@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+/*
+ * Tensorcraft Tailwind Base
+ *
+ * Theme colors reference CSS custom properties (--tc-*) that are
+ * defined per-theme in packages/themes/src/css/themes.css.
+ * The @theme block maps Tailwind utility classes to those variables.
+ *
+ * Usage: bg-surface, text-primary, text-accent, border-border, etc.
+ */
+
+@theme {
+  /* Background surfaces */
+  --color-surface: var(--tc-bg);
+  --color-surface-raised: var(--tc-surface);
+  --color-surface-overlay: var(--tc-surface-overlay);
+
+  /* Text */
+  --color-text-primary: var(--tc-text);
+  --color-text-muted: var(--tc-muted);
+
+  /* Theme colors */
+  --color-primary: var(--tc-primary);
+  --color-accent: var(--tc-accent);
+
+  /* Neon effects */
+  --color-glow: var(--tc-glow);
+  --color-neon-line: var(--tc-neon-line);
+
+  /* Semantic */
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+
+  /* Border */
+  --color-border: var(--tc-border);
+  --color-border-focus: var(--tc-primary);
+
+  /* Fonts — loaded via next/font, variables injected on <html> */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+
+  /* Border radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+}

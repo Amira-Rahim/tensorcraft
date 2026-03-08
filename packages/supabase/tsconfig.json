@@ -1,0 +1,9 @@
+{
+  "extends": "@tensorcraft/config/typescript/library",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "types": ["node"]
+  },
+  "include": ["src"]
+}

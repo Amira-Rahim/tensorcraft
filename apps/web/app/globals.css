@@ -1,0 +1,160 @@
+@import "tailwindcss";
+@import "@tensorcraft/themes/css/themes.css";
+
+@theme {
+  /* Background surfaces */
+  --color-surface: var(--tc-bg);
+  --color-surface-raised: var(--tc-surface);
+  --color-surface-overlay: var(--tc-surface-overlay);
+
+  /* Text */
+  --color-text-primary: var(--tc-text);
+  --color-text-muted: var(--tc-muted);
+
+  /* Theme colors */
+  --color-primary: var(--tc-primary);
+  --color-accent: var(--tc-accent);
+
+  /* Neon effects */
+  --color-glow: var(--tc-glow);
+  --color-neon-line: var(--tc-neon-line);
+
+  /* Semantic */
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+
+  /* Border */
+  --color-border: var(--tc-border);
+  --color-border-focus: var(--tc-primary);
+
+  /* Fonts — loaded via next/font, variables injected on <html> */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+
+  /* Border radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+}
+
+/*
+ * Tensorcraft Global Styles
+ * Dark mode only. Neon aesthetic. Futuristic UI.
+ */
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--tc-bg);
+  color: var(--tc-text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===== Neon Utility Classes ===== */
+
+/* Neon text glow effect */
+.neon-text {
+  text-shadow:
+    0 0 7px var(--tc-glow),
+    0 0 10px var(--tc-glow),
+    0 0 21px var(--tc-glow),
+    0 0 42px var(--tc-glow);
+}
+
+/* Subtle neon text (less intense) */
+.neon-text-subtle {
+  text-shadow:
+    0 0 5px color-mix(in srgb, var(--tc-glow) 40%, transparent),
+    0 0 10px color-mix(in srgb, var(--tc-glow) 20%, transparent);
+}
+
+/* Neon box glow */
+.neon-box {
+  box-shadow:
+    0 0 5px color-mix(in srgb, var(--tc-glow) 30%, transparent),
+    0 0 15px color-mix(in srgb, var(--tc-glow) 15%, transparent),
+    inset 0 0 5px color-mix(in srgb, var(--tc-glow) 10%, transparent);
+}
+
+/* Neon border glow */
+.neon-border {
+  border: 1px solid var(--tc-glow);
+  box-shadow:
+    0 0 5px color-mix(in srgb, var(--tc-glow) 40%, transparent),
+    inset 0 0 5px color-mix(in srgb, var(--tc-glow) 10%, transparent);
+}
+
+/* Animated gradient background */
+@keyframes gradient-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 15s ease infinite;
+}
+
+/* Animated neon line */
+@keyframes neon-pulse {
+  0%, 100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.neon-line {
+  background: var(--tc-neon-line);
+  animation: neon-pulse 2s ease-in-out infinite;
+}
+
+/* Grid pattern overlay */
+.grid-pattern {
+  background-image:
+    linear-gradient(
+      color-mix(in srgb, var(--tc-primary) 8%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--tc-primary) 8%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 60px 60px;
+}
+
+/* Frosted glass */
+.glass {
+  background: color-mix(in srgb, var(--tc-surface) 60%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .animate-gradient {
+    animation: none;
+  }
+  .neon-line {
+    animation: none;
+    opacity: 0.7;
+  }
+  .neon-text {
+    text-shadow: none;
+  }
+  .neon-text-subtle {
+    text-shadow: none;
+  }
+}

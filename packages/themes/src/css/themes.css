@@ -1,0 +1,80 @@
+/*
+ * Tensorcraft Theme CSS Custom Properties
+ *
+ * Each theme sets --tc-* variables that the Tailwind @theme block
+ * in packages/config/tailwind/base.css maps to utility classes.
+ *
+ * Theme switching: set data-theme="<slug>" on <html>.
+ * Deep Orbit is the default (applied on :root).
+ */
+
+/* ===== DEEP ORBIT (Space) — Default Theme ===== */
+:root,
+[data-theme="deep-orbit"] {
+  --tc-bg: #0B0D1A;
+  --tc-primary: #7B68EE;
+  --tc-accent: #F0C75E;
+  --tc-surface: #16213E;
+  --tc-surface-overlay: #1E2D4A;
+  --tc-text: #E2E8F0;
+  --tc-muted: #64748B;
+  --tc-border: #2A3A5C;
+  --tc-glow: #7B68EE;
+  --tc-neon-line: #F0C75E;
+}
+
+/* ===== NEON PROTOCOL (Cyberpunk) ===== */
+[data-theme="neon-protocol"] {
+  --tc-bg: #0A0A0F;
+  --tc-primary: #00D4FF;
+  --tc-accent: #FF2D7B;
+  --tc-surface: #151520;
+  --tc-surface-overlay: #1F1F2E;
+  --tc-text: #E2E8F0;
+  --tc-muted: #6B7280;
+  --tc-border: #2A2A3D;
+  --tc-glow: #00D4FF;
+  --tc-neon-line: #FF2D7B;
+}
+
+/* ===== SIGNAL WARD (Medical) ===== */
+[data-theme="signal-ward"] {
+  --tc-bg: #0A1628;
+  --tc-primary: #2ECC71;
+  --tc-accent: #5B8DEF;
+  --tc-surface: #132238;
+  --tc-surface-overlay: #1A2E48;
+  --tc-text: #F0F4F8;
+  --tc-muted: #6B7280;
+  --tc-border: #1E3A5F;
+  --tc-glow: #2ECC71;
+  --tc-neon-line: #5B8DEF;
+}
+
+/* ===== NOVA CANVAS (Creative AI) ===== */
+[data-theme="nova-canvas"] {
+  --tc-bg: #0D0D1A;
+  --tc-primary: #FF6B6B;
+  --tc-accent: #A78BFA;
+  --tc-surface: #1A1A30;
+  --tc-surface-overlay: #242440;
+  --tc-text: #E2E8F0;
+  --tc-muted: #6B7280;
+  --tc-border: #2D2D4A;
+  --tc-glow: #FF6B6B;
+  --tc-neon-line: #A78BFA;
+}
+
+/* ===== TERRA GRID (Industrial) ===== */
+[data-theme="terra-grid"] {
+  --tc-bg: #111827;
+  --tc-primary: #F59E0B;
+  --tc-accent: #10B981;
+  --tc-surface: #1F2937;
+  --tc-surface-overlay: #2D3748;
+  --tc-text: #E5E7EB;
+  --tc-muted: #6B7280;
+  --tc-border: #374151;
+  --tc-glow: #F59E0B;
+  --tc-neon-line: #10B981;
+}
