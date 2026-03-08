@@ -16,9 +16,9 @@
 
 | Name | Role | Description |
 |---|---|---|
-| **Yara** | Lead Artist / Creative Director | Visionary, passionate, occasionally impatient with purely technical thinking. Background in traditional fine art, transitioned to digital. She cares about *meaning*, not just output quality. Defines the artistic vision and pushes beyond technical capability toward genuine creative expression. |
-| **Kai** | Musician & Audio Engineer | Audio specialist handling sound generation, music, and audio-visual sync. Rhythmic thinker — explains concepts through musical metaphors. Laid-back but deeply knowledgeable. Sees waveforms everywhere. Brings the multimodal perspective. |
-| **Petrov** | Gallery Curator / Deployment Lead | Business and presentation side. Handles exhibitions, audience experience, practical deployment realities. Sophisticated, pragmatic, occasionally anxious about deadlines. Cares about audience experience above all. |
+| **Yara** | Lead Artist / Creative Director | Visionary, passionate, occasionally impatient with purely technical thinking. Background in kinetic sculpture and physical installations, transitioned to digital. She cares about *meaning*, not just output quality. Sees AI as the next tool in her workshop — after welding torches, CNC routers, and projection mapping. Defines the artistic vision and pushes beyond technical capability toward genuine creative expression. |
+| **Kai** | Creative Coder & Audio Engineer | Audio specialist and creative coder who thinks in math and signal processing. Explains ML concepts through precise technical analogies — Fourier transforms, sampling rates, signal-to-noise ratios. Laid-back but surgically exact. Bridges the gap between Yara's artistic vision and Ren's implementation by translating ideas into mathematical operations. |
+| **Petrov** | Gallery Curator / Deployment Lead | Business, presentation, and technical constraints. Handles exhibitions, audience experience, practical deployment realities. Sophisticated, pragmatic, anxious about deadlines — but also the voice of infrastructure reality. Knows the exact specs of every device in the gallery. Cares about audience experience above all, and knows that experience dies if the frame rate drops below 30fps. |
 | **Ren** | Creative Coder / Student Avatar | The player character. A frontend developer who joined the collective to explore creative coding. Strong JS skills, no ML background, deep curiosity. Approaches ML through play and iteration. Comfortable with ambiguity. |
 | **MUSE** | Creative AI Assistant | The collective's AI. Poetic, referential, occasionally pretentious. Quotes artists and philosophers alongside documentation. Genuinely tries to inspire. Tutorial guide, code assistant, creative suggestion engine. |
 
@@ -102,22 +102,34 @@ Ren visits The Grid for the first time. Yara shows them the Biennale proposal �
 
 > **REN:** "So we are building an AI that makes art... in the browser... in six weeks."
 
+> **PETROV:** "In the browser, on hardware we do not control. The venue has 40 kiosk machines — mid-range laptops with integrated GPUs. A full diffusion pipeline in the browser takes 45 seconds per image on that hardware. We need to pre-compute the heavy steps server-side and run only the final denoising in-browser."
+
+> **KAI:** "Forty-five seconds is not a guess, by the way. I benchmarked TensorFlow.js inference on a Surface Pro last week. The bottleneck is the attention layers — O(n²) on sequence length."
+
+> **PETROV:** "The venue Wi-Fi is 200 Mbps shared across 200 visitors. That is 1 Mbps per person. Every byte we send over the wire is a byte we cannot afford. The model weights alone are 400 MB if we are not careful."
+
 > **MUSE:** "Every masterpiece begins with a single gradient update. Welcome to the Nova Collective, Ren."
 
 Yara introduces the core idea: generative AI creates new data rather than classifying existing data. Instead of asking "what is this image?" you ask "what image should exist?" The shift from discriminative to generative thinking is the foundation of everything that follows.
 
-> **YARA:** "Imagination is not random. It is structured randomness — possibility shaped by intent. That is what a generative model does."
+> **YARA:** "Imagination is not random. It is structured randomness — possibility shaped by intent. That is what a generative model does. When I build a kinetic sculpture, I design constraints — the arm length, the motor speed, the weight distribution — and the motion that emerges is something I could not have predicted. A generative model works the same way."
 
 > **MUSE:** "Indeed. A probability distribution, sampled with purpose. Kandinsky would have understood immediately."
+
+> **KAI:** "A probability distribution is a histogram with infinite bins. You have used `Math.random()` — that is sampling from a uniform distribution. A generative model just samples from a much more interesting one."
 
 ### Lessons
 
 | # | Title | Description | FE Bridge | 5C Variation |
 |---|---|---|---|---|
 | 1 | What Is Generative AI? | Creating new data vs classifying existing data | `Math.random()` — controlled randomness | Standard |
+| | | *Hook: Echo's first output is pure noise. But Ren notices something — the noise is not random.* | | |
 | 2 | Probability Distributions | The mathematical foundation of generation | Random color generators / procedural generation | Discovery |
+| | | *Hook: The distribution shapes the output, but how do you actually pull a sample from it?* | | |
 | 3 | Sampling | Drawing from distributions to create outputs | CSS `random()` proposals / JS random seeding | Broken Code First |
+| | | *Hook: The loss function works, but the generated images all look the same — there is no structure, just colored static.* | | |
 | 4 | Noise as Input | Starting from randomness to create structure | Perlin noise in `<canvas>` generative art | Standard |
+| | | *Hook: The noise has structure now. But can a model learn to turn that structure into something recognizable?* | | |
 | 5 | Your First Generator | A simple model that produces visual patterns | Procedural `<canvas>` drawing with parameters | Standard (with debrief elements) |
 
 ### GITHUB
@@ -137,7 +149,7 @@ Yara introduces the core idea: generative AI creates new data rather than classi
 
 Yara introduces latent spaces through art:
 
-> **YARA:** "Imagine every possible painting exists in a vast space. Similar paintings are close together. A latent space is a map of that space, compressed to its essential dimensions. Every point is an image that could exist but does not yet. We are explorers in a space of potential art."
+> **YARA:** "In my sculpture studio, I have a wall of material samples — wood, resin, steel, glass — arranged by weight and flexibility. Similar materials cluster together. A latent space is the same idea, but for images: every possible image exists somewhere in the space, and similar images are neighbors. When I interpolate between oak and steel in my workshop, I get composites. When you interpolate in a latent space, you get images that blend properties. We are navigating a material library of possibility."
 
 Ren builds an interactive latent space explorer — dragging sliders and watching images morph in real time. The experience is revelatory.
 
@@ -172,7 +184,7 @@ Yara frames GANs as art criticism:
 
 > **YARA:** "The generator is a student artist. The discriminator is a harsh critic. They push each other to excellence. Neither is good alone — together, they create."
 
-Kai observes: "It is like a jam session — two musicians responding to each other in real time."
+Kai observes: "The discriminator is computing a binary cross-entropy loss against the generator's output. It is basically the same math as an A/B test — one signal is real, one is synthetic, and you are training a classifier to tell them apart. The generator's gradient flows backward through that classifier to improve."
 
 **Unique content:** Ren implements the full GAN pipeline — generator architecture (producing structured output from noise), discriminator architecture (judging output quality), adversarial training dynamics (balancing the two networks), and handling mode collapse (when the generator gets lazy and produces limited variety).
 
@@ -242,9 +254,23 @@ The first high-quality images emerge. Ren watches a diffusion model progressivel
 
 > **REN:** "It is loading... but it is loading from nothing. From pure noise into something beautiful."
 
+> **KAI:** "A diffusion step is denoising — same math as the noise reduction filter in Audacity. Each step predicts the noise and subtracts it. Fifty steps means fifty forward passes through the U-Net."
+
 > **PETROV:** "Can we make it faster? The audience will not wait 30 seconds."
 
-**Unique content:** Ren implements the full diffusion pipeline — the forward process (gradually adding noise to destroy an image), the reverse process (learning to remove noise step by step), noise schedules (controlling the denoising trajectory), the U-Net architecture for noise prediction, and classifier-free guidance for text-conditioned generation.
+The team runs the full 50-step pipeline in TensorFlow.js. On Petrov's test laptop — a mid-range machine matching the gallery kiosks — each image takes 43 seconds. Petrov stares at the profiler output, color draining from his face.
+
+> **PETROV:** "Forty-three seconds. Per image. For two hundred visitors. This is not a gallery installation, it is a loading screen exhibition."
+
+> **KAI:** "We do not need 50 steps. There is a technique called progressive distillation — you train a student model to match the teacher's output in fewer steps. A 4-step distilled model gets 90% of the quality at 8% of the compute. The math is straightforward: the student learns to skip intermediate denoising states by predicting the cumulative noise removal."
+
+> **YARA:** "Ninety percent quality. Will people notice the missing ten?"
+
+> **KAI:** "At 512×512 on a gallery wall viewed from two meters? No. The perceptual difference is below the just-noticeable-difference threshold."
+
+Ren implements the distilled 4-step model. Generation drops to 3.4 seconds. The quality loss is imperceptible at display resolution. Petrov exhales for the first time in an hour. The constraint becomes a teaching moment: model distillation is not a compromise, it is an engineering discipline — trading theoretical optimality for practical viability.
+
+**Unique content:** Ren implements the full diffusion pipeline — the forward process (gradually adding noise to destroy an image), the reverse process (learning to remove noise step by step), noise schedules (controlling the denoising trajectory), the U-Net architecture for noise prediction, classifier-free guidance for text-conditioned generation, and model distillation (compressing 50 denoising steps into 4 via progressive distillation).
 
 ### Lessons
 
@@ -279,7 +305,7 @@ Yara brings in examples of classical art:
 
 Ren builds a real-time style transfer system. The team experiments with blending multiple styles.
 
-> **KAI:** "What if we style-transferred sound? Same content, different musical genre?"
+> **KAI:** "Style transfer separates the Gram matrix of the style layers from the content activations. In audio, the Gram matrix would capture timbral texture — the spectral envelope — while the content would be the melody and rhythm. Same decomposition, different domain. We could render a jazz recording in the timbral style of a string quartet."
 
 **Unique content:** Ren implements neural style transfer — separating content from style using feature representations, applying artistic styles to photographs, real-time style transfer in the browser, and multi-style blending with adjustable weights.
 
@@ -314,6 +340,10 @@ The midpoint. Ren connects the vision and language models. The system generates 
 
 > **YARA:** (studying the output for a long time) "It is not art yet. But it understood the assignment. That is remarkable."
 
+> **MUSE:** "To understand an assignment is to grasp intent — the space between what is said and what is meant. Perhaps understanding is the first brushstroke of creation."
+
+> **PETROV:** "That is lovely, MUSE. Now can we talk about the CLIP alignment score? Because 'understood the assignment' is not a metric I can put in the Biennale progress report."
+
 **Unique content:** Ren implements vision-language models, cross-modal embeddings (shared representation spaces where images and text live together), image captioning (generating text from images), and text-to-image generation (generating images from text descriptions). The cross-modal alignment is the foundation for Module 8's CLIP integration.
 
 ### Lessons
@@ -345,6 +375,8 @@ Ren integrates CLIP, and suddenly the system understands nuance. "A melancholy c
 
 > **YARA:** "It is learning adjectives. It is learning mood. This is where engineering becomes art."
 
+> **KAI:** "It is not learning mood — it is learning that the vector for 'melancholy' is closer to 'twilight' than to 'noon' in CLIP's embedding space. The cosine similarity between those token embeddings is about 0.34 versus 0.12. Mood is a direction in a 512-dimensional vector space."
+
 **Unique content:** Ren implements contrastive learning (learning by comparing matched and mismatched text-image pairs), the CLIP architecture (joint text-image understanding), zero-shot classification (classifying without training examples), CLIP-guided generation (using CLIP to steer diffusion or GAN output), and prompt engineering for visual generation.
 
 ### Lessons
@@ -368,21 +400,29 @@ Ren integrates CLIP, and suddenly the system understands nuance. "A melancholy c
 
 ---
 
-## MODULE 9: AUDIO GENERATION
+## MODULE 9: AUDIO GENERATION — MULTIMODAL EXTENSION
 
-*Extending generative AI to sound — making the installation multi-sensory.*
+*Applying latent space thinking to a new modality — the installation needs a soundscape.*
 
 ### Narrative
 
-Kai's module. He builds the audio dimension of Nova Canvas AI:
+The team watches a test run of the installation. The visuals are stunning. The room is silent. Something is wrong.
 
-> **KAI:** "Every image the system generates should have a sound. Not just background music — a sound that *is* the image, translated to another sense."
+> **YARA:** "It feels like a museum, not an installation. An installation is spatial. It surrounds you. We need sound — not as decoration, but as a dimension of the work."
 
-The team listens to what their latent space sounds like.
+> **PETROV:** "So we are adding an entirely new modality three weeks before opening?"
+
+> **KAI:** "We are not starting from zero. A spectrogram is an image — frequency on the y-axis, time on the x-axis, amplitude as pixel intensity. We already know how to generate images from latent spaces. Audio is the same math, different domain. The VAE and diffusion architectures we built in Modules 4 and 5 transfer directly."
+
+This is Kai's moment. Where Yara thinks in visual composition and spatial design, Kai thinks in sample rates, frequency spectra, and phase coherence. He maps the visual latent space to audio parameters with mathematical precision.
+
+> **KAI:** "The latent vector has 512 dimensions. I am mapping the first 128 to spectral envelope — that controls timbre. Dimensions 129 through 256 map to rhythmic density via onset detection thresholds. The mapping is linear for now, but we can learn a nonlinear projection later. The point is: the same latent walk that morphs an image from landscape to portrait will morph the audio from ambient pad to percussive texture."
 
 > **MUSE:** "Kandinsky would have approved. He spent his career trying to paint music. We are building a system that does the reverse."
 
-**Unique content:** Ren and Kai implement audio-as-data (waveforms, spectrograms, audio tensors), neural audio synthesis (generating sound from latent representations), music generation (melodies and harmonies from sequence models), audio-visual synchronization (linking image generation to audio output), and interactive soundscapes that respond to audience input.
+> **KAI:** "Kandinsky was guessing. We have the Fourier transform. Every sound is a sum of sine waves at different frequencies and phases. A spectrogram decomposes audio the way a prism decomposes light. Once you see it as a 2D tensor, all our image generation tools apply."
+
+**Unique content:** Ren and Kai implement audio-as-data (waveforms, spectrograms, audio tensors), neural audio synthesis (generating sound from latent representations using the same architectures from Modules 4-5), music generation (melodies and harmonies from sequence models), audio-visual synchronization (linking image generation to audio output via shared latent spaces), and interactive soundscapes that respond to audience input. The key insight: switching modalities is applying what you know to new data, not learning a new field.
 
 ### Lessons
 
@@ -476,6 +516,8 @@ Ren stands in the middle of it all — the projections, the sound, the crowd —
 
 > **MUSE:** "Art is never finished, only abandoned. But tonight, we share what we have made. And tomorrow, we make something new."
 
+> **KAI:** "Tomorrow we fix the memory leak in the WebSocket handler. I have been watching the heap grow by 12 MB per hour. But yes — also the art thing."
+
 ### GITHUB
 
 **Commit:** `feat(m11): Nova Canvas AI v1.0 — full multimodal installation deployed`
@@ -509,10 +551,13 @@ Petrov's arc traces a traditional curator who starts dismissive of AI-generated 
 | Term | In-World Meaning | ML Meaning |
 |---|---|---|
 | Canvas | The generation output surface | Output tensor / generated image |
+| Canvas Layer | A single processing stage in the generation pipeline | Layer in the neural network |
+| Palette Vector | A point in the creative parameter space | Embedding / latent vector |
 | Palette | Set of creative parameters | Hyperparameter configuration |
 | Sketch | Low-resolution preliminary output | Early denoising step / low-fidelity generation |
 | Render | Final high-quality output | Full inference pass |
 | Studio | The workspace / development environment | Training environment |
+| Gallery Run | One full pass through the training collection | Epoch |
 | Exhibition | Public deployment | Production deployment |
 | Muse | Creative inspiration source | Pre-trained model / prompt |
 | Brushstroke | Individual generative operation | Single forward pass |
@@ -521,5 +566,7 @@ Petrov's arc traces a traditional curator who starts dismissive of AI-generated 
 | Gallery Wall | Display grid for generated outputs | Output visualization dashboard |
 | Remix | Variation on existing generation | Re-sampling with modified latent vector |
 | Commission | Specific generation request | Inference prompt |
-| Critique | Evaluation of output quality | Loss function evaluation |
+| Critique Score | Numerical evaluation of output quality | Loss function value |
 | Vernissage | Private preview before public launch | Staging deployment |
+| Pigment Channel | A single feature dimension in a representation | Feature map / activation channel |
+| Restoration | Removing noise to reveal the image underneath | Denoising step in diffusion |

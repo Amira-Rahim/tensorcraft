@@ -19,7 +19,7 @@
 | **Dr. Elena Vasquez** | Head Researcher / Mentor | Director of Signal Ward. Brilliant diagnostician, demanding but empathetic. Lost a patient early in her career due to a missed note in a chart — this drives her mission. Sets clinical context and explains *why* each NLP capability matters. Has no patience for sloppy work but infinite patience for genuine learning. |
 | **Obi Nwosu** | Computational Linguist / Concept Explainer | NLP expert with a PhD in biomedical NLP. Warm, articulate, deeply enthusiastic about language. Speaks three languages fluently and sees beauty in how words carry meaning. Introduces NLP theory, explains architectures, builds linguistic intuition. |
 | **Santos** | Nurse & Data Curator / Implementation Lead | Handles data quality, labeling, and the messy reality of clinical text. Practical, meticulous, protective of patient data. Has labeled ten thousand records by hand. Bridges the gap between raw medical records and clean training data. |
-| **Khalil Mensah** | Bioethicist & Health IT / Student Avatar | The player character. A skilled frontend developer working in Caduceus Medical Center's IT department. Strong JS/TS skills, no ML background. Thoughtful, principled, detail-oriented. He asks uncomfortable ethical questions that make the system better. Tasked with building the Diagnostic One interface after the hospital's vendor solution failed. |
+| **Khalil Mensah** | Bioethicist & Health IT / Student Avatar | The player character. A skilled frontend developer working in Caduceus Medical Center's IT department. Strong JS/TS skills, no ML background. Thoughtful, principled, detail-oriented. He asks uncomfortable ethical questions that make the system better. Tasked with building the Diagnostic One interface after the hospital's vendor solution failed. Previously built Meridian General's patient records UI — a React app that displayed charts, lab results, and medication histories but couldn't surface relevant information. The data was all there — drug interactions hiding across tabs, symptom patterns buried in months of notes — but his frontend could only *display* it, never *understand* it. Khalil knows the data is there; he just couldn't make it smart. Now he gets to fix that at the ML level. |
 | **MEDI** | Clinical Decision Support AI | The ward's AI assistant. Precise, helpful, occasionally pedantic about medical terminology. Unlike other theme AIs, MEDI is designed to be cautious — it flags uncertainty rather than projecting confidence. Corrects gently but firmly. Tutorial guide and hint system. |
 
 ### DISCLAIMER
@@ -129,6 +129,13 @@ Obi introduces Khalil to the fundamentals: what ML is, how it differs from rule-
 | 3 | Your First Classifier | A simple note type classifier | `Array.map(x => x * weight + bias)` | Broken Code First |
 | 4 | Tokens and Vocabulary | Breaking text into processable units | URL parsing (`new URL()`) | Standard |
 | 5 | Forward Pass | Running a simple text classifier end to end | Promise chains / middleware | Standard (with debrief elements) |
+
+**Inter-Lesson Hooks:**
+
+- **L1.1 → L1.2:** Khalil's first text analysis returns gibberish — turns out the input encoding is wrong. The clinical notes are UTF-8 but his pipeline assumed ASCII, mangling every accented character and special symbol.
+- **L1.2 → L1.3:** The tokenizer works, but MEDI flags a problem: two patients with identical symptoms are being classified differently. One note says "chest pain," the other says "CP." Same meaning, different tokens.
+- **L1.3 → L1.4:** The model runs, but Santos notices it's ignoring abbreviations that nurses use constantly — "pt," "hx," "dx," "prn." The vocabulary is built from textbooks, not from the ward.
+- **L1.4 → L1.5:** The vocabulary now handles abbreviations, but the forward pass produces wildly different confidence scores for notes that say the same thing in different word orders. Sequence matters — and the model doesn't know that yet.
 
 **FE BRIDGE (Module-Level):** Tokenization is URL parsing. When you call `new URL('https://caduceus.org/patient/12345?tab=notes&filter=active')`, the browser breaks the URL into structured parts — protocol, hostname, pathname, search params. Tokenization does the same to text: `"Patient presents with acute chest pain"` becomes `["Patient", "presents", "with", "acute", "chest", "pain"]` — structured, indexable, processable.
 
@@ -327,6 +334,16 @@ Diagnostic One's NER system, running on a batch of previously reviewed records, 
 
 > **KHALIL:** (nodding thoughtfully) "And if it had flagged incorrectly? What does a false positive cost in a medical setting?"
 
+**Santos Advocacy Scene:** Midway through testing, Obi proposes a model update that improves overall NER accuracy by 3.1%. Santos runs it against her ward's data and blocks the deployment.
+
+> **SANTOS:** "Your new version is 3% more accurate overall, but it's worse on elderly patients. Medication extraction dropped 8% for patients over 75. My ward is 60% elderly. They're on more medications, with more complex interactions, and your 'improvement' makes them less safe. Roll it back."
+
+> **OBI:** "But the aggregate numbers —"
+
+> **SANTOS:** "Aggregate numbers don't take the wrong pill, Obi."
+
+The team learns about subgroup performance analysis — evaluating model accuracy across patient demographics, not just in aggregate. It is a concept Santos understood before they had a name for it: the patients most at risk are often the ones the model serves worst.
+
 **Unique content:** Khalil implements BIO tagging (Beginning, Inside, Outside), builds a sequence labeling model for medical entity extraction, handles relationship extraction between entities, and addresses the unique challenges of medical NER — drug names that are common words, nested entities, discontinuous mentions.
 
 ### Lessons
@@ -387,11 +404,15 @@ Diagnostic One's NER system, running on a batch of previously reviewed records, 
 
 ### Narrative
 
-A doctor walks into Signal Ward and asks: "Has this patient ever been prescribed a statin?" In the old system, someone would manually search through years of records. Diagnostic One answers in seconds, with citations.
+An unconscious patient arrives in the ER with no accessible medical history. Records exist — but in a different hospital system, in a different format, partially in another language. The attending needs one answer before making a treatment decision: "Has this patient ever had an allergic reaction to penicillin?" In the old system, someone would call Meridian General, wait on hold, get transferred, and pray the night-shift clerk could pull the right file. The attending does not have that time. Diagnostic One needs to reach across systems, normalize formats, handle Spanish-language clinical notes from a previous hospital stay, and return a grounded answer with citations — in seconds, not minutes.
 
-> **OBI:** "This is what it was all for. Natural language access to clinical knowledge."
+> **OBI:** "This is what it was all for. Natural language access to clinical knowledge — across systems, across formats, across languages."
 
-**Unique content:** Khalil builds a RAG pipeline for clinical question answering — extractive QA (finding answers within documents), reading comprehension (understanding context), vector search for document retrieval, and knowledge grounding to ensure answers are supported by evidence. He implements citation linking so every generated answer points back to its source documents.
+> **SANTOS:** "The Meridian records use a completely different coding system. And half the allergy notes are free-text in Spanish from when the patient lived in Puerto Rico. If we can't normalize this, we're guessing."
+
+> **KHALIL:** "I built Meridian's records UI. I know their data format. The allergy field is buried in a free-text 'notes' column — no one ever structured it."
+
+**Unique content:** Khalil builds a RAG pipeline for clinical question answering — extractive QA (finding answers within documents), reading comprehension (understanding context), vector search for document retrieval, and knowledge grounding to ensure answers are supported by evidence. He implements citation linking so every generated answer points back to its source documents. The module's crisis scenario drives three additional technical challenges: cross-system retrieval (querying heterogeneous EHR formats), format normalization (mapping between coding systems), and multilingual handling (extracting medical facts from Spanish-language clinical notes).
 
 ### Lessons
 
@@ -518,14 +539,15 @@ Khalil's arc traces a principled developer who starts deeply skeptical of ML in 
 
 | Term | In-World Meaning | ML Meaning |
 |---|---|---|
-| Chart | Patient medical record | Training document |
+| Chart Note | Patient medical record entry | A single training example — the model's input format, structured or unstructured |
 | Intake | New record arriving in the system | Input data |
-| Triage | Sorting records by urgency | Classification by priority |
+| Triage Score | Urgency ranking determining treatment order | The model's confidence ranking, deciding which cases need human review vs. auto-processing |
 | Diagnosis | Identified condition or finding | Model prediction |
-| Differential | List of possible conditions | Top-k predictions with probabilities |
-| Rounds | Regular review of active cases | Evaluation loop |
+| Differential | List of possible conditions ranked by likelihood | Both the diagnostic differential *and* the gradient/loss differential — the gap between prediction and truth that drives learning |
+| Rounds | Regular review of active cases across the ward | A training epoch — the model "makes rounds" through the entire dataset, reviewing every case once |
 | Consult | Requesting specialist input | Ensemble model query |
-| Discharge Summary | Final patient record | Model output report |
+| Vital Signs | Patient health metrics (heart rate, BP, O2 sat) | Model health metrics — loss, accuracy, latency, throughput. If the vitals crash, the model is dying |
+| Discharge Summary | Final patient record summarizing stay and outcome | Model output — the inference result, a structured summary of what the model concluded and why |
 | Adverse Event | Negative patient outcome | Misclassification with consequences |
 | Clinical Trial | Testing new treatment | A/B testing a model version |
 | Chart Review | Manual record examination | Manual data annotation |

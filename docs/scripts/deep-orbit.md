@@ -15,9 +15,18 @@
 |---|---|---|
 | **Commander Adaeze Okafor** | Mentor / Mission Commander | Ship captain. Calm, authoritative, three prior deep-space missions. Sets context — she explains *why* the crew needs each capability but never dives into technical detail. Speaks in clear, deliberate sentences. |
 | **Dr. Hana Sato** | Astrophysicist / Concept Explainer | Lead scientist. Puzzle-lover, deeply curious, sometimes lost in abstractions. Uses analogies liberally, lights up when a student grasps a concept. Introduces ML theory via holographic whiteboard diagrams. |
-| **Chief Maria Torres** | Ship Engineer / Implementation Lead | Maintains all systems. Pragmatic skeptic — trusts things that work, distrusts "clever." Dry humor, no-nonsense. Handles TensorFlow.js, ONNX, quantization, performance. Backstory: 18 years in fleet engineering, refused two promotions to stay hands-on. A rule-based navigation system failed on Torres's previous mission, resulting in crew casualties — she carries that loss as armor against any system that promises more than it can deliver. Warms up once she sees results. |
+| **Chief Maria Torres** | Ship Engineer / Implementation Lead | Maintains all systems. Pragmatic skeptic — trusts things that work, distrusts "clever." Dry humor, no-nonsense. Handles TensorFlow.js, ONNX, quantization, performance. Backstory: 18 years in fleet engineering, refused two promotions to stay hands-on. On the ISS Vanguard, Torres trusted a rule-based navigation system through an asteroid field. It froze on an edge case — a tumbling fragment with irregular spin. Two crew members didn't make it to the escape pods. She carries that loss as armor against any system that promises more than it can deliver. Warms up once she sees results. |
 | **Ensign Joon Park** | Comms Officer / Student Avatar | The player character. Skilled frontend engineer reassigned to the Archimedes to maintain comms. No ML background but strong JS/TS skills. Eager, occasionally overwhelmed, grows in confidence across 11 modules. Asks clarifying questions and makes FE analogies. |
 | **ARIA** | Ship AI / Tutorial Guide | Onboard AI. Dry-witted, precise, occasionally sardonic. Voice of the code editor and terminal. Provides tutorials, documentation, hints, and commentary. |
+
+#### Park — Dialogue Evolution
+
+Park's voice changes across the course as his ML fluency grows. His dialogue should reflect this progression:
+
+- **Early (M1–M3):** *"Wait, so training a neural network is basically like running a build step?"* — Analogy-seeking, uncertain. Every ML concept gets filtered through frontend metaphors because that is all he has.
+- **Mid (M4–M6):** *"The sliding window approach reminds me of IntersectionObserver — we only process what's in view."* — Making connections independently. The analogies are sharper, more specific, and he volunteers them rather than needing Sato to supply them.
+- **Late (M7–M9):** *"We need to check for data leakage in the validation set before we trust these anomaly scores."* — Using ML terminology natively. The frontend analogies drop away. He thinks in the domain now.
+- **Capstone (M10–M11):** *"Int8 quantization on the signal processor — the inference budget is too tight for float32 on this band."* — ML practitioner. He no longer needs FE analogies. He speaks Torres's optimization language fluently.
 
 ### Career Paths & Salaries
 
@@ -558,6 +567,8 @@ The first batch of raw sensor data arrives from the long-range arrays — and it
 
 **FE BRIDGE (Module-Level):** A Web Audio API node graph is the perfect analogy for a data preprocessing pipeline. Each `AudioNode` transforms the signal — gain, filter, analyser — just like Express middleware transforms a request. Data flows through a chain of transforms, each one modifying the signal before passing it to the next node.
 
+**Inter-Lesson Hook:** Park's preprocessing pipeline works — until Torres feeds it raw data from an uncharted frequency band.
+
 ### GITHUB
 
 **Commit:** `feat(m2): data preprocessing pipeline with normalization and feature engineering`
@@ -597,6 +608,8 @@ The model reaches 78% accuracy. Okafor says: "Good enough to trust? Not yet. Kee
 | 5 | Evaluation Metrics | Accuracy, precision, recall, F1 | Lighthouse performance scores |
 
 **FE BRIDGE (Module-Level):** CSS animation keyframes are decomposition — breaking complex motion into discrete steps at specific percentages. A training loop does the same: at each epoch, the model evaluates its position, computes the error, and adjusts. The `@keyframes` analogy extends further — `ease-in-out` is like a learning rate schedule that starts slow, accelerates, then decelerates.
+
+**Inter-Lesson Hook:** The network trains successfully, but ARIA notices the loss curve has an unusual plateau at epoch 47.
 
 ### Shared Core
 
@@ -645,6 +658,8 @@ Park discovers the joy and pain of browser ML — the freedom of client-side inf
 
 **FE BRIDGE (Module-Level):** Browser ML runtimes are like frontend frameworks — React vs Vue vs Svelte. Each provides the same core capability (rendering UI / running inference) with different APIs, different performance profiles, and different ecosystems. TF.js is React (largest ecosystem, most resources). ONNX is Vue (pragmatic, great interop). Raw WASM is Svelte (most control, least abstraction).
 
+**Inter-Lesson Hook:** The browser runtime handles real-time inference — then three signals arrive simultaneously.
+
 ### GITHUB
 
 **Commit:** `feat(m4): browser runtime comparison — TF.js, ONNX, WASM benchmarks`
@@ -688,6 +703,8 @@ Park builds a spectrogram visualizer and feeds FFT features into the classifier.
 **FE BRIDGES (Module-Level):**
 - **CSS animation decomposition:** A `@keyframes` rule decomposes motion into discrete steps. FFT decomposes a waveform into discrete frequency components. Both take something continuous and express it as a sum of simpler parts.
 - **DevTools waterfall:** The Chrome DevTools performance waterfall shows events distributed across time — exactly what a spectrogram shows for frequency content. Time on the x-axis, frequency (or event type) on the y-axis, intensity as color.
+
+**Inter-Lesson Hook:** The FFT decomposition reveals the expected stellar harmonics... plus one frequency that shouldn't be there.
 
 ### Shared Core
 
@@ -736,6 +753,8 @@ Park builds an LSTM (Long Short-Term Memory) network to predict the next signal 
 **FE BRIDGES (Module-Level):**
 - **Redux state management:** A Redux reducer is a recurrent function — it takes previous state and a new action, and produces updated state. RNNs do exactly this: `newState = f(prevState, newInput)`. The hidden state of an RNN is the Redux store.
 - **localStorage with TTL:** LSTMs have a forget gate that decides what to keep and what to discard — like a cache with time-to-live. Some memories are worth keeping (long-term patterns); others should expire (short-term noise).
+
+**Inter-Lesson Hook:** The LSTM remembers the anomalous pattern from 72 hours ago. It's happening again.
 
 ### Shared Core
 
@@ -800,7 +819,7 @@ Covers anomaly detection fundamentals shared across themes: autoencoders (vanill
 - `src/visualization/reconstruction.ts`
 - `tests/anomaly/detector.test.ts`
 
-**Cliffhanger:** The mathematical sequence embedded in the anomaly resolves to prime numbers. Sato's hands are shaking.
+**Cliffhanger:** The mathematical structure embedded in the anomaly mirrors the Fibonacci sequence — the same sequence used in the Archimedes' own sensor calibration algorithm. Sato's hands are shaking. "It's not just structured. It's structured like *us*."
 
 ---
 
@@ -908,6 +927,8 @@ Torres's module. She has been waiting for this.
 
 Park learns to quantize (reduce numerical precision from 32-bit to 8-bit), prune (remove weights that contribute little to accuracy), and distill (train a small model to mimic a large one). The model shrinks from 340 MB to 42 MB with only 2% accuracy loss.
 
+The optimization work is no longer academic. Remaining fuel reserves limit compute time — the ship's reactor powers both the engines and the compute cluster, and every unnecessary training epoch is fuel the crew needs to get home. Okafor has posted the fuel gauge on the bridge dashboard next to the DEEP SCAN metrics. The two numbers move in opposite directions.
+
 > **TORRES:** (grudgingly) "Not bad, for a frontend dev."
 
 **Unique content:** Park implements post-training quantization (PTQ) and quantization-aware training (QAT). He builds a pruning pipeline that removes 60% of weights while maintaining 94% of accuracy. He distills the full DEEP SCAN model into a lightweight "student" model that runs inference in under 5ms.
@@ -964,25 +985,25 @@ DEEP SCAN classifies the anomalous signal definitively. The crew stares at the o
 
 ### CONSEQUENCE
 
-The final classification result appears on every screen on the bridge. The anomalous signal is a repeating mathematical sequence — prime numbers encoded in electromagnetic pulses. Not random. Not natural. Structured.
+The final classification result appears on every screen on the bridge. The anomalous signal contains a mathematical structure that mirrors the Fibonacci sequence — the same recursive ratio used in the Archimedes' own sensor calibration algorithm. Not a coincidence of mathematics. A reflection. Whatever sent this signal used a pattern that only makes sense if the source has been observing the ship's transmissions.
 
 > **OKAFOR:** "What am I looking at, Dr. Sato?"
 
-> **SATO:** "Primes. 2, 3, 5, 7, 11, 13... encoded as pulse intervals. No known natural phenomenon produces prime number sequences. This is... intentional."
+> **SATO:** "Fibonacci ratios. 1, 1, 2, 3, 5, 8, 13... encoded as pulse-interval proportions. But that is not the unsettling part." She pulls up the Archimedes' own calibration spec. "These ratios match our sensor calibration harmonics exactly — the same coefficients, the same convergence pattern. This signal was not just sent. It was composed *for us*."
 
-Silence on the bridge.
+Silence on the bridge. Torres is the first to speak.
 
-> **OKAFOR:** "ARIA, confidence level?"
+> **TORRES:** "Could it be echo? Our own calibration signal bouncing off something?"
 
-> **ARIA:** "97.3% confidence that the signal encodes a prime number sequence. I have cross-referenced against 14 known natural electromagnetic phenomena. None produce this pattern. Additionally, the sequence has been repeating for a minimum of 340 years, based on the light-travel time from the signal source."
+> **ARIA:** "Negative, Chief. I have modeled every reflection scenario. The signal originates 4.2 light-years from our position and has been repeating for a minimum of 340 years — long before the Archimedes was built. The calibration pattern match implies the source has been observing our transmissions since we entered the system and adapted its signal accordingly."
 
-> **OKAFOR:** "Send it to Earth. All of it. Every data point, every model weight, every analysis. Let them verify independently."
+> **SATO:** "Or — the Fibonacci structure is a natural phenomenon and the calibration match is coincidence. Phyllotaxis, shell spirals, branching patterns — Fibonacci appears in nature constantly."
 
-> **PARK:** "Commander... what does this mean?"
+> **PARK:** "So which is it? Are we being watched, or are we seeing patterns because we want to?"
 
-> **OKAFOR:** (long pause) "It means we are not done, Ensign. It means the mission continues."
+> **OKAFOR:** (long pause) "Send it to Earth. All of it. Every data point, every model weight, every analysis. Both hypotheses. Let them verify independently. We do not get to decide this alone."
 
-The Archimedes turns for home. But the signal keeps transmitting. And now, DEEP SCAN is listening.
+The Archimedes turns for home. But the signal keeps transmitting. And now, DEEP SCAN is listening — and the crew cannot stop wondering whether something is listening back.
 
 ### GITHUB
 
@@ -1000,7 +1021,7 @@ The Archimedes turns for home. But the signal keeps transmitting. And now, DEEP 
 
 ### ANIMATION
 
-Final animation: the bridge of the Archimedes. Every holographic display shows a different facet of DEEP SCAN — the spectrogram, the classification feed, the anomaly detector, the sequence predictor. At the center, the prime number sequence pulses in gold against the deep space backdrop. The camera pulls back through the bridge viewport to show the Archimedes against the star field of Kepler-442. The DEEP SCAN logo resolves one final time. Text: **"DEEP SCAN v1.0 — Signal Classified. Mission Continues."**
+Final animation: the bridge of the Archimedes. Every holographic display shows a different facet of DEEP SCAN — the spectrogram, the classification feed, the anomaly detector, the sequence predictor. At the center, the Fibonacci spiral pulses in gold against the deep space backdrop, its ratios mirroring the ship's own calibration harmonics. The camera pulls back through the bridge viewport to show the Archimedes against the star field of Kepler-442. The DEEP SCAN logo resolves one final time. Text: **"DEEP SCAN v1.0 — Signal Classified. Mission Continues."**
 
 ---
 
