@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="deep-orbit">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tensorcraft — Design Prototypes</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .hub-hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 80px 24px 48px;
+    }
+
+    .hub-title {
+      font-size: var(--text-3xl);
+      font-weight: 700;
+      color: var(--tc-primary);
+      letter-spacing: 0.2em;
+      animation: fade-in 0.8s ease both;
+    }
+
+    .hub-subtitle {
+      font-size: var(--text-lg);
+      color: var(--tc-muted);
+      margin-top: 8px;
+      animation: fade-in 0.8s ease 0.3s both;
+    }
+
+    .hub-divider {
+      width: 120px;
+      height: 2px;
+      margin: 24px 0;
+      animation: line-grow 1s ease 0.5s both;
+      transform-origin: center;
+    }
+
+    .hub-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    @media (min-width: 640px) {
+      .hub-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (min-width: 1024px) {
+      .hub-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (min-width: 1440px) {
+      .hub-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    .hub-card {
+      animation: slide-up 0.6s ease both;
+      text-decoration: none;
+      display: block;
+    }
+
+    .hub-card:nth-child(1) { animation-delay: 0.1s; }
+    .hub-card:nth-child(2) { animation-delay: 0.15s; }
+    .hub-card:nth-child(3) { animation-delay: 0.2s; }
+    .hub-card:nth-child(4) { animation-delay: 0.25s; }
+    .hub-card:nth-child(5) { animation-delay: 0.3s; }
+    .hub-card:nth-child(6) { animation-delay: 0.35s; }
+    .hub-card:nth-child(7) { animation-delay: 0.4s; }
+    .hub-card:nth-child(8) { animation-delay: 0.45s; }
+
+    .hub-card__icon {
+      font-size: 32px;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .hub-card__name {
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--tc-text);
+      margin-bottom: 4px;
+    }
+
+    .hub-card__desc {
+      font-size: var(--text-sm);
+      color: var(--tc-muted);
+      line-height: 1.5;
+    }
+
+    .hub-card__link {
+      display: inline-block;
+      margin-top: 12px;
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--tc-primary);
+      transition: color 0.2s;
+    }
+
+    .hub-card:hover .hub-card__link {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background grid -->
+  <div style="position:fixed;inset:0;z-index:0;opacity:0.3;" class="grid-pattern"></div>
+
+  <div style="position:relative;z-index:1;">
+
+    <!-- Hero -->
+    <header class="hub-hero">
+      <h1 class="hub-title neon-text">TENSORCRAFT</h1>
+      <p class="hub-subtitle">Design Prototypes</p>
+      <div class="hub-divider neon-line"></div>
+    </header>
+
+    <!-- Prototype Grid -->
+    <main class="hub-grid">
+
+      <a href="landing.html" class="hub-card glass-card">
+        <span class="hub-card__icon">🚀</span>
+        <h2 class="hub-card__name">Landing Page</h2>
+        <p class="hub-card__desc">Hero section, FE→ML bridges, theme showcase, and signup CTA.</p>
+        <span class="hub-card__link">Open prototype →</span>
+      </a>
+
+      <a href="theme-selection.html" class="hub-card glass-card">
+        <span class="hub-card__icon">🎨</span>
+        <h2 class="hub-card__name">Theme Selection</h2>
+        <p class="hub-card__desc">Choose from 5 themed worlds, each with a unique ML specialization.</p>
+        <span class="hub-card__link">Open prototype →</span>
+      </a>
+
+      <a href="module-overview.html" class="hub-card glass-card">
+        <span class="hub-card__icon">🗺️</span>
+        <h2 class="hub-card__name">Module Overview</h2>
+        <p class="hub-card__desc">Progress nodes, lesson map, and module-level navigation.</p>
+        <span class="hub-card__link">Open prototype →</span>
+      </a>
+
+      <a href="lesson-viewer.html" class="hub-card glass-card">
+        <span class="hub-card__icon">📖</span>
+        <h2 class="hub-card__name">Lesson Viewer</h2>
+        <p class="hub-card__desc">Rich content rendering with code blocks, hints, and bridge visuals.</p>
+        <span class="hub-card__link">Open prototype →</span>
+      </a>
+
+      <a href="exercise.html" class="hub-card glass-card">
+        <span class="hub-card__icon">⚡</span>
+        <h2 class="hub-card__name">Exercise</h2>
+        <p class="hub-card__desc">Interactive coding challenges with quizzes and real-time feedback.</p>
+        <span class="hub-card__link">Open prototype →</span>
+      </a>
+
+      <a href="dashboard.html" class="hub-card glass-card">
+        <span class="hub-card__icon">📊</span>
+        <h2 class="hub-card__name">Dashboard</h2>
+        <p class="hub-card__desc">Learner stats, streak tracking, and progress visualization.</p>
+        <span class="hub-card__link">Open prototype →</span>
+      </a>
+
+      <a href="pricing.html" class="hub-card glass-card">
+        <span class="hub-card__icon">💎</span>
+        <h2 class="hub-card__name">Pricing</h2>
+        <p class="hub-card__desc">Theme pricing tiers with feature comparison and checkout flow.</p>
+        <span class="hub-card__link">Open prototype →</span>
+      </a>
+
+      <a href="settings.html" class="hub-card glass-card">
+        <span class="hub-card__icon">⚙️</span>
+        <h2 class="hub-card__name">Settings</h2>
+        <p class="hub-card__desc">Profile, preferences, theme switching, and account management.</p>
+        <span class="hub-card__link">Open prototype →</span>
+      </a>
+
+    </main>
+
+  </div>
+
+  <!-- Theme Switcher -->
+  <div class="theme-switcher">
+    <button class="theme-toggle" aria-label="Switch theme">◈</button>
+    <div class="theme-popup">
+      <button class="theme-dot" data-theme="deep-orbit" style="background:#7B68EE;" title="Deep Orbit"></button>
+      <button class="theme-dot" data-theme="neon-protocol" style="background:#00D4FF;" title="Neon Protocol"></button>
+      <button class="theme-dot" data-theme="signal-ward" style="background:#2ECC71;" title="Signal Ward"></button>
+      <button class="theme-dot" data-theme="nova-canvas" style="background:#FF6B6B;" title="Nova Canvas"></button>
+      <button class="theme-dot" data-theme="terra-grid" style="background:#F59E0B;" title="Terra Grid"></button>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const themes = ['deep-orbit','neon-protocol','signal-ward','nova-canvas','terra-grid'];
+      const switcher = document.querySelector('.theme-switcher');
+      const popup = switcher?.querySelector('.theme-popup');
+      switcher?.querySelector('.theme-toggle')?.addEventListener('click', () => {
+        popup?.classList.toggle('active');
+      });
+      document.querySelectorAll('.theme-dot').forEach(dot => {
+        dot.addEventListener('click', () => {
+          document.documentElement.setAttribute('data-theme', dot.dataset.theme);
+          localStorage.setItem('tc-theme', dot.dataset.theme);
+          popup?.classList.remove('active');
+        });
+      });
+      const saved = localStorage.getItem('tc-theme');
+      if (saved) document.documentElement.setAttribute('data-theme', saved);
+    });
+  </script>
+
+</body>
+</html>

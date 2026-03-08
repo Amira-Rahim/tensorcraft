@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="deep-orbit">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
+  <title>Tensorcraft — Lesson Viewer</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--tc-bg, #0B0D1A);
+      color: var(--tc-text, #E2E8F0);
+      min-height: 100vh;
+      line-height: 1.7;
+    }
+    code, pre, .code-block, .tok-kw, .tok-str, .tok-cm, .tok-fn, .tok-num {
+      font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
+    }
+
+    /* --- NAV BAR --- */
+    .nav-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      height: 56px;
+      background: var(--tc-surface, #16213E);
+      border-bottom: 1px solid var(--tc-border, #2A3A5C);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .nav-logo {
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: 2px;
+      color: var(--tc-primary, #7B68EE);
+    }
+    .nav-breadcrumb {
+      font-size: 14px;
+      color: var(--tc-muted, #64748B);
+    }
+    .nav-breadcrumb span { color: var(--tc-text); }
+    .hamburger {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--tc-text);
+      font-size: 22px;
+      cursor: pointer;
+      min-width: 44px;
+      min-height: 44px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* --- RESPONSIVE TABS --- */
+    .tab-bar {
+      display: none;
+      background: var(--tc-surface);
+      border-bottom: 1px solid var(--tc-border);
+      position: sticky;
+      top: 56px;
+      z-index: 90;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 12px 16px;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--tc-muted);
+      font-size: 14px;
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      min-height: 48px;
+      transition: color 150ms, border-color 150ms;
+    }
+    .tab-btn.active {
+      color: var(--tc-text);
+      border-bottom-color: var(--tc-accent);
+    }
+
+    /* --- 3-COLUMN LAYOUT --- */
+    .lesson-layout {
+      display: grid;
+      grid-template-columns: 240px 1fr 1fr;
+      min-height: calc(100vh - 56px);
+    }
+
+    /* --- SIDEBAR --- */
+    .sidebar {
+      background: color-mix(in srgb, var(--tc-bg) 90%, #000);
+      border-right: 1px solid color-mix(in srgb, var(--tc-muted) 20%, transparent);
+      padding: 24px 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .sidebar-logo {
+      font-size: 18px;
+      color: var(--tc-primary);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .sidebar h3 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--tc-text);
+      line-height: 1.4;
+      margin-bottom: 20px;
+    }
+    .sidebar-lessons {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+    }
+    .sidebar-lesson {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      color: var(--tc-muted);
+      cursor: pointer;
+      transition: background 150ms;
+      min-height: 44px;
+    }
+    .sidebar-lesson:hover { background: var(--tc-surface); }
+    .sidebar-lesson.completed { color: var(--tc-muted); }
+    .sidebar-lesson.active {
+      color: var(--tc-accent);
+      font-weight: 600;
+      background: color-mix(in srgb, var(--tc-accent) 8%, transparent);
+    }
+    .sidebar-lesson.locked {
+      color: color-mix(in srgb, var(--tc-muted) 50%, transparent);
+      cursor: default;
+    }
+    .sidebar-lesson .icon {
+      min-width: 20px;
+      text-align: center;
+      font-size: 14px;
+    }
+    .sidebar-lesson.completed .icon { color: #22C55E; }
+    .sidebar-lesson.active .icon { color: var(--tc-accent); }
+
+    .sidebar-progress {
+      margin-top: auto;
+      padding-top: 20px;
+      border-top: 1px solid var(--tc-border);
+    }
+    .sidebar-progress-label {
+      font-size: 12px;
+      color: var(--tc-muted);
+      margin-bottom: 8px;
+    }
+    .progress-bar {
+      height: 4px;
+      background: var(--tc-border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--tc-accent);
+      border-radius: 2px;
+      transition: width 300ms ease;
+    }
+
+    /* --- NARRATIVE PANEL --- */
+    .narrative-panel {
+      padding: 48px;
+      overflow-y: auto;
+      display: flex;
+      justify-content: center;
+    }
+    .narrative-content {
+      max-width: 680px;
+      width: 100%;
+    }
+
+    .section-label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--tc-primary);
+      margin-bottom: 12px;
+      margin-top: 40px;
+    }
+    .section-label:first-child { margin-top: 0; }
+
+    .narrative-content p {
+      font-size: 16px;
+      line-height: 1.7;
+      margin-bottom: 16px;
+      color: var(--tc-text);
+    }
+    .narrative-content .dialogue {
+      padding-left: 20px;
+      border-left: 3px solid var(--tc-primary);
+      margin: 20px 0;
+      font-style: italic;
+    }
+    .dialogue .speaker {
+      font-style: normal;
+      font-weight: 600;
+      color: var(--tc-accent);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* --- BRIDGE COMPONENT --- */
+    .bridge-callout {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 0;
+      margin: 32px 0;
+      align-items: stretch;
+    }
+    .bridge-card {
+      background: var(--tc-surface);
+      border: 1px solid var(--tc-border);
+      border-radius: 12px;
+      padding: 20px;
+      backdrop-filter: blur(12px);
+    }
+    .bridge-card h4 {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--tc-muted);
+      margin-bottom: 12px;
+    }
+    .bridge-card h5 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--tc-text);
+      margin-bottom: 8px;
+    }
+    .bridge-card code {
+      display: block;
+      background: color-mix(in srgb, var(--tc-bg) 80%, #000);
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      color: var(--tc-accent);
+      margin-bottom: 10px;
+      line-height: 1.6;
+    }
+    .bridge-card p {
+      font-size: 14px !important;
+      color: var(--tc-muted) !important;
+      line-height: 1.6 !important;
+    }
+    .bridge-connector {
+      width: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .bridge-connector::after {
+      content: '';
+      position: absolute;
+      width: 2px;
+      height: 80%;
+      background: var(--tc-neon-line);
+      box-shadow: 0 0 8px var(--tc-neon-line), 0 0 16px color-mix(in srgb, var(--tc-neon-line) 40%, transparent);
+      border-radius: 1px;
+    }
+    .bridge-connector .bridge-icon {
+      position: relative;
+      z-index: 1;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--tc-neon-line);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: var(--tc-bg);
+      font-weight: 700;
+      box-shadow: 0 0 12px var(--tc-neon-line);
+    }
+
+    /* --- CHECKPOINT QUIZ --- */
+    .checkpoint-quiz {
+      background: var(--tc-surface);
+      border: 1px solid var(--tc-border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-top: 32px;
+    }
+    .checkpoint-quiz h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--tc-text);
+    }
+    .checkpoint-quiz .quiz-question {
+      font-size: 15px;
+      color: var(--tc-text);
+      margin-bottom: 16px;
+    }
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .quiz-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      border: 1px solid var(--tc-border);
+      cursor: pointer;
+      transition: background 150ms, border-color 150ms;
+      min-height: 44px;
+      font-size: 15px;
+    }
+    .quiz-option:hover { background: color-mix(in srgb, var(--tc-surface) 80%, var(--tc-text)); }
+    .quiz-option .radio {
+      width: 20px;
+      height: 20px;
+      min-width: 20px;
+      border-radius: 50%;
+      border: 2px solid var(--tc-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 150ms, background 150ms;
+    }
+    .quiz-option--correct {
+      background: rgba(34, 197, 94, 0.12) !important;
+      border-color: #22C55E !important;
+    }
+    .quiz-option--correct .radio {
+      border-color: #22C55E;
+      background: #22C55E;
+    }
+    .quiz-option--correct .radio::after {
+      content: '\2713';
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .quiz-option--wrong {
+      background: rgba(239, 68, 68, 0.12) !important;
+      border-color: #EF4444 !important;
+      animation: shake 300ms ease-out;
+    }
+    .quiz-option--wrong .radio {
+      border-color: #EF4444;
+      background: #EF4444;
+    }
+    .quiz-option--wrong .radio::after {
+      content: '\2717';
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-3px); }
+      40% { transform: translateX(3px); }
+      60% { transform: translateX(-3px); }
+      80% { transform: translateX(3px); }
+    }
+
+    /* --- CODE PANEL --- */
+    .code-panel {
+      background: #0D1117;
+      border-left: 1px solid var(--tc-border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .code-titlebar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      height: 44px;
+      background: #161B22;
+      border-bottom: 1px solid #30363D;
+    }
+    .code-tab {
+      font-size: 13px;
+      color: var(--tc-text);
+      padding: 10px 16px;
+      border-bottom: 2px solid var(--tc-accent);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .btn-run {
+      padding: 6px 16px;
+      background: var(--tc-primary);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      min-height: 32px;
+      transition: filter 150ms;
+    }
+    .btn-run:hover { filter: brightness(1.15); }
+
+    .code-editor {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .code-editor pre {
+      margin: 0;
+      white-space: pre;
+    }
+    .tok-cm { color: #8B949E; }
+    .tok-kw { color: #FF7B72; }
+    .tok-fn { color: #D2A8FF; }
+    .tok-str { color: #A5D6FF; }
+    .tok-num { color: #79C0FF; }
+    .tok-op { color: #C9D1D9; }
+
+    /* Test Results */
+    .test-results {
+      border-top: 1px solid #30363D;
+      padding: 16px 20px;
+      font-size: 13px;
+    }
+    .test-results h4 {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--tc-muted);
+      margin-bottom: 12px;
+    }
+    .test-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+    }
+    .test-pass { color: #22C55E; }
+    .test-fail { color: #EF4444; }
+
+    /* Hint Panel */
+    .hint-panel {
+      border-top: 1px solid #30363D;
+      padding: 16px 20px;
+    }
+    .hint-toggle {
+      background: none;
+      border: none;
+      color: var(--tc-primary);
+      cursor: pointer;
+      font-size: 13px;
+      font-family: inherit;
+      padding: 4px 0;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+    }
+    .hint-toggle:hover { text-decoration: underline; }
+    .hint-levels {
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .hint-level {
+      padding: 10px 14px;
+      border-left: 3px solid var(--tc-accent);
+      font-size: 13px;
+      color: var(--tc-text);
+      line-height: 1.6;
+      background: color-mix(in srgb, var(--tc-surface) 40%, transparent);
+      border-radius: 0 6px 6px 0;
+    }
+    .hint-level.collapsed {
+      color: var(--tc-muted);
+      cursor: pointer;
+      border-left-color: var(--tc-muted);
+    }
+    .hint-level.collapsed::before {
+      content: '+ ';
+      font-weight: 600;
+    }
+    .hint-level:nth-child(2) { border-left-color: var(--tc-primary); }
+    .hint-level:nth-child(3) { border-left-color: #F59E0B; }
+
+    /* --- THEME SWITCHER --- */
+    .theme-switcher {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 200;
+    }
+    .theme-toggle {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid var(--tc-border);
+      background: var(--tc-surface);
+      color: var(--tc-primary);
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(12px);
+      transition: transform 150ms;
+    }
+    .theme-toggle:hover { transform: scale(1.1); }
+    .theme-popup {
+      position: absolute;
+      bottom: 52px;
+      right: 0;
+      background: var(--tc-surface);
+      border: 1px solid var(--tc-border);
+      border-radius: 12px;
+      padding: 12px;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .theme-popup.active { display: flex; }
+    .theme-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: transform 150ms, border-color 150ms;
+    }
+    .theme-dot:hover {
+      transform: scale(1.15);
+      border-color: rgba(255,255,255,0.3);
+    }
+
+    /* --- RESPONSIVE: TABLET --- */
+    @media (max-width: 1023px) {
+      .sidebar { display: none; }
+      .hamburger { display: flex; }
+      .lesson-layout { grid-template-columns: 1fr; }
+      .tab-bar { display: flex; }
+      .tab-panel { display: none; }
+      .tab-panel.active { display: flex; }
+      .narrative-panel { padding: 32px; }
+      .narrative-panel.tab-panel.active { display: flex; }
+      .code-panel.tab-panel.active {
+        display: flex;
+        min-height: calc(100vh - 56px - 48px);
+      }
+      .bridge-callout {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+      .bridge-connector {
+        width: 100%;
+        height: 40px;
+      }
+      .bridge-connector::after {
+        width: 80%;
+        height: 2px;
+      }
+    }
+
+    /* --- RESPONSIVE: MOBILE --- */
+    @media (max-width: 639px) {
+      .nav-breadcrumb { display: none; }
+      .narrative-panel { padding: 16px; }
+      .code-editor { font-size: 13px; }
+      .code-panel.tab-panel.active { min-height: 300px; }
+      .btn-run {
+        width: 100%;
+        min-height: 44px;
+        font-size: 15px;
+      }
+      .bridge-callout { margin: 20px 0; }
+    }
+
+    /* Sidebar overlay for mobile */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 150;
+      background: rgba(0,0,0,0.5);
+    }
+    .sidebar-overlay.active { display: block; }
+    .sidebar-overlay .sidebar {
+      display: flex;
+      width: 280px;
+      height: 100%;
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+    .sidebar-overlay .sidebar-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: none;
+      border: none;
+      color: var(--tc-text);
+      font-size: 20px;
+      cursor: pointer;
+      min-width: 44px;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV BAR -->
+  <nav class="nav-bar">
+    <div class="nav-left">
+      <button class="hamburger" id="hamburger-btn">&#9776;</button>
+      <span class="nav-logo">&#9671; TENSORCRAFT</span>
+    </div>
+    <div class="nav-breadcrumb">Deep Orbit / Module 3 / <span>Your First Model</span></div>
+  </nav>
+
+  <!-- RESPONSIVE TABS (tablet/mobile) -->
+  <div class="tab-bar">
+    <button class="tab-btn active" data-panel="panel-narrative">Story</button>
+    <button class="tab-btn" data-panel="panel-code">Code</button>
+  </div>
+
+  <!-- SIDEBAR OVERLAY (mobile) -->
+  <div class="sidebar-overlay" id="sidebar-overlay">
+    <div class="sidebar">
+      <button class="sidebar-close" id="sidebar-close">&times;</button>
+      <div class="sidebar-logo">&#9671;</div>
+      <h3>Module 3: Neural Networks</h3>
+      <ul class="sidebar-lessons">
+        <li class="sidebar-lesson completed"><span class="icon">&#10003;</span> The Signal</li>
+        <li class="sidebar-lesson completed"><span class="icon">&#10003;</span> Patterns in Noise</li>
+        <li class="sidebar-lesson active"><span class="icon">&#9679;</span> Your First Model</li>
+        <li class="sidebar-lesson locked"><span class="icon">&#128274;</span> Training the Classifier</li>
+        <li class="sidebar-lesson locked"><span class="icon">&#128274;</span> Consequence &amp; Debrief</li>
+      </ul>
+      <div class="sidebar-progress">
+        <div class="sidebar-progress-label">Module Progress: 2/5</div>
+        <div class="progress-bar"><div class="progress-bar-fill" style="width: 40%;"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3-COLUMN LAYOUT -->
+  <div class="lesson-layout">
+
+    <!-- SIDEBAR (desktop only) -->
+    <aside class="sidebar" id="desktop-sidebar">
+      <div class="sidebar-logo">&#9671;</div>
+      <h3>Module 3: Neural Networks</h3>
+      <ul class="sidebar-lessons">
+        <li class="sidebar-lesson completed"><span class="icon">&#10003;</span> The Signal</li>
+        <li class="sidebar-lesson completed"><span class="icon">&#10003;</span> Patterns in Noise</li>
+        <li class="sidebar-lesson active"><span class="icon">&#9679;</span> Your First Model</li>
+        <li class="sidebar-lesson locked"><span class="icon">&#128274;</span> Training the Classifier</li>
+        <li class="sidebar-lesson locked"><span class="icon">&#128274;</span> Consequence &amp; Debrief</li>
+      </ul>
+      <div class="sidebar-progress">
+        <div class="sidebar-progress-label">Module Progress: 2/5</div>
+        <div class="progress-bar"><div class="progress-bar-fill" style="width: 40%;"></div></div>
+      </div>
+    </aside>
+
+    <!-- NARRATIVE PANEL -->
+    <div class="narrative-panel tab-panel active" id="panel-narrative">
+      <div class="narrative-content">
+
+        <div class="section-label">Context</div>
+        <div class="dialogue">
+          <div class="speaker">ARIA</div>
+          <p>"Commander, I'm detecting a repeating pattern in the Band-7 signals. It's too regular to be cosmic noise, but my rule-based classifier can't categorize it."</p>
+        </div>
+        <p>Okafor turns to you. "We need something smarter than rules. Park, what do you know about machine learning?"</p>
+        <p>Torres leans against the bulkhead, arms crossed. "Great. The frontend dev is going to train a neural network. What could possibly go wrong?"</p>
+        <p>Sato pulls up a holographic whiteboard. "Don't worry, Park. We'll start simple. Every neural network begins with a single, elegant concept: the activation function."</p>
+
+        <div class="section-label">Challenge</div>
+        <p>Build a simple classifier that can distinguish between cosmic noise and structured signals in the Archimedes' sensor data. Start by implementing the most fundamental activation function in neural networks.</p>
+
+        <div class="section-label">Concept &mdash; FE&#8594;ML Bridge</div>
+
+        <!-- BRIDGE CALLOUT -->
+        <div class="bridge-callout">
+          <div class="bridge-card">
+            <h4>Frontend</h4>
+            <h5>Math.max(0, x)</h5>
+            <code>Math.max(0, x)</code>
+            <p>In JavaScript, <code style="display:inline;background:none;padding:0;margin:0;">Math.max(0, x)</code> returns 0 for negative values and passes positive values through unchanged.</p>
+          </div>
+          <div class="bridge-connector">
+            <div class="bridge-icon">&#9876;</div>
+          </div>
+          <div class="bridge-card">
+            <h4>Machine Learning</h4>
+            <h5>ReLU Activation</h5>
+            <code>f(x) = max(0, x)</code>
+            <p>In neural networks, ReLU (Rectified Linear Unit) does exactly the same thing: it passes positive values and blocks negative ones.</p>
+          </div>
+        </div>
+
+        <p>Sato smiles. "See? You already know ReLU. You've been using it every time you called <code style="display:inline;background:color-mix(in srgb, var(--tc-bg) 80%, #000);padding:2px 6px;border-radius:4px;font-size:14px;">Math.max(0, x)</code> in your frontend code. Neural networks are full of concepts like this &mdash; things you already understand, just with different names."</p>
+
+        <p>ARIA chimes in: "I have prepared an exercise in your workstation editor. Implement the ReLU function, then test it against the sample signal data. I will be evaluating your work. No pressure."</p>
+
+        <!-- CHECKPOINT QUIZ -->
+        <div class="checkpoint-quiz">
+          <h3>Quick Check</h3>
+          <p class="quiz-question">Which activation function is equivalent to <code style="display:inline;background:none;padding:0;">Math.max(0, x)</code>?</p>
+          <div class="quiz-options">
+            <div class="quiz-option">
+              <div class="radio"></div>
+              <span>Sigmoid</span>
+            </div>
+            <div class="quiz-option quiz-option--correct">
+              <div class="radio"></div>
+              <span>ReLU</span>
+            </div>
+            <div class="quiz-option quiz-option--wrong">
+              <div class="radio"></div>
+              <span>Tanh</span>
+            </div>
+            <div class="quiz-option">
+              <div class="radio"></div>
+              <span>Softmax</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CODE PANEL -->
+    <div class="code-panel tab-panel" id="panel-code">
+      <div class="code-titlebar">
+        <span class="code-tab">exercise.js</span>
+        <button class="btn-run">Run Tests</button>
+      </div>
+      <div class="code-editor">
+        <pre><span class="tok-cm">// Implement the ReLU activation function</span>
+<span class="tok-kw">function</span> <span class="tok-fn">relu</span>(<span class="tok-op">x</span>) {
+  <span class="tok-cm">// Your code here</span>
+  <span class="tok-kw">return</span> Math.<span class="tok-fn">max</span>(<span class="tok-num">0</span>, <span class="tok-op">x</span>);
+}
+
+<span class="tok-cm">// Test with sample signal values</span>
+<span class="tok-kw">const</span> <span class="tok-op">signals</span> = [<span class="tok-num">-2.5</span>, <span class="tok-num">0</span>, <span class="tok-num">1.7</span>, <span class="tok-num">-0.3</span>, <span class="tok-num">4.2</span>];
+<span class="tok-kw">const</span> <span class="tok-op">activated</span> = signals.<span class="tok-fn">map</span>(<span class="tok-op">relu</span>);
+console.<span class="tok-fn">log</span>(<span class="tok-op">activated</span>);
+<span class="tok-cm">// Expected: [0, 0, 1.7, 0, 4.2]</span></pre>
+      </div>
+
+      <div class="test-results">
+        <h4>Test Results</h4>
+        <div class="test-item test-pass">&#10003; relu(5) should return 5</div>
+        <div class="test-item test-pass">&#10003; relu(-3) should return 0</div>
+        <div class="test-item test-fail">&#10007; relu(0) should return 0</div>
+      </div>
+
+      <div class="hint-panel">
+        <button class="hint-toggle" id="hint-toggle-btn">Need a hint?</button>
+        <div class="hint-levels" id="hint-levels">
+          <div class="hint-level">Think about what Math.max does with two arguments...</div>
+          <div class="hint-level collapsed">The ReLU function passes positive values and blocks negative ones...</div>
+          <div class="hint-level collapsed">return Math.max(0, x);</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- THEME SWITCHER -->
+  <div class="theme-switcher">
+    <button class="theme-toggle glass" title="Switch theme">&#9671;</button>
+    <div class="theme-popup">
+      <button class="theme-dot" data-theme="deep-orbit" style="background:#7B68EE" title="Deep Orbit"></button>
+      <button class="theme-dot" data-theme="neon-protocol" style="background:#00D4FF" title="Neon Protocol"></button>
+      <button class="theme-dot" data-theme="signal-ward" style="background:#2ECC71" title="Signal Ward"></button>
+      <button class="theme-dot" data-theme="nova-canvas" style="background:#FF6B6B" title="Nova Canvas"></button>
+      <button class="theme-dot" data-theme="terra-grid" style="background:#F59E0B" title="Terra Grid"></button>
+    </div>
+  </div>
+
+  <script>
+    /* Theme switcher */
+    document.addEventListener('DOMContentLoaded', () => {
+      const switcher = document.querySelector('.theme-switcher');
+      const popup = switcher?.querySelector('.theme-popup');
+      switcher?.querySelector('.theme-toggle')?.addEventListener('click', () => popup?.classList.toggle('active'));
+      document.querySelectorAll('.theme-dot').forEach(dot => {
+        dot.addEventListener('click', () => {
+          document.documentElement.setAttribute('data-theme', dot.dataset.theme);
+          localStorage.setItem('tc-theme', dot.dataset.theme);
+          popup?.classList.remove('active');
+        });
+      });
+      const saved = localStorage.getItem('tc-theme');
+      if (saved) document.documentElement.setAttribute('data-theme', saved);
+    });
+
+    /* Tab switching */
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.panel).classList.add('active');
+      });
+    });
+
+    /* Hamburger sidebar */
+    document.getElementById('hamburger-btn')?.addEventListener('click', () => {
+      document.getElementById('sidebar-overlay').classList.add('active');
+    });
+    document.getElementById('sidebar-close')?.addEventListener('click', () => {
+      document.getElementById('sidebar-overlay').classList.remove('active');
+    });
+    document.getElementById('sidebar-overlay')?.addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) e.currentTarget.classList.remove('active');
+    });
+
+    /* Hint toggle */
+    document.getElementById('hint-toggle-btn')?.addEventListener('click', () => {
+      const levels = document.getElementById('hint-levels');
+      levels.style.display = levels.style.display === 'none' ? 'flex' : 'none';
+    });
+
+    /* Collapsed hint expansion */
+    document.querySelectorAll('.hint-level.collapsed').forEach(level => {
+      level.addEventListener('click', () => {
+        level.classList.remove('collapsed');
+      });
+    });
+  </script>
+</body>
+</html>

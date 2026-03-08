@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="deep-orbit">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
+  <title>Tensorcraft — Choose Your World</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--tc-bg);
+      color: var(--tc-text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ---------- NAV ---------- */
+    .nav-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(16px, 4vw, 48px);
+      height: 64px;
+      background: var(--tc-surface);
+      border-bottom: 1px solid var(--tc-border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-logo {
+      font-weight: 700;
+      font-size: 1.125rem;
+      color: var(--tc-primary);
+      text-decoration: none;
+      letter-spacing: 0.06em;
+    }
+    .nav-links { display: flex; gap: 8px; }
+    .nav-links a {
+      color: var(--tc-text);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      padding: 10px 16px;
+      border-radius: 8px;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      transition: background 0.2s, color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      background: var(--tc-surface-overlay);
+      color: var(--tc-primary);
+    }
+
+    /* ---------- HERO ---------- */
+    .hero {
+      text-align: center;
+      padding: 80px 24px 56px;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .hero h1 {
+      font-size: clamp(1.75rem, 4vw, 2.5rem);
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, var(--tc-primary), var(--tc-accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p {
+      font-size: 1.125rem;
+      color: var(--tc-muted);
+      line-height: 1.7;
+    }
+
+    /* ---------- THEME GRID ---------- */
+    .theme-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 24px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 24px 100px;
+    }
+    @media (max-width: 1439px) and (min-width: 1024px) {
+      .theme-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 1023px) and (min-width: 640px) {
+      .theme-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 639px) {
+      .theme-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ---------- THEME CARD ---------- */
+    .theme-card {
+      background: var(--tc-surface);
+      border-radius: 16px;
+      padding: 0;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
+    }
+    .theme-card:hover {
+      transform: scale(1.03);
+    }
+    .theme-card.coming-soon {
+      filter: grayscale(40%) opacity(0.7);
+    }
+    .theme-card.coming-soon:hover {
+      filter: grayscale(20%) opacity(0.85);
+    }
+
+    /* Card inner */
+    .card-art {
+      height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      position: relative;
+    }
+    .card-body {
+      padding: 20px 24px 28px;
+    }
+    .card-domain {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+    .card-hook {
+      font-size: 0.8125rem;
+      color: var(--tc-muted);
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+    .card-model {
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      opacity: 0.9;
+    }
+    .card-characters {
+      font-size: 0.6875rem;
+      color: var(--tc-muted);
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+    .card-meta {
+      font-size: 0.75rem;
+      color: var(--tc-muted);
+      margin-bottom: 16px;
+    }
+
+    /* Badges */
+    .card-badge {
+      display: inline-block;
+      font-size: 0.625rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 16px;
+    }
+    .badge-available {
+      background: #2ECC71;
+      color: #0a1628;
+    }
+    .badge-coming {
+      background: var(--tc-muted);
+      color: var(--tc-bg);
+    }
+
+    /* Card CTA */
+    .card-cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 44px;
+      padding: 12px 24px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      font-family: inherit;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s;
+      border: none;
+      text-decoration: none;
+    }
+    .cta-filled {
+      color: #0B0D1A;
+    }
+    .cta-filled:hover { opacity: 0.9; transform: translateY(-1px); }
+    .cta-outline {
+      background: transparent;
+      color: var(--tc-text);
+    }
+    .cta-outline:hover { opacity: 0.8; }
+
+    /* Coming Soon Ribbon */
+    .ribbon {
+      position: absolute;
+      top: 16px;
+      right: -32px;
+      width: 140px;
+      text-align: center;
+      padding: 6px 0;
+      font-size: 0.5625rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transform: rotate(45deg);
+      z-index: 2;
+      background: rgba(0,0,0,0.75);
+      color: var(--tc-text);
+    }
+
+    /* ---------- MODAL ---------- */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(11,13,26,0.85);
+      z-index: 300;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      padding: 24px;
+    }
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal-card {
+      background: var(--tc-surface);
+      border: 1px solid var(--tc-border);
+      border-radius: 20px;
+      max-width: 480px;
+      width: 100%;
+      padding: 0;
+      overflow: hidden;
+      transform: translateY(24px);
+      transition: transform 0.3s ease;
+      position: relative;
+    }
+    .modal-overlay.active .modal-card {
+      transform: translateY(0);
+    }
+    .modal-art {
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+    }
+    .modal-body {
+      padding: 24px 28px 32px;
+    }
+    .modal-body h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .modal-body p {
+      font-size: 0.875rem;
+      color: var(--tc-muted);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+    .modal-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid var(--tc-border);
+      background: var(--tc-surface);
+      color: var(--tc-text);
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      transition: border-color 0.2s;
+    }
+    .modal-close:hover { border-color: var(--tc-primary); }
+    .modal-form {
+      display: flex;
+      gap: 8px;
+    }
+    .modal-input {
+      flex: 1;
+      min-height: 44px;
+      padding: 10px 14px;
+      font-size: 0.875rem;
+      font-family: inherit;
+      background: #0D1117;
+      border: 1px solid var(--tc-border);
+      border-radius: 10px;
+      color: var(--tc-text);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .modal-input:focus { border-color: var(--tc-primary); }
+    .modal-input::placeholder { color: var(--tc-muted); }
+    .modal-submit {
+      min-height: 44px;
+      min-width: 44px;
+      padding: 10px 20px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      font-family: inherit;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      color: #0B0D1A;
+      transition: opacity 0.2s;
+    }
+    .modal-submit:hover { opacity: 0.9; }
+    .modal-note {
+      font-size: 0.75rem;
+      color: var(--tc-muted);
+      margin-top: 12px;
+    }
+    .modal-success {
+      display: none;
+      padding: 16px;
+      background: rgba(46,204,113,0.1);
+      border: 1px solid rgba(46,204,113,0.3);
+      border-radius: 10px;
+      color: #2ECC71;
+      font-size: 0.875rem;
+      text-align: center;
+    }
+
+    /* ---------- THEME SWITCHER ---------- */
+    .theme-switcher {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 200;
+    }
+    .theme-toggle {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 1px solid var(--tc-border);
+      background: var(--tc-surface);
+      backdrop-filter: blur(12px);
+      color: var(--tc-primary);
+      font-size: 1.25rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: box-shadow 0.2s, border-color 0.2s;
+    }
+    .theme-toggle:hover {
+      border-color: var(--tc-primary);
+      box-shadow: 0 0 16px color-mix(in srgb, var(--tc-primary) 30%, transparent);
+    }
+    .theme-popup {
+      position: absolute;
+      bottom: 56px;
+      right: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 12px;
+      background: var(--tc-surface);
+      border: 1px solid var(--tc-border);
+      border-radius: 12px;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(8px);
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .theme-popup.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+    .theme-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: transform 0.15s, border-color 0.15s;
+    }
+    .theme-dot:hover { transform: scale(1.2); border-color: rgba(255,255,255,0.3); }
+  </style>
+</head>
+<body>
+
+  <!-- nav-bar -->
+  <nav class="nav-bar">
+    <a href="#" class="nav-logo">&#9671; TENSORCRAFT</a>
+    <div class="nav-links">
+      <a href="theme-selection.html" class="active">Themes</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="settings.html">Dashboard</a>
+    </div>
+  </nav>
+
+  <!-- hero -->
+  <section class="hero">
+    <h1>Choose Your World</h1>
+    <p>Each theme teaches the same ML fundamentals through a unique narrative, dataset, and visual identity.</p>
+  </section>
+
+  <!-- theme grid -->
+  <section class="theme-grid">
+
+    <!-- 1. Deep Orbit — LAUNCHED -->
+    <div class="theme-card" style="border: 2px solid #7B68EE;" data-launched="true"
+         onmouseenter="this.style.boxShadow='0 0 32px rgba(123,104,238,0.35)'"
+         onmouseleave="this.style.boxShadow='none'">
+      <div class="card-art" style="background: linear-gradient(135deg, #0B0D1A 0%, #16213E 50%, #7B68EE22 100%);">
+        &#128752;
+      </div>
+      <div class="card-body">
+        <div class="card-domain" style="color:#7B68EE;">Time-Series &amp; Signals</div>
+        <div class="card-title" style="color:#7B68EE;">Deep Orbit</div>
+        <div class="card-hook">Aboard the deep-space research vessel Archimedes, decode mysterious cosmic signals using signal processing, neural networks, and browser-based ML.</div>
+        <div class="card-model" style="color:#F0C75E;">You'll build: DEEP SCAN Signal Classifier</div>
+        <div class="card-characters">Meet Commander Okafor, Dr. Sato, Chief Torres, Ensign Park &amp; ARIA</div>
+        <div class="card-meta">11 Modules &middot; 55 Lessons</div>
+        <span class="card-badge badge-available">Available Now</span>
+        <button class="card-cta cta-filled" style="background:#7B68EE;">Start Learning</button>
+      </div>
+    </div>
+
+    <!-- 2. Neon Protocol — COMING SOON -->
+    <div class="theme-card coming-soon" style="border: 2px solid #00D4FF33;" data-theme-name="Neon Protocol" data-color="#00D4FF"
+         onclick="openModal(this)">
+      <div class="ribbon" style="color:#00D4FF;">COMING SOON</div>
+      <div class="card-art" style="background: linear-gradient(135deg, #0A0A0F 0%, #151520 50%, #00D4FF15 100%);">
+        &#9889;
+      </div>
+      <div class="card-body">
+        <div class="card-domain" style="color:#00D4FF;">Cybersecurity &amp; Network Analysis</div>
+        <div class="card-title" style="color:#00D4FF;">Neon Protocol</div>
+        <div class="card-hook">Navigate the neon-lit digital underground as a white-hat hacker, using ML to detect intrusions and analyze network anomalies in real time.</div>
+        <div class="card-model" style="color:#FF2D7B;">You'll build: NEON NET Anomaly Detector</div>
+        <div class="card-characters">Meet Cipher, Ghost, Relay, Patch &amp; AXIOM</div>
+        <div class="card-meta">11 Modules &middot; 55 Lessons</div>
+        <span class="card-badge badge-coming">Coming Soon</span>
+        <button class="card-cta cta-outline" style="border: 1px solid #00D4FF; color:#00D4FF;">Join Waitlist</button>
+      </div>
+    </div>
+
+    <!-- 3. Signal Ward — COMING SOON -->
+    <div class="theme-card coming-soon" style="border: 2px solid #2ECC7133;" data-theme-name="Signal Ward" data-color="#2ECC71"
+         onclick="openModal(this)">
+      <div class="ribbon" style="color:#2ECC71;">COMING SOON</div>
+      <div class="card-art" style="background: linear-gradient(135deg, #0A1628 0%, #132238 50%, #2ECC7115 100%);">
+        &#129657;
+      </div>
+      <div class="card-body">
+        <div class="card-domain" style="color:#2ECC71;">Medical Imaging &amp; Diagnostics</div>
+        <div class="card-title" style="color:#2ECC71;">Signal Ward</div>
+        <div class="card-hook">Join a cutting-edge hospital research team, training ML models to analyze medical scans and assist doctors with early diagnosis.</div>
+        <div class="card-model" style="color:#5B8DEF;">You'll build: WARD SCAN Diagnostic Classifier</div>
+        <div class="card-characters">Meet Dr. Reyes, Nurse Kim, Tech Obi, Intern Liu &amp; PULSE</div>
+        <div class="card-meta">11 Modules &middot; 55 Lessons</div>
+        <span class="card-badge badge-coming">Coming Soon</span>
+        <button class="card-cta cta-outline" style="border: 1px solid #2ECC71; color:#2ECC71;">Join Waitlist</button>
+      </div>
+    </div>
+
+    <!-- 4. Nova Canvas — COMING SOON -->
+    <div class="theme-card coming-soon" style="border: 2px solid #FF6B6B33;" data-theme-name="Nova Canvas" data-color="#FF6B6B"
+         onclick="openModal(this)">
+      <div class="ribbon" style="color:#FF6B6B;">COMING SOON</div>
+      <div class="card-art" style="background: linear-gradient(135deg, #0D0D1A 0%, #1A1A30 50%, #FF6B6B15 100%);">
+        &#127912;
+      </div>
+      <div class="card-body">
+        <div class="card-domain" style="color:#FF6B6B;">Generative Art &amp; Creative AI</div>
+        <div class="card-title" style="color:#FF6B6B;">Nova Canvas</div>
+        <div class="card-hook">Step into a creative AI studio where you train generative models to produce art, music visualizations, and style transfers in the browser.</div>
+        <div class="card-model" style="color:#A78BFA;">You'll build: NOVA GEN Style Transfer Engine</div>
+        <div class="card-characters">Meet Muse, Vertex, Bloom, Shade &amp; PRISM</div>
+        <div class="card-meta">11 Modules &middot; 55 Lessons</div>
+        <span class="card-badge badge-coming">Coming Soon</span>
+        <button class="card-cta cta-outline" style="border: 1px solid #FF6B6B; color:#FF6B6B;">Join Waitlist</button>
+      </div>
+    </div>
+
+    <!-- 5. Terra Grid — COMING SOON -->
+    <div class="theme-card coming-soon" style="border: 2px solid #F59E0B33;" data-theme-name="Terra Grid" data-color="#F59E0B"
+         onclick="openModal(this)">
+      <div class="ribbon" style="color:#F59E0B;">COMING SOON</div>
+      <div class="card-art" style="background: linear-gradient(135deg, #111827 0%, #1F2937 50%, #F59E0B15 100%);">
+        &#9881;
+      </div>
+      <div class="card-body">
+        <div class="card-domain" style="color:#F59E0B;">Industrial IoT &amp; Predictive Maintenance</div>
+        <div class="card-title" style="color:#F59E0B;">Terra Grid</div>
+        <div class="card-hook">Manage a vast industrial grid, training predictive models to prevent equipment failures and optimize energy distribution across the network.</div>
+        <div class="card-model" style="color:#10B981;">You'll build: GRID SENSE Predictive Monitor</div>
+        <div class="card-characters">Meet Chief Volkov, Analyst Priya, Drone Kai, Sensor Max &amp; CORE</div>
+        <div class="card-meta">11 Modules &middot; 55 Lessons</div>
+        <span class="card-badge badge-coming">Coming Soon</span>
+        <button class="card-cta cta-outline" style="border: 1px solid #F59E0B; color:#F59E0B;">Join Waitlist</button>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- Coming Soon Modal -->
+  <div class="modal-overlay" id="comingSoonModal">
+    <div class="modal-card">
+      <button class="modal-close" id="modalClose">&times;</button>
+      <div class="modal-art" id="modalArt"></div>
+      <div class="modal-body">
+        <h2 id="modalTitle"></h2>
+        <p id="modalDesc"></p>
+        <div id="modalFormWrap">
+          <div class="modal-form">
+            <input type="email" class="modal-input" id="modalEmail" placeholder="your@email.com">
+            <button class="modal-submit" id="modalSubmit">Notify Me</button>
+          </div>
+          <div class="modal-note" id="modalNote"></div>
+        </div>
+        <div class="modal-success" id="modalSuccess"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- theme-switcher -->
+  <div class="theme-switcher">
+    <button class="theme-toggle glass" title="Switch theme">&#9671;</button>
+    <div class="theme-popup">
+      <button class="theme-dot" data-theme="deep-orbit" style="background:#7B68EE" title="Deep Orbit"></button>
+      <button class="theme-dot" data-theme="neon-protocol" style="background:#00D4FF" title="Neon Protocol"></button>
+      <button class="theme-dot" data-theme="signal-ward" style="background:#2ECC71" title="Signal Ward"></button>
+      <button class="theme-dot" data-theme="nova-canvas" style="background:#FF6B6B" title="Nova Canvas"></button>
+      <button class="theme-dot" data-theme="terra-grid" style="background:#F59E0B" title="Terra Grid"></button>
+    </div>
+  </div>
+
+  <script>
+    /* Theme switcher */
+    document.addEventListener('DOMContentLoaded', () => {
+      const switcher = document.querySelector('.theme-switcher');
+      const popup = switcher?.querySelector('.theme-popup');
+      switcher?.querySelector('.theme-toggle')?.addEventListener('click', () => popup?.classList.toggle('active'));
+      document.querySelectorAll('.theme-dot').forEach(dot => {
+        dot.addEventListener('click', () => {
+          document.documentElement.setAttribute('data-theme', dot.dataset.theme);
+          localStorage.setItem('tc-theme', dot.dataset.theme);
+          popup?.classList.remove('active');
+        });
+      });
+      const saved = localStorage.getItem('tc-theme');
+      if (saved) document.documentElement.setAttribute('data-theme', saved);
+    });
+
+    /* Modal */
+    const modal = document.getElementById('comingSoonModal');
+    const modalClose = document.getElementById('modalClose');
+
+    function openModal(card) {
+      if (card.dataset.launched) return;
+      const name = card.dataset.themeName;
+      const color = card.dataset.color;
+
+      document.getElementById('modalArt').style.background =
+        `linear-gradient(135deg, var(--tc-bg) 0%, var(--tc-surface) 50%, ${color}30 100%)`;
+      document.getElementById('modalArt').textContent = card.querySelector('.card-art').textContent;
+      document.getElementById('modalTitle').textContent = name;
+      document.getElementById('modalTitle').style.color = color;
+      document.getElementById('modalDesc').textContent = card.querySelector('.card-hook').textContent;
+      document.getElementById('modalSubmit').style.background = color;
+      document.getElementById('modalNote').textContent = `We'll email you when ${name} launches.`;
+
+      document.getElementById('modalFormWrap').style.display = 'block';
+      document.getElementById('modalSuccess').style.display = 'none';
+
+      modal.classList.add('active');
+    }
+
+    function closeModal() {
+      modal.classList.remove('active');
+    }
+
+    modalClose.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+    document.getElementById('modalSubmit').addEventListener('click', () => {
+      const email = document.getElementById('modalEmail').value;
+      if (!email || !email.includes('@')) { document.getElementById('modalEmail').focus(); return; }
+      const name = document.getElementById('modalTitle').textContent;
+      document.getElementById('modalFormWrap').style.display = 'none';
+      const success = document.getElementById('modalSuccess');
+      success.style.display = 'block';
+      success.textContent = `You're on the list! We'll email you the moment ${name} goes live.`;
+    });
+  </script>
+
+</body>
+</html>

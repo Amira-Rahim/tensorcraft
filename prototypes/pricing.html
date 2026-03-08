@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="deep-orbit">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
+  <title>Tensorcraft — Pricing</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--tc-bg);
+      color: var(--tc-text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ---------- NAV ---------- */
+    .nav-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(16px, 4vw, 48px);
+      height: 64px;
+      background: var(--tc-surface);
+      border-bottom: 1px solid var(--tc-border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-logo {
+      font-weight: 700;
+      font-size: 1.125rem;
+      color: var(--tc-primary);
+      text-decoration: none;
+      letter-spacing: 0.06em;
+    }
+    .nav-links { display: flex; gap: 8px; }
+    .nav-links a {
+      color: var(--tc-text);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      padding: 10px 16px;
+      border-radius: 8px;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      transition: background 0.2s, color 0.2s;
+    }
+    .nav-links a:hover,
+    .nav-links a.active {
+      background: var(--tc-surface-overlay);
+      color: var(--tc-primary);
+    }
+
+    /* ---------- HERO ---------- */
+    .hero {
+      text-align: center;
+      padding: 80px 24px 48px;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .hero h1 {
+      font-size: clamp(1.75rem, 4vw, 2.5rem);
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, var(--tc-primary), var(--tc-accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p {
+      font-size: 1.125rem;
+      color: var(--tc-muted);
+      line-height: 1.7;
+    }
+
+    /* ---------- PRICING GRID ---------- */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px 64px;
+    }
+    @media (max-width: 1024px) {
+      .pricing-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 640px) {
+      .pricing-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ---------- GLASS CARD ---------- */
+    .glass-card {
+      background: var(--tc-surface);
+      border: 1px solid var(--tc-border);
+      border-radius: 16px;
+      padding: 32px 24px;
+      backdrop-filter: blur(12px);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      position: relative;
+    }
+    .glass-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    .glass-card.neon-border {
+      border: 2px solid var(--tc-primary);
+      box-shadow: 0 0 24px color-mix(in srgb, var(--tc-primary) 20%, transparent),
+                  inset 0 0 24px color-mix(in srgb, var(--tc-primary) 5%, transparent);
+    }
+    .glass-card.neon-border:hover {
+      box-shadow: 0 0 40px color-mix(in srgb, var(--tc-primary) 30%, transparent),
+                  inset 0 0 32px color-mix(in srgb, var(--tc-primary) 8%, transparent);
+    }
+
+    /* ---------- BADGE ---------- */
+    .badge {
+      display: inline-block;
+      font-size: 0.6875rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--tc-primary);
+      color: var(--tc-bg);
+      margin-bottom: 12px;
+    }
+
+    /* ---------- PRICING CARD CONTENT ---------- */
+    .price {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--tc-accent);
+      line-height: 1.3;
+      margin-bottom: 4px;
+    }
+    .card-name {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .card-desc {
+      font-size: 0.875rem;
+      color: var(--tc-muted);
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+    .card-subtitle {
+      font-size: 0.8125rem;
+      color: var(--tc-muted);
+      margin-bottom: 24px;
+    }
+    .feature-list {
+      list-style: none;
+      margin-bottom: 28px;
+    }
+    .feature-list li {
+      font-size: 0.875rem;
+      padding: 6px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--tc-text);
+    }
+    .feature-list li::before {
+      content: "\2713";
+      color: var(--tc-primary);
+      font-weight: 700;
+      font-size: 0.875rem;
+      flex-shrink: 0;
+    }
+
+    /* ---------- BUTTONS ---------- */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 44px;
+      padding: 12px 24px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      font-family: inherit;
+      border: none;
+      border-radius: 10px;
+      background: var(--tc-primary);
+      color: var(--tc-bg);
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s;
+      text-decoration: none;
+    }
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-primary:active { transform: translateY(0); }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 44px;
+      padding: 12px 24px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      font-family: inherit;
+      border: 1px solid var(--tc-border);
+      border-radius: 10px;
+      background: transparent;
+      color: var(--tc-text);
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+      text-decoration: none;
+    }
+    .btn-outline:hover { border-color: var(--tc-primary); color: var(--tc-primary); }
+
+    /* ---------- TEAM SECTION ---------- */
+    .team-section {
+      max-width: 1200px;
+      margin: 0 auto 64px;
+      padding: 0 24px;
+    }
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 24px;
+    }
+    @media (max-width: 640px) {
+      .team-grid { grid-template-columns: 1fr; }
+    }
+    .team-card {
+      text-align: center;
+      padding: 24px;
+      background: var(--tc-surface-overlay);
+      border-radius: 12px;
+      border: 1px solid var(--tc-border);
+    }
+    .team-card .price {
+      font-size: 1.75rem;
+    }
+    .team-card .card-name {
+      font-size: 1rem;
+      margin-bottom: 4px;
+    }
+    .team-card .card-desc {
+      font-size: 0.8125rem;
+      margin-bottom: 0;
+    }
+    .team-heading {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .team-sub {
+      color: var(--tc-muted);
+      font-size: 0.9375rem;
+    }
+
+    /* ---------- PPP NOTE ---------- */
+    .ppp-section {
+      max-width: 800px;
+      margin: 0 auto 64px;
+      padding: 0 24px;
+    }
+    .ppp-card {
+      background: var(--tc-surface);
+      border: 1px solid var(--tc-border);
+      border-radius: 12px;
+      padding: 24px 28px;
+      font-size: 0.875rem;
+      color: var(--tc-muted);
+      line-height: 1.7;
+      text-align: center;
+    }
+    .ppp-card strong {
+      color: var(--tc-text);
+    }
+
+    /* ---------- FAQ ---------- */
+    .faq-section {
+      max-width: 800px;
+      margin: 0 auto 100px;
+      padding: 0 24px;
+    }
+    .faq-heading {
+      font-size: 1.5rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .faq-item {
+      border: 1px solid var(--tc-border);
+      border-radius: 12px;
+      margin-bottom: 12px;
+      overflow: hidden;
+      background: var(--tc-surface);
+    }
+    .faq-question {
+      width: 100%;
+      min-height: 52px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: transparent;
+      border: none;
+      color: var(--tc-text);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      text-align: left;
+      gap: 12px;
+    }
+    .faq-question:hover { color: var(--tc-primary); }
+    .faq-chevron {
+      font-size: 1.25rem;
+      transition: transform 0.25s ease;
+      flex-shrink: 0;
+      color: var(--tc-muted);
+    }
+    .faq-item.open .faq-chevron { transform: rotate(180deg); }
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+    }
+    .faq-item.open .faq-answer {
+      max-height: 200px;
+    }
+    .faq-answer-inner {
+      padding: 0 20px 20px;
+      font-size: 0.875rem;
+      color: var(--tc-muted);
+      line-height: 1.7;
+    }
+
+    /* ---------- THEME SWITCHER ---------- */
+    .theme-switcher {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 200;
+    }
+    .theme-toggle {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 1px solid var(--tc-border);
+      background: var(--tc-surface);
+      backdrop-filter: blur(12px);
+      color: var(--tc-primary);
+      font-size: 1.25rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: box-shadow 0.2s, border-color 0.2s;
+    }
+    .theme-toggle:hover {
+      border-color: var(--tc-primary);
+      box-shadow: 0 0 16px color-mix(in srgb, var(--tc-primary) 30%, transparent);
+    }
+    .theme-popup {
+      position: absolute;
+      bottom: 56px;
+      right: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 12px;
+      background: var(--tc-surface);
+      border: 1px solid var(--tc-border);
+      border-radius: 12px;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(8px);
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .theme-popup.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+    .theme-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: transform 0.15s, border-color 0.15s;
+    }
+    .theme-dot:hover { transform: scale(1.2); border-color: rgba(255,255,255,0.3); }
+  </style>
+</head>
+<body>
+
+  <!-- nav-bar -->
+  <nav class="nav-bar">
+    <a href="#" class="nav-logo">&#9671; TENSORCRAFT</a>
+    <div class="nav-links">
+      <a href="theme-selection.html">Themes</a>
+      <a href="pricing.html" class="active">Pricing</a>
+      <a href="settings.html">Dashboard</a>
+    </div>
+  </nav>
+
+  <!-- hero -->
+  <section class="hero">
+    <h1>Simple, Fair Pricing</h1>
+    <p>One payment. Lifetime access. No subscriptions.</p>
+  </section>
+
+  <!-- pricing cards -->
+  <section class="pricing-grid">
+
+    <!-- Early Access -->
+    <div class="glass-card">
+      <div class="price">$49</div>
+      <div class="card-name">Early Access</div>
+      <div class="card-desc">Deep Orbit Modules 1-3</div>
+      <div class="card-subtitle">For early adopters who want to start learning now</div>
+      <ul class="feature-list">
+        <li>15 lessons</li>
+        <li>3 modules</li>
+        <li>All exercises</li>
+        <li>Community access</li>
+      </ul>
+      <button class="btn-outline">Get Started</button>
+    </div>
+
+    <!-- Single Theme — MOST POPULAR -->
+    <div class="glass-card neon-border">
+      <span class="badge">MOST POPULAR</span>
+      <div class="price">$79</div>
+      <div class="card-name">Single Theme</div>
+      <div class="card-desc">Complete Deep Orbit</div>
+      <ul class="feature-list">
+        <li>55 lessons</li>
+        <li>11 modules</li>
+        <li>All exercises</li>
+        <li>GitHub integration</li>
+        <li>Community access</li>
+        <li>Lifetime updates</li>
+      </ul>
+      <button class="btn-primary">Get Started</button>
+    </div>
+
+    <!-- Two Themes -->
+    <div class="glass-card">
+      <div class="price">$129</div>
+      <div class="card-name">Two Themes</div>
+      <div class="card-desc">Any two themes</div>
+      <div class="card-subtitle">Save $29 vs buying separately</div>
+      <ul class="feature-list">
+        <li>55 lessons per theme</li>
+        <li>11 modules per theme</li>
+        <li>All exercises</li>
+        <li>GitHub integration</li>
+        <li>Community access</li>
+        <li>Lifetime updates</li>
+        <li>Choose any 2 themes</li>
+      </ul>
+      <button class="btn-outline">Get Started</button>
+    </div>
+
+    <!-- Three Themes -->
+    <div class="glass-card">
+      <div class="price">$169</div>
+      <div class="card-name">Three Themes</div>
+      <div class="card-desc">Any three themes</div>
+      <div class="card-subtitle">Save $68 vs buying separately</div>
+      <ul class="feature-list">
+        <li>55 lessons per theme</li>
+        <li>11 modules per theme</li>
+        <li>All exercises</li>
+        <li>GitHub integration</li>
+        <li>Community access</li>
+        <li>Lifetime updates</li>
+        <li>Choose any 3 themes</li>
+      </ul>
+      <button class="btn-outline">Get Started</button>
+    </div>
+
+  </section>
+
+  <!-- team pricing -->
+  <section class="team-section">
+    <div class="glass-card" style="text-align:center;">
+      <h2 class="team-heading">Team &amp; Enterprise</h2>
+      <p class="team-sub">All team members get full access to selected themes</p>
+      <div class="team-grid">
+        <div class="team-card">
+          <div class="price">$599</div>
+          <div class="card-name">Team 5</div>
+          <div class="card-desc">Up to 5 team members</div>
+        </div>
+        <div class="team-card">
+          <div class="price">$999</div>
+          <div class="card-name">Team 10</div>
+          <div class="card-desc">Up to 10 team members</div>
+        </div>
+        <div class="team-card">
+          <div class="price">$2,999</div>
+          <div class="card-name">Site License</div>
+          <div class="card-desc">Unlimited team members</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PPP note -->
+  <section class="ppp-section">
+    <div class="ppp-card">
+      <strong>Purchasing Power Parity</strong><br>
+      We offer 20-70% purchasing power parity discounts automatically via ParityDeals. If you're in an eligible country, you'll see the adjusted price at checkout.
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq-section">
+    <h2 class="faq-heading">Frequently Asked Questions</h2>
+
+    <div class="faq-item">
+      <button class="faq-question">Can I upgrade later?<span class="faq-chevron">&#9662;</span></button>
+      <div class="faq-answer"><div class="faq-answer-inner">Absolutely. You can upgrade from any tier at any time. We'll credit the amount you've already paid toward the higher tier, so you only pay the difference.</div></div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question">What's included in lifetime access?<span class="faq-chevron">&#9662;</span></button>
+      <div class="faq-answer"><div class="faq-answer-inner">Lifetime access means you pay once and own the content forever. This includes all future updates to the modules you've purchased, new lessons added to your themes, and continued access to the community.</div></div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question">Do you offer refunds?<span class="faq-chevron">&#9662;</span></button>
+      <div class="faq-answer"><div class="faq-answer-inner">Yes. We offer a full refund within 30 days of purchase, no questions asked. If the course isn't right for you, just reach out to our support team.</div></div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question">Can I share my account?<span class="faq-chevron">&#9662;</span></button>
+      <div class="faq-answer"><div class="faq-answer-inner">Individual licenses are for a single user. If you'd like to share access with your team, check out our Team plans which offer per-seat pricing with admin features and progress tracking.</div></div>
+    </div>
+  </section>
+
+  <!-- theme-switcher -->
+  <div class="theme-switcher">
+    <button class="theme-toggle glass" title="Switch theme">&#9671;</button>
+    <div class="theme-popup">
+      <button class="theme-dot" data-theme="deep-orbit" style="background:#7B68EE" title="Deep Orbit"></button>
+      <button class="theme-dot" data-theme="neon-protocol" style="background:#00D4FF" title="Neon Protocol"></button>
+      <button class="theme-dot" data-theme="signal-ward" style="background:#2ECC71" title="Signal Ward"></button>
+      <button class="theme-dot" data-theme="nova-canvas" style="background:#FF6B6B" title="Nova Canvas"></button>
+      <button class="theme-dot" data-theme="terra-grid" style="background:#F59E0B" title="Terra Grid"></button>
+    </div>
+  </div>
+
+  <script>
+    /* Theme switcher */
+    document.addEventListener('DOMContentLoaded', () => {
+      const switcher = document.querySelector('.theme-switcher');
+      const popup = switcher?.querySelector('.theme-popup');
+      switcher?.querySelector('.theme-toggle')?.addEventListener('click', () => popup?.classList.toggle('active'));
+      document.querySelectorAll('.theme-dot').forEach(dot => {
+        dot.addEventListener('click', () => {
+          document.documentElement.setAttribute('data-theme', dot.dataset.theme);
+          localStorage.setItem('tc-theme', dot.dataset.theme);
+          popup?.classList.remove('active');
+        });
+      });
+      const saved = localStorage.getItem('tc-theme');
+      if (saved) document.documentElement.setAttribute('data-theme', saved);
+    });
+
+    /* FAQ accordion */
+    document.querySelectorAll('.faq-question').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.closest('.faq-item');
+        const wasOpen = item.classList.contains('open');
+        document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+        if (!wasOpen) item.classList.add('open');
+      });
+    });
+  </script>
+
+</body>
+</html>

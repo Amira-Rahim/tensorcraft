@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="deep-orbit">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
+  <title>Tensorcraft — Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--tc-bg, #0B0D1A);
+      color: var(--tc-text, #E2E8F0);
+      min-height: 100vh;
+      line-height: 1.7;
+    }
+
+    /* --- NAV BAR --- */
+    .nav-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      height: 56px;
+      background: var(--tc-surface, #16213E);
+      border-bottom: 1px solid var(--tc-border, #2A3A5C);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .nav-logo {
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: 2px;
+      color: var(--tc-primary, #7B68EE);
+    }
+    .nav-page {
+      font-size: 14px;
+      color: var(--tc-muted);
+      font-weight: 500;
+    }
+    .nav-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--tc-accent);
+      color: var(--tc-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    /* --- MAIN CONTENT --- */
+    .dashboard {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    /* Header */
+    .dashboard-header {
+      margin-bottom: 32px;
+    }
+    .dashboard-header h1 {
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 4px;
+    }
+    .dashboard-header .subtitle {
+      font-size: 16px;
+      color: var(--tc-muted);
+      margin-bottom: 20px;
+    }
+    .dashboard-header .subtitle em {
+      color: var(--tc-accent);
+      font-style: normal;
+      font-weight: 500;
+    }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 28px;
+      background: var(--tc-primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: filter 150ms, transform 150ms;
+      min-height: 44px;
+      text-decoration: none;
+    }
+    .btn-primary:hover { filter: brightness(1.15); transform: translateY(-1px); }
+
+    /* --- STATS ROW --- */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 900px) { .stats-row { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 500px) { .stats-row { grid-template-columns: 1fr; } }
+
+    .stat-card {
+      background: var(--tc-surface);
+      border: 1px solid var(--tc-border);
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      backdrop-filter: blur(12px);
+    }
+    .stat-card .stat-visual {
+      margin-bottom: 12px;
+    }
+    .stat-card .stat-big {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--tc-accent);
+      line-height: 1.2;
+    }
+    .stat-card .stat-label {
+      font-size: 14px;
+      color: var(--tc-muted);
+      margin-top: 4px;
+    }
+    .stat-card .stat-sub {
+      font-size: 12px;
+      color: color-mix(in srgb, var(--tc-muted) 70%, transparent);
+      margin-top: 4px;
+    }
+    .stat-card .stat-number {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--tc-text);
+      margin-top: 8px;
+    }
+
+    /* Progress ring */
+    .progress-ring { display: block; }
+    .progress-ring-bg { stroke: var(--tc-border); }
+    .progress-ring-fill {
+      stroke: var(--tc-accent);
+      transition: stroke-dashoffset 600ms ease;
+    }
+    .stat-card .ring-label {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--tc-accent);
+    }
+
+    /* Small progress bar */
+    .progress-bar-sm {
+      width: 100%;
+      height: 4px;
+      background: var(--tc-border);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    .progress-bar-sm-fill {
+      height: 100%;
+      background: var(--tc-accent);
+      border-radius: 2px;
+    }
+
+    /* Flame icon */
+    .flame { font-size: 24px; margin-bottom: 4px; }
+
+    /* --- GLASS CARD --- */
+    .glass-card {
+      background: var(--tc-surface);
+      border: 1px solid var(--tc-border);
+      border-radius: 12px;
+      padding: 24px;
+      backdrop-filter: blur(12px);
+      margin-bottom: 24px;
+    }
+    .glass-card h3 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: var(--tc-text);
+    }
+
+    /* --- MODULE PROGRESS --- */
+    .module-row {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .module-node-group {
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .module-node {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .module-node--completed {
+      background: color-mix(in srgb, var(--tc-accent) 15%, transparent);
+      border: 2px solid var(--tc-accent);
+      color: var(--tc-accent);
+    }
+    .module-node--active {
+      background: var(--tc-bg);
+      border: 2px solid var(--tc-accent);
+      color: var(--tc-accent);
+      box-shadow: 0 0 10px color-mix(in srgb, var(--tc-accent) 30%, transparent);
+    }
+    .module-node--locked {
+      background: var(--tc-bg);
+      border: 2px dashed color-mix(in srgb, var(--tc-muted) 30%, transparent);
+      color: color-mix(in srgb, var(--tc-muted) 50%, transparent);
+      font-size: 14px;
+    }
+    .module-connector {
+      width: 28px;
+      height: 2px;
+      flex-shrink: 0;
+    }
+    .module-connector--completed { background: var(--tc-accent); }
+    .module-connector--active {
+      background: linear-gradient(to right, var(--tc-accent), var(--tc-muted));
+    }
+    .module-connector--locked {
+      background: repeating-linear-gradient(
+        to right,
+        color-mix(in srgb, var(--tc-muted) 20%, transparent) 0px,
+        color-mix(in srgb, var(--tc-muted) 20%, transparent) 4px,
+        transparent 4px,
+        transparent 8px
+      );
+    }
+    .module-labels {
+      display: flex;
+      gap: 0;
+      margin-top: 8px;
+      overflow-x: auto;
+    }
+    .module-label-item {
+      width: 72px;
+      flex-shrink: 0;
+      text-align: center;
+      font-size: 11px;
+      color: var(--tc-muted);
+      line-height: 1.3;
+    }
+    .module-label-item.active { color: var(--tc-accent); font-weight: 600; }
+    .module-label-item.completed { color: var(--tc-text); }
+
+    /* --- HEATMAP --- */
+    .heatmap-grid {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 4px;
+      max-width: 400px;
+    }
+    .heatmap-cell {
+      aspect-ratio: 1;
+      border-radius: 3px;
+      min-width: 16px;
+      min-height: 16px;
+    }
+    .heat-0 { background: var(--tc-border); }
+    .heat-25 { background: color-mix(in srgb, var(--tc-accent) 25%, var(--tc-border)); }
+    .heat-50 { background: color-mix(in srgb, var(--tc-accent) 50%, var(--tc-border)); }
+    .heat-75 { background: color-mix(in srgb, var(--tc-accent) 75%, var(--tc-border)); }
+    .heat-100 { background: var(--tc-accent); }
+
+    .heatmap-legend {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 12px;
+      font-size: 12px;
+      color: var(--tc-muted);
+    }
+    .legend-square {
+      width: 14px;
+      height: 14px;
+      border-radius: 2px;
+    }
+
+    /* --- RECENT ACTIVITY --- */
+    .activity-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .activity-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+      border-bottom: 1px solid color-mix(in srgb, var(--tc-border) 50%, transparent);
+      gap: 12px;
+    }
+    .activity-item:last-child { border-bottom: none; }
+    .activity-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+      min-width: 0;
+    }
+    .activity-icon {
+      width: 28px;
+      height: 28px;
+      min-width: 28px;
+      border-radius: 50%;
+      background: color-mix(in srgb, #22C55E 15%, transparent);
+      color: #22C55E;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+    .activity-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--tc-text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .activity-time {
+      font-size: 12px;
+      color: var(--tc-muted);
+      white-space: nowrap;
+    }
+    .activity-score {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--tc-accent);
+      white-space: nowrap;
+    }
+
+    /* --- SHARE SECTION --- */
+    .share-section {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .share-section h4 {
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .share-buttons {
+      display: flex;
+      gap: 10px;
+    }
+    .btn-outline {
+      padding: 8px 20px;
+      background: transparent;
+      color: var(--tc-text);
+      border: 1px solid var(--tc-border);
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      min-height: 44px;
+      transition: border-color 150ms, background 150ms;
+    }
+    .btn-outline:hover {
+      border-color: var(--tc-primary);
+      background: color-mix(in srgb, var(--tc-primary) 8%, transparent);
+    }
+
+    /* --- THEME SWITCHER --- */
+    .theme-switcher {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 200;
+    }
+    .theme-toggle {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid var(--tc-border);
+      background: var(--tc-surface);
+      color: var(--tc-primary);
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(12px);
+      transition: transform 150ms;
+    }
+    .theme-toggle:hover { transform: scale(1.1); }
+    .theme-popup {
+      position: absolute;
+      bottom: 52px;
+      right: 0;
+      background: var(--tc-surface);
+      border: 1px solid var(--tc-border);
+      border-radius: 12px;
+      padding: 12px;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .theme-popup.active { display: flex; }
+    .theme-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: transform 150ms, border-color 150ms;
+    }
+    .theme-dot:hover {
+      transform: scale(1.15);
+      border-color: rgba(255,255,255,0.3);
+    }
+
+    @media (max-width: 600px) {
+      .dashboard { padding: 24px 16px 80px; }
+      .dashboard-header h1 { font-size: 25px; }
+      .activity-item { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV BAR -->
+  <nav class="nav-bar">
+    <div class="nav-left">
+      <span class="nav-logo">&#9671; TENSORCRAFT</span>
+      <span class="nav-page">Dashboard</span>
+    </div>
+    <div class="nav-avatar">A</div>
+  </nav>
+
+  <!-- DASHBOARD -->
+  <main class="dashboard">
+
+    <!-- HEADER -->
+    <div class="dashboard-header">
+      <h1>Welcome back, Amira</h1>
+      <p class="subtitle"><em>Deep Orbit</em> &mdash; Module 3 in progress</p>
+      <a href="lesson-viewer.html" class="btn-primary">Continue Learning</a>
+    </div>
+
+    <!-- STATS ROW -->
+    <div class="stats-row">
+
+      <!-- Completion -->
+      <div class="stat-card">
+        <div class="stat-visual">
+          <svg class="progress-ring" width="120" height="120" viewBox="0 0 120 120">
+            <circle class="progress-ring-bg" cx="60" cy="60" r="52" fill="none" stroke-width="8"/>
+            <circle class="progress-ring-fill" cx="60" cy="60" r="52" fill="none" stroke-width="8"
+              stroke-dasharray="326.7" stroke-dashoffset="215.6"
+              stroke-linecap="round" transform="rotate(-90 60 60)"/>
+            <text x="60" y="56" text-anchor="middle" fill="var(--tc-accent)" font-size="28" font-weight="700" font-family="Inter, sans-serif">34%</text>
+            <text x="60" y="74" text-anchor="middle" fill="var(--tc-muted)" font-size="12" font-family="Inter, sans-serif">19/55</text>
+          </svg>
+        </div>
+        <div class="stat-label">Lessons Complete</div>
+      </div>
+
+      <!-- Streak -->
+      <div class="stat-card">
+        <div class="flame">&#128293;</div>
+        <div class="stat-big">7</div>
+        <div class="stat-label">Day Streak</div>
+        <div class="stat-sub">Best: 12 days</div>
+      </div>
+
+      <!-- Bridges -->
+      <div class="stat-card">
+        <div class="stat-big">23<span style="font-size:18px;color:var(--tc-muted);font-weight:400;">/56</span></div>
+        <div class="stat-label">FE&#8594;ML Bridges</div>
+        <div class="progress-bar-sm">
+          <div class="progress-bar-sm-fill" style="width: 41%;"></div>
+        </div>
+      </div>
+
+      <!-- Time -->
+      <div class="stat-card">
+        <div class="stat-big">~12h</div>
+        <div class="stat-label">Remaining</div>
+        <div class="stat-sub">38h total invested</div>
+      </div>
+
+    </div>
+
+    <!-- MODULE PROGRESS -->
+    <div class="glass-card">
+      <h3>Module Progress</h3>
+      <div class="module-row">
+        <div class="module-node-group">
+          <div class="module-node module-node--completed">&#10003;</div>
+          <div class="module-connector module-connector--completed"></div>
+        </div>
+        <div class="module-node-group">
+          <div class="module-node module-node--completed">&#10003;</div>
+          <div class="module-connector module-connector--active"></div>
+        </div>
+        <div class="module-node-group">
+          <div class="module-node module-node--active">&#9679;</div>
+          <div class="module-connector module-connector--locked"></div>
+        </div>
+        <div class="module-node-group">
+          <div class="module-node module-node--locked">&#128274;</div>
+          <div class="module-connector module-connector--locked"></div>
+        </div>
+        <div class="module-node-group">
+          <div class="module-node module-node--locked">&#128274;</div>
+          <div class="module-connector module-connector--locked"></div>
+        </div>
+        <div class="module-node-group">
+          <div class="module-node module-node--locked">&#128274;</div>
+          <div class="module-connector module-connector--locked"></div>
+        </div>
+        <div class="module-node-group">
+          <div class="module-node module-node--locked">&#128274;</div>
+          <div class="module-connector module-connector--locked"></div>
+        </div>
+        <div class="module-node-group">
+          <div class="module-node module-node--locked">&#128274;</div>
+          <div class="module-connector module-connector--locked"></div>
+        </div>
+        <div class="module-node-group">
+          <div class="module-node module-node--locked">&#128274;</div>
+          <div class="module-connector module-connector--locked"></div>
+        </div>
+        <div class="module-node-group">
+          <div class="module-node module-node--locked">&#128274;</div>
+          <div class="module-connector module-connector--locked"></div>
+        </div>
+        <div class="module-node-group">
+          <div class="module-node module-node--locked">&#128274;</div>
+        </div>
+      </div>
+      <div class="module-labels">
+        <div class="module-label-item completed">M1 ML Signals</div>
+        <div class="module-label-item completed">M2 Data</div>
+        <div class="module-label-item active">M3 Neural Nets</div>
+        <div class="module-label-item">M4 Browser RT</div>
+        <div class="module-label-item">M5 Signal Proc</div>
+        <div class="module-label-item">M6 RNNs</div>
+        <div class="module-label-item">M7 Anomaly</div>
+        <div class="module-label-item">M8 Time-Series</div>
+        <div class="module-label-item">M9 LLM</div>
+        <div class="module-label-item">M10 Optimize</div>
+        <div class="module-label-item">M11 Capstone</div>
+      </div>
+    </div>
+
+    <!-- ACTIVITY HEATMAP -->
+    <div class="glass-card">
+      <h3>Last 30 Days</h3>
+      <div class="heatmap-grid">
+        <div class="heatmap-cell heat-0"></div>
+        <div class="heatmap-cell heat-25"></div>
+        <div class="heatmap-cell heat-0"></div>
+        <div class="heatmap-cell heat-50"></div>
+        <div class="heatmap-cell heat-75"></div>
+        <div class="heatmap-cell heat-100"></div>
+        <div class="heatmap-cell heat-50"></div>
+        <div class="heatmap-cell heat-0"></div>
+        <div class="heatmap-cell heat-25"></div>
+        <div class="heatmap-cell heat-0"></div>
+        <div class="heatmap-cell heat-0"></div>
+        <div class="heatmap-cell heat-0"></div>
+        <div class="heatmap-cell heat-25"></div>
+        <div class="heatmap-cell heat-75"></div>
+        <div class="heatmap-cell heat-100"></div>
+        <div class="heatmap-cell heat-100"></div>
+        <div class="heatmap-cell heat-50"></div>
+        <div class="heatmap-cell heat-25"></div>
+        <div class="heatmap-cell heat-0"></div>
+        <div class="heatmap-cell heat-0"></div>
+        <div class="heatmap-cell heat-25"></div>
+        <div class="heatmap-cell heat-50"></div>
+        <div class="heatmap-cell heat-75"></div>
+        <div class="heatmap-cell heat-100"></div>
+        <div class="heatmap-cell heat-100"></div>
+        <div class="heatmap-cell heat-75"></div>
+        <div class="heatmap-cell heat-100"></div>
+        <div class="heatmap-cell heat-75"></div>
+        <div class="heatmap-cell heat-50"></div>
+        <div class="heatmap-cell heat-100"></div>
+      </div>
+      <div class="heatmap-legend">
+        <span>Less</span>
+        <div class="legend-square heat-0"></div>
+        <div class="legend-square heat-25"></div>
+        <div class="legend-square heat-50"></div>
+        <div class="legend-square heat-75"></div>
+        <div class="legend-square heat-100"></div>
+        <span>More</span>
+      </div>
+    </div>
+
+    <!-- RECENT ACTIVITY -->
+    <div class="glass-card">
+      <h3>Recent Activity</h3>
+      <div class="activity-list">
+        <div class="activity-item">
+          <div class="activity-left">
+            <div class="activity-icon">&#10003;</div>
+            <span class="activity-title">M3L3: Your First Model</span>
+          </div>
+          <span class="activity-time">Completed 2h ago</span>
+          <span class="activity-score">Score: 92%</span>
+        </div>
+        <div class="activity-item">
+          <div class="activity-left">
+            <div class="activity-icon">&#10003;</div>
+            <span class="activity-title">M3L2: Patterns in Noise</span>
+          </div>
+          <span class="activity-time">Completed yesterday</span>
+          <span class="activity-score">Score: 88%</span>
+        </div>
+        <div class="activity-item">
+          <div class="activity-left">
+            <div class="activity-icon">&#10003;</div>
+            <span class="activity-title">M3L1: The Signal</span>
+          </div>
+          <span class="activity-time">Completed 2 days ago</span>
+          <span class="activity-score">Score: 95%</span>
+        </div>
+        <div class="activity-item">
+          <div class="activity-left">
+            <div class="activity-icon">&#10003;</div>
+            <span class="activity-title">M2L5: Module 2 Debrief</span>
+          </div>
+          <span class="activity-time">Completed 3 days ago</span>
+          <span class="activity-score">Score: 90%</span>
+        </div>
+        <div class="activity-item">
+          <div class="activity-left">
+            <div class="activity-icon">&#10003;</div>
+            <span class="activity-title">M2L4: Data Pipelines</span>
+          </div>
+          <span class="activity-time">Completed 4 days ago</span>
+          <span class="activity-score">Score: 85%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SHARE -->
+    <div class="glass-card">
+      <div class="share-section">
+        <h4>Share Your Progress</h4>
+        <div class="share-buttons">
+          <button class="btn-outline">Download PNG</button>
+          <button class="btn-outline">Copy Link</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- THEME SWITCHER -->
+  <div class="theme-switcher">
+    <button class="theme-toggle glass" title="Switch theme">&#9671;</button>
+    <div class="theme-popup">
+      <button class="theme-dot" data-theme="deep-orbit" style="background:#7B68EE" title="Deep Orbit"></button>
+      <button class="theme-dot" data-theme="neon-protocol" style="background:#00D4FF" title="Neon Protocol"></button>
+      <button class="theme-dot" data-theme="signal-ward" style="background:#2ECC71" title="Signal Ward"></button>
+      <button class="theme-dot" data-theme="nova-canvas" style="background:#FF6B6B" title="Nova Canvas"></button>
+      <button class="theme-dot" data-theme="terra-grid" style="background:#F59E0B" title="Terra Grid"></button>
+    </div>
+  </div>
+
+  <script>
+    /* Theme switcher */
+    document.addEventListener('DOMContentLoaded', () => {
+      const switcher = document.querySelector('.theme-switcher');
+      const popup = switcher?.querySelector('.theme-popup');
+      switcher?.querySelector('.theme-toggle')?.addEventListener('click', () => popup?.classList.toggle('active'));
+      document.querySelectorAll('.theme-dot').forEach(dot => {
+        dot.addEventListener('click', () => {
+          document.documentElement.setAttribute('data-theme', dot.dataset.theme);
+          localStorage.setItem('tc-theme', dot.dataset.theme);
+          popup?.classList.remove('active');
+        });
+      });
+      const saved = localStorage.getItem('tc-theme');
+      if (saved) document.documentElement.setAttribute('data-theme', saved);
+    });
+  </script>
+</body>
+</html>

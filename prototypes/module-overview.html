@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="deep-orbit">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
+  <title>Tensorcraft — Module Overview</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--tc-bg, #0B0D1A);
+      color: var(--tc-text, #E2E8F0);
+      min-height: 100vh;
+      line-height: 1.7;
+    }
+
+    /* --- NAV BAR --- */
+    .nav-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      height: 56px;
+      background: var(--tc-surface, #16213E);
+      border-bottom: 1px solid var(--tc-border, #2A3A5C);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-logo {
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: 2px;
+      color: var(--tc-primary, #7B68EE);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .nav-logo .theme-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--tc-accent, #F0C75E);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .nav-breadcrumb {
+      font-size: 14px;
+      color: var(--tc-muted, #64748B);
+    }
+    .nav-breadcrumb span { color: var(--tc-text); }
+
+    /* --- MAIN LAYOUT --- */
+    .main-layout {
+      display: grid;
+      grid-template-columns: 65% 35%;
+      gap: 0;
+      min-height: calc(100vh - 56px);
+    }
+    @media (max-width: 768px) {
+      .main-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* --- MODULE MAP PANEL --- */
+    .module-map-panel {
+      padding: 40px 48px;
+      overflow-y: auto;
+    }
+    .module-map-panel h2 {
+      font-size: 25px;
+      font-weight: 600;
+      margin-bottom: 32px;
+      color: var(--tc-text);
+    }
+
+    .module-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      position: relative;
+      padding-left: 24px;
+    }
+
+    .module-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      position: relative;
+      padding: 12px 0;
+    }
+    .module-item:nth-child(odd) { padding-left: 0; }
+    .module-item:nth-child(even) { padding-left: 60px; }
+
+    /* Connection lines */
+    .module-item:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 23px;
+      top: 60px;
+      width: 2px;
+      height: calc(100% - 24px);
+    }
+    .module-item:nth-child(even):not(:last-child)::after {
+      left: 83px;
+    }
+    .module-item.node--completed:not(:last-child)::after,
+    .module-item.completed-to-completed::after {
+      background: var(--tc-accent);
+    }
+    .module-item.completed-to-active::after {
+      background: linear-gradient(to bottom, var(--tc-accent), var(--tc-primary));
+    }
+    .module-item.active-to-available::after {
+      background: color-mix(in srgb, var(--tc-muted) 50%, transparent);
+    }
+    .module-item.available-to-locked::after {
+      background: repeating-linear-gradient(
+        to bottom,
+        color-mix(in srgb, var(--tc-muted) 20%, transparent) 0px,
+        color-mix(in srgb, var(--tc-muted) 20%, transparent) 4px,
+        transparent 4px,
+        transparent 8px
+      );
+    }
+    .module-item.locked-to-locked::after {
+      background: repeating-linear-gradient(
+        to bottom,
+        color-mix(in srgb, var(--tc-muted) 20%, transparent) 0px,
+        color-mix(in srgb, var(--tc-muted) 20%, transparent) 4px,
+        transparent 4px,
+        transparent 8px
+      );
+    }
+
+    /* Node circles */
+    .progress-node {
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+      position: relative;
+      transition: transform 150ms ease-out;
+      cursor: pointer;
+    }
+    .progress-node:hover { transform: scale(1.08); }
+
+    .node--completed .progress-node {
+      background: color-mix(in srgb, var(--tc-accent) 15%, transparent);
+      border: 2px solid var(--tc-accent);
+      color: var(--tc-accent);
+    }
+    .node--active .progress-node {
+      background: var(--tc-bg);
+      border: 2px solid var(--tc-accent);
+      color: var(--tc-accent);
+      animation: pulse-border 2s ease-in-out infinite;
+    }
+    .node--available .progress-node {
+      background: var(--tc-bg);
+      border: 2px solid var(--tc-muted);
+      color: var(--tc-muted);
+    }
+    .node--locked .progress-node {
+      background: var(--tc-bg);
+      border: 2px dashed color-mix(in srgb, var(--tc-muted) 30%, transparent);
+      color: color-mix(in srgb, var(--tc-muted) 50%, transparent);
+      cursor: default;
+    }
+    .node--locked .progress-node:hover { transform: none; }
+
+    @keyframes pulse-border {
+      0%, 100% { box-shadow: 0 0 0 0 transparent; border-color: var(--tc-accent); }
+      50% { box-shadow: 0 0 12px color-mix(in srgb, var(--tc-accent) 40%, transparent); }
+    }
+
+    .module-info {
+      flex: 1;
+      padding-top: 4px;
+    }
+    .module-info h3 {
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.4;
+      color: var(--tc-text);
+    }
+    .node--locked .module-info h3 { color: var(--tc-muted); }
+    .module-info .module-progress-label {
+      font-size: 12px;
+      color: var(--tc-muted);
+      margin-top: 2px;
+    }
+    .node--active .module-info .module-progress-label { color: var(--tc-accent); }
+
+    /* Lesson sub-nodes */
+    .lesson-list {
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-left: 4px;
+    }
+    .lesson-list[hidden] { display: none; }
+    .lesson-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--tc-text);
+    }
+    .lesson-dot {
+      width: 16px;
+      height: 16px;
+      min-width: 16px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      line-height: 1;
+    }
+    .lesson-dot--completed {
+      background: color-mix(in srgb, #22C55E 20%, transparent);
+      color: #22C55E;
+      border: 1.5px solid #22C55E;
+    }
+    .lesson-dot--active {
+      background: var(--tc-bg);
+      border: 1.5px solid var(--tc-accent);
+      color: var(--tc-accent);
+    }
+    .lesson-dot--locked {
+      background: transparent;
+      border: 1.5px solid color-mix(in srgb, var(--tc-muted) 40%, transparent);
+      color: var(--tc-muted);
+    }
+
+    .module-toggle {
+      background: none;
+      border: none;
+      color: var(--tc-primary);
+      font-size: 12px;
+      cursor: pointer;
+      margin-top: 6px;
+      padding: 4px 0;
+      font-family: inherit;
+    }
+    .module-toggle:hover { text-decoration: underline; }
+
+    /* --- STORY PANEL --- */
+    .story-panel {
+      padding: 40px 32px;
+      border-left: 1px solid var(--tc-border);
+      overflow-y: auto;
+    }
+
+    .glass-card {
+      background: var(--tc-surface);
+      border: 1px solid var(--tc-border);
+      border-radius: 12px;
+      padding: 28px;
+      backdrop-filter: blur(12px);
+    }
+
+    .story-panel .glass-card h2 {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--tc-accent);
+      margin-bottom: 4px;
+    }
+    .story-panel .glass-card .subtitle {
+      font-size: 14px;
+      color: var(--tc-primary);
+      margin-bottom: 16px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .story-panel .synopsis {
+      font-size: 16px;
+      line-height: 1.7;
+      color: var(--tc-text);
+      margin-bottom: 24px;
+    }
+
+    /* Characters */
+    .characters-section h4 {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--tc-muted);
+      margin-bottom: 12px;
+    }
+    .character-list {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .character {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .character-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--tc-bg);
+    }
+    .character-name {
+      font-size: 11px;
+      color: var(--tc-muted);
+      text-align: center;
+    }
+
+    /* Stats */
+    .story-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+      font-size: 14px;
+      color: var(--tc-muted);
+      margin-bottom: 24px;
+      padding-top: 16px;
+      border-top: 1px solid var(--tc-border);
+    }
+    .story-stats span {
+      white-space: nowrap;
+    }
+    .story-stats .stat-value {
+      color: var(--tc-accent);
+      font-weight: 600;
+    }
+
+    /* CTA */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 28px;
+      background: var(--tc-primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 150ms, transform 150ms;
+      min-height: 44px;
+    }
+    .btn-primary:hover {
+      filter: brightness(1.15);
+      transform: translateY(-1px);
+    }
+
+    /* --- THEME SWITCHER --- */
+    .theme-switcher {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 200;
+    }
+    .theme-toggle {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid var(--tc-border);
+      background: var(--tc-surface);
+      color: var(--tc-primary);
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(12px);
+      transition: transform 150ms;
+    }
+    .theme-toggle:hover { transform: scale(1.1); }
+    .theme-popup {
+      position: absolute;
+      bottom: 52px;
+      right: 0;
+      background: var(--tc-surface);
+      border: 1px solid var(--tc-border);
+      border-radius: 12px;
+      padding: 12px;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .theme-popup.active { display: flex; }
+    .theme-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: transform 150ms, border-color 150ms;
+    }
+    .theme-dot:hover {
+      transform: scale(1.15);
+      border-color: rgba(255,255,255,0.3);
+    }
+
+    @media (max-width: 768px) {
+      .module-map-panel { padding: 24px 16px; }
+      .story-panel { padding: 24px 16px; border-left: none; border-top: 1px solid var(--tc-border); }
+      .module-item:nth-child(even) { padding-left: 30px; }
+      .module-item:nth-child(even):not(:last-child)::after { left: 53px; }
+      .nav-breadcrumb { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV BAR -->
+  <nav class="nav-bar">
+    <div class="nav-logo">
+      <span>&#9671; TENSORCRAFT</span>
+      <span class="theme-label">Deep Orbit</span>
+    </div>
+    <div class="nav-breadcrumb">Themes / <span>Deep Orbit</span></div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-layout">
+
+    <!-- MODULE MAP -->
+    <div class="module-map-panel">
+      <h2>Module Map</h2>
+
+      <div class="module-list">
+
+        <!-- M1 -->
+        <div class="module-item node--completed completed-to-completed" data-module="1">
+          <div class="progress-node">&#10003;</div>
+          <div class="module-info">
+            <h3>M1: ML Through Signals</h3>
+            <div class="module-progress-label">5/5 lessons</div>
+            <button class="module-toggle" data-target="lessons-1">Show lessons</button>
+            <div class="lesson-list" id="lessons-1" hidden>
+              <div class="lesson-item"><span class="lesson-dot lesson-dot--completed">&#10003;</span> Arrival: What Is ML?</div>
+              <div class="lesson-item"><span class="lesson-dot lesson-dot--completed">&#10003;</span> Data & Labels</div>
+              <div class="lesson-item"><span class="lesson-dot lesson-dot--completed">&#10003;</span> Your First Model</div>
+              <div class="lesson-item"><span class="lesson-dot lesson-dot--completed">&#10003;</span> Training the Classifier</div>
+              <div class="lesson-item"><span class="lesson-dot lesson-dot--completed">&#10003;</span> Consequence & Debrief</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- M2 -->
+        <div class="module-item node--completed completed-to-active" data-module="2">
+          <div class="progress-node">&#10003;</div>
+          <div class="module-info">
+            <h3>M2: Data & Preprocessing</h3>
+            <div class="module-progress-label">5/5 lessons</div>
+            <button class="module-toggle" data-target="lessons-2">Show lessons</button>
+            <div class="lesson-list" id="lessons-2" hidden>
+              <div class="lesson-item"><span class="lesson-dot lesson-dot--completed">&#10003;</span> Raw Signal Intake</div>
+              <div class="lesson-item"><span class="lesson-dot lesson-dot--completed">&#10003;</span> Cleaning & Normalization</div>
+              <div class="lesson-item"><span class="lesson-dot lesson-dot--completed">&#10003;</span> Feature Extraction</div>
+              <div class="lesson-item"><span class="lesson-dot lesson-dot--completed">&#10003;</span> Data Pipelines</div>
+              <div class="lesson-item"><span class="lesson-dot lesson-dot--completed">&#10003;</span> Module 2 Debrief</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- M3 (Active) -->
+        <div class="module-item node--active active-to-available" data-module="3">
+          <div class="progress-node">&#9654;</div>
+          <div class="module-info">
+            <h3>M3: Neural Networks</h3>
+            <div class="module-progress-label">3/5 lessons</div>
+            <button class="module-toggle" data-target="lessons-3">Show lessons</button>
+            <div class="lesson-list" id="lessons-3" hidden>
+              <div class="lesson-item"><span class="lesson-dot lesson-dot--completed">&#10003;</span> The Signal</div>
+              <div class="lesson-item"><span class="lesson-dot lesson-dot--completed">&#10003;</span> Patterns in Noise</div>
+              <div class="lesson-item"><span class="lesson-dot lesson-dot--active">&#9679;</span> Your First Model</div>
+              <div class="lesson-item"><span class="lesson-dot lesson-dot--locked">&#9675;</span> Training the Classifier</div>
+              <div class="lesson-item"><span class="lesson-dot lesson-dot--locked">&#9675;</span> Consequence & Debrief</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- M4 (Available) -->
+        <div class="module-item node--available available-to-locked" data-module="4">
+          <div class="progress-node">&#9654;</div>
+          <div class="module-info">
+            <h3>M4: Browser Runtimes</h3>
+            <div class="module-progress-label">0/5 lessons</div>
+          </div>
+        </div>
+
+        <!-- M5 (Locked) -->
+        <div class="module-item node--locked locked-to-locked" data-module="5">
+          <div class="progress-node">&#128274;</div>
+          <div class="module-info">
+            <h3>M5: Signal Processing</h3>
+            <div class="module-progress-label">0/5 lessons</div>
+          </div>
+        </div>
+
+        <!-- M6 -->
+        <div class="module-item node--locked locked-to-locked" data-module="6">
+          <div class="progress-node">&#128274;</div>
+          <div class="module-info">
+            <h3>M6: Recurrent Networks</h3>
+            <div class="module-progress-label">0/5 lessons</div>
+          </div>
+        </div>
+
+        <!-- M7 -->
+        <div class="module-item node--locked locked-to-locked" data-module="7">
+          <div class="progress-node">&#128274;</div>
+          <div class="module-info">
+            <h3>M7: Anomaly Detection</h3>
+            <div class="module-progress-label">0/5 lessons</div>
+          </div>
+        </div>
+
+        <!-- M8 -->
+        <div class="module-item node--locked locked-to-locked" data-module="8">
+          <div class="progress-node">&#128274;</div>
+          <div class="module-info">
+            <h3>M8: Advanced Time-Series</h3>
+            <div class="module-progress-label">0/5 lessons</div>
+          </div>
+        </div>
+
+        <!-- M9 -->
+        <div class="module-item node--locked locked-to-locked" data-module="9">
+          <div class="progress-node">&#128274;</div>
+          <div class="module-info">
+            <h3>M9: LLM Integration</h3>
+            <div class="module-progress-label">0/5 lessons</div>
+          </div>
+        </div>
+
+        <!-- M10 -->
+        <div class="module-item node--locked locked-to-locked" data-module="10">
+          <div class="progress-node">&#128274;</div>
+          <div class="module-info">
+            <h3>M10: Optimization & Edge</h3>
+            <div class="module-progress-label">0/5 lessons</div>
+          </div>
+        </div>
+
+        <!-- M11 -->
+        <div class="module-item node--locked" data-module="11">
+          <div class="progress-node">&#128274;</div>
+          <div class="module-info">
+            <h3>M11: Capstone &mdash; Deploy DEEP SCAN</h3>
+            <div class="module-progress-label">0/5 lessons</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- STORY SYNOPSIS -->
+    <div class="story-panel">
+      <div class="glass-card">
+        <div class="subtitle">Time-Series &amp; Signals</div>
+        <h2>Deep Orbit</h2>
+        <p class="synopsis">
+          Aboard the research vessel <em>Archimedes</em>, your crew has detected structured electromagnetic
+          signals from the Kepler-442 system that defy classification. As Ensign Park, a frontend engineer
+          reassigned to comms, you must build DEEP SCAN &mdash; a multi-stage signal classification system &mdash;
+          learning machine learning from scratch through the lens of concepts you already know.
+        </p>
+
+        <div class="characters-section">
+          <h4>Crew</h4>
+          <div class="character-list">
+            <div class="character">
+              <div class="character-avatar" style="background: #F0C75E;">O</div>
+              <div class="character-name">Okafor</div>
+            </div>
+            <div class="character">
+              <div class="character-avatar" style="background: #7B68EE;">S</div>
+              <div class="character-name">Sato</div>
+            </div>
+            <div class="character">
+              <div class="character-avatar" style="background: #EF4444;">T</div>
+              <div class="character-name">Torres</div>
+            </div>
+            <div class="character">
+              <div class="character-avatar" style="background: #22C55E;">P</div>
+              <div class="character-name">Park</div>
+            </div>
+            <div class="character">
+              <div class="character-avatar" style="background: #64748B;">A</div>
+              <div class="character-name">ARIA</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="story-stats">
+          <span><span class="stat-value">19/55</span> Lessons</span>
+          <span>&middot;</span>
+          <span><span class="stat-value">23/56</span> Bridges</span>
+          <span>&middot;</span>
+          <span><span class="stat-value">~12h</span> remaining</span>
+        </div>
+
+        <button class="btn-primary" style="width: 100%;">Continue Learning</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- THEME SWITCHER -->
+  <div class="theme-switcher">
+    <button class="theme-toggle glass" title="Switch theme">&#9671;</button>
+    <div class="theme-popup">
+      <button class="theme-dot" data-theme="deep-orbit" style="background:#7B68EE" title="Deep Orbit"></button>
+      <button class="theme-dot" data-theme="neon-protocol" style="background:#00D4FF" title="Neon Protocol"></button>
+      <button class="theme-dot" data-theme="signal-ward" style="background:#2ECC71" title="Signal Ward"></button>
+      <button class="theme-dot" data-theme="nova-canvas" style="background:#FF6B6B" title="Nova Canvas"></button>
+      <button class="theme-dot" data-theme="terra-grid" style="background:#F59E0B" title="Terra Grid"></button>
+    </div>
+  </div>
+
+  <script>
+    /* Theme switcher */
+    document.addEventListener('DOMContentLoaded', () => {
+      const switcher = document.querySelector('.theme-switcher');
+      const popup = switcher?.querySelector('.theme-popup');
+      switcher?.querySelector('.theme-toggle')?.addEventListener('click', () => popup?.classList.toggle('active'));
+      document.querySelectorAll('.theme-dot').forEach(dot => {
+        dot.addEventListener('click', () => {
+          document.documentElement.setAttribute('data-theme', dot.dataset.theme);
+          localStorage.setItem('tc-theme', dot.dataset.theme);
+          popup?.classList.remove('active');
+        });
+      });
+      const saved = localStorage.getItem('tc-theme');
+      if (saved) document.documentElement.setAttribute('data-theme', saved);
+    });
+
+    /* Module lesson toggles */
+    document.querySelectorAll('.module-toggle').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = document.getElementById(btn.dataset.target);
+        if (target) {
+          const isHidden = target.hidden;
+          target.hidden = !isHidden;
+          btn.textContent = isHidden ? 'Hide lessons' : 'Show lessons';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="deep-orbit">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
+  <title>Tensorcraft — Exercise</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--tc-bg, #0B0D1A);
+      color: var(--tc-text, #E2E8F0);
+      min-height: 100vh;
+      line-height: 1.7;
+    }
+    code, pre, .code-block, .tok-kw, .tok-str, .tok-cm, .tok-fn, .tok-num {
+      font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
+    }
+
+    /* --- NAV BAR --- */
+    .nav-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      height: 56px;
+      background: var(--tc-surface, #16213E);
+      border-bottom: 1px solid var(--tc-border, #2A3A5C);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .nav-back {
+      color: var(--tc-primary);
+      text-decoration: none;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 44px;
+      padding: 0 8px;
+      transition: color 150ms;
+    }
+    .nav-back:hover { color: var(--tc-accent); }
+    .nav-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--tc-text);
+    }
+    .nav-timer {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--tc-accent);
+      font-family: 'JetBrains Mono', monospace;
+      padding: 6px 14px;
+      background: color-mix(in srgb, var(--tc-accent) 10%, transparent);
+      border-radius: 6px;
+      border: 1px solid color-mix(in srgb, var(--tc-accent) 25%, transparent);
+    }
+
+    /* --- MAIN LAYOUT --- */
+    .exercise-layout {
+      display: grid;
+      grid-template-columns: 60% 40%;
+      min-height: calc(100vh - 56px);
+    }
+
+    /* --- CODE EDITOR --- */
+    .code-editor-panel {
+      background: #0D1117;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .code-titlebar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      height: 44px;
+      background: #161B22;
+      border-bottom: 1px solid #30363D;
+    }
+    .code-tab {
+      font-size: 13px;
+      color: var(--tc-text);
+      padding: 10px 16px;
+      border-bottom: 2px solid var(--tc-accent);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .btn-run {
+      padding: 6px 16px;
+      background: var(--tc-primary);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      min-height: 32px;
+      transition: filter 150ms;
+    }
+    .btn-run:hover { filter: brightness(1.15); }
+
+    .code-content {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      font-size: 14px;
+      line-height: 1.6;
+      counter-reset: line;
+    }
+    .code-line {
+      display: flex;
+      gap: 16px;
+      min-height: 22px;
+    }
+    .line-num {
+      color: #484F58;
+      text-align: right;
+      min-width: 24px;
+      font-size: 12px;
+      line-height: 1.85;
+      user-select: none;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .line-code {
+      white-space: pre;
+      flex: 1;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .tok-cm { color: #8B949E; }
+    .tok-kw { color: #FF7B72; }
+    .tok-fn { color: #D2A8FF; }
+    .tok-str { color: #A5D6FF; }
+    .tok-num { color: #79C0FF; }
+    .tok-op { color: #C9D1D9; }
+
+    /* --- RESULTS PANEL --- */
+    .results-panel {
+      border-left: 1px solid var(--tc-border);
+      overflow-y: auto;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .glass-card {
+      background: var(--tc-surface);
+      border: 1px solid var(--tc-border);
+      border-radius: 12px;
+      padding: 20px;
+      backdrop-filter: blur(12px);
+    }
+    .glass-card h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: var(--tc-text);
+    }
+    .glass-card h3 .count {
+      color: var(--tc-accent);
+      font-weight: 700;
+    }
+
+    /* Test Results */
+    .test-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .test-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 14px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: color-mix(in srgb, var(--tc-bg) 60%, transparent);
+    }
+    .test-item .icon { min-width: 18px; font-size: 14px; }
+    .test-pass .icon { color: #22C55E; }
+    .test-fail .icon { color: #EF4444; }
+    .test-pass .label { color: var(--tc-text); }
+    .test-fail .label { color: #EF4444; }
+    .test-fail .expected {
+      display: block;
+      font-size: 12px;
+      color: var(--tc-muted);
+      margin-top: 4px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Hint Panel */
+    .hint-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .hint-level {
+      padding: 12px 16px;
+      border-radius: 0 8px 8px 0;
+      font-size: 14px;
+      color: var(--tc-text);
+      line-height: 1.6;
+      background: color-mix(in srgb, var(--tc-bg) 60%, transparent);
+    }
+    .hint-level-1 { border-left: 3px solid var(--tc-accent); }
+    .hint-level-2 { border-left: 3px solid var(--tc-primary); }
+    .hint-level-3 { border-left: 3px solid #F59E0B; }
+
+    .hint-level.collapsed {
+      color: var(--tc-muted);
+      cursor: pointer;
+      transition: color 150ms;
+    }
+    .hint-level.collapsed:hover { color: var(--tc-text); }
+    .hint-level.collapsed .hint-text { display: none; }
+    .hint-level.collapsed::after {
+      content: 'Click to reveal';
+      font-size: 12px;
+      font-style: italic;
+    }
+    .hint-header {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+      display: block;
+    }
+    .hint-level-1 .hint-header { color: var(--tc-accent); }
+    .hint-level-2 .hint-header { color: var(--tc-primary); }
+    .hint-level-3 .hint-header { color: #F59E0B; }
+
+    .hint-toggle {
+      background: none;
+      border: none;
+      color: var(--tc-primary);
+      cursor: pointer;
+      font-size: 14px;
+      font-family: inherit;
+      padding: 4px 0;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+    }
+    .hint-toggle:hover { text-decoration: underline; }
+
+    /* Exercise Meta */
+    .exercise-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+      font-size: 13px;
+      color: var(--tc-muted);
+    }
+    .exercise-meta .badge {
+      padding: 3px 10px;
+      border-radius: 12px;
+      background: color-mix(in srgb, var(--tc-primary) 15%, transparent);
+      color: var(--tc-primary);
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .exercise-meta .bridge-tag {
+      color: var(--tc-accent);
+      font-weight: 500;
+    }
+
+    /* Quiz */
+    .quiz-question {
+      font-size: 15px;
+      color: var(--tc-text);
+      margin-bottom: 16px;
+    }
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .quiz-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      border: 1px solid var(--tc-border);
+      cursor: pointer;
+      transition: background 150ms, border-color 150ms;
+      min-height: 44px;
+      font-size: 14px;
+    }
+    .quiz-option:hover { background: color-mix(in srgb, var(--tc-surface) 80%, var(--tc-text)); }
+    .quiz-option .radio {
+      width: 20px;
+      height: 20px;
+      min-width: 20px;
+      border-radius: 50%;
+      border: 2px solid var(--tc-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 150ms, background 150ms;
+    }
+    .quiz-option--correct {
+      background: rgba(34, 197, 94, 0.12) !important;
+      border-color: #22C55E !important;
+    }
+    .quiz-option--correct .radio {
+      border-color: #22C55E;
+      background: #22C55E;
+    }
+    .quiz-option--correct .radio::after {
+      content: '\2713';
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .quiz-option--wrong {
+      background: rgba(239, 68, 68, 0.12) !important;
+      border-color: #EF4444 !important;
+      animation: shake 300ms ease-out;
+    }
+    .quiz-option--wrong .radio {
+      border-color: #EF4444;
+      background: #EF4444;
+    }
+    .quiz-option--wrong .radio::after {
+      content: '\2717';
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-3px); }
+      40% { transform: translateX(3px); }
+      60% { transform: translateX(-3px); }
+      80% { transform: translateX(3px); }
+    }
+
+    /* Mobile bottom bar */
+    .mobile-bottom-bar {
+      display: none;
+      padding: 12px 16px;
+      background: var(--tc-surface);
+      border-top: 1px solid var(--tc-border);
+      position: sticky;
+      bottom: 0;
+      z-index: 50;
+    }
+    .mobile-bottom-bar .btn-primary {
+      width: 100%;
+      min-height: 44px;
+    }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 28px;
+      background: var(--tc-primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: filter 150ms, transform 150ms;
+    }
+    .btn-primary:hover { filter: brightness(1.15); transform: translateY(-1px); }
+
+    /* --- THEME SWITCHER --- */
+    .theme-switcher {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 200;
+    }
+    .theme-toggle {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid var(--tc-border);
+      background: var(--tc-surface);
+      color: var(--tc-primary);
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(12px);
+      transition: transform 150ms;
+    }
+    .theme-toggle:hover { transform: scale(1.1); }
+    .theme-popup {
+      position: absolute;
+      bottom: 52px;
+      right: 0;
+      background: var(--tc-surface);
+      border: 1px solid var(--tc-border);
+      border-radius: 12px;
+      padding: 12px;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .theme-popup.active { display: flex; }
+    .theme-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: transform 150ms, border-color 150ms;
+    }
+    .theme-dot:hover {
+      transform: scale(1.15);
+      border-color: rgba(255,255,255,0.3);
+    }
+
+    /* --- RESPONSIVE --- */
+    @media (max-width: 768px) {
+      .exercise-layout { grid-template-columns: 1fr; }
+      .results-panel {
+        border-left: none;
+        border-top: 1px solid var(--tc-border);
+      }
+      .code-editor-panel { min-height: 50vh; }
+      .mobile-bottom-bar { display: block; }
+      .nav-title { font-size: 13px; }
+      .line-num { display: none; }
+      .theme-switcher { bottom: 76px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV BAR -->
+  <nav class="nav-bar">
+    <div class="nav-left">
+      <a href="lesson-viewer.html" class="nav-back">&larr; Back to Lesson</a>
+      <span class="nav-title">ReLU Activation Function</span>
+    </div>
+    <div class="nav-timer">3:24</div>
+  </nav>
+
+  <!-- MAIN LAYOUT -->
+  <div class="exercise-layout">
+
+    <!-- CODE EDITOR -->
+    <div class="code-editor-panel">
+      <div class="code-titlebar">
+        <span class="code-tab">exercise.js</span>
+        <button class="btn-run">Run Tests</button>
+      </div>
+      <div class="code-content">
+        <div class="code-line"><span class="line-num"> 1</span><span class="line-code"><span class="tok-cm">/**</span></span></div>
+        <div class="code-line"><span class="line-num"> 2</span><span class="line-code"><span class="tok-cm"> * Mission: Implement signal activation functions</span></span></div>
+        <div class="code-line"><span class="line-num"> 3</span><span class="line-code"><span class="tok-cm"> * for the DEEP SCAN classifier.</span></span></div>
+        <div class="code-line"><span class="line-num"> 4</span><span class="line-code"><span class="tok-cm"> *</span></span></div>
+        <div class="code-line"><span class="line-num"> 5</span><span class="line-code"><span class="tok-cm"> * The Archimedes needs these to process raw signals.</span></span></div>
+        <div class="code-line"><span class="line-num"> 6</span><span class="line-code"><span class="tok-cm"> */</span></span></div>
+        <div class="code-line"><span class="line-num"> 7</span><span class="line-code"></span></div>
+        <div class="code-line"><span class="line-num"> 8</span><span class="line-code"><span class="tok-cm">// 1. Implement ReLU activation</span></span></div>
+        <div class="code-line"><span class="line-num"> 9</span><span class="line-code"><span class="tok-kw">function</span> <span class="tok-fn">relu</span>(<span class="tok-op">x</span>) {</span></div>
+        <div class="code-line"><span class="line-num">10</span><span class="line-code">  <span class="tok-kw">return</span> Math.<span class="tok-fn">max</span>(<span class="tok-num">0</span>, <span class="tok-op">x</span>);</span></div>
+        <div class="code-line"><span class="line-num">11</span><span class="line-code">}</span></div>
+        <div class="code-line"><span class="line-num">12</span><span class="line-code"></span></div>
+        <div class="code-line"><span class="line-num">13</span><span class="line-code"><span class="tok-cm">// 2. Implement Leaky ReLU (bonus)</span></span></div>
+        <div class="code-line"><span class="line-num">14</span><span class="line-code"><span class="tok-kw">function</span> <span class="tok-fn">leakyRelu</span>(<span class="tok-op">x</span>, <span class="tok-op">alpha</span> = <span class="tok-num">0.01</span>) {</span></div>
+        <div class="code-line"><span class="line-num">15</span><span class="line-code">  <span class="tok-kw">return</span> <span class="tok-op">x</span> > <span class="tok-num">0</span> ? <span class="tok-op">x</span> : <span class="tok-op">alpha</span> * <span class="tok-op">x</span>;</span></div>
+        <div class="code-line"><span class="line-num">16</span><span class="line-code">}</span></div>
+        <div class="code-line"><span class="line-num">17</span><span class="line-code"></span></div>
+        <div class="code-line"><span class="line-num">18</span><span class="line-code"><span class="tok-cm">// 3. Apply to signal batch</span></span></div>
+        <div class="code-line"><span class="line-num">19</span><span class="line-code"><span class="tok-kw">function</span> <span class="tok-fn">activateSignals</span>(<span class="tok-op">signals</span>, <span class="tok-op">fn</span>) {</span></div>
+        <div class="code-line"><span class="line-num">20</span><span class="line-code">  <span class="tok-kw">return</span> <span class="tok-op">signals</span>.<span class="tok-fn">map</span>(<span class="tok-op">fn</span>);</span></div>
+        <div class="code-line"><span class="line-num">21</span><span class="line-code">}</span></div>
+      </div>
+    </div>
+
+    <!-- RESULTS PANEL -->
+    <div class="results-panel">
+
+      <!-- Test Results -->
+      <div class="glass-card">
+        <h3>Tests: <span class="count">3/4</span> passing</h3>
+        <div class="test-list">
+          <div class="test-item test-pass">
+            <span class="icon">&#10003;</span>
+            <span class="label">relu(5) returns 5</span>
+          </div>
+          <div class="test-item test-pass">
+            <span class="icon">&#10003;</span>
+            <span class="label">relu(-3) returns 0</span>
+          </div>
+          <div class="test-item test-pass">
+            <span class="icon">&#10003;</span>
+            <span class="label">relu(0) returns 0</span>
+          </div>
+          <div class="test-item test-fail">
+            <span class="icon">&#10007;</span>
+            <div class="label">
+              leakyRelu(-3, 0.01) returns -0.03
+              <span class="expected">Expected: -0.03, Received: undefined</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hints -->
+      <div class="glass-card">
+        <button class="hint-toggle" id="hint-toggle-btn">Need a hint?</button>
+        <div class="hint-list" id="hint-list">
+          <div class="hint-level hint-level-1">
+            <span class="hint-header">Hint 1 &mdash; Nudge</span>
+            <span class="hint-text">For leaky ReLU, negative values aren't zeroed out &mdash; they're multiplied by a small constant.</span>
+          </div>
+          <div class="hint-level hint-level-2 collapsed">
+            <span class="hint-header">Hint 2 &mdash; Guidance</span>
+            <span class="hint-text">Use a ternary: if x > 0, return x. Otherwise, return alpha * x.</span>
+          </div>
+          <div class="hint-level hint-level-3 collapsed">
+            <span class="hint-header">Hint 3 &mdash; Solution</span>
+            <span class="hint-text" style="font-family:'JetBrains Mono',monospace;font-size:13px;">return x > 0 ? x : alpha * x;</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Exercise Meta -->
+      <div class="glass-card">
+        <div class="exercise-meta">
+          <span>Estimated: 8 min</span>
+          <span class="badge">Beginner</span>
+          <span>Concept: Activation Functions</span>
+          <span class="bridge-tag">FE Bridge: Math.max(0, x) = ReLU</span>
+        </div>
+      </div>
+
+      <!-- Checkpoint Quiz -->
+      <div class="glass-card">
+        <h3>Check Your Understanding</h3>
+        <p class="quiz-question">What happens when you pass -5 through a ReLU function?</p>
+        <div class="quiz-options">
+          <div class="quiz-option">
+            <div class="radio"></div>
+            <span>Returns -5</span>
+          </div>
+          <div class="quiz-option">
+            <div class="radio"></div>
+            <span>Returns 5</span>
+          </div>
+          <div class="quiz-option quiz-option--correct">
+            <div class="radio"></div>
+            <span>Returns 0</span>
+          </div>
+          <div class="quiz-option quiz-option--wrong">
+            <div class="radio"></div>
+            <span>Returns -0.05</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MOBILE BOTTOM BAR -->
+  <div class="mobile-bottom-bar">
+    <button class="btn-primary">Run Tests</button>
+  </div>
+
+  <!-- THEME SWITCHER -->
+  <div class="theme-switcher">
+    <button class="theme-toggle glass" title="Switch theme">&#9671;</button>
+    <div class="theme-popup">
+      <button class="theme-dot" data-theme="deep-orbit" style="background:#7B68EE" title="Deep Orbit"></button>
+      <button class="theme-dot" data-theme="neon-protocol" style="background:#00D4FF" title="Neon Protocol"></button>
+      <button class="theme-dot" data-theme="signal-ward" style="background:#2ECC71" title="Signal Ward"></button>
+      <button class="theme-dot" data-theme="nova-canvas" style="background:#FF6B6B" title="Nova Canvas"></button>
+      <button class="theme-dot" data-theme="terra-grid" style="background:#F59E0B" title="Terra Grid"></button>
+    </div>
+  </div>
+
+  <script>
+    /* Theme switcher */
+    document.addEventListener('DOMContentLoaded', () => {
+      const switcher = document.querySelector('.theme-switcher');
+      const popup = switcher?.querySelector('.theme-popup');
+      switcher?.querySelector('.theme-toggle')?.addEventListener('click', () => popup?.classList.toggle('active'));
+      document.querySelectorAll('.theme-dot').forEach(dot => {
+        dot.addEventListener('click', () => {
+          document.documentElement.setAttribute('data-theme', dot.dataset.theme);
+          localStorage.setItem('tc-theme', dot.dataset.theme);
+          popup?.classList.remove('active');
+        });
+      });
+      const saved = localStorage.getItem('tc-theme');
+      if (saved) document.documentElement.setAttribute('data-theme', saved);
+    });
+
+    /* Hint toggle */
+    document.getElementById('hint-toggle-btn')?.addEventListener('click', () => {
+      const list = document.getElementById('hint-list');
+      list.style.display = list.style.display === 'none' ? 'flex' : 'none';
+    });
+
+    /* Collapsed hint expansion */
+    document.querySelectorAll('.hint-level.collapsed').forEach(level => {
+      level.addEventListener('click', () => {
+        level.classList.remove('collapsed');
+      });
+    });
+
+    /* Timer mock */
+    let seconds = 204; // 3:24
+    const timerEl = document.querySelector('.nav-timer');
+    setInterval(() => {
+      seconds++;
+      const m = Math.floor(seconds / 60);
+      const s = seconds % 60;
+      if (timerEl) timerEl.textContent = `${m}:${s.toString().padStart(2, '0')}`;
+    }, 1000);
+  </script>
+</body>
+</html>

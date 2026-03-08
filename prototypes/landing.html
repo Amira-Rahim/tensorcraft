@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="deep-orbit">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tensorcraft — Learn ML Through Code You Already Know</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* ===== HERO ===== */
+    .hero {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 24px;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .hero__bg {
+      position: fixed;
+      inset: 0;
+      opacity: 0.35;
+      z-index: 0;
+    }
+
+    /* Gradient orbs */
+    .hero__orb {
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .hero__orb--primary {
+      top: -40%;
+      left: -20%;
+      width: 80vw;
+      height: 80vw;
+      background: radial-gradient(ellipse, var(--tc-primary), transparent 70%);
+      opacity: 0.2;
+      filter: blur(120px);
+    }
+
+    .hero__orb--accent {
+      bottom: -30%;
+      right: -20%;
+      width: 60vw;
+      height: 60vw;
+      background: radial-gradient(ellipse, var(--tc-accent), transparent 70%);
+      opacity: 0.15;
+      filter: blur(100px);
+      animation-delay: -7s;
+    }
+
+    .hero__content {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .hero__line-top {
+      width: 128px;
+      height: 2px;
+      margin-bottom: 48px;
+      transform-origin: center;
+      animation: line-grow 1s ease 0.2s both;
+    }
+
+    .hero__title {
+      font-size: clamp(var(--text-3xl), 8vw, 7rem);
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      color: var(--tc-primary);
+      animation: fade-in 1s ease 0.6s both;
+    }
+
+    .hero__line-bottom {
+      width: 200px;
+      height: 2px;
+      margin: 32px 0;
+      transform-origin: center;
+      animation: line-grow 1.2s ease 1s both;
+    }
+
+    .hero__tagline {
+      font-size: clamp(var(--text-lg), 2.5vw, var(--text-xl));
+      color: var(--tc-muted);
+      max-width: 640px;
+      animation: slide-up 0.8s ease 1.2s both;
+    }
+
+    .hero__tagline strong {
+      color: var(--tc-text);
+      font-weight: 500;
+    }
+
+    .hero__secondary {
+      font-size: var(--text-base);
+      color: var(--tc-muted);
+      max-width: 520px;
+      margin-top: 12px;
+      animation: fade-in 0.8s ease 1.6s both;
+    }
+
+    .hero__cta {
+      display: flex;
+      gap: 16px;
+      margin-top: 40px;
+      animation: slide-up 0.6s ease 2s both;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .hero__cta .btn-primary {
+      padding: 16px 32px;
+      font-size: var(--text-lg);
+    }
+
+    .hero__cta .btn-outline {
+      padding: 16px 32px;
+      font-size: var(--text-lg);
+    }
+
+    .hero__scroll {
+      position: absolute;
+      bottom: 32px;
+      animation: fade-in 1s ease 2.5s both;
+    }
+
+    .hero__scroll-indicator {
+      width: 24px;
+      height: 40px;
+      border: 2px solid var(--tc-muted);
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      padding-top: 8px;
+      animation: scroll-hint 2s ease-in-out infinite;
+    }
+
+    .hero__scroll-dot {
+      width: 4px;
+      height: 8px;
+      border-radius: 2px;
+      background: var(--tc-muted);
+    }
+
+    /* ===== SECTIONS SHARED ===== */
+    .section {
+      padding: 120px 24px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .section__inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section__heading {
+      font-size: clamp(var(--text-2xl), 4vw, var(--text-3xl));
+      font-weight: 700;
+      color: var(--tc-text);
+      margin-bottom: 16px;
+    }
+
+    .section__description {
+      font-size: var(--text-lg);
+      color: var(--tc-muted);
+      max-width: 640px;
+      margin-bottom: 48px;
+    }
+
+    /* ===== BRIDGES SECTION ===== */
+    .bridges-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    @media (min-width: 640px) {
+      .bridges-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (min-width: 1024px) {
+      .bridges-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .bridge-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 8px;
+      padding: 24px 16px;
+    }
+
+    .bridge-card__fe {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: var(--text-sm);
+      color: var(--tc-accent);
+    }
+
+    .bridge-card__connector {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 4px 0;
+    }
+
+    .bridge-card__line {
+      width: 32px;
+      height: 2px;
+    }
+
+    .bridge-card__dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--tc-primary);
+    }
+
+    .bridge-card__ml {
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--tc-text);
+    }
+
+    .bridges-note {
+      text-align: center;
+      font-size: var(--text-sm);
+      color: var(--tc-muted);
+      margin-top: 32px;
+    }
+
+    /* ===== THEMES SECTION ===== */
+    .themes-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    @media (min-width: 640px) {
+      .themes-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (min-width: 1024px) {
+      .themes-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (min-width: 1440px) {
+      .themes-grid { grid-template-columns: repeat(5, 1fr); }
+    }
+
+    .theme-card {
+      padding: 24px;
+      border-radius: 16px;
+      background: color-mix(in srgb, var(--tc-surface) 50%, transparent);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .theme-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .theme-card__badge {
+      margin-bottom: 16px;
+    }
+
+    .theme-card__name {
+      font-size: var(--text-xl);
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .theme-card__tagline {
+      font-size: var(--text-sm);
+      color: var(--tc-muted);
+      margin-bottom: 16px;
+    }
+
+    .theme-card__build {
+      padding-top: 16px;
+      border-top: 1px solid var(--tc-border);
+    }
+
+    .theme-card__build-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--tc-muted);
+      margin-bottom: 4px;
+    }
+
+    .theme-card__build-model {
+      font-size: var(--text-sm);
+      color: var(--tc-text);
+    }
+
+    /* ===== STATS SECTION ===== */
+    .stats-section {
+      border-top: 1px solid var(--tc-border);
+      border-bottom: 1px solid var(--tc-border);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    @media (min-width: 640px) {
+      .stats-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    /* ===== CTA FOOTER ===== */
+    .cta-footer {
+      text-align: center;
+    }
+
+    .cta-footer__heading {
+      font-size: clamp(var(--text-2xl), 4vw, var(--text-3xl));
+      font-weight: 700;
+      color: var(--tc-text);
+      margin-bottom: 16px;
+    }
+
+    .cta-footer__text {
+      font-size: var(--text-lg);
+      color: var(--tc-muted);
+      max-width: 520px;
+      margin: 0 auto 40px;
+    }
+
+    .cta-footer .btn-primary {
+      padding: 20px 40px;
+      font-size: var(--text-lg);
+    }
+
+    /* ===== SITE FOOTER ===== */
+    .site-footer {
+      text-align: center;
+      padding: 32px 24px;
+      border-top: 1px solid var(--tc-border);
+      font-size: var(--text-sm);
+      color: var(--tc-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background layers -->
+  <div class="hero__bg grid-pattern"></div>
+  <div class="hero__orb hero__orb--primary animate-gradient"></div>
+  <div class="hero__orb hero__orb--accent animate-gradient"></div>
+
+  <!-- Nav Bar -->
+  <nav class="nav-bar">
+    <div class="nav-bar__logo neon-text-subtle">◇ TENSORCRAFT</div>
+    <div class="nav-bar__spacer"></div>
+    <div class="nav-bar__links">
+      <a href="#themes">Themes</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#">Sign In</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero__content">
+      <div class="hero__line-top neon-line"></div>
+
+      <h1 class="hero__title neon-text-subtle">TENSORCRAFT</h1>
+
+      <div class="hero__line-bottom neon-line"></div>
+
+      <p class="hero__tagline">
+        Learn machine learning through <strong>code you already know</strong>
+      </p>
+
+      <p class="hero__secondary">
+        Interactive, story-driven ML education for frontend engineers.
+        Build real models in the browser.
+      </p>
+
+      <div class="hero__cta">
+        <a href="#" class="btn-primary">Start Learning — Free</a>
+        <a href="#bridges" class="btn-outline">View Curriculum</a>
+      </div>
+    </div>
+
+    <div class="hero__scroll">
+      <div class="hero__scroll-indicator">
+        <div class="hero__scroll-dot"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FE→ML Bridges Section -->
+  <section id="bridges" class="section">
+    <div class="section__inner">
+      <span class="section-label" style="color: var(--tc-accent);">THE CORE INNOVATION</span>
+      <h2 class="section__heading">Frontend → ML Bridges</h2>
+      <p class="section__description">
+        Every ML concept is introduced through a frontend concept you already know.
+        50+ deep structural mappings, not casual analogies.
+      </p>
+
+      <div class="bridges-grid">
+
+        <div class="glass-card bridge-card">
+          <span class="bridge-card__fe">Math.max(0, x)</span>
+          <div class="bridge-card__connector">
+            <div class="bridge-card__line neon-line"></div>
+            <div class="bridge-card__dot"></div>
+            <div class="bridge-card__line neon-line"></div>
+          </div>
+          <span class="bridge-card__ml">ReLU Activation</span>
+        </div>
+
+        <div class="glass-card bridge-card">
+          <span class="bridge-card__fe">Array.map() chain</span>
+          <div class="bridge-card__connector">
+            <div class="bridge-card__line neon-line"></div>
+            <div class="bridge-card__dot"></div>
+            <div class="bridge-card__line neon-line"></div>
+          </div>
+          <span class="bridge-card__ml">Neural Network</span>
+        </div>
+
+        <div class="glass-card bridge-card">
+          <span class="bridge-card__fe">CSS blur() kernel</span>
+          <div class="bridge-card__connector">
+            <div class="bridge-card__line neon-line"></div>
+            <div class="bridge-card__dot"></div>
+            <div class="bridge-card__line neon-line"></div>
+          </div>
+          <span class="bridge-card__ml">Convolution</span>
+        </div>
+
+        <div class="glass-card bridge-card">
+          <span class="bridge-card__fe">Promise.all()</span>
+          <div class="bridge-card__connector">
+            <div class="bridge-card__line neon-line"></div>
+            <div class="bridge-card__dot"></div>
+            <div class="bridge-card__line neon-line"></div>
+          </div>
+          <span class="bridge-card__ml">Batch Processing</span>
+        </div>
+
+        <div class="glass-card bridge-card">
+          <span class="bridge-card__fe">Service Worker + Cache</span>
+          <div class="bridge-card__connector">
+            <div class="bridge-card__line neon-line"></div>
+            <div class="bridge-card__dot"></div>
+            <div class="bridge-card__line neon-line"></div>
+          </div>
+          <span class="bridge-card__ml">Model Caching</span>
+        </div>
+
+        <div class="glass-card bridge-card">
+          <span class="bridge-card__fe">DOM Event Bubbling</span>
+          <div class="bridge-card__connector">
+            <div class="bridge-card__line neon-line"></div>
+            <div class="bridge-card__dot"></div>
+            <div class="bridge-card__line neon-line"></div>
+          </div>
+          <span class="bridge-card__ml">Backpropagation</span>
+        </div>
+
+      </div>
+
+      <p class="bridges-note">50+ bridges across 5 themed worlds</p>
+    </div>
+  </section>
+
+  <!-- Themes Section -->
+  <section id="themes" class="section">
+    <div class="section__inner">
+      <span class="section-label" style="color: var(--tc-accent);">FIVE THEMED WORLDS</span>
+      <h2 class="section__heading">Choose Your World</h2>
+      <p class="section__description">
+        Each theme is a complete ML education with a unique specialization.
+        11 modules. 55 lessons. ~22 hours. A real model on GitHub.
+      </p>
+
+      <div class="themes-grid">
+
+        <!-- Deep Orbit -->
+        <div class="theme-card" style="border: 1px solid #7B68EE40;">
+          <div class="theme-card__badge">
+            <span class="badge badge--launched">Available Now</span>
+          </div>
+          <h3 class="theme-card__name" style="color: #7B68EE;">Deep Orbit</h3>
+          <p class="theme-card__tagline">Time-Series &amp; Signals</p>
+          <div class="theme-card__build">
+            <p class="theme-card__build-label">You'll build:</p>
+            <p class="theme-card__build-model">DEEP SCAN — Signal Classifier</p>
+          </div>
+        </div>
+
+        <!-- Neon Protocol -->
+        <div class="theme-card" style="border: 1px dashed #00D4FF40;">
+          <div class="theme-card__badge">
+            <span class="badge badge--coming-soon">Coming Soon</span>
+          </div>
+          <h3 class="theme-card__name" style="color: #00D4FF;">Neon Protocol</h3>
+          <p class="theme-card__tagline">Computer Vision</p>
+          <div class="theme-card__build">
+            <p class="theme-card__build-label">You'll build:</p>
+            <p class="theme-card__build-model">Protocol Sentinel — Anomaly Detector</p>
+          </div>
+        </div>
+
+        <!-- Signal Ward -->
+        <div class="theme-card" style="border: 1px dashed #2ECC7140;">
+          <div class="theme-card__badge">
+            <span class="badge badge--coming-soon">Coming Soon</span>
+          </div>
+          <h3 class="theme-card__name" style="color: #2ECC71;">Signal Ward</h3>
+          <p class="theme-card__tagline">NLP &amp; Text Intelligence</p>
+          <div class="theme-card__build">
+            <p class="theme-card__build-label">You'll build:</p>
+            <p class="theme-card__build-model">Diagnostic One — Text Assistant</p>
+          </div>
+        </div>
+
+        <!-- Nova Canvas -->
+        <div class="theme-card" style="border: 1px dashed #FF6B6B40;">
+          <div class="theme-card__badge">
+            <span class="badge badge--coming-soon">Coming Soon</span>
+          </div>
+          <h3 class="theme-card__name" style="color: #FF6B6B;">Nova Canvas</h3>
+          <p class="theme-card__tagline">Multimodal &amp; GenAI</p>
+          <div class="theme-card__build">
+            <p class="theme-card__build-label">You'll build:</p>
+            <p class="theme-card__build-model">Nova Canvas AI — Creative Assistant</p>
+          </div>
+        </div>
+
+        <!-- Terra Grid -->
+        <div class="theme-card" style="border: 1px dashed #F59E0B40;">
+          <div class="theme-card__badge">
+            <span class="badge badge--coming-soon">Coming Soon</span>
+          </div>
+          <h3 class="theme-card__name" style="color: #F59E0B;">Terra Grid</h3>
+          <p class="theme-card__tagline">Edge AI &amp; MLOps</p>
+          <div class="theme-card__build">
+            <p class="theme-card__build-label">You'll build:</p>
+            <p class="theme-card__build-model">Terra Grid Intelligence — Edge System</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section id="pricing" class="section stats-section">
+    <div class="section__inner">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-card__value">50+</div>
+          <div class="stat-card__label">FE→ML Bridges</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__value">275</div>
+          <div class="stat-card__label">Total Lessons</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__value">5</div>
+          <div class="stat-card__label">Themed Worlds</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__value">$79</div>
+          <div class="stat-card__label">Per Theme</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Footer -->
+  <section class="section cta-footer">
+    <div class="section__inner">
+      <h2 class="cta-footer__heading">Ready to bridge the gap?</h2>
+      <p class="cta-footer__text">
+        Module 1 is free across all themes. No credit card required.
+      </p>
+      <a href="#" class="btn-primary">Start Deep Orbit — Free</a>
+    </div>
+  </section>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <p>Tensorcraft — ML education for frontend engineers</p>
+  </footer>
+
+  <!-- Theme Switcher -->
+  <div class="theme-switcher">
+    <button class="theme-toggle" aria-label="Switch theme">◈</button>
+    <div class="theme-popup">
+      <button class="theme-dot" data-theme="deep-orbit" style="background:#7B68EE;" title="Deep Orbit"></button>
+      <button class="theme-dot" data-theme="neon-protocol" style="background:#00D4FF;" title="Neon Protocol"></button>
+      <button class="theme-dot" data-theme="signal-ward" style="background:#2ECC71;" title="Signal Ward"></button>
+      <button class="theme-dot" data-theme="nova-canvas" style="background:#FF6B6B;" title="Nova Canvas"></button>
+      <button class="theme-dot" data-theme="terra-grid" style="background:#F59E0B;" title="Terra Grid"></button>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const themes = ['deep-orbit','neon-protocol','signal-ward','nova-canvas','terra-grid'];
+      const switcher = document.querySelector('.theme-switcher');
+      const popup = switcher?.querySelector('.theme-popup');
+      switcher?.querySelector('.theme-toggle')?.addEventListener('click', () => {
+        popup?.classList.toggle('active');
+      });
+      document.querySelectorAll('.theme-dot').forEach(dot => {
+        dot.addEventListener('click', () => {
+          document.documentElement.setAttribute('data-theme', dot.dataset.theme);
+          localStorage.setItem('tc-theme', dot.dataset.theme);
+          popup?.classList.remove('active');
+        });
+      });
+      const saved = localStorage.getItem('tc-theme');
+      if (saved) document.documentElement.setAttribute('data-theme', saved);
+    });
+  </script>
+
+</body>
+</html>
