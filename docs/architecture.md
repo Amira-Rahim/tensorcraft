@@ -156,16 +156,27 @@ Turborepo handles dependency ordering: `packages/*` build first, then `apps/*` c
 
 The core pedagogical innovation. Each ML concept is introduced through a frontend concept:
 
-| Frontend Concept | ML Concept |
-|-----------------|------------|
-| `Array.map()` chain | Neural Network |
-| CSS custom properties | Weights & Biases |
-| Lighthouse score | Loss Function |
-| `git bisect` | Backpropagation |
-| CSS `blur()` + kernel | Convolution |
-| `Promise.all()` | Batch Processing |
+Bridges are classified into three quality tiers:
+- **Identity** — FE concept *is* the ML concept (e.g., ReLU = `Math.max(0,x)`, Tensor = TypedArray)
+- **Structural** — Same pattern, different domain (e.g., Overfitting = CSS that only works on your screen)
+- **Intuition** — Useful starting point, refined in-lesson (e.g., Loss = Lighthouse score)
 
-50+ bridges total across 5 themes, organized by module.
+| Frontend Concept | ML Concept | Tier |
+|-----------------|------------|------|
+| `Math.max(0, x)` | ReLU Activation | Identity |
+| TypedArray + `.shape` | Tensor | Identity |
+| CSS `blur()` + kernel | Convolution | Identity |
+| Service Worker + Cache | Model Caching | Identity |
+| DOM event bubbling | Backpropagation | Structural |
+| Slider UI tuning | Gradient Descent | Structural |
+| `Promise.all()` chunks | Batch Processing | Structural |
+| CSS that only works on your screen | Overfitting | Structural |
+| Flexbox `flex-grow` distribution | Attention / Softmax | Structural |
+| CSS `nth-child()` | Positional Encoding | Structural |
+| CSS custom property overrides | LoRA Fine-tuning | Structural |
+| Lighthouse score | Loss Function | Intuition |
+
+26 shared bridges + 30+ theme-specific bridges across 5 themes. See [product-plan.md](product-plan.md) for the complete catalog.
 
 ## Key Architectural Decisions
 
