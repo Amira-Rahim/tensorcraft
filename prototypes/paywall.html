@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unlock Deep Orbit — Tensorcraft</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* ===== PAGE-LEVEL COLOR OVERRIDES ===== */
+    :root {
+      --page-bg: #080B16;
+      --page-surface: #0F1320;
+      --page-border: rgba(255,255,255,0.06);
+      --page-text: #FFFFFF;
+      --page-muted: #8B92A5;
+      --page-glow: #00D4FF;
+      --page-glow-secondary: #7B68EE;
+    }
+
+    body {
+      background: var(--page-bg);
+      color: var(--page-text);
+    }
+
+    /* ===== NAV BAR ===== */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      background: rgba(8,11,22,0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .nav__logo {
+      font-size: 18px;
+      font-weight: 600;
+      color: #FFFFFF;
+      letter-spacing: 0.02em;
+    }
+
+    .nav__links {
+      display: flex;
+      align-items: center;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 999px;
+      padding: 4px;
+    }
+
+    .nav__links a {
+      padding: 8px 16px;
+      font-size: 14px;
+      color: var(--page-muted);
+      transition: color 0.2s ease;
+      border-radius: 999px;
+    }
+
+    .nav__links a:hover {
+      color: #FFFFFF;
+    }
+
+    .nav__cta {
+      border: 1px solid rgba(255,255,255,0.15);
+      background: transparent;
+      color: #FFFFFF;
+      border-radius: 999px;
+      padding: 10px 24px;
+      font-size: 14px;
+      font-weight: 500;
+      transition: background 0.2s ease;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .nav__cta:hover {
+      background: rgba(255,255,255,0.05);
+    }
+
+    @media (max-width: 768px) {
+      .nav__links { display: none; }
+      .nav { padding: 0 20px; }
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      padding: 100px 24px 80px;
+      text-align: center;
+      position: relative;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% 100%, rgba(0,212,255,0.10), transparent 60%),
+        radial-gradient(ellipse 40% 30% at 50% 100%, rgba(0,212,255,0.06), transparent 50%),
+        radial-gradient(ellipse 100% 60% at 50% 120%, rgba(123,104,238,0.05), transparent 60%),
+        #080B16;
+    }
+
+    .success-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 20px;
+      border: 1px solid rgba(16,185,129,0.25);
+      background: rgba(16,185,129,0.08);
+      border-radius: 999px;
+      font-size: 14px;
+      color: #10B981;
+      font-weight: 500;
+      margin-bottom: 32px;
+    }
+
+    .success-badge__icon {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: rgba(16,185,129,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      line-height: 1;
+    }
+
+    .hero__title {
+      font-size: 52px;
+      font-weight: 700;
+      color: #FFFFFF;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+    }
+
+    .hero__subtitle {
+      font-size: 18px;
+      color: var(--page-muted);
+      max-width: 580px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 768px) {
+      .hero { padding: 80px 20px 60px; }
+      .hero__title { font-size: 32px; }
+    }
+
+    /* ===== COMPARISON SECTION ===== */
+    .comparison {
+      padding: 0 24px 100px;
+      position: relative;
+    }
+
+    .comparison__inner {
+      max-width: 860px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .comparison__inner { grid-template-columns: 1fr; }
+    }
+
+    /* ===== PLAN CARDS ===== */
+    .plan-card {
+      background: var(--page-surface);
+      border: 1px solid var(--page-border);
+      border-radius: 16px;
+      padding: 36px 32px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .plan-card--highlighted {
+      border-color: rgba(0,212,255,0.3);
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,212,255,0.04), transparent 60%),
+        var(--page-surface);
+    }
+
+    .plan-card__label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--page-muted);
+      margin-bottom: 4px;
+    }
+
+    .plan-card--highlighted .plan-card__label {
+      color: var(--page-glow);
+    }
+
+    .plan-card__name {
+      font-size: 22px;
+      font-weight: 700;
+      color: #FFFFFF;
+      margin-bottom: 24px;
+    }
+
+    .plan-card__features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      flex: 1;
+    }
+
+    .plan-card__feature {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--page-muted);
+    }
+
+    .plan-card--highlighted .plan-card__feature {
+      color: rgba(255,255,255,0.75);
+    }
+
+    .plan-card__feature-icon {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      margin-top: 1px;
+    }
+
+    .plan-card__feature-icon--check {
+      color: #10B981;
+    }
+
+    .plan-card__feature-icon--cyan {
+      color: var(--page-glow);
+    }
+
+    .plan-card__feature-text--completed {
+      color: rgba(255,255,255,0.5);
+    }
+
+    /* Price + CTA area */
+    .plan-card__footer {
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid var(--page-border);
+    }
+
+    .plan-card__price {
+      font-size: 36px;
+      font-weight: 700;
+      color: #FFFFFF;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .plan-card__price-note {
+      font-size: 14px;
+      color: var(--page-muted);
+      margin-bottom: 20px;
+    }
+
+    .plan-card__cta {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 14px 28px;
+      border: 1px solid rgba(0,212,255,0.3);
+      background: rgba(0,212,255,0.08);
+      color: #FFFFFF;
+      border-radius: 999px;
+      font-size: 16px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .plan-card__cta:hover {
+      background: rgba(0,212,255,0.15);
+      border-color: rgba(0,212,255,0.5);
+    }
+
+    .plan-card__included {
+      font-size: 13px;
+      color: var(--page-muted);
+      margin-top: 24px;
+      text-align: center;
+    }
+
+    /* ===== TRUST / BELOW COMPARISON ===== */
+    .trust {
+      padding: 0 24px 120px;
+      text-align: center;
+    }
+
+    .trust__inner {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .trust__social {
+      font-size: 15px;
+      color: var(--page-muted);
+      margin-bottom: 32px;
+    }
+
+    .trust__social strong {
+      color: #FFFFFF;
+      font-weight: 600;
+    }
+
+    .trust__divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+      margin-bottom: 32px;
+    }
+
+    .trust__bundles {
+      font-size: 14px;
+      color: var(--page-muted);
+      margin-bottom: 12px;
+      line-height: 1.6;
+    }
+
+    .trust__bundles strong {
+      color: rgba(255,255,255,0.8);
+      font-weight: 600;
+    }
+
+    .trust__bundles a {
+      color: var(--page-glow);
+      text-decoration: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .trust__bundles a:hover {
+      opacity: 0.8;
+    }
+
+    .trust__ppp {
+      font-size: 13px;
+      color: rgba(139,146,165,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .trust__ppp-icon {
+      font-size: 14px;
+    }
+
+    /* ===== SITE FOOTER ===== */
+    .site-footer {
+      border-top: 1px solid var(--page-border);
+      padding: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 14px;
+      color: var(--page-muted);
+    }
+
+    .site-footer__logo {
+      font-size: 16px;
+      font-weight: 600;
+      color: #FFFFFF;
+      letter-spacing: 0.02em;
+    }
+
+    .site-footer__links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .site-footer__links a {
+      color: var(--page-muted);
+      transition: color 0.2s ease;
+    }
+
+    .site-footer__links a:hover {
+      color: #FFFFFF;
+    }
+
+    @media (max-width: 640px) {
+      .site-footer {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+      }
+    }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-in {
+      animation: fade-up 0.6s ease both;
+    }
+
+    .animate-in-1 { animation-delay: 0.1s; }
+    .animate-in-2 { animation-delay: 0.2s; }
+    .animate-in-3 { animation-delay: 0.3s; }
+    .animate-in-4 { animation-delay: 0.4s; }
+    .animate-in-5 { animation-delay: 0.5s; }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav class="nav">
+    <div class="nav__logo">&#9671; tensorcraft</div>
+    <div class="nav__links">
+      <a href="landing.html">Themes</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="#">Docs</a>
+      <a href="#">Community</a>
+    </div>
+    <a href="#" class="nav__cta">Dashboard &rarr;</a>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="success-badge animate-in animate-in-1">
+      <span class="success-badge__icon">&#10003;</span>
+      You've completed Module 1
+    </div>
+    <h1 class="hero__title animate-in animate-in-2">Continue Your ML Journey</h1>
+    <p class="hero__subtitle animate-in animate-in-3">
+      Unlock all 11 modules of Deep Orbit to go from fundamentals to deploying your own neural network.
+    </p>
+  </section>
+
+  <!-- Side-by-side comparison -->
+  <section class="comparison">
+    <div class="comparison__inner">
+
+      <!-- LEFT: Preview (free) -->
+      <div class="plan-card animate-in animate-in-3">
+        <span class="plan-card__label">What you got</span>
+        <h2 class="plan-card__name">Preview</h2>
+        <ul class="plan-card__features">
+          <li class="plan-card__feature">
+            <span class="plan-card__feature-icon plan-card__feature-icon--check">&#10003;</span>
+            <span class="plan-card__feature-text--completed">Module 1: ML Through Signals &mdash; completed</span>
+          </li>
+          <li class="plan-card__feature">
+            <span class="plan-card__feature-icon plan-card__feature-icon--check">&#10003;</span>
+            <span class="plan-card__feature-text--completed">5 Lessons completed</span>
+          </li>
+          <li class="plan-card__feature">
+            <span class="plan-card__feature-icon plan-card__feature-icon--check">&#10003;</span>
+            <span class="plan-card__feature-text--completed">2 FE&rarr;ML Bridges unlocked</span>
+          </li>
+          <li class="plan-card__feature">
+            <span class="plan-card__feature-icon plan-card__feature-icon--check">&#10003;</span>
+            <span class="plan-card__feature-text--completed">Basic progress tracking</span>
+          </li>
+        </ul>
+        <div class="plan-card__footer">
+          <p class="plan-card__included">Included free with signup</p>
+        </div>
+      </div>
+
+      <!-- RIGHT: Full Access (highlighted) -->
+      <div class="plan-card plan-card--highlighted animate-in animate-in-4">
+        <span class="plan-card__label">Unlock everything</span>
+        <h2 class="plan-card__name">Full Access</h2>
+        <ul class="plan-card__features">
+          <li class="plan-card__feature">
+            <span class="plan-card__feature-icon plan-card__feature-icon--cyan">&#10003;</span>
+            <span>All 11 Modules</span>
+          </li>
+          <li class="plan-card__feature">
+            <span class="plan-card__feature-icon plan-card__feature-icon--cyan">&#10003;</span>
+            <span>55 Lessons + Capstone Projects</span>
+          </li>
+          <li class="plan-card__feature">
+            <span class="plan-card__feature-icon plan-card__feature-icon--cyan">&#10003;</span>
+            <span>12 FE&rarr;ML Bridges</span>
+          </li>
+          <li class="plan-card__feature">
+            <span class="plan-card__feature-icon plan-card__feature-icon--cyan">&#10003;</span>
+            <span>GitHub Integration</span>
+          </li>
+          <li class="plan-card__feature">
+            <span class="plan-card__feature-icon plan-card__feature-icon--cyan">&#10003;</span>
+            <span>Completion Certificate</span>
+          </li>
+          <li class="plan-card__feature">
+            <span class="plan-card__feature-icon plan-card__feature-icon--cyan">&#10003;</span>
+            <span>Progress sharing</span>
+          </li>
+        </ul>
+        <div class="plan-card__footer">
+          <div class="plan-card__price">$79</div>
+          <p class="plan-card__price-note">One-time payment &middot; Lifetime access</p>
+          <a href="#" class="plan-card__cta">Unlock Deep Orbit &rarr;</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Trust signals -->
+  <section class="trust">
+    <div class="trust__inner animate-in animate-in-5">
+      <p class="trust__social">Join <strong>2,400+ frontend engineers</strong> already learning ML with Tensorcraft</p>
+      <div class="trust__divider"></div>
+      <p class="trust__bundles">
+        <strong>Want more themes?</strong> Get Deep Orbit plus upcoming themes at a discount.
+        <a href="pricing.html">View bundle pricing &rarr;</a>
+      </p>
+      <p class="trust__ppp">
+        <span class="trust__ppp-icon">&#127760;</span>
+        We offer purchasing power parity discounts
+      </p>
+    </div>
+  </section>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="site-footer__logo">&#9671; tensorcraft</div>
+    <div class="site-footer__links">
+      <a href="#">Themes</a>
+      <a href="#">Docs</a>
+      <a href="#">Community</a>
+      <a href="#">Twitter</a>
+    </div>
+    <div>&copy; 2024 Tensorcraft. All rights reserved.</div>
+  </footer>
+
+</body>
+</html>

@@ -1,585 +1,921 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="deep-orbit">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="color-scheme" content="dark">
   <title>Tensorcraft — Pricing</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
   <style>
+    /* ===== PAGE-LEVEL COLOR OVERRIDES ===== */
+    :root {
+      --page-bg: #080B16;
+      --page-surface: #0F1320;
+      --page-border: rgba(255,255,255,0.06);
+      --page-text: #FFFFFF;
+      --page-muted: #8B92A5;
+      --page-glow: #00D4FF;
+      --page-glow-secondary: #7B68EE;
+    }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: var(--tc-bg);
-      color: var(--tc-text);
+      background: var(--page-bg);
+      color: var(--page-text);
       line-height: 1.6;
       min-height: 100vh;
     }
 
-    /* ---------- NAV ---------- */
-    .nav-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 clamp(16px, 4vw, 48px);
-      height: 64px;
-      background: var(--tc-surface);
-      border-bottom: 1px solid var(--tc-border);
+    a { text-decoration: none; }
+
+    /* ===== NAV BAR ===== */
+    .nav {
       position: sticky;
       top: 0;
       z-index: 100;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      background: rgba(8,11,22,0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
     }
-    .nav-logo {
-      font-weight: 700;
-      font-size: 1.125rem;
-      color: var(--tc-primary);
-      text-decoration: none;
-      letter-spacing: 0.06em;
+
+    .nav__logo {
+      font-size: 18px;
+      font-weight: 600;
+      color: #FFFFFF;
+      letter-spacing: 0.02em;
     }
-    .nav-links { display: flex; gap: 8px; }
-    .nav-links a {
-      color: var(--tc-text);
-      text-decoration: none;
-      font-size: 0.875rem;
+
+    .nav__links {
+      display: flex;
+      align-items: center;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 999px;
+      padding: 4px;
+    }
+
+    .nav__links a {
+      padding: 8px 16px;
+      font-size: 14px;
+      color: var(--page-muted);
+      transition: color 0.2s ease;
+      border-radius: 999px;
+    }
+
+    .nav__links a:hover,
+    .nav__links a.active {
+      color: #FFFFFF;
+    }
+
+    .nav__links a.active {
+      background: rgba(255,255,255,0.06);
+    }
+
+    .nav__cta {
+      border: 1px solid rgba(255,255,255,0.15);
+      background: transparent;
+      color: #FFFFFF;
+      border-radius: 999px;
+      padding: 10px 24px;
+      font-size: 14px;
       font-weight: 500;
-      padding: 10px 16px;
-      border-radius: 8px;
-      min-height: 44px;
+      transition: background 0.2s ease;
+      cursor: pointer;
       display: inline-flex;
       align-items: center;
-      transition: background 0.2s, color 0.2s;
-    }
-    .nav-links a:hover,
-    .nav-links a.active {
-      background: var(--tc-surface-overlay);
-      color: var(--tc-primary);
     }
 
-    /* ---------- HERO ---------- */
+    .nav__cta:hover {
+      background: rgba(255,255,255,0.05);
+    }
+
+    @media (max-width: 768px) {
+      .nav__links { display: none; }
+      .nav { padding: 0 20px; }
+    }
+
+    /* ===== HERO ===== */
     .hero {
+      padding: 120px 24px 80px;
       text-align: center;
-      padding: 80px 24px 48px;
-      max-width: 720px;
-      margin: 0 auto;
-    }
-    .hero h1 {
-      font-size: clamp(1.75rem, 4vw, 2.5rem);
-      font-weight: 800;
-      line-height: 1.2;
-      margin-bottom: 16px;
-      background: linear-gradient(135deg, var(--tc-primary), var(--tc-accent));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .hero p {
-      font-size: 1.125rem;
-      color: var(--tc-muted);
-      line-height: 1.7;
+      position: relative;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% 100%, rgba(0,212,255,0.10), transparent 60%),
+        radial-gradient(ellipse 40% 30% at 50% 100%, rgba(0,212,255,0.06), transparent 50%),
+        #080B16;
     }
 
-    /* ---------- PRICING GRID ---------- */
-    .pricing-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 24px;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 24px 64px;
-    }
-    @media (max-width: 1024px) {
-      .pricing-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-    @media (max-width: 640px) {
-      .pricing-grid { grid-template-columns: 1fr; }
+    .hero__badge {
+      display: inline-flex;
+      padding: 8px 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 999px;
+      font-size: 13px;
+      color: var(--page-muted);
+      letter-spacing: 0.05em;
+      margin-bottom: 32px;
     }
 
-    /* ---------- GLASS CARD ---------- */
-    .glass-card {
-      background: var(--tc-surface);
-      border: 1px solid var(--tc-border);
-      border-radius: 16px;
-      padding: 32px 24px;
-      backdrop-filter: blur(12px);
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    .hero__title {
+      font-size: 48px;
+      font-weight: 700;
+      color: #FFFFFF;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+    }
+
+    .hero__subtitle {
+      font-size: 18px;
+      color: var(--page-muted);
+      max-width: 520px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 768px) {
+      .hero { padding: 100px 20px 60px; }
+      .hero__title { font-size: 32px; }
+    }
+
+    /* ===== SECTION SHARED ===== */
+    .section {
+      padding: 100px 24px;
       position: relative;
     }
-    .glass-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-    }
-    .glass-card.neon-border {
-      border: 2px solid var(--tc-primary);
-      box-shadow: 0 0 24px color-mix(in srgb, var(--tc-primary) 20%, transparent),
-                  inset 0 0 24px color-mix(in srgb, var(--tc-primary) 5%, transparent);
-    }
-    .glass-card.neon-border:hover {
-      box-shadow: 0 0 40px color-mix(in srgb, var(--tc-primary) 30%, transparent),
-                  inset 0 0 32px color-mix(in srgb, var(--tc-primary) 8%, transparent);
+
+    .section__inner {
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
-    /* ---------- BADGE ---------- */
-    .badge {
-      display: inline-block;
-      font-size: 0.6875rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
+    .section__divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,212,255,0.2), transparent);
+      max-width: 600px;
+      margin: 0 auto 60px;
+    }
+
+    .section__label {
+      font-size: 13px;
+      color: var(--page-muted);
       text-transform: uppercase;
-      padding: 4px 10px;
-      border-radius: 999px;
-      background: var(--tc-primary);
-      color: var(--tc-bg);
+      letter-spacing: 0.15em;
+      text-align: center;
       margin-bottom: 12px;
     }
 
-    /* ---------- PRICING CARD CONTENT ---------- */
-    .price {
-      font-size: 2rem;
+    .section__heading {
+      font-size: 40px;
       font-weight: 700;
-      color: var(--tc-accent);
-      line-height: 1.3;
-      margin-bottom: 4px;
+      color: #FFFFFF;
+      text-align: center;
+      margin-bottom: 16px;
+      line-height: 1.2;
     }
-    .card-name {
-      font-size: 1.25rem;
+
+    .section__subtitle {
+      font-size: 18px;
+      color: var(--page-muted);
+      text-align: center;
+      max-width: 560px;
+      margin: 0 auto 56px;
+    }
+
+    @media (max-width: 768px) {
+      .section { padding: 80px 20px; }
+      .section__heading { font-size: 28px; }
+    }
+
+    /* ===== PRICING GRID ===== */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    @media (max-width: 1024px) {
+      .pricing-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 640px) {
+      .pricing-grid { grid-template-columns: 1fr; max-width: 400px; }
+    }
+
+    /* ===== PRICING CARD ===== */
+    .pricing-card {
+      background: var(--page-surface);
+      border: 1px solid var(--page-border);
+      border-radius: 16px;
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .pricing-card:hover {
+      border-color: rgba(255,255,255,0.1);
+      transform: translateY(-2px);
+    }
+
+    .pricing-card--recommended {
+      border-color: rgba(0,212,255,0.25);
+      position: relative;
+    }
+
+    .pricing-card--recommended:hover {
+      border-color: rgba(0,212,255,0.4);
+    }
+
+    .pricing-card__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 14px;
+      border-radius: 999px;
+      font-size: 11px;
       font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: rgba(0,212,255,0.1);
+      color: var(--page-glow);
+      border: 1px solid rgba(0,212,255,0.2);
+      width: fit-content;
+      margin-bottom: 20px;
+    }
+
+    .pricing-card__price {
+      font-size: 40px;
+      font-weight: 700;
+      color: #FFFFFF;
+      line-height: 1.1;
+      margin-bottom: 8px;
+    }
+
+    .pricing-card__name {
+      font-size: 18px;
+      font-weight: 600;
+      color: #FFFFFF;
       margin-bottom: 4px;
     }
-    .card-desc {
-      font-size: 0.875rem;
-      color: var(--tc-muted);
-      margin-bottom: 20px;
+
+    .pricing-card__desc {
+      font-size: 14px;
+      color: var(--page-muted);
+      margin-bottom: 8px;
       line-height: 1.5;
     }
-    .card-subtitle {
-      font-size: 0.8125rem;
-      color: var(--tc-muted);
+
+    .pricing-card__note {
+      font-size: 13px;
+      color: rgba(139,146,165,0.7);
       margin-bottom: 24px;
     }
-    .feature-list {
+
+    .pricing-card__spacer {
+      min-height: 30px;
+    }
+
+    .section--no-top { padding-top: 0; }
+    .section--no-pad { padding-top: 0; padding-bottom: 0; }
+
+    .pricing-card__features {
       list-style: none;
       margin-bottom: 28px;
+      flex: 1;
     }
-    .feature-list li {
-      font-size: 0.875rem;
+
+    .pricing-card__features li {
+      font-size: 14px;
       padding: 6px 0;
       display: flex;
       align-items: center;
       gap: 10px;
-      color: var(--tc-text);
+      color: var(--page-muted);
     }
-    .feature-list li::before {
+
+    .pricing-card__features li::before {
       content: "\2713";
-      color: var(--tc-primary);
+      color: var(--page-glow);
       font-weight: 700;
-      font-size: 0.875rem;
+      font-size: 13px;
       flex-shrink: 0;
     }
 
-    /* ---------- BUTTONS ---------- */
+    /* ===== BUTTONS ===== */
     .btn-primary {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       width: 100%;
-      min-height: 44px;
-      padding: 12px 24px;
-      font-size: 0.875rem;
-      font-weight: 600;
+      padding: 14px 24px;
+      font-size: 15px;
+      font-weight: 500;
       font-family: inherit;
-      border: none;
-      border-radius: 10px;
-      background: var(--tc-primary);
-      color: var(--tc-bg);
+      border: 1px solid rgba(0,212,255,0.3);
+      border-radius: 999px;
+      background: rgba(0,212,255,0.08);
+      color: #FFFFFF;
       cursor: pointer;
-      transition: opacity 0.2s, transform 0.15s;
-      text-decoration: none;
+      transition: all 0.2s ease;
     }
-    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
-    .btn-primary:active { transform: translateY(0); }
+
+    .btn-primary:hover {
+      background: rgba(0,212,255,0.15);
+      border-color: rgba(0,212,255,0.5);
+    }
 
     .btn-outline {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       width: 100%;
-      min-height: 44px;
-      padding: 12px 24px;
-      font-size: 0.875rem;
-      font-weight: 600;
+      padding: 14px 24px;
+      font-size: 15px;
+      font-weight: 500;
       font-family: inherit;
-      border: 1px solid var(--tc-border);
-      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 999px;
       background: transparent;
-      color: var(--tc-text);
+      color: #FFFFFF;
       cursor: pointer;
-      transition: border-color 0.2s, color 0.2s;
-      text-decoration: none;
+      transition: all 0.2s ease;
     }
-    .btn-outline:hover { border-color: var(--tc-primary); color: var(--tc-primary); }
 
-    /* ---------- TEAM SECTION ---------- */
-    .team-section {
-      max-width: 1200px;
-      margin: 0 auto 64px;
-      padding: 0 24px;
+    .btn-outline:hover {
+      background: rgba(255,255,255,0.05);
+      border-color: rgba(255,255,255,0.2);
     }
+
+    /* ===== FEATURE COMPARISON ===== */
+    .comparison-table {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      border-collapse: collapse;
+    }
+
+    .comparison-table thead th {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--page-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 16px 12px;
+      text-align: center;
+      border-bottom: 1px solid var(--page-border);
+    }
+
+    .comparison-table thead th:first-child {
+      text-align: left;
+    }
+
+    .comparison-table tbody td {
+      font-size: 14px;
+      color: var(--page-muted);
+      padding: 14px 12px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+    }
+
+    .comparison-table tbody td:first-child {
+      text-align: left;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .comparison-table .check {
+      color: var(--page-glow);
+    }
+
+    .comparison-table .dash {
+      color: rgba(139,146,165,0.3);
+    }
+
+    @media (max-width: 640px) {
+      .comparison-table { font-size: 12px; }
+      .comparison-table thead th,
+      .comparison-table tbody td { padding: 10px 6px; }
+    }
+
+    /* ===== TEAM SECTION ===== */
     .team-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-      margin-top: 24px;
-    }
-    @media (max-width: 640px) {
-      .team-grid { grid-template-columns: 1fr; }
-    }
-    .team-card {
-      text-align: center;
-      padding: 24px;
-      background: var(--tc-surface-overlay);
-      border-radius: 12px;
-      border: 1px solid var(--tc-border);
-    }
-    .team-card .price {
-      font-size: 1.75rem;
-    }
-    .team-card .card-name {
-      font-size: 1rem;
-      margin-bottom: 4px;
-    }
-    .team-card .card-desc {
-      font-size: 0.8125rem;
-      margin-bottom: 0;
-    }
-    .team-heading {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-    .team-sub {
-      color: var(--tc-muted);
-      font-size: 0.9375rem;
+      gap: 20px;
+      max-width: 900px;
+      margin: 0 auto;
     }
 
-    /* ---------- PPP NOTE ---------- */
-    .ppp-section {
-      max-width: 800px;
-      margin: 0 auto 64px;
-      padding: 0 24px;
+    @media (max-width: 640px) {
+      .team-grid { grid-template-columns: 1fr; max-width: 340px; }
     }
+
+    .team-card {
+      background: var(--page-surface);
+      border: 1px solid var(--page-border);
+      border-radius: 14px;
+      padding: 32px 24px;
+      text-align: center;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .team-card:hover {
+      border-color: rgba(255,255,255,0.1);
+      transform: translateY(-2px);
+    }
+
+    .team-card__price {
+      font-size: 32px;
+      font-weight: 700;
+      color: #FFFFFF;
+      margin-bottom: 8px;
+    }
+
+    .team-card__name {
+      font-size: 16px;
+      font-weight: 600;
+      color: #FFFFFF;
+      margin-bottom: 4px;
+    }
+
+    .team-card__desc {
+      font-size: 14px;
+      color: var(--page-muted);
+    }
+
+    /* ===== PPP NOTE ===== */
     .ppp-card {
-      background: var(--tc-surface);
-      border: 1px solid var(--tc-border);
-      border-radius: 12px;
-      padding: 24px 28px;
-      font-size: 0.875rem;
-      color: var(--tc-muted);
+      max-width: 680px;
+      margin: 0 auto;
+      background: var(--page-surface);
+      border: 1px solid var(--page-border);
+      border-radius: 14px;
+      padding: 28px 32px;
+      font-size: 14px;
+      color: var(--page-muted);
       line-height: 1.7;
       text-align: center;
     }
+
     .ppp-card strong {
-      color: var(--tc-text);
+      color: #FFFFFF;
     }
 
-    /* ---------- FAQ ---------- */
-    .faq-section {
-      max-width: 800px;
-      margin: 0 auto 100px;
-      padding: 0 24px;
+    /* ===== FAQ ===== */
+    .faq-list {
+      max-width: 720px;
+      margin: 0 auto;
     }
-    .faq-heading {
-      font-size: 1.5rem;
-      font-weight: 700;
-      text-align: center;
-      margin-bottom: 32px;
-    }
+
     .faq-item {
-      border: 1px solid var(--tc-border);
-      border-radius: 12px;
+      border: 1px solid var(--page-border);
+      border-radius: 14px;
       margin-bottom: 12px;
       overflow: hidden;
-      background: var(--tc-surface);
+      background: var(--page-surface);
+      transition: border-color 0.2s ease;
     }
+
+    .faq-item:hover {
+      border-color: rgba(255,255,255,0.08);
+    }
+
     .faq-question {
       width: 100%;
-      min-height: 52px;
-      padding: 16px 20px;
+      padding: 18px 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       background: transparent;
       border: none;
-      color: var(--tc-text);
-      font-size: 0.9375rem;
+      color: #FFFFFF;
+      font-size: 15px;
       font-weight: 600;
       font-family: inherit;
       cursor: pointer;
       text-align: left;
       gap: 12px;
+      transition: color 0.2s ease;
     }
-    .faq-question:hover { color: var(--tc-primary); }
+
+    .faq-question:hover {
+      color: var(--page-glow);
+    }
+
     .faq-chevron {
-      font-size: 1.25rem;
+      font-size: 14px;
       transition: transform 0.25s ease;
       flex-shrink: 0;
-      color: var(--tc-muted);
+      color: var(--page-muted);
     }
-    .faq-item.open .faq-chevron { transform: rotate(180deg); }
+
+    .faq-item.open .faq-chevron {
+      transform: rotate(180deg);
+    }
+
     .faq-answer {
       max-height: 0;
       overflow: hidden;
-      transition: max-height 0.3s ease, padding 0.3s ease;
+      transition: max-height 0.3s ease;
     }
+
     .faq-item.open .faq-answer {
       max-height: 200px;
     }
+
     .faq-answer-inner {
-      padding: 0 20px 20px;
-      font-size: 0.875rem;
-      color: var(--tc-muted);
+      padding: 0 24px 20px;
+      font-size: 14px;
+      color: var(--page-muted);
       line-height: 1.7;
     }
 
-    /* ---------- THEME SWITCHER ---------- */
-    .theme-switcher {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      z-index: 200;
+    /* ===== CTA FOOTER ===== */
+    .cta-footer {
+      padding: 120px 24px;
+      text-align: center;
+      position: relative;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0,212,255,0.10), transparent 60%),
+        radial-gradient(ellipse 40% 30% at 50% 0%, rgba(0,212,255,0.06), transparent 50%),
+        #080B16;
     }
-    .theme-toggle {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      border: 1px solid var(--tc-border);
-      background: var(--tc-surface);
-      backdrop-filter: blur(12px);
-      color: var(--tc-primary);
-      font-size: 1.25rem;
-      cursor: pointer;
+
+    .cta-footer__heading {
+      font-size: 32px;
+      font-weight: 700;
+      color: #FFFFFF;
+      margin-bottom: 16px;
+      line-height: 1.3;
+    }
+
+    .cta-footer__subtitle {
+      font-size: 18px;
+      color: var(--page-muted);
+      margin-bottom: 40px;
+    }
+
+    .cta-footer__btn {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid rgba(0,212,255,0.3);
+      background: rgba(0,212,255,0.08);
+      color: #FFFFFF;
+      border-radius: 999px;
+      padding: 16px 36px;
+      font-size: 17px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .cta-footer__btn:hover {
+      background: rgba(0,212,255,0.15);
+      border-color: rgba(0,212,255,0.5);
+    }
+
+    .cta-footer__note {
+      font-size: 14px;
+      color: var(--page-muted);
+      margin-top: 20px;
+    }
+
+    /* ===== SITE FOOTER ===== */
+    .site-footer {
+      border-top: 1px solid var(--page-border);
+      padding: 32px;
       display: flex;
       align-items: center;
-      justify-content: center;
-      transition: box-shadow 0.2s, border-color 0.2s;
+      justify-content: space-between;
+      font-size: 14px;
+      color: var(--page-muted);
     }
-    .theme-toggle:hover {
-      border-color: var(--tc-primary);
-      box-shadow: 0 0 16px color-mix(in srgb, var(--tc-primary) 30%, transparent);
+
+    .site-footer__logo {
+      font-size: 16px;
+      font-weight: 600;
+      color: #FFFFFF;
+      letter-spacing: 0.02em;
     }
-    .theme-popup {
-      position: absolute;
-      bottom: 56px;
-      right: 0;
+
+    .site-footer__links {
       display: flex;
-      flex-direction: column;
-      gap: 8px;
-      padding: 12px;
-      background: var(--tc-surface);
-      border: 1px solid var(--tc-border);
-      border-radius: 12px;
-      opacity: 0;
-      pointer-events: none;
-      transform: translateY(8px);
-      transition: opacity 0.2s, transform 0.2s;
+      gap: 24px;
     }
-    .theme-popup.active {
-      opacity: 1;
-      pointer-events: auto;
-      transform: translateY(0);
+
+    .site-footer__links a {
+      color: var(--page-muted);
+      transition: color 0.2s ease;
     }
-    .theme-dot {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      border: 2px solid transparent;
-      cursor: pointer;
-      transition: transform 0.15s, border-color 0.15s;
+
+    .site-footer__links a:hover {
+      color: #FFFFFF;
     }
-    .theme-dot:hover { transform: scale(1.2); border-color: rgba(255,255,255,0.3); }
+
+    @media (max-width: 640px) {
+      .site-footer {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+      }
+    }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-in {
+      animation: fade-up 0.6s ease both;
+    }
+
+    .animate-in-1 { animation-delay: 0.1s; }
+    .animate-in-2 { animation-delay: 0.2s; }
+    .animate-in-3 { animation-delay: 0.3s; }
+    .animate-in-4 { animation-delay: 0.4s; }
+    .animate-in-5 { animation-delay: 0.5s; }
   </style>
 </head>
 <body>
 
-  <!-- nav-bar -->
-  <nav class="nav-bar">
-    <a href="#" class="nav-logo">&#9671; TENSORCRAFT</a>
-    <div class="nav-links">
-      <a href="theme-selection.html">Themes</a>
+  <!-- Nav -->
+  <nav class="nav">
+    <div class="nav__logo">&#9671; tensorcraft</div>
+    <div class="nav__links">
+      <a href="landing.html">Home</a>
+      <a href="#themes">Themes</a>
       <a href="pricing.html" class="active">Pricing</a>
-      <a href="settings.html">Dashboard</a>
+      <a href="#">Docs</a>
+      <a href="#">Community</a>
     </div>
+    <a href="#" class="nav__cta">Start now &rarr;</a>
   </nav>
 
-  <!-- hero -->
+  <!-- Hero -->
   <section class="hero">
-    <h1>Simple, Fair Pricing</h1>
-    <p>One payment. Lifetime access. No subscriptions.</p>
+    <div class="hero__badge animate-in animate-in-1">One Payment &middot; Lifetime Access &middot; No Subscriptions</div>
+    <h1 class="hero__title animate-in animate-in-2">Simple, Fair Pricing</h1>
+    <p class="hero__subtitle animate-in animate-in-3">
+      One payment. Lifetime access. Every future update included. No subscriptions, ever.
+    </p>
   </section>
 
-  <!-- pricing cards -->
-  <section class="pricing-grid">
+  <!-- Pricing Tiers -->
+  <section class="section section--no-top">
+    <div class="section__inner">
+      <div class="pricing-grid animate-in animate-in-4">
 
-    <!-- Early Access -->
-    <div class="glass-card">
-      <div class="price">$49</div>
-      <div class="card-name">Early Access</div>
-      <div class="card-desc">Deep Orbit Modules 1-3</div>
-      <div class="card-subtitle">For early adopters who want to start learning now</div>
-      <ul class="feature-list">
-        <li>15 lessons</li>
-        <li>3 modules</li>
-        <li>All exercises</li>
-        <li>Community access</li>
-      </ul>
-      <button class="btn-outline">Get Started</button>
+        <!-- Early Access -->
+        <div class="pricing-card">
+          <div class="pricing-card__spacer"></div>
+          <div class="pricing-card__price">$49</div>
+          <div class="pricing-card__name">Early Access</div>
+          <div class="pricing-card__desc">Deep Orbit Modules 1-3</div>
+          <div class="pricing-card__note">For early adopters who want to start learning now</div>
+          <ul class="pricing-card__features">
+            <li>15 lessons</li>
+            <li>3 modules</li>
+            <li>All exercises</li>
+            <li>Community access</li>
+          </ul>
+          <button type="button" class="btn-outline">Get Started &rarr;</button>
+        </div>
+
+        <!-- Single Theme — Recommended -->
+        <div class="pricing-card pricing-card--recommended">
+          <div class="pricing-card__badge">Recommended</div>
+          <div class="pricing-card__price">$79</div>
+          <div class="pricing-card__name">Single Theme</div>
+          <div class="pricing-card__desc">Complete Deep Orbit &mdash; 55 lessons, 11 modules</div>
+          <div class="pricing-card__note"></div>
+          <ul class="pricing-card__features">
+            <li>55 lessons</li>
+            <li>11 modules</li>
+            <li>All exercises</li>
+            <li>GitHub integration</li>
+            <li>Community access</li>
+            <li>Lifetime updates</li>
+          </ul>
+          <button type="button" class="btn-primary">Get Started &rarr;</button>
+        </div>
+
+        <!-- Two Themes -->
+        <div class="pricing-card">
+          <div class="pricing-card__spacer"></div>
+          <div class="pricing-card__price">$129</div>
+          <div class="pricing-card__name">Two Themes</div>
+          <div class="pricing-card__desc">Any two themes</div>
+          <div class="pricing-card__note">Save $29 vs buying separately</div>
+          <ul class="pricing-card__features">
+            <li>55 lessons per theme</li>
+            <li>11 modules per theme</li>
+            <li>All exercises</li>
+            <li>GitHub integration</li>
+            <li>Community access</li>
+            <li>Lifetime updates</li>
+            <li>Choose any 2 themes</li>
+          </ul>
+          <button type="button" class="btn-outline">Get Started &rarr;</button>
+        </div>
+
+        <!-- Three Themes -->
+        <div class="pricing-card">
+          <div class="pricing-card__spacer"></div>
+          <div class="pricing-card__price">$169</div>
+          <div class="pricing-card__name">Three Themes</div>
+          <div class="pricing-card__desc">Any three themes</div>
+          <div class="pricing-card__note">Save $68 vs buying separately</div>
+          <ul class="pricing-card__features">
+            <li>55 lessons per theme</li>
+            <li>11 modules per theme</li>
+            <li>All exercises</li>
+            <li>GitHub integration</li>
+            <li>Community access</li>
+            <li>Lifetime updates</li>
+            <li>Choose any 3 themes</li>
+          </ul>
+          <button type="button" class="btn-outline">Get Started &rarr;</button>
+        </div>
+
+      </div>
     </div>
-
-    <!-- Single Theme — MOST POPULAR -->
-    <div class="glass-card neon-border">
-      <span class="badge">MOST POPULAR</span>
-      <div class="price">$79</div>
-      <div class="card-name">Single Theme</div>
-      <div class="card-desc">Complete Deep Orbit</div>
-      <ul class="feature-list">
-        <li>55 lessons</li>
-        <li>11 modules</li>
-        <li>All exercises</li>
-        <li>GitHub integration</li>
-        <li>Community access</li>
-        <li>Lifetime updates</li>
-      </ul>
-      <button class="btn-primary">Get Started</button>
-    </div>
-
-    <!-- Two Themes -->
-    <div class="glass-card">
-      <div class="price">$129</div>
-      <div class="card-name">Two Themes</div>
-      <div class="card-desc">Any two themes</div>
-      <div class="card-subtitle">Save $29 vs buying separately</div>
-      <ul class="feature-list">
-        <li>55 lessons per theme</li>
-        <li>11 modules per theme</li>
-        <li>All exercises</li>
-        <li>GitHub integration</li>
-        <li>Community access</li>
-        <li>Lifetime updates</li>
-        <li>Choose any 2 themes</li>
-      </ul>
-      <button class="btn-outline">Get Started</button>
-    </div>
-
-    <!-- Three Themes -->
-    <div class="glass-card">
-      <div class="price">$169</div>
-      <div class="card-name">Three Themes</div>
-      <div class="card-desc">Any three themes</div>
-      <div class="card-subtitle">Save $68 vs buying separately</div>
-      <ul class="feature-list">
-        <li>55 lessons per theme</li>
-        <li>11 modules per theme</li>
-        <li>All exercises</li>
-        <li>GitHub integration</li>
-        <li>Community access</li>
-        <li>Lifetime updates</li>
-        <li>Choose any 3 themes</li>
-      </ul>
-      <button class="btn-outline">Get Started</button>
-    </div>
-
   </section>
 
-  <!-- team pricing -->
-  <section class="team-section">
-    <div class="glass-card" style="text-align:center;">
-      <h2 class="team-heading">Team &amp; Enterprise</h2>
-      <p class="team-sub">All team members get full access to selected themes</p>
+  <!-- Feature Comparison -->
+  <section class="section">
+    <div class="section__inner">
+      <div class="section__divider"></div>
+      <p class="section__label">COMPARE PLANS</p>
+      <h2 class="section__heading">Feature Comparison</h2>
+      <p class="section__subtitle">Everything you need to know about what's included in each tier</p>
+
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Early Access</th>
+            <th>Single</th>
+            <th>Two</th>
+            <th>Three</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Modules</td>
+            <td>3</td>
+            <td>11</td>
+            <td>11 &times; 2</td>
+            <td>11 &times; 3</td>
+          </tr>
+          <tr>
+            <td>Lessons</td>
+            <td>15</td>
+            <td>55</td>
+            <td>110</td>
+            <td>165</td>
+          </tr>
+          <tr>
+            <td>Interactive exercises</td>
+            <td class="check">&#10003;</td>
+            <td class="check">&#10003;</td>
+            <td class="check">&#10003;</td>
+            <td class="check">&#10003;</td>
+          </tr>
+          <tr>
+            <td>Community access</td>
+            <td class="check">&#10003;</td>
+            <td class="check">&#10003;</td>
+            <td class="check">&#10003;</td>
+            <td class="check">&#10003;</td>
+          </tr>
+          <tr>
+            <td>GitHub integration</td>
+            <td class="dash">&mdash;</td>
+            <td class="check">&#10003;</td>
+            <td class="check">&#10003;</td>
+            <td class="check">&#10003;</td>
+          </tr>
+          <tr>
+            <td>Lifetime updates</td>
+            <td class="dash">&mdash;</td>
+            <td class="check">&#10003;</td>
+            <td class="check">&#10003;</td>
+            <td class="check">&#10003;</td>
+          </tr>
+          <tr>
+            <td>Choose themes</td>
+            <td class="dash">&mdash;</td>
+            <td class="dash">&mdash;</td>
+            <td class="check">&#10003;</td>
+            <td class="check">&#10003;</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Team Pricing -->
+  <section class="section">
+    <div class="section__inner">
+      <div class="section__divider"></div>
+      <p class="section__label">FOR ORGANIZATIONS</p>
+      <h2 class="section__heading">Team &amp; Enterprise</h2>
+      <p class="section__subtitle">All team members get full access to selected themes with admin features and progress tracking</p>
+
       <div class="team-grid">
         <div class="team-card">
-          <div class="price">$599</div>
-          <div class="card-name">Team 5</div>
-          <div class="card-desc">Up to 5 team members</div>
+          <div class="team-card__price">$599</div>
+          <div class="team-card__name">Team 5</div>
+          <div class="team-card__desc">Up to 5 team members</div>
         </div>
         <div class="team-card">
-          <div class="price">$999</div>
-          <div class="card-name">Team 10</div>
-          <div class="card-desc">Up to 10 team members</div>
+          <div class="team-card__price">$999</div>
+          <div class="team-card__name">Team 10</div>
+          <div class="team-card__desc">Up to 10 team members</div>
         </div>
         <div class="team-card">
-          <div class="price">$2,999</div>
-          <div class="card-name">Site License</div>
-          <div class="card-desc">Unlimited team members</div>
+          <div class="team-card__price">$2,999</div>
+          <div class="team-card__name">Site License</div>
+          <div class="team-card__desc">Unlimited team members</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- PPP note -->
-  <section class="ppp-section">
-    <div class="ppp-card">
-      <strong>Purchasing Power Parity</strong><br>
-      We offer 20-70% purchasing power parity discounts automatically via ParityDeals. If you're in an eligible country, you'll see the adjusted price at checkout.
+  <!-- PPP Note -->
+  <section class="section section--no-pad">
+    <div class="section__inner">
+      <div class="ppp-card">
+        <strong>Purchasing Power Parity</strong><br>
+        We offer 20-70% purchasing power parity discounts automatically via ParityDeals. If you're in an eligible country, you'll see the adjusted price at checkout.
+      </div>
     </div>
   </section>
 
   <!-- FAQ -->
-  <section class="faq-section">
-    <h2 class="faq-heading">Frequently Asked Questions</h2>
+  <section class="section">
+    <div class="section__inner">
+      <div class="section__divider"></div>
+      <p class="section__label">SUPPORT</p>
+      <h2 class="section__heading">Frequently Asked Questions</h2>
+      <p class="section__subtitle">Everything you need to know about purchasing and access</p>
 
-    <div class="faq-item">
-      <button class="faq-question">Can I upgrade later?<span class="faq-chevron">&#9662;</span></button>
-      <div class="faq-answer"><div class="faq-answer-inner">Absolutely. You can upgrade from any tier at any time. We'll credit the amount you've already paid toward the higher tier, so you only pay the difference.</div></div>
-    </div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <button type="button" class="faq-question">Can I upgrade later?<span class="faq-chevron">&#9662;</span></button>
+          <div class="faq-answer"><div class="faq-answer-inner">Absolutely. You can upgrade from any tier at any time. We'll credit the amount you've already paid toward the higher tier, so you only pay the difference.</div></div>
+        </div>
 
-    <div class="faq-item">
-      <button class="faq-question">What's included in lifetime access?<span class="faq-chevron">&#9662;</span></button>
-      <div class="faq-answer"><div class="faq-answer-inner">Lifetime access means you pay once and own the content forever. This includes all future updates to the modules you've purchased, new lessons added to your themes, and continued access to the community.</div></div>
-    </div>
+        <div class="faq-item">
+          <button type="button" class="faq-question">What's included in lifetime access?<span class="faq-chevron">&#9662;</span></button>
+          <div class="faq-answer"><div class="faq-answer-inner">Lifetime access means you pay once and own the content forever. This includes all future updates to the modules you've purchased, new lessons added to your themes, and continued access to the community.</div></div>
+        </div>
 
-    <div class="faq-item">
-      <button class="faq-question">Do you offer refunds?<span class="faq-chevron">&#9662;</span></button>
-      <div class="faq-answer"><div class="faq-answer-inner">Yes. We offer a full refund within 30 days of purchase, no questions asked. If the course isn't right for you, just reach out to our support team.</div></div>
-    </div>
+        <div class="faq-item">
+          <button type="button" class="faq-question">Do you offer refunds?<span class="faq-chevron">&#9662;</span></button>
+          <div class="faq-answer"><div class="faq-answer-inner">Yes. We offer a full refund within 30 days of purchase, no questions asked. If the course isn't right for you, just reach out to our support team.</div></div>
+        </div>
 
-    <div class="faq-item">
-      <button class="faq-question">Can I share my account?<span class="faq-chevron">&#9662;</span></button>
-      <div class="faq-answer"><div class="faq-answer-inner">Individual licenses are for a single user. If you'd like to share access with your team, check out our Team plans which offer per-seat pricing with admin features and progress tracking.</div></div>
+        <div class="faq-item">
+          <button type="button" class="faq-question">Can I share my account?<span class="faq-chevron">&#9662;</span></button>
+          <div class="faq-answer"><div class="faq-answer-inner">Individual licenses are for a single user. If you'd like to share access with your team, check out our Team plans which offer per-seat pricing with admin features and progress tracking.</div></div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- theme-switcher -->
-  <div class="theme-switcher">
-    <button class="theme-toggle glass" title="Switch theme">&#9671;</button>
-    <div class="theme-popup">
-      <button class="theme-dot" data-theme="deep-orbit" style="background:#7B68EE" title="Deep Orbit"></button>
-      <button class="theme-dot" data-theme="neon-protocol" style="background:#00D4FF" title="Neon Protocol"></button>
-      <button class="theme-dot" data-theme="signal-ward" style="background:#2ECC71" title="Signal Ward"></button>
-      <button class="theme-dot" data-theme="nova-canvas" style="background:#FF6B6B" title="Nova Canvas"></button>
-      <button class="theme-dot" data-theme="terra-grid" style="background:#F59E0B" title="Terra Grid"></button>
+  <!-- CTA Footer -->
+  <section class="cta-footer">
+    <h2 class="cta-footer__heading">Your frontend skills are the foundation.</h2>
+    <p class="cta-footer__subtitle">Add machine learning to your engineering toolkit.</p>
+    <a href="#" class="cta-footer__btn">Explore Deep Orbit &rarr;</a>
+    <p class="cta-footer__note">Join 2,400+ frontend engineers already learning</p>
+  </section>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="site-footer__logo">&#9671; tensorcraft</div>
+    <div class="site-footer__links">
+      <a href="#">Themes</a>
+      <a href="#">Docs</a>
+      <a href="#">Community</a>
+      <a href="#">Twitter</a>
     </div>
-  </div>
+    <div>&copy; 2024 Tensorcraft. All rights reserved.</div>
+  </footer>
 
   <script>
-    /* Theme switcher */
-    document.addEventListener('DOMContentLoaded', () => {
-      const switcher = document.querySelector('.theme-switcher');
-      const popup = switcher?.querySelector('.theme-popup');
-      switcher?.querySelector('.theme-toggle')?.addEventListener('click', () => popup?.classList.toggle('active'));
-      document.querySelectorAll('.theme-dot').forEach(dot => {
-        dot.addEventListener('click', () => {
-          document.documentElement.setAttribute('data-theme', dot.dataset.theme);
-          localStorage.setItem('tc-theme', dot.dataset.theme);
-          popup?.classList.remove('active');
-        });
-      });
-      const saved = localStorage.getItem('tc-theme');
-      if (saved) document.documentElement.setAttribute('data-theme', saved);
-    });
-
     /* FAQ accordion */
     document.querySelectorAll('.faq-question').forEach(btn => {
       btn.addEventListener('click', () => {

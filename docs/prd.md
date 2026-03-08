@@ -215,7 +215,21 @@ A visual map of the learner's journey through a theme.
 | 4 | Share snapshot | P2 | "Share Progress" button generates a branded PNG or SVG of the current diagram state for social sharing |
 | 5 | Reduced motion | P1 | Respect `prefers-reduced-motion`; disable pulsing borders and animated transitions when set |
 
-### 4.4 GitHub Integration
+### 4.4 Authentication & Onboarding
+
+Screens for user signup/login and the post-signup orientation flow.
+
+| # | Requirement | Priority | Description |
+|---|---|---|---|
+| 1 | Auth screen | P0 | Signup/login screen with three methods: GitHub OAuth, Google OAuth, and email magic link. Centered card layout with Tensorcraft branding. Toggle between signup and login modes. |
+| 2 | OAuth providers | P0 | GitHub OAuth (via NextAuth.js v5, PKCE flow) and Google OAuth. Request minimal scopes at signup; `repo` scope requested later if GitHub integration is enabled. |
+| 3 | Email magic link | P0 | Passwordless email login via NextAuth.js email provider. Input field + "Send Magic Link" button. Link expires after 15 minutes. |
+| 4 | Onboarding flow | P1 | 3-step post-signup flow: (1) Welcome screen with headline "You Already Think Like an ML Engineer", (2) Theme selection with Deep Orbit pre-highlighted as recommended, (3) Confirmation + "Begin Module 1" CTA. Stepper indicator shows progress. |
+| 5 | Onboarding persistence | P1 | Onboarding completion stored in user profile; completed users skip directly to dashboard on future logins. |
+| 6 | Paywall / upgrade modal | P0 | Modal shown when a free-tier user attempts to access Module 2+. Displays feature comparison, price, and upgrade CTA. Dismissible — user returns to accessible content. |
+| 7 | Bridge Explorer (V1.0) | P2 | Standalone browsable directory of all 50+ FE-to-ML bridges. Search by FE or ML concept. Filterable by theme and category. Links back to relevant lessons. Planned for V1.0 release. |
+
+### 4.5 GitHub Integration
 
 Allow learners to persist their project code in a GitHub repository.
 
@@ -226,7 +240,7 @@ Allow learners to persist their project code in a GitHub repository.
 | 3 | Opt-out toggle | P2 | Settings toggle to disable auto-commit; code is still saved server-side regardless |
 | 4 | Repo creation | P2 | If no repo is connected, prompt to create a new repo named `tensorcraft-projects` under the user's GitHub account |
 
-### 4.5 Payments
+### 4.6 Payments
 
 Monetization layer supporting free and paid tiers.
 
@@ -238,7 +252,7 @@ Monetization layer supporting free and paid tiers.
 | 4 | Upgrade prompts | P1 | When a free-tier user reaches the paywall (end of Module 2), show an in-context upgrade modal with benefit comparison, testimonial, and a 7-day free trial CTA |
 | 5 | Webhook handling | P0 | Listen for Stripe webhooks (`invoice.paid`, `customer.subscription.deleted`, `charge.failed`) to update user entitlements in real time |
 
-### 4.6 Analytics
+### 4.7 Analytics
 
 Track learning behavior, engagement, and conversion events.
 
@@ -410,6 +424,8 @@ Each theme has a distinct color palette. Colors are defined as CSS custom proper
 ---
 
 ## 8. Pricing
+
+> **PRICING MODEL DISCREPANCY:** This section defines a subscription model ($19/mo Pro, $39/seat Team), but the product-plan document (Part 2) and all prototype screens (pricing.html, paywall.html) implement per-model pricing ($79 per theme, lifetime access). The prototypes are the source of truth for the current design direction. This discrepancy must be resolved and one model chosen before V1.0 launch.
 
 ### Tier Comparison
 

@@ -10,235 +10,437 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
   <style>
+    /* ===== PAGE-LEVEL COLOR OVERRIDES ===== */
+    :root {
+      --page-bg: #080B16;
+      --page-surface: #0F1320;
+      --page-border: rgba(255,255,255,0.06);
+      --page-text: #FFFFFF;
+      --page-muted: #8B92A5;
+      --page-glow: #00D4FF;
+    }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: var(--tc-bg);
-      color: var(--tc-text);
+      background: var(--page-bg);
+      color: var(--page-text);
       line-height: 1.6;
       min-height: 100vh;
     }
 
-    /* ---------- NAV ---------- */
-    .nav-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 clamp(16px, 4vw, 48px);
-      height: 64px;
-      background: var(--tc-surface);
-      border-bottom: 1px solid var(--tc-border);
+    a { text-decoration: none; color: inherit; }
+
+    /* ===== NAV BAR ===== */
+    .nav {
       position: sticky;
       top: 0;
       z-index: 100;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      background: rgba(8,11,22,0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--page-border);
     }
-    .nav-logo {
-      font-weight: 700;
-      font-size: 1.125rem;
-      color: var(--tc-primary);
-      text-decoration: none;
-      letter-spacing: 0.06em;
+
+    .nav__logo {
+      font-size: 18px;
+      font-weight: 600;
+      color: #FFFFFF;
+      letter-spacing: 0.02em;
     }
-    .nav-links { display: flex; gap: 8px; }
-    .nav-links a {
-      color: var(--tc-text);
-      text-decoration: none;
-      font-size: 0.875rem;
+
+    .nav__links {
+      display: flex;
+      align-items: center;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 999px;
+      padding: 4px;
+    }
+
+    .nav__links a {
+      padding: 8px 16px;
+      font-size: 14px;
+      color: var(--page-muted);
+      transition: color 0.2s ease;
+      border-radius: 999px;
+    }
+
+    .nav__links a:hover,
+    .nav__links a.active {
+      color: #FFFFFF;
+    }
+
+    .nav__links a.active {
+      background: rgba(255,255,255,0.06);
+    }
+
+    .nav__cta {
+      border: 1px solid rgba(255,255,255,0.15);
+      background: transparent;
+      color: #FFFFFF;
+      border-radius: 999px;
+      padding: 10px 24px;
+      font-size: 14px;
       font-weight: 500;
-      padding: 10px 16px;
-      border-radius: 8px;
-      min-height: 44px;
+      transition: background 0.2s ease;
+      cursor: pointer;
       display: inline-flex;
       align-items: center;
-      transition: background 0.2s, color 0.2s;
-    }
-    .nav-links a:hover, .nav-links a.active {
-      background: var(--tc-surface-overlay);
-      color: var(--tc-primary);
     }
 
-    /* ---------- HERO ---------- */
+    .nav__cta:hover {
+      background: rgba(255,255,255,0.05);
+    }
+
+    @media (max-width: 768px) {
+      .nav__links { display: none; }
+      .nav { padding: 0 20px; }
+    }
+
+    /* ===== HERO ===== */
     .hero {
+      padding: 100px 24px 64px;
       text-align: center;
-      padding: 80px 24px 56px;
-      max-width: 760px;
-      margin: 0 auto;
-    }
-    .hero h1 {
-      font-size: clamp(1.75rem, 4vw, 2.5rem);
-      font-weight: 800;
-      line-height: 1.2;
-      margin-bottom: 16px;
-      background: linear-gradient(135deg, var(--tc-primary), var(--tc-accent));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .hero p {
-      font-size: 1.125rem;
-      color: var(--tc-muted);
-      line-height: 1.7;
-    }
-
-    /* ---------- THEME GRID ---------- */
-    .theme-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 24px;
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0 24px 100px;
-    }
-    @media (max-width: 1439px) and (min-width: 1024px) {
-      .theme-grid { grid-template-columns: repeat(3, 1fr); }
-    }
-    @media (max-width: 1023px) and (min-width: 640px) {
-      .theme-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-    @media (max-width: 639px) {
-      .theme-grid { grid-template-columns: 1fr; }
-    }
-
-    /* ---------- THEME CARD ---------- */
-    .theme-card {
-      background: var(--tc-surface);
-      border-radius: 16px;
-      padding: 0;
-      overflow: hidden;
       position: relative;
-      cursor: pointer;
-      transition: transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
-    }
-    .theme-card:hover {
-      transform: scale(1.03);
-    }
-    .theme-card.coming-soon {
-      filter: grayscale(40%) opacity(0.7);
-    }
-    .theme-card.coming-soon:hover {
-      filter: grayscale(20%) opacity(0.85);
+      background:
+        radial-gradient(ellipse 60% 40% at 50% 100%, rgba(0,212,255,0.08), transparent 60%),
+        var(--page-bg);
     }
 
-    /* Card inner */
-    .card-art {
-      height: 140px;
+    .hero__label {
+      font-size: 13px;
+      color: var(--page-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 16px;
+    }
+
+    .hero__title {
+      font-size: 48px;
+      font-weight: 700;
+      color: #FFFFFF;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+    }
+
+    .hero__subtitle {
+      font-size: 18px;
+      color: var(--page-muted);
+      max-width: 560px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 768px) {
+      .hero { padding: 72px 20px 48px; }
+      .hero__title { font-size: 32px; }
+    }
+
+    /* ===== THEMES SECTION ===== */
+    .themes-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px 120px;
+    }
+
+    /* ===== FEATURED CARD (Deep Orbit) ===== */
+    .theme-featured {
+      background: var(--page-surface);
+      border: 1px solid rgba(123,104,238,0.2);
+      border-radius: 16px;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      transition: border-color 0.3s ease;
+      margin-bottom: 20px;
+    }
+
+    .theme-featured:hover {
+      border-color: rgba(123,104,238,0.35);
+    }
+
+    .theme-featured__art {
+      position: relative;
+      min-height: 340px;
+      background:
+        radial-gradient(ellipse 70% 60% at 30% 70%, rgba(123,104,238,0.15), transparent),
+        radial-gradient(ellipse 50% 40% at 70% 30%, rgba(240,199,94,0.08), transparent),
+        var(--page-surface);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 3rem;
+      padding: 40px;
+    }
+
+    .theme-featured__art-icon {
+      font-size: 64px;
       position: relative;
+      z-index: 1;
     }
-    .card-body {
-      padding: 20px 24px 28px;
+
+    .theme-featured__body {
+      padding: 48px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
-    .card-domain {
-      font-size: 0.6875rem;
+
+    .theme-featured__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 14px;
+      border-radius: 999px;
+      font-size: 12px;
       font-weight: 600;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.04em;
+      background: rgba(46,204,113,0.1);
+      color: #2ECC71;
+      border: 1px solid rgba(46,204,113,0.2);
+      width: fit-content;
+      margin-bottom: 20px;
+    }
+
+    .theme-featured__badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #2ECC71;
+    }
+
+    .theme-featured__domain {
+      font-size: 13px;
+      color: var(--page-muted);
       text-transform: uppercase;
-      margin-bottom: 8px;
+      letter-spacing: 0.15em;
+      margin-bottom: 6px;
     }
-    .card-title {
-      font-size: 1.25rem;
+
+    .theme-featured__name {
+      font-size: 32px;
       font-weight: 700;
-      margin-bottom: 8px;
-      line-height: 1.3;
+      color: #7B68EE;
+      margin-bottom: 16px;
     }
-    .card-hook {
-      font-size: 0.8125rem;
-      color: var(--tc-muted);
-      line-height: 1.6;
+
+    .theme-featured__hook {
+      font-size: 15px;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    .theme-featured__build {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: #F0C75E;
       margin-bottom: 12px;
     }
-    .card-model {
-      font-size: 0.75rem;
-      font-weight: 600;
-      margin-bottom: 6px;
-      opacity: 0.9;
+
+    .theme-featured__characters {
+      font-size: 13px;
+      color: var(--page-muted);
+      margin-bottom: 20px;
+      line-height: 1.5;
     }
-    .card-characters {
-      font-size: 0.6875rem;
-      color: var(--tc-muted);
+
+    .theme-featured__meta {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+
+    .theme-featured__meta-item {
+      font-size: 13px;
+      color: var(--page-muted);
+    }
+
+    .theme-featured__meta-item strong {
+      color: #FFFFFF;
+      font-weight: 600;
+    }
+
+    .theme-featured__cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      background: #7B68EE;
+      color: #FFFFFF;
+      border-radius: 999px;
+      font-size: 15px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      width: fit-content;
+    }
+
+    .theme-featured__cta:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 1023px) {
+      .theme-featured { grid-template-columns: 1fr; }
+      .theme-featured__art { min-height: 200px; }
+      .theme-featured__body { padding: 32px 28px; }
+    }
+
+    /* ===== COMING SOON GRID (2x2) ===== */
+    .themes-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 640px) {
+      .themes-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ===== THEME CARD (coming soon) ===== */
+    .theme-card {
+      background: var(--page-surface);
+      border: 1px solid var(--page-border);
+      border-radius: 14px;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      transition: border-color 0.3s ease, transform 0.3s ease;
+      opacity: 0.65;
+    }
+
+    .theme-card:hover {
+      transform: translateY(-3px);
+      opacity: 0.85;
+    }
+
+    .theme-card__art {
+      height: 100px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .theme-card__art-icon {
+      font-size: 32px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .theme-card__body {
+      padding: 24px 28px 28px;
+    }
+
+    .theme-card__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      background: rgba(139,146,165,0.08);
+      color: var(--page-muted);
+      border: 1px solid rgba(139,146,165,0.12);
+    }
+
+    .theme-card__domain {
+      font-size: 12px;
+      color: var(--page-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 4px;
+    }
+
+    .theme-card__name {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .theme-card__hook {
+      font-size: 14px;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+
+    .theme-card__build {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--page-muted);
+      margin-bottom: 10px;
+    }
+
+    .theme-card__build span {
+      color: rgba(255,255,255,0.7);
+    }
+
+    .theme-card__characters {
+      font-size: 12px;
+      color: var(--page-muted);
       margin-bottom: 12px;
       line-height: 1.5;
     }
-    .card-meta {
-      font-size: 0.75rem;
-      color: var(--tc-muted);
-      margin-bottom: 16px;
+
+    .theme-card__footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
     }
 
-    /* Badges */
-    .card-badge {
-      display: inline-block;
-      font-size: 0.625rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      padding: 4px 10px;
-      border-radius: 999px;
-      margin-bottom: 16px;
-    }
-    .badge-available {
-      background: #2ECC71;
-      color: #0a1628;
-    }
-    .badge-coming {
-      background: var(--tc-muted);
-      color: var(--tc-bg);
+    .theme-card__meta {
+      font-size: 12px;
+      color: var(--page-muted);
     }
 
-    /* Card CTA */
-    .card-cta {
+    .theme-card__cta {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       width: 100%;
-      min-height: 44px;
       padding: 12px 24px;
-      font-size: 0.875rem;
-      font-weight: 600;
+      font-size: 14px;
+      font-weight: 500;
       font-family: inherit;
-      border-radius: 10px;
+      border-radius: 999px;
       cursor: pointer;
-      transition: opacity 0.2s, transform 0.15s;
-      border: none;
-      text-decoration: none;
-    }
-    .cta-filled {
-      color: #0B0D1A;
-    }
-    .cta-filled:hover { opacity: 0.9; transform: translateY(-1px); }
-    .cta-outline {
+      transition: background 0.2s ease, border-color 0.2s ease;
       background: transparent;
-      color: var(--tc-text);
-    }
-    .cta-outline:hover { opacity: 0.8; }
-
-    /* Coming Soon Ribbon */
-    .ribbon {
-      position: absolute;
-      top: 16px;
-      right: -32px;
-      width: 140px;
-      text-align: center;
-      padding: 6px 0;
-      font-size: 0.5625rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      transform: rotate(45deg);
-      z-index: 2;
-      background: rgba(0,0,0,0.75);
-      color: var(--tc-text);
+      border: 1px solid;
     }
 
-    /* ---------- MODAL ---------- */
+    .theme-card__cta:hover {
+      background: rgba(255,255,255,0.03);
+    }
+
+    /* Per-theme card hover accents */
+    .theme-card--neon:hover { border-color: rgba(0,212,255,0.2); }
+    .theme-card--signal:hover { border-color: rgba(46,204,113,0.2); }
+    .theme-card--nova:hover { border-color: rgba(255,107,107,0.2); }
+    .theme-card--terra:hover { border-color: rgba(245,158,11,0.2); }
+
+    /* ===== MODAL ===== */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(11,13,26,0.85);
+      background: rgba(8,11,22,0.85);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       z-index: 300;
       display: flex;
       align-items: center;
@@ -248,46 +450,53 @@
       transition: opacity 0.3s ease;
       padding: 24px;
     }
+
     .modal-overlay.active {
       opacity: 1;
       pointer-events: auto;
     }
+
     .modal-card {
-      background: var(--tc-surface);
-      border: 1px solid var(--tc-border);
-      border-radius: 20px;
+      background: var(--page-surface);
+      border: 1px solid var(--page-border);
+      border-radius: 16px;
       max-width: 480px;
       width: 100%;
-      padding: 0;
       overflow: hidden;
       transform: translateY(24px);
       transition: transform 0.3s ease;
       position: relative;
     }
+
     .modal-overlay.active .modal-card {
       transform: translateY(0);
     }
+
     .modal-art {
-      height: 120px;
+      height: 100px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 2.5rem;
     }
+
     .modal-body {
       padding: 24px 28px 32px;
     }
+
     .modal-body h2 {
-      font-size: 1.5rem;
+      font-size: 24px;
       font-weight: 700;
       margin-bottom: 8px;
     }
+
     .modal-body p {
-      font-size: 0.875rem;
-      color: var(--tc-muted);
+      font-size: 14px;
+      color: var(--page-muted);
       line-height: 1.7;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
     }
+
     .modal-close {
       position: absolute;
       top: 12px;
@@ -295,93 +504,112 @@
       width: 36px;
       height: 36px;
       border-radius: 50%;
-      border: 1px solid var(--tc-border);
-      background: var(--tc-surface);
-      color: var(--tc-text);
-      font-size: 1rem;
+      border: 1px solid var(--page-border);
+      background: var(--page-surface);
+      color: var(--page-muted);
+      font-size: 16px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 2;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s, color 0.2s;
     }
-    .modal-close:hover { border-color: var(--tc-primary); }
+
+    .modal-close:hover {
+      border-color: rgba(255,255,255,0.15);
+      color: #FFFFFF;
+    }
+
     .modal-form {
       display: flex;
       gap: 8px;
     }
+
     .modal-input {
       flex: 1;
       min-height: 44px;
-      padding: 10px 14px;
-      font-size: 0.875rem;
+      padding: 10px 16px;
+      font-size: 14px;
       font-family: inherit;
-      background: #0D1117;
-      border: 1px solid var(--tc-border);
-      border-radius: 10px;
-      color: var(--tc-text);
+      background: var(--page-bg);
+      border: 1px solid var(--page-border);
+      border-radius: 999px;
+      color: var(--page-text);
       outline: none;
       transition: border-color 0.2s;
     }
-    .modal-input:focus { border-color: var(--tc-primary); }
-    .modal-input::placeholder { color: var(--tc-muted); }
+
+    .modal-input:focus {
+      border-color: rgba(255,255,255,0.15);
+    }
+
+    .modal-input::placeholder {
+      color: var(--page-muted);
+    }
+
     .modal-submit {
       min-height: 44px;
-      min-width: 44px;
-      padding: 10px 20px;
-      font-size: 0.875rem;
+      padding: 10px 24px;
+      font-size: 14px;
       font-weight: 600;
       font-family: inherit;
       border: none;
-      border-radius: 10px;
+      border-radius: 999px;
       cursor: pointer;
-      color: #0B0D1A;
+      color: #080B16;
       transition: opacity 0.2s;
     }
+
     .modal-submit:hover { opacity: 0.9; }
+
     .modal-note {
-      font-size: 0.75rem;
-      color: var(--tc-muted);
+      font-size: 12px;
+      color: var(--page-muted);
       margin-top: 12px;
     }
+
     .modal-success {
       display: none;
       padding: 16px;
-      background: rgba(46,204,113,0.1);
-      border: 1px solid rgba(46,204,113,0.3);
-      border-radius: 10px;
+      background: rgba(46,204,113,0.08);
+      border: 1px solid rgba(46,204,113,0.2);
+      border-radius: 12px;
       color: #2ECC71;
-      font-size: 0.875rem;
+      font-size: 14px;
       text-align: center;
     }
 
-    /* ---------- THEME SWITCHER ---------- */
+    /* ===== THEME SWITCHER ===== */
     .theme-switcher {
       position: fixed;
       bottom: 24px;
       right: 24px;
       z-index: 200;
     }
+
     .theme-toggle {
       width: 48px;
       height: 48px;
       border-radius: 50%;
-      border: 1px solid var(--tc-border);
-      background: var(--tc-surface);
+      border: 1px solid var(--page-border);
+      background: var(--page-surface);
       backdrop-filter: blur(12px);
-      color: var(--tc-primary);
-      font-size: 1.25rem;
+      -webkit-backdrop-filter: blur(12px);
+      color: var(--page-muted);
+      font-size: 20px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: box-shadow 0.2s, border-color 0.2s;
+      transition: border-color 0.2s;
     }
+
     .theme-toggle:hover {
-      border-color: var(--tc-primary);
-      box-shadow: 0 0 16px color-mix(in srgb, var(--tc-primary) 30%, transparent);
+      border-color: rgba(255,255,255,0.15);
+      color: #FFFFFF;
     }
+
     .theme-popup {
       position: absolute;
       bottom: 56px;
@@ -390,19 +618,21 @@
       flex-direction: column;
       gap: 8px;
       padding: 12px;
-      background: var(--tc-surface);
-      border: 1px solid var(--tc-border);
-      border-radius: 12px;
+      background: var(--page-surface);
+      border: 1px solid var(--page-border);
+      border-radius: 14px;
       opacity: 0;
       pointer-events: none;
       transform: translateY(8px);
       transition: opacity 0.2s, transform 0.2s;
     }
+
     .theme-popup.active {
       opacity: 1;
       pointer-events: auto;
       transform: translateY(0);
     }
+
     .theme-dot {
       width: 28px;
       height: 28px;
@@ -411,126 +641,207 @@
       cursor: pointer;
       transition: transform 0.15s, border-color 0.15s;
     }
-    .theme-dot:hover { transform: scale(1.2); border-color: rgba(255,255,255,0.3); }
+
+    .theme-dot:hover {
+      transform: scale(1.2);
+      border-color: rgba(255,255,255,0.3);
+    }
+
+    /* ===== FOOTER ===== */
+    .site-footer {
+      border-top: 1px solid var(--page-border);
+      padding: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 14px;
+      color: var(--page-muted);
+    }
+
+    .site-footer__logo {
+      font-size: 16px;
+      font-weight: 600;
+      color: #FFFFFF;
+      letter-spacing: 0.02em;
+    }
+
+    .site-footer__links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .site-footer__links a {
+      color: var(--page-muted);
+      transition: color 0.2s ease;
+    }
+
+    .site-footer__links a:hover {
+      color: #FFFFFF;
+    }
+
+    @media (max-width: 640px) {
+      .site-footer {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+      }
+    }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-in {
+      animation: fade-up 0.6s ease both;
+    }
+
+    .animate-in-1 { animation-delay: 0.1s; }
+    .animate-in-2 { animation-delay: 0.2s; }
+    .animate-in-3 { animation-delay: 0.3s; }
+    .animate-in-4 { animation-delay: 0.4s; }
+    .animate-in-5 { animation-delay: 0.5s; }
   </style>
 </head>
 <body>
 
-  <!-- nav-bar -->
-  <nav class="nav-bar">
-    <a href="#" class="nav-logo">&#9671; TENSORCRAFT</a>
-    <div class="nav-links">
+  <!-- Nav -->
+  <nav class="nav">
+    <div class="nav__logo">&#9671; tensorcraft</div>
+    <div class="nav__links">
+      <a href="landing.html">Home</a>
       <a href="theme-selection.html" class="active">Themes</a>
-      <a href="pricing.html">Pricing</a>
-      <a href="settings.html">Dashboard</a>
+      <a href="#">Pricing</a>
+      <a href="#">Dashboard</a>
     </div>
+    <a href="#" class="nav__cta">Start now &rarr;</a>
   </nav>
 
-  <!-- hero -->
+  <!-- Hero -->
   <section class="hero">
-    <h1>Choose Your World</h1>
-    <p>Each theme teaches the same ML fundamentals through a unique narrative, dataset, and visual identity.</p>
+    <p class="hero__label animate-in animate-in-1">Five Themed Worlds</p>
+    <h1 class="hero__title animate-in animate-in-2">Choose Your World</h1>
+    <p class="hero__subtitle animate-in animate-in-3">Each theme teaches the complete ML toolkit through a unique narrative. Master one, or collect them all.</p>
   </section>
 
-  <!-- theme grid -->
-  <section class="theme-grid">
+  <!-- Themes -->
+  <section class="themes-section">
 
-    <!-- 1. Deep Orbit — LAUNCHED -->
-    <div class="theme-card" style="border: 2px solid #7B68EE;" data-launched="true"
-         onmouseenter="this.style.boxShadow='0 0 32px rgba(123,104,238,0.35)'"
-         onmouseleave="this.style.boxShadow='none'">
-      <div class="card-art" style="background: linear-gradient(135deg, #0B0D1A 0%, #16213E 50%, #7B68EE22 100%);">
-        &#128752;
+    <!-- FEATURED: Deep Orbit (launched) -->
+    <div class="theme-featured animate-in animate-in-4">
+      <div class="theme-featured__art">
+        <span class="theme-featured__art-icon">&#128752;</span>
       </div>
-      <div class="card-body">
-        <div class="card-domain" style="color:#7B68EE;">Time-Series &amp; Signals</div>
-        <div class="card-title" style="color:#7B68EE;">Deep Orbit</div>
-        <div class="card-hook">Aboard the deep-space research vessel Archimedes, decode mysterious cosmic signals using signal processing, neural networks, and browser-based ML.</div>
-        <div class="card-model" style="color:#F0C75E;">You'll build: DEEP SCAN Signal Classifier</div>
-        <div class="card-characters">Meet Commander Okafor, Dr. Sato, Chief Torres, Ensign Park &amp; ARIA</div>
-        <div class="card-meta">11 Modules &middot; 55 Lessons</div>
-        <span class="card-badge badge-available">Available Now</span>
-        <button class="card-cta cta-filled" style="background:#7B68EE;">Start Learning</button>
+      <div class="theme-featured__body">
+        <div class="theme-featured__badge">Available Now</div>
+        <p class="theme-featured__domain">Time-Series &amp; Signal Processing</p>
+        <h3 class="theme-featured__name">Deep Orbit</h3>
+        <p class="theme-featured__hook">Aboard the deep-space research vessel <em>Archimedes</em>, decode mysterious cosmic signals using FFT, neural networks, and browser-based ML. Every lesson is a mission. Every concept has a frontend bridge.</p>
+        <p class="theme-featured__build">You'll build: DEEP SCAN Signal Classifier</p>
+        <p class="theme-featured__characters">Meet Commander Okafor, Dr. Sato, Chief Torres, Ensign Park &amp; ARIA</p>
+        <div class="theme-featured__meta">
+          <span class="theme-featured__meta-item"><strong>11</strong> Modules</span>
+          <span class="theme-featured__meta-item"><strong>55</strong> Lessons</span>
+          <span class="theme-featured__meta-item"><strong>12</strong> FE Bridges</span>
+        </div>
+        <a href="module-overview.html" class="theme-featured__cta">Begin Learning &rarr;</a>
       </div>
     </div>
 
-    <!-- 2. Neon Protocol — COMING SOON -->
-    <div class="theme-card coming-soon" style="border: 2px solid #00D4FF33;" data-theme-name="Neon Protocol" data-color="#00D4FF"
-         onclick="openModal(this)">
-      <div class="ribbon" style="color:#00D4FF;">COMING SOON</div>
-      <div class="card-art" style="background: linear-gradient(135deg, #0A0A0F 0%, #151520 50%, #00D4FF15 100%);">
-        &#9889;
-      </div>
-      <div class="card-body">
-        <div class="card-domain" style="color:#00D4FF;">Cybersecurity &amp; Network Analysis</div>
-        <div class="card-title" style="color:#00D4FF;">Neon Protocol</div>
-        <div class="card-hook">Navigate the neon-lit digital underground as a white-hat hacker, using ML to detect intrusions and analyze network anomalies in real time.</div>
-        <div class="card-model" style="color:#FF2D7B;">You'll build: NEON NET Anomaly Detector</div>
-        <div class="card-characters">Meet Cipher, Ghost, Relay, Patch &amp; AXIOM</div>
-        <div class="card-meta">11 Modules &middot; 55 Lessons</div>
-        <span class="card-badge badge-coming">Coming Soon</span>
-        <button class="card-cta cta-outline" style="border: 1px solid #00D4FF; color:#00D4FF;">Join Waitlist</button>
-      </div>
-    </div>
+    <!-- Coming Soon Grid (2x2) -->
+    <div class="themes-grid animate-in animate-in-5">
 
-    <!-- 3. Signal Ward — COMING SOON -->
-    <div class="theme-card coming-soon" style="border: 2px solid #2ECC7133;" data-theme-name="Signal Ward" data-color="#2ECC71"
-         onclick="openModal(this)">
-      <div class="ribbon" style="color:#2ECC71;">COMING SOON</div>
-      <div class="card-art" style="background: linear-gradient(135deg, #0A1628 0%, #132238 50%, #2ECC7115 100%);">
-        &#129657;
+      <!-- Neon Protocol -->
+      <div class="theme-card theme-card--neon" data-theme-name="Neon Protocol" data-color="#00D4FF" onclick="openModal(this)">
+        <div class="theme-card__art" style="background: radial-gradient(ellipse at 50% 80%, rgba(0,212,255,0.1), transparent 70%), var(--page-surface);">
+          <span class="theme-card__art-icon">&#9889;</span>
+        </div>
+        <div class="theme-card__body">
+          <div class="theme-card__badge">Coming Soon</div>
+          <p class="theme-card__domain">Computer Vision</p>
+          <h3 class="theme-card__name" style="color: #00D4FF;">Neon Protocol</h3>
+          <p class="theme-card__hook">Navigate the neon-lit digital underground as a white-hat hacker, using computer vision to detect intrusions and analyze network anomalies.</p>
+          <p class="theme-card__build">You'll build: <span>Protocol Sentinel</span></p>
+          <p class="theme-card__characters">Meet Cipher, Ghost, Relay, Patch &amp; AXIOM</p>
+          <div class="theme-card__footer">
+            <span class="theme-card__meta">11 Modules &middot; 55 Lessons</span>
+          </div>
+          <button class="theme-card__cta" style="border-color: rgba(0,212,255,0.25); color: #00D4FF;">Join Waitlist &rarr;</button>
+        </div>
       </div>
-      <div class="card-body">
-        <div class="card-domain" style="color:#2ECC71;">Medical Imaging &amp; Diagnostics</div>
-        <div class="card-title" style="color:#2ECC71;">Signal Ward</div>
-        <div class="card-hook">Join a cutting-edge hospital research team, training ML models to analyze medical scans and assist doctors with early diagnosis.</div>
-        <div class="card-model" style="color:#5B8DEF;">You'll build: WARD SCAN Diagnostic Classifier</div>
-        <div class="card-characters">Meet Dr. Reyes, Nurse Kim, Tech Obi, Intern Liu &amp; PULSE</div>
-        <div class="card-meta">11 Modules &middot; 55 Lessons</div>
-        <span class="card-badge badge-coming">Coming Soon</span>
-        <button class="card-cta cta-outline" style="border: 1px solid #2ECC71; color:#2ECC71;">Join Waitlist</button>
-      </div>
-    </div>
 
-    <!-- 4. Nova Canvas — COMING SOON -->
-    <div class="theme-card coming-soon" style="border: 2px solid #FF6B6B33;" data-theme-name="Nova Canvas" data-color="#FF6B6B"
-         onclick="openModal(this)">
-      <div class="ribbon" style="color:#FF6B6B;">COMING SOON</div>
-      <div class="card-art" style="background: linear-gradient(135deg, #0D0D1A 0%, #1A1A30 50%, #FF6B6B15 100%);">
-        &#127912;
+      <!-- Signal Ward -->
+      <div class="theme-card theme-card--signal" data-theme-name="Signal Ward" data-color="#2ECC71" onclick="openModal(this)">
+        <div class="theme-card__art" style="background: radial-gradient(ellipse at 50% 80%, rgba(46,204,113,0.1), transparent 70%), var(--page-surface);">
+          <span class="theme-card__art-icon">&#129657;</span>
+        </div>
+        <div class="theme-card__body">
+          <div class="theme-card__badge">Coming Soon</div>
+          <p class="theme-card__domain">NLP &amp; Text Intelligence</p>
+          <h3 class="theme-card__name" style="color: #2ECC71;">Signal Ward</h3>
+          <p class="theme-card__hook">Join a cutting-edge hospital team training NLP models to analyze clinical text and assist doctors with early diagnosis.</p>
+          <p class="theme-card__build">You'll build: <span>Diagnostic One</span></p>
+          <p class="theme-card__characters">Meet Dr. Reyes, Nurse Kim, Tech Obi, Intern Liu &amp; PULSE</p>
+          <div class="theme-card__footer">
+            <span class="theme-card__meta">11 Modules &middot; 55 Lessons</span>
+          </div>
+          <button class="theme-card__cta" style="border-color: rgba(46,204,113,0.25); color: #2ECC71;">Join Waitlist &rarr;</button>
+        </div>
       </div>
-      <div class="card-body">
-        <div class="card-domain" style="color:#FF6B6B;">Generative Art &amp; Creative AI</div>
-        <div class="card-title" style="color:#FF6B6B;">Nova Canvas</div>
-        <div class="card-hook">Step into a creative AI studio where you train generative models to produce art, music visualizations, and style transfers in the browser.</div>
-        <div class="card-model" style="color:#A78BFA;">You'll build: NOVA GEN Style Transfer Engine</div>
-        <div class="card-characters">Meet Muse, Vertex, Bloom, Shade &amp; PRISM</div>
-        <div class="card-meta">11 Modules &middot; 55 Lessons</div>
-        <span class="card-badge badge-coming">Coming Soon</span>
-        <button class="card-cta cta-outline" style="border: 1px solid #FF6B6B; color:#FF6B6B;">Join Waitlist</button>
-      </div>
-    </div>
 
-    <!-- 5. Terra Grid — COMING SOON -->
-    <div class="theme-card coming-soon" style="border: 2px solid #F59E0B33;" data-theme-name="Terra Grid" data-color="#F59E0B"
-         onclick="openModal(this)">
-      <div class="ribbon" style="color:#F59E0B;">COMING SOON</div>
-      <div class="card-art" style="background: linear-gradient(135deg, #111827 0%, #1F2937 50%, #F59E0B15 100%);">
-        &#9881;
+      <!-- Nova Canvas -->
+      <div class="theme-card theme-card--nova" data-theme-name="Nova Canvas" data-color="#FF6B6B" onclick="openModal(this)">
+        <div class="theme-card__art" style="background: radial-gradient(ellipse at 50% 80%, rgba(255,107,107,0.1), transparent 70%), var(--page-surface);">
+          <span class="theme-card__art-icon">&#127912;</span>
+        </div>
+        <div class="theme-card__body">
+          <div class="theme-card__badge">Coming Soon</div>
+          <p class="theme-card__domain">Multimodal &amp; GenAI</p>
+          <h3 class="theme-card__name" style="color: #FF6B6B;">Nova Canvas</h3>
+          <p class="theme-card__hook">Step into a creative AI collective where you train generative models to produce art, style transfers, and multimodal experiences in the browser.</p>
+          <p class="theme-card__build">You'll build: <span>Nova Gen Engine</span></p>
+          <p class="theme-card__characters">Meet Muse, Vertex, Bloom, Shade &amp; PRISM</p>
+          <div class="theme-card__footer">
+            <span class="theme-card__meta">11 Modules &middot; 55 Lessons</span>
+          </div>
+          <button class="theme-card__cta" style="border-color: rgba(255,107,107,0.25); color: #FF6B6B;">Join Waitlist &rarr;</button>
+        </div>
       </div>
-      <div class="card-body">
-        <div class="card-domain" style="color:#F59E0B;">Industrial IoT &amp; Predictive Maintenance</div>
-        <div class="card-title" style="color:#F59E0B;">Terra Grid</div>
-        <div class="card-hook">Manage a vast industrial grid, training predictive models to prevent equipment failures and optimize energy distribution across the network.</div>
-        <div class="card-model" style="color:#10B981;">You'll build: GRID SENSE Predictive Monitor</div>
-        <div class="card-characters">Meet Chief Volkov, Analyst Priya, Drone Kai, Sensor Max &amp; CORE</div>
-        <div class="card-meta">11 Modules &middot; 55 Lessons</div>
-        <span class="card-badge badge-coming">Coming Soon</span>
-        <button class="card-cta cta-outline" style="border: 1px solid #F59E0B; color:#F59E0B;">Join Waitlist</button>
-      </div>
-    </div>
 
+      <!-- Terra Grid -->
+      <div class="theme-card theme-card--terra" data-theme-name="Terra Grid" data-color="#F59E0B" onclick="openModal(this)">
+        <div class="theme-card__art" style="background: radial-gradient(ellipse at 50% 80%, rgba(245,158,11,0.1), transparent 70%), var(--page-surface);">
+          <span class="theme-card__art-icon">&#9881;</span>
+        </div>
+        <div class="theme-card__body">
+          <div class="theme-card__badge">Coming Soon</div>
+          <p class="theme-card__domain">Edge AI &amp; MLOps</p>
+          <h3 class="theme-card__name" style="color: #F59E0B;">Terra Grid</h3>
+          <p class="theme-card__hook">Manage a vast industrial grid, training predictive models to prevent equipment failures and optimize energy distribution at the edge.</p>
+          <p class="theme-card__build">You'll build: <span>Grid Sense Monitor</span></p>
+          <p class="theme-card__characters">Meet Chief Volkov, Analyst Priya, Drone Kai, Sensor Max &amp; CORE</p>
+          <div class="theme-card__footer">
+            <span class="theme-card__meta">11 Modules &middot; 55 Lessons</span>
+          </div>
+          <button class="theme-card__cta" style="border-color: rgba(245,158,11,0.25); color: #F59E0B;">Join Waitlist &rarr;</button>
+        </div>
+      </div>
+
+    </div>
   </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="site-footer__logo">&#9671; tensorcraft</div>
+    <div class="site-footer__links">
+      <a href="#">Themes</a>
+      <a href="#">Docs</a>
+      <a href="#">Community</a>
+      <a href="#">Twitter</a>
+    </div>
+    <div>&copy; 2024 Tensorcraft. All rights reserved.</div>
+  </footer>
 
   <!-- Coming Soon Modal -->
   <div class="modal-overlay" id="comingSoonModal">
@@ -552,9 +863,9 @@
     </div>
   </div>
 
-  <!-- theme-switcher -->
+  <!-- Theme Switcher -->
   <div class="theme-switcher">
-    <button class="theme-toggle glass" title="Switch theme">&#9671;</button>
+    <button class="theme-toggle" title="Switch theme">&#9671;</button>
     <div class="theme-popup">
       <button class="theme-dot" data-theme="deep-orbit" style="background:#7B68EE" title="Deep Orbit"></button>
       <button class="theme-dot" data-theme="neon-protocol" style="background:#00D4FF" title="Neon Protocol"></button>
@@ -586,21 +897,21 @@
     const modalClose = document.getElementById('modalClose');
 
     function openModal(card) {
-      if (card.dataset.launched) return;
       const name = card.dataset.themeName;
       const color = card.dataset.color;
 
       document.getElementById('modalArt').style.background =
-        `linear-gradient(135deg, var(--tc-bg) 0%, var(--tc-surface) 50%, ${color}30 100%)`;
-      document.getElementById('modalArt').textContent = card.querySelector('.card-art').textContent;
+        `radial-gradient(ellipse at 50% 80%, ${color}18, transparent 70%), var(--page-surface)`;
+      document.getElementById('modalArt').textContent = card.querySelector('.theme-card__art-icon').textContent;
       document.getElementById('modalTitle').textContent = name;
       document.getElementById('modalTitle').style.color = color;
-      document.getElementById('modalDesc').textContent = card.querySelector('.card-hook').textContent;
+      document.getElementById('modalDesc').textContent = card.querySelector('.theme-card__hook').textContent;
       document.getElementById('modalSubmit').style.background = color;
       document.getElementById('modalNote').textContent = `We'll email you when ${name} launches.`;
 
       document.getElementById('modalFormWrap').style.display = 'block';
       document.getElementById('modalSuccess').style.display = 'none';
+      document.getElementById('modalEmail').value = '';
 
       modal.classList.add('active');
     }
@@ -615,12 +926,19 @@
 
     document.getElementById('modalSubmit').addEventListener('click', () => {
       const email = document.getElementById('modalEmail').value;
-      if (!email || !email.includes('@')) { document.getElementById('modalEmail').focus(); return; }
+      if (!email || !email.includes('@')) {
+        document.getElementById('modalEmail').focus();
+        return;
+      }
       const name = document.getElementById('modalTitle').textContent;
       document.getElementById('modalFormWrap').style.display = 'none';
       const success = document.getElementById('modalSuccess');
       success.style.display = 'block';
-      success.textContent = `You're on the list! We'll email you the moment ${name} goes live.`;
+      success.textContent = `You're on the list! We'll notify you when ${name} goes live.`;
+    });
+
+    document.getElementById('modalEmail').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') document.getElementById('modalSubmit').click();
     });
   </script>
 

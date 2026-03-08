@@ -1,61 +1,85 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="deep-orbit">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="dark">
   <title>Tensorcraft — Lesson Viewer</title>
-  <link rel="stylesheet" href="styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
+    /* ===== RESET ===== */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ===== DESIGN TOKENS ===== */
+    :root {
+      --bg: #080B16;
+      --surface: #0F1320;
+      --border: rgba(255,255,255,0.06);
+      --text: #FFFFFF;
+      --muted: #8B92A5;
+      --accent: #00D4FF;
+      --purple: #7B68EE;
+      --code-bg: #0D1117;
+      --green: #22C55E;
+      --red: #EF4444;
+    }
 
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: var(--tc-bg, #0B0D1A);
-      color: var(--tc-text, #E2E8F0);
+      background: var(--bg);
+      color: var(--text);
       min-height: 100vh;
       line-height: 1.7;
     }
-    code, pre, .code-block, .tok-kw, .tok-str, .tok-cm, .tok-fn, .tok-num {
+
+    code, pre, .code-editor, .tok-kw, .tok-str, .tok-cm, .tok-fn, .tok-num, .tok-op {
       font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
     }
 
-    /* --- NAV BAR --- */
+    /* ===== NAV BAR ===== */
     .nav-bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 0 24px;
       height: 56px;
-      background: var(--tc-surface, #16213E);
-      border-bottom: 1px solid var(--tc-border, #2A3A5C);
+      background: rgba(8,11,22,0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
       position: sticky;
       top: 0;
       z-index: 100;
     }
+
     .nav-left {
       display: flex;
       align-items: center;
       gap: 16px;
     }
+
     .nav-logo {
-      font-weight: 700;
+      font-weight: 600;
       font-size: 16px;
-      letter-spacing: 2px;
-      color: var(--tc-primary, #7B68EE);
+      letter-spacing: 0.02em;
+      color: var(--text);
     }
+
     .nav-breadcrumb {
       font-size: 14px;
-      color: var(--tc-muted, #64748B);
+      color: var(--muted);
     }
-    .nav-breadcrumb span { color: var(--tc-text); }
+
+    .nav-breadcrumb span {
+      color: var(--text);
+    }
+
     .hamburger {
       display: none;
       background: none;
       border: none;
-      color: var(--tc-text);
+      color: var(--text);
       font-size: 22px;
       cursor: pointer;
       min-width: 44px;
@@ -64,63 +88,68 @@
       justify-content: center;
     }
 
-    /* --- RESPONSIVE TABS --- */
+    /* ===== RESPONSIVE TABS ===== */
     .tab-bar {
       display: none;
-      background: var(--tc-surface);
-      border-bottom: 1px solid var(--tc-border);
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
       position: sticky;
       top: 56px;
       z-index: 90;
     }
+
     .tab-btn {
       flex: 1;
       padding: 12px 16px;
       background: none;
       border: none;
       border-bottom: 2px solid transparent;
-      color: var(--tc-muted);
+      color: var(--muted);
       font-size: 14px;
       font-weight: 500;
       font-family: inherit;
       cursor: pointer;
       min-height: 48px;
-      transition: color 150ms, border-color 150ms;
-    }
-    .tab-btn.active {
-      color: var(--tc-text);
-      border-bottom-color: var(--tc-accent);
+      transition: color 0.2s ease, border-color 0.2s ease;
     }
 
-    /* --- 3-COLUMN LAYOUT --- */
+    .tab-btn.active {
+      color: var(--text);
+      border-bottom-color: var(--accent);
+    }
+
+    /* ===== 3-COLUMN LAYOUT ===== */
     .lesson-layout {
       display: grid;
-      grid-template-columns: 240px 1fr 1fr;
+      grid-template-columns: 240px 60fr 40fr;
       min-height: calc(100vh - 56px);
     }
 
-    /* --- SIDEBAR --- */
+    /* ===== SIDEBAR ===== */
     .sidebar {
-      background: color-mix(in srgb, var(--tc-bg) 90%, #000);
-      border-right: 1px solid color-mix(in srgb, var(--tc-muted) 20%, transparent);
+      background: var(--surface);
+      border-right: 1px solid var(--border);
       padding: 24px 16px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
     }
+
     .sidebar-logo {
       font-size: 18px;
-      color: var(--tc-primary);
+      color: var(--purple);
       margin-bottom: 20px;
       text-align: center;
     }
+
     .sidebar h3 {
       font-size: 14px;
       font-weight: 600;
-      color: var(--tc-text);
+      color: var(--text);
       line-height: 1.4;
       margin-bottom: 20px;
     }
+
     .sidebar-lessons {
       list-style: none;
       display: flex;
@@ -128,6 +157,7 @@
       gap: 4px;
       flex: 1;
     }
+
     .sidebar-lesson {
       display: flex;
       align-items: center;
@@ -135,60 +165,74 @@
       padding: 10px 12px;
       border-radius: 8px;
       font-size: 14px;
-      color: var(--tc-muted);
+      color: var(--muted);
       cursor: pointer;
-      transition: background 150ms;
+      transition: background 0.2s ease;
       min-height: 44px;
     }
-    .sidebar-lesson:hover { background: var(--tc-surface); }
-    .sidebar-lesson.completed { color: var(--tc-muted); }
-    .sidebar-lesson.active {
-      color: var(--tc-accent);
-      font-weight: 600;
-      background: color-mix(in srgb, var(--tc-accent) 8%, transparent);
+
+    .sidebar-lesson:hover {
+      background: rgba(255,255,255,0.03);
     }
+
+    .sidebar-lesson.completed {
+      color: var(--muted);
+    }
+
+    .sidebar-lesson.active {
+      color: var(--text);
+      font-weight: 600;
+      background: rgba(0,212,255,0.06);
+    }
+
     .sidebar-lesson.locked {
-      color: color-mix(in srgb, var(--tc-muted) 50%, transparent);
+      color: rgba(139,146,165,0.4);
       cursor: default;
     }
+
     .sidebar-lesson .icon {
       min-width: 20px;
       text-align: center;
       font-size: 14px;
     }
-    .sidebar-lesson.completed .icon { color: #22C55E; }
-    .sidebar-lesson.active .icon { color: var(--tc-accent); }
+
+    .sidebar-lesson.completed .icon { color: var(--green); }
+    .sidebar-lesson.active .icon { color: var(--accent); }
 
     .sidebar-progress {
       margin-top: auto;
       padding-top: 20px;
-      border-top: 1px solid var(--tc-border);
+      border-top: 1px solid var(--border);
     }
+
     .sidebar-progress-label {
       font-size: 12px;
-      color: var(--tc-muted);
+      color: var(--muted);
       margin-bottom: 8px;
     }
+
     .progress-bar {
       height: 4px;
-      background: var(--tc-border);
+      background: rgba(255,255,255,0.06);
       border-radius: 2px;
       overflow: hidden;
     }
+
     .progress-bar-fill {
       height: 100%;
-      background: var(--tc-accent);
+      background: var(--accent);
       border-radius: 2px;
-      transition: width 300ms ease;
+      transition: width 0.3s ease;
     }
 
-    /* --- NARRATIVE PANEL --- */
+    /* ===== NARRATIVE PANEL ===== */
     .narrative-panel {
       padding: 48px;
       overflow-y: auto;
       display: flex;
       justify-content: center;
     }
+
     .narrative-content {
       max-width: 680px;
       width: 100%;
@@ -198,35 +242,50 @@
       font-size: 12px;
       font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 2px;
-      color: var(--tc-primary);
+      letter-spacing: 0.1em;
+      color: var(--muted);
       margin-bottom: 12px;
       margin-top: 40px;
     }
-    .section-label:first-child { margin-top: 0; }
+
+    .section-label:first-child {
+      margin-top: 0;
+    }
 
     .narrative-content p {
       font-size: 16px;
       line-height: 1.7;
       margin-bottom: 16px;
-      color: var(--tc-text);
+      color: rgba(255,255,255,0.8);
     }
+
     .narrative-content .dialogue {
       padding-left: 20px;
-      border-left: 3px solid var(--tc-primary);
+      border-left: 2px solid var(--purple);
       margin: 20px 0;
       font-style: italic;
     }
+
     .dialogue .speaker {
       font-style: normal;
       font-weight: 600;
-      color: var(--tc-accent);
+      color: var(--purple);
       font-size: 12px;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 0.08em;
     }
 
-    /* --- BRIDGE COMPONENT --- */
+    .narrative-content code.inline {
+      display: inline;
+      background: var(--code-bg);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 14px;
+      color: var(--accent);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    /* ===== BRIDGE CALLOUT ===== */
     .bridge-callout {
       display: grid;
       grid-template-columns: 1fr auto 1fr;
@@ -234,150 +293,173 @@
       margin: 32px 0;
       align-items: stretch;
     }
+
     .bridge-card {
-      background: var(--tc-surface);
-      border: 1px solid var(--tc-border);
-      border-radius: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
       padding: 20px;
-      backdrop-filter: blur(12px);
     }
+
     .bridge-card h4 {
-      font-size: 12px;
+      font-size: 11px;
       text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: var(--tc-muted);
+      letter-spacing: 0.1em;
+      color: var(--muted);
       margin-bottom: 12px;
     }
+
     .bridge-card h5 {
       font-size: 16px;
       font-weight: 600;
-      color: var(--tc-text);
+      color: var(--text);
       margin-bottom: 8px;
     }
+
     .bridge-card code {
       display: block;
-      background: color-mix(in srgb, var(--tc-bg) 80%, #000);
+      background: var(--code-bg);
       padding: 12px;
-      border-radius: 6px;
+      border-radius: 8px;
       font-size: 13px;
-      color: var(--tc-accent);
+      color: var(--accent);
       margin-bottom: 10px;
       line-height: 1.6;
+      border: 1px solid rgba(255,255,255,0.04);
     }
+
     .bridge-card p {
       font-size: 14px !important;
-      color: var(--tc-muted) !important;
+      color: var(--muted) !important;
       line-height: 1.6 !important;
     }
+
     .bridge-connector {
-      width: 40px;
+      width: 48px;
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
     }
-    .bridge-connector::after {
+
+    .bridge-connector::before {
       content: '';
       position: absolute;
-      width: 2px;
-      height: 80%;
-      background: var(--tc-neon-line);
-      box-shadow: 0 0 8px var(--tc-neon-line), 0 0 16px color-mix(in srgb, var(--tc-neon-line) 40%, transparent);
-      border-radius: 1px;
+      width: 1px;
+      height: 60%;
+      background: var(--border);
     }
+
     .bridge-connector .bridge-icon {
       position: relative;
       z-index: 1;
       width: 28px;
       height: 28px;
       border-radius: 50%;
-      background: var(--tc-neon-line);
+      background: var(--surface);
+      border: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 12px;
-      color: var(--tc-bg);
-      font-weight: 700;
-      box-shadow: 0 0 12px var(--tc-neon-line);
+      color: var(--muted);
     }
 
-    /* --- CHECKPOINT QUIZ --- */
+    /* ===== CHECKPOINT QUIZ ===== */
     .checkpoint-quiz {
-      background: var(--tc-surface);
-      border: 1px solid var(--tc-border);
-      border-radius: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
       padding: 24px;
       margin-top: 32px;
     }
+
     .checkpoint-quiz h3 {
       font-size: 16px;
       font-weight: 600;
       margin-bottom: 8px;
-      color: var(--tc-text);
+      color: var(--text);
     }
+
     .checkpoint-quiz .quiz-question {
       font-size: 15px;
-      color: var(--tc-text);
+      color: rgba(255,255,255,0.8);
       margin-bottom: 16px;
     }
+
     .quiz-options {
       display: flex;
       flex-direction: column;
       gap: 8px;
     }
+
     .quiz-option {
       display: flex;
       align-items: center;
       gap: 12px;
       padding: 12px 16px;
-      border-radius: 8px;
-      border: 1px solid var(--tc-border);
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: transparent;
       cursor: pointer;
-      transition: background 150ms, border-color 150ms;
+      transition: background 0.2s ease, border-color 0.2s ease;
       min-height: 44px;
       font-size: 15px;
+      color: rgba(255,255,255,0.8);
     }
-    .quiz-option:hover { background: color-mix(in srgb, var(--tc-surface) 80%, var(--tc-text)); }
+
+    .quiz-option:hover {
+      background: rgba(255,255,255,0.03);
+      border-color: rgba(255,255,255,0.1);
+    }
+
     .quiz-option .radio {
       width: 20px;
       height: 20px;
       min-width: 20px;
       border-radius: 50%;
-      border: 2px solid var(--tc-muted);
+      border: 2px solid rgba(255,255,255,0.15);
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: border-color 150ms, background 150ms;
+      transition: border-color 0.2s ease, background 0.2s ease;
     }
+
     .quiz-option--correct {
-      background: rgba(34, 197, 94, 0.12) !important;
-      border-color: #22C55E !important;
+      background: rgba(34,197,94,0.08) !important;
+      border-color: rgba(34,197,94,0.3) !important;
     }
+
     .quiz-option--correct .radio {
-      border-color: #22C55E;
-      background: #22C55E;
+      border-color: var(--green);
+      background: var(--green);
     }
+
     .quiz-option--correct .radio::after {
       content: '\2713';
       color: #fff;
       font-size: 12px;
       font-weight: 700;
     }
+
     .quiz-option--wrong {
-      background: rgba(239, 68, 68, 0.12) !important;
-      border-color: #EF4444 !important;
+      background: rgba(239,68,68,0.08) !important;
+      border-color: rgba(239,68,68,0.3) !important;
       animation: shake 300ms ease-out;
     }
+
     .quiz-option--wrong .radio {
-      border-color: #EF4444;
-      background: #EF4444;
+      border-color: var(--red);
+      background: var(--red);
     }
+
     .quiz-option--wrong .radio::after {
       content: '\2717';
       color: #fff;
       font-size: 12px;
       font-weight: 700;
     }
+
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
       20% { transform: translateX(-3px); }
@@ -386,76 +468,115 @@
       80% { transform: translateX(3px); }
     }
 
-    /* --- CODE PANEL --- */
+    /* ===== CODE PANEL ===== */
     .code-panel {
-      background: #0D1117;
-      border-left: 1px solid var(--tc-border);
+      background: var(--code-bg);
+      border-left: 1px solid var(--border);
       display: flex;
       flex-direction: column;
       overflow: hidden;
     }
+
     .code-titlebar {
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 0 16px;
       height: 44px;
-      background: #161B22;
-      border-bottom: 1px solid #30363D;
+      background: rgba(13,17,23,0.9);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
     }
+
     .code-tab {
       font-size: 13px;
-      color: var(--tc-text);
+      color: var(--muted);
       padding: 10px 16px;
-      border-bottom: 2px solid var(--tc-accent);
+      border-bottom: 2px solid var(--accent);
       font-family: 'JetBrains Mono', monospace;
     }
+
     .btn-run {
       padding: 6px 16px;
-      background: var(--tc-primary);
+      background: rgba(123,104,238,0.15);
+      border: 1px solid rgba(123,104,238,0.3);
       color: #fff;
-      border: none;
-      border-radius: 6px;
+      border-radius: 999px;
       font-size: 13px;
-      font-weight: 600;
+      font-weight: 500;
       font-family: inherit;
       cursor: pointer;
       min-height: 32px;
-      transition: filter 150ms;
+      transition: background 0.2s ease, border-color 0.2s ease;
     }
-    .btn-run:hover { filter: brightness(1.15); }
+
+    .btn-run:hover {
+      background: rgba(123,104,238,0.25);
+      border-color: rgba(123,104,238,0.5);
+    }
 
     .code-editor {
       flex: 1;
       padding: 20px;
       overflow-y: auto;
       font-size: 14px;
-      line-height: 1.6;
+      line-height: 1.7;
     }
+
     .code-editor pre {
       margin: 0;
       white-space: pre;
     }
-    .tok-cm { color: #8B949E; }
+
+    .tok-cm { color: #484F58; }
     .tok-kw { color: #FF7B72; }
     .tok-fn { color: #D2A8FF; }
     .tok-str { color: #A5D6FF; }
     .tok-num { color: #79C0FF; }
-    .tok-op { color: #C9D1D9; }
+    .tok-op { color: #8B92A5; }
 
-    /* Test Results */
-    .test-results {
-      border-top: 1px solid #30363D;
+    /* ===== PREVIEW PANEL ===== */
+    .preview-panel {
+      border-top: 1px solid rgba(255,255,255,0.06);
       padding: 16px 20px;
       font-size: 13px;
     }
-    .test-results h4 {
-      font-size: 12px;
+
+    .preview-panel h4 {
+      font-size: 11px;
       text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: var(--tc-muted);
+      letter-spacing: 0.1em;
+      color: var(--muted);
       margin-bottom: 12px;
     }
+
+    .preview-output {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+      background: rgba(255,255,255,0.02);
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .preview-output .result { color: var(--green); }
+
+    /* ===== TEST RESULTS ===== */
+    .test-results {
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 16px 20px;
+      font-size: 13px;
+    }
+
+    .test-results h4 {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
     .test-item {
       display: flex;
       align-items: center;
@@ -464,18 +585,20 @@
       font-family: 'JetBrains Mono', monospace;
       font-size: 12px;
     }
-    .test-pass { color: #22C55E; }
-    .test-fail { color: #EF4444; }
 
-    /* Hint Panel */
+    .test-pass { color: var(--green); }
+    .test-fail { color: var(--red); }
+
+    /* ===== HINT PANEL ===== */
     .hint-panel {
-      border-top: 1px solid #30363D;
+      border-top: 1px solid rgba(255,255,255,0.06);
       padding: 16px 20px;
     }
+
     .hint-toggle {
       background: none;
       border: none;
-      color: var(--tc-primary);
+      color: var(--purple);
       cursor: pointer;
       font-size: 13px;
       font-family: inherit;
@@ -483,85 +606,45 @@
       min-height: 44px;
       display: flex;
       align-items: center;
+      transition: color 0.2s ease;
     }
-    .hint-toggle:hover { text-decoration: underline; }
+
+    .hint-toggle:hover {
+      color: #9B8AFF;
+    }
+
     .hint-levels {
       margin-top: 12px;
       display: flex;
       flex-direction: column;
       gap: 8px;
     }
+
     .hint-level {
       padding: 10px 14px;
-      border-left: 3px solid var(--tc-accent);
+      border-left: 2px solid var(--accent);
       font-size: 13px;
-      color: var(--tc-text);
+      color: rgba(255,255,255,0.8);
       line-height: 1.6;
-      background: color-mix(in srgb, var(--tc-surface) 40%, transparent);
-      border-radius: 0 6px 6px 0;
+      background: rgba(255,255,255,0.02);
+      border-radius: 0 8px 8px 0;
     }
+
     .hint-level.collapsed {
-      color: var(--tc-muted);
+      color: var(--muted);
       cursor: pointer;
-      border-left-color: var(--tc-muted);
+      border-left-color: rgba(255,255,255,0.1);
     }
+
     .hint-level.collapsed::before {
       content: '+ ';
       font-weight: 600;
     }
-    .hint-level:nth-child(2) { border-left-color: var(--tc-primary); }
+
+    .hint-level:nth-child(2) { border-left-color: var(--purple); }
     .hint-level:nth-child(3) { border-left-color: #F59E0B; }
 
-    /* --- THEME SWITCHER --- */
-    .theme-switcher {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      z-index: 200;
-    }
-    .theme-toggle {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      border: 1px solid var(--tc-border);
-      background: var(--tc-surface);
-      color: var(--tc-primary);
-      font-size: 18px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      backdrop-filter: blur(12px);
-      transition: transform 150ms;
-    }
-    .theme-toggle:hover { transform: scale(1.1); }
-    .theme-popup {
-      position: absolute;
-      bottom: 52px;
-      right: 0;
-      background: var(--tc-surface);
-      border: 1px solid var(--tc-border);
-      border-radius: 12px;
-      padding: 12px;
-      display: none;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .theme-popup.active { display: flex; }
-    .theme-dot {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      border: 2px solid transparent;
-      cursor: pointer;
-      transition: transform 150ms, border-color 150ms;
-    }
-    .theme-dot:hover {
-      transform: scale(1.15);
-      border-color: rgba(255,255,255,0.3);
-    }
-
-    /* --- RESPONSIVE: TABLET --- */
+    /* ===== RESPONSIVE: TABLET ===== */
     @media (max-width: 1023px) {
       .sidebar { display: none; }
       .hamburger { display: flex; }
@@ -583,16 +666,16 @@
         width: 100%;
         height: 40px;
       }
-      .bridge-connector::after {
-        width: 80%;
-        height: 2px;
+      .bridge-connector::before {
+        width: 60%;
+        height: 1px;
       }
     }
 
-    /* --- RESPONSIVE: MOBILE --- */
+    /* ===== RESPONSIVE: MOBILE ===== */
     @media (max-width: 639px) {
       .nav-breadcrumb { display: none; }
-      .narrative-panel { padding: 16px; }
+      .narrative-panel { padding: 20px 16px; }
       .code-editor { font-size: 13px; }
       .code-panel.tab-panel.active { min-height: 300px; }
       .btn-run {
@@ -601,17 +684,27 @@
         font-size: 15px;
       }
       .bridge-callout { margin: 20px 0; }
+      .tab-bar {
+        background: var(--bg);
+      }
+      .tab-btn {
+        font-size: 13px;
+      }
     }
 
-    /* Sidebar overlay for mobile */
+    /* ===== SIDEBAR OVERLAY (mobile) ===== */
     .sidebar-overlay {
       display: none;
       position: fixed;
       inset: 0;
       z-index: 150;
-      background: rgba(0,0,0,0.5);
+      background: rgba(0,0,0,0.6);
+      -webkit-backdrop-filter: blur(4px);
+      backdrop-filter: blur(4px);
     }
+
     .sidebar-overlay.active { display: block; }
+
     .sidebar-overlay .sidebar {
       display: flex;
       width: 280px;
@@ -620,13 +713,14 @@
       left: 0;
       top: 0;
     }
+
     .sidebar-overlay .sidebar-close {
       position: absolute;
       top: 12px;
       right: 12px;
       background: none;
       border: none;
-      color: var(--tc-text);
+      color: var(--muted);
       font-size: 20px;
       cursor: pointer;
       min-width: 44px;
@@ -634,6 +728,11 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      transition: color 0.2s ease;
+    }
+
+    .sidebar-overlay .sidebar-close:hover {
+      color: var(--text);
     }
   </style>
 </head>
@@ -643,9 +742,9 @@
   <nav class="nav-bar">
     <div class="nav-left">
       <button class="hamburger" id="hamburger-btn">&#9776;</button>
-      <span class="nav-logo">&#9671; TENSORCRAFT</span>
+      <span class="nav-logo">&#9671; tensorcraft</span>
     </div>
-    <div class="nav-breadcrumb">Deep Orbit / Module 3 / <span>Your First Model</span></div>
+    <div class="nav-breadcrumb">Deep Orbit / Module 1 / <span>Your First Model</span></div>
   </nav>
 
   <!-- RESPONSIVE TABS (tablet/mobile) -->
@@ -659,7 +758,7 @@
     <div class="sidebar">
       <button class="sidebar-close" id="sidebar-close">&times;</button>
       <div class="sidebar-logo">&#9671;</div>
-      <h3>Module 3: Neural Networks</h3>
+      <h3>Module 1: Neural Networks</h3>
       <ul class="sidebar-lessons">
         <li class="sidebar-lesson completed"><span class="icon">&#10003;</span> The Signal</li>
         <li class="sidebar-lesson completed"><span class="icon">&#10003;</span> Patterns in Noise</li>
@@ -677,10 +776,10 @@
   <!-- 3-COLUMN LAYOUT -->
   <div class="lesson-layout">
 
-    <!-- SIDEBAR (desktop only) -->
+    <!-- SIDEBAR (desktop) -->
     <aside class="sidebar" id="desktop-sidebar">
       <div class="sidebar-logo">&#9671;</div>
-      <h3>Module 3: Neural Networks</h3>
+      <h3>Module 1: Neural Networks</h3>
       <ul class="sidebar-lessons">
         <li class="sidebar-lesson completed"><span class="icon">&#10003;</span> The Signal</li>
         <li class="sidebar-lesson completed"><span class="icon">&#10003;</span> Patterns in Noise</li>
@@ -710,7 +809,7 @@
         <div class="section-label">Challenge</div>
         <p>Build a simple classifier that can distinguish between cosmic noise and structured signals in the Archimedes' sensor data. Start by implementing the most fundamental activation function in neural networks.</p>
 
-        <div class="section-label">Concept &mdash; FE&#8594;ML Bridge</div>
+        <div class="section-label">Concept &mdash; FE &rarr; ML Bridge</div>
 
         <!-- BRIDGE CALLOUT -->
         <div class="bridge-callout">
@@ -718,10 +817,10 @@
             <h4>Frontend</h4>
             <h5>Math.max(0, x)</h5>
             <code>Math.max(0, x)</code>
-            <p>In JavaScript, <code style="display:inline;background:none;padding:0;margin:0;">Math.max(0, x)</code> returns 0 for negative values and passes positive values through unchanged.</p>
+            <p>In JavaScript, <code class="inline" style="display:inline;background:var(--code-bg);padding:2px 6px;border-radius:4px;font-size:13px;color:var(--accent);border:1px solid rgba(255,255,255,0.06);">Math.max(0, x)</code> returns 0 for negative values and passes positive values through unchanged.</p>
           </div>
           <div class="bridge-connector">
-            <div class="bridge-icon">&#9876;</div>
+            <div class="bridge-icon">&rarr;</div>
           </div>
           <div class="bridge-card">
             <h4>Machine Learning</h4>
@@ -731,14 +830,14 @@
           </div>
         </div>
 
-        <p>Sato smiles. "See? You already know ReLU. You've been using it every time you called <code style="display:inline;background:color-mix(in srgb, var(--tc-bg) 80%, #000);padding:2px 6px;border-radius:4px;font-size:14px;">Math.max(0, x)</code> in your frontend code. Neural networks are full of concepts like this &mdash; things you already understand, just with different names."</p>
+        <p>Sato smiles. "See? You already know ReLU. You've been using it every time you called <code class="inline" style="display:inline;background:var(--code-bg);padding:2px 6px;border-radius:4px;font-size:13px;color:var(--accent);border:1px solid rgba(255,255,255,0.06);">Math.max(0, x)</code> in your frontend code. Neural networks are full of concepts like this &mdash; things you already understand, just with different names."</p>
 
         <p>ARIA chimes in: "I have prepared an exercise in your workstation editor. Implement the ReLU function, then test it against the sample signal data. I will be evaluating your work. No pressure."</p>
 
         <!-- CHECKPOINT QUIZ -->
         <div class="checkpoint-quiz">
           <h3>Quick Check</h3>
-          <p class="quiz-question">Which activation function is equivalent to <code style="display:inline;background:none;padding:0;">Math.max(0, x)</code>?</p>
+          <p class="quiz-question">Which activation function is equivalent to <code style="display:inline;background:none;padding:0;font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--accent);">Math.max(0, x)</code>?</p>
           <div class="quiz-options">
             <div class="quiz-option">
               <div class="radio"></div>
@@ -782,6 +881,16 @@ console.<span class="tok-fn">log</span>(<span class="tok-op">activated</span>);
 <span class="tok-cm">// Expected: [0, 0, 1.7, 0, 4.2]</span></pre>
       </div>
 
+      <!-- PREVIEW PANEL -->
+      <div class="preview-panel">
+        <h4>Preview</h4>
+        <div class="preview-output">
+          <span class="tok-cm">// Console output:</span><br>
+          <span class="result">[0, 0, 1.7, 0, 4.2]</span>
+        </div>
+      </div>
+
+      <!-- TEST RESULTS -->
       <div class="test-results">
         <h4>Test Results</h4>
         <div class="test-item test-pass">&#10003; relu(5) should return 5</div>
@@ -789,6 +898,7 @@ console.<span class="tok-fn">log</span>(<span class="tok-op">activated</span>);
         <div class="test-item test-fail">&#10007; relu(0) should return 0</div>
       </div>
 
+      <!-- HINT PANEL -->
       <div class="hint-panel">
         <button class="hint-toggle" id="hint-toggle-btn">Need a hint?</button>
         <div class="hint-levels" id="hint-levels">
@@ -801,35 +911,7 @@ console.<span class="tok-fn">log</span>(<span class="tok-op">activated</span>);
 
   </div>
 
-  <!-- THEME SWITCHER -->
-  <div class="theme-switcher">
-    <button class="theme-toggle glass" title="Switch theme">&#9671;</button>
-    <div class="theme-popup">
-      <button class="theme-dot" data-theme="deep-orbit" style="background:#7B68EE" title="Deep Orbit"></button>
-      <button class="theme-dot" data-theme="neon-protocol" style="background:#00D4FF" title="Neon Protocol"></button>
-      <button class="theme-dot" data-theme="signal-ward" style="background:#2ECC71" title="Signal Ward"></button>
-      <button class="theme-dot" data-theme="nova-canvas" style="background:#FF6B6B" title="Nova Canvas"></button>
-      <button class="theme-dot" data-theme="terra-grid" style="background:#F59E0B" title="Terra Grid"></button>
-    </div>
-  </div>
-
   <script>
-    /* Theme switcher */
-    document.addEventListener('DOMContentLoaded', () => {
-      const switcher = document.querySelector('.theme-switcher');
-      const popup = switcher?.querySelector('.theme-popup');
-      switcher?.querySelector('.theme-toggle')?.addEventListener('click', () => popup?.classList.toggle('active'));
-      document.querySelectorAll('.theme-dot').forEach(dot => {
-        dot.addEventListener('click', () => {
-          document.documentElement.setAttribute('data-theme', dot.dataset.theme);
-          localStorage.setItem('tc-theme', dot.dataset.theme);
-          popup?.classList.remove('active');
-        });
-      });
-      const saved = localStorage.getItem('tc-theme');
-      if (saved) document.documentElement.setAttribute('data-theme', saved);
-    });
-
     /* Tab switching */
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', () => {

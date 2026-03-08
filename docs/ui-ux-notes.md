@@ -224,3 +224,69 @@ Each theme defines six CSS custom properties. All five themes share the same pro
 - Focus indicators: All interactive elements use a 2px `--theme-accent` outline with 2px offset on `:focus-visible`. This is a global style applied in the base CSS. Never suppress or override focus indicators.
 
 **Dark mode note:** Tensorcraft is dark-mode only. There is no light mode. The dark aesthetic is a core brand element. All design decisions assume a dark background. The `color-scheme: dark` meta tag is set in the document head to inform the browser (affects scrollbar styling, form controls, etc.). System-level forced colors (Windows High Contrast Mode) are respected via `@media (forced-colors: active)` -- in this mode, all custom colors are replaced with system colors and borders become visible.
+
+### 5.3 Prototype Design System — Zensman DeFi Aesthetic
+
+As of March 2026, all 12 prototype pages use a unified "Zensman DeFi" clean aesthetic instead of the heavy neon/glow style from earlier iterations. This is a clean, minimal, premium SaaS look.
+
+| Token | Value | Notes |
+|-------|-------|-------|
+| Background | `#080B16` | Replaces per-theme `--tc-bg` in prototypes |
+| Surface | `#0F1320` | Cards, panels, modals |
+| Borders | `rgba(255,255,255,0.06)` | Subtle, low-contrast dividers |
+| Headings text | `#FFFFFF` | Pure white for headings |
+| Muted text | `#8B92A5` | Secondary labels, captions |
+| Accent | `#00D4FF` | Subtle cyan; used sparingly for CTAs and highlights |
+
+**Key style rules:**
+- No heavy neon glow effects anywhere
+- Pill-shaped buttons: `border-radius: 999px`
+- Glass navigation bar: 72px height, `backdrop-filter: blur(20px)`
+- Overall feel: clean, minimal, premium SaaS — not cyberpunk
+
+> **Note:** The per-theme color system in Section 5.2 still applies within the app (lesson viewer, progress diagram, etc.). The Zensman aesthetic governs the marketing shell, auth, onboarding, pricing, and landing pages.
+
+---
+
+## PART 6: AUTH, ONBOARDING, PAYWALL, AND BRIDGE EXPLORER SCREENS
+
+These four screens were identified as gaps in the original screen inventory and have been added as prototypes.
+
+### 6.1 Auth / Login Screen (`auth.html`)
+
+The signup and login screen provides three authentication methods.
+
+- **Methods:** GitHub OAuth, Google OAuth, and email magic link. Each is presented as a full-width pill button stacked vertically. GitHub button has the GitHub icon + "Continue with GitHub". Google button has the Google icon + "Continue with Google". Email magic link has a text input for email address + "Send Magic Link" submit button.
+- **Layout:** Centered card (max-width: 420px) on the `#080B16` background. Card uses `#0F1320` surface with `rgba(255,255,255,0.06)` border. Tensorcraft logo above the card. Headline: "Welcome to Tensorcraft". Subtext toggles between "Sign up" and "Log in" modes via a text link below the form.
+- **Post-auth:** Successful signup redirects to the onboarding flow (Section 6.2). Returning users who have completed onboarding are redirected to their dashboard.
+
+### 6.2 Onboarding Flow (`onboarding.html`)
+
+A 3-step post-signup flow that orients the new user.
+
+- **Step 1 — Welcome:** Headline "You Already Think Like an ML Engineer" (matches the landing page hero). Brief value proposition paragraph. "Let's get started" CTA button.
+- **Step 2 — Choose Theme:** Displays available themes as selectable cards (same card style as theme-selection screen but simplified). User picks their starting theme. Deep Orbit is pre-highlighted as the recommended first theme.
+- **Step 3 — Start Learning:** Confirmation screen showing the selected theme, estimated time commitment, and a "Begin Module 1" CTA. Also shows a skip option: "Explore other themes first".
+- **Progress indicator:** A 3-dot stepper at the top of the card shows current position (filled dot = current, hollow = remaining).
+- **Persistence:** Onboarding completion is stored in the user profile. Users who have completed onboarding are never shown it again.
+
+### 6.3 Paywall / Upgrade Modal (`paywall.html`)
+
+Appears after completing the Module 1 free preview when a free-tier user attempts to access Module 2+.
+
+- **Trigger:** Navigating to any lesson in Module 2 or beyond while on the free tier.
+- **Layout:** Centered modal overlay with backdrop blur. Modal card (max-width: 520px) on `#0F1320` surface.
+- **Content:** Headline "Unlock the full [Theme Name] journey". Feature comparison (free vs. paid). Per-model price displayed prominently: "$79 — lifetime access to this theme". Pill-shaped CTA: "Unlock [Theme Name]". Secondary link: "View all themes" (links to pricing page).
+- **Dismiss:** Click outside the modal or X button. User is returned to the Module 1 content they can still access.
+
+> **PRICING DISCREPANCY:** The PRD (Section 8) defines a subscription model ($19/mo Pro, $39/seat Team), but the product-plan (Part 2) and the prototypes use per-model pricing ($79 per theme, lifetime access). The paywall prototype implements per-model pricing. This discrepancy must be resolved before V1.0 launch. See also the flag in the PRD.
+
+### 6.4 Bridge Explorer (`bridge-explorer.html`)
+
+A V1.0 feature for browsing all FE-to-ML bridges across themes.
+
+- **Purpose:** A standalone browsable directory of all 50+ FE-to-ML bridges, not tied to a specific lesson. Allows learners to search and explore bridges by FE concept or ML concept.
+- **Layout:** Full-page layout with search bar at top (pill-shaped input). Below: filterable grid of bridge cards. Each card shows: FE concept (left), arrow connector, ML concept (right), one-line summary, and the theme it belongs to.
+- **Filters:** Filter by theme (checkboxes), by ML category (e.g., "Training", "Architecture", "Data Prep"), or by FE category (e.g., "React", "CSS", "DOM").
+- **Card interaction:** Clicking a bridge card expands it inline to show the full analogy text, code examples for both FE and ML sides, and a "Go to lesson" link.
+- **Responsive:** On mobile, bridge cards stack vertically. The filter panel collapses into a slide-out drawer accessible via a filter icon button.

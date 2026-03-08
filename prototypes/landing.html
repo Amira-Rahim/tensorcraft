@@ -1,160 +1,316 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="deep-orbit">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tensorcraft — Learn ML Through Code You Already Know</title>
+  <title>Tensorcraft — The Bridge from Frontend to ML Is Shorter Than You Think</title>
   <link rel="stylesheet" href="styles.css">
   <style>
+    /* ===== PAGE-LEVEL COLOR OVERRIDES ===== */
+    :root {
+      --page-bg: #080B16;
+      --page-surface: #0F1320;
+      --page-border: rgba(255,255,255,0.06);
+      --page-text: #FFFFFF;
+      --page-muted: #8B92A5;
+      --page-glow: #00D4FF;
+      --page-glow-secondary: #7B68EE;
+    }
+
+    body {
+      background: var(--page-bg);
+      color: var(--page-text);
+    }
+
+    /* ===== NAV BAR ===== */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      background: rgba(8,11,22,0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .nav__logo {
+      font-size: 18px;
+      font-weight: 600;
+      color: #FFFFFF;
+      letter-spacing: 0.02em;
+    }
+
+    .nav__links {
+      display: flex;
+      align-items: center;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 999px;
+      padding: 4px;
+    }
+
+    .nav__links a {
+      padding: 8px 16px;
+      font-size: 14px;
+      color: var(--page-muted);
+      transition: color 0.2s ease;
+      border-radius: 999px;
+    }
+
+    .nav__links a:hover {
+      color: #FFFFFF;
+    }
+
+    .nav__cta {
+      border: 1px solid rgba(255,255,255,0.15);
+      background: transparent;
+      color: #FFFFFF;
+      border-radius: 999px;
+      padding: 10px 24px;
+      font-size: 14px;
+      font-weight: 500;
+      transition: background 0.2s ease;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .nav__cta:hover {
+      background: rgba(255,255,255,0.05);
+    }
+
+    @media (max-width: 768px) {
+      .nav__links { display: none; }
+      .nav { padding: 0 20px; }
+    }
+
     /* ===== HERO ===== */
     .hero {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 24px;
+      padding: 160px 24px 100px;
       text-align: center;
+      position: relative;
+      overflow: hidden;
+      background: #080B16;
+    }
+
+    /* Ambient background — two soft color fields that slowly breathe */
+    .hero__bg {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
       overflow: hidden;
     }
 
-    .hero__bg {
-      position: fixed;
-      inset: 0;
-      opacity: 0.35;
-      z-index: 0;
+    /* Cyan wash — FE side */
+    .hero__bg::before {
+      content: '';
+      position: absolute;
+      width: 700px;
+      height: 500px;
+      top: 45%;
+      left: 25%;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(ellipse 80% 70%, rgba(0,212,255,0.25) 0%, rgba(0,212,255,0.08) 45%, transparent 70%);
+      filter: blur(40px);
+      animation: breathe-left 10s ease-in-out infinite;
     }
 
-    /* Gradient orbs */
-    .hero__orb {
-      position: fixed;
-      border-radius: 50%;
+    /* Purple wash — ML side */
+    .hero__bg::after {
+      content: '';
+      position: absolute;
+      width: 700px;
+      height: 500px;
+      top: 50%;
+      left: 75%;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(ellipse 80% 70%, rgba(123,104,238,0.25) 0%, rgba(123,104,238,0.08) 45%, transparent 70%);
+      filter: blur(40px);
+      animation: breathe-right 10s ease-in-out infinite;
+    }
+
+    /* Fine dot grid — represents the structured intersection */
+    .hero__grid {
+      position: absolute;
+      inset: 0;
       pointer-events: none;
       z-index: 0;
+      background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 32px 32px;
+      -webkit-mask-image: radial-gradient(ellipse 60% 50% at 50% 50%, black 20%, transparent 70%);
+      mask-image: radial-gradient(ellipse 60% 50% at 50% 50%, black 20%, transparent 70%);
     }
 
-    .hero__orb--primary {
-      top: -40%;
-      left: -20%;
-      width: 80vw;
-      height: 80vw;
-      background: radial-gradient(ellipse, var(--tc-primary), transparent 70%);
-      opacity: 0.2;
-      filter: blur(120px);
+    @keyframes breathe-left {
+      0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1) translateX(0); }
+      50%      { opacity: 1;   transform: translate(-50%, -50%) scale(1.15) translateX(30px); }
     }
 
-    .hero__orb--accent {
-      bottom: -30%;
-      right: -20%;
-      width: 60vw;
-      height: 60vw;
-      background: radial-gradient(ellipse, var(--tc-accent), transparent 70%);
-      opacity: 0.15;
-      filter: blur(100px);
-      animation-delay: -7s;
+    @keyframes breathe-right {
+      0%, 100% { opacity: 1;   transform: translate(-50%, -50%) scale(1.1) translateX(0); }
+      50%      { opacity: 0.6; transform: translate(-50%, -50%) scale(1) translateX(-30px); }
     }
 
-    .hero__content {
+    @media (prefers-reduced-motion: reduce) {
+      .hero__bg::before, .hero__bg::after { animation: none; }
+    }
+
+    .hero > *:not(.hero__bg):not(.hero__grid) {
       position: relative;
-      z-index: 10;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      z-index: 1;
     }
 
-    .hero__line-top {
-      width: 128px;
-      height: 2px;
-      margin-bottom: 48px;
-      transform-origin: center;
-      animation: line-grow 1s ease 0.2s both;
+    .hero__badge {
+      display: inline-flex;
+      padding: 8px 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 999px;
+      font-size: 13px;
+      color: var(--page-muted);
+      letter-spacing: 0.05em;
+      margin-bottom: 32px;
     }
 
     .hero__title {
-      font-size: clamp(var(--text-3xl), 8vw, 7rem);
+      font-size: 64px;
       font-weight: 700;
-      letter-spacing: 0.2em;
-      color: var(--tc-primary);
-      animation: fade-in 1s ease 0.6s both;
+      color: #FFFFFF;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 28px;
     }
 
-    .hero__line-bottom {
-      width: 200px;
-      height: 2px;
-      margin: 32px 0;
-      transform-origin: center;
-      animation: line-grow 1.2s ease 1s both;
-    }
-
-    .hero__tagline {
-      font-size: clamp(var(--text-lg), 2.5vw, var(--text-xl));
-      color: var(--tc-muted);
-      max-width: 640px;
-      animation: slide-up 0.8s ease 1.2s both;
-    }
-
-    .hero__tagline strong {
-      color: var(--tc-text);
-      font-weight: 500;
-    }
-
-    .hero__secondary {
-      font-size: var(--text-base);
-      color: var(--tc-muted);
-      max-width: 520px;
-      margin-top: 12px;
-      animation: fade-in 0.8s ease 1.6s both;
+    .hero__subtitle {
+      font-size: 18px;
+      color: var(--page-muted);
+      max-width: 560px;
+      margin: 0 auto 40px;
+      line-height: 1.6;
     }
 
     .hero__cta {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid rgba(0,212,255,0.3);
+      background: rgba(0,212,255,0.08);
+      color: #FFFFFF;
+      border-radius: 999px;
+      padding: 14px 32px;
+      font-size: 16px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .hero__cta:hover {
+      background: rgba(0,212,255,0.15);
+      border-color: rgba(0,212,255,0.5);
+    }
+
+    .hero__note {
+      font-size: 14px;
+      color: var(--page-muted);
+      margin-top: 16px;
+    }
+
+    @media (max-width: 768px) {
+      .hero { padding: 100px 20px 60px; }
+      .hero__title { font-size: 36px; }
+    }
+
+    /* ===== PRODUCT PREVIEW ===== */
+    .preview {
+      max-width: 900px;
+      margin: -40px auto 0;
+      padding: 0 24px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .preview__window {
+      background: var(--page-surface);
+      border: 1px solid var(--page-border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .preview__titlebar {
       display: flex;
-      gap: 16px;
-      margin-top: 40px;
-      animation: slide-up 0.6s ease 2s both;
-      flex-wrap: wrap;
-      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--page-border);
     }
 
-    .hero__cta .btn-primary {
-      padding: 16px 32px;
-      font-size: var(--text-lg);
+    .preview__dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
     }
 
-    .hero__cta .btn-outline {
-      padding: 16px 32px;
-      font-size: var(--text-lg);
+    .preview__titlebar-text {
+      margin-left: 12px;
+      font-size: 13px;
+      color: var(--page-muted);
     }
 
-    .hero__scroll {
-      position: absolute;
-      bottom: 32px;
-      animation: fade-in 1s ease 2.5s both;
+    .preview__body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 320px;
     }
 
-    .hero__scroll-indicator {
-      width: 24px;
-      height: 40px;
-      border: 2px solid var(--tc-muted);
-      border-radius: 12px;
-      display: flex;
-      justify-content: center;
-      padding-top: 8px;
-      animation: scroll-hint 2s ease-in-out infinite;
+    .preview__narrative {
+      padding: 28px 24px;
+      border-right: 1px solid var(--page-border);
+      font-size: 14px;
+      line-height: 1.8;
+      color: var(--page-muted);
     }
 
-    .hero__scroll-dot {
-      width: 4px;
-      height: 8px;
-      border-radius: 2px;
-      background: var(--tc-muted);
+    .preview__narrative-title {
+      color: #FFFFFF;
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 16px;
     }
 
-    /* ===== SECTIONS SHARED ===== */
+    .preview__narrative p {
+      margin-bottom: 12px;
+    }
+
+    .preview__editor {
+      padding: 24px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.8;
+      color: var(--page-muted);
+      overflow: hidden;
+    }
+
+    .preview__editor-header {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.3);
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 768px) {
+      .preview__body { grid-template-columns: 1fr; }
+      .preview__narrative { border-right: none; border-bottom: 1px solid var(--page-border); }
+    }
+
+    /* ===== SECTION SHARED ===== */
     .section {
       padding: 120px 24px;
       position: relative;
-      z-index: 10;
     }
 
     .section__inner {
@@ -162,401 +318,777 @@
       margin: 0 auto;
     }
 
+    .section__divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,212,255,0.2), transparent);
+      max-width: 600px;
+      margin: 0 auto 60px;
+    }
+
+    .section__label {
+      font-size: 13px;
+      color: var(--page-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
     .section__heading {
-      font-size: clamp(var(--text-2xl), 4vw, var(--text-3xl));
+      font-size: 40px;
       font-weight: 700;
-      color: var(--tc-text);
+      color: #FFFFFF;
+      text-align: center;
       margin-bottom: 16px;
+      line-height: 1.2;
     }
 
-    .section__description {
-      font-size: var(--text-lg);
-      color: var(--tc-muted);
-      max-width: 640px;
-      margin-bottom: 48px;
+    .section__subtitle {
+      font-size: 18px;
+      color: var(--page-muted);
+      text-align: center;
+      max-width: 560px;
+      margin: 0 auto 56px;
     }
 
-    /* ===== BRIDGES SECTION ===== */
+    @media (max-width: 768px) {
+      .section { padding: 80px 20px; }
+      .section__heading { font-size: 28px; }
+    }
+
+    /* ===== BRIDGES GRID ===== */
     .bridges-grid {
       display: grid;
-      grid-template-columns: 1fr;
-      gap: 12px;
-    }
-
-    @media (min-width: 640px) {
-      .bridges-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-
-    @media (min-width: 1024px) {
-      .bridges-grid { grid-template-columns: repeat(3, 1fr); }
-    }
-
-    .bridge-card {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      gap: 8px;
-      padding: 24px 16px;
-    }
-
-    .bridge-card__fe {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: var(--text-sm);
-      color: var(--tc-accent);
-    }
-
-    .bridge-card__connector {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin: 4px 0;
-    }
-
-    .bridge-card__line {
-      width: 32px;
-      height: 2px;
-    }
-
-    .bridge-card__dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--tc-primary);
-    }
-
-    .bridge-card__ml {
-      font-size: var(--text-base);
-      font-weight: 600;
-      color: var(--tc-text);
-    }
-
-    .bridges-note {
-      text-align: center;
-      font-size: var(--text-sm);
-      color: var(--tc-muted);
-      margin-top: 32px;
-    }
-
-    /* ===== THEMES SECTION ===== */
-    .themes-grid {
-      display: grid;
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(3, 1fr);
       gap: 16px;
     }
 
-    @media (min-width: 640px) {
-      .themes-grid { grid-template-columns: repeat(2, 1fr); }
+    @media (max-width: 1023px) {
+      .bridges-grid { grid-template-columns: repeat(2, 1fr); }
     }
 
-    @media (min-width: 1024px) {
-      .themes-grid { grid-template-columns: repeat(3, 1fr); }
+    @media (max-width: 640px) {
+      .bridges-grid { grid-template-columns: 1fr; }
     }
 
-    @media (min-width: 1440px) {
-      .themes-grid { grid-template-columns: repeat(5, 1fr); }
+    .bridge-card {
+      background: var(--page-surface);
+      border: 1px solid var(--page-border);
+      border-radius: 12px;
+      padding: 28px;
+      transition: border-color 0.2s ease, transform 0.2s ease;
     }
 
-    .theme-card {
-      padding: 24px;
-      border-radius: 16px;
-      background: color-mix(in srgb, var(--tc-surface) 50%, transparent);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    .bridge-card:hover {
+      border-color: rgba(0,212,255,0.15);
+      transform: translateY(-2px);
     }
 
-    .theme-card:hover {
-      transform: translateY(-4px);
+    .bridge-card__fe {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      background: rgba(0,212,255,0.08);
+      border: 1px solid rgba(0,212,255,0.15);
+      border-radius: 6px;
+      padding: 4px 12px;
+      color: var(--page-glow);
     }
 
-    .theme-card__badge {
-      margin-bottom: 16px;
+    .bridge-card__arrow {
+      color: var(--page-muted);
+      margin: 12px 0;
+      font-size: 16px;
     }
 
-    .theme-card__name {
-      font-size: var(--text-xl);
-      font-weight: 700;
+    .bridge-card__ml-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: #FFFFFF;
       margin-bottom: 4px;
     }
 
-    .theme-card__tagline {
-      font-size: var(--text-sm);
-      color: var(--tc-muted);
+    .bridge-card__ml-desc {
+      font-size: 14px;
+      color: var(--page-muted);
+      line-height: 1.5;
+    }
+
+    /* ===== THEMES — FEATURED + GRID LAYOUT ===== */
+    .themes-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .theme-featured {
+      grid-column: 1 / -1;
+      background: var(--page-surface);
+      border: 1px solid rgba(123,104,238,0.2);
+      border-radius: 16px;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      transition: border-color 0.3s ease;
+    }
+
+    .theme-featured:hover {
+      border-color: rgba(123,104,238,0.4);
+    }
+
+    .theme-featured__art {
+      position: relative;
+      min-height: 320px;
+      background:
+        radial-gradient(ellipse 70% 60% at 30% 70%, rgba(123,104,238,0.15), transparent),
+        radial-gradient(ellipse 50% 40% at 70% 30%, rgba(240,199,94,0.08), transparent),
+        var(--page-surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+    }
+
+    .theme-featured__mockup {
+      width: 100%;
+      max-width: 360px;
+      background: rgba(11,13,26,0.8);
+      border: 1px solid rgba(123,104,238,0.15);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .theme-featured__mockup-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .theme-featured__mockup-bar span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .theme-featured__mockup-body {
+      padding: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      line-height: 1.7;
+      color: var(--page-muted);
+    }
+
+    .theme-featured__body {
+      padding: 48px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .theme-featured__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      background: rgba(46,204,113,0.1);
+      color: #2ECC71;
+      border: 1px solid rgba(46,204,113,0.2);
+      width: fit-content;
+      margin-bottom: 20px;
+    }
+
+    .theme-featured__badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #2ECC71;
+    }
+
+    .theme-featured__name {
+      font-size: 32px;
+      font-weight: 700;
+      color: #7B68EE;
+      margin-bottom: 4px;
+    }
+
+    .theme-featured__domain {
+      font-size: 14px;
+      color: var(--page-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 16px;
+    }
+
+    .theme-featured__hook {
+      font-size: 16px;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    .theme-featured__meta {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .theme-featured__meta-item {
+      font-size: 13px;
+      color: var(--page-muted);
+    }
+
+    .theme-featured__meta-item strong {
+      color: #FFFFFF;
+      font-weight: 600;
+    }
+
+    .theme-featured__characters {
+      font-size: 13px;
+      color: var(--page-muted);
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+
+    .theme-featured__cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      background: #7B68EE;
+      color: #FFFFFF;
+      border-radius: 999px;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      width: fit-content;
+    }
+
+    .theme-featured__cta:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .theme-featured__price {
+      font-size: 14px;
+      color: var(--page-muted);
+      margin-top: 12px;
+    }
+
+    .theme-featured__price strong {
+      color: #FFFFFF;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    /* Coming soon cards — 2x2 grid */
+    .theme-card {
+      background: var(--page-surface);
+      border: 1px solid var(--page-border);
+      border-radius: 14px;
+      overflow: hidden;
+      position: relative;
+      transition: border-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .theme-card:hover {
+      transform: translateY(-3px);
+    }
+
+    .theme-card__art {
+      height: 100px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .theme-card__art-icon {
+      font-size: 32px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .theme-card__body {
+      padding: 24px 28px 28px;
+    }
+
+    .theme-card__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      margin-bottom: 14px;
+      background: rgba(139,146,165,0.08);
+      color: var(--page-muted);
+      border: 1px solid rgba(139,146,165,0.12);
+    }
+
+    .theme-card__name {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .theme-card__domain {
+      font-size: 12px;
+      color: var(--page-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+    }
+
+    .theme-card__hook {
+      font-size: 14px;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.6;
       margin-bottom: 16px;
     }
 
     .theme-card__build {
-      padding-top: 16px;
-      border-top: 1px solid var(--tc-border);
-    }
-
-    .theme-card__build-label {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      text-transform: uppercase;
-      color: var(--tc-muted);
-      margin-bottom: 4px;
+      font-size: 12px;
+      color: var(--page-muted);
+      margin-bottom: 12px;
     }
 
-    .theme-card__build-model {
-      font-size: var(--text-sm);
-      color: var(--tc-text);
+    .theme-card__build span {
+      color: rgba(255,255,255,0.7);
+    }
+
+    .theme-card__footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .theme-card__meta {
+      font-size: 12px;
+      color: var(--page-muted);
+    }
+
+    .theme-card__price {
+      font-size: 16px;
+      color: #FFFFFF;
+      font-weight: 600;
+    }
+
+    /* Per-theme accents */
+    .theme-card--neon:hover { border-color: rgba(0,212,255,0.2); }
+    .theme-card--signal:hover { border-color: rgba(46,204,113,0.2); }
+    .theme-card--nova:hover { border-color: rgba(255,107,107,0.2); }
+    .theme-card--terra:hover { border-color: rgba(245,158,11,0.2); }
+
+    @media (max-width: 1023px) {
+      .theme-featured { grid-template-columns: 1fr; }
+      .theme-featured__art { min-height: 200px; }
+      .theme-featured__body { padding: 32px 28px; }
+    }
+
+    @media (max-width: 640px) {
+      .themes-layout { grid-template-columns: 1fr; }
+      .theme-featured__name { font-size: 26px; }
+      .theme-featured__meta { flex-wrap: wrap; gap: 12px; }
     }
 
     /* ===== STATS SECTION ===== */
-    .stats-section {
-      border-top: 1px solid var(--tc-border);
-      border-bottom: 1px solid var(--tc-border);
+    .stats {
+      border-top: 1px solid var(--page-border);
+      border-bottom: 1px solid var(--page-border);
+      padding: 80px 24px;
     }
 
-    .stats-grid {
+    .stats__grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 24px;
-      max-width: 800px;
+      max-width: 900px;
       margin: 0 auto;
     }
 
-    @media (min-width: 640px) {
-      .stats-grid { grid-template-columns: repeat(4, 1fr); }
+    @media (max-width: 640px) {
+      .stats__grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .stats__item {
+      text-align: center;
+    }
+
+    .stats__value {
+      font-size: 48px;
+      font-weight: 700;
+      color: #FFFFFF;
+      line-height: 1.1;
+    }
+
+    .stats__label {
+      font-size: 14px;
+      color: var(--page-muted);
+      margin-top: 8px;
     }
 
     /* ===== CTA FOOTER ===== */
     .cta-footer {
+      padding: 120px 24px;
       text-align: center;
+      position: relative;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0,212,255,0.12), transparent 60%),
+        radial-gradient(ellipse 40% 30% at 50% 0%, rgba(0,212,255,0.08), transparent 50%),
+        radial-gradient(ellipse 100% 60% at 50% -20%, rgba(123,104,238,0.06), transparent 60%),
+        #080B16;
     }
 
     .cta-footer__heading {
-      font-size: clamp(var(--text-2xl), 4vw, var(--text-3xl));
+      font-size: 32px;
       font-weight: 700;
-      color: var(--tc-text);
+      color: #FFFFFF;
       margin-bottom: 16px;
+      line-height: 1.3;
     }
 
-    .cta-footer__text {
-      font-size: var(--text-lg);
-      color: var(--tc-muted);
-      max-width: 520px;
-      margin: 0 auto 40px;
+    .cta-footer__subtitle {
+      font-size: 18px;
+      color: var(--page-muted);
+      margin-bottom: 40px;
     }
 
-    .cta-footer .btn-primary {
-      padding: 20px 40px;
-      font-size: var(--text-lg);
+    .cta-footer__btn {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid rgba(0,212,255,0.3);
+      background: rgba(0,212,255,0.08);
+      color: #FFFFFF;
+      border-radius: 999px;
+      padding: 16px 36px;
+      font-size: 17px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .cta-footer__btn:hover {
+      background: rgba(0,212,255,0.15);
+      border-color: rgba(0,212,255,0.5);
+    }
+
+    .cta-footer__note {
+      font-size: 14px;
+      color: var(--page-muted);
+      margin-top: 20px;
     }
 
     /* ===== SITE FOOTER ===== */
     .site-footer {
-      text-align: center;
-      padding: 32px 24px;
-      border-top: 1px solid var(--tc-border);
-      font-size: var(--text-sm);
-      color: var(--tc-muted);
+      border-top: 1px solid var(--page-border);
+      padding: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 14px;
+      color: var(--page-muted);
     }
+
+    .site-footer__logo {
+      font-size: 16px;
+      font-weight: 600;
+      color: #FFFFFF;
+      letter-spacing: 0.02em;
+    }
+
+    .site-footer__links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .site-footer__links a {
+      color: var(--page-muted);
+      transition: color 0.2s ease;
+    }
+
+    .site-footer__links a:hover {
+      color: #FFFFFF;
+    }
+
+    @media (max-width: 640px) {
+      .site-footer {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+      }
+    }
+
+    /* ===== SYNTAX HIGHLIGHTING IN PREVIEW ===== */
+    .preview__editor .kw { color: #FF7B72; }
+    .preview__editor .fn { color: #D2A8FF; }
+    .preview__editor .str { color: #A5D6FF; }
+    .preview__editor .cm { color: #484F58; }
+    .preview__editor .num { color: #79C0FF; }
+    .preview__editor .op { color: #8B92A5; }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-in {
+      animation: fade-up 0.6s ease both;
+    }
+
+    .animate-in-1 { animation-delay: 0.1s; }
+    .animate-in-2 { animation-delay: 0.2s; }
+    .animate-in-3 { animation-delay: 0.3s; }
+    .animate-in-4 { animation-delay: 0.4s; }
+    .animate-in-5 { animation-delay: 0.5s; }
   </style>
 </head>
 <body>
 
-  <!-- Background layers -->
-  <div class="hero__bg grid-pattern"></div>
-  <div class="hero__orb hero__orb--primary animate-gradient"></div>
-  <div class="hero__orb hero__orb--accent animate-gradient"></div>
-
-  <!-- Nav Bar -->
-  <nav class="nav-bar">
-    <div class="nav-bar__logo neon-text-subtle">◇ TENSORCRAFT</div>
-    <div class="nav-bar__spacer"></div>
-    <div class="nav-bar__links">
+  <!-- Nav -->
+  <nav class="nav">
+    <div class="nav__logo">&#9671; tensorcraft</div>
+    <div class="nav__links">
       <a href="#themes">Themes</a>
       <a href="#pricing">Pricing</a>
-      <a href="#">Sign In</a>
+      <a href="#">Docs</a>
+      <a href="#">Community</a>
     </div>
+    <a href="#" class="nav__cta">Start now &rarr;</a>
   </nav>
 
   <!-- Hero -->
   <section class="hero">
-    <div class="hero__content">
-      <div class="hero__line-top neon-line"></div>
+    <div class="hero__bg"></div>
+    <div class="hero__grid"></div>
 
-      <h1 class="hero__title neon-text-subtle">TENSORCRAFT</h1>
-
-      <div class="hero__line-bottom neon-line"></div>
-
-      <p class="hero__tagline">
-        Learn machine learning through <strong>code you already know</strong>
-      </p>
-
-      <p class="hero__secondary">
-        Interactive, story-driven ML education for frontend engineers.
-        Build real models in the browser.
-      </p>
-
-      <div class="hero__cta">
-        <a href="#" class="btn-primary">Start Learning — Free</a>
-        <a href="#bridges" class="btn-outline">View Curriculum</a>
-      </div>
-    </div>
-
-    <div class="hero__scroll">
-      <div class="hero__scroll-indicator">
-        <div class="hero__scroll-dot"></div>
-      </div>
-    </div>
+    <div class="hero__badge animate-in animate-in-1">Interactive &middot; Story-Driven &middot; Browser-Based</div>
+    <h1 class="hero__title animate-in animate-in-2">
+      The Bridge from Frontend to ML<br>Is Shorter Than You Think
+    </h1>
+    <p class="hero__subtitle animate-in animate-in-3">
+      Components, state, data flow — you already use the building blocks of machine learning every day. We just connect the dots.
+    </p>
+    <a href="#" class="hero__cta animate-in animate-in-4">Begin Your ML Journey &rarr;</a>
+    <p class="hero__note animate-in animate-in-5">Module 1 included as preview &middot; No credit card required</p>
   </section>
 
-  <!-- FE→ML Bridges Section -->
+  <!-- Product Preview -->
+  <div class="preview">
+    <div class="preview__window">
+      <div class="preview__titlebar">
+        <div class="preview__dot" style="background: #FF5F56;"></div>
+        <div class="preview__dot" style="background: #FFBD2E;"></div>
+        <div class="preview__dot" style="background: #27C93F;"></div>
+        <span class="preview__titlebar-text">Deep Orbit &mdash; M1L3: Your First Model</span>
+      </div>
+      <div class="preview__body">
+        <div class="preview__narrative">
+          <div class="preview__narrative-title">The Signal Arrives</div>
+          <p>The deep-space array picks up a repeating signal at 1420 MHz. Your task: classify whether this is natural background noise or something worth investigating.</p>
+          <p>You already know how <code style="color:#00D4FF;">Array.map()</code> transforms data through a chain of operations. A neural network does the same thing &mdash; each layer transforms the signal, extracting increasingly abstract features.</p>
+          <p style="color:#FFFFFF; font-weight:500;">Let's build the classifier.</p>
+        </div>
+        <div class="preview__editor">
+          <div class="preview__editor-header">model.js</div>
+          <code>
+<span class="cm">// Your first neural network</span>
+<span class="kw">const</span> model = sequential([
+  dense({ <span class="str">units</span>: <span class="num">16</span>, <span class="str">activation</span>: <span class="str">'relu'</span> }),
+  dense({ <span class="str">units</span>: <span class="num">8</span>,  <span class="str">activation</span>: <span class="str">'relu'</span> }),
+  dense({ <span class="str">units</span>: <span class="num">1</span>,  <span class="str">activation</span>: <span class="str">'sigmoid'</span> }),
+]);
+
+<span class="cm">// Like Array.map() — data flows</span>
+<span class="cm">// through each layer sequentially</span>
+<span class="kw">const</span> prediction = model
+  .<span class="fn">forward</span>(signalData);</code>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bridges Section -->
   <section id="bridges" class="section">
     <div class="section__inner">
-      <span class="section-label" style="color: var(--tc-accent);">THE CORE INNOVATION</span>
-      <h2 class="section__heading">Frontend → ML Bridges</h2>
-      <p class="section__description">
-        Every ML concept is introduced through a frontend concept you already know.
-        50+ deep structural mappings, not casual analogies.
-      </p>
+      <div class="section__divider"></div>
+      <p class="section__label">THE CORE INNOVATION</p>
+      <h2 class="section__heading">Frontend &rarr; ML Bridges</h2>
+      <p class="section__subtitle">Every ML concept maps to something you already know</p>
 
       <div class="bridges-grid">
 
-        <div class="glass-card bridge-card">
-          <span class="bridge-card__fe">Math.max(0, x)</span>
-          <div class="bridge-card__connector">
-            <div class="bridge-card__line neon-line"></div>
-            <div class="bridge-card__dot"></div>
-            <div class="bridge-card__line neon-line"></div>
-          </div>
-          <span class="bridge-card__ml">ReLU Activation</span>
+        <div class="bridge-card">
+          <div class="bridge-card__fe">Math.max(0, x)</div>
+          <div class="bridge-card__arrow">&rarr;</div>
+          <div class="bridge-card__ml-name">ReLU Activation</div>
+          <div class="bridge-card__ml-desc">The same function, used in every neural network</div>
         </div>
 
-        <div class="glass-card bridge-card">
-          <span class="bridge-card__fe">Array.map() chain</span>
-          <div class="bridge-card__connector">
-            <div class="bridge-card__line neon-line"></div>
-            <div class="bridge-card__dot"></div>
-            <div class="bridge-card__line neon-line"></div>
-          </div>
-          <span class="bridge-card__ml">Neural Network</span>
+        <div class="bridge-card">
+          <div class="bridge-card__fe">Array.map()</div>
+          <div class="bridge-card__arrow">&rarr;</div>
+          <div class="bridge-card__ml-name">Neural Network</div>
+          <div class="bridge-card__ml-desc">Sequential data transformation through layers</div>
         </div>
 
-        <div class="glass-card bridge-card">
-          <span class="bridge-card__fe">CSS blur() kernel</span>
-          <div class="bridge-card__connector">
-            <div class="bridge-card__line neon-line"></div>
-            <div class="bridge-card__dot"></div>
-            <div class="bridge-card__line neon-line"></div>
-          </div>
-          <span class="bridge-card__ml">Convolution</span>
+        <div class="bridge-card">
+          <div class="bridge-card__fe">CSS blur()</div>
+          <div class="bridge-card__arrow">&rarr;</div>
+          <div class="bridge-card__ml-name">Convolution</div>
+          <div class="bridge-card__ml-desc">Sliding window operations on pixel data</div>
         </div>
 
-        <div class="glass-card bridge-card">
-          <span class="bridge-card__fe">Promise.all()</span>
-          <div class="bridge-card__connector">
-            <div class="bridge-card__line neon-line"></div>
-            <div class="bridge-card__dot"></div>
-            <div class="bridge-card__line neon-line"></div>
-          </div>
-          <span class="bridge-card__ml">Batch Processing</span>
+        <div class="bridge-card">
+          <div class="bridge-card__fe">Promise.all()</div>
+          <div class="bridge-card__arrow">&rarr;</div>
+          <div class="bridge-card__ml-name">Batch Processing</div>
+          <div class="bridge-card__ml-desc">Parallel execution with configurable chunk size</div>
         </div>
 
-        <div class="glass-card bridge-card">
-          <span class="bridge-card__fe">Service Worker + Cache</span>
-          <div class="bridge-card__connector">
-            <div class="bridge-card__line neon-line"></div>
-            <div class="bridge-card__dot"></div>
-            <div class="bridge-card__line neon-line"></div>
-          </div>
-          <span class="bridge-card__ml">Model Caching</span>
+        <div class="bridge-card">
+          <div class="bridge-card__fe">addEventListener</div>
+          <div class="bridge-card__arrow">&rarr;</div>
+          <div class="bridge-card__ml-name">Backpropagation</div>
+          <div class="bridge-card__ml-desc">Signals propagating through a layered system</div>
         </div>
 
-        <div class="glass-card bridge-card">
-          <span class="bridge-card__fe">DOM Event Bubbling</span>
-          <div class="bridge-card__connector">
-            <div class="bridge-card__line neon-line"></div>
-            <div class="bridge-card__dot"></div>
-            <div class="bridge-card__line neon-line"></div>
-          </div>
-          <span class="bridge-card__ml">Backpropagation</span>
+        <div class="bridge-card">
+          <div class="bridge-card__fe">flex-grow</div>
+          <div class="bridge-card__arrow">&rarr;</div>
+          <div class="bridge-card__ml-name">Attention</div>
+          <div class="bridge-card__ml-desc">Proportional weight distribution across elements</div>
         </div>
 
       </div>
-
-      <p class="bridges-note">50+ bridges across 5 themed worlds</p>
     </div>
   </section>
 
   <!-- Themes Section -->
   <section id="themes" class="section">
     <div class="section__inner">
-      <span class="section-label" style="color: var(--tc-accent);">FIVE THEMED WORLDS</span>
-      <h2 class="section__heading">Choose Your World</h2>
-      <p class="section__description">
-        Each theme is a complete ML education with a unique specialization.
-        11 modules. 55 lessons. ~22 hours. A real model on GitHub.
-      </p>
+      <div class="section__divider"></div>
+      <p class="section__label">FIVE THEMED WORLDS</p>
+      <h2 class="section__heading">Choose Your Story</h2>
+      <p class="section__subtitle">Each theme is a complete ML education — same core curriculum, unique narrative and specialization</p>
 
-      <div class="themes-grid">
+      <div class="themes-layout">
 
-        <!-- Deep Orbit -->
-        <div class="theme-card" style="border: 1px solid #7B68EE40;">
-          <div class="theme-card__badge">
-            <span class="badge badge--launched">Available Now</span>
+        <!-- FEATURED: Deep Orbit -->
+        <div class="theme-featured">
+          <div class="theme-featured__art">
+            <div class="theme-featured__mockup">
+              <div class="theme-featured__mockup-bar">
+                <span style="background:#FF5F56;"></span>
+                <span style="background:#FFBD2E;"></span>
+                <span style="background:#27C93F;"></span>
+              </div>
+              <div class="theme-featured__mockup-body">
+                <span style="color:#FF7B72;">const</span> signal = <span style="color:#D2A8FF;">classify</span>(<br>
+                &nbsp;&nbsp;fftData,<br>
+                &nbsp;&nbsp;{ <span style="color:#A5D6FF;">layers</span>: [<span style="color:#79C0FF;">16</span>, <span style="color:#79C0FF;">8</span>, <span style="color:#79C0FF;">1</span>] }<br>
+                );<br><br>
+                <span style="color:#484F58;">// Like Array.map() — each layer</span><br>
+                <span style="color:#484F58;">// transforms the signal forward</span>
+              </div>
+            </div>
           </div>
-          <h3 class="theme-card__name" style="color: #7B68EE;">Deep Orbit</h3>
-          <p class="theme-card__tagline">Time-Series &amp; Signals</p>
-          <div class="theme-card__build">
-            <p class="theme-card__build-label">You'll build:</p>
-            <p class="theme-card__build-model">DEEP SCAN — Signal Classifier</p>
+          <div class="theme-featured__body">
+            <div class="theme-featured__badge">Available Now</div>
+            <h3 class="theme-featured__name">Deep Orbit</h3>
+            <p class="theme-featured__domain">Time-Series &amp; Signal Processing</p>
+            <p class="theme-featured__hook">Aboard the deep-space research vessel <em>Archimedes</em>, decode mysterious cosmic signals using FFT, neural networks, and browser-based ML. Every lesson is a mission. Every concept has a frontend bridge.</p>
+            <div class="theme-featured__meta">
+              <span class="theme-featured__meta-item"><strong>11</strong> Modules</span>
+              <span class="theme-featured__meta-item"><strong>55</strong> Lessons</span>
+              <span class="theme-featured__meta-item"><strong>12</strong> FE Bridges</span>
+            </div>
+            <p class="theme-featured__characters">Meet Commander Okafor, Dr. Sato, Chief Torres, Ensign Park &amp; ARIA</p>
+            <a href="module-overview.html" class="theme-featured__cta">Start Deep Orbit &rarr;</a>
+            <p class="theme-featured__price"><strong>$79</strong> &middot; Module 1 included as preview</p>
           </div>
         </div>
 
         <!-- Neon Protocol -->
-        <div class="theme-card" style="border: 1px dashed #00D4FF40;">
-          <div class="theme-card__badge">
-            <span class="badge badge--coming-soon">Coming Soon</span>
+        <div class="theme-card theme-card--neon">
+          <div class="theme-card__art" style="background: radial-gradient(ellipse at 50% 80%, rgba(0,212,255,0.12), transparent 70%), var(--page-surface);">
+            <span class="theme-card__art-icon">&#9889;</span>
           </div>
-          <h3 class="theme-card__name" style="color: #00D4FF;">Neon Protocol</h3>
-          <p class="theme-card__tagline">Computer Vision</p>
-          <div class="theme-card__build">
-            <p class="theme-card__build-label">You'll build:</p>
-            <p class="theme-card__build-model">Protocol Sentinel — Anomaly Detector</p>
+          <div class="theme-card__body">
+            <div class="theme-card__badge">Coming Soon</div>
+            <h3 class="theme-card__name" style="color: #00D4FF;">Neon Protocol</h3>
+            <p class="theme-card__domain">Computer Vision</p>
+            <p class="theme-card__hook">Navigate the neon-lit digital underground as a white-hat hacker, using computer vision to detect intrusions and analyze network anomalies.</p>
+            <p class="theme-card__build">You'll build: <span>Protocol Sentinel</span></p>
+            <div class="theme-card__footer">
+              <span class="theme-card__meta">11 Modules &middot; 55 Lessons</span>
+              <span class="theme-card__price">$79</span>
+            </div>
           </div>
         </div>
 
         <!-- Signal Ward -->
-        <div class="theme-card" style="border: 1px dashed #2ECC7140;">
-          <div class="theme-card__badge">
-            <span class="badge badge--coming-soon">Coming Soon</span>
+        <div class="theme-card theme-card--signal">
+          <div class="theme-card__art" style="background: radial-gradient(ellipse at 50% 80%, rgba(46,204,113,0.12), transparent 70%), var(--page-surface);">
+            <span class="theme-card__art-icon">&#129657;</span>
           </div>
-          <h3 class="theme-card__name" style="color: #2ECC71;">Signal Ward</h3>
-          <p class="theme-card__tagline">NLP &amp; Text Intelligence</p>
-          <div class="theme-card__build">
-            <p class="theme-card__build-label">You'll build:</p>
-            <p class="theme-card__build-model">Diagnostic One — Text Assistant</p>
+          <div class="theme-card__body">
+            <div class="theme-card__badge">Coming Soon</div>
+            <h3 class="theme-card__name" style="color: #2ECC71;">Signal Ward</h3>
+            <p class="theme-card__domain">NLP &amp; Text Intelligence</p>
+            <p class="theme-card__hook">Join a cutting-edge hospital team training NLP models to analyze clinical text and assist doctors with early diagnosis.</p>
+            <p class="theme-card__build">You'll build: <span>Diagnostic One</span></p>
+            <div class="theme-card__footer">
+              <span class="theme-card__meta">11 Modules &middot; 55 Lessons</span>
+              <span class="theme-card__price">$79</span>
+            </div>
           </div>
         </div>
 
         <!-- Nova Canvas -->
-        <div class="theme-card" style="border: 1px dashed #FF6B6B40;">
-          <div class="theme-card__badge">
-            <span class="badge badge--coming-soon">Coming Soon</span>
+        <div class="theme-card theme-card--nova">
+          <div class="theme-card__art" style="background: radial-gradient(ellipse at 50% 80%, rgba(255,107,107,0.12), transparent 70%), var(--page-surface);">
+            <span class="theme-card__art-icon">&#127912;</span>
           </div>
-          <h3 class="theme-card__name" style="color: #FF6B6B;">Nova Canvas</h3>
-          <p class="theme-card__tagline">Multimodal &amp; GenAI</p>
-          <div class="theme-card__build">
-            <p class="theme-card__build-label">You'll build:</p>
-            <p class="theme-card__build-model">Nova Canvas AI — Creative Assistant</p>
+          <div class="theme-card__body">
+            <div class="theme-card__badge">Coming Soon</div>
+            <h3 class="theme-card__name" style="color: #FF6B6B;">Nova Canvas</h3>
+            <p class="theme-card__domain">Multimodal &amp; GenAI</p>
+            <p class="theme-card__hook">Step into a creative AI collective where you train generative models to produce art, style transfers, and multimodal experiences in the browser.</p>
+            <p class="theme-card__build">You'll build: <span>Nova Gen Engine</span></p>
+            <div class="theme-card__footer">
+              <span class="theme-card__meta">11 Modules &middot; 55 Lessons</span>
+              <span class="theme-card__price">$79</span>
+            </div>
           </div>
         </div>
 
         <!-- Terra Grid -->
-        <div class="theme-card" style="border: 1px dashed #F59E0B40;">
-          <div class="theme-card__badge">
-            <span class="badge badge--coming-soon">Coming Soon</span>
+        <div class="theme-card theme-card--terra">
+          <div class="theme-card__art" style="background: radial-gradient(ellipse at 50% 80%, rgba(245,158,11,0.12), transparent 70%), var(--page-surface);">
+            <span class="theme-card__art-icon">&#9881;</span>
           </div>
-          <h3 class="theme-card__name" style="color: #F59E0B;">Terra Grid</h3>
-          <p class="theme-card__tagline">Edge AI &amp; MLOps</p>
-          <div class="theme-card__build">
-            <p class="theme-card__build-label">You'll build:</p>
-            <p class="theme-card__build-model">Terra Grid Intelligence — Edge System</p>
+          <div class="theme-card__body">
+            <div class="theme-card__badge">Coming Soon</div>
+            <h3 class="theme-card__name" style="color: #F59E0B;">Terra Grid</h3>
+            <p class="theme-card__domain">Edge AI &amp; MLOps</p>
+            <p class="theme-card__hook">Manage a vast industrial grid, training predictive models to prevent equipment failures and optimize energy distribution at the edge.</p>
+            <p class="theme-card__build">You'll build: <span>Grid Sense Monitor</span></p>
+            <div class="theme-card__footer">
+              <span class="theme-card__meta">11 Modules &middot; 55 Lessons</span>
+              <span class="theme-card__price">$79</span>
+            </div>
           </div>
         </div>
 
@@ -565,76 +1097,46 @@
   </section>
 
   <!-- Stats Section -->
-  <section id="pricing" class="section stats-section">
-    <div class="section__inner">
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-card__value">50+</div>
-          <div class="stat-card__label">FE→ML Bridges</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-card__value">275</div>
-          <div class="stat-card__label">Total Lessons</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-card__value">5</div>
-          <div class="stat-card__label">Themed Worlds</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-card__value">$79</div>
-          <div class="stat-card__label">Per Theme</div>
-        </div>
+  <section id="pricing" class="stats">
+    <div class="stats__grid">
+      <div class="stats__item">
+        <div class="stats__value">50+</div>
+        <div class="stats__label">FE &rarr; ML Bridges</div>
+      </div>
+      <div class="stats__item">
+        <div class="stats__value">275</div>
+        <div class="stats__label">Total Lessons</div>
+      </div>
+      <div class="stats__item">
+        <div class="stats__value">5</div>
+        <div class="stats__label">Themed Worlds</div>
+      </div>
+      <div class="stats__item">
+        <div class="stats__value">$79</div>
+        <div class="stats__label">Per Theme</div>
       </div>
     </div>
   </section>
 
   <!-- CTA Footer -->
-  <section class="section cta-footer">
-    <div class="section__inner">
-      <h2 class="cta-footer__heading">Ready to bridge the gap?</h2>
-      <p class="cta-footer__text">
-        Module 1 is free across all themes. No credit card required.
-      </p>
-      <a href="#" class="btn-primary">Start Deep Orbit — Free</a>
-    </div>
+  <section class="cta-footer">
+    <h2 class="cta-footer__heading">Your frontend skills are the foundation.</h2>
+    <p class="cta-footer__subtitle">Add machine learning to your engineering toolkit.</p>
+    <a href="#" class="cta-footer__btn">Explore Deep Orbit &rarr;</a>
+    <p class="cta-footer__note">Join 2,400+ frontend engineers already learning</p>
   </section>
 
   <!-- Site Footer -->
   <footer class="site-footer">
-    <p>Tensorcraft — ML education for frontend engineers</p>
-  </footer>
-
-  <!-- Theme Switcher -->
-  <div class="theme-switcher">
-    <button class="theme-toggle" aria-label="Switch theme">◈</button>
-    <div class="theme-popup">
-      <button class="theme-dot" data-theme="deep-orbit" style="background:#7B68EE;" title="Deep Orbit"></button>
-      <button class="theme-dot" data-theme="neon-protocol" style="background:#00D4FF;" title="Neon Protocol"></button>
-      <button class="theme-dot" data-theme="signal-ward" style="background:#2ECC71;" title="Signal Ward"></button>
-      <button class="theme-dot" data-theme="nova-canvas" style="background:#FF6B6B;" title="Nova Canvas"></button>
-      <button class="theme-dot" data-theme="terra-grid" style="background:#F59E0B;" title="Terra Grid"></button>
+    <div class="site-footer__logo">&#9671; tensorcraft</div>
+    <div class="site-footer__links">
+      <a href="#">Themes</a>
+      <a href="#">Docs</a>
+      <a href="#">Community</a>
+      <a href="#">Twitter</a>
     </div>
-  </div>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const themes = ['deep-orbit','neon-protocol','signal-ward','nova-canvas','terra-grid'];
-      const switcher = document.querySelector('.theme-switcher');
-      const popup = switcher?.querySelector('.theme-popup');
-      switcher?.querySelector('.theme-toggle')?.addEventListener('click', () => {
-        popup?.classList.toggle('active');
-      });
-      document.querySelectorAll('.theme-dot').forEach(dot => {
-        dot.addEventListener('click', () => {
-          document.documentElement.setAttribute('data-theme', dot.dataset.theme);
-          localStorage.setItem('tc-theme', dot.dataset.theme);
-          popup?.classList.remove('active');
-        });
-      });
-      const saved = localStorage.getItem('tc-theme');
-      if (saved) document.documentElement.setAttribute('data-theme', saved);
-    });
-  </script>
+    <div>&copy; 2024 Tensorcraft. All rights reserved.</div>
+  </footer>
 
 </body>
 </html>

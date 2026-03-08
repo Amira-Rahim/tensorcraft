@@ -1,144 +1,242 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="deep-orbit">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="color-scheme" content="dark">
-  <title>Tensorcraft — Module Overview</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>Tensorcraft — Deep Orbit Module Overview</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
+    /* ===== RESET & TOKENS ===== */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #080B16;
+      --surface: #0F1320;
+      --border: rgba(255,255,255,0.06);
+      --text: #FFFFFF;
+      --muted: #8B92A5;
+      --cyan: #00D4FF;
+      --purple: #7B68EE;
+    }
 
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: var(--tc-bg, #0B0D1A);
-      color: var(--tc-text, #E2E8F0);
+      background: var(--bg);
+      color: var(--text);
       min-height: 100vh;
-      line-height: 1.7;
+      line-height: 1.6;
     }
 
-    /* --- NAV BAR --- */
-    .nav-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 24px;
-      height: 56px;
-      background: var(--tc-surface, #16213E);
-      border-bottom: 1px solid var(--tc-border, #2A3A5C);
+    a { text-decoration: none; color: inherit; }
+    button { font-family: inherit; }
+    code { font-family: 'JetBrains Mono', monospace; }
+
+    /* ===== NAV ===== */
+    .nav {
       position: sticky;
       top: 0;
       z-index: 100;
-    }
-    .nav-logo {
-      font-weight: 700;
-      font-size: 16px;
-      letter-spacing: 2px;
-      color: var(--tc-primary, #7B68EE);
+      height: 72px;
       display: flex;
       align-items: center;
-      gap: 12px;
+      justify-content: space-between;
+      padding: 0 32px;
+      background: rgba(8,11,22,0.8);
+      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
     }
-    .nav-logo .theme-label {
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--tc-accent, #F0C75E);
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-    .nav-breadcrumb {
-      font-size: 14px;
-      color: var(--tc-muted, #64748B);
-    }
-    .nav-breadcrumb span { color: var(--tc-text); }
 
-    /* --- MAIN LAYOUT --- */
+    .nav__logo {
+      font-size: 18px;
+      font-weight: 600;
+      color: #FFFFFF;
+      letter-spacing: 0.02em;
+    }
+
+    .nav__links {
+      display: flex;
+      align-items: center;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 999px;
+      padding: 4px;
+    }
+
+    .nav__links a {
+      padding: 8px 16px;
+      font-size: 14px;
+      color: var(--muted);
+      transition: color 0.2s ease;
+      border-radius: 999px;
+    }
+
+    .nav__links a:hover { color: #FFFFFF; }
+    .nav__links a.is-active { color: #FFFFFF; background: rgba(255,255,255,0.06); }
+
+    .nav__cta {
+      border: 1px solid rgba(255,255,255,0.15);
+      background: transparent;
+      color: #FFFFFF;
+      border-radius: 999px;
+      padding: 10px 24px;
+      font-size: 14px;
+      font-weight: 500;
+      transition: background 0.2s ease;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .nav__cta:hover { background: rgba(255,255,255,0.05); }
+
+    @media (max-width: 768px) {
+      .nav__links { display: none; }
+      .nav { padding: 0 20px; }
+    }
+
+    /* ===== PAGE HEADER ===== */
+    .page-header {
+      padding: 60px 24px 40px;
+      text-align: center;
+      background:
+        radial-gradient(ellipse 60% 40% at 50% 100%, rgba(123,104,238,0.1), transparent 60%),
+        radial-gradient(ellipse 80% 50% at 50% 100%, rgba(0,212,255,0.06), transparent 50%),
+        var(--bg);
+    }
+
+    .page-header__label {
+      font-size: 13px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 12px;
+    }
+
+    .page-header__title {
+      font-size: 40px;
+      font-weight: 700;
+      color: #FFFFFF;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+
+    .page-header__subtitle {
+      font-size: 17px;
+      color: var(--muted);
+      max-width: 520px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 768px) {
+      .page-header { padding: 40px 20px 28px; }
+      .page-header__title { font-size: 28px; }
+    }
+
+    /* ===== MAIN LAYOUT ===== */
     .main-layout {
       display: grid;
-      grid-template-columns: 65% 35%;
+      grid-template-columns: 1fr 380px;
       gap: 0;
-      min-height: calc(100vh - 56px);
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
     }
-    @media (max-width: 768px) {
+
+    @media (max-width: 960px) {
       .main-layout {
         grid-template-columns: 1fr;
+        max-width: 640px;
       }
     }
 
-    /* --- MODULE MAP PANEL --- */
-    .module-map-panel {
-      padding: 40px 48px;
-      overflow-y: auto;
+    /* ===== MODULE MAP ===== */
+    .module-map {
+      padding: 40px 32px 40px 0;
+      position: relative;
     }
-    .module-map-panel h2 {
-      font-size: 25px;
-      font-weight: 600;
-      margin-bottom: 32px;
-      color: var(--tc-text);
+
+    @media (max-width: 960px) {
+      .module-map { padding: 24px 0; }
+    }
+
+    /* SVG Connection Lines */
+    .connections-svg {
+      position: absolute;
+      top: 0;
+      left: 31px;
+      width: 2px;
+      height: 100%;
+      pointer-events: none;
     }
 
     .module-list {
       display: flex;
       flex-direction: column;
-      gap: 0;
+      gap: 4px;
       position: relative;
-      padding-left: 24px;
     }
 
+    /* ===== MODULE ITEM ===== */
     .module-item {
       display: flex;
       align-items: flex-start;
       gap: 20px;
+      padding: 14px 16px;
+      border-radius: 14px;
       position: relative;
-      padding: 12px 0;
+      transition: background 0.2s ease;
+      cursor: pointer;
     }
-    .module-item:nth-child(odd) { padding-left: 0; }
-    .module-item:nth-child(even) { padding-left: 60px; }
 
-    /* Connection lines */
+    .module-item:hover {
+      background: rgba(255,255,255,0.02);
+    }
+
+    .module-item.node--locked {
+      cursor: default;
+    }
+
+    .module-item.node--locked:hover {
+      background: transparent;
+    }
+
+    /* Connection line between nodes */
     .module-item:not(:last-child)::after {
       content: '';
       position: absolute;
-      left: 23px;
-      top: 60px;
+      left: 47px;
+      top: 62px;
       width: 2px;
-      height: calc(100% - 24px);
+      height: calc(100% - 20px);
+      border-radius: 1px;
     }
-    .module-item:nth-child(even):not(:last-child)::after {
-      left: 83px;
+
+    .module-item.line--purple::after {
+      background: rgba(123,104,238,0.4);
     }
-    .module-item.node--completed:not(:last-child)::after,
-    .module-item.completed-to-completed::after {
-      background: var(--tc-accent);
+
+    .module-item.line--fade::after {
+      background: linear-gradient(to bottom, rgba(123,104,238,0.4), rgba(0,212,255,0.3));
     }
-    .module-item.completed-to-active::after {
-      background: linear-gradient(to bottom, var(--tc-accent), var(--tc-primary));
+
+    .module-item.line--muted::after {
+      background: rgba(255,255,255,0.08);
     }
-    .module-item.active-to-available::after {
-      background: color-mix(in srgb, var(--tc-muted) 50%, transparent);
-    }
-    .module-item.available-to-locked::after {
+
+    .module-item.line--dashed::after {
       background: repeating-linear-gradient(
         to bottom,
-        color-mix(in srgb, var(--tc-muted) 20%, transparent) 0px,
-        color-mix(in srgb, var(--tc-muted) 20%, transparent) 4px,
-        transparent 4px,
-        transparent 8px
-      );
-    }
-    .module-item.locked-to-locked::after {
-      background: repeating-linear-gradient(
-        to bottom,
-        color-mix(in srgb, var(--tc-muted) 20%, transparent) 0px,
-        color-mix(in srgb, var(--tc-muted) 20%, transparent) 4px,
+        rgba(255,255,255,0.06) 0px,
+        rgba(255,255,255,0.06) 4px,
         transparent 4px,
         transparent 8px
       );
     }
 
-    /* Node circles */
+    /* ===== PROGRESS NODE ===== */
     .progress-node {
       width: 48px;
       height: 48px;
@@ -147,518 +245,587 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 14px;
-      font-weight: 600;
-      position: relative;
-      transition: transform 150ms ease-out;
-      cursor: pointer;
-    }
-    .progress-node:hover { transform: scale(1.08); }
-
-    .node--completed .progress-node {
-      background: color-mix(in srgb, var(--tc-accent) 15%, transparent);
-      border: 2px solid var(--tc-accent);
-      color: var(--tc-accent);
-    }
-    .node--active .progress-node {
-      background: var(--tc-bg);
-      border: 2px solid var(--tc-accent);
-      color: var(--tc-accent);
-      animation: pulse-border 2s ease-in-out infinite;
-    }
-    .node--available .progress-node {
-      background: var(--tc-bg);
-      border: 2px solid var(--tc-muted);
-      color: var(--tc-muted);
-    }
-    .node--locked .progress-node {
-      background: var(--tc-bg);
-      border: 2px dashed color-mix(in srgb, var(--tc-muted) 30%, transparent);
-      color: color-mix(in srgb, var(--tc-muted) 50%, transparent);
-      cursor: default;
-    }
-    .node--locked .progress-node:hover { transform: none; }
-
-    @keyframes pulse-border {
-      0%, 100% { box-shadow: 0 0 0 0 transparent; border-color: var(--tc-accent); }
-      50% { box-shadow: 0 0 12px color-mix(in srgb, var(--tc-accent) 40%, transparent); }
-    }
-
-    .module-info {
-      flex: 1;
-      padding-top: 4px;
-    }
-    .module-info h3 {
       font-size: 16px;
       font-weight: 600;
-      line-height: 1.4;
-      color: var(--tc-text);
+      position: relative;
+      transition: transform 0.15s ease;
     }
-    .node--locked .module-info h3 { color: var(--tc-muted); }
-    .module-info .module-progress-label {
-      font-size: 12px;
-      color: var(--tc-muted);
+
+    .module-item:not(.node--locked) .progress-node:hover {
+      transform: scale(1.08);
+    }
+
+    /* Completed */
+    .node--completed .progress-node {
+      background: rgba(123,104,238,0.15);
+      border: 2px solid rgba(123,104,238,0.5);
+      color: #FFFFFF;
+    }
+
+    /* Active */
+    .node--active .progress-node {
+      background: var(--bg);
+      border: 2px solid var(--cyan);
+      color: var(--cyan);
+      animation: node-pulse 2.5s ease-in-out infinite;
+    }
+
+    @keyframes node-pulse {
+      0%, 100% { box-shadow: 0 0 0 0 transparent; }
+      50% { box-shadow: 0 0 16px rgba(0,212,255,0.2), 0 0 4px rgba(123,104,238,0.15); }
+    }
+
+    /* Available */
+    .node--available .progress-node {
+      background: var(--bg);
+      border: 2px solid rgba(255,255,255,0.25);
+      color: var(--muted);
+    }
+
+    /* Locked */
+    .node--locked .progress-node {
+      background: var(--bg);
+      border: 2px dashed rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.2);
+      font-size: 14px;
+    }
+
+    /* ===== MODULE INFO ===== */
+    .module-info {
+      flex: 1;
+      padding-top: 2px;
+      min-width: 0;
+    }
+
+    .module-info h3 {
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.4;
+      color: #FFFFFF;
+    }
+
+    .node--locked .module-info h3 {
+      color: rgba(255,255,255,0.3);
+    }
+
+    .module-meta {
+      font-size: 13px;
+      color: var(--muted);
       margin-top: 2px;
     }
-    .node--active .module-info .module-progress-label { color: var(--tc-accent); }
 
-    /* Lesson sub-nodes */
+    .node--active .module-meta {
+      color: var(--cyan);
+    }
+
+    .node--completed .module-meta {
+      color: var(--purple);
+    }
+
+    /* ===== LESSON SUB-LIST ===== */
     .lesson-list {
       margin-top: 12px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      padding-left: 4px;
+      gap: 6px;
     }
+
     .lesson-list[hidden] { display: none; }
+
     .lesson-item {
       display: flex;
       align-items: center;
       gap: 10px;
-      font-size: 14px;
-      color: var(--tc-text);
+      font-size: 13px;
+      color: var(--muted);
+      padding: 4px 0;
     }
+
+    .lesson-item--completed { color: rgba(255,255,255,0.7); }
+    .lesson-item--active { color: var(--cyan); }
+
     .lesson-dot {
-      width: 16px;
-      height: 16px;
-      min-width: 16px;
+      width: 18px;
+      height: 18px;
+      min-width: 18px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 10px;
+      font-size: 9px;
       line-height: 1;
     }
+
     .lesson-dot--completed {
-      background: color-mix(in srgb, #22C55E 20%, transparent);
-      color: #22C55E;
-      border: 1.5px solid #22C55E;
+      background: rgba(123,104,238,0.15);
+      color: var(--purple);
+      border: 1.5px solid rgba(123,104,238,0.4);
     }
+
     .lesson-dot--active {
-      background: var(--tc-bg);
-      border: 1.5px solid var(--tc-accent);
-      color: var(--tc-accent);
+      background: var(--bg);
+      border: 1.5px solid var(--cyan);
+      color: var(--cyan);
     }
+
     .lesson-dot--locked {
       background: transparent;
-      border: 1.5px solid color-mix(in srgb, var(--tc-muted) 40%, transparent);
-      color: var(--tc-muted);
+      border: 1.5px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.2);
     }
 
     .module-toggle {
       background: none;
       border: none;
-      color: var(--tc-primary);
+      color: var(--muted);
       font-size: 12px;
       cursor: pointer;
       margin-top: 6px;
       padding: 4px 0;
-      font-family: inherit;
+      transition: color 0.2s ease;
     }
-    .module-toggle:hover { text-decoration: underline; }
 
-    /* --- STORY PANEL --- */
+    .module-toggle:hover { color: #FFFFFF; }
+
+    /* ===== STORY PANEL ===== */
     .story-panel {
-      padding: 40px 32px;
-      border-left: 1px solid var(--tc-border);
-      overflow-y: auto;
+      padding: 40px 0 40px 32px;
     }
 
-    .glass-card {
-      background: var(--tc-surface);
-      border: 1px solid var(--tc-border);
-      border-radius: 12px;
-      padding: 28px;
-      backdrop-filter: blur(12px);
+    @media (max-width: 960px) {
+      .story-panel {
+        padding: 0;
+        margin-top: 8px;
+      }
     }
 
-    .story-panel .glass-card h2 {
-      font-size: 32px;
-      font-weight: 700;
-      color: var(--tc-accent);
-      margin-bottom: 4px;
+    .story-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      position: sticky;
+      top: 104px;
     }
-    .story-panel .glass-card .subtitle {
-      font-size: 14px;
-      color: var(--tc-primary);
-      margin-bottom: 16px;
-      letter-spacing: 1px;
+
+    .story-card__domain {
+      font-size: 12px;
+      color: var(--muted);
       text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 8px;
     }
-    .story-panel .synopsis {
-      font-size: 16px;
+
+    .story-card__title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #FFFFFF;
+      margin-bottom: 16px;
+    }
+
+    .story-card__synopsis {
+      font-size: 15px;
       line-height: 1.7;
-      color: var(--tc-text);
-      margin-bottom: 24px;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+
+    .story-card__synopsis em {
+      color: rgba(255,255,255,0.7);
+      font-style: italic;
     }
 
     /* Characters */
-    .characters-section h4 {
-      font-size: 12px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: var(--tc-muted);
-      margin-bottom: 12px;
-    }
-    .character-list {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
+    .crew-section {
       margin-bottom: 24px;
     }
-    .character {
+
+    .crew-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .crew-list {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .crew-member {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
     }
-    .character-avatar {
-      width: 32px;
-      height: 32px;
+
+    .crew-avatar {
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 700;
-      color: var(--tc-bg);
+      color: var(--bg);
     }
-    .character-name {
+
+    .crew-name {
       font-size: 11px;
-      color: var(--tc-muted);
-      text-align: center;
+      color: var(--muted);
     }
 
     /* Stats */
     .story-stats {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px 16px;
-      font-size: 14px;
-      color: var(--tc-muted);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      padding: 20px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
       margin-bottom: 24px;
-      padding-top: 16px;
-      border-top: 1px solid var(--tc-border);
-    }
-    .story-stats span {
-      white-space: nowrap;
-    }
-    .story-stats .stat-value {
-      color: var(--tc-accent);
-      font-weight: 600;
     }
 
-    /* CTA */
-    .btn-primary {
-      display: inline-flex;
+    .stat-block {
+      text-align: center;
+    }
+
+    .stat-block__value {
+      font-size: 20px;
+      font-weight: 700;
+      color: #FFFFFF;
+    }
+
+    .stat-block__label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* CTA Button */
+    .btn-continue {
+      display: flex;
       align-items: center;
       justify-content: center;
-      padding: 12px 28px;
-      background: var(--tc-primary);
-      color: #fff;
+      width: 100%;
+      padding: 14px 28px;
+      background: var(--purple);
+      color: #FFFFFF;
       border: none;
-      border-radius: 8px;
-      font-size: 16px;
+      border-radius: 999px;
+      font-size: 15px;
       font-weight: 600;
-      font-family: inherit;
       cursor: pointer;
-      transition: background 150ms, transform 150ms;
-      min-height: 44px;
+      transition: opacity 0.2s ease, transform 0.2s ease;
     }
-    .btn-primary:hover {
-      filter: brightness(1.15);
+
+    .btn-continue:hover {
+      opacity: 0.9;
       transform: translateY(-1px);
     }
 
-    /* --- THEME SWITCHER --- */
-    .theme-switcher {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      z-index: 200;
-    }
-    .theme-toggle {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      border: 1px solid var(--tc-border);
-      background: var(--tc-surface);
-      color: var(--tc-primary);
-      font-size: 18px;
-      cursor: pointer;
+    /* ===== FOOTER ===== */
+    .site-footer {
+      border-top: 1px solid var(--border);
+      padding: 32px;
       display: flex;
       align-items: center;
-      justify-content: center;
-      backdrop-filter: blur(12px);
-      transition: transform 150ms;
-    }
-    .theme-toggle:hover { transform: scale(1.1); }
-    .theme-popup {
-      position: absolute;
-      bottom: 52px;
-      right: 0;
-      background: var(--tc-surface);
-      border: 1px solid var(--tc-border);
-      border-radius: 12px;
-      padding: 12px;
-      display: none;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .theme-popup.active { display: flex; }
-    .theme-dot {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      border: 2px solid transparent;
-      cursor: pointer;
-      transition: transform 150ms, border-color 150ms;
-    }
-    .theme-dot:hover {
-      transform: scale(1.15);
-      border-color: rgba(255,255,255,0.3);
+      justify-content: space-between;
+      font-size: 14px;
+      color: var(--muted);
     }
 
-    @media (max-width: 768px) {
-      .module-map-panel { padding: 24px 16px; }
-      .story-panel { padding: 24px 16px; border-left: none; border-top: 1px solid var(--tc-border); }
-      .module-item:nth-child(even) { padding-left: 30px; }
-      .module-item:nth-child(even):not(:last-child)::after { left: 53px; }
-      .nav-breadcrumb { display: none; }
+    .site-footer__logo {
+      font-size: 16px;
+      font-weight: 600;
+      color: #FFFFFF;
+      letter-spacing: 0.02em;
     }
+
+    .site-footer__links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .site-footer__links a {
+      color: var(--muted);
+      transition: color 0.2s ease;
+    }
+
+    .site-footer__links a:hover { color: #FFFFFF; }
+
+    @media (max-width: 640px) {
+      .site-footer {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+      }
+    }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-in {
+      animation: fade-up 0.5s ease both;
+    }
+
+    .animate-in-1 { animation-delay: 0.05s; }
+    .animate-in-2 { animation-delay: 0.1s; }
+    .animate-in-3 { animation-delay: 0.15s; }
+    .animate-in-4 { animation-delay: 0.2s; }
+    .animate-in-5 { animation-delay: 0.25s; }
+    .animate-in-6 { animation-delay: 0.3s; }
+    .animate-in-7 { animation-delay: 0.35s; }
+    .animate-in-8 { animation-delay: 0.4s; }
+    .animate-in-9 { animation-delay: 0.45s; }
+    .animate-in-10 { animation-delay: 0.5s; }
+    .animate-in-11 { animation-delay: 0.55s; }
   </style>
 </head>
 <body>
 
-  <!-- NAV BAR -->
-  <nav class="nav-bar">
-    <div class="nav-logo">
-      <span>&#9671; TENSORCRAFT</span>
-      <span class="theme-label">Deep Orbit</span>
+  <!-- Nav -->
+  <nav class="nav">
+    <div class="nav__logo">&#9671; tensorcraft</div>
+    <div class="nav__links">
+      <a href="landing.html">Home</a>
+      <a href="#" class="is-active">Modules</a>
+      <a href="#">Docs</a>
+      <a href="#">Community</a>
     </div>
-    <div class="nav-breadcrumb">Themes / <span>Deep Orbit</span></div>
+    <a href="#" class="nav__cta">Continue M3 &rarr;</a>
   </nav>
 
-  <!-- MAIN CONTENT -->
+  <!-- Page Header -->
+  <header class="page-header">
+    <p class="page-header__label">Deep Orbit &mdash; 11 Modules</p>
+    <h1 class="page-header__title">Module Map</h1>
+    <p class="page-header__subtitle">Track your journey from frontend engineer to ML engineer aboard the Archimedes.</p>
+  </header>
+
+  <!-- Main Content -->
   <div class="main-layout">
 
-    <!-- MODULE MAP -->
-    <div class="module-map-panel">
-      <h2>Module Map</h2>
+    <!-- Module Map -->
+    <div class="module-map">
+
+      <!-- SVG Connection Lines (rendered behind module items) -->
+      <svg class="connections-svg" aria-hidden="true">
+        <!-- Completed segment -->
+        <line x1="1" y1="0" x2="1" y2="100%" stroke="rgba(123,104,238,0.3)" stroke-width="2"/>
+      </svg>
 
       <div class="module-list">
 
-        <!-- M1 -->
-        <div class="module-item node--completed completed-to-completed" data-module="1">
+        <!-- M1 Completed -->
+        <div class="module-item node--completed line--purple animate-in animate-in-1" data-module="1">
           <div class="progress-node">&#10003;</div>
           <div class="module-info">
             <h3>M1: ML Through Signals</h3>
-            <div class="module-progress-label">5/5 lessons</div>
+            <div class="module-meta">5/5 lessons completed</div>
             <button class="module-toggle" data-target="lessons-1">Show lessons</button>
             <div class="lesson-list" id="lessons-1" hidden>
-              <div class="lesson-item"><span class="lesson-dot lesson-dot--completed">&#10003;</span> Arrival: What Is ML?</div>
-              <div class="lesson-item"><span class="lesson-dot lesson-dot--completed">&#10003;</span> Data & Labels</div>
-              <div class="lesson-item"><span class="lesson-dot lesson-dot--completed">&#10003;</span> Your First Model</div>
-              <div class="lesson-item"><span class="lesson-dot lesson-dot--completed">&#10003;</span> Training the Classifier</div>
-              <div class="lesson-item"><span class="lesson-dot lesson-dot--completed">&#10003;</span> Consequence & Debrief</div>
+              <div class="lesson-item lesson-item--completed"><span class="lesson-dot lesson-dot--completed">&#10003;</span> Arrival: What Is ML?</div>
+              <div class="lesson-item lesson-item--completed"><span class="lesson-dot lesson-dot--completed">&#10003;</span> Data &amp; Labels</div>
+              <div class="lesson-item lesson-item--completed"><span class="lesson-dot lesson-dot--completed">&#10003;</span> Your First Model</div>
+              <div class="lesson-item lesson-item--completed"><span class="lesson-dot lesson-dot--completed">&#10003;</span> Training the Classifier</div>
+              <div class="lesson-item lesson-item--completed"><span class="lesson-dot lesson-dot--completed">&#10003;</span> Consequence &amp; Debrief</div>
             </div>
           </div>
         </div>
 
-        <!-- M2 -->
-        <div class="module-item node--completed completed-to-active" data-module="2">
+        <!-- M2 Completed -->
+        <div class="module-item node--completed line--fade animate-in animate-in-2" data-module="2">
           <div class="progress-node">&#10003;</div>
           <div class="module-info">
-            <h3>M2: Data & Preprocessing</h3>
-            <div class="module-progress-label">5/5 lessons</div>
+            <h3>M2: Data &amp; Preprocessing</h3>
+            <div class="module-meta">5/5 lessons completed</div>
             <button class="module-toggle" data-target="lessons-2">Show lessons</button>
             <div class="lesson-list" id="lessons-2" hidden>
-              <div class="lesson-item"><span class="lesson-dot lesson-dot--completed">&#10003;</span> Raw Signal Intake</div>
-              <div class="lesson-item"><span class="lesson-dot lesson-dot--completed">&#10003;</span> Cleaning & Normalization</div>
-              <div class="lesson-item"><span class="lesson-dot lesson-dot--completed">&#10003;</span> Feature Extraction</div>
-              <div class="lesson-item"><span class="lesson-dot lesson-dot--completed">&#10003;</span> Data Pipelines</div>
-              <div class="lesson-item"><span class="lesson-dot lesson-dot--completed">&#10003;</span> Module 2 Debrief</div>
+              <div class="lesson-item lesson-item--completed"><span class="lesson-dot lesson-dot--completed">&#10003;</span> Raw Signal Intake</div>
+              <div class="lesson-item lesson-item--completed"><span class="lesson-dot lesson-dot--completed">&#10003;</span> Cleaning &amp; Normalization</div>
+              <div class="lesson-item lesson-item--completed"><span class="lesson-dot lesson-dot--completed">&#10003;</span> Feature Extraction</div>
+              <div class="lesson-item lesson-item--completed"><span class="lesson-dot lesson-dot--completed">&#10003;</span> Data Pipelines</div>
+              <div class="lesson-item lesson-item--completed"><span class="lesson-dot lesson-dot--completed">&#10003;</span> Module 2 Debrief</div>
             </div>
           </div>
         </div>
 
-        <!-- M3 (Active) -->
-        <div class="module-item node--active active-to-available" data-module="3">
+        <!-- M3 Active -->
+        <div class="module-item node--active line--muted animate-in animate-in-3" data-module="3">
           <div class="progress-node">&#9654;</div>
           <div class="module-info">
             <h3>M3: Neural Networks</h3>
-            <div class="module-progress-label">3/5 lessons</div>
+            <div class="module-meta">3/5 lessons &mdash; in progress</div>
             <button class="module-toggle" data-target="lessons-3">Show lessons</button>
             <div class="lesson-list" id="lessons-3" hidden>
-              <div class="lesson-item"><span class="lesson-dot lesson-dot--completed">&#10003;</span> The Signal</div>
-              <div class="lesson-item"><span class="lesson-dot lesson-dot--completed">&#10003;</span> Patterns in Noise</div>
-              <div class="lesson-item"><span class="lesson-dot lesson-dot--active">&#9679;</span> Your First Model</div>
+              <div class="lesson-item lesson-item--completed"><span class="lesson-dot lesson-dot--completed">&#10003;</span> The Signal</div>
+              <div class="lesson-item lesson-item--completed"><span class="lesson-dot lesson-dot--completed">&#10003;</span> Patterns in Noise</div>
+              <div class="lesson-item lesson-item--active"><span class="lesson-dot lesson-dot--active">&#9679;</span> Your First Model</div>
               <div class="lesson-item"><span class="lesson-dot lesson-dot--locked">&#9675;</span> Training the Classifier</div>
-              <div class="lesson-item"><span class="lesson-dot lesson-dot--locked">&#9675;</span> Consequence & Debrief</div>
+              <div class="lesson-item"><span class="lesson-dot lesson-dot--locked">&#9675;</span> Consequence &amp; Debrief</div>
             </div>
           </div>
         </div>
 
-        <!-- M4 (Available) -->
-        <div class="module-item node--available available-to-locked" data-module="4">
+        <!-- M4 Available -->
+        <div class="module-item node--available line--dashed animate-in animate-in-4" data-module="4">
           <div class="progress-node">&#9654;</div>
           <div class="module-info">
             <h3>M4: Browser Runtimes</h3>
-            <div class="module-progress-label">0/5 lessons</div>
+            <div class="module-meta">0/5 lessons</div>
           </div>
         </div>
 
-        <!-- M5 (Locked) -->
-        <div class="module-item node--locked locked-to-locked" data-module="5">
+        <!-- M5 Locked -->
+        <div class="module-item node--locked line--dashed animate-in animate-in-5" data-module="5">
           <div class="progress-node">&#128274;</div>
           <div class="module-info">
             <h3>M5: Signal Processing</h3>
-            <div class="module-progress-label">0/5 lessons</div>
+            <div class="module-meta">0/5 lessons</div>
           </div>
         </div>
 
-        <!-- M6 -->
-        <div class="module-item node--locked locked-to-locked" data-module="6">
+        <!-- M6 Locked -->
+        <div class="module-item node--locked line--dashed animate-in animate-in-6" data-module="6">
           <div class="progress-node">&#128274;</div>
           <div class="module-info">
             <h3>M6: Recurrent Networks</h3>
-            <div class="module-progress-label">0/5 lessons</div>
+            <div class="module-meta">0/5 lessons</div>
           </div>
         </div>
 
-        <!-- M7 -->
-        <div class="module-item node--locked locked-to-locked" data-module="7">
+        <!-- M7 Locked -->
+        <div class="module-item node--locked line--dashed animate-in animate-in-7" data-module="7">
           <div class="progress-node">&#128274;</div>
           <div class="module-info">
             <h3>M7: Anomaly Detection</h3>
-            <div class="module-progress-label">0/5 lessons</div>
+            <div class="module-meta">0/5 lessons</div>
           </div>
         </div>
 
-        <!-- M8 -->
-        <div class="module-item node--locked locked-to-locked" data-module="8">
+        <!-- M8 Locked -->
+        <div class="module-item node--locked line--dashed animate-in animate-in-8" data-module="8">
           <div class="progress-node">&#128274;</div>
           <div class="module-info">
             <h3>M8: Advanced Time-Series</h3>
-            <div class="module-progress-label">0/5 lessons</div>
+            <div class="module-meta">0/5 lessons</div>
           </div>
         </div>
 
-        <!-- M9 -->
-        <div class="module-item node--locked locked-to-locked" data-module="9">
+        <!-- M9 Locked -->
+        <div class="module-item node--locked line--dashed animate-in animate-in-9" data-module="9">
           <div class="progress-node">&#128274;</div>
           <div class="module-info">
             <h3>M9: LLM Integration</h3>
-            <div class="module-progress-label">0/5 lessons</div>
+            <div class="module-meta">0/5 lessons</div>
           </div>
         </div>
 
-        <!-- M10 -->
-        <div class="module-item node--locked locked-to-locked" data-module="10">
+        <!-- M10 Locked -->
+        <div class="module-item node--locked line--dashed animate-in animate-in-10" data-module="10">
           <div class="progress-node">&#128274;</div>
           <div class="module-info">
-            <h3>M10: Optimization & Edge</h3>
-            <div class="module-progress-label">0/5 lessons</div>
+            <h3>M10: Optimization</h3>
+            <div class="module-meta">0/5 lessons</div>
           </div>
         </div>
 
-        <!-- M11 -->
-        <div class="module-item node--locked" data-module="11">
+        <!-- M11 Locked -->
+        <div class="module-item node--locked animate-in animate-in-11" data-module="11">
           <div class="progress-node">&#128274;</div>
           <div class="module-info">
             <h3>M11: Capstone &mdash; Deploy DEEP SCAN</h3>
-            <div class="module-progress-label">0/5 lessons</div>
+            <div class="module-meta">0/5 lessons</div>
           </div>
         </div>
 
       </div>
     </div>
 
-    <!-- STORY SYNOPSIS -->
-    <div class="story-panel">
-      <div class="glass-card">
-        <div class="subtitle">Time-Series &amp; Signals</div>
-        <h2>Deep Orbit</h2>
-        <p class="synopsis">
+    <!-- Story Synopsis Panel -->
+    <aside class="story-panel">
+      <div class="story-card">
+        <div class="story-card__domain">Time-Series &amp; Signals</div>
+        <h2 class="story-card__title">Deep Orbit</h2>
+        <p class="story-card__synopsis">
           Aboard the research vessel <em>Archimedes</em>, your crew has detected structured electromagnetic
           signals from the Kepler-442 system that defy classification. As Ensign Park, a frontend engineer
           reassigned to comms, you must build DEEP SCAN &mdash; a multi-stage signal classification system &mdash;
-          learning machine learning from scratch through the lens of concepts you already know.
+          learning machine learning from scratch through concepts you already know.
         </p>
 
-        <div class="characters-section">
-          <h4>Crew</h4>
-          <div class="character-list">
-            <div class="character">
-              <div class="character-avatar" style="background: #F0C75E;">O</div>
-              <div class="character-name">Okafor</div>
+        <div class="crew-section">
+          <div class="crew-label">Crew</div>
+          <div class="crew-list">
+            <div class="crew-member">
+              <div class="crew-avatar" style="background: rgba(123,104,238,0.8);">O</div>
+              <div class="crew-name">Okafor</div>
             </div>
-            <div class="character">
-              <div class="character-avatar" style="background: #7B68EE;">S</div>
-              <div class="character-name">Sato</div>
+            <div class="crew-member">
+              <div class="crew-avatar" style="background: rgba(0,212,255,0.7);">S</div>
+              <div class="crew-name">Sato</div>
             </div>
-            <div class="character">
-              <div class="character-avatar" style="background: #EF4444;">T</div>
-              <div class="character-name">Torres</div>
+            <div class="crew-member">
+              <div class="crew-avatar" style="background: rgba(239,68,68,0.7);">T</div>
+              <div class="crew-name">Torres</div>
             </div>
-            <div class="character">
-              <div class="character-avatar" style="background: #22C55E;">P</div>
-              <div class="character-name">Park</div>
+            <div class="crew-member">
+              <div class="crew-avatar" style="background: rgba(34,197,94,0.7);">P</div>
+              <div class="crew-name">Park</div>
             </div>
-            <div class="character">
-              <div class="character-avatar" style="background: #64748B;">A</div>
-              <div class="character-name">ARIA</div>
+            <div class="crew-member">
+              <div class="crew-avatar" style="background: rgba(139,146,165,0.5);">A</div>
+              <div class="crew-name">ARIA</div>
             </div>
           </div>
         </div>
 
         <div class="story-stats">
-          <span><span class="stat-value">19/55</span> Lessons</span>
-          <span>&middot;</span>
-          <span><span class="stat-value">23/56</span> Bridges</span>
-          <span>&middot;</span>
-          <span><span class="stat-value">~12h</span> remaining</span>
+          <div class="stat-block">
+            <div class="stat-block__value">19/55</div>
+            <div class="stat-block__label">Lessons</div>
+          </div>
+          <div class="stat-block">
+            <div class="stat-block__value">23/56</div>
+            <div class="stat-block__label">Bridges</div>
+          </div>
+          <div class="stat-block">
+            <div class="stat-block__value">~12h</div>
+            <div class="stat-block__label">Remaining</div>
+          </div>
         </div>
 
-        <button class="btn-primary" style="width: 100%;">Continue Learning</button>
+        <button type="button" class="btn-continue">Continue Learning &rarr;</button>
       </div>
-    </div>
+    </aside>
 
   </div>
 
-  <!-- THEME SWITCHER -->
-  <div class="theme-switcher">
-    <button class="theme-toggle glass" title="Switch theme">&#9671;</button>
-    <div class="theme-popup">
-      <button class="theme-dot" data-theme="deep-orbit" style="background:#7B68EE" title="Deep Orbit"></button>
-      <button class="theme-dot" data-theme="neon-protocol" style="background:#00D4FF" title="Neon Protocol"></button>
-      <button class="theme-dot" data-theme="signal-ward" style="background:#2ECC71" title="Signal Ward"></button>
-      <button class="theme-dot" data-theme="nova-canvas" style="background:#FF6B6B" title="Nova Canvas"></button>
-      <button class="theme-dot" data-theme="terra-grid" style="background:#F59E0B" title="Terra Grid"></button>
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="site-footer__logo">&#9671; tensorcraft</div>
+    <div class="site-footer__links">
+      <a href="landing.html">Home</a>
+      <a href="#">Docs</a>
+      <a href="#">Community</a>
+      <a href="#">Twitter</a>
     </div>
-  </div>
+    <div>&copy; 2024 Tensorcraft. All rights reserved.</div>
+  </footer>
 
   <script>
-    /* Theme switcher */
-    document.addEventListener('DOMContentLoaded', () => {
-      const switcher = document.querySelector('.theme-switcher');
-      const popup = switcher?.querySelector('.theme-popup');
-      switcher?.querySelector('.theme-toggle')?.addEventListener('click', () => popup?.classList.toggle('active'));
-      document.querySelectorAll('.theme-dot').forEach(dot => {
-        dot.addEventListener('click', () => {
-          document.documentElement.setAttribute('data-theme', dot.dataset.theme);
-          localStorage.setItem('tc-theme', dot.dataset.theme);
-          popup?.classList.remove('active');
-        });
-      });
-      const saved = localStorage.getItem('tc-theme');
-      if (saved) document.documentElement.setAttribute('data-theme', saved);
-    });
-
-    /* Module lesson toggles */
+    // Module lesson toggles
     document.querySelectorAll('.module-toggle').forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
         const target = document.getElementById(btn.dataset.target);
         if (target) {
           const isHidden = target.hidden;
@@ -667,6 +834,15 @@
         }
       });
     });
+
+    // Clicking a non-locked module item toggles its lessons (if it has them)
+    document.querySelectorAll('.module-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const toggle = item.querySelector('.module-toggle');
+        if (toggle) toggle.click();
+      });
+    });
   </script>
+
 </body>
 </html>
