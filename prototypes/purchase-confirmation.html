@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tensorcraft — Purchase Confirmed</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* ===== PAGE-LEVEL COLOR OVERRIDES ===== */
+    :root {
+      --page-bg: #080B16;
+      --page-surface: #0F1320;
+      --page-border: rgba(255,255,255,0.06);
+      --page-text: #FFFFFF;
+      --page-muted: #8B92A5;
+      --page-glow: #00D4FF;
+      --page-glow-secondary: #7B68EE;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--page-bg);
+      color: var(--page-text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    a { text-decoration: none; }
+
+    /* ===== NAV BAR ===== */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      background: rgba(8,11,22,0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .nav__logo {
+      font-size: 18px;
+      font-weight: 600;
+      color: #FFFFFF;
+      letter-spacing: 0.02em;
+    }
+
+    .nav__links {
+      display: flex;
+      align-items: center;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 999px;
+      padding: 4px;
+    }
+
+    .nav__links a {
+      padding: 8px 16px;
+      font-size: 14px;
+      color: var(--page-muted);
+      transition: color 0.2s ease;
+      border-radius: 999px;
+    }
+
+    .nav__links a:hover,
+    .nav__links a.active {
+      color: #FFFFFF;
+    }
+
+    .nav__links a.active {
+      background: rgba(255,255,255,0.06);
+    }
+
+    .nav__cta {
+      border: 1px solid rgba(255,255,255,0.15);
+      background: transparent;
+      color: #FFFFFF;
+      border-radius: 999px;
+      padding: 10px 24px;
+      font-size: 14px;
+      font-weight: 500;
+      transition: background 0.2s ease;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .nav__cta:hover {
+      background: rgba(255,255,255,0.06);
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    .page-content {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 64px 24px 80px;
+    }
+
+    /* ===== CONFIRMATION HERO ===== */
+    .confirmation-hero {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .confirmation-hero__icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 28px;
+      border-radius: 50%;
+      background: rgba(34, 197, 94, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    @keyframes scaleIn {
+      0% { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes checkDraw {
+      0% { stroke-dashoffset: 24; }
+      100% { stroke-dashoffset: 0; }
+    }
+
+    .confirmation-hero__icon svg {
+      animation: checkDraw 0.4s 0.3s ease-out forwards;
+    }
+
+    .confirmation-hero__heading {
+      font-size: 40px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+      line-height: 1.15;
+    }
+
+    .confirmation-hero__subheading {
+      font-size: 16px;
+      color: var(--page-muted);
+      max-width: 460px;
+      margin: 0 auto 24px;
+      line-height: 1.7;
+    }
+
+    .confirmation-hero__pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      border-radius: 999px;
+      background: var(--page-surface);
+      border: 1px solid var(--page-border);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--page-muted);
+    }
+
+    .confirmation-hero__pill span {
+      color: var(--page-text);
+    }
+
+    /* ===== GLASS CARD ===== */
+    .glass-card {
+      background: var(--page-surface);
+      border: 1px solid var(--page-border);
+      border-radius: 14px;
+      padding: 28px;
+      margin-bottom: 24px;
+    }
+
+    .glass-card__label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--page-muted);
+      margin-bottom: 20px;
+    }
+
+    /* ===== MODULE LIST ===== */
+    .module-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .module-list__item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--page-border);
+      font-size: 14px;
+      color: var(--page-text);
+    }
+
+    .module-list__item:last-child {
+      border-bottom: none;
+    }
+
+    .module-list__check {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: rgba(34, 197, 94, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .module-list__number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--page-muted);
+      min-width: 28px;
+    }
+
+    .module-list__name {
+      font-weight: 500;
+    }
+
+    /* ===== QUICK ACTIONS ===== */
+    .quick-actions {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      justify-content: center;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 14px 32px;
+      border-radius: 999px;
+      background: var(--page-glow);
+      color: #080B16;
+      font-size: 15px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      text-decoration: none;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--page-text);
+      font-size: 15px;
+      font-weight: 500;
+      border: 1px solid rgba(255,255,255,0.15);
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease;
+      text-decoration: none;
+    }
+
+    .btn-outline:hover {
+      background: rgba(255,255,255,0.04);
+      transform: translateY(-1px);
+    }
+
+    /* ===== COMMUNITY SECTION ===== */
+    .community-card {
+      text-align: center;
+    }
+
+    .community-card__heading {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .community-card__desc {
+      font-size: 14px;
+      color: var(--page-muted);
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .community-card__discord {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 28px;
+      border-radius: 999px;
+      background: transparent;
+      color: #7B68EE;
+      font-size: 14px;
+      font-weight: 500;
+      border: 1px solid rgba(123,104,238,0.3);
+      cursor: pointer;
+      transition: background 0.2s ease;
+      text-decoration: none;
+      margin-bottom: 14px;
+    }
+
+    .community-card__discord:hover {
+      background: rgba(123,104,238,0.08);
+    }
+
+    .community-card__note {
+      font-size: 13px;
+      color: var(--page-muted);
+      margin-top: 14px;
+    }
+
+    /* ===== RECEIPT NOTE ===== */
+    .receipt-note {
+      text-align: center;
+      font-size: 13px;
+      color: var(--page-muted);
+      margin-top: 40px;
+      margin-bottom: 0;
+      line-height: 1.7;
+    }
+
+    .receipt-note a {
+      color: var(--page-glow);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    /* ===== FOOTER ===== */
+    .site-footer {
+      margin-top: 80px;
+      border-top: 1px solid var(--page-border);
+      padding: 40px 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--page-muted);
+    }
+
+    .site-footer__logo {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--page-text);
+      letter-spacing: 0.02em;
+    }
+
+    .site-footer__links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .site-footer__links a {
+      color: var(--page-muted);
+      font-size: 13px;
+      transition: color 0.2s ease;
+    }
+
+    .site-footer__links a:hover {
+      color: var(--page-text);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 600px) {
+      .nav__links { display: none; }
+      .page-content { padding: 40px 16px 60px; }
+      .confirmation-hero__heading { font-size: 30px; }
+      .quick-actions { flex-direction: column; align-items: stretch; }
+      .btn-primary, .btn-outline { justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== NAV ===== -->
+  <nav class="nav">
+    <div class="nav__logo">&#9671; tensorcraft</div>
+    <div class="nav__links">
+      <a href="landing.html">Home</a>
+      <a href="theme-selection.html">Themes</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="dashboard.html">Dashboard</a>
+    </div>
+    <a href="dashboard.html" class="nav__cta">Dashboard</a>
+  </nav>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="page-content">
+
+    <!-- Confirmation Hero -->
+    <section class="confirmation-hero">
+      <div class="confirmation-hero__icon">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10 18L16 24L26 12" stroke="#22C55E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="24" stroke-dashoffset="24"/>
+        </svg>
+      </div>
+      <h1 class="confirmation-hero__heading">You're In</h1>
+      <p class="confirmation-hero__subheading">Deep Orbit is now fully unlocked. All 11 modules and 55 lessons are ready.</p>
+      <div class="confirmation-hero__pill">
+        <span>Deep Orbit</span> &middot; $79 &middot; One-time purchase
+      </div>
+    </section>
+
+    <!-- What's Unlocked -->
+    <section class="glass-card">
+      <div class="glass-card__label">Your Access</div>
+      <ul class="module-list">
+        <li class="module-list__item">
+          <div class="module-list__check">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 6L5 8.5L9.5 3.5" stroke="#22C55E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <span class="module-list__number">M1</span>
+          <span class="module-list__name">Awakening</span>
+        </li>
+        <li class="module-list__item">
+          <div class="module-list__check">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 6L5 8.5L9.5 3.5" stroke="#22C55E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <span class="module-list__number">M2</span>
+          <span class="module-list__name">Signal Processing</span>
+        </li>
+        <li class="module-list__item">
+          <div class="module-list__check">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 6L5 8.5L9.5 3.5" stroke="#22C55E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <span class="module-list__number">M3</span>
+          <span class="module-list__name">Pattern Recognition</span>
+        </li>
+        <li class="module-list__item">
+          <div class="module-list__check">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 6L5 8.5L9.5 3.5" stroke="#22C55E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <span class="module-list__number">M4</span>
+          <span class="module-list__name">Data Gravity</span>
+        </li>
+        <li class="module-list__item">
+          <div class="module-list__check">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 6L5 8.5L9.5 3.5" stroke="#22C55E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <span class="module-list__number">M5</span>
+          <span class="module-list__name">Neural Mapping</span>
+        </li>
+        <li class="module-list__item">
+          <div class="module-list__check">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 6L5 8.5L9.5 3.5" stroke="#22C55E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <span class="module-list__number">M6</span>
+          <span class="module-list__name">Tensor Flow</span>
+        </li>
+        <li class="module-list__item">
+          <div class="module-list__check">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 6L5 8.5L9.5 3.5" stroke="#22C55E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <span class="module-list__number">M7</span>
+          <span class="module-list__name">Loss Functions</span>
+        </li>
+        <li class="module-list__item">
+          <div class="module-list__check">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 6L5 8.5L9.5 3.5" stroke="#22C55E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <span class="module-list__number">M8</span>
+          <span class="module-list__name">Optimization</span>
+        </li>
+        <li class="module-list__item">
+          <div class="module-list__check">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 6L5 8.5L9.5 3.5" stroke="#22C55E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <span class="module-list__number">M9</span>
+          <span class="module-list__name">Model Architecture</span>
+        </li>
+        <li class="module-list__item">
+          <div class="module-list__check">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 6L5 8.5L9.5 3.5" stroke="#22C55E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <span class="module-list__number">M10</span>
+          <span class="module-list__name">Deployment</span>
+        </li>
+        <li class="module-list__item">
+          <div class="module-list__check">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 6L5 8.5L9.5 3.5" stroke="#22C55E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <span class="module-list__number">M11</span>
+          <span class="module-list__name">Deep Orbit Mission</span>
+        </li>
+      </ul>
+    </section>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+      <a href="module-overview.html" class="btn-primary">Continue Learning &rarr;</a>
+      <a href="settings.html" class="btn-outline">Connect GitHub</a>
+    </div>
+
+    <!-- Community Section -->
+    <section class="glass-card community-card">
+      <h2 class="community-card__heading">Join the Community</h2>
+      <p class="community-card__desc">Connect with 2,400+ frontend engineers learning ML</p>
+      <a href="#" class="community-card__discord">
+        <svg width="18" height="14" viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15.25 1.2A14.08 14.08 0 0011.7.05a.05.05 0 00-.06.03c-.15.27-.33.63-.45.91a13.04 13.04 0 00-3.88 0A8.93 8.93 0 006.85.08.05.05 0 006.8.05 14.04 14.04 0 003.25 1.2a.05.05 0 00-.02.02C.95 4.52.29 7.73.62 10.9a.06.06 0 00.02.04 14.18 14.18 0 004.26 2.15.05.05 0 00.06-.02c.33-.45.62-.92.87-1.42a.05.05 0 00-.03-.07 9.34 9.34 0 01-1.33-.64.05.05 0 01-.01-.09c.09-.07.18-.14.26-.21a.05.05 0 01.06-.01c2.79 1.27 5.8 1.27 8.56 0a.05.05 0 01.06.01c.08.07.17.14.27.21a.05.05 0 01-.01.09c-.43.25-.87.46-1.34.64a.05.05 0 00-.02.07c.26.5.55.97.87 1.42a.05.05 0 00.06.02 14.14 14.14 0 004.27-2.15.06.06 0 00.02-.04c.39-3.68-.65-6.87-2.76-9.7a.04.04 0 00-.02-.02zM6.34 9.01c-.84 0-1.53-.77-1.53-1.72s.67-1.72 1.53-1.72c.86 0 1.54.78 1.53 1.72 0 .95-.68 1.72-1.53 1.72zm5.66 0c-.84 0-1.53-.77-1.53-1.72S11.15 5.57 12 5.57c.86 0 1.54.78 1.53 1.72 0 .95-.67 1.72-1.53 1.72z" fill="#7B68EE"/>
+        </svg>
+        Join Discord
+      </a>
+      <p class="community-card__note">Get help, share progress, and find study partners</p>
+    </section>
+
+    <!-- Receipt Note -->
+    <p class="receipt-note">A receipt has been sent to your email. Questions? Contact <a href="mailto:support@tensorcraft.dev">support@tensorcraft.dev</a></p>
+
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="site-footer">
+    <div class="site-footer__logo">&#9671; tensorcraft</div>
+    <div class="site-footer__links">
+      <a href="theme-selection.html">Themes</a>
+      <a href="bridge-explorer.html">Docs</a>
+      <a href="dashboard.html">Community</a>
+      <a href="#">Twitter</a>
+    </div>
+    <div>&copy; 2024 Tensorcraft. All rights reserved.</div>
+  </footer>
+
+</body>
+</html>
