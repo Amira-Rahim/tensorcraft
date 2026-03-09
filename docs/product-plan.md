@@ -427,6 +427,18 @@ Upon completing all 11 modules in a theme, learners receive a verifiable complet
 
 The FE-to-ML Concept Bridge is Tensorcraft's signature pedagogical tool. It maps every core ML concept to a frontend development concept that the learner already deeply understands. This is not a loose analogy — each bridge identifies a **deep structural connection** between the two domains.
 
+#### Bridge Quality Tiers
+
+Every FE-to-ML bridge is classified into one of three quality tiers based on the depth of the structural mapping:
+
+| Tier | Description | Example |
+|---|---|---|
+| **Identity** | Direct 1:1 mapping. The FE concept and ML concept are essentially the same operation. A developer who understands one already understands the other. | `Array.map()` → Tensor Operations, `CSS Grid` → Matrix Layout, `TypeScript Types` → Tensor Shapes |
+| **Structural** | Same underlying pattern applied in a different domain. The shape of the problem is identical, but the context differs. Requires a small conceptual leap. | `useState()` → Model Parameters, `React Components` → Neural Network Layers, `useEffect()` → Training Loop, `fetch() API` → Data Pipeline |
+| **Intuition** | Conceptual parallel that builds intuition rather than direct code equivalence. Helps learners develop mental models, but the code differs significantly. | `Event Listeners` → Loss Functions, `Redux State` → Gradient Descent, `CSS Transitions` → Learning Rate |
+
+Bridge tiers are displayed as color-coded badges in the Bridge Explorer: Identity (cyan), Structural (purple), Intuition (amber).
+
 #### Shared Bridges (All Themes)
 
 These 20 bridges appear across all five themes:

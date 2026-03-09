@@ -97,10 +97,10 @@ TensorCraft organizes its curriculum into five thematic worlds. Each theme wraps
 | # | Theme | World | Specialization | Primary Model Types | V0.5 Status |
 |---|---|---|---|---|---|
 | 1 | Deep Orbit | Space exploration | Autonomous navigation & anomaly detection | CNN, Autoencoder, RL (DQN) | **Launch theme** |
-| 2 | Pixel Alchemist | Generative art | Style transfer & image synthesis | GAN, VAE, Neural Style Transfer | Coming soon |
-| 3 | Lingua Forge | Language & NLP | Text generation & sentiment analysis | RNN, LSTM, Transformer (small) | Coming soon |
-| 4 | Synth Weaver | Audio & music | Sound classification & synthesis | WaveNet (lite), Spectrogram CNN | Coming soon |
-| 5 | Data Nomad | Tabular / structured data | Prediction & recommendation | Decision Tree, XGBoost (JS), kNN | Coming soon |
+| 2 | Neon Protocol | Cyberpunk | Computer Vision | CNN, Object Detection, Style Transfer | Coming soon |
+| 3 | Signal Ward | Medical | NLP & Text | RNN, LSTM, Transformer (small) | Coming soon |
+| 4 | Nova Canvas | Creative AI | Multimodal & Generative | GAN, VAE, Diffusion (lite) | Coming soon |
+| 5 | Terra Grid | Industrial | Edge AI & Production ML | Decision Tree, XGBoost (JS), Model Optimization | Coming soon |
 
 ### 3.2 Curriculum Structure
 
@@ -183,7 +183,7 @@ The entry point where learners browse, preview, and enroll in themes.
 | # | Requirement | Priority | Description |
 |---|---|---|---|
 | 1 | Launched theme cards | P0 | Display launched themes (V0.5: Deep Orbit only) as fully interactive cards with title, world illustration, specialization tagline, lesson count, estimated duration, and "Start Learning" CTA |
-| 2 | Coming soon cards | P0 | Display upcoming themes (Pixel Alchemist, Lingua Forge, Synth Weaver, Data Nomad) as visually distinct cards with a blurred or dimmed preview illustration, "Coming Soon" badge, and "Notify Me" CTA |
+| 2 | Coming soon cards | P0 | Display upcoming themes (Neon Protocol, Signal Ward, Nova Canvas, Terra Grid) as visually distinct cards with a blurred or dimmed preview illustration, "Coming Soon" badge, and "Notify Me" CTA |
 | 3 | Email capture | P1 | Clicking "Notify Me" opens a minimal modal or inline form capturing email address; stored in mailing list segmented by theme interest |
 | 4 | Responsive layout | P0 | Grid adapts from 3-column (desktop) to 2-column (tablet) to single-column stacked (mobile); cards maintain aspect ratio |
 | 5 | Status-driven rendering | P1 | Card appearance (CTA text, illustration treatment, badge) is driven by a `status` field (`launched`, `coming_soon`, `beta`) in the theme config; no hard-coded conditionals per theme |
@@ -228,6 +228,7 @@ Screens for user signup/login and the post-signup orientation flow.
 | 5 | Onboarding persistence | P1 | Onboarding completion stored in user profile; completed users skip directly to dashboard on future logins. |
 | 6 | Paywall / upgrade modal | P0 | Modal shown when a free-tier user attempts to access Module 2+. Displays feature comparison, price, and upgrade CTA. Dismissible — user returns to accessible content. |
 | 7 | Bridge Explorer (V1.0) | P2 | Standalone browsable directory of all 50+ FE-to-ML bridges. Search by FE or ML concept. Filterable by theme and category. Links back to relevant lessons. Planned for V1.0 release. |
+| 8 | Capstone completion screen | P1 | Celebratory screen shown after completing all 11 modules of a theme. Displays: completion stats (modules, lessons, bridges mastered, time invested), simplified journey map showing all modules complete, narrative conclusion with character appearances, "Download Certificate" and "Share Progress" CTAs, "Push to GitHub" link, and "What's Next" suggestions (explore another theme, browse bridges, view dashboard). |
 
 ### 4.5 GitHub Integration
 
@@ -246,11 +247,13 @@ Monetization layer supporting free and paid tiers.
 
 | # | Requirement | Priority | Description |
 |---|---|---|---|
-| 1 | Payment processor | P0 | Integrate Stripe for subscription billing; support credit card and Google Pay / Apple Pay |
-| 2 | Tier definitions | P0 | Three tiers: **Free** ($0 — first 2 modules of one theme), **Pro** ($19/month or $149/year — all modules, all themes, GitHub integration), **Team** ($39/seat/month — Pro features + admin dashboard, seat management, progress reports) |
+| 1 | Payment processor | P0 | Integrate Stripe for one-time payments; support credit card and Google Pay / Apple Pay |
+| 2 | Tier definitions | P0 | Three tiers: **Free Preview** ($0 — Module 1 of one theme, 5 lessons), **Single Theme** ($79 — all 11 modules, lifetime access, GitHub integration), **Bundle** ($129–$169 — 2 or 3 themes at a discount) |
 | 3 | Purchasing-power parity (PPP) | P1 | Apply automatic regional discounts (up to 60% off) based on IP geolocation using a PPP index table; display original and discounted price |
 | 4 | Upgrade prompts | P1 | When a free-tier user reaches the paywall (end of Module 2), show an in-context upgrade modal with benefit comparison, testimonial, and a 7-day free trial CTA |
-| 5 | Webhook handling | P0 | Listen for Stripe webhooks (`invoice.paid`, `customer.subscription.deleted`, `charge.failed`) to update user entitlements in real time |
+| 5 | Webhook handling | P0 | Listen for Stripe webhooks (`checkout.session.completed`, `charge.refunded`, `charge.failed`) to update user entitlements in real time |
+| 6 | Post-purchase confirmation | P0 | Screen shown after successful payment. Displays: green checkmark animation, "You're In" heading, order summary (theme name, price, "one-time purchase"), list of all 11 newly-unlocked modules, "Continue Learning" and "Connect GitHub" CTAs, Discord community invite, and receipt confirmation note. |
+| 7 | Payment failure handling | P1 | When a payment fails (charge.failed webhook), display an error modal on the pricing page with: error description, "Try Again" button, alternative payment method suggestion, and "Contact Support" link. Do not redirect away from the pricing page. |
 
 ### 4.7 Analytics
 
@@ -270,9 +273,9 @@ Track learning behavior, engagement, and conversion events.
 | Event | Payload |
 |---|---|
 | `paywall_hit` | `userId`, `themeId`, `moduleId`, `timestamp` |
-| `upgrade_modal_shown` | `userId`, `themeId`, `source` (`paywall`, `settings`, `banner`), `timestamp` |
-| `subscription_started` | `userId`, `tier`, `price`, `pppDiscount`, `timestamp` |
-| `subscription_cancelled` | `userId`, `tier`, `reason`, `timestamp` |
+| `upgrade_modal_shown` | `userId`, `themeId`, `source` (`paywall`, `pricing_page`, `banner`), `timestamp` |
+| `purchase_completed` | `userId`, `tier`, `price`, `pppDiscount`, `timestamp` |
+| `refund_requested` | `userId`, `tier`, `reason`, `timestamp` |
 
 #### Engagement Events
 
@@ -290,7 +293,7 @@ Track learning behavior, engagement, and conversion events.
 | Lesson completion rate | `lesson_completed` / `lesson_started` per cohort |
 | Avg. time per lesson | Mean `duration` from `lesson_completed` |
 | Hint dependency ratio | `hint_requested` count / `lesson_completed` count |
-| Paywall conversion rate | `subscription_started` / `paywall_hit` |
+| Paywall conversion rate | `purchase_completed` / `paywall_hit` |
 | 7-day retention | Users with `lesson_started` on day 1 AND day 7+ |
 | 30-day retention | Users with `lesson_started` on day 1 AND day 30+ |
 
@@ -380,10 +383,10 @@ Each theme has a distinct color palette. Colors are defined as CSS custom proper
 | Theme | Primary | Secondary | Accent | Background | Surface |
 |---|---|---|---|---|---|
 | Deep Orbit | `#0B1E3F` (navy) | `#1A3A6B` (steel blue) | `#00E5A0` (aurora green) | `#060E1F` (void black) | `#0F2A4A` (deep panel) |
-| Pixel Alchemist | `#3B0764` (royal purple) | `#7C3AED` (vivid violet) | `#F472B6` (hot pink) | `#1A0030` (ink black) | `#2D0555` (plum panel) |
-| Lingua Forge | `#1E3A28` (forest green) | `#2D6A4F` (emerald) | `#FFD166` (amber) | `#0A1F12` (deep moss) | `#163020` (leaf panel) |
-| Synth Weaver | `#1A1A2E` (midnight) | `#16213E` (dark slate) | `#E94560` (neon red) | `#0F0F1A` (abyss) | `#1F1F35` (synth panel) |
-| Data Nomad | `#2B2D42` (charcoal) | `#8D99AE` (cool grey) | `#EF8354` (burnt orange) | `#1B1D2E` (slate black) | `#23253A` (data panel) |
+| Neon Protocol | `#3B0764` (royal purple) | `#7C3AED` (vivid violet) | `#F472B6` (hot pink) | `#1A0030` (ink black) | `#2D0555` (plum panel) |
+| Signal Ward | `#1E3A28` (forest green) | `#2D6A4F` (emerald) | `#FFD166` (amber) | `#0A1F12` (deep moss) | `#163020` (leaf panel) |
+| Nova Canvas | `#1A1A2E` (midnight) | `#16213E` (dark slate) | `#E94560` (neon red) | `#0F0F1A` (abyss) | `#1F1F35` (synth panel) |
+| Terra Grid | `#2B2D42` (charcoal) | `#8D99AE` (cool grey) | `#EF8354` (burnt orange) | `#1B1D2E` (slate black) | `#23253A` (data panel) |
 
 ### 6.2 Typography
 
@@ -405,8 +408,8 @@ Each theme has a distinct color palette. Colors are defined as CSS custom proper
 |---|---|---|---|---|
 | V0.5 | Ignition | Deep Orbit theme (Modules 1–3, 15 lessons); free tier only; basic progress diagram; no payments | 2026-Q2 | 500 beta sign-ups; lesson completion rate >= 50% in internal testing |
 | V1.0 | Liftoff | Deep Orbit full (all 11 modules, 55 lessons); Pro tier + Stripe payments; GitHub integration; skill radar | 2026-Q3 | 2,000 free users; 3% conversion to Pro; NPS >= 40 |
-| V2.0 | Constellation | Add Pixel Alchemist + Lingua Forge themes; Team tier; admin dashboard; PPP pricing | 2027-Q1 | 10,000 free users; $30K MRR; 30-day retention >= 45% |
-| V3.0 | Galaxy | Add Synth Weaver + Data Nomad themes; mobile app (React Native); offline lesson caching | 2027-Q3 | 25,000 free users; $80K MRR; 5 themes fully authored |
+| V2.0 | Constellation | Add Neon Protocol + Signal Ward themes; Team tier; admin dashboard; PPP pricing | 2027-Q1 | 10,000 free users; $30K MRR; 30-day retention >= 45% |
+| V3.0 | Galaxy | Add Nova Canvas + Terra Grid themes; mobile app (React Native); offline lesson caching | 2027-Q3 | 25,000 free users; $80K MRR; 5 themes fully authored |
 | V4.0 | Nebula | AI tutor (LLM-assisted hints); community features (forums, code reviews); advanced analytics dashboard | 2028-Q1 | 50,000 free users; $150K MRR; AI tutor beta positive feedback >= 70% |
 | V5.0 | Universe | Certification program; employer partnerships; custom theme SDK for third-party content | 2028-Q3 | 100,000 free users; $250K MRR; at least 2 employer partnerships signed |
 | i18n | Babel | Localization: Spanish, Portuguese, Japanese, Hindi; RTL support for future Arabic/Hebrew | 2028-Q4 | Community translation volunteers onboarded; i18n framework integrated by V3.0 |
@@ -425,41 +428,49 @@ Each theme has a distinct color palette. Colors are defined as CSS custom proper
 
 ## 8. Pricing
 
-> **PRICING MODEL DISCREPANCY:** This section defines a subscription model ($19/mo Pro, $39/seat Team), but the product-plan document (Part 2) and all prototype screens (pricing.html, paywall.html) implement per-model pricing ($79 per theme, lifetime access). The prototypes are the source of truth for the current design direction. This discrepancy must be resolved and one model chosen before V1.0 launch.
+### Pricing Model — Per-Theme (Lifetime Access)
 
-### Tier Comparison
+Tensorcraft uses a **per-theme, one-time purchase model**. Each theme is a standalone product with lifetime access. No subscriptions.
 
-| Feature | Free | Pro ($19/mo or $149/yr) | Team ($39/seat/mo) |
-|---|---|---|---|
-| Themes accessible | 1 | All 5 | All 5 |
-| Modules per theme | 2 | 11 | 11 |
-| Lessons accessible | 10 | 55 per theme | 55 per theme |
-| Code editor | Yes | Yes | Yes |
-| FE-to-ML bridge cards | Yes | Yes | Yes |
-| GitHub integration | No | Yes | Yes |
-| Skill radar | No | Yes | Yes |
-| Progress sharing | No | Yes | Yes |
-| Streak badges | Basic | Premium + custom | Premium + custom |
-| Admin dashboard | No | No | Yes |
-| Seat management | No | No | Yes |
-| Team progress reports | No | No | Yes |
-| Priority support | No | Email | Email + Slack |
-| PPP discount eligible | N/A | Yes (up to 60%) | Yes (up to 40%) |
+### Individual Pricing
 
-### Revenue Projections
+| Tier | Price | What's Included |
+|---|---|---|
+| Free Preview | $0 | Module 1 of any launched theme (5 lessons). Full code editor, bridges, and quizzes. No GitHub integration. |
+| Single Theme | $79 | All 11 modules (55 lessons) of one theme. Lifetime access. GitHub integration. Progress sharing. |
+| Two Themes | $129 | Any two themes. Save $29 vs buying separately. |
+| Three Themes | $169 | Any three themes. Save $68 vs buying separately. |
 
-| Period | Free Users | Pro Subscribers | Team Seats | MRR | ARR |
+*Deep Orbit available now. Other themes unlock upon release for bundle purchasers.*
+
+### Team Pricing
+
+| Tier | Price | What's Included |
+|---|---|---|
+| Team 5 | $599 | 5 seats, all launched themes, admin dashboard, team progress reports |
+| Team 10 | $999 | 10 seats, all launched themes, admin dashboard, team progress reports, priority support |
+| Site License | $2,999 | Unlimited seats, all themes (current + future), custom onboarding, dedicated support |
+
+### Purchasing Power Parity (PPP)
+
+Automatic regional discounts of 20–70% applied via ParityDeals based on IP geolocation. Discount percentage displayed on pricing page alongside original price.
+
+### Revenue Projections (Per-Model)
+
+| Period | Free Users | Single Theme | Bundles | Team Licenses | Revenue |
 |---|---|---|---|---|---|
-| Y1 (end) | 15,000 | 600 | 80 | $14,520 | $174,240 |
-| Y2 (end) | 45,000 | 2,200 | 350 | $50,500 | $606,000 |
-| Y3 (end) | 100,000 | 5,000 | 900 | $130,100 | $1,561,200 |
+| Y1 (end) | 15,000 | 800 | 200 | 30 | ~$150,000 |
+| Y2 (end) | 45,000 | 3,000 | 800 | 100 | ~$550,000 |
+| Y3 (end) | 100,000 | 7,000 | 2,000 | 250 | ~$1,400,000 |
 
 | Cumulative Revenue | Low Estimate | Mid Estimate | High Estimate |
 |---|---|---|---|
-| Year 1 | $500,000 | $700,000 | $900,000 |
-| Year 2 | $1,500,000 | $2,100,000 | $2,800,000 |
-| Year 3 | $3,200,000 | $4,500,000 | $6,000,000 |
-| 3-Year Cumulative | $5,200,000 | $7,300,000 | $9,700,000 |
+| Year 1 | $100,000 | $150,000 | $220,000 |
+| Year 2 | $400,000 | $550,000 | $750,000 |
+| Year 3 | $1,000,000 | $1,400,000 | $1,900,000 |
+| 3-Year Cumulative | $1,500,000 | $2,100,000 | $2,870,000 |
+
+*Note: Revenue scales significantly with theme launches (V2.0+). Projections assume 1 theme in Y1, 3 themes in Y2, 5 themes in Y3.*
 
 ---
 

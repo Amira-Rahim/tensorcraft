@@ -21,9 +21,9 @@
       --page-muted: #8B92A5;
       --page-glow: #00D4FF;
       --page-glow-secondary: #7B68EE;
-      --green: #2ECC71;
-      --amber: #F0C75E;
-      --blue: #4A9EFF;
+      --identity: #00D4FF;
+      --structural: #7B68EE;
+      --intuition: #F0C75E;
     }
 
     body {
@@ -302,21 +302,21 @@
     }
 
     .card__badge--identity {
-      color: var(--green);
-      background: rgba(46,204,113,0.1);
-      border: 1px solid rgba(46,204,113,0.2);
+      color: var(--identity);
+      background: rgba(0,212,255,0.1);
+      border: 1px solid rgba(0,212,255,0.2);
     }
 
     .card__badge--structural {
-      color: var(--amber);
-      background: rgba(240,199,94,0.1);
-      border: 1px solid rgba(240,199,94,0.2);
+      color: var(--structural);
+      background: rgba(123,104,238,0.1);
+      border: 1px solid rgba(123,104,238,0.2);
     }
 
     .card__badge--intuition {
-      color: var(--blue);
-      background: rgba(74,158,255,0.1);
-      border: 1px solid rgba(74,158,255,0.2);
+      color: var(--intuition);
+      background: rgba(240,199,94,0.1);
+      border: 1px solid rgba(240,199,94,0.2);
     }
 
     /* Description */
@@ -390,9 +390,9 @@
       flex-shrink: 0;
     }
 
-    .stats__dot--identity { background: var(--green); }
-    .stats__dot--structural { background: var(--amber); }
-    .stats__dot--intuition { background: var(--blue); }
+    .stats__dot--identity { background: var(--identity); }
+    .stats__dot--structural { background: var(--structural); }
+    .stats__dot--intuition { background: var(--intuition); }
 
     .stats__count {
       font-weight: 600;

@@ -155,6 +155,66 @@ Each theme ships a `manifest.json` file at its package root. This manifest drive
 4. **Fallback:** If a theme does not yet have content for a specific lesson, the core (unthemed) version is rendered with a subtle banner: "This lesson is not yet available in your selected theme. Showing the standard version."
 5. **Guest Users:** Theme preference is stored in `localStorage` and synced to Supabase upon account creation.
 
+### Database Schema (Supabase / PostgreSQL)
+
+Tables use Supabase Auth for user management. Row-Level Security (RLS) enforced on all tables.
+
+#### `profiles`
+
+| Column | Type | Notes |
+| --- | --- | --- |
+| id | uuid (PK) | References `auth.users.id` |
+| display_name | text | |
+| avatar_url | text | Nullable |
+| preferred_theme | text | Default: `'deep-orbit'` |
+| github_connected | boolean | Default: `false` |
+| github_username | text | Nullable |
+| github_repo_id | bigint | Nullable |
+| onboarding_completed | boolean | Default: `false` |
+| created_at | timestamptz | Default: `now()` |
+| updated_at | timestamptz | Default: `now()` |
+
+#### `purchases`
+
+| Column | Type | Notes |
+| --- | --- | --- |
+| id | uuid (PK) | |
+| user_id | uuid (FK) | References `profiles.id` |
+| theme_ids | text[] | Array of purchased theme slugs |
+| amount_cents | integer | Amount in cents |
+| currency | text | Default: `'usd'` |
+| stripe_session_id | text | Unique |
+| ppp_discount_pct | integer | 0–70 |
+| created_at | timestamptz | Default: `now()` |
+
+#### `theme_progress`
+
+| Column | Type | Notes |
+| --- | --- | --- |
+| id | uuid (PK) | |
+| user_id | uuid (FK) | References `profiles.id` |
+| theme_id | text | Theme slug |
+| module_id | integer | 1–11 |
+| lesson_id | integer | 1–5 |
+| status | text | `not_started`, `in_progress`, `completed` |
+| score | integer | 0–100, nullable |
+| hints_used | integer | Default: 0 |
+| started_at | timestamptz | Nullable |
+| completed_at | timestamptz | Nullable |
+
+**Unique constraint:** `(user_id, theme_id, module_id, lesson_id)`
+
+#### `waitlist_signups`
+
+| Column | Type | Notes |
+| --- | --- | --- |
+| id | uuid (PK) | |
+| email | text | |
+| theme_id | text | Theme slug they're interested in |
+| created_at | timestamptz | Default: `now()` |
+
+**Unique constraint:** `(email, theme_id)`
+
 ---
 
 ## 3. Sandpack Exercise Architecture
@@ -391,6 +451,8 @@ GitHub integration is entirely optional. Users who prefer not to connect GitHub 
 - **Visual Indicator:** Lessons show a subtle GitHub icon badge when integration is active. When not connected, the "Save to GitHub" button is replaced with "Save Progress" (Supabase-only).
 - **Data Cleanup:** When a user disconnects, the API revokes the installation token and removes the `github_installation_id` from their Supabase profile. No data is deleted from GitHub.
 
+**Retroactive push:** When a user connects GitHub after completing lessons, the system queues all completed lesson artifacts for push in chronological order. Each lesson is committed as a separate commit with the original completion timestamp in the commit message (e.g., "M1L3: Pattern Recognition — completed 2026-03-08"). The push runs as a background job, with a progress indicator shown in Settings. If the repository already contains conflicting files, the system creates a new branch `tensorcraft/retroactive-sync` and opens a PR.
+
 ### 5.4 Repo Structure
 
 When a user connects GitHub, Tensorcraft creates (or uses) a repository with the following structure:
@@ -404,6 +466,8 @@ When a user connects GitHub, Tensorcraft creates (or uses) a repository with the
 | `module-01/exercise-01.test.py` | Test file that validates the exercise (read-only reference) | Created alongside exercise code |
 | `module-01/README.md` | Module overview: title, objectives, completion status | Created with first exercise in the module; updated on each commit |
 | `PROGRESS.md` | Markdown table of all completed exercises with dates and attempt counts | Created on first commit; appended on each subsequent commit |
+
+**Repository naming:** `tensorcraft-{theme-slug}` (e.g., `tensorcraft-deep-orbit`). The internal project folder within the repo uses the theme-specific project name from the curriculum (e.g., `deep-scan-signal-classifier` for Deep Orbit).
 
 ---
 
