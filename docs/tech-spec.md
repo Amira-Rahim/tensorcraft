@@ -29,8 +29,10 @@
 | Backend API | Hono (standalone service) | Lightweight, high-performance HTTP server for API endpoints (auth callbacks, progress CRUD, payment webhooks) |
 | Language | TypeScript 5.4 | End-to-end type safety across monorepo packages |
 | Styling | Tailwind CSS 4 | Utility-first CSS with `@theme` directive for CSS-native theming; no CSS Modules needed |
-| Content | MDX 3 + next-mdx-remote | Markdown with embedded React components for interactive lessons |
+| Content | MDX 3 + Velite (Zod schemas) | Type-safe lesson content with build-time frontmatter validation. Missing fields cause build errors, not runtime errors. |
+| Code Highlighting | Code Hike (Shiki-based) | Scrollytelling code walkthroughs, annotations, step-based tutorials, FE Bridge side-by-side code comparisons |
 | Code Exercises | Sandpack (CodeSandbox) | In-browser code editor and runtime for hands-on ML exercises |
+| Email | Kit (ConvertKit) | Waitlist capture, per-theme segmented lists, 11-email nurture sequence, launch emails |
 | Database | Supabase (PostgreSQL) | User data, progress tracking, authentication, row-level security |
 | Auth | Supabase Auth + GitHub OAuth | Passwordless and social login; GitHub token acquisition for repo integration |
 | Payments | Stripe Checkout + Webhooks | Subscription billing, one-time purchases, webhook-driven fulfillment |
@@ -350,9 +352,9 @@ All events are typed in `packages/analytics/events.ts` and tracked via a type-sa
 | `signup_started` | `source` (landing, lesson-gate, pricing), `themeId` | User initiates signup flow |
 | `signup_completed` | `method` (github, email, google), `source`, `themeId` | Account successfully created |
 | `paywall_shown` | `lessonId`, `moduleId`, `paywallType` (soft, hard) | Free content limit reached and paywall appears |
-| `checkout_started` | `planId`, `billingInterval` (monthly, annual), `source` | User clicks "Subscribe" and Stripe Checkout opens |
-| `checkout_completed` | `planId`, `billingInterval`, `revenue`, `currency`, `couponCode` | Stripe webhook confirms successful payment |
-| `checkout_abandoned` | `planId`, `billingInterval`, `source`, `timeOnCheckoutSeconds` | User closes Stripe Checkout without completing |
+| `checkout_started` | `planId`, `source` | User clicks "Purchase" and Stripe Checkout opens |
+| `checkout_completed` | `planId`, `revenue`, `currency`, `couponCode` | Stripe webhook confirms successful payment |
+| `checkout_abandoned` | `planId`, `source`, `timeOnCheckoutSeconds` | User closes Stripe Checkout without completing |
 | `github_connected` | `hasExistingRepo`, `repoVisibility` (public, private) | User connects their GitHub account |
 | `github_commit_pushed` | `exerciseId`, `commitSha`, `filesChanged` | Code is successfully committed to the user's repo |
 

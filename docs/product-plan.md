@@ -261,16 +261,12 @@ These statistics inform our marketing, pricing, and curriculum design — the $7
 | Tier | Description | Price |
 |------|------------|-------|
 | **Single Model** | One theme, full 11 modules | $79 |
-| **Two Models** | Any two themes | $149 (save $9) |
-| **Three Models** | Any three themes | $209 (save $28) |
-| **Four Models** | Any four themes | $269 (save $47) |
-| **All Five Models** | Complete Tensorcraft collection | $319 (save $76) |
-| **Team License (5 seats)** | Any single theme, 5 learner seats | $349 (save $46) |
-| **Team License (10 seats)** | Any single theme, 10 learner seats | $649 (save $141) |
+| **Two Models** | Any two themes | $129 (save $29) |
+| **Three Models** | Any three themes | $169 (save $68) |
 
 #### Upgrade Path
 
-Learners who purchase a single theme can upgrade to a bundle at any time. The price they already paid is credited toward the bundle price. For example, a learner who bought Deep Orbit for $79 can upgrade to the Two Models tier by paying $70 ($149 – $79). This removes purchase anxiety and encourages starting with one theme.
+Learners who purchase a single theme can upgrade to a bundle at any time. The price they already paid is credited toward the bundle price. For example, a learner who bought Deep Orbit for $79 can upgrade to the Two Models tier by paying $70 ($129 – $79). This removes purchase anxiety and encourages starting with one theme.
 
 #### Purchasing Power Parity (PPP)
 
@@ -280,6 +276,10 @@ Tensorcraft offers PPP-adjusted pricing for learners in lower-income countries. 
 - **Tier B (40% off):** Countries with significant purchasing power gaps (e.g., parts of Southeast Asia, North Africa)
 - **Tier C (60% off):** Countries with large purchasing power gaps (e.g., parts of Sub-Saharan Africa, South Asia)
 
+#### Team Pricing (Future Phase)
+
+Team and enterprise pricing (5-seat, 10-seat, and site licenses) will be introduced after V1.0 launch when demand from engineering managers is validated. Pricing will be determined based on early enterprise inquiries and competitive analysis. Not included in V0.5 or V1.0 scope.
+
 ### 2.2 Revenue Projections
 
 #### Year 1 Revenue Projection
@@ -288,13 +288,11 @@ Tensorcraft offers PPP-adjusted pricing for learners in lower-income countries. 
 |-----------|-------|-------|---------|
 | Deep Orbit — Single | 2,500 | $79 | $197,500 |
 | Neon Protocol — Single | 1,800 | $79 | $142,200 |
-| Two Model Bundles | 600 | $149 | $89,400 |
-| Three Model Bundles | 200 | $209 | $41,800 |
-| Team Licenses (5-seat) | 40 | $349 | $13,960 |
-| Team Licenses (10-seat) | 15 | $649 | $9,735 |
+| Two Model Bundles | 600 | $129 | $77,400 |
+| Three Model Bundles | 200 | $169 | $33,800 |
 | Arena Subscriptions | 500 | $29 | $14,500 |
 | PPP Discount Adjustment | — | — | –$45,000 |
-| **Year 1 Total** | | | **$464,095** |
+| **Year 1 Total** | | | **$420,400** |
 
 #### Year 2 Revenue Projection
 
@@ -304,15 +302,11 @@ Tensorcraft offers PPP-adjusted pricing for learners in lower-income countries. 
 | Neon Protocol — Single | 2,800 | $79 | $221,200 |
 | Signal Ward — Single | 2,000 | $79 | $158,000 |
 | Nova Canvas — Single | 1,500 | $79 | $118,500 |
-| Two Model Bundles | 1,200 | $149 | $178,800 |
-| Three Model Bundles | 600 | $209 | $125,400 |
-| Four Model Bundles | 200 | $269 | $53,800 |
-| All Five Bundles | 100 | $319 | $31,900 |
-| Team Licenses (5-seat) | 80 | $349 | $27,920 |
-| Team Licenses (10-seat) | 35 | $649 | $22,715 |
+| Two Model Bundles | 1,200 | $129 | $154,800 |
+| Three Model Bundles | 600 | $169 | $101,400 |
 | Arena Subscriptions | 2,000 | $29 | $58,000 |
 | PPP Discount Adjustment | — | — | –$95,000 |
-| **Year 2 Total** | | | **$1,154,035** |
+| **Year 2 Total** | | | **$969,700** |
 
 #### Year 3 Revenue Projection
 
@@ -323,23 +317,19 @@ Tensorcraft offers PPP-adjusted pricing for learners in lower-income countries. 
 | Signal Ward — Single | 3,000 | $79 | $237,000 |
 | Nova Canvas — Single | 2,800 | $79 | $221,200 |
 | Terra Grid — Single | 2,000 | $79 | $158,000 |
-| Two Model Bundles | 1,800 | $149 | $268,200 |
-| Three Model Bundles | 1,000 | $209 | $209,000 |
-| Four Model Bundles | 500 | $269 | $134,500 |
-| All Five Bundles | 400 | $319 | $127,600 |
-| Team Licenses (5-seat) | 150 | $349 | $52,350 |
-| Team Licenses (10-seat) | 60 | $649 | $38,940 |
+| Two Model Bundles | 1,800 | $129 | $232,200 |
+| Three Model Bundles | 1,000 | $169 | $169,000 |
 | Arena Subscriptions | 5,000 | $29 | $145,000 |
 | PPP Discount Adjustment | — | — | –$150,000 |
-| **Year 3 Total** | | | **$2,034,290** |
+| **Year 3 Total** | | | **$1,604,900** |
 
 #### 3-Year Cumulative Revenue
 
-**Conservative estimate: $3,652,420**
-**Optimistic estimate (1.2x multiplier on units): $4,382,904**
-**High-growth estimate (1.8x multiplier on units + Arena expansion): $7,700,000**
+**Conservative estimate: $2,995,000**
+**Optimistic estimate (1.2x multiplier on units): $3,594,000**
+**High-growth estimate (1.8x multiplier on units + Arena expansion + Team pricing): $5,400,000+**
 
-Combined range: **$4.3M–$7.7M** over 3 years.
+Combined range: **$3.0M–$5.4M** over 3 years.
 
 #### Year 4–5 Note
 
@@ -438,6 +428,18 @@ Every FE-to-ML bridge is classified into one of three quality tiers based on the
 | **Intuition** | Conceptual parallel that builds intuition rather than direct code equivalence. Helps learners develop mental models, but the code differs significantly. | `Event Listeners` → Loss Functions, `Redux State` → Gradient Descent, `CSS Transitions` → Learning Rate |
 
 Bridge tiers are displayed as color-coded badges in the Bridge Explorer: Identity (cyan), Structural (purple), Intuition (amber).
+
+#### Bridge Quality Tiers
+
+Each bridge is classified into one of three quality tiers that indicate the strength of the FE→ML mapping:
+
+| Tier | Description | Example |
+|------|-------------|---------|
+| **Identity** | The FE concept *is* the ML concept — same function, same math, different name | `Math.max(0, x)` = ReLU Activation |
+| **Structural** | Same architectural pattern, different domain — deep parallel that holds under scrutiny | Overfitting = CSS that only works on your screen |
+| **Intuition** | Useful starting mental model that gets refined during the lesson — accurate enough to build on | Lighthouse score → Loss Function |
+
+The Bridge Explorer UI should display these tiers as badges on each bridge card, and allow filtering by tier.
 
 #### Shared Bridges (All Themes)
 
@@ -1514,8 +1516,8 @@ All five themes share these visual design constraints to maintain platform coher
 
 #### In Scope
 
-- Deep Orbit — Modules 1–5 (25 lessons)
-- Full 5C Loop for all 25 lessons
+- Deep Orbit — Modules 1–3 (15 lessons)
+- Full 5C Loop for all 15 lessons
 - Interactive animations for core ML concepts (at least 10)
 - FE-to-ML bridges: all 20 shared bridges + 6 Deep Orbit bridges
 - Progress diagram (Deep Orbit, modules 1–5 only)

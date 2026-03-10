@@ -33,58 +33,29 @@ Every front-end developer should be able to build, train, and deploy ML models w
 
 Deliver a gamified, project-based curriculum that meets FE developers where they are — in the browser, in JavaScript, with visual feedback — and guides them from zero ML knowledge to production-ready skills across five thematic learning tracks.
 
-### Success Metrics
-
-| Metric | V0.5 Target | V1.0 Target |
-|---|---|---|
-| Lesson completion rate | >= 60% | >= 75% |
-| Theme enrollment (free) | 2,000 users | 10,000 users |
-| Paid conversion rate | 3% | 6% |
-| NPS score | >= 40 | >= 55 |
-| Average lessons per week per active user | 2.5 | 3.5 |
-| Time-to-first-model (minutes) | <= 30 | <= 20 |
-| Monthly recurring revenue (MRR) | $5,000 | $30,000 |
-| 30-day retention | 35% | 50% |
-
 ---
 
 ## 2. User Personas
 
-### Persona 1: Career Pivoter — "Sam"
+### Primary: The Curious Frontend Engineer
 
-- **Age:** 29
-- **Role:** Mid-level front-end developer (3 years React, 1 year Vue)
-- **Goal:** Transition into an ML engineering or ML-adjacent role within 12 months
-- **Frustration:** Traditional ML courses assume Python fluency and math backgrounds; Sam bounces off after Week 2
-- **Jobs to be Done:**
-  1. Learn ML fundamentals without abandoning JavaScript
-  2. Build a portfolio of ML projects that complement existing FE work
-  3. Gain enough vocabulary to pass ML screening interviews
-- **Willingness to pay:** $20–$30/month for a clear career path
+- **Demographics:** 3–10 years frontend experience. React/Vue/Angular daily. JS/TS fluent. No ML experience. Age 25–40.
+- **Motivation:** AI is transforming the industry. Wants to understand ML without switching to Python or abandoning their frontend identity. Wants a portfolio project that proves ML skills to employers.
+- **Job to be done:** "Help me learn ML using the tools and mental models I already have, so I can build ML-powered features and expand my career options."
+- **Pain points:** Existing ML courses assume Python + math background. Academic courses are dry and theoretical. No courses teach browser-based ML. No interactive courses for Transformers.js/WebGPU/ONNX Runtime Web.
+- **Willingness to pay:** $79 one-time for a complete theme. $129–$169 for bundles.
 
-### Persona 2: Product Builder — "Priya"
+### Secondary: The Career Transitioner
 
-- **Age:** 34
-- **Role:** Senior front-end engineer / tech lead at a SaaS startup
-- **Goal:** Add on-device ML features (e.g., smart search, recommendation widgets) to her team's product without hiring a dedicated ML engineer
-- **Frustration:** TensorFlow.js docs are reference-heavy but lack guided, project-based learning; hard to know what is production-ready vs. experimental
-- **Jobs to be Done:**
-  1. Evaluate which ML models can run in-browser with acceptable latency
-  2. Prototype an ML-powered feature and present it to stakeholders
-  3. Understand trade-offs between on-device and server-side inference
-- **Willingness to pay:** $40–$50/month or team license; expense-able through employer
+- **Demographics:** 5–15 years software engineering. Wants to move into ML/AI roles. May have some Python but prefers JavaScript.
+- **Job to be done:** "Give me a structured path with a portfolio project that hiring managers can evaluate in seconds."
+- **Willingness to pay:** $79–$169. Expense-able through employer.
 
-### Persona 3: Curious Tinkerer — "Leo"
+### Tertiary: The Team Lead
 
-- **Age:** 22
-- **Role:** Junior developer, recent bootcamp graduate, freelance side projects
-- **Goal:** Explore ML out of curiosity; build cool demos to post on social media
-- **Frustration:** Overwhelmed by the breadth of ML; wants a guided, playful experience rather than a textbook
-- **Jobs to be Done:**
-  1. Complete bite-sized lessons during commute or lunch break
-  2. Share visually impressive results on Twitter/LinkedIn
-  3. Decide whether ML is worth deeper investment before committing to a paid course
-- **Willingness to pay:** Free tier initially; may convert to $15/month if hooked
+- **Demographics:** Engineering manager at a company exploring browser ML. Needs to upskill 5–10 frontend engineers.
+- **Job to be done:** "Give my team a structured curriculum with measurable progress and consistent quality."
+- **Willingness to pay:** Team pricing (planned for future release).
 
 ---
 
@@ -312,7 +283,7 @@ Track learning behavior, engagement, and conversion events.
 | ML runtime | TensorFlow.js (tfjs-core + tfjs-layers) | Runs models in-browser via WebGL backend; WASM fallback for unsupported GPUs |
 | Code editor | Monaco Editor (via @monaco-editor/react) | Shared configuration across themes; custom tokenizer for ML-specific keywords |
 | API layer | Next.js Route Handlers + tRPC | Type-safe API contracts between client and server |
-| Database | PlanetScale (MySQL) via Prisma ORM | Serverless-friendly; row-level security for multi-tenant data |
+| Database | Supabase (PostgreSQL) | Serverless-friendly; row-level security for multi-tenant data |
 | Auth | NextAuth.js v5 | Providers: GitHub OAuth, email magic link, Google OAuth |
 | Hosting | Vercel | Edge functions for PPP lookup; ISR for lesson content pages |
 
@@ -324,7 +295,7 @@ Track learning behavior, engagement, and conversion events.
 | `@tensorcraft/ui` | `packages/ui` | Shared component library (buttons, cards, modals, editor wrapper) |
 | `@tensorcraft/ml-sandbox` | `packages/ml-sandbox` | Sandboxed iframe environment for running learner code + TensorFlow.js models |
 | `@tensorcraft/content` | `packages/content` | MDX lesson files, theme configs, quiz data, and bridge cards |
-| `@tensorcraft/db` | `packages/db` | Prisma schema, migrations, seed scripts, and database utilities |
+| `@tensorcraft/db` | `packages/db` | Supabase schema, migrations, seed scripts, and database utilities |
 | `@tensorcraft/analytics` | `packages/analytics` | Event tracking client (wraps Segment / PostHog) with typed event definitions |
 | `@tensorcraft/config` | `packages/config` | Shared ESLint, TypeScript, Tailwind, and Prettier configurations |
 | `@tensorcraft/tests` | `packages/tests` | End-to-end (Playwright) and integration test suites |
@@ -408,10 +379,10 @@ Each theme has a distinct color palette. Colors are defined as CSS custom proper
 |---|---|---|---|---|
 | V0.5 | Ignition | Deep Orbit theme (Modules 1–3, 15 lessons); free tier only; basic progress diagram; no payments | 2026-Q2 | 500 beta sign-ups; lesson completion rate >= 50% in internal testing |
 | V1.0 | Liftoff | Deep Orbit full (all 11 modules, 55 lessons); Pro tier + Stripe payments; GitHub integration; skill radar | 2026-Q3 | 2,000 free users; 3% conversion to Pro; NPS >= 40 |
-| V2.0 | Constellation | Add Neon Protocol + Signal Ward themes; Team tier; admin dashboard; PPP pricing | 2027-Q1 | 10,000 free users; $30K MRR; 30-day retention >= 45% |
-| V3.0 | Galaxy | Add Nova Canvas + Terra Grid themes; mobile app (React Native); offline lesson caching | 2027-Q3 | 25,000 free users; $80K MRR; 5 themes fully authored |
-| V4.0 | Nebula | AI tutor (LLM-assisted hints); community features (forums, code reviews); advanced analytics dashboard | 2028-Q1 | 50,000 free users; $150K MRR; AI tutor beta positive feedback >= 70% |
-| V5.0 | Universe | Certification program; employer partnerships; custom theme SDK for third-party content | 2028-Q3 | 100,000 free users; $250K MRR; at least 2 employer partnerships signed |
+| V2.0 | Constellation | Add Neon Protocol + Signal Ward themes; Team tier; admin dashboard; PPP pricing | 2027-Q1 | 10,000 free users; $30K monthly revenue; 30-day retention >= 45% |
+| V3.0 | Galaxy | Add Nova Canvas + Terra Grid themes; mobile app (React Native); offline lesson caching | 2027-Q3 | 25,000 free users; $80K monthly revenue; 5 themes fully authored |
+| V4.0 | Nebula | AI tutor (LLM-assisted hints); community features (forums, code reviews); advanced analytics dashboard | 2028-Q1 | 50,000 free users; $150K monthly revenue; AI tutor beta positive feedback >= 70% |
+| V5.0 | Universe | Certification program; employer partnerships; custom theme SDK for third-party content | 2028-Q3 | 100,000 free users; $250K monthly revenue; at least 2 employer partnerships signed |
 | i18n | Babel | Localization: Spanish, Portuguese, Japanese, Hindi; RTL support for future Arabic/Hebrew | 2028-Q4 | Community translation volunteers onboarded; i18n framework integrated by V3.0 |
 
 ### V0.5 Content Calendar
@@ -445,11 +416,7 @@ Tensorcraft uses a **per-theme, one-time purchase model**. Each theme is a stand
 
 ### Team Pricing
 
-| Tier | Price | What's Included |
-|---|---|---|
-| Team 5 | $599 | 5 seats, all launched themes, admin dashboard, team progress reports |
-| Team 10 | $999 | 10 seats, all launched themes, admin dashboard, team progress reports, priority support |
-| Site License | $2,999 | Unlimited seats, all themes (current + future), custom onboarding, dedicated support |
+Team pricing (5-seat, 10-seat, and site licenses) planned for post-V1.0. See product-plan.md for future pricing strategy.
 
 ### Purchasing Power Parity (PPP)
 
@@ -457,11 +424,11 @@ Automatic regional discounts of 20–70% applied via ParityDeals based on IP geo
 
 ### Revenue Projections (Per-Model)
 
-| Period | Free Users | Single Theme | Bundles | Team Licenses | Revenue |
-|---|---|---|---|---|---|
-| Y1 (end) | 15,000 | 800 | 200 | 30 | ~$150,000 |
-| Y2 (end) | 45,000 | 3,000 | 800 | 100 | ~$550,000 |
-| Y3 (end) | 100,000 | 7,000 | 2,000 | 250 | ~$1,400,000 |
+| Period | Free Users | Single Theme | Bundles | Revenue |
+|---|---|---|---|---|
+| Y1 (end) | 15,000 | 800 | 200 | ~$150,000 |
+| Y2 (end) | 45,000 | 3,000 | 800 | ~$550,000 |
+| Y3 (end) | 100,000 | 7,000 | 2,000 | ~$1,400,000 |
 
 | Cumulative Revenue | Low Estimate | Mid Estimate | High Estimate |
 |---|---|---|---|
@@ -470,7 +437,7 @@ Automatic regional discounts of 20–70% applied via ParityDeals based on IP geo
 | Year 3 | $1,000,000 | $1,400,000 | $1,900,000 |
 | 3-Year Cumulative | $1,500,000 | $2,100,000 | $2,870,000 |
 
-*Note: Revenue scales significantly with theme launches (V2.0+). Projections assume 1 theme in Y1, 3 themes in Y2, 5 themes in Y3.*
+*Note: Revenue scales significantly with theme launches (V2.0+). Projections assume 1 theme in Y1, 3 themes in Y2, 5 themes in Y3. Team pricing not included — will be added post-V1.0.*
 
 ---
 

@@ -32,6 +32,12 @@ tensorcraft/
 | Database | Supabase (PostgreSQL) | Auth, RLS, real-time, generous free tier |
 | Styling | Tailwind CSS 4 | CSS-native `@theme` directive, zero-JS theming |
 | Animation | Framer Motion | Declarative, layout animations, gesture support |
+| Content | MDX 3 + Velite (Zod schemas) | Type-safe content with build-time validation |
+| Code Highlighting | Code Hike (Shiki-based) | Scrollytelling, FE Bridge code comparisons |
+| Code Exercises | Sandpack (CodeSandbox) | Browser-based code playgrounds with Jest |
+| Payments | Stripe Checkout + Webhooks | One-time purchases, webhook-driven fulfillment |
+| Email | Kit (ConvertKit) | Waitlist, per-theme segmented lists, nurture sequences |
+| Analytics | PostHog + Plausible | Product analytics + privacy-friendly marketing analytics |
 | Fonts | Inter + JetBrains Mono | Clean UI + monospace for code/technical content |
 
 ## Theme System
@@ -71,7 +77,7 @@ Each theme (`packages/themes/src/<theme>.ts`) exports a `ThemeManifest` with:
 
 - **`profiles`** — Extends `auth.users`. Auto-created via trigger on signup. Fields: display_name, avatar_url, github_username.
 - **`theme_progress`** — Per-lesson tracking. Fields: theme_id, module_id, lesson_id, status (not_started/in_progress/completed), score, hints_used, timestamps. Unique constraint on (user_id, theme_id, module_id, lesson_id).
-- **`purchases`** — Payment records from LemonSqueezy webhooks. Fields: plan_id, theme_ids (text[]), amount, currency, lemon_squeezy_id, status.
+- **`purchases`** — Payment records from Stripe webhooks. Fields: plan_id, theme_ids (text[]), amount, currency, stripe_session_id, status.
 - **`waitlist`** — Email capture for coming-soon themes. Public insert policy.
 
 ### Row-Level Security
@@ -99,7 +105,7 @@ Separate backend service running on port 3001. Communicates with Supabase using 
 
 - `/api/auth/*` — Auth callback handling, session management
 - `/api/progress/*` — Theme progress CRUD (authenticated)
-- `/api/payments/*` — LemonSqueezy webhook receiver, purchase verification
+- `/api/payments/*` — Stripe webhook receiver, purchase verification
 
 ### Middleware
 

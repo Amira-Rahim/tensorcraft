@@ -23,20 +23,27 @@ This document is the single source of truth for all development work needed to s
 
 ---
 
-## Unresolved Decisions (Blocking)
+## Resolved Decisions
 
-These discrepancies and open questions must be resolved before development begins. Each impacts technical scope.
+All blocking decisions have been resolved. This table documents the final choices.
 
-| # | Decision | Options | Currently Assumed | Impact |
-| --- | --- | --- | --- | --- |
-| 1 | **V0.5 module scope** | PRD 7 says Modules 1–3 (15 lessons) vs product-plan says Modules 1–5 (25 lessons) | Modules 1–5 (product-plan) | Content authoring timeline, beta scope |
-| 2 | **Database** | PRD 5.1 says PlanetScale + Prisma vs tech-spec says Supabase + Postgres | Supabase (tech-spec) | ORM choice, auth integration, RLS approach |
-| 3 | **Bundle pricing** | Product-plan says $149/$209/$269/$319 vs PRD/prototypes say $129/$169 | $129/$169 (PRD/prototypes) | Stripe config, pricing page, revenue projections |
-| 4 | **Code execution** | Pyodide (client-side, free, limited libs) vs server-side sandbox (full Python, adds cost/latency) | TensorFlow.js in Sandpack | Exercise architecture, infra cost |
-| 5 | **Narrative branching** | Convergent (simpler, single path) vs divergent (complex, player choices matter) | Convergent | Content pipeline complexity, authoring effort |
-| 6 | **AI-powered hints** | Manual progressive disclosure (3-level) vs LLM-powered hint generation | Manual (3-level) | Phase 3e scope, API cost, latency |
-| 7 | **Content licensing** | Learners own capstone projects? Commercial use allowed? | Undefined | Terms of Service, legal pages |
-| 8 | **WCAG level** | AA (current plan) vs AAA (higher bar for contrast/animation) | WCAG 2.1 AA | Animation design, color palette, contrast ratios |
+| # | Decision | Resolution | Rationale |
+| --- | --- | --- | --- |
+| 1 | **V0.5 module scope** | Modules 1–3 (15 lessons) | Matches PRD. Buildable in 4 months solo. |
+| 2 | **Database** | Supabase (PostgreSQL + Auth + RLS) | Already implemented in architecture. Auth + RLS from day one. |
+| 3 | **Bundle pricing** | $79 single / $129 two / $169 three | Simpler. No 4-theme or 5-theme bundles until themes exist. |
+| 4 | **Payment processor** | Stripe Checkout + Webhooks | One-time purchases. No subscriptions. Webhook-driven fulfillment. |
+| 5 | **Code execution** | TensorFlow.js in Sandpack | Client-side only. No server sandbox. |
+| 6 | **Narrative branching** | Convergent (single path) | Simpler content pipeline. All 5C variations are structural, not branching. |
+| 7 | **AI-powered hints** | Manual 3-level progressive disclosure | No LLM cost/latency. Hints authored per exercise. |
+| 8 | **WCAG level** | WCAG 2.1 AA | Standard compliance. AAA deferred. |
+| 9 | **Content pipeline** | MDX 3 + Velite (Zod schemas) | Build-time validation. Missing fields = build error. |
+| 10 | **Code highlighting** | Code Hike (Shiki-based) | Scrollytelling for FE Bridge side-by-side code comparisons. |
+| 11 | **Email provider** | Kit (ConvertKit) | Waitlist, per-theme segments, 11-email nurture sequence. |
+| 12 | **Team pricing** | Deferred to post-V1.0 | No team tiers at launch. Added to product plan as future phase. |
+| 13 | **Early Access tier** | Removed | V0.5 uses Free (M1) + $79 (full theme). No intermediate tier. |
+| 14 | **Ship name** | Archimedes | Consistent across all docs and prototypes. |
+| 15 | **Nova Canvas model** | Nova Canvas (not "Nova Canvas AI" or "Nova Gen Engine") | Simplified. |
 
 ---
 
@@ -148,7 +155,7 @@ These discrepancies and open questions must be resolved before development begin
   1. Welcome screen — headline "You Already Think Like an ML Engineer"
   2. Theme selection — Deep Orbit pre-highlighted as recommended
   3. Confirmation + "Begin Module 1" CTA
-- [ ] Dynamic module/lesson counts — show "5 Modules, 25 Lessons" for V0.5 (driven by content source, not hardcoded)
+- [ ] Dynamic module/lesson counts — show "3 Modules, 15 Lessons" for V0.5 (driven by content source, not hardcoded)
 - [ ] Onboarding completion persistence — store `onboarding_completed` flag in `profiles`, skip on future logins
 - [ ] Stepper indicator showing progress through 3 steps
 - [ ] Track `onboarding_completed` analytics event
@@ -235,7 +242,7 @@ These discrepancies and open questions must be resolved before development begin
 - [ ] Story panel with theme narrative (character + mission context)
 - [ ] Module prerequisite enforcement: complete Module N to unlock Module N+1
 - [ ] Visual locked state for unstarted modules (lock icon, reduced opacity, "Complete Module X to unlock" tooltip)
-- [ ] V0.5: Show Modules 1–5 only for Deep Orbit
+- [ ] V0.5: Show Modules 1–3 only for Deep Orbit
 
 ### 3e. Lesson Viewer
 
@@ -263,17 +270,20 @@ These discrepancies and open questions must be resolved before development begin
 - [ ] Friendly error messages (Sandpack errors tagged separately in Sentry)
 - [ ] Track `checkpoint_passed` and `capstone_submitted` events
 
-### 3g. Deep Orbit Content (V0.5 — Modules 1–5)
+### 3g. Deep Orbit Content (V0.5 — Modules 1–3)
 
 - [ ] Module 1: Tensors, Shapes, Operations, Data Loading, Normalization (5 lessons)
 - [ ] Module 2: Layers, Activations, Forward Pass, Loss Functions, Gradient Descent (5 lessons)
 - [ ] Module 3: CNN Basics, Kernels, Pooling, Feature Maps, Image Classification Capstone (5 lessons)
-- [ ] Module 4: Training Loop, Overfitting, Regularization, Metrics, Hyperparameters (5 lessons)
-- [ ] Module 5: Time-Series Intro, Signal Processing, FFT, Sliding Windows, Signal Classification Capstone (5 lessons)
-- [ ] All 25 lessons follow 5C Loop structure
+- [ ] All 15 lessons follow 5C Loop structure
 - [ ] All FE-to-ML bridges present (20 shared + 6 Deep Orbit-specific)
 - [ ] Character voices consistent: Commander Adaeza, Dr. Hana Sato, Chief Maria Torres, Echo (AI)
-- [ ] Narrative arc: setup (M1-2) → rising action (M3-4) → midpoint (M5 capstone)
+- [ ] Narrative arc (V0.5): foundation (M1) → skill building (M2) → capstone mission (M3)
+
+#### Post-V0.5 Content (Deep Orbit Modules 4–5, ships with V1.0)
+
+- [ ] Module 4: Training Loop, Overfitting, Regularization, Metrics, Hyperparameters (5 lessons)
+- [ ] Module 5: Time-Series Intro, Signal Processing, FFT, Sliding Windows, Signal Classification Capstone (5 lessons)
 
 ---
 
@@ -283,7 +293,7 @@ These discrepancies and open questions must be resolved before development begin
 
 - [ ] Build from `prototypes/pricing.html`
 - [ ] 4 individual tiers: Free Preview ($0), Single Theme ($79), Two Themes ($129), Three Themes ($169)
-- [ ] Team pricing: Team 5 ($599), Team 10 ($999), Site License ($2,999)
+- [ ] Team pricing: Deferred to post-V1.0. Design based on enterprise demand data.
 - [ ] FAQ accordion (interactive)
 - [ ] Feature comparison table
 
@@ -629,7 +639,7 @@ These discrepancies and open questions must be resolved before development begin
 - [ ] Legal pages live (Terms, Privacy)
 - [ ] Cookie consent banner functional
 - [ ] Stripe payments tested end-to-end (real money test transaction)
-- [ ] All 25 lessons pass content validation CI checks
+- [ ] All 15 lessons pass content validation CI checks
 - [ ] All exercises pass automated validation
 - [ ] Lighthouse scores meet thresholds (Performance ≥90, A11y ≥95)
 - [ ] Core Web Vitals within targets (LCP < 2.5s, CLS < 0.1, INP < 200ms)
@@ -785,7 +795,7 @@ All `href="#"` links in prototypes that need real routes:
 
 | Version | Content | Target |
 | --- | --- | --- |
-| V0.5 | Deep Orbit Modules 1–5 (25 lessons, MVP) | Q2 2026 |
+| V0.5 | Deep Orbit Modules 1–3 (15 lessons, MVP) | Q2 2026 |
 | V1.0 | Deep Orbit Modules 1–11 (55 lessons, full) | Q3 2026 |
 | V2.0 | + Neon Protocol (55 lessons) | Q4 2026 |
 | V3.0 | + Signal Ward + Nova Canvas (110 lessons) | Q1–Q2 2027 |

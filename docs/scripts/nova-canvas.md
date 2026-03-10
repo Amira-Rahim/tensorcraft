@@ -9,7 +9,7 @@
 **Tags:** `generative-AI` `GANs` `VAE` `diffusion` `CLIP` `multimodal` `style-transfer`
 **Theme:** AI-powered creative tools for a digital art collective preparing for a global exhibition
 **Setting:** NOVA LABS — The Nova Collective is a digital art community housed in a converted warehouse district known as "The Grid." Part gallery, part laboratory, part performance space, it exists at the intersection of art and technology. The collective has been invited to create the centerpiece installation for the Global Digital Arts Biennale — a multimodal AI system that generates art across mediums (visual, audio, text) and responds to audience interaction in real time.
-**Model being built:** Nova Canvas AI — a multimodal creative assistant
+**Model being built:** Nova Canvas — a multimodal creative assistant
 **GitHub repo deployed at end:** `nova-canvas-creative-ai`
 
 ### Characters
@@ -44,13 +44,13 @@ The interior of The Grid at night. Exposed brick walls covered in projected gene
 
 The Nova Collective has received the most prestigious commission in digital art: the centerpiece installation for the Global Digital Arts Biennale. Yara's vision is ambitious — an AI system that generates art across visual, audio, and text modalities, responding to audience interaction in real time. Every visitor becomes a collaborator.
 
-Ren, a frontend developer turned creative coder, joins the team as the engineer who will make it all work in the browser. Under the guidance of Yara (artistic vision), Kai (audio and cross-modal thinking), and Petrov (deployment and audience experience), Ren builds Nova Canvas AI — from simple generative patterns to GANs, VAEs, diffusion models, style transfer, CLIP-guided generation, and audio synthesis.
+Ren, a frontend developer turned creative coder, joins the team as the engineer who will make it all work in the browser. Under the guidance of Yara (artistic vision), Kai (audio and cross-modal thinking), and Petrov (deployment and audience experience), Ren builds Nova Canvas — from simple generative patterns to GANs, VAEs, diffusion models, style transfer, CLIP-guided generation, and audio synthesis.
 
 The journey explores not just how to generate art with machines, but what it means to create. Is a GAN output art? Who is the artist — the human who designed the system, or the model that produced the image? These questions run through every module, making Nova Canvas as philosophical as it is technical.
 
 ### Model Preview
 
-Nova Canvas AI evolves across 11 modules:
+Nova Canvas evolves across 11 modules:
 
 1. **M1-M2:** Simple generative model producing visual patterns from random inputs
 2. **M3:** GAN generating textures and abstract patterns
@@ -445,7 +445,7 @@ This is Kai's moment. Where Yara thinks in visual composition and spatial design
 
 ## MODULE 10: CREATIVE DEPLOYMENT
 
-*Making Nova Canvas AI real-time and installation-ready for 200 simultaneous visitors.*
+*Making Nova Canvas real-time and installation-ready for 200 simultaneous visitors.*
 
 ### Narrative
 
@@ -480,11 +480,11 @@ Ren optimizes aggressively. Kai suggests precomputing base audio loops and layer
 
 ## MODULE 11: CAPSTONE — THE BIENNALE
 
-*The exhibition opens. Nova Canvas AI meets the world.*
+*The exhibition opens. Nova Canvas meets the world.*
 
 ### Narrative
 
-Opening night. Visitors stream into The Grid. They speak prompts, touch surfaces, make gestures — and Nova Canvas AI responds with generated images, sounds, and text. Each creation is unique.
+Opening night. Visitors stream into The Grid. They speak prompts, touch surfaces, make gestures — and Nova Canvas responds with generated images, sounds, and text. Each creation is unique.
 
 ### Lessons
 
@@ -494,7 +494,7 @@ Opening night. Visitors stream into The Grid. They speak prompts, touch surfaces
 | 2 | User Experience Design | Designing the visitor interaction flow | UX design for interactive installations |
 | 3 | Load Testing | Simulating opening night traffic | Artillery / k6 load testing |
 | 4 | Monitoring & Failover | Keeping the installation running all night | Uptime monitoring and graceful degradation |
-| 5 | Opening Night | The Biennale opens — Nova Canvas AI goes live | Production launch day |
+| 5 | Opening Night | The Biennale opens — Nova Canvas goes live | Production launch day |
 
 ### CONSEQUENCE
 
@@ -502,7 +502,7 @@ Opening night. The Grid is transformed. Projections cover every wall. Sound fill
 
 A child walks up to the main interface. She whispers: "a dragon made of stars."
 
-Nova Canvas AI processes the prompt. CLIP aligns text to visual meaning. The diffusion model begins denoising. Progressively, from pure noise, a dragon materializes — scales made of constellations, wings trailing nebulae, eyes that burn with stellar fire. Kai's audio layer adds a shimmering, crystalline score that rises as the dragon takes shape.
+Nova Canvas processes the prompt. CLIP aligns text to visual meaning. The diffusion model begins denoising. Progressively, from pure noise, a dragon materializes — scales made of constellations, wings trailing nebulae, eyes that burn with stellar fire. Kai's audio layer adds a shimmering, crystalline score that rises as the dragon takes shape.
 
 The child laughs. The crowd around her goes silent, then breaks into applause.
 
@@ -520,7 +520,7 @@ Ren stands in the middle of it all — the projections, the sound, the crowd —
 
 ### GITHUB
 
-**Commit:** `feat(m11): Nova Canvas AI v1.0 — full multimodal installation deployed`
+**Commit:** `feat(m11): Nova Canvas v1.0 — full multimodal installation deployed`
 **Branch:** `module-11/capstone`
 **Deploys to:** `https://<username>.github.io/nova-canvas-creative-ai`
 
@@ -542,7 +542,7 @@ Petrov's arc traces a traditional curator who starts dismissive of AI-generated 
 - **M1 (Generative Basics):** Petrov watches Ren's first generated output and scoffs. "This is a photocopier, not a paintbrush. It copies patterns. It does not create."
 - **M4 (Variational Autoencoders):** Petrov watches Ren manipulate the latent space, smoothly morphing between visual styles. He pauses, tilts his head. "The latent space interpolation is... interesting. I would not call it art. But the space between the points — that has potential."
 - **M7 (Multimodal Learning):** Petrov approaches Ren with an idea. "What if we constrain the generator with my compositional principles? The rule of thirds, color harmony, focal weight. Let the machine generate, but within a framework I define." He begins collaborating directly with the system for the first time.
-- **M11 (Capstone):** Standing in The Grid on opening night, watching visitors create alongside Nova Canvas AI, Petrov delivers his final verdict: "It is not art. But what you do with it — that can be."
+- **M11 (Capstone):** Standing in The Grid on opening night, watching visitors create alongside Nova Canvas, Petrov delivers his final verdict: "It is not art. But what you do with it — that can be."
 
 ---
 
