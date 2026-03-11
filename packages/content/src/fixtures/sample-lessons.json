@@ -1,0 +1,188 @@
+[
+  {
+    "slug": "introduction-to-tensors",
+    "title": "Introduction to Tensors",
+    "moduleId": "foundations",
+    "themeId": "deep-orbit",
+    "order": 1,
+    "estimatedMinutes": 25,
+    "difficulty": "beginner",
+    "context": {
+      "narrative": "The Archimedes receives a mysterious data stream from deep space.",
+      "speaker": "Commander Okafor"
+    },
+    "concept": {
+      "explanation": "Tensors are multi-dimensional arrays — the fundamental data structure of machine learning.",
+      "bridge": {
+        "feTitle": "TypedArray",
+        "feCode": "const arr = new Float32Array([1, 2, 3])",
+        "mlTitle": "Tensor",
+        "mlCode": "const t = tf.tensor([1, 2, 3])",
+        "tier": "identity"
+      }
+    },
+    "consequence": {
+      "narrative": "The signal begins to take shape as structured data.",
+      "nextLessonTeaser": "Next: understanding tensor shapes"
+    },
+    "hints": [
+      {
+        "level": "nudge",
+        "content": "Think about how arrays store data in memory"
+      },
+      {
+        "level": "guidance",
+        "content": "Use tf.tensor() to create a tensor from an array"
+      },
+      { "level": "solution", "content": "const t = tf.tensor([1, 2, 3])" }
+    ],
+    "keywords": ["tensor", "array", "typed-array"]
+  },
+  {
+    "slug": "tensor-shapes",
+    "title": "Understanding Tensor Shapes",
+    "moduleId": "foundations",
+    "themeId": "deep-orbit",
+    "order": 2,
+    "estimatedMinutes": 20,
+    "difficulty": "beginner",
+    "context": {
+      "narrative": "Dr. Sato analyzes the dimensional structure of the incoming data."
+    },
+    "concept": {
+      "explanation": "Shape describes the size of each dimension in a tensor.",
+      "bridge": {
+        "feTitle": "Array.length",
+        "feCode": "const shape = [arr.length, arr[0].length]",
+        "mlTitle": "Tensor.shape",
+        "mlCode": "tensor.shape // [3, 4]",
+        "tier": "identity"
+      }
+    },
+    "consequence": {
+      "narrative": "The data dimensions are now clear — a 3D tensor of sensor readings."
+    },
+    "hints": [
+      { "level": "nudge", "content": "Count the nesting levels of your array" },
+      {
+        "level": "guidance",
+        "content": "Use .shape to inspect tensor dimensions"
+      },
+      {
+        "level": "solution",
+        "content": "const shape = tensor.shape; // [rows, cols]"
+      }
+    ],
+    "keywords": ["shape", "dimensions", "rank"]
+  },
+  {
+    "slug": "tensor-operations",
+    "title": "Basic Tensor Operations",
+    "moduleId": "foundations",
+    "themeId": "deep-orbit",
+    "order": 3,
+    "estimatedMinutes": 30,
+    "difficulty": "intermediate",
+    "context": {
+      "narrative": "Chief Torres needs to process the raw signal data.",
+      "speaker": "Chief Torres"
+    },
+    "concept": {
+      "explanation": "Tensors support element-wise and matrix operations like add, multiply, and matmul.",
+      "bridge": {
+        "feTitle": "Array.map()",
+        "feCode": "arr.map((x, i) => x + arr2[i])",
+        "mlTitle": "tf.add()",
+        "mlCode": "tf.add(tensor1, tensor2)",
+        "tier": "structural"
+      }
+    },
+    "consequence": {
+      "narrative": "The processed signal reveals a pattern in the noise."
+    },
+    "hints": [
+      {
+        "level": "nudge",
+        "content": "Think about element-wise vs matrix operations"
+      },
+      {
+        "level": "guidance",
+        "content": "tf.add() performs element-wise addition"
+      },
+      { "level": "solution", "content": "const result = tf.add(a, b)" }
+    ],
+    "keywords": ["operations", "add", "multiply", "matmul"]
+  },
+  {
+    "slug": "data-loading",
+    "title": "Loading and Preparing Data",
+    "moduleId": "foundations",
+    "themeId": "deep-orbit",
+    "order": 4,
+    "estimatedMinutes": 25,
+    "difficulty": "intermediate",
+    "context": {
+      "narrative": "Ensign Park sets up the data pipeline for the analysis system."
+    },
+    "concept": {
+      "explanation": "ML models require properly formatted input data — batched, shuffled, and normalized."
+    },
+    "consequence": {
+      "narrative": "The data pipeline is operational. ARIA confirms: ready for analysis.",
+      "nextLessonTeaser": "Next: normalizing your data for optimal model performance"
+    },
+    "hints": [
+      { "level": "nudge", "content": "Data needs to be split into batches" },
+      {
+        "level": "guidance",
+        "content": "Use tf.data.generator() for streaming data"
+      },
+      {
+        "level": "solution",
+        "content": "const ds = tf.data.generator(function* () { yield {xs, ys}; })"
+      }
+    ],
+    "keywords": ["data-loading", "batching", "pipeline"]
+  },
+  {
+    "slug": "normalization",
+    "title": "Data Normalization",
+    "moduleId": "foundations",
+    "themeId": "deep-orbit",
+    "order": 5,
+    "estimatedMinutes": 20,
+    "difficulty": "advanced",
+    "context": {
+      "narrative": "Commander Okafor orders all sensor data normalized before the deep scan begins.",
+      "speaker": "Commander Okafor"
+    },
+    "concept": {
+      "explanation": "Normalization scales data to a consistent range, improving model training stability.",
+      "bridge": {
+        "feTitle": "CSS normalize/reset",
+        "feCode": "* { margin: 0; padding: 0; box-sizing: border-box; }",
+        "mlTitle": "Feature Normalization",
+        "mlCode": "const normalized = data.sub(mean).div(std)",
+        "tier": "intuition"
+      }
+    },
+    "consequence": {
+      "narrative": "Module complete. The foundations are in place for the deep space signal classifier."
+    },
+    "hints": [
+      {
+        "level": "nudge",
+        "content": "Subtract the mean, divide by standard deviation"
+      },
+      {
+        "level": "guidance",
+        "content": "Use tensor.sub(mean).div(std) for z-score normalization"
+      },
+      {
+        "level": "solution",
+        "content": "const norm = tensor.sub(tensor.mean()).div(tensor.std())"
+      }
+    ],
+    "keywords": ["normalization", "z-score", "scaling", "preprocessing"]
+  }
+]

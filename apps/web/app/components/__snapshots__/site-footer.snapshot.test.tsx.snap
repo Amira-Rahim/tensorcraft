@@ -1,0 +1,42 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`SiteFooter snapshots > matches snapshot 1`] = `
+<footer
+  class="border-t border-border px-8 py-8"
+>
+  <div
+    class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-text-muted"
+  >
+    <div
+      class="font-semibold text-text-primary tracking-wide"
+    >
+      ◇ tensorcraft
+    </div>
+    <div
+      class="flex flex-wrap justify-center gap-6"
+    >
+      <a
+        class="hover:text-text-primary transition-colors"
+        href="/"
+      >
+        Home
+      </a>
+      <a
+        class="hover:text-text-primary transition-colors"
+        href="/terms"
+      >
+        Terms
+      </a>
+      <a
+        class="hover:text-text-primary transition-colors"
+        href="/privacy"
+      >
+        Privacy
+      </a>
+    </div>
+    <div>
+      © 2026 Tensorcraft. All rights reserved.
+    </div>
+  </div>
+</footer>
+`;

@@ -1,0 +1,23 @@
+{
+  "name": "@tensorcraft/content",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "lint": "eslint src/",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "velite": "^0.2.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@tensorcraft/config": "workspace:*",
+    "typescript": "^5.9.3"
+  }
+}

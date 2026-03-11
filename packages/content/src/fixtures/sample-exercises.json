@@ -1,0 +1,46 @@
+[
+  {
+    "slug": "create-a-tensor",
+    "lessonSlug": "introduction-to-tensors",
+    "title": "Create a Tensor",
+    "instructions": "Create a 1D tensor containing the values [1, 2, 3, 4, 5] using TensorFlow.js.",
+    "starterCode": "// Create a tensor with values 1 through 5\nconst tensor = null; // your code here",
+    "solutionCode": "const tensor = tf.tensor([1, 2, 3, 4, 5]);",
+    "testCode": "describe('Tensor', () => { it('exists', () => { expect(tensor).toBeDefined(); }); it('has correct shape', () => { expect(tensor.shape).toEqual([5]); }); });",
+    "estimatedMinutes": 10,
+    "difficulty": "beginner"
+  },
+  {
+    "slug": "reshape-tensor",
+    "lessonSlug": "tensor-shapes",
+    "title": "Reshape a Tensor",
+    "instructions": "Reshape a 1D tensor of 6 elements into a 2x3 matrix.",
+    "starterCode": "const flat = tf.tensor([1, 2, 3, 4, 5, 6]);\nconst matrix = null; // reshape to [2, 3]",
+    "solutionCode": "const flat = tf.tensor([1, 2, 3, 4, 5, 6]);\nconst matrix = flat.reshape([2, 3]);",
+    "testCode": "describe('Reshape', () => { it('has shape [2,3]', () => { expect(matrix.shape).toEqual([2, 3]); }); });",
+    "estimatedMinutes": 10,
+    "difficulty": "beginner"
+  },
+  {
+    "slug": "add-tensors",
+    "lessonSlug": "tensor-operations",
+    "title": "Add Two Tensors",
+    "instructions": "Add two tensors element-wise using tf.add().",
+    "starterCode": "const a = tf.tensor([1, 2, 3]);\nconst b = tf.tensor([4, 5, 6]);\nconst result = null; // add a and b",
+    "solutionCode": "const a = tf.tensor([1, 2, 3]);\nconst b = tf.tensor([4, 5, 6]);\nconst result = tf.add(a, b);",
+    "testCode": "describe('Add', () => { it('produces correct sum', () => { expect(Array.from(result.dataSync())).toEqual([5, 7, 9]); }); });",
+    "estimatedMinutes": 8,
+    "difficulty": "intermediate"
+  },
+  {
+    "slug": "normalize-data",
+    "lessonSlug": "normalization",
+    "title": "Normalize Sensor Data",
+    "instructions": "Apply z-score normalization to a tensor of sensor readings.",
+    "starterCode": "const data = tf.tensor([10, 20, 30, 40, 50]);\nconst normalized = null; // apply z-score normalization",
+    "solutionCode": "const data = tf.tensor([10, 20, 30, 40, 50]);\nconst normalized = data.sub(data.mean()).div(data.std());",
+    "testCode": "describe('Normalize', () => { it('has mean ~0', () => { expect(Math.abs(normalized.mean().dataSync()[0])).toBeLessThan(0.01); }); });",
+    "estimatedMinutes": 12,
+    "difficulty": "advanced"
+  }
+]

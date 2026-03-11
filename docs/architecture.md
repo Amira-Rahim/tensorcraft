@@ -100,16 +100,16 @@ Separate backend service running on port 3001. Communicates with Supabase using 
 ### Current Routes
 
 - `GET /api/health` — Health check returning `{ status: "ok", service: "tensorcraft-api", timestamp }`
-
-### Planned Route Groups
-
-- `/api/auth/*` — Auth callback handling, session management
-- `/api/progress/*` — Theme progress CRUD (authenticated)
-- `/api/payments/*` — Stripe webhook receiver, purchase verification
+- `POST /api/waitlist` — Add email to waitlist (no auth required, validates email, handles duplicates)
+- `GET /api/progress?themeId=` — Get user's progress for a theme (authenticated)
+- `POST /api/progress` — Create or update lesson progress (authenticated, upserts on user_id+theme_id+lesson_id)
+- `POST /api/payments/webhook` — Stripe webhook handler (checkout.session.completed, charge.refunded)
 
 ### Middleware
 
 - **CORS**: Allows `localhost:3000` (dev) and `tensorcraft.dev` (prod)
+- **Auth**: Validates Supabase JWT from Authorization header, sets `userId` and `accessToken` on context
+- **Rate Limiting**: In-memory, 60 req/min per IP (replace with Redis for production)
 
 ## Next.js Frontend (`apps/web`)
 
@@ -136,6 +136,46 @@ Client component with Framer Motion animations:
 - `letterAnimation` for character-by-character text
 - `whileInView` for scroll-triggered entries
 - `whileHover` for interactive hover states
+
+## Testing Infrastructure
+
+### Test Framework
+
+| Tool | Purpose | Config |
+|------|---------|--------|
+| Vitest v4.0.18 | Unit tests (jsdom environment) | `vitest.config.ts` |
+| React Testing Library | Component rendering + interaction | `vitest.setup.ts` |
+| Playwright v1.58.2 | E2E browser tests (Chromium) | `playwright.config.ts` |
+| vitest-axe | Unit-level WCAG accessibility checks | Registered in `vitest.setup.ts` |
+| @axe-core/playwright | E2E accessibility audits | Used in `e2e/accessibility.spec.ts` |
+
+### Test Categories
+
+- **Unit tests** (54 passing): API routes, middleware, components, Zod schemas, shared constants
+- **E2E tests** (3 spec files): Landing page, auth pages, legal pages
+- **Accessibility tests**: axe-core on components (unit) + full page audits (e2e)
+- **Content contract tests**: Validate content fixtures against Zod schemas
+- **Cross-reference tests**: Referential integrity across lessons/modules/exercises
+- **Snapshot tests**: Catch unintended markup regressions in components/pages
+- **Link validation**: ROUTES constants map to actual `page.tsx` files
+- **SEO metadata tests**: Verify title/description on server-rendered pages
+- **Theme CSS tests**: All 5 themes define required `--tc-*` custom properties
+
+### Running Tests
+
+```bash
+# Run all unit tests
+pnpm test
+
+# Watch mode
+pnpm test:watch
+
+# Update snapshots
+pnpm test -- -u
+
+# Run E2E tests (requires dev server running)
+pnpm test:e2e
+```
 
 ## Development Workflow
 

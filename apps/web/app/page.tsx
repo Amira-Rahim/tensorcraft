@@ -1,400 +1,546 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
+import { Nav } from "./components/nav";
 
-const themes = [
+const bridges = [
   {
-    name: "Deep Orbit",
-    tagline: "Time-Series & Signals",
-    status: "launched" as const,
-    color: "#7B68EE",
-    accent: "#F0C75E",
-    model: "DEEP SCAN — Signal Classifier",
+    fe: "Math.max(0, x)",
+    ml: "ReLU Activation",
+    desc: "The same function, used in every neural network",
   },
   {
+    fe: "Array.map()",
+    ml: "Neural Network",
+    desc: "Sequential data transformation through layers",
+  },
+  {
+    fe: "CSS blur()",
+    ml: "Convolution",
+    desc: "Sliding window operations on pixel data",
+  },
+  {
+    fe: "Promise.all()",
+    ml: "Batch Processing",
+    desc: "Parallel execution with configurable chunk size",
+  },
+  {
+    fe: "addEventListener",
+    ml: "Backpropagation",
+    desc: "Signals propagating through a layered system",
+  },
+  {
+    fe: "flex-grow",
+    ml: "Attention",
+    desc: "Proportional weight distribution across elements",
+  },
+];
+
+const comingSoonThemes = [
+  {
     name: "Neon Protocol",
-    tagline: "Computer Vision",
-    status: "coming-soon" as const,
+    domain: "Computer Vision",
+    hook: "Navigate the neon-lit digital underground as a white-hat hacker, using computer vision to detect intrusions and analyze network anomalies.",
+    model: "Protocol Sentinel",
     color: "#00D4FF",
-    accent: "#FF2D7B",
-    model: "Protocol Sentinel — Anomaly Detector",
+    icon: "\u26A1",
+    variant: "neon",
   },
   {
     name: "Signal Ward",
-    tagline: "NLP & Text Intelligence",
-    status: "coming-soon" as const,
+    domain: "NLP & Text Intelligence",
+    hook: "Join a cutting-edge hospital team training NLP models to analyze clinical text and assist doctors with early diagnosis.",
+    model: "Diagnostic One",
     color: "#2ECC71",
-    accent: "#5B8DEF",
-    model: "Diagnostic One — Text Assistant",
+    icon: "\u{1FA79}",
+    variant: "signal",
   },
   {
     name: "Nova Canvas",
-    tagline: "Multimodal & GenAI",
-    status: "coming-soon" as const,
+    domain: "Multimodal & GenAI",
+    hook: "Step into a creative AI collective where you train generative models to produce art, style transfers, and multimodal experiences in the browser.",
+    model: "Nova Canvas",
     color: "#FF6B6B",
-    accent: "#A78BFA",
-    model: "Nova Canvas AI — Creative Assistant",
+    icon: "\u{1F3A8}",
+    variant: "nova",
   },
   {
     name: "Terra Grid",
-    tagline: "Edge AI & MLOps",
-    status: "coming-soon" as const,
+    domain: "Edge AI & MLOps",
+    hook: "Manage a vast industrial grid, training predictive models to prevent equipment failures and optimize energy distribution at the edge.",
+    model: "Terra Grid Intelligence",
     color: "#F59E0B",
-    accent: "#10B981",
-    model: "Terra Grid Intelligence — Edge System",
+    icon: "\u2699",
+    variant: "terra",
   },
 ];
 
-const bridges = [
-  { fe: "Array.map() chain", ml: "Neural Network" },
-  { fe: "CSS custom properties", ml: "Weights & Biases" },
-  { fe: "Lighthouse score", ml: "Loss Function" },
-  { fe: "git bisect", ml: "Backpropagation" },
-  { fe: "CSS blur() + kernel", ml: "Convolution" },
-  { fe: "Promise.all()", ml: "Batch Processing" },
+const stats = [
+  { value: "50+", label: "FE \u2192 ML Bridges" },
+  { value: "275", label: "Total Lessons" },
+  { value: "5", label: "Themed Worlds" },
+  { value: "$79", label: "Per Theme" },
 ];
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
+  hidden: { opacity: 0, y: 20 },
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: {
-      delay: i * 0.1,
-      duration: 0.6,
-      ease: [0.4, 0, 0.2, 1],
-    },
+    transition: { delay: i * 0.1, duration: 0.6, ease: [0.4, 0, 0.2, 1] },
   }),
 };
 
-const staggerContainer = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.08,
-    },
-  },
-};
-
-const letterAnimation = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.4, ease: [0.4, 0, 0.2, 1] },
-  },
-};
-
 export default function Home() {
-  const title = "TENSORCRAFT";
-
   return (
-    <main className="relative min-h-screen overflow-hidden">
-      {/* Animated grid background */}
-      <div className="fixed inset-0 grid-pattern opacity-40" />
+    <>
+      <Nav />
 
-      {/* Gradient orbs */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div
-          className="absolute -top-[40%] -left-[20%] w-[80vw] h-[80vw] rounded-full animate-gradient opacity-20 blur-[120px]"
-          style={{
-            background:
-              "radial-gradient(ellipse, var(--tc-primary), transparent 70%)",
-          }}
-        />
-        <div
-          className="absolute -bottom-[30%] -right-[20%] w-[60vw] h-[60vw] rounded-full animate-gradient opacity-15 blur-[100px]"
-          style={{
-            background:
-              "radial-gradient(ellipse, var(--tc-accent), transparent 70%)",
-            animationDelay: "-7s",
-          }}
-        />
-      </div>
+      <main>
+        {/* ===== HERO ===== */}
+        <section className="relative overflow-hidden px-6 pt-40 pb-24 text-center">
+          {/* Breathing color washes */}
+          <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+            <div
+              className="absolute w-[700px] h-[500px] top-[45%] left-[25%] -translate-x-1/2 -translate-y-1/2 blur-[40px]"
+              style={{
+                background:
+                  "radial-gradient(ellipse 80% 70%, rgba(0,212,255,0.25) 0%, rgba(0,212,255,0.08) 45%, transparent 70%)",
+                animation: "breathe-left 10s ease-in-out infinite",
+              }}
+            />
+            <div
+              className="absolute w-[700px] h-[500px] top-[50%] left-[75%] -translate-x-1/2 -translate-y-1/2 blur-[40px]"
+              style={{
+                background:
+                  "radial-gradient(ellipse 80% 70%, rgba(123,104,238,0.25) 0%, rgba(123,104,238,0.08) 45%, transparent 70%)",
+                animation: "breathe-right 10s ease-in-out infinite",
+              }}
+            />
+          </div>
 
-      {/* Content */}
-      <div className="relative z-10">
-        {/* Hero */}
-        <section className="flex flex-col items-center justify-center min-h-screen px-6 text-center">
-          {/* Neon line top */}
-          <motion.div
-            className="neon-line h-px w-32 mb-12"
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ duration: 1, ease: [0.4, 0, 0.2, 1] }}
+          {/* Dot grid */}
+          <div
+            className="absolute inset-0 pointer-events-none z-0"
+            style={{
+              backgroundImage:
+                "radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px)",
+              backgroundSize: "32px 32px",
+              maskImage:
+                "radial-gradient(ellipse 60% 50% at 50% 50%, black 20%, transparent 70%)",
+              WebkitMaskImage:
+                "radial-gradient(ellipse 60% 50% at 50% 50%, black 20%, transparent 70%)",
+            }}
           />
 
-          {/* Title with letter animation */}
-          <motion.h1
-            className="text-6xl md:text-8xl lg:text-9xl font-bold tracking-[0.2em] neon-text-subtle"
-            style={{ color: "var(--tc-primary)" }}
-            variants={staggerContainer}
-            initial="hidden"
-            animate="visible"
-          >
-            {title.split("").map((letter, i) => (
-              <motion.span
-                key={i}
-                variants={letterAnimation}
-                className="inline-block"
-              >
-                {letter}
-              </motion.span>
-            ))}
-          </motion.h1>
-
-          {/* Tagline */}
-          <motion.p
-            className="mt-6 text-xl md:text-2xl text-text-muted max-w-2xl"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.2, duration: 0.8 }}
-          >
-            Learn machine learning through{" "}
-            <span className="text-text-primary font-medium">
-              code you already know
-            </span>
-          </motion.p>
-
-          <motion.p
-            className="mt-3 text-base text-text-muted max-w-lg"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.6, duration: 0.8 }}
-          >
-            Interactive, story-driven ML education for frontend engineers.
-            Build real models in the browser.
-          </motion.p>
-
-          {/* CTA */}
-          <motion.div
-            className="mt-10 flex gap-4"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 2, duration: 0.6 }}
-          >
-            <button className="relative group px-8 py-4 rounded-lg bg-primary text-surface font-semibold text-lg transition-all duration-300 hover:scale-105">
-              <span className="relative z-10">Start Learning — Free</span>
-              <div className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 neon-box" />
-            </button>
-            <button className="px-8 py-4 rounded-lg border border-border text-text-primary font-medium text-lg transition-all duration-300 hover:border-primary hover:text-primary">
-              View Curriculum
-            </button>
-          </motion.div>
-
-          {/* Scroll indicator */}
-          <motion.div
-            className="absolute bottom-8"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 2.5, duration: 1 }}
-          >
+          <div className="relative z-10">
             <motion.div
-              animate={{ y: [0, 8, 0] }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-              className="w-6 h-10 rounded-full border-2 border-text-muted flex justify-center pt-2"
+              className="inline-flex px-5 py-2 rounded-full border border-white/10 text-[13px] text-text-muted tracking-wider mb-8"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
             >
-              <div className="w-1 h-2 rounded-full bg-text-muted" />
+              Interactive &middot; Story-Driven &middot; Browser-Based
             </motion.div>
-          </motion.div>
+
+            <motion.h1
+              className="text-5xl md:text-[64px] font-bold leading-[1.1] tracking-tight mb-7"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1, duration: 0.6 }}
+            >
+              The Bridge from Frontend to ML
+              <br />
+              Is Shorter Than You Think
+            </motion.h1>
+
+            <motion.p
+              className="text-lg text-text-muted max-w-[560px] mx-auto mb-10 leading-relaxed"
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.6 }}
+            >
+              Components, state, data flow — you already use the building blocks
+              of machine learning every day. We just connect the dots.
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.6 }}
+            >
+              <Link
+                href="/auth/sign-in"
+                className="inline-flex items-center rounded-full border border-accent/30 bg-accent/8 px-8 py-3.5 text-base font-medium hover:bg-accent/15 hover:border-accent/50 transition-all"
+              >
+                Begin Your ML Journey &rarr;
+              </Link>
+              <p className="text-sm text-text-muted mt-4">
+                Module 1 included as preview &middot; No credit card required
+              </p>
+            </motion.div>
+          </div>
         </section>
 
-        {/* FE Bridge Section */}
-        <section className="px-6 py-32 max-w-5xl mx-auto">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={fadeUp}
-            custom={0}
-          >
-            <p className="text-sm font-mono uppercase tracking-[0.3em] text-accent mb-4">
-              The Core Innovation
-            </p>
-            <h2 className="text-4xl md:text-5xl font-bold text-text-primary mb-4">
-              Frontend → ML Bridges
-            </h2>
-            <p className="text-lg text-text-muted max-w-2xl mb-16">
-              Every ML concept is introduced through a frontend concept you
-              already know. 50+ deep structural mappings, not casual analogies.
-            </p>
-          </motion.div>
+        {/* ===== PRODUCT PREVIEW ===== */}
+        <motion.div
+          className="max-w-[900px] mx-auto px-6 -mt-10 relative z-10 mb-24"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+        >
+          <div className="rounded-2xl border border-border bg-surface-raised overflow-hidden">
+            <div className="flex items-center gap-2 px-5 py-3.5 border-b border-border">
+              <div
+                className="w-3 h-3 rounded-full"
+                style={{ background: "#FF5F56" }}
+              />
+              <div
+                className="w-3 h-3 rounded-full"
+                style={{ background: "#FFBD2E" }}
+              />
+              <div
+                className="w-3 h-3 rounded-full"
+                style={{ background: "#27C93F" }}
+              />
+              <span className="ml-3 text-[13px] text-text-muted">
+                Deep Orbit &mdash; M1L3: Your First Model
+              </span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 min-h-[320px]">
+              <div className="p-7 border-b md:border-b-0 md:border-r border-border text-sm text-text-muted leading-relaxed">
+                <div className="text-[15px] font-semibold text-text-primary mb-4">
+                  The Signal Arrives
+                </div>
+                <p className="mb-3">
+                  The deep-space array picks up a repeating signal at 1420 MHz.
+                  Your task: classify whether this is natural background noise
+                  or something worth investigating.
+                </p>
+                <p className="mb-3">
+                  You already know how{" "}
+                  <code className="text-accent">Array.map()</code> transforms
+                  data through a chain of operations. A neural network does the
+                  same thing — each layer transforms the signal, extracting
+                  increasingly abstract features.
+                </p>
+                <p className="text-text-primary font-medium">
+                  Let&apos;s build the classifier.
+                </p>
+              </div>
+              <div className="p-6 font-mono text-[13px] text-text-muted leading-relaxed">
+                <div className="text-[11px] uppercase tracking-widest text-white/30 mb-4">
+                  model.js
+                </div>
+                <pre className="whitespace-pre-wrap">
+                  <span className="text-[#484F58]">
+                    {"//"} Your first neural network
+                  </span>
+                  {"\n"}
+                  <span className="text-[#FF7B72]">const</span> model ={" "}
+                  <span className="text-[#D2A8FF]">sequential</span>([{"\n"}
+                  {"  "}
+                  <span className="text-[#D2A8FF]">dense</span>({"{"}{" "}
+                  <span className="text-[#A5D6FF]">units</span>:{" "}
+                  <span className="text-[#79C0FF]">16</span>,{" "}
+                  <span className="text-[#A5D6FF]">activation</span>:{" "}
+                  <span className="text-[#A5D6FF]">&apos;relu&apos;</span> {"}"}
+                  ),{"\n"}
+                  {"  "}
+                  <span className="text-[#D2A8FF]">dense</span>({"{"}{" "}
+                  <span className="text-[#A5D6FF]">units</span>:{" "}
+                  <span className="text-[#79C0FF]">8</span>,{"  "}
+                  <span className="text-[#A5D6FF]">activation</span>:{" "}
+                  <span className="text-[#A5D6FF]">&apos;relu&apos;</span> {"}"}
+                  ),{"\n"}
+                  {"  "}
+                  <span className="text-[#D2A8FF]">dense</span>({"{"}{" "}
+                  <span className="text-[#A5D6FF]">units</span>:{" "}
+                  <span className="text-[#79C0FF]">1</span>,{"  "}
+                  <span className="text-[#A5D6FF]">activation</span>:{" "}
+                  <span className="text-[#A5D6FF]">&apos;sigmoid&apos;</span>{" "}
+                  {"}"}),{"\n"}]);{"\n\n"}
+                  <span className="text-[#484F58]">
+                    {"//"} Like Array.map() — data flows
+                  </span>
+                  {"\n"}
+                  <span className="text-[#484F58]">
+                    {"//"} through each layer sequentially
+                  </span>
+                  {"\n"}
+                  <span className="text-[#FF7B72]">const</span> prediction =
+                  model{"\n"}
+                  {"  "}.<span className="text-[#D2A8FF]">forward</span>
+                  (signalData);
+                </pre>
+              </div>
+            </div>
+          </div>
+        </motion.div>
 
-          <motion.div
-            className="grid gap-4"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
-          >
-            {bridges.map((bridge, i) => (
-              <motion.div
-                key={bridge.fe}
-                variants={fadeUp}
-                custom={i}
-                className="group grid grid-cols-[1fr_auto_1fr] items-center gap-4 p-5 rounded-xl glass border border-border transition-all duration-300 hover:border-primary"
-              >
-                <div className="text-right">
-                  <span className="font-mono text-sm text-accent">
+        {/* ===== BRIDGES SECTION ===== */}
+        <section className="px-6 py-28">
+          <div className="max-w-[1200px] mx-auto">
+            <div className="h-px bg-gradient-to-r from-transparent via-accent/20 to-transparent max-w-[600px] mx-auto mb-14" />
+
+            <motion.div
+              className="text-center mb-14"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-80px" }}
+              variants={fadeUp}
+              custom={0}
+            >
+              <p className="text-[13px] text-text-muted uppercase tracking-[0.15em] mb-3">
+                The Core Innovation
+              </p>
+              <h2 className="text-[40px] font-bold mb-4">
+                Frontend &rarr; ML Bridges
+              </h2>
+              <p className="text-lg text-text-muted max-w-[560px] mx-auto">
+                Every ML concept maps to something you already know
+              </p>
+            </motion.div>
+
+            <motion.div
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-50px" }}
+            >
+              {bridges.map((bridge, i) => (
+                <motion.div
+                  key={bridge.fe}
+                  variants={fadeUp}
+                  custom={i}
+                  className="rounded-xl border border-border bg-surface-raised p-7 hover:border-accent/15 hover:-translate-y-0.5 transition-all duration-200"
+                >
+                  <div className="inline-block font-mono text-[13px] bg-accent/8 border border-accent/15 rounded-md px-3 py-1 text-accent mb-3">
                     {bridge.fe}
-                  </span>
-                </div>
-                <div className="flex items-center justify-center">
-                  <motion.div
-                    className="w-8 h-px bg-primary"
-                    initial={{ scaleX: 0 }}
-                    whileInView={{ scaleX: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.3 + i * 0.1, duration: 0.5 }}
-                  />
-                  <div
-                    className="w-2 h-2 rounded-full mx-1"
-                    style={{ backgroundColor: "var(--tc-primary)" }}
-                  />
-                  <motion.div
-                    className="w-8 h-px bg-primary"
-                    initial={{ scaleX: 0 }}
-                    whileInView={{ scaleX: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.3 + i * 0.1, duration: 0.5 }}
-                  />
-                </div>
-                <div>
-                  <span className="font-semibold text-text-primary">
+                  </div>
+                  <div className="text-text-muted my-3">&darr;</div>
+                  <div className="text-base font-semibold mb-1">
                     {bridge.ml}
-                  </span>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-
-          <motion.p
-            className="mt-8 text-center text-text-muted text-sm"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.8 }}
-          >
-            + 44 more bridges across 5 themes
-          </motion.p>
+                  </div>
+                  <div className="text-sm text-text-muted leading-relaxed">
+                    {bridge.desc}
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
         </section>
 
-        {/* Themes Section */}
-        <section className="px-6 py-32 max-w-6xl mx-auto">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={fadeUp}
-            custom={0}
-            className="mb-16"
-          >
-            <p className="text-sm font-mono uppercase tracking-[0.3em] text-accent mb-4">
-              5 Complete Courses
-            </p>
-            <h2 className="text-4xl md:text-5xl font-bold text-text-primary mb-4">
-              Choose Your World
-            </h2>
-            <p className="text-lg text-text-muted max-w-2xl">
-              Each theme is a complete ML education with a unique
-              specialization. 11 modules. 55 lessons. ~22 hours. A real model on
-              GitHub.
-            </p>
-          </motion.div>
+        {/* ===== THEMES SECTION ===== */}
+        <section id="themes" className="px-6 py-28">
+          <div className="max-w-[1200px] mx-auto">
+            <div className="h-px bg-gradient-to-r from-transparent via-accent/20 to-transparent max-w-[600px] mx-auto mb-14" />
 
-          <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
-          >
-            {themes.map((theme, i) => (
+            <motion.div
+              className="text-center mb-14"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-80px" }}
+              variants={fadeUp}
+              custom={0}
+            >
+              <p className="text-[13px] text-text-muted uppercase tracking-[0.15em] mb-3">
+                Five Themed Worlds
+              </p>
+              <h2 className="text-[40px] font-bold mb-4">Choose Your Story</h2>
+              <p className="text-lg text-text-muted max-w-[560px] mx-auto">
+                Each theme is a complete ML education — same core curriculum,
+                unique narrative and specialization
+              </p>
+            </motion.div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {/* Featured: Deep Orbit */}
               <motion.div
-                key={theme.name}
+                className="md:col-span-2 grid grid-cols-1 lg:grid-cols-2 rounded-2xl border border-[#7B68EE]/20 bg-surface-raised overflow-hidden hover:border-[#7B68EE]/40 transition-colors"
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
                 variants={fadeUp}
-                custom={i}
-                className={`group relative rounded-2xl p-6 transition-all duration-500 ${
-                  i === 0 ? "md:col-span-2 lg:col-span-1" : ""
-                }`}
-                style={{
-                  background: `linear-gradient(135deg, ${theme.color}08, ${theme.accent}05)`,
-                  border: `1px ${theme.status === "launched" ? "solid" : "dashed"} ${theme.color}30`,
-                }}
-                whileHover={{
-                  y: -4,
-                  borderColor: `${theme.color}60`,
-                  transition: { duration: 0.3 },
-                }}
+                custom={0}
               >
-                {/* Status badge */}
-                <div className="flex items-center justify-between mb-4">
-                  <div
-                    className="text-xs font-mono uppercase tracking-wider px-2 py-1 rounded-full"
-                    style={{
-                      color: theme.color,
-                      backgroundColor: `${theme.color}15`,
-                    }}
-                  >
-                    {theme.status === "launched"
-                      ? "▶ Available Now"
-                      : "◇ Coming Soon"}
+                {/* Art / Code mockup */}
+                <div
+                  className="relative min-h-[320px] flex items-center justify-center p-10"
+                  style={{
+                    background:
+                      "radial-gradient(ellipse 70% 60% at 30% 70%, rgba(123,104,238,0.15), transparent), radial-gradient(ellipse 50% 40% at 70% 30%, rgba(240,199,94,0.08), transparent), var(--tc-surface)",
+                  }}
+                >
+                  <div className="w-full max-w-[360px] rounded-[10px] border border-[#7B68EE]/15 bg-[rgba(11,13,26,0.8)] overflow-hidden">
+                    <div className="flex items-center gap-1.5 px-3.5 py-2.5 border-b border-white/6">
+                      <span
+                        className="w-2 h-2 rounded-full"
+                        style={{ background: "#FF5F56" }}
+                      />
+                      <span
+                        className="w-2 h-2 rounded-full"
+                        style={{ background: "#FFBD2E" }}
+                      />
+                      <span
+                        className="w-2 h-2 rounded-full"
+                        style={{ background: "#27C93F" }}
+                      />
+                    </div>
+                    <div className="p-4 font-mono text-xs text-text-muted leading-relaxed">
+                      <span className="text-[#FF7B72]">const</span> signal ={" "}
+                      <span className="text-[#D2A8FF]">classify</span>(
+                      <br />
+                      &nbsp;&nbsp;fftData,
+                      <br />
+                      &nbsp;&nbsp;{"{"}{" "}
+                      <span className="text-[#A5D6FF]">layers</span>: [
+                      <span className="text-[#79C0FF]">16</span>,{" "}
+                      <span className="text-[#79C0FF]">8</span>,{" "}
+                      <span className="text-[#79C0FF]">1</span>] {"}"}
+                      <br />
+                      );
+                      <br />
+                      <br />
+                      <span className="text-[#484F58]">
+                        {"// Like Array.map() — each layer"}
+                      </span>
+                      <br />
+                      <span className="text-[#484F58]">
+                        {"// transforms the signal forward"}
+                      </span>
+                    </div>
                   </div>
                 </div>
 
-                {/* Theme name */}
-                <h3
-                  className="text-2xl font-bold mb-1"
-                  style={{ color: theme.color }}
-                >
-                  {theme.name}
-                </h3>
-                <p className="text-sm text-text-muted mb-4">{theme.tagline}</p>
-
-                {/* Model */}
-                <div className="mt-auto pt-4 border-t border-border">
-                  <p className="text-xs font-mono text-text-muted mb-1">
-                    You&apos;ll build:
+                {/* Info */}
+                <div className="p-12 flex flex-col justify-center">
+                  <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold tracking-wide bg-[#2ECC71]/10 text-[#2ECC71] border border-[#2ECC71]/20 w-fit mb-5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#2ECC71]" />
+                    Available Now
+                  </div>
+                  <h3 className="text-[32px] font-bold text-[#7B68EE] mb-1">
+                    Deep Orbit
+                  </h3>
+                  <p className="text-sm text-text-muted uppercase tracking-widest mb-4">
+                    Time-Series &amp; Signal Processing
                   </p>
-                  <p className="text-sm text-text-primary">{theme.model}</p>
+                  <p className="text-base text-white/70 leading-relaxed mb-5">
+                    Aboard the deep-space research vessel <em>Archimedes</em>,
+                    decode mysterious cosmic signals using FFT, neural networks,
+                    and browser-based ML. Every lesson is a mission. Every
+                    concept has a frontend bridge.
+                  </p>
+                  <div className="flex gap-6 mb-6 text-[13px] text-text-muted">
+                    <span>
+                      <strong className="text-text-primary">11</strong> Modules
+                    </span>
+                    <span>
+                      <strong className="text-text-primary">55</strong> Lessons
+                    </span>
+                    <span>
+                      <strong className="text-text-primary">26</strong> FE
+                      Bridges
+                    </span>
+                  </div>
+                  <p className="text-[13px] text-text-muted mb-7">
+                    Meet Commander Okafor, Dr. Sato, Chief Torres, Ensign Park
+                    &amp; ARIA
+                  </p>
+                  <Link
+                    href="/themes/deep-orbit"
+                    className="inline-flex items-center gap-2 rounded-full bg-[#7B68EE] text-white px-7 py-3.5 text-[15px] font-semibold hover:opacity-90 hover:-translate-y-0.5 transition-all w-fit"
+                  >
+                    Start Deep Orbit &rarr;
+                  </Link>
+                  <p className="text-sm text-text-muted mt-3">
+                    <strong className="text-text-primary text-lg">$79</strong>{" "}
+                    &middot; Module 1 included as preview
+                  </p>
                 </div>
-
-                {/* Glow effect on hover */}
-                <div
-                  className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                  style={{
-                    boxShadow: `0 0 30px ${theme.color}15, inset 0 0 30px ${theme.color}05`,
-                  }}
-                />
               </motion.div>
-            ))}
-          </motion.div>
+
+              {/* Coming Soon Cards */}
+              {comingSoonThemes.map((theme, i) => (
+                <motion.div
+                  key={theme.name}
+                  className={`rounded-2xl border border-border bg-surface-raised overflow-hidden hover:-translate-y-0.5 transition-all duration-300 hover:border-[${theme.color}]/20`}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true }}
+                  variants={fadeUp}
+                  custom={i + 1}
+                >
+                  <div
+                    className="h-[100px] relative flex items-center justify-center"
+                    style={{
+                      background: `radial-gradient(ellipse at 50% 80%, ${theme.color}1F, transparent 70%), var(--tc-surface)`,
+                    }}
+                  >
+                    <span className="text-[32px] relative z-10">
+                      {theme.icon}
+                    </span>
+                  </div>
+                  <div className="p-6 pb-7">
+                    <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold tracking-wide bg-white/5 text-text-muted border border-white/8 mb-3.5">
+                      Coming Soon
+                    </div>
+                    <h3
+                      className="text-[22px] font-bold mb-0.5"
+                      style={{ color: theme.color }}
+                    >
+                      {theme.name}
+                    </h3>
+                    <p className="text-xs text-text-muted uppercase tracking-widest mb-3">
+                      {theme.domain}
+                    </p>
+                    <p className="text-sm text-white/55 leading-relaxed mb-4">
+                      {theme.hook}
+                    </p>
+                    <p className="font-mono text-xs text-text-muted mb-3">
+                      You&apos;ll build:{" "}
+                      <span className="text-white/70">{theme.model}</span>
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-text-muted">
+                        11 Modules &middot; 55 Lessons
+                      </span>
+                      <span className="text-base font-semibold">$79</span>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
         </section>
 
-        {/* Stats / Social Proof */}
-        <section className="px-6 py-24 border-t border-border">
+        {/* ===== STATS ===== */}
+        <section className="border-t border-b border-border px-6 py-20">
           <motion.div
-            className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center"
+            className="max-w-[900px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
           >
-            {[
-              { value: "50+", label: "FE→ML Bridges" },
-              { value: "275", label: "Total Lessons" },
-              { value: "5", label: "Themed Worlds" },
-              { value: "$79", label: "Per Theme" },
-            ].map((stat, i) => (
+            {stats.map((stat, i) => (
               <motion.div key={stat.label} variants={fadeUp} custom={i}>
-                <p className="text-3xl md:text-4xl font-bold text-primary">
-                  {stat.value}
-                </p>
-                <p className="text-sm text-text-muted mt-1">{stat.label}</p>
+                <div className="text-5xl font-bold">{stat.value}</div>
+                <div className="text-sm text-text-muted mt-2">{stat.label}</div>
               </motion.div>
             ))}
           </motion.div>
         </section>
 
-        {/* CTA Footer */}
-        <section className="px-6 py-32 text-center">
+        {/* ===== CTA FOOTER ===== */}
+        <section
+          className="px-6 py-28 text-center relative"
+          style={{
+            background:
+              "radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0,212,255,0.12), transparent 60%), radial-gradient(ellipse 40% 30% at 50% 0%, rgba(0,212,255,0.08), transparent 50%), radial-gradient(ellipse 100% 60% at 50% -20%, rgba(123,104,238,0.06), transparent 60%)",
+          }}
+        >
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -402,26 +548,24 @@ export default function Home() {
             variants={fadeUp}
             custom={0}
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-text-primary mb-6">
-              Ready to bridge the gap?
+            <h2 className="text-[32px] font-bold mb-4">
+              Your frontend skills are the foundation.
             </h2>
-            <p className="text-lg text-text-muted mb-10 max-w-lg mx-auto">
-              Module 1 is free across all themes. No credit card required.
+            <p className="text-lg text-text-muted mb-10">
+              Add machine learning to your engineering toolkit.
             </p>
-            <button className="relative group px-10 py-5 rounded-lg bg-primary text-surface font-semibold text-lg transition-all duration-300 hover:scale-105">
-              <span className="relative z-10">Start Deep Orbit — Free</span>
-              <div className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 neon-box" />
-            </button>
+            <Link
+              href="/themes/deep-orbit"
+              className="inline-flex items-center rounded-full border border-accent/30 bg-accent/8 px-9 py-4 text-[17px] font-medium hover:bg-accent/15 hover:border-accent/50 transition-all"
+            >
+              Explore Deep Orbit &rarr;
+            </Link>
+            <p className="text-sm text-text-muted mt-5">
+              Join 2,400+ frontend engineers already learning
+            </p>
           </motion.div>
         </section>
-
-        {/* Footer */}
-        <footer className="px-6 py-8 border-t border-border text-center">
-          <p className="text-sm text-text-muted">
-            Tensorcraft — ML education for frontend engineers
-          </p>
-        </footer>
-      </div>
-    </main>
+      </main>
+    </>
   );
 }

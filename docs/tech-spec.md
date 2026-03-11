@@ -1,7 +1,7 @@
 # Tensorcraft Technical Specification v3.2
 
 **Version:** 3.2
-**Last Updated:** 2026-03-08
+**Last Updated:** 2026-03-11
 **Status:** Active Development
 **Audience:** Engineering, Product, Content
 

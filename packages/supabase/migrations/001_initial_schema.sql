@@ -15,6 +15,7 @@ create table public.profiles (
   avatar_url text,
   github_username text,
   github_connected boolean not null default false,
+  onboarding_completed boolean not null default false,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -106,7 +107,7 @@ create index idx_progress_user_module on public.theme_progress(user_id, theme_id
 
 -- ============================================================
 -- PURCHASES
--- Payment records from LemonSqueezy webhooks.
+-- Payment records from Stripe webhooks.
 -- ============================================================
 create type public.purchase_status as enum ('pending', 'completed', 'failed', 'refunded');
 
@@ -117,7 +118,7 @@ create table public.purchases (
   theme_ids text[] not null default '{}',
   amount numeric(10,2) not null,
   currency text not null default 'USD',
-  lemon_squeezy_id text,
+  stripe_session_id text,
   status public.purchase_status not null default 'pending',
   created_at timestamptz not null default now()
 );
@@ -133,7 +134,7 @@ create policy "Users can view own purchases"
 -- No insert/update policies for anon/authenticated — handled server-side
 
 create index idx_purchases_user on public.purchases(user_id);
-create index idx_purchases_lemon on public.purchases(lemon_squeezy_id);
+create index idx_purchases_stripe on public.purchases(stripe_session_id);
 
 -- ============================================================
 -- WAITLIST

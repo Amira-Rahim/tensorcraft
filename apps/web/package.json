@@ -11,23 +11,25 @@
     "clean": "rm -rf .next .turbo"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.9.0",
+    "@supabase/supabase-js": "^2.98.0",
+    "@tensorcraft/supabase": "workspace:*",
+    "@tensorcraft/themes": "workspace:*",
+    "@tensorcraft/ui": "workspace:*",
+    "framer-motion": "^11.0.0",
     "next": "^15.3.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "framer-motion": "^11.0.0",
-    "@tensorcraft/ui": "workspace:*",
-    "@tensorcraft/themes": "workspace:*",
-    "@tensorcraft/supabase": "workspace:*"
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "@tailwindcss/postcss": "^4.0.0",
     "@tensorcraft/config": "workspace:*",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
-    "typescript": "^5.9.3",
-    "tailwindcss": "^4.0.0",
-    "@tailwindcss/postcss": "^4.0.0",
     "eslint": "^9.0.0",
-    "@eslint/js": "^9.0.0",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.9.3",
     "typescript-eslint": "^8.0.0"
   }
 }

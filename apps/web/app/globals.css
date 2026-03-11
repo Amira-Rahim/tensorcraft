@@ -92,7 +92,8 @@ body {
 
 /* Animated gradient background */
 @keyframes gradient-shift {
-  0%, 100% {
+  0%,
+  100% {
     background-position: 0% 50%;
   }
   50% {
@@ -107,7 +108,8 @@ body {
 
 /* Animated neon line */
 @keyframes neon-pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.4;
   }
   50% {
@@ -142,6 +144,47 @@ body {
   -webkit-backdrop-filter: blur(12px);
 }
 
+/* Fade up animation */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.5s ease both;
+}
+
+/* Hero breathing color washes */
+@keyframes breathe-left {
+  0%,
+  100% {
+    opacity: 0.6;
+    transform: translate(-50%, -50%) scale(1) translateX(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.15) translateX(30px);
+  }
+}
+
+@keyframes breathe-right {
+  0%,
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.1) translateX(0);
+  }
+  50% {
+    opacity: 0.6;
+    transform: translate(-50%, -50%) scale(1) translateX(-30px);
+  }
+}
+
 /* Respect reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .animate-gradient {
@@ -156,5 +199,12 @@ body {
   }
   .neon-text-subtle {
     text-shadow: none;
+  }
+  .animate-fade-up {
+    animation: none;
+  }
+  [style*="breathe-left"],
+  [style*="breathe-right"] {
+    animation: none !important;
   }
 }

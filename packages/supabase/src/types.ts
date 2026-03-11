@@ -17,6 +17,7 @@ export interface Database {
           avatar_url: string | null;
           github_username: string | null;
           github_connected: boolean;
+          onboarding_completed: boolean;
           created_at: string;
           updated_at: string;
         };
@@ -27,14 +28,17 @@ export interface Database {
           avatar_url?: string | null;
           github_username?: string | null;
           github_connected?: boolean;
+          onboarding_completed?: boolean;
         };
         Update: {
           display_name?: string | null;
           avatar_url?: string | null;
           github_username?: string | null;
           github_connected?: boolean;
+          onboarding_completed?: boolean;
           updated_at?: string;
         };
+        Relationships: [];
       };
       theme_progress: {
         Row: {
@@ -61,15 +65,26 @@ export interface Database {
           score?: number | null;
           hints_used?: number;
           attempts?: number;
+          started_at?: string | null;
         };
         Update: {
           status?: "not_started" | "in_progress" | "completed";
           score?: number | null;
           hints_used?: number;
           attempts?: number;
+          started_at?: string | null;
           completed_at?: string | null;
           updated_at?: string;
         };
+        Relationships: [
+          {
+            foreignKeyName: "theme_progress_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       purchases: {
         Row: {
@@ -79,7 +94,7 @@ export interface Database {
           theme_ids: string[];
           amount: number;
           currency: string;
-          lemon_squeezy_id: string | null;
+          stripe_session_id: string | null;
           status: "pending" | "completed" | "failed" | "refunded";
           created_at: string;
         };
@@ -89,13 +104,22 @@ export interface Database {
           theme_ids: string[];
           amount: number;
           currency?: string;
-          lemon_squeezy_id?: string | null;
+          stripe_session_id?: string | null;
           status?: "pending" | "completed" | "failed" | "refunded";
         };
         Update: {
-          lemon_squeezy_id?: string | null;
+          stripe_session_id?: string | null;
           status?: "pending" | "completed" | "failed" | "refunded";
         };
+        Relationships: [
+          {
+            foreignKeyName: "purchases_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       waitlist: {
         Row: {
@@ -110,8 +134,15 @@ export interface Database {
           theme_id?: string | null;
           source?: string | null;
         };
-        Update: never;
+        Update: {
+          email?: string;
+          theme_id?: string | null;
+          source?: string | null;
+        };
+        Relationships: [];
       };
     };
+    Views: Record<string, never>;
+    Functions: Record<string, never>;
   };
 }

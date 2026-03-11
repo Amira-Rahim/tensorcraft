@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
+import { CookieConsent } from "./components/cookie-consent";
+import { SiteFooter } from "./components/site-footer";
 import "./globals.css";
 
 const inter = Inter({
@@ -40,7 +42,11 @@ export default function RootLayout({
       className={`${inter.variable} ${jetbrainsMono.variable}`}
       data-theme="deep-orbit"
     >
-      <body className="min-h-screen">{children}</body>
+      <body className="min-h-screen flex flex-col">
+        <div className="flex-1">{children}</div>
+        <SiteFooter />
+        <CookieConsent />
+      </body>
     </html>
   );
 }
