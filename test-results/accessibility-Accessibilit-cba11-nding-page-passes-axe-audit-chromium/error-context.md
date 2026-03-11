@@ -191,14 +191,16 @@
                 - link "Privacy" [ref=e184] [cursor=pointer]:
                     - /url: /privacy
             - generic [ref=e185]: © 2026 Tensorcraft. All rights reserved.
-    - alert [ref=e186]
-    - generic [ref=e188]:
-        - paragraph [ref=e189]:
+    - button "Open Next.js Dev Tools" [ref=e191] [cursor=pointer]:
+        - img [ref=e192]
+    - alert [ref=e195]
+    - generic [ref=e197]:
+        - paragraph [ref=e198]:
             - text: We use essential cookies for authentication and optional analytics cookies (PostHog) to improve the learning experience. See our
-            - link "Privacy Policy" [ref=e190] [cursor=pointer]:
+            - link "Privacy Policy" [ref=e199] [cursor=pointer]:
                 - /url: /privacy
             - text: for details.
-        - generic [ref=e191]:
-            - button "Accept all" [ref=e192]
-            - button "Essential only" [ref=e193]
+        - generic [ref=e200]:
+            - button "Accept all" [ref=e201]
+            - button "Essential only" [ref=e202]
 ```

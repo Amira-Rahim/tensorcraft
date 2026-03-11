@@ -1,6 +1,6 @@
 # Tensorcraft — Development Plan
 
-> Last updated: 2026-03-11
+> Last updated: 2026-03-11 (audit update: security, database, user journey gaps)
 
 This document is the single source of truth for all development work needed to ship Tensorcraft. It covers every phase from repo initialization to post-launch operations, sourced from the PRD, tech-spec, product-plan, theme scripts, and two rounds of DeepSeek reviews.
 
@@ -199,7 +199,9 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] Breadcrumb navigation (theme → module → lesson)
 - [x] Responsive sidebar — hidden on mobile (`hidden lg:flex`), visible on desktop
 
-### 3f. Exercise Editor (IN PROGRESS — placeholder done, Sandpack remaining)
+### 3f. Exercise Editor (NOT STARTED — placeholder only, Sandpack remaining)
+
+> **V0.5 PRIORITY #1:** This is the single biggest functional gap. 14 exercises are authored with starterCode/solutionCode/testCode, but the Exercise component is a static loading skeleton. The 5C Loop's "Challenge" step is broken without this. Learning is read-only until Sandpack ships.
 
 - [x] Placeholder Exercise component with loading skeleton
 - [ ] Sandpack integration for live code execution (requires `@codesandbox/sandpack-react`)
@@ -208,7 +210,16 @@ All blocking decisions have been resolved. This table documents the final choice
 - [ ] Partial credit system
 - [ ] Friendly error messages
 
-### 3g. Deep Orbit Content (V0.5 — Modules 1–3) (COMPLETE)
+### 3h. Syntax Highlighting (NOT STARTED)
+
+> CodeBlock currently renders raw `<pre><code>` with a language badge and copy button but no syntax coloring. For a developer education platform, this is table stakes.
+
+- [ ] Integrate Shiki into CodeBlock component (or replace with Code Hike for scrollytelling)
+- [ ] Support TypeScript, JavaScript, Python, JSON, Bash at minimum
+- [ ] Dark theme matching Zensman DeFi design system colors
+- [ ] Server-side highlighting to avoid layout shift
+
+### 3i. Deep Orbit Content (V0.5 — Modules 1–3) (COMPLETE)
 
 - [x] Module 1 (Foundations): Introduction to Tensors, Tensor Shapes, Tensor Operations, Data Loading, Normalization (5 lessons + 4 exercises)
 - [x] Module 2 (Neural Networks): First Neuron, Activation Functions, Layers & Architecture, Forward Pass, Building a Network (5 lessons + 5 exercises)
@@ -234,13 +245,22 @@ All blocking decisions have been resolved. This table documents the final choice
 
 ### 4b. Stripe Integration
 
+> **SECURITY CRITICAL:** The current webhook at `apps/api/src/routes/payments.ts` parses raw JSON without Stripe signature verification. Anyone can fake a `checkout.session.completed` event. This MUST be fixed before any real payments.
+
+- [ ] **SECURITY: Replace stubbed webhook with `stripe.webhooks.constructEvent()` using signing secret**
 - [ ] Stripe Checkout sessions for one-time payments
+- [ ] `POST /api/checkout` endpoint — create Stripe Checkout session with theme metadata
 - [ ] Support credit card, Google Pay, Apple Pay
 - [ ] Webhook handling with signature validation:
   - `checkout.session.completed` → write purchase to `purchases` table, send confirmation email
   - `charge.refunded` → update purchase record, revoke access
   - `charge.failed` → display error modal with retry + support link
+- [ ] Validate Stripe session ID format (`cs_` prefix) before DB write
+- [ ] Validate `session.metadata` fields (null checks, required fields)
+- [ ] Webhook idempotency — store processed event IDs to prevent replay
+- [ ] Exempt webhook route from rate limiter (Stripe retries should not be blocked)
 - [ ] Webhook retry logic / dead-letter queue for failed deliveries
+- [ ] `GET /api/purchases/:userId` endpoint — verify user has purchased a theme
 - [ ] Payment failure error modal on pricing page (PRD 4.6)
 - [ ] Upgrade path: credit amount already paid toward higher tier
 - [ ] Track `purchase_completed` and `refund_requested` events
@@ -283,16 +303,34 @@ All blocking decisions have been resolved. This table documents the final choice
 
 ### 5a. Progress Tracking & Completion States
 
+> **CRITICAL GAP:** `POST /api/progress` exists but is NEVER called from any frontend page. Progress is never saved to the database. The lesson viewer is pure read — opening a lesson doesn't create a `started_at` record, finishing doesn't set `completed_at`.
+
+- [ ] Wire existing `apps/web/lib/progress.ts` into lesson viewer — file exists with getUserProgress, isLessonCompleted, hasThemePurchase but is never called
+- [ ] Add LessonProgressTracker client component to lesson page
+- [ ] "Mark as Complete" button in lesson viewer
+- [ ] Auto-mark lesson as `in_progress` on open (write `started_at`)
 - [ ] Progress nodes on module overview — visual indicators for not_started/in_progress/completed per lesson
 - [ ] Module prerequisite enforcement — gate Module N+1 until Module N is complete (or purchased)
 - [ ] Visual locked states for unpurchased modules (opacity, lock icon, paywall CTA)
+- [ ] `GET /api/progress/:userId/summary` endpoint — aggregated progress for dashboard
+- [ ] Add `theme_progress_summary` database view (aggregated completion stats)
+- [ ] Input validation on progress endpoint: validate theme/module/lesson IDs against known content slugs
+- [ ] Score range validation (clamp 0-100, validate as finite number)
+- [ ] Fix `started_at` overwrite bug — only set on INSERT, not UPDATE
+- [ ] Add `CHECK (hints_used >= 0)` and `CHECK (attempts >= 0)` constraints
+- [ ] Fix upsert race condition — use `ON CONFLICT` with proper resolution
 
 ### 5b. Dashboard
 
+> **GAP:** Dashboard page doesn't exist — `/dashboard` route is referenced in ROUTES constants but not implemented. Users have no way to see progress or resume learning.
+
 - [ ] Build from `prototypes/dashboard.html`
+- [ ] "Resume learning" — link to last in-progress lesson
 - [ ] Real progress stats from `theme_progress` table (modules completed, lessons done, current streak)
 - [ ] Streak calculation from `completed_at` timestamps
+- [ ] Add `streaks` table (user_id, theme_id, current_streak, longest_streak, last_activity_date) — denormalized for fast reads
 - [ ] Activity feed (recent lesson completions, achievements)
+- [ ] Add `achievements` table (user_id, achievement_type, theme_id, unlocked_at) — milestones and badges
 - [ ] Track `streak_achieved` event (3-day, 7-day, 30-day milestones)
 - [ ] Skill radar: radar chart showing proficiency across 6 axes (PRD 3.4)
 - [ ] Progress ring: circular SVG indicator (from dashboard.html prototype)
@@ -301,14 +339,34 @@ All blocking decisions have been resolved. This table documents the final choice
 
 ### 5c. Settings
 
+> **GAP:** Settings page doesn't exist — `/settings` route is referenced but not implemented.
+
 - [ ] Build from `prototypes/settings.html`
+- [ ] `PATCH /api/profiles/:userId` endpoint — update profile fields
 - [ ] Profile editing (display name, avatar)
 - [ ] GitHub connection toggle with retroactive push
 - [ ] Theme preference switching ("Theme applies to your learning content and code editor")
 - [ ] Notification preferences
 - [ ] Account management (danger zone: delete account, export data)
 
-### 5d. Theme Selection
+### 5d. Database Schema Updates
+
+> Schema changes needed to support user journey. Current 4 tables (profiles, theme_progress, purchases, waitlist) need augmentation.
+
+- [ ] Add `preferred_theme_id TEXT` to `profiles` — persist onboarding theme selection (currently lost in React state)
+- [ ] Add `last_active_at TIMESTAMPTZ` to `profiles` — needed for streak calculation, "welcome back" UI
+- [ ] Add `total_lessons_completed INTEGER DEFAULT 0` to `profiles` — denormalized counter for dashboard
+- [ ] Fix onboarding flow — save selected theme to `preferred_theme_id` on completion (not just React state)
+- [ ] Add `last_section_viewed TEXT` to `theme_progress` — resume reading mid-lesson (post-V0.5)
+- [ ] Add `time_spent_ms INTEGER` to `theme_progress` — compare actual vs estimated time (post-V0.5)
+- [ ] Create `exercise_attempts` table (user_id, exercise_slug, lesson_id, passed, score, hints_used, solution_viewed, submitted_code, duration_ms, attempted_at)
+- [ ] `POST /api/exercise-attempts` endpoint — record individual exercise results
+- [ ] `GET /api/exercise-attempts/:userId/:lessonId` endpoint — get user's exercise history
+- [ ] Add `VARCHAR(n)` constraints or API-level length checks on text fields
+- [ ] Add `CHECK (amount > 0)` constraint on purchases
+- [ ] Write migration file for all schema changes
+
+### 5e. Theme Selection
 
 - [ ] Build from `prototypes/theme-selection.html`
 - [ ] Deep Orbit as available, 4 themes as "Coming Soon"
@@ -316,7 +374,7 @@ All blocking decisions have been resolved. This table documents the final choice
 - [ ] Coming-soon modal with theme preview + email input
 - [ ] Track `theme_selected` event
 
-### 5e. GitHub Integration
+### 5f. GitHub Integration
 
 - [ ] GitHub App setup (tech-spec 5.1–5.2):
   - Fine-grained, per-repository permissions
@@ -348,7 +406,9 @@ All blocking decisions have been resolved. This table documents the final choice
 
 ### 6b. Mobile Responsiveness
 
-- [ ] Mobile slide-in sidebar drawer for lesson viewer (hamburger toggle, reuse `lesson-viewer.html` sidebar pattern)
+> **GAP:** Lesson sidebar is `hidden lg:flex` — mobile users see content but can't navigate between lessons without going back to the module overview.
+
+- [ ] Mobile lesson navigation drawer — slide-in sidebar for lesson-to-lesson navigation on mobile
 - [ ] Hamburger menu component with slide-in drawer (reuse `lesson-viewer.html` sidebar pattern)
 - [ ] Responsive at breakpoints: 320px, 768px, 1024px, 1440px
 - [ ] Touch-friendly interactions (swipe, tap targets)
@@ -378,14 +438,19 @@ All blocking decisions have been resolved. This table documents the final choice
 
 ### 6e. Error Handling
 
+> **GAP:** No session error handling UI — expired tokens show nothing useful. API errors return generic 500s.
+
 - [ ] Global error boundary component (React)
 - [ ] Custom 404 page (themed, with navigation back to dashboard)
 - [ ] Custom 500 page (error logged to Sentry, user-friendly message)
+- [ ] Session expiry handling — detect expired tokens, show re-login prompt (not blank page)
+- [ ] Token refresh flow — graceful session renewal without page reload
 - [ ] User-friendly error messages for:
   - Payment failures (retry + support link)
   - Auth failures (provider-specific guidance)
   - GitHub integration failures (retry + disconnect option)
   - Exercise execution errors (separate from platform errors in Sentry)
+  - API errors (structured error responses with user-facing messages)
 
 ### 6f. CI/CD Pipeline
 
@@ -404,9 +469,19 @@ All blocking decisions have been resolved. This table documents the final choice
 
 ### 6h. Security Hardening
 
+> **23 security findings identified in audit (5 CRITICAL, 4 HIGH, 7 MEDIUM, 7 LOW).** CRITICAL and HIGH items are tracked in their respective phases (4b, 5a). This section covers remaining hardening.
+
 - [ ] Content Security Policy (CSP) headers
 - [ ] XSS prevention in MDX rendering pipeline
 - [ ] API versioning headers
+- [ ] Fix rate limiter IP spoofing — use trusted proxy header or Cloudflare `CF-Connecting-IP` instead of `X-Forwarded-For`
+- [ ] Add TTL-based cleanup to in-memory rate limiter (or replace with Redis — see 6j)
+- [ ] Move hardcoded CORS origins to environment variable
+- [ ] Add `X-Request-ID` middleware for request tracing
+- [ ] Add structured error logging (Pino or Winston with request context)
+- [ ] Add graceful shutdown handler (`process.on('SIGTERM')`)
+- [ ] Health check endpoint: add `SELECT 1` DB probe (currently doesn't verify DB connection)
+- [ ] Purchase-to-theme referential integrity — validate `theme_ids[]` against known themes
 
 ### 6i. Analytics Event Tracking
 
@@ -535,12 +610,15 @@ All blocking decisions have been resolved. This table documents the final choice
 - [ ] Auth flows (login, signup, logout, session refresh)
 - [ ] Progress calculation logic (streak, completion %)
 
-### 8c. E2E Tests (4 spec files)
+### 8c. E2E Tests (5 spec files)
+
+> **NOTE:** Some E2E tests in `landing.spec.ts`, `auth.spec.ts`, and `legal.spec.ts` have selector precision issues (`getByText()` resolving to multiple elements in Playwright strict mode). These are test bugs, not app bugs, but they'll block CI.
 
 - [x] Landing page: hero, nav, themes, footer, CTA navigation
 - [x] Auth pages: sign-in/sign-up rendering, OAuth buttons, magic link, guest link
 - [x] Legal pages: terms/privacy content, back links, cookie consent banner
 - [x] Learning routes (14 tests): themes listing, theme detail with modules, module overview with lesson cards, lesson viewer with dialogue/sidebar/navigation, 404 handling
+- [ ] Fix E2E selector precision issues — use `getByRole` over `getByText` where multiple matches exist
 - [ ] Full user journeys:
   - New user: landing → signup → onboarding → Module 1 lesson → complete exercise
   - Payment: pricing → checkout → confirmation → Module 2 unlocked
@@ -838,6 +916,41 @@ All `href="#"` links in prototypes that need real routes:
 | 7 | Content quality at scale | Medium | High | Style guide + templates. First 10 lessons set bar. Hire narrative writer |
 | 8 | Low Coming Soon conversion | Medium | Medium | Nurture email: monthly free content. Early-bird 10% off for 48h |
 | 9 | Platform performance under load | Low | High | Load test before launch. Client-side WASM (Pyodide). CSS/Canvas animations GPU-accelerated. CDN for static assets |
+
+---
+
+## V0.5 Critical Path (Priority Order)
+
+Based on comprehensive audit of codebase, user journeys, database, and security:
+
+### Tier 1: Learning Loop Must Work
+
+1. **Sandpack exercises** (Phase 3f) — #1 gap, 14 exercises authored but none interactive
+2. **Syntax highlighting** (Phase 3h) — code platform needs colored code
+3. **Wire progress tracking** (Phase 5a) — lesson viewer must write to `/api/progress`
+4. **Mark Complete button** (Phase 5a) — explicit completion action in lesson viewer
+
+### Tier 2: Security & Payments
+
+5. **Fix CRITICAL security issues** — Stripe webhook verification, input validation, race conditions
+6. **Stripe checkout flow** (Phase 4b) — create session endpoint + checkout page
+7. **Paywall enforcement** (Phase 4c) — Module 1 free, Module 2+ requires purchase
+8. **Purchase verification endpoint** (Phase 4b) — frontend needs to check access
+
+### Tier 3: User Experience
+
+9. **Dashboard page** (Phase 5b) — progress overview, resume learning
+10. **Mobile lesson navigation** (Phase 6b) — drawer for lesson-to-lesson on mobile
+11. **Fix E2E tests** (Phase 8c) — unblock CI pipeline
+12. **Session error handling** (Phase 6e) — graceful token refresh, error UI
+
+### Tier 4: Post-V0.5
+
+- Settings page, GitHub integration, email sequences
+- Streaks, achievements, badges
+- PPP discounts, team plans
+- Advanced content components (MathBlock, InteractiveDemo)
+- Deep Orbit Modules 4-5
 
 ---
 
