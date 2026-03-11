@@ -1,0 +1,95 @@
+---
+slug: building-a-network
+title: "Building a Complete Network"
+moduleId: neural-networks
+themeId: deep-orbit
+order: 5
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "Commander Okafor gives the order: assemble the full signal classification network. Every component must work together."
+  speaker: "Commander Okafor"
+concept:
+  explanation: "Building a complete neural network combines everything — layers, activations, and compilation — like assembling a full React application from individual components."
+  bridge:
+    feTitle: "App Assembly"
+    feCode: "createRoot(el).render(<App />)"
+    mlTitle: "Model Compilation"
+    mlCode: "model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy' })"
+    tier: structural
+consequence:
+  narrative: "Module complete. The DEEP SCAN network is assembled and ready for training. The crew holds their breath."
+hints:
+  - level: nudge
+    content: "Compile sets the optimizer and loss function before training"
+  - level: guidance
+    content: "Use model.compile() with optimizer and loss parameters"
+  - level: solution
+    content: "model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] })"
+keywords:
+  - compile
+  - optimizer
+  - loss-function
+  - complete-network
+---
+
+<Dialogue speaker="Commander Okafor">
+This is it. We've built the components — neurons, activations, layers. Now assemble them into a complete system. The deep scan classifier must be ready for training by end of watch.
+</Dialogue>
+
+<LearningObjectives objectives={["Build a complete neural network from scratch", "Compile a model with optimizer, loss function, and metrics", "Understand what each compilation option controls", "Verify the network with a summary and test prediction"]} />
+
+## Assembly Required
+
+Building a React app: you create components, compose them, then mount the app. Building a neural network: you create layers, stack them, then compile the model.
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="complete-network.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// 1. Create the model
+const model = tf.sequential();
+
+// 2. Add layers (like adding components to your app)
+model.add(tf.layers.dense({
+  units: 32,
+  activation: 'relu',
+  inputShape: [3],     // 3 sensor inputs
+}));
+model.add(tf.layers.dense({ units: 16, activation: 'relu' }));
+model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
+
+// 3. Compile (like ReactDOM.render — prepares for execution)
+model.compile({
+  optimizer: 'adam',              // how to update weights
+  loss: 'binaryCrossentropy',    // how to measure error
+  metrics: ['accuracy'],          // what to track
+});
+
+// 4. Verify with summary
+model.summary();
+// Layer (type)          Output shape    Param #
+// dense_1 (Dense)       [null, 32]      128
+// dense_2 (Dense)       [null, 16]      528
+// dense_3 (Dense)       [null, 1]       17
+// Total params: 673
+
+// 5. Test with a prediction
+const testInput = tf.tensor2d([[0.5, 0.8, 0.2]]);
+const prediction = model.predict(testInput) as tf.Tensor;
+console.log('Initial prediction:', prediction.dataSync());`}
+</CodeBlock>
+
+**Compilation options explained:**
+- **optimizer** (`'adam'`): The algorithm that adjusts weights during training. Adam is the default choice — it adapts the learning rate automatically.
+- **loss** (`'binaryCrossentropy'`): Measures how wrong the predictions are. Binary crossentropy for yes/no classification, MSE for continuous values.
+- **metrics** (`['accuracy']`): What to display during training. Accuracy = percentage of correct predictions.
+
+## Challenge
+
+Assemble and compile the complete DEEP SCAN signal classifier.
+
+<Exercise slug="simple-network" />
+
+<KeyTakeaways takeaways={["Building a network: create → add layers → compile → predict", "Compilation prepares the model for training (optimizer + loss + metrics)", "Adam optimizer is the default choice — adapts learning rate automatically", "Binary crossentropy for classification, MSE for regression"]} />

@@ -1,0 +1,78 @@
+---
+slug: backpropagation
+title: "Backpropagation"
+moduleId: training-loop
+themeId: deep-orbit
+order: 3
+estimatedMinutes: 30
+difficulty: intermediate
+context:
+  narrative: "Gradient descent works for a single weight, but the network has hundreds. ARIA needs an efficient way to compute all gradients at once."
+concept:
+  explanation: "Backpropagation computes gradients for every weight by working backwards through the network — like how React's reconciliation traces changes from leaf nodes back to root."
+  bridge:
+    feTitle: "React Reconciliation"
+    feCode: "// Diff propagates from changed leaf → parent → root"
+    mlTitle: "Backpropagation"
+    mlCode: "// Gradient flows from loss → output → hidden → input"
+    tier: intuition
+consequence:
+  narrative: "Backpropagation efficiently computes all 673 gradients in a single backward pass. The training engine is ready."
+  nextLessonTeaser: "Next: putting it all together in the training loop"
+hints:
+  - level: nudge
+    content: "Backprop uses the chain rule to propagate gradients backwards"
+  - level: guidance
+    content: "TensorFlow.js handles backprop automatically with tf.variableGrads()"
+  - level: solution
+    content: "const { grads } = tf.variableGrads(() => lossFunction())"
+keywords:
+  - backpropagation
+  - chain-rule
+  - gradient-computation
+  - backward-pass
+---
+
+<Dialogue speaker="ARIA">
+Computing the gradient for each of 673 parameters individually would take 673 forward passes. Backpropagation computes them all in a single backward pass — a 673x speedup.
+</Dialogue>
+
+<LearningObjectives objectives={["Understand how backpropagation works at a high level", "See the connection to React's reconciliation algorithm", "Use tf.variableGrads() for automatic gradient computation", "Appreciate why backprop made deep learning practical"]} />
+
+## Working Backwards
+
+React's reconciliation algorithm finds what changed by comparing the virtual DOM tree from leaves to root. Backpropagation finds how to change each weight by propagating the loss gradient from output to input — backwards through the network.
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="backpropagation.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Build a simple network with trackable weights
+const w1 = tf.variable(tf.randomNormal([3, 4]));  // layer 1 weights
+const b1 = tf.variable(tf.zeros([4]));              // layer 1 bias
+const w2 = tf.variable(tf.randomNormal([4, 1]));   // layer 2 weights
+const b2 = tf.variable(tf.zeros([1]));              // layer 2 bias
+
+const input = tf.tensor2d([[0.5, 0.8, 0.2]]);
+const label = tf.tensor2d([[1]]);
+
+// Forward pass + loss computation + automatic backprop
+const { value: loss, grads } = tf.variableGrads(() => {
+  // Forward: input → layer1 → relu → layer2 → sigmoid
+  const hidden = tf.relu(input.matMul(w1).add(b1));
+  const output = tf.sigmoid(hidden.matMul(w2).add(b2));
+  return tf.losses.sigmoidCrossEntropy(label, output).mean() as tf.Scalar;
+});
+
+// grads now contains gradients for ALL 4 variables
+console.log('Loss:', loss.dataSync()[0]);
+console.log('w1 gradient shape:', grads[w1.name].shape); // [3, 4]
+console.log('w2 gradient shape:', grads[w2.name].shape); // [4, 1]
+
+// Each gradient tells us: "adjust this weight by this much"`}
+</CodeBlock>
+
+The magic: `tf.variableGrads()` records every operation during the forward pass, then automatically computes gradients for all variables by applying the chain rule backwards. You never have to implement backprop manually.
+
+<KeyTakeaways takeaways={["Backpropagation computes all gradients in one backward pass", "It works by applying the chain rule from output to input", "tf.variableGrads() handles it automatically — you define forward, it computes backward", "This made deep learning practical — efficient gradient computation for millions of parameters"]} />

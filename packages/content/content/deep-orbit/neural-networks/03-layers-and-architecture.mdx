@@ -1,0 +1,91 @@
+---
+slug: layers-and-architecture
+title: "Layers and Architecture"
+moduleId: neural-networks
+themeId: deep-orbit
+order: 3
+estimatedMinutes: 30
+difficulty: intermediate
+context:
+  narrative: "A single neuron isn't enough. Chief Torres demands a system that can handle the complexity of deep space signals."
+  speaker: "Chief Torres"
+concept:
+  explanation: "Neural network layers are like React component trees — each layer transforms its input and passes the result to the next layer."
+  bridge:
+    feTitle: "Component Composition"
+    feCode: "<Layout><Header /><Content><Sidebar /><Main /></Content></Layout>"
+    mlTitle: "Layer Composition"
+    mlCode: "model.add(tf.layers.dense({ units: 64 }))"
+    tier: structural
+consequence:
+  narrative: "The multi-layer network can now detect patterns that a single neuron couldn't. The signal analysis improves dramatically."
+hints:
+  - level: nudge
+    content: "Think of layers as functions that transform data step by step"
+  - level: guidance
+    content: "Use tf.layers.dense() to create fully connected layers"
+  - level: solution
+    content: "model.add(tf.layers.dense({ units: 32, activation: 'relu' }))"
+keywords:
+  - layers
+  - dense
+  - architecture
+  - composition
+---
+
+<Dialogue speaker="Chief Torres">
+One neuron can barely tell signal from noise. We need a system — multiple processing stages, each building on the last. Like how the ship's sensor array feeds through filters, amplifiers, then classifiers.
+</Dialogue>
+
+<LearningObjectives objectives={["Build multi-layer neural networks using tf.sequential()", "Understand how layers compose like React components", "Configure layer sizes (units) and activations", "Visualize data flow through a network"]} />
+
+## Components All the Way Down
+
+In React, you build complex UIs by composing simple components. Neural networks work the same way — you compose simple layers into powerful architectures.
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="layer-architecture.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// React: compose components
+// <App>
+//   <InputForm />     ← takes user data
+//   <ProcessingStep /> ← transforms it
+//   <OutputDisplay />  ← shows result
+// </App>
+
+// ML: compose layers
+const model = tf.sequential();
+
+// Input layer: accepts 3 sensor readings
+model.add(tf.layers.dense({
+  units: 16,
+  activation: 'relu',
+  inputShape: [3],     // 3 features in
+}));
+
+// Hidden layer: finds patterns
+model.add(tf.layers.dense({
+  units: 8,
+  activation: 'relu',
+}));
+
+// Output layer: binary classification
+model.add(tf.layers.dense({
+  units: 1,
+  activation: 'sigmoid', // output 0-1 probability
+}));
+
+model.summary(); // prints layer shapes and parameter counts`}
+</CodeBlock>
+
+Each layer transforms its input and passes the result forward — exactly like props flowing through a component tree. The `units` parameter is like the number of "features" that layer can learn to detect.
+
+## Challenge
+
+Build a 3-layer network for signal classification.
+
+<Exercise slug="build-layer" />
+
+<KeyTakeaways takeaways={["Layers compose like React components — each transforms and passes forward", "tf.sequential() creates a linear stack of layers", "units = number of neurons in a layer (features it can detect)", "inputShape only needed on the first layer — rest are inferred"]} />

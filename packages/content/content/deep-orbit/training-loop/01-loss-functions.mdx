@@ -1,0 +1,80 @@
+---
+slug: loss-functions
+title: "Loss Functions"
+moduleId: training-loop
+themeId: deep-orbit
+order: 1
+estimatedMinutes: 25
+difficulty: beginner
+context:
+  narrative: "The network makes its first predictions — they're terrible. Dr. Sato needs a way to measure exactly how wrong they are."
+  speaker: "Dr. Sato"
+concept:
+  explanation: "Loss functions measure prediction error — like the difference between expected and actual in a test assertion."
+  bridge:
+    feTitle: "expect().toBe()"
+    feCode: "expect(actual).toBe(expected) // assertion diff"
+    mlTitle: "Loss Function"
+    mlCode: "const loss = tf.losses.meanSquaredError(labels, predictions)"
+    tier: structural
+consequence:
+  narrative: "Now we can quantify exactly how wrong the network is. The loss score becomes our north star for improvement."
+  nextLessonTeaser: "Next: using gradients to reduce the loss"
+hints:
+  - level: nudge
+    content: "MSE = average of squared differences between predicted and actual"
+  - level: guidance
+    content: "Use tf.losses.meanSquaredError(labels, predictions)"
+  - level: solution
+    content: "const loss = tf.losses.meanSquaredError(tf.tensor([1, 0, 1]), tf.tensor([0.9, 0.2, 0.8]))"
+keywords:
+  - loss
+  - mse
+  - binary-crossentropy
+  - error
+---
+
+<Dialogue speaker="Dr. Sato">
+The network predicts 0.52 for a signal that should be 1.0. How wrong is that? We need a precise, mathematical measure of wrongness — a loss function.
+</Dialogue>
+
+<LearningObjectives objectives={["Understand what loss functions measure and why they're essential", "Implement MSE (Mean Squared Error) for regression tasks", "Implement binary crossentropy for classification tasks", "Interpret loss values — lower is better, zero is perfect"]} />
+
+## How Wrong Are We?
+
+In testing, assertions tell you if something's wrong: `expect(actual).toBe(expected)`. Loss functions do the same for neural networks — they compute a single number representing how wrong all predictions are.
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="loss-functions.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Actual labels (ground truth)
+const labels = tf.tensor([1, 0, 1, 0, 1]);
+
+// Network predictions (untrained — pretty bad)
+const predictions = tf.tensor([0.6, 0.4, 0.3, 0.7, 0.8]);
+
+// Mean Squared Error: average of (prediction - label)^2
+const mse = tf.losses.meanSquaredError(labels, predictions);
+console.log('MSE:', mse.dataSync()); // 0.188
+
+// Binary Crossentropy: better for classification (0 or 1)
+const bce = tf.losses.sigmoidCrossEntropy(labels, predictions);
+console.log('BCE:', bce.mean().dataSync());
+
+// Perfect predictions → loss approaches 0
+const perfect = tf.tensor([1, 0, 1, 0, 1]);
+const perfectLoss = tf.losses.meanSquaredError(labels, perfect);
+console.log('Perfect MSE:', perfectLoss.dataSync()); // 0`}
+</CodeBlock>
+
+Think of loss as the "distance" between where you are and where you want to be. Training a neural network = minimizing this distance.
+
+## Challenge
+
+Calculate the loss for the DEEP SCAN classifier's initial predictions.
+
+<Exercise slug="mse-loss" />
+
+<KeyTakeaways takeaways={["Loss functions quantify prediction error — like test assertion diffs", "MSE: good for regression, penalizes large errors quadratically", "Binary crossentropy: better for classification (0/1 outputs)", "Training goal: minimize loss toward zero"]} />

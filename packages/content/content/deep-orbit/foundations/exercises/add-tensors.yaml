@@ -1,0 +1,9 @@
+slug: add-tensors
+lessonSlug: tensor-operations
+title: "Add Two Tensors"
+instructions: "Add two tensors element-wise using tf.add()."
+starterCode: "const a = tf.tensor([1, 2, 3]);\nconst b = tf.tensor([4, 5, 6]);\nconst result = null; // add a and b"
+solutionCode: "const a = tf.tensor([1, 2, 3]);\nconst b = tf.tensor([4, 5, 6]);\nconst result = tf.add(a, b);"
+testCode: "describe('Add', () => { it('produces correct sum', () => { expect(Array.from(result.dataSync())).toEqual([5, 7, 9]); }); });"
+estimatedMinutes: 8
+difficulty: intermediate

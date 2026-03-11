@@ -1,0 +1,77 @@
+---
+slug: activation-functions
+title: "Activation Functions"
+moduleId: neural-networks
+themeId: deep-orbit
+order: 2
+estimatedMinutes: 20
+difficulty: beginner
+context:
+  narrative: "The raw neuron output is unbounded — ARIA needs a way to constrain it into meaningful decisions."
+concept:
+  explanation: "Activation functions transform raw neuron output into bounded, useful ranges — like Math.max(0, x) for ReLU or clamping values."
+  bridge:
+    feTitle: "Math.max(0, x)"
+    feCode: "const clamped = Math.max(0, rawValue)"
+    mlTitle: "ReLU Activation"
+    mlCode: "const activated = tf.relu(rawOutput)"
+    tier: identity
+consequence:
+  narrative: "With activation functions, neurons can now make binary decisions. The signal classifier takes shape."
+hints:
+  - level: nudge
+    content: "ReLU simply zeroes out negative values"
+  - level: guidance
+    content: "tf.relu() applies Math.max(0, x) to every element"
+  - level: solution
+    content: "const activated = tf.relu(neuronOutput)"
+keywords:
+  - activation
+  - relu
+  - sigmoid
+  - nonlinearity
+---
+
+<Dialogue speaker="ARIA">
+The neuron outputs unbounded values — negative infinity to positive infinity. I need a way to interpret these as decisions. Should this signal be classified as anomalous or normal?
+</Dialogue>
+
+<LearningObjectives objectives={["Understand why activation functions are necessary", "Implement ReLU, sigmoid, and tanh activations", "See how Math.max() and Math.min() map to neural network activations", "Choose the right activation for different situations"]} />
+
+## From Unbounded to Useful
+
+Without activation functions, a neural network is just a series of linear transformations — no matter how many layers you stack, it collapses to a single linear function. Activation functions introduce the non-linearity that lets networks learn complex patterns.
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="activations.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+const raw = tf.tensor([-2, -1, 0, 1, 2]);
+
+// ReLU: max(0, x) — the most popular activation
+const relu = tf.relu(raw);        // [0, 0, 0, 1, 2]
+
+// Sigmoid: squash to (0, 1) — good for probabilities
+const sigmoid = tf.sigmoid(raw);   // [0.12, 0.27, 0.5, 0.73, 0.88]
+
+// Tanh: squash to (-1, 1) — centered version of sigmoid
+const tanh = tf.tanh(raw);         // [-0.96, -0.76, 0, 0.76, 0.96]
+
+// Frontend equivalent of ReLU:
+const jsRelu = [-2, -1, 0, 1, 2].map(x => Math.max(0, x));
+// [0, 0, 0, 1, 2] — identical!`}
+</CodeBlock>
+
+**When to use which:**
+- **ReLU**: Default choice for hidden layers. Fast, simple, works well.
+- **Sigmoid**: Output layer for binary classification (is this signal anomalous? yes/no).
+- **Tanh**: When you need centered outputs (values can be negative).
+
+## Challenge
+
+Apply ReLU activation to neuron outputs.
+
+<Exercise slug="relu-activation" />
+
+<KeyTakeaways takeaways={["Activation functions add non-linearity — without them, networks can't learn complex patterns", "ReLU = Math.max(0, x) — the most common activation function", "Sigmoid squashes output to 0-1 (probabilities), tanh to -1 to 1", "Choose ReLU for hidden layers, sigmoid for binary output layers"]} />

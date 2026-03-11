@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { Hono } from "hono";
 import { authMiddleware } from "./auth";
+import type { AppEnv } from "../types";
 
 const mockGetUser = vi.fn();
 
@@ -13,11 +14,11 @@ vi.mock("@tensorcraft/supabase", () => ({
 }));
 
 describe("authMiddleware", () => {
-  let app: Hono;
+  let app: Hono<AppEnv>;
 
   beforeEach(() => {
     mockGetUser.mockReset();
-    app = new Hono();
+    app = new Hono<AppEnv>();
     app.use("*", authMiddleware);
     app.get("/test", (c) => {
       return c.json({

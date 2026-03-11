@@ -1,0 +1,9 @@
+slug: backprop-chain
+lessonSlug: backpropagation
+title: "Automatic Backpropagation"
+instructions: "Use tf.variableGrads() to automatically compute gradients for a simple loss function. Define a variable 'w' with value 3.0, compute loss as w squared, and use tf.variableGrads() to get the gradients automatically."
+starterCode: "const w = tf.variable(tf.scalar(3.0));\n\n// Use tf.variableGrads to compute gradients of w^2\nconst { value: loss, grads } = { value: null, grads: null }; // your code here"
+solutionCode: "const w = tf.variable(tf.scalar(3.0));\n\nconst { value: loss, grads } = tf.variableGrads(() => w.square());"
+testCode: "describe('Backprop', () => { it('computes loss', () => { expect(loss).toBeDefined(); expect(loss.dataSync()[0]).toBeCloseTo(9.0, 4); }); it('computes gradient', () => { expect(grads).toBeDefined(); const gradKeys = Object.keys(grads); expect(gradKeys.length).toBeGreaterThan(0); }); });"
+estimatedMinutes: 15
+difficulty: intermediate

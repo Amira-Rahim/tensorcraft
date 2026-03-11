@@ -1,0 +1,75 @@
+---
+slug: tensor-shapes
+title: "Understanding Tensor Shapes"
+moduleId: foundations
+themeId: deep-orbit
+order: 2
+estimatedMinutes: 20
+difficulty: beginner
+context:
+  narrative: "Dr. Sato analyzes the dimensional structure of the incoming data."
+concept:
+  explanation: "Shape describes the size of each dimension in a tensor."
+  bridge:
+    feTitle: "Array.length"
+    feCode: "const shape = [arr.length, arr[0].length]"
+    mlTitle: "Tensor.shape"
+    mlCode: "tensor.shape // [3, 4]"
+    tier: identity
+consequence:
+  narrative: "The data dimensions are now clear — a 3D tensor of sensor readings."
+hints:
+  - level: nudge
+    content: "Count the nesting levels of your array"
+  - level: guidance
+    content: "Use .shape to inspect tensor dimensions"
+  - level: solution
+    content: "const shape = tensor.shape; // [rows, cols]"
+keywords:
+  - shape
+  - dimensions
+  - rank
+---
+
+<Dialogue speaker="Dr. Sato">
+The data stream has structure — I can see repeating patterns at different scales. We need to understand its dimensional layout before we can analyze it.
+</Dialogue>
+
+Every tensor has a **shape** — a tuple of numbers describing how many elements exist along each dimension. If you've ever checked `array.length` or calculated `rows × cols` for a grid layout, you already think in shapes.
+
+<LearningObjectives objectives={["Read and interpret tensor shapes", "Understand the relationship between shape and data layout", "Reshape tensors without changing their data", "Recognize common shapes in ML (batches, sequences, images)"]} />
+
+## Shapes You Already Know
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+In frontend development, you work with shapes constantly. A responsive grid with 3 rows and 4 columns? That's shape `[3, 4]`. A list of 10 user cards? Shape `[10]`. A batch of 32 RGB images at 224×224 pixels? Shape `[32, 224, 224, 3]`.
+
+<CodeBlock language="typescript" title="tensor-shapes.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Shape [6] — a 1D vector with 6 elements
+const flat = tf.tensor([1, 2, 3, 4, 5, 6]);
+console.log(flat.shape);  // [6]
+
+// Reshape to [2, 3] — same data, different layout
+const matrix = flat.reshape([2, 3]);
+console.log(matrix.shape);  // [2, 3]
+
+// Reshape to [3, 2] — still the same 6 numbers
+const tall = flat.reshape([3, 2]);
+console.log(tall.shape);  // [3, 2]
+
+// The total elements must match: 2*3 = 3*2 = 6
+// This would throw: flat.reshape([2, 4]) — 2*4=8 ≠ 6`}
+</CodeBlock>
+
+The golden rule: **reshaping never changes the data, only how it's organized**. Think of it like CSS Grid — the same child elements can be arranged as 2×3 or 3×2 just by changing `grid-template-columns`.
+
+## Challenge
+
+Reshape a flat tensor into a matrix.
+
+<Exercise slug="reshape-tensor" />
+
+<KeyTakeaways takeaways={["Shape is a tuple describing the size of each tensor dimension", "Reshaping rearranges data layout without changing values", "Total elements must match: product of old shape = product of new shape", "Common ML shapes: [batch, height, width, channels] for images"]} />

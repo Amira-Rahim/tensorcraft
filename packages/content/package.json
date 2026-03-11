@@ -8,7 +8,8 @@
   },
   "scripts": {
     "build": "tsc",
-    "clean": "rm -rf dist",
+    "build:content": "velite build",
+    "clean": "rm -rf dist .velite",
     "lint": "eslint src/",
     "typecheck": "tsc --noEmit"
   },

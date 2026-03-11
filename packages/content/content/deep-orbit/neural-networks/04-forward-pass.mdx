@@ -1,0 +1,79 @@
+---
+slug: forward-pass
+title: "The Forward Pass"
+moduleId: neural-networks
+themeId: deep-orbit
+order: 4
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "The network architecture is ready. Dr. Sato feeds the first batch of signal data through the system."
+concept:
+  explanation: "The forward pass pushes data through the network layer by layer — like an event propagating through the DOM, each handler transforms it before passing it on."
+  bridge:
+    feTitle: "Event Propagation"
+    feCode: "element.addEventListener('click', e => transform(e))"
+    mlTitle: "Forward Pass"
+    mlCode: "const prediction = model.predict(inputTensor)"
+    tier: intuition
+consequence:
+  narrative: "The first predictions emerge — rough, untrained, but the pipeline works. The network needs training."
+  nextLessonTeaser: "Next: putting it all together to build a complete network"
+hints:
+  - level: nudge
+    content: "model.predict() runs the forward pass"
+  - level: guidance
+    content: "Input shape must match the model's inputShape"
+  - level: solution
+    content: "const prediction = model.predict(tf.tensor2d([[0.5, 0.8, 0.2]]))"
+keywords:
+  - forward-pass
+  - predict
+  - inference
+  - data-flow
+---
+
+<Dialogue speaker="Dr. Sato">
+The architecture is set. Let's feed data through and see what happens. Even untrained, the forward pass will show us the network's initial state — random weights producing random outputs.
+</Dialogue>
+
+<LearningObjectives objectives={["Trace data flow through a neural network layer by layer", "Use model.predict() to run inference", "Understand input and output tensor shapes at each layer", "Debug shape mismatches — the most common neural network error"]} />
+
+## Data Flows Forward
+
+The forward pass is simple: data enters the first layer, gets transformed, and flows to the next layer until it reaches the output. It's like DOM event propagation — each handler processes and passes forward.
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="forward-pass.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+const model = tf.sequential();
+model.add(tf.layers.dense({ units: 16, activation: 'relu', inputShape: [3] }));
+model.add(tf.layers.dense({ units: 8, activation: 'relu' }));
+model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
+
+// Forward pass: push sensor data through the network
+const sensorReading = tf.tensor2d([[0.5, 0.8, 0.2]]);  // shape: [1, 3]
+
+// predict() runs the full forward pass
+const prediction = model.predict(sensorReading) as tf.Tensor;
+console.log(prediction.shape);     // [1, 1]
+console.log(prediction.dataSync()); // ~0.5 (random, untrained)
+
+// Shape flow through layers:
+// Input:   [1, 3]  → 3 sensor values
+// Layer 1: [1, 16] → 16 features detected
+// Layer 2: [1, 8]  → 8 higher-level patterns
+// Output:  [1, 1]  → probability of anomaly`}
+</CodeBlock>
+
+The most common error in ML is shape mismatches. If your input shape doesn't match `inputShape`, you'll get an error — just like passing the wrong prop type to a React component.
+
+## Challenge
+
+Run a forward pass through the signal classifier.
+
+<Exercise slug="forward-pass" />
+
+<KeyTakeaways takeaways={["Forward pass = data flows through layers, each transforming it", "model.predict() runs inference — input in, prediction out", "Shape flows: [batch, inputFeatures] → ... → [batch, outputFeatures]", "Shape mismatches are the #1 neural network debugging issue"]} />

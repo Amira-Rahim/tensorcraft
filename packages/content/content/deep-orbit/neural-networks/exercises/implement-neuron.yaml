@@ -1,0 +1,9 @@
+slug: implement-neuron
+lessonSlug: first-neuron
+title: "Implement a Neuron"
+instructions: "Implement a single neuron that computes a weighted sum of inputs plus a bias. Use tf.dot() to multiply inputs by weights, then add the bias."
+starterCode: "const inputs = tf.tensor([1.0, 2.0, 3.0]);\nconst weights = tf.tensor([0.2, 0.8, -0.5]);\nconst bias = tf.scalar(0.1);\n\n// Compute weighted sum + bias\nconst output = null; // your code here"
+solutionCode: "const inputs = tf.tensor([1.0, 2.0, 3.0]);\nconst weights = tf.tensor([0.2, 0.8, -0.5]);\nconst bias = tf.scalar(0.1);\n\nconst output = tf.dot(inputs, weights).add(bias);"
+testCode: "describe('Neuron', () => { it('produces output', () => { expect(output).toBeDefined(); }); it('computes correct value', () => { const val = output.dataSync()[0]; expect(val).toBeCloseTo(0.4, 4); }); });"
+estimatedMinutes: 10
+difficulty: beginner

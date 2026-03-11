@@ -1,0 +1,54 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+    - main [ref=e3]:
+        - generic [ref=e4]:
+            - generic [ref=e5]: ◇ tensorcraft
+            - heading "Create your account" [level=1] [ref=e6]
+            - button "Continue with GitHub" [ref=e7]:
+                - img [ref=e8]
+                - text: Continue with GitHub
+            - button "Continue with Google" [ref=e10]:
+                - img [ref=e11]
+                - text: Continue with Google
+            - generic [ref=e18]: or
+            - generic [ref=e20]:
+                - textbox "you@example.com" [ref=e21]
+                - button "Send magic link" [ref=e22]
+            - generic [ref=e23]:
+                - text: Already have an account?
+                - link "Sign in" [ref=e24] [cursor=pointer]:
+                    - /url: /auth/sign-in
+            - generic [ref=e25]:
+                - text: By creating an account, you agree to our
+                - link "Terms" [ref=e26] [cursor=pointer]:
+                    - /url: /terms
+                - text: and
+                - link "Privacy Policy" [ref=e27] [cursor=pointer]:
+                    - /url: /privacy
+                - text: .
+    - contentinfo [ref=e28]:
+        - generic [ref=e29]:
+            - generic [ref=e30]: ◇ tensorcraft
+            - generic [ref=e31]:
+                - link "Home" [ref=e32] [cursor=pointer]:
+                    - /url: /
+                - link "Terms" [ref=e33] [cursor=pointer]:
+                    - /url: /terms
+                - link "Privacy" [ref=e34] [cursor=pointer]:
+                    - /url: /privacy
+            - generic [ref=e35]: © 2026 Tensorcraft. All rights reserved.
+    - button "Open Next.js Dev Tools" [ref=e41] [cursor=pointer]:
+        - img [ref=e42]
+    - alert [ref=e45]
+    - generic [ref=e47]:
+        - paragraph [ref=e48]:
+            - text: We use essential cookies for authentication and optional analytics cookies (PostHog) to improve the learning experience. See our
+            - link "Privacy Policy" [ref=e49] [cursor=pointer]:
+                - /url: /privacy
+            - text: for details.
+        - generic [ref=e50]:
+            - button "Accept all" [ref=e51]
+            - button "Essential only" [ref=e52]
+```

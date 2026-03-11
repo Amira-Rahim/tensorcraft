@@ -1,0 +1,9 @@
+slug: normalize-data
+lessonSlug: normalization
+title: "Normalize Sensor Data"
+instructions: "Apply z-score normalization to a tensor of sensor readings."
+starterCode: "const data = tf.tensor([10, 20, 30, 40, 50]);\nconst normalized = null; // apply z-score normalization"
+solutionCode: "const data = tf.tensor([10, 20, 30, 40, 50]);\nconst normalized = data.sub(data.mean()).div(data.std());"
+testCode: "describe('Normalize', () => { it('has mean ~0', () => { expect(Math.abs(normalized.mean().dataSync()[0])).toBeLessThan(0.01); }); });"
+estimatedMinutes: 12
+difficulty: advanced

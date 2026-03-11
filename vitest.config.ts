@@ -17,6 +17,8 @@ export default defineConfig({
       "@tensorcraft/supabase": path.resolve(__dirname, "packages/supabase/src"),
       "@tensorcraft/shared": path.resolve(__dirname, "packages/shared/src"),
       "@tensorcraft/themes": path.resolve(__dirname, "packages/themes/src"),
+      "@tensorcraft/ui": path.resolve(__dirname, "packages/ui/src"),
+      "@tensorcraft/content": path.resolve(__dirname, "packages/content/src"),
     },
   },
 });

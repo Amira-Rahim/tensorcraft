@@ -1,0 +1,9 @@
+slug: reshape-tensor
+lessonSlug: tensor-shapes
+title: "Reshape a Tensor"
+instructions: "Reshape a 1D tensor of 6 elements into a 2x3 matrix."
+starterCode: "const flat = tf.tensor([1, 2, 3, 4, 5, 6]);\nconst matrix = null; // reshape to [2, 3]"
+solutionCode: "const flat = tf.tensor([1, 2, 3, 4, 5, 6]);\nconst matrix = flat.reshape([2, 3]);"
+testCode: "describe('Reshape', () => { it('has shape [2,3]', () => { expect(matrix.shape).toEqual([2, 3]); }); });"
+estimatedMinutes: 10
+difficulty: beginner

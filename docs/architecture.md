@@ -13,10 +13,13 @@ tensorcraft/
 │   └── api/          Hono backend (port 3001)
 ├── packages/
 │   ├── config/       Shared ESLint, TypeScript, Tailwind configs
+│   ├── content/      MDX lessons, exercises, Velite config, content queries
+│   ├── shared/       Shared types, utilities, constants
 │   ├── themes/       5 themed course manifests + CSS custom properties
-│   ├── ui/           Shared React component library (Framer Motion)
+│   ├── ui/           Shared React component library + MDX components
 │   └── supabase/     Database types, clients, migrations
 ├── docs/             Project documentation
+├── e2e/              Playwright E2E tests
 ├── turbo.json        Turborepo task configuration
 └── pnpm-workspace.yaml
 ```
@@ -32,8 +35,8 @@ tensorcraft/
 | Database | Supabase (PostgreSQL) | Auth, RLS, real-time, generous free tier |
 | Styling | Tailwind CSS 4 | CSS-native `@theme` directive, zero-JS theming |
 | Animation | Framer Motion | Declarative, layout animations, gesture support |
-| Content | MDX 3 + Velite (Zod schemas) | Type-safe content with build-time validation |
-| Code Highlighting | Code Hike (Shiki-based) | Scrollytelling, FE Bridge code comparisons |
+| Content | MDX 3 + Velite (Zod schemas) | Type-safe content with build-time validation. 3 collections: lessons, exercises, modules |
+| Code Highlighting | Shiki (via CodeBlock component) | V0.5 uses basic syntax highlighting; Code Hike deferred |
 | Code Exercises | Sandpack (CodeSandbox) | Browser-based code playgrounds with Jest |
 | Payments | Stripe Checkout + Webhooks | One-time purchases, webhook-driven fulfillment |
 | Email | Kit (ConvertKit) | Waitlist, per-theme segmented lists, nurture sequences |
@@ -149,10 +152,53 @@ Client component with Framer Motion animations:
 | vitest-axe | Unit-level WCAG accessibility checks | Registered in `vitest.setup.ts` |
 | @axe-core/playwright | E2E accessibility audits | Used in `e2e/accessibility.spec.ts` |
 
+## Content Pipeline (`packages/content`)
+
+### How Content Works
+
+1. **MDX files** in `packages/content/content/deep-orbit/{module}/{lesson}.mdx` — YAML frontmatter (5C Loop fields) + MDX body (components)
+2. **Exercise YAML** in `packages/content/content/deep-orbit/{module}/exercises/{slug}.yaml` — starterCode, solutionCode, testCode
+3. **Module metadata** in `packages/content/content/deep-orbit/{module}/module.yaml` — slug, title, order, description
+4. **Velite** (`velite.config.ts`) compiles MDX → `.velite/` output at build time via `pnpm --filter @tensorcraft/content build:content`
+5. **Content queries** (`src/queries.ts`) — pure functions over Velite output: `getModules`, `getModuleLessons`, `getLesson`, `getExercise`, `getAdjacentLessons`
+6. **Turbo dependency** — `build:content` runs before `build` via `dependsOn: ["^build:content"]`
+
+### MDX Rendering
+
+Velite compiles MDX to function body strings. The `LessonContent` client component (`apps/web/app/themes/[slug]/[module]/[lesson]/lesson-content.tsx`) renders them using `new Function()` with `react/jsx-runtime` injection and frontmatter scope.
+
+### MDX Components (`packages/ui/src/mdx/`)
+
+| Component | Type | Purpose |
+|-----------|------|---------|
+| `Dialogue` | Server | Speaker label + styled blockquote |
+| `BridgeCallout` | Server | FE↔ML 3-column grid with tier colors |
+| `CodeBlock` | Client | Code with copy button + language badge |
+| `HintPanel` | Client | 3-level progressive disclosure |
+| `LearningObjectives` | Server | Checklist at lesson top |
+| `KeyTakeaways` | Server | Summary card at lesson bottom |
+| `Exercise` | Client | Placeholder for Sandpack (V0.5) |
+| `Quiz` | Client | Multiple-choice with feedback |
+
+### V0.5 Content Scope
+
+- 3 modules (Foundations, Neural Networks, Training Loop)
+- 15 lessons following 5C Loop structure
+- 14 exercises with starter/solution/test code
+
+## Learning Routes (`apps/web/app/themes/`)
+
+| Route | Page | Purpose |
+|-------|------|---------|
+| `/themes` | Theme listing | Grid of 5 themes, Deep Orbit active, 4 "Coming Soon" |
+| `/themes/[slug]` | Theme detail | Module list with characters, layout sets `data-theme` |
+| `/themes/[slug]/[module]` | Module overview | Lesson cards with order, title, time, difficulty |
+| `/themes/[slug]/[module]/[lesson]` | Lesson viewer | Sidebar nav + MDX content + 5C Loop sections + prev/next nav |
+
 ### Test Categories
 
-- **Unit tests** (54 passing): API routes, middleware, components, Zod schemas, shared constants
-- **E2E tests** (3 spec files): Landing page, auth pages, legal pages
+- **Unit tests** (211 passing): API routes, middleware, components, MDX components, content queries, Zod schemas, shared constants
+- **E2E tests** (4 spec files): Landing page, auth pages, legal pages, learning routes (themes/modules/lessons)
 - **Accessibility tests**: axe-core on components (unit) + full page audits (e2e)
 - **Content contract tests**: Validate content fixtures against Zod schemas
 - **Cross-reference tests**: Referential integrity across lessons/modules/exercises

@@ -1,0 +1,76 @@
+---
+slug: first-neuron
+title: "Your First Neuron"
+moduleId: neural-networks
+themeId: deep-orbit
+order: 1
+estimatedMinutes: 25
+difficulty: beginner
+context:
+  narrative: "ARIA's rule-based detection system has failed. Dr. Sato proposes building an adaptive system — starting with a single computational unit."
+  speaker: "Dr. Sato"
+concept:
+  explanation: "A neuron computes a weighted sum of inputs plus a bias, then applies an activation function — just like a reduce() callback that transforms accumulated values."
+  bridge:
+    feTitle: "Array.reduce()"
+    feCode: "inputs.reduce((sum, x, i) => sum + x * weights[i], bias)"
+    mlTitle: "Neuron"
+    mlCode: "const output = activation(tf.dot(inputs, weights).add(bias))"
+    tier: structural
+consequence:
+  narrative: "The single neuron can now distinguish between two types of signals. But Commander Okafor needs more — much more."
+  nextLessonTeaser: "Next: activation functions that give neurons decision-making power"
+hints:
+  - level: nudge
+    content: "A neuron multiplies each input by a weight, sums them, and adds bias"
+  - level: guidance
+    content: "Use tf.dot() for the weighted sum, then .add(bias)"
+  - level: solution
+    content: "const output = tf.dot(inputs, weights).add(bias)"
+keywords:
+  - neuron
+  - weights
+  - bias
+  - weighted-sum
+---
+
+<Dialogue speaker="Dr. Sato">
+ARIA's pattern matching failed because it uses fixed rules. We need something that can learn. The simplest learning unit is a single neuron — think of it as a function that can adjust its own parameters.
+</Dialogue>
+
+<LearningObjectives objectives={["Understand the anatomy of a single neuron (inputs, weights, bias)", "Implement a neuron as a weighted sum plus bias", "See how Array.reduce() maps to the dot product operation", "Initialize weights and bias for a simple classifier"]} />
+
+## The Simplest Learning Machine
+
+A neuron is surprisingly simple. It takes inputs, multiplies each by a weight, sums everything up, adds a bias, and outputs a number. You've written this exact pattern with `Array.reduce()`.
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="first-neuron.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// A neuron with 3 inputs
+const inputs = tf.tensor([0.5, 0.8, 0.2]);   // sensor readings
+const weights = tf.tensor([0.4, -0.2, 0.6]);  // learned importance
+const bias = tf.scalar(0.1);                   // threshold offset
+
+// The neuron computation: weighted sum + bias
+const output = tf.dot(inputs, weights).add(bias);
+console.log(output.dataSync()); // [0.18] — raw output
+
+// Compare with the reduce() equivalent:
+const jsInputs = [0.5, 0.8, 0.2];
+const jsWeights = [0.4, -0.2, 0.6];
+const jsOutput = jsInputs.reduce((sum, x, i) => sum + x * jsWeights[i], 0.1);
+console.log(jsOutput); // 0.18 — identical!`}
+</CodeBlock>
+
+The weights determine how much each input matters. A large positive weight means "this input is important and supports the output." A negative weight means "this input pushes against the output." The bias shifts the decision threshold.
+
+## Challenge
+
+Build your first neuron to classify signal readings.
+
+<Exercise slug="implement-neuron" />
+
+<KeyTakeaways takeaways={["A neuron = weighted sum + bias = Array.reduce() with learned weights", "Weights control input importance, bias shifts the decision threshold", "tf.dot() computes the weighted sum efficiently on the GPU", "This single operation is the building block of all neural networks"]} />

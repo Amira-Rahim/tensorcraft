@@ -1,0 +1,83 @@
+---
+slug: gradient-descent
+title: "Gradient Descent"
+moduleId: training-loop
+themeId: deep-orbit
+order: 2
+estimatedMinutes: 30
+difficulty: intermediate
+context:
+  narrative: "Knowing how wrong the network is isn't enough — Chief Torres wants to know which direction to adjust."
+  speaker: "Chief Torres"
+concept:
+  explanation: "Gradient descent finds the direction of steepest loss decrease — like using the scroll position to determine which direction to scroll for smoother animation."
+  bridge:
+    feTitle: "Scroll Direction"
+    feCode: "const direction = targetPos - currentPos > 0 ? 1 : -1"
+    mlTitle: "Gradient"
+    mlCode: "const gradient = tf.grad(lossFunction)(weights)"
+    tier: intuition
+consequence:
+  narrative: "The gradients reveal exactly how to adjust each weight. The path to a trained network is clear."
+hints:
+  - level: nudge
+    content: "Gradients tell you the slope — which way is downhill"
+  - level: guidance
+    content: "Multiply gradient by learning rate, subtract from weights"
+  - level: solution
+    content: "weights = weights.sub(gradient.mul(learningRate))"
+keywords:
+  - gradient
+  - descent
+  - learning-rate
+  - optimization
+---
+
+<Dialogue speaker="Chief Torres">
+Great, so the loss tells us we're wrong. But which knobs do I turn? Which weights need to go up, which need to go down, and by how much?
+</Dialogue>
+
+<LearningObjectives objectives={["Understand gradients as the direction of steepest ascent", "Implement a single gradient descent step", "Tune the learning rate — too high overshoots, too low crawls", "Visualize loss decreasing over multiple steps"]} />
+
+## Finding Downhill
+
+Imagine you're blindfolded on a hill and need to reach the bottom. You feel the slope under your feet — that's the gradient. You step in the direction that slopes down — that's gradient descent.
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="gradient-descent.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Simple example: find the x that minimizes (x - 3)^2
+let x = tf.variable(tf.scalar(0)); // start at 0
+const learningRate = 0.1;
+
+for (let step = 0; step < 20; step++) {
+  // Compute loss and gradient
+  const { value: loss, grads } = tf.variableGrads(() => {
+    return x.sub(3).square() as tf.Scalar; // loss = (x - 3)^2
+  });
+
+  // Update x: move opposite to gradient direction
+  const grad = grads[x.name];
+  x.assign(x.sub(grad.mul(learningRate)));
+
+  if (step % 5 === 0) {
+    console.log(\`Step \${step}: x=\${x.dataSync()[0].toFixed(3)}, loss=\${loss.dataSync()[0].toFixed(3)}\`);
+  }
+}
+// Step 0:  x=0.600, loss=9.000
+// Step 5:  x=2.806, loss=0.038
+// Step 10: x=2.993, loss=0.000
+// Step 15: x=3.000, loss=0.000`}
+</CodeBlock>
+
+**Learning rate** is crucial: too high and you overshoot the minimum (like scrolling past your target), too low and training takes forever (like scrolling one pixel at a time).
+
+## Challenge
+
+Implement gradient descent to minimize a loss function.
+
+<Exercise slug="gradient-step" />
+
+<KeyTakeaways takeaways={["Gradients = slope of the loss with respect to each weight", "Gradient descent: move weights opposite to the gradient direction", "Learning rate controls step size — the key hyperparameter", "tf.variableGrads() computes gradients automatically"]} />

@@ -81,6 +81,12 @@ importers:
       '@supabase/supabase-js':
         specifier: ^2.98.0
         version: 2.98.0
+      '@tensorcraft/content':
+        specifier: workspace:*
+        version: link:../../packages/content
+      '@tensorcraft/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       '@tensorcraft/supabase':
         specifier: workspace:*
         version: link:../../packages/supabase

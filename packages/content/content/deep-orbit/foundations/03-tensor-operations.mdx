@@ -1,0 +1,79 @@
+---
+slug: tensor-operations
+title: "Basic Tensor Operations"
+moduleId: foundations
+themeId: deep-orbit
+order: 3
+estimatedMinutes: 30
+difficulty: intermediate
+context:
+  narrative: "Chief Torres needs to process the raw signal data."
+  speaker: "Chief Torres"
+concept:
+  explanation: "Tensors support element-wise and matrix operations like add, multiply, and matmul."
+  bridge:
+    feTitle: "Array.map()"
+    feCode: "arr.map((x, i) => x + arr2[i])"
+    mlTitle: "tf.add()"
+    mlCode: "tf.add(tensor1, tensor2)"
+    tier: structural
+consequence:
+  narrative: "The processed signal reveals a pattern in the noise."
+hints:
+  - level: nudge
+    content: "Think about element-wise vs matrix operations"
+  - level: guidance
+    content: "tf.add() performs element-wise addition"
+  - level: solution
+    content: "const result = tf.add(a, b)"
+keywords:
+  - operations
+  - add
+  - multiply
+  - matmul
+---
+
+<Dialogue speaker="Chief Torres">
+Raw data is useless. We need to clean it, combine sensor feeds, and amplify the signal. Every operation needs to be fast — we're processing millions of data points per second.
+</Dialogue>
+
+You've used `Array.map()` to transform lists, `reduce()` to aggregate values, and spread operators to combine arrays. Tensor operations are the same ideas — but they run on the GPU and handle millions of elements in parallel.
+
+<LearningObjectives objectives={["Perform element-wise tensor operations (add, multiply, subtract)", "Understand broadcasting — how tensors of different shapes interact", "Use matrix multiplication (matmul) for combining data", "Chain operations together to build data transformations"]} />
+
+## Element-wise Operations
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+When you write `arr.map((x, i) => x + arr2[i])`, you're doing element-wise addition. TensorFlow.js does the same thing, but across any number of dimensions and on the GPU:
+
+<CodeBlock language="typescript" title="tensor-ops.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+const sensor1 = tf.tensor([1, 2, 3]);
+const sensor2 = tf.tensor([4, 5, 6]);
+
+// Element-wise operations — same as map + zip
+const sum = tf.add(sensor1, sensor2);     // [5, 7, 9]
+const product = tf.mul(sensor1, sensor2); // [4, 10, 18]
+const diff = tf.sub(sensor2, sensor1);    // [3, 3, 3]
+
+// Chaining with method syntax
+const result = sensor1.add(sensor2).mul(tf.scalar(2));
+// [10, 14, 18]
+
+// Matrix multiplication — the workhorse of neural networks
+const weights = tf.tensor2d([[1, 2], [3, 4], [5, 6]]);  // [3, 2]
+const input = tf.tensor2d([[1], [1], [1]]);               // [3, 1]
+const output = weights.transpose().matMul(input);          // [2, 1]`}
+</CodeBlock>
+
+Matrix multiplication (`matMul`) is the operation that makes neural networks work. Every layer in a neural network is essentially: `output = matMul(input, weights) + bias`. You'll see this pattern everywhere from here on.
+
+## Challenge
+
+Add two tensors together to combine sensor readings.
+
+<Exercise slug="add-tensors" />
+
+<KeyTakeaways takeaways={["Element-wise ops (add, mul, sub) work like Array.map across dimensions", "Method chaining works: tensor.add(other).mul(scalar)", "Matrix multiplication (matMul) is the core operation of neural networks", "GPU acceleration means tensor ops scale to millions of elements"]} />

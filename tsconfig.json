@@ -1,0 +1,30 @@
+{
+  "extends": "./packages/config/typescript/base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "declaration": false,
+    "declarationMap": false,
+    "types": ["vitest/globals"],
+    "jsx": "react-jsx",
+    "paths": {
+      "@/*": ["./apps/web/*"],
+      "@tensorcraft/shared": ["./packages/shared/src"],
+      "@tensorcraft/themes": ["./packages/themes/src"],
+      "@tensorcraft/ui": ["./packages/ui/src"],
+      "@tensorcraft/content": ["./packages/content/src"],
+      "@tensorcraft/supabase": ["./packages/supabase/src"],
+      "@tensorcraft/config/*": ["./packages/config/*"]
+    }
+  },
+  "include": [
+    "apps/**/*.ts",
+    "apps/**/*.tsx",
+    "packages/**/*.ts",
+    "packages/**/*.tsx",
+    "vitest.config.ts",
+    "vitest.setup.ts",
+    "vitest-axe-matchers.d.ts",
+    "e2e/**/*.ts"
+  ],
+  "exclude": ["node_modules", "**/dist", "**/.next", "**/.turbo", "**/.velite"]
+}

@@ -1,8 +1,12 @@
 {
   "$schema": "https://turborepo.dev/schema.json",
   "tasks": {
+    "build:content": {
+      "outputs": [".velite/**"],
+      "inputs": ["content/**", "velite.config.ts"]
+    },
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build", "^build:content"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"]
     },
     "dev": {

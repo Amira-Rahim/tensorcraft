@@ -1,0 +1,94 @@
+---
+slug: training-loop
+title: "The Training Loop"
+moduleId: training-loop
+themeId: deep-orbit
+order: 4
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "All the pieces are in place. Ensign Park initiates the training sequence — the network will learn from thousands of signal examples."
+  speaker: "Ensign Park"
+concept:
+  explanation: "The training loop repeatedly feeds data, computes loss, and updates weights — like a requestAnimationFrame loop that converges toward a target state."
+  bridge:
+    feTitle: "requestAnimationFrame"
+    feCode: "function animate() { update(); render(); requestAnimationFrame(animate); }"
+    mlTitle: "Training Loop"
+    mlCode: "await model.fit(trainX, trainY, { epochs: 50 })"
+    tier: structural
+consequence:
+  narrative: "Loss drops from 0.69 to 0.08 over 50 epochs. The network is learning. The signal becomes clearer with each iteration."
+  nextLessonTeaser: "Next: the final test — evaluating DEEP SCAN on real signals"
+hints:
+  - level: nudge
+    content: "model.fit() runs the training loop — forward pass, loss, backprop, update"
+  - level: guidance
+    content: "Set epochs (iterations) and validationSplit to track progress"
+  - level: solution
+    content: "await model.fit(x, y, { epochs: 50, batchSize: 32, validationSplit: 0.2 })"
+keywords:
+  - training
+  - epochs
+  - fit
+  - convergence
+---
+
+<Dialogue speaker="Ensign Park">
+Training sequence initiated. Each epoch processes the entire dataset once — forward pass, compute loss, backpropagate, update weights. Repeat until the loss converges.
+</Dialogue>
+
+<LearningObjectives objectives={["Implement the complete training loop with model.fit()", "Configure epochs, batch size, and validation split", "Monitor training progress with callbacks", "Recognize overfitting vs underfitting from the loss curve"]} />
+
+## The Learning Loop
+
+In frontend animation, `requestAnimationFrame` creates a loop that updates state and re-renders until the target is reached. Training is the same pattern: update weights and re-evaluate until the loss is minimized.
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="training-loop.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Prepare the model (from previous lesson)
+const model = tf.sequential();
+model.add(tf.layers.dense({ units: 32, activation: 'relu', inputShape: [3] }));
+model.add(tf.layers.dense({ units: 16, activation: 'relu' }));
+model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
+model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });
+
+// Training data: 100 signal readings with labels
+const trainX = tf.randomNormal([100, 3]);  // 100 samples, 3 features
+const trainY = tf.randomUniform([100, 1]).round();  // binary labels
+
+// THE TRAINING LOOP — model.fit() handles everything
+const history = await model.fit(trainX, trainY, {
+  epochs: 50,             // iterate over dataset 50 times
+  batchSize: 32,          // process 32 samples at a time
+  validationSplit: 0.2,   // hold out 20% for validation
+  callbacks: {
+    onEpochEnd: (epoch, logs) => {
+      if (epoch % 10 === 0) {
+        console.log(\`Epoch \${epoch}: loss=\${logs?.loss.toFixed(4)}, acc=\${logs?.acc.toFixed(4)}\`);
+      }
+    },
+  },
+});
+
+// Epoch 0:  loss=0.6931, acc=0.5125
+// Epoch 10: loss=0.4203, acc=0.7750
+// Epoch 20: loss=0.2115, acc=0.8875
+// Epoch 40: loss=0.0823, acc=0.9625`}
+</CodeBlock>
+
+**Key parameters:**
+- **epochs**: How many times to iterate over the full dataset. More epochs = more learning (up to a point).
+- **batchSize**: How many samples to process before updating weights. 32 is a good default.
+- **validationSplit**: Fraction of data held out to check for overfitting.
+
+## Challenge
+
+Train the DEEP SCAN network and watch the loss decrease.
+
+<Exercise slug="training-loop-exercise" />
+
+<KeyTakeaways takeaways={["model.fit() runs the full training loop: forward → loss → backprop → update", "Epochs = full passes through the dataset, batches = chunks within each epoch", "Validation split catches overfitting — if val_loss increases while loss decreases, you're memorizing", "Callbacks let you monitor progress, like console.log in a rAF loop"]} />

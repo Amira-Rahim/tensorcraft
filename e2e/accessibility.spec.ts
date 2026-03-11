@@ -7,6 +7,13 @@ const pages = [
   { name: "Sign Up", path: "/auth/sign-up" },
   { name: "Terms", path: "/terms" },
   { name: "Privacy", path: "/privacy" },
+  { name: "Themes", path: "/themes" },
+  { name: "Theme Detail", path: "/themes/deep-orbit" },
+  { name: "Module Overview", path: "/themes/deep-orbit/foundations" },
+  {
+    name: "Lesson Viewer",
+    path: "/themes/deep-orbit/foundations/introduction-to-tensors",
+  },
 ];
 
 test.describe("Accessibility audits", () => {

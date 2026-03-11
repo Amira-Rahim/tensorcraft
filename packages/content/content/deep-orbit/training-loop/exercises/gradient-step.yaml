@@ -1,0 +1,9 @@
+slug: gradient-step
+lessonSlug: gradient-descent
+title: "Perform a Gradient Descent Step"
+instructions: "Perform one step of gradient descent. Given a variable weight and a learning rate, compute the gradient of a simple loss (weight squared), then update the weight by subtracting learningRate * gradient."
+starterCode: "const weight = tf.variable(tf.scalar(5.0));\nconst learningRate = 0.1;\n\n// Compute gradient of loss = weight^2\n// Update weight: weight = weight - learningRate * gradient\n// Hint: gradient of weight^2 with respect to weight is 2*weight"
+solutionCode: "const weight = tf.variable(tf.scalar(5.0));\nconst learningRate = 0.1;\n\nconst gradient = weight.mul(2);\nweight.assign(weight.sub(tf.scalar(learningRate).mul(gradient)));"
+testCode: "describe('Gradient Step', () => { it('weight is defined', () => { expect(weight).toBeDefined(); }); it('weight decreased', () => { const val = weight.dataSync()[0]; expect(val).toBeCloseTo(4.0, 4); }); });"
+estimatedMinutes: 10
+difficulty: beginner

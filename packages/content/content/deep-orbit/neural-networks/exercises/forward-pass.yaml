@@ -1,0 +1,9 @@
+slug: forward-pass
+lessonSlug: forward-pass
+title: "Run a Forward Pass"
+instructions: "Create a simple sequential model with one dense layer (3 units, inputShape [2]), then run model.predict() on the provided input tensor. The input is a batch of 2 samples, each with 2 features."
+starterCode: "const input = tf.tensor2d([[1.0, 2.0], [3.0, 4.0]]);\n\n// Create a model and run a forward pass\nconst model = tf.sequential();\n// Add a dense layer here\n\nconst prediction = null; // run predict on input"
+solutionCode: "const input = tf.tensor2d([[1.0, 2.0], [3.0, 4.0]]);\n\nconst model = tf.sequential();\nmodel.add(tf.layers.dense({ units: 3, inputShape: [2] }));\n\nconst prediction = model.predict(input);"
+testCode: "describe('Forward Pass', () => { it('produces prediction', () => { expect(prediction).toBeDefined(); }); it('has correct batch size', () => { expect(prediction.shape[0]).toBe(2); }); it('has correct output units', () => { expect(prediction.shape[1]).toBe(3); }); });"
+estimatedMinutes: 12
+difficulty: intermediate
