@@ -1,0 +1,184 @@
+---
+slug: ci-cd-pipeline
+title: "CI/CD Pipeline"
+moduleId: capstone
+themeId: deep-orbit
+order: 2
+estimatedMinutes: 25
+difficulty: advanced
+context:
+  narrative: "Torres insists on automated testing. 'I am not deploying a signal classifier that was tested by hand. Automate it — every commit, every push, every merge.' Park builds the CI/CD pipeline."
+  speaker: "Chief Torres"
+concept:
+  explanation: "CI/CD for ML systems automates testing and deployment — the same GitHub Actions workflow you use for web apps, extended with model validation steps."
+  bridge:
+    feTitle: "GitHub Actions CI"
+    feCode: "on: push → npm test → npm build → deploy // automated web app pipeline"
+    mlTitle: "ML CI/CD"
+    mlCode: "on: push → test → validate-model → benchmark → deploy // + model checks"
+    tier: identity
+consequence:
+  narrative: "The pipeline passes: unit tests, integration tests, model validation, performance benchmarks — all green. Torres: 'Now I trust it.'"
+  nextLessonTeaser: "Next: monitoring — watching the system in production"
+hints:
+  - level: nudge
+    content: "CI/CD for ML adds model validation and benchmark steps to the standard test→build→deploy flow"
+  - level: guidance
+    content: "Add steps that check model accuracy against a holdout set and benchmark inference speed"
+  - level: solution
+    content: "Add validate-model (accuracy > 90%) and benchmark (inference < 20ms) steps to GitHub Actions"
+keywords:
+  - ci-cd
+  - github-actions
+  - testing
+  - deployment
+  - automation
+---
+
+<Dialogue speaker="Chief Torres">
+Manual testing is how systems fail in production. You will automate everything: unit tests, integration tests, model accuracy checks, performance benchmarks. Every push triggers the full pipeline. If anything fails, it does not ship.
+</Dialogue>
+
+<Dialogue speaker="Ensign Park">
+Same as any web app CI — GitHub Actions, test on push, deploy on merge to main. I just need to add model-specific checks: accuracy thresholds, inference speed benchmarks, memory budget validation.
+</Dialogue>
+
+You've set up GitHub Actions for web apps: lint, test, build, deploy. ML CI/CD extends this with model-specific gates: does the model still meet accuracy thresholds? Is inference fast enough? Does it fit in the memory budget? Same workflow engine, additional validation steps.
+
+<LearningObjectives objectives={["Extend a standard CI/CD pipeline with ML-specific validation steps", "Implement model accuracy gates that block deployment on regression", "Add inference performance benchmarks as CI checks", "Configure automated deployment with rollback on failure"]} />
+
+## ML-Aware CI/CD
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="yaml" title="deploy.yml">
+{`name: DEEP SCAN CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # Standard web app steps
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+
+  validate-model:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+
+      # ML-specific: validate model accuracy
+      - name: Validate model accuracy
+        run: |
+          node scripts/validate-model.js \\
+            --model models/deep-scan-v1.json \\
+            --test-data data/holdout.json \\
+            --min-accuracy 0.90
+
+      # ML-specific: benchmark inference speed
+      - name: Benchmark inference
+        run: |
+          node scripts/benchmark.js \\
+            --model models/deep-scan-v1.json \\
+            --max-inference-ms 20 \\
+            --max-memory-mb 50
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [test, validate-model]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npm run build
+      - uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: \${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist`}
+</CodeBlock>
+
+## Validation Scripts
+
+<CodeBlock language="typescript" title="validate-model.ts">
+{`// Model accuracy gate — blocks deployment if accuracy drops
+
+interface ValidationResult {
+  accuracy: number;
+  passed: boolean;
+  details: { total: number; correct: number; failures: string[] };
+}
+
+async function validateModel(
+  modelPath: string,
+  testDataPath: string,
+  minAccuracy: number
+): Promise<ValidationResult> {
+  const model = await loadModel(modelPath);
+  const testData = await loadTestData(testDataPath);
+
+  let correct = 0;
+  const failures: string[] = [];
+
+  for (const sample of testData) {
+    const prediction = await model.predict(sample.input);
+    if (prediction.label === sample.expectedLabel) {
+      correct++;
+    } else {
+      failures.push(
+        \`Expected \${sample.expectedLabel}, got \${prediction.label}\`
+      );
+    }
+  }
+
+  const accuracy = correct / testData.length;
+  return {
+    accuracy,
+    passed: accuracy >= minAccuracy,
+    details: { total: testData.length, correct, failures: failures.slice(0, 10) },
+  };
+}
+
+// Usage in CI
+const result = await validateModel(
+  'models/deep-scan-v1.json',
+  'data/holdout.json',
+  0.90
+);
+
+console.log(\`Accuracy: \${(result.accuracy * 100).toFixed(1)}%\`);
+console.log(\`Gate: \${result.passed ? 'PASSED ✓' : 'FAILED ✗'}\`);
+
+if (!result.passed) {
+  console.error('Model accuracy below threshold — blocking deployment');
+  process.exit(1);
+}`}
+</CodeBlock>
+
+## Challenge
+
+Write a model validation gate for CI/CD.
+
+<Exercise slug="ci-cd-gate" />
+
+<KeyTakeaways takeaways={["ML CI/CD extends standard web CI with model accuracy gates and performance benchmarks", "Accuracy gates prevent deployment when model quality regresses — same concept as test coverage thresholds", "Benchmark gates ensure inference speed and memory usage stay within budget", "GitHub Actions workflow: test → validate-model → benchmark → deploy, with each stage gating the next"]} />

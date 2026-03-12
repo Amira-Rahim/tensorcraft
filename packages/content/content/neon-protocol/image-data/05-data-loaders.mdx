@@ -1,0 +1,290 @@
+---
+slug: data-loaders
+title: "Data Loaders"
+moduleId: image-data
+themeId: neon-protocol
+order: 5
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "With 16,000 balanced, normalized images ready, Kira faces the final challenge: feeding them to the Protocol Sentinel efficiently. Loading everything at once would crash the browser tab. Ryo introduces batched data loading — the same pattern Kira uses for infinite scroll feeds."
+  speaker: "Ryo"
+concept:
+  explanation: "Data loaders feed training data in efficient batches — just like pagination and infinite scroll load content in chunks instead of dumping everything into the DOM at once."
+  bridge:
+    feTitle: "Pagination and Infinite Scroll"
+    feCode: "fetchPage(offset, limit).then(items => render(items))"
+    mlTitle: "Data Loader"
+    mlCode: "dataLoader.nextBatch(batchSize).then(batch => train(batch))"
+    tier: structural
+consequence:
+  narrative: "The data pipeline is complete. Images flow from disk through augmentation, normalization, and balancing into perfectly sized batches. Ryo watches the training metrics stabilize. 'Clean pipes, clean learning. The Sentinel is ready for its first real training run.'"
+  nextLessonTeaser: "Next module: Convolutional Networks — teaching the Protocol Sentinel to see patterns in your prepared image data."
+hints:
+  - level: nudge
+    content: "Think about how infinite scroll works — you don't load 10,000 posts at once. You load 20 at a time, triggered by scroll position."
+  - level: guidance
+    content: "A DataLoader needs to track its current position in the dataset, yield batches of a fixed size, and shuffle between epochs. Think of each epoch as 'reloading the feed from scratch in a new order.'"
+  - level: solution
+    content: "Implement a DataLoader class with a cursor that advances by batchSize on each nextBatch call. When the cursor exceeds dataset length, reshuffle and reset to 0, incrementing the epoch counter."
+keywords:
+  - data loader
+  - batch processing
+  - pagination
+  - infinite scroll
+  - epoch
+  - shuffling
+---
+
+<Dialogue speaker="Ryo">
+You've built the dataset, augmented it, normalized it, and balanced it. Now comes the engineering challenge: how do you feed 16,000 images to a neural network without blowing up the browser? You already know the answer — you use it every time you build an infinite scroll feed.
+</Dialogue>
+
+No frontend developer would load 16,000 items into the DOM at once. You'd paginate, virtualize, or infinite-scroll — loading small batches as needed. ML data loading follows the identical pattern. A data loader serves training samples in fixed-size batches, shuffling between complete passes through the dataset (called epochs).
+
+<LearningObjectives objectives={[
+  "Understand why batched loading is essential for ML training",
+  "Connect pagination and infinite scroll patterns to ML data loaders",
+  "Implement a data loader with batching, shuffling, and epoch tracking",
+  "Understand the impact of batch size on training behavior"
+]} />
+
+## From Infinite Scroll to Data Loaders
+
+You've built infinite scroll dozens of times. The pattern is always the same: maintain a cursor, fetch a page of items, advance the cursor, and render the new content.
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="scroll-vs-loader.ts">
+{`// Frontend: infinite scroll feed
+class InfiniteScrollFeed {
+  private offset = 0;
+  private readonly pageSize = 20;
+
+  async loadNextPage(): Promise<Post[]> {
+    const posts = await fetchPosts(this.offset, this.pageSize);
+    this.offset += this.pageSize;
+    return posts;
+  }
+
+  reset(): void {
+    this.offset = 0;
+  }
+}
+
+// ML: data loader — same pattern, different domain
+class DataLoader<T> {
+  private cursor = 0;
+  private epoch = 0;
+
+  constructor(
+    private data: T[],
+    private readonly batchSize: number
+  ) {}
+
+  nextBatch(): T[] {
+    if (this.cursor >= this.data.length) {
+      // "Reload the feed" — start a new epoch
+      this.cursor = 0;
+      this.epoch++;
+      this.shuffle();
+    }
+
+    const batch = this.data.slice(
+      this.cursor,
+      this.cursor + this.batchSize
+    );
+    this.cursor += this.batchSize;
+    return batch;
+  }
+
+  private shuffle(): void {
+    for (let i = this.data.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [this.data[i], this.data[j]] = [this.data[j], this.data[i]];
+    }
+  }
+}`}
+</CodeBlock>
+
+The critical difference: in infinite scroll, you show each item once. In ML training, you show the entire dataset multiple times (epochs), shuffling the order each time. This is like refreshing a social media feed — same posts, different order — ensuring the model doesn't learn from the sequence of examples.
+
+## Why Batches Matter
+
+<Dialogue speaker="Ryo">
+Batch size is a tuning dial. Small batches are noisy but learn fast. Large batches are stable but slow. It's exactly like choosing your page size in an API — too small and you're drowning in network requests, too large and the response takes forever to parse.
+</Dialogue>
+
+<CodeBlock language="typescript" title="batch-size-impact.ts">
+{`// Frontend analogy for batch size tradeoffs:
+
+// Batch size 1 (Stochastic):
+// Like loading posts one at a time
+// Fast updates, but jittery scrolling
+// ML: noisy gradients, fast but unstable learning
+
+// Batch size 16,000 (Full dataset):
+// Like loading ALL posts at once
+// Smooth but slow initial load, high memory
+// ML: precise gradients, but very slow updates
+
+// Batch size 32 (Mini-batch - the sweet spot):
+// Like loading a page of 32 items
+// Good balance of speed and smoothness
+// ML: reasonably stable gradients, efficient GPU usage
+
+// Common batch sizes: 16, 32, 64, 128, 256
+// Must be power of 2 for GPU memory alignment`}
+</CodeBlock>
+
+## Building a Production Data Loader
+
+A real data loader needs more than just batching. It needs shuffling, epoch tracking, and the ability to iterate through the entire dataset.
+
+<CodeBlock language="typescript" title="production-data-loader.ts">
+{`interface DataLoaderConfig {
+  batchSize: number;
+  shuffle: boolean;
+  dropLast: boolean;  // Drop incomplete final batch
+}
+
+interface Batch<T> {
+  data: T[];
+  batchIndex: number;
+  epoch: number;
+  isLastBatch: boolean;
+}
+
+class ProductionDataLoader<T> {
+  private indices: number[];
+  private cursor: number = 0;
+  private currentEpoch: number = 0;
+  private readonly totalBatches: number;
+
+  constructor(
+    private dataset: T[],
+    private config: DataLoaderConfig
+  ) {
+    this.indices = Array.from(
+      { length: dataset.length },
+      (_, i) => i
+    );
+    this.totalBatches = config.dropLast
+      ? Math.floor(dataset.length / config.batchSize)
+      : Math.ceil(dataset.length / config.batchSize);
+
+    if (config.shuffle) {
+      this.shuffleIndices();
+    }
+  }
+
+  nextBatch(): Batch<T> | null {
+    const batchIndex = Math.floor(
+      this.cursor / this.config.batchSize
+    );
+
+    if (batchIndex >= this.totalBatches) {
+      return null; // Epoch complete
+    }
+
+    const end = Math.min(
+      this.cursor + this.config.batchSize,
+      this.dataset.length
+    );
+
+    const batchIndices = this.indices.slice(this.cursor, end);
+    const data = batchIndices.map(i => this.dataset[i]);
+    this.cursor += this.config.batchSize;
+
+    return {
+      data,
+      batchIndex,
+      epoch: this.currentEpoch,
+      isLastBatch: batchIndex === this.totalBatches - 1,
+    };
+  }
+
+  startNewEpoch(): void {
+    this.cursor = 0;
+    this.currentEpoch++;
+    if (this.config.shuffle) {
+      this.shuffleIndices();
+    }
+  }
+
+  private shuffleIndices(): void {
+    for (let i = this.indices.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [this.indices[i], this.indices[j]] =
+        [this.indices[j], this.indices[i]];
+    }
+  }
+
+  getEpoch(): number {
+    return this.currentEpoch;
+  }
+
+  getTotalBatches(): number {
+    return this.totalBatches;
+  }
+}`}
+</CodeBlock>
+
+## The Training Loop Connection
+
+Data loaders sit at the heart of the training loop. Each epoch iterates through all batches, and the process repeats for many epochs.
+
+<CodeBlock language="typescript" title="training-loop-sketch.ts">
+{`// The full data pipeline in action
+async function trainModel(
+  dataset: ImageSample[],
+  numEpochs: number
+): Promise<void> {
+  const loader = new ProductionDataLoader(dataset, {
+    batchSize: 32,
+    shuffle: true,
+    dropLast: true,
+  });
+
+  for (let epoch = 0; epoch < numEpochs; epoch++) {
+    let batch = loader.nextBatch();
+
+    while (batch !== null) {
+      // 1. Forward pass with batch data
+      // 2. Calculate loss
+      // 3. Backward pass (compute gradients)
+      // 4. Update weights
+      console.log(
+        "Epoch " + batch.epoch +
+        ", Batch " + batch.batchIndex +
+        "/" + loader.getTotalBatches() +
+        ", Samples: " + batch.data.length
+      );
+      batch = loader.nextBatch();
+    }
+
+    loader.startNewEpoch();
+  }
+}`}
+</CodeBlock>
+
+<Dialogue speaker="Kira">
+So the data loader is basically a paginated API for the model. Each batch is a page, each epoch is a full scroll through the feed, and shuffling prevents the model from learning the order instead of the content.
+</Dialogue>
+
+<Dialogue speaker="Ryo">
+Perfect analogy. And just like you'd never build a production app without pagination, you'd never train a model without a proper data loader.
+</Dialogue>
+
+## Challenge
+
+Build a data loader that efficiently serves batched, shuffled training data to the Protocol Sentinel.
+
+<Exercise slug="batch-loader" />
+
+<KeyTakeaways takeaways={[
+  "Data loaders serve training samples in batches — the ML equivalent of pagination and infinite scroll",
+  "Batch size balances training speed against gradient stability, with 32 and 64 being common defaults",
+  "Shuffling between epochs prevents the model from learning the order of examples rather than their content",
+  "The data loader is the final stage of the pipeline: collect, augment, normalize, balance, then load in batches"
+]} />

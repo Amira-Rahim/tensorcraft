@@ -24,13 +24,17 @@
 
 ### Career Paths & Salaries
 
+> **Note:** Tensorcraft graduates are best positioned for "ML-Enhanced" frontend/fullstack roles. The pure ML engineering roles below typically also require Python fluency and deeper mathematics — Tensorcraft provides the conceptual foundation to pursue them.
+
 | Path | Description | Avg Salary (US) |
 |---|---|---|
-| Generative AI Engineer | Build image, audio, and text generation systems | $155,000 - $210,000 |
-| ML Engineer (Multimodal) | Train and deploy cross-modal models | $150,000 - $200,000 |
-| Creative Technologist | Bridge art and technology in interactive experiences | $120,000 - $170,000 |
-| Computer Vision Engineer (Generative) | Build and optimize image generation pipelines | $145,000 - $195,000 |
+| ML-Enhanced Frontend Engineer | Build generative AI features in the browser (image generation, style transfer, interactive AI art) | $120,000 - $160,000 |
+| Creative Technologist | Bridge art and technology in interactive AI-powered experiences | $120,000 - $170,000 |
 | AI Product Designer | Design user experiences for generative AI products | $130,000 - $180,000 |
+| Generative AI Engineer* | Build image, audio, and text generation systems | $155,000 - $210,000 |
+| ML Engineer (Multimodal)* | Train and deploy cross-modal models | $150,000 - $200,000 |
+
+*\*Requires additional Python fluency and deeper mathematics beyond this course.*
 
 ---
 

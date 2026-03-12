@@ -24,13 +24,17 @@
 
 ### Career Paths & Salaries
 
+> **Note:** Tensorcraft graduates are best positioned for "ML-Enhanced" frontend/fullstack roles. The pure ML engineering roles below typically also require Python fluency and deeper mathematics — Tensorcraft provides the conceptual foundation to pursue them.
+
 | Path | Description | Avg Salary (US) |
 |---|---|---|
-| Computer Vision Engineer | Build detection, segmentation, and tracking systems | $150,000 - $200,000 |
-| ML Engineer (Vision) | Train and deploy image/video models at scale | $145,000 - $195,000 |
-| Robotics Perception Engineer | Vision systems for autonomous machines | $140,000 - $190,000 |
-| AR/VR ML Engineer | Real-time vision for immersive experiences | $145,000 - $195,000 |
-| Medical Imaging ML Engineer | Apply vision models to healthcare diagnostics | $140,000 - $185,000 |
+| ML-Enhanced Frontend Engineer | Build ML-powered visual features in the browser (canvas, WebGL, image processing) | $120,000 - $160,000 |
+| Frontend Engineer (Vision Products) | Frontend for CV-heavy products (annotation tools, dashboards, AR/VR interfaces) | $125,000 - $165,000 |
+| Computer Vision Engineer* | Build detection, segmentation, and tracking systems | $150,000 - $200,000 |
+| ML Engineer (Vision)* | Train and deploy image/video models at scale | $145,000 - $195,000 |
+| AR/VR ML Engineer* | Real-time vision for immersive experiences | $145,000 - $195,000 |
+
+*\*Requires additional Python fluency and deeper mathematics beyond this course.*
 
 ---
 

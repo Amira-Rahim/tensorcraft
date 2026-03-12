@@ -1,0 +1,97 @@
+---
+slug: edge-devices
+title: "Edge Devices"
+moduleId: edge-ai-basics
+themeId: terra-grid
+order: 3
+estimatedMinutes: 20
+difficulty: beginner
+context:
+  narrative: "Cole opens a shipping crate of new gateway devices destined for Site 12."
+  speaker: "Cole Branson"
+concept:
+  explanation: "Edge devices have strict hardware constraints — understanding them is like understanding your device testing matrix for responsive web development."
+  bridge:
+    feTitle: "Device Testing Matrix"
+    feCode: "// Low-end: 2GB RAM, slow CPU\n// Must test on real constraints"
+    mlTitle: "Edge Device Specs"
+    mlCode: "// Gateway: 512MB RAM, ARM Cortex-A53\n// Must profile on real hardware"
+    tier: analogy
+consequence:
+  narrative: "You now understand exactly what hardware your models must run on."
+  nextLessonTeaser: "Next: building your first edge model"
+hints:
+  - level: nudge
+    content: "Think about testing your web app on a low-end Android phone"
+  - level: guidance
+    content: "List the constraints: RAM, CPU architecture, storage, power"
+  - level: solution
+    content: "512MB RAM, ARM quad-core, 4GB storage, 5W power budget"
+keywords:
+  - arm
+  - hardware-constraints
+  - memory
+  - edge-device
+---
+
+<Dialogue speaker="Cole Branson">
+Here's what we're deploying to Site 12. Quad-core ARM Cortex-A53, 512MB RAM, 4GB eMMC storage, powered by a solar panel. It needs to run 24/7 on about 5 watts. Your model has to fit in this.
+</Dialogue>
+
+You test your web applications on low-end devices. You know the pain of a React app that runs beautifully on your M2 MacBook but crawls on a budget Android phone. Edge ML has the same problem, amplified.
+
+<LearningObjectives objectives={["Identify common edge device hardware specifications", "Understand memory, compute, and power constraints", "Map frontend device testing concepts to edge ML deployment", "Calculate whether a model fits within device constraints"]} />
+
+## Know Your Hardware
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+In frontend development, you maintain a device testing matrix — the range of devices your application must support. Edge ML requires the same discipline. You need to know your target hardware intimately.
+
+<CodeBlock language="typescript" title="device-constraints.ts">
+{`interface EdgeDevice {
+  name: string;
+  ramMB: number;
+  cpuCores: number;
+  cpuArch: 'arm64' | 'x86_64';
+  storageMB: number;
+  powerWatts: number;
+}
+
+const terraGateway: EdgeDevice = {
+  name: 'Terra Gateway v3',
+  ramMB: 512,
+  cpuCores: 4,
+  cpuArch: 'arm64',
+  storageMB: 4096,
+  powerWatts: 5
+};
+
+function canDeployModel(
+  device: EdgeDevice,
+  modelSizeMB: number,
+  modelRamMB: number
+): { fits: boolean; reason?: string } {
+  if (modelRamMB > device.ramMB * 0.6) {
+    return { fits: false, reason: \`Model needs \${modelRamMB}MB RAM, device budget is \${Math.floor(device.ramMB * 0.6)}MB (60% of \${device.ramMB}MB)\` };
+  }
+  if (modelSizeMB > device.storageMB * 0.25) {
+    return { fits: false, reason: \`Model is \${modelSizeMB}MB, storage budget is \${Math.floor(device.storageMB * 0.25)}MB\` };
+  }
+  return { fits: true };
+}
+
+// Check: can a 200MB model using 400MB RAM deploy?
+console.log(canDeployModel(terraGateway, 200, 400));
+// { fits: false, reason: "Model needs 400MB RAM, device budget is 307MB..." }`}
+</CodeBlock>
+
+The 60% rule: never allocate more than 60% of device RAM to your model. The OS, sensor drivers, and communication stack need the rest. Sound familiar? It is the same principle as keeping your JavaScript bundle under your performance budget — leave headroom for the browser.
+
+## Challenge
+
+Determine whether given models fit within edge device constraints.
+
+<Exercise slug="device-constraints" />
+
+<KeyTakeaways takeaways={["Edge devices have strict RAM, CPU, storage, and power constraints", "The 60% rule: never use more than 60% of device RAM for your model", "Profiling on real hardware is essential — just like device testing in frontend", "ARM processors have different performance characteristics than x86 desktop CPUs"]} />

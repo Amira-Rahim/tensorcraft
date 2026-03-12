@@ -1,0 +1,153 @@
+---
+slug: over-the-air-updates
+title: "Over-the-Air Updates"
+moduleId: edge-deployment
+themeId: terra-grid
+order: 4
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "A critical model update needs to reach 847 devices. Cole designs an OTA pipeline that mirrors the Service Worker update lifecycle — download in background, verify, swap atomically."
+  speaker: "Cole Branson"
+concept:
+  explanation: "OTA model updates follow the Service Worker lifecycle — install new version in background, verify integrity, activate on next inference cycle, keep the old version as fallback."
+  bridge:
+    feTitle: "Service Worker Update"
+    feCode: "navigator.serviceWorker.register('/sw.js') // install → waiting → active"
+    mlTitle: "OTA Model Update"
+    mlCode: "otaUpdate({ download, verify, stage, activate }) // same lifecycle"
+    tier: structural
+consequence:
+  narrative: "GRID confirms: 847 of 847 devices updated. Zero downtime. Cole exhales."
+  nextLessonTeaser: "Next: keeping models running when connectivity drops"
+hints:
+  - level: nudge
+    content: "Think about how Service Workers update without disrupting the current page"
+  - level: guidance
+    content: "Download new model in background, verify checksum, then swap atomically"
+  - level: solution
+    content: "Stage the new model alongside the old one, run validation inference, then swap the active pointer"
+keywords:
+  - ota-update
+  - service-worker
+  - atomic-swap
+  - rollback
+---
+
+<Dialogue speaker="Cole Branson">
+We have a model update that improves anomaly detection by 4.2%. I need it on 847 devices without taking a single one offline. And if anything goes wrong, it rolls back automatically.
+</Dialogue>
+
+<Dialogue speaker="GRID">
+Deployment to Sector 7 initiated. Estimated completion: 47 minutes. Satellite bandwidth allocated.
+</Dialogue>
+
+You have seen this pattern before. A Service Worker installs a new version in the background while the current version keeps serving requests. When the new version is verified and ready, it activates on the next navigation. Model OTA updates follow the same lifecycle — download, verify, stage, activate — with the same guarantee: zero downtime.
+
+<LearningObjectives objectives={["Map the Service Worker lifecycle (install, waiting, active) to model OTA updates", "Implement atomic model swaps with automatic rollback on failure", "Design bandwidth-efficient update strategies using delta compression", "Build health checks that validate new models before activation"]} />
+
+## The Update Lifecycle
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="ota-lifecycle.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+type UpdateState = 'idle' | 'downloading' | 'verifying' | 'staging' | 'activating' | 'active' | 'failed';
+
+interface OTAManager {
+  currentVersion: string;
+  stagedVersion: string | null;
+  state: UpdateState;
+}
+
+async function performOTAUpdate(
+  manager: OTAManager,
+  updateUrl: string,
+  expectedChecksum: string,
+): Promise<boolean> {
+  // Phase 1: Download (like SW install event)
+  manager.state = 'downloading';
+  const packageData = await fetch(updateUrl).then(r => r.arrayBuffer());
+
+  // Phase 2: Verify integrity (like SRI check)
+  manager.state = 'verifying';
+  const checksum = await computeChecksum(packageData);
+  if (checksum !== expectedChecksum) {
+    manager.state = 'failed';
+    console.error('Checksum mismatch — update rejected');
+    return false;
+  }
+
+  // Phase 3: Stage (like SW waiting state)
+  manager.state = 'staging';
+  await writeToStorage('staged-model', packageData);
+
+  // Phase 4: Validate with test inference
+  const stagedModel = await tf.loadLayersModel('indexeddb://staged-model');
+  const testInput = tf.randomNormal([1, 24]);
+  const testOutput = stagedModel.predict(testInput) as tf.Tensor;
+  const outputValid = testOutput.shape[1] === 3;
+  testInput.dispose();
+  testOutput.dispose();
+  stagedModel.dispose();
+
+  if (!outputValid) {
+    manager.state = 'failed';
+    await deleteFromStorage('staged-model');
+    return false;
+  }
+
+  // Phase 5: Activate (like SW activate event)
+  manager.state = 'activating';
+  await copyStorage('current-model', 'rollback-model');  // backup
+  await copyStorage('staged-model', 'current-model');    // atomic swap
+  manager.state = 'active';
+
+  console.log('OTA update complete — new model active');
+  return true;
+}`}
+</CodeBlock>
+
+## Delta Updates
+
+Sending a full model over a $0.50/MB satellite link is expensive. Delta updates send only what changed — like git sending diffs instead of full snapshots:
+
+<CodeBlock language="typescript" title="delta-update.ts">
+{`interface DeltaUpdate {
+  fromVersion: string;
+  toVersion: string;
+  changedLayers: string[];
+  delta: ArrayBuffer;    // only the changed weights
+  fullSizeMB: number;
+  deltaSizeMB: number;
+}
+
+function applyDelta(currentWeights: ArrayBuffer, delta: DeltaUpdate): ArrayBuffer {
+  // Like applying a git patch — merge changes into existing weights
+  const current = new Float32Array(currentWeights);
+  const patch = new Float32Array(delta.delta);
+
+  // Apply weight updates at specified offsets
+  const result = new Float32Array(current);
+  let offset = 0;
+  for (const layerName of delta.changedLayers) {
+    const layerSize = getLayerSize(layerName);
+    const layerOffset = getLayerOffset(layerName);
+    result.set(patch.slice(offset, offset + layerSize), layerOffset);
+    offset += layerSize;
+  }
+
+  console.log(\`Delta update: \${delta.deltaSizeMB}MB vs \${delta.fullSizeMB}MB full\`);
+  // Typical savings: 60-80% bandwidth reduction
+  return result.buffer;
+}`}
+</CodeBlock>
+
+## Challenge
+
+Implement an OTA model update with integrity verification and rollback.
+
+<Exercise slug="ota-update" />
+
+<KeyTakeaways takeaways={["OTA model updates mirror the Service Worker lifecycle: download, verify, stage, activate", "Atomic swaps with rollback guarantee zero-downtime deployments — never leave a device with no working model", "Delta updates send only changed weights, reducing bandwidth by 60-80% — like git diffs vs full clones", "Always validate with test inference before activation — never trust a model you have not run"]} />

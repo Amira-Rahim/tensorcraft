@@ -1,0 +1,82 @@
+slug: build-unet
+lessonSlug: unet-architecture
+title: "Build U-Net Encoder-Decoder Blocks"
+instructions: "Write two functions: encoderBlock that takes an input size and filter count and returns the output size after conv + pool (halved), and decoderBlock that takes an input size, skip size, and filter count and returns the output size after upsample + concatenate (doubled input, channels = filters)."
+starterCode: |
+  interface BlockOutput {
+    outputSize: number;
+    outputChannels: number;
+  }
+
+  function encoderBlock(inputSize: number, inputChannels: number, filters: number): BlockOutput {
+    // Conv2d (same padding) keeps spatial size, changes channels to filters
+    // MaxPool2d (pool 2) halves the spatial size
+    // Return the output spatial size and channel count
+    return { outputSize: 0, outputChannels: 0 }; // your code here
+  }
+
+  function decoderBlock(inputSize: number, inputChannels: number, skipChannels: number, filters: number): BlockOutput {
+    // Conv2dTranspose (stride 2) doubles spatial size
+    // Concatenate adds skip channels
+    // Conv2d outputs 'filters' channels
+    // Return the output spatial size and channel count
+    return { outputSize: 0, outputChannels: 0 }; // your code here
+  }
+solutionCode: |
+  interface BlockOutput {
+    outputSize: number;
+    outputChannels: number;
+  }
+
+  function encoderBlock(inputSize: number, inputChannels: number, filters: number): BlockOutput {
+    return {
+      outputSize: Math.floor(inputSize / 2),
+      outputChannels: filters,
+    };
+  }
+
+  function decoderBlock(inputSize: number, inputChannels: number, skipChannels: number, filters: number): BlockOutput {
+    return {
+      outputSize: inputSize * 2,
+      outputChannels: filters,
+    };
+  }
+testCode: |
+  describe('encoderBlock', () => {
+    it('halves spatial size', () => {
+      const result = encoderBlock(224, 3, 32);
+      expect(result.outputSize).toBe(112);
+    });
+
+    it('sets channels to filter count', () => {
+      const result = encoderBlock(224, 3, 64);
+      expect(result.outputChannels).toBe(64);
+    });
+
+    it('handles odd sizes', () => {
+      const result = encoderBlock(113, 32, 64);
+      expect(result.outputSize).toBe(56);
+    });
+  });
+
+  describe('decoderBlock', () => {
+    it('doubles spatial size', () => {
+      const result = decoderBlock(14, 256, 128, 128);
+      expect(result.outputSize).toBe(28);
+    });
+
+    it('sets channels to filter count', () => {
+      const result = decoderBlock(14, 256, 128, 128);
+      expect(result.outputChannels).toBe(128);
+    });
+
+    it('works through a full U-Net path', () => {
+      const enc1 = encoderBlock(224, 3, 32);
+      const enc2 = encoderBlock(enc1.outputSize, 32, 64);
+      const enc3 = encoderBlock(enc2.outputSize, 64, 128);
+      const dec3 = decoderBlock(Math.floor(enc3.outputSize / 2), 256, enc3.outputChannels, 128);
+      expect(dec3.outputSize).toBe(enc3.outputSize);
+    });
+  });
+estimatedMinutes: 7
+difficulty: intermediate

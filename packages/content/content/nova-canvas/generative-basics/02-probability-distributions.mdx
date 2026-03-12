@@ -1,0 +1,123 @@
+---
+slug: probability-distributions
+title: "Probability Distributions"
+moduleId: generative-basics
+themeId: nova-canvas
+order: 2
+estimatedMinutes: 25
+difficulty: beginner
+context:
+  narrative: "Yara pulls up the collective's archive of past exhibitions — thousands of color palettes, compositions, and textures. Every generative model needs to understand the shape of its data."
+  speaker: "Yara"
+concept:
+  explanation: "A probability distribution describes how likely each possible value is. Generative models learn these distributions from data and then sample from them."
+  bridge:
+    feTitle: "Random Color Generator"
+    feCode: "const hue = Math.floor(Math.random() * 360)"
+    mlTitle: "Probability Distribution"
+    mlCode: "const sample = tf.randomNormal([1], mean, std)"
+    tier: structural
+consequence:
+  narrative: "Ren realizes that every dataset has a hidden shape — a distribution — and learning that shape is the first step to generating new data."
+  nextLessonTeaser: "Next: how to actually draw samples from these distributions"
+hints:
+  - level: nudge
+    content: "Think about how Math.random() gives uniform distribution — every value equally likely"
+  - level: guidance
+    content: "A normal distribution clusters values around a mean. Use tf.randomNormal()."
+  - level: solution
+    content: "tf.randomNormal([100], 0, 1) creates 100 samples from a standard normal distribution"
+keywords:
+  - probability
+  - distribution
+  - normal
+  - uniform
+  - gaussian
+---
+
+<Dialogue speaker="Yara">
+Before you can create, you need to understand the shape of what already exists. I have catalogued every color palette we have used in the last five years. Look at the pattern — warm tones cluster here, cool tones drift there. That clustering is not random. It is a distribution.
+</Dialogue>
+
+<Dialogue speaker="MUSE">
+Data has a shape. Learn the shape, and you can dream new points within it.
+</Dialogue>
+
+When you write `Math.random()`, you get a uniform distribution — every value between 0 and 1 is equally likely. But real-world data almost never looks like that. Heights cluster around an average. Colors in a sunset concentrate in warm hues. Brushstroke widths follow patterns. Understanding these distributions is the foundation of generation.
+
+<LearningObjectives objectives={["Understand what a probability distribution represents", "Distinguish between uniform and normal distributions", "Create and visualize distributions using TensorFlow.js", "Recognize how frontend random generators map to statistical distributions"]} />
+
+## Distributions Are Everywhere
+
+A probability distribution is a function that tells you how likely each value is. You use them in frontend code constantly — you just may not call them that.
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="distributions.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// UNIFORM: every value equally likely (Math.random)
+const uniform = tf.randomUniform([1000], 0, 360);
+// Histogram: flat — every hue equally represented
+
+// NORMAL (Gaussian): values cluster around a mean
+const normal = tf.randomNormal([1000], 180, 30);
+// Histogram: bell curve — most values near 180, fewer at extremes
+
+// Frontend parallel: weighted random for "natural" color palettes
+function warmHue(): number {
+  // Not uniform! Cluster around warm tones (0-60)
+  // This is a crude normal distribution
+  const sum = Array.from({ length: 6 }, () => Math.random());
+  const avg = sum.reduce((a, b) => a + b) / 6;
+  return avg * 120; // Central limit theorem → approximate normal
+}
+
+// TensorFlow.js makes this precise
+const warmHues = tf.randomNormal([100], 30, 15);
+// Mean=30 (orange), StdDev=15 → most values between 0-60`}
+</CodeBlock>
+
+## Key Distributions for Generative AI
+
+Three distributions appear everywhere in generative modeling:
+
+<CodeBlock language="typescript" title="key-distributions.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// 1. UNIFORM — equal probability across a range
+//    Use: initializing weights, random augmentation
+const uniformSamples = tf.randomUniform([500], -1, 1);
+
+// 2. NORMAL (Gaussian) — bell curve around a mean
+//    Use: latent space inputs, noise injection, weight init
+const normalSamples = tf.randomNormal([500], 0, 1);
+
+// 3. BERNOULLI — binary coin flips (0 or 1)
+//    Use: dropout, binary masks, stochastic decisions
+const bernoulliSamples = tf.randomUniform([500]).greater(0.5).toFloat();
+
+// Visualize: compute simple histogram counts
+async function histogram(tensor: tf.Tensor, bins: number = 10) {
+  const data = await tensor.array() as number[];
+  const min = Math.min(...data);
+  const max = Math.max(...data);
+  const step = (max - min) / bins;
+  const counts = new Array(bins).fill(0);
+  data.forEach(v => {
+    const bin = Math.min(Math.floor((v - min) / step), bins - 1);
+    counts[bin]++;
+  });
+  return counts;
+}`}
+</CodeBlock>
+
+## Why This Matters for Generation
+
+A generative model's entire job is to learn the probability distribution of its training data. Once it has captured that distribution, generating new data means sampling from it. The better the model understands the distribution, the more realistic its output.
+
+## Challenge
+
+<Exercise slug="sample-distribution" />
+
+<KeyTakeaways takeaways={["A probability distribution describes the likelihood of each possible value", "Uniform distributions give equal probability; normal distributions cluster around a mean", "Real data follows complex distributions that generative models must learn", "TensorFlow.js provides tf.randomNormal() and tf.randomUniform() for sampling"]} />

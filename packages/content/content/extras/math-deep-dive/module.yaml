@@ -1,0 +1,89 @@
+slug: math-deep-dive
+title: "Math Deep Dive: The TypeScript of ML"
+themeId: shared
+order: 4
+description: |
+  Optional companion track for each core module. Deeper linear algebra,
+  calculus, and probability — not required to complete the course, but
+  essential for advancing beyond it. Bridge: "Math is like TypeScript — you
+  can ship without it, but it catches bugs in your thinking."
+lessonCount: 6
+prerequisites:
+  - foundations
+  - neural-networks
+  - training-loop
+track: companion
+lessons:
+  - slug: tensors-as-linear-algebra
+    title: "Tensors as Linear Algebra"
+    order: 1
+    estimatedMinutes: 30
+    difficulty: advanced
+    companionTo: foundations
+    bridge: "Vector spaces → coordinate systems in CSS transforms"
+    summary: |
+      Companion to Module 1 (Foundations). Vector spaces, basis vectors,
+      linear independence, rank. Why tensors are more than just arrays —
+      they're elements of vector spaces with transformation rules. Matrix
+      multiplication as composition of linear maps.
+
+  - slug: calculus-of-neurons
+    title: "The Calculus of Neurons"
+    order: 2
+    estimatedMinutes: 35
+    difficulty: advanced
+    companionTo: neural-networks
+    bridge: "Derivatives → rate of change in requestAnimationFrame"
+    summary: |
+      Companion to Module 2 (Neural Networks). Partial derivatives, the chain
+      rule worked through step by step. Why backpropagation is just the chain
+      rule applied recursively. Compute a gradient by hand for a 2-layer network.
+
+  - slug: optimization-landscape
+    title: "The Optimization Landscape"
+    order: 3
+    estimatedMinutes: 30
+    difficulty: advanced
+    companionTo: training-loop
+    bridge: "Loss surface → 3D terrain in a game engine"
+    summary: |
+      Companion to Module 3 (Training Loop). Convexity, saddle points, local
+      minima. Why SGD with momentum works (physical intuition: ball rolling
+      down a hill). Convergence guarantees and when they break down.
+
+  - slug: convolution-as-matrix
+    title: "Convolution as Matrix Multiplication"
+    order: 4
+    estimatedMinutes: 30
+    difficulty: advanced
+    companionTo: signal-processing
+    bridge: "Toeplitz matrix → CSS transform matrix"
+    summary: |
+      Companion to Signal Processing. The Toeplitz matrix representation of
+      convolution. Why convolution in the time domain equals multiplication
+      in the frequency domain (convolution theorem). The math behind FFT.
+
+  - slug: information-theory
+    title: "Information Theory for ML"
+    order: 5
+    estimatedMinutes: 30
+    difficulty: advanced
+    companionTo: neural-networks
+    bridge: "Entropy → gzip compression ratio"
+    summary: |
+      Entropy, cross-entropy, KL divergence. Why cross-entropy loss works
+      (it measures the information gap between predicted and true distributions).
+      Mutual information and feature selection.
+
+  - slug: probability-and-bayes
+    title: "Probability & Bayesian Thinking"
+    order: 6
+    estimatedMinutes: 35
+    difficulty: advanced
+    companionTo: training-loop
+    bridge: "Prior → default state, posterior → state after user interaction"
+    summary: |
+      Bayes' theorem, prior/posterior/likelihood. Why L2 regularization is a
+      Gaussian prior on weights. MAP estimation. Bayesian vs. frequentist
+      interpretation of model uncertainty. Why dropout approximates Bayesian
+      inference.

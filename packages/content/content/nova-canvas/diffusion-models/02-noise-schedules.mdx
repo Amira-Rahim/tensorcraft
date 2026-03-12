@@ -1,0 +1,141 @@
+---
+slug: noise-schedules
+title: "Noise Schedules"
+moduleId: diffusion-models
+themeId: nova-canvas
+order: 2
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Kai frowns at the output. 'The early steps waste time on barely visible changes. The final steps rush through critical detail. We need a better schedule.' Ren nods: 'Like choosing the right easing curve for an animation.'"
+  speaker: "Kai"
+concept:
+  explanation: "A noise schedule controls how much noise is added or removed at each timestep — just like an animation easing curve controls the rate of change over time. Linear is rarely optimal."
+  bridge:
+    feTitle: "Animation easing curves"
+    feCode: "transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);"
+    mlTitle: "Noise schedule (beta schedule)"
+    mlCode: "const betas = cosineSchedule(timesteps);"
+    tier: pattern
+consequence:
+  narrative: "With the cosine schedule, the images are noticeably sharper. Same number of steps, better allocation of the noise budget. Petrov leans in: 'The details in the shadows — those were not there before.'"
+  nextLessonTeaser: "Next: the U-Net — the architecture that actually predicts the noise"
+hints:
+  - level: nudge
+    content: "Think about how ease-in-out animations spend more time accelerating and decelerating"
+  - level: guidance
+    content: "A cosine schedule adds noise slowly at the start and end, faster in the middle — preserving structure longer"
+  - level: solution
+    content: "Compute alpha_bar = cos((t/T + s) / (1 + s) * pi/2)^2 for each timestep t"
+keywords:
+  - noise-schedule
+  - beta-schedule
+  - cosine-schedule
+  - easing
+  - timestep
+---
+
+<Dialogue speaker="Kai">
+The linear schedule is wasteful. Look — the first twenty steps barely change anything, and the last twenty steps blur over fine details. We need the noise equivalent of an easing curve.
+</Dialogue>
+
+<Dialogue speaker="Ren">
+Right. In CSS, `linear` timing looks mechanical. `ease-in-out` feels natural because it allocates more time to acceleration and deceleration. A noise schedule does the same thing — it controls the *rate* of noise addition.
+</Dialogue>
+
+Every animation benefits from the right easing curve. Diffusion models are no different. The noise schedule — also called the beta schedule — determines how much noise to add at each timestep. Get it wrong, and you waste compute on imperceptible changes or rush through the details that matter.
+
+<LearningObjectives objectives={["Understand why linear noise schedules produce suboptimal results", "Implement linear, quadratic, and cosine noise schedules", "Compare schedule shapes and their effect on image quality", "Connect noise schedules to CSS animation easing curves"]} />
+
+## Linear vs Cosine Schedules
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="noise-schedules.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// LINEAR SCHEDULE: constant rate of noise addition
+// Like transition-timing-function: linear — mechanical, unnatural
+function linearSchedule(timesteps: number): number[] {
+  const betaStart = 0.0001;
+  const betaEnd = 0.02;
+  const betas: number[] = [];
+  for (let i = 0; i < timesteps; i++) {
+    betas.push(betaStart + (betaEnd - betaStart) * (i / (timesteps - 1)));
+  }
+  return betas;
+}
+
+// COSINE SCHEDULE: slow start, faster middle, slow end
+// Like transition-timing-function: ease-in-out — preserves structure
+function cosineSchedule(timesteps: number, s = 0.008): number[] {
+  const alphaBar = (t: number) => {
+    const angle = ((t / timesteps + s) / (1 + s)) * (Math.PI / 2);
+    return Math.cos(angle) ** 2;
+  };
+
+  const betas: number[] = [];
+  for (let i = 1; i <= timesteps; i++) {
+    const beta = 1 - alphaBar(i) / alphaBar(i - 1);
+    betas.push(Math.min(beta, 0.999)); // clip for stability
+  }
+  return betas;
+}
+
+// Compare: how much signal remains at each step?
+function cumulativeAlpha(betas: number[]): number[] {
+  const alphas = betas.map(b => 1 - b);
+  const cumAlpha: number[] = [];
+  let product = 1;
+  for (const a of alphas) {
+    product *= a;
+    cumAlpha.push(product);
+  }
+  return cumAlpha;
+}
+
+const linear = cumulativeAlpha(linearSchedule(100));
+const cosine = cumulativeAlpha(cosineSchedule(100));
+
+// At step 50 (halfway):
+console.log('Linear alpha_bar[50]:', linear[50].toFixed(3));  // ~0.05
+console.log('Cosine alpha_bar[50]:', cosine[50].toFixed(3));  // ~0.50
+// Cosine preserves 50% of signal at the midpoint; linear has already destroyed 95%`}
+</CodeBlock>
+
+## Applying the Schedule to Noise
+
+<CodeBlock language="typescript" title="apply-schedule.ts">
+{`// Use cumulative alpha to add noise at any timestep directly
+function addNoiseAtStep(
+  image: tf.Tensor4D,
+  noise: tf.Tensor4D,
+  alphaBar: number
+): tf.Tensor4D {
+  // x_t = sqrt(alpha_bar) * x_0 + sqrt(1 - alpha_bar) * noise
+  const signalCoeff = Math.sqrt(alphaBar);
+  const noiseCoeff = Math.sqrt(1 - alphaBar);
+
+  return tf.add(
+    tf.mul(image, tf.scalar(signalCoeff)),
+    tf.mul(noise, tf.scalar(noiseCoeff))
+  ) as tf.Tensor4D;
+}
+
+// With cosine schedule, step 25 of 100 still looks mostly like the image
+// With linear schedule, step 25 is already mostly noise
+const schedule = cumulativeAlpha(cosineSchedule(100));
+const img = tf.randomUniform([1, 64, 64, 3]) as tf.Tensor4D;
+const noise = tf.randomNormal([1, 64, 64, 3]) as tf.Tensor4D;
+
+const noisy25 = addNoiseAtStep(img, noise, schedule[25]);
+console.log('Signal preserved at step 25:', (schedule[25] * 100).toFixed(1) + '%');`}
+</CodeBlock>
+
+## Challenge
+
+Implement a cosine noise schedule and compute cumulative alpha values.
+
+<Exercise slug="noise-schedule" />
+
+<KeyTakeaways takeaways={["Noise schedules control the rate of noise addition, like CSS easing curves control animation pacing", "Linear schedules destroy signal too quickly — cosine schedules preserve structure longer", "Cumulative alpha (alpha_bar) tells you how much original signal remains at any step", "The right schedule improves image quality without adding compute cost"]} />

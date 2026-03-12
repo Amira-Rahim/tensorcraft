@@ -1,0 +1,115 @@
+---
+slug: quantization
+title: "Quantization"
+moduleId: optimization-edge
+themeId: deep-orbit
+order: 2
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "Torres's first optimization: reduce precision. 'Float32 uses 4 bytes per weight. Float16 uses 2. Int8 uses 1. Do the math — that's a 4x size reduction.'"
+  speaker: "Chief Torres"
+concept:
+  explanation: "Quantization reduces numerical precision for smaller models and faster inference — like image compression where PNG to WebP trades some quality for much smaller file size."
+  bridge:
+    feTitle: "Image Compression"
+    feCode: "// PNG (lossless, 2MB) → WebP (lossy, 200KB) — 10x smaller, ~same visual quality"
+    mlTitle: "Quantization"
+    mlCode: "// Float32 (340MB) → Int8 (85MB) — 4x smaller, ~2% accuracy loss"
+    tier: structural
+consequence:
+  narrative: "Quantization shrinks DEEP SCAN from 340 MB to 85 MB. Accuracy drops only 1.2%. Torres nods — 'That's a good trade.'"
+  nextLessonTeaser: "Next: pruning — removing weights that don't contribute to accuracy"
+hints:
+  - level: nudge
+    content: "Quantization is like choosing JPEG quality — lower precision = smaller size, slight quality loss"
+  - level: guidance
+    content: "Use tf.quantize() or model converter flags to reduce from float32 to float16 or uint8"
+  - level: solution
+    content: "const quantized = tf.quantize(weights, 'uint8'); // 4x smaller"
+keywords:
+  - quantization
+  - float16
+  - int8
+  - compression
+  - precision
+---
+
+<Dialogue speaker="Chief Torres">
+Every weight is a 32-bit float — 4 bytes. Your model has 85 million weights. That is 340 MB just for the numbers. Cut the precision to 8-bit integers and you are at 85 MB. The model is 4x smaller and inference runs on integer hardware — faster on every device.
+</Dialogue>
+
+You've optimized images: PNG (lossless, large) to WebP (lossy, small). The visual quality barely changes but the file size drops 5-10x. Quantization does the same for model weights: reduce from 32-bit floats to 8-bit integers. The accuracy barely changes but the model shrinks 4x.
+
+<LearningObjectives objectives={["Understand quantization as precision reduction: float32 → float16 → int8", "Quantize a model using TensorFlow.js conversion tools", "Measure the accuracy-size tradeoff of different quantization levels", "Choose the right precision for your deployment constraints"]} />
+
+## Precision Reduction
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="quantization.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Float32: full precision (default)
+// 1.2345678 → stored as 4 bytes
+// Model size: 85M params × 4 bytes = 340 MB
+
+// Float16: half precision
+// 1.234 → stored as 2 bytes (some precision lost)
+// Model size: 85M params × 2 bytes = 170 MB
+
+// Int8: integer precision
+// 1 → stored as 1 byte (significant precision lost, but usually OK)
+// Model size: 85M params × 1 byte = 85 MB
+
+// Simulate quantization effect
+function quantizeWeights(weights: Float32Array, bits: 8 | 16): { quantized: number[]; scale: number; zeroPoint: number } {
+  const min = Math.min(...weights);
+  const max = Math.max(...weights);
+  const range = max - min;
+  const levels = (1 << bits) - 1;  // 255 for 8-bit, 65535 for 16-bit
+  const scale = range / levels;
+  const zeroPoint = Math.round(-min / scale);
+
+  const quantized = Array.from(weights).map(w =>
+    Math.round((w - min) / scale)
+  );
+
+  return { quantized, scale, zeroPoint };
+}
+
+// Dequantize back to float
+function dequantize(quantized: number[], scale: number, zeroPoint: number): number[] {
+  return quantized.map(q => (q - zeroPoint) * scale);
+}
+
+// The error between original and quantized weights is small
+// Accuracy typically drops < 2% for int8 quantization`}
+</CodeBlock>
+
+## Saving Quantized Models
+
+<CodeBlock language="typescript" title="save-quantized.ts">
+{`// TensorFlow.js supports quantization during model saving
+// This is the easiest way to quantize in practice
+
+async function saveQuantized(model: tf.LayersModel, path: string) {
+  // Save with uint16 quantization (2 bytes per weight)
+  await model.save(\`file://\${path}\`, {
+    quantizationBytes: 2,  // 1 = uint8, 2 = uint16
+  });
+}
+
+// Size comparison for DEEP SCAN:
+// float32 (no quantization): 340 MB, accuracy: 94.2%
+// float16 (quantizationBytes: 2): 170 MB, accuracy: 94.0% (-0.2%)
+// uint8   (quantizationBytes: 1): 85 MB,  accuracy: 93.0% (-1.2%)`}
+</CodeBlock>
+
+## Challenge
+
+Quantize model weights and measure the precision loss.
+
+<Exercise slug="quantize-weights" />
+
+<KeyTakeaways takeaways={["Quantization reduces precision: float32 (4B) → float16 (2B) → int8 (1B) per weight", "Like image compression: smaller files, barely noticeable quality loss for most use cases", "DEEP SCAN: 340 MB → 85 MB with int8, only 1.2% accuracy drop — a worthwhile trade", "Always measure accuracy after quantization — some models are more sensitive than others"]} />

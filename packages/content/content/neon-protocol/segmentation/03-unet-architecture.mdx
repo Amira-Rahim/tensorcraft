@@ -1,0 +1,126 @@
+---
+slug: unet-architecture
+title: "U-Net Architecture"
+moduleId: segmentation
+themeId: neon-protocol
+order: 3
+estimatedMinutes: 30
+difficulty: intermediate
+context:
+  narrative: "Zara sketches an architecture diagram on the holotable. It looks like a U — layers descend on the left, compress the image into abstract features, then ascend on the right, expanding back to full resolution. 'Content flows down. Detail flows up. The skip connections are the secret.'"
+  speaker: "Zara"
+concept:
+  explanation: "U-Net is an encoder-decoder architecture for dense prediction. The encoder compresses spatial information into features (like a funnel). The decoder expands features back to full resolution. Skip connections bridge corresponding encoder-decoder layers, preserving spatial detail."
+  bridge:
+    feTitle: "Layout flow: content down, styles up"
+    feCode: "// CSS cascade: properties flow down, computed styles resolve up"
+    mlTitle: "U-Net: Encode down, decode up"
+    mlCode: "// Encoder compresses, decoder expands, skip connections preserve detail"
+    tier: structural
+consequence:
+  narrative: "The U-Net trains on District 7 feeds. After 50 epochs, it segments drones from sky with pixel-perfect boundaries. Zara smiles: 'The skip connections preserved the edges. Without them, every drone would be a blurry blob.'"
+  nextLessonTeaser: "Next: mask generation — producing pixel-precise boundaries for each detected object"
+hints:
+  - level: nudge
+    content: "The U-Net has two halves: encoder (downsampling) and decoder (upsampling), connected by skip connections"
+  - level: guidance
+    content: "Use tf.layers.conv2d for encoding, tf.layers.conv2dTranspose for decoding, and tf.layers.concatenate for skip connections"
+  - level: solution
+    content: "Build encoder blocks with conv2d + maxPooling2d, decoder blocks with conv2dTranspose, and concatenate corresponding encoder outputs"
+keywords:
+  - unet
+  - encoder-decoder
+  - skip-connections
+  - upsampling
+  - dense-prediction
+---
+
+<Dialogue speaker="Zara">
+The encoder is the descent — convolutions and pooling that compress a 224-by-224 image down to a tiny 14-by-14 feature map. Rich in meaning, poor in spatial detail. The decoder is the ascent — transposed convolutions that expand back to full resolution. But without skip connections, the decoded output loses fine edges. That is why the U shape matters.
+</Dialogue>
+
+<Dialogue speaker="Kira">
+Skip connections — like the CSS cascade? Properties flow down through the DOM, but computed values reference parent contexts?
+</Dialogue>
+
+The U-Net architecture is the workhorse of segmentation. Think of it like a layout engine: content flows down through nested containers (encoder), and the final rendering flows back up to the viewport (decoder). Skip connections act like CSS inheritance — they carry high-resolution spatial details from early layers directly to later layers, preventing information loss.
+
+<LearningObjectives objectives={["Understand the encoder-decoder structure of U-Net", "Implement skip connections that preserve spatial detail", "Build a simple U-Net in TensorFlow.js", "Connect the architecture to layout flow concepts in frontend development"]} />
+
+## The U Shape
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="unet-architecture.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+function encoderBlock(input: tf.SymbolicTensor, filters: number) {
+  let x = tf.layers.conv2d({
+    filters, kernelSize: 3, padding: 'same', activation: 'relu'
+  }).apply(input) as tf.SymbolicTensor;
+  x = tf.layers.conv2d({
+    filters, kernelSize: 3, padding: 'same', activation: 'relu'
+  }).apply(x) as tf.SymbolicTensor;
+  const pooled = tf.layers.maxPooling2d({
+    poolSize: 2
+  }).apply(x) as tf.SymbolicTensor;
+  return { skip: x, downsampled: pooled };
+}
+
+function decoderBlock(
+  input: tf.SymbolicTensor,
+  skip: tf.SymbolicTensor,
+  filters: number
+) {
+  let x = tf.layers.conv2dTranspose({
+    filters, kernelSize: 2, strides: 2, padding: 'same'
+  }).apply(input) as tf.SymbolicTensor;
+  // Skip connection: concatenate encoder features
+  x = tf.layers.concatenate().apply([x, skip]) as tf.SymbolicTensor;
+  x = tf.layers.conv2d({
+    filters, kernelSize: 3, padding: 'same', activation: 'relu'
+  }).apply(x) as tf.SymbolicTensor;
+  return x;
+}`}
+</CodeBlock>
+
+## Assembling the Network
+
+<CodeBlock language="typescript" title="build-unet.ts">
+{`function buildUNet(inputShape: [number, number, number], numClasses: number) {
+  const input = tf.input({ shape: inputShape });
+
+  // Encoder (descending path)
+  const enc1 = encoderBlock(input, 32);   // 224 -> 112
+  const enc2 = encoderBlock(enc1.downsampled, 64);  // 112 -> 56
+  const enc3 = encoderBlock(enc2.downsampled, 128); // 56  -> 28
+
+  // Bottleneck
+  let bottleneck = tf.layers.conv2d({
+    filters: 256, kernelSize: 3, padding: 'same', activation: 'relu'
+  }).apply(enc3.downsampled) as tf.SymbolicTensor;
+
+  // Decoder (ascending path) with skip connections
+  const dec3 = decoderBlock(bottleneck, enc3.skip, 128); // 14 -> 28
+  const dec2 = decoderBlock(dec3, enc2.skip, 64);        // 28 -> 56
+  const dec1 = decoderBlock(dec2, enc1.skip, 32);        // 56 -> 112... -> 224
+
+  // Final 1x1 convolution: one score per class per pixel
+  const output = tf.layers.conv2d({
+    filters: numClasses, kernelSize: 1, activation: 'softmax'
+  }).apply(dec1) as tf.SymbolicTensor;
+
+  return tf.model({ inputs: input, outputs: output });
+}
+
+const model = buildUNet([224, 224, 3], 6);
+model.summary(); // Output shape: [null, 224, 224, 6]`}
+</CodeBlock>
+
+## Challenge
+
+Build an encoder-decoder block with a skip connection.
+
+<Exercise slug="build-unet" />
+
+<KeyTakeaways takeaways={["U-Net compresses images through an encoder then expands through a decoder back to full resolution", "Skip connections concatenate encoder features with decoder features, preserving spatial detail", "The output has the same spatial dimensions as the input: [H, W, numClasses]", "The architecture mirrors layout flow — content descends through containers, rendering ascends to the viewport"]} />

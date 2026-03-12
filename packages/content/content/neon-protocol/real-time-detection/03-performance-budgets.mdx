@@ -1,0 +1,152 @@
+---
+slug: performance-budgets
+title: "Performance Budgets"
+moduleId: real-time-detection
+themeId: neon-protocol
+order: 3
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "The team fractures. Kira wants pure browser — impossible to shut down. Ryo insists on hybrid — server-side for accuracy. The argument escalates. Lin: 'Build both. Test both. Let the data decide.'"
+  speaker: "Lin"
+concept:
+  explanation: "Performance budgets in ML inference work exactly like Lighthouse performance budgets. You have a time budget per frame. Preprocessing, inference, and postprocessing must all fit within it — or you drop frames."
+  bridge:
+    feTitle: "Lighthouse Performance Budgets"
+    feCode: "// Budget: FCP < 1.8s, LCP < 2.5s, TBT < 200ms"
+    mlTitle: "Inference Performance Budget"
+    mlCode: "// Budget per frame at 30fps: preprocess < 5ms, inference < 20ms, postprocess < 5ms"
+    tier: structural
+consequence:
+  narrative: "Kira profiles Protocol Sentinel. Preprocessing: 3ms. Inference: 28ms. Postprocessing: 4ms. Total: 35ms — over the 33ms budget for 30fps. She needs to shave 2ms somewhere. NEON: 'Welcome to the optimization game. Every millisecond counts.'"
+  nextLessonTeaser: "Next: WebGL acceleration — using the GPU to break through the performance ceiling"
+hints:
+  - level: nudge
+    content: "Break down the total frame time into stages, just like you break down a Lighthouse audit"
+  - level: guidance
+    content: "Use performance.now() to measure each stage: preprocessing, inference, and postprocessing"
+  - level: solution
+    content: "const t0 = performance.now(); preprocess(); const t1 = performance.now(); model.predict(); const t2 = performance.now(); postprocess(); const t3 = performance.now();"
+keywords:
+  - performance-budget
+  - frame-rate
+  - profiling
+  - latency
+  - optimization
+---
+
+<Dialogue speaker="Kira">
+If we depend on servers, Meridian takes down one node and the whole district goes blind.
+</Dialogue>
+
+<Dialogue speaker="Ryo">
+If we go pure browser, we lose 15% accuracy. That 15% is people, Kira. Misidentified people.
+</Dialogue>
+
+<Dialogue speaker="Lin">
+Build both. Test both. Let the data decide. But first — profile what you have. You cannot optimize what you cannot measure.
+</Dialogue>
+
+You have used Lighthouse to audit web performance: First Contentful Paint under 1.8 seconds, Total Blocking Time under 200ms. ML inference has the same discipline. At 30fps, your total budget is 33.3ms per frame. Every stage — preprocessing, inference, postprocessing — eats into that budget.
+
+<LearningObjectives objectives={["Define performance budgets for real-time ML inference", "Profile each stage of the inference pipeline using performance.now()", "Identify bottlenecks through systematic measurement", "Apply frame-skipping and resolution reduction strategies when over budget"]} />
+
+## Setting the Budget
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="performance-budget.ts">
+{`// Frame budget at common target rates
+const BUDGETS = {
+  '60fps': 1000 / 60,  // 16.67ms
+  '30fps': 1000 / 30,  // 33.33ms
+  '24fps': 1000 / 24,  // 41.67ms
+  '15fps': 1000 / 15,  // 66.67ms
+};
+
+interface FrameProfile {
+  preprocess: number;
+  inference: number;
+  postprocess: number;
+  total: number;
+  withinBudget: boolean;
+}
+
+function profileFrame(
+  model: tf.LayersModel,
+  video: HTMLVideoElement,
+  targetFps: number
+): FrameProfile {
+  const budget = 1000 / targetFps;
+
+  const t0 = performance.now();
+
+  // Stage 1: Preprocess
+  const input = tf.tidy(() =>
+    tf.browser.fromPixels(video)
+      .resizeBilinear([224, 224])
+      .expandDims(0)
+      .div(255.0)
+  );
+  const t1 = performance.now();
+
+  // Stage 2: Inference
+  const prediction = model.predict(input) as tf.Tensor;
+  const t2 = performance.now();
+
+  // Stage 3: Postprocess
+  const scores = prediction.dataSync();
+  const classIndex = scores.indexOf(Math.max(...scores));
+  const t3 = performance.now();
+
+  input.dispose();
+  prediction.dispose();
+
+  return {
+    preprocess: t1 - t0,
+    inference: t2 - t1,
+    postprocess: t3 - t2,
+    total: t3 - t0,
+    withinBudget: (t3 - t0) <= budget,
+  };
+}`}
+</CodeBlock>
+
+## Adaptive Frame Strategies
+
+<CodeBlock language="typescript" title="adaptive-inference.ts">
+{`// When over budget: skip frames or reduce resolution
+class AdaptiveInference {
+  private skipCount = 0;
+  private skipRate = 1;    // Process every Nth frame
+  private inputSize = 224; // Can reduce for speed
+  private lastResult: Float32Array | null = null;
+
+  adjustForPerformance(frameTimeMs: number, budget: number) {
+    if (frameTimeMs > budget * 1.2) {
+      // Over budget by 20%+ — skip more frames
+      this.skipRate = Math.min(this.skipRate + 1, 4);
+    } else if (frameTimeMs < budget * 0.7 && this.skipRate > 1) {
+      // Well under budget — process more frames
+      this.skipRate = Math.max(this.skipRate - 1, 1);
+    }
+  }
+
+  shouldProcess(): boolean {
+    this.skipCount++;
+    if (this.skipCount >= this.skipRate) {
+      this.skipCount = 0;
+      return true;
+    }
+    return false; // Reuse lastResult for this frame
+  }
+}`}
+</CodeBlock>
+
+## Challenge
+
+Build a profiler that measures inference pipeline stages and determines if you are within budget.
+
+<Exercise slug="measure-fps" />
+
+<KeyTakeaways takeaways={["At 30fps, your total frame budget is 33.3ms — every stage of the pipeline counts", "Profile with performance.now() to identify exactly where time is spent", "Inference is usually the bottleneck — preprocessing and postprocessing should be under 5ms each", "Adaptive strategies like frame skipping trade detection frequency for consistent responsiveness"]} />

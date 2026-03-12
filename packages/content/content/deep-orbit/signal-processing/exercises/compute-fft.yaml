@@ -1,0 +1,53 @@
+slug: compute-fft
+lessonSlug: fourier-transform
+title: "Compute FFT and Find Dominant Frequency"
+instructions: "Write a function that takes a signal array and sample rate, computes the FFT using tf.spectral.rfft(), and returns the dominant frequency (the frequency with the highest magnitude, excluding the DC component at bin 0)."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function findDominantFrequency(signal: number[], sampleRate: number): number {
+    // 1. Compute FFT with tf.spectral.rfft()
+    // 2. Get magnitudes with tf.abs()
+    // 3. Skip bin 0 (DC) and find the bin with highest magnitude
+    // 4. Convert bin index to frequency: bin * sampleRate / signal.length
+    return null; // your code here
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function findDominantFrequency(signal: number[], sampleRate: number): number {
+    return tf.tidy(() => {
+      const fft = tf.spectral.rfft(tf.tensor1d(signal));
+      const magnitudes = tf.abs(fft).arraySync() as number[];
+      let maxBin = 1;
+      let maxMag = magnitudes[1];
+      for (let i = 2; i < magnitudes.length; i++) {
+        if (magnitudes[i] > maxMag) {
+          maxMag = magnitudes[i];
+          maxBin = i;
+        }
+      }
+      return maxBin * sampleRate / signal.length;
+    });
+  }
+testCode: |
+  describe('findDominantFrequency', () => {
+    it('finds a 5 Hz sine wave', () => {
+      const signal = Array.from({ length: 128 }, (_, i) => Math.sin(2 * Math.PI * 5 * i / 128));
+      const freq = findDominantFrequency(signal, 128);
+      expect(freq).toBe(5);
+    });
+    it('finds the stronger of two frequencies', () => {
+      const signal = Array.from({ length: 128 }, (_, i) =>
+        1.0 * Math.sin(2 * Math.PI * 10 * i / 128) + 0.3 * Math.sin(2 * Math.PI * 20 * i / 128)
+      );
+      const freq = findDominantFrequency(signal, 128);
+      expect(freq).toBe(10);
+    });
+    it('returns a number', () => {
+      const signal = Array.from({ length: 64 }, (_, i) => Math.sin(2 * Math.PI * 3 * i / 64));
+      expect(typeof findDominantFrequency(signal, 64)).toBe('number');
+    });
+  });
+estimatedMinutes: 12
+difficulty: intermediate

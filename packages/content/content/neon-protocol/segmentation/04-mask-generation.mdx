@@ -1,0 +1,119 @@
+---
+slug: mask-generation
+title: "Mask Generation"
+moduleId: segmentation
+themeId: neon-protocol
+order: 4
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "NEON displays a drone silhouette on screen — but the edges are jagged, bleeding into the sky. 'The raw model output is probabilistic,' Zara explains. 'You need to threshold it, smooth it, and extract clean boundaries. Just like refining an SVG mask.'"
+  speaker: "Zara"
+concept:
+  explanation: "Mask generation converts raw model probabilities into clean binary masks with precise boundaries. This involves thresholding soft predictions, morphological operations for cleanup, and contour extraction — paralleling SVG mask and clipPath workflows."
+  bridge:
+    feTitle: "SVG mask and clipPath"
+    feCode: "<mask id='m'><rect fill='white'/><circle fill='black' r='50'/></mask>"
+    mlTitle: "Binary Mask Generation"
+    mlCode: "const mask = prediction.greater(threshold); // binary: 0 or 1"
+    tier: structural
+consequence:
+  narrative: "The jagged edges sharpen into clean silhouettes. Each drone is outlined with sub-pixel precision. Kira overlays the masks on the live feed — perfect cutouts floating over the city grid."
+  nextLessonTeaser: "Next: scene understanding — combining segmentation with spatial reasoning to understand full scenes"
+hints:
+  - level: nudge
+    content: "Use tf.greater() or tf.greaterEqual() to threshold probabilities into binary masks"
+  - level: guidance
+    content: "After thresholding, apply morphological operations (erosion/dilation) to clean up noise"
+  - level: solution
+    content: "const binary = probs.greater(0.5); then use conv2d with specific kernels for erosion/dilation"
+keywords:
+  - mask-generation
+  - thresholding
+  - binary-mask
+  - morphological-operations
+  - svg-mask
+---
+
+<Dialogue speaker="Zara">
+The model gives you probabilities — 0.87 chance this pixel is a drone, 0.12 chance it is sky. You need to turn that into a clean yes-or-no mask. It is the same workflow as building an SVG mask: define the shape, refine the edges, apply it as a cutout.
+</Dialogue>
+
+<Dialogue speaker="Kira">
+So thresholding is like setting fill to black or white in an SVG mask element — anything above the threshold is visible, everything below is hidden?
+</Dialogue>
+
+In SVG, `<mask>` elements use white pixels to reveal and black pixels to hide content. Binary mask generation follows the same logic: pixels above a confidence threshold become 1 (object), pixels below become 0 (background). The threshold is your decision boundary.
+
+<LearningObjectives objectives={["Convert probability maps to binary masks using thresholding", "Apply morphological operations to clean mask boundaries", "Extract contours from binary masks for precise outlines", "Connect the workflow to SVG mask and clipPath techniques"]} />
+
+## From Probabilities to Masks
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="mask-thresholding.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Model outputs per-class probabilities: [H, W, numClasses]
+// Extract the drone class (index 4) probability map
+const classProbabilities = tf.randomUniform([224, 224, 6]);
+const droneProbMap = classProbabilities.slice([0, 0, 4], [-1, -1, 1]).squeeze();
+// droneProbMap shape: [224, 224] — values 0.0 to 1.0
+
+// Threshold: probability > 0.5 becomes 1, else 0
+const THRESHOLD = 0.5;
+const binaryMask = droneProbMap.greater(THRESHOLD).cast('float32');
+console.log(binaryMask.shape); // [224, 224]
+
+// Like an SVG mask:
+// <mask><rect fill="white" where="prob > 0.5" /></mask>
+// White (1) = object present, Black (0) = background`}
+</CodeBlock>
+
+## Cleaning Masks with Morphological Operations
+
+Raw masks often have noise — small holes and stray pixels. Morphological operations clean them up, just like smoothing SVG paths.
+
+<CodeBlock language="typescript" title="mask-cleanup.ts">
+{`// Erosion: shrink the mask to remove small noise
+// Dilation: expand the mask to fill small holes
+// Opening (erode then dilate): removes noise
+// Closing (dilate then erode): fills holes
+
+function morphologicalOp(
+  mask: tf.Tensor2D,
+  kernelSize: number,
+  operation: 'erode' | 'dilate'
+): tf.Tensor2D {
+  // Use a conv2d with an all-ones kernel
+  const kernel = tf.ones([kernelSize, kernelSize, 1, 1]);
+  const expanded = mask.expandDims(0).expandDims(-1) as tf.Tensor4D;
+  const total = kernelSize * kernelSize;
+
+  const convolved = tf.conv2d(expanded, kernel, 1, 'same');
+
+  if (operation === 'erode') {
+    // All neighbors must be 1 — pixel stays only if fully surrounded
+    return convolved.squeeze().greaterEqual(total).cast('float32') as tf.Tensor2D;
+  } else {
+    // Any neighbor is 1 — pixel activates if any neighbor is present
+    return convolved.squeeze().greater(0).cast('float32') as tf.Tensor2D;
+  }
+}
+
+// Clean up: opening removes specks, closing fills gaps
+function cleanMask(mask: tf.Tensor2D): tf.Tensor2D {
+  const eroded = morphologicalOp(mask, 3, 'erode');
+  const opened = morphologicalOp(eroded, 3, 'dilate');
+  const dilated = morphologicalOp(opened, 3, 'dilate');
+  return morphologicalOp(dilated, 3, 'erode');
+}`}
+</CodeBlock>
+
+## Challenge
+
+Build a mask generation pipeline that thresholds probabilities and cleans up the result.
+
+<Exercise slug="generate-mask" />
+
+<KeyTakeaways takeaways={["Thresholding converts probability maps to binary masks — same as SVG mask white/black logic", "Morphological operations (erode/dilate) clean mask boundaries like smoothing SVG paths", "The threshold value controls the sensitivity: lower catches more, higher is more precise", "Clean masks enable pixel-precise cutouts of surveillance targets on the live feed"]} />

@@ -1,0 +1,38 @@
+slug: bag-of-words
+lessonSlug: text-as-data
+title: "Bag of Words"
+instructions: "Implement a textToVector function that takes a string and a vocabulary array, and returns a number array where each element is the count of the corresponding vocabulary word in the input text. Lowercase the input before counting."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  const vocab = ['patient', 'chest', 'pain', 'allergy', 'medication'];
+
+  function textToVector(text: string, vocabulary: string[]): number[] {
+    // 1. Lowercase and split the text into words
+    // 2. For each word in the vocabulary, count occurrences
+    return null; // your code here
+  }
+
+  const vector = textToVector('Patient reports chest pain and chest tightness', vocab);
+  const tensor = tf.tensor(vector);
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  const vocab = ['patient', 'chest', 'pain', 'allergy', 'medication'];
+
+  function textToVector(text: string, vocabulary: string[]): number[] {
+    const words = text.toLowerCase().split(/\s+/);
+    return vocabulary.map(v => words.filter(w => w === v).length);
+  }
+
+  const vector = textToVector('Patient reports chest pain and chest tightness', vocab);
+  const tensor = tf.tensor(vector);
+testCode: |
+  describe('Bag of Words', () => {
+    it('returns an array', () => { expect(Array.isArray(textToVector('test', vocab))).toBe(true); });
+    it('has correct length', () => { expect(textToVector('test', vocab).length).toBe(5); });
+    it('counts correctly', () => { expect(textToVector('Patient reports chest pain and chest tightness', vocab)).toEqual([1, 2, 1, 0, 0]); });
+    it('handles empty text', () => { expect(textToVector('', vocab)).toEqual([0, 0, 0, 0, 0]); });
+  });
+estimatedMinutes: 8
+difficulty: beginner

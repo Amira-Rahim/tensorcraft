@@ -1,0 +1,240 @@
+---
+slug: yolo-architecture
+title: "YOLO Architecture"
+moduleId: object-detection
+themeId: neon-protocol
+order: 5
+estimatedMinutes: 35
+difficulty: intermediate
+context:
+  narrative: "Ryo finally reveals what he knows. 'Meridian uses YOLOv5 on every drone — You Only Look Once. A single neural network pass that outputs all detections at once. No region proposals, no two-stage pipeline. One shot.' Lin leans forward. 'Then we build one that is faster. One that runs in the browser. For the first time, we see the drones before they see us.'"
+  speaker: "Ryo"
+concept:
+  explanation: "YOLO (You Only Look Once) performs object detection in a single forward pass through the network. Instead of scanning regions one at a time, it processes the entire image at once — like single-pass browser rendering versus multi-pass layout recalculation."
+  bridge:
+    feTitle: "Single-Pass Rendering"
+    feCode: "requestAnimationFrame(() => updateAllElements()); // one pass, all updates"
+    mlTitle: "YOLO Single-Shot Detection"
+    mlCode: "const allDetections = model.predict(image); // one pass, all objects"
+    tier: structural
+consequence:
+  narrative: "The resistance's browser-based detector goes live. On Kira's laptop, running in a web worker with WebGL acceleration, it processes drone footage at 24 FPS. NEON watches the feed. 'For the first time, you see them before they see you. Meridian will not expect detection coming from a browser tab.' Lin smiles. 'This changes everything.'"
+  nextLessonTeaser: "Module complete. Next module: tracking objects across frames in real-time"
+hints:
+  - level: nudge
+    content: "YOLO divides the image into a grid and predicts boxes, confidence, and class probabilities at each cell"
+  - level: guidance
+    content: "Each grid cell predicts B bounding boxes, each with 5 values (x, y, w, h, confidence) plus class probabilities"
+  - level: solution
+    content: "Output tensor shape: [gridSize, gridSize, numAnchors * (5 + numClasses)] — decode by reshaping and slicing"
+keywords:
+  - yolo
+  - single-shot-detection
+  - real-time
+  - single-pass-rendering
+  - architecture
+---
+
+<Dialogue speaker="Ryo">
+Traditional detection was two stages. First, propose regions. Then, classify each one. Slow. Accurate, but slow. Then YOLO came along and said: why not do it all at once? One neural network. One forward pass. Every box, every label, every confidence score — all predicted simultaneously. Like the difference between re-rendering your entire component tree in multiple layout passes versus batching everything into a single requestAnimationFrame callback.
+</Dialogue>
+
+<Dialogue speaker="Kira">
+Single-pass rendering. I do that when I batch DOM mutations to avoid layout thrashing.
+</Dialogue>
+
+<Dialogue speaker="Ryo">
+Exactly the same principle. Meridian uses YOLOv5 because speed matters more than marginal accuracy gains when you are tracking targets from a drone moving at 120 km/h. And we are going to run it in the browser.
+</Dialogue>
+
+<Dialogue speaker="Lin">
+If it runs in the browser, there is no server to trace. No API to intercept. Just a web worker and a WebGL context. For the first time, we see the drones before they see us.
+</Dialogue>
+
+YOLO revolutionized object detection by doing everything in a **single forward pass**. No separate region proposal step. No multi-stage pipeline. One network, one pass, all detections. This is the architectural equivalent of batching all DOM updates into a single `requestAnimationFrame` instead of triggering multiple layout recalculations.
+
+<LearningObjectives objectives={["Understand the YOLO single-shot detection architecture and why it is fast", "Decode YOLO output tensors into bounding boxes with class predictions", "Compare single-pass vs multi-pass approaches in both ML and frontend rendering", "Build the detection pipeline: predict, decode, threshold, NMS"]} />
+
+## Two-Stage vs Single-Shot
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="two-stage-vs-yolo.ts">
+{`// Two-stage detection (like Faster R-CNN):
+// Step 1: Propose ~2000 candidate regions
+// Step 2: Classify each region individually
+// Like: reading the DOM 2000 times in a loop (layout thrashing)
+
+// YOLO single-shot detection:
+// Step 1: One forward pass -> all detections at once
+// Like: batching all reads, then all writes, in one rAF callback
+
+// Frontend analogy:
+// BAD (multi-pass):
+// elements.forEach(el => {
+//   const height = el.offsetHeight;    // read -> triggers layout
+//   el.style.transform = "...";        // write -> invalidates layout
+// });
+
+// GOOD (single-pass):
+// const heights = elements.map(el => el.offsetHeight);  // batch reads
+// elements.forEach((el, i) => {
+//   el.style.transform = "...";                          // batch writes
+// });
+
+// YOLO is the "batch everything" approach to detection.
+// One pass through the network. All boxes. All classes. Done.`}
+</CodeBlock>
+
+## YOLO Grid Output
+
+YOLO divides the image into an S x S grid. Each cell predicts B bounding boxes with confidence scores and C class probabilities.
+
+<CodeBlock language="typescript" title="yolo-grid.ts">
+{`// YOLO output structure:
+// Grid: S x S cells (e.g., 7x7 = 49 cells)
+// Per cell: B anchor boxes (e.g., 3 anchors)
+// Per anchor: [tx, ty, tw, th, confidence, ...classProbs]
+//             4 coords + 1 conf + numClasses values
+
+interface YOLOConfig {
+  gridSize: number;     // S: grid divisions (7, 13, 26, 52)
+  numAnchors: number;   // B: anchors per cell
+  numClasses: number;   // C: object categories
+  anchors: Array<[number, number]>; // pre-defined anchor dimensions
+}
+
+const config: YOLOConfig = {
+  gridSize: 13,
+  numAnchors: 3,
+  numClasses: 4, // drone, person, vehicle, camera
+  anchors: [[0.1, 0.15], [0.25, 0.35], [0.5, 0.6]],
+};
+
+// Output tensor shape:
+// [gridSize, gridSize, numAnchors * (5 + numClasses)]
+// [13, 13, 3 * (5 + 4)] = [13, 13, 27]
+// Total predictions: 13 * 13 * 3 = 507 candidate boxes
+
+const outputSize = config.gridSize * config.gridSize * config.numAnchors;
+console.log('Total candidate boxes:', outputSize); // 507`}
+</CodeBlock>
+
+## Decoding YOLO Output
+
+The raw output tensor needs to be decoded into usable bounding boxes. This is like parsing a serialized data structure into usable objects.
+
+<CodeBlock language="typescript" title="decode-yolo.ts">
+{`interface DecodedDetection {
+  box: number[];       // [xmin, ymin, xmax, ymax]
+  confidence: number;
+  classId: number;
+  classScore: number;
+}
+
+function sigmoid(x: number): number {
+  return 1 / (1 + Math.exp(-x));
+}
+
+function decodeYOLOOutput(
+  output: number[][][],  // [gridSize][gridSize][anchorData]
+  config: YOLOConfig
+): DecodedDetection[] {
+  const detections: DecodedDetection[] = [];
+  const valuesPerAnchor = 5 + config.numClasses;
+
+  for (let row = 0; row < config.gridSize; row++) {
+    for (let col = 0; col < config.gridSize; col++) {
+      for (let a = 0; a < config.numAnchors; a++) {
+        const offset = a * valuesPerAnchor;
+        const cell = output[row][col];
+
+        // Decode box coordinates
+        const tx = sigmoid(cell[offset]);
+        const ty = sigmoid(cell[offset + 1]);
+        const tw = cell[offset + 2];
+        const th = cell[offset + 3];
+        const conf = sigmoid(cell[offset + 4]);
+
+        // Convert grid-relative coords to image-relative
+        const cx = (col + tx) / config.gridSize;
+        const cy = (row + ty) / config.gridSize;
+        const w = config.anchors[a][0] * Math.exp(tw);
+        const h = config.anchors[a][1] * Math.exp(th);
+
+        // Decode class probabilities
+        const classScores: number[] = [];
+        for (let c = 0; c < config.numClasses; c++) {
+          classScores.push(sigmoid(cell[offset + 5 + c]));
+        }
+        const classId = classScores.indexOf(Math.max(...classScores));
+        const classScore = classScores[classId];
+
+        // Final confidence = objectness * class probability
+        const finalConf = conf * classScore;
+
+        if (finalConf > 0.25) { // confidence threshold
+          detections.push({
+            box: [cx - w/2, cy - h/2, cx + w/2, cy + h/2],
+            confidence: finalConf,
+            classId,
+            classScore,
+          });
+        }
+      }
+    }
+  }
+
+  return detections;
+}`}
+</CodeBlock>
+
+## The Full Pipeline
+
+Detection is a pipeline: predict, decode, filter, NMS. Each step is a familiar pattern.
+
+<CodeBlock language="typescript" title="detection-pipeline.ts">
+{`// The complete detection pipeline — all concepts from this module combined
+
+function detectObjects(
+  imageData: number[][][],  // preprocessed image tensor
+  config: YOLOConfig
+): DecodedDetection[] {
+  // Step 1: Forward pass (single-shot — one pass, all predictions)
+  // Like requestAnimationFrame: batch everything into one call
+  const rawOutput = model.predict(imageData);
+
+  // Step 2: Decode raw output into bounding boxes
+  // Like JSON.parse() — converting wire format to usable objects
+  const decoded = decodeYOLOOutput(rawOutput, config);
+
+  // Step 3: Confidence threshold (filter low-quality detections)
+  // Like filtering events by relevance
+  const confident = decoded.filter(d => d.confidence > 0.5);
+
+  // Step 4: Non-Max Suppression (remove duplicates)
+  // Like debounce() — keep the best, suppress redundant
+  const final = nms(confident, 0.5);
+
+  return final;
+}
+
+// Performance comparison:
+// Two-stage (Faster R-CNN): ~5 FPS  — too slow for real-time
+// YOLO v5:                  ~30 FPS — real-time on GPU
+// YOLO in browser (WebGL):  ~15 FPS — good enough to see drones first
+// YOLO in browser (WebGPU): ~24 FPS — the resistance's advantage
+
+// The resistance's edge: Meridian never expects detection
+// running from a browser tab. No server. No API. No trace.
+// Just JavaScript, WebGL, and a model small enough to fit
+// in a service worker cache.`}
+</CodeBlock>
+
+## Challenge
+
+Build a YOLO output decoder that converts grid predictions into bounding boxes.
+
+<Exercise slug="yolo-architecture" />
+
+<KeyTakeaways takeaways={["YOLO performs all detection in a single forward pass — like batching DOM updates into one requestAnimationFrame", "The output is a grid tensor: each cell predicts bounding boxes, confidence, and class probabilities simultaneously", "The full pipeline is predict, decode, threshold, NMS — each step maps to a familiar frontend pattern", "Browser-based YOLO runs at 15-24 FPS with WebGL and WebGPU — fast enough for the resistance to see drones first"]} />

@@ -1,0 +1,157 @@
+---
+slug: your-first-generator
+title: "Your First Generator"
+moduleId: generative-basics
+themeId: nova-canvas
+order: 5
+estimatedMinutes: 30
+difficulty: beginner
+context:
+  narrative: "The collective gathers for the first prototype session. Ren builds a simple generator that produces visual patterns — the first brushstroke of the Biennale installation."
+  speaker: "Yara"
+concept:
+  explanation: "A simple generator is a neural network that takes a noise vector and outputs structured data. Training it means teaching it to produce outputs that look like real data."
+  bridge:
+    feTitle: "Procedural Canvas Drawing"
+    feCode: "function draw(params: number[]) { ctx.beginPath(); /* ... */ }"
+    mlTitle: "Generator Network"
+    mlCode: "const output = generator.predict(tf.randomNormal([1, 64]))"
+    tier: structural
+consequence:
+  narrative: "The first generated patterns appear on screen — crude but unmistakably structured. The Biennale installation has its first heartbeat."
+  nextLessonTeaser: "Next module: diving into latent spaces — the hidden dimensions where generation happens"
+hints:
+  - level: nudge
+    content: "A generator is just a function from noise to data — like a procedural drawing function with learned parameters"
+  - level: guidance
+    content: "Build a tf.sequential model with dense layers that maps noise to a 28x28 output"
+  - level: solution
+    content: "const model = tf.sequential(); model.add(tf.layers.dense({inputShape: [64], units: 256, activation: 'relu'})); model.add(tf.layers.dense({units: 784, activation: 'sigmoid'}));"
+keywords:
+  - generator
+  - neural-network
+  - sequential
+  - training
+---
+
+<Dialogue speaker="Yara">
+Enough theory. Let us make something. I want to see patterns on that screen before midnight.
+</Dialogue>
+
+<Dialogue speaker="Kai">
+I have been feeding MUSE examples of geometric patterns all week. Time to see if Ren can build a network that dreams up new ones.
+</Dialogue>
+
+<Dialogue speaker="MUSE">
+A blank canvas and a noise vector. Let us see what emerges.
+</Dialogue>
+
+Everything you have learned so far — distributions, sampling, noise — comes together now. You are going to build a simple generator network: a function that takes random noise and outputs a 28x28 grayscale pattern.
+
+<LearningObjectives objectives={["Build a generator network using TensorFlow.js sequential API", "Train the generator to produce structured visual patterns", "Render generated output to an HTML canvas", "Understand the training loop for a simple generative model"]} />
+
+## Building the Generator
+
+A generator is a neural network that maps a low-dimensional noise vector to a high-dimensional output. Think of it as a procedural drawing function — but instead of hand-coded rules, the rules are *learned*.
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="first-generator.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Frontend: procedural drawing with explicit parameters
+function proceduralDraw(ctx: CanvasRenderingContext2D, params: number[]) {
+  params.forEach((p, i) => {
+    ctx.fillStyle = \`hsl(\${p * 360}, 70%, 50%)\`;
+    ctx.fillRect((i % 7) * 4, Math.floor(i / 7) * 4, 4, 4);
+  });
+}
+
+// ML: generator network with LEARNED parameters
+const generator = tf.sequential();
+generator.add(tf.layers.dense({
+  inputShape: [64],       // 64-dimensional noise input
+  units: 256,
+  activation: 'leakyReLU',
+}));
+generator.add(tf.layers.dense({
+  units: 512,
+  activation: 'leakyReLU',
+}));
+generator.add(tf.layers.dense({
+  units: 784,             // 28 * 28 = 784 pixel output
+  activation: 'sigmoid',  // values between 0 and 1
+}));
+
+// Generate a pattern
+const noise = tf.randomNormal([1, 64]);
+const generated = generator.predict(noise) as tf.Tensor;
+const pattern = generated.reshape([28, 28]);`}
+</CodeBlock>
+
+## Training the Generator
+
+Without training, the generator outputs random-looking noise. Training teaches it to produce patterns that match real data. For this first experiment, we train it to reconstruct simple geometric patterns.
+
+<CodeBlock language="typescript" title="train-generator.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Create simple target patterns: horizontal stripes
+function makeStripePatterns(count: number): tf.Tensor2D {
+  const patterns: number[][] = [];
+  for (let i = 0; i < count; i++) {
+    const row: number[] = [];
+    const freq = 2 + Math.floor(Math.random() * 6);
+    for (let y = 0; y < 28; y++) {
+      for (let x = 0; x < 28; x++) {
+        row.push(Math.sin(y * freq * 0.3) > 0 ? 1 : 0);
+      }
+    }
+    patterns.push(row);
+  }
+  return tf.tensor2d(patterns);
+}
+
+// Simple autoencoder-style training
+const autoEncoder = tf.sequential();
+autoEncoder.add(tf.layers.dense({ inputShape: [784], units: 64, activation: 'relu' }));
+autoEncoder.add(tf.layers.dense({ units: 256, activation: 'relu' }));
+autoEncoder.add(tf.layers.dense({ units: 784, activation: 'sigmoid' }));
+
+autoEncoder.compile({ optimizer: 'adam', loss: 'binaryCrossentropy' });
+
+const targets = makeStripePatterns(200);
+await autoEncoder.fit(targets, targets, {
+  epochs: 50,
+  batchSize: 32,
+  callbacks: { onEpochEnd: (e, logs) => console.log(\`Epoch \${e}: loss=\${logs?.loss.toFixed(4)}\`) }
+});`}
+</CodeBlock>
+
+## Rendering to Canvas
+
+The final step — bringing the generated pattern into the browser where it belongs.
+
+<CodeBlock language="typescript" title="render-pattern.ts">
+{`async function renderPattern(tensor: tf.Tensor, canvas: HTMLCanvasElement) {
+  const data = await tensor.reshape([28, 28]).array() as number[][];
+  const ctx = canvas.getContext('2d')!;
+  const scale = 8; // Scale up for visibility
+  canvas.width = 28 * scale;
+  canvas.height = 28 * scale;
+
+  for (let y = 0; y < 28; y++) {
+    for (let x = 0; x < 28; x++) {
+      const v = Math.floor(data[y][x] * 255);
+      ctx.fillStyle = \`rgb(\${v}, \${v}, \${v})\`;
+      ctx.fillRect(x * scale, y * scale, scale, scale);
+    }
+  }
+}`}
+</CodeBlock>
+
+## Challenge
+
+<Exercise slug="simple-generator" />
+
+<KeyTakeaways takeaways={["A generator is a neural network that maps noise vectors to structured output", "Dense layers with increasing units progressively shape noise into data", "Sigmoid activation constrains output to [0, 1] range for image pixels", "Training teaches the generator what 'real' patterns look like"]} />

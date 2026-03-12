@@ -1,0 +1,166 @@
+---
+slug: adversarial-patches
+title: "Adversarial Patches"
+moduleId: generative-vision
+themeId: neon-protocol
+order: 3
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "Zara's breakthrough: a small visual pattern that, when placed in a camera's field of view, causes Meridian's classifier to misidentify everything in the frame. Lin immediately halts deployment: 'If we teach an AI to create patches that fool cameras, what stops someone from using it to fool medical imaging?'"
+  speaker: "Lin"
+concept:
+  explanation: "Adversarial patches are carefully crafted pixel patterns that exploit a model's learned features to force misclassification. They work like CSS mix-blend-mode — visual interference that changes how the output is interpreted without changing the underlying content."
+  bridge:
+    feTitle: "CSS mix-blend-mode — Visual Interference"
+    feCode: ".overlay { mix-blend-mode: difference; } /* alters visual output without changing source */"
+    mlTitle: "Adversarial Perturbation"
+    mlCode: "const perturbation = computeGradient(model, image, targetClass).mul(epsilon);"
+    tier: intuition
+consequence:
+  narrative: "The patches work — too well. An adversarial sticker the size of a playing card makes Meridian's cameras classify a person as a mailbox. Ryo: 'At Meridian, Director Yates called this dual-use upside. Build it, ship it, let someone else worry about consequences. That thinking is exactly what we are fighting.' The team agrees: patches bound to Meridian's architecture fingerprints only."
+  nextLessonTeaser: "Next: style transfer — applying visual styles across images"
+hints:
+  - level: nudge
+    content: "Adversarial perturbations exploit gradients — the same gradients used in training, but applied to the input instead of the weights"
+  - level: guidance
+    content: "Compute the gradient of the loss with respect to the input image, then nudge the image in the direction that maximizes misclassification"
+  - level: solution
+    content: "const grads = tf.grad(x => model.predict(x).gather(targetClass, 1))(image); const patch = grads.sign().mul(epsilon);"
+keywords:
+  - adversarial-patch
+  - perturbation
+  - gradient-attack
+  - misclassification
+  - robustness
+---
+
+<Dialogue speaker="Zara">
+Look at this. A 32x32 pixel patch. Printed on a sticker. Place it in front of any Meridian camera and the classifier goes haywire — it thinks a person is a mailbox, a car is a tree, a drone is a bird.
+</Dialogue>
+
+<Dialogue speaker="Lin">
+Shut it down. Right now. If we teach an AI to create patches that fool cameras, what stops someone from using the same technique to fool medical imaging or autonomous vehicles? We deploy this responsibly or we do not deploy it at all.
+</Dialogue>
+
+<Dialogue speaker="Ryo">
+Lin is right. We scope the patches to Meridian's specific model signatures. Narrow target. No collateral. The patches are cryptographically bound to their architecture fingerprints — useless against any other system.
+</Dialogue>
+
+Adversarial patches exploit the gap between what a model *learned* and what images *actually mean*. The technique is simple: compute the gradient of the model's loss with respect to the input pixels, then modify those pixels to maximize misclassification. It is `mix-blend-mode: difference` for neural networks — visual interference that changes interpretation without changing content.
+
+<LearningObjectives objectives={["Understand how adversarial perturbations exploit model gradients", "Generate adversarial patches using the Fast Gradient Sign Method (FGSM)", "Constrain perturbations to be imperceptible or targeted", "Appreciate the ethical implications of adversarial attacks"]} />
+
+## Gradient-Based Attacks
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="adversarial-patch.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Fast Gradient Sign Method (FGSM)
+// Same gradients used in training — but applied to the input
+function fgsm(
+  model: tf.LayersModel,
+  image: tf.Tensor4D,
+  targetClass: number,
+  epsilon: number
+): tf.Tensor4D {
+  return tf.tidy(() => {
+    // Compute gradient of loss w.r.t. input image
+    const lossFunc = (input: tf.Tensor) => {
+      const prediction = model.predict(input) as tf.Tensor2D;
+      // Loss: negative log probability of target class
+      return prediction.gather([targetClass], 1).mean().neg();
+    };
+
+    const gradFunc = tf.grad(lossFunc);
+    const gradient = gradFunc(image);
+
+    // Perturbation = sign of gradient * epsilon
+    const perturbation = gradient.sign().mul(epsilon);
+
+    // Apply perturbation to original image
+    const adversarial = image.add(perturbation).clipByValue(0, 1);
+    return adversarial as tf.Tensor4D;
+  });
+}
+
+// Targeted patch: optimize a small region to cause misclassification
+function createPatch(
+  model: tf.LayersModel,
+  patchSize: number,
+  targetClass: number,
+  iterations: number = 100,
+  lr: number = 0.01
+): tf.Tensor4D {
+  // Initialize random patch
+  let patch = tf.variable(tf.randomUniform([1, patchSize, patchSize, 3]));
+
+  const optimizer = tf.train.adam(lr);
+
+  for (let i = 0; i < iterations; i++) {
+    optimizer.minimize(() => {
+      const prediction = model.predict(patch) as tf.Tensor2D;
+      // Minimize negative log probability of target class
+      return prediction.gather([targetClass], 1).mean().neg();
+    });
+
+    // Clamp patch values to valid pixel range
+    patch.assign(patch.clipByValue(0, 1));
+  }
+
+  return patch as unknown as tf.Tensor4D;
+}`}
+</CodeBlock>
+
+## Scoped Patches
+
+<CodeBlock language="typescript" title="scoped-patch.ts">
+{`// Bind patches to a specific model architecture fingerprint
+interface ModelFingerprint {
+  architecture: string;
+  layerCount: number;
+  parameterHash: string;
+}
+
+function fingerprintModel(model: tf.LayersModel): ModelFingerprint {
+  const weights = model.getWeights();
+  const paramSum = weights.reduce((sum, w) => {
+    const vals = w.dataSync();
+    return sum + vals.reduce((a, b) => a + Math.abs(b), 0);
+  }, 0);
+
+  return {
+    architecture: model.name,
+    layerCount: model.layers.length,
+    parameterHash: paramSum.toFixed(6),
+  };
+}
+
+// Only apply patch if model matches target fingerprint
+function applyPatchIfTargeted(
+  patch: tf.Tensor4D,
+  image: tf.Tensor4D,
+  model: tf.LayersModel,
+  targetFingerprint: ModelFingerprint
+): tf.Tensor4D {
+  const currentFingerprint = fingerprintModel(model);
+  if (currentFingerprint.parameterHash !== targetFingerprint.parameterHash) {
+    console.warn('Model does not match target — patch not applied');
+    return image;
+  }
+  // Apply patch to center of image
+  return tf.tidy(() => image.add(patch.resizeBilinear(
+    [image.shape[1], image.shape[2]]
+  )).clipByValue(0, 1) as tf.Tensor4D);
+}`}
+</CodeBlock>
+
+## Challenge
+
+Create an adversarial perturbation using gradient-based methods.
+
+<Exercise slug="create-patch" />
+
+<KeyTakeaways takeaways={["Adversarial patches exploit model gradients — the same math used in training, applied to inputs instead of weights", "FGSM is the simplest attack: perturbation = sign(gradient) * epsilon", "Responsible deployment means scoping attacks to specific targets — no collateral capability", "Understanding adversarial attacks is essential for building robust, trustworthy vision systems"]} />

@@ -3,49 +3,16 @@
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
+import { themes, themeSlugs } from "@tensorcraft/themes";
 
-const THEMES = [
-  {
-    id: "deep-orbit",
-    name: "Deep Orbit",
-    domain: "Time-Series & Signals",
-    hook: "Decode cosmic signals aboard a deep-space vessel",
-    color: "#7B68EE",
-    available: true,
-  },
-  {
-    id: "neon-protocol",
-    name: "Neon Protocol",
-    domain: "Computer Vision",
-    hook: "Hack the neon-lit digital underground",
-    color: "#00D4FF",
-    available: false,
-  },
-  {
-    id: "signal-ward",
-    name: "Signal Ward",
-    domain: "NLP & Text",
-    hook: "Train NLP models for clinical diagnosis",
-    color: "#2ECC71",
-    available: false,
-  },
-  {
-    id: "nova-canvas",
-    name: "Nova Canvas",
-    domain: "Multimodal & Generative",
-    hook: "Create art with generative models",
-    color: "#FF6B6B",
-    available: false,
-  },
-  {
-    id: "terra-grid",
-    name: "Terra Grid",
-    domain: "Edge AI & Production ML",
-    hook: "Predict failures across an industrial grid",
-    color: "#F59E0B",
-    available: false,
-  },
-] as const;
+const THEMES = themeSlugs.map((slug) => ({
+  id: slug,
+  name: themes[slug].displayName,
+  domain: themes[slug].specialization,
+  hook: themes[slug].tagline,
+  color: themes[slug].palette.primary,
+  available: themes[slug].status === "launched",
+}));
 
 const FEATURES = [
   {
@@ -81,7 +48,10 @@ export default function OnboardingPage() {
     if (user) {
       await supabase
         .from("profiles")
-        .update({ onboarding_completed: true })
+        .update({
+          onboarding_completed: true,
+          preferred_theme_id: selectedTheme,
+        })
         .eq("id", user.id);
     }
 

@@ -1,0 +1,118 @@
+---
+slug: sampling
+title: "Sampling"
+moduleId: generative-basics
+themeId: nova-canvas
+order: 3
+estimatedMinutes: 25
+difficulty: beginner
+context:
+  narrative: "Kai demonstrates how his audio synthesizer draws samples from distributions to create evolving soundscapes. Sampling is the act of pulling concrete values from abstract probability."
+  speaker: "Kai"
+concept:
+  explanation: "Sampling is the process of drawing concrete values from a probability distribution. Every generative model produces output by sampling."
+  bridge:
+    feTitle: "Seeded Random"
+    feCode: "function seededRandom(seed: number) { /* deterministic */ }"
+    mlTitle: "Sampling Strategy"
+    mlCode: "const sample = tf.randomNormal([1, 100], 0, 1)"
+    tier: structural
+consequence:
+  narrative: "Ren grasps that generation is not magic — it is structured sampling from learned distributions."
+  nextLessonTeaser: "Next: using noise as the raw material for creation"
+hints:
+  - level: nudge
+    content: "Sampling is just picking values from a distribution — like rolling dice with specific probabilities"
+  - level: guidance
+    content: "Use tf.randomNormal() to sample from a Gaussian, then apply transformations"
+  - level: solution
+    content: "const samples = tf.randomNormal([batchSize, dims]); const transformed = samples.mul(scale).add(shift);"
+keywords:
+  - sampling
+  - random
+  - temperature
+  - stochastic
+---
+
+<Dialogue speaker="Kai">
+Listen to this. Every note in this soundscape was sampled from a probability distribution I designed. High notes are rare — low probability. Bass tones are common — high probability. The distribution is the composition. Sampling is the performance.
+</Dialogue>
+
+<Dialogue speaker="MUSE">
+To sample is to reach into possibility and pull out a single truth.
+</Dialogue>
+
+In frontend development, you call `Math.random()` and get a number. That is sampling from a uniform distribution. But generative AI needs more control — sampling from specific distributions, at specific temperatures, with reproducible seeds.
+
+<LearningObjectives objectives={["Understand sampling as drawing values from distributions", "Implement different sampling strategies in TensorFlow.js", "Control randomness with temperature scaling", "Use seeded randomness for reproducible generation"]} />
+
+## From Distribution to Data Point
+
+Sampling bridges the gap between an abstract distribution and a concrete value. When a generative model runs, its final act is always sampling.
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="sampling-basics.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Basic sampling: draw from standard normal
+const samples = tf.randomNormal([5]);
+console.log(await samples.array());
+// e.g., [-0.42, 1.13, -0.87, 0.21, 0.65]
+
+// Transformed sampling: shift and scale
+const mean = 100;
+const stdDev = 15;
+const iqSamples = tf.randomNormal([1000]).mul(stdDev).add(mean);
+// Now samples cluster around 100 with spread of 15
+
+// Frontend parallel: weighted random selection
+function weightedChoice<T>(items: T[], weights: number[]): T {
+  const total = weights.reduce((a, b) => a + b, 0);
+  let r = Math.random() * total;
+  for (let i = 0; i < items.length; i++) {
+    r -= weights[i];
+    if (r <= 0) return items[i];
+  }
+  return items[items.length - 1];
+}
+// This IS sampling from a categorical distribution`}
+</CodeBlock>
+
+## Temperature: Controlling Creativity
+
+Temperature is a scaling factor that controls how "creative" or "conservative" sampling is. Low temperature concentrates probability on the most likely values. High temperature spreads it out, allowing wilder outputs.
+
+<CodeBlock language="typescript" title="temperature-sampling.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Logits: raw model output (unnormalized scores)
+const logits = tf.tensor1d([2.0, 1.0, 0.5, -1.0]);
+
+function sampleWithTemperature(logits: tf.Tensor1D, temp: number) {
+  // Divide logits by temperature before softmax
+  const scaled = logits.div(temp);
+  const probs = scaled.softmax();
+  return probs;
+}
+
+// Low temperature (0.1): almost deterministic
+// → [0.9999, 0.0001, 0.0000, 0.0000]
+const conservative = sampleWithTemperature(logits, 0.1);
+
+// Temperature 1.0: standard softmax
+// → [0.506, 0.186, 0.113, 0.025]
+const standard = sampleWithTemperature(logits, 1.0);
+
+// High temperature (5.0): nearly uniform
+// → [0.314, 0.268, 0.249, 0.169]
+const creative = sampleWithTemperature(logits, 5.0);`}
+</CodeBlock>
+
+Think of temperature like a thermostat for creativity. Kai uses it in his audio: low temperature for predictable rhythms, high temperature for experimental noise.
+
+## Challenge
+
+<Exercise slug="random-sampling" />
+
+<KeyTakeaways takeaways={["Sampling draws concrete values from abstract probability distributions", "Temperature controls the randomness-creativity tradeoff", "Low temperature produces conservative output; high temperature produces diverse output", "Seeded randomness enables reproducible generation for debugging and testing"]} />

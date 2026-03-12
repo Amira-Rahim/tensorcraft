@@ -1,0 +1,29 @@
+slug: word-tokenize
+lessonSlug: word-tokenization
+title: "Word Tokenize"
+instructions: "Implement a wordTokenize function that splits clinical text into tokens. It should: lowercase the input, preserve hyphenated words (e.g., 'non-insulin'), preserve decimal numbers (e.g., '98.6'), and strip other punctuation. Return an array of token strings."
+starterCode: |
+  function wordTokenize(text: string): string[] {
+    // 1. Lowercase the text
+    // 2. Use a regex to match words (with hyphens) and numbers (with decimals)
+    // 3. Return the matches or empty array
+    return null; // your code here
+  }
+
+  const tokens = wordTokenize('Pt started on non-insulin therapy. Temp 98.6F.');
+solutionCode: |
+  function wordTokenize(text: string): string[] {
+    return text.toLowerCase().match(/[a-z]+(?:-[a-z]+)*|[0-9]+(?:\.[0-9]+)?/g) || [];
+  }
+
+  const tokens = wordTokenize('Pt started on non-insulin therapy. Temp 98.6F.');
+testCode: |
+  describe('Word Tokenize', () => {
+    it('returns an array', () => { expect(Array.isArray(tokens)).toBe(true); });
+    it('lowercases tokens', () => { tokens.forEach(t => { if (/[a-z]/.test(t)) expect(t).toBe(t.toLowerCase()); }); });
+    it('preserves hyphenated words', () => { expect(tokens).toContain('non-insulin'); });
+    it('preserves decimal numbers', () => { expect(tokens).toContain('98.6'); });
+    it('removes punctuation', () => { expect(tokens.some(t => t.includes('.')  && !/^[0-9]/.test(t))).toBe(false); });
+  });
+estimatedMinutes: 7
+difficulty: beginner

@@ -1,0 +1,212 @@
+---
+slug: normalization
+title: "Normalization"
+moduleId: image-data
+themeId: neon-protocol
+order: 3
+estimatedMinutes: 22
+difficulty: intermediate
+context:
+  narrative: "NEON's analysis of the augmented dataset reveals a problem: pixel values range wildly across images — some captured in harsh neon light, others in near darkness. 'The Sentinel cannot learn when inputs scream at different volumes,' NEON warns. Kira must bring every image to a common scale."
+  speaker: "NEON"
+concept:
+  explanation: "Normalization scales pixel values to a consistent range — just like CSS normalize.css creates a consistent baseline across browsers by resetting defaults."
+  bridge:
+    feTitle: "CSS Normalize"
+    feCode: "* { margin: 0; padding: 0; box-sizing: border-box; }"
+    mlTitle: "Pixel Normalization"
+    mlCode: "normalized = (pixel - mean) / std"
+    tier: structural
+consequence:
+  narrative: "With normalized data flowing into the training pipeline, NEON reports stable gradient values for the first time. 'Consistent inputs yield consistent learning,' the AI confirms. The Protocol Sentinel's early training runs no longer spike and crash."
+  nextLessonTeaser: "Next: Class Balance — ensuring every camera type gets fair representation in training."
+hints:
+  - level: nudge
+    content: "Think about why normalize.css exists — different browsers have different default styles. Normalization brings everything to a consistent baseline."
+  - level: guidance
+    content: "Min-max normalization maps values to 0-1 by subtracting the minimum and dividing by the range. Z-score normalization subtracts the mean and divides by standard deviation."
+  - level: solution
+    content: "Implement minMaxNormalize by finding min and max across all pixels, then mapping each pixel to (pixel - min) / (max - min). Handle the edge case where max equals min by returning all zeros."
+keywords:
+  - normalization
+  - pixel scaling
+  - min-max normalization
+  - z-score standardization
+  - feature scaling
+---
+
+<Dialogue speaker="NEON">
+Analysis complete. Your pixel values span from 3 to 251 across the dataset. Some images dominate the learning signal simply because they are brighter. This is equivalent to one CSS module overriding all others because its specificity is unconstrained. We must normalize.
+</Dialogue>
+
+Every frontend developer has experienced the chaos of unstyled HTML across browsers. One browser adds 8px body margin, another adds 16px paragraph spacing, a third applies its own font sizes. CSS normalize.css solves this by establishing a consistent baseline. ML normalization solves the exact same problem for pixel data — bringing every image to a common scale so no single image dominates the learning process.
+
+<LearningObjectives objectives={[
+  "Understand why raw pixel values create training instability",
+  "Connect CSS normalization patterns to pixel normalization techniques",
+  "Implement min-max normalization to scale pixels to the 0-1 range",
+  "Implement z-score standardization for mean-centered data"
+]} />
+
+## The Browser Defaults Problem
+
+Before normalize.css, building cross-browser UIs was unpredictable. Each browser applied its own defaults, so the same HTML rendered differently everywhere.
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="css-vs-ml-normalization.ts">
+{`// Frontend: CSS reset normalizes browser defaults
+// Before: h1 { margin: 0.67em } in Chrome, different in Firefox
+// After:  h1 { margin: 0 } everywhere — consistent baseline
+
+// ML: pixel normalization does the same thing
+// Before: nighttime image pixels [3, 8, 12, 5]
+//         daytime image pixels  [201, 245, 230, 218]
+// The model "hears" daytime images 40x louder
+
+// After normalization: both map to [0, 1] range
+// Night: [0.0, 0.56, 1.0, 0.22]
+// Day:   [0.0, 1.0, 0.66, 0.39]
+// Equal volume — the model can focus on patterns, not brightness`}
+</CodeBlock>
+
+## Why Raw Pixels Break Training
+
+Neural networks learn by adjusting weights based on input values. When one image has pixel values in the range [0, 50] and another spans [200, 255], the brighter image produces much larger gradient updates. This is like having one CSS module with `!important` on every rule — it drowns out everything else.
+
+<Dialogue speaker="Kira">
+So without normalization, the model pays more attention to bright images just because their numbers are bigger? That's like a component with higher CSS specificity getting all the styling priority regardless of relevance.
+</Dialogue>
+
+Exactly. Normalization strips away the "specificity" of raw magnitudes, letting the model focus on actual patterns.
+
+## Min-Max Normalization
+
+The simplest approach: map all values to the [0, 1] range.
+
+<CodeBlock language="typescript" title="min-max-normalize.ts">
+{`type PixelGrid = number[][];
+
+function minMaxNormalize(pixels: PixelGrid): number[][] {
+  // Step 1: Find the global min and max (like finding
+  // the most extreme browser defaults)
+  let min = Infinity;
+  let max = -Infinity;
+
+  for (const row of pixels) {
+    for (const pixel of row) {
+      if (pixel < min) min = pixel;
+      if (pixel > max) max = pixel;
+    }
+  }
+
+  // Step 2: Guard against division by zero
+  // (like handling edge cases in responsive calculations)
+  const range = max - min;
+  if (range === 0) {
+    return pixels.map(row => row.map(() => 0));
+  }
+
+  // Step 3: Scale every pixel to [0, 1]
+  return pixels.map(row =>
+    row.map(pixel => (pixel - min) / range)
+  );
+}`}
+</CodeBlock>
+
+The formula `(value - min) / (max - min)` should feel familiar. It's the same math behind CSS `calc()` percentage calculations and progress bar widths: `width: calc((current - start) / (end - start) * 100%)`.
+
+## Z-Score Standardization
+
+For more advanced models, z-score normalization centers data around zero with unit variance. Each value becomes "how many standard deviations from the mean."
+
+<CodeBlock language="typescript" title="z-score-normalize.ts">
+{`function calculateMean(pixels: PixelGrid): number {
+  let sum = 0;
+  let count = 0;
+  for (const row of pixels) {
+    for (const pixel of row) {
+      sum += pixel;
+      count++;
+    }
+  }
+  return count === 0 ? 0 : sum / count;
+}
+
+function calculateStd(pixels: PixelGrid, mean: number): number {
+  let sumSquaredDiff = 0;
+  let count = 0;
+  for (const row of pixels) {
+    for (const pixel of row) {
+      sumSquaredDiff += (pixel - mean) ** 2;
+      count++;
+    }
+  }
+  return count === 0 ? 0 : Math.sqrt(sumSquaredDiff / count);
+}
+
+function zScoreNormalize(pixels: PixelGrid): number[][] {
+  const mean = calculateMean(pixels);
+  const std = calculateStd(pixels, mean);
+
+  if (std === 0) {
+    return pixels.map(row => row.map(() => 0));
+  }
+
+  return pixels.map(row =>
+    row.map(pixel => (pixel - mean) / std)
+  );
+}`}
+</CodeBlock>
+
+Z-score values can be negative (darker than average) or positive (brighter than average), with most values falling between -3 and 3. Think of it like centering a flexbox container — everything is positioned relative to the center, not the edge.
+
+## Channel-Wise Normalization
+
+Real images have three channels (RGB). Each channel may have different statistical properties — red neon signs create high red values, dark alleys have low blue values. Best practice: normalize each channel independently.
+
+<CodeBlock language="typescript" title="channel-normalize.ts">
+{`interface RGBImage {
+  red: PixelGrid;
+  green: PixelGrid;
+  blue: PixelGrid;
+}
+
+function normalizeRGBImage(image: RGBImage): RGBImage {
+  return {
+    red: minMaxNormalize(image.red),
+    green: minMaxNormalize(image.green),
+    blue: minMaxNormalize(image.blue),
+  };
+}
+
+// Production ML often uses dataset-wide statistics
+// (like a shared CSS variable system across components)
+interface ChannelStats {
+  mean: [number, number, number];
+  std: [number, number, number];
+}
+
+// ImageNet standard values — the "normalize.css" of computer vision
+const IMAGENET_STATS: ChannelStats = {
+  mean: [0.485, 0.456, 0.406],
+  std: [0.229, 0.224, 0.225],
+};`}
+</CodeBlock>
+
+<Dialogue speaker="NEON">
+The ImageNet statistics are to computer vision what normalize.css is to web development — a shared baseline adopted by the entire community. Using them allows pretrained models to process your data without recalibration.
+</Dialogue>
+
+## Challenge
+
+Implement normalization functions that bring Neon City's wildly varied surveillance footage to a consistent scale.
+
+<Exercise slug="normalize-pixels" />
+
+<KeyTakeaways takeaways={[
+  "Normalization creates a consistent baseline for pixel values — the ML equivalent of CSS normalize.css across browsers",
+  "Min-max normalization maps values to [0, 1] using the formula (value - min) / (max - min)",
+  "Z-score standardization centers data around zero using (value - mean) / std",
+  "Channel-wise normalization handles each RGB channel independently for accurate color representation"
+]} />

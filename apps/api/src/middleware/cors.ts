@@ -1,15 +1,20 @@
 import { cors } from "hono/cors";
 
+const DEFAULT_ORIGINS =
+  "http://localhost:3000,https://tensorcraft.dev,https://www.tensorcraft.dev";
+
 /**
  * CORS middleware for the Tensorcraft API.
- * Allows the Next.js frontend to make requests.
+ * Origins are read from CORS_ORIGINS env var (comma-separated).
+ * Falls back to default origins if not set.
  */
+const origins = (process.env.CORS_ORIGINS ?? DEFAULT_ORIGINS)
+  .split(",")
+  .map((o) => o.trim())
+  .filter(Boolean);
+
 export const corsMiddleware = cors({
-  origin: [
-    "http://localhost:3000",
-    "https://tensorcraft.dev",
-    "https://www.tensorcraft.dev",
-  ],
+  origin: origins,
   allowMethods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowHeaders: ["Content-Type", "Authorization"],
   credentials: true,

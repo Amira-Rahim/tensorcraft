@@ -1,0 +1,196 @@
+---
+slug: intersection-over-union
+title: "Intersection over Union (IoU)"
+moduleId: object-detection
+themeId: neon-protocol
+order: 3
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Kira's first detection model is producing boxes, but she has no idea if they are any good. Zara pulls up two overlapping rectangles on the holotable. 'How do you measure whether your predicted box matches the ground truth? The same way you check if two draggable elements overlap.'"
+  speaker: "Zara"
+concept:
+  explanation: "Intersection over Union (IoU) measures how much two boxes overlap. It is the area of their intersection divided by the area of their union. Frontend developers use the same math for drag-and-drop hit testing and collision detection."
+  bridge:
+    feTitle: "Drag-and-Drop Hit Testing"
+    feCode: "const overlap = getOverlapArea(dragRect, dropZone) / getTotalArea(dragRect, dropZone);"
+    mlTitle: "IoU Score"
+    mlCode: "const iou = intersectionArea / unionArea; // 0 = no overlap, 1 = perfect match"
+    tier: structural
+consequence:
+  narrative: "Kira runs her model and computes IoU against the ground truth. Average IoU: 0.72. NEON chirps: 'Meridian demands 0.85 or higher. We need to do better. But at least now we can measure it.'"
+  nextLessonTeaser: "Next: Non-Max Suppression — eliminating duplicate detections when anchors overlap"
+hints:
+  - level: nudge
+    content: "IoU is intersection area divided by union area — same as collision detection overlap ratios"
+  - level: guidance
+    content: "Find the overlap rectangle by taking the max of the left edges and min of the right edges"
+  - level: solution
+    content: "Compute overlap width and height (clamp to 0 if no overlap), then divide intersection area by union area"
+keywords:
+  - iou
+  - intersection-over-union
+  - overlap
+  - collision-detection
+  - hit-testing
+---
+
+<Dialogue speaker="Zara">
+You built drag-and-drop interfaces before, yes? When a user drags a card over a drop zone, how do you know if it "counts" as being inside?
+</Dialogue>
+
+<Dialogue speaker="Kira">
+I check if the rectangles overlap. I calculate the overlap area and compare it to the element sizes. If there is enough overlap, it snaps into place.
+</Dialogue>
+
+<Dialogue speaker="Zara">
+That is exactly IoU — Intersection over Union. The standard metric for evaluating object detection. You already know the algorithm.
+</Dialogue>
+
+When a detection model predicts a bounding box, you need to measure how accurate it is. **Intersection over Union (IoU)** compares a predicted box to the ground truth box by computing their overlap ratio. It is the same math you use for drag-and-drop collision detection.
+
+<LearningObjectives objectives={["Calculate Intersection over Union (IoU) between two bounding boxes", "Understand IoU thresholds and what they mean for detection quality", "Implement rectangle intersection and union area computation", "Connect IoU to frontend collision detection and hit testing patterns"]} />
+
+## The IoU Formula
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+IoU is simple: divide the area where two boxes overlap (intersection) by the total area they cover together (union).
+
+<CodeBlock language="typescript" title="iou-basics.ts">
+{`// Frontend collision detection:
+// "Does this dragged element overlap the drop zone?"
+// You compute the overlap rectangle and check its area.
+
+// IoU: the same thing, but as a ratio from 0 to 1.
+// IoU = Area of Intersection / Area of Union
+// 0.0 = no overlap at all
+// 0.5 = moderate overlap
+// 1.0 = perfect match (boxes are identical)
+
+// Both boxes in [x_min, y_min, x_max, y_max] format
+function computeIoU(boxA: number[], boxB: number[]): number {
+  // Find the intersection rectangle
+  const interLeft = Math.max(boxA[0], boxB[0]);
+  const interTop = Math.max(boxA[1], boxB[1]);
+  const interRight = Math.min(boxA[2], boxB[2]);
+  const interBottom = Math.min(boxA[3], boxB[3]);
+
+  // Clamp to zero if no overlap
+  const interWidth = Math.max(0, interRight - interLeft);
+  const interHeight = Math.max(0, interBottom - interTop);
+  const interArea = interWidth * interHeight;
+
+  // Compute individual areas
+  const areaA = (boxA[2] - boxA[0]) * (boxA[3] - boxA[1]);
+  const areaB = (boxB[2] - boxB[0]) * (boxB[3] - boxB[1]);
+
+  // Union = total area - overlap (avoid double counting)
+  const unionArea = areaA + areaB - interArea;
+
+  if (unionArea === 0) return 0;
+  return interArea / unionArea;
+}
+
+// Example: predicted drone box vs actual drone position
+const predicted = [0.3, 0.2, 0.7, 0.8]; // [xmin, ymin, xmax, ymax]
+const actual    = [0.35, 0.25, 0.75, 0.85];
+
+const iou = computeIoU(predicted, actual);
+console.log(iou.toFixed(3)); // 0.680 — decent but not great`}
+</CodeBlock>
+
+## IoU Thresholds
+
+Different IoU thresholds define what counts as a "correct" detection. This is like setting the sensitivity of a drag-and-drop snap zone.
+
+<CodeBlock language="typescript" title="iou-thresholds.ts">
+{`// In drag-and-drop: you might snap when overlap > 30%
+// In object detection: standard thresholds are stricter
+
+// IoU >= 0.5  -> "correct detection" (COCO standard)
+// IoU >= 0.75 -> "strict match" (COCO strict)
+// IoU < 0.5   -> "missed" or "false positive"
+
+interface Detection {
+  box: number[];    // [xmin, ymin, xmax, ymax]
+  label: string;
+  confidence: number;
+}
+
+interface GroundTruth {
+  box: number[];
+  label: string;
+}
+
+function evaluateDetection(
+  detection: Detection,
+  groundTruth: GroundTruth,
+  threshold: number = 0.5
+): { match: boolean; iou: number } {
+  const iou = computeIoU(detection.box, groundTruth.box);
+  const labelMatch = detection.label === groundTruth.label;
+
+  return {
+    match: iou >= threshold && labelMatch,
+    iou,
+  };
+}
+
+// Meridian uses 0.5 threshold for tracking, 0.75 for identification
+const droneDetection: Detection = {
+  box: [0.3, 0.2, 0.7, 0.8],
+  label: 'meridian-drone',
+  confidence: 0.91,
+};
+
+const truth: GroundTruth = {
+  box: [0.32, 0.22, 0.72, 0.82],
+  label: 'meridian-drone',
+};
+
+const result = evaluateDetection(droneDetection, truth);
+console.log(result);
+// { match: true, iou: 0.82 } — solid detection`}
+</CodeBlock>
+
+## Batch Evaluation
+
+Real evaluation requires checking many detections against many ground truths — like checking multiple draggable items against multiple drop zones.
+
+<CodeBlock language="typescript" title="batch-iou.ts">
+{`// Compute IoU matrix: every detection vs every ground truth
+function computeIoUMatrix(
+  detections: number[][],
+  groundTruths: number[][]
+): number[][] {
+  return detections.map(det =>
+    groundTruths.map(gt => computeIoU(det, gt))
+  );
+}
+
+// Example: 3 detections, 2 ground truth objects
+const dets = [
+  [0.1, 0.1, 0.4, 0.4],   // detection A
+  [0.3, 0.2, 0.7, 0.8],   // detection B
+  [0.5, 0.5, 0.9, 0.9],   // detection C
+];
+
+const gts = [
+  [0.32, 0.22, 0.72, 0.82], // ground truth 1
+  [0.55, 0.55, 0.85, 0.85], // ground truth 2
+];
+
+const matrix = computeIoUMatrix(dets, gts);
+// matrix[i][j] = IoU between detection i and ground truth j
+// Use this to match detections to ground truths (Hungarian algorithm)
+// Just like matching dragged items to the closest valid drop zone`}
+</CodeBlock>
+
+## Challenge
+
+Implement IoU computation between two bounding boxes.
+
+<Exercise slug="intersection-over-union" />
+
+<KeyTakeaways takeaways={["IoU measures bounding box overlap: intersection area divided by union area, producing a 0-1 score", "Standard detection threshold is IoU >= 0.5 (a correct detection), IoU >= 0.75 is a strict match", "The intersection rectangle is found by taking max of left edges and min of right edges — same as collision detection", "IoU is the foundation of all detection evaluation, just as hit testing is the foundation of drag-and-drop"]} />

@@ -202,8 +202,8 @@ Screens for user signup/login and the post-signup orientation flow.
 | # | Requirement | Priority | Description |
 |---|---|---|---|
 | 1 | Auth screen | P0 | Signup/login screen with three methods: GitHub OAuth, Google OAuth, and email magic link. Centered card layout with Tensorcraft branding. Toggle between signup and login modes. |
-| 2 | OAuth providers | P0 | GitHub OAuth (via NextAuth.js v5, PKCE flow) and Google OAuth. Request minimal scopes at signup; `repo` scope requested later if GitHub integration is enabled. |
-| 3 | Email magic link | P0 | Passwordless email login via NextAuth.js email provider. Input field + "Send Magic Link" button. Link expires after 15 minutes. |
+| 2 | OAuth providers | P0 | GitHub OAuth (via Supabase Auth via @supabase/ssr, PKCE flow) and Google OAuth. Request minimal scopes at signup; `repo` scope requested later if GitHub integration is enabled. |
+| 3 | Email magic link | P0 | Passwordless email login via Supabase Auth email provider. Input field + "Send Magic Link" button. Link expires after 15 minutes. |
 | 4 | Onboarding flow | P1 | 3-step post-signup flow: (1) Welcome screen with headline "You Already Think Like an ML Engineer", (2) Theme selection with Deep Orbit pre-highlighted as recommended, (3) Confirmation + "Begin Module 1" CTA. Stepper indicator shows progress. |
 | 5 | Onboarding persistence | P1 | Onboarding completion stored in user profile; completed users skip directly to dashboard on future logins. |
 | 6 | Paywall / upgrade modal | P0 | Modal shown when a free-tier user attempts to access Module 2+. Displays feature comparison, price, and upgrade CTA. Dismissible — user returns to accessible content. |
@@ -293,7 +293,7 @@ Track learning behavior, engagement, and conversion events.
 | Code editor | Monaco Editor (via @monaco-editor/react) | Shared configuration across themes; custom tokenizer for ML-specific keywords |
 | API layer | Next.js Route Handlers + tRPC | Type-safe API contracts between client and server |
 | Database | Supabase (MySQL) via Prisma ORM | Serverless-friendly; row-level security for multi-tenant data |
-| Auth | NextAuth.js v5 | Providers: GitHub OAuth, email magic link, Google OAuth |
+| Auth | Supabase Auth via @supabase/ssr | Providers: GitHub OAuth, email magic link, Google OAuth |
 | Hosting | Vercel | Edge functions for PPP lookup; ISR for lesson content pages |
 
 ### 5.2 Packages (Monorepo)
@@ -580,7 +580,7 @@ The specialization (roughly 40% of each curriculum) goes deeper into the theme's
 
 | Version | Content | Timing | Status |
 |---------|---------|--------|--------|
-| **V0.5** | Deep Orbit — Modules 1–5 (MVP) | Q2 2026 | In development |
+| **V0.5** | Deep Orbit — Modules 1–3 (15 lessons, free tier) | Q2 2026 | In development |
 | **V1.0** | Deep Orbit — Full 11 modules | Q3 2026 | Planned |
 | **V2.0** | Neon Protocol — Full 11 modules | Q4 2026 | Planned |
 | **V3.0** | Signal Ward — Full 11 modules | Q1 2027 | Planned |
@@ -3760,7 +3760,7 @@ All blocking decisions have been resolved. This table documents the final choice
 ### 2a. Auth System
 
 - [ ] Supabase Auth integration:
-  - GitHub OAuth (via NextAuth.js v5, PKCE flow) — request minimal scopes at signup
+  - GitHub OAuth (via Supabase Auth via @supabase/ssr, PKCE flow) — request minimal scopes at signup
   - Google OAuth
   - Email magic link (15-minute expiry)
 - [ ] Sign up / login page (from `prototypes/auth.html`)
@@ -4411,7 +4411,7 @@ All `href="#"` links in prototypes that need real routes:
 
 | Version | Content | Target |
 | --- | --- | --- |
-| V0.5 | Deep Orbit Modules 1–5 (15 lessons, MVP) | Q2 2026 |
+| V0.5 | Deep Orbit Modules 1–3 (15 lessons, free tier) | Q2 2026 |
 | V1.0 | Deep Orbit Modules 1–11 (55 lessons, full) | Q3 2026 |
 | V2.0 | + Neon Protocol (55 lessons) | Q4 2026 |
 | V3.0 | + Signal Ward + Nova Canvas (110 lessons) | Q1–Q2 2027 |

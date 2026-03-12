@@ -1,0 +1,85 @@
+slug: profile-model
+lessonSlug: model-profiling
+title: "Profile a Model"
+instructions: "Write a function that profiles a model by measuring its parameter count, memory size in MB (assuming float32 = 4 bytes per param), and average inference time over N runs."
+starterCode: |
+  interface ModelProfile {
+    parameterCount: number;
+    memorySizeMB: number;
+    avgInferenceMs: number;
+  }
+
+  async function profileModel(
+    model: { countParams: () => number; predict: (x: any) => any },
+    createInput: () => any,
+    runs: number
+  ): Promise<ModelProfile> {
+    // 1. Get parameter count from model.countParams()
+    // 2. Calculate memory: params * 4 bytes, convert to MB
+    // 3. Run inference `runs` times, measure average time
+    return null; // your code here
+  }
+solutionCode: |
+  interface ModelProfile {
+    parameterCount: number;
+    memorySizeMB: number;
+    avgInferenceMs: number;
+  }
+
+  async function profileModel(
+    model: { countParams: () => number; predict: (x: any) => any },
+    createInput: () => any,
+    runs: number
+  ): Promise<ModelProfile> {
+    const parameterCount = model.countParams();
+    const memorySizeMB = (parameterCount * 4) / (1024 * 1024);
+
+    const times: number[] = [];
+    for (let i = 0; i < runs; i++) {
+      const input = createInput();
+      const start = performance.now();
+      model.predict(input);
+      times.push(performance.now() - start);
+    }
+
+    const avgInferenceMs = times.reduce((a, b) => a + b, 0) / times.length;
+
+    return { parameterCount, memorySizeMB, avgInferenceMs };
+  }
+testCode: |
+  describe('profileModel', () => {
+    const mockModel = {
+      countParams: () => 85_000_000,
+      predict: (x: any) => x,
+    };
+    const createInput = () => [1, 2, 3];
+
+    it('returns correct parameter count', async () => {
+      const profile = await profileModel(mockModel, createInput, 5);
+      expect(profile.parameterCount).toBe(85_000_000);
+    });
+
+    it('calculates memory size in MB', async () => {
+      const profile = await profileModel(mockModel, createInput, 5);
+      const expected = (85_000_000 * 4) / (1024 * 1024);
+      expect(profile.memorySizeMB).toBeCloseTo(expected, 1);
+    });
+
+    it('measures average inference time', async () => {
+      const profile = await profileModel(mockModel, createInput, 10);
+      expect(profile.avgInferenceMs).toBeGreaterThanOrEqual(0);
+      expect(typeof profile.avgInferenceMs).toBe('number');
+    });
+
+    it('runs the correct number of iterations', async () => {
+      let count = 0;
+      const countingModel = {
+        countParams: () => 100,
+        predict: () => { count++; },
+      };
+      await profileModel(countingModel, createInput, 7);
+      expect(count).toBe(7);
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

@@ -1,0 +1,133 @@
+---
+slug: sequences-matter
+title: "Sequences Matter"
+moduleId: recurrent-networks
+themeId: deep-orbit
+order: 1
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "The signals show a rhythm — a pattern that spans dozens of time steps. The feedforward network only sees one snapshot at a time. Sato says they need a model with memory."
+  speaker: "Dr. Sato"
+concept:
+  explanation: "In sequences, order matters — just like React list rendering depends on key order to maintain correct state."
+  bridge:
+    feTitle: "React List Keys"
+    feCode: "items.map(item => <Item key={item.id} />)"
+    mlTitle: "Sequence Order"
+    mlCode: "model.predict(tf.tensor2d([t1, t2, t3, t4, t5]))"
+    tier: structural
+consequence:
+  narrative: "Park realizes the feedforward network is blind to temporal patterns. Each reading is processed in isolation — the model has no memory of what came before."
+  nextLessonTeaser: "Next: building a network that remembers — the Simple RNN"
+hints:
+  - level: nudge
+    content: "Think about why shuffling a list of React components breaks the UI — order carries information"
+  - level: guidance
+    content: "Sequence models process inputs in order, maintaining hidden state between steps"
+  - level: solution
+    content: "A sequence [1, 2, 3] carries different meaning than [3, 1, 2] — just like rendering order affects UI state"
+keywords:
+  - sequence
+  - temporal
+  - order
+  - time-series
+---
+
+<Dialogue speaker="Dr. Sato">
+This is not random noise. Something is repeating. The pattern spans dozens of time steps — our feedforward network only sees one snapshot at a time. We need a model with memory.
+</Dialogue>
+
+<Dialogue speaker="Ensign Park">
+Memory? You mean like... state that persists between inputs? That's just a reducer — previous state plus new input produces updated state.
+</Dialogue>
+
+You've seen this problem in React. When you render a list without stable keys, React can't track which items moved, were added, or were removed. Order carries information. The same is true for signals: the sequence [rising, falling, rising] tells a completely different story than [falling, rising, rising], even though they contain the same individual values.
+
+<LearningObjectives objectives={["Understand why order matters in sequential data — shuffling destroys information", "Recognize the limitation of feedforward networks for temporal data", "Prepare sequential input by creating time-step windows from raw signals", "Connect sequence processing to React list rendering and state management"]} />
+
+## Why Feedforward Networks Fail at Sequences
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="feedforward-limitation.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Feedforward network: each input is independent
+// It sees: [0.5, 0.3, 0.7] → classify
+// Then:    [0.8, 0.2, 0.9] → classify (no memory of previous)
+
+// But the signal has TEMPORAL patterns:
+// t=0: [0.5, 0.3, 0.7]  — rising
+// t=1: [0.8, 0.2, 0.9]  — still rising
+// t=2: [0.3, 0.1, 0.4]  — falling
+// t=3: [0.5, 0.3, 0.7]  — rising again ← THE PATTERN REPEATS
+
+// A feedforward network processes each time step in isolation
+// It cannot detect: "the signal rises, falls, then rises again"
+
+// What we need: a model that sees multiple time steps at once
+// Input shape changes from [features] to [timeSteps, features]
+
+// Preparing sequential input: create sliding windows
+function createSequences(data: number[][], windowSize: number): number[][][] {
+  const sequences: number[][][] = [];
+  for (let i = 0; i <= data.length - windowSize; i++) {
+    sequences.push(data.slice(i, i + windowSize));
+  }
+  return sequences;
+}
+
+// Raw signal readings (each row = one time step with 3 features)
+const readings = [
+  [0.5, 0.3, 0.7],
+  [0.8, 0.2, 0.9],
+  [0.3, 0.1, 0.4],
+  [0.5, 0.3, 0.7],
+  [0.9, 0.4, 0.8],
+];
+
+// Create sequences of 3 time steps each
+const sequences = createSequences(readings, 3);
+console.log(sequences.length);  // 3 sequences
+console.log(sequences[0]);
+// [[0.5, 0.3, 0.7], [0.8, 0.2, 0.9], [0.3, 0.1, 0.4]]
+// ^ This IS the pattern: rise-rise-fall`}
+</CodeBlock>
+
+## Sequence Shape: [batch, timeSteps, features]
+
+<CodeBlock language="typescript" title="sequence-tensors.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Feedforward input: [batch, features]
+// Shape: [32, 3] — 32 samples, each with 3 features
+const feedforwardInput = tf.randomNormal([32, 3]);
+
+// Sequential input: [batch, timeSteps, features]
+// Shape: [32, 5, 3] — 32 samples, each a window of 5 time steps, each with 3 features
+const sequentialInput = tf.randomNormal([32, 5, 3]);
+
+// The extra dimension is TIME
+// Think of it like:
+// - Feedforward: a single photo (width × height)
+// - Sequential: a video (frames × width × height)
+
+// Or in React terms:
+// - Feedforward: rendering a single component from props
+// - Sequential: rendering an animation from a keyframe sequence
+
+console.log('Feedforward shape:', feedforwardInput.shape);  // [32, 3]
+console.log('Sequential shape:', sequentialInput.shape);     // [32, 5, 3]
+
+feedforwardInput.dispose();
+sequentialInput.dispose();`}
+</CodeBlock>
+
+## Challenge
+
+Create time-step sequences from raw signal data.
+
+<Exercise slug="create-sequences" />
+
+<KeyTakeaways takeaways={["Order carries information in sequences — shuffling destroys temporal patterns, just like shuffling React list keys breaks UI state", "Feedforward networks process each input independently with no memory of previous inputs", "Sequential input adds a time dimension: shape goes from [batch, features] to [batch, timeSteps, features]", "Sliding windows convert a continuous signal stream into discrete sequences for model input"]} />

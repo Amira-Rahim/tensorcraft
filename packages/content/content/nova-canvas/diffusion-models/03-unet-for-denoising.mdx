@@ -1,0 +1,140 @@
+---
+slug: unet-for-denoising
+title: "U-Net for Denoising"
+moduleId: diffusion-models
+themeId: nova-canvas
+order: 3
+estimatedMinutes: 30
+difficulty: intermediate
+context:
+  narrative: "Ren sketches the architecture on the whiteboard. 'It goes down — encoding — then back up — decoding. With skip connections bridging across.' Yara tilts her head. 'Like an hourglass.' Ren smiles: 'Exactly. A U-shape.'"
+  speaker: "Ren"
+concept:
+  explanation: "The U-Net is an encoder-decoder architecture with skip connections. The encoder compresses the image to understand context; the decoder expands it back to predict noise. Skip connections preserve fine detail — like how a layout component wraps content but passes through children."
+  bridge:
+    feTitle: "Encoder-decoder layout patterns"
+    feCode: "<Layout><Sidebar /><Content>{children}</Content></Layout>"
+    mlTitle: "U-Net architecture"
+    mlCode: "skip = encoder(x); output = decoder(bottleneck, skip);"
+    tier: pattern
+consequence:
+  narrative: "The U-Net predictions are sharp. Skip connections preserve the edges and textures that the bottleneck alone would blur. Petrov examines the output: 'The brushstrokes. It remembers the brushstrokes.'"
+  nextLessonTeaser: "Next: classifier-free guidance — steering generation with text prompts"
+hints:
+  - level: nudge
+    content: "Think of Layout components that wrap content — the outer shell processes context while children pass through"
+  - level: guidance
+    content: "The encoder downsamples (compresses), the decoder upsamples (expands), and skip connections bridge matching resolution levels"
+  - level: solution
+    content: "Build conv blocks that halve spatial dimensions, then transposed conv blocks that double them, concatenating skip tensors at each level"
+keywords:
+  - unet
+  - encoder-decoder
+  - skip-connections
+  - denoising
+  - architecture
+---
+
+<Dialogue speaker="Ren">
+The architecture that predicts noise is called a U-Net. Think of it as an encoder-decoder — like a layout component. The encoder compresses the noisy image to understand the big picture. The decoder expands it back to full resolution to predict the noise at every pixel.
+</Dialogue>
+
+<Dialogue speaker="Yara">
+But if you compress and then expand, don't you lose detail? Like over-compressing a JPEG?
+</Dialogue>
+
+<Dialogue speaker="Ren">
+That is what skip connections solve. They bridge from the encoder to the decoder at each resolution level, carrying the fine details that compression would destroy. Like passing `children` through a layout wrapper.
+</Dialogue>
+
+You build layout components that wrap content but pass children through unchanged. U-Nets do the same thing — the encoder captures context, the decoder generates output, and skip connections carry fine-grained detail across.
+
+<LearningObjectives objectives={["Understand the U-Net encoder-decoder structure and why it suits denoising", "Implement downsampling (encoder) and upsampling (decoder) blocks", "Add skip connections that preserve fine detail across resolution levels", "Connect the architecture to frontend layout patterns with children passthrough"]} />
+
+## The U-Shape
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="unet-architecture.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Encoder block: conv + conv + downsample (halve spatial dims)
+function encoderBlock(
+  input: tf.SymbolicTensor,
+  filters: number
+): [tf.SymbolicTensor, tf.SymbolicTensor] {
+  let x = tf.layers.conv2d({
+    filters, kernelSize: 3, padding: 'same', activation: 'relu'
+  }).apply(input) as tf.SymbolicTensor;
+  x = tf.layers.conv2d({
+    filters, kernelSize: 3, padding: 'same', activation: 'relu'
+  }).apply(x) as tf.SymbolicTensor;
+
+  const skip = x; // preserve detail for the decoder
+  const downsampled = tf.layers.maxPooling2d({
+    poolSize: 2
+  }).apply(x) as tf.SymbolicTensor;
+
+  return [downsampled, skip];
+}
+
+// Decoder block: upsample + concat skip + conv + conv
+function decoderBlock(
+  input: tf.SymbolicTensor,
+  skip: tf.SymbolicTensor,
+  filters: number
+): tf.SymbolicTensor {
+  let x = tf.layers.upSampling2d({
+    size: [2, 2]
+  }).apply(input) as tf.SymbolicTensor;
+
+  // Skip connection: concatenate encoder features (the "children" passthrough)
+  x = tf.layers.concatenate().apply([x, skip]) as tf.SymbolicTensor;
+
+  x = tf.layers.conv2d({
+    filters, kernelSize: 3, padding: 'same', activation: 'relu'
+  }).apply(x) as tf.SymbolicTensor;
+  x = tf.layers.conv2d({
+    filters, kernelSize: 3, padding: 'same', activation: 'relu'
+  }).apply(x) as tf.SymbolicTensor;
+
+  return x;
+}
+
+// Build a simple U-Net
+function buildUNet(inputShape: [number, number, number]): tf.LayersModel {
+  const input = tf.input({ shape: inputShape });
+
+  // Encoder path (going down)
+  const [d1, skip1] = encoderBlock(input, 32);  // 64 -> 32
+  const [d2, skip2] = encoderBlock(d1, 64);     // 32 -> 16
+
+  // Bottleneck
+  let bottleneck = tf.layers.conv2d({
+    filters: 128, kernelSize: 3, padding: 'same', activation: 'relu'
+  }).apply(d2) as tf.SymbolicTensor;
+
+  // Decoder path (going up)
+  const u1 = decoderBlock(bottleneck, skip2, 64);  // 16 -> 32
+  const u2 = decoderBlock(u1, skip1, 32);           // 32 -> 64
+
+  // Output: predict the noise (same shape as input)
+  const output = tf.layers.conv2d({
+    filters: inputShape[2], kernelSize: 1, padding: 'same'
+  }).apply(u2) as tf.SymbolicTensor;
+
+  return tf.model({ inputs: input, outputs: output });
+}
+
+const unet = buildUNet([64, 64, 3]);
+unet.summary();
+// Total params: ~300K — small enough for browser inference`}
+</CodeBlock>
+
+## Challenge
+
+Build encoder and decoder blocks with skip connections.
+
+<Exercise slug="build-unet" />
+
+<KeyTakeaways takeaways={["U-Net is an encoder-decoder with skip connections — like a layout component that passes children through", "The encoder compresses spatial dimensions to capture context; the decoder expands back to full resolution", "Skip connections carry fine-grained detail from encoder to decoder at matching resolution levels", "The output has the same shape as the input — the model predicts the noise to subtract"]} />

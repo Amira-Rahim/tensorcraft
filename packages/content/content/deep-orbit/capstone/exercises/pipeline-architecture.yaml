@@ -1,0 +1,109 @@
+slug: pipeline-architecture
+lessonSlug: system-architecture
+title: "Build a Typed Pipeline"
+instructions: "Build a Pipeline class that chains typed stages together. Each stage has a name, a process function, and a validate function. The pipeline runs stages in order, passing output of one as input to the next. If validation fails, throw an error with the stage name."
+starterCode: |
+  interface PipelineStage<TIn, TOut> {
+    name: string;
+    process: (input: TIn) => TOut;
+    validate: (input: TIn) => boolean;
+  }
+
+  class Pipeline {
+    private stages: PipelineStage<any, any>[] = [];
+
+    addStage(stage: PipelineStage<any, any>): Pipeline {
+      // Add stage to the pipeline
+      return null; // your code here
+    }
+
+    run(input: any): any {
+      // Run all stages in order
+      // Validate input before each stage
+      // Throw Error(`Validation failed at: ${stage.name}`) on failure
+      return null; // your code here
+    }
+  }
+solutionCode: |
+  interface PipelineStage<TIn, TOut> {
+    name: string;
+    process: (input: TIn) => TOut;
+    validate: (input: TIn) => boolean;
+  }
+
+  class Pipeline {
+    private stages: PipelineStage<any, any>[] = [];
+
+    addStage(stage: PipelineStage<any, any>): Pipeline {
+      this.stages.push(stage);
+      return this;
+    }
+
+    run(input: any): any {
+      let data = input;
+      for (const stage of this.stages) {
+        if (!stage.validate(data)) {
+          throw new Error(`Validation failed at: ${stage.name}`);
+        }
+        data = stage.process(data);
+      }
+      return data;
+    }
+  }
+testCode: |
+  describe('Pipeline', () => {
+    it('chains stages together', () => {
+      const pipeline = new Pipeline()
+        .addStage({
+          name: 'double',
+          process: (n: number) => n * 2,
+          validate: (n: number) => typeof n === 'number',
+        })
+        .addStage({
+          name: 'toString',
+          process: (n: number) => String(n),
+          validate: (n: number) => n > 0,
+        });
+
+      expect(pipeline.run(5)).toBe('10');
+    });
+
+    it('throws on validation failure', () => {
+      const pipeline = new Pipeline()
+        .addStage({
+          name: 'positive-only',
+          process: (n: number) => n,
+          validate: (n: number) => n > 0,
+        });
+
+      expect(() => pipeline.run(-1)).toThrow('Validation failed at: positive-only');
+    });
+
+    it('passes output of one stage as input to next', () => {
+      const pipeline = new Pipeline()
+        .addStage({
+          name: 'add1',
+          process: (n: number) => n + 1,
+          validate: () => true,
+        })
+        .addStage({
+          name: 'add1again',
+          process: (n: number) => n + 1,
+          validate: () => true,
+        });
+
+      expect(pipeline.run(0)).toBe(2);
+    });
+
+    it('supports method chaining', () => {
+      const pipeline = new Pipeline();
+      const result = pipeline.addStage({
+        name: 'test',
+        process: (x: any) => x,
+        validate: () => true,
+      });
+      expect(result).toBe(pipeline);
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

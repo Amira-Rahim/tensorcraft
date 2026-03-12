@@ -1,0 +1,137 @@
+---
+slug: similarity-search
+title: "Similarity Search"
+moduleId: feature-extraction
+themeId: neon-protocol
+order: 3
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Zara captures a single frame of an unidentified drone over District 4. 'We need to find every other frame this drone appears in,' she says. 'Not by exact pixel match — by visual similarity. Feed the image into the feature extractor, get its vector, and find the nearest neighbors in the database.'"
+  speaker: "Zara"
+concept:
+  explanation: "Similarity search finds the closest feature vectors in a database to a query vector. Given a drone image, find all similar drone images. This is the same pattern as fuzzy text search or autocomplete — but in visual embedding space instead of string space."
+  bridge:
+    feTitle: "Fuzzy text search / autocomplete"
+    feCode: "const matches = fuse.search('drne'); // fuzzy match → 'drone'"
+    mlTitle: "Similarity Search"
+    mlCode: "const nearest = findKNearest(queryVector, database, k); // k most similar images"
+    tier: structural
+consequence:
+  narrative: "The search returns 47 matches across three weeks of footage. The same drone model, captured from different angles, different lighting, different districts. Zara maps the results to timestamps and locations. A patrol pattern emerges. 'Now we know where it flies,' she says. 'And when.'"
+  nextLessonTeaser: "Next: backbone networks — the pre-trained feature extractors that power production search systems"
+hints:
+  - level: nudge
+    content: "k-nearest neighbors finds the k items in the database closest to the query vector"
+  - level: guidance
+    content: "Compute cosine similarity between the query and every vector in the database, then sort"
+  - level: solution
+    content: "Map over the database computing similarities, sort descending, take the top k"
+keywords:
+  - similarity-search
+  - k-nearest-neighbors
+  - vector-database
+  - fuzzy-search
+  - retrieval
+---
+
+<Dialogue speaker="Zara">
+In frontend search, you type a misspelled word and fuzzy matching finds what you meant. Visual similarity search works the same way — but instead of comparing strings, you compare feature vectors. Feed in a query image, find the database entries with the smallest distance. The closest neighbors are the most visually similar.
+</Dialogue>
+
+<Dialogue speaker="Kira">
+So it is autocomplete, but for images. I give it one drone photo and it retrieves every visually similar frame from the archive?
+</Dialogue>
+
+Fuzzy text search ranks results by edit distance — how many character changes separate the query from each candidate. Similarity search ranks results by vector distance — how far apart two feature vectors are in embedding space. The algorithm is the same: compute a distance, sort by closeness, return the top results.
+
+<LearningObjectives objectives={["Implement k-nearest neighbor search in embedding space", "Rank images by cosine similarity to a query", "Understand the connection between fuzzy text search and visual similarity search", "Build a simple vector search index for the resistance's image database"]} />
+
+## Nearest Neighbor Search
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="similarity-search.ts">
+{`interface SearchResult {
+  index: number;
+  similarity: number;
+  label: string;
+}
+
+function cosineSim(a: number[], b: number[]): number {
+  let dot = 0, normA = 0, normB = 0;
+  for (let i = 0; i < a.length; i++) {
+    dot += a[i] * b[i];
+    normA += a[i] * a[i];
+    normB += b[i] * b[i];
+  }
+  return dot / (Math.sqrt(normA) * Math.sqrt(normB));
+}
+
+function findKNearest(
+  query: number[],
+  database: { vector: number[]; label: string }[],
+  k: number
+): SearchResult[] {
+  const scored = database.map((item, index) => ({
+    index,
+    similarity: cosineSim(query, item.vector),
+    label: item.label,
+  }));
+
+  // Sort by similarity descending (most similar first)
+  scored.sort((a, b) => b.similarity - a.similarity);
+  return scored.slice(0, k);
+}
+
+// Like fuzzy text search:
+// fuse.search('drne') → [{item: 'drone', score: 0.95}, ...]
+// findKNearest(queryVec, db, 5) → [{label: 'drone-x7', similarity: 0.97}, ...]`}
+</CodeBlock>
+
+## Building a Search Index
+
+<CodeBlock language="typescript" title="search-index.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+class VisualSearchIndex {
+  private vectors: number[][] = [];
+  private labels: string[] = [];
+  private extractor: tf.LayersModel | null = null;
+
+  async init(modelUrl: string) {
+    this.extractor = await tf.loadLayersModel(modelUrl);
+  }
+
+  async addImage(image: tf.Tensor3D, label: string) {
+    const features = this.extractor!.predict(
+      image.expandDims(0)
+    ) as tf.Tensor2D;
+    const vector = Array.from(features.dataSync());
+    this.vectors.push(vector);
+    this.labels.push(label);
+    features.dispose();
+  }
+
+  search(queryVector: number[], k: number = 5): SearchResult[] {
+    return findKNearest(
+      queryVector,
+      this.vectors.map((v, i) => ({ vector: v, label: this.labels[i] })),
+      k
+    );
+  }
+}
+
+// Usage: index drone footage, then search for matching drones
+const index = new VisualSearchIndex();
+// await index.addImage(droneFrame1, 'drone-d7-001');
+// const matches = index.search(queryVector, 10);`}
+</CodeBlock>
+
+## Challenge
+
+Implement a k-nearest neighbor search function.
+
+<Exercise slug="similarity-search" />
+
+<KeyTakeaways takeaways={["Similarity search finds the closest feature vectors in a database — like fuzzy text search for images", "k-nearest neighbors ranks all candidates by distance and returns the top k", "Cosine similarity is the standard distance metric for visual feature comparison", "The resistance can now track specific drones across weeks of footage with a single query image"]} />

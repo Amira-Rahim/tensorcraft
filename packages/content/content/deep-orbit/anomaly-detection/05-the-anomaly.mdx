@@ -1,0 +1,147 @@
+---
+slug: the-anomaly
+title: "The Anomaly"
+moduleId: anomaly-detection
+themeId: deep-orbit
+order: 5
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "DEEP SCAN fires its highest-confidence alert ever. The reconstruction error is off the charts. Torres checks the sensors three times. 'This is not instrument noise. The model is right.'"
+  speaker: "Chief Torres"
+concept:
+  explanation: "When an error boundary catches an unexpected throw, it means something genuinely new happened — the system encountered a case it was never designed for."
+  bridge:
+    feTitle: "Error Boundary"
+    feCode: "componentDidCatch(error) { // unexpected error — show fallback UI }"
+    mlTitle: "Anomaly Alert"
+    mlCode: "if (error > 12 * baseline) { alert('UNKNOWN SIGNAL DETECTED') }"
+    tier: intuition
+consequence:
+  narrative: "The mathematical structure embedded in the anomaly mirrors the Fibonacci sequence — the same sequence used in the ship's own sensor calibration. Sato's hands are shaking."
+  nextLessonTeaser: "Module 8: advanced forecasting to predict when the anomaly will appear next"
+hints:
+  - level: nudge
+    content: "Combine all detection methods — statistical, autoencoder, and LSTM prediction error"
+  - level: guidance
+    content: "An ensemble approach flags signals that multiple detectors agree on"
+  - level: solution
+    content: "const isAnomaly = zScore > 3 && reconstructionError > threshold && predictionError > 2 * baseline;"
+keywords:
+  - ensemble-detection
+  - alert
+  - fibonacci
+  - unknown-signal
+---
+
+<Dialogue speaker="Chief Torres">
+I have checked the sensor calibration three times. This is not instrument noise — the model is right.
+</Dialogue>
+
+<Dialogue speaker="Dr. Sato">
+The reconstruction error is twelve times the normal baseline. The frequency decomposition contains a component at 73.4 Hz that matches no known stellar phenomenon. And the LSTM predicted its arrival within three seconds. All three systems agree.
+</Dialogue>
+
+<Dialogue speaker="Commander Okafor">
+What am I looking at, Dr. Sato?
+</Dialogue>
+
+When a React error boundary catches an exception, it means something genuinely unexpected happened — the application encountered a case no developer anticipated. DEEP SCAN's anomaly alert is the same: every detection system agrees this signal is unlike anything in the training data.
+
+<LearningObjectives objectives={["Combine multiple detection methods into an ensemble for robust anomaly detection", "Build a detection pipeline: statistical checks → autoencoder → LSTM verification", "Interpret ensemble agreement as confidence — more detectors flagging = higher confidence", "Deploy the full anomaly detection system on the DEEP SCAN dashboard"]} />
+
+## Ensemble Detection
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="ensemble-detector.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+interface DetectionResult {
+  isAnomaly: boolean;
+  confidence: number;
+  detectors: {
+    statistical: { triggered: boolean; zScore: number };
+    autoencoder: { triggered: boolean; error: number };
+    lstm: { triggered: boolean; predictionError: number };
+  };
+}
+
+function detectAnomaly(
+  signal: number[],
+  baseline: { mean: number; std: number },
+  autoencoder: tf.LayersModel,
+  lstm: tf.LayersModel,
+  recentWindow: number[][],
+  thresholds: { zScore: number; reconstruction: number; prediction: number },
+): DetectionResult {
+  // Detector 1: Statistical z-score
+  const amplitude = Math.max(...signal.map(Math.abs));
+  const zScore = Math.abs(amplitude - baseline.mean) / baseline.std;
+  const statTriggered = zScore > thresholds.zScore;
+
+  // Detector 2: Autoencoder reconstruction error
+  const reconError = tf.tidy(() => {
+    const input = tf.tensor2d([signal]);
+    const reconstructed = autoencoder.predict(input) as tf.Tensor;
+    return tf.losses.meanSquaredError(input, reconstructed).dataSync()[0];
+  });
+  const aeTriggered = reconError > thresholds.reconstruction;
+
+  // Detector 3: LSTM prediction deviation
+  const predError = tf.tidy(() => {
+    const input = tf.tensor3d([recentWindow]);
+    const predicted = (lstm.predict(input) as tf.Tensor).dataSync();
+    return signal.reduce((sum, v, i) => sum + (v - predicted[i]) ** 2, 0) / signal.length;
+  });
+  const lstmTriggered = predError > thresholds.prediction;
+
+  // Ensemble: count how many detectors agree
+  const votes = [statTriggered, aeTriggered, lstmTriggered].filter(Boolean).length;
+
+  return {
+    isAnomaly: votes >= 2,  // majority vote
+    confidence: votes / 3,
+    detectors: {
+      statistical: { triggered: statTriggered, zScore },
+      autoencoder: { triggered: aeTriggered, error: reconError },
+      lstm: { triggered: lstmTriggered, predictionError: predError },
+    },
+  };
+}
+
+// The anomalous signal:
+// statistical: z=8.7 ✓, autoencoder: error=0.062 ✓, lstm: predError=0.041 ✓
+// Confidence: 3/3 = 100% — all detectors agree`}
+</CodeBlock>
+
+## The Discovery
+
+<CodeBlock language="typescript" title="the-discovery.ts">
+{`// The signal that breaks everything
+const anomalyResult = detectAnomaly(
+  anomalousSignal, baseline, autoencoder, lstm, recentWindow, thresholds,
+);
+
+console.log('=== DEEP SCAN ALERT ===');
+console.log('Anomaly detected:', anomalyResult.isAnomaly);      // true
+console.log('Confidence:', anomalyResult.confidence);             // 1.0
+console.log('Z-score:', anomalyResult.detectors.statistical.zScore.toFixed(1));  // 8.7
+console.log('Recon error:', anomalyResult.detectors.autoencoder.error.toFixed(4)); // 0.0620
+console.log('Pred error:', anomalyResult.detectors.lstm.predictionError.toFixed(4)); // 0.0410
+
+// Feature analysis reveals: the anomaly is in the frequency domain
+// A 73.4 Hz component with Fibonacci-ratio pulse intervals
+// The same ratios appear in the ship's sensor calibration harmonics
+
+// Is it alien? Is it coincidence? That's not for the model to decide.
+// The model's job is detection. The interpretation is human.`}
+</CodeBlock>
+
+## Challenge
+
+Build an ensemble anomaly detector combining multiple methods.
+
+<Exercise slug="ensemble-detector" />
+
+<KeyTakeaways takeaways={["Ensemble detection combines multiple methods — majority vote gives higher confidence than any single detector", "Three complementary approaches: statistics (simple), autoencoder (learned), LSTM (temporal)", "100% detector agreement = highest confidence, like multiple independent tests confirming the same bug", "The model detects and quantifies — interpretation (alien or coincidence?) remains a human decision"]} />

@@ -1,0 +1,52 @@
+slug: sample-distribution
+lessonSlug: probability-distributions
+title: "Sample from a Distribution"
+instructions: "Create a function that generates samples from both a uniform and normal distribution, returning an object with both arrays. Generate 100 uniform samples between 0 and 1, and 100 normal samples with mean 0 and standard deviation 1."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  async function sampleDistributions(): Promise<{ uniform: number[], normal: number[] }> {
+    // Generate 100 uniform samples between 0 and 1
+    const uniformSamples = null; // your code here
+
+    // Generate 100 normal samples with mean=0, std=1
+    const normalSamples = null; // your code here
+
+    return {
+      uniform: uniformSamples,
+      normal: normalSamples,
+    };
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  async function sampleDistributions(): Promise<{ uniform: number[], normal: number[] }> {
+    const uniformSamples = await tf.randomUniform([100], 0, 1).array() as number[];
+    const normalSamples = await tf.randomNormal([100], 0, 1).array() as number[];
+    return {
+      uniform: uniformSamples,
+      normal: normalSamples,
+    };
+  }
+testCode: |
+  describe('sampleDistributions', () => {
+    it('returns uniform and normal arrays of length 100', async () => {
+      const result = await sampleDistributions();
+      expect(result.uniform.length).toBe(100);
+      expect(result.normal.length).toBe(100);
+    });
+    it('uniform samples are between 0 and 1', async () => {
+      const result = await sampleDistributions();
+      result.uniform.forEach(v => {
+        expect(v).toBeGreaterThanOrEqual(0);
+        expect(v).toBeLessThanOrEqual(1);
+      });
+    });
+    it('normal samples have mean near 0', async () => {
+      const result = await sampleDistributions();
+      const mean = result.normal.reduce((a, b) => a + b, 0) / result.normal.length;
+      expect(Math.abs(mean)).toBeLessThan(1);
+    });
+  });
+estimatedMinutes: 5
+difficulty: beginner

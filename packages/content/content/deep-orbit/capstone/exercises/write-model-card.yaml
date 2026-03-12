@@ -1,0 +1,103 @@
+slug: write-model-card
+lessonSlug: documentation
+title: "Write a Model Card"
+instructions: "Create a function that generates a formatted Model Card string from structured model metadata. The card should include sections for Overview, Performance, Limitations, and Usage."
+starterCode: |
+  interface ModelMetadata {
+    name: string;
+    version: string;
+    accuracy: number;
+    sizeMB: number;
+    inferenceMs: number;
+    limitations: string[];
+    inputFormat: string;
+    outputFormat: string;
+  }
+
+  function generateModelCard(meta: ModelMetadata): string {
+    // Return a formatted string with these sections:
+    // # {name} v{version}
+    // ## Performance
+    // - Accuracy: {accuracy as percentage}%
+    // - Size: {sizeMB} MB
+    // - Inference: {inferenceMs}ms
+    // ## Limitations
+    // - {each limitation on its own line}
+    // ## Usage
+    // - Input: {inputFormat}
+    // - Output: {outputFormat}
+    return null; // your code here
+  }
+solutionCode: |
+  interface ModelMetadata {
+    name: string;
+    version: string;
+    accuracy: number;
+    sizeMB: number;
+    inferenceMs: number;
+    limitations: string[];
+    inputFormat: string;
+    outputFormat: string;
+  }
+
+  function generateModelCard(meta: ModelMetadata): string {
+    const lines = [
+      `# ${meta.name} v${meta.version}`,
+      '',
+      '## Performance',
+      `- Accuracy: ${(meta.accuracy * 100).toFixed(1)}%`,
+      `- Size: ${meta.sizeMB} MB`,
+      `- Inference: ${meta.inferenceMs}ms`,
+      '',
+      '## Limitations',
+      ...meta.limitations.map(l => `- ${l}`),
+      '',
+      '## Usage',
+      `- Input: ${meta.inputFormat}`,
+      `- Output: ${meta.outputFormat}`,
+    ];
+    return lines.join('\n');
+  }
+testCode: |
+  describe('generateModelCard', () => {
+    const meta = {
+      name: 'DEEP SCAN',
+      version: '1.0.0',
+      accuracy: 0.918,
+      sizeMB: 42,
+      inferenceMs: 5,
+      limitations: ['Only tested on Kepler-442 data', 'Requires 80-sample window'],
+      inputFormat: 'Float32Array(80)',
+      outputFormat: '{ label, confidence }',
+    };
+
+    it('includes model name and version', () => {
+      const card = generateModelCard(meta);
+      expect(card).toContain('# DEEP SCAN v1.0.0');
+    });
+
+    it('includes accuracy as percentage', () => {
+      const card = generateModelCard(meta);
+      expect(card).toContain('91.8%');
+    });
+
+    it('includes size and inference speed', () => {
+      const card = generateModelCard(meta);
+      expect(card).toContain('42 MB');
+      expect(card).toContain('5ms');
+    });
+
+    it('lists all limitations', () => {
+      const card = generateModelCard(meta);
+      expect(card).toContain('- Only tested on Kepler-442 data');
+      expect(card).toContain('- Requires 80-sample window');
+    });
+
+    it('includes usage information', () => {
+      const card = generateModelCard(meta);
+      expect(card).toContain('Float32Array(80)');
+      expect(card).toContain('{ label, confidence }');
+    });
+  });
+estimatedMinutes: 8
+difficulty: beginner

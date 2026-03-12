@@ -187,24 +187,12 @@ body {
 
 /* Respect reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  .animate-gradient {
-    animation: none;
-  }
-  .neon-line {
-    animation: none;
-    opacity: 0.7;
-  }
-  .neon-text {
-    text-shadow: none;
-  }
-  .neon-text-subtle {
-    text-shadow: none;
-  }
-  .animate-fade-up {
-    animation: none;
-  }
-  [style*="breathe-left"],
-  [style*="breathe-right"] {
-    animation: none !important;
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

@@ -1,0 +1,139 @@
+slug: build-dataset
+lessonSlug: building-datasets
+title: "Build a Surveillance Camera Dataset"
+instructions: "Implement a DatasetBuilder class that collects labeled image samples, retrieves samples by label, and produces summary statistics. The addSample method should validate that both label and path are non-empty strings. The getSamplesByLabel method filters samples by their label. The getSummary method returns total count, unique labels, and per-label counts."
+starterCode: |
+  interface ImageSample {
+    id: string;
+    label: string;
+    path: string;
+    width: number;
+    height: number;
+  }
+
+  interface DatasetSummary {
+    totalSamples: number;
+    labels: string[];
+    samplesPerLabel: Record<string, number>;
+  }
+
+  class DatasetBuilder {
+    private samples: ImageSample[] = [];
+
+    addSample(sample: ImageSample): void {
+      // TODO: Validate that label and path are non-empty,
+      // then add the sample to the collection
+      return null as any;
+    }
+
+    getSamplesByLabel(label: string): ImageSample[] {
+      // TODO: Return all samples matching the given label
+      return null as any;
+    }
+
+    getSummary(): DatasetSummary {
+      // TODO: Return totalSamples, unique labels array,
+      // and samplesPerLabel counts
+      return null as any;
+    }
+  }
+solutionCode: |
+  interface ImageSample {
+    id: string;
+    label: string;
+    path: string;
+    width: number;
+    height: number;
+  }
+
+  interface DatasetSummary {
+    totalSamples: number;
+    labels: string[];
+    samplesPerLabel: Record<string, number>;
+  }
+
+  class DatasetBuilder {
+    private samples: ImageSample[] = [];
+
+    addSample(sample: ImageSample): void {
+      if (!sample.label || !sample.label.trim()) {
+        throw new Error("Sample must have a non-empty label");
+      }
+      if (!sample.path || !sample.path.trim()) {
+        throw new Error("Sample must have a non-empty path");
+      }
+      this.samples.push(sample);
+    }
+
+    getSamplesByLabel(label: string): ImageSample[] {
+      return this.samples.filter(s => s.label === label);
+    }
+
+    getSummary(): DatasetSummary {
+      const samplesPerLabel: Record<string, number> = {};
+      for (const sample of this.samples) {
+        samplesPerLabel[sample.label] = (samplesPerLabel[sample.label] || 0) + 1;
+      }
+      return {
+        totalSamples: this.samples.length,
+        labels: Object.keys(samplesPerLabel),
+        samplesPerLabel,
+      };
+    }
+  }
+testCode: |
+  describe('DatasetBuilder', () => {
+    let builder: DatasetBuilder;
+
+    beforeEach(() => {
+      builder = new DatasetBuilder();
+    });
+
+    it('should add valid samples', () => {
+      builder.addSample({ id: '1', label: 'dome', path: 'img/dome_001.png', width: 224, height: 224 });
+      builder.addSample({ id: '2', label: 'bullet', path: 'img/bullet_001.png', width: 224, height: 224 });
+      const summary = builder.getSummary();
+      expect(summary.totalSamples).toBe(2);
+    });
+
+    it('should throw on empty label', () => {
+      expect(() => {
+        builder.addSample({ id: '1', label: '', path: 'img/test.png', width: 224, height: 224 });
+      }).toThrow();
+    });
+
+    it('should throw on empty path', () => {
+      expect(() => {
+        builder.addSample({ id: '1', label: 'dome', path: '', width: 224, height: 224 });
+      }).toThrow();
+    });
+
+    it('should filter samples by label', () => {
+      builder.addSample({ id: '1', label: 'dome', path: 'img/dome_001.png', width: 224, height: 224 });
+      builder.addSample({ id: '2', label: 'bullet', path: 'img/bullet_001.png', width: 224, height: 224 });
+      builder.addSample({ id: '3', label: 'dome', path: 'img/dome_002.png', width: 224, height: 224 });
+      const domes = builder.getSamplesByLabel('dome');
+      expect(domes.length).toBe(2);
+      expect(domes.every(s => s.label === 'dome')).toBe(true);
+    });
+
+    it('should return correct summary statistics', () => {
+      builder.addSample({ id: '1', label: 'dome', path: 'img/dome_001.png', width: 224, height: 224 });
+      builder.addSample({ id: '2', label: 'dome', path: 'img/dome_002.png', width: 224, height: 224 });
+      builder.addSample({ id: '3', label: 'bullet', path: 'img/bullet_001.png', width: 224, height: 224 });
+      const summary = builder.getSummary();
+      expect(summary.totalSamples).toBe(3);
+      expect(summary.labels).toContain('dome');
+      expect(summary.labels).toContain('bullet');
+      expect(summary.labels.length).toBe(2);
+      expect(summary.samplesPerLabel['dome']).toBe(2);
+      expect(summary.samplesPerLabel['bullet']).toBe(1);
+    });
+
+    it('should return empty results for non-existent label', () => {
+      builder.addSample({ id: '1', label: 'dome', path: 'img/dome_001.png', width: 224, height: 224 });
+      expect(builder.getSamplesByLabel('hidden').length).toBe(0);
+    });
+  });
+estimatedMinutes: 8
+difficulty: beginner

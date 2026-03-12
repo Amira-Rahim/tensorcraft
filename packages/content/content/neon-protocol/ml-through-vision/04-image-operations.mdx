@@ -1,0 +1,132 @@
+---
+slug: image-operations
+title: "Image Operations"
+moduleId: ml-through-vision
+themeId: neon-protocol
+order: 4
+estimatedMinutes: 20
+difficulty: beginner
+context:
+  narrative: "Every model expects a fixed input size. Kira must resize, crop, and transform surveillance feeds to match Protocol Sentinel's requirements."
+  speaker: "NEON"
+concept:
+  explanation: "Image transforms for ML — resize, crop, rotate, flip — are the same operations as CSS transform and object-fit that frontend developers use daily."
+  bridge:
+    feTitle: "CSS object-fit"
+    feCode: "object-fit: cover // center-crop to fill container"
+    mlTitle: "Image Preprocessing"
+    mlCode: "tf.image.cropAndResize(image, boxes, [224, 224]) // crop and resize to model input"
+    tier: identity
+consequence:
+  narrative: "The transforms reveal something: Meridian's cameras all output images at an unusual resolution — one optimized for a specific model architecture."
+  nextLessonTeaser: "Next: your first classifier — threshold-based image classification"
+hints:
+  - level: nudge
+    content: "Models expect fixed input sizes — resize all images to the same dimensions"
+  - level: guidance
+    content: "Use tf.image.resizeBilinear() for smooth resizing, slice() for cropping"
+  - level: solution
+    content: "const resized = tf.image.resizeBilinear(image.expandDims(0), [224, 224]).squeeze();"
+keywords:
+  - resize
+  - crop
+  - transform
+  - preprocessing
+  - normalization
+---
+
+<Dialogue speaker="NEON">
+Protocol Sentinel expects 224x224 pixel input. Meridian cameras stream at 640x480. Every frame must be resized before inference. Get the dimensions wrong and the model outputs garbage. This is not negotiable.
+</Dialogue>
+
+<Dialogue speaker="Kira">
+Same as responsive images — `object-fit: cover` is center-crop, `object-fit: contain` is resize-with-padding. I've been doing image transforms in CSS for years.
+</Dialogue>
+
+You set `object-fit: cover` to fill a container with a center-cropped image. You use CSS `transform: rotate(45deg)` to spin elements. ML image preprocessing uses the same operations: resize to a fixed input size, crop to a region of interest, flip and rotate for data augmentation.
+
+<LearningObjectives objectives={["Resize images to model-expected dimensions using bilinear interpolation", "Crop regions of interest from larger images", "Apply geometric transforms: flip, rotate, transpose", "Normalize pixel values from 0-255 to 0-1 for model consumption"]} />
+
+## Preprocessing Pipeline
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="image-ops.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Resize: object-fit: contain (with padding)
+function resizeContain(image: tf.Tensor3D, targetSize: [number, number]): tf.Tensor3D {
+  return tf.image.resizeBilinear(
+    image.expandDims(0) as tf.Tensor4D,
+    targetSize
+  ).squeeze() as tf.Tensor3D;
+}
+
+// Resize a 640x480 camera frame to 224x224
+const cameraFrame = tf.randomNormal([480, 640, 3]);
+const resized = resizeContain(cameraFrame, [224, 224]);
+console.log(resized.shape); // [224, 224, 3]
+
+// Crop: extract a region of interest
+function centerCrop(image: tf.Tensor3D, size: number): tf.Tensor3D {
+  const [h, w] = image.shape;
+  const startY = Math.floor((h - size) / 2);
+  const startX = Math.floor((w - size) / 2);
+  return image.slice([startY, startX, 0], [size, size, 3]);
+}
+
+// Flip: horizontal mirror (like transform: scaleX(-1))
+const flipped = tf.reverse(image, 1); // reverse along width axis
+
+// Normalize: 0-255 → 0-1 (models work better with small numbers)
+const normalized = image.toFloat().div(255);
+console.log('Range:', normalized.min().dataSync()[0], '-', normalized.max().dataSync()[0]);`}
+</CodeBlock>
+
+## Preprocessing for Surveillance Feeds
+
+<CodeBlock language="typescript" title="preprocess-feed.ts">
+{`// Complete preprocessing pipeline for Protocol Sentinel
+
+function preprocessFrame(frame: tf.Tensor3D): tf.Tensor4D {
+  return tf.tidy(() => {
+    // 1. Resize to model input size
+    const resized = tf.image.resizeBilinear(
+      frame.expandDims(0) as tf.Tensor4D,
+      [224, 224]
+    );
+
+    // 2. Normalize pixel values to [0, 1]
+    const normalized = resized.toFloat().div(255);
+
+    // 3. Return as batched tensor [1, 224, 224, 3]
+    return normalized as tf.Tensor4D;
+  });
+}
+
+// Batch multiple frames for efficient inference
+function preprocessBatch(frames: tf.Tensor3D[]): tf.Tensor4D {
+  return tf.tidy(() => {
+    const processed = frames.map(frame => {
+      const resized = tf.image.resizeBilinear(
+        frame.expandDims(0) as tf.Tensor4D,
+        [224, 224]
+      );
+      return resized.toFloat().div(255);
+    });
+    return tf.concat(processed, 0) as tf.Tensor4D;
+  });
+}
+
+const frame = tf.randomNormal([480, 640, 3]);
+const input = preprocessFrame(frame);
+console.log('Model input:', input.shape); // [1, 224, 224, 3]`}
+</CodeBlock>
+
+## Challenge
+
+Build a preprocessing function that resizes and normalizes an image for model input.
+
+<Exercise slug="preprocess-image" />
+
+<KeyTakeaways takeaways={["Models expect fixed input dimensions — resize all images to the same size before inference", "object-fit: cover is center-crop; object-fit: contain is resize-with-padding — same concepts in ML preprocessing", "Normalize pixels from 0-255 to 0-1 for better model convergence", "tf.tidy() prevents memory leaks by cleaning up intermediate tensors — essential for real-time processing"]} />

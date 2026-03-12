@@ -1,0 +1,118 @@
+---
+slug: pixels-and-tensors
+title: "Pixels & Tensors"
+moduleId: ml-through-vision
+themeId: neon-protocol
+order: 2
+estimatedMinutes: 25
+difficulty: beginner
+context:
+  narrative: "Zara explains image dimensions. 'A grayscale image is a 2D grid. Color adds a third dimension — channels. A batch of images adds a fourth. You already think in these dimensions when you set up responsive image grids.'"
+  speaker: "Zara"
+concept:
+  explanation: "Image tensors have specific shapes depending on their type — grayscale (2D), color (3D), or batched (4D). This maps directly to the Uint8ClampedArray layout from canvas."
+  bridge:
+    feTitle: "Uint8ClampedArray"
+    feCode: "imageData.data[i * 4 + 0] // Red channel of pixel i (flat array)"
+    mlTitle: "Tensor Indexing"
+    mlCode: "tensor.slice([y, x, 0], [1, 1, 1]) // Red channel of pixel (y, x)"
+    tier: identity
+consequence:
+  narrative: "Kira realizes the pixel patterns in Meridian's feeds are familiar — too familiar. NEON says: 'I have seen this encoding before. At Meridian.'"
+  nextLessonTeaser: "Next: color channels — RGB, grayscale, and hidden data in color spaces"
+hints:
+  - level: nudge
+    content: "Think of image dimensions like CSS grid — rows (height), columns (width), and depth (channels)"
+  - level: guidance
+    content: "Use tensor.shape to inspect dimensions, tensor.slice() to access specific pixels"
+  - level: solution
+    content: "const pixel = tensor.slice([y, x, 0], [1, 1, 3]); // RGB values of pixel at (y, x)"
+keywords:
+  - tensors
+  - pixel-data
+  - dimensions
+  - shapes
+  - indexing
+---
+
+<Dialogue speaker="Zara">
+A grayscale image is a 2D grid — height by width. Each cell holds one brightness value. Add color and you get a third dimension: three channels for red, green, blue. Stack multiple images and you get a fourth dimension: the batch. You already think in these dimensions when you write CSS grid layouts.
+</Dialogue>
+
+<Dialogue speaker="Kira">
+So a 224x224 RGB image is like a CSS grid with 224 rows, 224 columns, and 3 layers stacked on top of each other? And a batch is like rendering that grid 32 times?
+</Dialogue>
+
+The flat `Uint8ClampedArray` from `getImageData()` stores pixels in row-major order: `[R, G, B, A, R, G, B, A, ...]`. TensorFlow.js tensors organize the same data as a shaped multi-dimensional array: `[height, width, channels]`. Different interface, same numbers underneath.
+
+<LearningObjectives objectives={["Navigate between flat pixel arrays and shaped tensors", "Access individual pixels and channels using tensor indexing", "Understand row-major memory layout of image data", "Reshape and transpose image tensors for different model requirements"]} />
+
+## From Flat to Shaped
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="pixel-indexing.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Canvas: flat array, RGBA interleaved
+// imageData.data = [R0, G0, B0, A0, R1, G1, B1, A1, ...]
+// To get pixel (x, y) in a WxH image:
+// index = (y * width + x) * 4;
+// red   = data[index + 0]
+// green = data[index + 1]
+// blue  = data[index + 2]
+// alpha = data[index + 3]
+
+function getPixelCanvas(data: Uint8ClampedArray, width: number, x: number, y: number) {
+  const i = (y * width + x) * 4;
+  return { r: data[i], g: data[i + 1], b: data[i + 2], a: data[i + 3] };
+}
+
+// Tensor: shaped array, [height, width, channels]
+// Pixel (x, y) is at position [y, x, :]
+// No manual index math needed — the shape handles it
+
+function getPixelTensor(tensor: tf.Tensor3D, x: number, y: number) {
+  const pixel = tensor.slice([y, x, 0], [1, 1, 3]);
+  const [r, g, b] = Array.from(pixel.dataSync());
+  pixel.dispose();
+  return { r, g, b };
+}
+
+// Both approaches access the same underlying data
+// Tensors are cleaner because you think in dimensions, not offsets`}
+</CodeBlock>
+
+## Reshaping Image Data
+
+<CodeBlock language="typescript" title="reshaping.ts">
+{`// Converting between formats ML models need
+
+// Channels-last (TF.js default): [height, width, channels]
+// This is what tf.browser.fromPixels returns
+const channelsLast = tf.randomNormal([224, 224, 3]);
+
+// Channels-first (PyTorch convention): [channels, height, width]
+// Some pre-trained models expect this
+const channelsFirst = channelsLast.transpose([2, 0, 1]);
+console.log(channelsFirst.shape); // [3, 224, 224]
+
+// Grayscale from RGB — average the channels
+const rgb = tf.browser.fromPixels(canvas); // [224, 224, 3]
+const grayscale = rgb.mean(2, true); // [224, 224, 1]
+console.log(grayscale.shape);
+
+// Or use a weighted conversion (human perception)
+// Luminance = 0.299*R + 0.587*G + 0.114*B
+const weights = tf.tensor1d([0.299, 0.587, 0.114]);
+const luminance = rgb.toFloat().mul(weights).sum(2, true);
+console.log(luminance.shape); // [224, 224, 1]`}
+</CodeBlock>
+
+## Challenge
+
+Access specific pixel values from a tensor and reshape image data.
+
+<Exercise slug="pixel-indexing" />
+
+<KeyTakeaways takeaways={["Canvas stores pixels as a flat RGBA array; tensors store them as shaped [height, width, channels]", "Tensor indexing replaces manual offset math — think in dimensions, not byte offsets", "Channels-last [H,W,C] is the TF.js convention; channels-first [C,H,W] is PyTorch's", "Grayscale conversion averages RGB channels — or uses weighted luminance for perceptual accuracy"]} />

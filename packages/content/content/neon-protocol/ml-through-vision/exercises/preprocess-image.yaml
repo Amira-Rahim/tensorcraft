@@ -1,0 +1,78 @@
+slug: preprocess-image
+lessonSlug: image-operations
+title: "Preprocess an Image"
+instructions: "Write a function that normalizes pixel values from 0-255 to 0-1 and validates that the image has the correct dimensions for a model (targetHeight x targetWidth x 3 channels)."
+starterCode: |
+  interface PreprocessResult {
+    normalized: number[];
+    valid: boolean;
+    shape: [number, number, number];
+  }
+
+  function preprocessImage(
+    pixels: number[],
+    height: number,
+    width: number,
+    channels: number,
+    targetHeight: number,
+    targetWidth: number
+  ): PreprocessResult {
+    // 1. Normalize: divide each pixel value by 255
+    // 2. Check if dimensions match target (height === targetHeight, width === targetWidth, channels === 3)
+    // 3. Return normalized array, validity flag, and shape
+    return null; // your code here
+  }
+solutionCode: |
+  interface PreprocessResult {
+    normalized: number[];
+    valid: boolean;
+    shape: [number, number, number];
+  }
+
+  function preprocessImage(
+    pixels: number[],
+    height: number,
+    width: number,
+    channels: number,
+    targetHeight: number,
+    targetWidth: number
+  ): PreprocessResult {
+    const normalized = pixels.map(p => p / 255);
+    const valid = height === targetHeight && width === targetWidth && channels === 3;
+    return {
+      normalized,
+      valid,
+      shape: [height, width, channels],
+    };
+  }
+testCode: |
+  describe('preprocessImage', () => {
+    it('normalizes pixel values to 0-1', () => {
+      const result = preprocessImage([0, 128, 255], 1, 1, 3, 1, 1);
+      expect(result.normalized[0]).toBeCloseTo(0, 5);
+      expect(result.normalized[1]).toBeCloseTo(0.502, 2);
+      expect(result.normalized[2]).toBeCloseTo(1, 5);
+    });
+
+    it('validates matching dimensions', () => {
+      const result = preprocessImage([0, 0, 0], 224, 224, 3, 224, 224);
+      expect(result.valid).toBe(true);
+    });
+
+    it('rejects mismatched dimensions', () => {
+      const result = preprocessImage([0, 0, 0], 480, 640, 3, 224, 224);
+      expect(result.valid).toBe(false);
+    });
+
+    it('rejects non-RGB channels', () => {
+      const result = preprocessImage([0, 0, 0, 0], 224, 224, 4, 224, 224);
+      expect(result.valid).toBe(false);
+    });
+
+    it('returns correct shape', () => {
+      const result = preprocessImage([0, 0, 0], 480, 640, 3, 224, 224);
+      expect(result.shape).toEqual([480, 640, 3]);
+    });
+  });
+estimatedMinutes: 8
+difficulty: beginner

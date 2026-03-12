@@ -9,6 +9,21 @@ export function getModules(themeSlug: string) {
     .sort((a, b) => a.order - b.order);
 }
 
+/** Get only foundations (shared core) modules for a theme */
+export function getFoundationsModules(themeSlug: string) {
+  return getModules(themeSlug).filter((m) => m.track === "foundations");
+}
+
+/** Get only specialization (theme-specific) modules for a theme */
+export function getSpecializationModules(themeSlug: string) {
+  return getModules(themeSlug).filter((m) => m.track === "specialization");
+}
+
+/** Check if a module is part of the shared foundations track */
+export function isFoundationsModule(mod: { track: string }) {
+  return mod.track === "foundations";
+}
+
 /** Get a single module by theme and slug */
 export function getModule(themeSlug: string, moduleSlug: string) {
   return (
@@ -50,6 +65,11 @@ export function getLesson(
 /** Get an exercise by slug */
 export function getExercise(slug: string) {
   return exercises.find((e) => e.slug === slug) ?? null;
+}
+
+/** Get all exercises for a given lesson slug */
+export function getLessonExercises(lessonSlug: string) {
+  return exercises.filter((e) => e.lessonSlug === lessonSlug);
 }
 
 /** Get prev/next lessons for navigation */

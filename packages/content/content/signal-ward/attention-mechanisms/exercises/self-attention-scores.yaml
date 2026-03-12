@@ -1,0 +1,62 @@
+slug: self-attention-scores
+lessonSlug: self-attention
+title: "Self-Attention Scores"
+instructions: "Implement scaled dot-product self-attention. Given an input tensor and a dimension dk, create Q, K, V projections, compute scaled scores, apply softmax, and return the weighted output."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function scaledSelfAttention(
+    input: tf.Tensor2D,  // [seqLen, embedDim]
+    dk: number
+  ): { output: tf.Tensor2D; weights: tf.Tensor2D } {
+    const embedDim = input.shape[1];
+    // Step 1: Create Q, K, V projection matrices [embedDim, dk]
+    // Step 2: Project input to get Q, K, V
+    // Step 3: Compute scores = (Q * K^T) / sqrt(dk)
+    // Step 4: Apply softmax to get weights
+    // Step 5: Compute output = weights * V
+    return { output: null, weights: null };
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function scaledSelfAttention(
+    input: tf.Tensor2D,
+    dk: number
+  ): { output: tf.Tensor2D; weights: tf.Tensor2D } {
+    const embedDim = input.shape[1];
+    const Wq = tf.randomNormal([embedDim, dk]);
+    const Wk = tf.randomNormal([embedDim, dk]);
+    const Wv = tf.randomNormal([embedDim, dk]);
+
+    const Q = tf.matMul(input, Wq) as tf.Tensor2D;
+    const K = tf.matMul(input, Wk) as tf.Tensor2D;
+    const V = tf.matMul(input, Wv) as tf.Tensor2D;
+
+    const scores = tf.matMul(Q, K.transpose()).div(Math.sqrt(dk));
+    const weights = tf.softmax(scores, -1) as tf.Tensor2D;
+    const output = tf.matMul(weights, V) as tf.Tensor2D;
+
+    return { output, weights };
+  }
+testCode: |
+  describe('scaledSelfAttention', () => {
+    it('output has shape [seqLen, dk]', () => {
+      const input = tf.randomNormal([5, 16]) as tf.Tensor2D;
+      const { output } = scaledSelfAttention(input, 8);
+      expect(output.shape).toEqual([5, 8]);
+    });
+    it('weights have shape [seqLen, seqLen]', () => {
+      const input = tf.randomNormal([5, 16]) as tf.Tensor2D;
+      const { weights } = scaledSelfAttention(input, 8);
+      expect(weights.shape).toEqual([5, 5]);
+    });
+    it('each row of weights sums to 1', async () => {
+      const input = tf.randomNormal([4, 16]) as tf.Tensor2D;
+      const { weights } = scaledSelfAttention(input, 8);
+      const rowSums = await weights.sum(-1).array();
+      rowSums.forEach(s => expect(s).toBeCloseTo(1.0, 4));
+    });
+  });
+estimatedMinutes: 12
+difficulty: intermediate

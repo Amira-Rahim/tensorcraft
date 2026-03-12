@@ -1,0 +1,183 @@
+---
+slug: fft-as-features
+title: "FFT as Features"
+moduleId: signal-processing
+themeId: deep-orbit
+order: 4
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "Park feeds FFT magnitudes into the classifier as additional features. Accuracy jumps from 78% to 87%. Sato smiles — 'The frequency domain is where the real information lives.'"
+  speaker: "Ensign Park"
+concept:
+  explanation: "FFT magnitudes become input features for the model — like computing derived state from raw props to make rendering decisions."
+  bridge:
+    feTitle: "Derived State"
+    feCode: "const sortedItems = useMemo(() => items.sort(compare), [items])"
+    mlTitle: "Feature Engineering"
+    mlCode: "const features = tf.concat([rawSignal, fftMagnitudes], 1)"
+    tier: structural
+consequence:
+  narrative: "DEEP SCAN 2.0 classifies with 87% accuracy. The frequency features reveal patterns the raw signal alone could never show."
+  nextLessonTeaser: "Next: windowing functions — preventing artifacts in the FFT"
+hints:
+  - level: nudge
+    content: "Think of FFT output as derived state — computed from raw data to give the model better inputs"
+  - level: guidance
+    content: "Compute FFT magnitudes, normalize them, and concatenate with the original features"
+  - level: solution
+    content: "const fftFeatures = tf.abs(tf.spectral.rfft(signal)); const combined = tf.concat([raw, normalized(fftFeatures)], 1);"
+keywords:
+  - feature-engineering
+  - derived-features
+  - fft-features
+  - model-improvement
+---
+
+<Dialogue speaker="Ensign Park">
+What if we feed the FFT magnitudes directly into the model? Instead of just raw amplitude, frequency, and phase — we also give it the spectral decomposition. More information, better decisions.
+</Dialogue>
+
+<Dialogue speaker="Dr. Sato">
+Feature engineering — deriving new inputs from raw data. This is exactly how I improved the signal analyzer on the Kepler mission. The raw data tells the model *what happened*. The FFT tells it *what patterns are present*. Together, the model sees the full picture.
+</Dialogue>
+
+You do this in React all the time. Raw props come in, but you compute derived values — sorted lists, filtered arrays, aggregated counts — because the derived form is more useful for rendering. Feature engineering is the same idea: you transform raw data into forms that make the model's job easier.
+
+<LearningObjectives objectives={["Understand feature engineering as deriving useful model inputs from raw data", "Extract FFT magnitudes and use them as model features", "Normalize and combine raw features with frequency-domain features", "Measure the impact of better features on model accuracy"]} />
+
+## Derived State for Models
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="feature-engineering.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// BEFORE: raw signal features only (3 values)
+// The model sees: [amplitude, frequency, phase]
+// Accuracy: 78%
+
+// AFTER: raw + FFT features (3 + N frequency bins)
+// The model sees: [amplitude, frequency, phase, fft_bin_0, fft_bin_1, ..., fft_bin_N]
+// Accuracy: 87%
+
+function extractFeatures(signal: number[], windowSize: number = 64): number[] {
+  return tf.tidy(() => {
+    // Raw features (the original 3)
+    const amplitude = Math.max(...signal.map(Math.abs));
+    const avgFreq = signal.reduce((sum, v, i) =>
+      i > 0 && Math.sign(v) !== Math.sign(signal[i - 1]) ? sum + 1 : sum, 0
+    );
+    const phase = Math.atan2(signal[1], signal[0]);
+
+    // FFT features (derived from the same signal)
+    const windowSlice = signal.slice(0, windowSize);
+    const fft = tf.spectral.rfft(tf.tensor1d(windowSlice));
+    const magnitudes = tf.abs(fft).arraySync() as number[];
+
+    // Take the top-K frequency bins (most informative)
+    const topK = 8;
+    const sorted = magnitudes
+      .map((mag, bin) => ({ mag, bin }))
+      .sort((a, b) => b.mag - a.mag)
+      .slice(0, topK);
+
+    // Combine: [raw features..., top FFT magnitudes...]
+    return [amplitude, avgFreq, phase, ...sorted.map(s => s.mag)];
+  });
+}
+
+// Before: model input shape [null, 3]
+// After:  model input shape [null, 11]  (3 raw + 8 FFT)
+console.log('Feature vector:', extractFeatures(signalSamples));`}
+</CodeBlock>
+
+## Normalization Matters
+
+FFT magnitudes can be orders of magnitude larger than raw signal values. Without normalization, the model will overweight frequency features and ignore the raw ones.
+
+<CodeBlock language="typescript" title="normalization.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Like normalizing CSS values to a common scale
+// font-size: 16px, margin: 100px, opacity: 0.5
+// All different scales — a model would think margin is 200x more important
+
+function normalizeFeatures(features: number[][]): { normalized: number[][]; stats: { mean: number; std: number }[] } {
+  // Z-score normalization: (value - mean) / std
+  // After normalization: mean ≈ 0, std ≈ 1 for each feature
+  const stats = features[0].map((_, colIdx) => {
+    const column = features.map(row => row[colIdx]);
+    const mean = column.reduce((a, b) => a + b, 0) / column.length;
+    const std = Math.sqrt(
+      column.reduce((sum, v) => sum + (v - mean) ** 2, 0) / column.length
+    );
+    return { mean, std: std || 1 };  // avoid division by zero
+  });
+
+  const normalized = features.map(row =>
+    row.map((val, i) => (val - stats[i].mean) / stats[i].std)
+  );
+
+  return { normalized, stats };
+}
+
+// Save stats from training data — apply the SAME stats during inference
+// This is critical: normalize test data with training statistics
+const { normalized: trainNorm, stats } = normalizeFeatures(trainingFeatures);
+
+// During inference:
+function normalizeWithStats(features: number[], stats: { mean: number; std: number }[]): number[] {
+  return features.map((val, i) => (val - stats[i].mean) / stats[i].std);
+}`}
+</CodeBlock>
+
+## Building the Enhanced Model
+
+<CodeBlock language="typescript" title="enhanced-model.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Original model: 3 inputs → 32 → 16 → 1 (78% accuracy)
+// Enhanced model: 11 inputs → 64 → 32 → 16 → 1 (87% accuracy)
+
+const enhancedModel = tf.sequential();
+enhancedModel.add(tf.layers.dense({
+  units: 64,
+  activation: 'relu',
+  inputShape: [11],  // 3 raw + 8 FFT features
+}));
+enhancedModel.add(tf.layers.dense({ units: 32, activation: 'relu' }));
+enhancedModel.add(tf.layers.dense({ units: 16, activation: 'relu' }));
+enhancedModel.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
+
+enhancedModel.compile({
+  optimizer: 'adam',
+  loss: 'binaryCrossentropy',
+  metrics: ['accuracy'],
+});
+
+// Train with enhanced features
+const history = await enhancedModel.fit(trainX, trainY, {
+  epochs: 50,
+  validationSplit: 0.2,
+  callbacks: {
+    onEpochEnd: (epoch, logs) => {
+      if (epoch % 10 === 0) {
+        console.log(\`Epoch \${epoch}: acc=\${logs?.acc.toFixed(3)}, val_acc=\${logs?.val_acc.toFixed(3)}\`);
+      }
+    },
+  },
+});
+// Epoch 0:  acc=0.523, val_acc=0.510
+// Epoch 10: acc=0.712, val_acc=0.698
+// Epoch 30: acc=0.853, val_acc=0.841
+// Epoch 50: acc=0.871, val_acc=0.862  ← 87% with FFT features!`}
+</CodeBlock>
+
+## Challenge
+
+Extract FFT features from a signal and combine them with raw features.
+
+<Exercise slug="fft-features" />
+
+<KeyTakeaways takeaways={["Feature engineering transforms raw data into more informative model inputs — like computing derived state from props", "FFT magnitudes capture frequency patterns invisible in the time domain, boosting accuracy from 78% to 87%", "Always normalize features to the same scale — otherwise the model overweights large-valued features", "Save normalization statistics from training data and reuse them during inference for consistency"]} />

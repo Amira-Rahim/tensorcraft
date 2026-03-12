@@ -1,0 +1,98 @@
+slug: build-gan
+lessonSlug: gans-primer
+title: "Build GAN Components"
+instructions: "Implement functions that calculate the generator and discriminator losses for a GAN training step. The discriminator wants to correctly classify real images as 1 and fake images as 0. The generator wants the discriminator to classify its fakes as 1."
+starterCode: |
+  // Binary cross-entropy: -[y * log(p) + (1-y) * log(1-p)]
+  function binaryCrossEntropy(predicted: number, target: number): number {
+    // Clamp predicted to avoid log(0)
+    const p = Math.max(1e-7, Math.min(1 - 1e-7, predicted));
+    return 0; // your code here
+  }
+
+  interface GanLosses {
+    discriminatorLossReal: number;
+    discriminatorLossFake: number;
+    discriminatorLossTotal: number;
+    generatorLoss: number;
+  }
+
+  // realScores: discriminator outputs for real images (should be close to 1)
+  // fakeScores: discriminator outputs for fake images (should be close to 0)
+  function calculateGanLosses(
+    realScores: number[],
+    fakeScores: number[]
+  ): GanLosses {
+    // discriminatorLossReal: avg BCE with target=1 for real images
+    // discriminatorLossFake: avg BCE with target=0 for fake images
+    // discriminatorLossTotal: average of both
+    // generatorLoss: avg BCE of fakeScores with target=1 (wants to fool discriminator)
+    return null; // your code here
+  }
+solutionCode: |
+  function binaryCrossEntropy(predicted: number, target: number): number {
+    const p = Math.max(1e-7, Math.min(1 - 1e-7, predicted));
+    return -(target * Math.log(p) + (1 - target) * Math.log(1 - p));
+  }
+
+  interface GanLosses {
+    discriminatorLossReal: number;
+    discriminatorLossFake: number;
+    discriminatorLossTotal: number;
+    generatorLoss: number;
+  }
+
+  function calculateGanLosses(
+    realScores: number[],
+    fakeScores: number[]
+  ): GanLosses {
+    const avg = (arr: number[]) => arr.reduce((a, b) => a + b, 0) / arr.length;
+
+    const discriminatorLossReal = avg(realScores.map(s => binaryCrossEntropy(s, 1)));
+    const discriminatorLossFake = avg(fakeScores.map(s => binaryCrossEntropy(s, 0)));
+    const discriminatorLossTotal = (discriminatorLossReal + discriminatorLossFake) / 2;
+    const generatorLoss = avg(fakeScores.map(s => binaryCrossEntropy(s, 1)));
+
+    return {
+      discriminatorLossReal,
+      discriminatorLossFake,
+      discriminatorLossTotal,
+      generatorLoss,
+    };
+  }
+testCode: |
+  describe('binaryCrossEntropy', () => {
+    it('returns low loss for correct prediction (target=1, predicted=0.9)', () => {
+      expect(binaryCrossEntropy(0.9, 1)).toBeCloseTo(0.105, 2);
+    });
+
+    it('returns high loss for wrong prediction (target=1, predicted=0.1)', () => {
+      expect(binaryCrossEntropy(0.1, 1)).toBeCloseTo(2.303, 2);
+    });
+  });
+
+  describe('calculateGanLosses', () => {
+    it('calculates discriminator loss for perfect discrimination', () => {
+      const losses = calculateGanLosses([0.9, 0.95], [0.1, 0.05]);
+      expect(losses.discriminatorLossReal).toBeLessThan(0.2);
+      expect(losses.discriminatorLossFake).toBeLessThan(0.2);
+    });
+
+    it('calculates high generator loss when discriminator wins', () => {
+      const losses = calculateGanLosses([0.9], [0.1]);
+      expect(losses.generatorLoss).toBeGreaterThan(2);
+    });
+
+    it('calculates low generator loss when generator fools discriminator', () => {
+      const losses = calculateGanLosses([0.9], [0.9]);
+      expect(losses.generatorLoss).toBeLessThan(0.2);
+    });
+
+    it('discriminatorLossTotal is average of real and fake', () => {
+      const losses = calculateGanLosses([0.8], [0.2]);
+      const expected = (losses.discriminatorLossReal + losses.discriminatorLossFake) / 2;
+      expect(losses.discriminatorLossTotal).toBeCloseTo(expected, 5);
+    });
+  });
+estimatedMinutes: 8
+difficulty: intermediate

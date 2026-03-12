@@ -1,0 +1,91 @@
+slug: clinical-attention-weights
+lessonSlug: clinical-attention
+title: "Clinical Attention Weights"
+instructions: "Implement a clinical attention function that biases attention scores toward medically relevant tokens. Given a list of tokens and a medical vocabulary set, create a bias mask and apply it to attention scores before softmax."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  const MEDICAL_TERMS = new Set([
+    'methotrexate', 'lisinopril', 'warfarin', 'arthritis',
+    'hypertension', 'diabetes', 'nausea', 'fatigue'
+  ]);
+
+  function createMedicalBias(
+    tokens: string[],
+    biasStrength: number
+  ): tf.Tensor1D {
+    // Return a 1D tensor: biasStrength for medical terms, 0 otherwise
+    return null;
+  }
+
+  function clinicalAttention(
+    scores: tf.Tensor2D,  // [seqLen, seqLen] raw attention scores
+    tokens: string[],
+    biasStrength: number
+  ): tf.Tensor2D {
+    // Step 1: Create the medical bias vector
+    // Step 2: Add bias to each row of scores (broadcast over columns)
+    // Step 3: Apply softmax and return weights
+    return null;
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  const MEDICAL_TERMS = new Set([
+    'methotrexate', 'lisinopril', 'warfarin', 'arthritis',
+    'hypertension', 'diabetes', 'nausea', 'fatigue'
+  ]);
+
+  function createMedicalBias(
+    tokens: string[],
+    biasStrength: number
+  ): tf.Tensor1D {
+    const mask = tokens.map(t =>
+      MEDICAL_TERMS.has(t.toLowerCase()) ? biasStrength : 0.0
+    );
+    return tf.tensor1d(mask);
+  }
+
+  function clinicalAttention(
+    scores: tf.Tensor2D,
+    tokens: string[],
+    biasStrength: number
+  ): tf.Tensor2D {
+    const bias = createMedicalBias(tokens, biasStrength);
+    const biasedScores = scores.add(bias.reshape([1, -1]));
+    return tf.softmax(biasedScores, -1) as tf.Tensor2D;
+  }
+testCode: |
+  describe('createMedicalBias', () => {
+    it('assigns bias to medical terms', async () => {
+      const tokens = ['the', 'patient', 'takes', 'methotrexate'];
+      const bias = createMedicalBias(tokens, 2.0);
+      const values = await bias.array();
+      expect(values).toEqual([0, 0, 0, 2.0]);
+    });
+    it('is case insensitive', async () => {
+      const tokens = ['Arthritis', 'WARFARIN'];
+      const bias = createMedicalBias(tokens, 1.5);
+      const values = await bias.array();
+      expect(values).toEqual([1.5, 1.5]);
+    });
+  });
+  describe('clinicalAttention', () => {
+    it('returns weights that sum to 1 per row', async () => {
+      const scores = tf.tensor2d([[1, 1, 1], [1, 1, 1]]);
+      const tokens = ['patient', 'takes', 'methotrexate'];
+      const weights = clinicalAttention(scores as tf.Tensor2D, tokens, 2.0);
+      const sums = await weights.sum(-1).array();
+      sums.forEach(s => expect(s).toBeCloseTo(1.0, 4));
+    });
+    it('medical terms get higher attention', async () => {
+      const scores = tf.tensor2d([[0, 0, 0]]);
+      const tokens = ['the', 'patient', 'warfarin'];
+      const weights = clinicalAttention(scores as tf.Tensor2D, tokens, 3.0);
+      const w = await weights.array();
+      expect(w[0][2]).toBeGreaterThan(w[0][0]);
+      expect(w[0][2]).toBeGreaterThan(w[0][1]);
+    });
+  });
+estimatedMinutes: 12
+difficulty: intermediate

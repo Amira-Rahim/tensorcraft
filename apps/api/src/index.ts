@@ -2,22 +2,35 @@ import { Hono } from "hono";
 import { serve } from "@hono/node-server";
 import { corsMiddleware } from "./middleware/cors";
 import { rateLimitMiddleware } from "./middleware/rate-limit";
+import { securityHeadersMiddleware } from "./middleware/security-headers";
 import { health } from "./routes/health";
 import { waitlist } from "./routes/waitlist";
 import { progress } from "./routes/progress";
 import { payments } from "./routes/payments";
+import { profiles } from "./routes/profiles";
+import { exerciseAttempts } from "./routes/exercise-attempts";
 
 const app = new Hono();
 
 // Global middleware
+app.use("*", securityHeadersMiddleware);
 app.use("*", corsMiddleware);
-app.use("*", rateLimitMiddleware);
+
+// Rate limit all routes EXCEPT the Stripe webhook (Stripe retries on failure)
+app.use("*", async (c, next) => {
+  if (c.req.path === "/api/payments/webhook") {
+    return next();
+  }
+  return rateLimitMiddleware(c, next);
+});
 
 // Routes
 app.route("/api/health", health);
 app.route("/api/waitlist", waitlist);
 app.route("/api/progress", progress);
 app.route("/api/payments", payments);
+app.route("/api/profiles", profiles);
+app.route("/api/exercise-attempts", exerciseAttempts);
 
 // Root
 app.get("/", (c) => {
@@ -32,9 +45,27 @@ const port = Number(process.env.PORT) || 3001;
 
 console.log(`Tensorcraft API running on http://localhost:${port}`);
 
-serve({
+const server = serve({
   fetch: app.fetch,
   port,
 });
+
+// Graceful shutdown
+function shutdown(signal: string) {
+  console.log(`\n${signal} received — shutting down gracefully`);
+  server.close(() => {
+    console.log("Server closed");
+    process.exit(0);
+  });
+
+  // Force exit after 10s if connections are still hanging
+  setTimeout(() => {
+    console.error("Forcing exit after timeout");
+    process.exit(1);
+  }, 10_000).unref();
+}
+
+process.on("SIGTERM", () => shutdown("SIGTERM"));
+process.on("SIGINT", () => shutdown("SIGINT"));
 
 export default app;

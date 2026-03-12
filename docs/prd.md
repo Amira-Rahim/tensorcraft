@@ -1,7 +1,7 @@
 # TensorCraft PRD v3.2
 
-> **Product Requirements Document — Version 3.2**
-> Last updated: 2026-03-08
+> **Product Requirements Document — Version 3.3**
+> Last updated: 2026-03-13 (tech stack, packages, content pipeline, auth provider, module map updated to match implementation)
 
 ---
 
@@ -47,8 +47,9 @@ Deliver a gamified, project-based curriculum that meets FE developers where they
 
 ### Secondary: The Career Transitioner
 
-- **Demographics:** 5–15 years software engineering. Wants to move into ML/AI roles. May have some Python but prefers JavaScript.
-- **Job to be done:** "Give me a structured path with a portfolio project that hiring managers can evaluate in seconds."
+- **Demographics:** 5–15 years software engineering. Wants to add ML skills to expand into ML-enhanced frontend roles or ML-integrated product teams. May have some Python but prefers JavaScript.
+- **Job to be done:** "Give me a structured path with a portfolio project that proves I understand ML, so I can build ML-powered features and collaborate with data science teams."
+- **Realistic outcome:** ML-Enhanced Frontend Engineer / Frontend Engineer with ML Specialization ($120K-$160K). For full ML engineering roles, Tensorcraft provides the conceptual foundation; graduates will also need Python fluency and deeper mathematics.
 - **Willingness to pay:** $79–$169. Expense-able through employer.
 
 ### Tertiary: The Team Lead
@@ -67,11 +68,11 @@ TensorCraft organizes its curriculum into five thematic worlds. Each theme wraps
 
 | # | Theme | World | Specialization | Primary Model Types | V0.5 Status |
 |---|---|---|---|---|---|
-| 1 | Deep Orbit | Space exploration | Autonomous navigation & anomaly detection | CNN, Autoencoder, RL (DQN) | **Launch theme** |
-| 2 | Neon Protocol | Cyberpunk | Computer Vision | CNN, Object Detection, Style Transfer | Coming soon |
-| 3 | Signal Ward | Medical | NLP & Text | RNN, LSTM, Transformer (small) | Coming soon |
-| 4 | Nova Canvas | Creative AI | Multimodal & Generative | GAN, VAE, Diffusion (lite) | Coming soon |
-| 5 | Terra Grid | Industrial | Edge AI & Production ML | Decision Tree, XGBoost (JS), Model Optimization | Coming soon |
+| 1 | Deep Orbit | Space exploration | Time-Series & Signals | RNN, LSTM, Autoencoder, Anomaly Detection | **Launch theme** |
+| 2 | Neon Protocol | Cyberpunk | Computer Vision | CNN, Object Detection, Segmentation, GAN | Coming soon |
+| 3 | Signal Ward | Medical | NLP & Text | RNN, LSTM, Transformer, BERT, NER | Coming soon |
+| 4 | Nova Canvas | Creative AI | Multimodal & Generative | GAN, VAE, Diffusion, CLIP | Coming soon |
+| 5 | Terra Grid | Industrial | Edge AI & Production ML | Quantization, Pruning, Federated Learning | Coming soon |
 
 ### 3.2 Curriculum Structure
 
@@ -193,8 +194,8 @@ Screens for user signup/login and the post-signup orientation flow.
 | # | Requirement | Priority | Description |
 |---|---|---|---|
 | 1 | Auth screen | P0 | Signup/login screen with three methods: GitHub OAuth, Google OAuth, and email magic link. Centered card layout with Tensorcraft branding. Toggle between signup and login modes. |
-| 2 | OAuth providers | P0 | GitHub OAuth (via NextAuth.js v5, PKCE flow) and Google OAuth. Request minimal scopes at signup; `repo` scope requested later if GitHub integration is enabled. |
-| 3 | Email magic link | P0 | Passwordless email login via NextAuth.js email provider. Input field + "Send Magic Link" button. Link expires after 15 minutes. |
+| 2 | OAuth providers | P0 | GitHub OAuth (via Supabase Auth, PKCE flow) and Google OAuth. Request minimal scopes at signup; `repo` scope requested later if GitHub integration is enabled. |
+| 3 | Email magic link | P0 | Passwordless email login via Supabase Auth email provider. Input field + "Send Magic Link" button. Link expires after 15 minutes. |
 | 4 | Onboarding flow | P1 | 3-step post-signup flow: (1) Welcome screen with headline "You Already Think Like an ML Engineer", (2) Theme selection with Deep Orbit pre-highlighted as recommended, (3) Confirmation + "Begin Module 1" CTA. Stepper indicator shows progress. |
 | 5 | Onboarding persistence | P1 | Onboarding completion stored in user profile; completed users skip directly to dashboard on future logins. |
 | 6 | Paywall / upgrade modal | P0 | Modal shown when a free-tier user attempts to access Module 2+. Displays feature comparison, price, and upgrade CTA. Dismissible — user returns to accessible content. |
@@ -278,37 +279,41 @@ Track learning behavior, engagement, and conversion events.
 |---|---|---|
 | Framework | Next.js 15 (App Router) | Server components by default; client components for interactive panels |
 | Language | TypeScript 5.x | Strict mode enabled; no `any` types in production code |
-| Styling | Tailwind CSS 4 + CSS Modules | Tailwind for utility-first layout; CSS Modules for theme-specific overrides |
-| State management | Zustand | Lightweight; used for editor state, lesson progress, and UI toggles |
+| Styling | Tailwind CSS 4 + CSS custom properties | Tailwind for utility-first layout; CSS custom properties for per-theme theming via `data-theme` attribute |
 | ML runtime | TensorFlow.js (tfjs-core + tfjs-layers) | Runs models in-browser via WebGL backend; WASM fallback for unsupported GPUs |
-| Code editor | Monaco Editor (via @monaco-editor/react) | Shared configuration across themes; custom tokenizer for ML-specific keywords |
-| API layer | Next.js Route Handlers + tRPC | Type-safe API contracts between client and server |
+| Code editor / exercises | Sandpack (@codesandbox/sandpack-react) | Browser-based sandbox for interactive exercises with Jest-style test runner |
+| Syntax highlighting | Shiki 4.x | Lazy-loaded, cached singleton; `github-dark-default` theme; supports TS/JS/Python/JSON/Bash/YAML/MDX |
+| API layer | Hono (separate service, port 3001) | REST API on `@hono/node-server`; independent deployment and scaling from Next.js frontend |
 | Database | Supabase (PostgreSQL) | Serverless-friendly; row-level security for multi-tenant data |
-| Auth | NextAuth.js v5 | Providers: GitHub OAuth, email magic link, Google OAuth |
-| Hosting | Vercel | Edge functions for PPP lookup; ISR for lesson content pages |
+| Auth | Supabase Auth via `@supabase/ssr` | Providers: GitHub OAuth (PKCE), Google OAuth, email magic link. Cookie-based session management via Next.js middleware. |
+| Content pipeline | MDX 3 + Velite (Zod schemas) | Build-time validation; missing/invalid fields = build error. 3 collections: lessons, exercises, modules. |
+| Hosting | Vercel (frontend) + Fly.io/Railway (API, planned) | Edge functions for PPP lookup; ISR for lesson content pages |
+| Build orchestration | Turborepo + pnpm workspaces | `build:content` runs before `build` via task dependency graph |
 
 ### 5.2 Packages (Monorepo)
 
 | Package | Path | Description |
 |---|---|---|
-| `@tensorcraft/web` | `apps/web` | Next.js application — all user-facing pages and API routes |
-| `@tensorcraft/ui` | `packages/ui` | Shared component library (buttons, cards, modals, editor wrapper) |
-| `@tensorcraft/ml-sandbox` | `packages/ml-sandbox` | Sandboxed iframe environment for running learner code + TensorFlow.js models |
-| `@tensorcraft/content` | `packages/content` | MDX lesson files, theme configs, quiz data, and bridge cards |
-| `@tensorcraft/db` | `packages/db` | Supabase schema, migrations, seed scripts, and database utilities |
-| `@tensorcraft/analytics` | `packages/analytics` | Event tracking client (wraps Segment / PostHog) with typed event definitions |
-| `@tensorcraft/config` | `packages/config` | Shared ESLint, TypeScript, Tailwind, and Prettier configurations |
-| `@tensorcraft/tests` | `packages/tests` | End-to-end (Playwright) and integration test suites |
+| `@tensorcraft/web` | `apps/web` | Next.js 15 application — all user-facing pages, server/client components, and Next.js API routes (OG image generation) |
+| `@tensorcraft/api` | `apps/api` | Hono REST API service — health, waitlist, progress, payments (Stripe), profiles, and exercise-attempts endpoints |
+| `@tensorcraft/ui` | `packages/ui` | Shared React component library for MDX content rendering: CodeBlock (Shiki), Exercise (Sandpack), Dialogue, BridgeCallout, HintPanel, Quiz, LearningObjectives, KeyTakeaways |
+| `@tensorcraft/content` | `packages/content` | MDX lesson files, exercise YAML files, module metadata, Velite config, Zod schemas, and content query API |
+| `@tensorcraft/supabase` | `packages/supabase` | Supabase client/server instances, database type definitions, migrations (6 files), seed scripts, and admin operations |
+| `@tensorcraft/themes` | `packages/themes` | 5 theme manifests (Deep Orbit, Neon Protocol, Signal Ward, Nova Canvas, Terra Grid) with TypeScript configs and CSS custom properties |
+| `@tensorcraft/shared` | `packages/shared` | Shared constants (THEME_SLUGS, PRICING, ROUTES, V05_SCOPE, THEME_CONTENT), 50+ FE-to-ML bridge definitions, and shared TypeScript types |
+| `@tensorcraft/config` | `packages/config` | Shared ESLint, TypeScript, and Tailwind configurations |
 
 ### 5.3 Content Pipeline
 
-Lesson content is authored in **MDX** files stored in the `@tensorcraft/content` package. Each lesson file contains:
+Lesson content is authored in **MDX** files stored in the `@tensorcraft/content` package and compiled at build time by **Velite** with **Zod schema validation**. Three collections are defined:
 
-- Front matter (YAML): `themeId`, `moduleId`, `lessonId`, `title`, `objectives`, `bridgeConcept`, `estimatedMinutes`, `prerequisites`
-- Body (MDX): narrative text, embedded code blocks (with `runnable` and `editable` flags), quiz components (`<Quiz>`, `<MultipleChoice>`, `<CodeChallenge>`), and bridge cards (`<BridgeCard>`)
-- Assets: referenced images and diagrams stored in a co-located `assets/` directory, optimized at build time via `next/image`
+1. **Lessons** (`**/*.mdx`) — Front matter validated by Zod: `slug`, `title`, `moduleId`, `themeId`, `order`, `estimatedMinutes`, `difficulty` (beginner/intermediate/advanced), `context` (narrative + speaker), `concept` (explanation + optional bridge with tier), `consequence` (narrative + next-lesson teaser), `hints` (3-level: nudge/guidance/solution), `keywords`. Body is compiled MDX with embedded components.
+2. **Exercises** (`**/exercises/*.yaml`) — `slug`, `lessonSlug`, `title`, `instructions`, `starterCode`, `solutionCode`, `testCode`, `estimatedMinutes`, `difficulty`.
+3. **Modules** (`**/module.yaml`) — `slug`, `title`, `themeId`, `order`, `description`, `lessonCount` (always 5), `prerequisites`, `track` (foundations/specialization).
 
-A **build step** compiles MDX to serialized React components and generates a manifest file (`lesson-manifest.json`) used by the front end to render the progress diagram and handle lesson navigation.
+**Build step:** Velite compiles MDX to JavaScript and outputs to `.velite/` directory. Turbo task dependency ensures `build:content` runs before `build`. Strict mode fails the build on any invalid frontmatter. Content is queried at runtime via `packages/content/src/queries.ts` (getModules, getModuleLessons, getLesson, getExercise, getAdjacentLessons).
+
+**MDX components** (8 in `packages/ui/src/mdx/`): `<Dialogue>`, `<BridgeCallout>`, `<CodeBlock>` (Shiki), `<HintPanel>` (3-level progressive), `<LearningObjectives>`, `<KeyTakeaways>`, `<Exercise>` (Sandpack), `<Quiz>` (multiple-choice with feedback).
 
 ### 5.4 Rendering Strategy
 
@@ -492,28 +497,35 @@ Automatic regional discounts of 20–70% applied via ParityDeals based on IP geo
 
 ### A. Deep Orbit Module Map
 
-The Deep Orbit theme comprises 11 modules, each containing 5 lessons. Modules 1–6 cover shared core ML concepts (common across all themes), while Modules 7–11 dive into the theme's specialization: autonomous navigation and anomaly detection in space.
+The Deep Orbit theme comprises 11 modules, each containing 5 lessons. Modules 1–3 and 6 cover shared core ML concepts (foundations track), while Modules 4–5 and 7–10 dive into the theme's specialization (signal processing, recurrent networks, anomaly detection, LLM integration, optimization). Module 11 is the capstone.
 
-#### Shared Core Modules (Modules 1–6)
+All 11 modules are fully authored with 55 lessons and 56 exercises.
 
-| Module | Title | Lesson 1 | Lesson 2 | Lesson 3 | Lesson 4 | Lesson 5 (Capstone) |
-|---|---|---|---|---|---|---|
-| 1 | Tensors & Data | What is a Tensor? | Shapes & Ranks | Tensor Operations | Loading Space Datasets | Normalization & Preprocessing Capstone |
-| 2 | Layers & Activations | Dense Layers | Activation Functions | Forward Pass Mechanics | Loss Functions | Gradient Descent Capstone |
-| 3 | Convolutional Networks | CNN Architecture | Kernels & Filters | Pooling Strategies | Feature Map Visualization | Satellite Image Classifier Capstone |
-| 4 | Training & Evaluation | Training Loops | Batch Size & Epochs | Validation & Test Splits | Metrics (Accuracy, F1, AUC) | Model Evaluation Dashboard Capstone |
-| 5 | Optimization | SGD & Momentum | Adam & RMSProp | Learning Rate Scheduling | Early Stopping & Callbacks | Hyperparameter Tuning Capstone |
-| 6 | Deployment | Model Export (SavedModel) | TF.js Conversion | Browser Inference Pipeline | Performance Profiling | Deploy a Model to Production Capstone |
+#### Foundations Track (Modules 1–3, 6)
 
-#### Specialization Modules (Modules 7–11)
+| Order | Slug | Title | Description |
+|---|---|---|---|
+| 1 | `foundations` | Tensors & Data | Board the Archimedes and master tensors, shapes, and operations — the building blocks of every ML model |
+| 2 | `neural-networks` | Neural Networks: Layers & Architecture | Build your first neural network from scratch — neurons, layers, and activations |
+| 3 | `training-loop` | Training: Loss, Gradients & Optimization | Train the DEEP SCAN classifier — loss functions, gradient descent, and the training loop |
+| 6 | `browser-runtimes` | Browser ML Runtimes | Deploy models in the browser with TensorFlow.js, ONNX Runtime Web, and WebGPU |
 
-| Module | Title | Lesson 1 | Lesson 2 | Lesson 3 | Lesson 4 | Lesson 5 (Capstone) |
-|---|---|---|---|---|---|---|
-| 7 | Autoencoders | Encoder Architecture | Decoder Architecture | Latent Space Exploration | Denoising Autoencoders | Anomaly Detection in Telemetry Capstone |
-| 8 | Anomaly Detection | Statistical Baselines | Isolation Forests (JS) | Autoencoder Anomalies | Threshold Tuning | Space Station Anomaly Alert System Capstone |
-| 9 | Reinforcement Learning Basics | Agents & Environments | Rewards & Policies | Q-Learning Fundamentals | Epsilon-Greedy Exploration | Grid-World Navigation Capstone |
-| 10 | Deep Q-Networks | DQN Architecture | Experience Replay | Target Networks | Double DQN | Asteroid Navigation Agent Capstone |
-| 11 | Capstone Mission | Mission Briefing & Data Prep | Model Architecture Design | Training & Evaluation Pipeline | Real-Time Inference UI | Full Mission: Autonomous Space Probe Capstone |
+#### Specialization Track (Modules 4–5, 7–10)
+
+| Order | Slug | Title | Description |
+|---|---|---|---|
+| 4 | `signal-processing` | Signal Processing | FFT, spectrograms, and windowing — transforming raw time-series into rich features |
+| 5 | `recurrent-networks` | Recurrent Networks | RNNs, LSTMs, and GRUs — networks that remember past inputs and predict sequences |
+| 7 | `anomaly-detection` | Anomaly Detection | Autoencoders, reconstruction error, and anomaly scoring — flagging what deviates from normal |
+| 8 | `advanced-time-series` | Advanced Time-Series | Attention mechanisms, temporal CNNs, Kalman filters, and model ensembles |
+| 9 | `llm-integration` | LLM Integration | Prompt engineering, RAG over signal logs, and multi-model orchestration |
+| 10 | `optimization-edge` | Optimization & Edge | Quantization, pruning, caching, and WebGPU acceleration — shrink and speed up models |
+
+#### Capstone (Module 11)
+
+| Order | Slug | Title | Description |
+|---|---|---|---|
+| 11 | `capstone` | Capstone: Deploy DEEP SCAN | System architecture, CI/CD pipeline, monitoring, documentation, and production launch |
 
 ---
 

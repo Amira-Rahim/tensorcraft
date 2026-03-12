@@ -1,0 +1,124 @@
+---
+slug: deployment-targets
+title: "Deployment Targets"
+moduleId: edge-deployment
+themeId: terra-grid
+order: 1
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Cole surveys the hardware manifest for Sector 7. ARM Cortex-A53 processors, 512MB RAM, intermittent satellite connectivity. Every device is different."
+  speaker: "Cole Branson"
+concept:
+  explanation: "Edge hardware diversity mirrors browser diversity — you must test and optimize for the weakest target in your fleet, just like supporting IE11 alongside Chrome."
+  bridge:
+    feTitle: "Cross-Browser Testing"
+    feCode: "if (!('IntersectionObserver' in window)) { loadPolyfill(); }"
+    mlTitle: "Edge Hardware Detection"
+    mlCode: "if (device.ram < 256) { loadLiteModel(); }"
+    tier: structural
+consequence:
+  narrative: "Cole maps the hardware landscape. Three tiers: high-power substations, mid-range sensors, low-power remote monitors."
+  nextLessonTeaser: "Next: packaging models for these diverse targets"
+hints:
+  - level: nudge
+    content: "Think about how you detect browser capabilities before rendering"
+  - level: guidance
+    content: "Create a device profile that maps hardware specs to model variants"
+  - level: solution
+    content: "Match RAM, CPU, and connectivity to model tiers — full, medium, lite — like serving different bundles per browser capability"
+keywords:
+  - edge-hardware
+  - deployment-targets
+  - device-profiling
+  - hardware-diversity
+---
+
+<Dialogue speaker="Cole Branson">
+Once I deploy a model here, I can't just SSH in and fix it. The update has to work perfectly, every time, over a satellite link that costs $0.50 per MB.
+</Dialogue>
+
+<Dialogue speaker="GRID">
+Sector 7 hardware manifest loaded. 847 devices across 3 tiers. ARM Cortex-A53 (412 units), ARM Cortex-A72 (298 units), x86 edge servers (137 units). RAM ranges from 256MB to 4GB.
+</Dialogue>
+
+You have shipped frontend code to Safari, Firefox, Chrome, and that one customer still running IE11. You know the pain of hardware diversity. Edge ML deployment is the same problem — different processors, different memory, different capabilities — and the same solution: detect, adapt, degrade gracefully.
+
+<LearningObjectives objectives={["Map edge hardware diversity to browser compatibility testing concepts", "Profile deployment targets by CPU, RAM, and connectivity constraints", "Design tiered model deployment strategies for heterogeneous device fleets", "Implement capability detection to select the right model variant per device"]} />
+
+## The Hardware Landscape
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+In frontend development, you use feature detection to serve the right experience. Edge deployment uses the same pattern — but instead of checking for `IntersectionObserver`, you check for available RAM and compute.
+
+<CodeBlock language="typescript" title="device-profiling.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+interface DeviceProfile {
+  tier: 'high' | 'medium' | 'low';
+  ram: number;        // MB
+  cpuCores: number;
+  hasGPU: boolean;
+  connectivity: 'wired' | 'cellular' | 'satellite';
+}
+
+function profileDevice(specs: DeviceProfile): string {
+  // Like choosing a bundle size based on connection speed
+  if (specs.ram >= 2048 && specs.hasGPU) {
+    return 'models/terra-grid-full.bin';      // 12MB, full precision
+  } else if (specs.ram >= 512) {
+    return 'models/terra-grid-medium.bin';    // 4MB, int8 quantized
+  } else {
+    return 'models/terra-grid-lite.bin';      // 1.2MB, pruned + quantized
+  }
+}
+
+// Sector 7 deployment matrix
+const fleet: DeviceProfile[] = [
+  { tier: 'high', ram: 4096, cpuCores: 4, hasGPU: true, connectivity: 'wired' },
+  { tier: 'medium', ram: 512, cpuCores: 2, hasGPU: false, connectivity: 'cellular' },
+  { tier: 'low', ram: 256, cpuCores: 1, hasGPU: false, connectivity: 'satellite' },
+];
+
+fleet.forEach(device => {
+  const modelPath = profileDevice(device);
+  console.log(\`\${device.tier} tier → \${modelPath}\`);
+});`}
+</CodeBlock>
+
+## Constraint Budgets
+
+Every edge device has a budget, the same way every browser tab has a performance budget:
+
+<CodeBlock language="typescript" title="constraint-budget.ts">
+{`interface DeploymentBudget {
+  maxModelSizeMB: number;     // Like max bundle size
+  maxInferenceMs: number;     // Like time-to-interactive
+  maxMemoryMB: number;        // Like JS heap limit
+  updateBandwidthMB: number;  // Like data-saver mode
+}
+
+const budgets: Record<string, DeploymentBudget> = {
+  substation: { maxModelSizeMB: 12, maxInferenceMs: 50, maxMemoryMB: 2048, updateBandwidthMB: 50 },
+  sensor:     { maxModelSizeMB: 4,  maxInferenceMs: 100, maxMemoryMB: 256, updateBandwidthMB: 10 },
+  remote:     { maxModelSizeMB: 1.5, maxInferenceMs: 200, maxMemoryMB: 128, updateBandwidthMB: 2 },
+};
+
+function validateDeployment(modelSizeMB: number, target: string): boolean {
+  const budget = budgets[target];
+  if (modelSizeMB > budget.maxModelSizeMB) {
+    console.error(\`Model \${modelSizeMB}MB exceeds \${target} budget of \${budget.maxModelSizeMB}MB\`);
+    return false;
+  }
+  return true;
+}`}
+</CodeBlock>
+
+## Challenge
+
+Analyze a fleet of edge devices and assign the correct model variant to each.
+
+<Exercise slug="target-analysis" />
+
+<KeyTakeaways takeaways={["Edge hardware diversity mirrors browser diversity — profile targets and adapt", "Device profiling maps RAM, CPU, and connectivity to model tiers, like feature detection selects polyfills", "Constraint budgets for edge devices parallel performance budgets in frontend — model size is your bundle size", "Graceful degradation means every device gets the best model it can run, not a one-size-fits-all deployment"]} />

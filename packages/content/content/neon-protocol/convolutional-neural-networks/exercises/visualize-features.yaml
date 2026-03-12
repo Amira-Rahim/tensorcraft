@@ -1,0 +1,136 @@
+slug: visualize-features
+lessonSlug: visualizing-features
+title: "Visualize CNN Feature Maps"
+instructions: "Implement two functions. normalizeMap takes a 2D array of raw activation values and normalizes them to the [0, 1] range using min-max normalization (return all zeros if range is 0). extractActivations takes an array of 2D feature maps (number[][][]) and returns an array of ActivationMap objects, each containing the filterIndex, the normalized map, and the maxActivation (peak value from the raw map)."
+starterCode: |
+  interface ActivationMap {
+    filterIndex: number;
+    map: number[][];
+    maxActivation: number;
+  }
+
+  function normalizeMap(raw: number[][]): number[][] {
+    // TODO: Find min and max across all values
+    // TODO: Return all zeros if range is 0
+    // TODO: Scale to [0, 1] using (val - min) / range
+    return null as any;
+  }
+
+  function extractActivations(
+    featureMaps: number[][][]
+  ): ActivationMap[] {
+    // TODO: For each feature map, normalize it and find max activation
+    // TODO: Return an ActivationMap for each filter
+    return null as any;
+  }
+solutionCode: |
+  interface ActivationMap {
+    filterIndex: number;
+    map: number[][];
+    maxActivation: number;
+  }
+
+  function normalizeMap(raw: number[][]): number[][] {
+    let min = Infinity;
+    let max = -Infinity;
+
+    for (const row of raw) {
+      for (const val of row) {
+        if (val < min) min = val;
+        if (val > max) max = val;
+      }
+    }
+
+    const range = max - min;
+    if (range === 0) return raw.map(row => row.map(() => 0));
+
+    return raw.map(row =>
+      row.map(val => (val - min) / range)
+    );
+  }
+
+  function extractActivations(
+    featureMaps: number[][][]
+  ): ActivationMap[] {
+    return featureMaps.map((raw, i) => {
+      const normalized = normalizeMap(raw);
+      let peakVal = -Infinity;
+      for (const row of raw) {
+        for (const val of row) {
+          if (val > peakVal) peakVal = val;
+        }
+      }
+
+      return {
+        filterIndex: i,
+        map: normalized,
+        maxActivation: peakVal,
+      };
+    });
+  }
+testCode: |
+  describe('Feature Visualization', () => {
+    describe('normalizeMap', () => {
+      it('scales to [0, 1] range', () => {
+        const raw = [[0, 5], [10, 15]];
+        const result = normalizeMap(raw);
+        expect(result[0][0]).toBeCloseTo(0);
+        expect(result[1][1]).toBeCloseTo(1);
+        expect(result[0][1]).toBeCloseTo(1/3, 4);
+      });
+
+      it('returns zeros for uniform values', () => {
+        const raw = [[7, 7], [7, 7]];
+        const result = normalizeMap(raw);
+        expect(result).toEqual([[0, 0], [0, 0]]);
+      });
+
+      it('handles negative values', () => {
+        const raw = [[-10, 0, 10]];
+        const result = normalizeMap(raw);
+        expect(result[0][0]).toBeCloseTo(0);
+        expect(result[0][1]).toBeCloseTo(0.5);
+        expect(result[0][2]).toBeCloseTo(1);
+      });
+    });
+
+    describe('extractActivations', () => {
+      it('returns one ActivationMap per feature map', () => {
+        const featureMaps = [
+          [[1, 2], [3, 4]],
+          [[5, 6], [7, 8]],
+        ];
+        const result = extractActivations(featureMaps);
+        expect(result.length).toBe(2);
+      });
+
+      it('sets correct filterIndex', () => {
+        const featureMaps = [
+          [[1, 2], [3, 4]],
+          [[5, 6], [7, 8]],
+        ];
+        const result = extractActivations(featureMaps);
+        expect(result[0].filterIndex).toBe(0);
+        expect(result[1].filterIndex).toBe(1);
+      });
+
+      it('finds correct maxActivation', () => {
+        const featureMaps = [
+          [[1, 9], [3, 4]],
+          [[5, 6], [7, 2]],
+        ];
+        const result = extractActivations(featureMaps);
+        expect(result[0].maxActivation).toBe(9);
+        expect(result[1].maxActivation).toBe(7);
+      });
+
+      it('normalizes the maps', () => {
+        const featureMaps = [[[0, 10], [5, 15]]];
+        const result = extractActivations(featureMaps);
+        expect(result[0].map[0][0]).toBeCloseTo(0);
+        expect(result[0].map[1][1]).toBeCloseTo(1);
+      });
+    });
+  });
+estimatedMinutes: 8
+difficulty: advanced

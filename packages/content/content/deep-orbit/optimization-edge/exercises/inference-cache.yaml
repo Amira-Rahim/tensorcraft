@@ -1,0 +1,113 @@
+slug: inference-cache
+lessonSlug: caching-strategies
+title: "Build an Inference Cache"
+instructions: "Build an LRU inference cache with a max size and TTL (time-to-live). The cache should hash inputs by quantizing to 2 decimal places, evict the oldest entry when full, and expire entries older than the TTL."
+starterCode: |
+  class InferenceCache {
+    private cache = new Map<string, { result: string; timestamp: number }>();
+    private maxSize: number;
+    private ttlMs: number;
+
+    constructor(maxSize: number, ttlMs: number) {
+      this.maxSize = maxSize;
+      this.ttlMs = ttlMs;
+    }
+
+    private hashInput(input: number[]): string {
+      // Quantize to 2 decimal places and join with commas
+      return null; // your code here
+    }
+
+    get(input: number[], now: number = Date.now()): string | null {
+      // Return cached result if exists and not expired, else null
+      return null; // your code here
+    }
+
+    set(input: number[], result: string, now: number = Date.now()): void {
+      // Evict oldest if at capacity, then store
+      return null; // your code here
+    }
+
+    get size(): number {
+      return this.cache.size;
+    }
+  }
+solutionCode: |
+  class InferenceCache {
+    private cache = new Map<string, { result: string; timestamp: number }>();
+    private maxSize: number;
+    private ttlMs: number;
+
+    constructor(maxSize: number, ttlMs: number) {
+      this.maxSize = maxSize;
+      this.ttlMs = ttlMs;
+    }
+
+    private hashInput(input: number[]): string {
+      const quantized = input.map(v => Math.round(v * 100) / 100);
+      return quantized.join(',');
+    }
+
+    get(input: number[], now: number = Date.now()): string | null {
+      const key = this.hashInput(input);
+      const entry = this.cache.get(key);
+      if (!entry) return null;
+      if (now - entry.timestamp > this.ttlMs) {
+        this.cache.delete(key);
+        return null;
+      }
+      return entry.result;
+    }
+
+    set(input: number[], result: string, now: number = Date.now()): void {
+      const key = this.hashInput(input);
+      if (this.cache.size >= this.maxSize && !this.cache.has(key)) {
+        const oldest = this.cache.keys().next().value;
+        if (oldest) this.cache.delete(oldest);
+      }
+      this.cache.set(key, { result, timestamp: now });
+    }
+
+    get size(): number {
+      return this.cache.size;
+    }
+  }
+testCode: |
+  describe('InferenceCache', () => {
+    it('caches and retrieves results', () => {
+      const cache = new InferenceCache(10, 60000);
+      cache.set([1.0, 2.0, 3.0], 'anomaly', 1000);
+      expect(cache.get([1.0, 2.0, 3.0], 2000)).toBe('anomaly');
+    });
+
+    it('returns null for missing entries', () => {
+      const cache = new InferenceCache(10, 60000);
+      expect(cache.get([1.0, 2.0], 1000)).toBeNull();
+    });
+
+    it('expires entries after TTL', () => {
+      const cache = new InferenceCache(10, 5000);
+      cache.set([1.0], 'result', 1000);
+      expect(cache.get([1.0], 5000)).toBe('result');
+      expect(cache.get([1.0], 7000)).toBeNull();
+    });
+
+    it('quantizes inputs for near-match hits', () => {
+      const cache = new InferenceCache(10, 60000);
+      cache.set([1.001, 2.009], 'hit', 1000);
+      expect(cache.get([1.001, 2.009], 2000)).toBe('hit');
+    });
+
+    it('evicts oldest when full', () => {
+      const cache = new InferenceCache(2, 60000);
+      cache.set([1.0], 'first', 1000);
+      cache.set([2.0], 'second', 2000);
+      cache.set([3.0], 'third', 3000);
+      expect(cache.size).toBe(2);
+      expect(cache.get([1.0], 4000)).toBeNull();
+      expect(cache.get([2.0], 4000)).toBe('second');
+      expect(cache.get([3.0], 4000)).toBe('third');
+    });
+  });
+estimatedMinutes: 12
+difficulty: intermediate

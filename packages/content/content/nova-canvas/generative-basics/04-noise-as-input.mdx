@@ -1,0 +1,117 @@
+---
+slug: noise-as-input
+title: "Noise as Input"
+moduleId: generative-basics
+themeId: nova-canvas
+order: 4
+estimatedMinutes: 25
+difficulty: beginner
+context:
+  narrative: "Yara shows Ren her generative art sketches — intricate patterns grown from pure noise. Every generative model starts with randomness and shapes it into structure."
+  speaker: "Yara"
+concept:
+  explanation: "Generative models take random noise as input and transform it into structured output. The noise provides the raw variation; the model provides the structure."
+  bridge:
+    feTitle: "Perlin Noise"
+    feCode: "const val = noise.perlin2(x * 0.01, y * 0.01)"
+    mlTitle: "Latent Noise Vector"
+    mlCode: "const z = tf.randomNormal([1, 100])"
+    tier: structural
+consequence:
+  narrative: "Ren builds a canvas sketch driven by noise vectors and sees the parallel — noise is the clay, the model is the sculptor."
+  nextLessonTeaser: "Next: putting it all together to build your first generator"
+hints:
+  - level: nudge
+    content: "Perlin noise creates smooth randomness for terrain and textures — ML noise vectors serve the same purpose"
+  - level: guidance
+    content: "Create a noise vector with tf.randomNormal, then pass it through a dense layer"
+  - level: solution
+    content: "const z = tf.randomNormal([1, 64]); const output = tf.layers.dense({units: 784}).apply(z);"
+keywords:
+  - noise
+  - perlin
+  - latent-vector
+  - random-input
+---
+
+<Dialogue speaker="Yara">
+Every painting I make starts the same way — with a mess. A splash of paint, a smear of charcoal, a random gesture. The art is not in the first mark. The art is in what I do with it afterward. Generative models work the same way.
+</Dialogue>
+
+<Dialogue speaker="MUSE">
+From chaos, structure. From noise, signal. From nothing, everything.
+</Dialogue>
+
+If you have ever used Perlin noise to generate terrain in a canvas game, or simplex noise for procedural textures, you already understand the core idea. Noise is not the enemy of creation — it is the raw material.
+
+<LearningObjectives objectives={["Understand why generative models start from random noise", "Connect Perlin noise in canvas art to latent vectors in ML", "Create and manipulate noise vectors with TensorFlow.js", "Transform noise into structured patterns using a simple neural layer"]} />
+
+## Why Start from Noise?
+
+A generative model needs a source of variation. If you gave it the same input every time, it would produce the same output every time. Noise provides infinite variation — each random vector is a unique seed for a unique creation.
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="noise-to-structure.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Frontend: Perlin noise → terrain heightmap
+// Each (x, y) coordinate gets a smooth random value
+function generateTerrain(width: number, height: number) {
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d')!;
+  // noise.perlin2(x * scale, y * scale) → smooth height values
+  // Random input → structured output
+}
+
+// ML: Random vector → generated image
+// A noise vector is like coordinates in "idea space"
+const noiseVector = tf.randomNormal([1, 100]);
+// Each of the 100 dimensions encodes some aspect of the output
+
+// Different noise → different output
+const noise1 = tf.randomNormal([1, 100]);
+const noise2 = tf.randomNormal([1, 100]);
+// noise1 and noise2 will produce different generated images`}
+</CodeBlock>
+
+## Shaping Noise with Layers
+
+Raw noise is formless. A neural network layer transforms it into something with structure — just like how a vertex shader transforms random mesh data into a recognizable shape.
+
+<CodeBlock language="typescript" title="noise-through-layers.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// A single dense layer transforms noise into a pattern
+const noiseInput = tf.randomNormal([1, 64]);
+
+// Dense layer: 64 random values → 784 structured values (28x28 grid)
+const denseLayer = tf.layers.dense({ units: 784, activation: 'sigmoid' });
+const output = denseLayer.apply(noiseInput) as tf.Tensor;
+const reshaped = output.reshape([28, 28]);
+
+// Render to canvas
+async function renderToCanvas(tensor: tf.Tensor2D, canvas: HTMLCanvasElement) {
+  const data = await tensor.array();
+  const ctx = canvas.getContext('2d')!;
+  const imageData = ctx.createImageData(28, 28);
+  for (let i = 0; i < 784; i++) {
+    const v = Math.floor(data[Math.floor(i / 28)][i % 28] * 255);
+    imageData.data[i * 4] = v;
+    imageData.data[i * 4 + 1] = v;
+    imageData.data[i * 4 + 2] = v;
+    imageData.data[i * 4 + 3] = 255;
+  }
+  ctx.putImageData(imageData, 0, 0);
+}
+// Without training: random-looking pattern
+// After training: the layer learns to shape noise into meaningful images`}
+</CodeBlock>
+
+The untrained layer produces visual static. Training teaches it which shapes, edges, and textures are meaningful — just as an artist learns which marks to keep and which to discard.
+
+## Challenge
+
+<Exercise slug="noise-patterns" />
+
+<KeyTakeaways takeaways={["Generative models use random noise vectors as input for infinite variation", "Perlin noise in canvas art is conceptually identical to latent vectors in ML", "Neural network layers transform unstructured noise into structured output", "Training teaches the network which transformations produce meaningful results"]} />

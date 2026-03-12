@@ -1,0 +1,122 @@
+---
+slug: tokens-and-vocabulary
+title: "Tokens and Vocabulary"
+moduleId: ml-through-text
+themeId: signal-ward
+order: 4
+estimatedMinutes: 25
+difficulty: beginner
+context:
+  narrative: "Obi explains that before text can become numbers, it must be broken into tokens — the atomic units of text processing, just like URL segments."
+  speaker: "Obi"
+concept:
+  explanation: "Tokenization breaks text into discrete units (tokens) that can be mapped to numbers. Just as new URL() parses a URL into protocol, host, path, and query segments, a tokenizer parses text into processable pieces."
+  bridge:
+    feTitle: "URL Parsing"
+    feCode: "new URL('https://hospital.org/patient/123').pathname.split('/')"
+    mlTitle: "Tokenization"
+    mlCode: "'patient reports pain'.split(/\\s+/).map(t => vocab[t])"
+    tier: structural
+consequence:
+  narrative: "Diagnostic One can now split clinical notes into tokens and map them to vocabulary indices."
+  nextLessonTeaser: "Next: connecting all the pieces in a complete forward pass."
+hints:
+  - level: nudge
+    content: "Split the text into words, then look up each word in a vocabulary dictionary."
+  - level: guidance
+    content: "Use a Map or object to store word-to-index mappings, then map each token to its index."
+  - level: solution
+    content: "text.split(/\\s+/).map(word => vocabMap.get(word.toLowerCase()) ?? 0)"
+keywords:
+  - tokenization
+  - vocabulary
+  - text-processing
+  - token-ids
+---
+
+> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
+
+<Dialogue speaker="Obi">
+Khalil, when you parse a URL like /patient/123/records, you split it into segments: "patient", "123", "records." Each segment means something different. Tokenization does the same for text.
+</Dialogue>
+
+<Dialogue speaker="Khalil">
+So "patient reports chest pain" becomes four tokens?
+</Dialogue>
+
+<Dialogue speaker="Obi">
+Right. And each token maps to an index in our vocabulary. "patient" might be index 42, "reports" is 107, and so on. The model only sees these numbers.
+</Dialogue>
+
+You parse URLs all the time. `new URL()` breaks a URL into structured parts — protocol, host, pathname, search params. Tokenization does the same for natural language: it breaks a sentence into structured parts that a model can process.
+
+<LearningObjectives objectives={["Tokenize text by splitting on whitespace and punctuation", "Build a vocabulary mapping from words to integer indices", "Convert a sentence into a sequence of token IDs", "Handle unknown words with an out-of-vocabulary token"]} />
+
+## From Text to Token IDs
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="tokenization-basics.ts">
+{`// URL parsing: string → structured segments
+const url = new URL('https://hospital.org/patient/123/records');
+const segments = url.pathname.split('/').filter(Boolean);
+// ['patient', '123', 'records']
+
+// Text tokenization: string → structured tokens
+function tokenize(text: string): string[] {
+  return text.toLowerCase()
+    .replace(/[.,!?;:]/g, ' ')
+    .split(/\s+/)
+    .filter(Boolean);
+}
+
+const tokens = tokenize('Patient reports chest pain.');
+// ['patient', 'reports', 'chest', 'pain']`}
+</CodeBlock>
+
+## Building a Vocabulary
+
+A vocabulary maps each unique word to an integer ID. This is exactly like an i18n translation dictionary — each key maps to a value.
+
+<CodeBlock language="typescript" title="vocabulary-map.ts">
+{`// Build vocabulary from a corpus of notes
+function buildVocab(corpus: string[]): Map<string, number> {
+  const vocab = new Map<string, number>();
+  vocab.set('<PAD>', 0);   // padding token
+  vocab.set('<UNK>', 1);   // unknown words
+
+  let index = 2;
+  for (const text of corpus) {
+    for (const token of tokenize(text)) {
+      if (!vocab.has(token)) {
+        vocab.set(token, index++);
+      }
+    }
+  }
+  return vocab;
+}
+
+const corpus = [
+  'Patient reports chest pain',
+  'Patient denies fever or chills',
+];
+
+const vocab = buildVocab(corpus);
+// Map { '<PAD>' => 0, '<UNK>' => 1, 'patient' => 2, 'reports' => 3, ... }
+
+// Convert text to token IDs
+function encode(text: string, vocab: Map<string, number>): number[] {
+  return tokenize(text).map(t => vocab.get(t) ?? 1); // 1 = <UNK>
+}
+
+console.log(encode('Patient reports chest pain', vocab));
+// [2, 3, 4, 5]`}
+</CodeBlock>
+
+## Challenge
+
+Build a tokenizer and vocabulary encoder for clinical notes.
+
+<Exercise slug="tokenize-text" />
+
+<KeyTakeaways takeaways={["Tokenization splits text into atomic units, just like URL parsing splits paths into segments", "A vocabulary maps each unique token to an integer index", "Unknown words get a special <UNK> token to handle unseen text", "Token IDs are the numerical input that models actually process"]} />

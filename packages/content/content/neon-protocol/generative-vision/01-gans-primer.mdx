@@ -1,0 +1,170 @@
+---
+slug: gans-primer
+title: "GANs Primer"
+moduleId: generative-vision
+themeId: neon-protocol
+order: 1
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Zara has an idea. If Meridian's cameras use classifiers, then images can be crafted to confuse those classifiers. But first, the team needs to understand generative adversarial networks — two neural networks locked in competition."
+  speaker: "Zara"
+concept:
+  explanation: "A GAN is two networks competing: a generator creates fake data, a discriminator judges whether data is real or fake. They improve each other through adversarial training — like a fuzzer finding bugs that a validator misses."
+  bridge:
+    feTitle: "Fuzzer vs Validator in Testing"
+    feCode: "const fuzzInput = fuzzer.generate(); const isValid = validator.check(fuzzInput);"
+    mlTitle: "Generator vs Discriminator"
+    mlCode: "const fakeImage = generator.predict(noise); const isReal = discriminator.predict(fakeImage);"
+    tier: structural
+consequence:
+  narrative: "Kira trains her first GAN on surveillance camera images. The generator produces blurry approximations at first — then eerily realistic fakes. NEON: 'Congratulations. You have taught a neural network to lie. I hope you feel the appropriate amount of existential dread.'"
+  nextLessonTeaser: "Next: using GANs to generate synthetic training data"
+hints:
+  - level: nudge
+    content: "Think of the generator as a fuzzer creating test inputs, and the discriminator as a validator checking them"
+  - level: guidance
+    content: "Build two separate models — one that generates images from random noise, one that classifies images as real or fake"
+  - level: solution
+    content: "Generator: Dense -> Reshape -> Conv2DTranspose layers. Discriminator: Conv2D -> Dense -> sigmoid. Train alternately."
+keywords:
+  - GAN
+  - generator
+  - discriminator
+  - adversarial-training
+  - generative-model
+---
+
+<Dialogue speaker="Zara">
+Art has always been resistance. Graffiti over billboards. Murals over propaganda. Now the art literally fights back — images designed to confuse the cameras that oppress us. But first, you need to understand how machines create images.
+</Dialogue>
+
+<Dialogue speaker="NEON">
+A Generative Adversarial Network is two neural networks playing an infinite game. The generator is a counterfeiter. The discriminator is a detective. They make each other better. It is elegant, unstable, and occasionally terrifying.
+</Dialogue>
+
+A GAN pits two networks against each other. The generator creates fake data; the discriminator judges whether data is real or fake. As the discriminator improves, the generator must produce better fakes. As the generator improves, the discriminator must become more discerning. You have seen this pattern before: fuzz testing.
+
+<LearningObjectives objectives={["Understand the adversarial relationship between generator and discriminator", "Build a simple generator that produces images from random noise", "Build a discriminator that classifies images as real or fake", "Implement the alternating training loop that makes GANs work"]} />
+
+## Two Networks, One Game
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="gan-architecture.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Generator: random noise -> fake image
+function buildGenerator(latentDim: number): tf.LayersModel {
+  const model = tf.sequential();
+
+  // Dense layer to create initial feature map
+  model.add(tf.layers.dense({
+    inputShape: [latentDim],
+    units: 7 * 7 * 128,
+    activation: 'relu',
+  }));
+
+  // Reshape to spatial dimensions
+  model.add(tf.layers.reshape({ targetShape: [7, 7, 128] }));
+
+  // Upsample: 7x7 -> 14x14
+  model.add(tf.layers.conv2dTranspose({
+    filters: 64,
+    kernelSize: 4,
+    strides: 2,
+    padding: 'same',
+    activation: 'relu',
+  }));
+
+  // Upsample: 14x14 -> 28x28
+  model.add(tf.layers.conv2dTranspose({
+    filters: 1,
+    kernelSize: 4,
+    strides: 2,
+    padding: 'same',
+    activation: 'tanh', // Output in [-1, 1]
+  }));
+
+  return model;
+}
+
+// Discriminator: image -> real or fake?
+function buildDiscriminator(): tf.LayersModel {
+  const model = tf.sequential();
+
+  model.add(tf.layers.conv2d({
+    inputShape: [28, 28, 1],
+    filters: 64,
+    kernelSize: 4,
+    strides: 2,
+    padding: 'same',
+    activation: 'leakyReLU',
+  }));
+
+  model.add(tf.layers.conv2d({
+    filters: 128,
+    kernelSize: 4,
+    strides: 2,
+    padding: 'same',
+    activation: 'leakyReLU',
+  }));
+
+  model.add(tf.layers.flatten());
+  model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
+
+  model.compile({
+    optimizer: tf.train.adam(0.0002),
+    loss: 'binaryCrossentropy',
+  });
+
+  return model;
+}`}
+</CodeBlock>
+
+## The Training Loop
+
+<CodeBlock language="typescript" title="gan-training.ts">
+{`// Alternating training: discriminator then generator
+async function trainGanStep(
+  generator: tf.LayersModel,
+  discriminator: tf.LayersModel,
+  realImages: tf.Tensor4D,
+  latentDim: number,
+  batchSize: number
+) {
+  // Step 1: Train discriminator on real + fake
+  const noise = tf.randomNormal([batchSize, latentDim]);
+  const fakeImages = generator.predict(noise) as tf.Tensor;
+
+  const realLabels = tf.ones([batchSize, 1]);
+  const fakeLabels = tf.zeros([batchSize, 1]);
+
+  const dLossReal = await discriminator.trainOnBatch(realImages, realLabels);
+  const dLossFake = await discriminator.trainOnBatch(fakeImages, fakeLabels);
+
+  // Step 2: Train generator (through frozen discriminator)
+  // Generator succeeds when discriminator says "real"
+  const genNoise = tf.randomNormal([batchSize, latentDim]);
+  const misleadingLabels = tf.ones([batchSize, 1]); // Generator wants "real"
+
+  // Combined model: generator -> discriminator
+  // Discriminator weights frozen during this step
+  const genOutput = generator.predict(genNoise) as tf.Tensor;
+  const gLoss = await discriminator.trainOnBatch(genOutput, misleadingLabels);
+
+  // Cleanup
+  tf.dispose([noise, fakeImages, realLabels, fakeLabels,
+              genNoise, misleadingLabels, genOutput]);
+
+  return { dLossReal, dLossFake, gLoss };
+}`}
+</CodeBlock>
+
+## Challenge
+
+Build the generator and discriminator components of a GAN.
+
+<Exercise slug="build-gan" />
+
+<KeyTakeaways takeaways={["GANs are two networks in competition — a generator (counterfeiter) and discriminator (detective)", "The generator maps random noise to images; the discriminator classifies images as real or fake", "Training alternates: first improve the discriminator, then improve the generator", "The fuzzer-vs-validator pattern from testing is the same adversarial dynamic"]} />

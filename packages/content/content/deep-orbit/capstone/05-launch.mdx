@@ -1,0 +1,202 @@
+---
+slug: launch
+title: "Launch"
+moduleId: capstone
+themeId: deep-orbit
+order: 5
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "Everything is ready. Okafor gives the final order: 'Deploy DEEP SCAN. Classify the anomalous signal. Let's find out what we've been chasing across the galaxy.' Park deploys. The signal is classified."
+  speaker: "Commander Okafor"
+concept:
+  explanation: "Deploying an ML system to production is the same as deploying a web app — build, optimize, ship to a static host. The model is just another asset in the bundle."
+  bridge:
+    feTitle: "Static Site Deploy"
+    feCode: "npm run build && gh-pages -d dist // bundle, optimize, ship"
+    mlTitle: "ML App Deploy"
+    mlCode: "npm run build && gh-pages -d dist // same — model is a static asset"
+    tier: identity
+consequence:
+  narrative: "DEEP SCAN goes live. The anomalous signal is classified. The result appears on every display on the bridge. Silence. Then Okafor speaks."
+  nextLessonTeaser: "Mission complete. But the signal keeps transmitting."
+hints:
+  - level: nudge
+    content: "The model file is a static asset — deploy it like any other file in your build output"
+  - level: guidance
+    content: "Build the app, include the model in the dist folder, deploy to GitHub Pages"
+  - level: solution
+    content: "Configure the build to copy model files to dist, set up gh-pages deployment, verify the model loads from the deployed URL"
+keywords:
+  - deployment
+  - github-pages
+  - production
+  - static-site
+  - launch
+---
+
+<Dialogue speaker="Commander Okafor">
+Ten modules. Four months of work. The model is optimized, tested, monitored, documented. There is nothing left to prepare. Deploy DEEP SCAN. Classify the anomalous signal. Let us find out what we have been chasing.
+</Dialogue>
+
+Every web app you've built ends the same way: `npm run build`, push to production, watch the deploy. Deploying DEEP SCAN is no different. The model file is a static asset — like an image or a font. It goes in the build output, gets served from a CDN, and loads in the browser. The entire ML system runs client-side.
+
+<LearningObjectives objectives={["Configure a production build that includes model assets alongside web assets", "Deploy an ML-powered web app to GitHub Pages as a static site", "Verify the deployed system loads and runs inference correctly", "Complete the DEEP SCAN mission: classify the anomalous signal"]} />
+
+## Production Build
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="build-config.ts">
+{`// Production build configuration
+// Model files are static assets — treat them like images or fonts
+
+interface BuildConfig {
+  entry: string;
+  output: string;
+  assets: {
+    models: string[];    // model.json + weight shards
+    testData: string[];  // holdout data for validation
+  };
+  optimization: {
+    minify: boolean;
+    treeshake: boolean;
+    splitChunks: boolean;
+  };
+}
+
+const config: BuildConfig = {
+  entry: 'src/index.ts',
+  output: 'dist',
+  assets: {
+    models: [
+      'models/deep-scan-v1/model.json',      // 2 KB — model topology
+      'models/deep-scan-v1/weights.bin',      // 42 MB — quantized + pruned
+    ],
+    testData: [
+      'data/validation-sample.json',          // 100 samples for smoke test
+    ],
+  },
+  optimization: {
+    minify: true,
+    treeshake: true,
+    splitChunks: true,   // Separate model loading from app code
+  },
+};
+
+// Build output:
+// dist/
+// ├── index.html              (~5 KB)
+// ├── app.js                  (~150 KB gzipped)
+// ├── models/
+// │   ├── model.json          (~2 KB)
+// │   └── weights.bin         (~42 MB)
+// └── data/
+//     └── validation.json     (~50 KB)`}
+</CodeBlock>
+
+## Deploy and Verify
+
+<CodeBlock language="typescript" title="deploy.ts">
+{`// Deployment verification — smoke test the live system
+
+async function verifyDeployment(baseUrl: string): Promise<boolean> {
+  console.log('=== DEEP SCAN Deployment Verification ===');
+  console.log('');
+
+  // 1. Check model loads
+  console.log('1. Loading model...');
+  const modelUrl = \`\${baseUrl}/models/deep-scan-v1/model.json\`;
+  const response = await fetch(modelUrl);
+  if (!response.ok) {
+    console.error('✗ Model failed to load:', response.status);
+    return false;
+  }
+  console.log('✓ Model loaded successfully');
+
+  // 2. Check inference works
+  console.log('2. Running test inference...');
+  const testSignal = new Float32Array(80).fill(0).map(() => Math.random() * 2 - 1);
+  const result = await pipeline.classify(testSignal);
+  if (!result.label || result.confidence < 0) {
+    console.error('✗ Inference returned invalid result');
+    return false;
+  }
+  console.log(\`✓ Inference works: \${result.label} (\${(result.confidence * 100).toFixed(1)}%)\`);
+
+  // 3. Check performance
+  console.log('3. Benchmarking...');
+  const times: number[] = [];
+  for (let i = 0; i < 20; i++) {
+    const input = new Float32Array(80).fill(0).map(() => Math.random() * 2 - 1);
+    const t0 = performance.now();
+    await pipeline.classify(input);
+    times.push(performance.now() - t0);
+  }
+  const avgMs = times.reduce((a, b) => a + b) / times.length;
+  console.log(\`✓ Avg inference: \${avgMs.toFixed(1)}ms\`);
+
+  console.log('');
+  console.log('=== Deployment verified ===');
+  return true;
+}`}
+</CodeBlock>
+
+## The Signal
+
+<CodeBlock language="typescript" title="classify-anomaly.ts">
+{`// The moment everything has been building toward.
+// Classify the anomalous signal that the crew has tracked across 11 modules.
+
+async function classifyAnomalousSignal(): Promise<void> {
+  console.log('=== DEEP SCAN v1.0 — Final Classification ===');
+  console.log('');
+  console.log('Signal source: 4.2 light-years, bearing 127.3');
+  console.log('Duration: 340+ years of continuous transmission');
+  console.log('');
+
+  // Load the anomalous signal — the one that started everything
+  const anomalousSignal = await loadSignal('anomaly-kepler-442-001');
+
+  // Run through the complete pipeline
+  const preprocessed = await preprocess(anomalousSignal);
+  const features = await extractFeatures(preprocessed);
+  const classification = await classify(features);
+  const anomalyCheck = await detectAnomalies(features);
+  const sequenceAnalysis = await analyzeSequence(preprocessed);
+
+  // The result
+  console.log('--- Classification Result ---');
+  console.log('Label:', classification.label);
+  console.log('Confidence:', (classification.confidence * 100).toFixed(1) + '%');
+  console.log('Anomaly score:', anomalyCheck.score.toFixed(4));
+  console.log('');
+  console.log('--- Sequence Analysis ---');
+  console.log('Pattern: Fibonacci ratios (1, 1, 2, 3, 5, 8, 13...)');
+  console.log('Encoded as: pulse-interval proportions');
+  console.log('Match: Archimedes sensor calibration harmonics');
+  console.log('Correlation: 0.9987');
+  console.log('');
+  console.log('--- DEEP SCAN Assessment ---');
+  console.log('This signal contains mathematical structure consistent');
+  console.log('with the Fibonacci sequence. The pulse intervals mirror');
+  console.log('this vessel\\'s own calibration harmonics.');
+  console.log('');
+  console.log('Two hypotheses:');
+  console.log('  1. Natural phenomenon (phyllotaxis, shell spirals)');
+  console.log('  2. Adapted response to Archimedes transmissions');
+  console.log('');
+  console.log('Recommendation: Transmit all data to Earth for');
+  console.log('independent verification.');
+  console.log('');
+  console.log('DEEP SCAN v1.0 — Signal Classified. Mission Continues.');
+}`}
+</CodeBlock>
+
+## Challenge
+
+Write a deployment verification script for the complete system.
+
+<Exercise slug="verify-deployment" />
+
+<KeyTakeaways takeaways={["ML deployment is web deployment — the model is a static asset in your build output, served from a CDN", "Always verify deployments: model loads, inference works, performance meets budget", "DEEP SCAN v1.0: 42 MB model, 5ms inference, 91.8% accuracy — from 340 MB in Module 1 to production", "The signal is classified. The mission continues. And you — you think like an ML engineer now."]} />

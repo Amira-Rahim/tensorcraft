@@ -1,0 +1,18 @@
+slug: anomaly-detection
+title: "Anomaly Detection"
+themeId: deep-orbit
+order: 7
+description: |
+  DEEP SCAN's anomaly detector fires on a signal that matches no known category.
+  The reconstruction error is off the charts. You'll build autoencoders that learn
+  what "normal" looks like, then flag anything that deviates — using the same
+  intuition as git diff and error boundaries.
+lessonCount: 5
+prerequisites:
+  - foundations
+  - neural-networks
+  - training-loop
+  - browser-runtimes
+  - signal-processing
+  - recurrent-networks
+track: specialization

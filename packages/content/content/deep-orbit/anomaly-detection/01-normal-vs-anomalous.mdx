@@ -1,0 +1,134 @@
+---
+slug: normal-vs-anomalous
+title: "Normal vs Anomalous"
+moduleId: anomaly-detection
+themeId: deep-orbit
+order: 1
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "DEEP SCAN flags a signal that doesn't match any known category. Torres challenges: is the model broken, or have they found something new?"
+  speaker: "Chief Torres"
+concept:
+  explanation: "Anomaly detection defines what 'normal' looks like and flags deviations — like establishing baseline performance metrics and alerting when they drift."
+  bridge:
+    feTitle: "Performance Baseline"
+    feCode: "if (LCP > baseline * 1.5) alert('performance regression')"
+    mlTitle: "Anomaly Threshold"
+    mlCode: "if (reconstructionError > threshold) flag('anomaly')"
+    tier: structural
+consequence:
+  narrative: "The crew agrees: they need a formal definition of 'normal' before they can reliably detect 'anomalous.' Park begins building a model of normality."
+  nextLessonTeaser: "Next: autoencoders — learning to compress and reconstruct normal signals"
+hints:
+  - level: nudge
+    content: "Anomaly detection is about modeling normality, not memorizing every possible anomaly"
+  - level: guidance
+    content: "Compute statistics on normal data (mean, std, distribution) and flag outliers"
+  - level: solution
+    content: "const threshold = mean + 3 * std; const isAnomaly = value > threshold;"
+keywords:
+  - anomaly
+  - baseline
+  - outlier
+  - normal-distribution
+---
+
+<Dialogue speaker="Chief Torres">
+Either our model is broken, or...
+</Dialogue>
+
+<Dialogue speaker="Dr. Sato">
+...or we found something new.
+</Dialogue>
+
+<Dialogue speaker="Commander Okafor">
+How do we know which? How do we tell a genuine anomaly from a false alarm?
+</Dialogue>
+
+You've dealt with this in frontend monitoring. You set baseline metrics — LCP under 2.5s, CLS under 0.1 — and alert when values drift beyond the threshold. Anomaly detection works the same way: define what "normal" looks like, then flag anything that deviates significantly.
+
+<LearningObjectives objectives={["Understand anomaly detection as modeling normality, not cataloging every possible anomaly", "Compute baseline statistics (mean, std, percentiles) from normal signal data", "Set detection thresholds using statistical methods (z-score, IQR)", "Evaluate detection quality with precision and recall tradeoffs"]} />
+
+## Modeling Normality
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="baseline-stats.ts">
+{`// Step 1: Define "normal" from known-good data
+// Like establishing performance baselines before deploying a change
+
+interface SignalStats {
+  mean: number;
+  std: number;
+  p5: number;   // 5th percentile
+  p95: number;  // 95th percentile
+}
+
+function computeBaseline(normalSignals: number[]): SignalStats {
+  const sorted = [...normalSignals].sort((a, b) => a - b);
+  const n = sorted.length;
+  const mean = normalSignals.reduce((s, v) => s + v, 0) / n;
+  const std = Math.sqrt(normalSignals.reduce((s, v) => s + (v - mean) ** 2, 0) / n);
+
+  return {
+    mean,
+    std,
+    p5: sorted[Math.floor(n * 0.05)],
+    p95: sorted[Math.floor(n * 0.95)],
+  };
+}
+
+// Step 2: Flag deviations
+function isAnomaly(value: number, baseline: SignalStats, sigmas: number = 3): boolean {
+  const zScore = Math.abs(value - baseline.mean) / baseline.std;
+  return zScore > sigmas;  // beyond 3 standard deviations = anomaly
+}
+
+const baseline = computeBaseline(normalReadings);
+console.log('Baseline:', baseline);
+// { mean: 0.52, std: 0.15, p5: 0.28, p95: 0.76 }
+
+console.log(isAnomaly(0.55, baseline));  // false — normal
+console.log(isAnomaly(1.82, baseline));  // true — 8.7 sigmas away!`}
+</CodeBlock>
+
+## Precision vs Recall
+
+<CodeBlock language="typescript" title="precision-recall.ts">
+{`// The threshold is a dial between two types of errors:
+// - False positives: normal signals flagged as anomalies (crying wolf)
+// - False negatives: real anomalies missed (sleeping on duty)
+
+// Low threshold (2 sigma): catches more anomalies, but more false alarms
+// High threshold (4 sigma): fewer false alarms, but might miss subtle anomalies
+
+// Torres wants zero false positives — she hates wasting time investigating nothing
+// Sato wants zero false negatives — she can't afford to miss the signal
+
+// The right threshold depends on the cost of each error type
+// For DEEP SCAN: missing an alien signal is worse than a few false alarms
+// So we bias toward lower thresholds (higher recall)
+
+interface DetectionResult {
+  truePositives: number;   // correctly flagged anomalies
+  falsePositives: number;  // normal signals wrongly flagged
+  falseNegatives: number;  // anomalies we missed
+}
+
+function precision(r: DetectionResult): number {
+  return r.truePositives / (r.truePositives + r.falsePositives);
+}
+
+function recall(r: DetectionResult): number {
+  return r.truePositives / (r.truePositives + r.falseNegatives);
+}`}
+</CodeBlock>
+
+## Challenge
+
+Compute baseline statistics and detect anomalies using z-scores.
+
+<Exercise slug="detect-anomaly" />
+
+<KeyTakeaways takeaways={["Anomaly detection models normality — you define what's expected, then flag deviations", "Z-score thresholding is the simplest approach: flag values beyond N standard deviations from the mean", "Precision vs recall is a tradeoff controlled by the threshold — lower catches more but raises false alarms", "For DEEP SCAN, recall matters more than precision — missing the signal is worse than a few false alerts"]} />

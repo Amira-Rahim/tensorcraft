@@ -1,0 +1,128 @@
+---
+slug: beyond-lstm
+title: "Beyond LSTM"
+moduleId: advanced-time-series
+themeId: deep-orbit
+order: 1
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "The LSTM works, but its sequential nature is slow. Sato introduces attention — a mechanism that lets the model focus on the most relevant time steps directly, without processing the entire sequence step by step."
+  speaker: "Dr. Sato"
+concept:
+  explanation: "Attention mechanisms dynamically highlight the most relevant parts of input — like CSS :focus that moves to the active element based on context."
+  bridge:
+    feTitle: "CSS :focus"
+    feCode: ":focus { outline: 2px solid blue; } // highlight the active element"
+    mlTitle: "Attention"
+    mlCode: "weights = softmax(Q * K^T); output = weights * V // focus on relevant steps"
+    tier: intuition
+consequence:
+  narrative: "The attention model processes the full signal in parallel — 10x faster than the LSTM — and reveals which time steps matter most for each prediction."
+  nextLessonTeaser: "Next: temporal attention — attending to specific time steps in the signal"
+hints:
+  - level: nudge
+    content: "Attention computes relevance scores for each time step, then focuses on the important ones"
+  - level: guidance
+    content: "Q (query), K (key), V (value) — the query asks 'what should I focus on?', keys provide candidates, values carry the information"
+  - level: solution
+    content: "scores = matmul(Q, transpose(K)); weights = softmax(scores); output = matmul(weights, V);"
+keywords:
+  - attention
+  - self-attention
+  - query-key-value
+  - parallel
+---
+
+<Dialogue speaker="Dr. Sato">
+The LSTM must process time steps sequentially — step 1, then 2, then 3. It cannot skip ahead. But what if the relevant pattern is at step 5 and step 72? Attention lets the model look at all steps simultaneously and focus on what matters.
+</Dialogue>
+
+<Dialogue speaker="Ensign Park">
+Like CSS :focus — instead of styling every element equally, you highlight just the one that's active. Attention highlights the time steps that are most relevant to the current prediction.
+</Dialogue>
+
+When a user tabs through a form, CSS `:focus` moves to the active element. The browser doesn't re-render every element — it identifies which one matters and highlights it. Attention mechanisms do the same thing for sequences: instead of processing every time step equally, they compute relevance scores and focus compute on what matters.
+
+<LearningObjectives objectives={["Understand attention as dynamic relevance scoring — focusing on what matters", "Learn the Query-Key-Value framework for computing attention weights", "Compare attention with LSTM: parallel vs sequential, global vs local context", "Implement a simple attention mechanism in TensorFlow.js"]} />
+
+## The Query-Key-Value Framework
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="attention-basics.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Attention in three steps:
+// 1. Query: "What am I looking for?"
+// 2. Keys: "Here are the candidates"
+// 3. Values: "Here's the information at each candidate"
+
+// Score = how well each key matches the query
+// Weight = softmax(score) — normalize to probabilities
+// Output = weighted sum of values — focus on high-weight positions
+
+function simpleAttention(
+  query: tf.Tensor2D,   // [1, dim] — what we're looking for
+  keys: tf.Tensor2D,    // [seqLen, dim] — candidates at each time step
+  values: tf.Tensor2D,  // [seqLen, dim] — information at each time step
+): { output: tf.Tensor; weights: tf.Tensor } {
+  return tf.tidy(() => {
+    // Score each key against the query
+    const scores = tf.matMul(query, keys, false, true);  // [1, seqLen]
+
+    // Normalize to probabilities
+    const weights = tf.softmax(scores, 1);  // [1, seqLen]
+
+    // Weighted sum of values
+    const output = tf.matMul(weights, values);  // [1, dim]
+
+    return { output, weights };
+  });
+}
+
+// The weights tell you WHERE the model is "looking"
+// High weight at step 5 and step 72 = those steps matter most
+// This is interpretable — unlike LSTM hidden state`}
+</CodeBlock>
+
+## LSTM vs Attention
+
+<CodeBlock language="typescript" title="comparison.ts">
+{`// LSTM processes sequentially:
+// step 1 → step 2 → step 3 → ... → step 80
+// Information must pass through EVERY intermediate step
+// Long-range dependencies degrade (even with gates)
+
+// Attention processes in parallel:
+// [step 1, step 2, ..., step 80] → score ALL at once
+// Direct connection between ANY two steps
+// No degradation over distance
+
+// Speed comparison for 80-step sequences:
+// LSTM:      80 sequential operations (can't parallelize)
+// Attention: 1 matrix multiply (fully parallelizable on GPU)
+
+// Build an attention-enhanced model
+const model = tf.sequential();
+// Use a 1D convolution + attention hybrid
+model.add(tf.layers.conv1d({
+  filters: 64,
+  kernelSize: 3,
+  activation: 'relu',
+  inputShape: [80, 3],
+}));
+model.add(tf.layers.globalAveragePooling1d());  // simple attention: average all positions
+model.add(tf.layers.dense({ units: 32, activation: 'relu' }));
+model.add(tf.layers.dense({ units: 3 }));
+
+model.compile({ optimizer: 'adam', loss: 'meanSquaredError' });`}
+</CodeBlock>
+
+## Challenge
+
+Implement a simple attention mechanism over a sequence.
+
+<Exercise slug="simple-attention" />
+
+<KeyTakeaways takeaways={["Attention computes relevance scores for each position, then focuses on the important ones — like CSS :focus", "Query-Key-Value: the query asks what to look for, keys are candidates, values carry the information", "Attention processes all time steps in parallel — much faster than LSTM's sequential approach", "Attention weights are interpretable — you can see exactly which time steps the model focuses on"]} />

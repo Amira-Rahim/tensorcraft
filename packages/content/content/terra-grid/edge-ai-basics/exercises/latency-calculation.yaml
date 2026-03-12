@@ -1,0 +1,9 @@
+slug: latency-calculation
+lessonSlug: why-the-edge
+title: "Calculate Cloud vs Edge Latency"
+instructions: "Write a function cloudLatency(dataSizeKB, uploadMbps, serverMs) that calculates total round-trip time in ms. Formula: upload time = (dataSizeKB / (uploadMbps * 125)) * 1000, then add serverMs. Compare it to a fixed edge latency of 89ms."
+starterCode: "function cloudLatency(dataSizeKB, uploadMbps, serverMs) {\n  // Calculate upload time in ms, add server inference time\n  return null; // your code here\n}\n\nfunction isFasterOnEdge(dataSizeKB, uploadMbps, serverMs) {\n  const edgeMs = 89;\n  // Return true if edge is faster than cloud\n  return null; // your code here\n}"
+solutionCode: "function cloudLatency(dataSizeKB, uploadMbps, serverMs) {\n  const uploadMs = (dataSizeKB / (uploadMbps * 125)) * 1000;\n  return uploadMs + serverMs;\n}\n\nfunction isFasterOnEdge(dataSizeKB, uploadMbps, serverMs) {\n  const edgeMs = 89;\n  return edgeMs < cloudLatency(dataSizeKB, uploadMbps, serverMs);\n}"
+testCode: "describe('Latency', () => { it('calculates cloud latency', () => { expect(cloudLatency(250, 2, 50)).toBeCloseTo(1050, 0); }); it('edge is faster for satellite link', () => { expect(isFasterOnEdge(250, 2, 50)).toBe(true); }); });"
+estimatedMinutes: 10
+difficulty: beginner

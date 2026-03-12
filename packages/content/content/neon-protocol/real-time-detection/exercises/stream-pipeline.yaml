@@ -1,0 +1,133 @@
+slug: stream-pipeline
+lessonSlug: streaming-architectures
+title: "Build a Frame Queue with Backpressure"
+instructions: "Implement a FrameQueue class that manages incoming video frames with a maximum capacity. When the queue is full, the oldest frame should be dropped. Track the number of dropped frames for monitoring."
+starterCode: |
+  interface QueuedFrame {
+    feedId: string;
+    timestamp: number;
+    data: number[];
+  }
+
+  class FrameQueue {
+    private queue: QueuedFrame[] = [];
+    private maxSize: number;
+    private droppedCount: number = 0;
+
+    constructor(maxSize: number) {
+      this.maxSize = maxSize;
+    }
+
+    // Add a frame. If at capacity, drop the oldest frame first.
+    enqueue(frame: QueuedFrame): void {
+      // your code here
+    }
+
+    // Remove and return the next frame, or null if empty
+    dequeue(): QueuedFrame | null {
+      return null; // your code here
+    }
+
+    // Current queue length
+    size(): number {
+      return 0; // your code here
+    }
+
+    // Number of frames dropped due to backpressure
+    dropped(): number {
+      return 0; // your code here
+    }
+
+    // Drop rate as a percentage (dropped / total enqueued * 100)
+    dropRate(): number {
+      return 0; // your code here
+    }
+  }
+solutionCode: |
+  interface QueuedFrame {
+    feedId: string;
+    timestamp: number;
+    data: number[];
+  }
+
+  class FrameQueue {
+    private queue: QueuedFrame[] = [];
+    private maxSize: number;
+    private droppedCount: number = 0;
+    private totalEnqueued: number = 0;
+
+    constructor(maxSize: number) {
+      this.maxSize = maxSize;
+    }
+
+    enqueue(frame: QueuedFrame): void {
+      this.totalEnqueued++;
+      if (this.queue.length >= this.maxSize) {
+        this.queue.shift();
+        this.droppedCount++;
+      }
+      this.queue.push(frame);
+    }
+
+    dequeue(): QueuedFrame | null {
+      return this.queue.shift() || null;
+    }
+
+    size(): number {
+      return this.queue.length;
+    }
+
+    dropped(): number {
+      return this.droppedCount;
+    }
+
+    dropRate(): number {
+      if (this.totalEnqueued === 0) return 0;
+      return (this.droppedCount / this.totalEnqueued) * 100;
+    }
+  }
+testCode: |
+  describe('FrameQueue', () => {
+    it('enqueues and dequeues frames', () => {
+      const q = new FrameQueue(5);
+      q.enqueue({ feedId: 'a', timestamp: 1, data: [1] });
+      q.enqueue({ feedId: 'b', timestamp: 2, data: [2] });
+      expect(q.size()).toBe(2);
+      const frame = q.dequeue();
+      expect(frame?.feedId).toBe('a');
+      expect(q.size()).toBe(1);
+    });
+
+    it('returns null when dequeueing empty queue', () => {
+      const q = new FrameQueue(5);
+      expect(q.dequeue()).toBeNull();
+    });
+
+    it('drops oldest frame when at capacity', () => {
+      const q = new FrameQueue(2);
+      q.enqueue({ feedId: 'a', timestamp: 1, data: [1] });
+      q.enqueue({ feedId: 'b', timestamp: 2, data: [2] });
+      q.enqueue({ feedId: 'c', timestamp: 3, data: [3] });
+      expect(q.size()).toBe(2);
+      expect(q.dropped()).toBe(1);
+      const frame = q.dequeue();
+      expect(frame?.feedId).toBe('b');
+    });
+
+    it('tracks drop rate', () => {
+      const q = new FrameQueue(1);
+      q.enqueue({ feedId: 'a', timestamp: 1, data: [1] });
+      q.enqueue({ feedId: 'b', timestamp: 2, data: [2] });
+      q.enqueue({ feedId: 'c', timestamp: 3, data: [3] });
+      expect(q.dropped()).toBe(2);
+      expect(q.dropRate()).toBeCloseTo(66.67, 0);
+    });
+
+    it('reports 0 drop rate when no drops', () => {
+      const q = new FrameQueue(10);
+      q.enqueue({ feedId: 'a', timestamp: 1, data: [1] });
+      expect(q.dropRate()).toBe(0);
+    });
+  });
+estimatedMinutes: 8
+difficulty: intermediate

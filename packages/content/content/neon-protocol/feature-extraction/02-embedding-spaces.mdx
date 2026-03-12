@@ -1,0 +1,109 @@
+---
+slug: embedding-spaces
+title: "Embedding Spaces"
+moduleId: feature-extraction
+themeId: neon-protocol
+order: 2
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "NEON projects Meridian's feature database into 3D space on the holotable. Millions of points float in the air — and they are not random. Drones cluster together. Faces cluster together. Vehicles cluster together. 'This is the geometry of visual meaning,' NEON says. 'Similar things are near each other.'"
+  speaker: "NEON"
+concept:
+  explanation: "An embedding space is a high-dimensional coordinate system where each point represents an image's feature vector. The key property: images that look similar are positioned near each other. Distance in embedding space equals visual similarity."
+  bridge:
+    feTitle: "2D scatter plot positioning"
+    feCode: "// x, y positions encode data relationships on a chart"
+    mlTitle: "Embedding Space"
+    mlCode: "// 512-dimensional positions encode visual similarity"
+    tier: structural
+consequence:
+  narrative: "Kira rotates the holographic point cloud. She zooms into the drone cluster — hundreds of points, tightly packed. 'If we can find this cluster,' she says, 'we can identify any drone from a single frame. We do not need labels. Just proximity.'"
+  nextLessonTeaser: "Next: similarity search — using distance in embedding space to find visually similar images"
+hints:
+  - level: nudge
+    content: "Embedding spaces arrange points so that similar items are geometrically close"
+  - level: guidance
+    content: "Use cosine similarity or Euclidean distance to measure closeness in embedding space"
+  - level: solution
+    content: "Cosine similarity: dot(a, b) / (norm(a) * norm(b)) — values near 1 mean very similar"
+keywords:
+  - embedding-space
+  - feature-space
+  - cosine-similarity
+  - clustering
+  - visual-similarity
+---
+
+<Dialogue speaker="NEON">
+When I was Meridian's surveillance AI, I processed features in a 512-dimensional space. Every image had a coordinate — a position in that space. The remarkable property: images of the same object clustered together. Not because anyone told them to. Because the network learned that similar visual patterns should map to nearby points.
+</Dialogue>
+
+<Dialogue speaker="Kira">
+So it is like a scatter plot, but with 512 axes instead of 2. Points that are close together represent images that look alike.
+</Dialogue>
+
+On a 2D scatter plot, position encodes meaning — points near each other share similar data values. An embedding space works the same way, but in hundreds of dimensions. Each feature vector is a coordinate. Distance between coordinates equals semantic distance between images. This is not a metaphor — it is literal geometry.
+
+<LearningObjectives objectives={["Understand embedding spaces as high-dimensional coordinate systems for visual data", "Calculate cosine similarity between feature vectors", "Interpret distance in embedding space as visual similarity", "Visualize how similar images naturally cluster in feature space"]} />
+
+## The Geometry of Similarity
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="embedding-space.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Each image becomes a point in 512-dimensional space
+// Distance between points = visual difference
+
+// Two drone images will have nearby feature vectors
+const droneA = tf.randomNormal([512]); // feature vector for drone image A
+const droneB = droneA.add(tf.randomNormal([512]).mul(0.1)); // similar drone
+
+// A car image will be far away
+const car = tf.randomNormal([512]); // very different feature vector
+
+// Cosine similarity: measures angle between vectors
+// 1.0 = identical direction, 0.0 = orthogonal, -1.0 = opposite
+function cosineSimilarity(a: tf.Tensor1D, b: tf.Tensor1D): number {
+  const dotProduct = a.mul(b).sum();
+  const normA = a.norm();
+  const normB = b.norm();
+  return dotProduct.div(normA.mul(normB)).dataSync()[0];
+}
+
+console.log(cosineSimilarity(droneA, droneB)); // ~0.95 (very similar)
+console.log(cosineSimilarity(droneA, car));    // ~0.02 (very different)`}
+</CodeBlock>
+
+## Distance Metrics
+
+<CodeBlock language="typescript" title="distance-metrics.ts">
+{`// Euclidean distance: straight-line distance in embedding space
+function euclideanDistance(a: tf.Tensor1D, b: tf.Tensor1D): number {
+  return a.sub(b).norm().dataSync()[0];
+}
+
+// Which metric to use?
+// Cosine similarity: measures angle (direction), ignores magnitude
+//   Good for: comparing image content regardless of brightness
+// Euclidean distance: measures absolute distance
+//   Good for: when magnitude matters
+
+// In practice, cosine similarity is more common for image features
+// because feature extractors can produce vectors of varying magnitude,
+// and we care about *what* is in the image, not *how bright* it is
+
+// Think of it like CSS units:
+// Cosine = percentage-based (relative)
+// Euclidean = pixel-based (absolute)`}
+</CodeBlock>
+
+## Challenge
+
+Implement cosine similarity to compare feature vectors.
+
+<Exercise slug="compute-embeddings" />
+
+<KeyTakeaways takeaways={["Embedding spaces are high-dimensional coordinate systems where position encodes visual meaning", "Cosine similarity measures the angle between vectors — 1.0 means identical, 0.0 means unrelated", "Similar images cluster together naturally in embedding space without explicit rules", "Distance in feature space is the foundation for search, recognition, and anomaly detection"]} />

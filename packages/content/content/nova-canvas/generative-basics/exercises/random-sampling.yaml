@@ -1,0 +1,48 @@
+slug: random-sampling
+lessonSlug: sampling
+title: "Temperature-Controlled Sampling"
+instructions: "Implement a function that applies temperature scaling to logits and returns the resulting probability distribution. Divide the logits by the temperature, then apply softmax."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  async function sampleWithTemperature(
+    logits: number[],
+    temperature: number
+  ): Promise<number[]> {
+    const logitsTensor = tf.tensor1d(logits);
+    // 1. Divide logits by temperature
+    // 2. Apply softmax to get probabilities
+    const probs = null; // your code here
+    return probs;
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  async function sampleWithTemperature(
+    logits: number[],
+    temperature: number
+  ): Promise<number[]> {
+    const logitsTensor = tf.tensor1d(logits);
+    const scaled = logitsTensor.div(temperature);
+    const probs = scaled.softmax();
+    return await probs.array() as number[];
+  }
+testCode: |
+  describe('sampleWithTemperature', () => {
+    it('returns probabilities that sum to 1', async () => {
+      const probs = await sampleWithTemperature([2.0, 1.0, 0.5], 1.0);
+      const sum = probs.reduce((a, b) => a + b, 0);
+      expect(Math.abs(sum - 1.0)).toBeLessThan(0.01);
+    });
+    it('low temperature concentrates probability', async () => {
+      const probs = await sampleWithTemperature([2.0, 1.0, 0.5], 0.1);
+      expect(probs[0]).toBeGreaterThan(0.99);
+    });
+    it('high temperature flattens probability', async () => {
+      const probs = await sampleWithTemperature([2.0, 1.0, 0.5], 10.0);
+      expect(probs[0]).toBeLessThan(0.4);
+      expect(probs[2]).toBeGreaterThan(0.25);
+    });
+  });
+estimatedMinutes: 8
+difficulty: beginner

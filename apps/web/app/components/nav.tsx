@@ -9,10 +9,16 @@ export function Nav() {
 
       <div className="hidden md:flex items-center border border-white/8 rounded-full p-1">
         <Link
-          href="#themes"
+          href="/themes"
           className="px-4 py-2 text-sm text-text-muted hover:text-text-primary rounded-full transition-colors"
         >
           Themes
+        </Link>
+        <Link
+          href="/bridges"
+          className="px-4 py-2 text-sm text-text-muted hover:text-text-primary rounded-full transition-colors"
+        >
+          Bridges
         </Link>
         <Link
           href="/pricing"

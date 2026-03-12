@@ -1,0 +1,80 @@
+slug: quantize-weights
+lessonSlug: quantization
+title: "Quantize Weights to Int8"
+instructions: "Implement int8 quantization: map float32 weights to the 0-255 range using min-max scaling. Return the quantized array, scale factor, and zero point so the values can be dequantized back."
+starterCode: |
+  interface QuantizedResult {
+    quantized: number[];
+    scale: number;
+    zeroPoint: number;
+  }
+
+  function quantize(weights: number[]): QuantizedResult {
+    // 1. Find min and max of weights
+    // 2. Calculate scale = (max - min) / 255
+    // 3. Calculate zeroPoint = Math.round(-min / scale)
+    // 4. Map each weight to Math.round((w - min) / scale)
+    return null; // your code here
+  }
+
+  function dequantize(result: QuantizedResult): number[] {
+    // Reverse: (quantized - zeroPoint) * scale
+    return null; // your code here
+  }
+solutionCode: |
+  interface QuantizedResult {
+    quantized: number[];
+    scale: number;
+    zeroPoint: number;
+  }
+
+  function quantize(weights: number[]): QuantizedResult {
+    const min = Math.min(...weights);
+    const max = Math.max(...weights);
+    const scale = (max - min) / 255;
+    const zeroPoint = Math.round(-min / scale);
+
+    const quantized = weights.map(w => Math.round((w - min) / scale));
+
+    return { quantized, scale, zeroPoint };
+  }
+
+  function dequantize(result: QuantizedResult): number[] {
+    return result.quantized.map(q => (q - result.zeroPoint) * result.scale);
+  }
+testCode: |
+  describe('quantize', () => {
+    it('maps weights to 0-255 range', () => {
+      const result = quantize([0.5, -0.5, 1.0, -1.0]);
+      result.quantized.forEach(q => {
+        expect(q).toBeGreaterThanOrEqual(0);
+        expect(q).toBeLessThanOrEqual(255);
+      });
+    });
+
+    it('maps min to 0 and max to 255', () => {
+      const result = quantize([0.5, -0.5, 1.0, -1.0]);
+      expect(Math.min(...result.quantized)).toBe(0);
+      expect(Math.max(...result.quantized)).toBe(255);
+    });
+
+    it('preserves relative ordering', () => {
+      const result = quantize([0.1, 0.5, -0.3, 0.9]);
+      expect(result.quantized[1]).toBeGreaterThan(result.quantized[0]);
+      expect(result.quantized[3]).toBeGreaterThan(result.quantized[1]);
+      expect(result.quantized[2]).toBeLessThan(result.quantized[0]);
+    });
+  });
+
+  describe('dequantize', () => {
+    it('approximately recovers original weights', () => {
+      const original = [0.5, -0.5, 1.0, -1.0, 0.0];
+      const quantized = quantize(original);
+      const recovered = dequantize(quantized);
+      original.forEach((w, i) => {
+        expect(recovered[i]).toBeCloseTo(w, 1);
+      });
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

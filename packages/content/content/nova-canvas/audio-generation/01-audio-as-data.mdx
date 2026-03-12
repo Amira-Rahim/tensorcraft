@@ -1,0 +1,125 @@
+---
+slug: audio-as-data
+title: "Audio as Data"
+moduleId: audio-generation
+themeId: nova-canvas
+order: 1
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "The gallery walls shimmer with generative art, but the space is eerily silent. Yara stops mid-stride. 'Something is missing. We need sound — not as decoration, but as a dimension.'"
+  speaker: "Yara"
+concept:
+  explanation: "Audio is a time-series signal that can be represented as tensors — waveforms become 1D arrays, spectrograms become 2D image-like matrices."
+  bridge:
+    feTitle: "Web Audio API"
+    feCode: "const ctx = new AudioContext(); const buffer = ctx.createBuffer(1, 44100, 44100);"
+    mlTitle: "Audio Tensor"
+    mlCode: "const waveform = tf.tensor1d(new Float32Array(44100)); // 1 second at 44.1kHz"
+    tier: identity
+consequence:
+  narrative: "Kai grins as raw audio streams into tensors on screen. 'A waveform is just a Float32Array. We already speak this language.'"
+  nextLessonTeaser: "Next: generating sound with neural networks"
+hints:
+  - level: nudge
+    content: "Think about how AudioBuffer.getChannelData() returns a Float32Array — the same type tensors use"
+  - level: guidance
+    content: "Use the Web Audio API to decode audio, then wrap the channel data in tf.tensor1d()"
+  - level: solution
+    content: "const channelData = audioBuffer.getChannelData(0); const tensor = tf.tensor1d(channelData);"
+keywords:
+  - audio
+  - waveform
+  - spectrogram
+  - web-audio-api
+---
+
+<Dialogue speaker="Yara">
+Look at this room. Every surface alive with generated visuals, and it is completely silent. Sound is not decoration, Kai. It is a dimension. Without it, this installation is a painting pretending to be a world.
+</Dialogue>
+
+<Dialogue speaker="Kai">
+You know what a spectrogram is? It is an image. Pixel intensity mapped to frequency over time. We already know how to work with images. Audio is the same math, different domain.
+</Dialogue>
+
+You have been working with the Web Audio API for years — `AudioContext`, `AudioBuffer`, `getChannelData()`. Every audio sample is a floating-point number between -1 and 1. That `Float32Array` you get from `getChannelData()`? It is already a tensor waiting to happen.
+
+<LearningObjectives objectives={["Convert raw audio waveforms into TensorFlow.js tensors", "Understand the relationship between sample rate, duration, and tensor shape", "Build a spectrogram by applying Short-Time Fourier Transform (STFT) to audio tensors", "Visualize audio data as both waveforms and spectrograms in the browser"]} />
+
+## Waveforms Are Arrays
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+Every sound you have ever heard through a browser was a `Float32Array`. The Web Audio API decodes compressed audio into PCM samples — raw amplitude values at regular time intervals. TensorFlow.js tensors use the exact same underlying data type.
+
+<CodeBlock language="typescript" title="audio-to-tensor.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Load audio using the Web Audio API you already know
+const audioCtx = new AudioContext();
+const response = await fetch('/audio/ambient.wav');
+const arrayBuffer = await response.arrayBuffer();
+const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+
+// getChannelData returns Float32Array — already tensor-compatible
+const channelData = audioBuffer.getChannelData(0);
+console.log('Samples:', channelData.length);       // 44100 * duration
+console.log('Sample rate:', audioBuffer.sampleRate); // 44100
+
+// Wrap it in a tensor — zero transformation needed
+const waveform = tf.tensor1d(channelData);
+console.log('Tensor shape:', waveform.shape); // [numSamples]
+
+// Normalize to [-1, 1] range (usually already normalized, but be safe)
+const normalized = waveform.div(waveform.abs().max());`}
+</CodeBlock>
+
+## From Waveform to Spectrogram
+
+A waveform tells you amplitude over time. A spectrogram tells you which frequencies are present at each moment — it is a 2D image where the x-axis is time, the y-axis is frequency, and pixel brightness is magnitude.
+
+<CodeBlock language="typescript" title="spectrogram.ts">
+{`// Build a spectrogram using Short-Time Fourier Transform
+// This is windowed FFT — same concept as CSS scroll-driven animations
+// sampling the page at intervals
+
+function buildSpectrogram(
+  audio: Float32Array,
+  fftSize: number = 1024,
+  hopSize: number = 512
+): tf.Tensor2D {
+  const frames: number[][] = [];
+  for (let i = 0; i + fftSize <= audio.length; i += hopSize) {
+    const frame = audio.slice(i, i + fftSize);
+    // Apply Hann window to reduce spectral leakage
+    const windowed = applyHannWindow(frame);
+    const magnitudes = computeFFTMagnitudes(windowed);
+    frames.push(Array.from(magnitudes));
+  }
+  // Shape: [numFrames, fftSize/2] — it is a 2D image
+  return tf.tensor2d(frames);
+}
+
+function applyHannWindow(frame: Float32Array): Float32Array {
+  const windowed = new Float32Array(frame.length);
+  for (let i = 0; i < frame.length; i++) {
+    const multiplier = 0.5 * (1 - Math.cos(2 * Math.PI * i / (frame.length - 1)));
+    windowed[i] = frame[i] * multiplier;
+  }
+  return windowed;
+}
+
+const spectrogram = buildSpectrogram(channelData);
+console.log('Spectrogram shape:', spectrogram.shape);
+// [numTimeFrames, numFrequencyBins] — a grayscale image`}
+</CodeBlock>
+
+A spectrogram is an image. That single insight is the bridge between everything you have built with visual generation and the world of audio. The same convolutional networks, the same latent spaces, the same generation techniques — they all apply.
+
+## Challenge
+
+Convert a raw audio waveform into a tensor and compute its basic properties.
+
+<Exercise slug="audio-to-tensor" />
+
+<KeyTakeaways takeaways={["Audio waveforms are Float32Arrays — identical to the data type tensors use internally", "A spectrogram is a 2D tensor (image) representing frequency content over time", "The Web Audio API's getChannelData() output maps directly to tf.tensor1d()", "If you can generate images, you can generate audio — spectrograms bridge the two domains"]} />

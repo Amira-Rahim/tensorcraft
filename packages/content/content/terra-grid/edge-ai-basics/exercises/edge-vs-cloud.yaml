@@ -1,0 +1,9 @@
+slug: edge-vs-cloud
+lessonSlug: welcome-to-the-grid
+title: "Edge vs Cloud Classification"
+instructions: "Write a function classifyCompute(latencyMs, needsOffline) that returns 'edge' if latency is under 100ms OR offline is required, otherwise returns 'cloud'."
+starterCode: "function classifyCompute(latencyMs, needsOffline) {\n  // Return 'edge' or 'cloud' based on requirements\n  return null; // your code here\n}"
+solutionCode: "function classifyCompute(latencyMs, needsOffline) {\n  if (latencyMs < 100 || needsOffline) return 'edge';\n  return 'cloud';\n}"
+testCode: "describe('classifyCompute', () => { it('returns edge for low latency', () => { expect(classifyCompute(50, false)).toBe('edge'); }); it('returns edge for offline', () => { expect(classifyCompute(5000, true)).toBe('edge'); }); it('returns cloud otherwise', () => { expect(classifyCompute(5000, false)).toBe('cloud'); }); });"
+estimatedMinutes: 10
+difficulty: beginner

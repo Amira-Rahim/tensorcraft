@@ -1,0 +1,94 @@
+slug: generate-anchors
+lessonSlug: anchor-boxes
+title: "Generate an Anchor Grid"
+instructions: "Implement a generateAnchors function that creates anchor boxes on a grid. The function takes a gridSize (number of divisions per axis) and an array of scales (multiplied by the cell size to determine anchor width and height). For each grid cell, compute the center point, then create one square anchor at each scale. Return an array of Anchor objects with cx, cy, width, and height (all normalized 0-1)."
+starterCode: |
+  interface Anchor {
+    cx: number;
+    cy: number;
+    width: number;
+    height: number;
+  }
+
+  function generateAnchors(
+    gridSize: number,
+    scales: number[]
+  ): Anchor[] {
+    // TODO: Calculate cellSize as 1.0 / gridSize
+    // TODO: For each grid cell, compute center (col+0.5)*cellSize, (row+0.5)*cellSize
+    // TODO: For each scale, create an anchor with width/height = scale * cellSize
+    return null as any;
+  }
+solutionCode: |
+  interface Anchor {
+    cx: number;
+    cy: number;
+    width: number;
+    height: number;
+  }
+
+  function generateAnchors(
+    gridSize: number,
+    scales: number[]
+  ): Anchor[] {
+    const anchors: Anchor[] = [];
+    const cellSize = 1.0 / gridSize;
+
+    for (let row = 0; row < gridSize; row++) {
+      for (let col = 0; col < gridSize; col++) {
+        const cx = (col + 0.5) * cellSize;
+        const cy = (row + 0.5) * cellSize;
+
+        for (const scale of scales) {
+          const w = scale * cellSize;
+          const h = scale * cellSize;
+          anchors.push({ cx, cy, width: w, height: h });
+        }
+      }
+    }
+
+    return anchors;
+  }
+testCode: |
+  describe('generateAnchors', () => {
+    it('creates correct number of anchors', () => {
+      const anchors = generateAnchors(7, [1.0]);
+      expect(anchors.length).toBe(49);
+    });
+
+    it('creates multiple anchors per cell with multiple scales', () => {
+      const anchors = generateAnchors(7, [0.5, 1.0, 2.0]);
+      expect(anchors.length).toBe(49 * 3);
+    });
+
+    it('centers are correct for 2x2 grid', () => {
+      const anchors = generateAnchors(2, [1.0]);
+      expect(anchors[0].cx).toBeCloseTo(0.25);
+      expect(anchors[0].cy).toBeCloseTo(0.25);
+      expect(anchors[1].cx).toBeCloseTo(0.75);
+      expect(anchors[1].cy).toBeCloseTo(0.25);
+      expect(anchors[2].cx).toBeCloseTo(0.25);
+      expect(anchors[2].cy).toBeCloseTo(0.75);
+      expect(anchors[3].cx).toBeCloseTo(0.75);
+      expect(anchors[3].cy).toBeCloseTo(0.75);
+    });
+
+    it('scales affect anchor dimensions', () => {
+      const anchors = generateAnchors(4, [0.5, 2.0]);
+      const cellSize = 0.25;
+      expect(anchors[0].width).toBeCloseTo(0.5 * cellSize);
+      expect(anchors[1].width).toBeCloseTo(2.0 * cellSize);
+    });
+
+    it('all centers fall within [0, 1]', () => {
+      const anchors = generateAnchors(13, [1.0]);
+      for (const a of anchors) {
+        expect(a.cx).toBeGreaterThan(0);
+        expect(a.cx).toBeLessThan(1);
+        expect(a.cy).toBeGreaterThan(0);
+        expect(a.cy).toBeLessThan(1);
+      }
+    });
+  });
+estimatedMinutes: 8
+difficulty: intermediate

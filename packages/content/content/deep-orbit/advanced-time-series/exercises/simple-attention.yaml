@@ -1,0 +1,49 @@
+slug: simple-attention
+lessonSlug: beyond-lstm
+title: "Implement Simple Attention"
+instructions: "Write a function that computes attention weights over a sequence of values. Given an array of scores (one per time step), apply softmax to get normalized weights, then compute the weighted sum of the corresponding values."
+starterCode: |
+  function softmax(scores: number[]): number[] {
+    const max = Math.max(...scores);
+    const exps = scores.map(s => Math.exp(s - max));
+    const sum = exps.reduce((a, b) => a + b, 0);
+    return exps.map(e => e / sum);
+  }
+
+  function attend(scores: number[], values: number[]): { weights: number[]; output: number } {
+    // 1. Apply softmax to scores to get attention weights
+    // 2. Compute weighted sum: sum(weights[i] * values[i])
+    return null; // your code here
+  }
+solutionCode: |
+  function softmax(scores: number[]): number[] {
+    const max = Math.max(...scores);
+    const exps = scores.map(s => Math.exp(s - max));
+    const sum = exps.reduce((a, b) => a + b, 0);
+    return exps.map(e => e / sum);
+  }
+
+  function attend(scores: number[], values: number[]): { weights: number[]; output: number } {
+    const weights = softmax(scores);
+    const output = weights.reduce((sum, w, i) => sum + w * values[i], 0);
+    return { weights, output };
+  }
+testCode: |
+  describe('attend', () => {
+    it('returns weights that sum to 1', () => {
+      const { weights } = attend([1, 2, 3], [10, 20, 30]);
+      const sum = weights.reduce((a, b) => a + b, 0);
+      expect(sum).toBeCloseTo(1.0);
+    });
+    it('highest score gets highest weight', () => {
+      const { weights } = attend([1, 5, 2], [10, 20, 30]);
+      expect(weights[1]).toBeGreaterThan(weights[0]);
+      expect(weights[1]).toBeGreaterThan(weights[2]);
+    });
+    it('output is weighted sum', () => {
+      const { output } = attend([0, 0, 0], [10, 20, 30]);
+      expect(output).toBeCloseTo(20);
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

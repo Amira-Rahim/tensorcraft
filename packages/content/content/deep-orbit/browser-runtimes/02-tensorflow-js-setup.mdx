@@ -1,0 +1,144 @@
+---
+slug: tensorflow-js-setup
+title: "TensorFlow.js Setup"
+moduleId: browser-runtimes
+themeId: deep-orbit
+order: 2
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Park begins wiring TensorFlow.js into the ship's dashboard. Torres watches over his shoulder, timing every step."
+  speaker: "Ensign Park"
+concept:
+  explanation: "Setting up TensorFlow.js in a web project follows the same pattern as any npm dependency — install, import, configure the backend."
+  bridge:
+    feTitle: "npm install"
+    feCode: "npm install react react-dom"
+    mlTitle: "TF.js Install"
+    mlCode: "npm install @tensorflow/tfjs"
+    tier: identity
+consequence:
+  narrative: "TensorFlow.js initializes on the dashboard. The WebGL backend activates, confirming GPU acceleration is available."
+  nextLessonTeaser: "Next: loading a pre-trained model into the browser"
+hints:
+  - level: nudge
+    content: "Start with npm install, then import and check the backend"
+  - level: guidance
+    content: "Use tf.ready() to wait for backend initialization, then tf.getBackend() to verify"
+  - level: solution
+    content: "import * as tf from '@tensorflow/tfjs'; await tf.ready(); console.log(tf.getBackend());"
+keywords:
+  - tensorflow-js
+  - setup
+  - webgl
+  - backend
+---
+
+<Dialogue speaker="Ensign Park">
+Installing TensorFlow.js feels exactly like adding any other dependency. npm install, import, configure. I've done this a thousand times.
+</Dialogue>
+
+<Dialogue speaker="Chief Torres">
+Good. Because the hard part is not installation — it's what comes after. Check the backend. If it falls back to CPU, our inference budget is blown.
+</Dialogue>
+
+You've added React, Vue, D3, Three.js — every library starts the same way. TensorFlow.js is no different. The only new concept is **backends**: TF.js can run on WebGL (GPU), WebAssembly (CPU, optimized), or plain JavaScript (CPU, slow).
+
+<LearningObjectives objectives={["Install and import TensorFlow.js in a web project", "Understand TF.js backends (WebGL, WASM, CPU) and their performance characteristics", "Initialize TF.js and verify which backend is active", "Configure the optimal backend for your deployment target"]} />
+
+## Install and Import
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="setup.ts">
+{`// Step 1: Install (exactly like any frontend dependency)
+// npm install @tensorflow/tfjs
+
+// Step 2: Import
+import * as tf from '@tensorflow/tfjs';
+
+// Step 3: Wait for initialization
+await tf.ready();
+
+// Step 4: Check which backend is active
+console.log('Backend:', tf.getBackend());  // 'webgl', 'wasm', or 'cpu'
+console.log('TF.js version:', tf.version.tfjs);`}
+</CodeBlock>
+
+That's it. Four lines to have a full ML runtime in the browser. But the backend selection matters enormously for performance.
+
+## Backends: The Runtime Engine
+
+Think of backends like rendering engines in browsers. Chrome uses Blink, Firefox uses Gecko — same web pages, different performance. TF.js backends work the same way:
+
+<CodeBlock language="typescript" title="backends.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// WebGL backend — uses the GPU via WebGL shaders
+// Best for: most models, especially matrix-heavy operations
+// Like using CSS transforms (GPU-accelerated) instead of top/left (CPU)
+import '@tensorflow/tfjs-backend-webgl';
+
+// WASM backend — compiled C++ running in WebAssembly
+// Best for: smaller models, devices without good GPU, SIMD support
+// Like using a Web Worker for heavy computation
+import '@tensorflow/tfjs-backend-wasm';
+import { setWasmPaths } from '@tensorflow/tfjs-backend-wasm';
+setWasmPaths('/wasm/');  // point to your WASM binary files
+
+// CPU backend — pure JavaScript, no acceleration
+// Best for: nothing in production (fallback only)
+// Like doing layout calculations in JS instead of CSS
+
+// Set preferred backend explicitly
+await tf.setBackend('webgl');
+await tf.ready();
+
+// Or let TF.js choose the best available
+// It tries: webgl → wasm → cpu (in order)`}
+</CodeBlock>
+
+## Benchmarking Your Setup
+
+Torres would benchmark everything. You should too.
+
+<CodeBlock language="typescript" title="benchmark.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+async function benchmarkBackend(backendName: string) {
+  await tf.setBackend(backendName);
+  await tf.ready();
+
+  // Warm up — first operation is always slow (shader compilation for WebGL)
+  const warmup = tf.randomNormal([100, 100]);
+  tf.matMul(warmup, warmup.transpose()).dispose();
+  warmup.dispose();
+
+  // Benchmark: matrix multiply (the core ML operation)
+  const a = tf.randomNormal([256, 256]);
+  const b = tf.randomNormal([256, 256]);
+
+  const start = performance.now();
+  for (let i = 0; i < 100; i++) {
+    const result = tf.matMul(a, b);
+    result.dispose();  // always dispose to prevent memory leaks
+  }
+  const elapsed = performance.now() - start;
+
+  a.dispose();
+  b.dispose();
+
+  console.log(\`\${backendName}: \${(elapsed / 100).toFixed(2)}ms per matmul\`);
+  // webgl:  ~0.5ms  (GPU-accelerated)
+  // wasm:   ~3.0ms  (SIMD-optimized)
+  // cpu:    ~15.0ms (pure JS)
+}`}
+</CodeBlock>
+
+## Challenge
+
+Set up TensorFlow.js and verify the active backend.
+
+<Exercise slug="tfjs-setup" />
+
+<KeyTakeaways takeaways={["TensorFlow.js installs like any npm package — install, import, ready", "Backends (WebGL, WASM, CPU) determine performance — like choosing GPU-accelerated CSS vs JS layout", "WebGL is fastest for most models; WASM is the reliable fallback for devices without good GPUs", "Always call tf.dispose() on tensors you're done with — browser memory is limited"]} />

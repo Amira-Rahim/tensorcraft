@@ -10,14 +10,16 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "hono": "^4.7.0",
     "@hono/node-server": "^1.13.0",
-    "@tensorcraft/supabase": "workspace:*"
+    "@tensorcraft/shared": "workspace:*",
+    "@tensorcraft/supabase": "workspace:*",
+    "hono": "^4.7.0",
+    "stripe": "^20.4.1"
   },
   "devDependencies": {
     "@tensorcraft/config": "workspace:*",
-    "typescript": "^5.9.3",
+    "@types/node": "^22.0.0",
     "tsx": "^4.19.0",
-    "@types/node": "^22.0.0"
+    "typescript": "^5.9.3"
   }
 }

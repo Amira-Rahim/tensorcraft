@@ -38,12 +38,25 @@ export async function updateSession(request: NextRequest) {
   // Refresh the session — this keeps the auth token alive
   const {
     data: { user },
+    error: authError,
   } = await supabase.auth.getUser();
 
   const protectedRoutes = ["/dashboard", "/settings", "/onboarding"];
   const isProtected = protectedRoutes.some((route) =>
     request.nextUrl.pathname.startsWith(route),
   );
+
+  // If session refresh fails, clear stale cookies and treat as unauthenticated
+  if (authError && !user) {
+    if (isProtected) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/auth/sign-in";
+      url.searchParams.set("redirectTo", request.nextUrl.pathname);
+      url.searchParams.set("error", "session_expired");
+      return NextResponse.redirect(url);
+    }
+    return supabaseResponse;
+  }
 
   // Redirect unauthenticated users away from protected routes
   if (isProtected && !user) {

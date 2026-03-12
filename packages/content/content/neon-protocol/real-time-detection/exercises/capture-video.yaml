@@ -1,0 +1,75 @@
+slug: capture-video
+lessonSlug: video-stream-processing
+title: "Capture Video Frames as Tensors"
+instructions: "Write a function that takes a video element's dimensions and returns the correct tensor shape for a preprocessed batch-ready frame at 224x224. Also compute how many frames per second are needed for real-time detection."
+starterCode: |
+  interface FrameInfo {
+    rawShape: [number, number, number];
+    processedShape: [number, number, number, number];
+    pixelsPerFrame: number;
+    targetFps: number;
+    msPerFrame: number;
+  }
+
+  function analyzeVideoFrame(
+    videoWidth: number,
+    videoHeight: number,
+    targetFps: number
+  ): FrameInfo {
+    // rawShape: [height, width, 3] (RGB channels)
+    // processedShape: [1, 224, 224, 3] (batched, resized)
+    // pixelsPerFrame: 224 * 224 * 3
+    // msPerFrame: 1000 / targetFps
+    return null; // your code here
+  }
+solutionCode: |
+  interface FrameInfo {
+    rawShape: [number, number, number];
+    processedShape: [number, number, number, number];
+    pixelsPerFrame: number;
+    targetFps: number;
+    msPerFrame: number;
+  }
+
+  function analyzeVideoFrame(
+    videoWidth: number,
+    videoHeight: number,
+    targetFps: number
+  ): FrameInfo {
+    return {
+      rawShape: [videoHeight, videoWidth, 3],
+      processedShape: [1, 224, 224, 3],
+      pixelsPerFrame: 224 * 224 * 3,
+      targetFps,
+      msPerFrame: 1000 / targetFps,
+    };
+  }
+testCode: |
+  describe('analyzeVideoFrame', () => {
+    it('returns correct raw shape (height first)', () => {
+      const info = analyzeVideoFrame(640, 480, 30);
+      expect(info.rawShape).toEqual([480, 640, 3]);
+    });
+
+    it('returns correct processed shape with batch dim', () => {
+      const info = analyzeVideoFrame(640, 480, 30);
+      expect(info.processedShape).toEqual([1, 224, 224, 3]);
+    });
+
+    it('calculates pixels per frame', () => {
+      const info = analyzeVideoFrame(640, 480, 30);
+      expect(info.pixelsPerFrame).toBe(224 * 224 * 3);
+    });
+
+    it('calculates ms per frame for 30fps', () => {
+      const info = analyzeVideoFrame(640, 480, 30);
+      expect(info.msPerFrame).toBeCloseTo(33.33, 1);
+    });
+
+    it('calculates ms per frame for 60fps', () => {
+      const info = analyzeVideoFrame(1920, 1080, 60);
+      expect(info.msPerFrame).toBeCloseTo(16.67, 1);
+    });
+  });
+estimatedMinutes: 5
+difficulty: intermediate

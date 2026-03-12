@@ -1,0 +1,169 @@
+---
+slug: music-generation
+title: "Music Generation"
+moduleId: audio-generation
+themeId: nova-canvas
+order: 3
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Kai layers generated tones into sequences. 'A melody is a sequence of events with timing. We already know sequences — setTimeout, setInterval, requestAnimationFrame. Music is scheduled state changes.'"
+  speaker: "Kai"
+concept:
+  explanation: "Music generation is sequence prediction — given a series of notes, predict the next one. The same pattern as autocomplete, but with pitch and duration instead of characters."
+  bridge:
+    feTitle: "setTimeout Sequences"
+    feCode: "notes.forEach((note, i) => setTimeout(() => play(note), i * 500));"
+    mlTitle: "Sequence Prediction"
+    mlCode: "const nextNote = model.predict(tf.tensor2d([noteSequence]));"
+    tier: structural
+consequence:
+  narrative: "A melody emerges — not random, not composed, but grown. Each note follows from the last with a logic that feels almost like intention. Petrov pauses his optimization work to listen."
+  nextLessonTeaser: "Next: synchronizing audio and visual generation"
+hints:
+  - level: nudge
+    content: "Think of notes as tokens in a sequence — same pattern as text prediction"
+  - level: guidance
+    content: "Encode notes as integers (MIDI values), build sliding windows, predict the next note"
+  - level: solution
+    content: "Create a small LSTM that takes a window of MIDI note values and predicts the next one"
+keywords:
+  - music
+  - melody
+  - sequence-prediction
+  - midi
+---
+
+<Dialogue speaker="Kai">
+A melody is a sequence of events with timing constraints. You have been scheduling sequences your entire career — animation frames, API polling, debounced input handlers. Music generation is setTimeout with taste.
+</Dialogue>
+
+<Dialogue speaker="MUSE">
+I do not compose. I predict. Given these notes, what note is most likely to follow? The same question autocomplete asks about words, I ask about pitch.
+</Dialogue>
+
+You have scheduled timed events thousands of times. `setTimeout`, `setInterval`, `requestAnimationFrame` — all of them execute callbacks at specific moments. Music is the same pattern: a sequence of pitched events fired at precise intervals. The ML twist is that instead of hardcoding the sequence, a model predicts each next note from the notes that came before.
+
+<LearningObjectives objectives={["Encode musical notes as tensors using MIDI representation", "Build a sequence model that predicts the next note in a melody", "Schedule generated notes for playback using Web Audio API timing", "Control generation temperature to balance predictability and creativity"]} />
+
+## Notes as Tokens
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="note-encoding.ts">
+{`// MIDI notes: integers 0-127 mapping to pitches
+// Middle C = 60, D = 62, E = 64, F = 65, G = 67, A = 69, B = 71
+
+// Encode a simple melody as a sequence of MIDI values
+const melody = [60, 62, 64, 65, 67, 65, 64, 62]; // C major scale up and down
+
+// Normalize to [0, 1] range for the network
+const normalized = melody.map(note => note / 127);
+
+// Build training windows — same sliding window pattern as time-series
+function createWindows(notes: number[], windowSize: number) {
+  const inputs: number[][] = [];
+  const targets: number[] = [];
+
+  for (let i = 0; i + windowSize < notes.length; i++) {
+    inputs.push(notes.slice(i, i + windowSize));
+    targets.push(notes[i + windowSize]);
+  }
+
+  return {
+    xs: tf.tensor2d(inputs),
+    ys: tf.tensor1d(targets),
+  };
+}
+
+const { xs, ys } = createWindows(normalized, 4);
+console.log('Input shape:', xs.shape);  // [numWindows, 4]
+console.log('Target shape:', ys.shape); // [numWindows]`}
+</CodeBlock>
+
+## Melody Prediction Model
+
+<CodeBlock language="typescript" title="melody-model.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Simple LSTM for melody prediction
+const model = tf.sequential({
+  layers: [
+    tf.layers.lstm({
+      inputShape: [4, 1],  // 4-note window, 1 feature (pitch)
+      units: 64,
+      returnSequences: false,
+    }),
+    tf.layers.dense({ units: 32, activation: 'relu' }),
+    tf.layers.dense({ units: 1, activation: 'sigmoid' }), // output normalized pitch
+  ],
+});
+
+model.compile({
+  optimizer: tf.train.adam(0.01),
+  loss: 'meanSquaredError',
+});
+
+// Reshape inputs for LSTM: [batch, timesteps, features]
+const xsReshaped = xs.reshape([xs.shape[0], 4, 1]);
+await model.fit(xsReshaped, ys, { epochs: 100, verbose: 0 });
+
+// Generate a melody by predicting one note at a time
+async function generateMelody(seed: number[], length: number): Promise<number[]> {
+  const generated = [...seed];
+
+  for (let i = 0; i < length; i++) {
+    const window = generated.slice(-4).map(n => n / 127);
+    const input = tf.tensor3d([window.map(v => [v])]);
+    const prediction = model.predict(input) as tf.Tensor;
+    const nextNote = Math.round((await prediction.data())[0] * 127);
+    generated.push(Math.max(36, Math.min(96, nextNote))); // clamp to playable range
+  }
+
+  return generated;
+}
+
+const melody = await generateMelody([60, 62, 64, 65], 16);
+console.log('Generated melody:', melody);`}
+</CodeBlock>
+
+## Scheduled Playback
+
+<CodeBlock language="typescript" title="scheduled-playback.ts">
+{`// Schedule notes using Web Audio API timing — precise to the sample
+function scheduleMelody(
+  ctx: AudioContext,
+  notes: number[],
+  tempo: number = 120 // BPM
+) {
+  const beatDuration = 60 / tempo; // seconds per beat
+
+  notes.forEach((midiNote, i) => {
+    const startTime = ctx.currentTime + i * beatDuration;
+    const frequency = 440 * Math.pow(2, (midiNote - 69) / 12); // MIDI to Hz
+
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.frequency.value = frequency;
+    osc.type = 'sine';
+    gain.gain.setValueAtTime(0.3, startTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, startTime + beatDuration * 0.9);
+
+    osc.connect(gain).connect(ctx.destination);
+    osc.start(startTime);
+    osc.stop(startTime + beatDuration);
+  });
+}
+
+const ctx = new AudioContext();
+scheduleMelody(ctx, melody, 100);`}
+</CodeBlock>
+
+## Challenge
+
+Build a melody generator that predicts the next note from a sliding window of previous notes.
+
+<Exercise slug="generate-melody" />
+
+<KeyTakeaways takeaways={["Music generation is sequence prediction — the same pattern as text autocomplete", "MIDI notes map to integers, making them natural inputs for neural networks", "Sliding windows over note sequences create training data identical to time-series forecasting", "Web Audio API scheduling (AudioContext.currentTime) provides sample-accurate playback timing"]} />

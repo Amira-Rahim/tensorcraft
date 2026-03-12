@@ -1,0 +1,130 @@
+---
+slug: subword-tokenization
+title: "Subword Tokenization"
+moduleId: tokenization-preprocessing
+themeId: signal-ward
+order: 2
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Obi explains that some words — especially medical terms — need to be broken into smaller pieces to handle the vast vocabulary of clinical language."
+  speaker: "Obi"
+concept:
+  explanation: "Subword tokenization (BPE, WordPiece) breaks rare words into known sub-units. 'Cardiology' becomes ['cardio', '##logy']. Just like URL route parsing extracts meaningful segments from a path, subword tokenization extracts meaningful morphemes from words."
+  bridge:
+    feTitle: "Route Parsing"
+    feCode: "'/patients/:id/records'.match(/:([a-z]+)/g)"
+    mlTitle: "Subword Tokenizer"
+    mlCode: "'cardiology' → ['cardio', '##logy']"
+    tier: structural
+consequence:
+  narrative: "Diagnostic One can now handle medical terminology it hasn't seen before by breaking words into known sub-parts."
+  nextLessonTeaser: "Next: handling the specific challenges of medical abbreviations."
+hints:
+  - level: nudge
+    content: "Start with the longest known subword that matches the beginning of the word."
+  - level: guidance
+    content: "Iterate through the word, greedily matching the longest prefix in your vocabulary, then continue with the remainder."
+  - level: solution
+    content: "Use a while loop: find the longest prefix match in vocab, add it to tokens, advance the pointer."
+keywords:
+  - subword-tokenization
+  - bpe
+  - wordpiece
+  - morphemes
+---
+
+> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
+
+<Dialogue speaker="Obi">
+Our vocabulary can't contain every medical term — there are hundreds of thousands. But here's the trick: "cardiology" is just "cardio" plus "logy." If the model knows the parts, it can understand the whole.
+</Dialogue>
+
+<Dialogue speaker="Khalil">
+Like route parsing. /patients/:id/records — I break the path into segments and each segment has meaning.
+</Dialogue>
+
+<Dialogue speaker="Obi">
+Exactly. Subword tokenization is route parsing for words. You break them into meaningful segments.
+</Dialogue>
+
+When you define routes like `/patients/:id/records/:recordId`, your router parses the path into meaningful segments. Subword tokenization does the same to words — breaking "electrocardiogram" into `["electro", "##cardio", "##gram"]`, where each piece carries meaning.
+
+<LearningObjectives objectives={["Understand why subword tokenization outperforms word-level tokenization", "Implement a greedy WordPiece-style tokenizer", "Recognize how morphemes carry meaning in medical terminology", "Handle out-of-vocabulary words by decomposing them into known sub-units"]} />
+
+## Why Words Aren't Enough
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+A word-level vocabulary of 30,000 entries can't cover every medical term. But a subword vocabulary of 5,000 pieces can represent virtually any word by composition.
+
+<CodeBlock language="typescript" title="subword-tokenizer.ts">
+{`// A simplified WordPiece tokenizer
+const subwordVocab = new Set([
+  'card', '##io', '##logy', '##itis', '##ectomy',
+  'gastro', '##enter', 'hyper', '##tension',
+  'patient', 'reports', 'pain',
+  'the', 'a', 'with', 'has',
+]);
+
+function wordPieceTokenize(word: string): string[] {
+  const tokens: string[] = [];
+  let start = 0;
+
+  while (start < word.length) {
+    let end = word.length;
+    let found = false;
+
+    while (end > start) {
+      const substr = (start === 0 ? '' : '##') + word.slice(start, end);
+      if (subwordVocab.has(substr)) {
+        tokens.push(substr);
+        start = end;
+        found = true;
+        break;
+      }
+      end--;
+    }
+
+    if (!found) {
+      tokens.push('[UNK]');
+      break;
+    }
+  }
+  return tokens;
+}
+
+console.log(wordPieceTokenize('cardiology'));
+// ['card', '##io', '##logy']
+
+console.log(wordPieceTokenize('gastroenteritis'));
+// ['gastro', '##enter', '##itis']`}
+</CodeBlock>
+
+## The Power of Composability
+
+Medical language is highly compositional. Prefixes like "hyper-", "hypo-", "cardio-" combine with suffixes like "-itis", "-ectomy", "-ology". Subword tokenization captures this structure.
+
+<CodeBlock language="typescript" title="composable-terms.ts">
+{`// Medical terms decompose into meaningful parts
+// Just like React components compose into UIs
+
+const decompositions = {
+  'cardiology':     ['card', '##io', '##logy'],     // study of heart
+  'carditis':       ['card', '##itis'],              // heart inflammation
+  'cardioectomy':   ['card', '##io', '##ectomy'],    // heart removal (surgical)
+  'gastroenteritis': ['gastro', '##enter', '##itis'], // stomach/intestine inflammation
+};
+
+// The model learns that '##itis' = inflammation
+// So when it sees a new word ending in '##itis',
+// it already knows the concept!`}
+</CodeBlock>
+
+## Challenge
+
+Implement a WordPiece-style subword tokenizer.
+
+<Exercise slug="subword-tokenize" />
+
+<KeyTakeaways takeaways={["Subword tokenization breaks words into known morpheme-like pieces", "It handles unseen words by decomposing them — no more [UNK] for rare terms", "Medical terminology is highly compositional, making subword tokenization ideal", "The ## prefix marks continuation pieces (not the start of a word)"]} />

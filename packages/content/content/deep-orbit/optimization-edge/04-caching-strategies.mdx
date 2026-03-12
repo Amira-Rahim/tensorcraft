@@ -1,0 +1,115 @@
+---
+slug: caching-strategies
+title: "Caching Strategies"
+moduleId: optimization-edge
+themeId: deep-orbit
+order: 4
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Many signals repeat similar patterns. Park implements inference caching — skip the model entirely for inputs we've seen before."
+  speaker: "Ensign Park"
+concept:
+  explanation: "Caching inference results avoids redundant computation — like Service Worker caching strategies that serve cached responses for repeated requests."
+  bridge:
+    feTitle: "Service Worker Cache"
+    feCode: "caches.match(request) || fetch(request).then(cache) // cache-first"
+    mlTitle: "Inference Cache"
+    mlCode: "cache.get(inputHash) || model.predict(input).then(cache) // cache-first"
+    tier: identity
+consequence:
+  narrative: "Caching eliminates 40% of inference calls — the signal patterns repeat regularly enough that cached results are valid."
+  nextLessonTeaser: "Next: WebGPU acceleration — using the GPU for maximum inference speed"
+hints:
+  - level: nudge
+    content: "If you've seen this input before, return the cached result instead of running the model"
+  - level: guidance
+    content: "Hash the input features, use an LRU cache, set a TTL for cache entries"
+  - level: solution
+    content: "const hash = hashInput(signal); if (cache.has(hash)) return cache.get(hash); const result = model.predict(signal); cache.set(hash, result);"
+keywords:
+  - caching
+  - memoization
+  - lru-cache
+  - service-worker
+---
+
+<Dialogue speaker="Ensign Park">
+Many signals are similar — cosmic background with minor variations. If I've already classified a signal with these features, why run the model again? I'll cache the results, like a Service Worker caching API responses.
+</Dialogue>
+
+Service Worker caching is second nature to frontend developers: cache-first, stale-while-revalidate, network-first. Inference caching applies the same strategies: hash the input, check the cache, serve cached results for repeated patterns.
+
+<LearningObjectives objectives={["Implement an LRU cache for inference results", "Hash model inputs for cache key generation", "Choose cache strategies: exact match, approximate match, TTL-based expiry", "Measure cache hit rate and its impact on effective inference latency"]} />
+
+## Inference Caching
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="inference-cache.ts">
+{`class InferenceCache<T> {
+  private cache = new Map<string, { result: T; timestamp: number }>();
+  private readonly maxSize: number;
+  private readonly ttlMs: number;
+
+  constructor(maxSize: number = 1000, ttlMs: number = 60000) {
+    this.maxSize = maxSize;
+    this.ttlMs = ttlMs;
+  }
+
+  private hashInput(input: number[]): string {
+    // Quantize inputs to reduce near-miss cache misses
+    const quantized = input.map(v => Math.round(v * 100) / 100);
+    return quantized.join(',');
+  }
+
+  get(input: number[]): T | null {
+    const key = this.hashInput(input);
+    const entry = this.cache.get(key);
+    if (!entry) return null;
+    if (Date.now() - entry.timestamp > this.ttlMs) {
+      this.cache.delete(key);
+      return null;
+    }
+    return entry.result;
+  }
+
+  set(input: number[], result: T): void {
+    const key = this.hashInput(input);
+    if (this.cache.size >= this.maxSize) {
+      // Evict oldest entry (LRU approximation)
+      const oldest = this.cache.keys().next().value;
+      if (oldest) this.cache.delete(oldest);
+    }
+    this.cache.set(key, { result, timestamp: Date.now() });
+  }
+
+  get hitRate(): number {
+    return this.hits / (this.hits + this.misses) || 0;
+  }
+  private hits = 0;
+  private misses = 0;
+}
+
+// Usage
+const cache = new InferenceCache<string>(500, 30000);
+
+function cachedClassify(signal: number[]): string {
+  const cached = cache.get(signal);
+  if (cached) return cached;
+
+  const result = classify(model, signal);
+  cache.set(signal, result);
+  return result;
+}
+
+// After 1 hour: cache hit rate ≈ 40% — 40% fewer model calls!`}
+</CodeBlock>
+
+## Challenge
+
+Build an LRU inference cache with TTL expiry.
+
+<Exercise slug="inference-cache" />
+
+<KeyTakeaways takeaways={["Inference caching uses the same strategies as Service Worker caching: cache-first with TTL", "Quantizing inputs before hashing increases cache hit rate by matching near-identical signals", "LRU eviction prevents unbounded memory growth — same as browser cache limits", "40% cache hit rate on DEEP SCAN signals means 40% fewer model inference calls"]} />

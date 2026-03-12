@@ -1,0 +1,36 @@
+slug: generative-vs-discriminative
+lessonSlug: what-is-generative-ai
+title: "Generative vs Discriminative"
+instructions: "Create a function that demonstrates the generative approach: given a mean and standard deviation, generate an array of 10 new samples from a normal distribution using TensorFlow.js. Return the samples as a JavaScript array."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  async function generateSamples(mean: number, std: number): Promise<number[]> {
+    // Generate 10 samples from a normal distribution
+    // with the given mean and standard deviation
+    const samples = null; // your code here
+    return samples;
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  async function generateSamples(mean: number, std: number): Promise<number[]> {
+    const samples = tf.randomNormal([10], mean, std);
+    return await samples.array() as number[];
+  }
+testCode: |
+  describe('generateSamples', () => {
+    it('returns an array of 10 numbers', async () => {
+      const result = await generateSamples(0, 1);
+      expect(Array.isArray(result)).toBe(true);
+      expect(result.length).toBe(10);
+    });
+    it('returns numbers near the specified mean', async () => {
+      const result = await generateSamples(100, 1);
+      const avg = result.reduce((a, b) => a + b, 0) / result.length;
+      expect(avg).toBeGreaterThan(90);
+      expect(avg).toBeLessThan(110);
+    });
+  });
+estimatedMinutes: 5
+difficulty: beginner

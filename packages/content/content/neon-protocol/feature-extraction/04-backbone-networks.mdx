@@ -1,0 +1,123 @@
+---
+slug: backbone-networks
+title: "Backbone Networks"
+moduleId: feature-extraction
+themeId: neon-protocol
+order: 4
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Ryo opens a comparison chart on the holotable: MobileNet, ResNet, EfficientNet — each with different tradeoffs. 'These are backbone networks,' he says. 'Pre-trained feature extractors that you plug into your system like shared component libraries. You do not build from scratch. You pick the right backbone and build on top.'"
+  speaker: "Ryo"
+concept:
+  explanation: "A backbone network is a pre-trained CNN that serves as a reusable feature extractor. Like importing a shared component library in frontend development, you use someone else's trained network as a foundation and build your specific application on top."
+  bridge:
+    feTitle: "Shared component libraries"
+    feCode: "import { Button, Card } from '@company/ui-library';"
+    mlTitle: "Backbone Network"
+    mlCode: "const backbone = await tf.loadLayersModel('mobilenet_v2');"
+    tier: structural
+consequence:
+  narrative: "Ryo benchmarks three backbones on Kira's laptop. MobileNetV2: 48ms per frame. ResNet50: 180ms. 'For browser-based real-time detection,' he says, 'MobileNet is the only choice. We are not running on Meridian's server farms.'"
+  nextLessonTeaser: "Next: dimensionality reduction — compressing 512 dimensions into 2 for visualization"
+hints:
+  - level: nudge
+    content: "Backbone networks are pre-trained models you use as feature extractors — like importing a UI library"
+  - level: guidance
+    content: "Different backbones trade off accuracy for speed — MobileNet is fast, ResNet is accurate"
+  - level: solution
+    content: "Load a backbone, remove the classification head, and use it as a feature extractor in your pipeline"
+keywords:
+  - backbone-network
+  - mobilenet
+  - resnet
+  - feature-extractor
+  - component-library
+---
+
+<Dialogue speaker="Ryo">
+When you start a new frontend project, you do not write a button component from scratch. You import a component library. Backbone networks are the same idea. Someone trained a massive CNN on millions of images. You import it and use its features as a foundation for your specific task.
+</Dialogue>
+
+<Dialogue speaker="Kira">
+So MobileNet is like a lightweight UI library — fast but basic. And ResNet is like a full design system — powerful but heavier?
+</Dialogue>
+
+Exactly. Just as you choose a component library based on your project's constraints — bundle size, performance, feature set — you choose a backbone network based on your model's constraints: inference speed, accuracy, and memory footprint.
+
+<LearningObjectives objectives={["Understand backbone networks as reusable pre-trained feature extractors", "Compare common backbones: MobileNet, ResNet, EfficientNet", "Choose a backbone based on speed, accuracy, and deployment constraints", "Connect backbone selection to choosing frontend component libraries"]} />
+
+## Backbone Selection
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="backbone-comparison.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Common backbones and their tradeoffs:
+interface Backbone {
+  name: string;
+  featureSize: number;   // output embedding dimension
+  paramsMillion: number;  // model size
+  inferenceMs: number;    // approximate browser speed (224x224)
+  accuracy: number;       // ImageNet top-1 accuracy
+}
+
+const BACKBONES: Backbone[] = [
+  { name: 'MobileNetV2', featureSize: 1280, paramsMillion: 3.4,
+    inferenceMs: 45, accuracy: 71.8 },
+  { name: 'MobileNetV3', featureSize: 1024, paramsMillion: 5.4,
+    inferenceMs: 35, accuracy: 75.2 },
+  { name: 'ResNet50',    featureSize: 2048, paramsMillion: 25.6,
+    inferenceMs: 180, accuracy: 76.1 },
+  { name: 'EfficientNet-B0', featureSize: 1280, paramsMillion: 5.3,
+    inferenceMs: 60, accuracy: 77.1 },
+];
+
+// For browser-based resistance tools: MobileNetV3
+// Best accuracy-to-speed ratio for in-browser inference
+// Like choosing Preact over React for a performance-critical widget`}
+</CodeBlock>
+
+## Using a Backbone
+
+<CodeBlock language="typescript" title="use-backbone.ts">
+{`async function loadBackbone(name: string): Promise<tf.LayersModel> {
+  // TensorFlow.js provides pre-converted backbones
+  const urls: Record<string, string> = {
+    'mobilenet_v2': 'https://tfhub.dev/google/tfjs-model/mobilenet_v2/feature_vector/1/default/1',
+    'mobilenet_v3': 'https://tfhub.dev/google/tfjs-model/mobilenet_v3_small/feature_vector/1/default/1',
+  };
+
+  const model = await tf.loadGraphModel(urls[name]);
+  return model;
+}
+
+// Build a custom model on top of the backbone
+// Like composing UI library components into a custom page
+async function buildDroneDetector() {
+  const backbone = await loadBackbone('mobilenet_v2');
+
+  // Freeze backbone weights (pre-trained, don't change)
+  // Add custom layers on top for our specific task
+  const input = tf.input({ shape: [224, 224, 3] });
+  const features = backbone.predict(input); // [1, 1280]
+
+  // Custom classification head: drone vs not-drone
+  const dense = tf.layers.dense({ units: 128, activation: 'relu' });
+  const output = tf.layers.dense({ units: 2, activation: 'softmax' });
+
+  // Backbone = shared library, custom head = your application code
+}
+
+// The backbone does the heavy lifting (feature extraction)
+// Your custom head does the specific task (drone classification)`}
+</CodeBlock>
+
+## Challenge
+
+Compare backbone networks and select the optimal one for browser deployment.
+
+<Exercise slug="use-backbone" />
+
+<KeyTakeaways takeaways={["Backbone networks are pre-trained feature extractors — like importing a shared component library", "MobileNet is the browser-optimal backbone: small, fast, and accurate enough for real-time inference", "You build custom models by adding task-specific layers on top of a frozen backbone", "Choosing a backbone is like choosing a UI library: tradeoffs between power, speed, and bundle size"]} />

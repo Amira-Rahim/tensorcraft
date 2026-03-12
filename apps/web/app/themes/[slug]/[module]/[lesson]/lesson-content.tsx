@@ -7,11 +7,13 @@ import {
   BridgeCallout,
   CodeBlock,
   Exercise,
+  ExerciseDataProvider,
   HintPanel,
   KeyTakeaways,
   LearningObjectives,
   Quiz,
 } from "@tensorcraft/ui";
+import type { ExerciseData } from "@tensorcraft/ui";
 
 interface LessonContentProps {
   lesson: {
@@ -31,6 +33,7 @@ interface LessonContentProps {
       };
     };
   };
+  exercises?: ExerciseData[];
 }
 
 /** MDX components available in lesson content */
@@ -50,7 +53,15 @@ const mdxComponents = {
  * Velite's s.mdx() compiles MDX to a function body string that receives
  * { Fragment, jsx, jsxs } as arguments[0] and uses components from arguments[0].components.
  */
-export function LessonContent({ lesson }: LessonContentProps) {
+export function LessonContent({ lesson, exercises = [] }: LessonContentProps) {
+  const exerciseMap = useMemo(() => {
+    const map = new Map<string, ExerciseData>();
+    for (const ex of exercises) {
+      map.set(ex.slug, ex);
+    }
+    return map;
+  }, [exercises]);
+
   const Content = useMemo(() => {
     try {
       // Velite compiles MDX to: `const{Fragment,jsx,jsxs}=arguments[0]; ... return{default:fn}`
@@ -80,9 +91,11 @@ export function LessonContent({ lesson }: LessonContentProps) {
   }, [lesson.body]);
 
   return (
-    <div className="prose prose-invert max-w-none">
-      <Content />
-      {lesson.hints && <HintPanel hints={lesson.hints} />}
-    </div>
+    <ExerciseDataProvider exercises={exerciseMap}>
+      <div className="prose prose-invert max-w-none">
+        <Content />
+        {lesson.hints && <HintPanel hints={lesson.hints} />}
+      </div>
+    </ExerciseDataProvider>
   );
 }

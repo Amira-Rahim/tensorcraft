@@ -24,13 +24,17 @@
 
 ### Career Paths & Salaries
 
+> **Note:** Tensorcraft graduates are best positioned for "ML-Enhanced" frontend/fullstack roles. The pure ML engineering roles below typically also require Python fluency and deeper mathematics — Tensorcraft provides the conceptual foundation to pursue them.
+
 | Path | Description | Avg Salary (US) |
 |---|---|---|
-| MLOps Engineer | Build and maintain ML pipelines, deployment, monitoring | $145,000 - $195,000 |
-| Edge ML Engineer | Optimize and deploy models to constrained devices | $140,000 - $190,000 |
-| ML Infrastructure Engineer | Build the platforms that ML teams depend on | $150,000 - $200,000 |
-| ML Reliability Engineer | Ensure ML systems are robust and performant in production | $145,000 - $195,000 |
-| Data Platform Engineer | Build data pipelines, feature stores, and data infrastructure | $140,000 - $185,000 |
+| ML-Enhanced Frontend Engineer | Build edge-optimized ML features, model monitoring dashboards, deployment UIs | $120,000 - $160,000 |
+| Frontend Engineer (ML Platform) | Frontend for MLOps platforms (experiment tracking, model registries, pipeline builders) | $125,000 - $165,000 |
+| MLOps Engineer* | Build and maintain ML pipelines, deployment, monitoring | $145,000 - $195,000 |
+| ML Infrastructure Engineer* | Build the platforms that ML teams depend on | $150,000 - $200,000 |
+| Edge ML Engineer* | Optimize and deploy models to constrained devices | $140,000 - $190,000 |
+
+*\*Requires additional Python fluency and deeper mathematics beyond this course.*
 
 ---
 

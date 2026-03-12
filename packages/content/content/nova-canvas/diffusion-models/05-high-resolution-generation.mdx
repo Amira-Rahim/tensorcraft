@@ -1,0 +1,139 @@
+---
+slug: high-resolution-generation
+title: "High-Resolution Generation"
+moduleId: diffusion-models
+themeId: nova-canvas
+order: 5
+estimatedMinutes: 25
+difficulty: advanced
+context:
+  narrative: "Petrov needs 1024x1024 for the gallery prints. Ren runs the numbers: 'At 64x64 it takes 43 seconds. At 1024x1024... the browser tab will crash.' Kai suggests: 'Generate small, upscale smart. Like srcset — serve the right resolution for the context.'"
+  speaker: "Kai"
+concept:
+  explanation: "High-resolution generation uses cascaded models — generate at low resolution, then upscale with a super-resolution model. Like srcset and responsive images: serve the right size for the context, upscale only when needed."
+  bridge:
+    feTitle: "srcset and responsive images"
+    feCode: "<img srcset='small.jpg 256w, large.jpg 1024w' sizes='100vw' />"
+    mlTitle: "Cascaded diffusion (low-res + super-res)"
+    mlCode: "const lowRes = generate(64); const highRes = upscale(lowRes, 256);"
+    tier: pattern
+consequence:
+  narrative: "3.4 seconds. Low-res generation plus a fast upscaler. The gallery kiosks hum with life. Petrov's hands are shaking — not from panic this time, but from something closer to awe. 'We open in three days,' he says quietly. 'We are ready.'"
+  nextLessonTeaser: "Next module: Style Transfer — can MUSE paint in the style of Monet?"
+hints:
+  - level: nudge
+    content: "Think srcset: you don't send 4K images to mobile devices. Generate at the resolution you need."
+  - level: guidance
+    content: "Generate a small 64x64 image first, then use a separate super-resolution model to upscale to 256x256 or higher."
+  - level: solution
+    content: "Cascaded pipeline: diffusion model at 64x64 (fast) -> super-resolution model at 256x256 -> optional second upscale to 1024x1024"
+keywords:
+  - high-resolution
+  - super-resolution
+  - cascaded-diffusion
+  - upscaling
+  - srcset
+---
+
+<Dialogue speaker="Petrov">
+The gallery prints are one meter wide. I need at least 1024 by 1024 pixels. Can the model do that?
+</Dialogue>
+
+<Dialogue speaker="Ren">
+Directly? No. Memory scales quadratically with resolution. A 1024x1024 image has 256 times more pixels than 64x64. The browser tab would crash before step one.
+</Dialogue>
+
+<Dialogue speaker="Kai">
+So we do what responsive images do — serve the right resolution for the task. Generate at 64x64 where diffusion is fast, then upscale with a lightweight super-resolution model. Like srcset: the browser picks the size it needs.
+</Dialogue>
+
+You already handle this in frontend. `srcset` lets the browser choose the right image resolution. Cascaded diffusion does the same — generate at a manageable resolution, then upscale intelligently.
+
+<LearningObjectives objectives={["Understand why direct high-resolution diffusion is prohibitively expensive", "Implement a cascaded pipeline: base generation + super-resolution upscaling", "Build a simple super-resolution model using transposed convolutions", "Connect cascaded generation to srcset and responsive image strategies"]} />
+
+## The Resolution Problem
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="resolution-scaling.ts">
+{`// Why direct high-res generation doesn't work in the browser
+const resolutions = [64, 128, 256, 512, 1024];
+for (const res of resolutions) {
+  const pixels = res * res;
+  const tensorSize = pixels * 3 * 4; // 3 channels, float32
+  const mbPerImage = tensorSize / (1024 * 1024);
+  console.log(\`\${res}x\${res}: \${pixels.toLocaleString()} pixels, \${mbPerImage.toFixed(1)} MB per tensor\`);
+}
+// 64x64:    4,096 pixels,  0.05 MB per tensor
+// 128x128:  16,384 pixels, 0.2 MB per tensor
+// 256x256:  65,536 pixels, 0.8 MB per tensor
+// 512x512:  262,144 pixels, 3.0 MB per tensor
+// 1024x1024: 1,048,576 pixels, 12.0 MB per tensor
+// U-Net has dozens of intermediate tensors — multiply accordingly`}
+</CodeBlock>
+
+## Cascaded Generation Pipeline
+
+<CodeBlock language="typescript" title="cascaded-pipeline.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Super-resolution model: upscale 64x64 -> 256x256
+function buildSuperResModel(): tf.LayersModel {
+  const input = tf.input({ shape: [64, 64, 3] });
+
+  // Upscale 2x: 64 -> 128
+  let x = tf.layers.upSampling2d({ size: [2, 2] }).apply(input) as tf.SymbolicTensor;
+  x = tf.layers.conv2d({
+    filters: 64, kernelSize: 3, padding: 'same', activation: 'relu'
+  }).apply(x) as tf.SymbolicTensor;
+
+  // Upscale 2x: 128 -> 256
+  x = tf.layers.upSampling2d({ size: [2, 2] }).apply(x) as tf.SymbolicTensor;
+  x = tf.layers.conv2d({
+    filters: 32, kernelSize: 3, padding: 'same', activation: 'relu'
+  }).apply(x) as tf.SymbolicTensor;
+
+  // Output: 256x256x3
+  const output = tf.layers.conv2d({
+    filters: 3, kernelSize: 3, padding: 'same', activation: 'sigmoid'
+  }).apply(x) as tf.SymbolicTensor;
+
+  return tf.model({ inputs: input, outputs: output });
+}
+
+// The full cascaded pipeline
+async function generateHighRes(
+  baseModel: tf.LayersModel,
+  superResModel: tf.LayersModel,
+  prompt: tf.Tensor2D,
+  guidanceScale = 7.5
+): Promise<tf.Tensor4D> {
+  // Stage 1: fast diffusion at 64x64
+  console.time('base-generation');
+  const lowRes = await generateWithGuidance(
+    baseModel, prompt, 20, guidanceScale // only 20 steps!
+  );
+  console.timeEnd('base-generation'); // ~2.1 seconds
+
+  // Stage 2: upscale to 256x256
+  console.time('super-resolution');
+  const highRes = superResModel.predict(lowRes) as tf.Tensor4D;
+  console.timeEnd('super-resolution'); // ~1.3 seconds
+
+  lowRes.dispose();
+  return highRes; // total: ~3.4 seconds
+}
+
+// From 43 seconds to 3.4 seconds:
+// - Fewer diffusion steps (100 -> 20) via distilled model
+// - Lower base resolution (64x64 instead of 256x256)
+// - Lightweight super-resolution for the final upscale`}
+</CodeBlock>
+
+## Challenge
+
+Build a cascaded pipeline that generates low-res and upscales to high-res.
+
+<Exercise slug="high-res-generate" />
+
+<KeyTakeaways takeaways={["Direct high-resolution diffusion is memory-prohibitive in the browser — pixels scale quadratically", "Cascaded pipelines generate at low resolution and upscale with super-resolution models, like srcset", "Fewer diffusion steps + lower base resolution + fast upscaler = 43 seconds down to 3.4 seconds", "The gallery kiosks are saved: high-quality images at interactive speed"]} />

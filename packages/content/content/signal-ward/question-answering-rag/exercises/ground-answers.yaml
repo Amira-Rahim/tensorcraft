@@ -1,0 +1,110 @@
+slug: ground-answers
+lessonSlug: knowledge-grounding
+title: "Build an Answer Grounding Checker"
+instructions: "Implement a groundAnswer function that checks whether an answer is supported by evidence documents. For each document, compute an entailment score using the provided scoreFn. If the max entailment score exceeds the threshold, the answer is grounded. Return the grounded status, the best score, and citations for all documents above the threshold."
+starterCode: |
+  interface Citation {
+    documentId: string;
+    score: number;
+  }
+
+  interface GroundingResult {
+    isGrounded: boolean;
+    answer: string;
+    bestScore: number;
+    citations: Citation[];
+  }
+
+  function groundAnswer(
+    answer: string,
+    documents: { id: string; text: string }[],
+    scoreFn: (premise: string, hypothesis: string) => number,
+    threshold: number = 0.7
+  ): GroundingResult {
+    // 1. For each document, compute entailment score using scoreFn(doc.text, answer)
+    // 2. Collect citations where score > threshold
+    // 3. isGrounded = at least one citation exists
+    // 4. If not grounded, answer = "Insufficient evidence"
+    // 5. bestScore = highest score across all documents (0 if none)
+    return null; // your code here
+  }
+solutionCode: |
+  interface Citation {
+    documentId: string;
+    score: number;
+  }
+
+  interface GroundingResult {
+    isGrounded: boolean;
+    answer: string;
+    bestScore: number;
+    citations: Citation[];
+  }
+
+  function groundAnswer(
+    answer: string,
+    documents: { id: string; text: string }[],
+    scoreFn: (premise: string, hypothesis: string) => number,
+    threshold: number = 0.7
+  ): GroundingResult {
+    const citations: Citation[] = [];
+    let bestScore = 0;
+
+    for (const doc of documents) {
+      const score = scoreFn(doc.text, answer);
+      if (score > bestScore) bestScore = score;
+      if (score > threshold) {
+        citations.push({ documentId: doc.id, score });
+      }
+    }
+
+    const isGrounded = citations.length > 0;
+
+    return {
+      isGrounded,
+      answer: isGrounded ? answer : 'Insufficient evidence',
+      bestScore,
+      citations,
+    };
+  }
+testCode: |
+  describe('groundAnswer', () => {
+    const highScorer = (premise: string, hypothesis: string) =>
+      premise.includes('allergy') && hypothesis.includes('allergy') ? 0.95 : 0.1;
+
+    it('grounds answer when evidence supports it', () => {
+      const docs = [{ id: 'd1', text: 'Patient has penicillin allergy' }];
+      const result = groundAnswer('Patient has allergy', docs, highScorer);
+      expect(result.isGrounded).toBe(true);
+      expect(result.answer).toBe('Patient has allergy');
+      expect(result.citations.length).toBe(1);
+    });
+
+    it('rejects answer when no evidence supports it', () => {
+      const docs = [{ id: 'd1', text: 'Patient takes metformin daily' }];
+      const result = groundAnswer('Patient has allergy', docs, highScorer);
+      expect(result.isGrounded).toBe(false);
+      expect(result.answer).toBe('Insufficient evidence');
+    });
+
+    it('returns best score across all documents', () => {
+      const scorer = (_p: string, _h: string) => 0.5;
+      const docs = [
+        { id: 'd1', text: 'doc 1' },
+        { id: 'd2', text: 'doc 2' },
+      ];
+      const result = groundAnswer('test', docs, scorer);
+      expect(result.bestScore).toBe(0.5);
+    });
+
+    it('respects custom threshold', () => {
+      const scorer = () => 0.6;
+      const docs = [{ id: 'd1', text: 'doc' }];
+      const low = groundAnswer('test', docs, scorer, 0.5);
+      const high = groundAnswer('test', docs, scorer, 0.7);
+      expect(low.isGrounded).toBe(true);
+      expect(high.isGrounded).toBe(false);
+    });
+  });
+estimatedMinutes: 10
+difficulty: advanced

@@ -1,0 +1,53 @@
+slug: llm-client
+lessonSlug: llms-for-science
+title: "Create an LLM Client"
+instructions: "Write a function that takes a prompt string and returns a structured analysis object by calling an LLM API. Parse the JSON response and validate it has the required fields."
+starterCode: |
+  interface Analysis {
+    classification: string;
+    confidence: number;
+    reasoning: string;
+  }
+
+  async function analyzeSignal(prompt: string, apiCall: (p: string) => Promise<string>): Promise<Analysis> {
+    // 1. Call the API with the prompt
+    // 2. Parse the JSON response
+    // 3. Validate required fields exist
+    // 4. Return the analysis object
+    return null; // your code here
+  }
+solutionCode: |
+  interface Analysis {
+    classification: string;
+    confidence: number;
+    reasoning: string;
+  }
+
+  async function analyzeSignal(prompt: string, apiCall: (p: string) => Promise<string>): Promise<Analysis> {
+    const response = await apiCall(prompt);
+    const jsonMatch = response.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('No JSON in response');
+    const parsed = JSON.parse(jsonMatch[0]);
+    if (!parsed.classification || parsed.confidence === undefined || !parsed.reasoning) {
+      throw new Error('Missing required fields');
+    }
+    return parsed as Analysis;
+  }
+testCode: |
+  describe('analyzeSignal', () => {
+    const mockApi = async () => '{"classification":"anomaly","confidence":0.95,"reasoning":"High amplitude"}';
+    it('returns an analysis object', async () => {
+      const result = await analyzeSignal('test', mockApi);
+      expect(result.classification).toBe('anomaly');
+    });
+    it('parses confidence as number', async () => {
+      const result = await analyzeSignal('test', mockApi);
+      expect(typeof result.confidence).toBe('number');
+    });
+    it('throws on invalid JSON', async () => {
+      const badApi = async () => 'not json';
+      await expect(analyzeSignal('test', badApi)).rejects.toThrow();
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

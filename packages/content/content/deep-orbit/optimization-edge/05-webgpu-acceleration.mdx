@@ -1,0 +1,121 @@
+---
+slug: webgpu-acceleration
+title: "WebGPU Acceleration"
+moduleId: optimization-edge
+themeId: deep-orbit
+order: 5
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "Torres wants maximum speed. 'WebGL is good. WebGPU is better — direct GPU compute access without the graphics overhead. Use it.' Park discovers the next generation of browser GPU compute."
+  speaker: "Chief Torres"
+concept:
+  explanation: "WebGPU provides direct GPU compute access for ML inference — like upgrading from WebGL canvas rendering to a dedicated compute pipeline."
+  bridge:
+    feTitle: "Canvas WebGL"
+    feCode: "const gl = canvas.getContext('webgl2') // graphics-oriented GPU access"
+    mlTitle: "WebGPU Compute"
+    mlCode: "const device = await navigator.gpu.requestAdapter() // compute-oriented GPU access"
+    tier: structural
+consequence:
+  narrative: "WebGPU cuts inference time by 3x over WebGL. Torres: 'Not bad, for a frontend dev.' DEEP SCAN is production-ready."
+  nextLessonTeaser: "Module 11: the capstone — deploying the complete DEEP SCAN system"
+hints:
+  - level: nudge
+    content: "WebGPU is the successor to WebGL — designed for compute workloads, not just graphics"
+  - level: guidance
+    content: "TF.js supports WebGPU as a backend — switch with tf.setBackend('webgpu')"
+  - level: solution
+    content: "await tf.setBackend('webgpu'); await tf.ready(); // 2-3x faster inference"
+keywords:
+  - webgpu
+  - gpu-compute
+  - acceleration
+  - performance
+---
+
+<Dialogue speaker="Chief Torres">
+WebGL was designed for rendering triangles, not multiplying matrices. WebGPU is the real thing — direct GPU compute access. Set it up.
+</Dialogue>
+
+<Dialogue speaker="Ensign Park">
+So WebGPU is to WebGL what Web Workers are to the main thread — purpose-built for the actual workload instead of shoehorning into a different API?
+</Dialogue>
+
+WebGL was designed for 3D graphics — ML inference works on it, but it's like using `<canvas>` to render a spreadsheet. WebGPU is designed for general-purpose GPU compute: matrix multiplications, parallel reductions, and the tensor operations that ML inference actually needs.
+
+<LearningObjectives objectives={["Understand WebGPU as compute-oriented GPU access (vs WebGL's graphics orientation)", "Configure TensorFlow.js to use the WebGPU backend", "Benchmark WebGPU vs WebGL vs WASM for inference workloads", "Handle WebGPU availability with graceful fallback to WebGL"]} />
+
+## WebGPU Backend
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="webgpu-setup.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+async function initBestBackend(): Promise<string> {
+  // Try WebGPU first (fastest)
+  if ('gpu' in navigator) {
+    try {
+      await tf.setBackend('webgpu');
+      await tf.ready();
+      return 'webgpu';
+    } catch {
+      console.log('WebGPU not available, falling back');
+    }
+  }
+
+  // Fall back to WebGL (widely supported)
+  try {
+    await tf.setBackend('webgl');
+    await tf.ready();
+    return 'webgl';
+  } catch {
+    console.log('WebGL not available, falling back');
+  }
+
+  // Last resort: WASM (always works)
+  await tf.setBackend('wasm');
+  await tf.ready();
+  return 'wasm';
+}
+
+const backend = await initBestBackend();
+console.log('Using backend:', backend);
+
+// Benchmark results for DEEP SCAN (42MB optimized model):
+// WebGPU:  ~5ms per inference   (3x faster than WebGL)
+// WebGL:   ~15ms per inference  (GPU via graphics API)
+// WASM:    ~35ms per inference  (CPU, SIMD optimized)
+// CPU:     ~120ms per inference (pure JavaScript)`}
+</CodeBlock>
+
+## The Complete Optimization Stack
+
+<CodeBlock language="typescript" title="optimization-stack.ts">
+{`// DEEP SCAN optimization journey:
+
+console.log('=== DEEP SCAN Optimization Stack ===');
+console.log('');
+console.log('1. PROFILING:      Identified bottleneck layers');
+console.log('2. QUANTIZATION:   340 MB → 85 MB (int8)');
+console.log('3. PRUNING:        85 MB → 42 MB (60% sparsity)');
+console.log('4. CACHING:        40% fewer inference calls');
+console.log('5. WebGPU:         15ms → 5ms inference');
+console.log('');
+console.log('Result:');
+console.log('  Size:     340 MB → 42 MB (8x smaller)');
+console.log('  Speed:    45ms → 5ms (9x faster)');
+console.log('  Accuracy: 94.2% → 91.8% (2.4% loss)');
+console.log('  Fits in dashboard: YES ✓');
+console.log('');
+console.log('Torres: "Not bad, for a frontend dev."');`}
+</CodeBlock>
+
+## Challenge
+
+Set up the best available GPU backend and benchmark inference speed.
+
+<Exercise slug="gpu-backend" />
+
+<KeyTakeaways takeaways={["WebGPU provides 2-3x speedup over WebGL for ML inference — designed for compute, not graphics", "Always implement graceful fallback: WebGPU → WebGL → WASM, like progressive enhancement", "The full optimization stack (quantize + prune + cache + WebGPU) achieves 8x size reduction and 9x speed improvement", "Torres approves: DEEP SCAN is production-ready at 42 MB and 5ms inference"]} />

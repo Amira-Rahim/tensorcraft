@@ -1,0 +1,133 @@
+---
+slug: frame-by-frame-inference
+title: "Frame-by-Frame Inference"
+moduleId: real-time-detection
+themeId: neon-protocol
+order: 2
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "NEON calculates: at 4fps the team misses 87% of drone movements. Kira needs to run inference inside a requestAnimationFrame loop — the same pattern she used for smooth animations in her drawing app."
+  speaker: "NEON"
+concept:
+  explanation: "Running ML inference on live video is structurally identical to a game render loop. requestAnimationFrame() calls your function every frame. Instead of drawing pixels, you classify them."
+  bridge:
+    feTitle: "requestAnimationFrame() Render Loop"
+    feCode: "function loop() { render(); requestAnimationFrame(loop); }"
+    mlTitle: "Inference Loop"
+    mlCode: "function loop() { const pred = model.predict(frame); drawDetections(pred); requestAnimationFrame(loop); }"
+    tier: identity
+consequence:
+  narrative: "Protocol Sentinel hits 24fps on Kira's laptop. Drones are tracked frame by frame. Ryo nods — then points at the memory graph. 'You are leaking 50MB per second. Fix the tensor lifecycle or the browser crashes in two minutes.'"
+  nextLessonTeaser: "Next: performance budgets — how fast is fast enough?"
+hints:
+  - level: nudge
+    content: "Think of the inference loop exactly like a render loop — same timing, same structure"
+  - level: guidance
+    content: "Use requestAnimationFrame for timing, tf.tidy() for memory management, and track frame times for FPS"
+  - level: solution
+    content: "function detect() { tf.tidy(() => { const frame = tf.browser.fromPixels(video); const pred = model.predict(frame.resizeBilinear([224,224]).expandDims(0).div(255)); }); requestAnimationFrame(detect); }"
+keywords:
+  - requestAnimationFrame
+  - inference-loop
+  - frame-rate
+  - tensor-lifecycle
+  - memory-management
+---
+
+<Dialogue speaker="NEON">
+At 4 frames per second, you are processing one frame every 250 milliseconds. A Meridian scout drone covers 3 meters in that time. You are not doing real-time detection. You are doing historical analysis — very recent history, but history nonetheless.
+</Dialogue>
+
+<Dialogue speaker="Kira">
+I built a 60fps particle system for my drawing app using requestAnimationFrame. Same pattern — just swap canvas drawing for model inference. Right?
+</Dialogue>
+
+Exactly right. A render loop and an inference loop have identical structure. The browser calls your function roughly 60 times per second. Instead of drawing shapes, you classify frames.
+
+<LearningObjectives objectives={["Build an inference loop using requestAnimationFrame()", "Manage tensor memory with tf.tidy() to prevent leaks", "Calculate and display real-time FPS metrics", "Understand the relationship between inference time and achievable frame rate"]} />
+
+## The Inference Loop
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="inference-loop.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+function createInferenceLoop(
+  model: tf.LayersModel,
+  video: HTMLVideoElement,
+  onDetection: (scores: Float32Array, fps: number) => void
+) {
+  let lastTime = performance.now();
+  let frameCount = 0;
+  let fps = 0;
+
+  function detect() {
+    const now = performance.now();
+    frameCount++;
+
+    // Calculate FPS every second
+    if (now - lastTime >= 1000) {
+      fps = frameCount;
+      frameCount = 0;
+      lastTime = now;
+    }
+
+    // tf.tidy auto-disposes all tensors created inside
+    const scores = tf.tidy(() => {
+      const frame = tf.browser.fromPixels(video);
+      const input = frame
+        .resizeBilinear([224, 224])
+        .expandDims(0)
+        .div(255.0);
+      const prediction = model.predict(input) as tf.Tensor;
+      return prediction.dataSync() as Float32Array;
+    });
+
+    onDetection(scores, fps);
+    requestAnimationFrame(detect);
+  }
+
+  // Start the loop
+  requestAnimationFrame(detect);
+
+  // Return a stop function
+  return () => { /* set a flag to break the loop */ };
+}`}
+</CodeBlock>
+
+## Memory Management
+
+<CodeBlock language="typescript" title="tensor-lifecycle.ts">
+{`// BAD: tensors leak every frame
+function detectLeaky() {
+  const frame = tf.browser.fromPixels(video);   // Never disposed!
+  const input = frame.resizeBilinear([224, 224]); // Another leak!
+  const pred = model.predict(input.expandDims(0)); // And another!
+  requestAnimationFrame(detectLeaky);
+  // After 60 seconds at 30fps: 1,800 leaked tensors ~= browser crash
+}
+
+// GOOD: tf.tidy() cleans up automatically
+function detectClean() {
+  tf.tidy(() => {
+    const frame = tf.browser.fromPixels(video);
+    const input = frame.resizeBilinear([224, 224]).expandDims(0).div(255);
+    const pred = model.predict(input) as tf.Tensor;
+    // All intermediate tensors disposed when tidy() exits
+  });
+  requestAnimationFrame(detectClean);
+}
+
+// Monitor tensor count to verify no leaks
+console.log('Active tensors:', tf.memory().numTensors);`}
+</CodeBlock>
+
+## Challenge
+
+Build a frame-by-frame inference loop that tracks FPS and prevents memory leaks.
+
+<Exercise slug="frame-inference" />
+
+<KeyTakeaways takeaways={["requestAnimationFrame() for inference is the same pattern as requestAnimationFrame() for rendering", "tf.tidy() is essential — without it, tensor memory leaks crash the browser in seconds", "Real-time means your inference time must be less than your frame budget (33ms at 30fps)", "Monitor tf.memory().numTensors to verify your loop is not leaking"]} />

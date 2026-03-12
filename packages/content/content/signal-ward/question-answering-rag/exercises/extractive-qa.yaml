@@ -1,0 +1,105 @@
+slug: extractive-qa
+lessonSlug: extractive-qa
+title: "Build an Extractive QA Span Extractor"
+instructions: "Implement an extractAnswer function that takes start logits, end logits, and an array of tokens, then returns the best answer span. The function should find the (start, end) pair with the highest combined score where start <= end and the span length is at most maxSpanLength tokens. Return the joined tokens and the confidence score."
+starterCode: |
+  interface QAResult {
+    answer: string;
+    startIndex: number;
+    endIndex: number;
+    confidence: number;
+  }
+
+  function extractAnswer(
+    startLogits: number[],
+    endLogits: number[],
+    tokens: string[],
+    maxSpanLength: number = 10
+  ): QAResult {
+    // 1. Find best (start, end) pair where start <= end
+    //    and (end - start) < maxSpanLength
+    // 2. Score = startLogits[start] + endLogits[end]
+    // 3. confidence = score normalized by max possible score
+    // 4. answer = tokens.slice(start, end + 1).join(' ')
+    return null; // your code here
+  }
+solutionCode: |
+  interface QAResult {
+    answer: string;
+    startIndex: number;
+    endIndex: number;
+    confidence: number;
+  }
+
+  function extractAnswer(
+    startLogits: number[],
+    endLogits: number[],
+    tokens: string[],
+    maxSpanLength: number = 10
+  ): QAResult {
+    let bestScore = -Infinity;
+    let bestStart = 0;
+    let bestEnd = 0;
+
+    for (let s = 0; s < tokens.length; s++) {
+      for (let e = s; e < Math.min(s + maxSpanLength, tokens.length); e++) {
+        const score = startLogits[s] + endLogits[e];
+        if (score > bestScore) {
+          bestScore = score;
+          bestStart = s;
+          bestEnd = e;
+        }
+      }
+    }
+
+    const maxPossible = Math.max(...startLogits) + Math.max(...endLogits);
+    const confidence = maxPossible > 0 ? bestScore / maxPossible : 0;
+
+    return {
+      answer: tokens.slice(bestStart, bestEnd + 1).join(' '),
+      startIndex: bestStart,
+      endIndex: bestEnd,
+      confidence,
+    };
+  }
+testCode: |
+  describe('extractAnswer', () => {
+    it('finds the best span', () => {
+      const startLogits = [0.1, 0.8, 0.1, 0.0];
+      const endLogits = [0.0, 0.1, 0.9, 0.0];
+      const tokens = ['patient', 'allergic', 'to', 'penicillin'];
+      const result = extractAnswer(startLogits, endLogits, tokens);
+      expect(result.startIndex).toBe(1);
+      expect(result.endIndex).toBe(2);
+      expect(result.answer).toBe('allergic to');
+    });
+
+    it('respects maxSpanLength', () => {
+      const startLogits = [0.9, 0.0, 0.0, 0.0, 0.0];
+      const endLogits = [0.0, 0.0, 0.0, 0.0, 0.9];
+      const tokens = ['a', 'b', 'c', 'd', 'e'];
+      const result = extractAnswer(startLogits, endLogits, tokens, 2);
+      expect(result.endIndex - result.startIndex).toBeLessThan(2);
+    });
+
+    it('returns confidence between 0 and 1', () => {
+      const startLogits = [0.5, 0.5];
+      const endLogits = [0.5, 0.5];
+      const tokens = ['hello', 'world'];
+      const result = extractAnswer(startLogits, endLogits, tokens);
+      expect(result.confidence).toBeGreaterThanOrEqual(0);
+      expect(result.confidence).toBeLessThanOrEqual(1);
+    });
+
+    it('handles single-token answers', () => {
+      const startLogits = [0.1, 0.9];
+      const endLogits = [0.1, 0.9];
+      const tokens = ['no', 'yes'];
+      const result = extractAnswer(startLogits, endLogits, tokens);
+      expect(result.startIndex).toBe(1);
+      expect(result.endIndex).toBe(1);
+      expect(result.answer).toBe('yes');
+    });
+  });
+estimatedMinutes: 10
+difficulty: advanced

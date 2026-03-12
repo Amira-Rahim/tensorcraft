@@ -1,3 +1,4 @@
 export { getSupabaseBrowserClient } from "./client";
 export { getSupabaseServerClient, getSupabaseAdminClient } from "./server";
-export type { Database } from "./types";
+export { isAdmin, getUserRole } from "./admin";
+export type { Database, UserRole } from "./types";

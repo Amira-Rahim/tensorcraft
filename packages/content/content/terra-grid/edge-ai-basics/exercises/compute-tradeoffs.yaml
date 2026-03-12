@@ -1,0 +1,9 @@
+slug: compute-tradeoffs
+lessonSlug: edge-vs-cloud-tradeoffs
+title: "Design Compute Tradeoffs"
+instructions: "Write a function chooseTarget(maxLatencyMs, requiresOffline, modelSizeMB) that returns 'edge' if offline is required OR latency < 100ms, returns 'cloud' if modelSizeMB > 300, and returns 'hybrid' otherwise."
+starterCode: "function chooseTarget(maxLatencyMs, requiresOffline, modelSizeMB) {\n  // Return 'edge', 'cloud', or 'hybrid'\n  return null; // your code here\n}"
+solutionCode: "function chooseTarget(maxLatencyMs, requiresOffline, modelSizeMB) {\n  if (requiresOffline || maxLatencyMs < 100) return 'edge';\n  if (modelSizeMB > 300) return 'cloud';\n  return 'hybrid';\n}"
+testCode: "describe('chooseTarget', () => { it('returns edge for offline', () => { expect(chooseTarget(5000, true, 50)).toBe('edge'); }); it('returns edge for low latency', () => { expect(chooseTarget(50, false, 50)).toBe('edge'); }); it('returns cloud for large models', () => { expect(chooseTarget(5000, false, 500)).toBe('cloud'); }); it('returns hybrid otherwise', () => { expect(chooseTarget(5000, false, 50)).toBe('hybrid'); }); });"
+estimatedMinutes: 10
+difficulty: beginner

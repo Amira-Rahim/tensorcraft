@@ -1,0 +1,90 @@
+slug: gpu-backend
+lessonSlug: webgpu-acceleration
+title: "Select the Best GPU Backend"
+instructions: "Write a function that tries backends in order of preference (WebGPU → WebGL → WASM) and returns the name of the first one that initializes successfully. Each backend init may throw an error if unavailable."
+starterCode: |
+  type Backend = 'webgpu' | 'webgl' | 'wasm';
+
+  interface BackendConfig {
+    name: Backend;
+    isAvailable: () => boolean;
+    init: () => Promise<void>;
+  }
+
+  async function selectBestBackend(backends: BackendConfig[]): Promise<Backend> {
+    // Try each backend in order
+    // If isAvailable() and init() succeeds, return its name
+    // If init() throws, continue to next
+    // If none work, throw an Error
+    return null; // your code here
+  }
+solutionCode: |
+  type Backend = 'webgpu' | 'webgl' | 'wasm';
+
+  interface BackendConfig {
+    name: Backend;
+    isAvailable: () => boolean;
+    init: () => Promise<void>;
+  }
+
+  async function selectBestBackend(backends: BackendConfig[]): Promise<Backend> {
+    for (const backend of backends) {
+      if (!backend.isAvailable()) continue;
+      try {
+        await backend.init();
+        return backend.name;
+      } catch {
+        continue;
+      }
+    }
+    throw new Error('No backend available');
+  }
+testCode: |
+  describe('selectBestBackend', () => {
+    it('selects WebGPU when available', async () => {
+      const backends = [
+        { name: 'webgpu' as const, isAvailable: () => true, init: async () => {} },
+        { name: 'webgl' as const, isAvailable: () => true, init: async () => {} },
+        { name: 'wasm' as const, isAvailable: () => true, init: async () => {} },
+      ];
+      expect(await selectBestBackend(backends)).toBe('webgpu');
+    });
+
+    it('falls back to WebGL when WebGPU unavailable', async () => {
+      const backends = [
+        { name: 'webgpu' as const, isAvailable: () => false, init: async () => {} },
+        { name: 'webgl' as const, isAvailable: () => true, init: async () => {} },
+        { name: 'wasm' as const, isAvailable: () => true, init: async () => {} },
+      ];
+      expect(await selectBestBackend(backends)).toBe('webgl');
+    });
+
+    it('falls back when init throws', async () => {
+      const backends = [
+        { name: 'webgpu' as const, isAvailable: () => true, init: async () => { throw new Error('fail'); } },
+        { name: 'webgl' as const, isAvailable: () => true, init: async () => {} },
+        { name: 'wasm' as const, isAvailable: () => true, init: async () => {} },
+      ];
+      expect(await selectBestBackend(backends)).toBe('webgl');
+    });
+
+    it('selects WASM as last resort', async () => {
+      const backends = [
+        { name: 'webgpu' as const, isAvailable: () => false, init: async () => {} },
+        { name: 'webgl' as const, isAvailable: () => true, init: async () => { throw new Error('fail'); } },
+        { name: 'wasm' as const, isAvailable: () => true, init: async () => {} },
+      ];
+      expect(await selectBestBackend(backends)).toBe('wasm');
+    });
+
+    it('throws when no backend works', async () => {
+      const backends = [
+        { name: 'webgpu' as const, isAvailable: () => false, init: async () => {} },
+        { name: 'webgl' as const, isAvailable: () => false, init: async () => {} },
+        { name: 'wasm' as const, isAvailable: () => false, init: async () => {} },
+      ];
+      await expect(selectBestBackend(backends)).rejects.toThrow('No backend available');
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

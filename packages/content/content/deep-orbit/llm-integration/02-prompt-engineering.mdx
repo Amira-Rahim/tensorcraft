@@ -1,0 +1,130 @@
+---
+slug: prompt-engineering
+title: "Prompt Engineering"
+moduleId: llm-integration
+themeId: deep-orbit
+order: 2
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Sato discovers that the quality of LLM output depends entirely on the quality of the prompt. She refines her prompts iteratively — like debugging search queries until they return the right results."
+  speaker: "Dr. Sato"
+concept:
+  explanation: "Crafting effective prompts is like writing good search queries — specificity, structure, and context determine the quality of results."
+  bridge:
+    feTitle: "Search Queries"
+    feCode: "// Bad: 'error' → thousands of irrelevant results"
+    mlTitle: "Prompt Design"
+    mlCode: "// Bad: 'analyze signal' → vague, unfocused output"
+    tier: structural
+consequence:
+  narrative: "Structured prompts with role, context, and format instructions produce analysis that Sato only needs to lightly edit rather than rewrite."
+  nextLessonTeaser: "Next: RAG — grounding LLM responses in actual signal data"
+hints:
+  - level: nudge
+    content: "Good prompts have three parts: role (who), context (what data), format (how to respond)"
+  - level: guidance
+    content: "Use system/user message separation, provide examples, request structured output (JSON)"
+  - level: solution
+    content: "System: 'You are a signal analyst.' User: 'Given these readings: [...], classify and explain in JSON format: {class, confidence, reasoning}.'"
+keywords:
+  - prompt-engineering
+  - system-prompt
+  - few-shot
+  - structured-output
+---
+
+<Dialogue speaker="Dr. Sato">
+My first prompt was 'analyze this signal.' The output was useless — generic, vague, no structure. When I added role, context, data, and format instructions, the output became precise enough to include in the report.
+</Dialogue>
+
+You've learned that `git log --oneline --graph --all` gives better results than `git log`. The same applies to LLM prompts: specificity and structure dramatically improve output quality.
+
+<LearningObjectives objectives={["Structure prompts with role, context, data, and format instructions", "Use few-shot examples to guide output format and style", "Request structured output (JSON) for programmatic processing", "Iterate on prompts like debugging — refine until results match expectations"]} />
+
+## From Vague to Precise
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="prompt-evolution.ts">
+{`// Level 1: Vague — like searching for "error"
+const vaguePrompt = "Analyze this signal data.";
+// Output: generic paragraph about signals (useless)
+
+// Level 2: Specific role + context
+const betterPrompt = \`You are a deep space signal analyst aboard a research vessel.
+Analyze the following signal reading and classify it as normal or anomalous.
+Signal: amplitude=1.82, frequency=73.4Hz, phase=0.23rad\`;
+// Output: decent analysis but unstructured
+
+// Level 3: Structured with format instructions
+const structuredPrompt = \`You are a deep space signal analyst. Respond in JSON only.
+
+Signal reading:
+- Amplitude: 1.82 (normal range: 0.1-1.0)
+- Frequency: 73.4 Hz (known natural: 5, 12, 23, 47 Hz)
+- Phase: 0.23 rad
+
+Classify this signal. Respond with:
+{
+  "classification": "normal" | "anomalous",
+  "confidence": 0.0-1.0,
+  "reasoning": "brief explanation",
+  "anomalous_features": ["list of unusual features"]
+}\`;
+// Output: parseable JSON with clear reasoning`}
+</CodeBlock>
+
+## Prompt Templates
+
+<CodeBlock language="typescript" title="templates.ts">
+{`// Reusable prompt templates — like React component templates
+
+interface SignalData {
+  amplitude: number;
+  frequency: number;
+  phase: number;
+  fftPeaks: { hz: number; magnitude: number }[];
+}
+
+function classificationPrompt(signal: SignalData): string {
+  return \`You are DEEP SCAN, an AI signal classification system.
+
+## Context
+You are analyzing signals from deep space Sector 7-G.
+Known natural frequencies: 5, 12, 23, 47 Hz.
+Normal amplitude range: 0.1 to 1.0.
+
+## Signal Data
+- Amplitude: \${signal.amplitude}
+- Frequency: \${signal.frequency} Hz
+- Phase: \${signal.phase} rad
+- FFT Peaks: \${signal.fftPeaks.map(p => \`\${p.hz}Hz (\${p.magnitude.toFixed(2)})\`).join(', ')}
+
+## Task
+Classify this signal and explain your reasoning.
+
+## Output Format (JSON)
+{
+  "classification": "normal" | "anomalous" | "unknown",
+  "confidence": <0.0 to 1.0>,
+  "reasoning": "<2-3 sentences>",
+  "risk_level": "low" | "medium" | "high"
+}\`;
+}
+
+// Parse the response
+function parseClassification(response: string) {
+  const jsonMatch = response.match(/\\{[\\s\\S]*\\}/);
+  if (!jsonMatch) throw new Error('No JSON found in response');
+  return JSON.parse(jsonMatch[0]);
+}`}
+</CodeBlock>
+
+## Challenge
+
+Write a prompt template that produces structured signal analysis.
+
+<Exercise slug="prompt-template" />
+
+<KeyTakeaways takeaways={["Structure prompts with role, context, data, and format — like building a well-structured API request", "Request JSON output for programmatic processing — always parse and validate the response", "Few-shot examples teach the model your expected format and reasoning style", "Iterate on prompts like debugging: test, inspect output, refine, repeat"]} />

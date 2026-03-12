@@ -1,0 +1,134 @@
+---
+slug: medical-tokenization
+title: "Medical Tokenization"
+moduleId: tokenization-preprocessing
+themeId: signal-ward
+order: 3
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Santos presents records with three different abbreviations for the same medication. The team builds domain-specific tokenization rules."
+  speaker: "Santos"
+concept:
+  explanation: "Medical text uses abbreviations (pt, hx, dx, rx), shorthand, and non-standard spelling. Domain-specific tokenization rules normalize these variations, just like custom parsing rules in a frontend application."
+  bridge:
+    feTitle: "Domain Parsing Rules"
+    feCode: "const parsePhone = (s) => s.replace(/[^0-9]/g, '').match(/(\\d{3})(\\d{3})(\\d{4})/)"
+    mlTitle: "Medical Normalization"
+    mlCode: "const normalize = (s) => abbrevMap.get(s) ?? s"
+    tier: structural
+consequence:
+  narrative: "Diagnostic One now handles the most common clinical abbreviations, dramatically reducing misclassification."
+  nextLessonTeaser: "Next: building the vocabulary dictionary that maps all these tokens to numbers."
+hints:
+  - level: nudge
+    content: "Create a lookup map of common medical abbreviations to their full forms."
+  - level: guidance
+    content: "Tokenize first, then apply the abbreviation map to each token."
+  - level: solution
+    content: "tokens.map(t => abbreviationMap.get(t) || t)"
+keywords:
+  - medical-abbreviations
+  - text-normalization
+  - domain-specific
+  - preprocessing
+---
+
+> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
+
+<Dialogue speaker="Santos">
+This record has three different abbreviations for the same medication: "PCN", "penicillin", and "pen." And that's just one drug. We've got hundreds of abbreviations flying around.
+</Dialogue>
+
+<Dialogue speaker="Obi">
+Every domain has its own shorthand. In web dev, you parse phone numbers that come in as "(555) 123-4567" or "555.123.4567" or "5551234567." Same problem, different domain.
+</Dialogue>
+
+<Dialogue speaker="Dr. Vasquez">
+If Diagnostic One can't normalize these abbreviations, it will miss the same allergy our vendor missed. This is critical.
+</Dialogue>
+
+Every frontend developer has written custom parsers — phone number formatters, date normalizers, address cleaners. Medical tokenization is the same craft: you take messy, inconsistent input and normalize it into a standard form.
+
+<LearningObjectives objectives={["Build an abbreviation expansion map for common clinical shorthand", "Normalize medical text before tokenization", "Handle multiple representations of the same concept", "Implement a medical-aware preprocessing pipeline"]} />
+
+## The Abbreviation Problem
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="medical-abbreviations.ts">
+{`// Common medical abbreviations
+const MEDICAL_ABBREVS = new Map<string, string>([
+  ['pt', 'patient'],
+  ['pts', 'patients'],
+  ['hx', 'history'],
+  ['dx', 'diagnosis'],
+  ['rx', 'prescription'],
+  ['tx', 'treatment'],
+  ['sx', 'symptoms'],
+  ['pcn', 'penicillin'],
+  ['pen', 'penicillin'],
+  ['abx', 'antibiotics'],
+  ['bp', 'blood-pressure'],
+  ['hr', 'heart-rate'],
+  ['c/o', 'complains-of'],
+  ['s/p', 'status-post'],
+  ['w/o', 'without'],
+  ['prn', 'as-needed'],
+  ['bid', 'twice-daily'],
+  ['tid', 'three-times-daily'],
+]);
+
+function normalizeToken(token: string): string {
+  return MEDICAL_ABBREVS.get(token) ?? token;
+}
+
+function medicalTokenize(text: string): string[] {
+  // Handle slash abbreviations before splitting
+  const prepared = text.toLowerCase()
+    .replace(/c\/o/g, 'c/o')
+    .replace(/s\/p/g, 's/p')
+    .replace(/w\/o/g, 'w/o');
+
+  const tokens = prepared.match(/[a-z]+(?:\/[a-z])?|[0-9]+(?:\.[0-9]+)?/g) || [];
+  return tokens.map(normalizeToken);
+}
+
+console.log(medicalTokenize('Pt c/o chest pain. Hx of PCN allergy.'));
+// ['patient', 'complains-of', 'chest', 'pain', 'history', 'of', 'penicillin', 'allergy']`}
+</CodeBlock>
+
+## Spelling Normalization
+
+Clinical notes are often typed quickly. Common misspellings need handling too.
+
+<CodeBlock language="typescript" title="spelling-normalization.ts">
+{`const COMMON_MISSPELLINGS = new Map<string, string>([
+  ['patinet', 'patient'],
+  ['diagnossi', 'diagnosis'],
+  ['symtoms', 'symptoms'],
+  ['medcation', 'medication'],
+  ['prescritpion', 'prescription'],
+]);
+
+function normalizeSpelling(token: string): string {
+  return COMMON_MISSPELLINGS.get(token) ?? token;
+}
+
+// Full preprocessing pipeline
+function preprocessClinicalText(text: string): string[] {
+  const tokens = medicalTokenize(text);
+  return tokens.map(normalizeSpelling);
+}
+
+console.log(preprocessClinicalText('Patinet reports symtoms after PCN dose'));
+// ['patient', 'reports', 'symptoms', 'after', 'penicillin', 'dose']`}
+</CodeBlock>
+
+## Challenge
+
+Build a medical tokenizer that expands abbreviations.
+
+<Exercise slug="medical-tokens" />
+
+<KeyTakeaways takeaways={["Medical text uses hundreds of abbreviations that must be normalized", "Abbreviation expansion is like phone number parsing — domain-specific normalization", "A preprocessing pipeline chains tokenization, abbreviation expansion, and spelling correction", "Consistent normalization directly improves model accuracy"]} />

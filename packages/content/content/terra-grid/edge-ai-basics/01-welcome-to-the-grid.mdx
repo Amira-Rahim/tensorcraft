@@ -1,0 +1,93 @@
+---
+slug: welcome-to-the-grid
+title: "Welcome to the Grid"
+moduleId: edge-ai-basics
+themeId: terra-grid
+order: 1
+estimatedMinutes: 25
+difficulty: beginner
+context:
+  narrative: "You arrive at Terra Grid HQ. 47 sites, 2 million sensors, and a monitoring network that never sleeps."
+  speaker: "Hassan Al-Rashid"
+concept:
+  explanation: "Edge computing runs ML models directly on remote devices instead of sending data to the cloud — just like CDN edge locations serve content close to users."
+  bridge:
+    feTitle: "CDN Edge Location"
+    feCode: "// Content served from nearest PoP\nfetch('https://cdn.example.com/asset.js')"
+    mlTitle: "Edge Inference"
+    mlCode: "// Model runs on local device\nconst prediction = model.predict(sensorData)"
+    tier: analogy
+consequence:
+  narrative: "GRID assigns you to Site 12 — a wind farm in Patagonia with no reliable uplink."
+  nextLessonTeaser: "Next: understanding why the edge matters"
+hints:
+  - level: nudge
+    content: "Think about why CDNs exist — latency and availability"
+  - level: guidance
+    content: "Edge computing solves the same problems for ML that CDNs solve for content delivery"
+  - level: solution
+    content: "Edge = local inference, Cloud = remote inference"
+keywords:
+  - edge-computing
+  - inference
+  - latency
+  - cdn
+---
+
+<Dialogue speaker="Hassan Al-Rashid">
+Welcome to Terra Systems. I run infrastructure for the Grid — 47 monitoring sites across six continents, 2 million sensors feeding data every second. Your job is to make our ML models run out there, not in here.
+</Dialogue>
+
+<Dialogue speaker="GRID">
+47 sites monitored. 2,147,483 sensors active. Average inference latency: 8,234ms. Target: 89ms. Current architecture: unacceptable.
+</Dialogue>
+
+<Dialogue speaker="Cole Branson">
+Your model needs to run on this. 512MB RAM, ARM processor, no internet until Thursday. Welcome to the edge.
+</Dialogue>
+
+You have spent your career deploying code to the cloud. But Terra Grid does not have that luxury. When a turbine bearing starts failing at 2 AM on a wind farm in Patagonia, you cannot wait for a round trip to a data center in Virginia. The model must be there, on the device, ready.
+
+<LearningObjectives objectives={["Understand what edge computing means for ML deployment", "Identify the parallels between CDN architecture and edge AI", "Recognize the constraints of edge environments", "Describe the Terra Grid monitoring infrastructure"]} />
+
+## The CDN Parallel
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+You already understand edge computing. Every time you configure a CDN, you are making the same architectural decision: move the work closer to the user. CDNs cache static assets at edge locations to reduce latency. Edge AI caches *models* on local devices to reduce inference latency.
+
+<CodeBlock language="typescript" title="edge-vs-cloud.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Cloud inference: send data, wait for response
+async function cloudInference(sensorData: number[]) {
+  const response = await fetch('https://api.terra-grid.com/predict', {
+    body: JSON.stringify({ readings: sensorData })
+  });
+  return response.json(); // ~8,234ms round trip
+}
+
+// Edge inference: model runs locally on the device
+async function edgeInference(sensorData: number[]) {
+  const model = await tf.loadLayersModel('file://./model/model.json');
+  const input = tf.tensor2d([sensorData]);
+  const prediction = model.predict(input) as tf.Tensor;
+  return prediction.dataSync(); // ~89ms local
+}`}
+</CodeBlock>
+
+The cloud version requires connectivity, adds network latency, and fails when the satellite uplink goes down. The edge version runs locally, responds in milliseconds, and works offline. Same model, different deployment target.
+
+## The Grid Architecture
+
+Terra Grid monitors industrial infrastructure: wind farms, solar arrays, pipeline networks, water treatment plants. Each site has gateway devices — small ARM-based computers connected to hundreds of sensors. Your models run on those gateways.
+
+The constraints are real: 512MB RAM, quad-core ARM processors, intermittent connectivity, and power budgets measured in watts. Every byte matters.
+
+## Challenge
+
+Classify scenarios as edge or cloud computing.
+
+<Exercise slug="edge-vs-cloud" />
+
+<KeyTakeaways takeaways={["Edge AI runs models on local devices, just like CDNs serve content from edge locations", "Edge inference eliminates network latency and works offline", "Terra Grid devices have hard constraints: 512MB RAM, ARM processors, intermittent connectivity", "The same model can be deployed to cloud or edge — the architecture decision depends on requirements"]} />

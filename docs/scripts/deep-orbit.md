@@ -30,13 +30,17 @@ Park's voice changes across the course as his ML fluency grows. His dialogue sho
 
 ### Career Paths & Salaries
 
+> **Note:** Tensorcraft graduates are best positioned for "ML-Enhanced" frontend/fullstack roles. The pure ML engineering roles below typically also require Python fluency and deeper mathematics — Tensorcraft provides the conceptual foundation to pursue them.
+
 | Path | Description | Avg Salary (US) |
 |---|---|---|
-| ML Engineer (Time-Series) | Build and deploy temporal models for IoT, finance, health monitoring | $145,000 - $195,000 |
-| Signal Processing Engineer | DSP + ML hybrid roles in telecom, audio, defense | $130,000 - $180,000 |
-| Data Scientist (Sensor/IoT) | Analyze streaming sensor data, build anomaly pipelines | $125,000 - $170,000 |
-| Audio/Speech ML Engineer | Apply signal processing + ML to audio products | $140,000 - $190,000 |
-| Edge ML Engineer | Optimize and deploy models to constrained devices | $135,000 - $185,000 |
+| ML-Enhanced Frontend Engineer | Build ML-powered features in the browser, deploy pre-trained models, collaborate with ML teams | $120,000 - $160,000 |
+| Frontend Engineer (ML Products) | Frontend for ML-heavy products (dashboards, model monitoring, data annotation UIs) | $125,000 - $165,000 |
+| ML Engineer (Time-Series)* | Build and deploy temporal models for IoT, finance, health monitoring | $145,000 - $195,000 |
+| Signal Processing Engineer* | DSP + ML hybrid roles in telecom, audio, defense | $130,000 - $180,000 |
+| Edge ML Engineer* | Optimize and deploy models to constrained devices | $135,000 - $185,000 |
+
+*\*Requires additional Python fluency and deeper mathematics beyond this course.*
 
 ---
 

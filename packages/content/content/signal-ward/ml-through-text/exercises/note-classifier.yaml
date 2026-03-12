@@ -1,0 +1,43 @@
+slug: note-classifier
+lessonSlug: your-first-classifier
+title: "Note Classifier"
+instructions: "Write a classify function that takes a feature tensor and weight tensor, multiplies them element-wise, sums the result, adds a bias of 0.1, and returns the sigmoid of the score using tf.sigmoid(). Return the result of dataSync()[0]."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function classify(features: tf.Tensor, weights: tf.Tensor): number {
+    const bias = 0.1;
+    // 1. Multiply features by weights element-wise
+    // 2. Sum the result
+    // 3. Add bias
+    // 4. Apply sigmoid and return the value
+    return null; // your code here
+  }
+
+  const features = tf.tensor([1, 1, 0, 0, 0]);
+  const weights = tf.tensor([0.9, 0.3, -0.1, -0.5, -0.2]);
+  const result = classify(features, weights);
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function classify(features: tf.Tensor, weights: tf.Tensor): number {
+    const bias = 0.1;
+    const score = features.mul(weights).sum().add(tf.scalar(bias));
+    return tf.sigmoid(score).dataSync()[0];
+  }
+
+  const features = tf.tensor([1, 1, 0, 0, 0]);
+  const weights = tf.tensor([0.9, 0.3, -0.1, -0.5, -0.2]);
+  const result = classify(features, weights);
+testCode: |
+  describe('Note Classifier', () => {
+    it('returns a number', () => { expect(typeof result).toBe('number'); });
+    it('returns value between 0 and 1', () => { expect(result).toBeGreaterThan(0); expect(result).toBeLessThan(1); });
+    it('scores allergy note high', () => { expect(result).toBeGreaterThan(0.7); });
+    it('scores non-allergy note low', () => {
+      const nonAllergy = classify(tf.tensor([0, 0, 1, 0, 0]), weights);
+      expect(nonAllergy).toBeLessThan(0.55);
+    });
+  });
+estimatedMinutes: 8
+difficulty: beginner

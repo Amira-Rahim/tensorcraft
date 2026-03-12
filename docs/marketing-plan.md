@@ -54,7 +54,7 @@ This marketing plan outlines the strategy for taking Tensorcraft from launch thr
 
 ## Unique Value Proposition
 
-**For frontend engineers who want to learn machine learning, Tensorcraft is the only interactive education platform that translates ML concepts into frontend language — using 50+ concept bridges that map React state to model weights, component lifecycles to training loops, and virtual DOM diffing to gradient descent — so you can learn ML without leaving the browser or learning Python first.**
+**For frontend engineers who want to understand machine learning deeply enough to evaluate, debug, and architect ML-powered features, Tensorcraft is the only interactive education platform that translates ML concepts into frontend language — using 50+ concept bridges that map React state to model weights, component lifecycles to training loops, and middleware chains to neural network layers — starting from the tools and mental models you already know.**
 
 ### Key Differentiators
 
@@ -158,7 +158,7 @@ Build complete topic clusters to establish Tensorcraft as the authoritative reso
 | FE-to-ML Bridges | 50+ individual bridge pages, each mapping one FE concept to one ML concept with code examples | Own the entire "ML for React/Vue/Angular developers" space |
 | Browser-Based ML | 10-15 articles on WebGPU, Web Workers for training, IndexedDB model caching, inference optimization | Rank for "machine learning in the browser" and related terms |
 | Interactive ML Education | 8-12 articles on pedagogy, interactive learning, story-driven education, gamification in tech ed | Establish thought leadership in ML education niche |
-| ML Career for Frontend Devs | 10-15 articles on career paths, interview prep, portfolio projects, salary expectations | Capture high-intent "career pivot" traffic |
+| ML-Enhanced Frontend Careers | 10-15 articles on career paths (ML-Enhanced Frontend Engineer, $120K-$160K), interview prep, portfolio projects, and honest positioning on what JS-based ML skills unlock vs. what additionally requires Python | Capture high-intent "career pivot" traffic |
 | ML Project Tutorials | 15-25 end-to-end project walkthroughs building real ML features in React/Next.js/Vue apps | Rank for "build [ML feature] with [framework]" queries |
 
 **Build order:** Start with FE-to-ML Bridges (the core differentiator), then ML Fundamentals for JS Devs (highest search volume), then TensorFlow.js Ecosystem (strong commercial intent). Remaining pillars build out in months 4-8. Each cluster should have its pillar page live before any supporting articles publish. Internal links from cluster pages always point up to the pillar.
@@ -366,7 +366,7 @@ Target 4-6 conference talks in the first 12 months. Talk topics rotate between:
 
 - **"The Bridge Model: Teaching ML Through Frontend Analogies"** — pedagogical talk for education-focused conferences
 - **"Machine Learning in the Browser: A Practical Guide for Frontend Teams"** — technical talk for JS/frontend conferences
-- **"From React Developer to ML Engineer: A Bridge, Not a Leap"** — career-focused talk for general developer conferences
+- **"From React Developer to ML-Enhanced Engineer: A Bridge, Not a Leap"** — career-focused talk for general developer conferences
 
 Conference CFP submissions begin in month 3. Target conferences: React Summit, JSNation, CityJS, Frontend Love, All Things Open, THAT Conference, RenderATL, and local meetups.
 

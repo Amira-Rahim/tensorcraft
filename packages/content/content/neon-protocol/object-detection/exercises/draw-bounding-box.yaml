@@ -1,0 +1,93 @@
+slug: draw-bounding-box
+lessonSlug: bounding-boxes
+title: "Draw a Bounding Box on the Surveillance Feed"
+instructions: "Neon Protocol's surveillance grid needs visual overlays. Implement drawBoundingBox that takes a CanvasRenderingContext2D, a detection object { x, y, width, height, label, confidence }, and draws a rectangle with a label. The box stroke should be '#00D4FF' with lineWidth 2. Draw the label text above the top-left corner using fillText with font '14px monospace' and fillStyle '#00D4FF'. The label format should be: 'label (confidence%)' where confidence is rounded to the nearest integer (e.g., 'person (92%)')."
+starterCode: |
+  interface Detection {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    label: string;
+    confidence: number;
+  }
+
+  function drawBoundingBox(
+    ctx: CanvasRenderingContext2D,
+    detection: Detection
+  ): void {
+    // 1. Set strokeStyle to '#00D4FF' and lineWidth to 2
+    // 2. Draw a strokeRect at (x, y) with (width, height)
+    // 3. Set font to '14px monospace' and fillStyle to '#00D4FF'
+    // 4. Draw the label above the box using fillText
+    //    Format: 'label (confidence%)' e.g., 'drone (95%)'
+  }
+solutionCode: |
+  interface Detection {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    label: string;
+    confidence: number;
+  }
+
+  function drawBoundingBox(
+    ctx: CanvasRenderingContext2D,
+    detection: Detection
+  ): void {
+    const { x, y, width, height, label, confidence } = detection;
+
+    ctx.strokeStyle = '#00D4FF';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(x, y, width, height);
+
+    ctx.font = '14px monospace';
+    ctx.fillStyle = '#00D4FF';
+    const text = `${label} (${Math.round(confidence * 100)}%)`;
+    ctx.fillText(text, x, y - 5);
+  }
+testCode: |
+  describe('drawBoundingBox', () => {
+    let ctx: any;
+
+    beforeEach(() => {
+      ctx = {
+        strokeStyle: '',
+        lineWidth: 0,
+        font: '',
+        fillStyle: '',
+        strokeRect: jest.fn(),
+        fillText: jest.fn(),
+      };
+    });
+
+    it('sets correct stroke style and line width', () => {
+      drawBoundingBox(ctx, { x: 10, y: 20, width: 100, height: 80, label: 'drone', confidence: 0.95 });
+      expect(ctx.strokeStyle).toBe('#00D4FF');
+      expect(ctx.lineWidth).toBe(2);
+    });
+
+    it('draws strokeRect with correct coordinates', () => {
+      drawBoundingBox(ctx, { x: 10, y: 20, width: 100, height: 80, label: 'drone', confidence: 0.95 });
+      expect(ctx.strokeRect).toHaveBeenCalledWith(10, 20, 100, 80);
+    });
+
+    it('sets correct font and fill style for label', () => {
+      drawBoundingBox(ctx, { x: 10, y: 20, width: 100, height: 80, label: 'drone', confidence: 0.95 });
+      expect(ctx.font).toBe('14px monospace');
+      expect(ctx.fillStyle).toBe('#00D4FF');
+    });
+
+    it('draws label text with correct format', () => {
+      drawBoundingBox(ctx, { x: 10, y: 20, width: 100, height: 80, label: 'drone', confidence: 0.95 });
+      expect(ctx.fillText).toHaveBeenCalledWith('drone (95%)', 10, 15);
+    });
+
+    it('rounds confidence to nearest integer', () => {
+      drawBoundingBox(ctx, { x: 0, y: 50, width: 60, height: 40, label: 'vehicle', confidence: 0.876 });
+      expect(ctx.fillText).toHaveBeenCalledWith('vehicle (88%)', 0, 45);
+    });
+  });
+estimatedMinutes: 10
+difficulty: beginner

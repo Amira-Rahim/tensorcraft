@@ -1,0 +1,121 @@
+---
+slug: reconstruction-error
+title: "Reconstruction Error"
+moduleId: anomaly-detection
+themeId: deep-orbit
+order: 3
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Park feeds the anomalous signal through the autoencoder. The reconstruction is mangled — the error is 12x the normal baseline. Sato: 'That is our anomaly score.'"
+  speaker: "Dr. Sato"
+concept:
+  explanation: "Reconstruction error measures how different the output is from the input — like git diff showing what changed from the expected baseline."
+  bridge:
+    feTitle: "git diff"
+    feCode: "git diff HEAD -- file.ts  // what changed from baseline?"
+    mlTitle: "Reconstruction Error"
+    mlCode: "error = MSE(original, autoencoder.predict(original))"
+    tier: intuition
+consequence:
+  narrative: "The reconstruction error for the anomalous signal is 12x the normal threshold. Torres checks the sensors three times — this is not instrument noise. The model is right."
+  nextLessonTeaser: "Next: tuning the detection threshold — how sensitive should DEEP SCAN be?"
+hints:
+  - level: nudge
+    content: "Reconstruction error = difference between input and output. High error = anomaly."
+  - level: guidance
+    content: "Compute MSE between original signal and autoencoder output for each sample"
+  - level: solution
+    content: "const error = tf.losses.meanSquaredError(original, reconstructed).dataSync()[0];"
+keywords:
+  - reconstruction-error
+  - mse
+  - anomaly-score
+  - git-diff
+---
+
+<Dialogue speaker="Dr. Sato">
+Feed the anomalous signal through. The autoencoder was trained on normal data. If this signal is truly anomalous, the reconstruction will be poor — like trying to compress an image format the codec has never seen.
+</Dialogue>
+
+<Dialogue speaker="Ensign Park">
+So the reconstruction error IS the anomaly score? It's like running git diff — if the diff is empty, the signal matches the baseline. If the diff is huge, something changed.
+</Dialogue>
+
+`git diff` is the perfect mental model. You have a baseline (the committed code), and you compare the current state against it. No diff means no change. A large diff means significant deviation. Reconstruction error works identically: the autoencoder's "committed baseline" is its learned representation of normal signals.
+
+<LearningObjectives objectives={["Compute reconstruction error as the difference between input and autoencoder output", "Use MSE (mean squared error) as the anomaly score for each sample", "Establish a normal error distribution to set meaningful thresholds", "Interpret reconstruction error: which features contribute most to the anomaly"]} />
+
+## Measuring the Diff
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="reconstruction-error.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Compute reconstruction error for each sample
+function computeAnomalyScores(
+  autoencoder: tf.LayersModel,
+  signals: tf.Tensor2D,
+): number[] {
+  return tf.tidy(() => {
+    const reconstructed = autoencoder.predict(signals) as tf.Tensor2D;
+    // Per-sample MSE: mean of squared differences across features
+    const errors = tf.mean(tf.square(tf.sub(signals, reconstructed)), 1);
+    return Array.from(errors.dataSync());
+  });
+}
+
+// Normal signals: low reconstruction error
+const normalScores = computeAnomalyScores(autoencoder, normalTestData);
+console.log('Normal — mean error:', mean(normalScores).toFixed(6));  // ~0.001
+console.log('Normal — max error:', Math.max(...normalScores).toFixed(6));  // ~0.005
+
+// Anomalous signal: high reconstruction error
+const anomalyScores = computeAnomalyScores(autoencoder, anomalousData);
+console.log('Anomaly — error:', anomalyScores[0].toFixed(6));  // ~0.062
+// 12x the normal maximum — this is clearly anomalous`}
+</CodeBlock>
+
+## Feature-Level Error Analysis
+
+<CodeBlock language="typescript" title="feature-errors.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Which features contribute most to the anomaly?
+function featureErrors(
+  autoencoder: tf.LayersModel,
+  signal: tf.Tensor2D,
+  featureNames: string[],
+): { feature: string; error: number }[] {
+  return tf.tidy(() => {
+    const reconstructed = autoencoder.predict(signal) as tf.Tensor2D;
+    const errors = tf.square(tf.sub(signal, reconstructed));
+    const perFeature = errors.arraySync()[0] as number[];
+
+    return featureNames.map((name, i) => ({
+      feature: name,
+      error: perFeature[i],
+    })).sort((a, b) => b.error - a.error);
+  });
+}
+
+const analysis = featureErrors(autoencoder, anomalyTensor, [
+  'amplitude', 'frequency', 'phase',
+  'fft_0', 'fft_1', 'fft_2', 'fft_3', 'fft_4', 'fft_5', 'fft_6', 'fft_7',
+]);
+
+console.log('Top contributors:');
+// fft_5: 0.0412  ← the 73.4 Hz bin — the anomalous frequency!
+// fft_6: 0.0089
+// amplitude: 0.0051
+// Everything else: < 0.001`}
+</CodeBlock>
+
+## Challenge
+
+Compute reconstruction error and identify anomalous signals.
+
+<Exercise slug="reconstruction-error" />
+
+<KeyTakeaways takeaways={["Reconstruction error is the anomaly score — high error means the signal doesn't match learned normal patterns", "Like git diff: no diff = normal, large diff = anomaly, and you can see WHICH features differ most", "Normal signals cluster at low error; anomalies stand out at 10-100x the normal baseline", "Feature-level error analysis reveals exactly which aspects of the signal are anomalous"]} />

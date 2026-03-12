@@ -1,0 +1,110 @@
+---
+slug: kalman-filters
+title: "Kalman Filters"
+moduleId: advanced-time-series
+themeId: deep-orbit
+order: 4
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "The signal's timing is drifting. Park needs a filter that tracks a moving target under noise — a Kalman filter that maintains a running estimate of the true state."
+  speaker: "Dr. Sato"
+concept:
+  explanation: "Kalman filters maintain a running estimate smoothed against noise — like an exponential moving average in analytics that balances new data against historical trends."
+  bridge:
+    feTitle: "Exponential Moving Average"
+    feCode: "smoothed = alpha * newValue + (1 - alpha) * smoothed"
+    mlTitle: "Kalman Update"
+    mlCode: "estimate = gain * measurement + (1 - gain) * prediction"
+    tier: structural
+consequence:
+  narrative: "The Kalman filter tracks the timing drift — the interval between anomaly pulses is increasing by 0.3 seconds per cycle. Something is changing."
+  nextLessonTeaser: "Next: ensemble methods — combining models for more robust predictions"
+hints:
+  - level: nudge
+    content: "A Kalman filter is a predict-then-correct loop — predict the next state, then correct with the actual measurement"
+  - level: guidance
+    content: "The Kalman gain controls how much to trust the new measurement vs the prediction"
+  - level: solution
+    content: "prediction = A * estimate; gain = predVariance / (predVariance + measureVariance); estimate = prediction + gain * (measurement - prediction);"
+keywords:
+  - kalman-filter
+  - state-estimation
+  - smoothing
+  - tracking
+---
+
+<Dialogue speaker="Dr. Sato">
+The signal's period is not constant — it's drifting. We need a filter that tracks a moving target under noise. The Kalman filter predicts where the signal should be, then corrects with each new measurement. It is the optimal estimator for linear systems under Gaussian noise.
+</Dialogue>
+
+<Dialogue speaker="Ensign Park">
+That's an exponential moving average! smoothed = alpha * new + (1-alpha) * old. The Kalman filter just computes the optimal alpha at each step?
+</Dialogue>
+
+You've used exponential moving averages in analytics dashboards — smoothing noisy metrics to reveal the underlying trend. The Kalman filter is the mathematically optimal version of this: it dynamically adjusts how much to trust new data vs the historical estimate, based on the noise levels of each.
+
+<LearningObjectives objectives={["Understand the Kalman filter as a predict-correct loop for state estimation", "Implement a 1D Kalman filter for tracking signal timing", "Connect Kalman filtering to the exponential moving average pattern", "Track the anomaly timing drift and predict the next occurrence"]} />
+
+## Predict, Then Correct
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="kalman-filter.ts">
+{`// 1D Kalman Filter — optimal smoothing under noise
+
+interface KalmanState {
+  estimate: number;      // current best guess
+  variance: number;      // uncertainty in our estimate
+}
+
+class KalmanFilter {
+  private state: KalmanState;
+  private processNoise: number;      // how much the true value changes between steps
+  private measurementNoise: number;  // how noisy our measurements are
+
+  constructor(initial: number, processNoise: number, measurementNoise: number) {
+    this.state = { estimate: initial, variance: 1 };
+    this.processNoise = processNoise;
+    this.measurementNoise = measurementNoise;
+  }
+
+  update(measurement: number): KalmanState {
+    // PREDICT: where do we think the state is?
+    const predicted = this.state.estimate;
+    const predictedVariance = this.state.variance + this.processNoise;
+
+    // UPDATE: how much to trust the new measurement?
+    const gain = predictedVariance / (predictedVariance + this.measurementNoise);
+    // gain ≈ 0: trust prediction (measurement is noisy)
+    // gain ≈ 1: trust measurement (prediction is uncertain)
+
+    // CORRECT: blend prediction with measurement
+    this.state = {
+      estimate: predicted + gain * (measurement - predicted),
+      variance: (1 - gain) * predictedVariance,
+    };
+
+    return { ...this.state };
+  }
+}
+
+// Track the anomaly timing interval
+const kf = new KalmanFilter(73.4, 0.1, 1.0);  // initial estimate: 73.4 seconds
+
+const measurements = [73.4, 73.7, 74.1, 73.8, 74.2, 74.5, 74.3, 74.8];
+for (const m of measurements) {
+  const state = kf.update(m);
+  console.log(\`Measurement: \${m.toFixed(1)}, Estimate: \${state.estimate.toFixed(2)}\`);
+}
+// The filter smoothly tracks the upward drift: 73.4 → 74.3
+// The interval is increasing by ~0.3 seconds per cycle`}
+</CodeBlock>
+
+## Challenge
+
+Implement a Kalman filter and track the anomaly timing.
+
+<Exercise slug="kalman-filter" />
+
+<KeyTakeaways takeaways={["Kalman filters are optimal exponential moving averages — they dynamically compute the best blend of prediction and measurement", "The Kalman gain controls trust: high gain = trust measurements, low gain = trust predictions", "For DEEP SCAN, the Kalman filter reveals the anomaly interval is drifting upward by 0.3s per cycle", "The predict-correct loop is the same pattern as optimistic UI updates with server reconciliation"]} />

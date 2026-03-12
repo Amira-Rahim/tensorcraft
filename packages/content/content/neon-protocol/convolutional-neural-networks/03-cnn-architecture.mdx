@@ -1,0 +1,218 @@
+---
+slug: cnn-architecture
+title: "CNN Architecture"
+moduleId: convolutional-neural-networks
+themeId: neon-protocol
+order: 3
+estimatedMinutes: 28
+difficulty: intermediate
+context:
+  narrative: "Lin reviews the progress: 'We can detect edges and downsample. Now stack them. The Protocol Sentinel needs layers that feed into each other — like components composing into a page.' Kira sees the pattern immediately."
+  speaker: "Lin"
+concept:
+  explanation: "A CNN stacks conv, pool, and dense layers into a pipeline where each layer's output feeds the next — the same composition pattern as React components wrapping children."
+  bridge:
+    feTitle: "Component Composition"
+    feCode: "<Layout><Sidebar><NavList items={data} /></Sidebar></Layout>"
+    mlTitle: "CNN Layer Stack"
+    mlCode: "model.add(tf.layers.conv2d()); model.add(tf.layers.maxPooling2d()); model.add(tf.layers.dense());"
+    tier: structural
+consequence:
+  narrative: "The architecture is complete: three conv-pool blocks feeding into a dense classifier. NEON estimates the parameter count: '34,826 trainable weights. Lean enough to run in the browser.'"
+  nextLessonTeaser: "Next: training the CNN end-to-end on surveillance camera images"
+hints:
+  - level: nudge
+    content: "A CNN is just layers composed together. Conv layers extract features, pool layers compress, and dense layers classify."
+  - level: guidance
+    content: "Define each layer with its input and output shapes. Use flatten() to bridge the gap between 2D feature maps and 1D dense layers."
+  - level: solution
+    content: "Stack conv2d + maxPool blocks, then flatten, then dense layers. Return the layer configs as an array."
+keywords:
+  - cnn-architecture
+  - layer-composition
+  - flatten
+  - dense-layer
+  - model-design
+---
+
+<Dialogue speaker="Lin">
+You have convolution for feature extraction and pooling for compression. Now compose them. Think about how you build a React page — Layout wraps Sidebar wraps NavList. Each component transforms data and passes it down. A CNN is the same pattern: each layer transforms the feature maps and passes them to the next.
+</Dialogue>
+
+<Dialogue speaker="Kira">
+So the model is basically a component tree? Conv is like a data-fetching component, pooling is like a summarization component, and the dense layer at the end is the leaf that renders the final output?
+</Dialogue>
+
+That analogy is spot on. A CNN is a pipeline of composed layers, each transforming its input and passing the result downstream. The standard pattern is: convolution blocks (conv + activation + pool) stacked to extract increasingly abstract features, followed by dense layers for classification.
+
+<LearningObjectives objectives={["Design a CNN architecture by stacking conv, pool, and dense layers", "Understand how data shapes transform through each layer of the network", "Connect component composition patterns to neural network layer composition", "Calculate the total parameter count of a CNN"]} />
+
+## The Layer Stack
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="cnn-architecture.ts">
+{`// Component composition in React:
+// <Layout>         — wraps everything
+//   <Sidebar>      — transforms layout
+//     <NavList />   — renders final output
+//   </Sidebar>
+// </Layout>
+
+// CNN layer composition follows the same pattern:
+// Conv Block 1    — extracts low-level features (edges)
+//   Conv Block 2  — extracts mid-level features (shapes)
+//     Conv Block 3  — extracts high-level features (objects)
+//       Dense      — classifies based on features
+
+interface LayerConfig {
+  type: 'conv2d' | 'maxPool' | 'flatten' | 'dense';
+  outputShape: number[];
+  params: number;
+}
+
+function designCNN(inputShape: [number, number, number]): LayerConfig[] {
+  const layers: LayerConfig[] = [];
+  let [h, w, ch] = inputShape;
+
+  // Block 1: 8 filters, 3x3 kernel
+  const f1 = 8;
+  const k = 3;
+  // Conv params: (kernelH * kernelW * inputChannels + 1) * numFilters
+  layers.push({
+    type: 'conv2d',
+    outputShape: [h, w, f1],  // same padding preserves size
+    params: (k * k * ch + 1) * f1,
+  });
+  ch = f1;
+
+  // Pool: halves spatial dimensions
+  h = Math.floor(h / 2);
+  w = Math.floor(w / 2);
+  layers.push({
+    type: 'maxPool',
+    outputShape: [h, w, ch],
+    params: 0,  // pooling has no learnable parameters
+  });
+
+  // Block 2: 16 filters
+  const f2 = 16;
+  layers.push({
+    type: 'conv2d',
+    outputShape: [h, w, f2],
+    params: (k * k * ch + 1) * f2,
+  });
+  ch = f2;
+
+  h = Math.floor(h / 2);
+  w = Math.floor(w / 2);
+  layers.push({
+    type: 'maxPool',
+    outputShape: [h, w, ch],
+    params: 0,
+  });
+
+  // Block 3: 32 filters
+  const f3 = 32;
+  layers.push({
+    type: 'conv2d',
+    outputShape: [h, w, f3],
+    params: (k * k * ch + 1) * f3,
+  });
+  ch = f3;
+
+  h = Math.floor(h / 2);
+  w = Math.floor(w / 2);
+  layers.push({
+    type: 'maxPool',
+    outputShape: [h, w, ch],
+    params: 0,
+  });
+
+  // Flatten: convert 3D feature maps to 1D vector
+  const flatSize = h * w * ch;
+  layers.push({
+    type: 'flatten',
+    outputShape: [flatSize],
+    params: 0,
+  });
+
+  // Dense classifier: 64 hidden units
+  const hiddenUnits = 64;
+  layers.push({
+    type: 'dense',
+    outputShape: [hiddenUnits],
+    params: (flatSize + 1) * hiddenUnits,
+  });
+
+  // Output: 5 camera types
+  const numClasses = 5;
+  layers.push({
+    type: 'dense',
+    outputShape: [numClasses],
+    params: (hiddenUnits + 1) * numClasses,
+  });
+
+  return layers;
+}
+
+// Build the Protocol Sentinel architecture
+const layers = designCNN([224, 224, 3]);
+layers.forEach((l, i) => {
+  console.log(
+    'Layer ' + i + ' (' + l.type + '): ' +
+    JSON.stringify(l.outputShape) + ' — ' + l.params + ' params'
+  );
+});
+
+const totalParams = layers.reduce((sum, l) => sum + l.params, 0);
+console.log('Total trainable parameters:', totalParams);`}
+</CodeBlock>
+
+## The Feature Hierarchy
+
+Each conv block learns increasingly abstract features. This is the key insight: early layers see pixels and find edges, middle layers combine edges into shapes, and deep layers combine shapes into objects.
+
+<CodeBlock language="typescript" title="feature-hierarchy.ts">
+{`// What each conv block learns:
+const featureHierarchy = {
+  block1: {
+    learns: 'edges and gradients',
+    example: 'horizontal lines, vertical lines, diagonal edges',
+    analogy: 'CSS border detection — where does one element end?',
+  },
+  block2: {
+    learns: 'textures and simple shapes',
+    example: 'corners, curves, grids, parallel lines',
+    analogy: 'identifying UI components — is this a button or an input?',
+  },
+  block3: {
+    learns: 'object parts and complex patterns',
+    example: 'camera lens shapes, housing outlines, antenna forms',
+    analogy: 'recognizing page sections — header, sidebar, content area',
+  },
+};
+
+// The flatten + dense layers then classify:
+// "Given these high-level features, which camera type is this?"
+
+// Shape transformation through the network:
+// Input:  [224, 224, 3]    — raw RGB image
+// Conv1:  [224, 224, 8]    — 8 edge/gradient feature maps
+// Pool1:  [112, 112, 8]    — compressed
+// Conv2:  [112, 112, 16]   — 16 shape feature maps
+// Pool2:  [56, 56, 16]     — compressed
+// Conv3:  [56, 56, 32]     — 32 object-part feature maps
+// Pool3:  [28, 28, 32]     — compressed
+// Flat:   [25088]           — 1D vector
+// Dense1: [64]              — learned representation
+// Dense2: [5]               — class probabilities`}
+</CodeBlock>
+
+## Challenge
+
+Design a CNN layer stack and calculate the output shapes and parameter counts for each layer.
+
+<Exercise slug="design-cnn-layers" />
+
+<KeyTakeaways takeaways={["A CNN composes layers in sequence — conv blocks extract features, flatten bridges to dense layers, dense layers classify", "Each conv block learns increasingly abstract features: edges, then shapes, then object parts", "Pooling layers have zero learnable parameters — they just compress spatial dimensions", "The flatten layer reshapes 3D feature maps into a 1D vector for the dense classifier"]} />

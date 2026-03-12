@@ -1,0 +1,71 @@
+slug: rag-pipeline
+lessonSlug: rag-for-signals
+title: "Build a RAG Retriever"
+instructions: "Write a retrieval function that filters a signal database by band and classification. Given a query with optional band and class filters, return matching signals sorted by timestamp descending, limited to maxResults."
+starterCode: |
+  interface Signal {
+    id: string;
+    timestamp: string;
+    band: string;
+    classification: string;
+  }
+
+  function retrieveSignals(
+    db: Signal[],
+    filters: { band?: string; classification?: string },
+    maxResults: number,
+  ): Signal[] {
+    // Filter by band and classification if provided
+    // Sort by timestamp descending (newest first)
+    // Limit to maxResults
+    return null; // your code here
+  }
+solutionCode: |
+  interface Signal {
+    id: string;
+    timestamp: string;
+    band: string;
+    classification: string;
+  }
+
+  function retrieveSignals(
+    db: Signal[],
+    filters: { band?: string; classification?: string },
+    maxResults: number,
+  ): Signal[] {
+    let results = [...db];
+    if (filters.band) {
+      results = results.filter(s => s.band === filters.band);
+    }
+    if (filters.classification) {
+      results = results.filter(s => s.classification === filters.classification);
+    }
+    results.sort((a, b) => b.timestamp.localeCompare(a.timestamp));
+    return results.slice(0, maxResults);
+  }
+testCode: |
+  describe('retrieveSignals', () => {
+    const db = [
+      { id: '1', timestamp: '2026-01-01', band: 'A', classification: 'normal' },
+      { id: '2', timestamp: '2026-01-02', band: 'B', classification: 'anomaly' },
+      { id: '3', timestamp: '2026-01-03', band: 'A', classification: 'anomaly' },
+    ];
+    it('filters by band', () => {
+      const r = retrieveSignals(db, { band: 'A' }, 10);
+      expect(r.length).toBe(2);
+      r.forEach(s => expect(s.band).toBe('A'));
+    });
+    it('filters by classification', () => {
+      const r = retrieveSignals(db, { classification: 'anomaly' }, 10);
+      expect(r.length).toBe(2);
+    });
+    it('limits results', () => {
+      expect(retrieveSignals(db, {}, 1).length).toBe(1);
+    });
+    it('sorts newest first', () => {
+      const r = retrieveSignals(db, {}, 10);
+      expect(r[0].id).toBe('3');
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

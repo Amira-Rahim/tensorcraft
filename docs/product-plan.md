@@ -21,11 +21,11 @@ Each theme places the learner inside a narrative world where they build a real M
 
 | Theme | World | Specialization | Model Built | Relevant Career Paths | Salary Range |
 |-------|-------|---------------|-------------|----------------------|--------------|
-| **Deep Orbit** | Space exploration & celestial navigation | Deep learning & neural networks | Deep neural network for stellar classification | ML Engineer, Deep Learning Engineer, AI Research Scientist | $130K–$210K |
-| **Neon Protocol** | Cyberpunk city & digital underworld | Natural language processing | Transformer-based text classifier | NLP Engineer, Conversational AI Developer, Search/Ranking Engineer | $125K–$200K |
-| **Signal Ward** | Medical research station & biometrics | Signal processing & time-series | Multimodal signal classifier | ML Engineer (Healthcare), Biomedical AI Specialist, Time-Series Analyst | $120K–$195K |
-| **Nova Canvas** | Art colony & generative design studio | Computer vision & generative models | Variational autoencoder for image generation | Computer Vision Engineer, Generative AI Developer, Creative Technologist | $125K–$205K |
-| **Terra Grid** | Environmental monitoring & climate science | Geospatial ML & structured data | Geospatial prediction model | Geospatial ML Engineer, Climate Tech AI Developer, Data Scientist | $115K–$190K |
+| **Deep Orbit** | Space exploration & celestial navigation | Time-series & signals | Multi-stage signal classifier for anomaly detection | ML-Enhanced Frontend Engineer, Time-Series Specialist | $120K–$160K |
+| **Neon Protocol** | Cyberpunk city & digital underworld | Computer vision | Real-time surveillance detection system | ML-Enhanced Frontend Engineer, Computer Vision Specialist | $120K–$160K |
+| **Signal Ward** | Medical research station & clinical NLP | NLP & text | Clinical text analysis and decision support system | ML-Enhanced Frontend Engineer, NLP Specialist | $120K–$160K |
+| **Nova Canvas** | Art colony & generative design studio | Multimodal & generative models | Real-time multimodal creative installation | ML-Enhanced Frontend Engineer, Creative Technologist | $120K–$160K |
+| **Terra Grid** | Industrial infrastructure & edge computing | Edge AI & production ML | Distributed edge anomaly detection system | ML-Enhanced Frontend Engineer, Edge ML Specialist | $120K–$160K |
 
 **Every theme teaches ALL ML fundamentals.** Regardless of which theme a learner starts with, they will cover:
 
@@ -44,7 +44,7 @@ The specialization (roughly 40% of each curriculum) goes deeper into the theme's
 
 | Version | Content | Timing | Status |
 |---------|---------|--------|--------|
-| **V0.5** | Deep Orbit — Modules 1–5 (MVP) | Q2 2026 | In development |
+| **V0.5** | Deep Orbit — Modules 1–3 (15 lessons, free tier) | Q2 2026 | In development |
 | **V1.0** | Deep Orbit — Full 11 modules | Q3 2026 | Planned |
 | **V2.0** | Neon Protocol — Full 11 modules | Q4 2026 | Planned |
 | **V3.0** | Signal Ward — Full 11 modules | Q1 2027 | Planned |
@@ -86,18 +86,18 @@ Each theme teaches all ML fundamentals plus its own specialization. Below is the
 
 **Specialization (unique to Deep Orbit):**
 
-- Deep neural network design patterns
-- Multi-layer perceptrons and depth vs. width tradeoffs
-- Batch normalization and layer normalization
-- Advanced activation functions (ReLU variants, GELU, Swish)
-- Learning rate scheduling and warm-up strategies
-- Weight initialization strategies (Xavier, He, Lecun)
-- Residual connections and skip connections
-- Gradient clipping and exploding/vanishing gradient solutions
-- Stellar classification domain knowledge
-- Spectral data analysis and astronomical feature engineering
-- Multi-class classification with imbalanced astronomical datasets
-- Model interpretability for scientific applications
+- Signal processing fundamentals (FFT, frequency domain analysis)
+- Time-series representation and preprocessing
+- Spectrograms and temporal feature extraction
+- Recurrent neural networks (RNN) for sequential data
+- LSTM/GRU architectures for long-term dependencies
+- Attention mechanisms applied to time-series
+- Anomaly detection in signals (autoencoders, scoring)
+- Browser ML runtimes (TensorFlow.js, ONNX Runtime Web, WebGPU)
+- Model quantization, pruning, and distillation
+- Real-time inference and signal classification pipelines
+- Multi-stage classifier design (DEEP SCAN)
+- Space telemetry domain knowledge and astronomical datasets
 
 #### Neon Protocol — What You'll Learn
 
@@ -122,18 +122,18 @@ Each theme teaches all ML fundamentals plus its own specialization. Below is the
 
 **Specialization (unique to Neon Protocol):**
 
-- Text tokenization and vocabulary construction
-- Word embeddings (Word2Vec, GloVe) and embedding layers
-- Sequence modeling and recurrent intuitions
-- Attention mechanisms and self-attention
-- Transformer architecture from scratch
-- Positional encoding strategies
-- Multi-head attention implementation
-- Text classification pipelines
-- Sentiment analysis and intent detection
-- Handling variable-length sequences and padding
-- Subword tokenization (BPE, WordPiece)
-- Transfer learning with pre-trained language models
+- Image representation (pixels, channels, color spaces)
+- Convolutional neural networks (kernels, pooling, feature maps)
+- Object detection (anchor boxes, IoU, NMS, YOLO architecture)
+- Image segmentation (semantic, instance, U-Net encoder-decoder)
+- Feature extraction and embedding spaces
+- Transfer learning from pre-trained vision models
+- Real-time video processing and WebGL acceleration
+- Generative adversarial networks (GANs) for counter-surveillance
+- Adversarial robustness and ethical guardrails
+- Model optimization for real-time video inference
+- Edge deployment of computer vision systems
+- Surveillance detection domain knowledge
 
 #### Signal Ward — What You'll Learn
 
@@ -158,18 +158,18 @@ Each theme teaches all ML fundamentals plus its own specialization. Below is the
 
 **Specialization (unique to Signal Ward):**
 
-- Time-series data structures and temporal features
-- Sliding window techniques and sequence generation
-- Signal filtering and noise reduction
-- Fourier transforms and frequency domain analysis
-- 1D convolutional networks for signal processing
-- Recurrent neural networks (RNN, LSTM, GRU)
-- Bidirectional sequence models
-- Multimodal data fusion and cross-modal learning
-- Biomedical signal interpretation (ECG, EEG patterns)
-- Anomaly detection in temporal data
-- Handling missing data in time-series
-- Real-time inference considerations for streaming data
+- Text tokenization (word, subword/BPE, medical-specific)
+- Word embeddings (one-hot encoding, Word2Vec, domain-specific)
+- Sequence models (RNNs, LSTMs, bidirectional)
+- Attention mechanisms and self-attention
+- Transformer architecture and BERT fine-tuning
+- Named Entity Recognition (BIO tagging, relationship extraction)
+- Text classification and clinical triage
+- Retrieval-Augmented Generation (RAG) pipelines
+- Negation detection and temporal reasoning in clinical text
+- Production NLP deployment with privacy/fairness guardrails
+- Medical ontologies and domain-specific NLP challenges
+- Human-in-the-loop design for safety-critical AI
 
 #### Nova Canvas — What You'll Learn
 
@@ -194,18 +194,18 @@ Each theme teaches all ML fundamentals plus its own specialization. Below is the
 
 **Specialization (unique to Nova Canvas):**
 
-- Image data pipelines and tensor manipulation
-- Convolutional neural networks (CNNs) from scratch
-- Pooling, striding, and feature map interpretation
-- Data augmentation for image datasets
-- Encoder-decoder architectures
-- Autoencoders and dimensionality reduction
-- Variational autoencoders (VAE) — theory and implementation
-- Latent space exploration and interpolation
-- Generative model evaluation (FID, reconstruction loss)
-- Style transfer and artistic feature extraction
-- Image preprocessing and normalization techniques
-- Visualizing learned features and filters
+- Generative models vs. discriminative models
+- Probability distributions and sampling
+- Latent spaces, dimensionality, and interpolation
+- Generative adversarial networks (generator vs. discriminator)
+- Variational autoencoders (VAE) and reparameterization trick
+- Diffusion models (forward noise, reverse denoising)
+- Classifier-free guidance for conditional generation
+- Style transfer (content vs. style separation)
+- Multimodal learning (vision-language alignment, CLIP)
+- Audio generation and audio-visual synchronization
+- Real-time generation optimization and model distillation
+- Creative AI philosophy (authorship, artistic authenticity)
 
 #### Terra Grid — What You'll Learn
 
@@ -230,25 +230,30 @@ Each theme teaches all ML fundamentals plus its own specialization. Below is the
 
 **Specialization (unique to Terra Grid):**
 
-- Geospatial data formats and coordinate systems
-- Structured data pipelines and tabular feature engineering
-- Tree-based models (decision trees, random forests, gradient boosting)
-- Ensemble methods and model stacking
-- Geospatial feature extraction (distance, density, spatial joins)
-- Handling categorical features (encoding, embeddings)
-- Feature importance and SHAP values
-- Spatial autocorrelation and geographic bias
-- Climate and environmental data preprocessing
-- Regression and prediction for continuous geospatial targets
-- Multi-output prediction models
-- Working with large-scale structured datasets
+- Edge AI fundamentals (latency, privacy, offline operation)
+- Model profiling and optimization strategy
+- Quantization (post-training, quantization-aware training, mixed precision)
+- Pruning (weight, structured) and knowledge distillation
+- Edge deployment targeting and over-the-air updates
+- ML pipelines (data versioning, experiment tracking, model registry)
+- Production monitoring and drift detection (data drift, model drift)
+- Federated learning (federated averaging, privacy preservation, secure aggregation)
+- A/B testing models (traffic splitting, statistical significance, canary deployments)
+- Scale and reliability (failover, redundancy, load management)
+- Adversarial robustness in production
+- Global MLOps at scale across distributed infrastructure
 
 ### 1.5 Career Outcomes
 
-Tensorcraft is designed to produce measurable career impact:
+Tensorcraft produces **ML-Enhanced Frontend Engineers** — developers who can build ML-powered features, deploy pre-trained models in the browser, evaluate ML solutions, and collaborate fluently with data science teams.
 
+**Realistic career positioning:**
+
+- **Target role:** ML-Enhanced Frontend Engineer / Frontend Engineer with ML Specialization ($120K-$160K)
 - **57.7%** of frontend developers who complete a structured ML transition program report receiving a job offer or promotion within 6 months of completion.
-- **23.9%** average salary increase reported by career-switchers who move from frontend-only roles to ML-integrated or full ML engineering positions.
+- **23.9%** average salary increase reported by career-switchers who move from frontend-only roles to ML-integrated positions.
+
+**Honest scope:** This course gives you the foundation to understand, build, and deploy ML models in the browser. For production ML engineering roles requiring Python fluency and deeper mathematics, Tensorcraft provides the conceptual foundation — and we bridge you toward those next steps (see Python Bridge module). We do not claim to replace a full ML engineering education, but we give frontend engineers a genuine, deep understanding of ML that no other resource provides in their own language and tools.
 
 These statistics inform our marketing, pricing, and curriculum design — the $79 per-model price point is calibrated to feel trivially affordable relative to even a modest salary increase.
 
@@ -365,11 +370,11 @@ Every lesson in Tensorcraft follows the **5C Loop** — a repeating pedagogical 
 
 | Theme | Context Style | Concept Bridge | Code Environment | Challenge Type | Consequence Style |
 |-------|--------------|---------------|-----------------|---------------|------------------|
-| **Deep Orbit** | Mission briefings, sensor readings, crew dialogue | Physics & astronomy metaphors, spatial UI analogies | Python notebook with stellar data visualizations | Classify unknown stellar objects under time pressure | Ship navigation changes, crew reactions, mission outcomes |
-| **Neon Protocol** | Intercepted messages, underground contacts, digital noir | Communication & language metaphors, chat UI analogies | Python notebook with text processing pipelines | Decode encrypted communications, detect deception | Cover is maintained or blown, contacts trust or betray |
-| **Signal Ward** | Patient cases, lab readings, research briefings | Health monitoring metaphors, real-time dashboard analogies | Python notebook with signal visualization | Diagnose anomalies in noisy patient data | Patient outcomes, research breakthroughs, ethical dilemmas |
-| **Nova Canvas** | Gallery exhibitions, art critiques, creative briefs | Design & visual metaphors, CSS/SVG/Canvas analogies | Python notebook with image generation outputs | Generate art that meets specific aesthetic criteria | Art is celebrated or criticized, commissions won or lost |
-| **Terra Grid** | Field reports, satellite data, environmental alerts | Map & geolocation metaphors, geo-API analogies | Python notebook with geospatial visualizations | Predict environmental events with incomplete data | Communities are warned or caught off-guard, policy changes |
+| **Deep Orbit** | Mission briefings, sensor readings, crew dialogue | Signal processing & event-loop analogies, streaming data metaphors | Sandpack editor with TensorFlow.js signal processing | Detect anomalies in deep-space signal data under time pressure | Ship navigation changes, crew reactions, mission outcomes |
+| **Neon Protocol** | Surveillance footage, underground contacts, digital noir | Canvas/WebGL & visual processing analogies, pixel-level metaphors | Sandpack editor with TensorFlow.js image/video processing | Detect surveillance drones, identify threats in video feeds | Cover is maintained or blown, resistance succeeds or fails |
+| **Signal Ward** | Patient cases, clinical notes, research briefings | URL parsing & i18n analogies, text processing metaphors | Sandpack editor with TensorFlow.js text classification | Classify clinical text, extract entities, answer medical queries | Patient outcomes, diagnostic accuracy, ethical dilemmas |
+| **Nova Canvas** | Gallery exhibitions, art critiques, creative briefs | Math.random() & CSS transitions analogies, generative metaphors | Sandpack editor with TensorFlow.js generative models | Generate art that meets specific aesthetic criteria | Art is celebrated or criticized, installation succeeds or fails |
+| **Terra Grid** | Field reports, sensor networks, infrastructure alerts | CDN & CI/CD analogies, deployment & monitoring metaphors | Sandpack editor with TensorFlow.js edge inference | Deploy reliable ML to edge devices across harsh conditions | Infrastructure holds or fails, communities protected or at risk |
 
 ### 3.2 Assessment and Feedback Loops
 
@@ -449,10 +454,10 @@ These 20 bridges appear across all five themes:
 |---|-----------|--------------------|-----------------------------|
 | 1 | Training data | Component props | Both are external inputs that shape behavior. Props configure a component; training data configures a model. Change the props, the component renders differently. Change the data, the model learns differently. |
 | 2 | Model parameters (weights) | Component state | Both are internal values that change over time based on inputs. State updates in response to user events; weights update in response to training data. Both persist across render/training cycles. |
-| 3 | Loss function | Diff algorithm | Both measure the gap between "what we have" and "what we want." React's diff compares current and desired DOM; a loss function compares predictions and labels. Both drive the update process. |
-| 4 | Gradient descent | Reconciliation | Both are processes that incrementally reduce the gap identified by the diff/loss. Reconciliation patches the DOM toward the desired state; gradient descent adjusts weights toward lower loss. |
-| 5 | Learning rate | Transition duration | Both control the speed of change. A fast learning rate makes big jumps (risking overshoot); a long transition duration makes slow visual changes. Both require tuning for the best result. |
-| 6 | Epochs | Re-renders | Both are complete passes through a cycle. A re-render processes the entire component tree; an epoch processes the entire dataset. Multiple passes refine the output. |
+| 3 | Loss function | `expect().toBe()` assertions | Both measure the gap between actual and expected output. A test assertion checks `actual === expected`; a loss function computes the distance between predictions and labels. Both quantify "how wrong" and drive corrections. *Tier: Structural.* |
+| 4 | Gradient descent | Reconciliation | Both incrementally reduce a measured gap. Reconciliation patches the DOM toward the desired state; gradient descent adjusts weights toward lower loss. *Tier: Intuition. Caveat: Reconciliation is deterministic and complete; gradient descent is stochastic and incremental. The "reducing the gap" intuition is correct, but the dynamics differ significantly.* |
+| 5 | Learning rate | Animation easing / step size | Both control how aggressively a system moves toward its target per step. A large step overshoots; a small step converges slowly. Both require tuning. *Tier: Intuition. Caveat: The mechanisms are unrelated — learning rate scales gradient magnitudes, animation easing interpolates time curves — but the "tuning speed of convergence" intuition transfers.* |
+| 6 | Epochs | `requestAnimationFrame` loop | Both are repeated cycles where the system processes input and refines output. An rAF loop reruns render logic every frame; an epoch reruns training over the entire dataset. Both converge toward a target. *Tier: Structural.* |
 | 7 | Batch size | Chunk/page size | Both control how much data is processed at once. Pagination loads N items per page; batch size feeds N samples per gradient update. Both balance memory and throughput. |
 | 8 | Overfitting | Overspecialized component | Both are cases of being too tailored to specific inputs. An overspecialized component breaks with new data; an overfit model fails on new examples. Both need generalization. |
 | 9 | Regularization | Code linting/constraints | Both impose rules that prevent overly specific or complex solutions. Linting constrains code style; regularization constrains model complexity. Both improve generalizability. |
@@ -460,11 +465,11 @@ These 20 bridges appear across all five themes:
 | 11 | Train/test split | Dev/prod environments | Both separate the context for building from the context for evaluation. You develop in dev, test in prod; you train on training data, evaluate on test data. Mixing them gives false confidence. |
 | 12 | Hyperparameters | Config/environment variables | Both are settings that control behavior but aren't learned from data. Env vars configure an app without changing code; hyperparameters configure training without being part of the model. |
 | 13 | Neural network layers | Middleware/pipeline stages | Both are sequential processing steps where each transforms its input and passes the result forward. Express middleware and neural network layers are structurally identical: input → transform → output → next. |
-| 14 | Activation functions | Event handlers | Both determine whether and how a signal propagates. An event handler decides if a click triggers an action; an activation function decides if a neuron fires. Both are gatekeepers. |
-| 15 | Backpropagation | Error bubbling | Both propagate information backward through a chain. DOM events bubble up from child to parent; gradients flow backward from output to input layers. Both carry information about what went wrong. |
+| 14 | Activation functions (ReLU) | `Math.max(0, x)` | **Identity bridge.** ReLU is literally `Math.max(0, x)` — the same function, same math, different name. The strongest bridge in the system. Clip negative values to zero, pass positives through unchanged. |
+| 15 | Backpropagation | React reconciliation (tracing diffs backward) | Both propagate information backward through a structure to determine what needs updating. React traces from changed leaves back to root; backprop traces from loss back to input weights via the chain rule. *Tier: Intuition. Caveat: The "backward flow" visual is analogous, but backprop is a mathematical operation (chain rule, partial derivatives) with no direct DOM equivalent. Use this bridge as a starting point, then teach the real math.* |
 | 16 | Model inference | Server-side rendering | Both take an input and produce an output in a single forward pass, without iterative updating. SSR renders HTML from data; inference produces predictions from features. Both are "one-shot." |
 | 17 | Data augmentation | Responsive design/media queries | Both create variations of the input to handle diverse conditions. Media queries adapt layouts to screen sizes; data augmentation creates training variations for robustness. Both prevent brittleness. |
-| 18 | Dropout | Feature flags / A-B testing | Both randomly disable parts of a system to test robustness or prevent co-dependency. Feature flags disable features for subsets of users; dropout disables neurons during training. Both improve resilience. |
+| 18 | Dropout | Randomly hiding team members during practice | Both temporarily remove participants to prevent over-reliance on any single one. If one team member is always present, others depend on them; if one neuron always fires, others co-adapt. Random removal forces resilience. *Tier: Intuition. Note: This is a non-code analogy. The FE equivalent is not perfect — feature flags are deliberate, dropout is random — but the "force independence through random removal" principle transfers.* |
 | 19 | Confusion matrix | Error boundary report | Both provide structured breakdowns of what went right and wrong. An error boundary catches and categorizes errors; a confusion matrix categorizes predictions vs. actuals. Both guide debugging. |
 | 20 | Model deployment | CI/CD pipeline | Both are the process of taking something from development to production. CI/CD deploys code; model deployment serves a model. Both involve versioning, testing, and monitoring. |
 
@@ -483,45 +488,45 @@ These 20 bridges appear across all five themes:
 
 | # | ML Concept | Frontend Equivalent | Deep Structural Connection |
 |---|-----------|--------------------|-----------------------------|
-| 1 | Tokenization | Lexical parsing/splitting | Both break continuous input into discrete meaningful units. A lexer splits code into tokens; an NLP tokenizer splits text into tokens. Both are the first step in understanding structure. |
-| 2 | Embeddings | CSS custom properties (variables) | Both map symbolic identifiers to dense, meaningful values. CSS variables map names to values; embeddings map tokens to vectors. Both enable reuse and semantic consistency. |
-| 3 | Attention mechanism | Event delegation | Both dynamically determine which parts of the input are most relevant for processing. Event delegation selects which handler fires based on the target; attention selects which tokens to focus on based on relevance. |
-| 4 | Positional encoding | CSS Grid / z-index ordering | Both add spatial/sequential information to otherwise unordered elements. Grid and z-index define position in layout; positional encoding defines position in a sequence. Both make order explicit. |
-| 5 | Sequence padding | Flex/grid gap and alignment | Both handle inputs of varying length by adding neutral space to achieve uniform structure. Flex alignment pads elements to fill space; sequence padding adds zeros to match batch length. |
-| 6 | Transfer learning | npm packages / shared libraries | Both leverage pre-built, pre-trained work rather than starting from scratch. Importing a library gives you tested code; transfer learning gives you pre-trained weights. Both save time and improve quality. |
+| 1 | Image tensors | `canvas.getImageData()` | Both represent images as flat arrays of pixel values (RGBA channels). `Uint8ClampedArray` from `getImageData()` is literally an image tensor. Identity bridge. |
+| 2 | Convolution kernels | CSS `blur()` / SVG filters | Both apply a small sliding window that transforms local regions of an image. CSS blur applies a convolution kernel to pixels; CNNs apply learned kernels to feature maps. |
+| 3 | Bounding boxes | `getBoundingClientRect()` | Both define rectangular regions with x, y, width, height coordinates. DOM element bounds and object detection boxes use the same data structure. |
+| 4 | Non-Max Suppression | `debounce()` | Both keep the highest-priority event and suppress redundant ones. Debounce keeps the last call; NMS keeps the highest-confidence box and removes overlapping detections. |
+| 5 | Segmentation masks | SVG clip-path / CSS masks | Both create pixel-level boundaries that separate regions. CSS masks define visible/hidden areas; segmentation masks label each pixel's class. Same concept, different domain. |
+| 6 | Backbone networks | Shared component libraries | Both provide reusable feature extraction that multiple downstream tasks build on. A shared UI library serves multiple apps; a backbone CNN serves multiple vision tasks (detection, segmentation, classification). |
 
 #### Signal Ward Bridges
 
 | # | ML Concept | Frontend Equivalent | Deep Structural Connection |
 |---|-----------|--------------------|-----------------------------|
-| 1 | Time-series windowing | Infinite scroll / virtualized list | Both process continuous data by viewing it through a moving fixed-size window. A virtualized list renders a window of items; time-series windowing extracts a window of timesteps. Both manage unbounded data. |
-| 2 | Signal filtering | Input debouncing/throttling | Both remove noise from a stream of values to extract the meaningful signal. Debouncing filters rapid events; signal filtering removes high-frequency noise. Both improve signal-to-noise ratio. |
-| 3 | Fourier transform | CSS animation keyframes decomposition | Both decompose a complex signal into simpler periodic components. Keyframes define a complex animation as a series of states at time points; Fourier transforms decompose a signal into frequency components. |
-| 4 | Recurrent connections | Stateful components with useRef | Both maintain hidden state that persists across sequential processing steps. useRef holds mutable state across renders; RNN hidden states persist across timesteps. Both provide memory. |
-| 5 | Cross-modal fusion | Micro-frontend composition | Both combine independently developed, differently-structured modules into a unified system. Micro-frontends compose separate apps; cross-modal fusion combines different data types (audio, visual, text) into one model. |
-| 6 | Anomaly detection | Error monitoring / Sentry alerts | Both identify unusual patterns that deviate from expected behavior. Error monitoring flags unexpected errors; anomaly detection flags unusual data points. Both rely on baselines and thresholds. |
+| 1 | Tokenization | URL parsing / route splitting | Both break continuous input into discrete structured parts. A URL parser splits `/path/:param/` into segments; a tokenizer splits text into tokens. Same operation, different input. |
+| 2 | Word embeddings | i18n translation dictionaries | Both map symbolic identifiers to meaningful representations. i18n maps keys to localized strings; embeddings map tokens to dense vectors in semantic space. Both enable meaning-aware processing. |
+| 3 | RNN state accumulation | `Array.reduce()` | Both process a sequence element-by-element, carrying forward an accumulated state. `reduce()` builds a result by folding over an array; RNNs build a hidden state by folding over a sequence. Identical pattern. |
+| 4 | LSTM cell memory | Session storage | Both maintain persistent state across sequential processing steps that can be selectively read and updated. Session storage persists across page navigations; LSTM cells persist across timesteps. |
+| 5 | Attention mechanism | Search engine ranking | Both dynamically weight inputs by relevance to a query. Search ranks documents by query relevance; attention weights tokens by relevance to each other. Both are learned relevance scoring. |
+| 6 | Transformer architecture | React virtual DOM reconciliation | Both are reconciliation engines that compare current state to desired state. React's vDOM processes the component tree and computes diffs; transformers process input tokens and compute attention-weighted representations. |
 
 #### Nova Canvas Bridges
 
 | # | ML Concept | Frontend Equivalent | Deep Structural Connection |
 |---|-----------|--------------------|-----------------------------|
-| 1 | Convolution operation | CSS filters / SVG filters | Both apply a small kernel/matrix that slides over the input to produce a transformed output. CSS blur applies a convolution kernel to pixels; CNN convolution applies learned kernels to feature maps. |
-| 2 | Pooling layers | Image downsampling / srcset | Both reduce spatial resolution while preserving important information. srcset provides lower-res images for smaller screens; pooling reduces feature map dimensions while keeping salient features. |
-| 3 | Encoder-decoder architecture | Compression/decompression (e.g., gzip) | Both compress information into a compact representation and then reconstruct the original. Gzip encodes files into smaller packages; autoencoders compress data into a latent space and decode it back. |
-| 4 | Latent space | URL state / search params | Both are compact, structured representations of a larger, more complex state. URL params encode app state in a short string; latent vectors encode data in a compressed space. Both can be decoded to reconstruct the full state. |
-| 5 | Latent interpolation | CSS transitions between states | Both create smooth intermediate values between two defined points. CSS transitions interpolate between start and end styles; latent interpolation generates intermediate points between two latent vectors, producing smooth blends between generated outputs. |
-| 6 | Reconstruction loss | Visual regression testing | Both measure how closely an output matches an expected reference. Visual regression compares screenshots pixel-by-pixel; reconstruction loss measures pixel-level (or feature-level) difference between input and output. |
+| 1 | Sampling from distributions | `Math.random()` | Both generate values from probability distributions. `Math.random()` samples uniformly; generative models sample from learned distributions. Same operation with learned parameters. |
+| 2 | Latent space interpolation | CSS transitions between states | Both create smooth intermediate values between two defined points. CSS transitions interpolate between start and end styles; latent interpolation generates smooth blends between generated outputs. |
+| 3 | GAN (generator vs. discriminator) | Fuzzer vs. validator | Both are adversarial systems where one component generates and another judges. A fuzzer creates random inputs; a validator rejects bad ones. GANs formalize this into a training loop. |
+| 4 | VAE (encode/decode) | URL shortener | Both compress complex data into a compact representation and reconstruct the original. A URL shortener encodes a long URL into a short code and decodes it back; a VAE encodes data into a latent vector and decodes it back. |
+| 5 | Diffusion (noise → detail) | Progressive image loading | Both start with a degraded version and iteratively refine toward full quality. Progressive JPEG loads blurry-to-sharp; diffusion denoises random noise into a coherent image. Same trajectory, different domain. |
+| 6 | Style transfer | CSS theme switching | Both apply a different appearance to the same underlying content. CSS theme switching changes colors/fonts while keeping HTML structure; style transfer changes visual style while preserving content. Same content, different presentation. |
 
 #### Terra Grid Bridges
 
 | # | ML Concept | Frontend Equivalent | Deep Structural Connection |
 |---|-----------|--------------------|-----------------------------|
-| 1 | Decision trees | Conditional rendering chains | Both make sequential binary decisions to arrive at an output. if/else chains determine what to render; decision trees split data on feature thresholds. Both are tree structures with branching logic. |
-| 2 | Ensemble methods | Component composition patterns | Both combine multiple independent units to produce a result that's better than any single unit. Composing small focused components creates robust UIs; ensembling multiple models creates robust predictions. |
-| 3 | Feature importance | Performance profiling / Lighthouse | Both identify which inputs have the greatest impact on the output. Lighthouse shows which resources slow the page; feature importance shows which variables most affect predictions. Both guide optimization. |
-| 4 | Geospatial features | Geolocation API / Mapbox | Both work with coordinate-based data to extract spatial patterns and relationships. The Geolocation API provides position data for map UIs; geospatial features encode location for spatial prediction. |
-| 5 | Categorical encoding | Enum / union type mapping | Both convert symbolic categories into a structured representation that the system can process. TypeScript enums map labels to values; one-hot encoding maps categories to vectors. Both make categories machine-readable. |
-| 6 | SHAP values | React DevTools component profiling | Both explain *why* a system produced a specific output by attributing contribution to individual parts. DevTools shows which components caused re-renders; SHAP values show which features caused a prediction. |
+| 1 | Edge inference | CDN edge locations | Both move computation closer to the user/data source for lower latency. CDNs serve static assets from edge PoPs; edge ML runs inference on local devices. Same architecture, different payloads. |
+| 2 | Model quantization | Image format tradeoffs (PNG vs. WebP) | Both trade precision for size/speed. PNG is lossless but large; WebP is lossy but small. Float32 is precise but heavy; Int8 is approximate but fast. Same optimization decision. |
+| 3 | Weight pruning | Tree-shaking | Both remove unused parts to reduce size without changing behavior. Tree-shaking eliminates dead code; pruning eliminates near-zero weights. Same optimization, different artifact. |
+| 4 | Knowledge distillation | Code splitting | Both decompose a large artifact into smaller, purpose-built pieces. Code splitting breaks a bundle into route-specific chunks; distillation transfers a large model's knowledge into a smaller, faster model. |
+| 5 | ML pipeline (data → train → deploy) | CI/CD pipeline | Both are automated multi-stage pipelines that transform inputs into production artifacts. CI/CD: code → build → test → deploy. ML: data → train → evaluate → deploy. Same workflow pattern. |
+| 6 | Drift detection | Lighthouse CI | Both continuously monitor a production system for degradation against baselines. Lighthouse CI flags performance regressions; drift detection flags model accuracy regressions. Same monitoring pattern. |
 
 #### Teaching Principle
 
@@ -671,160 +676,169 @@ Each bridge has a shareable graphic (Open Graph-optimized) that learners can sha
 
 ### 4.1 Architecture
 
-Each theme's curriculum is structured as **60% shared core + 40% unique specialization**.
+Each theme's curriculum is structured as **foundations (modules 1-6) + specialization (modules 7-11)**.
 
-- **Shared core (60%)**: The ML fundamentals that every theme teaches. These are the same concepts, but taught through different narrative contexts and FE bridges. A learner who completes any single theme has a complete ML foundation.
-- **Unique specialization (40%)**: Domain-specific concepts, techniques, and model architectures unique to the theme's focus area. This is what makes each theme a distinct learning experience.
+- **Foundations track (modules 1-6)**: The ML fundamentals that every theme teaches. These modules are included free or with any theme purchase. Once a learner completes foundations through one theme, they are permanently unlocked — purchasing a second theme does NOT re-serve this content. In the content schema, these modules have `track: "foundations"`.
+- **Specialization track (modules 7-11)**: Domain-specific concepts, techniques, and model architectures unique to the theme's focus area. This is what each theme purchase ($79) pays for — 25 lessons of unique, specialized content. In the content schema, these modules have `track: "specialization"`.
 
-The 60/40 split is approximate and varies by module. Early modules (1–4) are closer to 80% shared / 20% unique. Later modules (8–11) are closer to 40% shared / 60% unique. The specialization ramps up as the learner's foundation solidifies.
+This structure eliminates redundancy across multi-theme purchases and makes pricing honest: each $79 buys 25 new specialized lessons, not 55 lessons where 30 are content you already completed.
 
 ### 4.2 Module Map — Deep Orbit
 
-#### Module 1: First Light
+> **Source of truth:** `docs/scripts/deep-orbit.md` contains the full narrative script with detailed lesson breakdowns, character dialogue, FE bridges, and exercises for every module. This section provides the structural overview.
+
+#### Module 1: Foundations — Tensors & Data
 
 **Shared Core:**
 - What is machine learning? Supervised vs. unsupervised vs. reinforcement learning
-- Data as the foundation: datasets, samples, features, labels
-- The ML workflow: data → model → prediction → evaluation
+- Tensors: shapes, ranks, operations, and the TypedArray connection
+- Data loading, preprocessing, and normalization
 
-**Unique Specialization:**
-- Introduction to astronomical datasets and stellar catalogs
-- Spectral data: what a star's light tells us
-
----
-
-#### Module 2: Signal and Noise
-
-**Shared Core:**
-- Data preprocessing: handling missing values, outliers, scaling
-- Feature engineering: creating meaningful inputs from raw data
-- Exploratory data analysis and visualization
-
-**Unique Specialization:**
-- Astronomical feature engineering: magnitude, color index, spectral class
-- Dealing with cosmic noise and measurement uncertainty
+**Unique Narrative:**
+- Crew of the research vessel *Archimedes* encounters anomalous deep-space signals
+- Commander Okafor introduces the mission; ARIA (AI assistant) guides initial concepts
+- Bridge: TypedArray = Tensor (identity)
 
 ---
 
-#### Module 3: The Learning Machine
+#### Module 2: Neural Networks — Layers & Architecture
 
 **Shared Core:**
-- Linear models: linear regression, logistic regression
-- The concept of a model "learning" from data
-- Cost functions and the idea of optimization
-
-**Unique Specialization:**
-- Classifying stars by spectral type using linear models
-- Multi-class classification setup for stellar objects
-
----
-
-#### Module 4: Into the Network
-
-**Shared Core:**
-- Neural network fundamentals: neurons, layers, weights, biases
-- Activation functions and non-linearity
+- Neurons, layers, weights, biases, activation functions
 - Forward propagation: from input to prediction
+- Building and composing network architectures
 
-**Unique Specialization:**
-- Designing a neural network for stellar classification
-- Input layer design for spectral data features
+**Unique Narrative:**
+- Dr. Sato proposes using neural networks to classify signal types
+- Chief Torres skeptical: "We have rules-based systems that work"
+- Bridge: Express middleware chain = NN layers (structural)
 
 ---
 
-#### Module 5: The Descent
+#### Module 3: Training Loop — Loss, Gradients & Optimization
 
 **Shared Core:**
-- Loss functions in depth: MSE, cross-entropy
-- Backpropagation: how gradients flow
-- Gradient descent: SGD, mini-batch, and variants
+- Loss functions (MSE, cross-entropy)
+- Backpropagation and gradient computation
+- Gradient descent variants (SGD, Adam) and training loops
 
-**Unique Specialization:**
-- Visualizing loss landscapes for astronomical classification
-- Multi-class cross-entropy for stellar categories
+**Unique Narrative:**
+- First model training reveals overfitting — Torres vindicated temporarily
+- ARIA introduces evaluation metrics; Park begins speaking ML natively
+- Bridge: Component state updates = weight updates (structural)
 
 ---
 
-#### Module 6: Deep Architecture
+#### Module 4: CNNs & Feature Extraction
 
 **Shared Core:**
-- Deep networks: adding depth and width
-- The vanishing/exploding gradient problem
-- Train/validation/test methodology
+- Convolutional layers, kernels, pooling, feature maps
+- Data augmentation and feature visualization
+- Transfer learning concepts
 
-**Unique Specialization:**
-- Residual connections for deep stellar classifiers
-- Weight initialization strategies (Xavier, He) in context
-- Batch normalization for spectral data distributions
+**Unique Narrative:**
+- Signal spectrograms require visual pattern detection
+- Torres grudgingly admits CNN detects patterns rules missed
+- Bridge: CSS blur() = convolution kernel (structural)
 
 ---
 
-#### Module 7: The Overfitting Trap
+#### Module 5: Optimization & Regularization
 
 **Shared Core:**
-- Overfitting and underfitting diagnosis
-- Regularization: L1, L2, dropout
-- Early stopping and validation curves
+- Overfitting/underfitting diagnosis
+- Regularization (L1, L2, dropout, early stopping)
+- Hyperparameter tuning, learning rate scheduling
 
-**Unique Specialization:**
-- Dropout strategies for astronomical classification
-- Handling class imbalance in stellar datasets (rare object types)
-
----
-
-#### Module 8: Hyperspace Tuning
-
-**Shared Core:**
-- Hyperparameter tuning: grid search, random search
-- Learning rate selection and scheduling
-- Evaluation metrics: accuracy, precision, recall, F1, AUC-ROC
-
-**Unique Specialization:**
-- Advanced learning rate scheduling: cosine annealing, warm restarts
-- Custom metrics for astronomical classification quality
-- Advanced activation functions: GELU, Swish, Mish
+**Unique Narrative:**
+- Model becomes overfit to Archimedes-specific noise patterns
+- Team learns to generalize across different sensor configurations
+- Bridge: npm audit = regularization (intuition)
 
 ---
 
-#### Module 9: Mission Validation
-
-**Shared Core:**
-- Cross-validation: k-fold, stratified
-- Confusion matrices and classification reports
-- Statistical significance and confidence intervals
-
-**Unique Specialization:**
-- Stratified validation for imbalanced astronomical classes
-- Model interpretability: which spectral features matter most?
-- Scientific rigor in ML evaluation
-
----
-
-#### Module 10: Stellar Deployment
+#### Module 6: Browser ML Runtimes
 
 **Shared Core:**
 - Model serialization and export
-- Inference optimization basics
-- Deployment patterns: batch vs. real-time
+- Browser ML runtimes: TensorFlow.js, ONNX Runtime Web, WebGPU
+- Inference optimization and profiling
 
-**Unique Specialization:**
-- Deploying a stellar classifier as an API
-- Handling new astronomical data in production
-- Model monitoring and drift detection for scientific instruments
+**Unique Narrative:**
+- Torres demands the system run on constrained shipboard hardware
+- Benchmarking runtimes under real conditions
+- Bridge: React vs Vue vs Svelte = TF.js vs ONNX vs WASM (structural)
 
 ---
 
-#### Module 11: The Final Classification
-
-**Shared Core:**
-- End-to-end ML project synthesis
-- Best practices and common pitfalls review
-- What to learn next: roadmap beyond Tensorcraft
+#### Module 7: Signal Processing
 
 **Unique Specialization:**
-- Full stellar classification system: from raw spectral data to deployed model
-- Final capstone: classify a novel dataset of unidentified celestial objects
-- Portfolio presentation of the complete Deep Orbit project
+- Signal processing fundamentals (FFT, frequency domain)
+- Spectrograms and temporal feature extraction
+- Time-series preprocessing and sliding windows
+- **AI-Wrong Moment:** Noise misclassified as signal pattern
+
+---
+
+#### Module 8: Sequence Models
+
+**Unique Specialization:**
+- RNN fundamentals for sequential data
+- LSTM/GRU architectures for long-term dependencies
+- Temporal dependency modeling in sensor readings
+- **AI-Wrong Moment:** LSTM "forgets" critical long-range dependency
+
+---
+
+#### Module 9: Attention & Anomaly Detection
+
+**Unique Specialization:**
+- Attention mechanisms applied to time-series
+- Autoencoders for anomaly detection
+- Anomaly scoring and threshold tuning
+- **AI-Wrong Moment:** High-confidence detection on a normal signal (false positive)
+
+---
+
+#### Module 10: Model Optimization
+
+**Unique Specialization:**
+- Quantization (post-training, QAT, mixed precision)
+- Pruning (weight, structured) and knowledge distillation
+- WebGPU acceleration for browser inference
+- **AI-Wrong Moment:** Quantized model misses failure mode invisible at reduced precision
+
+---
+
+#### Module 11: Capstone — DEEP SCAN
+
+**Unique Specialization:**
+- Full multi-stage signal classification pipeline
+- End-to-end deployment, monitoring, and evaluation
+- Real-time inference UI for anomaly alerting
+- **AI-Wrong Moment:** System deployed — what about the edge cases it hasn't seen?
+- Portfolio presentation of the complete DEEP SCAN project
+
+---
+
+#### Content Status (Deep Orbit, as of March 2026)
+
+| Module | Status | Lessons | Exercises |
+|--------|--------|---------|-----------|
+| 1. Foundations | Written | 5 | 4 |
+| 2. Neural Networks | Written | 5 | 5 |
+| 3. Training Loop | Written | 5 | 5 |
+| 4. CNNs & Feature Extraction | Not started | 0 | 0 |
+| 5. Optimization & Regularization | Not started | 0 | 0 |
+| 6. Browser ML Runtimes | Written | 5 | 5 |
+| 7. Signal Processing | Written | 5 | 5 |
+| 8. Sequence Models | Not started | 0 | 0 |
+| 9. Attention & Anomaly Detection | Not started | 0 | 0 |
+| 10. Model Optimization | Not started | 0 | 0 |
+| 11. Capstone: DEEP SCAN | Not started | 0 | 0 |
+
+**Total:** 25/55 lessons written (45%), 24 exercises. Remaining: 6 modules (30 lessons).
 
 ---
 
@@ -832,624 +846,352 @@ The 60/40 split is approximate and varies by module. Early modules (1–4) are c
 
 The module order follows a deliberate pedagogical arc:
 
-1. **Modules 1–3** (First Light → Signal and Noise → The Learning Machine): Build data literacy and introduce the simplest models. The learner gains confidence with linear approaches before confronting neural networks.
-2. **Modules 4–5** (Into the Network → The Descent): Introduce neural networks and the core training algorithm. This is the conceptual heart of ML, placed after the learner has context for *why* we need more powerful models.
-3. **Modules 6–7** (Deep Architecture → The Overfitting Trap): Go deeper and encounter the first real problems (vanishing gradients, overfitting). Learning to diagnose and fix problems is placed after basic competence.
-4. **Modules 8–9** (Hyperspace Tuning → Mission Validation): Refinement and evaluation. The learner has a working model and now learns to make it better and prove it works.
-5. **Modules 10–11** (Stellar Deployment → The Final Classification): Deployment and synthesis. The learner takes their model to production and completes the full cycle.
+1. **Modules 1–3** (Foundations → Neural Networks → Training Loop): Build core ML literacy using signal data as context. The learner gains confidence with fundamentals before encountering domain-specific challenges.
+2. **Modules 4–6** (CNNs → Optimization → Browser Runtimes): Deepen the toolkit and introduce browser-native ML execution. Torres's skepticism drives rigor in evaluation and runtime selection.
+3. **Modules 7–8** (Signal Processing → Sequence Models): Enter the Deep Orbit specialization — time-series and sequential data. The learner applies core knowledge to domain-specific architectures.
+4. **Modules 9–10** (Attention & Anomaly Detection → Model Optimization): Advanced techniques for real-world deployment. Each module includes an "AI-Wrong Moment" that teaches edge case awareness.
+5. **Module 11** (DEEP SCAN Capstone): Full pipeline synthesis and deployment. The learner builds, deploys, and evaluates a complete system.
 
 ### 4.3 Module Map — Neon Protocol
 
-#### Module 1: Intercept
+> **Source of truth:** `docs/scripts/neon-protocol.md` contains the full narrative script. This section provides the structural overview.
 
-**Shared Core:**
-- What is machine learning? Supervised vs. unsupervised vs. reinforcement learning
-- Data as the foundation: datasets, samples, features, labels
-- The ML workflow: data → model → prediction → evaluation
+**Specialization:** Computer Vision | **Model Built:** Protocol Sentinel (surveillance anomaly detection) | **GitHub repo:** `protocol-sentinel-vision`
+
+**Characters:** Kira (player/hacker), Zara (street artist/visual expert), Ryo (former corp engineer), Lin (resistance leader), NEON (reprogrammed surveillance AI guide)
+
+#### Foundations (Modules 1-6)
+
+| Module | Title | Shared Core | Unique Narrative Context |
+|--------|-------|-------------|--------------------------|
+| 1 | ML Through Vision (FREE) | ML fundamentals, data, workflow | Kira joins the resistance; NEON introduces surveillance data |
+| 2 | Image Data | Data preprocessing, feature engineering | Pixel tensors, channels, getImageData() as tensor extraction |
+| 3 | Convolutional Neural Networks | Neural networks, layers, architecture | Kernels, pooling, feature maps; Bridge: CSS blur() = convolution |
+| 4 | Object Detection | CNNs, feature extraction, transfer learning | Anchor boxes, NMS, bounding boxes; Bridge: debounce() = NMS |
+| 5 | Segmentation | Optimization, regularization | Pixel-level classification, segmentation masks; Bridge: clip-path = masks |
+| 6 | Feature Extraction | Browser ML runtimes, model export | Backbone networks, feature visualization |
+
+#### Specialization (Modules 7-11)
+
+#### Module 7: Transfer Learning
 
 **Unique Specialization:**
-- Introduction to text data and natural language
-- The challenges of unstructured data vs. structured data
+- Pre-trained models and fine-tuning strategies
+- Feature freezing and selective layer retraining
+- Domain adaptation across data distributions
+- Repurposing Meridian's $2M model against itself
+- **AI-Wrong Moment:** Accuracy suggests Meridian anticipated the transfer attack (poisoned weights)
 
 ---
 
-#### Module 2: Raw Signal
-
-**Shared Core:**
-- Data preprocessing: handling missing values, outliers, scaling
-- Feature engineering: creating meaningful inputs from raw data
-- Exploratory data analysis and visualization
+#### Module 8: Real-Time Detection
 
 **Unique Specialization:**
-- Text preprocessing: lowercasing, punctuation removal, stopwords
-- Tokenization strategies: word-level, character-level, subword (BPE)
-- Vocabulary construction and token frequency analysis
+- Video stream processing with `getUserMedia()` API
+- Frame-by-frame inference via `requestAnimationFrame()` loop
+- WebGL acceleration for GPU-powered browser inference
+- Performance budgets and streaming architectures (WebSocket/SSE)
+- Hybrid client/server architecture with graceful degradation
+- **AI-Wrong Moment:** False gait analysis identification — person limping from injury, not a surveillance officer
 
 ---
 
-#### Module 3: Pattern Language
-
-**Shared Core:**
-- Linear models: linear regression, logistic regression
-- The concept of a model "learning" from data
-- Cost functions and the idea of optimization
+#### Module 9: Generative Vision
 
 **Unique Specialization:**
-- Bag-of-words and TF-IDF representations
-- Text classification with linear models
-- Limitations of non-sequential text representations
+- GANs: generator vs discriminator in adversarial training
+- Adversarial patches that fool classifiers
+- Style transfer across images
+- Counter-surveillance: using generative AI defensively
+- Ethical constraints: patches cryptographically bound to Meridian's specific model
+- **AI-Wrong Moment:** Adversarial patch designed for Meridian also fools the resistance's own system
 
 ---
 
-#### Module 4: Neural Cipher
-
-**Shared Core:**
-- Neural network fundamentals: neurons, layers, weights, biases
-- Activation functions and non-linearity
-- Forward propagation: from input to prediction
+#### Module 10: Deployment
 
 **Unique Specialization:**
-- Word embeddings: Word2Vec, GloVe, learned embeddings
-- Embedding layers in neural networks
-- Semantic similarity and vector arithmetic
+- Model optimization: quantization, pruning, distillation for edge devices
+- Model serving via API-based inference architecture
+- A/B testing model versions in production
+- Monitoring model performance over time
 
 ---
 
-#### Module 5: The Gradient Key
-
-**Shared Core:**
-- Loss functions in depth: MSE, cross-entropy
-- Backpropagation: how gradients flow
-- Gradient descent: SGD, mini-batch, and variants
+#### Module 11: Capstone — Protocol Sentinel
 
 **Unique Specialization:**
-- Training embedding layers end-to-end
-- Loss functions for text classification tasks
-- Gradient flow through embedding and linear layers
-
----
-
-#### Module 6: Sequence Memory
-
-**Shared Core:**
-- Deep networks: adding depth and width
-- The vanishing/exploding gradient problem
-- Train/validation/test methodology
-
-**Unique Specialization:**
-- Sequence modeling intuitions: order matters
-- Recurrent neural networks (RNN) and their limitations
-- LSTM and GRU: gating mechanisms for long-range dependencies
-
----
-
-#### Module 7: Noise Filter
-
-**Shared Core:**
-- Overfitting and underfitting diagnosis
-- Regularization: L1, L2, dropout
-- Early stopping and validation curves
-
-**Unique Specialization:**
-- Overfitting in text models: vocabulary memorization
-- Dropout in sequence models
-- Handling variable-length sequences: padding and masking
-
----
-
-#### Module 8: Attention Protocol
-
-**Shared Core:**
-- Hyperparameter tuning: grid search, random search
-- Learning rate selection and scheduling
-- Evaluation metrics: accuracy, precision, recall, F1, AUC-ROC
-
-**Unique Specialization:**
-- The attention mechanism: query, key, value
-- Self-attention and scaled dot-product attention
-- Multi-head attention implementation
-
----
-
-#### Module 9: Transformer Core
-
-**Shared Core:**
-- Cross-validation: k-fold, stratified
-- Confusion matrices and classification reports
-- Statistical significance and confidence intervals
-
-**Unique Specialization:**
-- The Transformer architecture: encoder stack
-- Positional encoding: sinusoidal and learned
-- Building a Transformer text classifier from scratch
-
----
-
-#### Module 10: Transfer Protocol
-
-**Shared Core:**
-- Model serialization and export
-- Inference optimization basics
-- Deployment patterns: batch vs. real-time
-
-**Unique Specialization:**
-- Transfer learning with pre-trained language models
-- Fine-tuning strategies: full fine-tuning, feature extraction, adapters
-- Deploying a text classification model as an API
-
----
-
-#### Module 11: The Final Decode
-
-**Shared Core:**
-- End-to-end ML project synthesis
-- Best practices and common pitfalls review
-- What to learn next: roadmap beyond Tensorcraft
-
-**Unique Specialization:**
-- Full NLP pipeline: from raw text to deployed Transformer classifier
-- Final capstone: build a communication intent detection system
-- Portfolio presentation of the complete Neon Protocol project
+- Full system architecture design and integration testing (Cypress/Playwright)
+- Security and privacy: CORS, CSP, security headers, ethical deployment
+- CI/CD pipeline to production
+- Evidence broadcast: 847 devices across 12 districts, 96.2% detection confidence
+- Cryptographically signed evidence distributed to 14 independent media organizations
+- Portfolio deployment at `https://<username>.github.io/protocol-sentinel-vision`
 
 ### 4.4 Module Map — Signal Ward
 
-#### Module 1: First Pulse
+> **Source of truth:** `docs/scripts/signal-ward.md` contains the full narrative script. This section provides the structural overview.
 
-**Shared Core:**
-- What is machine learning? Supervised vs. unsupervised vs. reinforcement learning
-- Data as the foundation: datasets, samples, features, labels
-- The ML workflow: data → model → prediction → evaluation
+**Specialization:** NLP & Text (Clinical) | **Model Built:** Diagnostic One (clinical NLP assistant) | **GitHub repo:** `diagnostic-one-clinical-nlp`
+
+**Characters:** Khalil (player/bioethicist & frontend dev), Dr. Vasquez (head researcher/mentor), Obi (computational linguist), Santos (nurse/data curator), MEDI (clinical decision support AI guide)
+
+#### Foundations (Modules 1-6)
+
+| Module | Title | Shared Core | Unique Narrative Context |
+|--------|-------|-------------|--------------------------|
+| 1 | ML Through Text (FREE) | ML fundamentals, data, workflow | Khalil arrives at Signal Ward; clinical text as ML input |
+| 2 | Tokenization & Preprocessing | Data preprocessing, feature engineering | Text normalization, medical vocabulary, tokenization strategies |
+| 3 | Word Embeddings | Neural networks, layers, architecture | Dense vectors, Word2Vec, medical embeddings; Bridge: i18n dictionaries = embeddings |
+| 4 | Sequence Models | Training loop, loss, gradients | RNNs, LSTMs, bidirectional models; Bridge: Array.reduce() = RNN |
+| 5 | Attention Mechanisms | Optimization, regularization | Self-attention, multi-head attention; Bridge: search ranking = attention |
+| 6 | Transformers & BERT | Browser ML runtimes, model export | Transformer encoder, BERT fine-tuning, temporal reasoning |
+
+#### Specialization (Modules 7-11)
+
+#### Module 7: Named Entity Recognition
 
 **Unique Specialization:**
-- Introduction to time-series and signal data
-- Temporal structure: why order matters in biomedical data
+- BIO tagging (Beginning, Inside, Outside labels) for medical entities
+- Medication, condition, and procedure extraction
+- Relationship extraction between entities
+- Subgroup performance analysis across patient demographics
+- **AI-Wrong Moment:** Model update improves aggregate accuracy by 3.1% but degrades medication extraction by 8% for elderly patients. Santos blocks deployment.
 
 ---
 
-#### Module 2: Vital Signs
-
-**Shared Core:**
-- Data preprocessing: handling missing values, outliers, scaling
-- Feature engineering: creating meaningful inputs from raw data
-- Exploratory data analysis and visualization
+#### Module 8: Text Classification & Triage
 
 **Unique Specialization:**
-- Time-series preprocessing: resampling, interpolation, windowing
-- Signal visualization and temporal feature extraction
-- Handling missing timestamps and irregular sampling
+- Multi-label text classification for clinical documents
+- Urgency/priority scoring for record triage
+- Confidence calibration (knowing when uncertain)
+- Hallucination detection: generated text vs source documents
+- Grounding mechanisms for factual accuracy
+- **AI-Wrong Moment:** MEDI generates linguistically perfect but factually incorrect clinical summary — hallucinates a medication dosage
 
 ---
 
-#### Module 3: Baseline Reading
-
-**Shared Core:**
-- Linear models: linear regression, logistic regression
-- The concept of a model "learning" from data
-- Cost functions and the idea of optimization
+#### Module 9: Question Answering & RAG
 
 **Unique Specialization:**
-- Time-series classification with statistical features
-- Sliding window feature extraction
-- Baseline models for signal classification
+- Extractive QA and reading comprehension
+- Vector search for document retrieval
+- Knowledge grounding with citation linking
+- Cross-system retrieval across heterogeneous EHR formats
+- Multilingual handling (Spanish-language clinical notes)
+- Bridge: React Server Components = RAG (server fetches data, renders with grounded content)
 
 ---
 
-#### Module 4: Neural Rhythm
-
-**Shared Core:**
-- Neural network fundamentals: neurons, layers, weights, biases
-- Activation functions and non-linearity
-- Forward propagation: from input to prediction
+#### Module 10: Production NLP & Privacy
 
 **Unique Specialization:**
-- 1D convolutional networks for signal data
-- Kernel design for temporal patterns
-- Feature maps as learned signal filters
+- Model serving APIs for real-time clinical inference
+- HIPAA-compliant data handling and encryption
+- Bias auditing across patient demographics (12% accuracy gap on non-standard English)
+- Human-in-the-loop confirmation workflows
+- Liability and ethics review before go-live
 
 ---
 
-#### Module 5: The Feedback Loop
-
-**Shared Core:**
-- Loss functions in depth: MSE, cross-entropy
-- Backpropagation: how gradients flow
-- Gradient descent: SGD, mini-batch, and variants
+#### Module 11: Capstone — Diagnostic One
 
 **Unique Specialization:**
-- Training signal classifiers: temporal loss considerations
-- Gradient flow through convolutional layers
-- Batch construction for time-series data
-
----
-
-#### Module 6: Deep Frequency
-
-**Shared Core:**
-- Deep networks: adding depth and width
-- The vanishing/exploding gradient problem
-- Train/validation/test methodology
-
-**Unique Specialization:**
-- Fourier transforms and frequency domain analysis
-- Spectrograms as 2D representations of signals
-- Combining time-domain and frequency-domain features
-
----
-
-#### Module 7: Noise Ward
-
-**Shared Core:**
-- Overfitting and underfitting diagnosis
-- Regularization: L1, L2, dropout
-- Early stopping and validation curves
-
-**Unique Specialization:**
-- Signal filtering: low-pass, high-pass, band-pass
-- Noise augmentation for robust signal classifiers
-- Patient-level vs. sample-level validation splitting
-
----
-
-#### Module 8: Temporal Memory
-
-**Shared Core:**
-- Hyperparameter tuning: grid search, random search
-- Learning rate selection and scheduling
-- Evaluation metrics: accuracy, precision, recall, F1, AUC-ROC
-
-**Unique Specialization:**
-- Recurrent neural networks for sequential signal data
-- LSTM and GRU for long-range temporal dependencies
-- Bidirectional models for complete signal analysis
-
----
-
-#### Module 9: Multimodal Fusion
-
-**Shared Core:**
-- Cross-validation: k-fold, stratified
-- Confusion matrices and classification reports
-- Statistical significance and confidence intervals
-
-**Unique Specialization:**
-- Multimodal data: combining different signal types
-- Fusion architectures: early, late, and attention-based fusion
-- Cross-modal alignment and temporal synchronization
-
----
-
-#### Module 10: Clinical Deployment
-
-**Shared Core:**
-- Model serialization and export
-- Inference optimization basics
-- Deployment patterns: batch vs. real-time
-
-**Unique Specialization:**
-- Real-time inference for streaming signal data
-- Anomaly detection and alert systems
-- Ethical considerations in healthcare ML deployment
-
----
-
-#### Module 11: The Final Diagnosis
-
-**Shared Core:**
-- End-to-end ML project synthesis
-- Best practices and common pitfalls review
-- What to learn next: roadmap beyond Tensorcraft
-
-**Unique Specialization:**
-- Full signal processing pipeline: from raw signals to multimodal classifier
-- Final capstone: build a real-time patient monitoring anomaly detector
-- Portfolio presentation of the complete Signal Ward project
+- Full system integration with hospital information systems
+- Clinical validation against expert annotations
+- End-to-end testing and documentation
+- Production deployment with safety guardrails and monitoring loops
+- Results: note categorization 94%, medication extraction 91%, 40% reduction in physician search time
+- **AI-Wrong Moment:** Day 9 false positive — drug interaction flagged at 87% confidence that's clinically negligible. Teaches acceptable imperfection in human-AI collaboration.
+- Portfolio deployment at `https://<username>.github.io/diagnostic-one-clinical-nlp`
 
 ### 4.5 Module Map — Nova Canvas
 
-#### Module 1: First Sketch
+> **Source of truth:** `docs/scripts/nova-canvas.md` contains the full narrative script. This section provides the structural overview.
 
-**Shared Core:**
-- What is machine learning? Supervised vs. unsupervised vs. reinforcement learning
-- Data as the foundation: datasets, samples, features, labels
-- The ML workflow: data → model → prediction → evaluation
+**Specialization:** Multimodal & Generative | **Model Built:** Nova Canvas (multimodal creative installation) | **GitHub repo:** `nova-canvas-creative-ai`
+
+**Characters:** Ren (player/creative coder), Yara (lead artist/creative director), Kai (audio engineer/creative coder), Petrov (gallery curator/deployment lead), MUSE (creative AI assistant guide)
+
+#### Foundations (Modules 1-6)
+
+| Module | Title | Shared Core | Unique Narrative Context |
+|--------|-------|-------------|--------------------------|
+| 1 | Generative Basics (FREE) | ML fundamentals, data, workflow | Ren joins the team; generation vs classification framing |
+| 2 | Latent Spaces | Data preprocessing, feature engineering | Compressed representations, interpolation, latent exploration |
+| 3 | GANs | Neural networks, layers, architecture | Generator vs discriminator; Bridge: fuzzer/validator = GAN |
+| 4 | Variational Autoencoders | Training loop, loss, gradients | VAE, reparameterization trick; Bridge: URL shortener = VAE encoder |
+| 5 | Diffusion Models | Optimization, regularization | Noise-to-image denoising; Bridge: progressive loading = diffusion |
+| 6 | Style Transfer | Browser ML runtimes, model export | Content/style separation; Bridge: CSS themes = style transfer |
+
+#### Specialization (Modules 7-11)
+
+#### Module 7: Multimodal Learning
 
 **Unique Specialization:**
-- Introduction to image data: pixels, channels, tensors
-- The visual domain: why images are different from tabular data
+- Vision-language models connecting images and text
+- Cross-modal embeddings (shared representation spaces)
+- Image captioning and text-to-image generation
+- Bridge: full-stack apps (FE + BE + DB) = multimodal systems; `<img alt="...">` = text describing images
+- **AI-Wrong Moment:** Fine-tuned model produces work indistinguishable from human art — "If no one can tell the difference, does the difference matter?"
 
 ---
 
-#### Module 2: Raw Palette
-
-**Shared Core:**
-- Data preprocessing: handling missing values, outliers, scaling
-- Feature engineering: creating meaningful inputs from raw data
-- Exploratory data analysis and visualization
+#### Module 8: CLIP & Alignment
 
 **Unique Specialization:**
-- Image preprocessing: normalization, resizing, color space conversion
-- Data augmentation: flips, rotations, crops, color jitter
-- Building image data pipelines and dataloaders
+- Contrastive learning (learning by comparison)
+- CLIP architecture for joint text-image understanding
+- Zero-shot classification without training examples
+- CLIP-guided generation and prompt engineering
+- Vector space understanding (adjectives and mood as directions in 512D space)
+- **AI-Wrong Moment:** "Visual equivalent" of music is identical to the song's album cover — synesthesia or data leakage?
 
 ---
 
-#### Module 3: Color Theory
-
-**Shared Core:**
-- Linear models: linear regression, logistic regression
-- The concept of a model "learning" from data
-- Cost functions and the idea of optimization
+#### Module 9: Audio Generation
 
 **Unique Specialization:**
-- Image classification with flattened pixel features
-- Limitations of non-spatial approaches to image data
-- Why images need specialized architectures
+- Audio as data: waveforms, spectrograms, audio tensors
+- Neural audio synthesis from latent representations
+- Audio-visual synchronization via shared latent spaces
+- Interactive soundscapes responding to audience input
+- Core insight: switching modalities = applying existing knowledge to new data types
+- Bridge: Web Audio API (`OscillatorNode`, `AudioContext`) = audio generation primitives
 
 ---
 
-#### Module 4: Convolution Canvas
-
-**Shared Core:**
-- Neural network fundamentals: neurons, layers, weights, biases
-- Activation functions and non-linearity
-- Forward propagation: from input to prediction
+#### Module 10: Creative Deployment
 
 **Unique Specialization:**
-- Convolutional neural networks: kernels, stride, padding
-- Feature maps and hierarchical feature detection
-- Pooling layers: max pooling, average pooling
+- Performance profiling for generation bottlenecks
+- Progressive distillation: 4-step model achieves 90% quality at 8% compute (43s → 3.4s)
+- Caching and precomputation for popular outputs
+- Concurrent user handling: WebSocket connection pooling for 200+ simultaneous generators
+- Installation architecture for 40 gallery kiosks
 
 ---
 
-#### Module 5: The Gradient Brush
-
-**Shared Core:**
-- Loss functions in depth: MSE, cross-entropy
-- Backpropagation: how gradients flow
-- Gradient descent: SGD, mini-batch, and variants
+#### Module 11: Capstone — The Biennale
 
 **Unique Specialization:**
-- Training CNNs: gradient flow through convolutional layers
-- Visualizing learned filters and feature maps
-- Loss functions for image tasks
-
----
-
-#### Module 6: Deep Composition
-
-**Shared Core:**
-- Deep networks: adding depth and width
-- The vanishing/exploding gradient problem
-- Train/validation/test methodology
-
-**Unique Specialization:**
-- Deep CNN architectures: increasing depth effectively
-- Residual connections in image models
-- Feature visualization at different network depths
-
----
-
-#### Module 7: The Overfit Gallery
-
-**Shared Core:**
-- Overfitting and underfitting diagnosis
-- Regularization: L1, L2, dropout
-- Early stopping and validation curves
-
-**Unique Specialization:**
-- Data augmentation as regularization for image models
-- Spatial dropout for convolutional networks
-- Evaluating image model generalization
-
----
-
-#### Module 8: Encoding Space
-
-**Shared Core:**
-- Hyperparameter tuning: grid search, random search
-- Learning rate selection and scheduling
-- Evaluation metrics: accuracy, precision, recall, F1, AUC-ROC
-
-**Unique Specialization:**
-- Autoencoders: encoder-decoder architecture for images
-- Latent space: compressed representations of images
-- Reconstruction loss and latent space visualization
-
----
-
-#### Module 9: Variational Canvas
-
-**Shared Core:**
-- Cross-validation: k-fold, stratified
-- Confusion matrices and classification reports
-- Statistical significance and confidence intervals
-
-**Unique Specialization:**
-- Variational autoencoders (VAE): the reparameterization trick
-- KL divergence and the ELBO objective
-- Generating new images by sampling the latent space
-- Latent interpolation between images
-
----
-
-#### Module 10: Gallery Opening
-
-**Shared Core:**
-- Model serialization and export
-- Inference optimization basics
-- Deployment patterns: batch vs. real-time
-
-**Unique Specialization:**
-- Deploying a generative model as an interactive API
-- Latent space exploration interface
-- Generative model evaluation: FID, IS, reconstruction quality
-
----
-
-#### Module 11: The Final Exhibition
-
-**Shared Core:**
-- End-to-end ML project synthesis
-- Best practices and common pitfalls review
-- What to learn next: roadmap beyond Tensorcraft
-
-**Unique Specialization:**
-- Full computer vision pipeline: from raw images to VAE-powered generator
-- Final capstone: build a generative art system with controllable latent space
-- Portfolio presentation of the complete Nova Canvas project
+- Full integration of visual, audio, and text modalities
+- Load testing for opening night (247 concurrent users at peak)
+- Monitoring, failover, and graceful degradation
+- Sub-2-second generation time, zero crashes on opening night
+- Climactic moment: a child whispers "a dragon made of stars" — CLIP aligns, diffusion generates, audio responds
+- Portfolio deployment at `https://<username>.github.io/nova-canvas-creative-ai`
 
 ### 4.6 Module Map — Terra Grid
 
-#### Module 1: First Survey
+> **Source of truth:** `docs/scripts/terra-grid.md` contains the full narrative script. This section provides the structural overview.
 
-**Shared Core:**
-- What is machine learning? Supervised vs. unsupervised vs. reinforcement learning
-- Data as the foundation: datasets, samples, features, labels
-- The ML workflow: data → model → prediction → evaluation
+**Specialization:** Edge AI & MLOps | **Model Built:** Terra Grid Intelligence (edge-deployed infrastructure monitoring) | **GitHub repo:** `terra-grid-intelligence`
+
+**Characters:** Hassan (infrastructure lead/mentor), Cole (field engineer/edge specialist), Park Soo-Yeon (data ops manager), Jin (security analyst/adversarial expert), GRID (network management AI guide)
+
+#### Foundations (Modules 1-6)
+
+| Module | Title | Shared Core | Unique Narrative Context |
+|--------|-------|-------------|--------------------------|
+| 1 | Edge AI Basics (FREE) | ML fundamentals, data, workflow | Infrastructure monitoring intro; sensor data as ML input |
+| 2 | Model Optimization Fundamentals | Data preprocessing, feature engineering | Baseline anomaly detection for sensor data |
+| 3 | Quantization | Neural networks, layers, architecture | Float32→Int8, post-training quantization, QAT, mixed precision |
+| 4 | Pruning & Distillation | Training loop, loss, gradients | Weight/structured pruning, knowledge distillation (10x smaller, 95% accuracy) |
+| 5 | Edge Deployment | Optimization, regularization | Deploying across 847 edge devices; Bridge: CDN = edge inference |
+| 6 | MLOps Pipelines | Browser ML runtimes, model export | Automated pipelines, data versioning; Bridge: CI/CD = ML pipeline |
+
+#### Specialization (Modules 7-11)
+
+#### Module 7: Monitoring & Drift Detection
 
 **Unique Specialization:**
-- Introduction to geospatial and structured environmental data
-- Coordinate systems, spatial relationships, and geographic context
+- Production monitoring for model health in real time
+- Data drift detection via statistical tests for distribution shift
+- Model drift tracking (prediction quality degradation)
+- Alert systems with configurable thresholds
+- Drift response procedures: diagnosis, retraining, redeployment
+- Bridge: Lighthouse CI = drift detection (continuous regression detection against baseline)
+- **AI-Wrong Moment:** A/B test shows Model B 12% better, but it was trained on decommissioned site data. "The model is not better. The benchmark is wrong."
 
 ---
 
-#### Module 2: Field Data
-
-**Shared Core:**
-- Data preprocessing: handling missing values, outliers, scaling
-- Feature engineering: creating meaningful inputs from raw data
-- Exploratory data analysis and visualization
+#### Module 8: Federated Learning
 
 **Unique Specialization:**
-- Geospatial feature engineering: distance calculations, spatial joins, density features
-- Handling categorical environmental features
-- Geospatial data visualization: maps, heatmaps, spatial distributions
+- Federated averaging (combining model updates from distributed training)
+- Privacy preservation: keeping data local while improving models globally
+- Communication efficiency (minimizing data transfer)
+- Secure aggregation against gradient inversion attacks
+- The data silo problem (regulatory constraints preventing centralization)
+- Bridge: state sync across browser tabs = federated averaging; CORS = data silos
 
 ---
 
-#### Module 3: Ground Truth
-
-**Shared Core:**
-- Linear models: linear regression, logistic regression
-- The concept of a model "learning" from data
-- Cost functions and the idea of optimization
+#### Module 9: A/B Testing Models
 
 **Unique Specialization:**
-- Regression for continuous geospatial targets
-- Spatial autocorrelation and geographic bias in linear models
-- Baseline predictions with geographic features
+- Traffic splitting and routing to different model versions
+- Statistical significance testing for meaningful improvements
+- Canary deployments with automatic rollback
+- Multi-armed bandits for adaptive traffic allocation
+- Bridge: feature flags = A/B testing (deploy to subset, measure, promote if better)
+- Real-world validation: 2.3% improvement confirmed, catches bearing failure 6 hours earlier
 
 ---
 
-#### Module 4: Branching Paths
-
-**Shared Core:**
-- Neural network fundamentals: neurons, layers, weights, biases
-- Activation functions and non-linearity
-- Forward propagation: from input to prediction
+#### Module 10: Scale & Reliability
 
 **Unique Specialization:**
-- Decision trees: intuitive, interpretable models
-- Splitting criteria: Gini impurity, information gain, variance reduction
-- Visualizing decision boundaries on geographic data
+- Horizontal and vertical scaling for ML systems
+- Model sharding across devices; Bridge: dynamic `import()` = model sharding
+- Failover and graceful degradation when components fail
+- Stress testing: simultaneous anomalies across 3 regions, 12,400 devices
+- **AI-Wrong Moment:** Adversarial sensor readings trick model into ignoring equipment failures. Jin: "I can make the model ignore a cooling failure by adding noise."
 
 ---
 
-#### Module 5: The Optimization Trail
-
-**Shared Core:**
-- Loss functions in depth: MSE, cross-entropy
-- Backpropagation: how gradients flow
-- Gradient descent: SGD, mini-batch, and variants
+#### Module 11: Capstone — Terra Grid Intelligence
 
 **Unique Specialization:**
-- Tree-based optimization: pruning, max depth, min samples
-- Comparing gradient-based and tree-based learning
-- Loss functions for regression and classification on geospatial tasks
+- System architecture review and security hardening
+- Disaster recovery and operational runbooks
+- Global launch across all 47 sites, 12,400 edge devices
+- Real-world validation: cascading temperature anomaly caught at source, preventing residential grid cascade
+- Model size: 4.2MB, inference latency: 89ms
+- Dispatch in 47 minutes vs 2-3 hours manually
+- Portfolio deployment and documentation
 
 ---
 
-#### Module 6: Forest Ensemble
+## Part 4.7: Curriculum Gap Modules (Post-Launch)
 
-**Shared Core:**
-- Deep networks: adding depth and width
-- The vanishing/exploding gradient problem
-- Train/validation/test methodology
+These cross-theme modules address critical gaps identified in the content audit. They live in `packages/content/content/extras/` and are not part of any specific theme. Module YAMLs with full lesson outlines exist; MDX content will be written after Deep Orbit launches and validates.
 
-**Unique Specialization:**
-- Random forests: bagging and feature randomization
-- Gradient boosting: XGBoost, LightGBM
-- Ensemble methods: voting, stacking, blending
+### Classical ML: When Neural Networks Aren't the Answer
 
----
+**Track:** foundations | **Lessons:** 5 | **Prerequisite:** Modules 1-3
 
-#### Module 7: Erosion Control
+Fills the biggest curriculum gap: students must understand when *not* to use deep learning. Covers logistic regression, decision trees, k-nearest neighbors, ensemble methods (random forests, XGBoost), and a decision framework for model selection. Key bridge: "Classical ML models are like vanilla JS — no framework, full control, sometimes the right choice."
 
-**Shared Core:**
-- Overfitting and underfitting diagnosis
-- Regularization: L1, L2, dropout
-- Early stopping and validation curves
+### Ethics & Responsible AI
 
-**Unique Specialization:**
-- Tree regularization: max depth, min leaf samples, max features
-- Spatial cross-validation: avoiding geographic data leakage
-- Handling spatial autocorrelation in validation
+**Track:** foundations | **Lessons:** 5 | **Prerequisite:** Modules 1-3
 
----
+Every ML interview asks about bias and fairness. Covers dataset bias detection, fairness metrics (demographic parity, equalized odds), model interpretability (LIME, SHAP), responsible deployment, and building a reusable ethics checklist. Key bridge: "Data bias is like testing only in Chrome — works great for you, broken for half your users."
 
-#### Module 8: Grid Search Expedition
+### Python Bridge
 
-**Shared Core:**
-- Hyperparameter tuning: grid search, random search
-- Learning rate selection and scheduling
-- Evaluation metrics: accuracy, precision, recall, F1, AUC-ROC
+**Track:** bonus (unlocked after completing any theme) | **Lessons:** 5
 
-**Unique Specialization:**
-- Bayesian optimization for tree-based model hyperparameters
-- Feature importance: permutation importance, SHAP values
-- Custom evaluation metrics for environmental predictions
+Eliminates the biggest career gap. Not "learn Python" — instead, "you know ML in JavaScript, here's how the same concepts look in Python/PyTorch." Covers Python syntax for JS devs, NumPy as TypedArrays, PyTorch as TF.js, pandas as Array methods, and reading ML papers/repos. Comprehension-focused, not implementation. Key bridge: "Python's ML ecosystem is like jQuery — it was there first, everything builds on it."
 
----
+### Math Deep Dive (Companion Track)
 
-#### Module 9: Environmental Impact
+**Track:** companion (optional, parallel to core modules) | **Lessons:** 6
 
-**Shared Core:**
-- Cross-validation: k-fold, stratified
-- Confusion matrices and classification reports
-- Statistical significance and confidence intervals
-
-**Unique Specialization:**
-- Spatial cross-validation strategies
-- Multi-output prediction for environmental systems
-- Model interpretability with SHAP: explaining geographic predictions
-
----
-
-#### Module 10: Monitoring Station
-
-**Shared Core:**
-- Model serialization and export
-- Inference optimization basics
-- Deployment patterns: batch vs. real-time
-
-**Unique Specialization:**
-- Deploying geospatial prediction models
-- Handling new geographic regions in production (distribution shift)
-- Building monitoring dashboards for environmental predictions
-
----
-
-#### Module 11: The Final Forecast
-
-**Shared Core:**
-- End-to-end ML project synthesis
-- Best practices and common pitfalls review
-- What to learn next: roadmap beyond Tensorcraft
-
-**Unique Specialization:**
-- Full geospatial ML pipeline: from raw environmental data to deployed prediction model
-- Final capstone: build a geospatial environmental prediction system
-- Portfolio presentation of the complete Terra Grid project
+For students who want deeper foundations. Each lesson companions a core module: tensors as linear algebra, calculus of neurons (chain rule worked through), optimization landscape (convexity, saddle points), convolution as matrix multiplication, information theory, and Bayesian probability. Not required to complete the course, but essential for advancing beyond it. Key bridge: "Math is like TypeScript — you can ship without it, but it catches bugs in your thinking."
 
 ---
 

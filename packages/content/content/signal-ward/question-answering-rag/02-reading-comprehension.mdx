@@ -1,0 +1,164 @@
+---
+slug: reading-comprehension
+title: "Reading Comprehension — Understanding Context"
+moduleId: question-answering-rag
+themeId: signal-ward
+order: 2
+estimatedMinutes: 25
+difficulty: advanced
+context:
+  narrative: "The extractive QA model found the allergy note, but Obi raises a concern. 'Finding a keyword match is not comprehension. What if the record says the allergy was ruled out? Or that a family member has the allergy, not the patient?' Khalil realizes the model needs to understand context, not just locate text."
+  speaker: "Obi Nwosu"
+concept:
+  explanation: "Reading comprehension models don't just find text — they understand relationships between question and context, like a GraphQL resolver that fetches exactly the data a query needs."
+  bridge:
+    feTitle: "GraphQL Resolver"
+    feCode: "resolver: (parent, { patientId }) => db.allergies.find({ patientId, active: true })"
+    mlTitle: "Reading Comprehension"
+    mlCode: "model.comprehend({ question: 'active allergies?', context: record }) // understands scope"
+    tier: analogy
+consequence:
+  narrative: "The comprehension model correctly distinguishes 'patient allergic to penicillin' from 'patient's mother allergic to penicillin.' Obi nods. 'Now it reads like a clinician, not a search engine.'"
+  nextLessonTeaser: "Next: RAG architecture — when the answer isn't in a single document"
+hints:
+  - level: nudge
+    content: "Attention scores reveal which context tokens the model focuses on for each question token"
+  - level: guidance
+    content: "Use cross-attention between question and context embeddings to build a question-aware context representation"
+  - level: solution
+    content: "Compute attention weights as softmax(Q*K^T / sqrt(d)), apply to values, then predict answer span from the attended representation"
+keywords:
+  - reading-comprehension
+  - cross-attention
+  - context-understanding
+  - question-context-matching
+---
+
+<Dialogue speaker="Obi Nwosu">
+Your QA model found the word "penicillin" in the record. But read this note carefully: "Patient's mother has documented penicillin allergy. Patient has no known drug allergies." A keyword search would flag this as a positive. A comprehension model would not.
+</Dialogue>
+
+<Dialogue speaker="Khalil">
+It's like the difference between a REST endpoint that dumps everything and a GraphQL resolver that returns exactly what you asked for. The model needs to understand the relationship between the question and the specific context.
+</Dialogue>
+
+A GraphQL resolver does not return the entire database. It parses your query, understands what you need, and fetches precisely that. Reading comprehension works the same way — the model uses cross-attention to connect question tokens to the most relevant context tokens, building a query-specific understanding of the passage.
+
+<LearningObjectives objectives={["Build cross-attention layers that connect questions to relevant context spans", "Implement question-aware context representations using attention mechanisms", "Distinguish between subjects in clinical text (patient vs. family member)", "Evaluate comprehension quality with adversarial examples"]} />
+
+## Query-Specific Understanding
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="reading-comprehension.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Cross-attention: question attends to context
+// Like a GraphQL resolver matching query fields to database columns
+function crossAttention(
+  questionEmb: tf.Tensor2D,  // [questionLen, dim]
+  contextEmb: tf.Tensor2D    // [contextLen, dim]
+): tf.Tensor2D {
+  const dim = questionEmb.shape[1];
+  const scale = Math.sqrt(dim);
+
+  // Attention scores: which context tokens matter for each question token
+  const scores = tf.matMul(questionEmb, contextEmb, false, true)
+    .div(tf.scalar(scale));
+
+  // Normalize to probabilities
+  const weights = tf.softmax(scores, -1);  // [questionLen, contextLen]
+
+  // Weighted sum of context — question-aware representation
+  const attended = tf.matMul(weights, contextEmb);  // [questionLen, dim]
+  return attended as tf.Tensor2D;
+}
+
+// Build a comprehension model with cross-attention
+function buildComprehensionModel(
+  vocabSize: number,
+  embDim: number,
+  maxLen: number
+): tf.LayersModel {
+  const questionInput = tf.input({ shape: [maxLen], name: 'question' });
+  const contextInput = tf.input({ shape: [maxLen], name: 'context' });
+
+  const embedding = tf.layers.embedding({
+    inputDim: vocabSize,
+    outputDim: embDim,
+    name: 'shared_embedding',
+  });
+
+  const questionEmb = embedding.apply(questionInput) as tf.SymbolicTensor;
+  const contextEmb = embedding.apply(contextInput) as tf.SymbolicTensor;
+
+  // Bidirectional encoding for richer representations
+  const biLSTM = tf.layers.bidirectional({
+    layer: tf.layers.lstm({ units: embDim / 2, returnSequences: true }),
+  });
+
+  const questionEncoded = biLSTM.apply(questionEmb) as tf.SymbolicTensor;
+  const contextEncoded = biLSTM.apply(contextEmb) as tf.SymbolicTensor;
+
+  // Attention-based fusion
+  const attention = tf.layers.attention();
+  const attended = attention.apply([questionEncoded, contextEncoded]) as tf.SymbolicTensor;
+
+  // Predict answer span
+  const startLogits = tf.layers.dense({ units: 1, name: 'start' })
+    .apply(attended) as tf.SymbolicTensor;
+  const endLogits = tf.layers.dense({ units: 1, name: 'end' })
+    .apply(attended) as tf.SymbolicTensor;
+
+  return tf.model({
+    inputs: [questionInput, contextInput],
+    outputs: [
+      tf.layers.flatten().apply(startLogits) as tf.SymbolicTensor,
+      tf.layers.flatten().apply(endLogits) as tf.SymbolicTensor,
+    ],
+  });
+}`}
+</CodeBlock>
+
+## Adversarial Clinical Examples
+
+<CodeBlock language="typescript" title="adversarial-test.ts">
+{`// Test comprehension with tricky clinical scenarios
+const adversarialTests = [
+  {
+    question: "Is the patient allergic to penicillin?",
+    context: "Patient's mother has documented penicillin allergy. Patient has no known drug allergies.",
+    expectedAnswer: "Patient has no known drug allergies",
+    label: "family-vs-patient"
+  },
+  {
+    question: "Is the patient currently taking warfarin?",
+    context: "Warfarin was discontinued on 2023-01-15 due to bleeding risk. Current medications: metformin 500mg, lisinopril 10mg.",
+    expectedAnswer: "Warfarin was discontinued",
+    label: "current-vs-historical"
+  },
+  {
+    question: "Does the patient have diabetes?",
+    context: "Rule out diabetes. HbA1c 5.4% (normal). No evidence of insulin resistance.",
+    expectedAnswer: "No evidence of insulin resistance",
+    label: "rule-out-vs-diagnosis"
+  },
+];
+
+// A model that truly comprehends will get all three right.
+// A keyword matcher will fail on every one.
+for (const test of adversarialTests) {
+  const result = await comprehend(test.question, test.context);
+  console.log(\`[\${test.label}] Answer: "\${result.answer}"\`);
+  console.log(\`  Expected: "\${test.expectedAnswer}"\`);
+  console.log(\`  Correct: \${result.answer.includes(test.expectedAnswer)}\`);
+}`}
+</CodeBlock>
+
+## Challenge
+
+Implement a cross-attention function that computes question-aware context representations.
+
+<Exercise slug="reading-comprehension" />
+
+<KeyTakeaways takeaways={["Reading comprehension uses cross-attention to connect question tokens to relevant context tokens — like a GraphQL resolver matching queries to data", "Question-aware representations prevent false matches (family allergies, discontinued medications, ruled-out conditions)", "Adversarial clinical examples are essential for validating comprehension vs. keyword matching", "Attention weight visualization reveals which context tokens the model focuses on for each question"]} />

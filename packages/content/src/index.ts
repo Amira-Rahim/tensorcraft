@@ -15,9 +15,13 @@ export { lessons, exercises, modules } from "../.velite";
 export {
   getModules,
   getModule,
+  getFoundationsModules,
+  getSpecializationModules,
+  isFoundationsModule,
   getThemeLessons,
   getModuleLessons,
   getLesson,
   getExercise,
+  getLessonExercises,
   getAdjacentLessons,
 } from "./queries";

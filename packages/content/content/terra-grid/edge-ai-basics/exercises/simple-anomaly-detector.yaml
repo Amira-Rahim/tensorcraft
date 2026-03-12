@@ -1,0 +1,9 @@
+slug: simple-anomaly-detector
+lessonSlug: your-first-edge-model
+title: "Build a Simple Anomaly Detector"
+instructions: "Build a TensorFlow.js sequential model with: an input dense layer (inputShape [4], 8 units, relu activation) and an output dense layer (1 unit, sigmoid activation). Compile with adam optimizer and binaryCrossentropy loss."
+starterCode: "const model = tf.sequential();\n\n// Add a dense layer: inputShape [4], 8 units, relu\n// your code here\n\n// Add output layer: 1 unit, sigmoid\n// your code here\n\n// Compile with adam and binaryCrossentropy\n// your code here"
+solutionCode: "const model = tf.sequential();\nmodel.add(tf.layers.dense({ inputShape: [4], units: 8, activation: 'relu' }));\nmodel.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));\nmodel.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });"
+testCode: "describe('Anomaly Detector', () => { it('has 2 layers', () => { expect(model.layers.length).toBe(2); }); it('accepts input shape [4]', () => { expect(model.inputs[0].shape).toEqual([null, 4]); }); it('outputs shape [1]', () => { expect(model.outputs[0].shape).toEqual([null, 1]); }); });"
+estimatedMinutes: 15
+difficulty: beginner

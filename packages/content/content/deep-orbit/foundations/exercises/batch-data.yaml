@@ -1,0 +1,9 @@
+slug: batch-data
+lessonSlug: data-loading
+title: "Batch Sensor Data"
+instructions: "Create a data pipeline that batches sensor readings into groups of 4. Use tf.data.generator() with the provided generator function, then shuffle with a buffer of 10 and batch into groups of 4."
+starterCode: "function* sensorGen() {\n  for (let i = 0; i < 16; i++) {\n    yield { xs: tf.tensor([i, i * 2]), ys: tf.tensor([i % 2]) };\n  }\n}\n\n// Create a dataset pipeline: shuffle(10) then batch(4)\nconst dataset = null; // your code here"
+solutionCode: "function* sensorGen() {\n  for (let i = 0; i < 16; i++) {\n    yield { xs: tf.tensor([i, i * 2]), ys: tf.tensor([i % 2]) };\n  }\n}\n\nconst dataset = tf.data.generator(sensorGen).shuffle(10).batch(4);"
+testCode: "describe('Batch Data', () => { it('creates a dataset', () => { expect(dataset).toBeDefined(); }); it('produces batches of 4', async () => { let batchShape; await dataset.forEachAsync((b) => { batchShape = b.xs.shape; }); expect(batchShape[0]).toBe(4); }); });"
+estimatedMinutes: 12
+difficulty: intermediate

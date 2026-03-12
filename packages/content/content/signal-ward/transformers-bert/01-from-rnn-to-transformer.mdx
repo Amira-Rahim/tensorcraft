@@ -1,0 +1,117 @@
+---
+slug: from-rnn-to-transformer
+title: "From RNN to Transformer"
+moduleId: transformers-bert
+themeId: signal-ward
+order: 1
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Obi explains why the team is abandoning sequential processing for a radically different architecture."
+  speaker: "Obi Nwosu"
+concept:
+  explanation: "Transformers replace recurrence with self-attention, processing all tokens in parallel instead of one at a time."
+  bridge:
+    feTitle: "Class Components to Hooks"
+    feCode: "// Class: sequential lifecycle methods\n// Hooks: declare what you need, React handles order"
+    mlTitle: "RNN to Transformer"
+    mlCode: "// RNN: sequential hidden states\n// Transformer: parallel self-attention"
+    tier: analogy
+consequence:
+  narrative: "The team commits to the transformer architecture, knowing it can process entire clinical notes at once."
+  nextLessonTeaser: "Next: building the transformer encoder block from scratch."
+hints:
+  - level: nudge
+    content: "Think about what makes parallel processing possible — no sequential dependency"
+  - level: guidance
+    content: "Self-attention computes all token relationships simultaneously"
+  - level: solution
+    content: "Replace the recurrent loop with a single matrix multiplication for attention"
+keywords:
+  - transformer
+  - paradigm-shift
+  - parallelism
+  - self-attention
+---
+
+<Dialogue speaker="Obi Nwosu">
+Khalil, our LSTM processes a clinical note one word at a time — left to right, sequentially. A 500-word discharge summary takes 500 steps. What if we could process all 500 words simultaneously?
+</Dialogue>
+
+<Dialogue speaker="Khalil Mensah">
+That reminds me of when React moved from class components to hooks. Class components had these rigid lifecycle methods — mount, update, unmount — everything sequential. Hooks let you declare what you need, and React figures out the execution order.
+</Dialogue>
+
+<Dialogue speaker="Obi Nwosu">
+That's exactly the paradigm shift. The transformer paper — "Attention Is All You Need" — did for NLP what hooks did for React. It replaced sequential processing with declarative attention.
+</Dialogue>
+
+<LearningObjectives objectives={["Understand why RNNs bottleneck on long sequences", "Explain the core innovation of the transformer architecture", "Compare sequential vs parallel processing of text", "Identify when transformers outperform RNNs"]} />
+
+## The Sequential Bottleneck
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+RNNs have a fundamental problem: information from early words must pass through every subsequent step to reach the end. In a long clinical note, by the time the model reaches "discontinue warfarin," it may have degraded information about "started heparin" from three paragraphs earlier.
+
+<CodeBlock language="typescript" title="rnn-vs-transformer.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// RNN approach: sequential, O(n) steps
+async function rnnProcess(tokens: tf.Tensor2D) {
+  const seqLen = tokens.shape[0];
+  const hiddenDim = 64;
+  let hidden = tf.zeros([hiddenDim]);
+
+  for (let t = 0; t < seqLen; t++) {
+    const token = tokens.slice([t, 0], [1, -1]).squeeze();
+    // Each step depends on the previous hidden state
+    hidden = tf.tanh(
+      tf.add(
+        tf.matMul(token.reshape([1, -1]), tf.randomNormal([tokens.shape[1], hiddenDim])),
+        tf.matMul(hidden.reshape([1, -1]), tf.randomNormal([hiddenDim, hiddenDim]))
+      )
+    ).squeeze();
+  }
+  return hidden; // final hidden state — bottleneck!
+}
+
+// Transformer approach: parallel, O(1) depth
+function transformerProcess(tokens: tf.Tensor2D) {
+  const dk = 16;
+  const Wq = tf.randomNormal([tokens.shape[1], dk]);
+  const Wk = tf.randomNormal([tokens.shape[1], dk]);
+  const Wv = tf.randomNormal([tokens.shape[1], dk]);
+
+  const Q = tf.matMul(tokens, Wq);
+  const K = tf.matMul(tokens, Wk);
+  const V = tf.matMul(tokens, Wv);
+
+  // ALL token relationships computed in ONE operation
+  const scores = tf.matMul(Q, K.transpose()).div(Math.sqrt(dk));
+  const weights = tf.softmax(scores, -1);
+  return tf.matMul(weights, V); // every token has full context
+}
+
+const tokens = tf.randomNormal([20, 32]) as tf.Tensor2D;
+const output = transformerProcess(tokens);
+console.log('All tokens processed in parallel:', output.shape);`}
+</CodeBlock>
+
+## The Three Advantages
+
+1. **Parallelism**: All positions computed simultaneously — GPUs love this
+2. **Constant path length**: Any two words are connected in one attention step
+3. **No information bottleneck**: Each token retains its own representation
+
+<Dialogue speaker="Obi Nwosu">
+For clinical text, this is transformative. A drug mentioned in the admission note and a contraindication mentioned in the lab results are directly connected — no information decay over distance.
+</Dialogue>
+
+## Challenge
+
+Build a basic transformer-style parallel processor and compare it to sequential RNN processing.
+
+<Exercise slug="transformer-block" />
+
+<KeyTakeaways takeaways={["RNNs process sequentially, creating information bottlenecks on long text", "Transformers process all tokens in parallel via self-attention", "Any two tokens are connected in O(1) steps, not O(n)", "This paradigm shift mirrors React's move from class components to hooks"]} />

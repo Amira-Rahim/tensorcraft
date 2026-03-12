@@ -1,0 +1,176 @@
+---
+slug: model-loading
+title: "Model Loading"
+moduleId: browser-runtimes
+themeId: deep-orbit
+order: 3
+estimatedMinutes: 30
+difficulty: intermediate
+context:
+  narrative: "The trained DEEP SCAN model needs to be loaded into the browser dashboard. Park discovers that loading a model is just another fetch — with a twist."
+  speaker: "Ensign Park"
+concept:
+  explanation: "Loading a pre-trained model in TF.js follows the fetch → parse → use pattern you already know from API data fetching."
+  bridge:
+    feTitle: "fetch() → JSON"
+    feCode: "const data = await fetch(url).then(r => r.json())"
+    mlTitle: "Model Loading"
+    mlCode: "const model = await tf.loadLayersModel(url)"
+    tier: identity
+consequence:
+  narrative: "The DEEP SCAN model loads in 340ms. Torres nods — within budget. Park caches it in IndexedDB for offline use."
+  nextLessonTeaser: "Next: running real-time inference with the loaded model"
+hints:
+  - level: nudge
+    content: "Think of model loading as fetching JSON — same pattern, bigger payload"
+  - level: guidance
+    content: "tf.loadLayersModel() fetches model.json (architecture) and .bin files (weights)"
+  - level: solution
+    content: "const model = await tf.loadLayersModel('/models/deep-scan/model.json');"
+keywords:
+  - model-loading
+  - fetch
+  - layers-model
+  - indexeddb
+  - caching
+---
+
+<Dialogue speaker="Ensign Park">
+So the model is just files — a JSON manifest and binary weight chunks? That's... exactly like loading a web font or a spritesheet.
+</Dialogue>
+
+<Dialogue speaker="ARIA">
+Correct. The architecture is described in model.json. The learned weights are in one or more .bin files. The browser fetches both, just like any other asset.
+</Dialogue>
+
+Every frontend developer has written `fetch(url).then(r => r.json())` hundreds of times. Loading a trained model into the browser is the same pattern — you're fetching structured data over HTTP. The model's architecture lives in a JSON file, and the learned weights live in binary files alongside it.
+
+<LearningObjectives objectives={["Load a pre-trained TensorFlow.js model from a URL", "Understand the model format: model.json manifest + weight .bin shards", "Cache models in IndexedDB for offline access and faster subsequent loads", "Handle loading states and errors gracefully in the UI"]} />
+
+## The Fetch Pattern You Already Know
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="model-loading.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Loading a model is a fetch with extra steps
+// model.json contains the architecture (layers, shapes, activations)
+// group1-shard1of1.bin contains the learned weights (Float32Array)
+const model = await tf.loadLayersModel('/models/deep-scan/model.json');
+
+// Inspect what we loaded — like checking an API response shape
+console.log('Input shape:', model.inputs[0].shape);   // [null, 3]
+console.log('Output shape:', model.outputs[0].shape);  // [null, 1]
+model.summary();
+// Layer (type)              Output shape       Param #
+// dense_Dense1 (Dense)      [null, 32]         128
+// dense_Dense2 (Dense)      [null, 16]         528
+// dense_Dense3 (Dense)      [null, 1]          17`}
+</CodeBlock>
+
+Under the hood, `tf.loadLayersModel()` does exactly what you'd do manually:
+
+<CodeBlock language="typescript" title="under-the-hood.ts">
+{`// What tf.loadLayersModel() does internally:
+
+// 1. Fetch the manifest (architecture)
+const manifest = await fetch('/models/deep-scan/model.json').then(r => r.json());
+// manifest.modelTopology = layer config (Dense, activation, shapes)
+// manifest.weightsManifest = list of .bin files and their tensor names
+
+// 2. Fetch the weight binaries
+const weightData = await fetch('/models/deep-scan/group1-shard1of1.bin')
+  .then(r => r.arrayBuffer());
+// Raw Float32 values — the numbers the network learned during training
+
+// 3. Reconstruct the model from architecture + weights
+// tf.loadLayersModel() handles all of this in one call`}
+</CodeBlock>
+
+## Caching with IndexedDB
+
+Models can be 5-50MB. You don't want to re-download them on every page load — just like you'd cache API responses or use a service worker for static assets.
+
+<CodeBlock language="typescript" title="model-caching.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+const MODEL_URL = '/models/deep-scan/model.json';
+const CACHE_KEY = 'indexeddb://deep-scan-v1';
+
+async function loadModelWithCache(): Promise<tf.LayersModel> {
+  try {
+    // Try loading from IndexedDB cache first
+    const cached = await tf.loadLayersModel(CACHE_KEY);
+    console.log('Loaded from cache');
+    return cached;
+  } catch {
+    // Cache miss — fetch from server and save to IndexedDB
+    console.log('Cache miss — fetching from server');
+    const model = await tf.loadLayersModel(MODEL_URL);
+    await model.save(CACHE_KEY);  // saves to IndexedDB
+    console.log('Saved to cache');
+    return model;
+  }
+}
+
+// Usage — first load fetches from network, subsequent loads hit cache
+const model = await loadModelWithCache();
+
+// Check what's cached
+const savedModels = await tf.io.listModels();
+console.log(savedModels);
+// { 'indexeddb://deep-scan-v1': { dateSaved: '...', modelTopologyBytes: 1234, ... } }
+
+// Clear cache when deploying a new model version
+await tf.io.removeModel(CACHE_KEY);`}
+</CodeBlock>
+
+This is identical to the service worker caching pattern: check cache first, fall back to network, store for next time.
+
+## Loading States in the UI
+
+<CodeBlock language="typescript" title="loading-ui.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+type ModelState =
+  | { status: 'idle' }
+  | { status: 'loading'; progress: number }
+  | { status: 'ready'; model: tf.LayersModel }
+  | { status: 'error'; message: string };
+
+async function loadWithProgress(
+  url: string,
+  onProgress: (state: ModelState) => void,
+): Promise<tf.LayersModel> {
+  onProgress({ status: 'loading', progress: 0 });
+
+  try {
+    const model = await tf.loadLayersModel(url, {
+      onProgress: (fraction) => {
+        // fraction goes from 0 to 1 as weight shards download
+        onProgress({ status: 'loading', progress: fraction });
+      },
+    });
+
+    onProgress({ status: 'ready', model });
+    return model;
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Failed to load model';
+    onProgress({ status: 'error', message });
+    throw err;
+  }
+}
+
+// In your React component:
+// const [state, setState] = useState<ModelState>({ status: 'idle' });
+// useEffect(() => { loadWithProgress(MODEL_URL, setState); }, []);`}
+</CodeBlock>
+
+## Challenge
+
+Load a model with caching and verify its architecture.
+
+<Exercise slug="load-model" />
+
+<KeyTakeaways takeaways={["Model loading follows the fetch → parse → use pattern: tf.loadLayersModel() fetches JSON + binary weight files", "Models are two parts: model.json (architecture) and .bin files (learned weights) — like code-splitting chunks", "IndexedDB caching prevents re-downloading — same pattern as service worker asset caching", "The onProgress callback gives loading feedback, just like fetch progress events"]} />

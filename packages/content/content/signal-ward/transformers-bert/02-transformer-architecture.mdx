@@ -1,0 +1,121 @@
+---
+slug: transformer-architecture
+title: "Transformer Architecture"
+moduleId: transformers-bert
+themeId: signal-ward
+order: 2
+estimatedMinutes: 30
+difficulty: intermediate
+context:
+  narrative: "Khalil builds a transformer encoder block — the core unit of modern NLP."
+  speaker: "Obi Nwosu"
+concept:
+  explanation: "A transformer encoder block combines multi-head attention with feedforward layers, skip connections, and layer normalization."
+  bridge:
+    feTitle: "React Virtual DOM"
+    feCode: "// diff current vs previous → minimal updates"
+    mlTitle: "Residual Connections"
+    mlCode: "output = layerNorm(input + attention(input)); // preserve + refine"
+    tier: analogy
+consequence:
+  narrative: "Diagnostic One's core architecture is now built — a stack of encoder blocks that can understand clinical text in full context."
+  nextLessonTeaser: "Next: positional encoding — how transformers know word order."
+hints:
+  - level: nudge
+    content: "Each block has two sub-layers: attention and feedforward, each with residual + norm"
+  - level: guidance
+    content: "Apply attention, add the residual (input), normalize. Then feedforward, add residual, normalize again"
+  - level: solution
+    content: "x = layerNorm(x + multiHeadAttention(x)); x = layerNorm(x + feedforward(x));"
+keywords:
+  - encoder-block
+  - residual-connection
+  - layer-normalization
+  - feedforward
+---
+
+<Dialogue speaker="Obi Nwosu">
+Self-attention alone isn't enough. We need to wrap it in a complete encoder block — attention plus feedforward, with skip connections that preserve information. Think of it like React's virtual DOM: you diff the new state against the old and apply minimal, targeted updates.
+</Dialogue>
+
+<LearningObjectives objectives={["Build a complete transformer encoder block", "Implement residual (skip) connections", "Apply layer normalization after each sub-layer", "Stack multiple encoder blocks into an encoder"]} />
+
+## The Encoder Block
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+A transformer encoder block has two sub-layers, each wrapped in a residual connection and layer normalization:
+
+1. **Multi-Head Self-Attention** — tokens attend to each other
+2. **Position-wise Feed-Forward Network** — each token processed independently through a small MLP
+
+<CodeBlock language="typescript" title="encoder-block.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+function layerNorm(x: tf.Tensor2D): tf.Tensor2D {
+  const mean = x.mean(-1, true);
+  const variance = x.sub(mean).square().mean(-1, true);
+  const epsilon = 1e-6;
+  return x.sub(mean).div(variance.add(epsilon).sqrt()) as tf.Tensor2D;
+}
+
+function feedForward(x: tf.Tensor2D, dModel: number, dFF: number): tf.Tensor2D {
+  const W1 = tf.randomNormal([dModel, dFF]);
+  const b1 = tf.zeros([dFF]);
+  const W2 = tf.randomNormal([dFF, dModel]);
+  const b2 = tf.zeros([dModel]);
+
+  const hidden = tf.relu(tf.matMul(x, W1).add(b1));
+  return tf.matMul(hidden, W2).add(b2) as tf.Tensor2D;
+}
+
+function simpleMultiHeadAttention(x: tf.Tensor2D, dModel: number, numHeads: number): tf.Tensor2D {
+  const dk = dModel / numHeads;
+  const heads: tf.Tensor2D[] = [];
+
+  for (let h = 0; h < numHeads; h++) {
+    const Q = tf.matMul(x, tf.randomNormal([dModel, dk]));
+    const K = tf.matMul(x, tf.randomNormal([dModel, dk]));
+    const V = tf.matMul(x, tf.randomNormal([dModel, dk]));
+    const scores = tf.softmax(tf.matMul(Q, K.transpose()).div(Math.sqrt(dk)), -1);
+    heads.push(tf.matMul(scores, V) as tf.Tensor2D);
+  }
+  const concat = tf.concat(heads, 1) as tf.Tensor2D;
+  return tf.matMul(concat, tf.randomNormal([dModel, dModel])) as tf.Tensor2D;
+}
+
+function encoderBlock(x: tf.Tensor2D, dModel: number, numHeads: number, dFF: number): tf.Tensor2D {
+  // Sub-layer 1: Multi-head attention + residual + norm
+  const attnOut = simpleMultiHeadAttention(x, dModel, numHeads);
+  const norm1 = layerNorm(x.add(attnOut) as tf.Tensor2D);
+
+  // Sub-layer 2: Feed-forward + residual + norm
+  const ffOut = feedForward(norm1, dModel, dFF);
+  const norm2 = layerNorm(norm1.add(ffOut) as tf.Tensor2D);
+
+  return norm2;
+}
+
+// Stack 3 encoder blocks
+let x = tf.randomNormal([10, 64]) as tf.Tensor2D; // 10 tokens, 64-dim
+for (let i = 0; i < 3; i++) {
+  x = encoderBlock(x, 64, 4, 256);
+}
+console.log('Encoder output:', x.shape); // [10, 64]`}
+</CodeBlock>
+
+## Residual Connections: Preserving What Matters
+
+The `x.add(attnOut)` step is critical. Without it, deep networks suffer from vanishing gradients — information from early layers fades. The residual connection provides a highway for gradients and information to flow through unchanged, while the attention layer adds refinements.
+
+<Dialogue speaker="Khalil Mensah">
+That's like how React's reconciliation works — you don't rebuild the entire DOM. You keep the existing structure and apply only the changes. The residual connection is the existing DOM; the attention output is the diff.
+</Dialogue>
+
+## Challenge
+
+Build a complete transformer encoder block with attention, feedforward, residuals, and layer norm.
+
+<Exercise slug="build-encoder" />
+
+<KeyTakeaways takeaways={["An encoder block = multi-head attention + feedforward, each with residual + layer norm", "Residual connections prevent information loss in deep networks", "Layer normalization stabilizes training by normalizing activations", "Stacking blocks increases the model's representational capacity"]} />

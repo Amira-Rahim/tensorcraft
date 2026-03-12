@@ -1,0 +1,61 @@
+slug: add-noise
+lessonSlug: the-diffusion-process
+title: "Add Noise to an Image Tensor"
+instructions: "Write a function that adds Gaussian noise to an image tensor at a given timestep. The function takes an image tensor, a noise tensor, and a noise level (0 to 1). Return the blended result: image * (1 - noiseLevel) + noise * noiseLevel."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function addNoise(
+    image: tf.Tensor4D,
+    noise: tf.Tensor4D,
+    noiseLevel: number
+  ): tf.Tensor4D {
+    // Blend image and noise based on noiseLevel
+    // noiseLevel = 0 -> pure image
+    // noiseLevel = 1 -> pure noise
+    return null; // your code here
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function addNoise(
+    image: tf.Tensor4D,
+    noise: tf.Tensor4D,
+    noiseLevel: number
+  ): tf.Tensor4D {
+    const signalPart = tf.mul(image, tf.scalar(1 - noiseLevel));
+    const noisePart = tf.mul(noise, tf.scalar(noiseLevel));
+    return tf.add(signalPart, noisePart) as tf.Tensor4D;
+  }
+testCode: |
+  describe('addNoise', () => {
+    it('returns pure image when noiseLevel is 0', () => {
+      const image = tf.ones([1, 4, 4, 3]) as tf.Tensor4D;
+      const noise = tf.zeros([1, 4, 4, 3]) as tf.Tensor4D;
+      const result = addNoise(image, noise, 0);
+      const data = result.dataSync();
+      expect(data[0]).toBeCloseTo(1.0, 4);
+    });
+    it('returns pure noise when noiseLevel is 1', () => {
+      const image = tf.ones([1, 4, 4, 3]) as tf.Tensor4D;
+      const noise = tf.fill([1, 4, 4, 3], 0.5) as tf.Tensor4D;
+      const result = addNoise(image, noise, 1);
+      const data = result.dataSync();
+      expect(data[0]).toBeCloseTo(0.5, 4);
+    });
+    it('blends at 50% noise level', () => {
+      const image = tf.fill([1, 4, 4, 3], 1.0) as tf.Tensor4D;
+      const noise = tf.fill([1, 4, 4, 3], 0.0) as tf.Tensor4D;
+      const result = addNoise(image, noise, 0.5);
+      const data = result.dataSync();
+      expect(data[0]).toBeCloseTo(0.5, 4);
+    });
+    it('returns correct shape', () => {
+      const image = tf.ones([1, 8, 8, 3]) as tf.Tensor4D;
+      const noise = tf.zeros([1, 8, 8, 3]) as tf.Tensor4D;
+      const result = addNoise(image, noise, 0.3);
+      expect(result.shape).toEqual([1, 8, 8, 3]);
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

@@ -1,0 +1,186 @@
+---
+slug: training-a-cnn
+title: "Training a CNN"
+moduleId: convolutional-neural-networks
+themeId: neon-protocol
+order: 4
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "The architecture is built. Ryo pulls up the training dashboard: 'This is where it gets real. We feed the Sentinel surveillance images, compute loss, and update every kernel weight. Think of it like running your full CI/CD build pipeline — lint, test, bundle, deploy — but for neural network weights.'"
+  speaker: "Ryo"
+concept:
+  explanation: "Training a CNN is an iterative pipeline of forward pass, loss computation, backpropagation, and weight updates — structurally identical to a build pipeline that processes, validates, and outputs artifacts."
+  bridge:
+    feTitle: "Build Pipeline Execution"
+    feCode: "npm run build // lint -> typecheck -> test -> bundle -> deploy"
+    mlTitle: "Training Loop"
+    mlCode: "for (epoch) { const loss = model.trainOnBatch(images, labels); } // forward -> loss -> backward -> update"
+    tier: structural
+consequence:
+  narrative: "After 50 epochs, the Protocol Sentinel hits 89% accuracy on camera type classification. Kira watches the loss curve flatten. 'It learned,' she whispers. Lin nods: 'Now make it see what it learned.'"
+  nextLessonTeaser: "Next: visualizing what the CNN actually learned — peering inside the black box"
+hints:
+  - level: nudge
+    content: "The training loop runs forward pass, computes loss, then updates weights. Track loss and accuracy per epoch."
+  - level: guidance
+    content: "For each epoch, loop through batches. Compute predictions, calculate cross-entropy loss, then record the accuracy as correct predictions divided by total."
+  - level: solution
+    content: "Run forward pass on batch, compute cross-entropy loss, track running loss average, compute accuracy from argmax comparison."
+keywords:
+  - training-loop
+  - cross-entropy
+  - epochs
+  - batch-training
+  - accuracy
+---
+
+<Dialogue speaker="Ryo">
+At Meridian, we trained surveillance models on thousands of GPUs. But the process is the same whether you have one GPU or a thousand. You feed images in batches, compute how wrong the model is, calculate gradients, and nudge the weights. Repeat until convergence. It is a build pipeline — each epoch is a full build cycle.
+</Dialogue>
+
+<Dialogue speaker="Kira">
+So each epoch is like a CI run? Forward pass is the build step, loss is the test results, backprop is analyzing failures, and the weight update is the fix?
+</Dialogue>
+
+That is a solid mental model. Training is iterative refinement. Each epoch processes the entire dataset, and with each pass the kernels get better at detecting useful features.
+
+<LearningObjectives objectives={["Understand the end-to-end CNN training pipeline: forward pass, loss, backprop, update", "Implement a training loop with epoch and batch tracking", "Compute cross-entropy loss for multi-class classification", "Track accuracy and loss curves to monitor training progress"]} />
+
+## The Training Pipeline
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="training-pipeline.ts">
+{`// Build pipeline stages:
+// 1. Lint     -> Forward pass (process input)
+// 2. Test     -> Loss computation (measure errors)
+// 3. Analyze  -> Backpropagation (find what caused errors)
+// 4. Fix      -> Weight update (adjust parameters)
+// 5. Repeat   -> Next epoch
+
+interface TrainingConfig {
+  epochs: number;
+  batchSize: number;
+  learningRate: number;
+  numClasses: number;
+}
+
+interface EpochResult {
+  epoch: number;
+  loss: number;
+  accuracy: number;
+}
+
+// Cross-entropy loss for multi-class classification
+function crossEntropyLoss(
+  predictions: number[],  // softmax probabilities
+  trueLabel: number       // correct class index
+): number {
+  // Clamp to avoid log(0)
+  const clampedPred = Math.max(predictions[trueLabel], 1e-7);
+  return -Math.log(clampedPred);
+}
+
+// Softmax: convert raw scores to probabilities
+function softmax(logits: number[]): number[] {
+  const maxLogit = Math.max(...logits);
+  const exps = logits.map(l => Math.exp(l - maxLogit));
+  const sumExps = exps.reduce((a, b) => a + b, 0);
+  return exps.map(e => e / sumExps);
+}
+
+// Simulate one training epoch
+function trainEpoch(
+  dataSize: number,
+  batchSize: number,
+  numClasses: number
+): EpochResult {
+  const numBatches = Math.floor(dataSize / batchSize);
+  let totalLoss = 0;
+  let correctPredictions = 0;
+
+  for (let b = 0; b < numBatches; b++) {
+    // Simulate forward pass: random logits for each sample in the batch
+    for (let s = 0; s < batchSize; s++) {
+      const logits = Array.from({ length: numClasses }, () =>
+        Math.random() * 2 - 1
+      );
+      const probs = softmax(logits);
+      const trueLabel = Math.floor(Math.random() * numClasses);
+
+      // Loss computation
+      totalLoss += crossEntropyLoss(probs, trueLabel);
+
+      // Accuracy tracking
+      const predicted = probs.indexOf(Math.max(...probs));
+      if (predicted === trueLabel) correctPredictions++;
+    }
+  }
+
+  const totalSamples = numBatches * batchSize;
+  return {
+    epoch: 0,
+    loss: totalLoss / totalSamples,
+    accuracy: correctPredictions / totalSamples,
+  };
+}`}
+</CodeBlock>
+
+## Monitoring Training
+
+<CodeBlock language="typescript" title="training-monitor.ts">
+{`// Track training progress across epochs
+function runTraining(config: TrainingConfig, dataSize: number): EpochResult[] {
+  const history: EpochResult[] = [];
+
+  for (let e = 0; e < config.epochs; e++) {
+    const result = trainEpoch(dataSize, config.batchSize, config.numClasses);
+    result.epoch = e + 1;
+    history.push(result);
+
+    // Log progress like a build pipeline status
+    const lossBar = '='.repeat(Math.round(result.loss * 10));
+    const accBar = '='.repeat(Math.round(result.accuracy * 20));
+    console.log(
+      'Epoch ' + result.epoch + '/' + config.epochs +
+      ' - loss: ' + result.loss.toFixed(4) +
+      ' [' + lossBar + ']' +
+      ' - acc: ' + (result.accuracy * 100).toFixed(1) + '%' +
+      ' [' + accBar + ']'
+    );
+  }
+
+  return history;
+}
+
+// Protocol Sentinel training configuration
+const config: TrainingConfig = {
+  epochs: 50,
+  batchSize: 32,
+  learningRate: 0.001,
+  numClasses: 5,  // 5 camera types in Neon City
+};
+
+// Simulate training on 2000 surveillance camera images
+const history = runTraining(config, 2000);
+
+// Check for convergence: is loss still decreasing?
+function isConverging(history: EpochResult[], window: number): boolean {
+  if (history.length < window) return true;
+  const recent = history.slice(-window);
+  const firstLoss = recent[0].loss;
+  const lastLoss = recent[recent.length - 1].loss;
+  return lastLoss < firstLoss;
+}
+
+console.log('Still converging:', isConverging(history, 5));`}
+</CodeBlock>
+
+## Challenge
+
+Implement a training loop that tracks loss and accuracy across epochs.
+
+<Exercise slug="training-loop-cnn" />
+
+<KeyTakeaways takeaways={["Training is an iterative pipeline: forward pass, loss, backprop, weight update — one full cycle per epoch", "Cross-entropy loss measures how wrong the predicted probabilities are for the true class", "Softmax converts raw model outputs (logits) into probabilities that sum to 1", "Monitor both loss (should decrease) and accuracy (should increase) to verify training is working"]} />

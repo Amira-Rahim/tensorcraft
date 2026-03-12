@@ -36,13 +36,17 @@ Signal Ward deliberately includes moments where the AI system produces incorrect
 
 ### Career Paths & Salaries
 
+> **Note:** Tensorcraft graduates are best positioned for "ML-Enhanced" frontend/fullstack roles. The pure ML engineering roles below typically also require Python fluency and deeper mathematics — Tensorcraft provides the conceptual foundation to pursue them.
+
 | Path | Description | Avg Salary (US) |
 |---|---|---|
-| NLP Engineer | Build text understanding and generation systems | $145,000 - $195,000 |
-| Clinical NLP Specialist | Apply NLP to healthcare data and clinical text | $140,000 - $190,000 |
-| ML Engineer (NLP) | Train and deploy language models at scale | $150,000 - $200,000 |
-| AI Safety / Alignment Engineer | Build guardrails and safety systems for AI outputs | $155,000 - $210,000 |
-| Healthcare AI Product Manager | Bridge clinical needs and AI capabilities | $135,000 - $185,000 |
+| ML-Enhanced Frontend Engineer | Build NLP-powered features in the browser (search, text analysis, chatbot UIs) | $120,000 - $160,000 |
+| Frontend Engineer (NLP Products) | Frontend for NLP-heavy products (text annotation, clinical dashboards, AI safety UIs) | $125,000 - $165,000 |
+| NLP Engineer* | Build text understanding and generation systems | $145,000 - $195,000 |
+| ML Engineer (NLP)* | Train and deploy language models at scale | $150,000 - $200,000 |
+| AI Safety / Alignment Engineer* | Build guardrails and safety systems for AI outputs | $155,000 - $210,000 |
+
+*\*Requires additional Python fluency and deeper mathematics beyond this course.*
 
 ---
 

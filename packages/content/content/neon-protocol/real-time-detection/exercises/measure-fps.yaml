@@ -1,0 +1,93 @@
+slug: measure-fps
+lessonSlug: performance-budgets
+title: "Measure Inference Performance"
+instructions: "Implement a performance profiler that tracks timing for each pipeline stage (preprocess, inference, postprocess) and determines whether the total fits within a frame budget."
+starterCode: |
+  interface StageTimings {
+    preprocess: number;
+    inference: number;
+    postprocess: number;
+  }
+
+  interface BudgetReport {
+    total: number;
+    budget: number;
+    withinBudget: boolean;
+    bottleneck: 'preprocess' | 'inference' | 'postprocess';
+    overageMs: number;
+  }
+
+  function analyzeBudget(timings: StageTimings, targetFps: number): BudgetReport {
+    // budget = 1000 / targetFps
+    // total = sum of all stages
+    // bottleneck = stage with highest time
+    // overageMs = max(0, total - budget)
+    return null; // your code here
+  }
+solutionCode: |
+  interface StageTimings {
+    preprocess: number;
+    inference: number;
+    postprocess: number;
+  }
+
+  interface BudgetReport {
+    total: number;
+    budget: number;
+    withinBudget: boolean;
+    bottleneck: 'preprocess' | 'inference' | 'postprocess';
+    overageMs: number;
+  }
+
+  function analyzeBudget(timings: StageTimings, targetFps: number): BudgetReport {
+    const budget = 1000 / targetFps;
+    const total = timings.preprocess + timings.inference + timings.postprocess;
+    const stages: Array<['preprocess' | 'inference' | 'postprocess', number]> = [
+      ['preprocess', timings.preprocess],
+      ['inference', timings.inference],
+      ['postprocess', timings.postprocess],
+    ];
+    const bottleneck = stages.reduce((a, b) => (b[1] > a[1] ? b : a))[0];
+    return {
+      total,
+      budget,
+      withinBudget: total <= budget,
+      bottleneck,
+      overageMs: Math.max(0, total - budget),
+    };
+  }
+testCode: |
+  describe('analyzeBudget', () => {
+    it('calculates total from all stages', () => {
+      const report = analyzeBudget({ preprocess: 3, inference: 20, postprocess: 4 }, 30);
+      expect(report.total).toBe(27);
+    });
+
+    it('calculates correct budget for 30fps', () => {
+      const report = analyzeBudget({ preprocess: 3, inference: 20, postprocess: 4 }, 30);
+      expect(report.budget).toBeCloseTo(33.33, 1);
+    });
+
+    it('reports within budget when total is under', () => {
+      const report = analyzeBudget({ preprocess: 3, inference: 20, postprocess: 4 }, 30);
+      expect(report.withinBudget).toBe(true);
+    });
+
+    it('reports over budget when total exceeds', () => {
+      const report = analyzeBudget({ preprocess: 5, inference: 28, postprocess: 4 }, 30);
+      expect(report.withinBudget).toBe(false);
+      expect(report.overageMs).toBeCloseTo(3.67, 1);
+    });
+
+    it('identifies inference as bottleneck', () => {
+      const report = analyzeBudget({ preprocess: 3, inference: 28, postprocess: 4 }, 30);
+      expect(report.bottleneck).toBe('inference');
+    });
+
+    it('identifies preprocess as bottleneck when it is slowest', () => {
+      const report = analyzeBudget({ preprocess: 30, inference: 5, postprocess: 2 }, 30);
+      expect(report.bottleneck).toBe('preprocess');
+    });
+  });
+estimatedMinutes: 7
+difficulty: intermediate

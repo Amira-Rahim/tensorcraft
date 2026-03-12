@@ -1,0 +1,93 @@
+slug: ci-cd-gate
+lessonSlug: ci-cd-pipeline
+title: "Build a CI/CD Validation Gate"
+instructions: "Write a validation gate function that checks model accuracy against a minimum threshold. Given an array of predictions (with predicted and actual labels), compute accuracy and return a result indicating whether the gate passed."
+starterCode: |
+  interface Prediction {
+    predicted: string;
+    actual: string;
+  }
+
+  interface GateResult {
+    accuracy: number;
+    passed: boolean;
+    total: number;
+    correct: number;
+  }
+
+  function validateModelAccuracy(
+    predictions: Prediction[],
+    minAccuracy: number
+  ): GateResult {
+    // 1. Count correct predictions (predicted === actual)
+    // 2. Calculate accuracy = correct / total
+    // 3. Return result with passed = accuracy >= minAccuracy
+    return null; // your code here
+  }
+solutionCode: |
+  interface Prediction {
+    predicted: string;
+    actual: string;
+  }
+
+  interface GateResult {
+    accuracy: number;
+    passed: boolean;
+    total: number;
+    correct: number;
+  }
+
+  function validateModelAccuracy(
+    predictions: Prediction[],
+    minAccuracy: number
+  ): GateResult {
+    const correct = predictions.filter(p => p.predicted === p.actual).length;
+    const total = predictions.length;
+    const accuracy = correct / total;
+
+    return {
+      accuracy,
+      passed: accuracy >= minAccuracy,
+      total,
+      correct,
+    };
+  }
+testCode: |
+  describe('validateModelAccuracy', () => {
+    const predictions = [
+      { predicted: 'pulsar', actual: 'pulsar' },
+      { predicted: 'noise', actual: 'noise' },
+      { predicted: 'quasar', actual: 'pulsar' },
+      { predicted: 'noise', actual: 'noise' },
+      { predicted: 'anomaly', actual: 'anomaly' },
+    ];
+
+    it('calculates correct accuracy', () => {
+      const result = validateModelAccuracy(predictions, 0.5);
+      expect(result.accuracy).toBe(0.8);
+      expect(result.correct).toBe(4);
+      expect(result.total).toBe(5);
+    });
+
+    it('passes when accuracy meets threshold', () => {
+      const result = validateModelAccuracy(predictions, 0.8);
+      expect(result.passed).toBe(true);
+    });
+
+    it('fails when accuracy below threshold', () => {
+      const result = validateModelAccuracy(predictions, 0.9);
+      expect(result.passed).toBe(false);
+    });
+
+    it('handles perfect predictions', () => {
+      const perfect = [
+        { predicted: 'a', actual: 'a' },
+        { predicted: 'b', actual: 'b' },
+      ];
+      const result = validateModelAccuracy(perfect, 1.0);
+      expect(result.accuracy).toBe(1.0);
+      expect(result.passed).toBe(true);
+    });
+  });
+estimatedMinutes: 8
+difficulty: beginner

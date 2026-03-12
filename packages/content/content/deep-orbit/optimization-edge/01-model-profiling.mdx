@@ -1,0 +1,119 @@
+---
+slug: model-profiling
+title: "Model Profiling"
+moduleId: optimization-edge
+themeId: deep-orbit
+order: 1
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Torres demands numbers. 'How much memory? How fast? What's the bottleneck?' Park profiles the DEEP SCAN model like profiling a slow React app."
+  speaker: "Chief Torres"
+concept:
+  explanation: "Model profiling measures inference speed and memory usage — the same workflow as using Chrome DevTools Performance tab to find bottlenecks."
+  bridge:
+    feTitle: "DevTools Performance"
+    feCode: "performance.mark('start'); doWork(); performance.measure('task', 'start')"
+    mlTitle: "Model Profiling"
+    mlCode: "const t0 = performance.now(); model.predict(x); const ms = performance.now() - t0;"
+    tier: identity
+consequence:
+  narrative: "The profile reveals: 340 MB model size, 45ms inference, 80% of time in the first Dense layer. Torres knows exactly where to optimize."
+  nextLessonTeaser: "Next: quantization — shrinking the model by reducing numerical precision"
+hints:
+  - level: nudge
+    content: "Profile before optimizing — measure, don't guess"
+  - level: guidance
+    content: "Use tf.memory() for memory, performance.now() for timing, model.summary() for architecture"
+  - level: solution
+    content: "const mem = tf.memory(); const t0 = performance.now(); model.predict(x); console.log(performance.now() - t0);"
+keywords:
+  - profiling
+  - performance
+  - memory
+  - bottleneck
+  - devtools
+---
+
+<Dialogue speaker="Chief Torres">
+Your model works. Now make it fast. The bridge dashboard has 512 MB of RAM. Your model alone is 340 MB. Do the math.
+</Dialogue>
+
+<Dialogue speaker="Ensign Park">
+I'll profile it first — same as I'd profile a slow React app. Find the bottleneck, then fix it.
+</Dialogue>
+
+You never optimize without profiling first. In frontend development, you open DevTools, record a performance trace, and find the bottleneck. Model optimization follows the same discipline: measure memory, time inference, identify the heaviest layers, then optimize surgically.
+
+<LearningObjectives objectives={["Profile model memory usage with tf.memory()", "Benchmark inference latency with high-resolution timing", "Identify bottleneck layers using per-layer profiling", "Establish baseline metrics before optimization"]} />
+
+## Measure Everything
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="profiling.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+interface ModelProfile {
+  memorySizeMB: number;
+  parameterCount: number;
+  inferenceMeanMs: number;
+  inferenceP95Ms: number;
+  layerBreakdown: { name: string; params: number; outputShape: number[] }[];
+}
+
+async function profileModel(model: tf.LayersModel, inputShape: number[]): Promise<ModelProfile> {
+  // Memory
+  const memBefore = tf.memory();
+
+  // Parameter count
+  const parameterCount = model.countParams();
+  const memorySizeMB = (parameterCount * 4) / (1024 * 1024);  // float32 = 4 bytes
+
+  // Layer breakdown
+  const layerBreakdown = model.layers.map(layer => ({
+    name: layer.name,
+    params: layer.countParams(),
+    outputShape: layer.outputShape as number[],
+  }));
+
+  // Inference timing (warm up + 100 iterations)
+  const warmupInput = tf.randomNormal([1, ...inputShape]);
+  (model.predict(warmupInput) as tf.Tensor).dispose();
+  warmupInput.dispose();
+
+  const times: number[] = [];
+  for (let i = 0; i < 100; i++) {
+    const input = tf.randomNormal([1, ...inputShape]);
+    const start = performance.now();
+    const output = model.predict(input) as tf.Tensor;
+    times.push(performance.now() - start);
+    output.dispose();
+    input.dispose();
+  }
+
+  times.sort((a, b) => a - b);
+
+  return {
+    memorySizeMB,
+    parameterCount,
+    inferenceMeanMs: times.reduce((a, b) => a + b) / times.length,
+    inferenceP95Ms: times[Math.floor(times.length * 0.95)],
+    layerBreakdown,
+  };
+}
+
+const profile = await profileModel(model, [80, 11]);
+console.log('Model size:', profile.memorySizeMB.toFixed(1), 'MB');
+console.log('Parameters:', profile.parameterCount.toLocaleString());
+console.log('Inference mean:', profile.inferenceMeanMs.toFixed(1), 'ms');
+console.log('Inference P95:', profile.inferenceP95Ms.toFixed(1), 'ms');`}
+</CodeBlock>
+
+## Challenge
+
+Profile a model and identify its heaviest layer.
+
+<Exercise slug="profile-model" />
+
+<KeyTakeaways takeaways={["Always profile before optimizing — measure, don't guess, just like frontend performance work", "Key metrics: model size (MB), parameter count, inference latency (mean + P95)", "Layer breakdown reveals where the parameters and compute concentrate", "The DEEP SCAN baseline: 340 MB, 45ms inference — both need to shrink for the 512 MB dashboard"]} />

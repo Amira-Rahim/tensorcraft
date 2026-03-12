@@ -1,0 +1,45 @@
+slug: build-lstm
+lessonSlug: lstm-gates
+title: "Build an LSTM Model"
+instructions: "Create a sequential model with an LSTM layer (32 units, inputShape [50, 3]) followed by a Dense output layer (1 unit, sigmoid activation). Compile with adam optimizer and binaryCrossentropy loss."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function buildLSTM(): tf.Sequential {
+    const model = tf.sequential();
+    // Add an LSTM layer with 32 units and inputShape [50, 3]
+    // Add a Dense output layer with 1 unit and sigmoid activation
+    // Compile with adam and binaryCrossentropy
+    return null; // your code here
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function buildLSTM(): tf.Sequential {
+    const model = tf.sequential();
+    model.add(tf.layers.lstm({ units: 32, inputShape: [50, 3] }));
+    model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
+    model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });
+    return model;
+  }
+testCode: |
+  describe('buildLSTM', () => {
+    it('returns a model', () => {
+      const model = buildLSTM();
+      expect(model).toBeDefined();
+    });
+    it('has 2 layers', () => {
+      const model = buildLSTM();
+      expect(model.layers.length).toBe(2);
+    });
+    it('accepts long sequences', () => {
+      const model = buildLSTM();
+      const input = tf.randomNormal([1, 50, 3]);
+      const output = model.predict(input) as tf.Tensor;
+      expect(output.shape).toEqual([1, 1]);
+      input.dispose();
+      output.dispose();
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

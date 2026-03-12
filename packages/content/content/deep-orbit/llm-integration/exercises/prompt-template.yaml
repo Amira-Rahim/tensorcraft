@@ -1,0 +1,66 @@
+slug: prompt-template
+lessonSlug: prompt-engineering
+title: "Build a Prompt Template"
+instructions: "Write a function that takes signal data (amplitude, frequency, phase) and returns a structured prompt string that includes: role definition, signal data, known natural frequencies for reference, and a request for JSON output with classification, confidence, and reasoning fields."
+starterCode: |
+  interface SignalInput {
+    amplitude: number;
+    frequency: number;
+    phase: number;
+  }
+
+  function buildPrompt(signal: SignalInput): string {
+    // Build a structured prompt with:
+    // 1. Role: "You are DEEP SCAN, a signal classifier"
+    // 2. Context: known natural frequencies [5, 12, 23, 47] Hz
+    // 3. Signal data
+    // 4. Output format: JSON with classification, confidence, reasoning
+    return null; // your code here
+  }
+solutionCode: |
+  interface SignalInput {
+    amplitude: number;
+    frequency: number;
+    phase: number;
+  }
+
+  function buildPrompt(signal: SignalInput): string {
+    const lines = [
+      'You are DEEP SCAN, a signal classifier for deep space signals.',
+      '',
+      'Known natural frequencies: 5, 12, 23, 47 Hz.',
+      'Normal amplitude range: 0.1 to 1.0.',
+      '',
+      'Signal data:',
+      '- Amplitude: ' + signal.amplitude,
+      '- Frequency: ' + signal.frequency + ' Hz',
+      '- Phase: ' + signal.phase + ' rad',
+      '',
+      'Classify this signal. Respond in JSON with fields: classification (normal or anomalous), confidence (0.0-1.0), reasoning (explanation).',
+    ];
+    return lines.join('\n');
+  }
+testCode: |
+  describe('buildPrompt', () => {
+    const signal = { amplitude: 1.82, frequency: 73.4, phase: 0.23 };
+    it('includes the signal data', () => {
+      const prompt = buildPrompt(signal);
+      expect(prompt).toContain('1.82');
+      expect(prompt).toContain('73.4');
+    });
+    it('includes natural frequencies', () => {
+      const prompt = buildPrompt(signal);
+      expect(prompt).toContain('5');
+      expect(prompt).toContain('47');
+    });
+    it('requests JSON output', () => {
+      const prompt = buildPrompt(signal);
+      expect(prompt.toLowerCase()).toContain('json');
+    });
+    it('includes a role', () => {
+      const prompt = buildPrompt(signal);
+      expect(prompt).toContain('DEEP SCAN');
+    });
+  });
+estimatedMinutes: 10
+difficulty: beginner

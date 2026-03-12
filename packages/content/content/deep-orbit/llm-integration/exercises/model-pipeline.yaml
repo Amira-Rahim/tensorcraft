@@ -1,0 +1,58 @@
+slug: model-pipeline
+lessonSlug: multi-model-systems
+title: "Wire a Model Pipeline"
+instructions: "Write a pipeline function that chains three processing stages: classify (returns class string), detectAnomaly (returns boolean), and generateAlert (returns message string). Each stage receives the output of the previous. If the signal is not anomalous, skip the alert stage and return null for the message."
+starterCode: |
+  interface PipelineResult {
+    classification: string;
+    isAnomaly: boolean;
+    alert: string | null;
+  }
+
+  async function pipeline(
+    signal: number[],
+    classify: (s: number[]) => Promise<string>,
+    detectAnomaly: (s: number[], cls: string) => Promise<boolean>,
+    generateAlert: (s: number[], cls: string) => Promise<string>,
+  ): Promise<PipelineResult> {
+    // 1. Classify the signal
+    // 2. Check for anomaly
+    // 3. Generate alert only if anomalous
+    return null; // your code here
+  }
+solutionCode: |
+  interface PipelineResult {
+    classification: string;
+    isAnomaly: boolean;
+    alert: string | null;
+  }
+
+  async function pipeline(
+    signal: number[],
+    classify: (s: number[]) => Promise<string>,
+    detectAnomaly: (s: number[], cls: string) => Promise<boolean>,
+    generateAlert: (s: number[], cls: string) => Promise<string>,
+  ): Promise<PipelineResult> {
+    const classification = await classify(signal);
+    const isAnomaly = await detectAnomaly(signal, classification);
+    const alert = isAnomaly ? await generateAlert(signal, classification) : null;
+    return { classification, isAnomaly, alert };
+  }
+testCode: |
+  describe('pipeline', () => {
+    it('returns classification', async () => {
+      const r = await pipeline([1], async () => 'noise', async () => false, async () => '');
+      expect(r.classification).toBe('noise');
+    });
+    it('skips alert for normal signals', async () => {
+      const r = await pipeline([1], async () => 'noise', async () => false, async () => 'ALERT');
+      expect(r.alert).toBeNull();
+    });
+    it('generates alert for anomalies', async () => {
+      const r = await pipeline([1], async () => 'anomaly', async () => true, async () => 'ALERT!');
+      expect(r.isAnomaly).toBe(true);
+      expect(r.alert).toBe('ALERT!');
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

@@ -1,0 +1,33 @@
+slug: detect-anomaly
+lessonSlug: normal-vs-anomalous
+title: "Detect Anomalies with Z-Score"
+instructions: "Write a function that computes the z-score of a value given the mean and standard deviation of normal data, and returns whether it's anomalous (z-score > 3)."
+starterCode: |
+  function isAnomaly(value: number, mean: number, std: number): boolean {
+    // Compute z-score = |value - mean| / std
+    // Return true if z-score > 3
+    return null; // your code here
+  }
+solutionCode: |
+  function isAnomaly(value: number, mean: number, std: number): boolean {
+    const zScore = Math.abs(value - mean) / std;
+    return zScore > 3;
+  }
+testCode: |
+  describe('isAnomaly', () => {
+    it('flags values far from mean', () => {
+      expect(isAnomaly(100, 50, 10)).toBe(true);
+    });
+    it('does not flag normal values', () => {
+      expect(isAnomaly(52, 50, 10)).toBe(false);
+    });
+    it('handles exact boundary', () => {
+      expect(isAnomaly(80, 50, 10)).toBe(false);
+      expect(isAnomaly(81, 50, 10)).toBe(true);
+    });
+    it('handles negative deviations', () => {
+      expect(isAnomaly(10, 50, 10)).toBe(true);
+    });
+  });
+estimatedMinutes: 8
+difficulty: beginner

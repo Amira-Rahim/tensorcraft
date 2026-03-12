@@ -1,0 +1,180 @@
+---
+slug: bounding-boxes
+title: "Bounding Boxes"
+moduleId: object-detection
+themeId: neon-protocol
+order: 1
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Ryo pulls up a stolen Meridian schematic on the NeuralCore holotable. It shows how their drones represent detected targets — not as pixel masks, but as simple rectangles. 'Every detection system starts with a box,' he says. 'And you already know how boxes work.'"
+  speaker: "Ryo"
+concept:
+  explanation: "Object detection models locate objects by predicting bounding boxes — rectangular regions defined by coordinates. This is identical to how CSS position: absolute and getBoundingClientRect() define element locations on a page."
+  bridge:
+    feTitle: "getBoundingClientRect()"
+    feCode: "const rect = element.getBoundingClientRect(); // { x, y, width, height }"
+    mlTitle: "Bounding Box"
+    mlCode: "const bbox = [x, y, width, height]; // normalized 0-1 coordinates"
+    tier: identity
+consequence:
+  narrative: "Kira stares at the schematic. 'So a detection model is basically returning a DOMRect for every object it finds?' Ryo nods. 'Exactly. Meridian spent billions building what is, at its core, a very expensive getBoundingClientRect().'"
+  nextLessonTeaser: "Next: anchor boxes — pre-defined detection regions that speed up the search"
+hints:
+  - level: nudge
+    content: "A bounding box is just an object with x, y, width, and height — same as a DOMRect"
+  - level: guidance
+    content: "Normalize coordinates by dividing by image dimensions so values fall between 0 and 1"
+  - level: solution
+    content: "Return an object with x, y, width, height normalized to the 0-1 range"
+keywords:
+  - bounding-box
+  - object-detection
+  - coordinates
+  - getBoundingClientRect
+---
+
+<Dialogue speaker="Ryo">
+I spent six years at Meridian building their drone vision pipeline. Every frame, every detection — it all starts with a bounding box. Four numbers that say: "there is something here." You've used getBoundingClientRect() a thousand times. Same concept. Meridian just does it with neural networks instead of the DOM.
+</Dialogue>
+
+<Dialogue speaker="Kira">
+Wait — their multi-billion credit surveillance system outputs the same data structure as me checking if a tooltip overflows the viewport?
+</Dialogue>
+
+<Dialogue speaker="Ryo">
+The same four numbers. X, Y, width, height. The difference is how you get them.
+</Dialogue>
+
+In frontend development, you locate elements with `getBoundingClientRect()`. In object detection, a neural network predicts the same kind of rectangle — a **bounding box** — for every object it finds in an image. The representation is identical. The only difference is that ML uses normalized coordinates (0 to 1) instead of pixel values.
+
+<LearningObjectives objectives={["Understand bounding boxes as the fundamental representation of object locations", "Convert between pixel coordinates and normalized coordinates", "Calculate bounding box area and center points", "Recognize the direct parallel between DOMRect and ML bounding boxes"]} />
+
+## Bounding Boxes: DOMRects for Images
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+In the DOM, every element has a position described by a rectangle. Object detection models do the exact same thing — but for objects in images.
+
+<CodeBlock language="typescript" title="bounding-box-basics.ts">
+{`// Frontend: you already know this
+// element.getBoundingClientRect() returns:
+// { x: 120, y: 45, width: 200, height: 150, top, right, bottom, left }
+
+// ML: a bounding box is the same idea
+// [x, y, width, height] — but normalized to 0-1
+
+interface BoundingBox {
+  x: number;      // left edge (0-1)
+  y: number;      // top edge (0-1)
+  width: number;  // box width (0-1)
+  height: number; // box height (0-1)
+  label: string;  // what was detected
+  confidence: number; // how sure the model is (0-1)
+}
+
+// A drone detected at the center of a 640x480 image:
+// Pixel coordinates: x=220, y=140, w=200, h=200
+// Normalized: x=220/640, y=140/480, w=200/640, h=200/480
+
+const detection: BoundingBox = {
+  x: 0.344,
+  y: 0.292,
+  width: 0.3125,
+  height: 0.417,
+  label: 'meridian-drone',
+  confidence: 0.94,
+};`}
+</CodeBlock>
+
+## Why Normalize?
+
+Normalization makes bounding boxes resolution-independent — just like using percentages instead of pixels in CSS.
+
+<CodeBlock language="typescript" title="coordinate-conversion.ts">
+{`// Convert pixel coordinates to normalized (0-1) coordinates
+function toNormalized(
+  pixelBox: { x: number; y: number; width: number; height: number },
+  imageWidth: number,
+  imageHeight: number
+): { x: number; y: number; width: number; height: number } {
+  return {
+    x: pixelBox.x / imageWidth,
+    y: pixelBox.y / imageHeight,
+    width: pixelBox.width / imageWidth,
+    height: pixelBox.height / imageHeight,
+  };
+}
+
+// Convert normalized coordinates back to pixels
+function toPixels(
+  normalizedBox: { x: number; y: number; width: number; height: number },
+  imageWidth: number,
+  imageHeight: number
+): { x: number; y: number; width: number; height: number } {
+  return {
+    x: normalizedBox.x * imageWidth,
+    y: normalizedBox.y * imageHeight,
+    width: normalizedBox.width * imageWidth,
+    height: normalizedBox.height * imageHeight,
+  };
+}
+
+// This is why Meridian's system works on any camera resolution
+// The model outputs normalized boxes, then scales to display size
+// Exactly like CSS: width: 50% works at any viewport width
+
+const drone = { x: 220, y: 140, width: 200, height: 200 };
+const normalized = toNormalized(drone, 640, 480);
+console.log(normalized);
+// { x: 0.344, y: 0.292, width: 0.3125, height: 0.417 }
+
+// Render on a 1920x1080 display:
+const displayBox = toPixels(normalized, 1920, 1080);
+console.log(displayBox);
+// { x: 660, y: 315, width: 600, height: 450 }`}
+</CodeBlock>
+
+## Box Formats
+
+Detection models use different box formats. You need to convert between them — just like converting between different coordinate systems in CSS.
+
+<CodeBlock language="typescript" title="box-formats.ts">
+{`// Format 1: [x, y, width, height] — "xywh" (top-left corner + size)
+// Used by: COCO dataset, many web APIs
+// Same as getBoundingClientRect()!
+
+// Format 2: [x_center, y_center, width, height] — "cxcywh"
+// Used by: YOLO models
+// The center point + dimensions
+
+// Format 3: [x_min, y_min, x_max, y_max] — "xyxy" (two corners)
+// Used by: Pascal VOC, Faster R-CNN
+
+function xywhToCxcywh(box: number[]): number[] {
+  const [x, y, w, h] = box;
+  return [x + w / 2, y + h / 2, w, h];
+}
+
+function cxcywhToXywh(box: number[]): number[] {
+  const [cx, cy, w, h] = box;
+  return [cx - w / 2, cy - h / 2, w, h];
+}
+
+function xywhToXyxy(box: number[]): number[] {
+  const [x, y, w, h] = box;
+  return [x, y, x + w, y + h];
+}
+
+// Converting formats is like converting between
+// { left, top, width, height } and { left, top, right, bottom }
+// in CSS positioning`}
+</CodeBlock>
+
+## Challenge
+
+Build functions to create and convert bounding boxes.
+
+<Exercise slug="bounding-boxes" />
+
+<KeyTakeaways takeaways={["Bounding boxes are the ML equivalent of DOMRect — four numbers that locate an object", "Normalized coordinates (0-1) make boxes resolution-independent, like CSS percentages", "Detection models output boxes in different formats (xywh, cxcywh, xyxy) that you convert between", "getBoundingClientRect() and model.predict() return fundamentally the same data structure"]} />

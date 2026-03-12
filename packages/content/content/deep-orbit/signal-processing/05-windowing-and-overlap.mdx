@@ -1,0 +1,175 @@
+---
+slug: windowing-and-overlap
+title: "Windowing & Overlap"
+moduleId: signal-processing
+themeId: deep-orbit
+order: 5
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "Park's FFT results show spurious frequencies that shouldn't exist. Sato diagnoses the problem: spectral leakage from abrupt signal edges. The fix is a windowing function."
+  speaker: "Dr. Sato"
+concept:
+  explanation: "Windowing functions smooth signal edges before FFT to prevent spectral leakage — like virtual scrolling renders only the visible portion of a list with smooth transitions at the boundaries."
+  bridge:
+    feTitle: "Virtual Scrolling"
+    feCode: "// Render only items in viewport, fade edges smoothly"
+    mlTitle: "Windowing"
+    mlCode: "const windowed = signal.map((s, i) => s * hannWindow[i])"
+    tier: structural
+consequence:
+  narrative: "With Hann windowing, the spurious frequencies vanish. The 73.4 Hz anomaly stands clean and sharp. Sato whispers: 'That is not noise. That is structure.'"
+  nextLessonTeaser: "The frequency analysis has revealed something too regular to be natural. Module 6 will investigate temporal patterns."
+hints:
+  - level: nudge
+    content: "Windowing tapers signal edges to zero, preventing false frequencies from abrupt cutoffs"
+  - level: guidance
+    content: "Multiply each sample by the window function value: windowed[i] = signal[i] * window[i]"
+  - level: solution
+    content: "const hann = signal.map((s, i) => s * 0.5 * (1 - Math.cos(2 * Math.PI * i / (n - 1))));"
+keywords:
+  - windowing
+  - hann
+  - spectral-leakage
+  - overlap
+  - virtual-scrolling
+---
+
+<Dialogue speaker="Ensign Park">
+Dr. Sato, the FFT is showing frequencies I know aren't real. There's energy smeared across the entire spectrum, not just at the expected peaks.
+</Dialogue>
+
+<Dialogue speaker="Dr. Sato">
+Spectral leakage. When you slice a signal at arbitrary points, the abrupt edges create artificial high-frequency content. The FFT does not know where your signal ends and where an artifact begins. We need to taper the edges to zero — a windowing function.
+</Dialogue>
+
+You've solved this exact problem in frontend development. When you implement virtual scrolling, you render only the items in the viewport — but you can't just hard-cut at the edges, or you get visual artifacts. You fade items at the boundaries. Windowing functions do the same thing for signals: they smoothly taper the edges to zero so the FFT doesn't see artificial discontinuities.
+
+<LearningObjectives objectives={["Understand spectral leakage: why abrupt signal edges create false frequencies in the FFT", "Apply windowing functions (Hann, Hamming) to taper signal edges before FFT", "Implement overlapping windows for continuous signal processing", "Choose the right window function based on the frequency resolution vs leakage tradeoff"]} />
+
+## The Spectral Leakage Problem
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="spectral-leakage.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Generate a pure 10 Hz sine wave
+const sampleRate = 128;
+const signal: number[] = [];
+for (let i = 0; i < 128; i++) {
+  signal.push(Math.sin(2 * Math.PI * 10 * i / sampleRate));
+}
+
+// Problem: if the window doesn't capture exact whole periods,
+// the signal appears to "jump" at the edges
+// signal[0] = 0.0, signal[127] = -0.49 → discontinuity!
+
+// This discontinuity creates false high-frequency energy
+// The FFT sees a sharp edge and thinks "high frequencies must be present"
+const rawFFT = tf.tidy(() => {
+  const fft = tf.spectral.rfft(tf.tensor1d(signal));
+  return tf.abs(fft).arraySync() as number[];
+});
+
+// Expected: a single sharp peak at bin 10 (10 Hz)
+// Actual: peak at bin 10, BUT also energy spread across neighboring bins
+console.log('Bin 10 (target):', rawFFT[10].toFixed(1));  // ~64.0
+console.log('Bin 9 (leakage):', rawFFT[9].toFixed(1));   // ~8.2 — should be 0!
+console.log('Bin 11 (leakage):', rawFFT[11].toFixed(1));  // ~8.2 — should be 0!`}
+</CodeBlock>
+
+## The Fix: Window Functions
+
+<CodeBlock language="typescript" title="window-functions.ts">
+{`// A window function smoothly tapers the signal to zero at the edges
+// Like CSS opacity fading at the edges of a virtual scroll viewport
+
+// Hann window — the most common choice (good all-around)
+function hannWindow(n: number): number[] {
+  return Array.from({ length: n }, (_, i) =>
+    0.5 * (1 - Math.cos(2 * Math.PI * i / (n - 1)))
+  );
+}
+
+// Hamming window — slightly less leakage, slightly wider main lobe
+function hammingWindow(n: number): number[] {
+  return Array.from({ length: n }, (_, i) =>
+    0.54 - 0.46 * Math.cos(2 * Math.PI * i / (n - 1))
+  );
+}
+
+// Apply window: multiply element-wise
+function applyWindow(signal: number[], window: number[]): number[] {
+  return signal.map((s, i) => s * window[i]);
+}
+
+// Compare: raw FFT vs windowed FFT
+const hann = hannWindow(128);
+const windowedSignal = applyWindow(signal, hann);
+
+const windowedFFT = tf.tidy(() => {
+  const fft = tf.spectral.rfft(tf.tensor1d(windowedSignal));
+  return tf.abs(fft).arraySync() as number[];
+});
+
+console.log('--- Without windowing ---');
+console.log('Bin 9 (leakage):', rawFFT[9].toFixed(1));   // ~8.2
+console.log('Bin 10 (target):', rawFFT[10].toFixed(1));   // ~64.0
+console.log('Bin 11 (leakage):', rawFFT[11].toFixed(1));  // ~8.2
+
+console.log('--- With Hann window ---');
+console.log('Bin 9 (leakage):', windowedFFT[9].toFixed(1));   // ~0.3
+console.log('Bin 10 (target):', windowedFFT[10].toFixed(1));   // ~32.0
+console.log('Bin 11 (leakage):', windowedFFT[11].toFixed(1));  // ~0.3
+// Leakage nearly eliminated! Peak is smaller (window reduces energy) but cleaner.`}
+</CodeBlock>
+
+## Overlapping Windows
+
+Windowing tapers the signal to zero at the edges — which means you lose information there. The solution: overlap your windows so every sample gets full weight in at least one window.
+
+<CodeBlock language="typescript" title="overlap.ts">
+{`// Without overlap: gaps in information at window boundaries
+// With 50% overlap: every sample is fully weighted in at least one window
+// Like virtual scrolling with overscan — rendering extra items beyond the viewport
+
+function stftWithWindowing(
+  signal: number[],
+  windowSize: number,
+  hopSize: number,      // hopSize = windowSize/2 for 50% overlap
+  windowFn: (n: number) => number[],
+): number[][] {
+  const window = windowFn(windowSize);
+  const spectrogram: number[][] = [];
+  const numWindows = Math.floor((signal.length - windowSize) / hopSize) + 1;
+
+  for (let i = 0; i < numWindows; i++) {
+    const start = i * hopSize;
+    const chunk = signal.slice(start, start + windowSize);
+    const windowed = applyWindow(chunk, window);
+
+    const magnitudes = tf.tidy(() => {
+      const fft = tf.spectral.rfft(tf.tensor1d(windowed));
+      return tf.abs(fft).arraySync() as number[];
+    });
+
+    spectrogram.push(magnitudes);
+  }
+
+  return spectrogram;
+}
+
+// 50% overlap is the standard — good balance of coverage and computation
+const spec = stftWithWindowing(signal, 256, 128, hannWindow);
+console.log('Windows:', spec.length);
+console.log('Frequency bins:', spec[0].length);`}
+</CodeBlock>
+
+## Challenge
+
+Apply a Hann window to a signal before computing the FFT.
+
+<Exercise slug="apply-window" />
+
+<KeyTakeaways takeaways={["Spectral leakage creates false frequencies when signal edges are discontinuous — like visual artifacts from hard-clipping in virtual scroll", "Windowing functions (Hann, Hamming) taper signal edges to zero, eliminating leakage artifacts", "50% overlap between windows ensures no information is lost at tapered edges — like overscan in virtualized lists", "The 73.4 Hz anomaly, now clean after windowing, is confirmed as real structure — not an artifact"]} />

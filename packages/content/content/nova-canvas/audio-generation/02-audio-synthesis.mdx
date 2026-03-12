@@ -1,0 +1,136 @@
+---
+slug: audio-synthesis
+title: "Audio Synthesis"
+moduleId: audio-generation
+themeId: nova-canvas
+order: 2
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Kai connects a neural network to the gallery speakers. 'We are not playing recordings. We are growing sounds from latent vectors — the same way Yara grows images.'"
+  speaker: "Kai"
+concept:
+  explanation: "Neural audio synthesis generates waveforms by decoding latent vectors through a network, just like image generation decodes latent space into pixels."
+  bridge:
+    feTitle: "OscillatorNode"
+    feCode: "const osc = ctx.createOscillator(); osc.frequency.value = 440; osc.start();"
+    mlTitle: "Neural Oscillator"
+    mlCode: "const latent = tf.randomNormal([1, 64]); const waveform = decoder.predict(latent);"
+    tier: structural
+consequence:
+  narrative: "The first neural tone fills the gallery — not a sine wave, but something richer, textured, alive. Yara closes her eyes. 'That is not a sound. That is a feeling.'"
+  nextLessonTeaser: "Next: composing melodies and harmonies"
+hints:
+  - level: nudge
+    content: "An OscillatorNode generates simple waveforms. A neural network generates complex ones from the same starting point — a frequency representation"
+  - level: guidance
+    content: "Build a small decoder that takes a latent vector and outputs a Float32Array of audio samples"
+  - level: solution
+    content: "Use tf.sequential with dense layers to map a latent vector to a waveform of target length"
+keywords:
+  - synthesis
+  - neural-audio
+  - oscillator
+  - decoder
+---
+
+<Dialogue speaker="Kai">
+An OscillatorNode gives you sine, square, sawtooth, triangle. Four shapes. A neural synthesizer gives you infinite shapes — every timbre that could exist, generated from a point in latent space.
+</Dialogue>
+
+<Dialogue speaker="Yara">
+Like how our image generator does not store images — it stores the space of all possible images. You are building the space of all possible sounds.
+</Dialogue>
+
+You have used `OscillatorNode` to generate test tones and UI sound effects. It maps a frequency value to a periodic waveform. Neural synthesis does the same thing at a higher level of abstraction: it maps a latent vector to a complex waveform that no single oscillator could produce.
+
+<LearningObjectives objectives={["Build a neural network that generates audio waveforms from latent vectors", "Connect TensorFlow.js output to the Web Audio API for playback", "Control timbre and character by navigating latent space", "Understand the relationship between OscillatorNode parameters and neural network inputs"]} />
+
+## From Oscillators to Neural Synthesis
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="neural-synth.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Build a simple audio decoder: latent vector → waveform
+const decoder = tf.sequential({
+  layers: [
+    tf.layers.dense({ inputShape: [64], units: 256, activation: 'relu' }),
+    tf.layers.dense({ units: 512, activation: 'relu' }),
+    tf.layers.dense({ units: 1024, activation: 'relu' }),
+    // Output layer: generate 4096 audio samples (~93ms at 44.1kHz)
+    // tanh constrains output to [-1, 1] — valid audio range
+    tf.layers.dense({ units: 4096, activation: 'tanh' }),
+  ],
+});
+
+// Generate a sound from a random point in latent space
+const latent = tf.randomNormal([1, 64]);
+const waveform = decoder.predict(latent) as tf.Tensor;
+const audioData = await waveform.data() as Float32Array;
+
+console.log('Generated samples:', audioData.length); // 4096`}
+</CodeBlock>
+
+## Playback Through Web Audio API
+
+<CodeBlock language="typescript" title="playback.ts">
+{`// Connect neural output to speakers — bridging ML and Web Audio
+async function playGenerated(samples: Float32Array, sampleRate = 44100) {
+  const ctx = new AudioContext();
+  const buffer = ctx.createBuffer(1, samples.length, sampleRate);
+
+  // Copy neural network output into AudioBuffer
+  buffer.getChannelData(0).set(samples);
+
+  const source = ctx.createBufferSource();
+  source.buffer = buffer;
+
+  // Add some processing — you already know this API
+  const gainNode = ctx.createGain();
+  gainNode.gain.value = 0.5;
+
+  source.connect(gainNode).connect(ctx.destination);
+  source.start();
+}
+
+// Generate and play
+const z = tf.randomNormal([1, 64]);
+const generated = decoder.predict(z) as tf.Tensor;
+const samples = await generated.data() as Float32Array;
+await playGenerated(samples);`}
+</CodeBlock>
+
+## Navigating the Latent Space of Sound
+
+<CodeBlock language="typescript" title="latent-interpolation.ts">
+{`// Interpolate between two sounds — smooth morphing
+function interpolateLatent(
+  z1: tf.Tensor, z2: tf.Tensor, alpha: number
+): tf.Tensor {
+  return z1.mul(1 - alpha).add(z2.mul(alpha));
+}
+
+// Generate a smooth transition between two timbres
+const z1 = tf.randomNormal([1, 64]); // "warm" sound
+const z2 = tf.randomNormal([1, 64]); // "bright" sound
+
+for (let alpha = 0; alpha <= 1; alpha += 0.1) {
+  const z = interpolateLatent(z1, z2, alpha);
+  const waveform = decoder.predict(z) as tf.Tensor;
+  const samples = await waveform.data() as Float32Array;
+  await playGenerated(samples);
+  // Each step morphs smoothly from one timbre to another
+}`}
+</CodeBlock>
+
+Latent interpolation in audio is identical to latent interpolation in images. Move through the space and the output transforms continuously. No jumps, no glitches — just smooth evolution from one sound to another.
+
+## Challenge
+
+Build a neural synthesizer that generates audio from latent vectors and plays it back.
+
+<Exercise slug="neural-synth" />
+
+<KeyTakeaways takeaways={["Neural audio synthesis maps latent vectors to waveforms — same architecture as image generation", "OscillatorNode produces 4 fixed waveform types; neural networks produce infinite timbres", "Generated Float32Array samples connect directly to AudioBuffer for playback", "Latent space interpolation creates smooth morphing between sounds, just like image morphing"]} />

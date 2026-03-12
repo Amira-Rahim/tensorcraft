@@ -1,0 +1,92 @@
+slug: design-cnn-layers
+lessonSlug: cnn-architecture
+title: "Design CNN Layer Stack"
+instructions: "Implement a function calculateCNNShapes that takes an input shape [height, width, channels] and an array of layer configs. Each layer config has a type ('conv' or 'pool') and a value (number of filters for conv, pool size for pool). Return an array of objects with the layer type and output shape after each layer. Conv layers use 'same' padding (spatial dims unchanged, channels become numFilters). Pool layers halve spatial dimensions (Math.floor(dim / poolSize)), channels unchanged."
+starterCode: |
+  interface LayerConfig {
+    type: 'conv' | 'pool';
+    value: number; // filters for conv, poolSize for pool
+  }
+
+  interface LayerOutput {
+    type: string;
+    outputShape: [number, number, number];
+  }
+
+  function calculateCNNShapes(
+    inputShape: [number, number, number],
+    layers: LayerConfig[]
+  ): LayerOutput[] {
+    // Track how the shape transforms through each layer.
+    // Conv with 'same' padding: [h, w, numFilters]
+    // Pool: [Math.floor(h/poolSize), Math.floor(w/poolSize), channels]
+    return null; // your code here
+  }
+solutionCode: |
+  interface LayerConfig {
+    type: 'conv' | 'pool';
+    value: number;
+  }
+
+  interface LayerOutput {
+    type: string;
+    outputShape: [number, number, number];
+  }
+
+  function calculateCNNShapes(
+    inputShape: [number, number, number],
+    layers: LayerConfig[]
+  ): LayerOutput[] {
+    const results: LayerOutput[] = [];
+    let [h, w, ch] = inputShape;
+
+    for (const layer of layers) {
+      if (layer.type === 'conv') {
+        ch = layer.value;
+        results.push({ type: 'conv', outputShape: [h, w, ch] });
+      } else {
+        h = Math.floor(h / layer.value);
+        w = Math.floor(w / layer.value);
+        results.push({ type: 'pool', outputShape: [h, w, ch] });
+      }
+    }
+
+    return results;
+  }
+testCode: |
+  describe('calculateCNNShapes', () => {
+    it('handles a single conv layer', () => {
+      const result = calculateCNNShapes([224, 224, 3], [{ type: 'conv', value: 8 }]);
+      expect(result).toEqual([{ type: 'conv', outputShape: [224, 224, 8] }]);
+    });
+
+    it('handles a single pool layer', () => {
+      const result = calculateCNNShapes([224, 224, 3], [{ type: 'pool', value: 2 }]);
+      expect(result).toEqual([{ type: 'pool', outputShape: [112, 112, 3] }]);
+    });
+
+    it('handles conv then pool', () => {
+      const result = calculateCNNShapes([224, 224, 3], [
+        { type: 'conv', value: 16 },
+        { type: 'pool', value: 2 }
+      ]);
+      expect(result.length).toBe(2);
+      expect(result[0].outputShape).toEqual([224, 224, 16]);
+      expect(result[1].outputShape).toEqual([112, 112, 16]);
+    });
+
+    it('handles three conv-pool blocks', () => {
+      const result = calculateCNNShapes([224, 224, 3], [
+        { type: 'conv', value: 8 },
+        { type: 'pool', value: 2 },
+        { type: 'conv', value: 16 },
+        { type: 'pool', value: 2 },
+        { type: 'conv', value: 32 },
+        { type: 'pool', value: 2 }
+      ]);
+      expect(result.length).toBe(6);
+      expect(result[5].outputShape).toEqual([28, 28, 32]);
+    });
+  });
+estimatedMinutes: 8
+difficulty: intermediate

@@ -1,0 +1,121 @@
+---
+slug: feature-vectors
+title: "Feature Vectors"
+moduleId: feature-extraction
+themeId: neon-protocol
+order: 1
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Ryo connects to a decommissioned Meridian server. Instead of stored images, the database contains rows of numbers — 512-dimensional vectors. 'Meridian does not store images,' he explains. 'They store features. A compact fingerprint that captures everything the model learned about a frame. Faster to search. Impossible to reverse.'"
+  speaker: "Ryo"
+concept:
+  explanation: "A feature vector is a compact numerical representation of an image. A neural network compresses a 224x224x3 image (150,528 values) into a vector of 512 or 2048 numbers that encode its visual content. Like a hash function, it maps complex input to a fixed-size output — but preserves semantic similarity."
+  bridge:
+    feTitle: "Hash functions"
+    feCode: "const hash = crypto.subtle.digest('SHA-256', data); // fixed-size output"
+    mlTitle: "Feature Vector"
+    mlCode: "const features = model.predict(image); // [1, 512] — fixed-size embedding"
+    tier: structural
+consequence:
+  narrative: "Kira stares at the feature database. Millions of rows. Each row a 512-number fingerprint of a moment in someone's life. 'They compressed entire lives into vectors,' she says quietly. Ryo nods. 'And we are going to use that same technique to track their drones.'"
+  nextLessonTeaser: "Next: embedding spaces — understanding the geometry where similar images cluster together"
+hints:
+  - level: nudge
+    content: "Feature extraction uses a neural network with the final classification layer removed"
+  - level: guidance
+    content: "Feed an image through the network and take the output of the second-to-last layer"
+  - level: solution
+    content: "Load a pre-trained model, remove the classification head, and call predict to get the feature vector"
+keywords:
+  - feature-vector
+  - embedding
+  - representation
+  - hash-function
+  - dimensionality
+---
+
+<Dialogue speaker="Ryo">
+When I worked at Meridian, we processed 14 million camera frames per hour. You cannot store 14 million images. But you can store 14 million vectors of 512 numbers each. A feature vector is an image compressed to its essence — what a neural network considers important, stripped of everything it does not.
+</Dialogue>
+
+<Dialogue speaker="Kira">
+So it is like hashing. A hash function takes arbitrary input and produces a fixed-size fingerprint. You cannot reconstruct the original, but you can compare fingerprints efficiently.
+</Dialogue>
+
+A hash function maps input of any size to a fixed-size output. A feature extractor does the same — but with a crucial difference. Hash functions are designed so similar inputs produce wildly different outputs. Feature extractors are designed so similar inputs produce **similar** outputs. That similarity is what makes them useful for search, comparison, and recognition.
+
+<LearningObjectives objectives={["Understand feature vectors as compact numerical representations of images", "Extract features by removing the classification head from a pre-trained model", "Compare the structure of hash functions with neural feature extraction", "Calculate the compression ratio from raw pixels to feature vectors"]} />
+
+## Images to Numbers
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="feature-extraction.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// A 224x224 RGB image = 150,528 values
+// A feature vector = 512 values
+// Compression ratio: 294:1
+
+// To extract features, use a pre-trained model without the classification head
+// MobileNet's second-to-last layer outputs a 1024-d feature vector
+
+async function extractFeatures(image: tf.Tensor3D): Promise<tf.Tensor1D> {
+  // Load MobileNet and get the feature layer
+  const mobilenet = await tf.loadLayersModel(
+    'https://tfhub.dev/google/tfjs-model/mobilenet_v2/feature_vector/1/default/1'
+  );
+
+  // Preprocess: resize and normalize
+  const preprocessed = tf.tidy(() => {
+    const resized = tf.image.resizeBilinear(image.expandDims(0), [224, 224]);
+    return resized.div(255.0); // normalize to [0, 1]
+  });
+
+  // Extract features
+  const features = mobilenet.predict(preprocessed) as tf.Tensor2D;
+  return features.squeeze() as tf.Tensor1D; // [1024]
+}
+
+// The result: a 1024-number fingerprint of the image
+// Similar images will have similar fingerprints
+// Unlike crypto hashes, similarity is preserved`}
+</CodeBlock>
+
+## Manual Feature Extraction
+
+<CodeBlock language="typescript" title="manual-features.ts">
+{`// You can also build a feature extractor by slicing a trained model
+// This is like removing the last layer of a classification network
+
+async function buildFeatureExtractor() {
+  // Load a pre-trained classification model
+  const fullModel = await tf.loadLayersModel('model/model.json');
+
+  // Find the layer before the final classification head
+  const featureLayer = fullModel.layers[fullModel.layers.length - 2];
+
+  // Create a new model that outputs at that layer
+  const featureExtractor = tf.model({
+    inputs: fullModel.input,
+    outputs: featureLayer.output,
+  });
+
+  return featureExtractor;
+}
+
+// Compression comparison:
+// Raw image:    224 * 224 * 3 = 150,528 float32 values = 602 KB
+// Feature vec:  512 float32 values = 2 KB
+// Ratio:        ~300x compression
+// And the features carry more meaning than raw pixels`}
+</CodeBlock>
+
+## Challenge
+
+Build a function that calculates compression ratios for feature extraction.
+
+<Exercise slug="extract-features" />
+
+<KeyTakeaways takeaways={["Feature vectors are compact numerical fingerprints of images — like hash digests, but similarity-preserving", "Extracting features means removing the classification head from a pre-trained model", "A 224x224 image (150K values) compresses to ~512-2048 values — a 300x reduction", "Meridian stores features instead of images: faster to search, smaller to store, impossible to reverse"]} />

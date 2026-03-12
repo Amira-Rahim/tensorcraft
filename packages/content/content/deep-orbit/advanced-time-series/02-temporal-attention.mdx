@@ -1,0 +1,117 @@
+---
+slug: temporal-attention
+title: "Temporal Attention"
+moduleId: advanced-time-series
+themeId: deep-orbit
+order: 2
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "Park applies attention specifically to the temporal dimension — the model learns to 'scroll to' the most relevant time steps in each signal window."
+  speaker: "Ensign Park"
+concept:
+  explanation: "Temporal attention focuses on the most relevant time steps in a sequence — like scrollIntoView() that programmatically navigates to the element that matters."
+  bridge:
+    feTitle: "scrollIntoView()"
+    feCode: "element.scrollIntoView({ behavior: 'smooth' }) // jump to what matters"
+    mlTitle: "Temporal Attention"
+    mlCode: "attentionWeights = softmax(scores) // focus on relevant time steps"
+    tier: intuition
+consequence:
+  narrative: "The attention weights reveal the model focuses on two specific time ranges: the initial amplitude spike and the frequency shift 73 seconds later. The pattern is confirmed."
+  nextLessonTeaser: "Next: forecasting — predicting when the anomaly will appear next"
+hints:
+  - level: nudge
+    content: "Temporal attention assigns importance weights to each time step in the sequence"
+  - level: guidance
+    content: "Compute attention scores over the time axis, apply softmax, then weighted sum"
+  - level: solution
+    content: "const scores = tf.matMul(hidden, tf.transpose(hidden)); const weights = tf.softmax(scores);"
+keywords:
+  - temporal-attention
+  - time-step-focus
+  - interpretability
+  - scrollIntoView
+---
+
+<Dialogue speaker="Ensign Park">
+The attention weights are like a heatmap over time. I can see exactly WHERE the model is looking in the signal. It's scrolling to the moments that matter — the spike at step 12 and the frequency shift at step 85.
+</Dialogue>
+
+You use `scrollIntoView()` to programmatically navigate a user's viewport to the content that matters. Temporal attention does the same thing for the model's "viewport" across a sequence — it identifies the time steps that carry the most information and focuses processing there.
+
+<LearningObjectives objectives={["Apply attention specifically to the temporal dimension of sequential data", "Visualize attention weights as a temporal heatmap showing model focus", "Use attention for interpretability — understanding why the model made its prediction", "Build a temporal attention layer for the DEEP SCAN signal analyzer"]} />
+
+## Temporal Attention Layer
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="temporal-attention.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Temporal attention: score each time step's importance
+function temporalAttention(
+  sequence: tf.Tensor3D,  // [batch, timeSteps, features]
+): { attended: tf.Tensor2D; weights: tf.Tensor2D } {
+  return tf.tidy(() => {
+    // Learn a scoring function for each time step
+    // Project each step to a scalar importance score
+    const scores = tf.layers.dense({ units: 1 }).apply(sequence) as tf.Tensor;
+    const squeezed = scores.squeeze([2]) as tf.Tensor2D;  // [batch, timeSteps]
+
+    // Softmax over time axis — which steps matter most?
+    const weights = tf.softmax(squeezed, 1);  // [batch, timeSteps]
+
+    // Weighted sum: combine time steps by importance
+    const expanded = weights.expandDims(2);  // [batch, timeSteps, 1]
+    const weighted = tf.mul(sequence, expanded);
+    const attended = tf.sum(weighted, 1) as tf.Tensor2D;  // [batch, features]
+
+    return { attended, weights };
+  });
+}
+
+// The weights tell the story:
+// weights = [0.01, 0.01, ..., 0.12, 0.01, ..., 0.15, ...]
+//                                ^                 ^
+//                            step 12           step 85
+// The model focuses on the initial spike and the frequency shift`}
+</CodeBlock>
+
+## Interpreting Attention Weights
+
+<CodeBlock language="typescript" title="interpret-attention.ts">
+{`// Attention weights are interpretable — unlike LSTM hidden state
+// You can show the crew EXACTLY why the model made its prediction
+
+interface AttentionInsight {
+  timeStep: number;
+  weight: number;
+  reading: number[];
+}
+
+function topAttentionSteps(
+  weights: number[],
+  readings: number[][],
+  topK: number = 5,
+): AttentionInsight[] {
+  return weights
+    .map((weight, i) => ({ timeStep: i, weight, reading: readings[i] }))
+    .sort((a, b) => b.weight - a.weight)
+    .slice(0, topK);
+}
+
+// For the anomalous signal:
+// Step 12: weight=0.15, reading=[1.82, 73.4, 0.23]  ← amplitude spike
+// Step 85: weight=0.12, reading=[0.31, 73.4, 1.57]  ← frequency persists
+// Step 73: weight=0.09, reading=[0.95, 73.4, 0.89]  ← mid-pattern
+// The model found the 73.4 Hz component across multiple time steps`}
+</CodeBlock>
+
+## Challenge
+
+Build a temporal attention mechanism and identify the focused time steps.
+
+<Exercise slug="temporal-attention" />
+
+<KeyTakeaways takeaways={["Temporal attention assigns learned importance weights to each time step — scrolling to what matters", "Attention weights serve as built-in interpretability — you can see WHY the model made its prediction", "The DEEP SCAN attention reveals focus on the amplitude spike and the 73.4 Hz frequency shift", "Unlike LSTM hidden state, attention weights are directly visualizable as a temporal heatmap"]} />

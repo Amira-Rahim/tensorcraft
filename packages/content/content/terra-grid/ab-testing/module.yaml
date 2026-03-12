@@ -1,0 +1,14 @@
+slug: ab-testing
+title: "A/B Testing Models"
+themeId: terra-grid
+order: 9
+description: |
+  Hassan's rule: no model goes to 100% of devices without proof it's better.
+  After a 2024 drift incident cost $4.2 million, Terra Grid adopted rigorous
+  A/B testing for every model update. Traffic splitting, statistical significance,
+  canary deployments, and multi-armed bandits — the same strategies you use
+  for frontend feature flags, applied to edge ML models.
+lessonCount: 5
+prerequisites:
+  - federated-learning
+track: specialization

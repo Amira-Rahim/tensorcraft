@@ -1,0 +1,161 @@
+---
+slug: multi-model-systems
+title: "Multi-Model Systems"
+moduleId: llm-integration
+themeId: deep-orbit
+order: 5
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "Park orchestrates the full DEEP SCAN system: the signal classifier feeds the anomaly detector, which feeds the LLM reporter. Multiple models, one pipeline."
+  speaker: "Ensign Park"
+concept:
+  explanation: "Orchestrating multiple ML models is like micro-service architecture — each model handles its domain, and an orchestrator coordinates the flow."
+  bridge:
+    feTitle: "Micro-Services"
+    feCode: "// API gateway routes to auth, products, payments services"
+    mlTitle: "Model Orchestration"
+    mlCode: "// Pipeline: classifier → anomaly detector → LLM reporter"
+    tier: structural
+consequence:
+  narrative: "The complete DEEP SCAN pipeline processes signals end-to-end: classify, detect anomalies, predict timing, and generate reports — all automatically."
+  nextLessonTeaser: "Module 10: making the whole system fast enough for production — optimization and edge deployment"
+hints:
+  - level: nudge
+    content: "Each model in the pipeline handles one task, passing its output to the next"
+  - level: guidance
+    content: "Define clear interfaces between models: classifier output → anomaly input → LLM context"
+  - level: solution
+    content: "const classification = await classifier.predict(signal); if (anomalyDetector.isAnomaly(classification)) { const report = await llm.analyze(classification); }"
+keywords:
+  - orchestration
+  - pipeline
+  - multi-model
+  - micro-services
+---
+
+<Dialogue speaker="Ensign Park">
+Each model does one thing well. The classifier knows signal types. The autoencoder knows what's normal. The LSTM knows temporal patterns. The LLM knows language. I just need to wire them together — like an API gateway routing to micro-services.
+</Dialogue>
+
+You've built micro-service architectures where each service handles its domain — auth, products, payments — and an API gateway coordinates the flow. Multi-model ML systems work the same way: each model is a specialist, and an orchestrator connects them into a coherent pipeline.
+
+<LearningObjectives objectives={["Design a multi-model pipeline with clear interfaces between stages", "Orchestrate signal classifier, anomaly detector, LSTM predictor, and LLM reporter", "Handle errors and fallbacks when individual models fail", "Build the complete DEEP SCAN end-to-end processing pipeline"]} />
+
+## The DEEP SCAN Pipeline
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="pipeline.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+interface PipelineResult {
+  classification: { class: string; confidence: number };
+  anomaly: { isAnomaly: boolean; score: number };
+  prediction: { nextValues: number[]; confidence: number };
+  report: string | null;
+}
+
+async function processSignal(
+  signal: number[],
+  window: number[][],
+  models: {
+    classifier: tf.LayersModel;
+    autoencoder: tf.LayersModel;
+    lstm: tf.LayersModel;
+    llm: LLMClient;
+  },
+  thresholds: { anomaly: number },
+): Promise<PipelineResult> {
+  // Stage 1: Classify the signal
+  const classification = tf.tidy(() => {
+    const input = tf.tensor2d([signal]);
+    const output = (models.classifier.predict(input) as tf.Tensor).dataSync()[0];
+    return { class: output > 0.5 ? 'anomaly' : 'noise', confidence: output };
+  });
+
+  // Stage 2: Check for anomalies (autoencoder)
+  const anomaly = tf.tidy(() => {
+    const input = tf.tensor2d([signal]);
+    const reconstructed = models.autoencoder.predict(input) as tf.Tensor;
+    const error = tf.losses.meanSquaredError(input, reconstructed).dataSync()[0];
+    return { isAnomaly: error > thresholds.anomaly, score: error };
+  });
+
+  // Stage 3: Predict next values (LSTM)
+  const prediction = tf.tidy(() => {
+    const input = tf.tensor3d([window]);
+    const pred = (models.lstm.predict(input) as tf.Tensor).dataSync();
+    return { nextValues: Array.from(pred), confidence: 0.85 };
+  });
+
+  // Stage 4: Generate report if anomaly detected (LLM)
+  let report: string | null = null;
+  if (anomaly.isAnomaly) {
+    report = await models.llm.complete(\`
+Signal anomaly detected:
+- Classification: \${classification.class} (confidence: \${classification.confidence.toFixed(3)})
+- Anomaly score: \${anomaly.score.toFixed(4)} (threshold: \${thresholds.anomaly})
+- Predicted next values: \${prediction.nextValues.map(v => v.toFixed(3)).join(', ')}
+
+Generate a brief alert summary in 2-3 sentences.
+    \`);
+  }
+
+  return { classification, anomaly, prediction, report };
+}`}
+</CodeBlock>
+
+## Error Handling and Fallbacks
+
+<CodeBlock language="typescript" title="resilience.ts">
+{`// Like micro-service circuit breakers — if one model fails, degrade gracefully
+
+async function resilientPipeline(
+  signal: number[],
+  window: number[][],
+  models: any,
+  thresholds: any,
+): Promise<PipelineResult> {
+  // Classification is required — fail if it fails
+  const classification = await classifyWithRetry(signal, models.classifier);
+
+  // Anomaly detection: fall back to statistical check
+  let anomaly;
+  try {
+    anomaly = await detectAnomaly(signal, models.autoencoder, thresholds);
+  } catch {
+    // Fallback: simple z-score check
+    const zScore = computeZScore(signal);
+    anomaly = { isAnomaly: zScore > 3, score: zScore };
+  }
+
+  // Prediction: optional — skip if LSTM fails
+  let prediction = { nextValues: [], confidence: 0 };
+  try {
+    prediction = await predictNext(window, models.lstm);
+  } catch {
+    console.warn('LSTM prediction failed — skipping');
+  }
+
+  // Report: optional — skip if LLM is unavailable
+  let report = null;
+  if (anomaly.isAnomaly) {
+    try {
+      report = await generateReport(classification, anomaly, models.llm);
+    } catch {
+      report = \`ALERT: Anomaly detected (score: \${anomaly.score.toFixed(4)}). LLM unavailable for detailed report.\`;
+    }
+  }
+
+  return { classification, anomaly, prediction, report };
+}`}
+</CodeBlock>
+
+## Challenge
+
+Wire together a multi-model pipeline with error handling.
+
+<Exercise slug="model-pipeline" />
+
+<KeyTakeaways takeaways={["Multi-model systems are micro-service architectures — each model handles its domain, an orchestrator coordinates", "Define clear interfaces between stages: classifier output becomes anomaly detector input", "Graceful degradation: if one model fails, fall back to simpler methods rather than failing entirely", "The complete DEEP SCAN pipeline: classify → detect anomalies → predict → report — end-to-end automation"]} />

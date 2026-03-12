@@ -1,0 +1,49 @@
+slug: generate-report
+lessonSlug: report-generation
+title: "Assemble a Report"
+instructions: "Write a function that takes an array of report sections (each with a heading and content) and assembles them into a single markdown document with section headings and horizontal rules between sections."
+starterCode: |
+  interface Section { heading: string; content: string; }
+
+  function assembleReport(title: string, sections: Section[]): string {
+    // Create a markdown document with:
+    // # title
+    // ## heading1
+    // content1
+    // ---
+    // ## heading2
+    // content2
+    return null; // your code here
+  }
+solutionCode: |
+  interface Section { heading: string; content: string; }
+
+  function assembleReport(title: string, sections: Section[]): string {
+    const parts = sections.map(s => `## ${s.heading}\n\n${s.content}`);
+    return `# ${title}\n\n${parts.join('\n\n---\n\n')}`;
+  }
+testCode: |
+  describe('assembleReport', () => {
+    const sections = [
+      { heading: 'Summary', content: 'Brief overview.' },
+      { heading: 'Analysis', content: 'Detailed analysis.' },
+    ];
+    it('includes title', () => {
+      expect(assembleReport('Report', sections)).toContain('# Report');
+    });
+    it('includes all sections', () => {
+      const report = assembleReport('R', sections);
+      expect(report).toContain('## Summary');
+      expect(report).toContain('## Analysis');
+    });
+    it('includes separators', () => {
+      expect(assembleReport('R', sections)).toContain('---');
+    });
+    it('includes content', () => {
+      const report = assembleReport('R', sections);
+      expect(report).toContain('Brief overview.');
+      expect(report).toContain('Detailed analysis.');
+    });
+  });
+estimatedMinutes: 8
+difficulty: beginner

@@ -1,0 +1,180 @@
+---
+slug: pooling-layers
+title: "Pooling Layers"
+moduleId: convolutional-neural-networks
+themeId: neon-protocol
+order: 2
+estimatedMinutes: 22
+difficulty: intermediate
+context:
+  narrative: "The convolution output is massive — 224x224 feature maps for each of 32 kernels. Ryo shakes his head: 'When I was at Meridian, we hit the same wall. You need to downsample. Think about how srcset works — you serve a smaller image but keep the important details.'"
+  speaker: "Ryo"
+concept:
+  explanation: "Pooling reduces the spatial dimensions of feature maps by summarizing local regions — just like srcset delivers smaller responsive images that preserve key visual information."
+  bridge:
+    feTitle: "srcset Responsive Images"
+    feCode: "<img srcset='photo-800w.jpg 800w, photo-400w.jpg 400w' sizes='(max-width: 600px) 400px, 800px' />"
+    mlTitle: "Max Pooling"
+    mlCode: "const pooled = tf.maxPool(featureMap, poolSize, strides, 'valid'); // halves spatial dims"
+    tier: structural
+consequence:
+  narrative: "The pooled feature maps are a quarter of the size but retain the sharpest activations. NEON calculates the memory savings: 'From 6.4 million values to 1.6 million. Your browser will thank you.'"
+  nextLessonTeaser: "Next: stacking conv and pool layers into a complete CNN architecture"
+hints:
+  - level: nudge
+    content: "Max pooling takes the maximum value from each non-overlapping region. Think of it as keeping only the strongest signal."
+  - level: guidance
+    content: "For a 2x2 pool, divide the input into 2x2 blocks. For max pooling, take the maximum from each block."
+  - level: solution
+    content: "Loop in steps of poolSize. For each block, find Math.max of all values in the block."
+keywords:
+  - pooling
+  - max-pool
+  - average-pool
+  - downsampling
+  - spatial-reduction
+---
+
+<Dialogue speaker="Ryo">
+At Meridian, our first surveillance model choked because the feature maps were too large. A 224x224 input with 64 filters means over 3 million values per layer. Pooling solves this. You take each 2x2 region and keep only the max value. Same idea as responsive images — you downsample, but the important features survive.
+</Dialogue>
+
+<Dialogue speaker="Kira">
+So it is like serving a 400px image instead of an 800px one via srcset? You lose resolution but the content is still recognizable.
+</Dialogue>
+
+Exactly. Pooling compresses feature maps by summarizing local regions. The two main types are max pooling (keep the strongest activation) and average pooling (keep the mean). Max pooling is far more common because strong activations usually signal important features.
+
+<LearningObjectives objectives={["Understand why spatial downsampling is necessary in CNNs", "Implement max pooling and average pooling from scratch", "Connect responsive image downsampling (srcset) to feature map pooling", "Calculate output dimensions after pooling operations"]} />
+
+## Why Downsample?
+
+After convolution, feature maps can be enormous. A 224x224 image with 64 filters produces 64 feature maps of 224x224 each — over 3.2 million values. Pooling reduces spatial dimensions while preserving the most important activations.
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="pooling-operations.ts">
+{`// Max pooling: keep the strongest activation in each region
+function maxPool2D(
+  input: number[][],
+  poolSize: number
+): number[][] {
+  const iH = input.length;
+  const iW = input[0].length;
+  const oH = Math.floor(iH / poolSize);
+  const oW = Math.floor(iW / poolSize);
+
+  const output: number[][] = Array.from({ length: oH }, () =>
+    new Array(oW).fill(0)
+  );
+
+  for (let r = 0; r < oH; r++) {
+    for (let c = 0; c < oW; c++) {
+      let maxVal = -Infinity;
+      for (let pr = 0; pr < poolSize; pr++) {
+        for (let pc = 0; pc < poolSize; pc++) {
+          const val = input[r * poolSize + pr][c * poolSize + pc];
+          if (val > maxVal) maxVal = val;
+        }
+      }
+      output[r][c] = maxVal;
+    }
+  }
+
+  return output;
+}
+
+// Average pooling: take the mean of each region
+function avgPool2D(
+  input: number[][],
+  poolSize: number
+): number[][] {
+  const iH = input.length;
+  const iW = input[0].length;
+  const oH = Math.floor(iH / poolSize);
+  const oW = Math.floor(iW / poolSize);
+
+  const output: number[][] = Array.from({ length: oH }, () =>
+    new Array(oW).fill(0)
+  );
+
+  for (let r = 0; r < oH; r++) {
+    for (let c = 0; c < oW; c++) {
+      let sum = 0;
+      for (let pr = 0; pr < poolSize; pr++) {
+        for (let pc = 0; pc < poolSize; pc++) {
+          sum += input[r * poolSize + pr][c * poolSize + pc];
+        }
+      }
+      output[r][c] = sum / (poolSize * poolSize);
+    }
+  }
+
+  return output;
+}
+
+// Example: 4x4 feature map with 2x2 max pooling
+const featureMap = [
+  [1, 3, 2, 1],
+  [4, 6, 5, 2],
+  [7, 2, 1, 8],
+  [3, 1, 4, 9],
+];
+
+console.log(maxPool2D(featureMap, 2));
+// [[6, 5],
+//  [7, 9]]
+// Each 2x2 block reduced to its maximum value
+
+console.log(avgPool2D(featureMap, 2));
+// [[3.5, 2.5],
+//  [3.25, 5.5]]
+// Each 2x2 block reduced to its average`}
+</CodeBlock>
+
+## Dimension Reduction
+
+<CodeBlock language="typescript" title="pooling-dimensions.ts">
+{`// Pooling output size:
+// outputSize = Math.floor(inputSize / poolSize)
+// (assuming stride === poolSize, no overlap)
+
+function pooledDimensions(
+  inputHeight: number,
+  inputWidth: number,
+  poolSize: number,
+  numFilters: number
+): { shape: [number, number, number]; reduction: number } {
+  const oH = Math.floor(inputHeight / poolSize);
+  const oW = Math.floor(inputWidth / poolSize);
+
+  const inputTotal = inputHeight * inputWidth * numFilters;
+  const outputTotal = oH * oW * numFilters;
+
+  return {
+    shape: [oH, oW, numFilters],
+    reduction: Math.round((1 - outputTotal / inputTotal) * 100),
+  };
+}
+
+// After conv: [224, 224, 32] feature maps
+const result = pooledDimensions(224, 224, 2, 32);
+console.log(result.shape);     // [112, 112, 32]
+console.log(result.reduction); // 75 — removed 75% of spatial data
+
+// After two pooling layers: [56, 56, 32]
+const result2 = pooledDimensions(112, 112, 2, 32);
+console.log(result2.shape);    // [56, 56, 32]
+
+// Surveillance image pipeline:
+// 224x224x32 -> pool -> 112x112x32 -> pool -> 56x56x32
+// From 1,605,632 values to 100,352 — 94% reduction!`}
+</CodeBlock>
+
+## Challenge
+
+Implement max pooling on a 2D feature map.
+
+<Exercise slug="implement-max-pool" />
+
+<KeyTakeaways takeaways={["Pooling reduces spatial dimensions while preserving important features — like srcset serving smaller responsive images", "Max pooling keeps the strongest activation in each region and is the most common pooling type", "A 2x2 max pool with stride 2 reduces each spatial dimension by half, cutting total values by 75%", "Pooling makes CNNs more efficient and adds translation invariance — a feature detected anywhere in a region still activates"]} />

@@ -1,0 +1,152 @@
+---
+slug: classifier-free-guidance
+title: "Classifier-Free Guidance"
+moduleId: diffusion-models
+themeId: nova-canvas
+order: 4
+estimatedMinutes: 25
+difficulty: advanced
+context:
+  narrative: "Yara types a prompt: 'a forest at dawn, watercolor style.' The image that appears is vaguely forest-shaped but ignores the watercolor instruction. 'It's not listening to me,' she says. Kai responds: 'We need to amplify the prompt's influence. Think of it like !important in CSS — forcing the style override.'"
+  speaker: "Kai"
+concept:
+  explanation: "Classifier-free guidance amplifies the influence of a text prompt on image generation by contrasting conditioned and unconditioned predictions — like using CSS custom property overrides to force a specific visual style."
+  bridge:
+    feTitle: "CSS custom property overrides"
+    feCode: "element.style.setProperty('--color', 'blue', 'important');"
+    mlTitle: "Classifier-free guidance"
+    mlCode: "guided = uncond + scale * (cond - uncond);"
+    tier: pattern
+consequence:
+  narrative: "Guidance scale 7.5. The forest snaps into focus — dawn light filtering through watercolor trees. Yara smiles for the first time in days. 'Now it listens.'"
+  nextLessonTeaser: "Next: high-resolution generation — scaling up without running out of memory"
+hints:
+  - level: nudge
+    content: "Think of it as the difference between a styled and unstyled component, amplified"
+  - level: guidance
+    content: "Run the model twice: once with the prompt, once without. The difference tells you what the prompt contributes."
+  - level: solution
+    content: "guided_noise = unconditioned_noise + guidance_scale * (conditioned_noise - unconditioned_noise)"
+keywords:
+  - classifier-free-guidance
+  - guidance-scale
+  - conditioning
+  - text-to-image
+  - prompt
+---
+
+<Dialogue speaker="Yara">
+I typed "a forest at dawn, watercolor style" and it gave me a forest. But not watercolor. The prompt is a suggestion, not an instruction.
+</Dialogue>
+
+<Dialogue speaker="Kai">
+That is because the model balances its own learned priors with your prompt. We need to shift that balance. Classifier-free guidance lets us amplify the prompt's influence — like adding `!important` to override a CSS default.
+</Dialogue>
+
+CSS custom properties let you override styles at any level of specificity. Classifier-free guidance does the same for image generation — it amplifies how much the text prompt overrides the model's default tendencies.
+
+<LearningObjectives objectives={["Understand why unconditioned generation ignores prompt details", "Implement classifier-free guidance using conditioned and unconditioned predictions", "Control the guidance scale to balance prompt adherence and image quality", "Connect guidance to CSS property overrides and specificity"]} />
+
+## The Guidance Formula
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="classifier-free-guidance.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Classifier-free guidance: amplify prompt influence
+// Run the model TWICE per step:
+//   1. With the text prompt (conditioned)
+//   2. Without any prompt (unconditioned)
+// Then amplify the difference
+
+function guidedDenoise(
+  model: tf.LayersModel,
+  noisyImage: tf.Tensor4D,
+  textEmbedding: tf.Tensor2D,
+  timestep: tf.Tensor1D,
+  guidanceScale: number
+): tf.Tensor4D {
+  // Predict noise WITH the text prompt
+  const conditioned = model.predict(
+    [noisyImage, textEmbedding, timestep]
+  ) as tf.Tensor4D;
+
+  // Predict noise WITHOUT any prompt (null/empty embedding)
+  const nullEmbedding = tf.zeros(textEmbedding.shape) as tf.Tensor2D;
+  const unconditioned = model.predict(
+    [noisyImage, nullEmbedding, timestep]
+  ) as tf.Tensor4D;
+
+  // The guidance formula:
+  // guided = unconditioned + scale * (conditioned - unconditioned)
+  //
+  // scale = 1.0: normal conditioned output
+  // scale = 7.5: strongly guided by prompt (typical default)
+  // scale = 20:  over-saturated, artifacts appear
+  const difference = tf.sub(conditioned, unconditioned);
+  const scaled = tf.mul(difference, tf.scalar(guidanceScale));
+  const guided = tf.add(unconditioned, scaled);
+
+  // Cleanup
+  conditioned.dispose();
+  unconditioned.dispose();
+  nullEmbedding.dispose();
+  difference.dispose();
+  scaled.dispose();
+
+  return guided as tf.Tensor4D;
+}
+
+// The guidance scale is your "specificity" dial
+// Low (1-3):   model's default style dominates, prompt is a suggestion
+// Medium (5-8): balanced — prompt is followed but image looks natural
+// High (10-20): prompt is forced — vivid but may have artifacts
+console.log('Guidance scale 1.0 = suggestion');
+console.log('Guidance scale 7.5 = instruction');
+console.log('Guidance scale 15+ = !important');`}
+</CodeBlock>
+
+## Guidance in the Generation Loop
+
+<CodeBlock language="typescript" title="guided-generation-loop.ts">
+{`async function generateWithGuidance(
+  model: tf.LayersModel,
+  prompt: tf.Tensor2D,
+  steps: number,
+  guidanceScale = 7.5
+): Promise<tf.Tensor4D> {
+  let image = tf.randomNormal([1, 64, 64, 3]) as tf.Tensor4D;
+  const schedule = cosineSchedule(steps);
+  const cumAlpha = cumulativeAlpha(schedule);
+
+  for (let t = steps - 1; t >= 0; t--) {
+    const timestep = tf.tensor1d([t / steps]);
+
+    // Guided noise prediction (two forward passes per step)
+    const predictedNoise = guidedDenoise(
+      model, image, prompt, timestep, guidanceScale
+    );
+
+    // Standard denoising step with the guided prediction
+    const alpha = cumAlpha[t];
+    const alphaPrev = t > 0 ? cumAlpha[t - 1] : 1;
+    const cleaned = denoiseStep(image, predictedNoise, alpha, alphaPrev);
+
+    image.dispose();
+    predictedNoise.dispose();
+    timestep.dispose();
+    image = cleaned;
+  }
+
+  return image;
+}`}
+</CodeBlock>
+
+## Challenge
+
+Implement the classifier-free guidance formula to steer image generation with text.
+
+<Exercise slug="guided-generation" />
+
+<KeyTakeaways takeaways={["Classifier-free guidance amplifies text prompt influence, like CSS !important overrides defaults", "The formula: guided = unconditioned + scale * (conditioned - unconditioned)", "Guidance scale controls the tradeoff: low = natural but unfaithful, high = faithful but may artifact", "Cost: two model forward passes per denoising step — one conditioned, one unconditioned"]} />

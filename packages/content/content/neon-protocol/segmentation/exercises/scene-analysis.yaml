@@ -1,0 +1,78 @@
+slug: scene-analysis
+lessonSlug: scene-understanding
+title: "Analyze Scene Adjacency"
+instructions: "Write a function that takes a 2D segmentation mask (class indices) and a list of class names, and returns a set of adjacency pairs — strings like 'building-road' (alphabetically sorted) — for any two different classes that are horizontally or vertically adjacent."
+starterCode: |
+  function findAdjacencies(
+    mask: number[][],
+    classNames: string[]
+  ): string[] {
+    // Check horizontal and vertical neighbors
+    // For each pair of different adjacent classes, create a string
+    // with class names sorted alphabetically, joined by '-'
+    // Return unique pairs as a sorted array
+    return []; // your code here
+  }
+solutionCode: |
+  function findAdjacencies(
+    mask: number[][],
+    classNames: string[]
+  ): string[] {
+    const pairs = new Set<string>();
+    const height = mask.length;
+    const width = mask[0].length;
+
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const current = mask[y][x];
+        // Check right neighbor
+        if (x < width - 1 && mask[y][x + 1] !== current) {
+          const pair = [classNames[current], classNames[mask[y][x + 1]]].sort().join('-');
+          pairs.add(pair);
+        }
+        // Check below neighbor
+        if (y < height - 1 && mask[y + 1][x] !== current) {
+          const pair = [classNames[current], classNames[mask[y + 1][x]]].sort().join('-');
+          pairs.add(pair);
+        }
+      }
+    }
+    return Array.from(pairs).sort();
+  }
+testCode: |
+  describe('findAdjacencies', () => {
+    const classes = ['bg', 'road', 'building', 'person'];
+
+    it('finds horizontal adjacency', () => {
+      const mask = [[0, 1]];
+      const result = findAdjacencies(mask, classes);
+      expect(result).toContain('bg-road');
+    });
+
+    it('finds vertical adjacency', () => {
+      const mask = [[0], [2]];
+      const result = findAdjacencies(mask, classes);
+      expect(result).toContain('bg-building');
+    });
+
+    it('returns sorted pairs', () => {
+      const mask = [[1, 2]];
+      const result = findAdjacencies(mask, classes);
+      expect(result).toContain('building-road');
+    });
+
+    it('returns unique pairs only', () => {
+      const mask = [[1, 2, 1, 2]];
+      const result = findAdjacencies(mask, classes);
+      const count = result.filter(p => p === 'building-road').length;
+      expect(count).toBe(1);
+    });
+
+    it('finds no adjacencies in uniform mask', () => {
+      const mask = [[0, 0], [0, 0]];
+      const result = findAdjacencies(mask, classes);
+      expect(result.length).toBe(0);
+    });
+  });
+estimatedMinutes: 8
+difficulty: intermediate

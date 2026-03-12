@@ -1,0 +1,188 @@
+---
+slug: clinical-queries
+title: "Clinical Queries — Doctors Asking Questions in Natural Language"
+moduleId: question-answering-rag
+themeId: signal-ward
+order: 5
+estimatedMinutes: 25
+difficulty: advanced
+context:
+  narrative: "Vasquez sits at the nurse's station, types a query: 'Which of my patients on immunosuppressants have upcoming dental procedures?' The system retrieves, comprehends, grounds, and answers in 340 milliseconds. Santos watches over her shoulder. 'Can I use it too?' Vasquez smiles. 'Khalil, we need to handle how nurses ask questions, not just how doctors do.'"
+  speaker: "Dr. Vasquez"
+concept:
+  explanation: "Clinical query understanding maps natural language questions to structured retrieval intents — like a search bar with natural language understanding that rewrites user queries into database operations."
+  bridge:
+    feTitle: "Search Bar with NLU"
+    feCode: "parseQuery('red shoes under $50') → { color: 'red', type: 'shoes', maxPrice: 50 }"
+    mlTitle: "Clinical Query Parser"
+    mlCode: "parseQuery('patients on warfarin with INR > 3') → { medication: 'warfarin', lab: 'INR', condition: '> 3' }"
+    tier: structural
+consequence:
+  narrative: "The clinical query system handles both 'List current anticoagulant patients with subtherapeutic INR' from Dr. Vasquez and 'Who needs their blood thinner levels checked?' from Santos. Same intent, different language. Khalil's NLU layer normalizes both into the same structured query."
+  nextLessonTeaser: "Next module: production NLP and privacy — taking Diagnostic One to the real world"
+hints:
+  - level: nudge
+    content: "Break query understanding into intent classification and entity extraction"
+  - level: guidance
+    content: "Classify the query intent (lookup, comparison, aggregation), then extract clinical entities (medications, labs, conditions)"
+  - level: solution
+    content: "Use a multi-task model: one head for intent classification, one for entity extraction (NER), then map the structured output to a retrieval query"
+keywords:
+  - clinical-queries
+  - query-understanding
+  - intent-classification
+  - natural-language-interface
+  - search-nlu
+---
+
+<Dialogue speaker="Dr. Vasquez">
+Which of my patients on immunosuppressants have upcoming dental procedures?
+</Dialogue>
+
+<Dialogue speaker="Santos">
+Can I ask it something? How about: "Who needs their blood checked this week?" Same question a doctor might ask, just in different words.
+</Dialogue>
+
+<Dialogue speaker="Khalil">
+It is the same problem as building a search bar for an e-commerce site. Users type "red shoes under fifty bucks" and the system needs to parse that into structured filters. Here, doctors and nurses type clinical questions and we parse them into structured queries against patient records.
+</Dialogue>
+
+Every e-commerce site with a decent search bar does query understanding: parsing "red shoes under $50" into `{ color: 'red', type: 'shoes', maxPrice: 50 }`. Clinical query understanding does the same thing with medical language, handling the variability between how doctors, nurses, and specialists phrase the same clinical question.
+
+<LearningObjectives objectives={["Build a clinical query parser that extracts intents and entities from natural language questions", "Handle query variability between different clinical roles (doctors, nurses, specialists)", "Map parsed queries to structured retrieval operations against patient records", "Implement query expansion to handle synonyms and abbreviations in medical terminology"]} />
+
+## From Natural Language to Structured Queries
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="clinical-query-parser.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Clinical query intents
+type QueryIntent = 'patient_lookup' | 'lab_check' | 'medication_review'
+  | 'allergy_check' | 'schedule_query' | 'comparison';
+
+// Structured clinical query
+interface ClinicalQuery {
+  intent: QueryIntent;
+  entities: {
+    medications?: string[];
+    conditions?: string[];
+    labTests?: string[];
+    timeRange?: { start: string; end: string };
+    threshold?: { field: string; operator: '>' | '<' | '='; value: number };
+  };
+  originalText: string;
+}
+
+// Intent classifier: which type of clinical question is this?
+function buildIntentClassifier(vocabSize: number, maxLen: number): tf.LayersModel {
+  const input = tf.input({ shape: [maxLen] });
+
+  const embedded = tf.layers.embedding({ inputDim: vocabSize, outputDim: 64 })
+    .apply(input) as tf.SymbolicTensor;
+
+  const encoded = tf.layers.bidirectional({
+    layer: tf.layers.lstm({ units: 32 }),
+  }).apply(embedded) as tf.SymbolicTensor;
+
+  const output = tf.layers.dense({
+    units: 6,  // 6 intent types
+    activation: 'softmax',
+  }).apply(encoded) as tf.SymbolicTensor;
+
+  return tf.model({ inputs: input, outputs: output });
+}
+
+// Query expansion: normalize clinical synonyms
+const medicalSynonyms: Record<string, string> = {
+  'blood thinner': 'anticoagulant',
+  'blood pressure medicine': 'antihypertensive',
+  'sugar levels': 'glucose',
+  'blood checked': 'complete blood count',
+  'heart medicine': 'cardiovascular medication',
+  'pain killer': 'analgesic',
+};
+
+function expandQuery(query: string): string {
+  let expanded = query.toLowerCase();
+  for (const [informal, formal] of Object.entries(medicalSynonyms)) {
+    expanded = expanded.replace(informal, \`\${informal} (\${formal})\`);
+  }
+  return expanded;
+}
+
+// Parse a natural language clinical query
+async function parseClinicalQuery(
+  queryText: string,
+  intentModel: tf.LayersModel,
+  nerModel: (text: string) => Promise<{ entity: string; label: string }[]>,
+  tokenize: (text: string) => number[]
+): Promise<ClinicalQuery> {
+  // 1. Expand query with medical synonyms
+  const expanded = expandQuery(queryText);
+
+  // 2. Classify intent
+  const tokens = tokenize(expanded);
+  const intentPred = intentModel.predict(
+    tf.tensor2d([tokens])
+  ) as tf.Tensor;
+  const intentIndex = (await intentPred.argMax(1).array() as number[])[0];
+  const intents: QueryIntent[] = [
+    'patient_lookup', 'lab_check', 'medication_review',
+    'allergy_check', 'schedule_query', 'comparison'
+  ];
+
+  // 3. Extract clinical entities
+  const entities = await nerModel(expanded);
+  const medications = entities.filter(e => e.label === 'MEDICATION').map(e => e.entity);
+  const conditions = entities.filter(e => e.label === 'CONDITION').map(e => e.entity);
+  const labTests = entities.filter(e => e.label === 'LAB_TEST').map(e => e.entity);
+
+  intentPred.dispose();
+
+  return {
+    intent: intents[intentIndex],
+    entities: { medications, conditions, labTests },
+    originalText: queryText,
+  };
+}`}
+</CodeBlock>
+
+## Handling Role-Based Query Variability
+
+<CodeBlock language="typescript" title="query-normalization.ts">
+{`// Same clinical intent, different phrasing by role
+const queryVariants = [
+  {
+    doctor: "List current anticoagulant patients with subtherapeutic INR",
+    nurse: "Who needs their blood thinner levels checked?",
+    expectedIntent: 'lab_check' as QueryIntent,
+    expectedMedication: 'anticoagulant',
+  },
+  {
+    doctor: "Patients on methotrexate requiring hepatic function monitoring",
+    nurse: "Who on methotrexate needs their liver checked?",
+    expectedIntent: 'lab_check' as QueryIntent,
+    expectedMedication: 'methotrexate',
+  },
+];
+
+// Both phrasings should produce the same structured query
+for (const variant of queryVariants) {
+  const doctorQuery = await parseClinicalQuery(variant.doctor, intentModel, nerModel, tokenize);
+  const nurseQuery = await parseClinicalQuery(variant.nurse, intentModel, nerModel, tokenize);
+
+  console.log('Doctor:', doctorQuery.intent, doctorQuery.entities.medications);
+  console.log('Nurse: ', nurseQuery.intent, nurseQuery.entities.medications);
+  console.log('Intent match:', doctorQuery.intent === nurseQuery.intent);
+}`}
+</CodeBlock>
+
+## Challenge
+
+Build a clinical query parser that extracts intent and entities from natural language questions.
+
+<Exercise slug="clinical-query" />
+
+<KeyTakeaways takeaways={["Clinical query understanding is search-bar NLU for hospitals — parsing natural language into structured retrieval operations", "Query expansion with medical synonyms bridges informal and formal clinical language", "Multi-task models handle intent classification and entity extraction in a single pass", "Role-aware normalization ensures doctors and nurses get the same results from differently phrased questions"]} />

@@ -1,0 +1,41 @@
+slug: tokenize-text
+lessonSlug: tokens-and-vocabulary
+title: "Tokenize Text"
+instructions: "Implement an encode function that takes a text string and a vocabulary Map<string, number>, tokenizes the text (lowercase, split on whitespace), and returns an array of token IDs. Use 1 as the ID for unknown words."
+starterCode: |
+  function tokenize(text: string): string[] {
+    return text.toLowerCase().replace(/[.,!?;:]/g, ' ').split(/\s+/).filter(Boolean);
+  }
+
+  function encode(text: string, vocab: Map<string, number>): number[] {
+    // 1. Tokenize the text
+    // 2. Map each token to its vocab index (use 1 for unknown)
+    return null; // your code here
+  }
+
+  const vocab = new Map([['<PAD>', 0], ['<UNK>', 1], ['patient', 2], ['reports', 3], ['chest', 4], ['pain', 5]]);
+  const ids = encode('Patient reports chest pain', vocab);
+solutionCode: |
+  function tokenize(text: string): string[] {
+    return text.toLowerCase().replace(/[.,!?;:]/g, ' ').split(/\s+/).filter(Boolean);
+  }
+
+  function encode(text: string, vocab: Map<string, number>): number[] {
+    return tokenize(text).map(t => vocab.get(t) ?? 1);
+  }
+
+  const vocab = new Map([['<PAD>', 0], ['<UNK>', 1], ['patient', 2], ['reports', 3], ['chest', 4], ['pain', 5]]);
+  const ids = encode('Patient reports chest pain', vocab);
+testCode: |
+  describe('Tokenize Text', () => {
+    it('returns an array', () => { expect(Array.isArray(ids)).toBe(true); });
+    it('has correct length', () => { expect(ids.length).toBe(4); });
+    it('maps known words correctly', () => { expect(ids).toEqual([2, 3, 4, 5]); });
+    it('handles unknown words', () => {
+      const result = encode('patient has unknown symptoms', vocab);
+      expect(result[0]).toBe(2);
+      expect(result[1]).toBe(1);
+    });
+  });
+estimatedMinutes: 7
+difficulty: beginner

@@ -1,0 +1,188 @@
+---
+slug: fourier-transform
+title: "Fourier Transform"
+moduleId: signal-processing
+themeId: deep-orbit
+order: 2
+estimatedMinutes: 30
+difficulty: intermediate
+context:
+  narrative: "Dr. Sato introduces the mathematical tool that converts between time and frequency: the Fourier Transform. 'Think of a chord — the FFT tells you which individual notes make it up.'"
+  speaker: "Dr. Sato"
+concept:
+  explanation: "The Fourier Transform decomposes a complex signal into simple sine waves — like how a CSS @keyframes animation is defined as discrete steps that combine into smooth motion."
+  bridge:
+    feTitle: "@keyframes Decomposition"
+    feCode: "@keyframes pulse { 0% { scale: 1 } 50% { scale: 1.2 } 100% { scale: 1 } }"
+    mlTitle: "FFT Decomposition"
+    mlCode: "const frequencies = tf.spectral.rfft(signal)"
+    tier: structural
+consequence:
+  narrative: "The FFT output confirms Sato's suspicion — a sharp peak at 73.4 Hz that has no natural explanation. 'That is not stellar background,' she says quietly."
+  nextLessonTeaser: "Next: visualizing frequency content over time with spectrograms"
+hints:
+  - level: nudge
+    content: "FFT converts a time-domain array into frequency magnitudes — like decomposing an animation into its keyframe steps"
+  - level: guidance
+    content: "Use tf.spectral.rfft() for real-valued signals, then tf.abs() to get magnitudes"
+  - level: solution
+    content: "const fft = tf.spectral.rfft(signalTensor); const magnitudes = tf.abs(fft);"
+keywords:
+  - fourier-transform
+  - fft
+  - frequency
+  - decomposition
+  - spectral
+---
+
+<Dialogue speaker="Dr. Sato">
+Think of a chord on a piano, Park. You hear one sound, but it is actually three notes played simultaneously. The Fourier Transform is the mathematical tool that listens to the chord and tells you exactly which notes are in it — and how loud each one is.
+</Dialogue>
+
+<Dialogue speaker="Ensign Park">
+So the signal is the chord, and the FFT breaks it into individual frequencies? That's like how a CSS animation is defined as individual keyframes that blend together into smooth motion.
+</Dialogue>
+
+Every CSS animation you've written is a decomposition. You define discrete keyframe states — 0%, 25%, 50%, 75%, 100% — and the browser interpolates between them to create continuous motion. The Fourier Transform does the same thing in reverse: it takes a continuous signal and decomposes it into discrete frequency components.
+
+<LearningObjectives objectives={["Understand the Fourier Transform as signal decomposition into frequency components", "Compute the FFT of a signal using TensorFlow.js spectral operations", "Interpret FFT output: frequency bins, magnitudes, and the Nyquist frequency", "Connect decomposition to familiar frontend patterns (@keyframes, animation steps)"]} />
+
+## Decomposing Signals
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="fft-basics.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// A signal made of two sine waves: 5 Hz and 20 Hz
+const sampleRate = 128;  // samples per second
+const duration = 1;      // 1 second
+const n = sampleRate * duration;
+
+const signal: number[] = [];
+for (let i = 0; i < n; i++) {
+  const t = i / sampleRate;
+  signal.push(
+    1.0 * Math.sin(2 * Math.PI * 5 * t) +    // 5 Hz component (strong)
+    0.3 * Math.sin(2 * Math.PI * 20 * t)      // 20 Hz component (weak)
+  );
+}
+
+// Compute the FFT — decompose into frequencies
+const signalTensor = tf.tensor1d(signal);
+const fftResult = tf.spectral.rfft(signalTensor);     // complex-valued output
+const magnitudes = tf.abs(fftResult);                   // get magnitude of each frequency
+const magArray = await magnitudes.array();
+
+// Each index corresponds to a frequency bin:
+// bin[i] = i * (sampleRate / n) Hz
+// bin[0] = 0 Hz (DC offset)
+// bin[5] = 5 Hz  → magnitude ≈ 64.0 (strong!)
+// bin[20] = 20 Hz → magnitude ≈ 19.2 (weaker)
+// All others ≈ 0 (no other frequencies present)
+
+console.log('5 Hz magnitude:', magArray[5].toFixed(1));   // ~64.0
+console.log('20 Hz magnitude:', magArray[20].toFixed(1));  // ~19.2
+console.log('10 Hz magnitude:', magArray[10].toFixed(1));  // ~0.0
+
+// Clean up
+signalTensor.dispose();
+fftResult.dispose();
+magnitudes.dispose();`}
+</CodeBlock>
+
+## Understanding the Output
+
+The FFT transforms an array of N time-domain samples into N/2+1 frequency bins. Each bin tells you how much of that frequency is present in the signal.
+
+<CodeBlock language="typescript" title="fft-interpretation.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// The key relationship: bin index → frequency
+function binToFrequency(binIndex: number, sampleRate: number, fftSize: number): number {
+  return binIndex * (sampleRate / fftSize);
+}
+
+// For our signal: sampleRate=128, fftSize=128
+// bin 0  → 0 Hz   (DC component — average value)
+// bin 1  → 1 Hz
+// bin 5  → 5 Hz   ← our first sine wave
+// bin 20 → 20 Hz  ← our second sine wave
+// bin 64 → 64 Hz  (Nyquist frequency — maximum detectable)
+
+// Nyquist frequency: the highest frequency you can detect
+// = sampleRate / 2
+// Like the "max viewport width" — you can't render details finer than one pixel
+const nyquist = sampleRate / 2;  // 64 Hz
+console.log('Nyquist frequency:', nyquist, 'Hz');
+
+// Find the dominant frequency in a signal
+async function findDominantFrequency(signal: number[], sampleRate: number): Promise<number> {
+  return tf.tidy(() => {
+    const fft = tf.spectral.rfft(tf.tensor1d(signal));
+    const mags = tf.abs(fft);
+    const values = mags.arraySync() as number[];
+    // Skip bin 0 (DC offset) and find the peak
+    const peak = values.slice(1).reduce(
+      (best, val, i) => val > best.mag ? { bin: i + 1, mag: val } : best,
+      { bin: 0, mag: 0 }
+    );
+    return binToFrequency(peak.bin, sampleRate, signal.length);
+  });
+}
+
+const dominant = await findDominantFrequency(signal, 128);
+console.log('Dominant frequency:', dominant, 'Hz');  // 5`}
+</CodeBlock>
+
+## The FFT for DEEP SCAN
+
+<CodeBlock language="typescript" title="deep-scan-fft.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Analyze the deep space signal for anomalous frequencies
+function analyzeSignal(signal: number[], sampleRate: number) {
+  return tf.tidy(() => {
+    const fft = tf.spectral.rfft(tf.tensor1d(signal));
+    const magnitudes = tf.abs(fft).arraySync() as number[];
+
+    // Known natural frequencies from cosmic background
+    const naturalFrequencies = new Set([5, 12, 23, 47]);
+
+    // Find all significant peaks (above noise floor)
+    const noiseFloor = magnitudes.reduce((sum, m) => sum + m, 0) / magnitudes.length;
+    const threshold = noiseFloor * 5;  // 5x average = significant
+
+    const peaks: { frequency: number; magnitude: number; natural: boolean }[] = [];
+    for (let i = 1; i < magnitudes.length; i++) {
+      if (magnitudes[i] > threshold) {
+        const freq = Math.round(i * sampleRate / signal.length);
+        peaks.push({
+          frequency: freq,
+          magnitude: magnitudes[i],
+          natural: naturalFrequencies.has(freq),
+        });
+      }
+    }
+
+    return peaks;
+  });
+}
+
+// Expected result:
+// [
+//   { frequency: 5, magnitude: 51.2, natural: true },
+//   { frequency: 12, magnitude: 38.4, natural: true },
+//   { frequency: 23, magnitude: 25.6, natural: true },
+//   { frequency: 47, magnitude: 12.8, natural: true },
+//   { frequency: 73, magnitude: 3.2, natural: false },  // ← ANOMALY
+// ]`}
+</CodeBlock>
+
+## Challenge
+
+Compute the FFT of a signal and find its dominant frequency.
+
+<Exercise slug="compute-fft" />
+
+<KeyTakeaways takeaways={["The FFT decomposes a time-domain signal into frequency components — like decomposing an animation into @keyframes steps", "Each frequency bin = binIndex × (sampleRate / fftSize) Hz — a simple linear mapping", "The Nyquist frequency (sampleRate / 2) is the highest detectable frequency — like a resolution limit", "For DEEP SCAN, the FFT reveals an anomalous 73.4 Hz component hidden in the time-domain noise"]} />

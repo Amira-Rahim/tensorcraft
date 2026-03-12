@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { themes } from "@tensorcraft/themes";
+import { ComingSoonCard } from "./coming-soon-card";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -35,6 +36,21 @@ export default function ThemesPage() {
           {themeList.map((theme) => {
             const isLaunched = theme.status === "launched";
 
+            if (!isLaunched) {
+              return (
+                <ComingSoonCard
+                  key={theme.slug}
+                  slug={theme.slug}
+                  displayName={theme.displayName}
+                  specialization={theme.specialization}
+                  description={theme.description}
+                  accentColor={theme.palette.accent}
+                  surfaceColor={theme.palette.surface}
+                  mutedColor={theme.palette.muted}
+                />
+              );
+            }
+
             return (
               <div
                 key={theme.slug}
@@ -42,22 +58,17 @@ export default function ThemesPage() {
                 style={{
                   background: theme.palette.surface,
                   border: `1px solid rgba(255,255,255,0.06)`,
-                  opacity: isLaunched ? 1 : 0.6,
                 }}
               >
                 <div className="flex items-center gap-2 mb-3">
                   <span
                     className="text-[10px] uppercase tracking-widest px-2 py-0.5 rounded-full font-medium"
                     style={{
-                      background: isLaunched
-                        ? "rgba(0,212,255,0.1)"
-                        : "rgba(255,255,255,0.05)",
-                      color: isLaunched
-                        ? "#00D4FF"
-                        : "var(--tc-muted, #8B92A5)",
+                      background: "rgba(0,212,255,0.1)",
+                      color: "#00D4FF",
                     }}
                   >
-                    {isLaunched ? "Available" : "Coming Soon"}
+                    Available
                   </span>
                 </div>
 
@@ -80,25 +91,13 @@ export default function ThemesPage() {
                   {theme.description}
                 </p>
 
-                {isLaunched ? (
-                  <Link
-                    href={`/themes/${theme.slug}`}
-                    className="inline-flex items-center justify-center px-5 py-2.5 rounded-full text-sm font-medium transition-opacity hover:opacity-90"
-                    style={{ background: theme.palette.accent, color: "#000" }}
-                  >
-                    Start Learning
-                  </Link>
-                ) : (
-                  <span
-                    className="inline-flex items-center justify-center px-5 py-2.5 rounded-full text-sm font-medium"
-                    style={{
-                      border: "1px solid rgba(255,255,255,0.1)",
-                      color: theme.palette.muted,
-                    }}
-                  >
-                    Coming Soon
-                  </span>
-                )}
+                <Link
+                  href={`/themes/${theme.slug}`}
+                  className="inline-flex items-center justify-center px-5 py-2.5 rounded-full text-sm font-medium transition-opacity hover:opacity-90"
+                  style={{ background: theme.palette.accent, color: "#000" }}
+                >
+                  Start Learning
+                </Link>
               </div>
             );
           })}

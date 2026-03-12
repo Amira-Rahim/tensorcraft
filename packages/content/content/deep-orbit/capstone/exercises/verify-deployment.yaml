@@ -1,0 +1,104 @@
+slug: verify-deployment
+lessonSlug: launch
+title: "Verify a Deployment"
+instructions: "Write a deployment verification function that runs a series of checks (each returning { name, passed, message }) and returns an overall result. The deployment passes only if ALL checks pass."
+starterCode: |
+  interface CheckResult {
+    name: string;
+    passed: boolean;
+    message: string;
+  }
+
+  interface DeploymentResult {
+    passed: boolean;
+    checks: CheckResult[];
+    summary: string;
+  }
+
+  async function verifyDeployment(
+    checks: (() => Promise<CheckResult>)[]
+  ): Promise<DeploymentResult> {
+    // 1. Run all checks (in order, not parallel)
+    // 2. Collect results
+    // 3. passed = all checks passed
+    // 4. summary = "{passed}/{total} checks passed"
+    return null; // your code here
+  }
+solutionCode: |
+  interface CheckResult {
+    name: string;
+    passed: boolean;
+    message: string;
+  }
+
+  interface DeploymentResult {
+    passed: boolean;
+    checks: CheckResult[];
+    summary: string;
+  }
+
+  async function verifyDeployment(
+    checks: (() => Promise<CheckResult>)[]
+  ): Promise<DeploymentResult> {
+    const results: CheckResult[] = [];
+
+    for (const check of checks) {
+      const result = await check();
+      results.push(result);
+    }
+
+    const passedCount = results.filter(r => r.passed).length;
+    const total = results.length;
+
+    return {
+      passed: passedCount === total,
+      checks: results,
+      summary: `${passedCount}/${total} checks passed`,
+    };
+  }
+testCode: |
+  describe('verifyDeployment', () => {
+    it('passes when all checks pass', async () => {
+      const checks = [
+        async () => ({ name: 'model', passed: true, message: 'OK' }),
+        async () => ({ name: 'inference', passed: true, message: 'OK' }),
+      ];
+      const result = await verifyDeployment(checks);
+      expect(result.passed).toBe(true);
+      expect(result.summary).toBe('2/2 checks passed');
+    });
+
+    it('fails when any check fails', async () => {
+      const checks = [
+        async () => ({ name: 'model', passed: true, message: 'OK' }),
+        async () => ({ name: 'inference', passed: false, message: 'Too slow' }),
+      ];
+      const result = await verifyDeployment(checks);
+      expect(result.passed).toBe(false);
+      expect(result.summary).toBe('1/2 checks passed');
+    });
+
+    it('collects all check results', async () => {
+      const checks = [
+        async () => ({ name: 'a', passed: true, message: 'good' }),
+        async () => ({ name: 'b', passed: false, message: 'bad' }),
+        async () => ({ name: 'c', passed: true, message: 'good' }),
+      ];
+      const result = await verifyDeployment(checks);
+      expect(result.checks).toHaveLength(3);
+      expect(result.checks[1].name).toBe('b');
+      expect(result.checks[1].passed).toBe(false);
+    });
+
+    it('runs checks in order', async () => {
+      const order: string[] = [];
+      const checks = [
+        async () => { order.push('first'); return { name: 'first', passed: true, message: '' }; },
+        async () => { order.push('second'); return { name: 'second', passed: true, message: '' }; },
+      ];
+      await verifyDeployment(checks);
+      expect(order).toEqual(['first', 'second']);
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

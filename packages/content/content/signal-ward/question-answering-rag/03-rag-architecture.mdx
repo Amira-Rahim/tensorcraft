@@ -1,0 +1,176 @@
+---
+slug: rag-architecture
+title: "RAG Architecture — Retrieval-Augmented Generation Pipeline"
+moduleId: question-answering-rag
+themeId: signal-ward
+order: 3
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "The patient's allergy was found — in one document. But Santos reports that this patient has 47 clinical documents across two systems, some in English, some in Spanish. 'We cannot read 47 documents every time we need an answer,' Vasquez says. 'We need retrieval. Find the right documents first, then comprehend them.'"
+  speaker: "Dr. Vasquez"
+concept:
+  explanation: "RAG retrieves relevant documents first, then generates answers from them — like React Server Components that fetch data on the server before rendering on the client."
+  bridge:
+    feTitle: "React Server Components"
+    feCode: "async function PatientCard({ id }) { const data = await db.query(id); return <Card data={data} />; }"
+    mlTitle: "RAG Pipeline"
+    mlCode: "async function answer(q) { const docs = await retrieve(q); return generate(q, docs); }"
+    tier: structural
+consequence:
+  narrative: "The RAG pipeline retrieves the three most relevant documents from 47 records in 12 milliseconds. One is a Spanish-language discharge summary from a clinic in Guatemala. The QA model extracts the critical allergy information. Santos exhales. 'That would have taken me twenty minutes.'"
+  nextLessonTeaser: "Next: knowledge grounding — ensuring every answer has evidence"
+hints:
+  - level: nudge
+    content: "Encode documents and queries into the same vector space, then use cosine similarity to retrieve"
+  - level: guidance
+    content: "Build an index of document embeddings, then at query time encode the question and find the k nearest neighbors"
+  - level: solution
+    content: "Use a dense retriever to embed documents into vectors, store them in an index, retrieve top-k by cosine similarity, then pass retrieved docs as context to the QA model"
+keywords:
+  - rag
+  - retrieval-augmented-generation
+  - vector-search
+  - document-retrieval
+  - embeddings
+---
+
+<Dialogue speaker="Dr. Vasquez">
+One document, one answer — that was a proof of concept. This patient has 47 records across two hospital systems. Emergency notes, lab results, imaging reports, discharge summaries. Some in Spanish. We cannot comprehend 47 documents sequentially. We need to retrieve the right ones first.
+</Dialogue>
+
+<Dialogue speaker="Khalil">
+It is the same pattern as React Server Components. Fetch the data you need on the server, then render on the client. Retrieve the relevant documents first, then pass them to the QA model. Retrieval-Augmented Generation.
+</Dialogue>
+
+React Server Components changed how we think about data fetching. Instead of shipping a loading spinner and fetching on the client, you fetch on the server and stream the result. RAG does the same thing for question answering: instead of feeding the entire corpus to the model, you retrieve the relevant documents first, then pass only those as context.
+
+<LearningObjectives objectives={["Build a dense retrieval system using document embeddings and cosine similarity", "Implement a vector index for fast nearest-neighbor search in the browser", "Construct a complete RAG pipeline: embed → retrieve → comprehend → answer", "Handle multilingual retrieval for clinical documents in different languages"]} />
+
+## The RAG Pattern
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="rag-pipeline.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// RAG Pipeline: Retrieve → Augment → Generate
+// Same pattern as React Server Components: fetch data, then render
+
+interface Document {
+  id: string;
+  text: string;
+  metadata: { language: string; docType: string; date: string };
+}
+
+interface RetrievalResult {
+  document: Document;
+  score: number;
+}
+
+class VectorIndex {
+  private embeddings: tf.Tensor2D | null = null;
+  private documents: Document[] = [];
+
+  // Index documents by computing and storing their embeddings
+  async index(docs: Document[], embedFn: (text: string) => Promise<tf.Tensor1D>): Promise<void> {
+    this.documents = docs;
+    const vectors: tf.Tensor1D[] = [];
+
+    for (const doc of docs) {
+      const embedding = await embedFn(doc.text);
+      vectors.push(embedding);
+    }
+
+    // Stack into a matrix: [numDocs, embDim]
+    this.embeddings = tf.stack(vectors) as tf.Tensor2D;
+    vectors.forEach(v => v.dispose());  // Clean up individual tensors
+  }
+
+  // Retrieve top-k documents by cosine similarity
+  async retrieve(query: string, embedFn: (text: string) => Promise<tf.Tensor1D>, k: number = 3): Promise<RetrievalResult[]> {
+    if (!this.embeddings) throw new Error('Index is empty');
+
+    const queryEmb = await embedFn(query);
+
+    // Cosine similarity: dot product of normalized vectors
+    const queryNorm = queryEmb.div(queryEmb.norm());
+    const docsNorm = this.embeddings.div(
+      this.embeddings.norm('euclidean', 1, true)
+    );
+
+    const scores = tf.matMul(docsNorm, queryNorm.expandDims(1))
+      .squeeze([1]);
+
+    const scoreArray = await scores.array() as number[];
+
+    // Sort by score, take top k
+    const ranked = scoreArray
+      .map((score, i) => ({ document: this.documents[i], score }))
+      .sort((a, b) => b.score - a.score)
+      .slice(0, k);
+
+    queryEmb.dispose();
+    queryNorm.dispose();
+    docsNorm.dispose();
+    scores.dispose();
+
+    return ranked;
+  }
+}
+
+// Complete RAG pipeline
+async function ragAnswer(
+  question: string,
+  index: VectorIndex,
+  embedFn: (text: string) => Promise<tf.Tensor1D>,
+  qaModel: (question: string, context: string) => Promise<string>
+): Promise<{ answer: string; sources: RetrievalResult[] }> {
+  // 1. Retrieve relevant documents
+  const retrieved = await index.retrieve(question, embedFn, 3);
+
+  // 2. Augment: combine retrieved docs into context
+  const context = retrieved
+    .map(r => r.document.text)
+    .join('\\n---\\n');
+
+  // 3. Generate answer from context
+  const answer = await qaModel(question, context);
+
+  return { answer, sources: retrieved };
+}`}
+</CodeBlock>
+
+## Clinical RAG in Action
+
+<CodeBlock language="typescript" title="clinical-rag.ts">
+{`// Index 47 patient documents, answer in milliseconds
+const index = new VectorIndex();
+await index.index(patientRecords, embedDocument);
+
+const result = await ragAnswer(
+  "Has this patient ever had an allergic reaction to penicillin?",
+  index,
+  embedDocument,
+  comprehend
+);
+
+console.log('Answer:', result.answer);
+// → "Patient reported severe allergic reaction to penicillin-class antibiotics (2015)"
+
+console.log('Sources:');
+result.sources.forEach((s, i) => {
+  console.log(\`  \${i + 1}. [\${s.document.metadata.docType}] \${s.document.metadata.date} (score: \${s.score.toFixed(3)})\`);
+});
+// → 1. [discharge_summary] 2019-03-14 (score: 0.912)
+// → 2. [allergy_record] 2015-08-22 (score: 0.887)
+// → 3. [medication_list] 2023-11-01 (score: 0.743)`}
+</CodeBlock>
+
+## Challenge
+
+Build a vector index with cosine similarity retrieval for a RAG pipeline.
+
+<Exercise slug="rag-pipeline" />
+
+<KeyTakeaways takeaways={["RAG is React Server Components for NLP — retrieve relevant data first, then generate the answer", "Dense retrieval uses embedding similarity to find relevant documents, replacing keyword search", "Vector indexes enable sub-millisecond retrieval over thousands of clinical documents", "Source attribution in RAG means every answer points back to the documents it came from"]} />

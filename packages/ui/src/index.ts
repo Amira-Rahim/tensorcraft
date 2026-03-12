@@ -10,8 +10,10 @@ export {
   BridgeCallout,
   CodeBlock,
   Exercise,
+  ExerciseDataProvider,
   HintPanel,
   KeyTakeaways,
   LearningObjectives,
   Quiz,
 } from "./mdx";
+export type { ExerciseData } from "./mdx";

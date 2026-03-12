@@ -1,0 +1,110 @@
+---
+slug: text-as-data
+title: "Text as Data"
+moduleId: ml-through-text
+themeId: signal-ward
+order: 2
+estimatedMinutes: 25
+difficulty: beginner
+context:
+  narrative: "Obi introduces Khalil to bag-of-words — the simplest way to turn clinical notes into numbers a model can process."
+  speaker: "Obi"
+concept:
+  explanation: "Models only understand numbers. A bag-of-words representation counts word occurrences in a document, converting text into a numerical vector — just like JSON.parse converts a string into a usable data structure."
+  bridge:
+    feTitle: "JSON.parse()"
+    feCode: "const data = JSON.parse('{\"name\": \"aspirin\"}')"
+    mlTitle: "Bag of Words"
+    mlCode: "const bow = textToVector('patient takes aspirin daily')"
+    tier: structural
+consequence:
+  narrative: "Khalil successfully converts his first batch of clinical notes into numerical vectors."
+  nextLessonTeaser: "Next: building a simple classifier that can categorize these vectors."
+hints:
+  - level: nudge
+    content: "Count how many times each word appears in the text."
+  - level: guidance
+    content: "Create a vocabulary array first, then count occurrences of each word."
+  - level: solution
+    content: "Map each vocabulary word to its count in the input text using indexOf or filter."
+keywords:
+  - bag-of-words
+  - text-representation
+  - vectorization
+  - word-count
+---
+
+> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
+
+<Dialogue speaker="Obi">
+Khalil, you've parsed JSON a thousand times, right? You take a string, run JSON.parse, and get a structured object. Turning text into ML features is the same idea — different format, same principle.
+</Dialogue>
+
+<Dialogue speaker="Khalil">
+So instead of key-value pairs, I'm getting... what, a list of numbers?
+</Dialogue>
+
+<Dialogue speaker="Obi">
+Exactly. A vector. Each position represents a word from your vocabulary, and the value is how many times that word appears. It's called bag-of-words.
+</Dialogue>
+
+When your frontend fetches an API response, `JSON.parse()` converts a raw string into structured data your app can use. Bag-of-words does the same thing for ML: it converts raw text into a numerical vector your model can process.
+
+<LearningObjectives objectives={["Convert text into a bag-of-words vector", "Understand why models require numerical input", "Build a vocabulary from a corpus of clinical notes", "Recognize the limitations of bag-of-words for clinical text"]} />
+
+## From Strings to Vectors
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+A bag-of-words representation is simple: define a vocabulary, then count occurrences.
+
+<CodeBlock language="typescript" title="bag-of-words.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Our vocabulary — each word gets a position
+const vocab = ['patient', 'reports', 'chest', 'pain', 'denies', 'fever'];
+
+function textToVector(text: string): number[] {
+  const words = text.toLowerCase().split(/\s+/);
+  return vocab.map(v => words.filter(w => w === v).length);
+}
+
+// "patient reports chest pain" → [1, 1, 1, 1, 0, 0]
+const note1 = textToVector('patient reports chest pain');
+console.log(note1); // [1, 1, 1, 1, 0, 0]
+
+// "patient denies fever" → [1, 0, 0, 0, 1, 1]
+const note2 = textToVector('patient denies fever');
+console.log(note2); // [1, 0, 0, 0, 1, 1]
+
+// Now these are tensors the model can work with
+const tensor1 = tf.tensor(note1);
+const tensor2 = tf.tensor(note2);`}
+</CodeBlock>
+
+## Why Bag-of-Words Works (and Where It Fails)
+
+Bag-of-words captures *what* words are present but ignores *order*. "Patient denied pain" and "Pain denied patient" produce the same vector. For clinical text, that's a problem we'll solve in later modules. But it's a solid starting point.
+
+<CodeBlock language="typescript" title="bow-limitations.ts">
+{`// These two notes have VERY different meanings
+const noteA = textToVector('patient denied chest pain');
+const noteB = textToVector('patient reported chest pain');
+
+// But with our current vocabulary, they differ only
+// in words not yet in the vocab!
+// We need 'denied' and 'reported' in the vocabulary.
+const expandedVocab = ['patient', 'reports', 'chest', 'pain',
+                       'denies', 'fever', 'denied', 'reported'];
+
+// With expanded vocab, the vectors ARE different.
+// But bag-of-words still can't capture word ORDER.`}
+</CodeBlock>
+
+## Challenge
+
+Build a bag-of-words function that converts clinical notes into numerical vectors.
+
+<Exercise slug="bag-of-words" />
+
+<KeyTakeaways takeaways={["Bag-of-words converts text to numbers by counting word occurrences", "Each position in the vector corresponds to a vocabulary word", "JSON.parse converts strings to objects; bag-of-words converts text to vectors", "Bag-of-words loses word order — a limitation we'll address later"]} />

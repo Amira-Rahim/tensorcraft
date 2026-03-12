@@ -1,0 +1,65 @@
+slug: multi-head-attention
+lessonSlug: multi-head-attention
+title: "Multi-Head Attention"
+instructions: "Implement multi-head attention. Split the model dimension across the specified number of heads, run independent self-attention on each head, concatenate the results, and apply a final linear projection."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function multiHeadAttention(
+    input: tf.Tensor2D,   // [seqLen, dModel]
+    numHeads: number,
+    dModel: number
+  ): tf.Tensor2D {
+    const dk = dModel / numHeads;
+    // Step 1: For each head, create Q/K/V projections and run attention
+    // Step 2: Collect head outputs into an array
+    // Step 3: Concatenate along the last axis
+    // Step 4: Apply final linear projection Wo
+    return null;
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function multiHeadAttention(
+    input: tf.Tensor2D,
+    numHeads: number,
+    dModel: number
+  ): tf.Tensor2D {
+    const dk = dModel / numHeads;
+    const heads: tf.Tensor2D[] = [];
+
+    for (let h = 0; h < numHeads; h++) {
+      const Wq = tf.randomNormal([dModel, dk]);
+      const Wk = tf.randomNormal([dModel, dk]);
+      const Wv = tf.randomNormal([dModel, dk]);
+
+      const Q = tf.matMul(input, Wq);
+      const K = tf.matMul(input, Wk);
+      const V = tf.matMul(input, Wv);
+
+      const scores = tf.matMul(Q, K.transpose()).div(Math.sqrt(dk));
+      const weights = tf.softmax(scores, -1);
+      heads.push(tf.matMul(weights, V) as tf.Tensor2D);
+    }
+
+    const concatenated = tf.concat(heads, 1) as tf.Tensor2D;
+    const Wo = tf.randomNormal([dModel, dModel]);
+    return tf.matMul(concatenated, Wo) as tf.Tensor2D;
+  }
+testCode: |
+  describe('multiHeadAttention', () => {
+    it('output shape equals input shape [seqLen, dModel]', () => {
+      const input = tf.randomNormal([6, 32]) as tf.Tensor2D;
+      const output = multiHeadAttention(input, 4, 32);
+      expect(output.shape).toEqual([6, 32]);
+    });
+    it('works with different head counts', () => {
+      const input = tf.randomNormal([4, 16]) as tf.Tensor2D;
+      const out2 = multiHeadAttention(input, 2, 16);
+      const out4 = multiHeadAttention(input, 4, 16);
+      expect(out2.shape).toEqual([4, 16]);
+      expect(out4.shape).toEqual([4, 16]);
+    });
+  });
+estimatedMinutes: 15
+difficulty: intermediate

@@ -1,0 +1,133 @@
+---
+slug: instance-segmentation
+title: "Instance Segmentation"
+moduleId: segmentation
+themeId: neon-protocol
+order: 2
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Zara zooms into a crowd on the District 7 feed. The semantic mask shows all people as the same red blob. 'Useful — but the resistance needs to count individuals. We need to tell them apart. That is instance segmentation.'"
+  speaker: "Zara"
+concept:
+  explanation: "Instance segmentation distinguishes individual objects of the same class. While semantic segmentation labels all 'person' pixels the same, instance segmentation gives each person a unique ID — like DOM elements that share a class but have unique IDs."
+  bridge:
+    feTitle: "DOM element identity vs class"
+    feCode: "document.querySelectorAll('.person'); // same class, different elements"
+    mlTitle: "Instance Segmentation"
+    mlCode: "// Same class 'person', but instance IDs: person-1, person-2, person-3"
+    tier: structural
+consequence:
+  narrative: "The red blob separates into distinct silhouettes — each person outlined individually. NEON chimes in: 'I can now track 14 individuals in this frame. Meridian tracks 14 million. But ours run in the browser.'"
+  nextLessonTeaser: "Next: U-Net architecture — the encoder-decoder structure that makes dense prediction possible"
+hints:
+  - level: nudge
+    content: "Instance segmentation combines detection (which objects?) with segmentation (which pixels?)"
+  - level: guidance
+    content: "Each detected object gets its own binary mask — a tensor of 0s and 1s"
+  - level: solution
+    content: "For each detection, generate a binary mask and assign a unique instance ID"
+keywords:
+  - instance-segmentation
+  - object-instances
+  - binary-mask
+  - dom-identity
+---
+
+<Dialogue speaker="Zara">
+Semantic segmentation says "these pixels are people." Instance segmentation says "these pixels are person one, those are person two, and that cluster in the back is person three." It is the difference between `document.querySelectorAll('.person')` and selecting each element by its unique ID.
+</Dialogue>
+
+<Dialogue speaker="Kira">
+So semantic segmentation is `.className` and instance segmentation is `#elementId`?
+</Dialogue>
+
+Exactly. In the DOM, elements with the same class share a category but remain distinct nodes. Instance segmentation does the same for pixels: every object gets its own mask, even when multiple objects share the same class label.
+
+<LearningObjectives objectives={["Distinguish semantic segmentation (class labels) from instance segmentation (unique object masks)", "Represent instances as separate binary masks", "Assign unique IDs to detected objects", "Connect the concept to DOM element identity vs class membership"]} />
+
+## Class vs Instance
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="instance-segmentation.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Semantic: all people = class 3
+// semanticMask[y][x] = 3 means "this pixel is a person"
+
+// Instance: each person gets a unique mask
+interface InstanceMask {
+  classId: number;
+  className: string;
+  instanceId: number;
+  mask: tf.Tensor2D;    // binary mask: 1 = this instance, 0 = not
+  confidence: number;
+  bbox: [number, number, number, number]; // [x, y, w, h]
+}
+
+// A scene with 3 people and 2 drones = 5 instance masks
+const instances: InstanceMask[] = [
+  {
+    classId: 3, className: 'person', instanceId: 1,
+    mask: tf.zeros([224, 224]),  // binary mask for person 1
+    confidence: 0.95, bbox: [0.1, 0.2, 0.15, 0.4],
+  },
+  {
+    classId: 3, className: 'person', instanceId: 2,
+    mask: tf.zeros([224, 224]),  // binary mask for person 2
+    confidence: 0.91, bbox: [0.4, 0.25, 0.12, 0.35],
+  },
+  {
+    classId: 4, className: 'drone', instanceId: 3,
+    mask: tf.zeros([224, 224]),  // binary mask for drone 1
+    confidence: 0.88, bbox: [0.7, 0.05, 0.1, 0.08],
+  },
+];`}
+</CodeBlock>
+
+## Building Instance Maps
+
+Combine individual binary masks into a single labeled image where each pixel's value is its instance ID.
+
+<CodeBlock language="typescript" title="instance-map.ts">
+{`function buildInstanceMap(
+  instances: InstanceMask[],
+  height: number,
+  width: number
+): tf.Tensor2D {
+  // Start with zeros (background)
+  let instanceMap = tf.zeros([height, width]);
+
+  instances.forEach((inst) => {
+    // Where this instance's mask is 1, write the instance ID
+    // mask is binary: 1 = this object, 0 = not
+    const idTensor = inst.mask.mul(inst.instanceId);
+    // Where mask is 0, keep existing value; where 1, write ID
+    const keepExisting = instanceMap.mul(
+      tf.scalar(1).sub(inst.mask)
+    );
+    instanceMap = keepExisting.add(idTensor);
+  });
+
+  return instanceMap as tf.Tensor2D;
+}
+
+// Like building a z-index stack in CSS:
+// each element occupies its own layer, and the final composite
+// shows which element "owns" each pixel
+
+// Render with unique colors per instance
+function instanceColor(id: number): [number, number, number] {
+  const hue = (id * 137.508) % 360; // golden angle for spread
+  return hslToRgb(hue, 80, 60);
+}`}
+</CodeBlock>
+
+## Challenge
+
+Create a function that assigns unique instance labels to detected objects.
+
+<Exercise slug="instance-labels" />
+
+<KeyTakeaways takeaways={["Semantic segmentation labels pixels by class; instance segmentation labels pixels by individual object", "Each instance gets a binary mask and a unique ID — like DOM elements with shared class but unique IDs", "Instance maps combine multiple binary masks into a single labeled image", "The resistance can now count and track individual targets, not just categories"]} />

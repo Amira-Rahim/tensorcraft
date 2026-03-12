@@ -1,0 +1,155 @@
+---
+slug: extractive-qa
+title: "Extractive QA — Finding Answers Within Documents"
+moduleId: question-answering-rag
+themeId: signal-ward
+order: 1
+estimatedMinutes: 25
+difficulty: advanced
+context:
+  narrative: "An unconscious patient arrives in the ER. No ID, no medical bracelet, no accessible history. Santos pulls up the intake form: 'John Doe, approximately 45, unresponsive. We need to know if he has drug allergies before we administer anything.' Khalil stares at the screen. 'I built Meridian's records UI. I know their data format. If we can search their documents, I can find the answer.'"
+  speaker: "Santos"
+concept:
+  explanation: "Extractive QA finds the exact span of text in a document that answers a question — like Ctrl+F, but the model understands meaning, not just character matching."
+  bridge:
+    feTitle: "Ctrl+F (text search)"
+    feCode: "document.querySelector('article').textContent.indexOf('penicillin')"
+    mlTitle: "Extractive QA"
+    mlCode: "model.predict({ question, context }) // → { answer: 'allergic to penicillin', start: 142, end: 163 }"
+    tier: analogy
+consequence:
+  narrative: "The QA model highlights a span in the patient's discharge summary from 2019: 'Patient reported severe allergic reaction to penicillin-class antibiotics.' Santos pages the attending physician immediately."
+  nextLessonTeaser: "Next: reading comprehension — understanding context beyond keyword matching"
+hints:
+  - level: nudge
+    content: "The model predicts start and end positions within the context passage"
+  - level: guidance
+    content: "Use two output heads: one for start logits, one for end logits, then extract the span between them"
+  - level: solution
+    content: "Apply softmax to start and end logits independently, take argmax of each, slice the tokenized context between those positions"
+keywords:
+  - extractive-qa
+  - span-extraction
+  - question-answering
+  - clinical-search
+---
+
+<Dialogue speaker="Santos">
+Unconscious male, mid-forties, no ID. Paramedics found him collapsed at a bus stop. We need to start antibiotics but we have no allergy history. If he's allergic to penicillin and we give him amoxicillin, we could trigger anaphylaxis.
+</Dialogue>
+
+<Dialogue speaker="Khalil">
+I built the records interface at Meridian Health. Their discharge summaries are structured — diagnoses, medications, allergies, all in free text sections. If I can search those documents semantically, I can find whether this patient has any recorded allergies.
+</Dialogue>
+
+You have used Ctrl+F thousands of times. Type a string, find exact matches. But Ctrl+F fails when a doctor writes "patient exhibited hypersensitivity to penicillin-class agents" and you search for "penicillin allergy." Extractive QA bridges that gap — it understands the *meaning* of your question and finds the answer span within the document.
+
+<LearningObjectives objectives={["Understand extractive QA as span prediction over a context passage", "Build start and end position predictors using TensorFlow.js", "Extract answer spans from tokenized clinical text", "Evaluate QA accuracy with exact match and F1 metrics"]} />
+
+## From Ctrl+F to Semantic Search
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+Ctrl+F matches characters. Extractive QA matches meaning. The model reads both the question and the context passage, then predicts two positions: where the answer **starts** and where it **ends**.
+
+<CodeBlock language="typescript" title="extractive-qa.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Extractive QA: predict start and end positions of the answer span
+// Input: question + context encoded as token IDs
+// Output: start logits and end logits over all token positions
+
+interface QAInput {
+  questionTokens: number[];
+  contextTokens: number[];
+  // Combined: [CLS] question [SEP] context [SEP]
+}
+
+interface QAOutput {
+  answer: string;
+  startIndex: number;
+  endIndex: number;
+  confidence: number;
+}
+
+function buildQAHead(embeddingDim: number, seqLength: number): tf.LayersModel {
+  const input = tf.input({ shape: [seqLength, embeddingDim] });
+
+  // Start position predictor
+  const startDense = tf.layers.dense({ units: 1, name: 'start_logits' })
+    .apply(input) as tf.SymbolicTensor;
+  const startLogits = tf.layers.flatten().apply(startDense) as tf.SymbolicTensor;
+
+  // End position predictor
+  const endDense = tf.layers.dense({ units: 1, name: 'end_logits' })
+    .apply(input) as tf.SymbolicTensor;
+  const endLogits = tf.layers.flatten().apply(endDense) as tf.SymbolicTensor;
+
+  return tf.model({ inputs: input, outputs: [startLogits, endLogits] });
+}
+
+// Extract the answer span
+function extractAnswer(
+  startLogits: Float32Array,
+  endLogits: Float32Array,
+  tokens: string[],
+  contextStart: number
+): QAOutput {
+  // Only consider positions within the context (not the question)
+  const startProbs = tf.softmax(tf.tensor1d(startLogits)).arraySync() as number[];
+  const endProbs = tf.softmax(tf.tensor1d(endLogits)).arraySync() as number[];
+
+  let bestScore = -Infinity;
+  let bestStart = contextStart;
+  let bestEnd = contextStart;
+
+  for (let s = contextStart; s < tokens.length; s++) {
+    for (let e = s; e < Math.min(s + 30, tokens.length); e++) {
+      const score = startProbs[s] + endProbs[e];
+      if (score > bestScore) {
+        bestScore = score;
+        bestStart = s;
+        bestEnd = e;
+      }
+    }
+  }
+
+  const answerTokens = tokens.slice(bestStart, bestEnd + 1);
+  return {
+    answer: answerTokens.join(' '),
+    startIndex: bestStart,
+    endIndex: bestEnd,
+    confidence: Math.exp(bestScore) / 2,
+  };
+}`}
+</CodeBlock>
+
+## Clinical Application
+
+<CodeBlock language="typescript" title="clinical-qa.ts">
+{`// Search a patient's records for allergy information
+const context = \`
+  Discharge Summary - Meridian Health System
+  Date: 2019-03-14. Patient presented with community-acquired pneumonia.
+  Treatment: IV azithromycin (patient reported severe allergic reaction
+  to penicillin-class antibiotics, documented 2015). Switched to
+  fluoroquinolone after 48h due to insufficient response.
+  Discharged day 5 with oral levofloxacin.\`;
+
+const question = "Does this patient have any drug allergies?";
+
+// Tokenize, encode, predict
+const result = extractAnswer(startLogits, endLogits, tokens, contextOffset);
+console.log(result.answer);
+// → "severe allergic reaction to penicillin-class antibiotics"
+console.log('Confidence:', (result.confidence * 100).toFixed(1) + '%');
+// → Confidence: 94.2%`}
+</CodeBlock>
+
+## Challenge
+
+Build an extractive QA function that predicts start and end positions to extract answer spans.
+
+<Exercise slug="extractive-qa" />
+
+<KeyTakeaways takeaways={["Extractive QA is Ctrl+F that understands meaning — it finds answer spans by predicting start and end positions", "Two output heads (start logits, end logits) are applied independently, then combined to find the best span", "Answer spans are constrained to the context portion of the input, not the question", "In clinical settings, confidence scores determine whether to surface an answer or escalate to a human"]} />

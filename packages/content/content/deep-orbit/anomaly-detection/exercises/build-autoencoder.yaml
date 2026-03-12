@@ -1,0 +1,45 @@
+slug: build-autoencoder
+lessonSlug: autoencoders
+title: "Build an Autoencoder"
+instructions: "Build a simple autoencoder with TensorFlow.js: encoder (inputShape [8], Dense 4 relu), bottleneck (Dense 2 relu), decoder (Dense 4 relu, Dense 8 linear). Compile with adam and meanSquaredError."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function buildAutoencoder(): tf.Sequential {
+    const model = tf.sequential();
+    // Encoder: 8 → 4 (relu)
+    // Bottleneck: 4 → 2 (relu)
+    // Decoder: 2 → 4 (relu) → 8 (linear)
+    return null; // your code here
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function buildAutoencoder(): tf.Sequential {
+    const model = tf.sequential();
+    model.add(tf.layers.dense({ units: 4, activation: 'relu', inputShape: [8] }));
+    model.add(tf.layers.dense({ units: 2, activation: 'relu' }));
+    model.add(tf.layers.dense({ units: 4, activation: 'relu' }));
+    model.add(tf.layers.dense({ units: 8 }));
+    model.compile({ optimizer: 'adam', loss: 'meanSquaredError' });
+    return model;
+  }
+testCode: |
+  describe('buildAutoencoder', () => {
+    it('returns a model', () => {
+      expect(buildAutoencoder()).toBeDefined();
+    });
+    it('has 4 layers', () => {
+      expect(buildAutoencoder().layers.length).toBe(4);
+    });
+    it('input and output shapes match', () => {
+      const model = buildAutoencoder();
+      const input = tf.randomNormal([1, 8]);
+      const output = model.predict(input) as tf.Tensor;
+      expect(output.shape).toEqual([1, 8]);
+      input.dispose();
+      output.dispose();
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

@@ -1,0 +1,57 @@
+slug: build-spectrogram
+lessonSlug: spectrograms
+title: "Build a Spectrogram"
+instructions: "Implement a simple STFT function that slides a window across a signal and computes the FFT magnitude at each position. Return a 2D array where each row is one time window and each column is a frequency bin magnitude."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function stft(signal: number[], windowSize: number, hopSize: number): number[][] {
+    // 1. Calculate number of windows
+    // 2. For each window position:
+    //    a. Slice the signal from start to start + windowSize
+    //    b. Compute FFT with tf.spectral.rfft()
+    //    c. Get magnitudes with tf.abs()
+    //    d. Push to result array
+    return null; // your code here
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function stft(signal: number[], windowSize: number, hopSize: number): number[][] {
+    const spectrogram: number[][] = [];
+    const numWindows = Math.floor((signal.length - windowSize) / hopSize) + 1;
+    for (let i = 0; i < numWindows; i++) {
+      const start = i * hopSize;
+      const chunk = signal.slice(start, start + windowSize);
+      const magnitudes = tf.tidy(() => {
+        const fft = tf.spectral.rfft(tf.tensor1d(chunk));
+        return tf.abs(fft).arraySync() as number[];
+      });
+      spectrogram.push(magnitudes);
+    }
+    return spectrogram;
+  }
+testCode: |
+  describe('stft', () => {
+    const signal = Array.from({ length: 256 }, (_, i) => Math.sin(2 * Math.PI * 10 * i / 128));
+    it('returns a 2D array', () => {
+      const result = stft(signal, 64, 32);
+      expect(Array.isArray(result)).toBe(true);
+      expect(Array.isArray(result[0])).toBe(true);
+    });
+    it('has correct number of windows', () => {
+      const result = stft(signal, 64, 32);
+      const expected = Math.floor((256 - 64) / 32) + 1;
+      expect(result.length).toBe(expected);
+    });
+    it('has correct number of frequency bins', () => {
+      const result = stft(signal, 64, 32);
+      expect(result[0].length).toBe(33);
+    });
+    it('has non-negative magnitudes', () => {
+      const result = stft(signal, 64, 32);
+      result.forEach(row => row.forEach(val => expect(val).toBeGreaterThanOrEqual(0)));
+    });
+  });
+estimatedMinutes: 15
+difficulty: intermediate

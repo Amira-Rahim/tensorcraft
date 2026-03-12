@@ -1,0 +1,218 @@
+---
+slug: data-augmentation
+title: "Data Augmentation"
+moduleId: image-data
+themeId: neon-protocol
+order: 2
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "The team's dataset is solid but small — only 2,000 images. Training the Protocol Sentinel on this would be like learning to recognize faces from a single yearbook. Ryo fires up the augmentation pipeline: 'We don't need more cameras. We need more perspectives.'"
+  speaker: "Ryo"
+concept:
+  explanation: "Data augmentation creates training variety through transforms — just like CSS transforms create visual variations of the same element without changing the underlying DOM."
+  bridge:
+    feTitle: "CSS Transforms"
+    feCode: "transform: rotate(15deg) scale(0.9) skewX(5deg)"
+    mlTitle: "Image Augmentation"
+    mlCode: "augment(image, { rotate: 15, scale: 0.9, shear: 5 })"
+    tier: structural
+consequence:
+  narrative: "The augmentation pipeline transforms 2,000 images into an effective training set of 16,000. Ryo nods approvingly at the augmented samples scrolling across the screen. 'Same cameras, but the Sentinel will see them from every angle, in every light.'"
+  nextLessonTeaser: "Next: Normalization — scaling pixel values so the model can consume them consistently."
+hints:
+  - level: nudge
+    content: "Think about CSS transforms — rotate, scale, and translate all change how an element looks without changing what it is."
+  - level: guidance
+    content: "Each augmentation function takes pixel data (a 2D number array) and returns a transformed version. Rotation shifts positions, flipping reverses rows or columns, brightness adds to values."
+  - level: solution
+    content: "For horizontal flip, reverse each row. For brightness adjustment, add the delta to each pixel and clamp between 0 and 255. Apply a random subset of transforms to create variety."
+keywords:
+  - data augmentation
+  - image transforms
+  - CSS transforms
+  - training data
+  - overfitting prevention
+---
+
+<Dialogue speaker="Ryo">
+Two thousand images might sound like a lot, but a neural network will memorize them in minutes and learn nothing generalizable. We need to show it the same cameras from every angle, in every lighting condition. You already know how to transform visual elements — you've been doing it in CSS for years.
+</Dialogue>
+
+Every frontend developer has written `transform: rotate(45deg) scale(1.2)` to manipulate how an element appears on screen. The element itself doesn't change — its DOM structure, content, and semantics remain identical. You're just presenting it differently. Data augmentation applies the exact same principle to training images: transform the presentation without changing the meaning.
+
+<LearningObjectives objectives={[
+  "Understand why data augmentation prevents overfitting",
+  "Connect CSS transform operations to image augmentation techniques",
+  "Implement common augmentations: flip, rotate, brightness, and crop",
+  "Build an augmentation pipeline that applies random transforms"
+]} />
+
+## CSS Transforms Meet Image Transforms
+
+You already think in transforms. Every time you write a CSS animation or hover effect, you're applying spatial transformations to visual elements.
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+The operations map directly:
+
+| CSS Transform | Image Augmentation | Effect |
+|---|---|---|
+| `rotate(15deg)` | Rotation | Tilts the image |
+| `scale(0.8)` | Random crop + resize | Zooms in or out |
+| `scaleX(-1)` | Horizontal flip | Mirrors left-right |
+| `skewX(10deg)` | Shear transform | Angular distortion |
+| `brightness(1.2)` | Brightness adjustment | Lighter or darker |
+
+The key insight: **a dome camera rotated 15 degrees is still a dome camera**. The label doesn't change, but the model sees a new example. This forces it to learn the *concept* of "dome camera" rather than memorizing specific pixel patterns.
+
+## Why Augmentation Works
+
+<Dialogue speaker="Ryo">
+Imagine you only ever saw cars from the front. You'd recognize a grille and headlights, but a car from the side would confuse you. Augmentation is like walking around the car — same object, every angle.
+</Dialogue>
+
+Without augmentation, neural networks overfit — they memorize the training images pixel-for-pixel instead of learning general features. It's the ML equivalent of a component that only works at exactly 1440px width because you hardcoded every measurement instead of using flexible layouts.
+
+<CodeBlock language="typescript" title="overfitting-analogy.ts">
+{`// Frontend: brittle component (overfitting)
+const BrittleCard = () => (
+  <div style={{ width: "342px", height: "218px", left: "89px" }}>
+    {/* Only works at one exact viewport */}
+  </div>
+);
+
+// Frontend: flexible component (generalization)
+const FlexibleCard = () => (
+  <div style={{ width: "100%", maxWidth: "400px", padding: "1rem" }}>
+    {/* Works across viewports — learned the pattern, not the pixels */}
+  </div>
+);
+
+// ML: augmentation forces the model to be "flexible"
+// It must learn general features, not exact pixel positions`}
+</CodeBlock>
+
+## Core Augmentation Operations
+
+Let's implement the fundamental transforms. We'll work with images represented as 2D arrays of pixel values (0-255).
+
+<CodeBlock language="typescript" title="augmentations.ts">
+{`type PixelGrid = number[][];
+
+// Horizontal flip — like CSS scaleX(-1)
+function flipHorizontal(pixels: PixelGrid): PixelGrid {
+  return pixels.map(row => [...row].reverse());
+}
+
+// Vertical flip — like CSS scaleY(-1)
+function flipVertical(pixels: PixelGrid): PixelGrid {
+  return [...pixels].reverse();
+}
+
+// Brightness adjustment — like CSS filter: brightness()
+function adjustBrightness(pixels: PixelGrid, delta: number): PixelGrid {
+  return pixels.map(row =>
+    row.map(pixel => Math.max(0, Math.min(255, pixel + delta)))
+  );
+}
+
+// Random crop — like CSS object-fit: cover with offset
+function randomCrop(
+  pixels: PixelGrid,
+  cropHeight: number,
+  cropWidth: number
+): PixelGrid {
+  const maxY = pixels.length - cropHeight;
+  const maxX = pixels[0].length - cropWidth;
+  const startY = Math.floor(Math.random() * (maxY + 1));
+  const startX = Math.floor(Math.random() * (maxX + 1));
+
+  return pixels
+    .slice(startY, startY + cropHeight)
+    .map(row => row.slice(startX, startX + cropWidth));
+}`}
+</CodeBlock>
+
+Notice how `adjustBrightness` clamps values to the 0-255 range. This is exactly like clamping CSS values with `clamp()` — you need to keep outputs within valid bounds.
+
+## Building the Augmentation Pipeline
+
+In production, you don't apply every transform to every image. You randomly select a subset, creating natural variety — similar to how randomized CSS animations feel more organic than deterministic ones.
+
+<CodeBlock language="typescript" title="augmentation-pipeline.ts">
+{`interface AugmentationConfig {
+  flipHorizontal: boolean;
+  flipVertical: boolean;
+  brightnessRange: [number, number];
+  cropRatio: number;  // 0.8 means crop to 80% of original
+}
+
+function augmentImage(
+  pixels: PixelGrid,
+  config: AugmentationConfig
+): PixelGrid {
+  let result = pixels.map(row => [...row]);
+
+  // Each transform is applied with 50% probability
+  if (config.flipHorizontal && Math.random() > 0.5) {
+    result = flipHorizontal(result);
+  }
+
+  if (config.flipVertical && Math.random() > 0.5) {
+    result = flipVertical(result);
+  }
+
+  // Random brightness within range
+  const [minB, maxB] = config.brightnessRange;
+  const delta = minB + Math.random() * (maxB - minB);
+  if (Math.abs(delta) > 1) {
+    result = adjustBrightness(result, Math.round(delta));
+  }
+
+  // Random crop if configured
+  if (config.cropRatio < 1.0) {
+    const cropH = Math.floor(result.length * config.cropRatio);
+    const cropW = Math.floor(result[0].length * config.cropRatio);
+    result = randomCrop(result, cropH, cropW);
+  }
+
+  return result;
+}
+
+// Generate N augmented versions of a single image
+function generateAugmentations(
+  pixels: PixelGrid,
+  count: number,
+  config: AugmentationConfig
+): PixelGrid[] {
+  const augmented: PixelGrid[] = [];
+  for (let i = 0; i < count; i++) {
+    augmented.push(augmentImage(pixels, config));
+  }
+  return augmented;
+}`}
+</CodeBlock>
+
+<Dialogue speaker="Kira">
+So each augmented image is like a CSS variant — same underlying element, different visual presentation. The model learns to recognize the dome shape regardless of rotation or lighting.
+</Dialogue>
+
+Exactly. And just like you'd test your responsive component at multiple breakpoints, augmentation tests the model's understanding at multiple visual "breakpoints."
+
+## What NOT to Augment
+
+Not all transforms preserve meaning. Flipping text horizontally makes it unreadable. Rotating a "6" by 180 degrees turns it into a "9." For Zara's surveillance cameras, vertical flips are safe (cameras can be mounted upside down), but extreme rotations beyond 30 degrees would create unrealistic orientations.
+
+## Challenge
+
+Implement an augmentation pipeline that transforms surveillance camera images using flip, brightness, and crop operations.
+
+<Exercise slug="augment-image" />
+
+<KeyTakeaways takeaways={[
+  "Data augmentation creates training variety through transforms — the ML equivalent of CSS transforms on visual elements",
+  "Augmentation prevents overfitting by forcing the model to learn general features rather than memorizing exact pixel patterns",
+  "Common augmentations (flip, rotate, brightness, crop) map directly to CSS operations you already use",
+  "Not all transforms preserve label meaning — choose augmentations that create realistic variations"
+]} />

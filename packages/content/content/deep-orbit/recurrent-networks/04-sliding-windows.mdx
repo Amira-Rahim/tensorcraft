@@ -1,0 +1,125 @@
+---
+slug: sliding-windows
+title: "Sliding Windows"
+moduleId: recurrent-networks
+themeId: deep-orbit
+order: 4
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Park needs to feed continuous signal data into the LSTM in fixed-size chunks. He builds a sliding window pipeline — the same pattern as IntersectionObserver watching elements enter and leave the viewport."
+  speaker: "Ensign Park"
+concept:
+  explanation: "Sliding windows convert continuous streams into fixed-size overlapping chunks — like IntersectionObserver processing only what's in the viewport as the user scrolls."
+  bridge:
+    feTitle: "IntersectionObserver"
+    feCode: "observer.observe(element) // process what enters the viewport"
+    mlTitle: "Sliding Window"
+    mlCode: "sequences = signal.slice(i, i + windowSize) // process each window"
+    tier: structural
+consequence:
+  narrative: "The sliding window pipeline feeds perfectly shaped data into the LSTM. Park can now process the continuous signal feed in real time."
+  nextLessonTeaser: "Next: using the LSTM to predict future signal values"
+hints:
+  - level: nudge
+    content: "A sliding window moves through the signal one step at a time, creating overlapping subsequences"
+  - level: guidance
+    content: "For input/label pairs: input = window[0:n-1], label = window[n-1] (next value prediction)"
+  - level: solution
+    content: "for (let i = 0; i <= data.length - windowSize; i++) { X.push(data.slice(i, i+windowSize-1)); y.push(data[i+windowSize-1]); }"
+keywords:
+  - sliding-window
+  - batching
+  - time-series
+  - data-preparation
+---
+
+<Dialogue speaker="Ensign Park">
+The signal feed is continuous — readings every second, forever. But the LSTM needs fixed-size input: exactly 50 time steps. I need to convert a stream into windows, like IntersectionObserver processing what's currently in view.
+</Dialogue>
+
+You've used IntersectionObserver to lazy-load images or trigger animations as elements scroll into view. A sliding window over time-series data is the same concept: a fixed-size viewport slides across the data, processing each chunk as it enters the window.
+
+<LearningObjectives objectives={["Convert continuous signal streams into fixed-size overlapping windows", "Create input/label pairs for sequence prediction (next-value forecasting)", "Configure window size and stride for different temporal resolutions", "Build a streaming buffer that feeds the LSTM in real time"]} />
+
+## The Sliding Window Pattern
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="sliding-window.ts">
+{`// Sliding window for sequence prediction
+// Given: continuous signal [s0, s1, s2, s3, s4, s5, s6, s7, ...]
+// Window size: 4, Stride: 1
+
+// Window 0: [s0, s1, s2, s3] → predict s4
+// Window 1: [s1, s2, s3, s4] → predict s5
+// Window 2: [s2, s3, s4, s5] → predict s6
+
+function createWindows(
+  signal: number[][],
+  windowSize: number,
+  stride: number = 1,
+): { inputs: number[][][]; labels: number[][] } {
+  const inputs: number[][][] = [];
+  const labels: number[][] = [];
+
+  for (let i = 0; i <= signal.length - windowSize - 1; i += stride) {
+    inputs.push(signal.slice(i, i + windowSize));
+    labels.push(signal[i + windowSize]);
+  }
+
+  return { inputs, labels };
+}
+
+const readings = [
+  [0.5, 0.3], [0.8, 0.2], [0.3, 0.1], [0.5, 0.3],
+  [0.9, 0.4], [0.2, 0.1], [0.7, 0.5], [0.4, 0.2],
+];
+
+const { inputs, labels } = createWindows(readings, 4);
+console.log('Sequences:', inputs.length);  // 4`}
+</CodeBlock>
+
+## Real-Time Streaming Buffer
+
+<CodeBlock language="typescript" title="streaming-buffer.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+class SignalBuffer {
+  private buffer: number[][] = [];
+  private readonly windowSize: number;
+
+  constructor(windowSize: number) {
+    this.windowSize = windowSize;
+  }
+
+  push(reading: number[]): number[][] | null {
+    this.buffer.push(reading);
+    if (this.buffer.length > this.windowSize) {
+      this.buffer.shift();
+    }
+    return this.buffer.length === this.windowSize ? [...this.buffer] : null;
+  }
+}
+
+const buffer = new SignalBuffer(80);
+
+signalFeed.addEventListener('reading', (event: CustomEvent) => {
+  const window = buffer.push(event.detail.features);
+  if (window) {
+    const prediction = tf.tidy(() => {
+      const input = tf.tensor3d([window]);
+      return (model.predict(input) as tf.Tensor).dataSync();
+    });
+    updateDashboard(prediction);
+  }
+});`}
+</CodeBlock>
+
+## Challenge
+
+Build a sliding window function for sequential data.
+
+<Exercise slug="sliding-window" />
+
+<KeyTakeaways takeaways={["Sliding windows convert continuous streams into fixed-size chunks, like IntersectionObserver processing the visible viewport", "Window size determines temporal context — must be larger than the pattern you want to detect", "Stride controls overlap: stride=1 maximizes training data, stride=windowSize gives no overlap", "A ring buffer provides real-time windowing for the streaming dashboard pipeline"]} />

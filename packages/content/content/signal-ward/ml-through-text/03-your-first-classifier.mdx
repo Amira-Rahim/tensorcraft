@@ -1,0 +1,112 @@
+---
+slug: your-first-classifier
+title: "Your First Classifier"
+moduleId: ml-through-text
+themeId: signal-ward
+order: 3
+estimatedMinutes: 25
+difficulty: beginner
+context:
+  narrative: "Dr. Vasquez needs Diagnostic One to categorize incoming notes by type — allergy, progress, or discharge. Khalil builds his first classifier."
+  speaker: "Dr. Vasquez"
+concept:
+  explanation: "A classifier assigns a category to input data. At its simplest, it multiplies input features by learned weights and adds a bias — the same pattern as Array.map(x => x * weight + bias)."
+  bridge:
+    feTitle: "Array.map()"
+    feCode: "items.map(x => x * weight + bias)"
+    mlTitle: "Linear Classifier"
+    mlCode: "prediction = tf.add(tf.mul(input, weights), bias)"
+    tier: identity
+consequence:
+  narrative: "The first classifier correctly categorizes 3 out of 4 test notes. It's rough, but it works."
+  nextLessonTeaser: "Next: understanding how tokenization breaks text into processable units."
+hints:
+  - level: nudge
+    content: "Multiply each feature by a weight, sum the results, and add a bias."
+  - level: guidance
+    content: "Use tf.mul for element-wise multiplication, then tf.sum, then tf.add for bias."
+  - level: solution
+    content: "const score = tf.add(input.mul(weights).sum(), bias);"
+keywords:
+  - classifier
+  - weights
+  - bias
+  - linear-model
+---
+
+> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
+
+<Dialogue speaker="Dr. Vasquez">
+Our first milestone: Diagnostic One needs to tell the difference between an allergy note, a progress note, and a discharge summary. Can you build that, Khalil?
+</Dialogue>
+
+<Dialogue speaker="Khalil">
+So it's like... routing. A request comes in and I need to send it to the right handler based on its content?
+</Dialogue>
+
+<Dialogue speaker="Obi">
+That's exactly right. A classifier is a router for data. It looks at the features and decides which category they belong to.
+</Dialogue>
+
+You use `Array.map()` constantly — transforming each element in an array. A classifier does the same thing: it takes each input feature, multiplies it by a learned weight, adds a bias, and the result determines the category.
+
+<LearningObjectives objectives={["Build a simple linear classifier using TensorFlow.js", "Understand weights and bias as the model's learned parameters", "Map the concept of Array.map(transform) to matrix multiplication", "Classify clinical notes into categories using feature vectors"]} />
+
+## The Simplest Classifier
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+A linear classifier is just weighted addition. Each feature gets a weight that the model learns during training. Higher weight means that feature matters more for the prediction.
+
+<CodeBlock language="typescript" title="note-classifier.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Features: [has_allergy_word, has_medication, has_vitals, has_discharge_word, has_follow_up]
+const allergyNote = tf.tensor([1, 1, 0, 0, 0]);
+const progressNote = tf.tensor([0, 0, 1, 0, 0]);
+const dischargeNote = tf.tensor([0, 1, 0, 1, 1]);
+
+// Learned weights for "is this an allergy note?"
+const allergyWeights = tf.tensor([0.9, 0.3, -0.1, -0.5, -0.2]);
+const bias = tf.scalar(0.1);
+
+// Score = sum(features * weights) + bias
+function classify(features: tf.Tensor, weights: tf.Tensor, b: tf.Tensor): number {
+  const score = features.mul(weights).sum().add(b);
+  return score.dataSync()[0];
+}
+
+console.log('Allergy note score:', classify(allergyNote, allergyWeights, bias));     // ~1.3 (high)
+console.log('Progress note score:', classify(progressNote, allergyWeights, bias));    // ~0.0 (low)
+console.log('Discharge note score:', classify(dischargeNote, allergyWeights, bias));  // ~-0.1 (low)`}
+</CodeBlock>
+
+## From Score to Decision
+
+A raw score isn't a classification yet. We apply a **sigmoid** function to squash it between 0 and 1 — turning it into a probability.
+
+<CodeBlock language="typescript" title="sigmoid-decision.ts">
+{`// Sigmoid: squash any number to the 0-1 range
+// Like CSS clamp() but for probabilities
+function sigmoid(x: number): number {
+  return 1 / (1 + Math.exp(-x));
+}
+
+// High score → high probability
+console.log(sigmoid(1.3));   // ~0.79 → likely an allergy note
+console.log(sigmoid(0.0));   // 0.50 → uncertain
+console.log(sigmoid(-0.1));  // ~0.48 → probably not an allergy note
+
+// In TensorFlow.js, use tf.sigmoid()
+const scores = tf.tensor([1.3, 0.0, -0.1]);
+const probabilities = tf.sigmoid(scores);
+probabilities.print(); // [0.786, 0.500, 0.475]`}
+</CodeBlock>
+
+## Challenge
+
+Build a classifier that scores clinical notes as allergy-related or not.
+
+<Exercise slug="note-classifier" />
+
+<KeyTakeaways takeaways={["A classifier multiplies features by weights and adds bias — just like Array.map(transform)", "Sigmoid converts raw scores to probabilities between 0 and 1", "Weights are the parameters the model learns — they encode which features matter", "Classification is essentially routing: data in, category out"]} />

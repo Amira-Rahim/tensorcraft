@@ -1,0 +1,232 @@
+---
+slug: class-balance
+title: "Class Balance"
+moduleId: image-data
+themeId: neon-protocol
+order: 4
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Lin reviews the dataset statistics and spots trouble: 4,200 dome cameras but only 180 hidden micro-cameras — the very type the resistance most needs to detect. 'A model trained on this data will be brilliant at ignoring the most dangerous surveillance,' she warns."
+  speaker: "Lin"
+concept:
+  explanation: "Class imbalance in datasets is like uneven traffic distribution across servers — the overloaded class dominates while the underserved one gets ignored. Balancing techniques redistribute the load."
+  bridge:
+    feTitle: "Load Balancing"
+    feCode: "servers.distribute(requests, { strategy: 'round-robin' })"
+    mlTitle: "Class Balancing"
+    mlCode: "sampler.balance(dataset, { strategy: 'oversample-minority' })"
+    tier: structural
+consequence:
+  narrative: "After rebalancing, the Protocol Sentinel's recall on hidden micro-cameras jumps from 12% to 87%. Lin allows herself a rare smile. 'Now it sees what matters most — the cameras designed not to be seen.'"
+  nextLessonTeaser: "Next: Data Loaders — feeding your balanced dataset to the model efficiently."
+hints:
+  - level: nudge
+    content: "Think about what happens when one server gets 95% of the traffic — it dominates the system while others sit idle. Same thing happens when one class dominates a dataset."
+  - level: guidance
+    content: "Oversampling duplicates minority class samples. Undersampling removes majority class samples. Class weights make the model pay more attention to rare classes without changing the data."
+  - level: solution
+    content: "For oversampling, repeat minority class samples until they match the majority count. For calculating class weights, use totalSamples / (numClasses * classSampleCount) for each class."
+keywords:
+  - class imbalance
+  - oversampling
+  - undersampling
+  - class weights
+  - load balancing
+---
+
+<Dialogue speaker="Lin">
+Look at these numbers, Kira. Four thousand dome cameras, three thousand bullet cameras, eight hundred PTZ units, and only one hundred eighty hidden micro-cameras. If you trained a model that always guessed "dome camera," it would be right nearly half the time. That's not intelligence — that's a coin flip dressed up as a prediction.
+</Dialogue>
+
+If you've ever dealt with server load balancing, you understand this problem intuitively. Imagine a cluster of four servers where one handles 48% of all requests, another handles 34%, a third handles 9%, and the last handles only 2%. The overloaded servers dominate system behavior while the underserved ones barely register. Class imbalance in ML datasets creates exactly this problem — the model optimizes for the most common class and ignores the rare ones.
+
+<LearningObjectives objectives={[
+  "Recognize class imbalance and understand its impact on model performance",
+  "Connect load balancing strategies to dataset balancing techniques",
+  "Implement oversampling and undersampling to rebalance datasets",
+  "Calculate class weights as an alternative to resampling"
+]} />
+
+## The Load Balancing Parallel
+
+In infrastructure engineering, you never let one server absorb the majority of traffic. Load balancers distribute requests evenly so every server contributes and no single point of failure dominates.
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+ML class balancing uses the same strategies:
+
+| Load Balancing | Class Balancing | Strategy |
+|---|---|---|
+| Duplicate requests to idle servers | Oversample minority class | Add copies of rare examples |
+| Throttle busy servers | Undersample majority class | Remove excess common examples |
+| Weighted routing | Class weights | Make the model pay more attention to rare classes |
+
+## Measuring Imbalance
+
+Before balancing, you need to diagnose the problem. This is like monitoring server health before adjusting load balancer rules.
+
+<CodeBlock language="typescript" title="imbalance-analysis.ts">
+{`interface ClassDistribution {
+  label: string;
+  count: number;
+  percentage: number;
+}
+
+function analyzeBalance(labels: string[]): ClassDistribution[] {
+  const counts: Record<string, number> = {};
+  for (const label of labels) {
+    counts[label] = (counts[label] || 0) + 1;
+  }
+
+  const total = labels.length;
+  return Object.entries(counts)
+    .map(([label, count]) => ({
+      label,
+      count,
+      percentage: (count / total) * 100,
+    }))
+    .sort((a, b) => b.count - a.count);
+}
+
+function getImbalanceRatio(distribution: ClassDistribution[]): number {
+  // Ratio of largest class to smallest class
+  // > 10 is considered severely imbalanced
+  const maxCount = distribution[0].count;
+  const minCount = distribution[distribution.length - 1].count;
+  return minCount === 0 ? Infinity : maxCount / minCount;
+}
+
+// Example: Neon City surveillance dataset
+// dome-camera:    4200 (48.3%)  <-- majority
+// bullet-camera:  3000 (34.5%)
+// ptz-camera:      820 ( 9.4%)
+// hidden-camera:   180 ( 2.1%)  <-- minority
+// Imbalance ratio: 4200 / 180 = 23.3x (severely imbalanced)`}
+</CodeBlock>
+
+<Dialogue speaker="Lin">
+An imbalance ratio above 10 means your model is essentially blind to the minority class. At 23 to 1, the Sentinel would learn to say "dome camera" to almost everything and still score 48% accuracy. Useless.
+</Dialogue>
+
+## Oversampling: Duplicating Minority Requests
+
+The simplest fix: duplicate minority class samples until all classes have equal representation. It's like a load balancer replicating requests to underutilized servers.
+
+<CodeBlock language="typescript" title="oversampling.ts">
+{`interface Sample {
+  id: string;
+  label: string;
+}
+
+function oversample(samples: Sample[]): Sample[] {
+  // Find the majority class count
+  const counts: Record<string, Sample[]> = {};
+  for (const sample of samples) {
+    if (!counts[sample.label]) counts[sample.label] = [];
+    counts[sample.label].push(sample);
+  }
+
+  const maxCount = Math.max(
+    ...Object.values(counts).map(arr => arr.length)
+  );
+
+  // Repeat minority class samples to match majority count
+  const balanced: Sample[] = [];
+  for (const [label, classSamples] of Object.entries(counts)) {
+    for (let i = 0; i < maxCount; i++) {
+      balanced.push({
+        ...classSamples[i % classSamples.length],
+        id: i < classSamples.length
+          ? classSamples[i % classSamples.length].id
+          : classSamples[i % classSamples.length].id + "-dup-" + i,
+      });
+    }
+  }
+
+  return balanced;
+}`}
+</CodeBlock>
+
+Oversampling is safe and preserves all original data, but duplicated samples add no new information. Combining oversampling with augmentation (from the previous lesson) gives you the best of both worlds — more minority samples *and* more variety.
+
+## Undersampling: Throttling the Majority
+
+The opposite approach: reduce the majority class to match the minority. Like throttling a busy server, this can discard useful data.
+
+<CodeBlock language="typescript" title="undersampling.ts">
+{`function undersample(samples: Sample[]): Sample[] {
+  const counts: Record<string, Sample[]> = {};
+  for (const sample of samples) {
+    if (!counts[sample.label]) counts[sample.label] = [];
+    counts[sample.label].push(sample);
+  }
+
+  const minCount = Math.min(
+    ...Object.values(counts).map(arr => arr.length)
+  );
+
+  // Take only minCount samples from each class
+  const balanced: Sample[] = [];
+  for (const classSamples of Object.values(counts)) {
+    // Shuffle and take first minCount
+    const shuffled = [...classSamples].sort(() => Math.random() - 0.5);
+    balanced.push(...shuffled.slice(0, minCount));
+  }
+
+  return balanced;
+}
+
+// Warning: undersampling our dataset from 8,200 to 720 total samples
+// (180 per class x 4 classes) throws away 91% of our data!`}
+</CodeBlock>
+
+## Class Weights: The Software Solution
+
+Instead of changing the data, change how much the model cares about each class. Class weights multiply the loss for rare classes, making errors on them more expensive — like prioritizing critical API endpoints in your monitoring dashboard.
+
+<CodeBlock language="typescript" title="class-weights.ts">
+{`function calculateClassWeights(
+  labels: string[]
+): Record<string, number> {
+  const counts: Record<string, number> = {};
+  for (const label of labels) {
+    counts[label] = (counts[label] || 0) + 1;
+  }
+
+  const total = labels.length;
+  const numClasses = Object.keys(counts).length;
+  const weights: Record<string, number> = {};
+
+  // Formula: total / (numClasses * classCount)
+  // Rare classes get higher weights
+  for (const [label, count] of Object.entries(counts)) {
+    weights[label] = total / (numClasses * count);
+  }
+
+  return weights;
+}
+
+// Example output for our surveillance dataset:
+// dome-camera:   8200 / (4 * 4200) = 0.49 (downweighted)
+// bullet-camera: 8200 / (4 * 3000) = 0.68
+// ptz-camera:    8200 / (4 * 820)  = 2.50
+// hidden-camera: 8200 / (4 * 180)  = 11.39 (heavily upweighted)`}
+</CodeBlock>
+
+<Dialogue speaker="Kira">
+So the model loses 11 times more when it misclassifies a hidden camera than a dome camera. That forces it to pay attention to the rare class even though it only appears 2% of the time.
+</Dialogue>
+
+## Challenge
+
+Implement class balancing strategies to fix the imbalanced surveillance camera dataset.
+
+<Exercise slug="balance-classes" />
+
+<KeyTakeaways takeaways={[
+  "Class imbalance causes models to ignore rare classes — like a server getting 2% of traffic being invisible in monitoring",
+  "Oversampling duplicates minority samples (safe but adds no new information without augmentation)",
+  "Undersampling reduces majority samples (balances classes but discards potentially useful data)",
+  "Class weights adjust loss magnitude per class — the most flexible approach that preserves all data"
+]} />

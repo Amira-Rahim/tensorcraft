@@ -1,0 +1,190 @@
+---
+slug: anchor-boxes
+title: "Anchor Boxes"
+moduleId: object-detection
+themeId: neon-protocol
+order: 2
+estimatedMinutes: 30
+difficulty: intermediate
+context:
+  narrative: "Zara projects a grid onto a surveillance feed. Each cell glows faintly, waiting for a detection. 'The model does not search the entire image pixel by pixel,' she explains. 'It divides the image into regions — anchors — and checks each one. Just like CSS Grid divides a page into template areas.'"
+  speaker: "Zara"
+concept:
+  explanation: "Anchor boxes are pre-defined regions placed across an image in a grid pattern. The model predicts adjustments to these anchors rather than guessing coordinates from scratch. This is like CSS Grid template areas — a pre-defined layout that content snaps to."
+  bridge:
+    feTitle: "CSS Grid Template Areas"
+    feCode: "grid-template-areas: 'header header' 'sidebar main' 'footer footer';"
+    mlTitle: "Anchor Grid"
+    mlCode: "anchors = generateAnchors(gridSize: 7, scales: [0.5, 1.0, 2.0])"
+    tier: structural
+consequence:
+  narrative: "NEON flickers. 'Meridian uses a 13x13 anchor grid with 5 anchors per cell. That is 845 candidate boxes per frame. I used to evaluate all 845 in 4 milliseconds. You will need to be faster.'"
+  nextLessonTeaser: "Next: IoU — measuring how well your predicted boxes match the real targets"
+hints:
+  - level: nudge
+    content: "Think of the image as a CSS Grid — each cell gets pre-defined box templates"
+  - level: guidance
+    content: "Generate anchor center points by dividing the image into a grid, then create multiple boxes at each center"
+  - level: solution
+    content: "Loop through grid cells, compute center points, then apply width and height scales at each center"
+keywords:
+  - anchor-boxes
+  - detection-grid
+  - aspect-ratios
+  - scales
+  - css-grid
+---
+
+<Dialogue speaker="Zara">
+Think about how you lay out a dashboard. You do not position each widget pixel by pixel. You define a CSS Grid — columns, rows, template areas — and then content snaps into those regions. Object detection works the same way. The model pre-defines a grid of "anchor boxes" across the image and then predicts adjustments to those anchors.
+</Dialogue>
+
+<Dialogue speaker="Kira">
+So instead of the model saying "there is an object at exactly pixel 347, 218" — it says "the object is near anchor #42, shifted a bit left and stretched taller"?
+</Dialogue>
+
+<Dialogue speaker="Zara">
+Exactly. Predicting offsets from known positions is much easier than predicting absolute coordinates from nothing. Your CSS Grid intuition maps perfectly.
+</Dialogue>
+
+Searching an entire image for objects is computationally brutal. Instead, modern detection models pre-define a grid of **anchor boxes** — candidate regions at various sizes and aspect ratios. The model then predicts two things for each anchor: (1) "is there an object here?" and (2) "how should I adjust this anchor to fit the object?"
+
+<LearningObjectives objectives={["Understand anchor boxes as pre-defined detection candidates placed on a grid", "Generate anchor boxes at multiple scales and aspect ratios", "Calculate anchor offsets (deltas) to adjust anchors to fit objects", "Connect the CSS Grid mental model to detection grid architecture"]} />
+
+## The Anchor Grid
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+Just as CSS Grid divides a page into regions, a detection model divides an image into a grid. At each grid cell, it places several anchor boxes of different sizes and shapes.
+
+<CodeBlock language="typescript" title="anchor-grid.ts">
+{`// CSS Grid: you define a layout structure
+// grid-template-columns: repeat(7, 1fr);
+// grid-template-rows: repeat(7, 1fr);
+// -> 49 cells, each a candidate region
+
+// Anchor Grid: same idea for object detection
+// Divide the image into a 7x7 grid
+// At each cell, place anchors of different sizes
+
+interface Anchor {
+  cx: number;  // center x (normalized 0-1)
+  cy: number;  // center y (normalized 0-1)
+  width: number;
+  height: number;
+}
+
+function generateGrid(gridSize: number): Array<{ cx: number; cy: number }> {
+  const centers: Array<{ cx: number; cy: number }> = [];
+  const cellSize = 1.0 / gridSize;
+
+  for (let row = 0; row < gridSize; row++) {
+    for (let col = 0; col < gridSize; col++) {
+      centers.push({
+        cx: (col + 0.5) * cellSize,
+        cy: (row + 0.5) * cellSize,
+      });
+    }
+  }
+
+  return centers; // 49 center points for a 7x7 grid
+}
+
+const grid = generateGrid(7);
+console.log(grid.length); // 49
+console.log(grid[0]);     // { cx: 0.071, cy: 0.071 } — top-left cell center`}
+</CodeBlock>
+
+## Multiple Scales and Aspect Ratios
+
+Real objects come in different sizes and shapes. A person is tall and narrow; a car is wide and short. We generate multiple anchors at each grid cell to cover these variations.
+
+<CodeBlock language="typescript" title="multi-scale-anchors.ts">
+{`// Like CSS Grid with multiple items per cell:
+// Each cell can hold small, medium, or large elements
+// Each element can be portrait, square, or landscape
+
+function generateAnchors(
+  gridSize: number,
+  scales: number[],
+  aspectRatios: number[]
+): Anchor[] {
+  const anchors: Anchor[] = [];
+  const cellSize = 1.0 / gridSize;
+
+  for (let row = 0; row < gridSize; row++) {
+    for (let col = 0; col < gridSize; col++) {
+      const cx = (col + 0.5) * cellSize;
+      const cy = (row + 0.5) * cellSize;
+
+      for (const scale of scales) {
+        for (const ratio of aspectRatios) {
+          // ratio = width / height
+          const w = scale * cellSize * Math.sqrt(ratio);
+          const h = scale * cellSize / Math.sqrt(ratio);
+          anchors.push({ cx, cy, width: w, height: h });
+        }
+      }
+    }
+  }
+
+  return anchors;
+}
+
+// 3 scales x 3 ratios = 9 anchors per cell
+// 7x7 grid = 49 cells
+// Total: 49 * 9 = 441 anchor boxes
+
+const anchors = generateAnchors(
+  7,
+  [0.5, 1.0, 2.0],     // small, medium, large
+  [0.5, 1.0, 2.0]      // tall, square, wide
+);
+
+console.log(anchors.length); // 441`}
+</CodeBlock>
+
+## Predicting Offsets
+
+The model does not predict raw coordinates. It predicts **offsets** (deltas) from the nearest anchor. This is more stable and easier to learn.
+
+<CodeBlock language="typescript" title="anchor-offsets.ts">
+{`// Think of it like CSS transform: translate()
+// The anchor is the element's grid position
+// The offset is the transform that adjusts it
+
+interface AnchorDelta {
+  dx: number;   // shift center x
+  dy: number;   // shift center y
+  dw: number;   // scale width (log scale)
+  dh: number;   // scale height (log scale)
+}
+
+function applyDelta(anchor: Anchor, delta: AnchorDelta): Anchor {
+  return {
+    cx: anchor.cx + delta.dx * anchor.width,
+    cy: anchor.cy + delta.dy * anchor.height,
+    width: anchor.width * Math.exp(delta.dw),
+    height: anchor.height * Math.exp(delta.dh),
+  };
+}
+
+// The model predicts small deltas — nudging anchors into place
+// Much easier than predicting absolute coordinates from scratch
+// Like CSS: transform: translate(5px, -3px) scale(1.2)
+// vs setting left: 347px; top: 218px from nothing
+
+const anchor: Anchor = { cx: 0.5, cy: 0.5, width: 0.2, height: 0.2 };
+const delta: AnchorDelta = { dx: 0.1, dy: -0.05, dw: 0.2, dh: 0.3 };
+const adjusted = applyDelta(anchor, delta);
+console.log(adjusted);
+// Center shifted slightly, box grew a bit — now fits the object`}
+</CodeBlock>
+
+## Challenge
+
+Generate an anchor grid with multiple scales.
+
+<Exercise slug="anchor-boxes" />
+
+<KeyTakeaways takeaways={["Anchor boxes are pre-defined candidate regions laid out on a grid — like CSS Grid template areas", "Multiple scales and aspect ratios at each cell cover objects of different sizes and shapes", "Models predict offsets (deltas) from anchors rather than raw coordinates — like CSS transforms", "A 7x7 grid with 9 anchors per cell produces 441 candidates per image — the model scores all of them"]} />

@@ -1,0 +1,152 @@
+---
+slug: the-diffusion-process
+title: "The Diffusion Process"
+moduleId: diffusion-models
+themeId: nova-canvas
+order: 1
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Petrov pulls up the first render from MUSE. Pure noise. 'This is what the model starts with,' Ren explains. 'It learns to remove the noise, step by step, until an image appears. Like watching a Polaroid develop.'"
+  speaker: "Ren"
+concept:
+  explanation: "Diffusion models generate images by starting from pure noise and gradually removing it over many steps — exactly like progressive image loading, where a blurry placeholder sharpens into the final image."
+  bridge:
+    feTitle: "Progressive image loading (blur-up)"
+    feCode: "img { filter: blur(20px); transition: filter 0.3s; }"
+    mlTitle: "Diffusion denoising steps"
+    mlCode: "for (let t = T; t > 0; t--) image = denoise(image, t);"
+    tier: intuition
+consequence:
+  narrative: "The gallery screen flickers. From static snow, a shape emerges — buildings, a sky, stars. Forty-three seconds of patient denoising. Petrov whispers: 'It is beautiful. But forty-three seconds is an eternity for a kiosk.'"
+  nextLessonTeaser: "Next: noise schedules — controlling the trajectory from noise to clarity"
+hints:
+  - level: nudge
+    content: "Think of blur-up image loading: you start blurry and progressively sharpen"
+  - level: guidance
+    content: "The forward process adds noise in steps. The reverse process removes noise in steps. The model learns the reverse."
+  - level: solution
+    content: "Add Gaussian noise at each timestep t with a scaling factor. The model predicts the noise to subtract."
+keywords:
+  - diffusion
+  - denoising
+  - forward-process
+  - reverse-process
+  - progressive-loading
+---
+
+<Dialogue speaker="Petrov">
+Forty-three seconds. I timed it. The gallery opens in nine days and each kiosk takes forty-three seconds to produce a single image. We will have a queue around the block — and not the good kind.
+</Dialogue>
+
+<Dialogue speaker="Ren">
+Let me show you what is happening in those forty-three seconds. The model starts here — pure random noise. Then step by step, it removes a little noise. Watch the screen.
+</Dialogue>
+
+<Dialogue speaker="Yara">
+It is like watching a Polaroid develop. Or like those websites where the image loads blurry first, then sharpens. Progressive loading, right?
+</Dialogue>
+
+You already know this pattern. Progressive image loading starts with a tiny, blurred placeholder and sharpens it into the final image. Diffusion models do exactly the same thing — but in reverse. They learn to undo noise.
+
+<LearningObjectives objectives={["Understand the forward process: systematically adding noise to an image", "Understand the reverse process: a neural network learning to remove that noise", "Connect diffusion to progressive image loading (blur-up technique)", "Implement basic noise addition and removal with TensorFlow.js"]} />
+
+## The Forward Process: Destroying an Image
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="forward-diffusion.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// The forward process: systematically add Gaussian noise
+// Like progressively blurring an image until it is pure static
+function addNoise(
+  image: tf.Tensor4D,
+  timestep: number,
+  totalSteps: number
+): tf.Tensor4D {
+  // How much noise to add at this step (more noise = later step)
+  const noiseLevel = timestep / totalSteps;
+
+  // Generate random Gaussian noise matching image shape
+  const noise = tf.randomNormal(image.shape);
+
+  // Blend: original * (1 - noiseLevel) + noise * noiseLevel
+  const noisy = tf.add(
+    tf.mul(image, tf.scalar(1 - noiseLevel)),
+    tf.mul(noise, tf.scalar(noiseLevel))
+  );
+
+  return noisy as tf.Tensor4D;
+}
+
+// Watch an image dissolve into noise over 10 steps
+const image = tf.randomUniform([1, 64, 64, 3]); // placeholder "image"
+for (let t = 0; t <= 10; t++) {
+  const noisy = addNoise(image, t, 10);
+  console.log(\`Step \${t}: noise level = \${(t / 10).toFixed(1)}\`);
+  noisy.dispose();
+}
+// Step 0: noise level = 0.0  (original image)
+// Step 5: noise level = 0.5  (half noise, half image)
+// Step 10: noise level = 1.0 (pure noise)`}
+</CodeBlock>
+
+## The Reverse Process: Recovering the Image
+
+The model learns to reverse each step. Given a noisy image and a timestep, it predicts the noise that was added — then subtracts it.
+
+<CodeBlock language="typescript" title="reverse-diffusion.ts">
+{`// Simplified reverse diffusion step
+// The model predicts noise, we subtract it
+function denoiseStep(
+  noisyImage: tf.Tensor4D,
+  predictedNoise: tf.Tensor4D,
+  timestep: number,
+  totalSteps: number
+): tf.Tensor4D {
+  const stepSize = 1 / totalSteps;
+
+  // Subtract the predicted noise, scaled by step size
+  const cleaned = tf.sub(
+    noisyImage,
+    tf.mul(predictedNoise, tf.scalar(stepSize))
+  );
+
+  return cleaned as tf.Tensor4D;
+}
+
+// The full generation loop: start from noise, denoise step by step
+async function generate(
+  model: tf.LayersModel,
+  steps: number
+): Promise<tf.Tensor4D> {
+  let image = tf.randomNormal([1, 64, 64, 3]) as tf.Tensor4D;
+
+  for (let t = steps; t > 0; t--) {
+    // Model predicts the noise in the current image
+    const timestepTensor = tf.tensor1d([t / steps]);
+    const predictedNoise = model.predict(
+      [image, timestepTensor]
+    ) as tf.Tensor4D;
+
+    // Remove the predicted noise
+    const cleaned = denoiseStep(image, predictedNoise, t, steps);
+
+    image.dispose();
+    predictedNoise.dispose();
+    timestepTensor.dispose();
+    image = cleaned;
+  }
+
+  return image; // from pure noise to a generated image
+}`}
+</CodeBlock>
+
+## Challenge
+
+Add noise to an image tensor at a given timestep.
+
+<Exercise slug="add-noise" />
+
+<KeyTakeaways takeaways={["Diffusion = progressive image loading in reverse: noise sharpens into an image over many steps", "The forward process adds Gaussian noise incrementally until only static remains", "The reverse process uses a neural network to predict and subtract that noise step by step", "Each denoising step is small — the model only has to remove a little noise at a time, making the task learnable"]} />

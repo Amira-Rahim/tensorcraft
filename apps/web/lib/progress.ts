@@ -5,7 +5,9 @@ export async function getUserProgress(userId: string, themeSlug: string) {
   const supabase = await getSupabaseServerClient();
   const { data } = await supabase
     .from("theme_progress")
-    .select("*")
+    .select(
+      "id, theme_id, module_id, lesson_id, status, score, started_at, completed_at, updated_at",
+    )
     .eq("user_id", userId)
     .eq("theme_id", themeSlug);
 
@@ -28,6 +30,25 @@ export async function isLessonCompleted(
     .single();
 
   return data?.status === "completed";
+}
+
+/** Check if all lessons in a module are completed */
+export async function isModuleCompleted(
+  userId: string,
+  themeSlug: string,
+  moduleSlug: string,
+  totalLessons: number,
+) {
+  const supabase = await getSupabaseServerClient();
+  const { count } = await supabase
+    .from("theme_progress")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", userId)
+    .eq("theme_id", themeSlug)
+    .eq("module_id", moduleSlug)
+    .eq("status", "completed");
+
+  return (count ?? 0) >= totalLessons;
 }
 
 /** Check if user has purchased a theme */

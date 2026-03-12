@@ -1,0 +1,76 @@
+slug: pixel-indexing
+lessonSlug: pixels-and-tensors
+title: "Pixel Indexing"
+instructions: "Write a function that converts between flat pixel array index and (x, y) coordinates. Given width, convert a flat index to {x, y} and vice versa. Assume 4 channels (RGBA) per pixel."
+starterCode: |
+  interface Pixel {
+    x: number;
+    y: number;
+  }
+
+  function flatToPixel(flatIndex: number, width: number): Pixel {
+    // flatIndex is the byte offset in the RGBA array
+    // Each pixel is 4 bytes: R, G, B, A
+    // pixelIndex = floor(flatIndex / 4)
+    // x = pixelIndex % width
+    // y = floor(pixelIndex / width)
+    return null; // your code here
+  }
+
+  function pixelToFlat(x: number, y: number, width: number): number {
+    // Return the flat byte offset for pixel (x, y)
+    return null; // your code here
+  }
+solutionCode: |
+  interface Pixel {
+    x: number;
+    y: number;
+  }
+
+  function flatToPixel(flatIndex: number, width: number): Pixel {
+    const pixelIndex = Math.floor(flatIndex / 4);
+    return {
+      x: pixelIndex % width,
+      y: Math.floor(pixelIndex / width),
+    };
+  }
+
+  function pixelToFlat(x: number, y: number, width: number): number {
+    return (y * width + x) * 4;
+  }
+testCode: |
+  describe('flatToPixel', () => {
+    it('converts first pixel', () => {
+      expect(flatToPixel(0, 100)).toEqual({ x: 0, y: 0 });
+    });
+
+    it('converts within first row', () => {
+      expect(flatToPixel(20, 100)).toEqual({ x: 5, y: 0 });
+    });
+
+    it('converts to second row', () => {
+      expect(flatToPixel(400, 100)).toEqual({ x: 0, y: 1 });
+    });
+  });
+
+  describe('pixelToFlat', () => {
+    it('converts origin', () => {
+      expect(pixelToFlat(0, 0, 100)).toBe(0);
+    });
+
+    it('converts first row', () => {
+      expect(pixelToFlat(5, 0, 100)).toBe(20);
+    });
+
+    it('converts second row', () => {
+      expect(pixelToFlat(0, 1, 100)).toBe(400);
+    });
+
+    it('roundtrips correctly', () => {
+      const flat = pixelToFlat(7, 3, 50);
+      const pixel = flatToPixel(flat, 50);
+      expect(pixel).toEqual({ x: 7, y: 3 });
+    });
+  });
+estimatedMinutes: 8
+difficulty: beginner

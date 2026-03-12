@@ -1,0 +1,67 @@
+slug: generate-mask
+lessonSlug: mask-generation
+title: "Generate a Binary Mask"
+instructions: "Write a function that takes a 2D probability map (values 0-1) and a threshold, and returns a binary mask where values above the threshold are 1 and values at or below are 0. Also count the number of positive pixels."
+starterCode: |
+  interface MaskResult {
+    mask: number[][];
+    positiveCount: number;
+  }
+
+  function generateMask(probMap: number[][], threshold: number): MaskResult {
+    // Convert probability values to binary: > threshold = 1, else 0
+    // Count how many pixels are positive (1)
+    return { mask: [], positiveCount: 0 }; // your code here
+  }
+solutionCode: |
+  interface MaskResult {
+    mask: number[][];
+    positiveCount: number;
+  }
+
+  function generateMask(probMap: number[][], threshold: number): MaskResult {
+    let positiveCount = 0;
+    const mask = probMap.map(row =>
+      row.map(val => {
+        const binary = val > threshold ? 1 : 0;
+        positiveCount += binary;
+        return binary;
+      })
+    );
+    return { mask, positiveCount };
+  }
+testCode: |
+  describe('generateMask', () => {
+    it('thresholds values correctly', () => {
+      const probs = [[0.8, 0.3], [0.6, 0.1]];
+      const result = generateMask(probs, 0.5);
+      expect(result.mask).toEqual([[1, 0], [1, 0]]);
+    });
+
+    it('counts positive pixels', () => {
+      const probs = [[0.9, 0.9], [0.9, 0.1]];
+      const result = generateMask(probs, 0.5);
+      expect(result.positiveCount).toBe(3);
+    });
+
+    it('handles threshold of 0', () => {
+      const probs = [[0.1, 0.0], [0.5, 0.0]];
+      const result = generateMask(probs, 0);
+      expect(result.mask).toEqual([[1, 0], [1, 0]]);
+    });
+
+    it('value equal to threshold is 0', () => {
+      const probs = [[0.5]];
+      const result = generateMask(probs, 0.5);
+      expect(result.mask).toEqual([[0]]);
+      expect(result.positiveCount).toBe(0);
+    });
+
+    it('handles all-positive mask', () => {
+      const probs = [[1.0, 0.9], [0.8, 0.7]];
+      const result = generateMask(probs, 0.5);
+      expect(result.positiveCount).toBe(4);
+    });
+  });
+estimatedMinutes: 6
+difficulty: intermediate

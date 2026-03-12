@@ -1,0 +1,43 @@
+slug: predict-next
+lessonSlug: sequence-prediction
+title: "Predict the Next Signal Value"
+instructions: "Build an LSTM-based prediction model: LSTM layer (32 units, inputShape [10, 2]), Dense hidden layer (16 units, relu), Dense output layer (2 units, linear). Compile with adam optimizer and meanSquaredError loss. The model should take 10 time steps of 2 features and predict the next 2-feature reading."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function buildPredictor(): tf.Sequential {
+    const model = tf.sequential();
+    // LSTM → Dense(relu) → Dense(linear)
+    // Input: [10, 2], Output: [2]
+    return null; // your code here
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function buildPredictor(): tf.Sequential {
+    const model = tf.sequential();
+    model.add(tf.layers.lstm({ units: 32, inputShape: [10, 2] }));
+    model.add(tf.layers.dense({ units: 16, activation: 'relu' }));
+    model.add(tf.layers.dense({ units: 2 }));
+    model.compile({ optimizer: 'adam', loss: 'meanSquaredError' });
+    return model;
+  }
+testCode: |
+  describe('buildPredictor', () => {
+    it('returns a model', () => {
+      expect(buildPredictor()).toBeDefined();
+    });
+    it('has 3 layers', () => {
+      expect(buildPredictor().layers.length).toBe(3);
+    });
+    it('produces correct output shape', () => {
+      const model = buildPredictor();
+      const input = tf.randomNormal([1, 10, 2]);
+      const output = model.predict(input) as tf.Tensor;
+      expect(output.shape).toEqual([1, 2]);
+      input.dispose();
+      output.dispose();
+    });
+  });
+estimatedMinutes: 12
+difficulty: intermediate

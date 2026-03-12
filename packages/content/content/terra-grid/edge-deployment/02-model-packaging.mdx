@@ -1,0 +1,148 @@
+---
+slug: model-packaging
+title: "Model Packaging"
+moduleId: edge-deployment
+themeId: terra-grid
+order: 2
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Cole needs to bundle the Terra Grid model with its preprocessing logic, metadata, and validation checksums into a single deployable artifact."
+  speaker: "Cole Branson"
+concept:
+  explanation: "Model packaging is npm publishing for ML — you bundle weights, config, and metadata into a versioned artifact with integrity checks."
+  bridge:
+    feTitle: "npm pack"
+    feCode: "npm pack --json // creates versioned .tgz with package.json"
+    mlTitle: "Model Package"
+    mlCode: "packageModel({ weights, config, version, checksum })"
+    tier: structural
+consequence:
+  narrative: "The first model package passes integrity validation. Cole queues it for deployment to Sector 7."
+  nextLessonTeaser: "Next: choosing the right runtime environment for each device"
+hints:
+  - level: nudge
+    content: "Think about what goes into a npm package besides the code"
+  - level: guidance
+    content: "A model package needs weights, config, version info, and integrity checksums"
+  - level: solution
+    content: "Bundle model.json, weights.bin, preprocessing config, and a SHA-256 checksum into a versioned archive"
+keywords:
+  - model-packaging
+  - versioning
+  - checksum
+  - artifact
+---
+
+<Dialogue speaker="Cole Branson">
+I am not shipping raw weight files to 847 devices. Every deployment artifact needs a version, a checksum, and a rollback path. One corrupt byte in a weight file and the model outputs garbage.
+</Dialogue>
+
+<Dialogue speaker="Park Soo-Yeon">
+Treat it like a release. Semantic versioning, integrity hashes, the works.
+</Dialogue>
+
+You would never `npm publish` a package without a `package.json`, a version number, and a lockfile hash. Model deployment deserves the same rigor. A model package bundles everything needed for inference into a single, versioned, verifiable artifact.
+
+<LearningObjectives objectives={["Structure a model deployment artifact with weights, config, and metadata", "Implement integrity verification using checksums — the same concept as SRI hashes", "Apply semantic versioning to model releases", "Build a packaging pipeline that produces reproducible deployment bundles"]} />
+
+## Anatomy of a Model Package
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="model-package.ts">
+{`import * as tf from '@tensorflow/tfjs';
+import { createHash } from 'crypto';
+
+interface ModelPackage {
+  manifest: {
+    name: string;
+    version: string;            // semver, like package.json
+    created: string;
+    inputShape: number[];
+    outputShape: number[];
+    preprocessing: PreprocessConfig;
+  };
+  weights: ArrayBuffer;          // the model weights binary
+  checksum: string;              // SHA-256 of weights
+  signature: string;             // deployment approval hash
+}
+
+interface PreprocessConfig {
+  normalization: { mean: number[]; std: number[] };
+  featureOrder: string[];
+  inputRange: [number, number];
+}
+
+function createPackage(
+  model: tf.LayersModel,
+  weights: ArrayBuffer,
+  config: PreprocessConfig,
+  version: string,
+): ModelPackage {
+  const checksum = createHash('sha256')
+    .update(Buffer.from(weights))
+    .digest('hex');
+
+  return {
+    manifest: {
+      name: 'terra-grid-intelligence',
+      version,
+      created: new Date().toISOString(),
+      inputShape: [1, 24],       // 24 sensor features
+      outputShape: [1, 3],       // normal, warning, critical
+      preprocessing: config,
+    },
+    weights,
+    checksum,
+    signature: createHash('sha256')
+      .update(checksum + version)
+      .digest('hex'),
+  };
+}`}
+</CodeBlock>
+
+## Integrity Verification
+
+Subresource Integrity (SRI) hashes verify that a CDN-served script has not been tampered with. Model checksums do the same thing — verify that the weights arriving on an edge device are exactly what was packaged.
+
+<CodeBlock language="typescript" title="verify-package.ts">
+{`function verifyPackage(pkg: ModelPackage): boolean {
+  // Like checking <script integrity="sha256-...">
+  const computedChecksum = createHash('sha256')
+    .update(Buffer.from(pkg.weights))
+    .digest('hex');
+
+  if (computedChecksum !== pkg.checksum) {
+    console.error('INTEGRITY FAILURE: weights corrupted in transit');
+    return false;
+  }
+
+  const expectedSig = createHash('sha256')
+    .update(pkg.checksum + pkg.manifest.version)
+    .digest('hex');
+
+  if (expectedSig !== pkg.signature) {
+    console.error('SIGNATURE MISMATCH: unauthorized package');
+    return false;
+  }
+
+  console.log(\`Package \${pkg.manifest.name}@\${pkg.manifest.version} verified\`);
+  return true;
+}
+
+// On the edge device:
+const pkg = await downloadPackage('terra-grid-intelligence', '2.1.0');
+if (!verifyPackage(pkg)) {
+  console.error('Aborting deployment — falling back to previous version');
+  await rollback();
+}`}
+</CodeBlock>
+
+## Challenge
+
+Create a model packaging function with versioning and integrity verification.
+
+<Exercise slug="package-model" />
+
+<KeyTakeaways takeaways={["Model packages bundle weights, config, and metadata — just like npm packages bundle code and package.json", "Integrity checksums prevent corrupted deployments the same way SRI hashes prevent tampered scripts", "Semantic versioning for models enables rollback and compatibility tracking across your device fleet", "Never deploy raw weight files — always package, version, verify, then deploy"]} />

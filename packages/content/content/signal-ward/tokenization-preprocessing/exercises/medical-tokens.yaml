@@ -1,0 +1,39 @@
+slug: medical-tokens
+lessonSlug: medical-tokenization
+title: "Medical Tokens"
+instructions: "Implement a medicalTokenize function that tokenizes text and expands common medical abbreviations. Use the provided ABBREVS map. The function should lowercase, split into tokens, then replace any token found in the abbreviation map with its expanded form."
+starterCode: |
+  const ABBREVS = new Map([
+    ['pt', 'patient'], ['hx', 'history'], ['dx', 'diagnosis'],
+    ['rx', 'prescription'], ['pcn', 'penicillin'], ['bp', 'blood-pressure'],
+  ]);
+
+  function medicalTokenize(text: string): string[] {
+    // 1. Lowercase and tokenize (split on non-alphanumeric)
+    // 2. Map each token through the abbreviation map
+    return null; // your code here
+  }
+
+  const result = medicalTokenize('Pt hx of PCN allergy. BP elevated.');
+solutionCode: |
+  const ABBREVS = new Map([
+    ['pt', 'patient'], ['hx', 'history'], ['dx', 'diagnosis'],
+    ['rx', 'prescription'], ['pcn', 'penicillin'], ['bp', 'blood-pressure'],
+  ]);
+
+  function medicalTokenize(text: string): string[] {
+    const tokens = text.toLowerCase().match(/[a-z0-9]+/g) || [];
+    return tokens.map(t => ABBREVS.get(t) ?? t);
+  }
+
+  const result = medicalTokenize('Pt hx of PCN allergy. BP elevated.');
+testCode: |
+  describe('Medical Tokens', () => {
+    it('returns an array', () => { expect(Array.isArray(result)).toBe(true); });
+    it('expands pt to patient', () => { expect(result[0]).toBe('patient'); });
+    it('expands hx to history', () => { expect(result[1]).toBe('history'); });
+    it('expands pcn to penicillin', () => { expect(result).toContain('penicillin'); });
+    it('leaves non-abbreviations unchanged', () => { expect(result).toContain('allergy'); });
+  });
+estimatedMinutes: 7
+difficulty: intermediate

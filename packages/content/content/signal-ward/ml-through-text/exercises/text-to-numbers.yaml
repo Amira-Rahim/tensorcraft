@@ -1,0 +1,23 @@
+slug: text-to-numbers
+lessonSlug: the-crisis
+title: "Text to Numbers"
+instructions: "Create a feature tensor representing a clinical note. The note mentions 'allergy' (index 0), 'penicillin' (index 1), and 'anaphylaxis' (index 3). Set those positions to 1 and the rest to 0. The tensor should have 5 elements."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  // Create a 1D tensor with 5 elements
+  // Positions 0, 1, 3 should be 1 (features present)
+  // Positions 2, 4 should be 0 (features absent)
+  const noteFeatures = null; // your code here
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  const noteFeatures = tf.tensor([1, 1, 0, 1, 0]);
+testCode: |
+  describe('Text to Numbers', () => {
+    it('creates a tensor', () => { expect(noteFeatures).toBeDefined(); });
+    it('has correct shape', () => { expect(noteFeatures.shape).toEqual([5]); });
+    it('has correct values', () => { expect(Array.from(noteFeatures.dataSync())).toEqual([1, 1, 0, 1, 0]); });
+  });
+estimatedMinutes: 5
+difficulty: beginner

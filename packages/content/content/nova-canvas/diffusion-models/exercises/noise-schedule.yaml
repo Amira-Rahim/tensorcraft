@@ -1,0 +1,47 @@
+slug: noise-schedule
+lessonSlug: noise-schedules
+title: "Implement a Cosine Noise Schedule"
+instructions: "Implement a cosine noise schedule that returns an array of cumulative alpha values (alpha_bar) for each timestep. Use the formula: alpha_bar(t) = cos((t/T + s) / (1 + s) * pi/2)^2, where s = 0.008 is a small offset to prevent alpha_bar from being exactly 1 at t=0."
+starterCode: |
+  function cosineAlphaBar(timesteps: number, s: number = 0.008): number[] {
+    // Return an array of alpha_bar values for t = 0 to timesteps-1
+    // alpha_bar(t) = cos( ((t/T) + s) / (1 + s) * (pi / 2) ) ^ 2
+    return null; // your code here
+  }
+solutionCode: |
+  function cosineAlphaBar(timesteps: number, s: number = 0.008): number[] {
+    const result: number[] = [];
+    for (let t = 0; t < timesteps; t++) {
+      const angle = ((t / timesteps + s) / (1 + s)) * (Math.PI / 2);
+      result.push(Math.cos(angle) ** 2);
+    }
+    return result;
+  }
+testCode: |
+  describe('cosineAlphaBar', () => {
+    it('returns correct number of values', () => {
+      const result = cosineAlphaBar(100);
+      expect(result.length).toBe(100);
+    });
+    it('starts near 1 (mostly signal)', () => {
+      const result = cosineAlphaBar(100);
+      expect(result[0]).toBeGreaterThan(0.99);
+    });
+    it('ends near 0 (mostly noise)', () => {
+      const result = cosineAlphaBar(100);
+      expect(result[99]).toBeLessThan(0.01);
+    });
+    it('is monotonically decreasing', () => {
+      const result = cosineAlphaBar(50);
+      for (let i = 1; i < result.length; i++) {
+        expect(result[i]).toBeLessThan(result[i - 1]);
+      }
+    });
+    it('midpoint preserves roughly half signal', () => {
+      const result = cosineAlphaBar(100);
+      expect(result[50]).toBeGreaterThan(0.3);
+      expect(result[50]).toBeLessThan(0.7);
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

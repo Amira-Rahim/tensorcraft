@@ -1,0 +1,131 @@
+---
+slug: fine-tuning-bert
+title: "Fine-Tuning BERT"
+moduleId: transformers-bert
+themeId: signal-ward
+order: 5
+estimatedMinutes: 25
+difficulty: advanced
+context:
+  narrative: "The team fine-tunes a pre-trained BERT model on clinical text to build Diagnostic One's language understanding."
+  speaker: "Obi Nwosu"
+concept:
+  explanation: "Fine-tuning adapts a pre-trained model to a specific domain by continuing training on domain-specific data with a task-specific head."
+  bridge:
+    feTitle: "Customizing a Component Library"
+    feCode: "// Import MUI, override theme tokens\nconst theme = createTheme({ palette: { primary: '#00D4FF' } });"
+    mlTitle: "Fine-Tuning BERT"
+    mlCode: "// Load pre-trained BERT, add clinical classification head\nconst model = addClassifier(bertBase, numLabels);"
+    tier: analogy
+consequence:
+  narrative: "Diagnostic One now understands clinical language — not just general English — thanks to domain-specific fine-tuning."
+  nextLessonTeaser: "Next module: Named Entity Recognition — finding drugs, conditions, and procedures in clinical text."
+hints:
+  - level: nudge
+    content: "Freeze early BERT layers, only train the classification head initially"
+  - level: guidance
+    content: "Use a small learning rate (2e-5) and few epochs (3-4) to avoid catastrophic forgetting"
+  - level: solution
+    content: "Load pre-trained weights, add dense layer on [CLS] output, train with small LR for 3 epochs"
+keywords:
+  - fine-tuning
+  - transfer-learning
+  - domain-adaptation
+  - clinical-bert
+---
+
+<Dialogue speaker="Obi Nwosu">
+BERT was pre-trained on Wikipedia and books — general English. It knows language, but it doesn't know medicine. "Discharge" means something completely different in a clinical note than in everyday conversation. We need to fine-tune it on clinical text.
+</Dialogue>
+
+<Dialogue speaker="Khalil Mensah">
+That's like how I customize component libraries. I don't build Material UI from scratch — I import it and override the theme tokens to match our design system. Same components, different skin.
+</Dialogue>
+
+<LearningObjectives objectives={["Understand the fine-tuning paradigm: pre-train then adapt", "Add a task-specific classification head to a pre-trained encoder", "Apply appropriate learning rates to prevent catastrophic forgetting", "Fine-tune on clinical text for condition classification"]} />
+
+## Theme Overrides for Neural Networks
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+Fine-tuning follows the same pattern as theming a component library: you take a foundation that already works (pre-trained BERT), keep its core capabilities (language understanding), and customize the surface layer (task-specific head) for your domain.
+
+<CodeBlock language="typescript" title="fine-tune-clinical.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Simulated pre-trained BERT encoder (in practice, load real weights)
+function createBertEncoder(dModel: number, numLayers: number) {
+  const model = tf.sequential();
+  for (let i = 0; i < numLayers; i++) {
+    model.add(tf.layers.dense({
+      units: dModel,
+      activation: 'relu',
+      inputShape: i === 0 ? [dModel] : undefined
+    }));
+  }
+  return model;
+}
+
+// Add clinical classification head
+function addClinicalHead(
+  encoder: tf.Sequential,
+  numLabels: number,
+  dModel: number
+) {
+  const input = tf.input({ shape: [dModel] });
+  const encoded = encoder.apply(input) as tf.SymbolicTensor;
+
+  // Classification head: dropout → dense → softmax
+  const dropped = tf.layers.dropout({ rate: 0.1 }).apply(encoded) as tf.SymbolicTensor;
+  const output = tf.layers.dense({
+    units: numLabels,
+    activation: 'softmax'
+  }).apply(dropped) as tf.SymbolicTensor;
+
+  return tf.model({ inputs: input, outputs: output });
+}
+
+// Build and compile
+const dModel = 64;
+const encoder = createBertEncoder(dModel, 3);
+const clinicalModel = addClinicalHead(encoder, 5, dModel);
+
+// Use a SMALL learning rate for fine-tuning
+clinicalModel.compile({
+  optimizer: tf.train.adam(2e-5), // much smaller than training from scratch
+  loss: 'categoricalCrossentropy',
+  metrics: ['accuracy']
+});
+
+// Simulated clinical data: [CLS] embeddings → condition labels
+const xTrain = tf.randomNormal([100, dModel]);
+const yTrain = tf.oneHot(
+  tf.randomUniform([100], 0, 5, 'int32'),
+  5
+);
+
+await clinicalModel.fit(xTrain, yTrain, {
+  epochs: 3,      // few epochs — we're refining, not training from scratch
+  batchSize: 16,
+  validationSplit: 0.2,
+  callbacks: {
+    onEpochEnd: (epoch, logs) => {
+      console.log(\`Epoch \${epoch + 1}: loss=\${logs.loss.toFixed(4)}, acc=\${logs.acc.toFixed(4)}\`);
+    }
+  }
+});`}
+</CodeBlock>
+
+## Catastrophic Forgetting
+
+<Dialogue speaker="Obi Nwosu">
+The biggest risk in fine-tuning is catastrophic forgetting — the model overwrites its general language knowledge while learning clinical specifics. It's like customizing a theme so aggressively that the component library's core functionality breaks. Use small learning rates. Train for few epochs. Preserve the foundation.
+</Dialogue>
+
+## Challenge
+
+Fine-tune a pre-trained encoder on clinical condition classification.
+
+<Exercise slug="fine-tune-bert" />
+
+<KeyTakeaways takeaways={["Fine-tuning adapts pre-trained models to specific domains without training from scratch", "Add a task-specific head (dense + softmax) on top of the encoder", "Use small learning rates (2e-5) and few epochs to prevent catastrophic forgetting", "Domain-specific fine-tuning is why clinical BERT outperforms general BERT on medical tasks"]} />

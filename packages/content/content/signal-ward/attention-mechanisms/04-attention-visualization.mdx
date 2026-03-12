@@ -1,0 +1,128 @@
+---
+slug: attention-visualization
+title: "Attention Visualization"
+moduleId: attention-mechanisms
+themeId: signal-ward
+order: 4
+estimatedMinutes: 20
+difficulty: intermediate
+context:
+  narrative: "Khalil builds tools to visualize what Diagnostic One focuses on in clinical notes."
+  speaker: "Khalil Mensah"
+concept:
+  explanation: "Attention weights can be visualized as heatmaps, revealing which words the model connects."
+  bridge:
+    feTitle: "DevTools Element Highlighting"
+    feCode: "// Hover in DevTools → element highlights in the page"
+    mlTitle: "Attention Heatmap"
+    mlCode: "// High attention weight → token highlights in visualization"
+    tier: analogy
+consequence:
+  narrative: "Vasquez can now see why Diagnostic One makes its decisions — building trust in the system."
+  nextLessonTeaser: "Next: applying attention specifically to clinical vocabulary."
+hints:
+  - level: nudge
+    content: "Extract the attention weights matrix and render it as a grid"
+  - level: guidance
+    content: "Map weight values to opacity or color intensity for each token pair"
+  - level: solution
+    content: "Use canvas or SVG to render a seqLen x seqLen heatmap from the weights tensor"
+keywords:
+  - visualization
+  - heatmap
+  - interpretability
+  - explainability
+---
+
+<Dialogue speaker="Dr. Elena Vasquez">
+I can't trust a system I can't understand. If Diagnostic One flags a drug interaction, I need to see why — which words in the clinical note drove that decision.
+</Dialogue>
+
+<Dialogue speaker="Khalil Mensah">
+That's like DevTools highlighting. When you hover over an element in the inspector, the browser shows you exactly which box on the page it corresponds to. We can do the same with attention weights.
+</Dialogue>
+
+<LearningObjectives objectives={["Extract attention weight matrices from a model", "Render attention weights as a visual heatmap", "Interpret attention patterns in clinical context", "Build interactive token-pair attention displays"]} />
+
+## Making the Invisible Visible
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+Attention weights form a matrix where each cell `[i, j]` represents how much token `i` attends to token `j`. Visualizing this matrix reveals the model's internal reasoning.
+
+<CodeBlock language="typescript" title="attention-heatmap.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+interface AttentionViz {
+  tokens: string[];
+  weights: number[][];
+}
+
+async function extractAttentionWeights(
+  tokens: string[],
+  embeddings: tf.Tensor2D,
+  dk: number
+): Promise<AttentionViz> {
+  const Wq = tf.randomNormal([embeddings.shape[1], dk]);
+  const Wk = tf.randomNormal([embeddings.shape[1], dk]);
+
+  const Q = tf.matMul(embeddings, Wq);
+  const K = tf.matMul(embeddings, Wk);
+
+  const scores = tf.matMul(Q, K.transpose()).div(Math.sqrt(dk));
+  const weights = tf.softmax(scores, -1);
+
+  const weightMatrix = await weights.array() as number[][];
+  return { tokens, weights: weightMatrix };
+}
+
+function renderHeatmap(viz: AttentionViz, canvas: HTMLCanvasElement) {
+  const ctx = canvas.getContext('2d')!;
+  const cellSize = 40;
+  const n = viz.tokens.length;
+
+  canvas.width = cellSize * (n + 1);
+  canvas.height = cellSize * (n + 1);
+
+  for (let i = 0; i < n; i++) {
+    for (let j = 0; j < n; j++) {
+      const weight = viz.weights[i][j];
+      const intensity = Math.floor(weight * 255);
+      ctx.fillStyle = \`rgba(0, 212, 255, \${weight})\`;
+      ctx.fillRect((j + 1) * cellSize, (i + 1) * cellSize, cellSize - 1, cellSize - 1);
+    }
+    // Row and column labels
+    ctx.fillStyle = '#8B92A5';
+    ctx.font = '11px monospace';
+    ctx.fillText(viz.tokens[i], 2, (i + 1) * cellSize + 25);
+    ctx.fillText(viz.tokens[i], (i + 1) * cellSize + 2, 15);
+  }
+}
+
+// Example usage
+const tokens = ['Patient', 'prescribed', 'methotrexate', 'for', 'arthritis'];
+const embeddings = tf.randomNormal([5, 32]) as tf.Tensor2D;
+const viz = await extractAttentionWeights(tokens, embeddings, 16);
+// renderHeatmap(viz, document.getElementById('canvas'));`}
+</CodeBlock>
+
+## Reading Attention Patterns
+
+Common patterns in clinical attention heatmaps:
+
+- **Diagonal** — each word attends most to itself (common in early layers)
+- **Vertical stripes** — all words attend to a key term like a drug name
+- **Block patterns** — words within a clause attend to each other
+- **Off-diagonal connections** — distant words linked semantically
+
+<Dialogue speaker="Obi Nwosu">
+When you see "methotrexate" with a bright vertical stripe, every other word is attending to it. That's the model recognizing it as the anchor of the sentence — exactly what a clinician would do.
+</Dialogue>
+
+## Challenge
+
+Visualize attention weights between clinical tokens as a heatmap.
+
+<Exercise slug="visualize-attention" />
+
+<KeyTakeaways takeaways={["Attention weights form an interpretable matrix showing model focus", "Heatmaps reveal which token pairs the model connects", "Visualization builds clinical trust — doctors can verify model reasoning", "Common patterns include diagonal, vertical stripes, and block structures"]} />

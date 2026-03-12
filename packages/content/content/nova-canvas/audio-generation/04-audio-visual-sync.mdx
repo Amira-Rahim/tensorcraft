@@ -1,0 +1,172 @@
+---
+slug: audio-visual-sync
+title: "Audio-Visual Sync"
+moduleId: audio-generation
+themeId: nova-canvas
+order: 4
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Yara watches generated visuals drift independently of generated audio. 'They need to breathe together. Sound and image, one organism.' Kai nods. 'requestAnimationFrame meets AudioContext.currentTime.'"
+  speaker: "Yara"
+concept:
+  explanation: "Audio-visual synchronization aligns two generation loops — the visual render loop (requestAnimationFrame) and the audio scheduling loop (AudioContext) — using a shared clock."
+  bridge:
+    feTitle: "rAF + AudioContext Timing"
+    feCode: "requestAnimationFrame(t => { const audioTime = ctx.currentTime; render(audioTime); });"
+    mlTitle: "Synchronized Generation"
+    mlCode: "const frame = visualModel.predict(latent); const audio = audioModel.predict(latent);"
+    tier: structural
+consequence:
+  narrative: "Colors pulse with bass frequencies. Shapes morph in rhythm with melody. The installation is no longer visual or auditory — it is synaesthetic. MUSE whispers: 'They are listening with their eyes.'"
+  nextLessonTeaser: "Next: making soundscapes respond to the audience"
+hints:
+  - level: nudge
+    content: "Use AudioContext.currentTime as the single source of truth for both audio and visual timing"
+  - level: guidance
+    content: "Extract audio features (amplitude, frequency) in real time and pass them to the visual renderer"
+  - level: solution
+    content: "Use an AnalyserNode to get frequency data, then use those values to drive visual parameters in rAF"
+keywords:
+  - synchronization
+  - requestAnimationFrame
+  - analyser
+  - real-time
+---
+
+<Dialogue speaker="Yara">
+The visuals and the audio are two strangers in the same room. They need to become one thing. When the bass drops, the colors should deepen. When the melody rises, the geometry should unfold.
+</Dialogue>
+
+<Dialogue speaker="Kai">
+requestAnimationFrame gives us the visual heartbeat. AudioContext.currentTime gives us the audio heartbeat. We just need to make them share a pulse.
+</Dialogue>
+
+You have synchronized animations to scroll position, to mouse movement, to API responses. Audio-visual sync is the same problem: two systems that need to share a clock. The browser gives you both clocks already — `requestAnimationFrame` for visuals at 60fps, and `AudioContext.currentTime` for audio at sample-level precision.
+
+<LearningObjectives objectives={["Synchronize visual rendering with audio playback using shared timing", "Extract real-time audio features with AnalyserNode for visual reactivity", "Drive generative visual parameters from audio frequency and amplitude data", "Build a unified generation loop that produces coherent audio-visual output"]} />
+
+## The Two Clocks
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="sync-clocks.ts">
+{`// The browser has two timing systems. You already use both.
+// Visual: requestAnimationFrame — ~16.67ms intervals (60fps)
+// Audio: AudioContext.currentTime — microsecond precision
+
+const audioCtx = new AudioContext();
+const analyser = audioCtx.createAnalyser();
+analyser.fftSize = 256;
+const frequencyData = new Uint8Array(analyser.frequencyBinCount);
+const timeDomainData = new Uint8Array(analyser.fftSize);
+
+// Connect audio source → analyser → speakers
+// source.connect(analyser).connect(audioCtx.destination);
+
+function syncLoop() {
+  requestAnimationFrame(syncLoop);
+
+  // Read current audio state — this is your bridge
+  analyser.getByteFrequencyData(frequencyData);
+  analyser.getByteTimeDomainData(timeDomainData);
+
+  // Extract features for visual generation
+  const bass = average(frequencyData.slice(0, 4));    // Low frequencies
+  const mids = average(frequencyData.slice(4, 32));   // Mid frequencies
+  const highs = average(frequencyData.slice(32, 64)); // High frequencies
+  const amplitude = Math.max(...timeDomainData) / 255;
+
+  // Drive visuals from audio features
+  renderVisualization({ bass, mids, highs, amplitude });
+}
+
+function average(arr: Uint8Array): number {
+  return arr.reduce((sum, v) => sum + v, 0) / arr.length / 255;
+}`}
+</CodeBlock>
+
+## Neural Audio-Visual Generation
+
+<CodeBlock language="typescript" title="av-generation.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Shared latent space drives both audio and visual generation
+// Same z vector → coherent output across modalities
+class AVGenerator {
+  private visualDecoder: tf.LayersModel;
+  private audioDecoder: tf.LayersModel;
+
+  constructor(visualDecoder: tf.LayersModel, audioDecoder: tf.LayersModel) {
+    this.visualDecoder = visualDecoder;
+    this.audioDecoder = audioDecoder;
+  }
+
+  async generate(latent: tf.Tensor) {
+    // Same latent vector produces both visual and audio output
+    const [visual, audio] = await Promise.all([
+      this.visualDecoder.predict(latent) as tf.Tensor,
+      this.audioDecoder.predict(latent) as tf.Tensor,
+    ]);
+
+    return {
+      imageData: await visual.data() as Float32Array,
+      audioData: await audio.data() as Float32Array,
+    };
+  }
+
+  // Smooth transitions: interpolate latent space over time
+  async generateSequence(z1: tf.Tensor, z2: tf.Tensor, steps: number) {
+    const frames = [];
+    for (let i = 0; i < steps; i++) {
+      const alpha = i / (steps - 1);
+      const z = z1.mul(1 - alpha).add(z2.mul(alpha));
+      frames.push(await this.generate(z));
+    }
+    return frames;
+  }
+}
+
+// Both modalities evolve together — one latent walk, two outputs
+const generator = new AVGenerator(visualModel, audioModel);
+const sequence = await generator.generateSequence(z1, z2, 60); // 1 second at 60fps`}
+</CodeBlock>
+
+## Reactive Canvas
+
+<CodeBlock language="typescript" title="reactive-canvas.ts">
+{`// Map audio features to canvas parameters
+function renderVisualization(features: {
+  bass: number; mids: number; highs: number; amplitude: number;
+}) {
+  const canvas = document.getElementById('viz') as HTMLCanvasElement;
+  const ctx = canvas.getContext('2d')!;
+
+  // Bass drives background color intensity
+  const bgIntensity = Math.floor(features.bass * 40);
+  ctx.fillStyle = \`rgb(\${bgIntensity}, \${bgIntensity * 0.5}, \${bgIntensity * 2})\`;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Mids drive shape count and size
+  const shapeCount = Math.floor(features.mids * 20) + 1;
+  const shapeSize = features.amplitude * 100;
+
+  for (let i = 0; i < shapeCount; i++) {
+    const x = (canvas.width / shapeCount) * i + shapeSize / 2;
+    const y = canvas.height / 2 + Math.sin(Date.now() / 1000 + i) * features.highs * 100;
+
+    ctx.beginPath();
+    ctx.arc(x, y, shapeSize * (0.5 + features.highs), 0, Math.PI * 2);
+    ctx.fillStyle = \`hsla(\${i * 30 + features.bass * 360}, 70%, 60%, \${features.amplitude})\`;
+    ctx.fill();
+  }
+}`}
+</CodeBlock>
+
+## Challenge
+
+Build a synchronized audio-visual loop that drives canvas rendering from real-time audio analysis.
+
+<Exercise slug="sync-av" />
+
+<KeyTakeaways takeaways={["AudioContext.currentTime and requestAnimationFrame are the browser's two timing systems — sync them for AV coherence", "AnalyserNode extracts real-time frequency and amplitude data without interrupting playback", "Shared latent spaces ensure audio and visual generation are semantically linked, not just temporally", "Audio-reactive visuals use the same data-binding pattern as reactive UI frameworks"]} />

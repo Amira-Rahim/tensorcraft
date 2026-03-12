@@ -1,0 +1,110 @@
+---
+slug: self-attention
+title: "Self-Attention"
+moduleId: attention-mechanisms
+themeId: signal-ward
+order: 2
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Obi introduces self-attention — every word attending to every other word in a clinical note."
+  speaker: "Obi Nwosu"
+concept:
+  explanation: "Self-attention lets each token compute relevance scores against all other tokens in the same sequence."
+  bridge:
+    feTitle: "scrollIntoView()"
+    feCode: "el.scrollIntoView({ behavior: 'smooth' }); // programmatic focus"
+    mlTitle: "Self-Attention"
+    mlCode: "const attn = tf.softmax(tf.matMul(Q, K.transpose())); // each token attends to all others"
+    tier: analogy
+consequence:
+  narrative: "Diagnostic One can now relate distant words — connecting a drug mentioned in paragraph one to a side effect in paragraph three."
+  nextLessonTeaser: "Next: multi-head attention, attending to multiple aspects simultaneously."
+hints:
+  - level: nudge
+    content: "Query, Key, and Value are all derived from the same input"
+  - level: guidance
+    content: "Multiply the input by three different weight matrices to get Q, K, V"
+  - level: solution
+    content: "Q = input * Wq; K = input * Wk; V = input * Wv; attn = softmax(Q * K^T / sqrt(dk)) * V"
+keywords:
+  - self-attention
+  - query-key-value
+  - scaled-dot-product
+---
+
+<Dialogue speaker="Obi Nwosu">
+Basic attention uses an external query — we ask "what's the diagnosis?" and the model finds relevant words. But what if every word in the sentence could ask its own question about every other word?
+</Dialogue>
+
+<Dialogue speaker="Khalil Mensah">
+Like when I use `scrollIntoView()` — any element can programmatically bring another element into focus, not just the user's click.
+</Dialogue>
+
+<Dialogue speaker="Obi Nwosu">
+Perfect analogy. In self-attention, every word generates its own query, and every word is both a potential answer and a potential key. The result? Each word builds a representation that accounts for its full context.
+</Dialogue>
+
+<LearningObjectives objectives={["Understand the Query-Key-Value framework", "Implement scaled dot-product self-attention", "Explain why scaling by sqrt(d_k) prevents gradient issues", "Apply self-attention to a clinical text sequence"]} />
+
+## Query, Key, Value — The Three Projections
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+Think of self-attention like a hospital database. Each clinical term plays three roles simultaneously:
+- **Query**: "What information am I looking for?" (the search term)
+- **Key**: "What information do I contain?" (the index entry)
+- **Value**: "What do I actually provide when matched?" (the record content)
+
+<CodeBlock language="typescript" title="self-attention.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+function selfAttention(input: tf.Tensor2D, dk: number) {
+  // input shape: [seqLen, embedDim]
+  const seqLen = input.shape[0];
+  const embedDim = input.shape[1];
+
+  // Learned projection matrices
+  const Wq = tf.variable(tf.randomNormal([embedDim, dk]));
+  const Wk = tf.variable(tf.randomNormal([embedDim, dk]));
+  const Wv = tf.variable(tf.randomNormal([embedDim, dk]));
+
+  // Project input into Q, K, V spaces
+  const Q = tf.matMul(input, Wq); // [seqLen, dk]
+  const K = tf.matMul(input, Wk); // [seqLen, dk]
+  const V = tf.matMul(input, Wv); // [seqLen, dk]
+
+  // Scaled dot-product attention
+  const scale = Math.sqrt(dk);
+  const scores = tf.matMul(Q, K.transpose()).div(scale); // [seqLen, seqLen]
+  const weights = tf.softmax(scores, -1); // normalize each row
+
+  // Weighted sum of values
+  const output = tf.matMul(weights, V); // [seqLen, dk]
+  return { output, weights };
+}
+
+// Example: 8 clinical tokens, 32-dim embeddings, 16-dim attention
+const input = tf.randomNormal([8, 32]) as tf.Tensor2D;
+const { output, weights } = selfAttention(input, 16);
+console.log('Output shape:', output.shape);  // [8, 16]
+console.log('Weight matrix shape:', weights.shape);  // [8, 8]`}
+</CodeBlock>
+
+## Why Scale by sqrt(d_k)?
+
+Without scaling, dot products grow large as dimensionality increases. Large values push softmax into regions with extremely small gradients — the model stops learning. Dividing by `sqrt(d_k)` keeps values in a reasonable range.
+
+It's the same reason you normalize CSS values. A `z-index: 999999` works, but it makes the system brittle and hard to reason about.
+
+<Dialogue speaker="Obi Nwosu">
+In the note "Patient denied chest pain but reported nausea after starting methotrexate," self-attention lets "nausea" attend strongly to "methotrexate" — capturing that causal relationship even though four words separate them.
+</Dialogue>
+
+## Challenge
+
+Implement self-attention scores for a sequence of token embeddings.
+
+<Exercise slug="self-attention-scores" />
+
+<KeyTakeaways takeaways={["Self-attention lets every token attend to every other token in the sequence", "Q, K, V are linear projections of the same input — three different views", "Scaling by sqrt(d_k) prevents gradient vanishing in softmax", "Self-attention captures long-range dependencies that RNNs struggle with"]} />

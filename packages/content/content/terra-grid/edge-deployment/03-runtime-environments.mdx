@@ -1,0 +1,156 @@
+---
+slug: runtime-environments
+title: "Runtime Environments"
+moduleId: edge-deployment
+themeId: terra-grid
+order: 3
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Sector 7 runs three different processor architectures. Cole must choose the right ML runtime for each — TFLite for ARM, ONNX for x86, WASM for the browser dashboards."
+  speaker: "Cole Branson"
+concept:
+  explanation: "ML runtimes are like browser engines — V8, SpiderMonkey, and JSC all run JavaScript differently, just as TFLite, ONNX Runtime, and WASM run models differently."
+  bridge:
+    feTitle: "Browser Engines"
+    feCode: "// V8 (Chrome), SpiderMonkey (Firefox), JSC (Safari)"
+    mlTitle: "ML Runtimes"
+    mlCode: "// TFLite (mobile/ARM), ONNX (x86), WASM (browser)"
+    tier: structural
+consequence:
+  narrative: "Cole maps each device tier to its optimal runtime. The deployment matrix is complete."
+  nextLessonTeaser: "Next: pushing model updates over the air to remote devices"
+hints:
+  - level: nudge
+    content: "Think about how different browsers optimize JavaScript differently"
+  - level: guidance
+    content: "Each runtime has strengths — TFLite for mobile ARM, ONNX for x86, WASM for portability"
+  - level: solution
+    content: "Select runtime based on target hardware, then convert the model to that runtime's format"
+keywords:
+  - tflite
+  - onnx-runtime
+  - webassembly
+  - runtime-selection
+---
+
+<Dialogue speaker="Cole Branson">
+The substations run x86 Linux. The field sensors run ARM. And Hassan wants a browser dashboard that runs inference locally. That is three different runtimes for the same model.
+</Dialogue>
+
+<Dialogue speaker="GRID">
+Runtime compatibility matrix updated. TFLite coverage: 710 devices. ONNX Runtime coverage: 137 devices. WebAssembly fallback available for all.
+</Dialogue>
+
+You write JavaScript once, but V8, SpiderMonkey, and JavaScriptCore each compile and execute it differently. Each engine has different JIT strategies, different garbage collection, different performance characteristics. ML runtimes work the same way — one model, multiple execution engines, each optimized for different hardware.
+
+<LearningObjectives objectives={["Compare ML runtimes (TFLite, ONNX, WASM) to browser engines (V8, SpiderMonkey, JSC)", "Select the optimal runtime based on target hardware constraints", "Convert models between runtime formats", "Implement a runtime abstraction layer for cross-platform deployment"]} />
+
+## One Model, Multiple Engines
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="runtime-selection.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+type RuntimeTarget = 'tflite' | 'onnx' | 'wasm' | 'tfjs';
+
+interface RuntimeConfig {
+  target: RuntimeTarget;
+  format: string;
+  optimizations: string[];
+  avgInferenceMs: number;
+}
+
+// Like selecting the right polyfill bundle per browser
+const runtimeMatrix: Record<string, RuntimeConfig> = {
+  substation: {
+    target: 'onnx',
+    format: 'model.onnx',
+    optimizations: ['graph-optimization', 'operator-fusion'],
+    avgInferenceMs: 8,
+  },
+  sensor: {
+    target: 'tflite',
+    format: 'model.tflite',
+    optimizations: ['neon-simd', 'xnnpack-delegate'],
+    avgInferenceMs: 15,
+  },
+  remote: {
+    target: 'wasm',
+    format: 'model_wasm.bin',
+    optimizations: ['simd128', 'threads'],
+    avgInferenceMs: 45,
+  },
+  dashboard: {
+    target: 'tfjs',
+    format: 'model.json',
+    optimizations: ['webgl-backend', 'shader-compilation'],
+    avgInferenceMs: 22,
+  },
+};
+
+function selectRuntime(deviceType: string): RuntimeConfig {
+  const config = runtimeMatrix[deviceType];
+  if (!config) throw new Error(\`No runtime configured for \${deviceType}\`);
+  console.log(\`\${deviceType} → \${config.target} (\${config.avgInferenceMs}ms)\`);
+  return config;
+}`}
+</CodeBlock>
+
+## Runtime Abstraction
+
+Just as you write framework-agnostic components that work across React and Vue, you can build a runtime abstraction that works across ML engines:
+
+<CodeBlock language="typescript" title="runtime-abstraction.ts">
+{`interface InferenceEngine {
+  load(modelPath: string): Promise<void>;
+  predict(input: Float32Array): Promise<Float32Array>;
+  dispose(): void;
+}
+
+class TFJSEngine implements InferenceEngine {
+  private model: tf.LayersModel | null = null;
+
+  async load(modelPath: string) {
+    this.model = await tf.loadLayersModel(modelPath);
+  }
+
+  async predict(input: Float32Array): Promise<Float32Array> {
+    return tf.tidy(() => {
+      const tensor = tf.tensor2d(input, [1, input.length]);
+      const result = this.model!.predict(tensor) as tf.Tensor;
+      return new Float32Array(result.dataSync());
+    });
+  }
+
+  dispose() { this.model?.dispose(); }
+}
+
+// Same interface, different engine — like a polyfill
+class WASMEngine implements InferenceEngine {
+  private session: any = null;
+
+  async load(modelPath: string) {
+    const wasmModule = await WebAssembly.instantiateStreaming(fetch(modelPath));
+    this.session = wasmModule.instance.exports;
+  }
+
+  async predict(input: Float32Array): Promise<Float32Array> {
+    const ptr = this.session.allocate(input.length * 4);
+    new Float32Array(this.session.memory.buffer, ptr, input.length).set(input);
+    this.session.inference(ptr, input.length);
+    return new Float32Array(this.session.memory.buffer, ptr, 3); // 3 output classes
+  }
+
+  dispose() { this.session = null; }
+}`}
+</CodeBlock>
+
+## Challenge
+
+Set up a runtime configuration for a multi-architecture edge deployment.
+
+<Exercise slug="runtime-setup" />
+
+<KeyTakeaways takeaways={["ML runtimes parallel browser engines — each optimizes execution for different hardware", "TFLite excels on ARM (mobile/embedded), ONNX on x86 (servers), WASM provides universal fallback", "Runtime abstraction layers let you write inference code once and deploy everywhere — like cross-browser component libraries", "Always benchmark on actual target hardware — simulated performance numbers lie, just like desktop Lighthouse scores"]} />

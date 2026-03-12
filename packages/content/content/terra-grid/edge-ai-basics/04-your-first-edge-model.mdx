@@ -1,0 +1,107 @@
+---
+slug: your-first-edge-model
+title: "Your First Edge Model"
+moduleId: edge-ai-basics
+themeId: terra-grid
+order: 4
+estimatedMinutes: 30
+difficulty: beginner
+context:
+  narrative: "Site 12 needs a simple anomaly detector for vibration sensors. You build one that fits."
+  speaker: "Hassan Al-Rashid"
+concept:
+  explanation: "A simple anomaly detector on sensor data works like client-side form validation — checking if input falls within expected bounds."
+  bridge:
+    feTitle: "Client-Side Validation"
+    feCode: "function validate(input) {\n  return input >= min && input <= max;\n}"
+    mlTitle: "Anomaly Detection"
+    mlCode: "function isAnomaly(reading, mean, std) {\n  return Math.abs(reading - mean) > 3 * std;\n}"
+    tier: analogy
+consequence:
+  narrative: "Your first edge model is deployed to Site 12. It detects anomalies in real time."
+  nextLessonTeaser: "Next: understanding when to use edge vs cloud"
+hints:
+  - level: nudge
+    content: "Start with a threshold-based approach using mean and standard deviation"
+  - level: guidance
+    content: "Build a simple dense model that predicts whether a sensor reading is normal or anomalous"
+  - level: solution
+    content: "A two-layer dense network with sigmoid output classifying normal vs anomaly"
+keywords:
+  - anomaly-detection
+  - dense-model
+  - sensor-data
+  - inference
+---
+
+<Dialogue speaker="Hassan Al-Rashid">
+A model that works in your notebook is a hypothesis. A model that works at 3 AM on a solar farm in the Atacama Desert with no internet — that is a product. Start simple. Get something running on the device.
+</Dialogue>
+
+Your first edge model does not need to be complex. In frontend development, you start with basic form validation before building elaborate input pipelines. Edge ML follows the same principle: start with a simple anomaly detector, prove it works on the hardware, then iterate.
+
+<LearningObjectives objectives={["Build a simple anomaly detection model using TensorFlow.js", "Understand the structure of sensor data input", "Run inference on a small model within edge constraints", "Measure model size and memory usage"]} />
+
+## From Validation to Detection
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+Client-side form validation checks if input falls within expected bounds. Anomaly detection does the same thing — but it *learns* the bounds from data instead of hardcoding them.
+
+<CodeBlock language="typescript" title="simple-anomaly-detector.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Sensor data: [vibration, temperature, pressure, rpm]
+// Each reading is a 4-element vector
+
+// Build a tiny model — must fit in edge device memory
+function buildAnomalyDetector(): tf.Sequential {
+  const model = tf.sequential();
+
+  model.add(tf.layers.dense({
+    inputShape: [4],
+    units: 8,
+    activation: 'relu'
+  }));
+
+  model.add(tf.layers.dense({
+    units: 1,
+    activation: 'sigmoid' // 0 = normal, 1 = anomaly
+  }));
+
+  model.compile({
+    optimizer: 'adam',
+    loss: 'binaryCrossentropy',
+    metrics: ['accuracy']
+  });
+
+  return model;
+}
+
+const model = buildAnomalyDetector();
+
+// Check model size — critical for edge deployment
+const modelParams = model.countParams();
+console.log(\`Parameters: \${modelParams}\`);  // 49 parameters
+console.log(\`Estimated size: \${(modelParams * 4 / 1024).toFixed(1)}KB\`);  // ~0.2KB
+
+// Run inference on a sensor reading
+const sensorReading = tf.tensor2d([[0.85, 72.3, 14.7, 3200]]);
+const prediction = model.predict(sensorReading) as tf.Tensor;
+const score = prediction.dataSync()[0];
+console.log(\`Anomaly score: \${score.toFixed(4)}\`);
+
+// Clean up tensors — memory management matters on edge devices
+sensorReading.dispose();
+prediction.dispose();`}
+</CodeBlock>
+
+Notice the `dispose()` calls. On a device with 512MB RAM, you cannot afford memory leaks. Every tensor must be explicitly freed. This is like removing event listeners in frontend code to prevent memory leaks — except the consequences are a frozen gateway device at a remote site.
+
+## Challenge
+
+Build a simple anomaly detector for Terra Grid sensor data.
+
+<Exercise slug="simple-anomaly-detector" />
+
+<KeyTakeaways takeaways={["Start with the simplest model that solves the problem", "Count parameters to estimate model size: params * 4 bytes for Float32", "Always dispose tensors on edge devices to prevent memory leaks", "A 49-parameter model can be a legitimate production anomaly detector"]} />

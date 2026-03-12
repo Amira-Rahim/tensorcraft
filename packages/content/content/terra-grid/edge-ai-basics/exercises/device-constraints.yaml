@@ -1,0 +1,9 @@
+slug: device-constraints
+lessonSlug: edge-devices
+title: "Check Device Constraints"
+instructions: "Write a function canDeploy(deviceRamMB, modelRamMB) that returns true if the model fits within 60% of the device RAM. The model must not exceed 60% of available RAM to leave room for the OS and drivers."
+starterCode: "function canDeploy(deviceRamMB, modelRamMB) {\n  // Model must fit within 60% of device RAM\n  return null; // your code here\n}"
+solutionCode: "function canDeploy(deviceRamMB, modelRamMB) {\n  return modelRamMB <= deviceRamMB * 0.6;\n}"
+testCode: "describe('canDeploy', () => { it('allows model within budget', () => { expect(canDeploy(512, 200)).toBe(true); }); it('rejects model over budget', () => { expect(canDeploy(512, 400)).toBe(false); }); it('allows exactly 60%', () => { expect(canDeploy(512, 307.2)).toBe(true); }); });"
+estimatedMinutes: 10
+difficulty: beginner

@@ -1,0 +1,137 @@
+---
+slug: video-stream-processing
+title: "Video Stream Processing"
+moduleId: real-time-detection
+themeId: neon-protocol
+order: 1
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Protocol Sentinel goes live on a test feed. Kira watches the first detections appear in real-time on the browser dashboard. NEON warns: 'Frame rate dropping. Optimize or lose real-time capability.'"
+  speaker: "Kira"
+concept:
+  explanation: "Video streams are just sequences of image frames. The browser's getUserMedia() API provides direct access to camera feeds — the same API you've used for video chat features. Each frame is a canvas image you can feed to a model."
+  bridge:
+    feTitle: "getUserMedia() API"
+    feCode: "const stream = await navigator.mediaDevices.getUserMedia({ video: true });"
+    mlTitle: "Video Frame Pipeline"
+    mlCode: "const frame = tf.browser.fromPixels(video); const prediction = model.predict(frame.expandDims(0));"
+    tier: identity
+consequence:
+  narrative: "The test feed shows three Meridian drones circling District 7. Protocol Sentinel tags each one. Kira grins — then the frame rate drops to 4fps. NEON: 'Congratulations. You can detect drones. Slowly.'"
+  nextLessonTeaser: "Next: running inference on every frame without dropping below 30fps"
+hints:
+  - level: nudge
+    content: "getUserMedia returns a MediaStream — attach it to a video element's srcObject"
+  - level: guidance
+    content: "Create a video element, set srcObject to the stream, then use tf.browser.fromPixels(video) to capture frames"
+  - level: solution
+    content: "const video = document.createElement('video'); video.srcObject = stream; await video.play(); const frame = tf.browser.fromPixels(video);"
+keywords:
+  - video-stream
+  - getUserMedia
+  - real-time
+  - MediaStream
+  - frames
+---
+
+<Dialogue speaker="Kira">
+It is working. It is actually seeing them. Three drones over District 7 — tagged and tracked in real-time. In the browser. No server. No Meridian infrastructure. Just JavaScript.
+</Dialogue>
+
+<Dialogue speaker="NEON">
+Impressive. Your frame rate is 4fps. At that speed, a drone could fly from District 7 to District 12 before you process the next frame. Perhaps we should discuss optimization before you celebrate.
+</Dialogue>
+
+Every video stream is a sequence of images. The browser gives you direct access through `getUserMedia()` — the same API behind video chat, screen recording, and webcam filters. You have already used it. Now you will feed those frames to a model.
+
+<LearningObjectives objectives={["Access webcam and video feeds using the getUserMedia() API", "Convert live video frames to TensorFlow.js tensors", "Build a basic video-to-tensor pipeline for real-time inference", "Understand the relationship between frame rate and detection latency"]} />
+
+## Accessing the Feed
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="video-capture.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Step 1: Access the camera — same as video chat
+const stream = await navigator.mediaDevices.getUserMedia({
+  video: { width: 640, height: 480, facingMode: 'environment' }
+});
+
+// Step 2: Attach to a video element
+const video = document.createElement('video');
+video.srcObject = stream;
+video.playsInline = true;
+await video.play();
+
+// Step 3: Capture a single frame as a tensor
+const frame = tf.browser.fromPixels(video);
+console.log(frame.shape); // [480, 640, 3]
+
+// Step 4: Preprocess for model input
+const processed = tf.tidy(() => {
+  return frame
+    .resizeBilinear([224, 224])   // Resize to model input
+    .expandDims(0)                 // Add batch dimension
+    .div(255.0);                   // Normalize to [0, 1]
+});
+console.log(processed.shape); // [1, 224, 224, 3]`}
+</CodeBlock>
+
+## Building the Frame Pipeline
+
+<CodeBlock language="typescript" title="frame-pipeline.ts">
+{`// A continuous frame capture pipeline
+async function createFramePipeline(
+  model: tf.LayersModel,
+  video: HTMLVideoElement,
+  canvas: HTMLCanvasElement
+) {
+  const ctx = canvas.getContext('2d')!;
+
+  async function processFrame() {
+    // Capture frame as tensor
+    const frame = tf.browser.fromPixels(video);
+
+    // Run inference inside tf.tidy to prevent memory leaks
+    const prediction = tf.tidy(() => {
+      const input = frame
+        .resizeBilinear([224, 224])
+        .expandDims(0)
+        .div(255.0);
+      return model.predict(input) as tf.Tensor;
+    });
+
+    // Get results
+    const scores = await prediction.data();
+    const maxScore = Math.max(...scores);
+    const classIndex = scores.indexOf(maxScore);
+
+    // Draw frame + overlay detection results
+    ctx.drawImage(video, 0, 0);
+    if (maxScore > 0.7) {
+      ctx.strokeStyle = '#00D4FF';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
+      ctx.fillStyle = '#00D4FF';
+      ctx.font = '16px monospace';
+      ctx.fillText(\`Class \${classIndex} | \${(maxScore * 100).toFixed(1)}%\`, 15, 35);
+    }
+
+    // Clean up tensors
+    frame.dispose();
+    prediction.dispose();
+  }
+
+  return processFrame;
+}`}
+</CodeBlock>
+
+## Challenge
+
+Capture a video stream and convert frames to tensors for model input.
+
+<Exercise slug="capture-video" />
+
+<KeyTakeaways takeaways={["getUserMedia() gives direct browser access to camera feeds — the same API you use for video chat", "tf.browser.fromPixels() converts a video element frame to a tensor on every call", "Always use tf.tidy() or manual dispose() to prevent GPU memory leaks in frame loops", "Video inference is just image inference repeated — the challenge is doing it fast enough"]} />

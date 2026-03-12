@@ -1,0 +1,47 @@
+slug: sliding-window
+lessonSlug: sliding-windows
+title: "Build a Sliding Window"
+instructions: "Write a function that takes signal data and a window size, and returns input/label pairs for next-value prediction. Each input is a window of windowSize consecutive readings, and each label is the reading immediately after the window."
+starterCode: |
+  function createTrainingPairs(
+    signal: number[][],
+    windowSize: number,
+  ): { inputs: number[][][]; labels: number[][] } {
+    // For each valid position, create:
+    //   input: signal[i..i+windowSize]
+    //   label: signal[i+windowSize]
+    return null; // your code here
+  }
+solutionCode: |
+  function createTrainingPairs(
+    signal: number[][],
+    windowSize: number,
+  ): { inputs: number[][][]; labels: number[][] } {
+    const inputs: number[][][] = [];
+    const labels: number[][] = [];
+    for (let i = 0; i <= signal.length - windowSize - 1; i++) {
+      inputs.push(signal.slice(i, i + windowSize));
+      labels.push(signal[i + windowSize]);
+    }
+    return { inputs, labels };
+  }
+testCode: |
+  describe('createTrainingPairs', () => {
+    const data = [[1,0],[2,0],[3,0],[4,0],[5,0]];
+    it('returns correct number of pairs', () => {
+      const { inputs, labels } = createTrainingPairs(data, 3);
+      expect(inputs.length).toBe(2);
+      expect(labels.length).toBe(2);
+    });
+    it('input windows have correct size', () => {
+      const { inputs } = createTrainingPairs(data, 3);
+      inputs.forEach(w => expect(w.length).toBe(3));
+    });
+    it('labels follow windows correctly', () => {
+      const { inputs, labels } = createTrainingPairs(data, 3);
+      expect(inputs[0]).toEqual([[1,0],[2,0],[3,0]]);
+      expect(labels[0]).toEqual([4,0]);
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

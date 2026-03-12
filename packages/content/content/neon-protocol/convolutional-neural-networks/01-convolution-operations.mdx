@@ -1,0 +1,161 @@
+---
+slug: convolution-operations
+title: "Convolution Operations"
+moduleId: convolutional-neural-networks
+themeId: neon-protocol
+order: 1
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Kira stares at a surveillance feed, trying to sharpen a blurry license plate. Zara stops her: 'You already know how to do this. That blur filter in your Canvas drawing app? That IS a convolution. Let me show you what is really happening under the hood.'"
+  speaker: "Zara"
+concept:
+  explanation: "A convolution slides a small kernel (matrix) across an image, computing weighted sums at each position — identical to how CSS filter: blur() applies a Gaussian kernel to every pixel."
+  bridge:
+    feTitle: "CSS filter: blur()"
+    feCode: "element.style.filter = 'blur(4px)'; // applies a Gaussian convolution kernel"
+    mlTitle: "Convolution Operation"
+    mlCode: "const output = tf.conv2d(image, kernel, strides, 'same'); // slides kernel across image"
+    tier: structural
+consequence:
+  narrative: "Kira runs her first convolution on a surveillance frame. Edge detection lights up doorways, windows, and camera housings — structural features invisible to the naked eye."
+  nextLessonTeaser: "Next: pooling layers that compress feature maps without losing important patterns"
+hints:
+  - level: nudge
+    content: "A convolution kernel is just a small matrix of weights. Multiply each kernel value by the overlapping pixel, then sum."
+  - level: guidance
+    content: "Loop through the image. At each position, extract the region the same size as the kernel, multiply element-wise, and sum all values."
+  - level: solution
+    content: "For each (row, col), sum all kernel[kr][kc] * image[row+kr][col+kc] values."
+keywords:
+  - convolution
+  - kernel
+  - filter
+  - feature-map
+  - stride
+---
+
+<Dialogue speaker="Zara">
+Every time you apply `filter: blur()` in CSS, the browser slides a Gaussian kernel across every pixel. It multiplies neighboring pixel values by kernel weights, sums them up, and writes the result. That is a convolution. The only difference in ML is that we learn the kernel weights instead of hardcoding them.
+</Dialogue>
+
+<Dialogue speaker="Kira">
+Wait — so when I built that photo editor with Canvas filters in my drawing app, I was literally doing convolutions? The sharpen filter, the edge detection... those were all kernels?
+</Dialogue>
+
+Exactly. A convolution is a sliding window operation. You take a small matrix (the kernel), slide it across an image, and at each position compute a weighted sum. Different kernels detect different features: edges, textures, shapes.
+
+<LearningObjectives objectives={["Understand how a convolution kernel slides across an image to produce a feature map", "Implement a 2D convolution operation from scratch", "Recognize that CSS blur, sharpen, and edge-detect filters are convolution operations", "Distinguish between valid and same padding strategies"]} />
+
+## The Kernel Slides
+
+A convolution kernel is typically 3x3 or 5x5. At each position, it overlaps with a patch of the image, multiplies element-wise, and sums the result into one output pixel.
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="convolution-basics.ts">
+{`// CSS blur is a Gaussian convolution kernel:
+// [1/16, 2/16, 1/16]
+// [2/16, 4/16, 2/16]
+// [1/16, 2/16, 1/16]
+// The browser slides this over every pixel.
+
+// In ML, we learn the kernel weights. But the operation is identical.
+// Here's a 3x3 edge-detection kernel:
+const edgeKernel = [
+  [-1, -1, -1],
+  [-1,  8, -1],
+  [-1, -1, -1],
+];
+
+// A Sobel kernel for detecting vertical edges:
+const sobelX = [
+  [-1, 0, 1],
+  [-2, 0, 2],
+  [-1, 0, 1],
+];
+
+// The convolution operation: slide the kernel across the image
+function convolve2D(
+  image: number[][],
+  kernel: number[][]
+): number[][] {
+  const iH = image.length;
+  const iW = image[0].length;
+  const kH = kernel.length;
+  const kW = kernel[0].length;
+
+  // "valid" padding: output shrinks by (kernelSize - 1)
+  const oH = iH - kH + 1;
+  const oW = iW - kW + 1;
+
+  const output: number[][] = Array.from({ length: oH }, () =>
+    new Array(oW).fill(0)
+  );
+
+  for (let r = 0; r < oH; r++) {
+    for (let c = 0; c < oW; c++) {
+      let sum = 0;
+      for (let kr = 0; kr < kH; kr++) {
+        for (let kc = 0; kc < kW; kc++) {
+          sum += image[r + kr][c + kc] * kernel[kr][kc];
+        }
+      }
+      output[r][c] = sum;
+    }
+  }
+
+  return output;
+}
+
+// Test on a 5x5 "image"
+const testImage = [
+  [0, 0, 0, 0, 0],
+  [0, 1, 1, 1, 0],
+  [0, 1, 1, 1, 0],
+  [0, 1, 1, 1, 0],
+  [0, 0, 0, 0, 0],
+];
+
+const featureMap = convolve2D(testImage, edgeKernel);
+// Result: edges light up where pixel values change sharply
+console.log(featureMap);`}
+</CodeBlock>
+
+## Padding and Strides
+
+Two parameters control how the kernel slides:
+
+- **Padding**: "valid" means no padding (output shrinks). "same" pads the input so the output stays the same size.
+- **Stride**: how many pixels the kernel moves per step. Stride 1 moves one pixel at a time. Stride 2 skips every other position, halving the output size.
+
+<CodeBlock language="typescript" title="padding-and-strides.ts">
+{`// Output size formula:
+// outputSize = Math.floor((inputSize - kernelSize + 2 * padding) / stride) + 1
+
+function calculateOutputSize(
+  inputSize: number,
+  kernelSize: number,
+  stride: number,
+  paddingMode: 'valid' | 'same'
+): number {
+  if (paddingMode === 'same') {
+    return Math.ceil(inputSize / stride);
+  }
+  // 'valid' — no padding
+  return Math.floor((inputSize - kernelSize) / stride) + 1;
+}
+
+// 224x224 image, 3x3 kernel:
+console.log(calculateOutputSize(224, 3, 1, 'valid')); // 222 — shrinks by 2
+console.log(calculateOutputSize(224, 3, 1, 'same'));  // 224 — stays the same
+console.log(calculateOutputSize(224, 3, 2, 'valid')); // 111 — halved (stride 2)`}
+</CodeBlock>
+
+## Challenge
+
+Implement a 2D convolution function that applies a kernel to a grayscale image.
+
+<Exercise slug="apply-convolution" />
+
+<KeyTakeaways takeaways={["A convolution slides a kernel across an image, computing weighted sums — the same operation as CSS blur and sharpen filters", "Different kernels detect different features: edges, textures, gradients", "Padding controls whether the output shrinks (valid) or stays the same size (same)", "In a CNN, the kernel weights are learned during training instead of being hardcoded"]} />

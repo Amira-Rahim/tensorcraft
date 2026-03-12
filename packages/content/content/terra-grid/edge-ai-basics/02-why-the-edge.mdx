@@ -1,0 +1,94 @@
+---
+slug: why-the-edge
+title: "Why the Edge?"
+moduleId: edge-ai-basics
+themeId: terra-grid
+order: 2
+estimatedMinutes: 20
+difficulty: beginner
+context:
+  narrative: "Site 31 loses satellite connectivity during a dust storm. The cloud model goes silent."
+  speaker: "Cole Branson"
+concept:
+  explanation: "Edge deployment solves latency, privacy, and connectivity problems — the same reasons offline-first PWAs exist."
+  bridge:
+    feTitle: "Offline-First PWA"
+    feCode: "// Service worker caches for offline use\nself.addEventListener('fetch', handleOffline)"
+    mlTitle: "Offline Edge Model"
+    mlCode: "// Model cached locally, runs without network\nconst pred = localModel.predict(input)"
+    tier: analogy
+consequence:
+  narrative: "You understand why Terra Grid cannot rely on the cloud. Every site must be self-sufficient."
+  nextLessonTeaser: "Next: understanding the hardware you're deploying to"
+hints:
+  - level: nudge
+    content: "Consider what happens when fetch() fails in a PWA"
+  - level: guidance
+    content: "List three reasons a PWA works offline — they map to edge AI motivations"
+  - level: solution
+    content: "Latency, privacy, and connectivity are the three pillars of edge deployment"
+keywords:
+  - latency
+  - offline
+  - privacy
+  - pwa
+---
+
+<Dialogue speaker="Cole Branson">
+Site 31 just went dark. Dust storm knocked out the satellite uplink. If the anomaly detector was running in the cloud, we'd be blind for the next six hours. But it's running on the gateway, so we're still getting alerts locally.
+</Dialogue>
+
+<Dialogue speaker="Park Soo-Yeon">
+Last quarter we pushed 4.2 petabytes of raw sensor data to the cloud for inference. The bandwidth costs alone were $340,000. If the models run on-site, we send only the alerts — kilobytes instead of petabytes.
+</Dialogue>
+
+You have built offline-first PWAs. You know the pattern: cache critical resources locally so the application works without a network connection. Edge AI applies the same philosophy to machine learning inference.
+
+<LearningObjectives objectives={["Identify the three core motivations for edge deployment: latency, privacy, connectivity", "Calculate the latency impact of cloud vs edge inference", "Understand bandwidth cost implications of edge processing", "Draw parallels between PWA offline strategies and edge AI"]} />
+
+## Three Reasons for the Edge
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+### 1. Latency
+
+A vibration sensor on a gas turbine samples at 10kHz. By the time you send that data to a cloud endpoint and get a prediction back, the bearing has already failed. Edge inference gives you sub-100ms response times.
+
+### 2. Connectivity
+
+Remote sites have unreliable networks. Satellite uplinks fail. Cell towers go down. An edge model keeps working regardless. Just like a service worker serves cached content when `fetch()` fails, an edge model serves predictions when the network is unavailable.
+
+### 3. Privacy and Bandwidth
+
+Streaming raw sensor data to the cloud is expensive and raises data sovereignty concerns. Edge models process data locally and transmit only results.
+
+<CodeBlock language="typescript" title="latency-comparison.ts">
+{`// Calculate round-trip latency for cloud inference
+function calculateCloudLatency(
+  dataSizeKB: number,
+  uploadMbps: number,
+  serverInferenceMs: number,
+  responseSizeKB: number,
+  downloadMbps: number
+): number {
+  const uploadMs = (dataSizeKB / (uploadMbps * 125)) * 1000;
+  const downloadMs = (responseSizeKB / (downloadMbps * 125)) * 1000;
+  return uploadMs + serverInferenceMs + downloadMs;
+}
+
+// Site 31: satellite uplink, 2 Mbps up, 5 Mbps down
+const cloudLatency = calculateCloudLatency(256, 2, 50, 1, 5);
+console.log(\`Cloud: \${cloudLatency.toFixed(0)}ms\`); // ~1,074ms
+
+// Edge: no network overhead
+const edgeLatency = 89; // local inference only
+console.log(\`Edge: \${edgeLatency}ms\`); // 89ms`}
+</CodeBlock>
+
+## Challenge
+
+Calculate and compare cloud vs edge latency for a Terra Grid site.
+
+<Exercise slug="latency-calculation" />
+
+<KeyTakeaways takeaways={["Edge deployment is motivated by latency, connectivity, and bandwidth/privacy concerns", "Edge models work offline — like service workers caching critical resources", "Cloud inference adds network round-trip time to every prediction", "Edge processing reduces bandwidth costs by transmitting results instead of raw data"]} />

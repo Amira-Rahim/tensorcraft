@@ -1,0 +1,100 @@
+slug: model-monitor
+lessonSlug: monitoring
+title: "Build a Model Monitor"
+instructions: "Build a simple model monitor that tracks prediction confidence and detects data drift. It should compute average confidence over recent predictions and calculate a drift score by comparing the mean of recent input features against a baseline."
+starterCode: |
+  class ModelMonitor {
+    private confidences: number[] = [];
+    private baselineMean: number[];
+
+    constructor(baselineMean: number[]) {
+      this.baselineMean = baselineMean;
+    }
+
+    logPrediction(confidence: number): void {
+      // Store the confidence value
+      return null; // your code here
+    }
+
+    get avgConfidence(): number {
+      // Return average of all logged confidences (0 if none)
+      return null; // your code here
+    }
+
+    computeDrift(recentInputs: number[][]): number {
+      // 1. Compute mean of each feature across recentInputs
+      // 2. Compute Euclidean distance between recentMean and baselineMean
+      // 3. Return the distance as drift score
+      return null; // your code here
+    }
+  }
+solutionCode: |
+  class ModelMonitor {
+    private confidences: number[] = [];
+    private baselineMean: number[];
+
+    constructor(baselineMean: number[]) {
+      this.baselineMean = baselineMean;
+    }
+
+    logPrediction(confidence: number): void {
+      this.confidences.push(confidence);
+    }
+
+    get avgConfidence(): number {
+      if (this.confidences.length === 0) return 0;
+      return this.confidences.reduce((a, b) => a + b, 0) / this.confidences.length;
+    }
+
+    computeDrift(recentInputs: number[][]): number {
+      const featureCount = this.baselineMean.length;
+      const recentMean = new Array(featureCount).fill(0);
+
+      for (const row of recentInputs) {
+        for (let i = 0; i < featureCount; i++) {
+          recentMean[i] += row[i] / recentInputs.length;
+        }
+      }
+
+      let sumSqDiff = 0;
+      for (let i = 0; i < featureCount; i++) {
+        sumSqDiff += (this.baselineMean[i] - recentMean[i]) ** 2;
+      }
+      return Math.sqrt(sumSqDiff);
+    }
+  }
+testCode: |
+  describe('ModelMonitor', () => {
+    it('tracks average confidence', () => {
+      const monitor = new ModelMonitor([0, 0]);
+      monitor.logPrediction(0.9);
+      monitor.logPrediction(0.8);
+      monitor.logPrediction(0.7);
+      expect(monitor.avgConfidence).toBeCloseTo(0.8, 5);
+    });
+
+    it('returns 0 confidence when no predictions logged', () => {
+      const monitor = new ModelMonitor([0, 0]);
+      expect(monitor.avgConfidence).toBe(0);
+    });
+
+    it('detects no drift when data matches baseline', () => {
+      const monitor = new ModelMonitor([1.0, 2.0]);
+      const drift = monitor.computeDrift([[1.0, 2.0], [1.0, 2.0]]);
+      expect(drift).toBeCloseTo(0, 5);
+    });
+
+    it('detects drift when data shifts', () => {
+      const monitor = new ModelMonitor([0, 0]);
+      const drift = monitor.computeDrift([[3, 4], [3, 4]]);
+      expect(drift).toBeCloseTo(5, 5);
+    });
+
+    it('computes drift as Euclidean distance', () => {
+      const monitor = new ModelMonitor([0, 0, 0]);
+      const drift = monitor.computeDrift([[1, 0, 0]]);
+      expect(drift).toBeCloseTo(1, 5);
+    });
+  });
+estimatedMinutes: 12
+difficulty: intermediate

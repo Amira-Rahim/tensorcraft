@@ -1,0 +1,140 @@
+---
+slug: webgl-acceleration
+title: "WebGL Acceleration"
+moduleId: real-time-detection
+themeId: neon-protocol
+order: 4
+estimatedMinutes: 25
+difficulty: advanced
+context:
+  narrative: "Kira's inference loop runs at 22fps on CPU. Not enough. Ryo suggests switching TensorFlow.js to the WebGL backend. 'The GPU is already there — your browser uses it for CSS transforms and canvas compositing. Now use it for matrix multiplication.'"
+  speaker: "Ryo"
+concept:
+  explanation: "WebGL is the browser's GPU interface. You already use it indirectly — CSS 3D transforms, canvas compositing, WebGL-based games. TensorFlow.js can route tensor operations through WebGL shaders, turning matrix multiplications into parallel GPU operations."
+  bridge:
+    feTitle: "WebGL Rendering Pipeline"
+    feCode: "const gl = canvas.getContext('webgl2'); // GPU access for rendering"
+    mlTitle: "WebGL Compute Backend"
+    mlCode: "await tf.setBackend('webgl'); // GPU access for tensor math"
+    tier: structural
+consequence:
+  narrative: "WebGL backend: 22fps becomes 38fps. Protocol Sentinel runs in real-time for the first time. Ryo allows a rare half-smile. NEON: 'GPU utilization at 74%. Acceptable. For a resistance operation running on stolen hardware.'"
+  nextLessonTeaser: "Next: streaming architectures — handling continuous data from multiple feeds"
+hints:
+  - level: nudge
+    content: "tf.setBackend('webgl') switches all tensor operations to the GPU"
+  - level: guidance
+    content: "Call tf.setBackend('webgl') before loading your model, then use tf.env().getFlags() to verify GPU features"
+  - level: solution
+    content: "await tf.setBackend('webgl'); await tf.ready(); console.log(tf.getBackend()); // 'webgl'"
+keywords:
+  - webgl
+  - gpu-acceleration
+  - backend
+  - parallel-compute
+  - shader
+---
+
+<Dialogue speaker="Ryo">
+Your browser already uses the GPU. Every CSS 3D transform, every canvas composite operation, every WebGL game — they all route through the same graphics pipeline. TensorFlow.js can use that pipeline for matrix math. Same hardware, different purpose.
+</Dialogue>
+
+<Dialogue speaker="Kira">
+So instead of the CPU doing millions of multiplications sequentially, the GPU does them all at once?
+</Dialogue>
+
+<Dialogue speaker="Ryo">
+In parallel. A modern GPU has thousands of cores. A matrix multiplication that takes 20ms on CPU can take 3ms on GPU. That is the difference between 22fps and real-time.
+</Dialogue>
+
+The GPU is already running in your browser. WebGL gives TensorFlow.js access to it for tensor operations — the same hardware that renders your CSS transforms now accelerates neural network inference.
+
+<LearningObjectives objectives={["Switch TensorFlow.js to the WebGL backend for GPU-accelerated inference", "Understand why GPU parallelism accelerates matrix operations", "Benchmark CPU vs WebGL performance for the same model", "Handle GPU memory constraints and texture size limits"]} />
+
+## Activating the GPU
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="webgl-backend.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Set WebGL backend before any tensor operations
+await tf.setBackend('webgl');
+await tf.ready();
+
+console.log('Backend:', tf.getBackend()); // 'webgl'
+
+// Check GPU capabilities
+const gl = document.createElement('canvas').getContext('webgl2');
+if (gl) {
+  const maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
+  console.log('Max texture size:', maxTextureSize); // Usually 4096 or 16384
+  // This limits the maximum tensor dimensions on GPU
+}
+
+// TensorFlow.js WebGL environment flags
+const flags = tf.env().getFlags();
+console.log('WebGL version:', flags['WEBGL_VERSION']);
+console.log('Float32 textures:', flags['WEBGL_RENDER_FLOAT32_ENABLED']);
+
+// Benchmark: CPU vs WebGL
+async function benchmark(backend: string, model: tf.LayersModel) {
+  await tf.setBackend(backend);
+  await tf.ready();
+
+  const input = tf.randomNormal([1, 224, 224, 3]);
+  const times: number[] = [];
+
+  // Warm-up run (GPU compiles shaders on first call)
+  model.predict(input);
+
+  for (let i = 0; i < 20; i++) {
+    const t0 = performance.now();
+    const pred = model.predict(input) as tf.Tensor;
+    pred.dataSync(); // Force synchronous execution for timing
+    pred.dispose();
+    times.push(performance.now() - t0);
+  }
+
+  input.dispose();
+  const avg = times.reduce((a, b) => a + b) / times.length;
+  console.log(\`\${backend}: \${avg.toFixed(1)}ms avg\`);
+}`}
+</CodeBlock>
+
+## GPU Memory Management
+
+<CodeBlock language="typescript" title="gpu-memory.ts">
+{`// GPU memory is limited — more constrained than CPU RAM
+// TensorFlow.js manages GPU textures automatically, but you must still dispose tensors
+
+// Monitor GPU memory usage
+function logGpuMemory() {
+  const info = tf.memory();
+  console.log(\`Tensors: \${info.numTensors}\`);
+  console.log(\`GPU bytes: \${(info.numBytes / 1024 / 1024).toFixed(1)}MB\`);
+}
+
+// Force GPU memory cleanup
+function cleanupGpu() {
+  // Dispose all variables not tracked by a model
+  tf.disposeVariables();
+
+  // For WebGL specifically — reset the GL context if memory is critical
+  const backend = tf.backend() as any;
+  if (backend.gpgpu) {
+    backend.gpgpu.gl.flush();
+  }
+}
+
+// Use tf.tidy() religiously in loops — GPU memory leaks are worse than CPU leaks
+// because GPU memory is typically 2-8GB vs 16-32GB system RAM`}
+</CodeBlock>
+
+## Challenge
+
+Configure the WebGL backend and compare inference performance across backends.
+
+<Exercise slug="webgl-backend" />
+
+<KeyTakeaways takeaways={["tf.setBackend('webgl') routes tensor operations through the GPU — the same hardware running your CSS transforms", "GPU parallelism can accelerate inference 5-10x over CPU for matrix-heavy operations", "Always do a warm-up run — the GPU compiles shaders on the first inference call", "GPU memory is more limited than system RAM — tensor disposal is even more critical on WebGL"]} />

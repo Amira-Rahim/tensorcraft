@@ -1,0 +1,54 @@
+slug: noise-patterns
+lessonSlug: noise-as-input
+title: "Noise to Pattern"
+instructions: "Create a function that takes a noise vector dimension and produces a 28x28 pattern by passing noise through a dense layer. Return the reshaped 2D array."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  async function noiseToPattern(noiseDim: number): Promise<number[][]> {
+    // 1. Create a random noise vector of shape [1, noiseDim]
+    const noise = null; // your code here
+
+    // 2. Create a dense layer with 784 units and sigmoid activation
+    const layer = null; // your code here
+
+    // 3. Pass noise through the layer and reshape to [28, 28]
+    const output = null; // your code here
+
+    return output;
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  async function noiseToPattern(noiseDim: number): Promise<number[][]> {
+    const noise = tf.randomNormal([1, noiseDim]);
+    const layer = tf.layers.dense({ units: 784, activation: 'sigmoid' });
+    const output = layer.apply(noise) as tf.Tensor;
+    const reshaped = output.reshape([28, 28]);
+    return await reshaped.array() as number[][];
+  }
+testCode: |
+  describe('noiseToPattern', () => {
+    it('returns a 28x28 array', async () => {
+      const pattern = await noiseToPattern(64);
+      expect(pattern.length).toBe(28);
+      expect(pattern[0].length).toBe(28);
+    });
+    it('values are between 0 and 1 (sigmoid)', async () => {
+      const pattern = await noiseToPattern(64);
+      pattern.forEach(row => row.forEach(v => {
+        expect(v).toBeGreaterThanOrEqual(0);
+        expect(v).toBeLessThanOrEqual(1);
+      }));
+    });
+    it('different calls produce different patterns', async () => {
+      const p1 = await noiseToPattern(64);
+      const p2 = await noiseToPattern(64);
+      const flat1 = p1.flat();
+      const flat2 = p2.flat();
+      const same = flat1.every((v, i) => Math.abs(v - flat2[i]) < 0.001);
+      expect(same).toBe(false);
+    });
+  });
+estimatedMinutes: 8
+difficulty: beginner

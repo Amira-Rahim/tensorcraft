@@ -6,6 +6,8 @@
  * For now, they're manually maintained to match the migration.
  */
 
+export type UserRole = "user" | "admin";
+
 export interface Database {
   public: {
     Tables: {
@@ -18,6 +20,7 @@ export interface Database {
           github_username: string | null;
           github_connected: boolean;
           onboarding_completed: boolean;
+          role: UserRole;
           created_at: string;
           updated_at: string;
         };
@@ -29,6 +32,7 @@ export interface Database {
           github_username?: string | null;
           github_connected?: boolean;
           onboarding_completed?: boolean;
+          role?: UserRole;
         };
         Update: {
           display_name?: string | null;
@@ -36,6 +40,7 @@ export interface Database {
           github_username?: string | null;
           github_connected?: boolean;
           onboarding_completed?: boolean;
+          role?: UserRole;
           updated_at?: string;
         };
         Relationships: [];

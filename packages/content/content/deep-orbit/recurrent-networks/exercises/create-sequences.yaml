@@ -1,0 +1,43 @@
+slug: create-sequences
+lessonSlug: sequences-matter
+title: "Create Time-Step Sequences"
+instructions: "Write a function that takes an array of signal readings (each reading is an array of features) and a window size, and returns an array of overlapping subsequences. Each subsequence should contain exactly windowSize consecutive readings."
+starterCode: |
+  function createSequences(data: number[][], windowSize: number): number[][][] {
+    // Slide a window across the data, creating overlapping subsequences
+    // Example: data = [[1],[2],[3],[4]], windowSize = 3
+    // Result: [[[1],[2],[3]], [[2],[3],[4]]]
+    return null; // your code here
+  }
+solutionCode: |
+  function createSequences(data: number[][], windowSize: number): number[][][] {
+    const sequences: number[][][] = [];
+    for (let i = 0; i <= data.length - windowSize; i++) {
+      sequences.push(data.slice(i, i + windowSize));
+    }
+    return sequences;
+  }
+testCode: |
+  describe('createSequences', () => {
+    it('returns correct number of sequences', () => {
+      const data = [[1],[2],[3],[4],[5]];
+      expect(createSequences(data, 3).length).toBe(3);
+    });
+    it('each sequence has correct window size', () => {
+      const data = [[1],[2],[3],[4],[5]];
+      const seqs = createSequences(data, 3);
+      seqs.forEach(s => expect(s.length).toBe(3));
+    });
+    it('sequences overlap correctly', () => {
+      const data = [[1],[2],[3],[4]];
+      const seqs = createSequences(data, 3);
+      expect(seqs[0]).toEqual([[1],[2],[3]]);
+      expect(seqs[1]).toEqual([[2],[3],[4]]);
+    });
+    it('handles window equal to data length', () => {
+      const data = [[1],[2],[3]];
+      expect(createSequences(data, 3).length).toBe(1);
+    });
+  });
+estimatedMinutes: 8
+difficulty: beginner

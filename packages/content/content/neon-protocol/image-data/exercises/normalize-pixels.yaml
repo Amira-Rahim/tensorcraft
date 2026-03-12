@@ -1,0 +1,80 @@
+slug: normalize-pixels
+lessonSlug: normalization
+title: "Normalize Surveillance Image Pixels"
+instructions: "Implement a minMaxNormalize function that scales a 2D pixel grid to the [0, 1] range. Find the global minimum and maximum across all pixels, then apply the formula (pixel - min) / (max - min). Handle the edge case where all pixels are the same value (max === min) by returning all zeros."
+starterCode: |
+  type PixelGrid = number[][];
+
+  function minMaxNormalize(pixels: PixelGrid): number[][] {
+    // TODO: Find global min and max across all pixels
+    // TODO: Handle edge case where max === min (return all zeros)
+    // TODO: Scale each pixel to [0, 1] using (pixel - min) / (max - min)
+    return null as any;
+  }
+solutionCode: |
+  type PixelGrid = number[][];
+
+  function minMaxNormalize(pixels: PixelGrid): number[][] {
+    let min = Infinity;
+    let max = -Infinity;
+
+    for (const row of pixels) {
+      for (const pixel of row) {
+        if (pixel < min) min = pixel;
+        if (pixel > max) max = pixel;
+      }
+    }
+
+    const range = max - min;
+    if (range === 0) {
+      return pixels.map(row => row.map(() => 0));
+    }
+
+    return pixels.map(row =>
+      row.map(pixel => (pixel - min) / range)
+    );
+  }
+testCode: |
+  describe('minMaxNormalize', () => {
+    it('scales pixels to [0, 1] range', () => {
+      const pixels = [[0, 128, 255]];
+      const result = minMaxNormalize(pixels);
+      expect(result[0][0]).toBeCloseTo(0);
+      expect(result[0][1]).toBeCloseTo(0.502, 2);
+      expect(result[0][2]).toBeCloseTo(1);
+    });
+
+    it('handles 2D grids', () => {
+      const pixels = [
+        [50, 100],
+        [150, 200],
+      ];
+      const result = minMaxNormalize(pixels);
+      expect(result[0][0]).toBeCloseTo(0);
+      expect(result[1][1]).toBeCloseTo(1);
+      expect(result[0][1]).toBeCloseTo(1/3, 2);
+      expect(result[1][0]).toBeCloseTo(2/3, 2);
+    });
+
+    it('returns all zeros when all pixels are equal', () => {
+      const pixels = [[100, 100], [100, 100]];
+      const result = minMaxNormalize(pixels);
+      expect(result).toEqual([[0, 0], [0, 0]]);
+    });
+
+    it('handles negative pixel values', () => {
+      const pixels = [[-10, 0, 10]];
+      const result = minMaxNormalize(pixels);
+      expect(result[0][0]).toBeCloseTo(0);
+      expect(result[0][1]).toBeCloseTo(0.5);
+      expect(result[0][2]).toBeCloseTo(1);
+    });
+
+    it('does not mutate the original', () => {
+      const pixels = [[0, 255]];
+      minMaxNormalize(pixels);
+      expect(pixels[0]).toEqual([0, 255]);
+    });
+  });
+estimatedMinutes: 7
+difficulty: intermediate

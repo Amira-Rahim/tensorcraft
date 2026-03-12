@@ -1,0 +1,94 @@
+slug: build-unet
+lessonSlug: unet-for-denoising
+title: "Build a U-Net Encoder-Decoder Block"
+instructions: "Implement an encoder block that applies two conv2d layers (with ReLU activation, 'same' padding) and then max-pools to halve spatial dimensions. Return both the downsampled output and the skip connection (the tensor before pooling). Then implement a decoder block that upsamples, concatenates the skip connection, and applies two conv2d layers."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function encoderBlock(
+    input: tf.SymbolicTensor,
+    filters: number
+  ): [tf.SymbolicTensor, tf.SymbolicTensor] {
+    // 1. Apply conv2d (filters, kernelSize: 3, padding: 'same', activation: 'relu')
+    // 2. Apply another conv2d with same config
+    // 3. Save as skip connection
+    // 4. MaxPool2d with poolSize: 2
+    // Return [downsampled, skip]
+    return null; // your code here
+  }
+
+  function decoderBlock(
+    input: tf.SymbolicTensor,
+    skip: tf.SymbolicTensor,
+    filters: number
+  ): tf.SymbolicTensor {
+    // 1. UpSampling2d with size [2, 2]
+    // 2. Concatenate with skip connection
+    // 3. Apply conv2d (filters, kernelSize: 3, padding: 'same', activation: 'relu')
+    // 4. Apply another conv2d with same config
+    // Return the result
+    return null; // your code here
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function encoderBlock(
+    input: tf.SymbolicTensor,
+    filters: number
+  ): [tf.SymbolicTensor, tf.SymbolicTensor] {
+    let x = tf.layers.conv2d({
+      filters, kernelSize: 3, padding: 'same', activation: 'relu'
+    }).apply(input) as tf.SymbolicTensor;
+    x = tf.layers.conv2d({
+      filters, kernelSize: 3, padding: 'same', activation: 'relu'
+    }).apply(x) as tf.SymbolicTensor;
+    const skip = x;
+    const downsampled = tf.layers.maxPooling2d({
+      poolSize: 2
+    }).apply(x) as tf.SymbolicTensor;
+    return [downsampled, skip];
+  }
+
+  function decoderBlock(
+    input: tf.SymbolicTensor,
+    skip: tf.SymbolicTensor,
+    filters: number
+  ): tf.SymbolicTensor {
+    let x = tf.layers.upSampling2d({
+      size: [2, 2]
+    }).apply(input) as tf.SymbolicTensor;
+    x = tf.layers.concatenate().apply([x, skip]) as tf.SymbolicTensor;
+    x = tf.layers.conv2d({
+      filters, kernelSize: 3, padding: 'same', activation: 'relu'
+    }).apply(x) as tf.SymbolicTensor;
+    x = tf.layers.conv2d({
+      filters, kernelSize: 3, padding: 'same', activation: 'relu'
+    }).apply(x) as tf.SymbolicTensor;
+    return x;
+  }
+testCode: |
+  describe('encoderBlock', () => {
+    it('halves spatial dimensions', () => {
+      const input = tf.input({ shape: [32, 32, 3] });
+      const [down, skip] = encoderBlock(input, 16);
+      const model = tf.model({ inputs: input, outputs: down });
+      expect(model.outputShape).toEqual([null, 16, 16, 16]);
+    });
+    it('skip connection preserves original dimensions', () => {
+      const input = tf.input({ shape: [32, 32, 3] });
+      const [down, skip] = encoderBlock(input, 16);
+      const model = tf.model({ inputs: input, outputs: skip });
+      expect(model.outputShape).toEqual([null, 32, 32, 16]);
+    });
+  });
+  describe('decoderBlock', () => {
+    it('doubles spatial dimensions', () => {
+      const input = tf.input({ shape: [16, 16, 32] });
+      const skip = tf.input({ shape: [32, 32, 16] });
+      const output = decoderBlock(input, skip, 16);
+      const model = tf.model({ inputs: [input, skip], outputs: output });
+      expect(model.outputShape).toEqual([null, 32, 32, 16]);
+    });
+  });
+estimatedMinutes: 15
+difficulty: intermediate

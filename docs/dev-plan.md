@@ -1,6 +1,6 @@
 # Tensorcraft — Development Plan
 
-> Last updated: 2026-03-11 (audit update: security, database, user journey gaps)
+> Last updated: 2026-03-13 (all 11 Deep Orbit modules authored, Bridge Explorer built, prototype count corrected, PRD aligned with implementation)
 
 This document is the single source of truth for all development work needed to ship Tensorcraft. It covers every phase from repo initialization to post-launch operations, sourced from the PRD, tech-spec, product-plan, theme scripts, and two rounds of DeepSeek reviews.
 
@@ -10,7 +10,7 @@ This document is the single source of truth for all development work needed to s
 
 ## Phase 0: Prototyping & Documentation (COMPLETE)
 
-- [x] 14 HTML prototypes covering full user journey
+- [x] 15 HTML prototypes covering full user journey (landing, auth, onboarding, dashboard, theme-selection, module-overview, lesson-viewer, exercise, pricing, settings, paywall, bridge-explorer, capstone, purchase-confirmation, index)
 - [x] PRD, tech-spec, product-plan, ui-ux-notes, marketing-plan
 - [x] 5 theme scripts (Deep Orbit complete, 4 outlines)
 - [x] Pricing model aligned across all docs (per-model $79, bundles $129/$169)
@@ -199,25 +199,26 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] Breadcrumb navigation (theme → module → lesson)
 - [x] Responsive sidebar — hidden on mobile (`hidden lg:flex`), visible on desktop
 
-### 3f. Exercise Editor (NOT STARTED — placeholder only, Sandpack remaining)
-
-> **V0.5 PRIORITY #1:** This is the single biggest functional gap. 14 exercises are authored with starterCode/solutionCode/testCode, but the Exercise component is a static loading skeleton. The 5C Loop's "Challenge" step is broken without this. Learning is read-only until Sandpack ships.
+### 3f. Exercise Editor (COMPLETE)
 
 - [x] Placeholder Exercise component with loading skeleton
-- [ ] Sandpack integration for live code execution (requires `@codesandbox/sandpack-react`)
-- [ ] Custom lightweight test runner
-- [ ] 10-second execution timeout per test suite
-- [ ] Partial credit system
-- [ ] Friendly error messages
+- [x] Sandpack integration for live code execution (`@codesandbox/sandpack-react`)
+- [x] Custom lightweight test runner with Jest-style describe/it/expect harness
+- [x] TensorFlow.js mock (tf.tensor, tf.add, tf.relu, tf.sequential, tf.layers, etc.)
+- [x] 10-second execution timeout per test suite
+- [x] ExerciseDataProvider context — data flows from server (Velite) to client (Sandpack)
+- [x] Run Tests / Reset / Show Solution buttons (Zensman DeFi pill style)
+- [x] TestResultsPanel with pass/fail display and error messages
+- [x] Difficulty badge and estimated time display
+- [x] Partial credit system (scoring based on tests passed / total)
 
-### 3h. Syntax Highlighting (NOT STARTED)
+### 3h. Syntax Highlighting (COMPLETE)
 
-> CodeBlock currently renders raw `<pre><code>` with a language badge and copy button but no syntax coloring. For a developer education platform, this is table stakes.
-
-- [ ] Integrate Shiki into CodeBlock component (or replace with Code Hike for scrollytelling)
-- [ ] Support TypeScript, JavaScript, Python, JSON, Bash at minimum
-- [ ] Dark theme matching Zensman DeFi design system colors
-- [ ] Server-side highlighting to avoid layout shift
+- [x] Shiki integration in CodeBlock with lazy-loaded highlighter (client-side, cached singleton)
+- [x] Supports TypeScript, JavaScript, TSX, JSX, Python, JSON, Bash, HTML, CSS, YAML, Markdown
+- [x] `github-dark-default` theme (dark, matches Zensman DeFi aesthetic)
+- [x] Graceful fallback — renders plain code while Shiki loads, no layout shift
+- [x] Copy button preserved
 
 ### 3i. Deep Orbit Content (V0.5 — Modules 1–3) (COMPLETE)
 
@@ -237,46 +238,46 @@ All blocking decisions have been resolved. This table documents the final choice
 
 ### 4a. Pricing Page
 
-- [ ] Build from `prototypes/pricing.html`
-- [ ] 4 individual tiers: Free Preview ($0), Single Theme ($79), Two Themes ($129), Three Themes ($169)
+- [x] Build from `prototypes/pricing.html`
+- [x] 4 individual tiers: Free Preview ($0), Single Theme ($79), Two Themes ($129), Three Themes ($169)
 - [ ] Team pricing: Deferred to post-V1.0. Design based on enterprise demand data.
-- [ ] FAQ accordion (interactive)
-- [ ] Feature comparison table
+- [x] FAQ accordion (interactive)
+- [x] Feature comparison table
 
 ### 4b. Stripe Integration
 
 > **SECURITY CRITICAL:** The current webhook at `apps/api/src/routes/payments.ts` parses raw JSON without Stripe signature verification. Anyone can fake a `checkout.session.completed` event. This MUST be fixed before any real payments.
 
-- [ ] **SECURITY: Replace stubbed webhook with `stripe.webhooks.constructEvent()` using signing secret**
-- [ ] Stripe Checkout sessions for one-time payments
-- [ ] `POST /api/checkout` endpoint — create Stripe Checkout session with theme metadata
+- [x] **SECURITY: Replace stubbed webhook with `stripe.webhooks.constructEvent()` using signing secret**
+- [x] Stripe Checkout sessions for one-time payments
+- [x] `POST /api/checkout` endpoint — create Stripe Checkout session with theme metadata
 - [ ] Support credit card, Google Pay, Apple Pay
-- [ ] Webhook handling with signature validation:
+- [x] Webhook handling with signature validation:
   - `checkout.session.completed` → write purchase to `purchases` table, send confirmation email
   - `charge.refunded` → update purchase record, revoke access
   - `charge.failed` → display error modal with retry + support link
-- [ ] Validate Stripe session ID format (`cs_` prefix) before DB write
-- [ ] Validate `session.metadata` fields (null checks, required fields)
-- [ ] Webhook idempotency — store processed event IDs to prevent replay
-- [ ] Exempt webhook route from rate limiter (Stripe retries should not be blocked)
+- [x] Validate Stripe session ID format (`cs_` prefix) before DB write
+- [x] Validate `session.metadata` fields (null checks, required fields)
+- [x] Webhook idempotency — store processed event IDs to prevent replay
+- [x] Exempt webhook route from rate limiter (Stripe retries should not be blocked)
 - [ ] Webhook retry logic / dead-letter queue for failed deliveries
-- [ ] `GET /api/purchases/:userId` endpoint — verify user has purchased a theme
-- [ ] Payment failure error modal on pricing page (PRD 4.6)
+- [x] `GET /api/purchases/:userId` endpoint — verify user has purchased a theme
+- [x] Payment failure error modal on pricing page (PRD 4.6)
 - [ ] Upgrade path: credit amount already paid toward higher tier
 - [ ] Track `purchase_completed` and `refund_requested` events
 
 ### 4c. Paywall & Access Control
 
-- [ ] Route guard middleware — check `purchases` table for theme access
-- [ ] Paywall modal when free-tier user attempts Module 2+ (from `prototypes/paywall.html`)
-- [ ] Upgrade path from paywall → pricing page
+- [x] Route guard middleware — check `purchases` table for theme access
+- [x] Paywall modal when free-tier user attempts Module 2+ (from `prototypes/paywall.html`)
+- [x] Upgrade path from paywall → pricing page
 - [ ] Track `paywall_hit` and `upgrade_modal_shown` events
 
 ### 4d. Post-Purchase Confirmation
 
-- [ ] Build from `prototypes/purchase-confirmation.html`
-- [ ] Show unlocked modules list, next steps, Discord invite
-- [ ] Redirect here after successful Stripe checkout
+- [x] Build from `prototypes/purchase-confirmation.html`
+- [x] Show unlocked modules list, next steps, Discord invite
+- [x] Redirect here after successful Stripe checkout
 
 ### 4e. Email System
 
@@ -305,32 +306,34 @@ All blocking decisions have been resolved. This table documents the final choice
 
 > **CRITICAL GAP:** `POST /api/progress` exists but is NEVER called from any frontend page. Progress is never saved to the database. The lesson viewer is pure read — opening a lesson doesn't create a `started_at` record, finishing doesn't set `completed_at`.
 
-- [ ] Wire existing `apps/web/lib/progress.ts` into lesson viewer — file exists with getUserProgress, isLessonCompleted, hasThemePurchase but is never called
-- [ ] Add LessonProgressTracker client component to lesson page
-- [ ] "Mark as Complete" button in lesson viewer
-- [ ] Auto-mark lesson as `in_progress` on open (write `started_at`)
-- [ ] Progress nodes on module overview — visual indicators for not_started/in_progress/completed per lesson
-- [ ] Module prerequisite enforcement — gate Module N+1 until Module N is complete (or purchased)
-- [ ] Visual locked states for unpurchased modules (opacity, lock icon, paywall CTA)
-- [ ] `GET /api/progress/:userId/summary` endpoint — aggregated progress for dashboard
-- [ ] Add `theme_progress_summary` database view (aggregated completion stats)
-- [ ] Input validation on progress endpoint: validate theme/module/lesson IDs against known content slugs
-- [ ] Score range validation (clamp 0-100, validate as finite number)
-- [ ] Fix `started_at` overwrite bug — only set on INSERT, not UPDATE
-- [ ] Add `CHECK (hints_used >= 0)` and `CHECK (attempts >= 0)` constraints
+- [x] Client-side progress lib (`apps/web/lib/progress-client.ts`) — markLessonStarted, markLessonCompleted, updateExerciseProgress, getLessonStatus
+- [x] LessonProgressTracker client component — auto-marks `in_progress` on lesson open, shows "Mark as Complete" button
+- [x] "Mark as Complete" button in lesson viewer (pill style, accent color, completed state indicator)
+- [x] Auto-mark lesson as `in_progress` on open (writes `started_at`, skips if already exists)
+- [x] Progress nodes on module overview — visual indicators for not_started/in_progress/completed per lesson
+- [x] Module prerequisite enforcement — gate Module N+1 until Module N is complete (or purchased)
+- [x] Visual locked states for unpurchased modules (opacity, lock icon, paywall CTA)
+- [x] `GET /api/progress/summary` endpoint — aggregated progress for dashboard
+- [x] Add `theme_progress_summary` database view (aggregated completion stats)
+- [x] Input validation on progress endpoint: validate theme/module/lesson IDs against known content slugs
+- [x] Score range validation (clamp 0-100, validate as finite number)
+- [x] Fix `started_at` overwrite bug — only set on INSERT, not UPDATE
+- [x] Add `CHECK (hints_used >= 0)` and `CHECK (attempts >= 0)` constraints
 - [ ] Fix upsert race condition — use `ON CONFLICT` with proper resolution
 
 ### 5b. Dashboard
 
 > **GAP:** Dashboard page doesn't exist — `/dashboard` route is referenced in ROUTES constants but not implemented. Users have no way to see progress or resume learning.
 
-- [ ] Build from `prototypes/dashboard.html`
-- [ ] "Resume learning" — link to last in-progress lesson
-- [ ] Real progress stats from `theme_progress` table (modules completed, lessons done, current streak)
-- [ ] Streak calculation from `completed_at` timestamps
-- [ ] Add `streaks` table (user_id, theme_id, current_streak, longest_streak, last_activity_date) — denormalized for fast reads
+- [x] Dashboard page (`apps/web/app/dashboard/page.tsx`) — server component with auth guard
+- [x] "Resume learning" — Continue Learning card links to last in-progress lesson
+- [x] Real progress stats from `theme_progress` table per theme (completed/total lessons, progress bar)
+- [x] Per-theme progress cards with percentage and lesson counts
+- [x] Coming Soon themes section (shows non-launched themes)
+- [x] Streak calculation from `completed_at` timestamps
+- [x] Add `streaks` table (user_id, theme_id, current_streak, longest_streak, last_activity_date) — denormalized for fast reads
 - [ ] Activity feed (recent lesson completions, achievements)
-- [ ] Add `achievements` table (user_id, achievement_type, theme_id, unlocked_at) — milestones and badges
+- [x] Add `achievements` table (user_id, achievement_type, theme_id, unlocked_at) — milestones and badges
 - [ ] Track `streak_achieved` event (3-day, 7-day, 30-day milestones)
 - [ ] Skill radar: radar chart showing proficiency across 6 axes (PRD 3.4)
 - [ ] Progress ring: circular SVG indicator (from dashboard.html prototype)
@@ -341,37 +344,37 @@ All blocking decisions have been resolved. This table documents the final choice
 
 > **GAP:** Settings page doesn't exist — `/settings` route is referenced but not implemented.
 
-- [ ] Build from `prototypes/settings.html`
-- [ ] `PATCH /api/profiles/:userId` endpoint — update profile fields
-- [ ] Profile editing (display name, avatar)
+- [x] Build from `prototypes/settings.html`
+- [x] `PATCH /api/profiles/:userId` endpoint — update profile fields
+- [x] Profile editing (display name, avatar)
 - [ ] GitHub connection toggle with retroactive push
-- [ ] Theme preference switching ("Theme applies to your learning content and code editor")
+- [x] Theme preference switching ("Theme applies to your learning content and code editor")
 - [ ] Notification preferences
-- [ ] Account management (danger zone: delete account, export data)
+- [x] Account management (danger zone: delete account, export data)
 
 ### 5d. Database Schema Updates
 
 > Schema changes needed to support user journey. Current 4 tables (profiles, theme_progress, purchases, waitlist) need augmentation.
 
-- [ ] Add `preferred_theme_id TEXT` to `profiles` — persist onboarding theme selection (currently lost in React state)
-- [ ] Add `last_active_at TIMESTAMPTZ` to `profiles` — needed for streak calculation, "welcome back" UI
-- [ ] Add `total_lessons_completed INTEGER DEFAULT 0` to `profiles` — denormalized counter for dashboard
-- [ ] Fix onboarding flow — save selected theme to `preferred_theme_id` on completion (not just React state)
+- [x] Add `preferred_theme_id TEXT` to `profiles` — persist onboarding theme selection (currently lost in React state)
+- [x] Add `last_active_at TIMESTAMPTZ` to `profiles` — needed for streak calculation, "welcome back" UI
+- [x] Add `total_lessons_completed INTEGER DEFAULT 0` to `profiles` — denormalized counter for dashboard
+- [x] Fix onboarding flow — save selected theme to `preferred_theme_id` on completion (not just React state)
 - [ ] Add `last_section_viewed TEXT` to `theme_progress` — resume reading mid-lesson (post-V0.5)
 - [ ] Add `time_spent_ms INTEGER` to `theme_progress` — compare actual vs estimated time (post-V0.5)
-- [ ] Create `exercise_attempts` table (user_id, exercise_slug, lesson_id, passed, score, hints_used, solution_viewed, submitted_code, duration_ms, attempted_at)
-- [ ] `POST /api/exercise-attempts` endpoint — record individual exercise results
-- [ ] `GET /api/exercise-attempts/:userId/:lessonId` endpoint — get user's exercise history
+- [x] Create `exercise_attempts` table (user_id, exercise_slug, lesson_id, passed, score, hints_used, solution_viewed, submitted_code, duration_ms, attempted_at)
+- [x] `POST /api/exercise-attempts` endpoint — record individual exercise results
+- [x] `GET /api/exercise-attempts?lessonId=...` endpoint — get user's exercise history
 - [ ] Add `VARCHAR(n)` constraints or API-level length checks on text fields
-- [ ] Add `CHECK (amount > 0)` constraint on purchases
-- [ ] Write migration file for all schema changes
+- [x] Add `CHECK (amount > 0)` constraint on purchases
+- [x] Write migration file for all schema changes
 
 ### 5e. Theme Selection
 
-- [ ] Build from `prototypes/theme-selection.html`
-- [ ] Deep Orbit as available, 4 themes as "Coming Soon"
-- [ ] "Notify Me" email capture → `waitlist_signups` table with theme_id, confirmation toast
-- [ ] Coming-soon modal with theme preview + email input
+- [x] Build from `prototypes/theme-selection.html`
+- [x] Deep Orbit as available, 4 themes as "Coming Soon"
+- [x] "Notify Me" email capture → `waitlist_signups` table with theme_id, confirmation toast
+- [x] Coming-soon modal with theme preview + email input
 - [ ] Track `theme_selected` event
 
 ### 5f. GitHub Integration
@@ -398,7 +401,7 @@ All blocking decisions have been resolved. This table documents the final choice
 - [ ] WCAG 2.1 AA compliance across all pages
 - [ ] 44px minimum touch targets for all interactive elements
 - [ ] Keyboard navigation for all interactive elements (tab order, focus indicators)
-- [ ] `@media (prefers-reduced-motion: reduce)` — disable/simplify all animations globally
+- [x] `@media (prefers-reduced-motion: reduce)` — disable/simplify all animations globally
 - [ ] Screen reader testing (VoiceOver on macOS, NVDA on Windows)
 - [x] Automated accessibility testing: vitest-axe (unit — 8 components), @axe-core/playwright (E2E — 9 routes)
 - [ ] Color contrast audit (4.5:1 minimum for text, 3:1 for UI components)
@@ -408,8 +411,8 @@ All blocking decisions have been resolved. This table documents the final choice
 
 > **GAP:** Lesson sidebar is `hidden lg:flex` — mobile users see content but can't navigate between lessons without going back to the module overview.
 
-- [ ] Mobile lesson navigation drawer — slide-in sidebar for lesson-to-lesson navigation on mobile
-- [ ] Hamburger menu component with slide-in drawer (reuse `lesson-viewer.html` sidebar pattern)
+- [x] Mobile lesson navigation drawer (`MobileLessonNav`) — floating accent-colored menu button, slide-in drawer with full lesson list
+- [x] Hamburger menu button (fixed bottom-right, `lg:hidden`) + overlay + close button
 - [ ] Responsive at breakpoints: 320px, 768px, 1024px, 1440px
 - [ ] Touch-friendly interactions (swipe, tap targets)
 - [ ] Testing devices per PRD 5.5: iPhone SE, iPhone 15 Pro, iPad Air, Pixel 7, Samsung Galaxy S23
@@ -427,11 +430,11 @@ All blocking decisions have been resolved. This table documents the final choice
 
 ### 6d. SEO & Marketing Infrastructure
 
-- [ ] Structured data: Course schema, Organization schema (JSON-LD)
-- [ ] Dynamic OG images via Vercel OG (per-page, per-lesson)
-- [ ] Sitemap generation (next-sitemap)
-- [ ] robots.txt with crawl directives
-- [ ] Canonical URLs on all pages
+- [x] Structured data: Course schema, Organization schema (JSON-LD)
+- [x] Dynamic OG images via Vercel OG (per-page, per-lesson)
+- [x] Sitemap generation (next-sitemap)
+- [x] robots.txt with crawl directives
+- [x] Canonical URLs on all pages
 - [ ] Blog infrastructure (MDX-based, target: 2 posts/week)
 - [ ] Google Search Console setup
 - [ ] Target keywords: "learn machine learning JavaScript", "TensorFlow.js tutorial", "ML for front-end developers"
@@ -440,11 +443,12 @@ All blocking decisions have been resolved. This table documents the final choice
 
 > **GAP:** No session error handling UI — expired tokens show nothing useful. API errors return generic 500s.
 
-- [ ] Global error boundary component (React)
-- [ ] Custom 404 page (themed, with navigation back to dashboard)
-- [ ] Custom 500 page (error logged to Sentry, user-friendly message)
-- [ ] Session expiry handling — detect expired tokens, show re-login prompt (not blank page)
-- [ ] Token refresh flow — graceful session renewal without page reload
+- [x] Global error boundary component (React)
+- [x] Custom 404 page (themed, with navigation back to dashboard)
+- [x] Custom 500 page (error logged to Sentry, user-friendly message)
+- [x] Session expiry handling — middleware detects auth errors, redirects to `/auth/sign-in?error=session_expired`
+- [x] Sign-in page shows "Your session has expired" message when `error=session_expired` param present
+- [x] Token refresh flow — graceful session renewal without page reload
 - [ ] User-friendly error messages for:
   - Payment failures (retry + support link)
   - Auth failures (provider-specific guidance)
@@ -454,7 +458,7 @@ All blocking decisions have been resolved. This table documents the final choice
 
 ### 6f. CI/CD Pipeline
 
-- [ ] GitHub Actions: lint, typecheck, test on every PR
+- [x] GitHub Actions: lint, typecheck, test on every PR
 - [ ] Vercel deployment configuration (preview + production)
 - [ ] Branch protection rules (require PR reviews, passing CI)
 - [ ] Broken link checking in CI
@@ -471,16 +475,16 @@ All blocking decisions have been resolved. This table documents the final choice
 
 > **23 security findings identified in audit (5 CRITICAL, 4 HIGH, 7 MEDIUM, 7 LOW).** CRITICAL and HIGH items are tracked in their respective phases (4b, 5a). This section covers remaining hardening.
 
-- [ ] Content Security Policy (CSP) headers
+- [x] Content Security Policy (CSP) headers
 - [ ] XSS prevention in MDX rendering pipeline
 - [ ] API versioning headers
 - [ ] Fix rate limiter IP spoofing — use trusted proxy header or Cloudflare `CF-Connecting-IP` instead of `X-Forwarded-For`
-- [ ] Add TTL-based cleanup to in-memory rate limiter (or replace with Redis — see 6j)
-- [ ] Move hardcoded CORS origins to environment variable
-- [ ] Add `X-Request-ID` middleware for request tracing
+- [x] Add TTL-based cleanup to in-memory rate limiter (or replace with Redis — see 6j)
+- [x] Move hardcoded CORS origins to environment variable
+- [x] Add `X-Request-ID` middleware for request tracing
 - [ ] Add structured error logging (Pino or Winston with request context)
-- [ ] Add graceful shutdown handler (`process.on('SIGTERM')`)
-- [ ] Health check endpoint: add `SELECT 1` DB probe (currently doesn't verify DB connection)
+- [x] Add graceful shutdown handler (`process.on('SIGTERM')`)
+- [x] Health check endpoint: add `SELECT 1` DB probe (currently doesn't verify DB connection)
 - [ ] Purchase-to-theme referential integrity — validate `theme_ids[]` against known themes
 
 ### 6i. Analytics Event Tracking
@@ -508,12 +512,12 @@ All blocking decisions have been resolved. This table documents the final choice
 
 ## Phase 7: Post-V0.5 Features
 
-### 7a. Bridge Explorer (V1.0)
+### 7a. Bridge Explorer (COMPLETE)
 
-- [ ] Build from `prototypes/bridge-explorer.html`
-- [ ] Browse all 56+ FE-to-ML bridges with filters and search
-- [ ] Bridge quality tier color coding (Identity=#00D4FF, Structural=#7B68EE, Intuition=#F0C75E)
-- [ ] Gate behind PostHog feature flag, or ship as read-only reference page in V0.5
+- [x] Build from `prototypes/bridge-explorer.html` — `/bridges` route with `bridge-explorer.tsx`
+- [x] Browse all 56+ FE-to-ML bridges with filters and search
+- [x] Bridge quality tier color coding (Identity=#00D4FF, Structural=#7B68EE, Intuition=#F0C75E)
+- [x] Shipped as read-only reference page in V0.5 (no feature flag needed)
 
 ### 7b. Capstone Completion
 
@@ -535,18 +539,22 @@ All blocking decisions have been resolved. This table documents the final choice
 - [ ] RecallPrompt — spaced repetition prompts referencing earlier lessons
 - [ ] Content preview server for authors (hot-reload MDX without full build)
 
-### 7d. Deep Orbit Modules 4–5 (V0.5 → V1.0 bridge)
+### 7d. Deep Orbit Modules 4–5 (COMPLETE)
 
-- [ ] Module 4 content authoring (5 lessons + exercises)
-- [ ] Module 5 content authoring (5 lessons + exercises)
-- [ ] Capstone exercise for Module 5
+- [x] Module 4 (signal-processing) content authoring (5 lessons + 5 exercises)
+- [x] Module 5 (recurrent-networks) content authoring (5 lessons + 5 exercises)
 
-### 7e. Deep Orbit Modules 6–11 (V1.0)
+### 7e. Deep Orbit Modules 6–11 (COMPLETE — content authored)
 
-- [ ] Module 6–11 content authoring (30 additional lessons)
-- [ ] Full narrative arc completion (rising action → climax → resolution)
-- [ ] 2-3 "AI-wrong moments" where the system fails (teaching resilience)
-- [ ] Character arc completion for all 4 characters
+- [x] Module 6 (browser-runtimes) content authoring (5 lessons + 5 exercises)
+- [x] Module 7 (anomaly-detection) content authoring (5 lessons + 5 exercises)
+- [x] Module 8 (advanced-time-series) content authoring (5 lessons + 5 exercises)
+- [x] Module 9 (llm-integration) content authoring (5 lessons + 5 exercises)
+- [x] Module 10 (optimization-edge) content authoring (5 lessons + 5 exercises)
+- [x] Module 11 (capstone) content authoring (5 lessons + 5 exercises)
+- [x] Full narrative arc completion (rising action → climax → resolution)
+- [ ] 2-3 "AI-wrong moments" where the system fails (teaching resilience) — verify in content
+- [ ] Character arc completion for all 4 characters — verify in content
 
 ### 7f. Additional Themes
 
@@ -563,8 +571,8 @@ All blocking decisions have been resolved. This table documents the final choice
 
 ### 7h. Module Count Dynamic Updates
 
-- [ ] Drive all module/lesson counts from content source (MDX file count via Velite)
-- [ ] Never hardcode — automatically updates when new modules ship
+- [x] Drive all module/lesson counts from content source (THEME_CONTENT constant in shared package)
+- [x] Never hardcode — pricing page derives counts from THEME_CONTENT constant
 
 ### 7i. Arena (V1.0+)
 

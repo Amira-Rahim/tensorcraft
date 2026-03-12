@@ -1,0 +1,182 @@
+---
+slug: inference-pipeline
+title: "Inference Pipeline"
+moduleId: browser-runtimes
+themeId: deep-orbit
+order: 4
+estimatedMinutes: 30
+difficulty: intermediate
+context:
+  narrative: "The model is loaded. Park wires it into the dashboard's real-time signal feed — every second, a new reading arrives and the model must classify it."
+  speaker: "Ensign Park"
+concept:
+  explanation: "Running inference is the event handler → process → render cycle you use for every user interaction — input arrives, logic runs, UI updates."
+  bridge:
+    feTitle: "Event → Process → Render"
+    feCode: "input.addEventListener('change', e => { const result = process(e); render(result); })"
+    mlTitle: "Input → Predict → Display"
+    mlCode: "const prediction = model.predict(tensor); updateUI(prediction);"
+    tier: structural
+consequence:
+  narrative: "The dashboard shows live classifications. Green for normal, amber for anomalous. The crew watches as signals stream in."
+  nextLessonTeaser: "Next: comparing runtimes — is TF.js the only option?"
+hints:
+  - level: nudge
+    content: "Treat each signal reading as an event — preprocess, predict, display"
+  - level: guidance
+    content: "Use tf.tidy() to prevent memory leaks, and always normalize input before prediction"
+  - level: solution
+    content: "tf.tidy(() => { const input = tf.tensor2d([normalized]); return model.predict(input); })"
+keywords:
+  - inference
+  - predict
+  - real-time
+  - memory-management
+  - tidy
+---
+
+<Dialogue speaker="Ensign Park">
+Signal feed is connected. Every second, a new reading arrives — three values. I feed them into the model, get a classification, update the display. It is literally an event handler.
+</Dialogue>
+
+<Dialogue speaker="Chief Torres">
+And what happens to the tensors you create every second? If you do not dispose them, you will leak memory until the tab crashes. This is not a lab experiment anymore.
+</Dialogue>
+
+You've built this exact pattern hundreds of times: an event fires, your handler processes the data, and the UI updates. ML inference in the browser is the same loop — but with one critical addition: **memory management**. Tensors are GPU resources. If you don't clean them up, you'll leak memory until the tab crashes.
+
+<LearningObjectives objectives={["Build a real-time inference pipeline: input → preprocess → predict → display", "Use tf.tidy() for automatic tensor cleanup — preventing GPU memory leaks", "Preprocess raw input data to match model training format", "Measure and optimize inference latency for real-time requirements"]} />
+
+## The Event Loop of ML
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="inference-pipeline.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// The model expects normalized 3-feature input: [amplitude, frequency, phase]
+// Training used min-max normalization to [0, 1]
+const FEATURE_RANGES = {
+  amplitude: { min: 0, max: 2048 },
+  frequency: { min: 20, max: 20000 },
+  phase: { min: -Math.PI, max: Math.PI },
+};
+
+function normalize(value: number, min: number, max: number): number {
+  return (value - min) / (max - min);
+}
+
+// Preprocess raw signal → model input
+function preprocess(raw: { amplitude: number; frequency: number; phase: number }): number[] {
+  return [
+    normalize(raw.amplitude, FEATURE_RANGES.amplitude.min, FEATURE_RANGES.amplitude.max),
+    normalize(raw.frequency, FEATURE_RANGES.frequency.min, FEATURE_RANGES.frequency.max),
+    normalize(raw.phase, FEATURE_RANGES.phase.min, FEATURE_RANGES.phase.max),
+  ];
+}
+
+// Run inference — the core predict call
+function classify(model: tf.LayersModel, rawSignal: { amplitude: number; frequency: number; phase: number }) {
+  // tf.tidy() automatically disposes all intermediate tensors
+  // Like a try/finally that cleans up resources — no manual dispose() needed
+  return tf.tidy(() => {
+    const normalized = preprocess(rawSignal);
+    const input = tf.tensor2d([normalized]);        // shape: [1, 3]
+    const output = model.predict(input) as tf.Tensor;
+    const confidence = output.dataSync()[0];         // synchronous read
+
+    return {
+      class: confidence > 0.5 ? 'anomaly' : 'noise',
+      confidence: Math.round(confidence * 1000) / 1000,
+    };
+  });
+}`}
+</CodeBlock>
+
+## Memory Management with tf.tidy()
+
+This is the one concept that has no exact frontend parallel — and it's critical. GPU tensors don't get garbage collected like JavaScript objects. You must explicitly clean them up.
+
+<CodeBlock language="typescript" title="memory-management.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// BAD: leaks memory every call — tensors accumulate on the GPU
+function leakyPredict(model: tf.LayersModel, data: number[]) {
+  const input = tf.tensor2d([data]);           // allocated on GPU
+  const output = model.predict(input);          // allocated on GPU
+  return (output as tf.Tensor).dataSync()[0];   // input and output NEVER freed
+}
+
+// GOOD: tf.tidy() cleans up all tensors created inside it
+function cleanPredict(model: tf.LayersModel, data: number[]) {
+  return tf.tidy(() => {
+    const input = tf.tensor2d([data]);
+    const output = model.predict(input) as tf.Tensor;
+    return output.dataSync()[0];  // scalar return value (not a tensor) passes through
+  });
+  // input and output tensors automatically disposed here
+}
+
+// Monitor memory usage — like checking DevTools memory tab
+console.log(tf.memory());
+// { numTensors: 47, numDataBuffers: 47, numBytes: 12800, unreliable: false }`}
+</CodeBlock>
+
+Think of `tf.tidy()` like React's `useEffect` cleanup function — it ensures resources are released when they're no longer needed.
+
+## Wiring It into the Dashboard
+
+<CodeBlock language="typescript" title="dashboard-integration.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+interface SignalReading {
+  timestamp: number;
+  amplitude: number;
+  frequency: number;
+  phase: number;
+}
+
+interface Classification {
+  class: 'anomaly' | 'noise';
+  confidence: number;
+  latencyMs: number;
+}
+
+// Real-time pipeline: process each signal as it arrives
+function createInferencePipeline(model: tf.LayersModel) {
+  return function processSignal(reading: SignalReading): Classification {
+    const start = performance.now();
+
+    const result = tf.tidy(() => {
+      const normalized = preprocess(reading);
+      const input = tf.tensor2d([normalized]);
+      const output = model.predict(input) as tf.Tensor;
+      return output.dataSync()[0];
+    });
+
+    return {
+      class: result > 0.5 ? 'anomaly' : 'noise',
+      confidence: result,
+      latencyMs: performance.now() - start,
+    };
+  };
+}
+
+// Usage — exactly like setting up an event listener
+const pipeline = createInferencePipeline(model);
+
+// Process each signal reading as it arrives (1Hz)
+signalFeed.addEventListener('reading', (event: CustomEvent<SignalReading>) => {
+  const classification = pipeline(event.detail);
+  updateDashboard(classification);
+  // Typical: { class: 'noise', confidence: 0.12, latencyMs: 3.4 }
+});`}
+</CodeBlock>
+
+## Challenge
+
+Build a complete inference pipeline with preprocessing and memory management.
+
+<Exercise slug="inference-pipeline" />
+
+<KeyTakeaways takeaways={["Inference follows the event → process → render pattern: receive input, run model.predict(), update UI", "tf.tidy() is essential — it auto-disposes intermediate tensors, preventing GPU memory leaks", "Always preprocess input to match training format — normalize values to the same ranges used during training", "tf.memory() lets you monitor tensor count and memory usage, like the DevTools memory tab"]} />

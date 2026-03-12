@@ -1,0 +1,159 @@
+---
+slug: ensemble-methods
+title: "Ensemble Methods"
+moduleId: advanced-time-series
+themeId: deep-orbit
+order: 5
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "No single model handles all aspects of the signal. Park combines the LSTM, attention model, and Kalman filter into an ensemble — multiple models, one prediction."
+  speaker: "Ensign Park"
+concept:
+  explanation: "Ensemble methods combine multiple models for a more robust prediction — like micro-frontends where multiple independent apps compose into one view."
+  bridge:
+    feTitle: "Micro-Frontends"
+    feCode: "// Multiple apps compose into one view, each handling its domain"
+    mlTitle: "Model Ensemble"
+    mlCode: "prediction = average(lstm.predict(x), attention.predict(x), kalman.predict(x))"
+    tier: structural
+consequence:
+  narrative: "The ensemble catches the timing drift that the LSTM alone missed. Multiple perspectives yield a more complete picture."
+  nextLessonTeaser: "Module 9: adding language model capabilities to interpret and report DEEP SCAN findings"
+hints:
+  - level: nudge
+    content: "Ensemble = multiple models vote on the answer, reducing individual model errors"
+  - level: guidance
+    content: "Simple averaging works well: prediction = mean of all model predictions"
+  - level: solution
+    content: "const ensemble = models.map(m => m.predict(x)); return mean(ensemble);"
+keywords:
+  - ensemble
+  - model-averaging
+  - bagging
+  - stacking
+  - micro-frontends
+---
+
+<Dialogue speaker="Ensign Park">
+The LSTM is great at short-range patterns. The attention model catches long-range dependencies. The Kalman filter tracks drift. Why choose one when we can combine all three?
+</Dialogue>
+
+<Dialogue speaker="Dr. Sato">
+Exactly. Each model has blind spots. An ensemble covers them. Like having three specialists review the same data — their combined judgment is stronger than any individual.
+</Dialogue>
+
+Micro-frontends compose multiple independent applications into one coherent view — each app handles its domain expertise. Model ensembles do the same: each model brings its own strengths, and the combination is more robust than any single model.
+
+<LearningObjectives objectives={["Combine multiple models using averaging, weighted averaging, and stacking", "Understand why ensembles reduce error: averaging out individual model mistakes", "Build an ensemble of LSTM, attention, and Kalman filter for signal forecasting", "Evaluate ensemble performance vs individual models"]} />
+
+## Combining Models
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="ensemble.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+interface ModelPrediction {
+  modelName: string;
+  prediction: number[];
+  confidence: number;
+}
+
+// Simple averaging — each model gets equal vote
+function averageEnsemble(predictions: ModelPrediction[]): number[] {
+  const n = predictions.length;
+  const dim = predictions[0].prediction.length;
+  const result = new Array(dim).fill(0);
+
+  for (const p of predictions) {
+    for (let i = 0; i < dim; i++) {
+      result[i] += p.prediction[i] / n;
+    }
+  }
+  return result;
+}
+
+// Weighted averaging — trust better models more
+function weightedEnsemble(predictions: ModelPrediction[]): number[] {
+  const totalConf = predictions.reduce((s, p) => s + p.confidence, 0);
+  const dim = predictions[0].prediction.length;
+  const result = new Array(dim).fill(0);
+
+  for (const p of predictions) {
+    const weight = p.confidence / totalConf;
+    for (let i = 0; i < dim; i++) {
+      result[i] += p.prediction[i] * weight;
+    }
+  }
+  return result;
+}
+
+// DEEP SCAN ensemble
+const predictions: ModelPrediction[] = [
+  { modelName: 'LSTM', prediction: [0.82, 74.1, 0.45], confidence: 0.85 },
+  { modelName: 'Attention', prediction: [0.79, 73.8, 0.51], confidence: 0.90 },
+  { modelName: 'Kalman', prediction: [0.80, 74.3, 0.48], confidence: 0.75 },
+];
+
+const avg = averageEnsemble(predictions);
+const weighted = weightedEnsemble(predictions);
+console.log('Average:', avg);    // [0.803, 74.067, 0.480]
+console.log('Weighted:', weighted); // attention contributes most`}
+</CodeBlock>
+
+## Why Ensembles Work
+
+<CodeBlock language="typescript" title="why-ensembles.ts">
+{`// Each model makes different errors
+// When you average, individual errors cancel out
+
+// LSTM:      good at short patterns, misses long-range drift
+// Attention: good at long-range, may overfit on small datasets
+// Kalman:    good at tracking drift, assumes linear dynamics
+
+// Error reduction: if models have uncorrelated errors,
+// ensemble error ≈ individual error / sqrt(N)
+
+// Example:
+// LSTM MAE: 0.045
+// Attention MAE: 0.038
+// Kalman MAE: 0.052
+// Ensemble MAE: 0.028  ← better than any individual model
+
+function evaluateEnsemble(
+  models: { name: string; predictions: number[][] }[],
+  actual: number[][],
+): { individual: Record<string, number>; ensemble: number } {
+  const individual: Record<string, number> = {};
+
+  for (const model of models) {
+    let totalError = 0;
+    for (let i = 0; i < actual.length; i++) {
+      for (let j = 0; j < actual[i].length; j++) {
+        totalError += Math.abs(model.predictions[i][j] - actual[i][j]);
+      }
+    }
+    individual[model.name] = totalError / (actual.length * actual[0].length);
+  }
+
+  // Ensemble prediction
+  let ensembleError = 0;
+  for (let i = 0; i < actual.length; i++) {
+    for (let j = 0; j < actual[i].length; j++) {
+      const avg = models.reduce((s, m) => s + m.predictions[i][j], 0) / models.length;
+      ensembleError += Math.abs(avg - actual[i][j]);
+    }
+  }
+
+  return { individual, ensemble: ensembleError / (actual.length * actual[0].length) };
+}`}
+</CodeBlock>
+
+## Challenge
+
+Build a weighted ensemble from multiple model predictions.
+
+<Exercise slug="weighted-ensemble" />
+
+<KeyTakeaways takeaways={["Ensembles combine multiple models — averaging out individual errors for more robust predictions", "Weighted ensembles give more influence to higher-confidence models, like prioritizing trusted micro-frontends", "Diversity matters: models with different architectures (LSTM, attention, Kalman) make uncorrelated errors", "The DEEP SCAN ensemble catches the timing drift that no single model fully captured"]} />

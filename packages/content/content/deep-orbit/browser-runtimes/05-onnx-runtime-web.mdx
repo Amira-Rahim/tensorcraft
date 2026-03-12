@@ -1,0 +1,174 @@
+---
+slug: onnx-runtime-web
+title: "ONNX Runtime Web"
+moduleId: browser-runtimes
+themeId: deep-orbit
+order: 5
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "Torres demands a benchmark. 'TF.js is not the only option. Compare runtimes before we commit.' Park discovers ONNX — the universal model format."
+  speaker: "Chief Torres"
+concept:
+  explanation: "ONNX is a universal model format that runs across runtimes — like how HTML runs in any browser regardless of the rendering engine."
+  bridge:
+    feTitle: "Cross-Browser Compat"
+    feCode: "// Same HTML works in Chrome, Firefox, Safari"
+    mlTitle: "Cross-Runtime Models"
+    mlCode: "// Same ONNX model runs in TF.js, ONNX Runtime, PyTorch"
+    tier: structural
+consequence:
+  narrative: "Park presents the benchmark results. ONNX Runtime wins on cold start; TF.js wins on sustained inference. Torres chooses TF.js for the dashboard, ONNX for the backup system."
+  nextLessonTeaser: "Next module: the signals hold hidden structure — Dr. Sato introduces frequency-domain analysis"
+hints:
+  - level: nudge
+    content: "ONNX is a model format, not a framework — like HTML is a document format, not a browser"
+  - level: guidance
+    content: "Load ONNX models with onnxruntime-web's InferenceSession.create(), feed data with OrtTensor"
+  - level: solution
+    content: "const session = await ort.InferenceSession.create('model.onnx'); const results = await session.run({ input: tensor });"
+keywords:
+  - onnx
+  - runtime-comparison
+  - benchmark
+  - interop
+  - wasm
+---
+
+<Dialogue speaker="Chief Torres">
+We are not shipping the first runtime we tried. Compare TensorFlow.js and ONNX Runtime. Cold start, sustained inference, memory footprint. I want numbers, not opinions.
+</Dialogue>
+
+<Dialogue speaker="Ensign Park">
+Fair enough. ONNX is like... a universal model format? Train in Python, export to ONNX, run anywhere?
+</Dialogue>
+
+<Dialogue speaker="Chief Torres">
+Exactly. Like how you build once in HTML and it runs in Chrome, Firefox, Safari. ONNX is the HTML of trained models.
+</Dialogue>
+
+You've dealt with cross-browser compatibility your entire career. Different browsers, different engines, same web standards. ONNX (Open Neural Network Exchange) brings the same idea to ML: a universal format that any runtime can execute, regardless of which framework trained the model.
+
+<LearningObjectives objectives={["Understand ONNX as a universal model interchange format", "Load and run ONNX models in the browser with onnxruntime-web", "Benchmark TF.js vs ONNX Runtime: cold start, inference speed, memory usage", "Choose the right runtime for your use case based on real performance data"]} />
+
+## The Universal Model Format
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="onnx-basics.ts">
+{`// ONNX Runtime Web — the alternative browser ML runtime
+// npm install onnxruntime-web
+import * as ort from 'onnxruntime-web';
+
+// Load an ONNX model (exported from PyTorch, TF, sklearn, etc.)
+const session = await ort.InferenceSession.create('/models/deep-scan.onnx', {
+  executionProviders: ['wasm'],  // 'wasm' or 'webgl'
+});
+
+// Check model inputs/outputs — like inspecting an API schema
+console.log('Inputs:', session.inputNames);    // ['input']
+console.log('Outputs:', session.outputNames);  // ['output']
+
+// Create input tensor
+const inputData = new Float32Array([0.5, 0.3, 0.7]);  // normalized signal
+const inputTensor = new ort.Tensor('float32', inputData, [1, 3]);
+
+// Run inference
+const results = await session.run({ input: inputTensor });
+const output = results.output;
+console.log('Prediction:', output.data[0]);  // 0.847`}
+</CodeBlock>
+
+## TF.js vs ONNX Runtime: Head-to-Head
+
+<CodeBlock language="typescript" title="benchmark-comparison.ts">
+{`import * as tf from '@tensorflow/tfjs';
+import * as ort from 'onnxruntime-web';
+
+interface BenchmarkResult {
+  runtime: string;
+  coldStartMs: number;
+  avgInferenceMs: number;
+  memoryMB: number;
+}
+
+// Benchmark TensorFlow.js
+async function benchmarkTFJS(): Promise<BenchmarkResult> {
+  const t0 = performance.now();
+  const model = await tf.loadLayersModel('/models/deep-scan/model.json');
+  const coldStartMs = performance.now() - t0;
+
+  // Warm up
+  const warmup = tf.tensor2d([[0.5, 0.3, 0.7]]);
+  (model.predict(warmup) as tf.Tensor).dispose();
+  warmup.dispose();
+
+  // Sustained inference (100 iterations)
+  const times: number[] = [];
+  for (let i = 0; i < 100; i++) {
+    const start = performance.now();
+    tf.tidy(() => {
+      const input = tf.tensor2d([[Math.random(), Math.random(), Math.random()]]);
+      model.predict(input);
+    });
+    times.push(performance.now() - start);
+  }
+
+  return {
+    runtime: 'TF.js (WebGL)',
+    coldStartMs,
+    avgInferenceMs: times.reduce((a, b) => a + b, 0) / times.length,
+    memoryMB: tf.memory().numBytes / (1024 * 1024),
+  };
+}
+
+// Benchmark ONNX Runtime
+async function benchmarkONNX(): Promise<BenchmarkResult> {
+  const t0 = performance.now();
+  const session = await ort.InferenceSession.create('/models/deep-scan.onnx');
+  const coldStartMs = performance.now() - t0;
+
+  // Sustained inference (100 iterations)
+  const times: number[] = [];
+  for (let i = 0; i < 100; i++) {
+    const input = new ort.Tensor('float32',
+      new Float32Array([Math.random(), Math.random(), Math.random()]), [1, 3]);
+    const start = performance.now();
+    await session.run({ input });
+    times.push(performance.now() - start);
+  }
+
+  return {
+    runtime: 'ONNX (WASM)',
+    coldStartMs,
+    avgInferenceMs: times.reduce((a, b) => a + b, 0) / times.length,
+    memoryMB: 0, // WASM memory tracked separately
+  };
+}
+
+// Typical results for a small signal classifier:
+// TF.js (WebGL):  cold=340ms, inference=2.1ms, mem=0.8MB
+// ONNX (WASM):    cold=180ms, inference=3.8ms, mem=1.2MB`}
+</CodeBlock>
+
+## When to Choose Which
+
+| Factor | TF.js | ONNX Runtime Web |
+|--------|-------|-------------------|
+| **Ecosystem** | Largest (React of ML) | Growing (Vue of ML) |
+| **GPU acceleration** | WebGL (excellent) | WebGL (experimental) |
+| **Python interop** | Export from TF/Keras | Any framework via ONNX export |
+| **Cold start** | Slower (WebGL shader compilation) | Faster (WASM) |
+| **Sustained speed** | Faster (GPU shaders cached) | Good (SIMD-optimized WASM) |
+| **Memory management** | Manual (tf.tidy/dispose) | Automatic (GC) |
+| **Bundle size** | ~800KB | ~600KB |
+
+For DEEP SCAN: TF.js wins on sustained inference (the dashboard runs continuously). ONNX wins on cold start (backup system that loads on demand). Torres's decision to use both is pragmatic engineering.
+
+## Challenge
+
+Run an ONNX model and compare its output with TF.js.
+
+<Exercise slug="onnx-comparison" />
+
+<KeyTakeaways takeaways={["ONNX is a universal model format — train anywhere, deploy anywhere, like HTML across browsers", "ONNX Runtime Web uses WASM for reliable cross-device inference; TF.js uses WebGL for GPU acceleration", "Cold start vs sustained speed is the key tradeoff — ONNX starts faster, TF.js runs faster long-term", "Choose your runtime based on your deployment pattern: always-on dashboard (TF.js) vs on-demand inference (ONNX)"]} />

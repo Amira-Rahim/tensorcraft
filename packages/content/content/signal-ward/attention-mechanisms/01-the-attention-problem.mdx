@@ -1,0 +1,102 @@
+---
+slug: the-attention-problem
+title: "The Attention Problem"
+moduleId: attention-mechanisms
+themeId: signal-ward
+order: 1
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Obi demonstrates why not all words carry equal weight in clinical text."
+  speaker: "Obi Nwosu"
+concept:
+  explanation: "Attention mechanisms let models focus on the most relevant parts of input, rather than treating all tokens equally."
+  bridge:
+    feTitle: "CSS :focus + tabIndex"
+    feCode: "element.focus(); // browser highlights one element"
+    mlTitle: "Attention Weight"
+    mlCode: "const weight = tf.softmax(scores); // model highlights key tokens"
+    tier: analogy
+consequence:
+  narrative: "Khalil realizes that weighting matters — not every word in a clinical note is equally important."
+  nextLessonTeaser: "Next: self-attention, where every word learns to attend to every other word."
+hints:
+  - level: nudge
+    content: "Think about how softmax normalizes values to sum to 1"
+  - level: guidance
+    content: "Compute a dot product between a query and each key, then apply softmax"
+  - level: solution
+    content: "const scores = tf.dot(query, keys.transpose()); const weights = tf.softmax(scores);"
+keywords:
+  - attention
+  - softmax
+  - weights
+  - focus
+---
+
+<Dialogue speaker="Obi Nwosu">
+Khalil, read this clinical note: "The patient was prescribed methotrexate for rheumatoid arthritis and reports intermittent nausea." Which words matter most for understanding the medication relationship?
+</Dialogue>
+
+<Dialogue speaker="Khalil Mensah">
+"Methotrexate" and "rheumatoid arthritis" — the drug and what it's treating. The rest is context.
+</Dialogue>
+
+<Dialogue speaker="Obi Nwosu">
+Exactly. Your brain just performed attention. Our sequence models treat every word with roughly equal importance. That's like tabbing through every element on a page instead of jumping to the one that matters.
+</Dialogue>
+
+In frontend development, you use CSS `:focus` and `tabIndex` to direct the user's attention to what matters. Attention mechanisms do the same thing for neural networks — they learn which parts of the input to focus on.
+
+<LearningObjectives objectives={["Understand why uniform weighting fails for clinical text", "Compute attention scores using dot products", "Apply softmax to normalize scores into attention weights", "Use attention weights to create a weighted representation"]} />
+
+## The Problem with Equal Attention
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+Our LSTM from Module 4 processes each word sequentially, compressing the entire sentence into a single hidden state. That's like trying to summarize a patient's entire medical history in one sentence — you inevitably lose critical details.
+
+Consider: "Patient denied chest pain but reported shortness of breath." If the model treats "denied" and "reported" with equal weight, it might confuse which symptom is present and which is absent.
+
+<CodeBlock language="typescript" title="attention-scores.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Simulated hidden states for 5 words: [seqLen, hiddenDim]
+const hiddenStates = tf.randomNormal([5, 64]);
+
+// A query vector — what are we looking for?
+const query = tf.randomNormal([64]);
+
+// Compute raw attention scores via dot product
+const scores = tf.matMul(
+  hiddenStates,
+  query.reshape([64, 1])
+).squeeze(); // shape: [5]
+
+// Normalize with softmax — scores now sum to 1
+const weights = tf.softmax(scores);
+console.log('Attention weights:', await weights.array());
+
+// Create weighted combination — the "attended" representation
+const attended = tf.matMul(
+  weights.reshape([1, 5]),
+  hiddenStates
+).squeeze(); // shape: [64]
+console.log('Attended vector shape:', attended.shape);`}
+</CodeBlock>
+
+The dot product measures similarity between the query and each hidden state. Words that match what we're looking for get higher scores. Softmax turns those scores into a probability distribution — a set of weights that sum to 1.
+
+## Why This Matters Clinically
+
+<Dialogue speaker="Obi Nwosu">
+In a 500-word discharge summary, maybe 20 words determine the diagnosis. Attention lets Diagnostic One find those 20 words without reading the other 480 with equal intensity.
+</Dialogue>
+
+## Challenge
+
+Compute attention weights for a sequence of clinical tokens.
+
+<Exercise slug="compute-attention" />
+
+<KeyTakeaways takeaways={["Attention lets models focus on relevant parts of input, like CSS :focus directs user attention", "Dot product similarity measures how well each input matches a query", "Softmax normalizes raw scores into weights that sum to 1", "Weighted combination produces a context-aware representation"]} />

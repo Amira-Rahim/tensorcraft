@@ -1,0 +1,91 @@
+slug: visualize-attention
+lessonSlug: attention-visualization
+title: "Visualize Attention Weights"
+instructions: "Given a list of tokens and a 2D attention weight matrix, create a function that returns a structured visualization object. Each cell should contain the source token, target token, and attention weight. Also implement a function to find the top-k attended token pairs."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  interface AttentionCell {
+    source: string;
+    target: string;
+    weight: number;
+  }
+
+  function buildAttentionGrid(
+    tokens: string[],
+    weights: number[][]
+  ): AttentionCell[] {
+    // Build a flat array of AttentionCell objects for every (i, j) pair
+    return [];
+  }
+
+  function topKAttentionPairs(
+    grid: AttentionCell[],
+    k: number
+  ): AttentionCell[] {
+    // Return the top k pairs sorted by weight descending
+    return [];
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  interface AttentionCell {
+    source: string;
+    target: string;
+    weight: number;
+  }
+
+  function buildAttentionGrid(
+    tokens: string[],
+    weights: number[][]
+  ): AttentionCell[] {
+    const grid: AttentionCell[] = [];
+    for (let i = 0; i < tokens.length; i++) {
+      for (let j = 0; j < tokens.length; j++) {
+        grid.push({
+          source: tokens[i],
+          target: tokens[j],
+          weight: weights[i][j]
+        });
+      }
+    }
+    return grid;
+  }
+
+  function topKAttentionPairs(
+    grid: AttentionCell[],
+    k: number
+  ): AttentionCell[] {
+    return [...grid].sort((a, b) => b.weight - a.weight).slice(0, k);
+  }
+testCode: |
+  describe('buildAttentionGrid', () => {
+    it('returns correct number of cells', () => {
+      const tokens = ['a', 'b', 'c'];
+      const weights = [[0.5, 0.3, 0.2], [0.1, 0.7, 0.2], [0.3, 0.3, 0.4]];
+      const grid = buildAttentionGrid(tokens, weights);
+      expect(grid.length).toBe(9);
+    });
+    it('cells contain correct source and target', () => {
+      const tokens = ['drug', 'condition'];
+      const weights = [[0.6, 0.4], [0.3, 0.7]];
+      const grid = buildAttentionGrid(tokens, weights);
+      expect(grid[0]).toEqual({ source: 'drug', target: 'drug', weight: 0.6 });
+      expect(grid[1]).toEqual({ source: 'drug', target: 'condition', weight: 0.4 });
+    });
+  });
+  describe('topKAttentionPairs', () => {
+    it('returns top k pairs by weight', () => {
+      const grid = [
+        { source: 'a', target: 'b', weight: 0.9 },
+        { source: 'a', target: 'a', weight: 0.1 },
+        { source: 'b', target: 'a', weight: 0.5 }
+      ];
+      const top = topKAttentionPairs(grid, 2);
+      expect(top.length).toBe(2);
+      expect(top[0].weight).toBe(0.9);
+      expect(top[1].weight).toBe(0.5);
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

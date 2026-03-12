@@ -1,0 +1,33 @@
+slug: temporal-attention
+lessonSlug: temporal-attention
+title: "Find Top Attention Steps"
+instructions: "Write a function that takes an array of attention weights and returns the indices of the top-K highest-weighted time steps, sorted by weight descending."
+starterCode: |
+  function topKSteps(weights: number[], k: number): number[] {
+    // Return the indices of the K highest weights, sorted descending by weight
+    return null; // your code here
+  }
+solutionCode: |
+  function topKSteps(weights: number[], k: number): number[] {
+    return weights
+      .map((w, i) => ({ weight: w, index: i }))
+      .sort((a, b) => b.weight - a.weight)
+      .slice(0, k)
+      .map(item => item.index);
+  }
+testCode: |
+  describe('topKSteps', () => {
+    it('returns K indices', () => {
+      expect(topKSteps([0.1, 0.5, 0.2, 0.8, 0.3], 2).length).toBe(2);
+    });
+    it('returns highest first', () => {
+      const result = topKSteps([0.1, 0.5, 0.2, 0.8, 0.3], 2);
+      expect(result[0]).toBe(3);
+      expect(result[1]).toBe(1);
+    });
+    it('handles k=1', () => {
+      expect(topKSteps([0.1, 0.9, 0.5], 1)).toEqual([1]);
+    });
+  });
+estimatedMinutes: 8
+difficulty: beginner

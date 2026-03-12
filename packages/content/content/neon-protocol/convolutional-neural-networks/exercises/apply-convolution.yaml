@@ -1,0 +1,76 @@
+slug: apply-convolution
+lessonSlug: convolution-operations
+title: "Apply a 2D Convolution"
+instructions: "Implement a function convolve2D that takes a 2D grayscale image (number[][]) and a 2D kernel (number[][]), and returns the convolution result using valid padding (no padding). At each position, multiply the overlapping region element-wise with the kernel and sum the values."
+starterCode: |
+  function convolve2D(image: number[][], kernel: number[][]): number[][] {
+    // Output height = imageHeight - kernelHeight + 1
+    // Output width = imageWidth - kernelWidth + 1
+    // For each output position, compute the element-wise product
+    // of the kernel and the overlapping image patch, then sum.
+    return null; // your code here
+  }
+solutionCode: |
+  function convolve2D(image: number[][], kernel: number[][]): number[][] {
+    const iH = image.length;
+    const iW = image[0].length;
+    const kH = kernel.length;
+    const kW = kernel[0].length;
+    const oH = iH - kH + 1;
+    const oW = iW - kW + 1;
+
+    const output: number[][] = [];
+    for (let r = 0; r < oH; r++) {
+      output[r] = [];
+      for (let c = 0; c < oW; c++) {
+        let sum = 0;
+        for (let kr = 0; kr < kH; kr++) {
+          for (let kc = 0; kc < kW; kc++) {
+            sum += image[r + kr][c + kc] * kernel[kr][kc];
+          }
+        }
+        output[r][c] = sum;
+      }
+    }
+    return output;
+  }
+testCode: |
+  describe('convolve2D', () => {
+    it('returns correct output dimensions', () => {
+      const image = [[1,2,3],[4,5,6],[7,8,9]];
+      const kernel = [[1,0],[0,1]];
+      const result = convolve2D(image, kernel);
+      expect(result.length).toBe(2);
+      expect(result[0].length).toBe(2);
+    });
+
+    it('computes identity kernel correctly', () => {
+      const image = [[1,2,3],[4,5,6],[7,8,9]];
+      const kernel = [[1]];
+      const result = convolve2D(image, kernel);
+      expect(result).toEqual([[1,2,3],[4,5,6],[7,8,9]]);
+    });
+
+    it('computes edge detection kernel', () => {
+      const image = [
+        [0,0,0,0,0],
+        [0,1,1,1,0],
+        [0,1,1,1,0],
+        [0,1,1,1,0],
+        [0,0,0,0,0]
+      ];
+      const kernel = [[-1,-1,-1],[-1,8,-1],[-1,-1,-1]];
+      const result = convolve2D(image, kernel);
+      expect(result.length).toBe(3);
+      expect(result[1][1]).toBe(0);
+    });
+
+    it('computes sum kernel correctly', () => {
+      const image = [[1,1],[1,1]];
+      const kernel = [[1,1],[1,1]];
+      const result = convolve2D(image, kernel);
+      expect(result).toEqual([[4]]);
+    });
+  });
+estimatedMinutes: 8
+difficulty: intermediate

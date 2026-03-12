@@ -1,0 +1,152 @@
+---
+slug: simple-rnns
+title: "Simple RNNs"
+moduleId: recurrent-networks
+themeId: deep-orbit
+order: 2
+estimatedMinutes: 30
+difficulty: intermediate
+context:
+  narrative: "Park builds his first recurrent neural network — a network that maintains hidden state between time steps, processing the signal as a sequence rather than isolated snapshots."
+  speaker: "Ensign Park"
+concept:
+  explanation: "An RNN is a reducer function — it takes previous state and new input to produce updated state, exactly like useReducer in React."
+  bridge:
+    feTitle: "useReducer"
+    feCode: "const [state, dispatch] = useReducer(reducer, initialState)"
+    mlTitle: "RNN Cell"
+    mlCode: "newHidden = tanh(W_h * prevHidden + W_x * input + bias)"
+    tier: structural
+consequence:
+  narrative: "The RNN detects short-range patterns — it notices the signal rises before each anomalous burst. But longer patterns slip away."
+  nextLessonTeaser: "Next: LSTM gates — solving the vanishing gradient problem with selective memory"
+hints:
+  - level: nudge
+    content: "An RNN cell is just a function: (prevState, newInput) → newState"
+  - level: guidance
+    content: "Use tf.layers.simpleRNN() with a units parameter for hidden state size"
+  - level: solution
+    content: "model.add(tf.layers.simpleRNN({ units: 32, inputShape: [5, 3] }))"
+keywords:
+  - rnn
+  - recurrent
+  - hidden-state
+  - reducer
+  - vanishing-gradient
+---
+
+<Dialogue speaker="Ensign Park">
+So an RNN is just... a reducer? It takes the previous hidden state and the new input, runs them through a function, and outputs new hidden state? I use this pattern every day with useReducer.
+</Dialogue>
+
+<Dialogue speaker="Dr. Sato">
+Exactly right. The hidden state is the network's memory — it accumulates information from every time step it has seen. The key difference is that the reducer function is *learned* from data, not hand-coded.
+</Dialogue>
+
+If you've used `useReducer`, you already understand recurrent neural networks. A reducer takes `(previousState, action)` and returns `newState`. An RNN cell takes `(previousHidden, currentInput)` and returns `newHidden`. Same pattern — the RNN just learns the reducer function from data instead of you writing it by hand.
+
+<LearningObjectives objectives={["Understand the RNN as a learned reducer: (prevState, input) → newState", "Build a simple RNN using TensorFlow.js layers API", "Recognize the vanishing gradient problem — why simple RNNs struggle with long sequences", "Process sequential signal data through a recurrent architecture"]} />
+
+## The Learned Reducer
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="rnn-as-reducer.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// React useReducer — you write the state transition function
+function signalReducer(state: { count: number; trend: string }, action: { value: number }) {
+  const trend = action.value > 0.5 ? 'rising' : 'falling';
+  return { count: state.count + 1, trend };
+}
+
+// RNN — the network LEARNS the state transition function
+// At each time step:
+//   newHidden = tanh(W_h * prevHidden + W_x * input + bias)
+//
+// W_h and W_x are weight matrices learned during training
+// tanh squashes output to [-1, 1]
+// prevHidden carries memory of all previous time steps
+
+// Build a simple RNN in TF.js
+const model = tf.sequential();
+model.add(tf.layers.simpleRNN({
+  units: 32,           // hidden state size (like the shape of your Redux store)
+  inputShape: [5, 3],  // 5 time steps, 3 features each
+}));
+model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
+
+model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });
+
+// Input: [batch, timeSteps, features] = [32, 5, 3]
+const x = tf.randomNormal([32, 5, 3]);
+const y = tf.randomUniform([32, 1]).round();
+
+await model.fit(x, y, { epochs: 10 });
+
+x.dispose();
+y.dispose();`}
+</CodeBlock>
+
+## How the RNN Processes a Sequence
+
+<CodeBlock language="typescript" title="rnn-unrolled.ts">
+{`// Unrolling the RNN — what happens at each time step:
+
+// Time step 0: hidden = f(zeros, input[0])
+// Time step 1: hidden = f(hidden, input[1])  ← remembers step 0
+// Time step 2: hidden = f(hidden, input[2])  ← remembers steps 0-1
+// Time step 3: hidden = f(hidden, input[3])  ← remembers steps 0-2
+// Time step 4: hidden = f(hidden, input[4])  ← remembers steps 0-3
+
+// Like dispatching a sequence of actions to a reducer:
+// state = reducer(initialState, actions[0])
+// state = reducer(state, actions[1])
+// state = reducer(state, actions[2])
+// ...
+
+// The final hidden state encodes the entire sequence
+// We pass it to a Dense layer for classification
+
+// Return sequences: get hidden state at EVERY step (not just the last)
+const modelAllSteps = tf.sequential();
+modelAllSteps.add(tf.layers.simpleRNN({
+  units: 32,
+  inputShape: [5, 3],
+  returnSequences: true,  // output shape: [batch, 5, 32] instead of [batch, 32]
+}));
+// Useful when you need the full temporal output (e.g., for stacking RNN layers)`}
+</CodeBlock>
+
+## The Vanishing Gradient Problem
+
+<CodeBlock language="typescript" title="vanishing-gradient.ts">
+{`// Simple RNNs have a critical flaw: vanishing gradients
+// As information passes through many time steps, gradients shrink exponentially
+// Like a game of telephone — the message degrades with each relay
+
+// For DEEP SCAN: the anomaly pattern repeats every ~73 seconds
+// At 1 sample/second, that's a 73-step dependency
+// A simple RNN "forgets" information after ~10-20 steps
+
+// Demo: training on short vs long sequences
+const shortModel = tf.sequential();
+shortModel.add(tf.layers.simpleRNN({ units: 32, inputShape: [5, 3] }));    // 5 steps — works
+shortModel.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
+
+const longModel = tf.sequential();
+longModel.add(tf.layers.simpleRNN({ units: 32, inputShape: [100, 3] }));   // 100 steps — fails
+longModel.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
+
+// Short sequence: loss converges nicely
+// Long sequence: loss plateaus — gradients vanish before reaching early time steps
+// Solution: LSTM (next lesson)`}
+</CodeBlock>
+
+## Challenge
+
+Build a simple RNN that processes sequential signal data.
+
+<Exercise slug="build-rnn" />
+
+<KeyTakeaways takeaways={["An RNN is a learned reducer: (prevHidden, input) → newHidden, where the transition function is trained from data", "Hidden state carries memory across time steps — the network remembers what it has seen", "returnSequences: true gives output at every step; false gives only the final hidden state", "Simple RNNs suffer from vanishing gradients — they forget long-range patterns after ~10-20 steps"]} />

@@ -1,0 +1,134 @@
+---
+slug: your-first-classifier
+title: "Your First Classifier"
+moduleId: ml-through-vision
+themeId: neon-protocol
+order: 5
+estimatedMinutes: 25
+difficulty: beginner
+context:
+  narrative: "NEON runs the simple classifier on a surveillance feed. It works — barely. 62% accuracy. Kira realizes she needs something more powerful."
+  speaker: "NEON"
+concept:
+  explanation: "A threshold-based classifier applies if/else rules to pixel values — the simplest possible 'model.' This is where traditional programming ends and ML begins."
+  bridge:
+    feTitle: "if/else Logic"
+    feCode: "if (brightness > 128) return 'day'; else return 'night'; // rule-based"
+    mlTitle: "Threshold Classifier"
+    mlCode: "if (meanPixel > threshold) return 'active'; else return 'inactive'; // same pattern"
+    tier: identity
+consequence:
+  narrative: "62% accuracy. Not good enough to detect Meridian's drones. Kira needs neural networks — models that learn their own rules from data."
+  nextLessonTeaser: "Module 2: building a proper image dataset for training"
+hints:
+  - level: nudge
+    content: "Start with the simplest possible approach — if/else on pixel statistics"
+  - level: guidance
+    content: "Compute mean brightness, check for red channel spikes (camera LEDs), count threshold"
+  - level: solution
+    content: "const mean = image.mean().dataSync()[0]; return mean > 128 ? 'bright' : 'dark';"
+keywords:
+  - classifier
+  - threshold
+  - rules
+  - accuracy
+  - baseline
+---
+
+<Dialogue speaker="NEON">
+Before neural networks, there were rules. If the average brightness exceeds 128, the camera is active. If there is a red spot above 200 intensity, there is a recording LED. If the frame changes less than 5% between captures, the feed is static. These rules get you to 62% accuracy. Machine learning will get you to 95%.
+</Dialogue>
+
+<Dialogue speaker="Kira">
+So a threshold classifier is basically an if/else chain on pixel statistics? That's just... programming. Where does the ML start?
+</Dialogue>
+
+Every ML journey starts with a baseline. Before training a neural network, build the simplest rule-based solution — `if/else` on pixel values. This gives you two things: a baseline accuracy to beat and a deep understanding of why hand-written rules are insufficient for real-world vision tasks.
+
+<LearningObjectives objectives={["Build a threshold-based image classifier using pixel statistics", "Compute image features: mean brightness, channel ratios, variance", "Measure classifier accuracy against labeled test data", "Understand why hand-crafted rules fail and ML is needed"]} />
+
+## Rule-Based Classification
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="threshold-classifier.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// The simplest possible "model" — if/else on pixel values
+function classifyBrightness(image: tf.Tensor3D): string {
+  const mean = image.mean().dataSync()[0];
+  return mean > 128 ? 'daytime' : 'nighttime';
+}
+
+// Slightly better: use channel statistics
+function classifyCameraStatus(image: tf.Tensor3D): string {
+  const [r, g, b] = tf.split(image, 3, 2);
+
+  const rMean = (r as tf.Tensor).mean().dataSync()[0];
+  const gMean = (g as tf.Tensor).mean().dataSync()[0];
+  const bMean = (b as tf.Tensor).mean().dataSync()[0];
+  const brightness = (rMean + gMean + bMean) / 3;
+
+  [r, g, b].forEach(t => t.dispose());
+
+  // Rule chain
+  if (brightness < 30) return 'offline';           // Very dark = camera off
+  if (rMean > 200 && gMean < 50) return 'alert';   // Red LED = recording
+  if (brightness > 200) return 'overexposed';       // Washed out = malfunction
+  return 'active';                                  // Normal operation
+}
+
+// Test it
+const testImage = tf.randomUniform([224, 224, 3], 0, 255, 'int32');
+console.log('Status:', classifyCameraStatus(testImage as tf.Tensor3D));`}
+</CodeBlock>
+
+## Measuring Accuracy
+
+<CodeBlock language="typescript" title="accuracy.ts">
+{`// How good is our rule-based classifier?
+
+interface LabeledImage {
+  image: tf.Tensor3D;
+  label: string;
+}
+
+function measureAccuracy(
+  classifier: (img: tf.Tensor3D) => string,
+  testSet: LabeledImage[]
+): number {
+  let correct = 0;
+  for (const sample of testSet) {
+    const prediction = classifier(sample.image);
+    if (prediction === sample.label) correct++;
+  }
+  return correct / testSet.length;
+}
+
+// Results on Meridian surveillance feeds:
+// Threshold classifier: 62% accuracy
+// - Gets daytime/nighttime right most of the time
+// - Fails on indoor scenes (always 'nighttime')
+// - Fails on tinted camera lenses
+// - Cannot distinguish camera types at all
+//
+// The problem: rules don't generalize.
+// A camera behind tinted glass looks 'nighttime' to pixel stats
+// but is clearly 'active' to a human eye.
+//
+// This is why we need ML:
+// Instead of writing rules, show the model examples
+// and let it learn its own features.
+
+console.log('Rule-based accuracy: 62%');
+console.log('Target accuracy:     95%');
+console.log('Gap: neural networks fill this gap');`}
+</CodeBlock>
+
+## Challenge
+
+Build a threshold-based classifier and measure its accuracy.
+
+<Exercise slug="threshold-classifier" />
+
+<KeyTakeaways takeaways={["Always start with a baseline — the simplest rule-based approach gives you a score to beat", "Threshold classifiers are just if/else on pixel statistics: brightness, channel ratios, variance", "62% accuracy exposes the limitation: hand-crafted rules can't handle real-world variation (tinted glass, indoor scenes, different camera types)", "ML learns its own features from data instead of requiring you to hand-code every rule"]} />

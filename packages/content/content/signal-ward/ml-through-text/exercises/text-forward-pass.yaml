@@ -1,0 +1,68 @@
+slug: text-forward-pass
+lessonSlug: forward-pass
+title: "Text Forward Pass"
+instructions: "Implement the forwardPass function that chains together tokenization, bag-of-words encoding, weighted sum, and sigmoid activation. The function should take raw text and return a probability between 0 and 1."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  const vocab = new Map([['patient', 0], ['allergy', 1], ['penicillin', 2], ['medication', 3], ['pain', 4]]);
+  const weights = tf.tensor([0.1, 0.9, 0.8, 0.3, -0.1]);
+  const bias = tf.scalar(-0.2);
+
+  function tokenize(text: string): string[] {
+    return text.toLowerCase().replace(/[.,!?;:]/g, ' ').split(/\s+/).filter(Boolean);
+  }
+
+  function toBagOfWords(tokens: string[], v: Map<string, number>): number[] {
+    const bow = new Array(v.size).fill(0);
+    for (const t of tokens) { const i = v.get(t); if (i !== undefined) bow[i] += 1; }
+    return bow;
+  }
+
+  function forwardPass(text: string): number {
+    // 1. Tokenize the text
+    // 2. Convert to bag-of-words
+    // 3. Create tensor, multiply by weights, sum, add bias
+    // 4. Apply sigmoid and return the value
+    return null; // your code here
+  }
+
+  const result = forwardPass('Patient has penicillin allergy');
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  const vocab = new Map([['patient', 0], ['allergy', 1], ['penicillin', 2], ['medication', 3], ['pain', 4]]);
+  const weights = tf.tensor([0.1, 0.9, 0.8, 0.3, -0.1]);
+  const bias = tf.scalar(-0.2);
+
+  function tokenize(text: string): string[] {
+    return text.toLowerCase().replace(/[.,!?;:]/g, ' ').split(/\s+/).filter(Boolean);
+  }
+
+  function toBagOfWords(tokens: string[], v: Map<string, number>): number[] {
+    const bow = new Array(v.size).fill(0);
+    for (const t of tokens) { const i = v.get(t); if (i !== undefined) bow[i] += 1; }
+    return bow;
+  }
+
+  function forwardPass(text: string): number {
+    const tokens = tokenize(text);
+    const bow = toBagOfWords(tokens, vocab);
+    const input = tf.tensor(bow);
+    const score = input.mul(weights).sum().add(bias);
+    return tf.sigmoid(score).dataSync()[0];
+  }
+
+  const result = forwardPass('Patient has penicillin allergy');
+testCode: |
+  describe('Text Forward Pass', () => {
+    it('returns a number', () => { expect(typeof result).toBe('number'); });
+    it('returns value between 0 and 1', () => { expect(result).toBeGreaterThan(0); expect(result).toBeLessThan(1); });
+    it('scores allergy note high', () => { expect(result).toBeGreaterThan(0.7); });
+    it('scores pain note lower', () => {
+      const painResult = forwardPass('patient reports pain');
+      expect(painResult).toBeLessThan(result);
+    });
+  });
+estimatedMinutes: 10
+difficulty: beginner

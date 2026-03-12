@@ -1,0 +1,63 @@
+slug: browser-ml-tradeoffs
+lessonSlug: why-the-browser
+title: "Evaluate Browser ML Tradeoffs"
+instructions: "Complete the function that evaluates whether a given ML use case should use client-side (browser) or server-side inference. Consider latency requirements, data sensitivity, model size, and offline needs."
+starterCode: |
+  interface UseCase {
+    latencyBudgetMs: number;
+    dataSensitive: boolean;
+    modelSizeMB: number;
+    needsOffline: boolean;
+  }
+
+  type Recommendation = 'client' | 'server';
+
+  function recommendDeployment(useCase: UseCase): Recommendation {
+    // Client-side is preferred when:
+    // - Latency budget is tight (< 50ms) OR
+    // - Data is sensitive (must stay on device) OR
+    // - Offline support is needed
+    // BUT server-side is required when:
+    // - Model is too large for the browser (> 50MB)
+
+    return null; // your code here
+  }
+solutionCode: |
+  interface UseCase {
+    latencyBudgetMs: number;
+    dataSensitive: boolean;
+    modelSizeMB: number;
+    needsOffline: boolean;
+  }
+
+  type Recommendation = 'client' | 'server';
+
+  function recommendDeployment(useCase: UseCase): Recommendation {
+    if (useCase.modelSizeMB > 50) {
+      return 'server';
+    }
+    if (useCase.latencyBudgetMs < 50 || useCase.dataSensitive || useCase.needsOffline) {
+      return 'client';
+    }
+    return 'server';
+  }
+testCode: |
+  describe('recommendDeployment', () => {
+    it('recommends server for large models', () => {
+      expect(recommendDeployment({ latencyBudgetMs: 10, dataSensitive: true, modelSizeMB: 100, needsOffline: true })).toBe('server');
+    });
+    it('recommends client for low latency', () => {
+      expect(recommendDeployment({ latencyBudgetMs: 20, dataSensitive: false, modelSizeMB: 10, needsOffline: false })).toBe('client');
+    });
+    it('recommends client for sensitive data', () => {
+      expect(recommendDeployment({ latencyBudgetMs: 500, dataSensitive: true, modelSizeMB: 5, needsOffline: false })).toBe('client');
+    });
+    it('recommends client for offline needs', () => {
+      expect(recommendDeployment({ latencyBudgetMs: 500, dataSensitive: false, modelSizeMB: 20, needsOffline: true })).toBe('client');
+    });
+    it('recommends server when no client advantages', () => {
+      expect(recommendDeployment({ latencyBudgetMs: 500, dataSensitive: false, modelSizeMB: 30, needsOffline: false })).toBe('server');
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

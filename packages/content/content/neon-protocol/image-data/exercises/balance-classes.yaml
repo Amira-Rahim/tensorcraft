@@ -1,0 +1,133 @@
+slug: balance-classes
+lessonSlug: class-balance
+title: "Balance the Surveillance Camera Dataset"
+instructions: "Implement two functions: oversample takes an array of labeled samples and returns a new array where every class has the same count as the majority class (by repeating minority samples cyclically). calculateClassWeights takes an array of label strings and returns an object mapping each label to its weight using the formula: totalSamples / (numClasses * classSampleCount)."
+starterCode: |
+  interface Sample {
+    id: string;
+    label: string;
+  }
+
+  function oversample(samples: Sample[]): Sample[] {
+    // TODO: Find the majority class count
+    // TODO: Repeat minority class samples until they match majority count
+    // TODO: Use modular indexing to cycle through minority samples
+    return null as any;
+  }
+
+  function calculateClassWeights(labels: string[]): Record<string, number> {
+    // TODO: Count samples per class
+    // TODO: Apply formula: total / (numClasses * classCount)
+    return null as any;
+  }
+solutionCode: |
+  interface Sample {
+    id: string;
+    label: string;
+  }
+
+  function oversample(samples: Sample[]): Sample[] {
+    const groups: Record<string, Sample[]> = {};
+    for (const sample of samples) {
+      if (!groups[sample.label]) groups[sample.label] = [];
+      groups[sample.label].push(sample);
+    }
+
+    const maxCount = Math.max(
+      ...Object.values(groups).map(arr => arr.length)
+    );
+
+    const balanced: Sample[] = [];
+    for (const classSamples of Object.values(groups)) {
+      for (let i = 0; i < maxCount; i++) {
+        balanced.push(classSamples[i % classSamples.length]);
+      }
+    }
+
+    return balanced;
+  }
+
+  function calculateClassWeights(labels: string[]): Record<string, number> {
+    const counts: Record<string, number> = {};
+    for (const label of labels) {
+      counts[label] = (counts[label] || 0) + 1;
+    }
+
+    const total = labels.length;
+    const numClasses = Object.keys(counts).length;
+    const weights: Record<string, number> = {};
+
+    for (const [label, count] of Object.entries(counts)) {
+      weights[label] = total / (numClasses * count);
+    }
+
+    return weights;
+  }
+testCode: |
+  describe('Class Balancing', () => {
+    describe('oversample', () => {
+      it('equalizes class counts to majority', () => {
+        const samples: Sample[] = [
+          { id: '1', label: 'dome' },
+          { id: '2', label: 'dome' },
+          { id: '3', label: 'dome' },
+          { id: '4', label: 'hidden' },
+        ];
+        const result = oversample(samples);
+        const domeSamples = result.filter(s => s.label === 'dome');
+        const hiddenSamples = result.filter(s => s.label === 'hidden');
+        expect(domeSamples.length).toBe(3);
+        expect(hiddenSamples.length).toBe(3);
+      });
+
+      it('preserves already balanced data', () => {
+        const samples: Sample[] = [
+          { id: '1', label: 'a' },
+          { id: '2', label: 'a' },
+          { id: '3', label: 'b' },
+          { id: '4', label: 'b' },
+        ];
+        const result = oversample(samples);
+        expect(result.length).toBe(4);
+      });
+
+      it('cycles through minority samples', () => {
+        const samples: Sample[] = [
+          { id: '1', label: 'big' },
+          { id: '2', label: 'big' },
+          { id: '3', label: 'big' },
+          { id: '4', label: 'big' },
+          { id: '5', label: 'small' },
+        ];
+        const result = oversample(samples);
+        const smallSamples = result.filter(s => s.label === 'small');
+        expect(smallSamples.length).toBe(4);
+        expect(smallSamples[0].id).toBe('5');
+        expect(smallSamples[1].id).toBe('5');
+      });
+    });
+
+    describe('calculateClassWeights', () => {
+      it('returns higher weight for minority class', () => {
+        const labels = ['dome', 'dome', 'dome', 'hidden'];
+        const weights = calculateClassWeights(labels);
+        expect(weights['hidden']).toBeGreaterThan(weights['dome']);
+      });
+
+      it('returns 1.0 for balanced classes', () => {
+        const labels = ['a', 'a', 'b', 'b'];
+        const weights = calculateClassWeights(labels);
+        expect(weights['a']).toBeCloseTo(1.0);
+        expect(weights['b']).toBeCloseTo(1.0);
+      });
+
+      it('uses correct formula total/(numClasses*count)', () => {
+        const labels = ['dome', 'dome', 'dome', 'dome', 'hidden', 'hidden'];
+        const weights = calculateClassWeights(labels);
+        expect(weights['dome']).toBeCloseTo(6 / (2 * 4));
+        expect(weights['hidden']).toBeCloseTo(6 / (2 * 2));
+      });
+    });
+  });
+estimatedMinutes: 8
+difficulty: intermediate

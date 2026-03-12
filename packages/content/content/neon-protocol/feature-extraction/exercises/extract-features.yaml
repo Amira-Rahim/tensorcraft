@@ -1,0 +1,76 @@
+slug: extract-features
+lessonSlug: feature-vectors
+title: "Calculate Feature Compression"
+instructions: "Write a function that calculates the compression ratio and memory savings when converting a raw image to a feature vector. Given image dimensions (width, height, channels) and a feature vector size, return the total pixel count, feature size, compression ratio (rounded to 1 decimal), and memory savings in KB (assuming float32, 4 bytes per value, rounded to 1 decimal)."
+starterCode: |
+  interface CompressionInfo {
+    rawValues: number;
+    featureValues: number;
+    compressionRatio: number;
+    memorySavedKB: number;
+  }
+
+  function featureCompression(
+    width: number,
+    height: number,
+    channels: number,
+    featureSize: number
+  ): CompressionInfo {
+    // rawValues = width * height * channels
+    // compressionRatio = rawValues / featureSize (round to 1 decimal)
+    // memorySavedKB = (rawValues - featureSize) * 4 / 1024 (round to 1 decimal)
+    return { rawValues: 0, featureValues: 0, compressionRatio: 0, memorySavedKB: 0 };
+  }
+solutionCode: |
+  interface CompressionInfo {
+    rawValues: number;
+    featureValues: number;
+    compressionRatio: number;
+    memorySavedKB: number;
+  }
+
+  function featureCompression(
+    width: number,
+    height: number,
+    channels: number,
+    featureSize: number
+  ): CompressionInfo {
+    const rawValues = width * height * channels;
+    const compressionRatio = Math.round((rawValues / featureSize) * 10) / 10;
+    const memorySavedKB = Math.round(((rawValues - featureSize) * 4 / 1024) * 10) / 10;
+    return {
+      rawValues,
+      featureValues: featureSize,
+      compressionRatio,
+      memorySavedKB,
+    };
+  }
+testCode: |
+  describe('featureCompression', () => {
+    it('calculates raw values correctly', () => {
+      const info = featureCompression(224, 224, 3, 512);
+      expect(info.rawValues).toBe(150528);
+    });
+
+    it('stores feature size', () => {
+      const info = featureCompression(224, 224, 3, 512);
+      expect(info.featureValues).toBe(512);
+    });
+
+    it('calculates compression ratio', () => {
+      const info = featureCompression(224, 224, 3, 512);
+      expect(info.compressionRatio).toBe(294.0);
+    });
+
+    it('calculates memory saved in KB', () => {
+      const info = featureCompression(224, 224, 3, 512);
+      expect(info.memorySavedKB).toBe(588.3);
+    });
+
+    it('handles different feature sizes', () => {
+      const info = featureCompression(224, 224, 3, 2048);
+      expect(info.compressionRatio).toBe(73.5);
+    });
+  });
+estimatedMinutes: 6
+difficulty: intermediate

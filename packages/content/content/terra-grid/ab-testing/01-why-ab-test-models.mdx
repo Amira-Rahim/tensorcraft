@@ -1,0 +1,169 @@
+---
+slug: why-ab-test-models
+title: "Why A/B Test Models?"
+moduleId: ab-testing
+themeId: terra-grid
+order: 1
+estimatedMinutes: 25
+difficulty: advanced
+context:
+  narrative: "Hassan pulls up the incident report from March 2024. 'Model v2.3 went to all 12,400 devices at once. Power grid predictions drifted 15% within 48 hours. Three weeks before anyone noticed. That cost us $4.2 million. Never again.'"
+  speaker: "Hassan Al-Rashid"
+concept:
+  explanation: "A/B testing ML models validates improvements before full rollout — the same principle as feature flags in frontend development, but applied to model versions instead of UI changes."
+  bridge:
+    feTitle: "Feature Flags"
+    feCode: "if (featureFlags.newCheckout) { renderNewCheckout(); } else { renderOldCheckout(); }"
+    mlTitle: "Model Flags"
+    mlCode: "if (modelFlags.v2) { predict(modelV2, input); } else { predict(modelV1, input); }"
+    tier: identity
+consequence:
+  narrative: "Hassan nods at the monitoring dashboard. 'Now every model update goes through A/B testing. We prove it's better before it touches production. Cole, show them what happened when we tested v3.1.' Cole grins. 'The new model caught a bearing failure 6 hours earlier. That is real impact.'"
+  nextLessonTeaser: "Next: traffic splitting — routing requests to different model versions"
+hints:
+  - level: nudge
+    content: "Think of model versions like feature flag variants — each user gets one version, and you measure which performs better"
+  - level: guidance
+    content: "Create a ModelRouter that accepts a version map and routes predictions based on assignment"
+  - level: solution
+    content: "Use a hash of the device ID to deterministically assign devices to model versions"
+keywords:
+  - ab-testing
+  - feature-flags
+  - model-validation
+  - rollout
+---
+
+<Dialogue speaker="Hassan Al-Rashid">
+March 2024. Model v2.3 deployed to all 12,400 devices simultaneously. Power grid predictions drifted 15% within 48 hours. Three weeks before anyone caught it. $4.2 million in wasted maintenance dispatches. That is why no model goes to 100% of devices without proof it is better.
+</Dialogue>
+
+<Dialogue speaker="Cole Branson">
+We had the monitoring. We had the metrics. What we did not have was a controlled comparison. The old model was gone — nothing to measure against.
+</Dialogue>
+
+You have deployed feature flags in frontend apps. Show the new checkout to 10% of users, measure conversion rates, roll out when the numbers prove it works. A/B testing ML models follows the exact same pattern: route some devices to the new model, some to the old, and let the data decide which is better.
+
+<LearningObjectives objectives={["Understand why A/B testing is critical for production ML deployments", "Map feature flag concepts to model version routing", "Implement a basic model router that assigns devices to model versions", "Define metrics that determine whether a new model is actually better"]} />
+
+## Model Routing
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="model-router.ts">
+{`// A/B testing models = feature flags for ML
+// Same concept: route users to variants, measure outcomes
+
+interface ModelVersion {
+  id: string;
+  version: string;
+  predict: (input: Float32Array) => Promise<number[]>;
+}
+
+interface ABConfig {
+  control: ModelVersion;
+  treatment: ModelVersion;
+  treatmentPercent: number; // 0-100
+}
+
+class ModelRouter {
+  constructor(private config: ABConfig) {}
+
+  // Deterministic assignment — same device always gets same model
+  assignModel(deviceId: string): ModelVersion {
+    const hash = this.hashCode(deviceId);
+    const bucket = Math.abs(hash) % 100;
+    return bucket < this.config.treatmentPercent
+      ? this.config.treatment
+      : this.config.control;
+  }
+
+  private hashCode(str: string): number {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash |= 0; // Convert to 32-bit integer
+    }
+    return hash;
+  }
+
+  async predict(deviceId: string, input: Float32Array): Promise<{
+    prediction: number[];
+    modelVersion: string;
+  }> {
+    const model = this.assignModel(deviceId);
+    const prediction = await model.predict(input);
+    return { prediction, modelVersion: model.version };
+  }
+}
+
+// Terra Grid deployment: 10% of devices get the new model
+const router = new ModelRouter({
+  control: { id: 'anomaly-v3.0', version: '3.0', predict: modelV3.predict },
+  treatment: { id: 'anomaly-v3.1', version: '3.1', predict: modelV3_1.predict },
+  treatmentPercent: 10,
+});
+
+const result = await router.predict('device-7alpha-003', sensorData);
+console.log(\`Model \${result.modelVersion}: \${result.prediction}\`);`}
+</CodeBlock>
+
+## Metrics Collection
+
+<CodeBlock language="typescript" title="ab-metrics.ts">
+{`// Track outcomes per model version — same as tracking conversions per variant
+
+interface PredictionOutcome {
+  deviceId: string;
+  modelVersion: string;
+  predicted: string;
+  actual: string;
+  latencyMs: number;
+  timestamp: number;
+}
+
+class ABMetricsCollector {
+  private outcomes: PredictionOutcome[] = [];
+
+  record(outcome: PredictionOutcome): void {
+    this.outcomes.push(outcome);
+  }
+
+  summarize(version: string) {
+    const versionOutcomes = this.outcomes.filter(o => o.modelVersion === version);
+    const correct = versionOutcomes.filter(o => o.predicted === o.actual);
+    const avgLatency = versionOutcomes.reduce((s, o) => s + o.latencyMs, 0)
+      / versionOutcomes.length;
+
+    return {
+      version,
+      totalPredictions: versionOutcomes.length,
+      accuracy: correct.length / versionOutcomes.length,
+      avgLatencyMs: Math.round(avgLatency),
+    };
+  }
+}
+
+const collector = new ABMetricsCollector();
+// After each prediction, record the outcome
+collector.record({
+  deviceId: 'device-7alpha-003',
+  modelVersion: '3.1',
+  predicted: 'bearing-wear',
+  actual: 'bearing-wear',
+  latencyMs: 12,
+  timestamp: Date.now(),
+});
+
+console.log(collector.summarize('3.0')); // Control metrics
+console.log(collector.summarize('3.1')); // Treatment metrics`}
+</CodeBlock>
+
+## Challenge
+
+Build a model router with deterministic device assignment.
+
+<Exercise slug="split-traffic" />
+
+<KeyTakeaways takeaways={["A/B testing ML models follows the same pattern as frontend feature flags — route to variants, measure outcomes", "Deterministic assignment (hash-based) ensures each device always gets the same model version", "Collect prediction outcomes per version to compare accuracy, latency, and detection rate", "The $4.2 million lesson: never deploy a model update to 100% of devices without controlled comparison"]} />

@@ -1,0 +1,141 @@
+---
+slug: llms-for-science
+title: "LLMs for Science"
+moduleId: llm-integration
+themeId: deep-orbit
+order: 1
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Okafor needs a report for Earth Command in 6 hours. 47 days of data. Sato suggests using an LLM to draft the report — not to replace analysis, but to accelerate it."
+  speaker: "Dr. Sato"
+concept:
+  explanation: "LLMs are reasoning tools that generate structured output from instructions — like AI code completion that produces code from natural language descriptions."
+  bridge:
+    feTitle: "AI Code Completion"
+    feCode: "// Copilot: 'create a fetch wrapper' → generates full function"
+    mlTitle: "LLM Analysis"
+    mlCode: "// Prompt: 'summarize anomalies in Band-7' → generates report section"
+    tier: structural
+consequence:
+  narrative: "The LLM drafts a preliminary report in minutes. Sato reviews and corrects — it's faster than writing from scratch, but requires expert oversight."
+  nextLessonTeaser: "Next: crafting effective prompts for signal analysis"
+hints:
+  - level: nudge
+    content: "LLMs are tools that augment human analysis, not replace it — like Copilot for coding"
+  - level: guidance
+    content: "Provide structured context (data summaries, specific questions) for best results"
+  - level: solution
+    content: "Use system prompts for role, user prompts for data and questions, parse structured JSON responses"
+keywords:
+  - llm
+  - language-model
+  - ai-tools
+  - augmentation
+---
+
+<Dialogue speaker="Dr. Sato">
+We have 47 days of signal data, 12,000 classified signals, and one anomaly that could change everything. I cannot write a comprehensive report in the 6 hours before the next transmission window. But I can guide a language model to draft one.
+</Dialogue>
+
+<Dialogue speaker="Chief Torres">
+You want to trust a language model with a scientific report?
+</Dialogue>
+
+<Dialogue speaker="Dr. Sato">
+I want to use it as a tool, Torres — like Copilot for code. It drafts, I verify. It is faster than writing from scratch, and I catch what it gets wrong.
+</Dialogue>
+
+You already use AI as a coding tool — Copilot suggests code, you review and accept or modify. LLM integration for scientific analysis follows the same pattern: the model generates structured output from your instructions, and the expert (Sato) reviews and corrects.
+
+<LearningObjectives objectives={["Understand LLMs as augmentation tools for structured analysis", "Set up an LLM API client for programmatic access", "Define the human-AI workflow: generate → review → correct → approve", "Connect LLM usage to familiar developer tools (Copilot, ChatGPT, Claude)"]} />
+
+## LLMs as Developer Tools
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="llm-client.ts">
+{`// Setting up an LLM client — like configuring any API service
+interface LLMClient {
+  complete(prompt: string, options?: { temperature?: number; maxTokens?: number }): Promise<string>;
+}
+
+// In production, this calls an API (OpenAI, Anthropic, etc.)
+// For DEEP SCAN, we use the ship's onboard model
+async function createLLMClient(apiKey: string, baseUrl: string): Promise<LLMClient> {
+  return {
+    async complete(prompt, options = {}) {
+      const response = await fetch(\`\${baseUrl}/v1/completions\`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': \`Bearer \${apiKey}\`,
+        },
+        body: JSON.stringify({
+          prompt,
+          temperature: options.temperature ?? 0.3,  // low temp for factual analysis
+          max_tokens: options.maxTokens ?? 1024,
+        }),
+      });
+      const data = await response.json();
+      return data.choices[0].text;
+    },
+  };
+}
+
+// Usage: draft a signal analysis report
+const llm = await createLLMClient(API_KEY, BASE_URL);
+const report = await llm.complete(\`
+Summarize the following signal classification results:
+- Total signals analyzed: 12,000
+- Normal signals: 11,847 (98.7%)
+- Anomalous signals: 153 (1.3%)
+- Unclassified: 1 (0.008%)
+
+Focus on the single unclassified signal and its significance.
+\`);`}
+</CodeBlock>
+
+## The Human-AI Workflow
+
+<CodeBlock language="typescript" title="workflow.ts">
+{`// The workflow mirrors Copilot usage:
+// 1. CONTEXT: provide data and instructions
+// 2. GENERATE: LLM produces a draft
+// 3. REVIEW: expert checks for accuracy
+// 4. CORRECT: fix any errors or hallucinations
+// 5. APPROVE: human signs off on final output
+
+interface AnalysisWorkflow {
+  context: string;      // raw data and instructions
+  draft: string;        // LLM-generated output
+  corrections: string[];// expert corrections
+  approved: boolean;    // human sign-off
+  approvedBy: string;   // who verified
+}
+
+// CRITICAL: LLMs can hallucinate — generate plausible but false statements
+// Always verify claims against actual data
+// Like reviewing Copilot suggestions — accept what's correct, fix what's not
+
+function validateClaims(
+  draft: string,
+  actualData: Record<string, number>,
+): { valid: string[]; invalid: string[] } {
+  // Parse numerical claims from the draft
+  // Compare against actual data
+  // Flag discrepancies
+  const valid: string[] = [];
+  const invalid: string[] = [];
+  // ... validation logic
+  return { valid, invalid };
+}`}
+</CodeBlock>
+
+## Challenge
+
+Set up an LLM client and generate a structured analysis.
+
+<Exercise slug="llm-client" />
+
+<KeyTakeaways takeaways={["LLMs are augmentation tools — they draft, humans verify, like Copilot for code", "Low temperature (0.1-0.3) for factual analysis, higher (0.7-0.9) for creative tasks", "Always validate LLM output against actual data — hallucination is a feature, not a bug", "The workflow is generate → review → correct → approve — never auto-publish LLM output"]} />

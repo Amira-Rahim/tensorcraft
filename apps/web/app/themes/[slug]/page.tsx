@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { themes } from "@tensorcraft/themes";
-import { getModules } from "@tensorcraft/content";
+import { getModules, isFoundationsModule } from "@tensorcraft/content";
+import { getSupabaseServerClient } from "@/lib/supabase/server";
+import { hasThemePurchase } from "@/lib/progress";
 import type { Metadata } from "next";
 
 interface Props {
@@ -15,6 +17,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${theme.displayName} | Tensorcraft`,
     description: theme.description,
+    openGraph: {
+      images: [
+        `/api/og?title=${encodeURIComponent(theme.displayName)}&theme=${slug}&subtitle=${encodeURIComponent(theme.specialization)}`,
+      ],
+    },
   };
 }
 
@@ -24,6 +31,13 @@ export default async function ThemeDetailPage({ params }: Props) {
   if (!theme) notFound();
 
   const themeModules = getModules(slug);
+
+  // Check if user has purchased this theme
+  const supabase = await getSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const hasPurchased = user ? await hasThemePurchase(user.id, slug) : false;
 
   return (
     <main
@@ -102,22 +116,30 @@ export default async function ThemeDetailPage({ params }: Props) {
           </h2>
           <div className="flex flex-col gap-4">
             {themeModules.map((mod) => {
-              const isFree = mod.order === 1;
-              return (
-                <Link
-                  key={mod.slug}
-                  href={`/themes/${slug}/${mod.slug}`}
-                  className="rounded-xl p-5 flex items-center justify-between transition-colors hover:bg-white/[0.02]"
-                  style={{
-                    background: theme.palette.surface,
-                    border: "1px solid rgba(255,255,255,0.06)",
-                  }}
-                >
+              const isFree = isFoundationsModule(mod);
+              const isLocked = !isFree && !hasPurchased;
+
+              const cardClass = `rounded-xl p-5 flex items-center justify-between transition-colors ${
+                isLocked ? "opacity-60 cursor-default" : "hover:bg-white/[0.02]"
+              }`;
+              const cardStyle = {
+                background: theme.palette.surface,
+                border: isLocked
+                  ? "1px solid rgba(255,255,255,0.03)"
+                  : "1px solid rgba(255,255,255,0.06)",
+              };
+
+              const cardContent = (
+                <>
                   <div>
                     <div className="flex items-center gap-2 mb-1">
                       <span
                         className="text-xs font-medium"
-                        style={{ color: theme.palette.accent }}
+                        style={{
+                          color: isLocked
+                            ? theme.palette.muted
+                            : theme.palette.accent,
+                        }}
                       >
                         {theme.terminology.module} {mod.order}
                       </span>
@@ -129,13 +151,28 @@ export default async function ThemeDetailPage({ params }: Props) {
                             color: "#00D4FF",
                           }}
                         >
-                          Free
+                          Foundations
+                        </span>
+                      )}
+                      {isLocked && (
+                        <span
+                          className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded flex items-center gap-1"
+                          style={{
+                            background: "rgba(255,255,255,0.04)",
+                            color: theme.palette.muted,
+                          }}
+                        >
+                          &#128274; Locked
                         </span>
                       )}
                     </div>
                     <h3
                       className="text-lg font-semibold"
-                      style={{ color: theme.palette.text }}
+                      style={{
+                        color: isLocked
+                          ? theme.palette.muted
+                          : theme.palette.text,
+                      }}
                     >
                       {mod.title}
                     </h3>
@@ -145,8 +182,34 @@ export default async function ThemeDetailPage({ params }: Props) {
                     >
                       {mod.description}
                     </p>
+                    {isLocked && (
+                      <Link
+                        href="/pricing"
+                        className="inline-flex text-xs mt-2 underline underline-offset-2"
+                        style={{ color: theme.palette.accent }}
+                      >
+                        Purchase to unlock
+                      </Link>
+                    )}
                   </div>
-                  <span style={{ color: theme.palette.muted }}>→</span>
+                  {!isLocked && (
+                    <span style={{ color: theme.palette.muted }}>→</span>
+                  )}
+                </>
+              );
+
+              return isLocked ? (
+                <div key={mod.slug} className={cardClass} style={cardStyle}>
+                  {cardContent}
+                </div>
+              ) : (
+                <Link
+                  key={mod.slug}
+                  href={`/themes/${slug}/${mod.slug}`}
+                  className={cardClass}
+                  style={cardStyle}
+                >
+                  {cardContent}
                 </Link>
               );
             })}

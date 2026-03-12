@@ -1,0 +1,42 @@
+slug: tfjs-setup
+lessonSlug: tensorflow-js-setup
+title: "Initialize TensorFlow.js"
+instructions: "Initialize TensorFlow.js, wait for it to be ready, and return an object containing the active backend name and TF.js version."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  async function initTF(): Promise<{ backend: string; version: string }> {
+    // 1. Wait for TF.js to be ready
+    // 2. Get the backend name
+    // 3. Get the version
+    return null; // your code here
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  async function initTF(): Promise<{ backend: string; version: string }> {
+    await tf.ready();
+    return {
+      backend: tf.getBackend(),
+      version: tf.version.tfjs,
+    };
+  }
+testCode: |
+  describe('initTF', () => {
+    it('returns an object', async () => {
+      const result = await initTF();
+      expect(result).toBeDefined();
+    });
+    it('has a backend string', async () => {
+      const result = await initTF();
+      expect(typeof result.backend).toBe('string');
+      expect(result.backend.length).toBeGreaterThan(0);
+    });
+    it('has a version string', async () => {
+      const result = await initTF();
+      expect(typeof result.version).toBe('string');
+      expect(result.version.length).toBeGreaterThan(0);
+    });
+  });
+estimatedMinutes: 8
+difficulty: beginner

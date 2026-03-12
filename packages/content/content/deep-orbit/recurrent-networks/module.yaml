@@ -1,0 +1,17 @@
+slug: recurrent-networks
+title: "Recurrent Networks"
+themeId: deep-orbit
+order: 6
+description: |
+  The signals show temporal patterns — a rhythm spanning dozens of time steps.
+  Feedforward networks see snapshots; recurrent networks see sequences. You'll
+  build RNNs, LSTMs, and GRUs that remember past inputs and predict what comes
+  next — using concepts from Redux reducers and localStorage caching.
+lessonCount: 5
+prerequisites:
+  - foundations
+  - neural-networks
+  - training-loop
+  - browser-runtimes
+  - signal-processing
+track: specialization

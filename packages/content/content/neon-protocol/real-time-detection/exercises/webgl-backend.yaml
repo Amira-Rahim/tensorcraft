@@ -1,0 +1,83 @@
+slug: webgl-backend
+lessonSlug: webgl-acceleration
+title: "Compare Backend Performance"
+instructions: "Implement a function that takes an array of inference times from CPU and WebGL backends and returns a comparison report including average time, speedup factor, and whether WebGL meets the target frame budget."
+starterCode: |
+  interface BackendComparison {
+    cpuAvgMs: number;
+    webglAvgMs: number;
+    speedup: number;
+    cpuFps: number;
+    webglFps: number;
+    webglMeetsBudget: boolean;
+  }
+
+  function compareBackends(
+    cpuTimes: number[],
+    webglTimes: number[],
+    targetFps: number
+  ): BackendComparison {
+    // cpuAvgMs / webglAvgMs: average of the time arrays
+    // speedup: cpuAvg / webglAvg
+    // fps: 1000 / avgMs
+    // webglMeetsBudget: webglAvgMs <= 1000/targetFps
+    return null; // your code here
+  }
+solutionCode: |
+  interface BackendComparison {
+    cpuAvgMs: number;
+    webglAvgMs: number;
+    speedup: number;
+    cpuFps: number;
+    webglFps: number;
+    webglMeetsBudget: boolean;
+  }
+
+  function compareBackends(
+    cpuTimes: number[],
+    webglTimes: number[],
+    targetFps: number
+  ): BackendComparison {
+    const avg = (arr: number[]) => arr.reduce((a, b) => a + b, 0) / arr.length;
+    const cpuAvgMs = avg(cpuTimes);
+    const webglAvgMs = avg(webglTimes);
+    return {
+      cpuAvgMs,
+      webglAvgMs,
+      speedup: cpuAvgMs / webglAvgMs,
+      cpuFps: 1000 / cpuAvgMs,
+      webglFps: 1000 / webglAvgMs,
+      webglMeetsBudget: webglAvgMs <= 1000 / targetFps,
+    };
+  }
+testCode: |
+  describe('compareBackends', () => {
+    it('calculates average times', () => {
+      const result = compareBackends([40, 50, 45], [8, 10, 9], 30);
+      expect(result.cpuAvgMs).toBe(45);
+      expect(result.webglAvgMs).toBe(9);
+    });
+
+    it('calculates speedup factor', () => {
+      const result = compareBackends([40, 50, 45], [8, 10, 9], 30);
+      expect(result.speedup).toBe(5);
+    });
+
+    it('calculates FPS from average times', () => {
+      const result = compareBackends([50, 50], [10, 10], 30);
+      expect(result.cpuFps).toBe(20);
+      expect(result.webglFps).toBe(100);
+    });
+
+    it('reports WebGL meets budget at 30fps', () => {
+      const result = compareBackends([50, 50], [10, 10], 30);
+      expect(result.webglMeetsBudget).toBe(true);
+    });
+
+    it('reports WebGL fails budget when too slow', () => {
+      const result = compareBackends([50, 50], [40, 40], 30);
+      expect(result.webglMeetsBudget).toBe(false);
+    });
+  });
+estimatedMinutes: 6
+difficulty: intermediate

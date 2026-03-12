@@ -1,0 +1,45 @@
+slug: build-rnn
+lessonSlug: simple-rnns
+title: "Build a Simple RNN"
+instructions: "Create a sequential model with a SimpleRNN layer (16 units, inputShape [5, 3]) followed by a Dense output layer (1 unit, sigmoid activation). Compile with adam optimizer and binaryCrossentropy loss."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function buildRNN(): tf.Sequential {
+    const model = tf.sequential();
+    // Add a SimpleRNN layer with 16 units and inputShape [5, 3]
+    // Add a Dense output layer with 1 unit and sigmoid activation
+    // Compile with adam optimizer and binaryCrossentropy loss
+    return null; // your code here
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function buildRNN(): tf.Sequential {
+    const model = tf.sequential();
+    model.add(tf.layers.simpleRNN({ units: 16, inputShape: [5, 3] }));
+    model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
+    model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });
+    return model;
+  }
+testCode: |
+  describe('buildRNN', () => {
+    it('returns a model', () => {
+      const model = buildRNN();
+      expect(model).toBeDefined();
+    });
+    it('has 2 layers', () => {
+      const model = buildRNN();
+      expect(model.layers.length).toBe(2);
+    });
+    it('accepts correct input shape', () => {
+      const model = buildRNN();
+      const input = tf.randomNormal([1, 5, 3]);
+      const output = model.predict(input) as tf.Tensor;
+      expect(output.shape).toEqual([1, 1]);
+      input.dispose();
+      output.dispose();
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

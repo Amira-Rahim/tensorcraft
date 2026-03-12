@@ -1,0 +1,64 @@
+slug: channel-analysis
+lessonSlug: color-channels
+title: "Analyze Color Channels"
+instructions: "Write a function that takes an array of RGB pixel values (each pixel is [r, g, b]) and returns the mean value for each channel."
+starterCode: |
+  interface ChannelMeans {
+    red: number;
+    green: number;
+    blue: number;
+  }
+
+  function computeChannelMeans(pixels: number[][]): ChannelMeans {
+    // pixels is an array of [r, g, b] arrays
+    // Compute the average value for each channel
+    return null; // your code here
+  }
+solutionCode: |
+  interface ChannelMeans {
+    red: number;
+    green: number;
+    blue: number;
+  }
+
+  function computeChannelMeans(pixels: number[][]): ChannelMeans {
+    let rSum = 0, gSum = 0, bSum = 0;
+    for (const [r, g, b] of pixels) {
+      rSum += r;
+      gSum += g;
+      bSum += b;
+    }
+    const n = pixels.length;
+    return {
+      red: rSum / n,
+      green: gSum / n,
+      blue: bSum / n,
+    };
+  }
+testCode: |
+  describe('computeChannelMeans', () => {
+    it('computes means for uniform pixels', () => {
+      const pixels = [[100, 150, 200], [100, 150, 200]];
+      const means = computeChannelMeans(pixels);
+      expect(means.red).toBe(100);
+      expect(means.green).toBe(150);
+      expect(means.blue).toBe(200);
+    });
+
+    it('computes means for varying pixels', () => {
+      const pixels = [[0, 0, 0], [200, 100, 50]];
+      const means = computeChannelMeans(pixels);
+      expect(means.red).toBe(100);
+      expect(means.green).toBe(50);
+      expect(means.blue).toBe(25);
+    });
+
+    it('handles single pixel', () => {
+      const means = computeChannelMeans([[42, 128, 255]]);
+      expect(means.red).toBe(42);
+      expect(means.green).toBe(128);
+      expect(means.blue).toBe(255);
+    });
+  });
+estimatedMinutes: 6
+difficulty: beginner

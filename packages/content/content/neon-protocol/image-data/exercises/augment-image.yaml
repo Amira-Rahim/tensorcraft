@@ -1,0 +1,109 @@
+slug: augment-image
+lessonSlug: data-augmentation
+title: "Augment Surveillance Camera Images"
+instructions: "Implement three image augmentation functions: flipHorizontal reverses each row of pixels, adjustBrightness adds a delta to each pixel value clamped to [0, 255], and applyAugmentations takes a pixel grid and an options object { flip: boolean, brightness: number } and applies both transforms in sequence (flip first, then brightness)."
+starterCode: |
+  type PixelGrid = number[][];
+
+  function flipHorizontal(pixels: PixelGrid): PixelGrid {
+    // TODO: Return a new grid where each row is reversed
+    return null as any;
+  }
+
+  function adjustBrightness(pixels: PixelGrid, delta: number): PixelGrid {
+    // TODO: Add delta to each pixel, clamp to [0, 255]
+    return null as any;
+  }
+
+  function applyAugmentations(
+    pixels: PixelGrid,
+    options: { flip: boolean; brightness: number }
+  ): PixelGrid {
+    // TODO: Apply flip (if enabled) then brightness adjustment
+    return null as any;
+  }
+solutionCode: |
+  type PixelGrid = number[][];
+
+  function flipHorizontal(pixels: PixelGrid): PixelGrid {
+    return pixels.map(row => [...row].reverse());
+  }
+
+  function adjustBrightness(pixels: PixelGrid, delta: number): PixelGrid {
+    return pixels.map(row =>
+      row.map(pixel => Math.max(0, Math.min(255, pixel + delta)))
+    );
+  }
+
+  function applyAugmentations(
+    pixels: PixelGrid,
+    options: { flip: boolean; brightness: number }
+  ): PixelGrid {
+    let result = pixels.map(row => [...row]);
+    if (options.flip) {
+      result = flipHorizontal(result);
+    }
+    if (options.brightness !== 0) {
+      result = adjustBrightness(result, options.brightness);
+    }
+    return result;
+  }
+testCode: |
+  describe('Image Augmentation', () => {
+    const testImage: PixelGrid = [
+      [10, 20, 30],
+      [40, 50, 60],
+      [70, 80, 90],
+    ];
+
+    describe('flipHorizontal', () => {
+      it('reverses each row', () => {
+        const result = flipHorizontal(testImage);
+        expect(result[0]).toEqual([30, 20, 10]);
+        expect(result[1]).toEqual([60, 50, 40]);
+        expect(result[2]).toEqual([90, 80, 70]);
+      });
+
+      it('does not mutate the original', () => {
+        flipHorizontal(testImage);
+        expect(testImage[0]).toEqual([10, 20, 30]);
+      });
+    });
+
+    describe('adjustBrightness', () => {
+      it('adds delta to each pixel', () => {
+        const result = adjustBrightness(testImage, 10);
+        expect(result[0]).toEqual([20, 30, 40]);
+      });
+
+      it('clamps to 0 minimum', () => {
+        const result = adjustBrightness(testImage, -50);
+        expect(result[0][0]).toBe(0);
+      });
+
+      it('clamps to 255 maximum', () => {
+        const result = adjustBrightness([[250, 200]], 20);
+        expect(result[0][0]).toBe(255);
+        expect(result[0][1]).toBe(220);
+      });
+    });
+
+    describe('applyAugmentations', () => {
+      it('applies flip then brightness', () => {
+        const result = applyAugmentations(testImage, { flip: true, brightness: 10 });
+        expect(result[0]).toEqual([40, 30, 20]);
+      });
+
+      it('skips flip when disabled', () => {
+        const result = applyAugmentations(testImage, { flip: false, brightness: 5 });
+        expect(result[0]).toEqual([15, 25, 35]);
+      });
+
+      it('handles zero brightness', () => {
+        const result = applyAugmentations(testImage, { flip: true, brightness: 0 });
+        expect(result[0]).toEqual([30, 20, 10]);
+      });
+    });
+  });
+estimatedMinutes: 8
+difficulty: intermediate

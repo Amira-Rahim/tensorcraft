@@ -1,0 +1,115 @@
+---
+slug: word-tokenization
+title: "Word Tokenization"
+moduleId: tokenization-preprocessing
+themeId: signal-ward
+order: 1
+estimatedMinutes: 25
+difficulty: beginner
+context:
+  narrative: "Santos brings in a stack of messy clinical records. The first challenge: splitting text on the right boundaries."
+  speaker: "Santos"
+concept:
+  explanation: "Word tokenization splits text into individual words by identifying boundaries — spaces, punctuation, and special characters. It's the same pattern as String.split() and regex-based text processing you use daily."
+  bridge:
+    feTitle: "String.split()"
+    feCode: "'hello world'.split(/\\s+/)"
+    mlTitle: "Word Tokenizer"
+    mlCode: "tokenizer.tokenize('patient reports chest pain')"
+    tier: identity
+consequence:
+  narrative: "Diagnostic One can now reliably split clinical notes into word tokens, handling punctuation and edge cases."
+  nextLessonTeaser: "Next: subword tokenization — what happens when words themselves need breaking apart."
+hints:
+  - level: nudge
+    content: "Consider what counts as a word boundary — spaces, punctuation, line breaks."
+  - level: guidance
+    content: "Use a regex that matches word characters and splits on everything else."
+  - level: solution
+    content: "text.toLowerCase().match(/[a-z0-9]+/g) || []"
+keywords:
+  - word-tokenization
+  - string-split
+  - text-boundaries
+  - regex
+---
+
+> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
+
+<Dialogue speaker="Santos">
+Here's what we're dealing with. This patient record has periods inside abbreviations, hyphens in drug names, and slashes in dates. Good luck splitting that cleanly.
+</Dialogue>
+
+<Dialogue speaker="Obi">
+Santos just described every frontend developer's nightmare with user input. You've cleaned form data before, right Khalil? This is the same battle.
+</Dialogue>
+
+<Dialogue speaker="Khalil">
+String.split() with a regex. I've done this a hundred times for search inputs.
+</Dialogue>
+
+You already use `String.split()` to break strings apart — splitting CSV rows, parsing search queries, extracting URL parameters. Word tokenization is the same operation, applied to natural language.
+
+<LearningObjectives objectives={["Split clinical text into word tokens using regex patterns", "Handle punctuation, numbers, and special characters in medical text", "Understand whitespace vs. regex-based tokenization strategies", "Build a robust word tokenizer for clinical notes"]} />
+
+## Simple Splitting vs. Real Tokenization
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+Naive `split(' ')` breaks on spaces but misses punctuation attached to words. Clinical text needs smarter splitting.
+
+<CodeBlock language="typescript" title="word-tokenizer.ts">
+{`// Naive: splits on spaces only
+'BP: 120/80, temp 98.6F.'.split(' ');
+// ['BP:', '120/80,', 'temp', '98.6F.']
+// Problems: punctuation stuck to words
+
+// Better: regex-based word extraction
+function wordTokenize(text: string): string[] {
+  return text.toLowerCase().match(/[a-z0-9]+(?:\.[0-9]+)?/g) || [];
+}
+
+wordTokenize('BP: 120/80, temp 98.6F.');
+// ['bp', '120', '80', 'temp', '98.6', 'f']
+
+// Clinical-aware: preserve meaningful patterns
+function clinicalTokenize(text: string): string[] {
+  return text.toLowerCase()
+    .match(/[a-z]+(?:[-'][a-z]+)*|[0-9]+(?:\.[0-9]+)?(?:\/[0-9]+(?:\.[0-9]+)?)?/g) || [];
+}
+
+clinicalTokenize('BP: 120/80, temp 98.6F, non-insulin dependent.');
+// ['bp', '120/80', 'temp', '98.6', 'f', 'non-insulin', 'dependent']`}
+</CodeBlock>
+
+## Handling Clinical Edge Cases
+
+Medical text has patterns that general-purpose tokenizers struggle with: vitals with slashes, hyphenated drug names, decimal measurements.
+
+<CodeBlock language="typescript" title="clinical-edges.ts">
+{`function robustClinicalTokenize(text: string): string[] {
+  // Normalize whitespace
+  const normalized = text.toLowerCase().replace(/\s+/g, ' ').trim();
+
+  // Match: words (with hyphens), numbers (with decimals/fractions), standalone punctuation
+  const tokens = normalized.match(
+    /[a-z]+(?:[-'][a-z]+)*|[0-9]+(?:\.[0-9]+)?(?:\/[0-9]+(?:\.[0-9]+)?)?/g
+  ) || [];
+
+  return tokens;
+}
+
+// Test with real clinical text
+const note = "Pt c/o chest pain x 2 days. BP 130/85. Started on aspirin 81mg daily.";
+console.log(robustClinicalTokenize(note));
+// ['pt', 'c', 'o', 'chest', 'pain', 'x', '2', 'days', 'bp', '130/85',
+//  'started', 'on', 'aspirin', '81', 'daily']`}
+</CodeBlock>
+
+## Challenge
+
+Build a word tokenizer that handles clinical text edge cases.
+
+<Exercise slug="word-tokenize" />
+
+<KeyTakeaways takeaways={["Word tokenization is String.split() with clinical awareness", "Naive space-splitting fails on punctuation, hyphens, and medical patterns", "Regex-based tokenizers can preserve meaningful units like vitals and compound words", "The quality of your tokenizer directly affects model accuracy"]} />

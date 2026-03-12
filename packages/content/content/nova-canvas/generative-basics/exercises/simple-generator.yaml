@@ -1,0 +1,55 @@
+slug: simple-generator
+lessonSlug: your-first-generator
+title: "Build a Simple Generator"
+instructions: "Build a generator network using tf.sequential that takes a 64-dimensional noise vector and outputs a 784-dimensional vector (28x28 image). Use two hidden dense layers with leakyReLU activation and a final layer with sigmoid activation."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function buildGenerator(): tf.Sequential {
+    const model = tf.sequential();
+
+    // Add a dense layer: inputShape [64], 256 units, leakyReLU
+    // your code here
+
+    // Add a dense layer: 512 units, leakyReLU
+    // your code here
+
+    // Add output layer: 784 units, sigmoid
+    // your code here
+
+    return model;
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function buildGenerator(): tf.Sequential {
+    const model = tf.sequential();
+    model.add(tf.layers.dense({ inputShape: [64], units: 256, activation: 'leakyReLU' }));
+    model.add(tf.layers.dense({ units: 512, activation: 'leakyReLU' }));
+    model.add(tf.layers.dense({ units: 784, activation: 'sigmoid' }));
+    return model;
+  }
+testCode: |
+  describe('buildGenerator', () => {
+    it('returns a sequential model', () => {
+      const gen = buildGenerator();
+      expect(gen).toBeDefined();
+      expect(gen.layers.length).toBe(3);
+    });
+    it('accepts input shape [null, 64]', () => {
+      const gen = buildGenerator();
+      expect(gen.inputShape).toEqual([null, 64]);
+    });
+    it('outputs shape [null, 784]', () => {
+      const gen = buildGenerator();
+      expect(gen.outputShape).toEqual([null, 784]);
+    });
+    it('generates output from noise', () => {
+      const gen = buildGenerator();
+      const noise = tf.randomNormal([1, 64]);
+      const output = gen.predict(noise) as tf.Tensor;
+      expect(output.shape).toEqual([1, 784]);
+    });
+  });
+estimatedMinutes: 10
+difficulty: beginner

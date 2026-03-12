@@ -1,0 +1,77 @@
+slug: kalman-filter
+lessonSlug: kalman-filters
+title: "Implement a Kalman Filter"
+instructions: "Implement a simple 1D Kalman filter. Given an initial estimate, process noise, and measurement noise, write an update function that takes a new measurement and returns the updated estimate using the Kalman predict-correct loop."
+starterCode: |
+  class SimpleKalman {
+    estimate: number;
+    variance: number;
+    processNoise: number;
+    measureNoise: number;
+
+    constructor(initial: number, processNoise: number, measureNoise: number) {
+      this.estimate = initial;
+      this.variance = 1;
+      this.processNoise = processNoise;
+      this.measureNoise = measureNoise;
+    }
+
+    update(measurement: number): number {
+      // 1. Predict: predictedVariance = variance + processNoise
+      // 2. Gain: gain = predictedVariance / (predictedVariance + measureNoise)
+      // 3. Correct: estimate = estimate + gain * (measurement - estimate)
+      // 4. Update variance: variance = (1 - gain) * predictedVariance
+      // Return the new estimate
+      return null; // your code here
+    }
+  }
+solutionCode: |
+  class SimpleKalman {
+    estimate: number;
+    variance: number;
+    processNoise: number;
+    measureNoise: number;
+
+    constructor(initial: number, processNoise: number, measureNoise: number) {
+      this.estimate = initial;
+      this.variance = 1;
+      this.processNoise = processNoise;
+      this.measureNoise = measureNoise;
+    }
+
+    update(measurement: number): number {
+      const predictedVariance = this.variance + this.processNoise;
+      const gain = predictedVariance / (predictedVariance + this.measureNoise);
+      this.estimate = this.estimate + gain * (measurement - this.estimate);
+      this.variance = (1 - gain) * predictedVariance;
+      return this.estimate;
+    }
+  }
+testCode: |
+  describe('SimpleKalman', () => {
+    it('returns a number', () => {
+      const kf = new SimpleKalman(0, 0.1, 1);
+      expect(typeof kf.update(1)).toBe('number');
+    });
+    it('moves toward measurement', () => {
+      const kf = new SimpleKalman(0, 0.1, 1);
+      const est = kf.update(10);
+      expect(est).toBeGreaterThan(0);
+      expect(est).toBeLessThan(10);
+    });
+    it('converges with repeated measurements', () => {
+      const kf = new SimpleKalman(0, 0.01, 1);
+      for (let i = 0; i < 50; i++) kf.update(5);
+      expect(kf.estimate).toBeCloseTo(5, 0);
+    });
+    it('smooths noisy data', () => {
+      const kf = new SimpleKalman(10, 0.1, 1);
+      const noisy = [10, 12, 9, 11, 10, 13, 9, 11];
+      const estimates = noisy.map(m => kf.update(m));
+      const variance = estimates.reduce((s, e) => s + (e - 10.5) ** 2, 0) / estimates.length;
+      const inputVariance = noisy.reduce((s, n) => s + (n - 10.5) ** 2, 0) / noisy.length;
+      expect(variance).toBeLessThan(inputVariance);
+    });
+  });
+estimatedMinutes: 15
+difficulty: advanced

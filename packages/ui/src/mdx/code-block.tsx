@@ -1,11 +1,40 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useState, useEffect, type ReactNode } from "react";
 
 interface CodeBlockProps {
   language?: string;
   title?: string;
   children: ReactNode;
+}
+
+// Lazy-loaded Shiki highlighter
+let highlighterPromise: Promise<{
+  codeToHtml: (code: string, opts: { lang: string; theme: string }) => string;
+}> | null = null;
+
+function getHighlighter() {
+  if (!highlighterPromise) {
+    highlighterPromise = import("shiki").then((shiki) =>
+      shiki.createHighlighter({
+        themes: ["github-dark-default"],
+        langs: [
+          "typescript",
+          "javascript",
+          "tsx",
+          "jsx",
+          "python",
+          "json",
+          "bash",
+          "html",
+          "css",
+          "yaml",
+          "markdown",
+        ],
+      }),
+    );
+  }
+  return highlighterPromise;
 }
 
 export function CodeBlock({
@@ -14,9 +43,29 @@ export function CodeBlock({
   children,
 }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
+  const [highlightedHtml, setHighlightedHtml] = useState<string | null>(null);
 
   const code =
     typeof children === "string" ? children.trim() : String(children).trim();
+
+  useEffect(() => {
+    let cancelled = false;
+    getHighlighter()
+      .then((highlighter) => {
+        if (cancelled) return;
+        const html = highlighter.codeToHtml(code, {
+          lang: language,
+          theme: "github-dark-default",
+        });
+        setHighlightedHtml(html);
+      })
+      .catch(() => {
+        // Fallback: leave unhighlighted
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [code, language]);
 
   function handleCopy() {
     navigator.clipboard.writeText(code).then(() => {
@@ -60,6 +109,7 @@ export function CodeBlock({
           </span>
         </div>
         <button
+          type="button"
           onClick={handleCopy}
           className="text-xs px-2 py-1 rounded transition-colors"
           style={{
@@ -72,15 +122,22 @@ export function CodeBlock({
         </button>
       </div>
 
-      {/* Code */}
-      <pre className="overflow-x-auto p-4">
-        <code
-          className="text-sm leading-relaxed"
-          style={{ color: "rgba(255,255,255,0.85)" }}
-        >
-          {code}
-        </code>
-      </pre>
+      {/* Code — highlighted or fallback */}
+      {highlightedHtml ? (
+        <div
+          className="overflow-x-auto [&_pre]:p-4 [&_pre]:m-0 [&_pre]:bg-transparent [&_code]:text-sm [&_code]:leading-relaxed"
+          dangerouslySetInnerHTML={{ __html: highlightedHtml }}
+        />
+      ) : (
+        <pre className="overflow-x-auto p-4">
+          <code
+            className="text-sm leading-relaxed"
+            style={{ color: "rgba(255,255,255,0.85)" }}
+          >
+            {code}
+          </code>
+        </pre>
+      )}
     </div>
   );
 }

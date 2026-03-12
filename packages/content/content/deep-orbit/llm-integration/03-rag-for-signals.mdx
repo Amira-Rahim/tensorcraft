@@ -1,0 +1,133 @@
+---
+slug: rag-for-signals
+title: "RAG for Signals"
+moduleId: llm-integration
+themeId: deep-orbit
+order: 3
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "The LLM doesn't know about DEEP SCAN's specific signals. Sato builds a RAG pipeline — retrieving relevant signal data from the database and injecting it into the prompt."
+  speaker: "Dr. Sato"
+concept:
+  explanation: "RAG grounds LLM responses in real data by retrieving relevant records first — like Server Components that query the database before rendering."
+  bridge:
+    feTitle: "Server Components"
+    feCode: "async function Page() { const data = await db.query(...); return <View data={data} />; }"
+    mlTitle: "RAG Pipeline"
+    mlCode: "const context = await db.search(query); const answer = await llm.complete(prompt + context);"
+    tier: structural
+consequence:
+  narrative: "The RAG pipeline lets the crew ask natural language questions about signal data: 'Show me all anomalous signals in Band-7 from the last 72 hours.' The LLM answers with cited data."
+  nextLessonTeaser: "Next: auto-generating scientific reports from signal data"
+hints:
+  - level: nudge
+    content: "RAG = Retrieve relevant data first, then Augment the prompt with it, then Generate"
+  - level: guidance
+    content: "Search the signal database for relevant records, inject them into the prompt context"
+  - level: solution
+    content: "const signals = await db.query(relevantSignals); const prompt = `Given: ${signals}. Answer: ${question}`; const answer = await llm.complete(prompt);"
+keywords:
+  - rag
+  - retrieval-augmented-generation
+  - grounding
+  - server-components
+---
+
+<Dialogue speaker="Dr. Sato">
+The LLM has no knowledge of our specific signals. If I ask about Band-7 anomalies, it will either hallucinate or say it doesn't know. We need to retrieve the relevant data first and inject it into the prompt. Retrieval-Augmented Generation.
+</Dialogue>
+
+<Dialogue speaker="Ensign Park">
+That's Server Components! Fetch data on the server, then render with it. RAG fetches data from the signal database, then generates a response with it.
+</Dialogue>
+
+React Server Components query the database before rendering — the component has access to real data, not just what the client provides. RAG does the same for LLMs: retrieve relevant records from your database, inject them into the prompt, then generate a grounded response.
+
+<LearningObjectives objectives={["Understand RAG as retrieve → augment → generate: query data, inject into prompt, generate response", "Build a simple signal retrieval system using text and metadata matching", "Ground LLM responses in actual data to prevent hallucination", "Enable natural language queries over the DEEP SCAN signal database"]} />
+
+## The RAG Pipeline
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="rag-pipeline.ts">
+{`interface Signal {
+  id: string;
+  timestamp: string;
+  band: string;
+  classification: string;
+  confidence: number;
+  amplitude: number;
+  frequency: number;
+  anomalyScore: number;
+}
+
+// Step 1: RETRIEVE — find relevant signals from the database
+async function retrieveSignals(
+  query: string,
+  db: Signal[],
+): Promise<Signal[]> {
+  // Parse query for filters
+  const bandMatch = query.match(/band[- ]?(\w+)/i);
+  const hoursMatch = query.match(/(\d+)\s*hours/i);
+  const classMatch = query.match(/anomal/i) ? 'anomaly' : null;
+
+  let results = [...db];
+
+  if (bandMatch) {
+    results = results.filter(s => s.band.toLowerCase() === bandMatch[1].toLowerCase());
+  }
+  if (hoursMatch) {
+    const cutoff = Date.now() - parseInt(hoursMatch[1]) * 3600 * 1000;
+    results = results.filter(s => new Date(s.timestamp).getTime() > cutoff);
+  }
+  if (classMatch) {
+    results = results.filter(s => s.classification === 'anomaly');
+  }
+
+  return results.slice(0, 20);  // limit context size
+}
+
+// Step 2: AUGMENT — inject retrieved data into prompt
+function buildRAGPrompt(query: string, signals: Signal[]): string {
+  const signalContext = signals.map(s =>
+    \`[\${s.timestamp}] Band \${s.band}: \${s.classification} (conf=\${s.confidence}, amp=\${s.amplitude}, freq=\${s.frequency}Hz, anomalyScore=\${s.anomalyScore})\`
+  ).join('\\n');
+
+  return \`You are DEEP SCAN's analysis assistant. Answer based ONLY on the provided signal data.
+If the data doesn't contain the answer, say "insufficient data."
+
+## Retrieved Signal Data
+\${signalContext}
+
+## Question
+\${query}
+
+## Instructions
+- Cite specific signals by timestamp
+- Include quantitative details (counts, averages, ranges)
+- Flag any uncertainty\`;
+}
+
+// Step 3: GENERATE — get grounded response
+async function querySignals(query: string, db: Signal[], llm: LLMClient): Promise<string> {
+  const relevant = await retrieveSignals(query, db);
+  const prompt = buildRAGPrompt(query, relevant);
+  return llm.complete(prompt);
+}
+
+// Usage:
+const answer = await querySignals(
+  "Show me all anomalous signals in Band-7 from the last 72 hours",
+  signalDatabase,
+  llm,
+);`}
+</CodeBlock>
+
+## Challenge
+
+Build a RAG pipeline that retrieves and contextualizes signal data.
+
+<Exercise slug="rag-pipeline" />
+
+<KeyTakeaways takeaways={["RAG = Retrieve → Augment → Generate: fetch real data, inject into prompt, generate grounded response", "Like Server Components: data access happens before generation, ensuring the output reflects reality", "Limit retrieved context to stay within token limits — retrieve the top-K most relevant records", "Instruct the LLM to cite sources and say 'insufficient data' when information is missing"]} />

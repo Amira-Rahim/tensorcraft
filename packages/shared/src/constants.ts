@@ -42,6 +42,7 @@ export const ROUTES = {
     `/themes/${themeSlug}/${moduleSlug}` as const,
   lesson: (themeSlug: ThemeSlug, moduleSlug: string, lessonSlug: string) =>
     `/themes/${themeSlug}/${moduleSlug}/${lessonSlug}` as const,
+  bridges: "/bridges",
   dashboard: "/dashboard",
   settings: "/settings",
 } as const;
@@ -54,3 +55,26 @@ export const V05_SCOPE = {
   modules: 3,
   lessons: 15,
 } as const;
+
+/**
+ * Per-theme content structure — full course (V1.0).
+ * Used by pricing page and marketing. Update when course structure changes.
+ */
+export const THEME_CONTENT = {
+  modulesPerTheme: 11,
+  lessonsPerModule: 5,
+  totalLessonsPerTheme: 55,
+} as const;
+
+/** Default theme used for fallbacks */
+export const DEFAULT_THEME: ThemeSlug = "deep-orbit";
+
+/** Validate that a string is a known theme slug */
+export function isValidThemeSlug(slug: string): slug is ThemeSlug {
+  return (THEME_SLUGS as readonly string[]).includes(slug);
+}
+
+/** Validate slug format — alphanumeric with hyphens, max 100 chars */
+export function isValidSlug(id: string): boolean {
+  return /^[a-z0-9]([a-z0-9-]{0,98}[a-z0-9])?$/.test(id);
+}

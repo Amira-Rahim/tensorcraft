@@ -1,0 +1,64 @@
+slug: apply-window
+lessonSlug: windowing-and-overlap
+title: "Apply a Hann Window"
+instructions: "Implement a Hann window function and apply it to a signal. The Hann window formula is: w[i] = 0.5 * (1 - cos(2 * PI * i / (N - 1))). Return the windowed signal (element-wise multiplication of signal and window)."
+starterCode: |
+  function hannWindow(n: number): number[] {
+    // Generate a Hann window of length n
+    // w[i] = 0.5 * (1 - Math.cos(2 * Math.PI * i / (n - 1)))
+    return null; // your code here
+  }
+
+  function applyWindow(signal: number[], window: number[]): number[] {
+    // Multiply signal by window element-wise
+    return null; // your code here
+  }
+solutionCode: |
+  function hannWindow(n: number): number[] {
+    return Array.from({ length: n }, (_, i) =>
+      0.5 * (1 - Math.cos(2 * Math.PI * i / (n - 1)))
+    );
+  }
+
+  function applyWindow(signal: number[], window: number[]): number[] {
+    return signal.map((s, i) => s * window[i]);
+  }
+testCode: |
+  describe('hannWindow', () => {
+    it('returns correct length', () => {
+      expect(hannWindow(64).length).toBe(64);
+    });
+    it('starts at zero', () => {
+      const w = hannWindow(64);
+      expect(w[0]).toBeCloseTo(0, 5);
+    });
+    it('ends at zero', () => {
+      const w = hannWindow(64);
+      expect(w[63]).toBeCloseTo(0, 5);
+    });
+    it('peaks at center', () => {
+      const w = hannWindow(65);
+      expect(w[32]).toBeCloseTo(1, 5);
+    });
+  });
+  describe('applyWindow', () => {
+    it('returns same length', () => {
+      const s = [1, 2, 3, 4];
+      const w = [0.5, 1, 1, 0.5];
+      expect(applyWindow(s, w).length).toBe(4);
+    });
+    it('multiplies element-wise', () => {
+      const s = [2, 4, 6];
+      const w = [0.5, 1, 0.5];
+      expect(applyWindow(s, w)).toEqual([1, 4, 3]);
+    });
+    it('zeros edges with Hann window', () => {
+      const s = [1, 1, 1, 1, 1];
+      const w = hannWindow(5);
+      const result = applyWindow(s, w);
+      expect(result[0]).toBeCloseTo(0, 5);
+      expect(result[4]).toBeCloseTo(0, 5);
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

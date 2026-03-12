@@ -1,0 +1,174 @@
+---
+slug: knowledge-grounding
+title: "Knowledge Grounding — Ensuring Answers Are Supported by Evidence"
+moduleId: question-answering-rag
+themeId: signal-ward
+order: 4
+estimatedMinutes: 25
+difficulty: advanced
+context:
+  narrative: "Obi runs a test: he asks MEDI about a medication interaction that does not exist. MEDI confidently fabricates an answer. 'Hallucination,' Obi says flatly. 'In a chat app, this is annoying. In a hospital, it could kill someone. Every claim must have a source.'"
+  speaker: "Obi Nwosu"
+concept:
+  explanation: "Knowledge grounding ensures every generated answer is supported by retrieved evidence — like hyperlinks on the web, where every claim has a verifiable source."
+  bridge:
+    feTitle: "Hyperlinks"
+    feCode: "<a href='/studies/12345'>Reduces risk by 40%</a> // every claim has a source"
+    mlTitle: "Grounded Answer"
+    mlCode: "{ answer: 'Reduces risk by 40%', evidence: [{ docId: 12345, span: '...', score: 0.95 }] }"
+    tier: analogy
+consequence:
+  narrative: "The grounded QA system now refuses to answer when evidence is insufficient. Obi's fabricated interaction test returns: 'No supporting evidence found in patient records. Confidence: 0.12. Deferring to clinician.' Vasquez approves. 'A system that knows when it does not know is safer than one that always has an answer.'"
+  nextLessonTeaser: "Next: clinical queries — doctors asking questions in natural language"
+hints:
+  - level: nudge
+    content: "Compare the generated answer against the retrieved passages to compute an entailment score"
+  - level: guidance
+    content: "Build a Natural Language Inference (NLI) classifier that checks if the evidence entails the answer"
+  - level: solution
+    content: "For each answer span, compute entailment probability against each retrieved passage. If max entailment < threshold, refuse to answer."
+keywords:
+  - knowledge-grounding
+  - hallucination-detection
+  - entailment
+  - evidence-based
+  - clinical-safety
+---
+
+<Dialogue speaker="Obi Nwosu">
+I asked MEDI: "What is the interaction between metformin and ibuprofen in patients with renal impairment?" MEDI responded with a detailed, confident, and entirely fabricated answer. It cited a study that does not exist. In a chat application, a hallucination is an inconvenience. In Signal Ward, it is a liability.
+</Dialogue>
+
+<Dialogue speaker="Dr. Vasquez">
+Every claim needs a citation. If the model cannot point to specific evidence in the patient's records, it must say so. I would rather see "insufficient evidence" than a confident wrong answer.
+</Dialogue>
+
+On the web, hyperlinks are the contract between author and reader. "Reduces risk by 40%" means nothing without a link to the study. Knowledge grounding applies the same principle to ML: every answer must link back to specific evidence in the source documents. No evidence, no answer.
+
+<LearningObjectives objectives={["Implement entailment checking to verify answers against retrieved evidence", "Build confidence thresholds that trigger abstention when evidence is insufficient", "Design citation systems that link answer spans to source documents", "Detect and prevent hallucination in clinical QA systems"]} />
+
+## Every Claim Needs a Source
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="grounding.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+interface GroundedAnswer {
+  answer: string;
+  isGrounded: boolean;
+  confidence: number;
+  citations: Citation[];
+}
+
+interface Citation {
+  documentId: string;
+  span: string;
+  entailmentScore: number;
+  startOffset: number;
+  endOffset: number;
+}
+
+// Natural Language Inference: does the evidence support the claim?
+// Labels: entailment (0), neutral (1), contradiction (2)
+function buildNLIModel(vocabSize: number, embDim: number, maxLen: number): tf.LayersModel {
+  const premiseInput = tf.input({ shape: [maxLen], name: 'premise' });
+  const hypothesisInput = tf.input({ shape: [maxLen], name: 'hypothesis' });
+
+  const embedding = tf.layers.embedding({ inputDim: vocabSize, outputDim: embDim });
+
+  const premiseEmb = embedding.apply(premiseInput) as tf.SymbolicTensor;
+  const hypothesisEmb = embedding.apply(hypothesisInput) as tf.SymbolicTensor;
+
+  const lstm = tf.layers.lstm({ units: 64 });
+  const premiseEnc = lstm.apply(premiseEmb) as tf.SymbolicTensor;
+  const hypothesisEnc = lstm.apply(hypothesisEmb) as tf.SymbolicTensor;
+
+  const combined = tf.layers.concatenate().apply([premiseEnc, hypothesisEnc]) as tf.SymbolicTensor;
+  const dense = tf.layers.dense({ units: 64, activation: 'relu' }).apply(combined) as tf.SymbolicTensor;
+  const output = tf.layers.dense({ units: 3, activation: 'softmax' }).apply(dense) as tf.SymbolicTensor;
+
+  return tf.model({ inputs: [premiseInput, hypothesisInput], outputs: output });
+}
+
+// Ground an answer: verify every claim has supporting evidence
+async function groundAnswer(
+  answer: string,
+  retrievedDocs: { id: string; text: string }[],
+  nliModel: tf.LayersModel,
+  tokenize: (text: string) => number[],
+  threshold: number = 0.7
+): Promise<GroundedAnswer> {
+  const citations: Citation[] = [];
+
+  for (const doc of retrievedDocs) {
+    // Check if this document entails the answer
+    const premiseTokens = tokenize(doc.text);
+    const hypothesisTokens = tokenize(answer);
+
+    const prediction = nliModel.predict([
+      tf.tensor2d([premiseTokens]),
+      tf.tensor2d([hypothesisTokens]),
+    ]) as tf.Tensor;
+
+    const probs = await prediction.array() as number[][];
+    const entailmentScore = probs[0][0]; // P(entailment)
+
+    if (entailmentScore > threshold) {
+      citations.push({
+        documentId: doc.id,
+        span: doc.text.substring(0, 200),
+        entailmentScore,
+        startOffset: 0,
+        endOffset: 200,
+      });
+    }
+    prediction.dispose();
+  }
+
+  const maxScore = citations.length > 0
+    ? Math.max(...citations.map(c => c.entailmentScore))
+    : 0;
+
+  return {
+    answer: citations.length > 0 ? answer : 'Insufficient evidence in patient records.',
+    isGrounded: citations.length > 0,
+    confidence: maxScore,
+    citations,
+  };
+}`}
+</CodeBlock>
+
+## Hallucination Detection
+
+<CodeBlock language="typescript" title="hallucination-test.ts">
+{`// Test grounding with known hallucinations
+const tests = [
+  {
+    answer: "Patient is allergic to penicillin",
+    docs: [{ id: "d1", text: "Patient reported severe allergic reaction to penicillin-class antibiotics." }],
+    shouldBeGrounded: true,
+  },
+  {
+    answer: "Metformin interacts dangerously with ibuprofen causing renal failure",
+    docs: [{ id: "d1", text: "Current medications: metformin 500mg twice daily." }],
+    shouldBeGrounded: false, // No evidence of this interaction in the record
+  },
+];
+
+for (const test of tests) {
+  const result = await groundAnswer(test.answer, test.docs, nliModel, tokenize);
+  const status = result.isGrounded === test.shouldBeGrounded ? 'PASS' : 'FAIL';
+  console.log(\`[\${status}] Grounded: \${result.isGrounded}, Confidence: \${result.confidence.toFixed(3)}\`);
+  console.log(\`  Answer: "\${result.answer}"\`);
+  console.log(\`  Citations: \${result.citations.length}\`);
+}`}
+</CodeBlock>
+
+## Challenge
+
+Build an entailment-based grounding function that verifies answers against evidence.
+
+<Exercise slug="ground-answers" />
+
+<KeyTakeaways takeaways={["Knowledge grounding is hyperlinks for ML — every claim must link to verifiable evidence", "NLI models classify whether evidence entails, is neutral to, or contradicts a claim", "Confidence thresholds trigger abstention: 'insufficient evidence' is safer than a hallucinated answer", "In clinical NLP, a system that knows it does not know is more valuable than one that always guesses"]} />

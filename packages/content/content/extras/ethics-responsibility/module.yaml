@@ -1,0 +1,74 @@
+slug: ethics-responsibility
+title: "Ethics & Responsible AI"
+themeId: shared
+order: 2
+description: |
+  Every model you deploy affects real people. You'll learn to detect dataset
+  bias, measure fairness, interpret what your model actually learned, and
+  make responsible deployment decisions. Bridge: "Data bias is like testing
+  only in Chrome — works great for you, broken for half your users."
+lessonCount: 5
+prerequisites:
+  - foundations
+  - neural-networks
+  - training-loop
+track: foundations
+lessons:
+  - slug: dataset-bias
+    title: "Dataset Bias: Garbage In, Discrimination Out"
+    order: 1
+    estimatedMinutes: 25
+    difficulty: beginner
+    bridge: "Biased training data → testing only in Chrome on a MacBook"
+    summary: |
+      What dataset bias is, how it enters your pipeline, and how to detect it.
+      Selection bias, measurement bias, historical bias. Real-world examples
+      from hiring, lending, and healthcare. Practical: audit a dataset for
+      demographic representation.
+
+  - slug: fairness-metrics
+    title: "Fairness Metrics: Defining 'Fair'"
+    order: 2
+    estimatedMinutes: 30
+    difficulty: intermediate
+    bridge: "Fairness metrics → accessibility audit scores (Lighthouse)"
+    summary: |
+      Demographic parity, equalized odds, calibration. Why you can't satisfy
+      all fairness definitions simultaneously (impossibility theorem). Choosing
+      the right metric for your context. Practical: compute fairness metrics
+      for a classifier and identify disparate impact.
+
+  - slug: model-interpretability
+    title: "Interpretability: What Did the Model Actually Learn?"
+    order: 3
+    estimatedMinutes: 25
+    difficulty: intermediate
+    bridge: "Feature importance → Chrome DevTools Performance tab"
+    summary: |
+      LIME, SHAP values, saliency maps. The difference between correlation
+      and causation in model decisions. When a model learns the wrong thing
+      (hospital logo → pneumonia). Practical: generate explanations for a
+      trained model's predictions.
+
+  - slug: responsible-deployment
+    title: "Responsible Deployment: Who Gets Hurt If You're Wrong?"
+    order: 4
+    estimatedMinutes: 25
+    difficulty: intermediate
+    bridge: "Model impact assessment → accessibility impact assessment"
+    summary: |
+      Failure mode analysis for ML systems. High-stakes vs. low-stakes
+      applications. Human-in-the-loop systems. Model cards and documentation.
+      When to not deploy a model at all.
+
+  - slug: ethics-capstone
+    title: "Building an Ethics Checklist for Your ML Projects"
+    order: 5
+    estimatedMinutes: 30
+    difficulty: intermediate
+    bridge: "ML ethics checklist → pull request review checklist"
+    summary: |
+      Capstone: create a reusable ethics review process for ML projects.
+      Covers data sourcing, bias auditing, fairness testing, interpretability
+      requirements, and deployment monitoring. Output: a checklist you'll
+      actually use in your portfolio projects and future work.

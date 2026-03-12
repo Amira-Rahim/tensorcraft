@@ -1,0 +1,206 @@
+---
+slug: non-max-suppression
+title: "Non-Max Suppression"
+moduleId: object-detection
+themeId: neon-protocol
+order: 4
+estimatedMinutes: 30
+difficulty: intermediate
+context:
+  narrative: "Kira's model is detecting drones — but each drone generates dozens of overlapping boxes. The holotable is a mess of redundant rectangles. Ryo laughs. 'You need NMS. Think of it like debounce() — suppress the duplicates, keep the best.'"
+  speaker: "Ryo"
+concept:
+  explanation: "Non-Max Suppression (NMS) eliminates duplicate detections by keeping only the highest-confidence box when multiple boxes overlap significantly. It is the ML equivalent of debounce() — suppressing redundant outputs to keep only the meaningful ones."
+  bridge:
+    feTitle: "debounce()"
+    feCode: "const debouncedSearch = debounce(search, 300); // suppress redundant calls"
+    mlTitle: "Non-Max Suppression"
+    mlCode: "const kept = nms(boxes, scores, iouThreshold: 0.5); // suppress redundant boxes"
+    tier: structural
+consequence:
+  narrative: "After NMS, the holotable clears. Three clean boxes remain — one per drone. Kira grins. 'Clean. Like going from 50 scroll events to one debounced handler.' NEON approves: 'Meridian runs NMS at an IoU threshold of 0.45. I suggest 0.5 for cleaner results.'"
+  nextLessonTeaser: "Next: YOLO architecture — single-shot detection that does everything in one pass"
+hints:
+  - level: nudge
+    content: "Sort by confidence, keep the best, remove anything that overlaps too much with it, repeat"
+  - level: guidance
+    content: "Use a while loop: pick the top-scoring box, filter out boxes with IoU above the threshold, repeat"
+  - level: solution
+    content: "Sort descending by confidence, push the first to results, filter remaining by IoU, repeat until empty"
+keywords:
+  - non-max-suppression
+  - nms
+  - debounce
+  - duplicate-removal
+  - post-processing
+---
+
+<Dialogue speaker="Ryo">
+Every anchor near a drone fires a detection. You get 30 boxes for one drone. This is the same problem as a scroll listener firing 60 times per second — you do not want 60 handler calls, you want one. In frontend, you debounce. In detection, you run Non-Max Suppression.
+</Dialogue>
+
+<Dialogue speaker="Kira">
+So NMS is debounce for bounding boxes. Keep the best event, suppress everything too similar.
+</Dialogue>
+
+<Dialogue speaker="Ryo">
+Exactly. Sort by confidence, keep the winner, throw away anything that overlaps it too much. Repeat until you are done.
+</Dialogue>
+
+A detection model with 441 anchors will fire many overlapping boxes on the same object. **Non-Max Suppression (NMS)** filters these down to one box per object — just like `debounce()` filters rapid-fire events down to one meaningful call.
+
+<LearningObjectives objectives={["Understand why detection models produce redundant overlapping boxes", "Implement the NMS algorithm: sort by confidence, suppress high-IoU duplicates", "Choose appropriate IoU thresholds for suppression", "Connect NMS to the debounce pattern used in frontend event handling"]} />
+
+## The Debounce Analogy
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="debounce-vs-nms.ts">
+{`// Frontend: debounce suppresses redundant events
+function debounce(fn: Function, delay: number) {
+  let timer: number;
+  return (...args: any[]) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), delay);
+  };
+}
+// 50 keystrokes -> 1 search call
+
+// ML: NMS suppresses redundant detections
+// 30 overlapping boxes -> 1 clean detection
+// Instead of time-based suppression, NMS uses spatial overlap (IoU)
+
+// The pattern is identical:
+// debounce: "If a new event is too close in TIME to the last one, suppress it"
+// NMS:      "If a new box is too close in SPACE to a better one, suppress it"`}
+</CodeBlock>
+
+## The NMS Algorithm
+
+<CodeBlock language="typescript" title="nms-implementation.ts">
+{`interface Detection {
+  box: number[];       // [xmin, ymin, xmax, ymax]
+  confidence: number;
+  label: string;
+}
+
+function computeIoU(boxA: number[], boxB: number[]): number {
+  const interLeft = Math.max(boxA[0], boxB[0]);
+  const interTop = Math.max(boxA[1], boxB[1]);
+  const interRight = Math.min(boxA[2], boxB[2]);
+  const interBottom = Math.min(boxA[3], boxB[3]);
+
+  const interW = Math.max(0, interRight - interLeft);
+  const interH = Math.max(0, interBottom - interTop);
+  const interArea = interW * interH;
+
+  const areaA = (boxA[2] - boxA[0]) * (boxA[3] - boxA[1]);
+  const areaB = (boxB[2] - boxB[0]) * (boxB[3] - boxB[1]);
+  const unionArea = areaA + areaB - interArea;
+
+  return unionArea === 0 ? 0 : interArea / unionArea;
+}
+
+function nms(
+  detections: Detection[],
+  iouThreshold: number = 0.5
+): Detection[] {
+  // Step 1: Sort by confidence (highest first)
+  // Like prioritizing events by importance
+  const sorted = [...detections].sort(
+    (a, b) => b.confidence - a.confidence
+  );
+
+  const kept: Detection[] = [];
+  const suppressed = new Set<number>();
+
+  for (let i = 0; i < sorted.length; i++) {
+    if (suppressed.has(i)) continue;
+
+    // Step 2: Keep the highest-confidence detection
+    kept.push(sorted[i]);
+
+    // Step 3: Suppress all boxes that overlap too much
+    // Like clearTimeout() canceling pending debounced calls
+    for (let j = i + 1; j < sorted.length; j++) {
+      if (suppressed.has(j)) continue;
+      const iou = computeIoU(sorted[i].box, sorted[j].box);
+      if (iou >= iouThreshold) {
+        suppressed.add(j);
+      }
+    }
+  }
+
+  return kept;
+}`}
+</CodeBlock>
+
+## NMS in Action
+
+<CodeBlock language="typescript" title="nms-example.ts">
+{`// Simulated detections: 3 drones, each detected multiple times
+const rawDetections: Detection[] = [
+  // Drone 1 cluster
+  { box: [0.10, 0.10, 0.30, 0.30], confidence: 0.95, label: 'drone' },
+  { box: [0.11, 0.09, 0.31, 0.29], confidence: 0.88, label: 'drone' },
+  { box: [0.09, 0.11, 0.29, 0.31], confidence: 0.82, label: 'drone' },
+
+  // Drone 2 cluster
+  { box: [0.50, 0.40, 0.75, 0.70], confidence: 0.91, label: 'drone' },
+  { box: [0.52, 0.42, 0.77, 0.72], confidence: 0.85, label: 'drone' },
+
+  // Drone 3 cluster
+  { box: [0.70, 0.60, 0.95, 0.90], confidence: 0.89, label: 'drone' },
+  { box: [0.71, 0.59, 0.94, 0.89], confidence: 0.78, label: 'drone' },
+  { box: [0.69, 0.61, 0.93, 0.91], confidence: 0.72, label: 'drone' },
+];
+
+console.log('Before NMS:', rawDetections.length); // 8 boxes
+
+const cleanDetections = nms(rawDetections, 0.5);
+console.log('After NMS:', cleanDetections.length); // 3 boxes — one per drone
+
+// IoU threshold tuning:
+// Lower threshold (0.3) -> more aggressive suppression, fewer boxes
+// Higher threshold (0.7) -> less suppression, might keep duplicates
+// 0.5 is the standard — like a 300ms debounce delay`}
+</CodeBlock>
+
+## Class-Aware NMS
+
+When detecting multiple object types, only suppress within the same class — like debouncing each input field independently.
+
+<CodeBlock language="typescript" title="class-aware-nms.ts">
+{`function classAwareNms(
+  detections: Detection[],
+  iouThreshold: number = 0.5
+): Detection[] {
+  // Group detections by label
+  const byClass = new Map<string, Detection[]>();
+  for (const det of detections) {
+    const group = byClass.get(det.label) ?? [];
+    group.push(det);
+    byClass.set(det.label, group);
+  }
+
+  // Run NMS independently per class
+  const results: Detection[] = [];
+  for (const classDetections of byClass.values()) {
+    results.push(...nms(classDetections, iouThreshold));
+  }
+
+  return results;
+}
+
+// A drone box should not suppress a person box
+// even if they overlap — they are different classes
+// Like debouncing search input separately from scroll events`}
+</CodeBlock>
+
+## Challenge
+
+Implement the Non-Max Suppression algorithm.
+
+<Exercise slug="non-max-suppression" />
+
+<KeyTakeaways takeaways={["NMS is debounce for bounding boxes — suppress redundant detections, keep the best one", "The algorithm: sort by confidence, keep the top box, remove high-IoU overlaps, repeat", "IoU threshold controls suppression aggressiveness (0.5 is standard, like a 300ms debounce delay)", "Class-aware NMS only suppresses within the same object class, like debouncing each input independently"]} />

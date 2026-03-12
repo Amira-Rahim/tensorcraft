@@ -1,0 +1,69 @@
+slug: prune-weights
+lessonSlug: pruning
+title: "Prune Weights by Magnitude"
+instructions: "Implement magnitude-based pruning: zero out the smallest weights based on a sparsity ratio (0 to 1). A sparsity of 0.6 means 60% of weights are set to zero (the ones with the smallest absolute values)."
+starterCode: |
+  function pruneWeights(weights: number[], sparsity: number): number[] {
+    // 1. Sort absolute values to find the threshold
+    // 2. threshold = sorted[floor(length * sparsity)]
+    // 3. Zero out weights whose abs value < threshold
+    return null; // your code here
+  }
+
+  function calculateSparsity(weights: number[]): number {
+    // Return the fraction of weights that are zero
+    return null; // your code here
+  }
+solutionCode: |
+  function pruneWeights(weights: number[], sparsity: number): number[] {
+    const sorted = weights.map(Math.abs).sort((a, b) => a - b);
+    const threshold = sorted[Math.floor(sorted.length * sparsity)];
+
+    return weights.map(w => Math.abs(w) < threshold ? 0 : w);
+  }
+
+  function calculateSparsity(weights: number[]): number {
+    const zeros = weights.filter(w => w === 0).length;
+    return zeros / weights.length;
+  }
+testCode: |
+  describe('pruneWeights', () => {
+    const weights = [0.5, -0.01, 0.002, -0.8, 0.003, 0.7, -0.001, 0.6];
+
+    it('zeros out small weights at 50% sparsity', () => {
+      const pruned = pruneWeights(weights, 0.5);
+      expect(pruned[0]).toBe(0.5);
+      expect(pruned[3]).toBe(-0.8);
+      expect(pruned[1]).toBe(0);
+      expect(pruned[2]).toBe(0);
+    });
+
+    it('preserves large weights', () => {
+      const pruned = pruneWeights(weights, 0.6);
+      expect(pruned[0]).toBe(0.5);
+      expect(pruned[3]).toBe(-0.8);
+      expect(pruned[5]).toBe(0.7);
+      expect(pruned[7]).toBe(0.6);
+    });
+
+    it('returns all weights at 0% sparsity', () => {
+      const pruned = pruneWeights(weights, 0);
+      expect(pruned).toEqual(weights);
+    });
+  });
+
+  describe('calculateSparsity', () => {
+    it('returns 0 for no zeros', () => {
+      expect(calculateSparsity([1, 2, 3])).toBe(0);
+    });
+
+    it('returns correct sparsity', () => {
+      expect(calculateSparsity([1, 0, 0, 2])).toBe(0.5);
+    });
+
+    it('returns 1 for all zeros', () => {
+      expect(calculateSparsity([0, 0, 0])).toBe(1);
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

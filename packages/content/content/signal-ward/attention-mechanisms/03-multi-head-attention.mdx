@@ -1,0 +1,115 @@
+---
+slug: multi-head-attention
+title: "Multi-Head Attention"
+moduleId: attention-mechanisms
+themeId: signal-ward
+order: 3
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Obi explains why one attention head isn't enough for clinical text."
+  speaker: "Obi Nwosu"
+concept:
+  explanation: "Multi-head attention runs several attention operations in parallel, each learning to focus on different relationships."
+  bridge:
+    feTitle: "Multiple Event Listeners"
+    feCode: "el.addEventListener('click', handleNav);\nel.addEventListener('click', handleAnalytics);"
+    mlTitle: "Multiple Attention Heads"
+    mlCode: "// Head 1: drug-condition links\n// Head 2: dosage-frequency links\n// Head 3: temporal relationships"
+    tier: analogy
+consequence:
+  narrative: "Diagnostic One can now simultaneously track drug-condition relationships, temporal sequences, and dosage patterns."
+  nextLessonTeaser: "Next: visualizing what the model focuses on."
+hints:
+  - level: nudge
+    content: "Split the embedding dimension across heads, not the sequence"
+  - level: guidance
+    content: "Run self-attention independently per head, then concatenate results"
+  - level: solution
+    content: "Split d_model into numHeads chunks, run attention on each, concat and project"
+keywords:
+  - multi-head-attention
+  - parallel-heads
+  - concatenation
+---
+
+<Dialogue speaker="Obi Nwosu">
+One attention head learns one type of relationship. But clinical text has many simultaneous relationships — the drug to its condition, the dosage to its frequency, the symptom to its temporal qualifier. We need multiple heads, each specializing in a different pattern.
+</Dialogue>
+
+<Dialogue speaker="Khalil Mensah">
+Like attaching multiple event listeners to the same element — a click handler for navigation, another for analytics, another for animations. Same event, different purposes.
+</Dialogue>
+
+<LearningObjectives objectives={["Understand why single-head attention is insufficient", "Implement multi-head attention by splitting dimensions", "Concatenate and project head outputs", "Identify what different heads learn to attend to"]} />
+
+## One Element, Many Listeners
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+In a clinical note like "Increase methotrexate to 20mg weekly due to persistent joint inflammation," a single attention head might learn to connect "methotrexate" to "joint inflammation." But we also need a head that connects "20mg" to "weekly," and another that links "increase" to the temporal context. Multi-head attention runs these analyses in parallel.
+
+<CodeBlock language="typescript" title="multi-head-attention.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+function multiHeadAttention(
+  input: tf.Tensor2D,
+  numHeads: number,
+  dModel: number
+) {
+  const dk = dModel / numHeads;
+  const seqLen = input.shape[0];
+  const heads: tf.Tensor2D[] = [];
+
+  for (let h = 0; h < numHeads; h++) {
+    // Each head has its own projection matrices
+    const Wq = tf.randomNormal([dModel, dk]);
+    const Wk = tf.randomNormal([dModel, dk]);
+    const Wv = tf.randomNormal([dModel, dk]);
+
+    const Q = tf.matMul(input, Wq);
+    const K = tf.matMul(input, Wk);
+    const V = tf.matMul(input, Wv);
+
+    // Scaled dot-product attention per head
+    const scores = tf.matMul(Q, K.transpose()).div(Math.sqrt(dk));
+    const weights = tf.softmax(scores, -1);
+    const headOutput = tf.matMul(weights, V) as tf.Tensor2D;
+    heads.push(headOutput);
+  }
+
+  // Concatenate all heads: [seqLen, dk * numHeads] = [seqLen, dModel]
+  const concatenated = tf.concat(heads, 1) as tf.Tensor2D;
+
+  // Final linear projection
+  const Wo = tf.randomNormal([dModel, dModel]);
+  const output = tf.matMul(concatenated, Wo);
+
+  return output; // [seqLen, dModel]
+}
+
+// 10 tokens, 4 attention heads, 64-dim model
+const input = tf.randomNormal([10, 64]) as tf.Tensor2D;
+const output = multiHeadAttention(input, 4, 64);
+console.log('Output shape:', output.shape); // [10, 64]`}
+</CodeBlock>
+
+## What Do Heads Specialize In?
+
+Research on clinical transformers shows heads naturally specialize:
+- **Head 1** might learn syntactic relationships (subject-verb agreement)
+- **Head 2** might learn entity coreference ("the patient... she... her")
+- **Head 3** might learn negation scope ("denied" modifying "chest pain")
+- **Head 4** might learn medication-condition pairs
+
+<Dialogue speaker="Obi Nwosu">
+We don't tell the heads what to specialize in. They discover it during training. That's the beauty — the model finds structure we might not have thought to look for.
+</Dialogue>
+
+## Challenge
+
+Build a multi-head attention layer with configurable head count.
+
+<Exercise slug="multi-head-attention" />
+
+<KeyTakeaways takeaways={["Multi-head attention runs parallel attention operations, each learning different patterns", "Dimensions are split across heads: d_k = d_model / numHeads", "Heads naturally specialize — some track syntax, others track entities or negation", "Concatenation followed by linear projection merges all perspectives"]} />

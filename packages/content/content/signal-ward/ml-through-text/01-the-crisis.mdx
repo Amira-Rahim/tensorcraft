@@ -1,0 +1,110 @@
+---
+slug: the-crisis
+title: "The Crisis"
+moduleId: ml-through-text
+themeId: signal-ward
+order: 1
+estimatedMinutes: 25
+difficulty: beginner
+context:
+  narrative: "The hospital's vendor NLP system misclassified a drug allergy note, nearly causing a fatal interaction. Dr. Vasquez cancels the vendor contract and assembles an in-house team."
+  speaker: "Dr. Vasquez"
+concept:
+  explanation: "Machine learning finds patterns in data that rule-based systems miss. For clinical text, ML models learn to classify, extract, and interpret medical language — turning unstructured notes into actionable information."
+  bridge:
+    feTitle: "App Architecture"
+    feCode: "const app = { ui: 'React', state: 'Redux', api: 'REST' }"
+    mlTitle: "ML Pipeline"
+    mlCode: "const pipeline = { input: 'text', model: 'classifier', output: 'prediction' }"
+    tier: structural
+consequence:
+  narrative: "The team commits to building Diagnostic One. Khalil begins sketching the system architecture."
+  nextLessonTeaser: "Next: turning clinical text into numbers a model can understand."
+hints:
+  - level: nudge
+    content: "Think about what a model needs to make a decision — it needs numbers, not words."
+  - level: guidance
+    content: "Use tf.tensor() to represent a simple numerical feature vector."
+  - level: solution
+    content: "const features = tf.tensor([1, 0, 1, 0, 0]); represents a simple binary feature vector."
+keywords:
+  - machine-learning
+  - classification
+  - clinical-nlp
+  - pipeline
+---
+
+> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
+
+<Dialogue speaker="Dr. Vasquez">
+Everyone, sit down. Last night the vendor NLP system flagged a penicillin allergy note as "no known allergies." The patient received amoxicillin. We caught it at the pharmacy — barely. I'm canceling the vendor contract today.
+</Dialogue>
+
+<Dialogue speaker="Santos">
+The note said "pt has documented PCN allergy — anaphylaxis 2019." The system couldn't parse the abbreviation.
+</Dialogue>
+
+<Dialogue speaker="Dr. Vasquez">
+We're building our own. Khalil, you built the patient portal frontend. I need you on the ML interface. Obi will handle the NLP internals. We're calling it Diagnostic One.
+</Dialogue>
+
+A vendor system failed because it relied on rigid keyword matching. Machine learning takes a fundamentally different approach: instead of hand-coded rules, it learns patterns from data. As a frontend developer, you already think in systems. Now you'll apply that thinking to text intelligence.
+
+<LearningObjectives objectives={["Understand why ML outperforms rule-based systems for clinical text", "Identify the three stages of an ML pipeline: input, model, output", "Recognize the parallels between app architecture and ML architecture", "Create a simple numerical representation of text features using TensorFlow.js"]} />
+
+## Why Rules Break Down
+
+The vendor system had rules like `if note.includes('no known allergies')`. But clinical text is messy, abbreviated, and context-dependent. ML models learn from thousands of examples, discovering patterns no rule author could anticipate.
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+Just as a web app has layers — UI, state management, API — an ML pipeline has layers too. Data comes in, gets transformed, flows through a model, and produces a prediction. You already understand this architecture. The components are different, but the pattern is the same.
+
+<CodeBlock language="typescript" title="ml-pipeline-overview.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// In a web app, data flows through layers:
+// User Input → Validation → State → UI Update
+
+// In an ML pipeline, data flows the same way:
+// Raw Text → Preprocessing → Model → Prediction
+
+// Step 1: Represent text features as numbers
+// Each position = a feature (e.g., contains "allergy", contains "penicillin", etc.)
+const noteFeatures = tf.tensor([1, 1, 0, 1, 0]);
+
+// Step 2: A model applies learned weights to these features
+const weights = tf.tensor([0.8, 0.9, 0.1, 0.7, 0.2]);
+
+// Step 3: Produce a prediction (dot product + activation)
+const score = noteFeatures.mul(weights).sum();
+console.log('Allergy risk score:', score.dataSync()[0]);
+// Output: ~2.4 — high risk, flag for review`}
+</CodeBlock>
+
+## The Architecture of Diagnostic One
+
+Think of Diagnostic One the way you'd think about a React application. Components receive props, process them, and render output. An ML model receives features, processes them through learned weights, and outputs predictions.
+
+<CodeBlock language="typescript" title="diagnostic-one-sketch.ts">
+{`// Your React mental model:
+// <Component props={data} /> → rendered UI
+
+// The ML equivalent:
+// model.predict(features) → classification
+
+// Diagnostic One will have three core capabilities:
+const diagnosticOne = {
+  classify: 'Categorize note type (progress, discharge, allergy)',
+  extract: 'Pull structured data from unstructured text',
+  alert: 'Flag dangerous drug interactions or missing info',
+};`}
+</CodeBlock>
+
+## Challenge
+
+Create a simple feature vector representing a clinical note's characteristics.
+
+<Exercise slug="text-to-numbers" />
+
+<KeyTakeaways takeaways={["ML learns patterns from data instead of relying on hand-coded rules", "An ML pipeline mirrors web app architecture: input → processing → output", "Clinical text requires ML because abbreviations and context make rules brittle", "The first step is always converting text into numerical representations"]} />

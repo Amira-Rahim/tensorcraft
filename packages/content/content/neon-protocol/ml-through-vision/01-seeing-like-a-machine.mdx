@@ -1,0 +1,121 @@
+---
+slug: seeing-like-a-machine
+title: "Seeing Like a Machine"
+moduleId: ml-through-vision
+themeId: neon-protocol
+order: 1
+estimatedMinutes: 25
+difficulty: beginner
+context:
+  narrative: "Kira meets the resistance crew in NeuralCore HQ. Lin briefs her on the mission. Zara shows her a wall of surveillance feeds: 'This is what Meridian sees. Now let us teach a machine to see differently.'"
+  speaker: "Lin"
+concept:
+  explanation: "Images in a computer are just canvas pixel data — a 2D grid of RGBA values stored in a Uint8ClampedArray. Every getImageData() call returns a tensor."
+  bridge:
+    feTitle: "Canvas getImageData()"
+    feCode: "const pixels = ctx.getImageData(0, 0, w, h).data; // Uint8ClampedArray"
+    mlTitle: "Image Tensor"
+    mlCode: "const tensor = tf.browser.fromPixels(canvas); // [height, width, channels]"
+    tier: identity
+consequence:
+  narrative: "NEON boots up — glitchy, disoriented, but functional. 'I used to track 14 million faces simultaneously. Now I am helping you debug a tensor shape mismatch. How the mighty have fallen.'"
+  nextLessonTeaser: "Next: pixels and tensors — understanding the shape of image data"
+hints:
+  - level: nudge
+    content: "You've already worked with image tensors — every canvas getImageData() returns one"
+  - level: guidance
+    content: "Use tf.browser.fromPixels() to convert a canvas element to a tensor"
+  - level: solution
+    content: "const tensor = tf.browser.fromPixels(canvas); console.log(tensor.shape); // [height, width, 3]"
+keywords:
+  - computer-vision
+  - pixels
+  - tensors
+  - canvas
+  - image-data
+---
+
+<Dialogue speaker="Lin">
+Meridian Systems operates 200 cameras per city block. Their AI tracks every face, every gait, every pattern. We need someone who can build vision systems that fight back. Kira — you built a real-time collaborative drawing app with Canvas API and WebRTC for 50,000 users. You already know how to work with pixel data. You just never trained a model on it.
+</Dialogue>
+
+<Dialogue speaker="Kira">
+So when I was streaming pixel buffers over WebRTC in my drawing app — I was already working with image tensors? I just didn't call them that?
+</Dialogue>
+
+Every time you call `getImageData()` on a canvas context, you get back a `Uint8ClampedArray` — a flat buffer of RGBA pixel values. That array *is* a tensor: a multi-dimensional grid of numbers. Computer vision starts with exactly the data structures frontend developers already use.
+
+<LearningObjectives objectives={["Understand that images are multi-dimensional arrays (tensors) of pixel values", "Convert between canvas pixel data and TensorFlow.js tensors", "Identify the shape of image data: [height, width, channels]", "Recognize that frontend canvas work is already image tensor manipulation"]} />
+
+## Images Are Tensors
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="image-to-tensor.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Frontend: you've done this before
+const canvas = document.createElement('canvas');
+const ctx = canvas.getContext('2d')!;
+canvas.width = 224;
+canvas.height = 224;
+
+// Draw an image onto the canvas
+ctx.drawImage(img, 0, 0, 224, 224);
+
+// Method 1: Raw pixel access (what you already know)
+const imageData = ctx.getImageData(0, 0, 224, 224);
+const pixels = imageData.data; // Uint8ClampedArray, length = 224 * 224 * 4
+// Each pixel: [R, G, B, A] — values 0-255
+
+// Method 2: TensorFlow.js tensor (the ML way)
+const tensor = tf.browser.fromPixels(canvas);
+console.log(tensor.shape); // [224, 224, 3] — height, width, RGB channels
+console.log(tensor.dtype); // 'int32' — pixel values as integers
+
+// Same data, different interface:
+// pixels[0] === tensor.dataSync()[0]  — the red value of pixel (0,0)
+
+// Why 3 channels, not 4?
+// tf.browser.fromPixels drops the alpha channel by default
+// Pass numChannels: 4 to keep it:
+const withAlpha = tf.browser.fromPixels(canvas, 4);
+console.log(withAlpha.shape); // [224, 224, 4]`}
+</CodeBlock>
+
+## Image Shapes
+
+<CodeBlock language="typescript" title="image-shapes.ts">
+{`// Image dimensions in ML:
+// Grayscale: [height, width, 1]    — one value per pixel
+// Color:     [height, width, 3]    — RGB per pixel
+// Batch:     [batch, height, width, 3] — multiple images
+
+// A single 224x224 RGB image
+const singleImage = tf.randomNormal([224, 224, 3]);
+console.log('Single image:', singleImage.shape);
+
+// A batch of 32 images (what models expect during training)
+const batch = tf.randomNormal([32, 224, 224, 3]);
+console.log('Batch:', batch.shape);
+
+// Models expect batched input — even for a single image
+// Use expandDims to add the batch dimension:
+const batched = singleImage.expandDims(0);
+console.log('Batched single:', batched.shape); // [1, 224, 224, 3]
+
+// Surveillance feed dimensions:
+// Meridian cameras output 640x480 RGB frames
+// Protocol Sentinel resizes to 224x224 for inference
+const cameraFrame = tf.randomNormal([480, 640, 3]);
+const resized = tf.image.resizeBilinear(cameraFrame.expandDims(0), [224, 224]);
+console.log('Resized for model:', resized.shape); // [1, 224, 224, 3]`}
+</CodeBlock>
+
+## Challenge
+
+Convert canvas pixel data to a tensor and inspect its shape.
+
+<Exercise slug="canvas-to-tensor" />
+
+<KeyTakeaways takeaways={["Images are multi-dimensional arrays: [height, width, channels] — the same data as canvas getImageData()", "tf.browser.fromPixels() converts a canvas element to a TensorFlow.js tensor", "Models expect batched input: [batch, height, width, channels] — use expandDims() for single images", "You've been working with image tensors every time you used the Canvas API"]} />

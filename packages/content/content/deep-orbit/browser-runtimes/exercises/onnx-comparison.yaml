@@ -1,0 +1,39 @@
+slug: onnx-comparison
+lessonSlug: onnx-runtime-web
+title: "Run an ONNX Model"
+instructions: "Load an ONNX model using onnxruntime-web, run inference on a signal input [0.5, 0.3, 0.7], and return the prediction value from the output tensor."
+starterCode: |
+  import * as ort from 'onnxruntime-web';
+
+  async function runONNX(modelPath: string): Promise<number> {
+    // 1. Create an InferenceSession from the model path
+    // 2. Create an input tensor with values [0.5, 0.3, 0.7], shape [1, 3]
+    // 3. Run inference
+    // 4. Return the first value from the output
+    return null; // your code here
+  }
+solutionCode: |
+  import * as ort from 'onnxruntime-web';
+
+  async function runONNX(modelPath: string): Promise<number> {
+    const session = await ort.InferenceSession.create(modelPath);
+    const inputData = new Float32Array([0.5, 0.3, 0.7]);
+    const inputTensor = new ort.Tensor('float32', inputData, [1, 3]);
+    const results = await session.run({ input: inputTensor });
+    const output = results.output;
+    return output.data[0] as number;
+  }
+testCode: |
+  describe('runONNX', () => {
+    it('returns a number', async () => {
+      const result = await runONNX('/models/deep-scan.onnx');
+      expect(typeof result).toBe('number');
+    });
+    it('returns a value between 0 and 1', async () => {
+      const result = await runONNX('/models/deep-scan.onnx');
+      expect(result).toBeGreaterThanOrEqual(0);
+      expect(result).toBeLessThanOrEqual(1);
+    });
+  });
+estimatedMinutes: 12
+difficulty: advanced

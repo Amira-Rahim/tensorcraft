@@ -1,0 +1,187 @@
+---
+slug: streaming-architectures
+title: "Streaming Architectures"
+moduleId: real-time-detection
+themeId: neon-protocol
+order: 5
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "The resistance has 47 camera feeds across 12 districts. A single browser tab cannot process them all. Kira designs a streaming architecture — some feeds processed locally, others relayed through WebSocket from resistance servers. The hybrid system Lin demanded."
+  speaker: "Kira"
+concept:
+  explanation: "Processing continuous data streams is the same pattern as WebSockets and Server-Sent Events. You receive data in chunks, process each chunk, and push results downstream. The only difference: each chunk is a video frame, and processing means inference."
+  bridge:
+    feTitle: "WebSocket / Server-Sent Events"
+    feCode: "const ws = new WebSocket(url); ws.onmessage = (e) => processChunk(e.data);"
+    mlTitle: "Inference Stream"
+    mlCode: "feedStream.onFrame((frame) => { const result = model.predict(preprocess(frame)); emit(result); });"
+    tier: structural
+consequence:
+  narrative: "Protocol Sentinel processes 12 feeds simultaneously — 8 locally, 4 via relay. NEON identifies a Meridian agent by gait analysis. Kira reaches for the alert button — Ryo stops her. 'That person is limping from an injury. The model is wrong.' The cost of trusting vision without verification."
+  nextLessonTeaser: "Module 9 awaits: generative vision — art that fights back"
+hints:
+  - level: nudge
+    content: "Think of each video feed as a WebSocket connection — same event-driven pattern"
+  - level: guidance
+    content: "Create a FeedProcessor class that manages multiple streams with a shared inference queue"
+  - level: solution
+    content: "Use a round-robin or priority queue to process frames from multiple feeds, limiting concurrent inference to prevent GPU overload"
+keywords:
+  - streaming
+  - WebSocket
+  - server-sent-events
+  - multi-feed
+  - pipeline
+---
+
+<Dialogue speaker="Kira">
+Forty-seven feeds. One browser tab. Even with WebGL, we cannot run inference on all of them simultaneously.
+</Dialogue>
+
+<Dialogue speaker="Ryo">
+So do not try. Process the high-priority feeds locally. Relay the rest through our server nodes via WebSocket. The server runs inference and sends back detections. If a server goes down, the browser picks up that feed directly — graceful degradation.
+</Dialogue>
+
+<Dialogue speaker="Lin">
+The hybrid architecture we agreed on. Both of you were right. Build it.
+</Dialogue>
+
+You have built WebSocket connections for chat apps, real-time dashboards, and collaborative editors. A streaming inference pipeline is the same architecture — receive data, process it, emit results. The data happens to be video frames and the processing happens to be neural network inference.
+
+<LearningObjectives objectives={["Design a streaming architecture for processing multiple video feeds", "Implement a frame queue that prioritizes high-value feeds", "Build graceful degradation between local and server-side inference", "Handle backpressure when inference cannot keep up with incoming frames"]} />
+
+## Multi-Feed Architecture
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="stream-pipeline.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+interface Detection {
+  feedId: string;
+  classIndex: number;
+  confidence: number;
+  timestamp: number;
+}
+
+type DetectionCallback = (detection: Detection) => void;
+
+class FeedProcessor {
+  private queue: Array<{ feedId: string; frame: tf.Tensor3D }> = [];
+  private processing = false;
+  private model: tf.LayersModel;
+  private onDetection: DetectionCallback;
+
+  constructor(model: tf.LayersModel, onDetection: DetectionCallback) {
+    this.model = model;
+    this.onDetection = onDetection;
+  }
+
+  // Add a frame to the processing queue
+  enqueue(feedId: string, frame: tf.Tensor3D) {
+    // Backpressure: drop oldest frame if queue is full
+    if (this.queue.length > 10) {
+      const dropped = this.queue.shift()!;
+      dropped.frame.dispose();
+    }
+    this.queue.push({ feedId, frame });
+    this.processNext();
+  }
+
+  private async processNext() {
+    if (this.processing || this.queue.length === 0) return;
+    this.processing = true;
+
+    const { feedId, frame } = this.queue.shift()!;
+
+    const result = tf.tidy(() => {
+      const input = frame
+        .resizeBilinear([224, 224])
+        .expandDims(0)
+        .div(255.0);
+      return (this.model.predict(input) as tf.Tensor).dataSync();
+    });
+
+    frame.dispose();
+    const maxConf = Math.max(...result);
+    const classIndex = result.indexOf(maxConf);
+
+    if (maxConf > 0.7) {
+      this.onDetection({
+        feedId,
+        classIndex,
+        confidence: maxConf,
+        timestamp: Date.now(),
+      });
+    }
+
+    this.processing = false;
+    this.processNext();
+  }
+}`}
+</CodeBlock>
+
+## Hybrid Local + Server Pipeline
+
+<CodeBlock language="typescript" title="hybrid-pipeline.ts">
+{`// Server relay for feeds we cannot process locally
+class ServerRelay {
+  private ws: WebSocket;
+  private onDetection: DetectionCallback;
+
+  constructor(serverUrl: string, onDetection: DetectionCallback) {
+    this.ws = new WebSocket(serverUrl);
+    this.onDetection = onDetection;
+
+    this.ws.onmessage = (event) => {
+      const detection: Detection = JSON.parse(event.data);
+      this.onDetection(detection);
+    };
+  }
+
+  // Send a frame to the server for inference
+  sendFrame(feedId: string, imageData: Uint8Array) {
+    if (this.ws.readyState === WebSocket.OPEN) {
+      this.ws.send(JSON.stringify({ feedId, frame: Array.from(imageData) }));
+    }
+  }
+}
+
+// Hybrid: local for priority feeds, server for the rest
+class HybridPipeline {
+  private localProcessor: FeedProcessor;
+  private serverRelay: ServerRelay;
+  private priorityFeeds: Set<string>;
+
+  constructor(
+    model: tf.LayersModel,
+    serverUrl: string,
+    priorityFeedIds: string[],
+    onDetection: DetectionCallback
+  ) {
+    this.localProcessor = new FeedProcessor(model, onDetection);
+    this.serverRelay = new ServerRelay(serverUrl, onDetection);
+    this.priorityFeeds = new Set(priorityFeedIds);
+  }
+
+  processFrame(feedId: string, frame: tf.Tensor3D) {
+    if (this.priorityFeeds.has(feedId)) {
+      this.localProcessor.enqueue(feedId, frame);
+    } else {
+      // Relay to server
+      const data = new Uint8Array(frame.dataSync());
+      frame.dispose();
+      this.serverRelay.sendFrame(feedId, data);
+    }
+  }
+}`}
+</CodeBlock>
+
+## Challenge
+
+Build a streaming pipeline that manages multiple feeds with backpressure handling.
+
+<Exercise slug="stream-pipeline" />
+
+<KeyTakeaways takeaways={["Streaming inference follows the same pattern as WebSocket event processing — receive, process, emit", "Backpressure handling (dropping old frames) prevents memory buildup when inference is slower than input", "Hybrid architectures combine local GPU inference for priority feeds with server relay for the rest", "Graceful degradation means the system keeps working when server nodes go down — the browser picks up the load"]} />

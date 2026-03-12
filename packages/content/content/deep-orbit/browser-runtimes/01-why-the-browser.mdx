@@ -1,0 +1,125 @@
+---
+slug: why-the-browser
+title: "Why the Browser?"
+moduleId: browser-runtimes
+themeId: deep-orbit
+order: 1
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Torres demands the classifier run on the bridge dashboard. No Python notebooks, no server round-trips — the model must run where the crew can use it."
+  speaker: "Chief Torres"
+concept:
+  explanation: "Client-side ML inference keeps data on-device, eliminates server latency, and works offline — the same tradeoffs as client-side rendering vs SSR."
+  bridge:
+    feTitle: "Client-Side Rendering"
+    feCode: "const html = ReactDOM.render(<App data={data} />)"
+    mlTitle: "Client-Side Inference"
+    mlCode: "const prediction = model.predict(inputTensor)"
+    tier: structural
+consequence:
+  narrative: "Torres approves the browser deployment plan. Park begins setting up the runtime."
+  nextLessonTeaser: "Next: setting up TensorFlow.js in the browser"
+hints:
+  - level: nudge
+    content: "Think about where computation happens — server or client"
+  - level: guidance
+    content: "Client-side inference means the model runs in the browser, just like client-side rendering"
+  - level: solution
+    content: "Benefits: privacy (data stays local), latency (no network), offline support. Costs: model size, device power, cold start."
+keywords:
+  - browser-ml
+  - client-side
+  - inference
+  - privacy
+---
+
+<Dialogue speaker="Chief Torres">
+The bridge crew needs real-time classification in their dashboard. I am not routing signal data through a server on every reading. The model runs in the browser or it does not ship.
+</Dialogue>
+
+<Dialogue speaker="Ensign Park">
+But the model was trained in a notebook environment. Can we really run it in a browser tab?
+</Dialogue>
+
+You've faced this exact decision before as a frontend engineer. Server-side rendering vs client-side rendering. The tradeoffs are the same: where does the computation happen, and what do you gain or lose by moving it to the client?
+
+<LearningObjectives objectives={["Understand the advantages of browser-based ML inference (privacy, latency, offline)", "Identify the constraints of running models in the browser (memory, compute, cold start)", "Compare client-side inference to server-side inference using the CSR vs SSR mental model", "Evaluate when browser ML is the right choice vs a server API"]} />
+
+## The CSR vs SSR of Machine Learning
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+In frontend development, you choose between rendering on the server (SSR) or in the browser (CSR) based on performance, privacy, and user experience tradeoffs. ML inference has the same split:
+
+<CodeBlock language="typescript" title="inference-comparison.ts">
+{`// SERVER-SIDE INFERENCE — like SSR
+// Data leaves the device, hits a server, waits for response
+async function serverInference(signalData: number[]) {
+  const response = await fetch('/api/classify', {
+    method: 'POST',
+    body: JSON.stringify({ signal: signalData }),
+  });
+  return response.json(); // { class: 'anomaly', confidence: 0.94 }
+}
+
+// CLIENT-SIDE INFERENCE — like CSR
+// Data never leaves the browser. Model runs locally.
+async function clientInference(signalData: number[]) {
+  const inputTensor = tf.tensor2d([signalData]);
+  const prediction = model.predict(inputTensor) as tf.Tensor;
+  const result = await prediction.array();
+  inputTensor.dispose();
+  prediction.dispose();
+  return { class: result[0][0] > 0.5 ? 'anomaly' : 'noise', confidence: result[0][0] };
+}`}
+</CodeBlock>
+
+**When to choose client-side inference:**
+
+| Factor | Server (SSR) | Browser (CSR) |
+|--------|-------------|---------------|
+| **Latency** | Network round-trip (50-500ms) | Instant (5-50ms) |
+| **Privacy** | Data leaves device | Data stays local |
+| **Offline** | Requires connection | Works offline |
+| **Model size** | Unlimited | Constrained (~50MB practical limit) |
+| **Compute** | GPU clusters available | Device CPU/GPU only |
+| **Cold start** | Warm server | Model must download first |
+
+Torres is right: for a real-time dashboard processing signal readings every second, the network round-trip is unacceptable. The model must run in the browser.
+
+## The Cost of Client-Side ML
+
+Just as CSR has hydration costs and bundle size concerns, browser ML has its own tax:
+
+<CodeBlock language="typescript" title="browser-constraints.ts">
+{`// Memory: browser tabs typically have 1-4GB limit
+// A model with 10M parameters at float32 = ~40MB just for weights
+const modelSizeMB = (parameterCount * 4) / (1024 * 1024);
+console.log(\`Model size: \${modelSizeMB}MB\`);
+
+// Cold start: model must be downloaded and initialized
+// This is like the "time to interactive" metric in frontend
+const t0 = performance.now();
+const model = await tf.loadLayersModel('/models/deep-scan/model.json');
+const coldStartMs = performance.now() - t0;
+console.log(\`Cold start: \${coldStartMs}ms\`);  // 200-2000ms depending on model
+
+// Inference budget: 60fps = 16ms per frame
+// Signal processing at 1Hz = 1000ms budget (comfortable)
+// Real-time audio at 44.1kHz = 0.023ms budget (very tight)
+const inferenceStart = performance.now();
+const result = model.predict(input);
+const inferenceMs = performance.now() - inferenceStart;
+console.log(\`Inference: \${inferenceMs}ms\`);  // 5-50ms typical`}
+</CodeBlock>
+
+The good news: DEEP SCAN processes signals at 1Hz. With a 1000ms budget per inference, browser ML is more than fast enough.
+
+## Challenge
+
+Analyze the tradeoffs for a browser ML deployment scenario.
+
+<Exercise slug="browser-ml-tradeoffs" />
+
+<KeyTakeaways takeaways={["Client-side ML inference mirrors CSR: computation moves to the browser for speed, privacy, and offline support", "Browser constraints (memory, cold start, compute) mirror frontend performance concerns (bundle size, TTI, main thread)", "The right choice depends on latency requirements, data sensitivity, and model size — just like choosing CSR vs SSR", "For real-time dashboards like DEEP SCAN, client-side inference eliminates the network bottleneck"]} />

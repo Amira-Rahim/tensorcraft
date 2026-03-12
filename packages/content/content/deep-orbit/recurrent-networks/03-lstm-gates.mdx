@@ -1,0 +1,146 @@
+---
+slug: lstm-gates
+title: "LSTM Gates"
+moduleId: recurrent-networks
+themeId: deep-orbit
+order: 3
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "The simple RNN forgets the anomaly pattern — it's too far back in the sequence. Sato introduces LSTMs: networks with gates that decide what to remember and what to forget."
+  speaker: "Dr. Sato"
+concept:
+  explanation: "LSTMs use gates to selectively remember and forget — like localStorage with TTL where some data persists long-term and stale data is automatically cleared."
+  bridge:
+    feTitle: "localStorage with TTL"
+    feCode: "if (Date.now() > expiry) localStorage.removeItem(key) // forget stale data"
+    mlTitle: "LSTM Forget Gate"
+    mlCode: "forgetGate = sigmoid(W_f * [hidden, input]) // learn what to discard"
+    tier: structural
+consequence:
+  narrative: "The LSTM remembers the anomalous pattern from 72 hours ago. When it appears again, the network catches it immediately — long-range memory works."
+  nextLessonTeaser: "Next: preparing sequential data with sliding windows"
+hints:
+  - level: nudge
+    content: "LSTMs have three gates: forget (what to discard), input (what to add), output (what to expose)"
+  - level: guidance
+    content: "Use tf.layers.lstm() as a drop-in replacement for simpleRNN — same API, better memory"
+  - level: solution
+    content: "model.add(tf.layers.lstm({ units: 64, inputShape: [50, 3] }))"
+keywords:
+  - lstm
+  - gates
+  - forget-gate
+  - long-term-memory
+  - gru
+---
+
+<Dialogue speaker="Dr. Sato">
+The simple RNN forgets. By the time it reaches time step 50, information from step 1 has vanished — gradients multiplied through too many small numbers. LSTMs solve this with gates — learned switches that control what flows through and what gets discarded.
+</Dialogue>
+
+<Dialogue speaker="Ensign Park">
+Gates... like a cache with TTL? Some things you keep forever because they're important, some things you let expire because they're stale?
+</Dialogue>
+
+<Dialogue speaker="Dr. Sato">
+That is a remarkably good analogy, Ensign.
+</Dialogue>
+
+You manage data lifecycle in frontend apps all the time. Some localStorage entries persist until explicitly cleared (user preferences). Others have TTL and expire (session tokens). LSTMs do exactly this — they learn which information is worth keeping long-term and which should be discarded, using three learned gates.
+
+<LearningObjectives objectives={["Understand the three LSTM gates: forget (discard), input (add), output (expose)", "Build an LSTM network using TensorFlow.js that handles long-range dependencies", "Compare LSTM and GRU architectures — tradeoffs between complexity and performance", "Solve the vanishing gradient problem with gated memory cells"]} />
+
+## Three Gates, One Cell
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="lstm-gates.ts">
+{`// LSTM Cell — three gates controlling information flow
+
+// 1. FORGET GATE: what to discard from memory
+//    Like clearing expired localStorage entries
+//    forgetGate = sigmoid(W_f · [prevHidden, input])
+//    Output: values between 0 (forget completely) and 1 (keep fully)
+
+// 2. INPUT GATE: what new information to store
+//    Like calling localStorage.setItem() for new data
+//    inputGate = sigmoid(W_i · [prevHidden, input])
+//    candidate = tanh(W_c · [prevHidden, input])
+//    newCell = forgetGate * prevCell + inputGate * candidate
+
+// 3. OUTPUT GATE: what to expose as hidden state
+//    Like choosing which localStorage values to pass to a component
+//    outputGate = sigmoid(W_o · [prevHidden, input])
+//    newHidden = outputGate * tanh(newCell)
+
+// The cell state acts as a conveyor belt — information flows through
+// with minimal transformation, preventing gradient vanishing`}
+</CodeBlock>
+
+## Building an LSTM in TF.js
+
+<CodeBlock language="typescript" title="lstm-model.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// LSTM: drop-in replacement for SimpleRNN — same API, much better memory
+const model = tf.sequential();
+model.add(tf.layers.lstm({
+  units: 64,              // hidden state size
+  inputShape: [50, 3],    // 50 time steps, 3 features — handles long sequences!
+  returnSequences: false,  // only need final output for classification
+}));
+model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
+
+model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });
+
+// Training on long sequences — where SimpleRNN failed
+const x = tf.randomNormal([100, 50, 3]);  // 100 samples, 50 time steps
+const y = tf.randomUniform([100, 1]).round();
+
+const history = await model.fit(x, y, {
+  epochs: 20,
+  validationSplit: 0.2,
+  callbacks: {
+    onEpochEnd: (epoch, logs) => {
+      if (epoch % 5 === 0) {
+        console.log(\`Epoch \${epoch}: loss=\${logs?.loss.toFixed(4)}, val_loss=\${logs?.val_loss.toFixed(4)}\`);
+      }
+    },
+  },
+});
+// Unlike SimpleRNN, loss actually converges on long sequences!
+
+x.dispose();
+y.dispose();`}
+</CodeBlock>
+
+## GRU: The Lighter Alternative
+
+<CodeBlock language="typescript" title="gru-comparison.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// GRU (Gated Recurrent Unit) — fewer parameters, often similar performance
+// Two gates instead of three: reset gate + update gate
+// No separate cell state — simpler architecture
+
+const gruModel = tf.sequential();
+gruModel.add(tf.layers.gru({
+  units: 64,
+  inputShape: [50, 3],
+}));
+gruModel.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
+
+// Comparison:
+// LSTM: 4 weight matrices per gate — more parameters, better long-range memory
+// GRU:  3 weight matrices — ~25% fewer params, faster training
+// Rule of thumb: try both and compare — like choosing between React and Preact`}
+</CodeBlock>
+
+## Challenge
+
+Build an LSTM that handles long signal sequences.
+
+<Exercise slug="build-lstm" />
+
+<KeyTakeaways takeaways={["LSTMs use three learned gates (forget, input, output) to control memory — like localStorage with selective persistence and expiry", "The cell state provides a direct gradient highway, solving the vanishing gradient problem for long sequences", "GRUs are lighter (2 gates vs 3) with comparable performance — try both and compare", "For DEEP SCAN, LSTM catches the 73-second anomaly pattern that SimpleRNN missed entirely"]} />

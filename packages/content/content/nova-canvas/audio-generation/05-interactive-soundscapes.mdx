@@ -1,0 +1,184 @@
+---
+slug: interactive-soundscapes
+title: "Interactive Soundscapes"
+moduleId: audio-generation
+themeId: nova-canvas
+order: 5
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "The gallery prototype runs. Visitors stand still, observing. Yara shakes her head. 'They are spectators. They need to be participants. The sound should follow them, respond to them, belong to them.'"
+  speaker: "Yara"
+concept:
+  explanation: "Interactive soundscapes map user input (pointer position, gestures, movement) to audio generation parameters — the same event-driven pattern as drag-and-drop or interactive charts."
+  bridge:
+    feTitle: "Pointer Events"
+    feCode: "canvas.addEventListener('pointermove', e => { updateParam(e.clientX, e.clientY); });"
+    mlTitle: "Input-Driven Generation"
+    mlCode: "const z = tf.tensor2d([[x / width, y / height, ...params]]); model.predict(z);"
+    tier: structural
+consequence:
+  narrative: "A visitor reaches toward the screen. The soundscape shifts — lower tones as their hand descends, crystalline chimes as it rises. They laugh, startled. They reach again. The installation has found its voice."
+  nextLessonTeaser: "Next module: scaling this for 200 simultaneous visitors"
+hints:
+  - level: nudge
+    content: "Pointer coordinates are just numbers — normalize them and feed them into your latent vector"
+  - level: guidance
+    content: "Map clientX to pitch range and clientY to timbre, then generate audio in real time"
+  - level: solution
+    content: "Create a throttled pointermove handler that updates latent vector dimensions and triggers generation"
+keywords:
+  - interactive
+  - soundscape
+  - pointer-events
+  - real-time-generation
+---
+
+<Dialogue speaker="Yara">
+Art that does not respond to its audience is a monologue. We are building a conversation. Every gesture, every step, every breath should change the sound.
+</Dialogue>
+
+<Dialogue speaker="Kai">
+We already know how to do this. A slider changes a CSS variable. A drag event repositions an element. We are just swapping the output: instead of moving a div, we are reshaping a sound.
+</Dialogue>
+
+Every interactive UI you have built follows the same pattern: capture user input, transform it into parameters, update the output. Drag-and-drop, interactive charts, color pickers, sliders — all event-driven parameter mapping. Interactive audio generation is identical. The pointer moves, the latent vector shifts, the sound transforms.
+
+<LearningObjectives objectives={["Map pointer events to audio generation parameters in real time", "Build a continuous sound generation loop driven by user interaction", "Implement smooth parameter transitions to avoid audio artifacts", "Design multi-dimensional input mappings (position, velocity, pressure) for rich soundscapes"]} />
+
+## Event-Driven Audio Parameters
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="pointer-to-sound.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// State: current generation parameters, updated by pointer events
+const params = { x: 0.5, y: 0.5, velocity: 0, pressure: 0.5 };
+let lastX = 0, lastY = 0;
+
+const canvas = document.getElementById('interactive') as HTMLCanvasElement;
+
+canvas.addEventListener('pointermove', (e: PointerEvent) => {
+  // Normalize coordinates to [0, 1] — same as mapping to CSS percentage
+  params.x = e.clientX / window.innerWidth;
+  params.y = e.clientY / window.innerHeight;
+
+  // Velocity from movement delta — drives intensity
+  const dx = e.clientX - lastX;
+  const dy = e.clientY - lastY;
+  params.velocity = Math.min(Math.sqrt(dx * dx + dy * dy) / 100, 1);
+
+  // Pressure from pointer API (stylus, touch)
+  params.pressure = e.pressure || 0.5;
+
+  lastX = e.clientX;
+  lastY = e.clientY;
+});
+
+// Map normalized params to audio generation space
+function paramsToLatent(): tf.Tensor {
+  return tf.tensor2d([[
+    params.x,                           // horizontal position → pitch range
+    params.y,                           // vertical position → timbre
+    params.velocity,                    // movement speed → intensity
+    params.pressure,                    // pressure → volume/density
+    Math.sin(Date.now() / 1000) * 0.5 + 0.5, // time-varying component
+  ]]);
+}`}
+</CodeBlock>
+
+## Continuous Generation Loop
+
+<CodeBlock language="typescript" title="generation-loop.ts">
+{`// Smooth audio generation driven by interaction — no clicks, no gaps
+class InteractiveSoundscape {
+  private audioCtx: AudioContext;
+  private model: tf.LayersModel;
+  private isPlaying = false;
+  private scriptNode: ScriptProcessorNode;
+
+  constructor(model: tf.LayersModel) {
+    this.audioCtx = new AudioContext();
+    this.model = model;
+    // ScriptProcessorNode for real-time audio generation
+    this.scriptNode = this.audioCtx.createScriptProcessor(2048, 0, 1);
+  }
+
+  start() {
+    this.isPlaying = true;
+    this.scriptNode.onaudioprocess = async (e) => {
+      if (!this.isPlaying) return;
+
+      const output = e.outputBuffer.getChannelData(0);
+      const latent = paramsToLatent();
+
+      // Generate audio samples from current interaction state
+      const generated = this.model.predict(latent) as tf.Tensor;
+      const samples = await generated.data() as Float32Array;
+
+      // Crossfade to prevent clicks at buffer boundaries
+      for (let i = 0; i < output.length; i++) {
+        const fade = i < 64 ? i / 64 : i > output.length - 64
+          ? (output.length - i) / 64 : 1;
+        output[i] = (samples[i % samples.length] || 0) * fade;
+      }
+
+      // Clean up tensors
+      latent.dispose();
+      generated.dispose();
+    };
+
+    this.scriptNode.connect(this.audioCtx.destination);
+  }
+
+  stop() {
+    this.isPlaying = false;
+    this.scriptNode.disconnect();
+  }
+}`}
+</CodeBlock>
+
+## Multi-Dimensional Mapping
+
+<CodeBlock language="typescript" title="parameter-mapping.ts">
+{`// Rich parameter mappings — every gesture dimension drives a sound dimension
+interface SoundMapping {
+  parameter: string;
+  inputRange: [number, number];
+  outputRange: [number, number];
+  curve: 'linear' | 'exponential' | 'logarithmic';
+}
+
+const mappings: SoundMapping[] = [
+  { parameter: 'pitch',     inputRange: [0, 1], outputRange: [100, 2000], curve: 'exponential' },
+  { parameter: 'density',   inputRange: [0, 1], outputRange: [1, 64],    curve: 'linear' },
+  { parameter: 'reverb',    inputRange: [0, 1], outputRange: [0, 0.95],  curve: 'logarithmic' },
+  { parameter: 'brightness', inputRange: [0, 1], outputRange: [0.1, 1],  curve: 'linear' },
+];
+
+function applyMapping(value: number, mapping: SoundMapping): number {
+  const { inputRange, outputRange, curve } = mapping;
+  const normalized = (value - inputRange[0]) / (inputRange[1] - inputRange[0]);
+
+  const curved = curve === 'exponential' ? Math.pow(normalized, 2)
+    : curve === 'logarithmic' ? Math.sqrt(normalized)
+    : normalized;
+
+  return outputRange[0] + curved * (outputRange[1] - outputRange[0]);
+}
+
+// Apply mappings: pointer position → generation parameters
+const pitch = applyMapping(params.x, mappings[0]);
+const density = applyMapping(params.y, mappings[1]);
+const reverb = applyMapping(params.velocity, mappings[2]);
+const brightness = applyMapping(params.pressure, mappings[3]);`}
+</CodeBlock>
+
+## Challenge
+
+Build an interactive soundscape where pointer events drive real-time audio generation parameters.
+
+<Exercise slug="interactive-audio" />
+
+<KeyTakeaways takeaways={["Interactive audio maps user events to generation parameters — same pattern as interactive UI components", "Pointer position, velocity, and pressure each map to different audio dimensions (pitch, intensity, timbre)", "Continuous generation requires crossfading at buffer boundaries to prevent audible clicks", "Parameter mapping curves (linear, exponential, logarithmic) shape how input gestures feel as sound"]} />

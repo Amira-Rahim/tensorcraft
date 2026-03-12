@@ -1,0 +1,179 @@
+---
+slug: traffic-splitting
+title: "Traffic Splitting"
+moduleId: ab-testing
+themeId: terra-grid
+order: 2
+estimatedMinutes: 25
+difficulty: advanced
+context:
+  narrative: "Cole configures the traffic split from the field operations center. 'We start at 5%. If the new model holds steady for 24 hours, we bump to 20%. If it still looks good after a week, 50%. Slow and steady.'"
+  speaker: "Cole Branson"
+concept:
+  explanation: "Traffic splitting routes prediction requests to different model versions — the same technique as canary deployments with a load balancer, but applied to ML inference endpoints."
+  bridge:
+    feTitle: "Canary Deployments"
+    feCode: "// nginx: upstream { server v1 weight=95; server v2 weight=5; }"
+    mlTitle: "Model Traffic Split"
+    mlCode: "// router: modelV1 weight=95, modelV2 weight=5 — gradual rollout"
+    tier: structural
+consequence:
+  narrative: "After 24 hours at 5%, the metrics are clear: v3.1 catches anomalies 12% faster with no false positive increase. Cole bumps the split to 20%. 'Let it run for a week. If the numbers hold, we go wider.'"
+  nextLessonTeaser: "Next: statistical significance — knowing when results are meaningful"
+hints:
+  - level: nudge
+    content: "Weight-based routing distributes traffic proportionally, like a load balancer with weighted upstreams"
+  - level: guidance
+    content: "Implement a weighted random selector that respects traffic percentages"
+  - level: solution
+    content: "Use cumulative weights to select the target model: random number mapped to weight ranges"
+keywords:
+  - traffic-splitting
+  - canary-deployment
+  - load-balancing
+  - gradual-rollout
+---
+
+<Dialogue speaker="Cole Branson">
+We start at 5%. Only 620 devices see the new model. If anything looks wrong — accuracy drops, latency spikes, false positive rate climbs — we kill it instantly and all devices fall back to the current model. No drama.
+</Dialogue>
+
+<Dialogue speaker="Park Soo-Yeon">
+Same pattern as canary deployments for web apps. Weighted routing with automatic rollback triggers. The only difference is we are routing sensor data to model versions instead of HTTP requests to server versions.
+</Dialogue>
+
+You have configured load balancers with weighted upstreams: 95% to the stable server, 5% to the canary. Traffic splitting for ML models works the same way. Each prediction request gets routed to a model version based on configured weights, and you adjust those weights as confidence grows.
+
+<LearningObjectives objectives={["Implement weighted traffic splitting across model versions", "Configure graduated rollout schedules (5% -> 20% -> 50% -> 100%)", "Build automatic rollback triggers based on metric thresholds", "Track per-version metrics to validate traffic split decisions"]} />
+
+## Weighted Traffic Router
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="traffic-splitter.ts">
+{`// Weighted traffic splitting — like nginx upstream weights
+
+interface ModelEndpoint {
+  version: string;
+  weight: number;
+  predict: (input: Float32Array) => Promise<number[]>;
+}
+
+interface RolloutStage {
+  name: string;
+  treatmentWeight: number;
+  durationHours: number;
+  rollbackThresholds: {
+    maxAccuracyDrop: number;
+    maxLatencyIncreaseMs: number;
+    maxFalsePositiveRate: number;
+  };
+}
+
+class TrafficSplitter {
+  private endpoints: ModelEndpoint[] = [];
+
+  addEndpoint(endpoint: ModelEndpoint): void {
+    this.endpoints.push(endpoint);
+  }
+
+  // Weighted random selection
+  selectEndpoint(): ModelEndpoint {
+    const totalWeight = this.endpoints.reduce((s, e) => s + e.weight, 0);
+    let random = Math.random() * totalWeight;
+
+    for (const endpoint of this.endpoints) {
+      random -= endpoint.weight;
+      if (random <= 0) return endpoint;
+    }
+    return this.endpoints[this.endpoints.length - 1];
+  }
+
+  updateWeights(newWeights: Map<string, number>): void {
+    for (const endpoint of this.endpoints) {
+      const weight = newWeights.get(endpoint.version);
+      if (weight !== undefined) endpoint.weight = weight;
+    }
+  }
+}
+
+// Graduated rollout schedule for Terra Grid
+const rolloutPlan: RolloutStage[] = [
+  {
+    name: 'canary',
+    treatmentWeight: 5,
+    durationHours: 24,
+    rollbackThresholds: { maxAccuracyDrop: 0.02, maxLatencyIncreaseMs: 5, maxFalsePositiveRate: 0.05 },
+  },
+  {
+    name: 'early-adopter',
+    treatmentWeight: 20,
+    durationHours: 168, // 1 week
+    rollbackThresholds: { maxAccuracyDrop: 0.01, maxLatencyIncreaseMs: 3, maxFalsePositiveRate: 0.03 },
+  },
+  {
+    name: 'wide-rollout',
+    treatmentWeight: 50,
+    durationHours: 168,
+    rollbackThresholds: { maxAccuracyDrop: 0.005, maxLatencyIncreaseMs: 2, maxFalsePositiveRate: 0.02 },
+  },
+  {
+    name: 'full-rollout',
+    treatmentWeight: 100,
+    durationHours: 0,
+    rollbackThresholds: { maxAccuracyDrop: 0.005, maxLatencyIncreaseMs: 2, maxFalsePositiveRate: 0.02 },
+  },
+];
+
+const splitter = new TrafficSplitter();
+splitter.addEndpoint({ version: '3.0', weight: 95, predict: modelV3.predict });
+splitter.addEndpoint({ version: '3.1', weight: 5, predict: modelV3_1.predict });
+
+// Route a prediction
+const endpoint = splitter.selectEndpoint();
+console.log(\`Routing to model v\${endpoint.version}\`);`}
+</CodeBlock>
+
+## Rollback Controller
+
+<CodeBlock language="typescript" title="rollback.ts">
+{`// Automatic rollback when metrics breach thresholds
+
+class RollbackController {
+  constructor(
+    private splitter: TrafficSplitter,
+    private controlVersion: string,
+  ) {}
+
+  check(metrics: { accuracyDrop: number; latencyIncrease: number; falsePositiveRate: number },
+        thresholds: RolloutStage['rollbackThresholds']): boolean {
+    if (metrics.accuracyDrop > thresholds.maxAccuracyDrop) {
+      console.error(\`Accuracy drop \${metrics.accuracyDrop} exceeds threshold\`);
+      return false;
+    }
+    if (metrics.latencyIncrease > thresholds.maxLatencyIncreaseMs) {
+      console.error(\`Latency increase \${metrics.latencyIncrease}ms exceeds threshold\`);
+      return false;
+    }
+    if (metrics.falsePositiveRate > thresholds.maxFalsePositiveRate) {
+      console.error(\`False positive rate \${metrics.falsePositiveRate} exceeds threshold\`);
+      return false;
+    }
+    return true;
+  }
+
+  rollback(): void {
+    // Send all traffic back to control
+    this.splitter.updateWeights(new Map([[this.controlVersion, 100]]));
+    console.log(\`ROLLBACK: All traffic routed to v\${this.controlVersion}\`);
+  }
+}`}
+</CodeBlock>
+
+## Challenge
+
+Implement a weighted traffic splitter with graduated rollout.
+
+<Exercise slug="route-models" />
+
+<KeyTakeaways takeaways={["Weighted traffic splitting for models mirrors load balancer canary deployments", "Graduated rollout (5% -> 20% -> 50% -> 100%) limits blast radius at each stage", "Automatic rollback triggers on accuracy drop, latency increase, or false positive spikes", "The control model always stays available — never remove the fallback until the test is conclusive"]} />

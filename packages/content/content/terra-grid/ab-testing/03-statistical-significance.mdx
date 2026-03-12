@@ -1,0 +1,171 @@
+---
+slug: statistical-significance
+title: "Statistical Significance"
+moduleId: ab-testing
+themeId: terra-grid
+order: 3
+estimatedMinutes: 25
+difficulty: advanced
+context:
+  narrative: "Park Soo-Yeon reviews the first 24 hours of data. 'The new model looks 3% better, but we only have 1,200 predictions. Is that signal or noise? We need statistical significance before making any decisions.'"
+  speaker: "Park Soo-Yeon"
+concept:
+  explanation: "Statistical significance tells you whether observed differences are real or random noise — the same confidence intervals you use in analytics dashboards, applied to model comparison."
+  bridge:
+    feTitle: "Analytics Confidence"
+    feCode: "// A/B test: conversion 4.2% vs 4.5%, p=0.23 — not significant yet"
+    mlTitle: "Model Comparison"
+    mlCode: "// A/B test: accuracy 91.2% vs 93.8%, p=0.03 — significant, ship it"
+    tier: identity
+consequence:
+  narrative: "Park runs the significance test. 'p-value 0.003. With 8,400 predictions, the 2.6% accuracy improvement is statistically significant at 99% confidence. The new model is genuinely better.' Hassan: 'Now we have proof. Proceed to 20%.'"
+  nextLessonTeaser: "Next: canary deployments — gradual rollout with automatic rollback"
+hints:
+  - level: nudge
+    content: "Statistical significance requires enough samples — just like you need enough pageviews before trusting an A/B test result"
+  - level: guidance
+    content: "Implement a z-test comparing two proportions (accuracy rates from control and treatment)"
+  - level: solution
+    content: "Calculate pooled proportion, standard error, z-score, and p-value to determine significance"
+keywords:
+  - statistical-significance
+  - p-value
+  - confidence-interval
+  - hypothesis-testing
+---
+
+<Dialogue speaker="Park Soo-Yeon">
+After 24 hours we have 1,200 predictions from the treatment group. The new model shows 93.8% accuracy versus 91.2% for the control. That is a 2.6% improvement. But is it real? With 1,200 samples, the confidence interval is wide. We need more data before we act.
+</Dialogue>
+
+<Dialogue speaker="Hassan Al-Rashid">
+I have seen teams ship models based on 200 predictions and a gut feeling. That is how you get the March 2024 incident. Run the numbers. Tell me when the result is statistically significant.
+</Dialogue>
+
+You have seen confidence intervals on analytics dashboards: "Conversion rate: 4.5% +/- 0.3%, 95% confidence." Statistical significance for model A/B tests works identically. You need enough samples to distinguish real improvement from random variation. The math is the same — proportions, standard errors, z-scores.
+
+<LearningObjectives objectives={["Calculate statistical significance for model A/B test results", "Determine minimum sample sizes needed for reliable conclusions", "Implement a two-proportion z-test for comparing model accuracy", "Understand p-values and confidence intervals in the context of ML deployment decisions"]} />
+
+## Two-Proportion Z-Test
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="significance.ts">
+{`// Statistical significance test for model A/B comparison
+// Same math as web A/B testing — two-proportion z-test
+
+interface ABResult {
+  version: string;
+  total: number;
+  successes: number;
+  rate: number;
+}
+
+interface SignificanceResult {
+  zScore: number;
+  pValue: number;
+  isSignificant: boolean;
+  confidenceLevel: number;
+  controlRate: number;
+  treatmentRate: number;
+  improvement: number;
+}
+
+function twoProportionZTest(
+  control: ABResult,
+  treatment: ABResult,
+  alpha: number = 0.05
+): SignificanceResult {
+  const p1 = control.successes / control.total;
+  const p2 = treatment.successes / treatment.total;
+
+  // Pooled proportion
+  const pPool = (control.successes + treatment.successes)
+    / (control.total + treatment.total);
+
+  // Standard error
+  const se = Math.sqrt(
+    pPool * (1 - pPool) * (1 / control.total + 1 / treatment.total)
+  );
+
+  // Z-score
+  const zScore = (p2 - p1) / se;
+
+  // Two-tailed p-value (approximation using error function)
+  const pValue = 2 * (1 - normalCDF(Math.abs(zScore)));
+
+  return {
+    zScore,
+    pValue,
+    isSignificant: pValue < alpha,
+    confidenceLevel: (1 - alpha) * 100,
+    controlRate: p1,
+    treatmentRate: p2,
+    improvement: ((p2 - p1) / p1) * 100,
+  };
+}
+
+// Normal CDF approximation
+function normalCDF(x: number): number {
+  const t = 1 / (1 + 0.2316419 * Math.abs(x));
+  const d = 0.3989422804014327;
+  const p = d * Math.exp(-x * x / 2) *
+    (t * (0.3193815 + t * (-0.3565638 + t * (1.781478 +
+    t * (-1.8212560 + t * 1.3302744)))));
+  return x > 0 ? 1 - p : p;
+}
+
+// Terra Grid A/B test after 1 week
+const result = twoProportionZTest(
+  { version: '3.0', total: 7200, successes: 6566, rate: 0.912 },
+  { version: '3.1', total: 1200, successes: 1126, rate: 0.938 },
+  0.05
+);
+
+console.log(\`Z-score: \${result.zScore.toFixed(3)}\`);
+console.log(\`P-value: \${result.pValue.toFixed(4)}\`);
+console.log(\`Significant: \${result.isSignificant}\`);
+console.log(\`Improvement: \${result.improvement.toFixed(1)}%\`);`}
+</CodeBlock>
+
+## Sample Size Calculator
+
+<CodeBlock language="typescript" title="sample-size.ts">
+{`// How many predictions do we need before the test is reliable?
+
+function requiredSampleSize(
+  baselineRate: number,
+  minDetectableEffect: number,
+  alpha: number = 0.05,
+  power: number = 0.80
+): number {
+  // Z-scores for alpha and power
+  const zAlpha = 1.96;  // 95% confidence
+  const zBeta = 0.84;   // 80% power
+
+  const p1 = baselineRate;
+  const p2 = baselineRate + minDetectableEffect;
+  const pAvg = (p1 + p2) / 2;
+
+  const n = Math.ceil(
+    Math.pow(zAlpha * Math.sqrt(2 * pAvg * (1 - pAvg)) +
+    zBeta * Math.sqrt(p1 * (1 - p1) + p2 * (1 - p2)), 2) /
+    Math.pow(p2 - p1, 2)
+  );
+
+  return n;
+}
+
+// Terra Grid: baseline 91.2% accuracy, want to detect 2% improvement
+const needed = requiredSampleSize(0.912, 0.02);
+console.log(\`Need \${needed} predictions per group\`);
+// At ~600 predictions/day per group, that is about \${Math.ceil(needed / 600)} days`}
+</CodeBlock>
+
+## Challenge
+
+Implement a statistical significance test for model comparison.
+
+<Exercise slug="significance-test" />
+
+<KeyTakeaways takeaways={["Statistical significance prevents shipping models based on noise instead of signal", "The two-proportion z-test compares accuracy rates between control and treatment groups", "Sample size matters: too few predictions means wide confidence intervals and unreliable conclusions", "Always calculate required sample size before starting a test — know how long you need to run it"]} />

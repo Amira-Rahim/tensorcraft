@@ -1,0 +1,191 @@
+---
+slug: documentation
+title: "Documentation"
+moduleId: capstone
+themeId: deep-orbit
+order: 4
+estimatedMinutes: 20
+difficulty: intermediate
+context:
+  narrative: "Dr. Sato insists on documentation. 'If this crew cannot operate DEEP SCAN without Park, then it is not a production system. Document everything.' Park writes docs like writing a good README."
+  speaker: "Dr. Sato"
+concept:
+  explanation: "ML system documentation covers the same ground as software docs — API reference, architecture guide, getting started — plus model-specific docs like training data descriptions and performance characteristics."
+  bridge:
+    feTitle: "README + JSDoc"
+    feCode: "/** @param input - Signal array */ function classify(input) {} // API docs"
+    mlTitle: "Model Card"
+    mlCode: "/** Model: DEEP SCAN v1.0 | Accuracy: 91.8% | Size: 42MB */ // model docs"
+    tier: identity
+consequence:
+  narrative: "The documentation is complete. Every crew member can operate, maintain, and troubleshoot DEEP SCAN. Sato: 'Now it survives beyond any single engineer.'"
+  nextLessonTeaser: "Next: launch — deploying DEEP SCAN and classifying the anomalous signal"
+hints:
+  - level: nudge
+    content: "Model Cards document ML models the way README files document software projects"
+  - level: guidance
+    content: "Cover: what the model does, how it was trained, its limitations, and how to use it"
+  - level: solution
+    content: "Write a Model Card with sections for overview, training data, performance metrics, limitations, and API usage"
+keywords:
+  - documentation
+  - model-card
+  - api-docs
+  - readme
+  - maintainability
+---
+
+<Dialogue speaker="Dr. Sato">
+Park, if you were incapacitated tomorrow, could Torres operate DEEP SCAN? Could Commander Okafor interpret its output? Could ARIA retrain it? If the answer to any of these is no, then your system is not production-ready. Document everything.
+</Dialogue>
+
+<Dialogue speaker="Ensign Park">
+Right — same rule as any codebase. If it's not documented, it doesn't exist. I'll write a Model Card for the ML model and API docs for the pipeline. Like a really thorough README, but covering training data, accuracy metrics, and known limitations too.
+</Dialogue>
+
+Every open source project needs a README. Every API needs docs. ML systems add a specific documentation format: the **Model Card** — a standardized document that describes what a model does, how it was trained, what its limitations are, and how to interpret its outputs. It's a README for your model.
+
+<LearningObjectives objectives={["Write a Model Card documenting model purpose, training data, and performance", "Document pipeline API with typed interfaces and usage examples", "List known limitations and failure modes — what the model cannot do", "Create runbook documentation for common operational scenarios"]} />
+
+## Model Card
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="model-card.ts">
+{`// A Model Card is structured documentation for an ML model
+// Think of it as package.json + README + CHANGELOG for your model
+
+interface ModelCard {
+  name: string;
+  version: string;
+  description: string;
+  author: string;
+
+  // Training details
+  training: {
+    dataset: string;
+    datasetSize: number;
+    features: string[];
+    trainTestSplit: string;
+    epochs: number;
+    optimizer: string;
+  };
+
+  // Performance metrics
+  performance: {
+    accuracy: number;
+    precision: number;
+    recall: number;
+    f1Score: number;
+    inferenceMs: number;
+    modelSizeMB: number;
+  };
+
+  // What the model cannot do
+  limitations: string[];
+
+  // How to use it
+  usage: {
+    inputFormat: string;
+    outputFormat: string;
+    exampleCode: string;
+  };
+}
+
+const deepScanCard: ModelCard = {
+  name: 'DEEP SCAN Signal Classifier',
+  version: '1.0.0',
+  description: 'Classifies deep space radio signals into 5 categories: pulsar, quasar, noise, interference, anomaly.',
+  author: 'Ensign Park, USS Archimedes',
+
+  training: {
+    dataset: 'Kepler-442 Signal Archive (2024)',
+    datasetSize: 50_000,
+    features: ['FFT magnitudes (80 bins)', 'spectral peaks', 'SNR', 'bandwidth', 'temporal variance'],
+    trainTestSplit: '80/10/10 (train/val/test)',
+    epochs: 50,
+    optimizer: 'Adam (lr=0.001)',
+  },
+
+  performance: {
+    accuracy: 0.918,
+    precision: 0.92,
+    recall: 0.91,
+    f1Score: 0.915,
+    inferenceMs: 5,
+    modelSizeMB: 42,
+  },
+
+  limitations: [
+    'Trained on Kepler-442 region only — accuracy may drop in other star systems',
+    'Anomaly class has lowest recall (84%) — rare signals may be misclassified as noise',
+    'Requires minimum 80-sample window — cannot classify very short bursts',
+    'WebGPU backend required for <10ms inference — falls back to 15ms on WebGL',
+    'Not validated on signals below -20 dB SNR',
+  ],
+
+  usage: {
+    inputFormat: 'Float32Array of 80 signal samples, normalized to [-1, 1]',
+    outputFormat: '{ label: string, confidence: number, isAnomaly: boolean }',
+    exampleCode: 'const result = await deepScan.classify(signalData);',
+  },
+};`}
+</CodeBlock>
+
+## Pipeline API Documentation
+
+<CodeBlock language="typescript" title="api-docs.ts">
+{`// API docs — same approach as documenting a REST API or React component library
+
+/**
+ * DEEP SCAN Pipeline API
+ *
+ * @example
+ * const pipeline = createDeepScanPipeline();
+ * const report = await pipeline.classify(rawSignal);
+ * console.log(report.label, report.confidence);
+ */
+
+/**
+ * Classify a raw signal sample.
+ * @param signal - Float32Array of 80 samples, normalized to [-1, 1]
+ * @returns Classification result with label, confidence, and anomaly flag
+ * @throws {ValidationError} If signal length !== 80 or values outside [-1, 1]
+ */
+async function classify(signal: Float32Array): Promise<Classification> {
+  // 1. Validate input dimensions and range
+  // 2. Extract FFT features (Module 5)
+  // 3. Run classifier (Module 3)
+  // 4. Check anomaly detector (Module 7)
+  // 5. Return combined result
+}
+
+/**
+ * Get current model health metrics.
+ * @returns Monitor snapshot with confidence trend, latency stats, drift score
+ */
+function getHealthMetrics(): HealthSnapshot {
+  return {
+    avgConfidence: monitor.avgConfidence,
+    p95LatencyMs: monitor.getLatencyPercentile(95),
+    driftScore: monitor.computeDrift(recentInputs),
+    totalPredictions: monitor.logs.length,
+  };
+}
+
+// Runbook: common operational scenarios
+const runbook = {
+  'Low confidence trend': 'Check drift score → if high, retrain on recent data',
+  'High latency spike': 'Check backend → WebGPU may have fallen back to WebGL',
+  'Memory warning': 'Check inference cache size → reduce maxSize or TTL',
+  'Accuracy drop': 'Run validation against holdout set → check for data drift',
+};`}
+</CodeBlock>
+
+## Challenge
+
+Write a Model Card for the DEEP SCAN classifier.
+
+<Exercise slug="write-model-card" />
+
+<KeyTakeaways takeaways={["Model Cards are README files for ML models — standardized docs covering purpose, training, performance, and limitations", "Document known limitations honestly — what the model cannot do is as important as what it can", "Pipeline API docs follow the same JSDoc patterns you use for any TypeScript library", "Runbooks bridge the gap between documentation and operations — if X happens, do Y"]} />

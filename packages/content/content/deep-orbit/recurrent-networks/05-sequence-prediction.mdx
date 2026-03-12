@@ -1,0 +1,125 @@
+---
+slug: sequence-prediction
+title: "Sequence Prediction"
+moduleId: recurrent-networks
+themeId: deep-orbit
+order: 5
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "Park trains the LSTM to predict the next signal values. The predictions are eerily accurate — especially for the anomalous pattern. The LSTM remembers it from 72 hours ago."
+  speaker: "Ensign Park"
+concept:
+  explanation: "Sequence prediction forecasts the next values in a series — like autocomplete suggestions that predict the next word based on what you've typed so far."
+  bridge:
+    feTitle: "Autocomplete"
+    feCode: "suggestions = model.predict(inputText) // predict next word"
+    mlTitle: "Sequence Forecast"
+    mlCode: "nextValue = model.predict(recentWindow) // predict next signal"
+    tier: structural
+consequence:
+  narrative: "The LSTM predicts the anomalous signal will repeat in exactly 47 minutes. The crew waits. At 47 minutes and 3 seconds — it arrives."
+  nextLessonTeaser: "Module 7 dives deeper: if we can predict signals, can we detect ones that don't belong at all?"
+hints:
+  - level: nudge
+    content: "Sequence prediction is next-value forecasting — the LSTM outputs what it thinks comes next"
+  - level: guidance
+    content: "Train with input = window[0:n], label = signal[n+1]. Loss = MSE between predicted and actual."
+  - level: solution
+    content: "model.add(lstm({ units: 64, inputShape: [80, 3] })); model.add(dense({ units: 3 })); // predict next 3 features"
+keywords:
+  - prediction
+  - forecasting
+  - sequence-to-value
+  - autocomplete
+---
+
+<Dialogue speaker="Ensign Park">
+The LSTM just predicted the next signal reading within 3% accuracy. It knows the pattern. And look — it's predicting the anomaly will repeat in... 47 minutes.
+</Dialogue>
+
+<Dialogue speaker="Dr. Sato">
+If it can predict the timing, the signal has structure. And if it has structure... it is not random noise.
+</Dialogue>
+
+Autocomplete is everywhere in frontend development — search suggestions, code completion, email autocompletion. Each works by predicting the next token based on the sequence so far. Our LSTM does the same thing: given the last 80 signal readings, predict the next one.
+
+<LearningObjectives objectives={["Train an LSTM for next-value prediction on time-series data", "Evaluate prediction quality with MSE loss and visual comparison", "Generate multi-step forecasts by feeding predictions back as input", "Build a real-time prediction pipeline for the DEEP SCAN dashboard"]} />
+
+## Next-Value Prediction
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="prediction-model.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Prediction model: given 80 time steps, predict the next one
+const model = tf.sequential();
+model.add(tf.layers.lstm({
+  units: 64,
+  inputShape: [80, 3],
+  returnSequences: false,
+}));
+model.add(tf.layers.dense({ units: 32, activation: 'relu' }));
+model.add(tf.layers.dense({ units: 3 }));  // predict next [amplitude, frequency, phase]
+
+// MSE loss for regression (not classification)
+model.compile({
+  optimizer: tf.train.adam(0.001),
+  loss: 'meanSquaredError',
+  metrics: ['mae'],
+});
+
+const history = await model.fit(trainX, trainY, {
+  epochs: 50,
+  batchSize: 32,
+  validationSplit: 0.2,
+  callbacks: {
+    onEpochEnd: (epoch, logs) => {
+      if (epoch % 10 === 0) {
+        console.log(\`Epoch \${epoch}: mae=\${logs?.mae.toFixed(4)}, val_mae=\${logs?.val_mae.toFixed(4)}\`);
+      }
+    },
+  },
+});`}
+</CodeBlock>
+
+## Multi-Step Forecasting
+
+<CodeBlock language="typescript" title="multi-step.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Predict multiple steps ahead by feeding predictions back as input
+async function forecastMultiStep(
+  model: tf.LayersModel,
+  seed: number[][],
+  steps: number,
+): Promise<number[][]> {
+  const window = [...seed];
+  const predictions: number[][] = [];
+
+  for (let i = 0; i < steps; i++) {
+    const nextValue = tf.tidy(() => {
+      const input = tf.tensor3d([window.slice(-80)]);
+      const pred = model.predict(input) as tf.Tensor;
+      return Array.from(pred.dataSync());
+    });
+    predictions.push(nextValue);
+    window.push(nextValue);
+  }
+
+  return predictions;
+}
+
+// Forecast 47 minutes ahead
+const forecast = await forecastMultiStep(model, recentWindow, 47);
+// The LSTM predicts a spike at step 47 — the anomaly repeats!`}
+</CodeBlock>
+
+## Challenge
+
+Train a prediction model and forecast the next signal value.
+
+<Exercise slug="predict-next" />
+
+<KeyTakeaways takeaways={["Sequence prediction forecasts the next values using the LSTM's learned temporal patterns — like autocomplete for signals", "Multi-step forecasting feeds predictions back as input, generating forecasts one step at a time", "MSE/MAE metrics quantify prediction accuracy — high error on specific signals may indicate anomalies", "The LSTM predicted the anomaly would repeat at minute 47 — and it did, confirming the signal has structure"]} />

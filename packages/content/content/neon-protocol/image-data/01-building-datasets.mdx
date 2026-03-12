@@ -1,0 +1,220 @@
+---
+slug: building-datasets
+title: "Building Datasets"
+moduleId: image-data
+themeId: neon-protocol
+order: 1
+estimatedMinutes: 25
+difficulty: beginner
+context:
+  narrative: "Zara leads Kira through the rain-soaked streets of Sector 7, photographing surveillance cameras from every angle. Each image must be labeled and cataloged — the Protocol Sentinel needs thousands of examples to learn what corporate surveillance hardware looks like."
+  speaker: "Zara"
+concept:
+  explanation: "Building an ML dataset is like organizing a frontend asset pipeline — every image needs a clear path, consistent naming, and structured metadata."
+  bridge:
+    feTitle: "Asset Pipeline"
+    feCode: "assets/icons/{category}/{name}-{size}.svg"
+    mlTitle: "Dataset Structure"
+    mlCode: "dataset/{class_label}/{image_id}.png"
+    tier: structural
+consequence:
+  narrative: "The team's first dataset takes shape — 2,000 images across four camera types, each labeled and verified. Zara inspects the catalog with quiet satisfaction. 'Quality data is the difference between a model that guesses and one that sees,' she says."
+  nextLessonTeaser: "Next: Data Augmentation — multiply your dataset without collecting a single new image."
+hints:
+  - level: nudge
+    content: "Think about how you would organize component files in a large React project — folders by category, consistent naming conventions."
+  - level: guidance
+    content: "Each image needs a label (its class), a unique identifier, and metadata like dimensions and source. Structure your dataset object to hold arrays of labeled samples."
+  - level: solution
+    content: "Create an ImageSample type with id, label, path, width, height, and metadata fields. Build a Dataset class with methods to addSample, getSamplesByLabel, and getSummary."
+keywords:
+  - dataset
+  - labeling
+  - image classification
+  - data collection
+  - asset pipeline
+---
+
+<Dialogue speaker="Zara">
+Every great model starts with great data, Kira. You wouldn't ship a frontend app with broken image paths and missing alt tags. Same principle here — our dataset needs structure, consistency, and clear labels. Tonight, we build the foundation.
+</Dialogue>
+
+If you've ever organized a component library or set up an asset pipeline, you already understand the core challenge of building an ML dataset. In frontend development, you create folder hierarchies like `icons/navigation/arrow-left-24.svg` — each segment of the path carries meaning. ML datasets follow the same logic: every image lives in a folder named after its class label, with consistent naming and metadata.
+
+<LearningObjectives objectives={[
+  "Understand the structure of an image classification dataset",
+  "Map frontend asset pipeline patterns to ML dataset organization",
+  "Implement labeled sample collection with metadata tracking",
+  "Build summary statistics to verify dataset integrity"
+]} />
+
+## From Asset Folders to Dataset Directories
+
+In frontend projects, you organize assets by type and purpose. A well-structured icon library might look like:
+
+```
+assets/
+  icons/
+    navigation/
+      arrow-left-24.svg
+      arrow-right-24.svg
+    actions/
+      delete-16.svg
+      edit-16.svg
+```
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+ML datasets mirror this pattern exactly. The ImageNet dataset, for example, organizes millions of images into folders named after their class:
+
+```
+dataset/
+  dome-camera/
+    img_0001.png
+    img_0002.png
+  bullet-camera/
+    img_0001.png
+    img_0002.png
+```
+
+The folder name *is* the label. This convention — called "image folder" format — is the most common way to structure classification datasets.
+
+## Anatomy of a Dataset Sample
+
+Every image in a dataset is more than just pixels. It carries metadata that helps you track quality, provenance, and distribution.
+
+<CodeBlock language="typescript" title="dataset-types.ts">
+{`// Frontend: asset manifest entry
+interface AssetEntry {
+  path: string;
+  name: string;
+  category: string;
+  width: number;
+  height: number;
+}
+
+// ML: dataset sample — same structure, different domain
+interface ImageSample {
+  id: string;
+  label: string;
+  path: string;
+  width: number;
+  height: number;
+  metadata: {
+    source: string;
+    capturedAt: string;
+    verified: boolean;
+  };
+}`}
+</CodeBlock>
+
+Notice how similar these structures are. Both track dimensions, categorization, and file paths. The ML version adds verification status because mislabeled data is one of the most common causes of poor model performance.
+
+## Building the Collection
+
+Zara's process for building the surveillance camera dataset mirrors how you'd build a design system asset library — methodical collection, consistent formatting, and quality checks at every step.
+
+<CodeBlock language="typescript" title="dataset-builder.ts">
+{`interface ImageSample {
+  id: string;
+  label: string;
+  path: string;
+  width: number;
+  height: number;
+}
+
+interface DatasetSummary {
+  totalSamples: number;
+  labels: string[];
+  samplesPerLabel: Record<string, number>;
+}
+
+class DatasetBuilder {
+  private samples: ImageSample[] = [];
+
+  addSample(sample: ImageSample): void {
+    // Validate before adding — like input validation on a form
+    if (!sample.label || !sample.path) {
+      throw new Error("Sample must have a label and path");
+    }
+    this.samples.push(sample);
+  }
+
+  getSamplesByLabel(label: string): ImageSample[] {
+    return this.samples.filter(s => s.label === label);
+  }
+
+  getSummary(): DatasetSummary {
+    const labelCounts: Record<string, number> = {};
+    for (const sample of this.samples) {
+      labelCounts[sample.label] = (labelCounts[sample.label] || 0) + 1;
+    }
+    return {
+      totalSamples: this.samples.length,
+      labels: Object.keys(labelCounts),
+      samplesPerLabel: labelCounts,
+    };
+  }
+}`}
+</CodeBlock>
+
+The `getSummary` method is critical. Just as you'd audit a component library to find missing variants, you audit a dataset to find underrepresented classes. If your dataset has 500 dome cameras but only 12 hidden cameras, the model will struggle to recognize the rare type.
+
+## Quality Control
+
+<Dialogue speaker="Zara">
+I've seen resistance cells waste months training on dirty data. Duplicate images, wrong labels, corrupted files. Check everything before you feed it to the Sentinel.
+</Dialogue>
+
+Dataset quality checks are the ML equivalent of linting your codebase. Common issues include:
+
+- **Duplicates** — the same image appearing multiple times inflates your count without adding information
+- **Mislabels** — a dome camera photo filed under "bullet-camera" teaches the model the wrong pattern
+- **Corrupt files** — images that can't be decoded will crash your training pipeline
+- **Inconsistent dimensions** — while models resize inputs, wildly different aspect ratios can cause information loss
+
+<CodeBlock language="typescript" title="quality-checks.ts">
+{`function findDuplicates(samples: ImageSample[]): string[][] {
+  const pathGroups = new Map<string, string[]>();
+
+  for (const sample of samples) {
+    // Simple duplicate detection by normalized path
+    const key = sample.path.toLowerCase().trim();
+    if (!pathGroups.has(key)) {
+      pathGroups.set(key, []);
+    }
+    pathGroups.get(key)!.push(sample.id);
+  }
+
+  return Array.from(pathGroups.values()).filter(ids => ids.length > 1);
+}
+
+function validateSample(sample: ImageSample): string[] {
+  const errors: string[] = [];
+
+  if (sample.width <= 0 || sample.height <= 0) {
+    errors.push("Invalid dimensions: width and height must be positive");
+  }
+  if (!sample.label.trim()) {
+    errors.push("Empty label");
+  }
+  if (!sample.path.match(/\\.(png|jpg|jpeg|webp)$/i)) {
+    errors.push("Unsupported image format");
+  }
+
+  return errors;
+}`}
+</CodeBlock>
+
+## Challenge
+
+Build a dataset builder that collects, organizes, and summarizes labeled image samples — just like Zara's surveillance camera catalog.
+
+<Exercise slug="build-dataset" />
+
+<KeyTakeaways takeaways={[
+  "ML datasets follow the same organizational principles as frontend asset pipelines — folders as categories, consistent naming, metadata tracking",
+  "Every sample needs a label, unique identifier, and dimensional metadata",
+  "Dataset quality checks (duplicates, mislabels, corrupt files) are the ML equivalent of linting",
+  "Summary statistics reveal class imbalances and data quality issues before training begins"
+]} />

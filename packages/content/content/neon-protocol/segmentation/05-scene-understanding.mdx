@@ -1,0 +1,133 @@
+---
+slug: scene-understanding
+title: "Scene Understanding"
+moduleId: segmentation
+themeId: neon-protocol
+order: 5
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Lin calls the team to the war room. The holotable projects District 7 in full segmented view — every pixel classified, every object outlined. 'We do not just detect drones anymore,' Lin says. 'We understand the entire scene. Which streets are clear. Which rooftops have coverage. Where the blind spots are.'"
+  speaker: "Lin"
+concept:
+  explanation: "Scene understanding combines segmentation maps with spatial reasoning to extract meaning — object relationships, traversable paths, and contextual semantics. Like semantic HTML, the structure of the scene implies its meaning."
+  bridge:
+    feTitle: "Semantic HTML"
+    feCode: "<nav>, <main>, <aside> — structure implies meaning"
+    mlTitle: "Scene Understanding"
+    mlCode: "// Road + person + crosswalk = pedestrian crossing context"
+    tier: intuition
+consequence:
+  narrative: "The war room display updates in real-time: safe corridors glow green, high-surveillance zones pulse red, drone patrol routes trace across the city grid. For the first time, the resistance has a living map of Meridian's coverage. NEON observes: 'You have built what took Meridian three years. In a browser.'"
+  nextLessonTeaser: "Next module: Feature Extraction — Ryo reveals that Meridian stores features, not images"
+hints:
+  - level: nudge
+    content: "Scene understanding combines segmentation labels with spatial relationships between classes"
+  - level: guidance
+    content: "Analyze which classes are adjacent to each other to infer scene context"
+  - level: solution
+    content: "Build adjacency analysis by checking neighboring pixel labels in the segmentation mask"
+keywords:
+  - scene-understanding
+  - spatial-reasoning
+  - semantic-html
+  - context
+  - adjacency
+---
+
+<Dialogue speaker="Lin">
+A segmentation mask tells you what each pixel is. Scene understanding tells you what it means. If a person is on a road next to a crosswalk, that is a pedestrian crossing. If a drone is above a building, that is a surveillance post. Context comes from relationships.
+</Dialogue>
+
+<Dialogue speaker="Kira">
+It is like semantic HTML. A `<nav>` element inside a `<header>` means something different than a `<nav>` inside a `<footer>`. The tag alone is not enough — position and context define the meaning.
+</Dialogue>
+
+Semantic HTML gives meaning to structure: `<nav>` implies navigation, `<main>` implies primary content. Scene understanding does the same for segmentation — it reads spatial relationships between labeled regions to extract higher-level meaning. A "road" region adjacent to a "building" region forms a "street." A "drone" region above a "person" region forms a "surveillance event."
+
+<LearningObjectives objectives={["Combine segmentation labels with spatial relationships for scene reasoning", "Build adjacency maps that encode which classes neighbor each other", "Extract contextual events from spatial patterns in segmentation masks", "Connect the concept to semantic HTML — structure implies meaning"]} />
+
+## Structure Implies Meaning
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="scene-analysis.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+const CLASSES = ['background', 'road', 'building', 'person', 'drone', 'vehicle'];
+
+interface SceneEvent {
+  type: string;
+  location: { row: number; col: number };
+  involvedClasses: string[];
+}
+
+// Analyze which classes are adjacent in the segmentation mask
+function buildAdjacencyMap(mask: Int32Array, width: number, height: number) {
+  const adjacency = new Set<string>();
+
+  for (let y = 0; y < height - 1; y++) {
+    for (let x = 0; x < width - 1; x++) {
+      const current = mask[y * width + x];
+      const right = mask[y * width + x + 1];
+      const below = mask[(y + 1) * width + x];
+
+      if (current !== right) {
+        const pair = [CLASSES[current], CLASSES[right]].sort().join('-');
+        adjacency.add(pair);
+      }
+      if (current !== below) {
+        const pair = [CLASSES[current], CLASSES[below]].sort().join('-');
+        adjacency.add(pair);
+      }
+    }
+  }
+  return adjacency;
+}`}
+</CodeBlock>
+
+## Detecting Scene Events
+
+<CodeBlock language="typescript" title="scene-events.ts">
+{`// Like semantic HTML: the combination of elements defines meaning
+// <nav> + <header> = site navigation
+// drone + person = surveillance event
+
+const EVENT_RULES: Record<string, (adj: Set<string>) => boolean> = {
+  'surveillance-active': (adj) => adj.has('drone-person'),
+  'street-scene': (adj) => adj.has('person-road') || adj.has('road-vehicle'),
+  'aerial-patrol': (adj) => adj.has('building-drone'),
+  'clear-corridor': (adj) =>
+    adj.has('person-road') && !adj.has('drone-person') && !adj.has('drone-road'),
+};
+
+function detectEvents(adjacency: Set<string>): string[] {
+  const events: string[] = [];
+  for (const [eventType, check] of Object.entries(EVENT_RULES)) {
+    if (check(adjacency)) {
+      events.push(eventType);
+    }
+  }
+  return events;
+}
+
+// Scene summary for the resistance war room
+function analyzeScene(mask: tf.Tensor2D): { adjacency: Set<string>; events: string[] } {
+  const data = mask.dataSync() as Int32Array;
+  const [h, w] = mask.shape;
+  const adjacency = buildAdjacencyMap(data, w, h);
+  const events = detectEvents(adjacency);
+  return { adjacency, events };
+}
+
+// Output: { events: ['street-scene', 'clear-corridor'] }
+// The resistance knows: this street has people but no drones — safe to move`}
+</CodeBlock>
+
+## Challenge
+
+Build a scene analysis function that detects contextual events from a segmentation mask.
+
+<Exercise slug="scene-analysis" />
+
+<KeyTakeaways takeaways={["Scene understanding reads spatial relationships between segmented regions to extract meaning", "Adjacency maps encode which classes neighbor each other in the mask", "Event detection applies rules to adjacency patterns — like semantic HTML, structure implies meaning", "The resistance now has a real-time contextual map of the entire district"]} />

@@ -1,0 +1,140 @@
+---
+slug: color-channels
+title: "Color Channels"
+moduleId: ml-through-vision
+themeId: neon-protocol
+order: 3
+estimatedMinutes: 20
+difficulty: beginner
+context:
+  narrative: "NEON isolates a hidden channel in Meridian's camera feeds — data encoded in color values the human eye can't distinguish. 'They are using steganography. Hiding data inside images.'"
+  speaker: "NEON"
+concept:
+  explanation: "Color spaces are different coordinate systems for the same visual information — just like CSS has rgb(), hsl(), and oklch() for the same color."
+  bridge:
+    feTitle: "CSS Color Functions"
+    feCode: "rgb(255, 0, 0) === hsl(0, 100%, 50%) === oklch(0.63, 0.26, 29) // same red"
+    mlTitle: "Color Spaces"
+    mlCode: "RGB [255, 0, 0] === HSV [0, 1, 1] === LAB [53, 80, 67] // same red"
+    tier: identity
+consequence:
+  narrative: "Kira isolates the hidden data channel. Meridian is embedding tracking metadata directly into their camera feeds — invisible to the human eye but readable by their models."
+  nextLessonTeaser: "Next: image operations — resize, crop, and transform for model input"
+hints:
+  - level: nudge
+    content: "Different color spaces highlight different aspects of an image — HSV separates color from brightness"
+  - level: guidance
+    content: "Split a tensor into individual channels with tf.split() or tensor.slice()"
+  - level: solution
+    content: "const [r, g, b] = tf.split(imageTensor, 3, 2); // Split along channel axis"
+keywords:
+  - color-spaces
+  - rgb
+  - channels
+  - hsv
+  - grayscale
+---
+
+<Dialogue speaker="NEON">
+I am detecting anomalous patterns in the least significant bits of the blue channel. Meridian is embedding metadata — device IDs, timestamps, tracking hashes — directly into the pixel values. The changes are invisible to the human eye but perfectly readable by their models.
+</Dialogue>
+
+<Dialogue speaker="Kira">
+So each color channel is like a separate data layer? Like how CSS lets you express the same color in different coordinate systems — rgb(), hsl(), oklch() — each one reveals different properties?
+</Dialogue>
+
+You switch between `rgb()`, `hsl()`, and `oklch()` in CSS depending on what you need: `rgb` for exact values, `hsl` for adjusting lightness, `oklch` for perceptual uniformity. Color spaces in computer vision work the same way — RGB for raw data, HSV for separating color from brightness, LAB for perceptual difference.
+
+<LearningObjectives objectives={["Understand RGB, HSV, and grayscale color spaces and when to use each", "Split image tensors into individual channels", "Convert between color spaces for different vision tasks", "Recognize that color channels are independent data dimensions"]} />
+
+## Color Space Exploration
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="color-channels.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// An RGB image has 3 channels stacked in depth
+const image = tf.browser.fromPixels(canvas); // [224, 224, 3]
+
+// Split into individual channels
+const [red, green, blue] = tf.split(image, 3, 2);
+console.log(red.shape);   // [224, 224, 1] — red intensity map
+console.log(green.shape); // [224, 224, 1] — green intensity map
+console.log(blue.shape);  // [224, 224, 1] — blue intensity map
+
+// Each channel is a grayscale image showing that color's contribution
+// High values = strong presence of that color
+// Low values = weak presence
+
+// Grayscale: collapse channels into one
+const gray = image.mean(2, true); // [224, 224, 1]
+
+// RGB to HSV conversion (manual)
+function rgbToHsv(rgb: tf.Tensor3D): tf.Tensor3D {
+  const normalized = rgb.toFloat().div(255);
+  const [r, g, b] = tf.split(normalized, 3, 2) as tf.Tensor3D[];
+
+  const max = tf.maximum(tf.maximum(r, g), b);
+  const min = tf.minimum(tf.minimum(r, g), b);
+  const delta = max.sub(min);
+
+  // Value = max channel
+  const v = max;
+  // Saturation = delta / max (0 when max is 0)
+  const s = tf.where(max.greater(0), delta.div(max), tf.zerosLike(max));
+
+  return tf.concat([s, s, v], 2) as tf.Tensor3D; // simplified
+}
+
+// Why HSV matters for vision:
+// H (hue) = what color — invariant to lighting
+// S (saturation) = how vivid — separates color from gray
+// V (value) = how bright — separates content from illumination
+// A camera in shadow and sunlight has different V but same H`}
+</CodeBlock>
+
+## Channel Analysis
+
+<CodeBlock language="typescript" title="channel-analysis.ts">
+{`// Surveillance application: analyzing individual channels
+
+function analyzeChannels(image: tf.Tensor3D): void {
+  const [r, g, b] = tf.split(image, 3, 2);
+
+  // Mean intensity per channel
+  const rMean = r.mean().dataSync()[0];
+  const gMean = g.mean().dataSync()[0];
+  const bMean = b.mean().dataSync()[0];
+
+  console.log('Channel means — R:', rMean.toFixed(1),
+              'G:', gMean.toFixed(1), 'B:', bMean.toFixed(1));
+
+  // Nighttime camera feeds: high blue bias from IR LEDs
+  // Daylight feeds: balanced channels
+  // Meridian hidden data: anomalous blue channel variance
+
+  // Detect hidden data: compare channel variances
+  const rVar = r.toFloat().sub(rMean).square().mean().dataSync()[0];
+  const gVar = g.toFloat().sub(gMean).square().mean().dataSync()[0];
+  const bVar = b.toFloat().sub(bMean).square().mean().dataSync()[0];
+
+  console.log('Channel variance — R:', rVar.toFixed(1),
+              'G:', gVar.toFixed(1), 'B:', bVar.toFixed(1));
+
+  // Unusually high blue variance could indicate embedded data
+  if (bVar > rVar * 1.5 && bVar > gVar * 1.5) {
+    console.warn('Anomalous blue channel variance — possible steganography');
+  }
+
+  [r, g, b].forEach(t => t.dispose());
+}`}
+</CodeBlock>
+
+## Challenge
+
+Split an image into channels and compute per-channel statistics.
+
+<Exercise slug="channel-analysis" />
+
+<KeyTakeaways takeaways={["Color channels are independent data dimensions — each channel is a grayscale intensity map", "RGB, HSV, and LAB are different coordinate systems for the same color, like CSS rgb()/hsl()/oklch()", "HSV separates color (hue) from lighting (value) — critical for robust vision in varying conditions", "Channel analysis reveals properties invisible to the eye, like hidden data in least-significant bits"]} />

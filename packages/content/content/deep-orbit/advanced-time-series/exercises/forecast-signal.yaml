@@ -1,0 +1,55 @@
+slug: forecast-signal
+lessonSlug: forecasting
+title: "Multi-Step Forecast"
+instructions: "Write a function that generates a multi-step forecast. Given a prediction function (that takes the last N values and returns the next value), a seed array of historical values, and a horizon (number of steps to predict), generate the forecast by feeding each prediction back as input."
+starterCode: |
+  function forecast(
+    predictNext: (window: number[]) => number,
+    seed: number[],
+    windowSize: number,
+    horizon: number,
+  ): number[] {
+    // For each step in horizon:
+    //   1. Take the last windowSize values
+    //   2. Predict the next value
+    //   3. Append to the data
+    // Return only the predicted values
+    return null; // your code here
+  }
+solutionCode: |
+  function forecast(
+    predictNext: (window: number[]) => number,
+    seed: number[],
+    windowSize: number,
+    horizon: number,
+  ): number[] {
+    const data = [...seed];
+    const predictions: number[] = [];
+    for (let i = 0; i < horizon; i++) {
+      const window = data.slice(-windowSize);
+      const next = predictNext(window);
+      predictions.push(next);
+      data.push(next);
+    }
+    return predictions;
+  }
+testCode: |
+  describe('forecast', () => {
+    const identity = (w: number[]) => w[w.length - 1];
+    it('returns correct number of predictions', () => {
+      expect(forecast(identity, [1, 2, 3], 3, 5).length).toBe(5);
+    });
+    it('feeds predictions back', () => {
+      const addOne = (w: number[]) => w[w.length - 1] + 1;
+      const result = forecast(addOne, [1, 2, 3], 3, 3);
+      expect(result).toEqual([4, 5, 6]);
+    });
+    it('uses correct window size', () => {
+      let lastWindow: number[] = [];
+      const capture = (w: number[]) => { lastWindow = w; return 0; };
+      forecast(capture, [1, 2, 3, 4, 5], 3, 1);
+      expect(lastWindow.length).toBe(3);
+    });
+  });
+estimatedMinutes: 12
+difficulty: intermediate

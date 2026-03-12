@@ -1,0 +1,121 @@
+---
+slug: semantic-segmentation
+title: "Semantic Segmentation"
+moduleId: segmentation
+themeId: neon-protocol
+order: 1
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Zara pulls up a live street feed from District 7. Bounding boxes flash around pedestrians, drones, and vehicles. 'Detection tells you what is in the frame,' she says, highlighting a box. 'But it cannot tell you where the road ends and the sidewalk begins. For that, you need to classify every single pixel.'"
+  speaker: "Zara"
+concept:
+  explanation: "Semantic segmentation assigns a class label to every pixel in an image, producing a dense prediction map the same size as the input. Instead of one label per image or one box per object, you get one label per pixel."
+  bridge:
+    feTitle: "CSS clip-path"
+    feCode: "clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);"
+    mlTitle: "Segmentation Mask"
+    mlCode: "const mask = model.predict(image); // [H, W, numClasses]"
+    tier: structural
+consequence:
+  narrative: "The feed transforms. Instead of boxes, every pixel glows with color — roads blue, buildings green, people red, drones orange. Zara nods. 'Now you are not just detecting. You are understanding the entire scene.'"
+  nextLessonTeaser: "Next: instance segmentation — telling apart individual objects, not just categories"
+hints:
+  - level: nudge
+    content: "A segmentation mask has the same height and width as the input image, but each pixel holds a class index instead of a color"
+  - level: guidance
+    content: "Use tf.argMax along the channel axis to get the predicted class per pixel"
+  - level: solution
+    content: "const mask = tf.argMax(prediction, -1); // [H, W] — class index per pixel"
+keywords:
+  - semantic-segmentation
+  - pixel-classification
+  - dense-prediction
+  - clip-path
+  - segmentation-mask
+---
+
+<Dialogue speaker="Zara">
+A bounding box tells you "there is a drone here." But it cannot tell you the shape of the drone against the sky, or where the road meets the wall behind it. Semantic segmentation classifies every single pixel. It is the difference between pointing at a crowd and tracing every silhouette.
+</Dialogue>
+
+<Dialogue speaker="Kira">
+So instead of outputting a rectangle, the model outputs a full-resolution map where every pixel is labeled?
+</Dialogue>
+
+That is exactly right. In CSS, you use `clip-path` to define complex regions that determine which parts of an element are visible. Semantic segmentation does the same thing for an image — it partitions every pixel into a named region. The output is a **segmentation mask**: a tensor with the same height and width as the input, where each value is a class label.
+
+<LearningObjectives objectives={["Understand semantic segmentation as per-pixel classification", "Build a segmentation mask tensor from model output", "Map class indices to visual colors for display", "Recognize the structural parallel between CSS clip-path regions and segmentation masks"]} />
+
+## From Boxes to Pixels
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+With `clip-path`, you define polygon regions that carve out visible areas of an element. A segmentation model does this for every object category in the image — roads, buildings, people, sky — producing a dense map of non-overlapping regions.
+
+<CodeBlock language="typescript" title="semantic-segmentation.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Segmentation model output: [1, height, width, numClasses]
+// Each pixel gets a probability distribution over classes
+const NUM_CLASSES = 6;
+const CLASSES = ['background', 'road', 'building', 'person', 'drone', 'vehicle'];
+
+// Simulate a model prediction for a 224x224 image
+// In practice: const prediction = model.predict(inputTensor);
+const prediction = tf.randomNormal([1, 224, 224, NUM_CLASSES]);
+
+// Convert probabilities to class labels using argMax
+// This picks the highest-probability class for each pixel
+const mask = tf.argMax(prediction.squeeze(), -1);
+console.log(mask.shape); // [224, 224] — one class index per pixel
+
+// This is like applying a different clip-path region
+// for every object category in the scene`}
+</CodeBlock>
+
+## Visualizing Masks
+
+To render the segmentation mask, map each class index to a color — exactly like applying a color-coded `clip-path` overlay.
+
+<CodeBlock language="typescript" title="mask-visualization.ts">
+{`// Color palette for each class
+const COLORS: Record<string, [number, number, number]> = {
+  background: [0, 0, 0],
+  road: [0, 100, 255],
+  building: [0, 200, 100],
+  person: [255, 50, 50],
+  drone: [255, 165, 0],
+  vehicle: [200, 200, 0],
+};
+
+function renderMask(mask: tf.Tensor2D, canvas: HTMLCanvasElement): void {
+  const [h, w] = mask.shape;
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext('2d')!;
+  const imageData = ctx.createImageData(w, h);
+
+  const data = mask.dataSync();
+  for (let i = 0; i < data.length; i++) {
+    const classIdx = data[i];
+    const color = COLORS[CLASSES[classIdx]] || [0, 0, 0];
+    imageData.data[i * 4] = color[0];
+    imageData.data[i * 4 + 1] = color[1];
+    imageData.data[i * 4 + 2] = color[2];
+    imageData.data[i * 4 + 3] = 180; // semi-transparent overlay
+  }
+  ctx.putImageData(imageData, 0, 0);
+}
+
+// Overlay onto the original feed — the resistance can now
+// see District 7 parsed into meaningful regions`}
+</CodeBlock>
+
+## Challenge
+
+Build a function that converts raw segmentation logits into a class-index mask.
+
+<Exercise slug="semantic-segmentation" />
+
+<KeyTakeaways takeaways={["Semantic segmentation assigns a class label to every pixel, producing a dense [H, W] mask", "Model output is [H, W, numClasses] — use argMax to pick the winning class per pixel", "Rendering a mask is like applying color-coded clip-path regions across the entire image", "This gives the resistance full scene understanding, not just object locations"]} />

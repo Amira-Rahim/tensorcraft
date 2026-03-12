@@ -1,0 +1,128 @@
+---
+slug: forward-pass
+title: "Forward Pass"
+moduleId: ml-through-text
+themeId: signal-ward
+order: 5
+estimatedMinutes: 30
+difficulty: beginner
+context:
+  narrative: "Khalil connects all the pieces: tokenization, vocabulary lookup, feature extraction, and classification into one end-to-end pipeline."
+  speaker: "Khalil"
+concept:
+  explanation: "A forward pass runs input data through every layer of the model to produce a prediction. It's a pipeline — like Promise chains or Express middleware — where each step transforms the data and passes it to the next."
+  bridge:
+    feTitle: "Promise Chain"
+    feCode: "fetch(url).then(parse).then(validate).then(render)"
+    mlTitle: "Forward Pass"
+    mlCode: "tokenize(text).then(embed).then(model).then(classify)"
+    tier: structural
+consequence:
+  narrative: "Diagnostic One runs its first successful end-to-end classification. Dr. Vasquez is cautiously optimistic."
+  nextLessonTeaser: "Next module: handling the messy reality of clinical text with advanced tokenization."
+hints:
+  - level: nudge
+    content: "Chain the steps: tokenize → encode → create tensor → multiply by weights → sigmoid."
+  - level: guidance
+    content: "Use the functions from previous lessons in sequence: tokenize, encode, tf.tensor, then classify."
+  - level: solution
+    content: "const tokens = tokenize(text); const ids = encode(tokens, vocab); const features = tf.tensor(toBow(ids, vocabSize)); return tf.sigmoid(features.mul(weights).sum().add(bias));"
+keywords:
+  - forward-pass
+  - inference
+  - pipeline
+  - end-to-end
+---
+
+> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
+
+<Dialogue speaker="Khalil">
+Okay, I've got tokenization, vocabulary, and a classifier. But how do I connect them into one pipeline?
+</Dialogue>
+
+<Dialogue speaker="Obi">
+Think of it like a Promise chain. fetch, then parse, then validate, then render. Each step transforms the data and hands it to the next. That's exactly what a forward pass is.
+</Dialogue>
+
+<Dialogue speaker="Dr. Vasquez">
+Show me. Run a clinical note through the entire pipeline. I want to see it classify in real time.
+</Dialogue>
+
+In Express, middleware functions process a request in sequence: authentication, validation, parsing, response. A forward pass is the same pattern — data flows through layers, each transforming it, until a prediction emerges at the end.
+
+<LearningObjectives objectives={["Chain tokenization, encoding, and classification into a complete pipeline", "Run a forward pass through a simple text classifier", "Understand that inference is just data flowing through functions", "Build an end-to-end text classification pipeline in TensorFlow.js"]} />
+
+## The Complete Pipeline
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="forward-pass-pipeline.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Step 1: Tokenize
+function tokenize(text: string): string[] {
+  return text.toLowerCase().replace(/[.,!?;:]/g, ' ').split(/\s+/).filter(Boolean);
+}
+
+// Step 2: Encode to bag-of-words vector
+function toBagOfWords(tokens: string[], vocab: Map<string, number>, vocabSize: number): number[] {
+  const bow = new Array(vocabSize).fill(0);
+  for (const token of tokens) {
+    const idx = vocab.get(token);
+    if (idx !== undefined) bow[idx] += 1;
+  }
+  return bow;
+}
+
+// Step 3: Classify
+function forwardPass(text: string, vocab: Map<string, number>,
+                     weights: tf.Tensor, bias: tf.Tensor): number {
+  const tokens = tokenize(text);
+  const bow = toBagOfWords(tokens, vocab, vocab.size);
+  const input = tf.tensor(bow);
+  const score = input.mul(weights).sum().add(bias);
+  return tf.sigmoid(score).dataSync()[0];
+}
+
+// Build vocabulary
+const vocab = new Map<string, number>([
+  ['patient', 0], ['allergy', 1], ['penicillin', 2],
+  ['medication', 3], ['reports', 4], ['pain', 5],
+  ['discharge', 6], ['follow', 7],
+]);
+
+// Trained weights (in practice, these come from training)
+const weights = tf.tensor([0.1, 0.9, 0.8, 0.3, 0.0, -0.1, -0.5, -0.3]);
+const bias = tf.scalar(-0.2);
+
+// Run the pipeline
+const note = 'Patient has documented penicillin allergy';
+const probability = forwardPass(note, vocab, weights, bias);
+console.log('Allergy probability:', probability.toFixed(3)); // ~0.83`}
+</CodeBlock>
+
+## Comparing to a Promise Chain
+
+<CodeBlock language="typescript" title="promise-parallel.ts">
+{`// Frontend pipeline (you know this)
+const result = await fetch('/api/notes/42')
+  .then(res => res.json())           // parse
+  .then(data => validate(data))       // validate
+  .then(valid => renderNote(valid));   // render
+
+// ML pipeline (same pattern!)
+const prediction = pipe(
+  tokenize,                            // parse text
+  tokens => toBagOfWords(tokens, vocab, vocab.size),  // vectorize
+  bow => tf.tensor(bow).mul(weights).sum().add(bias), // compute
+  score => tf.sigmoid(score).dataSync()[0],           // activate
+)('Patient has documented penicillin allergy');`}
+</CodeBlock>
+
+## Challenge
+
+Build a complete forward pass pipeline that takes raw clinical text and outputs a classification probability.
+
+<Exercise slug="text-forward-pass" />
+
+<KeyTakeaways takeaways={["A forward pass chains tokenization → encoding → model → prediction", "It mirrors Promise chains and middleware: each step transforms data for the next", "Inference is just running data through learned functions — no magic involved", "The full pipeline: raw text in, probability out"]} />

@@ -1,0 +1,132 @@
+---
+slug: forecasting
+title: "Forecasting"
+moduleId: advanced-time-series
+themeId: deep-orbit
+order: 3
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "The crew needs to predict WHEN the anomaly will appear next. Park builds a forecasting system — predicting future signal behavior from past patterns."
+  speaker: "Dr. Sato"
+concept:
+  explanation: "Time-series forecasting predicts future values from past patterns — like predictive prefetching that loads resources before the user needs them."
+  bridge:
+    feTitle: "Prefetching"
+    feCode: "<link rel='prefetch' href='/next-page' /> // predict what's needed next"
+    mlTitle: "Forecasting"
+    mlCode: "future = model.predict(pastWindow) // predict what comes next"
+    tier: intuition
+consequence:
+  narrative: "The forecast predicts the anomaly will repeat at a specific time. It does not. The crew learns about non-stationary data — the signal's timing is changing."
+  nextLessonTeaser: "Next: Kalman filters — tracking a moving target under noise"
+hints:
+  - level: nudge
+    content: "Forecasting extends sequence prediction to multiple steps ahead"
+  - level: guidance
+    content: "Use rolling predictions: predict next step, append to window, predict again"
+  - level: solution
+    content: "for (let i = 0; i < steps; i++) { const next = model.predict(window); window = append(window, next); }"
+keywords:
+  - forecasting
+  - prediction
+  - non-stationary
+  - temporal-drift
+---
+
+<Dialogue speaker="Dr. Sato">
+If we can predict it, it has structure. If it has structure, it is not noise. And if it is not noise...
+</Dialogue>
+
+<Dialogue speaker="Commander Okafor">
+Then someone — or something — is sending it.
+</Dialogue>
+
+You've used `<link rel="prefetch">` to predict which page the user will navigate to next and preload it. Forecasting is the same idea applied to time series: based on past patterns, predict what the signal will look like in the future.
+
+<LearningObjectives objectives={["Build a multi-step forecasting system using rolling predictions", "Evaluate forecast accuracy with horizon-dependent metrics", "Understand non-stationarity — when past patterns stop predicting the future", "Handle prediction uncertainty with confidence intervals"]} />
+
+## Multi-Step Forecasting
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="forecasting.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+async function forecast(
+  model: tf.LayersModel,
+  seed: number[][],
+  horizon: number,
+): Promise<{ predictions: number[][]; confidence: number[] }> {
+  const window = [...seed];
+  const predictions: number[][] = [];
+  const confidence: number[] = [];
+
+  for (let step = 0; step < horizon; step++) {
+    const nextValue = tf.tidy(() => {
+      const input = tf.tensor3d([window.slice(-80)]);
+      const pred = model.predict(input) as tf.Tensor;
+      return Array.from(pred.dataSync());
+    });
+
+    predictions.push(nextValue);
+    window.push(nextValue);
+
+    // Confidence decreases with each step — errors compound
+    // Like prefetch accuracy dropping the further ahead you predict
+    confidence.push(Math.max(0, 1 - step * 0.015));
+  }
+
+  return { predictions, confidence };
+}
+
+// Forecast 100 steps ahead
+const result = await forecast(model, recentWindow, 100);
+console.log('Step 1 confidence:', result.confidence[0]);    // 0.985
+console.log('Step 50 confidence:', result.confidence[49]);  // 0.265
+console.log('Step 100 confidence:', result.confidence[99]); // 0.0 — too far ahead`}
+</CodeBlock>
+
+## Non-Stationarity: When Predictions Fail
+
+<CodeBlock language="typescript" title="non-stationary.ts">
+{`// The forecast says the anomaly repeats at step 47
+// But it doesn't arrive until step 50
+// The model was wrong — why?
+
+// NON-STATIONARY DATA: the statistical properties change over time
+// The signal's timing is DRIFTING — it's not perfectly periodic
+// Like a website's traffic patterns shifting after a redesign
+
+// Detection: compare predicted vs actual over a moving window
+function detectDrift(
+  predicted: number[][],
+  actual: number[][],
+  windowSize: number,
+): { driftDetected: boolean; driftMagnitude: number } {
+  const errors: number[] = [];
+  for (let i = 0; i < actual.length; i++) {
+    const err = actual[i].reduce((sum, v, j) => sum + (v - predicted[i][j]) ** 2, 0);
+    errors.push(err);
+  }
+
+  // Compare recent errors to historical errors
+  const recent = errors.slice(-windowSize);
+  const historical = errors.slice(0, -windowSize);
+  const recentMean = recent.reduce((a, b) => a + b, 0) / recent.length;
+  const histMean = historical.reduce((a, b) => a + b, 0) / historical.length;
+
+  return {
+    driftDetected: recentMean > histMean * 2,  // errors doubled
+    driftMagnitude: recentMean / histMean,
+  };
+}`}
+</CodeBlock>
+
+## Challenge
+
+Build a forecasting system and detect when predictions start drifting.
+
+<Exercise slug="forecast-signal" />
+
+<KeyTakeaways takeaways={["Forecasting extends prediction to multiple steps — confidence decreases with each step as errors compound", "Non-stationary data means patterns change over time — the model must adapt or be retrained", "Drift detection compares recent prediction errors to historical baselines, like monitoring for regressions", "The signal's timing is changing — it's not perfectly periodic, making simple forecasting insufficient"]} />

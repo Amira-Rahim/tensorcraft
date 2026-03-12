@@ -1,0 +1,74 @@
+slug: instance-labels
+lessonSlug: instance-segmentation
+title: "Assign Instance Labels"
+instructions: "Write a function that takes an array of detected objects (each with a classId and a binary pixel mask as a flat array) and returns a single instance map where each pixel holds the instance ID (1-indexed) of the object that covers it, or 0 for background."
+starterCode: |
+  interface Detection {
+    classId: number;
+    mask: number[]; // flat array, length = width * height, values 0 or 1
+  }
+
+  function buildInstanceMap(
+    detections: Detection[],
+    width: number,
+    height: number
+  ): number[] {
+    // Return a flat array of length width * height
+    // Each pixel = instance ID (1-indexed) or 0 for background
+    // Later detections overwrite earlier ones (higher z-index)
+    return []; // your code here
+  }
+solutionCode: |
+  interface Detection {
+    classId: number;
+    mask: number[];
+  }
+
+  function buildInstanceMap(
+    detections: Detection[],
+    width: number,
+    height: number
+  ): number[] {
+    const map = new Array(width * height).fill(0);
+    detections.forEach((det, idx) => {
+      const instanceId = idx + 1;
+      for (let i = 0; i < det.mask.length; i++) {
+        if (det.mask[i] === 1) {
+          map[i] = instanceId;
+        }
+      }
+    });
+    return map;
+  }
+testCode: |
+  describe('buildInstanceMap', () => {
+    it('returns all zeros for no detections', () => {
+      const map = buildInstanceMap([], 3, 3);
+      expect(map).toEqual([0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    });
+
+    it('assigns instance ID 1 to first detection', () => {
+      const det: Detection = { classId: 1, mask: [1, 0, 0, 1] };
+      const map = buildInstanceMap([det], 2, 2);
+      expect(map).toEqual([1, 0, 0, 1]);
+    });
+
+    it('later detections overwrite earlier ones', () => {
+      const det1: Detection = { classId: 1, mask: [1, 1, 0, 0] };
+      const det2: Detection = { classId: 2, mask: [0, 1, 1, 0] };
+      const map = buildInstanceMap([det1, det2], 2, 2);
+      expect(map[0]).toBe(1);
+      expect(map[1]).toBe(2);
+      expect(map[2]).toBe(2);
+      expect(map[3]).toBe(0);
+    });
+
+    it('uses 1-indexed instance IDs', () => {
+      const det1: Detection = { classId: 0, mask: [1, 0] };
+      const det2: Detection = { classId: 0, mask: [0, 1] };
+      const map = buildInstanceMap([det1, det2], 2, 1);
+      expect(map).toEqual([1, 2]);
+    });
+  });
+estimatedMinutes: 7
+difficulty: intermediate
