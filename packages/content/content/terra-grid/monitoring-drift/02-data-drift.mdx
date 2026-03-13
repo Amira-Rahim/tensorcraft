@@ -1,0 +1,147 @@
+---
+slug: data-drift
+title: "Data Drift"
+moduleId: monitoring-drift
+themeId: terra-grid
+order: 2
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Region 4 sensors received a firmware update that changed their output scale. The model still runs, but the inputs no longer match what it was trained on."
+  speaker: "Hassan Al-Rashid"
+concept:
+  explanation: "Data drift occurs when the statistical distribution of input data changes over time — like Lighthouse CI catching a CSS regression that shifts layout metrics."
+  bridge:
+    feTitle: "Lighthouse CI Regression"
+    feCode: "assert(LCP < 2500) // input metric shifted — investigate"
+    mlTitle: "Data Drift Detection"
+    mlCode: "assert(featureDist.klDivergence < 0.3) // input distribution shifted"
+    tier: structural
+consequence:
+  narrative: "The drift detector fires on Region 4. Feature 7 (temperature readings) shifted by 2 standard deviations. Root cause: firmware v3.2 changed the sensor scale from Celsius to Kelvin."
+  nextLessonTeaser: "Next: detecting when model predictions degrade, even when inputs look normal"
+hints:
+  - level: nudge
+    content: "Think about how Lighthouse CI detects when a metric regresses from its baseline"
+  - level: guidance
+    content: "Compare the statistical distribution of current inputs against the training data distribution"
+  - level: solution
+    content: "Compute KL divergence or PSI between current and baseline feature distributions — flag when above threshold"
+keywords:
+  - data-drift
+  - distribution-shift
+  - kl-divergence
+  - feature-monitoring
+---
+
+<Dialogue speaker="Hassan Al-Rashid">
+Region 4 accuracy degraded from 96.2% to 89.1% over 14 days. The model did not change. The data changed. A sensor firmware update altered the input distribution.
+</Dialogue>
+
+<Dialogue speaker="Park Soo-Yeon">
+This is why we monitor inputs, not just outputs. The model is doing exactly what we trained it to do — the problem is that the world changed underneath it.
+</Dialogue>
+
+Lighthouse CI catches regressions by comparing performance metrics against a baseline. When LCP jumps from 2.1s to 3.8s, you know something changed — maybe a new font, maybe an unoptimized image. Data drift detection works the same way: compare current input distributions against the training baseline, and flag when they diverge.
+
+<LearningObjectives objectives={["Understand data drift as a distribution shift in model inputs — like Lighthouse metric regression", "Implement KL divergence to quantify how much input data has changed", "Build per-feature drift monitors that pinpoint which inputs changed", "Design alerting thresholds that distinguish noise from real distribution shifts"]} />
+
+## Detecting Distribution Shift
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="data-drift-detector.ts">
+{`interface FeatureBaseline {
+  name: string;
+  mean: number;
+  std: number;
+  histogram: number[];     // binned distribution
+  binEdges: number[];
+}
+
+interface DriftReport {
+  feature: string;
+  klDivergence: number;
+  meanShift: number;
+  stdRatio: number;
+  isDrifting: boolean;
+}
+
+function computeKLDivergence(p: number[], q: number[]): number {
+  // KL(P || Q) — measures how different Q is from reference P
+  const epsilon = 1e-10;
+  let kl = 0;
+  for (let i = 0; i < p.length; i++) {
+    const pi = Math.max(p[i], epsilon);
+    const qi = Math.max(q[i], epsilon);
+    kl += pi * Math.log(pi / qi);
+  }
+  return kl;
+}
+
+function detectDataDrift(
+  baseline: FeatureBaseline[],
+  currentData: number[][],
+  threshold: number = 0.3,
+): DriftReport[] {
+  return baseline.map((feat, featureIdx) => {
+    const currentValues = currentData.map(row => row[featureIdx]);
+    const currentMean = mean(currentValues);
+    const currentStd = std(currentValues);
+
+    // Build histogram of current data using baseline bins
+    const currentHist = buildHistogram(currentValues, feat.binEdges);
+
+    // Normalize to probability distributions
+    const baselineDist = normalize(feat.histogram);
+    const currentDist = normalize(currentHist);
+
+    const kl = computeKLDivergence(baselineDist, currentDist);
+
+    return {
+      feature: feat.name,
+      klDivergence: kl,
+      meanShift: Math.abs(currentMean - feat.mean) / feat.std,  // in std devs
+      stdRatio: currentStd / feat.std,
+      isDrifting: kl > threshold,
+    };
+  });
+}`}
+</CodeBlock>
+
+## Pinpointing the Drift Source
+
+<CodeBlock language="typescript" title="drift-analysis.ts">
+{`function analyzeDrift(reports: DriftReport[]): void {
+  const drifting = reports.filter(r => r.isDrifting);
+
+  console.log(\`=== DATA DRIFT REPORT ===\`);
+  console.log(\`\${drifting.length} of \${reports.length} features drifting\`);
+
+  for (const report of drifting.sort((a, b) => b.klDivergence - a.klDivergence)) {
+    console.log(
+      \`  \${report.feature}: KL=\${report.klDivergence.toFixed(3)}, \` +
+      \`mean shifted \${report.meanShift.toFixed(1)} std devs, \` +
+      \`std ratio=\${report.stdRatio.toFixed(2)}\`
+    );
+  }
+
+  // Region 4 output:
+  // === DATA DRIFT REPORT ===
+  // 3 of 24 features drifting
+  //   temperature: KL=1.847, mean shifted 8.2 std devs, std ratio=1.01
+  //   humidity:    KL=0.412, mean shifted 1.8 std devs, std ratio=0.94
+  //   pressure:   KL=0.334, mean shifted 0.9 std devs, std ratio=1.12
+  //
+  // Root cause: firmware v3.2 changed temperature from Celsius to Kelvin
+  // Fix: update preprocessing to normalize the new scale
+}`}
+</CodeBlock>
+
+## Challenge
+
+Build a data drift detector that monitors feature distributions against a baseline.
+
+<Exercise slug="detect-data-drift" />
+
+<KeyTakeaways takeaways={["Data drift means the input distribution changed — the model is correct, but the world moved underneath it", "KL divergence quantifies distribution shift, like Lighthouse CI quantifies performance regression", "Per-feature monitoring pinpoints exactly which inputs drifted — enabling targeted fixes instead of full retraining", "The fix for data drift is often preprocessing (rescaling), not retraining — understand the root cause first"]} />

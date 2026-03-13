@@ -1,0 +1,110 @@
+---
+slug: the-variational-part
+title: "The Variational Part"
+moduleId: variational-autoencoders
+themeId: nova-canvas
+order: 2
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Ren discovers why regular autoencoders cannot generate — the latent space has holes. MUSE explains the variational approach: instead of encoding to a single point, encode to a distribution."
+  speaker: "MUSE"
+concept:
+  explanation: "A VAE encodes data not as a single point but as a distribution (mean + variance) in latent space. This forces the space to be smooth and continuous, enabling generation."
+  bridge:
+    feTitle: "URL Encoding"
+    feCode: "encodeURIComponent('hello world') // structured, decodable"
+    mlTitle: "Variational Encoding"
+    mlCode: "const [mu, logVar] = encoder.predict(image) // distribution, not point"
+    tier: structural
+consequence:
+  narrative: "The distinction clicks — instead of memorizing exact positions, the VAE learns regions of possibility. Every point in the space decodes to something meaningful."
+  nextLessonTeaser: "Next: the reparameterization trick — making randomness differentiable"
+hints:
+  - level: nudge
+    content: "A regular autoencoder maps to a point. A VAE maps to a region (mean + variance)."
+  - level: guidance
+    content: "The encoder outputs two vectors: mu (mean) and logVar (log variance)"
+  - level: solution
+    content: "Split the encoder output into two heads: one for mu, one for logVar"
+keywords:
+  - variational
+  - distribution
+  - mean
+  - variance
+  - latent-distribution
+---
+
+<Dialogue speaker="MUSE">
+A regular autoencoder says: "This image lives at point [0.3, -0.7, 1.2] in latent space." A variational autoencoder says: "This image lives *somewhere around* [0.3, -0.7, 1.2], with this much uncertainty." That uncertainty is the key to creation.
+</Dialogue>
+
+<Dialogue speaker="Yara">
+It is like the difference between a pin on a map and a circle on a map. The pin says "here, exactly." The circle says "somewhere in this area." And when circles overlap, you get a continuous landscape you can explore.
+</Dialogue>
+
+URL encoding takes arbitrary text and produces a structured, decodable representation. A VAE does the same thing, but instead of encoding to a single compact string, it encodes to a *probability distribution* — a mean and a variance that define a region of possibility.
+
+<LearningObjectives objectives={["Understand why regular autoencoders cannot generate well", "Grasp the key insight: encoding to distributions instead of points", "Build an encoder that outputs mean and log-variance", "See how distributional encoding creates a smooth, continuous latent space"]} />
+
+## Points vs. Distributions
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="variational-encoding.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Regular autoencoder: input → single point in latent space
+// The space has gaps — random points may decode to garbage
+function regularEncoder(inputDim: number, latentDim: number) {
+  const model = tf.sequential();
+  model.add(tf.layers.dense({ inputShape: [inputDim], units: 256, activation: 'relu' }));
+  model.add(tf.layers.dense({ units: latentDim }));  // single point
+  return model;
+}
+
+// VAE encoder: input → distribution (mean + variance) in latent space
+// The space is forced to be smooth — every point decodes to something valid
+function vaeEncoder(inputDim: number, latentDim: number) {
+  const input = tf.input({ shape: [inputDim] });
+  const hidden = tf.layers.dense({ units: 256, activation: 'relu' }).apply(input);
+
+  // Two output heads: mean and log-variance
+  const mu = tf.layers.dense({ units: latentDim, name: 'mu' }).apply(hidden);
+  const logVar = tf.layers.dense({ units: latentDim, name: 'logVar' }).apply(hidden);
+
+  return tf.model({
+    inputs: input,
+    outputs: [mu, logVar] as tf.SymbolicTensor[],
+  });
+}`}
+</CodeBlock>
+
+## Why Log-Variance?
+
+We output `log(variance)` instead of `variance` directly because variance must be positive, but neural network outputs can be any number. Taking the exponential of log-variance guarantees positivity.
+
+<CodeBlock language="typescript" title="log-variance.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// logVar can be any real number: -2.5, 0, 3.7
+// exp(logVar) is always positive: 0.08, 1.0, 40.4
+// This is the actual variance
+
+// Frontend parallel: CSS uses log-like scales for font sizes
+// font-size: 0.75rem, 1rem, 1.25rem, 1.5rem, 2rem
+// The scale is exponential, not linear — small changes at small sizes,
+// big changes at large sizes. Same idea as exp(logVar).
+
+function latentSample(mu: tf.Tensor, logVar: tf.Tensor): tf.Tensor {
+  const std = logVar.mul(0.5).exp();       // std = exp(logVar / 2)
+  const epsilon = tf.randomNormal(std.shape as number[]);
+  return mu.add(std.mul(epsilon));         // sample = mu + std * noise
+}`}
+</CodeBlock>
+
+## Challenge
+
+<Exercise slug="variational-encoding" />
+
+<KeyTakeaways takeaways={["Regular autoencoders encode to points, creating gaps in latent space", "VAEs encode to distributions (mean + variance), creating smooth continuous spaces", "The encoder outputs two vectors: mu (mean) and logVar (log-variance)", "Log-variance ensures the variance is always positive after exponentiation"]} />

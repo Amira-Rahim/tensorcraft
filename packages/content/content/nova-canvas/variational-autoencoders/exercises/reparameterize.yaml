@@ -1,0 +1,49 @@
+slug: reparameterize
+lessonSlug: reparameterization-trick
+title: "Reparameterization Trick"
+instructions: "Implement the reparameterization trick: given mu and logVar tensors, sample z = mu + exp(logVar * 0.5) * epsilon, where epsilon is drawn from a standard normal distribution."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function reparameterize(mu: tf.Tensor, logVar: tf.Tensor): tf.Tensor {
+    // 1. Sample epsilon from standard normal N(0, 1), same shape as mu
+    // 2. Compute std = exp(logVar * 0.5)
+    // 3. Return z = mu + std * epsilon
+    return null; // your code here
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function reparameterize(mu: tf.Tensor, logVar: tf.Tensor): tf.Tensor {
+    const epsilon = tf.randomNormal(mu.shape as number[]);
+    const std = logVar.mul(0.5).exp();
+    return mu.add(std.mul(epsilon));
+  }
+testCode: |
+  describe('reparameterize', () => {
+    it('returns tensor with same shape as mu', () => {
+      const mu = tf.zeros([2, 8]);
+      const logVar = tf.zeros([2, 8]);
+      const z = reparameterize(mu, logVar);
+      expect(z.shape).toEqual([2, 8]);
+    });
+    it('with zero logVar, samples are close to mu', async () => {
+      const mu = tf.fill([100, 4], 5.0);
+      const logVar = tf.fill([100, 4], -10); // very small variance
+      const z = reparameterize(mu, logVar);
+      const data = await z.array() as number[][];
+      const avg = data.flat().reduce((a, b) => a + b) / data.flat().length;
+      expect(avg).toBeGreaterThan(4.5);
+      expect(avg).toBeLessThan(5.5);
+    });
+    it('with large logVar, samples have high variance', async () => {
+      const mu = tf.zeros([1000, 1]);
+      const logVar = tf.fill([1000, 1], 4.0); // large variance
+      const z = reparameterize(mu, logVar);
+      const data = (await z.array() as number[][]).map(d => d[0]);
+      const variance = data.reduce((s, v) => s + v * v, 0) / data.length;
+      expect(variance).toBeGreaterThan(1.0);
+    });
+  });
+estimatedMinutes: 8
+difficulty: advanced

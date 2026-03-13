@@ -1,0 +1,59 @@
+slug: realtime-style
+lessonSlug: realtime-style-transfer
+title: "Build a Residual Block for Fast Style Transfer"
+instructions: "Implement a residual block for a feedforward style transfer network. The block applies two conv2d layers (kernelSize 3, same padding) and adds the input back via a skip connection. The first conv2d uses relu activation; the second uses no activation (added before the skip)."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function residualBlock(
+    input: tf.SymbolicTensor,
+    filters: number
+  ): tf.SymbolicTensor {
+    // 1. Conv2d with relu
+    // 2. Conv2d without activation
+    // 3. Add input (skip connection)
+    return null; // your code here
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function residualBlock(
+    input: tf.SymbolicTensor,
+    filters: number
+  ): tf.SymbolicTensor {
+    let x = tf.layers.conv2d({
+      filters, kernelSize: 3, padding: 'same', activation: 'relu'
+    }).apply(input) as tf.SymbolicTensor;
+    x = tf.layers.conv2d({
+      filters, kernelSize: 3, padding: 'same'
+    }).apply(x) as tf.SymbolicTensor;
+    return tf.layers.add().apply([input, x]) as tf.SymbolicTensor;
+  }
+testCode: |
+  describe('residualBlock', () => {
+    it('preserves spatial dimensions', () => {
+      const input = tf.input({ shape: [32, 32, 64] });
+      const output = residualBlock(input, 64);
+      const model = tf.model({ inputs: input, outputs: output });
+      expect(model.outputShape).toEqual([null, 32, 32, 64]);
+    });
+    it('preserves filter count', () => {
+      const input = tf.input({ shape: [16, 16, 128] });
+      const output = residualBlock(input, 128);
+      const model = tf.model({ inputs: input, outputs: output });
+      expect(model.outputShape).toEqual([null, 16, 16, 128]);
+    });
+    it('has skip connection (output != pure conv)', () => {
+      const input = tf.input({ shape: [8, 8, 32] });
+      const output = residualBlock(input, 32);
+      const model = tf.model({ inputs: input, outputs: output });
+      const testInput = tf.ones([1, 8, 8, 32]);
+      const result = model.predict(testInput) as tf.Tensor;
+      const resultData = result.dataSync();
+      // With skip connection, output should not be all zeros even with random weights
+      const hasNonZero = Array.from(resultData).some(v => Math.abs(v) > 0.01);
+      expect(hasNonZero).toBe(true);
+    });
+  });
+estimatedMinutes: 10
+difficulty: advanced

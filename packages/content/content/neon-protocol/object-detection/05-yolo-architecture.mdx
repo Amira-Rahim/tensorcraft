@@ -235,6 +235,6 @@ function detectObjects(
 
 Build a YOLO output decoder that converts grid predictions into bounding boxes.
 
-<Exercise slug="yolo-architecture" />
+<Exercise slug="yolo-detect" />
 
 <KeyTakeaways takeaways={["YOLO performs all detection in a single forward pass — like batching DOM updates into one requestAnimationFrame", "The output is a grid tensor: each cell predicts bounding boxes, confidence, and class probabilities simultaneously", "The full pipeline is predict, decode, threshold, NMS — each step maps to a familiar frontend pattern", "Browser-based YOLO runs at 15-24 FPS with WebGL and WebGPU — fast enough for the resistance to see drones first"]} />

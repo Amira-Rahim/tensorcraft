@@ -1,0 +1,201 @@
+slug: build-nlp-api
+lessonSlug: production-apis
+title: "Build a Production NLP API"
+instructions: "Implement an NLPApi class that validates requests, runs a prediction function, enforces a latency budget, and returns structured responses. The predict method should: (1) validate that text is a non-empty string (return an error response if not), (2) check if the model is ready (return error if not), (3) run the prediction within the latency budget using a timeout, (4) return a structured response with requestId, label, confidence, and processingTimeMs. Use sequential request IDs like 'req-1', 'req-2', etc."
+starterCode: |
+  interface NLPRequest {
+    text: string;
+  }
+
+  interface NLPSuccessResponse {
+    requestId: string;
+    label: string;
+    confidence: number;
+    processingTimeMs: number;
+  }
+
+  interface NLPErrorResponse {
+    requestId: string;
+    error: string;
+    code: 'VALIDATION_ERROR' | 'TIMEOUT' | 'SERVICE_UNAVAILABLE';
+  }
+
+  type NLPResponse = NLPSuccessResponse | NLPErrorResponse;
+
+  class NLPApi {
+    private requestCount = 0;
+    private predictFn: ((tokens: number[]) => number[]) | null;
+    private tokenizeFn: (text: string) => number[];
+    private labels: string[];
+    private latencyBudgetMs: number;
+
+    constructor(
+      predictFn: ((tokens: number[]) => number[]) | null,
+      tokenizeFn: (text: string) => number[],
+      labels: string[],
+      latencyBudgetMs: number = 200
+    ) {
+      this.predictFn = predictFn;
+      this.tokenizeFn = tokenizeFn;
+      this.labels = labels;
+      this.latencyBudgetMs = latencyBudgetMs;
+    }
+
+    predict(request: NLPRequest): NLPResponse {
+      // 1. Increment requestCount, generate requestId = "req-{count}"
+      // 2. Validate: text must be a non-empty string
+      //    If invalid, return { requestId, error: 'Invalid input', code: 'VALIDATION_ERROR' }
+      // 3. Check if predictFn is set (model ready)
+      //    If not, return { requestId, error: 'Model not ready', code: 'SERVICE_UNAVAILABLE' }
+      // 4. Record start time
+      // 5. Tokenize the text
+      // 6. Run predictFn on tokens
+      // 7. Check if elapsed time exceeds latencyBudgetMs
+      //    If so, return { requestId, error: 'Timeout', code: 'TIMEOUT' }
+      // 8. Find the index of the max value in prediction
+      // 9. Return success response with label, confidence, processingTimeMs
+      return null as any; // your code here
+    }
+
+    health(): { status: string; requestCount: number } {
+      return {
+        status: this.predictFn ? 'healthy' : 'degraded',
+        requestCount: this.requestCount,
+      };
+    }
+  }
+solutionCode: |
+  interface NLPRequest {
+    text: string;
+  }
+
+  interface NLPSuccessResponse {
+    requestId: string;
+    label: string;
+    confidence: number;
+    processingTimeMs: number;
+  }
+
+  interface NLPErrorResponse {
+    requestId: string;
+    error: string;
+    code: 'VALIDATION_ERROR' | 'TIMEOUT' | 'SERVICE_UNAVAILABLE';
+  }
+
+  type NLPResponse = NLPSuccessResponse | NLPErrorResponse;
+
+  class NLPApi {
+    private requestCount = 0;
+    private predictFn: ((tokens: number[]) => number[]) | null;
+    private tokenizeFn: (text: string) => number[];
+    private labels: string[];
+    private latencyBudgetMs: number;
+
+    constructor(
+      predictFn: ((tokens: number[]) => number[]) | null,
+      tokenizeFn: (text: string) => number[],
+      labels: string[],
+      latencyBudgetMs: number = 200
+    ) {
+      this.predictFn = predictFn;
+      this.tokenizeFn = tokenizeFn;
+      this.labels = labels;
+      this.latencyBudgetMs = latencyBudgetMs;
+    }
+
+    predict(request: NLPRequest): NLPResponse {
+      this.requestCount++;
+      const requestId = `req-${this.requestCount}`;
+
+      if (!request.text || typeof request.text !== 'string' || request.text.trim().length === 0) {
+        return { requestId, error: 'Invalid input', code: 'VALIDATION_ERROR' };
+      }
+
+      if (!this.predictFn) {
+        return { requestId, error: 'Model not ready', code: 'SERVICE_UNAVAILABLE' };
+      }
+
+      const startTime = performance.now();
+      const tokens = this.tokenizeFn(request.text);
+      const prediction = this.predictFn(tokens);
+      const elapsed = performance.now() - startTime;
+
+      if (elapsed > this.latencyBudgetMs) {
+        return { requestId, error: 'Timeout', code: 'TIMEOUT' };
+      }
+
+      const maxIndex = prediction.indexOf(Math.max(...prediction));
+
+      return {
+        requestId,
+        label: this.labels[maxIndex],
+        confidence: prediction[maxIndex],
+        processingTimeMs: elapsed,
+      };
+    }
+
+    health(): { status: string; requestCount: number } {
+      return {
+        status: this.predictFn ? 'healthy' : 'degraded',
+        requestCount: this.requestCount,
+      };
+    }
+  }
+testCode: |
+  describe('NLPApi', () => {
+    const mockPredict = (tokens: number[]) => [0.1, 0.85, 0.05];
+    const mockTokenize = (text: string) => text.split(' ').map((_, i) => i);
+    const labels = ['normal', 'urgent', 'critical'];
+
+    it('returns correct label and confidence', () => {
+      const api = new NLPApi(mockPredict, mockTokenize, labels);
+      const result = api.predict({ text: 'test input' });
+      expect('label' in result).toBe(true);
+      if ('label' in result) {
+        expect(result.label).toBe('urgent');
+        expect(result.confidence).toBe(0.85);
+      }
+    });
+
+    it('generates sequential request IDs', () => {
+      const api = new NLPApi(mockPredict, mockTokenize, labels);
+      const r1 = api.predict({ text: 'first' });
+      const r2 = api.predict({ text: 'second' });
+      expect(r1.requestId).toBe('req-1');
+      expect(r2.requestId).toBe('req-2');
+    });
+
+    it('returns validation error for empty text', () => {
+      const api = new NLPApi(mockPredict, mockTokenize, labels);
+      const result = api.predict({ text: '' });
+      expect('code' in result).toBe(true);
+      if ('code' in result) {
+        expect(result.code).toBe('VALIDATION_ERROR');
+      }
+    });
+
+    it('returns service unavailable when model not loaded', () => {
+      const api = new NLPApi(null, mockTokenize, labels);
+      const result = api.predict({ text: 'test' });
+      expect('code' in result).toBe(true);
+      if ('code' in result) {
+        expect(result.code).toBe('SERVICE_UNAVAILABLE');
+      }
+    });
+
+    it('reports health status', () => {
+      const api = new NLPApi(mockPredict, mockTokenize, labels);
+      expect(api.health().status).toBe('healthy');
+      const degraded = new NLPApi(null, mockTokenize, labels);
+      expect(degraded.health().status).toBe('degraded');
+    });
+
+    it('tracks request count in health', () => {
+      const api = new NLPApi(mockPredict, mockTokenize, labels);
+      api.predict({ text: 'one' });
+      api.predict({ text: 'two' });
+      expect(api.health().requestCount).toBe(2);
+    });
+  });
+estimatedMinutes: 15
+difficulty: intermediate

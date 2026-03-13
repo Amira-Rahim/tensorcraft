@@ -1,0 +1,44 @@
+slug: target-analysis
+lessonSlug: deployment-targets
+title: "Analyze Deployment Targets"
+instructions: "Write a function profileDevice that takes a device object with ram (MB), cpuCores, and hasGPU properties, and returns 'full' if ram >= 2048 and hasGPU, 'medium' if ram >= 512, or 'lite' otherwise."
+starterCode: |
+  interface Device {
+    ram: number;
+    cpuCores: number;
+    hasGPU: boolean;
+  }
+
+  function profileDevice(device: Device): 'full' | 'medium' | 'lite' {
+    // Your code here
+    return 'lite';
+  }
+solutionCode: |
+  interface Device {
+    ram: number;
+    cpuCores: number;
+    hasGPU: boolean;
+  }
+
+  function profileDevice(device: Device): 'full' | 'medium' | 'lite' {
+    if (device.ram >= 2048 && device.hasGPU) return 'full';
+    if (device.ram >= 512) return 'medium';
+    return 'lite';
+  }
+testCode: |
+  describe('profileDevice', () => {
+    it('returns full for high-power devices', () => {
+      expect(profileDevice({ ram: 4096, cpuCores: 4, hasGPU: true })).toBe('full');
+    });
+    it('returns medium for mid-range devices', () => {
+      expect(profileDevice({ ram: 512, cpuCores: 2, hasGPU: false })).toBe('medium');
+    });
+    it('returns lite for low-power devices', () => {
+      expect(profileDevice({ ram: 256, cpuCores: 1, hasGPU: false })).toBe('lite');
+    });
+    it('returns medium for high RAM without GPU', () => {
+      expect(profileDevice({ ram: 2048, cpuCores: 4, hasGPU: false })).toBe('medium');
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

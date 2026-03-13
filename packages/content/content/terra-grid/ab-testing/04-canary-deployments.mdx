@@ -1,0 +1,158 @@
+---
+slug: canary-deployments
+title: "Canary Deployments"
+moduleId: ab-testing
+themeId: terra-grid
+order: 4
+estimatedMinutes: 25
+difficulty: advanced
+context:
+  narrative: "Cole manages the canary rollout from the field. 'Region 3 gets the new model first. If it holds for 48 hours with no degradation, we expand to Regions 1 and 7. If anything looks off, one command rolls everything back.'"
+  speaker: "Cole Branson"
+concept:
+  explanation: "Canary deployments gradually roll out a new model version to a subset of devices with automatic rollback — identical to canary releases for frontend applications."
+  bridge:
+    feTitle: "Canary Releases"
+    feCode: "// Deploy v2 to 5% of servers, monitor error rate, promote or rollback"
+    mlTitle: "Model Canary"
+    mlCode: "// Deploy modelV2 to Region 3, monitor accuracy, promote or rollback"
+    tier: identity
+consequence:
+  narrative: "Region 3 canary passes all checks. Cole promotes to Regions 1 and 7. After 72 hours across 3 regions: zero accuracy regressions, 6-hour earlier anomaly detection on 3 confirmed incidents. 'The new model caught a bearing failure 6 hours earlier. That is real impact.'"
+  nextLessonTeaser: "Next: multi-armed bandits — adaptive traffic allocation that optimizes in real time"
+hints:
+  - level: nudge
+    content: "A canary deployment is a staged rollout with health checks at each stage"
+  - level: guidance
+    content: "Implement a CanaryManager that tracks deployment stages and automates promotion/rollback"
+  - level: solution
+    content: "Build a state machine: canary -> early-access -> wide-rollout -> full, with health gates between stages"
+keywords:
+  - canary-deployment
+  - gradual-rollout
+  - automatic-rollback
+  - staged-deployment
+---
+
+<Dialogue speaker="Cole Branson">
+Region 3 is our canary. 2,100 devices. If the new model performs well for 48 hours — no accuracy drops, no latency spikes, no missed anomalies — we promote. If anything goes sideways, one API call rolls back every device in the region. Clean and fast.
+</Dialogue>
+
+<Dialogue speaker="Jin Takahashi">
+The rollback must be instant. If a canary deployment compromises safety monitoring at any site, we need sub-second fallback to the proven model. No grace period.
+</Dialogue>
+
+You have deployed frontend canaries: push to one server, watch error rates, promote or roll back. Model canaries follow the exact same protocol. Deploy the new model to one region, monitor production metrics, and only promote when the data confirms improvement. The key difference: ML canaries must track model-specific health — accuracy, detection speed, false positive rates — not just HTTP errors.
+
+<LearningObjectives objectives={["Implement a canary deployment manager for model rollouts", "Define health check criteria specific to ML model performance", "Build automatic promotion and rollback logic based on metric thresholds", "Design region-based staged rollout strategies"]} />
+
+## Canary Manager
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="canary-manager.ts">
+{`// Canary deployment manager — staged rollout with health gates
+
+type DeploymentStage = 'canary' | 'early-access' | 'wide-rollout' | 'full' | 'rolled-back';
+
+interface HealthCheck {
+  accuracy: number;
+  avgLatencyMs: number;
+  falsePositiveRate: number;
+  missedAnomalies: number;
+}
+
+interface StageConfig {
+  name: DeploymentStage;
+  regions: string[];
+  requiredHealthDuration: number; // hours
+  healthThresholds: HealthCheck;
+  nextStage: DeploymentStage | null;
+}
+
+class CanaryManager {
+  private currentStage: DeploymentStage = 'canary';
+  private stageStartTime: number = Date.now();
+  private stages: Map<DeploymentStage, StageConfig>;
+
+  constructor(stages: StageConfig[]) {
+    this.stages = new Map(stages.map(s => [s.name, s]));
+  }
+
+  getCurrentStage(): StageConfig | undefined {
+    return this.stages.get(this.currentStage);
+  }
+
+  checkHealth(metrics: HealthCheck): { healthy: boolean; failures: string[] } {
+    const stage = this.getCurrentStage();
+    if (!stage) return { healthy: false, failures: ['Unknown stage'] };
+
+    const failures: string[] = [];
+    const t = stage.healthThresholds;
+
+    if (metrics.accuracy < t.accuracy)
+      failures.push(\`Accuracy \${metrics.accuracy} < \${t.accuracy}\`);
+    if (metrics.avgLatencyMs > t.avgLatencyMs)
+      failures.push(\`Latency \${metrics.avgLatencyMs}ms > \${t.avgLatencyMs}ms\`);
+    if (metrics.falsePositiveRate > t.falsePositiveRate)
+      failures.push(\`FP rate \${metrics.falsePositiveRate} > \${t.falsePositiveRate}\`);
+    if (metrics.missedAnomalies > t.missedAnomalies)
+      failures.push(\`Missed \${metrics.missedAnomalies} > \${t.missedAnomalies}\`);
+
+    return { healthy: failures.length === 0, failures };
+  }
+
+  async evaluate(metrics: HealthCheck): Promise<DeploymentStage> {
+    const health = this.checkHealth(metrics);
+
+    if (!health.healthy) {
+      console.error('Health check failed:', health.failures);
+      this.currentStage = 'rolled-back';
+      return this.currentStage;
+    }
+
+    const stage = this.getCurrentStage()!;
+    const elapsed = (Date.now() - this.stageStartTime) / 3600000;
+
+    if (elapsed >= stage.requiredHealthDuration && stage.nextStage) {
+      this.currentStage = stage.nextStage;
+      this.stageStartTime = Date.now();
+      console.log(\`Promoted to stage: \${this.currentStage}\`);
+    }
+
+    return this.currentStage;
+  }
+}
+
+// Terra Grid canary rollout plan
+const manager = new CanaryManager([
+  {
+    name: 'canary', regions: ['region-3'],
+    requiredHealthDuration: 48, nextStage: 'early-access',
+    healthThresholds: { accuracy: 0.90, avgLatencyMs: 20, falsePositiveRate: 0.05, missedAnomalies: 0 },
+  },
+  {
+    name: 'early-access', regions: ['region-3', 'region-1', 'region-7'],
+    requiredHealthDuration: 72, nextStage: 'wide-rollout',
+    healthThresholds: { accuracy: 0.91, avgLatencyMs: 18, falsePositiveRate: 0.04, missedAnomalies: 0 },
+  },
+  {
+    name: 'wide-rollout', regions: ['region-1', 'region-2', 'region-3', 'region-5', 'region-7'],
+    requiredHealthDuration: 168, nextStage: 'full',
+    healthThresholds: { accuracy: 0.92, avgLatencyMs: 15, falsePositiveRate: 0.03, missedAnomalies: 0 },
+  },
+  {
+    name: 'full', regions: ['all'],
+    requiredHealthDuration: 0, nextStage: null,
+    healthThresholds: { accuracy: 0.92, avgLatencyMs: 15, falsePositiveRate: 0.03, missedAnomalies: 0 },
+  },
+]);`}
+</CodeBlock>
+
+## Challenge
+
+Build a canary deployment manager with health gates and automatic rollback.
+
+<Exercise slug="canary-deploy" />
+
+<KeyTakeaways takeaways={["Canary deployments for models follow the same pattern as frontend canary releases", "Health checks for ML include model-specific metrics: accuracy, false positive rate, missed anomalies", "Region-based staged rollout limits blast radius — one region fails, the others stay on the proven model", "Automatic rollback on health check failure means no human needs to be awake at 3 AM to kill a bad deployment"]} />

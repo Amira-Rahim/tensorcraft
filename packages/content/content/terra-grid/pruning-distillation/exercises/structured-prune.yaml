@@ -1,0 +1,9 @@
+slug: structured-prune
+lessonSlug: structured-pruning
+title: "Structured Pruning"
+instructions: "Write a function neuronScore(weights) that returns the L1 norm (sum of absolute values) of an array. Then write structuredPrune(matrix, keepRatio) that keeps only the top keepRatio fraction of rows (neurons) by L1 score."
+starterCode: "function neuronScore(weights) {\n  // Return L1 norm: sum of absolute values\n  return null; // your code here\n}\n\nfunction structuredPrune(matrix, keepRatio) {\n  // Keep top keepRatio fraction of rows by L1 score\n  return null; // your code here\n}"
+solutionCode: "function neuronScore(weights) {\n  return weights.reduce((sum, w) => sum + Math.abs(w), 0);\n}\n\nfunction structuredPrune(matrix, keepRatio) {\n  const scores = matrix.map((row, i) => ({ index: i, score: neuronScore(row) }));\n  scores.sort((a, b) => b.score - a.score);\n  const keepCount = Math.ceil(matrix.length * keepRatio);\n  const keepIndices = scores.slice(0, keepCount).map(s => s.index).sort((a, b) => a - b);\n  return keepIndices.map(i => matrix[i]);\n}"
+testCode: "describe('structuredPrune', () => { const matrix = [[0.9, 0.8], [0.01, 0.02], [0.7, 0.6], [0.001, 0.002]]; const pruned = structuredPrune(matrix, 0.5); it('keeps half the neurons', () => { expect(pruned.length).toBe(2); }); it('keeps high-score neurons', () => { expect(neuronScore(pruned[0])).toBeGreaterThan(1.0); }); });"
+estimatedMinutes: 15
+difficulty: intermediate

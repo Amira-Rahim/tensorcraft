@@ -1,0 +1,9 @@
+slug: teacher-student
+lessonSlug: teacher-student-training
+title: "Combined Distillation Loss"
+instructions: "Write a function combinedLoss(distillLoss, taskLoss, alpha, temperature) that returns alpha * distillLoss * (temperature * temperature) + (1 - alpha) * taskLoss. Alpha balances teacher knowledge vs ground truth."
+starterCode: "function combinedLoss(distillLoss, taskLoss, alpha, temperature) {\n  // Combine distillation and task losses\n  return null; // your code here\n}"
+solutionCode: "function combinedLoss(distillLoss, taskLoss, alpha, temperature) {\n  return alpha * distillLoss * (temperature * temperature) + (1 - alpha) * taskLoss;\n}"
+testCode: "describe('combinedLoss', () => { it('balances losses with alpha', () => { const loss = combinedLoss(0.5, 0.3, 0.7, 3); expect(loss).toBeCloseTo(0.7 * 0.5 * 9 + 0.3 * 0.3); }); it('returns only task loss when alpha=0', () => { expect(combinedLoss(0.5, 0.3, 0, 3)).toBeCloseTo(0.3); }); it('scales distill loss by T^2', () => { const l1 = combinedLoss(1.0, 0, 1, 2); const l2 = combinedLoss(1.0, 0, 1, 4); expect(l2).toBeGreaterThan(l1); }); });"
+estimatedMinutes: 10
+difficulty: intermediate

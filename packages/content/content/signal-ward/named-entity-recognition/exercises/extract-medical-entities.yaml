@@ -1,0 +1,108 @@
+slug: extract-medical-entities
+lessonSlug: medical-entities
+title: "Extract Medical Entities"
+instructions: "Build a medical entity classifier with multiple detection strategies — like TypeScript type guards for clinical text. Implement classifyToken to identify entity types using dictionary lookup (drugs, conditions, procedures, frequencies), regex pattern matching (dosages), and abbreviation expansion. Then implement classifySentence to classify all tokens in an array."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  const DRUG_LIST = ['methotrexate', 'warfarin', 'lisinopril', 'aspirin', 'heparin', 'ibuprofen'];
+  const CONDITION_LIST = ['diabetes', 'hypertension', 'arthritis', 'pneumonia', 'sepsis'];
+  const PROCEDURE_LIST = ['intubation', 'biopsy', 'catheterization'];
+  const FREQUENCY_LIST = ['daily', 'weekly', 'bid', 'tid', 'qid', 'prn'];
+  const ABBREVIATIONS: Record<string, string> = {
+    'RA': 'CONDITION', 'DM': 'CONDITION', 'HTN': 'CONDITION',
+    'CHF': 'CONDITION', 'COPD': 'CONDITION', 'ABX': 'DRUG'
+  };
+  const DOSAGE_PATTERN = /^\d+\.?\d*(mg|mcg|ml|g|units|iu)$/i;
+
+  function classifyToken(token: string): string {
+    // Use multiple strategies like TypeScript type guards:
+    // 1. Dictionary lookup for drugs, conditions, procedures, frequencies
+    // 2. Regex pattern for dosages
+    // 3. Abbreviation map for clinical abbreviations
+    // Return: DRUG, CONDITION, PROCEDURE, FREQUENCY, DOSAGE, or O
+    return 'O';
+  }
+
+  function classifySentence(tokens: string[]): Array<{ token: string; label: string }> {
+    // Classify every token in the sentence
+    return [];
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  const DRUG_LIST = ['methotrexate', 'warfarin', 'lisinopril', 'aspirin', 'heparin', 'ibuprofen'];
+  const CONDITION_LIST = ['diabetes', 'hypertension', 'arthritis', 'pneumonia', 'sepsis'];
+  const PROCEDURE_LIST = ['intubation', 'biopsy', 'catheterization'];
+  const FREQUENCY_LIST = ['daily', 'weekly', 'bid', 'tid', 'qid', 'prn'];
+  const ABBREVIATIONS: Record<string, string> = {
+    'RA': 'CONDITION', 'DM': 'CONDITION', 'HTN': 'CONDITION',
+    'CHF': 'CONDITION', 'COPD': 'CONDITION', 'ABX': 'DRUG'
+  };
+  const DOSAGE_PATTERN = /^\d+\.?\d*(mg|mcg|ml|g|units|iu)$/i;
+
+  function classifyToken(token: string): string {
+    const lower = token.toLowerCase();
+    if (DRUG_LIST.includes(lower)) return 'DRUG';
+    if (CONDITION_LIST.includes(lower)) return 'CONDITION';
+    if (PROCEDURE_LIST.includes(lower)) return 'PROCEDURE';
+    if (FREQUENCY_LIST.includes(lower)) return 'FREQUENCY';
+    if (DOSAGE_PATTERN.test(token)) return 'DOSAGE';
+    if (token.toUpperCase() in ABBREVIATIONS) return ABBREVIATIONS[token.toUpperCase()];
+    return 'O';
+  }
+
+  function classifySentence(tokens: string[]): Array<{ token: string; label: string }> {
+    return tokens.map(token => ({ token, label: classifyToken(token) }));
+  }
+testCode: |
+  describe('classifyToken', () => {
+    it('identifies drugs from dictionary', () => {
+      expect(classifyToken('methotrexate')).toBe('DRUG');
+      expect(classifyToken('Warfarin')).toBe('DRUG');
+    });
+    it('identifies conditions from dictionary', () => {
+      expect(classifyToken('diabetes')).toBe('CONDITION');
+      expect(classifyToken('Hypertension')).toBe('CONDITION');
+    });
+    it('identifies procedures from dictionary', () => {
+      expect(classifyToken('biopsy')).toBe('PROCEDURE');
+    });
+    it('identifies frequencies from dictionary', () => {
+      expect(classifyToken('daily')).toBe('FREQUENCY');
+      expect(classifyToken('bid')).toBe('FREQUENCY');
+    });
+    it('identifies dosages by regex pattern', () => {
+      expect(classifyToken('15mg')).toBe('DOSAGE');
+      expect(classifyToken('100mcg')).toBe('DOSAGE');
+      expect(classifyToken('2.5ml')).toBe('DOSAGE');
+      expect(classifyToken('10units')).toBe('DOSAGE');
+    });
+    it('resolves clinical abbreviations', () => {
+      expect(classifyToken('HTN')).toBe('CONDITION');
+      expect(classifyToken('RA')).toBe('CONDITION');
+      expect(classifyToken('ABX')).toBe('DRUG');
+    });
+    it('returns O for non-entities', () => {
+      expect(classifyToken('the')).toBe('O');
+      expect(classifyToken('patient')).toBe('O');
+      expect(classifyToken('was')).toBe('O');
+    });
+  });
+  describe('classifySentence', () => {
+    it('classifies all tokens in a clinical sentence', () => {
+      const result = classifySentence(['Patient', 'takes', 'aspirin', '100mg', 'daily']);
+      expect(result[0].label).toBe('O');
+      expect(result[1].label).toBe('O');
+      expect(result[2].label).toBe('DRUG');
+      expect(result[3].label).toBe('DOSAGE');
+      expect(result[4].label).toBe('FREQUENCY');
+    });
+    it('handles abbreviations in context', () => {
+      const result = classifySentence(['History', 'of', 'HTN', 'on', 'lisinopril']);
+      expect(result[2].label).toBe('CONDITION');
+      expect(result[4].label).toBe('DRUG');
+    });
+  });
+estimatedMinutes: 15
+difficulty: intermediate

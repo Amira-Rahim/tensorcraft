@@ -1,0 +1,9 @@
+slug: set-budgets
+lessonSlug: computational-budgets
+title: "Set Computational Budgets"
+instructions: "Write createBudget(deviceRamMB, storageGB, targetLatencyMs) that returns { maxRamMB: deviceRamMB * 0.6, maxSizeMB: storageGB * 1024 * 0.25, maxLatencyMs: targetLatencyMs }. Then write checkBudget(metrics, budget) that returns true if all metrics are within budget."
+starterCode: "function createBudget(deviceRamMB, storageGB, targetLatencyMs) {\n  return null; // your code here\n}\n\nfunction checkBudget(metrics, budget) {\n  // metrics: { ramMB, sizeMB, latencyMs }\n  // Return true if all within budget\n  return null; // your code here\n}"
+solutionCode: "function createBudget(deviceRamMB, storageGB, targetLatencyMs) {\n  return { maxRamMB: deviceRamMB * 0.6, maxSizeMB: storageGB * 1024 * 0.25, maxLatencyMs: targetLatencyMs };\n}\n\nfunction checkBudget(metrics, budget) {\n  return metrics.ramMB <= budget.maxRamMB && metrics.sizeMB <= budget.maxSizeMB && metrics.latencyMs <= budget.maxLatencyMs;\n}"
+testCode: "describe('Budget', () => { const budget = createBudget(512, 4, 89); it('calculates RAM budget', () => { expect(budget.maxRamMB).toBeCloseTo(307.2); }); it('calculates size budget', () => { expect(budget.maxSizeMB).toBe(1024); }); it('passes valid model', () => { expect(checkBudget({ ramMB: 200, sizeMB: 50, latencyMs: 50 }, budget)).toBe(true); }); it('fails over-budget model', () => { expect(checkBudget({ ramMB: 400, sizeMB: 50, latencyMs: 50 }, budget)).toBe(false); }); });"
+estimatedMinutes: 10
+difficulty: intermediate

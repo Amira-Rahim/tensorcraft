@@ -1,0 +1,186 @@
+---
+slug: final-integration
+title: "Final Integration"
+moduleId: nc-capstone
+themeId: nova-canvas
+order: 1
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "Two weeks to opening night. Yara, Kai, Petrov, and Ren gather around the architecture diagram. Ten modules of work — image generation, style transfer, text-to-image, CLIP alignment, audio synthesis — all separate systems. Now they become one."
+  speaker: "Yara"
+concept:
+  explanation: "Final integration connects independently developed modules into a unified system — the same challenge as integrating packages in a monorepo, where each component must communicate through well-defined interfaces."
+  bridge:
+    feTitle: "Monorepo Integration"
+    feCode: "import { generate } from '@nova/image'; import { synthesize } from '@nova/audio';"
+    mlTitle: "Multi-Modal Pipeline"
+    mlCode: "const image = await imageModel.predict(z); const audio = await audioModel.predict(z);"
+    tier: structural
+consequence:
+  narrative: "For the first time, all modalities run together. A visitor speaks a prompt. Text becomes an image. The image generates a soundscape. The soundscape drives visual effects. A complete creative loop."
+  nextLessonTeaser: "Next: designing the visitor experience"
+hints:
+  - level: nudge
+    content: "Think about how each module exports a clean API — the integration layer just composes them"
+  - level: guidance
+    content: "Build a central orchestrator that routes data between modalities based on generation mode"
+  - level: solution
+    content: "Create a MultiModalPipeline class that chains image, audio, style, and text models with shared latent spaces"
+keywords:
+  - integration
+  - multi-modal
+  - pipeline
+  - orchestration
+---
+
+<Dialogue speaker="Yara">
+We have built an image generator, a style transfer engine, a text-to-image pipeline, an audio synthesizer, and a real-time synchronization system. Separately, each one is impressive. Together, they should be transcendent.
+</Dialogue>
+
+<Dialogue speaker="Ren">
+This is the same challenge as integrating a monorepo before a major release. Each package works in isolation. The hard part is making them work together — shared types, consistent interfaces, and a clear data flow.
+</Dialogue>
+
+You have integrated dozens of packages in production monorepos. Each package has its own tests, its own build, its own API surface. Integration means composing those APIs into a coherent application. Multi-modal AI integration is the same challenge: each model is a package with typed inputs and outputs, and the orchestrator wires them together.
+
+<LearningObjectives objectives={["Design a multi-modal orchestration layer that connects all generation modules", "Implement shared latent spaces for coherent cross-modal generation", "Build a routing system that directs user input to the appropriate model pipeline", "Handle errors and fallbacks across interconnected generation modules"]} />
+
+## The Orchestrator
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="orchestrator.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Each modality is a module with a consistent interface
+interface ModalityModule {
+  name: string;
+  generate(input: tf.Tensor): Promise<tf.Tensor>;
+  isReady(): boolean;
+}
+
+class MultiModalOrchestrator {
+  private modules = new Map<string, ModalityModule>();
+  private cache: GenerationCache;
+
+  constructor(cache: GenerationCache) {
+    this.cache = cache;
+  }
+
+  register(module: ModalityModule) {
+    this.modules.set(module.name, module);
+  }
+
+  // Full pipeline: text → image + audio + effects
+  async generateFromPrompt(prompt: string): Promise<MultiModalResult> {
+    // Stage 1: Text → shared latent vector
+    const textEncoder = this.modules.get('text-encoder')!;
+    const latent = await textEncoder.generate(
+      tf.tensor2d([[...encodePrompt(prompt)]])
+    );
+
+    // Stage 2: Latent → all modalities in parallel
+    const [image, audio, style] = await Promise.all([
+      this.modules.get('image-generator')!.generate(latent),
+      this.modules.get('audio-synthesizer')!.generate(latent),
+      this.modules.get('style-transfer')!.generate(latent),
+    ]);
+
+    return {
+      image: await image.data() as Float32Array,
+      audio: await audio.data() as Float32Array,
+      style: await style.data() as Float32Array,
+      latent: await latent.data() as Float32Array,
+    };
+  }
+
+  // Graceful degradation: if one modality fails, others continue
+  async generateSafe(prompt: string): Promise<Partial<MultiModalResult>> {
+    const result: Partial<MultiModalResult> = {};
+    const latent = await this.encodeText(prompt);
+
+    const tasks = [
+      { key: 'image', module: 'image-generator' },
+      { key: 'audio', module: 'audio-synthesizer' },
+      { key: 'style', module: 'style-transfer' },
+    ];
+
+    await Promise.allSettled(
+      tasks.map(async ({ key, module }) => {
+        const mod = this.modules.get(module);
+        if (mod?.isReady()) {
+          const output = await mod.generate(latent);
+          (result as any)[key] = await output.data();
+        }
+      })
+    );
+
+    return result;
+  }
+
+  private async encodeText(prompt: string): Promise<tf.Tensor> {
+    const encoder = this.modules.get('text-encoder')!;
+    return encoder.generate(tf.tensor2d([[...encodePrompt(prompt)]]));
+  }
+}
+
+interface MultiModalResult {
+  image: Float32Array;
+  audio: Float32Array;
+  style: Float32Array;
+  latent: Float32Array;
+}`}
+</CodeBlock>
+
+## Module Health Check
+
+<CodeBlock language="typescript" title="health-check.ts">
+{`// Pre-flight check before opening night — like CI passing before deploy
+async function systemHealthCheck(
+  orchestrator: MultiModalOrchestrator
+): Promise<HealthReport> {
+  const checks = [
+    'text-encoder', 'image-generator', 'audio-synthesizer',
+    'style-transfer', 'clip-alignment',
+  ];
+
+  const results = await Promise.all(
+    checks.map(async (name) => {
+      try {
+        const start = performance.now();
+        const testInput = tf.randomNormal([1, 128]);
+        await orchestrator.generateSafe('test');
+        testInput.dispose();
+        return { name, status: 'ok', latencyMs: performance.now() - start };
+      } catch (err) {
+        return { name, status: 'error', error: (err as Error).message };
+      }
+    })
+  );
+
+  return {
+    allHealthy: results.every(r => r.status === 'ok'),
+    modules: results,
+    timestamp: Date.now(),
+    tensorCount: tf.memory().numTensors,
+    memoryMB: tf.memory().numBytes / 1024 / 1024,
+  };
+}
+
+interface HealthReport {
+  allHealthy: boolean;
+  modules: { name: string; status: string; latencyMs?: number; error?: string }[];
+  timestamp: number;
+  tensorCount: number;
+  memoryMB: number;
+}`}
+</CodeBlock>
+
+## Challenge
+
+Build a multi-modal orchestrator that integrates image, audio, and style generation with graceful fallbacks.
+
+<Exercise slug="integrate-modalities" />
+
+<KeyTakeaways takeaways={["Multi-modal integration is monorepo package composition — each model is a module with typed I/O", "Shared latent spaces ensure cross-modal coherence: one vector, multiple outputs", "Promise.allSettled enables graceful degradation — partial results beat total failure", "Health checks before launch validate every module independently and in combination"]} />

@@ -1,0 +1,59 @@
+slug: profile-generation
+lessonSlug: performance-profiling
+title: "Profile Generation Pipeline"
+instructions: "Build a profiling function that measures the time taken by each stage of a generation pipeline (preprocessing, inference, postprocessing) using performance.mark() and performance.measure(). Return an object mapping stage names to their duration in milliseconds."
+starterCode: |
+  async function profilePipeline(
+    preprocess: () => Promise<void>,
+    infer: () => Promise<void>,
+    postprocess: () => Promise<void>
+  ): Promise<Record<string, number>> {
+    const metrics: Record<string, number> = {};
+    // Profile each stage using performance.mark() and performance.measure()
+    // your code here
+    return metrics;
+  }
+solutionCode: |
+  async function profilePipeline(
+    preprocess: () => Promise<void>,
+    infer: () => Promise<void>,
+    postprocess: () => Promise<void>
+  ): Promise<Record<string, number>> {
+    const metrics: Record<string, number> = {};
+    const stages = [
+      { name: 'preprocessing', fn: preprocess },
+      { name: 'inference', fn: infer },
+      { name: 'postprocessing', fn: postprocess },
+    ];
+    for (const stage of stages) {
+      performance.mark(`${stage.name}-start`);
+      await stage.fn();
+      performance.mark(`${stage.name}-end`);
+      performance.measure(stage.name, `${stage.name}-start`, `${stage.name}-end`);
+      const entry = performance.getEntriesByName(stage.name, 'measure')[0];
+      metrics[stage.name] = entry.duration;
+    }
+    performance.clearMarks();
+    performance.clearMeasures();
+    return metrics;
+  }
+testCode: |
+  describe('profilePipeline', () => {
+    const delay = (ms) => new Promise(r => setTimeout(r, ms));
+    it('measures all stages', async () => {
+      const metrics = await profilePipeline(
+        () => delay(10), () => delay(20), () => delay(10)
+      );
+      expect(metrics).toHaveProperty('preprocessing');
+      expect(metrics).toHaveProperty('inference');
+      expect(metrics).toHaveProperty('postprocessing');
+    });
+    it('returns numeric durations', async () => {
+      const metrics = await profilePipeline(
+        () => delay(5), () => delay(5), () => delay(5)
+      );
+      Object.values(metrics).forEach(v => expect(typeof v).toBe('number'));
+    });
+  });
+estimatedMinutes: 12
+difficulty: advanced

@@ -1,0 +1,129 @@
+slug: integrate-pipeline
+lessonSlug: integration
+title: "Build a Middleware Pipeline"
+instructions: "Implement a middleware-style pipeline where each stage receives a context object and a next() function. Stages process data and call next() to continue. If a stage does not call next(), downstream stages are skipped. The pipeline should execute stages in order and return the final context."
+starterCode: |
+  type PipelineContext = {
+    value: number;
+    log: string[];
+    errors: string[];
+  };
+
+  type Middleware = (
+    ctx: PipelineContext,
+    next: () => Promise<void>
+  ) => Promise<void>;
+
+  class MiddlewarePipeline {
+    private stack: Middleware[] = [];
+
+    use(middleware: Middleware): MiddlewarePipeline {
+      // Add middleware to the stack
+      return this; // your code here
+    }
+
+    async execute(ctx: PipelineContext): Promise<PipelineContext> {
+      // Execute middleware in order
+      // Each middleware receives ctx and a next() function
+      // Calling next() moves to the next middleware
+      return ctx; // your code here
+    }
+  }
+solutionCode: |
+  type PipelineContext = {
+    value: number;
+    log: string[];
+    errors: string[];
+  };
+
+  type Middleware = (
+    ctx: PipelineContext,
+    next: () => Promise<void>
+  ) => Promise<void>;
+
+  class MiddlewarePipeline {
+    private stack: Middleware[] = [];
+
+    use(middleware: Middleware): MiddlewarePipeline {
+      this.stack.push(middleware);
+      return this;
+    }
+
+    async execute(ctx: PipelineContext): Promise<PipelineContext> {
+      let index = 0;
+
+      const next = async (): Promise<void> => {
+        if (index < this.stack.length) {
+          const middleware = this.stack[index++];
+          await middleware(ctx, next);
+        }
+      };
+
+      await next();
+      return ctx;
+    }
+  }
+testCode: |
+  describe('MiddlewarePipeline', () => {
+    it('executes middleware in order', async () => {
+      const pipeline = new MiddlewarePipeline()
+        .use(async (ctx, next) => {
+          ctx.log.push('first');
+          await next();
+        })
+        .use(async (ctx, next) => {
+          ctx.log.push('second');
+          await next();
+        });
+
+      const result = await pipeline.execute({ value: 0, log: [], errors: [] });
+      expect(result.log).toEqual(['first', 'second']);
+    });
+
+    it('passes context between middleware', async () => {
+      const pipeline = new MiddlewarePipeline()
+        .use(async (ctx, next) => {
+          ctx.value = ctx.value * 2;
+          await next();
+        })
+        .use(async (ctx, next) => {
+          ctx.value = ctx.value + 10;
+          await next();
+        });
+
+      const result = await pipeline.execute({ value: 5, log: [], errors: [] });
+      expect(result.value).toBe(20);
+    });
+
+    it('skips downstream when next() is not called', async () => {
+      const pipeline = new MiddlewarePipeline()
+        .use(async (ctx, next) => {
+          ctx.log.push('runs');
+          ctx.errors.push('short-circuit');
+          // Do NOT call next() — pipeline stops here
+        })
+        .use(async (ctx, next) => {
+          ctx.log.push('should-not-run');
+          await next();
+        });
+
+      const result = await pipeline.execute({ value: 0, log: [], errors: [] });
+      expect(result.log).toEqual(['runs']);
+      expect(result.errors).toEqual(['short-circuit']);
+    });
+
+    it('supports method chaining', () => {
+      const pipeline = new MiddlewarePipeline();
+      const result = pipeline.use(async (ctx, next) => { await next(); });
+      expect(result).toBe(pipeline);
+    });
+
+    it('handles empty pipeline', async () => {
+      const pipeline = new MiddlewarePipeline();
+      const ctx = { value: 42, log: [], errors: [] };
+      const result = await pipeline.execute(ctx);
+      expect(result.value).toBe(42);
+    });
+  });
+estimatedMinutes: 15
+difficulty: intermediate

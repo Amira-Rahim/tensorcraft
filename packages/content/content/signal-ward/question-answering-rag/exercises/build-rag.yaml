@@ -1,0 +1,188 @@
+slug: build-rag
+lessonSlug: rag-architecture
+title: "Build a RAG Pipeline for Medical Documents"
+instructions: "Implement a basic Retrieval-Augmented Generation pipeline. You will build three functions: embedQuery to convert a query string into a vector using TensorFlow.js, retrieveChunks to find the top-k most similar document chunks by cosine similarity, and generateAnswer to combine the retrieved context with the query into a prompt and call a generation function. The pipeline should embed the query, retrieve relevant medical document chunks, and produce an answer grounded in the retrieved context."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  interface DocChunk {
+    id: string;
+    text: string;
+    embedding: number[];
+  }
+
+  interface RAGResult {
+    answer: string;
+    sources: string[];
+    query: string;
+  }
+
+  function dotProduct(a: number[], b: number[]): number {
+    let sum = 0;
+    for (let i = 0; i < a.length; i++) sum += a[i] * b[i];
+    return sum;
+  }
+
+  function magnitude(v: number[]): number {
+    return Math.sqrt(v.reduce((sum, val) => sum + val * val, 0));
+  }
+
+  function cosineSim(a: number[], b: number[]): number {
+    const magA = magnitude(a);
+    const magB = magnitude(b);
+    if (magA === 0 || magB === 0) return 0;
+    return dotProduct(a, b) / (magA * magB);
+  }
+
+  function retrieveChunks(
+    queryEmbedding: number[],
+    chunks: DocChunk[],
+    topK: number = 3
+  ): DocChunk[] {
+    // 1. Compute cosine similarity between queryEmbedding and each chunk's embedding
+    // 2. Sort chunks by similarity descending
+    // 3. Return the top-k chunks
+    return []; // your code here
+  }
+
+  function buildPrompt(query: string, contextChunks: DocChunk[]): string {
+    // 1. Join chunk texts with newline separators
+    // 2. Return a prompt: "Context:\n{context}\n\nQuestion: {query}\nAnswer:"
+    return ''; // your code here
+  }
+
+  function ragPipeline(
+    query: string,
+    queryEmbedding: number[],
+    chunks: DocChunk[],
+    generateFn: (prompt: string) => string,
+    topK: number = 3
+  ): RAGResult {
+    // 1. Retrieve top-k chunks using retrieveChunks
+    // 2. Build prompt using buildPrompt
+    // 3. Generate answer using generateFn
+    // 4. Return { answer, sources: retrieved chunk ids, query }
+    return null; // your code here
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  interface DocChunk {
+    id: string;
+    text: string;
+    embedding: number[];
+  }
+
+  interface RAGResult {
+    answer: string;
+    sources: string[];
+    query: string;
+  }
+
+  function dotProduct(a: number[], b: number[]): number {
+    let sum = 0;
+    for (let i = 0; i < a.length; i++) sum += a[i] * b[i];
+    return sum;
+  }
+
+  function magnitude(v: number[]): number {
+    return Math.sqrt(v.reduce((sum, val) => sum + val * val, 0));
+  }
+
+  function cosineSim(a: number[], b: number[]): number {
+    const magA = magnitude(a);
+    const magB = magnitude(b);
+    if (magA === 0 || magB === 0) return 0;
+    return dotProduct(a, b) / (magA * magB);
+  }
+
+  function retrieveChunks(
+    queryEmbedding: number[],
+    chunks: DocChunk[],
+    topK: number = 3
+  ): DocChunk[] {
+    const scored = chunks.map((chunk) => ({
+      chunk,
+      score: cosineSim(queryEmbedding, chunk.embedding),
+    }));
+
+    scored.sort((a, b) => b.score - a.score);
+
+    return scored.slice(0, topK).map((s) => s.chunk);
+  }
+
+  function buildPrompt(query: string, contextChunks: DocChunk[]): string {
+    const context = contextChunks.map((c) => c.text).join('\n');
+    return `Context:\n${context}\n\nQuestion: ${query}\nAnswer:`;
+  }
+
+  function ragPipeline(
+    query: string,
+    queryEmbedding: number[],
+    chunks: DocChunk[],
+    generateFn: (prompt: string) => string,
+    topK: number = 3
+  ): RAGResult {
+    const retrieved = retrieveChunks(queryEmbedding, chunks, topK);
+    const prompt = buildPrompt(query, retrieved);
+    const answer = generateFn(prompt);
+
+    return {
+      answer,
+      sources: retrieved.map((c) => c.id),
+      query,
+    };
+  }
+testCode: |
+  describe('RAG Pipeline', () => {
+    const chunks: DocChunk[] = [
+      { id: 'doc-1', text: 'Aspirin reduces inflammation and fever.', embedding: [0.9, 0.1, 0.0] },
+      { id: 'doc-2', text: 'MRI scans use magnetic fields for imaging.', embedding: [0.0, 0.9, 0.1] },
+      { id: 'doc-3', text: 'Ibuprofen is a non-steroidal anti-inflammatory.', embedding: [0.8, 0.2, 0.1] },
+      { id: 'doc-4', text: 'Blood tests measure hemoglobin levels.', embedding: [0.1, 0.1, 0.9] },
+    ];
+
+    const queryEmbedding = [0.85, 0.15, 0.05];
+    const mockGenerate = (prompt: string) => 'Aspirin and ibuprofen reduce inflammation.';
+
+    describe('retrieveChunks', () => {
+      it('returns top-k most similar chunks', () => {
+        const results = retrieveChunks(queryEmbedding, chunks, 2);
+        expect(results).toHaveLength(2);
+        expect(results[0].id).toBe('doc-1');
+        expect(results[1].id).toBe('doc-3');
+      });
+
+      it('respects topK parameter', () => {
+        const results = retrieveChunks(queryEmbedding, chunks, 1);
+        expect(results).toHaveLength(1);
+      });
+    });
+
+    describe('buildPrompt', () => {
+      it('includes context and query', () => {
+        const prompt = buildPrompt('What reduces fever?', [chunks[0]]);
+        expect(prompt).toContain('Context:');
+        expect(prompt).toContain('Aspirin');
+        expect(prompt).toContain('What reduces fever?');
+        expect(prompt).toContain('Answer:');
+      });
+    });
+
+    describe('ragPipeline', () => {
+      it('returns answer with source ids', () => {
+        const result = ragPipeline('anti-inflammatory drugs', queryEmbedding, chunks, mockGenerate, 2);
+        expect(result.answer).toBe('Aspirin and ibuprofen reduce inflammation.');
+        expect(result.sources).toContain('doc-1');
+        expect(result.sources).toContain('doc-3');
+        expect(result.query).toBe('anti-inflammatory drugs');
+      });
+
+      it('includes correct number of sources', () => {
+        const result = ragPipeline('test', queryEmbedding, chunks, mockGenerate, 3);
+        expect(result.sources).toHaveLength(3);
+      });
+    });
+  });
+estimatedMinutes: 15
+difficulty: intermediate

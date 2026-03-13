@@ -1,0 +1,146 @@
+slug: bandit-algorithm
+lessonSlug: multi-armed-bandits
+title: "Epsilon-Greedy Bandit"
+instructions: "Implement an EpsilonGreedyBandit class for adaptive model selection. The bandit maintains arms (model versions) with reward tracking. selectArm explores randomly with probability epsilon, otherwise exploits the arm with the highest average reward. recordReward updates an arm's statistics."
+starterCode: |
+  interface Arm {
+    version: string;
+    totalReward: number;
+    pulls: number;
+  }
+
+  class EpsilonGreedyBandit {
+    private arms: Arm[] = [];
+
+    constructor(private epsilon: number) {}
+
+    addArm(version: string): void {
+      // Add a new arm with zero reward and zero pulls
+      // your code here
+    }
+
+    selectArm(): string {
+      // With probability epsilon, return a random arm (explore)
+      // Otherwise, return the arm with highest average reward (exploit)
+      // If an arm has zero pulls, treat its average as Infinity (always explore unpulled arms)
+      return ''; // your code here
+    }
+
+    recordReward(version: string, reward: number): void {
+      // Find the arm and update its totalReward and pulls
+      // your code here
+    }
+
+    getStats(): { version: string; pulls: number; avgReward: number }[] {
+      return this.arms.map(a => ({
+        version: a.version,
+        pulls: a.pulls,
+        avgReward: a.pulls > 0 ? a.totalReward / a.pulls : 0,
+      }));
+    }
+  }
+solutionCode: |
+  interface Arm {
+    version: string;
+    totalReward: number;
+    pulls: number;
+  }
+
+  class EpsilonGreedyBandit {
+    private arms: Arm[] = [];
+
+    constructor(private epsilon: number) {}
+
+    addArm(version: string): void {
+      this.arms.push({ version, totalReward: 0, pulls: 0 });
+    }
+
+    selectArm(): string {
+      // Explore unpulled arms first
+      const unpulled = this.arms.find(a => a.pulls === 0);
+      if (unpulled) return unpulled.version;
+
+      // Explore randomly with probability epsilon
+      if (Math.random() < this.epsilon) {
+        return this.arms[Math.floor(Math.random() * this.arms.length)].version;
+      }
+
+      // Exploit: best average reward
+      let best = this.arms[0];
+      for (const arm of this.arms) {
+        const armAvg = arm.totalReward / arm.pulls;
+        const bestAvg = best.totalReward / best.pulls;
+        if (armAvg > bestAvg) best = arm;
+      }
+      return best.version;
+    }
+
+    recordReward(version: string, reward: number): void {
+      const arm = this.arms.find(a => a.version === version);
+      if (arm) {
+        arm.totalReward += reward;
+        arm.pulls++;
+      }
+    }
+
+    getStats(): { version: string; pulls: number; avgReward: number }[] {
+      return this.arms.map(a => ({
+        version: a.version,
+        pulls: a.pulls,
+        avgReward: a.pulls > 0 ? a.totalReward / a.pulls : 0,
+      }));
+    }
+  }
+testCode: |
+  describe('EpsilonGreedyBandit', () => {
+    it('adds arms correctly', () => {
+      const bandit = new EpsilonGreedyBandit(0.1);
+      bandit.addArm('v1');
+      bandit.addArm('v2');
+      expect(bandit.getStats().length).toBe(2);
+    });
+
+    it('selects unpulled arms first', () => {
+      const bandit = new EpsilonGreedyBandit(0);
+      bandit.addArm('v1');
+      bandit.addArm('v2');
+      const first = bandit.selectArm();
+      expect(first).toBe('v1');
+    });
+
+    it('records rewards correctly', () => {
+      const bandit = new EpsilonGreedyBandit(0.1);
+      bandit.addArm('v1');
+      bandit.recordReward('v1', 1);
+      bandit.recordReward('v1', 0);
+      const stats = bandit.getStats();
+      expect(stats[0].pulls).toBe(2);
+      expect(stats[0].avgReward).toBeCloseTo(0.5);
+    });
+
+    it('exploits best arm with epsilon=0', () => {
+      const bandit = new EpsilonGreedyBandit(0);
+      bandit.addArm('v1');
+      bandit.addArm('v2');
+      // Pull each once
+      bandit.recordReward('v1', 0.5);
+      bandit.recordReward('v2', 0.9);
+      // With epsilon=0, should always select v2
+      const selections = Array.from({ length: 50 }, () => bandit.selectArm());
+      expect(selections.every(s => s === 'v2')).toBe(true);
+    });
+
+    it('explores with epsilon=1', () => {
+      const bandit = new EpsilonGreedyBandit(1);
+      bandit.addArm('v1');
+      bandit.addArm('v2');
+      bandit.recordReward('v1', 1);
+      bandit.recordReward('v2', 0);
+      // With epsilon=1, should explore randomly — both arms should appear
+      const selections = Array.from({ length: 100 }, () => bandit.selectArm());
+      expect(selections.some(s => s === 'v1')).toBe(true);
+      expect(selections.some(s => s === 'v2')).toBe(true);
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

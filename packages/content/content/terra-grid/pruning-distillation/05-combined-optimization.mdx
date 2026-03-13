@@ -1,0 +1,132 @@
+---
+slug: combined-optimization
+title: "Combined Optimization"
+moduleId: pruning-distillation
+themeId: terra-grid
+order: 5
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Time to combine everything: pruning, quantization, and distillation into a single pipeline."
+  speaker: "Hassan Al-Rashid"
+concept:
+  explanation: "Combining all optimization techniques is like configuring a full Webpack production build — tree-shaking, minification, compression, code splitting, all working together."
+  bridge:
+    feTitle: "Full Webpack Production Config"
+    feCode: "// mode: 'production'\n// Tree-shaking + minification + compression\n// + code splitting + lazy loading"
+    mlTitle: "Full Model Optimization"
+    mlCode: "// Distill + prune + quantize\n// Student model, structured pruning, Int8\n// Combined: 40x smaller"
+    tier: structural
+consequence:
+  narrative: "The 200MB cloud model becomes a 5MB edge model. It passes all deployment budgets."
+  nextLessonTeaser: "Module complete. The foundation for edge deployment is set."
+hints:
+  - level: nudge
+    content: "Order matters: distill first, then prune, then quantize"
+  - level: guidance
+    content: "Each technique compounds: distill (10x) * prune (2x) * quantize (4x) = 80x"
+  - level: solution
+    content: "Pipeline: teacher→student distillation, structured pruning, Int8 quantization, fine-tune"
+keywords:
+  - combined
+  - pipeline
+  - production-config
+  - compound
+---
+
+<Dialogue speaker="Hassan Al-Rashid">
+You now have three tools: pruning removes unnecessary connections, quantization reduces precision, and distillation transfers knowledge to a smaller architecture. Used together, they compound. A 200MB model becomes 5MB — and it still works.
+</Dialogue>
+
+<Dialogue speaker="Cole Branson">
+If this works, I can deploy to every gateway in the fleet. 47 sites, updated overnight. Let us see the numbers.
+</Dialogue>
+
+In frontend, your production build combines every optimization: tree-shaking removes dead code, minification shrinks what remains, compression reduces transfer size, and code splitting loads only what is needed. Each technique is independent, but together they achieve reductions that no single technique could.
+
+<LearningObjectives objectives={["Combine distillation, pruning, and quantization in a single pipeline", "Calculate compound size reduction from combined techniques", "Determine the optimal order of optimization techniques", "Map the full Webpack production config to a full model optimization pipeline"]} />
+
+## The Full Production Pipeline
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="combined-optimization.ts">
+{`interface OptimizationPipeline {
+  step: string;
+  inputSizeMB: number;
+  outputSizeMB: number;
+  reduction: string;
+  accuracyRetained: number;
+}
+
+function calculatePipeline(
+  originalSizeMB: number,
+  originalAccuracy: number
+): OptimizationPipeline[] {
+  const steps: OptimizationPipeline[] = [];
+  let currentSize = originalSizeMB;
+  let currentAccuracy = originalAccuracy;
+
+  // Step 1: Knowledge Distillation (teacher → student)
+  // Like code splitting: extract route-specific code
+  const distilledSize = currentSize * 0.1; // 10x reduction
+  const distilledAcc = currentAccuracy * 0.97; // 3% accuracy cost
+  steps.push({
+    step: '1. Distillation (code splitting)',
+    inputSizeMB: currentSize,
+    outputSizeMB: distilledSize,
+    reduction: \`\${(currentSize / distilledSize).toFixed(0)}x\`,
+    accuracyRetained: distilledAcc
+  });
+  currentSize = distilledSize;
+  currentAccuracy = distilledAcc;
+
+  // Step 2: Structured Pruning (remove dead neurons)
+  // Like tree-shaking: remove unused code
+  const prunedSize = currentSize * 0.5; // 2x reduction
+  const prunedAcc = currentAccuracy * 0.99; // 1% accuracy cost
+  steps.push({
+    step: '2. Structured Pruning (tree-shaking)',
+    inputSizeMB: currentSize,
+    outputSizeMB: prunedSize,
+    reduction: \`\${(currentSize / prunedSize).toFixed(0)}x\`,
+    accuracyRetained: prunedAcc
+  });
+  currentSize = prunedSize;
+  currentAccuracy = prunedAcc;
+
+  // Step 3: Quantization (Float32 → Int8)
+  // Like minification: reduce representation size
+  const quantizedSize = currentSize * 0.25; // 4x reduction
+  const quantizedAcc = currentAccuracy * 0.988; // 1.2% accuracy cost
+  steps.push({
+    step: '3. Quantization (minification)',
+    inputSizeMB: currentSize,
+    outputSizeMB: quantizedSize,
+    reduction: \`\${(currentSize / quantizedSize).toFixed(0)}x\`,
+    accuracyRetained: quantizedAcc
+  });
+
+  return steps;
+}
+
+const pipeline = calculatePipeline(200, 0.985);
+pipeline.forEach(s => {
+  console.log(\`\${s.step}: \${s.inputSizeMB.toFixed(1)}MB → \${s.outputSizeMB.toFixed(1)}MB (\${s.reduction})\`);
+});
+// 1. Distillation: 200.0MB → 20.0MB (10x)
+// 2. Pruning: 20.0MB → 10.0MB (2x)
+// 3. Quantization: 10.0MB → 2.5MB (4x)
+// Total: 200MB → 2.5MB = 80x reduction
+// Accuracy: 98.5% → 93.7% — still above 92% threshold`}
+</CodeBlock>
+
+The order matters. Distill first to get the right architecture size, then prune to remove redundant neurons, then quantize to reduce precision. This mirrors the Webpack pipeline: tree-shake first (remove code), then minify (shrink code), then compress (reduce size).
+
+## Challenge
+
+Calculate combined optimization results for a full pipeline.
+
+<Exercise slug="combined-optimize" />
+
+<KeyTakeaways takeaways={["Combined techniques compound: 10x * 2x * 4x = 80x total reduction", "Order: distillation first, then pruning, then quantization", "Always fine-tune after each step to recover accuracy", "The full pipeline mirrors Webpack production: tree-shake → minify → compress → split"]} />

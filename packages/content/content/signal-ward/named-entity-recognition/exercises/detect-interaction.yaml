@@ -1,0 +1,143 @@
+slug: detect-interaction
+lessonSlug: the-interaction
+title: "Detect Drug Interactions"
+instructions: "Build a drug interaction detection pipeline — like dependency resolution for medicine. Implement detectInteractions that takes a list of drugs extracted from clinical notes (each with source and prescriber metadata), checks all pairs against the INTERACTIONS database, identifies cross-document interactions, and returns alerts sorted by severity (HIGH first, then MODERATE, then LOW). Sort drug names alphabetically to create canonical lookup keys."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  interface DrugEntry {
+    name: string;
+    source: string;
+    prescriber: string;
+  }
+
+  interface InteractionAlert {
+    drug1: string;
+    drug2: string;
+    severity: string;
+    effect: string;
+    crossDocument: boolean;
+  }
+
+  const INTERACTIONS: Record<string, { severity: string; effect: string }> = {
+    'aspirin+warfarin': { severity: 'HIGH', effect: 'Increased bleeding risk' },
+    'ibuprofen+methotrexate': { severity: 'HIGH', effect: 'Increased methotrexate toxicity' },
+    'lisinopril+potassium': { severity: 'MODERATE', effect: 'Risk of hyperkalemia' },
+    'aspirin+ibuprofen': { severity: 'MODERATE', effect: 'Reduced aspirin efficacy' }
+  };
+
+  function detectInteractions(drugs: DrugEntry[]): InteractionAlert[] {
+    // Check all drug pairs against INTERACTIONS
+    // Mark crossDocument when drugs come from different sources
+    // Sort by severity: HIGH before MODERATE before LOW
+    return [];
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  interface DrugEntry {
+    name: string;
+    source: string;
+    prescriber: string;
+  }
+
+  interface InteractionAlert {
+    drug1: string;
+    drug2: string;
+    severity: string;
+    effect: string;
+    crossDocument: boolean;
+  }
+
+  const INTERACTIONS: Record<string, { severity: string; effect: string }> = {
+    'aspirin+warfarin': { severity: 'HIGH', effect: 'Increased bleeding risk' },
+    'ibuprofen+methotrexate': { severity: 'HIGH', effect: 'Increased methotrexate toxicity' },
+    'lisinopril+potassium': { severity: 'MODERATE', effect: 'Risk of hyperkalemia' },
+    'aspirin+ibuprofen': { severity: 'MODERATE', effect: 'Reduced aspirin efficacy' }
+  };
+
+  const SEVERITY_ORDER: Record<string, number> = { HIGH: 0, MODERATE: 1, LOW: 2 };
+
+  function detectInteractions(drugs: DrugEntry[]): InteractionAlert[] {
+    const alerts: InteractionAlert[] = [];
+
+    for (let i = 0; i < drugs.length; i++) {
+      for (let j = i + 1; j < drugs.length; j++) {
+        const pair = [drugs[i].name.toLowerCase(), drugs[j].name.toLowerCase()]
+          .sort()
+          .join('+');
+
+        if (pair in INTERACTIONS) {
+          const interaction = INTERACTIONS[pair];
+          alerts.push({
+            drug1: drugs[i].name,
+            drug2: drugs[j].name,
+            severity: interaction.severity,
+            effect: interaction.effect,
+            crossDocument: drugs[i].source !== drugs[j].source
+          });
+        }
+      }
+    }
+
+    return alerts.sort((a, b) => SEVERITY_ORDER[a.severity] - SEVERITY_ORDER[b.severity]);
+  }
+testCode: |
+  describe('detectInteractions', () => {
+    it('detects known HIGH severity interactions', () => {
+      const drugs: DrugEntry[] = [
+        { name: 'warfarin', source: 'Cardiology', prescriber: 'Dr. Patel' },
+        { name: 'aspirin', source: 'Rheumatology', prescriber: 'Dr. Kim' }
+      ];
+      const alerts = detectInteractions(drugs);
+      expect(alerts.length).toBe(1);
+      expect(alerts[0].severity).toBe('HIGH');
+      expect(alerts[0].effect).toContain('bleeding');
+    });
+    it('detects cross-document interactions', () => {
+      const drugs: DrugEntry[] = [
+        { name: 'warfarin', source: 'Cardiology', prescriber: 'Dr. Patel' },
+        { name: 'aspirin', source: 'Rheumatology', prescriber: 'Dr. Kim' }
+      ];
+      const alerts = detectInteractions(drugs);
+      expect(alerts[0].crossDocument).toBe(true);
+    });
+    it('marks same-document interactions correctly', () => {
+      const drugs: DrugEntry[] = [
+        { name: 'warfarin', source: 'Note A', prescriber: 'Dr. A' },
+        { name: 'aspirin', source: 'Note A', prescriber: 'Dr. A' }
+      ];
+      const alerts = detectInteractions(drugs);
+      expect(alerts[0].crossDocument).toBe(false);
+    });
+    it('returns no alerts for safe combinations', () => {
+      const drugs: DrugEntry[] = [
+        { name: 'lisinopril', source: 'Note A', prescriber: 'Dr. A' },
+        { name: 'methotrexate', source: 'Note B', prescriber: 'Dr. B' }
+      ];
+      const alerts = detectInteractions(drugs);
+      expect(alerts.length).toBe(0);
+    });
+    it('sorts alerts by severity (HIGH first)', () => {
+      const drugs: DrugEntry[] = [
+        { name: 'aspirin', source: 'A', prescriber: 'Dr. A' },
+        { name: 'ibuprofen', source: 'A', prescriber: 'Dr. A' },
+        { name: 'warfarin', source: 'B', prescriber: 'Dr. B' }
+      ];
+      const alerts = detectInteractions(drugs);
+      expect(alerts.length).toBe(2);
+      expect(alerts[0].severity).toBe('HIGH');
+      expect(alerts[1].severity).toBe('MODERATE');
+    });
+    it('handles multiple interactions from multiple drugs', () => {
+      const drugs: DrugEntry[] = [
+        { name: 'aspirin', source: 'A', prescriber: 'Dr. A' },
+        { name: 'warfarin', source: 'B', prescriber: 'Dr. B' },
+        { name: 'ibuprofen', source: 'C', prescriber: 'Dr. C' }
+      ];
+      const alerts = detectInteractions(drugs);
+      expect(alerts.length).toBe(3);
+    });
+  });
+estimatedMinutes: 15
+difficulty: intermediate

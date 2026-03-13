@@ -1,0 +1,169 @@
+slug: build-inference-api
+lessonSlug: inference-api
+title: "Build an Inference API Class"
+instructions: "Create a typed InferenceAPI class that manages model state and exposes a clean prediction interface. The class should handle initialization, input validation, prediction with preprocessing, and disposal. Implement the full lifecycle: construct, init, predict, dispose."
+starterCode: |
+  interface ModelConfig {
+    inputSize: [number, number];
+    classNames: string[];
+    confidenceThreshold: number;
+  }
+
+  interface Prediction {
+    classIndex: number;
+    className: string;
+    confidence: number;
+  }
+
+  class InferenceAPI {
+    private config: ModelConfig;
+    private initialized: boolean;
+
+    constructor(config: ModelConfig) {
+      // Store config, set initialized to false
+    }
+
+    async init(): Promise<void> {
+      // Set initialized to true (simulates model loading)
+    }
+
+    predict(scores: number[]): Prediction {
+      // 1. Throw if not initialized
+      // 2. Throw if scores.length !== classNames.length
+      // 3. Find max score and its index
+      // 4. Return Prediction with className from config
+    }
+
+    isReady(): boolean {
+      // Return initialization status
+    }
+
+    dispose(): void {
+      // Set initialized to false
+    }
+  }
+solutionCode: |
+  interface ModelConfig {
+    inputSize: [number, number];
+    classNames: string[];
+    confidenceThreshold: number;
+  }
+
+  interface Prediction {
+    classIndex: number;
+    className: string;
+    confidence: number;
+  }
+
+  class InferenceAPI {
+    private config: ModelConfig;
+    private initialized: boolean;
+
+    constructor(config: ModelConfig) {
+      this.config = config;
+      this.initialized = false;
+    }
+
+    async init(): Promise<void> {
+      this.initialized = true;
+    }
+
+    predict(scores: number[]): Prediction {
+      if (!this.initialized) {
+        throw new Error('API not initialized. Call init() first.');
+      }
+
+      if (scores.length !== this.config.classNames.length) {
+        throw new Error(
+          `Score count mismatch: got ${scores.length}, expected ${this.config.classNames.length}`
+        );
+      }
+
+      let maxScore = -Infinity;
+      let classIndex = 0;
+
+      for (let i = 0; i < scores.length; i++) {
+        if (scores[i] > maxScore) {
+          maxScore = scores[i];
+          classIndex = i;
+        }
+      }
+
+      return {
+        classIndex,
+        className: this.config.classNames[classIndex],
+        confidence: maxScore,
+      };
+    }
+
+    isReady(): boolean {
+      return this.initialized;
+    }
+
+    dispose(): void {
+      this.initialized = false;
+    }
+  }
+testCode: |
+  describe('InferenceAPI', () => {
+    const config: ModelConfig = {
+      inputSize: [224, 224],
+      classNames: ['drone', 'vehicle', 'patrol', 'camera', 'civilian'],
+      confidenceThreshold: 0.7,
+    };
+
+    it('starts not initialized', () => {
+      const api = new InferenceAPI(config);
+      expect(api.isReady()).toBe(false);
+    });
+
+    it('is ready after init', async () => {
+      const api = new InferenceAPI(config);
+      await api.init();
+      expect(api.isReady()).toBe(true);
+    });
+
+    it('throws if predict called before init', () => {
+      const api = new InferenceAPI(config);
+      expect(() => api.predict([0.1, 0.2, 0.3, 0.1, 0.3])).toThrow();
+    });
+
+    it('throws if score count mismatches class count', async () => {
+      const api = new InferenceAPI(config);
+      await api.init();
+      expect(() => api.predict([0.5, 0.5])).toThrow();
+    });
+
+    it('returns correct prediction for highest score', async () => {
+      const api = new InferenceAPI(config);
+      await api.init();
+      const result = api.predict([0.1, 0.05, 0.8, 0.03, 0.02]);
+      expect(result.classIndex).toBe(2);
+      expect(result.className).toBe('patrol');
+      expect(result.confidence).toBeCloseTo(0.8);
+    });
+
+    it('handles first class as highest', async () => {
+      const api = new InferenceAPI(config);
+      await api.init();
+      const result = api.predict([0.95, 0.01, 0.02, 0.01, 0.01]);
+      expect(result.classIndex).toBe(0);
+      expect(result.className).toBe('drone');
+    });
+
+    it('dispose sets initialized to false', async () => {
+      const api = new InferenceAPI(config);
+      await api.init();
+      api.dispose();
+      expect(api.isReady()).toBe(false);
+    });
+
+    it('throws after dispose', async () => {
+      const api = new InferenceAPI(config);
+      await api.init();
+      api.dispose();
+      expect(() => api.predict([0.1, 0.2, 0.3, 0.2, 0.2])).toThrow();
+    });
+  });
+estimatedMinutes: 15
+difficulty: intermediate

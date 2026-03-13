@@ -1,0 +1,180 @@
+---
+slug: alert-systems
+title: "Alert Systems"
+moduleId: monitoring-drift
+themeId: terra-grid
+order: 4
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "GRID fires 200 alerts in one hour. Most are noise. Hassan redesigns the alerting thresholds to reduce fatigue while catching real issues."
+  speaker: "Hassan Al-Rashid"
+concept:
+  explanation: "Alert thresholds must balance sensitivity and noise — too sensitive and you get alert fatigue, too lax and you miss incidents. Same as monitoring tool configuration."
+  bridge:
+    feTitle: "Monitoring Thresholds"
+    feCode: "alert({ metric: 'error_rate', threshold: 0.05, window: '5m' })"
+    mlTitle: "Drift Alert Thresholds"
+    mlCode: "alert({ metric: 'kl_divergence', threshold: 0.3, window: '1h' })"
+    tier: identity
+consequence:
+  narrative: "Alert volume drops from 200/hour to 8/hour. Every remaining alert is actionable. The team trusts the system again."
+  nextLessonTeaser: "Next: responding to drift incidents with diagnosis and remediation"
+hints:
+  - level: nudge
+    content: "Think about how you configure PagerDuty or Sentry alert rules"
+  - level: guidance
+    content: "Use severity tiers, windowed aggregation, and deduplication to reduce noise"
+  - level: solution
+    content: "Define info/warning/critical tiers with escalating thresholds, window-based smoothing, and cooldown deduplication"
+keywords:
+  - alerting
+  - thresholds
+  - alert-fatigue
+  - severity-tiers
+---
+
+<Dialogue speaker="Hassan Al-Rashid">
+Two hundred alerts in one hour. The team stopped reading them after the first thirty. If everything is an alert, nothing is an alert.
+</Dialogue>
+
+<Dialogue speaker="GRID">
+Alert suppression configured. Severity tiers active. Deduplication window: 30 minutes. Estimated actionable alerts: 6-10 per hour.
+</Dialogue>
+
+You have configured Sentry alert rules. You know the pain of alert fatigue — when every minor JavaScript error pages the on-call engineer at 3 AM. Good alerting requires thresholds that separate signal from noise, severity tiers that route appropriately, and cooldowns that prevent duplicate alerts from burying the real ones.
+
+<LearningObjectives objectives={["Design multi-tier alert systems with info, warning, and critical severity levels", "Configure windowed thresholds that smooth out noise while catching sustained degradation", "Implement alert deduplication and cooldowns to prevent fatigue", "Route alerts to the right channel based on severity and scope"]} />
+
+## Alert Architecture
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="alert-system.ts">
+{`type AlertSeverity = 'info' | 'warning' | 'critical';
+type AlertChannel = 'dashboard' | 'slack' | 'pager';
+
+interface AlertRule {
+  name: string;
+  metric: string;
+  severity: AlertSeverity;
+  threshold: number;
+  windowMinutes: number;        // aggregate over this window
+  cooldownMinutes: number;      // suppress duplicates for this long
+  channel: AlertChannel;
+  lastFired: number | null;
+}
+
+const alertRules: AlertRule[] = [
+  {
+    name: 'high-latency',
+    metric: 'p95_latency_ms',
+    severity: 'warning',
+    threshold: 100,
+    windowMinutes: 15,
+    cooldownMinutes: 60,
+    channel: 'slack',
+    lastFired: null,
+  },
+  {
+    name: 'data-drift-detected',
+    metric: 'max_kl_divergence',
+    severity: 'warning',
+    threshold: 0.3,
+    windowMinutes: 60,
+    cooldownMinutes: 360,
+    channel: 'slack',
+    lastFired: null,
+  },
+  {
+    name: 'accuracy-critical',
+    metric: 'rolling_accuracy',
+    severity: 'critical',
+    threshold: 0.90,       // alert if below this
+    windowMinutes: 30,
+    cooldownMinutes: 120,
+    channel: 'pager',
+    lastFired: null,
+  },
+  {
+    name: 'device-offline',
+    metric: 'offline_device_count',
+    severity: 'info',
+    threshold: 10,
+    windowMinutes: 5,
+    cooldownMinutes: 30,
+    channel: 'dashboard',
+    lastFired: null,
+  },
+];
+
+function evaluateAlerts(
+  rules: AlertRule[],
+  metrics: Record<string, number>,
+): AlertRule[] {
+  const fired: AlertRule[] = [];
+
+  for (const rule of rules) {
+    const value = metrics[rule.metric];
+    if (value === undefined) continue;
+
+    // Check if threshold is breached
+    const breached = rule.metric === 'rolling_accuracy'
+      ? value < rule.threshold   // accuracy: alert when below
+      : value > rule.threshold;  // everything else: alert when above
+
+    if (!breached) continue;
+
+    // Check cooldown
+    if (rule.lastFired) {
+      const elapsed = (Date.now() - rule.lastFired) / 60000;
+      if (elapsed < rule.cooldownMinutes) continue;
+    }
+
+    rule.lastFired = Date.now();
+    fired.push(rule);
+  }
+
+  return fired;
+}`}
+</CodeBlock>
+
+## Alert Routing
+
+<CodeBlock language="typescript" title="alert-routing.ts">
+{`async function routeAlerts(alerts: AlertRule[], metrics: Record<string, number>): Promise<void> {
+  for (const alert of alerts) {
+    const message = formatAlert(alert, metrics[alert.metric]);
+
+    switch (alert.channel) {
+      case 'dashboard':
+        await logToDashboard(message);
+        break;
+      case 'slack':
+        await sendSlack('#ml-alerts', message);
+        break;
+      case 'pager':
+        await pageOnCall(message);
+        await sendSlack('#ml-critical', message);
+        break;
+    }
+  }
+}
+
+function formatAlert(rule: AlertRule, value: number): string {
+  const severity = rule.severity.toUpperCase();
+  return \`[\${severity}] \${rule.name}: \${rule.metric}=\${value.toFixed(3)} (threshold: \${rule.threshold})\`;
+}
+
+// Output:
+// [WARNING] data-drift-detected: max_kl_divergence=0.482 (threshold: 0.3)
+// [CRITICAL] accuracy-critical: rolling_accuracy=0.891 (threshold: 0.9)`}
+</CodeBlock>
+
+## Challenge
+
+Configure an alert system with severity tiers, thresholds, and cooldowns.
+
+<Exercise slug="configure-alerts" />
+
+<KeyTakeaways takeaways={["Alert fatigue kills monitoring systems — if everything alerts, nothing gets investigated", "Severity tiers route alerts appropriately: info→dashboard, warning→Slack, critical→pager", "Windowed thresholds smooth noise; cooldowns prevent duplicate storms", "The best alert is one that fires rarely and is always actionable — like a well-tuned Sentry alert rule"]} />

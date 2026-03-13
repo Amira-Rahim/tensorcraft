@@ -1,0 +1,48 @@
+slug: clean-text
+lessonSlug: text-cleaning
+title: "Clean Text"
+instructions: "Implement a cleanClinicalText function that takes raw clinical text (potentially containing HTML tags, HTML entities, Unicode smart quotes, and inconsistent casing) and returns a cleaned string. Steps: (1) strip all HTML tags, (2) replace HTML entities like &nbsp; and &amp; with spaces, (3) normalize smart quotes (curly single quotes to straight apostrophes), (4) lowercase everything, (5) remove characters that are not letters, numbers, spaces, periods, hyphens, or apostrophes, (6) collapse multiple spaces into one and trim."
+starterCode: |
+  function cleanClinicalText(text: string): string {
+    // 1. Strip HTML tags (replace with space)
+    // 2. Replace HTML entities (&nbsp; &amp; etc.) with space
+    // 3. Normalize smart quotes (\u2018, \u2019 → ')
+    // 4. Lowercase
+    // 5. Remove non-alphanumeric chars (keep spaces, periods, hyphens, apostrophes)
+    // 6. Collapse multiple spaces and trim
+    return ''; // your code here
+  }
+
+  const cleaned = cleanClinicalText(
+    '<p>Pt\u2019s <b>BP</b>: 120/80.&nbsp;Dx: HTN &amp; DM.</p>'
+  );
+solutionCode: |
+  function cleanClinicalText(text: string): string {
+    let result = text;
+    result = result.replace(/<[^>]*>/g, ' ');
+    result = result.replace(/&#?\w+;/g, ' ');
+    result = result.replace(/[\u2018\u2019]/g, "'");
+    result = result.replace(/[\u201C\u201D]/g, '"');
+    result = result.toLowerCase();
+    result = result.replace(/[^a-z0-9\s.\-']/g, ' ');
+    result = result.replace(/\s+/g, ' ').trim();
+    return result;
+  }
+
+  const cleaned = cleanClinicalText(
+    '<p>Pt\u2019s <b>BP</b>: 120/80.&nbsp;Dx: HTN &amp; DM.</p>'
+  );
+testCode: |
+  describe('Clean Clinical Text', () => {
+    it('returns a string', () => { expect(typeof cleaned).toBe('string'); });
+    it('strips HTML tags', () => { expect(cleaned).not.toMatch(/<[^>]*>/); });
+    it('is lowercased', () => { expect(cleaned).toBe(cleaned.toLowerCase()); });
+    it('has no multiple spaces', () => { expect(cleaned).not.toMatch(/  /); });
+    it('is trimmed', () => { expect(cleaned).toBe(cleaned.trim()); });
+    it('preserves apostrophes', () => { expect(cleaned).toContain("pt's"); });
+    it('preserves periods', () => { expect(cleaned).toContain('.'); });
+    it('preserves numbers', () => { expect(cleaned).toContain('120'); });
+    it('removes HTML entities', () => { expect(cleaned).not.toContain('&nbsp;'); });
+  });
+estimatedMinutes: 12
+difficulty: intermediate

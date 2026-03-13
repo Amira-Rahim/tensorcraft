@@ -16,7 +16,7 @@ concept:
     feCode: "resolver: (parent, { patientId }) => db.allergies.find({ patientId, active: true })"
     mlTitle: "Reading Comprehension"
     mlCode: "model.comprehend({ question: 'active allergies?', context: record }) // understands scope"
-    tier: analogy
+    tier: structural
 consequence:
   narrative: "The comprehension model correctly distinguishes 'patient allergic to penicillin' from 'patient's mother allergic to penicillin.' Obi nods. 'Now it reads like a clinician, not a search engine.'"
   nextLessonTeaser: "Next: RAG architecture — when the answer isn't in a single document"

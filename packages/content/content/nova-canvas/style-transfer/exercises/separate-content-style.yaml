@@ -1,0 +1,52 @@
+slug: separate-content-style
+lessonSlug: content-vs-style
+title: "Compute a Gram Matrix"
+instructions: "Implement a function that computes the Gram matrix from a 4D feature tensor [batch, height, width, channels]. Reshape to 2D (height*width, channels), compute F^T * F, and normalize by dividing by (height * width)."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function gramMatrix(features: tf.Tensor4D): tf.Tensor2D {
+    // 1. Get shape: [batch, height, width, channels]
+    // 2. Reshape to 2D: [height * width, channels]
+    // 3. Compute Gram: matMul(reshaped^T, reshaped)
+    // 4. Normalize by (height * width)
+    return null; // your code here
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function gramMatrix(features: tf.Tensor4D): tf.Tensor2D {
+    const [batch, height, width, channels] = features.shape;
+    const reshaped = features.reshape([height * width, channels]);
+    const gram = tf.matMul(reshaped, reshaped, true, false);
+    return tf.div(gram, tf.scalar(height * width)) as tf.Tensor2D;
+  }
+testCode: |
+  describe('gramMatrix', () => {
+    it('returns a square matrix of size channels x channels', () => {
+      const features = tf.randomNormal([1, 8, 8, 16]) as tf.Tensor4D;
+      const gram = gramMatrix(features);
+      expect(gram.shape).toEqual([16, 16]);
+    });
+    it('is symmetric', () => {
+      const features = tf.randomNormal([1, 4, 4, 8]) as tf.Tensor4D;
+      const gram = gramMatrix(features);
+      const transposed = gram.transpose();
+      const diff = tf.sub(gram, transposed).abs().max().dataSync()[0];
+      expect(diff).toBeLessThan(1e-4);
+    });
+    it('returns all zeros for zero input', () => {
+      const features = tf.zeros([1, 4, 4, 4]) as tf.Tensor4D;
+      const gram = gramMatrix(features);
+      const sum = gram.abs().sum().dataSync()[0];
+      expect(sum).toBeCloseTo(0);
+    });
+    it('normalizes by spatial dimensions', () => {
+      const ones = tf.ones([1, 2, 2, 2]) as tf.Tensor4D;
+      const gram = gramMatrix(ones);
+      const data = gram.dataSync();
+      expect(data[0]).toBeCloseTo(1.0, 4);
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

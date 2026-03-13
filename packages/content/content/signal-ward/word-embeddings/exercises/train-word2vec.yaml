@@ -1,0 +1,82 @@
+slug: train-word2vec
+lessonSlug: dense-vectors
+title: "Train Word2Vec Embeddings"
+instructions: "Create an embedding layer with TensorFlow.js that maps a vocabulary of 100 words to 64-dimensional dense vectors. Then implement a cosineSimilarity function that takes two number arrays and returns their cosine similarity. Use the simulated trained embeddings to verify that 'aspirin' is more similar to 'ibuprofen' than to 'appendectomy'."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  // Step 1: Create an embedding layer
+  const vocabSize = 100;
+  const embeddingDim = 64;
+
+  const embeddingLayer = null; // create using tf.layers.embedding
+
+  // Step 2: Implement cosine similarity
+  function cosineSimilarity(a: number[], b: number[]): number {
+    // Compute: dot(a, b) / (norm(a) * norm(b))
+    return null; // your code here
+  }
+
+  // Step 3: Test with simulated trained vectors
+  const trainedVectors: Record<string, number[]> = {
+    'aspirin':      [0.82, 0.21, -0.11, 0.53],
+    'ibuprofen':    [0.74, 0.29, -0.18, 0.45],
+    'appendectomy': [0.08, -0.31, 0.14, 0.91],
+  };
+
+  const simPainkiller = cosineSimilarity(trainedVectors['aspirin'], trainedVectors['ibuprofen']);
+  const simUnrelated = cosineSimilarity(trainedVectors['aspirin'], trainedVectors['appendectomy']);
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  const vocabSize = 100;
+  const embeddingDim = 64;
+
+  const embeddingLayer = tf.layers.embedding({
+    inputDim: vocabSize,
+    outputDim: embeddingDim,
+  });
+
+  function cosineSimilarity(a: number[], b: number[]): number {
+    const dot = a.reduce((sum, val, i) => sum + val * b[i], 0);
+    const normA = Math.sqrt(a.reduce((sum, val) => sum + val * val, 0));
+    const normB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0));
+    return dot / (normA * normB);
+  }
+
+  const trainedVectors: Record<string, number[]> = {
+    'aspirin':      [0.82, 0.21, -0.11, 0.53],
+    'ibuprofen':    [0.74, 0.29, -0.18, 0.45],
+    'appendectomy': [0.08, -0.31, 0.14, 0.91],
+  };
+
+  const simPainkiller = cosineSimilarity(trainedVectors['aspirin'], trainedVectors['ibuprofen']);
+  const simUnrelated = cosineSimilarity(trainedVectors['aspirin'], trainedVectors['appendectomy']);
+testCode: |
+  describe('Train Word2Vec', () => {
+    it('embedding layer is defined', () => {
+      expect(embeddingLayer).toBeDefined();
+    });
+    it('embedding layer has correct config', () => {
+      const config = embeddingLayer.getConfig();
+      expect(config.inputDim).toBe(100);
+      expect(config.outputDim).toBe(64);
+    });
+    it('cosine similarity returns a number', () => {
+      expect(typeof simPainkiller).toBe('number');
+    });
+    it('painkillers have high similarity', () => {
+      expect(simPainkiller).toBeGreaterThan(0.9);
+    });
+    it('unrelated words have low similarity', () => {
+      expect(simUnrelated).toBeLessThan(0.5);
+    });
+    it('painkillers more similar than unrelated pair', () => {
+      expect(simPainkiller).toBeGreaterThan(simUnrelated);
+    });
+    it('identical vectors have similarity 1', () => {
+      expect(cosineSimilarity([1, 0, 0], [1, 0, 0])).toBeCloseTo(1.0);
+    });
+  });
+estimatedMinutes: 12
+difficulty: intermediate

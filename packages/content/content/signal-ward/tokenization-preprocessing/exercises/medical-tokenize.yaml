@@ -1,0 +1,55 @@
+slug: medical-tokenize
+lessonSlug: medical-tokenization
+title: "Medical Tokenize"
+instructions: "Implement a clinicalTokenize function that processes medical text in three steps: (1) lowercase the input, (2) tokenize by matching sequences of letters (including hyphens between letters) and numbers (including decimals), and (3) expand abbreviations using the provided CLINICAL_ABBREVS map. Return the array of processed tokens."
+starterCode: |
+  const CLINICAL_ABBREVS = new Map([
+    ['pt', 'patient'], ['pts', 'patients'],
+    ['hx', 'history'], ['dx', 'diagnosis'],
+    ['rx', 'prescription'], ['tx', 'treatment'],
+    ['sx', 'symptoms'], ['pcn', 'penicillin'],
+    ['abx', 'antibiotics'], ['bp', 'blood-pressure'],
+    ['hr', 'heart-rate'], ['prn', 'as-needed'],
+    ['bid', 'twice-daily'], ['tid', 'three-times-daily'],
+  ]);
+
+  function clinicalTokenize(text: string): string[] {
+    // 1. Lowercase the text
+    // 2. Tokenize: match letter sequences (with hyphens) and numbers (with decimals)
+    // 3. Map each token through the abbreviation map
+    return []; // your code here
+  }
+
+  const result = clinicalTokenize('Pt hx of chest pain. HR 72 bpm, BP 120/80. Rx PCN bid.');
+solutionCode: |
+  const CLINICAL_ABBREVS = new Map([
+    ['pt', 'patient'], ['pts', 'patients'],
+    ['hx', 'history'], ['dx', 'diagnosis'],
+    ['rx', 'prescription'], ['tx', 'treatment'],
+    ['sx', 'symptoms'], ['pcn', 'penicillin'],
+    ['abx', 'antibiotics'], ['bp', 'blood-pressure'],
+    ['hr', 'heart-rate'], ['prn', 'as-needed'],
+    ['bid', 'twice-daily'], ['tid', 'three-times-daily'],
+  ]);
+
+  function clinicalTokenize(text: string): string[] {
+    const tokens = text.toLowerCase().match(/[a-z]+(?:-[a-z]+)*|[0-9]+(?:\.[0-9]+)?/g) || [];
+    return tokens.map(t => CLINICAL_ABBREVS.get(t) ?? t);
+  }
+
+  const result = clinicalTokenize('Pt hx of chest pain. HR 72 bpm, BP 120/80. Rx PCN bid.');
+testCode: |
+  describe('Clinical Tokenize', () => {
+    it('returns an array', () => { expect(Array.isArray(result)).toBe(true); });
+    it('expands pt to patient', () => { expect(result[0]).toBe('patient'); });
+    it('expands hx to history', () => { expect(result[1]).toBe('history'); });
+    it('expands hr to heart-rate', () => { expect(result).toContain('heart-rate'); });
+    it('expands bp to blood-pressure', () => { expect(result).toContain('blood-pressure'); });
+    it('expands rx to prescription', () => { expect(result).toContain('prescription'); });
+    it('expands pcn to penicillin', () => { expect(result).toContain('penicillin'); });
+    it('expands bid to twice-daily', () => { expect(result).toContain('twice-daily'); });
+    it('preserves numbers', () => { expect(result).toContain('72'); });
+    it('leaves non-abbreviations unchanged', () => { expect(result).toContain('chest'); });
+  });
+estimatedMinutes: 12
+difficulty: intermediate

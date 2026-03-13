@@ -1,0 +1,173 @@
+---
+slug: multi-class
+title: "Multi-Class Classification: Routing to Departments"
+moduleId: text-classification
+themeId: signal-ward
+order: 2
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Flagging urgency isn't enough — documents need to reach the right department. Santos and Khalil build a routing system."
+  speaker: "Santos"
+concept:
+  explanation: "Multi-class classification assigns exactly one label from several possible categories — like routing a document to cardiology, radiology, oncology, or general medicine."
+  bridge:
+    feTitle: "Express Router (switch/case routing)"
+    feCode: "// app.get('/cardio', handler)\n// app.get('/radiology', handler)\n// Each request matches exactly one route"
+    mlTitle: "Multi-Class Classifier"
+    mlCode: "// softmax([cardio, radio, onco, general])\n// Each document assigned to exactly one department"
+    tier: structural
+consequence:
+  narrative: "Documents now flow to the right department automatically. But some documents belong to more than one department."
+  nextLessonTeaser: "Next: multi-label classification for documents that need multiple tags."
+hints:
+  - level: nudge
+    content: "Softmax ensures all class probabilities sum to 1 — exactly one class wins"
+  - level: guidance
+    content: "Use categoricalCrossentropy loss with one-hot encoded labels"
+  - level: solution
+    content: "model.add(tf.layers.dense({ units: numDepts, activation: 'softmax' })); model.compile({ loss: 'categoricalCrossentropy' });"
+keywords:
+  - multi-class
+  - softmax
+  - routing
+  - department
+  - categorical-crossentropy
+---
+
+<Dialogue speaker="Santos">
+The urgency filter is working — we're catching critical findings faster. But flagging something as urgent doesn't tell us where to send it. A cardiac emergency needs cardiology, a suspicious mass needs oncology, an abnormal CT goes to radiology.
+</Dialogue>
+
+<Dialogue speaker="Khalil Mensah">
+That's a routing problem. In Express, each request URL matches exactly one route handler. We need the same thing here — each document matches exactly one department.
+</Dialogue>
+
+<LearningObjectives objectives={["Distinguish multi-class from binary classification", "Implement softmax activation for mutually exclusive categories", "Use categorical crossentropy as the multi-class loss function", "Build a department routing classifier for clinical documents"]} />
+
+## One Document, One Destination
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+An Express router matches each incoming request to exactly one handler. Similarly, softmax classification assigns each document to exactly one department. The softmax function guarantees that all output probabilities sum to 1 — like a router, every document goes somewhere, and no document goes to two places at once.
+
+<CodeBlock language="typescript" title="department-router.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+const DEPARTMENTS = [
+  'CARDIOLOGY', 'RADIOLOGY', 'ONCOLOGY',
+  'NEUROLOGY', 'GENERAL_MEDICINE', 'EMERGENCY'
+];
+
+function buildDepartmentRouter(
+  inputDim: number,
+  numDepts: number
+): tf.LayersModel {
+  const model = tf.sequential();
+
+  model.add(tf.layers.dense({
+    units: 128,
+    activation: 'relu',
+    inputShape: [inputDim]
+  }));
+
+  model.add(tf.layers.dropout({ rate: 0.3 }));
+
+  model.add(tf.layers.dense({
+    units: 64,
+    activation: 'relu'
+  }));
+
+  // Softmax: mutually exclusive departments
+  model.add(tf.layers.dense({
+    units: numDepts,
+    activation: 'softmax'
+  }));
+
+  model.compile({
+    optimizer: 'adam',
+    loss: 'categoricalCrossentropy',
+    metrics: ['accuracy']
+  });
+
+  return model;
+}
+
+// Simulated training data
+const xTrain = tf.randomNormal([300, 64]);
+const yTrain = tf.oneHot(
+  tf.randomUniform([300], 0, DEPARTMENTS.length, 'int32'),
+  DEPARTMENTS.length
+);
+
+const router = buildDepartmentRouter(64, DEPARTMENTS.length);
+await router.fit(xTrain, yTrain, {
+  epochs: 15,
+  batchSize: 32,
+  validationSplit: 0.2
+});
+
+// Route a new document
+const newDoc = tf.randomNormal([1, 64]);
+const probs = router.predict(newDoc) as tf.Tensor;
+const deptIdx = probs.argMax(-1).dataSync()[0];
+const confidence = probs.max().dataSync()[0];
+
+console.log(\`Route to: \${DEPARTMENTS[deptIdx]}\`);
+console.log(\`Confidence: \${(confidence * 100).toFixed(1)}%\`);
+
+// Show all department probabilities
+const allProbs = await probs.data();
+DEPARTMENTS.forEach((dept, i) => {
+  console.log(\`  \${dept}: \${(allProbs[i] * 100).toFixed(1)}%\`);
+});`}
+</CodeBlock>
+
+## Softmax: The Probability Router
+
+The key difference between binary and multi-class classification is in the output layer. Binary uses sigmoid (one probability). Multi-class uses softmax (a probability distribution). Softmax is like a competitive election — each class "votes," and the probabilities must sum to 1.
+
+<Dialogue speaker="Obi">
+What happens when a document could go to two departments? A patient with chest pain might need both cardiology and emergency.
+</Dialogue>
+
+<Dialogue speaker="Khalil Mensah">
+Softmax forces a single winner — the highest probability department. If we need multiple labels, we'll need a different approach. That's the next lesson.
+</Dialogue>
+
+## Confusion Matrix: Where Routing Goes Wrong
+
+When evaluating a multi-class classifier, accuracy alone isn't enough. A confusion matrix shows exactly which departments get confused with each other. If cardiology documents keep getting routed to emergency, that's a pattern worth investigating.
+
+<CodeBlock language="typescript" title="confusion-matrix.ts">
+{`// Build a confusion matrix from predictions
+function confusionMatrix(
+  actual: number[],
+  predicted: number[],
+  numClasses: number
+): number[][] {
+  const matrix = Array.from({ length: numClasses },
+    () => new Array(numClasses).fill(0)
+  );
+
+  for (let i = 0; i < actual.length; i++) {
+    matrix[actual[i]][predicted[i]]++;
+  }
+
+  return matrix;
+}
+
+// Example: check where misrouting happens
+const actuals = [0, 1, 2, 0, 5, 1, 3];
+const preds   = [0, 1, 2, 5, 5, 1, 3];  // One misroute: CARDIO → EMERGENCY
+const cm = confusionMatrix(actuals, preds, DEPARTMENTS.length);
+console.log('Confusion matrix:', cm);`}
+</CodeBlock>
+
+## Challenge
+
+Build a document routing system that classifies clinical documents to the correct department.
+
+<Exercise slug="route-documents" />
+
+<KeyTakeaways takeaways={["Multi-class classification assigns exactly one label from N possible categories", "Softmax activation produces a probability distribution that sums to 1", "Categorical crossentropy is the loss function for multi-class problems", "Confusion matrices reveal systematic misclassification patterns between departments"]} />

@@ -1,0 +1,31 @@
+slug: audio-to-tensor
+lessonSlug: audio-as-data
+title: "Audio to Tensor"
+instructions: "Convert a raw audio waveform (Float32Array) into a TensorFlow.js tensor and compute its duration in seconds given a sample rate of 44100 Hz. Return an object with the tensor and the duration."
+starterCode: |
+  function audioToTensor(waveform: Float32Array, sampleRate: number) {
+    // Create a 1D tensor from the waveform
+    const tensor = null; // your code here
+
+    // Calculate duration in seconds
+    const duration = 0; // your code here
+
+    return { tensor, duration };
+  }
+solutionCode: |
+  function audioToTensor(waveform: Float32Array, sampleRate: number) {
+    const tensor = tf.tensor1d(waveform);
+    const duration = waveform.length / sampleRate;
+    return { tensor, duration };
+  }
+testCode: |
+  describe('audioToTensor', () => {
+    const samples = new Float32Array(44100);
+    for (let i = 0; i < 44100; i++) samples[i] = Math.sin(2 * Math.PI * 440 * i / 44100);
+    const result = audioToTensor(samples, 44100);
+    it('creates a tensor', () => { expect(result.tensor).toBeDefined(); });
+    it('has correct shape', () => { expect(result.tensor.shape).toEqual([44100]); });
+    it('calculates duration', () => { expect(result.duration).toBeCloseTo(1.0); });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

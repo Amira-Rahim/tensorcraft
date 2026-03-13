@@ -1,0 +1,179 @@
+slug: fix-disparity
+lessonSlug: the-disparity
+title: "Fix the Performance Disparity"
+instructions: "Implement two functions: augmentSlice and measureImprovement. augmentSlice takes an array of text samples and returns an augmented array that includes all original samples plus new synthetic samples created by applying a simple abbreviation transformation (replace 'patient' with 'pt', 'temperature' with 'temp', 'blood pressure' with 'BP', 'without' with 'w/o'). Each original sample should produce one synthetic sample. measureImprovement takes before and after accuracy values for two groups and returns a report showing the original disparity, the new disparity, the improvement (reduction in gap), and whether the equity threshold is met."
+starterCode: |
+  interface Sample {
+    text: string;
+    label: number;
+  }
+
+  interface AugmentedSample extends Sample {
+    synthetic: boolean;
+  }
+
+  interface ImprovementReport {
+    originalDisparity: number;
+    newDisparity: number;
+    improvement: number;
+    meetsThreshold: boolean;
+  }
+
+  function augmentSlice(samples: Sample[]): AugmentedSample[] {
+    // 1. Include all original samples with synthetic = false
+    // 2. For each original sample, create one synthetic sample by applying abbreviations:
+    //    - "patient" -> "pt" (case insensitive)
+    //    - "temperature" -> "temp" (case insensitive)
+    //    - "blood pressure" -> "BP" (case insensitive)
+    //    - "without" -> "w/o" (case insensitive)
+    // 3. Mark synthetic samples with synthetic = true
+    return []; // your code here
+  }
+
+  function measureImprovement(
+    beforeBest: number,
+    beforeWorst: number,
+    afterBest: number,
+    afterWorst: number,
+    threshold: number = 0.05
+  ): ImprovementReport {
+    // originalDisparity = beforeBest - beforeWorst
+    // newDisparity = afterBest - afterWorst
+    // improvement = originalDisparity - newDisparity
+    // meetsThreshold = newDisparity <= threshold
+    return null as any; // your code here
+  }
+solutionCode: |
+  interface Sample {
+    text: string;
+    label: number;
+  }
+
+  interface AugmentedSample extends Sample {
+    synthetic: boolean;
+  }
+
+  interface ImprovementReport {
+    originalDisparity: number;
+    newDisparity: number;
+    improvement: number;
+    meetsThreshold: boolean;
+  }
+
+  function augmentSlice(samples: Sample[]): AugmentedSample[] {
+    const result: AugmentedSample[] = [];
+
+    for (const sample of samples) {
+      result.push({ ...sample, synthetic: false });
+
+      const abbreviated = sample.text
+        .replace(/patient/gi, 'pt')
+        .replace(/temperature/gi, 'temp')
+        .replace(/blood pressure/gi, 'BP')
+        .replace(/without/gi, 'w/o');
+
+      result.push({ text: abbreviated, label: sample.label, synthetic: true });
+    }
+
+    return result;
+  }
+
+  function measureImprovement(
+    beforeBest: number,
+    beforeWorst: number,
+    afterBest: number,
+    afterWorst: number,
+    threshold: number = 0.05
+  ): ImprovementReport {
+    const originalDisparity = beforeBest - beforeWorst;
+    const newDisparity = afterBest - afterWorst;
+
+    return {
+      originalDisparity,
+      newDisparity,
+      improvement: originalDisparity - newDisparity,
+      meetsThreshold: newDisparity <= threshold,
+    };
+  }
+testCode: |
+  describe('augmentSlice', () => {
+    it('doubles the number of samples', () => {
+      const samples: Sample[] = [
+        { text: 'patient stable', label: 0 },
+        { text: 'patient critical', label: 1 },
+      ];
+      const result = augmentSlice(samples);
+      expect(result.length).toBe(4);
+    });
+
+    it('marks originals as not synthetic', () => {
+      const samples: Sample[] = [{ text: 'test', label: 0 }];
+      const result = augmentSlice(samples);
+      expect(result[0].synthetic).toBe(false);
+    });
+
+    it('marks augmented samples as synthetic', () => {
+      const samples: Sample[] = [{ text: 'patient ok', label: 0 }];
+      const result = augmentSlice(samples);
+      const synthetics = result.filter(s => s.synthetic);
+      expect(synthetics.length).toBe(1);
+      expect(synthetics[0].synthetic).toBe(true);
+    });
+
+    it('applies abbreviation transformations', () => {
+      const samples: Sample[] = [
+        { text: 'patient temperature normal without issues', label: 0 },
+      ];
+      const result = augmentSlice(samples);
+      const synthetic = result.find(s => s.synthetic);
+      expect(synthetic?.text).toContain('pt');
+      expect(synthetic?.text).toContain('temp');
+      expect(synthetic?.text).toContain('w/o');
+      expect(synthetic?.text).not.toContain('patient');
+    });
+
+    it('preserves labels in synthetic samples', () => {
+      const samples: Sample[] = [{ text: 'patient critical', label: 1 }];
+      const result = augmentSlice(samples);
+      const synthetic = result.find(s => s.synthetic);
+      expect(synthetic?.label).toBe(1);
+    });
+
+    it('applies blood pressure abbreviation', () => {
+      const samples: Sample[] = [
+        { text: 'blood pressure elevated', label: 1 },
+      ];
+      const result = augmentSlice(samples);
+      const synthetic = result.find(s => s.synthetic);
+      expect(synthetic?.text).toContain('BP');
+    });
+  });
+
+  describe('measureImprovement', () => {
+    it('calculates original disparity', () => {
+      const report = measureImprovement(0.94, 0.82, 0.93, 0.91);
+      expect(report.originalDisparity).toBeCloseTo(0.12);
+    });
+
+    it('calculates new disparity', () => {
+      const report = measureImprovement(0.94, 0.82, 0.93, 0.91);
+      expect(report.newDisparity).toBeCloseTo(0.02);
+    });
+
+    it('calculates improvement', () => {
+      const report = measureImprovement(0.94, 0.82, 0.93, 0.91);
+      expect(report.improvement).toBeCloseTo(0.10);
+    });
+
+    it('meets threshold when disparity is small', () => {
+      const report = measureImprovement(0.94, 0.82, 0.93, 0.91, 0.05);
+      expect(report.meetsThreshold).toBe(true);
+    });
+
+    it('fails threshold when disparity is large', () => {
+      const report = measureImprovement(0.94, 0.82, 0.94, 0.82, 0.05);
+      expect(report.meetsThreshold).toBe(false);
+    });
+  });
+estimatedMinutes: 15
+difficulty: intermediate

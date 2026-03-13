@@ -1,0 +1,158 @@
+slug: debug-medi
+lessonSlug: medis-mistake
+title: "Debug MEDI's Diagnostic Pipeline"
+instructions: "Build a safety pipeline to catch errors like MEDI's mistake: (1) detectNegation — scan a text window around a clinical entity for negation cues (resolved, denied, no, without, absent, negative, ruled-out, discontinued, former, history). Return whether negation was detected and which cue triggered it. (2) triagePrediction — combine model confidence and negation detection to route predictions: if negation is detected but status is 'Active', flag for review; if confidence is below threshold, flag for review; otherwise auto-accept."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  interface NegationResult {
+    isNegated: boolean;
+    negationCue: string | null;
+  }
+
+  /**
+   * Detect negation cues within 6 words before the entity.
+   */
+  function detectNegation(
+    text: string,
+    entity: string
+  ): NegationResult {
+    // Step 1: Find the entity in the text
+    // Step 2: Extract a window of words before the entity
+    // Step 3: Check for negation cues: resolved, denied, no, without,
+    //         absent, negative, ruled-out, discontinued, former, history
+    // Step 4: Return whether negation was found and which cue
+    return { isNegated: false, negationCue: null };
+  }
+
+  interface TriageResult {
+    condition: string;
+    status: string;
+    confidence: number;
+    action: 'auto-accept' | 'flag-for-review';
+  }
+
+  /**
+   * Route prediction based on confidence and negation detection.
+   */
+  function triagePrediction(
+    condition: string,
+    predictedStatus: string,
+    confidence: number,
+    negationDetected: boolean,
+    confidenceThreshold: number
+  ): TriageResult {
+    // Rule 1: Negation detected + status is 'Active' → flag-for-review
+    // Rule 2: Confidence below threshold → flag-for-review
+    // Rule 3: Otherwise → auto-accept
+    return { condition, status: predictedStatus, confidence, action: 'auto-accept' };
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  interface NegationResult {
+    isNegated: boolean;
+    negationCue: string | null;
+  }
+
+  function detectNegation(
+    text: string,
+    entity: string
+  ): NegationResult {
+    const negationCues = [
+      'resolved', 'denied', 'denies', 'no', 'without', 'absent',
+      'negative', 'ruled-out', 'ruled out', 'discontinued', 'former', 'history'
+    ];
+
+    const words = text.toLowerCase().split(/\s+/);
+    const entityFirstWord = entity.toLowerCase().split(/\s+/)[0];
+    const entityIdx = words.findIndex(w => w.includes(entityFirstWord));
+
+    if (entityIdx === -1) {
+      return { isNegated: false, negationCue: null };
+    }
+
+    const windowStart = Math.max(0, entityIdx - 6);
+    const window = words.slice(windowStart, entityIdx + entity.split(/\s+/).length + 3);
+    const windowText = window.join(' ');
+
+    for (const cue of negationCues) {
+      if (windowText.includes(cue)) {
+        return { isNegated: true, negationCue: cue };
+      }
+    }
+
+    return { isNegated: false, negationCue: null };
+  }
+
+  interface TriageResult {
+    condition: string;
+    status: string;
+    confidence: number;
+    action: 'auto-accept' | 'flag-for-review';
+  }
+
+  function triagePrediction(
+    condition: string,
+    predictedStatus: string,
+    confidence: number,
+    negationDetected: boolean,
+    confidenceThreshold: number
+  ): TriageResult {
+    let action: TriageResult['action'] = 'auto-accept';
+
+    if (negationDetected && predictedStatus === 'Active') {
+      action = 'flag-for-review';
+    } else if (confidence < confidenceThreshold) {
+      action = 'flag-for-review';
+    }
+
+    return { condition, status: predictedStatus, confidence, action };
+  }
+testCode: |
+  describe('detectNegation', () => {
+    it('detects "resolved" as negation cue', () => {
+      const text = 'History of Type 2 diabetes mellitus, resolved following bariatric surgery';
+      const result = detectNegation(text, 'diabetes');
+      expect(result.isNegated).toBe(true);
+      expect(result.negationCue).toBe('resolved');
+    });
+    it('detects "denied" as negation cue', () => {
+      const text = 'Patient denied chest pain during examination';
+      const result = detectNegation(text, 'chest pain');
+      expect(result.isNegated).toBe(true);
+      expect(result.negationCue).toBe('denied');
+    });
+    it('returns false when no negation is present', () => {
+      const text = 'Patient presents with uncontrolled Type 2 diabetes mellitus';
+      const result = detectNegation(text, 'diabetes');
+      expect(result.isNegated).toBe(false);
+      expect(result.negationCue).toBeNull();
+    });
+    it('detects "no" as negation cue', () => {
+      const text = 'Patient reports no fever or chills';
+      const result = detectNegation(text, 'fever');
+      expect(result.isNegated).toBe(true);
+      expect(result.negationCue).toBe('no');
+    });
+  });
+  describe('triagePrediction', () => {
+    it('flags for review when negation conflicts with Active status', () => {
+      const result = triagePrediction('diabetes', 'Active', 0.72, true, 0.85);
+      expect(result.action).toBe('flag-for-review');
+    });
+    it('flags for review when confidence is below threshold', () => {
+      const result = triagePrediction('hypertension', 'Active', 0.60, false, 0.85);
+      expect(result.action).toBe('flag-for-review');
+    });
+    it('auto-accepts when confidence is high and no negation conflict', () => {
+      const result = triagePrediction('hypertension', 'Active', 0.95, false, 0.85);
+      expect(result.action).toBe('auto-accept');
+    });
+    it('auto-accepts Resolved status even with negation detected', () => {
+      const result = triagePrediction('diabetes', 'Resolved', 0.90, true, 0.85);
+      expect(result.action).toBe('auto-accept');
+    });
+  });
+estimatedMinutes: 15
+difficulty: advanced

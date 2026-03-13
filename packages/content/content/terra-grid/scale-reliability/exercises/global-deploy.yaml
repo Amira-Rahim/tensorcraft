@@ -1,0 +1,140 @@
+slug: global-deploy
+lessonSlug: global-operations
+title: "Global Deployment Scheduler"
+instructions: "Build a DeploymentScheduler that plans model deployments across regions based on their maintenance windows. Each region has a maintenance window defined by UTC start and end hours. The scheduler creates a plan that deploys to each region during its next available maintenance window."
+starterCode: |
+  interface Region {
+    id: string;
+    maintenanceStartUTC: number; // 0-23
+    maintenanceEndUTC: number;   // 0-23
+    currentVersion: string;
+  }
+
+  interface DeploymentEntry {
+    regionId: string;
+    scheduledHourUTC: number;
+    newVersion: string;
+  }
+
+  class DeploymentScheduler {
+    private regions: Region[] = [];
+
+    addRegion(region: Region): void {
+      // Add a region to the scheduler
+      // your code here
+    }
+
+    createPlan(newVersion: string, currentHourUTC: number): DeploymentEntry[] {
+      // Create a deployment plan that schedules each region
+      // during its maintenance window.
+      // If current hour is within the window, schedule for that hour.
+      // If current hour is past the window, schedule for the next day's window.
+      // Sort the plan by scheduledHourUTC.
+      return []; // your code here
+    }
+
+    checkConsistency(): boolean {
+      // Return true if all regions are on the same version
+      return false; // your code here
+    }
+  }
+solutionCode: |
+  interface Region {
+    id: string;
+    maintenanceStartUTC: number;
+    maintenanceEndUTC: number;
+    currentVersion: string;
+  }
+
+  interface DeploymentEntry {
+    regionId: string;
+    scheduledHourUTC: number;
+    newVersion: string;
+  }
+
+  class DeploymentScheduler {
+    private regions: Region[] = [];
+
+    addRegion(region: Region): void {
+      this.regions.push(region);
+    }
+
+    createPlan(newVersion: string, currentHourUTC: number): DeploymentEntry[] {
+      const plan: DeploymentEntry[] = [];
+
+      for (const region of this.regions) {
+        let scheduledHour: number;
+        if (currentHourUTC >= region.maintenanceStartUTC
+            && currentHourUTC < region.maintenanceEndUTC) {
+          scheduledHour = currentHourUTC;
+        } else if (currentHourUTC < region.maintenanceStartUTC) {
+          scheduledHour = region.maintenanceStartUTC;
+        } else {
+          scheduledHour = region.maintenanceStartUTC + 24; // next day
+        }
+
+        plan.push({
+          regionId: region.id,
+          scheduledHourUTC: scheduledHour,
+          newVersion: newVersion,
+        });
+      }
+
+      plan.sort((a, b) => a.scheduledHourUTC - b.scheduledHourUTC);
+      return plan;
+    }
+
+    checkConsistency(): boolean {
+      if (this.regions.length === 0) return true;
+      const firstVersion = this.regions[0].currentVersion;
+      return this.regions.every(r => r.currentVersion === firstVersion);
+    }
+  }
+testCode: |
+  describe('DeploymentScheduler', () => {
+    it('schedules during maintenance window', () => {
+      const scheduler = new DeploymentScheduler();
+      scheduler.addRegion({ id: 'r1', maintenanceStartUTC: 2, maintenanceEndUTC: 4, currentVersion: '1.0' });
+      const plan = scheduler.createPlan('2.0', 3);
+      expect(plan[0].scheduledHourUTC).toBe(3);
+    });
+
+    it('schedules for upcoming window', () => {
+      const scheduler = new DeploymentScheduler();
+      scheduler.addRegion({ id: 'r1', maintenanceStartUTC: 6, maintenanceEndUTC: 8, currentVersion: '1.0' });
+      const plan = scheduler.createPlan('2.0', 2);
+      expect(plan[0].scheduledHourUTC).toBe(6);
+    });
+
+    it('schedules for next day when window has passed', () => {
+      const scheduler = new DeploymentScheduler();
+      scheduler.addRegion({ id: 'r1', maintenanceStartUTC: 2, maintenanceEndUTC: 4, currentVersion: '1.0' });
+      const plan = scheduler.createPlan('2.0', 10);
+      expect(plan[0].scheduledHourUTC).toBe(26); // 2 + 24
+    });
+
+    it('sorts plan by scheduled time', () => {
+      const scheduler = new DeploymentScheduler();
+      scheduler.addRegion({ id: 'r1', maintenanceStartUTC: 18, maintenanceEndUTC: 20, currentVersion: '1.0' });
+      scheduler.addRegion({ id: 'r2', maintenanceStartUTC: 2, maintenanceEndUTC: 4, currentVersion: '1.0' });
+      const plan = scheduler.createPlan('2.0', 0);
+      expect(plan[0].regionId).toBe('r2');
+      expect(plan[1].regionId).toBe('r1');
+    });
+
+    it('checks version consistency', () => {
+      const scheduler = new DeploymentScheduler();
+      scheduler.addRegion({ id: 'r1', maintenanceStartUTC: 2, maintenanceEndUTC: 4, currentVersion: '1.0' });
+      scheduler.addRegion({ id: 'r2', maintenanceStartUTC: 6, maintenanceEndUTC: 8, currentVersion: '1.0' });
+      expect(scheduler.checkConsistency()).toBe(true);
+    });
+
+    it('detects version inconsistency', () => {
+      const scheduler = new DeploymentScheduler();
+      scheduler.addRegion({ id: 'r1', maintenanceStartUTC: 2, maintenanceEndUTC: 4, currentVersion: '1.0' });
+      scheduler.addRegion({ id: 'r2', maintenanceStartUTC: 6, maintenanceEndUTC: 8, currentVersion: '2.0' });
+      expect(scheduler.checkConsistency()).toBe(false);
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

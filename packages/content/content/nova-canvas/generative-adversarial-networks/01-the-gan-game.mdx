@@ -1,0 +1,120 @@
+---
+slug: the-gan-game
+title: "The GAN Game"
+moduleId: generative-adversarial-networks
+themeId: nova-canvas
+order: 1
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Yara frames the GAN concept through art criticism — one network creates, another judges. The tension between them drives both to improve."
+  speaker: "Yara"
+concept:
+  explanation: "A GAN consists of two networks — a generator that creates fake data and a discriminator that tries to distinguish fakes from real data. They train together in an adversarial game."
+  bridge:
+    feTitle: "Fuzzer vs Validator"
+    feCode: "const input = fuzzer.generate(); const isValid = validator.check(input);"
+    mlTitle: "Generator vs Discriminator"
+    mlCode: "const fake = G.predict(noise); const score = D.predict(fake);"
+    tier: structural
+consequence:
+  narrative: "Ren sees the elegance — no need for hand-crafted loss functions. The discriminator IS the loss function, and it gets smarter alongside the generator."
+  nextLessonTeaser: "Next: building the generator architecture — the creative network"
+hints:
+  - level: nudge
+    content: "Think of fuzz testing — one system generates inputs, another validates them"
+  - level: guidance
+    content: "The generator tries to fool the discriminator. The discriminator tries not to be fooled."
+  - level: solution
+    content: "Train D to classify real vs fake, then train G to make D output 'real' for fake data"
+keywords:
+  - gan
+  - adversarial
+  - generator
+  - discriminator
+  - minimax
+---
+
+<Dialogue speaker="Yara">
+The generator is a student artist. The discriminator is a harsh critic. The student paints a forgery. The critic examines it and says, "Fake." The student studies the critique, paints a better forgery. The critic sharpens their eye. Round after round, both get better. That is a GAN.
+</Dialogue>
+
+<Dialogue speaker="MUSE">
+Two minds locked in opposition. From their struggle, beauty emerges.
+</Dialogue>
+
+If you have ever used a fuzzer in testing — a tool that generates random inputs to find bugs in a validator — you already understand the GAN architecture. The fuzzer (generator) creates inputs. The validator (discriminator) judges them. The tension between creation and criticism drives improvement.
+
+<LearningObjectives objectives={["Understand the adversarial training paradigm of GANs", "Identify the roles of generator and discriminator", "Connect fuzzer/validator testing patterns to GAN architecture", "Describe the minimax game that drives GAN training"]} />
+
+## Two Players, One Game
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="gan-concept.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Frontend: Fuzzer vs Validator
+function fuzzer() {
+  // Generate random-looking form data
+  return { email: randomString() + '@test.com', age: Math.floor(Math.random() * 150) };
+}
+function validator(input: { email: string; age: number }): boolean {
+  return input.email.includes('@') && input.age > 0 && input.age < 130;
+}
+// Fuzzer tries to generate inputs that pass validation
+// Validator tries to reject invalid inputs
+// Both improve through the adversarial process
+
+// ML: Generator vs Discriminator
+// Generator: noise → fake image
+// Discriminator: image → real or fake?
+
+// Generator wins when discriminator cannot tell fake from real
+// Discriminator wins when it correctly identifies all fakes
+
+// The training loop alternates:
+// Step 1: Train discriminator on real + fake data
+// Step 2: Train generator to fool discriminator`}
+</CodeBlock>
+
+## The Minimax Game
+
+GANs are formalized as a minimax game. The discriminator wants to maximize its accuracy. The generator wants to minimize the discriminator's ability to detect fakes.
+
+<CodeBlock language="typescript" title="minimax.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Simplified GAN training step (pseudocode)
+async function ganTrainStep(
+  generator: tf.LayersModel,
+  discriminator: tf.LayersModel,
+  realBatch: tf.Tensor,
+  noiseDim: number
+) {
+  const batchSize = realBatch.shape[0];
+
+  // Step 1: Train Discriminator
+  // It should output 1 for real, 0 for fake
+  const noise = tf.randomNormal([batchSize, noiseDim]);
+  const fakeBatch = generator.predict(noise) as tf.Tensor;
+
+  const realLabels = tf.ones([batchSize, 1]);   // real = 1
+  const fakeLabels = tf.zeros([batchSize, 1]);  // fake = 0
+
+  // D learns: "this is what real looks like, this is what fake looks like"
+
+  // Step 2: Train Generator
+  // G wants D to output 1 (real) for its fake data
+  const misleadingLabels = tf.ones([batchSize, 1]);
+  // G learns: "make output that D thinks is real"
+}`}
+</CodeBlock>
+
+The beauty of GANs is that you do not need to define what "good" output looks like. The discriminator *learns* what good looks like from real data, and that learned judgment becomes the generator's training signal.
+
+## Challenge
+
+<Exercise slug="gan-game" />
+
+<KeyTakeaways takeaways={["GANs pit a generator against a discriminator in an adversarial game", "The generator creates fakes; the discriminator judges real vs fake", "Training alternates: improve discriminator, then improve generator", "No hand-crafted loss needed — the discriminator IS the learned loss function"]} />

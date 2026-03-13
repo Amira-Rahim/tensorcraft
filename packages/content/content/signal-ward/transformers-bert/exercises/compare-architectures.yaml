@@ -1,0 +1,107 @@
+slug: compare-architectures
+lessonSlug: from-rnn-to-transformer
+title: "Compare RNN and Transformer Architectures"
+instructions: "Implement two functions that process a sequence of token embeddings: (1) rnnProcess — sequentially processes tokens one at a time using a hidden state, returning the final hidden state; (2) transformerProcess — processes all tokens in parallel using scaled dot-product self-attention, returning attended representations for all tokens. Compare how each handles the same input."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  /**
+   * Process tokens sequentially — each step depends on the previous hidden state.
+   * @param tokens [seqLen, embedDim] input embeddings
+   * @param hiddenDim size of the hidden state
+   * @returns [hiddenDim] final hidden state
+   */
+  function rnnProcess(
+    tokens: tf.Tensor2D,
+    hiddenDim: number
+  ): tf.Tensor1D {
+    // Step 1: Initialize hidden state as zeros [hiddenDim]
+    // Step 2: Loop through each token sequentially
+    // Step 3: At each step: hidden = tanh(token * Wih + hidden * Whh)
+    // Step 4: Return final hidden state
+    return null;
+  }
+
+  /**
+   * Process all tokens in parallel via self-attention.
+   * @param tokens [seqLen, embedDim] input embeddings
+   * @param dk dimension of Q, K, V projections
+   * @returns [seqLen, dk] attended output for ALL tokens
+   */
+  function transformerProcess(
+    tokens: tf.Tensor2D,
+    dk: number
+  ): tf.Tensor2D {
+    // Step 1: Project tokens to Q, K, V using weight matrices
+    // Step 2: Compute scaled dot-product attention scores
+    // Step 3: Apply softmax and multiply by V
+    // Step 4: Return output for ALL tokens (not just the last one)
+    return null;
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function rnnProcess(
+    tokens: tf.Tensor2D,
+    hiddenDim: number
+  ): tf.Tensor1D {
+    const seqLen = tokens.shape[0];
+    const embedDim = tokens.shape[1];
+    const Wih = tf.randomNormal([embedDim, hiddenDim]);
+    const Whh = tf.randomNormal([hiddenDim, hiddenDim]);
+    let hidden = tf.zeros([hiddenDim]);
+
+    for (let t = 0; t < seqLen; t++) {
+      const token = tokens.slice([t, 0], [1, -1]).squeeze() as tf.Tensor1D;
+      const inputContrib = tf.matMul(token.reshape([1, -1]), Wih).squeeze();
+      const hiddenContrib = tf.matMul(hidden.reshape([1, -1]), Whh).squeeze();
+      hidden = tf.tanh(inputContrib.add(hiddenContrib)) as tf.Tensor1D;
+    }
+
+    return hidden;
+  }
+
+  function transformerProcess(
+    tokens: tf.Tensor2D,
+    dk: number
+  ): tf.Tensor2D {
+    const embedDim = tokens.shape[1];
+    const Wq = tf.randomNormal([embedDim, dk]);
+    const Wk = tf.randomNormal([embedDim, dk]);
+    const Wv = tf.randomNormal([embedDim, dk]);
+
+    const Q = tf.matMul(tokens, Wq);
+    const K = tf.matMul(tokens, Wk);
+    const V = tf.matMul(tokens, Wv);
+
+    const scores = tf.matMul(Q, K.transpose()).div(Math.sqrt(dk));
+    const weights = tf.softmax(scores, -1);
+    return tf.matMul(weights, V) as tf.Tensor2D;
+  }
+testCode: |
+  describe('rnnProcess', () => {
+    it('returns shape [hiddenDim]', () => {
+      const tokens = tf.randomNormal([8, 32]) as tf.Tensor2D;
+      const output = rnnProcess(tokens, 16);
+      expect(output.shape).toEqual([16]);
+    });
+    it('returns a 1D tensor (single hidden state, not per-token)', () => {
+      const tokens = tf.randomNormal([5, 16]) as tf.Tensor2D;
+      const output = rnnProcess(tokens, 24);
+      expect(output.rank).toBe(1);
+    });
+  });
+  describe('transformerProcess', () => {
+    it('returns shape [seqLen, dk] — output for ALL tokens', () => {
+      const tokens = tf.randomNormal([8, 32]) as tf.Tensor2D;
+      const output = transformerProcess(tokens, 16);
+      expect(output.shape).toEqual([8, 16]);
+    });
+    it('preserves sequence length in output', () => {
+      const tokens = tf.randomNormal([12, 64]) as tf.Tensor2D;
+      const output = transformerProcess(tokens, 32);
+      expect(output.shape[0]).toBe(12);
+    });
+  });
+estimatedMinutes: 15
+difficulty: intermediate

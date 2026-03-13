@@ -1,0 +1,67 @@
+slug: build-generator
+lessonSlug: generator-architecture
+title: "Build a GAN Generator"
+instructions: "Build a generator network that takes a 100-dimensional noise vector and outputs a 784-dimensional image vector. Use three dense layers with batch normalization and leakyReLU activation, and a sigmoid output layer."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function buildGenerator(): tf.Sequential {
+    const model = tf.sequential();
+
+    // Layer 1: 100 → 256, batchNorm, leakyReLU(0.2)
+    // your code here
+
+    // Layer 2: 256 → 512, batchNorm, leakyReLU(0.2)
+    // your code here
+
+    // Output: 512 → 784, sigmoid
+    // your code here
+
+    return model;
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function buildGenerator(): tf.Sequential {
+    const model = tf.sequential();
+
+    model.add(tf.layers.dense({ inputShape: [100], units: 256 }));
+    model.add(tf.layers.batchNormalization());
+    model.add(tf.layers.leakyReLU({ alpha: 0.2 }));
+
+    model.add(tf.layers.dense({ units: 512 }));
+    model.add(tf.layers.batchNormalization());
+    model.add(tf.layers.leakyReLU({ alpha: 0.2 }));
+
+    model.add(tf.layers.dense({ units: 784, activation: 'sigmoid' }));
+
+    return model;
+  }
+testCode: |
+  describe('buildGenerator', () => {
+    it('accepts input shape [null, 100]', () => {
+      const gen = buildGenerator();
+      expect(gen.inputShape).toEqual([null, 100]);
+    });
+    it('outputs shape [null, 784]', () => {
+      const gen = buildGenerator();
+      expect(gen.outputShape).toEqual([null, 784]);
+    });
+    it('has batch normalization layers', () => {
+      const gen = buildGenerator();
+      const bnLayers = gen.layers.filter(l => l.getClassName() === 'BatchNormalization');
+      expect(bnLayers.length).toBe(2);
+    });
+    it('generates valid output from noise', async () => {
+      const gen = buildGenerator();
+      const noise = tf.randomNormal([1, 100]);
+      const output = gen.predict(noise) as tf.Tensor;
+      const data = await output.array() as number[][];
+      data[0].forEach(v => {
+        expect(v).toBeGreaterThanOrEqual(0);
+        expect(v).toBeLessThanOrEqual(1);
+      });
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

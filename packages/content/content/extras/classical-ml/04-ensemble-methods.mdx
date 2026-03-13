@@ -1,0 +1,187 @@
+---
+slug: ensemble-methods
+title: "Ensemble Methods: Wisdom of Crowds"
+moduleId: classical-ml
+themeId: shared
+order: 4
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "One model can be wrong. But when dozens of models vote, the errors cancel out. This is the principle behind the most winning approach in applied ML."
+concept:
+  explanation: "Ensemble methods combine multiple weak models into a strong one through bagging (parallel, independent) or boosting (sequential, corrective)."
+  bridge:
+    feTitle: "Promise.allSettled + vote"
+    feCode: "const results = await Promise.allSettled(models); majorityVote(results)"
+    mlTitle: "Random forest"
+    mlCode: "forest.predict(x) // each tree votes, majority wins"
+    tier: structural
+consequence:
+  narrative: "You now understand why random forests and gradient boosting dominate Kaggle competitions and production ML systems alike."
+  nextLessonTeaser: "Next: the decision framework for choosing the right model for any problem"
+hints:
+  - level: nudge
+    content: "Bagging trains models in parallel on random subsets of data"
+  - level: guidance
+    content: "Each tree sees a random subset of features AND a random subset of data"
+  - level: solution
+    content: "Sample data with replacement, train tree on subset of features, repeat N times, majority vote"
+keywords:
+  - random-forest
+  - bagging
+  - boosting
+  - ensemble
+---
+
+<Dialogue speaker="Instructor">
+Here's a fact that surprises most people: on structured, tabular data, random forests and gradient-boosted trees beat neural networks more often than not. Not because trees are smarter, but because combining many simple models is often better than one complex one.
+</Dialogue>
+
+Think about how you handle unreliable API calls in production. You don't trust a single service — you call multiple, compare results, and take the consensus. That's exactly what ensemble methods do with models.
+
+<LearningObjectives objectives={["Understand bagging as parallel model training with random data subsets", "Build a simplified random forest from multiple decision trees", "Distinguish bagging (variance reduction) from boosting (bias reduction)", "Know when ensembles outperform deep learning (spoiler: tabular data)"]} />
+
+## The Promise.allSettled Pattern
+
+You already use the ensemble pattern in frontend code. When you need reliability, you don't trust a single source.
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="ensemble-pattern.ts">
+{`// Frontend: multiple API calls, take consensus
+async function reliablePrice(productId: string): Promise<number> {
+  const results = await Promise.allSettled([
+    fetchFromServiceA(productId),
+    fetchFromServiceB(productId),
+    fetchFromServiceC(productId),
+  ]);
+
+  const prices = results
+    .filter((r): r is PromiseFulfilledResult<number> => r.status === 'fulfilled')
+    .map(r => r.value);
+
+  // Take the median — robust to one bad response
+  return median(prices);
+}
+
+// ML: multiple models, take majority vote
+function randomForestPredict(
+  trees: DecisionTree[],
+  features: number[]
+): number {
+  const predictions = trees.map(tree => tree.predict(features));
+
+  // Majority vote
+  const votes = new Map<number, number>();
+  for (const pred of predictions) {
+    votes.set(pred, (votes.get(pred) ?? 0) + 1);
+  }
+
+  return [...votes.entries()].sort((a, b) => b[1] - a[1])[0][0];
+}`}
+</CodeBlock>
+
+## Bagging: Random Subsets, Parallel Training
+
+Bagging (Bootstrap AGGregating) trains each model on a random subset of the training data, sampled *with replacement*. This means each tree sees a slightly different version of the data.
+
+<CodeBlock language="typescript" title="bagging.ts">
+{`// Bootstrap sampling: random subset with replacement
+function bootstrapSample<T>(data: T[]): T[] {
+  const sample: T[] = [];
+  for (let i = 0; i < data.length; i++) {
+    const idx = Math.floor(Math.random() * data.length);
+    sample.push(data[idx]);
+  }
+  return sample; // same size as original, but with duplicates
+}
+
+// Random feature subset (what makes it a *random* forest)
+function randomFeatures(allFeatures: string[], maxFeatures: number): string[] {
+  const shuffled = [...allFeatures].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, maxFeatures);
+}
+
+// Build a random forest
+function buildRandomForest(
+  data: DataPoint[],
+  numTrees: number,
+  maxFeatures: number
+): DecisionTree[] {
+  const trees: DecisionTree[] = [];
+
+  for (let i = 0; i < numTrees; i++) {
+    // Each tree gets a random sample of data
+    const sample = bootstrapSample(data);
+    // Each tree only sees a random subset of features
+    const features = randomFeatures(allFeatureNames, maxFeatures);
+    // Train tree on this unique view of the data
+    trees.push(trainDecisionTree(sample, features, { maxDepth: 10 }));
+  }
+
+  return trees;
+}`}
+</CodeBlock>
+
+Why does this work? Each individual tree is mediocre — it only sees part of the data and part of the features. But their errors are *uncorrelated*. When you average uncorrelated errors, they cancel out.
+
+## Boosting: Sequential Error Correction
+
+While bagging trains models in parallel, boosting trains them sequentially. Each new model focuses on the mistakes of the previous one. It's like code review: each reviewer catches different bugs.
+
+<CodeBlock language="typescript" title="boosting-concept.ts">
+{`// Conceptual boosting: each model focuses on previous errors
+function boostingTrain(data: DataPoint[], numRounds: number) {
+  // Start with equal weights for all data points
+  let weights = new Array(data.length).fill(1 / data.length);
+  const models: { model: DecisionTree; weight: number }[] = [];
+
+  for (let round = 0; round < numRounds; round++) {
+    // Train a weak model (shallow tree) on weighted data
+    const model = trainWeightedTree(data, weights, { maxDepth: 3 });
+
+    // Find misclassified points
+    const errors = data.map((d, i) => ({
+      index: i,
+      wrong: model.predict(d.features) !== d.label,
+    }));
+
+    const errorRate = errors
+      .reduce((sum, e) => sum + (e.wrong ? weights[e.index] : 0), 0);
+
+    // Model weight: better models get more say
+    const modelWeight = 0.5 * Math.log((1 - errorRate) / errorRate);
+    models.push({ model, weight: modelWeight });
+
+    // Increase weights on misclassified points
+    // Next model will focus on these harder examples
+    weights = weights.map((w, i) =>
+      w * Math.exp(errors[i].wrong ? modelWeight : -modelWeight)
+    );
+
+    // Normalize weights
+    const totalWeight = weights.reduce((a, b) => a + b, 0);
+    weights = weights.map(w => w / totalWeight);
+  }
+
+  return models;
+}`}
+</CodeBlock>
+
+## Bagging vs. Boosting: When to Use Each
+
+| | Bagging (Random Forest) | Boosting (XGBoost) |
+|---|---|---|
+| Training | Parallel | Sequential |
+| Reduces | Variance (overfitting) | Bias (underfitting) |
+| Risk | Less prone to overfit | Can overfit if too many rounds |
+| Speed | Fast (parallelizable) | Slower (sequential) |
+| When to use | Your model is overfitting | Your model is too simple |
+
+## Challenge
+
+Build a simplified random forest with bootstrap sampling and majority voting.
+
+<Exercise slug="build-random-forest" />
+
+<KeyTakeaways takeaways={["Ensembles combine weak models into strong ones, like Promise.allSettled with voting", "Bagging trains models in parallel on random subsets — reduces variance", "Boosting trains models sequentially, each fixing prior errors — reduces bias", "On tabular data, random forests and XGBoost often beat neural networks"]} />

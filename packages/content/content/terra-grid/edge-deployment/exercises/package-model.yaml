@@ -1,0 +1,57 @@
+slug: package-model
+lessonSlug: model-packaging
+title: "Package a Model"
+instructions: "Write a function createModelPackage that takes a version string and a weights ArrayBuffer, and returns an object with version, checksum (first 12 chars of a simple hash), and sizeBytes. For the hash, sum all byte values and convert to hex."
+starterCode: |
+  interface ModelPackage {
+    version: string;
+    checksum: string;
+    sizeBytes: number;
+  }
+
+  function createModelPackage(version: string, weights: ArrayBuffer): ModelPackage {
+    // Your code here
+    return { version: '', checksum: '', sizeBytes: 0 };
+  }
+solutionCode: |
+  interface ModelPackage {
+    version: string;
+    checksum: string;
+    sizeBytes: number;
+  }
+
+  function createModelPackage(version: string, weights: ArrayBuffer): ModelPackage {
+    const bytes = new Uint8Array(weights);
+    let hash = 0;
+    for (let i = 0; i < bytes.length; i++) {
+      hash = ((hash << 5) - hash + bytes[i]) | 0;
+    }
+    const checksum = Math.abs(hash).toString(16).padStart(12, '0').slice(0, 12);
+    return { version, checksum, sizeBytes: weights.byteLength };
+  }
+testCode: |
+  describe('createModelPackage', () => {
+    it('includes the version', () => {
+      const pkg = createModelPackage('1.0.0', new ArrayBuffer(100));
+      expect(pkg.version).toBe('1.0.0');
+    });
+    it('computes sizeBytes', () => {
+      const pkg = createModelPackage('1.0.0', new ArrayBuffer(256));
+      expect(pkg.sizeBytes).toBe(256);
+    });
+    it('generates a 12-char checksum', () => {
+      const pkg = createModelPackage('1.0.0', new ArrayBuffer(100));
+      expect(pkg.checksum.length).toBe(12);
+    });
+    it('produces different checksums for different weights', () => {
+      const buf1 = new ArrayBuffer(4);
+      new Uint8Array(buf1).set([1, 2, 3, 4]);
+      const buf2 = new ArrayBuffer(4);
+      new Uint8Array(buf2).set([5, 6, 7, 8]);
+      const pkg1 = createModelPackage('1.0.0', buf1);
+      const pkg2 = createModelPackage('1.0.0', buf2);
+      expect(pkg1.checksum).not.toBe(pkg2.checksum);
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

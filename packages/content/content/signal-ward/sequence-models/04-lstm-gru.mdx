@@ -1,0 +1,205 @@
+---
+slug: lstm-gru
+title: "LSTM and GRU Cells"
+moduleId: sequence-models
+themeId: signal-ward
+order: 4
+estimatedMinutes: 30
+difficulty: intermediate
+context:
+  narrative: "Obi introduces gated architectures — LSTMs and GRUs — that solve the vanishing gradient problem by controlling what information persists across timesteps."
+  speaker: "Obi"
+concept:
+  explanation: "LSTM cells use three gates (forget, input, output) to control information flow, deciding what to keep, add, and expose. This is analogous to React's useMemo and useCallback — hooks that control what persists across renders."
+  bridge:
+    feTitle: "React useMemo / useCallback"
+    feCode: "const cached = useMemo(() => expensiveCalc(data), [data]); // controls what persists"
+    mlTitle: "LSTM Gates"
+    mlCode: "cellState = forgetGate * cellState + inputGate * candidate; // controls what persists"
+    tier: structural
+consequence:
+  narrative: "The team's model can now process long discharge summaries without forgetting the diagnosis at the top."
+  nextLessonTeaser: "Next: bidirectional models — reading clinical text forwards AND backwards for complete context."
+hints:
+  - level: nudge
+    content: "The forget gate decides what to discard from cell state, like useMemo's dependency array decides when to recalculate."
+  - level: guidance
+    content: "Use tf.layers.lstm instead of tf.layers.simpleRNN — the API is nearly identical."
+  - level: solution
+    content: "model.add(tf.layers.lstm({ units: 32 })); // drop-in replacement for simpleRNN"
+keywords:
+  - lstm
+  - gru
+  - gates
+  - forget-gate
+  - cell-state
+  - useMemo
+  - long-range-dependencies
+---
+
+> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
+
+<Dialogue speaker="Obi">
+Santos, when you use `useMemo` in React, what are you doing?
+</Dialogue>
+
+<Dialogue speaker="Santos">
+Controlling what persists across renders. The dependency array decides when to recalculate and when to keep the cached value.
+</Dialogue>
+
+<Dialogue speaker="Obi">
+An LSTM does exactly the same thing for sequence processing. It has gates that control what information to keep from the previous timestep, what new information to add, and what to expose as output. Instead of a dependency array, it uses learned sigmoid gates.
+</Dialogue>
+
+<Dialogue speaker="Dr. Vasquez">
+So the LSTM can choose to remember that "denied" appeared 20 words ago when it finally encounters "chest pain"?
+</Dialogue>
+
+<Dialogue speaker="MEDI">
+Correct. The LSTM cell state acts as a long-term memory highway. The forget gate selectively preserves critical clinical context across arbitrarily long sequences.
+</Dialogue>
+
+In React, `useMemo` and `useCallback` control what values persist across re-renders. Without them, expensive computations run unnecessarily or stale closures cause bugs. LSTMs solve the analogous problem in sequences: without gates, information either vanishes or explodes over long timesteps.
+
+<LearningObjectives objectives={["Understand the three LSTM gates: forget, input, and output", "Connect LSTM gates to React memoization hooks conceptually", "Build an LSTM model in TensorFlow.js for clinical text", "Compare LSTM vs GRU architecture tradeoffs"]} />
+
+## The Three Gates
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="lstm-gates-explained.ts">
+{`// React memoization analogy
+// useMemo controls WHAT persists across renders
+// LSTM gates control WHAT persists across timesteps
+
+// ---- FORGET GATE: What to discard ----
+// React: useMemo with changing deps → discard old value
+// LSTM: sigmoid(W_f * [hidden, input]) → values near 0 mean "forget"
+
+// ---- INPUT GATE: What new info to add ----
+// React: useMemo recalculates when deps change → store new value
+// LSTM: sigmoid(W_i * [hidden, input]) * tanh(W_c * [hidden, input])
+
+// ---- OUTPUT GATE: What to expose ----
+// React: useMemo returns the cached value to the component
+// LSTM: sigmoid(W_o * [hidden, input]) * tanh(cellState)
+
+// The cell state is the "cache" — it flows through time
+// with minimal modification, solving vanishing gradients
+
+function lstmCellConceptual(
+  prevHidden: number[],
+  prevCell: number[],
+  input: number[]
+) {
+  // Simplified — real LSTM uses matrix multiplication
+  const combined = [...prevHidden, ...input];
+
+  // Forget gate: what to drop from memory (0 = forget, 1 = keep)
+  const forgetGate = combined.map(v => sigmoid(v * 0.5));
+
+  // Input gate: what new info to store
+  const inputGate = combined.map(v => sigmoid(v * 0.3));
+  const candidate = combined.map(v => Math.tanh(v * 0.4));
+
+  // Update cell state: forget old + add new
+  const newCell = prevCell.map((c, i) =>
+    forgetGate[i % forgetGate.length] * c +
+    inputGate[i % inputGate.length] * candidate[i % candidate.length]
+  );
+
+  // Output gate: what to expose as hidden state
+  const outputGate = combined.map(v => sigmoid(v * 0.6));
+  const newHidden = newCell.map((c, i) =>
+    outputGate[i % outputGate.length] * Math.tanh(c)
+  );
+
+  return { hidden: newHidden, cell: newCell };
+}
+
+function sigmoid(x: number): number {
+  return 1 / (1 + Math.exp(-x));
+}`}
+</CodeBlock>
+
+## LSTM in TensorFlow.js
+
+<CodeBlock language="typescript" title="lstm-model.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Build clinical text classifier with LSTM
+const model = tf.sequential();
+
+model.add(tf.layers.embedding({
+  inputDim: 500,      // vocabulary size
+  outputDim: 32,      // embedding dimension
+  inputLength: 50,    // can handle LONG sequences now
+}));
+
+// LSTM: drop-in replacement for simpleRNN
+model.add(tf.layers.lstm({
+  units: 32,
+  returnSequences: false,
+  // Internally manages: forget gate, input gate, output gate, cell state
+  // No vanishing gradient — cell state provides gradient highway
+}));
+
+model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
+
+model.compile({
+  optimizer: 'adam',
+  loss: 'binaryCrossentropy',
+  metrics: ['accuracy'],
+});
+
+model.summary();
+// Note: LSTM has 4x the parameters of simpleRNN (4 gates × weights)
+// Total params for LSTM with units=32: 4 * (32 * 32 + 32 * 32 + 32) = 8,320
+// vs simpleRNN: 32 * 32 + 32 * 32 + 32 = 2,080`}
+</CodeBlock>
+
+## GRU: The Simpler Alternative
+
+<Dialogue speaker="Santos">
+Four times the parameters? That's going to be slower in the browser.
+</Dialogue>
+
+<Dialogue speaker="Obi">
+Good thinking. GRU is a lighter alternative — it merges the forget and input gates into a single "update gate" and removes the separate cell state. Fewer parameters, often similar performance.
+</Dialogue>
+
+<CodeBlock language="typescript" title="gru-comparison.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// GRU: 2 gates instead of 3, no separate cell state
+const gruModel = tf.sequential();
+gruModel.add(tf.layers.embedding({
+  inputDim: 500, outputDim: 32, inputLength: 50,
+}));
+gruModel.add(tf.layers.gru({
+  units: 32,
+  returnSequences: false,
+  // Two gates: update gate (combines forget+input) and reset gate
+  // Fewer parameters → faster in browser
+}));
+gruModel.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
+
+gruModel.compile({ optimizer: 'adam', loss: 'binaryCrossentropy' });
+gruModel.summary();
+// GRU params: 3 * (32 * 32 + 32 * 32 + 32) = 6,240
+// 25% fewer than LSTM's 8,320
+
+// Rule of thumb for browser ML:
+// - Short sequences (<20 tokens): simpleRNN may suffice
+// - Medium sequences (20-100): GRU is a good default
+// - Long sequences or complex dependencies: LSTM
+// - Very long sequences (>200): consider attention (next module)`}
+</CodeBlock>
+
+## Challenge
+
+Build an LSTM model that handles long clinical sequences where simple RNNs fail.
+
+<Exercise slug="sw-build-lstm" />
+
+<KeyTakeaways takeaways={["LSTM gates control information flow like useMemo controls what persists across React renders", "The forget gate discards irrelevant info, the input gate adds new info, the output gate controls exposure", "The cell state provides a gradient highway that solves vanishing gradients", "GRU is a lighter alternative with 2 gates instead of 3 — better for browser performance"]} />

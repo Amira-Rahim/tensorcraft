@@ -1,0 +1,200 @@
+---
+slug: choosing-your-model
+title: "When NOT to Use Deep Learning"
+moduleId: classical-ml
+themeId: shared
+order: 5
+estimatedMinutes: 30
+difficulty: intermediate
+context:
+  narrative: "The most important skill in ML isn't building models — it's knowing which model to build. This lesson gives you the decision framework."
+concept:
+  explanation: "Model selection depends on dataset size, interpretability requirements, compute budget, and data type. Deep learning is not always the answer."
+  bridge:
+    feTitle: "Choosing npm packages"
+    feCode: "// Need routing? react-router. Need state? zustand. Need SSR? Next.js"
+    mlTitle: "Model selection"
+    mlCode: "// Tabular? XGBoost. Images? CNN. Text? Transformer. Small data? KNN"
+    tier: structural
+consequence:
+  narrative: "You now have a practical decision framework for model selection. This is the skill that separates ML engineers from tutorial followers."
+  nextLessonTeaser: "You've completed the Classical ML module. These foundations will serve you in every ML project."
+hints:
+  - level: nudge
+    content: "Start simple — logistic regression is always your first baseline"
+  - level: guidance
+    content: "Consider: data size, data type, interpretability needs, compute budget"
+  - level: solution
+    content: "Small tabular data + interpretability = tree-based. Large unstructured data = deep learning."
+keywords:
+  - model-selection
+  - decision-framework
+  - deep-learning-alternatives
+  - production-ml
+---
+
+<Dialogue speaker="Instructor">
+I've seen teams spend months building a neural network that a logistic regression could have matched in an afternoon. The most expensive mistake in ML isn't picking the wrong hyperparameters — it's picking the wrong model entirely. Let's make sure you never make that mistake.
+</Dialogue>
+
+Choosing an ML model is like choosing a frontend framework. You wouldn't use Next.js for a static landing page, and you wouldn't use plain HTML for a real-time dashboard. The right tool depends on the job.
+
+<LearningObjectives objectives={["Apply a systematic decision framework for model selection", "Identify when classical ML outperforms deep learning", "Evaluate trade-offs between accuracy, interpretability, and compute cost", "Match problem types (tabular, image, text, time-series) to model families"]} />
+
+## The Decision Framework
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="model-selector.ts">
+{`type DataType = 'tabular' | 'image' | 'text' | 'time-series' | 'audio';
+type Priority = 'accuracy' | 'interpretability' | 'speed' | 'low-data';
+
+interface ProblemSpec {
+  dataType: DataType;
+  datasetSize: number;
+  needsInterpretability: boolean;
+  computeBudget: 'low' | 'medium' | 'high';
+  priority: Priority;
+}
+
+function recommendModel(spec: ProblemSpec): string {
+  // Rule 1: Unstructured data (images, text, audio) → deep learning
+  if (['image', 'audio'].includes(spec.dataType)) {
+    return spec.computeBudget === 'low'
+      ? 'Pre-trained model (transfer learning)'
+      : 'CNN / Vision Transformer';
+  }
+
+  if (spec.dataType === 'text') {
+    return spec.datasetSize < 1000
+      ? 'TF-IDF + Logistic Regression'
+      : 'Fine-tuned Transformer';
+  }
+
+  // Rule 2: Tabular data → classical ML almost always wins
+  if (spec.dataType === 'tabular') {
+    if (spec.needsInterpretability) {
+      return spec.datasetSize < 500
+        ? 'Logistic Regression / Decision Tree'
+        : 'Explainable Boosted Machine (EBM)';
+    }
+
+    if (spec.datasetSize < 100) return 'KNN or Logistic Regression';
+    if (spec.datasetSize < 10000) return 'Random Forest';
+    return 'XGBoost / LightGBM';
+  }
+
+  // Rule 3: Time-series → depends on complexity
+  if (spec.dataType === 'time-series') {
+    return spec.datasetSize < 1000
+      ? 'ARIMA or Prophet'
+      : 'LSTM / Temporal Fusion Transformer';
+  }
+
+  return 'Start with logistic regression baseline';
+}`}
+</CodeBlock>
+
+## When Classical ML Wins
+
+Here are the scenarios where you should reach for classical ML *first*:
+
+### 1. Tabular Data (Structured Data)
+
+This is the biggest one. If your data lives in a database table with named columns, tree-based models (random forest, XGBoost) consistently outperform neural networks.
+
+<CodeBlock language="typescript" title="tabular-wins.ts">
+{`// Classic tabular problem: predict user churn
+// Features: days_since_login, total_purchases, support_tickets, plan_type
+// Label: churned (0 or 1)
+
+// Neural network approach:
+//   - Needs feature engineering
+//   - Needs normalization
+//   - Needs architecture tuning
+//   - Training time: minutes to hours
+//   - Accuracy: ~85%
+
+// XGBoost approach:
+//   - Handles mixed feature types natively
+//   - Handles missing values natively
+//   - Minimal tuning needed
+//   - Training time: seconds
+//   - Accuracy: ~87%
+
+// The simpler model wins on accuracy AND speed.`}
+</CodeBlock>
+
+### 2. Small Datasets (< 1,000 samples)
+
+Neural networks are data-hungry. With small datasets, they memorize instead of learning. Classical models generalize better with less data.
+
+### 3. Interpretability Required
+
+Regulated industries (finance, healthcare, insurance) often require model explanations. "The model denied your loan because your debt-to-income ratio exceeds 0.4" is only possible with interpretable models.
+
+### 4. Tight Compute Budget
+
+Training a neural network requires GPUs. Training a random forest requires a laptop. In production, inference cost matters too — a decision tree evaluates in microseconds.
+
+## When Deep Learning Wins
+
+Deep learning is the right choice when:
+
+<CodeBlock language="typescript" title="deep-learning-wins.ts">
+{`const useDeepLearning = (problem: ProblemSpec): boolean => {
+  // Unstructured data: images, audio, video, raw text
+  if (['image', 'audio'].includes(problem.dataType)) return true;
+
+  // Massive datasets (100k+ samples) with complex patterns
+  if (problem.datasetSize > 100_000 && !problem.needsInterpretability) return true;
+
+  // Sequence-to-sequence tasks (translation, summarization)
+  if (problem.dataType === 'text' && problem.priority === 'accuracy') return true;
+
+  // Multi-modal inputs (image + text, audio + video)
+  // Classical ML can't naturally combine these
+  return false;
+};`}
+</CodeBlock>
+
+## The Production Checklist
+
+Before choosing your model, answer these five questions:
+
+<CodeBlock language="typescript" title="production-checklist.ts">
+{`interface ModelDecision {
+  // 1. What type of data do you have?
+  dataType: 'tabular' | 'image' | 'text' | 'time-series';
+
+  // 2. How much labeled data do you have?
+  datasetSize: number; // < 1k = small, 1k-100k = medium, 100k+ = large
+
+  // 3. Does a human need to understand why?
+  interpretable: boolean;
+
+  // 4. What's your compute budget?
+  hasGPU: boolean;
+  maxTrainingTime: 'minutes' | 'hours' | 'days';
+
+  // 5. What's your deployment target?
+  deployTarget: 'browser' | 'server' | 'edge' | 'mobile';
+}
+
+// The golden rule: start with the simplest model that could work.
+// Only add complexity when you have evidence it's needed.
+
+// Always establish a baseline:
+// 1. Logistic regression (classification) or linear regression (regression)
+// 2. Random forest or XGBoost
+// 3. Only then try a neural network
+// If step 1 achieves your target metric, ship it.`}
+</CodeBlock>
+
+## Challenge
+
+Given real-world scenarios, choose the right model and justify your reasoning.
+
+<Exercise slug="choose-model" />
+
+<KeyTakeaways takeaways={["Tabular data + classical ML beats neural networks more often than not", "Always start with a simple baseline — logistic regression for classification", "Deep learning shines with unstructured data (images, text, audio) and massive datasets", "Model selection is about trade-offs: accuracy vs. interpretability vs. compute vs. time", "The best model is the simplest one that meets your requirements"]} />

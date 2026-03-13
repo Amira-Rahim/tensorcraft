@@ -1,0 +1,136 @@
+slug: write-runbook
+lessonSlug: documentation-runbooks
+title: "Runbook Registry"
+instructions: "Build a RunbookRegistry that stores operational runbooks and generates formatted checklists. Each runbook has an id, title, trigger condition, and an array of steps. Implement add, get, findByTrigger (search trigger strings), and generateChecklist (formatted string output)."
+starterCode: |
+  interface RunbookStep {
+    order: number;
+    action: string;
+  }
+
+  interface Runbook {
+    id: string;
+    title: string;
+    trigger: string;
+    steps: RunbookStep[];
+  }
+
+  class RunbookRegistry {
+    private runbooks: Map<string, Runbook> = new Map();
+
+    add(runbook: Runbook): void {
+      // Store the runbook by id
+      // your code here
+    }
+
+    get(id: string): Runbook | undefined {
+      // Retrieve a runbook by id
+      return undefined; // your code here
+    }
+
+    findByTrigger(keyword: string): Runbook[] {
+      // Find runbooks whose trigger contains the keyword (case-insensitive)
+      return []; // your code here
+    }
+
+    generateChecklist(id: string): string {
+      // Generate a formatted checklist string:
+      // "# {title}\nTrigger: {trigger}\n[ ] Step 1: {action}\n[ ] Step 2: {action}\n..."
+      // Return 'Runbook not found' if id does not exist
+      return ''; // your code here
+    }
+  }
+solutionCode: |
+  interface RunbookStep {
+    order: number;
+    action: string;
+  }
+
+  interface Runbook {
+    id: string;
+    title: string;
+    trigger: string;
+    steps: RunbookStep[];
+  }
+
+  class RunbookRegistry {
+    private runbooks: Map<string, Runbook> = new Map();
+
+    add(runbook: Runbook): void {
+      this.runbooks.set(runbook.id, runbook);
+    }
+
+    get(id: string): Runbook | undefined {
+      return this.runbooks.get(id);
+    }
+
+    findByTrigger(keyword: string): Runbook[] {
+      const lower = keyword.toLowerCase();
+      return [...this.runbooks.values()].filter(r =>
+        r.trigger.toLowerCase().includes(lower)
+      );
+    }
+
+    generateChecklist(id: string): string {
+      const runbook = this.runbooks.get(id);
+      if (!runbook) return 'Runbook not found';
+
+      let checklist = `# ${runbook.title}\nTrigger: ${runbook.trigger}\n`;
+      for (const step of runbook.steps) {
+        checklist += `[ ] Step ${step.order}: ${step.action}\n`;
+      }
+      return checklist;
+    }
+  }
+testCode: |
+  describe('RunbookRegistry', () => {
+    it('adds and retrieves runbooks', () => {
+      const registry = new RunbookRegistry();
+      registry.add({ id: 'RB-001', title: 'Drift Response', trigger: 'accuracy drop', steps: [] });
+      expect(registry.get('RB-001')?.title).toBe('Drift Response');
+    });
+
+    it('returns undefined for missing runbook', () => {
+      const registry = new RunbookRegistry();
+      expect(registry.get('missing')).toBeUndefined();
+    });
+
+    it('finds runbooks by trigger keyword', () => {
+      const registry = new RunbookRegistry();
+      registry.add({ id: 'RB-001', title: 'Drift', trigger: 'Model accuracy drops below 90%', steps: [] });
+      registry.add({ id: 'RB-002', title: 'Latency', trigger: 'Latency exceeds 20ms', steps: [] });
+      const results = registry.findByTrigger('accuracy');
+      expect(results.length).toBe(1);
+      expect(results[0].id).toBe('RB-001');
+    });
+
+    it('case-insensitive trigger search', () => {
+      const registry = new RunbookRegistry();
+      registry.add({ id: 'RB-001', title: 'Test', trigger: 'Model DRIFT detected', steps: [] });
+      expect(registry.findByTrigger('drift').length).toBe(1);
+    });
+
+    it('generates formatted checklist', () => {
+      const registry = new RunbookRegistry();
+      registry.add({
+        id: 'RB-001', title: 'Drift Response',
+        trigger: 'accuracy drop',
+        steps: [
+          { order: 1, action: 'Check dashboard' },
+          { order: 2, action: 'Compare baseline' },
+        ],
+      });
+      const checklist = registry.generateChecklist('RB-001');
+      expect(checklist).toContain('# Drift Response');
+      expect(checklist).toContain('Trigger: accuracy drop');
+      expect(checklist).toContain('[ ] Step 1: Check dashboard');
+      expect(checklist).toContain('[ ] Step 2: Compare baseline');
+    });
+
+    it('returns error for missing runbook checklist', () => {
+      const registry = new RunbookRegistry();
+      expect(registry.generateChecklist('missing')).toBe('Runbook not found');
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

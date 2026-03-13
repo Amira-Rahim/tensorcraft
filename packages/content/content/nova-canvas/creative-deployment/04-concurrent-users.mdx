@@ -1,0 +1,208 @@
+---
+slug: concurrent-users
+title: "Concurrent Users"
+moduleId: creative-deployment
+themeId: nova-canvas
+order: 4
+estimatedMinutes: 25
+difficulty: advanced
+context:
+  narrative: "Petrov runs the stress test. One user: perfect. Ten users: fine. Fifty users: the WebSocket connections start dropping. 'We need connection pooling, request queuing, and graceful degradation. The same problems as any high-traffic web application.'"
+  speaker: "Petrov"
+concept:
+  explanation: "Handling concurrent generators is connection management — pooling WebSocket connections, queuing generation requests, and shedding load gracefully when demand exceeds capacity."
+  bridge:
+    feTitle: "WebSocket Connection Pooling"
+    feCode: "const pool = new ConnectionPool(maxConnections: 50); pool.acquire().then(ws => ws.send(data));"
+    mlTitle: "Generation Queue"
+    mlCode: "const queue = new GenerationQueue(maxConcurrent: 4); queue.enqueue(generateRequest);"
+    tier: structural
+consequence:
+  narrative: "The system handles 200 concurrent connections. Excess requests queue with estimated wait times. Nobody waits more than 2 seconds. Petrov exhales for the first time in weeks."
+  nextLessonTeaser: "Next: designing the physical-digital installation architecture"
+hints:
+  - level: nudge
+    content: "Think about HTTP/2 multiplexing and connection limits — same constraints apply to generation"
+  - level: guidance
+    content: "Build a queue that limits concurrent generation while keeping all connections alive"
+  - level: solution
+    content: "Implement a semaphore-based queue that processes N requests at a time and returns results via WebSocket"
+keywords:
+  - concurrency
+  - websocket
+  - queue
+  - connection-pooling
+---
+
+<Dialogue speaker="Petrov">
+Two hundred people in the gallery. Each one generating. That is 200 concurrent WebSocket connections, 200 potential generation requests per second. The GPU handles 4 at a time. We need a queue.
+</Dialogue>
+
+<Dialogue speaker="Ren">
+Same problem as a chat application with thousands of users. Connection pooling, message queuing, backpressure. The generation is just the payload — the infrastructure is pure frontend engineering.
+</Dialogue>
+
+You have managed concurrent connections before — WebSocket chat rooms, real-time dashboards, multiplayer game lobbies. The challenge is always the same: more clients than you can serve simultaneously. You need connection management, request queuing, and graceful degradation. The generation model is just the expensive operation at the end of a very familiar pipeline.
+
+<LearningObjectives objectives={["Implement a generation queue with configurable concurrency limits", "Manage WebSocket connections for multiple simultaneous users", "Provide real-time progress updates and estimated wait times", "Design graceful degradation when demand exceeds generation capacity"]} />
+
+## Generation Queue
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="generation-queue.ts">
+{`// Bounded concurrency queue — same pattern as database connection pools
+class GenerationQueue {
+  private queue: QueueItem[] = [];
+  private active = 0;
+  private maxConcurrent: number;
+
+  constructor(maxConcurrent: number = 4) {
+    this.maxConcurrent = maxConcurrent;
+  }
+
+  async enqueue(request: GenerationRequest): Promise<GenerationResult> {
+    return new Promise((resolve, reject) => {
+      const item: QueueItem = {
+        request,
+        resolve,
+        reject,
+        enqueuedAt: Date.now(),
+      };
+
+      this.queue.push(item);
+      this.processNext();
+    });
+  }
+
+  private async processNext() {
+    if (this.active >= this.maxConcurrent || this.queue.length === 0) return;
+
+    this.active++;
+    const item = this.queue.shift()!;
+
+    try {
+      const waitTime = Date.now() - item.enqueuedAt;
+      console.log(\`Processing after \${waitTime}ms wait, \${this.queue.length} remaining\`);
+
+      const result = await this.generate(item.request);
+      item.resolve(result);
+    } catch (err) {
+      item.reject(err);
+    } finally {
+      this.active--;
+      this.processNext(); // Process next in queue
+    }
+  }
+
+  private async generate(req: GenerationRequest): Promise<GenerationResult> {
+    const latent = tf.tensor2d([req.latentVector]);
+    const output = model.predict(latent) as tf.Tensor;
+    const data = await output.data() as Float32Array;
+    latent.dispose();
+    output.dispose();
+    return { data, prompt: req.prompt };
+  }
+
+  get stats() {
+    return {
+      queueLength: this.queue.length,
+      activeGenerations: this.active,
+      estimatedWaitMs: (this.queue.length / this.maxConcurrent) * 340,
+    };
+  }
+}
+
+interface QueueItem {
+  request: GenerationRequest;
+  resolve: (result: GenerationResult) => void;
+  reject: (err: any) => void;
+  enqueuedAt: number;
+}
+
+interface GenerationRequest { prompt: string; latentVector: number[]; }
+interface GenerationResult { data: Float32Array; prompt: string; }`}
+</CodeBlock>
+
+## WebSocket Connection Manager
+
+<CodeBlock language="typescript" title="ws-manager.ts">
+{`// Manage gallery visitor connections — each visitor gets real-time updates
+class GalleryConnectionManager {
+  private connections = new Map<string, WebSocket>();
+  private queue: GenerationQueue;
+
+  constructor(queue: GenerationQueue) {
+    this.queue = queue;
+  }
+
+  handleConnection(ws: WebSocket, visitorId: string) {
+    this.connections.set(visitorId, ws);
+
+    ws.addEventListener('message', async (event) => {
+      const request = JSON.parse(event.data);
+
+      // Send queue position immediately
+      this.sendStatus(visitorId, {
+        status: 'queued',
+        position: this.queue.stats.queueLength,
+        estimatedWaitMs: this.queue.stats.estimatedWaitMs,
+      });
+
+      try {
+        const result = await this.queue.enqueue(request);
+        this.sendStatus(visitorId, { status: 'complete', data: Array.from(result.data) });
+      } catch (err) {
+        this.sendStatus(visitorId, { status: 'error', message: 'Generation failed' });
+      }
+    });
+
+    ws.addEventListener('close', () => {
+      this.connections.delete(visitorId);
+    });
+
+    // Send current stats on connect
+    this.sendStatus(visitorId, {
+      status: 'connected',
+      activeVisitors: this.connections.size,
+    });
+  }
+
+  private sendStatus(visitorId: string, status: object) {
+    const ws = this.connections.get(visitorId);
+    if (ws?.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify(status));
+    }
+  }
+}`}
+</CodeBlock>
+
+## Load Shedding
+
+<CodeBlock language="typescript" title="load-shedding.ts">
+{`// Graceful degradation when queue is overwhelmed
+function handleOverload(queue: GenerationQueue, request: GenerationRequest): Response {
+  const stats = queue.stats;
+
+  if (stats.queueLength > 50) {
+    // Serve cached/lower-quality version instead of queueing
+    return { type: 'cached', data: getCachedFallback(request.prompt) };
+  }
+
+  if (stats.estimatedWaitMs > 5000) {
+    // Reduce quality for faster generation
+    return { type: 'fast', quality: 'reduced', data: generateFast(request) };
+  }
+
+  // Normal path
+  return { type: 'queued', estimatedWaitMs: stats.estimatedWaitMs };
+}`}
+</CodeBlock>
+
+## Challenge
+
+Build a concurrent generation queue with WebSocket status updates and load shedding.
+
+<Exercise slug="handle-concurrency" />
+
+<KeyTakeaways takeaways={["Generation queues limit concurrent model inference — same pattern as database connection pooling", "WebSocket connections provide real-time status updates: queue position, estimated wait time, completion", "Load shedding serves cached or lower-quality results when demand exceeds capacity", "Graceful degradation beats hard failure — visitors get something rather than nothing"]} />

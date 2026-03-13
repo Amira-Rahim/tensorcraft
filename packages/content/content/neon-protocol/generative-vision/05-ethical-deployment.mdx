@@ -1,0 +1,260 @@
+---
+slug: ethical-deployment
+title: "Ethical Deployment"
+moduleId: generative-vision
+themeId: neon-protocol
+order: 5
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Lin halts the entire deployment. The adversarial patches work, the style transfer camouflage works, the generators produce convincing fakes — and that is exactly the problem. 'We deploy this responsibly or we do not deploy it at all. Every capability needs governance. Every output needs an audit trail.' She pulls up the model governance framework she has been building in parallel."
+  speaker: "Lin"
+concept:
+  explanation: "Model governance defines what a generative system is allowed to do, who can use it, and how outputs are tracked. It is the ML equivalent of Content Security Policy headers — explicit rules about what resources can be loaded, what scripts can execute, and what connections are permitted. Without governance, a powerful model is an open attack surface."
+  bridge:
+    feTitle: "Content Security Policy Headers"
+    feCode: "Content-Security-Policy: default-src 'self'; script-src 'self'; img-src 'self' data:; // Explicit allow-list"
+    mlTitle: "Model Governance Policy"
+    mlCode: "const policy = { allowedTargets: ['meridian-v3'], maxEpsilon: 0.03, requireAuditLog: true };"
+    tier: structural
+consequence:
+  narrative: "The governance framework passes review. Every patch is cryptographically signed and bound to Meridian's architecture fingerprints. Every generation is logged. Epsilon is capped. Zara nods: 'Art with accountability. I can live with that.' NEON: 'The most dangerous tools are the ones without constraints. Congratulations — you chose to build the constraints first.'"
+  nextLessonTeaser: "Module complete. The generative vision arsenal is built, governed, and ready for deployment."
+hints:
+  - level: nudge
+    content: "Think about CSP headers — they do not disable features, they constrain them to an explicit allow-list"
+  - level: guidance
+    content: "A governance policy should specify: allowed targets, maximum perturbation strength, required logging, and output validation"
+  - level: solution
+    content: "Create a GovernancePolicy type with allowedTargets, maxEpsilon, requireAuditLog, and validateOutput fields. Wrap model operations in a GovernedModel class that enforces the policy."
+keywords:
+  - model-governance
+  - ethical-ai
+  - responsible-deployment
+  - audit-trail
+  - content-security-policy
+---
+
+<Dialogue speaker="Lin">
+I am shutting this down until we have governance. Every capability you have built this module — generators, style transfer, adversarial patches — is dual-use. A patch that fools Meridian's cameras can fool medical imaging. A style transfer model that creates camouflage can create deepfakes. We need a Content Security Policy for our models.
+</Dialogue>
+
+<Dialogue speaker="Ryo">
+CSP headers. Explicit allow-list for what scripts can run, what resources can load, what connections are permitted. You want the same thing for the model — an explicit policy for what it is allowed to generate and who it is allowed to target.
+</Dialogue>
+
+<Dialogue speaker="Lin">
+Exactly. No wildcard permissions. No 'default allow.' Every operation goes through the governance layer. Every output gets logged. And the patches are cryptographically bound to Meridian's architecture fingerprints — useless against any other system.
+</Dialogue>
+
+<Dialogue speaker="Zara">
+My art has always had rules. Never deface someone's home. Never cover another artist's work. Never target the powerless. These are the same rules, just formalized in code.
+</Dialogue>
+
+A Content Security Policy header tells the browser exactly which resources are allowed: which scripts can execute, which images can load, which domains can be contacted. Without CSP, any injected script runs with full privileges. Model governance applies the same principle: explicit policies defining what the model can target, how strong its perturbations can be, and whether outputs are logged. Without governance, a generative model is an open attack surface with no audit trail.
+
+<LearningObjectives objectives={["Design a governance policy that constrains model capabilities to an explicit allow-list", "Implement audit logging for all model operations", "Bind adversarial capabilities to specific target architectures", "Validate model outputs against safety constraints before deployment"]} />
+
+## The Governance Policy
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="governance-policy.ts">
+{`// Model governance policy — like CSP headers for ML
+interface GovernancePolicy {
+  // Allow-list of target model fingerprints (no wildcards)
+  allowedTargets: string[];
+
+  // Maximum perturbation strength
+  maxEpsilon: number;
+
+  // Require audit logging for every operation
+  requireAuditLog: boolean;
+
+  // Output validation function
+  validateOutput: (output: Float32Array) => boolean;
+
+  // Rate limiting: max operations per time window
+  maxOperationsPerHour: number;
+
+  // Expiration: policy must be renewed
+  expiresAt: Date;
+}
+
+// Example: strict policy for Meridian-only patches
+const meridianPolicy: GovernancePolicy = {
+  allowedTargets: ['meridian-v3-surveillance', 'meridian-v3-drone'],
+  maxEpsilon: 0.03,
+  requireAuditLog: true,
+  validateOutput: (output) => {
+    // Ensure output is within valid pixel range
+    return output.every(v => v >= 0 && v <= 1);
+  },
+  maxOperationsPerHour: 100,
+  expiresAt: new Date('2026-04-01'),
+};`}
+</CodeBlock>
+
+## The Governed Model Wrapper
+
+<CodeBlock language="typescript" title="governed-model.ts">
+{`interface AuditEntry {
+  timestamp: Date;
+  operation: string;
+  targetFingerprint: string;
+  epsilon: number;
+  approved: boolean;
+  reason?: string;
+}
+
+class GovernedModel {
+  private policy: GovernancePolicy;
+  private auditLog: AuditEntry[] = [];
+  private operationCount = 0;
+  private windowStart = Date.now();
+
+  constructor(policy: GovernancePolicy) {
+    this.policy = policy;
+  }
+
+  // Check if an operation is permitted before executing
+  canExecute(
+    operation: string,
+    targetFingerprint: string,
+    epsilon: number
+  ): { allowed: boolean; reason: string } {
+    // Check policy expiration
+    if (new Date() > this.policy.expiresAt) {
+      return { allowed: false, reason: 'Policy expired — renewal required' };
+    }
+
+    // Check target allow-list
+    if (!this.policy.allowedTargets.includes(targetFingerprint)) {
+      return { allowed: false, reason: \`Target '\${targetFingerprint}' not in allow-list\` };
+    }
+
+    // Check epsilon cap
+    if (epsilon > this.policy.maxEpsilon) {
+      return {
+        allowed: false,
+        reason: \`Epsilon \${epsilon} exceeds max \${this.policy.maxEpsilon}\`,
+      };
+    }
+
+    // Check rate limit
+    const hourElapsed = Date.now() - this.windowStart > 3600000;
+    if (hourElapsed) {
+      this.operationCount = 0;
+      this.windowStart = Date.now();
+    }
+    if (this.operationCount >= this.policy.maxOperationsPerHour) {
+      return { allowed: false, reason: 'Rate limit exceeded' };
+    }
+
+    return { allowed: true, reason: 'Policy check passed' };
+  }
+
+  // Execute an operation with full governance checks
+  execute(
+    operation: string,
+    targetFingerprint: string,
+    epsilon: number,
+    action: () => Float32Array
+  ): Float32Array | null {
+    const check = this.canExecute(operation, targetFingerprint, epsilon);
+
+    const entry: AuditEntry = {
+      timestamp: new Date(),
+      operation,
+      targetFingerprint,
+      epsilon,
+      approved: check.allowed,
+      reason: check.reason,
+    };
+
+    if (this.policy.requireAuditLog) {
+      this.auditLog.push(entry);
+    }
+
+    if (!check.allowed) {
+      console.warn(\`BLOCKED: \${operation} — \${check.reason}\`);
+      return null;
+    }
+
+    const output = action();
+
+    // Validate output
+    if (!this.policy.validateOutput(output)) {
+      console.warn(\`OUTPUT REJECTED: \${operation} — failed validation\`);
+      return null;
+    }
+
+    this.operationCount++;
+    return output;
+  }
+
+  getAuditLog(): AuditEntry[] {
+    return [...this.auditLog];
+  }
+
+  getBlockedOperations(): AuditEntry[] {
+    return this.auditLog.filter(e => !e.approved);
+  }
+}`}
+</CodeBlock>
+
+## Architecture Fingerprinting
+
+<CodeBlock language="typescript" title="fingerprint.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Generate a unique fingerprint for a model architecture
+// Patches are cryptographically bound to this fingerprint
+interface ModelFingerprint {
+  id: string;
+  architecture: string;
+  layerCount: number;
+  parameterCount: number;
+  parameterHash: string;
+}
+
+function fingerprintModel(model: tf.LayersModel): ModelFingerprint {
+  const weights = model.getWeights();
+
+  // Compute a hash from parameter statistics
+  let paramSum = 0;
+  let paramCount = 0;
+  for (const w of weights) {
+    const vals = w.dataSync();
+    for (const v of vals) {
+      paramSum += Math.abs(v);
+      paramCount++;
+    }
+  }
+
+  return {
+    id: \`\${model.name}-\${paramCount}-\${paramSum.toFixed(4)}\`,
+    architecture: model.name,
+    layerCount: model.layers.length,
+    parameterCount: paramCount,
+    parameterHash: paramSum.toFixed(6),
+  };
+}
+
+// Verify a patch is bound to the correct target
+function verifyPatchBinding(
+  patchFingerprint: string,
+  targetModel: tf.LayersModel
+): boolean {
+  const modelFp = fingerprintModel(targetModel);
+  return patchFingerprint === modelFp.id;
+}`}
+</CodeBlock>
+
+## Challenge
+
+Build a governance policy system that constrains model operations.
+
+<Exercise slug="deploy-responsibly" />
+
+<KeyTakeaways takeaways={["Model governance is CSP for ML — explicit allow-lists for what the model can do, not implicit 'allow all'", "Every operation should be audited: who ran it, what was the target, what were the parameters, was it approved", "Cryptographic fingerprinting binds capabilities to specific targets — no collateral damage", "The most powerful tools are the ones with the strongest constraints — governance enables deployment, not just restricts it"]} />

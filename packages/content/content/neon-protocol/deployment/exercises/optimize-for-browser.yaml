@@ -1,0 +1,134 @@
+slug: optimize-for-browser
+lessonSlug: optimization-for-browser
+title: "Quantize and Measure Model Size"
+instructions: "Write functions to simulate model quantization and measure the accuracy-size trade-off. Given an array of float32 weights, implement quantization to float16 and uint8 precision, and write a benchmark function that compares the resulting sizes and simulated accuracy."
+starterCode: |
+  interface QuantizationResult {
+    precision: 'float32' | 'float16' | 'uint8';
+    bytesPerWeight: number;
+    totalBytes: number;
+    totalMB: number;
+    simulatedAccuracy: number;
+  }
+
+  function quantize(
+    weights: number[],
+    precision: 'float32' | 'float16' | 'uint8'
+  ): QuantizationResult {
+    // float32 = 4 bytes, float16 = 2 bytes, uint8 = 1 byte
+    // Simulated accuracy loss: float32 = 0%, float16 = 0.1%, uint8 = 1.5%
+    // baseAccuracy = 0.94 (94%)
+    return null; // your code here
+  }
+
+  function compareQuantizations(
+    weights: number[]
+  ): QuantizationResult[] {
+    // Return results for all three precisions, sorted by totalBytes ascending
+    return null; // your code here
+  }
+solutionCode: |
+  interface QuantizationResult {
+    precision: 'float32' | 'float16' | 'uint8';
+    bytesPerWeight: number;
+    totalBytes: number;
+    totalMB: number;
+    simulatedAccuracy: number;
+  }
+
+  function quantize(
+    weights: number[],
+    precision: 'float32' | 'float16' | 'uint8'
+  ): QuantizationResult {
+    const baseAccuracy = 0.94;
+    const config = {
+      float32: { bytes: 4, accuracyLoss: 0 },
+      float16: { bytes: 2, accuracyLoss: 0.001 },
+      uint8: { bytes: 1, accuracyLoss: 0.015 },
+    };
+
+    const { bytes, accuracyLoss } = config[precision];
+    const totalBytes = weights.length * bytes;
+
+    return {
+      precision,
+      bytesPerWeight: bytes,
+      totalBytes,
+      totalMB: totalBytes / (1024 * 1024),
+      simulatedAccuracy: baseAccuracy - accuracyLoss,
+    };
+  }
+
+  function compareQuantizations(
+    weights: number[]
+  ): QuantizationResult[] {
+    const precisions: Array<'float32' | 'float16' | 'uint8'> = ['float32', 'float16', 'uint8'];
+    return precisions
+      .map(p => quantize(weights, p))
+      .sort((a, b) => a.totalBytes - b.totalBytes);
+  }
+testCode: |
+  describe('quantize', () => {
+    const weights = new Array(1000000).fill(0.5);
+
+    it('float32: 4 bytes per weight', () => {
+      const result = quantize(weights, 'float32');
+      expect(result.bytesPerWeight).toBe(4);
+      expect(result.totalBytes).toBe(4000000);
+    });
+
+    it('float16: 2 bytes per weight', () => {
+      const result = quantize(weights, 'float16');
+      expect(result.bytesPerWeight).toBe(2);
+      expect(result.totalBytes).toBe(2000000);
+    });
+
+    it('uint8: 1 byte per weight', () => {
+      const result = quantize(weights, 'uint8');
+      expect(result.bytesPerWeight).toBe(1);
+      expect(result.totalBytes).toBe(1000000);
+    });
+
+    it('float32 has no accuracy loss', () => {
+      const result = quantize(weights, 'float32');
+      expect(result.simulatedAccuracy).toBeCloseTo(0.94, 3);
+    });
+
+    it('float16 has 0.1% accuracy loss', () => {
+      const result = quantize(weights, 'float16');
+      expect(result.simulatedAccuracy).toBeCloseTo(0.939, 3);
+    });
+
+    it('uint8 has 1.5% accuracy loss', () => {
+      const result = quantize(weights, 'uint8');
+      expect(result.simulatedAccuracy).toBeCloseTo(0.925, 3);
+    });
+
+    it('calculates MB correctly', () => {
+      const result = quantize(weights, 'float32');
+      expect(result.totalMB).toBeCloseTo(3.8147, 2);
+    });
+  });
+
+  describe('compareQuantizations', () => {
+    const weights = new Array(500000).fill(0.1);
+
+    it('returns 3 results', () => {
+      const results = compareQuantizations(weights);
+      expect(results.length).toBe(3);
+    });
+
+    it('sorted by totalBytes ascending', () => {
+      const results = compareQuantizations(weights);
+      expect(results[0].precision).toBe('uint8');
+      expect(results[1].precision).toBe('float16');
+      expect(results[2].precision).toBe('float32');
+    });
+
+    it('uint8 is 4x smaller than float32', () => {
+      const results = compareQuantizations(weights);
+      expect(results[2].totalBytes / results[0].totalBytes).toBe(4);
+    });
+  });
+estimatedMinutes: 15
+difficulty: intermediate

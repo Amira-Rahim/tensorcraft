@@ -1,0 +1,141 @@
+---
+slug: dataset-bias
+title: "Dataset Bias: Garbage In, Discrimination Out"
+moduleId: ethics-responsibility
+themeId: shared
+order: 1
+estimatedMinutes: 25
+difficulty: beginner
+context:
+  narrative: "Before you train a single model, you need to ask: who is missing from your data?"
+  speaker: "Instructor"
+concept:
+  explanation: "Dataset bias occurs when your training data doesn't represent the real world — leading to models that work well for some people and fail for others."
+  bridge:
+    feTitle: "Browser-Only Testing"
+    feCode: "// Only tested in Chrome on macOS — 'works for me!'"
+    mlTitle: "Biased Training Data"
+    mlCode: "// Only trained on English text — fails on multilingual input"
+    tier: intuition
+consequence:
+  narrative: "Understanding bias is the first step toward building ML systems that serve everyone."
+  nextLessonTeaser: "Next: measuring fairness with concrete metrics"
+hints:
+  - level: nudge
+    content: "Count the representation of each group in your dataset"
+  - level: guidance
+    content: "Compare group proportions to expected real-world distributions"
+  - level: solution
+    content: "Compute per-group counts and ratios, then flag underrepresented groups"
+keywords:
+  - bias
+  - selection-bias
+  - measurement-bias
+  - dataset-audit
+---
+
+<Dialogue speaker="Instructor">
+Before we write a single line of model code, we need to talk about something that will determine whether your model helps people or harms them: the data you train on.
+</Dialogue>
+
+Every frontend developer has shipped a feature that "worked on my machine" but broke for users with different browsers, screen sizes, or assistive technologies. Dataset bias is the ML equivalent — except when ML models fail, the consequences can be far more serious than a broken layout.
+
+<LearningObjectives objectives={["Identify the three main types of dataset bias: selection, measurement, and historical", "Recognize how biased data leads to discriminatory model outputs", "Audit a dataset for demographic representation gaps", "Connect dataset bias to the familiar problem of insufficient cross-browser testing"]} />
+
+## The "Works on My Machine" Problem
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+You know the drill. You build a beautiful UI, test it in Chrome on your MacBook, ship it, and immediately get bug reports from Firefox users, Windows users, and screen reader users. The problem wasn't your code — it was your testing coverage. You only validated against a narrow slice of your actual user base.
+
+Dataset bias works exactly the same way. If your training data only represents certain demographics, your model will "work" for those groups and silently fail for everyone else.
+
+## Three Types of Bias
+
+### Selection Bias
+
+Your dataset doesn't represent the full population. If you train a facial recognition model on photos that are 80% light-skinned faces, it will perform poorly on darker skin tones. This is exactly like only testing on desktop when 60% of your traffic is mobile.
+
+### Measurement Bias
+
+Your data collection method itself introduces distortion. If you measure "employee productivity" using metrics that favor in-office workers, remote workers will be systematically rated lower — not because they're less productive, but because your measuring tool is broken.
+
+### Historical Bias
+
+Your data faithfully reflects an unfair world. If you train a hiring model on historical hiring decisions, and those decisions were biased against women in engineering, your model will learn to replicate that discrimination.
+
+<CodeBlock language="typescript" title="audit-dataset.ts">
+{`// Auditing a dataset for representation bias
+interface DataPoint {
+  age: number;
+  gender: string;
+  ethnicity: string;
+  income: number;
+  label: number; // 0 = loan denied, 1 = loan approved
+}
+
+function auditRepresentation(data: DataPoint[]) {
+  const total = data.length;
+
+  // Count representation by group
+  const genderCounts: Record<string, number> = {};
+  const ethnicityCounts: Record<string, number> = {};
+
+  for (const point of data) {
+    genderCounts[point.gender] = (genderCounts[point.gender] || 0) + 1;
+    ethnicityCounts[point.ethnicity] = (ethnicityCounts[point.ethnicity] || 0) + 1;
+  }
+
+  // Compute proportions and flag underrepresentation
+  const report: string[] = [];
+
+  for (const [group, count] of Object.entries(genderCounts)) {
+    const proportion = count / total;
+    report.push(\`Gender "\${group}": \${(proportion * 100).toFixed(1)}% (\${count}/\${total})\`);
+    if (proportion < 0.1) {
+      report.push(\`  ⚠ WARNING: "\${group}" is severely underrepresented\`);
+    }
+  }
+
+  for (const [group, count] of Object.entries(ethnicityCounts)) {
+    const proportion = count / total;
+    report.push(\`Ethnicity "\${group}": \${(proportion * 100).toFixed(1)}% (\${count}/\${total})\`);
+    if (proportion < 0.1) {
+      report.push(\`  ⚠ WARNING: "\${group}" is severely underrepresented\`);
+    }
+  }
+
+  return report;
+}
+
+// Also check label distribution per group — disparate outcomes signal bias
+function auditOutcomes(data: DataPoint[]) {
+  const groupOutcomes: Record<string, { approved: number; total: number }> = {};
+
+  for (const point of data) {
+    const key = point.gender;
+    if (!groupOutcomes[key]) groupOutcomes[key] = { approved: 0, total: 0 };
+    groupOutcomes[key].total++;
+    if (point.label === 1) groupOutcomes[key].approved++;
+  }
+
+  for (const [group, stats] of Object.entries(groupOutcomes)) {
+    const rate = stats.approved / stats.total;
+    console.log(\`\${group}: \${(rate * 100).toFixed(1)}% approval rate\`);
+  }
+}`}
+</CodeBlock>
+
+## Real-World Consequences
+
+These aren't hypothetical problems. Amazon scrapped an AI recruiting tool that penalized resumes containing the word "women's" because it was trained on a decade of male-dominated hiring. Healthcare algorithms allocated less care to Black patients because they used healthcare spending (influenced by systemic inequality) as a proxy for health needs.
+
+As a frontend developer, you already understand that "works for me" isn't good enough. Apply that same instinct to your data.
+
+## Challenge
+
+Audit a dataset and identify representation gaps across demographic groups.
+
+<Exercise slug="audit-dataset" />
+
+<KeyTakeaways takeaways={["Dataset bias is the ML equivalent of only testing in one browser", "Selection bias = missing groups, measurement bias = flawed metrics, historical bias = unfair world reflected in data", "Always audit your dataset demographics before training", "A model trained on biased data will produce biased outputs — no algorithm can fix bad data"]} />

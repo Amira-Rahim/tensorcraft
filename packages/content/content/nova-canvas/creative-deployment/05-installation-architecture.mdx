@@ -1,0 +1,209 @@
+---
+slug: installation-architecture
+title: "Installation Architecture"
+moduleId: creative-deployment
+themeId: nova-canvas
+order: 5
+estimatedMinutes: 25
+difficulty: advanced
+context:
+  narrative: "The gallery space is booked. Three projection walls, 12 tablets for visitor interaction, unreliable Wi-Fi, no guaranteed internet. Ren: 'This is a PWA problem. Offline-first, local inference, sync when possible.'"
+  speaker: "Ren"
+concept:
+  explanation: "An art installation is a Progressive Web App deployed to a physical space — offline-capable, installable, resilient to network failures, and designed for a specific hardware environment."
+  bridge:
+    feTitle: "PWA Architecture"
+    feCode: "navigator.serviceWorker.register('/sw.js'); // offline-first, installable"
+    mlTitle: "Installation Architecture"
+    mlCode: "// offline inference, local models, sync results when connected"
+    tier: identity
+consequence:
+  narrative: "Twelve tablets, each running Nova Canvas as a PWA with local model inference. No server dependency. No internet required. Petrov: 'If the Wi-Fi dies, the art keeps running. That is the standard.'"
+  nextLessonTeaser: "Next module: the Biennale opens"
+hints:
+  - level: nudge
+    content: "Think about what a PWA needs to work offline — cached assets, local data, background sync"
+  - level: guidance
+    content: "Cache the model files in a Service Worker, run inference locally with TensorFlow.js, sync results when online"
+  - level: solution
+    content: "Build a PWA manifest, Service Worker with model caching, and a local-first generation pipeline"
+keywords:
+  - pwa
+  - offline
+  - installation
+  - architecture
+---
+
+<Dialogue speaker="Ren">
+Three walls, twelve tablets, one gallery space. The Wi-Fi will drop. The internet will lag. The power might flicker. We need an architecture that does not care about any of that. This is a PWA. Offline-first. Local inference. Sync when you can.
+</Dialogue>
+
+<Dialogue speaker="Petrov">
+Every tablet runs the full application independently. No single point of failure. When connectivity returns, they sync their generation logs. The gallery never sees a loading spinner.
+</Dialogue>
+
+You have built PWAs before. Service Workers for offline caching, Web App Manifest for installability, IndexedDB for local storage, Background Sync for deferred uploads. An art installation is a PWA deployed to physical hardware. The same architecture, the same APIs, the same resilience patterns.
+
+<LearningObjectives objectives={["Design an offline-first architecture for a physical installation", "Cache ML models in Service Workers for fully offline inference", "Implement local-first data storage with background sync", "Plan hardware deployment with PWA installability and kiosk mode"]} />
+
+## PWA for Physical Installations
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="manifest.json">
+{`{
+  "name": "Nova Canvas — Biennale Installation",
+  "short_name": "Nova Canvas",
+  "start_url": "/gallery",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#080B16",
+  "theme_color": "#00D4FF",
+  "icons": [
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ],
+  "categories": ["art", "entertainment"],
+  "description": "Interactive generative art installation"
+}`}
+</CodeBlock>
+
+<CodeBlock language="typescript" title="sw-installation.ts">
+{`// Service Worker: cache everything needed for offline operation
+const MODEL_CACHE = 'nova-canvas-model-v1';
+const APP_CACHE = 'nova-canvas-app-v1';
+
+const MODEL_FILES = [
+  '/models/nova-canvas-optimized/model.json',
+  '/models/nova-canvas-optimized/weights.bin',
+  '/models/audio-synth/model.json',
+  '/models/audio-synth/weights.bin',
+];
+
+const APP_FILES = [
+  '/',
+  '/gallery',
+  '/index.html',
+  '/app.js',
+  '/styles.css',
+  '/tfjs/tf.min.js',
+];
+
+// Pre-cache models and app shell on install
+self.addEventListener('install', (event: ExtendableEvent) => {
+  event.waitUntil(
+    Promise.all([
+      caches.open(MODEL_CACHE).then(cache => cache.addAll(MODEL_FILES)),
+      caches.open(APP_CACHE).then(cache => cache.addAll(APP_FILES)),
+    ])
+  );
+});
+
+// Serve from cache, fall back to network
+self.addEventListener('fetch', (event: FetchEvent) => {
+  event.respondWith(
+    caches.match(event.request).then(cached => {
+      return cached || fetch(event.request).then(response => {
+        // Cache new requests for future offline use
+        const cache = event.request.url.includes('/models/')
+          ? MODEL_CACHE : APP_CACHE;
+        caches.open(cache).then(c => c.put(event.request, response.clone()));
+        return response;
+      });
+    })
+  );
+});`}
+</CodeBlock>
+
+## Local-First Generation
+
+<CodeBlock language="typescript" title="local-first.ts">
+{`// All generation runs locally — no server round-trip needed
+class LocalFirstGenerator {
+  private model: tf.LayersModel | null = null;
+  private db: IDBDatabase | null = null;
+
+  async initialize() {
+    // Load model from Service Worker cache — no network needed
+    this.model = await tf.loadLayersModel('/models/nova-canvas-optimized/model.json');
+
+    // IndexedDB for generation history
+    this.db = await this.openDB();
+    console.log('Generator initialized — fully offline capable');
+  }
+
+  async generate(params: GenerationParams): Promise<GenerationResult> {
+    if (!this.model) throw new Error('Model not loaded');
+
+    const result = await this.runInference(params);
+
+    // Store result locally
+    await this.storeResult(result);
+
+    // Background sync when online
+    if (navigator.onLine) {
+      this.syncResults();
+    }
+
+    return result;
+  }
+
+  private async runInference(params: GenerationParams): Promise<GenerationResult> {
+    return tf.tidy(() => {
+      const latent = tf.tensor2d([params.latentVector]);
+      const output = this.model!.predict(latent) as tf.Tensor;
+      return {
+        id: crypto.randomUUID(),
+        data: output.dataSync() as Float32Array,
+        params,
+        timestamp: Date.now(),
+        synced: false,
+      };
+    });
+  }
+
+  private async storeResult(result: GenerationResult) {
+    const tx = this.db!.transaction('generations', 'readwrite');
+    tx.objectStore('generations').put(result);
+  }
+
+  private async syncResults() {
+    const tx = this.db!.transaction('generations', 'readonly');
+    const store = tx.objectStore('generations');
+    const unsynced = await store.index('synced').getAll(false);
+
+    for (const result of unsynced) {
+      try {
+        await fetch('/api/sync', {
+          method: 'POST',
+          body: JSON.stringify(result),
+        });
+        // Mark as synced
+        const writeTx = this.db!.transaction('generations', 'readwrite');
+        result.synced = true;
+        writeTx.objectStore('generations').put(result);
+      } catch { /* retry later */ }
+    }
+  }
+
+  private openDB(): Promise<IDBDatabase> {
+    return new Promise((resolve, reject) => {
+      const req = indexedDB.open('nova-canvas', 1);
+      req.onupgradeneeded = () => {
+        const db = req.result;
+        const store = db.createObjectStore('generations', { keyPath: 'id' });
+        store.createIndex('synced', 'synced');
+      };
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+  }
+}`}
+</CodeBlock>
+
+## Challenge
+
+Design a PWA architecture for an offline-first installation with local model inference.
+
+<Exercise slug="installation-arch" />
+
+<KeyTakeaways takeaways={["Art installations are PWAs deployed to physical hardware — same architecture, same APIs", "Service Workers cache ML model files for fully offline inference — no internet required", "Local-first with background sync ensures the experience never depends on connectivity", "PWA kiosk mode (display: fullscreen) creates an immersive installation without browser chrome"]} />

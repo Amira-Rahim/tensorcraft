@@ -1,0 +1,89 @@
+---
+slug: tg-model-profiling
+title: "Model Profiling"
+moduleId: optimization-fundamentals
+themeId: terra-grid
+order: 1
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Park hands you a model that uses 1.8GB RAM. Your target device has 512MB."
+  speaker: "Park Soo-Yeon"
+concept:
+  explanation: "Profiling a model's size, speed, and memory usage is like running webpack-bundle-analyzer on your frontend build."
+  bridge:
+    feTitle: "Bundle Analyzer"
+    feCode: "// npx webpack-bundle-analyzer stats.json\n// Visual breakdown of bundle size"
+    mlTitle: "Model Profiler"
+    mlCode: "// model.summary() — layer-by-layer breakdown\n// Parameters, memory, output shapes"
+    tier: structural
+consequence:
+  narrative: "You now see exactly where the model's bulk is. 82% of parameters are in two layers."
+  nextLessonTeaser: "Next: choosing efficient architectures"
+hints:
+  - level: nudge
+    content: "Start with model.summary() to see the layer breakdown"
+  - level: guidance
+    content: "Calculate memory as parameters * 4 bytes for Float32"
+  - level: solution
+    content: "Use countParams() and multiply by 4 to get bytes"
+keywords:
+  - profiling
+  - model-size
+  - memory
+  - bundle-analysis
+---
+
+<Dialogue speaker="Park Soo-Yeon">
+This model uses 1.8GB RAM. Our edge devices have 512MB. Make it fit. But first, you need to understand where the size comes from. You would not optimize a JavaScript bundle without running the analyzer first.
+</Dialogue>
+
+You would never try to reduce a 5MB JavaScript bundle without first running `webpack-bundle-analyzer` to see what is taking up space. Model optimization follows the same principle: profile before you compress.
+
+<LearningObjectives objectives={["Profile a TensorFlow.js model to understand its size breakdown", "Calculate memory usage from parameter counts", "Identify which layers consume the most resources", "Map bundle analysis concepts to model profiling"]} />
+
+## Bundle Analysis for Models
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+Just as `webpack-bundle-analyzer` shows you which npm packages dominate your bundle, `model.summary()` shows you which layers dominate your model.
+
+<CodeBlock language="typescript" title="profile-model.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Build a model that's too big for edge deployment
+const model = tf.sequential();
+model.add(tf.layers.dense({ inputShape: [256], units: 512, activation: 'relu' }));
+model.add(tf.layers.dense({ units: 512, activation: 'relu' }));
+model.add(tf.layers.dense({ units: 256, activation: 'relu' }));
+model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
+
+model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy' });
+
+// Profile: how many parameters per layer?
+model.layers.forEach((layer, i) => {
+  const params = layer.countParams();
+  const sizeMB = (params * 4) / (1024 * 1024); // Float32 = 4 bytes
+  console.log(\`Layer \${i} (\${layer.name}): \${params} params, \${sizeMB.toFixed(2)}MB\`);
+});
+
+const totalParams = model.countParams();
+const totalSizeMB = (totalParams * 4) / (1024 * 1024);
+console.log(\`Total: \${totalParams} params, \${totalSizeMB.toFixed(2)}MB\`);
+
+// Layer 0: 131,584 params (512 * 256 + 512 bias) = 0.50MB
+// Layer 1: 262,656 params (512 * 512 + 512 bias) = 1.00MB
+// Layer 2: 131,328 params (256 * 512 + 256 bias) = 0.50MB
+// Layer 3: 257 params (1 * 256 + 1 bias) = 0.00MB
+// Total: 525,825 params, 2.01MB`}
+</CodeBlock>
+
+Layer 1 accounts for 50% of the model's parameters. In a JavaScript bundle, that would be your largest dependency. You would ask: can I use a lighter alternative? The same question applies here.
+
+## Challenge
+
+Profile a model and identify the largest layers.
+
+<Exercise slug="tg-profile-model" />
+
+<KeyTakeaways takeaways={["Always profile before optimizing — know where the size comes from", "Memory = parameters * 4 bytes for Float32 weights", "Dense layers with large unit counts dominate model size", "Model profiling maps directly to bundle analysis in frontend builds"]} />

@@ -1,0 +1,154 @@
+---
+slug: model-registry
+title: "Model Registry"
+moduleId: mlops-pipelines
+themeId: terra-grid
+order: 4
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Park has 47 trained models. Cole needs to know which one is approved for production. The model registry is the single source of truth — like npm registry for ML models."
+  speaker: "Park Soo-Yeon"
+concept:
+  explanation: "A model registry versions and stores trained models with metadata, just as npm registry stores versioned packages with their package.json."
+  bridge:
+    feTitle: "npm Registry"
+    feCode: "npm publish // versioned package with metadata in registry"
+    mlTitle: "Model Registry"
+    mlCode: "registry.publish(model, { version, metrics, stage })"
+    tier: structural
+consequence:
+  narrative: "The registry shows one model in production, two in staging, and 44 archived. Cole pulls the production model for deployment."
+  nextLessonTeaser: "Next: automating retraining so the pipeline runs itself"
+hints:
+  - level: nudge
+    content: "Think about how npm registry tracks package versions and their metadata"
+  - level: guidance
+    content: "Track model stage (development, staging, production, archived) like npm dist-tags (latest, next, beta)"
+  - level: solution
+    content: "Store model artifacts with version, metrics, data lineage, and promotion stage in a registry"
+keywords:
+  - model-registry
+  - versioning
+  - promotion
+  - artifact-store
+---
+
+<Dialogue speaker="Park Soo-Yeon">
+I have 47 trained models. Which one is in production? Which one should Cole deploy next? Without a registry, nobody knows.
+</Dialogue>
+
+<Dialogue speaker="Cole Branson">
+I need one command: give me the latest approved model. Not the latest trained model — the latest approved model. Those are different things.
+</Dialogue>
+
+You do not deploy npm packages by copying files around. You publish to a registry with a version, metadata, and dist-tags like `latest`, `next`, and `beta`. Your deployment pipeline pulls the `latest` tag. A model registry works the same way — it is the single source of truth for which model is approved, staged, or archived.
+
+<LearningObjectives objectives={["Design a model registry with versioning, metadata, and promotion stages", "Implement model lifecycle stages (development → staging → production → archived)", "Map npm dist-tags to model promotion stages", "Build a registry query API that lets deployment pipelines pull the right model"]} />
+
+## The Model Registry
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="model-registry.ts">
+{`type ModelStage = 'development' | 'staging' | 'production' | 'archived';
+
+interface RegisteredModel {
+  name: string;
+  version: string;
+  stage: ModelStage;          // like npm dist-tags
+  artifactPath: string;
+  metrics: {
+    accuracy: number;
+    f1Score: number;
+    inferenceMs: number;
+    modelSizeMB: number;
+  };
+  dataVersion: string;        // which dataset trained it
+  experimentId: string;       // which experiment produced it
+  registeredAt: string;
+  promotedBy: string | null;  // who approved the promotion
+}
+
+class ModelRegistry {
+  private models: RegisteredModel[] = [];
+
+  register(model: RegisteredModel): void {
+    this.models.push(model);
+    console.log(\`Registered: \${model.name}@\${model.version} [\${model.stage}]\`);
+  }
+
+  promote(name: string, version: string, toStage: ModelStage, approver: string): void {
+    const model = this.models.find(m => m.name === name && m.version === version);
+    if (!model) throw new Error(\`Model \${name}@\${version} not found\`);
+
+    // Enforce promotion order: dev → staging → production
+    const order: ModelStage[] = ['development', 'staging', 'production'];
+    const currentIdx = order.indexOf(model.stage);
+    const targetIdx = order.indexOf(toStage);
+
+    if (targetIdx !== currentIdx + 1 && toStage !== 'archived') {
+      throw new Error(\`Cannot promote from \${model.stage} to \${toStage}\`);
+    }
+
+    // Demote current production model when promoting a new one
+    if (toStage === 'production') {
+      const current = this.getByStage(name, 'production');
+      if (current) current.stage = 'archived';
+    }
+
+    model.stage = toStage;
+    model.promotedBy = approver;
+    console.log(\`Promoted \${name}@\${version} → \${toStage} by \${approver}\`);
+  }
+
+  getByStage(name: string, stage: ModelStage): RegisteredModel | undefined {
+    return this.models.find(m => m.name === name && m.stage === stage);
+  }
+
+  // Cole's one command: "give me the production model"
+  getProductionModel(name: string): RegisteredModel {
+    const model = this.getByStage(name, 'production');
+    if (!model) throw new Error(\`No production model for \${name}\`);
+    return model;
+  }
+}`}
+</CodeBlock>
+
+## Registry in Action
+
+<CodeBlock language="typescript" title="registry-usage.ts">
+{`const registry = new ModelRegistry();
+
+// Park registers her best experiment
+registry.register({
+  name: 'terra-grid-intelligence',
+  version: '2.3.0',
+  stage: 'development',
+  artifactPath: 's3://models/tgi-2.3.0.bin',
+  metrics: { accuracy: 0.961, f1Score: 0.948, inferenceMs: 12, modelSizeMB: 4.2 },
+  dataVersion: 'a3f8e2',
+  experimentId: 'run-47',
+  registeredAt: new Date().toISOString(),
+  promotedBy: null,
+});
+
+// Hassan reviews and promotes to staging
+registry.promote('terra-grid-intelligence', '2.3.0', 'staging', 'hassan');
+
+// After staging tests pass, promote to production
+registry.promote('terra-grid-intelligence', '2.3.0', 'production', 'hassan');
+
+// Cole deploys the production model
+const model = registry.getProductionModel('terra-grid-intelligence');
+console.log(\`Deploying: \${model.name}@\${model.version}\`);
+// Deploying: terra-grid-intelligence@2.3.0`}
+</CodeBlock>
+
+## Challenge
+
+Build a model registry with versioning and promotion stages.
+
+<Exercise slug="register-model" />
+
+<KeyTakeaways takeaways={["A model registry is the npm registry for ML — single source of truth for versioned model artifacts", "Promotion stages (dev → staging → production) parallel npm dist-tags (beta → next → latest)", "Enforced promotion order prevents untested models from reaching production", "Every registered model links back to its experiment and data version for full traceability"]} />

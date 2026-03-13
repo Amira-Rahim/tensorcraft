@@ -1,0 +1,165 @@
+---
+slug: ml-pipeline-anatomy
+title: "ML Pipeline Anatomy"
+moduleId: mlops-pipelines
+themeId: terra-grid
+order: 1
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Park maps out the stages of the Terra Grid retraining pipeline. Data ingestion, validation, training, evaluation, packaging, deployment — each stage has a gate."
+  speaker: "Park Soo-Yeon"
+concept:
+  explanation: "An ML pipeline has stages and gates, just like a CI/CD pipeline — data in, validation, build (training), test (evaluation), publish (deploy)."
+  bridge:
+    feTitle: "CI/CD Pipeline"
+    feCode: "lint → test → build → deploy // each stage gates the next"
+    mlTitle: "ML Pipeline"
+    mlCode: "ingest → validate → train → evaluate → deploy"
+    tier: structural
+consequence:
+  narrative: "Park's pipeline diagram covers the whiteboard. Hassan approves the gate criteria."
+  nextLessonTeaser: "Next: versioning the data that feeds the pipeline"
+hints:
+  - level: nudge
+    content: "Think about how a CI/CD pipeline flows from code commit to production"
+  - level: guidance
+    content: "Map each CI/CD stage to its ML equivalent: lint=validate, test=evaluate, build=train"
+  - level: solution
+    content: "Define pipeline stages with gate conditions: data validation passes, metrics exceed threshold, package integrity verified"
+keywords:
+  - ml-pipeline
+  - ci-cd
+  - pipeline-stages
+  - automation
+---
+
+<Dialogue speaker="Park Soo-Yeon">
+Manual retraining does not scale. We have 12 sectors generating new sensor data every hour. If I have to manually kick off training every time the data changes, we are already behind.
+</Dialogue>
+
+<Dialogue speaker="Hassan Al-Rashid">
+Automate it. But with human oversight at the gates. Automated does not mean unsupervised.
+</Dialogue>
+
+You have set up CI/CD pipelines. A developer pushes code, the pipeline runs lint, tests, builds, and deploys — each stage gating the next. If tests fail, the build never ships. ML pipelines follow the same architecture, with data replacing code as the input trigger.
+
+<LearningObjectives objectives={["Map CI/CD pipeline stages to their ML pipeline equivalents", "Design quality gates that prevent bad models from reaching production", "Understand the role of each ML pipeline stage: ingest, validate, train, evaluate, deploy", "Implement a pipeline orchestrator that enforces stage ordering and gate conditions"]} />
+
+## CI/CD for Models
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="pipeline-stages.ts">
+{`type StageStatus = 'pending' | 'running' | 'passed' | 'failed' | 'skipped';
+
+interface PipelineStage {
+  name: string;
+  status: StageStatus;
+  gate: () => Promise<boolean>;    // must pass to proceed
+  execute: () => Promise<any>;
+}
+
+interface MLPipeline {
+  stages: PipelineStage[];
+  triggerSource: 'schedule' | 'data-change' | 'manual';
+}
+
+// CI/CD:     lint        → test        → build    → deploy
+// ML:        validate    → preprocess  → train    → evaluate  → deploy
+const terraGridPipeline: MLPipeline = {
+  triggerSource: 'data-change',
+  stages: [
+    {
+      name: 'data-ingestion',
+      status: 'pending',
+      gate: async () => true,  // always allowed to start
+      execute: async () => {
+        const newData = await fetchSectorData('all');
+        return { rowCount: newData.length, sectors: 12 };
+      },
+    },
+    {
+      name: 'data-validation',       // ← like lint
+      status: 'pending',
+      gate: async () => true,
+      execute: async () => {
+        const stats = await validateSchema(data);
+        const driftScore = await checkDistribution(data, baseline);
+        return { valid: stats.errors === 0, driftScore };
+      },
+    },
+    {
+      name: 'training',              // ← like build
+      status: 'pending',
+      gate: async () => validationResult.valid && validationResult.driftScore < 0.3,
+      execute: async () => {
+        const model = await trainModel(processedData, hyperparams);
+        return { model, epochs: 50, finalLoss: 0.023 };
+      },
+    },
+    {
+      name: 'evaluation',            // ← like test
+      status: 'pending',
+      gate: async () => trainingResult.finalLoss < 0.05,
+      execute: async () => {
+        const metrics = await evaluateModel(model, testSet);
+        return { accuracy: metrics.accuracy, f1: metrics.f1 };
+      },
+    },
+    {
+      name: 'deployment',            // ← like deploy
+      status: 'pending',
+      gate: async () => evalResult.accuracy > 0.95 && evalResult.f1 > 0.92,
+      execute: async () => {
+        const pkg = await packageModel(model, version);
+        await deployToFleet(pkg, 'sector-7');
+        return { devicesUpdated: 847 };
+      },
+    },
+  ],
+};`}
+</CodeBlock>
+
+## Pipeline Orchestration
+
+<CodeBlock language="typescript" title="orchestrator.ts">
+{`async function runPipeline(pipeline: MLPipeline): Promise<boolean> {
+  console.log(\`Pipeline triggered by: \${pipeline.triggerSource}\`);
+
+  for (const stage of pipeline.stages) {
+    // Check gate — like a CI check that must pass
+    const gateOpen = await stage.gate();
+    if (!gateOpen) {
+      stage.status = 'failed';
+      console.error(\`Gate blocked at stage: \${stage.name}\`);
+      await notifyTeam(\`Pipeline blocked: \${stage.name} gate failed\`);
+      return false;
+    }
+
+    stage.status = 'running';
+    console.log(\`Running: \${stage.name}\`);
+
+    try {
+      const result = await stage.execute();
+      stage.status = 'passed';
+      console.log(\`Passed: \${stage.name}\`, result);
+    } catch (error) {
+      stage.status = 'failed';
+      console.error(\`Failed: \${stage.name}\`, error);
+      return false;
+    }
+  }
+
+  console.log('Pipeline complete — model deployed');
+  return true;
+}`}
+</CodeBlock>
+
+## Challenge
+
+Define the stages and gates for an ML pipeline.
+
+<Exercise slug="pipeline-stages" />
+
+<KeyTakeaways takeaways={["ML pipelines mirror CI/CD: ingest=commit, validate=lint, train=build, evaluate=test, deploy=release", "Quality gates prevent bad models from shipping — just like failing tests block a deploy", "Automation handles the repetitive work; human oversight handles the judgment calls", "Pipeline triggers can be scheduled, data-driven, or manual — like cron jobs, webhooks, or manual deploys"]} />

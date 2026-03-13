@@ -16,7 +16,7 @@ concept:
     feCode: "<Layout><Sidebar /><Content>{children}</Content></Layout>"
     mlTitle: "U-Net architecture"
     mlCode: "skip = encoder(x); output = decoder(bottleneck, skip);"
-    tier: pattern
+    tier: structural
 consequence:
   narrative: "The U-Net predictions are sharp. Skip connections preserve the edges and textures that the bottleneck alone would blur. Petrov examines the output: 'The brushstrokes. It remembers the brushstrokes.'"
   nextLessonTeaser: "Next: classifier-free guidance — steering generation with text prompts"
@@ -135,6 +135,6 @@ unet.summary();
 
 Build encoder and decoder blocks with skip connections.
 
-<Exercise slug="build-unet" />
+<Exercise slug="nc-build-unet" />
 
 <KeyTakeaways takeaways={["U-Net is an encoder-decoder with skip connections — like a layout component that passes children through", "The encoder compresses spatial dimensions to capture context; the decoder expands back to full resolution", "Skip connections carry fine-grained detail from encoder to decoder at matching resolution levels", "The output has the same shape as the input — the model predicts the noise to subtract"]} />

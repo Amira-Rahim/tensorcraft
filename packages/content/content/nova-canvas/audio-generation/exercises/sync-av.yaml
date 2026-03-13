@@ -1,0 +1,45 @@
+slug: sync-av
+lessonSlug: audio-visual-sync
+title: "Sync Audio-Visual"
+instructions: "Create a function that extracts audio features (bass, mids, highs, amplitude) from a Uint8Array of frequency data (128 bins). Bass is the average of bins 0-3, mids is bins 4-31, highs is bins 32-63. Amplitude is the max value across all bins. Normalize all values to [0, 1]."
+starterCode: |
+  function extractAudioFeatures(frequencyData: Uint8Array) {
+    // Extract and normalize audio features from frequency bin data
+    // your code here
+    return { bass: 0, mids: 0, highs: 0, amplitude: 0 };
+  }
+solutionCode: |
+  function extractAudioFeatures(frequencyData: Uint8Array) {
+    const avg = (start: number, end: number) => {
+      let sum = 0;
+      for (let i = start; i < end; i++) sum += frequencyData[i];
+      return sum / (end - start) / 255;
+    };
+    return {
+      bass: avg(0, 4),
+      mids: avg(4, 32),
+      highs: avg(32, 64),
+      amplitude: Math.max(...frequencyData) / 255,
+    };
+  }
+testCode: |
+  describe('extractAudioFeatures', () => {
+    const data = new Uint8Array(128);
+    data.fill(128, 0, 4);
+    data.fill(64, 4, 32);
+    data.fill(32, 32, 64);
+    data[10] = 255;
+    const features = extractAudioFeatures(data);
+    it('extracts bass', () => { expect(features.bass).toBeCloseTo(128 / 255); });
+    it('extracts mids', () => { expect(features.mids).toBeGreaterThan(0); });
+    it('extracts highs', () => { expect(features.highs).toBeCloseTo(32 / 255); });
+    it('extracts amplitude', () => { expect(features.amplitude).toBeCloseTo(1); });
+    it('all values normalized to [0,1]', () => {
+      Object.values(features).forEach(v => {
+        expect(v).toBeGreaterThanOrEqual(0);
+        expect(v).toBeLessThanOrEqual(1);
+      });
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

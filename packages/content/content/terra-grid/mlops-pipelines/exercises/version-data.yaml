@@ -1,0 +1,60 @@
+slug: version-data
+lessonSlug: data-versioning
+title: "Version a Dataset"
+instructions: "Write a function versionDataset that takes a data array of numbers and an optional parentVersion string. Return an object with hash (sum of all values mod 1000000 as hex string), rowCount (length of data), and parentVersion (the input or null)."
+starterCode: |
+  interface DatasetVersion {
+    hash: string;
+    rowCount: number;
+    parentVersion: string | null;
+  }
+
+  function versionDataset(data: number[], parentVersion?: string): DatasetVersion {
+    // Your code here
+    return { hash: '', rowCount: 0, parentVersion: null };
+  }
+solutionCode: |
+  interface DatasetVersion {
+    hash: string;
+    rowCount: number;
+    parentVersion: string | null;
+  }
+
+  function versionDataset(data: number[], parentVersion?: string): DatasetVersion {
+    let sum = 0;
+    for (const val of data) {
+      sum = ((sum << 5) - sum + Math.round(val * 1000)) | 0;
+    }
+    const hash = Math.abs(sum % 1000000).toString(16).padStart(6, '0');
+    return {
+      hash,
+      rowCount: data.length,
+      parentVersion: parentVersion || null,
+    };
+  }
+testCode: |
+  describe('versionDataset', () => {
+    it('returns a hex hash', () => {
+      const v = versionDataset([1, 2, 3]);
+      expect(v.hash).toMatch(/^[0-9a-f]+$/);
+    });
+    it('counts rows', () => {
+      const v = versionDataset([1, 2, 3, 4, 5]);
+      expect(v.rowCount).toBe(5);
+    });
+    it('tracks parent version', () => {
+      const v = versionDataset([1, 2], 'abc123');
+      expect(v.parentVersion).toBe('abc123');
+    });
+    it('defaults parent to null', () => {
+      const v = versionDataset([1, 2]);
+      expect(v.parentVersion).toBeNull();
+    });
+    it('different data produces different hashes', () => {
+      const v1 = versionDataset([1, 2, 3]);
+      const v2 = versionDataset([4, 5, 6]);
+      expect(v1.hash).not.toBe(v2.hash);
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

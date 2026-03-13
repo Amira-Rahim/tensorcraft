@@ -1,0 +1,82 @@
+slug: clip-embeddings
+lessonSlug: clip-architecture
+title: "Build Dual Encoders with Normalized Output"
+instructions: "Build an image encoder and a text encoder that both output L2-normalized embeddings of the same dimensionality. The image encoder takes [32, 32, 3] input. The text encoder takes [16] token input. Both should end with a dense layer and L2 normalization (divide by norm)."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function buildNormalizedImageEncoder(embeddingDim: number): tf.LayersModel {
+    // Input: [32, 32, 3]
+    // Conv2d(32, kernel 3, stride 2, same, relu) -> pool
+    // GlobalAveragePooling2d
+    // Dense(embeddingDim)
+    // Return model (we'll normalize in the encode function)
+    return null; // your code here
+  }
+
+  function buildNormalizedTextEncoder(embeddingDim: number): tf.LayersModel {
+    // Input: [16]
+    // Embedding(inputDim: 5000, outputDim: 32)
+    // GlobalAveragePooling1d
+    // Dense(embeddingDim)
+    // Return model
+    return null; // your code here
+  }
+
+  function encodeAndNormalize(model: tf.LayersModel, input: tf.Tensor): tf.Tensor2D {
+    // 1. Get raw embedding from model
+    // 2. L2 normalize: embedding / norm(embedding)
+    return null; // your code here
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function buildNormalizedImageEncoder(embeddingDim: number): tf.LayersModel {
+    const input = tf.input({ shape: [32, 32, 3] });
+    let x = tf.layers.conv2d({
+      filters: 32, kernelSize: 3, strides: 2, padding: 'same', activation: 'relu'
+    }).apply(input) as tf.SymbolicTensor;
+    x = tf.layers.globalAveragePooling2d({}).apply(x) as tf.SymbolicTensor;
+    const output = tf.layers.dense({ units: embeddingDim }).apply(x) as tf.SymbolicTensor;
+    return tf.model({ inputs: input, outputs: output });
+  }
+
+  function buildNormalizedTextEncoder(embeddingDim: number): tf.LayersModel {
+    const input = tf.input({ shape: [16] });
+    let x = tf.layers.embedding({
+      inputDim: 5000, outputDim: 32
+    }).apply(input) as tf.SymbolicTensor;
+    x = tf.layers.globalAveragePooling1d({}).apply(x) as tf.SymbolicTensor;
+    const output = tf.layers.dense({ units: embeddingDim }).apply(x) as tf.SymbolicTensor;
+    return tf.model({ inputs: input, outputs: output });
+  }
+
+  function encodeAndNormalize(model: tf.LayersModel, input: tf.Tensor): tf.Tensor2D {
+    const raw = model.predict(input) as tf.Tensor2D;
+    return tf.div(raw, tf.norm(raw, 2, 1, true)) as tf.Tensor2D;
+  }
+testCode: |
+  describe('buildNormalizedImageEncoder', () => {
+    it('outputs correct embedding dim', () => {
+      const model = buildNormalizedImageEncoder(128);
+      expect(model.outputShape).toEqual([null, 128]);
+    });
+  });
+  describe('buildNormalizedTextEncoder', () => {
+    it('outputs correct embedding dim', () => {
+      const model = buildNormalizedTextEncoder(128);
+      expect(model.outputShape).toEqual([null, 128]);
+    });
+  });
+  describe('encodeAndNormalize', () => {
+    it('produces unit-length vectors', () => {
+      const model = buildNormalizedImageEncoder(64);
+      const input = tf.randomUniform([2, 32, 32, 3]);
+      const emb = encodeAndNormalize(model, input);
+      const norms = tf.norm(emb, 2, 1).dataSync();
+      expect(norms[0]).toBeCloseTo(1.0, 3);
+      expect(norms[1]).toBeCloseTo(1.0, 3);
+    });
+  });
+estimatedMinutes: 12
+difficulty: advanced

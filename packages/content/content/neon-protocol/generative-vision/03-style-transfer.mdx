@@ -1,0 +1,218 @@
+---
+slug: style-transfer
+title: "Neural Style Transfer"
+moduleId: generative-vision
+themeId: neon-protocol
+order: 3
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Zara has a new camouflage idea. If resistance members wear clothing styled to look like Neon City's street art, surveillance cameras will classify them as background. She needs a neural network that transfers artistic style to images — the same content, wrapped in a different visual skin."
+  speaker: "Zara"
+concept:
+  explanation: "Neural style transfer separates an image's content (what objects are present) from its style (textures, colors, brushstrokes) and recombines them. A CSS theme changes a page's visual presentation without altering its structure. Style transfer does the same at the pixel level — same content, different visual identity."
+  bridge:
+    feTitle: "CSS Themes"
+    feCode: "document.documentElement.dataset.theme = 'neon'; // Same DOM, different visual presentation"
+    mlTitle: "Neural Style Transfer"
+    mlCode: "const styled = transferStyle(contentImage, styleImage); // Same content, different visual style"
+    tier: structural
+consequence:
+  narrative: "Zara feeds a surveillance still through style transfer using her own graffiti as the style source. The result: a human figure rendered in spray-paint textures, blending into the mural-covered alley behind them. NEON: 'The classifier confidence drops from 94% to 12%. It sees paint, not a person.' Zara steps back from the screen. 'Art that protects people. This is what I have been working toward.'"
+  nextLessonTeaser: "Next: adversarial patches — patterns designed to actively fool classifiers"
+hints:
+  - level: nudge
+    content: "Content comes from deep CNN layers (structure/objects); style comes from shallow layers (textures/patterns)"
+  - level: guidance
+    content: "Content loss is MSE between feature maps. Style loss is MSE between Gram matrices — correlation matrices that capture texture patterns."
+  - level: solution
+    content: "Extract features from pre-trained CNN layers. Content loss from conv4. Style loss from Gram matrices of conv1-conv5. Optimize output image to minimize weighted sum."
+keywords:
+  - style-transfer
+  - content-loss
+  - style-loss
+  - gram-matrix
+  - neural-style
+---
+
+<Dialogue speaker="Zara">
+A CSS theme changes how a page looks without touching the HTML. Dark mode, light mode, high contrast — same content, different skin. Style transfer is the neural network version. I take a surveillance photo and wrap it in the visual style of a Monet, a Basquiat, or my own street art. The content stays. The appearance transforms.
+</Dialogue>
+
+<Dialogue speaker="NEON">
+The technique exploits how convolutional neural networks naturally organize information. Shallow layers detect low-level patterns — edges, textures, color distributions. These are style. Deep layers detect high-level structures — objects, faces, spatial relationships. These are content. Separate them, recombine them, and you have style transfer.
+</Dialogue>
+
+<Dialogue speaker="Ryo">
+It is the exact separation we use in frontend architecture. CSS handles presentation. HTML handles structure. Change one without affecting the other. Neural networks learned the same separation on their own.
+</Dialogue>
+
+CSS themes change visual presentation without altering content structure. Neural style transfer achieves the same separation at the pixel level: content (what the image shows) lives in deep CNN layers, while style (how it looks) lives in shallow layers. By optimizing an output image to match one source's content and another's style, you create images that preserve structure while adopting an entirely new visual identity.
+
+<LearningObjectives objectives={["Understand how CNN layers naturally separate content from style", "Compute content loss from deep layer feature maps", "Compute style loss using Gram matrices from shallow layers", "Combine losses to transfer artistic style to arbitrary images"]} />
+
+## Content vs. Style in CNN Layers
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="feature-extraction.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Extract features from specific layers of a pre-trained CNN
+// Shallow layers -> style (textures, colors)
+// Deep layers -> content (objects, structure)
+function extractFeatures(
+  model: tf.LayersModel,
+  image: tf.Tensor4D,
+  layerNames: string[]
+): Map<string, tf.Tensor4D> {
+  const features = new Map<string, tf.Tensor4D>();
+
+  for (const name of layerNames) {
+    const layer = model.getLayer(name);
+    const extractor = tf.model({
+      inputs: model.input,
+      outputs: layer.output as tf.SymbolicTensor,
+    });
+    features.set(name, extractor.predict(image) as tf.Tensor4D);
+  }
+
+  return features;
+}
+
+// Style layers: shallow — capture textures, patterns
+const STYLE_LAYERS = ['block1_conv1', 'block2_conv1', 'block3_conv1'];
+
+// Content layer: deep — captures objects, structure
+const CONTENT_LAYER = 'block4_conv2';`}
+</CodeBlock>
+
+## The Gram Matrix: Capturing Style
+
+<CodeBlock language="typescript" title="gram-matrix.ts">
+{`// Gram matrix: correlations between feature channels
+// Captures texture patterns independent of spatial arrangement
+function gramMatrix(features: tf.Tensor4D): tf.Tensor2D {
+  return tf.tidy(() => {
+    const [batch, height, width, channels] = features.shape;
+    const numPixels = height * width;
+
+    // Reshape: [batch, h, w, channels] -> [numPixels, channels]
+    const reshaped = features.reshape([numPixels, channels]);
+
+    // Gram = F^T * F / numPixels
+    const gram = reshaped.transpose().matMul(reshaped);
+    return gram.div(numPixels) as tf.Tensor2D;
+  });
+}
+
+// Content loss: preserve structure (MSE between feature maps)
+function contentLoss(
+  contentFeatures: tf.Tensor4D,
+  outputFeatures: tf.Tensor4D
+): tf.Scalar {
+  return tf.tidy(() =>
+    contentFeatures.sub(outputFeatures).square().mean()
+  );
+}
+
+// Style loss: match textures (MSE between Gram matrices)
+function styleLoss(
+  styleFeatures: tf.Tensor4D,
+  outputFeatures: tf.Tensor4D
+): tf.Scalar {
+  return tf.tidy(() => {
+    const styleGram = gramMatrix(styleFeatures);
+    const outputGram = gramMatrix(outputFeatures);
+    return styleGram.sub(outputGram).square().mean();
+  });
+}
+
+// Total loss: weighted combination
+// Higher beta = more style influence, higher alpha = more content preservation
+function totalStyleTransferLoss(
+  contentFeatures: tf.Tensor4D,
+  styleFeaturesList: tf.Tensor4D[],
+  outputContentFeatures: tf.Tensor4D,
+  outputStyleFeaturesList: tf.Tensor4D[],
+  alpha: number = 1,
+  beta: number = 1000
+): tf.Scalar {
+  return tf.tidy(() => {
+    const cLoss = contentLoss(contentFeatures, outputContentFeatures);
+
+    let sLoss = tf.scalar(0);
+    for (let i = 0; i < styleFeaturesList.length; i++) {
+      sLoss = sLoss.add(
+        styleLoss(styleFeaturesList[i], outputStyleFeaturesList[i])
+      );
+    }
+
+    return cLoss.mul(alpha).add(sLoss.mul(beta)) as tf.Scalar;
+  });
+}`}
+</CodeBlock>
+
+## Running Style Transfer
+
+<CodeBlock language="typescript" title="run-transfer.ts">
+{`// Style transfer optimization loop
+async function transferStyle(
+  contentImage: tf.Tensor4D,
+  styleImage: tf.Tensor4D,
+  featureExtractor: tf.LayersModel,
+  contentLayerName: string,
+  styleLayerNames: string[],
+  iterations: number = 200
+): Promise<tf.Tensor4D> {
+  // Initialize output as copy of content image
+  const output = tf.variable(contentImage.clone());
+  const optimizer = tf.train.adam(0.02);
+
+  // Extract target features once (they do not change)
+  const targetContentFeatures = extractFeatures(
+    featureExtractor, contentImage, [contentLayerName]
+  ).get(contentLayerName)!;
+
+  const targetStyleFeatures = styleLayerNames.map(name =>
+    extractFeatures(featureExtractor, styleImage, [name]).get(name)!
+  );
+
+  for (let i = 0; i < iterations; i++) {
+    optimizer.minimize(() => {
+      const outputContent = extractFeatures(
+        featureExtractor, output as unknown as tf.Tensor4D, [contentLayerName]
+      ).get(contentLayerName)!;
+
+      const outputStyles = styleLayerNames.map(name =>
+        extractFeatures(
+          featureExtractor, output as unknown as tf.Tensor4D, [name]
+        ).get(name)!
+      );
+
+      return totalStyleTransferLoss(
+        targetContentFeatures, targetStyleFeatures,
+        outputContent, outputStyles,
+        1, 1000
+      );
+    });
+
+    // Keep pixels in valid range
+    output.assign(output.clipByValue(0, 1));
+
+    if (i % 50 === 0) {
+      console.log(\`Iteration \${i} / \${iterations}\`);
+    }
+  }
+
+  return output as unknown as tf.Tensor4D;
+}`}
+</CodeBlock>
+
+## Challenge
+
+Implement the Gram matrix and style transfer loss functions.
+
+<Exercise slug="apply-style-transfer" />
+
+<KeyTakeaways takeaways={["Style transfer separates content from style — the same principle as CSS themes separating HTML structure from visual presentation", "Gram matrices capture texture patterns by computing correlations between CNN feature channels", "Content loss (deep layers) preserves what the image shows; style loss (shallow layers) matches how it looks", "The alpha/beta balance controls whether the output leans toward content fidelity or style intensity"]} />

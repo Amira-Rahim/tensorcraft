@@ -1,0 +1,9 @@
+slug: accuracy-size-tradeoff
+lessonSlug: accuracy-vs-size
+title: "Evaluate Accuracy vs Size Tradeoff"
+instructions: "Write a function bestQuantization(originalAccuracy, minAccuracy) that returns 'int8' if (originalAccuracy - 0.012) >= minAccuracy, 'float16' if (originalAccuracy - 0.001) >= minAccuracy, or 'float32' if neither works. Always prefer the most compressed option that meets the threshold."
+starterCode: "function bestQuantization(originalAccuracy, minAccuracy) {\n  // Return the most aggressive format that stays above minAccuracy\n  return null; // your code here\n}"
+solutionCode: "function bestQuantization(originalAccuracy, minAccuracy) {\n  if ((originalAccuracy - 0.012) >= minAccuracy) return 'int8';\n  if ((originalAccuracy - 0.001) >= minAccuracy) return 'float16';\n  return 'float32';\n}"
+testCode: "describe('bestQuantization', () => { it('returns int8 when accuracy allows', () => { expect(bestQuantization(0.99, 0.97)).toBe('int8'); }); it('returns float16 when int8 too lossy', () => { expect(bestQuantization(0.98, 0.97)).toBe('float16'); }); it('returns float32 when precision critical', () => { expect(bestQuantization(0.971, 0.97)).toBe('float32'); }); });"
+estimatedMinutes: 10
+difficulty: intermediate

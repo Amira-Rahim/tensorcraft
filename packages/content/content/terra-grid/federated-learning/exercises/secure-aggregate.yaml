@@ -1,0 +1,56 @@
+slug: secure-aggregate
+lessonSlug: secure-aggregation
+title: "Secure Aggregation with Masking"
+instructions: "Write a function secureAggregate that takes an array of masked update arrays (number[][]) and returns their element-wise average (number[]). This simulates the server computing the aggregate — the masks cancel out during summation, so the server only needs to sum and divide."
+starterCode: |
+  function secureAggregate(maskedUpdates: number[][]): number[] {
+    // Your code here
+    return [];
+  }
+solutionCode: |
+  function secureAggregate(maskedUpdates: number[][]): number[] {
+    if (maskedUpdates.length === 0) return [];
+    const size = maskedUpdates[0].length;
+    const result = new Array(size).fill(0);
+
+    for (const update of maskedUpdates) {
+      for (let i = 0; i < size; i++) {
+        result[i] += update[i];
+      }
+    }
+
+    return result.map(v => v / maskedUpdates.length);
+  }
+testCode: |
+  describe('secureAggregate', () => {
+    it('computes element-wise average', () => {
+      const updates = [
+        [2, 4, 6],
+        [4, 6, 8],
+      ];
+      const result = secureAggregate(updates);
+      expect(result[0]).toBeCloseTo(3, 5);
+      expect(result[1]).toBeCloseTo(5, 5);
+      expect(result[2]).toBeCloseTo(7, 5);
+    });
+    it('masks cancel out in summation', () => {
+      // Simulate: A adds mask +0.5, B subtracts mask -0.5
+      const realA = [1, 2];
+      const realB = [3, 4];
+      const mask = 0.5;
+      const maskedA = realA.map(v => v + mask);
+      const maskedB = realB.map(v => v - mask);
+      const result = secureAggregate([maskedA, maskedB]);
+      expect(result[0]).toBeCloseTo(2, 5);
+      expect(result[1]).toBeCloseTo(3, 5);
+    });
+    it('handles single participant', () => {
+      const result = secureAggregate([[5, 10, 15]]);
+      expect(result).toEqual([5, 10, 15]);
+    });
+    it('handles empty input', () => {
+      expect(secureAggregate([])).toEqual([]);
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

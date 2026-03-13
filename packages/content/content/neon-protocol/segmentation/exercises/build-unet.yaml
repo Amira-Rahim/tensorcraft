@@ -1,4 +1,4 @@
-slug: build-unet
+slug: np-build-unet
 lessonSlug: unet-architecture
 title: "Build U-Net Encoder-Decoder Blocks"
 instructions: "Write two functions: encoderBlock that takes an input size and filter count and returns the output size after conv + pool (halved), and decoderBlock that takes an input size, skip size, and filter count and returns the output size after upsample + concatenate (doubled input, channels = filters)."

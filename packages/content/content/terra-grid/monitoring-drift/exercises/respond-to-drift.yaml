@@ -1,0 +1,56 @@
+slug: respond-to-drift
+lessonSlug: drift-response
+title: "Respond to a Drift Incident"
+instructions: "Write a function handleDriftIncident that takes currentAccuracy (number), baselineAccuracy (number), and availableRollbackVersion (string | null). If accuracy drop <= 0.03, return { action: 'monitor', details: 'Within tolerance' }. If drop > 0.03 and rollback is available, return { action: 'rollback', details: `Rolling back to ${version}` }. If drop > 0.03 and no rollback, return { action: 'retrain', details: 'No rollback available, triggering retrain' }."
+starterCode: |
+  interface IncidentResponse {
+    action: 'monitor' | 'rollback' | 'retrain';
+    details: string;
+  }
+
+  function handleDriftIncident(
+    currentAccuracy: number,
+    baselineAccuracy: number,
+    availableRollbackVersion: string | null,
+  ): IncidentResponse {
+    // Your code here
+    return { action: 'monitor', details: '' };
+  }
+solutionCode: |
+  interface IncidentResponse {
+    action: 'monitor' | 'rollback' | 'retrain';
+    details: string;
+  }
+
+  function handleDriftIncident(
+    currentAccuracy: number,
+    baselineAccuracy: number,
+    availableRollbackVersion: string | null,
+  ): IncidentResponse {
+    const drop = baselineAccuracy - currentAccuracy;
+    if (drop <= 0.03) {
+      return { action: 'monitor', details: 'Within tolerance' };
+    }
+    if (availableRollbackVersion) {
+      return { action: 'rollback', details: `Rolling back to ${availableRollbackVersion}` };
+    }
+    return { action: 'retrain', details: 'No rollback available, triggering retrain' };
+  }
+testCode: |
+  describe('handleDriftIncident', () => {
+    it('monitors when drop is small', () => {
+      const result = handleDriftIncident(0.94, 0.96, 'v1.0');
+      expect(result.action).toBe('monitor');
+    });
+    it('rolls back when drop is large and rollback available', () => {
+      const result = handleDriftIncident(0.89, 0.96, 'v1.0');
+      expect(result.action).toBe('rollback');
+      expect(result.details).toContain('v1.0');
+    });
+    it('retrains when no rollback available', () => {
+      const result = handleDriftIncident(0.89, 0.96, null);
+      expect(result.action).toBe('retrain');
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

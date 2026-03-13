@@ -1,0 +1,226 @@
+---
+slug: feature-pipelines
+title: "Feature Pipelines"
+moduleId: feature-extraction
+themeId: neon-protocol
+order: 5
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Kira has the pieces — feature extraction, embedding spaces, similarity search, backbone selection. Now Ryo pulls up a schematic on the holotable: a full pipeline diagram. 'Individual tools mean nothing if they do not connect,' he says. 'Meridian's power was never any single algorithm. It was the pipeline — ingest, preprocess, extract, index, query — running end-to-end on every camera in the city. We are going to build the same thing in the browser.'"
+  speaker: "Ryo"
+concept:
+  explanation: "A feature pipeline chains together preprocessing, feature extraction, normalization, and indexing into a single end-to-end system. Each stage transforms data for the next, like middleware in an Express server. The pipeline pattern decouples stages so you can swap backbones, change normalization, or upgrade indexing without rewriting the entire system."
+  bridge:
+    feTitle: "Express middleware pipeline"
+    feCode: "app.use(cors()).use(auth()).use(validate()).use(handler);"
+    mlTitle: "Feature Pipeline"
+    mlCode: "pipe(preprocess).pipe(extract).pipe(normalize).pipe(index);"
+    tier: structural
+consequence:
+  narrative: "Kira runs the pipeline against a live district camera feed. Frames flow in, features flow out, the search index updates in real time. Forty seconds later, the system flags a Meridian drone circling Block 7. 'We have a working surveillance detector,' Zara says quietly. 'Built entirely in the browser. No server. No Meridian infrastructure. Just JavaScript.'"
+  nextLessonTeaser: "Next module: Transfer Learning — Ryo downloads Meridian's own model weights and turns their tools against them"
+hints:
+  - level: nudge
+    content: "A feature pipeline chains multiple processing steps — each stage takes input from the previous one, like middleware"
+  - level: guidance
+    content: "Build each stage as an independent function: preprocess, extract features, normalize the vector, add to the index"
+  - level: solution
+    content: "Create a FeaturePipeline class that runs preprocess → backbone.predict → L2 normalize → index.add in sequence, with each stage configurable"
+keywords:
+  - feature-pipeline
+  - middleware
+  - preprocessing
+  - normalization
+  - end-to-end
+---
+
+<Dialogue speaker="Ryo">
+In a production Express server, you do not write one giant handler that does authentication, validation, logging, and business logic. You build a middleware pipeline — each function does one thing and passes the result to the next. Feature extraction works the same way. Preprocess the image. Extract features with a backbone. Normalize the vector. Add it to the index. Each stage is independent. Each stage is replaceable.
+</Dialogue>
+
+<Dialogue speaker="Kira">
+So the pipeline is middleware for images. Each step transforms the data and passes it forward. If I swap MobileNet for EfficientNet, only one stage changes — the rest of the pipeline stays the same.
+</Dialogue>
+
+The middleware pattern decouples processing stages. In Express, `cors()` does not know about `auth()`, and `auth()` does not know about the route handler. Each middleware transforms the request and calls `next()`. A feature pipeline works identically — each stage transforms data and passes it to the next stage. This decoupling is what makes production systems maintainable.
+
+<LearningObjectives objectives={["Build an end-to-end feature extraction pipeline with configurable stages", "Implement preprocessing, extraction, normalization, and indexing as independent pipeline stages", "Connect the pipeline pattern to Express middleware architecture", "Run a complete pipeline against image data to populate a searchable feature index"]} />
+
+## The Pipeline Pattern
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="pipeline-architecture.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Express middleware pipeline:
+// request → cors → auth → validate → handler → response
+//
+// Feature pipeline:
+// image → preprocess → extract → normalize → index → searchable
+
+// Each stage has a clear input and output type
+type PreprocessFn = (image: tf.Tensor3D) => tf.Tensor4D;
+type ExtractFn = (batch: tf.Tensor4D) => tf.Tensor2D;
+type NormalizeFn = (features: tf.Tensor2D) => tf.Tensor2D;
+type IndexFn = (vector: number[], label: string) => void;
+
+// Just like middleware signatures:
+// (req: Request, res: Response, next: NextFunction) => void
+// Each stage has a defined contract — swap implementations freely`}
+</CodeBlock>
+
+## Building Each Stage
+
+<CodeBlock language="typescript" title="pipeline-stages.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Stage 1: Preprocess — resize and normalize pixels
+function preprocess(image: tf.Tensor3D): tf.Tensor4D {
+  return tf.tidy(() => {
+    const resized = tf.image.resizeBilinear(image, [224, 224]);
+    const normalized = resized.div(255.0);
+    return normalized.expandDims(0) as tf.Tensor4D; // [1, 224, 224, 3]
+  });
+}
+
+// Stage 2: Extract — run through backbone
+async function extract(
+  batch: tf.Tensor4D,
+  backbone: tf.LayersModel
+): Promise<tf.Tensor2D> {
+  const features = backbone.predict(batch) as tf.Tensor2D;
+  return features; // [1, 1280]
+}
+
+// Stage 3: Normalize — L2 normalize the feature vector
+// Makes cosine similarity equivalent to dot product
+function normalizeL2(features: tf.Tensor2D): tf.Tensor2D {
+  return tf.tidy(() => {
+    const norm = features.norm('euclidean', 1, true); // [1, 1]
+    return features.div(norm) as tf.Tensor2D; // unit vector
+  });
+}
+
+// Stage 4: Index — store in the search index
+class FeatureIndex {
+  private vectors: number[][] = [];
+  private labels: string[] = [];
+
+  add(vector: number[], label: string): void {
+    this.vectors.push(vector);
+    this.labels.push(label);
+  }
+
+  search(query: number[], k: number): { label: string; score: number }[] {
+    // With L2-normalized vectors, dot product = cosine similarity
+    const scored = this.vectors.map((v, i) => ({
+      label: this.labels[i],
+      score: v.reduce((sum, val, j) => sum + val * query[j], 0),
+    }));
+    scored.sort((a, b) => b.score - a.score);
+    return scored.slice(0, k);
+  }
+
+  get size(): number { return this.vectors.length; }
+}`}
+</CodeBlock>
+
+## The Complete Pipeline
+
+<CodeBlock language="typescript" title="feature-pipeline.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+interface PipelineConfig {
+  backboneUrl: string;
+  inputSize: [number, number];
+  normalize: boolean;
+}
+
+class FeaturePipeline {
+  private backbone: tf.LayersModel | null = null;
+  private index = new FeatureIndex();
+  private config: PipelineConfig;
+
+  constructor(config: PipelineConfig) {
+    this.config = config;
+  }
+
+  // Initialize — load the backbone (like app.listen())
+  async init(): Promise<void> {
+    this.backbone = await tf.loadLayersModel(this.config.backboneUrl);
+    console.log('Pipeline ready. Backbone loaded.');
+  }
+
+  // Process a single image through the full pipeline
+  async process(image: tf.Tensor3D, label: string): Promise<number[]> {
+    // Stage 1: Preprocess
+    const batch = preprocess(image);
+
+    // Stage 2: Extract features
+    const raw = await extract(batch, this.backbone!);
+
+    // Stage 3: Normalize (optional)
+    const features = this.config.normalize ? normalizeL2(raw) : raw;
+
+    // Stage 4: Get the vector
+    const vector = Array.from(features.dataSync());
+
+    // Stage 5: Index
+    this.index.add(vector, label);
+
+    // Clean up tensors
+    tf.dispose([batch, raw, features]);
+
+    return vector;
+  }
+
+  // Query the index
+  search(queryVector: number[], k: number = 5) {
+    return this.index.search(queryVector, k);
+  }
+
+  // Process a batch of frames (like batch API requests)
+  async processBatch(
+    frames: { image: tf.Tensor3D; label: string }[]
+  ): Promise<void> {
+    for (const frame of frames) {
+      await this.process(frame.image, frame.label);
+    }
+    console.log(\`Indexed \${this.index.size} frames.\`);
+  }
+}
+
+// Usage — just like setting up an Express app:
+// const app = express();
+// app.use(cors());
+// app.use(auth());
+// app.listen(3000);
+
+const pipeline = new FeaturePipeline({
+  backboneUrl: 'https://tfhub.dev/google/tfjs-model/mobilenet_v2/feature_vector/1/default/1',
+  inputSize: [224, 224],
+  normalize: true,
+});
+
+// await pipeline.init();
+// await pipeline.process(cameraFrame, 'district-4-frame-001');
+// const matches = pipeline.search(queryVector, 10);`}
+</CodeBlock>
+
+<Dialogue speaker="Kira">
+This is exactly how I structure Express APIs. Each middleware does one job. The pipeline is composable — I can swap MobileNet for EfficientNet by changing a URL. I can disable normalization by flipping a boolean. The stages do not care about each other.
+</Dialogue>
+
+<Dialogue speaker="Ryo">
+That is why Meridian's system scaled to every camera in the city. Not because any single component was brilliant — but because the pipeline made components interchangeable. Now you have the same architecture running in a browser tab.
+</Dialogue>
+
+## Challenge
+
+Build a feature pipeline class that chains preprocessing, extraction, and normalization into a single `process` method.
+
+<Exercise slug="build-pipeline" />
+
+<KeyTakeaways takeaways={["Feature pipelines chain preprocess, extract, normalize, and index stages — exactly like Express middleware", "L2 normalization makes cosine similarity equivalent to dot product, simplifying search", "The pipeline pattern decouples stages so you can swap backbones or change normalization independently", "The resistance now has a complete in-browser surveillance detection system — ingest to query — with no server dependency"]} />

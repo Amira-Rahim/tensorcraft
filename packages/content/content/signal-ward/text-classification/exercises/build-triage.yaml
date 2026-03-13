@@ -1,0 +1,253 @@
+slug: build-triage
+lessonSlug: triage-system
+title: "Build the Triage Pipeline"
+instructions: "Implement a TriagePipeline class that chains three classification stages: (1) urgency detection (binary, sigmoid), (2) department routing (multi-class, softmax), and (3) multi-label tagging (sigmoid per tag). Each stage checks confidence against a review threshold — if any stage falls below, the document is flagged for human review. The classify method should return a complete TriageResult with urgency, department, tags, and review status."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  const DEPARTMENTS = [
+    'CARDIOLOGY', 'RADIOLOGY', 'ONCOLOGY',
+    'NEUROLOGY', 'GENERAL_MEDICINE', 'EMERGENCY'
+  ];
+
+  const CLINICAL_TAGS = [
+    'CARDIAC', 'RESPIRATORY', 'RENAL', 'NEUROLOGICAL',
+    'INFECTIOUS', 'ONCOLOGICAL', 'PAIN_MANAGEMENT', 'EMERGENCY'
+  ];
+
+  interface TriageResult {
+    urgency: { label: 'URGENT' | 'ROUTINE'; score: number };
+    department: { label: string; score: number };
+    tags: { label: string; score: number }[];
+    needsReview: boolean;
+    reviewReasons: string[];
+  }
+
+  class TriagePipeline {
+    private urgencyModel: tf.LayersModel;
+    private routingModel: tf.LayersModel;
+    private taggingModel: tf.LayersModel;
+    private urgencyThreshold: number;
+    private tagThreshold: number;
+    private reviewThreshold: number;
+
+    constructor(
+      urgencyModel: tf.LayersModel,
+      routingModel: tf.LayersModel,
+      taggingModel: tf.LayersModel,
+      urgencyThreshold: number = 0.3,
+      tagThreshold: number = 0.5,
+      reviewThreshold: number = 0.7
+    ) {
+      this.urgencyModel = urgencyModel;
+      this.routingModel = routingModel;
+      this.taggingModel = taggingModel;
+      this.urgencyThreshold = urgencyThreshold;
+      this.tagThreshold = tagThreshold;
+      this.reviewThreshold = reviewThreshold;
+    }
+
+    async classify(embedding: tf.Tensor2D): Promise<TriageResult> {
+      // Stage 1: Urgency (binary sigmoid)
+      // Stage 2: Department routing (multi-class softmax)
+      // Stage 3: Multi-label tagging (independent sigmoids)
+      // Check confidence at each stage; if below reviewThreshold, add reason
+      // Return complete TriageResult
+      return {
+        urgency: { label: 'ROUTINE', score: 0 },
+        department: { label: '', score: 0 },
+        tags: [],
+        needsReview: false,
+        reviewReasons: []
+      };
+    }
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  const DEPARTMENTS = [
+    'CARDIOLOGY', 'RADIOLOGY', 'ONCOLOGY',
+    'NEUROLOGY', 'GENERAL_MEDICINE', 'EMERGENCY'
+  ];
+
+  const CLINICAL_TAGS = [
+    'CARDIAC', 'RESPIRATORY', 'RENAL', 'NEUROLOGICAL',
+    'INFECTIOUS', 'ONCOLOGICAL', 'PAIN_MANAGEMENT', 'EMERGENCY'
+  ];
+
+  interface TriageResult {
+    urgency: { label: 'URGENT' | 'ROUTINE'; score: number };
+    department: { label: string; score: number };
+    tags: { label: string; score: number }[];
+    needsReview: boolean;
+    reviewReasons: string[];
+  }
+
+  class TriagePipeline {
+    private urgencyModel: tf.LayersModel;
+    private routingModel: tf.LayersModel;
+    private taggingModel: tf.LayersModel;
+    private urgencyThreshold: number;
+    private tagThreshold: number;
+    private reviewThreshold: number;
+
+    constructor(
+      urgencyModel: tf.LayersModel,
+      routingModel: tf.LayersModel,
+      taggingModel: tf.LayersModel,
+      urgencyThreshold: number = 0.3,
+      tagThreshold: number = 0.5,
+      reviewThreshold: number = 0.7
+    ) {
+      this.urgencyModel = urgencyModel;
+      this.routingModel = routingModel;
+      this.taggingModel = taggingModel;
+      this.urgencyThreshold = urgencyThreshold;
+      this.tagThreshold = tagThreshold;
+      this.reviewThreshold = reviewThreshold;
+    }
+
+    async classify(embedding: tf.Tensor2D): Promise<TriageResult> {
+      const reviewReasons: string[] = [];
+
+      // Stage 1: Urgency detection
+      const urgencyPred = this.urgencyModel.predict(embedding) as tf.Tensor;
+      const urgencyScore = (await urgencyPred.data())[0];
+      urgencyPred.dispose();
+
+      const urgencyLabel: 'URGENT' | 'ROUTINE' =
+        urgencyScore > this.urgencyThreshold ? 'URGENT' : 'ROUTINE';
+
+      if (urgencyScore > 0.3 && urgencyScore < 0.7) {
+        reviewReasons.push('Ambiguous urgency score');
+      }
+
+      // Stage 2: Department routing
+      const routingPred = this.routingModel.predict(embedding) as tf.Tensor;
+      const routingProbs = await routingPred.data();
+      routingPred.dispose();
+
+      const deptIdx = Array.from(routingProbs).indexOf(
+        Math.max(...Array.from(routingProbs))
+      );
+      const deptScore = routingProbs[deptIdx];
+
+      if (deptScore < this.reviewThreshold) {
+        reviewReasons.push('Low department routing confidence');
+      }
+
+      // Stage 3: Multi-label tagging
+      const tagPred = this.taggingModel.predict(embedding) as tf.Tensor;
+      const tagScores = await tagPred.data();
+      tagPred.dispose();
+
+      const tags = CLINICAL_TAGS
+        .map((label, i) => ({ label, score: tagScores[i] }))
+        .filter(t => t.score > this.tagThreshold);
+
+      if (tags.length === 0) {
+        reviewReasons.push('No clinical tags above threshold');
+      }
+
+      return {
+        urgency: { label: urgencyLabel, score: urgencyScore },
+        department: { label: DEPARTMENTS[deptIdx], score: deptScore },
+        tags,
+        needsReview: reviewReasons.length > 0,
+        reviewReasons
+      };
+    }
+  }
+testCode: |
+  describe('TriagePipeline', () => {
+    let pipeline: TriagePipeline;
+
+    function buildBinaryModel(inputDim: number): tf.LayersModel {
+      const model = tf.sequential();
+      model.add(tf.layers.dense({ units: 1, activation: 'sigmoid', inputShape: [inputDim] }));
+      model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy' });
+      return model;
+    }
+
+    function buildMultiClassModel(inputDim: number, numClasses: number): tf.LayersModel {
+      const model = tf.sequential();
+      model.add(tf.layers.dense({ units: numClasses, activation: 'softmax', inputShape: [inputDim] }));
+      model.compile({ optimizer: 'adam', loss: 'categoricalCrossentropy' });
+      return model;
+    }
+
+    function buildMultiLabelModel(inputDim: number, numLabels: number): tf.LayersModel {
+      const model = tf.sequential();
+      model.add(tf.layers.dense({ units: numLabels, activation: 'sigmoid', inputShape: [inputDim] }));
+      model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy' });
+      return model;
+    }
+
+    beforeAll(() => {
+      const urgencyModel = buildBinaryModel(32);
+      const routingModel = buildMultiClassModel(32, DEPARTMENTS.length);
+      const taggingModel = buildMultiLabelModel(32, CLINICAL_TAGS.length);
+      pipeline = new TriagePipeline(urgencyModel, routingModel, taggingModel);
+    });
+
+    it('returns a valid urgency label', async () => {
+      const input = tf.randomNormal([1, 32]) as tf.Tensor2D;
+      const result = await pipeline.classify(input);
+      expect(['URGENT', 'ROUTINE']).toContain(result.urgency.label);
+      expect(result.urgency.score).toBeGreaterThanOrEqual(0);
+      expect(result.urgency.score).toBeLessThanOrEqual(1);
+      input.dispose();
+    });
+
+    it('returns a valid department', async () => {
+      const input = tf.randomNormal([1, 32]) as tf.Tensor2D;
+      const result = await pipeline.classify(input);
+      expect(DEPARTMENTS).toContain(result.department.label);
+      expect(result.department.score).toBeGreaterThan(0);
+      input.dispose();
+    });
+
+    it('tags are from CLINICAL_TAGS', async () => {
+      const input = tf.randomNormal([1, 32]) as tf.Tensor2D;
+      const result = await pipeline.classify(input);
+      result.tags.forEach(tag => {
+        expect(CLINICAL_TAGS).toContain(tag.label);
+        expect(tag.score).toBeGreaterThan(0.5);
+      });
+      input.dispose();
+    });
+
+    it('needsReview is a boolean', async () => {
+      const input = tf.randomNormal([1, 32]) as tf.Tensor2D;
+      const result = await pipeline.classify(input);
+      expect(typeof result.needsReview).toBe('boolean');
+      input.dispose();
+    });
+
+    it('reviewReasons is an array of strings', async () => {
+      const input = tf.randomNormal([1, 32]) as tf.Tensor2D;
+      const result = await pipeline.classify(input);
+      expect(Array.isArray(result.reviewReasons)).toBe(true);
+      result.reviewReasons.forEach(reason => {
+        expect(typeof reason).toBe('string');
+      });
+      input.dispose();
+    });
+
+    it('flags review when no tags are above threshold', async () => {
+      const urgencyModel = buildBinaryModel(32);
+      const routingModel = buildMultiClassModel(32, DEPARTMENTS.length);
+      const taggingModel = buildMultiLabelModel(32, CLINICAL_TAGS.length);
+      // Use very high tag threshold to trigger no-tags review reason
+      const strictPipeline = new TriagePipeline(
+        urgencyModel, routingModel, taggingModel, 0.3, 0.99, 0.7
+      );
+      const input = tf.randomNormal([1, 32]) as tf.Tensor2D;
+      const result = await strictPipeline.classify(input);
+      expect(result.needsReview).toBe(true);
+      expect(result.reviewReasons).toContain('No clinical tags above threshold');
+      input.dispose();
+    });
+  });
+estimatedMinutes: 15
+difficulty: intermediate

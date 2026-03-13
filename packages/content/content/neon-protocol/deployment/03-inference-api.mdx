@@ -1,0 +1,226 @@
+---
+slug: inference-api
+title: "Inference API"
+moduleId: deployment
+themeId: neon-protocol
+order: 3
+estimatedMinutes: 30
+difficulty: intermediate
+context:
+  narrative: "Kira's dashboard needs to call Protocol Sentinel from multiple pages. Ryo realizes they need a clean API layer — a single interface that any resistance tool can call. NEON: 'Wrap the model. Expose a contract. Hide the complexity.'"
+  speaker: "Ryo"
+concept:
+  explanation: "An inference API is a clean interface that wraps your model and exposes prediction functionality through a standard contract. It is the same pattern as building a REST API endpoint — callers send data in a known format, receive results in a known format, and never touch the implementation details."
+  bridge:
+    feTitle: "REST API Endpoint"
+    feCode: "const response = await fetch('/api/users', {\n  method: 'POST',\n  body: JSON.stringify({ name: 'Ryo' })\n});\nconst user = await response.json();"
+    mlTitle: "Inference Endpoint"
+    mlCode: "const response = await fetch('/api/predict', {\n  method: 'POST',\n  body: JSON.stringify({ imageData: pixels })\n});\nconst prediction = await response.json();"
+    tier: identity
+consequence:
+  narrative: "Kira wires the inference API into the resistance dashboard, the mobile scanner, and the district alert system — all in one afternoon. Three tools, one model, one interface. NEON: 'Abstraction. The most powerful tool in any engineer's kit.'"
+  nextLessonTeaser: "Next: monitoring the deployed model to catch problems before they become emergencies"
+hints:
+  - level: nudge
+    content: "Think about the inference API like any service class — it loads once, exposes a predict method, and handles preprocessing internally"
+  - level: guidance
+    content: "Create a class that loads the model in an init method, preprocesses input in a private method, and exposes a single predict() method with typed inputs and outputs"
+  - level: solution
+    content: "class SentinelAPI { private model; async init() { this.model = await tf.loadLayersModel(url); } async predict(imageData) { const tensor = this.preprocess(imageData); return this.model.predict(tensor); } }"
+keywords:
+  - inference-api
+  - prediction-endpoint
+  - model-serving
+  - api-design
+  - abstraction
+---
+
+<Dialogue speaker="Ryo">
+Kira needs Sentinel on the dashboard. Lin needs it on the mobile scanner. The district alert system needs it for automated patrols. I cannot copy-paste model loading code into three different apps. We need one API. One interface. One contract.
+</Dialogue>
+
+<Dialogue speaker="NEON">
+You have built API layers hundreds of times. A model is just another service. Wrap it. Define the input contract. Define the output contract. Hide everything else.
+</Dialogue>
+
+A trained model is an implementation detail. The rest of your application should never know or care how predictions are made — only that they can call a function with data and get results back. This is the same abstraction principle behind every REST API you have ever consumed.
+
+<LearningObjectives objectives={["Design a typed inference API that wraps a TensorFlow.js model", "Implement preprocessing and postprocessing inside the API boundary", "Build both client-side and server-side inference endpoints", "Handle model loading, warmup, and error states gracefully"]} />
+
+## The API Pattern
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="sentinel-api.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+interface PredictionResult {
+  classIndex: number;
+  className: string;
+  confidence: number;
+  allScores: Record<string, number>;
+}
+
+interface SentinelConfig {
+  modelUrl: string;
+  inputSize: [number, number];
+  classNames: string[];
+  confidenceThreshold: number;
+}
+
+const DEFAULT_CONFIG: SentinelConfig = {
+  modelUrl: '/models/sentinel-q16/model.json',
+  inputSize: [224, 224],
+  classNames: ['drone', 'vehicle', 'patrol', 'camera', 'civilian'],
+  confidenceThreshold: 0.7
+};
+
+class SentinelAPI {
+  private model: tf.LayersModel | null = null;
+  private config: SentinelConfig;
+  private ready = false;
+
+  constructor(config: Partial<SentinelConfig> = {}) {
+    this.config = { ...DEFAULT_CONFIG, ...config };
+  }
+
+  async init(): Promise<void> {
+    this.model = await tf.loadLayersModel(this.config.modelUrl);
+
+    // Warmup: first inference is always slow (shader compilation)
+    const warmup = tf.zeros([1, ...this.config.inputSize, 3]);
+    const warmupResult = this.model.predict(warmup) as tf.Tensor;
+    warmupResult.dispose();
+    warmup.dispose();
+
+    this.ready = true;
+  }
+
+  async predict(imageData: ImageData | HTMLCanvasElement): Promise<PredictionResult> {
+    if (!this.ready || !this.model) {
+      throw new Error('SentinelAPI not initialized. Call init() first.');
+    }
+
+    return tf.tidy(() => {
+      // Preprocess — hidden from callers
+      const tensor = this.preprocess(imageData);
+
+      // Predict
+      const output = this.model!.predict(tensor) as tf.Tensor;
+      const scores = output.dataSync() as Float32Array;
+
+      // Postprocess — hidden from callers
+      return this.postprocess(scores);
+    });
+  }
+
+  private preprocess(input: ImageData | HTMLCanvasElement): tf.Tensor4D {
+    const raw = input instanceof ImageData
+      ? tf.browser.fromPixels(input)
+      : tf.browser.fromPixels(input);
+
+    return raw
+      .resizeBilinear(this.config.inputSize)
+      .expandDims(0)
+      .div(255.0) as tf.Tensor4D;
+  }
+
+  private postprocess(scores: Float32Array): PredictionResult {
+    const maxScore = Math.max(...scores);
+    const classIndex = scores.indexOf(maxScore);
+
+    const allScores: Record<string, number> = {};
+    this.config.classNames.forEach((name, i) => {
+      allScores[name] = scores[i];
+    });
+
+    return {
+      classIndex,
+      className: this.config.classNames[classIndex],
+      confidence: maxScore,
+      allScores
+    };
+  }
+
+  isReady(): boolean {
+    return this.ready;
+  }
+
+  dispose(): void {
+    this.model?.dispose();
+    this.model = null;
+    this.ready = false;
+  }
+}`}
+</CodeBlock>
+
+## Using the API
+
+With the abstraction in place, consuming the model is as simple as calling any other service.
+
+<CodeBlock language="typescript" title="usage.ts">
+{`// Initialize once at app startup
+const sentinel = new SentinelAPI({
+  confidenceThreshold: 0.8
+});
+await sentinel.init();
+
+// Use anywhere — dashboard, scanner, alert system
+const canvas = document.getElementById('feed') as HTMLCanvasElement;
+const result = await sentinel.predict(canvas);
+
+if (result.confidence >= 0.8) {
+  console.log(\`Detected: \${result.className} (\${(result.confidence * 100).toFixed(1)}%)\`);
+  alertDistrict(result);
+}
+
+// Batch processing from multiple feeds
+async function scanAllFeeds(feeds: HTMLCanvasElement[]): Promise<PredictionResult[]> {
+  return Promise.all(feeds.map(feed => sentinel.predict(feed)));
+}`}
+</CodeBlock>
+
+## Server-Side Inference Endpoint
+
+For devices that cannot run the model locally, expose an HTTP endpoint.
+
+<CodeBlock language="typescript" title="server-endpoint.ts">
+{`// Express-style endpoint
+import express from 'express';
+import * as tf from '@tensorflow/tfjs-node';
+
+const app = express();
+const sentinel = new SentinelAPI({ modelUrl: 'file://./models/sentinel/model.json' });
+
+app.post('/api/predict', express.json({ limit: '5mb' }), async (req, res) => {
+  try {
+    if (!sentinel.isReady()) {
+      return res.status(503).json({ error: 'Model not loaded' });
+    }
+
+    const { imageData, width, height } = req.body;
+
+    // Reconstruct ImageData from serialized pixels
+    const pixels = new Uint8ClampedArray(imageData);
+    const imgData = new ImageData(pixels, width, height);
+
+    const result = await sentinel.predict(imgData);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: 'Prediction failed' });
+  }
+});
+
+// Initialize model, then start server
+sentinel.init().then(() => {
+  app.listen(3001, () => console.log('Sentinel API running on :3001'));
+});`}
+</CodeBlock>
+
+## Challenge
+
+Build a typed inference API class that wraps model loading, preprocessing, and prediction.
+
+<Exercise slug="build-inference-api" />
+
+<KeyTakeaways takeaways={["An inference API wraps your model behind a clean contract — callers never touch tensors directly", "Warmup the model on init to avoid slow first predictions from shader compilation", "The same API pattern works client-side (in-browser) and server-side (HTTP endpoint)", "Always handle loading states, errors, and disposal — models are resources like database connections"]} />

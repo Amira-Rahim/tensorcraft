@@ -1,0 +1,281 @@
+---
+slug: the-disparity
+title: "The Disparity — Confronting the 12% Gap"
+moduleId: production-privacy
+themeId: signal-ward
+order: 5
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "The ethics review reaches its climax. Dr. Vasquez projects the fairness card on the screen. 'Twelve percent. That is the gap between how well your model works on attending physician notes and how well it works on night shift notes. Khalil, fix it or we do not deploy.' Khalil recognizes the pattern from cross-browser testing: 'It works in Chrome but breaks in Safari. Same code, different rendering engine. Same model, different writing style.'"
+  speaker: "Dr. Vasquez"
+concept:
+  explanation: "Performance disparity across demographic groups is like browser compatibility gaps — the system works well in one environment but fails in another. The remediation strategy is the same: identify the failure modes, build targeted fixes, and test across all environments."
+  bridge:
+    feTitle: "Browser Compatibility Gaps"
+    feCode: "// Works in Chrome, broken in Safari — polyfill, progressive enhancement, cross-browser testing"
+    mlTitle: "Performance Disparity"
+    mlCode: "// Works on formal notes, fails on ESL notes — data augmentation, re-weighting, cross-group testing"
+    tier: structural
+consequence:
+  narrative: "After augmentation and retraining, the disparity drops from 12% to 2.3%. Khalil presents the updated fairness card. Dr. Vasquez studies it. 'Two point three percent. Not zero. Document the remaining gap in the model card. Ship it with an honest account of what we know and what we do not. That is responsible deployment.' The ethics committee votes unanimously to approve the pilot."
+  nextLessonTeaser: "Next module: capstone — deploying Diagnostic One to Signal Ward"
+hints:
+  - level: nudge
+    content: "Identify which data slices underperform, then augment training data for those specific groups"
+  - level: guidance
+    content: "Generate synthetic examples for underperforming groups, apply sample weights to prioritize them during training, and retrain"
+  - level: solution
+    content: "Build a remediation pipeline: identify failing slices from the fairness audit, augment with paraphrased/transformed examples, apply inverse-frequency sample weights, retrain, re-audit, and document the remaining gap in a model card"
+keywords:
+  - performance-disparity
+  - browser-compatibility
+  - data-augmentation
+  - re-weighting
+  - model-card
+  - responsible-deployment
+  - remediation
+---
+
+<Dialogue speaker="Dr. Vasquez">
+Twelve percent. That is the gap. Your model classifies attending physician notes at 94% accuracy. Night shift nurse notes — written by staff who predominantly speak English as a second language — get 82%. Same patients. Same conditions. Different accuracy. Khalil, this is not a performance issue. It is an equity failure.
+</Dialogue>
+
+<Dialogue speaker="Khalil">
+I have seen this before. It is browser compatibility. You build a beautiful interface in Chrome, ship it, and discover it is broken in Safari. Same code, different rendering engine. Same model, different writing style. The fix is the same: identify the failure modes, build targeted polyfills, and test across every environment. Not just the one you developed in.
+</Dialogue>
+
+The 12% disparity is Diagnostic One's cross-browser bug. The model was trained primarily on attending physician notes — the "Chrome" of clinical writing. Night shift notes, ICU shorthand, and Spanish-language records are the "Safari," "Firefox," and "mobile" of the dataset. The remediation strategy follows the same playbook: identify which environments fail, build targeted fixes (data augmentation instead of polyfills), test across all environments, and document any remaining gaps.
+
+<LearningObjectives objectives={["Identify performance disparities across demographic slices using fairness audit data", "Implement data augmentation strategies that target underperforming groups", "Apply sample re-weighting to prioritize underrepresented populations during training", "Write honest model cards that document known limitations and remaining gaps"]} />
+
+## Diagnosing the Gap
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="disparity-analysis.ts">
+{`// Step 1: Identify which "browsers" are failing
+// Like running cross-browser tests and collecting failure reports
+
+interface DisparityReport {
+  sliceName: string;
+  accuracy: number;
+  gapFromBest: number;
+  failureModes: string[];
+  sampleCount: number;
+  needsRemediation: boolean;
+}
+
+function analyzeDisparities(
+  auditReport: AuditReport,
+  remediationThreshold: number = 0.05
+): DisparityReport[] {
+  const bestAccuracy = Math.max(...auditReport.slices.map(s => s.accuracy));
+
+  return auditReport.slices.map(slice => {
+    const gap = bestAccuracy - slice.accuracy;
+    return {
+      sliceName: slice.sliceName,
+      accuracy: slice.accuracy,
+      gapFromBest: gap,
+      failureModes: identifyFailureModes(slice),
+      sampleCount: slice.sampleCount,
+      needsRemediation: gap > remediationThreshold,
+    };
+  });
+}
+
+function identifyFailureModes(slice: SliceMetrics): string[] {
+  const modes: string[] = [];
+  if (slice.falseNegativeRate > 0.15) {
+    modes.push('High false negative rate — model misses positive cases');
+  }
+  if (slice.falsePositiveRate > 0.15) {
+    modes.push('High false positive rate — model triggers false alarms');
+  }
+  if (slice.sampleCount < 50) {
+    modes.push('Small sample size — results may be unreliable');
+  }
+  return modes;
+}`}
+</CodeBlock>
+
+## Data Augmentation — Polyfills for ML
+
+<CodeBlock language="typescript" title="augmentation.ts">
+{`// Data augmentation is the ML equivalent of polyfills and progressive enhancement
+// Can't change the browser? Add compatibility code.
+// Can't change how nurses write? Add more diverse training examples.
+
+interface AugmentationConfig {
+  targetSlice: string;
+  augmentationFactor: number;  // How many synthetic examples per original
+  strategies: AugmentationStrategy[];
+}
+
+type AugmentationStrategy = 'paraphrase' | 'abbreviate' | 'simplify' | 'noise';
+
+// Generate synthetic training examples for underperforming groups
+function augmentSlice(
+  samples: { text: string; label: number }[],
+  config: AugmentationConfig
+): { text: string; label: number; synthetic: boolean }[] {
+  const augmented: { text: string; label: number; synthetic: boolean }[] = [];
+
+  // Keep all original samples
+  for (const sample of samples) {
+    augmented.push({ ...sample, synthetic: false });
+  }
+
+  // Generate synthetic examples
+  for (const sample of samples) {
+    for (let i = 0; i < config.augmentationFactor; i++) {
+      const strategy = config.strategies[i % config.strategies.length];
+      const syntheticText = applyAugmentation(sample.text, strategy);
+      augmented.push({ text: syntheticText, label: sample.label, synthetic: true });
+    }
+  }
+
+  return augmented;
+}
+
+function applyAugmentation(text: string, strategy: AugmentationStrategy): string {
+  switch (strategy) {
+    case 'abbreviate':
+      // Simulate abbreviation-heavy writing styles
+      return text
+        .replace(/patient/gi, 'pt')
+        .replace(/temperature/gi, 'temp')
+        .replace(/blood pressure/gi, 'BP')
+        .replace(/milligrams/gi, 'mg')
+        .replace(/without/gi, 'w/o')
+        .replace(/with/gi, 'w/');
+
+    case 'simplify':
+      // Simulate shorter, simpler sentence structures
+      return text
+        .split('. ')
+        .map(s => s.split(',')[0])  // Drop subordinate clauses
+        .join('. ');
+
+    case 'noise':
+      // Add realistic typos and grammar variations
+      const words = text.split(' ');
+      const idx = Math.floor(Math.random() * words.length);
+      if (words[idx].length > 3) {
+        // Swap two adjacent characters
+        const chars = words[idx].split('');
+        const swapIdx = Math.floor(Math.random() * (chars.length - 1));
+        [chars[swapIdx], chars[swapIdx + 1]] = [chars[swapIdx + 1], chars[swapIdx]];
+        words[idx] = chars.join('');
+      }
+      return words.join(' ');
+
+    case 'paraphrase':
+      // Simple paraphrase: reorder clauses
+      const sentences = text.split('. ').filter(s => s.length > 0);
+      if (sentences.length > 1) {
+        const mid = Math.floor(sentences.length / 2);
+        return [...sentences.slice(mid), ...sentences.slice(0, mid)].join('. ') + '.';
+      }
+      return text;
+  }
+}
+
+// Sample re-weighting — give underperforming groups more influence during training
+function computeSampleWeights(
+  samples: { text: string; label: number; group: string }[],
+  groupAccuracies: Record<string, number>
+): number[] {
+  // Inverse accuracy weighting: lower accuracy = higher weight
+  const maxAccuracy = Math.max(...Object.values(groupAccuracies));
+
+  return samples.map(sample => {
+    const groupAccuracy = groupAccuracies[sample.group] ?? maxAccuracy;
+    // Weight inversely proportional to accuracy
+    return maxAccuracy / Math.max(groupAccuracy, 0.01);
+  });
+}`}
+</CodeBlock>
+
+## The Model Card — Honest Documentation
+
+<CodeBlock language="typescript" title="model-card.ts">
+{`// A model card documents what the model can and cannot do
+// Like browser support tables in library documentation
+// "Works in Chrome 90+, Firefox 88+. Known issues in Safari < 15."
+
+interface ModelCard {
+  name: string;
+  version: string;
+  description: string;
+  intendedUse: string;
+  performanceSummary: {
+    overallAccuracy: number;
+    bestGroup: { name: string; accuracy: number };
+    worstGroup: { name: string; accuracy: number };
+    accuracyGap: number;
+  };
+  knownLimitations: string[];
+  ethicalConsiderations: string[];
+  trainingData: {
+    description: string;
+    size: number;
+    augmentationApplied: boolean;
+  };
+}
+
+function generateModelCard(
+  auditReport: AuditReport,
+  remediationApplied: boolean
+): ModelCard {
+  const best = auditReport.slices.reduce((a, b) => a.accuracy > b.accuracy ? a : b);
+  const worst = auditReport.slices.reduce((a, b) => a.accuracy < b.accuracy ? a : b);
+
+  return {
+    name: 'Diagnostic One — Clinical Text Classifier',
+    version: remediationApplied ? '1.1.0' : '1.0.0',
+    description: 'Classifies clinical notes by type and extracts structured information.',
+    intendedUse: 'Clinical decision support — suggestions only, not autonomous decisions.',
+    performanceSummary: {
+      overallAccuracy: auditReport.overall.accuracy,
+      bestGroup: { name: best.sliceName, accuracy: best.accuracy },
+      worstGroup: { name: worst.sliceName, accuracy: worst.accuracy },
+      accuracyGap: auditReport.disparities.accuracyGap,
+    },
+    knownLimitations: [
+      \`Performance gap of \${(auditReport.disparities.accuracyGap * 100).toFixed(1)}% between \${best.sliceName} and \${worst.sliceName}\`,
+      'Not validated for pediatric notes',
+      'Abbreviation-heavy ICU notes may produce lower confidence scores',
+      'Spanish-language notes are supported but accuracy is reduced',
+    ],
+    ethicalConsiderations: [
+      'Model should not be used for autonomous clinical decisions',
+      'All medium-confidence predictions require clinician review',
+      'Performance should be re-audited quarterly as clinical writing patterns change',
+      'Disparities in training data reflect systemic inequities in clinical documentation',
+    ],
+    trainingData: {
+      description: 'De-identified clinical notes from Signal Ward, 2021-2025',
+      size: 45000,
+      augmentationApplied: remediationApplied,
+    },
+  };
+}`}
+</CodeBlock>
+
+<Dialogue speaker="Dr. Vasquez">
+Two point three percent. Not zero. But it is honest. Document the remaining gap. Ship the model card with every deployment. A known limitation is safer than a hidden one. That is responsible ML.
+</Dialogue>
+
+<Dialogue speaker="Khalil">
+We document browser support tables for every library we ship. "Works in Chrome 90+, Firefox 88+. Known issues in Safari below 15." This is the same practice. "Accuracy: 93.7% overall. Known gap: 2.3% lower on non-standard English notes. Quarterly re-audit required."
+</Dialogue>
+
+## Challenge
+
+Implement a disparity remediation pipeline that augments underperforming data slices and measures improvement.
+
+<Exercise slug="fix-disparity" />
+
+<KeyTakeaways takeaways={["Performance disparity is a cross-browser bug — same system, different environments, different results", "Data augmentation is the ML polyfill — generate diverse training examples to cover underrepresented writing styles", "Sample re-weighting gives underperforming groups more influence during training, like priority bug fixes for failing browsers", "Model cards are browser support tables for ML — document what works, what does not, and what limitations remain"]} />

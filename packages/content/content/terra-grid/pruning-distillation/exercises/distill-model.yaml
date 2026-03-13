@@ -1,0 +1,9 @@
+slug: distill-model
+lessonSlug: knowledge-distillation
+title: "Generate Soft Targets"
+instructions: "Write a function softmax(logits, temperature) that computes temperature-scaled softmax. For numerical stability, subtract the max logit before exponentiating. Return an array of probabilities that sum to 1."
+starterCode: "function softmax(logits, temperature) {\n  // Scale by temperature, subtract max, exponentiate, normalize\n  return null; // your code here\n}"
+solutionCode: "function softmax(logits, temperature) {\n  const scaled = logits.map(l => l / temperature);\n  const maxVal = Math.max(...scaled);\n  const exps = scaled.map(s => Math.exp(s - maxVal));\n  const sum = exps.reduce((a, b) => a + b, 0);\n  return exps.map(e => e / sum);\n}"
+testCode: "describe('softmax', () => { it('sums to 1', () => { const result = softmax([2.0, 1.0, 0.5], 1); expect(result.reduce((a, b) => a + b)).toBeCloseTo(1.0); }); it('higher temp produces softer distribution', () => { const hard = softmax([5, 1, 0], 1); const soft = softmax([5, 1, 0], 5); expect(soft[0]).toBeLessThan(hard[0]); expect(soft[1]).toBeGreaterThan(hard[1]); }); it('max element has highest probability', () => { const result = softmax([3, 1, 2], 1); expect(result[0]).toBeGreaterThan(result[1]); expect(result[0]).toBeGreaterThan(result[2]); }); });"
+estimatedMinutes: 15
+difficulty: intermediate

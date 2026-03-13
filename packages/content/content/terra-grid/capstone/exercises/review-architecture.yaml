@@ -1,0 +1,121 @@
+slug: review-architecture
+lessonSlug: system-architecture-review
+title: "Validate System Architecture"
+instructions: "Build a function validateArchitecture that takes an array of system components and checks: (1) all dependencies reference existing components, (2) no circular dependencies exist, (3) total memory fits within the budget. Return an object with valid (boolean) and issues (string array)."
+starterCode: |
+  interface Component {
+    name: string;
+    dependencies: string[];
+    memorySizeMB: number;
+  }
+
+  function validateArchitecture(
+    components: Component[],
+    memoryBudgetMB: number
+  ): { valid: boolean; issues: string[] } {
+    // 1. Check all dependencies reference existing component names
+    // 2. Check for circular dependencies (A depends on B, B depends on A)
+    // 3. Check total memory does not exceed budget
+    // Return { valid: true/false, issues: list of problems found }
+    return { valid: false, issues: [] }; // your code here
+  }
+solutionCode: |
+  interface Component {
+    name: string;
+    dependencies: string[];
+    memorySizeMB: number;
+  }
+
+  function validateArchitecture(
+    components: Component[],
+    memoryBudgetMB: number
+  ): { valid: boolean; issues: string[] } {
+    const issues: string[] = [];
+    const names = new Set(components.map(c => c.name));
+
+    // Check missing dependencies
+    for (const component of components) {
+      for (const dep of component.dependencies) {
+        if (!names.has(dep)) {
+          issues.push(`${component.name}: missing dependency "${dep}"`);
+        }
+      }
+    }
+
+    // Check circular dependencies
+    function hasCycle(name: string, visited: Set<string>, stack: Set<string>): boolean {
+      visited.add(name);
+      stack.add(name);
+      const comp = components.find(c => c.name === name);
+      if (comp) {
+        for (const dep of comp.dependencies) {
+          if (!visited.has(dep) && hasCycle(dep, visited, stack)) return true;
+          if (stack.has(dep)) return true;
+        }
+      }
+      stack.delete(name);
+      return false;
+    }
+
+    const visited = new Set<string>();
+    for (const comp of components) {
+      if (!visited.has(comp.name) && hasCycle(comp.name, visited, new Set())) {
+        issues.push(`Circular dependency detected involving "${comp.name}"`);
+      }
+    }
+
+    // Check memory budget
+    const totalMemory = components.reduce((s, c) => s + c.memorySizeMB, 0);
+    if (totalMemory > memoryBudgetMB) {
+      issues.push(`Total memory ${totalMemory}MB exceeds budget ${memoryBudgetMB}MB`);
+    }
+
+    return { valid: issues.length === 0, issues };
+  }
+testCode: |
+  describe('validateArchitecture', () => {
+    it('validates a correct architecture', () => {
+      const result = validateArchitecture([
+        { name: 'ingestion', dependencies: [], memorySizeMB: 2 },
+        { name: 'detector', dependencies: ['ingestion'], memorySizeMB: 4 },
+      ], 64);
+      expect(result.valid).toBe(true);
+      expect(result.issues.length).toBe(0);
+    });
+
+    it('detects missing dependencies', () => {
+      const result = validateArchitecture([
+        { name: 'detector', dependencies: ['missing-module'], memorySizeMB: 4 },
+      ], 64);
+      expect(result.valid).toBe(false);
+      expect(result.issues.some(i => i.includes('missing'))).toBe(true);
+    });
+
+    it('detects memory budget exceeded', () => {
+      const result = validateArchitecture([
+        { name: 'a', dependencies: [], memorySizeMB: 40 },
+        { name: 'b', dependencies: [], memorySizeMB: 30 },
+      ], 64);
+      expect(result.valid).toBe(false);
+      expect(result.issues.some(i => i.includes('memory') || i.includes('Memory'))).toBe(true);
+    });
+
+    it('passes with exact memory budget', () => {
+      const result = validateArchitecture([
+        { name: 'a', dependencies: [], memorySizeMB: 32 },
+        { name: 'b', dependencies: [], memorySizeMB: 32 },
+      ], 64);
+      expect(result.valid).toBe(true);
+    });
+
+    it('detects circular dependencies', () => {
+      const result = validateArchitecture([
+        { name: 'a', dependencies: ['b'], memorySizeMB: 2 },
+        { name: 'b', dependencies: ['a'], memorySizeMB: 2 },
+      ], 64);
+      expect(result.valid).toBe(false);
+      expect(result.issues.some(i => i.includes('ircular'))).toBe(true);
+    });
+  });
+estimatedMinutes: 15
+difficulty: advanced

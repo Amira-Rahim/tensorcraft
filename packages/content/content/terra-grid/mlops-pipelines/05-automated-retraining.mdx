@@ -1,0 +1,170 @@
+---
+slug: automated-retraining
+title: "Automated Retraining"
+moduleId: mlops-pipelines
+themeId: terra-grid
+order: 5
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Sector 9 installs 200 new sensors. The data distribution shifts. Park configures automated retraining triggered by data changes — like GitHub Actions triggered by pushes."
+  speaker: "Park Soo-Yeon"
+concept:
+  explanation: "Automated retraining triggers on data events, just as GitHub Actions trigger on code events — push, schedule, or manual dispatch."
+  bridge:
+    feTitle: "GitHub Actions"
+    feCode: "on: push: branches: [main] // event-triggered workflow"
+    mlTitle: "Retraining Trigger"
+    mlCode: "on: data-change: drift-score > 0.3 // event-triggered training"
+    tier: structural
+consequence:
+  narrative: "The pipeline detects the Sector 9 data shift, triggers retraining, and produces a new model that passes all gates. Park reviews and approves."
+  nextLessonTeaser: "Module 7: monitoring production models and detecting when they start to degrade"
+hints:
+  - level: nudge
+    content: "Think about what events trigger your CI/CD workflows"
+  - level: guidance
+    content: "Define trigger conditions: schedule (cron), data drift threshold exceeded, or manual request"
+  - level: solution
+    content: "Create a trigger evaluator that checks conditions and launches the full pipeline when thresholds are crossed"
+keywords:
+  - automated-retraining
+  - triggers
+  - github-actions
+  - continuous-training
+---
+
+<Dialogue speaker="Park Soo-Yeon">
+Sector 9 just came online with 200 new sensors. The data distribution shifted. The current model has never seen readings from those sensor types. We need to retrain.
+</Dialogue>
+
+<Dialogue speaker="Hassan Al-Rashid">
+Manually? Every time a sector changes?
+</Dialogue>
+
+<Dialogue speaker="Park Soo-Yeon">
+No. I have configured triggers. When the data drift score exceeds 0.3 or the dataset grows by more than 10%, the pipeline kicks off automatically. I review before it deploys.
+</Dialogue>
+
+GitHub Actions triggers on `push`, `pull_request`, `schedule`, or `workflow_dispatch`. You define the event, the conditions, and the workflow runs automatically. Automated retraining uses the same pattern — define trigger events (data change, drift detected, schedule), and the training pipeline runs when conditions are met.
+
+<LearningObjectives objectives={["Design retraining triggers based on data events — like GitHub Actions event triggers", "Implement threshold-based triggers for data drift, dataset growth, and performance degradation", "Configure scheduled retraining with cron patterns", "Build safeguards that prevent runaway retraining loops"]} />
+
+## Event-Driven Retraining
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="retraining-triggers.ts">
+{`type TriggerType = 'data-drift' | 'dataset-growth' | 'schedule' | 'performance-drop' | 'manual';
+
+interface RetrainingTrigger {
+  type: TriggerType;
+  condition: () => Promise<boolean>;
+  cooldownMinutes: number;    // prevent trigger storms
+  lastTriggered: number | null;
+}
+
+const triggers: RetrainingTrigger[] = [
+  {
+    // Like: on: push: branches: [main]
+    type: 'data-drift',
+    condition: async () => {
+      const driftScore = await measureDrift('sector-all');
+      return driftScore > 0.3;
+    },
+    cooldownMinutes: 360,  // max once per 6 hours
+    lastTriggered: null,
+  },
+  {
+    // Like: on: schedule: cron: '0 2 * * 1'
+    type: 'schedule',
+    condition: async () => {
+      const dayOfWeek = new Date().getDay();
+      const hour = new Date().getHours();
+      return dayOfWeek === 1 && hour === 2;  // Monday 2 AM
+    },
+    cooldownMinutes: 1440,  // once per day max
+    lastTriggered: null,
+  },
+  {
+    // Like: on: check_suite: completed: failure
+    type: 'performance-drop',
+    condition: async () => {
+      const currentAccuracy = await getProductionAccuracy();
+      return currentAccuracy < 0.93;
+    },
+    cooldownMinutes: 720,  // max once per 12 hours
+    lastTriggered: null,
+  },
+];
+
+async function evaluateTriggers(triggers: RetrainingTrigger[]): Promise<TriggerType | null> {
+  for (const trigger of triggers) {
+    // Check cooldown — prevent runaway retraining
+    if (trigger.lastTriggered) {
+      const elapsed = (Date.now() - trigger.lastTriggered) / 60000;
+      if (elapsed < trigger.cooldownMinutes) continue;
+    }
+
+    if (await trigger.condition()) {
+      trigger.lastTriggered = Date.now();
+      console.log(\`Trigger fired: \${trigger.type}\`);
+      return trigger.type;
+    }
+  }
+  return null;
+}`}
+</CodeBlock>
+
+## The Retraining Loop
+
+<CodeBlock language="typescript" title="retraining-loop.ts">
+{`async function retrainingLoop(
+  triggers: RetrainingTrigger[],
+  pipeline: MLPipeline,
+  registry: ModelRegistry,
+): Promise<void> {
+  // Check triggers every 15 minutes
+  const checkInterval = 15 * 60 * 1000;
+
+  setInterval(async () => {
+    const firedTrigger = await evaluateTriggers(triggers);
+    if (!firedTrigger) return;
+
+    console.log(\`Retraining triggered by: \${firedTrigger}\`);
+
+    // Run the full pipeline
+    const success = await runPipeline(pipeline);
+
+    if (success) {
+      // Register the new model — but do NOT auto-promote to production
+      // Hassan's rule: automated does not mean unsupervised
+      await registry.register({
+        name: 'terra-grid-intelligence',
+        version: incrementVersion(),
+        stage: 'staging',     // human must promote to production
+        // ... metrics, lineage
+      });
+
+      await notifyTeam({
+        message: \`New model ready for review (trigger: \${firedTrigger})\`,
+        channel: '#ml-pipeline',
+      });
+    } else {
+      await notifyTeam({
+        message: \`Retraining failed (trigger: \${firedTrigger}). Check pipeline logs.\`,
+        channel: '#ml-alerts',
+        severity: 'warning',
+      });
+    }
+  }, checkInterval);
+}`}
+</CodeBlock>
+
+## Challenge
+
+Configure automated retraining triggers with cooldowns and safeguards.
+
+<Exercise slug="auto-retrain" />
+
+<KeyTakeaways takeaways={["Retraining triggers mirror GitHub Actions events — data drift, schedule, and performance drops replace push, cron, and check failures", "Cooldown periods prevent trigger storms — just like rate limiting prevents API abuse", "Automated does not mean unsupervised — new models land in staging, not production, until a human approves", "Every automated run feeds the experiment tracker and model registry for full auditability"]} />

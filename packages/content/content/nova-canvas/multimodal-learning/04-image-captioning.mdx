@@ -1,0 +1,137 @@
+---
+slug: image-captioning
+title: "Image Captioning"
+moduleId: multimodal-learning
+themeId: nova-canvas
+order: 4
+estimatedMinutes: 25
+difficulty: advanced
+context:
+  narrative: "Petrov needs the gallery catalog: every generated image needs a text description. 'For accessibility,' Yara insists. 'Every image needs alt text. We built this to be inclusive.' Ren agrees: 'Image captioning is automated alt-text generation. The model describes what it sees.'"
+  speaker: "Yara"
+concept:
+  explanation: "Image captioning generates text descriptions from images — automated alt-text generation. An image encoder extracts visual features, and a text decoder generates a description word by word, just like writing alt text that describes what an image shows."
+  bridge:
+    feTitle: "Alt-text generation for accessibility"
+    feCode: "// Automated: <img alt={generateCaption(src)} />"
+    mlTitle: "Image captioning pipeline"
+    mlCode: "const features = encodeImage(img); const caption = decodeText(features);"
+    tier: structural
+consequence:
+  narrative: "MUSE generates a caption for each gallery piece. 'Abstract geometric forms in blue and gold, suggesting a digital cityscape at dusk.' Yara reads it aloud: 'That is genuinely beautiful alt text. Every image in the gallery is now accessible.'"
+  nextLessonTeaser: "Next: text-to-image — the reverse direction, generating images from text prompts"
+hints:
+  - level: nudge
+    content: "Think of writing alt text: you look at an image and describe what it shows in words"
+  - level: guidance
+    content: "Encode the image to features, then use an RNN/transformer decoder to generate words one at a time, conditioned on the image features"
+  - level: solution
+    content: "Image encoder -> context vector -> text decoder (autoregressive). At each step, predict the next word given previous words and image context."
+keywords:
+  - image-captioning
+  - alt-text
+  - autoregressive
+  - encoder-decoder
+  - accessibility
+---
+
+<Dialogue speaker="Yara">
+Every image in the gallery needs a description. For the catalog, for the website, and most importantly — for visitors who cannot see the images. Accessibility is not optional.
+</Dialogue>
+
+<Dialogue speaker="Ren">
+Image captioning is exactly this problem: given an image, generate a text description. It is automated alt-text generation. The model looks at pixels and produces words.
+</Dialogue>
+
+Alt text is the original vision-to-language task. You look at an image and describe it in words. Image captioning automates this with an encoder-decoder architecture: encode the image, decode into text.
+
+<LearningObjectives objectives={["Understand the encoder-decoder architecture for image captioning", "Implement autoregressive text generation conditioned on image features", "Build a simple captioning pipeline with TensorFlow.js", "Connect image captioning to alt-text generation for web accessibility"]} />
+
+## The Captioning Pipeline
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="image-captioning.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Image captioning = automated alt text
+// Step 1: Encode the image into a context vector
+// Step 2: Decode words one at a time, conditioned on context
+
+function buildCaptionDecoder(
+  vocabSize: number,
+  embeddingDim: number,
+  contextDim: number
+): tf.LayersModel {
+  // Two inputs: previous word + image context
+  const wordInput = tf.input({ shape: [1], name: 'word_input' });
+  const contextInput = tf.input({ shape: [contextDim], name: 'context' });
+
+  // Embed the previous word
+  let wordEmb = tf.layers.embedding({
+    inputDim: vocabSize, outputDim: embeddingDim
+  }).apply(wordInput) as tf.SymbolicTensor;
+  wordEmb = tf.layers.flatten().apply(wordEmb) as tf.SymbolicTensor;
+
+  // Combine word embedding with image context
+  const combined = tf.layers.concatenate().apply(
+    [wordEmb, contextInput]
+  ) as tf.SymbolicTensor;
+
+  // Predict next word
+  let x = tf.layers.dense({
+    units: 256, activation: 'relu'
+  }).apply(combined) as tf.SymbolicTensor;
+  const nextWord = tf.layers.dense({
+    units: vocabSize, activation: 'softmax'
+  }).apply(x) as tf.SymbolicTensor;
+
+  return tf.model({
+    inputs: [wordInput, contextInput],
+    outputs: nextWord
+  });
+}
+
+// Autoregressive generation: one word at a time
+async function generateCaption(
+  imageEncoder: tf.LayersModel,
+  decoder: tf.LayersModel,
+  image: tf.Tensor4D,
+  vocab: string[],
+  maxLen: number = 20
+): Promise<string> {
+  const context = imageEncoder.predict(image) as tf.Tensor2D;
+  const words: string[] = [];
+  let currentWord = vocab.indexOf('<start>');
+
+  for (let i = 0; i < maxLen; i++) {
+    const wordTensor = tf.tensor2d([[currentWord]]);
+    const prediction = decoder.predict([wordTensor, context]) as tf.Tensor2D;
+
+    // Greedy: pick the most likely next word
+    const nextIdx = prediction.argMax(1).dataSync()[0];
+    const nextWord = vocab[nextIdx];
+
+    wordTensor.dispose();
+    prediction.dispose();
+
+    if (nextWord === '<end>') break;
+    words.push(nextWord);
+    currentWord = nextIdx;
+  }
+
+  context.dispose();
+  return words.join(' ');
+}
+
+// Output: "abstract geometric forms in blue and gold"
+// This becomes: <img alt="abstract geometric forms in blue and gold" />`}
+</CodeBlock>
+
+## Challenge
+
+Implement the autoregressive caption generation loop.
+
+<Exercise slug="caption-image" />
+
+<KeyTakeaways takeaways={["Image captioning is automated alt-text generation — describing images in words for accessibility", "The architecture is encoder-decoder: image encoder produces context, text decoder generates words", "Generation is autoregressive: each word depends on the previous words and the image context", "Every generated image in the gallery now has a description — accessibility built into the creative pipeline"]} />

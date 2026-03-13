@@ -1,0 +1,194 @@
+---
+slug: calculus-of-neurons
+title: "The Calculus of Neurons"
+moduleId: math-deep-dive
+themeId: shared
+order: 2
+estimatedMinutes: 35
+difficulty: advanced
+companionTo: neural-networks
+context:
+  narrative: "Backpropagation isn't magic — it's the chain rule from calculus, applied recursively through your network."
+  speaker: "Instructor"
+concept:
+  explanation: "Partial derivatives and the chain rule are the engine behind every gradient update in neural networks."
+  bridge:
+    feTitle: "requestAnimationFrame"
+    feCode: "const velocity = (pos - lastPos) / deltaTime"
+    mlTitle: "Gradient"
+    mlCode: "const grad = tf.grad(loss)(weights)"
+    tier: structural
+consequence:
+  narrative: "Once you see backpropagation as chain rule bookkeeping, debugging gradient issues becomes tractable."
+  nextLessonTeaser: "Next: navigating the optimization landscape"
+hints:
+  - level: nudge
+    content: "A derivative is a rate of change — how much does the output wiggle when you wiggle an input?"
+  - level: guidance
+    content: "The chain rule says: if y = f(g(x)), then dy/dx = f'(g(x)) * g'(x)"
+  - level: solution
+    content: "Use tf.grad() to compute gradients automatically, then verify against your manual calculation"
+keywords:
+  - partial-derivatives
+  - chain-rule
+  - backpropagation
+  - gradient
+  - computational-graph
+---
+
+<Dialogue speaker="Instructor">
+In the Neural Networks module, you used backpropagation to train models. The framework handled the math. But understanding what's actually happening — partial derivatives flowing backward through a computational graph — gives you the intuition to debug vanishing gradients, pick better architectures, and understand why certain tricks work.
+</Dialogue>
+
+<LearningObjectives objectives={["Compute partial derivatives for multi-variable functions", "Apply the chain rule to composite functions step by step", "Trace gradient flow through a simple neural network by hand", "Use TensorFlow.js automatic differentiation to verify manual gradients", "Connect the concept of derivatives to rates of change in animation code"]} />
+
+## Derivatives as Rates of Change
+
+You already think in derivatives when you write animation code. In `requestAnimationFrame`, velocity is the derivative of position with respect to time — how fast the position changes per frame.
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+A gradient in ML is the same idea: how fast does the loss change when you nudge a weight? If the gradient is large, a small weight change causes a big loss change. If it's near zero, that weight isn't doing much.
+
+<CodeBlock language="typescript" title="derivative-intuition.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// In frontend: velocity = rate of change of position
+function animationDerivative(lastPos: number, currentPos: number, dt: number) {
+  return (currentPos - lastPos) / dt;  // This IS a derivative
+}
+
+// In ML: gradient = rate of change of loss w.r.t. weight
+// For f(x) = x^2, the derivative is f'(x) = 2x
+const f = (x: tf.Tensor) => x.square();
+const df = tf.grad(f);
+
+const x = tf.scalar(3);
+const gradient = df(x);
+console.log(await gradient.array()); // 6 — because 2 * 3 = 6
+// At x=3, increasing x by a tiny amount increases x^2 by ~6 times that amount`}
+</CodeBlock>
+
+## Partial Derivatives
+
+Neural networks have many weights. A partial derivative tells you how the loss changes when you nudge **one** weight while holding all others fixed.
+
+<CodeBlock language="typescript" title="partial-derivatives.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// f(x, y) = x^2 * y + y^3
+// Partial with respect to x: df/dx = 2xy (treat y as constant)
+// Partial with respect to y: df/dy = x^2 + 3y^2 (treat x as constant)
+
+// Manual computation at point (2, 3):
+// df/dx = 2 * 2 * 3 = 12
+// df/dy = 2^2 + 3 * 3^2 = 4 + 27 = 31
+
+// Verify with TensorFlow.js
+const f = (x: tf.Tensor, y: tf.Tensor) =>
+  x.square().mul(y).add(y.pow(3));
+
+// Gradient with respect to x
+const dfdx = tf.grad((x) => f(x, tf.scalar(3)));
+console.log(await dfdx(tf.scalar(2)).array()); // 12
+
+// Gradient with respect to y
+const dfdy = tf.grad((y) => f(tf.scalar(2), y));
+console.log(await dfdy(tf.scalar(3)).array()); // 31`}
+</CodeBlock>
+
+## The Chain Rule
+
+The chain rule is the single most important idea in deep learning. If you have a composite function — and every neural network is a deeply nested composite function — the chain rule tells you how to compute the derivative of the whole thing.
+
+<CodeBlock language="typescript" title="chain-rule.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Consider a 2-layer network (no bias, for simplicity):
+//   z1 = w1 * x         (layer 1: linear)
+//   a1 = relu(z1)       (activation)
+//   z2 = w2 * a1        (layer 2: linear)
+//   loss = (z2 - y)^2   (MSE loss)
+//
+// Chain rule for dLoss/dw1:
+//   dLoss/dw1 = dLoss/dz2 * dz2/da1 * da1/dz1 * dz1/dw1
+//
+// Each factor is a simple local derivative. Let's compute them:
+
+const x = 2.0;
+const y = 1.0;   // target
+const w1 = 0.5;
+const w2 = -0.3;
+
+// Forward pass
+const z1 = w1 * x;           // 1.0
+const a1 = Math.max(0, z1);  // 1.0 (ReLU)
+const z2 = w2 * a1;          // -0.3
+const loss = (z2 - y) ** 2;  // 1.69
+
+// Backward pass (chain rule, right to left)
+const dLoss_dz2 = 2 * (z2 - y);         // 2 * (-1.3) = -2.6
+const dz2_da1 = w2;                      // -0.3
+const da1_dz1 = z1 > 0 ? 1 : 0;         // 1 (ReLU derivative)
+const dz1_dw1 = x;                       // 2
+
+// Chain them together:
+const dLoss_dw1 = dLoss_dz2 * dz2_da1 * da1_dz1 * dz1_dw1;
+console.log('Manual gradient dL/dw1:', dLoss_dw1); // 1.56
+
+// Verify with TensorFlow.js auto-diff
+const computeLoss = (w1t: tf.Tensor) => {
+  const z1t = w1t.mul(x);
+  const a1t = z1t.relu();
+  const z2t = tf.scalar(w2).mul(a1t);
+  return z2t.sub(y).square();
+};
+
+const autoGrad = tf.grad(computeLoss);
+console.log('Auto gradient dL/dw1:', await autoGrad(tf.scalar(w1)).array());
+// Same value: 1.56`}
+</CodeBlock>
+
+## The Computational Graph
+
+Every neural network builds a computational graph during the forward pass. Backpropagation walks this graph in reverse, applying the chain rule at each node. This is why TensorFlow is called TensorFlow — tensors flow through a graph of operations.
+
+<CodeBlock language="typescript" title="computational-graph.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Visualize a computational graph as a pipeline:
+//
+//   x ──┐
+//       ├─ [multiply] ─ z1 ─ [relu] ─ a1 ──┐
+//  w1 ──┘                                    ├─ [multiply] ─ z2 ─ [sub y] ─ [square] ─ loss
+//                                       w2 ──┘
+//
+// Forward: left to right (compute values)
+// Backward: right to left (compute gradients via chain rule)
+
+// With multiple weights, tf.grads returns all gradients at once
+const networkLoss = (weights: tf.Tensor[]) => {
+  const [w1, w2] = weights;
+  const x = tf.scalar(2);
+  const y = tf.scalar(1);
+
+  const z1 = w1.mul(x);
+  const a1 = z1.relu();
+  const z2 = w2.mul(a1);
+  return z2.sub(y).square();
+};
+
+const gradFn = tf.grads(networkLoss);
+const grads = gradFn([tf.scalar(0.5), tf.scalar(-0.3)]);
+
+console.log('dL/dw1:', await grads[0].array()); // 1.56
+console.log('dL/dw2:', await grads[1].array()); // gradient for w2`}
+</CodeBlock>
+
+## Challenge
+
+Compute gradients by hand for a simple network, then verify with TensorFlow.js.
+
+<Exercise slug="compute-gradients" />
+
+<KeyTakeaways takeaways={["A derivative measures rate of change — the same concept behind velocity in animation code", "Partial derivatives measure how loss changes when you nudge one weight at a time", "The chain rule decomposes complex derivatives into products of simple local derivatives", "Backpropagation is the chain rule applied backward through a computational graph", "TensorFlow.js tf.grad() and tf.grads() automate this — but understanding the math helps you debug gradient problems"]} />

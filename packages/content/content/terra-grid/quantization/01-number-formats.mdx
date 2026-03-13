@@ -1,0 +1,91 @@
+---
+slug: number-formats
+title: "Number Formats"
+moduleId: quantization
+themeId: terra-grid
+order: 1
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Cole needs a model on a $35 sensor gateway. Every byte counts."
+  speaker: "Cole Branson"
+concept:
+  explanation: "Number formats in ML (Float32, Float16, Int8) trade precision for size — just like image formats (PNG, WebP, AVIF) trade quality for file size."
+  bridge:
+    feTitle: "Image Formats"
+    feCode: "// PNG: lossless, large\n// WebP: lossy, 30% smaller\n// AVIF: lossy, 50% smaller"
+    mlTitle: "Number Formats"
+    mlCode: "// Float32: full precision, 4 bytes\n// Float16: half precision, 2 bytes\n// Int8: quantized, 1 byte"
+    tier: structural
+consequence:
+  narrative: "You understand the precision-size spectrum. Int8 gives you 4x compression."
+  nextLessonTeaser: "Next: applying post-training quantization"
+hints:
+  - level: nudge
+    content: "Think about how JPEG quality settings trade file size for visual quality"
+  - level: guidance
+    content: "Float32 = 4 bytes, Float16 = 2 bytes, Int8 = 1 byte per parameter"
+  - level: solution
+    content: "Size reduction: Float32→Float16 = 2x, Float32→Int8 = 4x"
+keywords:
+  - float32
+  - float16
+  - int8
+  - precision
+---
+
+<Dialogue speaker="Cole Branson">
+I need this model running on a $35 sensor gateway. It has 512MB RAM shared between the OS, drivers, and your model. Every byte you save is a byte I can use for the sensor buffer.
+</Dialogue>
+
+You choose image formats every day. PNG for lossless screenshots, WebP for balanced quality and size, AVIF for maximum compression. Each format trades quality for file size. Number formats in ML make the exact same tradeoff — but with numerical precision instead of visual quality.
+
+<LearningObjectives objectives={["Understand Float32, Float16, and Int8 number formats", "Calculate memory savings from format conversion", "Recognize the precision-size tradeoff in each format", "Map image format decisions to number format decisions"]} />
+
+## The Precision Spectrum
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="number-formats.ts">
+{`// Number format comparison
+interface NumberFormat {
+  name: string;
+  bytesPerValue: number;
+  range: string;
+  precision: string;
+}
+
+const formats: NumberFormat[] = [
+  { name: 'Float32', bytesPerValue: 4, range: '±3.4e38', precision: '7 decimal digits' },
+  { name: 'Float16', bytesPerValue: 2, range: '±65504', precision: '3 decimal digits' },
+  { name: 'Int8',    bytesPerValue: 1, range: '-128 to 127', precision: '256 distinct values' },
+];
+
+// Calculate model size in each format
+function modelSizeInFormat(paramCount: number, format: NumberFormat): number {
+  return (paramCount * format.bytesPerValue) / (1024 * 1024); // MB
+}
+
+const params = 10_000_000; // 10M parameter model
+
+formats.forEach(f => {
+  console.log(\`\${f.name}: \${modelSizeInFormat(params, f).toFixed(1)}MB\`);
+});
+// Float32: 38.1MB
+// Float16: 19.1MB
+// Int8:     9.5MB — 4x smaller than Float32
+
+// The key question: does 1 byte per weight preserve enough information?
+// For most models: yes, with 0-2% accuracy loss.
+// That is like going from PNG to WebP — visually identical, much smaller.`}
+</CodeBlock>
+
+A 10-million parameter model goes from 38.1MB in Float32 to 9.5MB in Int8. That is a 4x reduction with typically less than 2% accuracy loss. The parallel to image compression is direct: WebP images look identical to PNG at 30% the file size.
+
+## Challenge
+
+Calculate model sizes across different number formats.
+
+<Exercise slug="compare-formats" />
+
+<KeyTakeaways takeaways={["Float32 (4 bytes), Float16 (2 bytes), Int8 (1 byte) per parameter", "Float32 → Int8 quantization gives 4x size reduction", "Typical accuracy loss from Int8 quantization: 0-2%", "The precision-size tradeoff mirrors image format quality-size tradeoffs"]} />

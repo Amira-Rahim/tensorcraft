@@ -1,94 +1,88 @@
 slug: generate-anchors
 lessonSlug: anchor-boxes
-title: "Generate an Anchor Grid"
-instructions: "Implement a generateAnchors function that creates anchor boxes on a grid. The function takes a gridSize (number of divisions per axis) and an array of scales (multiplied by the cell size to determine anchor width and height). For each grid cell, compute the center point, then create one square anchor at each scale. Return an array of Anchor objects with cx, cy, width, and height (all normalized 0-1)."
+title: "Generate Anchor Boxes for the City Grid"
+instructions: "The Neon Protocol detection system scans the city grid using anchor boxes at multiple scales. Implement generateAnchors that takes gridSize (number of cells along one axis), imageSize (pixel dimension, assume square image), and scales (an array of box size multipliers). For each grid cell (row, col) and each scale, generate an anchor box centered on that cell. The cell center is computed as ((col + 0.5) * stride, (row + 0.5) * stride) where stride = imageSize / gridSize. The anchor width and height are both stride * scale. Return a tf.Tensor with shape [gridSize * gridSize * scales.length, 4] where each row is [centerX, centerY, anchorWidth, anchorHeight]."
 starterCode: |
-  interface Anchor {
-    cx: number;
-    cy: number;
-    width: number;
-    height: number;
-  }
-
   function generateAnchors(
     gridSize: number,
+    imageSize: number,
     scales: number[]
-  ): Anchor[] {
-    // TODO: Calculate cellSize as 1.0 / gridSize
-    // TODO: For each grid cell, compute center (col+0.5)*cellSize, (row+0.5)*cellSize
-    // TODO: For each scale, create an anchor with width/height = scale * cellSize
-    return null as any;
+  ): tf.Tensor2D {
+    // stride = imageSize / gridSize
+    // For each row (0..gridSize-1), col (0..gridSize-1), scale:
+    //   centerX = (col + 0.5) * stride
+    //   centerY = (row + 0.5) * stride
+    //   w = stride * scale
+    //   h = stride * scale
+    // Return a tensor of shape [gridSize * gridSize * scales.length, 4]
+    return null; // your code here
   }
 solutionCode: |
-  interface Anchor {
-    cx: number;
-    cy: number;
-    width: number;
-    height: number;
-  }
-
   function generateAnchors(
     gridSize: number,
+    imageSize: number,
     scales: number[]
-  ): Anchor[] {
-    const anchors: Anchor[] = [];
-    const cellSize = 1.0 / gridSize;
+  ): tf.Tensor2D {
+    const stride = imageSize / gridSize;
+    const anchors: number[][] = [];
 
     for (let row = 0; row < gridSize; row++) {
       for (let col = 0; col < gridSize; col++) {
-        const cx = (col + 0.5) * cellSize;
-        const cy = (row + 0.5) * cellSize;
-
+        const cx = (col + 0.5) * stride;
+        const cy = (row + 0.5) * stride;
         for (const scale of scales) {
-          const w = scale * cellSize;
-          const h = scale * cellSize;
-          anchors.push({ cx, cy, width: w, height: h });
+          const w = stride * scale;
+          const h = stride * scale;
+          anchors.push([cx, cy, w, h]);
         }
       }
     }
 
-    return anchors;
+    return tf.tensor2d(anchors, [gridSize * gridSize * scales.length, 4]);
   }
 testCode: |
   describe('generateAnchors', () => {
-    it('creates correct number of anchors', () => {
-      const anchors = generateAnchors(7, [1.0]);
-      expect(anchors.length).toBe(49);
+    afterEach(() => tf.disposeVariables());
+
+    it('returns correct shape for 2x2 grid with 2 scales', () => {
+      const result = generateAnchors(2, 416, [1, 2]);
+      expect(result.shape).toEqual([8, 4]);
+      result.dispose();
     });
 
-    it('creates multiple anchors per cell with multiple scales', () => {
-      const anchors = generateAnchors(7, [0.5, 1.0, 2.0]);
-      expect(anchors.length).toBe(49 * 3);
+    it('returns correct shape for 3x3 grid with 3 scales', () => {
+      const result = generateAnchors(3, 416, [0.5, 1, 1.5]);
+      expect(result.shape).toEqual([27, 4]);
+      result.dispose();
     });
 
-    it('centers are correct for 2x2 grid', () => {
-      const anchors = generateAnchors(2, [1.0]);
-      expect(anchors[0].cx).toBeCloseTo(0.25);
-      expect(anchors[0].cy).toBeCloseTo(0.25);
-      expect(anchors[1].cx).toBeCloseTo(0.75);
-      expect(anchors[1].cy).toBeCloseTo(0.25);
-      expect(anchors[2].cx).toBeCloseTo(0.25);
-      expect(anchors[2].cy).toBeCloseTo(0.75);
-      expect(anchors[3].cx).toBeCloseTo(0.75);
-      expect(anchors[3].cy).toBeCloseTo(0.75);
+    it('computes correct center for top-left cell', () => {
+      const result = generateAnchors(2, 100, [1]);
+      const data = result.arraySync();
+      expect(data[0][0]).toBeCloseTo(25, 1);
+      expect(data[0][1]).toBeCloseTo(25, 1);
+      result.dispose();
     });
 
-    it('scales affect anchor dimensions', () => {
-      const anchors = generateAnchors(4, [0.5, 2.0]);
-      const cellSize = 0.25;
-      expect(anchors[0].width).toBeCloseTo(0.5 * cellSize);
-      expect(anchors[1].width).toBeCloseTo(2.0 * cellSize);
+    it('computes correct anchor dimensions with scale', () => {
+      const result = generateAnchors(2, 100, [1, 2]);
+      const data = result.arraySync();
+      expect(data[0][2]).toBeCloseTo(50, 1);
+      expect(data[0][3]).toBeCloseTo(50, 1);
+      expect(data[1][2]).toBeCloseTo(100, 1);
+      expect(data[1][3]).toBeCloseTo(100, 1);
+      result.dispose();
     });
 
-    it('all centers fall within [0, 1]', () => {
-      const anchors = generateAnchors(13, [1.0]);
-      for (const a of anchors) {
-        expect(a.cx).toBeGreaterThan(0);
-        expect(a.cx).toBeLessThan(1);
-        expect(a.cy).toBeGreaterThan(0);
-        expect(a.cy).toBeLessThan(1);
-      }
+    it('generates anchors in row-major order', () => {
+      const result = generateAnchors(2, 100, [1]);
+      const data = result.arraySync();
+      expect(data[0][0]).toBeCloseTo(25, 1);
+      expect(data[1][0]).toBeCloseTo(75, 1);
+      expect(data[2][0]).toBeCloseTo(25, 1);
+      expect(data[3][0]).toBeCloseTo(75, 1);
+      result.dispose();
     });
   });
-estimatedMinutes: 8
+estimatedMinutes: 12
 difficulty: intermediate

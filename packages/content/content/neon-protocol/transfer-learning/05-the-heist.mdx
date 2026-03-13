@@ -1,0 +1,226 @@
+---
+slug: the-heist
+title: "The Heist"
+moduleId: transfer-learning
+themeId: neon-protocol
+order: 5
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "Ryo sits on the server room floor, the stolen drive glowing in his hand. He looks at Kira. 'I helped build this model when I worked at Meridian. Three years. 200 engineers. 14 billion training images. And now we are going to fork it — strip out the surveillance layers, retrain the head, and turn it into the resistance's greatest weapon. They trained it to find us. We will train it to find them.'"
+  speaker: "Ryo"
+concept:
+  explanation: "Repurposing an existing model for a new task is like forking an open-source project. You take the codebase (pre-trained weights), strip out what you do not need (classification head), add your own features (new task-specific layers), and deploy it for a completely different purpose. The original authors' work becomes your foundation."
+  bridge:
+    feTitle: "Forking an open-source project"
+    feCode: "git clone meridian/sentinel && rm -rf src/surveillance && git commit -m 'repurposed'"
+    mlTitle: "Model Repurposing"
+    mlCode: "// Load Meridian's model, remove surveillance head, add resistance classifier"
+    tier: intuition
+consequence:
+  narrative: "The repurposed model goes live. Protocol Sentinel v1.0 — built on Meridian's own architecture, fine-tuned on 500 resistance images, running entirely in the browser. NEON displays the dashboard: real-time drone detection across all districts. Ryo addresses the team: 'They spent three years and two million credits building the best vision model in the world. And we just turned it against them. In a browser tab.'"
+  nextLessonTeaser: "Next module: the resistance begins deploying Protocol Sentinel across Neon City's districts"
+hints:
+  - level: nudge
+    content: "Forking a model is like forking a repo — clone, modify, and deploy for your purpose"
+  - level: guidance
+    content: "Combine all techniques: load pre-trained, extract features, freeze backbone, new head, augment data, fine-tune"
+  - level: solution
+    content: "Load model, freeze backbone, unfreeze last 3 conv layers, add new 5-class head, augment for night, train 20 epochs"
+keywords:
+  - model-repurposing
+  - forking
+  - protocol-sentinel
+  - transfer-learning
+  - capstone
+  - resistance
+---
+
+<Dialogue speaker="Ryo">
+I spent six years at Meridian. I wrote the pooling layers in their flagship model. I optimized the batch normalization. And when I realized what they were using it for — tracking dissidents, scoring citizens, predicting who would resist — I walked out. But I did not walk out empty-handed.
+</Dialogue>
+
+<Dialogue speaker="Kira">
+You forked their model?
+</Dialogue>
+
+<Dialogue speaker="Ryo">
+Every great open-source project starts with a fork. Their surveillance AI becomes our counter-surveillance AI. Same weights. Different purpose.
+</Dialogue>
+
+Forking an open-source project means taking the existing codebase and building something new on top of it. The original authors' work becomes your foundation. Repurposing a model is identical: Meridian's weights — trained over three years on 14 billion images — become the foundation for Protocol Sentinel. Same architecture. Opposite purpose.
+
+<LearningObjectives objectives={["Combine all transfer learning techniques into a complete model repurposing pipeline", "Load, freeze, modify, augment, and retrain a pre-trained model for a new task", "Build Protocol Sentinel: the resistance's counter-surveillance system", "Understand model repurposing as forking — same codebase, different mission"]} />
+
+## The Fork
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="protocol-sentinel.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// git clone meridian/sentinel-vision-v4
+// rm -rf src/surveillance-tracking
+// mkdir src/counter-surveillance
+// npm install && npm run build
+
+async function buildProtocolSentinel(meridianModelUrl: string) {
+  // Step 1: Clone — load the stolen model
+  const meridianModel = await tf.loadLayersModel(meridianModelUrl);
+  console.log('Loaded Meridian model:', meridianModel.layers.length, 'layers');
+  console.log('Original purpose: citizen surveillance');
+
+  // Step 2: Strip — remove the surveillance classification head
+  const lastFeatureLayer = meridianModel.layers[meridianModel.layers.length - 3];
+  const backbone = tf.model({
+    inputs: meridianModel.input,
+    outputs: lastFeatureLayer.output,
+  });
+
+  // Step 3: Freeze — preserve Meridian's feature extraction
+  // Object.freeze(backbone) — their years of training, locked in
+  backbone.layers.forEach(layer => { layer.trainable = false; });
+
+  // Step 4: Selectively unfreeze last 3 conv layers
+  // Domain adaptation — let these layers learn Neon City's visual style
+  const convLayers = backbone.layers.filter(l => l.getClassName() === 'Conv2D');
+  convLayers.slice(-3).forEach(layer => { layer.trainable = true; });
+
+  // Step 5: Add resistance classification head
+  const featureShape = lastFeatureLayer.outputShape as number[];
+  const input = tf.input({ shape: featureShape.slice(1) });
+  let x = tf.layers.dense({ units: 256, activation: 'relu' }).apply(input);
+  x = tf.layers.dropout({ rate: 0.4 }).apply(x);
+  x = tf.layers.dense({ units: 128, activation: 'relu' }).apply(x);
+  const output = tf.layers.dense({
+    units: 5, activation: 'softmax',
+  }).apply(x) as tf.SymbolicTensor;
+  // Classes: meridian-x7, meridian-scout, meridian-heavy, civilian-drone, no-drone
+
+  const head = tf.model({ inputs: input, outputs: output });
+  console.log('New purpose: counter-surveillance');
+
+  return { backbone, head };
+}`}
+</CodeBlock>
+
+## Training Protocol Sentinel
+
+<CodeBlock language="typescript" title="train-sentinel.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+async function trainProtocolSentinel(
+  backbone: tf.LayersModel,
+  head: tf.LayersModel,
+  trainingData: { images: tf.Tensor4D; labels: tf.Tensor2D }
+) {
+  // Domain augmentation — bridge the gap to Neon City conditions
+  const augmentedImages = tf.tidy(() => {
+    // Night brightness: random factor between 0.3 and 1.0
+    const brightness = tf.randomUniform(
+      [trainingData.images.shape[0], 1, 1, 1], 0.3, 1.0
+    );
+    const dimmed = trainingData.images.mul(brightness);
+
+    // Sensor noise: Gaussian noise for rain/fog/low-light
+    const noise = tf.randomNormal(dimmed.shape, 0, 10);
+    return dimmed.add(noise).clipByValue(0, 255);
+  });
+
+  // Extract features through the frozen backbone
+  const features = backbone.predict(augmentedImages) as tf.Tensor;
+
+  // Compile and train the resistance classification head
+  head.compile({
+    optimizer: tf.train.adam(0.001),
+    loss: 'categoricalCrossentropy',
+    metrics: ['accuracy'],
+  });
+
+  const history = await head.fit(features, trainingData.labels, {
+    epochs: 20,
+    batchSize: 16,
+    validationSplit: 0.2,
+    callbacks: {
+      onEpochEnd: (epoch, logs) => {
+        console.log(
+          \`[Sentinel] Epoch \${epoch + 1}/20 — \` +
+          \`loss: \${logs!.loss.toFixed(4)}, acc: \${(logs!.acc * 100).toFixed(1)}%\`
+        );
+      },
+    },
+  });
+
+  const finalAcc = history.history.acc.slice(-1)[0] as number;
+  console.log(\`Protocol Sentinel trained. Final accuracy: \${(finalAcc * 100).toFixed(1)}%\`);
+
+  // Meridian: $2M, 3 years, 200 engineers, 14B images
+  // Resistance: $0, 20 minutes, 1 frontend dev, 500 images
+  // Transfer learning is the great equalizer.
+}`}
+</CodeBlock>
+
+## The Complete Pipeline
+
+<CodeBlock language="typescript" title="sentinel-pipeline.ts">
+{`// The full fork → strip → freeze → extend → augment → train pipeline
+// Every step maps to a git workflow:
+
+// git clone meridian/sentinel        → tf.loadLayersModel(url)
+// git rm -rf src/surveillance        → remove classification head
+// git checkout --orphan resistance   → freeze backbone layers
+// mkdir src/counter-surveillance     → add new classification head
+// npm run adapt                      → augment for night domain
+// npm run build                      → train on 500 resistance images
+// npm run deploy                     → model.predict() in the browser
+
+async function deployProtocolSentinel() {
+  // Build
+  const { backbone, head } = await buildProtocolSentinel(
+    'https://resistance.net/stolen-meridian-model/model.json'
+  );
+
+  // Train
+  await trainProtocolSentinel(backbone, head, resistanceTrainingData);
+
+  // Deploy — runs entirely in the browser
+  // No servers. No cloud. No trail for Meridian to follow.
+  async function detectDrone(frame: HTMLCanvasElement) {
+    const tensor = tf.tidy(() => {
+      const img = tf.browser.fromPixels(frame);
+      const resized = tf.image.resizeBilinear(img, [224, 224]);
+      return resized.expandDims(0).div(255);
+    });
+
+    const features = backbone.predict(tensor) as tf.Tensor;
+    const prediction = head.predict(features) as tf.Tensor;
+    const classIndex = prediction.argMax(-1).dataSync()[0];
+    const confidence = prediction.max().dataSync()[0];
+
+    const classes = [
+      'meridian-x7', 'meridian-scout', 'meridian-heavy',
+      'civilian-drone', 'no-drone'
+    ];
+
+    tensor.dispose();
+    features.dispose();
+    prediction.dispose();
+
+    return { class: classes[classIndex], confidence };
+  }
+
+  return { detectDrone };
+}
+
+// Protocol Sentinel is live.
+// Meridian's own architecture, turned against them.
+// Running in a browser tab. No servers to trace.`}
+</CodeBlock>
+
+## Challenge
+
+Build the complete Protocol Sentinel pipeline by combining all transfer learning techniques.
+
+<Exercise slug="repurpose-model" />
+
+<KeyTakeaways takeaways={["Repurposing a model is forking a project: clone the weights, strip the old head, add your own", "Protocol Sentinel combines every technique: pre-training, feature reuse, freezing, domain adaptation, and fine-tuning", "500 images and 20 minutes of training leverages 3 years and $2M of Meridian's compute", "The model runs entirely in the browser — no servers, no cloud, no surveillance trail"]} />

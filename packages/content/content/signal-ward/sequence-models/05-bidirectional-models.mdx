@@ -1,0 +1,196 @@
+---
+slug: bidirectional-models
+title: "Bidirectional Models"
+moduleId: sequence-models
+themeId: signal-ward
+order: 5
+estimatedMinutes: 30
+difficulty: intermediate
+context:
+  narrative: "Dr. Vasquez poses a challenge: some clinical meanings can only be resolved by reading ahead. The team builds bidirectional LSTMs that read text forwards and backwards simultaneously."
+  speaker: "Dr. Vasquez"
+concept:
+  explanation: "Bidirectional models process sequences in both directions and concatenate the results, capturing both left and right context for each token. This is like combining Array.reduce() (left-to-right) with Array.reduceRight() (right-to-left) to get full context at every position."
+  bridge:
+    feTitle: "reduce() + reduceRight()"
+    feCode: "const left = arr.reduce(foldL, init); const right = arr.reduceRight(foldR, init);"
+    mlTitle: "Bidirectional RNN"
+    mlCode: "const [fwd, bwd] = biLSTM(tokens); const full = tf.concat([fwd, bwd]);"
+    tier: structural
+consequence:
+  narrative: "Diagnostic One now reads clinical notes in both directions, catching negation and context that unidirectional models miss."
+  nextLessonTeaser: "Module complete. Next module: Attention Mechanisms — focusing on what matters most."
+hints:
+  - level: nudge
+    content: "tf.layers.bidirectional wraps any RNN layer and runs it in both directions."
+  - level: guidance
+    content: "The output of a bidirectional layer has 2x the units — forward and backward states are concatenated."
+  - level: solution
+    content: "model.add(tf.layers.bidirectional({ layer: tf.layers.lstm({ units: 32 }) }));"
+keywords:
+  - bidirectional
+  - bilstm
+  - reduce-right
+  - forward-backward
+  - context-window
+---
+
+> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
+
+<Dialogue speaker="Dr. Vasquez">
+Consider this note: "The medication was discontinued because the patient developed a rash." When you read "the medication," you don't yet know it was discontinued. You only understand the full meaning after reading the entire sentence.
+</Dialogue>
+
+<Dialogue speaker="Santos">
+So the model needs to look ahead, not just behind. That's like needing both `reduce()` and `reduceRight()` to understand the full context.
+</Dialogue>
+
+<Dialogue speaker="Obi">
+Exactly. A bidirectional model runs two passes — one left-to-right, one right-to-left — and combines them. Every token gets context from both directions.
+</Dialogue>
+
+<Dialogue speaker="MEDI">
+Clinical note analysis confirms: 23% of negation patterns require right-to-left context for correct interpretation. Unidirectional models miss these cases.
+</Dialogue>
+
+In JavaScript, `Array.reduce()` processes left-to-right, accumulating state from the beginning. `Array.reduceRight()` processes right-to-left, accumulating from the end. Neither alone gives you complete context at every position. A bidirectional model combines both passes, giving each token full context from the entire sequence.
+
+<LearningObjectives objectives={["Understand why unidirectional models miss backward context clues", "Connect bidirectional processing to reduce() + reduceRight() combination", "Build a bidirectional LSTM in TensorFlow.js", "Recognize when bidirectional models are appropriate vs unnecessary"]} />
+
+## Two Directions, Full Context
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="bidirectional-concept.ts">
+{`// reduce() processes left-to-right
+const leftContext = ['The', 'medication', 'was', 'discontinued'].reduce(
+  (ctx, word) => ctx + ' → ' + word,
+  'START'
+);
+// START → The → medication → was → discontinued
+// At "discontinued": we know "The medication" came before
+
+// reduceRight() processes right-to-left
+const rightContext = ['The', 'medication', 'was', 'discontinued'].reduceRight(
+  (ctx, word) => ctx + ' → ' + word,
+  'END'
+);
+// END → discontinued → was → medication → The
+// At "medication": we know "was discontinued" comes after
+
+// Bidirectional: COMBINE both for full context at every position
+// At "medication":
+//   Forward context:  "The" came before
+//   Backward context: "was discontinued" comes after
+//   Full understanding: "The medication [was discontinued]"
+
+// In clinical text, this matters hugely:
+// "Patient reported pain before the surgery was cancelled"
+//   Forward at "pain": patient reported pain (seems positive)
+//   Backward at "pain": ...before surgery was cancelled
+//   Full context: the pain report led to cancellation
+
+function bidirectionalReduce<T>(
+  arr: T[],
+  foldLeft: (acc: string, val: T) => string,
+  foldRight: (acc: string, val: T) => string,
+): { forward: string; backward: string } {
+  const forward = arr.reduce(foldLeft, '');
+  const backward = arr.reduceRight(foldRight, '');
+  return { forward, backward };
+}`}
+</CodeBlock>
+
+## Building a Bidirectional LSTM
+
+<CodeBlock language="typescript" title="bilstm-model.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+const model = tf.sequential();
+
+model.add(tf.layers.embedding({
+  inputDim: 500,
+  outputDim: 32,
+  inputLength: 50,
+}));
+
+// Bidirectional wrapper: runs the LSTM in both directions
+model.add(tf.layers.bidirectional({
+  layer: tf.layers.lstm({ units: 32 }),
+  mergeMode: 'concat', // concatenate forward + backward states
+  // Output dimension: 32 (forward) + 32 (backward) = 64
+}));
+
+// Dense layer receives the concatenated bidirectional output
+model.add(tf.layers.dense({ units: 32, activation: 'relu' }));
+model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
+
+model.compile({
+  optimizer: 'adam',
+  loss: 'binaryCrossentropy',
+  metrics: ['accuracy'],
+});
+
+model.summary();
+// The bidirectional layer has 2x parameters of unidirectional
+// but captures context from BOTH directions`}
+</CodeBlock>
+
+## When to Use Bidirectional
+
+<Dialogue speaker="Santos">
+Should we always use bidirectional? If it's strictly better, why not default to it?
+</Dialogue>
+
+<Dialogue speaker="Obi">
+Two reasons. First, it doubles your parameters and computation — that matters in the browser. Second, bidirectional only works when you have the complete input upfront. For real-time streaming — like autocomplete — you can't look ahead because the future hasn't arrived yet.
+</Dialogue>
+
+<CodeBlock language="typescript" title="when-bidirectional.ts">
+{`// USE bidirectional when:
+// ✓ You have the complete text (clinical notes, documents)
+// ✓ Accuracy matters more than speed (clinical safety)
+// ✓ Negation and temporal patterns require backward context
+// ✓ Offline batch processing
+
+// DON'T use bidirectional when:
+// ✗ Real-time streaming input (autocomplete, live transcription)
+// ✗ Latency-critical applications (browser responsiveness)
+// ✗ Mobile devices with tight memory constraints
+// ✗ The task is inherently left-to-right (language generation)
+
+// Clinical text analysis = perfect use case for bidirectional
+// We always have the complete note before analysis begins
+// And accuracy is literally life-or-death
+
+import * as tf from '@tensorflow/tfjs';
+
+// Compare: unidirectional vs bidirectional on the same data
+async function compareModels(seqLen: number) {
+  // Unidirectional
+  const uniModel = tf.sequential();
+  uniModel.add(tf.layers.embedding({ inputDim: 100, outputDim: 16, inputLength: seqLen }));
+  uniModel.add(tf.layers.lstm({ units: 16 }));
+  uniModel.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
+  uniModel.compile({ optimizer: 'adam', loss: 'binaryCrossentropy' });
+
+  // Bidirectional
+  const biModel = tf.sequential();
+  biModel.add(tf.layers.embedding({ inputDim: 100, outputDim: 16, inputLength: seqLen }));
+  biModel.add(tf.layers.bidirectional({ layer: tf.layers.lstm({ units: 16 }) }));
+  biModel.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
+  biModel.compile({ optimizer: 'adam', loss: 'binaryCrossentropy' });
+
+  console.log('Unidirectional params:', uniModel.countParams());
+  console.log('Bidirectional params:', biModel.countParams());
+  // Bidirectional ≈ 2x unidirectional parameters
+}`}
+</CodeBlock>
+
+## Challenge
+
+Build a bidirectional LSTM that reads clinical text in both directions for improved negation detection.
+
+<Exercise slug="bidirectional-scan" />
+
+<KeyTakeaways takeaways={["Bidirectional models combine reduce() and reduceRight() — processing sequences in both directions", "Each token gets context from the entire sequence, not just preceding tokens", "Bidirectional is ideal for clinical text where complete notes are available before analysis", "Tradeoff: 2x parameters and compute, but significantly better accuracy on context-dependent patterns"]} />

@@ -1,0 +1,206 @@
+---
+slug: fine-tuning
+title: "Fine-tuning"
+moduleId: transfer-learning
+themeId: neon-protocol
+order: 3
+estimatedMinutes: 30
+difficulty: intermediate
+context:
+  narrative: "Ryo connects the portable drive to the holotable. The stolen MobileNet model loads, its architecture glowing in wireframe blue. 'This model knows what objects look like in general. But it does not know a Meridian X-7 from a civilian quadcopter. We need to fine-tune — freeze the layers that already work, replace the classification head, and train on our 500 drone images.'"
+  speaker: "Ryo"
+concept:
+  explanation: "Fine-tuning takes a pre-trained model and adapts it to your specific task. You freeze the early layers (universal features), replace the final classification layer, and train on your data. Like Object.freeze() in JavaScript — you lock the parts that should not change and only modify what needs to adapt."
+  bridge:
+    feTitle: "Object.freeze()"
+    feCode: "Object.freeze(baseConfig); // locked. const myConfig = { ...baseConfig, theme: 'dark' };"
+    mlTitle: "Layer Freezing"
+    mlCode: "layer.trainable = false; // frozen. newHead.trainable = true; // adapts"
+    tier: identity
+consequence:
+  narrative: "After 20 epochs on 500 labeled drone images, the fine-tuned model hits 94% accuracy on Meridian's drone fleet. Ryo leans back. 'Two million credits of pre-training. Twenty minutes of fine-tuning. That is the exchange rate of transfer learning.' Kira watches the loss curve flatten. 'What if we unfroze a few more layers?'"
+  nextLessonTeaser: "Next: domain adaptation — making the model work in Neon City's rain, fog, and neon lighting"
+hints:
+  - level: nudge
+    content: "Freeze the backbone with layer.trainable = false, like Object.freeze() protecting shared state"
+  - level: guidance
+    content: "Replace the last layer with a new Dense layer matching your class count, then compile and fit"
+  - level: solution
+    content: "Freeze all layers, add new Dense(numClasses, 'softmax'), compile with lower learning rate, fit on your data"
+keywords:
+  - fine-tuning
+  - layer-freezing
+  - object-freeze
+  - classification-head
+  - transfer-learning
+  - learning-rate
+---
+
+<Dialogue speaker="Ryo">
+`Object.freeze()` makes a JavaScript object immutable. Setting `layer.trainable = false` does the same for a neural network layer. The weights become read-only — the optimizer cannot update them during training. You freeze what you want to preserve, and leave trainable what needs to adapt.
+</Dialogue>
+
+<Dialogue speaker="Kira">
+So fine-tuning is `Object.freeze(backbone)` and then extending with our own classification layer?
+</Dialogue>
+
+<Dialogue speaker="Ryo">
+Exactly. And the reason it works with only 500 images is that the frozen backbone already understands edges, textures, and shapes. We only need to teach the new head: this combination of features equals X-7 drone.
+</Dialogue>
+
+When you use `Object.freeze()`, you protect the properties that should be stable while keeping other parts mutable. Fine-tuning applies the same pattern to neural networks: freeze the pre-trained layers that already extract useful features, then attach and train a new classification head for your specific task.
+
+<LearningObjectives objectives={["Freeze pre-trained layers using layer.trainable = false", "Replace a model's classification head with task-specific layers", "Fine-tune on a small dataset using a frozen backbone", "Connect layer freezing to Object.freeze() and immutability patterns"]} />
+
+## Freeze and Extend
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="fine-tuning-pipeline.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+async function fineTuneForDrones(baseModelUrl: string) {
+  // Step 1: Load the pre-trained model
+  const baseModel = await tf.loadLayersModel(baseModelUrl);
+
+  // Step 2: Freeze the backbone — Object.freeze() for neural networks
+  // These layers already know edges, textures, shapes
+  baseModel.layers.forEach(layer => {
+    layer.trainable = false; // immutable — preserve pre-trained knowledge
+  });
+
+  // Step 3: Extract features from the second-to-last layer
+  const featureLayer = baseModel.layers[baseModel.layers.length - 2];
+  const featureExtractor = tf.model({
+    inputs: baseModel.input,
+    outputs: featureLayer.output,
+  });
+
+  // Step 4: Build a new classification head
+  const featureShape = featureLayer.outputShape as number[];
+  const input = tf.input({ shape: featureShape.slice(1) });
+  let x = tf.layers.dense({ units: 128, activation: 'relu' }).apply(input);
+  x = tf.layers.dropout({ rate: 0.3 }).apply(x);
+  // 4 classes: meridian-x7, meridian-scout, civilian, non-drone
+  const output = tf.layers.dense({ units: 4, activation: 'softmax' }).apply(x);
+
+  const head = tf.model({
+    inputs: input,
+    outputs: output as tf.SymbolicTensor,
+  });
+
+  return { featureExtractor, head };
+}`}
+</CodeBlock>
+
+## Choosing What to Freeze
+
+Like `Object.freeze()` gives you control over which properties are immutable, fine-tuning gives you control over which layers learn. The strategy depends on your dataset size.
+
+<CodeBlock language="typescript" title="freeze-strategies.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Freezing strategies — how much to lock down
+
+interface FreezeStrategy {
+  name: string;
+  unfreezeLastN: number;
+  learningRate: number;
+  bestFor: string;
+  risk: string;
+}
+
+const strategies: FreezeStrategy[] = [
+  {
+    name: 'Head only (safest)',
+    unfreezeLastN: 2,
+    learningRate: 0.001,
+    bestFor: 'Very small datasets (100-500 images)',
+    risk: 'Low — all pre-trained knowledge preserved',
+  },
+  {
+    name: 'Partial unfreeze (balanced)',
+    unfreezeLastN: 5,
+    learningRate: 0.0001, // lower LR for pre-trained layers
+    bestFor: 'Medium datasets (500-5000 images)',
+    risk: 'Medium — some adaptation, some preservation',
+  },
+  {
+    name: 'Full fine-tune (aggressive)',
+    unfreezeLastN: Infinity,
+    learningRate: 0.00001, // very low to avoid catastrophic forgetting
+    bestFor: 'Large datasets (5000+ images)',
+    risk: 'High — catastrophic forgetting if LR too high',
+  },
+];
+
+function applyFreezeStrategy(
+  model: tf.LayersModel,
+  strategy: FreezeStrategy
+): void {
+  const total = model.layers.length;
+  model.layers.forEach((layer, i) => {
+    layer.trainable = i >= total - strategy.unfreezeLastN;
+  });
+
+  // Must recompile after changing trainable
+  model.compile({
+    optimizer: tf.train.adam(strategy.learningRate),
+    loss: 'categoricalCrossentropy',
+    metrics: ['accuracy'],
+  });
+}
+
+// Catastrophic forgetting: when fine-tuning overwrites the useful
+// knowledge the model learned during pre-training.
+// Like accidentally calling Object.assign(defaults, {}) — wiping everything.
+// Prevention: freeze aggressively, use low learning rates.`}
+</CodeBlock>
+
+## Training the Fine-tuned Model
+
+<CodeBlock language="typescript" title="train-fine-tuned.ts">
+{`async function trainDroneClassifier(
+  featureExtractor: tf.LayersModel,
+  head: tf.LayersModel,
+  images: tf.Tensor4D,
+  labels: tf.Tensor2D
+) {
+  // Extract features once — the backbone is frozen, so features never change
+  const features = featureExtractor.predict(images) as tf.Tensor;
+
+  // Compile the classification head
+  head.compile({
+    optimizer: tf.train.adam(0.001),
+    loss: 'categoricalCrossentropy',
+    metrics: ['accuracy'],
+  });
+
+  // Train — only the head's weights update
+  await head.fit(features, labels, {
+    epochs: 20,
+    batchSize: 32,
+    validationSplit: 0.2,
+    callbacks: {
+      onEpochEnd: (epoch, logs) => {
+        console.log(
+          \`Epoch \${epoch + 1}: loss=\${logs!.loss.toFixed(4)} acc=\${logs!.acc.toFixed(4)}\`
+        );
+      },
+    },
+  });
+
+  // Why 500 images is enough:
+  // The backbone already understands edges, textures, shapes (from ImageNet).
+  // We only teach the head: "this combination of features = X-7 drone."
+  // Like extending a frozen config object with one new property.
+}`}
+</CodeBlock>
+
+## Challenge
+
+Build a fine-tuning pipeline that freezes a backbone and trains a new classification head.
+
+<Exercise slug="fine-tune-model" />
+
+<KeyTakeaways takeaways={["layer.trainable = false is the neural network equivalent of Object.freeze()", "Fine-tuning replaces the classification head and trains on your data while keeping the backbone frozen", "500 images is enough because the backbone already understands visual features from millions of images", "Use lower learning rates for unfrozen pre-trained layers to avoid catastrophic forgetting"]} />

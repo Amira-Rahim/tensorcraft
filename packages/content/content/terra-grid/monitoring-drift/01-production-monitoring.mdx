@@ -1,0 +1,145 @@
+---
+slug: production-monitoring
+title: "Production Monitoring"
+moduleId: monitoring-drift
+themeId: terra-grid
+order: 1
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Hassan pulls up the monitoring dashboard. 847 devices, 12 sectors, 50,000 inferences per hour. Without real-time health metrics, they are flying blind."
+  speaker: "Hassan Al-Rashid"
+concept:
+  explanation: "Model monitoring tracks prediction health in production, just as Sentry and DataDog track application health — latency, error rates, and throughput."
+  bridge:
+    feTitle: "App Monitoring (Sentry)"
+    feCode: "Sentry.captureException(err) // track errors, latency, throughput"
+    mlTitle: "Model Monitoring"
+    mlCode: "monitor.logPrediction({ latency, confidence, distribution })"
+    tier: structural
+consequence:
+  narrative: "The monitoring dashboard lights up. Hassan can see every sector's model health in real time."
+  nextLessonTeaser: "Next: detecting when input data starts to change"
+hints:
+  - level: nudge
+    content: "Think about what metrics you track in a production web application"
+  - level: guidance
+    content: "Track prediction latency, confidence distributions, throughput, and error rates"
+  - level: solution
+    content: "Log every prediction with latency, confidence score, and input feature statistics — aggregate into dashboards"
+keywords:
+  - production-monitoring
+  - observability
+  - metrics
+  - dashboards
+---
+
+<Dialogue speaker="Hassan Al-Rashid">
+We have 847 models running in the field. If one starts producing garbage predictions, how long until we notice? Days? Weeks? That is unacceptable.
+</Dialogue>
+
+<Dialogue speaker="GRID">
+Monitoring dashboard initialized. 50,247 inferences logged in the last hour. Average latency: 14ms. Average confidence: 0.91.
+</Dialogue>
+
+You would never deploy a web application without Sentry, DataDog, or at least basic error tracking. You monitor response times, error rates, and throughput. Production ML models need the same observability — but instead of HTTP status codes, you track prediction confidence, inference latency, and output distributions.
+
+<LearningObjectives objectives={["Design a model monitoring system using the same patterns as application monitoring", "Track the key metrics of production ML: latency, confidence, throughput, and distribution", "Build aggregated health dashboards across a fleet of edge devices", "Identify the difference between model errors and system errors"]} />
+
+## Model Health Metrics
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="model-monitor.ts">
+{`interface PredictionLog {
+  timestamp: number;
+  deviceId: string;
+  sectorId: string;
+  latencyMs: number;
+  confidence: number;        // max softmax output
+  prediction: number;        // predicted class
+  inputStats: {
+    mean: number;
+    std: number;
+    min: number;
+    max: number;
+  };
+}
+
+class ModelMonitor {
+  private logs: PredictionLog[] = [];
+  private windowSize = 1000;  // rolling window
+
+  logPrediction(log: PredictionLog): void {
+    this.logs.push(log);
+    if (this.logs.length > this.windowSize * 2) {
+      this.logs = this.logs.slice(-this.windowSize);
+    }
+  }
+
+  getHealthMetrics(): Record<string, number> {
+    const recent = this.logs.slice(-this.windowSize);
+    if (recent.length === 0) return {};
+
+    const latencies = recent.map(l => l.latencyMs);
+    const confidences = recent.map(l => l.confidence);
+
+    return {
+      p50Latency: percentile(latencies, 50),
+      p95Latency: percentile(latencies, 95),
+      p99Latency: percentile(latencies, 99),
+      avgConfidence: mean(confidences),
+      lowConfidenceRate: recent.filter(l => l.confidence < 0.5).length / recent.length,
+      throughput: recent.length,
+      errorRate: recent.filter(l => l.latencyMs > 200).length / recent.length,
+    };
+  }
+
+  getPerSectorHealth(): Record<string, Record<string, number>> {
+    const sectors = new Map<string, PredictionLog[]>();
+    for (const log of this.logs.slice(-this.windowSize)) {
+      const existing = sectors.get(log.sectorId) || [];
+      existing.push(log);
+      sectors.set(log.sectorId, existing);
+    }
+
+    const health: Record<string, Record<string, number>> = {};
+    for (const [sector, logs] of sectors) {
+      health[sector] = {
+        avgLatency: mean(logs.map(l => l.latencyMs)),
+        avgConfidence: mean(logs.map(l => l.confidence)),
+        count: logs.length,
+      };
+    }
+    return health;
+  }
+}`}
+</CodeBlock>
+
+## Dashboard Aggregation
+
+<CodeBlock language="typescript" title="health-dashboard.ts">
+{`function printHealthDashboard(monitor: ModelMonitor): void {
+  const metrics = monitor.getHealthMetrics();
+  const sectors = monitor.getPerSectorHealth();
+
+  console.log('=== TERRA GRID MODEL HEALTH ===');
+  console.log(\`Throughput: \${metrics.throughput} predictions/window\`);
+  console.log(\`Latency:    p50=\${metrics.p50Latency}ms  p95=\${metrics.p95Latency}ms  p99=\${metrics.p99Latency}ms\`);
+  console.log(\`Confidence: avg=\${metrics.avgConfidence?.toFixed(3)}  low-rate=\${(metrics.lowConfidenceRate * 100).toFixed(1)}%\`);
+  console.log('');
+  console.log('Per-Sector:');
+  for (const [sector, health] of Object.entries(sectors)) {
+    const status = health.avgConfidence > 0.85 ? 'OK' : 'WARN';
+    console.log(\`  \${sector}: confidence=\${health.avgConfidence.toFixed(3)} latency=\${health.avgLatency.toFixed(0)}ms [\${status}]\`);
+  }
+}`}
+</CodeBlock>
+
+## Challenge
+
+Implement a monitoring system that tracks prediction health metrics.
+
+<Exercise slug="monitor-metrics" />
+
+<KeyTakeaways takeaways={["Model monitoring parallels app monitoring — track latency, error rates, throughput, and confidence instead of HTTP metrics", "Rolling windows keep memory bounded while providing recent-enough visibility into model health", "Per-sector (per-region) health breakdowns reveal localized issues that aggregate metrics hide", "Low confidence rate is the ML equivalent of elevated error rate — a signal that something is changing"]} />

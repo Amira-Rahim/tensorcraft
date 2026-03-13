@@ -1,0 +1,79 @@
+slug: nc-build-autoencoder
+lessonSlug: autoencoders-recap
+title: "Build an Autoencoder"
+instructions: "Build a complete autoencoder with encoder (784 → 256 → 128 → 16) and decoder (16 → 128 → 256 → 784). Use relu for hidden layers and sigmoid for the final output. Compile with adam optimizer and meanSquaredError loss."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function buildAutoencoder(): {
+    encoder: tf.Sequential,
+    decoder: tf.Sequential,
+    autoencoder: tf.LayersModel
+  } {
+    // Build encoder: 784 → 256 → 128 → 16
+    const encoder = tf.sequential();
+    // your code here
+
+    // Build decoder: 16 → 128 → 256 → 784
+    const decoder = tf.sequential();
+    // your code here
+
+    // Combine into autoencoder
+    const input = tf.input({ shape: [784] });
+    const encoded = encoder.apply(input);
+    const decoded = decoder.apply(encoded);
+    const autoencoder = tf.model({ inputs: input, outputs: decoded });
+    autoencoder.compile({ optimizer: 'adam', loss: 'meanSquaredError' });
+
+    return { encoder, decoder, autoencoder };
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function buildAutoencoder(): {
+    encoder: tf.Sequential,
+    decoder: tf.Sequential,
+    autoencoder: tf.LayersModel
+  } {
+    const encoder = tf.sequential();
+    encoder.add(tf.layers.dense({ inputShape: [784], units: 256, activation: 'relu' }));
+    encoder.add(tf.layers.dense({ units: 128, activation: 'relu' }));
+    encoder.add(tf.layers.dense({ units: 16, activation: 'relu' }));
+
+    const decoder = tf.sequential();
+    decoder.add(tf.layers.dense({ inputShape: [16], units: 128, activation: 'relu' }));
+    decoder.add(tf.layers.dense({ units: 256, activation: 'relu' }));
+    decoder.add(tf.layers.dense({ units: 784, activation: 'sigmoid' }));
+
+    const input = tf.input({ shape: [784] });
+    const encoded = encoder.apply(input);
+    const decoded = decoder.apply(encoded);
+    const autoencoder = tf.model({ inputs: input, outputs: decoded });
+    autoencoder.compile({ optimizer: 'adam', loss: 'meanSquaredError' });
+
+    return { encoder, decoder, autoencoder };
+  }
+testCode: |
+  describe('buildAutoencoder', () => {
+    it('encoder compresses to 16 dims', () => {
+      const { encoder } = buildAutoencoder();
+      expect(encoder.outputShape).toEqual([null, 16]);
+    });
+    it('decoder expands to 784 dims', () => {
+      const { decoder } = buildAutoencoder();
+      expect(decoder.outputShape).toEqual([null, 784]);
+    });
+    it('autoencoder maps 784 → 784', () => {
+      const { autoencoder } = buildAutoencoder();
+      expect(autoencoder.inputShape).toEqual([null, 784]);
+      expect(autoencoder.outputShape).toEqual([null, 784]);
+    });
+    it('produces valid output', async () => {
+      const { autoencoder } = buildAutoencoder();
+      const input = tf.randomUniform([1, 784]);
+      const output = autoencoder.predict(input) as tf.Tensor;
+      expect(output.shape).toEqual([1, 784]);
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

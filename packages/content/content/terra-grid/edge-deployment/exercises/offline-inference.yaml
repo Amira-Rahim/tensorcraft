@@ -1,0 +1,93 @@
+slug: offline-inference
+lessonSlug: offline-operation
+title: "Offline Inference Buffer"
+instructions: "Implement a PredictionBuffer class with: constructor(capacity: number), push(prediction: { timestamp: number; value: number; synced: boolean }) that adds to the buffer and drops oldest when over capacity, getUnsynced() that returns all entries where synced is false, and markSynced() that sets all entries to synced=true."
+starterCode: |
+  interface Prediction {
+    timestamp: number;
+    value: number;
+    synced: boolean;
+  }
+
+  class PredictionBuffer {
+    private buffer: Prediction[] = [];
+    private capacity: number;
+
+    constructor(capacity: number) {
+      this.capacity = capacity;
+    }
+
+    push(prediction: Prediction): void {
+      // Your code here
+    }
+
+    getUnsynced(): Prediction[] {
+      // Your code here
+      return [];
+    }
+
+    markSynced(): void {
+      // Your code here
+    }
+  }
+solutionCode: |
+  interface Prediction {
+    timestamp: number;
+    value: number;
+    synced: boolean;
+  }
+
+  class PredictionBuffer {
+    private buffer: Prediction[] = [];
+    private capacity: number;
+
+    constructor(capacity: number) {
+      this.capacity = capacity;
+    }
+
+    push(prediction: Prediction): void {
+      this.buffer.push(prediction);
+      if (this.buffer.length > this.capacity) {
+        this.buffer.shift();
+      }
+    }
+
+    getUnsynced(): Prediction[] {
+      return this.buffer.filter(p => !p.synced);
+    }
+
+    markSynced(): void {
+      this.buffer.forEach(p => p.synced = true);
+    }
+  }
+testCode: |
+  describe('PredictionBuffer', () => {
+    it('stores predictions', () => {
+      const buf = new PredictionBuffer(10);
+      buf.push({ timestamp: 1, value: 0.5, synced: false });
+      expect(buf.getUnsynced().length).toBe(1);
+    });
+    it('respects capacity', () => {
+      const buf = new PredictionBuffer(2);
+      buf.push({ timestamp: 1, value: 0.1, synced: false });
+      buf.push({ timestamp: 2, value: 0.2, synced: false });
+      buf.push({ timestamp: 3, value: 0.3, synced: false });
+      expect(buf.getUnsynced().length).toBe(2);
+      expect(buf.getUnsynced()[0].timestamp).toBe(2);
+    });
+    it('filters unsynced', () => {
+      const buf = new PredictionBuffer(10);
+      buf.push({ timestamp: 1, value: 0.1, synced: true });
+      buf.push({ timestamp: 2, value: 0.2, synced: false });
+      expect(buf.getUnsynced().length).toBe(1);
+    });
+    it('marks all as synced', () => {
+      const buf = new PredictionBuffer(10);
+      buf.push({ timestamp: 1, value: 0.1, synced: false });
+      buf.push({ timestamp: 2, value: 0.2, synced: false });
+      buf.markSynced();
+      expect(buf.getUnsynced().length).toBe(0);
+    });
+  });
+estimatedMinutes: 15
+difficulty: intermediate

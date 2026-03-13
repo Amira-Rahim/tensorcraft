@@ -1,0 +1,145 @@
+---
+slug: one-hot-encoding
+title: "One-Hot Encoding"
+moduleId: word-embeddings
+themeId: signal-ward
+order: 1
+estimatedMinutes: 25
+difficulty: beginner
+context:
+  narrative: "Obi introduces the simplest word representation: one-hot encoding. Each word gets a unique ID with no relationships — like enum values where each item is equally distant from every other."
+  speaker: "Obi"
+concept:
+  explanation: "One-hot encoding represents each word as a vector where exactly one position is 1 and all others are 0. It assigns a unique identity but captures zero semantic relationships — 'aspirin' is equally distant from 'ibuprofen' and 'appendectomy'."
+  bridge:
+    feTitle: "Enum Values"
+    feCode: "enum Drug { Aspirin = 0, Ibuprofen = 1, Appendectomy = 2 }"
+    mlTitle: "One-Hot Vector"
+    mlCode: "aspirin = [1, 0, 0]  // unique ID, no relationships"
+    tier: identity
+consequence:
+  narrative: "The team sees that one-hot encoding works for identification but is wasteful and blind to meaning. 10,000 words means 10,000-dimensional vectors with no semantic structure."
+  nextLessonTeaser: "Next: dense vectors that place similar words near each other in space."
+hints:
+  - level: nudge
+    content: "Create a zero-filled array with length equal to vocabulary size, then set one position to 1."
+  - level: guidance
+    content: "Use new Array(vocabSize).fill(0), then set array[index] = 1."
+  - level: solution
+    content: "const vec = new Array(vocab.length).fill(0); vec[vocab.indexOf(word)] = 1; return tf.tensor1d(vec);"
+keywords:
+  - one-hot-encoding
+  - sparse-vector
+  - word-representation
+  - categorical-encoding
+---
+
+> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
+
+<Dialogue speaker="Obi">
+Santos, when you define a TypeScript enum — say, for medication categories — each value gets a unique number. But does the enum tell you that aspirin and ibuprofen are related?
+</Dialogue>
+
+<Dialogue speaker="Santos">
+No. Enums are just labels. Aspirin is 0, ibuprofen is 1, appendectomy is 2. The numbers are arbitrary.
+</Dialogue>
+
+<Dialogue speaker="Obi">
+That is exactly what one-hot encoding does. Each word in your vocabulary gets a unique vector — a single 1 in a sea of zeros. It identifies words but says nothing about how they relate.
+</Dialogue>
+
+One-hot encoding is the enum of machine learning. Each word gets a unique ID, but the representation carries no information about meaning, similarity, or relationships. It is the simplest possible encoding and the starting point for understanding why we need something better.
+
+<LearningObjectives objectives={["Create one-hot encoded vectors for vocabulary words using TensorFlow.js", "Understand why one-hot encoding captures no semantic relationships", "Calculate the memory cost of one-hot encoding at scale", "Recognize the limitations that motivate dense word embeddings"]} />
+
+## The Enum of ML
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+In frontend code, enum values give each item a unique integer. One-hot encoding does the same thing, except each word becomes a vector instead of a single number. The vector has one position set to 1 (the word's index) and every other position set to 0.
+
+<CodeBlock language="typescript" title="one-hot-encoding.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Our clinical vocabulary
+const vocab = ['aspirin', 'ibuprofen', 'penicillin', 'amoxicillin', 'appendectomy'];
+
+function oneHotEncode(word: string, vocabulary: string[]): tf.Tensor1D {
+  const index = vocabulary.indexOf(word);
+  const vector = new Array(vocabulary.length).fill(0);
+  if (index !== -1) vector[index] = 1;
+  return tf.tensor1d(vector);
+}
+
+// Each word becomes a unique vector
+const aspirin     = oneHotEncode('aspirin', vocab);
+const ibuprofen   = oneHotEncode('ibuprofen', vocab);
+const appendectomy = oneHotEncode('appendectomy', vocab);
+
+aspirin.print();      // [1, 0, 0, 0, 0]
+ibuprofen.print();    // [0, 1, 0, 0, 0]
+appendectomy.print(); // [0, 0, 0, 0, 1]`}
+</CodeBlock>
+
+## The Problem: No Relationships
+
+Aspirin and ibuprofen are both NSAIDs — pain relievers that work on the same biological pathway. But their one-hot vectors are orthogonal, meaning their cosine similarity is 0. They are exactly as "different" from each other as aspirin is from appendectomy (a surgical procedure). One-hot encoding is blind to meaning.
+
+<CodeBlock language="typescript" title="one-hot-distances.ts">
+{`function cosineSimilarity(a: tf.Tensor, b: tf.Tensor): number {
+  const dot = a.mul(b).sum();
+  const normA = a.norm();
+  const normB = b.norm();
+  return dot.div(normA.mul(normB)).dataSync()[0];
+}
+
+// Aspirin vs Ibuprofen (both painkillers — should be similar)
+console.log(cosineSimilarity(aspirin, ibuprofen));  // 0
+
+// Aspirin vs Appendectomy (completely unrelated — should be different)
+console.log(cosineSimilarity(aspirin, appendectomy));  // 0
+
+// One-hot encoding says everything is equally unrelated.
+// That is a problem when your model needs to know that
+// aspirin and ibuprofen are interchangeable but neither
+// is a surgical procedure.
+
+// And with a real clinical vocabulary of 50,000 terms,
+// each vector has 50,000 dimensions — mostly zeros.`}
+</CodeBlock>
+
+<Dialogue speaker="Dr. Vasquez">
+So if a patient's chart mentions ibuprofen and the model has only seen aspirin in training, the one-hot model sees no connection at all?
+</Dialogue>
+
+<Dialogue speaker="Obi">
+Exactly. It cannot generalize. Every word is an island. That is why we need representations that place related words near each other — dense vectors that capture meaning, not just identity.
+</Dialogue>
+
+## The Scale Problem
+
+<CodeBlock language="typescript" title="scale-problem.ts">
+{`// With a 50,000-word clinical vocabulary:
+const vocabSize = 50_000;
+
+// Each one-hot vector has 50,000 dimensions
+// A batch of 128 words = 128 x 50,000 = 6.4 million values
+// Most of them are zeros — wasted memory
+
+// In frontend terms: imagine a CSS file where every class name
+// is a unique 50,000-character string of 0s and 1s.
+// It works, but it is absurdly wasteful.
+
+console.log('Vector dimensions:', vocabSize);
+console.log('Non-zero values per vector:', 1);
+console.log('Sparsity:', ((vocabSize - 1) / vocabSize * 100).toFixed(4) + '%');
+// Sparsity: 99.9980% — almost entirely zeros`}
+</CodeBlock>
+
+## Challenge
+
+Implement one-hot encoding for clinical vocabulary words.
+
+<Exercise slug="encode-one-hot" />
+
+<KeyTakeaways takeaways={["One-hot encoding assigns each word a unique vector — like enum values with unique IDs", "Every word is equally distant from every other word: no semantic relationships", "Memory cost scales linearly with vocabulary size (50K words = 50K dimensions per vector)", "We need denser representations that capture meaning — that is what word embeddings provide"]} />

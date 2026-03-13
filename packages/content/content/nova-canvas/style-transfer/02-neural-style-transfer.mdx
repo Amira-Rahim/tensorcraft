@@ -1,0 +1,128 @@
+---
+slug: neural-style-transfer
+title: "Neural Style Transfer"
+moduleId: style-transfer
+themeId: nova-canvas
+order: 2
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Yara uploads a photograph of the city skyline and selects Monet as the style. MUSE processes it — the photograph softens, edges dissolve into impressionist light. 'It is painting,' Yara whispers. 'The machine is painting.'"
+  speaker: "Yara"
+concept:
+  explanation: "Neural style transfer optimizes an image to match the content of one image and the style of another — like applying a CSS theme to existing HTML content. Minimize the content loss and the style loss simultaneously."
+  bridge:
+    feTitle: "CSS theme switching"
+    feCode: "document.body.dataset.theme = 'monet'; // swap visual identity"
+    mlTitle: "Neural style transfer"
+    mlCode: "loss = contentLoss(target, content) + styleLoss(target, style);"
+    tier: structural
+consequence:
+  narrative: "The gallery wall shows the same cityscape in five styles — Monet, Basquiat, Hokusai, Rothko, and Yara's own. Petrov studies them in silence. 'The machine has taste,' he says finally. 'Or at least, it can borrow ours.'"
+  nextLessonTeaser: "Next: how networks encode artistic style — the mathematics of visual identity"
+hints:
+  - level: nudge
+    content: "Think of applying a CSS theme: the HTML content stays the same, only the visual presentation changes"
+  - level: guidance
+    content: "Generate an image by minimizing two losses: content loss (match the photograph's structure) and style loss (match the painting's textures)"
+  - level: solution
+    content: "Initialize with content image. Optimize pixel values using gradient descent to minimize: alpha * MSE(content features) + beta * MSE(Gram matrices)"
+keywords:
+  - neural-style-transfer
+  - content-loss
+  - style-loss
+  - optimization
+  - Gatys
+---
+
+<Dialogue speaker="Yara">
+I want to see this photograph through Monet's eyes. Can MUSE do that?
+</Dialogue>
+
+<Dialogue speaker="Ren">
+The algorithm is elegant. We take the content features from your photograph and the style features from a Monet painting. Then we optimize a new image that matches both — photograph's structure, Monet's brushstrokes.
+</Dialogue>
+
+Swapping CSS themes preserves content while changing visual identity. Neural style transfer does the same — it generates an image that preserves one image's content while adopting another image's style.
+
+<LearningObjectives objectives={["Define content loss as the MSE between content feature activations", "Define style loss as the MSE between Gram matrices of style features", "Combine losses with weighting to control content-style balance", "Optimize pixel values using gradient descent to minimize total loss"]} />
+
+## The Style Transfer Algorithm
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="style-transfer.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Content loss: the generated image should have the same structure
+function contentLoss(
+  generatedFeatures: tf.Tensor,
+  contentFeatures: tf.Tensor
+): tf.Scalar {
+  return tf.losses.meanSquaredError(contentFeatures, generatedFeatures);
+}
+
+// Style loss: the generated image should have the same textures
+function styleLoss(
+  generatedGram: tf.Tensor2D,
+  styleGram: tf.Tensor2D
+): tf.Scalar {
+  return tf.losses.meanSquaredError(styleGram, generatedGram);
+}
+
+// Total loss: weighted combination
+function totalLoss(
+  contentL: tf.Scalar,
+  styleL: tf.Scalar,
+  contentWeight: number,
+  styleWeight: number
+): tf.Scalar {
+  return tf.add(
+    tf.mul(contentL, tf.scalar(contentWeight)),
+    tf.mul(styleL, tf.scalar(styleWeight))
+  ) as tf.Scalar;
+}
+
+// The optimization loop: adjust pixels to minimize loss
+async function styleTransfer(
+  contentImage: tf.Tensor4D,
+  styleImage: tf.Tensor4D,
+  featureModel: tf.LayersModel,
+  iterations: number = 100,
+  contentWeight: number = 1,
+  styleWeight: number = 1000
+): Promise<tf.Tensor4D> {
+  // Extract targets (these don't change)
+  const contentTarget = featureModel.predict(contentImage) as tf.Tensor;
+  const styleFeatures = featureModel.predict(styleImage) as tf.Tensor4D;
+  const styleTarget = gramMatrix(styleFeatures);
+
+  // Start with the content image (faster convergence than random)
+  const generated = tf.variable(contentImage.clone());
+  const optimizer = tf.train.adam(0.02);
+
+  for (let i = 0; i < iterations; i++) {
+    optimizer.minimize(() => {
+      const genFeatures = featureModel.predict(generated) as tf.Tensor4D;
+      const genGram = gramMatrix(genFeatures);
+
+      const cLoss = contentLoss(genFeatures, contentTarget);
+      const sLoss = styleLoss(genGram, styleTarget);
+      const loss = totalLoss(cLoss, sLoss, contentWeight, styleWeight);
+
+      if (i % 20 === 0) loss.print();
+      return loss;
+    }, true, [generated]);
+  }
+
+  return generated as unknown as tf.Tensor4D;
+}`}
+</CodeBlock>
+
+## Challenge
+
+Implement the content and style loss functions for neural style transfer.
+
+<Exercise slug="neural-style" />
+
+<KeyTakeaways takeaways={["Neural style transfer = CSS theme switching: preserve content structure, swap visual identity", "Content loss measures difference in deep CNN features between generated and content image", "Style loss measures difference in Gram matrices between generated and style image", "The balance between content weight and style weight controls how much the original structure is preserved"]} />

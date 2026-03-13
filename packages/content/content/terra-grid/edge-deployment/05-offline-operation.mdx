@@ -1,0 +1,161 @@
+---
+slug: offline-operation
+title: "Offline Operation"
+moduleId: edge-deployment
+themeId: terra-grid
+order: 5
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "A storm severs satellite connectivity to 200 remote sensors. The models must keep running — collecting predictions, queuing telemetry, and syncing when the link returns."
+  speaker: "Cole Branson"
+concept:
+  explanation: "Offline-first ML mirrors offline-first web apps — cache models in IndexedDB, queue predictions locally, sync when connectivity returns."
+  bridge:
+    feTitle: "IndexedDB + Service Worker"
+    feCode: "const db = await idb.open('app-cache'); // offline-first storage"
+    mlTitle: "Offline Model Cache"
+    mlCode: "const model = await tf.loadLayersModel('indexeddb://cached-model');"
+    tier: structural
+consequence:
+  narrative: "The storm passes. 200 devices reconnect and sync 14 hours of buffered predictions. Zero data loss."
+  nextLessonTeaser: "Module 6: building automated pipelines to retrain and redeploy at scale"
+hints:
+  - level: nudge
+    content: "Think about how offline-first web apps use IndexedDB and background sync"
+  - level: guidance
+    content: "Cache the model locally, buffer predictions, and use a sync queue for when connectivity returns"
+  - level: solution
+    content: "Load model from IndexedDB, store predictions in a local ring buffer, sync via Background Sync API pattern"
+keywords:
+  - offline-first
+  - indexeddb
+  - sync-queue
+  - edge-resilience
+---
+
+<Dialogue speaker="Cole Branson">
+Station 7-Delta just lost satellite. Forecast says 14 hours minimum before link recovery. Those sensors are on their own.
+</Dialogue>
+
+<Dialogue speaker="Hassan Al-Rashid">
+That is precisely why we designed for offline-first. The models run locally. Predictions buffer. When the link comes back, everything syncs. No data loss.
+</Dialogue>
+
+You have built offline-first web apps. Service Workers cache assets. IndexedDB stores data. Background Sync queues API calls for when connectivity returns. Edge ML uses the exact same architecture — cache the model, buffer the results, sync when possible.
+
+<LearningObjectives objectives={["Implement offline model caching using IndexedDB — the same pattern as offline-first web apps", "Design prediction buffering with ring buffers for memory-constrained devices", "Build sync queues that reconcile local predictions with the central system", "Handle model staleness during extended offline periods"]} />
+
+## Offline Model Cache
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="offline-cache.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+class OfflineModelCache {
+  private modelKey = 'indexeddb://terra-grid-model';
+  private model: tf.LayersModel | null = null;
+
+  async initialize(): Promise<void> {
+    try {
+      // Try loading from local cache first (like SW cache-first strategy)
+      this.model = await tf.loadLayersModel(this.modelKey);
+      console.log('Model loaded from local cache');
+    } catch {
+      // Cache miss — download and store
+      this.model = await tf.loadLayersModel('/api/models/terra-grid/model.json');
+      await this.model.save(this.modelKey);
+      console.log('Model downloaded and cached locally');
+    }
+  }
+
+  async predict(sensorData: number[]): Promise<Float32Array> {
+    if (!this.model) throw new Error('Model not initialized');
+    return tf.tidy(() => {
+      const input = tf.tensor2d([sensorData]);
+      const output = this.model!.predict(input) as tf.Tensor;
+      return new Float32Array(output.dataSync());
+    });
+  }
+}`}
+</CodeBlock>
+
+## Prediction Buffer
+
+When offline, predictions queue in a ring buffer — a fixed-size circular array that overwrites the oldest entries when full, preventing memory from growing unbounded on a 256MB device:
+
+<CodeBlock language="typescript" title="prediction-buffer.ts">
+{`interface BufferedPrediction {
+  timestamp: number;
+  sensorId: string;
+  input: number[];
+  output: number[];
+  synced: boolean;
+}
+
+class PredictionRingBuffer {
+  private buffer: BufferedPrediction[];
+  private head = 0;
+  private count = 0;
+
+  constructor(private capacity: number = 10000) {
+    this.buffer = new Array(capacity);
+  }
+
+  push(prediction: BufferedPrediction): void {
+    this.buffer[this.head] = prediction;
+    this.head = (this.head + 1) % this.capacity;
+    this.count = Math.min(this.count + 1, this.capacity);
+  }
+
+  getUnsynced(): BufferedPrediction[] {
+    return this.buffer
+      .filter(p => p && !p.synced)
+      .sort((a, b) => a.timestamp - b.timestamp);
+  }
+
+  async syncToServer(endpoint: string): Promise<number> {
+    const unsynced = this.getUnsynced();
+    if (unsynced.length === 0) return 0;
+
+    // Batch upload — like Background Sync API
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      body: JSON.stringify({ predictions: unsynced }),
+    });
+
+    if (response.ok) {
+      unsynced.forEach(p => p.synced = true);
+      console.log(\`Synced \${unsynced.length} buffered predictions\`);
+    }
+    return unsynced.length;
+  }
+}
+
+// Usage during the 14-hour outage:
+const buffer = new PredictionRingBuffer(50000);
+const cache = new OfflineModelCache();
+await cache.initialize();
+
+// Continuous inference loop — runs regardless of connectivity
+setInterval(async () => {
+  const sensorData = await readSensors();
+  const prediction = await cache.predict(sensorData);
+  buffer.push({
+    timestamp: Date.now(),
+    sensorId: 'station-7-delta',
+    input: sensorData,
+    output: Array.from(prediction),
+    synced: false,
+  });
+}, 5000); // every 5 seconds`}
+</CodeBlock>
+
+## Challenge
+
+Build an offline inference system with local caching and sync queue.
+
+<Exercise slug="offline-inference" />
+
+<KeyTakeaways takeaways={["Offline-first ML mirrors offline-first web architecture — cache assets, buffer data, sync later", "IndexedDB stores models locally, just as it stores app data in PWAs", "Ring buffers prevent memory overflow on constrained devices during extended offline periods", "Background sync patterns reconcile buffered predictions when connectivity returns — zero data loss"]} />

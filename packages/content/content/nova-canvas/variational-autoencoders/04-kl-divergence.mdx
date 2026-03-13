@@ -1,0 +1,146 @@
+---
+slug: kl-divergence
+title: "KL Divergence"
+moduleId: variational-autoencoders
+themeId: nova-canvas
+order: 4
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "The VAE reconstructs well but the latent space is messy — clusters with gaps. MUSE introduces KL divergence as the force that regularizes the space into a smooth, organized landscape."
+  speaker: "MUSE"
+concept:
+  explanation: "KL divergence measures how different the encoder's learned distribution is from a standard normal. It regularizes the latent space, pushing it toward a smooth, continuous distribution."
+  bridge:
+    feTitle: "CSS Specificity Balance"
+    feCode: "// Too specific: #app > .nav > .link { } — inflexible. Balance specificity."
+    mlTitle: "KL Divergence"
+    mlCode: "klLoss = -0.5 * sum(1 + logVar - mu^2 - exp(logVar))"
+    tier: intuition
+consequence:
+  narrative: "With KL divergence in the loss, the latent space smooths out. Random samples decode into coherent art. MUSE generates an 'original' that eerily resembles a famous painting — memorization vs generalization."
+  nextLessonTeaser: "Next: putting it all together — a creative VAE for the exhibition"
+hints:
+  - level: nudge
+    content: "KL divergence is a penalty that keeps the latent space organized — like CSS specificity guidelines"
+  - level: guidance
+    content: "The VAE loss has two parts: reconstruction loss + KL divergence"
+  - level: solution
+    content: "const klLoss = mu.square().add(logVar.exp()).sub(logVar).sub(1).mul(0.5).sum(1).mean();"
+keywords:
+  - kl-divergence
+  - regularization
+  - elbo
+  - reconstruction
+  - prior
+---
+
+<Dialogue speaker="MUSE">
+The VAE has two competing desires. It wants to reconstruct perfectly — make the output match the input. But it also wants its latent space to be smooth and organized. KL divergence is the tension between these desires. Too much reconstruction focus and the space becomes chaotic. Too much regularization and the reconstructions become blurry. Finding the balance is the art.
+</Dialogue>
+
+<Dialogue speaker="Yara">
+It is like CSS specificity. Too specific and your styles are rigid, impossible to override. Too generic and nothing looks right. You need the balance point.
+</Dialogue>
+
+The VAE loss function has two parts: **reconstruction loss** (how well it rebuilds the input) and **KL divergence** (how close the latent distribution is to a standard normal). Together, they form the Evidence Lower Bound (ELBO).
+
+<LearningObjectives objectives={["Understand KL divergence as a measure of distribution difference", "Implement the VAE loss function with reconstruction + KL terms", "Tune the balance between reconstruction quality and latent smoothness", "Recognize the ELBO as the objective function for VAEs"]} />
+
+## What KL Divergence Measures
+
+KL divergence answers: "How different is the encoder's distribution from a standard normal?" If the encoder is free to place data anywhere, the latent space becomes chaotic. KL divergence gently pulls every encoding toward the origin, creating overlap and smoothness.
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="kl-divergence.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// KL divergence for a Gaussian:
+// KL(q(z|x) || p(z)) = -0.5 * sum(1 + log(sigma^2) - mu^2 - sigma^2)
+// Where q(z|x) is the encoder's distribution
+// and p(z) = N(0, 1) is the prior (standard normal)
+
+function klDivergence(mu: tf.Tensor, logVar: tf.Tensor): tf.Scalar {
+  // KL = -0.5 * sum(1 + logVar - mu^2 - exp(logVar))
+  const kl = mu.square()
+    .add(logVar.exp())
+    .sub(logVar)
+    .sub(1)
+    .mul(-0.5)
+    .sum(1)     // sum over latent dimensions
+    .mean();    // average over batch
+  return kl as tf.Scalar;
+}
+
+// Intuition:
+// mu far from 0 → penalty (move toward center)
+// logVar far from 0 → penalty (standardize spread)
+// This forces the encoder to use the SAME region of space
+// for ALL data — creating a smooth, navigable landscape`}
+</CodeBlock>
+
+## The Complete VAE Loss
+
+<CodeBlock language="typescript" title="vae-loss.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+function vaeLoss(
+  original: tf.Tensor,
+  reconstructed: tf.Tensor,
+  mu: tf.Tensor,
+  logVar: tf.Tensor,
+  beta: number = 1.0
+): tf.Scalar {
+  // Part 1: Reconstruction loss — how well did we rebuild?
+  const reconLoss = tf.losses.meanSquaredError(original, reconstructed);
+
+  // Part 2: KL divergence — how organized is the latent space?
+  const klLoss = mu.square()
+    .add(logVar.exp())
+    .sub(logVar)
+    .sub(1)
+    .mul(0.5)
+    .sum(1)
+    .mean();
+
+  // Combined: minimize reconstruction error + beta * KL divergence
+  // beta controls the tradeoff:
+  //   beta < 1: prioritize reconstruction (sharper but messy space)
+  //   beta = 1: standard VAE (balanced)
+  //   beta > 1: prioritize organization (blurrier but smoother space)
+  return reconLoss.add(klLoss.mul(beta)) as tf.Scalar;
+}
+
+// CSS specificity analogy:
+// reconLoss = inline styles (exact, specific)
+// klLoss = class-based styles (general, systematic)
+// beta = how strictly you enforce the design system`}
+</CodeBlock>
+
+## The AI-Wrong Moment
+
+<CodeBlock language="typescript" title="memorization-warning.ts">
+{`// MUSE generates an "original" piece for the exhibition.
+// Yara recognizes it instantly — it's nearly identical to
+// Mondrian's "Composition with Red, Blue, and Yellow."
+
+// This is MEMORIZATION, not generalization.
+// When KL divergence is too low, the model memorizes training data
+// instead of learning the underlying distribution.
+
+// How to tell the difference:
+// 1. Generate many samples and check for near-duplicates of training data
+// 2. Measure KL divergence — if near zero, the model may be memorizing
+// 3. Interpolate between two encoded training samples —
+//    smooth transitions = generalization, jumpy transitions = memorization
+
+// The lesson: KL divergence is not just a math term.
+// It is the force that pushes the model from copying to creating.`}
+</CodeBlock>
+
+## Challenge
+
+<Exercise slug="kl-loss" />
+
+<KeyTakeaways takeaways={["KL divergence measures how far the learned distribution is from standard normal", "VAE loss = reconstruction loss + beta * KL divergence", "Beta controls the balance: sharp reconstructions vs smooth latent space", "Too little KL regularization leads to memorization instead of generalization"]} />

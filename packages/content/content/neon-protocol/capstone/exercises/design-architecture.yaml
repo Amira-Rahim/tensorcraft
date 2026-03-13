@@ -1,0 +1,100 @@
+slug: design-architecture
+lessonSlug: system-architecture
+title: "Design a Component Registry"
+instructions: "Build a component registry for Protocol Sentinel. Create a ComponentManifest interface and a validateArchitecture function that checks for missing dependencies and returns a validation result with any errors found."
+starterCode: |
+  interface ComponentManifest {
+    name: string;
+    version: string;
+    dependencies: string[];
+    inputType: string;
+    outputType: string;
+  }
+
+  interface ValidationResult {
+    valid: boolean;
+    errors: string[];
+  }
+
+  function validateArchitecture(components: ComponentManifest[]): ValidationResult {
+    // 1. Collect all component names into a Set
+    // 2. Check each component's dependencies exist in the Set
+    // 3. Return { valid: true/false, errors: [...] }
+    return { valid: false, errors: [] }; // your code here
+  }
+solutionCode: |
+  interface ComponentManifest {
+    name: string;
+    version: string;
+    dependencies: string[];
+    inputType: string;
+    outputType: string;
+  }
+
+  interface ValidationResult {
+    valid: boolean;
+    errors: string[];
+  }
+
+  function validateArchitecture(components: ComponentManifest[]): ValidationResult {
+    const names = new Set(components.map(c => c.name));
+    const errors: string[] = [];
+
+    for (const component of components) {
+      for (const dep of component.dependencies) {
+        if (!names.has(dep)) {
+          errors.push(`${component.name} depends on ${dep}, which does not exist`);
+        }
+      }
+    }
+
+    return { valid: errors.length === 0, errors };
+  }
+testCode: |
+  describe('validateArchitecture', () => {
+    it('validates a correct architecture', () => {
+      const components: ComponentManifest[] = [
+        { name: 'preprocessor', version: '1.0.0', dependencies: [], inputType: 'RawFrame', outputType: 'ProcessedFrame' },
+        { name: 'detector', version: '1.0.0', dependencies: ['preprocessor'], inputType: 'ProcessedFrame', outputType: 'DetectionResult' },
+        { name: 'classifier', version: '1.0.0', dependencies: ['detector'], inputType: 'DetectionResult', outputType: 'ClassificationResult' },
+      ];
+      const result = validateArchitecture(components);
+      expect(result.valid).toBe(true);
+      expect(result.errors).toHaveLength(0);
+    });
+
+    it('detects missing dependencies', () => {
+      const components: ComponentManifest[] = [
+        { name: 'classifier', version: '1.0.0', dependencies: ['detector'], inputType: 'DetectionResult', outputType: 'ClassificationResult' },
+      ];
+      const result = validateArchitecture(components);
+      expect(result.valid).toBe(false);
+      expect(result.errors.length).toBeGreaterThan(0);
+      expect(result.errors[0]).toContain('detector');
+    });
+
+    it('handles components with no dependencies', () => {
+      const components: ComponentManifest[] = [
+        { name: 'ingest', version: '1.0.0', dependencies: [], inputType: 'MediaStream', outputType: 'RawFrame' },
+      ];
+      const result = validateArchitecture(components);
+      expect(result.valid).toBe(true);
+    });
+
+    it('reports multiple missing dependencies', () => {
+      const components: ComponentManifest[] = [
+        { name: 'reporter', version: '1.0.0', dependencies: ['classifier', 'guard'], inputType: 'any', outputType: 'Report' },
+      ];
+      const result = validateArchitecture(components);
+      expect(result.valid).toBe(false);
+      expect(result.errors).toHaveLength(2);
+    });
+
+    it('handles empty component list', () => {
+      const result = validateArchitecture([]);
+      expect(result.valid).toBe(true);
+      expect(result.errors).toHaveLength(0);
+    });
+  });
+estimatedMinutes: 15
+difficulty: intermediate

@@ -1,0 +1,100 @@
+slug: plot-embeddings
+lessonSlug: embedding-spaces
+title: "Plot Embedding Distances"
+instructions: "Write a function that takes an array of labeled feature vectors and computes a distance matrix showing the cosine similarity between every pair. Return an object with the labels array and a 2D matrix where matrix[i][j] is the cosine similarity between vector i and vector j, rounded to 3 decimal places. This matrix is used to visualize clusters in embedding space — high values indicate items that cluster together."
+starterCode: |
+  interface LabeledVector {
+    label: string;
+    vector: number[];
+  }
+
+  interface DistanceMatrix {
+    labels: string[];
+    matrix: number[][];
+  }
+
+  function buildDistanceMatrix(items: LabeledVector[]): DistanceMatrix {
+    // 1. Extract labels into an array
+    // 2. For each pair (i, j), compute cosine similarity
+    // 3. Round each value to 3 decimal places
+    // 4. matrix[i][i] should be 1.000 (identical vectors)
+    return { labels: [], matrix: [] };
+  }
+solutionCode: |
+  interface LabeledVector {
+    label: string;
+    vector: number[];
+  }
+
+  interface DistanceMatrix {
+    labels: string[];
+    matrix: number[][];
+  }
+
+  function cosineSim(a: number[], b: number[]): number {
+    let dot = 0, normA = 0, normB = 0;
+    for (let i = 0; i < a.length; i++) {
+      dot += a[i] * b[i];
+      normA += a[i] * a[i];
+      normB += b[i] * b[i];
+    }
+    return dot / (Math.sqrt(normA) * Math.sqrt(normB));
+  }
+
+  function buildDistanceMatrix(items: LabeledVector[]): DistanceMatrix {
+    const labels = items.map(item => item.label);
+    const matrix: number[][] = [];
+    for (let i = 0; i < items.length; i++) {
+      const row: number[] = [];
+      for (let j = 0; j < items.length; j++) {
+        const sim = cosineSim(items[i].vector, items[j].vector);
+        row.push(Math.round(sim * 1000) / 1000);
+      }
+      matrix.push(row);
+    }
+    return { labels, matrix };
+  }
+testCode: |
+  describe('buildDistanceMatrix', () => {
+    const items: LabeledVector[] = [
+      { label: 'drone-a', vector: [1, 0, 0] },
+      { label: 'drone-b', vector: [0.9, 0.1, 0] },
+      { label: 'car', vector: [0, 1, 0] },
+    ];
+
+    it('returns correct labels', () => {
+      const result = buildDistanceMatrix(items);
+      expect(result.labels).toEqual(['drone-a', 'drone-b', 'car']);
+    });
+
+    it('diagonal is 1 (self-similarity)', () => {
+      const result = buildDistanceMatrix(items);
+      expect(result.matrix[0][0]).toBe(1);
+      expect(result.matrix[1][1]).toBe(1);
+      expect(result.matrix[2][2]).toBe(1);
+    });
+
+    it('matrix is symmetric', () => {
+      const result = buildDistanceMatrix(items);
+      expect(result.matrix[0][1]).toBe(result.matrix[1][0]);
+      expect(result.matrix[0][2]).toBe(result.matrix[2][0]);
+    });
+
+    it('similar vectors have high similarity', () => {
+      const result = buildDistanceMatrix(items);
+      expect(result.matrix[0][1]).toBeGreaterThan(0.9);
+    });
+
+    it('orthogonal vectors have zero similarity', () => {
+      const result = buildDistanceMatrix(items);
+      expect(result.matrix[0][2]).toBe(0);
+    });
+
+    it('values are rounded to 3 decimal places', () => {
+      const result = buildDistanceMatrix(items);
+      const val = result.matrix[0][1];
+      expect(val).toBe(Math.round(val * 1000) / 1000);
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

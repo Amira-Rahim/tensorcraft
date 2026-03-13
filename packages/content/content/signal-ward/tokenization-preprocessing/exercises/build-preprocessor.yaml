@@ -1,0 +1,60 @@
+slug: build-preprocessor
+lessonSlug: preprocessing-pipelines
+title: "Build Preprocessor"
+instructions: "Build a TextPipeline class that chains preprocessing steps. Implement: (1) an add(name, fn) method that registers a step function and returns 'this' for chaining, (2) a run(input) method that passes the input through each step in order and returns the final output string. Then create a pipeline with three steps: 'lowercase' (lowercases text), 'stripHtml' (removes HTML tags by replacing them with spaces), and 'collapse' (collapses multiple spaces into one and trims). Run the pipeline on the provided test input."
+starterCode: |
+  class TextPipeline {
+    private steps: { name: string; fn: (s: string) => string }[] = [];
+
+    add(name: string, fn: (s: string) => string): this {
+      // Register the step and return this for chaining
+      return this; // your code here
+    }
+
+    run(input: string): string {
+      // Pass input through each step in order
+      return ''; // your code here
+    }
+  }
+
+  const pipeline = new TextPipeline();
+  // Add steps: lowercase, stripHtml, collapse whitespace
+  // your code here
+
+  const output = pipeline.run('<p>Patient BP</p>  <b>Elevated</b>');
+solutionCode: |
+  class TextPipeline {
+    private steps: { name: string; fn: (s: string) => string }[] = [];
+
+    add(name: string, fn: (s: string) => string): this {
+      this.steps.push({ name, fn });
+      return this;
+    }
+
+    run(input: string): string {
+      return this.steps.reduce((acc, step) => step.fn(acc), input);
+    }
+  }
+
+  const pipeline = new TextPipeline()
+    .add('lowercase', (t) => t.toLowerCase())
+    .add('stripHtml', (t) => t.replace(/<[^>]*>/g, ' '))
+    .add('collapse', (t) => t.replace(/\s+/g, ' ').trim());
+
+  const output = pipeline.run('<p>Patient BP</p>  <b>Elevated</b>');
+testCode: |
+  describe('TextPipeline', () => {
+    it('produces a string', () => { expect(typeof output).toBe('string'); });
+    it('lowercases the output', () => { expect(output).toBe(output.toLowerCase()); });
+    it('strips HTML tags', () => { expect(output).not.toMatch(/<[^>]*>/); });
+    it('has no multiple spaces', () => { expect(output).not.toMatch(/  /); });
+    it('is trimmed', () => { expect(output).toBe(output.trim()); });
+    it('contains expected words', () => { expect(output).toContain('patient'); expect(output).toContain('elevated'); });
+    it('supports chaining', () => { const p = new TextPipeline(); expect(p.add('x', (t) => t)).toBe(p); });
+    it('runs steps in order', () => {
+      const p = new TextPipeline().add('a', (t) => t + '1').add('b', (t) => t + '2');
+      expect(p.run('0')).toBe('012');
+    });
+  });
+estimatedMinutes: 12
+difficulty: intermediate

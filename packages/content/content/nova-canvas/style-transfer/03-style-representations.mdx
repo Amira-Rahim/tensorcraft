@@ -1,0 +1,127 @@
+---
+slug: style-representations
+title: "Style Representations"
+moduleId: style-transfer
+themeId: nova-canvas
+order: 3
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Kai examines the Gram matrices on screen. 'Each artist has a unique signature in these numbers. Monet's Gram matrix is smooth gradients. Basquiat's is sharp, high-contrast. The math captures what makes their art recognizable.' Yara: 'Like design tokens — the encoded DNA of a visual identity.'"
+  speaker: "Kai"
+concept:
+  explanation: "Style representations are encoded as Gram matrices across multiple CNN layers — capturing texture correlations at different scales. Like design tokens that encode a visual identity: colors, spacing, typography that make a brand recognizable."
+  bridge:
+    feTitle: "Design tokens — encoded visual identity"
+    feCode: "const tokens = { color: '#1e3a5f', radius: '8px', font: 'Inter' };"
+    mlTitle: "Gram matrix style encoding"
+    mlCode: "const style = layers.map(l => gramMatrix(getActivation(l)));"
+    tier: structural
+consequence:
+  narrative: "Yara creates a library of style tokens — Gram matrices extracted from her favorite paintings. Each one is a reusable identity. 'I can apply any of these to any photograph,' she realizes. 'An infinite palette.'"
+  nextLessonTeaser: "Next: real-time style transfer — fast enough for the browser"
+hints:
+  - level: nudge
+    content: "Design tokens capture the essence of a brand. Gram matrices capture the essence of an artistic style."
+  - level: guidance
+    content: "Extract Gram matrices from multiple layers to capture style at different scales: fine textures, medium patterns, large structures."
+  - level: solution
+    content: "Build a multi-output model that returns activations from several layers. Compute Gram matrices at each level and weight them for the style loss."
+keywords:
+  - gram-matrix
+  - style-encoding
+  - design-tokens
+  - multi-layer
+  - texture-correlation
+---
+
+<Dialogue speaker="Kai">
+Look at these two Gram matrices. This one is Monet — see the smooth, gradual correlations? And this one is Basquiat — sharp, high-contrast, almost binary. The Gram matrix is a fingerprint of artistic style.
+</Dialogue>
+
+<Dialogue speaker="Yara">
+Like design tokens. When I build a design system, I encode the visual identity into tokens — colors, spacing, radii, type scales. Everything that makes a brand feel like itself. The Gram matrix does the same thing for a painting.
+</Dialogue>
+
+Design tokens encode a brand's visual DNA. Gram matrices encode an artist's visual DNA. Both are compact, reusable representations of identity that can be applied to any content.
+
+<LearningObjectives objectives={["Understand how Gram matrices capture style at different scales across CNN layers", "Build a multi-output model to extract features from multiple layers simultaneously", "Compute multi-scale style representations for richer style capture", "Connect style encoding to design tokens and visual identity systems"]} />
+
+## Multi-Scale Style Extraction
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="multi-scale-style.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Design tokens capture style at different levels:
+// - Colors (fine) -> like early CNN layers
+// - Spacing (medium) -> like mid CNN layers
+// - Layout (large) -> like deep CNN layers
+
+// Build a model that outputs activations from multiple layers
+function buildStyleExtractor() {
+  const input = tf.input({ shape: [128, 128, 3] });
+
+  const conv1 = tf.layers.conv2d({
+    filters: 32, kernelSize: 3, padding: 'same', activation: 'relu', name: 'block1'
+  }).apply(input) as tf.SymbolicTensor;
+  const pool1 = tf.layers.maxPooling2d({ poolSize: 2 }).apply(conv1) as tf.SymbolicTensor;
+
+  const conv2 = tf.layers.conv2d({
+    filters: 64, kernelSize: 3, padding: 'same', activation: 'relu', name: 'block2'
+  }).apply(pool1) as tf.SymbolicTensor;
+  const pool2 = tf.layers.maxPooling2d({ poolSize: 2 }).apply(conv2) as tf.SymbolicTensor;
+
+  const conv3 = tf.layers.conv2d({
+    filters: 128, kernelSize: 3, padding: 'same', activation: 'relu', name: 'block3'
+  }).apply(pool2) as tf.SymbolicTensor;
+
+  // Return activations from ALL style-relevant layers
+  return tf.model({
+    inputs: input,
+    outputs: [conv1, conv2, conv3] // multi-scale outputs
+  });
+}
+
+// Extract a complete style representation
+function extractStyleTokens(
+  extractor: tf.LayersModel,
+  image: tf.Tensor4D
+): tf.Tensor2D[] {
+  const activations = extractor.predict(image) as tf.Tensor[];
+
+  // Compute Gram matrix at each scale
+  return activations.map(act => gramMatrix(act as tf.Tensor4D));
+}
+
+// Multi-scale style loss
+function multiScaleStyleLoss(
+  generatedGrams: tf.Tensor2D[],
+  targetGrams: tf.Tensor2D[],
+  weights: number[] = [1, 1, 1]
+): tf.Scalar {
+  let total = tf.scalar(0);
+  for (let i = 0; i < generatedGrams.length; i++) {
+    const layerLoss = tf.losses.meanSquaredError(
+      targetGrams[i], generatedGrams[i]
+    );
+    total = tf.add(total, tf.mul(layerLoss, tf.scalar(weights[i]))) as tf.Scalar;
+  }
+  return total;
+}
+
+// Yara's style library: reusable artistic identities
+const styleLibrary = new Map<string, tf.Tensor2D[]>();
+// styleLibrary.set('monet', extractStyleTokens(extractor, monetImage));
+// styleLibrary.set('basquiat', extractStyleTokens(extractor, basquiatImage));
+// styleLibrary.set('yara', extractStyleTokens(extractor, yaraImage));`}
+</CodeBlock>
+
+## Challenge
+
+Extract Gram matrices from multiple CNN layers to build a multi-scale style representation.
+
+<Exercise slug="extract-style" />
+
+<KeyTakeaways takeaways={["Gram matrices at different CNN layers capture style at different scales — like design tokens at different levels", "Early layers encode fine textures (brushstrokes, color patches); deep layers encode large-scale patterns", "Multi-scale style representations produce richer, more faithful style transfer", "Style tokens are reusable: extract once from a painting, apply to any content image"]} />

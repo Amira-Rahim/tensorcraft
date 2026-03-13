@@ -1,0 +1,164 @@
+---
+slug: latent-space-exploration
+title: "Latent Space Exploration"
+moduleId: latent-spaces
+themeId: nova-canvas
+order: 5
+estimatedMinutes: 30
+difficulty: intermediate
+context:
+  narrative: "Ren builds an interactive explorer for the exhibition — visitors use sliders and a 2D map to navigate through the latent space of generated art in real time."
+  speaker: "Petrov"
+concept:
+  explanation: "A latent space explorer is an interactive tool that lets users navigate the latent space using sliders, 2D maps, or other controls, generating output in real time."
+  bridge:
+    feTitle: "Slider UI with Live Preview"
+    feCode: "<input type='range' onChange={e => updatePreview(e.target.value)} />"
+    mlTitle: "Interactive Latent Explorer"
+    mlCode: "const output = decoder.predict(tf.tensor2d([sliderValues]))"
+    tier: identity
+consequence:
+  narrative: "The first interactive prototype runs on a kiosk. Visitors drag sliders and watch art transform in real time. Petrov declares it exhibition-ready."
+  nextLessonTeaser: "Next module: Generative Adversarial Networks — teaching models to create through competition"
+hints:
+  - level: nudge
+    content: "This is a slider-driven UI — each slider value maps to one latent dimension"
+  - level: guidance
+    content: "Collect slider values into an array, create a tensor, pass through the decoder"
+  - level: solution
+    content: "const z = tf.tensor2d([sliderValues]); const output = decoder.predict(z); renderToCanvas(output);"
+keywords:
+  - explorer
+  - interactive
+  - real-time
+  - visualization
+---
+
+<Dialogue speaker="Petrov">
+The kiosks arrive in four weeks. I need a working prototype that runs at 30 frames per second in Chrome on a laptop with integrated graphics. Show me something I can put in front of visitors.
+</Dialogue>
+
+<Dialogue speaker="Yara">
+Make it intuitive. A child should be able to walk up, drag a slider, and feel like an artist.
+</Dialogue>
+
+This is where everything converges — latent spaces, encoding, dimensionality, interpolation, disentanglement — into an interactive tool that runs in the browser. You are building exactly what frontend developers do best: a responsive, real-time UI. The difference is that the data source is a neural network decoder.
+
+<LearningObjectives objectives={["Build a complete latent space explorer with slider controls", "Render decoded output to canvas in real time", "Handle performance with debouncing and tensor disposal", "Create a 2D navigation map for latent space exploration"]} />
+
+## Architecture
+
+The explorer follows a familiar frontend pattern: user input drives state, state drives rendering.
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="explorer-architecture.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// The pattern is identical to any slider-driven UI:
+// Input → State → Render
+
+// 1. Capture slider values
+const sliders = Array.from({ length: 16 }, (_, i) => {
+  const input = document.createElement('input');
+  input.type = 'range';
+  input.min = '-3';
+  input.max = '3';
+  input.step = '0.1';
+  input.value = '0';
+  input.addEventListener('input', () => updateLatentVector());
+  return input;
+});
+
+// 2. Build latent vector from slider values
+function getLatentVector(): tf.Tensor2D {
+  const values = sliders.map(s => parseFloat(s.value));
+  return tf.tensor2d([values]);
+}
+
+// 3. Decode and render
+async function updateLatentVector() {
+  const z = getLatentVector();
+  const output = decoder.predict(z) as tf.Tensor;
+  await renderToCanvas(output.reshape([28, 28]));
+  z.dispose();
+  output.dispose();  // Prevent memory leaks!
+}`}
+</CodeBlock>
+
+## Performance: Memory and Speed
+
+TensorFlow.js tensors live on the GPU. If you do not dispose them, you get memory leaks — the GPU equivalent of DOM node leaks.
+
+<CodeBlock language="typescript" title="performance.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// BAD: leaking tensors on every slider update
+function leakyUpdate() {
+  const z = getLatentVector();      // allocates GPU memory
+  const output = decoder.predict(z); // allocates more GPU memory
+  renderToCanvas(output);
+  // z and output are never disposed — memory leak!
+}
+
+// GOOD: tidy() automatically disposes intermediate tensors
+function cleanUpdate() {
+  const output = tf.tidy(() => {
+    const z = getLatentVector();
+    return decoder.predict(z) as tf.Tensor;
+  });
+  // Only 'output' survives — everything else is disposed
+
+  renderToCanvas(output).then(() => output.dispose());
+}
+
+// ALSO GOOD: debounce rapid slider updates
+function debounce(fn: Function, ms: number) {
+  let timer: ReturnType<typeof setTimeout>;
+  return (...args: unknown[]) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), ms);
+  };
+}
+const debouncedUpdate = debounce(cleanUpdate, 16); // ~60fps cap`}
+</CodeBlock>
+
+## The 2D Map
+
+For an exhibition, sliders are precise but not intuitive. A 2D map lets visitors click or drag to explore two dimensions at once — like a touchpad for the latent space.
+
+<CodeBlock language="typescript" title="latent-map.ts">
+{`function create2DMap(
+  canvas: HTMLCanvasElement,
+  decoder: tf.LayersModel,
+  dim1: number,
+  dim2: number,
+  baseVector: number[]
+) {
+  canvas.addEventListener('mousemove', async (e) => {
+    if (e.buttons !== 1) return; // Only while clicking
+
+    const rect = canvas.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 6 - 3;  // -3 to 3
+    const y = ((e.clientY - rect.top) / rect.height) * 6 - 3;
+
+    const z = [...baseVector];
+    z[dim1] = x;
+    z[dim2] = y;
+
+    const output = tf.tidy(() => {
+      const zTensor = tf.tensor2d([z]);
+      return decoder.predict(zTensor) as tf.Tensor;
+    });
+
+    await renderToCanvas(output.reshape([28, 28]));
+    output.dispose();
+  });
+}`}
+</CodeBlock>
+
+## Challenge
+
+<Exercise slug="latent-explorer" />
+
+<KeyTakeaways takeaways={["A latent space explorer is a slider-driven UI backed by a neural decoder", "Always dispose tensors to prevent GPU memory leaks — use tf.tidy()", "Debounce slider updates for smooth 60fps interaction", "2D maps provide intuitive exploration of two latent dimensions simultaneously"]} />

@@ -1,0 +1,120 @@
+---
+slug: interpolation
+title: "Interpolation"
+moduleId: latent-spaces
+themeId: nova-canvas
+order: 3
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Yara wants a smooth transition between two art pieces for the exhibition walkway. Ren discovers that walking between two points in latent space creates a seamless morph."
+  speaker: "Yara"
+concept:
+  explanation: "Interpolation in latent space means blending between two encoded points. Because the space is structured, intermediate points produce meaningful, smooth transitions."
+  bridge:
+    feTitle: "CSS Transitions"
+    feCode: "transition: transform 0.3s ease-in-out"
+    mlTitle: "Latent Interpolation"
+    mlCode: "const mid = z1.mul(1 - t).add(z2.mul(t))"
+    tier: identity
+consequence:
+  narrative: "The walkway prototype shows visitors a seamless morph between styles — abstract geometry flowing into organic curves — all generated from latent interpolation."
+  nextLessonTeaser: "Next: separating the factors — making each dimension control one thing"
+hints:
+  - level: nudge
+    content: "CSS transitions interpolate between two states. Latent interpolation does the same in feature space."
+  - level: guidance
+    content: "Linear interpolation: result = a * (1 - t) + b * t, where t goes from 0 to 1"
+  - level: solution
+    content: "const interpolated = z1.mul(1 - t).add(z2.mul(t));"
+keywords:
+  - interpolation
+  - lerp
+  - morphing
+  - transition
+  - slerp
+---
+
+<Dialogue speaker="Yara">
+The walkway between Gallery A and Gallery B is thirty meters long. I want visitors to experience a seamless transformation — geometric precision melting into organic chaos — as they walk. No jump cuts. Pure gradient.
+</Dialogue>
+
+<Dialogue speaker="MUSE">
+Between any two dreams lies a corridor of infinite possibility. Walk it slowly.
+</Dialogue>
+
+You know CSS transitions intimately. When you write `transition: transform 0.3s ease-in-out`, the browser smoothly interpolates between the start and end states. Latent space interpolation works on the same principle — but instead of interpolating CSS properties, you interpolate entire images, sounds, or artworks.
+
+<LearningObjectives objectives={["Understand interpolation as smooth movement between two points", "Implement linear interpolation (lerp) between latent vectors", "Recognize why structured latent spaces produce meaningful intermediate points", "Build a multi-step interpolation sequence for animation"]} />
+
+## Linear Interpolation (Lerp)
+
+The simplest interpolation is linear: blend two vectors with a parameter `t` that goes from 0 to 1.
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="latent-interpolation.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Frontend: CSS-like interpolation between two states
+function lerpColor(colorA: number[], colorB: number[], t: number): number[] {
+  return colorA.map((a, i) => a * (1 - t) + colorB[i] * t);
+}
+// lerpColor([255, 0, 0], [0, 0, 255], 0.5) → [127.5, 0, 127.5]
+
+// ML: interpolation between two latent vectors
+function lerpLatent(z1: tf.Tensor, z2: tf.Tensor, t: number): tf.Tensor {
+  return z1.mul(1 - t).add(z2.mul(t));
+}
+
+// Generate the walkway morph: 10 steps between two artworks
+async function generateMorph(
+  z1: tf.Tensor,
+  z2: tf.Tensor,
+  decoder: tf.LayersModel,
+  steps: number = 10
+): Promise<tf.Tensor[]> {
+  const frames: tf.Tensor[] = [];
+  for (let i = 0; i <= steps; i++) {
+    const t = i / steps;
+    const zInterp = lerpLatent(z1, z2, t);
+    const frame = decoder.predict(zInterp) as tf.Tensor;
+    frames.push(frame);
+  }
+  return frames;
+}`}
+</CodeBlock>
+
+## Why This Works
+
+In a well-structured latent space, nearby points represent similar data. So a point halfway between "geometric pattern" and "organic swirl" produces something that is a coherent blend of both — not random noise.
+
+<CodeBlock language="typescript" title="interpolation-quality.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// GOOD latent space: interpolation produces meaningful results
+// z1 = [0.2, 0.8, -0.3]  → sharp geometric pattern
+// z2 = [-0.5, 0.1, 0.9]  → soft organic curves
+// midpoint → blend of geometric and organic (coherent!)
+
+// BAD latent space: interpolation produces garbage
+// Midpoint between two valid points might be in a "dead zone"
+// where the decoder produces meaningless output
+
+// Spherical interpolation (slerp) often works better for high dimensions
+function slerp(z1: tf.Tensor, z2: tf.Tensor, t: number): tf.Tensor {
+  const omega = tf.acos(
+    z1.div(z1.norm()).dot(z2.div(z2.norm())).clipByValue(-1, 1)
+  ) as tf.Scalar;
+  const sinOmega = omega.sin();
+  const coeff1 = omega.mul(1 - t).sin().div(sinOmega);
+  const coeff2 = omega.mul(t).sin().div(sinOmega);
+  return z1.mul(coeff1).add(z2.mul(coeff2));
+}`}
+</CodeBlock>
+
+## Challenge
+
+<Exercise slug="interpolate-points" />
+
+<KeyTakeaways takeaways={["Latent interpolation is CSS transitions for generated data", "Linear interpolation (lerp): result = a * (1-t) + b * t", "Structured latent spaces produce meaningful intermediate points", "Spherical interpolation (slerp) can work better in high dimensions"]} />

@@ -16,7 +16,7 @@ concept:
     feCode: "function validate(input) {\n  return input >= min && input <= max;\n}"
     mlTitle: "Anomaly Detection"
     mlCode: "function isAnomaly(reading, mean, std) {\n  return Math.abs(reading - mean) > 3 * std;\n}"
-    tier: analogy
+    tier: structural
 consequence:
   narrative: "Your first edge model is deployed to Site 12. It detects anomalies in real time."
   nextLessonTeaser: "Next: understanding when to use edge vs cloud"

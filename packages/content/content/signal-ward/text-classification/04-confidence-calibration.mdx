@@ -1,0 +1,226 @@
+---
+slug: confidence-calibration
+title: "Confidence Calibration: Knowing When You Don't Know"
+moduleId: text-classification
+themeId: signal-ward
+order: 4
+estimatedMinutes: 30
+difficulty: intermediate
+context:
+  narrative: "MEDI confidently misclassifies a rare condition. Dr. Vasquez explains that in medicine, overconfidence kills. The system needs to say 'I'm not sure.'"
+  speaker: "Dr. Elena Vasquez"
+concept:
+  explanation: "Calibration ensures that model confidence scores match actual accuracy — when the model says 80% confident, it should be right 80% of the time."
+  bridge:
+    feTitle: "TypeScript Strict Mode (flagging uncertainty)"
+    feCode: "// strict mode: flag unknown types as errors\n// 'any' is dangerous — make uncertainty explicit"
+    mlTitle: "Model Calibration"
+    mlCode: "// calibrated model: flag uncertain predictions\n// High confidence on wrong answers is dangerous"
+    tier: structural
+consequence:
+  narrative: "MEDI now knows what it doesn't know. Documents that fall below the confidence threshold get routed to human review instead of being silently misclassified."
+  nextLessonTeaser: "Next: combining everything into a complete triage pipeline."
+hints:
+  - level: nudge
+    content: "Entropy of the output distribution measures uncertainty — high entropy means the model is unsure"
+  - level: guidance
+    content: "Temperature scaling adjusts the softmax to better calibrate confidence scores"
+  - level: solution
+    content: "function calibrate(logits, temperature) { return tf.softmax(tf.div(logits, temperature)); }"
+keywords:
+  - calibration
+  - confidence
+  - uncertainty
+  - temperature-scaling
+  - entropy
+---
+
+<Dialogue speaker="MEDI">
+Document classified as ROUTINE with 94% confidence.
+</Dialogue>
+
+<Dialogue speaker="Dr. Elena Vasquez">
+That document describes a rare autoimmune flare. Your model has never seen this pattern before, yet it's 94% confident it's routine. In medicine, that kind of overconfidence is lethal. I need the system to say "I don't know" when it doesn't know.
+</Dialogue>
+
+<Dialogue speaker="Khalil Mensah">
+It's like TypeScript strict mode. Without it, everything is implicitly `any` — the compiler doesn't flag uncertainty. With strict mode, every unknown type becomes an explicit error. We need strict mode for our classifier.
+</Dialogue>
+
+<LearningObjectives objectives={["Understand why raw model confidence scores can be misleading", "Measure calibration using reliability diagrams and expected calibration error", "Apply temperature scaling to improve confidence calibration", "Use entropy as a measure of prediction uncertainty"]} />
+
+## The Danger of Confident Mistakes
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+TypeScript strict mode forces you to handle every uncertain case explicitly. Without it, the compiler silently allows `any` types — and bugs hide in the ambiguity. Model calibration is the same idea: without it, a model can be 95% "confident" about a prediction and still be wrong half the time.
+
+A well-calibrated model's confidence matches its actual accuracy. When it says 80%, it should be right about 80% of the time. Most neural networks are overconfident — they need calibration.
+
+<CodeBlock language="typescript" title="calibration.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Temperature scaling: the simplest calibration method
+function temperatureScale(
+  logits: tf.Tensor,
+  temperature: number
+): tf.Tensor {
+  // Higher temperature -> softer probabilities -> less overconfident
+  // Lower temperature -> sharper probabilities -> more confident
+  return tf.softmax(tf.div(logits, temperature));
+}
+
+// Entropy measures how uncertain the prediction distribution is
+function predictionEntropy(probs: tf.Tensor): tf.Tensor {
+  // H = -sum(p * log(p))
+  // High entropy = uncertain; low entropy = confident
+  const logProbs = tf.log(tf.add(probs, 1e-10)); // avoid log(0)
+  return tf.neg(tf.sum(tf.mul(probs, logProbs), -1));
+}
+
+// Maximum entropy for reference (uniform distribution)
+function maxEntropy(numClasses: number): number {
+  return Math.log(numClasses);
+}
+
+// Example: uncalibrated vs calibrated predictions
+const logits = tf.tensor2d([[3.5, 1.2, 0.1, -0.5, 0.3, -1.0]]);
+
+// Uncalibrated: very confident
+const uncalibrated = tf.softmax(logits);
+console.log('Uncalibrated:', await uncalibrated.data());
+
+// Calibrated with temperature = 2.0: softer distribution
+const calibrated = temperatureScale(logits, 2.0);
+console.log('Calibrated (T=2):', await calibrated.data());
+
+// Check entropy
+const uncalEntropy = predictionEntropy(uncalibrated);
+const calEntropy = predictionEntropy(calibrated);
+console.log('Uncalibrated entropy:', uncalEntropy.dataSync()[0].toFixed(3));
+console.log('Calibrated entropy:', calEntropy.dataSync()[0].toFixed(3));
+console.log('Max entropy:', maxEntropy(6).toFixed(3));`}
+</CodeBlock>
+
+## Reliability Diagrams
+
+A reliability diagram bins predictions by confidence and plots actual accuracy against predicted confidence. A perfectly calibrated model falls on the diagonal — 70% confidence means 70% accuracy. Most models curve above the diagonal (overconfident).
+
+<CodeBlock language="typescript" title="reliability-diagram.ts">
+{`interface CalibrationBin {
+  binCenter: number;
+  avgConfidence: number;
+  avgAccuracy: number;
+  count: number;
+}
+
+function computeCalibrationBins(
+  predictions: number[],
+  actuals: boolean[],
+  numBins: number = 10
+): CalibrationBin[] {
+  const bins: CalibrationBin[] = [];
+
+  for (let i = 0; i < numBins; i++) {
+    const lower = i / numBins;
+    const upper = (i + 1) / numBins;
+    const binCenter = (lower + upper) / 2;
+
+    const inBin = predictions
+      .map((p, idx) => ({ confidence: p, correct: actuals[idx] }))
+      .filter(x => x.confidence >= lower && x.confidence < upper);
+
+    if (inBin.length === 0) {
+      bins.push({ binCenter, avgConfidence: 0, avgAccuracy: 0, count: 0 });
+      continue;
+    }
+
+    const avgConfidence = inBin.reduce((s, x) => s + x.confidence, 0) / inBin.length;
+    const avgAccuracy = inBin.filter(x => x.correct).length / inBin.length;
+
+    bins.push({ binCenter, avgConfidence, avgAccuracy, count: inBin.length });
+  }
+
+  return bins;
+}
+
+// Expected Calibration Error (ECE)
+function expectedCalibrationError(
+  bins: CalibrationBin[],
+  totalSamples: number
+): number {
+  return bins.reduce((ece, bin) => {
+    return ece + (bin.count / totalSamples) *
+      Math.abs(bin.avgAccuracy - bin.avgConfidence);
+  }, 0);
+}
+
+// Example: check calibration
+const predictions = [0.91, 0.88, 0.92, 0.87, 0.93, 0.90, 0.89, 0.91, 0.88, 0.92];
+const correct = [true, true, false, true, true, false, true, false, true, true];
+
+const bins = computeCalibrationBins(predictions, correct);
+const ece = expectedCalibrationError(bins, predictions.length);
+console.log('ECE (lower is better):', ece.toFixed(4));
+// High ECE means the model is poorly calibrated`}
+</CodeBlock>
+
+## Uncertainty-Aware Routing
+
+<Dialogue speaker="Dr. Elena Vasquez">
+Here's my rule: if the model's confidence is below 70%, route it to a human reviewer. I'd rather have a physician spend 30 seconds confirming a result than have the system silently make a mistake.
+</Dialogue>
+
+<Dialogue speaker="MEDI">
+Understood. Implementing uncertainty-aware routing. Documents below confidence threshold will be flagged for human review.
+</Dialogue>
+
+<CodeBlock language="typescript" title="uncertainty-routing.ts">
+{`interface ClassificationResult {
+  label: string;
+  confidence: number;
+  entropy: number;
+  needsReview: boolean;
+}
+
+function classifyWithUncertainty(
+  logits: tf.Tensor,
+  labels: string[],
+  temperature: number = 1.5,
+  reviewThreshold: number = 0.7
+): ClassificationResult {
+  // Calibrate with temperature scaling
+  const calibratedProbs = temperatureScale(logits, temperature);
+  const probArray = calibratedProbs.dataSync();
+
+  // Find top prediction
+  const topIdx = calibratedProbs.argMax(-1).dataSync()[0];
+  const confidence = probArray[topIdx];
+
+  // Compute entropy
+  const entropy = predictionEntropy(calibratedProbs).dataSync()[0];
+  const maxEnt = maxEntropy(labels.length);
+  const normalizedEntropy = entropy / maxEnt; // 0 = certain, 1 = maximally uncertain
+
+  return {
+    label: labels[topIdx],
+    confidence,
+    entropy: normalizedEntropy,
+    needsReview: confidence < reviewThreshold || normalizedEntropy > 0.5
+  };
+}
+
+// Usage: classify and check if human review is needed
+// const result = classifyWithUncertainty(logits, DEPARTMENTS, 1.5, 0.7);
+// if (result.needsReview) {
+//   console.log('Routing to human review:', result.label, result.confidence);
+// }`}
+</CodeBlock>
+
+## Challenge
+
+Implement confidence calibration and uncertainty detection for a clinical classifier.
+
+<Exercise slug="calibrate-confidence" />
+
+<KeyTakeaways takeaways={["Raw model confidence scores are often overconfident and should not be trusted at face value", "Temperature scaling is the simplest method to improve calibration — divide logits by a learned temperature", "Entropy of the prediction distribution measures uncertainty — high entropy means the model is unsure", "In clinical systems, uncertain predictions should route to human review rather than be silently classified"]} />

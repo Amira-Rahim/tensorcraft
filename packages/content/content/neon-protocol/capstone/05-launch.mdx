@@ -1,0 +1,420 @@
+---
+slug: np-launch
+title: "Launch"
+moduleId: np-capstone
+themeId: neon-protocol
+order: 5
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "Midnight. Every resistance cell in Neon City is online. Protocol Sentinel is loaded in 200 browsers across 12 districts. Lin's voice crackles over the encrypted channel: 'Feature flags are set. Canary deployment to District 7 first. If it holds, we go city-wide.' Kira's hand hovers over the launch command. Everything she has built — detection, classification, adversarial defense, streaming, testing, documentation — converges into this single moment."
+  speaker: "Lin"
+concept:
+  explanation: "Launching an ML system follows the same deployment strategy as a production web app: feature flags for gradual rollout, canary deployments for risk mitigation, monitoring dashboards for real-time health, and rollback procedures when things go wrong."
+  bridge:
+    feTitle: "Production Deployment with Feature Flags"
+    feCode: "if (featureFlag('new-checkout')) { render(<NewCheckout />); } // gradual rollout, instant rollback"
+    mlTitle: "Model Launch with Feature Flags"
+    mlCode: "if (featureFlag('sentinel-v1')) { pipeline.run(frame); } // canary deployment, instant rollback"
+    tier: identity
+consequence:
+  narrative: "District 7 lights up. Protocol Sentinel detects 34 Meridian surveillance devices in the first hour. Confidence scores above 0.85 on every alert. Zero false positives against the human verification team. Lin opens the channel: 'All districts — go live.' Across Neon City, 200 browsers activate. Every screen in every district shows the evidence. Meridian's surveillance network — exposed. The Architect's voice cuts through the static: 'You think transparency is a weapon? I built the infrastructure you are using to fight me.' Kira closes her laptop. 'That is the point. The tools are neutral. The documentation is not. Everyone can see what you built and what it does to people.' Protocol Sentinel watches the watchers. And this time, the watchers cannot hide."
+  nextLessonTeaser: "Congratulations. You have completed Neon Protocol. The bridge from frontend to computer vision is no longer a gap — it is a path you have walked."
+hints:
+  - level: nudge
+    content: "Think of model deployment like deploying a Next.js app — feature flags, canary rollout, monitoring, rollback"
+  - level: guidance
+    content: "Implement a feature flag system that controls which pipeline version runs, with percentage-based rollout"
+  - level: solution
+    content: "Create a deployment config with feature flags, health checks, and automatic rollback on error rate threshold"
+keywords:
+  - deployment
+  - feature-flags
+  - canary-deployment
+  - monitoring
+  - rollback
+  - launch
+---
+
+<Dialogue speaker="Lin">
+This is not a demo. This is not a test. Two hundred cells. Twelve districts. Every browser running Protocol Sentinel simultaneously. We deploy to District 7 first — canary deployment. If the error rate stays below 2% for one hour, we go city-wide. Kira — you built the feature flag system. Walk us through it.
+</Dialogue>
+
+<Dialogue speaker="Kira">
+Same pattern I used at my last startup for deploying new checkout flows. Feature flags control which pipeline version runs. We start at 10% of District 7 feeds. Monitor error rates, inference latency, false positive rate. If anything spikes, we roll back instantly — the old pipeline keeps running behind the flag.
+</Dialogue>
+
+<Dialogue speaker="Ryo">
+And the monitoring dashboard? Real-time metrics — not batch reports from yesterday. I want to see every detection, every confidence score, every error as it happens.
+</Dialogue>
+
+You have deployed web applications with feature flags, canary rollouts, and instant rollback. Launching Protocol Sentinel follows the same playbook. The only difference is the metrics you monitor: instead of page load time and conversion rate, you track inference latency, detection accuracy, and false positive rate.
+
+<LearningObjectives objectives={["Implement feature flags for gradual ML model rollout", "Design a canary deployment strategy with automatic rollback triggers", "Build a real-time monitoring dashboard for ML pipeline health", "Execute a production launch with staged rollout across multiple deployment targets"]} />
+
+## Feature Flags for ML
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="feature-flags.ts">
+{`// Feature flags for ML pipeline — same pattern as frontend feature flags
+
+interface FeatureFlag {
+  name: string;
+  enabled: boolean;
+  rolloutPercentage: number;  // 0-100
+  targetDistricts: string[];
+  metadata: {
+    modelVersion: string;
+    deployedAt: number;
+    deployedBy: string;
+  };
+}
+
+class SentinelFlags {
+  private flags: Map<string, FeatureFlag> = new Map();
+
+  register(flag: FeatureFlag): void {
+    this.flags.set(flag.name, flag);
+  }
+
+  isEnabled(name: string, context: { district: string; feedId: string }): boolean {
+    const flag = this.flags.get(name);
+    if (!flag || !flag.enabled) return false;
+
+    // Check district targeting
+    if (flag.targetDistricts.length > 0 &&
+        !flag.targetDistricts.includes(context.district)) {
+      return false;
+    }
+
+    // Percentage-based rollout using consistent hashing
+    const hash = simpleHash(context.feedId);
+    return (hash % 100) < flag.rolloutPercentage;
+  }
+
+  setRollout(name: string, percentage: number): void {
+    const flag = this.flags.get(name);
+    if (flag) {
+      flag.rolloutPercentage = Math.min(100, Math.max(0, percentage));
+      console.log(\`[\${name}] Rollout: \${flag.rolloutPercentage}%\`);
+    }
+  }
+
+  kill(name: string): void {
+    const flag = this.flags.get(name);
+    if (flag) {
+      flag.enabled = false;
+      console.log(\`[\${name}] KILLED — rolling back to previous version\`);
+    }
+  }
+}
+
+function simpleHash(str: string): number {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = ((hash << 5) - hash) + str.charCodeAt(i);
+    hash |= 0;
+  }
+  return Math.abs(hash);
+}
+
+// Register Protocol Sentinel v1
+const flags = new SentinelFlags();
+flags.register({
+  name: 'sentinel-v1',
+  enabled: true,
+  rolloutPercentage: 10,  // Start with 10%
+  targetDistricts: ['district-7'],  // Canary district
+  metadata: {
+    modelVersion: '1.0.0',
+    deployedAt: Date.now(),
+    deployedBy: 'kira-chen',
+  },
+});`}
+</CodeBlock>
+
+## Canary Deployment
+
+<CodeBlock language="typescript" title="canary.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Canary deployment — run new pipeline alongside old, compare results
+interface CanaryConfig {
+  canaryFlag: string;
+  errorRateThreshold: number;   // Max acceptable error rate (e.g., 0.02 = 2%)
+  latencyThreshold: number;     // Max acceptable p95 latency in ms
+  minSampleSize: number;        // Minimum frames before making a decision
+  evaluationWindow: number;     // Time window in ms
+}
+
+interface CanaryMetrics {
+  totalFrames: number;
+  errors: number;
+  latencies: number[];
+  falsePositives: number;
+  truePositives: number;
+  startTime: number;
+}
+
+class CanaryDeployment {
+  private config: CanaryConfig;
+  private metrics: CanaryMetrics;
+  private flags: SentinelFlags;
+
+  constructor(config: CanaryConfig, flags: SentinelFlags) {
+    this.config = config;
+    this.flags = flags;
+    this.metrics = {
+      totalFrames: 0,
+      errors: 0,
+      latencies: [],
+      falsePositives: 0,
+      truePositives: 0,
+      startTime: Date.now(),
+    };
+  }
+
+  recordResult(latencyMs: number, error: boolean, falsePositive: boolean): void {
+    this.metrics.totalFrames++;
+    this.metrics.latencies.push(latencyMs);
+    if (error) this.metrics.errors++;
+    if (falsePositive) this.metrics.falsePositives++;
+    if (!error && !falsePositive) this.metrics.truePositives++;
+
+    // Evaluate after minimum sample size
+    if (this.metrics.totalFrames >= this.config.minSampleSize) {
+      this.evaluate();
+    }
+  }
+
+  private evaluate(): void {
+    const errorRate = this.metrics.errors / this.metrics.totalFrames;
+    const sorted = [...this.metrics.latencies].sort((a, b) => a - b);
+    const p95Index = Math.floor(sorted.length * 0.95);
+    const p95Latency = sorted[p95Index];
+
+    console.log(\`Canary evaluation:
+      Frames: \${this.metrics.totalFrames}
+      Error rate: \${(errorRate * 100).toFixed(2)}%
+      P95 latency: \${p95Latency.toFixed(1)}ms
+      False positives: \${this.metrics.falsePositives}\`);
+
+    // Auto-rollback on threshold breach
+    if (errorRate > this.config.errorRateThreshold) {
+      console.error(\`ERROR RATE EXCEEDED: \${(errorRate * 100).toFixed(2)}% > \${this.config.errorRateThreshold * 100}%\`);
+      this.rollback('error-rate-exceeded');
+      return;
+    }
+
+    if (p95Latency > this.config.latencyThreshold) {
+      console.error(\`LATENCY EXCEEDED: \${p95Latency.toFixed(1)}ms > \${this.config.latencyThreshold}ms\`);
+      this.rollback('latency-exceeded');
+      return;
+    }
+
+    // If evaluation window passed and metrics are good, promote
+    const elapsed = Date.now() - this.metrics.startTime;
+    if (elapsed > this.config.evaluationWindow) {
+      this.promote();
+    }
+  }
+
+  private rollback(reason: string): void {
+    console.log(\`ROLLBACK: \${reason}\`);
+    this.flags.kill(this.config.canaryFlag);
+  }
+
+  private promote(): void {
+    console.log('CANARY PASSED — promoting to full rollout');
+    this.flags.setRollout(this.config.canaryFlag, 100);
+  }
+}
+
+// Launch canary for District 7
+const canary = new CanaryDeployment(
+  {
+    canaryFlag: 'sentinel-v1',
+    errorRateThreshold: 0.02,     // 2% max errors
+    latencyThreshold: 100,        // 100ms p95
+    minSampleSize: 500,           // Evaluate after 500 frames
+    evaluationWindow: 3600000,    // 1 hour window
+  },
+  flags
+);`}
+</CodeBlock>
+
+## Real-Time Monitoring
+
+<Dialogue speaker="Ryo">
+Numbers on a screen mean nothing without context. Show me the health of every stage, every feed, every district. If a single camera drops below threshold, I want to know before the operator does.
+</Dialogue>
+
+<CodeBlock language="typescript" title="monitoring.ts">
+{`// Real-time monitoring dashboard — same as frontend performance monitoring
+interface PipelineHealth {
+  stage: string;
+  status: 'healthy' | 'degraded' | 'critical';
+  metrics: {
+    avgLatencyMs: number;
+    p95LatencyMs: number;
+    errorRate: number;
+    throughputFps: number;
+  };
+  lastError?: string;
+  lastUpdated: number;
+}
+
+class SentinelMonitor {
+  private health: Map<string, PipelineHealth> = new Map();
+  private listeners: Array<(health: PipelineHealth[]) => void> = [];
+
+  recordStageMetric(
+    stage: string,
+    latencyMs: number,
+    success: boolean,
+    error?: string
+  ): void {
+    const current = this.health.get(stage) || {
+      stage,
+      status: 'healthy' as const,
+      metrics: { avgLatencyMs: 0, p95LatencyMs: 0, errorRate: 0, throughputFps: 0 },
+      lastUpdated: Date.now(),
+    };
+
+    // Update rolling averages
+    const alpha = 0.1; // exponential moving average
+    current.metrics.avgLatencyMs =
+      alpha * latencyMs + (1 - alpha) * current.metrics.avgLatencyMs;
+    current.metrics.errorRate =
+      alpha * (success ? 0 : 1) + (1 - alpha) * current.metrics.errorRate;
+
+    // Determine status
+    if (current.metrics.errorRate > 0.1) {
+      current.status = 'critical';
+    } else if (current.metrics.errorRate > 0.02 || current.metrics.avgLatencyMs > 80) {
+      current.status = 'degraded';
+    } else {
+      current.status = 'healthy';
+    }
+
+    if (error) current.lastError = error;
+    current.lastUpdated = Date.now();
+
+    this.health.set(stage, current);
+    this.notify();
+  }
+
+  onUpdate(listener: (health: PipelineHealth[]) => void): void {
+    this.listeners.push(listener);
+  }
+
+  private notify(): void {
+    const snapshot = Array.from(this.health.values());
+    for (const listener of this.listeners) {
+      listener(snapshot);
+    }
+  }
+
+  getSystemStatus(): 'operational' | 'degraded' | 'critical' {
+    const stages = Array.from(this.health.values());
+    if (stages.some(s => s.status === 'critical')) return 'critical';
+    if (stages.some(s => s.status === 'degraded')) return 'degraded';
+    return 'operational';
+  }
+}
+
+// Wire monitoring into the pipeline
+const monitor = new SentinelMonitor();
+
+monitor.onUpdate((health) => {
+  const system = monitor.getSystemStatus();
+  console.log(\`System: \${system}\`);
+  for (const stage of health) {
+    console.log(\`  [\${stage.stage}] \${stage.status} — \${stage.metrics.avgLatencyMs.toFixed(1)}ms avg\`);
+  }
+});`}
+</CodeBlock>
+
+## The Launch
+
+<Dialogue speaker="Lin">
+District 7 — canary is green. Error rate 0.3%. P95 latency 42 milliseconds. 34 detections in the first hour, all confirmed by human operators. Zero false positives. All districts — go live.
+</Dialogue>
+
+<Dialogue speaker="Kira">
+Rolling out to 100%. All districts. All feeds.
+</Dialogue>
+
+<Dialogue speaker="NEON">
+Two hundred browsers. Twelve districts. Four hundred and twelve active camera feeds. Protocol Sentinel is processing 15 frames per second per feed. I can see everything the Architect built — every camera, every drone, every tracking device. And now, so can everyone else.
+</Dialogue>
+
+<Dialogue speaker="The Architect">
+You think transparency is a weapon? I built the infrastructure you are using to fight me. Every fiber optic cable. Every cell tower. Every GPU in those browsers runs on my silicon.
+</Dialogue>
+
+<Dialogue speaker="Kira">
+That is the point. The tools are neutral. The documentation is not. Everyone can see what you built and what it does to people. You cannot hide behind proprietary systems anymore. We documented everything — including your model's 23% false positive rate on dark-skinned faces that you never disclosed.
+</Dialogue>
+
+<CodeBlock language="typescript" title="launch.ts">
+{`// The final deployment — go city-wide
+async function launchProtocolSentinel(): Promise<void> {
+  console.log('=== PROTOCOL SENTINEL — CITY-WIDE LAUNCH ===');
+  console.log(\`Timestamp: \${new Date().toISOString()}\`);
+  console.log(\`Districts: ALL (1-12)\`);
+  console.log(\`Active feeds: 412\`);
+  console.log('');
+
+  // Step 1: Verify all models loaded
+  const models = ['detector', 'classifier', 'adversarial-guard'];
+  for (const name of models) {
+    const model = await tf.loadLayersModel(\`/models/\${name}/model.json\`);
+    console.log(\`Model \${name}: loaded (\${model.countParams()} params)\`);
+  }
+
+  // Step 2: Remove district targeting — go global
+  flags.setRollout('sentinel-v1', 100);
+  flags.register({
+    name: 'sentinel-v1',
+    enabled: true,
+    rolloutPercentage: 100,
+    targetDistricts: [], // Empty = all districts
+    metadata: {
+      modelVersion: '1.0.0',
+      deployedAt: Date.now(),
+      deployedBy: 'kira-chen',
+    },
+  });
+
+  // Step 3: Activate monitoring for all districts
+  monitor.onUpdate((health) => {
+    const critical = health.filter(h => h.status === 'critical');
+    if (critical.length > 0) {
+      console.error('CRITICAL STAGES:', critical.map(c => c.stage));
+      // Auto-rollback if critical errors in first 10 minutes
+      const uptime = Date.now() - launchTime;
+      if (uptime < 600000) {
+        console.error('AUTO-ROLLBACK: critical error within launch window');
+        flags.kill('sentinel-v1');
+      }
+    }
+  });
+
+  const launchTime = Date.now();
+  console.log('');
+  console.log('Protocol Sentinel is LIVE.');
+  console.log('Watch the watchers.');
+}
+
+launchProtocolSentinel();`}
+</CodeBlock>
+
+## Challenge
+
+Implement a deployment configuration with feature flags, health checks, and automatic rollback.
+
+<Exercise slug="deploy-sentinel" />
+
+<KeyTakeaways takeaways={["ML model deployment uses the same strategies as frontend deployment: feature flags, canary rollout, monitoring, rollback", "Feature flags enable instant rollback — the previous model keeps running behind the flag", "Canary deployments limit blast radius — test on a subset before going global", "Real-time monitoring with automatic rollback triggers prevents bad models from reaching all users"]} />

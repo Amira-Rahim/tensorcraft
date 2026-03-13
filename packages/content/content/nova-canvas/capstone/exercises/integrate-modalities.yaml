@@ -1,0 +1,80 @@
+slug: integrate-modalities
+lessonSlug: final-integration
+title: "Integrate Modalities"
+instructions: "Build a MultiModalOrchestrator that registers named generator modules and runs them all in parallel from a shared input. Each module has a name and an async generate(input) method. The orchestrator's generateAll(input) method should run all registered modules in parallel and return an object mapping module names to their outputs. If any module fails, its entry should be null (use Promise.allSettled)."
+starterCode: |
+  interface GeneratorModule {
+    name: string;
+    generate: (input: any) => Promise<any>;
+  }
+
+  class MultiModalOrchestrator {
+    private modules: GeneratorModule[] = [];
+
+    register(module: GeneratorModule): void {
+      // your code here
+    }
+
+    async generateAll(input: any): Promise<Record<string, any | null>> {
+      // Run all modules in parallel, return map of name → result (null on failure)
+      // your code here
+      return {};
+    }
+  }
+solutionCode: |
+  class MultiModalOrchestrator {
+    private modules: GeneratorModule[] = [];
+
+    register(module: GeneratorModule): void {
+      this.modules.push(module);
+    }
+
+    async generateAll(input: any): Promise<Record<string, any | null>> {
+      const results: Record<string, any | null> = {};
+      const settled = await Promise.allSettled(
+        this.modules.map(async (mod) => {
+          const output = await mod.generate(input);
+          return { name: mod.name, output };
+        })
+      );
+      for (const result of settled) {
+        if (result.status === 'fulfilled') {
+          results[result.value.name] = result.value.output;
+        } else {
+          const mod = this.modules[settled.indexOf(result)];
+          results[mod.name] = null;
+        }
+      }
+      return results;
+    }
+  }
+testCode: |
+  describe('MultiModalOrchestrator', () => {
+    it('runs all modules', async () => {
+      const orch = new MultiModalOrchestrator();
+      orch.register({ name: 'image', generate: async (x) => 'img-' + x });
+      orch.register({ name: 'audio', generate: async (x) => 'aud-' + x });
+      const result = await orch.generateAll('test');
+      expect(result.image).toBe('img-test');
+      expect(result.audio).toBe('aud-test');
+    });
+    it('handles module failure gracefully', async () => {
+      const orch = new MultiModalOrchestrator();
+      orch.register({ name: 'ok', generate: async () => 'fine' });
+      orch.register({ name: 'bad', generate: async () => { throw new Error('fail'); } });
+      const result = await orch.generateAll('test');
+      expect(result.ok).toBe('fine');
+      expect(result.bad).toBeNull();
+    });
+    it('runs in parallel', async () => {
+      const orch = new MultiModalOrchestrator();
+      const delay = (ms) => new Promise(r => setTimeout(r, ms));
+      orch.register({ name: 'a', generate: async () => { await delay(50); return 'a'; } });
+      orch.register({ name: 'b', generate: async () => { await delay(50); return 'b'; } });
+      const start = Date.now();
+      await orch.generateAll('test');
+      expect(Date.now() - start).toBeLessThan(120);
+    });
+  });
+estimatedMinutes: 15
+difficulty: advanced

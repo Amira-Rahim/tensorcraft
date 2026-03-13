@@ -1,0 +1,106 @@
+---
+slug: benchmarking
+title: "Benchmarking"
+moduleId: optimization-fundamentals
+themeId: terra-grid
+order: 4
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Cole needs standardized benchmarks before deploying updated models to the field."
+  speaker: "Cole Branson"
+concept:
+  explanation: "Benchmarking model performance is like using performance.mark() and performance.measure() in the browser — standardized, repeatable measurements."
+  bridge:
+    feTitle: "Performance API"
+    feCode: "performance.mark('start');\nprocessData();\nperformance.mark('end');\nperformance.measure('process', 'start', 'end');"
+    mlTitle: "Model Benchmark"
+    mlCode: "const start = performance.now();\nmodel.predict(input);\nconst elapsed = performance.now() - start;"
+    tier: identity
+consequence:
+  narrative: "Every model now has a benchmark suite that runs before field deployment."
+  nextLessonTeaser: "Next: creating your optimization strategy"
+hints:
+  - level: nudge
+    content: "Run multiple inference passes and average the results"
+  - level: guidance
+    content: "Include warm-up runs to account for JIT compilation"
+  - level: solution
+    content: "Run 10 warm-up passes, then 100 measurement passes, report mean and p95"
+keywords:
+  - benchmark
+  - performance-api
+  - latency
+  - throughput
+---
+
+<Dialogue speaker="Cole Branson">
+Last month someone deployed a model that benchmarked at 45ms on their laptop and ran at 890ms on the gateway. We need standardized benchmarks that reflect real device performance. No more surprises in the field.
+</Dialogue>
+
+You use `performance.mark()` and `performance.measure()` to benchmark frontend code. Model benchmarking uses the same timing primitives but adds ML-specific considerations: warm-up runs, batch sizes, and memory tracking.
+
+<LearningObjectives objectives={["Build a standardized model benchmark suite", "Account for warm-up runs and JIT compilation effects", "Measure latency, throughput, and memory usage", "Report p50, p95, and p99 latency percentiles"]} />
+
+## Standardized Measurement
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="benchmark-model.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+interface BenchmarkResult {
+  meanMs: number;
+  p95Ms: number;
+  p99Ms: number;
+  throughputPerSec: number;
+  peakMemoryMB: number;
+}
+
+async function benchmarkModel(
+  model: tf.LayersModel,
+  inputShape: number[],
+  warmupRuns: number = 10,
+  measureRuns: number = 100
+): Promise<BenchmarkResult> {
+  const input = tf.randomNormal([1, ...inputShape]);
+
+  // Warm-up: let JIT optimize (like browser JIT for JS)
+  for (let i = 0; i < warmupRuns; i++) {
+    const pred = model.predict(input) as tf.Tensor;
+    pred.dispose();
+  }
+
+  // Measure
+  const times: number[] = [];
+  for (let i = 0; i < measureRuns; i++) {
+    const start = performance.now();
+    const pred = model.predict(input) as tf.Tensor;
+    pred.dataSync(); // Force synchronous completion
+    const elapsed = performance.now() - start;
+    times.push(elapsed);
+    pred.dispose();
+  }
+
+  input.dispose();
+  times.sort((a, b) => a - b);
+
+  return {
+    meanMs: times.reduce((a, b) => a + b) / times.length,
+    p95Ms: times[Math.floor(times.length * 0.95)],
+    p99Ms: times[Math.floor(times.length * 0.99)],
+    throughputPerSec: 1000 / (times.reduce((a, b) => a + b) / times.length),
+    peakMemoryMB: tf.memory().numBytes / (1024 * 1024)
+  };
+}`}
+</CodeBlock>
+
+The warm-up phase is critical. Just as V8's JIT compiler optimizes hot functions after a few calls, TensorFlow.js optimizes tensor operations after initial runs. Skipping warm-up gives you artificially slow first-run numbers.
+
+## Challenge
+
+Write a benchmark function that measures model inference latency.
+
+<Exercise slug="benchmark-model" />
+
+<KeyTakeaways takeaways={["Always include warm-up runs before measuring — JIT affects both JS and TF.js", "Report percentiles (p95, p99) not just means — outliers matter on edge devices", "Use dataSync() to force synchronous completion for accurate timing", "Standardized benchmarks prevent deploy-time surprises in the field"]} />

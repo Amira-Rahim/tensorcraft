@@ -1,0 +1,244 @@
+---
+slug: monitoring-and-drift
+title: "Monitoring and Drift"
+moduleId: deployment
+themeId: neon-protocol
+order: 4
+estimatedMinutes: 30
+difficulty: intermediate
+context:
+  narrative: "Protocol Sentinel has been live for three days. Accuracy reports from District 9 show a drop from 94% to 71%. Something has changed — not in the model, but in the world. NEON: 'Meridian updated their drone fleet. Your training data is stale. Welcome to data drift.'"
+  speaker: "Ryo"
+concept:
+  explanation: "Model monitoring is error tracking for ML. Just like you use Sentry or DataDog to watch for runtime errors and performance regressions in your web apps, you need monitoring for model predictions — tracking confidence scores, latency, accuracy decay, and data drift over time."
+  bridge:
+    feTitle: "Error Tracking (Sentry/DataDog)"
+    feCode: "Sentry.captureException(error);\nSentry.setTag('page', '/dashboard');\ntrackMetric('api_latency_ms', 230);"
+    mlTitle: "Model Monitoring"
+    mlCode: "trackMetric('prediction_confidence', 0.72);\ntrackMetric('inference_latency_ms', 45);\ndetectDrift(currentDistribution, baselineDistribution);"
+    tier: structural
+consequence:
+  narrative: "Ryo sets up automated drift alerts. When District 9's confidence scores drop below 80%, the system flags it immediately. Lin begins collecting new samples of Meridian's updated drones. NEON: 'The model is not broken. The world moved. Now you can see it moving.'"
+  nextLessonTeaser: "Next: stress-testing Sentinel to make sure it survives anything Meridian throws at it"
+hints:
+  - level: nudge
+    content: "Track prediction confidence over time — a downward trend means something in the input data has changed"
+  - level: guidance
+    content: "Compare the distribution of incoming prediction scores against a baseline from training. Use statistical distance measures like mean shift or KL divergence."
+  - level: solution
+    content: "Compute a running average of confidence scores and alert when it drops below a threshold. Compare input feature distributions using simple statistics like mean and standard deviation shift."
+keywords:
+  - monitoring
+  - data-drift
+  - model-performance
+  - confidence-tracking
+  - distribution-shift
+---
+
+<Dialogue speaker="Ryo">
+District 9 is reporting false negatives. Meridian drones flying right past Sentinel undetected. Three days ago we were at 94% accuracy. Now we are at 71%. The model has not changed. What happened?
+</Dialogue>
+
+<Dialogue speaker="NEON">
+The model has not changed. The world has. Meridian deployed new drone models — different shapes, different paint, different flight patterns. Your training data does not include them. This is data drift, and it will kill any deployed model that is not monitored.
+</Dialogue>
+
+Deploying a model is not the end of the job — it is the beginning of a new one. Models decay. The real world changes. Data drift is the ML equivalent of an API breaking because a third-party service changed their response format. You need monitoring to catch it.
+
+<LearningObjectives objectives={["Implement real-time confidence score tracking for deployed models", "Detect data drift by comparing input distributions against a baseline", "Build alerting thresholds for model performance degradation", "Design a monitoring dashboard for browser-based ML systems"]} />
+
+## Error Tracking for Models
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="model-monitor.ts">
+{`interface MonitorConfig {
+  confidenceThreshold: number;
+  windowSize: number;
+  driftAlertThreshold: number;
+}
+
+interface PredictionLog {
+  timestamp: number;
+  confidence: number;
+  classIndex: number;
+  inferenceMs: number;
+}
+
+class ModelMonitor {
+  private config: MonitorConfig;
+  private logs: PredictionLog[] = [];
+  private baselineConfidences: number[] = [];
+  private alertCallbacks: ((message: string) => void)[] = [];
+
+  constructor(config: MonitorConfig) {
+    this.config = config;
+  }
+
+  // Record baseline during initial healthy deployment
+  setBaseline(confidences: number[]): void {
+    this.baselineConfidences = confidences;
+  }
+
+  // Log every prediction
+  log(prediction: PredictionLog): void {
+    this.logs.push(prediction);
+
+    // Check for low confidence
+    if (prediction.confidence < this.config.confidenceThreshold) {
+      this.alert(
+        \`Low confidence prediction: \${(prediction.confidence * 100).toFixed(1)}% at \${new Date(prediction.timestamp).toISOString()}\`
+      );
+    }
+
+    // Check for drift on rolling window
+    if (this.logs.length >= this.config.windowSize) {
+      this.checkDrift();
+    }
+  }
+
+  private checkDrift(): void {
+    const recent = this.logs.slice(-this.config.windowSize);
+    const recentMean = recent.reduce((s, l) => s + l.confidence, 0) / recent.length;
+    const baselineMean = this.baselineConfidences.reduce((a, b) => a + b, 0)
+      / this.baselineConfidences.length;
+
+    const drift = baselineMean - recentMean;
+
+    if (drift > this.config.driftAlertThreshold) {
+      this.alert(
+        \`Data drift detected: confidence dropped \${(drift * 100).toFixed(1)}% from baseline (\${(baselineMean * 100).toFixed(1)}% → \${(recentMean * 100).toFixed(1)}%)\`
+      );
+    }
+  }
+
+  onAlert(callback: (message: string) => void): void {
+    this.alertCallbacks.push(callback);
+  }
+
+  private alert(message: string): void {
+    this.alertCallbacks.forEach(cb => cb(message));
+  }
+
+  getMetrics() {
+    const recent = this.logs.slice(-this.config.windowSize);
+    return {
+      totalPredictions: this.logs.length,
+      avgConfidence: recent.reduce((s, l) => s + l.confidence, 0) / recent.length,
+      avgLatencyMs: recent.reduce((s, l) => s + l.inferenceMs, 0) / recent.length,
+      lowConfidenceRate: recent.filter(
+        l => l.confidence < this.config.confidenceThreshold
+      ).length / recent.length
+    };
+  }
+}`}
+</CodeBlock>
+
+## Detecting Distribution Shift
+
+Data drift means the incoming data looks different from what the model was trained on. You can detect it by comparing simple statistics.
+
+<CodeBlock language="typescript" title="drift-detection.ts">
+{`interface DistributionStats {
+  mean: number;
+  stdDev: number;
+  min: number;
+  max: number;
+}
+
+function computeStats(values: number[]): DistributionStats {
+  const mean = values.reduce((a, b) => a + b, 0) / values.length;
+  const variance = values.reduce((sum, v) => sum + (v - mean) ** 2, 0) / values.length;
+  return {
+    mean,
+    stdDev: Math.sqrt(variance),
+    min: Math.min(...values),
+    max: Math.max(...values)
+  };
+}
+
+function detectDrift(
+  baseline: DistributionStats,
+  current: DistributionStats,
+  threshold: number = 2.0
+): { isDrifted: boolean; severity: number; details: string } {
+  // Normalized mean shift: how many baseline std devs has the mean moved?
+  const meanShift = Math.abs(current.mean - baseline.mean) / baseline.stdDev;
+
+  // Variance ratio: has the spread of predictions changed?
+  const varianceRatio = current.stdDev / baseline.stdDev;
+
+  const isDrifted = meanShift > threshold || varianceRatio > 2.0 || varianceRatio < 0.5;
+
+  return {
+    isDrifted,
+    severity: meanShift,
+    details: isDrifted
+      ? \`Mean shifted \${meanShift.toFixed(2)} std devs. Variance ratio: \${varianceRatio.toFixed(2)}\`
+      : 'Distribution stable'
+  };
+}
+
+// Usage with the monitor
+const baselineStats = computeStats(baselineConfidences);
+
+setInterval(() => {
+  const recentConfidences = monitor.getRecentConfidences(100);
+  const currentStats = computeStats(recentConfidences);
+  const driftResult = detectDrift(baselineStats, currentStats);
+
+  if (driftResult.isDrifted) {
+    console.warn('DRIFT ALERT:', driftResult.details);
+    // Trigger retraining pipeline or alert the team
+  }
+}, 60_000); // check every minute`}
+</CodeBlock>
+
+## Wiring It Together
+
+<CodeBlock language="typescript" title="monitored-inference.ts">
+{`// Wrap the inference API with monitoring
+const sentinel = new SentinelAPI();
+const monitor = new ModelMonitor({
+  confidenceThreshold: 0.7,
+  windowSize: 100,
+  driftAlertThreshold: 0.15
+});
+
+// Set baseline from validation set
+monitor.setBaseline(validationConfidences);
+
+// Alert handler
+monitor.onAlert((msg) => {
+  console.warn('[SENTINEL MONITOR]', msg);
+  // Send to your alerting system
+  fetch('/api/alerts', {
+    method: 'POST',
+    body: JSON.stringify({ source: 'sentinel', message: msg })
+  });
+});
+
+// Monitored prediction
+async function monitoredPredict(imageData: ImageData) {
+  const start = performance.now();
+  const result = await sentinel.predict(imageData);
+  const inferenceMs = performance.now() - start;
+
+  monitor.log({
+    timestamp: Date.now(),
+    confidence: result.confidence,
+    classIndex: result.classIndex,
+    inferenceMs
+  });
+
+  return result;
+}`}
+</CodeBlock>
+
+## Challenge
+
+Build a drift detector that compares current prediction distributions against a baseline.
+
+<Exercise slug="monitor-drift" />
+
+<KeyTakeaways takeaways={["Model monitoring is error tracking for ML — track confidence, latency, and accuracy over time", "Data drift means the real world has changed but your model has not — it causes silent accuracy decay", "Detect drift by comparing rolling statistics (mean, std dev) of predictions against a baseline", "Automated alerts on drift let you catch degradation before users report failures"]} />

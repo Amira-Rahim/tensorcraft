@@ -1,0 +1,364 @@
+---
+slug: testing-and-validation
+title: "Testing and Validation"
+moduleId: np-capstone
+themeId: neon-protocol
+order: 3
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "The pipeline runs. But Lin refuses to deploy untested software. 'If Protocol Sentinel misclassifies a civilian as a Meridian agent, we destroy someone's life. If it misses a surveillance drone, we are exposed.' Zara takes the lead on testing. She maps the ML testing pyramid — unit tests for individual components, integration tests for stage connections, end-to-end tests for the full pipeline. Kira recognizes every layer."
+  speaker: "Zara"
+concept:
+  explanation: "ML testing follows the same testing pyramid as frontend development: unit tests for individual functions, integration tests for connected components, and end-to-end tests for the complete system. Add data validation as a fourth layer unique to ML."
+  bridge:
+    feTitle: "Frontend Testing Pyramid"
+    feCode: "// Unit: expect(format(date)).toBe('Jan 1')  Integration: render(<Form />) → submit  E2E: cy.visit('/') → click → assert"
+    mlTitle: "ML Testing Pyramid"
+    mlCode: "// Unit: expect(preprocess(frame).shape).toEqual([1,224,224,3])  Integration: pipeline.run(frame) → detections  E2E: camera → pipeline → broadcast → verify"
+    tier: structural
+consequence:
+  narrative: "Two hundred tests pass. Six fail — edge cases Kira never considered. A frame with zero detections crashes the classifier. A grayscale camera feed breaks the preprocessor. An adversarial patch with exactly 0.8 variance slips through the guard. Zara fixes each one. 'Testing is not bureaucracy. It is how you earn trust.'"
+  nextLessonTeaser: "Next: documentation — model cards, system docs, and handoff to the resistance network"
+hints:
+  - level: nudge
+    content: "Start with unit tests for each pipeline stage, then test stage connections, then the full pipeline"
+  - level: guidance
+    content: "Use deterministic test data — create known tensors instead of relying on random inputs"
+  - level: solution
+    content: "Create fixture tensors with known values, test each stage independently, then compose stages and verify end-to-end output"
+keywords:
+  - testing
+  - validation
+  - unit-tests
+  - integration-tests
+  - data-validation
+  - test-pyramid
+---
+
+<Dialogue speaker="Lin">
+You would not deploy a frontend application without tests. You will not deploy Protocol Sentinel without them either. Lives depend on this system being correct. Zara — build the test suite.
+</Dialogue>
+
+<Dialogue speaker="Zara">
+Same pyramid we use for any production system. Unit tests for each stage. Integration tests for connected stages. End-to-end tests for the full pipeline. But ML adds a fourth layer that frontend does not have: data validation. We test the data itself — distributions, edge cases, adversarial inputs.
+</Dialogue>
+
+<Dialogue speaker="Kira">
+Jest for units, React Testing Library for integration, Cypress for E2E. I know this pyramid. The ML version uses the same structure — just different assertions. Instead of checking DOM output, I check tensor shapes and prediction confidence.
+</Dialogue>
+
+The testing pyramid is identical. Unit tests at the base — fast, isolated, covering individual functions. Integration tests in the middle — verifying that connected stages pass data correctly. End-to-end tests at the top — running the complete pipeline against realistic scenarios. ML adds data validation: checking that inputs match expected distributions and outputs fall within acceptable ranges.
+
+<LearningObjectives objectives={["Apply the frontend testing pyramid (unit, integration, e2e) to ML pipeline testing", "Write unit tests for individual pipeline stages using deterministic test tensors", "Build integration tests that verify data contracts between connected stages", "Implement data validation checks for tensor shapes, value ranges, and distribution drift"]} />
+
+## The ML Testing Pyramid
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="unit-tests.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// UNIT TESTS — test each stage in isolation
+// Same as testing a utility function or React hook
+
+describe('Preprocessor', () => {
+  it('resizes frame to 224x224', () => {
+    const frame = tf.randomNormal([480, 640, 3]);
+    const processed = preprocess(frame);
+
+    expect(processed.shape).toEqual([1, 224, 224, 3]);
+    frame.dispose();
+    processed.dispose();
+  });
+
+  it('normalizes pixel values to [0, 1]', () => {
+    // Create a frame with known values
+    const frame = tf.fill([100, 100, 3], 255);
+    const processed = preprocess(frame);
+    const maxVal = processed.max().dataSync()[0];
+
+    expect(maxVal).toBeCloseTo(1.0, 5);
+    frame.dispose();
+    processed.dispose();
+  });
+
+  it('handles single-channel (grayscale) input', () => {
+    const grayFrame = tf.randomNormal([480, 640, 1]);
+    // Should convert to 3-channel before processing
+    const processed = preprocess(grayFrame);
+
+    expect(processed.shape[3]).toBe(3);
+    grayFrame.dispose();
+    processed.dispose();
+  });
+
+  it('rejects invalid tensor rank', () => {
+    const badInput = tf.scalar(42);
+    expect(() => preprocess(badInput as any)).toThrow('Expected rank 3');
+    badInput.dispose();
+  });
+});
+
+// Helper: deterministic test data (no randomness in tests)
+function createTestFrame(
+  height: number,
+  width: number,
+  fillValue: number = 128
+): tf.Tensor3D {
+  return tf.fill([height, width, 3], fillValue) as tf.Tensor3D;
+}
+
+function preprocess(frame: tf.Tensor3D): tf.Tensor4D {
+  if (frame.rank !== 3) throw new Error('Expected rank 3');
+
+  return tf.tidy(() => {
+    let rgb = frame;
+    if (frame.shape[2] === 1) {
+      rgb = frame.tile([1, 1, 3]);
+    }
+    return rgb
+      .resizeBilinear([224, 224])
+      .expandDims(0)
+      .div(255.0) as tf.Tensor4D;
+  });
+}`}
+</CodeBlock>
+
+## Integration Tests
+
+<CodeBlock language="typescript" title="integration-tests.ts">
+{`// INTEGRATION TESTS — test connected stages
+// Same as testing component composition in React Testing Library
+
+describe('Preprocess → Detect pipeline', () => {
+  let detectorModel: tf.LayersModel;
+
+  beforeAll(async () => {
+    // Use a lightweight test model, not the production model
+    detectorModel = createMockDetector();
+  });
+
+  it('passes preprocessed frames to detector', async () => {
+    const frame = createTestFrame(480, 640);
+    const processed = preprocess(frame);
+    const detections = await detect(processed, detectorModel);
+
+    expect(detections).toBeDefined();
+    expect(Array.isArray(detections)).toBe(true);
+
+    // Each detection has the expected shape
+    for (const det of detections) {
+      expect(det.box).toHaveLength(4);
+      expect(det.score).toBeGreaterThanOrEqual(0);
+      expect(det.score).toBeLessThanOrEqual(1);
+    }
+
+    frame.dispose();
+    processed.dispose();
+  });
+
+  it('handles zero detections gracefully', async () => {
+    // Black frame — should produce no detections
+    const frame = createTestFrame(480, 640, 0);
+    const processed = preprocess(frame);
+    const detections = await detect(processed, detectorModel);
+
+    expect(detections).toEqual([]);
+    frame.dispose();
+    processed.dispose();
+  });
+});
+
+describe('Detect → Classify pipeline', () => {
+  it('classifies each detection independently', async () => {
+    const mockDetections = [
+      { box: [0.1, 0.1, 0.5, 0.5], score: 0.9 },
+      { box: [0.6, 0.6, 0.9, 0.9], score: 0.8 },
+    ];
+
+    const classifications = await classifyDetections(
+      mockDetections,
+      createTestFrame(224, 224)
+    );
+
+    expect(classifications).toHaveLength(2);
+    for (const cls of classifications) {
+      expect(cls.label).toBeDefined();
+      expect(cls.confidence).toBeGreaterThan(0);
+      expect(typeof cls.isSurveillance).toBe('boolean');
+    }
+  });
+});
+
+// Mock model for testing — deterministic output
+function createMockDetector(): tf.LayersModel {
+  const input = tf.input({ shape: [224, 224, 3] });
+  const flat = tf.layers.flatten().apply(input);
+  const output = tf.layers.dense({ units: 10 }).apply(flat);
+  return tf.model({ inputs: input, outputs: output as tf.SymbolicTensor });
+}`}
+</CodeBlock>
+
+## Data Validation
+
+<Dialogue speaker="Zara">
+This is the layer frontend testing does not have. We validate the data itself. Is the input distribution what we expect? Are the pixel values in range? Has the camera drifted — literally — and started sending frames that look nothing like our training data?
+</Dialogue>
+
+<CodeBlock language="typescript" title="data-validation.ts">
+{`// DATA VALIDATION — unique to ML, no frontend equivalent
+// Catches data issues before they become prediction errors
+
+interface ValidationReport {
+  passed: boolean;
+  checks: Array<{
+    name: string;
+    passed: boolean;
+    expected: string;
+    actual: string;
+  }>;
+}
+
+function validateInput(tensor: tf.Tensor): ValidationReport {
+  const checks: ValidationReport['checks'] = [];
+
+  // Check 1: Shape
+  const expectedRank = 4; // [batch, height, width, channels]
+  checks.push({
+    name: 'tensor-rank',
+    passed: tensor.rank === expectedRank,
+    expected: \`rank \${expectedRank}\`,
+    actual: \`rank \${tensor.rank}\`,
+  });
+
+  // Check 2: Value range
+  const min = tensor.min().dataSync()[0];
+  const max = tensor.max().dataSync()[0];
+  const inRange = min >= 0 && max <= 1.0;
+  checks.push({
+    name: 'value-range',
+    passed: inRange,
+    expected: '[0, 1]',
+    actual: \`[\${min.toFixed(3)}, \${max.toFixed(3)}]\`,
+  });
+
+  // Check 3: No NaN values
+  const hasNaN = tf.any(tf.isNaN(tensor)).dataSync()[0] === 1;
+  checks.push({
+    name: 'no-nan',
+    passed: !hasNaN,
+    expected: 'no NaN values',
+    actual: hasNaN ? 'contains NaN' : 'clean',
+  });
+
+  // Check 4: Reasonable mean (not all black or all white)
+  const mean = tensor.mean().dataSync()[0];
+  const reasonableMean = mean > 0.05 && mean < 0.95;
+  checks.push({
+    name: 'reasonable-mean',
+    passed: reasonableMean,
+    expected: 'mean between 0.05 and 0.95',
+    actual: \`mean = \${mean.toFixed(3)}\`,
+  });
+
+  // Check 5: Non-zero variance (not a solid color)
+  const variance = tf.moments(tensor).variance.dataSync()[0];
+  checks.push({
+    name: 'non-zero-variance',
+    passed: variance > 0.001,
+    expected: 'variance > 0.001',
+    actual: \`variance = \${variance.toFixed(6)}\`,
+  });
+
+  return {
+    passed: checks.every(c => c.passed),
+    checks,
+  };
+}
+
+// Usage in pipeline:
+const report = validateInput(processedFrame);
+if (!report.passed) {
+  const failures = report.checks.filter(c => !c.passed);
+  console.warn('Validation failures:', failures);
+  // Decide: skip frame, use fallback, or halt
+}`}
+</CodeBlock>
+
+## End-to-End Tests
+
+<CodeBlock language="typescript" title="e2e-tests.ts">
+{`// END-TO-END TESTS — full pipeline, realistic scenarios
+// Same as Cypress/Playwright testing a complete user flow
+
+describe('Protocol Sentinel E2E', () => {
+  let pipeline: SentinelPipeline;
+
+  beforeAll(async () => {
+    pipeline = buildSentinelPipeline();
+  });
+
+  it('processes a surveillance frame end-to-end', async () => {
+    const frame = createTestFrame(480, 640, 128);
+    const ctx = await pipeline.execute({
+      feedId: 'test-cam-01',
+      timestamp: Date.now(),
+      frame,
+      errors: [],
+    });
+
+    // Pipeline completed without fatal errors
+    expect(ctx.errors.filter(e => e.includes('fatal'))).toHaveLength(0);
+
+    // Processing stages populated their fields
+    expect(ctx.processed).toBeDefined();
+    expect(ctx.detections).toBeDefined();
+    expect(ctx.classifications).toBeDefined();
+    expect(ctx.verified).toBeDefined();
+  });
+
+  it('handles camera feed dropout', async () => {
+    const ctx = await pipeline.execute({
+      feedId: 'test-cam-02',
+      timestamp: Date.now(),
+      // No frame — camera offline
+      errors: [],
+    });
+
+    expect(ctx.errors).toContain('preprocess: no frame provided');
+    // Pipeline should not crash
+    expect(ctx.broadcast).toBeUndefined();
+  });
+
+  it('flags adversarial inputs', async () => {
+    // Create a frame with high-frequency noise (adversarial pattern)
+    const adversarial = tf.tidy(() => {
+      const noise = tf.randomUniform([480, 640, 3], 0, 255);
+      return noise as tf.Tensor3D;
+    });
+
+    const ctx = await pipeline.execute({
+      feedId: 'test-cam-03',
+      timestamp: Date.now(),
+      frame: adversarial,
+      errors: [],
+    });
+
+    // Adversarial guard should flag it
+    expect(ctx.adversarialScore).toBeDefined();
+    // Should not produce trusted broadcast
+    if (ctx.broadcast) {
+      expect(ctx.verified).toBeDefined();
+    }
+  });
+});`}
+</CodeBlock>
+
+## Challenge
+
+Write validation functions that check tensor shapes, value ranges, and data quality.
+
+<Exercise slug="validate-system" />
+
+<KeyTakeaways takeaways={["ML testing follows the same pyramid as frontend: unit tests (stages), integration tests (connections), e2e tests (pipeline)", "Deterministic test data (known tensor values) replaces random inputs for reproducible tests", "Data validation is the fourth layer unique to ML — checking shapes, ranges, NaN, mean, and variance", "Every test failure Zara found maps to a real-world scenario: zero detections, grayscale feeds, boundary adversarial scores"]} />

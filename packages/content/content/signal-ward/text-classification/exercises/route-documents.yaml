@@ -1,0 +1,147 @@
+slug: route-documents
+lessonSlug: multi-class
+title: "Route Documents to Departments"
+instructions: "Build a multi-class classifier that routes clinical documents to one of 6 departments: CARDIOLOGY, RADIOLOGY, ONCOLOGY, NEUROLOGY, GENERAL_MEDICINE, EMERGENCY. The model should use softmax activation and categorical crossentropy. Implement a routeDocument function that returns the department name and confidence score."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  const DEPARTMENTS = [
+    'CARDIOLOGY', 'RADIOLOGY', 'ONCOLOGY',
+    'NEUROLOGY', 'GENERAL_MEDICINE', 'EMERGENCY'
+  ];
+
+  function buildRouter(inputDim: number, numDepts: number): tf.LayersModel {
+    // Build a sequential model with:
+    // 1. Dense layer: 64 units, relu, inputShape [inputDim]
+    // 2. Dense layer: numDepts units, softmax activation
+    // Compile with categoricalCrossentropy loss and adam optimizer
+    return null as any;
+  }
+
+  interface RouteResult {
+    department: string;
+    confidence: number;
+    allScores: Record<string, number>;
+  }
+
+  async function routeDocument(
+    model: tf.LayersModel,
+    embedding: tf.Tensor2D
+  ): Promise<RouteResult> {
+    // Run prediction, find top department
+    // Return department name, confidence, and all scores
+    return { department: '', confidence: 0, allScores: {} };
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  const DEPARTMENTS = [
+    'CARDIOLOGY', 'RADIOLOGY', 'ONCOLOGY',
+    'NEUROLOGY', 'GENERAL_MEDICINE', 'EMERGENCY'
+  ];
+
+  function buildRouter(inputDim: number, numDepts: number): tf.LayersModel {
+    const model = tf.sequential();
+
+    model.add(tf.layers.dense({
+      units: 64,
+      activation: 'relu',
+      inputShape: [inputDim]
+    }));
+
+    model.add(tf.layers.dense({
+      units: numDepts,
+      activation: 'softmax'
+    }));
+
+    model.compile({
+      optimizer: 'adam',
+      loss: 'categoricalCrossentropy',
+      metrics: ['accuracy']
+    });
+
+    return model;
+  }
+
+  interface RouteResult {
+    department: string;
+    confidence: number;
+    allScores: Record<string, number>;
+  }
+
+  async function routeDocument(
+    model: tf.LayersModel,
+    embedding: tf.Tensor2D
+  ): Promise<RouteResult> {
+    const prediction = model.predict(embedding) as tf.Tensor;
+    const probs = await prediction.data();
+    prediction.dispose();
+
+    const topIdx = probs.indexOf(Math.max(...Array.from(probs)));
+    const allScores: Record<string, number> = {};
+    DEPARTMENTS.forEach((dept, i) => {
+      allScores[dept] = probs[i];
+    });
+
+    return {
+      department: DEPARTMENTS[topIdx],
+      confidence: probs[topIdx],
+      allScores
+    };
+  }
+testCode: |
+  describe('Document Router', () => {
+    let model: tf.LayersModel;
+
+    beforeAll(() => {
+      model = buildRouter(32, DEPARTMENTS.length);
+    });
+
+    it('builds a model with correct input shape', () => {
+      expect(model.inputs[0].shape).toEqual([null, 32]);
+    });
+
+    it('outputs probabilities for all departments', () => {
+      expect(model.outputs[0].shape).toEqual([null, 6]);
+    });
+
+    it('uses categoricalCrossentropy loss', () => {
+      expect(model.loss).toBe('categoricalCrossentropy');
+    });
+
+    it('output probabilities sum to 1', async () => {
+      const input = tf.randomNormal([1, 32]) as tf.Tensor2D;
+      const output = model.predict(input) as tf.Tensor;
+      const probs = await output.data();
+      const sum = Array.from(probs).reduce((a, b) => a + b, 0);
+      expect(sum).toBeCloseTo(1.0, 4);
+      input.dispose();
+      output.dispose();
+    });
+
+    it('returns a valid department name', async () => {
+      const input = tf.randomNormal([1, 32]) as tf.Tensor2D;
+      const result = await routeDocument(model, input);
+      expect(DEPARTMENTS).toContain(result.department);
+      input.dispose();
+    });
+
+    it('confidence is between 0 and 1', async () => {
+      const input = tf.randomNormal([1, 32]) as tf.Tensor2D;
+      const result = await routeDocument(model, input);
+      expect(result.confidence).toBeGreaterThan(0);
+      expect(result.confidence).toBeLessThanOrEqual(1);
+      input.dispose();
+    });
+
+    it('allScores contains all departments', async () => {
+      const input = tf.randomNormal([1, 32]) as tf.Tensor2D;
+      const result = await routeDocument(model, input);
+      DEPARTMENTS.forEach(dept => {
+        expect(result.allScores).toHaveProperty(dept);
+      });
+      input.dispose();
+    });
+  });
+estimatedMinutes: 15
+difficulty: intermediate

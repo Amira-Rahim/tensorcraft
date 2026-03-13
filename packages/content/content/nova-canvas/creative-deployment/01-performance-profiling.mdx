@@ -1,0 +1,174 @@
+---
+slug: performance-profiling
+title: "Performance Profiling"
+moduleId: creative-deployment
+themeId: nova-canvas
+order: 1
+estimatedMinutes: 25
+difficulty: advanced
+context:
+  narrative: "Petrov pulls up the metrics dashboard. 'Current generation time: 3.2 seconds per image. The Biennale expects instant response. We need to find every bottleneck and crush it.'"
+  speaker: "Petrov"
+concept:
+  explanation: "Performance profiling for ML generation uses the same Chrome DevTools you use for frontend optimization — the Performance panel, memory snapshots, and flame charts reveal where inference time is spent."
+  bridge:
+    feTitle: "DevTools Performance Panel"
+    feCode: "performance.mark('start'); doWork(); performance.mark('end'); performance.measure('work', 'start', 'end');"
+    mlTitle: "Inference Profiling"
+    mlCode: "performance.mark('inference-start'); model.predict(input); performance.mark('inference-end');"
+    tier: identity
+consequence:
+  narrative: "The flame chart reveals the truth: 60% of time is spent on tensor allocation, not computation. Petrov smiles grimly. 'We have been optimizing the wrong thing. Memory allocation is our enemy.'"
+  nextLessonTeaser: "Next: model optimization through distillation and quantization"
+hints:
+  - level: nudge
+    content: "Use performance.mark() and performance.measure() to instrument each stage of generation"
+  - level: guidance
+    content: "Profile tensor creation, inference, and data transfer separately to find the real bottleneck"
+  - level: solution
+    content: "Wrap each pipeline stage with performance marks, then read them from the Performance timeline"
+keywords:
+  - profiling
+  - performance
+  - devtools
+  - bottleneck
+---
+
+<Dialogue speaker="Petrov">
+Three-point-two seconds per generation. Unacceptable. The gallery visitors will walk away after one. We need sub-second response. Where is the time going?
+</Dialogue>
+
+<Dialogue speaker="Ren">
+The same place it always goes in frontend apps — where you least expect it. We need to profile before we optimize. Chrome DevTools does not care whether you are rendering DOM or running inference.
+</Dialogue>
+
+You have profiled React re-renders, diagnosed layout thrashing, traced memory leaks in single-page applications. ML inference profiling uses the exact same tools. `performance.mark()`, `performance.measure()`, the Chrome DevTools Performance panel, memory snapshots — all of it applies directly.
+
+<LearningObjectives objectives={["Profile TensorFlow.js inference using Chrome DevTools Performance panel", "Identify bottlenecks in tensor allocation, computation, and data transfer", "Measure memory usage patterns during generation loops", "Build a profiling harness that instruments each pipeline stage"]} />
+
+## Instrumenting Generation
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="profiling-harness.ts">
+{`// Profile each stage of the generation pipeline
+// Same API you use for profiling React renders
+
+async function profileGeneration(model: tf.LayersModel, input: tf.Tensor) {
+  const metrics: Record<string, number> = {};
+
+  // Stage 1: Tensor preparation
+  performance.mark('prep-start');
+  const preprocessed = input.expandDims(0).div(255);
+  performance.mark('prep-end');
+  performance.measure('preprocessing', 'prep-start', 'prep-end');
+
+  // Stage 2: Inference
+  performance.mark('inference-start');
+  const output = model.predict(preprocessed) as tf.Tensor;
+  // Force synchronous execution to get accurate timing
+  await output.data();
+  performance.mark('inference-end');
+  performance.measure('inference', 'inference-start', 'inference-end');
+
+  // Stage 3: Post-processing
+  performance.mark('post-start');
+  const result = output.squeeze().mul(255).clipByValue(0, 255);
+  const imageData = await result.data();
+  performance.mark('post-end');
+  performance.measure('postprocessing', 'post-start', 'post-end');
+
+  // Collect measurements
+  const entries = performance.getEntriesByType('measure');
+  entries.forEach(entry => {
+    metrics[entry.name] = entry.duration;
+  });
+
+  // Clean up
+  preprocessed.dispose();
+  output.dispose();
+  result.dispose();
+  performance.clearMarks();
+  performance.clearMeasures();
+
+  return metrics;
+}
+
+const metrics = await profileGeneration(model, inputTensor);
+console.table(metrics);
+// preprocessing: 2.1ms | inference: 2847ms | postprocessing: 45ms`}
+</CodeBlock>
+
+## Memory Profiling
+
+<CodeBlock language="typescript" title="memory-profiling.ts">
+{`// Track tensor memory — the ML equivalent of tracking DOM node count
+function logMemory(label: string) {
+  const mem = tf.memory();
+  console.log(\`[\${label}] Tensors: \${mem.numTensors}, Bytes: \${(mem.numBytes / 1024 / 1024).toFixed(2)}MB\`);
+}
+
+// Profile a generation session
+logMemory('before generation');
+
+for (let i = 0; i < 10; i++) {
+  const z = tf.randomNormal([1, 128]);
+  const generated = model.predict(z) as tf.Tensor;
+  await generated.data();
+
+  logMemory(\`after generation \${i}\`);
+
+  // Without dispose(), tensor count grows every iteration — memory leak
+  z.dispose();
+  generated.dispose();
+}
+
+logMemory('after cleanup');
+
+// Use tf.tidy() to auto-dispose intermediate tensors
+const result = tf.tidy(() => {
+  const z = tf.randomNormal([1, 128]);
+  const raw = model.predict(z) as tf.Tensor;
+  return raw.squeeze().mul(255);
+});
+// Only 'result' survives — all intermediates are freed`}
+</CodeBlock>
+
+## Continuous Monitoring
+
+<CodeBlock language="typescript" title="perf-monitor.ts">
+{`// Real-time performance overlay — like an FPS counter for generation
+class PerfMonitor {
+  private history: number[] = [];
+  private maxHistory = 60;
+
+  record(generationTimeMs: number) {
+    this.history.push(generationTimeMs);
+    if (this.history.length > this.maxHistory) this.history.shift();
+  }
+
+  get average(): number {
+    return this.history.reduce((a, b) => a + b, 0) / this.history.length;
+  }
+
+  get fps(): number {
+    return this.average > 0 ? 1000 / this.average : 0;
+  }
+
+  render(ctx: CanvasRenderingContext2D, x: number, y: number) {
+    ctx.fillStyle = this.average < 100 ? '#00ff88' : this.average < 500 ? '#ffaa00' : '#ff4444';
+    ctx.font = '14px monospace';
+    ctx.fillText(\`Gen: \${this.average.toFixed(0)}ms (\${this.fps.toFixed(1)} gen/s)\`, x, y);
+    ctx.fillText(\`Tensors: \${tf.memory().numTensors}\`, x, y + 18);
+    ctx.fillText(\`VRAM: \${(tf.memory().numBytes / 1024 / 1024).toFixed(1)}MB\`, x, y + 36);
+  }
+}`}
+</CodeBlock>
+
+## Challenge
+
+Build a profiling harness that measures each stage of a generation pipeline and reports bottlenecks.
+
+<Exercise slug="profile-generation" />
+
+<KeyTakeaways takeaways={["Chrome DevTools Performance panel works for ML inference profiling — same marks, measures, and flame charts", "tf.memory() is the ML equivalent of checking DOM node counts — track tensor count and byte usage", "Always call .data() before measuring inference time to force synchronous execution", "Memory leaks in generation loops come from undisposed tensors — use tf.tidy() or manual dispose()"]} />

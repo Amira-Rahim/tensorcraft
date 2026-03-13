@@ -1,0 +1,160 @@
+slug: tag-documents
+lessonSlug: multi-label
+title: "Tag Documents with Multiple Labels"
+instructions: "Build a multi-label classifier that assigns zero or more clinical tags to a document. Use sigmoid activation (not softmax) so each tag is an independent binary decision. Implement a tagDocument function that returns all tags whose score exceeds a given threshold (default 0.5)."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  const CLINICAL_TAGS = [
+    'CARDIAC', 'RESPIRATORY', 'RENAL', 'NEUROLOGICAL',
+    'INFECTIOUS', 'ONCOLOGICAL', 'PAIN_MANAGEMENT', 'EMERGENCY'
+  ];
+
+  function buildTagger(inputDim: number, numLabels: number): tf.LayersModel {
+    // Build a sequential model with:
+    // 1. Dense layer: 64 units, relu, inputShape [inputDim]
+    // 2. Dense layer: numLabels units, sigmoid activation
+    // Compile with binaryCrossentropy loss and adam optimizer
+    return null as any;
+  }
+
+  interface TagResult {
+    activeTags: string[];
+    scores: Record<string, number>;
+  }
+
+  async function tagDocument(
+    model: tf.LayersModel,
+    embedding: tf.Tensor2D,
+    threshold: number = 0.5
+  ): Promise<TagResult> {
+    // Run prediction, collect tags above threshold
+    // Return active tags and all scores
+    return { activeTags: [], scores: {} };
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  const CLINICAL_TAGS = [
+    'CARDIAC', 'RESPIRATORY', 'RENAL', 'NEUROLOGICAL',
+    'INFECTIOUS', 'ONCOLOGICAL', 'PAIN_MANAGEMENT', 'EMERGENCY'
+  ];
+
+  function buildTagger(inputDim: number, numLabels: number): tf.LayersModel {
+    const model = tf.sequential();
+
+    model.add(tf.layers.dense({
+      units: 64,
+      activation: 'relu',
+      inputShape: [inputDim]
+    }));
+
+    model.add(tf.layers.dense({
+      units: numLabels,
+      activation: 'sigmoid'
+    }));
+
+    model.compile({
+      optimizer: 'adam',
+      loss: 'binaryCrossentropy',
+      metrics: ['accuracy']
+    });
+
+    return model;
+  }
+
+  interface TagResult {
+    activeTags: string[];
+    scores: Record<string, number>;
+  }
+
+  async function tagDocument(
+    model: tf.LayersModel,
+    embedding: tf.Tensor2D,
+    threshold: number = 0.5
+  ): Promise<TagResult> {
+    const prediction = model.predict(embedding) as tf.Tensor;
+    const probArray = await prediction.data();
+    prediction.dispose();
+
+    const scores: Record<string, number> = {};
+    const activeTags: string[] = [];
+
+    CLINICAL_TAGS.forEach((tag, i) => {
+      scores[tag] = probArray[i];
+      if (probArray[i] > threshold) {
+        activeTags.push(tag);
+      }
+    });
+
+    return { activeTags, scores };
+  }
+testCode: |
+  describe('Multi-Label Tagger', () => {
+    let model: tf.LayersModel;
+
+    beforeAll(() => {
+      model = buildTagger(32, CLINICAL_TAGS.length);
+    });
+
+    it('builds a model with correct input shape', () => {
+      expect(model.inputs[0].shape).toEqual([null, 32]);
+    });
+
+    it('outputs scores for all tags', () => {
+      expect(model.outputs[0].shape).toEqual([null, 8]);
+    });
+
+    it('uses binaryCrossentropy loss', () => {
+      expect(model.loss).toBe('binaryCrossentropy');
+    });
+
+    it('each output is between 0 and 1 (sigmoid)', async () => {
+      const input = tf.randomNormal([1, 32]) as tf.Tensor2D;
+      const output = model.predict(input) as tf.Tensor;
+      const probs = await output.data();
+      Array.from(probs).forEach(p => {
+        expect(p).toBeGreaterThanOrEqual(0);
+        expect(p).toBeLessThanOrEqual(1);
+      });
+      input.dispose();
+      output.dispose();
+    });
+
+    it('outputs do NOT sum to 1 (not softmax)', async () => {
+      const input = tf.randomNormal([1, 32]) as tf.Tensor2D;
+      const output = model.predict(input) as tf.Tensor;
+      const probs = await output.data();
+      const sum = Array.from(probs).reduce((a, b) => a + b, 0);
+      // With 8 independent sigmoids, sum is very unlikely to be exactly 1
+      expect(Math.abs(sum - 1.0)).toBeGreaterThan(0.01);
+      input.dispose();
+      output.dispose();
+    });
+
+    it('returns active tags above threshold', async () => {
+      const input = tf.randomNormal([1, 32]) as tf.Tensor2D;
+      const result = await tagDocument(model, input, 0.0);
+      // With threshold 0, all tags should be active (all sigmoids > 0)
+      expect(result.activeTags.length).toBe(CLINICAL_TAGS.length);
+      input.dispose();
+    });
+
+    it('returns no tags when threshold is 1', async () => {
+      const input = tf.randomNormal([1, 32]) as tf.Tensor2D;
+      const result = await tagDocument(model, input, 1.0);
+      expect(result.activeTags.length).toBe(0);
+      input.dispose();
+    });
+
+    it('scores contain all clinical tags', async () => {
+      const input = tf.randomNormal([1, 32]) as tf.Tensor2D;
+      const result = await tagDocument(model, input);
+      CLINICAL_TAGS.forEach(tag => {
+        expect(result.scores).toHaveProperty(tag);
+      });
+      input.dispose();
+    });
+  });
+estimatedMinutes: 15
+difficulty: intermediate

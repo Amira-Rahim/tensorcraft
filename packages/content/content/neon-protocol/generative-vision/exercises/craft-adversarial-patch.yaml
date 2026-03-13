@@ -1,0 +1,131 @@
+slug: craft-adversarial-patch
+lessonSlug: adversarial-patches
+title: "Implement FGSM Adversarial Attack"
+instructions: "Implement the Fast Gradient Sign Method (FGSM). Given pixel values and their gradients with respect to a loss function, compute the adversarial perturbation and the resulting adversarial image. FGSM computes: perturbation[i] = epsilon * sign(gradient[i]), then adversarialImage[i] = clamp(original[i] + perturbation[i], 0, 1). Also implement a function to evaluate attack success rate."
+starterCode: |
+  interface AdversarialResult {
+    perturbation: number[];
+    adversarialImage: number[];
+    maxPerturbation: number;
+  }
+
+  // FGSM: adversarial = original + epsilon * sign(gradient)
+  // sign: positive -> 1, negative -> -1, zero -> 0
+  // Clamp result to [0, 1]
+  function fgsm(
+    imagePixels: number[],
+    gradients: number[],
+    epsilon: number
+  ): AdversarialResult {
+    return { perturbation: [], adversarialImage: [], maxPerturbation: 0 }; // your code here
+  }
+
+  // Evaluate how many images are misclassified after FGSM
+  // Returns success rate (0 to 1)
+  function evaluateAttack(
+    images: number[][],
+    gradients: number[][],
+    trueLabels: number[],
+    classifyFn: (pixels: number[]) => number,
+    epsilon: number
+  ): number {
+    return 0; // your code here
+  }
+solutionCode: |
+  interface AdversarialResult {
+    perturbation: number[];
+    adversarialImage: number[];
+    maxPerturbation: number;
+  }
+
+  function fgsm(
+    imagePixels: number[],
+    gradients: number[],
+    epsilon: number
+  ): AdversarialResult {
+    const perturbation = gradients.map(g => {
+      if (g > 0) return epsilon;
+      if (g < 0) return -epsilon;
+      return 0;
+    });
+
+    const adversarialImage = imagePixels.map((pixel, i) =>
+      Math.max(0, Math.min(1, pixel + perturbation[i]))
+    );
+
+    return {
+      perturbation,
+      adversarialImage,
+      maxPerturbation: epsilon,
+    };
+  }
+
+  function evaluateAttack(
+    images: number[][],
+    gradients: number[][],
+    trueLabels: number[],
+    classifyFn: (pixels: number[]) => number,
+    epsilon: number
+  ): number {
+    let misclassified = 0;
+    for (let i = 0; i < images.length; i++) {
+      const result = fgsm(images[i], gradients[i], epsilon);
+      const predictedLabel = classifyFn(result.adversarialImage);
+      if (predictedLabel !== trueLabels[i]) {
+        misclassified++;
+      }
+    }
+    return misclassified / images.length;
+  }
+testCode: |
+  describe('fgsm', () => {
+    it('creates perturbation from gradient signs', () => {
+      const result = fgsm([0.5, 0.5, 0.5], [1.2, -0.8, 0], 0.1);
+      expect(result.perturbation).toEqual([0.1, -0.1, 0]);
+    });
+
+    it('adds perturbation to original image', () => {
+      const result = fgsm([0.5, 0.5, 0.5], [1.0, -1.0, 0], 0.1);
+      expect(result.adversarialImage).toEqual([0.6, 0.4, 0.5]);
+    });
+
+    it('clamps adversarial image to [0, 1]', () => {
+      const result = fgsm([0.95, 0.05], [1.0, -1.0], 0.1);
+      expect(result.adversarialImage[0]).toBe(1.0);
+      expect(result.adversarialImage[1]).toBe(0.0);
+    });
+
+    it('maxPerturbation equals epsilon', () => {
+      const result = fgsm([0.5], [1.0], 0.03);
+      expect(result.maxPerturbation).toBe(0.03);
+    });
+
+    it('handles zero gradients', () => {
+      const result = fgsm([0.5, 0.5], [0, 0], 0.1);
+      expect(result.perturbation).toEqual([0, 0]);
+      expect(result.adversarialImage).toEqual([0.5, 0.5]);
+    });
+  });
+
+  describe('evaluateAttack', () => {
+    it('returns 0 when no attacks succeed', () => {
+      const classify = (pixels: number[]) => 0;
+      const rate = evaluateAttack([[0.5]], [[1.0]], [0], classify, 0.1);
+      expect(rate).toBe(0);
+    });
+
+    it('returns 1 when all attacks succeed', () => {
+      const classify = (pixels: number[]) => 1;
+      const rate = evaluateAttack([[0.5]], [[1.0]], [0], classify, 0.1);
+      expect(rate).toBe(1);
+    });
+
+    it('returns correct fraction for partial success', () => {
+      let callCount = 0;
+      const classify = () => { callCount++; return callCount <= 1 ? 1 : 0; };
+      const rate = evaluateAttack([[0.5], [0.5]], [[1.0], [1.0]], [0, 0], classify, 0.1);
+      expect(rate).toBe(0.5);
+    });
+  });
+estimatedMinutes: 15
+difficulty: intermediate

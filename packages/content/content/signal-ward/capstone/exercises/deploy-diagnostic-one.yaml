@@ -1,0 +1,166 @@
+slug: deploy-diagnostic-one
+lessonSlug: launch-day
+title: "Deploy Diagnostic One"
+instructions: "Write a verifyDeployment function that runs an array of health check functions in order, collects results, and returns an overall deployment status. The deployment passes only if ALL checks pass. Also implement a shouldRollback function that returns true if the error rate exceeds a threshold or p95 latency exceeds a limit."
+starterCode: |
+  interface HealthCheck {
+    name: string;
+    passed: boolean;
+    message: string;
+  }
+
+  interface DeploymentResult {
+    passed: boolean;
+    checks: HealthCheck[];
+    summary: string;
+  }
+
+  async function verifyDeployment(
+    checks: (() => Promise<HealthCheck>)[]
+  ): Promise<DeploymentResult> {
+    // 1. Run all checks in order (not parallel)
+    // 2. Collect results into an array
+    // 3. passed = all checks passed
+    // 4. summary = "{passedCount}/{total} checks passed"
+    return null as any; // your code here
+  }
+
+  function shouldRollback(metrics: {
+    totalPredictions: number;
+    errorCount: number;
+    p95LatencyMs: number;
+  }, thresholds: {
+    maxErrorRate: number;
+    maxLatencyMs: number;
+  }): boolean {
+    // Return true if:
+    // - error rate (errorCount / totalPredictions) exceeds maxErrorRate
+    // - OR p95LatencyMs exceeds maxLatencyMs
+    // If totalPredictions is 0, do not rollback
+    return false; // your code here
+  }
+solutionCode: |
+  interface HealthCheck {
+    name: string;
+    passed: boolean;
+    message: string;
+  }
+
+  interface DeploymentResult {
+    passed: boolean;
+    checks: HealthCheck[];
+    summary: string;
+  }
+
+  async function verifyDeployment(
+    checks: (() => Promise<HealthCheck>)[]
+  ): Promise<DeploymentResult> {
+    const results: HealthCheck[] = [];
+
+    for (const check of checks) {
+      const result = await check();
+      results.push(result);
+    }
+
+    const passedCount = results.filter(r => r.passed).length;
+    const total = results.length;
+
+    return {
+      passed: passedCount === total,
+      checks: results,
+      summary: `${passedCount}/${total} checks passed`,
+    };
+  }
+
+  function shouldRollback(metrics: {
+    totalPredictions: number;
+    errorCount: number;
+    p95LatencyMs: number;
+  }, thresholds: {
+    maxErrorRate: number;
+    maxLatencyMs: number;
+  }): boolean {
+    if (metrics.totalPredictions === 0) return false;
+
+    const errorRate = metrics.errorCount / metrics.totalPredictions;
+    return errorRate > thresholds.maxErrorRate || metrics.p95LatencyMs > thresholds.maxLatencyMs;
+  }
+testCode: |
+  describe('verifyDeployment', () => {
+    it('passes when all checks pass', async () => {
+      const checks = [
+        async () => ({ name: 'model-load', passed: true, message: 'OK' }),
+        async () => ({ name: 'inference', passed: true, message: 'OK' }),
+        async () => ({ name: 'latency', passed: true, message: '12ms' }),
+      ];
+      const result = await verifyDeployment(checks);
+      expect(result.passed).toBe(true);
+      expect(result.summary).toBe('3/3 checks passed');
+    });
+
+    it('fails when any check fails', async () => {
+      const checks = [
+        async () => ({ name: 'model-load', passed: true, message: 'OK' }),
+        async () => ({ name: 'inference', passed: false, message: 'Timeout' }),
+      ];
+      const result = await verifyDeployment(checks);
+      expect(result.passed).toBe(false);
+      expect(result.summary).toBe('1/2 checks passed');
+    });
+
+    it('collects all check results', async () => {
+      const checks = [
+        async () => ({ name: 'a', passed: true, message: 'ok' }),
+        async () => ({ name: 'b', passed: false, message: 'fail' }),
+      ];
+      const result = await verifyDeployment(checks);
+      expect(result.checks).toHaveLength(2);
+      expect(result.checks[1].name).toBe('b');
+    });
+
+    it('runs checks in order', async () => {
+      const order: string[] = [];
+      const checks = [
+        async () => { order.push('first'); return { name: 'first', passed: true, message: '' }; },
+        async () => { order.push('second'); return { name: 'second', passed: true, message: '' }; },
+      ];
+      await verifyDeployment(checks);
+      expect(order).toEqual(['first', 'second']);
+    });
+  });
+
+  describe('shouldRollback', () => {
+    it('returns true when error rate exceeds threshold', () => {
+      const result = shouldRollback(
+        { totalPredictions: 100, errorCount: 10, p95LatencyMs: 100 },
+        { maxErrorRate: 0.05, maxLatencyMs: 500 }
+      );
+      expect(result).toBe(true);
+    });
+
+    it('returns true when latency exceeds threshold', () => {
+      const result = shouldRollback(
+        { totalPredictions: 100, errorCount: 1, p95LatencyMs: 600 },
+        { maxErrorRate: 0.05, maxLatencyMs: 500 }
+      );
+      expect(result).toBe(true);
+    });
+
+    it('returns false when metrics are within thresholds', () => {
+      const result = shouldRollback(
+        { totalPredictions: 100, errorCount: 2, p95LatencyMs: 200 },
+        { maxErrorRate: 0.05, maxLatencyMs: 500 }
+      );
+      expect(result).toBe(false);
+    });
+
+    it('returns false when no predictions yet', () => {
+      const result = shouldRollback(
+        { totalPredictions: 0, errorCount: 0, p95LatencyMs: 0 },
+        { maxErrorRate: 0.05, maxLatencyMs: 500 }
+      );
+      expect(result).toBe(false);
+    });
+  });
+estimatedMinutes: 15
+difficulty: intermediate

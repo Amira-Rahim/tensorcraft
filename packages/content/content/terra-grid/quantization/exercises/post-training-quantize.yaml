@@ -1,0 +1,9 @@
+slug: post-training-quantize
+lessonSlug: post-training-quantization
+title: "Post-Training Quantize"
+instructions: "Write a function quantize(value, min, max) that maps a float value to the Int8 range [-128, 127]. Formula: scale = (max - min) / 255, quantized = Math.round((value - min) / scale) - 128. Clamp result to [-128, 127]."
+starterCode: "function quantize(value, min, max) {\n  // Map value from [min, max] to [-128, 127]\n  return null; // your code here\n}"
+solutionCode: "function quantize(value, min, max) {\n  const scale = (max - min) / 255;\n  let q = Math.round((value - min) / scale) - 128;\n  return Math.max(-128, Math.min(127, q));\n}"
+testCode: "describe('quantize', () => { it('maps min to -128', () => { expect(quantize(-1.0, -1.0, 1.0)).toBe(-128); }); it('maps max to 127', () => { expect(quantize(1.0, -1.0, 1.0)).toBe(127); }); it('maps zero to near 0', () => { const q = quantize(0, -1.0, 1.0); expect(q).toBeGreaterThan(-2); expect(q).toBeLessThan(2); }); });"
+estimatedMinutes: 15
+difficulty: intermediate

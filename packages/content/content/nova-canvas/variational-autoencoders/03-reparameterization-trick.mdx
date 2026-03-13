@@ -1,0 +1,131 @@
+---
+slug: reparameterization-trick
+title: "Reparameterization Trick"
+moduleId: variational-autoencoders
+themeId: nova-canvas
+order: 3
+estimatedMinutes: 25
+difficulty: advanced
+context:
+  narrative: "Ren hits a wall — you cannot backpropagate through random sampling. Kai explains the reparameterization trick using an analogy from seeded random number generators."
+  speaker: "Kai"
+concept:
+  explanation: "The reparameterization trick moves randomness outside the gradient computation path. Instead of sampling z directly, compute z = mu + sigma * epsilon where epsilon is fixed random noise."
+  bridge:
+    feTitle: "Seeded Random"
+    feCode: "function seeded(seed: number) { return (seed * 9301 + 49297) % 233280 / 233280; }"
+    mlTitle: "Reparameterization"
+    mlCode: "z = mu + exp(logVar * 0.5) * epsilon  // epsilon is external noise"
+    tier: structural
+consequence:
+  narrative: "The trick works — gradients flow through mu and logVar while epsilon provides the randomness. The VAE can now train end-to-end."
+  nextLessonTeaser: "Next: KL divergence — the regularizer that keeps the latent space well-organized"
+hints:
+  - level: nudge
+    content: "You cannot take the derivative of a random number. But you CAN take the derivative of mu + sigma * constant."
+  - level: guidance
+    content: "Separate the randomness (epsilon) from the learnable parameters (mu, sigma)"
+  - level: solution
+    content: "const epsilon = tf.randomNormal(mu.shape); const z = mu.add(logVar.mul(0.5).exp().mul(epsilon));"
+keywords:
+  - reparameterization
+  - gradient
+  - differentiable
+  - backpropagation
+  - epsilon
+---
+
+<Dialogue speaker="Kai">
+Here is the problem. You need to sample from the distribution to generate output. But sampling is random, and you cannot compute gradients through randomness. Backpropagation needs a smooth, differentiable path. Randomness is a wall.
+</Dialogue>
+
+<Dialogue speaker="MUSE">
+The trick is ancient and elegant: do not sample from the distribution. Instead, sample from a fixed source of noise and transform it.
+</Dialogue>
+
+In frontend development, a seeded random number generator separates the *source of randomness* (the seed) from the *computation* that uses it. The computation is deterministic given a fixed seed — and therefore differentiable. The reparameterization trick applies this same separation to VAE training.
+
+<LearningObjectives objectives={["Understand why random sampling blocks gradient flow", "Implement the reparameterization trick in TensorFlow.js", "Connect seeded randomness to the concept of external noise", "Build a custom sampling layer for a VAE"]} />
+
+## The Problem
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="the-problem.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// PROBLEM: We need z = sample from N(mu, sigma)
+// But "sample" is not differentiable — no gradient flows through it
+
+// BAD (conceptually): z = randomSample(mu, sigma)
+// Backprop asks: "how should mu change to reduce loss?"
+// Answer: "I don't know, there was randomness in the way"
+
+// SOLUTION: Reparameterization trick
+// z = mu + sigma * epsilon, where epsilon ~ N(0, 1)
+// Now backprop asks: "how should mu change?"
+// Answer: "increase mu by this amount" (clear gradient through addition)
+
+// Analogy: seeded random
+// const random = seededRandom(42);  // epsilon is like the seed
+// const result = base + scale * random;  // mu + sigma * epsilon
+// The result depends on base and scale (differentiable!)
+// while still being "random" via the seed`}
+</CodeBlock>
+
+## The Implementation
+
+<CodeBlock language="typescript" title="reparameterization.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// The reparameterization trick as a custom layer
+class SamplingLayer extends tf.layers.Layer {
+  static className = 'SamplingLayer';
+
+  computeOutputShape(inputShape: tf.Shape[]): tf.Shape {
+    return inputShape[0]; // same shape as mu
+  }
+
+  call(inputs: tf.Tensor[]): tf.Tensor {
+    const [mu, logVar] = inputs;
+
+    // Step 1: Sample epsilon from standard normal N(0, 1)
+    const epsilon = tf.randomNormal(mu.shape as number[]);
+
+    // Step 2: Transform: z = mu + exp(logVar/2) * epsilon
+    const std = logVar.mul(0.5).exp();
+    const z = mu.add(std.mul(epsilon));
+
+    return z;
+    // Gradients flow through mu and logVar (math operations)
+    // Epsilon is treated as a constant — no gradient needed
+  }
+}
+
+// Usage in model
+function buildVAE(inputDim: number, latentDim: number) {
+  const input = tf.input({ shape: [inputDim] });
+  const hidden = tf.layers.dense({ units: 256, activation: 'relu' }).apply(input);
+
+  const mu = tf.layers.dense({ units: latentDim }).apply(hidden) as tf.SymbolicTensor;
+  const logVar = tf.layers.dense({ units: latentDim }).apply(hidden) as tf.SymbolicTensor;
+
+  // Sampling with reparameterization
+  const z = new SamplingLayer().apply([mu, logVar]) as tf.SymbolicTensor;
+
+  const decoderHidden = tf.layers.dense({ units: 256, activation: 'relu' }).apply(z);
+  const output = tf.layers.dense({ units: inputDim, activation: 'sigmoid' }).apply(decoderHidden);
+
+  return tf.model({ inputs: input, outputs: output as tf.SymbolicTensor });
+}`}
+</CodeBlock>
+
+## Why It Works
+
+The key insight is that `z = mu + sigma * epsilon` is a deterministic function of `mu`, `sigma`, and `epsilon`. Since `epsilon` is sampled *before* the computation, it acts like a constant during backpropagation. Gradients flow cleanly through `mu` and `sigma`.
+
+## Challenge
+
+<Exercise slug="reparameterize" />
+
+<KeyTakeaways takeaways={["Random sampling blocks gradient flow — backprop cannot pass through randomness", "The reparameterization trick: z = mu + exp(logVar/2) * epsilon", "Epsilon is sampled independently and treated as a constant during backprop", "This separates randomness from learnable parameters, just like seeded random"]} />

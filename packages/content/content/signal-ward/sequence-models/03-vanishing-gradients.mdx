@@ -1,0 +1,163 @@
+---
+slug: vanishing-gradients
+title: "The Vanishing Gradient Problem"
+moduleId: sequence-models
+themeId: signal-ward
+order: 3
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Santos discovers that the RNN forgets critical information from earlier in long clinical notes — a symptom of the vanishing gradient problem."
+  speaker: "Santos"
+concept:
+  explanation: "In long sequences, gradients shrink exponentially as they backpropagate through time. Early tokens lose their influence on learning, like an event bubbling through deeply nested DOM elements — the signal fades before reaching the top."
+  bridge:
+    feTitle: "Event Bubbling Fades in Deep DOM"
+    feCode: "div > div > div > div > button.click() // event may never reach root"
+    mlTitle: "Gradient Vanishes Over Time"
+    mlCode: "grad_t0 = grad_tN * W^N // shrinks exponentially with depth"
+    tier: structural
+consequence:
+  narrative: "The team understands why the simple RNN fails on long discharge summaries. They need a more robust architecture."
+  nextLessonTeaser: "Next: LSTM and GRU — architectures with gates that solve the vanishing gradient problem."
+hints:
+  - level: nudge
+    content: "Multiply a fraction by itself many times — it approaches zero. That's what happens to gradients in deep backpropagation."
+  - level: guidance
+    content: "Compare RNN performance on short sequences (5 tokens) vs long sequences (50 tokens) — accuracy drops sharply."
+  - level: solution
+    content: "Demonstrate gradient magnitude decay: for i in range(50): grad *= 0.9 shows how quickly signal vanishes."
+keywords:
+  - vanishing-gradient
+  - backpropagation-through-time
+  - long-range-dependencies
+  - event-bubbling
+  - gradient-decay
+---
+
+> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
+
+<Dialogue speaker="Santos">
+Something's wrong. Our RNN classifies short clinical notes perfectly, but on long discharge summaries it's basically random. It's like the model forgets everything from the beginning of the document.
+</Dialogue>
+
+<Dialogue speaker="Obi">
+That's exactly what's happening. It's the vanishing gradient problem. Think of it like event bubbling in a deeply nested DOM — by the time the click event reaches the root, the signal has faded to nothing.
+</Dialogue>
+
+<Dialogue speaker="Dr. Vasquez">
+In clinical notes, the diagnosis is often stated at the top, but the supporting evidence is scattered throughout. If the model can't connect the beginning to the end, it's useless.
+</Dialogue>
+
+<Dialogue speaker="MEDI">
+Warning: gradient magnitude at timestep 1 is 0.00003 when sequence length is 50. Information from early tokens has effectively zero influence on weight updates.
+</Dialogue>
+
+In the browser, a click event on a deeply nested element bubbles up through every ancestor. If each layer slightly dampens the event, by the time it reaches the document root, the signal is nearly gone. Vanishing gradients work the same way — each RNN timestep slightly shrinks the gradient, and over long sequences, early tokens lose all influence.
+
+<LearningObjectives objectives={["Understand why gradients vanish during backpropagation through time", "Connect vanishing gradients to event bubbling signal loss in deep DOM trees", "Observe gradient decay experimentally with TensorFlow.js", "Recognize the symptoms: poor performance on long sequences despite good short-sequence accuracy"]} />
+
+## The Math of Signal Decay
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="gradient-decay.ts">
+{`// Event bubbling analogy: signal fades through layers
+function simulateEventBubbling(depth: number, dampingFactor: number): number {
+  let signalStrength = 1.0;
+  for (let layer = 0; layer < depth; layer++) {
+    signalStrength *= dampingFactor;
+  }
+  return signalStrength;
+}
+
+// Shallow DOM (5 levels): signal is strong
+console.log('Depth 5:', simulateEventBubbling(5, 0.9));   // 0.590
+// Deep DOM (50 levels): signal nearly vanishes
+console.log('Depth 50:', simulateEventBubbling(50, 0.9));  // 0.005
+// Very deep (100 levels): effectively zero
+console.log('Depth 100:', simulateEventBubbling(100, 0.9)); // 0.00003
+
+// This is EXACTLY what happens to gradients in an RNN:
+// grad_at_step_0 = grad_at_step_N × (W_recurrent)^N
+// If the largest eigenvalue of W < 1, gradients vanish
+// If > 1, gradients explode (also bad!)
+
+function simulateGradientFlow(seqLength: number, weightScale: number): number {
+  let gradient = 1.0;
+  for (let t = 0; t < seqLength; t++) {
+    gradient *= weightScale; // simplified: multiply by recurrent weight
+  }
+  return gradient;
+}
+
+console.log('\\nGradient flow (weight=0.9):');
+console.log('  Seq length 5:', simulateGradientFlow(5, 0.9).toFixed(6));
+console.log('  Seq length 20:', simulateGradientFlow(20, 0.9).toFixed(6));
+console.log('  Seq length 50:', simulateGradientFlow(50, 0.9).toFixed(6));`}
+</CodeBlock>
+
+## Seeing It in Practice
+
+<CodeBlock language="typescript" title="rnn-long-vs-short.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Compare RNN accuracy on short vs long sequences
+async function testSequenceLength(seqLen: number): Promise<number> {
+  const model = tf.sequential();
+  model.add(tf.layers.embedding({
+    inputDim: 100, outputDim: 16, inputLength: seqLen,
+  }));
+  model.add(tf.layers.simpleRNN({ units: 16 }));
+  model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
+  model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });
+
+  // Generate synthetic data: class depends on FIRST token
+  // (0-49 = class 0, 50-99 = class 1), rest is random noise
+  const numSamples = 200;
+  const xData: number[][] = [];
+  const yData: number[] = [];
+  for (let i = 0; i < numSamples; i++) {
+    const label = Math.random() > 0.5 ? 1 : 0;
+    const seq = new Array(seqLen).fill(0).map(() => Math.floor(Math.random() * 100));
+    seq[0] = label === 1 ? 75 : 25; // signal is at position 0
+    xData.push(seq);
+    yData.push(label);
+  }
+
+  const xs = tf.tensor2d(xData, [numSamples, seqLen], 'int32');
+  const ys = tf.tensor2d(yData, [numSamples, 1]);
+
+  await model.fit(xs, ys, { epochs: 20, verbose: 0 });
+  const result = model.evaluate(xs, ys) as tf.Tensor[];
+  const accuracy = (await result[1].array()) as number;
+  tf.dispose([xs, ys, ...result, model]);
+  return accuracy;
+}
+
+// Short sequences: RNN can "remember" the first token
+const shortAcc = await testSequenceLength(5);
+console.log('Short sequence (5) accuracy:', shortAcc.toFixed(3));
+// Typically ~0.85-0.95
+
+// Long sequences: gradient from token 0 vanishes
+const longAcc = await testSequenceLength(50);
+console.log('Long sequence (50) accuracy:', longAcc.toFixed(3));
+// Typically ~0.50-0.60 (near random!)`}
+</CodeBlock>
+
+<Dialogue speaker="Santos">
+So the longer the discharge summary, the more the model forgets about the diagnosis at the top. That's a dealbreaker for clinical use.
+</Dialogue>
+
+<Dialogue speaker="Obi">
+Exactly. We need an architecture that can selectively remember important information across long sequences. That's what LSTMs were invented for.
+</Dialogue>
+
+## Challenge
+
+Diagnose the vanishing gradient problem by measuring how gradient magnitude decays over sequence length.
+
+<Exercise slug="diagnose-vanishing" />
+
+<KeyTakeaways takeaways={["Gradients shrink exponentially during backpropagation through time, like event signals fading through deep DOM nesting", "Simple RNNs fail on long sequences because early tokens lose all influence on learning", "The vanishing gradient problem manifests as poor accuracy on long sequences despite good short-sequence performance", "This fundamental limitation motivates gated architectures like LSTMs and GRUs"]} />

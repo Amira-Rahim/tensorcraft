@@ -1,4 +1,4 @@
-slug: build-unet
+slug: nc-build-unet
 lessonSlug: unet-for-denoising
 title: "Build a U-Net Encoder-Decoder Block"
 instructions: "Implement an encoder block that applies two conv2d layers (with ReLU activation, 'same' padding) and then max-pools to halve spatial dimensions. Return both the downsampled output and the skip connection (the tensor before pooling). Then implement a decoder block that upsamples, concatenates the skip connection, and applies two conv2d layers."

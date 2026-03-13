@@ -1,0 +1,268 @@
+---
+slug: medis-mistake
+title: "MEDI's Mistake"
+moduleId: transformers-bert
+themeId: signal-ward
+order: 5
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "MEDI flags a resolved condition as active — a dangerous error that forces the team to confront model limitations, failure modes, and the gap between accuracy metrics and clinical safety."
+  speaker: "Dr. Elena Vasquez"
+concept:
+  explanation: "Models can hallucinate or misclassify when they encounter edge cases, temporal reasoning gaps, or distributional shifts — understanding failure modes is as critical as understanding architecture."
+  bridge:
+    feTitle: "Stale Cache Serving Wrong Data"
+    feCode: "// Cache returns outdated response after data changed\ncache.get('user-status'); // → 'active' (but user deactivated)"
+    mlTitle: "Model Hallucination"
+    mlCode: "// Model returns outdated classification despite context change\npredict('diabetes, resolved'); // → 'Active' (ignores 'resolved')"
+    tier: structural
+consequence:
+  narrative: "The team implements confidence thresholds, negation detection, and human-in-the-loop safeguards — turning MEDI's failure into a safer system."
+  nextLessonTeaser: "Next module: Named Entity Recognition — extracting structured information from unstructured clinical text."
+hints:
+  - level: nudge
+    content: "Think about what happens when a cache serves stale data — the model's internal representation is 'stale' for edge cases"
+  - level: guidance
+    content: "Check prediction confidence, look for negation words, and flag low-confidence results for human review"
+  - level: solution
+    content: "Build a pipeline that checks confidence threshold, scans for negation patterns, and routes uncertain predictions to human review"
+keywords:
+  - model-limitations
+  - hallucination
+  - negation-detection
+  - confidence-thresholds
+  - human-in-the-loop
+---
+
+<Dialogue speaker="MEDI">
+Alert — Priority One. Patient 2847-R: Active condition identified. Type 2 diabetes mellitus. Recommending insulin protocol review.
+</Dialogue>
+
+<Dialogue speaker="Dr. Elena Vasquez">
+Pull the full note. Now.
+</Dialogue>
+
+<Dialogue speaker="Khalil Mensah">
+Here it is: "History of Type 2 diabetes mellitus, resolved following bariatric surgery, March 2024. Current A1C 5.2%, within normal range. No diabetic medications."
+</Dialogue>
+
+<Dialogue speaker="Dr. Elena Vasquez">
+Your system just recommended an insulin review for a patient whose diabetes resolved eight months ago. If a nurse follows that recommendation without reading the full note, we're giving insulin to someone who doesn't need it. That's a hypoglycemic event waiting to happen.
+</Dialogue>
+
+<LearningObjectives objectives={["Identify common failure modes in NLP models: negation blindness, temporal reasoning gaps, and distributional shift", "Implement confidence thresholds to flag uncertain predictions", "Build negation detection to catch resolved/denied/ruled-out conditions", "Design human-in-the-loop safeguards for safety-critical applications"]} />
+
+## The Stale Cache Problem
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+Every frontend engineer has fought stale caches. You update user data in the database, but the CDN keeps serving the old version. The data changed, but the system's representation didn't. MEDI has the same problem — "Type 2 diabetes" activates strong patterns from training data, and the model's internal representation fails to update when it encounters "resolved."
+
+<Dialogue speaker="Obi Nwosu">
+This is a negation detection failure. MEDI's model learned strong associations: "Type 2 diabetes" maps to "active condition" in the vast majority of training examples. The word "resolved" should invalidate that classification, but the model's attention weights didn't give it enough importance.
+</Dialogue>
+
+<CodeBlock language="typescript" title="failure-analysis.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// What MEDI's model "saw" — attention weight analysis
+interface AttentionAnalysis {
+  token: string;
+  attentionWeight: number;
+  contribution: 'positive' | 'negative' | 'neutral';
+}
+
+function analyzeAttention(
+  tokens: string[],
+  attentionWeights: number[]
+): AttentionAnalysis[] {
+  const negationTerms = new Set([
+    'resolved', 'denied', 'negative', 'ruled-out', 'no',
+    'without', 'absent', 'discontinued', 'former', 'history'
+  ]);
+
+  return tokens.map((token, i) => ({
+    token,
+    attentionWeight: attentionWeights[i],
+    contribution: negationTerms.has(token.toLowerCase())
+      ? 'negative'
+      : attentionWeights[i] > 0.1 ? 'positive' : 'neutral'
+  }));
+}
+
+// MEDI's attention on the problematic note
+const tokens = ['[CLS]', 'History', 'of', 'Type', '2', 'diabetes',
+                'resolved', 'after', 'bariatric', 'surgery', '[SEP]'];
+const weights = [0.02, 0.05, 0.01, 0.18, 0.12, 0.35,
+                 0.04, 0.02, 0.08, 0.11, 0.02];
+//                                        ^^^^
+// "resolved" got only 4% attention — the model barely noticed it
+
+const analysis = analyzeAttention(tokens, weights);
+analysis.forEach(a => {
+  const bar = '█'.repeat(Math.round(a.attentionWeight * 50));
+  console.log(\`\${a.token.padEnd(12)} \${bar} \${(a.attentionWeight * 100).toFixed(1)}% [\${a.contribution}]\`);
+});`}
+</CodeBlock>
+
+## Three Lines of Defense
+
+<Dialogue speaker="Obi Nwosu">
+MEDI's error teaches us that accuracy on a test set doesn't guarantee safety in production. We need defense in depth — just like how you wouldn't rely solely on client-side validation in a web app.
+</Dialogue>
+
+### Defense 1: Confidence Thresholds
+
+<CodeBlock language="typescript" title="confidence-threshold.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+interface PredictionResult {
+  label: string;
+  confidence: number;
+  requiresReview: boolean;
+  reason?: string;
+}
+
+function predictWithConfidence(
+  logits: tf.Tensor1D,
+  labels: string[],
+  threshold: number = 0.85
+): PredictionResult {
+  const probabilities = tf.softmax(logits);
+  const values = probabilities.arraySync() as number[];
+  const maxIdx = values.indexOf(Math.max(...values));
+  const confidence = values[maxIdx];
+
+  return {
+    label: labels[maxIdx],
+    confidence,
+    requiresReview: confidence < threshold,
+    reason: confidence < threshold
+      ? \`Confidence \${(confidence * 100).toFixed(1)}% below threshold \${(threshold * 100).toFixed(1)}%\`
+      : undefined
+  };
+}
+
+const labels = ['Active', 'Resolved', 'Chronic', 'Suspected', 'Ruled-out'];
+
+// High confidence — model is certain
+const clearCase = tf.tensor1d([3.2, -1.0, 0.1, -0.5, -2.0]);
+console.log('Clear case:', predictWithConfidence(clearCase, labels));
+// → { label: 'Active', confidence: 0.94, requiresReview: false }
+
+// MEDI's problematic case — model is uncertain
+const ambiguousCase = tf.tensor1d([1.1, 0.9, 0.3, -0.2, -0.5]);
+console.log('Ambiguous case:', predictWithConfidence(ambiguousCase, labels));
+// → { label: 'Active', confidence: 0.38, requiresReview: true }`}
+</CodeBlock>
+
+### Defense 2: Negation Detection
+
+<CodeBlock language="typescript" title="negation-detection.ts">
+{`function detectNegation(text: string, entity: string): {
+  isNegated: boolean;
+  negationCue: string | null;
+  windowText: string;
+} {
+  const negationPatterns = [
+    /\b(no|not|without|denies?|denied|absent|negative|resolved|ruled[- ]?out|discontinued|former|history of)\b/i
+  ];
+
+  const entityIdx = text.toLowerCase().indexOf(entity.toLowerCase());
+  if (entityIdx === -1) return { isNegated: false, negationCue: null, windowText: '' };
+
+  // Check a window of 6 words before and 3 words after the entity
+  const words = text.split(/\s+/);
+  const entityWordIdx = words.findIndex(w =>
+    w.toLowerCase().includes(entity.toLowerCase().split(' ')[0])
+  );
+
+  const windowStart = Math.max(0, entityWordIdx - 6);
+  const windowEnd = Math.min(words.length, entityWordIdx + entity.split(' ').length + 3);
+  const window = words.slice(windowStart, windowEnd).join(' ');
+
+  for (const pattern of negationPatterns) {
+    const match = window.match(pattern);
+    if (match) {
+      return { isNegated: true, negationCue: match[1], windowText: window };
+    }
+  }
+
+  return { isNegated: false, negationCue: null, windowText: window };
+}
+
+// MEDI's problematic note
+const note = "History of Type 2 diabetes mellitus, resolved following bariatric surgery";
+const result = detectNegation(note, "diabetes");
+console.log(result);
+// → { isNegated: true, negationCue: 'resolved', windowText: 'History of Type 2 diabetes mellitus, resolved following' }
+
+// A truly active condition
+const activeNote = "Patient presents with uncontrolled Type 2 diabetes mellitus, A1C 9.8%";
+console.log(detectNegation(activeNote, "diabetes"));
+// → { isNegated: false, negationCue: null, windowText: '...' }`}
+</CodeBlock>
+
+### Defense 3: Human-in-the-Loop
+
+<CodeBlock language="typescript" title="human-in-the-loop.ts">
+{`interface ClinicalPrediction {
+  condition: string;
+  status: string;
+  confidence: number;
+  negationDetected: boolean;
+  action: 'auto-accept' | 'flag-for-review' | 'auto-reject';
+}
+
+function triagePrediction(
+  condition: string,
+  predictedStatus: string,
+  confidence: number,
+  negationDetected: boolean,
+  confidenceThreshold: number = 0.85
+): ClinicalPrediction {
+  let action: ClinicalPrediction['action'];
+
+  if (negationDetected && predictedStatus === 'Active') {
+    // Model says active, but negation detected — conflict!
+    action = 'flag-for-review';
+  } else if (confidence < confidenceThreshold) {
+    // Low confidence — human should verify
+    action = 'flag-for-review';
+  } else if (negationDetected && predictedStatus !== 'Resolved') {
+    // Negation detected but model didn't predict resolved
+    action = 'flag-for-review';
+  } else {
+    action = 'auto-accept';
+  }
+
+  return { condition, status: predictedStatus, confidence, negationDetected, action };
+}
+
+// MEDI's mistake — caught by the safety net
+const mediResult = triagePrediction('Type 2 diabetes', 'Active', 0.72, true);
+console.log(mediResult);
+// → { action: 'flag-for-review' } — negation + active = conflict
+
+// Clear active condition — no negation, high confidence
+const clearResult = triagePrediction('Hypertension', 'Active', 0.95, false);
+console.log(clearResult);
+// → { action: 'auto-accept' }`}
+</CodeBlock>
+
+<Dialogue speaker="Dr. Elena Vasquez">
+So the system doesn't just give an answer — it tells me how confident it is, whether it detected conflicting signals, and whether a human should verify. That's the kind of system I can trust.
+</Dialogue>
+
+<Dialogue speaker="Obi Nwosu">
+In frontend terms, you never trust client input alone — you validate server-side too. In clinical ML, you never trust model output alone — you validate with confidence checks, negation detection, and human review. Defense in depth.
+</Dialogue>
+
+## Challenge
+
+Build a diagnostic safety pipeline that combines confidence thresholds, negation detection, and human-in-the-loop routing to catch errors like MEDI's mistake.
+
+<Exercise slug="debug-medi" />
+
+<KeyTakeaways takeaways={["Model hallucination is analogous to a stale cache serving outdated data — the representation doesn't reflect reality", "Negation detection catches cases where context words like 'resolved' or 'denied' invalidate a classification", "Confidence thresholds flag uncertain predictions for human review instead of auto-accepting", "Defense in depth — confidence, negation, human review — is essential for safety-critical ML applications"]} />

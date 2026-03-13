@@ -1,0 +1,138 @@
+slug: canary-deploy
+lessonSlug: canary-deployments
+title: "Canary Deployment Manager"
+instructions: "Build a CanaryManager class that manages staged model rollouts. Implement checkHealth to verify metrics against thresholds, and evaluate to decide whether to promote to the next stage or rollback. The manager tracks deployment stages: canary -> promoted -> rolled-back."
+starterCode: |
+  interface HealthMetrics {
+    accuracy: number;
+    latencyMs: number;
+    falsePositiveRate: number;
+  }
+
+  interface StageThresholds {
+    minAccuracy: number;
+    maxLatencyMs: number;
+    maxFalsePositiveRate: number;
+  }
+
+  class CanaryManager {
+    private stage: 'canary' | 'promoted' | 'rolled-back' = 'canary';
+    private healthyChecks: number = 0;
+
+    constructor(
+      private thresholds: StageThresholds,
+      private requiredHealthyChecks: number,
+    ) {}
+
+    checkHealth(metrics: HealthMetrics): { healthy: boolean; failures: string[] } {
+      // Check each metric against thresholds
+      // Return { healthy: true/false, failures: list of failed checks }
+      return { healthy: false, failures: [] }; // your code here
+    }
+
+    evaluate(metrics: HealthMetrics): 'canary' | 'promoted' | 'rolled-back' {
+      // 1. Check health
+      // 2. If unhealthy, set stage to 'rolled-back'
+      // 3. If healthy, increment healthyChecks
+      // 4. If healthyChecks >= requiredHealthyChecks, set stage to 'promoted'
+      // 5. Return current stage
+      return this.stage; // your code here
+    }
+
+    getStage(): string {
+      return this.stage;
+    }
+  }
+solutionCode: |
+  interface HealthMetrics {
+    accuracy: number;
+    latencyMs: number;
+    falsePositiveRate: number;
+  }
+
+  interface StageThresholds {
+    minAccuracy: number;
+    maxLatencyMs: number;
+    maxFalsePositiveRate: number;
+  }
+
+  class CanaryManager {
+    private stage: 'canary' | 'promoted' | 'rolled-back' = 'canary';
+    private healthyChecks: number = 0;
+
+    constructor(
+      private thresholds: StageThresholds,
+      private requiredHealthyChecks: number,
+    ) {}
+
+    checkHealth(metrics: HealthMetrics): { healthy: boolean; failures: string[] } {
+      const failures: string[] = [];
+      if (metrics.accuracy < this.thresholds.minAccuracy)
+        failures.push(`Accuracy ${metrics.accuracy} < ${this.thresholds.minAccuracy}`);
+      if (metrics.latencyMs > this.thresholds.maxLatencyMs)
+        failures.push(`Latency ${metrics.latencyMs}ms > ${this.thresholds.maxLatencyMs}ms`);
+      if (metrics.falsePositiveRate > this.thresholds.maxFalsePositiveRate)
+        failures.push(`FP rate ${metrics.falsePositiveRate} > ${this.thresholds.maxFalsePositiveRate}`);
+      return { healthy: failures.length === 0, failures };
+    }
+
+    evaluate(metrics: HealthMetrics): 'canary' | 'promoted' | 'rolled-back' {
+      if (this.stage === 'rolled-back' || this.stage === 'promoted') return this.stage;
+
+      const health = this.checkHealth(metrics);
+      if (!health.healthy) {
+        this.stage = 'rolled-back';
+        return this.stage;
+      }
+
+      this.healthyChecks++;
+      if (this.healthyChecks >= this.requiredHealthyChecks) {
+        this.stage = 'promoted';
+      }
+      return this.stage;
+    }
+
+    getStage(): string {
+      return this.stage;
+    }
+  }
+testCode: |
+  describe('CanaryManager', () => {
+    const thresholds = { minAccuracy: 0.90, maxLatencyMs: 20, maxFalsePositiveRate: 0.05 };
+
+    it('starts in canary stage', () => {
+      const manager = new CanaryManager(thresholds, 3);
+      expect(manager.getStage()).toBe('canary');
+    });
+
+    it('rolls back on unhealthy metrics', () => {
+      const manager = new CanaryManager(thresholds, 3);
+      const result = manager.evaluate({ accuracy: 0.85, latencyMs: 15, falsePositiveRate: 0.03 });
+      expect(result).toBe('rolled-back');
+    });
+
+    it('promotes after enough healthy checks', () => {
+      const manager = new CanaryManager(thresholds, 3);
+      const healthy = { accuracy: 0.95, latencyMs: 12, falsePositiveRate: 0.02 };
+      manager.evaluate(healthy);
+      manager.evaluate(healthy);
+      const result = manager.evaluate(healthy);
+      expect(result).toBe('promoted');
+    });
+
+    it('stays in canary with fewer healthy checks', () => {
+      const manager = new CanaryManager(thresholds, 3);
+      const healthy = { accuracy: 0.95, latencyMs: 12, falsePositiveRate: 0.02 };
+      manager.evaluate(healthy);
+      expect(manager.evaluate(healthy)).toBe('canary');
+    });
+
+    it('reports health check failures', () => {
+      const manager = new CanaryManager(thresholds, 3);
+      const health = manager.checkHealth({ accuracy: 0.85, latencyMs: 25, falsePositiveRate: 0.08 });
+      expect(health.healthy).toBe(false);
+      expect(health.failures.length).toBe(3);
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

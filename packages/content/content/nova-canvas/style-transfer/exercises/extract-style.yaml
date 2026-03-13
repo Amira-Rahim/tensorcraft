@@ -1,0 +1,64 @@
+slug: extract-style
+lessonSlug: style-representations
+title: "Extract Multi-Scale Style Representations"
+instructions: "Given an array of feature tensors (activations from multiple CNN layers), compute Gram matrices for each to create a multi-scale style representation. Return an array of Gram matrices."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function gramMatrix(features: tf.Tensor4D): tf.Tensor2D {
+    const [batch, height, width, channels] = features.shape;
+    const reshaped = features.reshape([height * width, channels]);
+    const gram = tf.matMul(reshaped, reshaped, true, false);
+    return tf.div(gram, tf.scalar(height * width)) as tf.Tensor2D;
+  }
+
+  function extractMultiScaleStyle(
+    layerActivations: tf.Tensor4D[]
+  ): tf.Tensor2D[] {
+    // Compute a Gram matrix for each layer's activations
+    return null; // your code here
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function gramMatrix(features: tf.Tensor4D): tf.Tensor2D {
+    const [batch, height, width, channels] = features.shape;
+    const reshaped = features.reshape([height * width, channels]);
+    const gram = tf.matMul(reshaped, reshaped, true, false);
+    return tf.div(gram, tf.scalar(height * width)) as tf.Tensor2D;
+  }
+
+  function extractMultiScaleStyle(
+    layerActivations: tf.Tensor4D[]
+  ): tf.Tensor2D[] {
+    return layerActivations.map(act => gramMatrix(act));
+  }
+testCode: |
+  describe('extractMultiScaleStyle', () => {
+    it('returns one Gram matrix per layer', () => {
+      const activations = [
+        tf.randomNormal([1, 32, 32, 16]) as tf.Tensor4D,
+        tf.randomNormal([1, 16, 16, 32]) as tf.Tensor4D,
+        tf.randomNormal([1, 8, 8, 64]) as tf.Tensor4D,
+      ];
+      const grams = extractMultiScaleStyle(activations);
+      expect(grams.length).toBe(3);
+    });
+    it('Gram matrix dimensions match channel counts', () => {
+      const activations = [
+        tf.randomNormal([1, 16, 16, 8]) as tf.Tensor4D,
+        tf.randomNormal([1, 8, 8, 16]) as tf.Tensor4D,
+      ];
+      const grams = extractMultiScaleStyle(activations);
+      expect(grams[0].shape).toEqual([8, 8]);
+      expect(grams[1].shape).toEqual([16, 16]);
+    });
+    it('returns symmetric matrices', () => {
+      const activations = [tf.randomNormal([1, 4, 4, 4]) as tf.Tensor4D];
+      const grams = extractMultiScaleStyle(activations);
+      const diff = tf.sub(grams[0], grams[0].transpose()).abs().max().dataSync()[0];
+      expect(diff).toBeLessThan(1e-4);
+    });
+  });
+estimatedMinutes: 8
+difficulty: intermediate

@@ -1,0 +1,126 @@
+slug: shard-model
+lessonSlug: model-sharding
+title: "Model Shard Planner"
+instructions: "Build a ShardPlanner that splits model layers into shards based on a memory budget. Each layer has a name and size in MB. The planner groups consecutive layers into shards such that no shard exceeds the memory limit. If a single layer exceeds the limit, it gets its own shard."
+starterCode: |
+  interface Layer {
+    name: string;
+    sizeMB: number;
+  }
+
+  interface Shard {
+    id: string;
+    layers: string[];
+    totalSizeMB: number;
+  }
+
+  class ShardPlanner {
+    constructor(private maxShardSizeMB: number) {}
+
+    plan(layers: Layer[]): Shard[] {
+      // Group consecutive layers into shards
+      // Each shard's total size should not exceed maxShardSizeMB
+      // If adding a layer would exceed the limit, start a new shard
+      // A single layer that exceeds the limit gets its own shard
+      return []; // your code here
+    }
+  }
+solutionCode: |
+  interface Layer {
+    name: string;
+    sizeMB: number;
+  }
+
+  interface Shard {
+    id: string;
+    layers: string[];
+    totalSizeMB: number;
+  }
+
+  class ShardPlanner {
+    constructor(private maxShardSizeMB: number) {}
+
+    plan(layers: Layer[]): Shard[] {
+      const shards: Shard[] = [];
+      let currentLayers: string[] = [];
+      let currentSize = 0;
+
+      for (const layer of layers) {
+        if (currentSize + layer.sizeMB > this.maxShardSizeMB && currentLayers.length > 0) {
+          shards.push({
+            id: `shard-${shards.length}`,
+            layers: [...currentLayers],
+            totalSizeMB: currentSize,
+          });
+          currentLayers = [];
+          currentSize = 0;
+        }
+        currentLayers.push(layer.name);
+        currentSize += layer.sizeMB;
+      }
+
+      if (currentLayers.length > 0) {
+        shards.push({
+          id: `shard-${shards.length}`,
+          layers: [...currentLayers],
+          totalSizeMB: currentSize,
+        });
+      }
+
+      return shards;
+    }
+  }
+testCode: |
+  describe('ShardPlanner', () => {
+    it('creates a single shard for small models', () => {
+      const planner = new ShardPlanner(10);
+      const shards = planner.plan([
+        { name: 'layer1', sizeMB: 2 },
+        { name: 'layer2', sizeMB: 3 },
+      ]);
+      expect(shards.length).toBe(1);
+      expect(shards[0].layers).toEqual(['layer1', 'layer2']);
+      expect(shards[0].totalSizeMB).toBe(5);
+    });
+
+    it('splits when exceeding budget', () => {
+      const planner = new ShardPlanner(6);
+      const shards = planner.plan([
+        { name: 'layer1', sizeMB: 3 },
+        { name: 'layer2', sizeMB: 3 },
+        { name: 'layer3', sizeMB: 3 },
+        { name: 'layer4', sizeMB: 3 },
+      ]);
+      expect(shards.length).toBe(2);
+      expect(shards[0].totalSizeMB).toBe(6);
+      expect(shards[1].totalSizeMB).toBe(6);
+    });
+
+    it('handles single large layer', () => {
+      const planner = new ShardPlanner(5);
+      const shards = planner.plan([
+        { name: 'layer1', sizeMB: 2 },
+        { name: 'big-layer', sizeMB: 8 },
+        { name: 'layer3', sizeMB: 2 },
+      ]);
+      expect(shards.length).toBe(3);
+      expect(shards[1].layers).toEqual(['big-layer']);
+    });
+
+    it('assigns sequential shard IDs', () => {
+      const planner = new ShardPlanner(5);
+      const shards = planner.plan([
+        { name: 'a', sizeMB: 4 },
+        { name: 'b', sizeMB: 4 },
+        { name: 'c', sizeMB: 4 },
+      ]);
+      expect(shards.map(s => s.id)).toEqual(['shard-0', 'shard-1', 'shard-2']);
+    });
+
+    it('returns empty array for empty input', () => {
+      const planner = new ShardPlanner(5);
+      expect(planner.plan([])).toEqual([]);
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

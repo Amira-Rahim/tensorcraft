@@ -1,0 +1,38 @@
+slug: neural-synth
+lessonSlug: audio-synthesis
+title: "Neural Synthesizer"
+instructions: "Build a simple neural audio decoder that takes a latent vector of size 32 and outputs 2048 audio samples. Use tf.sequential with dense layers and tanh activation on the output layer to constrain values to [-1, 1]."
+starterCode: |
+  function buildAudioDecoder() {
+    const model = tf.sequential();
+    // Add layers: input shape [32], output 2048 samples with tanh activation
+    // your code here
+
+    return model;
+  }
+solutionCode: |
+  function buildAudioDecoder() {
+    const model = tf.sequential({
+      layers: [
+        tf.layers.dense({ inputShape: [32], units: 128, activation: 'relu' }),
+        tf.layers.dense({ units: 512, activation: 'relu' }),
+        tf.layers.dense({ units: 2048, activation: 'tanh' }),
+      ],
+    });
+    return model;
+  }
+testCode: |
+  describe('buildAudioDecoder', () => {
+    const model = buildAudioDecoder();
+    it('accepts latent vector of size 32', () => { expect(model.inputs[0].shape).toEqual([null, 32]); });
+    it('outputs 2048 samples', () => { expect(model.outputs[0].shape).toEqual([null, 2048]); });
+    it('generates valid audio range', async () => {
+      const z = tf.randomNormal([1, 32]);
+      const out = model.predict(z);
+      const data = await out.data();
+      expect(Math.max(...data)).toBeLessThanOrEqual(1);
+      expect(Math.min(...data)).toBeGreaterThanOrEqual(-1);
+    });
+  });
+estimatedMinutes: 12
+difficulty: intermediate

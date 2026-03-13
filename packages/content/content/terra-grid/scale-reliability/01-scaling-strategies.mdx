@@ -1,0 +1,151 @@
+---
+slug: scaling-strategies
+title: "Scaling Strategies"
+moduleId: scale-reliability
+themeId: terra-grid
+order: 1
+estimatedMinutes: 25
+difficulty: advanced
+context:
+  narrative: "GRID initiates the stress test. 'Simulating simultaneous sensor anomalies across 3 regions. 12,400 affected devices. Inference load increasing 400%.' Hassan watches the dashboard. 'This is where we find out if the system holds.'"
+  speaker: "GRID"
+concept:
+  explanation: "Scaling ML inference horizontally and vertically mirrors auto-scaling web servers — add more instances or add more resources to existing ones."
+  bridge:
+    feTitle: "Auto-Scaling Servers"
+    feCode: "// AWS: minInstances: 2, maxInstances: 10, targetCPU: 70%"
+    mlTitle: "Auto-Scaling Inference"
+    mlCode: "// Edge: minWorkers: 2, maxWorkers: 8, targetLatency: 15ms"
+    tier: identity
+consequence:
+  narrative: "The system scales from 2 inference workers to 6 within 30 seconds. Latency stays under 18ms. Hassan exhales. 'Horizontal scaling held. The architecture works.'"
+  nextLessonTeaser: "Next: model sharding — splitting models across devices when they are too large for one"
+hints:
+  - level: nudge
+    content: "Horizontal scaling adds more inference workers; vertical scaling adds more resources to each worker"
+  - level: guidance
+    content: "Implement an auto-scaler that monitors latency and adjusts worker count"
+  - level: solution
+    content: "Scale up when latency exceeds target, scale down when it drops below threshold, with cooldown periods"
+keywords:
+  - horizontal-scaling
+  - vertical-scaling
+  - auto-scaling
+  - load-balancing
+---
+
+<Dialogue speaker="GRID">
+Stress test initiated. Simulating simultaneous sensor anomalies across Regions 1, 3, and 7. 12,400 devices reporting. Inference requests increasing 400% above baseline. Current latency: 14ms. Monitoring.
+</Dialogue>
+
+<Dialogue speaker="Hassan Al-Rashid">
+Everything fails eventually. The question is: does it fail well? If we cannot handle a 4x load spike, we have no business running critical infrastructure monitoring. Watch the latency.
+</Dialogue>
+
+You have configured auto-scaling groups for web servers: set a target CPU utilization, define min and max instances, and let the orchestrator handle the rest. Scaling ML inference follows the same pattern. When prediction latency climbs, spin up more inference workers. When load drops, scale back down. The principles are identical — the metric you target is latency instead of CPU.
+
+<LearningObjectives objectives={["Implement horizontal scaling for ML inference workers", "Build an auto-scaler that responds to latency thresholds", "Configure scale-up and scale-down policies with cooldown periods", "Compare horizontal vs vertical scaling tradeoffs for edge ML"]} />
+
+## Inference Auto-Scaler
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="auto-scaler.ts">
+{`// Auto-scaling inference workers — same pattern as web server scaling
+
+interface InferenceWorker {
+  id: string;
+  status: 'active' | 'draining' | 'idle';
+  currentLatencyMs: number;
+  predictionsPerSecond: number;
+}
+
+interface ScalingPolicy {
+  minWorkers: number;
+  maxWorkers: number;
+  targetLatencyMs: number;
+  scaleUpThresholdMs: number;
+  scaleDownThresholdMs: number;
+  cooldownSeconds: number;
+}
+
+class InferenceAutoScaler {
+  private workers: InferenceWorker[] = [];
+  private lastScaleAction: number = 0;
+  private policy: ScalingPolicy;
+
+  constructor(policy: ScalingPolicy) {
+    this.policy = policy;
+    // Start with minimum workers
+    for (let i = 0; i < policy.minWorkers; i++) {
+      this.addWorker();
+    }
+  }
+
+  private addWorker(): InferenceWorker {
+    const worker: InferenceWorker = {
+      id: \`worker-\${this.workers.length + 1}\`,
+      status: 'active',
+      currentLatencyMs: 0,
+      predictionsPerSecond: 0,
+    };
+    this.workers.push(worker);
+    return worker;
+  }
+
+  private removeWorker(): void {
+    const idle = this.workers.find(w => w.status === 'idle');
+    if (idle) {
+      this.workers = this.workers.filter(w => w.id !== idle.id);
+    }
+  }
+
+  evaluate(): { action: 'scale-up' | 'scale-down' | 'none'; workerCount: number } {
+    const now = Date.now();
+    const cooldownElapsed = (now - this.lastScaleAction) / 1000 > this.policy.cooldownSeconds;
+
+    if (!cooldownElapsed) return { action: 'none', workerCount: this.workers.length };
+
+    const avgLatency = this.workers.reduce((s, w) => s + w.currentLatencyMs, 0)
+      / this.workers.length;
+
+    if (avgLatency > this.policy.scaleUpThresholdMs
+        && this.workers.length < this.policy.maxWorkers) {
+      this.addWorker();
+      this.lastScaleAction = now;
+      return { action: 'scale-up', workerCount: this.workers.length };
+    }
+
+    if (avgLatency < this.policy.scaleDownThresholdMs
+        && this.workers.length > this.policy.minWorkers) {
+      this.removeWorker();
+      this.lastScaleAction = now;
+      return { action: 'scale-down', workerCount: this.workers.length };
+    }
+
+    return { action: 'none', workerCount: this.workers.length };
+  }
+}
+
+// Terra Grid scaling policy
+const scaler = new InferenceAutoScaler({
+  minWorkers: 2,
+  maxWorkers: 8,
+  targetLatencyMs: 15,
+  scaleUpThresholdMs: 20,
+  scaleDownThresholdMs: 8,
+  cooldownSeconds: 60,
+});
+
+// During stress test
+const result = scaler.evaluate();
+console.log(\`Action: \${result.action}, Workers: \${result.workerCount}\`);`}
+</CodeBlock>
+
+## Challenge
+
+Build an auto-scaler that adjusts inference workers based on latency.
+
+<Exercise slug="scale-horizontally" />
+
+<KeyTakeaways takeaways={["Horizontal scaling for ML inference mirrors auto-scaling web servers — add workers when load increases", "Target latency instead of CPU utilization as the scaling metric for inference workloads", "Cooldown periods prevent thrashing — no rapid scale-up/scale-down oscillations", "Edge constraint: scaling horizontally means distributing across more devices, not spinning up cloud instances"]} />

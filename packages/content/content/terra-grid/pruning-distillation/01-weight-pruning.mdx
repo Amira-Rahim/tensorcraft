@@ -1,0 +1,90 @@
+---
+slug: weight-pruning
+title: "Weight Pruning"
+moduleId: pruning-distillation
+themeId: terra-grid
+order: 1
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Hassan examines the model's weights and finds most are near zero — dead weight."
+  speaker: "Hassan Al-Rashid"
+concept:
+  explanation: "Weight pruning removes near-zero connections from a neural network — just like tree-shaking removes unused exports from JavaScript modules."
+  bridge:
+    feTitle: "Tree-Shaking"
+    feCode: "// Webpack removes unused exports\nimport { used } from './utils';\n// unused exports are eliminated"
+    mlTitle: "Weight Pruning"
+    mlCode: "// Remove weights close to zero\n// if (Math.abs(weight) < threshold)\n//   weight = 0; // pruned"
+    tier: structural
+consequence:
+  narrative: "60% of the model's weights were near zero. Pruning them barely affects accuracy."
+  nextLessonTeaser: "Next: structured pruning — removing entire neurons"
+hints:
+  - level: nudge
+    content: "Weights near zero contribute almost nothing to the output"
+  - level: guidance
+    content: "Set weights below a threshold to exactly zero"
+  - level: solution
+    content: "Sort weights by magnitude, zero out the smallest percentage"
+keywords:
+  - pruning
+  - tree-shaking
+  - sparsity
+  - magnitude
+---
+
+<Dialogue speaker="Hassan Al-Rashid">
+We have a massive model that knows everything. We need a tiny model that knows just enough. Look at the weight distribution — 60% of the values are near zero. They are unused exports. Tree-shake them.
+</Dialogue>
+
+You use tree-shaking every day. Webpack analyzes your import statements and removes code that is never used. Weight pruning applies the same principle to neural networks: weights near zero contribute almost nothing to the model's output, so you remove them.
+
+<LearningObjectives objectives={["Understand magnitude-based weight pruning", "Implement a pruning function that zeros small weights", "Calculate sparsity percentage after pruning", "Map tree-shaking concepts to neural network pruning"]} />
+
+## Tree-Shaking for Neural Networks
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="weight-pruning.ts">
+{`// Magnitude-based pruning: zero out weights below threshold
+function pruneWeights(weights: number[], sparsityTarget: number): {
+  pruned: number[];
+  sparsity: number;
+  nonZeroCount: number;
+} {
+  // Sort by absolute value to find the threshold
+  const sorted = weights.map(Math.abs).sort((a, b) => a - b);
+  const cutoffIndex = Math.floor(sorted.length * sparsityTarget);
+  const threshold = sorted[cutoffIndex];
+
+  // Zero out weights below threshold (tree-shake them)
+  const pruned = weights.map(w => Math.abs(w) < threshold ? 0 : w);
+
+  const nonZeroCount = pruned.filter(w => w !== 0).length;
+  const sparsity = 1 - (nonZeroCount / pruned.length);
+
+  return { pruned, sparsity, nonZeroCount };
+}
+
+// Example: prune 60% of weights
+const weights = [0.82, -0.01, 0.003, -0.91, 0.05, -0.002, 0.67, 0.008, -0.73, 0.001];
+const result = pruneWeights(weights, 0.6);
+
+console.log('Original weights:', weights.length);           // 10
+console.log('Non-zero after pruning:', result.nonZeroCount); // 4
+console.log('Sparsity:', (result.sparsity * 100).toFixed(0) + '%'); // 60%
+
+// The large weights (0.82, -0.91, 0.67, -0.73) carry the signal
+// The small weights (0.003, -0.002, 0.001) are noise — like unused imports`}
+</CodeBlock>
+
+The insight is that most trained neural networks are over-parameterized. Just as a JavaScript bundle often contains unused code paths, a neural network often contains weights that contribute almost nothing to the output. Removing them has minimal impact on accuracy.
+
+## Challenge
+
+Implement magnitude-based weight pruning.
+
+<Exercise slug="tg-prune-weights" />
+
+<KeyTakeaways takeaways={["Weight pruning zeros out near-zero weights — tree-shaking for neural networks", "Most trained models are over-parameterized: 50-90% of weights can be pruned", "Magnitude-based pruning removes the smallest absolute weights first", "Sparse models can be stored more efficiently using compressed formats"]} />

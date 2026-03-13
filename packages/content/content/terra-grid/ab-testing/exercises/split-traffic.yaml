@@ -1,0 +1,98 @@
+slug: split-traffic
+lessonSlug: why-ab-test-models
+title: "Build a Model Router"
+instructions: "Build a ModelRouter class that deterministically assigns devices to model versions using hash-based bucketing. The router should take a treatment percentage and route devices to either the control or treatment model. The same device ID should always get the same model."
+starterCode: |
+  class ModelRouter {
+    constructor(
+      private controlVersion: string,
+      private treatmentVersion: string,
+      private treatmentPercent: number,
+    ) {}
+
+    private hashCode(str: string): number {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash |= 0;
+      }
+      return hash;
+    }
+
+    assignVersion(deviceId: string): string {
+      // Use hashCode to deterministically assign device to a version
+      // If hash % 100 < treatmentPercent, return treatmentVersion
+      // Otherwise return controlVersion
+      return ''; // your code here
+    }
+  }
+solutionCode: |
+  class ModelRouter {
+    constructor(
+      private controlVersion: string,
+      private treatmentVersion: string,
+      private treatmentPercent: number,
+    ) {}
+
+    private hashCode(str: string): number {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash |= 0;
+      }
+      return hash;
+    }
+
+    assignVersion(deviceId: string): string {
+      const hash = this.hashCode(deviceId);
+      const bucket = Math.abs(hash) % 100;
+      return bucket < this.treatmentPercent
+        ? this.treatmentVersion
+        : this.controlVersion;
+    }
+  }
+testCode: |
+  describe('ModelRouter', () => {
+    it('assigns devices deterministically', () => {
+      const router = new ModelRouter('v3.0', 'v3.1', 50);
+      const first = router.assignVersion('device-001');
+      const second = router.assignVersion('device-001');
+      expect(first).toBe(second);
+    });
+
+    it('returns only valid versions', () => {
+      const router = new ModelRouter('v3.0', 'v3.1', 50);
+      const version = router.assignVersion('device-001');
+      expect(['v3.0', 'v3.1']).toContain(version);
+    });
+
+    it('routes all to control when treatmentPercent is 0', () => {
+      const router = new ModelRouter('v3.0', 'v3.1', 0);
+      const results = Array.from({ length: 100 }, (_, i) =>
+        router.assignVersion(`device-${i}`)
+      );
+      expect(results.every(v => v === 'v3.0')).toBe(true);
+    });
+
+    it('routes all to treatment when treatmentPercent is 100', () => {
+      const router = new ModelRouter('v3.0', 'v3.1', 100);
+      const results = Array.from({ length: 100 }, (_, i) =>
+        router.assignVersion(`device-${i}`)
+      );
+      expect(results.every(v => v === 'v3.1')).toBe(true);
+    });
+
+    it('splits traffic approximately correctly', () => {
+      const router = new ModelRouter('v3.0', 'v3.1', 30);
+      const results = Array.from({ length: 1000 }, (_, i) =>
+        router.assignVersion(`device-${i}`)
+      );
+      const treatmentCount = results.filter(v => v === 'v3.1').length;
+      expect(treatmentCount).toBeGreaterThan(200);
+      expect(treatmentCount).toBeLessThan(400);
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

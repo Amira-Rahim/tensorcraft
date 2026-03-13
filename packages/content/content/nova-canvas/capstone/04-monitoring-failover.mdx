@@ -1,0 +1,202 @@
+---
+slug: monitoring-failover
+title: "Monitoring & Failover"
+moduleId: nc-capstone
+themeId: nova-canvas
+order: 4
+estimatedMinutes: 25
+difficulty: advanced
+context:
+  narrative: "Three days to opening. Petrov builds the monitoring dashboard. 'We cannot be in the server room during the exhibition. The system must tell us when something is wrong — and fix what it can on its own.'"
+  speaker: "Petrov"
+concept:
+  explanation: "Monitoring and failover for ML systems applies the same observability patterns as web applications — health checks, error budgets, circuit breakers, and graceful degradation."
+  bridge:
+    feTitle: "Uptime Monitoring"
+    feCode: "// health check: fetch('/health').then(r => r.ok ? 'up' : alert('down'));"
+    mlTitle: "Model Monitoring"
+    mlCode: "// monitor: tensor count, inference latency, generation quality, error rate"
+    tier: structural
+consequence:
+  narrative: "The monitoring dashboard goes live. Twelve tablet health indicators, generation latency graphs, memory usage trends, error rate alerts. Petrov can watch the entire installation from his phone."
+  nextLessonTeaser: "Next: opening night"
+hints:
+  - level: nudge
+    content: "Think about what metrics matter most for a live installation — latency, memory, and error rate"
+  - level: guidance
+    content: "Build health checks that run continuously and trigger automatic recovery actions"
+  - level: solution
+    content: "Implement a monitor that checks tensor count, inference time, and connection health, with automatic restart on failure"
+keywords:
+  - monitoring
+  - failover
+  - health-check
+  - circuit-breaker
+---
+
+<Dialogue speaker="Petrov">
+The system will run for six hours a day, six days a week, for three months. We will not be standing next to it. It must monitor itself, heal itself, and alert us only when it cannot recover.
+</Dialogue>
+
+<Dialogue speaker="Ren">
+Same pattern as any production web app. Health endpoints, error budgets, circuit breakers, auto-restart. The only difference is we are also watching tensor memory and inference latency alongside the usual metrics.
+</Dialogue>
+
+You have set up monitoring for production web applications — uptime checks, error tracking, performance budgets, alerting. Installation monitoring adds ML-specific metrics (tensor count, inference latency, model health) to the same observability stack you already know.
+
+<LearningObjectives objectives={["Implement continuous health monitoring for a multi-device installation", "Build circuit breakers that isolate failing modalities without taking down the system", "Design automatic recovery procedures for common failure modes", "Create an alerting system with severity levels and escalation"]} />
+
+## Health Monitoring
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="health-monitor.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+interface HealthMetrics {
+  tensorCount: number;
+  memoryMB: number;
+  avgInferenceMs: number;
+  errorRate: number;
+  activeConnections: number;
+  uptime: number;
+}
+
+class InstallationMonitor {
+  private metrics: HealthMetrics[] = [];
+  private alerts: Alert[] = [];
+  private intervalId: number | null = null;
+
+  private thresholds = {
+    maxTensors: 1000,       // Tensor leak threshold
+    maxMemoryMB: 512,       // Memory pressure threshold
+    maxInferenceMs: 2000,   // Latency budget
+    maxErrorRate: 0.05,     // 5% error budget
+  };
+
+  start(intervalMs: number = 5000) {
+    this.intervalId = window.setInterval(() => this.check(), intervalMs);
+  }
+
+  private check() {
+    const mem = tf.memory();
+    const current: HealthMetrics = {
+      tensorCount: mem.numTensors,
+      memoryMB: mem.numBytes / 1024 / 1024,
+      avgInferenceMs: this.getAverageInference(),
+      errorRate: this.getErrorRate(),
+      activeConnections: this.getConnectionCount(),
+      uptime: performance.now(),
+    };
+
+    this.metrics.push(current);
+
+    // Check thresholds
+    if (current.tensorCount > this.thresholds.maxTensors) {
+      this.alert('warning', 'Tensor leak detected', \`\${current.tensorCount} tensors active\`);
+      this.recoverTensorLeak();
+    }
+
+    if (current.memoryMB > this.thresholds.maxMemoryMB) {
+      this.alert('critical', 'Memory pressure', \`\${current.memoryMB.toFixed(0)}MB used\`);
+    }
+
+    if (current.avgInferenceMs > this.thresholds.maxInferenceMs) {
+      this.alert('warning', 'High inference latency', \`\${current.avgInferenceMs.toFixed(0)}ms avg\`);
+    }
+
+    if (current.errorRate > this.thresholds.maxErrorRate) {
+      this.alert('critical', 'Error rate exceeded', \`\${(current.errorRate * 100).toFixed(1)}%\`);
+    }
+  }
+
+  private alert(severity: 'info' | 'warning' | 'critical', title: string, detail: string) {
+    this.alerts.push({ severity, title, detail, timestamp: Date.now() });
+    if (severity === 'critical') this.notifyTeam(title, detail);
+  }
+
+  private recoverTensorLeak() {
+    // Force garbage collection of orphaned tensors
+    tf.engine().startScope();
+    tf.engine().endScope();
+    console.log('Tensor cleanup executed, count:', tf.memory().numTensors);
+  }
+
+  private notifyTeam(title: string, detail: string) {
+    // Send alert via webhook — Petrov gets a push notification
+    fetch('/api/alerts', {
+      method: 'POST',
+      body: JSON.stringify({ title, detail, timestamp: Date.now() }),
+    }).catch(() => { /* alert system itself failed — log locally */ });
+  }
+
+  private getAverageInference(): number { return 0; /* from metrics collector */ }
+  private getErrorRate(): number { return 0; /* from error tracker */ }
+  private getConnectionCount(): number { return 0; /* from connection manager */ }
+}`}
+</CodeBlock>
+
+## Circuit Breaker
+
+<CodeBlock language="typescript" title="circuit-breaker.ts">
+{`// Circuit breaker: isolate failing modules, keep the rest running
+class CircuitBreaker {
+  private failureCount = 0;
+  private lastFailure = 0;
+  private state: 'closed' | 'open' | 'half-open' = 'closed';
+
+  constructor(
+    private threshold: number = 5,
+    private resetTimeMs: number = 30000,
+    private moduleName: string = 'unknown'
+  ) {}
+
+  async execute<T>(fn: () => Promise<T>, fallback: () => T): Promise<T> {
+    if (this.state === 'open') {
+      if (Date.now() - this.lastFailure > this.resetTimeMs) {
+        this.state = 'half-open'; // Try one request
+      } else {
+        console.log(\`[\${this.moduleName}] Circuit OPEN — serving fallback\`);
+        return fallback();
+      }
+    }
+
+    try {
+      const result = await fn();
+      if (this.state === 'half-open') {
+        this.state = 'closed'; // Recovery successful
+        this.failureCount = 0;
+      }
+      return result;
+    } catch (err) {
+      this.failureCount++;
+      this.lastFailure = Date.now();
+
+      if (this.failureCount >= this.threshold) {
+        this.state = 'open';
+        console.log(\`[\${this.moduleName}] Circuit OPENED after \${this.threshold} failures\`);
+      }
+
+      return fallback();
+    }
+  }
+}
+
+// Each modality gets its own circuit breaker
+const imageBreaker = new CircuitBreaker(3, 15000, 'image-generator');
+const audioBreaker = new CircuitBreaker(3, 15000, 'audio-synthesizer');
+
+// If image generation fails 3 times, serve cached images for 15 seconds
+const image = await imageBreaker.execute(
+  () => imageModel.generate(latent),
+  () => getCachedFallback('image')
+);`}
+</CodeBlock>
+
+## Challenge
+
+Build a monitoring system with health checks, automatic recovery, and circuit breakers.
+
+<Exercise slug="monitor-failover" />
+
+<KeyTakeaways takeaways={["ML monitoring adds tensor count and inference latency to standard web app observability metrics", "Circuit breakers isolate failing modalities — if audio breaks, images keep generating", "Automatic recovery (tensor cleanup, model reload) handles common failures without human intervention", "Alert severity levels (info, warning, critical) prevent notification fatigue while catching real problems"]} />

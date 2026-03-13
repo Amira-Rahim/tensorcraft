@@ -1,0 +1,71 @@
+slug: track-experiment
+lessonSlug: experiment-tracking
+title: "Track an Experiment"
+instructions: "Implement an ExperimentTracker class with: logRun(run: { id: string; accuracy: number; loss: number }) that stores the run, getRuns() that returns all runs, and getBest() that returns the run with highest accuracy (or null if empty)."
+starterCode: |
+  interface Run {
+    id: string;
+    accuracy: number;
+    loss: number;
+  }
+
+  class ExperimentTracker {
+    // Your code here
+
+    logRun(run: Run): void {
+    }
+
+    getRuns(): Run[] {
+      return [];
+    }
+
+    getBest(): Run | null {
+      return null;
+    }
+  }
+solutionCode: |
+  interface Run {
+    id: string;
+    accuracy: number;
+    loss: number;
+  }
+
+  class ExperimentTracker {
+    private runs: Run[] = [];
+
+    logRun(run: Run): void {
+      this.runs.push(run);
+    }
+
+    getRuns(): Run[] {
+      return this.runs;
+    }
+
+    getBest(): Run | null {
+      if (this.runs.length === 0) return null;
+      return this.runs.reduce((best, run) =>
+        run.accuracy > best.accuracy ? run : best
+      );
+    }
+  }
+testCode: |
+  describe('ExperimentTracker', () => {
+    it('logs runs', () => {
+      const tracker = new ExperimentTracker();
+      tracker.logRun({ id: 'r1', accuracy: 0.9, loss: 0.1 });
+      expect(tracker.getRuns().length).toBe(1);
+    });
+    it('returns null for empty tracker', () => {
+      const tracker = new ExperimentTracker();
+      expect(tracker.getBest()).toBeNull();
+    });
+    it('finds the best run', () => {
+      const tracker = new ExperimentTracker();
+      tracker.logRun({ id: 'r1', accuracy: 0.9, loss: 0.1 });
+      tracker.logRun({ id: 'r2', accuracy: 0.95, loss: 0.05 });
+      tracker.logRun({ id: 'r3', accuracy: 0.88, loss: 0.12 });
+      expect(tracker.getBest()!.id).toBe('r2');
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

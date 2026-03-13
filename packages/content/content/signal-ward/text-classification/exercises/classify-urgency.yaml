@@ -1,0 +1,129 @@
+slug: classify-urgency
+lessonSlug: binary-classification
+title: "Classify Document Urgency"
+instructions: "Build a binary classifier that takes a document embedding (a 32-dimensional vector) and predicts whether the document is urgent (1) or routine (0). The model should use a single sigmoid output. Then implement a classify function that applies a clinical threshold of 0.3 — lower than the default 0.5 to prioritize catching urgent cases."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function buildUrgencyClassifier(inputDim: number): tf.LayersModel {
+    // Build a sequential model with:
+    // 1. Dense layer: 32 units, relu, inputShape [inputDim]
+    // 2. Dense layer: 1 unit, sigmoid activation
+    // Compile with binaryCrossentropy loss and adam optimizer
+    return null as any;
+  }
+
+  interface UrgencyResult {
+    label: 'URGENT' | 'ROUTINE';
+    score: number;
+  }
+
+  async function classifyUrgency(
+    model: tf.LayersModel,
+    embedding: tf.Tensor2D,
+    threshold: number = 0.3
+  ): Promise<UrgencyResult> {
+    // Run prediction, compare score to threshold
+    // Return { label, score }
+    return { label: 'ROUTINE', score: 0 };
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function buildUrgencyClassifier(inputDim: number): tf.LayersModel {
+    const model = tf.sequential();
+
+    model.add(tf.layers.dense({
+      units: 32,
+      activation: 'relu',
+      inputShape: [inputDim]
+    }));
+
+    model.add(tf.layers.dense({
+      units: 1,
+      activation: 'sigmoid'
+    }));
+
+    model.compile({
+      optimizer: 'adam',
+      loss: 'binaryCrossentropy',
+      metrics: ['accuracy']
+    });
+
+    return model;
+  }
+
+  interface UrgencyResult {
+    label: 'URGENT' | 'ROUTINE';
+    score: number;
+  }
+
+  async function classifyUrgency(
+    model: tf.LayersModel,
+    embedding: tf.Tensor2D,
+    threshold: number = 0.3
+  ): Promise<UrgencyResult> {
+    const prediction = model.predict(embedding) as tf.Tensor;
+    const score = (await prediction.data())[0];
+    prediction.dispose();
+
+    return {
+      label: score > threshold ? 'URGENT' : 'ROUTINE',
+      score
+    };
+  }
+testCode: |
+  describe('Urgency Classifier', () => {
+    let model: tf.LayersModel;
+
+    beforeAll(() => {
+      model = buildUrgencyClassifier(32);
+    });
+
+    it('builds a model with correct input shape', () => {
+      expect(model.inputs[0].shape).toEqual([null, 32]);
+    });
+
+    it('outputs a single value', () => {
+      expect(model.outputs[0].shape).toEqual([null, 1]);
+    });
+
+    it('uses binaryCrossentropy loss', () => {
+      expect(model.loss).toBe('binaryCrossentropy');
+    });
+
+    it('outputs values between 0 and 1', async () => {
+      const input = tf.randomNormal([1, 32]) as tf.Tensor2D;
+      const output = model.predict(input) as tf.Tensor;
+      const value = (await output.data())[0];
+      expect(value).toBeGreaterThanOrEqual(0);
+      expect(value).toBeLessThanOrEqual(1);
+      input.dispose();
+      output.dispose();
+    });
+
+    it('classifies as URGENT when score exceeds threshold', async () => {
+      const input = tf.randomNormal([1, 32]) as tf.Tensor2D;
+      const result = await classifyUrgency(model, input, 0.0);
+      expect(result.label).toBe('URGENT');
+      expect(result.score).toBeGreaterThan(0);
+      input.dispose();
+    });
+
+    it('classifies as ROUTINE when score is below threshold', async () => {
+      const input = tf.randomNormal([1, 32]) as tf.Tensor2D;
+      const result = await classifyUrgency(model, input, 1.0);
+      expect(result.label).toBe('ROUTINE');
+      input.dispose();
+    });
+
+    it('returns a score between 0 and 1', async () => {
+      const input = tf.randomNormal([1, 32]) as tf.Tensor2D;
+      const result = await classifyUrgency(model, input);
+      expect(result.score).toBeGreaterThanOrEqual(0);
+      expect(result.score).toBeLessThanOrEqual(1);
+      input.dispose();
+    });
+  });
+estimatedMinutes: 15
+difficulty: intermediate

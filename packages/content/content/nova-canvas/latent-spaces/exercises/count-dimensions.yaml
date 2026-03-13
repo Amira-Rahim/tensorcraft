@@ -1,0 +1,76 @@
+slug: count-dimensions
+lessonSlug: dimensionality
+title: "Count Dimensions"
+instructions: "Build three autoencoders with different bottleneck sizes (2, 16, and 64 latent dimensions). Each should have input/output of 784 and one hidden layer of 128 units. Return them in an object."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function buildAutoencoders(): {
+    tiny: tf.Sequential,
+    medium: tf.Sequential,
+    large: tf.Sequential
+  } {
+    function makeAE(latentDim: number): tf.Sequential {
+      const model = tf.sequential();
+      // Encoder: 784 → 128 (relu) → latentDim (relu)
+      // Decoder: latentDim → 128 (relu) → 784 (sigmoid)
+      // your code here
+      return model;
+    }
+
+    return {
+      tiny: null,   // latentDim = 2
+      medium: null,  // latentDim = 16
+      large: null,   // latentDim = 64
+    };
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function buildAutoencoders(): {
+    tiny: tf.Sequential,
+    medium: tf.Sequential,
+    large: tf.Sequential
+  } {
+    function makeAE(latentDim: number): tf.Sequential {
+      const model = tf.sequential();
+      model.add(tf.layers.dense({ inputShape: [784], units: 128, activation: 'relu' }));
+      model.add(tf.layers.dense({ units: latentDim, activation: 'relu' }));
+      model.add(tf.layers.dense({ units: 128, activation: 'relu' }));
+      model.add(tf.layers.dense({ units: 784, activation: 'sigmoid' }));
+      return model;
+    }
+
+    return {
+      tiny: makeAE(2),
+      medium: makeAE(16),
+      large: makeAE(64),
+    };
+  }
+testCode: |
+  describe('buildAutoencoders', () => {
+    it('tiny has 4 layers', () => {
+      const { tiny } = buildAutoencoders();
+      expect(tiny.layers.length).toBe(4);
+    });
+    it('tiny bottleneck is 2', () => {
+      const { tiny } = buildAutoencoders();
+      expect(tiny.layers[1].outputShape).toEqual([null, 2]);
+    });
+    it('medium bottleneck is 16', () => {
+      const { medium } = buildAutoencoders();
+      expect(medium.layers[1].outputShape).toEqual([null, 16]);
+    });
+    it('large bottleneck is 64', () => {
+      const { large } = buildAutoencoders();
+      expect(large.layers[1].outputShape).toEqual([null, 64]);
+    });
+    it('all output 784 dimensions', () => {
+      const models = buildAutoencoders();
+      expect(models.tiny.outputShape).toEqual([null, 784]);
+      expect(models.medium.outputShape).toEqual([null, 784]);
+      expect(models.large.outputShape).toEqual([null, 784]);
+    });
+  });
+estimatedMinutes: 8
+difficulty: beginner

@@ -1,0 +1,255 @@
+---
+slug: hospital-integration
+title: "Hospital Integration — Connecting to EHR Systems"
+moduleId: sw-capstone
+themeId: signal-ward
+order: 2
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "Khalil opens the hospital's API documentation. HL7 FHIR — a standard for exchanging healthcare data. 'It is just REST,' he says, scrolling through resource types. 'Patient, Observation, MedicationRequest, Condition. Each resource has a schema. I have integrated with worse APIs.' Santos looks over his shoulder. 'Worse APIs that did not involve patient safety.' Khalil pauses. 'Fair point. Let us be very careful with this one.'"
+  speaker: "Khalil"
+concept:
+  explanation: "Integrating Diagnostic One with hospital EHR systems through HL7 FHIR is the same discipline as integrating with any third-party API — adapting your internal data models to external contracts, handling versioning, and building robust error handling for data you do not control."
+  bridge:
+    feTitle: "Third-Party API Integration"
+    feCode: "// Stripe API: adapt your Order model to Stripe's PaymentIntent schema"
+    mlTitle: "EHR Integration"
+    mlCode: "// FHIR API: adapt your ClinicalNote model to FHIR's Observation resource schema"
+    tier: structural
+consequence:
+  narrative: "The FHIR adapter passes its first integration test. A MedicationRequest resource flows in, gets transformed to Diagnostic One's internal format, runs through the NLP pipeline, and produces a drug interaction alert. Obi watches the data flow on his monitor. 'It is like watching a webhook fire for the first time. Except the webhook might save someone's life.' Dr. Vasquez reviews the adapter's error handling. 'What happens when the EHR sends malformed data?' Khalil shows her the validation layer. 'Same thing that happens when Stripe sends a malformed webhook — we log it, reject it, and alert the team.'"
+  nextLessonTeaser: "Next: validating Diagnostic One against expert annotations"
+hints:
+  - level: nudge
+    content: "Think of FHIR resources as API response schemas — you need to map them to your internal types"
+  - level: guidance
+    content: "Build an adapter layer that transforms FHIR resources into your pipeline's input format, with validation at the boundary"
+  - level: solution
+    content: "Create a FHIRAdapter class that fetches resources, validates them against expected schemas, transforms them to ClinicalNote format, and handles versioning and errors"
+keywords:
+  - ehr-integration
+  - fhir
+  - hl7
+  - api-adapter
+  - data-transformation
+---
+
+<Dialogue speaker="Khalil">
+HL7 FHIR. It is a REST API for healthcare data. Patient resources, Observation resources, MedicationRequest resources. Each has a JSON schema. I have integrated frontend apps with Stripe, Twilio, SendGrid — this is the same pattern. Fetch the resource, validate the schema, transform it to our internal format.
+</Dialogue>
+
+<Dialogue speaker="Santos">
+Except if our Stripe integration drops a payment, someone retries their credit card. If our FHIR integration drops a medication record, someone might miss a drug interaction. The error handling needs to be airtight.
+</Dialogue>
+
+You have integrated web applications with third-party APIs. Stripe for payments, Auth0 for authentication, Twilio for messaging. Every integration follows the same pattern: read the external API's documentation, map their data models to your internal types, build an adapter layer that transforms between the two, and handle every possible failure mode. Integrating Diagnostic One with hospital EHR systems through HL7 FHIR follows the exact same pattern — with higher stakes.
+
+<LearningObjectives objectives={["Build an adapter layer that transforms FHIR resources into Diagnostic One's internal format", "Handle versioning, pagination, and error responses from external EHR APIs", "Implement validation at the integration boundary to reject malformed clinical data", "Design retry and dead-letter patterns for failed EHR data ingestion"]} />
+
+## FHIR Resource Mapping
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="fhir-adapter.ts">
+{`// FHIR integration — same pattern as any third-party API adapter
+// Map external schemas to internal types, validate at the boundary
+
+// External: FHIR MedicationRequest (hospital's format)
+interface FHIRMedicationRequest {
+  resourceType: 'MedicationRequest';
+  id: string;
+  status: 'active' | 'completed' | 'cancelled';
+  medicationCodeableConcept: {
+    coding: { system: string; code: string; display: string }[];
+    text: string;
+  };
+  subject: { reference: string }; // "Patient/12345"
+  dosageInstruction: {
+    text: string;
+    timing: { repeat: { frequency: number; period: number } };
+    doseAndRate: { doseQuantity: { value: number; unit: string } }[];
+  }[];
+  authoredOn: string;
+}
+
+// Internal: what Diagnostic One's pipeline expects
+interface ClinicalMedication {
+  drugName: string;
+  drugCode: string;
+  dosage: string;
+  patientId: string;
+  prescribedDate: string;
+  status: string;
+  rawText: string;
+}
+
+// Adapter — transforms FHIR to internal format
+class FHIRAdapter {
+  private baseUrl: string;
+  private apiKey: string;
+
+  constructor(baseUrl: string, apiKey: string) {
+    this.baseUrl = baseUrl;
+    this.apiKey = apiKey;
+  }
+
+  // Fetch and transform — like calling Stripe's API and mapping to your Order model
+  async getMedications(patientId: string): Promise<ClinicalMedication[]> {
+    const response = await fetch(
+      \`\${this.baseUrl}/MedicationRequest?patient=\${patientId}&status=active\`,
+      { headers: { Authorization: \`Bearer \${this.apiKey}\` } }
+    );
+
+    if (!response.ok) {
+      throw new FHIRError(\`Failed to fetch medications: \${response.status}\`);
+    }
+
+    const bundle = await response.json();
+
+    // FHIR returns a Bundle of resources — like paginated API results
+    return bundle.entry
+      .map((entry: any) => entry.resource)
+      .filter(this.validateMedicationRequest)
+      .map(this.transformMedication);
+  }
+
+  // Schema validation — reject malformed data at the boundary
+  private validateMedicationRequest(resource: any): boolean {
+    return (
+      resource.resourceType === 'MedicationRequest' &&
+      resource.medicationCodeableConcept?.coding?.length > 0 &&
+      resource.subject?.reference != null &&
+      resource.status != null
+    );
+  }
+
+  // Transform external schema to internal type
+  private transformMedication(fhir: FHIRMedicationRequest): ClinicalMedication {
+    const coding = fhir.medicationCodeableConcept.coding[0];
+    const dosage = fhir.dosageInstruction?.[0];
+
+    return {
+      drugName: coding.display,
+      drugCode: coding.code,
+      dosage: dosage?.text ?? 'Not specified',
+      patientId: fhir.subject.reference.replace('Patient/', ''),
+      prescribedDate: fhir.authoredOn,
+      status: fhir.status,
+      rawText: \`\${coding.display} \${dosage?.text ?? ''}\`.trim(),
+    };
+  }
+}
+
+class FHIRError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'FHIRError';
+  }
+}`}
+</CodeBlock>
+
+## Drug Interaction Check Pipeline
+
+<CodeBlock language="typescript" title="interaction-check.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Once medications are fetched from the EHR, check for interactions
+// This connects the FHIR adapter to the NLP pipeline
+
+interface DrugInteraction {
+  drug1: string;
+  drug2: string;
+  severity: 'low' | 'moderate' | 'high' | 'critical';
+  description: string;
+  confidence: number;
+}
+
+async function checkInteractions(
+  medications: ClinicalMedication[],
+  pipeline: DiagnosticOnePipeline
+): Promise<DrugInteraction[]> {
+  const interactions: DrugInteraction[] = [];
+
+  // Check each pair of medications
+  for (let i = 0; i < medications.length; i++) {
+    for (let j = i + 1; j < medications.length; j++) {
+      const query = \`Drug interaction between \${medications[i].drugName} and \${medications[j].drugName}\`;
+
+      const result = await pipeline.run({
+        text: query,
+        metadata: {
+          source: 'ehr',
+          patientId: medications[i].patientId,
+          authorRole: 'system',
+          timestamp: new Date().toISOString(),
+        },
+      });
+
+      if (result.confidence > 0.5) {
+        interactions.push({
+          drug1: medications[i].drugName,
+          drug2: medications[j].drugName,
+          severity: getSeverity(result.confidence),
+          description: result.groundedClaims[0]?.text ?? 'Potential interaction detected',
+          confidence: result.confidence,
+        });
+      }
+    }
+  }
+
+  return interactions;
+}
+
+function getSeverity(confidence: number): DrugInteraction['severity'] {
+  if (confidence > 0.95) return 'critical';
+  if (confidence > 0.85) return 'high';
+  if (confidence > 0.7) return 'moderate';
+  return 'low';
+}
+
+// Dead-letter queue for failed integrations — like a webhook retry system
+class DeadLetterQueue {
+  private failed: { resource: any; error: string; attempts: number; lastAttempt: string }[] = [];
+
+  enqueue(resource: any, error: string): void {
+    this.failed.push({
+      resource,
+      error,
+      attempts: 1,
+      lastAttempt: new Date().toISOString(),
+    });
+  }
+
+  async retry(adapter: FHIRAdapter): Promise<number> {
+    let recovered = 0;
+    const stillFailed: typeof this.failed = [];
+
+    for (const item of this.failed) {
+      if (item.attempts >= 3) {
+        stillFailed.push(item); // Give up after 3 retries
+        continue;
+      }
+      try {
+        // Re-attempt the transformation
+        recovered++;
+      } catch {
+        item.attempts++;
+        item.lastAttempt = new Date().toISOString();
+        stillFailed.push(item);
+      }
+    }
+
+    this.failed = stillFailed;
+    return recovered;
+  }
+}`}
+</CodeBlock>
+
+## Challenge
+
+Build a FHIR adapter that transforms external medical resources into Diagnostic One's internal format.
+
+<Exercise slug="build-fhir-adapter" />
+
+<KeyTakeaways takeaways={["EHR integration through FHIR is the same pattern as any third-party API integration — map external schemas to internal types, validate at the boundary", "Validation at the integration boundary is critical — reject malformed clinical data before it enters the pipeline", "Dead-letter queues and retry patterns handle transient EHR failures without losing patient data", "The adapter pattern isolates your pipeline from external API changes — when the EHR upgrades, only the adapter needs to change"]} />

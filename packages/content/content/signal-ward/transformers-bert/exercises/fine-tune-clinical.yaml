@@ -1,0 +1,115 @@
+slug: fine-tune-clinical
+lessonSlug: fine-tuning-bert
+title: "Fine-Tune BERT for Clinical Classification"
+instructions: "Build a fine-tuning pipeline: (1) createPretrainedEncoder — create a simulated pre-trained encoder using stacked dense layers with ReLU activation. (2) fineTuneForClassification — take the encoder, add a dropout (0.1) and classification head (dense + softmax), and compile the model with adam optimizer at learning rate 2e-5. The final model should accept [dModel] input and output [numLabels] probabilities."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  /**
+   * Create a simulated pre-trained encoder with stacked dense layers.
+   */
+  function createPretrainedEncoder(
+    dModel: number,
+    numLayers: number
+  ): tf.LayersModel {
+    // Build a functional model with numLayers dense(dModel, relu) layers
+    return null;
+  }
+
+  /**
+   * Add a classification head and compile for fine-tuning.
+   * @param learningRate should default to 2e-5
+   */
+  function fineTuneForClassification(
+    encoder: tf.LayersModel,
+    dModel: number,
+    numLabels: number,
+    learningRate: number
+  ): tf.LayersModel {
+    // Step 1: Create input, pass through encoder
+    // Step 2: Add dropout (rate 0.1)
+    // Step 3: Add dense layer with softmax activation
+    // Step 4: Compile with adam(learningRate) and categoricalCrossentropy
+    return null;
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function createPretrainedEncoder(
+    dModel: number,
+    numLayers: number
+  ): tf.LayersModel {
+    const input = tf.input({ shape: [dModel] });
+    let x: tf.SymbolicTensor = input;
+
+    for (let i = 0; i < numLayers; i++) {
+      x = tf.layers.dense({
+        units: dModel,
+        activation: 'relu',
+        name: `encoder_layer_${i}`
+      }).apply(x) as tf.SymbolicTensor;
+    }
+
+    return tf.model({ inputs: input, outputs: x });
+  }
+
+  function fineTuneForClassification(
+    encoder: tf.LayersModel,
+    dModel: number,
+    numLabels: number,
+    learningRate: number
+  ): tf.LayersModel {
+    const input = tf.input({ shape: [dModel] });
+    const encoded = encoder.apply(input) as tf.SymbolicTensor;
+
+    const dropped = tf.layers.dropout({ rate: 0.1 }).apply(encoded) as tf.SymbolicTensor;
+    const output = tf.layers.dense({
+      units: numLabels,
+      activation: 'softmax'
+    }).apply(dropped) as tf.SymbolicTensor;
+
+    const model = tf.model({ inputs: input, outputs: output });
+    model.compile({
+      optimizer: tf.train.adam(learningRate),
+      loss: 'categoricalCrossentropy',
+      metrics: ['accuracy']
+    });
+
+    return model;
+  }
+testCode: |
+  describe('createPretrainedEncoder', () => {
+    it('accepts input of shape [dModel]', () => {
+      const encoder = createPretrainedEncoder(32, 3);
+      const input = tf.randomNormal([1, 32]);
+      const output = encoder.predict(input) as tf.Tensor;
+      expect(output.shape).toEqual([1, 32]);
+    });
+    it('has the correct number of dense layers', () => {
+      const encoder = createPretrainedEncoder(16, 4);
+      const denseLayers = encoder.layers.filter(l => l.getClassName() === 'Dense');
+      expect(denseLayers.length).toBe(4);
+    });
+  });
+  describe('fineTuneForClassification', () => {
+    it('outputs correct number of labels', () => {
+      const encoder = createPretrainedEncoder(32, 2);
+      const model = fineTuneForClassification(encoder, 32, 5, 2e-5);
+      expect(model.outputShape).toEqual([null, 5]);
+    });
+    it('accepts input and produces valid probabilities', async () => {
+      const encoder = createPretrainedEncoder(16, 1);
+      const model = fineTuneForClassification(encoder, 16, 3, 2e-5);
+      const input = tf.randomNormal([1, 16]);
+      const output = model.predict(input) as tf.Tensor;
+      const sum = await output.sum().array();
+      expect(sum).toBeCloseTo(1.0, 4);
+    });
+    it('output shape matches numLabels for different configurations', () => {
+      const encoder = createPretrainedEncoder(64, 3);
+      const model = fineTuneForClassification(encoder, 64, 7, 2e-5);
+      expect(model.outputShape).toEqual([null, 7]);
+    });
+  });
+estimatedMinutes: 15
+difficulty: advanced

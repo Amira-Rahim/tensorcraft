@@ -1,0 +1,89 @@
+slug: train-gan
+lessonSlug: training-dynamics
+title: "Train a GAN Step"
+instructions: "Implement a single GAN training step. Train the discriminator on a batch of real data (labeled 1) and fake data (labeled 0), then train the generator to fool the discriminator. Return the discriminator and generator losses."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  async function ganStep(
+    generator: tf.Sequential,
+    discriminator: tf.Sequential,
+    gan: tf.LayersModel,
+    realBatch: tf.Tensor2D,
+    noiseDim: number
+  ): Promise<{ dLoss: number, gLoss: number }> {
+    const batchSize = realBatch.shape[0];
+
+    // 1. Generate fake batch
+    const noise = tf.randomNormal([batchSize, noiseDim]);
+    const fakeBatch = null; // your code here
+
+    // 2. Train discriminator on real (labels=1) and fake (labels=0)
+    const dLossReal = null; // your code here
+    const dLossFake = null; // your code here
+
+    // 3. Train generator via combined model (labels=1 to fool D)
+    const genNoise = tf.randomNormal([batchSize, noiseDim]);
+    const gLoss = null; // your code here
+
+    return {
+      dLoss: ((dLossReal + dLossFake) / 2),
+      gLoss: gLoss,
+    };
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  async function ganStep(
+    generator: tf.Sequential,
+    discriminator: tf.Sequential,
+    gan: tf.LayersModel,
+    realBatch: tf.Tensor2D,
+    noiseDim: number
+  ): Promise<{ dLoss: number, gLoss: number }> {
+    const batchSize = realBatch.shape[0];
+
+    const noise = tf.randomNormal([batchSize, noiseDim]);
+    const fakeBatch = generator.predict(noise) as tf.Tensor;
+
+    const dLossReal = (await discriminator.trainOnBatch(
+      realBatch, tf.ones([batchSize, 1])
+    ) as number[])[0];
+    const dLossFake = (await discriminator.trainOnBatch(
+      fakeBatch, tf.zeros([batchSize, 1])
+    ) as number[])[0];
+
+    const genNoise = tf.randomNormal([batchSize, noiseDim]);
+    const gLoss = (await gan.trainOnBatch(
+      genNoise, tf.ones([batchSize, 1])
+    ) as number[])[0];
+
+    tf.dispose([noise, fakeBatch, genNoise]);
+
+    return {
+      dLoss: (dLossReal + dLossFake) / 2,
+      gLoss: gLoss,
+    };
+  }
+testCode: |
+  describe('ganStep', () => {
+    it('returns dLoss and gLoss as numbers', async () => {
+      const G = tf.sequential();
+      G.add(tf.layers.dense({ inputShape: [10], units: 784, activation: 'sigmoid' }));
+      const D = tf.sequential();
+      D.add(tf.layers.dense({ inputShape: [784], units: 1, activation: 'sigmoid' }));
+      D.compile({ optimizer: 'adam', loss: 'binaryCrossentropy' });
+      D.trainable = false;
+      const ganInput = tf.input({ shape: [10] });
+      const ganOutput = D.apply(G.apply(ganInput));
+      const ganModel = tf.model({ inputs: ganInput, outputs: ganOutput });
+      ganModel.compile({ optimizer: 'adam', loss: 'binaryCrossentropy' });
+      D.trainable = true;
+      const realData = tf.randomUniform([4, 784]);
+      const result = await ganStep(G, D, ganModel, realData, 10);
+      expect(typeof result.dLoss).toBe('number');
+      expect(typeof result.gLoss).toBe('number');
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

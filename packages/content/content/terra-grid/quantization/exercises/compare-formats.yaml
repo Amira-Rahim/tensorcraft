@@ -1,0 +1,9 @@
+slug: compare-formats
+lessonSlug: number-formats
+title: "Compare Number Formats"
+instructions: "Write a function modelSize(paramCount, bytesPerParam) that returns the size in MB (paramCount * bytesPerParam / 1024 / 1024). Then write compareSizes(paramCount) that returns { float32, float16, int8 } sizes in MB."
+starterCode: "function modelSize(paramCount, bytesPerParam) {\n  return null; // your code here\n}\n\nfunction compareSizes(paramCount) {\n  // Return { float32, float16, int8 } sizes in MB\n  return null; // your code here\n}"
+solutionCode: "function modelSize(paramCount, bytesPerParam) {\n  return (paramCount * bytesPerParam) / (1024 * 1024);\n}\n\nfunction compareSizes(paramCount) {\n  return {\n    float32: modelSize(paramCount, 4),\n    float16: modelSize(paramCount, 2),\n    int8: modelSize(paramCount, 1)\n  };\n}"
+testCode: "describe('compareSizes', () => { const sizes = compareSizes(1048576); it('calculates Float32', () => { expect(sizes.float32).toBe(4); }); it('calculates Float16', () => { expect(sizes.float16).toBe(2); }); it('calculates Int8', () => { expect(sizes.int8).toBe(1); }); });"
+estimatedMinutes: 10
+difficulty: intermediate

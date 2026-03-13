@@ -1,0 +1,251 @@
+---
+slug: opening-night
+title: "Opening Night"
+moduleId: nc-capstone
+themeId: nova-canvas
+order: 5
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "Opening night. The gallery doors open. 247 concurrent visitors at peak. A child whispers 'a dragon made of stars' and Nova Canvas generates it — image, sound, and all. Petrov watches the dashboard. 'It is holding. Everything is holding.'"
+  speaker: "Petrov"
+concept:
+  explanation: "Production launch day is operational readiness — runbooks, rollback plans, communication channels, and the discipline to watch metrics instead of making changes."
+  bridge:
+    feTitle: "Production Launch Day"
+    feCode: "// Launch checklist: staging verified, rollback ready, monitoring active, team on standby"
+    mlTitle: "Installation Launch"
+    mlCode: "// All models loaded, caches warm, health checks green, failover tested"
+    tier: identity
+consequence:
+  narrative: "The exhibition runs for three months. 12,847 unique visitors. 31,209 generations. The system crashes twice — both times, the circuit breakers engage and recover within 30 seconds. Kai: 'Tomorrow we fix the memory leak in the WebSocket handler.' There is always a tomorrow."
+  nextLessonTeaser: "You have completed Nova Canvas. The bridge from frontend to ML is shorter than you thought."
+hints:
+  - level: nudge
+    content: "A launch checklist is a pre-flight checklist — verify every system before the doors open"
+  - level: guidance
+    content: "Build a runbook that covers the top 10 failure scenarios with step-by-step recovery procedures"
+  - level: solution
+    content: "Create a LaunchChecklist class that verifies all systems, a Runbook with typed failure responses, and a post-launch metrics dashboard"
+keywords:
+  - launch
+  - production
+  - runbook
+  - operations
+---
+
+<Dialogue speaker="Petrov">
+It is holding. Everything is holding. Inference latency at 290ms p95. Memory stable at 340MB. Zero errors in the last hour. 247 concurrent connections.
+</Dialogue>
+
+<Dialogue speaker="Yara">
+Look at them. They are not looking at screens. They are inside the art. A woman is conducting a symphony with her hands. A child just asked for a dragon made of stars.
+</Dialogue>
+
+<Dialogue speaker="Kai">
+Tomorrow we fix the memory leak in the WebSocket handler. Tonight we watch.
+</Dialogue>
+
+Every production launch you have done follows the same rhythm: weeks of preparation, a launch checklist, the deployment, the anxious monitoring, the first real users. An installation opening night is a production deployment you can see happening in front of you. The visitors are your users. The metrics dashboard is your Datadog. The runbook is your incident response plan.
+
+<LearningObjectives objectives={["Build a comprehensive pre-launch checklist that verifies every system component", "Create a runbook with typed failure scenarios and recovery procedures", "Monitor a live system in production — knowing when to act and when to watch", "Conduct a post-launch retrospective that captures lessons for future deployments"]} />
+
+## Launch Checklist
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="launch-checklist.ts">
+{`// Pre-flight checklist — run this before opening the gallery doors
+interface ChecklistItem {
+  name: string;
+  check: () => Promise<boolean>;
+  critical: boolean; // If critical fails, do not launch
+  recovery?: () => Promise<void>;
+}
+
+const launchChecklist: ChecklistItem[] = [
+  {
+    name: 'All models loaded',
+    check: async () => {
+      const modules = ['text-encoder', 'image-generator', 'audio-synthesizer', 'style-transfer'];
+      return modules.every(m => orchestrator.isModuleReady(m));
+    },
+    critical: true,
+    recovery: async () => { await orchestrator.reloadAll(); },
+  },
+  {
+    name: 'Generation cache warm',
+    check: async () => cache.size >= 100,
+    critical: false,
+    recovery: async () => { await warmCache(100); },
+  },
+  {
+    name: 'All tablets connected',
+    check: async () => connectionManager.activeConnections >= 12,
+    critical: false,
+  },
+  {
+    name: 'Tensor memory clean',
+    check: async () => tf.memory().numTensors < 50,
+    critical: true,
+    recovery: async () => { tf.disposeVariables(); },
+  },
+  {
+    name: 'Audio system ready',
+    check: async () => {
+      const ctx = new AudioContext();
+      return ctx.state === 'running' || ctx.state === 'suspended';
+    },
+    critical: true,
+  },
+  {
+    name: 'Health monitoring active',
+    check: async () => monitor.isRunning,
+    critical: true,
+    recovery: async () => { monitor.start(5000); },
+  },
+];
+
+async function runChecklist(): Promise<{ ready: boolean; results: any[] }> {
+  const results = [];
+
+  for (const item of launchChecklist) {
+    const passed = await item.check();
+    if (!passed && item.recovery) {
+      console.log(\`Recovering: \${item.name}\`);
+      await item.recovery();
+      const retryPassed = await item.check();
+      results.push({ ...item, passed: retryPassed, recovered: true });
+    } else {
+      results.push({ ...item, passed, recovered: false });
+    }
+  }
+
+  const ready = results
+    .filter(r => r.critical)
+    .every(r => r.passed);
+
+  console.log(ready ? 'READY FOR LAUNCH' : 'LAUNCH BLOCKED');
+  console.table(results.map(r => ({
+    Check: r.name, Passed: r.passed ? 'YES' : 'NO',
+    Critical: r.critical ? 'YES' : '-', Recovered: r.recovered ? 'YES' : '-',
+  })));
+
+  return { ready, results };
+}`}
+</CodeBlock>
+
+## The Runbook
+
+<CodeBlock language="typescript" title="runbook.ts">
+{`// Typed failure scenarios with step-by-step recovery
+interface RunbookEntry {
+  scenario: string;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  symptoms: string[];
+  steps: string[];
+  autoRecovery?: () => Promise<boolean>;
+  escalation: string;
+}
+
+const runbook: RunbookEntry[] = [
+  {
+    scenario: 'Tensor memory leak',
+    severity: 'high',
+    symptoms: ['Tensor count > 1000', 'Increasing memory usage', 'Slowing inference'],
+    steps: [
+      '1. Check tf.memory().numTensors',
+      '2. Run tf.engine().startScope() / endScope() to force cleanup',
+      '3. If persists, restart the generation pipeline',
+      '4. If still persists, reload the page on affected tablet',
+    ],
+    autoRecovery: async () => {
+      tf.engine().startScope();
+      tf.engine().endScope();
+      return tf.memory().numTensors < 200;
+    },
+    escalation: 'Kai — audio pipeline likely source',
+  },
+  {
+    scenario: 'WebSocket connection storm',
+    severity: 'critical',
+    symptoms: ['Connection count spikes', 'Reconnect loops', 'Server memory increase'],
+    steps: [
+      '1. Check active connection count',
+      '2. Enable connection rate limiting',
+      '3. Restart affected tablets if in reconnect loop',
+      '4. Check server-side WebSocket handler for resource leaks',
+    ],
+    escalation: 'Ren — connection manager owner',
+  },
+  {
+    scenario: 'Generation quality degradation',
+    severity: 'medium',
+    symptoms: ['Visitor complaints', 'Output looks noisy or repetitive'],
+    steps: [
+      '1. Check model weights are loaded correctly',
+      '2. Verify input normalization range',
+      '3. Re-download model from cache',
+      '4. Compare against reference outputs',
+    ],
+    escalation: 'Yara — visual quality assessment',
+  },
+];
+
+// Auto-recovery: try the automated fix first
+async function handleIncident(scenario: string) {
+  const entry = runbook.find(r => r.scenario === scenario);
+  if (!entry) return;
+
+  console.log(\`[INCIDENT] \${entry.scenario} — severity: \${entry.severity}\`);
+
+  if (entry.autoRecovery) {
+    const recovered = await entry.autoRecovery();
+    if (recovered) {
+      console.log('[RECOVERED] Auto-recovery successful');
+      return;
+    }
+  }
+
+  console.log(\`[ESCALATE] Contact: \${entry.escalation}\`);
+  console.log('Steps:', entry.steps.join('\\n'));
+}`}
+</CodeBlock>
+
+## Opening Night Dashboard
+
+<CodeBlock language="typescript" title="dashboard.ts">
+{`// Real-time dashboard — the view from Petrov's phone
+function renderDashboard(canvas: HTMLCanvasElement, monitor: InstallationMonitor) {
+  const ctx = canvas.getContext('2d')!;
+  const metrics = monitor.currentMetrics;
+
+  // Status indicator
+  const allGreen = metrics.errorRate < 0.01 && metrics.avgInferenceMs < 1000;
+  ctx.fillStyle = allGreen ? '#00ff88' : metrics.errorRate < 0.05 ? '#ffaa00' : '#ff4444';
+  ctx.font = 'bold 48px monospace';
+  ctx.fillText(allGreen ? 'ALL SYSTEMS NOMINAL' : 'ATTENTION REQUIRED', 20, 60);
+
+  // Key metrics
+  ctx.font = '24px monospace';
+  ctx.fillStyle = '#ffffff';
+  ctx.fillText(\`Visitors: \${metrics.activeConnections}\`, 20, 120);
+  ctx.fillText(\`Inference: \${metrics.avgInferenceMs.toFixed(0)}ms p95\`, 20, 160);
+  ctx.fillText(\`Memory: \${metrics.memoryMB.toFixed(0)}MB\`, 20, 200);
+  ctx.fillText(\`Tensors: \${metrics.tensorCount}\`, 20, 240);
+  ctx.fillText(\`Error rate: \${(metrics.errorRate * 100).toFixed(2)}%\`, 20, 280);
+  ctx.fillText(\`Generations: \${metrics.totalGenerations}\`, 20, 320);
+}`}
+</CodeBlock>
+
+<Dialogue speaker="MUSE">
+A child whispered "a dragon made of stars." I generated it in 280 milliseconds. She smiled. That is the only metric that matters.
+</Dialogue>
+
+## Challenge
+
+Build a launch checklist and runbook for deploying a live installation.
+
+<Exercise slug="launch-biennale" />
+
+<KeyTakeaways takeaways={["Launch checklists verify every system component — critical items block launch, non-critical items get logged", "Runbooks turn panic into procedure — typed failure scenarios with step-by-step recovery", "Auto-recovery handles common issues without human intervention; escalation handles the rest", "The discipline of production operations is watching metrics and resisting the urge to make changes during peak load"]} />

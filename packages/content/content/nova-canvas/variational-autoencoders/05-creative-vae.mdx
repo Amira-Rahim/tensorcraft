@@ -1,0 +1,192 @@
+---
+slug: creative-vae
+title: "Creative VAE"
+moduleId: variational-autoencoders
+themeId: nova-canvas
+order: 5
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "Ren builds the final creative VAE — a controllable generative model for the exhibition. Visitors can explore a smooth latent space of art, blending styles and attributes with precision."
+  speaker: "Yara"
+concept:
+  explanation: "A creative VAE combines encoding, reparameterization, KL regularization, and decoding into a unified model for controllable generation. Design system tokens map to latent dimensions."
+  bridge:
+    feTitle: "Design System Tokens"
+    feCode: "tokens: { color: 'ocean', density: 0.7, rhythm: 'flowing' }"
+    mlTitle: "VAE Latent Controls"
+    mlCode: "z: { warmth: 0.3, complexity: -0.8, symmetry: 1.2 }"
+    tier: structural
+consequence:
+  narrative: "The creative VAE powers the centerpiece of the exhibition. Visitors walk through a space where every surface displays generated art that responds to their presence — unique, controllable, and running entirely in the browser."
+  nextLessonTeaser: "You have mastered the foundations of generative AI. Next modules explore advanced architectures and real-world deployment."
+hints:
+  - level: nudge
+    content: "Design tokens give you named, semantic control. VAE latent dimensions do the same for generated art."
+  - level: guidance
+    content: "Combine encoder, sampling layer, and decoder into one model. Add KL loss as a regularizer."
+  - level: solution
+    content: "Build the full VAE with custom training step that computes both reconstruction and KL losses."
+keywords:
+  - vae
+  - creative
+  - controllable
+  - generation
+  - design-tokens
+---
+
+<Dialogue speaker="Yara">
+This is the moment. Everything we have built — the distributions, the latent spaces, the reparameterization, the KL balance — comes together here. I want an interactive installation where visitors shape the art. Not by choosing from a menu, but by exploring a continuous space of possibility.
+</Dialogue>
+
+<Dialogue speaker="Petrov">
+And it must run at 30fps in Chrome on those kiosk laptops. No excuses.
+</Dialogue>
+
+<Dialogue speaker="MUSE">
+Every visitor becomes an artist. Every point in the space is an undiscovered masterpiece.
+</Dialogue>
+
+In a design system, tokens like `color: 'ocean'`, `density: 0.7`, `rhythm: 'flowing'` give designers semantic, controllable parameters. A trained VAE gives you the same thing — latent dimensions that control specific visual attributes of the generated output.
+
+<LearningObjectives objectives={["Build a complete VAE with custom training loop in TensorFlow.js", "Implement the full loss function: reconstruction + KL divergence", "Create an interactive generation UI with latent space controls", "Optimize for real-time browser performance"]} />
+
+## The Complete VAE
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="creative-vae.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+function buildCreativeVAE(inputDim: number, latentDim: number) {
+  // --- Encoder ---
+  const encoderInput = tf.input({ shape: [inputDim] });
+  const encHidden1 = tf.layers.dense({ units: 512, activation: 'relu' })
+    .apply(encoderInput);
+  const encHidden2 = tf.layers.dense({ units: 256, activation: 'relu' })
+    .apply(encHidden1);
+
+  const mu = tf.layers.dense({ units: latentDim, name: 'mu' })
+    .apply(encHidden2) as tf.SymbolicTensor;
+  const logVar = tf.layers.dense({ units: latentDim, name: 'logVar' })
+    .apply(encHidden2) as tf.SymbolicTensor;
+
+  const encoder = tf.model({
+    inputs: encoderInput,
+    outputs: [mu, logVar],
+  });
+
+  // --- Decoder ---
+  const decoderInput = tf.input({ shape: [latentDim] });
+  const decHidden1 = tf.layers.dense({ units: 256, activation: 'relu' })
+    .apply(decoderInput);
+  const decHidden2 = tf.layers.dense({ units: 512, activation: 'relu' })
+    .apply(decHidden1);
+  const decoderOutput = tf.layers.dense({ units: inputDim, activation: 'sigmoid' })
+    .apply(decHidden2) as tf.SymbolicTensor;
+
+  const decoder = tf.model({
+    inputs: decoderInput,
+    outputs: decoderOutput,
+  });
+
+  return { encoder, decoder };
+}`}
+</CodeBlock>
+
+## Custom Training Loop
+
+Because the VAE loss has two components, we use a custom training loop with `tf.train.adam` and `tf.variableGrads`.
+
+<CodeBlock language="typescript" title="vae-training.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+async function trainCreativeVAE(
+  encoder: tf.LayersModel,
+  decoder: tf.LayersModel,
+  data: tf.Tensor2D,
+  latentDim: number,
+  epochs: number = 100,
+  beta: number = 1.0
+) {
+  const optimizer = tf.train.adam(0.001);
+  const batchSize = 32;
+  const numBatches = Math.floor(data.shape[0] / batchSize);
+
+  for (let epoch = 0; epoch < epochs; epoch++) {
+    let totalLoss = 0;
+
+    for (let b = 0; b < numBatches; b++) {
+      const batch = data.slice([b * batchSize, 0], [batchSize, -1]);
+
+      const loss = optimizer.minimize(() => {
+        const [mu, logVar] = encoder.predict(batch) as tf.Tensor[];
+
+        // Reparameterization
+        const epsilon = tf.randomNormal([batchSize, latentDim]);
+        const z = mu.add(logVar.mul(0.5).exp().mul(epsilon));
+
+        // Decode
+        const reconstructed = decoder.predict(z) as tf.Tensor;
+
+        // Reconstruction loss
+        const reconLoss = batch.sub(reconstructed).square().sum(1).mean();
+
+        // KL divergence
+        const klLoss = mu.square().add(logVar.exp()).sub(logVar).sub(1)
+          .mul(0.5).sum(1).mean();
+
+        return reconLoss.add(klLoss.mul(beta)) as tf.Scalar;
+      }, true) as tf.Scalar;
+
+      totalLoss += (await loss.array());
+      loss.dispose();
+    }
+
+    if (epoch % 10 === 0) {
+      console.log(\`Epoch \${epoch}: loss=\${(totalLoss / numBatches).toFixed(4)}\`);
+    }
+  }
+}`}
+</CodeBlock>
+
+## Interactive Generation
+
+<CodeBlock language="typescript" title="interactive-generation.ts">
+{`// Design token style interface for the exhibition kiosk
+interface ArtTokens {
+  warmth: number;      // z[0]: cool blues ← → warm reds
+  complexity: number;  // z[1]: minimal ← → intricate
+  symmetry: number;    // z[2]: asymmetric ← → symmetric
+  texture: number;     // z[3]: smooth ← → textured
+}
+
+function tokensToLatent(tokens: ArtTokens, latentDim: number): number[] {
+  const z = new Array(latentDim).fill(0);
+  z[0] = tokens.warmth;
+  z[1] = tokens.complexity;
+  z[2] = tokens.symmetry;
+  z[3] = tokens.texture;
+  return z;
+}
+
+async function generateFromTokens(
+  tokens: ArtTokens,
+  decoder: tf.LayersModel,
+  latentDim: number
+): Promise<number[][]> {
+  const output = tf.tidy(() => {
+    const z = tf.tensor2d([tokensToLatent(tokens, latentDim)]);
+    return (decoder.predict(z) as tf.Tensor).reshape([28, 28]);
+  });
+  const result = await output.array() as number[][];
+  output.dispose();
+  return result;
+}`}
+</CodeBlock>
+
+## Challenge
+
+<Exercise slug="creative-vae" />
+
+<KeyTakeaways takeaways={["A complete VAE combines encoder, reparameterization, decoder, and dual loss", "Design system tokens are the perfect mental model for latent dimensions", "Custom training loops give you control over the VAE loss components", "tf.tidy() and dispose() are essential for real-time browser performance"]} />

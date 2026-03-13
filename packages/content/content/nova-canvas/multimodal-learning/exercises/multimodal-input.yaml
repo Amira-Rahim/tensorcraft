@@ -1,0 +1,75 @@
+slug: multimodal-input
+lessonSlug: what-is-multimodal
+title: "Build Parallel Encoders for Text and Images"
+instructions: "Build two encoders that produce embeddings of the same dimensionality. The image encoder takes [64, 64, 3] input, uses conv2d + globalAveragePooling2d + dense. The text encoder takes [32] input (token indices), uses embedding + globalAveragePooling1d + dense. Both output vectors of size embeddingDim."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function buildImageEncoder(embeddingDim: number): tf.LayersModel {
+    const input = tf.input({ shape: [64, 64, 3] });
+    // conv2d(32 filters, kernel 3, stride 2, same, relu)
+    // globalAveragePooling2d
+    // dense(embeddingDim)
+    return null; // your code here
+  }
+
+  function buildTextEncoder(embeddingDim: number): tf.LayersModel {
+    const input = tf.input({ shape: [32] });
+    // embedding(inputDim: 10000, outputDim: 64)
+    // globalAveragePooling1d
+    // dense(embeddingDim)
+    return null; // your code here
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function buildImageEncoder(embeddingDim: number): tf.LayersModel {
+    const input = tf.input({ shape: [64, 64, 3] });
+    let x = tf.layers.conv2d({
+      filters: 32, kernelSize: 3, strides: 2, padding: 'same', activation: 'relu'
+    }).apply(input) as tf.SymbolicTensor;
+    x = tf.layers.globalAveragePooling2d({}).apply(x) as tf.SymbolicTensor;
+    const output = tf.layers.dense({
+      units: embeddingDim
+    }).apply(x) as tf.SymbolicTensor;
+    return tf.model({ inputs: input, outputs: output });
+  }
+
+  function buildTextEncoder(embeddingDim: number): tf.LayersModel {
+    const input = tf.input({ shape: [32] });
+    let x = tf.layers.embedding({
+      inputDim: 10000, outputDim: 64
+    }).apply(input) as tf.SymbolicTensor;
+    x = tf.layers.globalAveragePooling1d({}).apply(x) as tf.SymbolicTensor;
+    const output = tf.layers.dense({
+      units: embeddingDim
+    }).apply(x) as tf.SymbolicTensor;
+    return tf.model({ inputs: input, outputs: output });
+  }
+testCode: |
+  describe('buildImageEncoder', () => {
+    it('outputs correct embedding dimension', () => {
+      const model = buildImageEncoder(256);
+      expect(model.outputShape).toEqual([null, 256]);
+    });
+    it('accepts 64x64x3 input', () => {
+      const model = buildImageEncoder(128);
+      const input = tf.randomUniform([1, 64, 64, 3]);
+      const output = model.predict(input) as tf.Tensor;
+      expect(output.shape).toEqual([1, 128]);
+    });
+  });
+  describe('buildTextEncoder', () => {
+    it('outputs correct embedding dimension', () => {
+      const model = buildTextEncoder(256);
+      expect(model.outputShape).toEqual([null, 256]);
+    });
+    it('accepts sequence of 32 tokens', () => {
+      const model = buildTextEncoder(128);
+      const input = tf.randomUniform([1, 32], 0, 10000, 'int32');
+      const output = model.predict(input) as tf.Tensor;
+      expect(output.shape).toEqual([1, 128]);
+    });
+  });
+estimatedMinutes: 12
+difficulty: intermediate

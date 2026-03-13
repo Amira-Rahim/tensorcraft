@@ -1,0 +1,70 @@
+slug: blend-styles
+lessonSlug: artistic-control
+title: "Blend Two Style Representations"
+instructions: "Implement a function that blends two multi-scale style representations (arrays of Gram matrices) using linear interpolation. Given alpha (0 to 1), compute blended[i] = (1 - alpha) * gramA[i] + alpha * gramB[i] for each layer."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function blendStyles(
+    gramA: tf.Tensor2D[],
+    gramB: tf.Tensor2D[],
+    alpha: number
+  ): tf.Tensor2D[] {
+    // Linear interpolation: (1 - alpha) * A + alpha * B
+    // alpha = 0: pure style A
+    // alpha = 1: pure style B
+    return null; // your code here
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function blendStyles(
+    gramA: tf.Tensor2D[],
+    gramB: tf.Tensor2D[],
+    alpha: number
+  ): tf.Tensor2D[] {
+    return gramA.map((gA, i) => {
+      const gB = gramB[i];
+      return tf.add(
+        tf.mul(gA, tf.scalar(1 - alpha)),
+        tf.mul(gB, tf.scalar(alpha))
+      ) as tf.Tensor2D;
+    });
+  }
+testCode: |
+  describe('blendStyles', () => {
+    it('returns pure A when alpha is 0', () => {
+      const gramA = [tf.fill([4, 4], 1.0) as tf.Tensor2D];
+      const gramB = [tf.fill([4, 4], 2.0) as tf.Tensor2D];
+      const blended = blendStyles(gramA, gramB, 0);
+      expect(blended[0].dataSync()[0]).toBeCloseTo(1.0, 4);
+    });
+    it('returns pure B when alpha is 1', () => {
+      const gramA = [tf.fill([4, 4], 1.0) as tf.Tensor2D];
+      const gramB = [tf.fill([4, 4], 2.0) as tf.Tensor2D];
+      const blended = blendStyles(gramA, gramB, 1);
+      expect(blended[0].dataSync()[0]).toBeCloseTo(2.0, 4);
+    });
+    it('returns midpoint when alpha is 0.5', () => {
+      const gramA = [tf.fill([4, 4], 0.0) as tf.Tensor2D];
+      const gramB = [tf.fill([4, 4], 1.0) as tf.Tensor2D];
+      const blended = blendStyles(gramA, gramB, 0.5);
+      expect(blended[0].dataSync()[0]).toBeCloseTo(0.5, 4);
+    });
+    it('handles multiple layers', () => {
+      const gramA = [
+        tf.fill([4, 4], 1.0) as tf.Tensor2D,
+        tf.fill([8, 8], 2.0) as tf.Tensor2D
+      ];
+      const gramB = [
+        tf.fill([4, 4], 3.0) as tf.Tensor2D,
+        tf.fill([8, 8], 4.0) as tf.Tensor2D
+      ];
+      const blended = blendStyles(gramA, gramB, 0.5);
+      expect(blended.length).toBe(2);
+      expect(blended[0].dataSync()[0]).toBeCloseTo(2.0, 4);
+      expect(blended[1].dataSync()[0]).toBeCloseTo(3.0, 4);
+    });
+  });
+estimatedMinutes: 8
+difficulty: advanced

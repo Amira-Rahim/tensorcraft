@@ -1,0 +1,118 @@
+slug: sw-build-lstm
+lessonSlug: lstm-gru
+title: "Build an LSTM Model"
+instructions: "Build an LSTM model for clinical text classification that handles long sequences where simple RNNs fail. Create buildLstmModel with: embedding (inputDim: 300, outputDim: 32, inputLength: 50), LSTM (units: 32), and dense (units: 1, sigmoid). Also create buildGruModel with the same architecture but using GRU instead of LSTM. Compare their parameter counts to understand the size tradeoff."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function buildLstmModel(): tf.Sequential {
+    const model = tf.sequential();
+    // Add embedding: inputDim=300, outputDim=32, inputLength=50
+    // Add LSTM: units=32, returnSequences=false
+    // Add dense: units=1, activation='sigmoid'
+    // Compile with adam + binaryCrossentropy
+    return model;
+  }
+
+  function buildGruModel(): tf.Sequential {
+    const model = tf.sequential();
+    // Same architecture but with GRU instead of LSTM
+    return model;
+  }
+
+  function getParamCount(model: tf.Sequential): number {
+    // Return total trainable parameter count
+    return 0; // your code here
+  }
+
+  const lstmModel = buildLstmModel();
+  const gruModel = buildGruModel();
+  const lstmParams = getParamCount(lstmModel);
+  const gruParams = getParamCount(gruModel);
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function buildLstmModel(): tf.Sequential {
+    const model = tf.sequential();
+    model.add(tf.layers.embedding({
+      inputDim: 300,
+      outputDim: 32,
+      inputLength: 50,
+    }));
+    model.add(tf.layers.lstm({
+      units: 32,
+      returnSequences: false,
+    }));
+    model.add(tf.layers.dense({
+      units: 1,
+      activation: 'sigmoid',
+    }));
+    model.compile({
+      optimizer: 'adam',
+      loss: 'binaryCrossentropy',
+    });
+    return model;
+  }
+
+  function buildGruModel(): tf.Sequential {
+    const model = tf.sequential();
+    model.add(tf.layers.embedding({
+      inputDim: 300,
+      outputDim: 32,
+      inputLength: 50,
+    }));
+    model.add(tf.layers.gru({
+      units: 32,
+      returnSequences: false,
+    }));
+    model.add(tf.layers.dense({
+      units: 1,
+      activation: 'sigmoid',
+    }));
+    model.compile({
+      optimizer: 'adam',
+      loss: 'binaryCrossentropy',
+    });
+    return model;
+  }
+
+  function getParamCount(model: tf.Sequential): number {
+    return model.countParams();
+  }
+
+  const lstmModel = buildLstmModel();
+  const gruModel = buildGruModel();
+  const lstmParams = getParamCount(lstmModel);
+  const gruParams = getParamCount(gruModel);
+testCode: |
+  describe('Build an LSTM Model', () => {
+    it('LSTM model has 3 layers', () => {
+      expect(lstmModel.layers.length).toBe(3);
+    });
+    it('second layer is LSTM', () => {
+      expect(lstmModel.layers[1].getClassName()).toBe('LSTM');
+    });
+    it('GRU model has 3 layers', () => {
+      expect(gruModel.layers.length).toBe(3);
+    });
+    it('GRU second layer is GRU', () => {
+      expect(gruModel.layers[1].getClassName()).toBe('GRU');
+    });
+    it('LSTM has more parameters than GRU', () => {
+      expect(lstmParams).toBeGreaterThan(gruParams);
+    });
+    it('LSTM produces valid prediction', async () => {
+      const input = tf.zeros([1, 50], 'int32');
+      const pred = lstmModel.predict(input) as tf.Tensor;
+      const val = (await pred.array()) as number[][];
+      expect(val[0][0]).toBeGreaterThanOrEqual(0);
+      expect(val[0][0]).toBeLessThanOrEqual(1);
+      tf.dispose([input, pred]);
+    });
+    it('parameter counts are positive', () => {
+      expect(lstmParams).toBeGreaterThan(0);
+      expect(gruParams).toBeGreaterThan(0);
+    });
+  });
+estimatedMinutes: 15
+difficulty: intermediate

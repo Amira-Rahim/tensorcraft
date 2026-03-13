@@ -1,0 +1,101 @@
+slug: translate-python
+lessonSlug: python-for-js-devs
+title: "Translate Python to JavaScript"
+instructions: "You're reading a Python ML utility module. Translate the Python class below into its JavaScript equivalent. The Python code defines a DataNormalizer class with fit() and transform() methods. Implement the same class in JavaScript using standard array methods. Focus on producing identical behavior — the logic is the same, only the syntax changes."
+starterCode: |
+  // Translate this Python class to JavaScript:
+  //
+  // class DataNormalizer:
+  //     def __init__(self):
+  //         self.mean = None
+  //         self.std = None
+  //
+  //     def fit(self, data):
+  //         self.mean = sum(data) / len(data)
+  //         self.std = (sum((x - self.mean) ** 2 for x in data) / len(data)) ** 0.5
+  //         return self
+  //
+  //     def transform(self, data):
+  //         return [(x - self.mean) / self.std for x in data]
+  //
+  //     def fit_transform(self, data):
+  //         self.fit(data)
+  //         return self.transform(data)
+
+  class DataNormalizer {
+    constructor() {
+      // TODO: initialize mean and std
+    }
+
+    fit(data) {
+      // TODO: compute mean and std from data
+    }
+
+    transform(data) {
+      // TODO: normalize data using mean and std
+    }
+
+    fitTransform(data) {
+      // TODO: fit then transform
+    }
+  }
+solutionCode: |
+  class DataNormalizer {
+    constructor() {
+      this.mean = null;
+      this.std = null;
+    }
+
+    fit(data) {
+      this.mean = data.reduce((sum, x) => sum + x, 0) / data.length;
+      this.std = Math.sqrt(
+        data.reduce((sum, x) => sum + (x - this.mean) ** 2, 0) / data.length
+      );
+      return this;
+    }
+
+    transform(data) {
+      return data.map(x => (x - this.mean) / this.std);
+    }
+
+    fitTransform(data) {
+      this.fit(data);
+      return this.transform(data);
+    }
+  }
+testCode: |
+  describe('DataNormalizer', () => {
+    const normalizer = new DataNormalizer();
+    const data = [10, 20, 30, 40, 50];
+
+    it('fit() computes mean correctly', () => {
+      normalizer.fit(data);
+      expect(normalizer.mean).toBeCloseTo(30, 5);
+    });
+
+    it('fit() computes std correctly', () => {
+      expect(normalizer.std).toBeCloseTo(Math.sqrt(200), 5);
+    });
+
+    it('transform() normalizes data', () => {
+      const result = normalizer.transform(data);
+      const mean = result.reduce((s, x) => s + x, 0) / result.length;
+      expect(mean).toBeCloseTo(0, 5);
+    });
+
+    it('fitTransform() combines fit and transform', () => {
+      const fresh = new DataNormalizer();
+      const result = fresh.fitTransform([2, 4, 6]);
+      expect(fresh.mean).toBeCloseTo(4, 5);
+      expect(result).toHaveLength(3);
+      expect(result[0]).toBeCloseTo(-1.2247, 3);
+    });
+
+    it('fit() returns this for chaining', () => {
+      const fresh = new DataNormalizer();
+      const returned = fresh.fit([1, 2, 3]);
+      expect(returned).toBe(fresh);
+    });
+  });
+estimatedMinutes: 15
+difficulty: beginner

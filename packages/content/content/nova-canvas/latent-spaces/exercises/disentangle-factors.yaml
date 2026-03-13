@@ -1,0 +1,63 @@
+slug: disentangle-factors
+lessonSlug: disentanglement
+title: "Disentangle Factors"
+instructions: "Implement a function that takes a base latent vector and sweeps a single dimension across a range of values, keeping all other dimensions fixed. Return an array of modified vectors."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  async function traverseDimension(
+    baseVector: number[],
+    dimension: number,
+    steps: number,
+    range: number
+  ): Promise<number[][]> {
+    // For each step, create a copy of baseVector
+    // but set baseVector[dimension] to a value from -range to +range
+    const results: number[][] = [];
+    // your code here
+    return results;
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  async function traverseDimension(
+    baseVector: number[],
+    dimension: number,
+    steps: number,
+    range: number
+  ): Promise<number[][]> {
+    const results: number[][] = [];
+    for (let i = 0; i < steps; i++) {
+      const value = -range + (2 * range * i) / (steps - 1);
+      const modified = [...baseVector];
+      modified[dimension] = value;
+      results.push(modified);
+    }
+    return results;
+  }
+testCode: |
+  describe('traverseDimension', () => {
+    it('returns correct number of steps', async () => {
+      const base = [0, 0, 0, 0];
+      const result = await traverseDimension(base, 0, 5, 2.0);
+      expect(result.length).toBe(5);
+    });
+    it('only modifies the specified dimension', async () => {
+      const base = [1, 2, 3, 4];
+      const result = await traverseDimension(base, 1, 3, 1.0);
+      result.forEach(vec => {
+        expect(vec[0]).toBe(1);
+        expect(vec[2]).toBe(3);
+        expect(vec[3]).toBe(4);
+      });
+    });
+    it('sweeps from -range to +range', async () => {
+      const base = [0, 0, 0];
+      const result = await traverseDimension(base, 0, 3, 2.0);
+      expect(result[0][0]).toBeCloseTo(-2.0);
+      expect(result[1][0]).toBeCloseTo(0);
+      expect(result[2][0]).toBeCloseTo(2.0);
+    });
+  });
+estimatedMinutes: 8
+difficulty: intermediate

@@ -1,0 +1,141 @@
+---
+slug: generator-architecture
+title: "Generator Architecture"
+moduleId: generative-adversarial-networks
+themeId: nova-canvas
+order: 2
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Ren designs the generator network — the creative half of the GAN. Kai compares it to a template engine that takes data and produces structured output."
+  speaker: "Kai"
+concept:
+  explanation: "The generator takes a low-dimensional noise vector and progressively upscales it through dense and reshape layers to produce full-resolution output."
+  bridge:
+    feTitle: "Template Engine"
+    feCode: "const html = template.render({ title, items, theme })"
+    mlTitle: "Generator Network"
+    mlCode: "const image = generator.predict(tf.randomNormal([1, 100]))"
+    tier: structural
+consequence:
+  narrative: "The generator architecture takes shape — a pipeline that transforms a 100-dimensional whisper of randomness into a 28x28 image. Rough, but unmistakably structured."
+  nextLessonTeaser: "Next: building the discriminator — the critic that judges the generator's work"
+hints:
+  - level: nudge
+    content: "A template engine takes compact data and expands it into structured HTML — the generator does the same for images"
+  - level: guidance
+    content: "Use dense layers with increasing units: 100 → 256 → 512 → 784"
+  - level: solution
+    content: "model.add(tf.layers.dense({inputShape: [100], units: 256, activation: 'leakyReLU'})); // then 512, then 784"
+keywords:
+  - generator
+  - architecture
+  - upscaling
+  - transposed-convolution
+---
+
+<Dialogue speaker="Kai">
+Think of a template engine. You feed it a small data object — title, items, theme — and it expands that into a full HTML page. Every template call produces a different page, but they all follow the same structure. A generator does the same thing: small input, structured output.
+</Dialogue>
+
+<Dialogue speaker="MUSE">
+The seed is small. The tree is vast. Architecture is the blueprint between them.
+</Dialogue>
+
+A generator is an upscaling pipeline. It takes a compact noise vector (the seed) and progressively expands it through layers until it reaches the target resolution. Each layer adds detail and structure.
+
+<LearningObjectives objectives={["Design a generator architecture for image generation", "Understand progressive upscaling from noise to image", "Choose appropriate activations for generator layers", "Use batch normalization to stabilize generator training"]} />
+
+## The Upscaling Pipeline
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="generator-architecture.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+function buildGenerator(noiseDim: number = 100): tf.Sequential {
+  const model = tf.sequential();
+
+  // Layer 1: Expand noise into a base representation
+  model.add(tf.layers.dense({
+    inputShape: [noiseDim],
+    units: 256,
+    activation: 'leakyReLU',
+  }));
+  model.add(tf.layers.batchNormalization());
+
+  // Layer 2: Further expansion
+  model.add(tf.layers.dense({
+    units: 512,
+    activation: 'leakyReLU',
+  }));
+  model.add(tf.layers.batchNormalization());
+
+  // Layer 3: Expand to image dimensions
+  model.add(tf.layers.dense({
+    units: 1024,
+    activation: 'leakyReLU',
+  }));
+  model.add(tf.layers.batchNormalization());
+
+  // Output layer: 784 pixels (28x28), sigmoid for [0,1] range
+  model.add(tf.layers.dense({
+    units: 784,
+    activation: 'sigmoid',
+  }));
+
+  return model;
+}
+
+const generator = buildGenerator();
+console.log(generator.summary());
+// Input: [null, 100]  → Output: [null, 784]`}
+</CodeBlock>
+
+## Key Design Choices
+
+Three architectural decisions define a good generator:
+
+<CodeBlock language="typescript" title="design-choices.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// 1. ACTIVATION: LeakyReLU for hidden layers
+// Regular ReLU kills gradients (output = 0 for negative input)
+// LeakyReLU lets a small gradient through: max(0.2 * x, x)
+// This keeps the generator learning even in "dead zones"
+
+// 2. BATCH NORMALIZATION: stabilizes training
+// Without it, each layer's input distribution shifts during training
+// BatchNorm normalizes each layer's input → faster, more stable training
+// Rule: BatchNorm after dense, before activation (or after — both work)
+
+// 3. OUTPUT ACTIVATION: sigmoid or tanh
+// sigmoid: output in [0, 1] — good for images normalized to [0, 1]
+// tanh: output in [-1, 1] — good for images normalized to [-1, 1]
+
+// Why not ReLU for the output?
+// ReLU has no upper bound — pixel values could explode
+// We need bounded output for valid image data
+
+function buildGeneratorV2(noiseDim: number): tf.Sequential {
+  const model = tf.sequential();
+  model.add(tf.layers.dense({
+    inputShape: [noiseDim], units: 256,
+  }));
+  model.add(tf.layers.batchNormalization());
+  model.add(tf.layers.leakyReLU({ alpha: 0.2 }));
+
+  model.add(tf.layers.dense({ units: 512 }));
+  model.add(tf.layers.batchNormalization());
+  model.add(tf.layers.leakyReLU({ alpha: 0.2 }));
+
+  model.add(tf.layers.dense({ units: 784, activation: 'tanh' }));
+  return model;
+}`}
+</CodeBlock>
+
+## Challenge
+
+<Exercise slug="build-generator" />
+
+<KeyTakeaways takeaways={["Generators progressively upscale from noise to full-resolution output", "LeakyReLU prevents dead neurons; BatchNorm stabilizes training", "Output activation must be bounded — sigmoid for [0,1], tanh for [-1,1]", "The architecture mirrors a template engine: compact input to structured output"]} />

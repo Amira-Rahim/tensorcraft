@@ -1,0 +1,155 @@
+---
+slug: documentation-runbooks
+title: "Documentation & Runbooks"
+moduleId: tg-capstone
+themeId: terra-grid
+order: 4
+estimatedMinutes: 25
+difficulty: advanced
+context:
+  narrative: "Hassan insists on operational documentation. 'This system will be maintained by people who did not build it. If they cannot understand it from the documentation alone, we have failed. Write runbooks for every operational scenario.'"
+  speaker: "Hassan Al-Rashid"
+concept:
+  explanation: "Operational runbooks document step-by-step procedures for common and emergency scenarios — the same playbook approach used for web application incident response."
+  bridge:
+    feTitle: "Runbook Creation"
+    feCode: "// Runbook: 'High CPU Alert' → check top → identify process → scale/restart"
+    mlTitle: "ML Runbook"
+    mlCode: "// Runbook: 'Model Drift Alert' → check metrics → compare baseline → retrain/rollback"
+    tier: identity
+consequence:
+  narrative: "The documentation covers 12 runbooks: model deployment, rollback, drift response, federated learning sync, security incident, device failure, and 6 more. Cole reviews them from the field. 'I could hand these to a new engineer and they could operate the system by day two.'"
+  nextLessonTeaser: "Next: global launch — deploying Terra Grid Intelligence to all 47 sites"
+hints:
+  - level: nudge
+    content: "A runbook has a trigger condition, step-by-step actions, verification checks, and escalation paths"
+  - level: guidance
+    content: "Create runbooks for the most common and most critical operational scenarios"
+  - level: solution
+    content: "Build a Runbook class with structured steps, verification commands, and auto-generated checklists"
+keywords:
+  - documentation
+  - runbooks
+  - operational-procedures
+  - incident-response
+---
+
+<Dialogue speaker="Hassan Al-Rashid">
+Six months from now, someone who has never seen this codebase will get paged at 2 AM because model drift triggered an alert. They need to know exactly what to do. Step by step. No ambiguity. That is what runbooks are for.
+</Dialogue>
+
+<Dialogue speaker="Cole Branson">
+Same as any on-call runbook for web infrastructure. Alert fires, engineer opens the runbook, follows the steps, verifies each action, escalates if needed. The only difference is the steps involve model metrics instead of server metrics.
+</Dialogue>
+
+You have written runbooks for web operations: "If CPU exceeds 90%, check top, identify the process, scale horizontally or restart." ML runbooks follow the same structure but address model-specific scenarios: drift detection, accuracy degradation, failed federated learning rounds, adversarial input alerts. Each runbook has a trigger, steps, verification commands, and an escalation path.
+
+<LearningObjectives objectives={["Design operational runbooks for edge ML systems", "Structure runbooks with trigger conditions, steps, verifications, and escalation", "Create model cards that document model behavior, limitations, and intended use", "Build a documentation system that stays in sync with the deployed system"]} />
+
+## Runbook System
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="runbook.ts">
+{`// Operational runbooks — same structure as web ops playbooks
+
+interface RunbookStep {
+  order: number;
+  action: string;
+  command?: string;
+  expectedOutput?: string;
+  ifFailed: string;
+}
+
+interface Runbook {
+  id: string;
+  title: string;
+  trigger: string;
+  severity: 'P1' | 'P2' | 'P3';
+  estimatedMinutes: number;
+  steps: RunbookStep[];
+  escalation: { condition: string; contact: string };
+}
+
+class RunbookRegistry {
+  private runbooks: Map<string, Runbook> = new Map();
+
+  add(runbook: Runbook): void {
+    this.runbooks.set(runbook.id, runbook);
+  }
+
+  get(id: string): Runbook | undefined {
+    return this.runbooks.get(id);
+  }
+
+  findByTrigger(alertType: string): Runbook[] {
+    return [...this.runbooks.values()].filter(r =>
+      r.trigger.toLowerCase().includes(alertType.toLowerCase())
+    );
+  }
+
+  generateChecklist(id: string): string {
+    const runbook = this.runbooks.get(id);
+    if (!runbook) return 'Runbook not found';
+
+    let checklist = \`# \${runbook.title}\\n\`;
+    checklist += \`Trigger: \${runbook.trigger}\\n\`;
+    checklist += \`Severity: \${runbook.severity} | Est: \${runbook.estimatedMinutes} min\\n\\n\`;
+
+    for (const step of runbook.steps) {
+      checklist += \`[ ] Step \${step.order}: \${step.action}\\n\`;
+      if (step.command) checklist += \`    Command: \${step.command}\\n\`;
+      if (step.expectedOutput) checklist += \`    Expected: \${step.expectedOutput}\\n\`;
+      checklist += \`    If failed: \${step.ifFailed}\\n\\n\`;
+    }
+
+    checklist += \`Escalation: \${runbook.escalation.condition}\\n\`;
+    checklist += \`Contact: \${runbook.escalation.contact}\\n\`;
+    return checklist;
+  }
+}
+
+// Terra Grid runbooks
+const registry = new RunbookRegistry();
+
+registry.add({
+  id: 'RB-001',
+  title: 'Model Drift Response',
+  trigger: 'Model accuracy drops below 90% for 1 hour',
+  severity: 'P2',
+  estimatedMinutes: 30,
+  steps: [
+    { order: 1, action: 'Check model accuracy dashboard',
+      command: 'tg-cli metrics --model current --window 1h',
+      expectedOutput: 'accuracy < 0.90',
+      ifFailed: 'Dashboard may be stale — check raw metrics' },
+    { order: 2, action: 'Compare against baseline model',
+      command: 'tg-cli compare --current --baseline',
+      expectedOutput: 'Drift report with affected features',
+      ifFailed: 'Run manual comparison with test dataset' },
+    { order: 3, action: 'Check for data distribution shift',
+      command: 'tg-cli data-drift --window 24h',
+      expectedOutput: 'Distribution comparison report',
+      ifFailed: 'Manually inspect recent sensor data' },
+    { order: 4, action: 'Rollback to previous model if drift confirmed',
+      command: 'tg-cli rollback --to previous --confirm',
+      expectedOutput: 'Rollback complete, accuracy restored',
+      ifFailed: 'Escalate to ML team lead' },
+  ],
+  escalation: {
+    condition: 'Drift persists after rollback or root cause unclear',
+    contact: 'Hassan Al-Rashid — ML Infrastructure Lead',
+  },
+});
+
+const checklist = registry.generateChecklist('RB-001');
+console.log(checklist);`}
+</CodeBlock>
+
+## Challenge
+
+Build a runbook registry with checklist generation.
+
+<Exercise slug="write-runbook" />
+
+<KeyTakeaways takeaways={["ML runbooks follow the same structure as web ops playbooks — trigger, steps, verification, escalation", "Every operational scenario needs a documented procedure — the 2 AM engineer should never have to guess", "Model cards document model behavior, limitations, and intended use for stakeholders", "Runbooks must be tested regularly — an outdated runbook is worse than no runbook"]} />

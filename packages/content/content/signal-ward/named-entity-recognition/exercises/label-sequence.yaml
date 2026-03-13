@@ -1,0 +1,146 @@
+slug: label-sequence
+lessonSlug: sequence-labeling
+title: "Label a Sequence"
+instructions: "Build a sequence labeling model using TensorFlow.js that assigns BIO tags to each token. Implement buildLabeler to create a model with an embedding layer, a bidirectional LSTM with returnSequences: true, and a time-distributed dense output layer with softmax activation. Then implement prepareInput to convert tokens to a padded integer tensor, and decodeOutput to extract predicted tags from the model's output."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  const TAGS = ['O', 'B-DRUG', 'I-DRUG', 'B-CONDITION', 'I-CONDITION',
+                'B-DOSAGE', 'I-DOSAGE', 'B-FREQUENCY', 'I-FREQUENCY'];
+
+  function buildLabeler(
+    vocabSize: number,
+    embedDim: number,
+    hiddenDim: number,
+    numTags: number,
+    maxLen: number
+  ): tf.LayersModel {
+    // Build: input → embedding → BiLSTM(returnSequences) → TimeDistributed(Dense(softmax))
+    // Return the compiled model
+    const input = tf.input({ shape: [maxLen] });
+    // Add layers here...
+    return tf.model({ inputs: input, outputs: input }); // placeholder
+  }
+
+  function prepareInput(
+    tokens: string[],
+    vocab: Map<string, number>,
+    maxLen: number
+  ): tf.Tensor2D {
+    // Convert tokens to integer IDs using vocab, pad to maxLen with zeros
+    return tf.zeros([1, maxLen]) as tf.Tensor2D;
+  }
+
+  function decodeOutput(
+    output: tf.Tensor,
+    tokens: string[]
+  ): Array<{ token: string; tag: string }> {
+    // Get argmax per token, map to TAGS
+    return [];
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  const TAGS = ['O', 'B-DRUG', 'I-DRUG', 'B-CONDITION', 'I-CONDITION',
+                'B-DOSAGE', 'I-DOSAGE', 'B-FREQUENCY', 'I-FREQUENCY'];
+
+  function buildLabeler(
+    vocabSize: number,
+    embedDim: number,
+    hiddenDim: number,
+    numTags: number,
+    maxLen: number
+  ): tf.LayersModel {
+    const input = tf.input({ shape: [maxLen] });
+
+    const embedded = tf.layers.embedding({
+      inputDim: vocabSize,
+      outputDim: embedDim
+    }).apply(input) as tf.SymbolicTensor;
+
+    const contextual = tf.layers.bidirectional({
+      layer: tf.layers.lstm({
+        units: hiddenDim,
+        returnSequences: true
+      }) as tf.RNNLayer
+    }).apply(embedded) as tf.SymbolicTensor;
+
+    const output = tf.layers.timeDistributed({
+      layer: tf.layers.dense({
+        units: numTags,
+        activation: 'softmax'
+      })
+    }).apply(contextual) as tf.SymbolicTensor;
+
+    const model = tf.model({ inputs: input, outputs: output });
+    model.compile({
+      optimizer: 'adam',
+      loss: 'categoricalCrossentropy',
+      metrics: ['accuracy']
+    });
+    return model;
+  }
+
+  function prepareInput(
+    tokens: string[],
+    vocab: Map<string, number>,
+    maxLen: number
+  ): tf.Tensor2D {
+    const ids = tokens.map(t => vocab.get(t.toLowerCase()) ?? 0);
+    while (ids.length < maxLen) ids.push(0);
+    return tf.tensor2d([ids.slice(0, maxLen)]);
+  }
+
+  function decodeOutput(
+    output: tf.Tensor,
+    tokens: string[]
+  ): Array<{ token: string; tag: string }> {
+    const squeezed = output.squeeze();
+    const argmaxed = squeezed.argMax(-1);
+    const indices = argmaxed.dataSync();
+    return tokens.map((token, i) => ({
+      token,
+      tag: TAGS[indices[i]]
+    }));
+  }
+testCode: |
+  describe('buildLabeler', () => {
+    it('builds a model with correct input shape', () => {
+      const model = buildLabeler(1000, 32, 64, 9, 20);
+      expect(model.inputs[0].shape).toEqual([null, 20]);
+    });
+    it('builds a model with correct output shape', () => {
+      const model = buildLabeler(1000, 32, 64, 9, 20);
+      expect(model.outputs[0].shape).toEqual([null, 20, 9]);
+    });
+    it('model can process input tensor', () => {
+      const model = buildLabeler(1000, 32, 64, 9, 20);
+      const input = tf.zeros([1, 20]);
+      const output = model.predict(input) as tf.Tensor;
+      expect(output.shape).toEqual([1, 20, 9]);
+    });
+  });
+  describe('prepareInput', () => {
+    it('converts tokens to padded tensor', () => {
+      const vocab = new Map([['patient', 1], ['takes', 2], ['aspirin', 3]]);
+      const result = prepareInput(['patient', 'takes', 'aspirin'], vocab, 5);
+      expect(result.shape).toEqual([1, 5]);
+      const data = result.dataSync();
+      expect(data[0]).toBe(1);
+      expect(data[1]).toBe(2);
+      expect(data[2]).toBe(3);
+      expect(data[3]).toBe(0);
+      expect(data[4]).toBe(0);
+    });
+  });
+  describe('decodeOutput', () => {
+    it('decodes model output to tags', () => {
+      const mockOutput = tf.tensor3d([[[1,0,0,0,0,0,0,0,0], [0,1,0,0,0,0,0,0,0], [0,0,0,0,0,1,0,0,0]]]);
+      const result = decodeOutput(mockOutput, ['Patient', 'aspirin', '15mg']);
+      expect(result[0].tag).toBe('O');
+      expect(result[1].tag).toBe('B-DRUG');
+      expect(result[2].tag).toBe('B-DOSAGE');
+    });
+  });
+estimatedMinutes: 15
+difficulty: intermediate

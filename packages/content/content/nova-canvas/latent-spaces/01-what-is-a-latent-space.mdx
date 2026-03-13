@@ -1,0 +1,118 @@
+---
+slug: what-is-a-latent-space
+title: "What Is a Latent Space?"
+moduleId: latent-spaces
+themeId: nova-canvas
+order: 1
+estimatedMinutes: 25
+difficulty: beginner
+context:
+  narrative: "Yara takes Ren through her material library — shelves of pigments, textures, and media organized by hidden properties. This is the physical analogy to a latent space."
+  speaker: "Yara"
+concept:
+  explanation: "A latent space is a compressed, lower-dimensional representation of data where similar items are near each other. Encoding maps data into this space; decoding maps it back out."
+  bridge:
+    feTitle: "URL Shortener"
+    feCode: "const short = encode('https://example.com/very/long/path') // → 'abc123'"
+    mlTitle: "Latent Encoding"
+    mlCode: "const z = encoder.predict(image) // [784] → [16]"
+    tier: structural
+consequence:
+  narrative: "Ren sees that beneath the surface of every image is a compact code — a position in latent space that captures its essence."
+  nextLessonTeaser: "Next: how many dimensions does your latent space need?"
+hints:
+  - level: nudge
+    content: "Think of a URL shortener — it encodes long URLs into short codes that can be decoded back"
+  - level: guidance
+    content: "An encoder compresses high-dimensional data to low-dimensional. A decoder reverses it."
+  - level: solution
+    content: "const encoder = tf.sequential(); encoder.add(tf.layers.dense({inputShape: [784], units: 16}));"
+keywords:
+  - latent-space
+  - encoding
+  - decoding
+  - representation
+---
+
+<Dialogue speaker="Yara">
+Come with me to the material library. See how I organize pigments — not by name or bottle shape, but by hue, opacity, and granularity. Three numbers describe each pigment better than any label. That is a latent space. Every material has a position in it.
+</Dialogue>
+
+<Dialogue speaker="MUSE">
+The visible is vast. The latent is compact. Between them lies understanding.
+</Dialogue>
+
+A URL shortener takes a long URL and compresses it into a short code. The short code is not random — it encodes the original URL in a way that can be reversed. A latent space works exactly the same way, but for images, sounds, or any complex data.
+
+<LearningObjectives objectives={["Understand latent space as compressed representation of data", "Connect the encoder-decoder pattern to URL shortening", "Build a simple encoder that maps data to a lower dimension", "Visualize positions in latent space"]} />
+
+## Encoding and Decoding
+
+Every latent space has two operations: **encode** (compress data into the space) and **decode** (reconstruct data from the space). Together they form an autoencoder.
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="latent-space-concept.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Frontend: URL shortener — encode/decode
+const urlMap = new Map<string, string>();
+function encode(url: string): string {
+  const code = btoa(url).slice(0, 6);
+  urlMap.set(code, url);
+  return code; // compressed representation
+}
+function decode(code: string): string {
+  return urlMap.get(code)!; // reconstruct original
+}
+
+// ML: Autoencoder — encode/decode
+// Image (784 dims) → Latent code (16 dims) → Reconstructed image (784 dims)
+const encoder = tf.sequential();
+encoder.add(tf.layers.dense({ inputShape: [784], units: 128, activation: 'relu' }));
+encoder.add(tf.layers.dense({ units: 16, activation: 'relu' }));  // bottleneck
+
+const decoder = tf.sequential();
+decoder.add(tf.layers.dense({ inputShape: [16], units: 128, activation: 'relu' }));
+decoder.add(tf.layers.dense({ units: 784, activation: 'sigmoid' }));
+
+// Encode an image to its latent position
+// const latentCode = encoder.predict(imageData);  // [1, 784] → [1, 16]
+// Decode back to image
+// const reconstruction = decoder.predict(latentCode);  // [1, 16] → [1, 784]`}
+</CodeBlock>
+
+## Why Latent Spaces Matter
+
+The magic is what happens *inside* the latent space. Similar images end up near each other. A face with glasses and a face without glasses might differ by just one dimension. This structure is not designed — it emerges from training.
+
+<CodeBlock language="typescript" title="latent-similarity.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// In a well-trained latent space:
+// - Similar inputs map to nearby points
+// - The distance between points is meaningful
+// - Moving smoothly through the space creates smooth transitions
+
+// Analogy: CSS color space
+// hsl(0, 100%, 50%)   → red
+// hsl(10, 100%, 50%)  → orange-red (nearby in hue dimension)
+// hsl(180, 100%, 50%) → cyan (far away in hue dimension)
+// The HSL space is a "latent space" for colors — each dimension means something
+
+// A trained encoder does the same for complex data:
+// Two similar faces → nearby latent vectors
+// Two different faces → distant latent vectors
+function cosineSimilarity(a: tf.Tensor1D, b: tf.Tensor1D): tf.Scalar {
+  const dotProduct = a.dot(b);
+  const normA = a.norm();
+  const normB = b.norm();
+  return dotProduct.div(normA.mul(normB)) as tf.Scalar;
+}`}
+</CodeBlock>
+
+## Challenge
+
+<Exercise slug="encode-decode-latent" />
+
+<KeyTakeaways takeaways={["A latent space is a compressed representation where similar data points are nearby", "Encoders compress high-dimensional data; decoders reconstruct from the compressed form", "URL shorteners and zip compression are frontend analogies for encoding", "Structure in latent space emerges from training — similar items cluster naturally"]} />

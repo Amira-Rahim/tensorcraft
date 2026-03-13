@@ -1,0 +1,154 @@
+slug: apply-style-transfer
+lessonSlug: style-transfer
+title: "Compute Style Transfer Losses"
+instructions: "Implement the Gram matrix and style transfer loss functions. The Gram matrix captures texture/style by computing correlations between feature channels: gram[i][j] = sum(features[p][i] * features[p][j]) / numPixels. Content loss is MSE between feature maps. Style loss is MSE between Gram matrices. Total loss combines both with weights alpha (content) and beta (style)."
+starterCode: |
+  // Compute Gram matrix from a 2D feature map
+  // Input: features[pixels][channels]
+  // Output: gram[channels][channels]
+  function gramMatrix(features: number[][]): number[][] {
+    // gram[i][j] = sum over pixels(features[p][i] * features[p][j]) / numPixels
+    return []; // your code here
+  }
+
+  // Content loss: MSE between content features and output features
+  function contentLoss(contentFeatures: number[], outputFeatures: number[]): number {
+    return 0; // your code here
+  }
+
+  // Style loss: MSE between Gram matrices
+  function styleLoss(gramA: number[][], gramB: number[][]): number {
+    return 0; // your code here
+  }
+
+  // Total style transfer loss
+  function totalLoss(
+    contentFeatures: number[],
+    outputContentFeatures: number[],
+    styleGram: number[][],
+    outputStyleGram: number[][],
+    alpha: number,
+    beta: number
+  ): number {
+    // alpha * contentLoss + beta * styleLoss
+    return 0; // your code here
+  }
+solutionCode: |
+  function gramMatrix(features: number[][]): number[][] {
+    const numPixels = features.length;
+    const channels = features[0].length;
+    const gram: number[][] = [];
+
+    for (let i = 0; i < channels; i++) {
+      gram[i] = [];
+      for (let j = 0; j < channels; j++) {
+        let sum = 0;
+        for (let p = 0; p < numPixels; p++) {
+          sum += features[p][i] * features[p][j];
+        }
+        gram[i][j] = sum / numPixels;
+      }
+    }
+    return gram;
+  }
+
+  function contentLoss(contentFeatures: number[], outputFeatures: number[]): number {
+    let sum = 0;
+    for (let i = 0; i < contentFeatures.length; i++) {
+      sum += (contentFeatures[i] - outputFeatures[i]) ** 2;
+    }
+    return sum / contentFeatures.length;
+  }
+
+  function styleLoss(gramA: number[][], gramB: number[][]): number {
+    let sum = 0;
+    let count = 0;
+    for (let i = 0; i < gramA.length; i++) {
+      for (let j = 0; j < gramA[i].length; j++) {
+        sum += (gramA[i][j] - gramB[i][j]) ** 2;
+        count++;
+      }
+    }
+    return sum / count;
+  }
+
+  function totalLoss(
+    contentFeatures: number[],
+    outputContentFeatures: number[],
+    styleGram: number[][],
+    outputStyleGram: number[][],
+    alpha: number,
+    beta: number
+  ): number {
+    const cLoss = contentLoss(contentFeatures, outputContentFeatures);
+    const sLoss = styleLoss(styleGram, outputStyleGram);
+    return alpha * cLoss + beta * sLoss;
+  }
+testCode: |
+  describe('gramMatrix', () => {
+    it('produces a square matrix of size [channels][channels]', () => {
+      const features = [[1, 2], [3, 4], [5, 6]];
+      const gram = gramMatrix(features);
+      expect(gram.length).toBe(2);
+      expect(gram[0].length).toBe(2);
+    });
+
+    it('computes correct values', () => {
+      const features = [[1, 0], [0, 1]];
+      const gram = gramMatrix(features);
+      expect(gram[0][0]).toBeCloseTo(0.5);
+      expect(gram[0][1]).toBeCloseTo(0);
+      expect(gram[1][0]).toBeCloseTo(0);
+      expect(gram[1][1]).toBeCloseTo(0.5);
+    });
+
+    it('is symmetric', () => {
+      const features = [[1, 2], [3, 4], [5, 6]];
+      const gram = gramMatrix(features);
+      expect(gram[0][1]).toBeCloseTo(gram[1][0]);
+    });
+  });
+
+  describe('contentLoss', () => {
+    it('returns 0 for identical features', () => {
+      expect(contentLoss([1, 2, 3], [1, 2, 3])).toBe(0);
+    });
+
+    it('computes correct MSE', () => {
+      expect(contentLoss([1, 0], [0, 0])).toBeCloseTo(0.5);
+    });
+  });
+
+  describe('styleLoss', () => {
+    it('returns 0 for identical Gram matrices', () => {
+      const gram = [[1, 2], [2, 4]];
+      expect(styleLoss(gram, gram)).toBe(0);
+    });
+
+    it('computes correct MSE between Gram matrices', () => {
+      const gramA = [[1, 0], [0, 1]];
+      const gramB = [[3, 0], [0, 3]];
+      expect(styleLoss(gramA, gramB)).toBe(2);
+    });
+  });
+
+  describe('totalLoss', () => {
+    it('weights content and style losses correctly', () => {
+      const content = [1, 0];
+      const outputContent = [0, 0];
+      const styleGram = [[1, 0], [0, 1]];
+      const outputStyleGram = [[3, 0], [0, 3]];
+      const result = totalLoss(content, outputContent, styleGram, outputStyleGram, 1, 1000);
+      const expectedContent = 0.5;
+      const expectedStyle = 2;
+      expect(result).toBeCloseTo(1 * expectedContent + 1000 * expectedStyle);
+    });
+
+    it('returns 0 when content and style match', () => {
+      const features = [1, 2];
+      const gram = [[1, 0], [0, 1]];
+      expect(totalLoss(features, features, gram, gram, 1, 1000)).toBe(0);
+    });
+  });
+estimatedMinutes: 15
+difficulty: intermediate

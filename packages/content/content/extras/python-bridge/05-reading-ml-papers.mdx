@@ -1,0 +1,202 @@
+---
+slug: reading-ml-papers
+title: "Reading ML Papers and PyTorch Repos"
+moduleId: python-bridge
+themeId: shared
+order: 5
+estimatedMinutes: 30
+difficulty: intermediate
+concept:
+  explanation: "ML papers follow a predictable structure, and their PyTorch implementations follow predictable patterns. Knowing where to look makes them readable."
+  bridge:
+    feTitle: "Technical blog post with code"
+    feCode: "// Introduction → Problem → Architecture → Results → Code"
+    mlTitle: "ML paper"
+    mlCode: "# Abstract → Method → Experiments → Appendix → GitHub repo"
+    tier: structural
+hints:
+  - level: nudge
+    content: "Start with the abstract and figures, then jump to the model definition in code"
+  - level: guidance
+    content: "In the repo, look for model.py or net.py — that's where the architecture lives"
+  - level: solution
+    content: "Map each nn.Module class to layers you know, then read forward() for the data flow"
+keywords:
+  - papers
+  - research
+  - pytorch
+  - comprehension
+---
+
+<Dialogue speaker="Instructor">
+An ML paper is just a technical blog post with more formality. A PyTorch repo is just a codebase with models instead of UI components. You already know how to read technical writing and navigate code — now you have the vocabulary to do it in ML.
+</Dialogue>
+
+This is the capstone of the Python Bridge. Everything you've learned — Python syntax, NumPy operations, PyTorch models, pandas data wrangling — comes together when you open an ML paper and its reference implementation. This lesson teaches you where to look and what to skip.
+
+<LearningObjectives objectives={["Navigate the standard structure of an ML research paper", "Find the model architecture in a PyTorch repository", "Read a PyTorch model definition and identify layers, shapes, and data flow", "Extract the key information from a paper without reading every equation"]} />
+
+## Anatomy of an ML Paper
+
+Every ML paper follows the same structure. Think of it as a blog post template.
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="text" title="paper-structure.txt">
+{`ML Paper Structure              →  Blog Post Equivalent
+─────────────────────────────────────────────────────
+Abstract                        →  TL;DR at the top
+1. Introduction                 →  "Here's the problem we're solving"
+2. Related Work                 →  "Other approaches and why ours is different"
+3. Method / Architecture        →  "Here's how we built it" (THE KEY SECTION)
+4. Experiments                  →  "Here's how we tested it"
+5. Results                      →  "Here's what happened"
+6. Conclusion                   →  "Summary and future work"
+Appendix                        →  Implementation details, hyperparameters`}
+</CodeBlock>
+
+**Reading strategy:** Read the abstract, look at all figures and tables, then read Section 3 (Method). Skip Related Work on your first pass. The figures usually contain the architecture diagram — that's your roadmap.
+
+## Anatomy of a PyTorch Repository
+
+<CodeBlock language="text" title="repo-structure.txt">
+{`Typical PyTorch Repo            →  React/Next.js Equivalent
+─────────────────────────────────────────────────────
+model.py / net.py               →  components/ (the architecture)
+train.py                        →  app entry point (the training script)
+data.py / dataset.py            →  api/ or hooks/ (data loading)
+utils.py                        →  lib/ or utils/ (helpers)
+configs/ or args                →  .env or config files
+requirements.txt                →  package.json
+README.md                       →  README.md`}
+</CodeBlock>
+
+**Start with `model.py`.** This is where the architecture lives. Everything else is plumbing.
+
+## Reading a Model Definition
+
+Here's a real-world pattern you'll see in repos. Let's read it step by step.
+
+<CodeBlock language="python" title="real-model.py">
+{`import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+class TimeSeriesEncoder(nn.Module):
+    """Encodes a time series into a fixed-length representation."""
+
+    def __init__(self, input_dim, hidden_dim=128, num_layers=2, dropout=0.1):
+        super().__init__()
+        self.lstm = nn.LSTM(
+            input_dim, hidden_dim,
+            num_layers=num_layers,
+            batch_first=True,        # input shape: (batch, seq_len, features)
+            dropout=dropout
+        )
+        self.attention = nn.Linear(hidden_dim, 1)
+        self.fc = nn.Linear(hidden_dim, 64)
+        self.norm = nn.LayerNorm(64)
+
+    def forward(self, x):
+        # x shape: (batch, seq_len, input_dim)
+        lstm_out, _ = self.lstm(x)          # (batch, seq_len, hidden_dim)
+
+        # Attention weights
+        attn_weights = F.softmax(
+            self.attention(lstm_out), dim=1  # (batch, seq_len, 1)
+        )
+        context = (lstm_out * attn_weights).sum(dim=1)  # (batch, hidden_dim)
+
+        out = self.fc(context)               # (batch, 64)
+        out = self.norm(out)                 # (batch, 64)
+        return F.relu(out)`}
+</CodeBlock>
+
+Here's how to read this as a JavaScript developer:
+
+<CodeBlock language="typescript" title="reading-guide.ts">
+{`// Mental translation:
+// 1. __init__ = constructor. Lists the layers (building blocks).
+//    - LSTM layer: processes sequences (like processing array items in order)
+//    - Linear layers: dense layers (tf.layers.dense)
+//    - LayerNorm: normalization (tf.layers.layerNormalization)
+
+// 2. forward() = the data flow. Read it top to bottom:
+//    - Input goes through LSTM → get sequence of hidden states
+//    - Compute attention weights (which time steps matter most)
+//    - Weighted sum → single vector per batch item
+//    - Dense layer → normalize → ReLU activation → output
+
+// TF.js equivalent architecture:
+const encoder = tf.sequential({
+  layers: [
+    tf.layers.lstm({ units: 128, returnSequences: true, inputShape: [null, inputDim] }),
+    // attention would be a custom layer
+    tf.layers.dense({ units: 64 }),
+    tf.layers.layerNormalization(),
+    tf.layers.activation({ activation: 'relu' }),
+  ]
+});`}
+</CodeBlock>
+
+## Decoding Common Patterns
+
+<CodeBlock language="python" title="common-patterns.py">
+{`# Pattern 1: Residual connection (skip connection)
+# "Add the input back to the output"
+out = self.layer(x) + x
+
+# Pattern 2: Multi-head attention
+# "Multiple parallel attention computations"
+attn_output = F.multi_head_attention_forward(...)
+
+# Pattern 3: Embedding lookup
+# "Convert integer IDs to dense vectors" (like a lookup table)
+embedded = self.embedding(token_ids)  # nn.Embedding(vocab_size, embed_dim)
+
+# Pattern 4: Gradient clipping (in training code)
+# "Prevent exploding gradients"
+torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+
+# Pattern 5: Learning rate scheduler
+# "Decrease learning rate over time"
+scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.1)`}
+</CodeBlock>
+
+## Reading Math Notation
+
+You don't need to derive equations. You need to map symbols to operations.
+
+<CodeBlock language="text" title="math-cheatsheet.txt">
+{`Symbol    Meaning                    Code
+──────────────────────────────────────────────
+Σ         sum                        np.sum / tf.sum
+∏         product                    np.prod / tf.prod
+||x||     norm (length of vector)    np.linalg.norm / tf.norm
+x̂         normalized / predicted     x_hat or x_pred in code
+∂L/∂w     gradient of loss w.r.t w   loss.backward() / tf.grads
+argmax    index of largest value     np.argmax / tf.argMax
+softmax   normalize to probabilities F.softmax / tf.softmax
+⊙         element-wise multiply      a * b / a.mul(b)
+@         matrix multiply            a @ b / tf.matMul(a, b)`}
+</CodeBlock>
+
+## A Reading Workflow
+
+When you encounter an ML paper or repo, follow this checklist:
+
+1. **Paper:** Read abstract and look at all figures/tables (5 min)
+2. **Paper:** Read the Method section, focusing on the architecture diagram (10 min)
+3. **Repo:** Open `model.py`, find the main `nn.Module` class
+4. **Repo:** Read `__init__` to list the layers
+5. **Repo:** Read `forward()` to trace the data flow
+6. **Connect:** Match each layer in code to the architecture diagram
+7. **Skip:** Don't get stuck on math you don't understand — look at the code instead
+
+## Challenge
+
+Read a PyTorch model definition and answer comprehension questions by building the equivalent in TF.js.
+
+<Exercise slug="read-paper" />
+
+<KeyTakeaways takeaways={["ML papers follow a predictable structure — focus on Abstract, Method, and Figures", "In a PyTorch repo, model.py is the entry point — read __init__ for layers, forward() for data flow", "You don't need to understand every equation — map symbols to code operations", "Reading ML code is a comprehension exercise, not an implementation task"]} />

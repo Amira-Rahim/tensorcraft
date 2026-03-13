@@ -1,0 +1,177 @@
+---
+slug: multi-armed-bandits
+title: "Multi-Armed Bandits"
+moduleId: ab-testing
+themeId: terra-grid
+order: 5
+estimatedMinutes: 25
+difficulty: advanced
+context:
+  narrative: "Park proposes an improvement to the A/B framework. 'Standard A/B tests lock in the traffic split. Multi-armed bandits adapt. If one model is clearly better, the algorithm shifts traffic automatically. Less exposure to the worse model.'"
+  speaker: "Park Soo-Yeon"
+concept:
+  explanation: "Multi-armed bandits adaptively allocate traffic to the better-performing model variant — the same algorithm used for dynamic ad rotation on websites."
+  bridge:
+    feTitle: "Dynamic Ad Rotation"
+    feCode: "// Show ad with highest CTR more often, explore alternatives with epsilon"
+    mlTitle: "Adaptive Model Selection"
+    mlCode: "// Route to best model more often, explore alternatives with epsilon"
+    tier: structural
+consequence:
+  narrative: "The bandit algorithm converges within 3 days. Model v3.1 receives 87% of traffic because it consistently outperforms. Park: 'The algorithm found the winner faster than a fixed A/B test would have, and fewer devices were exposed to the worse model.'"
+  nextLessonTeaser: "Next module: Scale & Reliability — building infrastructure that survives the worst day"
+hints:
+  - level: nudge
+    content: "Epsilon-greedy: exploit the best model most of the time, explore alternatives with probability epsilon"
+  - level: guidance
+    content: "Track rewards (successful predictions) per model and select the one with highest average reward"
+  - level: solution
+    content: "Implement epsilon-greedy with decaying epsilon — explore more early, exploit more as confidence grows"
+keywords:
+  - multi-armed-bandit
+  - epsilon-greedy
+  - adaptive-allocation
+  - exploration-exploitation
+---
+
+<Dialogue speaker="Park Soo-Yeon">
+Standard A/B tests split traffic 50/50 and wait for significance. That means half your devices run the worse model for the entire test duration. Multi-armed bandits are smarter — they shift traffic toward the winner as evidence accumulates. Less wasted exposure, faster convergence.
+</Dialogue>
+
+<Dialogue speaker="Hassan Al-Rashid">
+If it reduces the time our devices spend on a worse model, I want it. Show me the implementation.
+</Dialogue>
+
+You have seen dynamic ad rotation on websites: the system shows the highest-performing ad most of the time while occasionally testing alternatives. Multi-armed bandits apply the same explore-exploit tradeoff to model selection. Instead of fixed traffic splits, the algorithm adapts — sending more traffic to the model that is performing better while still exploring alternatives.
+
+<LearningObjectives objectives={["Implement an epsilon-greedy multi-armed bandit for model selection", "Understand the explore-exploit tradeoff in the context of model deployment", "Build a UCB1 (Upper Confidence Bound) bandit as an alternative strategy", "Compare bandit approaches to fixed A/B testing for model evaluation"]} />
+
+## Epsilon-Greedy Bandit
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="epsilon-greedy.ts">
+{`// Epsilon-greedy bandit — same algorithm as dynamic ad rotation
+
+interface ModelArm {
+  version: string;
+  predict: (input: Float32Array) => Promise<number[]>;
+  totalReward: number;
+  pulls: number;
+}
+
+class EpsilonGreedyBandit {
+  private arms: ModelArm[] = [];
+  private epsilon: number;
+  private decayRate: number;
+  private totalPulls: number = 0;
+
+  constructor(epsilon: number = 0.1, decayRate: number = 0.999) {
+    this.epsilon = epsilon;
+    this.decayRate = decayRate;
+  }
+
+  addArm(version: string, predict: ModelArm['predict']): void {
+    this.arms.push({ version, predict, totalReward: 0, pulls: 0 });
+  }
+
+  selectArm(): ModelArm {
+    // Explore: random arm
+    const currentEpsilon = this.epsilon * Math.pow(this.decayRate, this.totalPulls);
+    if (Math.random() < currentEpsilon) {
+      return this.arms[Math.floor(Math.random() * this.arms.length)];
+    }
+
+    // Exploit: best average reward
+    return this.arms.reduce((best, arm) => {
+      const avgReward = arm.pulls > 0 ? arm.totalReward / arm.pulls : Infinity;
+      const bestAvg = best.pulls > 0 ? best.totalReward / best.pulls : Infinity;
+      return avgReward > bestAvg ? arm : best;
+    });
+  }
+
+  recordReward(version: string, reward: number): void {
+    const arm = this.arms.find(a => a.version === version);
+    if (arm) {
+      arm.totalReward += reward;
+      arm.pulls++;
+      this.totalPulls++;
+    }
+  }
+
+  getStats(): { version: string; pulls: number; avgReward: number; trafficShare: number }[] {
+    return this.arms.map(arm => ({
+      version: arm.version,
+      pulls: arm.pulls,
+      avgReward: arm.pulls > 0 ? arm.totalReward / arm.pulls : 0,
+      trafficShare: this.totalPulls > 0 ? arm.pulls / this.totalPulls : 0,
+    }));
+  }
+}
+
+// Terra Grid: 3 model versions competing
+const bandit = new EpsilonGreedyBandit(0.15, 0.999);
+bandit.addArm('v3.0', modelV3.predict);
+bandit.addArm('v3.1', modelV3_1.predict);
+bandit.addArm('v3.2-beta', modelV3_2.predict);
+
+// Each prediction cycle
+const selected = bandit.selectArm();
+const prediction = await selected.predict(sensorData);
+const correct = prediction[0] === actualLabel ? 1 : 0;
+bandit.recordReward(selected.version, correct);
+
+console.log('Traffic distribution:', bandit.getStats());`}
+</CodeBlock>
+
+## UCB1 Strategy
+
+<CodeBlock language="typescript" title="ucb1.ts">
+{`// Upper Confidence Bound — balances exploitation with exploration bonus
+
+class UCB1Bandit {
+  private arms: ModelArm[] = [];
+  private totalPulls: number = 0;
+
+  addArm(version: string, predict: ModelArm['predict']): void {
+    this.arms.push({ version, predict, totalReward: 0, pulls: 0 });
+  }
+
+  selectArm(): ModelArm {
+    // Pull each arm at least once
+    const unpulled = this.arms.find(a => a.pulls === 0);
+    if (unpulled) return unpulled;
+
+    // UCB1 formula: avgReward + sqrt(2 * ln(totalPulls) / armPulls)
+    return this.arms.reduce((best, arm) => {
+      const ucb = (arm.totalReward / arm.pulls) +
+        Math.sqrt(2 * Math.log(this.totalPulls) / arm.pulls);
+      const bestUcb = (best.totalReward / best.pulls) +
+        Math.sqrt(2 * Math.log(this.totalPulls) / best.pulls);
+      return ucb > bestUcb ? arm : best;
+    });
+  }
+
+  recordReward(version: string, reward: number): void {
+    const arm = this.arms.find(a => a.version === version);
+    if (arm) {
+      arm.totalReward += reward;
+      arm.pulls++;
+      this.totalPulls++;
+    }
+  }
+}
+
+// UCB1 naturally balances explore/exploit without epsilon tuning
+const ucb = new UCB1Bandit();
+ucb.addArm('v3.0', modelV3.predict);
+ucb.addArm('v3.1', modelV3_1.predict);`}
+</CodeBlock>
+
+## Challenge
+
+Implement an epsilon-greedy bandit for adaptive model selection.
+
+<Exercise slug="bandit-algorithm" />
+
+<KeyTakeaways takeaways={["Multi-armed bandits adaptively route traffic to the better model, reducing exposure to worse variants", "Epsilon-greedy: exploit the best model (1-epsilon)% of the time, explore randomly epsilon% of the time", "UCB1 adds an exploration bonus that decreases as an arm is pulled more — no epsilon parameter to tune", "Bandits converge faster than fixed A/B tests and waste fewer predictions on clearly worse models"]} />

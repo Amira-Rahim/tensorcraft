@@ -1,0 +1,262 @@
+---
+slug: ethics-capstone
+title: "Building an Ethics Checklist for Your ML Projects"
+moduleId: ethics-responsibility
+themeId: shared
+order: 5
+estimatedMinutes: 30
+difficulty: intermediate
+context:
+  narrative: "You've learned the individual pieces. Now assemble them into a reusable ethics review process."
+  speaker: "Instructor"
+concept:
+  explanation: "An ML ethics checklist is a structured review process — like a pull request checklist that ensures every model meets standards for data quality, fairness, interpretability, and deployment safety."
+  bridge:
+    feTitle: "Pull Request Review Checklist"
+    feCode: "// PR checklist: tests pass, a11y checked, perf budget met, docs updated"
+    mlTitle: "ML Ethics Checklist"
+    mlCode: "// Ethics checklist: data audited, fairness tested, model explained, impact assessed"
+    tier: identity
+consequence:
+  narrative: "You now have a practical, reusable ethics review process for every ML project you build."
+hints:
+  - level: nudge
+    content: "Think about what checks you'd want at each stage: data, training, evaluation, deployment"
+  - level: guidance
+    content: "Structure the checklist with categories and individual check items with pass/fail status"
+  - level: solution
+    content: "Create a typed checklist covering data sourcing, bias audit, fairness metrics, interpretability, and deployment review"
+keywords:
+  - ethics-checklist
+  - responsible-ai
+  - model-review
+  - deployment-checklist
+---
+
+<Dialogue speaker="Instructor">
+Over the last four lessons, you've learned to audit datasets for bias, measure fairness with metrics, interpret model predictions, and assess deployment risk. Now it's time to package all of that into something you'll actually use: a reusable ethics checklist.
+</Dialogue>
+
+As a frontend developer, you know the power of checklists. Your team probably has a PR review checklist: tests pass, no accessibility regressions, performance budget met, documentation updated. Nobody relies on memory alone for quality assurance. Your ML projects deserve the same rigor.
+
+<LearningObjectives objectives={["Combine dataset auditing, fairness metrics, interpretability, and deployment review into a single checklist", "Build a typed, executable ethics checklist in TypeScript", "Understand when each check should be applied in the ML lifecycle", "Create a reusable template for future ML projects"]} />
+
+## The PR Checklist for ML
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+Your PR checklist catches bugs before they reach production. An ML ethics checklist catches harm before it reaches users. Both work because they make quality systematic rather than optional.
+
+## The Five Phases of Ethics Review
+
+### Phase 1: Data Sourcing
+
+Before you touch a model, audit your data.
+
+<CodeBlock language="typescript" title="ethics-checklist.ts">
+{`interface CheckItem {
+  id: string;
+  phase: 'data' | 'training' | 'evaluation' | 'deployment' | 'monitoring';
+  description: string;
+  status: 'pass' | 'fail' | 'not-applicable' | 'pending';
+  notes: string;
+}
+
+interface EthicsChecklist {
+  projectName: string;
+  modelVersion: string;
+  reviewDate: string;
+  reviewer: string;
+  checks: CheckItem[];
+  overallStatus: 'approved' | 'needs-review' | 'blocked';
+}
+
+const ethicsTemplate: CheckItem[] = [
+  // Phase 1: Data
+  {
+    id: 'data-source',
+    phase: 'data',
+    description: 'Data sources are documented with collection methods and dates',
+    status: 'pending',
+    notes: '',
+  },
+  {
+    id: 'data-consent',
+    phase: 'data',
+    description: 'Data was collected with appropriate consent and licensing',
+    status: 'pending',
+    notes: '',
+  },
+  {
+    id: 'data-representation',
+    phase: 'data',
+    description: 'Dataset representation audit completed — no group below 10% of expected proportion',
+    status: 'pending',
+    notes: '',
+  },
+  {
+    id: 'data-labels',
+    phase: 'data',
+    description: 'Labels reviewed for measurement bias and historical bias',
+    status: 'pending',
+    notes: '',
+  },
+
+  // Phase 2: Training
+  {
+    id: 'training-splits',
+    phase: 'training',
+    description: 'Train/validation/test splits maintain demographic proportions',
+    status: 'pending',
+    notes: '',
+  },
+  {
+    id: 'training-augmentation',
+    phase: 'training',
+    description: 'Data augmentation does not introduce or amplify bias',
+    status: 'pending',
+    notes: '',
+  },
+
+  // Phase 3: Evaluation
+  {
+    id: 'eval-fairness',
+    phase: 'evaluation',
+    description: 'Fairness metrics computed per demographic group (disparate impact ratio >= 0.8)',
+    status: 'pending',
+    notes: '',
+  },
+  {
+    id: 'eval-subgroup',
+    phase: 'evaluation',
+    description: 'Performance metrics broken down by subgroup — no group accuracy below threshold',
+    status: 'pending',
+    notes: '',
+  },
+  {
+    id: 'eval-interpretability',
+    phase: 'evaluation',
+    description: 'Feature importance reviewed — model uses relevant features, not proxies',
+    status: 'pending',
+    notes: '',
+  },
+
+  // Phase 4: Deployment
+  {
+    id: 'deploy-model-card',
+    phase: 'deployment',
+    description: 'Model card completed with intended use, limitations, and performance metrics',
+    status: 'pending',
+    notes: '',
+  },
+  {
+    id: 'deploy-impact',
+    phase: 'deployment',
+    description: 'Impact assessment completed — all critical failure modes have mitigations',
+    status: 'pending',
+    notes: '',
+  },
+  {
+    id: 'deploy-fallback',
+    phase: 'deployment',
+    description: 'Human fallback process defined for high-stakes decisions',
+    status: 'pending',
+    notes: '',
+  },
+  {
+    id: 'deploy-recourse',
+    phase: 'deployment',
+    description: 'Users affected by model decisions have a clear appeal or recourse process',
+    status: 'pending',
+    notes: '',
+  },
+
+  // Phase 5: Monitoring
+  {
+    id: 'monitor-drift',
+    phase: 'monitoring',
+    description: 'Monitoring in place for data drift and model performance degradation',
+    status: 'pending',
+    notes: '',
+  },
+  {
+    id: 'monitor-fairness',
+    phase: 'monitoring',
+    description: 'Ongoing fairness metric tracking scheduled (monthly minimum)',
+    status: 'pending',
+    notes: '',
+  },
+  {
+    id: 'monitor-feedback',
+    phase: 'monitoring',
+    description: 'Feedback mechanism in place for users to report issues',
+    status: 'pending',
+    notes: '',
+  },
+];`}
+</CodeBlock>
+
+### Running the Review
+
+<CodeBlock language="typescript" title="run-review.ts">
+{`function runEthicsReview(checklist: EthicsChecklist): string {
+  const phases = ['data', 'training', 'evaluation', 'deployment', 'monitoring'] as const;
+  const report: string[] = [];
+
+  report.push(\`Ethics Review: \${checklist.projectName} v\${checklist.modelVersion}\`);
+  report.push(\`Reviewer: \${checklist.reviewer} | Date: \${checklist.reviewDate}\`);
+  report.push('---');
+
+  let hasFailures = false;
+  let hasPending = false;
+
+  for (const phase of phases) {
+    const phaseChecks = checklist.checks.filter(c => c.phase === phase);
+    const passed = phaseChecks.filter(c => c.status === 'pass').length;
+    const failed = phaseChecks.filter(c => c.status === 'fail').length;
+    const pending = phaseChecks.filter(c => c.status === 'pending').length;
+
+    report.push(\`\${phase.toUpperCase()}: \${passed} passed, \${failed} failed, \${pending} pending\`);
+
+    for (const check of phaseChecks) {
+      const icon = check.status === 'pass' ? '[PASS]' :
+                   check.status === 'fail' ? '[FAIL]' :
+                   check.status === 'not-applicable' ? '[N/A]' : '[PENDING]';
+      report.push(\`  \${icon} \${check.description}\`);
+      if (check.notes) report.push(\`        Note: \${check.notes}\`);
+    }
+
+    if (failed > 0) hasFailures = true;
+    if (pending > 0) hasPending = true;
+  }
+
+  report.push('---');
+  if (hasFailures) {
+    report.push('OVERALL: BLOCKED — address failing checks before deployment');
+  } else if (hasPending) {
+    report.push('OVERALL: NEEDS REVIEW — complete pending checks');
+  } else {
+    report.push('OVERALL: APPROVED — all checks passed');
+  }
+
+  return report.join('\\n');
+}`}
+</CodeBlock>
+
+## Making It Stick
+
+The best checklist is one you actually use. Here are three tips from the frontend world:
+
+1. **Automate what you can.** Just like CI runs your tests and linting automatically, automate fairness metric computation and representation audits in your training pipeline.
+
+2. **Make it a gate, not a suggestion.** Your PR can't merge without passing tests. Your model shouldn't deploy without passing ethics review.
+
+3. **Review and iterate.** Your PR checklist evolves as you learn from production incidents. Your ethics checklist should too.
+
+## Challenge
+
+Build a complete ethics checklist for an ML project and run the review.
+
+<Exercise slug="build-ethics-checklist" />
+
+<KeyTakeaways takeaways={["An ML ethics checklist is a PR review checklist for responsible AI", "Five phases: data sourcing, training, evaluation, deployment, monitoring", "Automate what you can — fairness metrics and representation audits should be in your pipeline", "Make ethics review a deployment gate, not an optional step", "Iterate on your checklist as you learn from real-world outcomes"]} />

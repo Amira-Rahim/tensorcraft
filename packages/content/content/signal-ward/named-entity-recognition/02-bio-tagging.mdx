@@ -1,0 +1,171 @@
+---
+slug: bio-tagging
+title: "BIO Tagging"
+moduleId: named-entity-recognition
+themeId: signal-ward
+order: 2
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Obi introduces BIO tagging to handle multi-word entities like 'rheumatoid arthritis' — where simple per-token labels fall apart."
+  speaker: "Obi Nwosu"
+concept:
+  explanation: "BIO tagging marks entity boundaries using B (beginning), I (inside), and O (outside) — like HTML opening and closing tags that define where elements start and end."
+  bridge:
+    feTitle: "HTML Opening/Closing Tags"
+    feCode: "<span class='condition'>rheumatoid arthritis</span> <!-- tags mark boundaries -->"
+    mlTitle: "BIO Tags"
+    mlCode: "B-CONDITION I-CONDITION O // tags mark entity boundaries"
+    tier: structural
+consequence:
+  narrative: "The model can now correctly identify multi-word entities, distinguishing 'rheumatoid arthritis' as one condition from two adjacent single-word entities."
+  nextLessonTeaser: "Next: medical-specific entity types and the challenges of clinical vocabulary."
+hints:
+  - level: nudge
+    content: "B marks the first token of an entity, I marks continuation tokens — like an opening tag and its content"
+  - level: guidance
+    content: "Two adjacent entities of the same type need the B tag to separate them, just like two adjacent spans need separate opening tags"
+  - level: solution
+    content: "Map each token to B-TYPE if it starts an entity, I-TYPE if it continues one, O if it's outside all entities"
+keywords:
+  - bio-tagging
+  - entity-boundaries
+  - sequence-labeling
+  - iob-format
+---
+
+<Dialogue speaker="Obi Nwosu">
+Khalil, our basic NER labels each token independently. But look at "rheumatoid arthritis" — that's one condition, two words. How do we tell the model that "arthritis" continues the entity started by "rheumatoid" rather than being a separate entity?
+</Dialogue>
+
+<Dialogue speaker="Khalil Mensah">
+In HTML, I'd wrap them in a single tag: `<span class="condition">rheumatoid arthritis</span>`. The opening tag marks where the entity begins, and the closing tag marks where it ends. Everything between is inside the entity.
+</Dialogue>
+
+<Dialogue speaker="Obi Nwosu">
+That's exactly what BIO tagging does. B is the opening tag — the beginning of an entity. I is the content inside. O is everything outside any tag. No explicit closing tag needed; the entity ends when you hit O or a new B.
+</Dialogue>
+
+<LearningObjectives objectives={["Understand the BIO (Beginning, Inside, Outside) tagging scheme", "Map BIO tags to the familiar concept of HTML opening and closing tags", "Convert entity annotations into BIO tag sequences", "Decode BIO sequences back into entity spans"]} />
+
+## Opening and Closing Tags for NLP
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+In HTML, `<span class="drug">` tells the browser: "A drug entity starts here." `</span>` tells it: "The drug entity ends here." BIO tagging encodes the same information in a flat sequence:
+
+| HTML | BIO |
+|------|-----|
+| `<span class="drug">` | `B-DRUG` |
+| content inside the tag | `I-DRUG` |
+| `</span>` (implicit at next B or O) | next tag |
+| text outside any tag | `O` |
+
+The critical insight: in HTML, forgetting to close a tag merges everything into one element. In BIO, forgetting the B tag on a new entity merges it with the previous one.
+
+<CodeBlock language="typescript" title="bio-tagging.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// BIO tag set — like a vocabulary of HTML tags for clinical text
+const BIO_TAGS = [
+  'O',                          // outside any entity (plain text)
+  'B-DRUG', 'I-DRUG',          // <span class="drug">...</span>
+  'B-CONDITION', 'I-CONDITION', // <span class="condition">...</span>
+  'B-DOSAGE', 'I-DOSAGE',      // <span class="dosage">...</span>
+  'B-PROCEDURE', 'I-PROCEDURE' // <span class="procedure">...</span>
+];
+
+interface EntitySpan {
+  text: string;
+  type: string;
+  tokens: string[];
+  startIdx: number;
+  endIdx: number;
+}
+
+// Encoding: annotations → BIO tags (like adding HTML tags to raw text)
+function tokensToBioTags(
+  tokens: string[],
+  entities: Array<{ start: number; end: number; type: string }>
+): string[] {
+  const tags = new Array(tokens.length).fill('O');
+
+  for (const entity of entities) {
+    // B tag = opening tag
+    tags[entity.start] = \`B-\${entity.type}\`;
+    // I tags = content inside the tag
+    for (let i = entity.start + 1; i < entity.end; i++) {
+      tags[i] = \`I-\${entity.type}\`;
+    }
+  }
+
+  return tags;
+}
+
+// Decoding: BIO tags → entity spans (like parsing HTML back into a DOM)
+function bioTagsToEntities(tokens: string[], tags: string[]): EntitySpan[] {
+  const entities: EntitySpan[] = [];
+  let current: EntitySpan | null = null;
+
+  for (let i = 0; i < tokens.length; i++) {
+    if (tags[i].startsWith('B-')) {
+      // Opening tag — close any previous entity, start a new one
+      if (current) entities.push(current);
+      const type = tags[i].substring(2);
+      current = {
+        text: tokens[i],
+        type,
+        tokens: [tokens[i]],
+        startIdx: i,
+        endIdx: i + 1
+      };
+    } else if (tags[i].startsWith('I-') && current) {
+      // Inside tag — extend the current entity
+      current.tokens.push(tokens[i]);
+      current.text += ' ' + tokens[i];
+      current.endIdx = i + 1;
+    } else {
+      // O tag or I without a preceding B — close any open entity
+      if (current) entities.push(current);
+      current = null;
+    }
+  }
+  if (current) entities.push(current);
+  return entities;
+}
+
+// Example: "Patient has rheumatoid arthritis taking methotrexate"
+const tokens = ['Patient', 'has', 'rheumatoid', 'arthritis', 'taking', 'methotrexate'];
+const tags = ['O', 'O', 'B-CONDITION', 'I-CONDITION', 'O', 'B-DRUG'];
+//             plain  plain  <condition>    </condition>  plain  <drug/>
+
+const entities = bioTagsToEntities(tokens, tags);
+console.log(entities);
+// [{ text: 'rheumatoid arthritis', type: 'CONDITION', ... },
+//  { text: 'methotrexate', type: 'DRUG', ... }]`}
+</CodeBlock>
+
+## Why B Matters: Preventing Tag Merge
+
+<Dialogue speaker="Santos">
+What happens if a patient has "diabetes hypertension" — two conditions listed back to back?
+</Dialogue>
+
+<Dialogue speaker="Obi Nwosu">
+Without the B tag, both words get I-CONDITION. The decoder merges them into one entity: "diabetes hypertension." The B tag on "hypertension" is like a new opening `<span>` — it signals a separate entity starts there, even though the type is the same.
+</Dialogue>
+
+Consider the difference:
+
+- **Wrong:** `I-CONDITION I-CONDITION` → "diabetes hypertension" (one merged entity)
+- **Correct:** `B-CONDITION B-CONDITION` → "diabetes" and "hypertension" (two separate entities)
+
+This mirrors the HTML rule: you can't nest two `<span>` elements without proper opening tags for each.
+
+## Challenge
+
+Implement a BIO tagger that converts entity annotations into tag sequences and decodes them back.
+
+<Exercise slug="apply-bio-tags" />
+
+<KeyTakeaways takeaways={["BIO tagging is like HTML tags — B opens an entity, I continues it, O marks outside text", "Multi-word entities use B on the first token and I on continuation tokens", "The B tag prevents adjacent same-type entities from merging, like separate opening tags in HTML", "Decoding BIO tags reconstructs entity spans, like parsing HTML into DOM elements"]} />

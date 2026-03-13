@@ -1,0 +1,83 @@
+slug: launch-biennale
+lessonSlug: opening-night
+title: "Launch Checklist"
+instructions: "Build a launch checklist runner. Given an array of checklist items (each with a name, an async check() that returns boolean, a critical flag, and an optional async recovery()), run all checks in order. If a check fails and has recovery, run recovery then re-check. Return a report with each item's pass status and an overall ready boolean (true only if all critical items pass)."
+starterCode: |
+  interface ChecklistItem {
+    name: string;
+    check: () => Promise<boolean>;
+    critical: boolean;
+    recovery?: () => Promise<void>;
+  }
+
+  interface ChecklistReport {
+    items: Array<{ name: string; passed: boolean; recovered: boolean; critical: boolean }>;
+    ready: boolean;
+  }
+
+  async function runChecklist(items: ChecklistItem[]): Promise<ChecklistReport> {
+    // Run each check, attempt recovery on failure, compile report
+    // your code here
+    return { items: [], ready: false };
+  }
+solutionCode: |
+  async function runChecklist(items: ChecklistItem[]): Promise<ChecklistReport> {
+    const results: ChecklistReport['items'] = [];
+
+    for (const item of items) {
+      let passed = await item.check();
+      let recovered = false;
+
+      if (!passed && item.recovery) {
+        await item.recovery();
+        passed = await item.check();
+        recovered = passed;
+      }
+
+      results.push({ name: item.name, passed, recovered, critical: item.critical });
+    }
+
+    const ready = results.filter(r => r.critical).every(r => r.passed);
+    return { items: results, ready };
+  }
+testCode: |
+  describe('runChecklist', () => {
+    it('passes all green checks', async () => {
+      const items = [
+        { name: 'a', check: async () => true, critical: true },
+        { name: 'b', check: async () => true, critical: false },
+      ];
+      const report = await runChecklist(items);
+      expect(report.ready).toBe(true);
+      expect(report.items.every(i => i.passed)).toBe(true);
+    });
+    it('blocks on critical failure', async () => {
+      const items = [
+        { name: 'critical-fail', check: async () => false, critical: true },
+      ];
+      const report = await runChecklist(items);
+      expect(report.ready).toBe(false);
+    });
+    it('allows non-critical failure', async () => {
+      const items = [
+        { name: 'ok', check: async () => true, critical: true },
+        { name: 'optional-fail', check: async () => false, critical: false },
+      ];
+      const report = await runChecklist(items);
+      expect(report.ready).toBe(true);
+    });
+    it('attempts recovery', async () => {
+      let fixed = false;
+      const items = [{
+        name: 'recoverable',
+        check: async () => fixed,
+        critical: true,
+        recovery: async () => { fixed = true; },
+      }];
+      const report = await runChecklist(items);
+      expect(report.ready).toBe(true);
+      expect(report.items[0].recovered).toBe(true);
+    });
+  });
+estimatedMinutes: 15
+difficulty: advanced

@@ -1,0 +1,156 @@
+slug: validate-system
+lessonSlug: testing-and-validation
+title: "Validate Tensor Data"
+instructions: "Write a validateTensor function that checks a tensor's shape, value range, and data quality. Return a ValidationReport with individual check results. Check that: (1) the tensor has the expected rank, (2) all values are within [0, 1], (3) no NaN values are present, (4) the mean is between 0.05 and 0.95 (not all black or all white)."
+starterCode: |
+  interface CheckResult {
+    name: string;
+    passed: boolean;
+    message: string;
+  }
+
+  interface ValidationReport {
+    passed: boolean;
+    checks: CheckResult[];
+  }
+
+  function validateTensor(
+    values: number[],
+    shape: number[],
+    expectedRank: number
+  ): ValidationReport {
+    // Check 1: "rank" — shape.length === expectedRank
+    // Check 2: "value-range" — all values >= 0 and <= 1
+    // Check 3: "no-nan" — no NaN values
+    // Check 4: "reasonable-mean" — mean between 0.05 and 0.95
+    // Return { passed: all checks pass, checks: [...] }
+    return { passed: false, checks: [] }; // your code here
+  }
+solutionCode: |
+  interface CheckResult {
+    name: string;
+    passed: boolean;
+    message: string;
+  }
+
+  interface ValidationReport {
+    passed: boolean;
+    checks: CheckResult[];
+  }
+
+  function validateTensor(
+    values: number[],
+    shape: number[],
+    expectedRank: number
+  ): ValidationReport {
+    const checks: CheckResult[] = [];
+
+    // Check 1: Rank
+    const rankOk = shape.length === expectedRank;
+    checks.push({
+      name: 'rank',
+      passed: rankOk,
+      message: rankOk
+        ? `Rank is ${expectedRank}`
+        : `Expected rank ${expectedRank}, got ${shape.length}`,
+    });
+
+    // Check 2: Value range [0, 1]
+    const min = Math.min(...values);
+    const max = Math.max(...values);
+    const rangeOk = min >= 0 && max <= 1;
+    checks.push({
+      name: 'value-range',
+      passed: rangeOk,
+      message: rangeOk
+        ? `Values in [${min.toFixed(3)}, ${max.toFixed(3)}]`
+        : `Values out of range: [${min.toFixed(3)}, ${max.toFixed(3)}]`,
+    });
+
+    // Check 3: No NaN
+    const hasNaN = values.some(v => isNaN(v));
+    checks.push({
+      name: 'no-nan',
+      passed: !hasNaN,
+      message: hasNaN ? 'Contains NaN values' : 'No NaN values',
+    });
+
+    // Check 4: Reasonable mean
+    const sum = values.reduce((a, b) => a + b, 0);
+    const mean = sum / values.length;
+    const meanOk = mean > 0.05 && mean < 0.95;
+    checks.push({
+      name: 'reasonable-mean',
+      passed: meanOk,
+      message: meanOk
+        ? `Mean is ${mean.toFixed(3)}`
+        : `Mean ${mean.toFixed(3)} outside [0.05, 0.95]`,
+    });
+
+    return {
+      passed: checks.every(c => c.passed),
+      checks,
+    };
+  }
+testCode: |
+  describe('validateTensor', () => {
+    it('passes for valid normalized data', () => {
+      const values = [0.2, 0.5, 0.8, 0.3, 0.6, 0.4];
+      const result = validateTensor(values, [2, 3], 2);
+      expect(result.passed).toBe(true);
+      expect(result.checks).toHaveLength(4);
+      expect(result.checks.every(c => c.passed)).toBe(true);
+    });
+
+    it('fails on wrong rank', () => {
+      const values = [0.5, 0.5, 0.5];
+      const result = validateTensor(values, [3], 4);
+      expect(result.passed).toBe(false);
+      const rankCheck = result.checks.find(c => c.name === 'rank');
+      expect(rankCheck!.passed).toBe(false);
+    });
+
+    it('fails on values outside [0, 1]', () => {
+      const values = [0.5, 1.5, 0.3];
+      const result = validateTensor(values, [3], 1);
+      expect(result.passed).toBe(false);
+      const rangeCheck = result.checks.find(c => c.name === 'value-range');
+      expect(rangeCheck!.passed).toBe(false);
+    });
+
+    it('fails on NaN values', () => {
+      const values = [0.5, NaN, 0.3];
+      const result = validateTensor(values, [3], 1);
+      expect(result.passed).toBe(false);
+      const nanCheck = result.checks.find(c => c.name === 'no-nan');
+      expect(nanCheck!.passed).toBe(false);
+    });
+
+    it('fails on all-zero data (mean too low)', () => {
+      const values = [0.0, 0.0, 0.0, 0.01];
+      const result = validateTensor(values, [4], 1);
+      expect(result.passed).toBe(false);
+      const meanCheck = result.checks.find(c => c.name === 'reasonable-mean');
+      expect(meanCheck!.passed).toBe(false);
+    });
+
+    it('fails on all-one data (mean too high)', () => {
+      const values = [1.0, 1.0, 1.0, 0.99];
+      const result = validateTensor(values, [4], 1);
+      expect(result.passed).toBe(false);
+      const meanCheck = result.checks.find(c => c.name === 'reasonable-mean');
+      expect(meanCheck!.passed).toBe(false);
+    });
+
+    it('returns all four checks', () => {
+      const values = [0.5];
+      const result = validateTensor(values, [1], 1);
+      const names = result.checks.map(c => c.name);
+      expect(names).toContain('rank');
+      expect(names).toContain('value-range');
+      expect(names).toContain('no-nan');
+      expect(names).toContain('reasonable-mean');
+    });
+  });
+estimatedMinutes: 15
+difficulty: intermediate

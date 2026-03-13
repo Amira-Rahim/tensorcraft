@@ -1,0 +1,71 @@
+slug: interpolate-points
+lessonSlug: interpolation
+title: "Interpolate Between Points"
+instructions: "Implement a linear interpolation function that takes two latent vectors (as tf.Tensor1D) and a parameter t (0 to 1), returning the interpolated vector. Then create a function that generates N evenly-spaced interpolation steps."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function lerp(z1: tf.Tensor1D, z2: tf.Tensor1D, t: number): tf.Tensor1D {
+    // Linear interpolation: z1 * (1 - t) + z2 * t
+    return null; // your code here
+  }
+
+  function interpolationSteps(
+    z1: tf.Tensor1D,
+    z2: tf.Tensor1D,
+    steps: number
+  ): tf.Tensor1D[] {
+    // Generate 'steps' evenly spaced interpolations from z1 to z2
+    return null; // your code here
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function lerp(z1: tf.Tensor1D, z2: tf.Tensor1D, t: number): tf.Tensor1D {
+    return z1.mul(1 - t).add(z2.mul(t)) as tf.Tensor1D;
+  }
+
+  function interpolationSteps(
+    z1: tf.Tensor1D,
+    z2: tf.Tensor1D,
+    steps: number
+  ): tf.Tensor1D[] {
+    const results: tf.Tensor1D[] = [];
+    for (let i = 0; i <= steps; i++) {
+      const t = i / steps;
+      results.push(lerp(z1, z2, t));
+    }
+    return results;
+  }
+testCode: |
+  describe('lerp', () => {
+    it('returns z1 when t=0', async () => {
+      const z1 = tf.tensor1d([1, 2, 3]);
+      const z2 = tf.tensor1d([4, 5, 6]);
+      const result = await lerp(z1, z2, 0).array();
+      expect(result).toEqual([1, 2, 3]);
+    });
+    it('returns z2 when t=1', async () => {
+      const z1 = tf.tensor1d([1, 2, 3]);
+      const z2 = tf.tensor1d([4, 5, 6]);
+      const result = await lerp(z1, z2, 1).array();
+      expect(result).toEqual([4, 5, 6]);
+    });
+    it('returns midpoint when t=0.5', async () => {
+      const z1 = tf.tensor1d([0, 0]);
+      const z2 = tf.tensor1d([10, 10]);
+      const result = await lerp(z1, z2, 0.5).array();
+      expect(result[0]).toBeCloseTo(5);
+      expect(result[1]).toBeCloseTo(5);
+    });
+  });
+  describe('interpolationSteps', () => {
+    it('returns steps+1 tensors', () => {
+      const z1 = tf.tensor1d([0, 0]);
+      const z2 = tf.tensor1d([1, 1]);
+      const results = interpolationSteps(z1, z2, 4);
+      expect(results.length).toBe(5);
+    });
+  });
+estimatedMinutes: 8
+difficulty: intermediate

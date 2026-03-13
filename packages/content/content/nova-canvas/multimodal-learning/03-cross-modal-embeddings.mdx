@@ -1,0 +1,119 @@
+---
+slug: cross-modal-embeddings
+title: "Cross-Modal Embeddings"
+moduleId: multimodal-learning
+themeId: nova-canvas
+order: 3
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Kai pulls up the embedding visualizer. 'Look — the sunset image and the text sunset are next to each other in the space. Dog photo and dog text, right next to each other. Two completely different data types, living in the same neighborhood.' Ren: 'Like shared component props — the same interface works across platforms.'"
+  speaker: "Kai"
+concept:
+  explanation: "Cross-modal embeddings map different data types to the same vector space — a shared representation where similarity is measurable across modalities. Like shared component props that provide a consistent interface across React, React Native, and web components."
+  bridge:
+    feTitle: "Shared component props across platforms"
+    feCode: "interface ButtonProps { label: string; onClick: () => void; }"
+    mlTitle: "Cross-modal embedding space"
+    mlCode: "similarity(encodeImage(photo), encodeText('sunset')) > 0.8;"
+    tier: structural
+consequence:
+  narrative: "The embedding space is alive with clusters. Animals in one region, landscapes in another, architecture in a third. Text descriptions sit right next to their corresponding images. 'They found each other,' Yara says. 'Different languages, same meaning.'"
+  nextLessonTeaser: "Next: image captioning — teaching MUSE to describe what it sees"
+hints:
+  - level: nudge
+    content: "Think of TypeScript interfaces — the same prop types work across different component implementations"
+  - level: guidance
+    content: "Project both modalities into a shared space of the same dimensionality. Use L2 normalization so all embeddings lie on a unit hypersphere."
+  - level: solution
+    content: "Encode + normalize both modalities. Measure cosine similarity. Use projection heads (linear layers) to align the spaces during training."
+keywords:
+  - cross-modal
+  - shared-space
+  - projection
+  - alignment
+  - embedding
+---
+
+<Dialogue speaker="Kai">
+Look at the embedding space. The sunset photo lives at coordinates [0.23, -0.45, 0.67, ...]. The text "a sunset over a digital city" lives at [0.21, -0.47, 0.65, ...]. Different modalities, nearly identical vectors.
+</Dialogue>
+
+<Dialogue speaker="Ren">
+It is like shared component props. A `ButtonProps` interface works whether the component is React, React Native, or a web component. The interface is the same even though the implementation is completely different.
+</Dialogue>
+
+Shared interfaces let different implementations communicate. Cross-modal embeddings do the same — images and text live in the same vector space, sharing the same "interface" (dimensionality and distance metric), even though they come from completely different encoders.
+
+<LearningObjectives objectives={["Understand cross-modal embedding spaces and why normalization matters", "Implement projection heads that align different encoder outputs", "Measure cross-modal similarity using cosine distance", "Connect shared embedding spaces to shared TypeScript interfaces"]} />
+
+## Building the Shared Space
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="cross-modal-embeddings.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Projection head: maps encoder output to the shared space
+// Like an adapter pattern — different implementations, same interface
+function buildProjectionHead(inputDim: number, outputDim: number): tf.LayersModel {
+  const input = tf.input({ shape: [inputDim] });
+
+  let x = tf.layers.dense({
+    units: outputDim, activation: 'relu'
+  }).apply(input) as tf.SymbolicTensor;
+  x = tf.layers.dense({
+    units: outputDim, activation: 'linear'
+  }).apply(x) as tf.SymbolicTensor;
+
+  // L2 normalize: all embeddings on the unit hypersphere
+  const normalized = tf.layers.layerNormalization().apply(x) as tf.SymbolicTensor;
+
+  return tf.model({ inputs: input, outputs: normalized });
+}
+
+// Full cross-modal system
+class CrossModalEmbedder {
+  imageEncoder: tf.LayersModel;
+  textEncoder: tf.LayersModel;
+  imageProjection: tf.LayersModel;
+  textProjection: tf.LayersModel;
+
+  constructor(embeddingDim: number = 256) {
+    this.imageEncoder = buildImageEncoder(512);
+    this.textEncoder = buildTextEncoder(10000, 32, 512);
+    this.imageProjection = buildProjectionHead(512, embeddingDim);
+    this.textProjection = buildProjectionHead(512, embeddingDim);
+  }
+
+  encodeImage(image: tf.Tensor4D): tf.Tensor2D {
+    const features = this.imageEncoder.predict(image) as tf.Tensor2D;
+    return this.imageProjection.predict(features) as tf.Tensor2D;
+  }
+
+  encodeText(tokens: tf.Tensor2D): tf.Tensor2D {
+    const features = this.textEncoder.predict(tokens) as tf.Tensor2D;
+    return this.textProjection.predict(features) as tf.Tensor2D;
+  }
+
+  // Cross-modal similarity: image vs text
+  similarity(image: tf.Tensor4D, text: tf.Tensor2D): tf.Scalar {
+    const imgEmb = this.encodeImage(image).squeeze() as tf.Tensor1D;
+    const txtEmb = this.encodeText(text).squeeze() as tf.Tensor1D;
+    return cosineSimilarity(imgEmb, txtEmb);
+  }
+}
+
+// Usage:
+// const embedder = new CrossModalEmbedder(256);
+// const sim = embedder.similarity(sunsetPhoto, tokenize("sunset"));
+// sim > 0.8 -> these represent the same concept`}
+</CodeBlock>
+
+## Challenge
+
+Build a projection head that maps encoder outputs to a shared normalized embedding space.
+
+<Exercise slug="cross-modal-embed" />
+
+<KeyTakeaways takeaways={["Cross-modal embeddings map different data types to the same vector space, like shared interfaces across platforms", "Projection heads adapt modality-specific features to the shared space dimensionality", "L2 normalization ensures all embeddings live on a unit hypersphere, making cosine similarity meaningful", "After alignment, you can directly compare an image to a text description using vector distance"]} />

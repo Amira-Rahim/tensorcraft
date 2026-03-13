@@ -1,0 +1,195 @@
+---
+slug: pandas-data-wrangling
+title: "pandas = Array.map/filter/reduce on Tabular Data"
+moduleId: python-bridge
+themeId: shared
+order: 4
+estimatedMinutes: 25
+difficulty: intermediate
+concept:
+  explanation: "A pandas DataFrame is an array of objects with column-aware map, filter, reduce, groupBy, and join operations built in."
+  bridge:
+    feTitle: "Array of objects + .map/.filter/.reduce"
+    feCode: "data.filter(r => r.age > 25).map(r => ({ ...r, label: r.age > 50 ? 1 : 0 }))"
+    mlTitle: "pandas DataFrame"
+    mlCode: "df[df['age'] > 25].assign(label=lambda r: (r['age'] > 50).astype(int))"
+    tier: structural
+hints:
+  - level: nudge
+    content: "Think of a DataFrame as a spreadsheet you manipulate with code"
+  - level: guidance
+    content: "df['column'] is like data.map(row => row.column)"
+  - level: solution
+    content: "Every pandas operation has a JavaScript array method equivalent"
+keywords:
+  - pandas
+  - dataframe
+  - data-wrangling
+  - tabular
+---
+
+<Dialogue speaker="Instructor">
+You've filtered arrays, mapped over objects, reduced datasets to summaries, and grouped items by category — all in JavaScript. A pandas DataFrame is that same toolkit, optimized for tabular data. If you can chain .map().filter().reduce(), you can read pandas code.
+</Dialogue>
+
+Before data reaches a model, it goes through wrangling: cleaning, transforming, splitting, normalizing. In Python, that's pandas. In JavaScript, that's the array methods you use every day. This lesson maps every common pandas operation to its JavaScript equivalent.
+
+<LearningObjectives objectives={["Read pandas DataFrame operations and understand what they do", "Map pandas filtering, selection, and transformation to JS array methods", "Understand groupby as the equivalent of a reduce-to-groups pattern", "Translate pandas data preparation pipelines to JavaScript"]} />
+
+## DataFrames Are Arrays of Objects
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="python" title="pandas-basics.py">
+{`import pandas as pd
+
+# Create a DataFrame — like an array of objects with typed columns
+df = pd.DataFrame({
+    'name': ['Alice', 'Bob', 'Carol', 'Dave'],
+    'age': [28, 35, 42, 23],
+    'score': [0.85, 0.72, 0.91, 0.68]
+})
+
+#     name  age  score
+# 0  Alice   28   0.85
+# 1    Bob   35   0.72
+# 2  Carol   42   0.91
+# 3   Dave   23   0.68`}
+</CodeBlock>
+
+<CodeBlock language="typescript" title="js-equivalent.ts">
+{`// JavaScript equivalent
+const data = [
+  { name: 'Alice', age: 28, score: 0.85 },
+  { name: 'Bob',   age: 35, score: 0.72 },
+  { name: 'Carol', age: 42, score: 0.91 },
+  { name: 'Dave',  age: 23, score: 0.68 },
+];`}
+</CodeBlock>
+
+## Selecting Columns
+
+<CodeBlock language="python" title="pandas-select.py">
+{`# pandas
+names = df['name']                    # Single column → Series
+subset = df[['name', 'score']]        # Multiple columns → DataFrame
+
+# JavaScript
+# const names = data.map(r => r.name);
+# const subset = data.map(({ name, score }) => ({ name, score }));`}
+</CodeBlock>
+
+## Filtering Rows
+
+<CodeBlock language="python" title="pandas-filter.py">
+{`# pandas — boolean indexing
+adults = df[df['age'] > 30]
+high_scorers = df[df['score'] >= 0.8]
+combined = df[(df['age'] > 25) & (df['score'] > 0.7)]
+
+# JavaScript
+# const adults = data.filter(r => r.age > 30);
+# const highScorers = data.filter(r => r.score >= 0.8);
+# const combined = data.filter(r => r.age > 25 && r.score > 0.7);`}
+</CodeBlock>
+
+## Adding / Transforming Columns
+
+<CodeBlock language="python" title="pandas-transform.py">
+{`# pandas
+df['normalized'] = df['score'] / df['score'].max()
+df['label'] = (df['score'] > 0.8).astype(int)
+df['age_group'] = df['age'].apply(lambda x: 'senior' if x > 40 else 'junior')
+
+# JavaScript
+# const result = data.map(r => ({
+#   ...r,
+#   normalized: r.score / Math.max(...data.map(d => d.score)),
+#   label: r.score > 0.8 ? 1 : 0,
+#   ageGroup: r.age > 40 ? 'senior' : 'junior',
+# }));`}
+</CodeBlock>
+
+## Aggregation (reduce)
+
+<CodeBlock language="python" title="pandas-aggregation.py">
+{`# pandas
+df['score'].mean()                   # Average
+df['score'].sum()                    # Sum
+df['age'].min()                      # Minimum
+df.describe()                        # Summary statistics
+
+# JavaScript
+# const mean = data.reduce((s, r) => s + r.score, 0) / data.length;
+# const sum = data.reduce((s, r) => s + r.score, 0);
+# const min = Math.min(...data.map(r => r.age));`}
+</CodeBlock>
+
+## GroupBy
+
+The `groupby` operation is the most important pattern. It's exactly a reduce that buckets items by key.
+
+<CodeBlock language="python" title="pandas-groupby.py">
+{`# pandas
+grouped = df.groupby('age_group')['score'].mean()
+# age_group
+# junior    0.75
+# senior    0.91
+
+# JavaScript
+# const grouped = data.reduce((acc, r) => {
+#   const key = r.ageGroup;
+#   if (!acc[key]) acc[key] = [];
+#   acc[key].push(r.score);
+#   return acc;
+# }, {});
+# const means = Object.fromEntries(
+#   Object.entries(grouped).map(([k, v]) =>
+#     [k, v.reduce((s, x) => s + x, 0) / v.length]
+#   )
+# );`}
+</CodeBlock>
+
+## Sorting and Merging
+
+<CodeBlock language="python" title="pandas-sort-merge.py">
+{`# Sort
+df_sorted = df.sort_values('score', ascending=False)
+# → data.sort((a, b) => b.score - a.score)
+
+# Merge (like SQL JOIN)
+merged = pd.merge(df1, df2, on='user_id', how='left')
+# → like a manual join with Map lookup in JS`}
+</CodeBlock>
+
+## Data Prep for ML
+
+The real payoff: reading a data preparation pipeline in a Jupyter notebook.
+
+<CodeBlock language="python" title="pandas-ml-prep.py">
+{`# Typical pandas ML pipeline
+df = pd.read_csv('data.csv')                     # Load
+df = df.dropna()                                  # Remove missing values
+df = df[df['value'] > 0]                          # Filter outliers
+df['value_norm'] = (df['value'] - df['value'].mean()) / df['value'].std()  # Normalize
+X = df[['feature1', 'feature2', 'feature3']].values  # → numpy array
+y = df['label'].values                            # → numpy array
+
+# JavaScript equivalent
+# let data = rawData
+#   .filter(r => r.value != null && r.value > 0)
+#   .map(r => ({ ...r }));
+# const mean = data.reduce((s, r) => s + r.value, 0) / data.length;
+# const std = Math.sqrt(data.reduce((s, r) => s + (r.value - mean) ** 2, 0) / data.length);
+# data = data.map(r => ({ ...r, valueNorm: (r.value - mean) / std }));
+# const X = data.map(r => [r.feature1, r.feature2, r.feature3]);
+# const y = data.map(r => r.label);`}
+</CodeBlock>
+
+## Challenge
+
+Translate a pandas data wrangling pipeline to JavaScript array operations.
+
+<Exercise slug="wrangle-data" />
+
+<KeyTakeaways takeaways={["A pandas DataFrame is an array of objects with column-aware operations built in", "df[condition] is .filter(), df['col'].apply() is .map(), df.groupby() is .reduce()", "pandas data preparation pipelines read like chained JS array methods", "You can understand any Jupyter notebook's data section with these mappings"]} />

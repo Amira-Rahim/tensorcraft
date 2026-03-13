@@ -1,0 +1,139 @@
+slug: build-pipeline
+lessonSlug: feature-pipelines
+title: "Build a Feature Pipeline"
+instructions: "Write a FeaturePipeline class that chains preprocessing, feature extraction, and normalization into a single process method. The constructor takes a config with inputSize ([width, height]) and normalize (boolean). Implement three methods: preprocess (resize a flat pixel array to the target size by sampling), extractFeatures (compute the mean of each channel as a simple feature), and process (run preprocess → extractFeatures → optional L2 normalize, returning the final feature vector). L2 normalization divides each element by the vector's Euclidean magnitude."
+starterCode: |
+  interface PipelineConfig {
+    inputSize: [number, number]; // [width, height]
+    normalize: boolean;
+  }
+
+  class FeaturePipeline {
+    private config: PipelineConfig;
+
+    constructor(config: PipelineConfig) {
+      this.config = config;
+    }
+
+    // Stage 1: Resize pixel array to target dimensions
+    // Input: flat array of RGB values [r,g,b,r,g,b,...], original width, height
+    // Output: flat array resized to config.inputSize via nearest-neighbor sampling
+    preprocess(pixels: number[], width: number, height: number): number[] {
+      return [];
+    }
+
+    // Stage 2: Extract features — compute mean R, mean G, mean B
+    // Input: flat RGB pixel array
+    // Output: [meanR, meanG, meanB]
+    extractFeatures(pixels: number[]): number[] {
+      return [];
+    }
+
+    // Stage 3: Run the full pipeline: preprocess → extract → normalize
+    // If config.normalize is true, L2-normalize the feature vector
+    process(pixels: number[], width: number, height: number): number[] {
+      return [];
+    }
+  }
+solutionCode: |
+  interface PipelineConfig {
+    inputSize: [number, number]; // [width, height]
+    normalize: boolean;
+  }
+
+  class FeaturePipeline {
+    private config: PipelineConfig;
+
+    constructor(config: PipelineConfig) {
+      this.config = config;
+    }
+
+    preprocess(pixels: number[], width: number, height: number): number[] {
+      const [tw, th] = this.config.inputSize;
+      const result: number[] = [];
+      for (let y = 0; y < th; y++) {
+        for (let x = 0; x < tw; x++) {
+          const srcX = Math.floor(x * width / tw);
+          const srcY = Math.floor(y * height / th);
+          const srcIdx = (srcY * width + srcX) * 3;
+          result.push(pixels[srcIdx], pixels[srcIdx + 1], pixels[srcIdx + 2]);
+        }
+      }
+      return result;
+    }
+
+    extractFeatures(pixels: number[]): number[] {
+      let sumR = 0, sumG = 0, sumB = 0;
+      const count = pixels.length / 3;
+      for (let i = 0; i < pixels.length; i += 3) {
+        sumR += pixels[i];
+        sumG += pixels[i + 1];
+        sumB += pixels[i + 2];
+      }
+      return [sumR / count, sumG / count, sumB / count];
+    }
+
+    process(pixels: number[], width: number, height: number): number[] {
+      const preprocessed = this.preprocess(pixels, width, height);
+      const features = this.extractFeatures(preprocessed);
+      if (this.config.normalize) {
+        const magnitude = Math.sqrt(features.reduce((sum, v) => sum + v * v, 0));
+        if (magnitude === 0) return features;
+        return features.map(v => v / magnitude);
+      }
+      return features;
+    }
+  }
+testCode: |
+  describe('FeaturePipeline', () => {
+    it('preprocess resizes pixel data', () => {
+      const pipe = new FeaturePipeline({ inputSize: [2, 2], normalize: false });
+      // 4x4 image, all red
+      const pixels = Array(4 * 4 * 3).fill(0);
+      for (let i = 0; i < pixels.length; i += 3) { pixels[i] = 255; }
+      const result = pipe.preprocess(pixels, 4, 4);
+      expect(result.length).toBe(2 * 2 * 3); // resized to 2x2
+    });
+
+    it('extractFeatures computes channel means', () => {
+      const pipe = new FeaturePipeline({ inputSize: [2, 2], normalize: false });
+      // 2 pixels: [100, 50, 0, 200, 150, 100]
+      const features = pipe.extractFeatures([100, 50, 0, 200, 150, 100]);
+      expect(features[0]).toBe(150); // mean R
+      expect(features[1]).toBe(100); // mean G
+      expect(features[2]).toBe(50);  // mean B
+    });
+
+    it('process chains all stages without normalization', () => {
+      const pipe = new FeaturePipeline({ inputSize: [2, 2], normalize: false });
+      const pixels = [];
+      for (let i = 0; i < 4 * 4; i++) { pixels.push(100, 200, 50); }
+      const result = pipe.process(pixels, 4, 4);
+      expect(result.length).toBe(3);
+      expect(result[0]).toBeCloseTo(100, 1);
+      expect(result[1]).toBeCloseTo(200, 1);
+      expect(result[2]).toBeCloseTo(50, 1);
+    });
+
+    it('process normalizes when config.normalize is true', () => {
+      const pipe = new FeaturePipeline({ inputSize: [2, 2], normalize: true });
+      const pixels = [];
+      for (let i = 0; i < 4 * 4; i++) { pixels.push(100, 0, 0); }
+      const result = pipe.process(pixels, 4, 4);
+      // Normalized: [1, 0, 0] since only R channel has value
+      expect(result[0]).toBeCloseTo(1, 5);
+      expect(result[1]).toBeCloseTo(0, 5);
+      expect(result[2]).toBeCloseTo(0, 5);
+    });
+
+    it('normalized vector has unit magnitude', () => {
+      const pipe = new FeaturePipeline({ inputSize: [2, 2], normalize: true });
+      const pixels = [];
+      for (let i = 0; i < 4 * 4; i++) { pixels.push(120, 80, 200); }
+      const result = pipe.process(pixels, 4, 4);
+      const magnitude = Math.sqrt(result.reduce((s, v) => s + v * v, 0));
+      expect(magnitude).toBeCloseTo(1, 5);
+    });
+  });
+estimatedMinutes: 12
+difficulty: intermediate

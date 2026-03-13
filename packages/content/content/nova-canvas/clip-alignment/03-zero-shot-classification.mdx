@@ -1,0 +1,118 @@
+---
+slug: zero-shot-classification
+title: "Zero-Shot Classification"
+moduleId: clip-alignment
+themeId: nova-canvas
+order: 3
+estimatedMinutes: 25
+difficulty: advanced
+context:
+  narrative: "Petrov uploads a photograph of an abstract painting. 'What genre is this? The gallery needs tags.' Ren types a list of genres — impressionism, cubism, abstract expressionism — and CLIP ranks them by similarity. No fine-tuning. No labeled training data. 'It just knows,' Petrov says, incredulous. Kai: 'It does not know. It compares.'"
+  speaker: "Kai"
+concept:
+  explanation: "Zero-shot classification classifies images into categories never seen during training — by comparing the image embedding to text embeddings of category descriptions. Like dynamic routing — handling unknown paths by matching against a pattern instead of hardcoding every route."
+  bridge:
+    feTitle: "Dynamic routing — handling unknown paths"
+    feCode: "app.get('/:category/:item', (req, res) => matchRoute(req.params));"
+    mlTitle: "Zero-shot classification"
+    mlCode: "const label = categories[argmax(similarity(image, categoryTexts))];"
+    tier: structural
+consequence:
+  narrative: "MUSE tags every gallery piece without being trained on a single example. Abstract expressionism. Digital impressionism. Geometric minimalism. Petrov checks the tags against his own labels: 94% agreement. 'Better than the interns,' he mutters."
+  nextLessonTeaser: "Next: CLIP-guided generation — using CLIP to steer what the model creates"
+hints:
+  - level: nudge
+    content: "Dynamic routes handle paths they have never seen. Zero-shot handles categories never seen in training."
+  - level: guidance
+    content: "Encode the image and all candidate labels as text. Pick the label whose embedding is closest to the image embedding."
+  - level: solution
+    content: "similarities = cosine(imageEmbedding, textEmbeddings). prediction = argmax(similarities). No training needed."
+keywords:
+  - zero-shot
+  - classification
+  - dynamic-routing
+  - label-free
+  - similarity-matching
+---
+
+<Dialogue speaker="Kai">
+Dynamic routing handles paths it has never seen. You write `/:category/:item` and it matches any category, any item — without hardcoding every possibility. Zero-shot classification does the same thing. CLIP classifies images it has never seen into categories it was never trained on.
+</Dialogue>
+
+<Dialogue speaker="Petrov">
+No training data at all? How?
+</Dialogue>
+
+<Dialogue speaker="Kai">
+It does not memorize categories. It compares. Encode the image, encode each candidate label as text, pick the closest match. The categories are just text — you can change them anytime.
+</Dialogue>
+
+Dynamic routing handles unknown paths by matching against patterns. Zero-shot classification handles unknown categories by matching against text descriptions. No hardcoded routes, no hardcoded labels — just flexible comparison.
+
+<LearningObjectives objectives={["Understand zero-shot classification: classify without task-specific training data", "Implement classification by comparing image embeddings to text label embeddings", "Use prompt templates to improve classification accuracy", "Connect zero-shot classification to dynamic routing patterns"]} />
+
+## Classification Without Training
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="zero-shot-classification.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Zero-shot: classify an image using text descriptions of categories
+// Like dynamic routing: no hardcoded paths, just pattern matching
+async function zeroShotClassify(
+  clip: CLIPModel,
+  image: tf.Tensor4D,
+  categories: string[],
+  tokenizer: (text: string) => tf.Tensor2D
+): Promise<{ label: string; confidence: number }[]> {
+  // Encode the image
+  const imageEmb = clip.encodeImage(image);
+
+  // Encode each category as text
+  const textEmbeddings: tf.Tensor2D[] = categories.map(cat => {
+    // Prompt template improves accuracy (like route patterns)
+    const prompt = \`a photo of \${cat}\`;
+    const tokens = tokenizer(prompt);
+    return clip.encodeText(tokens);
+  });
+
+  // Stack all text embeddings into a matrix
+  const textMatrix = tf.concat(textEmbeddings, 0) as tf.Tensor2D;
+
+  // Compute similarities: image vs each category
+  const similarities = tf.matMul(imageEmb, textMatrix, false, true);
+  const probs = tf.softmax(tf.div(similarities, tf.scalar(0.01)));
+  const probData = await probs.data();
+
+  // Rank by similarity
+  const results = categories.map((label, i) => ({
+    label,
+    confidence: probData[i]
+  }));
+
+  return results.sort((a, b) => b.confidence - a.confidence);
+}
+
+// Usage: classify a gallery painting
+// const results = await zeroShotClassify(clip, painting, [
+//   'impressionism',
+//   'cubism',
+//   'abstract expressionism',
+//   'digital art',
+//   'minimalism'
+// ], tokenize);
+// results[0] = { label: 'abstract expressionism', confidence: 0.87 }
+
+// Change categories anytime — no retraining needed:
+// const moods = ['melancholy', 'joyful', 'serene', 'chaotic', 'contemplative'];
+// const results = await zeroShotClassify(clip, painting, moods, tokenize);`}
+</CodeBlock>
+
+## Challenge
+
+Implement zero-shot classification by comparing image embeddings to text label embeddings.
+
+<Exercise slug="zero-shot-classify" />
+
+<KeyTakeaways takeaways={["Zero-shot classification = dynamic routing for categories: no hardcoded labels, just flexible matching", "Encode the image and candidate labels as text, pick the closest match in embedding space", "Prompt templates (a photo of {category}) significantly improve accuracy", "Categories are just text — change them anytime without retraining the model"]} />

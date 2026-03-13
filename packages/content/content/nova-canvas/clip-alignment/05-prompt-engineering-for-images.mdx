@@ -1,0 +1,132 @@
+---
+slug: prompt-engineering-for-images
+title: "Prompt Engineering for Images"
+moduleId: clip-alignment
+themeId: nova-canvas
+order: 5
+estimatedMinutes: 25
+difficulty: advanced
+context:
+  narrative: "Yara experiments with prompts. 'City at night' gives a generic skyline. 'A melancholy digital cityscape at twilight, rendered in deep blues and amber, architectural solitude, cinematic lighting' produces something that makes Petrov go quiet. 'The prompt is the brushstroke now,' she says. 'Specificity is the skill.'"
+  speaker: "Yara"
+concept:
+  explanation: "Prompt engineering for images is the art of writing text that guides the model toward specific visual outcomes. Like writing effective CSS selectors — specificity matters. A vague selector matches too broadly; a precise selector targets exactly what you want."
+  bridge:
+    feTitle: "Writing effective CSS selectors"
+    feCode: "/* Vague: */ div { } /* Specific: */ .gallery > .card:nth-child(2n) { }"
+    mlTitle: "Prompt engineering"
+    mlCode: "// Vague: 'city' -> generic. Specific: 'melancholy cityscape, twilight, deep blues' -> targeted"
+    tier: structural
+consequence:
+  narrative: "The gallery catalog grows. Each piece accompanied by its prompt — the artistic intent made visible. Visitors can read the prompt and see how words became images. Yara writes the final prompt for the centerpiece: 'The space between what was said and what was meant, rendered in light.' MUSE produces something that silences the room."
+  nextLessonTeaser: "The next module explores model evaluation and fine-tuning — making MUSE truly Yara's collaborator"
+hints:
+  - level: nudge
+    content: "CSS specificity: div {} matches everything. .gallery > .featured:first-child {} matches exactly one element."
+  - level: guidance
+    content: "Add modifiers: style (watercolor, digital), mood (melancholy, joyful), lighting (cinematic, flat), composition (close-up, wide angle)"
+  - level: solution
+    content: "Structure prompts with: subject + style + mood + lighting + color palette + composition. Each modifier narrows the output space."
+keywords:
+  - prompt-engineering
+  - specificity
+  - modifiers
+  - text-to-image
+  - CSS-selectors
+---
+
+<Dialogue speaker="Yara">
+"City at night" gives me a stock photo. "A melancholy digital cityscape at twilight, deep blues and amber, architectural solitude, cinematic lighting" gives me art. The words are the brush now.
+</Dialogue>
+
+<Dialogue speaker="Kai">
+CSS specificity. `div` matches everything — too broad. `.gallery > .card:nth-child(2n)` targets exactly what you want. Prompt engineering is the same skill: vague prompts produce generic output, specific prompts produce targeted results.
+</Dialogue>
+
+You already know that specificity matters. In CSS, a vague selector matches too broadly. In prompt engineering, a vague prompt produces generic images. The skill is the same: precision in description produces precision in output.
+
+<LearningObjectives objectives={["Understand prompt engineering as a specificity problem — like CSS selectors", "Use structured modifiers: subject, style, mood, lighting, color, composition", "Measure prompt effectiveness using CLIP alignment scores", "Iterate on prompts using embedding distance as feedback"]} />
+
+## The Specificity Spectrum
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="prompt-engineering.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// CSS SPECIFICITY PARALLEL:
+// div { }                          -> very broad match
+// .gallery .card { }               -> moderate specificity
+// .gallery > .card.featured:first  -> precise target
+//
+// PROMPT SPECIFICITY:
+// "city"                                   -> very broad
+// "cityscape at twilight"                  -> moderate
+// "melancholy digital cityscape, twilight, -> precise
+//  deep blues, cinematic lighting"
+
+// Structured prompt builder (like BEM for images)
+interface PromptComponents {
+  subject: string;        // what: "cityscape", "portrait", "landscape"
+  style?: string;         // how: "watercolor", "digital", "oil painting"
+  mood?: string;          // feeling: "melancholy", "joyful", "serene"
+  lighting?: string;      // light: "cinematic", "natural", "dramatic"
+  colorPalette?: string;  // colors: "deep blues and amber", "monochrome"
+  composition?: string;   // framing: "wide angle", "close-up", "bird's eye"
+  quality?: string;       // fidelity: "highly detailed", "8k", "photorealistic"
+}
+
+function buildPrompt(components: PromptComponents): string {
+  const parts: string[] = [components.subject];
+  if (components.style) parts.push(components.style);
+  if (components.mood) parts.push(components.mood);
+  if (components.lighting) parts.push(\`\${components.lighting} lighting\`);
+  if (components.colorPalette) parts.push(components.colorPalette);
+  if (components.composition) parts.push(components.composition);
+  if (components.quality) parts.push(components.quality);
+  return parts.join(', ');
+}
+
+// Measure prompt effectiveness with CLIP
+async function scorePrompt(
+  clip: CLIPModel,
+  prompt: string,
+  generatedImage: tf.Tensor4D,
+  tokenizer: (text: string) => tf.Tensor2D
+): Promise<number> {
+  const tokens = tokenizer(prompt);
+  const textEmb = clip.encodeText(tokens);
+  const imageEmb = clip.encodeImage(generatedImage);
+
+  const similarity = tf.sum(tf.mul(
+    textEmb.squeeze() as tf.Tensor1D,
+    imageEmb.squeeze() as tf.Tensor1D
+  ));
+
+  return similarity.dataSync()[0];
+}
+
+// Iterate: compare prompt variations
+const prompts = [
+  buildPrompt({ subject: 'city at night' }),
+  buildPrompt({ subject: 'cityscape', mood: 'melancholy', lighting: 'twilight' }),
+  buildPrompt({
+    subject: 'digital cityscape',
+    mood: 'melancholy',
+    lighting: 'cinematic',
+    colorPalette: 'deep blues and amber',
+    composition: 'wide angle',
+    style: 'architectural solitude'
+  }),
+];
+// CLIP scores: 0.18, 0.27, 0.34
+// More specific = higher alignment = closer to artistic intent`}
+</CodeBlock>
+
+## Challenge
+
+Build a structured prompt and measure its CLIP alignment score against a generated image.
+
+<Exercise slug="visual-prompts" />
+
+<KeyTakeaways takeaways={["Prompt engineering is CSS specificity for images: vague prompts match broadly, specific prompts target precisely", "Structure prompts with modifiers: subject + style + mood + lighting + color + composition", "CLIP alignment scores measure how well the generated image matches the prompt intent", "The prompt is the new brushstroke: specificity in language produces precision in visual output"]} />

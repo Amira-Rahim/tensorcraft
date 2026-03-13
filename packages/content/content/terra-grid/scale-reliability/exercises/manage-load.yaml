@@ -1,0 +1,122 @@
+slug: manage-load
+lessonSlug: load-management
+title: "Priority Inference Queue"
+instructions: "Build a PriorityQueue that processes items by priority level. Items with higher priority (critical > high > normal > low) are dequeued first. Implement enqueue, dequeue, and size methods. When the queue is full, reject low-priority items."
+starterCode: |
+  type Priority = 'critical' | 'high' | 'normal' | 'low';
+
+  interface QueueItem {
+    id: string;
+    priority: Priority;
+    data: number;
+  }
+
+  class PriorityQueue {
+    private queues: Map<Priority, QueueItem[]> = new Map([
+      ['critical', []], ['high', []], ['normal', []], ['low', []],
+    ]);
+
+    constructor(private maxSize: number) {}
+
+    enqueue(item: QueueItem): boolean {
+      // Add item to appropriate priority queue
+      // If total size >= maxSize and priority is 'low', reject (return false)
+      // Otherwise add and return true
+      return false; // your code here
+    }
+
+    dequeue(): QueueItem | null {
+      // Return highest priority item (critical first, then high, normal, low)
+      // Remove it from the queue
+      return null; // your code here
+    }
+
+    size(): number {
+      // Return total items across all priority levels
+      return 0; // your code here
+    }
+  }
+solutionCode: |
+  type Priority = 'critical' | 'high' | 'normal' | 'low';
+
+  interface QueueItem {
+    id: string;
+    priority: Priority;
+    data: number;
+  }
+
+  class PriorityQueue {
+    private queues: Map<Priority, QueueItem[]> = new Map([
+      ['critical', []], ['high', []], ['normal', []], ['low', []],
+    ]);
+
+    constructor(private maxSize: number) {}
+
+    enqueue(item: QueueItem): boolean {
+      if (this.size() >= this.maxSize && item.priority === 'low') {
+        return false;
+      }
+      this.queues.get(item.priority)!.push(item);
+      return true;
+    }
+
+    dequeue(): QueueItem | null {
+      for (const priority of ['critical', 'high', 'normal', 'low'] as Priority[]) {
+        const queue = this.queues.get(priority)!;
+        if (queue.length > 0) return queue.shift()!;
+      }
+      return null;
+    }
+
+    size(): number {
+      let total = 0;
+      this.queues.forEach(q => total += q.length);
+      return total;
+    }
+  }
+testCode: |
+  describe('PriorityQueue', () => {
+    it('dequeues highest priority first', () => {
+      const pq = new PriorityQueue(10);
+      pq.enqueue({ id: '1', priority: 'low', data: 1 });
+      pq.enqueue({ id: '2', priority: 'critical', data: 2 });
+      pq.enqueue({ id: '3', priority: 'normal', data: 3 });
+      expect(pq.dequeue()!.id).toBe('2');
+      expect(pq.dequeue()!.id).toBe('3');
+      expect(pq.dequeue()!.id).toBe('1');
+    });
+
+    it('returns null when empty', () => {
+      const pq = new PriorityQueue(10);
+      expect(pq.dequeue()).toBeNull();
+    });
+
+    it('rejects low-priority when full', () => {
+      const pq = new PriorityQueue(2);
+      pq.enqueue({ id: '1', priority: 'high', data: 1 });
+      pq.enqueue({ id: '2', priority: 'high', data: 2 });
+      const accepted = pq.enqueue({ id: '3', priority: 'low', data: 3 });
+      expect(accepted).toBe(false);
+      expect(pq.size()).toBe(2);
+    });
+
+    it('accepts high-priority when full', () => {
+      const pq = new PriorityQueue(2);
+      pq.enqueue({ id: '1', priority: 'low', data: 1 });
+      pq.enqueue({ id: '2', priority: 'low', data: 2 });
+      const accepted = pq.enqueue({ id: '3', priority: 'critical', data: 3 });
+      expect(accepted).toBe(true);
+    });
+
+    it('tracks size correctly', () => {
+      const pq = new PriorityQueue(10);
+      expect(pq.size()).toBe(0);
+      pq.enqueue({ id: '1', priority: 'normal', data: 1 });
+      pq.enqueue({ id: '2', priority: 'high', data: 2 });
+      expect(pq.size()).toBe(2);
+      pq.dequeue();
+      expect(pq.size()).toBe(1);
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

@@ -1,136 +1,156 @@
 slug: visualize-features
 lessonSlug: visualizing-features
 title: "Visualize CNN Feature Maps"
-instructions: "Implement two functions. normalizeMap takes a 2D array of raw activation values and normalizes them to the [0, 1] range using min-max normalization (return all zeros if range is 0). extractActivations takes an array of 2D feature maps (number[][][]) and returns an array of ActivationMap objects, each containing the filterIndex, the normalized map, and the maxActivation (peak value from the raw map)."
+instructions: "Extract and visualize intermediate feature maps from a CNN to see what patterns each layer detects. Implement three functions. buildCNN constructs a simple sequential CNN with two conv2d layers (8 and 16 filters, 3x3 kernel, 'same' padding, relu activation) that accepts 28x28x1 input. createFeatureExtractor takes the trained model and a target layer index, and returns a new tf.LayersModel whose input is the original model's input and whose output is the target layer's output. extractFeatureMaps takes the feature extractor model and a 28x28x1 image tensor, runs a forward pass, and returns an object with the output shape (as a number array) and the number of filters (the last dimension of the output)."
 starterCode: |
-  interface ActivationMap {
-    filterIndex: number;
-    map: number[][];
-    maxActivation: number;
+  import * as tf from '@tensorflow/tfjs';
+
+  interface FeatureMapResult {
+    shape: number[];
+    numFilters: number;
   }
 
-  function normalizeMap(raw: number[][]): number[][] {
-    // TODO: Find min and max across all values
-    // TODO: Return all zeros if range is 0
-    // TODO: Scale to [0, 1] using (val - min) / range
+  function buildCNN(): tf.LayersModel {
+    // TODO: Create a sequential model with:
+    //   - conv2d: 8 filters, 3x3 kernel, same padding, relu, inputShape [28,28,1]
+    //   - conv2d: 16 filters, 3x3 kernel, same padding, relu
     return null as any;
   }
 
-  function extractActivations(
-    featureMaps: number[][][]
-  ): ActivationMap[] {
-    // TODO: For each feature map, normalize it and find max activation
-    // TODO: Return an ActivationMap for each filter
+  function createFeatureExtractor(
+    model: tf.LayersModel,
+    layerIndex: number
+  ): tf.LayersModel {
+    // TODO: Build a new tf.model using the original model's input
+    //       and the target layer's output
+    return null as any;
+  }
+
+  function extractFeatureMaps(
+    extractor: tf.LayersModel,
+    image: tf.Tensor4D
+  ): FeatureMapResult {
+    // TODO: Run the image through the extractor
+    // TODO: Return the output shape and number of filters
     return null as any;
   }
 solutionCode: |
-  interface ActivationMap {
-    filterIndex: number;
-    map: number[][];
-    maxActivation: number;
+  import * as tf from '@tensorflow/tfjs';
+
+  interface FeatureMapResult {
+    shape: number[];
+    numFilters: number;
   }
 
-  function normalizeMap(raw: number[][]): number[][] {
-    let min = Infinity;
-    let max = -Infinity;
-
-    for (const row of raw) {
-      for (const val of row) {
-        if (val < min) min = val;
-        if (val > max) max = val;
-      }
-    }
-
-    const range = max - min;
-    if (range === 0) return raw.map(row => row.map(() => 0));
-
-    return raw.map(row =>
-      row.map(val => (val - min) / range)
-    );
+  function buildCNN(): tf.LayersModel {
+    const model = tf.sequential();
+    model.add(tf.layers.conv2d({
+      filters: 8,
+      kernelSize: 3,
+      padding: 'same',
+      activation: 'relu',
+      inputShape: [28, 28, 1],
+    }));
+    model.add(tf.layers.conv2d({
+      filters: 16,
+      kernelSize: 3,
+      padding: 'same',
+      activation: 'relu',
+    }));
+    return model;
   }
 
-  function extractActivations(
-    featureMaps: number[][][]
-  ): ActivationMap[] {
-    return featureMaps.map((raw, i) => {
-      const normalized = normalizeMap(raw);
-      let peakVal = -Infinity;
-      for (const row of raw) {
-        for (const val of row) {
-          if (val > peakVal) peakVal = val;
-        }
-      }
-
-      return {
-        filterIndex: i,
-        map: normalized,
-        maxActivation: peakVal,
-      };
+  function createFeatureExtractor(
+    model: tf.LayersModel,
+    layerIndex: number
+  ): tf.LayersModel {
+    const targetLayer = model.layers[layerIndex];
+    return tf.model({
+      inputs: model.input,
+      outputs: targetLayer.output,
     });
+  }
+
+  function extractFeatureMaps(
+    extractor: tf.LayersModel,
+    image: tf.Tensor4D
+  ): FeatureMapResult {
+    const output = extractor.predict(image) as tf.Tensor;
+    const shape = output.shape;
+    const numFilters = shape[shape.length - 1];
+    output.dispose();
+    return { shape: shape as number[], numFilters };
   }
 testCode: |
   describe('Feature Visualization', () => {
-    describe('normalizeMap', () => {
-      it('scales to [0, 1] range', () => {
-        const raw = [[0, 5], [10, 15]];
-        const result = normalizeMap(raw);
-        expect(result[0][0]).toBeCloseTo(0);
-        expect(result[1][1]).toBeCloseTo(1);
-        expect(result[0][1]).toBeCloseTo(1/3, 4);
+    describe('buildCNN', () => {
+      it('creates a model with two layers', () => {
+        const model = buildCNN();
+        expect(model.layers.length).toBe(2);
       });
 
-      it('returns zeros for uniform values', () => {
-        const raw = [[7, 7], [7, 7]];
-        const result = normalizeMap(raw);
-        expect(result).toEqual([[0, 0], [0, 0]]);
+      it('first layer has 8 filters', () => {
+        const model = buildCNN();
+        const config = model.layers[0].getConfig();
+        expect(config.filters).toBe(8);
       });
 
-      it('handles negative values', () => {
-        const raw = [[-10, 0, 10]];
-        const result = normalizeMap(raw);
-        expect(result[0][0]).toBeCloseTo(0);
-        expect(result[0][1]).toBeCloseTo(0.5);
-        expect(result[0][2]).toBeCloseTo(1);
+      it('second layer has 16 filters', () => {
+        const model = buildCNN();
+        const config = model.layers[1].getConfig();
+        expect(config.filters).toBe(16);
+      });
+
+      it('accepts 28x28x1 input', () => {
+        const model = buildCNN();
+        const inputShape = model.inputShape;
+        expect(inputShape).toEqual([null, 28, 28, 1]);
       });
     });
 
-    describe('extractActivations', () => {
-      it('returns one ActivationMap per feature map', () => {
-        const featureMaps = [
-          [[1, 2], [3, 4]],
-          [[5, 6], [7, 8]],
-        ];
-        const result = extractActivations(featureMaps);
-        expect(result.length).toBe(2);
+    describe('createFeatureExtractor', () => {
+      it('returns a model whose output matches the target layer', () => {
+        const model = buildCNN();
+        const extractor = createFeatureExtractor(model, 0);
+        const testInput = tf.zeros([1, 28, 28, 1]);
+        const output = extractor.predict(testInput) as tf.Tensor;
+        expect(output.shape).toEqual([1, 28, 28, 8]);
+        output.dispose();
+        testInput.dispose();
       });
 
-      it('sets correct filterIndex', () => {
-        const featureMaps = [
-          [[1, 2], [3, 4]],
-          [[5, 6], [7, 8]],
-        ];
-        const result = extractActivations(featureMaps);
-        expect(result[0].filterIndex).toBe(0);
-        expect(result[1].filterIndex).toBe(1);
+      it('can target the second layer', () => {
+        const model = buildCNN();
+        const extractor = createFeatureExtractor(model, 1);
+        const testInput = tf.zeros([1, 28, 28, 1]);
+        const output = extractor.predict(testInput) as tf.Tensor;
+        expect(output.shape).toEqual([1, 28, 28, 16]);
+        output.dispose();
+        testInput.dispose();
+      });
+    });
+
+    describe('extractFeatureMaps', () => {
+      it('returns correct shape for first conv layer', () => {
+        const model = buildCNN();
+        const extractor = createFeatureExtractor(model, 0);
+        const image = tf.zeros([1, 28, 28, 1]) as tf.Tensor4D;
+        const result = extractFeatureMaps(extractor, image);
+        expect(result.shape).toEqual([1, 28, 28, 8]);
+        expect(result.numFilters).toBe(8);
+        image.dispose();
       });
 
-      it('finds correct maxActivation', () => {
-        const featureMaps = [
-          [[1, 9], [3, 4]],
-          [[5, 6], [7, 2]],
-        ];
-        const result = extractActivations(featureMaps);
-        expect(result[0].maxActivation).toBe(9);
-        expect(result[1].maxActivation).toBe(7);
-      });
-
-      it('normalizes the maps', () => {
-        const featureMaps = [[[0, 10], [5, 15]]];
-        const result = extractActivations(featureMaps);
-        expect(result[0].map[0][0]).toBeCloseTo(0);
-        expect(result[0].map[1][1]).toBeCloseTo(1);
+      it('returns correct shape for second conv layer', () => {
+        const model = buildCNN();
+        const extractor = createFeatureExtractor(model, 1);
+        const image = tf.zeros([1, 28, 28, 1]) as tf.Tensor4D;
+        const result = extractFeatureMaps(extractor, image);
+        expect(result.shape).toEqual([1, 28, 28, 16]);
+        expect(result.numFilters).toBe(16);
+        image.dispose();
       });
     });
   });
-estimatedMinutes: 8
-difficulty: advanced
+estimatedMinutes: 15
+difficulty: intermediate

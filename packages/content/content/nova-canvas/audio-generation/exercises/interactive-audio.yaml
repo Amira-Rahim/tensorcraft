@@ -1,0 +1,40 @@
+slug: interactive-audio
+lessonSlug: interactive-soundscapes
+title: "Interactive Audio Parameters"
+instructions: "Create a parameter mapping function that converts a normalized input value [0, 1] to an output range using a specified curve (linear, exponential, or logarithmic). Exponential uses power of 2, logarithmic uses square root."
+starterCode: |
+  interface SoundMapping {
+    inputRange: [number, number];
+    outputRange: [number, number];
+    curve: 'linear' | 'exponential' | 'logarithmic';
+  }
+
+  function applyMapping(value: number, mapping: SoundMapping): number {
+    // Normalize value to [0, 1] based on inputRange
+    // Apply curve transformation
+    // Scale to outputRange
+    // your code here
+    return 0;
+  }
+solutionCode: |
+  function applyMapping(value: number, mapping: SoundMapping): number {
+    const { inputRange, outputRange, curve } = mapping;
+    const normalized = (value - inputRange[0]) / (inputRange[1] - inputRange[0]);
+    const clamped = Math.max(0, Math.min(1, normalized));
+    const curved = curve === 'exponential' ? Math.pow(clamped, 2)
+      : curve === 'logarithmic' ? Math.sqrt(clamped)
+      : clamped;
+    return outputRange[0] + curved * (outputRange[1] - outputRange[0]);
+  }
+testCode: |
+  describe('applyMapping', () => {
+    const linear = { inputRange: [0, 1] as [number, number], outputRange: [100, 200] as [number, number], curve: 'linear' as const };
+    const expo = { inputRange: [0, 1] as [number, number], outputRange: [0, 100] as [number, number], curve: 'exponential' as const };
+    const log = { inputRange: [0, 1] as [number, number], outputRange: [0, 100] as [number, number], curve: 'logarithmic' as const };
+    it('linear maps midpoint correctly', () => { expect(applyMapping(0.5, linear)).toBeCloseTo(150); });
+    it('exponential maps below linear', () => { expect(applyMapping(0.5, expo)).toBeCloseTo(25); });
+    it('logarithmic maps above linear', () => { expect(applyMapping(0.5, log)).toBeCloseTo(70.71, 0); });
+    it('handles range boundaries', () => { expect(applyMapping(0, linear)).toBeCloseTo(100); expect(applyMapping(1, linear)).toBeCloseTo(200); });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

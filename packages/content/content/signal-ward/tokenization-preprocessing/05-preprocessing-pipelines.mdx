@@ -1,0 +1,246 @@
+---
+slug: preprocessing-pipelines
+title: "Building Preprocessing Pipelines"
+moduleId: tokenization-preprocessing
+themeId: signal-ward
+order: 5
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "With cleaning, tokenization, and normalization all working individually, the team needs to chain them into a single reliable pipeline. Obi draws the parallel to Express middleware — each step transforms the data and passes it to the next."
+  speaker: "Obi"
+concept:
+  explanation: "A preprocessing pipeline chains text cleaning, tokenization, normalization, and encoding into a single composable flow. Each step transforms the data for the next, exactly like Express middleware or a functional pipe()."
+  bridge:
+    feTitle: "Express Middleware"
+    feCode: "app.use(cors()).use(auth()).use(validate()).use(handler)"
+    mlTitle: "Text Pipeline"
+    mlCode: "pipe(clean, tokenize, normalize, encode)(text)"
+    tier: structural
+consequence:
+  narrative: "Diagnostic One now processes raw clinical notes end-to-end in a single pipeline call. The team can swap steps, add logging, and handle errors — just like middleware."
+  nextLessonTeaser: "Next module: giving tokens meaning with word embeddings."
+hints:
+  - level: nudge
+    content: "Think of each preprocessing step as a middleware function that transforms text."
+  - level: guidance
+    content: "Build a pipe() function that chains transformers, or use a class with an addStep method."
+  - level: solution
+    content: "Create a Pipeline class with steps array, add() method, and run() method that reduces through each step."
+keywords:
+  - pipeline
+  - middleware
+  - composition
+  - preprocessing
+  - end-to-end
+---
+
+> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
+
+<Dialogue speaker="Obi">
+We've built all the pieces — cleaning, tokenizing, normalizing abbreviations. But right now each step is a separate function call. We need a pipeline that chains them together, like Express middleware.
+</Dialogue>
+
+<Dialogue speaker="Khalil">
+So `app.use(cors).use(auth).use(validate)` becomes `pipeline.add(clean).add(tokenize).add(normalize)`? Each step transforms the data and hands it to the next?
+</Dialogue>
+
+<Dialogue speaker="MEDI">
+I would also recommend adding error handling and logging to each step. When I misclassify a note, we need to trace back through the pipeline to find where the data was corrupted.
+</Dialogue>
+
+If you've built Express middleware, you've built a preprocessing pipeline. Each middleware function receives a request, transforms it, and calls `next()`. A text pipeline does the same: each step receives text (or tokens), transforms it, and passes the result forward.
+
+<LearningObjectives objectives={["Build a composable preprocessing pipeline using functional composition", "Implement a Pipeline class with pluggable steps", "Add logging and error handling to pipeline stages", "Create reusable step functions for different clinical text sources", "Understand pipeline ordering and its impact on output"]} />
+
+## The Pipe Pattern
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="functional-pipe.ts">
+{`// Functional pipe — identical to lodash/fp pipe or RxJS pipe
+type Transform = (input: string) => string;
+
+function pipe(...fns: Transform[]): Transform {
+  return (input: string) => fns.reduce((acc, fn) => fn(acc), input);
+}
+
+// Define individual steps
+const stripHtml: Transform = (text) =>
+  text.replace(/<[^>]*>/g, ' ').replace(/&#?\\w+;/g, ' ');
+
+const normalizeUnicode: Transform = (text) =>
+  text.normalize('NFKD')
+    .replace(/[\\u0300-\\u036f]/g, '')
+    .replace(/[\\u2018\\u2019]/g, "'")
+    .replace(/[\\u201C\\u201D]/g, '"');
+
+const lowercase: Transform = (text) => text.toLowerCase();
+
+const collapseWhitespace: Transform = (text) =>
+  text.replace(/\\s+/g, ' ').trim();
+
+const removeSpecialChars: Transform = (text) =>
+  text.replace(/[^a-z0-9\\s.\\-']/g, ' ');
+
+// Compose the pipeline
+const cleanText = pipe(
+  stripHtml,
+  normalizeUnicode,
+  lowercase,
+  collapseWhitespace,
+  removeSpecialChars,
+  collapseWhitespace  // Run again after special char removal
+);
+
+console.log(cleanText('<p>Pt\\u2019s <b>BP</b>: 120/80</p>'));
+// "pt's bp 120 80"`}
+</CodeBlock>
+
+## The Pipeline Class
+
+For more complex scenarios, a class-based pipeline offers logging, error handling, and step management.
+
+<CodeBlock language="typescript" title="pipeline-class.ts">
+{`type StepFn = (input: string) => string;
+
+interface PipelineStep {
+  name: string;
+  fn: StepFn;
+}
+
+interface PipelineResult {
+  output: string;
+  log: { step: string; input: string; output: string; durationMs: number }[];
+}
+
+class TextPipeline {
+  private steps: PipelineStep[] = [];
+
+  add(name: string, fn: StepFn): this {
+    this.steps.push({ name, fn });
+    return this; // Enable chaining
+  }
+
+  run(input: string): PipelineResult {
+    const log: PipelineResult['log'] = [];
+    let current = input;
+
+    for (const step of this.steps) {
+      const start = performance.now();
+      try {
+        const output = step.fn(current);
+        log.push({
+          step: step.name,
+          input: current.slice(0, 50),
+          output: output.slice(0, 50),
+          durationMs: performance.now() - start,
+        });
+        current = output;
+      } catch (err) {
+        log.push({
+          step: step.name,
+          input: current.slice(0, 50),
+          output: 'ERROR: ' + (err as Error).message,
+          durationMs: performance.now() - start,
+        });
+        throw new Error('Pipeline failed at step "' + step.name + '": ' + (err as Error).message);
+      }
+    }
+
+    return { output: current, log };
+  }
+}
+
+// Usage — reads like Express middleware
+const pipeline = new TextPipeline()
+  .add('stripHtml', (t) => t.replace(/<[^>]*>/g, ' '))
+  .add('lowercase', (t) => t.toLowerCase())
+  .add('collapseWS', (t) => t.replace(/\\s+/g, ' ').trim());
+
+const result = pipeline.run('<p>Patient BP Elevated</p>');
+console.log(result.output);  // 'patient bp elevated'
+console.log(result.log);     // Step-by-step trace`}
+</CodeBlock>
+
+## End-to-End Clinical Pipeline
+
+Chain cleaning, tokenization, abbreviation expansion, and stop-word removal into a full pipeline.
+
+<CodeBlock language="typescript" title="clinical-pipeline.ts">
+{`const MEDICAL_ABBREVS = new Map([
+  ['pt', 'patient'], ['hx', 'history'], ['dx', 'diagnosis'],
+  ['rx', 'prescription'], ['pcn', 'penicillin'], ['bp', 'blood-pressure'],
+  ['hr', 'heart-rate'], ['prn', 'as-needed'],
+]);
+
+const STOP_WORDS = new Set([
+  'the', 'a', 'an', 'is', 'was', 'were', 'of', 'in', 'on', 'for',
+  'to', 'with', 'and', 'or', 'but', 'at', 'by', 'from',
+]);
+
+class ClinicalPipeline {
+  private textPipeline: TextPipeline;
+
+  constructor() {
+    this.textPipeline = new TextPipeline()
+      .add('stripHtml', (t) => t.replace(/<[^>]*>/g, ' ').replace(/&#?\\w+;/g, ' '))
+      .add('unicode', (t) => t.normalize('NFKD').replace(/[\\u0300-\\u036f]/g, ''))
+      .add('lowercase', (t) => t.toLowerCase())
+      .add('specialChars', (t) => t.replace(/[^a-z0-9\\s.\\-]/g, ' '))
+      .add('whitespace', (t) => t.replace(/\\s+/g, ' ').trim());
+  }
+
+  process(rawNote: string): string[] {
+    // Step 1: Clean the text
+    const { output: cleaned } = this.textPipeline.run(rawNote);
+
+    // Step 2: Tokenize
+    const tokens = cleaned.match(/[a-z]+(?:-[a-z]+)*|[0-9]+(?:\\.[0-9]+)?/g) || [];
+
+    // Step 3: Expand abbreviations
+    const expanded = tokens.map(t => MEDICAL_ABBREVS.get(t) ?? t);
+
+    // Step 4: Remove stop words
+    const filtered = expanded.filter(t => !STOP_WORDS.has(t));
+
+    return filtered;
+  }
+}
+
+const pipeline = new ClinicalPipeline();
+const note = '<p>Pt hx of <b>PCN</b> allergy. BP was 120/80 on the monitor.</p>';
+console.log(pipeline.process(note));
+// ['patient', 'history', 'penicillin', 'allergy', 'blood-pressure', '120', '80', 'monitor']`}
+</CodeBlock>
+
+## Step Ordering Matters
+
+The order of pipeline steps affects the output. Consider what happens when you lowercase before vs. after abbreviation handling.
+
+<CodeBlock language="typescript" title="ordering-matters.ts">
+{`// WRONG: Expand abbreviations before lowercasing
+// "PCN" won't match the map key "pcn"
+const wrongOrder = (text: string) => {
+  const tokens = text.match(/[a-zA-Z]+/g) || [];
+  const expanded = tokens.map(t => MEDICAL_ABBREVS.get(t) ?? t); // "PCN" misses
+  return expanded.map(t => t.toLowerCase());
+};
+
+// RIGHT: Lowercase first, then expand
+const rightOrder = (text: string) => {
+  const tokens = text.toLowerCase().match(/[a-z]+/g) || [];
+  return tokens.map(t => MEDICAL_ABBREVS.get(t) ?? t); // "pcn" matches
+};
+
+console.log(wrongOrder('PCN allergy'));  // ['pcn', 'allergy'] — not expanded!
+console.log(rightOrder('PCN allergy'));  // ['penicillin', 'allergy'] — correct`}
+</CodeBlock>
+
+## Challenge
+
+Build a reusable preprocessing pipeline with pluggable steps.
+
+<Exercise slug="build-preprocessor" />
+
+<KeyTakeaways takeaways={["A preprocessing pipeline is Express middleware for text — each step transforms and passes data forward", "Functional pipe() and class-based Pipeline are both valid patterns", "Logging and error handling in pipelines make debugging model issues tractable", "Step ordering matters — lowercase before abbreviation lookup, clean before tokenize", "Reusable pipelines ensure consistent preprocessing across training and inference"]} />

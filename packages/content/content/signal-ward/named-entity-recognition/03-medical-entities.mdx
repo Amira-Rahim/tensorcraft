@@ -1,0 +1,183 @@
+---
+slug: medical-entities
+title: "Medical Entities"
+moduleId: named-entity-recognition
+themeId: signal-ward
+order: 3
+estimatedMinutes: 25
+difficulty: advanced
+context:
+  narrative: "The team builds a medical NER model handling drugs, conditions, procedures, and dosages — the complex type system of clinical language."
+  speaker: "Obi Nwosu"
+concept:
+  explanation: "Medical NER requires domain-specific entity types, each with distinct patterns — like defining TypeScript union types where each variant has its own shape and validation rules."
+  bridge:
+    feTitle: "TypeScript Union Types"
+    feCode: "type Entity = Drug | Condition | Procedure; // each variant has its own shape"
+    mlTitle: "Medical Entity Types"
+    mlCode: "type MedEntity = 'DRUG' | 'CONDITION' | 'PROCEDURE'; // each type has distinct patterns"
+    tier: structural
+consequence:
+  narrative: "Diagnostic One can now parse complex clinical notes, correctly distinguishing between drugs, conditions, procedures, and dosages even when they look similar."
+  nextLessonTeaser: "Next: sequence labeling with neural networks — training a model to assign these types automatically."
+hints:
+  - level: nudge
+    content: "Each entity type has distinct patterns — drugs have specific suffixes, dosages have numeric patterns, abbreviations map to known types"
+  - level: guidance
+    content: "Combine dictionary lookup, regex patterns, and abbreviation expansion to classify tokens"
+  - level: solution
+    content: "Check token against drug/condition/procedure lists, test dosage regex, resolve abbreviations, return the matching type or O"
+keywords:
+  - medical-ner
+  - clinical-entities
+  - union-types
+  - domain-specific
+---
+
+<Dialogue speaker="Obi Nwosu">
+General NER knows three types: Person, Location, Organization. Medical NER needs a much richer type system. "Methotrexate" is a DRUG. "RA" is an abbreviation for a CONDITION. "15mg PO q.d." contains a DOSAGE, a ROUTE, and a FREQUENCY. It's like going from JavaScript's loose typing to TypeScript's strict union types.
+</Dialogue>
+
+<Dialogue speaker="Khalil Mensah">
+So each entity type is like a variant in a union: `type Entity = Drug | Condition | Procedure | Dosage`. Each variant has its own shape — drugs have generic names and brand names, dosages have numbers and units, conditions have standard codes.
+</Dialogue>
+
+<Dialogue speaker="Dr. Elena Vasquez">
+And just like TypeScript catches type errors at compile time, our NER needs to catch classification errors before they reach a clinician. Labeling "methotrexate" as a CONDITION instead of a DRUG could be dangerous downstream.
+</Dialogue>
+
+<LearningObjectives objectives={["Define medical entity types as a structured type system (Drug | Condition | Procedure | Dosage)", "Handle clinical abbreviations, dosage patterns, and non-standard notation", "Build a multi-strategy token classifier using dictionaries, patterns, and abbreviation maps", "Evaluate NER performance with precision, recall, and F1"]} />
+
+## A Type System for Clinical Language
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+In TypeScript, a union type like `Drug | Condition | Procedure` tells the compiler: "This value can be one of several shapes, and each shape has different properties." Medical NER works the same way. Each entity type has distinct characteristics:
+
+- **DRUG**: Dictionary words (methotrexate, warfarin), often ending in -olol, -pril, -statin
+- **CONDITION**: Dictionary words (diabetes, hypertension), abbreviations (RA, HTN, CHF)
+- **DOSAGE**: Numeric patterns (15mg, 100mcg, 2.5ml)
+- **FREQUENCY**: Temporal terms (daily, weekly, bid, tid, prn)
+- **PROCEDURE**: Medical actions (intubation, biopsy, catheterization)
+
+Like TypeScript's type guards, each entity type has its own validation logic.
+
+<CodeBlock language="typescript" title="medical-entities.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Medical entity type system — like TypeScript union types
+// type MedicalEntity = Drug | Condition | Dosage | Frequency | Procedure;
+
+const MEDICAL_ENTITIES = {
+  DRUG: ['methotrexate', 'lisinopril', 'warfarin', 'heparin', 'aspirin', 'ibuprofen'],
+  CONDITION: ['diabetes', 'hypertension', 'arthritis', 'pneumonia', 'sepsis'],
+  DOSAGE: [],  // pattern-based: /^\d+\.?\d*(mg|mcg|ml|g|units|iu)$/i
+  FREQUENCY: ['daily', 'weekly', 'bid', 'tid', 'qid', 'prn', 'q.d.'],
+  PROCEDURE: ['intubation', 'catheterization', 'biopsy', 'mri', 'ct']
+};
+
+// Pattern matchers — like TypeScript type guards
+const DOSAGE_PATTERN = /^\d+\.?\d*(mg|mcg|ml|g|units|iu)$/i;
+
+// Abbreviation resolver — like a type alias map
+const ABBREV_MAP: Record<string, string> = {
+  'RA': 'CONDITION',   // rheumatoid arthritis
+  'DM': 'CONDITION',   // diabetes mellitus
+  'HTN': 'CONDITION',  // hypertension
+  'CHF': 'CONDITION',  // congestive heart failure
+  'COPD': 'CONDITION', // chronic obstructive pulmonary disease
+  'ABX': 'DRUG'        // antibiotics
+};
+
+// Type guard: classify a single token
+function classifyToken(token: string): string {
+  const lower = token.toLowerCase();
+
+  // Check each type's dictionary — like narrowing a union type
+  for (const [type, terms] of Object.entries(MEDICAL_ENTITIES)) {
+    if (terms.includes(lower)) return type;
+  }
+
+  // Check pattern-based types — like regex type guards
+  if (DOSAGE_PATTERN.test(token)) return 'DOSAGE';
+
+  // Check abbreviation map — like type alias resolution
+  if (token.toUpperCase() in ABBREV_MAP) return ABBREV_MAP[token.toUpperCase()];
+
+  return 'O'; // outside — no type match
+}
+
+// Classify an entire sentence
+function classifySentence(
+  tokens: string[]
+): Array<{ token: string; label: string }> {
+  return tokens.map(token => ({
+    token,
+    label: classifyToken(token)
+  }));
+}
+
+// Neural approach: embedding → BiLSTM → Dense → BIO tags
+function buildMedicalNerModel(
+  vocabSize: number,
+  embedDim: number,
+  hiddenDim: number,
+  numTags: number
+): tf.LayersModel {
+  const input = tf.input({ shape: [null] });
+
+  const embedding = tf.layers.embedding({
+    inputDim: vocabSize,
+    outputDim: embedDim
+  }).apply(input) as tf.SymbolicTensor;
+
+  // Bidirectional LSTM captures left and right context
+  const lstm = tf.layers.bidirectional({
+    layer: tf.layers.lstm({
+      units: hiddenDim,
+      returnSequences: true
+    }) as tf.RNNLayer
+  }).apply(embedding) as tf.SymbolicTensor;
+
+  // Dense layer per token — like assigning a type to each element
+  const output = tf.layers.timeDistributed({
+    layer: tf.layers.dense({ units: numTags, activation: 'softmax' })
+  }).apply(lstm) as tf.SymbolicTensor;
+
+  return tf.model({ inputs: input, outputs: output });
+}
+
+// Example
+const tokens = ['Patient', 'has', 'RA', 'taking', 'methotrexate', '15mg', 'weekly'];
+const result = classifySentence(tokens);
+console.log(result);
+// [{ token: 'Patient', label: 'O' },
+//  { token: 'has', label: 'O' },
+//  { token: 'RA', label: 'CONDITION' },       // abbreviation resolved
+//  { token: 'taking', label: 'O' },
+//  { token: 'methotrexate', label: 'DRUG' },  // dictionary match
+//  { token: '15mg', label: 'DOSAGE' },         // pattern match
+//  { token: 'weekly', label: 'FREQUENCY' }]    // dictionary match`}
+</CodeBlock>
+
+## Precision, Recall, and F1
+
+<Dialogue speaker="Santos">
+How do we know the model is correct? Finding 90% of drugs means nothing if it also flags "patient" as a drug 30% of the time. We need the TypeScript equivalent of strict mode — catching false positives and false negatives.
+</Dialogue>
+
+Just like TypeScript's strict mode catches both "value used as wrong type" (false positive) and "type not checked" (false negative), NER evaluation uses three metrics:
+
+- **Precision**: Of tokens the model labeled as DRUG, how many actually are drugs? (How many false positives?)
+- **Recall**: Of all actual drugs in the text, how many did the model find? (How many false negatives?)
+- **F1**: The harmonic mean of precision and recall — the single number that balances both
+
+In a clinical setting, a false negative (missing a drug) can be as dangerous as a false positive (hallucinating one). Both metrics matter.
+
+## Challenge
+
+Build a medical entity classifier that handles drugs, conditions, dosages, frequencies, and abbreviations.
+
+<Exercise slug="extract-medical-entities" />
+
+<KeyTakeaways takeaways={["Medical entity types form a union type system: Drug | Condition | Procedure | Dosage | Frequency", "Each type has distinct detection strategies: dictionaries, regex patterns, abbreviation maps", "Like TypeScript type guards, each strategy narrows the token to a specific entity type", "Precision catches false positives, recall catches false negatives — both matter clinically"]} />

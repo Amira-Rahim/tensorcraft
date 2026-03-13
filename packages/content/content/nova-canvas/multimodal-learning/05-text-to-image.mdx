@@ -1,0 +1,149 @@
+---
+slug: text-to-image
+title: "Text-to-Image"
+moduleId: multimodal-learning
+themeId: nova-canvas
+order: 5
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "The moment. Ren types: 'a sunset over a digital city.' MUSE processes the text, encodes it, conditions the diffusion model, and begins denoising. From noise, shapes emerge. A horizon. Buildings. Light. Rough, but unmistakably a sunset over a digital city. Petrov: 'Can we talk about the CLIP alignment score?'"
+  speaker: "Ren"
+concept:
+  explanation: "Text-to-image generation reverses captioning: text becomes the input, images become the output. Like server-side rendering — text (HTML/data) is transformed into visual output (the rendered page). The text description becomes the image."
+  bridge:
+    feTitle: "Server-side rendering — text becomes visual"
+    feCode: "const html = renderToString(<App data={textData} />);"
+    mlTitle: "Text-to-image generation"
+    mlCode: "const image = diffusionModel.generate(encodeText(prompt));"
+    tier: structural
+consequence:
+  narrative: "The first text-to-image output. Rough edges. Imperfect colors. But recognizable. Yara stares at the screen: 'From words to art. We just crossed the bridge.' Petrov already has concerns: 'The CLIP alignment score is 0.23. We need at least 0.30.'"
+  nextLessonTeaser: "Next module: CLIP & Alignment — teaching MUSE to understand nuance and mood"
+hints:
+  - level: nudge
+    content: "SSR transforms text data into visual HTML. Text-to-image transforms text prompts into pixel data."
+  - level: guidance
+    content: "Encode the text prompt, use it to condition the diffusion process. The text embedding guides what the model generates."
+  - level: solution
+    content: "Text encoder -> text embedding -> condition the U-Net denoiser at each step. Combined with classifier-free guidance for prompt adherence."
+keywords:
+  - text-to-image
+  - conditioning
+  - text-guided
+  - generation
+  - server-side-rendering
+---
+
+<Dialogue speaker="Ren">
+Everything we built converges here. The text encoder from multimodal learning. The diffusion model from module five. The classifier-free guidance for prompt adherence. Text in, image out.
+</Dialogue>
+
+<Dialogue speaker="Kai">
+It is server-side rendering for art. SSR takes data and text and renders it into a visual page. Text-to-image takes a prompt and renders it into pixels. Text becomes visual.
+</Dialogue>
+
+Server-side rendering transforms text and data into a visual page. Text-to-image transforms a text prompt into a visual image. The principle is identical: text is the source of truth, and the system renders it into something you can see.
+
+<LearningObjectives objectives={["Understand how text conditioning drives image generation in diffusion models", "Connect the text encoder to the diffusion U-Net via cross-attention or concatenation", "Implement a text-to-image pipeline combining text encoding, diffusion, and guidance", "Connect text-to-image to server-side rendering — text as source, visuals as output"]} />
+
+## The Text-to-Image Pipeline
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="text-to-image.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// The complete text-to-image pipeline:
+// 1. Encode text prompt to embedding
+// 2. Use embedding to condition diffusion
+// 3. Denoise from noise to image, guided by text
+
+class TextToImagePipeline {
+  textEncoder: tf.LayersModel;
+  unet: tf.LayersModel;
+  superRes: tf.LayersModel;
+
+  constructor(
+    textEncoder: tf.LayersModel,
+    unet: tf.LayersModel,
+    superRes: tf.LayersModel
+  ) {
+    this.textEncoder = textEncoder;
+    this.unet = unet;
+    this.superRes = superRes;
+  }
+
+  // Tokenize text prompt (simplified)
+  tokenize(prompt: string, vocabSize: number, seqLen: number): tf.Tensor2D {
+    const tokens = prompt.split(' ').map(
+      word => Math.abs(hashCode(word)) % vocabSize
+    );
+    // Pad or truncate to seqLen
+    while (tokens.length < seqLen) tokens.push(0);
+    return tf.tensor2d([tokens.slice(0, seqLen)]);
+  }
+
+  async generate(
+    prompt: string,
+    steps: number = 20,
+    guidanceScale: number = 7.5
+  ): Promise<tf.Tensor4D> {
+    // Step 1: Text -> embedding (like SSR data fetching)
+    const tokens = this.tokenize(prompt, 10000, 32);
+    const textEmbedding = this.textEncoder.predict(tokens) as tf.Tensor2D;
+
+    // Step 2: Start from noise
+    let image = tf.randomNormal([1, 64, 64, 3]) as tf.Tensor4D;
+    const schedule = cosineAlphaBar(steps);
+
+    // Step 3: Denoise with text guidance (like SSR rendering)
+    for (let t = steps - 1; t >= 0; t--) {
+      const timestep = tf.tensor1d([t / steps]);
+
+      // Conditioned prediction (with prompt)
+      const condNoise = this.unet.predict(
+        [image, textEmbedding, timestep]
+      ) as tf.Tensor4D;
+
+      // Unconditioned prediction (without prompt)
+      const nullEmb = tf.zeros(textEmbedding.shape) as tf.Tensor2D;
+      const uncondNoise = this.unet.predict(
+        [image, nullEmb, timestep]
+      ) as tf.Tensor4D;
+
+      // Classifier-free guidance
+      const guided = applyGuidance(condNoise, uncondNoise, guidanceScale);
+
+      // Denoise step
+      const alpha = schedule[t];
+      const cleaned = denoiseStep(image, guided, alpha);
+
+      // Cleanup tensors
+      image.dispose(); condNoise.dispose();
+      uncondNoise.dispose(); nullEmb.dispose();
+      guided.dispose(); timestep.dispose();
+      image = cleaned;
+    }
+
+    // Step 4: Upscale (like SSR hydration — enhance the initial render)
+    const highRes = this.superRes.predict(image) as tf.Tensor4D;
+    image.dispose();
+    tokens.dispose();
+    textEmbedding.dispose();
+
+    return highRes;
+  }
+}
+
+// "a sunset over a digital city" -> pixels
+// From text to art in 3.4 seconds`}
+</CodeBlock>
+
+## Challenge
+
+Wire up the text-to-image pipeline: encode text, condition diffusion, generate.
+
+<Exercise slug="text-to-image" />
+
+<KeyTakeaways takeaways={["Text-to-image is server-side rendering for art: text prompt in, visual image out", "The pipeline combines text encoding, conditioned diffusion, classifier-free guidance, and super-resolution", "Text embeddings condition the U-Net at each denoising step, steering what the model generates", "MUSE's first text-to-image output is rough but recognizable — the bridge from words to art is crossed"]} />

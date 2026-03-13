@@ -1,0 +1,225 @@
+---
+slug: adversarial-patches
+title: "Adversarial Patches"
+moduleId: generative-vision
+themeId: neon-protocol
+order: 4
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Zara's breakthrough moment. She has trained generators, explored latent spaces, and mastered style transfer. Now the real weapon: adversarial patches — small visual patterns that cause Meridian's classifiers to misidentify everything in the frame. But Lin intervenes immediately: 'This is XSS for neural networks. We need to understand what we are building.'"
+  speaker: "Lin"
+concept:
+  explanation: "Adversarial patches are carefully crafted pixel patterns that exploit a model's learned features to force misclassification. They work like XSS attacks — inputs specifically crafted to exploit the system's processing logic. An XSS payload is a string designed to be interpreted as code. An adversarial patch is an image designed to be interpreted as something it is not."
+  bridge:
+    feTitle: "XSS Attacks"
+    feCode: "const malicious = '<img onerror=\"alert(1)\">'; // Input crafted to exploit the parser"
+    mlTitle: "Adversarial Examples"
+    mlCode: "const patch = optimizePatch(model, targetClass, epsilon); // Input crafted to exploit the classifier"
+    tier: structural
+consequence:
+  narrative: "The patch works. A 32x32 pixel sticker makes Meridian's cameras classify a person as a traffic cone. Ryo stares at it: 'At Meridian, Director Yates called this a feature — stress-testing the competition. Now I see it for what it is: a weapon.' Lin: 'Which is exactly why we scope it. Patches bound to Meridian's architecture fingerprints only. No collateral capability.' The team agrees unanimously."
+  nextLessonTeaser: "Next: Lin's ethics review — responsible deployment of everything we have built"
+hints:
+  - level: nudge
+    content: "Adversarial perturbations use the same gradients as training — but applied to input pixels instead of model weights"
+  - level: guidance
+    content: "FGSM: compute gradient of loss w.r.t. input, take the sign, multiply by epsilon, add to image"
+  - level: solution
+    content: "perturbation = epsilon * sign(dLoss/dInput). adversarial = clamp(image + perturbation, 0, 1). For targeted attacks, minimize loss for the target class."
+keywords:
+  - adversarial-patch
+  - perturbation
+  - gradient-attack
+  - fgsm
+  - robustness
+---
+
+<Dialogue speaker="Zara">
+Every system has inputs it was never designed to handle. Web apps have XSS. Neural networks have adversarial examples. A string that looks like data but executes as code. An image that looks like a sticker but registers as a traffic cone. Same principle: craft the input to exploit the processor.
+</Dialogue>
+
+<Dialogue speaker="Lin">
+And same consequences if deployed irresponsibly. XSS led to content security policies. Adversarial attacks need the same kind of governance. Before we build this, we agree on constraints.
+</Dialogue>
+
+<Dialogue speaker="NEON">
+The mathematics is straightforward. During training, you compute gradients with respect to model weights and update the weights. For an adversarial attack, you compute gradients with respect to the input pixels and update the pixels. Same calculus, different target. The model told you exactly how to fool it.
+</Dialogue>
+
+An XSS attack crafts a string that exploits a parser's assumptions. An adversarial patch crafts pixels that exploit a classifier's learned features. Both work because the system processes inputs in ways the designer did not anticipate. The Fast Gradient Sign Method (FGSM) is the simplest adversarial attack: compute the gradient of the loss with respect to the input, take its sign, scale by epsilon, and add it to the image. The model's own gradients reveal exactly how to fool it.
+
+<LearningObjectives objectives={["Understand how adversarial perturbations exploit model gradients", "Implement the Fast Gradient Sign Method (FGSM) for untargeted attacks", "Create targeted adversarial patches that force a specific misclassification", "Recognize the parallel between adversarial examples and injection attacks"]} />
+
+## Gradients Against the Input
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="fgsm.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Fast Gradient Sign Method (FGSM)
+// The same gradients used in training — applied to inputs, not weights
+function fgsm(
+  model: tf.LayersModel,
+  image: tf.Tensor4D,
+  trueClass: number,
+  epsilon: number
+): tf.Tensor4D {
+  return tf.tidy(() => {
+    // Compute gradient of loss with respect to input pixels
+    const lossFunc = (input: tf.Tensor) => {
+      const prediction = model.predict(input) as tf.Tensor2D;
+      // Cross-entropy loss for the true class
+      const oneHot = tf.oneHot([trueClass], prediction.shape[1]);
+      return prediction.mul(oneHot).sum().neg();
+    };
+
+    const gradFunc = tf.grad(lossFunc);
+    const gradient = gradFunc(image);
+
+    // Perturbation = sign(gradient) * epsilon
+    // sign() gives direction; epsilon controls magnitude
+    const perturbation = gradient.sign().mul(epsilon);
+
+    // Adversarial image = original + perturbation, clamped to [0, 1]
+    return image.add(perturbation).clipByValue(0, 1) as tf.Tensor4D;
+  });
+}`}
+</CodeBlock>
+
+## Targeted Attacks
+
+<CodeBlock language="typescript" title="targeted-patch.ts">
+{`// Targeted attack: force the model to predict a specific wrong class
+function targetedFgsm(
+  model: tf.LayersModel,
+  image: tf.Tensor4D,
+  targetClass: number,
+  epsilon: number
+): tf.Tensor4D {
+  return tf.tidy(() => {
+    const lossFunc = (input: tf.Tensor) => {
+      const prediction = model.predict(input) as tf.Tensor2D;
+      const oneHot = tf.oneHot([targetClass], prediction.shape[1]);
+      // MINIMIZE loss for target class (maximize probability)
+      return prediction.mul(oneHot).sum().neg();
+    };
+
+    const gradFunc = tf.grad(lossFunc);
+    const gradient = gradFunc(image);
+
+    // Subtract gradient to move TOWARD target class
+    const perturbation = gradient.sign().mul(epsilon);
+    return image.sub(perturbation).clipByValue(0, 1) as tf.Tensor4D;
+  });
+}
+
+// Iterative FGSM: multiple small steps for stronger attacks
+function iterativeFgsm(
+  model: tf.LayersModel,
+  image: tf.Tensor4D,
+  targetClass: number,
+  epsilon: number,
+  steps: number = 10
+): tf.Tensor4D {
+  const stepSize = epsilon / steps;
+  let adversarial = image.clone();
+
+  for (let i = 0; i < steps; i++) {
+    const next = targetedFgsm(model, adversarial, targetClass, stepSize);
+    adversarial.dispose();
+    adversarial = next;
+
+    // Constrain total perturbation to epsilon ball
+    adversarial = tf.tidy(() => {
+      const diff = adversarial.sub(image);
+      const clipped = diff.clipByValue(-epsilon, epsilon);
+      return image.add(clipped).clipByValue(0, 1) as tf.Tensor4D;
+    });
+  }
+
+  return adversarial;
+}`}
+</CodeBlock>
+
+## Creating Printable Patches
+
+<CodeBlock language="typescript" title="printable-patch.ts">
+{`// Optimize a standalone patch that causes misclassification
+// when placed in the scene — like a sticker
+function createAdversarialPatch(
+  model: tf.LayersModel,
+  patchSize: number,
+  targetClass: number,
+  iterations: number = 200,
+  lr: number = 0.01
+): tf.Variable {
+  // Initialize with random pixels
+  const patch = tf.variable(
+    tf.randomUniform([1, patchSize, patchSize, 3])
+  );
+
+  const optimizer = tf.train.adam(lr);
+
+  for (let i = 0; i < iterations; i++) {
+    optimizer.minimize(() => {
+      // Resize patch to model input size
+      const resized = patch.resizeBilinear([224, 224]);
+      const prediction = model.predict(resized) as tf.Tensor2D;
+
+      // Maximize probability of target class
+      const oneHot = tf.oneHot([targetClass], prediction.shape[1]);
+      return prediction.mul(oneHot).sum().neg() as tf.Scalar;
+    });
+
+    // Keep pixels in printable range [0, 1]
+    patch.assign(patch.clipByValue(0, 1));
+
+    if (i % 50 === 0) {
+      console.log(\`Patch optimization step \${i}/\${iterations}\`);
+    }
+  }
+
+  return patch;
+}
+
+// Evaluate patch effectiveness
+function evaluatePatch(
+  model: tf.LayersModel,
+  patch: tf.Tensor4D,
+  targetClass: number,
+  testImages: tf.Tensor4D[]
+): { successRate: number; avgConfidence: number } {
+  let successes = 0;
+  let totalConfidence = 0;
+
+  for (const image of testImages) {
+    const patched = tf.tidy(() =>
+      image.add(patch.resizeBilinear([image.shape[1], image.shape[2]]))
+        .clipByValue(0, 1) as tf.Tensor4D
+    );
+
+    const prediction = (model.predict(patched) as tf.Tensor2D).dataSync();
+    const predictedClass = prediction.indexOf(Math.max(...prediction));
+
+    if (predictedClass === targetClass) successes++;
+    totalConfidence += prediction[targetClass];
+
+    patched.dispose();
+  }
+
+  return {
+    successRate: successes / testImages.length,
+    avgConfidence: totalConfidence / testImages.length,
+  };
+}`}
+</CodeBlock>
+
+## Challenge
+
+Implement the FGSM adversarial attack.
+
+<Exercise slug="craft-adversarial-patch" />
+
+<KeyTakeaways takeaways={["Adversarial examples exploit model gradients — the same math used in training, but applied to input pixels instead of weights", "FGSM is the simplest attack: perturbation = epsilon * sign(gradient). One line of math, devastating effect.", "Targeted attacks force a specific misclassification by optimizing toward the target class", "Adversarial attacks are XSS for neural networks — crafted inputs that exploit the system's processing assumptions"]} />

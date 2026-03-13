@@ -1,0 +1,78 @@
+slug: monitor-metrics
+lessonSlug: production-monitoring
+title: "Monitor Model Metrics"
+instructions: "Implement a MetricsCollector class with: record(latencyMs: number, confidence: number) that stores a measurement, getAvgLatency() that returns the average latency, getAvgConfidence() that returns the average confidence, and getLowConfidenceRate(threshold: number) that returns the fraction of records with confidence below the threshold. Return 0 for all metrics when no records exist."
+starterCode: |
+  class MetricsCollector {
+    // Your code here
+
+    record(latencyMs: number, confidence: number): void {
+    }
+
+    getAvgLatency(): number {
+      return 0;
+    }
+
+    getAvgConfidence(): number {
+      return 0;
+    }
+
+    getLowConfidenceRate(threshold: number): number {
+      return 0;
+    }
+  }
+solutionCode: |
+  class MetricsCollector {
+    private latencies: number[] = [];
+    private confidences: number[] = [];
+
+    record(latencyMs: number, confidence: number): void {
+      this.latencies.push(latencyMs);
+      this.confidences.push(confidence);
+    }
+
+    getAvgLatency(): number {
+      if (this.latencies.length === 0) return 0;
+      return this.latencies.reduce((a, b) => a + b, 0) / this.latencies.length;
+    }
+
+    getAvgConfidence(): number {
+      if (this.confidences.length === 0) return 0;
+      return this.confidences.reduce((a, b) => a + b, 0) / this.confidences.length;
+    }
+
+    getLowConfidenceRate(threshold: number): number {
+      if (this.confidences.length === 0) return 0;
+      return this.confidences.filter(c => c < threshold).length / this.confidences.length;
+    }
+  }
+testCode: |
+  describe('MetricsCollector', () => {
+    it('returns 0 for empty collector', () => {
+      const mc = new MetricsCollector();
+      expect(mc.getAvgLatency()).toBe(0);
+      expect(mc.getAvgConfidence()).toBe(0);
+    });
+    it('computes average latency', () => {
+      const mc = new MetricsCollector();
+      mc.record(10, 0.9);
+      mc.record(20, 0.8);
+      expect(mc.getAvgLatency()).toBe(15);
+    });
+    it('computes average confidence', () => {
+      const mc = new MetricsCollector();
+      mc.record(10, 0.9);
+      mc.record(20, 0.7);
+      expect(mc.getAvgConfidence()).toBe(0.8);
+    });
+    it('computes low confidence rate', () => {
+      const mc = new MetricsCollector();
+      mc.record(10, 0.9);
+      mc.record(20, 0.3);
+      mc.record(15, 0.4);
+      mc.record(12, 0.8);
+      expect(mc.getLowConfidenceRate(0.5)).toBe(0.5);
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

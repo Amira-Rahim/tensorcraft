@@ -1,0 +1,198 @@
+---
+slug: text-cleaning
+title: "Text Cleaning & Normalization"
+moduleId: tokenization-preprocessing
+themeId: signal-ward
+order: 4
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "A batch of clinical notes imported from the legacy system arrives riddled with HTML tags, invisible Unicode characters, and inconsistent casing. Santos discovers that Diagnostic One's accuracy drops 15% on this dirty data."
+  speaker: "Santos"
+concept:
+  explanation: "Text cleaning removes noise — HTML tags, special characters, extra whitespace — and normalization standardizes format through lowercasing, stemming, and Unicode handling. It's the same process as sanitizing user input in a web form before storing it in a database."
+  bridge:
+    feTitle: "Input Sanitization"
+    feCode: "const clean = input.replace(/<[^>]*>/g, '').trim().toLowerCase()"
+    mlTitle: "Text Normalization"
+    mlCode: "const normalize = (text) => stripHtml(text).replace(/[^a-z0-9\\s]/g, '').trim()"
+    tier: structural
+consequence:
+  narrative: "After the cleaning pipeline is applied, Diagnostic One's accuracy on the legacy data recovers to match the clean dataset — proving that garbage in, garbage out is not inevitable."
+  nextLessonTeaser: "Next: chaining all these steps into a reusable preprocessing pipeline."
+hints:
+  - level: nudge
+    content: "Start by stripping HTML tags with a regex, then handle special characters."
+  - level: guidance
+    content: "Chain operations: strip HTML, normalize Unicode, remove special chars, collapse whitespace, lowercase."
+  - level: solution
+    content: "text.replace(/<[^>]*>/g, ' ').normalize('NFKD').replace(/[^a-z0-9\\s-]/g, '').replace(/\\s+/g, ' ').trim()"
+keywords:
+  - text-cleaning
+  - normalization
+  - sanitization
+  - stemming
+  - preprocessing
+---
+
+> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
+
+<Dialogue speaker="Santos">
+We just imported 14,000 notes from the old system. Half of them have HTML tags embedded in the text, there are Unicode characters I've never seen, and some notes are ALL CAPS. Diagnostic One is choking on this data.
+</Dialogue>
+
+<Dialogue speaker="Obi">
+Classic data migration problem. You wouldn't render unsanitized user input in a browser — you strip tags, escape entities, normalize encoding. Same principle applies here: clean the text before the tokenizer ever sees it.
+</Dialogue>
+
+<Dialogue speaker="MEDI">
+I should note that my accuracy on the legacy dataset is currently 62%, compared to 77% on properly formatted notes. The noise is not random — it is systematically degrading my performance.
+</Dialogue>
+
+Every frontend developer sanitizes user input — stripping HTML from rich text editors, normalizing phone numbers, trimming whitespace from form fields. Text cleaning for ML is the same discipline applied to a different domain. Dirty data produces dirty predictions.
+
+<LearningObjectives objectives={["Strip HTML tags and entities from clinical text", "Handle Unicode normalization and special characters", "Apply consistent lowercasing and whitespace normalization", "Implement basic stemming to reduce word variants", "Build a multi-step text cleaning function"]} />
+
+## Stripping HTML Tags
+
+Legacy clinical systems often store notes with embedded HTML from WYSIWYG editors.
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="strip-html.ts">
+{`// Clinical note from legacy system
+const dirtyNote = '<p>Pt presents with <b>chest pain</b>.</p><br/>' +
+  '<span style="color:red">ALLERGY: PCN</span>&nbsp;&mdash; confirmed 2024.';
+
+function stripHtml(text: string): string {
+  return text
+    .replace(/<[^>]*>/g, ' ')        // Remove HTML tags
+    .replace(/&nbsp;/g, ' ')          // Replace common entities
+    .replace(/&mdash;/g, '—')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&#?\\w+;/g, ' ');        // Catch remaining entities
+}
+
+console.log(stripHtml(dirtyNote));
+// ' Pt presents with  chest pain .  ALLERGY: PCN  — confirmed 2024.'`}
+</CodeBlock>
+
+## Unicode Normalization
+
+Clinical notes may contain accented characters, smart quotes, or invisible control characters from copy-paste.
+
+<CodeBlock language="typescript" title="unicode-normalization.ts">
+{`function normalizeUnicode(text: string): string {
+  return text
+    .normalize('NFKD')                          // Decompose Unicode (é → e + ́)
+    .replace(/[\\u0300-\\u036f]/g, '')             // Strip combining diacritical marks
+    .replace(/[\\u2018\\u2019]/g, "'")             // Smart single quotes → straight
+    .replace(/[\\u201C\\u201D]/g, '"')             // Smart double quotes → straight
+    .replace(/[\\u2013\\u2014]/g, '-')             // En/em dashes → hyphen
+    .replace(/[\\u00A0]/g, ' ')                    // Non-breaking space → space
+    .replace(/[\\u200B-\\u200D\\uFEFF]/g, '');     // Zero-width characters → remove
+}
+
+console.log(normalizeUnicode('Patient\u2019s dx: caf\u00e9 au lait spots'));
+// "Patient's dx: cafe au lait spots"`}
+</CodeBlock>
+
+## Lowercasing and Whitespace
+
+Inconsistent casing and extra whitespace create false distinctions between identical tokens.
+
+<CodeBlock language="typescript" title="case-whitespace.ts">
+{`function normalizeWhitespace(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/\\s+/g, ' ')    // Collapse multiple spaces, tabs, newlines
+    .trim();
+}
+
+// "CHEST PAIN" and "chest pain" and "Chest  Pain" all become "chest pain"
+console.log(normalizeWhitespace('  CHEST   PAIN\\n'));  // 'chest pain'
+console.log(normalizeWhitespace('Chest  Pain'));        // 'chest pain'`}
+</CodeBlock>
+
+## Basic Stemming
+
+Stemming reduces words to their root form — "medications," "medicated," and "medicating" all become "medic." This is a crude but effective approach for reducing vocabulary size.
+
+<CodeBlock language="typescript" title="simple-stemmer.ts">
+{`// Simple suffix-stripping stemmer for clinical text
+const SUFFIX_RULES: [RegExp, string][] = [
+  [/ational$/, 'ate'],
+  [/ization$/, 'ize'],
+  [/iveness$/, 'ive'],
+  [/fulness$/, 'ful'],
+  [/ousli$/, 'ous'],
+  [/ation$/, 'ate'],
+  [/ities$/, 'ity'],
+  [/ings$/, ''],
+  [/ment$/, ''],
+  [/ness$/, ''],
+  [/ing$/, ''],
+  [/ies$/, 'y'],
+  [/ed$/, ''],
+  [/s$/, ''],
+];
+
+function stem(word: string): string {
+  if (word.length < 4) return word; // Skip short words
+  for (const [pattern, replacement] of SUFFIX_RULES) {
+    if (pattern.test(word)) {
+      const result = word.replace(pattern, replacement);
+      if (result.length >= 3) return result; // Ensure minimum length
+    }
+  }
+  return word;
+}
+
+console.log(stem('medications'));  // 'medicate'  (via -ation → -ate, then -s)
+console.log(stem('presenting'));   // 'present'
+console.log(stem('allergies'));    // 'allergy'`}
+</CodeBlock>
+
+## The Full Cleaning Function
+
+Chain all the steps into a single reusable cleaner.
+
+<CodeBlock language="typescript" title="clean-clinical-text.ts">
+{`function cleanClinicalText(text: string): string {
+  let cleaned = text;
+
+  // Step 1: Strip HTML
+  cleaned = cleaned.replace(/<[^>]*>/g, ' ');
+  cleaned = cleaned.replace(/&#?\\w+;/g, ' ');
+
+  // Step 2: Unicode normalization
+  cleaned = cleaned.normalize('NFKD');
+  cleaned = cleaned.replace(/[\\u0300-\\u036f]/g, '');
+  cleaned = cleaned.replace(/[\\u2018\\u2019]/g, "'");
+  cleaned = cleaned.replace(/[\\u201C\\u201D]/g, '"');
+  cleaned = cleaned.replace(/[\\u2013\\u2014]/g, '-');
+  cleaned = cleaned.replace(/[\\u200B-\\u200D\\uFEFF]/g, '');
+
+  // Step 3: Remove non-alphanumeric (keep hyphens, periods for decimals)
+  cleaned = cleaned.replace(/[^a-zA-Z0-9\\s.\\-']/g, ' ');
+
+  // Step 4: Lowercase and collapse whitespace
+  cleaned = cleaned.toLowerCase().replace(/\\s+/g, ' ').trim();
+
+  return cleaned;
+}
+
+const legacy = '<p>Pt\\u2019s <b>BP</b>: 120/80.&nbsp;Dx: HTN.</p>';
+console.log(cleanClinicalText(legacy));
+// "pt's bp 120 80. dx htn."`}
+</CodeBlock>
+
+## Challenge
+
+Build a text cleaning function that handles HTML, special characters, and normalization.
+
+<Exercise slug="clean-text" />
+
+<KeyTakeaways takeaways={["Text cleaning is input sanitization — the same discipline you apply to web forms", "HTML stripping, Unicode normalization, and casing are the three essential cleaning steps", "Stemming reduces vocabulary size by collapsing word variants to their root", "Clean data in, clean predictions out — cleaning directly impacts model accuracy"]} />

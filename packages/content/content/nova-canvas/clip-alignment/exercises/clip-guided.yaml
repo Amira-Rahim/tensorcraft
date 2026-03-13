@@ -1,0 +1,66 @@
+slug: clip-guided
+lessonSlug: clip-guided-generation
+title: "Apply CLIP Guidance to an Image"
+instructions: "Implement a CLIP guidance step. Given an image tensor, a target text embedding, and a CLIP-like scoring function, compute the gradient of the similarity score with respect to the image and nudge the image in that direction. Use tf.grad to compute the gradient."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function clipGuidanceStep(
+    image: tf.Tensor4D,
+    targetEmbedding: tf.Tensor1D,
+    clipScoreFn: (img: tf.Tensor) => tf.Scalar,
+    guidanceStrength: number
+  ): tf.Tensor4D {
+    // 1. Use tf.grad to get gradient of clipScoreFn w.r.t. image
+    // 2. Multiply gradient by guidanceStrength
+    // 3. Add to image
+    // 4. Return guided image
+    return null; // your code here
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function clipGuidanceStep(
+    image: tf.Tensor4D,
+    targetEmbedding: tf.Tensor1D,
+    clipScoreFn: (img: tf.Tensor) => tf.Scalar,
+    guidanceStrength: number
+  ): tf.Tensor4D {
+    const gradFn = tf.grad(clipScoreFn);
+    const gradient = gradFn(image) as tf.Tensor4D;
+    const nudge = tf.mul(gradient, tf.scalar(guidanceStrength));
+    const guided = tf.add(image, nudge) as tf.Tensor4D;
+    gradient.dispose();
+    nudge.dispose();
+    return guided;
+  }
+testCode: |
+  describe('clipGuidanceStep', () => {
+    it('returns same shape as input', () => {
+      const image = tf.randomNormal([1, 8, 8, 3]) as tf.Tensor4D;
+      const target = tf.randomNormal([64]) as tf.Tensor1D;
+      const scoreFn = (img: tf.Tensor) => tf.sum(img) as tf.Scalar;
+      const result = clipGuidanceStep(image, target, scoreFn, 0.01);
+      expect(result.shape).toEqual([1, 8, 8, 3]);
+    });
+    it('modifies the image (not identity)', () => {
+      const image = tf.ones([1, 4, 4, 3]) as tf.Tensor4D;
+      const target = tf.ones([32]) as tf.Tensor1D;
+      const scoreFn = (img: tf.Tensor) => tf.mean(img) as tf.Scalar;
+      const result = clipGuidanceStep(image, target, scoreFn, 1.0);
+      const diff = tf.sub(result, image).abs().sum().dataSync()[0];
+      expect(diff).toBeGreaterThan(0);
+    });
+    it('stronger guidance makes bigger changes', () => {
+      const image = tf.ones([1, 4, 4, 3]) as tf.Tensor4D;
+      const target = tf.ones([32]) as tf.Tensor1D;
+      const scoreFn = (img: tf.Tensor) => tf.mean(img) as tf.Scalar;
+      const weak = clipGuidanceStep(image, target, scoreFn, 0.1);
+      const strong = clipGuidanceStep(image, target, scoreFn, 10.0);
+      const diffWeak = tf.sub(weak, image).abs().sum().dataSync()[0];
+      const diffStrong = tf.sub(strong, image).abs().sum().dataSync()[0];
+      expect(diffStrong).toBeGreaterThan(diffWeak);
+    });
+  });
+estimatedMinutes: 12
+difficulty: advanced

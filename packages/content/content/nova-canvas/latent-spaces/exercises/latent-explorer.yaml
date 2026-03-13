@@ -1,0 +1,62 @@
+slug: latent-explorer
+lessonSlug: latent-space-exploration
+title: "Build a Latent Explorer"
+instructions: "Create a function that takes an array of slider values, converts them to a latent tensor, passes it through a decoder, and returns the output as a 2D array (28x28). Use tf.tidy() to prevent memory leaks."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  async function explore(
+    sliderValues: number[],
+    decoder: tf.LayersModel
+  ): Promise<number[][]> {
+    // 1. Use tf.tidy to prevent memory leaks
+    // 2. Convert sliderValues to a tensor2d of shape [1, N]
+    // 3. Pass through decoder
+    // 4. Reshape to [28, 28] and return as JS array
+    const output = null; // your code here
+    return output;
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  async function explore(
+    sliderValues: number[],
+    decoder: tf.LayersModel
+  ): Promise<number[][]> {
+    const output = tf.tidy(() => {
+      const z = tf.tensor2d([sliderValues]);
+      const decoded = decoder.predict(z) as tf.Tensor;
+      return decoded.reshape([28, 28]);
+    });
+    const result = await output.array() as number[][];
+    output.dispose();
+    return result;
+  }
+testCode: |
+  describe('explore', () => {
+    let decoder;
+    beforeAll(() => {
+      decoder = tf.sequential();
+      decoder.add(tf.layers.dense({ inputShape: [16], units: 784, activation: 'sigmoid' }));
+    });
+    it('returns a 28x28 array', async () => {
+      const result = await explore(new Array(16).fill(0), decoder);
+      expect(result.length).toBe(28);
+      expect(result[0].length).toBe(28);
+    });
+    it('values are between 0 and 1', async () => {
+      const result = await explore(new Array(16).fill(0), decoder);
+      result.forEach(row => row.forEach(v => {
+        expect(v).toBeGreaterThanOrEqual(0);
+        expect(v).toBeLessThanOrEqual(1);
+      }));
+    });
+    it('does not leak tensors', async () => {
+      const before = tf.memory().numTensors;
+      await explore(new Array(16).fill(0), decoder);
+      const after = tf.memory().numTensors;
+      expect(after).toBeLessThanOrEqual(before + 1);
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

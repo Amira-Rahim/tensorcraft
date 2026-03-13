@@ -1,0 +1,135 @@
+slug: monitor-drift
+lessonSlug: monitoring-and-drift
+title: "Detect Data Drift"
+instructions: "Build a drift detector that compares a rolling window of prediction confidence scores against a baseline distribution. Implement functions to compute distribution statistics (mean, standard deviation) and detect drift when the mean shifts beyond a threshold measured in standard deviations."
+starterCode: |
+  interface DistributionStats {
+    mean: number;
+    stdDev: number;
+  }
+
+  interface DriftResult {
+    isDrifted: boolean;
+    meanShift: number;
+    baselineMean: number;
+    currentMean: number;
+  }
+
+  function computeStats(values: number[]): DistributionStats {
+    // Calculate mean and population standard deviation
+    return null; // your code here
+  }
+
+  function detectDrift(
+    baseline: number[],
+    current: number[],
+    threshold: number
+  ): DriftResult {
+    // Compare means: drift if |currentMean - baselineMean| / baselineStdDev > threshold
+    return null; // your code here
+  }
+solutionCode: |
+  interface DistributionStats {
+    mean: number;
+    stdDev: number;
+  }
+
+  interface DriftResult {
+    isDrifted: boolean;
+    meanShift: number;
+    baselineMean: number;
+    currentMean: number;
+  }
+
+  function computeStats(values: number[]): DistributionStats {
+    const mean = values.reduce((sum, v) => sum + v, 0) / values.length;
+    const variance = values.reduce((sum, v) => sum + (v - mean) ** 2, 0) / values.length;
+    return {
+      mean,
+      stdDev: Math.sqrt(variance),
+    };
+  }
+
+  function detectDrift(
+    baseline: number[],
+    current: number[],
+    threshold: number
+  ): DriftResult {
+    const baselineStats = computeStats(baseline);
+    const currentStats = computeStats(current);
+
+    const meanShift = Math.abs(currentStats.mean - baselineStats.mean) / baselineStats.stdDev;
+
+    return {
+      isDrifted: meanShift > threshold,
+      meanShift,
+      baselineMean: baselineStats.mean,
+      currentMean: currentStats.mean,
+    };
+  }
+testCode: |
+  describe('computeStats', () => {
+    it('computes mean correctly', () => {
+      const stats = computeStats([1, 2, 3, 4, 5]);
+      expect(stats.mean).toBeCloseTo(3, 5);
+    });
+
+    it('computes stdDev correctly', () => {
+      const stats = computeStats([2, 4, 4, 4, 5, 5, 7, 9]);
+      expect(stats.mean).toBeCloseTo(5, 5);
+      expect(stats.stdDev).toBeCloseTo(2, 5);
+    });
+
+    it('stdDev is 0 for identical values', () => {
+      const stats = computeStats([0.9, 0.9, 0.9, 0.9]);
+      expect(stats.stdDev).toBeCloseTo(0, 5);
+    });
+
+    it('handles single value', () => {
+      const stats = computeStats([0.85]);
+      expect(stats.mean).toBeCloseTo(0.85, 5);
+      expect(stats.stdDev).toBeCloseTo(0, 5);
+    });
+  });
+
+  describe('detectDrift', () => {
+    it('no drift when distributions are similar', () => {
+      const baseline = [0.92, 0.94, 0.91, 0.93, 0.95, 0.90, 0.94, 0.92];
+      const current = [0.91, 0.93, 0.92, 0.94, 0.90, 0.93, 0.91, 0.92];
+      const result = detectDrift(baseline, current, 2.0);
+      expect(result.isDrifted).toBe(false);
+    });
+
+    it('detects drift when mean drops significantly', () => {
+      const baseline = [0.92, 0.94, 0.91, 0.93, 0.95, 0.90, 0.94, 0.92];
+      const current = [0.71, 0.68, 0.73, 0.70, 0.69, 0.72, 0.67, 0.71];
+      const result = detectDrift(baseline, current, 2.0);
+      expect(result.isDrifted).toBe(true);
+    });
+
+    it('returns correct baseline and current means', () => {
+      const baseline = [0.90, 0.90, 0.90, 0.90];
+      const current = [0.70, 0.70, 0.70, 0.70];
+      const result = detectDrift(baseline, current, 1.0);
+      expect(result.baselineMean).toBeCloseTo(0.90, 5);
+      expect(result.currentMean).toBeCloseTo(0.70, 5);
+    });
+
+    it('meanShift is positive regardless of direction', () => {
+      const baseline = [0.50, 0.50, 0.50, 0.50];
+      const current = [0.80, 0.80, 0.80, 0.80];
+      const result = detectDrift(baseline, current, 1.0);
+      expect(result.meanShift).toBeGreaterThan(0);
+    });
+
+    it('respects threshold parameter', () => {
+      const baseline = [0.90, 0.92, 0.88, 0.91];
+      const current = [0.85, 0.87, 0.83, 0.86];
+      const looseResult = detectDrift(baseline, current, 5.0);
+      const tightResult = detectDrift(baseline, current, 1.0);
+      expect(looseResult.isDrifted).toBe(false);
+      expect(tightResult.isDrifted).toBe(true);
+    });
+  });
+estimatedMinutes: 15
+difficulty: intermediate

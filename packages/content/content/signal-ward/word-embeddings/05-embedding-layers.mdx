@@ -1,0 +1,225 @@
+---
+slug: embedding-layers
+title: "Training Custom Embedding Layers"
+moduleId: word-embeddings
+themeId: signal-ward
+order: 5
+estimatedMinutes: 30
+difficulty: intermediate
+context:
+  narrative: "Instead of using pre-trained vectors alone, the team builds a custom embedding layer inside Diagnostic One's neural network. The layer is a trainable lookup table — Map<string, Vector> where the vectors update during training."
+  speaker: "Obi"
+concept:
+  explanation: "An embedding layer is a trainable lookup table that maps integer token IDs to dense vectors. During training, backpropagation adjusts these vectors so that words useful for the task develop meaningful representations. You can initialize with pre-trained weights or train from scratch."
+  bridge:
+    feTitle: "Lookup Table / Map"
+    feCode: "const lookup = new Map<string, Vector>(); lookup.get('aspirin');"
+    mlTitle: "Embedding Layer"
+    mlCode: "tf.layers.embedding({ inputDim: vocabSize, outputDim: 64 });"
+    tier: structural
+consequence:
+  narrative: "Diagnostic One now has a trainable embedding layer initialized with medical vectors. As the model trains on hospital data, the embeddings fine-tune to capture institution-specific terminology."
+  nextLessonTeaser: "Next module: sequence models — because word order changes the meaning of clinical text."
+hints:
+  - level: nudge
+    content: "Create a sequential model with an embedding layer as the first layer, followed by a dense output layer."
+  - level: guidance
+    content: "Use tf.sequential(), add tf.layers.embedding, then tf.layers.globalAveragePooling1d, then tf.layers.dense. Compile and train."
+  - level: solution
+    content: "const model = tf.sequential(); model.add(tf.layers.embedding({inputDim, outputDim})); model.add(tf.layers.globalAveragePooling1d()); model.add(tf.layers.dense({units: 1, activation: 'sigmoid'}));"
+keywords:
+  - embedding-layer
+  - trainable-lookup
+  - fine-tuning
+  - transfer-learning
+---
+
+> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
+
+<Dialogue speaker="Obi">
+Santos, think of a Map in JavaScript. You pass in a key, you get back a value. An embedding layer is exactly that: you pass in a token ID, you get back a vector. The difference? During training, the vectors update automatically.
+</Dialogue>
+
+<Dialogue speaker="Santos">
+So it is like a Map where the values optimize themselves based on how well the model performs?
+</Dialogue>
+
+<Dialogue speaker="Obi">
+Precisely. Backpropagation adjusts the vectors so that words important for the task develop useful representations. And we can initialize the Map with our pre-trained medical vectors to give it a head start.
+</Dialogue>
+
+A `Map<string, Vector>` gives you instant lookup: pass in a key, get back a value. An embedding layer does the same with integer IDs, but the values are learnable parameters. During training, the network adjusts these vectors through backpropagation, so the embedding space evolves to serve the model's task.
+
+<LearningObjectives objectives={["Build a neural network with a trainable embedding layer in TensorFlow.js", "Initialize embedding weights from pre-trained vectors", "Understand the difference between frozen and fine-tuned embeddings", "Train a simple text classifier with an embedding layer"]} />
+
+## The Trainable Lookup Table
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="embedding-as-lookup.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// A JavaScript Map: key -> value (fixed)
+const jsLookup = new Map<number, number[]>();
+jsLookup.set(0, [0.1, -0.3, 0.5]);  // 'aspirin'
+jsLookup.set(1, [0.4, 0.2, -0.1]);  // 'ibuprofen'
+jsLookup.set(2, [-0.2, 0.7, 0.3]);  // 'penicillin'
+// Values never change
+
+// An embedding layer: tokenID -> vector (trainable)
+const embeddingLayer = tf.layers.embedding({
+  inputDim: 3,     // vocabulary size (number of keys)
+  outputDim: 3,    // vector dimensions (value size)
+});
+
+// Same lookup operation
+const tokenId = tf.tensor2d([[0]], [1, 1], 'int32');
+const vector = embeddingLayer.apply(tokenId) as tf.Tensor;
+vector.print(); // Random initial values — will be learned during training
+
+// Unlike the Map, these values update during training
+// to minimize the model's loss function.`}
+</CodeBlock>
+
+## Building a Model with an Embedding Layer
+
+<CodeBlock language="typescript" title="embedding-model.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+const vocabSize = 500;
+const embeddingDim = 32;
+const maxSeqLength = 20;
+
+// Build a simple clinical note classifier
+const model = tf.sequential();
+
+// Layer 1: Embedding — maps token IDs to dense vectors
+model.add(tf.layers.embedding({
+  inputDim: vocabSize,
+  outputDim: embeddingDim,
+  inputLength: maxSeqLength,
+}));
+
+// Layer 2: Average the word vectors into a single document vector
+model.add(tf.layers.globalAveragePooling1d());
+
+// Layer 3: Classify the document
+model.add(tf.layers.dense({
+  units: 1,
+  activation: 'sigmoid', // binary classification: allergy or not
+}));
+
+model.compile({
+  optimizer: 'adam',
+  loss: 'binaryCrossentropy',
+  metrics: ['accuracy'],
+});
+
+model.summary();
+// Layer 1: embedding — 500 * 32 = 16,000 trainable parameters
+// Layer 2: global_average_pooling1d — 0 parameters
+// Layer 3: dense — 33 parameters (32 weights + 1 bias)`}
+</CodeBlock>
+
+## Initializing with Pre-trained Weights
+
+<Dialogue speaker="MEDI">
+You can initialize the embedding layer with pre-trained medical vectors. Words that appear in your pre-trained data start with meaningful representations. Words not in the pre-trained set start with small random values and learn from your task-specific training data.
+</Dialogue>
+
+<CodeBlock language="typescript" title="pretrained-init.ts">
+{`// Simulated pre-trained medical vectors
+const pretrainedVectors: Record<string, number[]> = {
+  'aspirin':    [0.82, 0.21, -0.11],
+  'ibuprofen':  [0.74, 0.29, -0.18],
+  'penicillin': [-0.12, 0.81, 0.62],
+  'allergy':    [0.45, 0.67, -0.23],
+  'pain':       [0.55, -0.33, 0.22],
+};
+
+function buildEmbeddingMatrix(
+  vocab: Map<string, number>,
+  pretrained: Record<string, number[]>,
+  embeddingDim: number
+): number[][] {
+  const matrix: number[][] = [];
+
+  for (let i = 0; i < vocab.size; i++) {
+    // Default: small random values for unknown words
+    matrix.push(Array.from({ length: embeddingDim },
+      () => (Math.random() - 0.5) * 0.1
+    ));
+  }
+
+  // Overwrite with pre-trained vectors where available
+  let loaded = 0;
+  for (const [word, idx] of vocab) {
+    if (pretrained[word]) {
+      matrix[idx] = [...pretrained[word]];
+      loaded++;
+    }
+  }
+
+  console.log(loaded + '/' + vocab.size + ' words initialized from pre-trained vectors');
+  return matrix;
+}
+
+const vocab = new Map([
+  ['<PAD>', 0], ['<UNK>', 1], ['aspirin', 2],
+  ['ibuprofen', 3], ['penicillin', 4], ['allergy', 5], ['pain', 6],
+]);
+
+const weightMatrix = buildEmbeddingMatrix(vocab, pretrainedVectors, 3);`}
+</CodeBlock>
+
+## Frozen vs. Fine-tuned
+
+<CodeBlock language="typescript" title="frozen-vs-finetuned.ts">
+{`// Option 1: Frozen embeddings — do not update during training
+// Use when: small dataset, pre-trained vectors match your domain well
+const frozenModel = tf.sequential();
+frozenModel.add(tf.layers.embedding({
+  inputDim: vocab.size,
+  outputDim: 3,
+  weights: [tf.tensor2d(weightMatrix)],
+  trainable: false,  // locked — gradients will not flow here
+}));
+// Like importing a library and using it as-is
+
+// Option 2: Fine-tuned embeddings — allow small adjustments
+// Use when: large dataset, need to adapt pre-trained vectors to your task
+const fineTunedModel = tf.sequential();
+fineTunedModel.add(tf.layers.embedding({
+  inputDim: vocab.size,
+  outputDim: 3,
+  weights: [tf.tensor2d(weightMatrix)],
+  trainable: true,  // unlocked — will adjust during training
+}));
+// Like forking a library and customizing it
+
+// Option 3: From scratch — no pre-trained initialization
+// Use when: very large dataset, highly specialized domain
+const scratchModel = tf.sequential();
+scratchModel.add(tf.layers.embedding({
+  inputDim: vocab.size,
+  outputDim: 3,
+  // No weights — starts random, learns everything from your data
+}));
+// Like writing a library from scratch`}
+</CodeBlock>
+
+<Dialogue speaker="Dr. Vasquez">
+Which approach should we use for Diagnostic One?
+</Dialogue>
+
+<Dialogue speaker="Obi">
+We have about 50,000 annotated clinical notes. That is a medium-sized dataset. I recommend initializing with BioWordVec and fine-tuning — we get the benefit of pre-trained medical knowledge while letting the model adapt to our hospital's specific terminology and abbreviations.
+</Dialogue>
+
+## Challenge
+
+Build a neural network model with a trainable embedding layer and initialize it with pre-trained vectors.
+
+<Exercise slug="build-embedding-layer" />
+
+<KeyTakeaways takeaways={["An embedding layer is a trainable lookup table: Map<tokenID, Vector> where values update during training", "Initialize with pre-trained weights to give your model a head start on medical vocabulary", "Freeze embeddings for small datasets; fine-tune for large datasets; train from scratch for very large datasets", "The embedding layer is typically the first layer in a text classification neural network"]} />

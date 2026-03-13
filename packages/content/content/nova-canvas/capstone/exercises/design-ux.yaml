@@ -1,0 +1,72 @@
+slug: design-ux
+lessonSlug: user-experience-design
+title: "Design Visitor Flow"
+instructions: "Implement a state machine for a visitor journey through a gallery installation. States: approaching, observing, touching, creating, sharing. Each state has an allowed set of next states. Implement transition(trigger) that moves to the next valid state and returns the new state, or returns the current state if the transition is invalid."
+starterCode: |
+  type VisitorState = 'approaching' | 'observing' | 'touching' | 'creating' | 'sharing';
+
+  class VisitorJourney {
+    public state: VisitorState = 'approaching';
+    public history: VisitorState[] = ['approaching'];
+
+    transition(trigger: string): VisitorState {
+      // Define valid transitions:
+      // approaching + 'detect' → observing
+      // observing + 'touch' → touching
+      // touching + 'speak' → creating
+      // creating + 'complete' → sharing
+      // sharing + 'timeout' → approaching
+      // your code here
+      return this.state;
+    }
+  }
+solutionCode: |
+  class VisitorJourney {
+    public state: VisitorState = 'approaching';
+    public history: VisitorState[] = ['approaching'];
+
+    private transitions: Record<string, { from: VisitorState; to: VisitorState }> = {
+      detect: { from: 'approaching', to: 'observing' },
+      touch: { from: 'observing', to: 'touching' },
+      speak: { from: 'touching', to: 'creating' },
+      complete: { from: 'creating', to: 'sharing' },
+      timeout: { from: 'sharing', to: 'approaching' },
+    };
+
+    transition(trigger: string): VisitorState {
+      const t = this.transitions[trigger];
+      if (t && t.from === this.state) {
+        this.state = t.to;
+        this.history.push(this.state);
+      }
+      return this.state;
+    }
+  }
+testCode: |
+  describe('VisitorJourney', () => {
+    it('starts at approaching', () => {
+      const v = new VisitorJourney();
+      expect(v.state).toBe('approaching');
+    });
+    it('transitions through full journey', () => {
+      const v = new VisitorJourney();
+      expect(v.transition('detect')).toBe('observing');
+      expect(v.transition('touch')).toBe('touching');
+      expect(v.transition('speak')).toBe('creating');
+      expect(v.transition('complete')).toBe('sharing');
+      expect(v.transition('timeout')).toBe('approaching');
+    });
+    it('ignores invalid transitions', () => {
+      const v = new VisitorJourney();
+      expect(v.transition('touch')).toBe('approaching');
+      expect(v.transition('speak')).toBe('approaching');
+    });
+    it('tracks history', () => {
+      const v = new VisitorJourney();
+      v.transition('detect');
+      v.transition('touch');
+      expect(v.history).toEqual(['approaching', 'observing', 'touching']);
+    });
+  });
+estimatedMinutes: 12
+difficulty: advanced

@@ -1,0 +1,160 @@
+---
+slug: drift-response
+title: "Drift Response"
+moduleId: monitoring-drift
+themeId: terra-grid
+order: 5
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "Region 4 drift alert escalates to critical. Hassan leads the incident response — diagnose, mitigate, fix, and prevent recurrence. The same playbook as a production outage."
+  speaker: "Hassan Al-Rashid"
+concept:
+  explanation: "Drift incident response follows the same playbook as production incident response — detect, triage, mitigate, fix, and run a post-mortem."
+  bridge:
+    feTitle: "Incident Response"
+    feCode: "rollback(deployment, 'v2.1.3') // mitigate first, investigate second"
+    mlTitle: "Drift Response"
+    mlCode: "rollback(model, 'v2.1.0') // revert to last known good model"
+    tier: structural
+consequence:
+  narrative: "Region 4 accuracy restored to 95.8% within 2 hours. Post-mortem identifies the firmware update as root cause. New preprocessing pipeline handles the sensor scale change."
+  nextLessonTeaser: "Module 8: federated learning when data cannot be centralized"
+hints:
+  - level: nudge
+    content: "Think about your incident response runbook for production outages"
+  - level: guidance
+    content: "Follow the steps: detect → triage severity → mitigate (rollback) → diagnose root cause → fix → post-mortem"
+  - level: solution
+    content: "Rollback to the last known good model immediately, then diagnose whether the fix is preprocessing, retraining, or both"
+keywords:
+  - incident-response
+  - drift-remediation
+  - rollback
+  - post-mortem
+---
+
+<Dialogue speaker="Hassan Al-Rashid">
+This is why we monitor. Without drift detection, we would not have caught this for months. Region 4 accuracy is at 89.1% and dropping. We are treating this as a Severity 1 incident.
+</Dialogue>
+
+<Dialogue speaker="Cole Branson">
+I can roll back to the previous model in 12 minutes. That buys us time to investigate.
+</Dialogue>
+
+<Dialogue speaker="Park Soo-Yeon">
+Rolling back the model only helps if the old model handles the new data distribution. If the firmware changed the sensor scale, neither model works correctly until we fix the preprocessing.
+</Dialogue>
+
+You have been paged at 2 AM for a production outage. You know the drill: mitigate first (rollback the bad deploy), investigate second (find the root cause), fix third (ship the patch), and prevent fourth (post-mortem and safeguards). Drift incident response follows the same playbook.
+
+<LearningObjectives objectives={["Apply production incident response methodology to model drift incidents", "Execute rapid mitigation through model rollback or preprocessing adjustments", "Diagnose root causes by correlating drift signals with external events", "Run post-mortems that produce actionable prevention measures"]} />
+
+## The Incident Response Playbook
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="drift-response.ts">
+{`type IncidentPhase = 'detection' | 'triage' | 'mitigation' | 'diagnosis' | 'fix' | 'postmortem';
+
+interface DriftIncident {
+  id: string;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  phase: IncidentPhase;
+  region: string;
+  detectedAt: number;
+  metrics: {
+    baselineAccuracy: number;
+    currentAccuracy: number;
+    driftScore: number;
+    affectedDevices: number;
+  };
+  timeline: { phase: IncidentPhase; timestamp: number; action: string }[];
+}
+
+async function respondToDrift(incident: DriftIncident): Promise<void> {
+  // Phase 1: Triage — how bad is it?
+  incident.phase = 'triage';
+  const accuracyDrop = incident.metrics.baselineAccuracy - incident.metrics.currentAccuracy;
+
+  if (accuracyDrop > 0.05) {
+    incident.severity = 'critical';
+    await pageOnCall(\`Critical drift: Region \${incident.region}, accuracy -\${(accuracyDrop * 100).toFixed(1)}%\`);
+  }
+
+  incident.timeline.push({
+    phase: 'triage',
+    timestamp: Date.now(),
+    action: \`Severity: \${incident.severity}, accuracy drop: \${(accuracyDrop * 100).toFixed(1)}%\`,
+  });
+
+  // Phase 2: Mitigate — stop the bleeding
+  incident.phase = 'mitigation';
+  const previousModel = await registry.getByStage('terra-grid-intelligence', 'archived');
+
+  if (previousModel) {
+    await deployToRegion(previousModel, incident.region);
+    incident.timeline.push({
+      phase: 'mitigation',
+      timestamp: Date.now(),
+      action: \`Rolled back to \${previousModel.version}\`,
+    });
+  }
+
+  // Phase 3: Diagnose — what caused the drift?
+  incident.phase = 'diagnosis';
+  const driftReport = await analyzeDrift(incident.region);
+  const externalEvents = await getExternalEvents(incident.region, incident.detectedAt);
+
+  incident.timeline.push({
+    phase: 'diagnosis',
+    timestamp: Date.now(),
+    action: \`Root cause: \${driftReport.rootCause}. Correlated event: \${externalEvents[0]?.description}\`,
+  });
+}`}
+</CodeBlock>
+
+## Post-Mortem
+
+<CodeBlock language="typescript" title="postmortem.ts">
+{`interface PostMortem {
+  incidentId: string;
+  duration: { detected: number; mitigated: number; resolved: number };
+  impact: string;
+  rootCause: string;
+  fix: string;
+  preventionMeasures: string[];
+}
+
+function generatePostMortem(incident: DriftIncident): PostMortem {
+  const detection = incident.timeline.find(t => t.phase === 'triage')!;
+  const mitigation = incident.timeline.find(t => t.phase === 'mitigation')!;
+  const fix = incident.timeline.find(t => t.phase === 'fix');
+
+  return {
+    incidentId: incident.id,
+    duration: {
+      detected: detection.timestamp - incident.detectedAt,
+      mitigated: mitigation.timestamp - incident.detectedAt,
+      resolved: fix ? fix.timestamp - incident.detectedAt : 0,
+    },
+    impact: \`Region \${incident.region}: \${incident.metrics.affectedDevices} devices, accuracy degraded \${((incident.metrics.baselineAccuracy - incident.metrics.currentAccuracy) * 100).toFixed(1)}% for \${Math.round((mitigation.timestamp - incident.detectedAt) / 60000)} minutes\`,
+    rootCause: 'Sensor firmware v3.2 changed temperature output from Celsius to Kelvin. Preprocessing pipeline assumed Celsius.',
+    fix: 'Added firmware version detection to preprocessing. Temperature values auto-converted based on device firmware version.',
+    preventionMeasures: [
+      'Add firmware version to device telemetry metadata',
+      'Include unit validation in data ingestion pipeline',
+      'Create data drift alerts per firmware version cohort',
+      'Require preprocessing compatibility tests before firmware rollouts',
+    ],
+  };
+}`}
+</CodeBlock>
+
+## Challenge
+
+Handle a drift incident using the detect-mitigate-diagnose-fix playbook.
+
+<Exercise slug="respond-to-drift" />
+
+<KeyTakeaways takeaways={["Drift incident response follows production incident methodology: detect, triage, mitigate, diagnose, fix, post-mortem", "Mitigate first (rollback), investigate second — do not debug while accuracy is degrading in production", "Correlate drift signals with external events (firmware updates, seasonal changes, new data sources) to find root causes", "Post-mortems that produce prevention measures are the only way to avoid repeating the same drift incidents"]} />

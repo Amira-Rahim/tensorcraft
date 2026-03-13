@@ -1,0 +1,102 @@
+slug: monitor-failover
+lessonSlug: monitoring-failover
+title: "Circuit Breaker"
+instructions: "Implement a CircuitBreaker class with three states: closed (normal), open (failing, use fallback), and half-open (testing recovery). The breaker opens after a threshold number of failures and resets after a timeout period. Execute takes an async function and a fallback function."
+starterCode: |
+  class CircuitBreaker {
+    private failureCount = 0;
+    private lastFailure = 0;
+    private state: 'closed' | 'open' | 'half-open' = 'closed';
+    private threshold: number;
+    private resetTimeMs: number;
+
+    constructor(threshold: number = 3, resetTimeMs: number = 5000) {
+      this.threshold = threshold;
+      this.resetTimeMs = resetTimeMs;
+    }
+
+    async execute<T>(fn: () => Promise<T>, fallback: () => T): Promise<T> {
+      // If open and reset time elapsed, try half-open
+      // If open and not elapsed, return fallback
+      // Try fn, on success reset if half-open
+      // On failure, increment count, open if threshold reached
+      // your code here
+      return fallback();
+    }
+
+    getState(): string { return this.state; }
+  }
+solutionCode: |
+  class CircuitBreaker {
+    private failureCount = 0;
+    private lastFailure = 0;
+    private state: 'closed' | 'open' | 'half-open' = 'closed';
+    private threshold: number;
+    private resetTimeMs: number;
+
+    constructor(threshold: number = 3, resetTimeMs: number = 5000) {
+      this.threshold = threshold;
+      this.resetTimeMs = resetTimeMs;
+    }
+
+    async execute<T>(fn: () => Promise<T>, fallback: () => T): Promise<T> {
+      if (this.state === 'open') {
+        if (Date.now() - this.lastFailure > this.resetTimeMs) {
+          this.state = 'half-open';
+        } else {
+          return fallback();
+        }
+      }
+      try {
+        const result = await fn();
+        if (this.state === 'half-open') {
+          this.state = 'closed';
+          this.failureCount = 0;
+        }
+        return result;
+      } catch (err) {
+        this.failureCount++;
+        this.lastFailure = Date.now();
+        if (this.failureCount >= this.threshold) {
+          this.state = 'open';
+        }
+        return fallback();
+      }
+    }
+
+    getState(): string { return this.state; }
+  }
+testCode: |
+  describe('CircuitBreaker', () => {
+    it('starts closed', () => {
+      const cb = new CircuitBreaker(3, 100);
+      expect(cb.getState()).toBe('closed');
+    });
+    it('stays closed on success', async () => {
+      const cb = new CircuitBreaker(3, 100);
+      await cb.execute(async () => 'ok', () => 'fallback');
+      expect(cb.getState()).toBe('closed');
+    });
+    it('opens after threshold failures', async () => {
+      const cb = new CircuitBreaker(2, 100);
+      const fail = async () => { throw new Error('fail'); };
+      await cb.execute(fail, () => 'fb');
+      await cb.execute(fail, () => 'fb');
+      expect(cb.getState()).toBe('open');
+    });
+    it('returns fallback when open', async () => {
+      const cb = new CircuitBreaker(1, 100000);
+      await cb.execute(async () => { throw new Error(); }, () => 'fb');
+      const result = await cb.execute(async () => 'ok', () => 'fallback');
+      expect(result).toBe('fallback');
+    });
+    it('recovers to closed on success in half-open', async () => {
+      const cb = new CircuitBreaker(1, 10);
+      await cb.execute(async () => { throw new Error(); }, () => 'fb');
+      await new Promise(r => setTimeout(r, 20));
+      await cb.execute(async () => 'recovered', () => 'fb');
+      expect(cb.getState()).toBe('closed');
+    });
+  });
+estimatedMinutes: 15
+difficulty: advanced

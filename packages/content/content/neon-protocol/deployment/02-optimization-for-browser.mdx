@@ -1,0 +1,203 @@
+---
+slug: optimization-for-browser
+title: "Optimization for Browser"
+moduleId: deployment
+themeId: neon-protocol
+order: 2
+estimatedMinutes: 30
+difficulty: intermediate
+context:
+  narrative: "Lin reports from District 4: Protocol Sentinel takes 12 seconds to load on her device. Ryo runs the numbers — 45MB of weights. For a resistance network running on salvaged hardware, that is a death sentence. NEON: 'Trim the fat. Keep the signal.'"
+  speaker: "Ryo"
+concept:
+  explanation: "Model optimization for the browser is like webpack tree-shaking for neural networks. Tree-shaking removes unused code paths to shrink your bundle. Quantization and pruning remove unnecessary precision and redundant connections to shrink your model — same goal, same intuition, different domain."
+  bridge:
+    feTitle: "Webpack Tree-Shaking"
+    feCode: "// webpack removes unused exports\nexport function used() { ... }\nexport function unused() { ... } // stripped in production"
+    mlTitle: "Model Pruning"
+    mlCode: "// Pruning removes low-impact weights\nconst pruned = await pruneModel(model, { sparsity: 0.5 }); // 50% of weights zeroed"
+    tier: structural
+consequence:
+  narrative: "The optimized model drops from 45MB to 11MB. Load time on Lin's device: 2.8 seconds. Accuracy loss: 0.3%. Ryo exhales. NEON: 'Acceptable trade-off. Now every resistance node in Neon City can run Sentinel.'"
+  nextLessonTeaser: "Next: building the inference API so other resistance systems can call Sentinel"
+hints:
+  - level: nudge
+    content: "Quantization reduces float32 weights to float16 or uint8 — halving or quartering the model size"
+  - level: guidance
+    content: "Use tf.io.withSaveHandler to apply quantization during export. For pruning, zero out weights below a threshold and retrain briefly."
+  - level: solution
+    content: "await model.save('downloads://sentinel', { weightDataQuantizationBits: 16 }); // float16 quantization halves the file size"
+keywords:
+  - quantization
+  - pruning
+  - optimization
+  - model-size
+  - float16
+---
+
+<Dialogue speaker="Ryo">
+Forty-five megabytes. That is the model size. Lin's device in District 4 takes twelve seconds just to download the weights. Half the resistance is running on hardware Meridian discarded. We need to cut this down without killing accuracy.
+</Dialogue>
+
+<Dialogue speaker="NEON">
+You have done this before. Every production web application trims its bundle — dead code elimination, tree-shaking, minification. A neural network is no different. Remove what the model does not need. Keep what it does.
+</Dialogue>
+
+A model that is too large to load is a model that does not exist in the field. Browser-based ML has hard constraints: network bandwidth, memory limits, cold start time. Optimization makes the difference between a usable tool and a tech demo.
+
+<LearningObjectives objectives={["Apply post-training quantization to reduce model size by 2-4x", "Implement weight pruning to remove low-impact connections", "Measure the accuracy-size trade-off after optimization", "Choose the right optimization strategy for browser deployment constraints"]} />
+
+## Tree-Shaking for Neural Networks
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+In frontend builds, tree-shaking analyzes your dependency graph and strips code that is never called. Model optimization applies the same logic to neural networks: quantization reduces the precision of every weight (like minification), and pruning removes weights that contribute almost nothing to the output (like dead code elimination).
+
+<CodeBlock language="typescript" title="quantization.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Load the full-precision model (float32 — 4 bytes per weight)
+const model = await tf.loadLayersModel('/models/sentinel/model.json');
+
+// Check original size
+const originalWeights = model.getWeights();
+const originalBytes = originalWeights.reduce(
+  (sum, w) => sum + w.size * 4, 0  // float32 = 4 bytes
+);
+console.log('Original size:', (originalBytes / 1024 / 1024).toFixed(1), 'MB');
+
+// Save with float16 quantization (2 bytes per weight — 50% reduction)
+await model.save('downloads://sentinel-q16', {
+  weightDataQuantizationBits: 16
+});
+
+// Save with uint8 quantization (1 byte per weight — 75% reduction)
+await model.save('downloads://sentinel-q8', {
+  weightDataQuantizationBits: 8
+});
+
+// Compare: 45MB → 22.5MB (float16) → 11.25MB (uint8)`}
+</CodeBlock>
+
+## Weight Pruning
+
+Pruning zeros out weights that are close to zero — they contribute almost nothing to the model's decisions. After pruning, you retrain briefly to recover any lost accuracy.
+
+<CodeBlock language="typescript" title="pruning.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+function pruneWeights(
+  model: tf.LayersModel,
+  sparsityTarget: number
+): tf.LayersModel {
+  const weights = model.getWeights();
+
+  const pruned = weights.map(weightTensor => {
+    return tf.tidy(() => {
+      const absWeights = weightTensor.abs();
+      const flat = absWeights.reshape([-1]);
+      const sorted = tf.topk(flat, flat.size).values;
+
+      // Find the threshold: bottom X% of weights get zeroed
+      const cutoffIndex = Math.floor(flat.size * sparsityTarget);
+      const thresholdValue = sorted.slice(
+        [sorted.size - cutoffIndex - 1], [1]
+      );
+      const threshold = thresholdValue.dataSync()[0];
+
+      // Create binary mask: 1 where weight > threshold, 0 otherwise
+      const mask = absWeights.greater(threshold).cast('float32');
+      return weightTensor.mul(mask);
+    });
+  });
+
+  model.setWeights(pruned);
+  return model;
+}
+
+// Prune 50% of smallest weights
+const prunedModel = pruneWeights(model, 0.5);
+
+// Fine-tune to recover accuracy (a few epochs with low learning rate)
+prunedModel.compile({
+  optimizer: tf.train.adam(0.0001),
+  loss: 'categoricalCrossentropy',
+  metrics: ['accuracy']
+});`}
+</CodeBlock>
+
+## Measuring the Trade-Off
+
+Every optimization has a cost. You need to measure it.
+
+<CodeBlock language="typescript" title="benchmark.ts">
+{`interface OptimizationResult {
+  label: string;
+  sizeBytes: number;
+  sizeMB: number;
+  accuracy: number;
+  loadTimeMs: number;
+  inferenceTimeMs: number;
+}
+
+async function benchmarkModel(
+  modelPath: string,
+  testData: tf.Tensor,
+  testLabels: tf.Tensor,
+  label: string
+): Promise<OptimizationResult> {
+  // Measure load time
+  const loadStart = performance.now();
+  const model = await tf.loadLayersModel(modelPath);
+  const loadTimeMs = performance.now() - loadStart;
+
+  // Measure size
+  const weights = model.getWeights();
+  const sizeBytes = weights.reduce((sum, w) => sum + w.size * 4, 0);
+
+  // Measure accuracy
+  const predictions = model.predict(testData) as tf.Tensor;
+  const predLabels = predictions.argMax(-1);
+  const trueLabels = testLabels.argMax(-1);
+  const correct = predLabels.equal(trueLabels).sum();
+  const accuracy = (await correct.data())[0] / testLabels.shape[0];
+
+  // Measure inference time (average of 100 runs)
+  const sample = testData.slice([0], [1]);
+  const times: number[] = [];
+  for (let i = 0; i < 100; i++) {
+    const start = performance.now();
+    const pred = model.predict(sample) as tf.Tensor;
+    await pred.data(); // force sync
+    times.push(performance.now() - start);
+    pred.dispose();
+  }
+  const inferenceTimeMs = times.reduce((a, b) => a + b, 0) / times.length;
+
+  return {
+    label,
+    sizeBytes,
+    sizeMB: sizeBytes / 1024 / 1024,
+    accuracy,
+    loadTimeMs,
+    inferenceTimeMs
+  };
+}
+
+// Compare original vs optimized
+const results = await Promise.all([
+  benchmarkModel('/models/sentinel/model.json', testX, testY, 'float32'),
+  benchmarkModel('/models/sentinel-q16/model.json', testX, testY, 'float16'),
+  benchmarkModel('/models/sentinel-q8/model.json', testX, testY, 'uint8'),
+]);
+
+console.table(results);`}
+</CodeBlock>
+
+## Challenge
+
+Apply quantization to reduce a model's size and measure the accuracy impact.
+
+<Exercise slug="optimize-for-browser" />
+
+<KeyTakeaways takeaways={["Quantization reduces weight precision from float32 to float16 or uint8, cutting model size by 2-4x", "Pruning zeros out low-magnitude weights — the neural network equivalent of tree-shaking", "Every optimization involves an accuracy-size trade-off that must be measured", "For browser deployment, the right optimization strategy depends on your device constraints and accuracy requirements"]} />

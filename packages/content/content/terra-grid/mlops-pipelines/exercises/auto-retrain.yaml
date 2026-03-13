@@ -1,0 +1,66 @@
+slug: auto-retrain
+lessonSlug: automated-retraining
+title: "Configure Retraining Triggers"
+instructions: "Write a function evaluateTriggers that takes an array of trigger objects, each with name (string), condition (function returning boolean), and cooldownMs (number), plus a lastFiredMap (Record<string, number>) and the current time (number). Return the name of the first trigger whose condition is true AND whose cooldown has elapsed (currentTime - lastFired >= cooldownMs), or null if none fire. Update lastFiredMap for the fired trigger."
+starterCode: |
+  interface Trigger {
+    name: string;
+    condition: () => boolean;
+    cooldownMs: number;
+  }
+
+  function evaluateTriggers(
+    triggers: Trigger[],
+    lastFiredMap: Record<string, number>,
+    currentTime: number,
+  ): string | null {
+    // Your code here
+    return null;
+  }
+solutionCode: |
+  interface Trigger {
+    name: string;
+    condition: () => boolean;
+    cooldownMs: number;
+  }
+
+  function evaluateTriggers(
+    triggers: Trigger[],
+    lastFiredMap: Record<string, number>,
+    currentTime: number,
+  ): string | null {
+    for (const trigger of triggers) {
+      const lastFired = lastFiredMap[trigger.name] || 0;
+      if (currentTime - lastFired < trigger.cooldownMs) continue;
+      if (trigger.condition()) {
+        lastFiredMap[trigger.name] = currentTime;
+        return trigger.name;
+      }
+    }
+    return null;
+  }
+testCode: |
+  describe('evaluateTriggers', () => {
+    it('fires when condition is true and cooldown elapsed', () => {
+      const triggers = [{ name: 'drift', condition: () => true, cooldownMs: 1000 }];
+      const map = {};
+      expect(evaluateTriggers(triggers, map, 5000)).toBe('drift');
+    });
+    it('respects cooldown', () => {
+      const triggers = [{ name: 'drift', condition: () => true, cooldownMs: 1000 }];
+      const map = { drift: 4500 };
+      expect(evaluateTriggers(triggers, map, 5000)).toBeNull();
+    });
+    it('returns null when no conditions met', () => {
+      const triggers = [{ name: 'drift', condition: () => false, cooldownMs: 1000 }];
+      expect(evaluateTriggers(triggers, {}, 5000)).toBeNull();
+    });
+    it('updates lastFiredMap', () => {
+      const triggers = [{ name: 'drift', condition: () => true, cooldownMs: 1000 }];
+      const map = {};
+      evaluateTriggers(triggers, map, 5000);
+      expect(map['drift']).toBe(5000);
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

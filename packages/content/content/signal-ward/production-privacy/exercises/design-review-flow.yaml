@@ -1,0 +1,197 @@
+slug: design-review-flow
+lessonSlug: human-in-the-loop
+title: "Design a Human Review Workflow"
+instructions: "Implement a ReviewFlow class that routes predictions to one of three tiers based on confidence: 'auto_surface' (confidence >= autoThreshold), 'needs_review' (confidence >= reviewThreshold), or 'suppress' (below reviewThreshold). The class should track counts per tier, maintain a review queue for 'needs_review' predictions, allow recording decisions (approve/reject), and provide a summary with total count, per-tier counts, review rate (needs_review / total), and approval rate (approved / total decisions, 0 if no decisions)."
+starterCode: |
+  type Tier = 'auto_surface' | 'needs_review' | 'suppress';
+
+  interface Prediction {
+    id: string;
+    label: string;
+    confidence: number;
+  }
+
+  interface RoutingResult {
+    prediction: Prediction;
+    tier: Tier;
+  }
+
+  interface Decision {
+    predictionId: string;
+    action: 'approve' | 'reject';
+  }
+
+  class ReviewFlow {
+    private autoThreshold: number;
+    private reviewThreshold: number;
+    private counts: Record<Tier, number> = { auto_surface: 0, needs_review: 0, suppress: 0 };
+    private reviewQueue: Prediction[] = [];
+    private decisions: Decision[] = [];
+
+    constructor(autoThreshold: number = 0.95, reviewThreshold: number = 0.7) {
+      this.autoThreshold = autoThreshold;
+      this.reviewThreshold = reviewThreshold;
+    }
+
+    route(prediction: Prediction): RoutingResult {
+      // Route to correct tier based on confidence thresholds
+      // Increment the appropriate counter
+      // If tier is 'needs_review', add to reviewQueue
+      return null as any; // your code here
+    }
+
+    recordDecision(decision: Decision): void {
+      // Remove prediction from reviewQueue and store the decision
+      // your code here
+    }
+
+    getSummary(): {
+      total: number;
+      counts: Record<Tier, number>;
+      reviewRate: number;
+      approvalRate: number;
+      pendingReviews: number;
+    } {
+      // total = sum of all tier counts
+      // reviewRate = needs_review / total (0 if total is 0)
+      // approvalRate = approved decisions / total decisions (0 if no decisions)
+      // pendingReviews = current length of reviewQueue
+      return null as any; // your code here
+    }
+  }
+solutionCode: |
+  type Tier = 'auto_surface' | 'needs_review' | 'suppress';
+
+  interface Prediction {
+    id: string;
+    label: string;
+    confidence: number;
+  }
+
+  interface RoutingResult {
+    prediction: Prediction;
+    tier: Tier;
+  }
+
+  interface Decision {
+    predictionId: string;
+    action: 'approve' | 'reject';
+  }
+
+  class ReviewFlow {
+    private autoThreshold: number;
+    private reviewThreshold: number;
+    private counts: Record<Tier, number> = { auto_surface: 0, needs_review: 0, suppress: 0 };
+    private reviewQueue: Prediction[] = [];
+    private decisions: Decision[] = [];
+
+    constructor(autoThreshold: number = 0.95, reviewThreshold: number = 0.7) {
+      this.autoThreshold = autoThreshold;
+      this.reviewThreshold = reviewThreshold;
+    }
+
+    route(prediction: Prediction): RoutingResult {
+      let tier: Tier;
+      if (prediction.confidence >= this.autoThreshold) {
+        tier = 'auto_surface';
+      } else if (prediction.confidence >= this.reviewThreshold) {
+        tier = 'needs_review';
+      } else {
+        tier = 'suppress';
+      }
+      this.counts[tier]++;
+      if (tier === 'needs_review') {
+        this.reviewQueue.push(prediction);
+      }
+      return { prediction, tier };
+    }
+
+    recordDecision(decision: Decision): void {
+      this.reviewQueue = this.reviewQueue.filter(p => p.id !== decision.predictionId);
+      this.decisions.push(decision);
+    }
+
+    getSummary(): {
+      total: number;
+      counts: Record<Tier, number>;
+      reviewRate: number;
+      approvalRate: number;
+      pendingReviews: number;
+    } {
+      const total = this.counts.auto_surface + this.counts.needs_review + this.counts.suppress;
+      const approved = this.decisions.filter(d => d.action === 'approve').length;
+      return {
+        total,
+        counts: { ...this.counts },
+        reviewRate: total > 0 ? this.counts.needs_review / total : 0,
+        approvalRate: this.decisions.length > 0 ? approved / this.decisions.length : 0,
+        pendingReviews: this.reviewQueue.length,
+      };
+    }
+  }
+testCode: |
+  describe('ReviewFlow', () => {
+    it('routes high confidence to auto_surface', () => {
+      const flow = new ReviewFlow(0.95, 0.7);
+      const result = flow.route({ id: '1', label: 'urgent', confidence: 0.98 });
+      expect(result.tier).toBe('auto_surface');
+    });
+
+    it('routes medium confidence to needs_review', () => {
+      const flow = new ReviewFlow(0.95, 0.7);
+      const result = flow.route({ id: '2', label: 'normal', confidence: 0.82 });
+      expect(result.tier).toBe('needs_review');
+    });
+
+    it('routes low confidence to suppress', () => {
+      const flow = new ReviewFlow(0.95, 0.7);
+      const result = flow.route({ id: '3', label: 'unknown', confidence: 0.45 });
+      expect(result.tier).toBe('suppress');
+    });
+
+    it('tracks counts correctly', () => {
+      const flow = new ReviewFlow(0.9, 0.5);
+      flow.route({ id: '1', label: 'a', confidence: 0.95 });
+      flow.route({ id: '2', label: 'b', confidence: 0.6 });
+      flow.route({ id: '3', label: 'c', confidence: 0.3 });
+      flow.route({ id: '4', label: 'd', confidence: 0.7 });
+      const summary = flow.getSummary();
+      expect(summary.total).toBe(4);
+      expect(summary.counts.auto_surface).toBe(1);
+      expect(summary.counts.needs_review).toBe(2);
+      expect(summary.counts.suppress).toBe(1);
+    });
+
+    it('computes review rate', () => {
+      const flow = new ReviewFlow(0.9, 0.5);
+      flow.route({ id: '1', label: 'a', confidence: 0.6 });
+      flow.route({ id: '2', label: 'b', confidence: 0.6 });
+      flow.route({ id: '3', label: 'c', confidence: 0.95 });
+      flow.route({ id: '4', label: 'd', confidence: 0.3 });
+      expect(flow.getSummary().reviewRate).toBe(0.5);
+    });
+
+    it('tracks pending reviews and decisions', () => {
+      const flow = new ReviewFlow(0.9, 0.5);
+      flow.route({ id: '1', label: 'a', confidence: 0.7 });
+      flow.route({ id: '2', label: 'b', confidence: 0.6 });
+      expect(flow.getSummary().pendingReviews).toBe(2);
+
+      flow.recordDecision({ predictionId: '1', action: 'approve' });
+      expect(flow.getSummary().pendingReviews).toBe(1);
+      expect(flow.getSummary().approvalRate).toBe(1);
+    });
+
+    it('computes approval rate across decisions', () => {
+      const flow = new ReviewFlow(0.9, 0.5);
+      flow.route({ id: '1', label: 'a', confidence: 0.7 });
+      flow.route({ id: '2', label: 'b', confidence: 0.6 });
+      flow.route({ id: '3', label: 'c', confidence: 0.55 });
+      flow.recordDecision({ predictionId: '1', action: 'approve' });
+      flow.recordDecision({ predictionId: '2', action: 'reject' });
+      flow.recordDecision({ predictionId: '3', action: 'approve' });
+      expect(flow.getSummary().approvalRate).toBeCloseTo(2 / 3);
+    });
+  });
+estimatedMinutes: 15
+difficulty: intermediate

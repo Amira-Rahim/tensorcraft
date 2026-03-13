@@ -1,0 +1,227 @@
+---
+slug: triage-system
+title: "Building the Complete Triage Pipeline"
+moduleId: text-classification
+themeId: signal-ward
+order: 5
+estimatedMinutes: 30
+difficulty: intermediate
+context:
+  narrative: "With urgency detection, department routing, multi-label tagging, and calibration in place, the team builds the full triage pipeline that handles every document entering Signal Ward."
+  speaker: "Santos"
+concept:
+  explanation: "A triage pipeline chains multiple classifiers together — urgency detection, department routing, and multi-label tagging — with confidence-gated human review at each stage."
+  bridge:
+    feTitle: "Priority Queue (urgent items first)"
+    feCode: "// queue.enqueue(task, priority)\n// High-priority items processed first\n// Unknown priority → manual review"
+    mlTitle: "Triage Pipeline"
+    mlCode: "// pipeline.classify(doc) → urgency, dept, tags\n// High urgency → fast-tracked\n// Low confidence → human review"
+    tier: structural
+consequence:
+  narrative: "The triage pipeline is operational. MEDI processes incoming documents in seconds, routing urgent cases immediately and flagging uncertain ones for human review. The ward runs faster and safer."
+  nextLessonTeaser: "The text-classification module is complete. Your triage system is live."
+hints:
+  - level: nudge
+    content: "Chain the classifiers in order: urgency first, then department routing, then tagging"
+  - level: guidance
+    content: "Add confidence gates between stages — below threshold routes to human review"
+  - level: solution
+    content: "Create a TriagePipeline class that runs urgency → routing → tagging with confidence checks at each step"
+keywords:
+  - triage
+  - pipeline
+  - priority-queue
+  - confidence-gating
+  - clinical-workflow
+---
+
+<Dialogue speaker="Santos">
+We have the pieces: urgency detection, department routing, multi-label tagging, and confidence calibration. Now we need to wire them into a single pipeline that handles every document hitting the ward.
+</Dialogue>
+
+<Dialogue speaker="Khalil Mensah">
+It's like building a priority queue with middleware. Each document enters the pipeline, gets classified at multiple stages, and exits with a complete triage profile. Uncertain cases get dequeued for human review instead of being auto-processed.
+</Dialogue>
+
+<LearningObjectives objectives={["Design a multi-stage triage pipeline combining urgency, routing, and tagging", "Implement confidence-gated routing with human-review fallback", "Handle edge cases: ambiguous documents, rare conditions, and system failures", "Evaluate end-to-end pipeline performance with clinically meaningful metrics"]} />
+
+## The Full Pipeline
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+A priority queue processes high-priority items first. A triage pipeline does the same — but each item also gets classified, routed, and tagged along the way. At any stage, if the model isn't confident enough, the document drops out of the automated pipeline and into a human review queue.
+
+<CodeBlock language="typescript" title="triage-pipeline.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+interface TriageResult {
+  documentId: string;
+  urgency: { label: string; score: number };
+  department: { label: string; score: number };
+  tags: { label: string; score: number }[];
+  needsReview: boolean;
+  reviewReasons: string[];
+}
+
+const URGENCY_LABELS = ['ROUTINE', 'URGENT'];
+const DEPARTMENTS = [
+  'CARDIOLOGY', 'RADIOLOGY', 'ONCOLOGY',
+  'NEUROLOGY', 'GENERAL_MEDICINE', 'EMERGENCY'
+];
+const CLINICAL_TAGS = [
+  'CARDIAC', 'RESPIRATORY', 'RENAL', 'NEUROLOGICAL',
+  'INFECTIOUS', 'ONCOLOGICAL', 'PAIN_MANAGEMENT', 'EMERGENCY'
+];
+
+class TriagePipeline {
+  private urgencyModel: tf.LayersModel;
+  private routingModel: tf.LayersModel;
+  private taggingModel: tf.LayersModel;
+
+  // Confidence thresholds — clinical decisions, not hyperparameters
+  private urgencyThreshold = 0.3;  // Low: catch all urgent cases
+  private routingThreshold = 0.6;  // Moderate: need reasonable certainty
+  private taggingThreshold = 0.5;  // Standard: per-label decision
+  private reviewThreshold = 0.7;   // Below this → human review
+
+  constructor(
+    urgencyModel: tf.LayersModel,
+    routingModel: tf.LayersModel,
+    taggingModel: tf.LayersModel
+  ) {
+    this.urgencyModel = urgencyModel;
+    this.routingModel = routingModel;
+    this.taggingModel = taggingModel;
+  }
+
+  async classify(
+    documentId: string,
+    embedding: tf.Tensor2D
+  ): Promise<TriageResult> {
+    const reviewReasons: string[] = [];
+
+    // Stage 1: Urgency detection (binary)
+    const urgencyScore = (
+      this.urgencyModel.predict(embedding) as tf.Tensor
+    ).dataSync()[0];
+    const urgencyLabel = urgencyScore > this.urgencyThreshold
+      ? 'URGENT' : 'ROUTINE';
+
+    if (urgencyScore > 0.3 && urgencyScore < 0.7) {
+      reviewReasons.push('Ambiguous urgency score');
+    }
+
+    // Stage 2: Department routing (multi-class)
+    const routingProbs = this.routingModel.predict(embedding) as tf.Tensor;
+    const deptIdx = routingProbs.argMax(-1).dataSync()[0];
+    const deptScore = routingProbs.max().dataSync()[0];
+    const deptLabel = DEPARTMENTS[deptIdx];
+
+    if (deptScore < this.reviewThreshold) {
+      reviewReasons.push(
+        \`Low department confidence: \${(deptScore * 100).toFixed(1)}%\`
+      );
+    }
+
+    // Stage 3: Multi-label tagging
+    const tagScores = await (
+      this.taggingModel.predict(embedding) as tf.Tensor
+    ).data();
+    const tags = CLINICAL_TAGS
+      .map((label, i) => ({ label, score: tagScores[i] }))
+      .filter(t => t.score > this.taggingThreshold);
+
+    if (tags.length === 0) {
+      reviewReasons.push('No clinical tags above threshold');
+    }
+
+    return {
+      documentId,
+      urgency: { label: urgencyLabel, score: urgencyScore },
+      department: { label: deptLabel, score: deptScore },
+      tags,
+      needsReview: reviewReasons.length > 0,
+      reviewReasons
+    };
+  }
+}
+
+// Usage
+// const pipeline = new TriagePipeline(urgencyModel, routingModel, taggingModel);
+// const result = await pipeline.classify('DOC-2847', docEmbedding);
+// if (result.needsReview) {
+//   humanReviewQueue.enqueue(result);
+// } else if (result.urgency.label === 'URGENT') {
+//   fastTrack(result);
+// } else {
+//   routeToDepartment(result);
+// }`}
+</CodeBlock>
+
+## Processing the Queue
+
+<Dialogue speaker="Dr. Elena Vasquez">
+Show me the flow. A document arrives — what happens?
+</Dialogue>
+
+<Dialogue speaker="MEDI">
+Step one: urgency check. If the threshold is crossed, the document is fast-tracked. Step two: department routing. The document is sent to the most likely department. Step three: tagging. All relevant clinical tags are applied. At any step, if my confidence drops below the review threshold, I flag it for a human physician.
+</Dialogue>
+
+<CodeBlock language="typescript" title="process-queue.ts">
+{`interface QueueItem {
+  documentId: string;
+  embedding: tf.Tensor2D;
+  arrivedAt: number;
+}
+
+async function processQueue(
+  queue: QueueItem[],
+  pipeline: TriagePipeline
+): Promise<{ automated: TriageResult[]; review: TriageResult[] }> {
+  const automated: TriageResult[] = [];
+  const review: TriageResult[] = [];
+
+  for (const item of queue) {
+    const result = await pipeline.classify(item.documentId, item.embedding);
+
+    if (result.needsReview) {
+      review.push(result);
+    } else {
+      automated.push(result);
+    }
+  }
+
+  // Sort automated results: urgent first (priority queue behavior)
+  automated.sort((a, b) => b.urgency.score - a.urgency.score);
+
+  console.log(\`Processed: \${queue.length} documents\`);
+  console.log(\`  Automated: \${automated.length}\`);
+  console.log(\`  Needs review: \${review.length}\`);
+  console.log(\`  Automation rate: \${
+    ((automated.length / queue.length) * 100).toFixed(1)
+  }%\`);
+
+  return { automated, review };
+}`}
+</CodeBlock>
+
+## Measuring What Matters
+
+<Dialogue speaker="Dr. Elena Vasquez">
+I don't care about overall accuracy. Tell me: how many urgent documents did we miss? How many got sent to the wrong department? Those are the numbers that save lives.
+</Dialogue>
+
+Clinical metrics focus on harm prevention:
+- **Urgent recall**: What percentage of truly urgent documents did we catch?
+- **Misroute rate**: What percentage of documents went to the wrong department?
+- **Review rate**: What percentage needed human intervention?
+- **Time-to-physician**: How quickly did urgent findings reach a doctor?
+
+## Challenge
+
+Build the complete triage pipeline that chains urgency detection, department routing, and multi-label tagging with confidence-gated human review.
+
+<Exercise slug="build-triage" />
+
+<KeyTakeaways takeaways={["A triage pipeline chains multiple classifiers: urgency, routing, and tagging", "Confidence gates at each stage route uncertain predictions to human review", "Priority queue ordering ensures urgent documents are processed first", "Clinical evaluation metrics focus on harm prevention: missed urgencies, misroutes, and time-to-physician"]} />

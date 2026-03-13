@@ -1,0 +1,252 @@
+---
+slug: hardening-sentinel
+title: "Hardening Sentinel"
+moduleId: deployment
+themeId: neon-protocol
+order: 5
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "Final preparations. Ryo runs Protocol Sentinel through every worst-case scenario: corrupted inputs, memory pressure, network drops, concurrent feeds. If Sentinel fails in the field, the resistance pays the price. NEON: 'Break it here, so it does not break out there.'"
+  speaker: "Ryo"
+concept:
+  explanation: "Stress-testing and hardening a deployed ML system is load testing for models. Just like you use k6 or Artillery to push your APIs to their limits before launch, you need to stress-test your model: flood it with requests, feed it garbage data, starve it of memory, and verify it degrades gracefully."
+  bridge:
+    feTitle: "Load Testing APIs (k6, Artillery)"
+    feCode: "// k6 script\nexport default function() {\n  http.get('http://api.example.com/health');\n  check(res, { 'status is 200': (r) => r.status === 200 });\n}"
+    mlTitle: "Load Testing Models"
+    mlCode: "// Stress test: concurrent predictions\nconst results = await Promise.all(\n  Array(50).fill(null).map(() => sentinel.predict(randomInput))\n);\nassert(results.every(r => r.confidence >= 0));"
+    tier: structural
+consequence:
+  narrative: "Sentinel survives every test. Memory stays stable under 200 concurrent requests. Corrupted inputs return errors instead of crashes. Timeout handling works. Ryo marks the system as deployment-ready. NEON: 'Protocol Sentinel is hardened. Deploy to all districts.'"
+  nextLessonTeaser: "The deployment module is complete. Protocol Sentinel is production-ready."
+hints:
+  - level: nudge
+    content: "Think about what can go wrong: invalid inputs, memory leaks from undisposed tensors, concurrent access, and slow predictions"
+  - level: guidance
+    content: "Write functions that test each failure mode: send a zero-sized tensor, send 100 concurrent requests, monitor tf.memory() for leaks, and set prediction timeouts"
+  - level: solution
+    content: "Create a test suite that validates error handling for bad inputs, measures memory before and after 1000 predictions, runs concurrent stress tests, and checks that timeouts abort long-running predictions."
+keywords:
+  - stress-testing
+  - hardening
+  - load-testing
+  - error-handling
+  - memory-leaks
+  - resilience
+---
+
+<Dialogue speaker="Ryo">
+Before we deploy to all districts, I want to break it. Every edge case. Every failure mode. Corrupted camera feeds. Memory pressure. Fifty concurrent users. If Sentinel crashes in the field, people get caught.
+</Dialogue>
+
+<Dialogue speaker="NEON">
+The discipline of breaking your own system before the enemy does. Load testing, chaos engineering, fault injection. You have done this for APIs. Now do it for the model.
+</Dialogue>
+
+A model that works in development is not a model that works in production. Production means corrupted inputs, resource constraints, concurrent users, and failure modes you did not anticipate. Hardening is the process of finding and fixing every way the system can fail — before it does.
+
+<LearningObjectives objectives={["Stress-test a TensorFlow.js model with concurrent prediction requests", "Detect and prevent memory leaks in long-running model deployments", "Implement graceful error handling for invalid and corrupted inputs", "Add timeout and circuit-breaker patterns to model inference"]} />
+
+## Load Testing for Models
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="stress-test.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+interface StressTestResult {
+  totalRequests: number;
+  successful: number;
+  failed: number;
+  avgLatencyMs: number;
+  p95LatencyMs: number;
+  maxLatencyMs: number;
+  memoryLeakDetected: boolean;
+}
+
+async function stressTest(
+  sentinel: SentinelAPI,
+  concurrency: number,
+  totalRequests: number
+): Promise<StressTestResult> {
+  const latencies: number[] = [];
+  let successful = 0;
+  let failed = 0;
+
+  // Memory before
+  const memBefore = tf.memory();
+
+  // Generate random test inputs
+  const testInputs = Array(totalRequests).fill(null).map(() =>
+    new ImageData(
+      new Uint8ClampedArray(224 * 224 * 4).map(() => Math.random() * 255),
+      224, 224
+    )
+  );
+
+  // Run in batches of 'concurrency'
+  for (let i = 0; i < totalRequests; i += concurrency) {
+    const batch = testInputs.slice(i, i + concurrency);
+    const results = await Promise.allSettled(
+      batch.map(async (input) => {
+        const start = performance.now();
+        const result = await sentinel.predict(input);
+        latencies.push(performance.now() - start);
+        return result;
+      })
+    );
+
+    results.forEach(r => {
+      if (r.status === 'fulfilled') successful++;
+      else failed++;
+    });
+  }
+
+  // Memory after
+  const memAfter = tf.memory();
+  const memoryLeakDetected = memAfter.numTensors > memBefore.numTensors + 10;
+
+  // Calculate percentiles
+  latencies.sort((a, b) => a - b);
+  const p95Index = Math.floor(latencies.length * 0.95);
+
+  return {
+    totalRequests,
+    successful,
+    failed,
+    avgLatencyMs: latencies.reduce((a, b) => a + b, 0) / latencies.length,
+    p95LatencyMs: latencies[p95Index],
+    maxLatencyMs: latencies[latencies.length - 1],
+    memoryLeakDetected
+  };
+}`}
+</CodeBlock>
+
+## Memory Leak Detection
+
+Tensor memory leaks are the silent killer of browser ML. Every undisposed tensor accumulates until the tab crashes.
+
+<CodeBlock language="typescript" title="memory-audit.ts">
+{`async function memoryAudit(
+  sentinel: SentinelAPI,
+  iterations: number
+): Promise<{ leaked: boolean; tensorsLeaked: number; bytesLeaked: number }> {
+  // Force garbage collection of any pending tensors
+  tf.engine().startScope();
+  tf.engine().endScope();
+
+  const before = tf.memory();
+
+  for (let i = 0; i < iterations; i++) {
+    const input = new ImageData(
+      new Uint8ClampedArray(224 * 224 * 4).map(() => Math.random() * 255),
+      224, 224
+    );
+    await sentinel.predict(input);
+  }
+
+  const after = tf.memory();
+
+  const tensorsLeaked = after.numTensors - before.numTensors;
+  const bytesLeaked = after.numBytes - before.numBytes;
+
+  return {
+    leaked: tensorsLeaked > 5, // small tolerance for internal state
+    tensorsLeaked,
+    bytesLeaked
+  };
+}
+
+// Run the audit
+const audit = await memoryAudit(sentinel, 1000);
+if (audit.leaked) {
+  console.error(\`MEMORY LEAK: \${audit.tensorsLeaked} tensors (\${audit.bytesLeaked} bytes) leaked over 1000 predictions\`);
+} else {
+  console.log('Memory audit passed. No leaks detected.');
+}`}
+</CodeBlock>
+
+## Error Handling and Circuit Breakers
+
+<CodeBlock language="typescript" title="resilient-api.ts">
+{`class ResilientSentinelAPI {
+  private sentinel: SentinelAPI;
+  private consecutiveFailures = 0;
+  private circuitOpen = false;
+  private readonly maxFailures = 5;
+  private readonly timeoutMs = 5000;
+  private readonly cooldownMs = 30000;
+
+  constructor(sentinel: SentinelAPI) {
+    this.sentinel = sentinel;
+  }
+
+  async predict(imageData: ImageData): Promise<PredictionResult> {
+    // Circuit breaker: if too many failures, stop trying temporarily
+    if (this.circuitOpen) {
+      throw new Error('Circuit open — model temporarily unavailable');
+    }
+
+    try {
+      // Timeout wrapper
+      const result = await this.withTimeout(
+        this.sentinel.predict(imageData),
+        this.timeoutMs
+      );
+
+      this.consecutiveFailures = 0;
+      return result;
+    } catch (error) {
+      this.consecutiveFailures++;
+
+      if (this.consecutiveFailures >= this.maxFailures) {
+        this.openCircuit();
+      }
+
+      throw error;
+    }
+  }
+
+  private async withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+    const timeout = new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error(\`Prediction timed out after \${ms}ms\`)), ms)
+    );
+    return Promise.race([promise, timeout]);
+  }
+
+  private openCircuit(): void {
+    this.circuitOpen = true;
+    console.warn(\`Circuit breaker opened after \${this.maxFailures} consecutive failures\`);
+
+    setTimeout(() => {
+      this.circuitOpen = false;
+      this.consecutiveFailures = 0;
+      console.log('Circuit breaker reset — accepting requests');
+    }, this.cooldownMs);
+  }
+}
+
+// Input validation
+function validateInput(imageData: ImageData): void {
+  if (!imageData || imageData.width === 0 || imageData.height === 0) {
+    throw new Error('Invalid input: ImageData is empty or null');
+  }
+  if (imageData.data.length !== imageData.width * imageData.height * 4) {
+    throw new Error('Invalid input: ImageData buffer size mismatch');
+  }
+  // Check for all-zero frames (camera disconnected)
+  const hasSignal = imageData.data.some(v => v > 0);
+  if (!hasSignal) {
+    throw new Error('Invalid input: blank frame detected — camera may be disconnected');
+  }
+}`}
+</CodeBlock>
+
+## Challenge
+
+Write a stress test that validates memory stability and error handling under load.
+
+<Exercise slug="stress-test" />
+
+<KeyTakeaways takeaways={["Stress-test models the same way you load-test APIs — concurrent requests, edge cases, failure injection", "Memory leaks from undisposed tensors are the most common production failure in browser ML", "Circuit breakers and timeouts prevent cascading failures when the model is under pressure", "Always validate inputs before inference — corrupted data should return errors, not crashes"]} />

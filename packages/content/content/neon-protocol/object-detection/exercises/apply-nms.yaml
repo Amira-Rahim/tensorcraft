@@ -1,142 +1,140 @@
 slug: apply-nms
 lessonSlug: non-max-suppression
-title: "Apply Non-Max Suppression"
-instructions: "Implement the nms function that takes an array of Detection objects (each with box in [xmin, ymin, xmax, ymax] format, confidence score, and label) and an iouThreshold. Sort detections by confidence (highest first). Keep the top detection, suppress any remaining detections that overlap it with IoU >= threshold, then repeat for the next unsuppressed detection. Return the array of kept detections."
+title: "Apply Non-Max Suppression to Filter Duplicate Targets"
+instructions: "Neon Protocol's sensor array generates redundant detections for the same target. Implement applyNMS that takes an array of detections (each with { box: [x1, y1, x2, y2], score: number, label: string }) and an iouThreshold. The function should: (1) sort detections by score in descending order, (2) iterate through detections, keeping a detection only if its IoU with all previously kept detections is below iouThreshold, (3) return the filtered array. Implement a helper computeIoU(boxA, boxB) that takes two [x1, y1, x2, y2] arrays and returns the IoU as a number."
 starterCode: |
   interface Detection {
-    box: number[];
-    confidence: number;
+    box: [number, number, number, number]; // [x1, y1, x2, y2]
+    score: number;
     label: string;
   }
 
-  function computeIoU(boxA: number[], boxB: number[]): number {
-    const interLeft = Math.max(boxA[0], boxB[0]);
-    const interTop = Math.max(boxA[1], boxB[1]);
-    const interRight = Math.min(boxA[2], boxB[2]);
-    const interBottom = Math.min(boxA[3], boxB[3]);
-    const interW = Math.max(0, interRight - interLeft);
-    const interH = Math.max(0, interBottom - interTop);
-    const interArea = interW * interH;
-    const areaA = (boxA[2] - boxA[0]) * (boxA[3] - boxA[1]);
-    const areaB = (boxB[2] - boxB[0]) * (boxB[3] - boxB[1]);
-    const unionArea = areaA + areaB - interArea;
-    return unionArea === 0 ? 0 : interArea / unionArea;
+  function computeIoU(
+    boxA: [number, number, number, number],
+    boxB: [number, number, number, number]
+  ): number {
+    // Compute intersection over union between two boxes
+    // Each box is [x1, y1, x2, y2]
+    return 0; // your code here
   }
 
-  function nms(
+  function applyNMS(
     detections: Detection[],
     iouThreshold: number
   ): Detection[] {
-    // TODO: Sort by confidence (highest first)
-    // TODO: Iterate: keep the best, suppress overlapping boxes
-    // TODO: Return kept detections
-    return null as any;
+    // 1. Sort detections by score (descending)
+    // 2. Greedily select detections:
+    //    - Pick the highest-scoring remaining detection
+    //    - Remove all detections with IoU > iouThreshold
+    // 3. Return the kept detections
+    return []; // your code here
   }
 solutionCode: |
   interface Detection {
-    box: number[];
-    confidence: number;
+    box: [number, number, number, number];
+    score: number;
     label: string;
   }
 
-  function computeIoU(boxA: number[], boxB: number[]): number {
-    const interLeft = Math.max(boxA[0], boxB[0]);
-    const interTop = Math.max(boxA[1], boxB[1]);
-    const interRight = Math.min(boxA[2], boxB[2]);
-    const interBottom = Math.min(boxA[3], boxB[3]);
-    const interW = Math.max(0, interRight - interLeft);
-    const interH = Math.max(0, interBottom - interTop);
+  function computeIoU(
+    boxA: [number, number, number, number],
+    boxB: [number, number, number, number]
+  ): number {
+    const interX1 = Math.max(boxA[0], boxB[0]);
+    const interY1 = Math.max(boxA[1], boxB[1]);
+    const interX2 = Math.min(boxA[2], boxB[2]);
+    const interY2 = Math.min(boxA[3], boxB[3]);
+
+    const interW = Math.max(0, interX2 - interX1);
+    const interH = Math.max(0, interY2 - interY1);
     const interArea = interW * interH;
+
     const areaA = (boxA[2] - boxA[0]) * (boxA[3] - boxA[1]);
     const areaB = (boxB[2] - boxB[0]) * (boxB[3] - boxB[1]);
     const unionArea = areaA + areaB - interArea;
+
     return unionArea === 0 ? 0 : interArea / unionArea;
   }
 
-  function nms(
+  function applyNMS(
     detections: Detection[],
     iouThreshold: number
   ): Detection[] {
-    const sorted = [...detections].sort(
-      (a, b) => b.confidence - a.confidence
-    );
-
+    const sorted = [...detections].sort((a, b) => b.score - a.score);
     const kept: Detection[] = [];
-    const suppressed = new Set<number>();
 
-    for (let i = 0; i < sorted.length; i++) {
-      if (suppressed.has(i)) continue;
-
-      kept.push(sorted[i]);
-
-      for (let j = i + 1; j < sorted.length; j++) {
-        if (suppressed.has(j)) continue;
-        const iou = computeIoU(sorted[i].box, sorted[j].box);
-        if (iou >= iouThreshold) {
-          suppressed.add(j);
+    for (const det of sorted) {
+      let shouldKeep = true;
+      for (const keptDet of kept) {
+        if (computeIoU(det.box, keptDet.box) > iouThreshold) {
+          shouldKeep = false;
+          break;
         }
+      }
+      if (shouldKeep) {
+        kept.push(det);
       }
     }
 
     return kept;
   }
 testCode: |
-  describe('Non-Max Suppression', () => {
+  describe('applyNMS', () => {
     it('keeps single detection unchanged', () => {
       const dets: Detection[] = [
-        { box: [0.1, 0.1, 0.5, 0.5], confidence: 0.9, label: 'drone' },
+        { box: [0, 0, 10, 10], score: 0.9, label: 'drone' }
       ];
-      const result = nms(dets, 0.5);
+      const result = applyNMS(dets, 0.5);
       expect(result.length).toBe(1);
+      expect(result[0].score).toBe(0.9);
     });
 
-    it('suppresses overlapping lower-confidence box', () => {
+    it('suppresses overlapping lower-score detection', () => {
       const dets: Detection[] = [
-        { box: [0.1, 0.1, 0.5, 0.5], confidence: 0.9, label: 'drone' },
-        { box: [0.12, 0.12, 0.52, 0.52], confidence: 0.7, label: 'drone' },
+        { box: [0, 0, 10, 10], score: 0.9, label: 'drone' },
+        { box: [1, 1, 11, 11], score: 0.7, label: 'drone' },
       ];
-      const result = nms(dets, 0.5);
+      const result = applyNMS(dets, 0.5);
       expect(result.length).toBe(1);
-      expect(result[0].confidence).toBe(0.9);
+      expect(result[0].score).toBe(0.9);
     });
 
-    it('keeps non-overlapping boxes', () => {
+    it('keeps non-overlapping detections', () => {
       const dets: Detection[] = [
-        { box: [0.0, 0.0, 0.3, 0.3], confidence: 0.9, label: 'drone' },
-        { box: [0.6, 0.6, 0.9, 0.9], confidence: 0.8, label: 'drone' },
+        { box: [0, 0, 10, 10], score: 0.9, label: 'drone' },
+        { box: [50, 50, 60, 60], score: 0.8, label: 'vehicle' },
       ];
-      const result = nms(dets, 0.5);
+      const result = applyNMS(dets, 0.5);
       expect(result.length).toBe(2);
     });
 
-    it('reduces cluster to one detection', () => {
+    it('returns detections sorted by score descending', () => {
       const dets: Detection[] = [
-        { box: [0.10, 0.10, 0.30, 0.30], confidence: 0.95, label: 'drone' },
-        { box: [0.11, 0.09, 0.31, 0.29], confidence: 0.88, label: 'drone' },
-        { box: [0.09, 0.11, 0.29, 0.31], confidence: 0.82, label: 'drone' },
+        { box: [50, 50, 60, 60], score: 0.6, label: 'vehicle' },
+        { box: [0, 0, 10, 10], score: 0.95, label: 'drone' },
+        { box: [200, 200, 220, 220], score: 0.8, label: 'person' },
       ];
-      const result = nms(dets, 0.5);
-      expect(result.length).toBe(1);
-      expect(result[0].confidence).toBe(0.95);
+      const result = applyNMS(dets, 0.5);
+      expect(result[0].score).toBe(0.95);
+      expect(result[1].score).toBe(0.8);
+      expect(result[2].score).toBe(0.6);
     });
 
-    it('handles empty input', () => {
-      const result = nms([], 0.5);
+    it('handles three overlapping detections correctly', () => {
+      const dets: Detection[] = [
+        { box: [0, 0, 10, 10], score: 0.5, label: 'drone' },
+        { box: [0, 0, 10, 10], score: 0.9, label: 'drone' },
+        { box: [0, 0, 10, 10], score: 0.7, label: 'drone' },
+      ];
+      const result = applyNMS(dets, 0.5);
+      expect(result.length).toBe(1);
+      expect(result[0].score).toBe(0.9);
+    });
+
+    it('returns empty array for empty input', () => {
+      const result = applyNMS([], 0.5);
       expect(result.length).toBe(0);
     });
-
-    it('keeps highest confidence from each cluster', () => {
-      const dets: Detection[] = [
-        { box: [0.0, 0.0, 0.3, 0.3], confidence: 0.7, label: 'drone' },
-        { box: [0.01, 0.01, 0.31, 0.31], confidence: 0.9, label: 'drone' },
-        { box: [0.6, 0.6, 0.9, 0.9], confidence: 0.8, label: 'drone' },
-        { box: [0.61, 0.61, 0.91, 0.91], confidence: 0.6, label: 'drone' },
-      ];
-      const result = nms(dets, 0.5);
-      expect(result.length).toBe(2);
-      expect(result[0].confidence).toBe(0.9);
-      expect(result[1].confidence).toBe(0.8);
-    });
   });
-estimatedMinutes: 10
+estimatedMinutes: 15
 difficulty: intermediate

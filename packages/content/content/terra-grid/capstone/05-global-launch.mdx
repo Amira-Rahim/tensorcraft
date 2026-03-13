@@ -1,0 +1,193 @@
+---
+slug: global-launch
+title: "Global Launch"
+moduleId: tg-capstone
+themeId: terra-grid
+order: 5
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "Hassan gives the go order. 'Deploy Terra Grid Intelligence to all 47 sites. 12,400 devices. Model size: 4.2MB. We have tested every component, hardened every surface, documented every procedure. Launch it.' Two days later, the system proves its worth."
+  speaker: "Hassan Al-Rashid"
+concept:
+  explanation: "Production launch with monitoring follows the same checklist approach as shipping a web application to production — pre-flight checks, staged rollout, real-time monitoring, incident response readiness."
+  bridge:
+    feTitle: "Production Launch"
+    feCode: "// Pre-flight: tests pass, staging verified, monitoring ready, rollback tested"
+    mlTitle: "ML Production Launch"
+    mlCode: "// Pre-flight: accuracy verified, edge tested, monitoring ready, rollback tested"
+    tier: identity
+consequence:
+  narrative: "Two days after launch. Substation 7-Alpha. Temperature spike triggers a cascading anomaly across 3 regions. Terra Grid Intelligence identifies the root cause in 11.7 seconds. Manual analysis would have taken 2-3 hours. GRID reports: 'Time to detection: 4.2 seconds. Time to root cause: 11.7 seconds. Model size: 4.2MB. Running on 12,400 edge devices across 47 sites.' Hassan: 'This is what it looks like when the system works.'"
+  nextLessonTeaser: "Congratulations — you have completed Terra Grid."
+hints:
+  - level: nudge
+    content: "A launch checklist verifies every system is ready before deployment begins"
+  - level: guidance
+    content: "Create a pre-flight checklist, monitor key metrics in real-time during rollout, and have rollback ready"
+  - level: solution
+    content: "Build a LaunchController that runs pre-flight checks, coordinates staged deployment, and monitors post-launch"
+keywords:
+  - production-launch
+  - monitoring
+  - pre-flight
+  - deployment
+---
+
+<Dialogue speaker="Hassan Al-Rashid">
+Pre-flight checklist complete. Security audit: passed. Disaster recovery: tested. Runbooks: published. A/B testing: statistically significant improvement confirmed. Failover: verified. All 47 site coordinators report ready. Deploy Terra Grid Intelligence.
+</Dialogue>
+
+<Dialogue speaker="GRID">
+Deployment initiated. Region 3 first — 2,100 devices. Canary window: 4 hours. If all health checks pass, proceeding to Regions 1 and 7. Full deployment estimated: 18 hours across all 8 time zones.
+</Dialogue>
+
+This is the moment everything comes together. Every module — edge AI, optimization, quantization, pruning, federated learning, privacy, monitoring, A/B testing, scaling — assembled into one production system. The launch follows the same disciplined approach as shipping any critical web application: pre-flight checks, staged rollout, real-time monitoring, and instant rollback capability.
+
+<LearningObjectives objectives={["Execute a production launch checklist for edge ML deployment", "Implement real-time monitoring dashboards for global model performance", "Coordinate staged deployment across 47 sites and 8 time zones", "Respond to the first real-world incident with the complete system"]} />
+
+## Launch Controller
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="launch-controller.ts">
+{`// Production launch — same discipline as web app deployment
+
+interface PreFlightCheck {
+  name: string;
+  category: string;
+  verify: () => Promise<boolean>;
+}
+
+interface LaunchMetrics {
+  devicesOnline: number;
+  devicesUpdated: number;
+  avgAccuracy: number;
+  avgLatencyMs: number;
+  incidentsDetected: number;
+  falsePositives: number;
+}
+
+class LaunchController {
+  private checks: PreFlightCheck[] = [];
+  private launched: boolean = false;
+
+  addCheck(check: PreFlightCheck): void {
+    this.checks.push(check);
+  }
+
+  async preFlight(): Promise<{
+    ready: boolean; results: { name: string; passed: boolean }[];
+  }> {
+    const results = [];
+    for (const check of this.checks) {
+      const passed = await check.verify();
+      results.push({ name: check.name, passed });
+      if (!passed) console.error(\`PRE-FLIGHT FAILED: \${check.name}\`);
+    }
+    return {
+      ready: results.every(r => r.passed),
+      results,
+    };
+  }
+
+  async launch(): Promise<void> {
+    const preflight = await this.preFlight();
+    if (!preflight.ready) {
+      throw new Error('Pre-flight checks failed — launch aborted');
+    }
+    this.launched = true;
+    console.log('TERRA GRID INTELLIGENCE: Launch initiated');
+  }
+
+  monitorPostLaunch(metrics: LaunchMetrics): {
+    status: 'healthy' | 'degraded' | 'critical';
+    alerts: string[];
+  } {
+    const alerts: string[] = [];
+
+    const updateRate = metrics.devicesUpdated / metrics.devicesOnline;
+    if (updateRate < 0.95) alerts.push(\`Update rate \${(updateRate * 100).toFixed(1)}% below 95%\`);
+    if (metrics.avgAccuracy < 0.90) alerts.push(\`Accuracy \${metrics.avgAccuracy} below 90%\`);
+    if (metrics.avgLatencyMs > 20) alerts.push(\`Latency \${metrics.avgLatencyMs}ms above 20ms\`);
+
+    const status = alerts.length === 0 ? 'healthy'
+      : alerts.some(a => a.includes('Accuracy')) ? 'critical' : 'degraded';
+
+    return { status, alerts };
+  }
+}
+
+// Terra Grid launch
+const launcher = new LaunchController();
+launcher.addCheck({ name: 'Security audit passed', category: 'security',
+  verify: async () => true });
+launcher.addCheck({ name: 'DR plan tested', category: 'operations',
+  verify: async () => true });
+launcher.addCheck({ name: 'Runbooks published', category: 'documentation',
+  verify: async () => true });
+launcher.addCheck({ name: 'A/B test significant', category: 'validation',
+  verify: async () => true });
+launcher.addCheck({ name: 'Failover verified', category: 'reliability',
+  verify: async () => true });
+launcher.addCheck({ name: 'Model size within budget', category: 'performance',
+  verify: async () => true }); // 4.2MB < 64MB budget
+
+await launcher.launch();`}
+</CodeBlock>
+
+## The Cascading Anomaly
+
+<CodeBlock language="typescript" title="incident-response.ts">
+{`// Two days post-launch: Substation 7-Alpha
+// Terra Grid Intelligence proves its worth
+
+interface IncidentReport {
+  timestamp: number;
+  source: string;
+  anomalyType: string;
+  timeToDetectionSeconds: number;
+  timeToRootCauseSeconds: number;
+  affectedDevices: number;
+  affectedRegions: string[];
+  manualEstimateHours: number;
+}
+
+// The cascading anomaly at Substation 7-Alpha
+const incident: IncidentReport = {
+  timestamp: Date.now(),
+  source: 'substation-7alpha',
+  anomalyType: 'cascading-temperature-spike',
+  timeToDetectionSeconds: 4.2,
+  timeToRootCauseSeconds: 11.7,
+  affectedDevices: 847,
+  affectedRegions: ['region-1', 'region-3', 'region-5'],
+  manualEstimateHours: 2.5,
+};
+
+console.log('=== INCIDENT REPORT ===');
+console.log(\`Source: \${incident.source}\`);
+console.log(\`Type: \${incident.anomalyType}\`);
+console.log(\`Detection: \${incident.timeToDetectionSeconds}s (manual: \${incident.manualEstimateHours}h)\`);
+console.log(\`Root cause: \${incident.timeToRootCauseSeconds}s\`);
+console.log(\`Affected: \${incident.affectedDevices} devices across \${incident.affectedRegions.length} regions\`);
+console.log('');
+console.log('Model: 4.2MB | Devices: 12,400 | Sites: 47');
+console.log('This is what it looks like when the system works.');`}
+</CodeBlock>
+
+<Dialogue speaker="GRID">
+Incident detected at Substation 7-Alpha. Temperature spike: 47 degrees above baseline in 90 seconds. Cascading anomaly propagating to Regions 1 and 5. Time to detection: 4.2 seconds. Time to root cause identification: 11.7 seconds. Automated mitigation initiated. All affected devices responding.
+</Dialogue>
+
+<Dialogue speaker="Hassan Al-Rashid">
+Manual analysis would have taken 2 to 3 hours. By then, the cascade would have reached Region 7. This is what it looks like when the system works. Model size: 4.2MB. Running on 12,400 edge devices across 47 sites. Every module we built — edge deployment, optimization, federated learning, A/B testing, failover — all of it came together in 11.7 seconds.
+</Dialogue>
+
+## Challenge
+
+Build a launch controller with pre-flight checks and post-launch monitoring.
+
+<Exercise slug="global-launch" />
+
+<KeyTakeaways takeaways={["Production launch follows the same discipline as web app deployment — pre-flight, staged rollout, monitoring", "Pre-flight checks verify every system component before deployment begins", "Post-launch monitoring tracks deployment progress, accuracy, latency, and incident detection", "Terra Grid Intelligence: 4.2MB model, 12,400 devices, 47 sites, 11.7 seconds to root cause — this is what it looks like when the system works"]} />

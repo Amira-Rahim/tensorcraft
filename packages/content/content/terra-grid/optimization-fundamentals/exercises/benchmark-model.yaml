@@ -1,0 +1,9 @@
+slug: benchmark-model
+lessonSlug: benchmarking
+title: "Benchmark a Model"
+instructions: "Write a function benchmarkInference(times) that takes an array of latency measurements in ms (already sorted) and returns { meanMs, p95Ms, p99Ms }. meanMs is the average, p95Ms is the value at index Math.floor(length * 0.95), p99Ms is at Math.floor(length * 0.99)."
+starterCode: "function benchmarkInference(times) {\n  // times: sorted array of latency measurements in ms\n  // Return { meanMs, p95Ms, p99Ms }\n  return null; // your code here\n}"
+solutionCode: "function benchmarkInference(times) {\n  const meanMs = times.reduce((a, b) => a + b, 0) / times.length;\n  const p95Ms = times[Math.floor(times.length * 0.95)];\n  const p99Ms = times[Math.floor(times.length * 0.99)];\n  return { meanMs, p95Ms, p99Ms };\n}"
+testCode: "describe('benchmarkInference', () => { const times = Array.from({ length: 100 }, (_, i) => 10 + i * 0.5); const result = benchmarkInference(times); it('calculates mean', () => { expect(result.meanMs).toBeCloseTo(34.75, 1); }); it('calculates p95', () => { expect(result.p95Ms).toBe(times[95]); }); it('calculates p99', () => { expect(result.p99Ms).toBe(times[99]); }); });"
+estimatedMinutes: 10
+difficulty: intermediate

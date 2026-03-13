@@ -1,0 +1,146 @@
+---
+slug: mode-collapse-and-fixes
+title: "Mode Collapse & Fixes"
+moduleId: generative-adversarial-networks
+themeId: nova-canvas
+order: 5
+estimatedMinutes: 30
+difficulty: intermediate
+context:
+  narrative: "The GAN starts producing the same pattern over and over. Yara calls it 'the one-trick pony problem.' Ren must diagnose and fix mode collapse."
+  speaker: "Yara"
+concept:
+  explanation: "Mode collapse occurs when the generator finds one output that fools the discriminator and produces only that output, ignoring the diversity of the training data."
+  bridge:
+    feTitle: "Non-Random Random"
+    feCode: "Math.floor(Math.random() * 3) // always 0, 1, or 2 — never 3+"
+    mlTitle: "Mode Collapse"
+    mlCode: "generator.predict(noise1) ≈ generator.predict(noise2) // same output!"
+    tier: intuition
+consequence:
+  narrative: "Ren applies minibatch discrimination and the GAN starts producing diverse patterns again. The exhibition installation now generates unique art for every visitor."
+  nextLessonTeaser: "Next module: VAEs — a different approach to generation with controllable, structured latent spaces"
+hints:
+  - level: nudge
+    content: "If Math.random() always returned 0.5, it would not be random. Mode collapse is the same idea."
+  - level: guidance
+    content: "Detect mode collapse by checking if multiple noise inputs produce near-identical outputs"
+  - level: solution
+    content: "Add noise to discriminator inputs, use minibatch statistics, or try Wasserstein loss"
+keywords:
+  - mode-collapse
+  - diversity
+  - minibatch
+  - wasserstein
+  - regularization
+---
+
+<Dialogue speaker="Yara">
+It is producing the same pattern. Every single time. Different noise, same output. This is not generative art — it is a photocopier. We call this the one-trick pony problem.
+</Dialogue>
+
+<Dialogue speaker="Kai">
+I have seen this in music. A composer finds one melody that the audience likes and plays it forever. No exploration, no risk. The generator found the safe zone and refuses to leave.
+</Dialogue>
+
+<Dialogue speaker="MUSE">
+A single note repeated is not a symphony. Diversity is the soul of creativity.
+</Dialogue>
+
+Mode collapse is the most infamous GAN failure mode. The generator discovers one output (or a small set of outputs) that reliably fools the discriminator and stops exploring. Every input noise vector produces nearly identical output.
+
+<LearningObjectives objectives={["Recognize mode collapse by checking output diversity", "Understand why mode collapse happens mechanically", "Implement detection metrics for mode collapse", "Apply fixes: minibatch discrimination, label smoothing, and noise injection"]} />
+
+## Detecting Mode Collapse
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="detect-collapse.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Frontend analogy: testing randomness
+// If Math.random() always returned values in [0.49, 0.51],
+// it would TECHNICALLY be random but practically useless.
+// Mode collapse is the same: technically different outputs,
+// but practically identical.
+
+async function detectModeCollapse(
+  generator: tf.LayersModel,
+  noiseDim: number,
+  numSamples: number = 20
+): Promise<{ collapsed: boolean; diversity: number }> {
+  const outputs: tf.Tensor[] = [];
+
+  for (let i = 0; i < numSamples; i++) {
+    const noise = tf.randomNormal([1, noiseDim]);
+    const output = generator.predict(noise) as tf.Tensor;
+    outputs.push(output.flatten());
+    noise.dispose();
+  }
+
+  // Compute average pairwise distance
+  let totalDist = 0;
+  let pairs = 0;
+  for (let i = 0; i < outputs.length; i++) {
+    for (let j = i + 1; j < outputs.length; j++) {
+      const dist = outputs[i].sub(outputs[j]).square().mean();
+      totalDist += (await dist.array()) as number;
+      dist.dispose();
+      pairs++;
+    }
+  }
+
+  const avgDist = totalDist / pairs;
+  outputs.forEach(t => t.dispose());
+
+  return {
+    collapsed: avgDist < 0.01,  // threshold: outputs too similar
+    diversity: avgDist,
+  };
+}`}
+</CodeBlock>
+
+## Fixes for Mode Collapse
+
+Several techniques can prevent or recover from mode collapse:
+
+<CodeBlock language="typescript" title="collapse-fixes.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Fix 1: LABEL SMOOTHING
+// Instead of training D on hard labels (0 and 1),
+// use soft labels (0.0-0.1 and 0.9-1.0)
+// This prevents D from becoming overconfident
+const realLabels = tf.randomUniform([batchSize, 1], 0.9, 1.0);
+const fakeLabels = tf.randomUniform([batchSize, 1], 0.0, 0.1);
+
+// Fix 2: INSTANCE NOISE
+// Add small noise to discriminator inputs
+// This smooths the decision boundary
+function addInstanceNoise(images: tf.Tensor, stddev: number): tf.Tensor {
+  const noise = tf.randomNormal(images.shape as number[], 0, stddev);
+  return images.add(noise);
+}
+// Decrease noise over time: stddev = 0.1 * (1 - epoch / totalEpochs)
+
+// Fix 3: MINIBATCH DISCRIMINATION
+// Let D see statistics across the batch, not just individual samples
+// If all samples look identical, D can catch the collapse
+function minibatchStd(x: tf.Tensor2D): tf.Tensor2D {
+  const std = x.sub(x.mean(0)).square().mean(0).sqrt().mean();
+  const repeated = std.tile([x.shape[0], 1]);
+  return tf.concat([x, repeated], 1) as tf.Tensor2D;
+}
+
+// Fix 4: LEARNING RATE SCHEDULING
+// Reduce learning rates over time to stabilize
+function decayLR(baseLR: number, epoch: number, decay: number): number {
+  return baseLR / (1 + decay * epoch);
+}`}
+</CodeBlock>
+
+## Challenge
+
+<Exercise slug="fix-mode-collapse" />
+
+<KeyTakeaways takeaways={["Mode collapse: generator produces identical output for different inputs", "Detect by measuring pairwise distances between generated samples", "Label smoothing prevents the discriminator from becoming overconfident", "Instance noise and minibatch discrimination encourage output diversity"]} />

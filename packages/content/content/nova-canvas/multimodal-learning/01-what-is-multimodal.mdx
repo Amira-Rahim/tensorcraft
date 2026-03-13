@@ -1,0 +1,120 @@
+---
+slug: what-is-multimodal
+title: "What Is Multimodal?"
+moduleId: multimodal-learning
+themeId: nova-canvas
+order: 1
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Yara asks MUSE to generate an image from text. Nothing happens. 'It only understands images,' Ren explains. 'It is monolingual — it speaks vision but not language. We need to make it multilingual.' Kai adds: 'Multimodal. Like a full-stack app that connects frontend, backend, and database.'"
+  speaker: "Ren"
+concept:
+  explanation: "Multimodal models process multiple data types — text, images, audio — in a unified system. Like a full-stack application where frontend, backend, and database must work together, each component handles a different modality but they share a common interface."
+  bridge:
+    feTitle: "Full-stack apps — frontend + backend + database"
+    feCode: "fetch('/api/data').then(r => r.json()).then(render);"
+    mlTitle: "Multimodal pipeline"
+    mlCode: "const embedding = encodeText(text); const image = decodeImage(embedding);"
+    tier: intuition
+consequence:
+  narrative: "The architecture takes shape on the whiteboard: a text encoder, an image encoder, and a shared embedding space where both modalities meet. 'Two languages,' Kai says, 'one translator.'"
+  nextLessonTeaser: "Next: vision-language models — connecting images and text in a single system"
+hints:
+  - level: nudge
+    content: "Think of a full-stack app: the frontend speaks HTML/CSS, the backend speaks Python, the database speaks SQL — but they communicate"
+  - level: guidance
+    content: "Each modality (text, image, audio) has its own encoder, but all encoders map to a shared embedding space"
+  - level: solution
+    content: "Text encoder -> shared vector space <- Image encoder. Both produce vectors of the same dimensionality."
+keywords:
+  - multimodal
+  - modality
+  - embedding-space
+  - encoder
+  - full-stack
+---
+
+<Dialogue speaker="Yara">
+I typed "a sunset over a digital city" and MUSE did nothing. It just stared at me.
+</Dialogue>
+
+<Dialogue speaker="Ren">
+MUSE currently only understands images — pixel data in, pixel data out. It is monolingual. To understand text, it needs a text encoder. To connect text and images, it needs a shared representation space.
+</Dialogue>
+
+<Dialogue speaker="Kai">
+It is like building a full-stack app. Your frontend speaks HTML and CSS. Your backend speaks Python or Node. Your database speaks SQL. They are all different languages, but they communicate through APIs and shared data formats. Multimodal AI works the same way.
+</Dialogue>
+
+You already build systems where different technologies work together. Frontend, backend, database — each handles a different type of data but they share interfaces. Multimodal AI applies the same principle: different encoders for different data types, unified by a shared embedding space.
+
+<LearningObjectives objectives={["Understand what multimodal means: models that process multiple data types", "Identify the key components: modality-specific encoders and a shared embedding space", "Connect multimodal architecture to full-stack application design", "Implement basic text and image encoders that produce compatible embeddings"]} />
+
+## The Multimodal Architecture
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="multimodal-architecture.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// FULL-STACK ANALOGY:
+// Frontend (HTML/CSS) = Image modality (pixels)
+// Backend (Node/Python) = Text modality (tokens)
+// Database (SQL) = Shared embedding space (vectors)
+// API = Encoder/decoder interfaces
+
+// Image encoder: pixels -> embedding vector
+function buildImageEncoder(embeddingDim: number): tf.LayersModel {
+  const input = tf.input({ shape: [64, 64, 3] });
+
+  let x = tf.layers.conv2d({
+    filters: 32, kernelSize: 3, strides: 2, padding: 'same', activation: 'relu'
+  }).apply(input) as tf.SymbolicTensor;
+  x = tf.layers.conv2d({
+    filters: 64, kernelSize: 3, strides: 2, padding: 'same', activation: 'relu'
+  }).apply(x) as tf.SymbolicTensor;
+  x = tf.layers.globalAveragePooling2d({}).apply(x) as tf.SymbolicTensor;
+  const embedding = tf.layers.dense({
+    units: embeddingDim, activation: 'linear'
+  }).apply(x) as tf.SymbolicTensor;
+
+  return tf.model({ inputs: input, outputs: embedding });
+}
+
+// Text encoder: token sequence -> embedding vector
+function buildTextEncoder(
+  vocabSize: number,
+  seqLen: number,
+  embeddingDim: number
+): tf.LayersModel {
+  const input = tf.input({ shape: [seqLen] });
+
+  let x = tf.layers.embedding({
+    inputDim: vocabSize, outputDim: 64
+  }).apply(input) as tf.SymbolicTensor;
+  x = tf.layers.globalAveragePooling1d({}).apply(x) as tf.SymbolicTensor;
+  const embedding = tf.layers.dense({
+    units: embeddingDim, activation: 'linear'
+  }).apply(x) as tf.SymbolicTensor;
+
+  return tf.model({ inputs: input, outputs: embedding });
+}
+
+// Both encoders output vectors of the SAME dimensionality
+// This shared space is where text and images "meet"
+const embeddingDim = 256;
+const imageEnc = buildImageEncoder(embeddingDim);
+const textEnc = buildTextEncoder(10000, 32, embeddingDim);
+
+// Now: encode("sunset") and encode(sunsetImage) should be CLOSE
+// in the shared embedding space`}
+</CodeBlock>
+
+## Challenge
+
+Build image and text encoders that produce embeddings of the same dimensionality.
+
+<Exercise slug="multimodal-input" />
+
+<KeyTakeaways takeaways={["Multimodal = multiple data types in one system, like a full-stack app connecting frontend, backend, and database", "Each modality has its own encoder, but all map to a shared embedding space of the same dimensionality", "The shared space is where different modalities meet — text and images become comparable vectors", "This architecture enables cross-modal tasks: text-to-image, image-to-text, image-text matching"]} />

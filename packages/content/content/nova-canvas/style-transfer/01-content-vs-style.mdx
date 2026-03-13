@@ -1,0 +1,118 @@
+---
+slug: content-vs-style
+title: "Content vs Style"
+moduleId: style-transfer
+themeId: nova-canvas
+order: 1
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Yara holds up two paintings. 'Same subject — a bridge over water. Monet painted it with soft light and broken color. Basquiat would paint it with raw energy and text fragments. The content is the same. The style is everything.'"
+  speaker: "Yara"
+concept:
+  explanation: "Neural networks naturally separate content (what is depicted) from style (how it is depicted) — just like HTML defines content and CSS defines presentation. The same content can wear any style."
+  bridge:
+    feTitle: "Content vs presentation (HTML vs CSS)"
+    feCode: "<article class='monet'>A bridge over water</article>"
+    mlTitle: "Content vs style representations"
+    mlCode: "const content = extractContent(image); const style = extractStyle(image);"
+    tier: intuition
+consequence:
+  narrative: "Yara gets it. She has been separating content from style her entire career — first with paint, now with code. 'So the network learns what the painting shows and how it shows it as separate things?' Ren nods: 'Different layers, different representations.'"
+  nextLessonTeaser: "Next: neural style transfer — applying one image's style to another's content"
+hints:
+  - level: nudge
+    content: "Think HTML vs CSS: same HTML with different stylesheets looks completely different"
+  - level: guidance
+    content: "Early CNN layers capture style (textures, colors, brushstrokes). Deeper layers capture content (objects, structure)."
+  - level: solution
+    content: "Content = activations from deep layers (e.g., conv4_2). Style = Gram matrices of activations from multiple layers."
+keywords:
+  - content-representation
+  - style-representation
+  - separation-of-concerns
+  - CNN-features
+  - gram-matrix
+---
+
+<Dialogue speaker="Yara">
+Every artist understands this instinctively. The bridge over water is the content. Monet's broken brushstrokes and diffused light — that is the style. Same subject, completely different paintings.
+</Dialogue>
+
+<Dialogue speaker="Ren">
+Frontend developers understand it too. HTML is content. CSS is style. The same HTML with a different stylesheet looks like a completely different site. Neural networks learn this same separation.
+</Dialogue>
+
+You already live in a world of content-style separation. HTML structures what the page says. CSS controls how it looks. Neural networks learn the same division — different layers encode different things.
+
+<LearningObjectives objectives={["Understand how CNNs naturally separate content and style into different layer activations", "Extract content features from deep layers of a pretrained network", "Compute Gram matrices to capture style information from multiple layers", "Connect content/style separation to the HTML/CSS paradigm"]} />
+
+## Where Content and Style Live in a CNN
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="content-style-extraction.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// In a CNN, different layers capture different things:
+// Early layers: edges, textures, colors (STYLE)
+// Deep layers: objects, structure, composition (CONTENT)
+
+// Load a pretrained feature extractor (e.g., VGG-like)
+async function buildFeatureExtractor() {
+  // Simplified CNN for demonstration
+  const input = tf.input({ shape: [128, 128, 3] });
+
+  // Block 1: captures edges, basic textures (style)
+  let x = tf.layers.conv2d({
+    filters: 32, kernelSize: 3, padding: 'same', activation: 'relu', name: 'style_1'
+  }).apply(input) as tf.SymbolicTensor;
+  x = tf.layers.maxPooling2d({ poolSize: 2 }).apply(x) as tf.SymbolicTensor;
+
+  // Block 2: captures patterns, brushstrokes (style)
+  x = tf.layers.conv2d({
+    filters: 64, kernelSize: 3, padding: 'same', activation: 'relu', name: 'style_2'
+  }).apply(x) as tf.SymbolicTensor;
+  x = tf.layers.maxPooling2d({ poolSize: 2 }).apply(x) as tf.SymbolicTensor;
+
+  // Block 3: captures objects, structure (content)
+  x = tf.layers.conv2d({
+    filters: 128, kernelSize: 3, padding: 'same', activation: 'relu', name: 'content'
+  }).apply(x) as tf.SymbolicTensor;
+
+  return tf.model({ inputs: input, outputs: x });
+}
+
+// CONTENT: what is in the image (objects, spatial arrangement)
+// Extracted from a single deep layer
+function extractContent(
+  model: tf.LayersModel,
+  image: tf.Tensor4D
+): tf.Tensor {
+  return model.predict(image) as tf.Tensor;
+}
+
+// STYLE: how the image looks (textures, colors, patterns)
+// Captured as correlations between features — the Gram matrix
+function gramMatrix(features: tf.Tensor4D): tf.Tensor2D {
+  const [batch, height, width, channels] = features.shape;
+  // Reshape to 2D: (height * width) x channels
+  const reshaped = features.reshape([height * width, channels]);
+  // Gram = F^T * F (correlations between feature channels)
+  const gram = tf.matMul(reshaped, reshaped, true, false);
+  // Normalize by number of elements
+  return tf.div(gram, tf.scalar(height * width)) as tf.Tensor2D;
+}
+
+// The Gram matrix captures which textures co-occur
+// Monet: soft edges + warm colors = high correlation
+// Basquiat: harsh lines + primary colors = different correlation pattern`}
+</CodeBlock>
+
+## Challenge
+
+Compute a Gram matrix from CNN feature activations to capture an image's style.
+
+<Exercise slug="separate-content-style" />
+
+<KeyTakeaways takeaways={["CNNs naturally separate content (deep layers) from style (early layers), like HTML separates from CSS", "Content is captured by activations of deep convolutional layers — what objects and structures are present", "Style is captured by Gram matrices — correlations between feature channels that encode textures and patterns", "The same content can be rendered in any style, just like the same HTML can wear any stylesheet"]} />

@@ -1,0 +1,215 @@
+---
+slug: feature-reuse
+title: "Feature Reuse"
+moduleId: transfer-learning
+themeId: neon-protocol
+order: 2
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Back at the resistance safehouse, NEON projects a visualization of MobileNet's internal layers onto the wall. Colored heatmaps cascade from top to bottom — edges, textures, shapes, objects. 'The question is not whether this model works,' NEON says. 'The question is why a model trained on cats and cars can recognize drones it has never seen.'"
+  speaker: "NEON"
+concept:
+  explanation: "Pre-trained models learn hierarchical features that transfer across domains. Early layers detect universal visual primitives — edges, gradients, textures. Later layers combine them into domain-specific patterns. These reusable features are like component libraries: a Button component works whether you are building an e-commerce app or a dashboard."
+  bridge:
+    feTitle: "Component libraries"
+    feCode: "import { Button, Input, Card } from '@ui/components'; // reusable building blocks"
+    mlTitle: "Transfer Learning"
+    mlCode: "// Early layers = universal components. Later layers = domain-specific pages."
+    tier: structural
+consequence:
+  narrative: "Kira stares at the heatmaps. Layer 3 activates on edges — the same edges in cats, cars, and drones. 'It learned edges from cats,' she says slowly. 'And those same edges outline a Meridian X-7.' Ryo nods. 'Features transfer. That is the whole trick.'"
+  nextLessonTeaser: "Next: fine-tuning — adapting this model to recognize Meridian's specific drone fleet"
+hints:
+  - level: nudge
+    content: "Early layers learn universal features like edges and textures — they work for any visual task"
+  - level: guidance
+    content: "Use an intermediate layer's output as a feature vector — it captures reusable visual patterns"
+  - level: solution
+    content: "Create a feature extractor model by using an intermediate layer as the output: tf.model({ inputs, outputs: intermediateLayer.output })"
+keywords:
+  - feature-reuse
+  - transfer-learning
+  - feature-hierarchy
+  - component-libraries
+  - visual-features
+  - feature-extraction
+---
+
+<Dialogue speaker="NEON">
+A Button component does not care if it lives in a shopping cart or a login form. It renders the same way. A convolutional filter that detects vertical edges does not care if the edge belongs to a cat's ear or a drone's wing. Features are reusable building blocks.
+</Dialogue>
+
+<Dialogue speaker="Kira">
+So the early layers of a model are like a component library — generic building blocks that work everywhere?
+</Dialogue>
+
+<Dialogue speaker="NEON">
+Precisely. And like any good component library, the value compounds. Each layer builds on the previous one. Edges become textures. Textures become shapes. Shapes become objects.
+</Dialogue>
+
+When you import `Button`, `Input`, and `Card` from a component library, you do not care how they were originally built or what app they were designed for. You compose them into something new. Transfer learning works the same way: a model's internal features — edges, textures, shapes — compose into new recognitions for tasks the model was never trained on.
+
+<LearningObjectives objectives={["Understand the feature hierarchy: edges, textures, shapes, objects", "Explain why features learned on one dataset transfer to different domains", "Extract intermediate features from a pre-trained model", "Connect feature reuse to component library patterns in frontend development"]} />
+
+## The Feature Hierarchy
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+A component library is organized in layers of abstraction. Primitives like `Box` and `Text` compose into `Card` and `ListItem`, which compose into `ProductGrid` and `UserProfile`. Neural networks learn the same hierarchical structure automatically during training.
+
+<CodeBlock language="typescript" title="feature-hierarchy.ts">
+{`// Component library hierarchy:
+// Primitives:  Box, Text, Icon           → universal across all apps
+// Components:  Button, Input, Card        → reusable across most apps
+// Patterns:    SearchBar, NavMenu         → reusable across similar apps
+// Pages:       ProductPage, Checkout      → specific to one app
+
+// Neural network feature hierarchy:
+// Layer 1-2:   Edges, gradients, colors   → universal across all vision tasks
+// Layer 3-5:   Textures, patterns, curves → reusable across most vision tasks
+// Layer 6-10:  Parts (wheels, wings, eyes) → reusable across similar tasks
+// Layer 11+:   Full objects (car, drone)   → specific to the training dataset
+
+// The deeper you go, the more specific the features become
+// But the early layers? Universal. Like primitives in a design system.
+
+interface FeatureLevel {
+  layerRange: string;
+  detects: string;
+  analogy: string;
+  transferability: 'universal' | 'high' | 'moderate' | 'task-specific';
+}
+
+const hierarchy: FeatureLevel[] = [
+  {
+    layerRange: 'Layer 1-2',
+    detects: 'Edges, gradients, color blobs',
+    analogy: 'Box, Text, Icon — raw primitives',
+    transferability: 'universal',
+  },
+  {
+    layerRange: 'Layer 3-5',
+    detects: 'Textures, repeating patterns, corners',
+    analogy: 'Button, Input, Card — composable components',
+    transferability: 'high',
+  },
+  {
+    layerRange: 'Layer 6-10',
+    detects: 'Object parts — wheels, wings, faces',
+    analogy: 'SearchBar, NavMenu — assembled patterns',
+    transferability: 'moderate',
+  },
+  {
+    layerRange: 'Layer 11+',
+    detects: 'Full objects — specific car models, breeds',
+    analogy: 'ProductPage, Checkout — app-specific screens',
+    transferability: 'task-specific',
+  },
+];`}
+</CodeBlock>
+
+## Extracting Reusable Features
+
+Like importing specific components from a library, you can extract features from specific layers of a pre-trained model. The earlier the layer, the more universal the features.
+
+<CodeBlock language="typescript" title="extract-features.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Extract features from an intermediate layer
+// Like importing only the components you need:
+// import { Card } from '@ui/components'; // not the whole library
+
+async function buildFeatureExtractor(
+  model: tf.LayersModel,
+  layerName: string
+): Promise<tf.LayersModel> {
+  // Find the target layer
+  const targetLayer = model.getLayer(layerName);
+
+  // Create a new model that outputs from that layer
+  // Everything after is discarded — like tree-shaking unused components
+  const featureExtractor = tf.model({
+    inputs: model.input,
+    outputs: targetLayer.output,
+  });
+
+  return featureExtractor;
+}
+
+// Features from early layers transfer to ANY vision task
+// Features from later layers only transfer to SIMILAR tasks
+
+function analyzeTransferability(
+  layerIndex: number,
+  totalLayers: number
+): string {
+  const depth = layerIndex / totalLayers;
+
+  if (depth < 0.2) return 'Universal — edges and gradients work everywhere';
+  if (depth < 0.5) return 'High — textures and patterns transfer broadly';
+  if (depth < 0.8) return 'Moderate — object parts transfer to similar domains';
+  return 'Low — task-specific features, likely need retraining';
+}`}
+</CodeBlock>
+
+## Why Cats Help You Find Drones
+
+<CodeBlock language="typescript" title="cross-domain-transfer.ts">
+{`// A model trained on ImageNet (cats, dogs, cars, boats) can detect drones.
+// Why? Because the FEATURES are shared, even when the OBJECTS are different.
+
+// Cat ear edge     → same edge detector → Drone wing edge
+// Fur texture      → same texture detector → Carbon fiber texture
+// Round eye shape  → same shape detector → Camera lens shape
+
+// This is why component libraries work across projects:
+// A <Card> component does not know it was first built for a blog.
+// It works equally well in a dashboard, an admin panel, or a drone tracker.
+
+interface FeatureTransferExample {
+  feature: string;
+  sourceObject: string;
+  targetObject: string;
+  layerDepth: 'early' | 'middle' | 'late';
+}
+
+const transfers: FeatureTransferExample[] = [
+  {
+    feature: 'Horizontal edge',
+    sourceObject: 'Cat whiskers',
+    targetObject: 'Drone propeller blade',
+    layerDepth: 'early',
+  },
+  {
+    feature: 'Metallic texture',
+    sourceObject: 'Car hood',
+    targetObject: 'Drone chassis',
+    layerDepth: 'middle',
+  },
+  {
+    feature: 'Circular shape',
+    sourceObject: 'Clock face',
+    targetObject: 'Drone rotor hub',
+    layerDepth: 'middle',
+  },
+  {
+    feature: 'Symmetric silhouette',
+    sourceObject: 'Butterfly wings',
+    targetObject: 'Drone airframe',
+    layerDepth: 'middle',
+  },
+];
+
+// The resistance does not need 14 million drone images.
+// They need 500 drone images and a model that already
+// understands edges, textures, and shapes.`}
+</CodeBlock>
+
+## Challenge
+
+Extract reusable features from a model's layer hierarchy and measure transferability.
+
+<Exercise slug="extract-reusable-features" />
+
+<KeyTakeaways takeaways={["Pre-trained models learn a hierarchy: edges, textures, shapes, objects — each layer builds on the previous", "Early-layer features are universal and transfer to any vision task — like primitive UI components", "Later-layer features are task-specific and may need retraining — like app-specific pages", "A model trained on cats can detect drones because they share edges, textures, and shapes"]} />

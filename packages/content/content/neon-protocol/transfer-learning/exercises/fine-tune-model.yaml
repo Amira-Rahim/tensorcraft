@@ -1,0 +1,78 @@
+slug: fine-tune-model
+lessonSlug: fine-tuning
+title: "Build a Fine-tuning Pipeline"
+instructions: "Write a function that takes a model's layer descriptions and a new number of classes, and returns a fine-tuning plan. The plan should include: the index of the layer to cut at (second-to-last), the feature size (output of that layer), the new class count, and the new head's parameter count (featureSize * newClasses + newClasses for bias). This simulates the planning step before freezing a backbone and attaching a new classification head."
+starterCode: |
+  interface Layer {
+    name: string;
+    outputSize: number;
+  }
+
+  interface FineTunePlan {
+    cutAtIndex: number;
+    featureSize: number;
+    newClasses: number;
+    headParams: number;
+  }
+
+  function planFineTuning(layers: Layer[], newClasses: number): FineTunePlan {
+    // Cut at second-to-last layer
+    // featureSize = outputSize of that layer
+    // headParams = featureSize * newClasses + newClasses (weights + biases)
+    return { cutAtIndex: 0, featureSize: 0, newClasses: 0, headParams: 0 };
+  }
+solutionCode: |
+  interface Layer {
+    name: string;
+    outputSize: number;
+  }
+
+  interface FineTunePlan {
+    cutAtIndex: number;
+    featureSize: number;
+    newClasses: number;
+    headParams: number;
+  }
+
+  function planFineTuning(layers: Layer[], newClasses: number): FineTunePlan {
+    const cutAtIndex = layers.length - 2;
+    const featureSize = layers[cutAtIndex].outputSize;
+    const headParams = featureSize * newClasses + newClasses;
+    return { cutAtIndex, featureSize, newClasses, headParams };
+  }
+testCode: |
+  describe('planFineTuning', () => {
+    const layers: Layer[] = [
+      { name: 'conv1', outputSize: 32 },
+      { name: 'conv2', outputSize: 64 },
+      { name: 'flatten', outputSize: 1280 },
+      { name: 'dense', outputSize: 1000 },
+    ];
+
+    it('cuts at second-to-last layer', () => {
+      const plan = planFineTuning(layers, 4);
+      expect(plan.cutAtIndex).toBe(2);
+    });
+
+    it('gets feature size from cut layer', () => {
+      const plan = planFineTuning(layers, 4);
+      expect(plan.featureSize).toBe(1280);
+    });
+
+    it('stores new class count', () => {
+      const plan = planFineTuning(layers, 4);
+      expect(plan.newClasses).toBe(4);
+    });
+
+    it('calculates head params (weights + biases)', () => {
+      const plan = planFineTuning(layers, 4);
+      expect(plan.headParams).toBe(1280 * 4 + 4);
+    });
+
+    it('works with different class counts', () => {
+      const plan = planFineTuning(layers, 10);
+      expect(plan.headParams).toBe(1280 * 10 + 10);
+    });
+  });
+estimatedMinutes: 7
+difficulty: intermediate

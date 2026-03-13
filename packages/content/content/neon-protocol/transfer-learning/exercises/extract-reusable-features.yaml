@@ -1,0 +1,103 @@
+slug: extract-reusable-features
+lessonSlug: feature-reuse
+title: "Extract Reusable Features from a Layer Hierarchy"
+instructions: "Write a function that analyzes a model's layer hierarchy and determines which layers are reusable for a new task. Given an array of layers (each with name, depth as a fraction 0-1, and featureType), return an object with: universalLayers (depth < 0.3), reusableLayers (depth >= 0.3 and < 0.7), and taskSpecificLayers (depth >= 0.7). Also return a transferScore — the percentage of layers that are universal or reusable (rounded to nearest integer)."
+starterCode: |
+  interface ModelLayer {
+    name: string;
+    depth: number;       // 0.0 to 1.0, position in the network
+    featureType: string;  // e.g., 'edges', 'textures', 'shapes', 'objects'
+  }
+
+  interface TransferAnalysis {
+    universalLayers: string[];     // names of layers with depth < 0.3
+    reusableLayers: string[];      // names of layers with depth >= 0.3 and < 0.7
+    taskSpecificLayers: string[];  // names of layers with depth >= 0.7
+    transferScore: number;         // percentage of universal + reusable layers (rounded integer)
+  }
+
+  function analyzeTransferability(layers: ModelLayer[]): TransferAnalysis {
+    // Categorize layers by depth and calculate transfer score
+    return {
+      universalLayers: [],
+      reusableLayers: [],
+      taskSpecificLayers: [],
+      transferScore: 0,
+    };
+  }
+solutionCode: |
+  interface ModelLayer {
+    name: string;
+    depth: number;
+    featureType: string;
+  }
+
+  interface TransferAnalysis {
+    universalLayers: string[];
+    reusableLayers: string[];
+    taskSpecificLayers: string[];
+    transferScore: number;
+  }
+
+  function analyzeTransferability(layers: ModelLayer[]): TransferAnalysis {
+    const universalLayers = layers
+      .filter(l => l.depth < 0.3)
+      .map(l => l.name);
+    const reusableLayers = layers
+      .filter(l => l.depth >= 0.3 && l.depth < 0.7)
+      .map(l => l.name);
+    const taskSpecificLayers = layers
+      .filter(l => l.depth >= 0.7)
+      .map(l => l.name);
+    const transferScore = Math.round(
+      ((universalLayers.length + reusableLayers.length) / layers.length) * 100
+    );
+    return { universalLayers, reusableLayers, taskSpecificLayers, transferScore };
+  }
+testCode: |
+  describe('analyzeTransferability', () => {
+    const layers: ModelLayer[] = [
+      { name: 'conv1', depth: 0.05, featureType: 'edges' },
+      { name: 'conv2', depth: 0.15, featureType: 'gradients' },
+      { name: 'conv3', depth: 0.25, featureType: 'textures' },
+      { name: 'conv4', depth: 0.4, featureType: 'patterns' },
+      { name: 'conv5', depth: 0.5, featureType: 'shapes' },
+      { name: 'conv6', depth: 0.65, featureType: 'parts' },
+      { name: 'conv7', depth: 0.75, featureType: 'objects' },
+      { name: 'conv8', depth: 0.85, featureType: 'categories' },
+      { name: 'dense1', depth: 0.95, featureType: 'classes' },
+      { name: 'output', depth: 1.0, featureType: 'predictions' },
+    ];
+
+    it('identifies universal layers (depth < 0.3)', () => {
+      const result = analyzeTransferability(layers);
+      expect(result.universalLayers).toEqual(['conv1', 'conv2', 'conv3']);
+    });
+
+    it('identifies reusable layers (0.3 <= depth < 0.7)', () => {
+      const result = analyzeTransferability(layers);
+      expect(result.reusableLayers).toEqual(['conv4', 'conv5', 'conv6']);
+    });
+
+    it('identifies task-specific layers (depth >= 0.7)', () => {
+      const result = analyzeTransferability(layers);
+      expect(result.taskSpecificLayers).toEqual(['conv7', 'conv8', 'dense1', 'output']);
+    });
+
+    it('calculates transfer score as percentage', () => {
+      const result = analyzeTransferability(layers);
+      // 3 universal + 3 reusable = 6 out of 10 = 60%
+      expect(result.transferScore).toBe(60);
+    });
+
+    it('handles all universal layers', () => {
+      const shallow: ModelLayer[] = [
+        { name: 'a', depth: 0.1, featureType: 'edges' },
+        { name: 'b', depth: 0.2, featureType: 'textures' },
+      ];
+      const result = analyzeTransferability(shallow);
+      expect(result.transferScore).toBe(100);
+    });
+  });
+estimatedMinutes: 8
+difficulty: intermediate

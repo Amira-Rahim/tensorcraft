@@ -1,0 +1,141 @@
+slug: build-vae
+lessonSlug: variational-autoencoders
+title: "Implement VAE Core Math"
+instructions: "Implement the reparameterization trick and KL divergence for a Variational Autoencoder. The reparameterization trick samples from a distribution in a differentiable way: z = mean + exp(0.5 * logVar) * epsilon. KL divergence measures how far the learned distribution is from a standard normal: KL = 0.5 * mean(mean^2 + exp(logVar) - logVar - 1)."
+starterCode: |
+  // Reparameterization trick: sample from N(mean, var) differentiably
+  // z = mean + exp(0.5 * logVar) * epsilon
+  function reparameterize(
+    mean: number[],
+    logVar: number[],
+    epsilon: number[]
+  ): number[] {
+    // For each dimension:
+    // stdDev = exp(0.5 * logVar[i])
+    // z[i] = mean[i] + stdDev * epsilon[i]
+    return []; // your code here
+  }
+
+  // KL divergence from N(mean, var) to N(0, 1)
+  // KL = 0.5 * mean(mean^2 + exp(logVar) - logVar - 1)
+  function klDivergence(mean: number[], logVar: number[]): number {
+    return 0; // your code here
+  }
+
+  // Total VAE loss = reconstruction loss + KL weight * KL divergence
+  function vaeLoss(
+    original: number[],
+    reconstructed: number[],
+    mean: number[],
+    logVar: number[],
+    klWeight: number
+  ): { reconstructionLoss: number; klLoss: number; totalLoss: number } {
+    // reconstructionLoss = MSE between original and reconstructed
+    // klLoss = klDivergence(mean, logVar)
+    // totalLoss = reconstructionLoss + klWeight * klLoss
+    return { reconstructionLoss: 0, klLoss: 0, totalLoss: 0 }; // your code here
+  }
+solutionCode: |
+  function reparameterize(
+    mean: number[],
+    logVar: number[],
+    epsilon: number[]
+  ): number[] {
+    return mean.map((m, i) => {
+      const stdDev = Math.exp(0.5 * logVar[i]);
+      return m + stdDev * epsilon[i];
+    });
+  }
+
+  function klDivergence(mean: number[], logVar: number[]): number {
+    let sum = 0;
+    for (let i = 0; i < mean.length; i++) {
+      sum += mean[i] ** 2 + Math.exp(logVar[i]) - logVar[i] - 1;
+    }
+    return 0.5 * sum / mean.length;
+  }
+
+  function vaeLoss(
+    original: number[],
+    reconstructed: number[],
+    mean: number[],
+    logVar: number[],
+    klWeight: number
+  ): { reconstructionLoss: number; klLoss: number; totalLoss: number } {
+    let mseSum = 0;
+    for (let i = 0; i < original.length; i++) {
+      mseSum += (original[i] - reconstructed[i]) ** 2;
+    }
+    const reconstructionLoss = mseSum / original.length;
+    const klLoss = klDivergence(mean, logVar);
+    const totalLoss = reconstructionLoss + klWeight * klLoss;
+    return { reconstructionLoss, klLoss, totalLoss };
+  }
+testCode: |
+  describe('reparameterize', () => {
+    it('returns mean when epsilon is zero', () => {
+      const result = reparameterize([1, 2, 3], [0, 0, 0], [0, 0, 0]);
+      expect(result).toEqual([1, 2, 3]);
+    });
+
+    it('shifts by stdDev when epsilon is 1', () => {
+      // logVar = 0 => stdDev = exp(0) = 1
+      const result = reparameterize([0, 0], [0, 0], [1, 1]);
+      expect(result[0]).toBeCloseTo(1);
+      expect(result[1]).toBeCloseTo(1);
+    });
+
+    it('scales by stdDev correctly', () => {
+      // logVar = 2 => stdDev = exp(1) ≈ 2.718
+      const result = reparameterize([0], [2], [1]);
+      expect(result[0]).toBeCloseTo(Math.E, 2);
+    });
+
+    it('preserves vector length', () => {
+      const result = reparameterize([1, 2, 3, 4], [0, 0, 0, 0], [0, 0, 0, 0]);
+      expect(result.length).toBe(4);
+    });
+  });
+
+  describe('klDivergence', () => {
+    it('returns 0 for standard normal (mean=0, logVar=0)', () => {
+      expect(klDivergence([0, 0], [0, 0])).toBeCloseTo(0);
+    });
+
+    it('returns positive value for non-standard distribution', () => {
+      expect(klDivergence([1, 1], [0, 0])).toBeGreaterThan(0);
+    });
+
+    it('increases with larger mean', () => {
+      const kl1 = klDivergence([1], [0]);
+      const kl2 = klDivergence([3], [0]);
+      expect(kl2).toBeGreaterThan(kl1);
+    });
+
+    it('computes correct value', () => {
+      // mean=[1], logVar=[0]: KL = 0.5 * (1 + 1 - 0 - 1) = 0.5
+      expect(klDivergence([1], [0])).toBeCloseTo(0.5);
+    });
+  });
+
+  describe('vaeLoss', () => {
+    it('reconstruction loss is MSE', () => {
+      const result = vaeLoss([1, 0], [0, 0], [0], [0], 0);
+      expect(result.reconstructionLoss).toBeCloseTo(0.5);
+    });
+
+    it('total loss includes KL with weight', () => {
+      const result = vaeLoss([0], [0], [1], [0], 2.0);
+      expect(result.klLoss).toBeCloseTo(0.5);
+      expect(result.totalLoss).toBeCloseTo(0 + 2.0 * 0.5);
+    });
+
+    it('total loss is sum of components', () => {
+      const result = vaeLoss([1], [0.5], [1], [0], 1.0);
+      expect(result.totalLoss).toBeCloseTo(
+        result.reconstructionLoss + 1.0 * result.klLoss
+      );
+    });
+  });
+estimatedMinutes: 15
+difficulty: intermediate

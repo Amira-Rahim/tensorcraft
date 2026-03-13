@@ -1,0 +1,148 @@
+---
+slug: fairness-metrics
+title: "Fairness Metrics: Defining 'Fair'"
+moduleId: ethics-responsibility
+themeId: shared
+order: 2
+estimatedMinutes: 30
+difficulty: intermediate
+context:
+  narrative: "You've found bias in your data. Now you need a way to measure whether your model's outputs are fair."
+  speaker: "Instructor"
+concept:
+  explanation: "Fairness metrics quantify how equitably a model treats different groups — just like Lighthouse scores quantify accessibility compliance."
+  bridge:
+    feTitle: "Lighthouse Accessibility Score"
+    feCode: "// Lighthouse: 72/100 accessibility — which rules are failing?"
+    mlTitle: "Fairness Metric"
+    mlCode: "// Demographic parity: 0.65 — which groups are disadvantaged?"
+    tier: intuition
+consequence:
+  narrative: "You can now quantify fairness — but choosing the right metric depends on context."
+  nextLessonTeaser: "Next: understanding what your model actually learned"
+hints:
+  - level: nudge
+    content: "Compare positive prediction rates across groups"
+  - level: guidance
+    content: "Demographic parity compares P(prediction=1) across groups"
+  - level: solution
+    content: "Compute approval rate per group, then take the ratio of min to max"
+keywords:
+  - fairness
+  - demographic-parity
+  - equalized-odds
+  - disparate-impact
+---
+
+<Dialogue speaker="Instructor">
+You've audited your dataset and found imbalances. But how do you know if your model's predictions are actually unfair? You need numbers — fairness metrics give you a concrete score, just like Lighthouse gives you an accessibility score.
+</Dialogue>
+
+As a frontend developer, you've probably run a Lighthouse audit and stared at a score trying to decide if 72 is "good enough." Fairness metrics put you in a similar position — except the stakes aren't page performance, they're whether real people get loans, jobs, or medical care.
+
+<LearningObjectives objectives={["Define and compute demographic parity for a binary classifier", "Define and compute equalized odds (true positive rate parity)", "Understand the impossibility theorem — you cannot satisfy all fairness metrics simultaneously", "Choose the appropriate fairness metric based on application context"]} />
+
+## Lighthouse, but for Fairness
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+Lighthouse tells you "your color contrast ratio is 3.2:1, but WCAG AA requires 4.5:1." Fairness metrics tell you "your loan approval rate for Group A is 80%, but for Group B it's only 45%." Both give you a number. Both force you to decide what "good enough" looks like.
+
+## Demographic Parity
+
+The simplest fairness metric: does each group receive positive predictions at the same rate?
+
+<CodeBlock language="typescript" title="demographic-parity.ts">
+{`interface Prediction {
+  group: string;    // e.g., "A" or "B"
+  predicted: number; // 0 or 1
+  actual: number;    // 0 or 1 (ground truth)
+}
+
+function demographicParity(predictions: Prediction[]): Record<string, number> {
+  const groupStats: Record<string, { positive: number; total: number }> = {};
+
+  for (const p of predictions) {
+    if (!groupStats[p.group]) groupStats[p.group] = { positive: 0, total: 0 };
+    groupStats[p.group].total++;
+    if (p.predicted === 1) groupStats[p.group].positive++;
+  }
+
+  // Compute positive prediction rate per group
+  const rates: Record<string, number> = {};
+  for (const [group, stats] of Object.entries(groupStats)) {
+    rates[group] = stats.positive / stats.total;
+  }
+
+  return rates;
+  // If rates are equal across groups → demographic parity is satisfied
+}
+
+// Disparate impact ratio: min(rate) / max(rate)
+// The 4/5ths rule: ratio should be >= 0.8
+function disparateImpactRatio(rates: Record<string, number>): number {
+  const values = Object.values(rates);
+  return Math.min(...values) / Math.max(...values);
+}`}
+</CodeBlock>
+
+## Equalized Odds
+
+A stricter metric: does each group have the same true positive rate AND false positive rate?
+
+<CodeBlock language="typescript" title="equalized-odds.ts">
+{`function equalizedOdds(predictions: Prediction[]) {
+  const groupStats: Record<string, {
+    truePositives: number;
+    falsePositives: number;
+    actualPositives: number;
+    actualNegatives: number;
+  }> = {};
+
+  for (const p of predictions) {
+    if (!groupStats[p.group]) {
+      groupStats[p.group] = {
+        truePositives: 0, falsePositives: 0,
+        actualPositives: 0, actualNegatives: 0
+      };
+    }
+    const s = groupStats[p.group];
+    if (p.actual === 1) {
+      s.actualPositives++;
+      if (p.predicted === 1) s.truePositives++;
+    } else {
+      s.actualNegatives++;
+      if (p.predicted === 1) s.falsePositives++;
+    }
+  }
+
+  const result: Record<string, { tpr: number; fpr: number }> = {};
+  for (const [group, s] of Object.entries(groupStats)) {
+    result[group] = {
+      tpr: s.actualPositives > 0 ? s.truePositives / s.actualPositives : 0,
+      fpr: s.actualNegatives > 0 ? s.falsePositives / s.actualNegatives : 0,
+    };
+  }
+
+  return result;
+  // Equalized odds: TPR and FPR should be equal across groups
+}`}
+</CodeBlock>
+
+## The Impossibility Theorem
+
+Here's the uncomfortable truth: you mathematically cannot satisfy all fairness definitions at the same time (unless your model is perfect or the base rates are equal across groups). This is called the impossibility theorem.
+
+This is like trying to optimize for Lighthouse performance, accessibility, SEO, and best practices all at 100 simultaneously — sometimes improving one metric degrades another. You have to make a judgment call about which metric matters most for your specific application.
+
+**When to use demographic parity:** When equal access to a resource matters more than accuracy (e.g., seeing job ads).
+
+**When to use equalized odds:** When you need the model to be equally accurate across groups (e.g., medical diagnosis).
+
+## Challenge
+
+Compute fairness metrics for a classifier and determine if disparate impact exists.
+
+<Exercise slug="compute-fairness" />
+
+<KeyTakeaways takeaways={["Demographic parity: equal positive prediction rates across groups", "Equalized odds: equal true positive and false positive rates across groups", "The impossibility theorem means you must choose which fairness metric matters most", "The 4/5ths rule: disparate impact ratio below 0.8 signals unfairness"]} />

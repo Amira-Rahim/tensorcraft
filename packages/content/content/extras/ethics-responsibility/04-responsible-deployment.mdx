@@ -1,0 +1,153 @@
+---
+slug: responsible-deployment
+title: "Responsible Deployment: Who Gets Hurt If You're Wrong?"
+moduleId: ethics-responsibility
+themeId: shared
+order: 4
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Your model is trained, tested, and performing well. But deploying it means real people experience its mistakes."
+  speaker: "Instructor"
+concept:
+  explanation: "Responsible deployment means analyzing failure modes, documenting limitations, and deciding when human oversight is required — like conducting an accessibility impact assessment before a major launch."
+  bridge:
+    feTitle: "Accessibility Impact Assessment"
+    feCode: "// a11y review: Who can't use this feature? What's the fallback?"
+    mlTitle: "Model Impact Assessment"
+    mlCode: "// ML review: Who is harmed by errors? What's the recourse?"
+    tier: intuition
+consequence:
+  narrative: "You now have a framework for deciding whether, how, and when to deploy a model."
+  nextLessonTeaser: "Next: building a reusable ethics checklist for all your ML projects"
+hints:
+  - level: nudge
+    content: "Consider what happens when the model is wrong for each stakeholder"
+  - level: guidance
+    content: "Map each failure mode to its severity and affected population"
+  - level: solution
+    content: "Create a structured impact assessment with failure modes, severity, affected groups, and mitigations"
+keywords:
+  - deployment
+  - failure-modes
+  - model-cards
+  - human-in-the-loop
+  - impact-assessment
+---
+
+<Dialogue speaker="Instructor">
+Your model scores well on every metric. Your fairness numbers look good. You've verified it learned the right patterns. But before you deploy, there's one more question — the most important one: who gets hurt if you're wrong?
+</Dialogue>
+
+Every frontend developer has done a pre-launch review. Does it work on mobile? Is it accessible? What happens if the API is down? Responsible ML deployment follows the same logic, but the failure cases involve people's livelihoods, health, and civil rights.
+
+<LearningObjectives objectives={["Conduct a failure mode analysis for an ML system", "Distinguish between high-stakes and low-stakes ML applications", "Understand when human-in-the-loop oversight is required", "Create a model card documenting a model's capabilities and limitations"]} />
+
+## The Accessibility Review, but for ML
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+Before launching a major feature, responsible frontend teams ask: "Who can't use this? What's the fallback experience?" An accessibility impact assessment identifies users who might be excluded and builds alternatives.
+
+A model impact assessment asks the same questions: "Who is harmed by errors? What recourse do they have? Is there a human fallback?"
+
+## Failure Mode Analysis
+
+Every model will be wrong sometimes. The question is: what happens when it's wrong?
+
+<CodeBlock language="typescript" title="impact-assessment.ts">
+{`interface FailureMode {
+  description: string;
+  probability: 'low' | 'medium' | 'high';
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  affectedGroups: string[];
+  mitigation: string;
+  humanFallback: boolean;
+}
+
+interface ModelImpactAssessment {
+  modelName: string;
+  purpose: string;
+  stakeholders: string[];
+  failureModes: FailureMode[];
+  deploymentDecision: 'deploy' | 'deploy-with-oversight' | 'do-not-deploy';
+  rationale: string;
+}
+
+// Example: loan approval model
+const loanModelAssessment: ModelImpactAssessment = {
+  modelName: 'loan-approval-v2',
+  purpose: 'Pre-screen loan applications for manual review',
+  stakeholders: ['applicants', 'loan officers', 'bank', 'regulators'],
+  failureModes: [
+    {
+      description: 'False negative — qualified applicant denied',
+      probability: 'medium',
+      severity: 'high',
+      affectedGroups: ['applicants', 'especially underrepresented groups'],
+      mitigation: 'Human review of all denials; applicant appeal process',
+      humanFallback: true,
+    },
+    {
+      description: 'False positive — unqualified applicant approved',
+      probability: 'low',
+      severity: 'medium',
+      affectedGroups: ['bank', 'applicant (may take on unaffordable debt)'],
+      mitigation: 'Secondary manual review before final approval',
+      humanFallback: true,
+    },
+    {
+      description: 'Systematic bias against a demographic group',
+      probability: 'medium',
+      severity: 'critical',
+      affectedGroups: ['affected demographic group', 'regulators'],
+      mitigation: 'Monthly fairness audits; regulatory reporting',
+      humanFallback: true,
+    },
+  ],
+  deploymentDecision: 'deploy-with-oversight',
+  rationale: 'Model assists but does not replace human loan officers. All decisions subject to human review.',
+};
+
+function assessRisk(assessment: ModelImpactAssessment): string {
+  const hasCritical = assessment.failureModes.some(f => f.severity === 'critical');
+  const allHaveFallbacks = assessment.failureModes.every(f => f.humanFallback);
+
+  if (hasCritical && !allHaveFallbacks) {
+    return 'DO NOT DEPLOY — critical failure modes without human fallbacks';
+  }
+  if (hasCritical && allHaveFallbacks) {
+    return 'DEPLOY WITH OVERSIGHT — critical risks mitigated by human review';
+  }
+  return 'DEPLOY — risks are manageable with standard monitoring';
+}`}
+</CodeBlock>
+
+## High-Stakes vs. Low-Stakes
+
+Not all ML applications carry equal risk. A music recommendation that suggests a bad song is annoying. A medical diagnosis model that misses cancer is catastrophic.
+
+**High-stakes (require human oversight):** healthcare, criminal justice, hiring, lending, child welfare.
+
+**Lower-stakes (can tolerate errors):** content recommendations, spam filtering, autocomplete, image tagging.
+
+The stakes determine how much oversight you need — not whether you need it at all. Every deployed model needs monitoring.
+
+## Model Cards
+
+Model cards are like `package.json` for ML models — structured documentation that tells anyone who encounters your model what it does, what it was trained on, how it performs, and where it fails.
+
+A model card should include:
+- **Intended use:** what the model is designed to do
+- **Out-of-scope uses:** what it should not be used for
+- **Training data:** what it was trained on, and known gaps
+- **Performance metrics:** accuracy, fairness metrics, broken down by group
+- **Limitations:** known failure modes and biases
+
+## Challenge
+
+Build a model impact assessment for a given ML application scenario.
+
+<Exercise slug="assess-impact" />
+
+<KeyTakeaways takeaways={["Always ask 'who gets hurt if this is wrong?' before deploying", "Failure mode analysis maps errors to their real-world consequences", "High-stakes applications require human-in-the-loop oversight", "Model cards document capabilities and limitations — like package.json for ML", "Sometimes the responsible decision is to not deploy at all"]} />

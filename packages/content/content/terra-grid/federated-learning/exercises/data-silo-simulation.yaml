@@ -1,0 +1,60 @@
+slug: data-silo-simulation
+lessonSlug: data-silo-problem
+title: "Simulate Data Silos"
+instructions: "Write a function federatedStrategy that takes an array of silo objects (each with org: string and dataSize: number) and returns an object with totalData (sum of all dataSizes), participants (number of silos), and approach: 'centralized' if there is only 1 silo, 'federated' if there are 2 or more."
+starterCode: |
+  interface Silo {
+    org: string;
+    dataSize: number;
+  }
+
+  interface Strategy {
+    totalData: number;
+    participants: number;
+    approach: 'centralized' | 'federated';
+  }
+
+  function federatedStrategy(silos: Silo[]): Strategy {
+    // Your code here
+    return { totalData: 0, participants: 0, approach: 'centralized' };
+  }
+solutionCode: |
+  interface Silo {
+    org: string;
+    dataSize: number;
+  }
+
+  interface Strategy {
+    totalData: number;
+    participants: number;
+    approach: 'centralized' | 'federated';
+  }
+
+  function federatedStrategy(silos: Silo[]): Strategy {
+    const totalData = silos.reduce((sum, s) => sum + s.dataSize, 0);
+    return {
+      totalData,
+      participants: silos.length,
+      approach: silos.length >= 2 ? 'federated' : 'centralized',
+    };
+  }
+testCode: |
+  describe('federatedStrategy', () => {
+    it('uses centralized for single silo', () => {
+      const result = federatedStrategy([{ org: 'Alpha', dataSize: 1000 }]);
+      expect(result.approach).toBe('centralized');
+      expect(result.totalData).toBe(1000);
+    });
+    it('uses federated for multiple silos', () => {
+      const result = federatedStrategy([
+        { org: 'Alpha', dataSize: 2400 },
+        { org: 'Beta', dataSize: 1800 },
+        { org: 'Volta', dataSize: 3100 },
+      ]);
+      expect(result.approach).toBe('federated');
+      expect(result.totalData).toBe(7300);
+      expect(result.participants).toBe(3);
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

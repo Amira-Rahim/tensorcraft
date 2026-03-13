@@ -1,0 +1,54 @@
+slug: load-test
+lessonSlug: load-testing
+title: "Load Test Analysis"
+instructions: "Implement a function that analyzes load test results. Given an array of latency measurements (in ms), compute: count, average, p50, p95, p99, max, and a pass/fail verdict (pass if p95 < 2000ms). The percentile function should use the ceiling method on the sorted array."
+starterCode: |
+  interface LoadTestReport {
+    count: number;
+    average: number;
+    p50: number;
+    p95: number;
+    p99: number;
+    max: number;
+    verdict: 'PASS' | 'FAIL';
+  }
+
+  function analyzeLatencies(latencies: number[]): LoadTestReport {
+    // Sort, compute percentiles, determine verdict
+    // your code here
+    return { count: 0, average: 0, p50: 0, p95: 0, p99: 0, max: 0, verdict: 'FAIL' };
+  }
+solutionCode: |
+  function analyzeLatencies(latencies: number[]): LoadTestReport {
+    const sorted = [...latencies].sort((a, b) => a - b);
+    const count = sorted.length;
+    const average = sorted.reduce((a, b) => a + b, 0) / count;
+    const percentile = (p: number) => sorted[Math.ceil((p / 100) * count) - 1];
+    const p95 = percentile(95);
+    return {
+      count,
+      average,
+      p50: percentile(50),
+      p95,
+      p99: percentile(99),
+      max: sorted[count - 1],
+      verdict: p95 < 2000 ? 'PASS' : 'FAIL',
+    };
+  }
+testCode: |
+  describe('analyzeLatencies', () => {
+    const latencies = Array.from({ length: 100 }, (_, i) => 100 + i * 10);
+    const report = analyzeLatencies(latencies);
+    it('counts correctly', () => { expect(report.count).toBe(100); });
+    it('computes average', () => { expect(report.average).toBeCloseTo(595); });
+    it('computes p50', () => { expect(report.p50).toBe(600); });
+    it('computes p95', () => { expect(report.p95).toBe(1040); });
+    it('computes max', () => { expect(report.max).toBe(1090); });
+    it('passes when p95 < 2000', () => { expect(report.verdict).toBe('PASS'); });
+    it('fails when p95 >= 2000', () => {
+      const slow = Array.from({ length: 100 }, () => 3000);
+      expect(analyzeLatencies(slow).verdict).toBe('FAIL');
+    });
+  });
+estimatedMinutes: 12
+difficulty: advanced

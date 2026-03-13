@@ -1,0 +1,228 @@
+---
+slug: bias-auditing
+title: "Bias Auditing — Lighthouse for Fairness"
+moduleId: production-privacy
+themeId: signal-ward
+order: 3
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "Dr. Vasquez delivers the hard truth in the ethics review: 'Your model performs 12% worse on records written in non-standard English. Notes from our night shift — predominantly staffed by nurses who speak English as a second language — have higher error rates. This is not a bug report. It is an equity crisis.' Khalil draws the parallel immediately: 'It is the same as an accessibility audit. We run Lighthouse and find that our app works for sighted mouse users but fails for everyone else.'"
+  speaker: "Dr. Vasquez"
+concept:
+  explanation: "Bias auditing for ML models follows the same methodology as running a Lighthouse accessibility audit — systematically testing across user groups to ensure no population is excluded or underserved."
+  bridge:
+    feTitle: "Accessibility Audit (Lighthouse)"
+    feCode: "// Lighthouse: test color contrast, keyboard nav, screen readers — score each category, flag failures"
+    mlTitle: "Bias Audit (Fairness)"
+    mlCode: "// Fairness audit: test across demographics, languages, writing styles — score each group, flag disparities"
+    tier: structural
+consequence:
+  narrative: "The bias audit reveals three failure modes: non-standard English, abbreviation-heavy ICU notes, and Spanish-language records. Khalil implements data augmentation for underperforming slices and retrains. The gap drops from 12% to 2.3%. Vasquez reviews the fairness card. 'Two percent is not zero, but it is honest. Document the remaining gap and ship it with the model card.'"
+  nextLessonTeaser: "Next: human-in-the-loop — designing approval gates for clinical predictions"
+hints:
+  - level: nudge
+    content: "Compute accuracy for each demographic group separately, then compare the results"
+  - level: guidance
+    content: "Slice your evaluation data by demographic attributes, compute per-group metrics, calculate the gap between best and worst groups"
+  - level: solution
+    content: "Build an audit pipeline: define demographic slices, run predictions per slice, compute accuracy/F1 per group, calculate max disparity, flag any gap exceeding the equity threshold"
+keywords:
+  - bias-auditing
+  - fairness
+  - equity
+  - demographic-parity
+  - accessibility
+  - lighthouse
+  - disparate-impact
+---
+
+<Dialogue speaker="Dr. Vasquez">
+Your model performs 12% worse on records written in non-standard English. Our night shift nurses — many of whom speak English as a second language — write differently. Shorter sentences. Different abbreviations. No formal headers. Your model was trained on attending physician notes. It works well for people who write like attending physicians. That is a bias, and in this hospital, it is unacceptable.
+</Dialogue>
+
+<Dialogue speaker="Khalil">
+It is the same problem as accessibility. If you only test your app with a mouse on a large monitor, you miss keyboard users, screen reader users, mobile users. Run Lighthouse and suddenly you see a score of 40 where you expected 95. If you only evaluate your model on one style of clinical writing, you miss everyone who writes differently. We need a Lighthouse for fairness.
+</Dialogue>
+
+Accessibility auditing taught the frontend world a critical lesson: you cannot build for everyone by testing with one user profile. You run Lighthouse, test with VoiceOver, check color contrast ratios, verify keyboard navigation. Bias auditing applies the same discipline to ML: test across demographic groups, measure performance per group, and fix the gaps. A model that works well on average but fails for specific populations is not a good model — just as a website that works for sighted mouse users but fails for screen reader users is not an accessible website.
+
+<LearningObjectives objectives={["Build a fairness audit pipeline that evaluates model performance across demographic slices", "Compute disparity metrics: accuracy gaps, false positive rate ratios, false negative rate ratios", "Generate fairness cards that document per-group performance and known limitations", "Implement bias mitigation through data augmentation and sample re-weighting"]} />
+
+## Fairness Audit Pipeline
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="bias-audit.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+interface AuditSlice {
+  name: string;
+  description: string;
+  samples: { text: string; trueLabel: number }[];
+}
+
+interface SliceMetrics {
+  sliceName: string;
+  accuracy: number;
+  falsePositiveRate: number;
+  falseNegativeRate: number;
+  sampleCount: number;
+}
+
+interface AuditReport {
+  overall: SliceMetrics;
+  slices: SliceMetrics[];
+  disparities: {
+    worstSlice: string;
+    bestSlice: string;
+    accuracyGap: number;
+    meetsEquityThreshold: boolean;
+  };
+}
+
+// Compute metrics for a single demographic slice
+function computeSliceMetrics(
+  predictions: number[],
+  trueLabels: number[],
+  sliceName: string
+): SliceMetrics {
+  let correct = 0;
+  let falsePositives = 0;
+  let falseNegatives = 0;
+  let totalPositives = 0;
+  let totalNegatives = 0;
+
+  for (let i = 0; i < predictions.length; i++) {
+    if (predictions[i] === trueLabels[i]) correct++;
+    if (trueLabels[i] === 1) totalPositives++;
+    if (trueLabels[i] === 0) totalNegatives++;
+    if (predictions[i] === 1 && trueLabels[i] === 0) falsePositives++;
+    if (predictions[i] === 0 && trueLabels[i] === 1) falseNegatives++;
+  }
+
+  return {
+    sliceName,
+    accuracy: correct / predictions.length,
+    falsePositiveRate: totalNegatives > 0 ? falsePositives / totalNegatives : 0,
+    falseNegativeRate: totalPositives > 0 ? falseNegatives / totalPositives : 0,
+    sampleCount: predictions.length,
+  };
+}
+
+// Run a complete fairness audit — like running Lighthouse across device profiles
+async function auditFairness(
+  model: tf.LayersModel,
+  slices: AuditSlice[],
+  tokenize: (text: string) => number[],
+  equityThreshold: number = 0.05
+): Promise<AuditReport> {
+  const allPredictions: number[] = [];
+  const allLabels: number[] = [];
+  const sliceMetrics: SliceMetrics[] = [];
+
+  for (const slice of slices) {
+    const predictions: number[] = [];
+    const labels = slice.samples.map(s => s.trueLabel);
+
+    for (const sample of slice.samples) {
+      const tokens = tokenize(sample.text);
+      const input = tf.tensor2d([tokens]);
+      const output = model.predict(input) as tf.Tensor;
+      const probs = (await output.array() as number[][])[0];
+      predictions.push(probs.indexOf(Math.max(...probs)));
+      input.dispose();
+      output.dispose();
+    }
+
+    sliceMetrics.push(computeSliceMetrics(predictions, labels, slice.name));
+    allPredictions.push(...predictions);
+    allLabels.push(...labels);
+  }
+
+  const overall = computeSliceMetrics(allPredictions, allLabels, 'overall');
+  const worstSlice = sliceMetrics.reduce((a, b) => a.accuracy < b.accuracy ? a : b);
+  const bestSlice = sliceMetrics.reduce((a, b) => a.accuracy > b.accuracy ? a : b);
+  const accuracyGap = bestSlice.accuracy - worstSlice.accuracy;
+
+  return {
+    overall,
+    slices: sliceMetrics,
+    disparities: {
+      worstSlice: worstSlice.sliceName,
+      bestSlice: bestSlice.sliceName,
+      accuracyGap,
+      meetsEquityThreshold: accuracyGap <= equityThreshold,
+    },
+  };
+}`}
+</CodeBlock>
+
+## The Fairness Card
+
+<CodeBlock language="typescript" title="fairness-card.ts">
+{`// A fairness card is like a Lighthouse report — per-category scores with pass/fail
+function generateFairnessCard(report: AuditReport): string {
+  const lines: string[] = [];
+  lines.push('=== Diagnostic One — Fairness Audit ===');
+  lines.push(\`Overall Accuracy: \${(report.overall.accuracy * 100).toFixed(1)}%\`);
+  lines.push('');
+  lines.push('Per-Group Performance:');
+
+  for (const slice of report.slices) {
+    const bar = '#'.repeat(Math.round(slice.accuracy * 20));
+    const gap = slice.accuracy - report.overall.accuracy;
+    const gapStr = gap >= 0 ? \`+\${(gap * 100).toFixed(1)}%\` : \`\${(gap * 100).toFixed(1)}%\`;
+    const fprStr = \`FPR: \${(slice.falsePositiveRate * 100).toFixed(1)}%\`;
+    const fnrStr = \`FNR: \${(slice.falseNegativeRate * 100).toFixed(1)}%\`;
+    lines.push(\`  \${slice.sliceName.padEnd(25)} \${bar.padEnd(20)} \${(slice.accuracy * 100).toFixed(1)}% (\${gapStr}) | \${fprStr} | \${fnrStr}\`);
+  }
+
+  lines.push('');
+  lines.push(\`Accuracy Gap: \${(report.disparities.accuracyGap * 100).toFixed(1)}%\`);
+  lines.push(\`Equity Threshold Met: \${report.disparities.meetsEquityThreshold ? 'PASS' : 'FAIL'}\`);
+
+  if (!report.disparities.meetsEquityThreshold) {
+    lines.push(\`  Worst performing group: \${report.disparities.worstSlice}\`);
+    lines.push('  Action required: augment training data for underperforming groups');
+  }
+
+  return lines.join('\\n');
+}
+
+// Define the audit slices for Diagnostic One
+const diagnosticOneSlices: AuditSlice[] = [
+  {
+    name: 'attending-physician-notes',
+    description: 'Standard format, formal English, full sentences',
+    samples: [],  // populated from evaluation dataset
+  },
+  {
+    name: 'night-shift-nurse-notes',
+    description: 'Abbreviated, non-standard English, ESL patterns',
+    samples: [],
+  },
+  {
+    name: 'icu-shorthand',
+    description: 'Heavy abbreviation, telegraphic style, no headers',
+    samples: [],
+  },
+  {
+    name: 'spanish-language-notes',
+    description: 'Spanish-language clinical notes from bilingual staff',
+    samples: [],
+  },
+];`}
+</CodeBlock>
+
+<Dialogue speaker="Obi Nwosu">
+The fairness card is the model's Lighthouse report. You would not ship a website with a Lighthouse accessibility score of 40. You should not ship a model with a 12% accuracy gap between demographic groups. Measure, document, remediate.
+</Dialogue>
+
+## Challenge
+
+Build a bias auditor that computes per-group accuracy and flags demographic disparities.
+
+<Exercise slug="audit-bias" />
+
+<KeyTakeaways takeaways={["Bias auditing is Lighthouse for ML — systematically test across demographic groups and score each one", "A 12% accuracy gap between groups is a failing score, just as a Lighthouse accessibility score of 40 is a failure", "Fairness cards document per-group performance honestly — a known limitation is safer than a hidden one", "Aggregate metrics (overall accuracy) hide group-level failures the same way global page speed hides per-device problems"]} />

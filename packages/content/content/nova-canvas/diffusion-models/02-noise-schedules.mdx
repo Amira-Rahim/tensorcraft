@@ -16,7 +16,7 @@ concept:
     feCode: "transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);"
     mlTitle: "Noise schedule (beta schedule)"
     mlCode: "const betas = cosineSchedule(timesteps);"
-    tier: pattern
+    tier: structural
 consequence:
   narrative: "With the cosine schedule, the images are noticeably sharper. Same number of steps, better allocation of the noise budget. Petrov leans in: 'The details in the shadows — those were not there before.'"
   nextLessonTeaser: "Next: the U-Net — the architecture that actually predicts the noise"

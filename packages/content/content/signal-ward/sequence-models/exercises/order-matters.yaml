@@ -1,0 +1,89 @@
+slug: order-matters
+lessonSlug: why-order-matters
+title: "Order Matters"
+instructions: "Implement toSequence that converts clinical text to an ordered array of token IDs using a vocab Map, and detectNegation that returns true if a negation word ('no', 'denied', 'denies', 'without', 'not') appears before a target symptom in the sequence. Demonstrate that word order determines clinical meaning."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  const vocab = new Map([
+    ['<PAD>', 0], ['<UNK>', 1], ['patient', 2], ['denied', 3],
+    ['reported', 4], ['chest', 5], ['pain', 6], ['no', 7],
+    ['denies', 8], ['fever', 9], ['without', 10], ['nausea', 11],
+  ]);
+
+  const NEGATION_WORDS = new Set(['no', 'denied', 'denies', 'without', 'not']);
+
+  function toSequence(text: string, v: Map<string, number>, maxLen: number): number[] {
+    // Split text into words, map each to vocab ID (use 1 for unknown)
+    // Pad with 0s to maxLen, truncate if longer
+    return []; // your code here
+  }
+
+  function detectNegation(text: string, symptom: string): boolean {
+    // Return true if a negation word appears BEFORE the symptom in the text
+    // Order matters: "pain denied" is NOT negated, "denied pain" IS negated
+    return false; // your code here
+  }
+
+  const seqA = toSequence('patient denied chest pain', vocab, 8);
+  const seqB = toSequence('patient reported chest pain', vocab, 8);
+  const negatedA = detectNegation('patient denied chest pain', 'pain');
+  const negatedB = detectNegation('patient reported chest pain', 'pain');
+  const tensorA = tf.tensor1d(seqA, 'int32');
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  const vocab = new Map([
+    ['<PAD>', 0], ['<UNK>', 1], ['patient', 2], ['denied', 3],
+    ['reported', 4], ['chest', 5], ['pain', 6], ['no', 7],
+    ['denies', 8], ['fever', 9], ['without', 10], ['nausea', 11],
+  ]);
+
+  const NEGATION_WORDS = new Set(['no', 'denied', 'denies', 'without', 'not']);
+
+  function toSequence(text: string, v: Map<string, number>, maxLen: number): number[] {
+    const tokens = text.toLowerCase().split(/\s+/);
+    const ids = tokens.map(t => v.get(t) ?? 1);
+    while (ids.length < maxLen) ids.push(0);
+    return ids.slice(0, maxLen);
+  }
+
+  function detectNegation(text: string, symptom: string): boolean {
+    const words = text.toLowerCase().split(/\s+/);
+    const symptomIdx = words.indexOf(symptom);
+    if (symptomIdx === -1) return false;
+    return words.slice(0, symptomIdx).some(w => NEGATION_WORDS.has(w));
+  }
+
+  const seqA = toSequence('patient denied chest pain', vocab, 8);
+  const seqB = toSequence('patient reported chest pain', vocab, 8);
+  const negatedA = detectNegation('patient denied chest pain', 'pain');
+  const negatedB = detectNegation('patient reported chest pain', 'pain');
+  const tensorA = tf.tensor1d(seqA, 'int32');
+testCode: |
+  describe('Order Matters', () => {
+    it('converts text to sequence with correct IDs', () => {
+      expect(seqA).toEqual([2, 3, 5, 6, 0, 0, 0, 0]);
+    });
+    it('different sentences produce different sequences', () => {
+      expect(seqA).not.toEqual(seqB);
+      expect(seqB).toEqual([2, 4, 5, 6, 0, 0, 0, 0]);
+    });
+    it('detects negation before symptom', () => {
+      expect(negatedA).toBe(true);
+    });
+    it('reports no negation when absent', () => {
+      expect(negatedB).toBe(false);
+    });
+    it('handles unknown words with UNK token', () => {
+      const seq = toSequence('patient has severe pain', vocab, 8);
+      expect(seq[1]).toBe(1); // "has" → UNK
+      expect(seq[2]).toBe(1); // "severe" → UNK
+    });
+    it('creates valid tensor from sequence', () => {
+      expect(tensorA.shape).toEqual([8]);
+      expect(tensorA.dtype).toBe('int32');
+    });
+  });
+estimatedMinutes: 15
+difficulty: intermediate

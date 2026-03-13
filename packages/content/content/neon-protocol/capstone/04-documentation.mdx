@@ -1,0 +1,360 @@
+---
+slug: np-documentation
+title: "Documentation"
+moduleId: np-capstone
+themeId: neon-protocol
+order: 4
+estimatedMinutes: 25
+difficulty: advanced
+context:
+  narrative: "Protocol Sentinel works. Tests pass. But the resistance has 200 cells across Neon City — each needs to deploy and maintain their own instance. 'If only we can run it, it is useless,' Lin says. 'Document everything. Model cards, API docs, deployment guides. Every cell must be able to operate independently.' Kira opens her editor. She has written README files before. Model cards are the same idea — with different sections."
+  speaker: "Lin"
+concept:
+  explanation: "A model card is a README.md for a machine learning model. It documents what the model does, how it was trained, what its limitations are, and when it should not be trusted. Same structure, same purpose — helping the next developer understand what they are working with."
+  bridge:
+    feTitle: "README.md + API Docs"
+    feCode: "## Installation\n## Usage\n## API Reference\n## Known Issues\n## Contributing"
+    mlTitle: "Model Card"
+    mlCode: "## Model Details\n## Intended Use\n## Training Data\n## Performance Metrics\n## Limitations\n## Ethical Considerations"
+    tier: identity
+consequence:
+  narrative: "Kira writes the documentation through the night. Model cards for each component. API docs for every stage. A deployment runbook with step-by-step instructions. By morning, any resistance cell with a browser and an internet connection can deploy Protocol Sentinel. The Architect built a surveillance empire on proprietary, undocumented systems. The resistance fights back with open documentation."
+  nextLessonTeaser: "Next: launch — Protocol Sentinel goes live across Neon City"
+hints:
+  - level: nudge
+    content: "A model card has the same sections as a good README — just focused on ML-specific details"
+  - level: guidance
+    content: "Include: model details, intended use, training data, metrics, limitations, and ethical considerations"
+  - level: solution
+    content: "Write a structured model card object with all required sections, including quantified performance metrics and explicit limitation statements"
+keywords:
+  - documentation
+  - model-card
+  - API-docs
+  - deployment-guide
+  - handoff
+---
+
+<Dialogue speaker="Lin">
+Protocol Sentinel is not a weapon. It is a tool. And a tool without documentation is a liability. When we distribute this to 200 cells, every operator needs to understand what this system can do, what it cannot do, and when it will fail. Write it all down.
+</Dialogue>
+
+<Dialogue speaker="Kira">
+I have written hundreds of README files. Package documentation, API references, component storybooks. A model card is the same thing — introduction, usage, API, limitations, contributing guidelines. Just with different section headers.
+</Dialogue>
+
+<Dialogue speaker="NEON">
+Meridian never documented my limitations. They deployed me to track 14 million people without a single line about my 23% false positive rate on dark-skinned faces. Documentation is not just courtesy. It is accountability.
+</Dialogue>
+
+Every open-source package you have used has a README. Every API you have integrated has documentation. Model cards serve the same purpose for ML systems — they tell the next developer (or operator, or resistance cell) what the model does, how it performs, where it fails, and when it should not be trusted. The format is standardized. If you can write a good README, you can write a good model card.
+
+<LearningObjectives objectives={["Write a model card documenting an ML system's capabilities, limitations, and ethical considerations", "Create API documentation for a multi-stage ML pipeline", "Document performance metrics with appropriate context and caveats", "Build a deployment runbook for non-technical operators"]} />
+
+## Model Cards
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="model-card.ts">
+{`// A model card is structured documentation — like a typed README
+interface ModelCard {
+  modelDetails: {
+    name: string;
+    version: string;
+    type: string;
+    framework: string;
+    size: string;
+    lastUpdated: string;
+    authors: string[];
+    license: string;
+  };
+
+  intendedUse: {
+    primaryUse: string;
+    outOfScope: string[];
+    users: string[];
+  };
+
+  trainingData: {
+    description: string;
+    size: string;
+    sources: string[];
+    preprocessing: string;
+    knownBiases: string[];
+  };
+
+  performance: {
+    metrics: Array<{
+      name: string;
+      value: number;
+      dataset: string;
+      conditions: string;
+    }>;
+    bestCase: string;
+    worstCase: string;
+  };
+
+  limitations: {
+    knownIssues: string[];
+    failureConditions: string[];
+    notSuitableFor: string[];
+  };
+
+  ethicalConsiderations: {
+    risks: string[];
+    mitigations: string[];
+    humanOversight: string;
+  };
+}
+
+// Protocol Sentinel — Detector Model Card
+const detectorCard: ModelCard = {
+  modelDetails: {
+    name: 'Protocol Sentinel — Surveillance Detector',
+    version: '1.0.0',
+    type: 'Object Detection (MobileNet-SSD)',
+    framework: 'TensorFlow.js 4.x',
+    size: '6.2 MB (quantized)',
+    lastUpdated: '2084-03-15',
+    authors: ['Kira Chen', 'Zara Okonkwo', 'Ryo Tanaka'],
+    license: 'Resistance Open License v2',
+  },
+
+  intendedUse: {
+    primaryUse: 'Detect Meridian surveillance equipment in video feeds',
+    outOfScope: [
+      'Identifying individual people',
+      'Tracking movement patterns',
+      'Facial recognition of any kind',
+    ],
+    users: ['Resistance cell operators', 'Civilian defense networks'],
+  },
+
+  trainingData: {
+    description: 'Manually labeled frames from 47 resistance camera feeds',
+    size: '12,400 labeled frames across 4 classes',
+    sources: [
+      'Resistance surveillance network (Districts 1-12)',
+      'Publicly available Meridian equipment catalogs',
+      'Synthetic augmented data (rotation, scale, lighting)',
+    ],
+    preprocessing: 'Resize to 224x224, normalize to [0,1], random augmentation',
+    knownBiases: [
+      'Training data skewed toward Districts 4-7 (higher camera density)',
+      'Underrepresented: rooftop-mounted devices, camouflaged equipment',
+      'Night footage: 18% of dataset vs 50% of operational hours',
+    ],
+  },
+
+  performance: {
+    metrics: [
+      {
+        name: 'mAP@0.5',
+        value: 0.847,
+        dataset: 'resistance-test-v2',
+        conditions: 'Daytime, clear weather, standard angles',
+      },
+      {
+        name: 'mAP@0.5',
+        value: 0.631,
+        dataset: 'resistance-test-v2',
+        conditions: 'Nighttime, any weather',
+      },
+      {
+        name: 'False Positive Rate',
+        value: 0.043,
+        dataset: 'civilian-only-test',
+        conditions: 'No Meridian equipment present',
+      },
+      {
+        name: 'Inference Time',
+        value: 47,
+        dataset: 'N/A',
+        conditions: 'Chrome 120, WebGL backend, RTX 3060',
+      },
+    ],
+    bestCase: 'Daytime, unobstructed view, standard Meridian equipment',
+    worstCase: 'Night, rain, partially obscured or modified equipment',
+  },
+
+  limitations: {
+    knownIssues: [
+      'Night detection accuracy drops 25% compared to daytime',
+      'Partially obscured equipment detected at 58% vs 91% unobstructed',
+      'New Meridian equipment models not in training data will be missed',
+    ],
+    failureConditions: [
+      'Complete darkness (no infrared support)',
+      'Camera resolution below 320x240',
+      'Frame rate below 5 FPS causes detection gaps',
+    ],
+    notSuitableFor: [
+      'Legal evidence without human verification',
+      'Automated response systems (always require human confirmation)',
+      'Deployment without the adversarial guard module',
+    ],
+  },
+
+  ethicalConsiderations: {
+    risks: [
+      'False positives could trigger unnecessary alerts',
+      'System could theoretically be repurposed for surveillance',
+      'Operator over-reliance without human verification',
+    ],
+    mitigations: [
+      'All detections require human confirmation before action',
+      'Model explicitly cannot identify individuals',
+      'Adversarial guard flags uncertain detections',
+      'All predictions include confidence scores',
+    ],
+    humanOversight: 'Required. No automated actions. Every alert must be verified by a trained operator.',
+  },
+};`}
+</CodeBlock>
+
+## Pipeline API Documentation
+
+<CodeBlock language="typescript" title="api-docs.ts">
+{`// API documentation — same structure as REST API docs
+interface PipelineAPIDoc {
+  endpoint: string;
+  description: string;
+  input: {
+    type: string;
+    shape?: string;
+    required: boolean;
+    description: string;
+  }[];
+  output: {
+    type: string;
+    shape?: string;
+    description: string;
+  };
+  errors: {
+    code: string;
+    description: string;
+    resolution: string;
+  }[];
+  example: string;
+}
+
+const preprocessorDoc: PipelineAPIDoc = {
+  endpoint: 'preprocessor.process()',
+  description: 'Resizes and normalizes a raw camera frame for model inference',
+  input: [
+    {
+      type: 'tf.Tensor3D',
+      shape: '[height, width, 3]',
+      required: true,
+      description: 'Raw RGB frame from camera feed. Any resolution.',
+    },
+  ],
+  output: {
+    type: 'tf.Tensor4D',
+    shape: '[1, 224, 224, 3]',
+    description: 'Batched, resized, normalized frame. Values in [0, 1].',
+  },
+  errors: [
+    {
+      code: 'INVALID_RANK',
+      description: 'Input tensor is not rank 3',
+      resolution: 'Ensure input is [height, width, channels], not batched',
+    },
+    {
+      code: 'INVALID_CHANNELS',
+      description: 'Input has channels != 1 or 3',
+      resolution: 'Convert to RGB (3 channels) or grayscale (1 channel)',
+    },
+  ],
+  example: \`const frame = tf.browser.fromPixels(canvas);
+const processed = await preprocessor.process(frame);
+// processed.shape === [1, 224, 224, 3]\`,
+};
+
+// Generate markdown from structured docs
+function generateMarkdown(doc: PipelineAPIDoc): string {
+  let md = \`## \${doc.endpoint}\\n\\n\`;
+  md += \`\${doc.description}\\n\\n\`;
+  md += \`### Input\\n\\n\`;
+  for (const input of doc.input) {
+    md += \`- **\${input.type}** \${input.shape || ''} \`;
+    md += \`(\${input.required ? 'required' : 'optional'}): \${input.description}\\n\`;
+  }
+  md += \`\\n### Output\\n\\n\`;
+  md += \`- **\${doc.output.type}** \${doc.output.shape || ''}: \${doc.output.description}\\n\`;
+  md += \`\\n### Errors\\n\\n\`;
+  for (const error of doc.errors) {
+    md += \`- **\${error.code}**: \${error.description}. Fix: \${error.resolution}\\n\`;
+  }
+  md += \`\\n### Example\\n\\n\\\`\\\`\\\`typescript\\n\${doc.example}\\n\\\`\\\`\\\`\\n\`;
+  return md;
+}`}
+</CodeBlock>
+
+## Deployment Runbook
+
+<CodeBlock language="typescript" title="runbook.ts">
+{`// Deployment runbook — step-by-step for resistance cell operators
+interface RunbookStep {
+  step: number;
+  title: string;
+  command?: string;
+  verification: string;
+  troubleshooting: string;
+}
+
+const deploymentRunbook: RunbookStep[] = [
+  {
+    step: 1,
+    title: 'Verify browser compatibility',
+    command: undefined,
+    verification: 'Open Chrome 100+ or Firefox 110+. Check DevTools → Console for WebGL support.',
+    troubleshooting: 'If WebGL unavailable, Protocol Sentinel falls back to CPU (10x slower). Use a newer device.',
+  },
+  {
+    step: 2,
+    title: 'Load Protocol Sentinel',
+    command: 'Navigate to sentinel.resistance.net/deploy',
+    verification: 'Status bar shows "Models loaded" with green indicator for all 3 models.',
+    troubleshooting: 'If model load fails, check network connection. Models are 6-15 MB each.',
+  },
+  {
+    step: 3,
+    title: 'Connect camera feeds',
+    command: 'Click "Add Feed" → enter camera stream URL',
+    verification: 'Live preview appears. Frame rate shown in overlay (target: 15+ FPS).',
+    troubleshooting: 'If feed shows black, verify camera URL. CORS errors require relay server.',
+  },
+  {
+    step: 4,
+    title: 'Run system check',
+    command: 'Click "System Check" button',
+    verification: 'All 6 pipeline stages show green. Inference time < 100ms per frame.',
+    troubleshooting: 'If adversarial guard shows yellow, update to latest model version.',
+  },
+  {
+    step: 5,
+    title: 'Activate monitoring',
+    command: 'Toggle "Active Monitoring" switch',
+    verification: 'Feed borders turn blue. Detection overlays appear on identified equipment.',
+    troubleshooting: 'High false positive rate? Adjust confidence threshold in Settings (default: 0.7).',
+  },
+];
+
+// Print runbook
+for (const step of deploymentRunbook) {
+  console.log(\`Step \${step.step}: \${step.title}\`);
+  if (step.command) console.log(\`  Command: \${step.command}\`);
+  console.log(\`  Verify: \${step.verification}\`);
+  console.log(\`  Troubleshoot: \${step.troubleshooting}\`);
+  console.log('');
+}`}
+</CodeBlock>
+
+## Challenge
+
+Write a structured model card for Protocol Sentinel's classifier component.
+
+<Exercise slug="np-write-model-card" />
+
+<KeyTakeaways takeaways={["A model card is a README for an ML model — same structure, same purpose, ML-specific sections", "Key sections: model details, intended use, training data, performance metrics, limitations, ethical considerations", "Performance metrics without context are meaningless — always specify dataset, conditions, and caveats", "Documentation is accountability: explicitly stating what a model cannot do is as important as what it can"]} />

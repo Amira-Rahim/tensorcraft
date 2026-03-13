@@ -1,0 +1,155 @@
+---
+slug: model-sharding
+title: "Model Sharding"
+moduleId: scale-reliability
+themeId: terra-grid
+order: 2
+estimatedMinutes: 25
+difficulty: advanced
+context:
+  narrative: "Park encounters the size problem. 'The ensemble model is 18MB. Our edge devices have 512MB RAM total, with only 64MB available for ML. We need to split this across multiple devices and coordinate inference.'"
+  speaker: "Park Soo-Yeon"
+concept:
+  explanation: "Model sharding splits a large model across multiple devices for parallel inference — the same concept as dynamic import() code splitting in frontend apps."
+  bridge:
+    feTitle: "Dynamic Imports"
+    feCode: "const Chart = lazy(() => import('./Chart')); // load chunk on demand"
+    mlTitle: "Model Sharding"
+    mlCode: "const shard = await loadShard('./model-part-2.bin'); // load model chunk on demand"
+    tier: structural
+consequence:
+  narrative: "The ensemble runs across 3 devices, each handling a 6MB shard. Coordinated inference adds 4ms of overhead but fits within the 64MB memory budget on every device. Park: 'Sharding solved the memory constraint without sacrificing model capability.'"
+  nextLessonTeaser: "Next: failover and redundancy — what happens when a shard goes offline"
+hints:
+  - level: nudge
+    content: "Split the model at layer boundaries, like splitting a bundle at route boundaries"
+  - level: guidance
+    content: "Implement a ShardCoordinator that distributes layers across devices and merges results"
+  - level: solution
+    content: "Assign layer groups to shards, run them in sequence across devices, pipe intermediate tensors"
+keywords:
+  - model-sharding
+  - code-splitting
+  - distributed-inference
+  - memory-optimization
+---
+
+<Dialogue speaker="Park Soo-Yeon">
+The ensemble model is 18MB. Each edge device has 512MB total, but after the OS, monitoring agents, and sensor drivers, we have 64MB for ML. The model does not fit. We split it across 3 devices and coordinate inference.
+</Dialogue>
+
+<Dialogue speaker="Cole Branson">
+Same idea as code splitting in a big React app. You do not ship the entire bundle to every page. You split at logical boundaries and load chunks on demand.
+</Dialogue>
+
+You use `import()` to split your frontend bundle into chunks loaded on demand. Model sharding applies the same principle: split a large model at layer boundaries, distribute shards across devices, and coordinate inference by piping intermediate tensors between them. Each device only holds a fraction of the model in memory.
+
+<LearningObjectives objectives={["Split a TensorFlow.js model into shards at layer boundaries", "Implement a shard coordinator that distributes inference across devices", "Manage intermediate tensor communication between shards", "Calculate memory budgets and determine optimal shard sizes"]} />
+
+## Shard Coordinator
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="shard-coordinator.ts">
+{`// Model sharding — like dynamic import() code splitting
+import * as tf from '@tensorflow/tfjs';
+
+interface ModelShard {
+  id: string;
+  deviceId: string;
+  layers: string[];
+  memoryMB: number;
+  predict: (input: tf.Tensor) => Promise<tf.Tensor>;
+}
+
+interface ShardPlan {
+  totalModelSizeMB: number;
+  maxShardSizeMB: number;
+  shards: ModelShard[];
+}
+
+class ShardCoordinator {
+  private shards: ModelShard[] = [];
+
+  constructor(plan: ShardPlan) {
+    this.shards = plan.shards;
+  }
+
+  // Split a model into shards based on memory budget
+  static createPlan(
+    model: tf.LayersModel,
+    maxMemoryMB: number
+  ): ShardPlan {
+    const layers = model.layers;
+    const shards: ModelShard[] = [];
+    let currentShard: string[] = [];
+    let currentSize = 0;
+
+    for (const layer of layers) {
+      const layerSize = layer.countParams() * 4 / (1024 * 1024); // 4 bytes per float32
+      if (currentSize + layerSize > maxMemoryMB && currentShard.length > 0) {
+        shards.push({
+          id: \`shard-\${shards.length}\`,
+          deviceId: \`device-\${shards.length}\`,
+          layers: [...currentShard],
+          memoryMB: currentSize,
+          predict: async (input) => input, // placeholder
+        });
+        currentShard = [];
+        currentSize = 0;
+      }
+      currentShard.push(layer.name);
+      currentSize += layerSize;
+    }
+
+    if (currentShard.length > 0) {
+      shards.push({
+        id: \`shard-\${shards.length}\`,
+        deviceId: \`device-\${shards.length}\`,
+        layers: [...currentShard],
+        memoryMB: currentSize,
+        predict: async (input) => input,
+      });
+    }
+
+    return {
+      totalModelSizeMB: shards.reduce((s, sh) => s + sh.memoryMB, 0),
+      maxShardSizeMB: maxMemoryMB,
+      shards,
+    };
+  }
+
+  // Run inference across shards in sequence
+  async predict(input: tf.Tensor): Promise<tf.Tensor> {
+    let intermediate = input;
+    for (const shard of this.shards) {
+      console.log(\`Running shard \${shard.id} on \${shard.deviceId}\`);
+      intermediate = await shard.predict(intermediate);
+    }
+    return intermediate;
+  }
+
+  getMemoryReport(): { shardId: string; deviceId: string; memoryMB: number }[] {
+    return this.shards.map(s => ({
+      shardId: s.id,
+      deviceId: s.deviceId,
+      memoryMB: s.memoryMB,
+    }));
+  }
+}
+
+// 18MB model split into shards under 6MB each
+const plan = ShardCoordinator.createPlan(ensembleModel, 6);
+console.log(\`Split into \${plan.shards.length} shards\`);
+plan.shards.forEach(s =>
+  console.log(\`  \${s.id}: \${s.memoryMB.toFixed(1)}MB on \${s.deviceId}\`)
+);`}
+</CodeBlock>
+
+## Challenge
+
+Implement a model sharding coordinator that splits layers across devices.
+
+<Exercise slug="shard-model" />
+
+<KeyTakeaways takeaways={["Model sharding splits a model at layer boundaries, like code splitting at route boundaries", "Each shard runs on a separate device within its memory budget", "Intermediate tensors flow between shards — the output of shard N is the input to shard N+1", "Sharding adds communication overhead but solves the fundamental memory constraint on edge devices"]} />

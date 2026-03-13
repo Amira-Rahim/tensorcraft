@@ -201,6 +201,6 @@ When detecting multiple object types, only suppress within the same class — li
 
 Implement the Non-Max Suppression algorithm.
 
-<Exercise slug="non-max-suppression" />
+<Exercise slug="apply-nms" />
 
 <KeyTakeaways takeaways={["NMS is debounce for bounding boxes — suppress redundant detections, keep the best one", "The algorithm: sort by confidence, keep the top box, remove high-IoU overlaps, repeat", "IoU threshold controls suppression aggressiveness (0.5 is standard, like a 300ms debounce delay)", "Class-aware NMS only suppresses within the same object class, like debouncing each input independently"]} />

@@ -1,0 +1,93 @@
+slug: load-backbone
+lessonSlug: backbone-networks
+title: "Backbone Performance Scorer"
+instructions: "Write a function that scores backbone networks for browser deployment. Given an array of backbones (each with name, accuracy, inferenceMs, sizeMB, and featureSize), compute a composite score for each. The score formula: (accuracy / 100) * 0.4 + (1 - inferenceMs / 300) * 0.35 + (1 - sizeMB / 150) * 0.25. Return the backbones sorted by score descending, each with the original properties plus a 'score' field rounded to 3 decimal places."
+starterCode: |
+  interface Backbone {
+    name: string;
+    accuracy: number;
+    inferenceMs: number;
+    sizeMB: number;
+    featureSize: number;
+  }
+
+  interface ScoredBackbone extends Backbone {
+    score: number;
+  }
+
+  function scoreBackbones(backbones: Backbone[]): ScoredBackbone[] {
+    // Score = (accuracy/100)*0.4 + (1 - inferenceMs/300)*0.35 + (1 - sizeMB/150)*0.25
+    // Sort by score descending
+    // Round score to 3 decimal places
+    return [];
+  }
+solutionCode: |
+  interface Backbone {
+    name: string;
+    accuracy: number;
+    inferenceMs: number;
+    sizeMB: number;
+    featureSize: number;
+  }
+
+  interface ScoredBackbone extends Backbone {
+    score: number;
+  }
+
+  function scoreBackbones(backbones: Backbone[]): ScoredBackbone[] {
+    const scored = backbones.map(b => {
+      const accuracyScore = (b.accuracy / 100) * 0.4;
+      const speedScore = (1 - b.inferenceMs / 300) * 0.35;
+      const sizeScore = (1 - b.sizeMB / 150) * 0.25;
+      const score = Math.round((accuracyScore + speedScore + sizeScore) * 1000) / 1000;
+      return { ...b, score };
+    });
+    scored.sort((a, b) => b.score - a.score);
+    return scored;
+  }
+testCode: |
+  describe('scoreBackbones', () => {
+    const backbones: Backbone[] = [
+      { name: 'MobileNetV2', accuracy: 71.8, inferenceMs: 45, sizeMB: 14, featureSize: 1280 },
+      { name: 'MobileNetV3', accuracy: 75.2, inferenceMs: 35, sizeMB: 22, featureSize: 1024 },
+      { name: 'ResNet50', accuracy: 76.1, inferenceMs: 180, sizeMB: 98, featureSize: 2048 },
+      { name: 'EfficientNet-B0', accuracy: 77.1, inferenceMs: 60, sizeMB: 21, featureSize: 1280 },
+    ];
+
+    it('returns all backbones with scores', () => {
+      const result = scoreBackbones(backbones);
+      expect(result.length).toBe(4);
+      result.forEach(b => expect(b.score).toBeDefined());
+    });
+
+    it('sorts by score descending', () => {
+      const result = scoreBackbones(backbones);
+      for (let i = 1; i < result.length; i++) {
+        expect(result[i].score).toBeLessThanOrEqual(result[i - 1].score);
+      }
+    });
+
+    it('MobileNet variants score higher than ResNet for browser use', () => {
+      const result = scoreBackbones(backbones);
+      const resnetScore = result.find(b => b.name === 'ResNet50')!.score;
+      const mobileScore = result.find(b => b.name === 'MobileNetV3')!.score;
+      expect(mobileScore).toBeGreaterThan(resnetScore);
+    });
+
+    it('scores are rounded to 3 decimal places', () => {
+      const result = scoreBackbones(backbones);
+      result.forEach(b => {
+        expect(b.score).toBe(Math.round(b.score * 1000) / 1000);
+      });
+    });
+
+    it('preserves original backbone properties', () => {
+      const result = scoreBackbones(backbones);
+      const mobilenet = result.find(b => b.name === 'MobileNetV2')!;
+      expect(mobilenet.accuracy).toBe(71.8);
+      expect(mobilenet.inferenceMs).toBe(45);
+      expect(mobilenet.featureSize).toBe(1280);
+    });
+  });
+estimatedMinutes: 8
+difficulty: intermediate

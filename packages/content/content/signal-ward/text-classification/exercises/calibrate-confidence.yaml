@@ -1,0 +1,159 @@
+slug: calibrate-confidence
+lessonSlug: confidence-calibration
+title: "Calibrate Model Confidence"
+instructions: "Implement three functions for confidence calibration: (1) temperatureScale — divides logits by a temperature value before applying softmax, (2) predictionEntropy — computes the Shannon entropy of a probability distribution to measure uncertainty, and (3) expectedCalibrationError — bins predictions by confidence and computes the weighted average gap between confidence and accuracy."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function temperatureScale(logits: tf.Tensor, temperature: number): tf.Tensor {
+    // Divide logits by temperature, then apply softmax
+    // Higher temperature = softer, less confident probabilities
+    return logits;
+  }
+
+  function predictionEntropy(probs: tf.Tensor): tf.Tensor {
+    // Compute Shannon entropy: H = -sum(p * log(p))
+    // Add small epsilon (1e-10) to avoid log(0)
+    // Return a scalar tensor
+    return tf.scalar(0);
+  }
+
+  function expectedCalibrationError(
+    confidences: number[],
+    accuracies: boolean[],
+    numBins: number = 10
+  ): number {
+    // Bin predictions by confidence level
+    // For each bin, compute |avg_confidence - avg_accuracy|
+    // Weight by bin count / total samples
+    // Return the weighted sum (ECE)
+    return 0;
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function temperatureScale(logits: tf.Tensor, temperature: number): tf.Tensor {
+    return tf.softmax(tf.div(logits, temperature));
+  }
+
+  function predictionEntropy(probs: tf.Tensor): tf.Tensor {
+    const safeProbs = tf.add(probs, 1e-10);
+    const logProbs = tf.log(safeProbs);
+    return tf.neg(tf.sum(tf.mul(probs, logProbs), -1));
+  }
+
+  function expectedCalibrationError(
+    confidences: number[],
+    accuracies: boolean[],
+    numBins: number = 10
+  ): number {
+    const total = confidences.length;
+    let ece = 0;
+
+    for (let b = 0; b < numBins; b++) {
+      const lower = b / numBins;
+      const upper = (b + 1) / numBins;
+
+      const indices: number[] = [];
+      for (let i = 0; i < total; i++) {
+        if (confidences[i] >= lower && confidences[i] < upper) {
+          indices.push(i);
+        }
+      }
+
+      if (indices.length === 0) continue;
+
+      const avgConf = indices.reduce((s, i) => s + confidences[i], 0) / indices.length;
+      const avgAcc = indices.filter(i => accuracies[i]).length / indices.length;
+
+      ece += (indices.length / total) * Math.abs(avgConf - avgAcc);
+    }
+
+    return ece;
+  }
+testCode: |
+  describe('Confidence Calibration', () => {
+    describe('temperatureScale', () => {
+      it('returns valid probabilities that sum to 1', async () => {
+        const logits = tf.tensor2d([[2.0, 1.0, 0.5]]);
+        const result = temperatureScale(logits, 1.0);
+        const probs = await result.data();
+        const sum = Array.from(probs).reduce((a, b) => a + b, 0);
+        expect(sum).toBeCloseTo(1.0, 4);
+        logits.dispose();
+        result.dispose();
+      });
+
+      it('higher temperature produces softer distribution', async () => {
+        const logits = tf.tensor2d([[3.0, 1.0, 0.1]]);
+        const sharp = temperatureScale(logits, 0.5);
+        const soft = temperatureScale(logits, 3.0);
+        const sharpMax = (await sharp.max().data())[0];
+        const softMax = (await soft.max().data())[0];
+        expect(sharpMax).toBeGreaterThan(softMax);
+        logits.dispose();
+        sharp.dispose();
+        soft.dispose();
+      });
+
+      it('temperature of 1 equals standard softmax', async () => {
+        const logits = tf.tensor2d([[1.0, 2.0, 3.0]]);
+        const scaled = temperatureScale(logits, 1.0);
+        const standard = tf.softmax(logits);
+        const scaledData = await scaled.data();
+        const standardData = await standard.data();
+        for (let i = 0; i < 3; i++) {
+          expect(scaledData[i]).toBeCloseTo(standardData[i], 5);
+        }
+        logits.dispose();
+        scaled.dispose();
+        standard.dispose();
+      });
+    });
+
+    describe('predictionEntropy', () => {
+      it('uniform distribution has maximum entropy', async () => {
+        const uniform = tf.tensor1d([0.25, 0.25, 0.25, 0.25]);
+        const entropy = predictionEntropy(uniform);
+        const value = (await entropy.data())[0];
+        expect(value).toBeCloseTo(Math.log(4), 2);
+        uniform.dispose();
+        entropy.dispose();
+      });
+
+      it('peaked distribution has low entropy', async () => {
+        const peaked = tf.tensor1d([0.97, 0.01, 0.01, 0.01]);
+        const entropy = predictionEntropy(peaked);
+        const value = (await entropy.data())[0];
+        expect(value).toBeLessThan(0.5);
+        peaked.dispose();
+        entropy.dispose();
+      });
+    });
+
+    describe('expectedCalibrationError', () => {
+      it('perfectly calibrated model has ECE of 0', () => {
+        const confidences = [0.85, 0.85, 0.85, 0.85, 0.85, 0.85, 0.85, 0.85, 0.85, 0.85];
+        const accuracies = [true, true, true, true, true, true, true, true, false, false];
+        const ece = expectedCalibrationError(confidences, accuracies);
+        expect(ece).toBeLessThan(0.1);
+      });
+
+      it('overconfident model has high ECE', () => {
+        const confidences = [0.95, 0.95, 0.95, 0.95, 0.95, 0.95, 0.95, 0.95, 0.95, 0.95];
+        const accuracies = [true, false, true, false, true, false, true, false, true, false];
+        const ece = expectedCalibrationError(confidences, accuracies);
+        expect(ece).toBeGreaterThan(0.3);
+      });
+
+      it('returns a value between 0 and 1', () => {
+        const confidences = [0.9, 0.8, 0.7, 0.6, 0.5];
+        const accuracies = [true, true, false, true, false];
+        const ece = expectedCalibrationError(confidences, accuracies);
+        expect(ece).toBeGreaterThanOrEqual(0);
+        expect(ece).toBeLessThanOrEqual(1);
+      });
+    });
+  });
+estimatedMinutes: 15
+difficulty: intermediate

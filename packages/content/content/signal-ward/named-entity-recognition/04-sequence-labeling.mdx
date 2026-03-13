@@ -1,0 +1,188 @@
+---
+slug: sequence-labeling
+title: "Sequence Labeling"
+moduleId: named-entity-recognition
+themeId: signal-ward
+order: 4
+estimatedMinutes: 25
+difficulty: advanced
+context:
+  narrative: "Santos pushes for a neural approach to NER — one that considers context, not just individual tokens — while advocating for careful validation."
+  speaker: "Santos"
+concept:
+  explanation: "Sequence labeling assigns a class to every token in a sequence using neural networks that consider surrounding context — like CSS class assignment where each element's class depends on its siblings."
+  bridge:
+    feTitle: "CSS Class Assignment Per Element"
+    feCode: "elements.forEach(el => el.className = getClass(el, siblings)); // context-aware styling"
+    mlTitle: "Token Classification"
+    mlCode: "tokens.forEach(t => t.label = classify(t, context)); // context-aware labeling"
+    tier: structural
+consequence:
+  narrative: "Diagnostic One can now use surrounding context to resolve ambiguous tokens — 'cold' as a CONDITION vs. 'cold' as an adjective."
+  nextLessonTeaser: "Next: the breakthrough — your NER pipeline catches a drug interaction three doctors missed."
+hints:
+  - level: nudge
+    content: "Each token's label should depend on the tokens around it, not just itself"
+  - level: guidance
+    content: "Use an embedding layer, a bidirectional LSTM, and a time-distributed dense layer"
+  - level: solution
+    content: "Build: input → embedding → BiLSTM(returnSequences=true) → TimeDistributed(Dense(softmax)) → per-token predictions"
+keywords:
+  - sequence-labeling
+  - token-classification
+  - bilstm
+  - context-aware
+---
+
+<Dialogue speaker="Santos">
+Our dictionary-based classifier labels every instance of "cold" as a CONDITION. But in "patient has a cold" it's a condition, while in "cold compress applied" it's an adjective. Context matters. We need a model that looks at the surrounding words before deciding.
+</Dialogue>
+
+<Dialogue speaker="Khalil Mensah">
+That's like CSS specificity. A bare `.highlight` selector might style the wrong elements. But `.medical-note > .symptom-list > .highlight` uses context — parent elements — to target precisely. Each element's class depends on where it sits in the DOM.
+</Dialogue>
+
+<Dialogue speaker="Santos">
+Exactly. Sequence labeling considers the full context of each token — what comes before it, what comes after it — before assigning a label. It's CSS class assignment where every element's class depends on its siblings.
+</Dialogue>
+
+<LearningObjectives objectives={["Understand sequence labeling as context-aware token classification", "Build a BiLSTM-based sequence labeling model with TensorFlow.js", "Prepare training data with token-label pairs and padding", "Evaluate sequence labeling with per-token accuracy and span-level F1"]} />
+
+## CSS Classes That Depend on Siblings
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+In simple CSS, you assign a class to each element independently: `el.className = 'drug'`. But real-world styling often depends on context — `:first-child`, `:nth-of-type`, adjacent sibling selectors. The element's appearance depends on its neighbors.
+
+Sequence labeling works the same way. A dictionary lookup classifies tokens in isolation. A neural sequence labeler considers the full sentence context before assigning each label:
+
+- "Patient has a **cold**" → CONDITION (preceded by "has a")
+- "Apply **cold** compress" → O (preceded by "Apply", followed by "compress")
+
+<CodeBlock language="typescript" title="sequence-labeling.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// BIO tag vocabulary
+const TAGS = ['O', 'B-DRUG', 'I-DRUG', 'B-CONDITION', 'I-CONDITION',
+              'B-DOSAGE', 'I-DOSAGE', 'B-FREQUENCY', 'I-FREQUENCY'];
+
+// Build a neural sequence labeler
+function buildSequenceLabeler(
+  vocabSize: number,
+  embedDim: number,
+  hiddenDim: number,
+  numTags: number,
+  maxSeqLen: number
+): tf.LayersModel {
+  const input = tf.input({ shape: [maxSeqLen] });
+
+  // Step 1: Embed each token — like assigning initial styles
+  const embedded = tf.layers.embedding({
+    inputDim: vocabSize,
+    outputDim: embedDim,
+    maskZero: true
+  }).apply(input) as tf.SymbolicTensor;
+
+  // Step 2: BiLSTM captures context from both directions
+  // Like sibling selectors that look left AND right
+  const contextual = tf.layers.bidirectional({
+    layer: tf.layers.lstm({
+      units: hiddenDim,
+      returnSequences: true  // output for EVERY token, not just the last
+    }) as tf.RNNLayer
+  }).apply(embedded) as tf.SymbolicTensor;
+
+  // Step 3: Classify each token using its context-aware representation
+  // Like assigning final CSS classes based on full selector context
+  const output = tf.layers.timeDistributed({
+    layer: tf.layers.dense({
+      units: numTags,
+      activation: 'softmax'
+    })
+  }).apply(contextual) as tf.SymbolicTensor;
+
+  return tf.model({ inputs: input, outputs: output });
+}
+
+// Prepare training data: tokens → padded integer sequences
+function prepareSequence(
+  tokens: string[],
+  vocab: Map<string, number>,
+  maxLen: number
+): tf.Tensor2D {
+  const ids = tokens.map(t => vocab.get(t.toLowerCase()) ?? 0);
+  // Pad to maxLen — like setting a fixed container width
+  while (ids.length < maxLen) ids.push(0);
+  return tf.tensor2d([ids.slice(0, maxLen)]);
+}
+
+// Decode predictions back to BIO tags
+async function decodePredictions(
+  predictions: tf.Tensor,
+  tokens: string[]
+): Promise<Array<{ token: string; tag: string; confidence: number }>> {
+  const probs = await predictions.squeeze().array() as number[][];
+  return tokens.map((token, i) => {
+    const maxIdx = probs[i].indexOf(Math.max(...probs[i]));
+    return {
+      token,
+      tag: TAGS[maxIdx],
+      confidence: probs[i][maxIdx]
+    };
+  });
+}
+
+// Build and compile the model
+const MAX_SEQ_LEN = 64;
+const model = buildSequenceLabeler(5000, 64, 128, TAGS.length, MAX_SEQ_LEN);
+model.compile({
+  optimizer: 'adam',
+  loss: 'categoricalCrossentropy',
+  metrics: ['accuracy']
+});
+
+console.log('Sequence labeler built:');
+model.summary();`}
+</CodeBlock>
+
+## Training the Labeler
+
+<Dialogue speaker="Obi Nwosu">
+The key insight: `returnSequences: true` on the LSTM means we get an output for every token, not just the last one. Without it, we'd get a single vector for the whole sentence — useful for classification, useless for labeling individual tokens.
+</Dialogue>
+
+Training requires aligned token-label pairs. Each training example is a sentence where every token has a BIO tag:
+
+<CodeBlock language="typescript" title="training-data.ts">
+{`// Training example: sentence → BIO tags
+const trainingExamples = [
+  {
+    tokens: ['Patient', 'prescribed', 'methotrexate', '15mg', 'weekly', 'for', 'arthritis'],
+    tags:   ['O',       'O',          'B-DRUG',       'B-DOSAGE', 'B-FREQUENCY', 'O', 'B-CONDITION']
+  },
+  {
+    tokens: ['History', 'of', 'rheumatoid', 'arthritis', 'on', 'warfarin', '5mg'],
+    tags:   ['O',       'O',  'B-CONDITION', 'I-CONDITION', 'O', 'B-DRUG', 'B-DOSAGE']
+  }
+];
+
+// Convert tags to one-hot vectors for training
+function tagsToOneHot(tags: string[], tagVocab: string[]): tf.Tensor {
+  const indices = tags.map(t => tagVocab.indexOf(t));
+  return tf.oneHot(indices, tagVocab.length);
+}`}
+</CodeBlock>
+
+## Santos on Validation
+
+<Dialogue speaker="Santos">
+A model that's 95% accurate per-token might still miss 30% of entities. Why? Because entity-level evaluation requires getting every token in a span correct. "B-CONDITION I-CONDITION" is only a correct entity if both tags are right. One wrong tag, and the whole entity is wrong. Always evaluate at the span level, not just the token level.
+</Dialogue>
+
+## Challenge
+
+Build a sequence labeling model that assigns BIO tags to clinical tokens using a BiLSTM.
+
+<Exercise slug="label-sequence" />
+
+<KeyTakeaways takeaways={["Sequence labeling assigns context-aware labels to every token, like CSS classes that depend on sibling elements", "BiLSTM captures context from both directions — what comes before AND after each token", "returnSequences: true produces per-token outputs, not a single sentence vector", "Span-level evaluation matters more than token-level accuracy in clinical NER"]} />

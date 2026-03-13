@@ -1,0 +1,63 @@
+slug: zero-shot-classify
+lessonSlug: zero-shot-classification
+title: "Zero-Shot Image Classification"
+instructions: "Implement zero-shot classification. Given a normalized image embedding (1D) and an array of normalized text embeddings (one per category), compute cosine similarities and return the index of the best-matching category."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function zeroShotClassify(
+    imageEmbedding: tf.Tensor1D,
+    categoryEmbeddings: tf.Tensor2D
+  ): number {
+    // 1. Compute similarities: matMul(categoryEmbeddings, imageEmbedding)
+    //    or dot product since both are normalized
+    // 2. Return the index of the highest similarity
+    return -1; // your code here
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function zeroShotClassify(
+    imageEmbedding: tf.Tensor1D,
+    categoryEmbeddings: tf.Tensor2D
+  ): number {
+    const imageExpanded = imageEmbedding.expandDims(1);
+    const similarities = tf.matMul(categoryEmbeddings, imageExpanded as tf.Tensor2D);
+    const bestIdx = similarities.squeeze().argMax().dataSync()[0];
+    return bestIdx;
+  }
+testCode: |
+  describe('zeroShotClassify', () => {
+    it('returns index of most similar category', () => {
+      const image = tf.tensor1d([1, 0, 0]);
+      const categories = tf.tensor2d([
+        [0, 1, 0],
+        [1, 0, 0],
+        [0, 0, 1]
+      ]);
+      const result = zeroShotClassify(image, categories);
+      expect(result).toBe(1);
+    });
+    it('handles non-trivial embeddings', () => {
+      const image = tf.tensor1d([0.6, 0.8, 0]);
+      const categories = tf.tensor2d([
+        [1, 0, 0],
+        [0, 1, 0],
+        [0.6, 0.8, 0],
+      ]);
+      const result = zeroShotClassify(image, categories);
+      expect(result).toBe(2);
+    });
+    it('works with higher dimensions', () => {
+      const image = tf.tensor1d([1, 0, 0, 0, 0]);
+      const categories = tf.tensor2d([
+        [0, 0, 0, 0, 1],
+        [0, 0, 1, 0, 0],
+        [0.9, 0.1, 0, 0, 0],
+      ]);
+      const result = zeroShotClassify(image, categories);
+      expect(result).toBe(2);
+    });
+  });
+estimatedMinutes: 10
+difficulty: advanced

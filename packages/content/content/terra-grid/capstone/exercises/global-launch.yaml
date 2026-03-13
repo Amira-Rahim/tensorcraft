@@ -1,0 +1,150 @@
+slug: global-launch
+lessonSlug: global-launch
+title: "Launch Controller"
+instructions: "Build a LaunchController that manages a pre-flight checklist and post-launch monitoring. Implement addCheck to register named checks, preFlight to run all checks and return whether the system is ready, and monitorPostLaunch to evaluate live metrics against thresholds."
+starterCode: |
+  interface PreFlightCheck {
+    name: string;
+    verify: () => boolean;
+  }
+
+  interface LaunchMetrics {
+    devicesOnline: number;
+    devicesUpdated: number;
+    accuracy: number;
+    latencyMs: number;
+  }
+
+  class LaunchController {
+    private checks: PreFlightCheck[] = [];
+
+    addCheck(check: PreFlightCheck): void {
+      // Add a pre-flight check
+      // your code here
+    }
+
+    preFlight(): { ready: boolean; results: { name: string; passed: boolean }[] } {
+      // Run all checks, return whether all passed
+      return { ready: false, results: [] }; // your code here
+    }
+
+    monitorPostLaunch(metrics: LaunchMetrics): {
+      status: 'healthy' | 'degraded' | 'critical';
+      alerts: string[];
+    } {
+      // Check metrics:
+      // - Update rate (devicesUpdated/devicesOnline) < 0.95 -> alert
+      // - accuracy < 0.90 -> alert (critical)
+      // - latencyMs > 20 -> alert
+      // Status: 'critical' if accuracy alert, 'degraded' if other alerts, 'healthy' if none
+      return { status: 'healthy', alerts: [] }; // your code here
+    }
+  }
+solutionCode: |
+  interface PreFlightCheck {
+    name: string;
+    verify: () => boolean;
+  }
+
+  interface LaunchMetrics {
+    devicesOnline: number;
+    devicesUpdated: number;
+    accuracy: number;
+    latencyMs: number;
+  }
+
+  class LaunchController {
+    private checks: PreFlightCheck[] = [];
+
+    addCheck(check: PreFlightCheck): void {
+      this.checks.push(check);
+    }
+
+    preFlight(): { ready: boolean; results: { name: string; passed: boolean }[] } {
+      const results = this.checks.map(check => ({
+        name: check.name,
+        passed: check.verify(),
+      }));
+      return {
+        ready: results.every(r => r.passed),
+        results,
+      };
+    }
+
+    monitorPostLaunch(metrics: LaunchMetrics): {
+      status: 'healthy' | 'degraded' | 'critical';
+      alerts: string[];
+    } {
+      const alerts: string[] = [];
+
+      const updateRate = metrics.devicesUpdated / metrics.devicesOnline;
+      if (updateRate < 0.95) {
+        alerts.push(`Update rate ${(updateRate * 100).toFixed(1)}% below 95%`);
+      }
+      if (metrics.accuracy < 0.90) {
+        alerts.push(`Accuracy ${metrics.accuracy} below 90%`);
+      }
+      if (metrics.latencyMs > 20) {
+        alerts.push(`Latency ${metrics.latencyMs}ms above 20ms`);
+      }
+
+      const status = alerts.length === 0 ? 'healthy'
+        : alerts.some(a => a.includes('Accuracy')) ? 'critical'
+        : 'degraded';
+
+      return { status, alerts };
+    }
+  }
+testCode: |
+  describe('LaunchController', () => {
+    it('passes pre-flight when all checks pass', () => {
+      const controller = new LaunchController();
+      controller.addCheck({ name: 'security', verify: () => true });
+      controller.addCheck({ name: 'testing', verify: () => true });
+      const result = controller.preFlight();
+      expect(result.ready).toBe(true);
+    });
+
+    it('fails pre-flight when any check fails', () => {
+      const controller = new LaunchController();
+      controller.addCheck({ name: 'security', verify: () => true });
+      controller.addCheck({ name: 'testing', verify: () => false });
+      const result = controller.preFlight();
+      expect(result.ready).toBe(false);
+    });
+
+    it('reports healthy metrics', () => {
+      const controller = new LaunchController();
+      const result = controller.monitorPostLaunch({
+        devicesOnline: 100, devicesUpdated: 98, accuracy: 0.95, latencyMs: 12,
+      });
+      expect(result.status).toBe('healthy');
+      expect(result.alerts.length).toBe(0);
+    });
+
+    it('detects critical accuracy drop', () => {
+      const controller = new LaunchController();
+      const result = controller.monitorPostLaunch({
+        devicesOnline: 100, devicesUpdated: 98, accuracy: 0.85, latencyMs: 12,
+      });
+      expect(result.status).toBe('critical');
+    });
+
+    it('detects degraded status on latency spike', () => {
+      const controller = new LaunchController();
+      const result = controller.monitorPostLaunch({
+        devicesOnline: 100, devicesUpdated: 98, accuracy: 0.95, latencyMs: 25,
+      });
+      expect(result.status).toBe('degraded');
+      expect(result.alerts.length).toBeGreaterThan(0);
+    });
+
+    it('handles empty pre-flight checks', () => {
+      const controller = new LaunchController();
+      const result = controller.preFlight();
+      expect(result.ready).toBe(true);
+      expect(result.results).toEqual([]);
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

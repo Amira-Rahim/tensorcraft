@@ -1,0 +1,168 @@
+---
+slug: medical-embeddings
+title: "Pre-trained Medical Embeddings"
+moduleId: word-embeddings
+themeId: signal-ward
+order: 3
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Obi demonstrates that generic embeddings miss clinical nuances. 'Discharge' means leaving the hospital, not firing someone. Domain-specific embeddings like BioWordVec solve this — just like scoped CSS variables override global defaults."
+  speaker: "Obi"
+concept:
+  explanation: "Medical embeddings are word vectors trained on clinical text (PubMed, MIMIC-III, clinical notes). They capture domain-specific relationships that generic embeddings miss — 'stat' means 'immediately' in clinical context, not 'statistics'. Like scoped CSS variables, domain embeddings provide context-specific values."
+  bridge:
+    feTitle: "Scoped CSS Variables"
+    feCode: ".clinical { --color-alert: #dc3545; } /* context-specific */"
+    mlTitle: "Domain Embeddings"
+    mlCode: "// 'stat' near 'urgent', not 'statistics' — context-specific"
+    tier: structural
+consequence:
+  narrative: "Diagnostic One switches from generic to medical-domain embeddings and immediately improves on ambiguous clinical terms like 'discharge', 'stat', and 'positive'."
+  nextLessonTeaser: "Next: using cosine similarity for word analogies and clinical reasoning."
+hints:
+  - level: nudge
+    content: "Load two embedding sets (generic and medical) and compare which neighbors make clinical sense."
+  - level: guidance
+    content: "Create generic and medical embedding dictionaries. Use cosine similarity to find the closest word to 'discharge' in each."
+  - level: solution
+    content: "Iterate over all words except the query, compute cosine similarity, return the word with the highest score."
+keywords:
+  - medical-embeddings
+  - biowordvec
+  - domain-specific
+  - clinical-nlp
+---
+
+> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
+
+<Dialogue speaker="Obi">
+Santos, in CSS you can define a variable globally and then override it in a specific scope. --color-primary might be blue site-wide, but inside a clinical dashboard, you scope it to mean something specific. Domain embeddings work the same way.
+</Dialogue>
+
+<Dialogue speaker="Santos">
+So generic Word2Vec is like the global stylesheet, and medical embeddings are the scoped overrides?
+</Dialogue>
+
+<Dialogue speaker="Obi">
+Precisely. In generic English, "discharge" is closest to "fire" and "release." In clinical text, "discharge" is closest to "hospital," "home," and "follow-up." The scoped context changes the meaning entirely.
+</Dialogue>
+
+<Dialogue speaker="Dr. Vasquez">
+That is exactly the class of error that brought down the vendor system. It read "discharge summary" and associated it with termination instead of a patient leaving the hospital.
+</Dialogue>
+
+A global CSS variable provides a default value. A scoped CSS variable overrides it for a specific component. Medical embeddings do the same for word meaning — they override generic associations with clinically accurate ones, trained on millions of medical documents.
+
+<LearningObjectives objectives={["Understand why domain-specific embeddings outperform generic ones for clinical text", "Compare generic vs. medical embedding results for ambiguous terms", "Load and use pre-trained embedding vectors as frozen lookup tables", "Identify clinical terms that require domain-specific representations"]} />
+
+## Generic vs. Medical Embeddings
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="generic-vs-medical.ts">
+{`// Generic embeddings (trained on Wikipedia, news articles)
+const genericEmbeddings: Record<string, number[]> = {
+  'discharge':  [0.31, -0.52, 0.18, 0.09],  // near "fire", "release"
+  'hospital':   [-0.08, 0.24, 0.81, 0.33],
+  'fire':       [0.38, -0.59, 0.12, 0.03],
+  'home':       [0.11, 0.07, 0.29, 0.72],
+  'stat':       [0.61, 0.48, -0.22, 0.31],   // near "statistics"
+  'urgent':     [-0.27, 0.14, 0.42, 0.79],
+  'positive':   [0.55, 0.62, 0.33, 0.18],    // near "good", "optimistic"
+  'negative':   [-0.49, -0.57, -0.28, 0.12],
+};
+
+// Medical embeddings (trained on PubMed + clinical notes)
+const medicalEmbeddings: Record<string, number[]> = {
+  'discharge':  [0.09, 0.33, 0.71, 0.48],   // near "hospital", "home"
+  'hospital':   [0.02, 0.41, 0.78, 0.39],
+  'fire':       [0.82, -0.51, -0.08, 0.01],
+  'home':       [0.15, 0.22, 0.63, 0.58],
+  'stat':       [-0.18, 0.13, 0.52, 0.88],   // near "urgent", "immediately"
+  'urgent':     [-0.25, 0.19, 0.44, 0.82],
+  'positive':   [0.42, 0.68, -0.11, 0.51],   // near "detected", "present"
+  'negative':   [0.39, 0.61, -0.15, 0.22],   // near "absent", "not detected"
+};`}
+</CodeBlock>
+
+## The Difference in Action
+
+<CodeBlock language="typescript" title="compare-embeddings.ts">
+{`function cosineSim(a: number[], b: number[]): number {
+  const dot = a.reduce((s, v, i) => s + v * b[i], 0);
+  const nA = Math.sqrt(a.reduce((s, v) => s + v * v, 0));
+  const nB = Math.sqrt(b.reduce((s, v) => s + v * v, 0));
+  return dot / (nA * nB);
+}
+
+// "discharge" in generic embeddings: closest to "fire"
+console.log('Generic: discharge ~ fire =',
+  cosineSim(genericEmbeddings['discharge'], genericEmbeddings['fire']).toFixed(3)
+); // ~0.95
+
+console.log('Generic: discharge ~ hospital =',
+  cosineSim(genericEmbeddings['discharge'], genericEmbeddings['hospital']).toFixed(3)
+); // ~0.12
+
+// "discharge" in medical embeddings: closest to "hospital"
+console.log('Medical: discharge ~ hospital =',
+  cosineSim(medicalEmbeddings['discharge'], medicalEmbeddings['hospital']).toFixed(3)
+); // ~0.97
+
+console.log('Medical: discharge ~ fire =',
+  cosineSim(medicalEmbeddings['discharge'], medicalEmbeddings['fire']).toFixed(3)
+); // ~-0.20
+
+// "stat" in medical context means "immediately", not "statistics"
+console.log('Medical: stat ~ urgent =',
+  cosineSim(medicalEmbeddings['stat'], medicalEmbeddings['urgent']).toFixed(3)
+); // ~0.92`}
+</CodeBlock>
+
+## Real-World Medical Embedding Models
+
+<Dialogue speaker="MEDI">
+Several pre-trained medical embedding models are available for clinical NLP. BioWordVec was trained on PubMed and MIMIC-III clinical notes. Clinical embeddings from the NLP community capture abbreviations like "PCN" (penicillin), "PRN" (as needed), and "q.i.d." (four times daily).
+</Dialogue>
+
+<CodeBlock language="typescript" title="loading-pretrained.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// In production, you would load pre-trained medical embeddings
+// from a binary file or an API endpoint:
+//
+// BioWordVec: trained on PubMed + MIMIC-III
+// fastText-medical: trained on clinical notes
+// ClinicalBERT embeddings: contextual medical vectors
+
+async function loadMedicalEmbeddings(
+  vocabSize: number,
+  embeddingDim: number,
+  pretrainedWeights: number[][]
+): Promise<tf.LayersModel> {
+  const model = tf.sequential();
+
+  const embeddingLayer = tf.layers.embedding({
+    inputDim: vocabSize,
+    outputDim: embeddingDim,
+    weights: [tf.tensor2d(pretrainedWeights)],
+    trainable: false,  // freeze — use as-is, do not modify during training
+  });
+
+  model.add(embeddingLayer);
+  return model;
+}
+
+// The key insight: freezing the embedding layer means
+// your model inherits knowledge from millions of documents
+// without needing millions of your own training samples.`}
+</CodeBlock>
+
+## Challenge
+
+Load generic and medical embeddings and compare their results for ambiguous clinical terms.
+
+<Exercise slug="load-medical-embeddings" />
+
+<KeyTakeaways takeaways={["Generic embeddings miss domain-specific meanings: 'discharge' near 'fire' instead of 'hospital'", "Medical embeddings (BioWordVec, clinical models) capture clinical relationships correctly", "Domain embeddings are like scoped CSS variables — they override global defaults with context-specific values", "Pre-trained medical embeddings can be frozen and reused, giving your model clinical knowledge for free"]} />

@@ -1,0 +1,189 @@
+---
+slug: caching-precomputation
+title: "Caching & Precomputation"
+moduleId: creative-deployment
+themeId: nova-canvas
+order: 3
+estimatedMinutes: 25
+difficulty: advanced
+context:
+  narrative: "Ren runs the numbers. 'Even optimized, generation takes 340ms. For the most popular prompts — sunset, dragon, abstract — we can pre-generate and cache. Instant response for the common case, generation for the novel case.'"
+  speaker: "Ren"
+concept:
+  explanation: "Caching generated outputs trades storage for computation time — the same tradeoff as Service Worker caches, CDN edge caching, and React.memo."
+  bridge:
+    feTitle: "Service Worker Cache"
+    feCode: "caches.open('v1').then(cache => cache.put(request, response));"
+    mlTitle: "Generation Cache"
+    mlCode: "const cache = new Map(); cache.set(promptHash, generatedOutput);"
+    tier: structural
+consequence:
+  narrative: "The top 100 prompts now respond in under 10ms. Ren: 'We pre-generated 200 variations and cached them in the Service Worker. The visitor gets instant art. The model only fires for novel requests.'"
+  nextLessonTeaser: "Next: handling 200 concurrent generators"
+hints:
+  - level: nudge
+    content: "Think about which generated outputs will be requested most often — cache those"
+  - level: guidance
+    content: "Hash the input parameters, check the cache first, generate only on cache miss"
+  - level: solution
+    content: "Implement a Map-based cache with LRU eviction and pre-populate it with popular outputs"
+keywords:
+  - caching
+  - precomputation
+  - service-worker
+  - cdn
+---
+
+<Dialogue speaker="Ren">
+Not every generation needs to be real-time. The top 20 prompts account for 60% of requests. Pre-generate those, cache them in a Service Worker, and visitors get instant art. Same strategy as pre-rendering above-the-fold content.
+</Dialogue>
+
+<Dialogue speaker="Petrov">
+Cache the predictable. Generate the novel. Simple. How much storage do we need?
+</Dialogue>
+
+You have implemented caching at every layer of the frontend stack. Browser cache headers, Service Worker caches, React.memo, useMemo, CDN edge caching. Every caching strategy trades storage for computation. Generation caching is no different: store popular outputs and skip the expensive inference for repeat requests.
+
+<LearningObjectives objectives={["Implement a generation cache with hash-based key lookup", "Pre-compute popular outputs during off-peak hours", "Use Service Worker caches for offline-capable generation results", "Design a cache eviction strategy based on frequency and recency"]} />
+
+## Cache Architecture
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="generation-cache.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// LRU cache for generated outputs — same pattern as any memoization
+class GenerationCache {
+  private cache = new Map<string, Float32Array>();
+  private accessOrder: string[] = [];
+  private maxSize: number;
+
+  constructor(maxSize: number = 200) {
+    this.maxSize = maxSize;
+  }
+
+  // Hash input parameters to create cache key
+  private hashInput(params: Record<string, any>): string {
+    return JSON.stringify(params, Object.keys(params).sort());
+  }
+
+  get(params: Record<string, any>): Float32Array | null {
+    const key = this.hashInput(params);
+    const result = this.cache.get(key);
+    if (result) {
+      // Move to end of access order (LRU update)
+      this.accessOrder = this.accessOrder.filter(k => k !== key);
+      this.accessOrder.push(key);
+      return result;
+    }
+    return null;
+  }
+
+  set(params: Record<string, any>, output: Float32Array) {
+    const key = this.hashInput(params);
+    // Evict least recently used if at capacity
+    while (this.cache.size >= this.maxSize) {
+      const oldest = this.accessOrder.shift()!;
+      this.cache.delete(oldest);
+    }
+    this.cache.set(key, output);
+    this.accessOrder.push(key);
+  }
+
+  get hitRate(): number {
+    return this.hits / (this.hits + this.misses) || 0;
+  }
+  private hits = 0;
+  private misses = 0;
+}`}
+</CodeBlock>
+
+## Cache-First Generation
+
+<CodeBlock language="typescript" title="cache-first.ts">
+{`// Cache-first strategy — identical to Service Worker cache-first pattern
+async function generateWithCache(
+  model: tf.LayersModel,
+  params: Record<string, any>,
+  cache: GenerationCache
+): Promise<Float32Array> {
+  // Check cache first — instant response for cached outputs
+  const cached = cache.get(params);
+  if (cached) {
+    console.log('Cache HIT — 0ms generation');
+    return cached;
+  }
+
+  // Cache miss — generate and store
+  console.log('Cache MISS — generating...');
+  const latent = paramsToLatent(params);
+  const output = model.predict(latent) as tf.Tensor;
+  const result = await output.data() as Float32Array;
+
+  cache.set(params, new Float32Array(result));
+
+  latent.dispose();
+  output.dispose();
+  return result;
+}
+
+function paramsToLatent(params: Record<string, any>): tf.Tensor {
+  // Deterministic latent from params — same input always gives same output
+  const seed = hashToNumbers(JSON.stringify(params));
+  return tf.tensor2d([seed.slice(0, 128)]);
+}`}
+</CodeBlock>
+
+## Service Worker Integration
+
+<CodeBlock language="typescript" title="sw-cache.ts">
+{`// Service Worker cache for generated outputs — works offline
+// sw.ts (Service Worker)
+
+const CACHE_NAME = 'nova-canvas-generations-v1';
+
+self.addEventListener('fetch', (event: FetchEvent) => {
+  if (event.request.url.includes('/api/generate')) {
+    event.respondWith(cacheFirstGeneration(event.request));
+  }
+});
+
+async function cacheFirstGeneration(request: Request): Promise<Response> {
+  const cache = await caches.open(CACHE_NAME);
+
+  // Check cache
+  const cached = await cache.match(request);
+  if (cached) return cached;
+
+  // Generate and cache
+  const response = await fetch(request);
+  const clone = response.clone();
+  await cache.put(request, clone);
+
+  return response;
+}
+
+// Pre-populate cache with popular outputs during installation
+self.addEventListener('install', (event: ExtendableEvent) => {
+  event.waitUntil(precomputePopular());
+});
+
+async function precomputePopular() {
+  const cache = await caches.open(CACHE_NAME);
+  const popularPrompts = ['sunset', 'dragon', 'abstract', 'ocean', 'forest'];
+
+  for (const prompt of popularPrompts) {
+    const response = await fetch(\`/api/generate?prompt=\${prompt}\`);
+    await cache.put(new Request(\`/api/generate?prompt=\${prompt}\`), response);
+  }
+}`}
+</CodeBlock>
+
+## Challenge
+
+Implement a cache-first generation strategy with LRU eviction.
+
+<Exercise slug="cache-outputs" />
+
+<KeyTakeaways takeaways={["Generation caching trades storage for computation — same tradeoff as Service Worker caches and CDN", "LRU eviction ensures the cache holds the most relevant outputs without unbounded growth", "Pre-computing popular outputs during off-peak hours eliminates generation latency for common requests", "Cache-first with network fallback is the optimal strategy: instant for known, generative for novel"]} />

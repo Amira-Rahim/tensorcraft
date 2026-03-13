@@ -1,0 +1,121 @@
+slug: wrangle-data
+lessonSlug: pandas-data-wrangling
+title: "Data Wrangling in JavaScript"
+instructions: "Translate a pandas data pipeline to JavaScript. You have an array of sensor reading objects. Implement the pipeline: (1) filter out rows with null values, (2) filter to only readings above a threshold, (3) add a normalized column, (4) group by sensorId and compute the mean of the normalized values. This mirrors a typical pandas preprocessing pipeline."
+starterCode: |
+  // Translate this pandas pipeline to JavaScript:
+  //
+  // df = df.dropna(subset=['value'])
+  // df = df[df['value'] > 0]
+  // mean_val = df['value'].mean()
+  // std_val = df['value'].std()
+  // df['normalized'] = (df['value'] - mean_val) / std_val
+  // result = df.groupby('sensorId')['normalized'].mean()
+
+  const sensorData = [
+    { sensorId: 'A', value: 10 },
+    { sensorId: 'A', value: 20 },
+    { sensorId: 'B', value: null },
+    { sensorId: 'B', value: 30 },
+    { sensorId: 'A', value: -5 },
+    { sensorId: 'C', value: 40 },
+    { sensorId: 'C', value: 50 },
+    { sensorId: 'B', value: 15 },
+  ];
+
+  function wrangleData(data) {
+    // Step 1: Filter out rows where value is null
+    // (pandas: df.dropna(subset=['value']))
+
+    // Step 2: Filter to only positive values
+    // (pandas: df[df['value'] > 0])
+
+    // Step 3: Compute mean and std, then add normalized field
+    // (pandas: df['normalized'] = (df['value'] - mean) / std)
+
+    // Step 4: Group by sensorId and compute mean of normalized values
+    // (pandas: df.groupby('sensorId')['normalized'].mean())
+    // Return an object like { A: 0.123, B: 0.456, C: 0.789 }
+  }
+solutionCode: |
+  const sensorData = [
+    { sensorId: 'A', value: 10 },
+    { sensorId: 'A', value: 20 },
+    { sensorId: 'B', value: null },
+    { sensorId: 'B', value: 30 },
+    { sensorId: 'A', value: -5 },
+    { sensorId: 'C', value: 40 },
+    { sensorId: 'C', value: 50 },
+    { sensorId: 'B', value: 15 },
+  ];
+
+  function wrangleData(data) {
+    // Step 1: dropna
+    let clean = data.filter(r => r.value !== null && r.value !== undefined);
+
+    // Step 2: filter positive
+    clean = clean.filter(r => r.value > 0);
+
+    // Step 3: normalize
+    const mean = clean.reduce((s, r) => s + r.value, 0) / clean.length;
+    const std = Math.sqrt(
+      clean.reduce((s, r) => s + (r.value - mean) ** 2, 0) / clean.length
+    );
+    const normalized = clean.map(r => ({
+      ...r,
+      normalized: (r.value - mean) / std,
+    }));
+
+    // Step 4: groupby + mean
+    const groups = normalized.reduce((acc, r) => {
+      if (!acc[r.sensorId]) acc[r.sensorId] = [];
+      acc[r.sensorId].push(r.normalized);
+      return acc;
+    }, {});
+
+    const result = {};
+    for (const [key, values] of Object.entries(groups)) {
+      result[key] = values.reduce((s, v) => s + v, 0) / values.length;
+    }
+
+    return result;
+  }
+testCode: |
+  describe('wrangleData', () => {
+    const result = wrangleData(sensorData);
+
+    it('returns an object with sensor IDs as keys', () => {
+      expect(typeof result).toBe('object');
+      expect(Object.keys(result).sort()).toEqual(['A', 'B', 'C']);
+    });
+
+    it('excludes null values and negative values', () => {
+      // Original has 8 rows, null removes 1, negative removes 1 = 6 valid rows
+      const validValues = [10, 20, 30, 40, 50, 15];
+      const mean = validValues.reduce((s, v) => s + v, 0) / validValues.length;
+      const std = Math.sqrt(validValues.reduce((s, v) => s + (v - mean) ** 2, 0) / validValues.length);
+      // Sensor A has values 10 and 20
+      const aNorm = [(10 - mean) / std, (20 - mean) / std];
+      const aMean = (aNorm[0] + aNorm[1]) / 2;
+      expect(result['A']).toBeCloseTo(aMean, 5);
+    });
+
+    it('computes normalized group means that are finite numbers', () => {
+      Object.values(result).forEach(v => {
+        expect(Number.isFinite(v)).toBe(true);
+      });
+    });
+
+    it('normalized values across all groups average to approximately 0', () => {
+      const validValues = [10, 20, 30, 40, 50, 15];
+      const allNormalized = validValues.map(v => {
+        const mean = validValues.reduce((s, x) => s + x, 0) / validValues.length;
+        const std = Math.sqrt(validValues.reduce((s, x) => s + (x - mean) ** 2, 0) / validValues.length);
+        return (v - mean) / std;
+      });
+      const overallMean = allNormalized.reduce((s, v) => s + v, 0) / allNormalized.length;
+      expect(overallMean).toBeCloseTo(0, 5);
+    });
+  });
+estimatedMinutes: 15
+difficulty: intermediate

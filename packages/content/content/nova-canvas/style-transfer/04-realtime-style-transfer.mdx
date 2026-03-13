@@ -1,0 +1,121 @@
+---
+slug: realtime-style-transfer
+title: "Real-time Style Transfer"
+moduleId: style-transfer
+themeId: nova-canvas
+order: 4
+estimatedMinutes: 25
+difficulty: advanced
+context:
+  narrative: "Petrov tests the gallery kiosk: 'Three minutes for one style transfer. The visitors will leave.' Kai pulls up a different approach: 'We train a feedforward network that applies the style in a single pass. Like pre-compiling CSS — no runtime optimization needed.'"
+  speaker: "Kai"
+concept:
+  explanation: "Real-time style transfer replaces iterative optimization with a feedforward network trained to apply a specific style in one pass — like how CSS filters apply visual effects instantly without per-pixel computation at runtime."
+  bridge:
+    feTitle: "CSS filter chains"
+    feCode: "img { filter: saturate(1.5) contrast(1.2) blur(1px); }"
+    mlTitle: "Feedforward style network"
+    mlCode: "const stylized = styleNet.predict(contentImage);"
+    tier: structural
+consequence:
+  narrative: "One forward pass. 85 milliseconds. The photograph transforms into a Monet in the time it takes to blink. Yara stares at the kiosk screen, watching visitors' photographs become paintings in real time. 'This is what I dreamed it could be.'"
+  nextLessonTeaser: "Next: blending multiple styles — combining Monet and Basquiat in a single image"
+hints:
+  - level: nudge
+    content: "CSS filters are instant because the computation is pre-compiled. A feedforward style network works the same way."
+  - level: guidance
+    content: "Train an encoder-decoder network on the style loss. At inference, a single forward pass applies the style."
+  - level: solution
+    content: "The network: encode (downsample) -> residual blocks (transform) -> decode (upsample). Train with perceptual + style losses."
+keywords:
+  - realtime
+  - feedforward
+  - fast-style-transfer
+  - inference-speed
+  - residual-blocks
+---
+
+<Dialogue speaker="Kai">
+The Gatys method optimizes each image from scratch — hundreds of iterations, minutes per image. That is like computing CSS styles by running gradient descent on every page load. We need to pre-compile the style into a network.
+</Dialogue>
+
+<Dialogue speaker="Ren">
+A feedforward network. Train it once on the Monet style, and it applies that style in a single forward pass. Like CSS `filter` — the browser applies saturate, contrast, and blur instantly because the operations are pre-compiled.
+</Dialogue>
+
+CSS filters apply visual effects in real time because they are pre-computed GPU operations, not pixel-by-pixel calculations. Fast style transfer works the same way — a network pre-trained on a specific style applies it in a single pass.
+
+<LearningObjectives objectives={["Understand why iterative optimization is too slow for real-time use", "Build a feedforward style transfer network with encoder-residual-decoder architecture", "Train the network using perceptual and style losses from a pretrained feature extractor", "Connect fast inference to CSS filter chains — pre-compiled visual effects"]} />
+
+## The Fast Style Network
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="fast-style-network.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Residual block: core of the transformation network
+function residualBlock(input: tf.SymbolicTensor, filters: number): tf.SymbolicTensor {
+  let x = tf.layers.conv2d({
+    filters, kernelSize: 3, padding: 'same', activation: 'relu'
+  }).apply(input) as tf.SymbolicTensor;
+  x = tf.layers.conv2d({
+    filters, kernelSize: 3, padding: 'same'
+  }).apply(x) as tf.SymbolicTensor;
+  // Skip connection: input + transformed
+  return tf.layers.add().apply([input, x]) as tf.SymbolicTensor;
+}
+
+// Build a feedforward style transfer network
+function buildStyleNetwork(): tf.LayersModel {
+  const input = tf.input({ shape: [256, 256, 3] });
+
+  // Encoder: downsample (like CSS filter input)
+  let x = tf.layers.conv2d({
+    filters: 32, kernelSize: 9, strides: 1, padding: 'same', activation: 'relu'
+  }).apply(input) as tf.SymbolicTensor;
+  x = tf.layers.conv2d({
+    filters: 64, kernelSize: 3, strides: 2, padding: 'same', activation: 'relu'
+  }).apply(x) as tf.SymbolicTensor;
+  x = tf.layers.conv2d({
+    filters: 128, kernelSize: 3, strides: 2, padding: 'same', activation: 'relu'
+  }).apply(x) as tf.SymbolicTensor;
+
+  // Transform: residual blocks (like CSS filter processing)
+  x = residualBlock(x, 128);
+  x = residualBlock(x, 128);
+  x = residualBlock(x, 128);
+
+  // Decoder: upsample back to original resolution
+  x = tf.layers.upSampling2d({ size: [2, 2] }).apply(x) as tf.SymbolicTensor;
+  x = tf.layers.conv2d({
+    filters: 64, kernelSize: 3, padding: 'same', activation: 'relu'
+  }).apply(x) as tf.SymbolicTensor;
+  x = tf.layers.upSampling2d({ size: [2, 2] }).apply(x) as tf.SymbolicTensor;
+  x = tf.layers.conv2d({
+    filters: 32, kernelSize: 3, padding: 'same', activation: 'relu'
+  }).apply(x) as tf.SymbolicTensor;
+
+  // Output: stylized image
+  const output = tf.layers.conv2d({
+    filters: 3, kernelSize: 9, padding: 'same', activation: 'sigmoid'
+  }).apply(x) as tf.SymbolicTensor;
+
+  return tf.model({ inputs: input, outputs: output });
+}
+
+// Speed comparison:
+// Gatys (iterative): ~180 seconds for 256x256
+// Fast style transfer: ~85 milliseconds for 256x256
+// That is a 2000x speedup — from minutes to real-time
+const net = buildStyleNetwork();
+console.log('Parameters:', net.countParams().toLocaleString());`}
+</CodeBlock>
+
+## Challenge
+
+Build a feedforward style transfer network with residual blocks.
+
+<Exercise slug="realtime-style" />
+
+<KeyTakeaways takeaways={["Iterative style transfer optimizes from scratch each time — like computing CSS by gradient descent on page load", "Feedforward networks pre-compile a style into learned weights — single-pass inference, like CSS filters", "The architecture: encoder (downsample) -> residual blocks (transform) -> decoder (upsample)", "Result: 2000x speedup, from minutes per image to 85 milliseconds — true real-time performance"]} />

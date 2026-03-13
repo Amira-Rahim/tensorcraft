@@ -1,0 +1,288 @@
+---
+slug: launch-day
+title: "Launch Day — Diagnostic One Goes Live"
+moduleId: sw-capstone
+themeId: signal-ward
+order: 5
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "Day 9 of the pilot. Santos watches the monitoring dashboard. MEDI processes clinical notes in real time — tokenizing, embedding, classifying, checking interactions. Then the alert fires. 'Drug interaction detected: methotrexate and trimethoprim. Severity: high. Confidence: 0.91.' Dr. Vasquez reviews the case. The patient has rheumatoid arthritis, is on weekly methotrexate, and was just prescribed trimethoprim for a urinary tract infection. She checks the drug reference. 'It is a real interaction — trimethoprim can increase methotrexate toxicity. But in this case, the methotrexate dose is low and the trimethoprim course is short. I would prescribe it with monitoring.' She marks it: confirmed interaction, clinical override with monitoring. 'Better a false alarm than a missed one.'"
+  speaker: "Dr. Vasquez"
+concept:
+  explanation: "Deploying Diagnostic One to production is the same as deploying any web application — build, ship, monitor, and have a rollback plan. The model is a static asset in the bundle. The monitoring dashboard is an observability layer. The rollback plan is a feature flag."
+  bridge:
+    feTitle: "Production Deployment"
+    feCode: "// npm run build && deploy --monitor --rollback-on-error"
+    mlTitle: "Clinical Deployment"
+    mlCode: "// npm run build && deploy --monitor --rollback-on-error // same command, model is a static asset"
+    tier: identity
+consequence:
+  narrative: "Day 30. Diagnostic One has processed 2,847 clinical notes. 12 confirmed drug interactions caught. 3 false positives investigated and dismissed. Zero missed interactions in the validation set. Dr. Vasquez presents the pilot results to the hospital board. 'Diagnostic One is not replacing clinicians. It is giving us a second pair of eyes that never gets tired, never skips a chart, and never forgets a drug interaction. The false positive on Day 9 — methotrexate and trimethoprim — proved that the system works. It flagged a real interaction. I overrode it because the clinical context was safe. That is exactly how this should work.' Santos closes her laptop. Eleven modules. From tokenizing her first clinical note to deploying a production NLP system. Khalil was right — she was already thinking like an ML engineer. She just needed to see it."
+  nextLessonTeaser: "Mission complete. Diagnostic One is live. And you — you think like an ML engineer now."
+hints:
+  - level: nudge
+    content: "The model is a static asset — deploy it the same way you deploy images and fonts"
+  - level: guidance
+    content: "Set up health checks, monitoring dashboards, and feature flags for safe rollback"
+  - level: solution
+    content: "Build a deployment verification function that checks model loading, inference latency, and monitoring endpoints, with a feature flag for instant rollback"
+keywords:
+  - deployment
+  - production
+  - monitoring
+  - rollback
+  - feature-flags
+  - launch
+---
+
+<Dialogue speaker="Santos">
+Build is green. Tests pass. Model card approved. FHIR adapter validated. Monitoring dashboard live. Feature flag set to 10% rollout. I have deployed hundreds of web apps. This one just happens to include a trained NLP model.
+</Dialogue>
+
+<Dialogue speaker="Khalil">
+The model file is 28 MB — smaller than some hero images I have shipped. It is a static asset. It loads in the browser. The inference runs client-side. The deployment is identical to every Next.js app you have ever shipped.
+</Dialogue>
+
+Every web application you have deployed follows the same pattern: build, test, ship, monitor, rollback if something breaks. Deploying Diagnostic One is no different. The TensorFlow.js model is a static asset — a JSON topology file and a binary weights file. They go in the build output alongside your JavaScript bundles, CSS files, and images. The deployment pipeline is the same. The monitoring is the same. The rollback plan is the same.
+
+<LearningObjectives objectives={["Deploy Diagnostic One as a production web application with model assets", "Implement health checks and monitoring for a live clinical NLP system", "Set up feature flags for gradual rollout and instant rollback", "Handle the first real alert: the methotrexate-trimethoprim interaction"]} />
+
+## Production Deployment
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="deploy-diagnostic-one.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Deployment configuration — same as any web app deployment
+interface DeploymentConfig {
+  modelPath: string;
+  version: string;
+  rolloutPercentage: number;
+  healthCheckInterval: number;
+  rollbackThreshold: {
+    errorRate: number;
+    latencyP95: number;
+    memoryMB: number;
+  };
+}
+
+const config: DeploymentConfig = {
+  modelPath: '/models/diagnostic-one-v1/model.json',
+  version: '1.0.0',
+  rolloutPercentage: 10, // Start with 10% of traffic
+  healthCheckInterval: 30000, // Check every 30 seconds
+  rollbackThreshold: {
+    errorRate: 0.05,    // Rollback if >5% errors
+    latencyP95: 500,    // Rollback if p95 latency >500ms
+    memoryMB: 512,      // Rollback if memory >512MB
+  },
+};
+
+// Feature flag — same pattern as LaunchDarkly, Unleash, or a simple config
+class FeatureFlag {
+  private flags: Map<string, { enabled: boolean; percentage: number }> = new Map();
+
+  setFlag(name: string, enabled: boolean, percentage: number = 100): void {
+    this.flags.set(name, { enabled, percentage });
+  }
+
+  isEnabled(name: string, userId?: string): boolean {
+    const flag = this.flags.get(name);
+    if (!flag || !flag.enabled) return false;
+    if (flag.percentage >= 100) return true;
+
+    // Consistent hashing — same user always gets same result
+    const hash = userId
+      ? userId.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0) % 100
+      : Math.random() * 100;
+    return hash < flag.percentage;
+  }
+
+  // Instant rollback — flip the flag
+  rollback(name: string): void {
+    this.setFlag(name, false, 0);
+    console.log(\`ROLLBACK: \${name} disabled\`);
+  }
+}
+
+const flags = new FeatureFlag();
+flags.setFlag('diagnostic-one', true, 10); // 10% rollout`}
+</CodeBlock>
+
+## Health Checks and Monitoring
+
+<CodeBlock language="typescript" title="monitoring.ts">
+{`// Monitoring dashboard — same as Datadog, Grafana, or your custom metrics
+// Track model health alongside application health
+
+interface HealthCheck {
+  name: string;
+  status: 'healthy' | 'degraded' | 'unhealthy';
+  latencyMs: number;
+  message: string;
+}
+
+interface MonitoringMetrics {
+  totalPredictions: number;
+  errorCount: number;
+  avgLatencyMs: number;
+  p95LatencyMs: number;
+  memoryUsageMB: number;
+  alertsFired: number;
+  falsePositives: number;
+  truePositives: number;
+}
+
+class DiagnosticOneMonitor {
+  private metrics: MonitoringMetrics = {
+    totalPredictions: 0,
+    errorCount: 0,
+    avgLatencyMs: 0,
+    p95LatencyMs: 0,
+    memoryUsageMB: 0,
+    alertsFired: 0,
+    falsePositives: 0,
+    truePositives: 0,
+  };
+  private latencies: number[] = [];
+
+  recordPrediction(latencyMs: number, success: boolean): void {
+    this.metrics.totalPredictions++;
+    if (!success) this.metrics.errorCount++;
+    this.latencies.push(latencyMs);
+    this.updateLatencyMetrics();
+  }
+
+  recordAlert(isTrue: boolean): void {
+    this.metrics.alertsFired++;
+    if (isTrue) this.metrics.truePositives++;
+    else this.metrics.falsePositives++;
+  }
+
+  private updateLatencyMetrics(): void {
+    const sorted = [...this.latencies].sort((a, b) => a - b);
+    this.metrics.avgLatencyMs = sorted.reduce((a, b) => a + b, 0) / sorted.length;
+    this.metrics.p95LatencyMs = sorted[Math.floor(sorted.length * 0.95)] ?? 0;
+  }
+
+  async runHealthChecks(): Promise<HealthCheck[]> {
+    const checks: HealthCheck[] = [];
+
+    // Check 1: Model loads
+    const modelStart = performance.now();
+    try {
+      const model = await tf.loadLayersModel(config.modelPath);
+      model.dispose();
+      checks.push({
+        name: 'model-load',
+        status: 'healthy',
+        latencyMs: performance.now() - modelStart,
+        message: 'Model loaded successfully',
+      });
+    } catch (error) {
+      checks.push({
+        name: 'model-load',
+        status: 'unhealthy',
+        latencyMs: performance.now() - modelStart,
+        message: \`Model failed to load: \${error}\`,
+      });
+    }
+
+    // Check 2: Error rate
+    const errorRate = this.metrics.errorCount / (this.metrics.totalPredictions || 1);
+    checks.push({
+      name: 'error-rate',
+      status: errorRate < 0.05 ? 'healthy' : errorRate < 0.1 ? 'degraded' : 'unhealthy',
+      latencyMs: 0,
+      message: \`Error rate: \${(errorRate * 100).toFixed(2)}%\`,
+    });
+
+    // Check 3: Latency
+    checks.push({
+      name: 'latency',
+      status: this.metrics.p95LatencyMs < 500 ? 'healthy' : 'degraded',
+      latencyMs: this.metrics.p95LatencyMs,
+      message: \`p95 latency: \${this.metrics.p95LatencyMs.toFixed(1)}ms\`,
+    });
+
+    return checks;
+  }
+
+  shouldRollback(): boolean {
+    const errorRate = this.metrics.errorCount / (this.metrics.totalPredictions || 1);
+    return (
+      errorRate > config.rollbackThreshold.errorRate ||
+      this.metrics.p95LatencyMs > config.rollbackThreshold.latencyP95
+    );
+  }
+
+  getMetrics(): MonitoringMetrics {
+    return { ...this.metrics };
+  }
+}`}
+</CodeBlock>
+
+## The First Real Alert
+
+<CodeBlock language="typescript" title="day-nine.ts">
+{`// Day 9 of the pilot. The moment Diagnostic One proves itself.
+
+async function dayNine(): Promise<void> {
+  console.log('=== Diagnostic One — Day 9 ===');
+  console.log('');
+
+  // MEDI processes a clinical note
+  const clinicalNote = {
+    text: 'Patient with rheumatoid arthritis on methotrexate 15mg weekly. ' +
+          'Presenting with urinary tract infection. ' +
+          'Plan: prescribe trimethoprim 200mg twice daily for 3 days.',
+    metadata: {
+      source: 'ehr' as const,
+      patientId: 'PT-4471',
+      authorRole: 'attending',
+      timestamp: '2025-03-13T03:14:00Z',
+    },
+  };
+
+  // Pipeline processes the note
+  const result = await pipeline.run(clinicalNote);
+
+  // Alert fires
+  console.log('ALERT: Drug interaction detected');
+  console.log('  Drug 1: methotrexate');
+  console.log('  Drug 2: trimethoprim');
+  console.log('  Severity: high');
+  console.log(\`  Confidence: \${(result.confidence * 100).toFixed(1)}%\`);
+  console.log('  Evidence: Trimethoprim inhibits renal clearance of methotrexate,');
+  console.log('           potentially increasing methotrexate toxicity');
+  console.log(\`  Review tier: \${result.reviewStatus}\`);
+  console.log('');
+
+  // Dr. Vasquez reviews
+  console.log('--- Clinician Review ---');
+  console.log('Reviewer: Dr. Vasquez');
+  console.log('Decision: Confirmed interaction, clinical override with monitoring');
+  console.log('Reasoning: Low methotrexate dose (15mg weekly) and short trimethoprim');
+  console.log('           course (3 days) — acceptable risk with monitoring');
+  console.log('');
+  console.log('"Better a false alarm than a missed one."');
+  console.log('');
+
+  // The system learns from the feedback
+  monitor.recordAlert(true); // It was a real interaction
+  console.log('Feedback recorded. Model will learn that this interaction is real');
+  console.log('but clinical context can make it acceptable.');
+  console.log('');
+  console.log('=== Diagnostic One: working as designed ===');
+}`}
+</CodeBlock>
+
+## Challenge
+
+Write a deployment verification function that checks model health, latency, and monitoring for Diagnostic One.
+
+<Exercise slug="deploy-diagnostic-one" />
+
+<KeyTakeaways takeaways={["ML deployment is web deployment — the model is a static asset, the monitoring is observability, the rollback is a feature flag", "Feature flags enable gradual rollout (10% to 50% to 100%) and instant rollback if something breaks", "The methotrexate-trimethoprim alert proved Diagnostic One works: it flagged a real interaction, the clinician reviewed it, and made an informed override", "You started Signal Ward tokenizing your first clinical note. You end it deploying a production NLP system. You think like an ML engineer now."]} />

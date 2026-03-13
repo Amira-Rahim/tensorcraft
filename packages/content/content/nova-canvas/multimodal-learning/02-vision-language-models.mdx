@@ -1,0 +1,115 @@
+---
+slug: vision-language-models
+title: "Vision-Language Models"
+moduleId: multimodal-learning
+themeId: nova-canvas
+order: 2
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Ren shows MUSE an image of a sunset. 'What do you see?' The model outputs a vector. 'Now describe it.' Silence. 'It sees,' Ren explains, 'but it cannot speak. We need to connect vision to language. Like connecting an img tag to its alt text — the image and its description are linked.'"
+  speaker: "Ren"
+concept:
+  explanation: "Vision-language models connect image understanding and text generation — like the relationship between an img element and its alt attribute. The image and its text description are two representations of the same thing."
+  bridge:
+    feTitle: "img alt='...' — text describing images"
+    feCode: "<img src='sunset.jpg' alt='A golden sunset over the ocean' />"
+    mlTitle: "Vision-language model"
+    mlCode: "const caption = visionLanguageModel(image); // 'A golden sunset...'"
+    tier: intuition
+consequence:
+  narrative: "MUSE processes the sunset image and outputs: 'warm colors, horizon line, city silhouette.' Not poetic. Not wrong. Yara laughs: 'It has the vocabulary of a real estate listing. But it can see and speak. That is a start.'"
+  nextLessonTeaser: "Next: cross-modal embeddings — building a shared representation space"
+hints:
+  - level: nudge
+    content: "Alt text describes what an image shows. Vision-language models learn this connection automatically."
+  - level: guidance
+    content: "Encode images and their captions into a shared space. Train so that matched pairs are close, mismatched pairs are far apart."
+  - level: solution
+    content: "Image encoder + text encoder -> shared space. Loss = cosine similarity between matched pairs minus similarity between mismatched pairs."
+keywords:
+  - vision-language
+  - image-text
+  - alt-text
+  - paired-data
+  - cosine-similarity
+---
+
+<Dialogue speaker="Ren">
+Every `img` tag should have an `alt` attribute — text that describes the image. This is the fundamental vision-language connection: the same concept expressed in two modalities. What we see and what we say about what we see.
+</Dialogue>
+
+<Dialogue speaker="Yara">
+So training a vision-language model is like building a massive dataset of images with their alt text?
+</Dialogue>
+
+<Dialogue speaker="Ren">
+Exactly. Millions of image-caption pairs. The model learns that a picture of a sunset and the words "a golden sunset over the ocean" are the same concept in two different languages.
+</Dialogue>
+
+You already connect images and text every time you write an `alt` attribute. Vision-language models learn this connection at scale — millions of image-caption pairs, encoded into a shared space where the image embedding and the text embedding of its description are neighbors.
+
+<LearningObjectives objectives={["Understand how vision-language models connect image and text understanding", "Implement cosine similarity to measure alignment between image and text embeddings", "Train with contrastive loss: matched pairs close, mismatched pairs far", "Connect the image-text relationship to HTML img alt attributes"]} />
+
+## Connecting Vision and Language
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="vision-language.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Cosine similarity: how aligned are two embeddings?
+function cosineSimilarity(a: tf.Tensor1D, b: tf.Tensor1D): tf.Scalar {
+  const dotProduct = tf.sum(tf.mul(a, b));
+  const normA = tf.norm(a);
+  const normB = tf.norm(b);
+  return tf.div(dotProduct, tf.mul(normA, normB)) as tf.Scalar;
+}
+
+// Training data: image-caption pairs (like img + alt)
+interface ImageTextPair {
+  image: tf.Tensor4D;     // the img src
+  caption: tf.Tensor2D;   // the alt text (tokenized)
+}
+
+// Contrastive loss: matched pairs should be similar,
+// mismatched pairs should be dissimilar
+function contrastiveLoss(
+  imageEmbeddings: tf.Tensor2D, // [batchSize, embeddingDim]
+  textEmbeddings: tf.Tensor2D   // [batchSize, embeddingDim]
+): tf.Scalar {
+  // Normalize embeddings
+  const normImages = tf.div(imageEmbeddings,
+    tf.norm(imageEmbeddings, 2, 1, true));
+  const normTexts = tf.div(textEmbeddings,
+    tf.norm(textEmbeddings, 2, 1, true));
+
+  // Similarity matrix: every image against every caption
+  const similarities = tf.matMul(normImages, normTexts, false, true);
+
+  // The diagonal contains matched pairs (img[i] with caption[i])
+  // Off-diagonal contains mismatched pairs
+  const batchSize = imageEmbeddings.shape[0];
+  const labels = tf.range(0, batchSize, 1, 'int32');
+
+  // Cross-entropy: matched pairs should have highest similarity
+  const temperature = 0.07;
+  const logits = tf.div(similarities, tf.scalar(temperature));
+  return tf.losses.softmaxCrossEntropy(
+    tf.oneHot(labels, batchSize),
+    logits
+  );
+}
+
+// After training:
+// encode(sunsetImage) ≈ encode("a golden sunset over the ocean")
+// encode(sunsetImage) ≠ encode("a cat sleeping on a couch")`}
+</CodeBlock>
+
+## Challenge
+
+Implement cosine similarity between image and text embeddings.
+
+<Exercise slug="vision-language" />
+
+<KeyTakeaways takeaways={["Vision-language models connect images and text, like img elements and their alt attributes", "Cosine similarity measures how aligned two embeddings are in the shared space", "Contrastive loss pushes matched image-text pairs together and mismatched pairs apart", "After training, the model understands that a sunset photo and the words 'sunset' are the same concept"]} />

@@ -1,0 +1,133 @@
+---
+slug: autoencoders-recap
+title: "Autoencoders Recap"
+moduleId: variational-autoencoders
+themeId: nova-canvas
+order: 1
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Before diving into VAEs, Ren revisits autoencoders — the compression-reconstruction pipeline that forms the foundation. Kai draws the parallel to audio compression codecs."
+  speaker: "Kai"
+concept:
+  explanation: "An autoencoder compresses input through a bottleneck and reconstructs it, learning efficient representations. It is the foundation for VAEs."
+  bridge:
+    feTitle: "gzip / Brotli Compression"
+    feCode: "const compressed = brotli.compress(data); const original = brotli.decompress(compressed);"
+    mlTitle: "Autoencoder"
+    mlCode: "const z = encoder.predict(image); const reconstruction = decoder.predict(z);"
+    tier: structural
+consequence:
+  narrative: "Ren has a working autoencoder that compresses and reconstructs patterns. But it cannot generate NEW patterns — only reproduce existing ones. That limitation sets the stage for the variational part."
+  nextLessonTeaser: "Next: adding the 'variational' to make autoencoders generative"
+hints:
+  - level: nudge
+    content: "Think of file compression — data goes in, compressed form comes out, original is reconstructed"
+  - level: guidance
+    content: "Build an encoder (shrink) and decoder (expand) with a bottleneck in the middle"
+  - level: solution
+    content: "Encoder: 784→256→16, Decoder: 16→256→784. Train to minimize reconstruction error."
+keywords:
+  - autoencoder
+  - compression
+  - reconstruction
+  - bottleneck
+---
+
+<Dialogue speaker="Kai">
+Before we get fancy, let us make sure you have the fundamentals locked in. An autoencoder is like an audio codec — MP3 compresses a WAV file, then decompresses it back. Some information is lost, but the important parts survive. The bottleneck forces the model to learn what matters.
+</Dialogue>
+
+<Dialogue speaker="MUSE">
+To remember everything is to remember nothing. The art of compression is the art of knowing what to keep.
+</Dialogue>
+
+You use compression every day. Brotli compresses your JavaScript bundles. JPEG compresses your images. gzip compresses your API responses. An autoencoder is a neural network that learns its own compression algorithm — customized for the specific data it sees.
+
+<LearningObjectives objectives={["Build and train a complete autoencoder in TensorFlow.js", "Understand the encoder-bottleneck-decoder pipeline", "Measure reconstruction quality with MSE loss", "Recognize the autoencoder's limitation: it cannot generate new data"]} />
+
+## The Compression Pipeline
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="autoencoder.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Frontend: Brotli compression pipeline
+// Original JS (1 MB) → compress → Brotli (200 KB) → decompress → JS (1 MB)
+// The 200 KB version IS the data, just in a compact representation
+
+// ML: Autoencoder compression pipeline
+// Image (784) → encoder → Latent (16) → decoder → Image (784)
+
+function buildAutoencoder(inputDim: number, latentDim: number) {
+  const encoder = tf.sequential();
+  encoder.add(tf.layers.dense({
+    inputShape: [inputDim], units: 256, activation: 'relu'
+  }));
+  encoder.add(tf.layers.dense({ units: 128, activation: 'relu' }));
+  encoder.add(tf.layers.dense({ units: latentDim, activation: 'relu' }));
+
+  const decoder = tf.sequential();
+  decoder.add(tf.layers.dense({
+    inputShape: [latentDim], units: 128, activation: 'relu'
+  }));
+  decoder.add(tf.layers.dense({ units: 256, activation: 'relu' }));
+  decoder.add(tf.layers.dense({ units: inputDim, activation: 'sigmoid' }));
+
+  // Combined model for training
+  const input = tf.input({ shape: [inputDim] });
+  const encoded = encoder.apply(input);
+  const decoded = decoder.apply(encoded);
+  const autoencoder = tf.model({
+    inputs: input,
+    outputs: decoded as tf.SymbolicTensor,
+  });
+
+  autoencoder.compile({
+    optimizer: 'adam',
+    loss: 'meanSquaredError',
+  });
+
+  return { encoder, decoder, autoencoder };
+}`}
+</CodeBlock>
+
+## Training and Reconstruction
+
+The autoencoder trains by trying to reproduce its input. The loss is the difference between the original and the reconstruction.
+
+<CodeBlock language="typescript" title="train-autoencoder.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+async function trainAutoencoder(
+  autoencoder: tf.LayersModel,
+  data: tf.Tensor2D,
+  epochs: number = 50
+) {
+  // Input = Output: the model learns to reconstruct its own input
+  await autoencoder.fit(data, data, {
+    epochs,
+    batchSize: 32,
+    validationSplit: 0.1,
+    callbacks: {
+      onEpochEnd: (epoch, logs) => {
+        console.log(
+          \`Epoch \${epoch}: loss=\${logs?.loss.toFixed(4)}, val_loss=\${logs?.val_loss.toFixed(4)}\`
+        );
+      },
+    },
+  });
+}
+
+// THE LIMITATION: autoencoders reconstruct, but cannot generate
+// If you sample a random point in the latent space,
+// the decoder might produce garbage — the space has "holes"
+// VAEs fix this by forcing the latent space to be smooth and continuous`}
+</CodeBlock>
+
+## Challenge
+
+<Exercise slug="nc-build-autoencoder" />
+
+<KeyTakeaways takeaways={["Autoencoders learn to compress and reconstruct data through a bottleneck", "The compression pipeline mirrors gzip/Brotli: encode, compress, decode", "Training minimizes reconstruction error — the difference between input and output", "Limitation: autoencoders cannot generate new data because the latent space has gaps"]} />

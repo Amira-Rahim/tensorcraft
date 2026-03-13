@@ -1,0 +1,166 @@
+---
+slug: global-operations
+title: "Global Operations"
+moduleId: scale-reliability
+themeId: terra-grid
+order: 5
+estimatedMinutes: 25
+difficulty: advanced
+context:
+  narrative: "Hassan reviews the global deployment map. 'We operate across 8 time zones. When Region 1 is in peak industrial hours, Region 7 is overnight. Model updates must roll out safely across all of them. Park, show me the global coordination layer.'"
+  speaker: "Hassan Al-Rashid"
+concept:
+  explanation: "Managing ML across global regions follows the same patterns as CDN multi-region deployment — replicate models close to devices, coordinate updates, handle regional differences."
+  bridge:
+    feTitle: "CDN Multi-Region"
+    feCode: "// CDN: replicate assets to edge nodes, invalidate cache on deploy"
+    mlTitle: "Model Multi-Region"
+    mlCode: "// Edge: replicate models to regions, coordinate updates, handle drift"
+    tier: structural
+consequence:
+  narrative: "The global coordination system manages model deployments across 8 time zones. Region-aware rollouts avoid deploying during peak industrial hours. Model version consistency is maintained within 15 minutes across all 47 sites."
+  nextLessonTeaser: "Next module: Capstone — deploying Terra Grid Intelligence to production"
+hints:
+  - level: nudge
+    content: "Region-aware deployment schedules updates during low-activity windows, like deploying web apps during off-peak hours"
+  - level: guidance
+    content: "Implement a RegionCoordinator that tracks time zones and schedules model updates per region"
+  - level: solution
+    content: "Calculate local time per region, deploy during maintenance windows, verify consistency after rollout"
+keywords:
+  - global-deployment
+  - multi-region
+  - cdn-pattern
+  - time-zone-coordination
+---
+
+<Dialogue speaker="Hassan Al-Rashid">
+47 sites. 8 time zones. When I push a model update, Region 1 is running midday industrial operations and Region 7 is in overnight maintenance mode. We cannot treat them the same. Region-aware deployment or nothing.
+</Dialogue>
+
+<Dialogue speaker="Park Soo-Yeon">
+Same pattern as CDN multi-region deployment. Replicate models to regional edge nodes. Schedule updates during each region's maintenance window. Verify consistency after rollout. If any region fails to update, it keeps running the previous version until the next window.
+</Dialogue>
+
+You have deployed web applications to CDN edge nodes: replicate assets globally, invalidate caches on deploy, serve from the nearest node. Global ML operations follow the same pattern. Models are replicated to regional edge clusters, updates are coordinated across time zones, and each region maintains its own health metrics. The challenge is coordination at scale — 47 sites must converge to the same model version without disrupting operations.
+
+<LearningObjectives objectives={["Design a global model deployment coordinator across time zones", "Implement region-aware update scheduling with maintenance windows", "Build consistency checks that verify all regions are running the same model version", "Handle regional model drift and divergent update states"]} />
+
+## Global Coordinator
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="global-coordinator.ts">
+{`// Global model deployment — like CDN edge node management
+
+interface Region {
+  id: string;
+  name: string;
+  timeZoneOffset: number; // hours from UTC
+  siteCount: number;
+  deviceCount: number;
+  currentModelVersion: string;
+  maintenanceWindowUTC: { start: number; end: number }; // hours
+}
+
+interface DeploymentPlan {
+  modelVersion: string;
+  regions: { regionId: string; scheduledUTC: Date; status: string }[];
+}
+
+class GlobalCoordinator {
+  private regions: Region[] = [];
+
+  addRegion(region: Region): void {
+    this.regions.push(region);
+  }
+
+  // Schedule deployment during each region's maintenance window
+  createDeploymentPlan(newVersion: string): DeploymentPlan {
+    const now = new Date();
+    const plan: DeploymentPlan = { modelVersion: newVersion, regions: [] };
+
+    for (const region of this.regions) {
+      const scheduledTime = this.nextMaintenanceWindow(region, now);
+      plan.regions.push({
+        regionId: region.id,
+        scheduledUTC: scheduledTime,
+        status: 'scheduled',
+      });
+    }
+
+    // Sort by scheduled time
+    plan.regions.sort((a, b) => a.scheduledUTC.getTime() - b.scheduledUTC.getTime());
+    return plan;
+  }
+
+  private nextMaintenanceWindow(region: Region, after: Date): Date {
+    const result = new Date(after);
+    result.setUTCHours(region.maintenanceWindowUTC.start, 0, 0, 0);
+    if (result <= after) {
+      result.setUTCDate(result.getUTCDate() + 1);
+    }
+    return result;
+  }
+
+  // Check version consistency across all regions
+  checkConsistency(): {
+    consistent: boolean;
+    versions: Map<string, string[]>;
+  } {
+    const versions = new Map<string, string[]>();
+    for (const region of this.regions) {
+      const regions = versions.get(region.currentModelVersion) || [];
+      regions.push(region.id);
+      versions.set(region.currentModelVersion, regions);
+    }
+    return {
+      consistent: versions.size === 1,
+      versions,
+    };
+  }
+
+  getStatus(): { regionId: string; version: string; devices: number }[] {
+    return this.regions.map(r => ({
+      regionId: r.id,
+      version: r.currentModelVersion,
+      devices: r.deviceCount,
+    }));
+  }
+}
+
+// Terra Grid global deployment
+const coordinator = new GlobalCoordinator();
+coordinator.addRegion({
+  id: 'region-1', name: 'North America East',
+  timeZoneOffset: -5, siteCount: 12, deviceCount: 3200,
+  currentModelVersion: '3.0',
+  maintenanceWindowUTC: { start: 6, end: 8 }, // 1-3 AM local
+});
+coordinator.addRegion({
+  id: 'region-3', name: 'Central Europe',
+  timeZoneOffset: 1, siteCount: 8, deviceCount: 2100,
+  currentModelVersion: '3.0',
+  maintenanceWindowUTC: { start: 2, end: 4 }, // 3-5 AM local
+});
+coordinator.addRegion({
+  id: 'region-7', name: 'East Asia',
+  timeZoneOffset: 9, siteCount: 15, deviceCount: 4200,
+  currentModelVersion: '3.0',
+  maintenanceWindowUTC: { start: 18, end: 20 }, // 3-5 AM local
+});
+
+const plan = coordinator.createDeploymentPlan('3.1');
+console.log('Deployment schedule:');
+plan.regions.forEach(r =>
+  console.log(\`  \${r.regionId}: \${r.scheduledUTC.toISOString()}\`)
+);`}
+</CodeBlock>
+
+## Challenge
+
+Build a global deployment coordinator with time-zone-aware scheduling.
+
+<Exercise slug="global-deploy" />
+
+<KeyTakeaways takeaways={["Global ML deployment mirrors CDN multi-region management — replicate models to edge nodes, coordinate updates", "Region-aware scheduling deploys during local maintenance windows to avoid disrupting peak operations", "Consistency checks verify all regions converge to the same model version after rollout", "If a region fails to update, it keeps running the previous version — availability over consistency"]} />

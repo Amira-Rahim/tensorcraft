@@ -1,0 +1,132 @@
+---
+slug: disentanglement
+title: "Disentanglement"
+moduleId: latent-spaces
+themeId: nova-canvas
+order: 4
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Ren tries to change just the color of a generated artwork without affecting the shape. The latent dimensions are tangled — moving one slider changes everything. Disentanglement is the solution."
+  speaker: "Kai"
+concept:
+  explanation: "Disentanglement means organizing a latent space so each dimension controls one independent factor of variation — like separating color from shape from texture."
+  bridge:
+    feTitle: "Component Props"
+    feCode: "<Button size='lg' variant='primary' disabled={false} />"
+    mlTitle: "Disentangled Dimensions"
+    mlCode: "z[0] = color, z[1] = shape, z[2] = texture  // independent"
+    tier: structural
+consequence:
+  narrative: "Ren builds a prototype where each slider controls a single visual attribute — one for color warmth, one for complexity, one for symmetry. The curators are thrilled."
+  nextLessonTeaser: "Next: putting it all together in an interactive latent space explorer"
+hints:
+  - level: nudge
+    content: "Think of React component props — each prop controls one thing independently"
+  - level: guidance
+    content: "In a disentangled space, changing one latent dimension only affects one visual feature"
+  - level: solution
+    content: "Modify one dimension of the latent vector while keeping others fixed, then decode"
+keywords:
+  - disentanglement
+  - factors-of-variation
+  - independence
+  - controllability
+---
+
+<Dialogue speaker="Kai">
+I want to change the rhythm of this generated soundscape without affecting the melody. But every time I tweak one knob, everything shifts. The dimensions are *entangled* — they are all connected. We need to untangle them.
+</Dialogue>
+
+<Dialogue speaker="MUSE">
+A tangled space is a dream where every detail is connected. A disentangled space is a studio where every tool has its own drawer.
+</Dialogue>
+
+In React, a well-designed component has independent props: `size` does not affect `color`, and `disabled` does not change `variant`. Each prop controls exactly one aspect. A disentangled latent space has the same property — each dimension controls one independent factor of variation.
+
+<LearningObjectives objectives={["Understand entangled vs disentangled representations", "Connect component props to latent dimensions", "Traverse individual latent dimensions to observe isolated effects", "Recognize why disentanglement matters for creative control"]} />
+
+## Entangled vs. Disentangled
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="entangled-vs-disentangled.ts">
+{`// ENTANGLED component: changing one prop affects multiple visual aspects
+// <BadButton theme="dark" />
+// "theme" controls color AND border AND shadow AND text — all at once
+
+// DISENTANGLED component: each prop is independent
+// <Button size="lg" variant="primary" rounded={true} disabled={false} />
+// Change size without affecting color, roundness, or state
+
+// ENTANGLED latent space:
+// z = [0.5, -0.3, 0.8]
+// Change z[0] → color changes AND shape changes AND texture changes
+
+// DISENTANGLED latent space:
+// z = [0.5, -0.3, 0.8]
+// z[0] controls color only
+// z[1] controls shape only
+// z[2] controls texture only`}
+</CodeBlock>
+
+## Traversing Single Dimensions
+
+To test disentanglement, fix all dimensions except one and sweep it across a range. In a disentangled space, only one visual attribute should change.
+
+<CodeBlock language="typescript" title="dimension-traversal.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+async function traverseDimension(
+  baseVector: tf.Tensor1D,
+  dimension: number,
+  decoder: tf.LayersModel,
+  steps: number = 7,
+  range: number = 3.0
+): Promise<tf.Tensor[]> {
+  const results: tf.Tensor[] = [];
+  const baseData = await baseVector.array() as number[];
+
+  for (let i = 0; i < steps; i++) {
+    const value = -range + (2 * range * i) / (steps - 1);
+    const modified = [...baseData];
+    modified[dimension] = value;  // Change only this dimension
+    const zModified = tf.tensor2d([modified]);
+    const output = decoder.predict(zModified) as tf.Tensor;
+    results.push(output);
+  }
+  return results;
+  // Disentangled: each row shows ONE attribute changing
+  // Entangled: each row shows MANY attributes changing
+}
+
+// Sweep dimension 0: only color should change
+// Sweep dimension 1: only shape should change
+// Sweep dimension 2: only texture should change`}
+</CodeBlock>
+
+## Why Disentanglement Matters for Art
+
+For the Biennale installation, disentanglement means creative control. Visitors can use individual sliders to adjust specific attributes without unpredictable side effects — just like adjusting independent CSS properties.
+
+<CodeBlock language="typescript" title="creative-control.ts">
+{`// Exhibition kiosk: each slider maps to one latent dimension
+interface ArtControls {
+  colorWarmth: number;   // z[0]: -3 (cool blue) to +3 (warm red)
+  complexity: number;    // z[1]: -3 (simple) to +3 (complex)
+  symmetry: number;      // z[2]: -3 (chaotic) to +3 (symmetrical)
+  organicness: number;   // z[3]: -3 (geometric) to +3 (organic)
+}
+
+function controlsToLatent(controls: ArtControls): number[] {
+  return [controls.colorWarmth, controls.complexity,
+          controls.symmetry, controls.organicness,
+          ...new Array(12).fill(0)];  // remaining dims at default
+}`}
+</CodeBlock>
+
+## Challenge
+
+<Exercise slug="disentangle-factors" />
+
+<KeyTakeaways takeaways={["Disentanglement means each latent dimension controls one independent factor", "Component props are the frontend analogy — each prop controls one visual aspect", "Test disentanglement by sweeping one dimension while fixing the rest", "Disentangled spaces enable intuitive creative control for end users"]} />

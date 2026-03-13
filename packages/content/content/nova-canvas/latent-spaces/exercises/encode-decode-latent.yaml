@@ -1,0 +1,53 @@
+slug: encode-decode-latent
+lessonSlug: what-is-a-latent-space
+title: "Encode and Decode"
+instructions: "Build a simple autoencoder with an encoder (784 → 128 → 16) and decoder (16 → 128 → 784). Use relu activations for hidden layers and sigmoid for the final decoder layer. Return an object with both models."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function buildAutoencoder(): { encoder: tf.Sequential, decoder: tf.Sequential } {
+    // Build encoder: 784 → 128 (relu) → 16 (relu)
+    const encoder = tf.sequential();
+    // your code here
+
+    // Build decoder: 16 → 128 (relu) → 784 (sigmoid)
+    const decoder = tf.sequential();
+    // your code here
+
+    return { encoder, decoder };
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function buildAutoencoder(): { encoder: tf.Sequential, decoder: tf.Sequential } {
+    const encoder = tf.sequential();
+    encoder.add(tf.layers.dense({ inputShape: [784], units: 128, activation: 'relu' }));
+    encoder.add(tf.layers.dense({ units: 16, activation: 'relu' }));
+
+    const decoder = tf.sequential();
+    decoder.add(tf.layers.dense({ inputShape: [16], units: 128, activation: 'relu' }));
+    decoder.add(tf.layers.dense({ units: 784, activation: 'sigmoid' }));
+
+    return { encoder, decoder };
+  }
+testCode: |
+  describe('buildAutoencoder', () => {
+    it('encoder has input shape [null, 784]', () => {
+      const { encoder } = buildAutoencoder();
+      expect(encoder.inputShape).toEqual([null, 784]);
+    });
+    it('encoder outputs shape [null, 16]', () => {
+      const { encoder } = buildAutoencoder();
+      expect(encoder.outputShape).toEqual([null, 16]);
+    });
+    it('decoder has input shape [null, 16]', () => {
+      const { decoder } = buildAutoencoder();
+      expect(decoder.inputShape).toEqual([null, 16]);
+    });
+    it('decoder outputs shape [null, 784]', () => {
+      const { decoder } = buildAutoencoder();
+      expect(decoder.outputShape).toEqual([null, 784]);
+    });
+  });
+estimatedMinutes: 8
+difficulty: beginner

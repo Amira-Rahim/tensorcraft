@@ -1,0 +1,56 @@
+slug: optimize-model
+lessonSlug: model-optimization
+title: "Optimize Model Weights"
+instructions: "Implement a weight quantization function that takes a Float32Array of model weights, quantizes them to uint8 (0-255) using min-max scaling, then dequantizes back to Float32Array. Return an object with the dequantized weights, the compression info (min, max, scale), and the mean squared error between original and dequantized weights."
+starterCode: |
+  function quantizeWeights(weights: Float32Array) {
+    // Find min and max
+    // Quantize to uint8 range [0, 255]
+    // Dequantize back to float32
+    // Compute MSE between original and dequantized
+    // your code here
+    return {
+      dequantized: new Float32Array(0),
+      info: { min: 0, max: 0, scale: 0 },
+      mse: 0,
+    };
+  }
+solutionCode: |
+  function quantizeWeights(weights: Float32Array) {
+    let min = Infinity, max = -Infinity;
+    for (let i = 0; i < weights.length; i++) {
+      if (weights[i] < min) min = weights[i];
+      if (weights[i] > max) max = weights[i];
+    }
+    const scale = (max - min) / 255;
+    const quantized = new Uint8Array(weights.length);
+    for (let i = 0; i < weights.length; i++) {
+      quantized[i] = Math.round((weights[i] - min) / scale);
+    }
+    const dequantized = new Float32Array(weights.length);
+    let mseSum = 0;
+    for (let i = 0; i < weights.length; i++) {
+      dequantized[i] = quantized[i] * scale + min;
+      mseSum += Math.pow(weights[i] - dequantized[i], 2);
+    }
+    return {
+      dequantized,
+      info: { min, max, scale },
+      mse: mseSum / weights.length,
+    };
+  }
+testCode: |
+  describe('quantizeWeights', () => {
+    const weights = new Float32Array([0.1, -0.5, 0.8, -0.2, 0.0, 0.3]);
+    const result = quantizeWeights(weights);
+    it('returns correct length', () => { expect(result.dequantized.length).toBe(6); });
+    it('has low MSE', () => { expect(result.mse).toBeLessThan(0.001); });
+    it('preserves approximate values', () => {
+      for (let i = 0; i < weights.length; i++) {
+        expect(result.dequantized[i]).toBeCloseTo(weights[i], 1);
+      }
+    });
+    it('computes scale', () => { expect(result.info.scale).toBeGreaterThan(0); });
+  });
+estimatedMinutes: 12
+difficulty: advanced

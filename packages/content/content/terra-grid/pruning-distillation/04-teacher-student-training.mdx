@@ -1,0 +1,107 @@
+---
+slug: teacher-student-training
+title: "Teacher-Student Training"
+moduleId: pruning-distillation
+themeId: terra-grid
+order: 4
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "You set up the distillation training pipeline: the cloud model teaches the edge model."
+  speaker: "Hassan Al-Rashid"
+concept:
+  explanation: "The teacher-student training process is like pair programming with a senior engineer — the junior learns not just what to do, but why."
+  bridge:
+    feTitle: "Mentor Pair Programming"
+    feCode: "// Senior explains reasoning, not just code\n// Junior learns patterns, not just syntax\n// Knowledge transfers through collaboration"
+    mlTitle: "Teacher-Student Training"
+    mlCode: "// Teacher provides soft predictions\n// Student learns patterns, not just labels\n// Knowledge transfers through distillation loss"
+    tier: intuition
+consequence:
+  narrative: "The student model is trained and ready for edge deployment."
+  nextLessonTeaser: "Next: combining all optimization techniques"
+hints:
+  - level: nudge
+    content: "The total loss combines distillation loss (match teacher) and task loss (match labels)"
+  - level: guidance
+    content: "Use alpha to balance between teacher knowledge and ground truth"
+  - level: solution
+    content: "totalLoss = alpha * distillLoss + (1 - alpha) * taskLoss"
+keywords:
+  - training
+  - teacher-student
+  - loss-function
+  - alpha
+---
+
+<Dialogue speaker="Hassan Al-Rashid">
+The distillation process has two objectives. First, the student should match the teacher's predictions — learning the patterns. Second, the student should still be correct on the actual labels. Balance both.
+</Dialogue>
+
+When a senior engineer pair programs with a junior, the junior learns from two sources: the senior's explanations (soft knowledge) and the actual requirements (hard truth). Distillation training works the same way — the student learns from both the teacher's outputs and the ground truth labels.
+
+<LearningObjectives objectives={["Implement the combined distillation loss function", "Understand the alpha parameter for balancing teacher vs ground truth", "Set up a teacher-student training loop", "Evaluate student model accuracy relative to teacher"]} />
+
+## The Combined Loss
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="teacher-student.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Combined distillation loss
+function distillationLoss(
+  studentLogits: number[],
+  teacherLogits: number[],
+  trueLabels: number[],
+  temperature: number,
+  alpha: number
+): number {
+  // Soft targets from teacher (high temperature)
+  const teacherSoft = softmax(teacherLogits, temperature);
+  const studentSoft = softmax(studentLogits, temperature);
+
+  // Distillation loss: match teacher's soft distribution
+  const distillLoss = teacherSoft.reduce((loss, tp, i) =>
+    loss - tp * Math.log(studentSoft[i] + 1e-8), 0);
+
+  // Task loss: match ground truth labels
+  const studentHard = softmax(studentLogits, 1);
+  const taskLoss = trueLabels.reduce((loss, label, i) =>
+    loss - label * Math.log(studentHard[i] + 1e-8), 0);
+
+  // Combined: alpha balances teacher knowledge vs ground truth
+  // alpha = 0.7 → lean on teacher (pair programming mode)
+  // alpha = 0.3 → lean on ground truth (independent work mode)
+  return alpha * distillLoss * (temperature * temperature) + (1 - alpha) * taskLoss;
+}
+
+function softmax(logits: number[], temperature: number): number[] {
+  const scaled = logits.map(l => l / temperature);
+  const maxVal = Math.max(...scaled);
+  const exps = scaled.map(s => Math.exp(s - maxVal));
+  const sum = exps.reduce((a, b) => a + b, 0);
+  return exps.map(e => e / sum);
+}
+
+// Teacher (200MB cloud model) output for a sensor reading
+const teacherLogits = [4.5, 1.2, 0.3]; // confident: class 0 (normal)
+// Student (5MB edge model) output
+const studentLogits = [2.1, 1.8, 0.9]; // less confident, learning
+// Ground truth
+const trueLabels = [1, 0, 0]; // class 0 is correct
+
+const loss = distillationLoss(studentLogits, teacherLogits, trueLabels, 3.0, 0.7);
+console.log(\`Combined loss: \${loss.toFixed(4)}\`);
+// Student will be pushed toward teacher's output distribution`}
+</CodeBlock>
+
+The `temperature * temperature` scaling factor compensates for the softened gradients at high temperature. Without it, the distillation loss would be underweighted relative to the task loss. Alpha typically starts at 0.7 (trusting the teacher) and can be reduced as the student improves.
+
+## Challenge
+
+Implement the combined distillation loss function.
+
+<Exercise slug="teacher-student" />
+
+<KeyTakeaways takeaways={["Combined loss = alpha * distillation_loss + (1-alpha) * task_loss", "Alpha controls how much the student trusts the teacher vs ground truth", "Temperature scaling (T^2) compensates for softened gradient magnitudes", "Typical setup: temperature=3-5, alpha=0.5-0.7"]} />

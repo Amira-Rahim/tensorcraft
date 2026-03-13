@@ -1,0 +1,209 @@
+---
+slug: privacy-and-hipaa
+title: "Privacy & HIPAA — Protecting Patient Data at Every Layer"
+moduleId: production-privacy
+themeId: signal-ward
+order: 2
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "The hospital's compliance officer joins the ethics review. 'Your model processes Protected Health Information. Where does patient data go? Who has access? What gets logged?' Khalil draws parallels to GDPR cookie consent — the same regulatory mindset, different domain. 'We already know how to handle data privacy. HIPAA applies the same principles to medical data, with stricter consequences.'"
+  speaker: "Khalil"
+concept:
+  explanation: "HIPAA compliance for ML systems follows the same principles as GDPR cookie consent and web data privacy — data minimization, explicit consent, access logging, and encryption — applied to Protected Health Information with higher stakes."
+  bridge:
+    feTitle: "GDPR Cookie Consent"
+    feCode: "// Consent banner, data minimization, right to deletion, audit trail — regulatory compliance for user data"
+    mlTitle: "HIPAA Compliance"
+    mlCode: "// PHI encryption, access logging, data minimization, on-device inference — regulatory compliance for medical data"
+    tier: structural
+consequence:
+  narrative: "Khalil demonstrates the privacy architecture: all inference runs in the browser, no PHI leaves the device, model weights contain no patient data, and every access is logged. The compliance officer reviews the audit trail and the PHI redaction pipeline. 'This is the most privacy-forward ML system I have reviewed. Approved for pilot.'"
+  nextLessonTeaser: "Next: bias auditing — ensuring the model works fairly for everyone"
+hints:
+  - level: nudge
+    content: "The biggest privacy advantage of browser-based ML: patient data never leaves the device"
+  - level: guidance
+    content: "Implement PHI detection with regex patterns, redact before logging, and maintain audit trails that track events without storing content"
+  - level: solution
+    content: "Build a privacy pipeline: detect PHI with regex patterns (SSN, MRN, DOB, phone), redact from all logs, encrypt cached data, run inference on-device, and log access events (who, when, what type) without logging the actual text"
+keywords:
+  - hipaa
+  - privacy
+  - phi
+  - gdpr
+  - data-minimization
+  - encryption
+  - compliance
+---
+
+<Dialogue speaker="Khalil">
+Every frontend application I have built handles sensitive data — passwords, payment details, personal information. We follow GDPR rules: consent banners, data minimization, right to deletion, audit trails. HIPAA is the same regulatory mindset applied to medical data. The principles are identical. The consequences of failure are higher.
+</Dialogue>
+
+<Dialogue speaker="Dr. Vasquez">
+The critical advantage of browser-based inference is architectural. The model weights travel to the browser. The clinical notes stay on the hospital network. Patient data never touches a cloud server. No PHI exfiltration risk. That is a privacy guarantee no cloud-based ML system can match.
+</Dialogue>
+
+You already understand data privacy. GDPR taught the web industry to ask before collecting, to minimize what you store, and to provide audit trails. HIPAA applies the same toolkit to Protected Health Information (PHI). And browser-based ML gives you a structural advantage: if inference runs on-device, patient data never leaves the hospital network.
+
+<LearningObjectives objectives={["Implement PHI detection and redaction to prevent accidental exposure in logs and caches", "Design on-device inference architectures where patient data never leaves the browser", "Build HIPAA-compliant audit logging that tracks access events without storing sensitive content", "Apply data minimization principles from GDPR to ML training and inference pipelines"]} />
+
+## Privacy as Architecture
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="phi-detector.ts">
+{`// PHI Detection: like input sanitization for XSS, but for medical data
+// Catch sensitive data before it reaches logs, caches, or analytics
+
+interface PHIDetection {
+  type: 'NAME' | 'MRN' | 'DOB' | 'SSN' | 'PHONE' | 'ADDRESS';
+  start: number;
+  end: number;
+  text: string;
+}
+
+const PHI_PATTERNS: { type: PHIDetection['type']; pattern: RegExp }[] = [
+  { type: 'MRN', pattern: /\b(MRN|Medical Record)\s*[#:]?\s*\d{6,10}\b/gi },
+  { type: 'SSN', pattern: /\b\d{3}-\d{2}-\d{4}\b/g },
+  { type: 'DOB', pattern: /\b(DOB|Date of Birth)\s*[:]?\s*\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}\b/gi },
+  { type: 'PHONE', pattern: /\b\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/g },
+];
+
+function detectPHI(text: string): PHIDetection[] {
+  const detections: PHIDetection[] = [];
+
+  for (const { type, pattern } of PHI_PATTERNS) {
+    let match;
+    const regex = new RegExp(pattern.source, pattern.flags);
+    while ((match = regex.exec(text)) !== null) {
+      detections.push({
+        type,
+        start: match.index,
+        end: match.index + match[0].length,
+        text: match[0],
+      });
+    }
+  }
+
+  return detections;
+}
+
+function redactPHI(text: string): string {
+  const detections = detectPHI(text);
+  let redacted = text;
+
+  // Process in reverse order to maintain indices
+  for (const det of detections.sort((a, b) => b.start - a.start)) {
+    redacted = redacted.substring(0, det.start)
+      + \`[REDACTED_\${det.type}]\`
+      + redacted.substring(det.end);
+  }
+
+  return redacted;
+}`}
+</CodeBlock>
+
+## Audit Logging Without Storing Content
+
+<CodeBlock language="typescript" title="hipaa-audit.ts">
+{`// HIPAA requires audit trails for all PHI access
+// Log the event metadata, never the content — like GDPR consent logs
+
+interface AuditEntry {
+  timestamp: string;
+  userId: string;
+  action: 'inference' | 'view_prediction' | 'export' | 'model_load';
+  resourceType: 'clinical_note' | 'prediction' | 'model';
+  resourceId: string;
+  metadata: {
+    inputLength?: number;
+    modelVersion?: string;
+    predictionConfidence?: number;
+    accessJustification?: string;
+  };
+  // Never log the actual PHI content
+}
+
+class HIPAAAuditLogger {
+  private entries: AuditEntry[] = [];
+
+  log(entry: AuditEntry): void {
+    // Validate: no PHI leaked into metadata
+    const metaString = JSON.stringify(entry.metadata);
+    const phiDetections = detectPHI(metaString);
+    if (phiDetections.length > 0) {
+      throw new Error('PHI detected in audit metadata — redact before logging');
+    }
+    this.entries.push(entry);
+  }
+
+  report(startDate: string, endDate: string): {
+    totalAccesses: number;
+    byAction: Record<string, number>;
+    uniqueUsers: number;
+  } {
+    const filtered = this.entries.filter(
+      e => e.timestamp >= startDate && e.timestamp <= endDate
+    );
+
+    const byAction: Record<string, number> = {};
+    const users = new Set<string>();
+
+    for (const entry of filtered) {
+      byAction[entry.action] = (byAction[entry.action] || 0) + 1;
+      users.add(entry.userId);
+    }
+
+    return { totalAccesses: filtered.length, byAction, uniqueUsers: users.size };
+  }
+}
+
+// On-device inference: PHI never leaves the browser
+async function privacyAwareInference(
+  clinicalNote: string,
+  model: tf.LayersModel,
+  tokenize: (text: string) => number[],
+  logger: HIPAAAuditLogger,
+  userId: string
+): Promise<{ prediction: number[]; noteId: string }> {
+  const noteId = crypto.randomUUID();
+
+  // Log access event — never log content
+  logger.log({
+    timestamp: new Date().toISOString(),
+    userId,
+    action: 'inference',
+    resourceType: 'clinical_note',
+    resourceId: noteId,
+    metadata: {
+      inputLength: clinicalNote.length,
+      modelVersion: '1.0.0',
+    },
+  });
+
+  // All computation happens locally — no network call
+  const tokens = tokenize(clinicalNote);
+  const input = tf.tensor2d([tokens]);
+  const output = model.predict(input) as tf.Tensor;
+  const prediction = await output.array() as number[];
+
+  input.dispose();
+  output.dispose();
+
+  return { prediction, noteId };
+}`}
+</CodeBlock>
+
+<Dialogue speaker="MEDI">
+Privacy architecture summary: model weights are public, patient data is private. Ship the weights to the browser. Keep the data on the device. Log events, not content. This is data minimization at the infrastructure level.
+</Dialogue>
+
+## Challenge
+
+Build a record anonymization pipeline that detects and redacts PHI from clinical text.
+
+<Exercise slug="anonymize-records" />
+
+<KeyTakeaways takeaways={["HIPAA compliance follows the same regulatory mindset as GDPR — consent, minimization, audit trails, encryption — applied to medical data", "Browser-based ML provides architectural privacy: patient data never leaves the device, eliminating cloud exfiltration risk", "PHI detection and redaction is input sanitization for medical data — catch it before it reaches logs or analytics", "Audit trails log the event (who, when, what type) without logging the content — metadata, not data"]} />

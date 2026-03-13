@@ -1,0 +1,94 @@
+---
+slug: quantization-aware-training
+title: "Quantization-Aware Training"
+moduleId: quantization
+themeId: terra-grid
+order: 3
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Post-training quantization missed a bearing failure at Site 23. The model needs to be trained with quantization in mind."
+  speaker: "Hassan Al-Rashid"
+concept:
+  explanation: "Quantization-aware training trains with quantization noise built in — like mobile-first development where you design for constraints from the start."
+  bridge:
+    feTitle: "Mobile-First Development"
+    feCode: "// Design for mobile constraints first\n// Then enhance for larger screens\n@media (min-width: 768px) { ... }"
+    mlTitle: "Quantization-Aware Training"
+    mlCode: "// Train with quantization noise\n// Model learns to be robust to Int8 precision\nsimulateQuantization(weights)"
+    tier: structural
+consequence:
+  narrative: "The QAT model handles the bearing failure case correctly — quantization noise made it more robust."
+  nextLessonTeaser: "Next: mixed precision — different precision for different layers"
+hints:
+  - level: nudge
+    content: "Simulate quantization during training by adding rounding noise"
+  - level: guidance
+    content: "Quantize and dequantize during the forward pass — the model learns to handle the noise"
+  - level: solution
+    content: "Apply fake quantization: round weights to nearest Int8 value during forward pass, use real gradients for backward pass"
+keywords:
+  - qat
+  - quantization-aware
+  - mobile-first
+  - noise
+---
+
+<Dialogue speaker="Hassan Al-Rashid">
+Site 23. The post-training quantized model missed a bearing failure. The vibration readings were in a range where Int8 precision was not fine enough. The turbine seized. We need models that are trained for quantization, not converted after the fact.
+</Dialogue>
+
+<Dialogue speaker="Jin Takahashi">
+The failure signature was a 0.3% vibration anomaly. Post-training quantization rounded it away. The model literally could not see the difference.
+</Dialogue>
+
+Mobile-first development means designing for the smallest screen from the start, then enhancing for larger displays. Quantization-aware training (QAT) applies the same philosophy: train the model knowing it will run at Int8 precision, so it learns to be accurate within those constraints.
+
+<LearningObjectives objectives={["Understand why post-training quantization can miss edge cases", "Implement fake quantization during training", "Compare QAT accuracy vs post-training quantization accuracy", "Apply mobile-first thinking to model training"]} />
+
+## Design for Constraints First
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="quantization-aware.ts">
+{`// Fake quantization: simulate Int8 during training
+function fakeQuantize(value: number, min: number, max: number): number {
+  // Clamp to range
+  const clamped = Math.max(min, Math.min(max, value));
+  // Scale to [0, 255], round, scale back
+  const scale = (max - min) / 255;
+  const quantized = Math.round((clamped - min) / scale);
+  const dequantized = quantized * scale + min;
+  return dequantized;
+}
+
+// During training, weights pass through fake quantization
+// Forward pass: use quantized weights (simulates Int8)
+// Backward pass: use straight-through estimator (real gradients)
+function fakeQuantizeArray(weights: number[], min: number, max: number): number[] {
+  return weights.map(w => fakeQuantize(w, min, max));
+}
+
+// Compare: original vs fake-quantized weights
+const weights = [0.12345, -0.00312, 0.78901, -0.45678, 0.00089];
+const quantized = fakeQuantizeArray(weights, -1, 1);
+
+console.log('Original: ', weights.map(w => w.toFixed(5)));
+console.log('Quantized:', quantized.map(w => w.toFixed(5)));
+// The model sees these rounded values during training
+// and learns to produce correct outputs despite the rounding
+
+// Post-training: applies quantization AFTER the model has learned
+// QAT: applies quantization DURING learning — model adapts to it
+// Like mobile-first vs "make the desktop site responsive later"`}
+</CodeBlock>
+
+The straight-through estimator is the key trick: during the forward pass, weights are quantized (adding rounding noise). During the backward pass, gradients flow through as if no quantization happened. The model learns to produce correct outputs even with rounded weights.
+
+## Challenge
+
+Implement a fake quantization function for quantization-aware training.
+
+<Exercise slug="qat-training" />
+
+<KeyTakeaways takeaways={["QAT trains with simulated quantization noise — mobile-first for models", "Fake quantization: quantize in forward pass, straight-through gradients in backward pass", "QAT typically achieves 0.5-1% better accuracy than post-training quantization", "Design for constraints from the start — do not retrofit precision later"]} />

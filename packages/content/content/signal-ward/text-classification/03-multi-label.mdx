@@ -1,0 +1,184 @@
+---
+slug: multi-label
+title: "Multi-Label Classification: Multiple Tags Per Document"
+moduleId: text-classification
+themeId: signal-ward
+order: 3
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Dr. Vasquez points out that real clinical documents don't fit into neat single categories. A single report might involve multiple conditions, procedures, and specialties."
+  speaker: "Dr. Elena Vasquez"
+concept:
+  explanation: "Multi-label classification assigns zero or more labels to each input — like tagging a document with every relevant topic, not just the primary one."
+  bridge:
+    feTitle: "Checkbox Groups (multiple selections)"
+    feCode: "// <input type='checkbox' /> Cardiac\n// <input type='checkbox' /> Respiratory\n// Each checkbox is independent — check any combination"
+    mlTitle: "Multi-Label Classifier"
+    mlCode: "// sigmoid([cardiac, respiratory, renal, neuro])\n// Each label is independent — any combination possible"
+    tier: structural
+consequence:
+  narrative: "Documents now carry full tag sets. A chest-pain case gets tagged as cardiac, emergency, and pain-management simultaneously."
+  nextLessonTeaser: "Next: confidence calibration — knowing when the model isn't sure about its tags."
+hints:
+  - level: nudge
+    content: "Use sigmoid on each output unit independently — not softmax"
+  - level: guidance
+    content: "Binary crossentropy works per-label: each label is its own binary decision"
+  - level: solution
+    content: "model.add(tf.layers.dense({ units: numLabels, activation: 'sigmoid' })); model.compile({ loss: 'binaryCrossentropy' });"
+keywords:
+  - multi-label
+  - sigmoid
+  - tagging
+  - checkbox
+  - binary-crossentropy
+---
+
+<Dialogue speaker="Dr. Elena Vasquez">
+Your routing system sends each document to one department. But look at this case: "72-year-old male, chest pain, elevated troponin, history of COPD, renal insufficiency." That needs cardiology, pulmonology, and nephrology. One label isn't enough.
+</Dialogue>
+
+<Dialogue speaker="Khalil Mensah">
+Ah, that's the difference between a radio button and a checkbox group. Radio buttons force one selection. Checkboxes let you pick any combination. We need checkboxes.
+</Dialogue>
+
+<LearningObjectives objectives={["Distinguish multi-label from multi-class classification", "Use sigmoid activation for independent label predictions", "Apply binary crossentropy per label for multi-label training", "Evaluate multi-label classifiers using precision, recall, and F1 per label"]} />
+
+## Checkboxes, Not Radio Buttons
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+In HTML forms, radio buttons enforce mutual exclusivity — pick exactly one. Checkboxes allow any combination. Multi-label classification works like checkboxes: each label gets its own independent sigmoid, outputting a probability between 0 and 1. You can check as many boxes as apply — or none at all.
+
+The critical insight: switch from softmax (probabilities sum to 1) to sigmoid (each probability is independent). Each output neuron is its own binary classifier.
+
+<CodeBlock language="typescript" title="multi-label-tagger.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+const CLINICAL_TAGS = [
+  'CARDIAC', 'RESPIRATORY', 'RENAL', 'NEUROLOGICAL',
+  'INFECTIOUS', 'ONCOLOGICAL', 'PAIN_MANAGEMENT', 'EMERGENCY'
+];
+
+function buildMultiLabelClassifier(
+  inputDim: number,
+  numLabels: number
+): tf.LayersModel {
+  const model = tf.sequential();
+
+  model.add(tf.layers.dense({
+    units: 128,
+    activation: 'relu',
+    inputShape: [inputDim]
+  }));
+
+  model.add(tf.layers.dropout({ rate: 0.3 }));
+
+  model.add(tf.layers.dense({
+    units: 64,
+    activation: 'relu'
+  }));
+
+  // Sigmoid: each label is independent
+  model.add(tf.layers.dense({
+    units: numLabels,
+    activation: 'sigmoid'  // NOT softmax — labels are independent
+  }));
+
+  model.compile({
+    optimizer: 'adam',
+    loss: 'binaryCrossentropy',  // per-label binary decision
+    metrics: ['accuracy']
+  });
+
+  return model;
+}
+
+// Simulated multi-label data
+// Each document can have multiple 1s in its label vector
+const xTrain = tf.randomNormal([300, 64]);
+const yTrain = tf.tensor2d(
+  Array.from({ length: 300 }, () =>
+    CLINICAL_TAGS.map(() => Math.random() > 0.7 ? 1 : 0)
+  )
+);
+
+const tagger = buildMultiLabelClassifier(64, CLINICAL_TAGS.length);
+await tagger.fit(xTrain, yTrain, {
+  epochs: 15,
+  batchSize: 32,
+  validationSplit: 0.2
+});
+
+// Tag a new document
+const newDoc = tf.randomNormal([1, 64]);
+const scores = await (tagger.predict(newDoc) as tf.Tensor).data();
+
+const TAG_THRESHOLD = 0.5;
+const assignedTags = CLINICAL_TAGS.filter((_, i) => scores[i] > TAG_THRESHOLD);
+console.log('Assigned tags:', assignedTags);
+
+// Show all scores
+CLINICAL_TAGS.forEach((tag, i) => {
+  const active = scores[i] > TAG_THRESHOLD ? ' *' : '';
+  console.log(\`  \${tag}: \${(scores[i] * 100).toFixed(1)}%\${active}\`);
+});`}
+</CodeBlock>
+
+## Per-Label Evaluation
+
+With multi-class, you measure overall accuracy. With multi-label, you need to evaluate each label independently. A model might be great at detecting cardiac cases but terrible at catching infectious ones.
+
+<CodeBlock language="typescript" title="multi-label-metrics.ts">
+{`interface LabelMetrics {
+  label: string;
+  precision: number;
+  recall: number;
+  f1: number;
+}
+
+function perLabelMetrics(
+  actual: number[][],
+  predicted: number[][],
+  labels: string[]
+): LabelMetrics[] {
+  return labels.map((label, i) => {
+    let tp = 0, fp = 0, fn = 0;
+
+    for (let j = 0; j < actual.length; j++) {
+      const a = actual[j][i];
+      const p = predicted[j][i];
+      if (a === 1 && p === 1) tp++;
+      if (a === 0 && p === 1) fp++;
+      if (a === 1 && p === 0) fn++;
+    }
+
+    const precision = tp / (tp + fp || 1);
+    const recall = tp / (tp + fn || 1);
+    const f1 = 2 * precision * recall / (precision + recall || 1);
+
+    return { label, precision, recall, f1 };
+  });
+}
+
+// Check which tags the model handles well
+// const metrics = perLabelMetrics(actualLabels, predictedLabels, CLINICAL_TAGS);
+// metrics.forEach(m => console.log(\`\${m.label}: F1=\${m.f1.toFixed(3)}\`));`}
+</CodeBlock>
+
+<Dialogue speaker="Obi">
+So every document is like a patient — it can have multiple conditions at once. And we need to catch all of them, not just the primary diagnosis.
+</Dialogue>
+
+<Dialogue speaker="Dr. Elena Vasquez">
+Exactly. Missing a secondary condition like renal insufficiency in a cardiac patient could mean prescribing a nephrotoxic drug. Every relevant tag matters.
+</Dialogue>
+
+## Challenge
+
+Build a multi-label classifier that tags clinical documents with all applicable conditions.
+
+<Exercise slug="tag-documents" />
+
+<KeyTakeaways takeaways={["Multi-label classification uses sigmoid (not softmax) so each label is independent", "Binary crossentropy works per-label — each output is its own binary classifier", "A document can have zero, one, or many labels simultaneously", "Evaluate each label separately with precision, recall, and F1 to find weak spots"]} />

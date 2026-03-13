@@ -1,0 +1,89 @@
+slug: load-pretrained
+lessonSlug: pretrained-models
+title: "Describe a Pre-trained Model"
+instructions: "Write a function that takes a model description (layers array with name, type, outputShape, and paramCount) and returns a summary including total layers, total parameters, the output shape of the last layer, and the names of all 'conv2d' type layers. This simulates inspecting a pre-trained model after loading it — like reading a package's README to understand what you just installed."
+starterCode: |
+  interface LayerInfo {
+    name: string;
+    type: string;
+    outputShape: number[];
+    paramCount: number;
+  }
+
+  interface ModelSummary {
+    totalLayers: number;
+    totalParams: number;
+    outputShape: number[];
+    convLayerNames: string[];
+  }
+
+  function describeModel(layers: LayerInfo[]): ModelSummary {
+    // Summarize the model architecture
+    // totalLayers: how many layers in the model
+    // totalParams: sum of all paramCount values
+    // outputShape: the outputShape of the last layer
+    // convLayerNames: names of layers where type === 'conv2d'
+    return { totalLayers: 0, totalParams: 0, outputShape: [], convLayerNames: [] };
+  }
+solutionCode: |
+  interface LayerInfo {
+    name: string;
+    type: string;
+    outputShape: number[];
+    paramCount: number;
+  }
+
+  interface ModelSummary {
+    totalLayers: number;
+    totalParams: number;
+    outputShape: number[];
+    convLayerNames: string[];
+  }
+
+  function describeModel(layers: LayerInfo[]): ModelSummary {
+    const totalParams = layers.reduce((sum, l) => sum + l.paramCount, 0);
+    const convLayerNames = layers
+      .filter(l => l.type === 'conv2d')
+      .map(l => l.name);
+    return {
+      totalLayers: layers.length,
+      totalParams,
+      outputShape: layers[layers.length - 1].outputShape,
+      convLayerNames,
+    };
+  }
+testCode: |
+  describe('describeModel', () => {
+    const layers: LayerInfo[] = [
+      { name: 'conv1', type: 'conv2d', outputShape: [112, 112, 32], paramCount: 864 },
+      { name: 'pool1', type: 'maxpool', outputShape: [56, 56, 32], paramCount: 0 },
+      { name: 'conv2', type: 'conv2d', outputShape: [56, 56, 64], paramCount: 18432 },
+      { name: 'flatten', type: 'flatten', outputShape: [200704], paramCount: 0 },
+      { name: 'dense1', type: 'dense', outputShape: [1000], paramCount: 200704000 },
+    ];
+
+    it('counts total layers', () => {
+      expect(describeModel(layers).totalLayers).toBe(5);
+    });
+
+    it('sums total parameters', () => {
+      expect(describeModel(layers).totalParams).toBe(200723296);
+    });
+
+    it('returns output shape of last layer', () => {
+      expect(describeModel(layers).outputShape).toEqual([1000]);
+    });
+
+    it('finds conv layer names', () => {
+      expect(describeModel(layers).convLayerNames).toEqual(['conv1', 'conv2']);
+    });
+
+    it('handles no conv layers', () => {
+      const denseLayers: LayerInfo[] = [
+        { name: 'd1', type: 'dense', outputShape: [128], paramCount: 1024 },
+      ];
+      expect(describeModel(denseLayers).convLayerNames).toEqual([]);
+    });
+  });
+estimatedMinutes: 6
+difficulty: intermediate

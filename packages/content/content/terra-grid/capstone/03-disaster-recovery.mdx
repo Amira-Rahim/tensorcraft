@@ -1,0 +1,164 @@
+---
+slug: disaster-recovery
+title: "Disaster Recovery"
+moduleId: tg-capstone
+themeId: terra-grid
+order: 3
+estimatedMinutes: 25
+difficulty: advanced
+context:
+  narrative: "Hassan runs the worst-case scenario. 'Central coordination goes down. Regions lose contact with each other. What happens to 12,400 edge devices running ML inference autonomously? We need a disaster recovery plan that covers every failure mode.'"
+  speaker: "Hassan Al-Rashid"
+concept:
+  explanation: "Disaster recovery for ML systems plans for catastrophic failures — the same backup and restore procedures you implement for web application databases and infrastructure."
+  bridge:
+    feTitle: "Backup & Restore"
+    feCode: "// pg_dump database.sql → S3 → pg_restore on failover instance"
+    mlTitle: "Model Recovery"
+    mlCode: "// checkpoint model → replicate → restore on device failure"
+    tier: structural
+consequence:
+  narrative: "The disaster recovery plan covers 7 failure scenarios. Each has a detection mechanism, automatic response, manual escalation path, and recovery time objective. Hassan: 'Every failure mode documented. Every recovery path tested. Now I trust this system to run critical infrastructure.'"
+  nextLessonTeaser: "Next: documentation and runbooks — operational documentation for the team that will maintain this"
+hints:
+  - level: nudge
+    content: "List every failure mode: device failure, network partition, model corruption, coordinator outage"
+  - level: guidance
+    content: "For each failure mode, define detection, automatic response, manual escalation, and RTO"
+  - level: solution
+    content: "Create a DisasterRecoveryPlan class with scenario definitions and automated recovery procedures"
+keywords:
+  - disaster-recovery
+  - backup-restore
+  - failover
+  - rto-rpo
+---
+
+<Dialogue speaker="Hassan Al-Rashid">
+Worst case: the central coordinator goes offline during a cascading anomaly event. 47 sites, 12,400 devices, no central coordination. Each device must continue operating autonomously with whatever model it has. What is the recovery time objective? How do we restore coordination? Document everything.
+</Dialogue>
+
+<Dialogue speaker="Cole Branson">
+Same as any infrastructure disaster recovery plan. Define the failure modes, set recovery time objectives, test the recovery procedures. The only difference is we are recovering ML models and inference state, not just database backups.
+</Dialogue>
+
+You have written disaster recovery plans for web applications: database backups every 6 hours, cross-region replication, failover DNS, RTO of 15 minutes. ML disaster recovery adds model-specific concerns — model checkpoints, inference state recovery, gradient buffers for federated learning — but the planning framework is identical.
+
+<LearningObjectives objectives={["Design a disaster recovery plan for edge ML infrastructure", "Define Recovery Time Objectives (RTO) and Recovery Point Objectives (RPO) for ML components", "Implement model checkpointing and state recovery procedures", "Test recovery procedures against simulated failure scenarios"]} />
+
+## Disaster Recovery Plan
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="disaster-recovery.ts">
+{`// Disaster recovery planning — same framework as web infrastructure DR
+
+interface FailureScenario {
+  id: string;
+  name: string;
+  severity: 'critical' | 'high' | 'medium';
+  detection: string;
+  automaticResponse: string;
+  manualEscalation: string;
+  rtoMinutes: number;   // Recovery Time Objective
+  rpoMinutes: number;   // Recovery Point Objective
+}
+
+interface RecoveryProcedure {
+  scenarioId: string;
+  steps: { order: number; action: string; verifyCommand: string }[];
+}
+
+class DisasterRecoveryPlan {
+  private scenarios: FailureScenario[] = [];
+  private procedures: Map<string, RecoveryProcedure> = new Map();
+
+  addScenario(scenario: FailureScenario, procedure: RecoveryProcedure): void {
+    this.scenarios.push(scenario);
+    this.procedures.set(scenario.id, procedure);
+  }
+
+  getScenario(id: string): FailureScenario | undefined {
+    return this.scenarios.find(s => s.id === id);
+  }
+
+  async executeRecovery(scenarioId: string): Promise<{
+    success: boolean; stepsCompleted: number; totalSteps: number;
+  }> {
+    const procedure = this.procedures.get(scenarioId);
+    if (!procedure) throw new Error(\`No procedure for scenario: \${scenarioId}\`);
+
+    let completed = 0;
+    for (const step of procedure.steps) {
+      console.log(\`Step \${step.order}: \${step.action}\`);
+      // Execute and verify each step
+      completed++;
+    }
+
+    return {
+      success: completed === procedure.steps.length,
+      stepsCompleted: completed,
+      totalSteps: procedure.steps.length,
+    };
+  }
+
+  summary(): { total: number; critical: number; avgRtoMinutes: number } {
+    const critical = this.scenarios.filter(s => s.severity === 'critical');
+    const avgRto = this.scenarios.reduce((s, sc) => s + sc.rtoMinutes, 0)
+      / this.scenarios.length;
+    return { total: this.scenarios.length, critical: critical.length, avgRtoMinutes: avgRto };
+  }
+}
+
+// Terra Grid disaster recovery plan
+const drPlan = new DisasterRecoveryPlan();
+
+drPlan.addScenario(
+  {
+    id: 'DR-001', name: 'Central coordinator offline',
+    severity: 'critical',
+    detection: 'Heartbeat timeout > 30 seconds',
+    automaticResponse: 'Devices switch to autonomous mode with last known model',
+    manualEscalation: 'Page on-call engineer, activate backup coordinator',
+    rtoMinutes: 5, rpoMinutes: 15,
+  },
+  {
+    scenarioId: 'DR-001',
+    steps: [
+      { order: 1, action: 'Activate backup coordinator', verifyCommand: 'ping backup-coord' },
+      { order: 2, action: 'Verify device connectivity', verifyCommand: 'check-devices --all' },
+      { order: 3, action: 'Sync model versions', verifyCommand: 'verify-model-consistency' },
+      { order: 4, action: 'Resume federated learning', verifyCommand: 'check-fl-status' },
+    ],
+  }
+);
+
+drPlan.addScenario(
+  {
+    id: 'DR-002', name: 'Model corruption on edge device',
+    severity: 'high',
+    detection: 'Model hash verification failure',
+    automaticResponse: 'Fallback to previous model checkpoint',
+    manualEscalation: 'Investigate corruption source, re-deploy from registry',
+    rtoMinutes: 2, rpoMinutes: 60,
+  },
+  {
+    scenarioId: 'DR-002',
+    steps: [
+      { order: 1, action: 'Detect hash mismatch', verifyCommand: 'verify-model-hash' },
+      { order: 2, action: 'Load previous checkpoint', verifyCommand: 'check-model-loaded' },
+      { order: 3, action: 'Verify inference accuracy', verifyCommand: 'run-validation-suite' },
+    ],
+  }
+);
+
+console.log('DR Plan:', drPlan.summary());`}
+</CodeBlock>
+
+## Challenge
+
+Create a disaster recovery plan with failure scenarios and recovery procedures.
+
+<Exercise slug="disaster-recovery-plan" />
+
+<KeyTakeaways takeaways={["ML disaster recovery follows the same framework as web infrastructure DR — failure modes, RTO, RPO, procedures", "Edge devices must operate autonomously when central coordination fails", "Model checkpointing is the ML equivalent of database backups — recover to a known-good state", "Test recovery procedures regularly — an untested DR plan is no plan at all"]} />

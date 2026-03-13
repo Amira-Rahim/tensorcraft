@@ -1,0 +1,59 @@
+slug: guided-generation
+lessonSlug: classifier-free-guidance
+title: "Apply Classifier-Free Guidance"
+instructions: "Implement the classifier-free guidance formula. Given a conditioned noise prediction, an unconditioned noise prediction, and a guidance scale, return the guided noise prediction using: guided = unconditioned + scale * (conditioned - unconditioned)."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function applyGuidance(
+    conditioned: tf.Tensor4D,
+    unconditioned: tf.Tensor4D,
+    guidanceScale: number
+  ): tf.Tensor4D {
+    // guided = unconditioned + guidanceScale * (conditioned - unconditioned)
+    return null; // your code here
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function applyGuidance(
+    conditioned: tf.Tensor4D,
+    unconditioned: tf.Tensor4D,
+    guidanceScale: number
+  ): tf.Tensor4D {
+    const difference = tf.sub(conditioned, unconditioned);
+    const scaled = tf.mul(difference, tf.scalar(guidanceScale));
+    return tf.add(unconditioned, scaled) as tf.Tensor4D;
+  }
+testCode: |
+  describe('applyGuidance', () => {
+    it('returns conditioned output when scale is 1', () => {
+      const cond = tf.fill([1, 4, 4, 3], 1.0) as tf.Tensor4D;
+      const uncond = tf.fill([1, 4, 4, 3], 0.0) as tf.Tensor4D;
+      const result = applyGuidance(cond, uncond, 1.0);
+      const data = result.dataSync();
+      expect(data[0]).toBeCloseTo(1.0, 4);
+    });
+    it('amplifies difference with higher scale', () => {
+      const cond = tf.fill([1, 4, 4, 3], 1.0) as tf.Tensor4D;
+      const uncond = tf.fill([1, 4, 4, 3], 0.5) as tf.Tensor4D;
+      const result = applyGuidance(cond, uncond, 7.5);
+      const data = result.dataSync();
+      expect(data[0]).toBeCloseTo(4.25, 4);
+    });
+    it('returns unconditioned when scale is 0', () => {
+      const cond = tf.fill([1, 4, 4, 3], 1.0) as tf.Tensor4D;
+      const uncond = tf.fill([1, 4, 4, 3], 0.3) as tf.Tensor4D;
+      const result = applyGuidance(cond, uncond, 0);
+      const data = result.dataSync();
+      expect(data[0]).toBeCloseTo(0.3, 4);
+    });
+    it('preserves tensor shape', () => {
+      const cond = tf.ones([1, 8, 8, 3]) as tf.Tensor4D;
+      const uncond = tf.zeros([1, 8, 8, 3]) as tf.Tensor4D;
+      const result = applyGuidance(cond, uncond, 5);
+      expect(result.shape).toEqual([1, 8, 8, 3]);
+    });
+  });
+estimatedMinutes: 10
+difficulty: advanced

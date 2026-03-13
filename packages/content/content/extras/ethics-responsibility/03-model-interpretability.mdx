@@ -1,0 +1,129 @@
+---
+slug: model-interpretability
+title: "Interpretability: What Did the Model Actually Learn?"
+moduleId: ethics-responsibility
+themeId: shared
+order: 3
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Your model has high accuracy, but can you explain why it makes the predictions it does?"
+  speaker: "Instructor"
+concept:
+  explanation: "Interpretability techniques like LIME and SHAP reveal which features drive a model's predictions — similar to how Chrome DevTools reveals what's causing performance bottlenecks."
+  bridge:
+    feTitle: "Chrome DevTools Performance Tab"
+    feCode: "// Performance: 'Long Task' — scripting 342ms in handleClick()"
+    mlTitle: "Feature Importance (SHAP)"
+    mlCode: "// SHAP: 'income' contributes +0.32 to loan approval prediction"
+    tier: intuition
+consequence:
+  narrative: "You can now look inside the black box and explain model decisions."
+  nextLessonTeaser: "Next: responsible deployment — what happens when your model meets the real world"
+hints:
+  - level: nudge
+    content: "Perturb each feature and measure the change in prediction"
+  - level: guidance
+    content: "Zero out one feature at a time and compare predictions"
+  - level: solution
+    content: "For each feature, set it to zero, re-predict, and compute the difference from the original prediction"
+keywords:
+  - interpretability
+  - LIME
+  - SHAP
+  - feature-importance
+  - explainability
+---
+
+<Dialogue speaker="Instructor">
+Your model hits 95% accuracy. Congratulations. But here's the question that matters: do you know why it's making its predictions? Because a model that's right for the wrong reasons is a ticking time bomb.
+</Dialogue>
+
+You've been here before. Your web app is slow, and Chrome DevTools tells you exactly which function is eating up 342ms on the main thread. You don't guess — you profile. Interpretability is profiling for ML models. Instead of asking "what's slow?", you're asking "what's driving this prediction?"
+
+<LearningObjectives objectives={["Explain why model interpretability matters for trust and debugging", "Implement a simplified feature importance method by measuring prediction changes", "Understand the intuition behind LIME (local perturbation-based explanations)", "Understand the intuition behind SHAP (Shapley value-based feature attribution)"]} />
+
+## DevTools for Your Model
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+The Chrome Performance tab doesn't just tell you "your page is slow." It tells you exactly which function, in which file, at which call stack is responsible. SHAP and LIME do the same for model predictions — they tell you exactly which input feature, by how much, pushed the prediction in which direction.
+
+## Feature Importance: The Simple Version
+
+The most intuitive approach: remove each feature one at a time and see how much the prediction changes.
+
+<CodeBlock language="typescript" title="feature-importance.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Simple permutation-based feature importance
+async function featureImportance(
+  model: tf.LayersModel,
+  input: number[],
+  featureNames: string[]
+): Promise<Array<{ feature: string; importance: number }>> {
+  const inputTensor = tf.tensor2d([input]);
+  const basePrediction = (model.predict(inputTensor) as tf.Tensor).dataSync()[0];
+
+  const importances: Array<{ feature: string; importance: number }> = [];
+
+  for (let i = 0; i < input.length; i++) {
+    // Zero out this feature
+    const perturbed = [...input];
+    perturbed[i] = 0;
+
+    const perturbedTensor = tf.tensor2d([perturbed]);
+    const newPrediction = (model.predict(perturbedTensor) as tf.Tensor).dataSync()[0];
+
+    importances.push({
+      feature: featureNames[i],
+      importance: Math.abs(basePrediction - newPrediction),
+    });
+
+    perturbedTensor.dispose();
+  }
+
+  // Sort by importance (most impactful first)
+  importances.sort((a, b) => b.importance - a.importance);
+
+  inputTensor.dispose();
+  return importances;
+}
+
+// Usage
+const features = ['income', 'age', 'zipCode', 'creditScore', 'employmentYears'];
+const applicant = [55000, 34, 90210, 720, 5];
+
+const result = await featureImportance(model, applicant, features);
+// [
+//   { feature: 'creditScore', importance: 0.42 },
+//   { feature: 'income', importance: 0.31 },
+//   { feature: 'employmentYears', importance: 0.12 },
+//   { feature: 'age', importance: 0.08 },
+//   { feature: 'zipCode', importance: 0.04 },
+// ]`}
+</CodeBlock>
+
+## LIME: Local Explanations
+
+LIME (Local Interpretable Model-Agnostic Explanations) works by creating small perturbations around a single prediction and fitting a simple, interpretable model to those perturbations. Think of it as zooming into one point on your performance timeline — you don't need to understand the entire app, just what happened in that 342ms window.
+
+## SHAP: Fair Credit Assignment
+
+SHAP (SHapley Additive exPlanations) borrows from game theory. Imagine your features are team members on a project. SHAP asks: "If we built every possible subset of this team, how much does each member contribute on average?" This gives each feature a fair share of the prediction.
+
+The key difference: LIME is fast and local, SHAP is thorough and theoretically grounded. Like the difference between a quick `console.log` debug session and a full profiling run.
+
+## When Models Learn the Wrong Thing
+
+A famous example: a model trained to detect pneumonia in X-rays learned to look for the text "PORTABLE" stamped on images — because portable X-ray machines were used for the sickest patients. The model achieved high accuracy by reading labels instead of analyzing lungs.
+
+Without interpretability, you wouldn't know your model is cheating. It's like discovering your "fast" page load is only fast because the service worker is serving stale cached content.
+
+## Challenge
+
+Implement a feature importance function that explains which inputs drive a model's predictions.
+
+<Exercise slug="explain-predictions" />
+
+<KeyTakeaways takeaways={["Interpretability is DevTools for ML — it tells you why, not just what", "Feature importance: remove a feature, measure the prediction change", "LIME explains individual predictions by perturbing inputs locally", "SHAP assigns fair credit to each feature using game theory", "Models can achieve high accuracy by learning the wrong patterns — always check"]} />

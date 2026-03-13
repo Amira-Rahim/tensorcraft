@@ -1,0 +1,113 @@
+slug: repurpose-model
+lessonSlug: the-heist
+title: "Build the Protocol Sentinel Pipeline"
+instructions: "Write a function that describes a complete model repurposing pipeline. Given the original model info (totalLayers, totalParams, originalClasses, featureSize, avgParamsPerLayer) and repurpose config (newClasses, unfreezeLastN, learningRate), calculate: layers to freeze, layers to train, new head params (featureSize * newClasses + newClasses), total trainable params (unfrozen layers * avgParamsPerLayer + new head), and compressionVsOriginal (trainable / total original as percentage rounded to 1 decimal)."
+starterCode: |
+  interface OriginalModel {
+    totalLayers: number;
+    totalParams: number;
+    originalClasses: number;
+    featureSize: number;
+    avgParamsPerLayer: number;
+  }
+
+  interface RepurposeConfig {
+    newClasses: number;
+    unfreezeLastN: number;
+    learningRate: number;
+  }
+
+  interface RepurposePlan {
+    frozenLayers: number;
+    trainableLayers: number;
+    newHeadParams: number;
+    totalTrainableParams: number;
+    compressionVsOriginal: number; // trainable / total original, as percentage rounded to 1 decimal
+  }
+
+  function planRepurpose(model: OriginalModel, config: RepurposeConfig): RepurposePlan {
+    return {
+      frozenLayers: 0,
+      trainableLayers: 0,
+      newHeadParams: 0,
+      totalTrainableParams: 0,
+      compressionVsOriginal: 0,
+    };
+  }
+solutionCode: |
+  interface OriginalModel {
+    totalLayers: number;
+    totalParams: number;
+    originalClasses: number;
+    featureSize: number;
+    avgParamsPerLayer: number;
+  }
+
+  interface RepurposeConfig {
+    newClasses: number;
+    unfreezeLastN: number;
+    learningRate: number;
+  }
+
+  interface RepurposePlan {
+    frozenLayers: number;
+    trainableLayers: number;
+    newHeadParams: number;
+    totalTrainableParams: number;
+    compressionVsOriginal: number;
+  }
+
+  function planRepurpose(model: OriginalModel, config: RepurposeConfig): RepurposePlan {
+    const trainableLayers = Math.min(config.unfreezeLastN, model.totalLayers);
+    const frozenLayers = model.totalLayers - trainableLayers;
+    const newHeadParams = model.featureSize * config.newClasses + config.newClasses;
+    const unfrozenParams = trainableLayers * model.avgParamsPerLayer;
+    const totalTrainableParams = unfrozenParams + newHeadParams;
+    const compressionVsOriginal = Math.round((totalTrainableParams / model.totalParams) * 1000) / 10;
+    return {
+      frozenLayers,
+      trainableLayers,
+      newHeadParams,
+      totalTrainableParams,
+      compressionVsOriginal,
+    };
+  }
+testCode: |
+  describe('planRepurpose', () => {
+    const model: OriginalModel = {
+      totalLayers: 50,
+      totalParams: 3400000,
+      originalClasses: 1000,
+      featureSize: 1280,
+      avgParamsPerLayer: 68000,
+    };
+
+    it('calculates frozen layers', () => {
+      const plan = planRepurpose(model, { newClasses: 5, unfreezeLastN: 3, learningRate: 0.001 });
+      expect(plan.frozenLayers).toBe(47);
+    });
+
+    it('calculates trainable layers', () => {
+      const plan = planRepurpose(model, { newClasses: 5, unfreezeLastN: 3, learningRate: 0.001 });
+      expect(plan.trainableLayers).toBe(3);
+    });
+
+    it('calculates new head params', () => {
+      const plan = planRepurpose(model, { newClasses: 5, unfreezeLastN: 3, learningRate: 0.001 });
+      expect(plan.newHeadParams).toBe(1280 * 5 + 5);
+    });
+
+    it('calculates total trainable params', () => {
+      const plan = planRepurpose(model, { newClasses: 5, unfreezeLastN: 3, learningRate: 0.001 });
+      expect(plan.totalTrainableParams).toBe(3 * 68000 + 6405);
+    });
+
+    it('calculates compression vs original', () => {
+      const plan = planRepurpose(model, { newClasses: 5, unfreezeLastN: 0, learningRate: 0.001 });
+      // Only head params are trainable
+      const expected = Math.round((6405 / 3400000) * 1000) / 10;
+      expect(plan.compressionVsOriginal).toBe(expected);
+    });
+  });
+estimatedMinutes: 10
+difficulty: advanced

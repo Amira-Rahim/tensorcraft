@@ -1,0 +1,41 @@
+slug: generate-melody
+lessonSlug: music-generation
+title: "Generate Melody"
+instructions: "Create a function that builds sliding windows from a sequence of MIDI note values (normalized to [0, 1] by dividing by 127). Given a sequence and a window size, return an object with xs (input windows as a 2D tensor) and ys (target values as a 1D tensor)."
+starterCode: |
+  function createMelodyWindows(notes: number[], windowSize: number) {
+    // Normalize notes to [0, 1]
+    // Build sliding windows: each window of 'windowSize' notes predicts the next note
+    // Return { xs: tf.Tensor2D, ys: tf.Tensor1D }
+
+    // your code here
+    return { xs: null, ys: null };
+  }
+solutionCode: |
+  function createMelodyWindows(notes: number[], windowSize: number) {
+    const normalized = notes.map(n => n / 127);
+    const inputs: number[][] = [];
+    const targets: number[] = [];
+    for (let i = 0; i + windowSize < normalized.length; i++) {
+      inputs.push(normalized.slice(i, i + windowSize));
+      targets.push(normalized[i + windowSize]);
+    }
+    return {
+      xs: tf.tensor2d(inputs),
+      ys: tf.tensor1d(targets),
+    };
+  }
+testCode: |
+  describe('createMelodyWindows', () => {
+    const notes = [60, 62, 64, 65, 67, 69, 71, 72];
+    const result = createMelodyWindows(notes, 4);
+    it('creates correct number of windows', () => { expect(result.xs.shape[0]).toBe(4); });
+    it('has correct window size', () => { expect(result.xs.shape[1]).toBe(4); });
+    it('creates matching targets', () => { expect(result.ys.shape[0]).toBe(4); });
+    it('values are normalized', async () => {
+      const data = await result.xs.data();
+      expect(data[0]).toBeCloseTo(60 / 127);
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

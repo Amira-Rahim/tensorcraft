@@ -1,0 +1,96 @@
+slug: sw-build-rnn
+lessonSlug: sw-simple-rnns
+title: "Build a Simple RNN"
+instructions: "Build a simple RNN model for clinical text classification using TensorFlow.js. The model should have three layers: an embedding layer (inputDim: 200, outputDim: 16, inputLength: 12), a simpleRNN layer (units: 16, returnSequences: false), and a dense layer (units: 1, activation: 'sigmoid'). Compile with adam optimizer and binaryCrossentropy loss. Then implement processSequence that runs a single prediction on a padded token sequence."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function buildRnnModel(): tf.Sequential {
+    const model = tf.sequential();
+    // Add embedding layer: inputDim=200, outputDim=16, inputLength=12
+    // Add simpleRNN layer: units=16, returnSequences=false
+    // Add dense layer: units=1, activation='sigmoid'
+    // Compile with optimizer='adam', loss='binaryCrossentropy'
+    return model;
+  }
+
+  async function processSequence(
+    model: tf.Sequential,
+    tokenIds: number[],
+    maxLen: number
+  ): Promise<number> {
+    // Pad tokenIds to maxLen (with 0s), then predict
+    // Return the prediction as a single number
+    return 0; // your code here
+  }
+
+  const model = buildRnnModel();
+  const prediction = await processSequence(model, [2, 3, 5, 6], 12);
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function buildRnnModel(): tf.Sequential {
+    const model = tf.sequential();
+    model.add(tf.layers.embedding({
+      inputDim: 200,
+      outputDim: 16,
+      inputLength: 12,
+    }));
+    model.add(tf.layers.simpleRNN({
+      units: 16,
+      returnSequences: false,
+    }));
+    model.add(tf.layers.dense({
+      units: 1,
+      activation: 'sigmoid',
+    }));
+    model.compile({
+      optimizer: 'adam',
+      loss: 'binaryCrossentropy',
+    });
+    return model;
+  }
+
+  async function processSequence(
+    model: tf.Sequential,
+    tokenIds: number[],
+    maxLen: number
+  ): Promise<number> {
+    const padded = [...tokenIds];
+    while (padded.length < maxLen) padded.push(0);
+    const input = tf.tensor2d([padded.slice(0, maxLen)], [1, maxLen], 'int32');
+    const output = model.predict(input) as tf.Tensor;
+    const value = (await output.array()) as number[][];
+    tf.dispose([input, output]);
+    return value[0][0];
+  }
+
+  const model = buildRnnModel();
+  const prediction = await processSequence(model, [2, 3, 5, 6], 12);
+testCode: |
+  describe('Build a Simple RNN', () => {
+    it('model has 3 layers', () => {
+      expect(model.layers.length).toBe(3);
+    });
+    it('first layer is embedding', () => {
+      expect(model.layers[0].getClassName()).toBe('Embedding');
+    });
+    it('second layer is SimpleRNN', () => {
+      expect(model.layers[1].getClassName()).toBe('SimpleRNN');
+    });
+    it('third layer is Dense with sigmoid', () => {
+      expect(model.layers[2].getClassName()).toBe('Dense');
+    });
+    it('prediction is between 0 and 1', () => {
+      expect(prediction).toBeGreaterThanOrEqual(0);
+      expect(prediction).toBeLessThanOrEqual(1);
+    });
+    it('output shape is correct', () => {
+      const input = tf.tensor2d([[1, 2, 3, 4, 0, 0, 0, 0, 0, 0, 0, 0]], [1, 12], 'int32');
+      const out = model.predict(input) as tf.Tensor;
+      expect(out.shape).toEqual([1, 1]);
+      tf.dispose([input, out]);
+    });
+  });
+estimatedMinutes: 15
+difficulty: intermediate

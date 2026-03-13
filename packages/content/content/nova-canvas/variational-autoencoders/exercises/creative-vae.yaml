@@ -1,0 +1,94 @@
+slug: creative-vae
+lessonSlug: creative-vae
+title: "Creative VAE Generator"
+instructions: "Build a function that takes 'design tokens' (named creative parameters), maps them to a latent vector, and generates a 28x28 image using a decoder. Use tf.tidy() to prevent memory leaks."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  interface ArtTokens {
+    warmth: number;     // -3 to 3
+    complexity: number; // -3 to 3
+    symmetry: number;   // -3 to 3
+    texture: number;    // -3 to 3
+  }
+
+  async function generateArt(
+    tokens: ArtTokens,
+    decoder: tf.LayersModel,
+    latentDim: number
+  ): Promise<number[][]> {
+    // 1. Convert tokens to latent vector (fill remaining dims with 0)
+    // 2. Use tf.tidy to create tensor, decode, and reshape to [28, 28]
+    // 3. Return as 2D JS array, dispose output tensor
+    return null; // your code here
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  interface ArtTokens {
+    warmth: number;
+    complexity: number;
+    symmetry: number;
+    texture: number;
+  }
+
+  async function generateArt(
+    tokens: ArtTokens,
+    decoder: tf.LayersModel,
+    latentDim: number
+  ): Promise<number[][]> {
+    const z = new Array(latentDim).fill(0);
+    z[0] = tokens.warmth;
+    z[1] = tokens.complexity;
+    z[2] = tokens.symmetry;
+    z[3] = tokens.texture;
+
+    const output = tf.tidy(() => {
+      const zTensor = tf.tensor2d([z]);
+      const decoded = decoder.predict(zTensor) as tf.Tensor;
+      return decoded.reshape([28, 28]);
+    });
+
+    const result = await output.array() as number[][];
+    output.dispose();
+    return result;
+  }
+testCode: |
+  describe('generateArt', () => {
+    let decoder;
+    beforeAll(() => {
+      decoder = tf.sequential();
+      decoder.add(tf.layers.dense({ inputShape: [16], units: 784, activation: 'sigmoid' }));
+    });
+    it('returns a 28x28 array', async () => {
+      const tokens = { warmth: 0, complexity: 0, symmetry: 0, texture: 0 };
+      const result = await generateArt(tokens, decoder, 16);
+      expect(result.length).toBe(28);
+      expect(result[0].length).toBe(28);
+    });
+    it('values are between 0 and 1', async () => {
+      const tokens = { warmth: 1.5, complexity: -0.5, symmetry: 2.0, texture: -1.0 };
+      const result = await generateArt(tokens, decoder, 16);
+      result.forEach(row => row.forEach(v => {
+        expect(v).toBeGreaterThanOrEqual(0);
+        expect(v).toBeLessThanOrEqual(1);
+      }));
+    });
+    it('different tokens produce different output', async () => {
+      const t1 = { warmth: -3, complexity: -3, symmetry: -3, texture: -3 };
+      const t2 = { warmth: 3, complexity: 3, symmetry: 3, texture: 3 };
+      const r1 = await generateArt(t1, decoder, 16);
+      const r2 = await generateArt(t2, decoder, 16);
+      const same = r1.flat().every((v, i) => Math.abs(v - r2.flat()[i]) < 0.001);
+      expect(same).toBe(false);
+    });
+    it('does not leak tensors', async () => {
+      const before = tf.memory().numTensors;
+      const tokens = { warmth: 0, complexity: 0, symmetry: 0, texture: 0 };
+      await generateArt(tokens, decoder, 16);
+      const after = tf.memory().numTensors;
+      expect(after).toBeLessThanOrEqual(before + 1);
+    });
+  });
+estimatedMinutes: 10
+difficulty: advanced

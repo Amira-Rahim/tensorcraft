@@ -1,0 +1,154 @@
+slug: build-fhir-adapter
+lessonSlug: hospital-integration
+title: "Build a FHIR Adapter"
+instructions: "Build a FHIRAdapter class that transforms FHIR MedicationRequest resources into a simplified internal format. Implement validate() to check required fields and transform() to map FHIR fields to your internal ClinicalMedication type. The adaptAll() method should validate each resource, skip invalid ones, and return only successfully transformed medications."
+starterCode: |
+  interface FHIRMedicationRequest {
+    resourceType: string;
+    id: string;
+    status: string;
+    medicationCodeableConcept: {
+      coding: { system: string; code: string; display: string }[];
+    };
+    subject: { reference: string };
+    authoredOn: string;
+  }
+
+  interface ClinicalMedication {
+    drugName: string;
+    drugCode: string;
+    patientId: string;
+    prescribedDate: string;
+    status: string;
+  }
+
+  class FHIRAdapter {
+    validate(resource: FHIRMedicationRequest): boolean {
+      // Return true if:
+      // - resourceType is 'MedicationRequest'
+      // - medicationCodeableConcept.coding has at least one entry
+      // - subject.reference is not empty
+      return false; // your code here
+    }
+
+    transform(resource: FHIRMedicationRequest): ClinicalMedication {
+      // Map FHIR fields to internal format:
+      // - drugName: first coding entry's display
+      // - drugCode: first coding entry's code
+      // - patientId: subject.reference with 'Patient/' prefix removed
+      // - prescribedDate: authoredOn
+      // - status: status
+      return null as any; // your code here
+    }
+
+    adaptAll(resources: FHIRMedicationRequest[]): ClinicalMedication[] {
+      // Filter to valid resources, then transform each one
+      return []; // your code here
+    }
+  }
+solutionCode: |
+  interface FHIRMedicationRequest {
+    resourceType: string;
+    id: string;
+    status: string;
+    medicationCodeableConcept: {
+      coding: { system: string; code: string; display: string }[];
+    };
+    subject: { reference: string };
+    authoredOn: string;
+  }
+
+  interface ClinicalMedication {
+    drugName: string;
+    drugCode: string;
+    patientId: string;
+    prescribedDate: string;
+    status: string;
+  }
+
+  class FHIRAdapter {
+    validate(resource: FHIRMedicationRequest): boolean {
+      return (
+        resource.resourceType === 'MedicationRequest' &&
+        resource.medicationCodeableConcept?.coding?.length > 0 &&
+        resource.subject?.reference?.length > 0
+      );
+    }
+
+    transform(resource: FHIRMedicationRequest): ClinicalMedication {
+      const coding = resource.medicationCodeableConcept.coding[0];
+      return {
+        drugName: coding.display,
+        drugCode: coding.code,
+        patientId: resource.subject.reference.replace('Patient/', ''),
+        prescribedDate: resource.authoredOn,
+        status: resource.status,
+      };
+    }
+
+    adaptAll(resources: FHIRMedicationRequest[]): ClinicalMedication[] {
+      return resources
+        .filter(r => this.validate(r))
+        .map(r => this.transform(r));
+    }
+  }
+testCode: |
+  describe('FHIRAdapter', () => {
+    const adapter = new FHIRAdapter();
+
+    const validResource: FHIRMedicationRequest = {
+      resourceType: 'MedicationRequest',
+      id: 'med-001',
+      status: 'active',
+      medicationCodeableConcept: {
+        coding: [{ system: 'http://rxnorm', code: '6809', display: 'methotrexate' }],
+      },
+      subject: { reference: 'Patient/12345' },
+      authoredOn: '2025-03-01',
+    };
+
+    it('validates correct FHIR resources', () => {
+      expect(adapter.validate(validResource)).toBe(true);
+    });
+
+    it('rejects resources with wrong resourceType', () => {
+      expect(adapter.validate({ ...validResource, resourceType: 'Patient' })).toBe(false);
+    });
+
+    it('rejects resources with empty coding', () => {
+      const bad = {
+        ...validResource,
+        medicationCodeableConcept: { coding: [] },
+      };
+      expect(adapter.validate(bad)).toBe(false);
+    });
+
+    it('transforms FHIR to internal format', () => {
+      const result = adapter.transform(validResource);
+      expect(result.drugName).toBe('methotrexate');
+      expect(result.drugCode).toBe('6809');
+      expect(result.patientId).toBe('12345');
+      expect(result.prescribedDate).toBe('2025-03-01');
+      expect(result.status).toBe('active');
+    });
+
+    it('adaptAll filters invalid and transforms valid', () => {
+      const resources = [
+        validResource,
+        { ...validResource, resourceType: 'Patient' },
+        {
+          ...validResource,
+          id: 'med-002',
+          medicationCodeableConcept: {
+            coding: [{ system: 'http://rxnorm', code: '10219', display: 'trimethoprim' }],
+          },
+        },
+      ];
+      const results = adapter.adaptAll(resources);
+      expect(results).toHaveLength(2);
+      expect(results[0].drugName).toBe('methotrexate');
+      expect(results[1].drugName).toBe('trimethoprim');
+    });
+  });
+estimatedMinutes: 15
+difficulty: intermediate

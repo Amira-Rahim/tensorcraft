@@ -1,0 +1,285 @@
+---
+slug: integration
+title: "Integration"
+moduleId: np-capstone
+themeId: neon-protocol
+order: 2
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "The architecture diagram is approved. Now each module must connect to the next. Kira starts wiring — detection feeds into classification, classification feeds into the adversarial guard, the guard feeds into broadcast. Ryo watches: 'Treat each connection like middleware. Data in, data out, next() to continue.' It clicks instantly."
+  speaker: "Ryo"
+concept:
+  explanation: "Integrating ML pipeline stages follows the same pattern as Express/Next.js middleware. Each stage receives input, transforms it, and calls next() to pass output downstream. Errors short-circuit the chain."
+  bridge:
+    feTitle: "Middleware Chain"
+    feCode: "app.use(cors()).use(auth()).use(validate()).use(handler); // req flows through each"
+    mlTitle: "Model Pipeline"
+    mlCode: "pipeline.use(preprocess).use(detect).use(classify).use(guard); // tensor flows through each"
+    tier: structural
+consequence:
+  narrative: "The pipeline runs end-to-end for the first time. A test frame enters. Preprocessed. Objects detected. Classified — Meridian drone. Adversarial check — clean. Broadcast payload generated. Kira watches the data flow through six stages in 47 milliseconds. The Architect's surveillance network has a new adversary."
+  nextLessonTeaser: "Next: testing and validation — making sure Protocol Sentinel works before it goes live"
+hints:
+  - level: nudge
+    content: "Each pipeline stage is middleware — it receives data, processes it, and passes it downstream"
+  - level: guidance
+    content: "Create a SentinelPipeline class with a use() method that chains stages together"
+  - level: solution
+    content: "Implement the middleware pattern: each stage calls next() with its output, errors skip to the error handler"
+keywords:
+  - integration
+  - middleware
+  - pipeline
+  - composition
+  - data-flow
+---
+
+<Dialogue speaker="Ryo">
+Architecture is a diagram. Integration is making it real. Every connection between stages is a contract — typed input, typed output, error handling at every boundary. You have done this before, Kira. Think middleware.
+</Dialogue>
+
+<Dialogue speaker="Kira">
+Express middleware. Each function gets the request, does its thing, calls next(). The detection model gets a preprocessed frame, does inference, passes detections downstream. Same pattern — different data.
+</Dialogue>
+
+<Dialogue speaker="Zara">
+Except if one stage corrupts its output, every downstream stage fails silently. In a web app, a bad middleware returns a 500. In a surveillance detection system, a bad pipeline stage means Meridian's drones go undetected. Validate between every stage.
+</Dialogue>
+
+You have chained middleware in Express, composed Next.js API routes, and wired up React context providers. Protocol Sentinel's integration follows the same pattern: each ML module is a middleware function that receives typed data, transforms it, and passes the result downstream. The key difference is that you must validate tensor shapes and value ranges between stages — a shape mismatch does not return a helpful error message.
+
+<LearningObjectives objectives={["Integrate multiple ML models into a unified middleware-style pipeline", "Implement typed data contracts between pipeline stages with runtime validation", "Handle errors and edge cases at stage boundaries without crashing the pipeline", "Compose detection, classification, and adversarial defense into a single end-to-end system"]} />
+
+## The Middleware Pattern for ML
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="sentinel-pipeline.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Middleware-style pipeline — each stage is a function that calls next()
+type PipelineContext = {
+  feedId: string;
+  timestamp: number;
+  frame?: tf.Tensor3D;
+  processed?: tf.Tensor4D;
+  detections?: Array<{ box: number[]; score: number }>;
+  classifications?: Array<{ label: string; confidence: number; isSurveillance: boolean }>;
+  verified?: boolean;
+  adversarialScore?: number;
+  broadcast?: { alerts: any[]; evidenceHash: string };
+  errors: string[];
+};
+
+type Middleware = (
+  ctx: PipelineContext,
+  next: () => Promise<void>
+) => Promise<void>;
+
+class SentinelPipeline {
+  private stack: Middleware[] = [];
+
+  use(middleware: Middleware): SentinelPipeline {
+    this.stack.push(middleware);
+    return this;
+  }
+
+  async execute(ctx: PipelineContext): Promise<PipelineContext> {
+    let index = 0;
+
+    const next = async (): Promise<void> => {
+      if (index < this.stack.length) {
+        const middleware = this.stack[index++];
+        await middleware(ctx, next);
+      }
+    };
+
+    await next();
+    return ctx;
+  }
+}`}
+</CodeBlock>
+
+## Wiring the Stages
+
+<CodeBlock language="typescript" title="stages.ts">
+{`// Stage 1: Preprocessing middleware
+const preprocess: Middleware = async (ctx, next) => {
+  if (!ctx.frame) {
+    ctx.errors.push('preprocess: no frame provided');
+    return; // short-circuit — do not call next()
+  }
+
+  ctx.processed = tf.tidy(() => {
+    return ctx.frame!
+      .resizeBilinear([224, 224])
+      .expandDims(0)
+      .div(255.0) as tf.Tensor4D;
+  });
+
+  await next();
+
+  // Cleanup after downstream stages finish (like middleware cleanup)
+  ctx.processed?.dispose();
+};
+
+// Stage 2: Detection middleware
+const detect: Middleware = async (ctx, next) => {
+  if (!ctx.processed) {
+    ctx.errors.push('detect: no processed frame');
+    return;
+  }
+
+  const detectionModel = await tf.loadLayersModel('/models/detector/model.json');
+  const output = detectionModel.predict(ctx.processed) as tf.Tensor;
+  const scores = await output.data();
+
+  // Parse detection output into bounding boxes
+  ctx.detections = [];
+  for (let i = 0; i < scores.length; i += 5) {
+    if (scores[i + 4] > 0.5) {
+      ctx.detections.push({
+        box: [scores[i], scores[i + 1], scores[i + 2], scores[i + 3]],
+        score: scores[i + 4],
+      });
+    }
+  }
+
+  output.dispose();
+  await next();
+};
+
+// Stage 3: Classification middleware
+const classify: Middleware = async (ctx, next) => {
+  if (!ctx.detections || ctx.detections.length === 0) {
+    ctx.classifications = [];
+    await next();
+    return;
+  }
+
+  const classifierModel = await tf.loadLayersModel('/models/classifier/model.json');
+  const labels = ['civilian', 'meridian-agent', 'meridian-drone', 'surveillance-device'];
+
+  ctx.classifications = [];
+  for (const detection of ctx.detections) {
+    // Crop and classify each detection
+    const cropped = tf.tidy(() => {
+      const [y1, x1, y2, x2] = detection.box;
+      return tf.image
+        .cropAndResize(
+          ctx.processed!,
+          [[y1, x1, y2, x2]],
+          [0],
+          [64, 64]
+        )
+        .squeeze([0]) as tf.Tensor3D;
+    });
+
+    const pred = classifierModel.predict(cropped.expandDims(0)) as tf.Tensor;
+    const probabilities = await pred.data();
+    const maxIdx = probabilities.indexOf(Math.max(...probabilities));
+
+    ctx.classifications.push({
+      label: labels[maxIdx],
+      confidence: probabilities[maxIdx],
+      isSurveillance: maxIdx >= 1, // anything non-civilian
+    });
+
+    cropped.dispose();
+    pred.dispose();
+  }
+
+  await next();
+};
+
+// Stage 4: Adversarial guard middleware
+const adversarialGuard: Middleware = async (ctx, next) => {
+  if (!ctx.classifications) {
+    await next();
+    return;
+  }
+
+  // Check for adversarial perturbation patterns
+  const inputVariance = tf.tidy(() => {
+    if (!ctx.processed) return 0;
+    const grad = tf.abs(
+      ctx.processed.sub(ctx.processed.mean())
+    );
+    return grad.mean().dataSync()[0];
+  });
+
+  // Adversarial inputs often have unusually high-frequency noise
+  ctx.adversarialScore = typeof inputVariance === 'number' ? inputVariance : 0;
+  ctx.verified = ctx.adversarialScore < 0.8;
+
+  if (!ctx.verified) {
+    ctx.errors.push(\`adversarial-guard: suspicious input (score: \${ctx.adversarialScore.toFixed(3)})\`);
+  }
+
+  await next();
+};`}
+</CodeBlock>
+
+## Assembling the Pipeline
+
+<CodeBlock language="typescript" title="assemble.ts">
+{`// Wire it all together — like app.use() in Express
+const sentinel = new SentinelPipeline()
+  .use(preprocess)
+  .use(detect)
+  .use(classify)
+  .use(adversarialGuard)
+  .use(async (ctx, next) => {
+    // Stage 5: Broadcast — the final middleware
+    const surveillanceAlerts = (ctx.classifications || [])
+      .filter(c => c.isSurveillance && c.confidence > 0.7);
+
+    if (surveillanceAlerts.length > 0 && ctx.verified) {
+      ctx.broadcast = {
+        alerts: surveillanceAlerts.map(a => ({
+          label: a.label,
+          confidence: a.confidence,
+        })),
+        evidenceHash: generateHash(ctx.feedId, ctx.timestamp),
+      };
+      console.log('BROADCAST:', ctx.broadcast.alerts.length, 'alerts');
+    }
+
+    await next();
+  });
+
+// Run the pipeline on a camera frame
+async function processFrame(feedId: string, frame: tf.Tensor3D) {
+  const ctx: PipelineContext = {
+    feedId,
+    timestamp: Date.now(),
+    frame,
+    errors: [],
+  };
+
+  const result = await sentinel.execute(ctx);
+
+  if (result.errors.length > 0) {
+    console.warn('Pipeline warnings:', result.errors);
+  }
+
+  return result;
+}
+
+function generateHash(feedId: string, timestamp: number): string {
+  return btoa(\`\${feedId}:\${timestamp}:\${Math.random()}\`).slice(0, 16);
+}`}
+</CodeBlock>
+
+<Dialogue speaker="NEON">
+Forty-seven milliseconds, end to end. Ingestion, preprocessing, detection, classification, adversarial check, broadcast preparation. I have seen Meridian's pipeline — it takes 200 milliseconds and skips the adversarial check entirely. Protocol Sentinel is faster and more honest. Poetic.
+</Dialogue>
+
+## Challenge
+
+Build a middleware-style pipeline that integrates multiple processing stages.
+
+<Exercise slug="integrate-pipeline" />
+
+<KeyTakeaways takeaways={["ML pipeline integration follows the Express middleware pattern — each stage receives data, transforms it, and calls next()", "Typed context objects carry data between stages, preventing shape mismatches", "Short-circuiting (not calling next()) handles errors without crashing downstream stages", "Cleanup in middleware (disposing tensors after downstream finishes) prevents memory leaks"]} />

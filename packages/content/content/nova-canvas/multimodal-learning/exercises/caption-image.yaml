@@ -1,0 +1,89 @@
+slug: caption-image
+lessonSlug: image-captioning
+title: "Implement Autoregressive Caption Generation"
+instructions: "Implement the autoregressive loop for image captioning. Given a decoder model, a context vector, and a vocabulary, generate words one at a time. At each step, feed the current word index and context to the decoder, take the argmax of the output as the next word. Stop when you hit '<end>' or reach maxLen."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  async function generateCaption(
+    decoder: tf.LayersModel,
+    context: tf.Tensor2D,
+    vocab: string[],
+    maxLen: number = 15
+  ): Promise<string> {
+    const words: string[] = [];
+    let currentWordIdx = vocab.indexOf('<start>');
+
+    // Loop up to maxLen times:
+    //   1. Create tensor for current word index: tf.tensor2d([[currentWordIdx]])
+    //   2. Predict: decoder.predict([wordTensor, context])
+    //   3. Get next word index: argMax(prediction, 1).dataSync()[0]
+    //   4. Look up word in vocab
+    //   5. If '<end>', stop. Otherwise push to words array.
+    //   6. Update currentWordIdx
+
+    return null; // your code here
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  async function generateCaption(
+    decoder: tf.LayersModel,
+    context: tf.Tensor2D,
+    vocab: string[],
+    maxLen: number = 15
+  ): Promise<string> {
+    const words: string[] = [];
+    let currentWordIdx = vocab.indexOf('<start>');
+
+    for (let i = 0; i < maxLen; i++) {
+      const wordTensor = tf.tensor2d([[currentWordIdx]]);
+      const prediction = decoder.predict([wordTensor, context]) as tf.Tensor2D;
+      const nextIdx = prediction.argMax(1).dataSync()[0];
+      const nextWord = vocab[nextIdx];
+
+      wordTensor.dispose();
+      prediction.dispose();
+
+      if (nextWord === '<end>') break;
+      words.push(nextWord);
+      currentWordIdx = nextIdx;
+    }
+
+    return words.join(' ');
+  }
+testCode: |
+  describe('generateCaption', () => {
+    it('returns a string', async () => {
+      const vocab = ['<pad>', '<start>', '<end>', 'a', 'sunset', 'city'];
+      // Mock decoder that always predicts index 3 ('a') then 5 ('city') then 2 ('<end>')
+      const wordInput = tf.input({ shape: [1], name: 'word' });
+      const ctxInput = tf.input({ shape: [8], name: 'ctx' });
+      const concat = tf.layers.concatenate().apply([
+        tf.layers.flatten().apply(wordInput) as tf.SymbolicTensor,
+        ctxInput
+      ]) as tf.SymbolicTensor;
+      const output = tf.layers.dense({ units: vocab.length, activation: 'softmax' }).apply(concat) as tf.SymbolicTensor;
+      const decoder = tf.model({ inputs: [wordInput, ctxInput], outputs: output });
+      const context = tf.zeros([1, 8]) as tf.Tensor2D;
+      const caption = await generateCaption(decoder, context, vocab, 5);
+      expect(typeof caption).toBe('string');
+    });
+    it('respects maxLen', async () => {
+      const vocab = ['<pad>', '<start>', 'word1', 'word2', 'word3'];
+      const wordInput = tf.input({ shape: [1], name: 'word' });
+      const ctxInput = tf.input({ shape: [4], name: 'ctx' });
+      const concat = tf.layers.concatenate().apply([
+        tf.layers.flatten().apply(wordInput) as tf.SymbolicTensor,
+        ctxInput
+      ]) as tf.SymbolicTensor;
+      const output = tf.layers.dense({ units: vocab.length, activation: 'softmax' }).apply(concat) as tf.SymbolicTensor;
+      const decoder = tf.model({ inputs: [wordInput, ctxInput], outputs: output });
+      const context = tf.zeros([1, 4]) as tf.Tensor2D;
+      const caption = await generateCaption(decoder, context, vocab, 3);
+      const wordCount = caption.split(' ').filter(w => w.length > 0).length;
+      expect(wordCount).toBeLessThanOrEqual(3);
+    });
+  });
+estimatedMinutes: 12
+difficulty: advanced

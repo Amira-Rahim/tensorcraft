@@ -1,0 +1,124 @@
+slug: scale-horizontally
+lessonSlug: scaling-strategies
+title: "Build an Auto-Scaler"
+instructions: "Build an AutoScaler class that adjusts inference worker count based on average latency. Scale up when latency exceeds the threshold and worker count is below max. Scale down when latency drops below the low threshold and worker count is above min. Implement a cooldown period to prevent thrashing."
+starterCode: |
+  class AutoScaler {
+    private workerCount: number;
+    private lastScaleTime: number = 0;
+
+    constructor(
+      private minWorkers: number,
+      private maxWorkers: number,
+      private scaleUpLatencyMs: number,
+      private scaleDownLatencyMs: number,
+      private cooldownMs: number,
+    ) {
+      this.workerCount = minWorkers;
+    }
+
+    evaluate(avgLatencyMs: number, currentTimeMs: number): {
+      action: 'scale-up' | 'scale-down' | 'none';
+      workerCount: number;
+    } {
+      // 1. Check if cooldown has elapsed since last scale action
+      // 2. If latency > scaleUpLatencyMs and workerCount < maxWorkers, scale up
+      // 3. If latency < scaleDownLatencyMs and workerCount > minWorkers, scale down
+      // 4. Update lastScaleTime when scaling
+      return { action: 'none', workerCount: this.workerCount }; // your code here
+    }
+
+    getWorkerCount(): number {
+      return this.workerCount;
+    }
+  }
+solutionCode: |
+  class AutoScaler {
+    private workerCount: number;
+    private lastScaleTime: number = 0;
+
+    constructor(
+      private minWorkers: number,
+      private maxWorkers: number,
+      private scaleUpLatencyMs: number,
+      private scaleDownLatencyMs: number,
+      private cooldownMs: number,
+    ) {
+      this.workerCount = minWorkers;
+    }
+
+    evaluate(avgLatencyMs: number, currentTimeMs: number): {
+      action: 'scale-up' | 'scale-down' | 'none';
+      workerCount: number;
+    } {
+      const cooldownElapsed = (currentTimeMs - this.lastScaleTime) >= this.cooldownMs;
+
+      if (!cooldownElapsed) {
+        return { action: 'none', workerCount: this.workerCount };
+      }
+
+      if (avgLatencyMs > this.scaleUpLatencyMs && this.workerCount < this.maxWorkers) {
+        this.workerCount++;
+        this.lastScaleTime = currentTimeMs;
+        return { action: 'scale-up', workerCount: this.workerCount };
+      }
+
+      if (avgLatencyMs < this.scaleDownLatencyMs && this.workerCount > this.minWorkers) {
+        this.workerCount--;
+        this.lastScaleTime = currentTimeMs;
+        return { action: 'scale-down', workerCount: this.workerCount };
+      }
+
+      return { action: 'none', workerCount: this.workerCount };
+    }
+
+    getWorkerCount(): number {
+      return this.workerCount;
+    }
+  }
+testCode: |
+  describe('AutoScaler', () => {
+    it('starts with minimum workers', () => {
+      const scaler = new AutoScaler(2, 8, 20, 8, 1000);
+      expect(scaler.getWorkerCount()).toBe(2);
+    });
+
+    it('scales up when latency exceeds threshold', () => {
+      const scaler = new AutoScaler(2, 8, 20, 8, 0);
+      const result = scaler.evaluate(25, 1000);
+      expect(result.action).toBe('scale-up');
+      expect(result.workerCount).toBe(3);
+    });
+
+    it('scales down when latency is low', () => {
+      const scaler = new AutoScaler(2, 8, 20, 8, 0);
+      scaler.evaluate(25, 1000); // scale up to 3
+      const result = scaler.evaluate(5, 2000); // scale down
+      expect(result.action).toBe('scale-down');
+      expect(result.workerCount).toBe(2);
+    });
+
+    it('does not exceed max workers', () => {
+      const scaler = new AutoScaler(2, 3, 20, 8, 0);
+      scaler.evaluate(25, 1000); // 3
+      const result = scaler.evaluate(25, 2000); // already at max
+      expect(result.action).toBe('none');
+      expect(result.workerCount).toBe(3);
+    });
+
+    it('respects cooldown period', () => {
+      const scaler = new AutoScaler(2, 8, 20, 8, 5000);
+      scaler.evaluate(25, 1000); // scale up at t=1000
+      const result = scaler.evaluate(25, 3000); // t=3000, cooldown not elapsed
+      expect(result.action).toBe('none');
+    });
+
+    it('does not go below min workers', () => {
+      const scaler = new AutoScaler(2, 8, 20, 8, 0);
+      const result = scaler.evaluate(5, 1000);
+      expect(result.action).toBe('none');
+      expect(result.workerCount).toBe(2);
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

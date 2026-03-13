@@ -1,0 +1,89 @@
+---
+slug: knowledge-distillation
+title: "Knowledge Distillation"
+moduleId: pruning-distillation
+themeId: terra-grid
+order: 3
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "The cloud model knows everything about anomaly detection. We need to transfer that knowledge to a tiny edge model."
+  speaker: "Park Soo-Yeon"
+concept:
+  explanation: "Knowledge distillation trains a small 'student' model to mimic a large 'teacher' model — like code splitting where a small chunk contains just the code needed for a specific route."
+  bridge:
+    feTitle: "Code Splitting"
+    feCode: "// Full bundle: 2MB — everything\n// Route chunk: 50KB — just what's needed\nconst Page = lazy(() => import('./page'));"
+    mlTitle: "Knowledge Distillation"
+    mlCode: "// Teacher: 200MB — full knowledge\n// Student: 5MB — distilled knowledge\nstudent.fitWith(teacherOutputs);"
+    tier: structural
+consequence:
+  narrative: "The student model achieves 96% of the teacher's accuracy at 2.5% of the size."
+  nextLessonTeaser: "Next: the teacher-student training process in detail"
+hints:
+  - level: nudge
+    content: "The student learns from the teacher's soft predictions, not just the hard labels"
+  - level: guidance
+    content: "Soft targets (probabilities) contain more information than hard labels (0 or 1)"
+  - level: solution
+    content: "Train student to match teacher's output distribution using KL divergence"
+keywords:
+  - distillation
+  - teacher-student
+  - code-splitting
+  - soft-targets
+---
+
+<Dialogue speaker="Park Soo-Yeon">
+Our cloud anomaly detector is a 200MB model trained on three years of sensor data from all 47 sites. It knows every failure pattern. I need a 5MB model for the edge that captures the essential knowledge. Not all of it — just enough.
+</Dialogue>
+
+Code splitting extracts the minimum JavaScript needed for a specific route from the full application bundle. Knowledge distillation does the same for models: extract the minimum knowledge needed for a specific task from a large, general model.
+
+<LearningObjectives objectives={["Understand the teacher-student distillation framework", "Recognize why soft targets carry more information than hard labels", "Implement a basic distillation loss function", "Map code splitting concepts to knowledge distillation"]} />
+
+## From Full Bundle to Route Chunk
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="knowledge-distillation.ts">
+{`// Why soft targets matter
+// Hard label: [0, 1, 0] — "this is class 1"
+// Soft target: [0.05, 0.85, 0.10] — "this is probably class 1,
+//   but it shares some characteristics with class 2"
+
+// The soft target carries information about relationships between classes
+// A bearing failure (class 1) looks somewhat like shaft misalignment (class 2)
+// Hard labels lose this nuance. Soft targets preserve it.
+
+function softmax(logits: number[], temperature: number): number[] {
+  const scaled = logits.map(l => l / temperature);
+  const maxVal = Math.max(...scaled);
+  const exps = scaled.map(s => Math.exp(s - maxVal));
+  const sum = exps.reduce((a, b) => a + b, 0);
+  return exps.map(e => e / sum);
+}
+
+// Higher temperature → softer distribution → more knowledge transfer
+const logits = [5.0, 2.0, 0.5];
+console.log('T=1 (hard):', softmax(logits, 1).map(p => p.toFixed(3)));
+// [0.936, 0.047, 0.017] — almost one-hot
+console.log('T=3 (soft):', softmax(logits, 3).map(p => p.toFixed(3)));
+// [0.592, 0.253, 0.155] — reveals class relationships
+
+// Distillation loss: student tries to match teacher's soft outputs
+function distillationLoss(teacherProbs: number[], studentProbs: number[]): number {
+  return teacherProbs.reduce((loss, tp, i) =>
+    loss - tp * Math.log(studentProbs[i] + 1e-8), 0);
+}`}
+</CodeBlock>
+
+Temperature is the key parameter. At temperature 1, the teacher's outputs are nearly one-hot (hard). At higher temperatures, the distribution softens, revealing relationships between classes that the student can learn from. It is like the difference between binary "used/unused" in tree-shaking versus the nuanced dependency graph that code splitting uses.
+
+## Challenge
+
+Implement soft target generation using temperature-scaled softmax.
+
+<Exercise slug="distill-model" />
+
+<KeyTakeaways takeaways={["Knowledge distillation trains a small student to mimic a large teacher", "Soft targets (high temperature) carry more information than hard labels", "The student learns class relationships, not just correct answers", "Distillation can produce models at 2-5% of teacher size with 95%+ accuracy retention"]} />

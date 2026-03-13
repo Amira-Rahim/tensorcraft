@@ -1,0 +1,167 @@
+---
+slug: model-export
+title: "Model Export"
+moduleId: deployment
+themeId: neon-protocol
+order: 1
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Ryo stares at the trained Protocol Sentinel model in the browser dev tools. It works — but only on his machine. NEON: 'A model that cannot leave the machine that trained it is a prototype, not a product. Serialize it.'"
+  speaker: "Ryo"
+concept:
+  explanation: "Model serialization is saving a trained model's architecture and weights so it can be loaded elsewhere. If you have ever used JSON.stringify to save application state and JSON.parse to restore it later, you already understand the concept. A model's weights are its learned state — serialization freezes that state into a portable format."
+  bridge:
+    feTitle: "JSON.stringify/parse"
+    feCode: "const saved = JSON.stringify(appState); localStorage.setItem('state', saved); const restored = JSON.parse(localStorage.getItem('state'));"
+    mlTitle: "Model Serialization"
+    mlCode: "await model.save('localstorage://sentinel'); const loaded = await tf.loadLayersModel('localstorage://sentinel');"
+    tier: structural
+consequence:
+  narrative: "The model is saved. Ryo sends the exported files to Lin, who loads Protocol Sentinel on a completely different machine in District 4. The first remote detection lights up her screen. NEON: 'Now it is portable. Next, make it small enough to run everywhere.'"
+  nextLessonTeaser: "Next: shrinking the model so it runs on every device in the resistance network"
+hints:
+  - level: nudge
+    content: "model.save() returns a Promise and accepts different storage schemes like localstorage://, indexeddb://, downloads://, and file://"
+  - level: guidance
+    content: "Use model.save('downloads://sentinel') to export as files, or model.save('localstorage://sentinel') for browser storage. Loading uses tf.loadLayersModel with the same scheme."
+  - level: solution
+    content: "await model.save('downloads://sentinel'); // exports model.json + weights.bin. const loaded = await tf.loadLayersModel('localstorage://sentinel');"
+keywords:
+  - model-export
+  - serialization
+  - save-model
+  - weights
+  - model-json
+---
+
+<Dialogue speaker="Ryo">
+Protocol Sentinel detects Meridian drones with 94% accuracy. But it only runs here, on this machine, in this browser tab. If Meridian takes out this safehouse, we lose everything. We need to export it — make it portable.
+</Dialogue>
+
+<Dialogue speaker="NEON">
+A model that cannot be saved is a model that does not exist. Serialize the architecture and weights. Think of it like saving your application state — except the state is millions of learned parameters.
+</Dialogue>
+
+You have trained a model. It works. But it lives in memory — volatile, fragile, bound to a single browser session. Serialization turns that ephemeral state into files you can store, transfer, and reload anywhere.
+
+<LearningObjectives objectives={["Serialize a TensorFlow.js model to multiple storage backends", "Understand the model.json + weights binary shard format", "Export models for download, IndexedDB, and HTTP hosting", "Load a previously saved model and verify it produces identical predictions"]} />
+
+## Saving State, Saving Models
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+As a frontend engineer, you save application state constantly — to localStorage, to IndexedDB, to a server. Model export is the same pattern. The model's "state" is its architecture (layers, shapes, activations) plus its weights (the learned numbers). TensorFlow.js splits these into a JSON topology file and one or more binary weight shards.
+
+<CodeBlock language="typescript" title="model-export.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Assume 'model' is your trained Protocol Sentinel model
+
+// Save to browser localStorage
+await model.save('localstorage://protocol-sentinel');
+
+// Save to IndexedDB (better for large models)
+await model.save('indexeddb://protocol-sentinel');
+
+// Trigger a file download (model.json + .bin weight shards)
+await model.save('downloads://protocol-sentinel');
+
+// Save to an HTTP endpoint (POST request)
+await model.save('http://safehouse-api.neon-city.net/models');
+
+// Check what has been saved locally
+const savedModels = await tf.io.listModels();
+console.log(savedModels);
+// {
+//   'localstorage://protocol-sentinel': { dateSaved, modelTopologyBytes, weightSpecsBytes, weightDataBytes },
+//   'indexeddb://protocol-sentinel': { ... }
+// }`}
+</CodeBlock>
+
+## Understanding the Export Format
+
+When you export a TensorFlow.js model, you get two pieces:
+
+- **model.json** — The architecture topology (layer types, shapes, activation functions) plus a manifest listing weight shard files
+- **group1-shard1of1.bin** — The actual weight data as a binary ArrayBuffer, split into shards for large models
+
+<CodeBlock language="typescript" title="model-topology.ts">
+{`// The model.json structure (simplified)
+const topology = {
+  modelTopology: {
+    class_name: "Sequential",
+    config: {
+      layers: [
+        { class_name: "Conv2D", config: { filters: 32, kernel_size: [3, 3] } },
+        { class_name: "MaxPooling2D", config: { pool_size: [2, 2] } },
+        { class_name: "Dense", config: { units: 128, activation: "relu" } },
+        { class_name: "Dense", config: { units: 5, activation: "softmax" } }
+      ]
+    }
+  },
+  weightsManifest: [{
+    paths: ["group1-shard1of1.bin"],
+    weights: [
+      { name: "conv2d/kernel", shape: [3, 3, 3, 32], dtype: "float32" },
+      { name: "conv2d/bias", shape: [32], dtype: "float32" }
+    ]
+  }]
+};
+
+// Loading from hosted files
+const model = await tf.loadLayersModel('/models/sentinel/model.json');
+
+// Verify the loaded model works
+const testInput = tf.randomNormal([1, 224, 224, 3]);
+const prediction = model.predict(testInput) as tf.Tensor;
+console.log('Output shape:', prediction.shape); // [1, 5]
+prediction.print();`}
+</CodeBlock>
+
+## Verifying Export Integrity
+
+Never deploy without verifying. A corrupted export means silent failures in the field.
+
+<CodeBlock language="typescript" title="verify-export.ts">
+{`async function verifyModelExport(
+  original: tf.LayersModel,
+  savedPath: string
+): Promise<boolean> {
+  // Load the exported model
+  const loaded = await tf.loadLayersModel(savedPath);
+
+  // Create identical test input
+  const testInput = tf.randomNormal([1, 224, 224, 3]);
+
+  // Run both models
+  const originalOutput = original.predict(testInput) as tf.Tensor;
+  const loadedOutput = loaded.predict(testInput) as tf.Tensor;
+
+  // Compare outputs
+  const originalData = await originalOutput.data();
+  const loadedData = await loadedOutput.data();
+
+  const isIdentical = originalData.every(
+    (val, i) => Math.abs(val - loadedData[i]) < 1e-6
+  );
+
+  // Clean up
+  testInput.dispose();
+  originalOutput.dispose();
+  loadedOutput.dispose();
+
+  console.log(isIdentical ? 'Export verified.' : 'MISMATCH DETECTED.');
+  return isIdentical;
+}
+
+await verifyModelExport(model, 'indexeddb://protocol-sentinel');`}
+</CodeBlock>
+
+## Challenge
+
+Export a model and verify its integrity after reloading.
+
+<Exercise slug="export-model" />
+
+<KeyTakeaways takeaways={["Model serialization is the ML equivalent of JSON.stringify — it saves learned state into a portable format", "TensorFlow.js exports a model.json topology file plus binary weight shards", "Multiple storage backends are available: localStorage, IndexedDB, file download, and HTTP", "Always verify that a loaded model produces identical outputs to the original before deploying"]} />

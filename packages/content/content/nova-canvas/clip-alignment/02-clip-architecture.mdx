@@ -1,0 +1,137 @@
+---
+slug: clip-architecture
+title: "CLIP Architecture"
+moduleId: clip-alignment
+themeId: nova-canvas
+order: 2
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "Ren draws the architecture. 'Two encoders. One for images, one for text. Trained together on 400 million image-text pairs from the internet. The result: a shared space where sunset photo and the words sunset over a digital city are neighbors.' Kai: 'It is Algolia but for concepts — multi-index search across modalities.'"
+  speaker: "Ren"
+concept:
+  explanation: "CLIP (Contrastive Language-Image Pretraining) trains dual encoders on massive image-text data to create a shared embedding space. Like Algolia multi-index search — you can search across different content types (images, text) with a single query because they share the same ranking space."
+  bridge:
+    feTitle: "Algolia multi-index search"
+    feCode: "algolia.search('sunset city', { indices: ['images', 'articles'] });"
+    mlTitle: "CLIP dual encoder"
+    mlCode: "const results = clip.search(textQuery, imageDatabase);"
+    tier: structural
+consequence:
+  narrative: "CLIP understands nuance. 'A melancholy cityscape at twilight' and 'a city at night' produce different embeddings — the model encodes mood, not just content. Kai smiles: 'Mood is a direction in a 512-dimensional vector space.'"
+  nextLessonTeaser: "Next: zero-shot classification — classifying images without any training examples"
+hints:
+  - level: nudge
+    content: "Algolia multi-index search returns results from different content types ranked in the same space"
+  - level: guidance
+    content: "Two separate encoders (image: CNN/ViT, text: Transformer) trained with contrastive loss on image-text pairs"
+  - level: solution
+    content: "Image encoder + text encoder + projection heads + contrastive loss. Both encoders output 512-dim vectors. Train on millions of image-caption pairs."
+keywords:
+  - CLIP
+  - dual-encoder
+  - contrastive-pretraining
+  - multi-index
+  - alignment
+---
+
+<Dialogue speaker="Ren">
+CLIP is two encoders trained together. The image encoder sees pixels. The text encoder reads words. Contrastive loss pulls matching pairs together. After training on 400 million pairs, the shared space understands concepts — not just pixels and tokens.
+</Dialogue>
+
+<Dialogue speaker="Kai">
+It is like Algolia multi-index search. You type a query and get results from images, articles, and products — all ranked in the same relevance space. CLIP does the same thing: text and images, ranked by conceptual similarity.
+</Dialogue>
+
+Algolia lets you search across different content types with a single query because they share a ranking space. CLIP creates the same unified search across modalities — given text, find matching images; given an image, find matching text.
+
+<LearningObjectives objectives={["Understand the CLIP dual-encoder architecture: image encoder + text encoder + shared space", "Implement the training loop with contrastive loss on image-text batches", "Use learned embeddings for cross-modal search: text query -> image results", "Connect CLIP to multi-index search systems like Algolia"]} />
+
+## The CLIP Architecture
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="clip-architecture.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+class CLIPModel {
+  imageEncoder: tf.LayersModel;
+  textEncoder: tf.LayersModel;
+  imageProjection: tf.LayersModel;
+  textProjection: tf.LayersModel;
+  temperature: tf.Variable;
+
+  constructor(embeddingDim: number = 512) {
+    // Image encoder: CNN-based feature extractor
+    this.imageEncoder = this.buildImageEncoder(embeddingDim);
+    // Text encoder: embedding + pooling
+    this.textEncoder = this.buildTextEncoder(embeddingDim);
+    // Projection heads: map to shared space
+    this.imageProjection = this.buildProjection(embeddingDim, embeddingDim);
+    this.textProjection = this.buildProjection(embeddingDim, embeddingDim);
+    // Learnable temperature
+    this.temperature = tf.variable(tf.scalar(0.07));
+  }
+
+  private buildImageEncoder(dim: number): tf.LayersModel {
+    const input = tf.input({ shape: [224, 224, 3] });
+    let x = tf.layers.conv2d({
+      filters: 64, kernelSize: 7, strides: 2, padding: 'same', activation: 'relu'
+    }).apply(input) as tf.SymbolicTensor;
+    x = tf.layers.maxPooling2d({ poolSize: 2 }).apply(x) as tf.SymbolicTensor;
+    x = tf.layers.conv2d({
+      filters: 128, kernelSize: 3, strides: 2, padding: 'same', activation: 'relu'
+    }).apply(x) as tf.SymbolicTensor;
+    x = tf.layers.globalAveragePooling2d({}).apply(x) as tf.SymbolicTensor;
+    const out = tf.layers.dense({ units: dim }).apply(x) as tf.SymbolicTensor;
+    return tf.model({ inputs: input, outputs: out });
+  }
+
+  private buildTextEncoder(dim: number): tf.LayersModel {
+    const input = tf.input({ shape: [77] }); // CLIP uses 77 token context
+    let x = tf.layers.embedding({
+      inputDim: 49408, outputDim: dim
+    }).apply(input) as tf.SymbolicTensor;
+    x = tf.layers.globalAveragePooling1d({}).apply(x) as tf.SymbolicTensor;
+    const out = tf.layers.dense({ units: dim }).apply(x) as tf.SymbolicTensor;
+    return tf.model({ inputs: input, outputs: out });
+  }
+
+  private buildProjection(inputDim: number, outputDim: number): tf.LayersModel {
+    const input = tf.input({ shape: [inputDim] });
+    const projected = tf.layers.dense({
+      units: outputDim
+    }).apply(input) as tf.SymbolicTensor;
+    return tf.model({ inputs: input, outputs: projected });
+  }
+
+  // Encode image to shared space
+  encodeImage(image: tf.Tensor4D): tf.Tensor2D {
+    const features = this.imageEncoder.predict(image) as tf.Tensor2D;
+    const projected = this.imageProjection.predict(features) as tf.Tensor2D;
+    return tf.div(projected, tf.norm(projected, 2, 1, true)) as tf.Tensor2D;
+  }
+
+  // Encode text to shared space
+  encodeText(tokens: tf.Tensor2D): tf.Tensor2D {
+    const features = this.textEncoder.predict(tokens) as tf.Tensor2D;
+    const projected = this.textProjection.predict(features) as tf.Tensor2D;
+    return tf.div(projected, tf.norm(projected, 2, 1, true)) as tf.Tensor2D;
+  }
+
+  // Search: find best matching image for a text query
+  search(query: tf.Tensor2D, images: tf.Tensor2D): tf.Tensor1D {
+    const queryEmb = this.encodeText(query);
+    const similarities = tf.matMul(queryEmb, images, false, true).squeeze();
+    return similarities as tf.Tensor1D;
+  }
+}`}
+</CodeBlock>
+
+## Challenge
+
+Build CLIP-style dual encoders that produce normalized embeddings in a shared space.
+
+<Exercise slug="clip-embeddings" />
+
+<KeyTakeaways takeaways={["CLIP = dual encoders (image + text) trained with contrastive loss on massive paired data", "Like Algolia multi-index search: different content types, one unified ranking space", "The learned temperature parameter controls how sharp the similarity distribution is", "After training, CLIP enables cross-modal search, zero-shot classification, and guided generation"]} />

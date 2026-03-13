@@ -1,0 +1,168 @@
+---
+slug: load-management
+title: "Load Management"
+moduleId: scale-reliability
+themeId: terra-grid
+order: 4
+estimatedMinutes: 25
+difficulty: advanced
+context:
+  narrative: "GRID reports the stress test peak. 'Prediction requests at 8,400 per second. Normal baseline is 2,100. Queue depth increasing.' Park configures the load management system to handle the spike without dropping critical predictions."
+  speaker: "GRID"
+concept:
+  explanation: "Load management for ML inference uses the same techniques as handling web traffic spikes — rate limiting, request queuing, and priority-based processing."
+  bridge:
+    feTitle: "Rate Limiting"
+    feCode: "// Express: rateLimit({ windowMs: 60000, max: 100 }) per client"
+    mlTitle: "Inference Throttling"
+    mlCode: "// Edge: inferenceLimit({ windowMs: 1000, max: 50 }) per device"
+    tier: identity
+consequence:
+  narrative: "The load manager prioritizes safety-critical predictions and queues routine monitoring. During the 4x spike, zero critical predictions are dropped. Routine monitoring delays average 340ms. Park: 'Priority queuing kept the critical path clear.'"
+  nextLessonTeaser: "Next: global operations — managing ML across time zones and regions"
+hints:
+  - level: nudge
+    content: "Priority queues process high-priority items first, like a web server handling health checks before regular requests"
+  - level: guidance
+    content: "Implement a PriorityQueue with critical/high/normal/low levels and per-level rate limits"
+  - level: solution
+    content: "Use a sorted queue, process critical first, apply token bucket rate limiting per priority level"
+keywords:
+  - load-management
+  - rate-limiting
+  - priority-queue
+  - backpressure
+---
+
+<Dialogue speaker="GRID">
+Prediction requests at 8,400 per second. Normal baseline: 2,100 per second. Queue depth: 342 and rising. Estimated processing delay for low-priority requests: 480ms.
+</Dialogue>
+
+<Dialogue speaker="Park Soo-Yeon">
+We cannot process everything at peak load, so we prioritize. Safety-critical predictions — gas leaks, electrical faults, structural anomalies — go first, always. Routine temperature monitoring can wait 500ms. The same way a web server handles health check endpoints before serving static assets under load.
+</Dialogue>
+
+You have implemented rate limiting on API endpoints: 100 requests per minute per client, with priority bypass for health checks. Load management for ML inference applies the same patterns. When prediction requests spike, queue them by priority, rate-limit by device, and shed low-priority load before touching the critical path.
+
+<LearningObjectives objectives={["Implement priority-based inference queuing for edge ML", "Build token bucket rate limiting for prediction requests", "Design load shedding strategies that protect critical predictions", "Monitor queue depth and processing latency under load"]} />
+
+## Priority Queue
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="load-manager.ts">
+{`// Priority-based load management — like API rate limiting with priority lanes
+
+type Priority = 'critical' | 'high' | 'normal' | 'low';
+
+interface PredictionRequest {
+  id: string;
+  deviceId: string;
+  priority: Priority;
+  input: Float32Array;
+  enqueuedAt: number;
+}
+
+class PriorityInferenceQueue {
+  private queues: Map<Priority, PredictionRequest[]> = new Map([
+    ['critical', []], ['high', []], ['normal', []], ['low', []],
+  ]);
+  private maxQueueSize: number;
+
+  constructor(maxQueueSize: number = 1000) {
+    this.maxQueueSize = maxQueueSize;
+  }
+
+  enqueue(request: PredictionRequest): boolean {
+    const queue = this.queues.get(request.priority)!;
+    // Load shedding: drop low-priority when queue is full
+    if (this.totalSize() >= this.maxQueueSize) {
+      if (request.priority === 'low') return false; // shed
+      // Drop oldest low-priority to make room
+      const lowQueue = this.queues.get('low')!;
+      if (lowQueue.length > 0) {
+        lowQueue.shift();
+      } else {
+        return false;
+      }
+    }
+    queue.push(request);
+    return true;
+  }
+
+  dequeue(): PredictionRequest | null {
+    // Process highest priority first
+    for (const priority of ['critical', 'high', 'normal', 'low'] as Priority[]) {
+      const queue = this.queues.get(priority)!;
+      if (queue.length > 0) return queue.shift()!;
+    }
+    return null;
+  }
+
+  totalSize(): number {
+    let total = 0;
+    this.queues.forEach(q => total += q.length);
+    return total;
+  }
+
+  stats(): { priority: Priority; queued: number }[] {
+    return [...this.queues.entries()].map(([p, q]) => ({
+      priority: p, queued: q.length,
+    }));
+  }
+}
+
+// Token bucket rate limiter per device
+class TokenBucket {
+  private tokens: number;
+  private lastRefill: number;
+
+  constructor(
+    private maxTokens: number,
+    private refillRatePerSecond: number,
+  ) {
+    this.tokens = maxTokens;
+    this.lastRefill = Date.now();
+  }
+
+  tryConsume(): boolean {
+    this.refill();
+    if (this.tokens > 0) {
+      this.tokens--;
+      return true;
+    }
+    return false;
+  }
+
+  private refill(): void {
+    const now = Date.now();
+    const elapsed = (now - this.lastRefill) / 1000;
+    this.tokens = Math.min(
+      this.maxTokens,
+      this.tokens + elapsed * this.refillRatePerSecond
+    );
+    this.lastRefill = now;
+  }
+}
+
+const queue = new PriorityInferenceQueue(500);
+const rateLimiter = new TokenBucket(50, 10); // 50 burst, 10/sec refill
+
+// Process incoming prediction request
+if (rateLimiter.tryConsume()) {
+  queue.enqueue({
+    id: 'req-001', deviceId: 'device-7alpha',
+    priority: 'critical', input: sensorData,
+    enqueuedAt: Date.now(),
+  });
+}
+console.log('Queue stats:', queue.stats());`}
+</CodeBlock>
+
+## Challenge
+
+Build a priority inference queue with token bucket rate limiting.
+
+<Exercise slug="manage-load" />
+
+<KeyTakeaways takeaways={["Priority queuing for ML inference mirrors API rate limiting — critical requests bypass the queue", "Token bucket rate limiting prevents any single device from overwhelming the inference pipeline", "Load shedding drops low-priority requests to protect capacity for critical predictions", "During a 4x traffic spike, zero critical predictions should be dropped — that is the design target"]} />

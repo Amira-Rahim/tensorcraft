@@ -1,0 +1,182 @@
+---
+slug: model-optimization
+title: "Model Optimization"
+moduleId: creative-deployment
+themeId: nova-canvas
+order: 2
+estimatedMinutes: 25
+difficulty: advanced
+context:
+  narrative: "The profiling data is clear: the model is too large for real-time gallery use. Petrov calls the team. 'We need a smaller model that produces the same quality. Distillation and quantization — the same tricks that make webpack bundles smaller.'"
+  speaker: "Petrov"
+concept:
+  explanation: "Model optimization reduces inference time by shrinking the model — quantization reduces precision (like image compression), distillation trains a smaller student model to mimic a larger teacher."
+  bridge:
+    feTitle: "Webpack Production Build"
+    feCode: "// minify + tree-shake + compress: 2MB → 200KB, same functionality"
+    mlTitle: "Model Optimization"
+    mlCode: "// quantize + distill + prune: 50MB → 5MB, similar quality"
+    tier: structural
+consequence:
+  narrative: "The optimized model runs in 340ms — down from 3.2 seconds. Petrov: 'Ten times faster. The quality drop is barely visible. Ship it.'"
+  nextLessonTeaser: "Next: caching and precomputation for instant responses"
+hints:
+  - level: nudge
+    content: "Think of quantization as reducing image quality from PNG to JPEG — lossy but much smaller"
+  - level: guidance
+    content: "Convert float32 weights to uint8 with tf.quantization, measure quality vs speed tradeoff"
+  - level: solution
+    content: "Use tf.GraphModel quantization during conversion, then benchmark both models side by side"
+keywords:
+  - quantization
+  - distillation
+  - optimization
+  - model-compression
+---
+
+<Dialogue speaker="Petrov">
+The model is 47 megabytes. It downloads in 8 seconds on gallery Wi-Fi. Inference takes 3 seconds. We need both numbers to drop by 10x. Same approach as production frontend builds — strip everything unnecessary.
+</Dialogue>
+
+<Dialogue speaker="Ren">
+Webpack takes a 2MB bundle and produces 200KB through minification, tree-shaking, and compression. Same functionality, tenth the size. Model optimization does the same thing with weights.
+</Dialogue>
+
+You have optimized frontend bundles your entire career. Minification removes whitespace. Tree-shaking removes dead code. Code splitting loads only what is needed. Model optimization applies the same principles: quantization reduces precision, pruning removes unnecessary weights, distillation transfers knowledge to a smaller architecture.
+
+<LearningObjectives objectives={["Apply weight quantization to reduce model size and inference time", "Understand knowledge distillation as training a small model to mimic a large one", "Measure the quality-speed tradeoff using generation benchmarks", "Choose the right optimization strategy based on deployment constraints"]} />
+
+## Quantization: Reducing Precision
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="quantization.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Float32 → Uint8 quantization
+// Like converting PNG → JPEG: smaller, slightly lossy, much faster
+async function quantizeWeights(model: tf.LayersModel): Promise<tf.LayersModel> {
+  const quantizedWeights = model.getWeights().map(weight => {
+    const data = weight.dataSync();
+    const min = Math.min(...data);
+    const max = Math.max(...data);
+    const scale = (max - min) / 255;
+
+    // Quantize: float32 → uint8 with scale and offset
+    const quantized = new Uint8Array(data.length);
+    for (let i = 0; i < data.length; i++) {
+      quantized[i] = Math.round((data[i] - min) / scale);
+    }
+
+    // Dequantize back to float32 for inference
+    const dequantized = new Float32Array(data.length);
+    for (let i = 0; i < data.length; i++) {
+      dequantized[i] = quantized[i] * scale + min;
+    }
+
+    return tf.tensor(dequantized, weight.shape);
+  });
+
+  model.setWeights(quantizedWeights);
+  return model;
+}
+
+// Measure size reduction
+const originalSize = model.getWeights()
+  .reduce((sum, w) => sum + w.size * 4, 0); // float32 = 4 bytes
+console.log('Original:', (originalSize / 1024 / 1024).toFixed(1), 'MB');
+// With quantization: effectively 1/4 the precision, ~4x smaller transfer`}
+</CodeBlock>
+
+## Knowledge Distillation
+
+<CodeBlock language="typescript" title="distillation.ts">
+{`// Train a small "student" to mimic a large "teacher"
+// Like code-splitting: the student handles common cases, teacher handles edge cases
+
+const teacher = await tf.loadLayersModel('/models/nova-canvas-full/model.json');
+
+// Student: 1/10th the parameters, same input/output shape
+const student = tf.sequential({
+  layers: [
+    tf.layers.dense({ inputShape: [128], units: 64, activation: 'relu' }),
+    tf.layers.dense({ units: 128, activation: 'relu' }),
+    tf.layers.dense({ units: 784, activation: 'tanh' }), // same output as teacher
+  ],
+});
+
+student.compile({ optimizer: tf.train.adam(0.001), loss: 'meanSquaredError' });
+
+// Distillation: student learns from teacher's outputs, not raw data
+async function distill(numBatches: number) {
+  for (let i = 0; i < numBatches; i++) {
+    const input = tf.randomNormal([32, 128]); // random latent vectors
+    const teacherOutput = teacher.predict(input) as tf.Tensor;
+
+    // Student learns to match teacher's output distribution
+    await student.fit(input, teacherOutput, { epochs: 1, verbose: 0 });
+
+    input.dispose();
+    teacherOutput.dispose();
+  }
+}
+
+await distill(500);
+
+// Compare inference speed
+async function benchmark(model: tf.LayersModel, label: string) {
+  const input = tf.randomNormal([1, 128]);
+  const start = performance.now();
+  for (let i = 0; i < 100; i++) {
+    const out = model.predict(input) as tf.Tensor;
+    await out.data();
+    out.dispose();
+  }
+  console.log(\`\${label}: \${((performance.now() - start) / 100).toFixed(1)}ms per inference\`);
+  input.dispose();
+}
+
+await benchmark(teacher, 'Teacher');  // ~320ms
+await benchmark(student, 'Student');  // ~34ms`}
+</CodeBlock>
+
+## Quality Comparison
+
+<CodeBlock language="typescript" title="quality-check.ts">
+{`// Measure quality loss from optimization — like Lighthouse scores for models
+async function compareQuality(
+  teacher: tf.LayersModel,
+  student: tf.LayersModel,
+  numSamples: number = 50
+): Promise<{ mse: number; correlation: number }> {
+  let totalMSE = 0;
+
+  for (let i = 0; i < numSamples; i++) {
+    const z = tf.randomNormal([1, 128]);
+    const teacherOut = (teacher.predict(z) as tf.Tensor).dataSync();
+    const studentOut = (student.predict(z) as tf.Tensor).dataSync();
+
+    const mse = Array.from(teacherOut).reduce((sum, v, j) =>
+      sum + Math.pow(v - studentOut[j], 2), 0) / teacherOut.length;
+    totalMSE += mse;
+    z.dispose();
+  }
+
+  return {
+    mse: totalMSE / numSamples,
+    correlation: 1 - (totalMSE / numSamples), // simplified quality score
+  };
+}
+
+const quality = await compareQuality(teacher, student);
+console.log('MSE:', quality.mse.toFixed(6));         // lower is better
+console.log('Quality:', (quality.correlation * 100).toFixed(1) + '%'); // higher is better`}
+</CodeBlock>
+
+## Challenge
+
+Optimize a model using quantization and measure the quality-speed tradeoff.
+
+<Exercise slug="optimize-model" />
+
+<KeyTakeaways takeaways={["Quantization reduces weight precision (float32 to uint8) — like image compression for model weights", "Knowledge distillation trains a small student model to mimic a large teacher — like code-splitting for ML", "Always benchmark both speed and quality after optimization — faster is useless if output quality collapses", "A 10x smaller model with 95% quality is often the right tradeoff for real-time applications"]} />

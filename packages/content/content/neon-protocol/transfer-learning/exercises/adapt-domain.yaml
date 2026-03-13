@@ -1,0 +1,80 @@
+slug: adapt-domain
+lessonSlug: domain-adaptation
+title: "Build Domain Augmentation Transforms"
+instructions: "Write a function that takes pixel values (0-255) and applies night-time domain augmentation: multiply by a brightness factor, add noise values, and clamp the result to 0-255. This simulates adapting training data from a daylight domain (source) to Neon City's night conditions (target) — like building i18n transforms that adapt your app for a new locale."
+starterCode: |
+  interface AugmentConfig {
+    brightnessFactor: number; // 0.3 to 0.7
+    noiseValues: number[];   // pre-generated noise, same length as pixels
+  }
+
+  function augmentForNight(
+    pixels: number[],
+    config: AugmentConfig
+  ): number[] {
+    // 1. Multiply each pixel by brightnessFactor
+    // 2. Add corresponding noise value
+    // 3. Clamp result to 0-255 and round to integer
+    return []; // your code here
+  }
+solutionCode: |
+  interface AugmentConfig {
+    brightnessFactor: number;
+    noiseValues: number[];
+  }
+
+  function augmentForNight(
+    pixels: number[],
+    config: AugmentConfig
+  ): number[] {
+    return pixels.map((pixel, i) => {
+      const dimmed = pixel * config.brightnessFactor;
+      const noisy = dimmed + config.noiseValues[i];
+      return Math.round(Math.max(0, Math.min(255, noisy)));
+    });
+  }
+testCode: |
+  describe('augmentForNight', () => {
+    it('reduces brightness', () => {
+      const result = augmentForNight([200, 200, 200], {
+        brightnessFactor: 0.5,
+        noiseValues: [0, 0, 0],
+      });
+      expect(result).toEqual([100, 100, 100]);
+    });
+
+    it('adds noise', () => {
+      const result = augmentForNight([100, 100, 100], {
+        brightnessFactor: 1.0,
+        noiseValues: [10, -10, 5],
+      });
+      expect(result).toEqual([110, 90, 105]);
+    });
+
+    it('clamps to 0-255', () => {
+      const result = augmentForNight([250, 10], {
+        brightnessFactor: 1.0,
+        noiseValues: [20, -20],
+      });
+      expect(result[0]).toBe(255);
+      expect(result[1]).toBe(0);
+    });
+
+    it('rounds to integers', () => {
+      const result = augmentForNight([100], {
+        brightnessFactor: 0.33,
+        noiseValues: [0],
+      });
+      expect(Number.isInteger(result[0])).toBe(true);
+    });
+
+    it('combines brightness and noise', () => {
+      const result = augmentForNight([200], {
+        brightnessFactor: 0.5,
+        noiseValues: [10],
+      });
+      expect(result[0]).toBe(110); // 200 * 0.5 + 10
+    });
+  });
+estimatedMinutes: 6
+difficulty: intermediate

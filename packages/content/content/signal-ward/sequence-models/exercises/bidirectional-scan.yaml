@@ -1,0 +1,110 @@
+slug: bidirectional-scan
+lessonSlug: bidirectional-models
+title: "Bidirectional Scan"
+instructions: "Build a bidirectional LSTM model for clinical text classification. Create buildBiLstmModel with: embedding (inputDim: 300, outputDim: 32, inputLength: 50), bidirectional LSTM (units: 32, mergeMode: 'concat'), dense (units: 16, relu), and dense (units: 1, sigmoid). Also implement scanBothDirections that simulates bidirectional processing using Array reduce() and reduceRight() to build forward and backward context strings for each token position."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function buildBiLstmModel(): tf.Sequential {
+    const model = tf.sequential();
+    // Add embedding: inputDim=300, outputDim=32, inputLength=50
+    // Add bidirectional LSTM: units=32, mergeMode='concat'
+    // Add dense: units=16, activation='relu'
+    // Add dense: units=1, activation='sigmoid'
+    // Compile with adam + binaryCrossentropy
+    return model;
+  }
+
+  function scanBothDirections(tokens: string[]): {
+    forward: string[];
+    backward: string[];
+  } {
+    // For each position, build the accumulated context from each direction
+    // forward[i] = tokens[0] through tokens[i] joined by ' → '
+    // backward[i] = tokens[n-1] through tokens[i] joined by ' → '
+    return { forward: [], backward: [] };
+  }
+
+  const biModel = buildBiLstmModel();
+  const biParams = biModel.countParams();
+  const scan = scanBothDirections(['patient', 'denied', 'chest', 'pain']);
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function buildBiLstmModel(): tf.Sequential {
+    const model = tf.sequential();
+    model.add(tf.layers.embedding({
+      inputDim: 300,
+      outputDim: 32,
+      inputLength: 50,
+    }));
+    model.add(tf.layers.bidirectional({
+      layer: tf.layers.lstm({ units: 32 }),
+      mergeMode: 'concat',
+    }));
+    model.add(tf.layers.dense({ units: 16, activation: 'relu' }));
+    model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
+    model.compile({
+      optimizer: 'adam',
+      loss: 'binaryCrossentropy',
+    });
+    return model;
+  }
+
+  function scanBothDirections(tokens: string[]): {
+    forward: string[];
+    backward: string[];
+  } {
+    const forward: string[] = [];
+    tokens.reduce((acc, token) => {
+      const ctx = acc ? acc + ' → ' + token : token;
+      forward.push(ctx);
+      return ctx;
+    }, '');
+
+    const backward: string[] = new Array(tokens.length).fill('');
+    tokens.reduceRight((acc, token, idx) => {
+      const ctx = acc ? acc + ' → ' + token : token;
+      backward[idx] = ctx;
+      return ctx;
+    }, '');
+
+    return { forward, backward };
+  }
+
+  const biModel = buildBiLstmModel();
+  const biParams = biModel.countParams();
+  const scan = scanBothDirections(['patient', 'denied', 'chest', 'pain']);
+testCode: |
+  describe('Bidirectional Scan', () => {
+    it('model has 4 layers', () => {
+      expect(biModel.layers.length).toBe(4);
+    });
+    it('second layer is Bidirectional', () => {
+      expect(biModel.layers[1].getClassName()).toBe('Bidirectional');
+    });
+    it('produces valid prediction', async () => {
+      const input = tf.zeros([1, 50], 'int32');
+      const pred = biModel.predict(input) as tf.Tensor;
+      const val = (await pred.array()) as number[][];
+      expect(val[0][0]).toBeGreaterThanOrEqual(0);
+      expect(val[0][0]).toBeLessThanOrEqual(1);
+      tf.dispose([input, pred]);
+    });
+    it('forward scan accumulates left-to-right', () => {
+      expect(scan.forward[0]).toBe('patient');
+      expect(scan.forward[1]).toBe('patient → denied');
+      expect(scan.forward[3]).toBe('patient → denied → chest → pain');
+    });
+    it('backward scan accumulates right-to-left', () => {
+      expect(scan.backward[3]).toBe('pain');
+      expect(scan.backward[2]).toBe('pain → chest');
+      expect(scan.backward[0]).toBe('pain → chest → denied → patient');
+    });
+    it('forward and backward have same length', () => {
+      expect(scan.forward.length).toBe(scan.backward.length);
+      expect(scan.forward.length).toBe(4);
+    });
+  });
+estimatedMinutes: 15
+difficulty: intermediate

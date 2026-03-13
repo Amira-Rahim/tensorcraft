@@ -1,0 +1,100 @@
+---
+slug: computational-budgets
+title: "Computational Budgets"
+moduleId: optimization-fundamentals
+themeId: terra-grid
+order: 3
+estimatedMinutes: 20
+difficulty: intermediate
+context:
+  narrative: "GRID establishes hard computational budgets for every model deployed to the field."
+  speaker: "GRID"
+concept:
+  explanation: "Setting computational budgets for models is like setting performance budgets in Lighthouse — hard limits that cannot be exceeded."
+  bridge:
+    feTitle: "Lighthouse Budget"
+    feCode: "// performance-budget.json\n{ \"resourceSizes\": [{ \"resourceType\": \"script\", \"budget\": 300 }] }"
+    mlTitle: "Model Budget"
+    mlCode: "// model-budget.json\n{ \"maxSizeMB\": 50, \"maxLatencyMs\": 89, \"maxRamMB\": 307 }"
+    tier: structural
+consequence:
+  narrative: "Every model now has a deployment budget. No exceptions."
+  nextLessonTeaser: "Next: standardized benchmarking"
+hints:
+  - level: nudge
+    content: "Define your budget based on device constraints: 60% of RAM, storage, latency target"
+  - level: guidance
+    content: "Create a budget object with maxSizeMB, maxLatencyMs, maxRamMB"
+  - level: solution
+    content: "Check model metrics against budget thresholds and return pass/fail"
+keywords:
+  - performance-budget
+  - constraints
+  - lighthouse
+  - limits
+---
+
+<Dialogue speaker="GRID">
+New deployment policy: no model ships without passing budget validation. Maximum model size: 50MB. Maximum inference latency: 89ms. Maximum RAM usage: 307MB. These are not guidelines. They are requirements.
+</Dialogue>
+
+<Dialogue speaker="Park Soo-Yeon">
+I have seen too many models that work in staging and crash in production because nobody set hard limits. This is our Lighthouse budget, but for ML.
+</Dialogue>
+
+You set performance budgets in Lighthouse: maximum bundle size, maximum time-to-interactive, maximum total blocking time. If the budget fails, the build fails. Model deployment budgets work exactly the same way.
+
+<LearningObjectives objectives={["Define computational budgets for edge model deployment", "Calculate budget thresholds from device specifications", "Validate models against budget constraints before deployment", "Apply Lighthouse performance budget concepts to ML models"]} />
+
+## Hard Limits
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="computational-budget.ts">
+{`interface ModelBudget {
+  maxSizeMB: number;
+  maxRamMB: number;
+  maxLatencyMs: number;
+  maxParams: number;
+}
+
+interface ModelMetrics {
+  sizeMB: number;
+  ramMB: number;
+  latencyMs: number;
+  params: number;
+}
+
+function createBudget(deviceRamMB: number, storageGB: number, targetLatencyMs: number): ModelBudget {
+  return {
+    maxSizeMB: storageGB * 1024 * 0.25,   // 25% of storage
+    maxRamMB: deviceRamMB * 0.6,            // 60% of RAM
+    maxLatencyMs: targetLatencyMs,
+    maxParams: (deviceRamMB * 0.6 * 1024 * 1024) / 4 // Float32
+  };
+}
+
+function validateBudget(metrics: ModelMetrics, budget: ModelBudget): { pass: boolean; violations: string[] } {
+  const violations: string[] = [];
+  if (metrics.sizeMB > budget.maxSizeMB) violations.push(\`Size \${metrics.sizeMB}MB > \${budget.maxSizeMB}MB\`);
+  if (metrics.ramMB > budget.maxRamMB) violations.push(\`RAM \${metrics.ramMB}MB > \${budget.maxRamMB}MB\`);
+  if (metrics.latencyMs > budget.maxLatencyMs) violations.push(\`Latency \${metrics.latencyMs}ms > \${budget.maxLatencyMs}ms\`);
+  return { pass: violations.length === 0, violations };
+}
+
+const budget = createBudget(512, 4, 89);
+console.log(budget);
+// { maxSizeMB: 1024, maxRamMB: 307.2, maxLatencyMs: 89, maxParams: 80530636 }
+
+const result = validateBudget({ sizeMB: 200, ramMB: 400, latencyMs: 50, params: 5000000 }, budget);
+console.log(result);
+// { pass: false, violations: ["RAM 400MB > 307.2MB"] }`}
+</CodeBlock>
+
+## Challenge
+
+Create and validate computational budgets for Terra Grid devices.
+
+<Exercise slug="set-budgets" />
+
+<KeyTakeaways takeaways={["Computational budgets are hard limits derived from device specifications", "Apply the 60% RAM rule, 25% storage rule, and latency targets", "Budget validation should block deployment — like failing a Lighthouse audit", "Define budgets before optimization so you know exactly what 'done' looks like"]} />

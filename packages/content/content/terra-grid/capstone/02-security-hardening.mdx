@@ -1,0 +1,139 @@
+---
+slug: security-hardening
+title: "Security Hardening"
+moduleId: tg-capstone
+themeId: terra-grid
+order: 2
+estimatedMinutes: 25
+difficulty: advanced
+context:
+  narrative: "Jin Takahashi conducts the final security review. 'Before this goes to 47 sites, I need to verify every attack surface. Model tampering, adversarial inputs, data exfiltration, unauthorized model updates. We lock it down or we do not ship.'"
+  speaker: "Jin Takahashi"
+concept:
+  explanation: "Security hardening for ML systems follows the same OWASP-style checklist approach as web application security audits — identify attack surfaces, mitigate risks, verify controls."
+  bridge:
+    feTitle: "OWASP Security Checklist"
+    feCode: "// XSS prevention, CSRF tokens, CSP headers, input sanitization"
+    mlTitle: "ML Security Checklist"
+    mlCode: "// Model integrity, input validation, adversarial detection, update auth"
+    tier: structural
+consequence:
+  narrative: "Jin's security audit passes all 24 checks. Model integrity verified with SHA-256 hashes. Input validation catches 99.7% of adversarial patterns. Update authentication requires multi-factor from authorized operators only. 'Hardened. Ship it.'"
+  nextLessonTeaser: "Next: disaster recovery — planning for the worst-case scenario"
+hints:
+  - level: nudge
+    content: "Start with an attack surface inventory — list every way an attacker could compromise the ML system"
+  - level: guidance
+    content: "Implement model integrity checks (hash verification) and input validation (range bounds, anomaly detection)"
+  - level: solution
+    content: "Create a SecurityAuditor class that runs a checklist of automated verification checks"
+keywords:
+  - security-hardening
+  - owasp
+  - model-integrity
+  - adversarial-defense
+---
+
+<Dialogue speaker="Jin Takahashi">
+Before this goes to 47 sites, every attack surface gets reviewed. Model files — can someone swap in a tampered model? Input data — can adversarial sensor readings trick the system? Update channel — can an unauthorized party push a model update? Each one gets a control and a verification test.
+</Dialogue>
+
+<Dialogue speaker="Hassan Al-Rashid">
+The adversarial sensor incident from the stress test proved the point. Someone fed crafted readings that made the model ignore a cooling system failure. We cannot deploy without hardening against that class of attack.
+</Dialogue>
+
+You run OWASP security audits on web applications: check for XSS, verify CSRF tokens, enforce CSP headers, sanitize inputs. ML security hardening follows the same checklist discipline. Identify attack surfaces specific to ML — model tampering, adversarial inputs, data poisoning, unauthorized updates — and implement controls for each one.
+
+<LearningObjectives objectives={["Conduct a security audit for an edge ML deployment", "Implement model integrity verification using cryptographic hashes", "Build input validation that detects adversarial sensor readings", "Design secure model update channels with authentication and verification"]} />
+
+## Security Audit
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="security-audit.ts">
+{`// ML security audit — OWASP-style checklist for edge ML
+
+interface SecurityCheck {
+  id: string;
+  category: 'model-integrity' | 'input-validation' | 'update-auth' | 'data-protection';
+  name: string;
+  verify: () => Promise<boolean>;
+}
+
+class SecurityAuditor {
+  private checks: SecurityCheck[] = [];
+
+  addCheck(check: SecurityCheck): void {
+    this.checks.push(check);
+  }
+
+  async runAudit(): Promise<{
+    passed: number; failed: number; results: { id: string; name: string; passed: boolean }[];
+  }> {
+    const results = [];
+    for (const check of this.checks) {
+      const passed = await check.verify();
+      results.push({ id: check.id, name: check.name, passed });
+    }
+    return {
+      passed: results.filter(r => r.passed).length,
+      failed: results.filter(r => !r.passed).length,
+      results,
+    };
+  }
+}
+
+// Model integrity — verify model files have not been tampered with
+async function verifyModelIntegrity(
+  modelBuffer: ArrayBuffer,
+  expectedHash: string
+): Promise<boolean> {
+  const hashBuffer = await crypto.subtle.digest('SHA-256', modelBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return hash === expectedHash;
+}
+
+// Input validation — detect adversarial sensor readings
+function validateSensorInput(readings: Float32Array, bounds: {
+  min: number; max: number; maxRateOfChange: number;
+}): { valid: boolean; anomalies: number[] } {
+  const anomalies: number[] = [];
+  for (let i = 0; i < readings.length; i++) {
+    if (readings[i] < bounds.min || readings[i] > bounds.max) {
+      anomalies.push(i);
+    }
+    if (i > 0 && Math.abs(readings[i] - readings[i - 1]) > bounds.maxRateOfChange) {
+      anomalies.push(i);
+    }
+  }
+  return { valid: anomalies.length === 0, anomalies };
+}
+
+// Run audit
+const auditor = new SecurityAuditor();
+auditor.addCheck({
+  id: 'SEC-001', category: 'model-integrity',
+  name: 'Model file hash verification',
+  verify: async () => verifyModelIntegrity(modelBuffer, knownHash),
+});
+auditor.addCheck({
+  id: 'SEC-002', category: 'input-validation',
+  name: 'Sensor bounds validation',
+  verify: async () => {
+    const result = validateSensorInput(testData, { min: -50, max: 200, maxRateOfChange: 10 });
+    return result.valid;
+  },
+});
+
+const report = await auditor.runAudit();
+console.log(\`Audit: \${report.passed}/\${report.passed + report.failed} checks passed\`);`}
+</CodeBlock>
+
+## Challenge
+
+Build a security auditor with model integrity and input validation checks.
+
+<Exercise slug="harden-security" />
+
+<KeyTakeaways takeaways={["ML security hardening follows the same checklist discipline as OWASP web application audits", "Model integrity verification uses cryptographic hashes to detect tampering", "Input validation catches adversarial sensor readings before they reach the model", "Secure update channels prevent unauthorized model deployments to edge devices"]} />

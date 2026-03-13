@@ -1,0 +1,268 @@
+---
+slug: probability-and-bayes
+title: "Probability & Bayesian Thinking"
+moduleId: math-deep-dive
+themeId: shared
+order: 6
+estimatedMinutes: 35
+difficulty: advanced
+companionTo: training-loop
+context:
+  narrative: "Every model has beliefs about the world. Bayesian thinking makes those beliefs explicit and updateable."
+  speaker: "Instructor"
+concept:
+  explanation: "Bayes' theorem updates prior beliefs with evidence to produce posterior beliefs — the same pattern as state management."
+  bridge:
+    feTitle: "State Management"
+    feCode: "const newState = reducer(prevState, action)"
+    mlTitle: "Bayes Update"
+    mlCode: "posterior = likelihood * prior / evidence"
+    tier: structural
+consequence:
+  narrative: "Bayesian thinking reveals why regularization works and how to reason about model uncertainty."
+  nextLessonTeaser: "You've completed the Math Deep Dive companion track"
+hints:
+  - level: nudge
+    content: "A prior is your default belief, a posterior is your belief after seeing data — like default state vs. state after user interaction"
+  - level: guidance
+    content: "Bayes: P(A|B) = P(B|A) * P(A) / P(B) — update prior P(A) with likelihood P(B|A)"
+  - level: solution
+    content: "Implement the update loop: for each observation, posterior = normalize(likelihood * prior)"
+keywords:
+  - bayes-theorem
+  - prior
+  - posterior
+  - likelihood
+  - map-estimation
+  - regularization
+---
+
+<Dialogue speaker="Instructor">
+In the Training Loop module, you used L2 regularization to prevent overfitting. But why does adding a penalty on weight magnitude help? The answer comes from Bayesian probability: L2 regularization is equivalent to assuming a Gaussian prior on your weights. This lesson connects probability theory to the practical techniques you've already used.
+</Dialogue>
+
+<LearningObjectives objectives={["Apply Bayes' theorem to update beliefs with new evidence", "Connect priors and posteriors to state management patterns in frontend code", "Explain why L2 regularization is a Gaussian prior on weights", "Implement MAP estimation and compare it to maximum likelihood", "Understand why dropout approximates Bayesian inference"]} />
+
+## Priors and Posteriors as State
+
+In frontend development, state management follows a clear pattern: you start with a default state, then update it as events arrive. Bayesian inference works identically.
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="bayes-as-state.ts">
+{`// Frontend state management
+type State = { count: number };
+type Action = { type: 'increment' } | { type: 'decrement' };
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case 'increment': return { count: state.count + 1 };
+    case 'decrement': return { count: state.count - 1 };
+  }
+}
+
+// Bayesian inference is the same pattern:
+// Prior (default state) + Evidence (action) = Posterior (new state)
+
+// P(hypothesis | data) = P(data | hypothesis) * P(hypothesis) / P(data)
+// posterior            = likelihood           * prior           / evidence
+
+function bayesUpdate(
+  prior: number[],        // P(hypothesis) — your current beliefs
+  likelihood: number[],   // P(data | hypothesis) — how well each hypothesis explains the data
+): number[] {
+  // Unnormalized posterior
+  const unnormalized = prior.map((p, i) => p * likelihood[i]);
+  // Normalize so probabilities sum to 1
+  const total = unnormalized.reduce((s, v) => s + v, 0);
+  return unnormalized.map(v => v / total);
+}`}
+</CodeBlock>
+
+## Bayes' Theorem in Action
+
+<CodeBlock language="typescript" title="bayes-example.ts">
+{`// Scenario: Is a user a bot or human?
+// Prior: 5% of traffic is bots
+// Evidence: user clicked 100 times in 10 seconds
+
+function bayesUpdate(prior: number[], likelihood: number[]): number[] {
+  const unnormalized = prior.map((p, i) => p * likelihood[i]);
+  const total = unnormalized.reduce((s, v) => s + v, 0);
+  return unnormalized.map(v => v / total);
+}
+
+// Prior beliefs: [P(human), P(bot)]
+let beliefs = [0.95, 0.05];
+
+// Observation 1: 100 clicks in 10 seconds
+// Likelihood: P(100 clicks | human) = 0.001, P(100 clicks | bot) = 0.8
+beliefs = bayesUpdate(beliefs, [0.001, 0.8]);
+console.log('After rapid clicks:', beliefs.map(b => b.toFixed(4)));
+// [0.0231, 0.9769] — now we strongly suspect bot
+
+// Observation 2: user solves a CAPTCHA correctly
+// Likelihood: P(solve | human) = 0.95, P(solve | bot) = 0.1
+beliefs = bayesUpdate(beliefs, [0.95, 0.1]);
+console.log('After CAPTCHA pass:', beliefs.map(b => b.toFixed(4)));
+// Beliefs updated again — maybe it IS a human after all
+
+// Each observation updates our beliefs incrementally
+// This is EXACTLY how sequential learning works in ML`}
+</CodeBlock>
+
+## Regularization as a Prior
+
+Here's the deep connection: when you add L2 regularization to your loss function, you're making a Bayesian statement about your weights.
+
+<CodeBlock language="typescript" title="regularization-prior.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Standard loss: minimize prediction error
+// L = sum((y_pred - y_true)^2)
+
+// L2 regularized loss: minimize error + keep weights small
+// L = sum((y_pred - y_true)^2) + lambda * sum(w^2)
+
+// Bayesian interpretation:
+// sum((y_pred - y_true)^2)  =  -log P(data | weights)    [likelihood]
+// lambda * sum(w^2)         =  -log P(weights)            [prior]
+// Total loss                =  -log P(weights | data)     [posterior]
+
+// Minimizing L2-regularized loss = finding the MAP estimate
+// (Maximum A Posteriori — the most probable weights given data AND prior)
+
+// The lambda * sum(w^2) term is equivalent to a Gaussian prior
+// centered at zero: P(w) = Normal(0, 1/lambda)
+// Larger lambda = tighter prior = more regularization
+
+// Demonstration
+const x = tf.tensor2d([[1], [2], [3], [4], [5]]);
+const yTrue = tf.tensor2d([[2.1], [3.9], [6.2], [7.8], [10.1]]);
+
+// Without regularization (pure maximum likelihood)
+const wML = tf.variable(tf.randomNormal([1, 1]));
+const optimizerML = tf.train.sgd(0.01);
+for (let i = 0; i < 200; i++) {
+  optimizerML.minimize(() => tf.losses.meanSquaredError(yTrue, tf.matMul(x, wML)));
+}
+console.log('ML estimate:', await wML.array());
+
+// With L2 regularization (MAP with Gaussian prior)
+const wMAP = tf.variable(tf.randomNormal([1, 1]));
+const lambda = 0.1;
+const optimizerMAP = tf.train.sgd(0.01);
+for (let i = 0; i < 200; i++) {
+  optimizerMAP.minimize(() => {
+    const pred = tf.matMul(x, wMAP);
+    const mseLoss = tf.losses.meanSquaredError(yTrue, pred);
+    const l2Penalty = wMAP.square().sum().mul(lambda);
+    return mseLoss.add(l2Penalty) as tf.Scalar;
+  });
+}
+console.log('MAP estimate:', await wMAP.array());
+// MAP estimate is pulled toward zero by the prior`}
+</CodeBlock>
+
+## Maximum Likelihood vs MAP
+
+<CodeBlock language="typescript" title="ml-vs-map.ts">
+{`// Maximum Likelihood (ML): Find weights that maximize P(data | weights)
+//   = Find the weights that best explain the data
+//   = No prior, no regularization
+//   = Can overfit with limited data
+
+// Maximum A Posteriori (MAP): Find weights that maximize P(weights | data)
+//   = P(data | weights) * P(weights) — likelihood times prior
+//   = L2 regularization when prior is Gaussian
+//   = L1 regularization when prior is Laplacian
+//   = Better generalization
+
+// With lots of data, ML and MAP converge (data overwhelms the prior)
+// With little data, the prior matters a lot (regularization helps)
+
+// This is why regularization helps more with small datasets:
+// the prior (regularizer) fills in where data is missing
+
+function mapEstimate(
+  data: number[],
+  priorMean: number,
+  priorVariance: number,
+  dataVariance: number
+): number {
+  const n = data.length;
+  const dataMean = data.reduce((s, v) => s + v, 0) / n;
+
+  // MAP estimate: weighted average of prior mean and data mean
+  const priorWeight = 1 / priorVariance;
+  const dataWeight = n / dataVariance;
+
+  return (priorWeight * priorMean + dataWeight * dataMean) /
+         (priorWeight + dataWeight);
+}
+
+// Few data points: prior has strong influence
+console.log('MAP (2 points):', mapEstimate([5, 7], 0, 1, 1).toFixed(3));
+// Pulled toward prior mean of 0
+
+// Many data points: data dominates
+console.log('MAP (100 points):', mapEstimate(
+  Array(100).fill(6), 0, 1, 1
+).toFixed(3));
+// Close to data mean of 6`}
+</CodeBlock>
+
+## Dropout as Approximate Bayesian Inference
+
+<CodeBlock language="typescript" title="dropout-bayes.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Dropout randomly zeros out neurons during training.
+// Bayesian interpretation: dropout trains an ensemble of
+// sub-networks, each with different weights zeroed out.
+//
+// At inference with dropout ON (Monte Carlo dropout):
+// - Run the same input N times with random dropout
+// - The variance of outputs estimates model uncertainty
+//
+// This is approximate Bayesian inference!
+
+async function mcDropoutPredict(
+  model: tf.LayersModel,
+  input: tf.Tensor,
+  nSamples: number
+): Promise<{ mean: number[]; uncertainty: number[] }> {
+  const predictions: number[][] = [];
+
+  for (let i = 0; i < nSamples; i++) {
+    // Run with training=true to keep dropout active
+    const pred = model.predict(input, { training: true }) as tf.Tensor;
+    predictions.push(await pred.array() as number[]);
+    pred.dispose();
+  }
+
+  // Mean = best estimate
+  // Std = uncertainty (Bayesian posterior width)
+  const mean = predictions[0].map((_, j) =>
+    predictions.reduce((s, p) => s + p[j], 0) / nSamples
+  );
+  const uncertainty = predictions[0].map((_, j) => {
+    const m = mean[j];
+    const variance = predictions.reduce((s, p) => s + (p[j] - m) ** 2, 0) / nSamples;
+    return Math.sqrt(variance);
+  });
+
+  return { mean, uncertainty };
+}
+
+// High uncertainty = model is unsure = want more data in this region
+// Low uncertainty = model is confident = predictions are reliable`}
+</CodeBlock>
+
+## Challenge
+
+Implement Bayesian updating to classify events based on sequential observations.
+
+<Exercise slug="bayes-update" />
+
+<KeyTakeaways takeaways={["Bayes' theorem updates prior beliefs with evidence to produce posteriors — same as state management reducers", "L2 regularization is equivalent to a Gaussian prior on weights (MAP estimation)", "With lots of data, the prior doesn't matter; with little data, the prior prevents overfitting", "Maximum Likelihood ignores priors and can overfit; MAP incorporates priors for better generalization", "Dropout with Monte Carlo sampling approximates Bayesian inference, giving uncertainty estimates for free"]} />

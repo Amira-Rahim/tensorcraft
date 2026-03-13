@@ -1,0 +1,93 @@
+slug: find-entities
+lessonSlug: what-is-ner
+title: "Find Clinical Entities"
+instructions: "Implement a findEntities function that takes an array of clinical tokens and classifies each one as an entity type (DRUG, CONDITION, DOSAGE, FREQUENCY) or O (outside). Use dictionary lookup for drugs, conditions, and frequencies. Use the provided regex pattern for dosages. Return an array of objects with token, label, and index. Think of it as querySelectorAll — walk every token and decide if it matches a selector."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  const DRUG_VOCAB = ['methotrexate', 'warfarin', 'lisinopril', 'aspirin', 'heparin', 'ibuprofen'];
+  const CONDITION_VOCAB = ['arthritis', 'diabetes', 'hypertension', 'pneumonia', 'sepsis'];
+  const FREQUENCY_VOCAB = ['daily', 'weekly', 'bid', 'tid', 'qid', 'prn'];
+  const DOSAGE_PATTERN = /^\d+\.?\d*(mg|mcg|ml|g|units)$/i;
+
+  interface TokenEntity {
+    token: string;
+    label: string;
+    index: number;
+  }
+
+  function findEntities(tokens: string[]): TokenEntity[] {
+    // Walk each token like querySelectorAll walks each DOM node
+    // Check against DRUG_VOCAB, CONDITION_VOCAB, FREQUENCY_VOCAB, and DOSAGE_PATTERN
+    // Return { token, label, index } for every token (O if no match)
+    return [];
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  const DRUG_VOCAB = ['methotrexate', 'warfarin', 'lisinopril', 'aspirin', 'heparin', 'ibuprofen'];
+  const CONDITION_VOCAB = ['arthritis', 'diabetes', 'hypertension', 'pneumonia', 'sepsis'];
+  const FREQUENCY_VOCAB = ['daily', 'weekly', 'bid', 'tid', 'qid', 'prn'];
+  const DOSAGE_PATTERN = /^\d+\.?\d*(mg|mcg|ml|g|units)$/i;
+
+  interface TokenEntity {
+    token: string;
+    label: string;
+    index: number;
+  }
+
+  function findEntities(tokens: string[]): TokenEntity[] {
+    return tokens.map((token, index) => {
+      const lower = token.toLowerCase();
+      if (DRUG_VOCAB.includes(lower)) {
+        return { token, label: 'DRUG', index };
+      }
+      if (CONDITION_VOCAB.includes(lower)) {
+        return { token, label: 'CONDITION', index };
+      }
+      if (FREQUENCY_VOCAB.includes(lower)) {
+        return { token, label: 'FREQUENCY', index };
+      }
+      if (DOSAGE_PATTERN.test(token)) {
+        return { token, label: 'DOSAGE', index };
+      }
+      return { token, label: 'O', index };
+    });
+  }
+testCode: |
+  describe('findEntities', () => {
+    it('identifies drug tokens', () => {
+      const result = findEntities(['Patient', 'takes', 'methotrexate']);
+      expect(result[2].label).toBe('DRUG');
+      expect(result[2].index).toBe(2);
+    });
+    it('identifies condition tokens', () => {
+      const result = findEntities(['has', 'diabetes']);
+      expect(result[1].label).toBe('CONDITION');
+    });
+    it('identifies dosage tokens by pattern', () => {
+      const result = findEntities(['takes', '15mg', 'daily']);
+      expect(result[1].label).toBe('DOSAGE');
+    });
+    it('identifies frequency tokens', () => {
+      const result = findEntities(['takes', '15mg', 'daily']);
+      expect(result[2].label).toBe('FREQUENCY');
+    });
+    it('labels non-entities as O', () => {
+      const result = findEntities(['The', 'patient', 'was', 'seen']);
+      result.forEach(r => expect(r.label).toBe('O'));
+    });
+    it('handles case-insensitive matching', () => {
+      const result = findEntities(['WARFARIN', 'Diabetes']);
+      expect(result[0].label).toBe('DRUG');
+      expect(result[1].label).toBe('CONDITION');
+    });
+    it('returns correct indices', () => {
+      const result = findEntities(['Patient', 'prescribed', 'aspirin', '100mg', 'bid']);
+      expect(result[2]).toEqual({ token: 'aspirin', label: 'DRUG', index: 2 });
+      expect(result[3]).toEqual({ token: '100mg', label: 'DOSAGE', index: 3 });
+      expect(result[4]).toEqual({ token: 'bid', label: 'FREQUENCY', index: 4 });
+    });
+  });
+estimatedMinutes: 15
+difficulty: intermediate

@@ -1,0 +1,146 @@
+slug: design-diagnostic-one
+lessonSlug: system-design
+title: "Design the Diagnostic One Pipeline"
+instructions: "Build a DiagnosticPipeline class that registers named stages with typed process functions and dependencies, then executes them in order. Each stage receives the merged results of its dependencies. If a stage fails, use its fallback function. The run method returns the final merged results of all stages."
+starterCode: |
+  interface StageConfig {
+    name: string;
+    process: (input: any) => any;
+    fallback: (error: Error) => any;
+    dependencies: string[];
+  }
+
+  class DiagnosticPipeline {
+    private stages: StageConfig[] = [];
+
+    registerStage(config: StageConfig): void {
+      // Add the stage to the pipeline
+      // your code here
+    }
+
+    run(input: any): Record<string, any> {
+      // 1. Create a results map to store each stage's output
+      // 2. For each stage:
+      //    a. Gather outputs of dependency stages from results
+      //    b. Merge input with dependency outputs
+      //    c. Try to run stage.process, catch errors and use stage.fallback
+      //    d. Store result under stage.name
+      // 3. Return the full results map
+      return {}; // your code here
+    }
+  }
+solutionCode: |
+  interface StageConfig {
+    name: string;
+    process: (input: any) => any;
+    fallback: (error: Error) => any;
+    dependencies: string[];
+  }
+
+  class DiagnosticPipeline {
+    private stages: StageConfig[] = [];
+
+    registerStage(config: StageConfig): void {
+      this.stages.push(config);
+    }
+
+    run(input: any): Record<string, any> {
+      const results: Record<string, any> = {};
+
+      for (const stage of this.stages) {
+        try {
+          const depOutputs = stage.dependencies.map(d => results[d] ?? {});
+          const mergedInput = Object.assign({}, input, ...depOutputs);
+          results[stage.name] = stage.process(mergedInput);
+        } catch (error) {
+          results[stage.name] = stage.fallback(error as Error);
+        }
+      }
+
+      return results;
+    }
+  }
+testCode: |
+  describe('DiagnosticPipeline', () => {
+    it('runs stages in registration order', () => {
+      const pipeline = new DiagnosticPipeline();
+      const order: string[] = [];
+
+      pipeline.registerStage({
+        name: 'tokenizer',
+        process: () => { order.push('tokenizer'); return { tokens: [1, 2, 3] }; },
+        fallback: () => ({ tokens: [] }),
+        dependencies: [],
+      });
+
+      pipeline.registerStage({
+        name: 'classifier',
+        process: () => { order.push('classifier'); return { label: 'drug' }; },
+        fallback: () => ({ label: 'unknown' }),
+        dependencies: ['tokenizer'],
+      });
+
+      pipeline.run({ text: 'test' });
+      expect(order).toEqual(['tokenizer', 'classifier']);
+    });
+
+    it('passes dependency outputs to downstream stages', () => {
+      const pipeline = new DiagnosticPipeline();
+
+      pipeline.registerStage({
+        name: 'tokenizer',
+        process: () => ({ tokens: [10, 20] }),
+        fallback: () => ({ tokens: [] }),
+        dependencies: [],
+      });
+
+      pipeline.registerStage({
+        name: 'embedder',
+        process: (input: any) => ({ embeddings: input.tokens.map((t: number) => t * 0.1) }),
+        fallback: () => ({ embeddings: [] }),
+        dependencies: ['tokenizer'],
+      });
+
+      const results = pipeline.run({ text: 'hello' });
+      expect(results.embedder.embeddings).toEqual([1, 2]);
+    });
+
+    it('uses fallback when a stage throws', () => {
+      const pipeline = new DiagnosticPipeline();
+
+      pipeline.registerStage({
+        name: 'failing',
+        process: () => { throw new Error('NER failed'); },
+        fallback: () => ({ entities: [], error: true }),
+        dependencies: [],
+      });
+
+      const results = pipeline.run({ text: 'test' });
+      expect(results.failing.entities).toEqual([]);
+      expect(results.failing.error).toBe(true);
+    });
+
+    it('returns results for all stages', () => {
+      const pipeline = new DiagnosticPipeline();
+
+      pipeline.registerStage({
+        name: 'a',
+        process: () => ({ valueA: 1 }),
+        fallback: () => ({}),
+        dependencies: [],
+      });
+
+      pipeline.registerStage({
+        name: 'b',
+        process: () => ({ valueB: 2 }),
+        fallback: () => ({}),
+        dependencies: [],
+      });
+
+      const results = pipeline.run({});
+      expect(results.a.valueA).toBe(1);
+      expect(results.b.valueB).toBe(2);
+    });
+  });
+estimatedMinutes: 15
+difficulty: intermediate

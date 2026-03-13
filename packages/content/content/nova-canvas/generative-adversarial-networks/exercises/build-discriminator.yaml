@@ -1,0 +1,72 @@
+slug: build-discriminator
+lessonSlug: discriminator-architecture
+title: "Build a GAN Discriminator"
+instructions: "Build a discriminator network that takes a 784-dimensional input and outputs a single probability (real vs fake). Use two dense layers with leakyReLU and dropout, and compile with binaryCrossentropy loss."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function buildDiscriminator(): tf.Sequential {
+    const model = tf.sequential();
+
+    // Layer 1: 784 → 512, leakyReLU(0.2), dropout(0.3)
+    // your code here
+
+    // Layer 2: 512 → 256, leakyReLU(0.2), dropout(0.3)
+    // your code here
+
+    // Output: 256 → 1, sigmoid
+    // your code here
+
+    // Compile with adam optimizer (lr=0.0002) and binaryCrossentropy
+    // your code here
+
+    return model;
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function buildDiscriminator(): tf.Sequential {
+    const model = tf.sequential();
+
+    model.add(tf.layers.dense({ inputShape: [784], units: 512 }));
+    model.add(tf.layers.leakyReLU({ alpha: 0.2 }));
+    model.add(tf.layers.dropout({ rate: 0.3 }));
+
+    model.add(tf.layers.dense({ units: 256 }));
+    model.add(tf.layers.leakyReLU({ alpha: 0.2 }));
+    model.add(tf.layers.dropout({ rate: 0.3 }));
+
+    model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
+
+    model.compile({
+      optimizer: tf.train.adam(0.0002),
+      loss: 'binaryCrossentropy',
+    });
+
+    return model;
+  }
+testCode: |
+  describe('buildDiscriminator', () => {
+    it('accepts input shape [null, 784]', () => {
+      const disc = buildDiscriminator();
+      expect(disc.inputShape).toEqual([null, 784]);
+    });
+    it('outputs shape [null, 1]', () => {
+      const disc = buildDiscriminator();
+      expect(disc.outputShape).toEqual([null, 1]);
+    });
+    it('has dropout layers', () => {
+      const disc = buildDiscriminator();
+      const dropLayers = disc.layers.filter(l => l.getClassName() === 'Dropout');
+      expect(dropLayers.length).toBe(2);
+    });
+    it('outputs values between 0 and 1', async () => {
+      const disc = buildDiscriminator();
+      const input = tf.randomNormal([1, 784]);
+      const output = await (disc.predict(input) as tf.Tensor).array() as number[][];
+      expect(output[0][0]).toBeGreaterThanOrEqual(0);
+      expect(output[0][0]).toBeLessThanOrEqual(1);
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

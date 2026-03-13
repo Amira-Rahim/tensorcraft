@@ -1,0 +1,202 @@
+slug: deploy-responsibly
+lessonSlug: ethical-deployment
+title: "Build a Governance Policy System"
+instructions: "Implement a model governance system inspired by Content Security Policy headers. Create a GovernancePolicy that constrains model operations to an explicit allow-list, and a GovernedModel class that enforces the policy, logs all operations, and blocks unauthorized actions."
+starterCode: |
+  interface GovernancePolicy {
+    allowedTargets: string[];
+    maxEpsilon: number;
+    requireAuditLog: boolean;
+    maxOperationsPerWindow: number;
+  }
+
+  interface AuditEntry {
+    operation: string;
+    target: string;
+    epsilon: number;
+    allowed: boolean;
+    reason: string;
+  }
+
+  class GovernedModel {
+    private policy: GovernancePolicy;
+    private auditLog: AuditEntry[] = [];
+    private operationCount: number = 0;
+
+    constructor(policy: GovernancePolicy) {
+      this.policy = policy;
+    }
+
+    // Check if operation is allowed by policy
+    checkPolicy(
+      operation: string,
+      target: string,
+      epsilon: number
+    ): { allowed: boolean; reason: string } {
+      // Check: target in allowedTargets?
+      // Check: epsilon <= maxEpsilon?
+      // Check: operationCount < maxOperationsPerWindow?
+      return { allowed: false, reason: '' }; // your code here
+    }
+
+    // Execute operation with governance checks and audit logging
+    execute(
+      operation: string,
+      target: string,
+      epsilon: number,
+      action: () => number
+    ): number | null {
+      // 1. Check policy
+      // 2. Log to audit trail (if requireAuditLog)
+      // 3. If allowed, run action and increment count
+      // 4. Return result or null if blocked
+      return null; // your code here
+    }
+
+    getAuditLog(): AuditEntry[] {
+      return []; // your code here
+    }
+
+    getBlockedCount(): number {
+      return 0; // your code here
+    }
+  }
+solutionCode: |
+  interface GovernancePolicy {
+    allowedTargets: string[];
+    maxEpsilon: number;
+    requireAuditLog: boolean;
+    maxOperationsPerWindow: number;
+  }
+
+  interface AuditEntry {
+    operation: string;
+    target: string;
+    epsilon: number;
+    allowed: boolean;
+    reason: string;
+  }
+
+  class GovernedModel {
+    private policy: GovernancePolicy;
+    private auditLog: AuditEntry[] = [];
+    private operationCount: number = 0;
+
+    constructor(policy: GovernancePolicy) {
+      this.policy = policy;
+    }
+
+    checkPolicy(
+      operation: string,
+      target: string,
+      epsilon: number
+    ): { allowed: boolean; reason: string } {
+      if (!this.policy.allowedTargets.includes(target)) {
+        return { allowed: false, reason: `Target '${target}' not in allow-list` };
+      }
+      if (epsilon > this.policy.maxEpsilon) {
+        return { allowed: false, reason: `Epsilon ${epsilon} exceeds max ${this.policy.maxEpsilon}` };
+      }
+      if (this.operationCount >= this.policy.maxOperationsPerWindow) {
+        return { allowed: false, reason: 'Rate limit exceeded' };
+      }
+      return { allowed: true, reason: 'Policy check passed' };
+    }
+
+    execute(
+      operation: string,
+      target: string,
+      epsilon: number,
+      action: () => number
+    ): number | null {
+      const check = this.checkPolicy(operation, target, epsilon);
+
+      if (this.policy.requireAuditLog) {
+        this.auditLog.push({
+          operation,
+          target,
+          epsilon,
+          allowed: check.allowed,
+          reason: check.reason,
+        });
+      }
+
+      if (!check.allowed) {
+        return null;
+      }
+
+      this.operationCount++;
+      return action();
+    }
+
+    getAuditLog(): AuditEntry[] {
+      return [...this.auditLog];
+    }
+
+    getBlockedCount(): number {
+      return this.auditLog.filter(e => !e.allowed).length;
+    }
+  }
+testCode: |
+  describe('GovernedModel', () => {
+    const policy: GovernancePolicy = {
+      allowedTargets: ['meridian-v3'],
+      maxEpsilon: 0.05,
+      requireAuditLog: true,
+      maxOperationsPerWindow: 3,
+    };
+
+    it('allows operations within policy', () => {
+      const model = new GovernedModel(policy);
+      const result = model.execute('patch', 'meridian-v3', 0.03, () => 42);
+      expect(result).toBe(42);
+    });
+
+    it('blocks operations targeting non-allowed models', () => {
+      const model = new GovernedModel(policy);
+      const result = model.execute('patch', 'medical-scanner', 0.03, () => 42);
+      expect(result).toBeNull();
+    });
+
+    it('blocks operations exceeding max epsilon', () => {
+      const model = new GovernedModel(policy);
+      const result = model.execute('patch', 'meridian-v3', 0.1, () => 42);
+      expect(result).toBeNull();
+    });
+
+    it('blocks operations exceeding rate limit', () => {
+      const model = new GovernedModel(policy);
+      model.execute('op1', 'meridian-v3', 0.01, () => 1);
+      model.execute('op2', 'meridian-v3', 0.01, () => 2);
+      model.execute('op3', 'meridian-v3', 0.01, () => 3);
+      const result = model.execute('op4', 'meridian-v3', 0.01, () => 4);
+      expect(result).toBeNull();
+    });
+
+    it('logs all operations to audit trail', () => {
+      const model = new GovernedModel(policy);
+      model.execute('patch', 'meridian-v3', 0.03, () => 1);
+      model.execute('patch', 'medical-scanner', 0.03, () => 2);
+      const log = model.getAuditLog();
+      expect(log.length).toBe(2);
+      expect(log[0].allowed).toBe(true);
+      expect(log[1].allowed).toBe(false);
+    });
+
+    it('counts blocked operations', () => {
+      const model = new GovernedModel(policy);
+      model.execute('patch', 'meridian-v3', 0.03, () => 1);
+      model.execute('patch', 'bad-target', 0.03, () => 2);
+      model.execute('patch', 'meridian-v3', 0.99, () => 3);
+      expect(model.getBlockedCount()).toBe(2);
+    });
+
+    it('checkPolicy returns correct reason for target violation', () => {
+      const model = new GovernedModel(policy);
+      const check = model.checkPolicy('patch', 'other-model', 0.01);
+      expect(check.allowed).toBe(false);
+      expect(check.reason).toContain('not in allow-list');
+    });
+  });
+estimatedMinutes: 15
+difficulty: intermediate

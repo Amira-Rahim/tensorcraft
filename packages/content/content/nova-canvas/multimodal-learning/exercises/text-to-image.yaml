@@ -1,0 +1,90 @@
+slug: text-to-image
+lessonSlug: text-to-image
+title: "Build a Text-to-Image Pipeline"
+instructions: "Implement a simplified text-to-image pipeline class. It should have a generate method that: (1) encodes the text tokens with the text encoder, (2) starts from random noise [1, 32, 32, 3], (3) for each step, predicts noise using the U-Net conditioned on the text embedding and timestep, (4) subtracts a fraction of the predicted noise. Return the final denoised image."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  class SimpleTextToImage {
+    textEncoder: tf.LayersModel;
+    unet: tf.LayersModel;
+
+    constructor(textEncoder: tf.LayersModel, unet: tf.LayersModel) {
+      this.textEncoder = textEncoder;
+      this.unet = unet;
+    }
+
+    generate(tokens: tf.Tensor2D, steps: number): tf.Tensor4D {
+      // 1. Encode text: this.textEncoder.predict(tokens)
+      // 2. Start from noise: tf.randomNormal([1, 32, 32, 3])
+      // 3. For t = steps-1 down to 0:
+      //    a. Create timestep tensor: tf.tensor1d([t / steps])
+      //    b. Predict noise: this.unet.predict([image, textEmb, timestep])
+      //    c. Subtract: image = image - (1/steps) * predictedNoise
+      // 4. Return final image
+      return null; // your code here
+    }
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  class SimpleTextToImage {
+    textEncoder: tf.LayersModel;
+    unet: tf.LayersModel;
+
+    constructor(textEncoder: tf.LayersModel, unet: tf.LayersModel) {
+      this.textEncoder = textEncoder;
+      this.unet = unet;
+    }
+
+    generate(tokens: tf.Tensor2D, steps: number): tf.Tensor4D {
+      const textEmb = this.textEncoder.predict(tokens) as tf.Tensor2D;
+      let image = tf.randomNormal([1, 32, 32, 3]) as tf.Tensor4D;
+      const stepSize = 1 / steps;
+
+      for (let t = steps - 1; t >= 0; t--) {
+        const timestep = tf.tensor1d([t / steps]);
+        const predictedNoise = this.unet.predict(
+          [image, textEmb, timestep]
+        ) as tf.Tensor4D;
+
+        const update = tf.mul(predictedNoise, tf.scalar(stepSize));
+        const newImage = tf.sub(image, update) as tf.Tensor4D;
+
+        image.dispose();
+        predictedNoise.dispose();
+        update.dispose();
+        timestep.dispose();
+        image = newImage;
+      }
+
+      textEmb.dispose();
+      return image;
+    }
+  }
+testCode: |
+  describe('SimpleTextToImage', () => {
+    it('generates an image tensor of correct shape', () => {
+      // Build minimal text encoder
+      const tInput = tf.input({ shape: [8] });
+      const tEmb = tf.layers.dense({ units: 16 }).apply(tInput) as tf.SymbolicTensor;
+      const textEnc = tf.model({ inputs: tInput, outputs: tEmb });
+
+      // Build minimal unet (takes image + text + timestep)
+      const imgIn = tf.input({ shape: [32, 32, 3] });
+      const txtIn = tf.input({ shape: [16] });
+      const tIn = tf.input({ shape: [1] });
+      const flat = tf.layers.flatten().apply(imgIn) as tf.SymbolicTensor;
+      const cat = tf.layers.concatenate().apply([flat, txtIn, tIn]) as tf.SymbolicTensor;
+      let u = tf.layers.dense({ units: 32 * 32 * 3 }).apply(cat) as tf.SymbolicTensor;
+      u = tf.layers.reshape({ targetShape: [32, 32, 3] }).apply(u) as tf.SymbolicTensor;
+      const unet = tf.model({ inputs: [imgIn, txtIn, tIn], outputs: u });
+
+      const pipeline = new SimpleTextToImage(textEnc, unet);
+      const tokens = tf.zeros([1, 8]) as tf.Tensor2D;
+      const result = pipeline.generate(tokens, 3);
+      expect(result.shape).toEqual([1, 32, 32, 3]);
+    });
+  });
+estimatedMinutes: 15
+difficulty: advanced

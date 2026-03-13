@@ -1,0 +1,83 @@
+slug: handle-concurrency
+lessonSlug: concurrent-users
+title: "Handle Concurrent Generation"
+instructions: "Build a bounded concurrency queue that processes async tasks with a maximum number of concurrent executions. The enqueue method returns a promise that resolves when the task completes. Track queue length and active count."
+starterCode: |
+  class ConcurrencyQueue {
+    private queue: Array<{ task: () => Promise<any>; resolve: Function; reject: Function }> = [];
+    private active = 0;
+    private maxConcurrent: number;
+
+    constructor(maxConcurrent: number) {
+      this.maxConcurrent = maxConcurrent;
+    }
+
+    async enqueue<T>(task: () => Promise<T>): Promise<T> {
+      // Add task to queue, process when slot available
+      // your code here
+      return null as any;
+    }
+
+    private processNext(): void {
+      // Process next task if capacity available
+      // your code here
+    }
+
+    get queueLength(): number { return this.queue.length; }
+    get activeCount(): number { return this.active; }
+  }
+solutionCode: |
+  class ConcurrencyQueue {
+    private queue: Array<{ task: () => Promise<any>; resolve: Function; reject: Function }> = [];
+    private active = 0;
+    private maxConcurrent: number;
+
+    constructor(maxConcurrent: number) {
+      this.maxConcurrent = maxConcurrent;
+    }
+
+    async enqueue<T>(task: () => Promise<T>): Promise<T> {
+      return new Promise<T>((resolve, reject) => {
+        this.queue.push({ task, resolve, reject });
+        this.processNext();
+      });
+    }
+
+    private processNext(): void {
+      if (this.active >= this.maxConcurrent || this.queue.length === 0) return;
+      this.active++;
+      const { task, resolve, reject } = this.queue.shift()!;
+      task().then(resolve).catch(reject).finally(() => {
+        this.active--;
+        this.processNext();
+      });
+    }
+
+    get queueLength(): number { return this.queue.length; }
+    get activeCount(): number { return this.active; }
+  }
+testCode: |
+  describe('ConcurrencyQueue', () => {
+    const delay = (ms) => new Promise(r => setTimeout(r, ms));
+    it('limits concurrency', async () => {
+      const queue = new ConcurrencyQueue(2);
+      let maxActive = 0;
+      let current = 0;
+      const task = async () => { current++; maxActive = Math.max(maxActive, current); await delay(50); current--; };
+      await Promise.all([queue.enqueue(task), queue.enqueue(task), queue.enqueue(task), queue.enqueue(task)]);
+      expect(maxActive).toBeLessThanOrEqual(2);
+    });
+    it('processes all tasks', async () => {
+      const queue = new ConcurrencyQueue(2);
+      const results: number[] = [];
+      await Promise.all([1, 2, 3].map(n => queue.enqueue(async () => { results.push(n); })));
+      expect(results.length).toBe(3);
+    });
+    it('returns task result', async () => {
+      const queue = new ConcurrencyQueue(1);
+      const result = await queue.enqueue(async () => 42);
+      expect(result).toBe(42);
+    });
+  });
+estimatedMinutes: 15
+difficulty: advanced

@@ -1,0 +1,104 @@
+slug: harden-security
+lessonSlug: security-hardening
+title: "Security Audit Checklist"
+instructions: "Build a SecurityAuditor class that runs a list of named security checks. Each check is a function that returns true (pass) or false (fail). The runAudit method executes all checks and returns a summary with pass count, fail count, and individual results."
+starterCode: |
+  interface SecurityCheck {
+    name: string;
+    verify: () => boolean;
+  }
+
+  class SecurityAuditor {
+    private checks: SecurityCheck[] = [];
+
+    addCheck(check: SecurityCheck): void {
+      // Add a security check
+      // your code here
+    }
+
+    runAudit(): {
+      passed: number;
+      failed: number;
+      results: { name: string; passed: boolean }[];
+    } {
+      // Run all checks and return summary
+      return { passed: 0, failed: 0, results: [] }; // your code here
+    }
+  }
+solutionCode: |
+  interface SecurityCheck {
+    name: string;
+    verify: () => boolean;
+  }
+
+  class SecurityAuditor {
+    private checks: SecurityCheck[] = [];
+
+    addCheck(check: SecurityCheck): void {
+      this.checks.push(check);
+    }
+
+    runAudit(): {
+      passed: number;
+      failed: number;
+      results: { name: string; passed: boolean }[];
+    } {
+      const results = this.checks.map(check => ({
+        name: check.name,
+        passed: check.verify(),
+      }));
+
+      return {
+        passed: results.filter(r => r.passed).length,
+        failed: results.filter(r => !r.passed).length,
+        results,
+      };
+    }
+  }
+testCode: |
+  describe('SecurityAuditor', () => {
+    it('runs all checks', () => {
+      const auditor = new SecurityAuditor();
+      auditor.addCheck({ name: 'check1', verify: () => true });
+      auditor.addCheck({ name: 'check2', verify: () => true });
+      const result = auditor.runAudit();
+      expect(result.results.length).toBe(2);
+    });
+
+    it('counts passed and failed', () => {
+      const auditor = new SecurityAuditor();
+      auditor.addCheck({ name: 'pass1', verify: () => true });
+      auditor.addCheck({ name: 'fail1', verify: () => false });
+      auditor.addCheck({ name: 'pass2', verify: () => true });
+      const result = auditor.runAudit();
+      expect(result.passed).toBe(2);
+      expect(result.failed).toBe(1);
+    });
+
+    it('reports individual results', () => {
+      const auditor = new SecurityAuditor();
+      auditor.addCheck({ name: 'hash-check', verify: () => false });
+      const result = auditor.runAudit();
+      expect(result.results[0]).toEqual({ name: 'hash-check', passed: false });
+    });
+
+    it('handles empty audit', () => {
+      const auditor = new SecurityAuditor();
+      const result = auditor.runAudit();
+      expect(result.passed).toBe(0);
+      expect(result.failed).toBe(0);
+      expect(result.results).toEqual([]);
+    });
+
+    it('all checks pass scenario', () => {
+      const auditor = new SecurityAuditor();
+      auditor.addCheck({ name: 'a', verify: () => true });
+      auditor.addCheck({ name: 'b', verify: () => true });
+      auditor.addCheck({ name: 'c', verify: () => true });
+      const result = auditor.runAudit();
+      expect(result.passed).toBe(3);
+      expect(result.failed).toBe(0);
+    });
+  });
+estimatedMinutes: 8
+difficulty: intermediate

@@ -1,0 +1,92 @@
+slug: installation-arch
+lessonSlug: installation-architecture
+title: "Installation Architecture"
+instructions: "Design a local-first generator class with offline capability. It should store generation results in an in-memory store, track sync status, and return unsynced results for later upload. Implement generate(params), getUnsynced(), and markSynced(id)."
+starterCode: |
+  interface GenerationResult {
+    id: string;
+    params: Record<string, any>;
+    timestamp: number;
+    synced: boolean;
+  }
+
+  class LocalFirstGenerator {
+    private results: Map<string, GenerationResult> = new Map();
+
+    generate(params: Record<string, any>): GenerationResult {
+      // Create a result with unique id, store it, mark as unsynced
+      // your code here
+      return null as any;
+    }
+
+    getUnsynced(): GenerationResult[] {
+      // Return all results where synced === false
+      // your code here
+      return [];
+    }
+
+    markSynced(id: string): boolean {
+      // Mark a result as synced, return success
+      // your code here
+      return false;
+    }
+
+    get totalCount(): number { return this.results.size; }
+  }
+solutionCode: |
+  class LocalFirstGenerator {
+    private results: Map<string, GenerationResult> = new Map();
+    private counter = 0;
+
+    generate(params: Record<string, any>): GenerationResult {
+      const id = `gen-${++this.counter}-${Date.now()}`;
+      const result: GenerationResult = {
+        id,
+        params,
+        timestamp: Date.now(),
+        synced: false,
+      };
+      this.results.set(id, result);
+      return result;
+    }
+
+    getUnsynced(): GenerationResult[] {
+      return Array.from(this.results.values()).filter(r => !r.synced);
+    }
+
+    markSynced(id: string): boolean {
+      const result = this.results.get(id);
+      if (!result) return false;
+      result.synced = true;
+      return true;
+    }
+
+    get totalCount(): number { return this.results.size; }
+  }
+testCode: |
+  describe('LocalFirstGenerator', () => {
+    it('generates with unique ids', () => {
+      const gen = new LocalFirstGenerator();
+      const r1 = gen.generate({ prompt: 'test1' });
+      const r2 = gen.generate({ prompt: 'test2' });
+      expect(r1.id).not.toBe(r2.id);
+    });
+    it('starts unsynced', () => {
+      const gen = new LocalFirstGenerator();
+      gen.generate({ prompt: 'test' });
+      expect(gen.getUnsynced().length).toBe(1);
+    });
+    it('marks synced', () => {
+      const gen = new LocalFirstGenerator();
+      const r = gen.generate({ prompt: 'test' });
+      gen.markSynced(r.id);
+      expect(gen.getUnsynced().length).toBe(0);
+    });
+    it('tracks total count', () => {
+      const gen = new LocalFirstGenerator();
+      gen.generate({ prompt: 'a' }); gen.generate({ prompt: 'b' });
+      expect(gen.totalCount).toBe(2);
+    });
+  });
+estimatedMinutes: 12
+difficulty: advanced

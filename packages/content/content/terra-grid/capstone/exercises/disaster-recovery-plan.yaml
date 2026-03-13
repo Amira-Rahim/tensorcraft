@@ -1,0 +1,110 @@
+slug: disaster-recovery-plan
+lessonSlug: disaster-recovery
+title: "Disaster Recovery Planner"
+instructions: "Build a DRPlanner class that stores failure scenarios with severity and RTO (Recovery Time Objective). Implement addScenario to register scenarios, getByPriority to return scenarios sorted by severity (critical first, then high, then medium), and summary to calculate total scenarios and average RTO."
+starterCode: |
+  type Severity = 'critical' | 'high' | 'medium';
+
+  interface Scenario {
+    id: string;
+    name: string;
+    severity: Severity;
+    rtoMinutes: number;
+  }
+
+  class DRPlanner {
+    private scenarios: Scenario[] = [];
+
+    addScenario(scenario: Scenario): void {
+      // Add a failure scenario
+      // your code here
+    }
+
+    getByPriority(): Scenario[] {
+      // Return scenarios sorted by severity: critical first, then high, then medium
+      return []; // your code here
+    }
+
+    summary(): { total: number; critical: number; avgRtoMinutes: number } {
+      // Return summary statistics
+      return { total: 0, critical: 0, avgRtoMinutes: 0 }; // your code here
+    }
+  }
+solutionCode: |
+  type Severity = 'critical' | 'high' | 'medium';
+
+  interface Scenario {
+    id: string;
+    name: string;
+    severity: Severity;
+    rtoMinutes: number;
+  }
+
+  class DRPlanner {
+    private scenarios: Scenario[] = [];
+
+    addScenario(scenario: Scenario): void {
+      this.scenarios.push(scenario);
+    }
+
+    getByPriority(): Scenario[] {
+      const order: Record<Severity, number> = { critical: 0, high: 1, medium: 2 };
+      return [...this.scenarios].sort((a, b) => order[a.severity] - order[b.severity]);
+    }
+
+    summary(): { total: number; critical: number; avgRtoMinutes: number } {
+      const critical = this.scenarios.filter(s => s.severity === 'critical').length;
+      const avgRto = this.scenarios.length > 0
+        ? this.scenarios.reduce((s, sc) => s + sc.rtoMinutes, 0) / this.scenarios.length
+        : 0;
+      return { total: this.scenarios.length, critical, avgRtoMinutes: avgRto };
+    }
+  }
+testCode: |
+  describe('DRPlanner', () => {
+    it('adds and retrieves scenarios', () => {
+      const planner = new DRPlanner();
+      planner.addScenario({ id: 'DR-001', name: 'Coordinator down', severity: 'critical', rtoMinutes: 5 });
+      expect(planner.summary().total).toBe(1);
+    });
+
+    it('sorts by severity priority', () => {
+      const planner = new DRPlanner();
+      planner.addScenario({ id: '1', name: 'Medium issue', severity: 'medium', rtoMinutes: 30 });
+      planner.addScenario({ id: '2', name: 'Critical outage', severity: 'critical', rtoMinutes: 5 });
+      planner.addScenario({ id: '3', name: 'High alert', severity: 'high', rtoMinutes: 15 });
+      const sorted = planner.getByPriority();
+      expect(sorted[0].severity).toBe('critical');
+      expect(sorted[1].severity).toBe('high');
+      expect(sorted[2].severity).toBe('medium');
+    });
+
+    it('calculates summary correctly', () => {
+      const planner = new DRPlanner();
+      planner.addScenario({ id: '1', name: 'A', severity: 'critical', rtoMinutes: 5 });
+      planner.addScenario({ id: '2', name: 'B', severity: 'critical', rtoMinutes: 10 });
+      planner.addScenario({ id: '3', name: 'C', severity: 'high', rtoMinutes: 15 });
+      const summary = planner.summary();
+      expect(summary.total).toBe(3);
+      expect(summary.critical).toBe(2);
+      expect(summary.avgRtoMinutes).toBe(10);
+    });
+
+    it('handles empty planner', () => {
+      const planner = new DRPlanner();
+      const summary = planner.summary();
+      expect(summary.total).toBe(0);
+      expect(summary.critical).toBe(0);
+      expect(summary.avgRtoMinutes).toBe(0);
+    });
+
+    it('does not mutate original order', () => {
+      const planner = new DRPlanner();
+      planner.addScenario({ id: '1', name: 'Medium', severity: 'medium', rtoMinutes: 30 });
+      planner.addScenario({ id: '2', name: 'Critical', severity: 'critical', rtoMinutes: 5 });
+      planner.getByPriority(); // should not affect internal order
+      expect(planner.summary().total).toBe(2);
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

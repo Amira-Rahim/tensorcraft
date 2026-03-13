@@ -1,0 +1,223 @@
+---
+slug: system-design
+title: "System Design — Assembling Diagnostic One"
+moduleId: sw-capstone
+themeId: signal-ward
+order: 1
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "Santos pins the architecture diagram to the briefing room wall. Nine modules of NLP work laid out in colored boxes: tokenization, embeddings, sequences, attention, transformers, NER, classification, QA, production infrastructure. 'We built each piece separately,' she says. 'Now we wire them together.' Khalil studies the diagram. 'It is a microservices architecture. Each module is an independent service with a typed contract. We just need an orchestrator.'"
+  speaker: "Santos"
+concept:
+  explanation: "Designing Diagnostic One's architecture is the same discipline as designing a microservices system — independent services with typed contracts, orchestrated through a central pipeline that manages data flow, error handling, and fallback paths."
+  bridge:
+    feTitle: "Microservices Architecture"
+    feCode: "// Auth Service → User Service → Payment Service — independent services, typed APIs"
+    mlTitle: "ML Pipeline Architecture"
+    mlCode: "// Tokenizer → NER → Classifier → QA → Reviewer — independent models, typed interfaces"
+    tier: structural
+consequence:
+  narrative: "The architecture diagram fills the entire wall. Six stages, twelve components, typed interfaces at every boundary. Dr. Vasquez reviews it and nods. 'This is how you build a system that can catch a drug interaction at 3 AM when no one is watching. Each piece does one thing well. Together they do something none of them could do alone.' Obi photographs the wall. MEDI logs the architecture. Diagnostic One has a blueprint."
+  nextLessonTeaser: "Next: integrating Diagnostic One with hospital EHR systems"
+hints:
+  - level: nudge
+    content: "Map each NLP module to a pipeline stage with clear input and output types"
+  - level: guidance
+    content: "Define interfaces between stages: tokenizer output feeds embedding input, NER output feeds classification input, QA output feeds the review gate"
+  - level: solution
+    content: "Build a pipeline configuration that declares all stages, their dependencies, input/output types, and fallback behaviors — like a service mesh for NLP components"
+keywords:
+  - system-design
+  - microservices
+  - pipeline-architecture
+  - typed-interfaces
+  - orchestration
+---
+
+<Dialogue speaker="Santos">
+Nine modules of work. Tokenization, embeddings, sequence models, attention, transformers, NER, text classification, question answering, production infrastructure. Each module is a component. Today we wire them into Diagnostic One.
+</Dialogue>
+
+<Dialogue speaker="Khalil">
+It is a microservices architecture. I have built these before — auth service, user service, payment service, notification service. Each service has a typed API contract. Each service can be tested independently. You compose them through an API gateway. Diagnostic One is the same pattern: independent NLP services composed through a pipeline orchestrator.
+</Dialogue>
+
+You have designed microservices architectures — independent services communicating through typed APIs, orchestrated by a gateway that routes requests, handles failures, and aggregates responses. Diagnostic One follows the same pattern. Each NLP module is an independent service with typed inputs and outputs. The pipeline orchestrator routes clinical text through each service in sequence, handles failures with fallback paths, and assembles the final diagnostic report.
+
+<LearningObjectives objectives={["Design the complete Diagnostic One architecture as a typed pipeline of NLP services", "Define contracts between pipeline stages: preprocessing, NLP analysis, knowledge retrieval, safety review", "Implement error boundaries and fallback paths for each component", "Map nine modules of NLP work to six orchestrated pipeline stages"]} />
+
+## The Complete Pipeline
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="diagnostic-one-pipeline.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Diagnostic One: Complete System Architecture
+// Each stage maps to modules you built throughout Signal Ward
+
+// Stage 1: Input Processing (Modules 1-2: Text Basics, Tokenization)
+interface RawClinicalInput {
+  text: string;
+  metadata: {
+    source: 'ehr' | 'lab_report' | 'clinical_note';
+    patientId: string;
+    authorRole: string;
+    timestamp: string;
+  };
+}
+
+interface TokenizedInput {
+  tokens: number[];
+  attentionMask: number[];
+  originalText: string;
+  metadata: RawClinicalInput['metadata'];
+}
+
+// Stage 2: NLP Analysis (Modules 3-7: Embeddings, Sequences, Attention, Transformers, NER)
+interface NLPAnalysis {
+  entities: {
+    text: string;
+    label: 'DRUG' | 'CONDITION' | 'PROCEDURE' | 'DOSAGE' | 'ANATOMY';
+    confidence: number;
+    span: [number, number];
+  }[];
+  classification: {
+    label: string;
+    confidence: number;
+  };
+  contextEmbeddings: Float32Array;
+}
+
+// Stage 3: Knowledge Retrieval (Module 8: QA & RAG)
+interface KnowledgeResult {
+  answers: { answer: string; confidence: number; sourceId: string }[];
+  interactions: { drug1: string; drug2: string; severity: string; evidence: string }[];
+  retrievedDocIds: string[];
+}
+
+// Stage 4: Grounding & Verification
+interface GroundedResult {
+  claims: { text: string; isGrounded: boolean; evidence: string[] }[];
+  overallConfidence: number;
+}
+
+// Stage 5: Safety & Review (Module 9: Production, Privacy, Bias, Human Review)
+interface SafetyResult {
+  isApproved: boolean;
+  reviewTier: 'auto_surface' | 'needs_review' | 'suppress';
+  phiDetected: boolean;
+  biasFlags: string[];
+}
+
+// Stage 6: Diagnostic Report
+interface DiagnosticReport {
+  requestId: string;
+  entities: NLPAnalysis['entities'];
+  interactions: KnowledgeResult['interactions'];
+  classification: NLPAnalysis['classification'];
+  groundedClaims: GroundedResult['claims'];
+  reviewStatus: SafetyResult['reviewTier'];
+  confidence: number;
+  processingTimeMs: number;
+}
+
+// Pipeline orchestrator — like an API gateway for NLP services
+class DiagnosticOnePipeline {
+  private stages: Map<string, {
+    process: (input: any) => Promise<any>;
+    fallback: (error: Error) => any;
+    dependencies: string[];
+    timeout: number;
+  }> = new Map();
+
+  registerStage(name: string, config: {
+    process: (input: any) => Promise<any>;
+    fallback: (error: Error) => any;
+    dependencies: string[];
+    timeout: number;
+  }): void {
+    this.stages.set(name, config);
+  }
+
+  async run(input: RawClinicalInput): Promise<DiagnosticReport> {
+    const startTime = performance.now();
+    const results: Map<string, any> = new Map();
+
+    for (const [name, stage] of this.stages) {
+      try {
+        const deps = stage.dependencies.map(d => results.get(d));
+        const stageInput = deps.length > 0
+          ? Object.assign({}, input, ...deps)
+          : input;
+        results.set(name, await stage.process(stageInput));
+      } catch (error) {
+        console.warn(\`Stage \${name} failed, using fallback\`);
+        results.set(name, stage.fallback(error as Error));
+      }
+    }
+
+    return {
+      requestId: crypto.randomUUID(),
+      ...results.get('output'),
+      processingTimeMs: performance.now() - startTime,
+    };
+  }
+}`}
+</CodeBlock>
+
+## Component Manifest
+
+<CodeBlock language="typescript" title="component-manifest.ts">
+{`// Map every Signal Ward module to a pipeline component
+// Like a package.json for NLP services
+
+const manifest = [
+  { name: 'tokenizer', module: 'tokenization-preprocessing', stage: 1,
+    input: 'RawClinicalInput', output: 'TokenizedInput' },
+  { name: 'embedder', module: 'word-embeddings', stage: 2,
+    input: 'TokenizedInput', output: 'EmbeddedInput' },
+  { name: 'sequence-encoder', module: 'sequence-models', stage: 2,
+    input: 'EmbeddedInput', output: 'EncodedSequence' },
+  { name: 'attention-layer', module: 'attention-mechanisms', stage: 2,
+    input: 'EncodedSequence', output: 'AttendedSequence' },
+  { name: 'transformer', module: 'transformers-bert', stage: 2,
+    input: 'TokenizedInput', output: 'TransformerOutput' },
+  { name: 'ner-extractor', module: 'named-entity-recognition', stage: 2,
+    input: 'TransformerOutput', output: 'NERResult' },
+  { name: 'classifier', module: 'text-classification', stage: 2,
+    input: 'TransformerOutput', output: 'ClassificationResult' },
+  { name: 'qa-engine', module: 'question-answering-rag', stage: 3,
+    input: 'TransformerOutput', output: 'KnowledgeResult' },
+  { name: 'grounder', module: 'question-answering-rag', stage: 4,
+    input: 'KnowledgeResult', output: 'GroundedResult' },
+  { name: 'privacy-filter', module: 'production-privacy', stage: 5,
+    input: 'RawClinicalInput', output: 'SafetyResult' },
+  { name: 'bias-checker', module: 'production-privacy', stage: 5,
+    input: 'NLPAnalysis', output: 'BiasFlags' },
+  { name: 'review-gate', module: 'production-privacy', stage: 5,
+    input: 'GroundedResult', output: 'ReviewDecision' },
+];
+
+// Validate the dependency graph — same as checking for circular deps in npm
+function validateManifest(components: typeof manifest): boolean {
+  const names = new Set(components.map(c => c.name));
+  const stageOrder = components.every((c, i, arr) => {
+    const deps = arr.filter(a => a.stage < c.stage);
+    return deps.length === 0 || deps.every(d => d.stage < c.stage);
+  });
+  return stageOrder && names.size === components.length;
+}
+
+console.log('Diagnostic One:', manifest.length, 'components across 5 stages');
+console.log('Manifest valid:', validateManifest(manifest));`}
+</CodeBlock>
+
+## Challenge
+
+Design a typed pipeline configuration that maps Diagnostic One's components and validates their dependencies.
+
+<Exercise slug="design-diagnostic-one" />
+
+<KeyTakeaways takeaways={["Diagnostic One's architecture maps directly to microservices architecture — independent services with typed contracts, composed through an orchestrator", "Every pipeline stage has typed interfaces — catching integration errors at compile time, not at 3 AM in production", "Error boundaries and fallback paths ensure partial failures degrade gracefully, not catastrophically", "Nine modules of NLP work compose into six pipeline stages: process, analyze, retrieve, ground, verify, output"]} />

@@ -1,0 +1,157 @@
+slug: np-write-model-card
+lessonSlug: np-documentation
+title: "Write a Model Card"
+instructions: "Create a function that builds a structured model card for an ML model. The function takes model details and performance metrics, and returns a complete ModelCard object. Calculate the overall reliability rating based on metrics: 'high' if accuracy > 0.9 and falsePositiveRate < 0.05, 'medium' if accuracy > 0.7, 'low' otherwise."
+starterCode: |
+  interface ModelMetrics {
+    accuracy: number;
+    falsePositiveRate: number;
+    inferenceTimeMs: number;
+  }
+
+  interface ModelCard {
+    name: string;
+    version: string;
+    description: string;
+    metrics: ModelMetrics;
+    reliability: 'high' | 'medium' | 'low';
+    limitations: string[];
+    requiresHumanReview: boolean;
+  }
+
+  function buildModelCard(
+    name: string,
+    version: string,
+    description: string,
+    metrics: ModelMetrics
+  ): ModelCard {
+    // 1. Determine reliability:
+    //    'high'   if accuracy > 0.9 AND falsePositiveRate < 0.05
+    //    'medium' if accuracy > 0.7
+    //    'low'    otherwise
+    // 2. Auto-generate limitations based on metrics
+    // 3. requiresHumanReview = true if reliability is not 'high'
+    return null as any; // your code here
+  }
+solutionCode: |
+  interface ModelMetrics {
+    accuracy: number;
+    falsePositiveRate: number;
+    inferenceTimeMs: number;
+  }
+
+  interface ModelCard {
+    name: string;
+    version: string;
+    description: string;
+    metrics: ModelMetrics;
+    reliability: 'high' | 'medium' | 'low';
+    limitations: string[];
+    requiresHumanReview: boolean;
+  }
+
+  function buildModelCard(
+    name: string,
+    version: string,
+    description: string,
+    metrics: ModelMetrics
+  ): ModelCard {
+    let reliability: 'high' | 'medium' | 'low';
+    if (metrics.accuracy > 0.9 && metrics.falsePositiveRate < 0.05) {
+      reliability = 'high';
+    } else if (metrics.accuracy > 0.7) {
+      reliability = 'medium';
+    } else {
+      reliability = 'low';
+    }
+
+    const limitations: string[] = [];
+    if (metrics.accuracy <= 0.9) {
+      limitations.push(`Accuracy is ${(metrics.accuracy * 100).toFixed(1)}% — may miss detections`);
+    }
+    if (metrics.falsePositiveRate >= 0.05) {
+      limitations.push(`False positive rate is ${(metrics.falsePositiveRate * 100).toFixed(1)}% — manual verification recommended`);
+    }
+    if (metrics.inferenceTimeMs > 100) {
+      limitations.push(`Inference time is ${metrics.inferenceTimeMs}ms — may not support real-time processing`);
+    }
+
+    return {
+      name,
+      version,
+      description,
+      metrics,
+      reliability,
+      limitations,
+      requiresHumanReview: reliability !== 'high',
+    };
+  }
+testCode: |
+  describe('buildModelCard', () => {
+    it('assigns high reliability for strong metrics', () => {
+      const card = buildModelCard('detector', '1.0.0', 'Detects things', {
+        accuracy: 0.95,
+        falsePositiveRate: 0.02,
+        inferenceTimeMs: 45,
+      });
+      expect(card.reliability).toBe('high');
+      expect(card.requiresHumanReview).toBe(false);
+    });
+
+    it('assigns medium reliability for decent accuracy', () => {
+      const card = buildModelCard('classifier', '1.0.0', 'Classifies things', {
+        accuracy: 0.85,
+        falsePositiveRate: 0.08,
+        inferenceTimeMs: 60,
+      });
+      expect(card.reliability).toBe('medium');
+      expect(card.requiresHumanReview).toBe(true);
+    });
+
+    it('assigns low reliability for poor accuracy', () => {
+      const card = buildModelCard('weak-model', '0.1.0', 'Needs work', {
+        accuracy: 0.55,
+        falsePositiveRate: 0.15,
+        inferenceTimeMs: 200,
+      });
+      expect(card.reliability).toBe('low');
+      expect(card.requiresHumanReview).toBe(true);
+    });
+
+    it('requires high accuracy AND low FPR for high reliability', () => {
+      const card = buildModelCard('accurate-but-noisy', '1.0.0', 'High acc, high FPR', {
+        accuracy: 0.95,
+        falsePositiveRate: 0.10,
+        inferenceTimeMs: 30,
+      });
+      expect(card.reliability).toBe('medium');
+    });
+
+    it('includes limitations for weak metrics', () => {
+      const card = buildModelCard('test', '1.0.0', 'Test model', {
+        accuracy: 0.75,
+        falsePositiveRate: 0.08,
+        inferenceTimeMs: 150,
+      });
+      expect(card.limitations.length).toBeGreaterThanOrEqual(2);
+    });
+
+    it('preserves name, version, and description', () => {
+      const card = buildModelCard('sentinel-detector', '2.1.0', 'Surveillance detection', {
+        accuracy: 0.92,
+        falsePositiveRate: 0.03,
+        inferenceTimeMs: 40,
+      });
+      expect(card.name).toBe('sentinel-detector');
+      expect(card.version).toBe('2.1.0');
+      expect(card.description).toBe('Surveillance detection');
+    });
+
+    it('includes metrics in the card', () => {
+      const metrics = { accuracy: 0.88, falsePositiveRate: 0.04, inferenceTimeMs: 55 };
+      const card = buildModelCard('test', '1.0.0', 'Test', metrics);
+      expect(card.metrics).toEqual(metrics);
+    });
+  });
+estimatedMinutes: 15
+difficulty: intermediate

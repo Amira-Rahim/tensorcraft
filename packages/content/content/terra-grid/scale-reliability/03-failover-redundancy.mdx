@@ -1,0 +1,153 @@
+---
+slug: failover-redundancy
+title: "Failover & Redundancy"
+moduleId: scale-reliability
+themeId: terra-grid
+order: 3
+estimatedMinutes: 25
+difficulty: advanced
+context:
+  narrative: "During the stress test, GRID kills a shard host. 'Device-3 offline. Shard-2 unavailable.' Hassan watches for the failover. 'This is the real test. Does the system degrade gracefully or crash?'"
+  speaker: "Hassan Al-Rashid"
+concept:
+  explanation: "Failover systems detect component failures and switch to backups automatically — identical to React error boundaries and fallback UI for graceful degradation."
+  bridge:
+    feTitle: "Error Boundaries"
+    feCode: "<ErrorBoundary fallback={<FallbackUI />}><Chart /></ErrorBoundary>"
+    mlTitle: "Model Failover"
+    mlCode: "modelFailover.wrap(primaryModel, fallbackModel) // auto-switch on failure"
+    tier: structural
+consequence:
+  narrative: "Device-3 goes offline. Within 200ms, the failover controller routes shard-2 inference to the backup device. Accuracy drops 0.3% running the simplified fallback model, but the system stays operational. Hassan: 'That is what graceful degradation looks like.'"
+  nextLessonTeaser: "Next: load management — handling traffic spikes without dropping predictions"
+hints:
+  - level: nudge
+    content: "Error boundaries catch errors and render fallback UI. Model failover catches failures and routes to backup models."
+  - level: guidance
+    content: "Implement a FailoverController with primary/fallback model pairs and health monitoring"
+  - level: solution
+    content: "Wrap model calls in try/catch, switch to fallback on failure, emit health events"
+keywords:
+  - failover
+  - redundancy
+  - graceful-degradation
+  - error-boundaries
+---
+
+<Dialogue speaker="GRID">
+Stress test: Device-3 offline. Shard-2 unavailable. 2,100 devices in Region 3 have lost access to the ensemble's second processing stage. Inference pipeline interrupted.
+</Dialogue>
+
+<Dialogue speaker="Hassan Al-Rashid">
+This is the real test. Not whether the system works when everything is fine — anyone can build that. The question is: when a component fails, does the system degrade gracefully or does it crash and take everything down with it?
+</Dialogue>
+
+You wrap unreliable React components in `<ErrorBoundary>` with fallback UI. When the chart component crashes, the user sees a friendly message instead of a white screen. Model failover follows the exact same pattern: wrap the primary model in a failover controller. When inference fails, automatically switch to a simpler fallback model. Degraded accuracy is better than no predictions at all.
+
+<LearningObjectives objectives={["Implement a failover controller for ML inference with automatic backup switching", "Design fallback model strategies for edge deployment", "Build health monitoring that detects failures and triggers failover", "Calculate acceptable degradation thresholds for fallback models"]} />
+
+## Failover Controller
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="failover.ts">
+{`// Model failover — like React ErrorBoundary for ML inference
+import * as tf from '@tensorflow/tfjs';
+
+interface ModelEndpoint {
+  name: string;
+  predict: (input: tf.Tensor) => Promise<tf.Tensor>;
+  healthCheck: () => Promise<boolean>;
+}
+
+type FailoverStatus = 'primary' | 'fallback' | 'degraded' | 'offline';
+
+class FailoverController {
+  private status: FailoverStatus = 'primary';
+  private consecutiveFailures: number = 0;
+  private maxFailures: number;
+
+  constructor(
+    private primary: ModelEndpoint,
+    private fallback: ModelEndpoint,
+    maxFailures: number = 3,
+  ) {
+    this.maxFailures = maxFailures;
+  }
+
+  async predict(input: tf.Tensor): Promise<{
+    prediction: tf.Tensor;
+    source: string;
+    status: FailoverStatus;
+  }> {
+    // Try primary model first
+    if (this.status === 'primary') {
+      try {
+        const prediction = await this.primary.predict(input);
+        this.consecutiveFailures = 0;
+        return { prediction, source: this.primary.name, status: 'primary' };
+      } catch (error) {
+        this.consecutiveFailures++;
+        console.error(\`Primary model failed (\${this.consecutiveFailures}/\${this.maxFailures})\`);
+
+        if (this.consecutiveFailures >= this.maxFailures) {
+          this.status = 'fallback';
+          console.warn('Switching to fallback model');
+        }
+      }
+    }
+
+    // Fallback model
+    try {
+      const prediction = await this.fallback.predict(input);
+      return { prediction, source: this.fallback.name, status: 'fallback' };
+    } catch (error) {
+      this.status = 'offline';
+      throw new Error('Both primary and fallback models unavailable');
+    }
+  }
+
+  async tryRecovery(): Promise<boolean> {
+    if (this.status !== 'fallback') return false;
+
+    const healthy = await this.primary.healthCheck();
+    if (healthy) {
+      this.status = 'primary';
+      this.consecutiveFailures = 0;
+      console.log('Primary model recovered — switching back');
+      return true;
+    }
+    return false;
+  }
+
+  getStatus(): { status: FailoverStatus; consecutiveFailures: number } {
+    return { status: this.status, consecutiveFailures: this.consecutiveFailures };
+  }
+}
+
+// Terra Grid failover configuration
+const controller = new FailoverController(
+  {
+    name: 'ensemble-v3.1',
+    predict: async (input) => ensembleModel.predict(input) as Promise<tf.Tensor>,
+    healthCheck: async () => { /* ping model endpoint */ return true; },
+  },
+  {
+    name: 'lightweight-v2.0',
+    predict: async (input) => lightModel.predict(input) as Promise<tf.Tensor>,
+    healthCheck: async () => true,
+  },
+  3 // switch after 3 consecutive failures
+);
+
+const result = await controller.predict(sensorTensor);
+console.log(\`Prediction from: \${result.source} (status: \${result.status})\`);`}
+</CodeBlock>
+
+## Challenge
+
+Build a failover controller with automatic recovery.
+
+<Exercise slug="failover-system" />
+
+<KeyTakeaways takeaways={["Model failover mirrors React error boundaries — catch failures, switch to fallback, keep the system operational", "Consecutive failure thresholds prevent flapping between primary and fallback on transient errors", "Recovery checks periodically test whether the primary model is available again", "Degraded accuracy from a fallback model is always better than no predictions at all"]} />

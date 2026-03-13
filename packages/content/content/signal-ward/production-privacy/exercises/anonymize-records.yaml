@@ -1,0 +1,126 @@
+slug: anonymize-records
+lessonSlug: privacy-and-hipaa
+title: "Anonymize Clinical Records"
+instructions: "Implement detectPHI and anonymizeRecord functions. detectPHI should find three types of Protected Health Information in text: SSNs (###-##-####), phone numbers ((###) ###-#### or ###-###-####), and Medical Record Numbers (MRN followed by optional colon/space and 6-10 digits). anonymizeRecord should replace every detected PHI instance with a type-specific placeholder like [REDACTED_SSN], [REDACTED_PHONE], or [REDACTED_MRN]. Process replacements in reverse index order to preserve string positions."
+starterCode: |
+  interface PHIMatch {
+    type: 'SSN' | 'PHONE' | 'MRN';
+    text: string;
+    start: number;
+    end: number;
+  }
+
+  function detectPHI(text: string): PHIMatch[] {
+    // Find all PHI patterns in the text:
+    // SSN: ###-##-#### (e.g., 123-45-6789)
+    // PHONE: (###) ###-#### or ###-###-#### (e.g., (555) 123-4567)
+    // MRN: "MRN" followed by optional colon/space and 6-10 digits
+    return []; // your code here
+  }
+
+  function anonymizeRecord(text: string): string {
+    // Replace each PHI match with [REDACTED_TYPE]
+    // e.g., SSN becomes [REDACTED_SSN]
+    // Process in reverse order to maintain string indices
+    return ''; // your code here
+  }
+solutionCode: |
+  interface PHIMatch {
+    type: 'SSN' | 'PHONE' | 'MRN';
+    text: string;
+    start: number;
+    end: number;
+  }
+
+  function detectPHI(text: string): PHIMatch[] {
+    const matches: PHIMatch[] = [];
+    const patterns: { type: PHIMatch['type']; regex: RegExp }[] = [
+      { type: 'SSN', regex: /\b\d{3}-\d{2}-\d{4}\b/g },
+      { type: 'PHONE', regex: /\(?\d{3}\)?[-\s]\d{3}-\d{4}/g },
+      { type: 'MRN', regex: /MRN[:\s]*\d{6,10}/gi },
+    ];
+
+    for (const { type, regex } of patterns) {
+      let match;
+      while ((match = regex.exec(text)) !== null) {
+        matches.push({
+          type,
+          text: match[0],
+          start: match.index,
+          end: match.index + match[0].length,
+        });
+      }
+    }
+
+    return matches;
+  }
+
+  function anonymizeRecord(text: string): string {
+    const matches = detectPHI(text);
+    let result = text;
+
+    const sorted = matches.sort((a, b) => b.start - a.start);
+    for (const match of sorted) {
+      result = result.substring(0, match.start)
+        + `[REDACTED_${match.type}]`
+        + result.substring(match.end);
+    }
+
+    return result;
+  }
+testCode: |
+  describe('detectPHI', () => {
+    it('detects SSNs', () => {
+      const matches = detectPHI('Patient SSN is 123-45-6789');
+      expect(matches.some(m => m.type === 'SSN')).toBe(true);
+      expect(matches.find(m => m.type === 'SSN')?.text).toBe('123-45-6789');
+    });
+
+    it('detects phone numbers with parentheses', () => {
+      const matches = detectPHI('Call (555) 123-4567 for follow-up');
+      expect(matches.some(m => m.type === 'PHONE')).toBe(true);
+    });
+
+    it('detects phone numbers without parentheses', () => {
+      const matches = detectPHI('Phone: 555-123-4567');
+      expect(matches.some(m => m.type === 'PHONE')).toBe(true);
+    });
+
+    it('detects MRNs', () => {
+      const matches = detectPHI('MRN: 12345678');
+      expect(matches.some(m => m.type === 'MRN')).toBe(true);
+    });
+
+    it('returns empty array for clean text', () => {
+      const matches = detectPHI('Patient is stable and resting');
+      expect(matches.length).toBe(0);
+    });
+  });
+
+  describe('anonymizeRecord', () => {
+    it('redacts SSNs with type label', () => {
+      const result = anonymizeRecord('SSN 123-45-6789 on file');
+      expect(result).toContain('[REDACTED_SSN]');
+      expect(result).not.toContain('123-45-6789');
+    });
+
+    it('redacts multiple PHI types', () => {
+      const text = 'SSN 123-45-6789, MRN: 98765432, call (555) 987-6543';
+      const result = anonymizeRecord(text);
+      expect(result).not.toContain('123-45-6789');
+      expect(result).not.toContain('98765432');
+      expect(result).not.toContain('987-6543');
+    });
+
+    it('preserves non-PHI text', () => {
+      const result = anonymizeRecord('Patient stable, SSN 123-45-6789');
+      expect(result).toContain('Patient stable');
+    });
+
+    it('returns original text when no PHI found', () => {
+      const text = 'Patient discharged in good condition';
+      expect(anonymizeRecord(text)).toBe(text);
+    });
+  });
+estimatedMinutes: 15
+difficulty: intermediate

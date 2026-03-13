@@ -1,0 +1,62 @@
+slug: pipeline-stages
+lessonSlug: ml-pipeline-anatomy
+title: "Define Pipeline Stages"
+instructions: "Write a function runPipeline that takes an array of stage objects, each with a name (string) and gate (function returning boolean). Execute stages in order. If a gate returns false, return { completed: false, failedAt: stage.name }. If all pass, return { completed: true, failedAt: null }."
+starterCode: |
+  interface Stage {
+    name: string;
+    gate: () => boolean;
+  }
+
+  interface PipelineResult {
+    completed: boolean;
+    failedAt: string | null;
+  }
+
+  function runPipeline(stages: Stage[]): PipelineResult {
+    // Your code here
+    return { completed: false, failedAt: null };
+  }
+solutionCode: |
+  interface Stage {
+    name: string;
+    gate: () => boolean;
+  }
+
+  interface PipelineResult {
+    completed: boolean;
+    failedAt: string | null;
+  }
+
+  function runPipeline(stages: Stage[]): PipelineResult {
+    for (const stage of stages) {
+      if (!stage.gate()) {
+        return { completed: false, failedAt: stage.name };
+      }
+    }
+    return { completed: true, failedAt: null };
+  }
+testCode: |
+  describe('runPipeline', () => {
+    it('completes when all gates pass', () => {
+      const stages = [
+        { name: 'validate', gate: () => true },
+        { name: 'train', gate: () => true },
+        { name: 'deploy', gate: () => true },
+      ];
+      expect(runPipeline(stages)).toEqual({ completed: true, failedAt: null });
+    });
+    it('stops at first failed gate', () => {
+      const stages = [
+        { name: 'validate', gate: () => true },
+        { name: 'train', gate: () => false },
+        { name: 'deploy', gate: () => true },
+      ];
+      expect(runPipeline(stages)).toEqual({ completed: false, failedAt: 'train' });
+    });
+    it('handles empty pipeline', () => {
+      expect(runPipeline([])).toEqual({ completed: true, failedAt: null });
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

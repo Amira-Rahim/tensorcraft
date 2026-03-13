@@ -1,0 +1,71 @@
+slug: high-res-generate
+lessonSlug: high-resolution-generation
+title: "Build a Super-Resolution Upscaler"
+instructions: "Build a simple super-resolution model using TensorFlow.js that upscales a 32x32x3 image to 128x128x3. Use two upSampling2d layers (each doubling spatial dimensions) with conv2d layers after each upsample. The final output should use sigmoid activation."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function buildSuperRes(): tf.LayersModel {
+    const input = tf.input({ shape: [32, 32, 3] });
+
+    // 1. UpSampling2d size [2,2] -> 64x64
+    // 2. Conv2d: 32 filters, kernelSize 3, padding same, relu
+    // 3. UpSampling2d size [2,2] -> 128x128
+    // 4. Conv2d: 16 filters, kernelSize 3, padding same, relu
+    // 5. Conv2d: 3 filters, kernelSize 3, padding same, sigmoid (output)
+
+    return null; // your code here
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function buildSuperRes(): tf.LayersModel {
+    const input = tf.input({ shape: [32, 32, 3] });
+
+    let x = tf.layers.upSampling2d({ size: [2, 2] }).apply(input) as tf.SymbolicTensor;
+    x = tf.layers.conv2d({
+      filters: 32, kernelSize: 3, padding: 'same', activation: 'relu'
+    }).apply(x) as tf.SymbolicTensor;
+
+    x = tf.layers.upSampling2d({ size: [2, 2] }).apply(x) as tf.SymbolicTensor;
+    x = tf.layers.conv2d({
+      filters: 16, kernelSize: 3, padding: 'same', activation: 'relu'
+    }).apply(x) as tf.SymbolicTensor;
+
+    const output = tf.layers.conv2d({
+      filters: 3, kernelSize: 3, padding: 'same', activation: 'sigmoid'
+    }).apply(x) as tf.SymbolicTensor;
+
+    return tf.model({ inputs: input, outputs: output });
+  }
+testCode: |
+  describe('buildSuperRes', () => {
+    it('returns a valid model', () => {
+      const model = buildSuperRes();
+      expect(model).toBeDefined();
+      expect(model.predict).toBeDefined();
+    });
+    it('upscales from 32x32 to 128x128', () => {
+      const model = buildSuperRes();
+      expect(model.inputShape).toEqual([null, 32, 32, 3]);
+      expect(model.outputShape).toEqual([null, 128, 128, 3]);
+    });
+    it('outputs 3 channels', () => {
+      const model = buildSuperRes();
+      const input = tf.randomUniform([1, 32, 32, 3]);
+      const output = model.predict(input) as tf.Tensor;
+      expect(output.shape[3]).toBe(3);
+    });
+    it('output values are between 0 and 1 (sigmoid)', () => {
+      const model = buildSuperRes();
+      const input = tf.randomUniform([1, 32, 32, 3]);
+      const output = model.predict(input) as tf.Tensor;
+      const data = output.dataSync();
+      for (let i = 0; i < Math.min(data.length, 100); i++) {
+        expect(data[i]).toBeGreaterThanOrEqual(0);
+        expect(data[i]).toBeLessThanOrEqual(1);
+      }
+    });
+  });
+estimatedMinutes: 12
+difficulty: advanced

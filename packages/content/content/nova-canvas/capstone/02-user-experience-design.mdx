@@ -1,0 +1,200 @@
+---
+slug: user-experience-design
+title: "User Experience Design"
+moduleId: nc-capstone
+themeId: nova-canvas
+order: 2
+estimatedMinutes: 25
+difficulty: advanced
+context:
+  narrative: "Yara sketches the visitor flow on a whiteboard. 'A person walks in. They have never seen generative AI. In sixty seconds, they need to understand, engage, and feel something. The UX must be invisible.'"
+  speaker: "Yara"
+concept:
+  explanation: "UX design for AI installations follows the same principles as web UX — progressive disclosure, immediate feedback, graceful error states — but for physical spaces with diverse, non-technical visitors."
+  bridge:
+    feTitle: "UX Design Principles"
+    feCode: "// Progressive disclosure: show simple first, reveal complexity on demand"
+    mlTitle: "Installation UX"
+    mlCode: "// Visitor flow: observe → touch → create → share — each step reveals more"
+    tier: structural
+consequence:
+  narrative: "The visitor flow is mapped: approach, observe ambient generation, touch to interact, speak to create, share the result. Five stages, each one deepening engagement. No instructions needed."
+  nextLessonTeaser: "Next: load testing for opening night"
+hints:
+  - level: nudge
+    content: "Think about onboarding flows in apps — the same progressive disclosure applies to physical installations"
+  - level: guidance
+    content: "Design for zero instructions: the visitor should understand the interaction through affordance alone"
+  - level: solution
+    content: "Map a 5-stage visitor journey with increasing interaction depth and clear visual/audio feedback at each stage"
+keywords:
+  - ux-design
+  - visitor-flow
+  - interaction
+  - progressive-disclosure
+---
+
+<Dialogue speaker="Yara">
+A gallery visitor is not a user reading documentation. They will not tap a help icon. They will not read a tooltip. The interface must be so intuitive that a child understands it by watching for ten seconds.
+</Dialogue>
+
+<Dialogue speaker="Ren">
+Progressive disclosure. Same principle as onboarding flows in web apps. Show the simplest interaction first. Reveal depth as the visitor engages. Every app I have built starts with the same question: what does the user see in the first five seconds?
+</Dialogue>
+
+Every web application you have built faces the same challenge: a new user lands on your page and you have seconds to communicate value, invite interaction, and build confidence. Installation UX is the same problem in physical space. The visitor is the user. The gallery is the viewport. The interaction must be self-evident.
+
+<LearningObjectives objectives={["Design a progressive disclosure flow for non-technical gallery visitors", "Implement visual and audio feedback loops that guide interaction without text instructions", "Build error states that feel intentional rather than broken", "Create an accessibility-first interaction model for diverse visitors"]} />
+
+## The Visitor Journey
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="visitor-flow.ts">
+{`// Map the visitor journey — same state machine pattern as multi-step forms
+type VisitorState = 'approaching' | 'observing' | 'touching' | 'creating' | 'sharing';
+
+interface VisitorSession {
+  id: string;
+  state: VisitorState;
+  startedAt: number;
+  interactions: InteractionEvent[];
+  generationsCount: number;
+}
+
+const stateTransitions: Record<VisitorState, {
+  display: string;
+  nextTrigger: string;
+  timeout?: number;
+}> = {
+  approaching: {
+    display: 'ambient-generative',  // Slow, beautiful generation loops
+    nextTrigger: 'proximity-detected',
+  },
+  observing: {
+    display: 'reactive-ambient',     // Generation responds to presence
+    nextTrigger: 'first-touch',
+    timeout: 30000,                  // Return to approaching after 30s
+  },
+  touching: {
+    display: 'interactive-canvas',   // Direct manipulation of generation
+    nextTrigger: 'voice-input',
+  },
+  creating: {
+    display: 'full-generation',      // Text-to-image + audio + style
+    nextTrigger: 'generation-complete',
+  },
+  sharing: {
+    display: 'result-with-qr',      // Show result + QR code to take home
+    nextTrigger: 'timeout',
+    timeout: 15000,
+  },
+};
+
+function transitionVisitor(session: VisitorSession, trigger: string): VisitorState {
+  const current = stateTransitions[session.state];
+  if (trigger === current.nextTrigger) {
+    const states: VisitorState[] = ['approaching', 'observing', 'touching', 'creating', 'sharing'];
+    const nextIndex = states.indexOf(session.state) + 1;
+    return states[nextIndex] || 'approaching'; // Loop back
+  }
+  return session.state;
+}`}
+</CodeBlock>
+
+## Feedback Without Words
+
+<CodeBlock language="typescript" title="feedback-system.ts">
+{`// Every interaction needs immediate, non-verbal feedback
+class FeedbackSystem {
+  private audioCtx: AudioContext;
+  private canvas: HTMLCanvasElement;
+
+  constructor(canvas: HTMLCanvasElement) {
+    this.audioCtx = new AudioContext();
+    this.canvas = canvas;
+  }
+
+  // Visual ripple on touch — instant acknowledgment
+  touchFeedback(x: number, y: number) {
+    const ctx = this.canvas.getContext('2d')!;
+    let radius = 0;
+    const animate = () => {
+      radius += 3;
+      ctx.beginPath();
+      ctx.arc(x, y, radius, 0, Math.PI * 2);
+      ctx.strokeStyle = \`rgba(0, 212, 255, \${1 - radius / 100})\`;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      if (radius < 100) requestAnimationFrame(animate);
+    };
+    animate();
+  }
+
+  // Audio chime on generation start — builds anticipation
+  generationStartFeedback() {
+    const osc = this.audioCtx.createOscillator();
+    const gain = this.audioCtx.createGain();
+    osc.frequency.value = 523.25; // C5
+    gain.gain.setValueAtTime(0.2, this.audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, this.audioCtx.currentTime + 0.5);
+    osc.connect(gain).connect(this.audioCtx.destination);
+    osc.start();
+    osc.stop(this.audioCtx.currentTime + 0.5);
+  }
+
+  // Progress visualization during generation — no spinner, art instead
+  generationProgress(progress: number) {
+    const ctx = this.canvas.getContext('2d')!;
+    // Growing crystalline pattern instead of a progress bar
+    const points = Math.floor(progress * 60);
+    for (let i = 0; i < points; i++) {
+      const angle = (i / 60) * Math.PI * 2;
+      const r = 50 + progress * 100;
+      const x = this.canvas.width / 2 + Math.cos(angle) * r;
+      const y = this.canvas.height / 2 + Math.sin(angle) * r;
+      ctx.fillStyle = \`hsla(\${i * 6}, 70%, 60%, \${progress})\`;
+      ctx.fillRect(x - 2, y - 2, 4, 4);
+    }
+  }
+}`}
+</CodeBlock>
+
+## Accessibility
+
+<CodeBlock language="typescript" title="accessibility.ts">
+{`// Gallery visitors include children, elderly, wheelchair users, visually impaired
+const accessibilityConfig = {
+  // Touch targets: minimum 48px (WCAG), but for installations aim for 80px+
+  minTouchTarget: 80,
+
+  // Text: large, high-contrast, minimal
+  fontSize: { min: 24, prompt: 36, title: 48 },
+  contrast: { minimum: 7, target: 10 }, // WCAG AAA
+
+  // Audio: always provide visual alternative
+  audioVisualParity: true,
+
+  // Height: interactive elements reachable from wheelchair (< 1200mm)
+  maxInteractiveHeight: 1100, // pixels mapped to physical mm
+
+  // Timeout: generous, with visible countdown
+  idleTimeout: 45000,
+  warningBeforeTimeout: 10000,
+};
+
+// Adaptive interaction: detect input type and adjust
+function detectInteractionMode(): 'touch' | 'voice' | 'gesture' {
+  if ('ontouchstart' in window) return 'touch';
+  if ('webkitSpeechRecognition' in window) return 'voice';
+  return 'gesture'; // fallback to pointer/camera tracking
+}`}
+</CodeBlock>
+
+## Challenge
+
+Design a visitor experience flow with progressive disclosure and non-verbal feedback.
+
+<Exercise slug="design-ux" />
+
+<KeyTakeaways takeaways={["Installation UX follows web UX principles — progressive disclosure, immediate feedback, graceful errors", "Non-verbal feedback (visual ripples, audio chimes, animated progress) replaces text instructions", "State machine patterns from multi-step forms map directly to visitor journey flows", "Accessibility in physical spaces means reachable touch targets, large text, and audio-visual parity"]} />

@@ -1,0 +1,106 @@
+---
+slug: optimization-strategy
+title: "Optimization Strategy"
+moduleId: optimization-fundamentals
+themeId: terra-grid
+order: 5
+estimatedMinutes: 20
+difficulty: intermediate
+context:
+  narrative: "Hassan asks you to create a formal optimization plan before touching any model weights."
+  speaker: "Hassan Al-Rashid"
+concept:
+  explanation: "Creating an optimization plan is like a build optimization checklist — a systematic approach covering every technique in priority order."
+  bridge:
+    feTitle: "Build Optimization Checklist"
+    feCode: "// 1. Tree-shake → 2. Minify → 3. Compress\n// 4. Code-split → 5. Lazy-load → 6. CDN"
+    mlTitle: "Model Optimization Checklist"
+    mlCode: "// 1. Architecture → 2. Prune → 3. Quantize\n// 4. Distill → 5. Benchmark → 6. Deploy"
+    tier: structural
+consequence:
+  narrative: "You have a systematic optimization plan. Time to execute it."
+  nextLessonTeaser: "Next module: quantization — the most impactful compression technique"
+hints:
+  - level: nudge
+    content: "Start with the highest-impact, lowest-risk optimizations"
+  - level: guidance
+    content: "Order: architecture review, pruning, quantization, distillation"
+  - level: solution
+    content: "Profile → set budget → optimize architecture → prune → quantize → distill → benchmark → deploy"
+keywords:
+  - strategy
+  - optimization-plan
+  - checklist
+  - pipeline
+---
+
+<Dialogue speaker="Hassan Al-Rashid">
+Never optimize without a plan. I have watched engineers spend three weeks quantizing a model that needed an architecture change. Profile first. Set your budget. Then execute in order of impact.
+</Dialogue>
+
+In frontend, your build optimization follows a systematic order: tree-shake unused code, minify what remains, compress the output, code-split for lazy loading. You do not skip steps or do them out of order. Model optimization follows the same discipline.
+
+<LearningObjectives objectives={["Create a systematic model optimization plan", "Prioritize techniques by impact and risk", "Map frontend build optimization stages to ML model compression", "Define success criteria before starting optimization"]} />
+
+## The Optimization Pipeline
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="optimization-plan.ts">
+{`interface OptimizationStep {
+  name: string;
+  expectedSizeReduction: string;
+  risk: 'low' | 'medium' | 'high';
+  accuracyImpact: string;
+}
+
+const optimizationPipeline: OptimizationStep[] = [
+  {
+    name: '1. Architecture Review',
+    expectedSizeReduction: '30-60%',
+    risk: 'low',
+    accuracyImpact: 'None if done correctly'
+  },
+  {
+    name: '2. Weight Pruning',
+    expectedSizeReduction: '50-90%',
+    risk: 'medium',
+    accuracyImpact: '0-5% loss typical'
+  },
+  {
+    name: '3. Quantization (Float32 → Int8)',
+    expectedSizeReduction: '75% (4x smaller)',
+    risk: 'low',
+    accuracyImpact: '0-2% loss typical'
+  },
+  {
+    name: '4. Knowledge Distillation',
+    expectedSizeReduction: '60-95%',
+    risk: 'medium',
+    accuracyImpact: '1-5% loss typical'
+  },
+  {
+    name: '5. Combined + Fine-tune',
+    expectedSizeReduction: 'Compound savings',
+    risk: 'high',
+    accuracyImpact: 'Must validate carefully'
+  }
+];
+
+// Frontend parallel:
+// 1. Architecture → Component refactoring
+// 2. Pruning → Tree-shaking
+// 3. Quantization → Minification
+// 4. Distillation → Code-splitting
+// 5. Combined → Full production build config`}
+</CodeBlock>
+
+The key insight: each step is independent but they compound. A model that is 40% smaller after architecture review, then 4x smaller after quantization, then 50% smaller after pruning is now 12x smaller than the original. That is how a 1.8GB model fits in 512MB of RAM.
+
+## Challenge
+
+Create an optimization plan for a model that needs to shrink from 1.8GB to under 300MB.
+
+<Exercise slug="optimization-plan" />
+
+<KeyTakeaways takeaways={["Optimization follows a systematic pipeline — just like a build optimization checklist", "Start with architecture review (low risk, high impact) before compression", "Techniques compound: 40% + 4x + 50% = 12x total reduction", "Always profile and benchmark between each optimization step"]} />

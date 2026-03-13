@@ -1,0 +1,51 @@
+slug: variational-encoding
+lessonSlug: the-variational-part
+title: "Variational Encoding"
+instructions: "Build a VAE encoder that outputs two vectors: mu (mean) and logVar (log-variance). The encoder should take 784-dimensional input, pass through a hidden layer of 256 units with relu, then split into two heads of latentDim units each."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function buildVAEEncoder(latentDim: number): tf.LayersModel {
+    const input = tf.input({ shape: [784] });
+
+    // Hidden layer: 784 → 256, relu
+    const hidden = null; // your code here
+
+    // Two output heads:
+    const mu = null;     // dense, latentDim units
+    const logVar = null; // dense, latentDim units
+
+    return tf.model({ inputs: input, outputs: [mu, logVar] });
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function buildVAEEncoder(latentDim: number): tf.LayersModel {
+    const input = tf.input({ shape: [784] });
+    const hidden = tf.layers.dense({ units: 256, activation: 'relu' }).apply(input);
+    const mu = tf.layers.dense({ units: latentDim, name: 'mu' }).apply(hidden) as tf.SymbolicTensor;
+    const logVar = tf.layers.dense({ units: latentDim, name: 'logVar' }).apply(hidden) as tf.SymbolicTensor;
+    return tf.model({ inputs: input, outputs: [mu, logVar] });
+  }
+testCode: |
+  describe('buildVAEEncoder', () => {
+    it('has input shape [null, 784]', () => {
+      const enc = buildVAEEncoder(16);
+      expect(enc.inputShape).toEqual([null, 784]);
+    });
+    it('outputs two tensors', () => {
+      const enc = buildVAEEncoder(16);
+      const input = tf.randomNormal([1, 784]);
+      const outputs = enc.predict(input);
+      expect(Array.isArray(outputs)).toBe(true);
+      expect((outputs as tf.Tensor[]).length).toBe(2);
+    });
+    it('both outputs have shape [null, latentDim]', () => {
+      const enc = buildVAEEncoder(8);
+      const outputShapes = enc.outputShape as tf.Shape[];
+      expect(outputShapes[0]).toEqual([null, 8]);
+      expect(outputShapes[1]).toEqual([null, 8]);
+    });
+  });
+estimatedMinutes: 8
+difficulty: intermediate

@@ -1,0 +1,55 @@
+slug: detect-data-drift
+lessonSlug: data-drift
+title: "Detect Data Drift"
+instructions: "Write a function detectDrift that takes baselineMean (number), baselineStd (number), and currentValues (number[]). Compute the current mean, then calculate the z-score of the shift: abs(currentMean - baselineMean) / baselineStd. Return { drifting: true, shiftScore } if shiftScore > 2.0, otherwise { drifting: false, shiftScore }."
+starterCode: |
+  interface DriftResult {
+    drifting: boolean;
+    shiftScore: number;
+  }
+
+  function detectDrift(
+    baselineMean: number,
+    baselineStd: number,
+    currentValues: number[],
+  ): DriftResult {
+    // Your code here
+    return { drifting: false, shiftScore: 0 };
+  }
+solutionCode: |
+  interface DriftResult {
+    drifting: boolean;
+    shiftScore: number;
+  }
+
+  function detectDrift(
+    baselineMean: number,
+    baselineStd: number,
+    currentValues: number[],
+  ): DriftResult {
+    const currentMean = currentValues.reduce((a, b) => a + b, 0) / currentValues.length;
+    const shiftScore = Math.abs(currentMean - baselineMean) / baselineStd;
+    return {
+      drifting: shiftScore > 2.0,
+      shiftScore,
+    };
+  }
+testCode: |
+  describe('detectDrift', () => {
+    it('detects drift when shift is large', () => {
+      const result = detectDrift(10, 1, [15, 16, 14, 15]);
+      expect(result.drifting).toBe(true);
+      expect(result.shiftScore).toBeGreaterThan(2);
+    });
+    it('no drift when values are close', () => {
+      const result = detectDrift(10, 2, [10.5, 9.5, 10.2, 9.8]);
+      expect(result.drifting).toBe(false);
+      expect(result.shiftScore).toBeLessThan(2);
+    });
+    it('computes correct shift score', () => {
+      const result = detectDrift(100, 10, [120, 120, 120, 120]);
+      expect(result.shiftScore).toBeCloseTo(2.0, 1);
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

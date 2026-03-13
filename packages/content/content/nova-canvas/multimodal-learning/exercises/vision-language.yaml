@@ -1,0 +1,50 @@
+slug: vision-language
+lessonSlug: vision-language-models
+title: "Compute Cosine Similarity Between Embeddings"
+instructions: "Implement cosine similarity between two 1D tensors. Cosine similarity = dot(a, b) / (norm(a) * norm(b)). Return a scalar tensor."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function cosineSimilarity(a: tf.Tensor1D, b: tf.Tensor1D): tf.Scalar {
+    // 1. Compute dot product: sum(a * b)
+    // 2. Compute norms: norm(a), norm(b)
+    // 3. Return dot / (normA * normB)
+    return null; // your code here
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function cosineSimilarity(a: tf.Tensor1D, b: tf.Tensor1D): tf.Scalar {
+    const dotProduct = tf.sum(tf.mul(a, b));
+    const normA = tf.norm(a);
+    const normB = tf.norm(b);
+    return tf.div(dotProduct, tf.mul(normA, normB)) as tf.Scalar;
+  }
+testCode: |
+  describe('cosineSimilarity', () => {
+    it('returns 1 for identical vectors', () => {
+      const a = tf.tensor1d([1, 2, 3]);
+      const result = cosineSimilarity(a, a);
+      expect(result.dataSync()[0]).toBeCloseTo(1.0, 4);
+    });
+    it('returns -1 for opposite vectors', () => {
+      const a = tf.tensor1d([1, 0, 0]);
+      const b = tf.tensor1d([-1, 0, 0]);
+      const result = cosineSimilarity(a, b);
+      expect(result.dataSync()[0]).toBeCloseTo(-1.0, 4);
+    });
+    it('returns 0 for orthogonal vectors', () => {
+      const a = tf.tensor1d([1, 0, 0]);
+      const b = tf.tensor1d([0, 1, 0]);
+      const result = cosineSimilarity(a, b);
+      expect(result.dataSync()[0]).toBeCloseTo(0.0, 4);
+    });
+    it('is scale-invariant', () => {
+      const a = tf.tensor1d([1, 2, 3]);
+      const b = tf.tensor1d([2, 4, 6]);
+      const result = cosineSimilarity(a, b);
+      expect(result.dataSync()[0]).toBeCloseTo(1.0, 4);
+    });
+  });
+estimatedMinutes: 8
+difficulty: intermediate

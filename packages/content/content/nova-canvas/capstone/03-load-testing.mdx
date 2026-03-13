@@ -1,0 +1,204 @@
+---
+slug: load-testing
+title: "Load Testing"
+moduleId: nc-capstone
+themeId: nova-canvas
+order: 3
+estimatedMinutes: 25
+difficulty: advanced
+context:
+  narrative: "One week to opening. Petrov builds the load test. 'We simulate 300 visitors — fifty more than capacity. Every interaction pattern, every edge case, every failure mode. If it breaks now, we fix it. If it breaks on opening night, we are finished.'"
+  speaker: "Petrov"
+concept:
+  explanation: "Load testing for ML installations simulates concurrent users making generation requests — the same methodology as load testing web APIs, but with heavier compute per request."
+  bridge:
+    feTitle: "Artillery / k6 Load Testing"
+    feCode: "// k6: export default function() { http.post('/api/generate', payload); }"
+    mlTitle: "Generation Load Test"
+    mlCode: "// Simulate 300 concurrent visitors generating simultaneously"
+    tier: identity
+consequence:
+  narrative: "The load test reveals three critical issues: WebSocket reconnection fails after 180 connections, tensor memory leaks after 500 generations, and the audio pipeline blocks the main thread at high concurrency. All fixable. All caught before opening night."
+  nextLessonTeaser: "Next: monitoring and failover for a running installation"
+hints:
+  - level: nudge
+    content: "Model your load test scenarios after real visitor behavior — not constant load, but waves"
+  - level: guidance
+    content: "Create scenarios: steady trickle, opening rush, sustained peak, and recovery"
+  - level: solution
+    content: "Write a test harness that simulates visitor sessions with realistic timing and measures latency percentiles"
+keywords:
+  - load-testing
+  - stress-testing
+  - performance
+  - concurrency
+---
+
+<Dialogue speaker="Petrov">
+The Biennale expects 200 visitors during peak hours. We test for 300. If it survives 300, opening night is a controlled event, not an experiment.
+</Dialogue>
+
+<Dialogue speaker="Kai">
+My audio pipeline has never been tested with more than 10 concurrent streams. This is going to be revealing.
+</Dialogue>
+
+You have load-tested APIs with Artillery, k6, or Locust. You have simulated thousands of concurrent users hitting REST endpoints. Load testing a generative installation uses the same tools and methodology, but the payload is heavier — each request triggers model inference instead of a database query.
+
+<LearningObjectives objectives={["Design load test scenarios that model realistic visitor behavior patterns", "Simulate concurrent WebSocket connections with generation requests", "Measure latency percentiles (p50, p95, p99) under increasing load", "Identify breaking points and failure modes before production deployment"]} />
+
+## Test Scenarios
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="load-test-scenarios.ts">
+{`// Model real visitor behavior — not constant hammering
+interface LoadScenario {
+  name: string;
+  duration: number;         // seconds
+  arrivalRate: number;      // visitors per second
+  pattern: 'constant' | 'ramp' | 'spike' | 'wave';
+}
+
+const scenarios: LoadScenario[] = [
+  // Morning: slow trickle as gallery opens
+  { name: 'morning-trickle', duration: 300, arrivalRate: 0.5, pattern: 'ramp' },
+
+  // Afternoon: steady flow of visitors
+  { name: 'afternoon-steady', duration: 600, arrivalRate: 2, pattern: 'constant' },
+
+  // Opening night rush: sudden spike to capacity
+  { name: 'opening-rush', duration: 120, arrivalRate: 10, pattern: 'spike' },
+
+  // Sustained peak: 200+ concurrent for 30 minutes
+  { name: 'sustained-peak', duration: 1800, arrivalRate: 5, pattern: 'wave' },
+
+  // Recovery: load drops suddenly — test resource cleanup
+  { name: 'recovery', duration: 300, arrivalRate: 0.1, pattern: 'ramp' },
+];`}
+</CodeBlock>
+
+## Visitor Simulator
+
+<CodeBlock language="typescript" title="visitor-simulator.ts">
+{`// Simulate a single gallery visitor session
+class VirtualVisitor {
+  private ws: WebSocket;
+  private metrics: VisitorMetrics;
+
+  constructor(serverUrl: string) {
+    this.ws = new WebSocket(serverUrl);
+    this.metrics = { connectTime: 0, generations: [], errors: [] };
+  }
+
+  async simulateVisit(durationMs: number = 60000) {
+    const connectStart = performance.now();
+    await this.waitForOpen();
+    this.metrics.connectTime = performance.now() - connectStart;
+
+    const endTime = Date.now() + durationMs;
+
+    while (Date.now() < endTime) {
+      // Simulate visitor behavior: observe, then interact
+      await this.wait(2000 + Math.random() * 5000); // Think time
+
+      const genStart = performance.now();
+      try {
+        await this.requestGeneration({
+          prompt: this.randomPrompt(),
+          latentVector: Array.from({ length: 128 }, () => Math.random() * 2 - 1),
+        });
+        this.metrics.generations.push(performance.now() - genStart);
+      } catch (err) {
+        this.metrics.errors.push((err as Error).message);
+      }
+    }
+
+    this.ws.close();
+    return this.metrics;
+  }
+
+  private randomPrompt(): string {
+    const prompts = [
+      'a dragon made of stars', 'sunset over crystal mountains',
+      'abstract emotion in blue', 'forest of light', 'ocean of sound',
+      'geometric dreams', 'neon wilderness', 'ancient future city',
+    ];
+    return prompts[Math.floor(Math.random() * prompts.length)];
+  }
+
+  private requestGeneration(params: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const timeout = setTimeout(() => reject(new Error('Timeout')), 10000);
+      this.ws.send(JSON.stringify({ type: 'generate', ...params }));
+      this.ws.addEventListener('message', (e) => {
+        const data = JSON.parse(e.data);
+        if (data.status === 'complete') { clearTimeout(timeout); resolve(data); }
+        if (data.status === 'error') { clearTimeout(timeout); reject(new Error(data.message)); }
+      }, { once: true });
+    });
+  }
+
+  private waitForOpen(): Promise<void> {
+    return new Promise((resolve) => {
+      if (this.ws.readyState === WebSocket.OPEN) return resolve();
+      this.ws.addEventListener('open', () => resolve(), { once: true });
+    });
+  }
+
+  private wait(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+}
+
+interface VisitorMetrics {
+  connectTime: number;
+  generations: number[];
+  errors: string[];
+}`}
+</CodeBlock>
+
+## Results Analysis
+
+<CodeBlock language="typescript" title="analyze-results.ts">
+{`// Analyze load test results — same metrics as API load testing
+function analyzeResults(allMetrics: VisitorMetrics[]): LoadTestReport {
+  const allLatencies = allMetrics.flatMap(m => m.generations).sort((a, b) => a - b);
+  const allErrors = allMetrics.flatMap(m => m.errors);
+
+  return {
+    totalVisitors: allMetrics.length,
+    totalGenerations: allLatencies.length,
+    totalErrors: allErrors.length,
+    errorRate: allErrors.length / (allLatencies.length + allErrors.length),
+    latency: {
+      p50: percentile(allLatencies, 50),
+      p95: percentile(allLatencies, 95),
+      p99: percentile(allLatencies, 99),
+      max: allLatencies[allLatencies.length - 1],
+    },
+    connectTime: {
+      avg: avg(allMetrics.map(m => m.connectTime)),
+      max: Math.max(...allMetrics.map(m => m.connectTime)),
+    },
+    verdict: allLatencies.length > 0 && percentile(allLatencies, 95) < 2000
+      ? 'PASS' : 'FAIL',
+  };
+}
+
+function percentile(sorted: number[], p: number): number {
+  const idx = Math.ceil((p / 100) * sorted.length) - 1;
+  return sorted[Math.max(0, idx)];
+}
+
+function avg(nums: number[]): number {
+  return nums.reduce((a, b) => a + b, 0) / nums.length;
+}`}
+</CodeBlock>
+
+## Challenge
+
+Build a load testing harness that simulates concurrent gallery visitors and reports latency percentiles.
+
+<Exercise slug="load-test" />
+
+<KeyTakeaways takeaways={["Load testing ML systems uses the same tools and methodology as API load testing — k6, Artillery, or custom harnesses", "Model realistic visitor behavior with think time, variable prompts, and session duration", "Latency percentiles (p50, p95, p99) reveal the experience for typical and worst-case visitors", "Test beyond expected capacity — if the system survives 150% load, opening night is predictable"]} />

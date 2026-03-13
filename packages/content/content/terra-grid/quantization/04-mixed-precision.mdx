@@ -1,0 +1,105 @@
+---
+slug: mixed-precision
+title: "Mixed Precision"
+moduleId: quantization
+themeId: terra-grid
+order: 4
+estimatedMinutes: 20
+difficulty: intermediate
+context:
+  narrative: "Some layers need higher precision than others. Jin analyzes which layers are sensitive."
+  speaker: "Jin Takahashi"
+concept:
+  explanation: "Mixed precision uses different number formats for different layers — like responsive images that serve different resolutions based on context."
+  bridge:
+    feTitle: "Responsive Images"
+    feCode: "<img srcset=\"small.webp 480w, large.png 1200w\"\n  sizes=\"(max-width: 600px) 480px, 1200px\" />"
+    mlTitle: "Mixed Precision"
+    mlCode: "// First layer: Float16 (sensitive)\n// Middle layers: Int8 (robust)\n// Last layer: Float16 (sensitive)"
+    tier: structural
+consequence:
+  narrative: "Mixed precision gives you 3x compression instead of 4x, but preserves critical accuracy."
+  nextLessonTeaser: "Next: managing the accuracy vs size tradeoff"
+hints:
+  - level: nudge
+    content: "Not all layers need the same precision — early and late layers are often more sensitive"
+  - level: guidance
+    content: "Keep sensitive layers at Float16 and quantize robust middle layers to Int8"
+  - level: solution
+    content: "Assign precision per layer based on sensitivity analysis"
+keywords:
+  - mixed-precision
+  - layer-sensitivity
+  - responsive
+  - per-layer
+---
+
+<Dialogue speaker="Jin Takahashi">
+I ran a sensitivity analysis. The first and last layers lose significant accuracy when quantized to Int8. The middle layers are robust. We should use different precision for different parts of the model.
+</Dialogue>
+
+You already use mixed precision in frontend development. Responsive images serve different resolutions to different devices: high-res for desktop, compressed for mobile. Mixed precision does the same for model layers: high precision where it matters, lower precision where it does not.
+
+<LearningObjectives objectives={["Understand why different layers have different precision sensitivity", "Implement per-layer precision assignment", "Calculate memory savings from mixed precision strategies", "Map responsive image strategies to mixed precision model deployment"]} />
+
+## Different Precision for Different Layers
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="mixed-precision.ts">
+{`type Precision = 'float32' | 'float16' | 'int8';
+
+interface LayerConfig {
+  name: string;
+  params: number;
+  precision: Precision;
+  sensitive: boolean;
+}
+
+function bytesPerParam(precision: Precision): number {
+  switch (precision) {
+    case 'float32': return 4;
+    case 'float16': return 2;
+    case 'int8': return 1;
+  }
+}
+
+function assignPrecision(layers: LayerConfig[]): LayerConfig[] {
+  return layers.map((layer, i) => {
+    // First and last layers: keep higher precision (sensitive)
+    // Middle layers: quantize aggressively (robust)
+    const isEdgeLayer = i === 0 || i === layers.length - 1;
+    return {
+      ...layer,
+      precision: isEdgeLayer ? 'float16' : 'int8',
+      sensitive: isEdgeLayer,
+    };
+  });
+}
+
+function totalSizeMB(layers: LayerConfig[]): number {
+  return layers.reduce((sum, l) =>
+    sum + (l.params * bytesPerParam(l.precision)) / (1024 * 1024), 0);
+}
+
+const layers: LayerConfig[] = [
+  { name: 'input_dense', params: 131072, precision: 'float32', sensitive: true },
+  { name: 'hidden_1', params: 262144, precision: 'float32', sensitive: false },
+  { name: 'hidden_2', params: 262144, precision: 'float32', sensitive: false },
+  { name: 'output', params: 512, precision: 'float32', sensitive: true },
+];
+
+console.log('All Float32:', totalSizeMB(layers).toFixed(2) + 'MB'); // 2.50MB
+const mixed = assignPrecision(layers);
+console.log('Mixed precision:', totalSizeMB(mixed).toFixed(2) + 'MB'); // 0.75MB`}
+</CodeBlock>
+
+The edge layers (first and last) are kept at Float16 because they directly interface with input data and output predictions. The middle layers, which learn abstract features, tolerate Int8 well. This is analogous to serving hero images at full resolution while compressing thumbnails.
+
+## Challenge
+
+Assign precision levels to model layers and calculate total size.
+
+<Exercise slug="mixed-precision" />
+
+<KeyTakeaways takeaways={["First and last layers are typically more sensitive to quantization", "Mixed precision balances compression ratio with accuracy preservation", "Per-layer precision assignment mirrors responsive image srcset strategies", "Mixed precision gives ~3x compression vs 4x for full Int8, but better accuracy"]} />

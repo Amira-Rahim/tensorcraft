@@ -1,0 +1,9 @@
+slug: mixed-precision
+lessonSlug: mixed-precision
+title: "Assign Mixed Precision"
+instructions: "Write a function totalSizeMB(layers) where each layer is { params, precision } and precision is 'float32' (4 bytes), 'float16' (2 bytes), or 'int8' (1 byte). Return the total size in MB."
+starterCode: "function totalSizeMB(layers) {\n  // Each layer: { params, precision }\n  // precision: 'float32'=4B, 'float16'=2B, 'int8'=1B\n  return null; // your code here\n}"
+solutionCode: "function totalSizeMB(layers) {\n  const bytes = { float32: 4, float16: 2, int8: 1 };\n  return layers.reduce((sum, l) => sum + (l.params * bytes[l.precision]) / (1024 * 1024), 0);\n}"
+testCode: "describe('totalSizeMB', () => { it('calculates mixed precision size', () => { const layers = [{ params: 1048576, precision: 'float16' }, { params: 1048576, precision: 'int8' }, { params: 1048576, precision: 'float16' }]; expect(totalSizeMB(layers)).toBe(5); }); it('handles all float32', () => { const layers = [{ params: 1048576, precision: 'float32' }]; expect(totalSizeMB(layers)).toBe(4); }); });"
+estimatedMinutes: 10
+difficulty: intermediate

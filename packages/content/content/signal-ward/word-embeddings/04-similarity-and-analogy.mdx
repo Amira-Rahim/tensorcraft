@@ -1,0 +1,187 @@
+---
+slug: similarity-and-analogy
+title: "Cosine Similarity and Word Analogies"
+moduleId: word-embeddings
+themeId: signal-ward
+order: 4
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Obi shows the team that word vectors support arithmetic. 'doctor' - 'adult' + 'child' = 'pediatrician'. The team applies this to find clinical relationships and drug analogies."
+  speaker: "Obi"
+concept:
+  explanation: "Cosine similarity measures the angle between two vectors, revealing semantic relatedness. Word vectors also support analogies through vector arithmetic: king - man + woman = queen. In clinical NLP, this enables reasoning like aspirin - pain + infection = antibiotic."
+  bridge:
+    feTitle: "String Similarity"
+    feCode: "levenshtein('aspirin', 'asprin') // edit distance = 1"
+    mlTitle: "Vector Similarity"
+    mlCode: "cosineSim(vec('aspirin'), vec('ibuprofen')) // semantic similarity = 0.95"
+    tier: intuition
+consequence:
+  narrative: "Diagnostic One can now find related medications, detect analogy-based relationships, and flag when a patient's medication list contains semantically conflicting terms."
+  nextLessonTeaser: "Next: training custom embedding layers inside a neural network."
+hints:
+  - level: nudge
+    content: "For analogies, subtract one vector and add another, then find the closest match."
+  - level: guidance
+    content: "Compute a - b + c for each dimension, then find the word whose vector has the highest cosine similarity to the result."
+  - level: solution
+    content: "const result = a.map((v, i) => v - b[i] + c[i]); then iterate all words, compute cosineSim with result, return the best match."
+keywords:
+  - cosine-similarity
+  - word-analogies
+  - vector-arithmetic
+  - semantic-similarity
+---
+
+> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
+
+<Dialogue speaker="Obi">
+Santos, you know Levenshtein distance — it measures how many character edits separate two strings. "aspirin" and "asprin" are 1 edit apart. Cosine similarity does something similar, but for meaning instead of spelling.
+</Dialogue>
+
+<Dialogue speaker="Santos">
+So Levenshtein says "aspirin" and "asprin" are close because they look similar, and cosine similarity says "aspirin" and "ibuprofen" are close because they mean similar things?
+</Dialogue>
+
+<Dialogue speaker="Obi">
+Exactly. And here is where it gets interesting: you can do arithmetic with word vectors. Subtract one concept, add another, and discover new relationships.
+</Dialogue>
+
+Levenshtein distance measures surface-level similarity between strings — how many edits to transform one into the other. Cosine similarity measures deep semantic similarity between word vectors — how close their meanings are. And unlike string comparison, vector arithmetic lets you reason about relationships.
+
+<LearningObjectives objectives={["Implement cosine similarity to measure semantic relatedness between word vectors", "Perform word analogy tasks using vector arithmetic (a - b + c = ?)", "Find the most similar words to a query vector", "Apply analogy reasoning to clinical vocabulary"]} />
+
+## Cosine Similarity: Measuring Meaning
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="cosine-similarity.ts">
+{`// Cosine similarity measures the angle between two vectors.
+// 1.0 = identical direction (same meaning)
+// 0.0 = perpendicular (unrelated)
+// -1.0 = opposite direction (opposite meaning)
+
+function cosineSimilarity(a: number[], b: number[]): number {
+  const dot = a.reduce((sum, val, i) => sum + val * b[i], 0);
+  const normA = Math.sqrt(a.reduce((sum, val) => sum + val * val, 0));
+  const normB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0));
+  return dot / (normA * normB);
+}
+
+const embeddings: Record<string, number[]> = {
+  'aspirin':      [0.82, 0.21, -0.11, 0.53, 0.34, -0.08],
+  'ibuprofen':    [0.74, 0.29, -0.18, 0.45, 0.31, -0.12],
+  'penicillin':   [-0.12, 0.81, 0.62, -0.22, 0.15, 0.71],
+  'amoxicillin':  [-0.19, 0.73, 0.68, -0.15, 0.18, 0.65],
+  'headache':     [0.55, -0.31, 0.22, 0.78, -0.15, 0.08],
+  'infection':    [-0.08, 0.69, 0.55, -0.18, 0.42, 0.58],
+  'appendectomy': [0.08, -0.31, 0.14, 0.91, 0.61, -0.33],
+  'surgeon':      [0.12, -0.25, 0.19, 0.85, 0.55, -0.28],
+};
+
+// Similar medications score high
+console.log('aspirin ~ ibuprofen:',
+  cosineSimilarity(embeddings['aspirin'], embeddings['ibuprofen']).toFixed(3)
+); // ~0.98
+
+// Different categories score low
+console.log('aspirin ~ appendectomy:',
+  cosineSimilarity(embeddings['aspirin'], embeddings['appendectomy']).toFixed(3)
+); // ~0.22`}
+</CodeBlock>
+
+## Finding Nearest Neighbors
+
+<CodeBlock language="typescript" title="nearest-neighbors.ts">
+{`function findMostSimilar(
+  query: string,
+  embeddings: Record<string, number[]>,
+  topK: number = 3
+): { word: string; similarity: number }[] {
+  const queryVec = embeddings[query];
+  const results: { word: string; similarity: number }[] = [];
+
+  for (const [word, vec] of Object.entries(embeddings)) {
+    if (word === query) continue;
+    results.push({
+      word,
+      similarity: cosineSimilarity(queryVec, vec),
+    });
+  }
+
+  return results
+    .sort((a, b) => b.similarity - a.similarity)
+    .slice(0, topK);
+}
+
+console.log('Most similar to aspirin:', findMostSimilar('aspirin', embeddings));
+// [{word: 'ibuprofen', similarity: 0.98}, ...]
+
+console.log('Most similar to penicillin:', findMostSimilar('penicillin', embeddings));
+// [{word: 'amoxicillin', similarity: 0.97}, {word: 'infection', similarity: 0.89}, ...]`}
+</CodeBlock>
+
+## Word Analogies: Vector Arithmetic
+
+<Dialogue speaker="Obi">
+Here is the famous result: king - man + woman = queen. The vector arithmetic captures the relationship "male royalty is to female royalty." We can do the same with medical terms.
+</Dialogue>
+
+<CodeBlock language="typescript" title="word-analogies.ts">
+{`// Analogy: a is to b as c is to ???
+// Formula: result = vec(a) - vec(b) + vec(c)
+// Then find the word whose vector is closest to the result
+
+function solveAnalogy(
+  a: string, b: string, c: string,
+  embeddings: Record<string, number[]>
+): string {
+  const vecA = embeddings[a];
+  const vecB = embeddings[b];
+  const vecC = embeddings[c];
+
+  // result = a - b + c
+  const resultVec = vecA.map((val, i) => val - vecB[i] + vecC[i]);
+
+  // Find the closest word (excluding inputs)
+  const exclude = new Set([a, b, c]);
+  let bestWord = '';
+  let bestSim = -Infinity;
+
+  for (const [word, vec] of Object.entries(embeddings)) {
+    if (exclude.has(word)) continue;
+    const sim = cosineSimilarity(resultVec, vec);
+    if (sim > bestSim) {
+      bestSim = sim;
+      bestWord = word;
+    }
+  }
+
+  return bestWord;
+}
+
+// aspirin is to headache as penicillin is to ???
+const result = solveAnalogy('aspirin', 'headache', 'penicillin', embeddings);
+console.log('aspirin : headache :: penicillin :', result);
+// Expected: "infection" — aspirin treats headaches, penicillin treats infections
+
+// appendectomy is to surgeon as ??? is to ???
+// Vector arithmetic discovers occupational relationships`}
+</CodeBlock>
+
+<Dialogue speaker="Dr. Vasquez">
+Could we use this to find drug alternatives? If a patient is allergic to penicillin, could the model suggest amoxicillin is similar but flag that it is also a beta-lactam?
+</Dialogue>
+
+<Dialogue speaker="MEDI">
+The similarity score would identify amoxicillin as the closest alternative. However, since both are beta-lactam antibiotics, a clinical decision support system should cross-reference with allergy data. Embedding similarity finds semantic neighbors but does not replace pharmacological knowledge.
+</Dialogue>
+
+## Challenge
+
+Implement cosine similarity and a word analogy solver for clinical vocabulary.
+
+<Exercise slug="compute-word-similarity" />
+
+<KeyTakeaways takeaways={["Cosine similarity measures the angle between vectors: 1.0 = same meaning, 0.0 = unrelated", "Nearest-neighbor search finds semantically related words by ranking cosine similarities", "Vector arithmetic enables analogies: king - man + woman = queen works for clinical terms too", "String similarity (Levenshtein) measures spelling closeness; vector similarity measures meaning closeness"]} />

@@ -1,0 +1,92 @@
+slug: compute-iou
+lessonSlug: intersection-over-union
+title: "Compute IoU for Overlapping Detections"
+instructions: "When multiple cameras in Neon Protocol's network detect the same target, we need to measure how much their bounding boxes overlap. Implement computeIoU that takes two bounding boxes in [x1, y1, x2, y2] format (top-left and bottom-right corners) as tf.Tensor1D inputs and returns a scalar tf.Tensor with the Intersection over Union value. IoU = area of intersection / area of union. If the boxes do not overlap, return 0. Use TensorFlow.js tensor operations (tf.maximum, tf.minimum, tf.mul, tf.sub, tf.div) rather than extracting values to JavaScript."
+starterCode: |
+  function computeIoU(boxA: tf.Tensor1D, boxB: tf.Tensor1D): tf.Scalar {
+    // boxA and boxB are [x1, y1, x2, y2]
+    // 1. Compute intersection coordinates
+    //    interX1 = max(boxA[0], boxB[0]), interY1 = max(boxA[1], boxB[1])
+    //    interX2 = min(boxA[2], boxB[2]), interY2 = min(boxA[3], boxB[3])
+    // 2. Compute intersection width and height (clamp to 0)
+    // 3. Compute intersection area
+    // 4. Compute union area = areaA + areaB - intersection
+    // 5. Return IoU = intersection / union
+    return null; // your code here
+  }
+solutionCode: |
+  function computeIoU(boxA: tf.Tensor1D, boxB: tf.Tensor1D): tf.Scalar {
+    return tf.tidy(() => {
+      const [ax1, ay1, ax2, ay2] = [
+        boxA.slice(0, 1), boxA.slice(1, 1),
+        boxA.slice(2, 1), boxA.slice(3, 1)
+      ];
+      const [bx1, by1, bx2, by2] = [
+        boxB.slice(0, 1), boxB.slice(1, 1),
+        boxB.slice(2, 1), boxB.slice(3, 1)
+      ];
+
+      const interX1 = tf.maximum(ax1, bx1);
+      const interY1 = tf.maximum(ay1, by1);
+      const interX2 = tf.minimum(ax2, bx2);
+      const interY2 = tf.minimum(ay2, by2);
+
+      const interW = tf.maximum(tf.sub(interX2, interX1), 0);
+      const interH = tf.maximum(tf.sub(interY2, interY1), 0);
+      const interArea = tf.mul(interW, interH);
+
+      const areaA = tf.mul(tf.sub(ax2, ax1), tf.sub(ay2, ay1));
+      const areaB = tf.mul(tf.sub(bx2, bx1), tf.sub(by2, by1));
+      const unionArea = tf.sub(tf.add(areaA, areaB), interArea);
+
+      return tf.div(interArea, unionArea).squeeze() as tf.Scalar;
+    });
+  }
+testCode: |
+  describe('computeIoU', () => {
+    afterEach(() => tf.disposeVariables());
+
+    it('returns 1 for identical boxes', () => {
+      const box = tf.tensor1d([0, 0, 10, 10]);
+      const result = computeIoU(box, box);
+      expect(result.dataSync()[0]).toBeCloseTo(1.0, 4);
+      box.dispose();
+      result.dispose();
+    });
+
+    it('returns 0 for non-overlapping boxes', () => {
+      const boxA = tf.tensor1d([0, 0, 10, 10]);
+      const boxB = tf.tensor1d([20, 20, 30, 30]);
+      const result = computeIoU(boxA, boxB);
+      expect(result.dataSync()[0]).toBeCloseTo(0, 4);
+      boxA.dispose(); boxB.dispose(); result.dispose();
+    });
+
+    it('computes correct IoU for partial overlap', () => {
+      const boxA = tf.tensor1d([0, 0, 10, 10]);
+      const boxB = tf.tensor1d([5, 5, 15, 15]);
+      const result = computeIoU(boxA, boxB);
+      // Intersection: 5x5=25, Union: 100+100-25=175
+      expect(result.dataSync()[0]).toBeCloseTo(25 / 175, 4);
+      boxA.dispose(); boxB.dispose(); result.dispose();
+    });
+
+    it('handles box fully contained in another', () => {
+      const boxA = tf.tensor1d([0, 0, 20, 20]);
+      const boxB = tf.tensor1d([5, 5, 10, 10]);
+      const result = computeIoU(boxA, boxB);
+      // Intersection: 5x5=25, Union: 400+25-25=400
+      expect(result.dataSync()[0]).toBeCloseTo(25 / 400, 4);
+      boxA.dispose(); boxB.dispose(); result.dispose();
+    });
+
+    it('returns a scalar tensor', () => {
+      const boxA = tf.tensor1d([0, 0, 10, 10]);
+      const boxB = tf.tensor1d([0, 0, 10, 10]);
+      const result = computeIoU(boxA, boxB);
+      expect(result.shape).toEqual([]);
+      boxA.dispose(); boxB.dispose(); result.dispose();
+    });
+  });
+estimatedMinutes: 12
+difficulty: intermediate

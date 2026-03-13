@@ -1,0 +1,186 @@
+---
+slug: sw-simple-rnns
+title: "Simple RNNs"
+moduleId: sequence-models
+themeId: signal-ward
+order: 2
+estimatedMinutes: 30
+difficulty: intermediate
+context:
+  narrative: "Obi introduces recurrent neural networks — models that process text one word at a time, carrying context forward like Array.reduce accumulates state."
+  speaker: "Obi"
+concept:
+  explanation: "An RNN processes a sequence one element at a time, maintaining a hidden state that accumulates context. It's exactly like Array.reduce — each step takes the current element and the accumulated state, producing a new state."
+  bridge:
+    feTitle: "Array.reduce()"
+    feCode: "words.reduce((state, word) => updateState(state, word), initialState)"
+    mlTitle: "RNN Step"
+    mlCode: "tokens.reduce((hidden, token) => rnnCell(hidden, embed(token)), h0)"
+    tier: identity
+consequence:
+  narrative: "Diagnostic One can now process clinical notes sequentially, understanding that 'denied' before 'pain' negates the symptom."
+  nextLessonTeaser: "Next: why simple RNNs struggle with long sequences — the vanishing gradient problem."
+hints:
+  - level: nudge
+    content: "An RNN cell takes two inputs: the current token embedding and the previous hidden state."
+  - level: guidance
+    content: "Use tf.layers.simpleRNN to create a recurrent layer, feed it a sequence of embeddings."
+  - level: solution
+    content: "const rnn = tf.layers.simpleRNN({ units: 32 }); const output = rnn.apply(embeddedSequence);"
+keywords:
+  - rnn
+  - recurrent-neural-network
+  - hidden-state
+  - array-reduce
+  - sequence-processing
+---
+
+> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
+
+<Dialogue speaker="Obi">
+Santos, you use Array.reduce all the time, right? Start with an initial value, process each element, accumulate state?
+</Dialogue>
+
+<Dialogue speaker="Santos">
+Sure. Like summing an array: `[1,2,3].reduce((sum, n) => sum + n, 0)`. Each step folds in the next value.
+</Dialogue>
+
+<Dialogue speaker="Obi">
+An RNN is exactly that. Start with an initial hidden state, process each token, accumulate context. By the time you've read "patient denied chest pain," the hidden state encodes the full meaning — including the negation.
+</Dialogue>
+
+<Dialogue speaker="MEDI">
+Confirmed: Array.reduce and RNN forward pass share identical computational structure. Both are left-fold operations over sequences.
+</Dialogue>
+
+`Array.reduce()` processes elements one at a time, carrying forward an accumulator. An RNN does the same: it processes tokens one at a time, carrying forward a hidden state vector. After reading the entire sequence, the hidden state encodes the sentence's meaning.
+
+<LearningObjectives objectives={["Understand RNNs as Array.reduce over token sequences", "Build a simple RNN in TensorFlow.js for clinical text classification", "Trace how hidden state evolves as each token is processed", "Combine embedding + RNN + dense layers for end-to-end text processing"]} />
+
+## RNN = Array.reduce for Tensors
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="rnn-as-reduce.ts">
+{`// JavaScript reduce: accumulate a value across an array
+const sum = [1, 2, 3, 4].reduce((acc, val) => acc + val, 0);
+// Step 1: acc=0, val=1 → acc=1
+// Step 2: acc=1, val=2 → acc=3
+// Step 3: acc=3, val=3 → acc=6
+// Step 4: acc=6, val=4 → acc=10
+
+// RNN: accumulate a hidden state across a token sequence
+// Step 1: hidden=h0, token='patient'  → hidden=h1
+// Step 2: hidden=h1, token='denied'   → hidden=h2  (now "knows" negation)
+// Step 3: hidden=h2, token='chest'    → hidden=h3
+// Step 4: hidden=h3, token='pain'     → hidden=h4  (pain is negated)
+
+// The RNN cell formula (simplified)
+// new_hidden = tanh(W_h * hidden + W_x * tokenEmbedding + bias)
+
+function rnnCell(
+  hidden: number[],
+  tokenEmbed: number[],
+  Wh: number[][],
+  Wx: number[][]
+): number[] {
+  return hidden.map((h, i) =>
+    Math.tanh(
+      h * Wh[i][0] + tokenEmbed[i % tokenEmbed.length] * Wx[i][0]
+    )
+  );
+}
+
+// It's literally reduce:
+// const finalState = tokens.reduce(
+//   (hidden, token) => rnnCell(hidden, embed(token), Wh, Wx),
+//   initialHidden
+// );`}
+</CodeBlock>
+
+## Building an RNN in TensorFlow.js
+
+<CodeBlock language="typescript" title="text-rnn.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Build a clinical text classification model
+const model = tf.sequential();
+
+// Layer 1: Embedding — token IDs → dense vectors
+model.add(tf.layers.embedding({
+  inputDim: 500,      // vocabulary size
+  outputDim: 32,      // embedding dimension
+  inputLength: 16,    // max sequence length
+}));
+
+// Layer 2: SimpleRNN — process sequence, output final hidden state
+model.add(tf.layers.simpleRNN({
+  units: 32,          // hidden state dimension
+  returnSequences: false, // only return final state
+}));
+
+// Layer 3: Dense — classify based on final hidden state
+model.add(tf.layers.dense({
+  units: 1,
+  activation: 'sigmoid', // binary: symptom present or negated?
+}));
+
+model.compile({
+  optimizer: 'adam',
+  loss: 'binaryCrossentropy',
+  metrics: ['accuracy'],
+});
+
+model.summary();
+
+// Input: padded token ID sequences [batchSize, seqLength]
+const input = tf.tensor2d(
+  [[2, 1, 3, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
+  [1, 16],
+  'int32'
+);
+const prediction = model.predict(input) as tf.Tensor;
+prediction.print(); // probability of positive symptom mention`}
+</CodeBlock>
+
+## Tracing Hidden State Evolution
+
+<Dialogue speaker="Dr. Vasquez">
+Can we see what the hidden state looks like after each word? I want to understand how the model builds its interpretation.
+</Dialogue>
+
+<CodeBlock language="typescript" title="trace-hidden.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Use returnSequences to see hidden state at EVERY step
+const traceModel = tf.sequential();
+traceModel.add(tf.layers.embedding({
+  inputDim: 500, outputDim: 16, inputLength: 8,
+}));
+traceModel.add(tf.layers.simpleRNN({
+  units: 16,
+  returnSequences: true, // return hidden state at each timestep
+}));
+
+// Input: "patient denied chest pain" → [2, 3, 4, 5, 0, 0, 0, 0]
+const input = tf.tensor2d([[2, 3, 4, 5, 0, 0, 0, 0]], [1, 8], 'int32');
+const allStates = traceModel.predict(input) as tf.Tensor;
+
+console.log('All hidden states shape:', allStates.shape);
+// [1, 8, 16] — one 16-dim hidden state per timestep
+
+// Compare to Array.reduce with logging:
+// [2, 3, 4, 5].reduce((state, token) => {
+//   const newState = rnnCell(state, token);
+//   console.log('After token', token, '→ state:', newState);
+//   return newState;
+// }, initialState);`}
+</CodeBlock>
+
+## Challenge
+
+Build a simple RNN model that processes clinical text sequences and classifies them.
+
+<Exercise slug="sw-build-rnn" />
+
+<KeyTakeaways takeaways={["An RNN processes tokens sequentially, just like Array.reduce accumulates state", "The hidden state carries context forward — it 'remembers' what came before", "Embedding + SimpleRNN + Dense is a complete text classification pipeline", "Use returnSequences to inspect how hidden state evolves at each timestep"]} />

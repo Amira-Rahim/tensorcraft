@@ -1,0 +1,144 @@
+---
+slug: what-is-ner
+title: "What Is NER?"
+moduleId: named-entity-recognition
+themeId: signal-ward
+order: 1
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Dr. Vasquez explains why she needs structured information extracted from hundreds of unstructured clinical notes each week."
+  speaker: "Dr. Elena Vasquez"
+concept:
+  explanation: "Named Entity Recognition (NER) identifies and classifies specific elements in text — drugs, conditions, dosages, procedures — transforming unstructured prose into structured, queryable data."
+  bridge:
+    feTitle: "document.querySelectorAll()"
+    feCode: "document.querySelectorAll('.drug'); // find specific elements in a sea of nodes"
+    mlTitle: "Named Entity Recognition"
+    mlCode: "ner(tokens); // find specific entities in a sea of words"
+    tier: structural
+consequence:
+  narrative: "Khalil understands that NER transforms free text into structured, computable data — the same way querySelectorAll turns a DOM tree into a usable collection."
+  nextLessonTeaser: "Next: BIO tagging — marking where entities begin and end."
+hints:
+  - level: nudge
+    content: "Think of each token as a DOM node that needs to be selected or skipped"
+  - level: guidance
+    content: "Assign a category label to each token based on what it represents"
+  - level: solution
+    content: "Loop through tokens, check each against known vocabularies and patterns, and assign DRUG, CONDITION, DOSAGE, FREQUENCY, or O"
+keywords:
+  - ner
+  - entity-recognition
+  - token-classification
+  - querySelectorAll
+---
+
+<Dialogue speaker="Dr. Elena Vasquez">
+Khalil, I reviewed 47 clinical notes this morning. Each one buries critical information in free text — drug names, dosages, conditions, procedures. I need that data structured. Searchable. Computable. Right now, it's like having a massive DOM tree with no class names, no IDs, no way to query it.
+</Dialogue>
+
+<Dialogue speaker="Khalil Mensah">
+So you need the equivalent of `document.querySelectorAll()` for clinical text. Instead of finding all `.drug` elements in a DOM, you're finding all drug mentions in a paragraph.
+</Dialogue>
+
+<Dialogue speaker="Dr. Elena Vasquez">
+Exactly. "Patient prescribed methotrexate 15mg weekly for rheumatoid arthritis." I need the system to pull out "methotrexate" as a DRUG, "15mg" as a DOSAGE, "weekly" as a FREQUENCY, and "rheumatoid arthritis" as a CONDITION. Every word classified or skipped.
+</Dialogue>
+
+<LearningObjectives objectives={["Define Named Entity Recognition and its role in clinical NLP", "Map NER to the familiar concept of DOM querying with querySelectorAll", "Identify common clinical entity types (drugs, conditions, dosages, procedures)", "Implement basic token-level entity classification"]} />
+
+## querySelectorAll for Text
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+When you call `document.querySelectorAll('.drug')`, the browser traverses every node in the DOM tree and returns the ones matching your selector. NER does the same thing with text: it walks through every token and decides whether it matches an entity type.
+
+The difference? DOM nodes have explicit class names. Clinical text does not. The model has to learn which tokens are drugs, which are conditions, and which are just connecting words like "the" or "prescribed."
+
+<CodeBlock language="typescript" title="what-is-ner.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Entity types for clinical NER — like CSS selectors for text
+const ENTITY_TYPES = ['O', 'DRUG', 'CONDITION', 'DOSAGE', 'FREQUENCY', 'PROCEDURE'];
+
+interface Entity {
+  text: string;
+  type: string;
+  start: number;
+  end: number;
+}
+
+// querySelectorAll for clinical text
+function findEntities(
+  tokens: string[],
+  embeddings: tf.Tensor2D,
+  numClasses: number
+): tf.Tensor2D {
+  // Classification layer: each token → entity type probabilities
+  // Like checking each DOM node against a selector
+  const W = tf.variable(tf.randomNormal([embeddings.shape[1], numClasses]));
+  const b = tf.variable(tf.zeros([numClasses]));
+
+  const logits = tf.matMul(embeddings, W).add(b);
+  return tf.softmax(logits, -1) as tf.Tensor2D; // [seqLen, numClasses]
+}
+
+async function extractEntities(
+  tokens: string[],
+  predictions: tf.Tensor2D
+): Promise<Entity[]> {
+  const predArray = await predictions.argMax(-1).array() as number[];
+  const entities: Entity[] = [];
+
+  for (let i = 0; i < tokens.length; i++) {
+    const typeIdx = predArray[i];
+    if (typeIdx !== 0) { // skip 'O' (outside) — like nodes that don't match the selector
+      entities.push({
+        text: tokens[i],
+        type: ENTITY_TYPES[typeIdx],
+        start: i,
+        end: i + 1
+      });
+    }
+  }
+  return entities;
+}
+
+// Example: parse a clinical sentence
+const tokens = ['Patient', 'prescribed', 'methotrexate', '15mg', 'weekly'];
+const embeddings = tf.randomNormal([5, 64]) as tf.Tensor2D;
+const probs = findEntities(tokens, embeddings, ENTITY_TYPES.length);
+const entities = await extractEntities(tokens, probs);
+console.log('Found entities:', entities);
+// Like: document.querySelectorAll('.drug, .dosage, .frequency')`}
+</CodeBlock>
+
+## Why NER Matters in Medicine
+
+<Dialogue speaker="Obi Nwosu">
+Think of a hospital's electronic health records as one massive web page with millions of text nodes. Without NER, searching for "which patients are on warfarin?" means a human reading every note. With NER, it's a database query. That's the difference between hours and milliseconds.
+</Dialogue>
+
+<Dialogue speaker="Dr. Elena Vasquez">
+And it's not just search. Once we have structured entities, we can detect drug interactions, track treatment outcomes, and flag anomalies across thousands of patients. NER is the foundation of everything Diagnostic One will do.
+</Dialogue>
+
+## The Classification Pipeline
+
+Every NER system follows the same pipeline, whether it's rule-based or neural:
+
+1. **Tokenize** the input text into individual words
+2. **Embed** each token into a numerical representation
+3. **Classify** each token as an entity type or O (outside)
+4. **Extract** contiguous entity spans from the classifications
+
+This mirrors how a browser processes a CSS selector: parse the selector, walk the DOM, test each node, collect matches.
+
+## Challenge
+
+Find and classify entities in a clinical sentence using token-level classification.
+
+<Exercise slug="find-entities" />
+
+<KeyTakeaways takeaways={["NER is querySelectorAll for text — finding specific elements in a sea of tokens", "Each token gets classified as an entity type (DRUG, CONDITION, etc.) or O (outside)", "Clinical NER transforms unstructured notes into structured, queryable data", "The pipeline mirrors DOM querying: parse, walk, test, collect"]} />

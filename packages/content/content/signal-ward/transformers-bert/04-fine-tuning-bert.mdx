@@ -1,0 +1,203 @@
+---
+slug: fine-tuning-bert
+title: "Fine-Tuning BERT"
+moduleId: transformers-bert
+themeId: signal-ward
+order: 4
+estimatedMinutes: 25
+difficulty: advanced
+context:
+  narrative: "The team adapts BERT for clinical condition classification — inheriting general language knowledge and adding medical specialization."
+  speaker: "Obi Nwosu"
+concept:
+  explanation: "Fine-tuning adapts a pre-trained model to a specific task by adding a task-specific head and continuing training with a small learning rate on domain data."
+  bridge:
+    feTitle: "Extending a Base Class"
+    feCode: "class ClinicalModel extends BertBase {\n  classify() { /* new capability */ }\n}"
+    mlTitle: "Fine-Tuning BERT"
+    mlCode: "// Inherit pre-trained weights, add classification head\nconst model = addHead(bertBase, numLabels);"
+    tier: structural
+consequence:
+  narrative: "Diagnostic One can now classify clinical conditions — but the team must be careful not to destroy the pre-trained knowledge in the process."
+  nextLessonTeaser: "Next: MEDI makes a dangerous mistake — and we learn what happens when a model's limitations are ignored."
+hints:
+  - level: nudge
+    content: "Think of fine-tuning as extending a base class — you inherit all capabilities and add specialization"
+  - level: guidance
+    content: "Use a very small learning rate (2e-5) and few epochs (3-4) to preserve pre-trained knowledge"
+  - level: solution
+    content: "Load encoder, add dropout + dense softmax head on [CLS] output, compile with adam(2e-5), train 3 epochs"
+keywords:
+  - fine-tuning
+  - transfer-learning
+  - catastrophic-forgetting
+  - domain-adaptation
+---
+
+<Dialogue speaker="Santos Rivera">
+We've got a BERT model that understands general English. But when I feed it "pt c/o SOB x 3d, hx of CHF," it's lost. Clinical language is its own dialect.
+</Dialogue>
+
+<Dialogue speaker="Khalil Mensah">
+That's like class inheritance in TypeScript. You don't rewrite the entire base class — you extend it and override only the methods you need. The base class handles the fundamentals; the subclass adds the specialization.
+</Dialogue>
+
+<Dialogue speaker="Obi Nwosu">
+Perfect analogy. Fine-tuning is exactly that. BERT is our base class — it knows language structure, grammar, semantics. We extend it with a clinical classification head. The base stays mostly intact. The new head learns the domain.
+</Dialogue>
+
+<LearningObjectives objectives={["Understand the fine-tuning paradigm: inherit general knowledge, add task specialization", "Add a task-specific classification head to a pre-trained encoder", "Apply learning rate strategies to prevent catastrophic forgetting", "Implement gradual unfreezing for stable domain adaptation"]} />
+
+## Inheritance, Not Rewriting
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+When you extend a React component library's base class, you inherit its rendering logic, event handling, and lifecycle management. You only override what's specific to your use case. Fine-tuning works identically — BERT's encoder layers already understand language. You add a small classification head on top and train primarily that head.
+
+<CodeBlock language="typescript" title="fine-tune-clinical.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Simulated pre-trained BERT encoder
+function createPretrainedEncoder(dModel: number, numLayers: number) {
+  const input = tf.input({ shape: [dModel] });
+  let x: tf.SymbolicTensor = input;
+
+  for (let i = 0; i < numLayers; i++) {
+    x = tf.layers.dense({
+      units: dModel,
+      activation: 'relu',
+      name: \`encoder_layer_\${i}\`
+    }).apply(x) as tf.SymbolicTensor;
+  }
+
+  return tf.model({ inputs: input, outputs: x });
+}
+
+// Fine-tuning: extend the base with a classification head
+function fineTuneForClassification(
+  encoder: tf.LayersModel,
+  dModel: number,
+  numLabels: number,
+  learningRate: number = 2e-5
+): tf.LayersModel {
+  const input = tf.input({ shape: [dModel] });
+  const encoded = encoder.apply(input) as tf.SymbolicTensor;
+
+  // Task-specific head — the "subclass methods"
+  const dropped = tf.layers.dropout({ rate: 0.1 }).apply(encoded) as tf.SymbolicTensor;
+  const output = tf.layers.dense({
+    units: numLabels,
+    activation: 'softmax',
+    name: 'clinical_classifier'
+  }).apply(dropped) as tf.SymbolicTensor;
+
+  const model = tf.model({ inputs: input, outputs: output });
+
+  // Small learning rate preserves pre-trained knowledge
+  model.compile({
+    optimizer: tf.train.adam(learningRate),
+    loss: 'categoricalCrossentropy',
+    metrics: ['accuracy']
+  });
+
+  return model;
+}
+
+// Build the pipeline
+const dModel = 64;
+const encoder = createPretrainedEncoder(dModel, 4);
+const clinicalModel = fineTuneForClassification(encoder, dModel, 5);
+
+// Clinical condition labels:
+// 0: Active, 1: Resolved, 2: Chronic, 3: Suspected, 4: Ruled-out
+const labels = ['Active', 'Resolved', 'Chronic', 'Suspected', 'Ruled-out'];
+
+// Simulated clinical training data
+const xTrain = tf.randomNormal([200, dModel]);
+const yTrain = tf.oneHot(tf.randomUniform([200], 0, 5, 'int32'), 5);
+
+await clinicalModel.fit(xTrain, yTrain, {
+  epochs: 3,
+  batchSize: 16,
+  validationSplit: 0.2,
+  callbacks: {
+    onEpochEnd: (epoch, logs) => {
+      console.log(\`Epoch \${epoch + 1}: loss=\${logs.loss.toFixed(4)}, acc=\${logs.acc.toFixed(4)}\`);
+    }
+  }
+});`}
+</CodeBlock>
+
+## Catastrophic Forgetting: The Override Trap
+
+<Dialogue speaker="Obi Nwosu">
+The biggest danger in fine-tuning is catastrophic forgetting. If your learning rate is too high or you train too many epochs, the model overwrites its pre-trained knowledge. It's like overriding every method in a base class until there's nothing left of the original — you've destroyed the inheritance.
+</Dialogue>
+
+Three strategies to prevent catastrophic forgetting:
+
+1. **Small learning rate**: 2e-5 instead of 1e-3 — gentle updates that refine rather than overwrite
+2. **Few epochs**: 3-4 epochs, not 50 — the model already knows language
+3. **Gradual unfreezing**: Train only the head first, then progressively unfreeze encoder layers
+
+<CodeBlock language="typescript" title="gradual-unfreezing.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+function gradualUnfreeze(
+  model: tf.LayersModel,
+  totalLayers: number,
+  epoch: number
+): void {
+  // Phase 1 (epochs 0-1): Only classification head is trainable
+  // Phase 2 (epochs 2-3): Top encoder layer unfreezes
+  // Phase 3 (epochs 4+): All layers trainable with discriminative LR
+
+  const unfreezeFrom = Math.max(0, totalLayers - epoch);
+
+  model.layers.forEach((layer, idx) => {
+    if (layer.name === 'clinical_classifier') {
+      layer.trainable = true;  // always trainable
+    } else if (idx >= unfreezeFrom) {
+      layer.trainable = true;  // progressively unfreeze top layers
+    } else {
+      layer.trainable = false; // keep frozen
+    }
+  });
+
+  console.log(\`Epoch \${epoch}: \${model.layers.filter(l => l.trainable).length} trainable layers\`);
+}
+
+// Discriminative learning rates — lower layers learn slower
+function discriminativeLR(
+  baseRate: number,
+  layerIndex: number,
+  totalLayers: number
+): number {
+  // Each layer down gets a smaller learning rate
+  const factor = Math.pow(0.7, totalLayers - layerIndex);
+  return baseRate * factor;
+}
+
+// Layer 0 (bottom): 2e-5 * 0.7^4 = ~4.8e-6
+// Layer 3 (top):    2e-5 * 0.7^1 = ~1.4e-5
+// Classifier head:  2e-5 (full rate)
+for (let i = 0; i < 5; i++) {
+  console.log(\`Layer \${i} LR: \${discriminativeLR(2e-5, i, 5).toExponential(2)}\`);
+}`}
+</CodeBlock>
+
+<Dialogue speaker="Santos Rivera">
+So lower layers — the ones that learned basic language patterns — get tiny updates. Upper layers — closer to the task — get larger updates. Like how you'd be more careful editing a utility library than a feature component.
+</Dialogue>
+
+<Dialogue speaker="Obi Nwosu">
+Exactly. The foundation stays solid. The specialization adapts.
+</Dialogue>
+
+## Challenge
+
+Build a fine-tuning pipeline with a pre-trained encoder, classification head, and proper learning rate configuration for clinical condition classification.
+
+<Exercise slug="fine-tune-clinical" />
+
+<KeyTakeaways takeaways={["Fine-tuning extends a pre-trained model with task-specific capabilities — like class inheritance", "Use small learning rates (2e-5) and few epochs (3-4) to prevent catastrophic forgetting", "Gradual unfreezing trains the head first, then progressively unfreezes encoder layers", "Discriminative learning rates apply smaller updates to lower (more general) layers"]} />

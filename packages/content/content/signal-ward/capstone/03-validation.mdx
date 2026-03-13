@@ -1,0 +1,211 @@
+---
+slug: validation
+title: "Validation — Testing Against Expert Annotations"
+moduleId: sw-capstone
+themeId: signal-ward
+order: 3
+estimatedMinutes: 30
+difficulty: advanced
+context:
+  narrative: "Dr. Vasquez places a folder on the table. Five hundred clinical notes, each annotated by two board-certified physicians. Drug names highlighted, interactions flagged, severity levels assigned. 'This is the gold standard,' she says. 'Every entity, every classification, every interaction — verified by experts. Your system needs to match these annotations. Not perfectly — but well enough that I trust it at 3 AM.' Santos opens the first annotated note. Highlighted spans, BIO tags, classification labels. 'It is like a snapshot test,' she says. 'Known inputs, expected outputs.'"
+  speaker: "Dr. Vasquez"
+concept:
+  explanation: "Validating Diagnostic One against expert annotations is the same discipline as end-to-end testing — running automated checks against known-good outputs. Precision, recall, and F1 score are the clinical equivalents of test pass rates, measuring how well your system matches expert-verified ground truth."
+  bridge:
+    feTitle: "End-to-End Testing"
+    feCode: "expect(render(<App />)).toMatchSnapshot(); // compare against known-good output"
+    mlTitle: "Clinical Validation"
+    mlCode: "expect(model.predict(note)).toMatchAnnotations(expertLabels); // compare against expert ground truth"
+    tier: structural
+consequence:
+  narrative: "The validation suite finishes running. Precision: 0.89. Recall: 0.84. F1: 0.86. Dr. Vasquez studies the confusion matrix. 'The system is cautious — it flags things that are not there more often than it misses things that are. For a clinical system, that is the right trade-off. I would rather investigate a false alarm than miss a real interaction.' She signs the validation report. 'Approved for pilot deployment.'"
+  nextLessonTeaser: "Next: writing the clinical documentation and model card"
+hints:
+  - level: nudge
+    content: "Precision measures false positives, recall measures false negatives — think about which matters more in clinical settings"
+  - level: guidance
+    content: "Build a validation harness that runs Diagnostic One against annotated notes and computes precision, recall, and F1 for each entity type"
+  - level: solution
+    content: "Create a ValidationSuite class that loads expert annotations, runs predictions, computes per-class and overall metrics, and generates a confusion matrix"
+keywords:
+  - validation
+  - precision
+  - recall
+  - f1-score
+  - confusion-matrix
+  - expert-annotations
+---
+
+<Dialogue speaker="Dr. Vasquez">
+Five hundred clinical notes. Each one annotated by two board-certified physicians who independently marked every drug name, every condition, every interaction. Where they disagreed, a third physician resolved. This is the gold standard. If your system cannot match these annotations, it does not deploy.
+</Dialogue>
+
+<Dialogue speaker="Santos">
+It is end-to-end testing. Known inputs, expected outputs. I run the system against the annotations and check if the predictions match. Precision tells me how many of the system's flags were correct. Recall tells me how many of the real interactions the system found. F1 balances them.
+</Dialogue>
+
+Every frontend application has a test suite. Unit tests verify individual functions. Integration tests verify that components work together. End-to-end tests verify that the entire application produces correct output for known inputs. Clinical validation is end-to-end testing for ML — you run Diagnostic One against expert-annotated clinical notes and measure how well the predictions match the ground truth.
+
+<LearningObjectives objectives={["Compute precision, recall, and F1 score for clinical NLP predictions", "Build a validation harness that runs Diagnostic One against expert annotations", "Interpret a confusion matrix to identify systematic errors in entity recognition", "Understand the precision-recall trade-off in clinical settings where false negatives are more dangerous than false positives"]} />
+
+## Precision, Recall, and F1
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="validation-metrics.ts">
+{`// Clinical validation metrics — the same math behind test coverage reports
+// Precision: of everything the system flagged, how many were correct?
+// Recall: of everything that should have been flagged, how many did the system find?
+
+interface Annotation {
+  text: string;
+  label: string;
+  span: [number, number];
+}
+
+interface Prediction {
+  text: string;
+  label: string;
+  span: [number, number];
+  confidence: number;
+}
+
+interface ValidationMetrics {
+  precision: number;
+  recall: number;
+  f1: number;
+  truePositives: number;
+  falsePositives: number;
+  falseNegatives: number;
+}
+
+function computeMetrics(
+  predictions: Prediction[],
+  annotations: Annotation[]
+): ValidationMetrics {
+  let truePositives = 0;
+  let falsePositives = 0;
+  let falseNegatives = 0;
+
+  const matched = new Set<number>();
+
+  // For each prediction, check if it matches an annotation
+  for (const pred of predictions) {
+    const matchIdx = annotations.findIndex((ann, idx) =>
+      !matched.has(idx) &&
+      ann.label === pred.label &&
+      spansOverlap(ann.span, pred.span)
+    );
+
+    if (matchIdx >= 0) {
+      truePositives++;
+      matched.add(matchIdx);
+    } else {
+      falsePositives++; // System flagged something that was not in annotations
+    }
+  }
+
+  // Annotations not matched by any prediction
+  falseNegatives = annotations.length - matched.size;
+
+  const precision = truePositives / (truePositives + falsePositives) || 0;
+  const recall = truePositives / (truePositives + falseNegatives) || 0;
+  const f1 = 2 * (precision * recall) / (precision + recall) || 0;
+
+  return { precision, recall, f1, truePositives, falsePositives, falseNegatives };
+}
+
+function spansOverlap(a: [number, number], b: [number, number]): boolean {
+  return a[0] < b[1] && b[0] < a[1];
+}
+
+// Example: validate NER against expert annotations
+const expertAnnotations: Annotation[] = [
+  { text: 'methotrexate', label: 'DRUG', span: [45, 57] },
+  { text: 'trimethoprim', label: 'DRUG', span: [72, 84] },
+  { text: 'rheumatoid arthritis', label: 'CONDITION', span: [12, 32] },
+];
+
+const systemPredictions: Prediction[] = [
+  { text: 'methotrexate', label: 'DRUG', span: [45, 57], confidence: 0.97 },
+  { text: 'trimethoprim', label: 'DRUG', span: [72, 84], confidence: 0.94 },
+  { text: 'rheumatoid arthritis', label: 'CONDITION', span: [12, 32], confidence: 0.91 },
+  { text: 'weekly', label: 'DOSAGE', span: [58, 64], confidence: 0.62 },
+];
+
+const metrics = computeMetrics(systemPredictions, expertAnnotations);
+console.log('Precision:', metrics.precision.toFixed(3)); // 0.750 (3/4 predictions correct)
+console.log('Recall:', metrics.recall.toFixed(3));       // 1.000 (found all 3 annotations)
+console.log('F1:', metrics.f1.toFixed(3));               // 0.857`}
+</CodeBlock>
+
+## Confusion Matrix
+
+<CodeBlock language="typescript" title="confusion-matrix.ts">
+{`// Confusion matrix — see exactly where the system makes mistakes
+// Like a test report that shows which tests fail and why
+
+type EntityLabel = 'DRUG' | 'CONDITION' | 'PROCEDURE' | 'DOSAGE' | 'ANATOMY';
+
+interface ConfusionMatrix {
+  labels: EntityLabel[];
+  matrix: number[][];
+  perClassMetrics: Map<EntityLabel, ValidationMetrics>;
+}
+
+function buildConfusionMatrix(
+  predictions: Prediction[],
+  annotations: Annotation[],
+  labels: EntityLabel[]
+): ConfusionMatrix {
+  const size = labels.length;
+  const matrix: number[][] = Array.from({ length: size }, () =>
+    new Array(size).fill(0)
+  );
+  const perClassMetrics = new Map<EntityLabel, ValidationMetrics>();
+
+  // Fill the matrix: rows = actual, columns = predicted
+  for (const ann of annotations) {
+    const actualIdx = labels.indexOf(ann.label as EntityLabel);
+    const matchingPred = predictions.find(p =>
+      spansOverlap(p.span, ann.span)
+    );
+
+    if (matchingPred) {
+      const predIdx = labels.indexOf(matchingPred.label as EntityLabel);
+      matrix[actualIdx][predIdx]++;
+    }
+  }
+
+  // Compute per-class metrics
+  for (const label of labels) {
+    const classPreds = predictions.filter(p => p.label === label);
+    const classAnns = annotations.filter(a => a.label === label);
+    perClassMetrics.set(label, computeMetrics(classPreds, classAnns));
+  }
+
+  return { labels, matrix, perClassMetrics };
+}
+
+// Print the confusion matrix
+function printConfusionMatrix(cm: ConfusionMatrix): void {
+  console.log('Confusion Matrix:');
+  console.log('Actual \\\\ Predicted', ...cm.labels);
+  for (let i = 0; i < cm.labels.length; i++) {
+    console.log(cm.labels[i], ...cm.matrix[i]);
+  }
+
+  console.log('\\nPer-class metrics:');
+  for (const [label, metrics] of cm.perClassMetrics) {
+    console.log(\`  \${label}: P=\${metrics.precision.toFixed(3)} R=\${metrics.recall.toFixed(3)} F1=\${metrics.f1.toFixed(3)}\`);
+  }
+}`}
+</CodeBlock>
+
+## Challenge
+
+Build a validation suite that computes precision, recall, and F1 for NLP predictions against expert annotations.
+
+<Exercise slug="validate-annotations" />
+
+<KeyTakeaways takeaways={["Clinical validation is end-to-end testing for ML — run predictions against expert-annotated ground truth and measure accuracy", "Precision measures false positive rate (false alarms), recall measures false negative rate (missed detections)", "In clinical settings, high recall is prioritized over high precision — better to investigate a false alarm than miss a real drug interaction", "The confusion matrix reveals systematic errors: if the system consistently confuses DOSAGE with DRUG, that is a training data problem"]} />

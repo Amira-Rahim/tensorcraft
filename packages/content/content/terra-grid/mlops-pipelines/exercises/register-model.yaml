@@ -1,0 +1,68 @@
+slug: register-model
+lessonSlug: model-registry
+title: "Build a Model Registry"
+instructions: "Implement a ModelRegistry class with: register(model: { name: string; version: string; stage: string }) that stores the model, promote(name: string, version: string, newStage: string) that changes the model's stage, and getByStage(name: string, stage: string) that returns the matching model or null."
+starterCode: |
+  interface Model {
+    name: string;
+    version: string;
+    stage: string;
+  }
+
+  class ModelRegistry {
+    // Your code here
+
+    register(model: Model): void {
+    }
+
+    promote(name: string, version: string, newStage: string): void {
+    }
+
+    getByStage(name: string, stage: string): Model | null {
+      return null;
+    }
+  }
+solutionCode: |
+  interface Model {
+    name: string;
+    version: string;
+    stage: string;
+  }
+
+  class ModelRegistry {
+    private models: Model[] = [];
+
+    register(model: Model): void {
+      this.models.push(model);
+    }
+
+    promote(name: string, version: string, newStage: string): void {
+      const model = this.models.find(m => m.name === name && m.version === version);
+      if (model) model.stage = newStage;
+    }
+
+    getByStage(name: string, stage: string): Model | null {
+      return this.models.find(m => m.name === name && m.stage === stage) || null;
+    }
+  }
+testCode: |
+  describe('ModelRegistry', () => {
+    it('registers a model', () => {
+      const reg = new ModelRegistry();
+      reg.register({ name: 'tgi', version: '1.0', stage: 'development' });
+      expect(reg.getByStage('tgi', 'development')).not.toBeNull();
+    });
+    it('promotes a model', () => {
+      const reg = new ModelRegistry();
+      reg.register({ name: 'tgi', version: '1.0', stage: 'development' });
+      reg.promote('tgi', '1.0', 'production');
+      expect(reg.getByStage('tgi', 'production')!.version).toBe('1.0');
+    });
+    it('returns null for missing stage', () => {
+      const reg = new ModelRegistry();
+      reg.register({ name: 'tgi', version: '1.0', stage: 'development' });
+      expect(reg.getByStage('tgi', 'production')).toBeNull();
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

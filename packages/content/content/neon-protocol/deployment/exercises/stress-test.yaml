@@ -1,0 +1,166 @@
+slug: stress-test
+lessonSlug: hardening-sentinel
+title: "Stress Test a Model API"
+instructions: "Write a stress test harness that runs concurrent predictions against a model API and reports performance metrics. Implement a function that simulates concurrent load, collects latency measurements, and detects memory leaks by comparing tensor counts before and after."
+starterCode: |
+  interface StressTestConfig {
+    concurrency: number;
+    totalRequests: number;
+  }
+
+  interface StressTestReport {
+    totalRequests: number;
+    successful: number;
+    failed: number;
+    avgLatencyMs: number;
+    maxLatencyMs: number;
+    p95LatencyMs: number;
+    memoryStable: boolean;
+  }
+
+  function computeP95(latencies: number[]): number {
+    // Sort ascending, return the value at the 95th percentile index
+    return 0; // your code here
+  }
+
+  function runStressTest(
+    predictFn: (input: number) => { success: boolean; latencyMs: number },
+    config: StressTestConfig,
+    tensorsBefore: number,
+    tensorsAfter: number
+  ): StressTestReport {
+    // 1. Call predictFn for each request (input = request index)
+    // 2. Collect successes, failures, and latencies
+    // 3. Calculate avg, max, p95 latency
+    // 4. memoryStable = tensorsAfter <= tensorsBefore + 5
+    return null; // your code here
+  }
+solutionCode: |
+  interface StressTestConfig {
+    concurrency: number;
+    totalRequests: number;
+  }
+
+  interface StressTestReport {
+    totalRequests: number;
+    successful: number;
+    failed: number;
+    avgLatencyMs: number;
+    maxLatencyMs: number;
+    p95LatencyMs: number;
+    memoryStable: boolean;
+  }
+
+  function computeP95(latencies: number[]): number {
+    const sorted = [...latencies].sort((a, b) => a - b);
+    const index = Math.floor(sorted.length * 0.95);
+    return sorted[Math.min(index, sorted.length - 1)];
+  }
+
+  function runStressTest(
+    predictFn: (input: number) => { success: boolean; latencyMs: number },
+    config: StressTestConfig,
+    tensorsBefore: number,
+    tensorsAfter: number
+  ): StressTestReport {
+    let successful = 0;
+    let failed = 0;
+    const latencies: number[] = [];
+
+    for (let i = 0; i < config.totalRequests; i++) {
+      const result = predictFn(i);
+      if (result.success) {
+        successful++;
+        latencies.push(result.latencyMs);
+      } else {
+        failed++;
+      }
+    }
+
+    const avgLatencyMs = latencies.length > 0
+      ? latencies.reduce((a, b) => a + b, 0) / latencies.length
+      : 0;
+
+    const maxLatencyMs = latencies.length > 0
+      ? Math.max(...latencies)
+      : 0;
+
+    return {
+      totalRequests: config.totalRequests,
+      successful,
+      failed,
+      avgLatencyMs,
+      maxLatencyMs,
+      p95LatencyMs: latencies.length > 0 ? computeP95(latencies) : 0,
+      memoryStable: tensorsAfter <= tensorsBefore + 5,
+    };
+  }
+testCode: |
+  describe('computeP95', () => {
+    it('returns 95th percentile value', () => {
+      const latencies = Array.from({ length: 100 }, (_, i) => i + 1);
+      expect(computeP95(latencies)).toBe(96);
+    });
+
+    it('handles small arrays', () => {
+      expect(computeP95([10, 20, 30])).toBe(30);
+    });
+
+    it('handles single value', () => {
+      expect(computeP95([42])).toBe(42);
+    });
+
+    it('sorts before computing', () => {
+      const latencies = [100, 1, 50, 2, 99];
+      expect(computeP95(latencies)).toBe(100);
+    });
+  });
+
+  describe('runStressTest', () => {
+    it('counts successful and failed requests', () => {
+      const predict = (i: number) => ({
+        success: i % 3 !== 0,
+        latencyMs: 10,
+      });
+      const report = runStressTest(predict, { concurrency: 10, totalRequests: 30 }, 100, 100);
+      expect(report.successful).toBe(20);
+      expect(report.failed).toBe(10);
+    });
+
+    it('calculates average latency from successful requests', () => {
+      const predict = () => ({ success: true, latencyMs: 50 });
+      const report = runStressTest(predict, { concurrency: 5, totalRequests: 10 }, 0, 0);
+      expect(report.avgLatencyMs).toBeCloseTo(50);
+    });
+
+    it('finds max latency', () => {
+      const predict = (i: number) => ({ success: true, latencyMs: i * 10 });
+      const report = runStressTest(predict, { concurrency: 5, totalRequests: 5 }, 0, 0);
+      expect(report.maxLatencyMs).toBe(40);
+    });
+
+    it('detects memory leak', () => {
+      const predict = () => ({ success: true, latencyMs: 10 });
+      const stable = runStressTest(predict, { concurrency: 5, totalRequests: 10 }, 100, 103);
+      expect(stable.memoryStable).toBe(true);
+
+      const leaky = runStressTest(predict, { concurrency: 5, totalRequests: 10 }, 100, 200);
+      expect(leaky.memoryStable).toBe(false);
+    });
+
+    it('handles all failures gracefully', () => {
+      const predict = () => ({ success: false, latencyMs: 0 });
+      const report = runStressTest(predict, { concurrency: 5, totalRequests: 10 }, 0, 0);
+      expect(report.successful).toBe(0);
+      expect(report.failed).toBe(10);
+      expect(report.avgLatencyMs).toBe(0);
+    });
+
+    it('reports correct totalRequests', () => {
+      const predict = () => ({ success: true, latencyMs: 5 });
+      const report = runStressTest(predict, { concurrency: 10, totalRequests: 50 }, 0, 0);
+      expect(report.totalRequests).toBe(50);
+    });
+  });
+estimatedMinutes: 15
+difficulty: intermediate

@@ -1,0 +1,9 @@
+slug: optimization-plan
+lessonSlug: optimization-strategy
+title: "Create an Optimization Plan"
+instructions: "Write a function getOptimizationSteps(currentSizeMB, targetSizeMB) that returns an array of step names in order. If currentSizeMB > targetSizeMB * 8, include all steps: ['architecture', 'pruning', 'quantization', 'distillation']. If > targetSizeMB * 4, return ['pruning', 'quantization', 'distillation']. If > targetSizeMB * 2, return ['pruning', 'quantization']. Otherwise return ['quantization']."
+starterCode: "function getOptimizationSteps(currentSizeMB, targetSizeMB) {\n  // Return array of optimization steps needed\n  return null; // your code here\n}"
+solutionCode: "function getOptimizationSteps(currentSizeMB, targetSizeMB) {\n  if (currentSizeMB > targetSizeMB * 8) return ['architecture', 'pruning', 'quantization', 'distillation'];\n  if (currentSizeMB > targetSizeMB * 4) return ['pruning', 'quantization', 'distillation'];\n  if (currentSizeMB > targetSizeMB * 2) return ['pruning', 'quantization'];\n  return ['quantization'];\n}"
+testCode: "describe('getOptimizationSteps', () => { it('returns all steps for large reduction', () => { expect(getOptimizationSteps(1800, 100)).toEqual(['architecture', 'pruning', 'quantization', 'distillation']); }); it('returns quantization only for small reduction', () => { expect(getOptimizationSteps(150, 100)).toEqual(['quantization']); }); it('returns pruning + quantization for medium', () => { expect(getOptimizationSteps(250, 100)).toEqual(['pruning', 'quantization']); }); });"
+estimatedMinutes: 10
+difficulty: intermediate

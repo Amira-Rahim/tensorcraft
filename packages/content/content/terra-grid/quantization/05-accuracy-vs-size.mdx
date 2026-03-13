@@ -1,0 +1,115 @@
+---
+slug: accuracy-vs-size
+title: "Accuracy vs Size"
+moduleId: quantization
+themeId: terra-grid
+order: 5
+estimatedMinutes: 20
+difficulty: intermediate
+context:
+  narrative: "After the Site 23 incident, Hassan establishes accuracy thresholds that cannot be crossed."
+  speaker: "Hassan Al-Rashid"
+concept:
+  explanation: "Managing accuracy vs size is like managing lossy compression quality — finding the acceptable threshold."
+  bridge:
+    feTitle: "Lossy Compression"
+    feCode: "// JPEG quality 85: visually identical, 60% smaller\n// JPEG quality 20: visible artifacts, 90% smaller"
+    mlTitle: "Quantization Quality"
+    mlCode: "// Int8: 1.2% accuracy loss, 4x smaller\n// Int4: 5% accuracy loss, 8x smaller"
+    tier: structural
+consequence:
+  narrative: "You define the minimum acceptable accuracy for each use case. The Site 23 lesson is learned."
+  nextLessonTeaser: "Next module: pruning and distillation for even more compression"
+hints:
+  - level: nudge
+    content: "Define the accuracy floor before you start compressing"
+  - level: guidance
+    content: "Test accuracy at each quantization level and find the knee of the curve"
+  - level: solution
+    content: "Choose the most aggressive quantization that stays above your accuracy threshold"
+keywords:
+  - accuracy
+  - tradeoff
+  - lossy
+  - threshold
+---
+
+<Dialogue speaker="Hassan Al-Rashid">
+After Site 23, every model has a minimum accuracy threshold. For safety-critical systems like turbine monitoring, 97% accuracy is the floor. For environmental telemetry, 92% is acceptable. Know your threshold before you compress.
+</Dialogue>
+
+JPEG quality 85 produces images visually identical to the original at 60% smaller. Quality 20 produces visible artifacts but is 90% smaller. The right choice depends on the use case. Quantization quality works the same way — the right level depends on what accuracy loss is acceptable.
+
+<LearningObjectives objectives={["Define minimum accuracy thresholds for different use cases", "Evaluate accuracy degradation across quantization levels", "Find the optimal compression point on the accuracy-size curve", "Apply lossy compression decision frameworks to model quantization"]} />
+
+## Finding the Knee
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="accuracy-vs-size.ts">
+{`interface QuantizationResult {
+  format: string;
+  sizeMB: number;
+  accuracy: number;
+  sizeReduction: string;
+  acceptable: boolean;
+}
+
+function evaluateQuantization(
+  originalSizeMB: number,
+  originalAccuracy: number,
+  minAccuracy: number
+): QuantizationResult[] {
+  const results: QuantizationResult[] = [
+    {
+      format: 'Float32 (original)',
+      sizeMB: originalSizeMB,
+      accuracy: originalAccuracy,
+      sizeReduction: '1x',
+      acceptable: originalAccuracy >= minAccuracy
+    },
+    {
+      format: 'Float16',
+      sizeMB: originalSizeMB / 2,
+      accuracy: originalAccuracy - 0.001, // ~0.1% loss
+      sizeReduction: '2x',
+      acceptable: (originalAccuracy - 0.001) >= minAccuracy
+    },
+    {
+      format: 'Int8 (post-training)',
+      sizeMB: originalSizeMB / 4,
+      accuracy: originalAccuracy - 0.012, // ~1.2% loss
+      sizeReduction: '4x',
+      acceptable: (originalAccuracy - 0.012) >= minAccuracy
+    },
+    {
+      format: 'Int8 (QAT)',
+      sizeMB: originalSizeMB / 4,
+      accuracy: originalAccuracy - 0.005, // ~0.5% loss with QAT
+      sizeReduction: '4x',
+      acceptable: (originalAccuracy - 0.005) >= minAccuracy
+    },
+  ];
+  return results;
+}
+
+// Safety-critical: turbine monitoring (97% floor)
+const turbine = evaluateQuantization(200, 0.985, 0.97);
+turbine.forEach(r => console.log(
+  \`\${r.format}: \${r.sizeMB}MB, \${(r.accuracy * 100).toFixed(1)}%, \${r.acceptable ? 'PASS' : 'FAIL'}\`
+));
+// Float32: 200MB, 98.5%, PASS
+// Float16: 100MB, 98.4%, PASS
+// Int8 (post-training): 50MB, 97.3%, PASS
+// Int8 (QAT): 50MB, 98.0%, PASS ← best choice`}
+</CodeBlock>
+
+For safety-critical applications, QAT is worth the extra training time because it preserves more accuracy at the same compression ratio. For non-critical telemetry, post-training quantization is faster and good enough.
+
+## Challenge
+
+Evaluate quantization options against accuracy thresholds for different use cases.
+
+<Exercise slug="accuracy-size-tradeoff" />
+
+<KeyTakeaways takeaways={["Define accuracy thresholds before compressing — safety-critical vs non-critical", "QAT preserves ~0.7% more accuracy than post-training quantization at the same size", "Find the knee of the accuracy-size curve: maximum compression above your threshold", "The Site 23 lesson: always validate quantized models against edge cases"]} />

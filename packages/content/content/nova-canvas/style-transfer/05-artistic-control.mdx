@@ -1,0 +1,119 @@
+---
+slug: artistic-control
+title: "Artistic Control"
+moduleId: style-transfer
+themeId: nova-canvas
+order: 5
+estimatedMinutes: 25
+difficulty: advanced
+context:
+  narrative: "Yara wants to blend styles. 'Half Monet, half Basquiat. Soft light with raw energy.' Kai grins: 'That is just interpolating between style representations. Like CSS mix-blend-mode — layer one visual effect over another.'"
+  speaker: "Yara"
+concept:
+  explanation: "Style blending interpolates between Gram matrices of multiple styles — like CSS mix-blend-mode layers visual effects. Control the blend ratio to create hybrid styles that no single artist represents."
+  bridge:
+    feTitle: "CSS mix-blend-mode"
+    feCode: ".overlay { mix-blend-mode: multiply; opacity: 0.6; }"
+    mlTitle: "Style interpolation"
+    mlCode: "blended = lerp(gramMonet, gramBasquiat, 0.5);"
+    tier: structural
+consequence:
+  narrative: "The gallery wall shows a gradient of styles — pure Monet on the left, pure Basquiat on the right, and every blend between. Visitors slide a physical dial on the kiosk, watching the cityscape morph between artistic identities in real time. Petrov is speechless."
+  nextLessonTeaser: "Next module: Multimodal Learning — MUSE generates its first image from a text prompt"
+hints:
+  - level: nudge
+    content: "mix-blend-mode layers two visual effects. Style blending layers two artistic identities."
+  - level: guidance
+    content: "Linearly interpolate between two sets of Gram matrices: blended = (1 - alpha) * styleA + alpha * styleB"
+  - level: solution
+    content: "For each layer, compute blendedGram[i] = (1 - alpha) * gramA[i] + alpha * gramB[i]. Use the blended Gram matrices as the style target."
+keywords:
+  - style-blending
+  - interpolation
+  - mix-blend-mode
+  - multi-style
+  - artistic-control
+---
+
+<Dialogue speaker="Yara">
+I do not want pure Monet or pure Basquiat. I want something between — Monet's light with Basquiat's line work. A style that does not exist in any museum.
+</Dialogue>
+
+<Dialogue speaker="Kai">
+In CSS, `mix-blend-mode` layers visual effects — multiply, screen, overlay. Style blending does the same thing. We interpolate between two Gram matrices and use the blend as our target. You get a style that is half Monet, half Basquiat — or any ratio you choose.
+</Dialogue>
+
+CSS `mix-blend-mode` layers visual effects to create composites. Style blending interpolates between artistic representations to create hybrid styles. Both give you creative control over how visual identities combine.
+
+<LearningObjectives objectives={["Interpolate between Gram matrices to blend artistic styles", "Control blend ratios to create hybrid styles at any point between two artists", "Apply spatial style masks to use different styles in different image regions", "Connect style blending to CSS mix-blend-mode compositing"]} />
+
+## Blending Two Styles
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="style-blending.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+// Linear interpolation between two style representations
+function blendStyles(
+  gramA: tf.Tensor2D[],
+  gramB: tf.Tensor2D[],
+  alpha: number // 0 = pure A, 1 = pure B
+): tf.Tensor2D[] {
+  return gramA.map((gA, i) => {
+    const gB = gramB[i];
+    // blended = (1 - alpha) * A + alpha * B
+    return tf.add(
+      tf.mul(gA, tf.scalar(1 - alpha)),
+      tf.mul(gB, tf.scalar(alpha))
+    ) as tf.Tensor2D;
+  });
+}
+
+// Create a gradient of styles
+function styleGradient(
+  gramMonet: tf.Tensor2D[],
+  gramBasquiat: tf.Tensor2D[],
+  steps: number
+): tf.Tensor2D[][] {
+  const gradient: tf.Tensor2D[][] = [];
+  for (let i = 0; i <= steps; i++) {
+    const alpha = i / steps;
+    gradient.push(blendStyles(gramMonet, gramBasquiat, alpha));
+  }
+  return gradient;
+  // [0] = pure Monet
+  // [steps/2] = 50/50 blend
+  // [steps] = pure Basquiat
+}
+
+// Spatial style blending: different styles in different regions
+function spatialBlend(
+  gramA: tf.Tensor2D[],
+  gramB: tf.Tensor2D[],
+  mask: tf.Tensor2D // 0-1 mask, same spatial dims as features
+): { foreground: tf.Tensor2D[]; background: tf.Tensor2D[] } {
+  // Where mask = 1, use style A; where mask = 0, use style B
+  // This allows Monet sky + Basquiat buildings
+  return {
+    foreground: gramA,
+    background: gramB
+  };
+}
+
+// Yara's dial: visitors control the blend in real time
+// alpha = 0.0 -> "Impressionist Dawn"
+// alpha = 0.3 -> "Structured Light"
+// alpha = 0.5 -> "Urban Impressionism"
+// alpha = 0.7 -> "Energetic Calm"
+// alpha = 1.0 -> "Raw Expression"
+console.log('Each blend point is a new aesthetic that exists nowhere else');`}
+</CodeBlock>
+
+## Challenge
+
+Blend two style representations by interpolating their Gram matrices.
+
+<Exercise slug="blend-styles" />
+
+<KeyTakeaways takeaways={["Style blending interpolates between Gram matrices, like mix-blend-mode layers visual effects", "The blend ratio controls the balance: 0 = pure style A, 1 = pure style B, 0.5 = equal mix", "Spatial masks enable different styles in different image regions — Monet sky, Basquiat buildings", "Every point on the interpolation gradient is a novel style that exists in no museum"]} />

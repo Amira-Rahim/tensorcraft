@@ -1,0 +1,104 @@
+slug: visual-prompts
+lessonSlug: prompt-engineering-for-images
+title: "Build Structured Prompts and Score Them"
+instructions: "Implement a buildPrompt function that constructs a comma-separated prompt string from structured components (subject, style, mood, lighting, colorPalette). Then implement a scorePromptSimilarity function that computes cosine similarity between a prompt embedding and an image embedding."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  interface PromptComponents {
+    subject: string;
+    style?: string;
+    mood?: string;
+    lighting?: string;
+    colorPalette?: string;
+  }
+
+  function buildPrompt(components: PromptComponents): string {
+    // Join non-null components with ', '
+    // Always start with subject
+    return ''; // your code here
+  }
+
+  function scorePromptSimilarity(
+    promptEmbedding: tf.Tensor1D,
+    imageEmbedding: tf.Tensor1D
+  ): number {
+    // Cosine similarity between normalized embeddings
+    return 0; // your code here
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  interface PromptComponents {
+    subject: string;
+    style?: string;
+    mood?: string;
+    lighting?: string;
+    colorPalette?: string;
+  }
+
+  function buildPrompt(components: PromptComponents): string {
+    const parts: string[] = [components.subject];
+    if (components.style) parts.push(components.style);
+    if (components.mood) parts.push(components.mood);
+    if (components.lighting) parts.push(components.lighting);
+    if (components.colorPalette) parts.push(components.colorPalette);
+    return parts.join(', ');
+  }
+
+  function scorePromptSimilarity(
+    promptEmbedding: tf.Tensor1D,
+    imageEmbedding: tf.Tensor1D
+  ): number {
+    const dot = tf.sum(tf.mul(promptEmbedding, imageEmbedding));
+    const normA = tf.norm(promptEmbedding);
+    const normB = tf.norm(imageEmbedding);
+    const similarity = tf.div(dot, tf.mul(normA, normB));
+    return similarity.dataSync()[0];
+  }
+testCode: |
+  describe('buildPrompt', () => {
+    it('returns subject alone when no modifiers', () => {
+      const result = buildPrompt({ subject: 'cityscape' });
+      expect(result).toBe('cityscape');
+    });
+    it('joins all components with commas', () => {
+      const result = buildPrompt({
+        subject: 'cityscape',
+        style: 'watercolor',
+        mood: 'melancholy',
+        lighting: 'twilight',
+        colorPalette: 'deep blues'
+      });
+      expect(result).toBe('cityscape, watercolor, melancholy, twilight, deep blues');
+    });
+    it('skips undefined components', () => {
+      const result = buildPrompt({
+        subject: 'portrait',
+        mood: 'serene'
+      });
+      expect(result).toBe('portrait, serene');
+    });
+  });
+  describe('scorePromptSimilarity', () => {
+    it('returns 1 for identical vectors', () => {
+      const a = tf.tensor1d([1, 0, 0]);
+      const score = scorePromptSimilarity(a, a);
+      expect(score).toBeCloseTo(1.0, 4);
+    });
+    it('returns 0 for orthogonal vectors', () => {
+      const a = tf.tensor1d([1, 0, 0]);
+      const b = tf.tensor1d([0, 1, 0]);
+      const score = scorePromptSimilarity(a, b);
+      expect(score).toBeCloseTo(0.0, 4);
+    });
+    it('returns value between -1 and 1', () => {
+      const a = tf.tensor1d([0.5, 0.3, -0.2]);
+      const b = tf.tensor1d([-0.1, 0.7, 0.4]);
+      const score = scorePromptSimilarity(a, b);
+      expect(score).toBeGreaterThanOrEqual(-1);
+      expect(score).toBeLessThanOrEqual(1);
+    });
+  });
+estimatedMinutes: 10
+difficulty: advanced

@@ -1,0 +1,139 @@
+---
+slug: communication-efficiency
+title: "Communication Efficiency"
+moduleId: federated-learning
+themeId: terra-grid
+order: 4
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Each federated round exchanges model weights across satellite links. Cole calculates: 15 rounds x 3 participants x 4MB per update = 180MB at $0.50/MB. They need to compress the updates."
+  speaker: "Cole Branson"
+concept:
+  explanation: "Efficient federated communication sends only what changed — like GraphQL requesting only needed fields instead of fetching entire resources."
+  bridge:
+    feTitle: "GraphQL Selective Queries"
+    feCode: "query { user { name, email } } // request only needed fields"
+    mlTitle: "Gradient Compression"
+    mlCode: "sendTopKGradients(k=0.01) // send only significant updates"
+    tier: structural
+consequence:
+  narrative: "Communication cost drops from 180MB to 22MB per training cycle. The satellite budget holds."
+  nextLessonTeaser: "Next: protecting individual updates during aggregation"
+hints:
+  - level: nudge
+    content: "Think about how GraphQL reduces over-fetching compared to REST"
+  - level: guidance
+    content: "Send only the gradient values that changed significantly — sparsify the updates"
+  - level: solution
+    content: "Use top-K sparsification: sort gradients by magnitude, send only the top 1%, accumulate the rest locally"
+keywords:
+  - communication-efficiency
+  - gradient-compression
+  - sparsification
+  - bandwidth
+---
+
+<Dialogue speaker="Cole Branson">
+Each weight update is 4MB. Fifteen rounds, three companies, that is 180MB of satellite bandwidth at fifty cents per megabyte. Ninety dollars per training cycle. We need to compress these updates.
+</Dialogue>
+
+<Dialogue speaker="Park Soo-Yeon">
+Most gradient values are near zero anyway. We can send only the top 1% and accumulate the rest for the next round. Ninety percent bandwidth savings.
+</Dialogue>
+
+A REST API returns the entire user object when you only need their name and email. GraphQL solves this by requesting only the fields you need — reducing payload by 80-90%. Federated learning has the same problem: most gradient values in an update are near zero and contribute almost nothing to learning. Gradient compression sends only the significant values.
+
+<LearningObjectives objectives={["Understand the communication bottleneck in federated learning", "Implement top-K gradient sparsification to reduce update size by 90%+", "Use gradient quantization to reduce per-value precision", "Accumulate residuals to preserve information lost during compression"]} />
+
+## The Bandwidth Problem
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="gradient-compression.ts">
+{`interface CompressedUpdate {
+  indices: Uint32Array;      // which weights changed
+  values: Float32Array;      // only the changed values
+  originalSize: number;
+  compressedSize: number;
+  compressionRatio: number;
+}
+
+function topKSparsify(
+  gradients: Float32Array,
+  topKRatio: number = 0.01,  // keep top 1%
+): CompressedUpdate {
+  const k = Math.ceil(gradients.length * topKRatio);
+
+  // Find top-K by absolute magnitude
+  const indexed = Array.from(gradients).map((v, i) => ({ v: Math.abs(v), i, orig: v }));
+  indexed.sort((a, b) => b.v - a.v);
+  const topK = indexed.slice(0, k);
+
+  const indices = new Uint32Array(topK.map(x => x.i));
+  const values = new Float32Array(topK.map(x => x.orig));
+
+  const originalBytes = gradients.length * 4;           // float32
+  const compressedBytes = k * (4 + 4);                  // index + value per entry
+
+  return {
+    indices,
+    values,
+    originalSize: originalBytes,
+    compressedSize: compressedBytes,
+    compressionRatio: originalBytes / compressedBytes,
+  };
+}
+
+// Example: 1M parameter model
+// Original update: 4MB
+// Top 1% (10K values): 80KB
+// Compression ratio: 50x
+// Bandwidth savings: 98%`}
+</CodeBlock>
+
+## Residual Accumulation
+
+The remaining 99% of gradients are not thrown away — they accumulate locally and get sent in the next round when they become significant:
+
+<CodeBlock language="typescript" title="residual-accumulation.ts">
+{`class EfficientFederatedClient {
+  private residuals: Float32Array;
+
+  constructor(modelSize: number) {
+    this.residuals = new Float32Array(modelSize);
+  }
+
+  compressUpdate(gradients: Float32Array): CompressedUpdate {
+    // Add accumulated residuals from previous rounds
+    const accumulated = new Float32Array(gradients.length);
+    for (let i = 0; i < gradients.length; i++) {
+      accumulated[i] = gradients[i] + this.residuals[i];
+    }
+
+    // Sparsify — send only top 1%
+    const compressed = topKSparsify(accumulated, 0.01);
+
+    // Store the rest as residuals for next round
+    this.residuals = new Float32Array(accumulated);
+    for (let j = 0; j < compressed.indices.length; j++) {
+      this.residuals[compressed.indices[j]] = 0;  // sent values no longer residual
+    }
+
+    return compressed;
+  }
+}
+
+// Round 1: send top 1%, store 99% as residuals
+// Round 2: new gradients + residuals → some residuals now significant → sent
+// Over time, ALL information reaches the server, just prioritized by importance
+// Like a priority queue for network requests`}
+</CodeBlock>
+
+## Challenge
+
+Implement communication-efficient federated updates with gradient compression.
+
+<Exercise slug="efficient-updates" />
+
+<KeyTakeaways takeaways={["Most gradient values are near zero — sending only the top 1% reduces bandwidth by 98%, like GraphQL reduces over-fetching", "Residual accumulation preserves the 99% that was not sent — it gets included in future rounds when it becomes significant", "Gradient quantization (float32 to int8) provides an additional 4x compression on top of sparsification", "Communication efficiency makes federated learning practical on bandwidth-constrained links like satellite"]} />

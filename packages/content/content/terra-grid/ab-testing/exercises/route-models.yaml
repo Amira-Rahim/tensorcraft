@@ -1,0 +1,107 @@
+slug: route-models
+lessonSlug: traffic-splitting
+title: "Weighted Traffic Splitter"
+instructions: "Build a TrafficSplitter class that routes to model endpoints based on configured weights. Implement addEndpoint to register models with weights, selectEndpoint to pick one using weighted random selection, and updateWeights to change traffic distribution."
+starterCode: |
+  interface Endpoint {
+    version: string;
+    weight: number;
+  }
+
+  class TrafficSplitter {
+    private endpoints: Endpoint[] = [];
+
+    addEndpoint(version: string, weight: number): void {
+      // Add an endpoint with the given weight
+      // your code here
+    }
+
+    selectEndpoint(): string {
+      // Select an endpoint based on weights
+      // Higher weight = higher probability of selection
+      return ''; // your code here
+    }
+
+    updateWeights(weights: Map<string, number>): void {
+      // Update weights for existing endpoints
+      // your code here
+    }
+
+    getWeights(): Map<string, number> {
+      return new Map(this.endpoints.map(e => [e.version, e.weight]));
+    }
+  }
+solutionCode: |
+  interface Endpoint {
+    version: string;
+    weight: number;
+  }
+
+  class TrafficSplitter {
+    private endpoints: Endpoint[] = [];
+
+    addEndpoint(version: string, weight: number): void {
+      this.endpoints.push({ version, weight });
+    }
+
+    selectEndpoint(): string {
+      const totalWeight = this.endpoints.reduce((s, e) => s + e.weight, 0);
+      let random = Math.random() * totalWeight;
+
+      for (const endpoint of this.endpoints) {
+        random -= endpoint.weight;
+        if (random <= 0) return endpoint.version;
+      }
+      return this.endpoints[this.endpoints.length - 1].version;
+    }
+
+    updateWeights(weights: Map<string, number>): void {
+      for (const endpoint of this.endpoints) {
+        const weight = weights.get(endpoint.version);
+        if (weight !== undefined) endpoint.weight = weight;
+      }
+    }
+
+    getWeights(): Map<string, number> {
+      return new Map(this.endpoints.map(e => [e.version, e.weight]));
+    }
+  }
+testCode: |
+  describe('TrafficSplitter', () => {
+    it('adds endpoints and returns valid versions', () => {
+      const splitter = new TrafficSplitter();
+      splitter.addEndpoint('v1', 50);
+      splitter.addEndpoint('v2', 50);
+      const result = splitter.selectEndpoint();
+      expect(['v1', 'v2']).toContain(result);
+    });
+
+    it('respects weights approximately', () => {
+      const splitter = new TrafficSplitter();
+      splitter.addEndpoint('v1', 90);
+      splitter.addEndpoint('v2', 10);
+      const results = Array.from({ length: 1000 }, () => splitter.selectEndpoint());
+      const v1Count = results.filter(v => v === 'v1').length;
+      expect(v1Count).toBeGreaterThan(800);
+    });
+
+    it('updates weights correctly', () => {
+      const splitter = new TrafficSplitter();
+      splitter.addEndpoint('v1', 50);
+      splitter.addEndpoint('v2', 50);
+      splitter.updateWeights(new Map([['v1', 100], ['v2', 0]]));
+      const weights = splitter.getWeights();
+      expect(weights.get('v1')).toBe(100);
+      expect(weights.get('v2')).toBe(0);
+    });
+
+    it('routes all traffic to single endpoint with weight 0 for others', () => {
+      const splitter = new TrafficSplitter();
+      splitter.addEndpoint('v1', 0);
+      splitter.addEndpoint('v2', 100);
+      const results = Array.from({ length: 100 }, () => splitter.selectEndpoint());
+      expect(results.every(v => v === 'v2')).toBe(true);
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

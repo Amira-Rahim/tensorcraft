@@ -1,0 +1,79 @@
+slug: neural-style
+lessonSlug: neural-style-transfer
+title: "Implement Content and Style Losses"
+instructions: "Implement two loss functions: contentLoss computes MSE between generated and target content features. styleLoss computes MSE between generated and target Gram matrices. Then implement totalLoss that combines them with weights."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function contentLoss(generated: tf.Tensor, target: tf.Tensor): tf.Scalar {
+    // Mean squared error between feature activations
+    return null; // your code here
+  }
+
+  function styleLoss(generatedGram: tf.Tensor2D, targetGram: tf.Tensor2D): tf.Scalar {
+    // Mean squared error between Gram matrices
+    return null; // your code here
+  }
+
+  function totalLoss(
+    cLoss: tf.Scalar,
+    sLoss: tf.Scalar,
+    contentWeight: number,
+    styleWeight: number
+  ): tf.Scalar {
+    // Weighted combination: contentWeight * cLoss + styleWeight * sLoss
+    return null; // your code here
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function contentLoss(generated: tf.Tensor, target: tf.Tensor): tf.Scalar {
+    return tf.losses.meanSquaredError(target, generated);
+  }
+
+  function styleLoss(generatedGram: tf.Tensor2D, targetGram: tf.Tensor2D): tf.Scalar {
+    return tf.losses.meanSquaredError(targetGram, generatedGram);
+  }
+
+  function totalLoss(
+    cLoss: tf.Scalar,
+    sLoss: tf.Scalar,
+    contentWeight: number,
+    styleWeight: number
+  ): tf.Scalar {
+    return tf.add(
+      tf.mul(cLoss, tf.scalar(contentWeight)),
+      tf.mul(sLoss, tf.scalar(styleWeight))
+    ) as tf.Scalar;
+  }
+testCode: |
+  describe('contentLoss', () => {
+    it('returns 0 for identical tensors', () => {
+      const a = tf.ones([1, 4, 4, 8]);
+      const loss = contentLoss(a, a);
+      expect(loss.dataSync()[0]).toBeCloseTo(0, 4);
+    });
+    it('returns positive value for different tensors', () => {
+      const a = tf.ones([1, 4, 4, 8]);
+      const b = tf.zeros([1, 4, 4, 8]);
+      const loss = contentLoss(a, b);
+      expect(loss.dataSync()[0]).toBeGreaterThan(0);
+    });
+  });
+  describe('styleLoss', () => {
+    it('returns 0 for identical Gram matrices', () => {
+      const g = tf.ones([8, 8]) as tf.Tensor2D;
+      const loss = styleLoss(g, g);
+      expect(loss.dataSync()[0]).toBeCloseTo(0, 4);
+    });
+  });
+  describe('totalLoss', () => {
+    it('weights losses correctly', () => {
+      const cLoss = tf.scalar(1);
+      const sLoss = tf.scalar(2);
+      const total = totalLoss(cLoss, sLoss, 1, 1000);
+      expect(total.dataSync()[0]).toBeCloseTo(2001, 0);
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

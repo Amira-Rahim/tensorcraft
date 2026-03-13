@@ -1,0 +1,90 @@
+slug: fix-mode-collapse
+lessonSlug: mode-collapse-and-fixes
+title: "Fix Mode Collapse"
+instructions: "Implement two functions: one that detects mode collapse by measuring diversity of generated outputs (average pairwise distance), and one that applies label smoothing to prevent it."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  async function measureDiversity(
+    generator: tf.LayersModel,
+    noiseDim: number,
+    numSamples: number
+  ): Promise<number> {
+    // Generate numSamples outputs from different noise vectors
+    // Compute average pairwise L2 distance between outputs
+    // Return the average distance (low = collapsed, high = diverse)
+    return null; // your code here
+  }
+
+  function smoothLabels(
+    labels: tf.Tensor,
+    smoothing: number
+  ): tf.Tensor {
+    // Apply label smoothing:
+    // real labels (1) become (1 - smoothing) e.g. 0.9
+    // fake labels (0) become (smoothing) e.g. 0.1
+    return null; // your code here
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  async function measureDiversity(
+    generator: tf.LayersModel,
+    noiseDim: number,
+    numSamples: number
+  ): Promise<number> {
+    const outputs: tf.Tensor[] = [];
+    for (let i = 0; i < numSamples; i++) {
+      const noise = tf.randomNormal([1, noiseDim]);
+      const output = (generator.predict(noise) as tf.Tensor).flatten();
+      outputs.push(output);
+      noise.dispose();
+    }
+
+    let totalDist = 0;
+    let pairs = 0;
+    for (let i = 0; i < outputs.length; i++) {
+      for (let j = i + 1; j < outputs.length; j++) {
+        const dist = outputs[i].sub(outputs[j]).square().mean();
+        totalDist += (await dist.array()) as number;
+        dist.dispose();
+        pairs++;
+      }
+    }
+    outputs.forEach(t => t.dispose());
+    return totalDist / pairs;
+  }
+
+  function smoothLabels(
+    labels: tf.Tensor,
+    smoothing: number
+  ): tf.Tensor {
+    return labels.mul(1 - 2 * smoothing).add(smoothing);
+  }
+testCode: |
+  describe('measureDiversity', () => {
+    it('returns a positive number', async () => {
+      const gen = tf.sequential();
+      gen.add(tf.layers.dense({ inputShape: [10], units: 50, activation: 'sigmoid' }));
+      const diversity = await measureDiversity(gen, 10, 5);
+      expect(diversity).toBeGreaterThan(0);
+    });
+  });
+  describe('smoothLabels', () => {
+    it('smooths real labels from 1 toward center', async () => {
+      const labels = tf.ones([4, 1]);
+      const smoothed = await smoothLabels(labels, 0.1).array();
+      (smoothed as number[][]).forEach(row => {
+        expect(row[0]).toBeCloseTo(0.9);
+      });
+    });
+    it('smooths fake labels from 0 toward center', async () => {
+      const labels = tf.zeros([4, 1]);
+      const smoothed = await smoothLabels(labels, 0.1).array();
+      (smoothed as number[][]).forEach(row => {
+        expect(row[0]).toBeCloseTo(0.1);
+      });
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

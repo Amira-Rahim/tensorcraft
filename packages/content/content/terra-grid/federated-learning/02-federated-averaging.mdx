@@ -1,0 +1,141 @@
+---
+slug: federated-averaging
+title: "Federated Averaging"
+moduleId: federated-learning
+themeId: terra-grid
+order: 2
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Three companies have each trained the model on their local data. Now Hassan must combine their weight updates into a single improved model. The key algorithm: Federated Averaging."
+  speaker: "Hassan Al-Rashid"
+concept:
+  explanation: "Federated averaging combines model updates from distributed training, just like syncing state across browser tabs using BroadcastChannel."
+  bridge:
+    feTitle: "State Sync Across Tabs"
+    feCode: "channel.postMessage(localState) // merge states from multiple tabs"
+    mlTitle: "Federated Averaging"
+    mlCode: "aggregate(localUpdates) // merge weights from multiple trainers"
+    tier: structural
+consequence:
+  narrative: "The federated model outperforms any single company's local model. More data, better generalization, zero data sharing."
+  nextLessonTeaser: "Next: ensuring data privacy during federated training"
+hints:
+  - level: nudge
+    content: "Think about how you merge state from multiple browser tabs into a consistent view"
+  - level: guidance
+    content: "Average the weight updates, weighted by each participant's dataset size"
+  - level: solution
+    content: "Weighted average: new_weights = sum(n_i / N * weights_i) where n_i is each participant's data size"
+keywords:
+  - federated-averaging
+  - weight-aggregation
+  - distributed-training
+  - state-sync
+---
+
+<Dialogue speaker="Hassan Al-Rashid">
+Three companies. Three locally trained models. Each one is good at recognizing patterns in their own data. Now we combine them into one model that knows all three distributions — without any company seeing another's data.
+</Dialogue>
+
+<Dialogue speaker="GRID">
+Aggregation round 1 complete. Global model accuracy: 94.7%. Individual accuracies: Alpha 91.2%, Beta 89.8%, Volta 93.1%. The whole exceeds any part.
+</Dialogue>
+
+You have synced state across browser tabs using `BroadcastChannel` or `localStorage` events. Each tab has its own local state. When something changes, the tab broadcasts its update. A coordinator merges the updates into a consistent global state. Federated averaging is the same pattern applied to model weights.
+
+<LearningObjectives objectives={["Implement the Federated Averaging (FedAvg) algorithm for combining distributed model updates", "Understand weighted averaging based on participant dataset sizes", "Track convergence across federated training rounds", "Compare federated model performance against individual local models"]} />
+
+## The FedAvg Algorithm
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="federated-averaging.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+interface ParticipantUpdate {
+  organizationId: string;
+  weights: Float32Array[];     // one array per layer
+  dataSize: number;            // number of training samples
+  localLoss: number;
+  localAccuracy: number;
+}
+
+function federatedAverage(updates: ParticipantUpdate[]): Float32Array[] {
+  // Total data across all participants
+  const totalData = updates.reduce((sum, u) => sum + u.dataSize, 0);
+
+  // Weighted average of each layer's weights
+  const numLayers = updates[0].weights.length;
+  const averaged: Float32Array[] = [];
+
+  for (let layer = 0; layer < numLayers; layer++) {
+    const layerSize = updates[0].weights[layer].length;
+    const result = new Float32Array(layerSize);
+
+    for (const update of updates) {
+      const weight = update.dataSize / totalData;  // proportional to data contribution
+      for (let i = 0; i < layerSize; i++) {
+        result[i] += update.weights[layer][i] * weight;
+      }
+    }
+
+    averaged.push(result);
+  }
+
+  return averaged;
+}
+
+// Example:
+// Alpha: 2.4M rows (33%) → weights contribute 33% to average
+// Beta:  1.8M rows (25%) → weights contribute 25% to average
+// Volta: 3.1M rows (42%) → weights contribute 42% to average`}
+</CodeBlock>
+
+## Training Rounds
+
+<CodeBlock language="typescript" title="training-rounds.ts">
+{`async function runFederatedTraining(
+  initialModel: tf.LayersModel,
+  participants: string[],
+  rounds: number,
+): Promise<{ model: tf.LayersModel; history: { round: number; accuracy: number }[] }> {
+  let globalWeights = extractWeights(initialModel);
+  const history: { round: number; accuracy: number }[] = [];
+
+  for (let round = 0; round < rounds; round++) {
+    console.log(\`=== Federated Round \${round + 1}/\${rounds} ===\`);
+
+    // Send global model to all participants
+    const updates: ParticipantUpdate[] = [];
+    for (const org of participants) {
+      // Each org trains locally on their own data
+      const update = await trainLocally(org, globalWeights);
+      updates.push(update);
+      console.log(\`  \${org}: accuracy=\${update.localAccuracy.toFixed(3)}, loss=\${update.localLoss.toFixed(4)}\`);
+    }
+
+    // Aggregate updates using weighted average
+    globalWeights = federatedAverage(updates);
+
+    // Evaluate global model
+    const globalAccuracy = await evaluateGlobalModel(globalWeights);
+    history.push({ round: round + 1, accuracy: globalAccuracy });
+    console.log(\`  Global accuracy: \${globalAccuracy.toFixed(3)}\`);
+  }
+
+  const finalModel = applyWeights(initialModel, globalWeights);
+  return { model: finalModel, history };
+}
+
+// Round 1: 87.3% → Round 5: 92.1% → Round 10: 94.7% → Round 15: 95.4%
+// Each round improves as the model sees patterns from all three data sources`}
+</CodeBlock>
+
+## Challenge
+
+Implement federated averaging to combine weight updates from multiple participants.
+
+<Exercise slug="federated-average" />
+
+<KeyTakeaways takeaways={["Federated Averaging (FedAvg) computes a weighted average of participant model updates — like merging state from multiple browser tabs", "Weight each participant's contribution by their dataset size — more data, more influence on the global model", "The global model outperforms any individual local model because it learns patterns from all data sources", "Multiple rounds of send-train-aggregate converge toward a model that generalizes across all participants"]} />

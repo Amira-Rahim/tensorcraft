@@ -1,0 +1,149 @@
+---
+slug: training-dynamics
+title: "Training Dynamics"
+moduleId: generative-adversarial-networks
+themeId: nova-canvas
+order: 4
+estimatedMinutes: 30
+difficulty: intermediate
+context:
+  narrative: "Training begins. Ren discovers that training a GAN is like balancing two dancers — if one gets too far ahead, the whole performance falls apart."
+  speaker: "Petrov"
+concept:
+  explanation: "GAN training alternates between updating the discriminator and the generator. The key challenge is keeping both networks in balance — neither should dominate."
+  bridge:
+    feTitle: "Load Balancing"
+    feCode: "if (server1.load > server2.load) route(server2)"
+    mlTitle: "GAN Training Balance"
+    mlCode: "if (dLoss < 0.1) skipDStep(); // D is too strong"
+    tier: intuition
+consequence:
+  narrative: "After hours of training and tuning, the GAN produces its first recognizable patterns. Crude, but alive. Petrov approves the approach for the exhibition."
+  nextLessonTeaser: "Next: when things go wrong — mode collapse and how to fix it"
+hints:
+  - level: nudge
+    content: "Like load balancing — if one server handles all traffic, the system degrades"
+  - level: guidance
+    content: "Alternate: train D for one step, then train G for one step. Monitor both losses."
+  - level: solution
+    content: "Train D on half-real/half-fake batch, then train G through the combined model with 'real' labels"
+keywords:
+  - training
+  - adversarial
+  - balance
+  - convergence
+  - loss
+---
+
+<Dialogue speaker="Petrov">
+I have managed enough engineering teams to know this: two systems in competition will find equilibrium only if neither is allowed to dominate. Your discriminator is too smart? The generator gives up. Generator too clever? The discriminator stops learning. Balance. That is the only goal.
+</Dialogue>
+
+<Dialogue speaker="MUSE">
+A dance requires two. If one leads too strongly, the other merely stumbles.
+</Dialogue>
+
+Training a GAN is notoriously tricky. Unlike training a single model where loss steadily decreases, GAN training involves two competing losses that must stay in balance. Think of it like load balancing across servers — if one server handles all the traffic, the system breaks down.
+
+<LearningObjectives objectives={["Implement the alternating GAN training loop", "Monitor generator and discriminator losses for balance", "Recognize signs of training instability", "Apply practical tricks for stable GAN training"]} />
+
+## The Training Loop
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="training-loop.ts">
+{`import * as tf from '@tensorflow/tfjs';
+
+async function trainGAN(
+  generator: tf.Sequential,
+  discriminator: tf.Sequential,
+  gan: tf.LayersModel,
+  realData: tf.Tensor2D,
+  epochs: number,
+  batchSize: number,
+  noiseDim: number
+) {
+  const numBatches = Math.floor(realData.shape[0] / batchSize);
+
+  for (let epoch = 0; epoch < epochs; epoch++) {
+    let dLossTotal = 0;
+    let gLossTotal = 0;
+
+    for (let batch = 0; batch < numBatches; batch++) {
+      // --- Train Discriminator ---
+      const realBatch = realData.slice(
+        [batch * batchSize, 0],
+        [batchSize, -1]
+      );
+      const noise = tf.randomNormal([batchSize, noiseDim]);
+      const fakeBatch = generator.predict(noise) as tf.Tensor;
+
+      // Real images labeled 1, fake images labeled 0
+      const dLossReal = await discriminator.trainOnBatch(
+        realBatch, tf.ones([batchSize, 1])
+      ) as number[];
+      const dLossFake = await discriminator.trainOnBatch(
+        fakeBatch, tf.zeros([batchSize, 1])
+      ) as number[];
+      dLossTotal += (dLossReal[0] + dLossFake[0]) / 2;
+
+      // --- Train Generator ---
+      const genNoise = tf.randomNormal([batchSize, noiseDim]);
+      // Generator wants discriminator to say "real" (1)
+      const gLoss = await gan.trainOnBatch(
+        genNoise, tf.ones([batchSize, 1])
+      ) as number[];
+      gLossTotal += gLoss[0];
+
+      // Dispose intermediate tensors
+      tf.dispose([noise, fakeBatch, genNoise]);
+    }
+
+    console.log(\`Epoch \${epoch}: D loss=\${(dLossTotal/numBatches).toFixed(4)}, G loss=\${(gLossTotal/numBatches).toFixed(4)}\`);
+  }
+}`}
+</CodeBlock>
+
+## Reading the Losses
+
+Interpreting GAN losses is different from normal training. You do not want either loss to reach zero.
+
+<CodeBlock language="typescript" title="loss-monitoring.ts">
+{`// Healthy training:
+// D loss hovers around 0.5-0.7 (it is unsure — good!)
+// G loss hovers around 0.7-1.5 (it is learning)
+// Both fluctuate but neither collapses
+
+// DANGER: D loss → 0, G loss → large
+// Discriminator is too strong. Generator has given up.
+// Fix: reduce D learning rate, add dropout, train G more steps
+
+// DANGER: D loss → large, G loss → 0
+// Generator found a cheap trick. Discriminator is confused.
+// Fix: check for mode collapse (next lesson)
+
+// DANGER: Both losses oscillate wildly
+// Training is unstable.
+// Fix: reduce learning rate, use gradient clipping
+
+interface TrainingMetrics {
+  dLoss: number;
+  gLoss: number;
+  dAccuracyReal: number;
+  dAccuracyFake: number;
+}
+
+function diagnose(metrics: TrainingMetrics): string {
+  if (metrics.dLoss < 0.1) return 'D too strong — reduce D learning rate';
+  if (metrics.gLoss < 0.1) return 'Possible mode collapse — check diversity';
+  if (metrics.dAccuracyReal > 0.95 && metrics.dAccuracyFake > 0.95)
+    return 'D dominating — add dropout or skip D steps';
+  return 'Training looks healthy';
+}`}
+</CodeBlock>
+
+## Challenge
+
+<Exercise slug="train-gan" />
+
+<KeyTakeaways takeaways={["GAN training alternates between discriminator and generator updates", "Healthy training shows both losses fluctuating, neither collapsing to zero", "D loss near 0.5 means the discriminator is uncertain — this is good", "Monitor both losses and adjust learning rates to maintain balance"]} />

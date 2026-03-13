@@ -1,0 +1,52 @@
+slug: runtime-setup
+lessonSlug: runtime-environments
+title: "Configure Runtime Environments"
+instructions: "Write a function selectRuntime that takes a deviceType string ('substation', 'sensor', 'remote', or 'dashboard') and returns an object with target ('onnx', 'tflite', 'wasm', or 'tfjs') and format (the file extension: '.onnx', '.tflite', '.wasm', or '.json')."
+starterCode: |
+  interface RuntimeConfig {
+    target: string;
+    format: string;
+  }
+
+  function selectRuntime(deviceType: string): RuntimeConfig {
+    // Your code here
+    return { target: '', format: '' };
+  }
+solutionCode: |
+  interface RuntimeConfig {
+    target: string;
+    format: string;
+  }
+
+  function selectRuntime(deviceType: string): RuntimeConfig {
+    const runtimes: Record<string, RuntimeConfig> = {
+      substation: { target: 'onnx', format: '.onnx' },
+      sensor: { target: 'tflite', format: '.tflite' },
+      remote: { target: 'wasm', format: '.wasm' },
+      dashboard: { target: 'tfjs', format: '.json' },
+    };
+    const config = runtimes[deviceType];
+    if (!config) throw new Error(`Unknown device type: ${deviceType}`);
+    return config;
+  }
+testCode: |
+  describe('selectRuntime', () => {
+    it('selects onnx for substations', () => {
+      expect(selectRuntime('substation').target).toBe('onnx');
+    });
+    it('selects tflite for sensors', () => {
+      expect(selectRuntime('sensor').target).toBe('tflite');
+    });
+    it('selects wasm for remote devices', () => {
+      expect(selectRuntime('remote').target).toBe('wasm');
+    });
+    it('selects tfjs for dashboards', () => {
+      expect(selectRuntime('dashboard').target).toBe('tfjs');
+    });
+    it('returns correct format extensions', () => {
+      expect(selectRuntime('substation').format).toBe('.onnx');
+      expect(selectRuntime('dashboard').format).toBe('.json');
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

@@ -1,0 +1,69 @@
+slug: configure-alerts
+lessonSlug: alert-systems
+title: "Configure Alert Rules"
+instructions: "Write a function checkAlerts that takes an array of alert rules (each with name, metric, threshold, and type 'above' | 'below') and a metrics object (Record<string, number>). Return an array of alert names where the metric value crosses the threshold (above threshold for type 'above', below threshold for type 'below')."
+starterCode: |
+  interface AlertRule {
+    name: string;
+    metric: string;
+    threshold: number;
+    type: 'above' | 'below';
+  }
+
+  function checkAlerts(
+    rules: AlertRule[],
+    metrics: Record<string, number>,
+  ): string[] {
+    // Your code here
+    return [];
+  }
+solutionCode: |
+  interface AlertRule {
+    name: string;
+    metric: string;
+    threshold: number;
+    type: 'above' | 'below';
+  }
+
+  function checkAlerts(
+    rules: AlertRule[],
+    metrics: Record<string, number>,
+  ): string[] {
+    const fired: string[] = [];
+    for (const rule of rules) {
+      const value = metrics[rule.metric];
+      if (value === undefined) continue;
+      if (rule.type === 'above' && value > rule.threshold) {
+        fired.push(rule.name);
+      } else if (rule.type === 'below' && value < rule.threshold) {
+        fired.push(rule.name);
+      }
+    }
+    return fired;
+  }
+testCode: |
+  describe('checkAlerts', () => {
+    const rules = [
+      { name: 'high-latency', metric: 'latency', threshold: 100, type: 'above' as const },
+      { name: 'low-accuracy', metric: 'accuracy', threshold: 0.9, type: 'below' as const },
+      { name: 'high-drift', metric: 'drift', threshold: 0.3, type: 'above' as const },
+    ];
+    it('fires above-threshold alerts', () => {
+      const result = checkAlerts(rules, { latency: 150, accuracy: 0.95, drift: 0.1 });
+      expect(result).toEqual(['high-latency']);
+    });
+    it('fires below-threshold alerts', () => {
+      const result = checkAlerts(rules, { latency: 50, accuracy: 0.85, drift: 0.1 });
+      expect(result).toEqual(['low-accuracy']);
+    });
+    it('fires multiple alerts', () => {
+      const result = checkAlerts(rules, { latency: 150, accuracy: 0.85, drift: 0.5 });
+      expect(result).toEqual(['high-latency', 'low-accuracy', 'high-drift']);
+    });
+    it('returns empty when all ok', () => {
+      const result = checkAlerts(rules, { latency: 50, accuracy: 0.95, drift: 0.1 });
+      expect(result).toEqual([]);
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

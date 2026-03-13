@@ -1,0 +1,59 @@
+slug: encode-one-hot
+lessonSlug: one-hot-encoding
+title: "Encode One-Hot Vectors"
+instructions: "Implement a oneHotEncode function that takes a word and a vocabulary array, and returns a TensorFlow.js 1D tensor where the position matching the word's index is 1 and all others are 0. If the word is not found in the vocabulary, return an all-zeros vector."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  const vocab = ['aspirin', 'ibuprofen', 'penicillin', 'amoxicillin', 'appendectomy'];
+
+  function oneHotEncode(word: string, vocabulary: string[]): tf.Tensor1D {
+    // 1. Find the word's index in the vocabulary
+    // 2. Create a zero-filled array of vocabulary length
+    // 3. If the word exists, set that position to 1
+    // 4. Return as a 1D tensor
+    return null; // your code here
+  }
+
+  const aspirin = oneHotEncode('aspirin', vocab);
+  const ibuprofen = oneHotEncode('ibuprofen', vocab);
+  const unknown = oneHotEncode('tylenol', vocab);
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  const vocab = ['aspirin', 'ibuprofen', 'penicillin', 'amoxicillin', 'appendectomy'];
+
+  function oneHotEncode(word: string, vocabulary: string[]): tf.Tensor1D {
+    const index = vocabulary.indexOf(word);
+    const vector = new Array(vocabulary.length).fill(0);
+    if (index !== -1) vector[index] = 1;
+    return tf.tensor1d(vector);
+  }
+
+  const aspirin = oneHotEncode('aspirin', vocab);
+  const ibuprofen = oneHotEncode('ibuprofen', vocab);
+  const unknown = oneHotEncode('tylenol', vocab);
+testCode: |
+  describe('Encode One-Hot', () => {
+    it('aspirin tensor is defined', () => {
+      expect(aspirin).toBeDefined();
+    });
+    it('has correct shape', () => {
+      expect(aspirin.shape).toEqual([5]);
+    });
+    it('aspirin has 1 at position 0', () => {
+      expect(Array.from(aspirin.dataSync())).toEqual([1, 0, 0, 0, 0]);
+    });
+    it('ibuprofen has 1 at position 1', () => {
+      expect(Array.from(ibuprofen.dataSync())).toEqual([0, 1, 0, 0, 0]);
+    });
+    it('each vector has exactly one 1', () => {
+      expect(aspirin.sum().dataSync()[0]).toBe(1);
+      expect(ibuprofen.sum().dataSync()[0]).toBe(1);
+    });
+    it('unknown word returns all zeros', () => {
+      expect(unknown.sum().dataSync()[0]).toBe(0);
+    });
+  });
+estimatedMinutes: 12
+difficulty: beginner

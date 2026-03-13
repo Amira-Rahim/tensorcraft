@@ -1,0 +1,183 @@
+slug: ground-knowledge
+lessonSlug: knowledge-grounding
+title: "Verify Answers Against Source Documents"
+instructions: "Implement a knowledge grounding system that verifies whether a generated answer is supported by source documents. Build three functions: tokenize to split text into lowercase word tokens, computeOverlap to calculate the fraction of answer tokens found in a source text, and groundAnswer to check each claim in a generated answer against source documents and return a grounding verdict with per-claim evidence scores. A claim is considered grounded if its overlap score meets or exceeds the threshold."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  interface GroundingClaim {
+    claim: string;
+    bestSource: string;
+    overlapScore: number;
+    isGrounded: boolean;
+  }
+
+  interface GroundingResult {
+    claims: GroundingClaim[];
+    overallGrounded: boolean;
+    groundedRatio: number;
+  }
+
+  function tokenize(text: string): string[] {
+    // 1. Convert to lowercase
+    // 2. Split on non-alphanumeric characters
+    // 3. Filter out empty strings
+    return []; // your code here
+  }
+
+  function computeOverlap(answerTokens: string[], sourceText: string): number {
+    // 1. Tokenize the source text
+    // 2. Create a Set from source tokens
+    // 3. Count how many answer tokens appear in the source set
+    // 4. Return the fraction: matchCount / answerTokens.length
+    return 0; // your code here
+  }
+
+  function groundAnswer(
+    claims: string[],
+    sources: { id: string; text: string }[],
+    threshold: number = 0.5
+  ): GroundingResult {
+    // For each claim:
+    // 1. Tokenize the claim
+    // 2. Compute overlap against each source
+    // 3. Find the source with highest overlap
+    // 4. Mark as grounded if overlapScore >= threshold
+    // Return { claims, overallGrounded (all grounded), groundedRatio }
+    return null; // your code here
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  interface GroundingClaim {
+    claim: string;
+    bestSource: string;
+    overlapScore: number;
+    isGrounded: boolean;
+  }
+
+  interface GroundingResult {
+    claims: GroundingClaim[];
+    overallGrounded: boolean;
+    groundedRatio: number;
+  }
+
+  function tokenize(text: string): string[] {
+    return text
+      .toLowerCase()
+      .split(/[^a-z0-9]+/)
+      .filter((t) => t.length > 0);
+  }
+
+  function computeOverlap(answerTokens: string[], sourceText: string): number {
+    const sourceTokens = new Set(tokenize(sourceText));
+    let matches = 0;
+
+    for (const token of answerTokens) {
+      if (sourceTokens.has(token)) matches++;
+    }
+
+    return answerTokens.length > 0 ? matches / answerTokens.length : 0;
+  }
+
+  function groundAnswer(
+    claims: string[],
+    sources: { id: string; text: string }[],
+    threshold: number = 0.5
+  ): GroundingResult {
+    const groundedClaims: GroundingClaim[] = claims.map((claim) => {
+      const claimTokens = tokenize(claim);
+      let bestScore = 0;
+      let bestSource = '';
+
+      for (const source of sources) {
+        const score = computeOverlap(claimTokens, source.text);
+        if (score > bestScore) {
+          bestScore = score;
+          bestSource = source.id;
+        }
+      }
+
+      return {
+        claim,
+        bestSource,
+        overlapScore: bestScore,
+        isGrounded: bestScore >= threshold,
+      };
+    });
+
+    const groundedCount = groundedClaims.filter((c) => c.isGrounded).length;
+
+    return {
+      claims: groundedClaims,
+      overallGrounded: groundedCount === groundedClaims.length,
+      groundedRatio: groundedClaims.length > 0 ? groundedCount / groundedClaims.length : 0,
+    };
+  }
+testCode: |
+  describe('Knowledge Grounding', () => {
+    const sources = [
+      { id: 'src-1', text: 'The patient was prescribed metformin for type 2 diabetes management.' },
+      { id: 'src-2', text: 'Blood glucose levels should be monitored daily with a glucometer.' },
+      { id: 'src-3', text: 'Regular exercise and diet changes support diabetes treatment outcomes.' },
+    ];
+
+    describe('tokenize', () => {
+      it('splits text into lowercase tokens', () => {
+        const tokens = tokenize('Blood Glucose Levels');
+        expect(tokens).toEqual(['blood', 'glucose', 'levels']);
+      });
+
+      it('filters empty strings', () => {
+        const tokens = tokenize('hello--world');
+        expect(tokens).toEqual(['hello', 'world']);
+      });
+    });
+
+    describe('computeOverlap', () => {
+      it('returns 1.0 for perfect overlap', () => {
+        const tokens = tokenize('blood glucose');
+        const score = computeOverlap(tokens, 'Blood glucose levels should be monitored.');
+        expect(score).toBe(1.0);
+      });
+
+      it('returns 0 for no overlap', () => {
+        const tokens = tokenize('cardiac surgery');
+        const score = computeOverlap(tokens, 'Blood glucose levels should be monitored.');
+        expect(score).toBe(0);
+      });
+    });
+
+    describe('groundAnswer', () => {
+      it('marks well-supported claims as grounded', () => {
+        const claims = ['Patient prescribed metformin for diabetes'];
+        const result = groundAnswer(claims, sources, 0.5);
+        expect(result.claims[0].isGrounded).toBe(true);
+        expect(result.claims[0].bestSource).toBe('src-1');
+      });
+
+      it('marks unsupported claims as ungrounded', () => {
+        const claims = ['Patient requires immediate cardiac surgery'];
+        const result = groundAnswer(claims, sources, 0.5);
+        expect(result.claims[0].isGrounded).toBe(false);
+      });
+
+      it('calculates grounded ratio correctly', () => {
+        const claims = [
+          'Metformin prescribed for diabetes',
+          'Patient needs brain surgery',
+        ];
+        const result = groundAnswer(claims, sources, 0.5);
+        expect(result.groundedRatio).toBe(0.5);
+        expect(result.overallGrounded).toBe(false);
+      });
+
+      it('returns overallGrounded true when all claims grounded', () => {
+        const claims = ['Blood glucose monitored daily'];
+        const result = groundAnswer(claims, sources, 0.5);
+        expect(result.overallGrounded).toBe(true);
+      });
+    });
+  });
+estimatedMinutes: 15
+difficulty: intermediate

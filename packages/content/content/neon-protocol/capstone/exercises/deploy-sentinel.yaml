@@ -1,0 +1,160 @@
+slug: deploy-sentinel
+lessonSlug: launch
+title: "Deploy with Feature Flags"
+instructions: "Implement a FeatureFlagManager that controls gradual rollout of Protocol Sentinel. It should support registering flags with a rollout percentage, checking if a flag is enabled for a given target using consistent hashing, updating rollout percentages, and killing (disabling) a flag for instant rollback."
+starterCode: |
+  interface Flag {
+    name: string;
+    enabled: boolean;
+    rolloutPercentage: number;
+  }
+
+  class FeatureFlagManager {
+    private flags: Map<string, Flag> = new Map();
+
+    register(name: string, rolloutPercentage: number): void {
+      // Register a new enabled flag with the given rollout percentage
+      // your code here
+    }
+
+    isEnabled(name: string, targetId: string): boolean {
+      // Return true if:
+      //   1. Flag exists and is enabled
+      //   2. hash(targetId) % 100 < rolloutPercentage
+      // Use the provided hash function
+      return false; // your code here
+    }
+
+    setRollout(name: string, percentage: number): void {
+      // Update rollout percentage (clamp to 0-100)
+      // your code here
+    }
+
+    kill(name: string): void {
+      // Set flag.enabled = false for instant rollback
+      // your code here
+    }
+  }
+
+  function hash(str: string): number {
+    let h = 0;
+    for (let i = 0; i < str.length; i++) {
+      h = ((h << 5) - h) + str.charCodeAt(i);
+      h |= 0;
+    }
+    return Math.abs(h);
+  }
+solutionCode: |
+  interface Flag {
+    name: string;
+    enabled: boolean;
+    rolloutPercentage: number;
+  }
+
+  class FeatureFlagManager {
+    private flags: Map<string, Flag> = new Map();
+
+    register(name: string, rolloutPercentage: number): void {
+      this.flags.set(name, {
+        name,
+        enabled: true,
+        rolloutPercentage: Math.min(100, Math.max(0, rolloutPercentage)),
+      });
+    }
+
+    isEnabled(name: string, targetId: string): boolean {
+      const flag = this.flags.get(name);
+      if (!flag || !flag.enabled) return false;
+      return (hash(targetId) % 100) < flag.rolloutPercentage;
+    }
+
+    setRollout(name: string, percentage: number): void {
+      const flag = this.flags.get(name);
+      if (flag) {
+        flag.rolloutPercentage = Math.min(100, Math.max(0, percentage));
+      }
+    }
+
+    kill(name: string): void {
+      const flag = this.flags.get(name);
+      if (flag) {
+        flag.enabled = false;
+      }
+    }
+  }
+
+  function hash(str: string): number {
+    let h = 0;
+    for (let i = 0; i < str.length; i++) {
+      h = ((h << 5) - h) + str.charCodeAt(i);
+      h |= 0;
+    }
+    return Math.abs(h);
+  }
+testCode: |
+  describe('FeatureFlagManager', () => {
+    it('registers and enables a flag', () => {
+      const manager = new FeatureFlagManager();
+      manager.register('sentinel-v1', 100);
+      expect(manager.isEnabled('sentinel-v1', 'any-feed')).toBe(true);
+    });
+
+    it('returns false for unregistered flags', () => {
+      const manager = new FeatureFlagManager();
+      expect(manager.isEnabled('nonexistent', 'feed-1')).toBe(false);
+    });
+
+    it('respects rollout percentage', () => {
+      const manager = new FeatureFlagManager();
+      manager.register('test-flag', 50);
+
+      // Test with many targets — roughly half should be enabled
+      let enabled = 0;
+      for (let i = 0; i < 100; i++) {
+        if (manager.isEnabled('test-flag', `feed-${i}`)) enabled++;
+      }
+      // Should be roughly 50%, allow wide margin
+      expect(enabled).toBeGreaterThan(20);
+      expect(enabled).toBeLessThan(80);
+    });
+
+    it('kills a flag for instant rollback', () => {
+      const manager = new FeatureFlagManager();
+      manager.register('sentinel-v1', 100);
+      expect(manager.isEnabled('sentinel-v1', 'feed-1')).toBe(true);
+
+      manager.kill('sentinel-v1');
+      expect(manager.isEnabled('sentinel-v1', 'feed-1')).toBe(false);
+    });
+
+    it('updates rollout percentage', () => {
+      const manager = new FeatureFlagManager();
+      manager.register('sentinel-v1', 0);
+      expect(manager.isEnabled('sentinel-v1', 'feed-1')).toBe(false);
+
+      manager.setRollout('sentinel-v1', 100);
+      expect(manager.isEnabled('sentinel-v1', 'feed-1')).toBe(true);
+    });
+
+    it('clamps rollout percentage to 0-100', () => {
+      const manager = new FeatureFlagManager();
+      manager.register('test', 150);
+      // Should clamp to 100 — all targets enabled
+      expect(manager.isEnabled('test', 'any')).toBe(true);
+
+      manager.setRollout('test', -10);
+      // Should clamp to 0 — no targets enabled
+      expect(manager.isEnabled('test', 'any')).toBe(false);
+    });
+
+    it('provides consistent results for the same target', () => {
+      const manager = new FeatureFlagManager();
+      manager.register('sentinel-v1', 50);
+
+      const first = manager.isEnabled('sentinel-v1', 'feed-42');
+      const second = manager.isEnabled('sentinel-v1', 'feed-42');
+      expect(first).toBe(second);
+    });
+  });
+estimatedMinutes: 15
+difficulty: intermediate

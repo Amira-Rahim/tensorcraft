@@ -1,0 +1,62 @@
+slug: federated-average
+lessonSlug: federated-averaging
+title: "Federated Average"
+instructions: "Write a function federatedAverage that takes an array of participant updates, each with weights (number[]) and dataSize (number). Return a new number[] where each element is the weighted average across participants, weighted by their dataSize proportion."
+starterCode: |
+  interface ParticipantUpdate {
+    weights: number[];
+    dataSize: number;
+  }
+
+  function federatedAverage(updates: ParticipantUpdate[]): number[] {
+    // Your code here
+    return [];
+  }
+solutionCode: |
+  interface ParticipantUpdate {
+    weights: number[];
+    dataSize: number;
+  }
+
+  function federatedAverage(updates: ParticipantUpdate[]): number[] {
+    const totalData = updates.reduce((sum, u) => sum + u.dataSize, 0);
+    const numWeights = updates[0].weights.length;
+    const result = new Array(numWeights).fill(0);
+
+    for (const update of updates) {
+      const proportion = update.dataSize / totalData;
+      for (let i = 0; i < numWeights; i++) {
+        result[i] += update.weights[i] * proportion;
+      }
+    }
+
+    return result;
+  }
+testCode: |
+  describe('federatedAverage', () => {
+    it('computes weighted average', () => {
+      const updates = [
+        { weights: [1, 2, 3], dataSize: 100 },
+        { weights: [3, 4, 5], dataSize: 100 },
+      ];
+      const result = federatedAverage(updates);
+      expect(result[0]).toBeCloseTo(2, 5);
+      expect(result[1]).toBeCloseTo(3, 5);
+      expect(result[2]).toBeCloseTo(4, 5);
+    });
+    it('weights by data size', () => {
+      const updates = [
+        { weights: [10], dataSize: 300 },
+        { weights: [20], dataSize: 100 },
+      ];
+      const result = federatedAverage(updates);
+      expect(result[0]).toBeCloseTo(12.5, 5);
+    });
+    it('handles single participant', () => {
+      const updates = [{ weights: [5, 10], dataSize: 100 }];
+      const result = federatedAverage(updates);
+      expect(result).toEqual([5, 10]);
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

@@ -1,0 +1,60 @@
+slug: gan-game
+lessonSlug: the-gan-game
+title: "The GAN Game"
+instructions: "Create two functions: one that simulates a generator producing fake data (random numbers), and one that acts as a discriminator scoring how 'real' the data looks. The discriminator should return a value closer to 1 for values near the real data mean, and closer to 0 for outliers."
+starterCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function generator(noiseDim: number): tf.Tensor1D {
+    // Generate a 1D tensor of random values from normal distribution
+    return null; // your code here
+  }
+
+  async function discriminator(
+    data: tf.Tensor1D,
+    realMean: number,
+    realStd: number
+  ): Promise<number> {
+    // Score how "real" the data looks:
+    // Compute the mean of data, then compute how close it is to realMean
+    // Use a Gaussian-like scoring: exp(-(diff^2) / (2 * realStd^2))
+    return null; // your code here
+  }
+solutionCode: |
+  import * as tf from '@tensorflow/tfjs';
+
+  function generator(noiseDim: number): tf.Tensor1D {
+    return tf.randomNormal([noiseDim]) as tf.Tensor1D;
+  }
+
+  async function discriminator(
+    data: tf.Tensor1D,
+    realMean: number,
+    realStd: number
+  ): Promise<number> {
+    const dataMean = (await data.mean().array()) as number;
+    const diff = dataMean - realMean;
+    const score = Math.exp(-(diff * diff) / (2 * realStd * realStd));
+    return score;
+  }
+testCode: |
+  describe('generator', () => {
+    it('returns a 1D tensor of correct size', () => {
+      const result = generator(10);
+      expect(result.shape).toEqual([10]);
+    });
+  });
+  describe('discriminator', () => {
+    it('scores data near the mean highly', async () => {
+      const nearMean = tf.tensor1d([5.0, 5.1, 4.9, 5.0, 5.1]);
+      const score = await discriminator(nearMean, 5.0, 1.0);
+      expect(score).toBeGreaterThan(0.9);
+    });
+    it('scores data far from the mean low', async () => {
+      const farAway = tf.tensor1d([100, 101, 99, 100, 102]);
+      const score = await discriminator(farAway, 5.0, 1.0);
+      expect(score).toBeLessThan(0.01);
+    });
+  });
+estimatedMinutes: 8
+difficulty: intermediate

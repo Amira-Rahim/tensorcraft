@@ -1,0 +1,169 @@
+---
+slug: k-nearest-neighbors
+title: "k-Nearest Neighbors: The Simplest Algorithm"
+moduleId: classical-ml
+themeId: shared
+order: 3
+estimatedMinutes: 25
+difficulty: beginner
+context:
+  narrative: "The laziest algorithm in ML — literally. KNN does zero work during training and all the work at prediction time. Sometimes that's exactly what you want."
+concept:
+  explanation: "k-Nearest Neighbors classifies a new point by finding the k closest points in the training data and taking a majority vote."
+  bridge:
+    feTitle: "Sort and slice"
+    feCode: "items.sort((a, b) => dist(a) - dist(b)).slice(0, k)"
+    mlTitle: "KNN"
+    mlCode: "knn.classify(point, k) // find k nearest, majority vote"
+    tier: structural
+consequence:
+  narrative: "You now have a model that requires no training at all. For small datasets with clear clusters, KNN is hard to beat."
+  nextLessonTeaser: "Next: ensemble methods — combining many weak models into one strong one"
+hints:
+  - level: nudge
+    content: "Euclidean distance is just the Pythagorean theorem extended to N dimensions"
+  - level: guidance
+    content: "Sort all training points by distance to the query point, take the first k"
+  - level: solution
+    content: "distances.sort().slice(0, k).map(d => d.label) then majority vote"
+keywords:
+  - knn
+  - distance-metrics
+  - lazy-learning
+  - curse-of-dimensionality
+---
+
+<Dialogue speaker="Instructor">
+What if I told you there's an ML algorithm that has no training step at all? No weights to learn, no gradients to compute, no epochs to wait through. You just store the data and look things up at prediction time. That's k-nearest neighbors.
+</Dialogue>
+
+As a frontend developer, you already know this pattern. Ever built a search feature that sorts results by relevance? Or a "similar products" section that finds items closest to the one being viewed? That's KNN.
+
+<LearningObjectives objectives={["Implement KNN classification from scratch using distance metrics", "Understand Euclidean vs. Manhattan distance and when to use each", "Choose an appropriate value for k and understand its effect", "Recognize the curse of dimensionality and when KNN breaks down"]} />
+
+## The Algorithm: Sort, Slice, Vote
+
+KNN is the most intuitive ML algorithm because it maps directly to array operations you use every day.
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="knn-basics.ts">
+{`interface DataPoint {
+  features: number[];
+  label: string;
+}
+
+// Euclidean distance — Pythagorean theorem in N dimensions
+function euclideanDistance(a: number[], b: number[]): number {
+  return Math.sqrt(
+    a.reduce((sum, val, i) => sum + (val - b[i]) ** 2, 0)
+  );
+}
+
+// KNN in three lines of logic
+function knnClassify(
+  query: number[],
+  trainingData: DataPoint[],
+  k: number
+): string {
+  // 1. Sort by distance (Array.sort)
+  const sorted = trainingData
+    .map(point => ({
+      label: point.label,
+      distance: euclideanDistance(query, point.features),
+    }))
+    .sort((a, b) => a.distance - b.distance);
+
+  // 2. Take the k nearest (.slice)
+  const neighbors = sorted.slice(0, k);
+
+  // 3. Majority vote (.reduce)
+  const votes = neighbors.reduce((acc, n) => {
+    acc[n.label] = (acc[n.label] ?? 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
+  return Object.entries(votes).sort((a, b) => b[1] - a[1])[0][0];
+}`}
+</CodeBlock>
+
+That's the entire algorithm. No training loop, no weights, no backpropagation. Just sort, slice, and vote.
+
+## Distance Metrics: Choosing Your Ruler
+
+The choice of distance metric matters. It's like choosing between `===` and a custom comparator — both compare, but they measure different things.
+
+<CodeBlock language="typescript" title="distance-metrics.ts">
+{`// Euclidean: straight-line distance (most common)
+function euclidean(a: number[], b: number[]): number {
+  return Math.sqrt(a.reduce((sum, val, i) => sum + (val - b[i]) ** 2, 0));
+}
+
+// Manhattan: grid-walking distance (robust to outliers)
+function manhattan(a: number[], b: number[]): number {
+  return a.reduce((sum, val, i) => sum + Math.abs(val - b[i]), 0);
+}
+
+// Example: two points in 2D space
+const pointA = [1, 2];
+const pointB = [4, 6];
+
+console.log(euclidean(pointA, pointB)); // 5.0 (straight line)
+console.log(manhattan(pointA, pointB)); // 7.0 (grid walk: 3 + 4)
+
+// Manhattan is better when features have different scales
+// or when outliers could skew Euclidean distance`}
+</CodeBlock>
+
+## Choosing k: The Hyperparameter
+
+The value of k determines how many neighbors get to vote. It's a trade-off:
+
+- **k = 1**: Every prediction follows its single nearest neighbor. Noisy, overfits.
+- **k = n** (all data): Every prediction is the majority class. Underfits.
+- **Sweet spot**: Usually an odd number (to avoid ties) between 3 and 15.
+
+<CodeBlock language="typescript" title="choosing-k.ts">
+{`// Test different values of k on validation data
+function findBestK(
+  trainData: DataPoint[],
+  valData: DataPoint[],
+  kValues: number[]
+): { k: number; accuracy: number } {
+  let bestK = 1;
+  let bestAccuracy = 0;
+
+  for (const k of kValues) {
+    let correct = 0;
+    for (const point of valData) {
+      const predicted = knnClassify(point.features, trainData, k);
+      if (predicted === point.label) correct++;
+    }
+    const accuracy = correct / valData.length;
+    console.log(\`k=\${k}: accuracy=\${(accuracy * 100).toFixed(1)}%\`);
+
+    if (accuracy > bestAccuracy) {
+      bestAccuracy = accuracy;
+      bestK = k;
+    }
+  }
+
+  return { k: bestK, accuracy: bestAccuracy };
+}
+
+findBestK(trainSet, valSet, [1, 3, 5, 7, 11, 15]);`}
+</CodeBlock>
+
+## The Curse of Dimensionality
+
+KNN works beautifully in low dimensions (2-10 features). But as dimensions increase, a strange thing happens: all points become approximately equidistant. It's like trying to find your "nearest neighbor" in a city versus in a universe — in high-dimensional space, the concept of "nearest" loses meaning.
+
+This is why KNN struggles with raw image data (thousands of pixels) but excels at tabular data with a handful of meaningful features.
+
+## Challenge
+
+Implement KNN classification with configurable k and distance metric.
+
+<Exercise slug="implement-knn" />
+
+<KeyTakeaways takeaways={["KNN has no training step — it stores data and compares at prediction time", "The algorithm is literally Array.sort() by distance, .slice(0, k), then majority vote", "Choose k as an odd number between 3-15; validate to find the best value", "KNN breaks down in high dimensions — stick to low-dimensional tabular data"]} />

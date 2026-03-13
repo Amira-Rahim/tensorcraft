@@ -1,0 +1,241 @@
+---
+slug: human-in-the-loop
+title: "Human-in-the-Loop — Code Review for Clinical Predictions"
+moduleId: production-privacy
+themeId: signal-ward
+order: 4
+estimatedMinutes: 25
+difficulty: advanced
+context:
+  narrative: "The ethics committee's final structural requirement: 'No automated clinical decision may be made without clinician review.' Khalil thinks of pull requests. 'It is code review. The model writes the prediction — like a junior developer writing code. The clinician reviews and approves, requests changes, or rejects. Automated checks first, human judgment last.'"
+  speaker: "Khalil"
+concept:
+  explanation: "Human-in-the-loop ML follows the same pattern as code review — automated checks (linting, CI) run first, then a human reviewer approves, requests changes, or rejects. The system recommends, the human decides."
+  bridge:
+    feTitle: "Code Review (PR Workflow)"
+    feCode: "// Lint + CI pass → PR created → human reviews → approve / request changes / reject"
+    mlTitle: "Human-in-the-Loop"
+    mlCode: "// Confidence check → prediction queued → clinician reviews → approve / modify / reject"
+    tier: structural
+consequence:
+  narrative: "Diagnostic One's review architecture is complete: high-confidence predictions surface as suggestions, medium-confidence predictions queue for clinician review, low-confidence predictions are suppressed. Santos runs a simulation — 200 predictions in an hour. 62% auto-surface, 28% go to review, 10% suppressed. Dr. Vasquez approves: 'This is the right balance. The model assists; it does not decide.'"
+  nextLessonTeaser: "Next: confronting the 12% disparity — responsible remediation and honest documentation"
+hints:
+  - level: nudge
+    content: "Define confidence thresholds that route predictions to different review tiers, like branch protection rules"
+  - level: guidance
+    content: "Build a review queue with approve/reject/modify actions, and feed clinician decisions back as training labels"
+  - level: solution
+    content: "Implement three tiers: auto-surface above 0.95 (like auto-merge), queue for review between 0.7-0.95 (like PR review), suppress below 0.7 (like failing CI). Track clinician feedback for model improvement."
+keywords:
+  - human-in-the-loop
+  - code-review
+  - review-queue
+  - clinician-approval
+  - feedback-loop
+  - confidence-routing
+---
+
+<Dialogue speaker="Khalil">
+The committee wants clinician review on every prediction. I have built this system before — it is a pull request workflow. The model writes the prediction, like a junior developer writing code. Automated checks run first — confidence thresholds, validation, safety checks. Then a human reviewer approves, requests changes, or rejects. Linting and CI are necessary but not sufficient. Human judgment is the final gate.
+</Dialogue>
+
+<Dialogue speaker="Dr. Vasquez">
+But not every prediction needs the same level of review. If the model is 99% confident about a well-known drug interaction, I want to see it immediately — like auto-merging a passing Dependabot PR. If it is 73% confident about something unusual, queue it for my review. If it is 40% confident, suppress it entirely — do not create alert fatigue.
+</Dialogue>
+
+Every engineering team uses code review. A junior developer opens a PR, CI runs automated checks, and a senior engineer reviews the changes. The PR gets approved, returned with requested changes, or rejected. Human-in-the-loop ML is the same workflow: the model produces a prediction (the PR), automated checks verify confidence and safety (CI), and a clinician reviews and decides (code review). The confidence level determines how much oversight each prediction requires — just as branch protection rules determine which merges require review.
+
+<LearningObjectives objectives={["Design a confidence-based routing system that triages predictions into review tiers", "Build a clinician review queue with approve, reject, and modify actions", "Implement feedback loops that use clinician decisions to improve the model", "Balance automation throughput against alert fatigue using rate limiting and priority weighting"]} />
+
+## Confidence-Based Routing
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+<CodeBlock language="typescript" title="review-pipeline.ts">
+{`type ReviewTier = 'auto_surface' | 'queue_review' | 'suppress';
+
+interface Prediction {
+  id: string;
+  label: string;
+  confidence: number;
+  evidence: string[];
+  timestamp: string;
+}
+
+interface ReviewDecision {
+  predictionId: string;
+  action: 'approve' | 'reject' | 'modify';
+  modifiedLabel?: string;
+  clinicianId: string;
+  reasoning?: string;
+  timestamp: string;
+}
+
+// Route predictions by confidence — like branch protection rules
+// auto_surface: high confidence, no review needed (auto-merge)
+// queue_review: medium confidence, needs human review (PR review required)
+// suppress: low confidence, not shown (failing CI blocks merge)
+function routePrediction(
+  prediction: Prediction,
+  thresholds: { autoSurface: number; review: number }
+): ReviewTier {
+  if (prediction.confidence >= thresholds.autoSurface) return 'auto_surface';
+  if (prediction.confidence >= thresholds.review) return 'queue_review';
+  return 'suppress';
+}
+
+// Review queue — like a PR dashboard sorted by priority
+class ClinicalReviewQueue {
+  private pending: Prediction[] = [];
+  private decisions: ReviewDecision[] = [];
+
+  enqueue(prediction: Prediction): void {
+    this.pending.push(prediction);
+    // Sort by confidence descending — highest priority first
+    this.pending.sort((a, b) => b.confidence - a.confidence);
+  }
+
+  getNext(): Prediction | undefined {
+    return this.pending[0];
+  }
+
+  getPendingCount(): number {
+    return this.pending.length;
+  }
+
+  recordDecision(decision: ReviewDecision): void {
+    this.pending = this.pending.filter(p => p.id !== decision.predictionId);
+    this.decisions.push(decision);
+  }
+
+  // Feedback statistics — like PR review metrics
+  getFeedbackStats(): {
+    totalReviewed: number;
+    approvalRate: number;
+    modificationRate: number;
+    rejectionRate: number;
+  } {
+    const total = this.decisions.length;
+    if (total === 0) {
+      return { totalReviewed: 0, approvalRate: 0, modificationRate: 0, rejectionRate: 0 };
+    }
+
+    return {
+      totalReviewed: total,
+      approvalRate: this.decisions.filter(d => d.action === 'approve').length / total,
+      modificationRate: this.decisions.filter(d => d.action === 'modify').length / total,
+      rejectionRate: this.decisions.filter(d => d.action === 'reject').length / total,
+    };
+  }
+
+  // Extract training labels from clinician feedback
+  // Approved predictions confirm the model was right
+  // Modified predictions provide corrected labels
+  getTrainingFeedback(): { predictionId: string; label: string; source: 'model' | 'clinician' }[] {
+    return this.decisions
+      .filter(d => d.action !== 'reject')
+      .map(d => ({
+        predictionId: d.predictionId,
+        label: d.action === 'modify' ? d.modifiedLabel! : d.predictionId,
+        source: d.action === 'modify' ? 'clinician' as const : 'model' as const,
+      }));
+  }
+}`}
+</CodeBlock>
+
+## Alert Fatigue Prevention
+
+<CodeBlock language="typescript" title="alert-management.ts">
+{`// Alert fatigue: too many low-value alerts cause clinicians to ignore all alerts
+// Same as notification spam in web apps — over-notify and users disable notifications
+
+interface AlertConfig {
+  maxAlertsPerHour: number;
+  cooldownMinutes: number;
+  priorityWeights: Record<string, number>;
+}
+
+class AlertManager {
+  private recentAlerts: { timestamp: number; priority: number }[] = [];
+  private config: AlertConfig;
+
+  constructor(config: AlertConfig) {
+    this.config = config;
+  }
+
+  shouldAlert(prediction: Prediction): boolean {
+    const now = Date.now();
+    const oneHourAgo = now - 60 * 60 * 1000;
+
+    // Clean expired alerts
+    this.recentAlerts = this.recentAlerts.filter(a => a.timestamp > oneHourAgo);
+
+    // Rate limit — like API rate limiting
+    if (this.recentAlerts.length >= this.config.maxAlertsPerHour) {
+      // Only critical alerts break through the rate limit
+      const priority = this.config.priorityWeights[prediction.label] ?? 1;
+      if (priority < 3) return false;
+    }
+
+    return true;
+  }
+
+  recordAlert(prediction: Prediction): void {
+    this.recentAlerts.push({
+      timestamp: Date.now(),
+      priority: this.config.priorityWeights[prediction.label] ?? 1,
+    });
+  }
+}
+
+// Complete human-in-the-loop pipeline
+class HumanInTheLoopPipeline {
+  private queue = new ClinicalReviewQueue();
+  private alerts: AlertManager;
+  private thresholds = { autoSurface: 0.95, review: 0.7 };
+  private stats = { autoSurfaced: 0, queued: 0, suppressed: 0 };
+
+  constructor(alertConfig: AlertConfig) {
+    this.alerts = new AlertManager(alertConfig);
+  }
+
+  async process(prediction: Prediction): Promise<{
+    tier: ReviewTier;
+    action: string;
+  }> {
+    const tier = routePrediction(prediction, this.thresholds);
+
+    switch (tier) {
+      case 'auto_surface':
+        this.stats.autoSurfaced++;
+        if (this.alerts.shouldAlert(prediction)) {
+          this.alerts.recordAlert(prediction);
+          return { tier, action: 'Displayed as suggestion' };
+        }
+        return { tier, action: 'Throttled — alert rate limit reached' };
+
+      case 'queue_review':
+        this.stats.queued++;
+        this.queue.enqueue(prediction);
+        return { tier, action: \`Queued for review (position \${this.queue.getPendingCount()})\` };
+
+      case 'suppress':
+        this.stats.suppressed++;
+        return { tier, action: 'Suppressed — below confidence threshold' };
+    }
+  }
+}`}
+</CodeBlock>
+
+<Dialogue speaker="Santos">
+So 62% of predictions auto-surface, 28% go to the review queue, and 10% get suppressed. That means clinicians only manually review about a third of predictions. The model handles the routine cases. Clinicians focus on the edge cases. That is the right division of labor.
+</Dialogue>
+
+## Challenge
+
+Design a human review workflow that routes predictions to approval tiers based on confidence.
+
+<Exercise slug="design-review-flow" />
+
+<KeyTakeaways takeaways={["Human-in-the-loop is code review for ML — automated checks first (CI), human judgment last (reviewer approval)", "Confidence-based routing creates three tiers: auto-surface (auto-merge), queue for review (PR review), suppress (failing CI)", "Clinician feedback on reviewed predictions becomes training data — approved predictions confirm, modifications correct", "Alert fatigue is notification spam for clinicians — rate limiting and priority weighting prevent desensitization"]} />

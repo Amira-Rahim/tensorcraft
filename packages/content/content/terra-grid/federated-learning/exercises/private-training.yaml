@@ -1,0 +1,58 @@
+slug: private-training
+lessonSlug: privacy-preservation
+title: "Apply Differential Privacy"
+instructions: "Write a function clipAndNoise that takes a gradients array (number[]), a clipNorm (number), and a noiseSigma (number). First clip: compute the L2 norm of gradients. If norm > clipNorm, scale all values by clipNorm/norm. Then add Gaussian noise: for each value, add noiseSigma * (Math.random() - 0.5) * 2. Return the resulting array."
+starterCode: |
+  function clipAndNoise(
+    gradients: number[],
+    clipNorm: number,
+    noiseSigma: number,
+  ): number[] {
+    // Your code here
+    return [];
+  }
+solutionCode: |
+  function clipAndNoise(
+    gradients: number[],
+    clipNorm: number,
+    noiseSigma: number,
+  ): number[] {
+    // Compute L2 norm
+    let norm = 0;
+    for (const g of gradients) {
+      norm += g * g;
+    }
+    norm = Math.sqrt(norm);
+
+    // Clip if necessary
+    const clipped = gradients.map(g =>
+      norm > clipNorm ? g * (clipNorm / norm) : g
+    );
+
+    // Add noise
+    return clipped.map(g => g + noiseSigma * (Math.random() - 0.5) * 2);
+  }
+testCode: |
+  describe('clipAndNoise', () => {
+    it('clips gradients when norm exceeds clipNorm', () => {
+      const result = clipAndNoise([3, 4], 1.0, 0);
+      const norm = Math.sqrt(result[0] ** 2 + result[1] ** 2);
+      expect(norm).toBeCloseTo(1.0, 1);
+    });
+    it('does not clip when norm is within bound', () => {
+      const result = clipAndNoise([0.1, 0.1], 1.0, 0);
+      expect(result[0]).toBeCloseTo(0.1, 5);
+      expect(result[1]).toBeCloseTo(0.1, 5);
+    });
+    it('adds noise when sigma > 0', () => {
+      const result = clipAndNoise([1, 1, 1], 10, 0.5);
+      const hasNoise = result.some((v, i) => Math.abs(v - 1) > 0.001);
+      expect(hasNoise).toBe(true);
+    });
+    it('returns same length array', () => {
+      const result = clipAndNoise([1, 2, 3, 4], 1.0, 0.1);
+      expect(result.length).toBe(4);
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate

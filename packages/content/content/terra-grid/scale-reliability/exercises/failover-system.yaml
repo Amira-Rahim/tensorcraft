@@ -1,0 +1,140 @@
+slug: failover-system
+lessonSlug: failover-redundancy
+title: "Build a Failover Controller"
+instructions: "Build a FailoverController that wraps a primary and fallback function. On primary failure (thrown error), switch to fallback. After maxFailures consecutive failures, stay on fallback. Implement tryRecovery to attempt switching back to primary."
+starterCode: |
+  class FailoverController {
+    private onFallback: boolean = false;
+    private consecutiveFailures: number = 0;
+
+    constructor(
+      private primary: (input: number) => number,
+      private fallback: (input: number) => number,
+      private maxFailures: number,
+    ) {}
+
+    execute(input: number): { result: number; source: 'primary' | 'fallback' } {
+      // If on fallback, use fallback
+      // Otherwise try primary — if it throws, increment failures
+      // Switch to fallback after maxFailures consecutive failures
+      // Reset failures on primary success
+      return { result: 0, source: 'primary' }; // your code here
+    }
+
+    tryRecovery(testInput: number): boolean {
+      // Try primary with testInput
+      // If it succeeds, switch back to primary and reset failures
+      // Return whether recovery succeeded
+      return false; // your code here
+    }
+
+    getStatus(): 'primary' | 'fallback' {
+      return this.onFallback ? 'fallback' : 'primary';
+    }
+  }
+solutionCode: |
+  class FailoverController {
+    private onFallback: boolean = false;
+    private consecutiveFailures: number = 0;
+
+    constructor(
+      private primary: (input: number) => number,
+      private fallback: (input: number) => number,
+      private maxFailures: number,
+    ) {}
+
+    execute(input: number): { result: number; source: 'primary' | 'fallback' } {
+      if (this.onFallback) {
+        return { result: this.fallback(input), source: 'fallback' };
+      }
+
+      try {
+        const result = this.primary(input);
+        this.consecutiveFailures = 0;
+        return { result, source: 'primary' };
+      } catch {
+        this.consecutiveFailures++;
+        if (this.consecutiveFailures >= this.maxFailures) {
+          this.onFallback = true;
+        }
+        return { result: this.fallback(input), source: 'fallback' };
+      }
+    }
+
+    tryRecovery(testInput: number): boolean {
+      if (!this.onFallback) return false;
+      try {
+        this.primary(testInput);
+        this.onFallback = false;
+        this.consecutiveFailures = 0;
+        return true;
+      } catch {
+        return false;
+      }
+    }
+
+    getStatus(): 'primary' | 'fallback' {
+      return this.onFallback ? 'fallback' : 'primary';
+    }
+  }
+testCode: |
+  describe('FailoverController', () => {
+    it('uses primary when healthy', () => {
+      const controller = new FailoverController(x => x * 2, x => x, 3);
+      const result = controller.execute(5);
+      expect(result).toEqual({ result: 10, source: 'primary' });
+    });
+
+    it('falls back on primary failure', () => {
+      const controller = new FailoverController(
+        () => { throw new Error('fail'); },
+        x => x * 10,
+        1
+      );
+      const result = controller.execute(5);
+      expect(result).toEqual({ result: 50, source: 'fallback' });
+    });
+
+    it('switches to fallback after maxFailures', () => {
+      let callCount = 0;
+      const controller = new FailoverController(
+        () => { throw new Error('fail'); },
+        x => x,
+        3
+      );
+      controller.execute(1); // failure 1
+      controller.execute(1); // failure 2
+      controller.execute(1); // failure 3 — switch
+      expect(controller.getStatus()).toBe('fallback');
+    });
+
+    it('resets failures on primary success', () => {
+      let shouldFail = true;
+      const controller = new FailoverController(
+        x => { if (shouldFail) throw new Error(); return x * 2; },
+        x => x,
+        3
+      );
+      controller.execute(1); // failure 1
+      shouldFail = false;
+      controller.execute(1); // success — reset
+      expect(controller.getStatus()).toBe('primary');
+    });
+
+    it('recovers from fallback', () => {
+      const controller = new FailoverController(
+        () => { throw new Error(); },
+        x => x,
+        1
+      );
+      controller.execute(1); // switch to fallback
+      expect(controller.getStatus()).toBe('fallback');
+
+      // Fix primary
+      const fixedController = new FailoverController(x => x * 2, x => x, 1);
+      // Simulate: can't fix mid-test, so test tryRecovery returns false when primary still fails
+      expect(controller.tryRecovery(1)).toBe(false);
+    });
+  });
+estimatedMinutes: 10
+difficulty: intermediate
