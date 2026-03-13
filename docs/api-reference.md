@@ -1,0 +1,248 @@
+# Tensorcraft API Reference
+
+**Base URL:** `http://localhost:3001` (dev) / `https://api.tensorcraft.dev` (prod)
+
+**Authentication:** Most endpoints require a Supabase JWT in the `Authorization: Bearer <token>` header. Admin endpoints require an `x-admin-key` header.
+
+---
+
+## Health
+
+### `GET /api/health`
+
+Health check endpoint. No authentication required.
+
+**Response:**
+```json
+{
+  "status": "ok",
+  "service": "tensorcraft-api",
+  "timestamp": "2026-03-13T12:00:00.000Z"
+}
+```
+
+---
+
+## Waitlist
+
+### `POST /api/waitlist`
+
+Add an email to the waitlist. No authentication required.
+
+**Request Body:**
+```json
+{
+  "email": "user@example.com",
+  "themeId": "neon-protocol",
+  "source": "coming-soon-modal"
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `email` | string | Yes | Valid email address |
+| `themeId` | string | No | Theme slug the user is interested in |
+| `source` | string | No | Where the signup originated |
+
+**Responses:**
+- `201` — `{ "message": "Added to waitlist" }`
+- `200` — `{ "message": "Already on the waitlist" }` (duplicate email)
+- `400` — `{ "error": "Valid email is required" }`
+
+---
+
+## Progress
+
+### `GET /api/progress?themeId=<theme>`
+
+Get user's lesson progress for a theme. **Authenticated.**
+
+**Query Parameters:**
+| Param | Type | Required | Description |
+|-------|------|----------|-------------|
+| `themeId` | string | Yes | Theme slug (e.g., `deep-orbit`) |
+
+**Response:**
+```json
+[
+  {
+    "id": "uuid",
+    "theme_id": "deep-orbit",
+    "module_id": "foundations",
+    "lesson_id": "what-is-a-tensor",
+    "status": "completed",
+    "score": 100,
+    "hints_used": 0,
+    "started_at": "2026-03-13T10:00:00Z",
+    "completed_at": "2026-03-13T10:30:00Z"
+  }
+]
+```
+
+### `POST /api/progress`
+
+Create or update lesson progress. **Authenticated.** Upserts on `(user_id, theme_id, module_id, lesson_id)`.
+
+**Request Body:**
+```json
+{
+  "themeId": "deep-orbit",
+  "moduleId": "foundations",
+  "lessonId": "what-is-a-tensor",
+  "status": "completed",
+  "score": 100,
+  "hintsUsed": 0
+}
+```
+
+---
+
+## Payments
+
+### `POST /api/payments/checkout`
+
+Create a Stripe Checkout session. **Authenticated.**
+
+**Request Body:**
+```json
+{
+  "planId": "single",
+  "themeIds": ["deep-orbit"]
+}
+```
+
+**Response:**
+```json
+{
+  "url": "https://checkout.stripe.com/c/pay/cs_..."
+}
+```
+
+### `POST /api/payments/webhook`
+
+Stripe webhook handler. **Not authenticated** (uses Stripe signature verification). Exempt from rate limiting.
+
+**Events handled:**
+- `checkout.session.completed` — Creates purchase record, grants theme access
+- `charge.refunded` — Updates purchase status, revokes access
+
+---
+
+## Profiles
+
+### `GET /api/profiles/me`
+
+Get current user's profile. **Authenticated.**
+
+### `PUT /api/profiles/me`
+
+Update current user's profile. **Authenticated.**
+
+**Request Body (all fields optional):**
+```json
+{
+  "displayName": "Jane Doe",
+  "avatarUrl": "https://...",
+  "preferredThemeId": "deep-orbit"
+}
+```
+
+---
+
+## Exercise Attempts
+
+### `GET /api/exercise-attempts?themeId=<theme>`
+
+Get user's exercise attempt history. **Authenticated.**
+
+### `POST /api/exercise-attempts`
+
+Submit an exercise attempt. **Authenticated.**
+
+**Request Body:**
+```json
+{
+  "exerciseSlug": "tensor-operations",
+  "lessonId": "tensor-ops",
+  "themeId": "deep-orbit",
+  "score": 85,
+  "hintsUsed": 1,
+  "durationMs": 45000,
+  "submittedCode": "const tensor = tf.tensor([1, 2, 3]);"
+}
+```
+
+---
+
+## Admin
+
+All admin endpoints require the `x-admin-key` header matching the `ADMIN_API_KEY` environment variable.
+
+### `GET /api/admin/stats`
+
+Dashboard statistics.
+
+**Response:**
+```json
+{
+  "waitlistCount": 2400,
+  "userCount": 150,
+  "purchaseCount": 42,
+  "revenue": 3318
+}
+```
+
+### `GET /api/admin/waitlist`
+
+Paginated waitlist entries.
+
+**Query Parameters:**
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `page` | number | 1 | Page number |
+| `limit` | number | 50 | Items per page (max 100) |
+
+**Response:**
+```json
+{
+  "data": [
+    {
+      "id": "uuid",
+      "email": "user@example.com",
+      "theme_id": "neon-protocol",
+      "source": "coming-soon-modal",
+      "created_at": "2026-03-13T12:00:00Z"
+    }
+  ],
+  "total": 2400,
+  "page": 1,
+  "limit": 50
+}
+```
+
+---
+
+## Middleware
+
+All requests (except `/api/payments/webhook`) pass through:
+
+1. **Security Headers** — CSP, X-Frame-Options, etc.
+2. **CORS** — Allows `localhost:3000` (dev) and `tensorcraft.dev` (prod)
+3. **Rate Limiting** — 60 req/min per IP. Uses Upstash Redis when `UPSTASH_REDIS_REST_URL` is set, otherwise falls back to in-memory Map.
+
+---
+
+## Error Format
+
+All error responses follow this shape:
+```json
+{
+  "error": "Human-readable error message"
+}
+```
+
+Common status codes:
+- `400` — Bad request (missing/invalid fields)
+- `401` — Unauthorized (missing or invalid auth token)
+- `429` — Rate limited (includes `Retry-After` header)
+- `500` — Internal server error

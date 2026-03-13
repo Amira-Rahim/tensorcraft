@@ -97,6 +97,15 @@ export default async function ModuleOverviewPage({ params }: Props) {
               <div
                 className="h-1.5 flex-1 max-w-[200px] rounded-full overflow-hidden"
                 style={{ background: "rgba(255,255,255,0.06)" }}
+                role="progressbar"
+                aria-valuenow={
+                  lessons.length > 0
+                    ? Math.round((completedCount / lessons.length) * 100)
+                    : 0
+                }
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-label={`Module progress: ${completedCount} of ${lessons.length} completed`}
               >
                 <div
                   className="h-full rounded-full transition-all"

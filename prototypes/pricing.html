@@ -648,6 +648,7 @@
   </style>
 </head>
 <body>
+  <a href="#main-content" class="skip-link" style="position:absolute;top:-100px;left:16px;padding:8px 16px;background:#080B16;color:#00D4FF;border:1px solid rgba(0,212,255,0.3);border-radius:999px;font-size:13px;z-index:9999;transition:top 0.2s;" onfocus="this.style.top='16px'" onblur="this.style.top='-100px'">Skip to content</a>
 
   <!-- Nav -->
   <nav class="nav">
@@ -659,11 +660,20 @@
       <a href="bridge-explorer.html">Docs</a>
       <a href="dashboard.html">Community</a>
     </div>
-    <a href="auth.html" class="nav__cta">Start now &rarr;</a>
+    <!-- User Menu (authenticated state) -->
+    <div class="nav__user-menu" style="position:relative;">
+      <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="nav__avatar" style="width:36px;height:36px;border-radius:50%;background:rgba(0,212,255,0.12);border:1px solid rgba(0,212,255,0.3);color:#00D4FF;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;">A</button>
+      <div class="hidden" style="position:absolute;right:0;top:calc(100% + 8px);min-width:180px;background:#0F1320;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:6px;z-index:100;">
+        <a href="dashboard.html" style="display:block;padding:10px 14px;border-radius:8px;color:#FFFFFF;font-size:13px;text-decoration:none;transition:background 0.15s;" onmouseover="this.style.background='rgba(255,255,255,0.04)'" onmouseout="this.style.background='transparent'">Dashboard</a>
+        <a href="settings.html" style="display:block;padding:10px 14px;border-radius:8px;color:#FFFFFF;font-size:13px;text-decoration:none;transition:background 0.15s;" onmouseover="this.style.background='rgba(255,255,255,0.04)'" onmouseout="this.style.background='transparent'">Settings</a>
+        <div style="height:1px;background:rgba(255,255,255,0.06);margin:4px 0;"></div>
+        <a href="auth.html" style="display:block;padding:10px 14px;border-radius:8px;color:#8B92A5;font-size:13px;text-decoration:none;transition:background 0.15s;" onmouseover="this.style.background='rgba(255,255,255,0.04)'" onmouseout="this.style.background='transparent'">Sign Out</a>
+      </div>
+    </div>
   </nav>
 
   <!-- Hero -->
-  <section class="hero">
+  <section id="main-content" class="hero">
     <div class="hero__badge animate-in animate-in-1">One Payment &middot; Lifetime Access &middot; No Subscriptions</div>
     <h1 class="hero__title animate-in animate-in-2">Simple, Fair Pricing</h1>
     <p class="hero__subtitle animate-in animate-in-3">
@@ -708,7 +718,8 @@
             <li>Community access</li>
             <li>Lifetime updates</li>
           </ul>
-          <a href="auth.html" class="btn-primary">Get Started &rarr;</a>
+          <a href="auth.html" class="btn-primary">Checkout &mdash; $79 &rarr;</a>
+          <p style="color:#8B92A5;font-size:11px;margin-top:6px;">Secure checkout via Stripe</p>
         </div>
 
         <!-- Two Themes -->
@@ -728,7 +739,8 @@
             <li>Lifetime updates</li>
             <li>Choose any 2 themes</li>
           </ul>
-          <a href="auth.html" class="btn-outline">Get Started &rarr;</a>
+          <a href="auth.html" class="btn-outline">Checkout &mdash; $129 &rarr;</a>
+          <p style="color:#8B92A5;font-size:11px;margin-top:6px;">Secure checkout via Stripe</p>
         </div>
 
         <!-- Three Themes -->
@@ -748,7 +760,8 @@
             <li>Lifetime updates</li>
             <li>Choose any 3 themes</li>
           </ul>
-          <a href="auth.html" class="btn-outline">Get Started &rarr;</a>
+          <a href="auth.html" class="btn-outline">Checkout &mdash; $169 &rarr;</a>
+          <p style="color:#8B92A5;font-size:11px;margin-top:6px;">Secure checkout via Stripe</p>
         </div>
 
       </div>

@@ -146,6 +146,110 @@ export interface Database {
         };
         Relationships: [];
       };
+      streaks: {
+        Row: {
+          id: string;
+          user_id: string;
+          theme_id: string;
+          current_streak: number;
+          longest_streak: number;
+          last_activity_date: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          theme_id: string;
+          current_streak?: number;
+          longest_streak?: number;
+          last_activity_date?: string | null;
+        };
+        Update: {
+          current_streak?: number;
+          longest_streak?: number;
+          last_activity_date?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "streaks_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      achievements: {
+        Row: {
+          id: string;
+          user_id: string;
+          achievement_type: string;
+          theme_id: string | null;
+          metadata: Record<string, unknown> | null;
+          earned_at: string;
+          created_at: string;
+        };
+        Insert: {
+          user_id: string;
+          achievement_type: string;
+          theme_id?: string | null;
+          metadata?: Record<string, unknown> | null;
+          earned_at?: string;
+        };
+        Update: {
+          metadata?: Record<string, unknown> | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "achievements_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      exercise_attempts: {
+        Row: {
+          id: string;
+          user_id: string;
+          exercise_slug: string;
+          lesson_id: string;
+          theme_id: string;
+          score: number;
+          hints_used: number;
+          duration_ms: number | null;
+          submitted_code: string;
+          attempted_at: string;
+          created_at: string;
+        };
+        Insert: {
+          user_id: string;
+          exercise_slug: string;
+          lesson_id: string;
+          theme_id: string;
+          score: number;
+          hints_used?: number;
+          duration_ms?: number | null;
+          submitted_code: string;
+        };
+        Update: {
+          score?: number;
+          hints_used?: number;
+          duration_ms?: number | null;
+          submitted_code?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "exercise_attempts_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;

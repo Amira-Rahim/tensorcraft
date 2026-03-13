@@ -93,12 +93,14 @@ export function SettingsForm({
         <div className="space-y-4">
           <div>
             <label
+              htmlFor="settings-display-name"
               className="block text-xs mb-1.5"
               style={{ color: "var(--tc-muted, #8B92A5)" }}
             >
               Display Name
             </label>
             <input
+              id="settings-display-name"
               type="text"
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
@@ -112,12 +114,14 @@ export function SettingsForm({
 
           <div>
             <label
+              htmlFor="settings-email"
               className="block text-xs mb-1.5"
               style={{ color: "var(--tc-muted, #8B92A5)" }}
             >
               Email
             </label>
             <input
+              id="settings-email"
               type="email"
               value={email}
               readOnly
@@ -132,12 +136,14 @@ export function SettingsForm({
 
           <div>
             <label
+              htmlFor="settings-avatar-url"
               className="block text-xs mb-1.5"
               style={{ color: "var(--tc-muted, #8B92A5)" }}
             >
               Avatar URL
             </label>
             <input
+              id="settings-avatar-url"
               type="url"
               value={avatarUrl}
               onChange={(e) => setAvatarUrl(e.target.value)}

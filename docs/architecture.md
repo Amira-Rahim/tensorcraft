@@ -82,6 +82,9 @@ Each theme (`packages/themes/src/<theme>.ts`) exports a `ThemeManifest` with:
 - **`theme_progress`** — Per-lesson tracking. Fields: theme_id, module_id, lesson_id, status (not_started/in_progress/completed), score, hints_used, timestamps. Unique constraint on (user_id, theme_id, module_id, lesson_id).
 - **`purchases`** — Payment records from Stripe webhooks. Fields: plan_id, theme_ids (text[]), amount, currency, stripe_session_id, status.
 - **`waitlist`** — Email capture for coming-soon themes. Public insert policy.
+- **`streaks`** — Per-theme streak tracking. Fields: user_id, theme_id, current_streak, longest_streak, last_activity_date, timestamps.
+- **`achievements`** — User achievements. Fields: user_id, achievement_type, theme_id, metadata (JSONB), earned_at, timestamps.
+- **`exercise_attempts`** — Exercise submission history. Fields: user_id, exercise_slug, lesson_id, theme_id, score, hints_used, duration_ms, submitted_code, attempted_at, timestamps.
 
 ### Row-Level Security
 
@@ -90,6 +93,9 @@ All tables have RLS enabled:
 - `theme_progress`: Users can only CRUD their own progress
 - `purchases`: Users can read their own; inserts are server-only (via service role)
 - `waitlist`: Anyone can insert (public); only service role can read
+- `streaks`: Users can only CRUD their own streaks
+- `achievements`: Users can only read their own; inserts are server-only
+- `exercise_attempts`: Users can only CRUD their own attempts
 
 ### Auto-created Resources
 
@@ -107,12 +113,19 @@ Separate backend service running on port 3001. Communicates with Supabase using 
 - `GET /api/progress?themeId=` — Get user's progress for a theme (authenticated)
 - `POST /api/progress` — Create or update lesson progress (authenticated, upserts on user_id+theme_id+lesson_id)
 - `POST /api/payments/webhook` — Stripe webhook handler (checkout.session.completed, charge.refunded)
+- `POST /api/payments/checkout` — Create Stripe checkout session (authenticated)
+- `GET /api/admin/stats` — Dashboard stats: waitlist count, user count, purchases, revenue (admin key required)
+- `GET /api/admin/waitlist` — Paginated waitlist entries (admin key required)
+- `GET /api/exercise-attempts` — Get user's exercise attempts (authenticated)
+- `POST /api/exercise-attempts` — Submit exercise attempt (authenticated)
+- `GET /api/profiles/me` — Get current user profile (authenticated)
+- `PUT /api/profiles/me` — Update current user profile (authenticated)
 
 ### Middleware
 
 - **CORS**: Allows `localhost:3000` (dev) and `tensorcraft.dev` (prod)
 - **Auth**: Validates Supabase JWT from Authorization header, sets `userId` and `accessToken` on context
-- **Rate Limiting**: In-memory, 60 req/min per IP (replace with Redis for production)
+- **Rate Limiting**: Upstash Redis adapter (distributed, production-ready) with in-memory fallback when UPSTASH_REDIS_REST_URL not set. 60 req/min per IP. Stripe webhook route exempt.
 
 ## Next.js Frontend (`apps/web`)
 
@@ -121,6 +134,19 @@ Separate backend service running on port 3001. Communicates with Supabase using 
 - **Turbopack** for development (via `next dev --turbopack`)
 - **Transpile** all workspace packages via `next.config.ts`
 - **PostCSS** with `@tailwindcss/postcss` for Tailwind 4
+
+### User Menu Component (`app/components/user-menu.tsx`)
+
+- Auth state detection via Supabase `onAuthStateChange`
+- Avatar initial button with dropdown (Dashboard, Settings, Sign Out)
+- Falls back to "Start now" link for unauthenticated users
+- Click-outside handler to close dropdown
+
+### Checkout Flow (`app/pricing/checkout-button.tsx`)
+
+- Client component that calls `/api/payments/checkout` with auth token
+- Redirects to Stripe checkout URL
+- Redirects unauthenticated users to sign-in page
 
 ### Landing Page (`app/page.tsx`)
 
@@ -139,6 +165,22 @@ Client component with Framer Motion animations:
 - `letterAnimation` for character-by-character text
 - `whileInView` for scroll-triggered entries
 - `whileHover` for interactive hover states
+
+### Accessibility (WCAG 2.1 AA)
+
+- Skip-to-content link on all pages
+- Form labels (visible or `sr-only`) on all inputs
+- `aria-pressed` on filter toggle buttons
+- `aria-label` on OAuth buttons and SVG icons
+- Focus trap and focus restore on modals
+- `role="progressbar"` with `aria-valuenow/min/max` on progress bars
+- Color-only indicators supplemented with text labels
+
+### Error Tracking (`apps/api/src/lib/error-tracking.ts`)
+
+- Structured JSON error logging (Sentry-compatible API shape)
+- `captureException(error, context)` and `captureMessage(message, context)` functions
+- Ready for Sentry SDK drop-in replacement
 
 ## Testing Infrastructure
 
@@ -201,6 +243,7 @@ Velite compiles MDX to function body strings. The `LessonContent` client compone
 - **E2E tests** (4 spec files): Landing page, auth pages, legal pages, learning routes (themes/modules/lessons)
 - **Accessibility tests**: axe-core on components (unit) + full page audits (e2e)
 - **Content contract tests**: Validate content fixtures against Zod schemas
+- **Content completeness tests**: Validates every module has 5 lessons, every exercise references a valid lesson
 - **Cross-reference tests**: Referential integrity across lessons/modules/exercises
 - **Snapshot tests**: Catch unintended markup regressions in components/pages
 - **Link validation**: ROUTES constants map to actual `page.tsx` files
@@ -241,6 +284,8 @@ pnpm lint
 # Clean build artifacts
 pnpm clean
 ```
+
+Pre-commit hooks run `prettier --write` and `eslint --fix` on staged `.ts/.tsx/.mts` files.
 
 Turborepo handles dependency ordering: `packages/*` build first, then `apps/*` consume them.
 

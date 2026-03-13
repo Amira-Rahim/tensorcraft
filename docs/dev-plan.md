@@ -63,6 +63,7 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] TypeScript 5.x strict mode — no `any` in production code
 - [x] ESLint + Prettier configuration (shared config package)
 - [x] Pre-commit hooks: husky + lint-staged (lint, typecheck, format)
+- [x] ESLint added to lint-staged pre-commit hooks
 - [x] Configure Tailwind CSS 4 with `@theme` directive + CSS custom properties for theming
 - [x] Font delivery: Inter + JetBrains Mono via `next/font/google`
   - `font-display: swap` to prevent FOIT
@@ -72,6 +73,8 @@ All blocking decisions have been resolved. This table documents the final choice
 
 - [x] Set up Hono API service (`apps/api`)
 - [x] Configure middleware (CORS, auth validation, rate limiting)
+- [x] Admin API endpoints: `GET /api/admin/stats`, `GET /api/admin/waitlist` with API key auth
+- [x] `.env.example` for API service documenting all required env vars
 
 ### 1c. Database Setup (COMPLETE)
 
@@ -90,7 +93,7 @@ All blocking decisions have been resolved. This table documents the final choice
 ### 1d. Security Foundations (COMPLETE)
 
 - [x] CORS configuration for API endpoints
-- [x] Rate limiting on API routes (in-memory, 60 req/min per IP)
+- [x] Rate limiting on API routes — Upstash Redis adapter with in-memory fallback, 60 req/min per IP. Stripe webhook exempt.
 
 ---
 
@@ -112,6 +115,7 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] OAuth callback route (`/auth/callback`) — code exchange + redirect
 - [x] Sign-out route (`/auth/sign-out`) — session destruction + redirect
 - [x] OAuth error handling (error param on callback, UI error display)
+- [x] User menu component with auth state detection, avatar dropdown, sign-out (`apps/web/app/components/user-menu.tsx`)
 
 ### 2b. Onboarding Flow (COMPLETE)
 
@@ -260,6 +264,7 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] Validate `session.metadata` fields (null checks, required fields)
 - [x] Webhook idempotency — store processed event IDs to prevent replay
 - [x] Exempt webhook route from rate limiter (Stripe retries should not be blocked)
+- [x] Checkout button client component (`apps/web/app/pricing/checkout-button.tsx`) — initiates Stripe session and redirects
 - [ ] Webhook retry logic / dead-letter queue for failed deliveries
 - [x] `GET /api/purchases/:userId` endpoint — verify user has purchased a theme
 - [x] Payment failure error modal on pricing page (PRD 4.6)
@@ -319,6 +324,7 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] Score range validation (clamp 0-100, validate as finite number)
 - [x] Fix `started_at` overwrite bug — only set on INSERT, not UPDATE
 - [x] Add `CHECK (hints_used >= 0)` and `CHECK (attempts >= 0)` constraints
+- [x] Inline style memoization in lesson-progress.tsx
 - [ ] Fix upsert race condition — use `ON CONFLICT` with proper resolution
 
 ### 5b. Dashboard
@@ -367,6 +373,7 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] `GET /api/exercise-attempts?lessonId=...` endpoint — get user's exercise history
 - [ ] Add `VARCHAR(n)` constraints or API-level length checks on text fields
 - [x] Add `CHECK (amount > 0)` constraint on purchases
+- [x] Supabase types updated for streaks, achievements, exercise_attempts tables
 - [x] Write migration file for all schema changes
 
 ### 5e. Theme Selection
@@ -404,6 +411,12 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] `@media (prefers-reduced-motion: reduce)` — disable/simplify all animations globally
 - [ ] Screen reader testing (VoiceOver on macOS, NVDA on Windows)
 - [x] Automated accessibility testing: vitest-axe (unit — 8 components), @axe-core/playwright (E2E — 9 routes)
+- [x] Form labels (`sr-only` or visible) on all form inputs (auth-form, settings-form, bridge-explorer, coming-soon-modal)
+- [x] Skip-to-content link as first child of body in root layout
+- [x] `aria-label` on OAuth buttons, `aria-hidden` on decorative SVGs
+- [x] `aria-pressed` on filter toggle buttons (bridge explorer tier/category pills)
+- [x] Focus trap and focus restore on coming-soon modal
+- [x] `role="progressbar"` with `aria-valuenow/min/max` on module progress bars
 - [ ] Color contrast audit (4.5:1 minimum for text, 3:1 for UI components)
 - [ ] Image alt-text on all images
 
@@ -459,6 +472,7 @@ All blocking decisions have been resolved. This table documents the final choice
 ### 6f. CI/CD Pipeline
 
 - [x] GitHub Actions: lint, typecheck, test on every PR
+- [x] E2E tests (Playwright) added to CI workflow
 - [ ] Vercel deployment configuration (preview + production)
 - [ ] Branch protection rules (require PR reviews, passing CI)
 - [ ] Broken link checking in CI
@@ -466,6 +480,7 @@ All blocking decisions have been resolved. This table documents the final choice
 
 ### 6g. Monitoring & Error Tracking
 
+- [x] Error tracking utility stub (structured JSON logging, Sentry-compatible API)
 - [ ] Sentry integration for error tracking (separate projects for web + API)
 - [ ] Vercel Analytics for Core Web Vitals
 - [ ] PostHog setup (EU instance) for product analytics
@@ -649,6 +664,7 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] Content contract tests — validate sample fixtures against schemas — `contract.test.ts` (16 tests)
 - [x] Cross-reference integrity — exercise.lessonSlug → lesson, lesson.moduleId → module, no duplicate slugs, sequential order — `cross-reference.test.ts` (8 tests)
 - [x] Build-time content validation — Velite strict mode fails build on invalid frontmatter
+- [x] Content completeness CI test (`packages/content/src/completeness.test.ts`)
 
 ### 8f. Snapshot Tests (COMPLETE)
 

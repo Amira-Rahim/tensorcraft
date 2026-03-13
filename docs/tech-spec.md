@@ -38,9 +38,14 @@
 | Payments | Stripe Checkout + Webhooks | Subscription billing, one-time purchases, webhook-driven fulfillment |
 | Hosting | Vercel (web) + Fly.io / Railway (api) | Edge-optimized frontend delivery; independently deployed backend |
 | Monorepo | Turborepo + pnpm workspaces | Parallel builds, dependency caching, shared package management |
-| CI/CD | GitHub Actions | Automated testing, linting, preview deployments, content validation |
+| CI/CD | GitHub Actions | Automated testing, linting, preview deployments, content validation. Playwright E2E tests run after unit tests. ESLint added to lint-staged pre-commit hooks alongside Prettier. |
 
 > **Note:** The current implementation uses Hono as a separate backend service (`apps/api` on port 3001) rather than Next.js API routes, enabling independent deployment and scaling. The Hono backend handles auth callbacks, progress CRUD, and payment webhooks. This architectural decision allows the frontend and backend to be deployed, versioned, and scaled independently --- the Next.js app on Vercel's edge network and the Hono API on a long-running process host such as Fly.io or Railway.
+>
+> **Admin API Endpoints:**
+>
+> - `GET /api/admin/stats` --- Dashboard stats (waitlist, users, purchases, revenue). Requires `x-admin-key` header.
+> - `GET /api/admin/waitlist` --- Paginated waitlist entries. Requires `x-admin-key` header. Query params: `page`, `limit`.
 >
 > **Note:** Tailwind CSS 4 (not Tailwind + CSS Modules) is used with the `@theme` directive for CSS-native theming. Theme tokens are defined in CSS custom properties and consumed via `@theme` blocks, eliminating the need for JavaScript-based theme switching or CSS Modules. Each theme package exports a CSS file with its `@theme` overrides.
 
@@ -57,6 +62,22 @@
 | `packages/content` | Content source files | MDX lessons, exercise definitions, frontmatter schemas, validation scripts |
 | `packages/analytics` | Analytics abstraction | Event definitions, PostHog client wrapper, type-safe tracking functions |
 | `packages/github` | GitHub integration module | GitHub App client, GraphQL mutations, commit builders, repo scaffolding |
+
+### 1.3 Environment Variables
+
+Required env vars for the API service (`apps/api`):
+
+| Variable | Description | Required |
+| --- | --- | --- |
+| `SUPABASE_URL` | Supabase project URL | Yes |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key (server-side only) | Yes |
+| `STRIPE_SECRET_KEY` | Stripe secret key | Yes |
+| `STRIPE_WEBHOOK_SECRET` | Stripe webhook signing secret | Yes |
+| `PORT` | API server port (default: 3001) | Yes |
+| `CORS_ORIGINS` | Comma-separated allowed origins | Yes |
+| `UPSTASH_REDIS_REST_URL` | Upstash Redis REST API URL (for distributed rate limiting) | No |
+| `UPSTASH_REDIS_REST_TOKEN` | Upstash Redis REST API token | No |
+| `ADMIN_API_KEY` | Admin API key for admin endpoints | Yes |
 
 ---
 
@@ -216,6 +237,47 @@ Tables use Supabase Auth for user management. Row-Level Security (RLS) enforced 
 | created_at | timestamptz | Default: `now()` |
 
 **Unique constraint:** `(email, theme_id)`
+
+#### `streaks`
+
+| Column | Type | Notes |
+| --- | --- | --- |
+| id | uuid (PK) | |
+| user_id | uuid (FK) | References `profiles.id` |
+| theme_id | text | Theme slug |
+| current_streak | integer | Default: 0 |
+| longest_streak | integer | Default: 0 |
+| last_activity_date | date | Nullable |
+| created_at | timestamptz | Default: `now()` |
+| updated_at | timestamptz | Default: `now()` |
+
+#### `achievements`
+
+| Column | Type | Notes |
+| --- | --- | --- |
+| id | uuid (PK) | |
+| user_id | uuid (FK) | References `profiles.id` |
+| achievement_type | text | e.g., "first_lesson", "streak_7" |
+| theme_id | text | Nullable |
+| metadata | jsonb | Nullable |
+| earned_at | timestamptz | Default: `now()` |
+| created_at | timestamptz | Default: `now()` |
+
+#### `exercise_attempts`
+
+| Column | Type | Notes |
+| --- | --- | --- |
+| id | uuid (PK) | |
+| user_id | uuid (FK) | References `profiles.id` |
+| exercise_slug | text | |
+| lesson_id | text | |
+| theme_id | text | |
+| score | integer | 0-100 |
+| hints_used | integer | Default: 0 |
+| duration_ms | integer | Nullable |
+| submitted_code | text | |
+| attempted_at | timestamptz | Default: `now()` |
+| created_at | timestamptz | Default: `now()` |
 
 ---
 

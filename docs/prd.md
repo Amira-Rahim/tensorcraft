@@ -1,7 +1,7 @@
 # TensorCraft PRD v3.2
 
-> **Product Requirements Document — Version 3.3**
-> Last updated: 2026-03-13 (tech stack, packages, content pipeline, auth provider, module map updated to match implementation)
+> **Product Requirements Document — Version 3.4**
+> Last updated: 2026-03-13 (audit fixes: accessibility hardening, user menu, checkout button, admin API + rate limiting + error tracking, new DB tables, CI/CD pipeline additions)
 
 ---
 
@@ -201,6 +201,7 @@ Screens for user signup/login and the post-signup orientation flow.
 | 6 | Paywall / upgrade modal | P0 | Modal shown when a free-tier user attempts to access Module 2+. Displays feature comparison, price, and upgrade CTA. Dismissible — user returns to accessible content. |
 | 7 | Bridge Explorer (V1.0) | P2 | Standalone browsable directory of all 50+ FE-to-ML bridges. Search by FE or ML concept. Filterable by theme and category. Links back to relevant lessons. Planned for V1.0 release. |
 | 8 | Capstone completion screen | P1 | Celebratory screen shown after completing all 11 modules of a theme. Displays: completion stats (modules, lessons, bridges mastered, time invested), simplified journey map showing all modules complete, narrative conclusion with character appearances, "Download Certificate" and "Share Progress" CTAs, "Push to GitHub" link, and "What's Next" suggestions (explore another theme, browse bridges, view dashboard). |
+| 9 | User menu component | P0 | Authenticated header dropdown with auth-state detection. Shows avatar (Supabase user metadata or fallback initials), display name, and a dropdown menu with links to Dashboard, Settings, and Sign Out. Unauthenticated state shows "Sign In" button. Sign-out calls Supabase `signOut()` and redirects to landing page. |
 
 ### 4.5 GitHub Integration
 
@@ -226,6 +227,7 @@ Monetization layer supporting free and paid tiers.
 | 5 | Webhook handling | P0 | Listen for Stripe webhooks (`checkout.session.completed`, `charge.refunded`, `charge.failed`) to update user entitlements in real time |
 | 6 | Post-purchase confirmation | P0 | Screen shown after successful payment. Displays: green checkmark animation, "You're In" heading, order summary (theme name, price, "one-time purchase"), list of all 11 newly-unlocked modules, "Continue Learning" and "Connect GitHub" CTAs, Discord community invite, and receipt confirmation note. |
 | 7 | Payment failure handling | P1 | When a payment fails (charge.failed webhook), display an error modal on the pricing page with: error description, "Try Again" button, alternative payment method suggestion, and "Contact Support" link. Do not redirect away from the pricing page. |
+| 8 | Checkout button client component | P0 | Client component (`"use client"`) that initiates a Stripe Checkout session via the Hono API (`POST /api/checkout`), passing `themeId`, `tier`, and `userId`. On success, redirects the browser to the Stripe-hosted checkout URL. Displays loading spinner during session creation. Handles errors with inline toast notification. |
 
 ### 4.7 Analytics
 
@@ -284,7 +286,7 @@ Track learning behavior, engagement, and conversion events.
 | Code editor / exercises | Sandpack (@codesandbox/sandpack-react) | Browser-based sandbox for interactive exercises with Jest-style test runner |
 | Syntax highlighting | Shiki 4.x | Lazy-loaded, cached singleton; `github-dark-default` theme; supports TS/JS/Python/JSON/Bash/YAML/MDX |
 | API layer | Hono (separate service, port 3001) | REST API on `@hono/node-server`; independent deployment and scaling from Next.js frontend |
-| Database | Supabase (PostgreSQL) | Serverless-friendly; row-level security for multi-tenant data |
+| Database | Supabase (PostgreSQL) | Serverless-friendly; row-level security for multi-tenant data. Additional tables: `streaks` (per-theme streak tracking with `current_streak`, `longest_streak`, `last_activity_date`), `achievements` (user achievement badges with `badge_type`, `earned_at`, `theme_id`), `exercise_attempts` (exercise submission history with `user_id`, `exercise_slug`, `submitted_code`, `passed`, `score`, `attempted_at`) |
 | Auth | Supabase Auth via `@supabase/ssr` | Providers: GitHub OAuth (PKCE), Google OAuth, email magic link. Cookie-based session management via Next.js middleware. |
 | Content pipeline | MDX 3 + Velite (Zod schemas) | Build-time validation; missing/invalid fields = build error. 3 collections: lessons, exercises, modules. |
 | Hosting | Vercel (frontend) + Fly.io/Railway (API, planned) | Edge functions for PPP lookup; ISR for lesson content pages |
@@ -295,7 +297,7 @@ Track learning behavior, engagement, and conversion events.
 | Package | Path | Description |
 |---|---|---|
 | `@tensorcraft/web` | `apps/web` | Next.js 15 application — all user-facing pages, server/client components, and Next.js API routes (OG image generation) |
-| `@tensorcraft/api` | `apps/api` | Hono REST API service — health, waitlist, progress, payments (Stripe), profiles, and exercise-attempts endpoints |
+| `@tensorcraft/api` | `apps/api` | Hono REST API service — health, waitlist, progress, payments (Stripe), profiles, and exercise-attempts endpoints. Includes admin API endpoints (`GET /api/admin/stats`, `GET /api/admin/waitlist`) protected by API key authentication (`X-API-Key` header). All endpoints are rate-limited via Upstash Redis (`@upstash/ratelimit`) with automatic in-memory fallback when Redis is unavailable. Structured JSON error logging via error-tracking utility (Sentry-compatible `captureException` interface). |
 | `@tensorcraft/ui` | `packages/ui` | Shared React component library for MDX content rendering: CodeBlock (Shiki), Exercise (Sandpack), Dialogue, BridgeCallout, HintPanel, Quiz, LearningObjectives, KeyTakeaways |
 | `@tensorcraft/content` | `packages/content` | MDX lesson files, exercise YAML files, module metadata, Velite config, Zod schemas, and content query API |
 | `@tensorcraft/supabase` | `packages/supabase` | Supabase client/server instances, database type definitions, migrations (6 files), seed scripts, and admin operations |
@@ -397,7 +399,7 @@ Each theme has a distinct color palette. Colors are defined as CSS custom proper
 | Week 1–2 | Module 1 authoring | 5 lessons: Tensors, Shapes, Operations, Data Loading, Normalization |
 | Week 3–4 | Module 2 authoring | 5 lessons: Layers, Activations, Forward Pass, Loss Functions, Gradient Descent |
 | Week 5–6 | Module 3 authoring | 5 lessons: CNN Basics, Kernels, Pooling, Feature Maps, Image Classification Capstone |
-| Week 7 | Integration testing | Full walkthrough of 15 lessons; fix content bugs; accessibility audit |
+| Week 7 | Integration testing | Full walkthrough of 15 lessons; fix content bugs; accessibility audit. **CI pipeline includes:** Playwright E2E tests (auth flows, lesson navigation, checkout) run on every PR; content completeness validation tests (verify all modules have 5 lessons, required frontmatter fields present, exercise files exist); ESLint enforced via pre-commit hooks (Husky + lint-staged). |
 | Week 8 | Beta launch | Deploy to `beta.tensorcraft.dev`; invite 500 waitlist users |
 
 ---
@@ -488,7 +490,7 @@ Automatic regional discounts of 20–70% applied via ParityDeals based on IP geo
 | 5 | Stripe regional compliance | Medium | Medium | Tax calculation, invoicing requirements, and payment method support vary by country | Use Stripe Tax for automated tax calculation; enable local payment methods (iDEAL, Boleto) via Stripe; consult legal counsel for EU/India/Brazil compliance |
 | 6 | GitHub OAuth scope changes | Low | Low | GitHub may deprecate or modify OAuth scopes, breaking integration | Abstract GitHub API behind an adapter layer; monitor GitHub changelog; implement graceful degradation if repo access is revoked |
 | 7 | Curriculum staleness | Medium | Medium | ML ecosystem evolves rapidly; lessons may reference outdated APIs or deprecated model architectures | Schedule quarterly content reviews; version lessons with "last updated" date; community contribution pipeline for corrections |
-| 8 | Accessibility compliance | Medium | Medium | Complex interactive components (editor, progress diagram, canvas) may not meet WCAG 2.2 AA | Conduct accessibility audit before each release; use `aria-live` regions for dynamic content; provide text-only alternatives for visual components |
+| 8 | Accessibility compliance | Medium | Medium | Complex interactive components (editor, progress diagram, canvas) may not meet WCAG 2.2 AA | Conduct accessibility audit before each release; use `aria-live` regions for dynamic content; provide text-only alternatives for visual components. **Audit fixes completed:** skip-to-content link on all pages; `sr-only` or visible labels on all form inputs; `aria-pressed` on filter toggle buttons; `aria-label` on OAuth buttons and SVG icons; focus trap and focus restore on modals; `role="progressbar"` with `aria-valuenow`/`aria-valuemin`/`aria-valuemax` on progress bars; color-only indicators supplemented with text labels. |
 | 9 | Competitor response | Medium | High | Established platforms (freeCodeCamp, Codecademy, Scrimba) launch similar FE-to-ML courses | Differentiate on bridge pedagogy and themed worlds; build community moat; move fast on content — first-mover advantage in this niche is significant |
 
 ---

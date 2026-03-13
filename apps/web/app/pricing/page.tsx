@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { PRICING, THEME_CONTENT } from "@tensorcraft/shared";
 import type { Metadata } from "next";
 import { PaymentError } from "./payment-error";
+import { CheckoutButton } from "./checkout-button";
 
 export const metadata: Metadata = {
   title: "Pricing | Tensorcraft",
@@ -211,25 +212,26 @@ export default function PricingPage() {
                   ))}
                 </ul>
 
-                <Link
-                  href={tier.href}
-                  className="flex items-center justify-center w-full h-[52px] rounded-full text-[15px] font-medium transition-all"
-                  style={
-                    tier.recommended
-                      ? {
-                          border: "1px solid rgba(0,212,255,0.3)",
-                          background: "rgba(0,212,255,0.08)",
-                          color: "#FFFFFF",
-                        }
-                      : {
-                          border: "1px solid rgba(255,255,255,0.12)",
-                          background: "transparent",
-                          color: "#FFFFFF",
-                        }
-                  }
-                >
-                  {tier.cta} &rarr;
-                </Link>
+                {tier.id === "free" ? (
+                  <Link
+                    href={tier.href}
+                    className="flex items-center justify-center w-full h-[52px] rounded-full text-[15px] font-medium transition-all"
+                    style={{
+                      border: "1px solid rgba(255,255,255,0.12)",
+                      background: "transparent",
+                      color: "#FFFFFF",
+                    }}
+                  >
+                    {tier.cta} &rarr;
+                  </Link>
+                ) : (
+                  <CheckoutButton
+                    planId={tier.id}
+                    recommended={tier.recommended}
+                  >
+                    {tier.cta} &rarr;
+                  </CheckoutButton>
+                )}
               </div>
             );
           })}

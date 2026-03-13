@@ -39,7 +39,11 @@ export function BridgeExplorer() {
       {/* Controls */}
       <div className="flex flex-col sm:flex-row gap-4 mb-10">
         {/* Search */}
+        <label htmlFor="bridge-search" className="sr-only">
+          Search bridges
+        </label>
         <input
+          id="bridge-search"
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -68,13 +72,18 @@ export function BridgeExplorer() {
       </div>
 
       {/* Category tabs */}
-      <div className="flex flex-wrap gap-2 mb-8">
+      <div
+        className="flex flex-wrap gap-2 mb-8"
+        role="group"
+        aria-label="Filter by category"
+      >
         {(
           ["all", ...Object.keys(BRIDGE_CATEGORY_LABELS)] as CategoryFilter[]
         ).map((cat) => (
           <button
             key={cat}
             onClick={() => setCategoryFilter(cat)}
+            aria-pressed={categoryFilter === cat}
             className={`px-4 py-1.5 text-xs font-medium rounded-full border transition-colors ${
               categoryFilter === cat
                 ? "border-accent/40 text-accent bg-accent/10"
@@ -200,6 +209,7 @@ function TierPill({
   return (
     <button
       onClick={onClick}
+      aria-pressed={active}
       className="px-3 py-1.5 text-xs font-medium rounded-full border transition-colors"
       style={{
         borderColor: active ? `${color}60` : "rgba(255,255,255,0.06)",

@@ -29,23 +29,62 @@ export function ComingSoonModal({
     "idle",
   );
 
+  const previousFocusRef = useCallback(() => {
+    return document.activeElement as HTMLElement | null;
+  }, []);
+
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {
+        onClose();
+        return;
+      }
+
+      // Focus trap
+      if (e.key === "Tab") {
+        const modal = document.querySelector('[role="dialog"]');
+        if (!modal) return;
+        const focusable = modal.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+        );
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     },
     [onClose],
   );
 
   useEffect(() => {
     if (open) {
+      const prevFocus = previousFocusRef();
       document.addEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "hidden";
+
+      // Auto-focus close button
+      const closeBtn = document.querySelector<HTMLElement>(
+        '[role="dialog"] [aria-label="Close"]',
+      );
+      closeBtn?.focus();
+
+      return () => {
+        document.removeEventListener("keydown", handleKeyDown);
+        document.body.style.overflow = "";
+        prevFocus?.focus();
+      };
     }
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "";
     };
-  }, [open, handleKeyDown]);
+  }, [open, handleKeyDown, previousFocusRef]);
 
   if (!open) return null;
 
@@ -145,7 +184,11 @@ export function ComingSoonModal({
               Get notified when this theme launches:
             </p>
             <div className="flex gap-2">
+              <label htmlFor="waitlist-email" className="sr-only">
+                Email address
+              </label>
               <input
+                id="waitlist-email"
                 type="email"
                 required
                 placeholder="your@email.com"

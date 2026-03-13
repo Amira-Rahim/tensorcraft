@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import {
   markLessonStarted,
   markLessonCompleted,
@@ -64,14 +64,27 @@ export function LessonProgressTracker({
   // Don't render anything if no auth (guest user)
   if (status === null) return null;
 
+  const completedStyle = useMemo(
+    () => ({
+      background: "rgba(74, 222, 128, 0.08)",
+      border: "1px solid rgba(74, 222, 128, 0.2)",
+    }),
+    [],
+  );
+
+  const buttonStyle = useMemo(
+    () => ({
+      background: completing ? "rgba(255,255,255,0.06)" : accentColor,
+      color: completing ? "rgba(255,255,255,0.4)" : "#080B16",
+    }),
+    [completing, accentColor],
+  );
+
   if (status === "completed") {
     return (
       <div
         className="flex items-center gap-2 px-4 py-3 rounded-xl my-6"
-        style={{
-          background: "rgba(74, 222, 128, 0.08)",
-          border: "1px solid rgba(74, 222, 128, 0.2)",
-        }}
+        style={completedStyle}
       >
         <span className="text-sm">✓</span>
         <span className="text-sm font-medium" style={{ color: "#4ADE80" }}>
@@ -88,10 +101,7 @@ export function LessonProgressTracker({
         onClick={handleComplete}
         disabled={completing}
         className="w-full py-3 rounded-full text-sm font-semibold uppercase tracking-wider transition-all"
-        style={{
-          background: completing ? "rgba(255,255,255,0.06)" : accentColor,
-          color: completing ? "rgba(255,255,255,0.4)" : "#080B16",
-        }}
+        style={buttonStyle}
       >
         {completing ? "Saving..." : "Mark as Complete"}
       </button>

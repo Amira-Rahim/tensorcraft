@@ -9,6 +9,7 @@ import { progress } from "./routes/progress";
 import { payments } from "./routes/payments";
 import { profiles } from "./routes/profiles";
 import { exerciseAttempts } from "./routes/exercise-attempts";
+import { admin } from "./routes/admin";
 
 const app = new Hono();
 
@@ -31,6 +32,7 @@ app.route("/api/progress", progress);
 app.route("/api/payments", payments);
 app.route("/api/profiles", profiles);
 app.route("/api/exercise-attempts", exerciseAttempts);
+app.route("/api/admin", admin);
 
 // Root
 app.get("/", (c) => {
