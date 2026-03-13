@@ -7,8 +7,8 @@ order: 3
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Dr. Vasquez points out that real clinical documents don't fit into neat single categories. A single report might involve multiple conditions, procedures, and specialties."
-  speaker: "Dr. Elena Vasquez"
+  narrative: "Dr. Karimi points out that real clinical documents don't fit into neat single categories. A single report might involve multiple conditions, procedures, and specialties."
+  speaker: "Dr. Zahra Karimi"
 concept:
   explanation: "Multi-label classification assigns zero or more labels to each input — like tagging a document with every relevant topic, not just the primary one."
   bridge:
@@ -35,11 +35,11 @@ keywords:
   - binary-crossentropy
 ---
 
-<Dialogue speaker="Dr. Elena Vasquez">
+<Dialogue speaker="Dr. Zahra Karimi">
 Your routing system sends each document to one department. But look at this case: "72-year-old male, chest pain, elevated troponin, history of COPD, renal insufficiency." That needs cardiology, pulmonology, and nephrology. One label isn't enough.
 </Dialogue>
 
-<Dialogue speaker="Khalil Mensah">
+<Dialogue speaker="Khalil Ansari">
 Ah, that's the difference between a radio button and a checkbox group. Radio buttons force one selection. Checkboxes let you pick any combination. We need checkboxes.
 </Dialogue>
 
@@ -167,11 +167,11 @@ function perLabelMetrics(
 // metrics.forEach(m => console.log(\`\${m.label}: F1=\${m.f1.toFixed(3)}\`));`}
 </CodeBlock>
 
-<Dialogue speaker="Obi">
+<Dialogue speaker="Vikram">
 So every document is like a patient — it can have multiple conditions at once. And we need to catch all of them, not just the primary diagnosis.
 </Dialogue>
 
-<Dialogue speaker="Dr. Elena Vasquez">
+<Dialogue speaker="Dr. Zahra Karimi">
 Exactly. Missing a secondary condition like renal insufficiency in a cardiac patient could mean prescribing a nephrotoxic drug. Every relevant tag matters.
 </Dialogue>
 

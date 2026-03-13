@@ -7,8 +7,8 @@ order: 1
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Dr. Sato stares at the signal plot. 'We are only seeing half the picture. This is the time domain. The real structure hides in the frequency domain.'"
-  speaker: "Dr. Sato"
+  narrative: "Dr. Farah stares at the signal plot. 'We are only seeing half the picture. This is the time domain. The real structure hides in the frequency domain.'"
+  speaker: "Dr. Farah"
 concept:
   explanation: "Every signal has two representations — time domain (amplitude over time) and frequency domain (which frequencies are present) — just like a web page has a DOM and a CSSOM."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "fft(signal) // frequency view of the signal"
     tier: intuition
 consequence:
-  narrative: "Park sees it — the same signal, two completely different views. Patterns invisible in time become obvious in frequency."
+  narrative: "Demir sees it — the same signal, two completely different views. Patterns invisible in time become obvious in frequency."
   nextLessonTeaser: "Next: the Fourier Transform — how to convert between these two views"
 hints:
   - level: nudge
@@ -34,15 +34,15 @@ keywords:
   - dual-representation
 ---
 
-<Dialogue speaker="Dr. Sato">
-Look at this signal plot, Park. Amplitude over time. You see noise with occasional spikes. But I suspect there is hidden structure — periodic components buried in the noise that only reveal themselves in the frequency domain.
+<Dialogue speaker="Dr. Farah">
+Look at this signal plot, Demir. Amplitude over time. You see noise with occasional spikes. But I suspect there is hidden structure — periodic components buried in the noise that only reveal themselves in the frequency domain.
 </Dialogue>
 
-<Dialogue speaker="Ensign Park">
+<Dialogue speaker="Ensign Demir">
 Two views of the same data? That's like... the DOM and the CSSOM. Same page, completely different representations. The DOM shows structure, the CSSOM shows styling.
 </Dialogue>
 
-<Dialogue speaker="Dr. Sato">
+<Dialogue speaker="Dr. Farah">
 Precisely. The time domain shows you *when* things happen. The frequency domain shows you *what patterns* are repeating. Both are complete descriptions of the same signal — just different lenses.
 </Dialogue>
 
@@ -97,7 +97,7 @@ console.log(complex.slice(0, 10));
 
 ## Why Frequency Matters for DEEP SCAN
 
-The deep space signals look like noise in the time domain. But Dr. Sato suspects they contain specific frequency components — periodic patterns buried in randomness. If a signal contains a frequency that shouldn't be there, that's an anomaly.
+The deep space signals look like noise in the time domain. But Dr. Farah suspects they contain specific frequency components — periodic patterns buried in randomness. If a signal contains a frequency that shouldn't be there, that's an anomaly.
 
 <CodeBlock language="typescript" title="why-frequency.ts">
 {`// In the time domain, these two signals look almost identical:
@@ -120,7 +120,7 @@ const anomalousSignal = generateSignal([
 // cosmicNoise[100] = 0.342, anomalousSignal[100] = 0.347
 
 // In the frequency domain: 73.4 Hz peak stands out immediately
-// This is why Sato wants to switch representations`}
+// This is why Farah wants to switch representations`}
 </CodeBlock>
 
 ## Challenge

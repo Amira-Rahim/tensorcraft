@@ -7,7 +7,7 @@ order: 3
 estimatedMinutes: 22
 difficulty: intermediate
 context:
-  narrative: "NEON's analysis of the augmented dataset reveals a problem: pixel values range wildly across images — some captured in harsh neon light, others in near darkness. 'The Sentinel cannot learn when inputs scream at different volumes,' NEON warns. Kira must bring every image to a common scale."
+  narrative: "NEON's analysis of the augmented dataset reveals a problem: pixel values range wildly across images — some captured in harsh neon light, others in near darkness. 'The Sentinel cannot learn when inputs scream at different volumes,' NEON warns. Noor must bring every image to a common scale."
   speaker: "NEON"
 concept:
   explanation: "Normalization scales pixel values to a consistent range — just like CSS normalize.css creates a consistent baseline across browsers by resetting defaults."
@@ -74,7 +74,7 @@ Before normalize.css, building cross-browser UIs was unpredictable. Each browser
 
 Neural networks learn by adjusting weights based on input values. When one image has pixel values in the range [0, 50] and another spans [200, 255], the brighter image produces much larger gradient updates. This is like having one CSS module with `!important` on every rule — it drowns out everything else.
 
-<Dialogue speaker="Kira">
+<Dialogue speaker="Noor">
 So without normalization, the model pays more attention to bright images just because their numbers are bigger? That's like a component with higher CSS specificity getting all the styling priority regardless of relevance.
 </Dialogue>
 

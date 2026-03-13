@@ -7,18 +7,18 @@ order: 3
 estimatedMinutes: 30
 difficulty: intermediate
 context:
-  narrative: "Kira's dashboard needs to call Protocol Sentinel from multiple pages. Ryo realizes they need a clean API layer — a single interface that any resistance tool can call. NEON: 'Wrap the model. Expose a contract. Hide the complexity.'"
-  speaker: "Ryo"
+  narrative: "Noor's dashboard needs to call Protocol Sentinel from multiple pages. Amir realizes they need a clean API layer — a single interface that any resistance tool can call. NEON: 'Wrap the model. Expose a contract. Hide the complexity.'"
+  speaker: "Amir"
 concept:
   explanation: "An inference API is a clean interface that wraps your model and exposes prediction functionality through a standard contract. It is the same pattern as building a REST API endpoint — callers send data in a known format, receive results in a known format, and never touch the implementation details."
   bridge:
     feTitle: "REST API Endpoint"
-    feCode: "const response = await fetch('/api/users', {\n  method: 'POST',\n  body: JSON.stringify({ name: 'Ryo' })\n});\nconst user = await response.json();"
+    feCode: "const response = await fetch('/api/users', {\n  method: 'POST',\n  body: JSON.stringify({ name: 'Amir' })\n});\nconst user = await response.json();"
     mlTitle: "Inference Endpoint"
     mlCode: "const response = await fetch('/api/predict', {\n  method: 'POST',\n  body: JSON.stringify({ imageData: pixels })\n});\nconst prediction = await response.json();"
     tier: identity
 consequence:
-  narrative: "Kira wires the inference API into the resistance dashboard, the mobile scanner, and the district alert system — all in one afternoon. Three tools, one model, one interface. NEON: 'Abstraction. The most powerful tool in any engineer's kit.'"
+  narrative: "Noor wires the inference API into the resistance dashboard, the mobile scanner, and the district alert system — all in one afternoon. Three tools, one model, one interface. NEON: 'Abstraction. The most powerful tool in any engineer's kit.'"
   nextLessonTeaser: "Next: monitoring the deployed model to catch problems before they become emergencies"
 hints:
   - level: nudge
@@ -35,8 +35,8 @@ keywords:
   - abstraction
 ---
 
-<Dialogue speaker="Ryo">
-Kira needs Sentinel on the dashboard. Lin needs it on the mobile scanner. The district alert system needs it for automated patrols. I cannot copy-paste model loading code into three different apps. We need one API. One interface. One contract.
+<Dialogue speaker="Amir">
+Noor needs Sentinel on the dashboard. Dilan needs it on the mobile scanner. The district alert system needs it for automated patrols. I cannot copy-paste model loading code into three different apps. We need one API. One interface. One contract.
 </Dialogue>
 
 <Dialogue speaker="NEON">

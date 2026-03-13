@@ -7,7 +7,7 @@ order: 4
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "The fine-tuned model works perfectly on daytime footage but fails at night. Kira replays the test results — 94% accuracy at noon, 52% after dark. NEON projects the failure cases: neon-lit streets, rain-streaked lenses, fog-blurred silhouettes. 'The training data is from one domain — daylight, clear skies,' NEON explains. 'Neon City at 2AM is a different domain entirely. Same app, different locale.'"
+  narrative: "The fine-tuned model works perfectly on daytime footage but fails at night. Noor replays the test results — 94% accuracy at noon, 52% after dark. NEON projects the failure cases: neon-lit streets, rain-streaked lenses, fog-blurred silhouettes. 'The training data is from one domain — daylight, clear skies,' NEON explains. 'Neon City at 2AM is a different domain entirely. Same app, different locale.'"
   speaker: "NEON"
 concept:
   explanation: "Domain adaptation bridges the gap between the distribution of training data (source domain) and real-world deployment data (target domain). The core functionality stays the same, but surface-level conditions change — brightness, contrast, noise, weather. Like i18n: the same app, adapted for a different locale."
@@ -40,7 +40,7 @@ keywords:
 You have built an app that works perfectly in English. Now deploy it to Japan. The buttons are the same, the logic is the same, but text wraps differently, dates format differently, character sets change entirely. That is domain shift. Your model works on daylight photos from ImageNet. Neon City at 2AM in the rain is a completely different locale.
 </Dialogue>
 
-<Dialogue speaker="Kira">
+<Dialogue speaker="Noor">
 So domain adaptation is i18n for neural networks. Same model, same features, but the input presentation changes and we need the system to handle it.
 </Dialogue>
 
@@ -186,7 +186,7 @@ const levels: AdaptationLevel[] = [
 ];
 
 // The resistance uses Level 1 (augmentation) + Level 3 (few-shot).
-// Ryo's 500 images include some night shots. Combined with synthetic
+// Amir's 500 images include some night shots. Combined with synthetic
 // augmentation, it is enough to bridge the domain gap.`}
 </CodeBlock>
 

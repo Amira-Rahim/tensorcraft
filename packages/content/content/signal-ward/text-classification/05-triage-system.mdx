@@ -8,7 +8,7 @@ estimatedMinutes: 30
 difficulty: intermediate
 context:
   narrative: "With urgency detection, department routing, multi-label tagging, and calibration in place, the team builds the full triage pipeline that handles every document entering Signal Ward."
-  speaker: "Santos"
+  speaker: "Imran"
 concept:
   explanation: "A triage pipeline chains multiple classifiers together — urgency detection, department routing, and multi-label tagging — with confidence-gated human review at each stage."
   bridge:
@@ -35,11 +35,11 @@ keywords:
   - clinical-workflow
 ---
 
-<Dialogue speaker="Santos">
+<Dialogue speaker="Imran">
 We have the pieces: urgency detection, department routing, multi-label tagging, and confidence calibration. Now we need to wire them into a single pipeline that handles every document hitting the ward.
 </Dialogue>
 
-<Dialogue speaker="Khalil Mensah">
+<Dialogue speaker="Khalil Ansari">
 It's like building a priority queue with middleware. Each document enters the pipeline, gets classified at multiple stages, and exits with a complete triage profile. Uncertain cases get dequeued for human review instead of being auto-processed.
 </Dialogue>
 
@@ -160,7 +160,7 @@ class TriagePipeline {
 
 ## Processing the Queue
 
-<Dialogue speaker="Dr. Elena Vasquez">
+<Dialogue speaker="Dr. Zahra Karimi">
 Show me the flow. A document arrives — what happens?
 </Dialogue>
 
@@ -208,7 +208,7 @@ async function processQueue(
 
 ## Measuring What Matters
 
-<Dialogue speaker="Dr. Elena Vasquez">
+<Dialogue speaker="Dr. Zahra Karimi">
 I don't care about overall accuracy. Tell me: how many urgent documents did we miss? How many got sent to the wrong department? Those are the numbers that save lives.
 </Dialogue>
 

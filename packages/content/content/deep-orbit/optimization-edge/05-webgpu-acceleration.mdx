@@ -7,8 +7,8 @@ order: 5
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "Torres wants maximum speed. 'WebGL is good. WebGPU is better — direct GPU compute access without the graphics overhead. Use it.' Park discovers the next generation of browser GPU compute."
-  speaker: "Chief Torres"
+  narrative: "Nazari wants maximum speed. 'WebGL is good. WebGPU is better — direct GPU compute access without the graphics overhead. Use it.' Demir discovers the next generation of browser GPU compute."
+  speaker: "Chief Nazari"
 concept:
   explanation: "WebGPU provides direct GPU compute access for ML inference — like upgrading from WebGL canvas rendering to a dedicated compute pipeline."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "const device = await navigator.gpu.requestAdapter() // compute-oriented GPU access"
     tier: structural
 consequence:
-  narrative: "WebGPU cuts inference time by 3x over WebGL. Torres: 'Not bad, for a frontend dev.' DEEP SCAN is production-ready."
+  narrative: "WebGPU cuts inference time by 3x over WebGL. Nazari: 'Not bad, for a frontend dev.' DEEP SCAN is production-ready."
   nextLessonTeaser: "Module 11: the capstone — deploying the complete DEEP SCAN system"
 hints:
   - level: nudge
@@ -34,11 +34,11 @@ keywords:
   - performance
 ---
 
-<Dialogue speaker="Chief Torres">
+<Dialogue speaker="Chief Nazari">
 WebGL was designed for rendering triangles, not multiplying matrices. WebGPU is the real thing — direct GPU compute access. Set it up.
 </Dialogue>
 
-<Dialogue speaker="Ensign Park">
+<Dialogue speaker="Ensign Demir">
 So WebGPU is to WebGL what Web Workers are to the main thread — purpose-built for the actual workload instead of shoehorning into a different API?
 </Dialogue>
 
@@ -109,7 +109,7 @@ console.log('  Speed:    45ms → 5ms (9x faster)');
 console.log('  Accuracy: 94.2% → 91.8% (2.4% loss)');
 console.log('  Fits in dashboard: YES ✓');
 console.log('');
-console.log('Torres: "Not bad, for a frontend dev."');`}
+console.log('Nazari: "Not bad, for a frontend dev."');`}
 </CodeBlock>
 
 ## Challenge
@@ -118,4 +118,4 @@ Set up the best available GPU backend and benchmark inference speed.
 
 <Exercise slug="gpu-backend" />
 
-<KeyTakeaways takeaways={["WebGPU provides 2-3x speedup over WebGL for ML inference — designed for compute, not graphics", "Always implement graceful fallback: WebGPU → WebGL → WASM, like progressive enhancement", "The full optimization stack (quantize + prune + cache + WebGPU) achieves 8x size reduction and 9x speed improvement", "Torres approves: DEEP SCAN is production-ready at 42 MB and 5ms inference"]} />
+<KeyTakeaways takeaways={["WebGPU provides 2-3x speedup over WebGL for ML inference — designed for compute, not graphics", "Always implement graceful fallback: WebGPU → WebGL → WASM, like progressive enhancement", "The full optimization stack (quantize + prune + cache + WebGPU) achieves 8x size reduction and 9x speed improvement", "Nazari approves: DEEP SCAN is production-ready at 42 MB and 5ms inference"]} />

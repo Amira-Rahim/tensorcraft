@@ -7,8 +7,8 @@ order: 1
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "Petrov pulls up the metrics dashboard. 'Current generation time: 3.2 seconds per image. The Biennale expects instant response. We need to find every bottleneck and crush it.'"
-  speaker: "Petrov"
+  narrative: "Erdem pulls up the metrics dashboard. 'Current generation time: 3.2 seconds per image. The Biennale expects instant response. We need to find every bottleneck and crush it.'"
+  speaker: "Erdem"
 concept:
   explanation: "Performance profiling for ML generation uses the same Chrome DevTools you use for frontend optimization — the Performance panel, memory snapshots, and flame charts reveal where inference time is spent."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "performance.mark('inference-start'); model.predict(input); performance.mark('inference-end');"
     tier: identity
 consequence:
-  narrative: "The flame chart reveals the truth: 60% of time is spent on tensor allocation, not computation. Petrov smiles grimly. 'We have been optimizing the wrong thing. Memory allocation is our enemy.'"
+  narrative: "The flame chart reveals the truth: 60% of time is spent on tensor allocation, not computation. Erdem smiles grimly. 'We have been optimizing the wrong thing. Memory allocation is our enemy.'"
   nextLessonTeaser: "Next: model optimization through distillation and quantization"
 hints:
   - level: nudge
@@ -34,11 +34,11 @@ keywords:
   - bottleneck
 ---
 
-<Dialogue speaker="Petrov">
+<Dialogue speaker="Erdem">
 Three-point-two seconds per generation. Unacceptable. The gallery visitors will walk away after one. We need sub-second response. Where is the time going?
 </Dialogue>
 
-<Dialogue speaker="Ren">
+<Dialogue speaker="Samir">
 The same place it always goes in frontend apps — where you least expect it. We need to profile before we optimize. Chrome DevTools does not care whether you are rendering DOM or running inference.
 </Dialogue>
 

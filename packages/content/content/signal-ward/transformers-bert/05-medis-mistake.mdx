@@ -8,7 +8,7 @@ estimatedMinutes: 30
 difficulty: advanced
 context:
   narrative: "MEDI flags a resolved condition as active — a dangerous error that forces the team to confront model limitations, failure modes, and the gap between accuracy metrics and clinical safety."
-  speaker: "Dr. Elena Vasquez"
+  speaker: "Dr. Zahra Karimi"
 concept:
   explanation: "Models can hallucinate or misclassify when they encounter edge cases, temporal reasoning gaps, or distributional shifts — understanding failure modes is as critical as understanding architecture."
   bridge:
@@ -39,15 +39,15 @@ keywords:
 Alert — Priority One. Patient 2847-R: Active condition identified. Type 2 diabetes mellitus. Recommending insulin protocol review.
 </Dialogue>
 
-<Dialogue speaker="Dr. Elena Vasquez">
+<Dialogue speaker="Dr. Zahra Karimi">
 Pull the full note. Now.
 </Dialogue>
 
-<Dialogue speaker="Khalil Mensah">
+<Dialogue speaker="Khalil Ansari">
 Here it is: "History of Type 2 diabetes mellitus, resolved following bariatric surgery, March 2024. Current A1C 5.2%, within normal range. No diabetic medications."
 </Dialogue>
 
-<Dialogue speaker="Dr. Elena Vasquez">
+<Dialogue speaker="Dr. Zahra Karimi">
 Your system just recommended an insulin review for a patient whose diabetes resolved eight months ago. If a nurse follows that recommendation without reading the full note, we're giving insulin to someone who doesn't need it. That's a hypoglycemic event waiting to happen.
 </Dialogue>
 
@@ -59,7 +59,7 @@ Your system just recommended an insulin review for a patient whose diabetes reso
 
 Every frontend engineer has fought stale caches. You update user data in the database, but the CDN keeps serving the old version. The data changed, but the system's representation didn't. MEDI has the same problem — "Type 2 diabetes" activates strong patterns from training data, and the model's internal representation fails to update when it encounters "resolved."
 
-<Dialogue speaker="Obi Nwosu">
+<Dialogue speaker="Vikram Reddy">
 This is a negation detection failure. MEDI's model learned strong associations: "Type 2 diabetes" maps to "active condition" in the vast majority of training examples. The word "resolved" should invalidate that classification, but the model's attention weights didn't give it enough importance.
 </Dialogue>
 
@@ -108,7 +108,7 @@ analysis.forEach(a => {
 
 ## Three Lines of Defense
 
-<Dialogue speaker="Obi Nwosu">
+<Dialogue speaker="Vikram Reddy">
 MEDI's error teaches us that accuracy on a test set doesn't guarantee safety in production. We need defense in depth — just like how you wouldn't rely solely on client-side validation in a web app.
 </Dialogue>
 
@@ -251,11 +251,11 @@ console.log(clearResult);
 // → { action: 'auto-accept' }`}
 </CodeBlock>
 
-<Dialogue speaker="Dr. Elena Vasquez">
+<Dialogue speaker="Dr. Zahra Karimi">
 So the system doesn't just give an answer — it tells me how confident it is, whether it detected conflicting signals, and whether a human should verify. That's the kind of system I can trust.
 </Dialogue>
 
-<Dialogue speaker="Obi Nwosu">
+<Dialogue speaker="Vikram Reddy">
 In frontend terms, you never trust client input alone — you validate server-side too. In clinical ML, you never trust model output alone — you validate with confidence checks, negation detection, and human review. Defense in depth.
 </Dialogue>
 

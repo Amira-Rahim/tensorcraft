@@ -7,7 +7,7 @@ order: 3
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Ren builds the discriminator — the critic network that judges whether art is real or generated. Yara compares it to gallery curation: examining every detail for authenticity."
+  narrative: "Samir builds the discriminator — the critic network that judges whether art is real or generated. Yara compares it to gallery curation: examining every detail for authenticity."
   speaker: "Yara"
 concept:
   explanation: "The discriminator is a binary classifier that takes an image and outputs a probability of it being real. It progressively compresses the input down to a single decision."
@@ -18,7 +18,7 @@ concept:
     mlCode: "const realness = discriminator.predict(image)  // → 0.0 to 1.0"
     tier: structural
 consequence:
-  narrative: "The critic network is complete. Ren now has both halves of the GAN — a creator and a judge, ready to train together."
+  narrative: "The critic network is complete. Samir now has both halves of the GAN — a creator and a judge, ready to train together."
   nextLessonTeaser: "Next: the adversarial training loop — making both networks dance"
 hints:
   - level: nudge

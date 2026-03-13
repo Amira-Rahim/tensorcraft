@@ -1,5 +1,5 @@
 slug: note-classifier
-lessonSlug: your-first-classifier
+lessonSlug: sw-your-first-classifier
 title: "Note Classifier"
 instructions: "Write a classify function that takes a feature tensor and weight tensor, multiplies them element-wise, sums the result, adds a bias of 0.1, and returns the sigmoid of the score using tf.sigmoid(). Return the result of dataSync()[0]."
 starterCode: |

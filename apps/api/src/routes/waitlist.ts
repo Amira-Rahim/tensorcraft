@@ -13,7 +13,8 @@ waitlist.post("/", async (c) => {
     source?: string;
   }>();
 
-  if (!body.email || !body.email.includes("@")) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!body.email || !emailRegex.test(body.email)) {
     return c.json({ error: "Valid email is required" }, 400);
   }
 
@@ -30,7 +31,13 @@ waitlist.post("/", async (c) => {
     if (error.code === "23505") {
       return c.json({ message: "Already on the waitlist" }, 200);
     }
-    return c.json({ error: "Failed to join waitlist" }, 500);
+    return c.json(
+      {
+        error: "Failed to join waitlist",
+        requestId: c.res.headers.get("X-Request-Id"),
+      },
+      500,
+    );
   }
 
   return c.json({ message: "Added to waitlist" }, 201);

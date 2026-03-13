@@ -7,8 +7,8 @@ order: 4
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "Santos pushes for a neural approach to NER — one that considers context, not just individual tokens — while advocating for careful validation."
-  speaker: "Santos"
+  narrative: "Imran pushes for a neural approach to NER — one that considers context, not just individual tokens — while advocating for careful validation."
+  speaker: "Imran"
 concept:
   explanation: "Sequence labeling assigns a class to every token in a sequence using neural networks that consider surrounding context — like CSS class assignment where each element's class depends on its siblings."
   bridge:
@@ -34,15 +34,15 @@ keywords:
   - context-aware
 ---
 
-<Dialogue speaker="Santos">
+<Dialogue speaker="Imran">
 Our dictionary-based classifier labels every instance of "cold" as a CONDITION. But in "patient has a cold" it's a condition, while in "cold compress applied" it's an adjective. Context matters. We need a model that looks at the surrounding words before deciding.
 </Dialogue>
 
-<Dialogue speaker="Khalil Mensah">
+<Dialogue speaker="Khalil Ansari">
 That's like CSS specificity. A bare `.highlight` selector might style the wrong elements. But `.medical-note > .symptom-list > .highlight` uses context — parent elements — to target precisely. Each element's class depends on where it sits in the DOM.
 </Dialogue>
 
-<Dialogue speaker="Santos">
+<Dialogue speaker="Imran">
 Exactly. Sequence labeling considers the full context of each token — what comes before it, what comes after it — before assigning a label. It's CSS class assignment where every element's class depends on its siblings.
 </Dialogue>
 
@@ -147,7 +147,7 @@ model.summary();`}
 
 ## Training the Labeler
 
-<Dialogue speaker="Obi Nwosu">
+<Dialogue speaker="Vikram Reddy">
 The key insight: `returnSequences: true` on the LSTM means we get an output for every token, not just the last one. Without it, we'd get a single vector for the whole sentence — useful for classification, useless for labeling individual tokens.
 </Dialogue>
 
@@ -173,9 +173,9 @@ function tagsToOneHot(tags: string[], tagVocab: string[]): tf.Tensor {
 }`}
 </CodeBlock>
 
-## Santos on Validation
+## Imran on Validation
 
-<Dialogue speaker="Santos">
+<Dialogue speaker="Imran">
 A model that's 95% accurate per-token might still miss 30% of entities. Why? Because entity-level evaluation requires getting every token in a span correct. "B-CONDITION I-CONDITION" is only a correct entity if both tags are right. One wrong tag, and the whole entity is wrong. Always evaluate at the span level, not just the token level.
 </Dialogue>
 

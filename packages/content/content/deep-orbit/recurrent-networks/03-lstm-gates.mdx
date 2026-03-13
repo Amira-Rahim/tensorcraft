@@ -7,8 +7,8 @@ order: 3
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "The simple RNN forgets the anomaly pattern — it's too far back in the sequence. Sato introduces LSTMs: networks with gates that decide what to remember and what to forget."
-  speaker: "Dr. Sato"
+  narrative: "The simple RNN forgets the anomaly pattern — it's too far back in the sequence. Farah introduces LSTMs: networks with gates that decide what to remember and what to forget."
+  speaker: "Dr. Farah"
 concept:
   explanation: "LSTMs use gates to selectively remember and forget — like localStorage with TTL where some data persists long-term and stale data is automatically cleared."
   bridge:
@@ -35,15 +35,15 @@ keywords:
   - gru
 ---
 
-<Dialogue speaker="Dr. Sato">
+<Dialogue speaker="Dr. Farah">
 The simple RNN forgets. By the time it reaches time step 50, information from step 1 has vanished — gradients multiplied through too many small numbers. LSTMs solve this with gates — learned switches that control what flows through and what gets discarded.
 </Dialogue>
 
-<Dialogue speaker="Ensign Park">
+<Dialogue speaker="Ensign Demir">
 Gates... like a cache with TTL? Some things you keep forever because they're important, some things you let expire because they're stale?
 </Dialogue>
 
-<Dialogue speaker="Dr. Sato">
+<Dialogue speaker="Dr. Farah">
 That is a remarkably good analogy, Ensign.
 </Dialogue>
 

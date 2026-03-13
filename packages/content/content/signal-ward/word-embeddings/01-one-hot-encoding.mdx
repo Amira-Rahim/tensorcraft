@@ -7,8 +7,8 @@ order: 1
 estimatedMinutes: 25
 difficulty: beginner
 context:
-  narrative: "Obi introduces the simplest word representation: one-hot encoding. Each word gets a unique ID with no relationships — like enum values where each item is equally distant from every other."
-  speaker: "Obi"
+  narrative: "Vikram introduces the simplest word representation: one-hot encoding. Each word gets a unique ID with no relationships — like enum values where each item is equally distant from every other."
+  speaker: "Vikram"
 concept:
   explanation: "One-hot encoding represents each word as a vector where exactly one position is 1 and all others are 0. It assigns a unique identity but captures zero semantic relationships — 'aspirin' is equally distant from 'ibuprofen' and 'appendectomy'."
   bridge:
@@ -36,15 +36,15 @@ keywords:
 
 > **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
-<Dialogue speaker="Obi">
-Santos, when you define a TypeScript enum — say, for medication categories — each value gets a unique number. But does the enum tell you that aspirin and ibuprofen are related?
+<Dialogue speaker="Vikram">
+Imran, when you define a TypeScript enum — say, for medication categories — each value gets a unique number. But does the enum tell you that aspirin and ibuprofen are related?
 </Dialogue>
 
-<Dialogue speaker="Santos">
+<Dialogue speaker="Imran">
 No. Enums are just labels. Aspirin is 0, ibuprofen is 1, appendectomy is 2. The numbers are arbitrary.
 </Dialogue>
 
-<Dialogue speaker="Obi">
+<Dialogue speaker="Vikram">
 That is exactly what one-hot encoding does. Each word in your vocabulary gets a unique vector — a single 1 in a sea of zeros. It identifies words but says nothing about how they relate.
 </Dialogue>
 
@@ -108,11 +108,11 @@ console.log(cosineSimilarity(aspirin, appendectomy));  // 0
 // each vector has 50,000 dimensions — mostly zeros.`}
 </CodeBlock>
 
-<Dialogue speaker="Dr. Vasquez">
+<Dialogue speaker="Dr. Karimi">
 So if a patient's chart mentions ibuprofen and the model has only seen aspirin in training, the one-hot model sees no connection at all?
 </Dialogue>
 
-<Dialogue speaker="Obi">
+<Dialogue speaker="Vikram">
 Exactly. It cannot generalize. Every word is an island. That is why we need representations that place related words near each other — dense vectors that capture meaning, not just identity.
 </Dialogue>
 

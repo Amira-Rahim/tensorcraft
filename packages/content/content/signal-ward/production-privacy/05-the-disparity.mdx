@@ -7,8 +7,8 @@ order: 5
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "The ethics review reaches its climax. Dr. Vasquez projects the fairness card on the screen. 'Twelve percent. That is the gap between how well your model works on attending physician notes and how well it works on night shift notes. Khalil, fix it or we do not deploy.' Khalil recognizes the pattern from cross-browser testing: 'It works in Chrome but breaks in Safari. Same code, different rendering engine. Same model, different writing style.'"
-  speaker: "Dr. Vasquez"
+  narrative: "The ethics review reaches its climax. Dr. Karimi projects the fairness card on the screen. 'Twelve percent. That is the gap between how well your model works on attending physician notes and how well it works on night shift notes. Khalil, fix it or we do not deploy.' Khalil recognizes the pattern from cross-browser testing: 'It works in Chrome but breaks in Safari. Same code, different rendering engine. Same model, different writing style.'"
+  speaker: "Dr. Karimi"
 concept:
   explanation: "Performance disparity across demographic groups is like browser compatibility gaps — the system works well in one environment but fails in another. The remediation strategy is the same: identify the failure modes, build targeted fixes, and test across all environments."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "// Works on formal notes, fails on ESL notes — data augmentation, re-weighting, cross-group testing"
     tier: structural
 consequence:
-  narrative: "After augmentation and retraining, the disparity drops from 12% to 2.3%. Khalil presents the updated fairness card. Dr. Vasquez studies it. 'Two point three percent. Not zero. Document the remaining gap in the model card. Ship it with an honest account of what we know and what we do not. That is responsible deployment.' The ethics committee votes unanimously to approve the pilot."
+  narrative: "After augmentation and retraining, the disparity drops from 12% to 2.3%. Khalil presents the updated fairness card. Dr. Karimi studies it. 'Two point three percent. Not zero. Document the remaining gap in the model card. Ship it with an honest account of what we know and what we do not. That is responsible deployment.' The ethics committee votes unanimously to approve the pilot."
   nextLessonTeaser: "Next module: capstone — deploying Diagnostic One to Signal Ward"
 hints:
   - level: nudge
@@ -37,7 +37,7 @@ keywords:
   - remediation
 ---
 
-<Dialogue speaker="Dr. Vasquez">
+<Dialogue speaker="Dr. Karimi">
 Twelve percent. That is the gap. Your model classifies attending physician notes at 94% accuracy. Night shift nurse notes — written by staff who predominantly speak English as a second language — get 82%. Same patients. Same conditions. Different accuracy. Khalil, this is not a performance issue. It is an equity failure.
 </Dialogue>
 
@@ -264,7 +264,7 @@ function generateModelCard(
 }`}
 </CodeBlock>
 
-<Dialogue speaker="Dr. Vasquez">
+<Dialogue speaker="Dr. Karimi">
 Two point three percent. Not zero. But it is honest. Document the remaining gap. Ship the model card with every deployment. A known limitation is safer than a hidden one. That is responsible ML.
 </Dialogue>
 

@@ -7,8 +7,8 @@ order: 2
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "Torres's first optimization: reduce precision. 'Float32 uses 4 bytes per weight. Float16 uses 2. Int8 uses 1. Do the math — that's a 4x size reduction.'"
-  speaker: "Chief Torres"
+  narrative: "Nazari's first optimization: reduce precision. 'Float32 uses 4 bytes per weight. Float16 uses 2. Int8 uses 1. Do the math — that's a 4x size reduction.'"
+  speaker: "Chief Nazari"
 concept:
   explanation: "Quantization reduces numerical precision for smaller models and faster inference — like image compression where PNG to WebP trades some quality for much smaller file size."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "// Float32 (340MB) → Int8 (85MB) — 4x smaller, ~2% accuracy loss"
     tier: structural
 consequence:
-  narrative: "Quantization shrinks DEEP SCAN from 340 MB to 85 MB. Accuracy drops only 1.2%. Torres nods — 'That's a good trade.'"
+  narrative: "Quantization shrinks DEEP SCAN from 340 MB to 85 MB. Accuracy drops only 1.2%. Nazari nods — 'That's a good trade.'"
   nextLessonTeaser: "Next: pruning — removing weights that don't contribute to accuracy"
 hints:
   - level: nudge
@@ -35,7 +35,7 @@ keywords:
   - precision
 ---
 
-<Dialogue speaker="Chief Torres">
+<Dialogue speaker="Chief Nazari">
 Every weight is a 32-bit float — 4 bytes. Your model has 85 million weights. That is 340 MB just for the numbers. Cut the precision to 8-bit integers and you are at 85 MB. The model is 4x smaller and inference runs on integer hardware — faster on every device.
 </Dialogue>
 

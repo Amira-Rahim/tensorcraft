@@ -6,6 +6,8 @@ themeId: shared
 order: 3
 estimatedMinutes: 30
 difficulty: intermediate
+context:
+  narrative: "Most cutting-edge ML research uses PyTorch. When you find an interesting paper or model on GitHub, it will almost certainly be in PyTorch. But you already know TF.js — and they're the same thing."
 concept:
   explanation: "PyTorch nn.Module and TensorFlow.js tf.LayersModel express the same abstractions — layers, forward passes, loss functions, and optimizers — with different syntax."
   bridge:
@@ -14,6 +16,9 @@ concept:
     mlTitle: "PyTorch nn.Module"
     mlCode: "self.fc = nn.Linear(input_dim, 64)"
     tier: structural
+consequence:
+  narrative: "You can now read PyTorch code and understand the architecture. nn.Linear is dense, nn.Conv2d is conv2d, forward() is predict(). The concepts are identical."
+  nextLessonTeaser: "Next: pandas DataFrames are arrays of objects with built-in data wrangling"
 hints:
   - level: nudge
     content: "nn.Linear is tf.layers.dense, nn.Conv2d is tf.layers.conv2d"

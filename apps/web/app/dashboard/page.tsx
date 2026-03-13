@@ -78,17 +78,11 @@ export default async function DashboardPage() {
   // Find the theme to continue (most recent activity)
   const continueTheme = themeProgress.find((t) => t.lastLessonId) ?? null;
 
-  // Fetch streaks (table added in migration 003 — may not be in generated types yet)
-  type StreakRow = {
-    theme_id: string;
-    current_streak: number;
-    longest_streak: number;
-  };
   const { data: streaksRaw } = await supabase
-    .from("streaks" as "profiles")
+    .from("streaks")
     .select("theme_id, current_streak, longest_streak")
     .eq("user_id", user.id);
-  const streaks = (streaksRaw ?? []) as unknown as StreakRow[];
+  const streaks = streaksRaw ?? [];
 
   const totalStreak = streaks.reduce(
     (max, s) => Math.max(max, s.current_streak ?? 0),

@@ -7,8 +7,8 @@ order: 1
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Torres demands the classifier run on the bridge dashboard. No Python notebooks, no server round-trips — the model must run where the crew can use it."
-  speaker: "Chief Torres"
+  narrative: "Nazari demands the classifier run on the bridge dashboard. No Python notebooks, no server round-trips — the model must run where the crew can use it."
+  speaker: "Chief Nazari"
 concept:
   explanation: "Client-side ML inference keeps data on-device, eliminates server latency, and works offline — the same tradeoffs as client-side rendering vs SSR."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "const prediction = model.predict(inputTensor)"
     tier: structural
 consequence:
-  narrative: "Torres approves the browser deployment plan. Park begins setting up the runtime."
+  narrative: "Nazari approves the browser deployment plan. Demir begins setting up the runtime."
   nextLessonTeaser: "Next: setting up TensorFlow.js in the browser"
 hints:
   - level: nudge
@@ -34,11 +34,11 @@ keywords:
   - privacy
 ---
 
-<Dialogue speaker="Chief Torres">
+<Dialogue speaker="Chief Nazari">
 The bridge crew needs real-time classification in their dashboard. I am not routing signal data through a server on every reading. The model runs in the browser or it does not ship.
 </Dialogue>
 
-<Dialogue speaker="Ensign Park">
+<Dialogue speaker="Ensign Demir">
 But the model was trained in a notebook environment. Can we really run it in a browser tab?
 </Dialogue>
 
@@ -86,7 +86,7 @@ async function clientInference(signalData: number[]) {
 | **Compute** | GPU clusters available | Device CPU/GPU only |
 | **Cold start** | Warm server | Model must download first |
 
-Torres is right: for a real-time dashboard processing signal readings every second, the network round-trip is unacceptable. The model must run in the browser.
+Nazari is right: for a real-time dashboard processing signal readings every second, the network round-trip is unacceptable. The model must run in the browser.
 
 ## The Cost of Client-Side ML
 

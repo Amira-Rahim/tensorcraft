@@ -7,8 +7,8 @@ order: 1
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Ryo pulls up a stolen Meridian schematic on the NeuralCore holotable. It shows how their drones represent detected targets — not as pixel masks, but as simple rectangles. 'Every detection system starts with a box,' he says. 'And you already know how boxes work.'"
-  speaker: "Ryo"
+  narrative: "Amir pulls up a stolen Meridian schematic on the NeuralCore holotable. It shows how their drones represent detected targets — not as pixel masks, but as simple rectangles. 'Every detection system starts with a box,' he says. 'And you already know how boxes work.'"
+  speaker: "Amir"
 concept:
   explanation: "Object detection models locate objects by predicting bounding boxes — rectangular regions defined by coordinates. This is identical to how CSS position: absolute and getBoundingClientRect() define element locations on a page."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "const bbox = [x, y, width, height]; // normalized 0-1 coordinates"
     tier: identity
 consequence:
-  narrative: "Kira stares at the schematic. 'So a detection model is basically returning a DOMRect for every object it finds?' Ryo nods. 'Exactly. Meridian spent billions building what is, at its core, a very expensive getBoundingClientRect().'"
+  narrative: "Noor stares at the schematic. 'So a detection model is basically returning a DOMRect for every object it finds?' Amir nods. 'Exactly. Meridian spent billions building what is, at its core, a very expensive getBoundingClientRect().'"
   nextLessonTeaser: "Next: anchor boxes — pre-defined detection regions that speed up the search"
 hints:
   - level: nudge
@@ -34,15 +34,15 @@ keywords:
   - getBoundingClientRect
 ---
 
-<Dialogue speaker="Ryo">
+<Dialogue speaker="Amir">
 I spent six years at Meridian building their drone vision pipeline. Every frame, every detection — it all starts with a bounding box. Four numbers that say: "there is something here." You've used getBoundingClientRect() a thousand times. Same concept. Meridian just does it with neural networks instead of the DOM.
 </Dialogue>
 
-<Dialogue speaker="Kira">
+<Dialogue speaker="Noor">
 Wait — their multi-billion credit surveillance system outputs the same data structure as me checking if a tooltip overflows the viewport?
 </Dialogue>
 
-<Dialogue speaker="Ryo">
+<Dialogue speaker="Amir">
 The same four numbers. X, Y, width, height. The difference is how you get them.
 </Dialogue>
 

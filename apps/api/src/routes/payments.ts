@@ -65,9 +65,7 @@ payments.post("/checkout", async (c) => {
 
   const stripe = getStripe();
   const origin =
-    c.req.header("origin") ||
-    process.env.NEXT_PUBLIC_APP_URL ||
-    "http://localhost:3000";
+    c.req.header("origin") || process.env.APP_URL || "http://localhost:3000";
 
   const session = await stripe.checkout.sessions.create({
     mode: "payment",
@@ -125,7 +123,13 @@ payments.get("/purchases", async (c) => {
   const { data, error } = await query;
 
   if (error) {
-    return c.json({ error: "Failed to fetch purchases" }, 500);
+    return c.json(
+      {
+        error: "Failed to fetch purchases",
+        requestId: c.res.headers.get("X-Request-Id"),
+      },
+      500,
+    );
   }
 
   return c.json({
@@ -149,7 +153,13 @@ payments.post("/webhook", async (c) => {
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
   if (!webhookSecret) {
     console.error("STRIPE_WEBHOOK_SECRET not configured");
-    return c.json({ error: "Webhook not configured" }, 500);
+    return c.json(
+      {
+        error: "Webhook not configured",
+        requestId: c.res.headers.get("X-Request-Id"),
+      },
+      500,
+    );
   }
 
   const rawBody = await c.req.text();
@@ -161,7 +171,12 @@ payments.post("/webhook", async (c) => {
     event = stripe.webhooks.constructEvent(rawBody, signature, webhookSecret);
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
-    console.error("Webhook signature verification failed:", message);
+    console.error("Webhook signature verification failed:", {
+      error: message,
+      timestamp: new Date().toISOString(),
+      hasSignature: !!signature,
+      bodyLength: rawBody.length,
+    });
     return c.json({ error: "Invalid signature" }, 400);
   }
 

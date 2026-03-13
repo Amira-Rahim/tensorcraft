@@ -7,8 +7,8 @@ order: 3
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "The team fractures. Kira wants pure browser — impossible to shut down. Ryo insists on hybrid — server-side for accuracy. The argument escalates. Lin: 'Build both. Test both. Let the data decide.'"
-  speaker: "Lin"
+  narrative: "The team fractures. Noor wants pure browser — impossible to shut down. Amir insists on hybrid — server-side for accuracy. The argument escalates. Dilan: 'Build both. Test both. Let the data decide.'"
+  speaker: "Dilan"
 concept:
   explanation: "Performance budgets in ML inference work exactly like Lighthouse performance budgets. You have a time budget per frame. Preprocessing, inference, and postprocessing must all fit within it — or you drop frames."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "// Budget per frame at 30fps: preprocess < 5ms, inference < 20ms, postprocess < 5ms"
     tier: structural
 consequence:
-  narrative: "Kira profiles Protocol Sentinel. Preprocessing: 3ms. Inference: 28ms. Postprocessing: 4ms. Total: 35ms — over the 33ms budget for 30fps. She needs to shave 2ms somewhere. NEON: 'Welcome to the optimization game. Every millisecond counts.'"
+  narrative: "Noor profiles Protocol Sentinel. Preprocessing: 3ms. Inference: 28ms. Postprocessing: 4ms. Total: 35ms — over the 33ms budget for 30fps. She needs to shave 2ms somewhere. NEON: 'Welcome to the optimization game. Every millisecond counts.'"
   nextLessonTeaser: "Next: WebGL acceleration — using the GPU to break through the performance ceiling"
 hints:
   - level: nudge
@@ -35,15 +35,15 @@ keywords:
   - optimization
 ---
 
-<Dialogue speaker="Kira">
+<Dialogue speaker="Noor">
 If we depend on servers, Meridian takes down one node and the whole district goes blind.
 </Dialogue>
 
-<Dialogue speaker="Ryo">
-If we go pure browser, we lose 15% accuracy. That 15% is people, Kira. Misidentified people.
+<Dialogue speaker="Amir">
+If we go pure browser, we lose 15% accuracy. That 15% is people, Noor. Misidentified people.
 </Dialogue>
 
-<Dialogue speaker="Lin">
+<Dialogue speaker="Dilan">
 Build both. Test both. Let the data decide. But first — profile what you have. You cannot optimize what you cannot measure.
 </Dialogue>
 

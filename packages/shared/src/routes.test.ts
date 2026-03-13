@@ -34,9 +34,17 @@ describe("ROUTES map to actual pages", () => {
     expect(hasRoute).toBe(true);
   });
 
-  it.todo("pricing page has a page (/pricing)");
-  it.todo("dashboard page has a page (/dashboard)");
-  it.todo("settings page has a page (/settings)");
+  it("pricing page has a page (/pricing)", () => {
+    expect(hasPage("pricing")).toBe(true);
+  });
+
+  it("dashboard page has a page (/dashboard)", () => {
+    expect(hasPage("dashboard")).toBe(true);
+  });
+
+  it("settings page has a page (/settings)", () => {
+    expect(hasPage("settings")).toBe(true);
+  });
 
   it("terms page exists", () => {
     expect(hasPage("terms")).toBe(true);

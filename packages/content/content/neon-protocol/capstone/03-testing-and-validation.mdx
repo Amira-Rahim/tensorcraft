@@ -7,7 +7,7 @@ order: 3
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "The pipeline runs. But Lin refuses to deploy untested software. 'If Protocol Sentinel misclassifies a civilian as a Meridian agent, we destroy someone's life. If it misses a surveillance drone, we are exposed.' Zara takes the lead on testing. She maps the ML testing pyramid — unit tests for individual components, integration tests for stage connections, end-to-end tests for the full pipeline. Kira recognizes every layer."
+  narrative: "The pipeline runs. But Dilan refuses to deploy untested software. 'If Protocol Sentinel misclassifies a civilian as a Meridian agent, we destroy someone's life. If it misses a surveillance drone, we are exposed.' Zara takes the lead on testing. She maps the ML testing pyramid — unit tests for individual components, integration tests for stage connections, end-to-end tests for the full pipeline. Noor recognizes every layer."
   speaker: "Zara"
 concept:
   explanation: "ML testing follows the same testing pyramid as frontend development: unit tests for individual functions, integration tests for connected components, and end-to-end tests for the complete system. Add data validation as a fourth layer unique to ML."
@@ -18,7 +18,7 @@ concept:
     mlCode: "// Unit: expect(preprocess(frame).shape).toEqual([1,224,224,3])  Integration: pipeline.run(frame) → detections  E2E: camera → pipeline → broadcast → verify"
     tier: structural
 consequence:
-  narrative: "Two hundred tests pass. Six fail — edge cases Kira never considered. A frame with zero detections crashes the classifier. A grayscale camera feed breaks the preprocessor. An adversarial patch with exactly 0.8 variance slips through the guard. Zara fixes each one. 'Testing is not bureaucracy. It is how you earn trust.'"
+  narrative: "Two hundred tests pass. Six fail — edge cases Noor never considered. A frame with zero detections crashes the classifier. A grayscale camera feed breaks the preprocessor. An adversarial patch with exactly 0.8 variance slips through the guard. Zara fixes each one. 'Testing is not bureaucracy. It is how you earn trust.'"
   nextLessonTeaser: "Next: documentation — model cards, system docs, and handoff to the resistance network"
 hints:
   - level: nudge
@@ -36,7 +36,7 @@ keywords:
   - test-pyramid
 ---
 
-<Dialogue speaker="Lin">
+<Dialogue speaker="Dilan">
 You would not deploy a frontend application without tests. You will not deploy Protocol Sentinel without them either. Lives depend on this system being correct. Zara — build the test suite.
 </Dialogue>
 
@@ -44,7 +44,7 @@ You would not deploy a frontend application without tests. You will not deploy P
 Same pyramid we use for any production system. Unit tests for each stage. Integration tests for connected stages. End-to-end tests for the full pipeline. But ML adds a fourth layer that frontend does not have: data validation. We test the data itself — distributions, edge cases, adversarial inputs.
 </Dialogue>
 
-<Dialogue speaker="Kira">
+<Dialogue speaker="Noor">
 Jest for units, React Testing Library for integration, Cypress for E2E. I know this pyramid. The ML version uses the same structure — just different assertions. Instead of checking DOM output, I check tensor shapes and prediction confidence.
 </Dialogue>
 

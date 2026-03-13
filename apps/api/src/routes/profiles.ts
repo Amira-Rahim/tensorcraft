@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import { getSupabaseServerClient } from "@tensorcraft/supabase";
+import { isValidThemeSlug } from "@tensorcraft/shared";
 import { authMiddleware } from "../middleware/auth";
 import type { AppEnv } from "../types";
 
@@ -37,21 +38,20 @@ function validateField(field: AllowedField, value: unknown): string | null {
       if (typeof value !== "string" || value.length > 2048) {
         return "avatar_url must be a string of at most 2048 characters";
       }
-      // Basic URL check
+      // URL validation — reject dangerous protocols
       try {
-        new URL(value);
+        const parsed = new URL(value);
+        if (!["https:", "http:"].includes(parsed.protocol)) {
+          return "avatar_url must use https or http protocol";
+        }
       } catch {
         return "avatar_url must be a valid URL";
       }
       return null;
 
     case "preferred_theme_id":
-      if (
-        typeof value !== "string" ||
-        value.length === 0 ||
-        value.length > 50
-      ) {
-        return "preferred_theme_id must be a string between 1 and 50 characters";
+      if (typeof value !== "string" || !isValidThemeSlug(value)) {
+        return "preferred_theme_id must be a valid theme slug";
       }
       return null;
 
@@ -126,7 +126,13 @@ profiles.patch("/:userId", async (c) => {
 
   if (error) {
     console.error("Profile update failed:", error.message);
-    return c.json({ error: "Failed to update profile" }, 500);
+    return c.json(
+      {
+        error: "Failed to update profile",
+        requestId: c.res.headers.get("X-Request-Id"),
+      },
+      500,
+    );
   }
 
   return c.json({ profile: data });

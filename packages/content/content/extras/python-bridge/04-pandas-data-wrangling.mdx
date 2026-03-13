@@ -6,6 +6,8 @@ themeId: shared
 order: 4
 estimatedMinutes: 25
 difficulty: intermediate
+context:
+  narrative: "Before data reaches a model, it needs cleaning, filtering, and reshaping. In JavaScript you'd use map/filter/reduce. In Python's ML ecosystem, that tool is pandas."
 concept:
   explanation: "A pandas DataFrame is an array of objects with column-aware map, filter, reduce, groupBy, and join operations built in."
   bridge:
@@ -14,6 +16,9 @@ concept:
     mlTitle: "pandas DataFrame"
     mlCode: "df[df['age'] > 25].assign(label=lambda r: (r['age'] > 50).astype(int))"
     tier: structural
+consequence:
+  narrative: "You can now read pandas data preprocessing code. df['col'] is like row.col, df[condition] is .filter(), and .apply() is .map(). Data wrangling translates directly."
+  nextLessonTeaser: "Next: how to read ML papers and navigate PyTorch repos"
 hints:
   - level: nudge
     content: "Think of a DataFrame as a spreadsheet you manipulate with code"
@@ -45,25 +50,25 @@ Before data reaches a model, it goes through wrangling: cleaning, transforming, 
 
 # Create a DataFrame — like an array of objects with typed columns
 df = pd.DataFrame({
-    'name': ['Alice', 'Bob', 'Carol', 'Dave'],
+    'name': ['Amina', 'Ravi', 'Leyla', 'Arjun'],
     'age': [28, 35, 42, 23],
     'score': [0.85, 0.72, 0.91, 0.68]
 })
 
 #     name  age  score
-# 0  Alice   28   0.85
-# 1    Bob   35   0.72
-# 2  Carol   42   0.91
-# 3   Dave   23   0.68`}
+# 0  Amina   28   0.85
+# 1    Ravi   35   0.72
+# 2  Leyla   42   0.91
+# 3   Arjun   23   0.68`}
 </CodeBlock>
 
 <CodeBlock language="typescript" title="js-equivalent.ts">
 {`// JavaScript equivalent
 const data = [
-  { name: 'Alice', age: 28, score: 0.85 },
-  { name: 'Bob',   age: 35, score: 0.72 },
-  { name: 'Carol', age: 42, score: 0.91 },
-  { name: 'Dave',  age: 23, score: 0.68 },
+  { name: 'Amina', age: 28, score: 0.85 },
+  { name: 'Ravi',   age: 35, score: 0.72 },
+  { name: 'Leyla', age: 42, score: 0.91 },
+  { name: 'Arjun',  age: 23, score: 0.68 },
 ];`}
 </CodeBlock>
 

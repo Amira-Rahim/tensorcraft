@@ -7,8 +7,8 @@ order: 4
 estimatedMinutes: 20
 difficulty: intermediate
 context:
-  narrative: "Some layers need higher precision than others. Jin analyzes which layers are sensitive."
-  speaker: "Jin Takahashi"
+  narrative: "Some layers need higher precision than others. Elif analyzes which layers are sensitive."
+  speaker: "Elif Yilmaz"
 concept:
   explanation: "Mixed precision uses different number formats for different layers — like responsive images that serve different resolutions based on context."
   bridge:
@@ -34,7 +34,7 @@ keywords:
   - per-layer
 ---
 
-<Dialogue speaker="Jin Takahashi">
+<Dialogue speaker="Elif Yilmaz">
 I ran a sensitivity analysis. The first and last layers lose significant accuracy when quantized to Int8. The middle layers are robust. We should use different precision for different parts of the model.
 </Dialogue>
 

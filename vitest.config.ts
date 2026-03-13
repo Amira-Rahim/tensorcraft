@@ -10,6 +10,18 @@ export default defineConfig({
     setupFiles: ["./vitest.setup.ts"],
     include: ["**/*.test.{ts,tsx}"],
     exclude: ["**/node_modules/**", ".next", "dist", "e2e"],
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "lcov"],
+      exclude: [
+        "node_modules/",
+        "dist/",
+        ".velite/",
+        "**/*.test.ts",
+        "**/*.spec.ts",
+        "e2e/",
+      ],
+    },
   },
   resolve: {
     alias: {

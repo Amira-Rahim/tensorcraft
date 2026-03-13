@@ -7,7 +7,7 @@ order: 2
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "Khalil opens the hospital's API documentation. HL7 FHIR — a standard for exchanging healthcare data. 'It is just REST,' he says, scrolling through resource types. 'Patient, Observation, MedicationRequest, Condition. Each resource has a schema. I have integrated with worse APIs.' Santos looks over his shoulder. 'Worse APIs that did not involve patient safety.' Khalil pauses. 'Fair point. Let us be very careful with this one.'"
+  narrative: "Khalil opens the hospital's API documentation. HL7 FHIR — a standard for exchanging healthcare data. 'It is just REST,' he says, scrolling through resource types. 'Patient, Observation, MedicationRequest, Condition. Each resource has a schema. I have integrated with worse APIs.' Imran looks over his shoulder. 'Worse APIs that did not involve patient safety.' Khalil pauses. 'Fair point. Let us be very careful with this one.'"
   speaker: "Khalil"
 concept:
   explanation: "Integrating Diagnostic One with hospital EHR systems through HL7 FHIR is the same discipline as integrating with any third-party API — adapting your internal data models to external contracts, handling versioning, and building robust error handling for data you do not control."
@@ -18,7 +18,7 @@ concept:
     mlCode: "// FHIR API: adapt your ClinicalNote model to FHIR's Observation resource schema"
     tier: structural
 consequence:
-  narrative: "The FHIR adapter passes its first integration test. A MedicationRequest resource flows in, gets transformed to Diagnostic One's internal format, runs through the NLP pipeline, and produces a drug interaction alert. Obi watches the data flow on his monitor. 'It is like watching a webhook fire for the first time. Except the webhook might save someone's life.' Dr. Vasquez reviews the adapter's error handling. 'What happens when the EHR sends malformed data?' Khalil shows her the validation layer. 'Same thing that happens when Stripe sends a malformed webhook — we log it, reject it, and alert the team.'"
+  narrative: "The FHIR adapter passes its first integration test. A MedicationRequest resource flows in, gets transformed to Diagnostic One's internal format, runs through the NLP pipeline, and produces a drug interaction alert. Vikram watches the data flow on his monitor. 'It is like watching a webhook fire for the first time. Except the webhook might save someone's life.' Dr. Karimi reviews the adapter's error handling. 'What happens when the EHR sends malformed data?' Khalil shows her the validation layer. 'Same thing that happens when Stripe sends a malformed webhook — we log it, reject it, and alert the team.'"
   nextLessonTeaser: "Next: validating Diagnostic One against expert annotations"
 hints:
   - level: nudge
@@ -39,7 +39,7 @@ keywords:
 HL7 FHIR. It is a REST API for healthcare data. Patient resources, Observation resources, MedicationRequest resources. Each has a JSON schema. I have integrated frontend apps with Stripe, Twilio, SendGrid — this is the same pattern. Fetch the resource, validate the schema, transform it to our internal format.
 </Dialogue>
 
-<Dialogue speaker="Santos">
+<Dialogue speaker="Imran">
 Except if our Stripe integration drops a payment, someone retries their credit card. If our FHIR integration drops a medication record, someone might miss a drug interaction. The error handling needs to be airtight.
 </Dialogue>
 

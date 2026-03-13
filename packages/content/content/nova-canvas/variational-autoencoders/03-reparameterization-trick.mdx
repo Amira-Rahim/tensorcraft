@@ -7,8 +7,8 @@ order: 3
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "Ren hits a wall — you cannot backpropagate through random sampling. Kai explains the reparameterization trick using an analogy from seeded random number generators."
-  speaker: "Kai"
+  narrative: "Samir hits a wall — you cannot backpropagate through random sampling. Rohan explains the reparameterization trick using an analogy from seeded random number generators."
+  speaker: "Rohan"
 concept:
   explanation: "The reparameterization trick moves randomness outside the gradient computation path. Instead of sampling z directly, compute z = mu + sigma * epsilon where epsilon is fixed random noise."
   bridge:
@@ -35,7 +35,7 @@ keywords:
   - epsilon
 ---
 
-<Dialogue speaker="Kai">
+<Dialogue speaker="Rohan">
 Here is the problem. You need to sample from the distribution to generate output. But sampling is random, and you cannot compute gradients through randomness. Backpropagation needs a smooth, differentiable path. Randomness is a wall.
 </Dialogue>
 

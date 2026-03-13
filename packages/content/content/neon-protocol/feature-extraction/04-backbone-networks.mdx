@@ -7,8 +7,8 @@ order: 4
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Ryo opens a comparison chart on the holotable: MobileNet, ResNet, EfficientNet — each with different tradeoffs. 'These are backbone networks,' he says. 'Pre-trained feature extractors that you plug into your system like shared component libraries. You do not build from scratch. You pick the right backbone and build on top.'"
-  speaker: "Ryo"
+  narrative: "Amir opens a comparison chart on the holotable: MobileNet, ResNet, EfficientNet — each with different tradeoffs. 'These are backbone networks,' he says. 'Pre-trained feature extractors that you plug into your system like shared component libraries. You do not build from scratch. You pick the right backbone and build on top.'"
+  speaker: "Amir"
 concept:
   explanation: "A backbone network is a pre-trained CNN that serves as a reusable feature extractor. Like importing a shared component library in frontend development, you use someone else's trained network as a foundation and build your specific application on top."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "const backbone = await tf.loadLayersModel('mobilenet_v2');"
     tier: structural
 consequence:
-  narrative: "Ryo benchmarks three backbones on Kira's laptop. MobileNetV2: 48ms per frame. ResNet50: 180ms. 'For browser-based real-time detection,' he says, 'MobileNet is the only choice. We are not running on Meridian's server farms.'"
+  narrative: "Amir benchmarks three backbones on Noor's laptop. MobileNetV2: 48ms per frame. ResNet50: 180ms. 'For browser-based real-time detection,' he says, 'MobileNet is the only choice. We are not running on Meridian's server farms.'"
   nextLessonTeaser: "Next: dimensionality reduction — compressing 512 dimensions into 2 for visualization"
 hints:
   - level: nudge
@@ -35,11 +35,11 @@ keywords:
   - component-library
 ---
 
-<Dialogue speaker="Ryo">
+<Dialogue speaker="Amir">
 When you start a new frontend project, you do not write a button component from scratch. You import a component library. Backbone networks are the same idea. Someone trained a massive CNN on millions of images. You import it and use its features as a foundation for your specific task.
 </Dialogue>
 
-<Dialogue speaker="Kira">
+<Dialogue speaker="Noor">
 So MobileNet is like a lightweight UI library — fast but basic. And ResNet is like a full design system — powerful but heavier?
 </Dialogue>
 

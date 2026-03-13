@@ -7,8 +7,8 @@ order: 4
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "Petrov runs the stress test. One user: perfect. Ten users: fine. Fifty users: the WebSocket connections start dropping. 'We need connection pooling, request queuing, and graceful degradation. The same problems as any high-traffic web application.'"
-  speaker: "Petrov"
+  narrative: "Erdem runs the stress test. One user: perfect. Ten users: fine. Fifty users: the WebSocket connections start dropping. 'We need connection pooling, request queuing, and graceful degradation. The same problems as any high-traffic web application.'"
+  speaker: "Erdem"
 concept:
   explanation: "Handling concurrent generators is connection management — pooling WebSocket connections, queuing generation requests, and shedding load gracefully when demand exceeds capacity."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "const queue = new GenerationQueue(maxConcurrent: 4); queue.enqueue(generateRequest);"
     tier: structural
 consequence:
-  narrative: "The system handles 200 concurrent connections. Excess requests queue with estimated wait times. Nobody waits more than 2 seconds. Petrov exhales for the first time in weeks."
+  narrative: "The system handles 200 concurrent connections. Excess requests queue with estimated wait times. Nobody waits more than 2 seconds. Erdem exhales for the first time in weeks."
   nextLessonTeaser: "Next: designing the physical-digital installation architecture"
 hints:
   - level: nudge
@@ -34,11 +34,11 @@ keywords:
   - connection-pooling
 ---
 
-<Dialogue speaker="Petrov">
+<Dialogue speaker="Erdem">
 Two hundred people in the gallery. Each one generating. That is 200 concurrent WebSocket connections, 200 potential generation requests per second. The GPU handles 4 at a time. We need a queue.
 </Dialogue>
 
-<Dialogue speaker="Ren">
+<Dialogue speaker="Samir">
 Same problem as a chat application with thousands of users. Connection pooling, message queuing, backpressure. The generation is just the payload — the infrastructure is pure frontend engineering.
 </Dialogue>
 

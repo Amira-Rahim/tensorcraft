@@ -1,4 +1,4 @@
-# TensorCraft PRD v3.2
+# TensorCraft PRD v3.4
 
 > **Product Requirements Document — Version 3.4**
 > Last updated: 2026-03-13 (audit fixes: accessibility hardening, user menu, checkout button, admin API + rate limiting + error tracking, new DB tables, CI/CD pipeline additions)

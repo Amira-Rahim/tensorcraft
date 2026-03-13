@@ -78,9 +78,7 @@ exerciseAttempts.post("/", async (c) => {
     return c.json({ error: "submittedCode exceeds maximum size" }, 400);
   }
 
-  // exercise_attempts table added in migration 004 — not in generated Supabase types yet
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const supabase = getSupabaseServerClient(token) as any;
+  const supabase = getSupabaseServerClient(token);
 
   const { data, error } = await supabase
     .from("exercise_attempts")
@@ -100,7 +98,13 @@ exerciseAttempts.post("/", async (c) => {
     .single();
 
   if (error) {
-    return c.json({ error: "Failed to record attempt" }, 500);
+    return c.json(
+      {
+        error: "Failed to record attempt",
+        requestId: c.res.headers.get("X-Request-Id"),
+      },
+      500,
+    );
   }
 
   return c.json({ attempt: data }, 201);
@@ -119,8 +123,7 @@ exerciseAttempts.get("/", async (c) => {
     return c.json({ error: "lessonId query parameter is required" }, 400);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const supabase = getSupabaseServerClient(token) as any;
+  const supabase = getSupabaseServerClient(token);
 
   let query = supabase
     .from("exercise_attempts")
@@ -136,7 +139,13 @@ exerciseAttempts.get("/", async (c) => {
   const { data, error } = await query;
 
   if (error) {
-    return c.json({ error: "Failed to fetch attempts" }, 500);
+    return c.json(
+      {
+        error: "Failed to fetch attempts",
+        requestId: c.res.headers.get("X-Request-Id"),
+      },
+      500,
+    );
   }
 
   return c.json({ attempts: data });

@@ -7,8 +7,8 @@ order: 2
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "The architecture diagram is approved. Now each module must connect to the next. Kira starts wiring — detection feeds into classification, classification feeds into the adversarial guard, the guard feeds into broadcast. Ryo watches: 'Treat each connection like middleware. Data in, data out, next() to continue.' It clicks instantly."
-  speaker: "Ryo"
+  narrative: "The architecture diagram is approved. Now each module must connect to the next. Noor starts wiring — detection feeds into classification, classification feeds into the adversarial guard, the guard feeds into broadcast. Amir watches: 'Treat each connection like middleware. Data in, data out, next() to continue.' It clicks instantly."
+  speaker: "Amir"
 concept:
   explanation: "Integrating ML pipeline stages follows the same pattern as Express/Next.js middleware. Each stage receives input, transforms it, and calls next() to pass output downstream. Errors short-circuit the chain."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "pipeline.use(preprocess).use(detect).use(classify).use(guard); // tensor flows through each"
     tier: structural
 consequence:
-  narrative: "The pipeline runs end-to-end for the first time. A test frame enters. Preprocessed. Objects detected. Classified — Meridian drone. Adversarial check — clean. Broadcast payload generated. Kira watches the data flow through six stages in 47 milliseconds. The Architect's surveillance network has a new adversary."
+  narrative: "The pipeline runs end-to-end for the first time. A test frame enters. Preprocessed. Objects detected. Classified — Meridian drone. Adversarial check — clean. Broadcast payload generated. Noor watches the data flow through six stages in 47 milliseconds. The Architect's surveillance network has a new adversary."
   nextLessonTeaser: "Next: testing and validation — making sure Protocol Sentinel works before it goes live"
 hints:
   - level: nudge
@@ -35,11 +35,11 @@ keywords:
   - data-flow
 ---
 
-<Dialogue speaker="Ryo">
-Architecture is a diagram. Integration is making it real. Every connection between stages is a contract — typed input, typed output, error handling at every boundary. You have done this before, Kira. Think middleware.
+<Dialogue speaker="Amir">
+Architecture is a diagram. Integration is making it real. Every connection between stages is a contract — typed input, typed output, error handling at every boundary. You have done this before, Noor. Think middleware.
 </Dialogue>
 
-<Dialogue speaker="Kira">
+<Dialogue speaker="Noor">
 Express middleware. Each function gets the request, does its thing, calls next(). The detection model gets a preprocessed frame, does inference, passes detections downstream. Same pattern — different data.
 </Dialogue>
 

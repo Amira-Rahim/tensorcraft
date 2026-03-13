@@ -7,8 +7,8 @@ order: 1
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "DEEP SCAN flags a signal that doesn't match any known category. Torres challenges: is the model broken, or have they found something new?"
-  speaker: "Chief Torres"
+  narrative: "DEEP SCAN flags a signal that doesn't match any known category. Nazari challenges: is the model broken, or have they found something new?"
+  speaker: "Chief Nazari"
 concept:
   explanation: "Anomaly detection defines what 'normal' looks like and flags deviations — like establishing baseline performance metrics and alerting when they drift."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "if (reconstructionError > threshold) flag('anomaly')"
     tier: structural
 consequence:
-  narrative: "The crew agrees: they need a formal definition of 'normal' before they can reliably detect 'anomalous.' Park begins building a model of normality."
+  narrative: "The crew agrees: they need a formal definition of 'normal' before they can reliably detect 'anomalous.' Demir begins building a model of normality."
   nextLessonTeaser: "Next: autoencoders — learning to compress and reconstruct normal signals"
 hints:
   - level: nudge
@@ -34,15 +34,15 @@ keywords:
   - normal-distribution
 ---
 
-<Dialogue speaker="Chief Torres">
+<Dialogue speaker="Chief Nazari">
 Either our model is broken, or...
 </Dialogue>
 
-<Dialogue speaker="Dr. Sato">
+<Dialogue speaker="Dr. Farah">
 ...or we found something new.
 </Dialogue>
 
-<Dialogue speaker="Commander Okafor">
+<Dialogue speaker="Commander Mirza">
 How do we know which? How do we tell a genuine anomaly from a false alarm?
 </Dialogue>
 
@@ -103,8 +103,8 @@ console.log(isAnomaly(1.82, baseline));  // true — 8.7 sigmas away!`}
 // Low threshold (2 sigma): catches more anomalies, but more false alarms
 // High threshold (4 sigma): fewer false alarms, but might miss subtle anomalies
 
-// Torres wants zero false positives — she hates wasting time investigating nothing
-// Sato wants zero false negatives — she can't afford to miss the signal
+// Nazari wants zero false positives — she hates wasting time investigating nothing
+// Farah wants zero false negatives — she can't afford to miss the signal
 
 // The right threshold depends on the cost of each error type
 // For DEEP SCAN: missing an alien signal is worse than a few false alarms

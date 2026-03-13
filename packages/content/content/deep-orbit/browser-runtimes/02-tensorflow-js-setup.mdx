@@ -7,8 +7,8 @@ order: 2
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Park begins wiring TensorFlow.js into the ship's dashboard. Torres watches over his shoulder, timing every step."
-  speaker: "Ensign Park"
+  narrative: "Demir begins wiring TensorFlow.js into the ship's dashboard. Nazari watches over his shoulder, timing every step."
+  speaker: "Ensign Demir"
 concept:
   explanation: "Setting up TensorFlow.js in a web project follows the same pattern as any npm dependency — install, import, configure the backend."
   bridge:
@@ -34,11 +34,11 @@ keywords:
   - backend
 ---
 
-<Dialogue speaker="Ensign Park">
+<Dialogue speaker="Ensign Demir">
 Installing TensorFlow.js feels exactly like adding any other dependency. npm install, import, configure. I've done this a thousand times.
 </Dialogue>
 
-<Dialogue speaker="Chief Torres">
+<Dialogue speaker="Chief Nazari">
 Good. Because the hard part is not installation — it's what comes after. Check the backend. If it falls back to CPU, our inference budget is blown.
 </Dialogue>
 
@@ -100,7 +100,7 @@ await tf.ready();
 
 ## Benchmarking Your Setup
 
-Torres would benchmark everything. You should too.
+Nazari would benchmark everything. You should too.
 
 <CodeBlock language="typescript" title="benchmark.ts">
 {`import * as tf from '@tensorflow/tfjs';

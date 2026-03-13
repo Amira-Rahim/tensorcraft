@@ -7,8 +7,8 @@ order: 2
 estimatedMinutes: 30
 difficulty: intermediate
 context:
-  narrative: "Park builds his first recurrent neural network — a network that maintains hidden state between time steps, processing the signal as a sequence rather than isolated snapshots."
-  speaker: "Ensign Park"
+  narrative: "Demir builds his first recurrent neural network — a network that maintains hidden state between time steps, processing the signal as a sequence rather than isolated snapshots."
+  speaker: "Ensign Demir"
 concept:
   explanation: "An RNN is a reducer function — it takes previous state and new input to produce updated state, exactly like useReducer in React."
   bridge:
@@ -35,11 +35,11 @@ keywords:
   - vanishing-gradient
 ---
 
-<Dialogue speaker="Ensign Park">
+<Dialogue speaker="Ensign Demir">
 So an RNN is just... a reducer? It takes the previous hidden state and the new input, runs them through a function, and outputs new hidden state? I use this pattern every day with useReducer.
 </Dialogue>
 
-<Dialogue speaker="Dr. Sato">
+<Dialogue speaker="Dr. Farah">
 Exactly right. The hidden state is the network's memory — it accumulates information from every time step it has seen. The key difference is that the reducer function is *learned* from data, not hand-coded.
 </Dialogue>
 

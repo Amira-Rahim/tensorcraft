@@ -7,8 +7,8 @@ order: 4
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "Cole manages the canary rollout from the field. 'Region 3 gets the new model first. If it holds for 48 hours with no degradation, we expand to Regions 1 and 7. If anything looks off, one command rolls everything back.'"
-  speaker: "Cole Branson"
+  narrative: "Tariq manages the canary rollout from the field. 'Region 3 gets the new model first. If it holds for 48 hours with no degradation, we expand to Regions 1 and 7. If anything looks off, one command rolls everything back.'"
+  speaker: "Tariq Hussain"
 concept:
   explanation: "Canary deployments gradually roll out a new model version to a subset of devices with automatic rollback — identical to canary releases for frontend applications."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "// Deploy modelV2 to Region 3, monitor accuracy, promote or rollback"
     tier: identity
 consequence:
-  narrative: "Region 3 canary passes all checks. Cole promotes to Regions 1 and 7. After 72 hours across 3 regions: zero accuracy regressions, 6-hour earlier anomaly detection on 3 confirmed incidents. 'The new model caught a bearing failure 6 hours earlier. That is real impact.'"
+  narrative: "Region 3 canary passes all checks. Tariq promotes to Regions 1 and 7. After 72 hours across 3 regions: zero accuracy regressions, 6-hour earlier anomaly detection on 3 confirmed incidents. 'The new model caught a bearing failure 6 hours earlier. That is real impact.'"
   nextLessonTeaser: "Next: multi-armed bandits — adaptive traffic allocation that optimizes in real time"
 hints:
   - level: nudge
@@ -34,11 +34,11 @@ keywords:
   - staged-deployment
 ---
 
-<Dialogue speaker="Cole Branson">
+<Dialogue speaker="Tariq Hussain">
 Region 3 is our canary. 2,100 devices. If the new model performs well for 48 hours — no accuracy drops, no latency spikes, no missed anomalies — we promote. If anything goes sideways, one API call rolls back every device in the region. Clean and fast.
 </Dialogue>
 
-<Dialogue speaker="Jin Takahashi">
+<Dialogue speaker="Elif Yilmaz">
 The rollback must be instant. If a canary deployment compromises safety monitoring at any site, we need sub-second fallback to the proven model. No grace period.
 </Dialogue>
 

@@ -7,7 +7,7 @@ order: 3
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Kira's first detection model is producing boxes, but she has no idea if they are any good. Zara pulls up two overlapping rectangles on the holotable. 'How do you measure whether your predicted box matches the ground truth? The same way you check if two draggable elements overlap.'"
+  narrative: "Noor's first detection model is producing boxes, but she has no idea if they are any good. Zara pulls up two overlapping rectangles on the holotable. 'How do you measure whether your predicted box matches the ground truth? The same way you check if two draggable elements overlap.'"
   speaker: "Zara"
 concept:
   explanation: "Intersection over Union (IoU) measures how much two boxes overlap. It is the area of their intersection divided by the area of their union. Frontend developers use the same math for drag-and-drop hit testing and collision detection."
@@ -18,7 +18,7 @@ concept:
     mlCode: "const iou = intersectionArea / unionArea; // 0 = no overlap, 1 = perfect match"
     tier: structural
 consequence:
-  narrative: "Kira runs her model and computes IoU against the ground truth. Average IoU: 0.72. NEON chirps: 'Meridian demands 0.85 or higher. We need to do better. But at least now we can measure it.'"
+  narrative: "Noor runs her model and computes IoU against the ground truth. Average IoU: 0.72. NEON chirps: 'Meridian demands 0.85 or higher. We need to do better. But at least now we can measure it.'"
   nextLessonTeaser: "Next: Non-Max Suppression — eliminating duplicate detections when anchors overlap"
 hints:
   - level: nudge
@@ -39,7 +39,7 @@ keywords:
 You built drag-and-drop interfaces before, yes? When a user drags a card over a drop zone, how do you know if it "counts" as being inside?
 </Dialogue>
 
-<Dialogue speaker="Kira">
+<Dialogue speaker="Noor">
 I check if the rectangles overlap. I calculate the overlap area and compare it to the element sizes. If there is enough overlap, it snaps into place.
 </Dialogue>
 

@@ -7,8 +7,8 @@ order: 4
 estimatedMinutes: 30
 difficulty: intermediate
 context:
-  narrative: "MEDI confidently misclassifies a rare condition. Dr. Vasquez explains that in medicine, overconfidence kills. The system needs to say 'I'm not sure.'"
-  speaker: "Dr. Elena Vasquez"
+  narrative: "MEDI confidently misclassifies a rare condition. Dr. Karimi explains that in medicine, overconfidence kills. The system needs to say 'I'm not sure.'"
+  speaker: "Dr. Zahra Karimi"
 concept:
   explanation: "Calibration ensures that model confidence scores match actual accuracy — when the model says 80% confident, it should be right 80% of the time."
   bridge:
@@ -39,11 +39,11 @@ keywords:
 Document classified as ROUTINE with 94% confidence.
 </Dialogue>
 
-<Dialogue speaker="Dr. Elena Vasquez">
+<Dialogue speaker="Dr. Zahra Karimi">
 That document describes a rare autoimmune flare. Your model has never seen this pattern before, yet it's 94% confident it's routine. In medicine, that kind of overconfidence is lethal. I need the system to say "I don't know" when it doesn't know.
 </Dialogue>
 
-<Dialogue speaker="Khalil Mensah">
+<Dialogue speaker="Khalil Ansari">
 It's like TypeScript strict mode. Without it, everything is implicitly `any` — the compiler doesn't flag uncertainty. With strict mode, every unknown type becomes an explicit error. We need strict mode for our classifier.
 </Dialogue>
 
@@ -167,7 +167,7 @@ console.log('ECE (lower is better):', ece.toFixed(4));
 
 ## Uncertainty-Aware Routing
 
-<Dialogue speaker="Dr. Elena Vasquez">
+<Dialogue speaker="Dr. Zahra Karimi">
 Here's my rule: if the model's confidence is below 70%, route it to a human reviewer. I'd rather have a physician spend 30 seconds confirming a result than have the system silently make a mistake.
 </Dialogue>
 

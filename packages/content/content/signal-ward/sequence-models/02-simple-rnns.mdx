@@ -7,8 +7,8 @@ order: 2
 estimatedMinutes: 30
 difficulty: intermediate
 context:
-  narrative: "Obi introduces recurrent neural networks — models that process text one word at a time, carrying context forward like Array.reduce accumulates state."
-  speaker: "Obi"
+  narrative: "Vikram introduces recurrent neural networks — models that process text one word at a time, carrying context forward like Array.reduce accumulates state."
+  speaker: "Vikram"
 concept:
   explanation: "An RNN processes a sequence one element at a time, maintaining a hidden state that accumulates context. It's exactly like Array.reduce — each step takes the current element and the accumulated state, producing a new state."
   bridge:
@@ -37,15 +37,15 @@ keywords:
 
 > **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
-<Dialogue speaker="Obi">
-Santos, you use Array.reduce all the time, right? Start with an initial value, process each element, accumulate state?
+<Dialogue speaker="Vikram">
+Imran, you use Array.reduce all the time, right? Start with an initial value, process each element, accumulate state?
 </Dialogue>
 
-<Dialogue speaker="Santos">
+<Dialogue speaker="Imran">
 Sure. Like summing an array: `[1,2,3].reduce((sum, n) => sum + n, 0)`. Each step folds in the next value.
 </Dialogue>
 
-<Dialogue speaker="Obi">
+<Dialogue speaker="Vikram">
 An RNN is exactly that. Start with an initial hidden state, process each token, accumulate context. By the time you've read "patient denied chest pain," the hidden state encodes the full meaning — including the negation.
 </Dialogue>
 
@@ -145,7 +145,7 @@ prediction.print(); // probability of positive symptom mention`}
 
 ## Tracing Hidden State Evolution
 
-<Dialogue speaker="Dr. Vasquez">
+<Dialogue speaker="Dr. Karimi">
 Can we see what the hidden state looks like after each word? I want to understand how the model builds its interpretation.
 </Dialogue>
 

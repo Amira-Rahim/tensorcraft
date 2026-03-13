@@ -7,8 +7,8 @@ order: 4
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Torres demands precise thresholds. 'If DEEP SCAN cries wolf one more time, the bridge crew will ignore it. Set the sensitivity correctly.'"
-  speaker: "Chief Torres"
+  narrative: "Nazari demands precise thresholds. 'If DEEP SCAN cries wolf one more time, the bridge crew will ignore it. Set the sensitivity correctly.'"
+  speaker: "Chief Nazari"
 concept:
   explanation: "Threshold tuning balances false positives and false negatives — like setting alert thresholds in a monitoring dashboard where too many alerts cause alert fatigue."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "if (reconstructionError > threshold) flag('anomaly')"
     tier: structural
 consequence:
-  narrative: "Park sets the threshold at the 99th percentile of normal errors. DEEP SCAN is precise — it flags only the signals that truly don't belong."
+  narrative: "Demir sets the threshold at the 99th percentile of normal errors. DEEP SCAN is precise — it flags only the signals that truly don't belong."
   nextLessonTeaser: "Next: the moment of truth — DEEP SCAN encounters the unclassifiable signal"
 hints:
   - level: nudge
@@ -35,12 +35,12 @@ keywords:
   - alert-fatigue
 ---
 
-<Dialogue speaker="Chief Torres">
+<Dialogue speaker="Chief Nazari">
 Last week, DEEP SCAN flagged 14 signals. I checked every one. Twelve were cosmic background radiation. I am not doing that again. Set the threshold so it only fires on real anomalies.
 </Dialogue>
 
-<Dialogue speaker="Dr. Sato">
-But if we set it too high, we might miss a genuine anomaly. It is a tradeoff, Torres.
+<Dialogue speaker="Dr. Farah">
+But if we set it too high, we might miss a genuine anomaly. It is a tradeoff, Nazari.
 </Dialogue>
 
 Alert fatigue is real — in frontend monitoring and in space. If your error tracker fires on every minor exception, the team starts ignoring it. If DEEP SCAN flags too many false positives, the bridge crew will stop paying attention. The threshold must balance sensitivity against specificity.

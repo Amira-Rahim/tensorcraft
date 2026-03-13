@@ -7,7 +7,7 @@ order: 1
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Kira stares at a surveillance feed, trying to sharpen a blurry license plate. Zara stops her: 'You already know how to do this. That blur filter in your Canvas drawing app? That IS a convolution. Let me show you what is really happening under the hood.'"
+  narrative: "Noor stares at a surveillance feed, trying to sharpen a blurry license plate. Zara stops her: 'You already know how to do this. That blur filter in your Canvas drawing app? That IS a convolution. Let me show you what is really happening under the hood.'"
   speaker: "Zara"
 concept:
   explanation: "A convolution slides a small kernel (matrix) across an image, computing weighted sums at each position — identical to how CSS filter: blur() applies a Gaussian kernel to every pixel."
@@ -18,7 +18,7 @@ concept:
     mlCode: "const output = tf.conv2d(image, kernel, strides, 'same'); // slides kernel across image"
     tier: structural
 consequence:
-  narrative: "Kira runs her first convolution on a surveillance frame. Edge detection lights up doorways, windows, and camera housings — structural features invisible to the naked eye."
+  narrative: "Noor runs her first convolution on a surveillance frame. Edge detection lights up doorways, windows, and camera housings — structural features invisible to the naked eye."
   nextLessonTeaser: "Next: pooling layers that compress feature maps without losing important patterns"
 hints:
   - level: nudge
@@ -39,7 +39,7 @@ keywords:
 Every time you apply `filter: blur()` in CSS, the browser slides a Gaussian kernel across every pixel. It multiplies neighboring pixel values by kernel weights, sums them up, and writes the result. That is a convolution. The only difference in ML is that we learn the kernel weights instead of hardcoding them.
 </Dialogue>
 
-<Dialogue speaker="Kira">
+<Dialogue speaker="Noor">
 Wait — so when I built that photo editor with Canvas filters in my drawing app, I was literally doing convolutions? The sharpen filter, the edge detection... those were all kernels?
 </Dialogue>
 

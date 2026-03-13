@@ -7,8 +7,8 @@ order: 5
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "The gallery space is booked. Three projection walls, 12 tablets for visitor interaction, unreliable Wi-Fi, no guaranteed internet. Ren: 'This is a PWA problem. Offline-first, local inference, sync when possible.'"
-  speaker: "Ren"
+  narrative: "The gallery space is booked. Three projection walls, 12 tablets for visitor interaction, unreliable Wi-Fi, no guaranteed internet. Samir: 'This is a PWA problem. Offline-first, local inference, sync when possible.'"
+  speaker: "Samir"
 concept:
   explanation: "An art installation is a Progressive Web App deployed to a physical space — offline-capable, installable, resilient to network failures, and designed for a specific hardware environment."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "// offline inference, local models, sync results when connected"
     tier: identity
 consequence:
-  narrative: "Twelve tablets, each running Nova Canvas as a PWA with local model inference. No server dependency. No internet required. Petrov: 'If the Wi-Fi dies, the art keeps running. That is the standard.'"
+  narrative: "Twelve tablets, each running Nova Canvas as a PWA with local model inference. No server dependency. No internet required. Erdem: 'If the Wi-Fi dies, the art keeps running. That is the standard.'"
   nextLessonTeaser: "Next module: the Biennale opens"
 hints:
   - level: nudge
@@ -34,11 +34,11 @@ keywords:
   - architecture
 ---
 
-<Dialogue speaker="Ren">
+<Dialogue speaker="Samir">
 Three walls, twelve tablets, one gallery space. The Wi-Fi will drop. The internet will lag. The power might flicker. We need an architecture that does not care about any of that. This is a PWA. Offline-first. Local inference. Sync when you can.
 </Dialogue>
 
-<Dialogue speaker="Petrov">
+<Dialogue speaker="Erdem">
 Every tablet runs the full application independently. No single point of failure. When connectivity returns, they sync their generation logs. The gallery never sees a loading spinner.
 </Dialogue>
 

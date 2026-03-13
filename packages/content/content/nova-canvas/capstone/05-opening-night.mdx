@@ -7,8 +7,8 @@ order: 5
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "Opening night. The gallery doors open. 247 concurrent visitors at peak. A child whispers 'a dragon made of stars' and Nova Canvas generates it — image, sound, and all. Petrov watches the dashboard. 'It is holding. Everything is holding.'"
-  speaker: "Petrov"
+  narrative: "Opening night. The gallery doors open. 247 concurrent visitors at peak. A child whispers 'a dragon made of stars' and Nova Canvas generates it — image, sound, and all. Erdem watches the dashboard. 'It is holding. Everything is holding.'"
+  speaker: "Erdem"
 concept:
   explanation: "Production launch day is operational readiness — runbooks, rollback plans, communication channels, and the discipline to watch metrics instead of making changes."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "// All models loaded, caches warm, health checks green, failover tested"
     tier: identity
 consequence:
-  narrative: "The exhibition runs for three months. 12,847 unique visitors. 31,209 generations. The system crashes twice — both times, the circuit breakers engage and recover within 30 seconds. Kai: 'Tomorrow we fix the memory leak in the WebSocket handler.' There is always a tomorrow."
+  narrative: "The exhibition runs for three months. 12,847 unique visitors. 31,209 generations. The system crashes twice — both times, the circuit breakers engage and recover within 30 seconds. Rohan: 'Tomorrow we fix the memory leak in the WebSocket handler.' There is always a tomorrow."
   nextLessonTeaser: "You have completed Nova Canvas. The bridge from frontend to ML is shorter than you thought."
 hints:
   - level: nudge
@@ -34,7 +34,7 @@ keywords:
   - operations
 ---
 
-<Dialogue speaker="Petrov">
+<Dialogue speaker="Erdem">
 It is holding. Everything is holding. Inference latency at 290ms p95. Memory stable at 340MB. Zero errors in the last hour. 247 concurrent connections.
 </Dialogue>
 
@@ -42,7 +42,7 @@ It is holding. Everything is holding. Inference latency at 290ms p95. Memory sta
 Look at them. They are not looking at screens. They are inside the art. A woman is conducting a symphony with her hands. A child just asked for a dragon made of stars.
 </Dialogue>
 
-<Dialogue speaker="Kai">
+<Dialogue speaker="Rohan">
 Tomorrow we fix the memory leak in the WebSocket handler. Tonight we watch.
 </Dialogue>
 
@@ -164,7 +164,7 @@ const runbook: RunbookEntry[] = [
       tf.engine().endScope();
       return tf.memory().numTensors < 200;
     },
-    escalation: 'Kai — audio pipeline likely source',
+    escalation: 'Rohan — audio pipeline likely source',
   },
   {
     scenario: 'WebSocket connection storm',
@@ -176,7 +176,7 @@ const runbook: RunbookEntry[] = [
       '3. Restart affected tablets if in reconnect loop',
       '4. Check server-side WebSocket handler for resource leaks',
     ],
-    escalation: 'Ren — connection manager owner',
+    escalation: 'Samir — connection manager owner',
   },
   {
     scenario: 'Generation quality degradation',
@@ -215,7 +215,7 @@ async function handleIncident(scenario: string) {
 ## Opening Night Dashboard
 
 <CodeBlock language="typescript" title="dashboard.ts">
-{`// Real-time dashboard — the view from Petrov's phone
+{`// Real-time dashboard — the view from Erdem's phone
 function renderDashboard(canvas: HTMLCanvasElement, monitor: InstallationMonitor) {
   const ctx = canvas.getContext('2d')!;
   const metrics = monitor.currentMetrics;

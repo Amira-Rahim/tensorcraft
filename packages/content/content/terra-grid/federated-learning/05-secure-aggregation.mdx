@@ -7,8 +7,8 @@ order: 5
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "Jin raises the final concern: the aggregation server can see each company's individual weight updates. Secure aggregation ensures the server only sees the combined result — no individual contributions."
-  speaker: "Jin Takahashi"
+  narrative: "Elif raises the final concern: the aggregation server can see each company's individual weight updates. Secure aggregation ensures the server only sees the combined result — no individual contributions."
+  speaker: "Elif Yilmaz"
 concept:
   explanation: "Secure aggregation hides individual updates from the server, just as end-to-end encryption hides individual messages from the messaging platform."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "// Server: aggregates updates but cannot see individual ones"
     tier: structural
 consequence:
-  narrative: "The federated system passes Jin's security audit. The server computes the global average without seeing any individual update. Three companies, zero data exposure, one shared model."
+  narrative: "The federated system passes Elif's security audit. The server computes the global average without seeing any individual update. Three companies, zero data exposure, one shared model."
   nextLessonTeaser: "Module 9: bringing it all together in a production deployment"
 hints:
   - level: nudge
@@ -34,7 +34,7 @@ keywords:
   - privacy
 ---
 
-<Dialogue speaker="Jin Takahashi">
+<Dialogue speaker="Elif Yilmaz">
 Differential privacy protects individual data points. But the aggregation server still sees each company's raw weight updates. If the server is compromised, an attacker learns what each company's model looks like.
 </Dialogue>
 

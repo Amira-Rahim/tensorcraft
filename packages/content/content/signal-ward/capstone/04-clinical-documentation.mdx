@@ -7,8 +7,8 @@ order: 4
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "Dr. Vasquez pulls up the FDA's guidance on clinical decision support software. 'Before Diagnostic One can be used in any hospital, we need documentation. A model card — what it does, what it does not do, how it was validated, its known limitations, and when a clinician should override it.' Obi nods. 'It is API documentation. I have written hundreds of API docs. Endpoints, parameters, expected responses, error codes, rate limits.' Vasquez smiles. 'Exactly. Except your users are clinicians, and your error codes could affect patient care.'"
-  speaker: "Dr. Vasquez"
+  narrative: "Dr. Karimi pulls up the FDA's guidance on clinical decision support software. 'Before Diagnostic One can be used in any hospital, we need documentation. A model card — what it does, what it does not do, how it was validated, its known limitations, and when a clinician should override it.' Vikram nods. 'It is API documentation. I have written hundreds of API docs. Endpoints, parameters, expected responses, error codes, rate limits.' Karimi smiles. 'Exactly. Except your users are clinicians, and your error codes could affect patient care.'"
+  speaker: "Dr. Karimi"
 concept:
   explanation: "A model card is API documentation for an ML system — it describes what the model does, its limitations, intended use cases, and performance characteristics. Just as API documentation tells developers what to expect from an endpoint, a model card tells clinicians what to expect from a diagnostic tool."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "// Diagnostic One — accepts clinical text, returns entities + interactions, accuracy: F1 0.86, limitation: English only"
     tier: structural
 consequence:
-  narrative: "The model card is complete. Four pages covering intended use, validation results, known limitations, fairness analysis, and override guidance. Dr. Vasquez reads every line. 'This is honest documentation,' she says. 'It tells clinicians exactly what the system can and cannot do. It tells them when to trust it and when to question it.' She adds her signature. The regulatory submission package is complete. Santos formats the model card as a static page in the Diagnostic One interface — accessible from every screen with a single click."
+  narrative: "The model card is complete. Four pages covering intended use, validation results, known limitations, fairness analysis, and override guidance. Dr. Karimi reads every line. 'This is honest documentation,' she says. 'It tells clinicians exactly what the system can and cannot do. It tells them when to trust it and when to question it.' She adds her signature. The regulatory submission package is complete. Imran formats the model card as a static page in the Diagnostic One interface — accessible from every screen with a single click."
   nextLessonTeaser: "Next: launch day — Diagnostic One goes live"
 hints:
   - level: nudge
@@ -35,11 +35,11 @@ keywords:
   - transparency
 ---
 
-<Dialogue speaker="Obi">
+<Dialogue speaker="Vikram">
 API documentation. I write it for every service I build. What the endpoint accepts, what it returns, what errors it can throw, what the rate limits are, what edge cases to watch for. A model card is the same thing — except the endpoint is a trained model and the users are doctors.
 </Dialogue>
 
-<Dialogue speaker="Dr. Vasquez">
+<Dialogue speaker="Dr. Karimi">
 And the edge cases could affect patient safety. So the documentation needs to be honest. Not marketing copy — clinical documentation. What does Diagnostic One do well? Where does it fail? When should a clinician override it? If we cannot answer those questions clearly, it does not deploy.
 </Dialogue>
 

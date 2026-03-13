@@ -6,6 +6,8 @@ themeId: shared
 order: 1
 estimatedMinutes: 20
 difficulty: beginner
+context:
+  narrative: "You're about to read ML code written in Python. Before you panic — don't. If you know JavaScript, you already know 90% of Python. The syntax is different, but the logic is identical."
 concept:
   explanation: "Python syntax maps directly to JavaScript syntax — indentation replaces braces, list comprehensions replace map/filter, and everything else is a 1:1 translation."
   bridge:
@@ -14,6 +16,9 @@ concept:
     mlTitle: "Python Syntax"
     mlCode: "items = [x * 2 for x in arr if x > 0]"
     tier: structural
+consequence:
+  narrative: "You can now read Python ML code without a translator. The syntax differences are cosmetic — the logic you already know carries over completely."
+  nextLessonTeaser: "Next: NumPy arrays are just TypedArrays with superpowers"
 hints:
   - level: nudge
     content: "Think about how arrow functions map to Python's lambda and def"

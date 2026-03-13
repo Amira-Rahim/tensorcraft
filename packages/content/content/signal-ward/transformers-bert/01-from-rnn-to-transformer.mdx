@@ -7,8 +7,8 @@ order: 1
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Obi explains why the team is abandoning sequential processing for a radically different architecture."
-  speaker: "Obi Nwosu"
+  narrative: "Vikram explains why the team is abandoning sequential processing for a radically different architecture."
+  speaker: "Vikram Reddy"
 concept:
   explanation: "Transformers replace recurrence with self-attention, processing all tokens in parallel instead of one at a time."
   bridge:
@@ -34,15 +34,15 @@ keywords:
   - self-attention
 ---
 
-<Dialogue speaker="Obi Nwosu">
+<Dialogue speaker="Vikram Reddy">
 Khalil, our LSTM processes a clinical note one word at a time — left to right, sequentially. A 500-word discharge summary takes 500 steps. What if we could process all 500 words simultaneously?
 </Dialogue>
 
-<Dialogue speaker="Khalil Mensah">
+<Dialogue speaker="Khalil Ansari">
 That reminds me of when React moved from class components to hooks. Class components had these rigid lifecycle methods — mount, update, unmount — everything sequential. Hooks let you declare what you need, and React figures out the execution order.
 </Dialogue>
 
-<Dialogue speaker="Obi Nwosu">
+<Dialogue speaker="Vikram Reddy">
 That's exactly the paradigm shift. The transformer paper — "Attention Is All You Need" — did for NLP what hooks did for React. It replaced sequential processing with declarative attention.
 </Dialogue>
 
@@ -104,7 +104,7 @@ console.log('All tokens processed in parallel:', output.shape);`}
 2. **Constant path length**: Any two words are connected in one attention step
 3. **No information bottleneck**: Each token retains its own representation
 
-<Dialogue speaker="Obi Nwosu">
+<Dialogue speaker="Vikram Reddy">
 For clinical text, this is transformative. A drug mentioned in the admission note and a contraindication mentioned in the lab results are directly connected — no information decay over distance.
 </Dialogue>
 

@@ -7,8 +7,8 @@ order: 2
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Park discovers that last week's model regression was caused by a bad data batch — but nobody can tell which version of the training data produced the current model."
-  speaker: "Park Soo-Yeon"
+  narrative: "Priya discovers that last week's model regression was caused by a bad data batch — but nobody can tell which version of the training data produced the current model."
+  speaker: "Priya Sharma"
 concept:
   explanation: "Data versioning tracks dataset changes over time, just as Git tracks code changes — enabling rollback, blame, and reproducibility."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "dvc log --oneline // trace every change to training data"
     tier: structural
 consequence:
-  narrative: "Park traces the regression to a corrupted sensor batch from Sector 3. She reverts to the previous data version and retrains."
+  narrative: "Priya traces the regression to a corrupted sensor batch from Sector 3. She reverts to the previous data version and retrains."
   nextLessonTeaser: "Next: tracking experiments so you know which training run produced which model"
 hints:
   - level: nudge
@@ -34,7 +34,7 @@ keywords:
   - dataset-hash
 ---
 
-<Dialogue speaker="Park Soo-Yeon">
+<Dialogue speaker="Priya Sharma">
 The model regressed last Tuesday. But I cannot tell you which training data produced it. Was it the batch before or after the Sector 3 sensor recalibration? Nobody versioned the data.
 </Dialogue>
 

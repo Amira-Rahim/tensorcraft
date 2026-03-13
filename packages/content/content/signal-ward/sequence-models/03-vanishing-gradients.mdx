@@ -7,8 +7,8 @@ order: 3
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Santos discovers that the RNN forgets critical information from earlier in long clinical notes — a symptom of the vanishing gradient problem."
-  speaker: "Santos"
+  narrative: "Imran discovers that the RNN forgets critical information from earlier in long clinical notes — a symptom of the vanishing gradient problem."
+  speaker: "Imran"
 concept:
   explanation: "In long sequences, gradients shrink exponentially as they backpropagate through time. Early tokens lose their influence on learning, like an event bubbling through deeply nested DOM elements — the signal fades before reaching the top."
   bridge:
@@ -37,15 +37,15 @@ keywords:
 
 > **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
-<Dialogue speaker="Santos">
+<Dialogue speaker="Imran">
 Something's wrong. Our RNN classifies short clinical notes perfectly, but on long discharge summaries it's basically random. It's like the model forgets everything from the beginning of the document.
 </Dialogue>
 
-<Dialogue speaker="Obi">
+<Dialogue speaker="Vikram">
 That's exactly what's happening. It's the vanishing gradient problem. Think of it like event bubbling in a deeply nested DOM — by the time the click event reaches the root, the signal has faded to nothing.
 </Dialogue>
 
-<Dialogue speaker="Dr. Vasquez">
+<Dialogue speaker="Dr. Karimi">
 In clinical notes, the diagnosis is often stated at the top, but the supporting evidence is scattered throughout. If the model can't connect the beginning to the end, it's useless.
 </Dialogue>
 
@@ -146,11 +146,11 @@ console.log('Long sequence (50) accuracy:', longAcc.toFixed(3));
 // Typically ~0.50-0.60 (near random!)`}
 </CodeBlock>
 
-<Dialogue speaker="Santos">
+<Dialogue speaker="Imran">
 So the longer the discharge summary, the more the model forgets about the diagnosis at the top. That's a dealbreaker for clinical use.
 </Dialogue>
 
-<Dialogue speaker="Obi">
+<Dialogue speaker="Vikram">
 Exactly. We need an architecture that can selectively remember important information across long sequences. That's what LSTMs were invented for.
 </Dialogue>
 

@@ -42,7 +42,11 @@ async function redisIncr(
     }
 
     return { count, ttl: ttl > 0 ? ttl : 60 };
-  } catch {
+  } catch (err) {
+    console.error(
+      "Rate limiter Redis error:",
+      err instanceof Error ? err.message : err,
+    );
     return null; // Fall back to in-memory
   }
 }
@@ -83,8 +87,12 @@ function inMemoryIncr(ip: string): { count: number; resetInSec: number } {
 /* ── Middleware ─────────────────────────────────────────────────────── */
 
 export async function rateLimitMiddleware(c: Context, next: Next) {
+  // Use cf-connecting-ip (Cloudflare) or last IP in x-forwarded-for (reverse proxy)
+  // to prevent client-side IP spoofing via the first entry
   const ip =
-    c.req.header("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+    c.req.header("cf-connecting-ip") ??
+    c.req.header("x-forwarded-for")?.split(",").pop()?.trim() ??
+    "unknown";
 
   // Try Redis first, fall back to in-memory
   const redisKey = `rl:${ip}`;

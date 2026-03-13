@@ -7,8 +7,8 @@ order: 1
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "The signals show a rhythm — a pattern that spans dozens of time steps. The feedforward network only sees one snapshot at a time. Sato says they need a model with memory."
-  speaker: "Dr. Sato"
+  narrative: "The signals show a rhythm — a pattern that spans dozens of time steps. The feedforward network only sees one snapshot at a time. Farah says they need a model with memory."
+  speaker: "Dr. Farah"
 concept:
   explanation: "In sequences, order matters — just like React list rendering depends on key order to maintain correct state."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "model.predict(tf.tensor2d([t1, t2, t3, t4, t5]))"
     tier: structural
 consequence:
-  narrative: "Park realizes the feedforward network is blind to temporal patterns. Each reading is processed in isolation — the model has no memory of what came before."
+  narrative: "Demir realizes the feedforward network is blind to temporal patterns. Each reading is processed in isolation — the model has no memory of what came before."
   nextLessonTeaser: "Next: building a network that remembers — the Simple RNN"
 hints:
   - level: nudge
@@ -34,11 +34,11 @@ keywords:
   - time-series
 ---
 
-<Dialogue speaker="Dr. Sato">
+<Dialogue speaker="Dr. Farah">
 This is not random noise. Something is repeating. The pattern spans dozens of time steps — our feedforward network only sees one snapshot at a time. We need a model with memory.
 </Dialogue>
 
-<Dialogue speaker="Ensign Park">
+<Dialogue speaker="Ensign Demir">
 Memory? You mean like... state that persists between inputs? That's just a reducer — previous state plus new input produces updated state.
 </Dialogue>
 

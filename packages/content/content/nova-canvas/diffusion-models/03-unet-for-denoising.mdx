@@ -7,8 +7,8 @@ order: 3
 estimatedMinutes: 30
 difficulty: intermediate
 context:
-  narrative: "Ren sketches the architecture on the whiteboard. 'It goes down — encoding — then back up — decoding. With skip connections bridging across.' Yara tilts her head. 'Like an hourglass.' Ren smiles: 'Exactly. A U-shape.'"
-  speaker: "Ren"
+  narrative: "Samir sketches the architecture on the whiteboard. 'It goes down — encoding — then back up — decoding. With skip connections bridging across.' Yara tilts her head. 'Like an hourglass.' Samir smiles: 'Exactly. A U-shape.'"
+  speaker: "Samir"
 concept:
   explanation: "The U-Net is an encoder-decoder architecture with skip connections. The encoder compresses the image to understand context; the decoder expands it back to predict noise. Skip connections preserve fine detail — like how a layout component wraps content but passes through children."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "skip = encoder(x); output = decoder(bottleneck, skip);"
     tier: structural
 consequence:
-  narrative: "The U-Net predictions are sharp. Skip connections preserve the edges and textures that the bottleneck alone would blur. Petrov examines the output: 'The brushstrokes. It remembers the brushstrokes.'"
+  narrative: "The U-Net predictions are sharp. Skip connections preserve the edges and textures that the bottleneck alone would blur. Erdem examines the output: 'The brushstrokes. It remembers the brushstrokes.'"
   nextLessonTeaser: "Next: classifier-free guidance — steering generation with text prompts"
 hints:
   - level: nudge
@@ -35,7 +35,7 @@ keywords:
   - architecture
 ---
 
-<Dialogue speaker="Ren">
+<Dialogue speaker="Samir">
 The architecture that predicts noise is called a U-Net. Think of it as an encoder-decoder — like a layout component. The encoder compresses the noisy image to understand the big picture. The decoder expands it back to full resolution to predict the noise at every pixel.
 </Dialogue>
 
@@ -43,7 +43,7 @@ The architecture that predicts noise is called a U-Net. Think of it as an encode
 But if you compress and then expand, don't you lose detail? Like over-compressing a JPEG?
 </Dialogue>
 
-<Dialogue speaker="Ren">
+<Dialogue speaker="Samir">
 That is what skip connections solve. They bridge from the encoder to the decoder at each resolution level, carrying the fine details that compression would destroy. Like passing `children` through a layout wrapper.
 </Dialogue>
 

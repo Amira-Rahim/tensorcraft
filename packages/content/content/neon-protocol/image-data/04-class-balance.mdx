@@ -7,8 +7,8 @@ order: 4
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Lin reviews the dataset statistics and spots trouble: 4,200 dome cameras but only 180 hidden micro-cameras — the very type the resistance most needs to detect. 'A model trained on this data will be brilliant at ignoring the most dangerous surveillance,' she warns."
-  speaker: "Lin"
+  narrative: "Dilan reviews the dataset statistics and spots trouble: 4,200 dome cameras but only 180 hidden micro-cameras — the very type the resistance most needs to detect. 'A model trained on this data will be brilliant at ignoring the most dangerous surveillance,' she warns."
+  speaker: "Dilan"
 concept:
   explanation: "Class imbalance in datasets is like uneven traffic distribution across servers — the overloaded class dominates while the underserved one gets ignored. Balancing techniques redistribute the load."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "sampler.balance(dataset, { strategy: 'oversample-minority' })"
     tier: structural
 consequence:
-  narrative: "After rebalancing, the Protocol Sentinel's recall on hidden micro-cameras jumps from 12% to 87%. Lin allows herself a rare smile. 'Now it sees what matters most — the cameras designed not to be seen.'"
+  narrative: "After rebalancing, the Protocol Sentinel's recall on hidden micro-cameras jumps from 12% to 87%. Dilan allows herself a rare smile. 'Now it sees what matters most — the cameras designed not to be seen.'"
   nextLessonTeaser: "Next: Data Loaders — feeding your balanced dataset to the model efficiently."
 hints:
   - level: nudge
@@ -35,8 +35,8 @@ keywords:
   - load balancing
 ---
 
-<Dialogue speaker="Lin">
-Look at these numbers, Kira. Four thousand dome cameras, three thousand bullet cameras, eight hundred PTZ units, and only one hundred eighty hidden micro-cameras. If you trained a model that always guessed "dome camera," it would be right nearly half the time. That's not intelligence — that's a coin flip dressed up as a prediction.
+<Dialogue speaker="Dilan">
+Look at these numbers, Noor. Four thousand dome cameras, three thousand bullet cameras, eight hundred PTZ units, and only one hundred eighty hidden micro-cameras. If you trained a model that always guessed "dome camera," it would be right nearly half the time. That's not intelligence — that's a coin flip dressed up as a prediction.
 </Dialogue>
 
 If you've ever dealt with server load balancing, you understand this problem intuitively. Imagine a cluster of four servers where one handles 48% of all requests, another handles 34%, a third handles 9%, and the last handles only 2%. The overloaded servers dominate system behavior while the underserved ones barely register. Class imbalance in ML datasets creates exactly this problem — the model optimizes for the most common class and ignores the rare ones.
@@ -105,7 +105,7 @@ function getImbalanceRatio(distribution: ClassDistribution[]): number {
 // Imbalance ratio: 4200 / 180 = 23.3x (severely imbalanced)`}
 </CodeBlock>
 
-<Dialogue speaker="Lin">
+<Dialogue speaker="Dilan">
 An imbalance ratio above 10 means your model is essentially blind to the minority class. At 23 to 1, the Sentinel would learn to say "dome camera" to almost everything and still score 48% accuracy. Useless.
 </Dialogue>
 
@@ -214,7 +214,7 @@ Instead of changing the data, change how much the model cares about each class. 
 // hidden-camera: 8200 / (4 * 180)  = 11.39 (heavily upweighted)`}
 </CodeBlock>
 
-<Dialogue speaker="Kira">
+<Dialogue speaker="Noor">
 So the model loses 11 times more when it misclassifies a hidden camera than a dome camera. That forces it to pay attention to the rare class even though it only appears 2% of the time.
 </Dialogue>
 

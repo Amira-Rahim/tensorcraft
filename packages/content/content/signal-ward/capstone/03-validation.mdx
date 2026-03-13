@@ -7,8 +7,8 @@ order: 3
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "Dr. Vasquez places a folder on the table. Five hundred clinical notes, each annotated by two board-certified physicians. Drug names highlighted, interactions flagged, severity levels assigned. 'This is the gold standard,' she says. 'Every entity, every classification, every interaction — verified by experts. Your system needs to match these annotations. Not perfectly — but well enough that I trust it at 3 AM.' Santos opens the first annotated note. Highlighted spans, BIO tags, classification labels. 'It is like a snapshot test,' she says. 'Known inputs, expected outputs.'"
-  speaker: "Dr. Vasquez"
+  narrative: "Dr. Karimi places a folder on the table. Five hundred clinical notes, each annotated by two board-certified physicians. Drug names highlighted, interactions flagged, severity levels assigned. 'This is the gold standard,' she says. 'Every entity, every classification, every interaction — verified by experts. Your system needs to match these annotations. Not perfectly — but well enough that I trust it at 3 AM.' Imran opens the first annotated note. Highlighted spans, BIO tags, classification labels. 'It is like a snapshot test,' she says. 'Known inputs, expected outputs.'"
+  speaker: "Dr. Karimi"
 concept:
   explanation: "Validating Diagnostic One against expert annotations is the same discipline as end-to-end testing — running automated checks against known-good outputs. Precision, recall, and F1 score are the clinical equivalents of test pass rates, measuring how well your system matches expert-verified ground truth."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "expect(model.predict(note)).toMatchAnnotations(expertLabels); // compare against expert ground truth"
     tier: structural
 consequence:
-  narrative: "The validation suite finishes running. Precision: 0.89. Recall: 0.84. F1: 0.86. Dr. Vasquez studies the confusion matrix. 'The system is cautious — it flags things that are not there more often than it misses things that are. For a clinical system, that is the right trade-off. I would rather investigate a false alarm than miss a real interaction.' She signs the validation report. 'Approved for pilot deployment.'"
+  narrative: "The validation suite finishes running. Precision: 0.89. Recall: 0.84. F1: 0.86. Dr. Karimi studies the confusion matrix. 'The system is cautious — it flags things that are not there more often than it misses things that are. For a clinical system, that is the right trade-off. I would rather investigate a false alarm than miss a real interaction.' She signs the validation report. 'Approved for pilot deployment.'"
   nextLessonTeaser: "Next: writing the clinical documentation and model card"
 hints:
   - level: nudge
@@ -36,11 +36,11 @@ keywords:
   - expert-annotations
 ---
 
-<Dialogue speaker="Dr. Vasquez">
+<Dialogue speaker="Dr. Karimi">
 Five hundred clinical notes. Each one annotated by two board-certified physicians who independently marked every drug name, every condition, every interaction. Where they disagreed, a third physician resolved. This is the gold standard. If your system cannot match these annotations, it does not deploy.
 </Dialogue>
 
-<Dialogue speaker="Santos">
+<Dialogue speaker="Imran">
 It is end-to-end testing. Known inputs, expected outputs. I run the system against the annotations and check if the predictions match. Precision tells me how many of the system's flags were correct. Recall tells me how many of the real interactions the system found. F1 balances them.
 </Dialogue>
 

@@ -7,8 +7,8 @@ order: 2
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Kai frowns at the output. 'The early steps waste time on barely visible changes. The final steps rush through critical detail. We need a better schedule.' Ren nods: 'Like choosing the right easing curve for an animation.'"
-  speaker: "Kai"
+  narrative: "Rohan frowns at the output. 'The early steps waste time on barely visible changes. The final steps rush through critical detail. We need a better schedule.' Samir nods: 'Like choosing the right easing curve for an animation.'"
+  speaker: "Rohan"
 concept:
   explanation: "A noise schedule controls how much noise is added or removed at each timestep — just like an animation easing curve controls the rate of change over time. Linear is rarely optimal."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "const betas = cosineSchedule(timesteps);"
     tier: structural
 consequence:
-  narrative: "With the cosine schedule, the images are noticeably sharper. Same number of steps, better allocation of the noise budget. Petrov leans in: 'The details in the shadows — those were not there before.'"
+  narrative: "With the cosine schedule, the images are noticeably sharper. Same number of steps, better allocation of the noise budget. Erdem leans in: 'The details in the shadows — those were not there before.'"
   nextLessonTeaser: "Next: the U-Net — the architecture that actually predicts the noise"
 hints:
   - level: nudge
@@ -35,11 +35,11 @@ keywords:
   - timestep
 ---
 
-<Dialogue speaker="Kai">
+<Dialogue speaker="Rohan">
 The linear schedule is wasteful. Look — the first twenty steps barely change anything, and the last twenty steps blur over fine details. We need the noise equivalent of an easing curve.
 </Dialogue>
 
-<Dialogue speaker="Ren">
+<Dialogue speaker="Samir">
 Right. In CSS, `linear` timing looks mechanical. `ease-in-out` feels natural because it allocates more time to acceleration and deceleration. A noise schedule does the same thing — it controls the *rate* of noise addition.
 </Dialogue>
 

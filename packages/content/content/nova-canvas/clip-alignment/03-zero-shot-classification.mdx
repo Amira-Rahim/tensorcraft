@@ -7,8 +7,8 @@ order: 3
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "Petrov uploads a photograph of an abstract painting. 'What genre is this? The gallery needs tags.' Ren types a list of genres — impressionism, cubism, abstract expressionism — and CLIP ranks them by similarity. No fine-tuning. No labeled training data. 'It just knows,' Petrov says, incredulous. Kai: 'It does not know. It compares.'"
-  speaker: "Kai"
+  narrative: "Erdem uploads a photograph of an abstract painting. 'What genre is this? The gallery needs tags.' Samir types a list of genres — impressionism, cubism, abstract expressionism — and CLIP ranks them by similarity. No fine-tuning. No labeled training data. 'It just knows,' Erdem says, incredulous. Rohan: 'It does not know. It compares.'"
+  speaker: "Rohan"
 concept:
   explanation: "Zero-shot classification classifies images into categories never seen during training — by comparing the image embedding to text embeddings of category descriptions. Like dynamic routing — handling unknown paths by matching against a pattern instead of hardcoding every route."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "const label = categories[argmax(similarity(image, categoryTexts))];"
     tier: structural
 consequence:
-  narrative: "MUSE tags every gallery piece without being trained on a single example. Abstract expressionism. Digital impressionism. Geometric minimalism. Petrov checks the tags against his own labels: 94% agreement. 'Better than the interns,' he mutters."
+  narrative: "MUSE tags every gallery piece without being trained on a single example. Abstract expressionism. Digital impressionism. Geometric minimalism. Erdem checks the tags against his own labels: 94% agreement. 'Better than the interns,' he mutters."
   nextLessonTeaser: "Next: CLIP-guided generation — using CLIP to steer what the model creates"
 hints:
   - level: nudge
@@ -35,15 +35,15 @@ keywords:
   - similarity-matching
 ---
 
-<Dialogue speaker="Kai">
+<Dialogue speaker="Rohan">
 Dynamic routing handles paths it has never seen. You write `/:category/:item` and it matches any category, any item — without hardcoding every possibility. Zero-shot classification does the same thing. CLIP classifies images it has never seen into categories it was never trained on.
 </Dialogue>
 
-<Dialogue speaker="Petrov">
+<Dialogue speaker="Erdem">
 No training data at all? How?
 </Dialogue>
 
-<Dialogue speaker="Kai">
+<Dialogue speaker="Rohan">
 It does not memorize categories. It compares. Encode the image, encode each candidate label as text, pick the closest match. The categories are just text — you can change them anytime.
 </Dialogue>
 

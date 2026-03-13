@@ -7,8 +7,8 @@ order: 1
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "An unconscious patient arrives in the ER. No ID, no medical bracelet, no accessible history. Santos pulls up the intake form: 'John Doe, approximately 45, unresponsive. We need to know if he has drug allergies before we administer anything.' Khalil stares at the screen. 'I built Meridian's records UI. I know their data format. If we can search their documents, I can find the answer.'"
-  speaker: "Santos"
+  narrative: "An unconscious patient arrives in the ER. No ID, no medical bracelet, no accessible history. Imran pulls up the intake form: 'John Doe, approximately 45, unresponsive. We need to know if he has drug allergies before we administer anything.' Khalil stares at the screen. 'I built Meridian's records UI. I know their data format. If we can search their documents, I can find the answer.'"
+  speaker: "Imran"
 concept:
   explanation: "Extractive QA finds the exact span of text in a document that answers a question — like Ctrl+F, but the model understands meaning, not just character matching."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "model.predict({ question, context }) // → { answer: 'allergic to penicillin', start: 142, end: 163 }"
     tier: structural
 consequence:
-  narrative: "The QA model highlights a span in the patient's discharge summary from 2019: 'Patient reported severe allergic reaction to penicillin-class antibiotics.' Santos pages the attending physician immediately."
+  narrative: "The QA model highlights a span in the patient's discharge summary from 2019: 'Patient reported severe allergic reaction to penicillin-class antibiotics.' Imran pages the attending physician immediately."
   nextLessonTeaser: "Next: reading comprehension — understanding context beyond keyword matching"
 hints:
   - level: nudge
@@ -34,7 +34,7 @@ keywords:
   - clinical-search
 ---
 
-<Dialogue speaker="Santos">
+<Dialogue speaker="Imran">
 Unconscious male, mid-forties, no ID. Paramedics found him collapsed at a bus stop. We need to start antibiotics but we have no allergy history. If he's allergic to penicillin and we give him amoxicillin, we could trigger anaphylaxis.
 </Dialogue>
 

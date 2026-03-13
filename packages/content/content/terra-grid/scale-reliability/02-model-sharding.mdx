@@ -7,8 +7,8 @@ order: 2
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "Park encounters the size problem. 'The ensemble model is 18MB. Our edge devices have 512MB RAM total, with only 64MB available for ML. We need to split this across multiple devices and coordinate inference.'"
-  speaker: "Park Soo-Yeon"
+  narrative: "Priya encounters the size problem. 'The ensemble model is 18MB. Our edge devices have 512MB RAM total, with only 64MB available for ML. We need to split this across multiple devices and coordinate inference.'"
+  speaker: "Priya Sharma"
 concept:
   explanation: "Model sharding splits a large model across multiple devices for parallel inference — the same concept as dynamic import() code splitting in frontend apps."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "const shard = await loadShard('./model-part-2.bin'); // load model chunk on demand"
     tier: structural
 consequence:
-  narrative: "The ensemble runs across 3 devices, each handling a 6MB shard. Coordinated inference adds 4ms of overhead but fits within the 64MB memory budget on every device. Park: 'Sharding solved the memory constraint without sacrificing model capability.'"
+  narrative: "The ensemble runs across 3 devices, each handling a 6MB shard. Coordinated inference adds 4ms of overhead but fits within the 64MB memory budget on every device. Priya: 'Sharding solved the memory constraint without sacrificing model capability.'"
   nextLessonTeaser: "Next: failover and redundancy — what happens when a shard goes offline"
 hints:
   - level: nudge
@@ -34,11 +34,11 @@ keywords:
   - memory-optimization
 ---
 
-<Dialogue speaker="Park Soo-Yeon">
+<Dialogue speaker="Priya Sharma">
 The ensemble model is 18MB. Each edge device has 512MB total, but after the OS, monitoring agents, and sensor drivers, we have 64MB for ML. The model does not fit. We split it across 3 devices and coordinate inference.
 </Dialogue>
 
-<Dialogue speaker="Cole Branson">
+<Dialogue speaker="Tariq Hussain">
 Same idea as code splitting in a big React app. You do not ship the entire bundle to every page. You split at logical boundaries and load chunks on demand.
 </Dialogue>
 

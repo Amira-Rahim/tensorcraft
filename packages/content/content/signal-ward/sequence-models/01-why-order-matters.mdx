@@ -8,7 +8,7 @@ estimatedMinutes: 25
 difficulty: intermediate
 context:
   narrative: "'Patient denied chest pain' versus 'Patient reported chest pain' — in clinical text, word order can be the difference between life and death."
-  speaker: "Dr. Vasquez"
+  speaker: "Dr. Karimi"
 concept:
   explanation: "Word order changes meaning. Bag-of-words loses this information. Sequence models process tokens in order, maintaining positional context — just like the execution order of async operations determines what state your app ends up in."
   bridge:
@@ -37,15 +37,15 @@ keywords:
 
 > **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
-<Dialogue speaker="Dr. Vasquez">
+<Dialogue speaker="Dr. Karimi">
 Listen carefully. "Patient denied chest pain" and "Patient reported chest pain." Same words, different order, opposite meaning. If our system gets this wrong, someone could die.
 </Dialogue>
 
-<Dialogue speaker="Santos">
+<Dialogue speaker="Imran">
 It's like async code. `await validate(); await save();` is completely different from `await save(); await validate();`. Order determines the outcome.
 </Dialogue>
 
-<Dialogue speaker="Dr. Vasquez">
+<Dialogue speaker="Dr. Karimi">
 Exactly. And clinical notes are full of these ordering traps. "No fever, but reports nausea" — the meaning flips mid-sentence.
 </Dialogue>
 
@@ -136,7 +136,7 @@ const dangerousPairs = [
 
 ## From Bag to Sequence
 
-<Dialogue speaker="Obi">
+<Dialogue speaker="Vikram">
 Think of it this way. A bag-of-words is like dumping all your async calls into Promise.all — you lose the ordering. A sequence model is like an async/await chain — each step depends on what came before.
 </Dialogue>
 

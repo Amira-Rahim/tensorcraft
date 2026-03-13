@@ -7,8 +7,8 @@ order: 4
 estimatedMinutes: 20
 difficulty: intermediate
 context:
-  narrative: "Dr. Sato insists on documentation. 'If this crew cannot operate DEEP SCAN without Park, then it is not a production system. Document everything.' Park writes docs like writing a good README."
-  speaker: "Dr. Sato"
+  narrative: "Dr. Farah insists on documentation. 'If this crew cannot operate DEEP SCAN without Demir, then it is not a production system. Document everything.' Demir writes docs like writing a good README."
+  speaker: "Dr. Farah"
 concept:
   explanation: "ML system documentation covers the same ground as software docs — API reference, architecture guide, getting started — plus model-specific docs like training data descriptions and performance characteristics."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "/** Model: DEEP SCAN v1.0 | Accuracy: 91.8% | Size: 42MB */ // model docs"
     tier: identity
 consequence:
-  narrative: "The documentation is complete. Every crew member can operate, maintain, and troubleshoot DEEP SCAN. Sato: 'Now it survives beyond any single engineer.'"
+  narrative: "The documentation is complete. Every crew member can operate, maintain, and troubleshoot DEEP SCAN. Farah: 'Now it survives beyond any single engineer.'"
   nextLessonTeaser: "Next: launch — deploying DEEP SCAN and classifying the anomalous signal"
 hints:
   - level: nudge
@@ -35,11 +35,11 @@ keywords:
   - maintainability
 ---
 
-<Dialogue speaker="Dr. Sato">
-Park, if you were incapacitated tomorrow, could Torres operate DEEP SCAN? Could Commander Okafor interpret its output? Could ARIA retrain it? If the answer to any of these is no, then your system is not production-ready. Document everything.
+<Dialogue speaker="Dr. Farah">
+Demir, if you were incapacitated tomorrow, could Nazari operate DEEP SCAN? Could Commander Mirza interpret its output? Could ARIA retrain it? If the answer to any of these is no, then your system is not production-ready. Document everything.
 </Dialogue>
 
-<Dialogue speaker="Ensign Park">
+<Dialogue speaker="Ensign Demir">
 Right — same rule as any codebase. If it's not documented, it doesn't exist. I'll write a Model Card for the ML model and API docs for the pipeline. Like a really thorough README, but covering training data, accuracy metrics, and known limitations too.
 </Dialogue>
 
@@ -96,7 +96,7 @@ const deepScanCard: ModelCard = {
   name: 'DEEP SCAN Signal Classifier',
   version: '1.0.0',
   description: 'Classifies deep space radio signals into 5 categories: pulsar, quasar, noise, interference, anomaly.',
-  author: 'Ensign Park, USS Archimedes',
+  author: 'Ensign Demir, USS Archimedes',
 
   training: {
     dataset: 'Kepler-442 Signal Archive (2024)',

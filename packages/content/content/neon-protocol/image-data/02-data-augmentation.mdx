@@ -7,8 +7,8 @@ order: 2
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "The team's dataset is solid but small — only 2,000 images. Training the Protocol Sentinel on this would be like learning to recognize faces from a single yearbook. Ryo fires up the augmentation pipeline: 'We don't need more cameras. We need more perspectives.'"
-  speaker: "Ryo"
+  narrative: "The team's dataset is solid but small — only 2,000 images. Training the Protocol Sentinel on this would be like learning to recognize faces from a single yearbook. Amir fires up the augmentation pipeline: 'We don't need more cameras. We need more perspectives.'"
+  speaker: "Amir"
 concept:
   explanation: "Data augmentation creates training variety through transforms — just like CSS transforms create visual variations of the same element without changing the underlying DOM."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "augment(image, { rotate: 15, scale: 0.9, shear: 5 })"
     tier: structural
 consequence:
-  narrative: "The augmentation pipeline transforms 2,000 images into an effective training set of 16,000. Ryo nods approvingly at the augmented samples scrolling across the screen. 'Same cameras, but the Sentinel will see them from every angle, in every light.'"
+  narrative: "The augmentation pipeline transforms 2,000 images into an effective training set of 16,000. Amir nods approvingly at the augmented samples scrolling across the screen. 'Same cameras, but the Sentinel will see them from every angle, in every light.'"
   nextLessonTeaser: "Next: Normalization — scaling pixel values so the model can consume them consistently."
 hints:
   - level: nudge
@@ -35,7 +35,7 @@ keywords:
   - overfitting prevention
 ---
 
-<Dialogue speaker="Ryo">
+<Dialogue speaker="Amir">
 Two thousand images might sound like a lot, but a neural network will memorize them in minutes and learn nothing generalizable. We need to show it the same cameras from every angle, in every lighting condition. You already know how to transform visual elements — you've been doing it in CSS for years.
 </Dialogue>
 
@@ -68,7 +68,7 @@ The key insight: **a dome camera rotated 15 degrees is still a dome camera**. Th
 
 ## Why Augmentation Works
 
-<Dialogue speaker="Ryo">
+<Dialogue speaker="Amir">
 Imagine you only ever saw cars from the front. You'd recognize a grille and headlights, but a car from the side would confuse you. Augmentation is like walking around the car — same object, every angle.
 </Dialogue>
 
@@ -194,7 +194,7 @@ function generateAugmentations(
 }`}
 </CodeBlock>
 
-<Dialogue speaker="Kira">
+<Dialogue speaker="Noor">
 So each augmented image is like a CSS variant — same underlying element, different visual presentation. The model learns to recognize the dome shape regardless of rotation or lighting.
 </Dialogue>
 

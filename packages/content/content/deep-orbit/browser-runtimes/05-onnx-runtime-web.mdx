@@ -7,8 +7,8 @@ order: 5
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "Torres demands a benchmark. 'TF.js is not the only option. Compare runtimes before we commit.' Park discovers ONNX — the universal model format."
-  speaker: "Chief Torres"
+  narrative: "Nazari demands a benchmark. 'TF.js is not the only option. Compare runtimes before we commit.' Demir discovers ONNX — the universal model format."
+  speaker: "Chief Nazari"
 concept:
   explanation: "ONNX is a universal model format that runs across runtimes — like how HTML runs in any browser regardless of the rendering engine."
   bridge:
@@ -18,8 +18,8 @@ concept:
     mlCode: "// Same ONNX model runs in TF.js, ONNX Runtime, PyTorch"
     tier: structural
 consequence:
-  narrative: "Park presents the benchmark results. ONNX Runtime wins on cold start; TF.js wins on sustained inference. Torres chooses TF.js for the dashboard, ONNX for the backup system."
-  nextLessonTeaser: "Next module: the signals hold hidden structure — Dr. Sato introduces frequency-domain analysis"
+  narrative: "Demir presents the benchmark results. ONNX Runtime wins on cold start; TF.js wins on sustained inference. Nazari chooses TF.js for the dashboard, ONNX for the backup system."
+  nextLessonTeaser: "Next module: the signals hold hidden structure — Dr. Farah introduces frequency-domain analysis"
 hints:
   - level: nudge
     content: "ONNX is a model format, not a framework — like HTML is a document format, not a browser"
@@ -35,15 +35,15 @@ keywords:
   - wasm
 ---
 
-<Dialogue speaker="Chief Torres">
+<Dialogue speaker="Chief Nazari">
 We are not shipping the first runtime we tried. Compare TensorFlow.js and ONNX Runtime. Cold start, sustained inference, memory footprint. I want numbers, not opinions.
 </Dialogue>
 
-<Dialogue speaker="Ensign Park">
+<Dialogue speaker="Ensign Demir">
 Fair enough. ONNX is like... a universal model format? Train in Python, export to ONNX, run anywhere?
 </Dialogue>
 
-<Dialogue speaker="Chief Torres">
+<Dialogue speaker="Chief Nazari">
 Exactly. Like how you build once in HTML and it runs in Chrome, Firefox, Safari. ONNX is the HTML of trained models.
 </Dialogue>
 
@@ -163,7 +163,7 @@ async function benchmarkONNX(): Promise<BenchmarkResult> {
 | **Memory management** | Manual (tf.tidy/dispose) | Automatic (GC) |
 | **Bundle size** | ~800KB | ~600KB |
 
-For DEEP SCAN: TF.js wins on sustained inference (the dashboard runs continuously). ONNX wins on cold start (backup system that loads on demand). Torres's decision to use both is pragmatic engineering.
+For DEEP SCAN: TF.js wins on sustained inference (the dashboard runs continuously). ONNX wins on cold start (backup system that loads on demand). Nazari's decision to use both is pragmatic engineering.
 
 ## Challenge
 

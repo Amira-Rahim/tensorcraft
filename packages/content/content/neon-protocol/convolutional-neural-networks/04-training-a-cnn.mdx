@@ -7,8 +7,8 @@ order: 4
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "The architecture is built. Ryo pulls up the training dashboard: 'This is where it gets real. We feed the Sentinel surveillance images, compute loss, and update every kernel weight. Think of it like running your full CI/CD build pipeline — lint, test, bundle, deploy — but for neural network weights.'"
-  speaker: "Ryo"
+  narrative: "The architecture is built. Amir pulls up the training dashboard: 'This is where it gets real. We feed the Sentinel surveillance images, compute loss, and update every kernel weight. Think of it like running your full CI/CD build pipeline — lint, test, bundle, deploy — but for neural network weights.'"
+  speaker: "Amir"
 concept:
   explanation: "Training a CNN is an iterative pipeline of forward pass, loss computation, backpropagation, and weight updates — structurally identical to a build pipeline that processes, validates, and outputs artifacts."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "for (epoch) { const loss = model.trainOnBatch(images, labels); } // forward -> loss -> backward -> update"
     tier: structural
 consequence:
-  narrative: "After 50 epochs, the Protocol Sentinel hits 89% accuracy on camera type classification. Kira watches the loss curve flatten. 'It learned,' she whispers. Lin nods: 'Now make it see what it learned.'"
+  narrative: "After 50 epochs, the Protocol Sentinel hits 89% accuracy on camera type classification. Noor watches the loss curve flatten. 'It learned,' she whispers. Dilan nods: 'Now make it see what it learned.'"
   nextLessonTeaser: "Next: visualizing what the CNN actually learned — peering inside the black box"
 hints:
   - level: nudge
@@ -35,11 +35,11 @@ keywords:
   - accuracy
 ---
 
-<Dialogue speaker="Ryo">
+<Dialogue speaker="Amir">
 At Meridian, we trained surveillance models on thousands of GPUs. But the process is the same whether you have one GPU or a thousand. You feed images in batches, compute how wrong the model is, calculate gradients, and nudge the weights. Repeat until convergence. It is a build pipeline — each epoch is a full build cycle.
 </Dialogue>
 
-<Dialogue speaker="Kira">
+<Dialogue speaker="Noor">
 So each epoch is like a CI run? Forward pass is the build step, loss is the test results, backprop is analyzing failures, and the weight update is the fix?
 </Dialogue>
 

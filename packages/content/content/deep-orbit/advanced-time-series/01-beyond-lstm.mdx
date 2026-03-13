@@ -7,8 +7,8 @@ order: 1
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "The LSTM works, but its sequential nature is slow. Sato introduces attention — a mechanism that lets the model focus on the most relevant time steps directly, without processing the entire sequence step by step."
-  speaker: "Dr. Sato"
+  narrative: "The LSTM works, but its sequential nature is slow. Farah introduces attention — a mechanism that lets the model focus on the most relevant time steps directly, without processing the entire sequence step by step."
+  speaker: "Dr. Farah"
 concept:
   explanation: "Attention mechanisms dynamically highlight the most relevant parts of input — like CSS :focus that moves to the active element based on context."
   bridge:
@@ -34,11 +34,11 @@ keywords:
   - parallel
 ---
 
-<Dialogue speaker="Dr. Sato">
+<Dialogue speaker="Dr. Farah">
 The LSTM must process time steps sequentially — step 1, then 2, then 3. It cannot skip ahead. But what if the relevant pattern is at step 5 and step 72? Attention lets the model look at all steps simultaneously and focus on what matters.
 </Dialogue>
 
-<Dialogue speaker="Ensign Park">
+<Dialogue speaker="Ensign Demir">
 Like CSS :focus — instead of styling every element equally, you highlight just the one that's active. Attention highlights the time steps that are most relevant to the current prediction.
 </Dialogue>
 

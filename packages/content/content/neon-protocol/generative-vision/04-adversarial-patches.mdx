@@ -7,8 +7,8 @@ order: 4
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Zara's breakthrough moment. She has trained generators, explored latent spaces, and mastered style transfer. Now the real weapon: adversarial patches — small visual patterns that cause Meridian's classifiers to misidentify everything in the frame. But Lin intervenes immediately: 'This is XSS for neural networks. We need to understand what we are building.'"
-  speaker: "Lin"
+  narrative: "Zara's breakthrough moment. She has trained generators, explored latent spaces, and mastered style transfer. Now the real weapon: adversarial patches — small visual patterns that cause Meridian's classifiers to misidentify everything in the frame. But Dilan intervenes immediately: 'This is XSS for neural networks. We need to understand what we are building.'"
+  speaker: "Dilan"
 concept:
   explanation: "Adversarial patches are carefully crafted pixel patterns that exploit a model's learned features to force misclassification. They work like XSS attacks — inputs specifically crafted to exploit the system's processing logic. An XSS payload is a string designed to be interpreted as code. An adversarial patch is an image designed to be interpreted as something it is not."
   bridge:
@@ -18,8 +18,8 @@ concept:
     mlCode: "const patch = optimizePatch(model, targetClass, epsilon); // Input crafted to exploit the classifier"
     tier: structural
 consequence:
-  narrative: "The patch works. A 32x32 pixel sticker makes Meridian's cameras classify a person as a traffic cone. Ryo stares at it: 'At Meridian, Director Yates called this a feature — stress-testing the competition. Now I see it for what it is: a weapon.' Lin: 'Which is exactly why we scope it. Patches bound to Meridian's architecture fingerprints only. No collateral capability.' The team agrees unanimously."
-  nextLessonTeaser: "Next: Lin's ethics review — responsible deployment of everything we have built"
+  narrative: "The patch works. A 32x32 pixel sticker makes Meridian's cameras classify a person as a traffic cone. Amir stares at it: 'At Meridian, Director Yates called this a feature — stress-testing the competition. Now I see it for what it is: a weapon.' Dilan: 'Which is exactly why we scope it. Patches bound to Meridian's architecture fingerprints only. No collateral capability.' The team agrees unanimously."
+  nextLessonTeaser: "Next: Dilan's ethics review — responsible deployment of everything we have built"
 hints:
   - level: nudge
     content: "Adversarial perturbations use the same gradients as training — but applied to input pixels instead of model weights"
@@ -39,7 +39,7 @@ keywords:
 Every system has inputs it was never designed to handle. Web apps have XSS. Neural networks have adversarial examples. A string that looks like data but executes as code. An image that looks like a sticker but registers as a traffic cone. Same principle: craft the input to exploit the processor.
 </Dialogue>
 
-<Dialogue speaker="Lin">
+<Dialogue speaker="Dilan">
 And same consequences if deployed irresponsibly. XSS led to content security policies. Adversarial attacks need the same kind of governance. Before we build this, we agree on constraints.
 </Dialogue>
 

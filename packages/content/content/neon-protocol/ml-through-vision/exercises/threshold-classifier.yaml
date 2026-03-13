@@ -1,5 +1,5 @@
 slug: threshold-classifier
-lessonSlug: your-first-classifier
+lessonSlug: np-your-first-classifier
 title: "Build a Threshold Classifier"
 instructions: "Write a threshold-based image classifier that categorizes images based on mean brightness. Return 'dark' for mean < 64, 'dim' for mean < 128, 'bright' for mean < 192, and 'overexposed' for mean >= 192."
 starterCode: |

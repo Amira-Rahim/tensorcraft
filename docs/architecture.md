@@ -97,6 +97,10 @@ All tables have RLS enabled:
 - `achievements`: Users can only read their own; inserts are server-only
 - `exercise_attempts`: Users can only CRUD their own attempts
 
+### Views
+
+- **`theme_progress_summary`** — Aggregated completion stats per user per theme. Columns: user_id, theme_id, total_lessons, completed_lessons, in_progress_lessons, first_started_at, last_completed_at, completion_percent. Inherits RLS from underlying `theme_progress` table.
+
 ### Auto-created Resources
 
 - **Trigger**: `on_auth_user_created` → auto-inserts a `profiles` row
@@ -114,8 +118,11 @@ Separate backend service running on port 3001. Communicates with Supabase using 
 - `POST /api/progress` — Create or update lesson progress (authenticated, upserts on user_id+theme_id+lesson_id)
 - `POST /api/payments/webhook` — Stripe webhook handler (checkout.session.completed, charge.refunded)
 - `POST /api/payments/checkout` — Create Stripe checkout session (authenticated)
-- `GET /api/admin/stats` — Dashboard stats: waitlist count, user count, purchases, revenue (admin key required)
-- `GET /api/admin/waitlist` — Paginated waitlist entries (admin key required)
+- `GET /api/progress/summary` — Aggregated progress across all themes using `theme_progress_summary` view (authenticated)
+- `GET /api/admin/stats` — Dashboard stats: waitlist count, user count, purchases, revenue (admin auth required)
+- `GET /api/admin/waitlist` — Paginated waitlist entries (admin auth required)
+
+> Admin routes support two auth methods: (1) Supabase role-based auth (user with admin role) — preferred, and (2) API key via `x-admin-key` header — fallback for CI/scripts.
 - `GET /api/exercise-attempts` — Get user's exercise attempts (authenticated)
 - `POST /api/exercise-attempts` — Submit exercise attempt (authenticated)
 - `GET /api/profiles/me` — Get current user profile (authenticated)
@@ -123,9 +130,10 @@ Separate backend service running on port 3001. Communicates with Supabase using 
 
 ### Middleware
 
-- **CORS**: Allows `localhost:3000` (dev) and `tensorcraft.dev` (prod)
+- **Security Headers**: Sets CSP, HSTS, X-Content-Type-Options, X-Frame-Options, and generates a unique `X-Request-ID` per request (`security-headers.ts`)
+- **CORS**: Allows `localhost:3000` (dev) and `tensorcraft.dev` (prod). Configurable via `CORS_ORIGINS` env var.
 - **Auth**: Validates Supabase JWT from Authorization header, sets `userId` and `accessToken` on context
-- **Rate Limiting**: Upstash Redis adapter (distributed, production-ready) with in-memory fallback when UPSTASH_REDIS_REST_URL not set. 60 req/min per IP. Stripe webhook route exempt.
+- **Rate Limiting**: Upstash Redis adapter (distributed, production-ready) with in-memory fallback when `UPSTASH_REDIS_REST_URL` not set. 60 req/min per IP. Stripe webhook route exempt.
 
 ## Next.js Frontend (`apps/web`)
 

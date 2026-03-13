@@ -1,6 +1,14 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { Hono } from "hono";
 import { health } from "./health";
+
+vi.mock("@tensorcraft/supabase", () => ({
+  getSupabaseAdminClient: () => ({
+    from: () => ({
+      select: () => Promise.resolve({ error: null, count: 0 }),
+    }),
+  }),
+}));
 
 const app = new Hono();
 app.route("/api/health", health);

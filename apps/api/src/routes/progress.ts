@@ -36,7 +36,13 @@ progress.get("/", async (c) => {
     .order("lesson_id");
 
   if (error) {
-    return c.json({ error: "Failed to fetch progress" }, 500);
+    return c.json(
+      {
+        error: "Failed to fetch progress",
+        requestId: c.res.headers.get("X-Request-Id"),
+      },
+      500,
+    );
   }
 
   return c.json({ progress: data });
@@ -146,7 +152,13 @@ progress.post("/", async (c) => {
     .single();
 
   if (error) {
-    return c.json({ error: "Failed to update progress" }, 500);
+    return c.json(
+      {
+        error: "Failed to update progress",
+        requestId: c.res.headers.get("X-Request-Id"),
+      },
+      500,
+    );
   }
 
   return c.json({ progress: data });
@@ -168,7 +180,13 @@ progress.get("/summary", async (c) => {
     .eq("user_id", userId);
 
   if (error) {
-    return c.json({ error: "Failed to fetch progress summary" }, 500);
+    return c.json(
+      {
+        error: "Failed to fetch progress summary",
+        requestId: c.res.headers.get("X-Request-Id"),
+      },
+      500,
+    );
   }
 
   // Group by theme
@@ -187,16 +205,11 @@ progress.get("/summary", async (c) => {
 
   // Fetch streaks
   const { data: streaksRaw } = await supabase
-    .from("streaks" as "profiles")
+    .from("streaks")
     .select("theme_id, current_streak, longest_streak")
     .eq("user_id", userId);
 
-  type StreakRow = {
-    theme_id: string;
-    current_streak: number;
-    longest_streak: number;
-  };
-  const streaks = (streaksRaw ?? []) as unknown as StreakRow[];
+  const streaks = streaksRaw ?? [];
   const streakMap: Record<string, { current: number; longest: number }> = {};
   for (const s of streaks) {
     streakMap[s.theme_id] = {

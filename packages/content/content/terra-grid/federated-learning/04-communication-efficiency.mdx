@@ -7,8 +7,8 @@ order: 4
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Each federated round exchanges model weights across satellite links. Cole calculates: 15 rounds x 3 participants x 4MB per update = 180MB at $0.50/MB. They need to compress the updates."
-  speaker: "Cole Branson"
+  narrative: "Each federated round exchanges model weights across satellite links. Tariq calculates: 15 rounds x 3 participants x 4MB per update = 180MB at $0.50/MB. They need to compress the updates."
+  speaker: "Tariq Hussain"
 concept:
   explanation: "Efficient federated communication sends only what changed — like GraphQL requesting only needed fields instead of fetching entire resources."
   bridge:
@@ -34,11 +34,11 @@ keywords:
   - bandwidth
 ---
 
-<Dialogue speaker="Cole Branson">
+<Dialogue speaker="Tariq Hussain">
 Each weight update is 4MB. Fifteen rounds, three companies, that is 180MB of satellite bandwidth at fifty cents per megabyte. Ninety dollars per training cycle. We need to compress these updates.
 </Dialogue>
 
-<Dialogue speaker="Park Soo-Yeon">
+<Dialogue speaker="Priya Sharma">
 Most gradient values are near zero anyway. We can send only the top 1% and accumulate the rest for the next round. Ninety percent bandwidth savings.
 </Dialogue>
 

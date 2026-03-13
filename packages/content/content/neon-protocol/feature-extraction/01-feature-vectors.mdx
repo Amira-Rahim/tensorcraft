@@ -7,8 +7,8 @@ order: 1
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Ryo connects to a decommissioned Meridian server. Instead of stored images, the database contains rows of numbers — 512-dimensional vectors. 'Meridian does not store images,' he explains. 'They store features. A compact fingerprint that captures everything the model learned about a frame. Faster to search. Impossible to reverse.'"
-  speaker: "Ryo"
+  narrative: "Amir connects to a decommissioned Meridian server. Instead of stored images, the database contains rows of numbers — 512-dimensional vectors. 'Meridian does not store images,' he explains. 'They store features. A compact fingerprint that captures everything the model learned about a frame. Faster to search. Impossible to reverse.'"
+  speaker: "Amir"
 concept:
   explanation: "A feature vector is a compact numerical representation of an image. A neural network compresses a 224x224x3 image (150,528 values) into a vector of 512 or 2048 numbers that encode its visual content. Like a hash function, it maps complex input to a fixed-size output — but preserves semantic similarity."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "const features = model.predict(image); // [1, 512] — fixed-size embedding"
     tier: structural
 consequence:
-  narrative: "Kira stares at the feature database. Millions of rows. Each row a 512-number fingerprint of a moment in someone's life. 'They compressed entire lives into vectors,' she says quietly. Ryo nods. 'And we are going to use that same technique to track their drones.'"
+  narrative: "Noor stares at the feature database. Millions of rows. Each row a 512-number fingerprint of a moment in someone's life. 'They compressed entire lives into vectors,' she says quietly. Amir nods. 'And we are going to use that same technique to track their drones.'"
   nextLessonTeaser: "Next: embedding spaces — understanding the geometry where similar images cluster together"
 hints:
   - level: nudge
@@ -35,11 +35,11 @@ keywords:
   - dimensionality
 ---
 
-<Dialogue speaker="Ryo">
+<Dialogue speaker="Amir">
 When I worked at Meridian, we processed 14 million camera frames per hour. You cannot store 14 million images. But you can store 14 million vectors of 512 numbers each. A feature vector is an image compressed to its essence — what a neural network considers important, stripped of everything it does not.
 </Dialogue>
 
-<Dialogue speaker="Kira">
+<Dialogue speaker="Noor">
 So it is like hashing. A hash function takes arbitrary input and produces a fixed-size fingerprint. You cannot reconstruct the original, but you can compare fingerprints efficiently.
 </Dialogue>
 

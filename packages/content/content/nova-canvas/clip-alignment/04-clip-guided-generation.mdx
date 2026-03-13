@@ -7,7 +7,7 @@ order: 4
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "MUSE generates technically competent images. But Petrov frowns: 'Technically competent. Artistically dead. The colors are correct, the composition is sound, but there is no feeling.' Yara suggests: 'Use CLIP as a critic — like ESLint for art. It guides the model toward images that match the emotional intent, not just the literal description.'"
+  narrative: "MUSE generates technically competent images. But Erdem frowns: 'Technically competent. Artistically dead. The colors are correct, the composition is sound, but there is no feeling.' Yara suggests: 'Use CLIP as a critic — like ESLint for art. It guides the model toward images that match the emotional intent, not just the literal description.'"
   speaker: "Yara"
 concept:
   explanation: "CLIP-guided generation uses CLIP as a scoring function to steer the diffusion process — at each step, nudge the image toward higher CLIP similarity with the prompt. Like ESLint guiding code toward patterns: it does not write the code, but it steers it in the right direction."
@@ -18,7 +18,7 @@ concept:
     mlCode: "gradient = clipScore(image, prompt); image += lr * gradient;"
     tier: structural
 consequence:
-  narrative: "With CLIP guidance, the images come alive. 'A melancholy cityscape at twilight' now produces deep blues, long shadows, a sense of solitude in the architecture. Petrov stares at the gallery wall. 'It feels something now,' he says. But then, the AI-Wrong moment: a style transfer produces technically perfect but emotionally hollow output. 'Technically competent,' Petrov repeats. 'Artistically dead.' The team realizes CLIP alignment is not the same as artistic truth."
+  narrative: "With CLIP guidance, the images come alive. 'A melancholy cityscape at twilight' now produces deep blues, long shadows, a sense of solitude in the architecture. Erdem stares at the gallery wall. 'It feels something now,' he says. But then, the AI-Wrong moment: a style transfer produces technically perfect but emotionally hollow output. 'Technically competent,' Erdem repeats. 'Artistically dead.' The team realizes CLIP alignment is not the same as artistic truth."
   nextLessonTeaser: "Next: prompt engineering for images — writing text that produces exactly the visuals you want"
 hints:
   - level: nudge
@@ -35,7 +35,7 @@ keywords:
   - alignment-score
 ---
 
-<Dialogue speaker="Petrov">
+<Dialogue speaker="Erdem">
 Technically competent. Artistically dead. The cityscape has buildings and a sky. But where is the melancholy? Where is the twilight feeling?
 </Dialogue>
 

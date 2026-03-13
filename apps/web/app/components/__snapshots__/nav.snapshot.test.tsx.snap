@@ -2,6 +2,7 @@
 
 exports[`Nav snapshots > matches snapshot 1`] = `
 <nav
+  aria-label="Main navigation"
   class="sticky top-0 z-50 h-[72px] flex items-center justify-between px-8 bg-surface/80 backdrop-blur-[20px] border-b border-border"
 >
   <a
@@ -18,6 +19,12 @@ exports[`Nav snapshots > matches snapshot 1`] = `
       href="/themes"
     >
       Themes
+    </a>
+    <a
+      class="px-4 py-2 text-sm text-text-muted hover:text-text-primary rounded-full transition-colors"
+      href="/bridges"
+    >
+      Bridges
     </a>
     <a
       class="px-4 py-2 text-sm text-text-muted hover:text-text-primary rounded-full transition-colors"

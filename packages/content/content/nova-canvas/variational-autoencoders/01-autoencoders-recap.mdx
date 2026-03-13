@@ -7,8 +7,8 @@ order: 1
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Before diving into VAEs, Ren revisits autoencoders — the compression-reconstruction pipeline that forms the foundation. Kai draws the parallel to audio compression codecs."
-  speaker: "Kai"
+  narrative: "Before diving into VAEs, Samir revisits autoencoders — the compression-reconstruction pipeline that forms the foundation. Rohan draws the parallel to audio compression codecs."
+  speaker: "Rohan"
 concept:
   explanation: "An autoencoder compresses input through a bottleneck and reconstructs it, learning efficient representations. It is the foundation for VAEs."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "const z = encoder.predict(image); const reconstruction = decoder.predict(z);"
     tier: structural
 consequence:
-  narrative: "Ren has a working autoencoder that compresses and reconstructs patterns. But it cannot generate NEW patterns — only reproduce existing ones. That limitation sets the stage for the variational part."
+  narrative: "Samir has a working autoencoder that compresses and reconstructs patterns. But it cannot generate NEW patterns — only reproduce existing ones. That limitation sets the stage for the variational part."
   nextLessonTeaser: "Next: adding the 'variational' to make autoencoders generative"
 hints:
   - level: nudge
@@ -34,7 +34,7 @@ keywords:
   - bottleneck
 ---
 
-<Dialogue speaker="Kai">
+<Dialogue speaker="Rohan">
 Before we get fancy, let us make sure you have the fundamentals locked in. An autoencoder is like an audio codec — MP3 compresses a WAV file, then decompresses it back. Some information is lost, but the important parts survive. The bottleneck forces the model to learn what matters.
 </Dialogue>
 

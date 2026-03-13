@@ -8,7 +8,7 @@ estimatedMinutes: 25
 difficulty: advanced
 context:
   narrative: "The team builds a medical NER model handling drugs, conditions, procedures, and dosages — the complex type system of clinical language."
-  speaker: "Obi Nwosu"
+  speaker: "Vikram Reddy"
 concept:
   explanation: "Medical NER requires domain-specific entity types, each with distinct patterns — like defining TypeScript union types where each variant has its own shape and validation rules."
   bridge:
@@ -34,15 +34,15 @@ keywords:
   - domain-specific
 ---
 
-<Dialogue speaker="Obi Nwosu">
+<Dialogue speaker="Vikram Reddy">
 General NER knows three types: Person, Location, Organization. Medical NER needs a much richer type system. "Methotrexate" is a DRUG. "RA" is an abbreviation for a CONDITION. "15mg PO q.d." contains a DOSAGE, a ROUTE, and a FREQUENCY. It's like going from JavaScript's loose typing to TypeScript's strict union types.
 </Dialogue>
 
-<Dialogue speaker="Khalil Mensah">
+<Dialogue speaker="Khalil Ansari">
 So each entity type is like a variant in a union: `type Entity = Drug | Condition | Procedure | Dosage`. Each variant has its own shape — drugs have generic names and brand names, dosages have numbers and units, conditions have standard codes.
 </Dialogue>
 
-<Dialogue speaker="Dr. Elena Vasquez">
+<Dialogue speaker="Dr. Zahra Karimi">
 And just like TypeScript catches type errors at compile time, our NER needs to catch classification errors before they reach a clinician. Labeling "methotrexate" as a CONDITION instead of a DRUG could be dangerous downstream.
 </Dialogue>
 
@@ -162,7 +162,7 @@ console.log(result);
 
 ## Precision, Recall, and F1
 
-<Dialogue speaker="Santos">
+<Dialogue speaker="Imran">
 How do we know the model is correct? Finding 90% of drugs means nothing if it also flags "patient" as a drug 30% of the time. We need the TypeScript equivalent of strict mode — catching false positives and false negatives.
 </Dialogue>
 

@@ -7,8 +7,8 @@ order: 5
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "Midnight. Every resistance cell in Neon City is online. Protocol Sentinel is loaded in 200 browsers across 12 districts. Lin's voice crackles over the encrypted channel: 'Feature flags are set. Canary deployment to District 7 first. If it holds, we go city-wide.' Kira's hand hovers over the launch command. Everything she has built — detection, classification, adversarial defense, streaming, testing, documentation — converges into this single moment."
-  speaker: "Lin"
+  narrative: "Midnight. Every resistance cell in Neon City is online. Protocol Sentinel is loaded in 200 browsers across 12 districts. Dilan's voice crackles over the encrypted channel: 'Feature flags are set. Canary deployment to District 7 first. If it holds, we go city-wide.' Noor's hand hovers over the launch command. Everything she has built — detection, classification, adversarial defense, streaming, testing, documentation — converges into this single moment."
+  speaker: "Dilan"
 concept:
   explanation: "Launching an ML system follows the same deployment strategy as a production web app: feature flags for gradual rollout, canary deployments for risk mitigation, monitoring dashboards for real-time health, and rollback procedures when things go wrong."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "if (featureFlag('sentinel-v1')) { pipeline.run(frame); } // canary deployment, instant rollback"
     tier: identity
 consequence:
-  narrative: "District 7 lights up. Protocol Sentinel detects 34 Meridian surveillance devices in the first hour. Confidence scores above 0.85 on every alert. Zero false positives against the human verification team. Lin opens the channel: 'All districts — go live.' Across Neon City, 200 browsers activate. Every screen in every district shows the evidence. Meridian's surveillance network — exposed. The Architect's voice cuts through the static: 'You think transparency is a weapon? I built the infrastructure you are using to fight me.' Kira closes her laptop. 'That is the point. The tools are neutral. The documentation is not. Everyone can see what you built and what it does to people.' Protocol Sentinel watches the watchers. And this time, the watchers cannot hide."
+  narrative: "District 7 lights up. Protocol Sentinel detects 34 Meridian surveillance devices in the first hour. Confidence scores above 0.85 on every alert. Zero false positives against the human verification team. Dilan opens the channel: 'All districts — go live.' Across Neon City, 200 browsers activate. Every screen in every district shows the evidence. Meridian's surveillance network — exposed. The Architect's voice cuts through the static: 'You think transparency is a weapon? I built the infrastructure you are using to fight me.' Noor closes her laptop. 'That is the point. The tools are neutral. The documentation is not. Everyone can see what you built and what it does to people.' Protocol Sentinel watches the watchers. And this time, the watchers cannot hide."
   nextLessonTeaser: "Congratulations. You have completed Neon Protocol. The bridge from frontend to computer vision is no longer a gap — it is a path you have walked."
 hints:
   - level: nudge
@@ -36,15 +36,15 @@ keywords:
   - launch
 ---
 
-<Dialogue speaker="Lin">
-This is not a demo. This is not a test. Two hundred cells. Twelve districts. Every browser running Protocol Sentinel simultaneously. We deploy to District 7 first — canary deployment. If the error rate stays below 2% for one hour, we go city-wide. Kira — you built the feature flag system. Walk us through it.
+<Dialogue speaker="Dilan">
+This is not a demo. This is not a test. Two hundred cells. Twelve districts. Every browser running Protocol Sentinel simultaneously. We deploy to District 7 first — canary deployment. If the error rate stays below 2% for one hour, we go city-wide. Noor — you built the feature flag system. Walk us through it.
 </Dialogue>
 
-<Dialogue speaker="Kira">
+<Dialogue speaker="Noor">
 Same pattern I used at my last startup for deploying new checkout flows. Feature flags control which pipeline version runs. We start at 10% of District 7 feeds. Monitor error rates, inference latency, false positive rate. If anything spikes, we roll back instantly — the old pipeline keeps running behind the flag.
 </Dialogue>
 
-<Dialogue speaker="Ryo">
+<Dialogue speaker="Amir">
 And the monitoring dashboard? Real-time metrics — not batch reports from yesterday. I want to see every detection, every confidence score, every error as it happens.
 </Dialogue>
 
@@ -246,7 +246,7 @@ const canary = new CanaryDeployment(
 
 ## Real-Time Monitoring
 
-<Dialogue speaker="Ryo">
+<Dialogue speaker="Amir">
 Numbers on a screen mean nothing without context. Show me the health of every stage, every feed, every district. If a single camera drops below threshold, I want to know before the operator does.
 </Dialogue>
 
@@ -338,11 +338,11 @@ monitor.onUpdate((health) => {
 
 ## The Launch
 
-<Dialogue speaker="Lin">
+<Dialogue speaker="Dilan">
 District 7 — canary is green. Error rate 0.3%. P95 latency 42 milliseconds. 34 detections in the first hour, all confirmed by human operators. Zero false positives. All districts — go live.
 </Dialogue>
 
-<Dialogue speaker="Kira">
+<Dialogue speaker="Noor">
 Rolling out to 100%. All districts. All feeds.
 </Dialogue>
 
@@ -354,7 +354,7 @@ Two hundred browsers. Twelve districts. Four hundred and twelve active camera fe
 You think transparency is a weapon? I built the infrastructure you are using to fight me. Every fiber optic cable. Every cell tower. Every GPU in those browsers runs on my silicon.
 </Dialogue>
 
-<Dialogue speaker="Kira">
+<Dialogue speaker="Noor">
 That is the point. The tools are neutral. The documentation is not. Everyone can see what you built and what it does to people. You cannot hide behind proprietary systems anymore. We documented everything — including your model's 23% false positive rate on dark-skinned faces that you never disclosed.
 </Dialogue>
 

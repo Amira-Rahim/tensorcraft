@@ -8,7 +8,7 @@ estimatedMinutes: 20
 difficulty: intermediate
 context:
   narrative: "Khalil builds tools to visualize what Diagnostic One focuses on in clinical notes."
-  speaker: "Khalil Mensah"
+  speaker: "Khalil Ansari"
 concept:
   explanation: "Attention weights can be visualized as heatmaps, revealing which words the model connects."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "// High attention weight → token highlights in visualization"
     tier: structural
 consequence:
-  narrative: "Vasquez can now see why Diagnostic One makes its decisions — building trust in the system."
+  narrative: "Karimi can now see why Diagnostic One makes its decisions — building trust in the system."
   nextLessonTeaser: "Next: applying attention specifically to clinical vocabulary."
 hints:
   - level: nudge
@@ -34,11 +34,11 @@ keywords:
   - explainability
 ---
 
-<Dialogue speaker="Dr. Elena Vasquez">
+<Dialogue speaker="Dr. Zahra Karimi">
 I can't trust a system I can't understand. If Diagnostic One flags a drug interaction, I need to see why — which words in the clinical note drove that decision.
 </Dialogue>
 
-<Dialogue speaker="Khalil Mensah">
+<Dialogue speaker="Khalil Ansari">
 That's like DevTools highlighting. When you hover over an element in the inspector, the browser shows you exactly which box on the page it corresponds to. We can do the same with attention weights.
 </Dialogue>
 
@@ -115,7 +115,7 @@ Common patterns in clinical attention heatmaps:
 - **Block patterns** — words within a clause attend to each other
 - **Off-diagonal connections** — distant words linked semantically
 
-<Dialogue speaker="Obi Nwosu">
+<Dialogue speaker="Vikram Reddy">
 When you see "methotrexate" with a bright vertical stripe, every other word is attending to it. That's the model recognizing it as the anchor of the sentence — exactly what a clinician would do.
 </Dialogue>
 

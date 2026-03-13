@@ -7,8 +7,8 @@ order: 5
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "The resistance has 47 camera feeds across 12 districts. A single browser tab cannot process them all. Kira designs a streaming architecture — some feeds processed locally, others relayed through WebSocket from resistance servers. The hybrid system Lin demanded."
-  speaker: "Kira"
+  narrative: "The resistance has 47 camera feeds across 12 districts. A single browser tab cannot process them all. Noor designs a streaming architecture — some feeds processed locally, others relayed through WebSocket from resistance servers. The hybrid system Dilan demanded."
+  speaker: "Noor"
 concept:
   explanation: "Processing continuous data streams is the same pattern as WebSockets and Server-Sent Events. You receive data in chunks, process each chunk, and push results downstream. The only difference: each chunk is a video frame, and processing means inference."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "feedStream.onFrame((frame) => { const result = model.predict(preprocess(frame)); emit(result); });"
     tier: structural
 consequence:
-  narrative: "Protocol Sentinel processes 12 feeds simultaneously — 8 locally, 4 via relay. NEON identifies a Meridian agent by gait analysis. Kira reaches for the alert button — Ryo stops her. 'That person is limping from an injury. The model is wrong.' The cost of trusting vision without verification."
+  narrative: "Protocol Sentinel processes 12 feeds simultaneously — 8 locally, 4 via relay. NEON identifies a Meridian agent by gait analysis. Noor reaches for the alert button — Amir stops her. 'That person is limping from an injury. The model is wrong.' The cost of trusting vision without verification."
   nextLessonTeaser: "Module 9 awaits: generative vision — art that fights back"
 hints:
   - level: nudge
@@ -35,15 +35,15 @@ keywords:
   - pipeline
 ---
 
-<Dialogue speaker="Kira">
+<Dialogue speaker="Noor">
 Forty-seven feeds. One browser tab. Even with WebGL, we cannot run inference on all of them simultaneously.
 </Dialogue>
 
-<Dialogue speaker="Ryo">
+<Dialogue speaker="Amir">
 So do not try. Process the high-priority feeds locally. Relay the rest through our server nodes via WebSocket. The server runs inference and sends back detections. If a server goes down, the browser picks up that feed directly — graceful degradation.
 </Dialogue>
 
-<Dialogue speaker="Lin">
+<Dialogue speaker="Dilan">
 The hybrid architecture we agreed on. Both of you were right. Build it.
 </Dialogue>
 

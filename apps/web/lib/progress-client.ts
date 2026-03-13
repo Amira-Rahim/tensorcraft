@@ -97,9 +97,7 @@ export async function markLessonCompleted(
 
 /** Update streak for a theme after lesson completion */
 async function updateStreak(userId: string, themeId: string) {
-  // streaks table added in migration 003 — not in generated Supabase types yet
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const supabase = getSupabaseBrowserClient() as any;
+  const supabase = getSupabaseBrowserClient();
   const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
 
   const { data: existing } = await supabase
@@ -120,15 +118,15 @@ async function updateStreak(userId: string, themeId: string) {
     return;
   }
 
-  const lastDate = existing.last_activity_date as string | null;
+  const lastDate = existing.last_activity_date;
   if (lastDate === today) return;
 
   const yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - 1);
   const yesterdayStr = yesterday.toISOString().slice(0, 10);
 
-  const currentStreak = (existing.current_streak as number) ?? 0;
-  const bestStreak = (existing.longest_streak as number) ?? 0;
+  const currentStreak = existing.current_streak ?? 0;
+  const bestStreak = existing.longest_streak ?? 0;
   const newStreak = lastDate === yesterdayStr ? currentStreak + 1 : 1;
   const newLongest = Math.max(bestStreak, newStreak);
 

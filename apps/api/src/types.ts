@@ -5,5 +5,6 @@ export type AppEnv = {
   Variables: {
     userId: string;
     accessToken: string;
+    isAdmin?: boolean;
   };
 };

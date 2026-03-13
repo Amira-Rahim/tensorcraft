@@ -11,7 +11,8 @@
     "build:content": "velite build",
     "clean": "rm -rf dist .velite",
     "lint": "eslint src/",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
     "velite": "^0.2.0",

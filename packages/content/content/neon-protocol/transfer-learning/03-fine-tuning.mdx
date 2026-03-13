@@ -7,8 +7,8 @@ order: 3
 estimatedMinutes: 30
 difficulty: intermediate
 context:
-  narrative: "Ryo connects the portable drive to the holotable. The stolen MobileNet model loads, its architecture glowing in wireframe blue. 'This model knows what objects look like in general. But it does not know a Meridian X-7 from a civilian quadcopter. We need to fine-tune — freeze the layers that already work, replace the classification head, and train on our 500 drone images.'"
-  speaker: "Ryo"
+  narrative: "Amir connects the portable drive to the holotable. The stolen MobileNet model loads, its architecture glowing in wireframe blue. 'This model knows what objects look like in general. But it does not know a Meridian X-7 from a civilian quadcopter. We need to fine-tune — freeze the layers that already work, replace the classification head, and train on our 500 drone images.'"
+  speaker: "Amir"
 concept:
   explanation: "Fine-tuning takes a pre-trained model and adapts it to your specific task. You freeze the early layers (universal features), replace the final classification layer, and train on your data. Like Object.freeze() in JavaScript — you lock the parts that should not change and only modify what needs to adapt."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "layer.trainable = false; // frozen. newHead.trainable = true; // adapts"
     tier: identity
 consequence:
-  narrative: "After 20 epochs on 500 labeled drone images, the fine-tuned model hits 94% accuracy on Meridian's drone fleet. Ryo leans back. 'Two million credits of pre-training. Twenty minutes of fine-tuning. That is the exchange rate of transfer learning.' Kira watches the loss curve flatten. 'What if we unfroze a few more layers?'"
+  narrative: "After 20 epochs on 500 labeled drone images, the fine-tuned model hits 94% accuracy on Meridian's drone fleet. Amir leans back. 'Two million credits of pre-training. Twenty minutes of fine-tuning. That is the exchange rate of transfer learning.' Noor watches the loss curve flatten. 'What if we unfroze a few more layers?'"
   nextLessonTeaser: "Next: domain adaptation — making the model work in Neon City's rain, fog, and neon lighting"
 hints:
   - level: nudge
@@ -36,15 +36,15 @@ keywords:
   - learning-rate
 ---
 
-<Dialogue speaker="Ryo">
+<Dialogue speaker="Amir">
 `Object.freeze()` makes a JavaScript object immutable. Setting `layer.trainable = false` does the same for a neural network layer. The weights become read-only — the optimizer cannot update them during training. You freeze what you want to preserve, and leave trainable what needs to adapt.
 </Dialogue>
 
-<Dialogue speaker="Kira">
+<Dialogue speaker="Noor">
 So fine-tuning is `Object.freeze(backbone)` and then extending with our own classification layer?
 </Dialogue>
 
-<Dialogue speaker="Ryo">
+<Dialogue speaker="Amir">
 Exactly. And the reason it works with only 500 images is that the frozen backbone already understands edges, textures, and shapes. We only need to teach the new head: this combination of features equals X-7 drone.
 </Dialogue>
 

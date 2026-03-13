@@ -127,6 +127,7 @@ function BridgeCard({ bridge }: { bridge: Bridge }) {
   return (
     <button
       onClick={() => setExpanded(!expanded)}
+      aria-expanded={expanded ? "true" : "false"}
       className="text-left rounded-2xl p-5 border border-border bg-surface hover:border-white/15 transition-colors cursor-pointer"
     >
       {/* Tier badge + category */}

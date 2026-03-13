@@ -18,7 +18,7 @@ concept:
     mlCode: "const mask = prediction.greater(threshold); // binary: 0 or 1"
     tier: structural
 consequence:
-  narrative: "The jagged edges sharpen into clean silhouettes. Each drone is outlined with sub-pixel precision. Kira overlays the masks on the live feed — perfect cutouts floating over the city grid."
+  narrative: "The jagged edges sharpen into clean silhouettes. Each drone is outlined with sub-pixel precision. Noor overlays the masks on the live feed — perfect cutouts floating over the city grid."
   nextLessonTeaser: "Next: scene understanding — combining segmentation with spatial reasoning to understand full scenes"
 hints:
   - level: nudge
@@ -39,7 +39,7 @@ keywords:
 The model gives you probabilities — 0.87 chance this pixel is a drone, 0.12 chance it is sky. You need to turn that into a clean yes-or-no mask. It is the same workflow as building an SVG mask: define the shape, refine the edges, apply it as a cutout.
 </Dialogue>
 
-<Dialogue speaker="Kira">
+<Dialogue speaker="Noor">
 So thresholding is like setting fill to black or white in an SVG mask element — anything above the threshold is visible, everything below is hidden?
 </Dialogue>
 

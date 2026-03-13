@@ -7,8 +7,8 @@ order: 1
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Protocol Sentinel goes live on a test feed. Kira watches the first detections appear in real-time on the browser dashboard. NEON warns: 'Frame rate dropping. Optimize or lose real-time capability.'"
-  speaker: "Kira"
+  narrative: "Protocol Sentinel goes live on a test feed. Noor watches the first detections appear in real-time on the browser dashboard. NEON warns: 'Frame rate dropping. Optimize or lose real-time capability.'"
+  speaker: "Noor"
 concept:
   explanation: "Video streams are just sequences of image frames. The browser's getUserMedia() API provides direct access to camera feeds — the same API you've used for video chat features. Each frame is a canvas image you can feed to a model."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "const frame = tf.browser.fromPixels(video); const prediction = model.predict(frame.expandDims(0));"
     tier: identity
 consequence:
-  narrative: "The test feed shows three Meridian drones circling District 7. Protocol Sentinel tags each one. Kira grins — then the frame rate drops to 4fps. NEON: 'Congratulations. You can detect drones. Slowly.'"
+  narrative: "The test feed shows three Meridian drones circling District 7. Protocol Sentinel tags each one. Noor grins — then the frame rate drops to 4fps. NEON: 'Congratulations. You can detect drones. Slowly.'"
   nextLessonTeaser: "Next: running inference on every frame without dropping below 30fps"
 hints:
   - level: nudge
@@ -35,7 +35,7 @@ keywords:
   - frames
 ---
 
-<Dialogue speaker="Kira">
+<Dialogue speaker="Noor">
 It is working. It is actually seeing them. Three drones over District 7 — tagged and tracked in real-time. In the browser. No server. No Meridian infrastructure. Just JavaScript.
 </Dialogue>
 

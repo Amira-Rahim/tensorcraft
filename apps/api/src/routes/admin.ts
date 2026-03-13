@@ -1,31 +1,84 @@
 import { Hono } from "hono";
+import { timingSafeEqual } from "node:crypto";
 import { getSupabaseAdminClient } from "@tensorcraft/supabase";
+import { isAdmin } from "@tensorcraft/supabase";
+import { authMiddleware } from "../middleware/auth";
 
-const admin = new Hono();
+// Use a broader env type since admin routes may authenticate via API key (no userId)
+type AdminEnv = {
+  Variables: {
+    userId?: string;
+    accessToken?: string;
+    isAdmin?: boolean;
+  };
+};
+
+const admin = new Hono<AdminEnv>();
 
 /**
- * Simple admin auth check — requires ADMIN_API_KEY header.
- * In production, replace with Supabase role-based check.
+ * Timing-safe comparison for API key.
+ * Uses constant-time comparison to prevent timing attacks.
  */
-function requireAdmin(c: {
-  req: { header: (name: string) => string | undefined };
-}) {
-  const key = c.req.header("x-admin-key");
+function isValidApiKey(provided: string | undefined): boolean {
   const expected = process.env.ADMIN_API_KEY;
-  if (!expected || key !== expected) {
+  if (!expected || !provided) return false;
+
+  // timingSafeEqual requires equal-length buffers
+  const expectedBuf = Buffer.from(expected);
+  const providedBuf = Buffer.from(provided);
+
+  if (expectedBuf.length !== providedBuf.length) {
+    // Still perform a comparison to avoid leaking length info via timing
+    const dummy = Buffer.alloc(expectedBuf.length);
+    timingSafeEqual(expectedBuf, dummy);
     return false;
   }
-  return true;
+
+  return timingSafeEqual(expectedBuf, providedBuf);
 }
+
+/**
+ * Combined admin auth middleware.
+ * Supports two auth methods:
+ * 1. Supabase role-based auth (user with admin role) — preferred
+ * 2. API key via x-admin-key header — fallback for CI/scripts
+ */
+admin.use("*", async (c, next) => {
+  // Method 1: Try API key first (for CI/scripts without a Supabase session)
+  const apiKey = c.req.header("x-admin-key");
+  if (isValidApiKey(apiKey)) {
+    c.set("isAdmin", true);
+    await next();
+    return;
+  }
+
+  // Method 2: Try Supabase role-based auth
+  try {
+    // Run authMiddleware to extract userId
+    let authPassed = false;
+    await authMiddleware(c, async () => {
+      authPassed = true;
+    });
+
+    if (authPassed) {
+      const userId = c.get("userId");
+      if (userId && (await isAdmin(userId))) {
+        c.set("isAdmin", true);
+        await next();
+        return;
+      }
+    }
+  } catch {
+    // Auth failed — fall through to 401
+  }
+
+  return c.json({ error: "Unauthorized" }, 401);
+});
 
 /**
  * GET /api/admin/stats — Dashboard stats (waitlist, users, purchases, revenue).
  */
 admin.get("/stats", async (c) => {
-  if (!requireAdmin(c)) {
-    return c.json({ error: "Unauthorized" }, 401);
-  }
-
   const supabase = getSupabaseAdminClient();
 
   const [waitlistRes, profilesRes, purchasesRes] = await Promise.all([
@@ -55,12 +108,11 @@ admin.get("/stats", async (c) => {
  * Query params: ?page=1&limit=50
  */
 admin.get("/waitlist", async (c) => {
-  if (!requireAdmin(c)) {
-    return c.json({ error: "Unauthorized" }, 401);
-  }
-
-  const page = Math.max(1, Number(c.req.query("page")) || 1);
-  const limit = Math.min(100, Math.max(1, Number(c.req.query("limit")) || 50));
+  const page = Math.max(1, Math.floor(Number(c.req.query("page")) || 1));
+  const limit = Math.min(
+    100,
+    Math.max(1, Math.floor(Number(c.req.query("limit")) || 50)),
+  );
   const offset = (page - 1) * limit;
 
   const supabase = getSupabaseAdminClient();
@@ -72,7 +124,13 @@ admin.get("/waitlist", async (c) => {
     .range(offset, offset + limit - 1);
 
   if (error) {
-    return c.json({ error: "Failed to fetch waitlist" }, 500);
+    return c.json(
+      {
+        error: "Failed to fetch waitlist",
+        requestId: c.res.headers.get("X-Request-Id"),
+      },
+      500,
+    );
   }
 
   return c.json({

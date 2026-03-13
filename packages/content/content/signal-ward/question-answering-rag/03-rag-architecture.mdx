@@ -7,8 +7,8 @@ order: 3
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "The patient's allergy was found — in one document. But Santos reports that this patient has 47 clinical documents across two systems, some in English, some in Spanish. 'We cannot read 47 documents every time we need an answer,' Vasquez says. 'We need retrieval. Find the right documents first, then comprehend them.'"
-  speaker: "Dr. Vasquez"
+  narrative: "The patient's allergy was found — in one document. But Imran reports that this patient has 47 clinical documents across two systems, some in English, some in Spanish. 'We cannot read 47 documents every time we need an answer,' Karimi says. 'We need retrieval. Find the right documents first, then comprehend them.'"
+  speaker: "Dr. Karimi"
 concept:
   explanation: "RAG retrieves relevant documents first, then generates answers from them — like React Server Components that fetch data on the server before rendering on the client."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "async function answer(q) { const docs = await retrieve(q); return generate(q, docs); }"
     tier: structural
 consequence:
-  narrative: "The RAG pipeline retrieves the three most relevant documents from 47 records in 12 milliseconds. One is a Spanish-language discharge summary from a clinic in Guatemala. The QA model extracts the critical allergy information. Santos exhales. 'That would have taken me twenty minutes.'"
+  narrative: "The RAG pipeline retrieves the three most relevant documents from 47 records in 12 milliseconds. One is a Spanish-language discharge summary from a clinic in Guatemala. The QA model extracts the critical allergy information. Imran exhales. 'That would have taken me twenty minutes.'"
   nextLessonTeaser: "Next: knowledge grounding — ensuring every answer has evidence"
 hints:
   - level: nudge
@@ -35,7 +35,7 @@ keywords:
   - embeddings
 ---
 
-<Dialogue speaker="Dr. Vasquez">
+<Dialogue speaker="Dr. Karimi">
 One document, one answer — that was a proof of concept. This patient has 47 records across two hospital systems. Emergency notes, lab results, imaging reports, discharge summaries. Some in Spanish. We cannot comprehend 47 documents sequentially. We need to retrieve the right ones first.
 </Dialogue>
 

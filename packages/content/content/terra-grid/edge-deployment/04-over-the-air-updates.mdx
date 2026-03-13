@@ -7,8 +7,8 @@ order: 4
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "A critical model update needs to reach 847 devices. Cole designs an OTA pipeline that mirrors the Service Worker update lifecycle — download in background, verify, swap atomically."
-  speaker: "Cole Branson"
+  narrative: "A critical model update needs to reach 847 devices. Tariq designs an OTA pipeline that mirrors the Service Worker update lifecycle — download in background, verify, swap atomically."
+  speaker: "Tariq Hussain"
 concept:
   explanation: "OTA model updates follow the Service Worker lifecycle — install new version in background, verify integrity, activate on next inference cycle, keep the old version as fallback."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "otaUpdate({ download, verify, stage, activate }) // same lifecycle"
     tier: structural
 consequence:
-  narrative: "GRID confirms: 847 of 847 devices updated. Zero downtime. Cole exhales."
+  narrative: "GRID confirms: 847 of 847 devices updated. Zero downtime. Tariq exhales."
   nextLessonTeaser: "Next: keeping models running when connectivity drops"
 hints:
   - level: nudge
@@ -34,7 +34,7 @@ keywords:
   - rollback
 ---
 
-<Dialogue speaker="Cole Branson">
+<Dialogue speaker="Tariq Hussain">
 We have a model update that improves anomaly detection by 4.2%. I need it on 847 devices without taking a single one offline. And if anything goes wrong, it rolls back automatically.
 </Dialogue>
 

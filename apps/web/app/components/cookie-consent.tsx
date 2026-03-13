@@ -9,19 +9,37 @@ export function CookieConsent() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const consent = localStorage.getItem(CONSENT_KEY);
-    if (!consent) {
+    if (typeof window === "undefined") return;
+    try {
+      const consent = localStorage.getItem(CONSENT_KEY);
+      if (!consent) {
+        setVisible(true);
+      }
+    } catch {
+      // localStorage may be blocked (e.g. private browsing)
       setVisible(true);
     }
   }, []);
 
   function accept() {
-    localStorage.setItem(CONSENT_KEY, "accepted");
+    try {
+      if (typeof window !== "undefined") {
+        localStorage.setItem(CONSENT_KEY, "accepted");
+      }
+    } catch {
+      // localStorage may be unavailable
+    }
     setVisible(false);
   }
 
   function decline() {
-    localStorage.setItem(CONSENT_KEY, "declined");
+    try {
+      if (typeof window !== "undefined") {
+        localStorage.setItem(CONSENT_KEY, "declined");
+      }
+    } catch {
+      // localStorage may be unavailable
+    }
     setVisible(false);
   }
 

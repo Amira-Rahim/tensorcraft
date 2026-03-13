@@ -7,8 +7,8 @@ order: 2
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "Torres insists on automated testing. 'I am not deploying a signal classifier that was tested by hand. Automate it — every commit, every push, every merge.' Park builds the CI/CD pipeline."
-  speaker: "Chief Torres"
+  narrative: "Nazari insists on automated testing. 'I am not deploying a signal classifier that was tested by hand. Automate it — every commit, every push, every merge.' Demir builds the CI/CD pipeline."
+  speaker: "Chief Nazari"
 concept:
   explanation: "CI/CD for ML systems automates testing and deployment — the same GitHub Actions workflow you use for web apps, extended with model validation steps."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "on: push → test → validate-model → benchmark → deploy // + model checks"
     tier: identity
 consequence:
-  narrative: "The pipeline passes: unit tests, integration tests, model validation, performance benchmarks — all green. Torres: 'Now I trust it.'"
+  narrative: "The pipeline passes: unit tests, integration tests, model validation, performance benchmarks — all green. Nazari: 'Now I trust it.'"
   nextLessonTeaser: "Next: monitoring — watching the system in production"
 hints:
   - level: nudge
@@ -35,11 +35,11 @@ keywords:
   - automation
 ---
 
-<Dialogue speaker="Chief Torres">
+<Dialogue speaker="Chief Nazari">
 Manual testing is how systems fail in production. You will automate everything: unit tests, integration tests, model accuracy checks, performance benchmarks. Every push triggers the full pipeline. If anything fails, it does not ship.
 </Dialogue>
 
-<Dialogue speaker="Ensign Park">
+<Dialogue speaker="Ensign Demir">
 Same as any web app CI — GitHub Actions, test on push, deploy on merge to main. I just need to add model-specific checks: accuracy thresholds, inference speed benchmarks, memory budget validation.
 </Dialogue>
 

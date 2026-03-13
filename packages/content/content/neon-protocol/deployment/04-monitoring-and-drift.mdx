@@ -8,7 +8,7 @@ estimatedMinutes: 30
 difficulty: intermediate
 context:
   narrative: "Protocol Sentinel has been live for three days. Accuracy reports from District 9 show a drop from 94% to 71%. Something has changed — not in the model, but in the world. NEON: 'Meridian updated their drone fleet. Your training data is stale. Welcome to data drift.'"
-  speaker: "Ryo"
+  speaker: "Amir"
 concept:
   explanation: "Model monitoring is error tracking for ML. Just like you use Sentry or DataDog to watch for runtime errors and performance regressions in your web apps, you need monitoring for model predictions — tracking confidence scores, latency, accuracy decay, and data drift over time."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "trackMetric('prediction_confidence', 0.72);\ntrackMetric('inference_latency_ms', 45);\ndetectDrift(currentDistribution, baselineDistribution);"
     tier: structural
 consequence:
-  narrative: "Ryo sets up automated drift alerts. When District 9's confidence scores drop below 80%, the system flags it immediately. Lin begins collecting new samples of Meridian's updated drones. NEON: 'The model is not broken. The world moved. Now you can see it moving.'"
+  narrative: "Amir sets up automated drift alerts. When District 9's confidence scores drop below 80%, the system flags it immediately. Dilan begins collecting new samples of Meridian's updated drones. NEON: 'The model is not broken. The world moved. Now you can see it moving.'"
   nextLessonTeaser: "Next: stress-testing Sentinel to make sure it survives anything Meridian throws at it"
 hints:
   - level: nudge
@@ -35,7 +35,7 @@ keywords:
   - distribution-shift
 ---
 
-<Dialogue speaker="Ryo">
+<Dialogue speaker="Amir">
 District 9 is reporting false negatives. Meridian drones flying right past Sentinel undetected. Three days ago we were at 94% accuracy. Now we are at 71%. The model has not changed. What happened?
 </Dialogue>
 

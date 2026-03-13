@@ -8,7 +8,7 @@ estimatedMinutes: 25
 difficulty: advanced
 context:
   narrative: "The team adapts BERT for clinical condition classification — inheriting general language knowledge and adding medical specialization."
-  speaker: "Obi Nwosu"
+  speaker: "Vikram Reddy"
 concept:
   explanation: "Fine-tuning adapts a pre-trained model to a specific task by adding a task-specific head and continuing training with a small learning rate on domain data."
   bridge:
@@ -34,15 +34,15 @@ keywords:
   - domain-adaptation
 ---
 
-<Dialogue speaker="Santos Rivera">
+<Dialogue speaker="Imran Malik">
 We've got a BERT model that understands general English. But when I feed it "pt c/o SOB x 3d, hx of CHF," it's lost. Clinical language is its own dialect.
 </Dialogue>
 
-<Dialogue speaker="Khalil Mensah">
+<Dialogue speaker="Khalil Ansari">
 That's like class inheritance in TypeScript. You don't rewrite the entire base class — you extend it and override only the methods you need. The base class handles the fundamentals; the subclass adds the specialization.
 </Dialogue>
 
-<Dialogue speaker="Obi Nwosu">
+<Dialogue speaker="Vikram Reddy">
 Perfect analogy. Fine-tuning is exactly that. BERT is our base class — it knows language structure, grammar, semantics. We extend it with a clinical classification head. The base stays mostly intact. The new head learns the domain.
 </Dialogue>
 
@@ -130,7 +130,7 @@ await clinicalModel.fit(xTrain, yTrain, {
 
 ## Catastrophic Forgetting: The Override Trap
 
-<Dialogue speaker="Obi Nwosu">
+<Dialogue speaker="Vikram Reddy">
 The biggest danger in fine-tuning is catastrophic forgetting. If your learning rate is too high or you train too many epochs, the model overwrites its pre-trained knowledge. It's like overriding every method in a base class until there's nothing left of the original — you've destroyed the inheritance.
 </Dialogue>
 
@@ -186,11 +186,11 @@ for (let i = 0; i < 5; i++) {
 }`}
 </CodeBlock>
 
-<Dialogue speaker="Santos Rivera">
+<Dialogue speaker="Imran Malik">
 So lower layers — the ones that learned basic language patterns — get tiny updates. Upper layers — closer to the task — get larger updates. Like how you'd be more careful editing a utility library than a feature component.
 </Dialogue>
 
-<Dialogue speaker="Obi Nwosu">
+<Dialogue speaker="Vikram Reddy">
 Exactly. The foundation stays solid. The specialization adapts.
 </Dialogue>
 

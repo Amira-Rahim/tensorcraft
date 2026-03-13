@@ -7,8 +7,8 @@ order: 5
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Sector 9 installs 200 new sensors. The data distribution shifts. Park configures automated retraining triggered by data changes — like GitHub Actions triggered by pushes."
-  speaker: "Park Soo-Yeon"
+  narrative: "Sector 9 installs 200 new sensors. The data distribution shifts. Priya configures automated retraining triggered by data changes — like GitHub Actions triggered by pushes."
+  speaker: "Priya Sharma"
 concept:
   explanation: "Automated retraining triggers on data events, just as GitHub Actions trigger on code events — push, schedule, or manual dispatch."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "on: data-change: drift-score > 0.3 // event-triggered training"
     tier: structural
 consequence:
-  narrative: "The pipeline detects the Sector 9 data shift, triggers retraining, and produces a new model that passes all gates. Park reviews and approves."
+  narrative: "The pipeline detects the Sector 9 data shift, triggers retraining, and produces a new model that passes all gates. Priya reviews and approves."
   nextLessonTeaser: "Module 7: monitoring production models and detecting when they start to degrade"
 hints:
   - level: nudge
@@ -34,7 +34,7 @@ keywords:
   - continuous-training
 ---
 
-<Dialogue speaker="Park Soo-Yeon">
+<Dialogue speaker="Priya Sharma">
 Sector 9 just came online with 200 new sensors. The data distribution shifted. The current model has never seen readings from those sensor types. We need to retrain.
 </Dialogue>
 
@@ -42,7 +42,7 @@ Sector 9 just came online with 200 new sensors. The data distribution shifted. T
 Manually? Every time a sector changes?
 </Dialogue>
 
-<Dialogue speaker="Park Soo-Yeon">
+<Dialogue speaker="Priya Sharma">
 No. I have configured triggers. When the data drift score exceeds 0.3 or the dataset grows by more than 10%, the pipeline kicks off automatically. I review before it deploys.
 </Dialogue>
 

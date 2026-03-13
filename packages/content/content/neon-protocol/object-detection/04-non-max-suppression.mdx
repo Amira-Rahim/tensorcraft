@@ -7,8 +7,8 @@ order: 4
 estimatedMinutes: 30
 difficulty: intermediate
 context:
-  narrative: "Kira's model is detecting drones — but each drone generates dozens of overlapping boxes. The holotable is a mess of redundant rectangles. Ryo laughs. 'You need NMS. Think of it like debounce() — suppress the duplicates, keep the best.'"
-  speaker: "Ryo"
+  narrative: "Noor's model is detecting drones — but each drone generates dozens of overlapping boxes. The holotable is a mess of redundant rectangles. Amir laughs. 'You need NMS. Think of it like debounce() — suppress the duplicates, keep the best.'"
+  speaker: "Amir"
 concept:
   explanation: "Non-Max Suppression (NMS) eliminates duplicate detections by keeping only the highest-confidence box when multiple boxes overlap significantly. It is the ML equivalent of debounce() — suppressing redundant outputs to keep only the meaningful ones."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "const kept = nms(boxes, scores, iouThreshold: 0.5); // suppress redundant boxes"
     tier: structural
 consequence:
-  narrative: "After NMS, the holotable clears. Three clean boxes remain — one per drone. Kira grins. 'Clean. Like going from 50 scroll events to one debounced handler.' NEON approves: 'Meridian runs NMS at an IoU threshold of 0.45. I suggest 0.5 for cleaner results.'"
+  narrative: "After NMS, the holotable clears. Three clean boxes remain — one per drone. Noor grins. 'Clean. Like going from 50 scroll events to one debounced handler.' NEON approves: 'Meridian runs NMS at an IoU threshold of 0.45. I suggest 0.5 for cleaner results.'"
   nextLessonTeaser: "Next: YOLO architecture — single-shot detection that does everything in one pass"
 hints:
   - level: nudge
@@ -35,15 +35,15 @@ keywords:
   - post-processing
 ---
 
-<Dialogue speaker="Ryo">
+<Dialogue speaker="Amir">
 Every anchor near a drone fires a detection. You get 30 boxes for one drone. This is the same problem as a scroll listener firing 60 times per second — you do not want 60 handler calls, you want one. In frontend, you debounce. In detection, you run Non-Max Suppression.
 </Dialogue>
 
-<Dialogue speaker="Kira">
+<Dialogue speaker="Noor">
 So NMS is debounce for bounding boxes. Keep the best event, suppress everything too similar.
 </Dialogue>
 
-<Dialogue speaker="Ryo">
+<Dialogue speaker="Amir">
 Exactly. Sort by confidence, keep the winner, throw away anything that overlaps it too much. Repeat until you are done.
 </Dialogue>
 

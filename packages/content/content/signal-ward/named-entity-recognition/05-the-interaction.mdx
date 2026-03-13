@@ -8,7 +8,7 @@ estimatedMinutes: 25
 difficulty: advanced
 context:
   narrative: "Diagnostic One's NER pipeline catches a drug interaction that three doctors missed — the midpoint breakthrough."
-  speaker: "Dr. Elena Vasquez"
+  speaker: "Dr. Zahra Karimi"
 concept:
   explanation: "Combining NER with relationship extraction and a drug interaction database creates a safety system — like dependency resolution in package.json, where conflicting packages are flagged before they cause runtime failures."
   bridge:
@@ -34,19 +34,19 @@ keywords:
   - dependency-resolution
 ---
 
-<Dialogue speaker="Dr. Elena Vasquez">
-Khalil, pull up Mrs. Okonkwo's chart. She's been admitted three times in two months for unexplained bleeding. Three different attendings, three different assessments. Nobody found the cause.
+<Dialogue speaker="Dr. Zahra Karimi">
+Khalil, pull up Mrs. Begum's chart. She's been admitted three times in two months for unexplained bleeding. Three different attendings, three different assessments. Nobody found the cause.
 </Dialogue>
 
-<Dialogue speaker="Khalil Mensah">
+<Dialogue speaker="Khalil Ansari">
 Running her notes through Diagnostic One now. The NER pipeline is extracting entities from all three admission records...
 </Dialogue>
 
 <Dialogue speaker="MEDI">
-Alert: Potential drug interaction detected. Patient is prescribed warfarin (Cardiology, Dr. Patel, January 15) and high-dose aspirin (Rheumatology, Dr. Kim, February 3). Combined anticoagulant and antiplatelet effect significantly increases bleeding risk. Confidence: 0.96.
+Alert: Potential drug interaction detected. Patient is prescribed warfarin (Cardiology, Dr. Patel, January 15) and high-dose aspirin (Rheumatology, Dr. Qureshi, February 3). Combined anticoagulant and antiplatelet effect significantly increases bleeding risk. Confidence: 0.96.
 </Dialogue>
 
-<Dialogue speaker="Dr. Elena Vasquez">
+<Dialogue speaker="Dr. Zahra Karimi">
 Two different specialists. Two different prescribing systems. Neither saw the other's prescription. Your NER pipeline found both drugs across separate documents and connected them. That is what three doctors missed.
 </Dialogue>
 
@@ -152,10 +152,10 @@ function drugSafetyPipeline(
   return checkInteractions(allDrugs);
 }
 
-// Example: Mrs. Okonkwo's case
+// Example: Mrs. Begum's case
 const drugs: DrugEntity[] = [
   { name: 'warfarin', source: 'Cardiology Note', prescriber: 'Dr. Patel', date: '2025-01-15' },
-  { name: 'aspirin', source: 'Rheumatology Note', prescriber: 'Dr. Kim', date: '2025-02-03' }
+  { name: 'aspirin', source: 'Rheumatology Note', prescriber: 'Dr. Qureshi', date: '2025-02-03' }
 ];
 
 const alerts = checkInteractions(drugs);
@@ -170,15 +170,15 @@ alerts.forEach(a => {
 
 ## The Human-AI Partnership
 
-<Dialogue speaker="Dr. Elena Vasquez">
-Diagnostic One did not replace the three doctors who missed this interaction. It augmented them. It read every note across every department, extracted every drug, and checked every pair — something no human can do reliably across thousands of patients. But the clinical decision, adjusting Mrs. Okonkwo's medications safely, that is still mine.
+<Dialogue speaker="Dr. Zahra Karimi">
+Diagnostic One did not replace the three doctors who missed this interaction. It augmented them. It read every note across every department, extracted every drug, and checked every pair — something no human can do reliably across thousands of patients. But the clinical decision, adjusting Mrs. Begum's medications safely, that is still mine.
 </Dialogue>
 
-<Dialogue speaker="Santos">
+<Dialogue speaker="Imran">
 And we need to be transparent about what the system can and cannot catch. It found a pairwise interaction from a known database. It would not catch a novel interaction that's not in the database, or a three-way interaction, or a dosage-dependent interaction. Augmentation, not replacement.
 </Dialogue>
 
-<Dialogue speaker="Obi Nwosu">
+<Dialogue speaker="Vikram Reddy">
 Like a linter. ESLint catches patterns it knows about. It does not catch every bug. But the bugs it does catch — consistently, across every file, every commit — save lives. In our case, literally.
 </Dialogue>
 

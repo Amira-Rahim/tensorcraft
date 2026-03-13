@@ -7,8 +7,8 @@ order: 5
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "Vasquez sits at the nurse's station, types a query: 'Which of my patients on immunosuppressants have upcoming dental procedures?' The system retrieves, comprehends, grounds, and answers in 340 milliseconds. Santos watches over her shoulder. 'Can I use it too?' Vasquez smiles. 'Khalil, we need to handle how nurses ask questions, not just how doctors do.'"
-  speaker: "Dr. Vasquez"
+  narrative: "Karimi sits at the nurse's station, types a query: 'Which of my patients on immunosuppressants have upcoming dental procedures?' The system retrieves, comprehends, grounds, and answers in 340 milliseconds. Imran watches over her shoulder. 'Can I use it too?' Karimi smiles. 'Khalil, we need to handle how nurses ask questions, not just how doctors do.'"
+  speaker: "Dr. Karimi"
 concept:
   explanation: "Clinical query understanding maps natural language questions to structured retrieval intents — like a search bar with natural language understanding that rewrites user queries into database operations."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "parseQuery('patients on warfarin with INR > 3') → { medication: 'warfarin', lab: 'INR', condition: '> 3' }"
     tier: structural
 consequence:
-  narrative: "The clinical query system handles both 'List current anticoagulant patients with subtherapeutic INR' from Dr. Vasquez and 'Who needs their blood thinner levels checked?' from Santos. Same intent, different language. Khalil's NLU layer normalizes both into the same structured query."
+  narrative: "The clinical query system handles both 'List current anticoagulant patients with subtherapeutic INR' from Dr. Karimi and 'Who needs their blood thinner levels checked?' from Imran. Same intent, different language. Khalil's NLU layer normalizes both into the same structured query."
   nextLessonTeaser: "Next module: production NLP and privacy — taking Diagnostic One to the real world"
 hints:
   - level: nudge
@@ -35,11 +35,11 @@ keywords:
   - search-nlu
 ---
 
-<Dialogue speaker="Dr. Vasquez">
+<Dialogue speaker="Dr. Karimi">
 Which of my patients on immunosuppressants have upcoming dental procedures?
 </Dialogue>
 
-<Dialogue speaker="Santos">
+<Dialogue speaker="Imran">
 Can I ask it something? How about: "Who needs their blood checked this week?" Same question a doctor might ask, just in different words.
 </Dialogue>
 

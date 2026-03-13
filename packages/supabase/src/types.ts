@@ -1,9 +1,9 @@
 /**
  * Tensorcraft Database Types
  *
- * These types mirror the Supabase schema defined in migrations/001_initial_schema.sql.
+ * These types mirror the Supabase schema defined in migrations 001–006.
  * In production, these should be auto-generated via `supabase gen types typescript`.
- * For now, they're manually maintained to match the migration.
+ * For now, they're manually maintained to match the migrations.
  */
 
 export type UserRole = "user" | "admin";
@@ -20,6 +20,9 @@ export interface Database {
           github_username: string | null;
           github_connected: boolean;
           onboarding_completed: boolean;
+          preferred_theme_id: string | null;
+          last_active_at: string | null;
+          total_lessons_completed: number;
           role: UserRole;
           created_at: string;
           updated_at: string;
@@ -32,6 +35,9 @@ export interface Database {
           github_username?: string | null;
           github_connected?: boolean;
           onboarding_completed?: boolean;
+          preferred_theme_id?: string | null;
+          last_active_at?: string | null;
+          total_lessons_completed?: number;
           role?: UserRole;
         };
         Update: {
@@ -40,6 +46,9 @@ export interface Database {
           github_username?: string | null;
           github_connected?: boolean;
           onboarding_completed?: boolean;
+          preferred_theme_id?: string | null;
+          last_active_at?: string | null;
+          total_lessons_completed?: number;
           role?: UserRole;
           updated_at?: string;
         };
@@ -154,7 +163,6 @@ export interface Database {
           current_streak: number;
           longest_streak: number;
           last_activity_date: string | null;
-          created_at: string;
           updated_at: string;
         };
         Insert: {
@@ -186,19 +194,17 @@ export interface Database {
           user_id: string;
           achievement_type: string;
           theme_id: string | null;
-          metadata: Record<string, unknown> | null;
-          earned_at: string;
-          created_at: string;
+          unlocked_at: string;
         };
         Insert: {
           user_id: string;
           achievement_type: string;
           theme_id?: string | null;
-          metadata?: Record<string, unknown> | null;
-          earned_at?: string;
+          unlocked_at?: string;
         };
         Update: {
-          metadata?: Record<string, unknown> | null;
+          achievement_type?: string;
+          theme_id?: string | null;
         };
         Relationships: [
           {
@@ -217,28 +223,33 @@ export interface Database {
           exercise_slug: string;
           lesson_id: string;
           theme_id: string;
+          passed: boolean;
           score: number;
           hints_used: number;
+          solution_viewed: boolean;
+          submitted_code: string | null;
           duration_ms: number | null;
-          submitted_code: string;
           attempted_at: string;
-          created_at: string;
         };
         Insert: {
           user_id: string;
           exercise_slug: string;
           lesson_id: string;
           theme_id: string;
-          score: number;
-          hints_used?: number;
-          duration_ms?: number | null;
-          submitted_code: string;
-        };
-        Update: {
+          passed?: boolean;
           score?: number;
           hints_used?: number;
+          solution_viewed?: boolean;
+          submitted_code?: string | null;
           duration_ms?: number | null;
-          submitted_code?: string;
+        };
+        Update: {
+          passed?: boolean;
+          score?: number;
+          hints_used?: number;
+          solution_viewed?: boolean;
+          submitted_code?: string | null;
+          duration_ms?: number | null;
         };
         Relationships: [
           {
@@ -251,7 +262,26 @@ export interface Database {
         ];
       };
     };
-    Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Views: {
+      theme_progress_summary: {
+        Row: {
+          user_id: string;
+          theme_id: string;
+          total_lessons: number;
+          completed_lessons: number;
+          in_progress_lessons: number;
+          first_started_at: string | null;
+          last_completed_at: string | null;
+          completion_percent: number | null;
+        };
+        Relationships: [];
+      };
+    };
+    Functions: {
+      is_admin: {
+        Args: Record<string, never>;
+        Returns: boolean;
+      };
+    };
   };
 }

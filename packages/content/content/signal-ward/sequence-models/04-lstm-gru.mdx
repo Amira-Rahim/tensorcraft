@@ -7,8 +7,8 @@ order: 4
 estimatedMinutes: 30
 difficulty: intermediate
 context:
-  narrative: "Obi introduces gated architectures — LSTMs and GRUs — that solve the vanishing gradient problem by controlling what information persists across timesteps."
-  speaker: "Obi"
+  narrative: "Vikram introduces gated architectures — LSTMs and GRUs — that solve the vanishing gradient problem by controlling what information persists across timesteps."
+  speaker: "Vikram"
 concept:
   explanation: "LSTM cells use three gates (forget, input, output) to control information flow, deciding what to keep, add, and expose. This is analogous to React's useMemo and useCallback — hooks that control what persists across renders."
   bridge:
@@ -39,19 +39,19 @@ keywords:
 
 > **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
-<Dialogue speaker="Obi">
-Santos, when you use `useMemo` in React, what are you doing?
+<Dialogue speaker="Vikram">
+Imran, when you use `useMemo` in React, what are you doing?
 </Dialogue>
 
-<Dialogue speaker="Santos">
+<Dialogue speaker="Imran">
 Controlling what persists across renders. The dependency array decides when to recalculate and when to keep the cached value.
 </Dialogue>
 
-<Dialogue speaker="Obi">
+<Dialogue speaker="Vikram">
 An LSTM does exactly the same thing for sequence processing. It has gates that control what information to keep from the previous timestep, what new information to add, and what to expose as output. Instead of a dependency array, it uses learned sigmoid gates.
 </Dialogue>
 
-<Dialogue speaker="Dr. Vasquez">
+<Dialogue speaker="Dr. Karimi">
 So the LSTM can choose to remember that "denied" appeared 20 words ago when it finally encounters "chest pain"?
 </Dialogue>
 
@@ -160,11 +160,11 @@ model.summary();
 
 ## GRU: The Simpler Alternative
 
-<Dialogue speaker="Santos">
+<Dialogue speaker="Imran">
 Four times the parameters? That's going to be slower in the browser.
 </Dialogue>
 
-<Dialogue speaker="Obi">
+<Dialogue speaker="Vikram">
 Good thinking. GRU is a lighter alternative — it merges the forget and input gates into a single "update gate" and removes the separate cell state. Fewer parameters, often similar performance.
 </Dialogue>
 

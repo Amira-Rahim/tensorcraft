@@ -7,8 +7,8 @@ order: 5
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Lin halts the entire deployment. The adversarial patches work, the style transfer camouflage works, the generators produce convincing fakes — and that is exactly the problem. 'We deploy this responsibly or we do not deploy it at all. Every capability needs governance. Every output needs an audit trail.' She pulls up the model governance framework she has been building in parallel."
-  speaker: "Lin"
+  narrative: "Dilan halts the entire deployment. The adversarial patches work, the style transfer camouflage works, the generators produce convincing fakes — and that is exactly the problem. 'We deploy this responsibly or we do not deploy it at all. Every capability needs governance. Every output needs an audit trail.' She pulls up the model governance framework she has been building in parallel."
+  speaker: "Dilan"
 concept:
   explanation: "Model governance defines what a generative system is allowed to do, who can use it, and how outputs are tracked. It is the ML equivalent of Content Security Policy headers — explicit rules about what resources can be loaded, what scripts can execute, and what connections are permitted. Without governance, a powerful model is an open attack surface."
   bridge:
@@ -35,15 +35,15 @@ keywords:
   - content-security-policy
 ---
 
-<Dialogue speaker="Lin">
+<Dialogue speaker="Dilan">
 I am shutting this down until we have governance. Every capability you have built this module — generators, style transfer, adversarial patches — is dual-use. A patch that fools Meridian's cameras can fool medical imaging. A style transfer model that creates camouflage can create deepfakes. We need a Content Security Policy for our models.
 </Dialogue>
 
-<Dialogue speaker="Ryo">
+<Dialogue speaker="Amir">
 CSP headers. Explicit allow-list for what scripts can run, what resources can load, what connections are permitted. You want the same thing for the model — an explicit policy for what it is allowed to generate and who it is allowed to target.
 </Dialogue>
 
-<Dialogue speaker="Lin">
+<Dialogue speaker="Dilan">
 Exactly. No wildcard permissions. No 'default allow.' Every operation goes through the governance layer. Every output gets logged. And the patches are cryptographically bound to Meridian's architecture fingerprints — useless against any other system.
 </Dialogue>
 

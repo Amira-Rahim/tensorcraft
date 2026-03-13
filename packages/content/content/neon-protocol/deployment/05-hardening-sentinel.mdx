@@ -7,8 +7,8 @@ order: 5
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "Final preparations. Ryo runs Protocol Sentinel through every worst-case scenario: corrupted inputs, memory pressure, network drops, concurrent feeds. If Sentinel fails in the field, the resistance pays the price. NEON: 'Break it here, so it does not break out there.'"
-  speaker: "Ryo"
+  narrative: "Final preparations. Amir runs Protocol Sentinel through every worst-case scenario: corrupted inputs, memory pressure, network drops, concurrent feeds. If Sentinel fails in the field, the resistance pays the price. NEON: 'Break it here, so it does not break out there.'"
+  speaker: "Amir"
 concept:
   explanation: "Stress-testing and hardening a deployed ML system is load testing for models. Just like you use k6 or Artillery to push your APIs to their limits before launch, you need to stress-test your model: flood it with requests, feed it garbage data, starve it of memory, and verify it degrades gracefully."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "// Stress test: concurrent predictions\nconst results = await Promise.all(\n  Array(50).fill(null).map(() => sentinel.predict(randomInput))\n);\nassert(results.every(r => r.confidence >= 0));"
     tier: structural
 consequence:
-  narrative: "Sentinel survives every test. Memory stays stable under 200 concurrent requests. Corrupted inputs return errors instead of crashes. Timeout handling works. Ryo marks the system as deployment-ready. NEON: 'Protocol Sentinel is hardened. Deploy to all districts.'"
+  narrative: "Sentinel survives every test. Memory stays stable under 200 concurrent requests. Corrupted inputs return errors instead of crashes. Timeout handling works. Amir marks the system as deployment-ready. NEON: 'Protocol Sentinel is hardened. Deploy to all districts.'"
   nextLessonTeaser: "The deployment module is complete. Protocol Sentinel is production-ready."
 hints:
   - level: nudge
@@ -36,7 +36,7 @@ keywords:
   - resilience
 ---
 
-<Dialogue speaker="Ryo">
+<Dialogue speaker="Amir">
 Before we deploy to all districts, I want to break it. Every edge case. Every failure mode. Corrupted camera feeds. Memory pressure. Fifty concurrent users. If Sentinel crashes in the field, people get caught.
 </Dialogue>
 

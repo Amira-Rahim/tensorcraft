@@ -7,8 +7,8 @@ order: 4
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "A batch of clinical notes imported from the legacy system arrives riddled with HTML tags, invisible Unicode characters, and inconsistent casing. Santos discovers that Diagnostic One's accuracy drops 15% on this dirty data."
-  speaker: "Santos"
+  narrative: "A batch of clinical notes imported from the legacy system arrives riddled with HTML tags, invisible Unicode characters, and inconsistent casing. Imran discovers that Diagnostic One's accuracy drops 15% on this dirty data."
+  speaker: "Imran"
 concept:
   explanation: "Text cleaning removes noise — HTML tags, special characters, extra whitespace — and normalization standardizes format through lowercasing, stemming, and Unicode handling. It's the same process as sanitizing user input in a web form before storing it in a database."
   bridge:
@@ -37,11 +37,11 @@ keywords:
 
 > **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
-<Dialogue speaker="Santos">
+<Dialogue speaker="Imran">
 We just imported 14,000 notes from the old system. Half of them have HTML tags embedded in the text, there are Unicode characters I've never seen, and some notes are ALL CAPS. Diagnostic One is choking on this data.
 </Dialogue>
 
-<Dialogue speaker="Obi">
+<Dialogue speaker="Vikram">
 Classic data migration problem. You wouldn't render unsanitized user input in a browser — you strip tags, escape entities, normalize encoding. Same principle applies here: clean the text before the tokenizer ever sees it.
 </Dialogue>
 

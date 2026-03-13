@@ -7,8 +7,8 @@ order: 4
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Park needs to feed continuous signal data into the LSTM in fixed-size chunks. He builds a sliding window pipeline — the same pattern as IntersectionObserver watching elements enter and leave the viewport."
-  speaker: "Ensign Park"
+  narrative: "Demir needs to feed continuous signal data into the LSTM in fixed-size chunks. He builds a sliding window pipeline — the same pattern as IntersectionObserver watching elements enter and leave the viewport."
+  speaker: "Ensign Demir"
 concept:
   explanation: "Sliding windows convert continuous streams into fixed-size overlapping chunks — like IntersectionObserver processing only what's in the viewport as the user scrolls."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "sequences = signal.slice(i, i + windowSize) // process each window"
     tier: structural
 consequence:
-  narrative: "The sliding window pipeline feeds perfectly shaped data into the LSTM. Park can now process the continuous signal feed in real time."
+  narrative: "The sliding window pipeline feeds perfectly shaped data into the LSTM. Demir can now process the continuous signal feed in real time."
   nextLessonTeaser: "Next: using the LSTM to predict future signal values"
 hints:
   - level: nudge
@@ -34,7 +34,7 @@ keywords:
   - data-preparation
 ---
 
-<Dialogue speaker="Ensign Park">
+<Dialogue speaker="Ensign Demir">
 The signal feed is continuous — readings every second, forever. But the LSTM needs fixed-size input: exactly 50 time steps. I need to convert a stream into windows, like IntersectionObserver processing what's currently in view.
 </Dialogue>
 

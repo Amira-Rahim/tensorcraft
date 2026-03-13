@@ -8,7 +8,7 @@ estimatedMinutes: 30
 difficulty: intermediate
 context:
   narrative: "Instead of using pre-trained vectors alone, the team builds a custom embedding layer inside Diagnostic One's neural network. The layer is a trainable lookup table — Map<string, Vector> where the vectors update during training."
-  speaker: "Obi"
+  speaker: "Vikram"
 concept:
   explanation: "An embedding layer is a trainable lookup table that maps integer token IDs to dense vectors. During training, backpropagation adjusts these vectors so that words useful for the task develop meaningful representations. You can initialize with pre-trained weights or train from scratch."
   bridge:
@@ -36,15 +36,15 @@ keywords:
 
 > **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
-<Dialogue speaker="Obi">
-Santos, think of a Map in JavaScript. You pass in a key, you get back a value. An embedding layer is exactly that: you pass in a token ID, you get back a vector. The difference? During training, the vectors update automatically.
+<Dialogue speaker="Vikram">
+Imran, think of a Map in JavaScript. You pass in a key, you get back a value. An embedding layer is exactly that: you pass in a token ID, you get back a vector. The difference? During training, the vectors update automatically.
 </Dialogue>
 
-<Dialogue speaker="Santos">
+<Dialogue speaker="Imran">
 So it is like a Map where the values optimize themselves based on how well the model performs?
 </Dialogue>
 
-<Dialogue speaker="Obi">
+<Dialogue speaker="Vikram">
 Precisely. Backpropagation adjusts the vectors so that words important for the task develop useful representations. And we can initialize the Map with our pre-trained medical vectors to give it a head start.
 </Dialogue>
 
@@ -208,11 +208,11 @@ scratchModel.add(tf.layers.embedding({
 // Like writing a library from scratch`}
 </CodeBlock>
 
-<Dialogue speaker="Dr. Vasquez">
+<Dialogue speaker="Dr. Karimi">
 Which approach should we use for Diagnostic One?
 </Dialogue>
 
-<Dialogue speaker="Obi">
+<Dialogue speaker="Vikram">
 We have about 50,000 annotated clinical notes. That is a medium-sized dataset. I recommend initializing with BioWordVec and fine-tuning — we get the benefit of pre-trained medical knowledge while letting the model adapt to our hospital's specific terminology and abbreviations.
 </Dialogue>
 

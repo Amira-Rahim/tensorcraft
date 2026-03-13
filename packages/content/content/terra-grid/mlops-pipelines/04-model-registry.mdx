@@ -7,8 +7,8 @@ order: 4
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Park has 47 trained models. Cole needs to know which one is approved for production. The model registry is the single source of truth — like npm registry for ML models."
-  speaker: "Park Soo-Yeon"
+  narrative: "Priya has 47 trained models. Tariq needs to know which one is approved for production. The model registry is the single source of truth — like npm registry for ML models."
+  speaker: "Priya Sharma"
 concept:
   explanation: "A model registry versions and stores trained models with metadata, just as npm registry stores versioned packages with their package.json."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "registry.publish(model, { version, metrics, stage })"
     tier: structural
 consequence:
-  narrative: "The registry shows one model in production, two in staging, and 44 archived. Cole pulls the production model for deployment."
+  narrative: "The registry shows one model in production, two in staging, and 44 archived. Tariq pulls the production model for deployment."
   nextLessonTeaser: "Next: automating retraining so the pipeline runs itself"
 hints:
   - level: nudge
@@ -34,11 +34,11 @@ keywords:
   - artifact-store
 ---
 
-<Dialogue speaker="Park Soo-Yeon">
-I have 47 trained models. Which one is in production? Which one should Cole deploy next? Without a registry, nobody knows.
+<Dialogue speaker="Priya Sharma">
+I have 47 trained models. Which one is in production? Which one should Tariq deploy next? Without a registry, nobody knows.
 </Dialogue>
 
-<Dialogue speaker="Cole Branson">
+<Dialogue speaker="Tariq Hussain">
 I need one command: give me the latest approved model. Not the latest trained model — the latest approved model. Those are different things.
 </Dialogue>
 
@@ -106,7 +106,7 @@ class ModelRegistry {
     return this.models.find(m => m.name === name && m.stage === stage);
   }
 
-  // Cole's one command: "give me the production model"
+  // Tariq's one command: "give me the production model"
   getProductionModel(name: string): RegisteredModel {
     const model = this.getByStage(name, 'production');
     if (!model) throw new Error(\`No production model for \${name}\`);
@@ -120,7 +120,7 @@ class ModelRegistry {
 <CodeBlock language="typescript" title="registry-usage.ts">
 {`const registry = new ModelRegistry();
 
-// Park registers her best experiment
+// Priya registers her best experiment
 registry.register({
   name: 'terra-grid-intelligence',
   version: '2.3.0',
@@ -139,7 +139,7 @@ registry.promote('terra-grid-intelligence', '2.3.0', 'staging', 'hassan');
 // After staging tests pass, promote to production
 registry.promote('terra-grid-intelligence', '2.3.0', 'production', 'hassan');
 
-// Cole deploys the production model
+// Tariq deploys the production model
 const model = registry.getProductionModel('terra-grid-intelligence');
 console.log(\`Deploying: \${model.name}@\${model.version}\`);
 // Deploying: terra-grid-intelligence@2.3.0`}

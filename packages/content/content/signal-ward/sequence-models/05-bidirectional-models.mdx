@@ -7,8 +7,8 @@ order: 5
 estimatedMinutes: 30
 difficulty: intermediate
 context:
-  narrative: "Dr. Vasquez poses a challenge: some clinical meanings can only be resolved by reading ahead. The team builds bidirectional LSTMs that read text forwards and backwards simultaneously."
-  speaker: "Dr. Vasquez"
+  narrative: "Dr. Karimi poses a challenge: some clinical meanings can only be resolved by reading ahead. The team builds bidirectional LSTMs that read text forwards and backwards simultaneously."
+  speaker: "Dr. Karimi"
 concept:
   explanation: "Bidirectional models process sequences in both directions and concatenate the results, capturing both left and right context for each token. This is like combining Array.reduce() (left-to-right) with Array.reduceRight() (right-to-left) to get full context at every position."
   bridge:
@@ -37,15 +37,15 @@ keywords:
 
 > **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
-<Dialogue speaker="Dr. Vasquez">
+<Dialogue speaker="Dr. Karimi">
 Consider this note: "The medication was discontinued because the patient developed a rash." When you read "the medication," you don't yet know it was discontinued. You only understand the full meaning after reading the entire sentence.
 </Dialogue>
 
-<Dialogue speaker="Santos">
+<Dialogue speaker="Imran">
 So the model needs to look ahead, not just behind. That's like needing both `reduce()` and `reduceRight()` to understand the full context.
 </Dialogue>
 
-<Dialogue speaker="Obi">
+<Dialogue speaker="Vikram">
 Exactly. A bidirectional model runs two passes — one left-to-right, one right-to-left — and combines them. Every token gets context from both directions.
 </Dialogue>
 
@@ -138,11 +138,11 @@ model.summary();
 
 ## When to Use Bidirectional
 
-<Dialogue speaker="Santos">
+<Dialogue speaker="Imran">
 Should we always use bidirectional? If it's strictly better, why not default to it?
 </Dialogue>
 
-<Dialogue speaker="Obi">
+<Dialogue speaker="Vikram">
 Two reasons. First, it doubles your parameters and computation — that matters in the browser. Second, bidirectional only works when you have the complete input upfront. For real-time streaming — like autocomplete — you can't look ahead because the future hasn't arrived yet.
 </Dialogue>
 

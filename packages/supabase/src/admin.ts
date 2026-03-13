@@ -11,13 +11,14 @@ import type { UserRole } from "./types";
  */
 export async function isAdmin(userId: string): Promise<boolean> {
   const supabase = getSupabaseAdminClient();
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("profiles")
-    .select("role")
+    .select("*")
     .eq("id", userId)
     .single();
 
-  return data?.role === "admin";
+  if (error || !data) return false;
+  return data.role === "admin";
 }
 
 /**
@@ -25,11 +26,12 @@ export async function isAdmin(userId: string): Promise<boolean> {
  */
 export async function getUserRole(userId: string): Promise<UserRole | null> {
   const supabase = getSupabaseAdminClient();
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("profiles")
-    .select("role")
+    .select("*")
     .eq("id", userId)
     .single();
 
-  return data?.role ?? null;
+  if (error || !data) return null;
+  return data.role;
 }

@@ -37,12 +37,18 @@ export function captureMessage(
 ): void {
   const timestamp = new Date().toISOString();
 
-  console.error(
-    JSON.stringify({
-      level,
-      timestamp,
-      message,
-      ...context,
-    }),
-  );
+  const payload = JSON.stringify({
+    level,
+    timestamp,
+    message,
+    ...context,
+  });
+
+  if (level === "error") {
+    console.error(payload);
+  } else if (level === "warning") {
+    console.warn(payload);
+  } else {
+    console.log(payload);
+  }
 }

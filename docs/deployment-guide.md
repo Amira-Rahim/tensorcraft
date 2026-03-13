@@ -34,10 +34,11 @@ Set these in Fly.io/Railway dashboard or `.env`:
 | `STRIPE_SECRET_KEY` | Yes | Stripe secret key |
 | `STRIPE_WEBHOOK_SECRET` | Yes | Stripe webhook signing secret |
 | `PORT` | No | API server port (default: `3001`) |
+| `APP_URL` | No | Application URL used for Stripe checkout redirects (fallback: `NEXT_PUBLIC_APP_URL` or `http://localhost:3000`) |
 | `CORS_ORIGINS` | No | Comma-separated allowed origins (default: `http://localhost:3000`) |
 | `UPSTASH_REDIS_REST_URL` | No | Upstash Redis REST API URL for distributed rate limiting |
 | `UPSTASH_REDIS_REST_TOKEN` | No | Upstash Redis REST API token |
-| `ADMIN_API_KEY` | No | API key for admin endpoints |
+| `ADMIN_API_KEY` | Yes | API key for admin endpoints (used by CI/scripts as fallback to role-based auth) |
 
 ---
 
@@ -102,6 +103,8 @@ Supabase is managed via their dashboard:
 3. Enable Row-Level Security on all tables
 4. Configure Auth providers (GitHub OAuth, Google OAuth, Magic Link)
 5. Set up OAuth redirect URLs for your domain
+
+**Database Backup Strategy:** Supabase Pro plans include daily automated backups with point-in-time recovery (PITR). For additional safety, schedule weekly `pg_dump` exports via a cron job or GitHub Action and store them in a separate cloud storage bucket (e.g., S3 or GCS). Test restore procedures quarterly.
 
 ---
 

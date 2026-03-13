@@ -79,12 +79,14 @@ const modules = defineCollection({
     themeId: s.string().min(1),
     order: s.number().int().positive(),
     description: s.string().min(1),
-    lessonCount: s.literal(5),
+    lessonCount: s.number().int().positive(),
     prerequisites: s.array(s.string()).default([]),
     // "foundations" = shared core (modules 1-6), "specialization" = theme-specific (modules 7-11)
-    // Foundations content is included free or with first theme purchase.
-    // Specialization content is what each theme purchase ($79) pays for.
-    track: s.enum(["foundations", "specialization"]).default("foundations"),
+    // "companion" = optional deep-dive companion modules, "bonus" = unlockable bonus content
+    track: s
+      .enum(["foundations", "specialization", "companion", "bonus"])
+      .default("foundations"),
+    unlockCondition: s.string().optional(),
   }),
 });
 

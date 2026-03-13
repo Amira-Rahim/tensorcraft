@@ -7,8 +7,8 @@ order: 4
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "The signal's timing is drifting. Park needs a filter that tracks a moving target under noise — a Kalman filter that maintains a running estimate of the true state."
-  speaker: "Dr. Sato"
+  narrative: "The signal's timing is drifting. Demir needs a filter that tracks a moving target under noise — a Kalman filter that maintains a running estimate of the true state."
+  speaker: "Dr. Farah"
 concept:
   explanation: "Kalman filters maintain a running estimate smoothed against noise — like an exponential moving average in analytics that balances new data against historical trends."
   bridge:
@@ -34,11 +34,11 @@ keywords:
   - tracking
 ---
 
-<Dialogue speaker="Dr. Sato">
+<Dialogue speaker="Dr. Farah">
 The signal's period is not constant — it's drifting. We need a filter that tracks a moving target under noise. The Kalman filter predicts where the signal should be, then corrects with each new measurement. It is the optimal estimator for linear systems under Gaussian noise.
 </Dialogue>
 
-<Dialogue speaker="Ensign Park">
+<Dialogue speaker="Ensign Demir">
 That's an exponential moving average! smoothed = alpha * new + (1-alpha) * old. The Kalman filter just computes the optimal alpha at each step?
 </Dialogue>
 

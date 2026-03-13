@@ -1,7 +1,7 @@
-# Tensorcraft Technical Specification v3.2
+# Tensorcraft Technical Specification v3.3
 
-**Version:** 3.2
-**Last Updated:** 2026-03-11
+**Version:** 3.3
+**Last Updated:** 2026-03-13
 **Status:** Active Development
 **Audience:** Engineering, Product, Content
 
@@ -74,6 +74,7 @@ Required env vars for the API service (`apps/api`):
 | `STRIPE_SECRET_KEY` | Stripe secret key | Yes |
 | `STRIPE_WEBHOOK_SECRET` | Stripe webhook signing secret | Yes |
 | `PORT` | API server port (default: 3001) | Yes |
+| `APP_URL` | Application URL for Stripe checkout redirects (fallback: `NEXT_PUBLIC_APP_URL`) | No |
 | `CORS_ORIGINS` | Comma-separated allowed origins | Yes |
 | `UPSTASH_REDIS_REST_URL` | Upstash Redis REST API URL (for distributed rate limiting) | No |
 | `UPSTASH_REDIS_REST_TOKEN` | Upstash Redis REST API token | No |
@@ -207,6 +208,7 @@ Tables use Supabase Auth for user management. Row-Level Security (RLS) enforced 
 | amount_cents | integer | Amount in cents |
 | currency | text | Default: `'usd'` |
 | stripe_session_id | text | Unique |
+| status | text | `completed`, `refunded` |
 | ppp_discount_pct | integer | 0–70 |
 | created_at | timestamptz | Default: `now()` |
 
@@ -217,8 +219,8 @@ Tables use Supabase Auth for user management. Row-Level Security (RLS) enforced 
 | id | uuid (PK) | |
 | user_id | uuid (FK) | References `profiles.id` |
 | theme_id | text | Theme slug |
-| module_id | integer | 1–11 |
-| lesson_id | integer | 1–5 |
+| module_id | text | Module slug (e.g., `foundations`) |
+| lesson_id | text | Lesson slug (e.g., `what-is-a-tensor`) |
 | status | text | `not_started`, `in_progress`, `completed` |
 | score | integer | 0–100, nullable |
 | hints_used | integer | Default: 0 |
@@ -670,4 +672,4 @@ Translations follow a structured three-step workflow to ensure quality and consi
 
 ---
 
-*End of Technical Specification v3.2*
+*End of Technical Specification v3.3*

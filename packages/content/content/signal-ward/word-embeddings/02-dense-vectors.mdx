@@ -7,8 +7,8 @@ order: 2
 estimatedMinutes: 30
 difficulty: intermediate
 context:
-  narrative: "Obi reveals the distributional hypothesis: words that appear in similar contexts have similar meanings. Word2Vec learns dense vectors where 'aspirin' and 'ibuprofen' cluster together — like similar colors clustering in RGB space."
-  speaker: "Obi"
+  narrative: "Vikram reveals the distributional hypothesis: words that appear in similar contexts have similar meanings. Word2Vec learns dense vectors where 'aspirin' and 'ibuprofen' cluster together — like similar colors clustering in RGB space."
+  speaker: "Vikram"
 concept:
   explanation: "Word2Vec learns dense vector representations from context patterns. Words used in similar sentences get similar vectors. The distributional hypothesis — 'you shall know a word by the company it keeps' — drives the learning, just like similar colors occupy nearby regions in RGB color space."
   bridge:
@@ -36,15 +36,15 @@ keywords:
 
 > **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
-<Dialogue speaker="Obi">
-Santos, think about CSS colors. Red is rgb(255, 0, 0) and orange is rgb(255, 165, 0). They are nearby in RGB space because they share similar values. Now imagine words working the same way — "aspirin" and "ibuprofen" as nearby points in a learned space.
+<Dialogue speaker="Vikram">
+Imran, think about CSS colors. Red is rgb(255, 0, 0) and orange is rgb(255, 165, 0). They are nearby in RGB space because they share similar values. Now imagine words working the same way — "aspirin" and "ibuprofen" as nearby points in a learned space.
 </Dialogue>
 
-<Dialogue speaker="Santos">
+<Dialogue speaker="Imran">
 So instead of one-hot vectors where every word is equally far apart, you compress them into a space where distance means something?
 </Dialogue>
 
-<Dialogue speaker="Obi">
+<Dialogue speaker="Vikram">
 Exactly. Word2Vec learns these dense vectors from raw text. It reads millions of sentences and notices that "aspirin" and "ibuprofen" appear in the same kinds of contexts — "prescribed ___ for pain," "patient takes ___ daily." So it gives them similar vectors.
 </Dialogue>
 
@@ -147,11 +147,11 @@ console.log('penicillin ~ amoxicillin:',
 // even if it has only seen one of them in a specific context.`}
 </CodeBlock>
 
-<Dialogue speaker="Dr. Vasquez">
+<Dialogue speaker="Dr. Karimi">
 So if a patient record mentions ibuprofen and the model was trained mostly on aspirin cases, it can still generalize?
 </Dialogue>
 
-<Dialogue speaker="Obi">
+<Dialogue speaker="Vikram">
 Yes. Because their vectors are nearly identical, the model treats them as near-equivalents. That is the power of dense representations — generalization through geometric proximity.
 </Dialogue>
 

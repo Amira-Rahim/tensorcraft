@@ -7,8 +7,8 @@ order: 2
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "The GAN generates images, but Zara wants control. She needs to encode existing surveillance footage into a compressed representation and reconstruct it with modifications — swap a face, change lighting, alter a uniform. Ryo recognizes the pattern: 'It is a URL with query parameters. The latent space is the compressed state.'"
-  speaker: "Ryo"
+  narrative: "The GAN generates images, but Zara wants control. She needs to encode existing surveillance footage into a compressed representation and reconstruct it with modifications — swap a face, change lighting, alter a uniform. Amir recognizes the pattern: 'It is a URL with query parameters. The latent space is the compressed state.'"
+  speaker: "Amir"
 concept:
   explanation: "A Variational Autoencoder compresses images into a structured latent space and reconstructs them. The encoder maps high-dimensional data to a compact representation; the decoder maps it back. The latent space is like URL query parameters — a compressed representation of complex state that can be manipulated and decoded."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "const [mean, logVar] = encoder.predict(image); // Compressed representation of image"
     tier: structural
 consequence:
-  narrative: "Ryo encodes a surveillance frame into a 64-dimensional latent vector. He tweaks dimension 23 — the reconstructed image shifts from day to night. Dimension 41 changes the camera angle. Zara grins: 'A 64-number address for every possible image. Now we can navigate the space of all images like a map.'"
+  narrative: "Amir encodes a surveillance frame into a 64-dimensional latent vector. He tweaks dimension 23 — the reconstructed image shifts from day to night. Dimension 41 changes the camera angle. Zara grins: 'A 64-number address for every possible image. Now we can navigate the space of all images like a map.'"
   nextLessonTeaser: "Next: style transfer — applying artistic styles to images as camouflage"
 hints:
   - level: nudge
@@ -35,7 +35,7 @@ keywords:
   - reconstruction-loss
 ---
 
-<Dialogue speaker="Ryo">
+<Dialogue speaker="Amir">
 At Meridian, we compressed session state into URL parameters — theme, layout, filters, all encoded into a short string. A VAE does the same thing with images. The encoder compresses a 28x28 image into 64 numbers. The decoder reconstructs it from those 64 numbers. The compression forces the network to learn what actually matters.
 </Dialogue>
 

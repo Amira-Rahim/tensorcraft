@@ -7,8 +7,8 @@ order: 1
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Ryo stares at the trained Protocol Sentinel model in the browser dev tools. It works — but only on his machine. NEON: 'A model that cannot leave the machine that trained it is a prototype, not a product. Serialize it.'"
-  speaker: "Ryo"
+  narrative: "Amir stares at the trained Protocol Sentinel model in the browser dev tools. It works — but only on his machine. NEON: 'A model that cannot leave the machine that trained it is a prototype, not a product. Serialize it.'"
+  speaker: "Amir"
 concept:
   explanation: "Model serialization is saving a trained model's architecture and weights so it can be loaded elsewhere. If you have ever used JSON.stringify to save application state and JSON.parse to restore it later, you already understand the concept. A model's weights are its learned state — serialization freezes that state into a portable format."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "await model.save('localstorage://sentinel'); const loaded = await tf.loadLayersModel('localstorage://sentinel');"
     tier: structural
 consequence:
-  narrative: "The model is saved. Ryo sends the exported files to Lin, who loads Protocol Sentinel on a completely different machine in District 4. The first remote detection lights up her screen. NEON: 'Now it is portable. Next, make it small enough to run everywhere.'"
+  narrative: "The model is saved. Amir sends the exported files to Dilan, who loads Protocol Sentinel on a completely different machine in District 4. The first remote detection lights up her screen. NEON: 'Now it is portable. Next, make it small enough to run everywhere.'"
   nextLessonTeaser: "Next: shrinking the model so it runs on every device in the resistance network"
 hints:
   - level: nudge
@@ -35,7 +35,7 @@ keywords:
   - model-json
 ---
 
-<Dialogue speaker="Ryo">
+<Dialogue speaker="Amir">
 Protocol Sentinel detects Meridian drones with 94% accuracy. But it only runs here, on this machine, in this browser tab. If Meridian takes out this safehouse, we lose everything. We need to export it — make it portable.
 </Dialogue>
 

@@ -7,8 +7,8 @@ order: 3
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Obi explains why one attention head isn't enough for clinical text."
-  speaker: "Obi Nwosu"
+  narrative: "Vikram explains why one attention head isn't enough for clinical text."
+  speaker: "Vikram Reddy"
 concept:
   explanation: "Multi-head attention runs several attention operations in parallel, each learning to focus on different relationships."
   bridge:
@@ -33,11 +33,11 @@ keywords:
   - concatenation
 ---
 
-<Dialogue speaker="Obi Nwosu">
+<Dialogue speaker="Vikram Reddy">
 One attention head learns one type of relationship. But clinical text has many simultaneous relationships — the drug to its condition, the dosage to its frequency, the symptom to its temporal qualifier. We need multiple heads, each specializing in a different pattern.
 </Dialogue>
 
-<Dialogue speaker="Khalil Mensah">
+<Dialogue speaker="Khalil Ansari">
 Like attaching multiple event listeners to the same element — a click handler for navigation, another for analytics, another for animations. Same event, different purposes.
 </Dialogue>
 
@@ -102,7 +102,7 @@ Research on clinical transformers shows heads naturally specialize:
 - **Head 3** might learn negation scope ("denied" modifying "chest pain")
 - **Head 4** might learn medication-condition pairs
 
-<Dialogue speaker="Obi Nwosu">
+<Dialogue speaker="Vikram Reddy">
 We don't tell the heads what to specialize in. They discover it during training. That's the beauty — the model finds structure we might not have thought to look for.
 </Dialogue>
 

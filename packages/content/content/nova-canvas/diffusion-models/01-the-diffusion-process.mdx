@@ -7,8 +7,8 @@ order: 1
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Petrov pulls up the first render from MUSE. Pure noise. 'This is what the model starts with,' Ren explains. 'It learns to remove the noise, step by step, until an image appears. Like watching a Polaroid develop.'"
-  speaker: "Ren"
+  narrative: "Erdem pulls up the first render from MUSE. Pure noise. 'This is what the model starts with,' Samir explains. 'It learns to remove the noise, step by step, until an image appears. Like watching a Polaroid develop.'"
+  speaker: "Samir"
 concept:
   explanation: "Diffusion models generate images by starting from pure noise and gradually removing it over many steps — exactly like progressive image loading, where a blurry placeholder sharpens into the final image."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "for (let t = T; t > 0; t--) image = denoise(image, t);"
     tier: intuition
 consequence:
-  narrative: "The gallery screen flickers. From static snow, a shape emerges — buildings, a sky, stars. Forty-three seconds of patient denoising. Petrov whispers: 'It is beautiful. But forty-three seconds is an eternity for a kiosk.'"
+  narrative: "The gallery screen flickers. From static snow, a shape emerges — buildings, a sky, stars. Forty-three seconds of patient denoising. Erdem whispers: 'It is beautiful. But forty-three seconds is an eternity for a kiosk.'"
   nextLessonTeaser: "Next: noise schedules — controlling the trajectory from noise to clarity"
 hints:
   - level: nudge
@@ -35,11 +35,11 @@ keywords:
   - progressive-loading
 ---
 
-<Dialogue speaker="Petrov">
+<Dialogue speaker="Erdem">
 Forty-three seconds. I timed it. The gallery opens in nine days and each kiosk takes forty-three seconds to produce a single image. We will have a queue around the block — and not the good kind.
 </Dialogue>
 
-<Dialogue speaker="Ren">
+<Dialogue speaker="Samir">
 Let me show you what is happening in those forty-three seconds. The model starts here — pure random noise. Then step by step, it removes a little noise. Watch the screen.
 </Dialogue>
 

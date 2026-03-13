@@ -8,7 +8,7 @@ estimatedMinutes: 30
 difficulty: intermediate
 context:
   narrative: "Khalil builds a transformer encoder block — the core unit of modern NLP."
-  speaker: "Obi Nwosu"
+  speaker: "Vikram Reddy"
 concept:
   explanation: "A transformer encoder block combines multi-head attention with feedforward layers, skip connections, and layer normalization."
   bridge:
@@ -34,7 +34,7 @@ keywords:
   - feedforward
 ---
 
-<Dialogue speaker="Obi Nwosu">
+<Dialogue speaker="Vikram Reddy">
 Self-attention alone isn't enough. We need to wrap it in a complete encoder block — attention plus feedforward, with skip connections that preserve information. Think of it like React's virtual DOM: you diff the new state against the old and apply minimal, targeted updates.
 </Dialogue>
 
@@ -108,7 +108,7 @@ console.log('Encoder output:', x.shape); // [10, 64]`}
 
 The `x.add(attnOut)` step is critical. Without it, deep networks suffer from vanishing gradients — information from early layers fades. The residual connection provides a highway for gradients and information to flow through unchanged, while the attention layer adds refinements.
 
-<Dialogue speaker="Khalil Mensah">
+<Dialogue speaker="Khalil Ansari">
 That's like how React's reconciliation works — you don't rebuild the entire DOM. You keep the existing structure and apply only the changes. The residual connection is the existing DOM; the attention output is the diff.
 </Dialogue>
 

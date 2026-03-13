@@ -7,8 +7,8 @@ order: 5
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "Park's FFT results show spurious frequencies that shouldn't exist. Sato diagnoses the problem: spectral leakage from abrupt signal edges. The fix is a windowing function."
-  speaker: "Dr. Sato"
+  narrative: "Demir's FFT results show spurious frequencies that shouldn't exist. Farah diagnoses the problem: spectral leakage from abrupt signal edges. The fix is a windowing function."
+  speaker: "Dr. Farah"
 concept:
   explanation: "Windowing functions smooth signal edges before FFT to prevent spectral leakage — like virtual scrolling renders only the visible portion of a list with smooth transitions at the boundaries."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "const windowed = signal.map((s, i) => s * hannWindow[i])"
     tier: structural
 consequence:
-  narrative: "With Hann windowing, the spurious frequencies vanish. The 73.4 Hz anomaly stands clean and sharp. Sato whispers: 'That is not noise. That is structure.'"
+  narrative: "With Hann windowing, the spurious frequencies vanish. The 73.4 Hz anomaly stands clean and sharp. Farah whispers: 'That is not noise. That is structure.'"
   nextLessonTeaser: "The frequency analysis has revealed something too regular to be natural. Module 6 will investigate temporal patterns."
 hints:
   - level: nudge
@@ -35,11 +35,11 @@ keywords:
   - virtual-scrolling
 ---
 
-<Dialogue speaker="Ensign Park">
-Dr. Sato, the FFT is showing frequencies I know aren't real. There's energy smeared across the entire spectrum, not just at the expected peaks.
+<Dialogue speaker="Ensign Demir">
+Dr. Farah, the FFT is showing frequencies I know aren't real. There's energy smeared across the entire spectrum, not just at the expected peaks.
 </Dialogue>
 
-<Dialogue speaker="Dr. Sato">
+<Dialogue speaker="Dr. Farah">
 Spectral leakage. When you slice a signal at arbitrary points, the abrupt edges create artificial high-frequency content. The FFT does not know where your signal ends and where an artifact begins. We need to taper the edges to zero — a windowing function.
 </Dialogue>
 

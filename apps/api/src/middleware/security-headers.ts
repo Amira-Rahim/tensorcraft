@@ -9,7 +9,7 @@ export async function securityHeadersMiddleware(c: Context, next: Next) {
   const requestId = crypto.randomUUID();
 
   c.header("X-Request-ID", requestId);
-  c.header("Content-Security-Policy", "default-src 'self'");
+  c.header("Content-Security-Policy", "default-src 'none'");
   c.header("X-Content-Type-Options", "nosniff");
   c.header("X-Frame-Options", "DENY");
   c.header(

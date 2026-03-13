@@ -7,8 +7,8 @@ order: 2
 estimatedMinutes: 20
 difficulty: intermediate
 context:
-  narrative: "Cole points out that sparse weights do not actually speed up inference on ARM processors."
-  speaker: "Cole Branson"
+  narrative: "Tariq points out that sparse weights do not actually speed up inference on ARM processors."
+  speaker: "Tariq Hussain"
 concept:
   explanation: "Structured pruning removes entire neurons or channels — like dead code elimination that removes whole functions, not individual statements."
   bridge:
@@ -34,7 +34,7 @@ keywords:
   - channels
 ---
 
-<Dialogue speaker="Cole Branson">
+<Dialogue speaker="Tariq Hussain">
 Your sparse model has the same number of weights — most of them are just zero. The ARM processor still iterates over all of them. I need the model to be physically smaller, not just mostly zeros. Remove entire neurons.
 </Dialogue>
 

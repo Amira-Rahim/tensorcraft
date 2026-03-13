@@ -18,7 +18,7 @@ concept:
     mlCode: "app.post('/api/predict', validate, async (req, res) => { const result = await model.predict(req.body.text); res.json(result); })"
     tier: identity
 consequence:
-  narrative: "The inference API processes its first clinical query in 43 milliseconds. The ethics committee watches as Dr. Vasquez types a question and receives a structured, cited response. Santos checks the error handler — a malformed request returns a clean 400 with a descriptive message. The chair nods. 'The interface is solid. Now show me what happens with patient data.'"
+  narrative: "The inference API processes its first clinical query in 43 milliseconds. The ethics committee watches as Dr. Karimi types a question and receives a structured, cited response. Imran checks the error handler — a malformed request returns a clean 400 with a descriptive message. The chair nods. 'The interface is solid. Now show me what happens with patient data.'"
   nextLessonTeaser: "Next: HIPAA compliance — protecting patient data in every layer of the pipeline"
 hints:
   - level: nudge
@@ -40,7 +40,7 @@ keywords:
 The committee asked how clinicians would actually interact with Diagnostic One. I realized we had a model but no interface. We need a production API — same contract as any REST endpoint. POST a clinical note, GET back structured predictions. But this is not a CRUD app. We have a 200-millisecond SLA, and every request touches a patient's care.
 </Dialogue>
 
-<Dialogue speaker="Obi Nwosu">
+<Dialogue speaker="Vikram Reddy">
 You have built REST APIs with latency budgets before, yes? Rate limiting, request validation, error handling, health checks — it is the same discipline. The only difference is that between request and response, a neural network runs instead of a database query.
 </Dialogue>
 
@@ -254,7 +254,7 @@ class BatchPredictor {
 }`}
 </CodeBlock>
 
-<Dialogue speaker="Santos">
+<Dialogue speaker="Imran">
 So the API contract is: POST text, GET predictions, 200-millisecond SLA, structured errors. I have shipped a dozen APIs with that exact pattern. The model is just a different backend.
 </Dialogue>
 

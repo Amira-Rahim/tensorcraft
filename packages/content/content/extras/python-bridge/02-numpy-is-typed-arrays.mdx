@@ -6,6 +6,8 @@ themeId: shared
 order: 2
 estimatedMinutes: 25
 difficulty: beginner
+context:
+  narrative: "Every ML tutorial starts with 'import numpy as np'. NumPy is Python's tensor library — and if you've used Float32Array or tf.tensor, you already understand it."
 concept:
   explanation: "NumPy ndarrays and TensorFlow.js tensors are the same concept — typed, shaped, contiguous memory buffers with vectorized math operations."
   bridge:
@@ -14,6 +16,9 @@ concept:
     mlTitle: "NumPy ndarray"
     mlCode: "a = np.array([1,2,3]); a * 2"
     tier: identity
+consequence:
+  narrative: "You can now read NumPy code fluently. Every np.zeros is tf.zeros, every np.reshape is tf.reshape. The translation is nearly mechanical."
+  nextLessonTeaser: "Next: PyTorch models are TensorFlow.js models with different syntax"
 hints:
   - level: nudge
     content: "NumPy broadcasting works exactly like tf.js broadcasting"

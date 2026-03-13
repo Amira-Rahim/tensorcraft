@@ -7,8 +7,8 @@ order: 5
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "With 16,000 balanced, normalized images ready, Kira faces the final challenge: feeding them to the Protocol Sentinel efficiently. Loading everything at once would crash the browser tab. Ryo introduces batched data loading — the same pattern Kira uses for infinite scroll feeds."
-  speaker: "Ryo"
+  narrative: "With 16,000 balanced, normalized images ready, Noor faces the final challenge: feeding them to the Protocol Sentinel efficiently. Loading everything at once would crash the browser tab. Amir introduces batched data loading — the same pattern Noor uses for infinite scroll feeds."
+  speaker: "Amir"
 concept:
   explanation: "Data loaders feed training data in efficient batches — just like pagination and infinite scroll load content in chunks instead of dumping everything into the DOM at once."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "dataLoader.nextBatch(batchSize).then(batch => train(batch))"
     tier: structural
 consequence:
-  narrative: "The data pipeline is complete. Images flow from disk through augmentation, normalization, and balancing into perfectly sized batches. Ryo watches the training metrics stabilize. 'Clean pipes, clean learning. The Sentinel is ready for its first real training run.'"
+  narrative: "The data pipeline is complete. Images flow from disk through augmentation, normalization, and balancing into perfectly sized batches. Amir watches the training metrics stabilize. 'Clean pipes, clean learning. The Sentinel is ready for its first real training run.'"
   nextLessonTeaser: "Next module: Convolutional Networks — teaching the Protocol Sentinel to see patterns in your prepared image data."
 hints:
   - level: nudge
@@ -36,7 +36,7 @@ keywords:
   - shuffling
 ---
 
-<Dialogue speaker="Ryo">
+<Dialogue speaker="Amir">
 You've built the dataset, augmented it, normalized it, and balanced it. Now comes the engineering challenge: how do you feed 16,000 images to a neural network without blowing up the browser? You already know the answer — you use it every time you build an infinite scroll feed.
 </Dialogue>
 
@@ -111,7 +111,7 @@ The critical difference: in infinite scroll, you show each item once. In ML trai
 
 ## Why Batches Matter
 
-<Dialogue speaker="Ryo">
+<Dialogue speaker="Amir">
 Batch size is a tuning dial. Small batches are noisy but learn fast. Large batches are stable but slow. It's exactly like choosing your page size in an API — too small and you're drowning in network requests, too large and the response takes forever to parse.
 </Dialogue>
 
@@ -268,11 +268,11 @@ async function trainModel(
 }`}
 </CodeBlock>
 
-<Dialogue speaker="Kira">
+<Dialogue speaker="Noor">
 So the data loader is basically a paginated API for the model. Each batch is a page, each epoch is a full scroll through the feed, and shuffling prevents the model from learning the order instead of the content.
 </Dialogue>
 
-<Dialogue speaker="Ryo">
+<Dialogue speaker="Amir">
 Perfect analogy. And just like you'd never build a production app without pagination, you'd never train a model without a proper data loader.
 </Dialogue>
 

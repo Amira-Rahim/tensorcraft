@@ -87,7 +87,7 @@ testCode: |
     it('detects known HIGH severity interactions', () => {
       const drugs: DrugEntry[] = [
         { name: 'warfarin', source: 'Cardiology', prescriber: 'Dr. Patel' },
-        { name: 'aspirin', source: 'Rheumatology', prescriber: 'Dr. Kim' }
+        { name: 'aspirin', source: 'Rheumatology', prescriber: 'Dr. Qureshi' }
       ];
       const alerts = detectInteractions(drugs);
       expect(alerts.length).toBe(1);
@@ -97,7 +97,7 @@ testCode: |
     it('detects cross-document interactions', () => {
       const drugs: DrugEntry[] = [
         { name: 'warfarin', source: 'Cardiology', prescriber: 'Dr. Patel' },
-        { name: 'aspirin', source: 'Rheumatology', prescriber: 'Dr. Kim' }
+        { name: 'aspirin', source: 'Rheumatology', prescriber: 'Dr. Qureshi' }
       ];
       const alerts = detectInteractions(drugs);
       expect(alerts[0].crossDocument).toBe(true);

@@ -7,8 +7,8 @@ order: 2
 estimatedMinutes: 22
 difficulty: intermediate
 context:
-  narrative: "The convolution output is massive — 224x224 feature maps for each of 32 kernels. Ryo shakes his head: 'When I was at Meridian, we hit the same wall. You need to downsample. Think about how srcset works — you serve a smaller image but keep the important details.'"
-  speaker: "Ryo"
+  narrative: "The convolution output is massive — 224x224 feature maps for each of 32 kernels. Amir shakes his head: 'When I was at Meridian, we hit the same wall. You need to downsample. Think about how srcset works — you serve a smaller image but keep the important details.'"
+  speaker: "Amir"
 concept:
   explanation: "Pooling reduces the spatial dimensions of feature maps by summarizing local regions — just like srcset delivers smaller responsive images that preserve key visual information."
   bridge:
@@ -35,11 +35,11 @@ keywords:
   - spatial-reduction
 ---
 
-<Dialogue speaker="Ryo">
+<Dialogue speaker="Amir">
 At Meridian, our first surveillance model choked because the feature maps were too large. A 224x224 input with 64 filters means over 3 million values per layer. Pooling solves this. You take each 2x2 region and keep only the max value. Same idea as responsive images — you downsample, but the important features survive.
 </Dialogue>
 
-<Dialogue speaker="Kira">
+<Dialogue speaker="Noor">
 So it is like serving a 400px image instead of an 800px one via srcset? You lose resolution but the content is still recognizable.
 </Dialogue>
 

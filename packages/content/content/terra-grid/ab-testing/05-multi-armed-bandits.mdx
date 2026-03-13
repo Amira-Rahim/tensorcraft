@@ -7,8 +7,8 @@ order: 5
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "Park proposes an improvement to the A/B framework. 'Standard A/B tests lock in the traffic split. Multi-armed bandits adapt. If one model is clearly better, the algorithm shifts traffic automatically. Less exposure to the worse model.'"
-  speaker: "Park Soo-Yeon"
+  narrative: "Priya proposes an improvement to the A/B framework. 'Standard A/B tests lock in the traffic split. Multi-armed bandits adapt. If one model is clearly better, the algorithm shifts traffic automatically. Less exposure to the worse model.'"
+  speaker: "Priya Sharma"
 concept:
   explanation: "Multi-armed bandits adaptively allocate traffic to the better-performing model variant — the same algorithm used for dynamic ad rotation on websites."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "// Route to best model more often, explore alternatives with epsilon"
     tier: structural
 consequence:
-  narrative: "The bandit algorithm converges within 3 days. Model v3.1 receives 87% of traffic because it consistently outperforms. Park: 'The algorithm found the winner faster than a fixed A/B test would have, and fewer devices were exposed to the worse model.'"
+  narrative: "The bandit algorithm converges within 3 days. Model v3.1 receives 87% of traffic because it consistently outperforms. Priya: 'The algorithm found the winner faster than a fixed A/B test would have, and fewer devices were exposed to the worse model.'"
   nextLessonTeaser: "Next module: Scale & Reliability — building infrastructure that survives the worst day"
 hints:
   - level: nudge
@@ -34,7 +34,7 @@ keywords:
   - exploration-exploitation
 ---
 
-<Dialogue speaker="Park Soo-Yeon">
+<Dialogue speaker="Priya Sharma">
 Standard A/B tests split traffic 50/50 and wait for significance. That means half your devices run the worse model for the entire test duration. Multi-armed bandits are smarter — they shift traffic toward the winner as evidence accumulates. Less wasted exposure, faster convergence.
 </Dialogue>
 

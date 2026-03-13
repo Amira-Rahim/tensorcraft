@@ -7,8 +7,8 @@ order: 2
 estimatedMinutes: 30
 difficulty: intermediate
 context:
-  narrative: "Lin reports from District 4: Protocol Sentinel takes 12 seconds to load on her device. Ryo runs the numbers — 45MB of weights. For a resistance network running on salvaged hardware, that is a death sentence. NEON: 'Trim the fat. Keep the signal.'"
-  speaker: "Ryo"
+  narrative: "Dilan reports from District 4: Protocol Sentinel takes 12 seconds to load on her device. Amir runs the numbers — 45MB of weights. For a resistance network running on salvaged hardware, that is a death sentence. NEON: 'Trim the fat. Keep the signal.'"
+  speaker: "Amir"
 concept:
   explanation: "Model optimization for the browser is like webpack tree-shaking for neural networks. Tree-shaking removes unused code paths to shrink your bundle. Quantization and pruning remove unnecessary precision and redundant connections to shrink your model — same goal, same intuition, different domain."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "// Pruning removes low-impact weights\nconst pruned = await pruneModel(model, { sparsity: 0.5 }); // 50% of weights zeroed"
     tier: structural
 consequence:
-  narrative: "The optimized model drops from 45MB to 11MB. Load time on Lin's device: 2.8 seconds. Accuracy loss: 0.3%. Ryo exhales. NEON: 'Acceptable trade-off. Now every resistance node in Neon City can run Sentinel.'"
+  narrative: "The optimized model drops from 45MB to 11MB. Load time on Dilan's device: 2.8 seconds. Accuracy loss: 0.3%. Amir exhales. NEON: 'Acceptable trade-off. Now every resistance node in Neon City can run Sentinel.'"
   nextLessonTeaser: "Next: building the inference API so other resistance systems can call Sentinel"
 hints:
   - level: nudge
@@ -35,8 +35,8 @@ keywords:
   - float16
 ---
 
-<Dialogue speaker="Ryo">
-Forty-five megabytes. That is the model size. Lin's device in District 4 takes twelve seconds just to download the weights. Half the resistance is running on hardware Meridian discarded. We need to cut this down without killing accuracy.
+<Dialogue speaker="Amir">
+Forty-five megabytes. That is the model size. Dilan's device in District 4 takes twelve seconds just to download the weights. Half the resistance is running on hardware Meridian discarded. We need to cut this down without killing accuracy.
 </Dialogue>
 
 <Dialogue speaker="NEON">

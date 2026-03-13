@@ -7,8 +7,8 @@ order: 2
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Flagging urgency isn't enough — documents need to reach the right department. Santos and Khalil build a routing system."
-  speaker: "Santos"
+  narrative: "Flagging urgency isn't enough — documents need to reach the right department. Imran and Khalil build a routing system."
+  speaker: "Imran"
 concept:
   explanation: "Multi-class classification assigns exactly one label from several possible categories — like routing a document to cardiology, radiology, oncology, or general medicine."
   bridge:
@@ -35,11 +35,11 @@ keywords:
   - categorical-crossentropy
 ---
 
-<Dialogue speaker="Santos">
+<Dialogue speaker="Imran">
 The urgency filter is working — we're catching critical findings faster. But flagging something as urgent doesn't tell us where to send it. A cardiac emergency needs cardiology, a suspicious mass needs oncology, an abnormal CT goes to radiology.
 </Dialogue>
 
-<Dialogue speaker="Khalil Mensah">
+<Dialogue speaker="Khalil Ansari">
 That's a routing problem. In Express, each request URL matches exactly one route handler. We need the same thing here — each document matches exactly one department.
 </Dialogue>
 
@@ -127,11 +127,11 @@ DEPARTMENTS.forEach((dept, i) => {
 
 The key difference between binary and multi-class classification is in the output layer. Binary uses sigmoid (one probability). Multi-class uses softmax (a probability distribution). Softmax is like a competitive election — each class "votes," and the probabilities must sum to 1.
 
-<Dialogue speaker="Obi">
+<Dialogue speaker="Vikram">
 What happens when a document could go to two departments? A patient with chest pain might need both cardiology and emergency.
 </Dialogue>
 
-<Dialogue speaker="Khalil Mensah">
+<Dialogue speaker="Khalil Ansari">
 Softmax forces a single winner — the highest probability department. If we need multiple labels, we'll need a different approach. That's the next lesson.
 </Dialogue>
 

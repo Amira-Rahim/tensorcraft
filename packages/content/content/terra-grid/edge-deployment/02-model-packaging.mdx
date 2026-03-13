@@ -7,8 +7,8 @@ order: 2
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Cole needs to bundle the Terra Grid model with its preprocessing logic, metadata, and validation checksums into a single deployable artifact."
-  speaker: "Cole Branson"
+  narrative: "Tariq needs to bundle the Terra Grid model with its preprocessing logic, metadata, and validation checksums into a single deployable artifact."
+  speaker: "Tariq Hussain"
 concept:
   explanation: "Model packaging is npm publishing for ML — you bundle weights, config, and metadata into a versioned artifact with integrity checks."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "packageModel({ weights, config, version, checksum })"
     tier: structural
 consequence:
-  narrative: "The first model package passes integrity validation. Cole queues it for deployment to Sector 7."
+  narrative: "The first model package passes integrity validation. Tariq queues it for deployment to Sector 7."
   nextLessonTeaser: "Next: choosing the right runtime environment for each device"
 hints:
   - level: nudge
@@ -34,11 +34,11 @@ keywords:
   - artifact
 ---
 
-<Dialogue speaker="Cole Branson">
+<Dialogue speaker="Tariq Hussain">
 I am not shipping raw weight files to 847 devices. Every deployment artifact needs a version, a checksum, and a rollback path. One corrupt byte in a weight file and the model outputs garbage.
 </Dialogue>
 
-<Dialogue speaker="Park Soo-Yeon">
+<Dialogue speaker="Priya Sharma">
 Treat it like a release. Semantic versioning, integrity hashes, the works.
 </Dialogue>
 

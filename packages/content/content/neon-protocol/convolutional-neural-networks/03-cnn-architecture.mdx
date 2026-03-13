@@ -7,8 +7,8 @@ order: 3
 estimatedMinutes: 28
 difficulty: intermediate
 context:
-  narrative: "Lin reviews the progress: 'We can detect edges and downsample. Now stack them. The Protocol Sentinel needs layers that feed into each other — like components composing into a page.' Kira sees the pattern immediately."
-  speaker: "Lin"
+  narrative: "Dilan reviews the progress: 'We can detect edges and downsample. Now stack them. The Protocol Sentinel needs layers that feed into each other — like components composing into a page.' Noor sees the pattern immediately."
+  speaker: "Dilan"
 concept:
   explanation: "A CNN stacks conv, pool, and dense layers into a pipeline where each layer's output feeds the next — the same composition pattern as React components wrapping children."
   bridge:
@@ -35,11 +35,11 @@ keywords:
   - model-design
 ---
 
-<Dialogue speaker="Lin">
+<Dialogue speaker="Dilan">
 You have convolution for feature extraction and pooling for compression. Now compose them. Think about how you build a React page — Layout wraps Sidebar wraps NavList. Each component transforms data and passes it down. A CNN is the same pattern: each layer transforms the feature maps and passes them to the next.
 </Dialogue>
 
-<Dialogue speaker="Kira">
+<Dialogue speaker="Noor">
 So the model is basically a component tree? Conv is like a data-fetching component, pooling is like a summarization component, and the dense layer at the end is the leaf that renders the final output?
 </Dialogue>
 

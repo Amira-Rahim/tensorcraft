@@ -7,8 +7,8 @@ order: 1
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Dr. Vasquez explains why she needs structured information extracted from hundreds of unstructured clinical notes each week."
-  speaker: "Dr. Elena Vasquez"
+  narrative: "Dr. Karimi explains why she needs structured information extracted from hundreds of unstructured clinical notes each week."
+  speaker: "Dr. Zahra Karimi"
 concept:
   explanation: "Named Entity Recognition (NER) identifies and classifies specific elements in text — drugs, conditions, dosages, procedures — transforming unstructured prose into structured, queryable data."
   bridge:
@@ -34,15 +34,15 @@ keywords:
   - querySelectorAll
 ---
 
-<Dialogue speaker="Dr. Elena Vasquez">
+<Dialogue speaker="Dr. Zahra Karimi">
 Khalil, I reviewed 47 clinical notes this morning. Each one buries critical information in free text — drug names, dosages, conditions, procedures. I need that data structured. Searchable. Computable. Right now, it's like having a massive DOM tree with no class names, no IDs, no way to query it.
 </Dialogue>
 
-<Dialogue speaker="Khalil Mensah">
+<Dialogue speaker="Khalil Ansari">
 So you need the equivalent of `document.querySelectorAll()` for clinical text. Instead of finding all `.drug` elements in a DOM, you're finding all drug mentions in a paragraph.
 </Dialogue>
 
-<Dialogue speaker="Dr. Elena Vasquez">
+<Dialogue speaker="Dr. Zahra Karimi">
 Exactly. "Patient prescribed methotrexate 15mg weekly for rheumatoid arthritis." I need the system to pull out "methotrexate" as a DRUG, "15mg" as a DOSAGE, "weekly" as a FREQUENCY, and "rheumatoid arthritis" as a CONDITION. Every word classified or skipped.
 </Dialogue>
 
@@ -116,11 +116,11 @@ console.log('Found entities:', entities);
 
 ## Why NER Matters in Medicine
 
-<Dialogue speaker="Obi Nwosu">
+<Dialogue speaker="Vikram Reddy">
 Think of a hospital's electronic health records as one massive web page with millions of text nodes. Without NER, searching for "which patients are on warfarin?" means a human reading every note. With NER, it's a database query. That's the difference between hours and milliseconds.
 </Dialogue>
 
-<Dialogue speaker="Dr. Elena Vasquez">
+<Dialogue speaker="Dr. Zahra Karimi">
 And it's not just search. Once we have structured entities, we can detect drug interactions, track treatment outcomes, and flag anomalies across thousands of patients. NER is the foundation of everything Diagnostic One will do.
 </Dialogue>
 

@@ -7,8 +7,8 @@ order: 3
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "Dr. Vasquez delivers the hard truth in the ethics review: 'Your model performs 12% worse on records written in non-standard English. Notes from our night shift — predominantly staffed by nurses who speak English as a second language — have higher error rates. This is not a bug report. It is an equity crisis.' Khalil draws the parallel immediately: 'It is the same as an accessibility audit. We run Lighthouse and find that our app works for sighted mouse users but fails for everyone else.'"
-  speaker: "Dr. Vasquez"
+  narrative: "Dr. Karimi delivers the hard truth in the ethics review: 'Your model performs 12% worse on records written in non-standard English. Notes from our night shift — predominantly staffed by nurses who speak English as a second language — have higher error rates. This is not a bug report. It is an equity crisis.' Khalil draws the parallel immediately: 'It is the same as an accessibility audit. We run Lighthouse and find that our app works for sighted mouse users but fails for everyone else.'"
+  speaker: "Dr. Karimi"
 concept:
   explanation: "Bias auditing for ML models follows the same methodology as running a Lighthouse accessibility audit — systematically testing across user groups to ensure no population is excluded or underserved."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "// Fairness audit: test across demographics, languages, writing styles — score each group, flag disparities"
     tier: structural
 consequence:
-  narrative: "The bias audit reveals three failure modes: non-standard English, abbreviation-heavy ICU notes, and Spanish-language records. Khalil implements data augmentation for underperforming slices and retrains. The gap drops from 12% to 2.3%. Vasquez reviews the fairness card. 'Two percent is not zero, but it is honest. Document the remaining gap and ship it with the model card.'"
+  narrative: "The bias audit reveals three failure modes: non-standard English, abbreviation-heavy ICU notes, and Spanish-language records. Khalil implements data augmentation for underperforming slices and retrains. The gap drops from 12% to 2.3%. Karimi reviews the fairness card. 'Two percent is not zero, but it is honest. Document the remaining gap and ship it with the model card.'"
   nextLessonTeaser: "Next: human-in-the-loop — designing approval gates for clinical predictions"
 hints:
   - level: nudge
@@ -37,7 +37,7 @@ keywords:
   - disparate-impact
 ---
 
-<Dialogue speaker="Dr. Vasquez">
+<Dialogue speaker="Dr. Karimi">
 Your model performs 12% worse on records written in non-standard English. Our night shift nurses — many of whom speak English as a second language — write differently. Shorter sentences. Different abbreviations. No formal headers. Your model was trained on attending physician notes. It works well for people who write like attending physicians. That is a bias, and in this hospital, it is unacceptable.
 </Dialogue>
 
@@ -215,7 +215,7 @@ const diagnosticOneSlices: AuditSlice[] = [
 ];`}
 </CodeBlock>
 
-<Dialogue speaker="Obi Nwosu">
+<Dialogue speaker="Vikram Reddy">
 The fairness card is the model's Lighthouse report. You would not ship a website with a Lighthouse accessibility score of 40. You should not ship a model with a 12% accuracy gap between demographic groups. Measure, document, remediate.
 </Dialogue>
 

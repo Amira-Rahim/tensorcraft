@@ -95,6 +95,26 @@ Create or update lesson progress. **Authenticated.** Upserts on `(user_id, theme
 }
 ```
 
+### `GET /api/progress/summary`
+
+Get aggregated progress across all themes. **Authenticated.** Uses the `theme_progress_summary` database view.
+
+**Response:**
+```json
+[
+  {
+    "user_id": "uuid",
+    "theme_id": "deep-orbit",
+    "total_lessons": 15,
+    "completed_lessons": 8,
+    "in_progress_lessons": 2,
+    "first_started_at": "2026-03-01T10:00:00Z",
+    "last_completed_at": "2026-03-13T10:30:00Z",
+    "completion_percent": 53.3
+  }
+]
+```
+
 ---
 
 ## Payments
@@ -241,8 +261,35 @@ All error responses follow this shape:
 }
 ```
 
+For `500` errors, a `requestId` is included to aid debugging (matches the `X-Request-ID` response header):
+```json
+{
+  "error": "Failed to update progress",
+  "requestId": "550e8400-e29b-41d4-a716-446655440000"
+}
+```
+
 Common status codes:
+
 - `400` — Bad request (missing/invalid fields)
 - `401` — Unauthorized (missing or invalid auth token)
 - `429` — Rate limited (includes `Retry-After` header)
-- `500` — Internal server error
+- `500` — Internal server error (includes `requestId`)
+
+---
+
+## Rate Limiting
+
+All endpoints (except `/api/payments/webhook`) are rate limited to **60 requests per minute per IP**.
+
+- **Primary store:** Upstash Redis (when `UPSTASH_REDIS_REST_URL` is configured) for distributed limiting across multiple API instances.
+- **Fallback store:** In-memory Map when Redis is not configured. Suitable for single-instance deployments and local development.
+- Rate-limited responses return `429 Too Many Requests` with a `Retry-After` header.
+
+---
+
+## Webhook Behavior
+
+The Stripe webhook endpoint (`POST /api/payments/webhook`) uses Stripe's built-in signature verification via `STRIPE_WEBHOOK_SECRET`. It is exempt from rate limiting.
+
+**Note:** Stripe automatically retries failed webhook deliveries (non-2xx responses) for up to 3 days with exponential backoff. Ensure the webhook handler is idempotent -- duplicate `checkout.session.completed` events for the same `stripe_session_id` are handled gracefully via the unique constraint on the `purchases` table.

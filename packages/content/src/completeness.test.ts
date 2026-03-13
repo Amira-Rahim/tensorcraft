@@ -2,29 +2,29 @@ import { describe, it, expect } from "vitest";
 import { modules, lessons, exercises } from "../.velite";
 
 describe("Content completeness", () => {
-  it("every module has exactly 5 lessons", () => {
+  it("every module has exactly lessonCount lessons", () => {
     for (const mod of modules) {
       const modLessons = lessons.filter(
-        (l) => l.themeId === mod.themeId && l.moduleId === mod.slug,
+        (l) => l.moduleId === mod.slug && l.themeId === mod.themeId,
       );
       expect(
         modLessons.length,
-        `Module "${mod.slug}" (theme: ${mod.themeId}) should have 5 lessons but has ${modLessons.length}`,
-      ).toBe(5);
+        `Module "${mod.slug}" (theme: ${mod.themeId}) has ${modLessons.length} lessons, expected ${mod.lessonCount}`,
+      ).toBe(mod.lessonCount);
     }
   });
 
-  it("every lesson has orders 1-5 within its module", () => {
+  it("every lesson has sequential orders within its module", () => {
     for (const mod of modules) {
-      const modLessons = lessons
-        .filter((l) => l.themeId === mod.themeId && l.moduleId === mod.slug)
-        .map((l) => l.order)
-        .sort((a, b) => a - b);
-
+      const modLessons = lessons.filter(
+        (l) => l.moduleId === mod.slug && l.themeId === mod.themeId,
+      );
+      const orders = modLessons.map((l) => l.order).sort((a, b) => a - b);
+      const expected = Array.from({ length: mod.lessonCount }, (_, i) => i + 1);
       expect(
-        modLessons,
-        `Module "${mod.slug}" (theme: ${mod.themeId}) lessons should have orders [1,2,3,4,5]`,
-      ).toEqual([1, 2, 3, 4, 5]);
+        orders,
+        `Module "${mod.slug}" (theme: ${mod.themeId}) has orders [${orders}], expected [${expected}]`,
+      ).toEqual(expected);
     }
   });
 
@@ -51,5 +51,17 @@ describe("Content completeness", () => {
       expect(seen.has(key), `Duplicate module: ${key}`).toBe(false);
       seen.add(key);
     }
+  });
+
+  it("has at least one module", () => {
+    expect(modules.length).toBeGreaterThan(0);
+  });
+
+  it("has at least one lesson", () => {
+    expect(lessons.length).toBeGreaterThan(0);
+  });
+
+  it("has at least one exercise", () => {
+    expect(exercises.length).toBeGreaterThan(0);
   });
 });

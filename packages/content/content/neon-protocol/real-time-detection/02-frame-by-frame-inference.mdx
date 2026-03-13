@@ -7,7 +7,7 @@ order: 2
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "NEON calculates: at 4fps the team misses 87% of drone movements. Kira needs to run inference inside a requestAnimationFrame loop — the same pattern she used for smooth animations in her drawing app."
+  narrative: "NEON calculates: at 4fps the team misses 87% of drone movements. Noor needs to run inference inside a requestAnimationFrame loop — the same pattern she used for smooth animations in her drawing app."
   speaker: "NEON"
 concept:
   explanation: "Running ML inference on live video is structurally identical to a game render loop. requestAnimationFrame() calls your function every frame. Instead of drawing pixels, you classify them."
@@ -18,7 +18,7 @@ concept:
     mlCode: "function loop() { const pred = model.predict(frame); drawDetections(pred); requestAnimationFrame(loop); }"
     tier: identity
 consequence:
-  narrative: "Protocol Sentinel hits 24fps on Kira's laptop. Drones are tracked frame by frame. Ryo nods — then points at the memory graph. 'You are leaking 50MB per second. Fix the tensor lifecycle or the browser crashes in two minutes.'"
+  narrative: "Protocol Sentinel hits 24fps on Noor's laptop. Drones are tracked frame by frame. Amir nods — then points at the memory graph. 'You are leaking 50MB per second. Fix the tensor lifecycle or the browser crashes in two minutes.'"
   nextLessonTeaser: "Next: performance budgets — how fast is fast enough?"
 hints:
   - level: nudge
@@ -39,7 +39,7 @@ keywords:
 At 4 frames per second, you are processing one frame every 250 milliseconds. A Meridian scout drone covers 3 meters in that time. You are not doing real-time detection. You are doing historical analysis — very recent history, but history nonetheless.
 </Dialogue>
 
-<Dialogue speaker="Kira">
+<Dialogue speaker="Noor">
 I built a 60fps particle system for my drawing app using requestAnimationFrame. Same pattern — just swap canvas drawing for model inference. Right?
 </Dialogue>
 

@@ -7,8 +7,8 @@ order: 3
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "Ren runs the numbers. 'Even optimized, generation takes 340ms. For the most popular prompts — sunset, dragon, abstract — we can pre-generate and cache. Instant response for the common case, generation for the novel case.'"
-  speaker: "Ren"
+  narrative: "Samir runs the numbers. 'Even optimized, generation takes 340ms. For the most popular prompts — sunset, dragon, abstract — we can pre-generate and cache. Instant response for the common case, generation for the novel case.'"
+  speaker: "Samir"
 concept:
   explanation: "Caching generated outputs trades storage for computation time — the same tradeoff as Service Worker caches, CDN edge caching, and React.memo."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "const cache = new Map(); cache.set(promptHash, generatedOutput);"
     tier: structural
 consequence:
-  narrative: "The top 100 prompts now respond in under 10ms. Ren: 'We pre-generated 200 variations and cached them in the Service Worker. The visitor gets instant art. The model only fires for novel requests.'"
+  narrative: "The top 100 prompts now respond in under 10ms. Samir: 'We pre-generated 200 variations and cached them in the Service Worker. The visitor gets instant art. The model only fires for novel requests.'"
   nextLessonTeaser: "Next: handling 200 concurrent generators"
 hints:
   - level: nudge
@@ -34,11 +34,11 @@ keywords:
   - cdn
 ---
 
-<Dialogue speaker="Ren">
+<Dialogue speaker="Samir">
 Not every generation needs to be real-time. The top 20 prompts account for 60% of requests. Pre-generate those, cache them in a Service Worker, and visitors get instant art. Same strategy as pre-rendering above-the-fold content.
 </Dialogue>
 
-<Dialogue speaker="Petrov">
+<Dialogue speaker="Erdem">
 Cache the predictable. Generate the novel. Simple. How much storage do we need?
 </Dialogue>
 

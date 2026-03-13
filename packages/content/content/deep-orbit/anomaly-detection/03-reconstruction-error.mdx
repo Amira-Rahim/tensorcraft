@@ -7,8 +7,8 @@ order: 3
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Park feeds the anomalous signal through the autoencoder. The reconstruction is mangled — the error is 12x the normal baseline. Sato: 'That is our anomaly score.'"
-  speaker: "Dr. Sato"
+  narrative: "Demir feeds the anomalous signal through the autoencoder. The reconstruction is mangled — the error is 12x the normal baseline. Farah: 'That is our anomaly score.'"
+  speaker: "Dr. Farah"
 concept:
   explanation: "Reconstruction error measures how different the output is from the input — like git diff showing what changed from the expected baseline."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "error = MSE(original, autoencoder.predict(original))"
     tier: intuition
 consequence:
-  narrative: "The reconstruction error for the anomalous signal is 12x the normal threshold. Torres checks the sensors three times — this is not instrument noise. The model is right."
+  narrative: "The reconstruction error for the anomalous signal is 12x the normal threshold. Nazari checks the sensors three times — this is not instrument noise. The model is right."
   nextLessonTeaser: "Next: tuning the detection threshold — how sensitive should DEEP SCAN be?"
 hints:
   - level: nudge
@@ -34,11 +34,11 @@ keywords:
   - git-diff
 ---
 
-<Dialogue speaker="Dr. Sato">
+<Dialogue speaker="Dr. Farah">
 Feed the anomalous signal through. The autoencoder was trained on normal data. If this signal is truly anomalous, the reconstruction will be poor — like trying to compress an image format the codec has never seen.
 </Dialogue>
 
-<Dialogue speaker="Ensign Park">
+<Dialogue speaker="Ensign Demir">
 So the reconstruction error IS the anomaly score? It's like running git diff — if the diff is empty, the signal matches the baseline. If the diff is huge, something changed.
 </Dialogue>
 

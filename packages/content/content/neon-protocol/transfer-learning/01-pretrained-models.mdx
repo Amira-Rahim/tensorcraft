@@ -7,8 +7,8 @@ order: 1
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Ryo leads Kira through a maintenance corridor beneath Meridian's data center in the corporate district. Water drips from exposed pipes. He stops at a server rack humming behind a cracked panel, connects a portable drive, and begins downloading model weights. 'This model was trained on ImageNet — 14 million images, 1000 categories. Two million credits of compute. We are going to use it for free.'"
-  speaker: "Ryo"
+  narrative: "Amir leads Noor through a maintenance corridor beneath Meridian's data center in the corporate district. Water drips from exposed pipes. He stops at a server rack humming behind a cracked panel, connects a portable drive, and begins downloading model weights. 'This model was trained on ImageNet — 14 million images, 1000 categories. Two million credits of compute. We are going to use it for free.'"
+  speaker: "Amir"
 concept:
   explanation: "Pre-trained models are neural networks already trained on massive datasets. Instead of training from scratch (expensive, slow, data-hungry), you load these weights and immediately get a powerful feature extractor. Like installing an npm package — you leverage someone else's work instead of reimplementing everything yourself."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "const model = await tf.loadLayersModel('mobilenet_v2'); // millions of $ of training"
     tier: identity
 consequence:
-  narrative: "The download completes. 25 megabytes. Ryo holds up the drive, its status LED blinking green. 'Two million credits of training on this drive. Meridian trained it on their server farm over three weeks. We just downloaded it in forty seconds. That is the power of pre-trained models.'"
+  narrative: "The download completes. 25 megabytes. Amir holds up the drive, its status LED blinking green. 'Two million credits of training on this drive. Meridian trained it on their server farm over three weeks. We just downloaded it in forty seconds. That is the power of pre-trained models.'"
   nextLessonTeaser: "Next: feature reuse — why the patterns this model learned transfer to tasks it was never trained on"
 hints:
   - level: nudge
@@ -37,15 +37,15 @@ keywords:
   - resnet
 ---
 
-<Dialogue speaker="Ryo">
+<Dialogue speaker="Amir">
 When you need to sort an array, you do not implement mergesort from scratch. You call `Array.sort()`. When you need date formatting, you install `date-fns`. Pre-trained models are the same principle applied to AI. Someone else spent the compute, the data, the engineering hours. You download the result and build on top.
 </Dialogue>
 
-<Dialogue speaker="Kira">
+<Dialogue speaker="Noor">
 So `tf.loadLayersModel('mobilenet')` is basically `npm install mobilenet`?
 </Dialogue>
 
-<Dialogue speaker="Ryo">
+<Dialogue speaker="Amir">
 Exactly. Except the package cost two million credits to build.
 </Dialogue>
 
@@ -166,7 +166,7 @@ const models: PretrainedModel[] = [
   },
 ];
 
-// Ryo chose MobileNetV2 — small enough to run in a browser tab
+// Amir chose MobileNetV2 — small enough to run in a browser tab
 // without Meridian's servers ever knowing.`}
 </CodeBlock>
 

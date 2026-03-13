@@ -7,8 +7,8 @@ order: 4
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Obi shows the team that word vectors support arithmetic. 'doctor' - 'adult' + 'child' = 'pediatrician'. The team applies this to find clinical relationships and drug analogies."
-  speaker: "Obi"
+  narrative: "Vikram shows the team that word vectors support arithmetic. 'doctor' - 'adult' + 'child' = 'pediatrician'. The team applies this to find clinical relationships and drug analogies."
+  speaker: "Vikram"
 concept:
   explanation: "Cosine similarity measures the angle between two vectors, revealing semantic relatedness. Word vectors also support analogies through vector arithmetic: king - man + woman = queen. In clinical NLP, this enables reasoning like aspirin - pain + infection = antibiotic."
   bridge:
@@ -36,15 +36,15 @@ keywords:
 
 > **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
-<Dialogue speaker="Obi">
-Santos, you know Levenshtein distance — it measures how many character edits separate two strings. "aspirin" and "asprin" are 1 edit apart. Cosine similarity does something similar, but for meaning instead of spelling.
+<Dialogue speaker="Vikram">
+Imran, you know Levenshtein distance — it measures how many character edits separate two strings. "aspirin" and "asprin" are 1 edit apart. Cosine similarity does something similar, but for meaning instead of spelling.
 </Dialogue>
 
-<Dialogue speaker="Santos">
+<Dialogue speaker="Imran">
 So Levenshtein says "aspirin" and "asprin" are close because they look similar, and cosine similarity says "aspirin" and "ibuprofen" are close because they mean similar things?
 </Dialogue>
 
-<Dialogue speaker="Obi">
+<Dialogue speaker="Vikram">
 Exactly. And here is where it gets interesting: you can do arithmetic with word vectors. Subtract one concept, add another, and discover new relationships.
 </Dialogue>
 
@@ -124,7 +124,7 @@ console.log('Most similar to penicillin:', findMostSimilar('penicillin', embeddi
 
 ## Word Analogies: Vector Arithmetic
 
-<Dialogue speaker="Obi">
+<Dialogue speaker="Vikram">
 Here is the famous result: king - man + woman = queen. The vector arithmetic captures the relationship "male royalty is to female royalty." We can do the same with medical terms.
 </Dialogue>
 
@@ -170,7 +170,7 @@ console.log('aspirin : headache :: penicillin :', result);
 // Vector arithmetic discovers occupational relationships`}
 </CodeBlock>
 
-<Dialogue speaker="Dr. Vasquez">
+<Dialogue speaker="Dr. Karimi">
 Could we use this to find drug alternatives? If a patient is allergic to penicillin, could the model suggest amoxicillin is similar but flag that it is also a beta-lactam?
 </Dialogue>
 

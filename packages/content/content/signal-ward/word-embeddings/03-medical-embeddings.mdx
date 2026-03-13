@@ -7,8 +7,8 @@ order: 3
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Obi demonstrates that generic embeddings miss clinical nuances. 'Discharge' means leaving the hospital, not firing someone. Domain-specific embeddings like BioWordVec solve this — just like scoped CSS variables override global defaults."
-  speaker: "Obi"
+  narrative: "Vikram demonstrates that generic embeddings miss clinical nuances. 'Discharge' means leaving the hospital, not firing someone. Domain-specific embeddings like BioWordVec solve this — just like scoped CSS variables override global defaults."
+  speaker: "Vikram"
 concept:
   explanation: "Medical embeddings are word vectors trained on clinical text (PubMed, MIMIC-III, clinical notes). They capture domain-specific relationships that generic embeddings miss — 'stat' means 'immediately' in clinical context, not 'statistics'. Like scoped CSS variables, domain embeddings provide context-specific values."
   bridge:
@@ -36,19 +36,19 @@ keywords:
 
 > **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
-<Dialogue speaker="Obi">
-Santos, in CSS you can define a variable globally and then override it in a specific scope. --color-primary might be blue site-wide, but inside a clinical dashboard, you scope it to mean something specific. Domain embeddings work the same way.
+<Dialogue speaker="Vikram">
+Imran, in CSS you can define a variable globally and then override it in a specific scope. --color-primary might be blue site-wide, but inside a clinical dashboard, you scope it to mean something specific. Domain embeddings work the same way.
 </Dialogue>
 
-<Dialogue speaker="Santos">
+<Dialogue speaker="Imran">
 So generic Word2Vec is like the global stylesheet, and medical embeddings are the scoped overrides?
 </Dialogue>
 
-<Dialogue speaker="Obi">
+<Dialogue speaker="Vikram">
 Precisely. In generic English, "discharge" is closest to "fire" and "release." In clinical text, "discharge" is closest to "hospital," "home," and "follow-up." The scoped context changes the meaning entirely.
 </Dialogue>
 
-<Dialogue speaker="Dr. Vasquez">
+<Dialogue speaker="Dr. Karimi">
 That is exactly the class of error that brought down the vendor system. It read "discharge summary" and associated it with termination instead of a patient leaving the hospital.
 </Dialogue>
 

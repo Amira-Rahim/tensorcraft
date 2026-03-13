@@ -7,8 +7,8 @@ order: 2
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "The profiling data is clear: the model is too large for real-time gallery use. Petrov calls the team. 'We need a smaller model that produces the same quality. Distillation and quantization — the same tricks that make webpack bundles smaller.'"
-  speaker: "Petrov"
+  narrative: "The profiling data is clear: the model is too large for real-time gallery use. Erdem calls the team. 'We need a smaller model that produces the same quality. Distillation and quantization — the same tricks that make webpack bundles smaller.'"
+  speaker: "Erdem"
 concept:
   explanation: "Model optimization reduces inference time by shrinking the model — quantization reduces precision (like image compression), distillation trains a smaller student model to mimic a larger teacher."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "// quantize + distill + prune: 50MB → 5MB, similar quality"
     tier: structural
 consequence:
-  narrative: "The optimized model runs in 340ms — down from 3.2 seconds. Petrov: 'Ten times faster. The quality drop is barely visible. Ship it.'"
+  narrative: "The optimized model runs in 340ms — down from 3.2 seconds. Erdem: 'Ten times faster. The quality drop is barely visible. Ship it.'"
   nextLessonTeaser: "Next: caching and precomputation for instant responses"
 hints:
   - level: nudge
@@ -34,11 +34,11 @@ keywords:
   - model-compression
 ---
 
-<Dialogue speaker="Petrov">
+<Dialogue speaker="Erdem">
 The model is 47 megabytes. It downloads in 8 seconds on gallery Wi-Fi. Inference takes 3 seconds. We need both numbers to drop by 10x. Same approach as production frontend builds — strip everything unnecessary.
 </Dialogue>
 
-<Dialogue speaker="Ren">
+<Dialogue speaker="Samir">
 Webpack takes a 2MB bundle and produces 200KB through minification, tree-shaking, and compression. Same functionality, tenth the size. Model optimization does the same thing with weights.
 </Dialogue>
 

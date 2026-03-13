@@ -7,8 +7,8 @@ order: 4
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "Petrov tests the gallery kiosk: 'Three minutes for one style transfer. The visitors will leave.' Kai pulls up a different approach: 'We train a feedforward network that applies the style in a single pass. Like pre-compiling CSS — no runtime optimization needed.'"
-  speaker: "Kai"
+  narrative: "Erdem tests the gallery kiosk: 'Three minutes for one style transfer. The visitors will leave.' Rohan pulls up a different approach: 'We train a feedforward network that applies the style in a single pass. Like pre-compiling CSS — no runtime optimization needed.'"
+  speaker: "Rohan"
 concept:
   explanation: "Real-time style transfer replaces iterative optimization with a feedforward network trained to apply a specific style in one pass — like how CSS filters apply visual effects instantly without per-pixel computation at runtime."
   bridge:
@@ -35,11 +35,11 @@ keywords:
   - residual-blocks
 ---
 
-<Dialogue speaker="Kai">
+<Dialogue speaker="Rohan">
 The Gatys method optimizes each image from scratch — hundreds of iterations, minutes per image. That is like computing CSS styles by running gradient descent on every page load. We need to pre-compile the style into a network.
 </Dialogue>
 
-<Dialogue speaker="Ren">
+<Dialogue speaker="Samir">
 A feedforward network. Train it once on the Monet style, and it applies that style in a single forward pass. Like CSS `filter` — the browser applies saturate, contrast, and blur instantly because the operations are pre-compiled.
 </Dialogue>
 

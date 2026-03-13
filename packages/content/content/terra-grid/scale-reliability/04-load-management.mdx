@@ -7,7 +7,7 @@ order: 4
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "GRID reports the stress test peak. 'Prediction requests at 8,400 per second. Normal baseline is 2,100. Queue depth increasing.' Park configures the load management system to handle the spike without dropping critical predictions."
+  narrative: "GRID reports the stress test peak. 'Prediction requests at 8,400 per second. Normal baseline is 2,100. Queue depth increasing.' Priya configures the load management system to handle the spike without dropping critical predictions."
   speaker: "GRID"
 concept:
   explanation: "Load management for ML inference uses the same techniques as handling web traffic spikes — rate limiting, request queuing, and priority-based processing."
@@ -18,7 +18,7 @@ concept:
     mlCode: "// Edge: inferenceLimit({ windowMs: 1000, max: 50 }) per device"
     tier: identity
 consequence:
-  narrative: "The load manager prioritizes safety-critical predictions and queues routine monitoring. During the 4x spike, zero critical predictions are dropped. Routine monitoring delays average 340ms. Park: 'Priority queuing kept the critical path clear.'"
+  narrative: "The load manager prioritizes safety-critical predictions and queues routine monitoring. During the 4x spike, zero critical predictions are dropped. Routine monitoring delays average 340ms. Priya: 'Priority queuing kept the critical path clear.'"
   nextLessonTeaser: "Next: global operations — managing ML across time zones and regions"
 hints:
   - level: nudge
@@ -38,7 +38,7 @@ keywords:
 Prediction requests at 8,400 per second. Normal baseline: 2,100 per second. Queue depth: 342 and rising. Estimated processing delay for low-priority requests: 480ms.
 </Dialogue>
 
-<Dialogue speaker="Park Soo-Yeon">
+<Dialogue speaker="Priya Sharma">
 We cannot process everything at peak load, so we prioritize. Safety-critical predictions — gas leaks, electrical faults, structural anomalies — go first, always. Routine temperature monitoring can wait 500ms. The same way a web server handles health check endpoints before serving static assets under load.
 </Dialogue>
 

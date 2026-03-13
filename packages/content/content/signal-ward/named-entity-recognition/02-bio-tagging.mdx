@@ -7,8 +7,8 @@ order: 2
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Obi introduces BIO tagging to handle multi-word entities like 'rheumatoid arthritis' — where simple per-token labels fall apart."
-  speaker: "Obi Nwosu"
+  narrative: "Vikram introduces BIO tagging to handle multi-word entities like 'rheumatoid arthritis' — where simple per-token labels fall apart."
+  speaker: "Vikram Reddy"
 concept:
   explanation: "BIO tagging marks entity boundaries using B (beginning), I (inside), and O (outside) — like HTML opening and closing tags that define where elements start and end."
   bridge:
@@ -34,15 +34,15 @@ keywords:
   - iob-format
 ---
 
-<Dialogue speaker="Obi Nwosu">
+<Dialogue speaker="Vikram Reddy">
 Khalil, our basic NER labels each token independently. But look at "rheumatoid arthritis" — that's one condition, two words. How do we tell the model that "arthritis" continues the entity started by "rheumatoid" rather than being a separate entity?
 </Dialogue>
 
-<Dialogue speaker="Khalil Mensah">
+<Dialogue speaker="Khalil Ansari">
 In HTML, I'd wrap them in a single tag: `<span class="condition">rheumatoid arthritis</span>`. The opening tag marks where the entity begins, and the closing tag marks where it ends. Everything between is inside the entity.
 </Dialogue>
 
-<Dialogue speaker="Obi Nwosu">
+<Dialogue speaker="Vikram Reddy">
 That's exactly what BIO tagging does. B is the opening tag — the beginning of an entity. I is the content inside. O is everything outside any tag. No explicit closing tag needed; the entity ends when you hit O or a new B.
 </Dialogue>
 
@@ -147,11 +147,11 @@ console.log(entities);
 
 ## Why B Matters: Preventing Tag Merge
 
-<Dialogue speaker="Santos">
+<Dialogue speaker="Imran">
 What happens if a patient has "diabetes hypertension" — two conditions listed back to back?
 </Dialogue>
 
-<Dialogue speaker="Obi Nwosu">
+<Dialogue speaker="Vikram Reddy">
 Without the B tag, both words get I-CONDITION. The decoder merges them into one entity: "diabetes hypertension." The B tag on "hypertension" is like a new opening `<span>` — it signals a separate entity starts there, even though the type is the same.
 </Dialogue>
 

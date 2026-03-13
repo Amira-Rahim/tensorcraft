@@ -9,11 +9,12 @@ health.get("/", async (c) => {
 
   try {
     const supabase = getSupabaseAdminClient();
-    // Query a nonexistent table with limit 0.
-    // A "relation does not exist" error still proves DB is reachable.
-    // Only network / auth failures indicate a real problem.
-    const res = await supabase.from("_health_check_noop").select("*").limit(0);
-    if (res.error && !res.error.message.includes("does not exist")) {
+    // Lightweight connectivity check using a real table with head-only count query.
+    // This avoids querying a non-existent table and the fragile error-message check.
+    const res = await supabase
+      .from("profiles")
+      .select("*", { count: "exact", head: true });
+    if (res.error) {
       dbStatus = "error";
       dbError = res.error.message;
     }

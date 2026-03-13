@@ -7,7 +7,7 @@ order: 5
 estimatedMinutes: 30
 difficulty: intermediate
 context:
-  narrative: "The GAN starts producing the same pattern over and over. Yara calls it 'the one-trick pony problem.' Ren must diagnose and fix mode collapse."
+  narrative: "The GAN starts producing the same pattern over and over. Yara calls it 'the one-trick pony problem.' Samir must diagnose and fix mode collapse."
   speaker: "Yara"
 concept:
   explanation: "Mode collapse occurs when the generator finds one output that fools the discriminator and produces only that output, ignoring the diversity of the training data."
@@ -18,7 +18,7 @@ concept:
     mlCode: "generator.predict(noise1) ≈ generator.predict(noise2) // same output!"
     tier: intuition
 consequence:
-  narrative: "Ren applies minibatch discrimination and the GAN starts producing diverse patterns again. The exhibition installation now generates unique art for every visitor."
+  narrative: "Samir applies minibatch discrimination and the GAN starts producing diverse patterns again. The exhibition installation now generates unique art for every visitor."
   nextLessonTeaser: "Next module: VAEs — a different approach to generation with controllable, structured latent spaces"
 hints:
   - level: nudge
@@ -39,7 +39,7 @@ keywords:
 It is producing the same pattern. Every single time. Different noise, same output. This is not generative art — it is a photocopier. We call this the one-trick pony problem.
 </Dialogue>
 
-<Dialogue speaker="Kai">
+<Dialogue speaker="Rohan">
 I have seen this in music. A composer finds one melody that the audience likes and plays it forever. No exploration, no risk. The generator found the safe zone and refuses to leave.
 </Dialogue>
 

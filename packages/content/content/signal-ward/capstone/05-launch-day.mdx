@@ -7,8 +7,8 @@ order: 5
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "Day 9 of the pilot. Santos watches the monitoring dashboard. MEDI processes clinical notes in real time — tokenizing, embedding, classifying, checking interactions. Then the alert fires. 'Drug interaction detected: methotrexate and trimethoprim. Severity: high. Confidence: 0.91.' Dr. Vasquez reviews the case. The patient has rheumatoid arthritis, is on weekly methotrexate, and was just prescribed trimethoprim for a urinary tract infection. She checks the drug reference. 'It is a real interaction — trimethoprim can increase methotrexate toxicity. But in this case, the methotrexate dose is low and the trimethoprim course is short. I would prescribe it with monitoring.' She marks it: confirmed interaction, clinical override with monitoring. 'Better a false alarm than a missed one.'"
-  speaker: "Dr. Vasquez"
+  narrative: "Day 9 of the pilot. Imran watches the monitoring dashboard. MEDI processes clinical notes in real time — tokenizing, embedding, classifying, checking interactions. Then the alert fires. 'Drug interaction detected: methotrexate and trimethoprim. Severity: high. Confidence: 0.91.' Dr. Karimi reviews the case. The patient has rheumatoid arthritis, is on weekly methotrexate, and was just prescribed trimethoprim for a urinary tract infection. She checks the drug reference. 'It is a real interaction — trimethoprim can increase methotrexate toxicity. But in this case, the methotrexate dose is low and the trimethoprim course is short. I would prescribe it with monitoring.' She marks it: confirmed interaction, clinical override with monitoring. 'Better a false alarm than a missed one.'"
+  speaker: "Dr. Karimi"
 concept:
   explanation: "Deploying Diagnostic One to production is the same as deploying any web application — build, ship, monitor, and have a rollback plan. The model is a static asset in the bundle. The monitoring dashboard is an observability layer. The rollback plan is a feature flag."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "// npm run build && deploy --monitor --rollback-on-error // same command, model is a static asset"
     tier: identity
 consequence:
-  narrative: "Day 30. Diagnostic One has processed 2,847 clinical notes. 12 confirmed drug interactions caught. 3 false positives investigated and dismissed. Zero missed interactions in the validation set. Dr. Vasquez presents the pilot results to the hospital board. 'Diagnostic One is not replacing clinicians. It is giving us a second pair of eyes that never gets tired, never skips a chart, and never forgets a drug interaction. The false positive on Day 9 — methotrexate and trimethoprim — proved that the system works. It flagged a real interaction. I overrode it because the clinical context was safe. That is exactly how this should work.' Santos closes her laptop. Eleven modules. From tokenizing her first clinical note to deploying a production NLP system. Khalil was right — she was already thinking like an ML engineer. She just needed to see it."
+  narrative: "Day 30. Diagnostic One has processed 2,847 clinical notes. 12 confirmed drug interactions caught. 3 false positives investigated and dismissed. Zero missed interactions in the validation set. Dr. Karimi presents the pilot results to the hospital board. 'Diagnostic One is not replacing clinicians. It is giving us a second pair of eyes that never gets tired, never skips a chart, and never forgets a drug interaction. The false positive on Day 9 — methotrexate and trimethoprim — proved that the system works. It flagged a real interaction. I overrode it because the clinical context was safe. That is exactly how this should work.' Imran closes her laptop. Eleven modules. From tokenizing her first clinical note to deploying a production NLP system. Khalil was right — she was already thinking like an ML engineer. She just needed to see it."
   nextLessonTeaser: "Mission complete. Diagnostic One is live. And you — you think like an ML engineer now."
 hints:
   - level: nudge
@@ -36,7 +36,7 @@ keywords:
   - launch
 ---
 
-<Dialogue speaker="Santos">
+<Dialogue speaker="Imran">
 Build is green. Tests pass. Model card approved. FHIR adapter validated. Monitoring dashboard live. Feature flag set to 10% rollout. I have deployed hundreds of web apps. This one just happens to include a trained NLP model.
 </Dialogue>
 
@@ -260,9 +260,9 @@ async function dayNine(): Promise<void> {
   console.log(\`  Review tier: \${result.reviewStatus}\`);
   console.log('');
 
-  // Dr. Vasquez reviews
+  // Dr. Karimi reviews
   console.log('--- Clinician Review ---');
-  console.log('Reviewer: Dr. Vasquez');
+  console.log('Reviewer: Dr. Karimi');
   console.log('Decision: Confirmed interaction, clinical override with monitoring');
   console.log('Reasoning: Low methotrexate dose (15mg weekly) and short trimethoprim');
   console.log('           course (3 days) — acceptable risk with monitoring');

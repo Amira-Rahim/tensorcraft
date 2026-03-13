@@ -7,8 +7,8 @@ order: 1
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Kai puts two images side by side. 'Which one matches the caption a melancholy cityscape at twilight?' One is moody, blue-toned. The other is a bright daytime city. 'The model learns by comparison,' he says. 'Not by being told the answer — by seeing which pairs match and which don't. Like an A/B test.'"
-  speaker: "Kai"
+  narrative: "Rohan puts two images side by side. 'Which one matches the caption a melancholy cityscape at twilight?' One is moody, blue-toned. The other is a bright daytime city. 'The model learns by comparison,' he says. 'Not by being told the answer — by seeing which pairs match and which don't. Like an A/B test.'"
+  speaker: "Rohan"
 concept:
   explanation: "Contrastive learning trains models by comparing positive pairs (matching image-text) against negative pairs (mismatched). Like A/B testing — you learn what works by comparing options side by side, not by being told the answer directly."
   bridge:
@@ -18,7 +18,7 @@ concept:
     mlCode: "loss = -log(sim(pos) / sum(sim(pos) + sim(negatives)));"
     tier: intuition
 consequence:
-  narrative: "The model stops confusing 'city at night' with 'melancholy cityscape at twilight.' The contrastive loss teaches it that mood matters — the difference between a description and an evocation. Kai: 'Mood is a direction in a 512-dimensional vector space.'"
+  narrative: "The model stops confusing 'city at night' with 'melancholy cityscape at twilight.' The contrastive loss teaches it that mood matters — the difference between a description and an evocation. Rohan: 'Mood is a direction in a 512-dimensional vector space.'"
   nextLessonTeaser: "Next: the CLIP architecture — how to build this at scale"
 hints:
   - level: nudge
@@ -35,15 +35,15 @@ keywords:
   - temperature
 ---
 
-<Dialogue speaker="Kai">
+<Dialogue speaker="Rohan">
 A/B testing works by comparison. You show variant A to half your users and variant B to the other half. You learn which is better not from theory but from direct comparison. Contrastive learning works the same way.
 </Dialogue>
 
-<Dialogue speaker="Petrov">
+<Dialogue speaker="Erdem">
 So the model sees a batch of images and captions and has to figure out which go together?
 </Dialogue>
 
-<Dialogue speaker="Kai">
+<Dialogue speaker="Rohan">
 Exactly. In a batch of 32, there are 32 correct pairs and 992 incorrect pairs. The model learns by getting better at telling them apart. Learning by comparison — not by memorization.
 </Dialogue>
 
