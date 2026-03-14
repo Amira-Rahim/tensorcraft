@@ -16,25 +16,25 @@ export async function GET(req: NextRequest) {
   return new ImageResponse(
     <div
       tw="flex flex-col w-full h-full"
-      style={{ backgroundColor: "#080B16" }}
+      style={{ backgroundColor: "#1C1C1C" }}
     >
       {/* Top section with branding and content */}
       <div tw="flex flex-col flex-1 px-16 pt-14 pb-8">
         {/* Branding */}
         <div tw="flex items-center mb-auto">
           <div
-            tw="w-10 h-10 rounded-lg mr-4 flex items-center justify-center"
+            tw="w-10 h-10 mr-4 flex items-center justify-center"
             style={{ backgroundColor: accentColor }}
           >
-            <span tw="text-xl font-bold" style={{ color: "#080B16" }}>
-              T
+            <span tw="text-xl font-bold" style={{ color: "#1C1C1C" }}>
+              T_
             </span>
           </div>
           <span
             tw="text-2xl font-bold tracking-tight"
-            style={{ color: "#FFFFFF" }}
+            style={{ color: "#C8C8C8" }}
           >
-            Tensorcraft
+            TENSORCRAFT
           </span>
         </div>
 
@@ -42,12 +42,12 @@ export async function GET(req: NextRequest) {
         <div tw="flex flex-col mt-auto mb-8">
           <h1
             tw="text-6xl font-bold leading-tight m-0"
-            style={{ color: "#FFFFFF" }}
+            style={{ color: "#C8C8C8" }}
           >
             {title}
           </h1>
           {subtitle && (
-            <p tw="text-2xl mt-4 m-0" style={{ color: "#8B92A5" }}>
+            <p tw="text-2xl mt-4 m-0" style={{ color: "#5A5A5A" }}>
               {subtitle}
             </p>
           )}

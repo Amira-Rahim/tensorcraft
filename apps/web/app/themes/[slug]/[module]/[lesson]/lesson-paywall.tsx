@@ -17,48 +17,31 @@ export function LessonPaywall({
 }: LessonPaywallProps) {
   return (
     <div
-      className="rounded-2xl p-10 text-center my-12"
+      className="p-10 text-center my-12 bg-surface-raised"
       style={{
-        background: "var(--tc-surface, #0F1320)",
         border: `1px solid ${accentColor}25`,
       }}
     >
       <div className="text-4xl mb-4" style={{ color: accentColor }}>
         &#128274;
       </div>
-      <h2
-        className="text-xl font-bold mb-3"
-        style={{ color: "var(--tc-text, #FFFFFF)" }}
-      >
+      <h2 className="text-xl font-bold font-mono mb-3 text-text-primary">
         This lesson requires a purchase
       </h2>
-      <p
-        className="text-sm mb-6 max-w-md mx-auto leading-relaxed"
-        style={{ color: "var(--tc-muted, #8B92A5)" }}
-      >
+      <p className="text-sm mb-6 max-w-md mx-auto leading-relaxed text-text-muted">
         Module 1 is free for everyone. To continue learning {themeName} beyond
         Module 1, purchase access to unlock all 11 modules and 55 lessons.
       </p>
       <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
         <Link
           href="/pricing"
-          className="inline-flex items-center justify-center h-[44px] px-6 rounded-full text-sm font-medium transition-all"
-          style={{
-            border: `1px solid ${accentColor}50`,
-            background: `${accentColor}12`,
-            color: "#FFFFFF",
-          }}
+          className="inline-flex items-center justify-center h-11 px-6 text-sm font-medium font-mono bg-primary text-surface border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover"
         >
           View Pricing &rarr;
         </Link>
         <Link
           href={`/themes/${themeSlug}`}
-          className="inline-flex items-center justify-center h-[44px] px-6 rounded-full text-sm font-medium transition-all"
-          style={{
-            border: "1px solid rgba(255,255,255,0.12)",
-            background: "transparent",
-            color: "var(--tc-muted, #8B92A5)",
-          }}
+          className="inline-flex items-center justify-center h-11 px-6 text-sm font-medium font-mono border border-border text-text-muted hover:text-text-primary hover:border-primary/30 transition-all brutalist-hover"
         >
           Back to {themeName}
         </Link>

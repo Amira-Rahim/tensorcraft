@@ -354,29 +354,57 @@ Lesson content is authored in **MDX** files stored in the `@tensorcraft/content`
 
 ## 6. Design System
 
-### 6.1 Theme Colors
+### 6.1 Design Aesthetic — Brutalist Terminal
 
-Each theme has a distinct color palette. Colors are defined as CSS custom properties and toggled via a `data-theme` attribute on `<html>`.
+The UI follows a "Brutalist Terminal" aesthetic: sharp edges, offset shadows, monospace-first typography. Dark mode only. No glow effects, no glassmorphism.
 
-| Theme | Primary | Secondary | Accent | Background | Surface |
-|---|---|---|---|---|---|
-| Deep Orbit | `#0B1E3F` (navy) | `#1A3A6B` (steel blue) | `#00E5A0` (aurora green) | `#060E1F` (void black) | `#0F2A4A` (deep panel) |
-| Neon Protocol | `#3B0764` (royal purple) | `#7C3AED` (vivid violet) | `#F472B6` (hot pink) | `#1A0030` (ink black) | `#2D0555` (plum panel) |
-| Signal Ward | `#1E3A28` (forest green) | `#2D6A4F` (emerald) | `#FFD166` (amber) | `#0A1F12` (deep moss) | `#163020` (leaf panel) |
-| Nova Canvas | `#1A1A2E` (midnight) | `#16213E` (dark slate) | `#E94560` (neon red) | `#0F0F1A` (abyss) | `#1F1F35` (synth panel) |
-| Terra Grid | `#2B2D42` (charcoal) | `#8D99AE` (cool grey) | `#EF8354` (burnt orange) | `#1B1D2E` (slate black) | `#23253A` (data panel) |
+**Shell tokens** (shared across all pages):
 
-### 6.2 Typography
+| Token | Value | Usage |
+|---|---|---|
+| Background | `#1C1C1C` | Page background |
+| Surface (Panel) | `#252525` | Cards, panels |
+| Surface (Overlay) | `#313131` | Elevated surfaces, dropdowns |
+| Primary | `#6BAA8A` | Buttons, links, active states |
+| Text | `#C8C8C8` | Body text |
+| Muted | `#8A8A8A` | Secondary text (WCAG AA on `#1C1C1C`) |
+| Border | `#2A2A2A` | Dividers, card borders |
+| Code BG | `#161616` | Code block backgrounds |
+
+**Key design rules:**
+
+- Zero border-radius everywhere
+- Offset box shadows: `4px 4px 0 rgba(107,170,138,0.25)`
+- JetBrains Mono as primary font; Inter for body paragraphs
+- Solid nav: 60px, no blur
+- `// COMMENT` style section labels
+- Buttons: square, offset shadow on hover with `translate(-2px,-2px)`
+
+### 6.2 Theme Colors
+
+Each theme has a distinct color palette within the lesson content area. Colors are defined as CSS custom properties (`--tc-*`) and toggled via a `data-theme` attribute on `<html>`.
+
+**ThemePalette interface** (`packages/themes/src/types.ts`): `bg`, `primary`, `accent`, `surface`, `surfaceOverlay`, `text`, `muted`, `border`, `codeBg`.
+
+| Theme | Primary | Accent | Background | Surface |
+|---|---|---|---|---|
+| Deep Orbit | `#7B68EE` | `#F0C75E` | `#0B0D1A` | `#16213E` |
+| Neon Protocol | `#00D4FF` | `#FF2D7B` | `#0A0A0F` | `#151520` |
+| Signal Ward | `#2ECC71` | `#5B8DEF` | `#0A1628` | `#132238` |
+| Nova Canvas | `#FF6B6B` | `#A78BFA` | `#0D0D1A` | `#1A1A30` |
+| Terra Grid | `#F59E0B` | `#10B981` | `#111827` | `#1F2937` |
+
+### 6.3 Typography
 
 | Element | Font | Weight | Size (desktop) | Size (mobile) | Line Height |
 |---|---|---|---|---|---|
-| H1 (page title) | Inter | 800 (Extra Bold) | 2.5rem (40px) | 1.75rem (28px) | 1.2 |
-| H2 (section title) | Inter | 700 (Bold) | 2rem (32px) | 1.5rem (24px) | 1.25 |
-| H3 (subsection) | Inter | 600 (Semi Bold) | 1.5rem (24px) | 1.25rem (20px) | 1.3 |
+| H1 (page title) | JetBrains Mono | 800 (Extra Bold) | 2.5rem (40px) | 1.75rem (28px) | 1.2 |
+| H2 (section title) | JetBrains Mono | 700 (Bold) | 2rem (32px) | 1.5rem (24px) | 1.25 |
+| H3 (subsection) | JetBrains Mono | 600 (Semi Bold) | 1.5rem (24px) | 1.25rem (20px) | 1.3 |
 | Body | Inter | 400 (Regular) | 1rem (16px) | 1rem (16px) | 1.6 |
 | Code | JetBrains Mono | 400 (Regular) | 0.875rem (14px) | 0.8125rem (13px) | 1.5 |
-| Caption / label | Inter | 500 (Medium) | 0.75rem (12px) | 0.75rem (12px) | 1.4 |
-| Button | Inter | 600 (Semi Bold) | 0.875rem (14px) | 0.875rem (14px) | 1.0 |
+| Caption / label | JetBrains Mono | 500 (Medium) | 0.75rem (12px) | 0.75rem (12px) | 1.4 |
+| Button | JetBrains Mono | 600 (Semi Bold) | 0.875rem (14px) | 0.875rem (14px) | 1.0 |
 
 ---
 

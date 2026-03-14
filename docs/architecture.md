@@ -47,7 +47,7 @@ tensorcraft/
 
 ### Design Philosophy
 
-Dark mode only. Neon aesthetic with glowing borders, text shadows, animated gradients, and glassmorphism. Every theme has a unique color palette but shares the same structural design tokens.
+Dark mode only. Brutalist Terminal aesthetic with sharp edges (zero border-radius), offset box shadows (`4px 4px 0`), monospace-first typography (JetBrains Mono), and solid backgrounds. No glow effects, no glassmorphism. Every theme has a unique color palette but shares the same structural design tokens.
 
 ### 5 Themed Courses
 
@@ -64,12 +64,12 @@ Dark mode only. Neon aesthetic with glowing borders, text shadows, animated grad
 1. **CSS Custom Properties** (`packages/themes/src/css/themes.css`): Each theme defines `--tc-*` variables under a `[data-theme="theme-slug"]` selector.
 2. **Tailwind 4 `@theme`** (`packages/config/tailwind/base.css`): Maps Tailwind utility classes to `--tc-*` variables so `bg-surface`, `text-primary`, `border-border` all resolve dynamically.
 3. **Runtime Switching**: Set `data-theme` attribute on `<html>` to switch themes. No JS bundle cost — pure CSS resolution.
-4. **Neon Utilities** (`apps/web/app/globals.css`): `.neon-text`, `.neon-box`, `.neon-border`, `.glass`, `.grid-pattern` — all using theme-aware `--tc-glow` and `--tc-neon-line` tokens. All animations respect `prefers-reduced-motion`.
+4. **Brutalist Utilities** (`apps/web/app/globals.css`): `.brutalist-shadow`, `.brutalist-hover`, `.comment-label` — offset box shadows and monospace section labels. All animations respect `prefers-reduced-motion`.
 
 ### Theme Manifests
 
 Each theme (`packages/themes/src/<theme>.ts`) exports a `ThemeManifest` with:
-- **Palette**: bg, primary, accent, surface, text, glow, neonLine colors
+- **Palette**: bg, primary, accent, surface, surfaceOverlay, text, muted, border, codeBg colors
 - **Characters**: 5 per theme (4 human mentors + 1 AI companion)
 - **Terminology**: Theme-specific names for modules/lessons/exercises (e.g., Deep Orbit uses "Mission", "Sector", "Simulation")
 - **Career paths** and **coming soon** metadata
@@ -159,11 +159,12 @@ Separate backend service running on port 3001. Communicates with Supabase using 
 ### Landing Page (`app/page.tsx`)
 
 Client component with Framer Motion animations:
-- Animated grid background + gradient orbs
+
+- ParticleField canvas background
 - Letter-by-letter title reveal with stagger
 - FE→ML bridge showcase (6 featured bridges with animated connectors)
-- Theme preview cards with neon glow hover effects
-- Stats section and CTA with glow effects
+- Theme preview cards with brutalist offset shadow hover effects
+- Stats section and CTA with brutalist styling
 - Scroll-triggered animations throughout
 
 ### Animation Patterns
@@ -328,6 +329,6 @@ Bridges are classified into three quality tiers:
 1. **Hono as separate backend** — Not embedded in Next.js API routes. Allows independent scaling, deployment, and technology evolution.
 2. **Supabase from day 1** — Full schema with RLS, not deferred. Ensures auth and data patterns are established early.
 3. **CSS-native theming** — No JS runtime cost for theme switching. Tailwind 4's `@theme` directive resolves utilities to CSS custom properties.
-4. **Dark + neon aesthetic** — All themes are dark with neon accents. Glow effects use `--tc-glow` token for consistent intensity.
+4. **Dark + brutalist aesthetic** — All themes are dark with solid backgrounds. Brutalist Terminal style: zero border-radius, offset box shadows, monospace-first typography. No glow or neon effects.
 5. **Framer Motion over CSS animations** — Needed for scroll-triggered reveals, layout animations, and gesture-based interactions that CSS alone can't handle cleanly.
 6. **Document as we build** — This file is maintained alongside code, updated with each significant architectural change.

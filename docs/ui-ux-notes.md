@@ -225,26 +225,39 @@ Each theme defines six CSS custom properties. All five themes share the same pro
 
 **Dark mode note:** Tensorcraft is dark-mode only. There is no light mode. The dark aesthetic is a core brand element. All design decisions assume a dark background. The `color-scheme: dark` meta tag is set in the document head to inform the browser (affects scrollbar styling, form controls, etc.). System-level forced colors (Windows High Contrast Mode) are respected via `@media (forced-colors: active)` -- in this mode, all custom colors are replaced with system colors and borders become visible.
 
-### 5.3 Prototype Design System — Zensman DeFi Aesthetic
+### 5.3 Prototype Design System — Brutalist Terminal Aesthetic
 
-As of March 2026, all 12 prototype pages use a unified "Zensman DeFi" clean aesthetic instead of the heavy neon/glow style from earlier iterations. This is a clean, minimal, premium SaaS look.
+As of March 2026, all 15 prototype pages use a unified "Brutalist Terminal" aesthetic. This is a sharp, developer-tool-oriented design that feels like a terminal, not a marketing page.
 
 | Token | Value | Notes |
 |-------|-------|-------|
-| Background | `#080B16` | Replaces per-theme `--tc-bg` in prototypes |
-| Surface | `#0F1320` | Cards, panels, modals |
-| Borders | `rgba(255,255,255,0.06)` | Subtle, low-contrast dividers |
-| Headings text | `#FFFFFF` | Pure white for headings |
-| Muted text | `#8B92A5` | Secondary labels, captions |
-| Accent | `#00D4FF` | Subtle cyan; used sparingly for CTAs and highlights |
+| Background | `#1C1C1C` | Shell background for all pages |
+| Surface (Panel) | `#252525` | Cards, panels, modals |
+| Surface (Card) | `#313131` | Elevated surfaces, overlays |
+| Primary | `#6BAA8A` | Sage green; buttons, links, active states |
+| Text | `#C8C8C8` | Body text |
+| Muted text | `#8A8A8A` | Secondary labels, captions (WCAG AA compliant) |
+| Border | `#2A2A2A` | Subtle, low-contrast dividers |
+| Code BG | `#161616` | Code block backgrounds |
 
 **Key style rules:**
-- No heavy neon glow effects anywhere
-- Pill-shaped buttons: `border-radius: 999px`
-- Glass navigation bar: 72px height, `backdrop-filter: blur(20px)`
-- Overall feel: clean, minimal, premium SaaS — not cyberpunk
 
-> **Note:** The per-theme color system in Section 5.2 still applies within the app (lesson viewer, progress diagram, etc.). The Zensman aesthetic governs the marketing shell, auth, onboarding, pricing, and landing pages.
+- Zero border-radius everywhere (sharp edges)
+- Offset box shadows: `4px 4px 0 rgba(107,170,138,0.25)`
+- JetBrains Mono as primary font (Inter for body paragraphs only)
+- Solid navigation bar: 60px height, no blur or glassmorphism
+- `// COMMENT` style monospace uppercase section labels
+- Buttons: square, offset shadow on hover, `translate(-2px,-2px)` hover state
+- No glow effects, no neon lines, no animated gradients
+
+**ThemePalette interface** (in `packages/themes/src/types.ts`):
+
+- `bg`, `primary`, `accent`, `surface`, `surfaceOverlay`, `text`, `muted`, `border`, `codeBg`
+- Removed: `glow`, `neonLine` (no longer part of the design system)
+
+**WCAG Note:** Prototype muted color `#5A5A5A` on `#1C1C1C` = 2.8:1 contrast (fails AA). Use `#8A8A8A` (5.1:1) for body text; reserve `#5A5A5A` for decorative/large text only.
+
+> **Note:** The per-theme color system in Section 5.2 still applies within the lesson viewer and progress diagram. The Brutalist Terminal aesthetic governs the shell: marketing, auth, onboarding, pricing, landing, nav, and footer.
 
 ---
 

@@ -86,29 +86,16 @@ export function CheckoutButton({
         type="button"
         onClick={handleCheckout}
         disabled={loading}
-        className={`flex items-center justify-center w-full h-[52px] rounded-full text-[15px] font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
-        style={
+        className={`flex items-center justify-center w-full h-[52px] text-[15px] font-medium font-mono transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
           recommended
-            ? {
-                border: "1px solid rgba(0,212,255,0.3)",
-                background: "rgba(0,212,255,0.08)",
-                color: "#FFFFFF",
-              }
-            : {
-                border: "1px solid rgba(255,255,255,0.12)",
-                background: "transparent",
-                color: "#FFFFFF",
-              }
-        }
+            ? "bg-primary text-[#1C1C1C] border border-primary hover:shadow-[4px_4px_0px_0px_#C8C8C8] hover:-translate-x-0.5 hover:-translate-y-0.5"
+            : "bg-transparent text-primary border border-primary hover:bg-primary hover:text-[#1C1C1C]"
+        } ${className}`}
       >
         {loading ? "Redirecting..." : children}
       </button>
       {error && (
-        <p
-          className="mt-2 text-xs text-center"
-          style={{ color: "#EF4444" }}
-          role="alert"
-        >
+        <p className="mt-2 text-xs text-center text-red-500" role="alert">
           {error}
         </p>
       )}

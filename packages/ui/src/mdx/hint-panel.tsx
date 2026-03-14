@@ -12,9 +12,17 @@ interface HintPanelProps {
 }
 
 const levelConfig = {
-  nudge: { label: "Nudge", color: "#00D4FF", icon: "💡" },
-  guidance: { label: "Guidance", color: "#7B68EE", icon: "🧭" },
-  solution: { label: "Solution", color: "#F0C75E", icon: "✅" },
+  nudge: { label: "Nudge", color: "var(--tc-tier-identity)", icon: "💡" },
+  guidance: {
+    label: "Guidance",
+    color: "var(--tc-tier-structural)",
+    icon: "🧭",
+  },
+  solution: {
+    label: "Solution",
+    color: "var(--tc-tier-intuition)",
+    icon: "✅",
+  },
 };
 
 export function HintPanel({ hints }: HintPanelProps) {
@@ -23,17 +31,8 @@ export function HintPanel({ hints }: HintPanelProps) {
   if (!hints || hints.length === 0) return null;
 
   return (
-    <div
-      className="rounded-[14px] p-5 my-6"
-      style={{
-        background: "var(--tc-surface, #0F1320)",
-        border: "1px solid rgba(255,255,255,0.06)",
-      }}
-    >
-      <h4
-        className="text-xs font-semibold uppercase tracking-widest mb-4"
-        style={{ color: "var(--tc-muted, #8B92A5)" }}
-      >
+    <div className="p-5 my-6 brutalist-shadow bg-surface-raised border border-border">
+      <h4 className="text-xs font-mono font-semibold uppercase tracking-widest mb-4 text-text-muted">
         Need a hint?
       </h4>
 
@@ -47,31 +46,26 @@ export function HintPanel({ hints }: HintPanelProps) {
             <div key={hint.level}>
               {isRevealed ? (
                 <div
-                  className="rounded-lg p-3"
+                  className="p-3 bg-surface"
                   style={{
                     borderLeft: `3px solid ${config.color}`,
-                    background: "rgba(255,255,255,0.02)",
                   }}
                 >
                   <span
-                    className="text-[11px] font-semibold uppercase tracking-widest block mb-1"
+                    className="text-[11px] font-mono font-semibold uppercase tracking-widest block mb-1"
                     style={{ color: config.color }}
                   >
                     {config.icon} {config.label}
                   </span>
-                  <p
-                    className="text-sm leading-relaxed"
-                    style={{ color: "rgba(255,255,255,0.8)" }}
-                  >
+                  <p className="text-sm leading-relaxed text-text-primary/80">
                     {hint.content}
                   </p>
                 </div>
               ) : isNext ? (
                 <button
                   onClick={() => setRevealedLevel(index)}
-                  className="w-full text-left rounded-lg p-3 transition-colors hover:bg-white/5"
+                  className="w-full text-left p-3 transition-colors hover:bg-surface border border-dashed border-border brutalist-hover"
                   style={{
-                    border: `1px dashed rgba(255,255,255,0.1)`,
                     color: config.color,
                   }}
                 >
@@ -80,13 +74,7 @@ export function HintPanel({ hints }: HintPanelProps) {
                   </span>
                 </button>
               ) : (
-                <div
-                  className="rounded-lg p-3 opacity-40"
-                  style={{
-                    border: "1px dashed rgba(255,255,255,0.06)",
-                    color: "var(--tc-muted, #8B92A5)",
-                  }}
-                >
+                <div className="p-3 opacity-40 border border-dashed border-border text-text-muted">
                   <span className="text-xs">
                     {config.icon} {config.label}
                   </span>

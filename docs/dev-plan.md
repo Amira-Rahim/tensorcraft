@@ -845,6 +845,78 @@ All blocking decisions have been resolved. This table documents the final choice
 
 ---
 
+## Phase 11: Brutalist Terminal Redesign
+
+Full design system overhaul from "Zensman DeFi Neon" to "Brutalist Terminal" aesthetic. Driven by 15 new JSX prototypes.
+
+### 11a. Design System Foundation
+
+- [~] Update `ThemePalette` interface in `packages/themes/src/types.ts`: remove `glow`/`neonLine`, add `surfaceOverlay`/`border`/`codeBg`
+- [ ] Update `packages/themes/src/css/themes.css` with new brutalist shell tokens and remove `--tc-glow`/`--tc-neon-line`
+- [ ] Update all 5 theme manifest files (deep-orbit, neon-protocol, signal-ward, nova-canvas, terra-grid) to match new `ThemePalette` interface
+- [ ] Update `packages/config/tailwind/base.css` `@theme` block: remove glow/neon-line tokens, set all radius to `0`, add code-bg token
+- [ ] Replace neon utilities in `apps/web/app/globals.css` with brutalist utilities (`.brutalist-shadow`, `.brutalist-hover`, `.comment-label`)
+- [ ] Update `packages/themes/src/theme-properties.test.ts` for new palette shape
+
+### 11b. New Shared Components
+
+- [ ] Build `ParticleField` canvas component (`packages/ui/src/particle-field.tsx`)
+- [ ] Build `BridgeTicker` scrolling ticker (`packages/ui/src/bridge-ticker.tsx`)
+- [ ] Build `ARIANarrator` dual robot companion system (`packages/ui/src/narrator/`)
+- [ ] Build visualization components: `LossLandscape`, `SkillRadar`, `ActivityHeatmap`, `LossCurve` (`packages/ui/src/visualizations/`)
+
+### 11c. Shell Component Updates
+
+- [ ] Update Nav: solid bg, square edges, `T_` logo badge, JetBrains Mono, 60px height
+- [ ] Update Footer: brutalist typography, remove neon effects
+- [ ] Update AuthForm: square inputs/buttons, zero border-radius
+- [ ] Update CookieConsent, UserMenu: brutalist card styling
+- [ ] Update layout.tsx: body class, font priority
+
+### 11d. Page Component Updates (15 pages)
+
+- [ ] Landing page: ParticleField bg, BridgeTicker, bridge table with tiers, 5C loop section, brutalist buttons
+- [ ] Auth pages: split layout, LossLandscape left, form right, "You already think like an ML engineer"
+- [ ] Dashboard: module sidebar, LossCurve, SkillRadar, ActivityHeatmap, activity log
+- [ ] LessonViewer: 5C nav indicators, timer, side-by-side bridge panel, checkpoint quiz w/ confetti, ARIANarrator
+- [ ] Exercise: line numbers, test results panel, bridge hint, console output
+- [ ] BridgeExplorer: category filter (Identity/Structural/Intuition), search, expandable cards
+- [ ] Pricing: 4-tier grid, comparison table, "Simple, Fair Pricing"
+- [ ] ThemeSelection: Featured Deep Orbit hero, 2x2 coming-soon grid, waitlist modal
+- [ ] Onboarding: expand to 5 steps (Welcome, Background, Goal, Theme, Ready)
+- [ ] ModuleOverview: expandable modules, lesson lists, node indicators, formulas
+- [ ] Settings: 5-tab sidebar, toggle components, theme previews
+- [ ] Paywall (NEW): free vs paid comparison, social proof, "Continue Your ML Journey"
+- [ ] Capstone (NEW): timeline, certificate card, stats, next theme teaser
+- [ ] PurchaseConfirmation: access card, receipt, "You're In"
+
+### 11e. Backend & Database
+
+- [ ] Migration: add `experience_level`, `learning_goal` to `profiles` (expanded onboarding)
+- [ ] Migration: new `certificates` table
+- [ ] API: certificate endpoints (`POST /certificates`, `GET /certificates/:id`)
+- [ ] API: daily activity aggregation for heatmap
+- [ ] API: onboarding update (accept `experience_level`, `learning_goal`)
+
+### 11f. Test Updates
+
+- [ ] Update theme-properties test for new palette shape (9 keys, no glow/neonLine)
+- [ ] Update snapshot tests for all redesigned components
+- [ ] Update E2E tests for new page structure
+- [ ] Add tests for new components (ParticleField, BridgeTicker, Narrator, visualizations)
+
+### 11g. Documentation Updates
+
+- [x] Update `docs/architecture.md` — brutalist aesthetic, palette keys, utilities
+- [x] Update `docs/ui-ux-notes.md` — replace Zensman DeFi section with Brutalist Terminal
+- [x] Update `docs/prd.md` — design system section with new tokens and typography
+- [~] Update `docs/dev-plan.md` — add Phase 11 for brutalist redesign
+- [ ] Update `docs/tech-spec.md` — theme manifest spec, component architecture
+- [ ] Update `docs/product-plan.md` — UI/UX section, narrator characters
+- [ ] Update `docs/marketing-plan.md` — brand guidelines for brutalist aesthetic
+
+---
+
 ## Appendix A: Placeholder Links Reference
 
 All `href="#"` links in prototypes that need real routes:

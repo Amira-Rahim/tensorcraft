@@ -9,14 +9,15 @@ export const signalWard: ThemeManifest = {
     "Meridian General Hospital's diagnostic AI crashed during a patient surge. Build Diagnostic One — a clinical text intelligence assistant.",
   status: "coming-soon",
   palette: {
-    bg: "#0A1628",
-    primary: "#2ECC71",
-    accent: "#5B8DEF",
-    surface: "#132238",
-    text: "#F0F4F8",
-    muted: "#6B7280",
-    glow: "#2ECC71",
-    neonLine: "#5B8DEF",
+    bg: "#1C1C1C",
+    primary: "#5BAA70",
+    accent: "#7096B0",
+    surface: "#252525",
+    text: "#C8C8C8",
+    muted: "#5A5A5A",
+    surfaceOverlay: "#313131",
+    border: "#2A2A2A",
+    codeBg: "#161616",
   },
   terminology: {
     lesson: "Procedure",
@@ -62,8 +63,5 @@ export const signalWard: ThemeManifest = {
   },
   specialization: "NLP & Text Intelligence",
   modelBuilt: "Diagnostic One — clinical text assistant",
-  careerPaths: [
-    "NLP Engineer ($114K–$237K)",
-    "LLM/AI Engineer ($174K–$350K)",
-  ],
+  careerPaths: ["NLP Engineer ($114K–$237K)", "LLM/AI Engineer ($174K–$350K)"],
 };

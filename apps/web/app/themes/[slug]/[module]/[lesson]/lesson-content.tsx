@@ -82,9 +82,7 @@ export function LessonContent({ lesson, exercises = [] }: LessonContentProps) {
     } catch {
       return function Fallback() {
         return (
-          <p style={{ color: "var(--tc-muted, #8B92A5)" }}>
-            Error rendering lesson content.
-          </p>
+          <p className="text-text-muted">Error rendering lesson content.</p>
         );
       };
     }

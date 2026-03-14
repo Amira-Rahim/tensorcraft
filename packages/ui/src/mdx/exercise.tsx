@@ -205,7 +205,7 @@ function parseAndRunTests(userCode: string, testCode: string): TestResult[] {
         softmax: function(x) { var d=Array.from(x.dataSync()); var max=Math.max.apply(null,d); var exp=d.map(function(v){return Math.exp(v-max);}); var sum=exp.reduce(function(a,b){return a+b;},0); return tf.tensor(exp.map(function(v){return v/sum;}), x.shape); },
         scalar: function(v) { return tf.tensor([v]); },
         zeros: function(shape) { return tf.tensor(new Array(shape.reduce(function(a,b){return a*b;},1)).fill(0), shape); },
-        ones: function(shape) { return tf.tensor(new Array(shape.reduce(function(a,b){return a*b;},1)).fill(1), shape); },
+        ones: function(shape) { return tf.tensor(new Array(shape.reduce(function(a,b){return a+b;},1)).fill(1), shape); },
         sequential: function() {
           var layers = [];
           return {
@@ -255,42 +255,39 @@ function TestResultsPanel({ results }: { results: TestResult[] }) {
 
   return (
     <div
-      className="rounded-lg p-4 mt-3"
-      style={{
-        background: allPassed
-          ? "rgba(74, 222, 128, 0.08)"
+      className={`p-4 mt-3 brutalist-shadow border ${
+        allPassed
+          ? "bg-green-400/8 border-green-400/20"
           : partial
-            ? "rgba(251, 191, 36, 0.06)"
-            : "rgba(248, 113, 113, 0.08)",
-        border: `1px solid ${allPassed ? "rgba(74, 222, 128, 0.2)" : partial ? "rgba(251, 191, 36, 0.15)" : "rgba(248, 113, 113, 0.2)"}`,
-      }}
+            ? "bg-yellow-400/6 border-yellow-400/15"
+            : "bg-red-400/8 border-red-400/20"
+      }`}
     >
       {/* Partial credit progress bar */}
       {total > 1 && (
-        <div
-          className="h-1 rounded-full overflow-hidden mb-3"
-          style={{ background: "rgba(255,255,255,0.06)" }}
-        >
+        <div className="h-1 overflow-hidden mb-3 bg-border">
           <div
-            className="h-full rounded-full transition-all"
-            style={{
-              width: `${score}%`,
-              background: allPassed
-                ? "#4ADE80"
+            className={`h-full transition-all ${
+              allPassed
+                ? "bg-green-400"
                 : partial
-                  ? "#FBBF24"
-                  : "#F87171",
-            }}
+                  ? "bg-yellow-400"
+                  : "bg-red-400"
+            }`}
+            style={{ width: `${score}%` }}
           />
         </div>
       )}
 
       <div className="flex items-center justify-between mb-3">
         <span
-          className="text-xs font-semibold uppercase tracking-widest"
-          style={{
-            color: allPassed ? "#4ADE80" : partial ? "#FBBF24" : "#F87171",
-          }}
+          className={`text-xs font-mono font-semibold uppercase tracking-widest ${
+            allPassed
+              ? "text-green-400"
+              : partial
+                ? "text-yellow-400"
+                : "text-red-400"
+          }`}
         >
           {allPassed
             ? "All tests passed!"
@@ -299,15 +296,13 @@ function TestResultsPanel({ results }: { results: TestResult[] }) {
               : `${passed} of ${total} tests passed`}
         </span>
         <span
-          className="text-xs font-mono px-2 py-0.5 rounded"
-          style={{
-            background: allPassed
-              ? "rgba(74, 222, 128, 0.15)"
+          className={`text-xs font-mono px-2 py-0.5 ${
+            allPassed
+              ? "bg-green-400/15 text-green-400"
               : partial
-                ? "rgba(251, 191, 36, 0.12)"
-                : "rgba(248, 113, 113, 0.15)",
-            color: allPassed ? "#4ADE80" : partial ? "#FBBF24" : "#F87171",
-          }}
+                ? "bg-yellow-400/12 text-yellow-400"
+                : "bg-red-400/15 text-red-400"
+          }`}
         >
           {passed}/{total}
         </span>
@@ -321,19 +316,16 @@ function TestResultsPanel({ results }: { results: TestResult[] }) {
             </span>
             <div className="flex-1 min-w-0">
               <span
-                style={{
-                  color: result.passed
-                    ? "rgba(255,255,255,0.7)"
-                    : "rgba(255,255,255,0.9)",
-                }}
+                className={
+                  result.passed
+                    ? "text-text-primary/70"
+                    : "text-text-primary/90"
+                }
               >
                 {result.name}
               </span>
               {result.error && (
-                <p
-                  className="text-xs mt-0.5 font-mono"
-                  style={{ color: "#F87171" }}
-                >
+                <p className="text-xs mt-0.5 font-mono text-red-400">
                   {result.error}
                 </p>
               )}
@@ -412,12 +404,7 @@ function ExerciseControls({
         type="button"
         onClick={handleRun}
         disabled={running}
-        className="px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider transition-all"
-        style={{
-          background: "var(--tc-accent, #00D4FF)",
-          color: "#080B16",
-          opacity: running ? 0.6 : 1,
-        }}
+        className="px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider transition-all brutalist-hover bg-primary text-surface border-2 border-primary hover:bg-transparent hover:text-primary disabled:opacity-60"
       >
         {running ? "Running..." : "Run Tests"}
       </button>
@@ -425,11 +412,7 @@ function ExerciseControls({
       <button
         type="button"
         onClick={handleReset}
-        className="px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider transition-colors"
-        style={{
-          background: "rgba(255,255,255,0.06)",
-          color: "rgba(255,255,255,0.6)",
-        }}
+        className="px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider transition-colors brutalist-hover bg-surface-overlay text-text-muted"
       >
         Reset
       </button>
@@ -438,12 +421,7 @@ function ExerciseControls({
         <button
           type="button"
           onClick={handleShowSolution}
-          className="px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider transition-colors ml-auto"
-          style={{
-            background: "rgba(240, 199, 94, 0.1)",
-            color: "#F0C75E",
-            border: "1px solid rgba(240, 199, 94, 0.2)",
-          }}
+          className="px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider transition-colors ml-auto brutalist-hover bg-yellow-400/10 text-yellow-400 border border-yellow-400/20"
         >
           Show Solution
         </button>
@@ -466,31 +444,16 @@ export function Exercise({ slug }: ExerciseProps) {
   // Fallback if exercise data not provided via context
   if (!exercise) {
     return (
-      <div
-        className="rounded-[14px] p-6 my-6"
-        style={{
-          background: "var(--tc-surface, #0F1320)",
-          border: "1px solid rgba(255,255,255,0.06)",
-        }}
-      >
+      <div className="p-6 my-6 brutalist-shadow bg-surface-raised border border-border">
         <div className="flex items-center gap-2 mb-3">
           <span className="text-base">⚡</span>
-          <h4
-            className="text-xs font-semibold uppercase tracking-widest"
-            style={{ color: "var(--tc-accent, #00D4FF)" }}
-          >
+          <h4 className="text-xs font-mono font-semibold uppercase tracking-widest text-primary">
             Exercise
           </h4>
         </div>
-        <p className="text-sm" style={{ color: "var(--tc-muted, #8B92A5)" }}>
+        <p className="text-sm text-text-muted">
           Exercise{" "}
-          <code
-            className="text-xs px-1.5 py-0.5 rounded"
-            style={{
-              background: "rgba(255,255,255,0.06)",
-              color: "var(--tc-accent, #00D4FF)",
-            }}
-          >
+          <code className="text-xs px-1.5 py-0.5 bg-surface-overlay text-primary">
             {slug}
           </code>{" "}
           not found.
@@ -504,28 +467,21 @@ export function Exercise({ slug }: ExerciseProps) {
 
   return (
     <div
-      className="rounded-[14px] p-6 my-6"
-      style={{
-        background: "var(--tc-surface, #0F1320)",
-        border: allPassed
-          ? "1px solid rgba(74, 222, 128, 0.3)"
-          : "1px solid rgba(255,255,255,0.06)",
-      }}
+      className={`p-6 my-6 brutalist-shadow bg-surface-raised border ${
+        allPassed ? "border-green-400/30" : "border-border"
+      }`}
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <span className="text-base">⚡</span>
-          <h4
-            className="text-xs font-semibold uppercase tracking-widest"
-            style={{ color: "var(--tc-accent, #00D4FF)" }}
-          >
+          <h4 className="text-xs font-mono font-semibold uppercase tracking-widest text-primary">
             Exercise
           </h4>
         </div>
         <div className="flex items-center gap-3">
           <span
-            className="text-[11px] font-medium px-2 py-0.5 rounded-full"
+            className="text-[11px] font-mono font-medium px-2 py-0.5"
             style={{
               background: `${diffConfig.color}15`,
               color: diffConfig.color,
@@ -533,52 +489,40 @@ export function Exercise({ slug }: ExerciseProps) {
           >
             {diffConfig.label}
           </span>
-          <span
-            className="text-[11px]"
-            style={{ color: "var(--tc-muted, #8B92A5)" }}
-          >
+          <span className="text-[11px] text-text-muted">
             ~{exercise.estimatedMinutes} min
           </span>
         </div>
       </div>
 
       {/* Title & Instructions */}
-      <h3
-        className="text-lg font-semibold mb-2"
-        style={{ color: "rgba(255,255,255,0.95)" }}
-      >
+      <h3 className="text-lg font-semibold mb-2 text-text-primary">
         {exercise.title}
       </h3>
-      <p
-        className="text-sm leading-relaxed mb-4"
-        style={{ color: "rgba(255,255,255,0.65)" }}
-      >
+      <p className="text-sm leading-relaxed mb-4 text-text-primary/65">
         {exercise.instructions}
       </p>
 
       {/* Sandpack Editor */}
-      <div
-        className="rounded-lg overflow-hidden"
-        style={{ border: "1px solid rgba(255,255,255,0.06)" }}
-      >
+      <div className="overflow-hidden border border-border">
         <SandpackProvider
           template="vanilla"
           theme={{
             colors: {
-              surface1: "#0F1320",
-              surface2: "#080B16",
-              surface3: "#1a1f35",
-              clickable: "#8B92A5",
-              base: "#e0e0e0",
-              disabled: "#4a4a5a",
-              hover: "#00D4FF",
-              accent: "#00D4FF",
+              surface1: "#252525",
+              surface2: "#1C1C1C",
+              surface3: "#313131",
+              clickable: "#5A5A5A",
+              base: "#C8C8C8",
+              disabled: "#3a3a3a",
+              hover: "#6BAA8A",
+              accent: "#6BAA8A",
               error: "#F87171",
               errorSurface: "#2d1515",
             },
             syntax: {
-              plain: "#e0e0e0",
-              comment: { color: "#6A7380", fontStyle: "italic" },
+              plain: "#C8C8C8",
+              comment: { color: "#5A5A5A", fontStyle: "italic" },
               keyword: "#c792ea",
               tag: "#f07178",
               punctuation: "#89ddff",
@@ -608,13 +552,7 @@ export function Exercise({ slug }: ExerciseProps) {
           />
 
           {/* Controls inside Sandpack context */}
-          <div
-            className="px-4 py-3"
-            style={{
-              background: "var(--tc-surface, #0F1320)",
-              borderTop: "1px solid rgba(255,255,255,0.06)",
-            }}
-          >
+          <div className="px-4 py-3 bg-surface-raised border-t border-border">
             <ExerciseControls
               exercise={exercise}
               onResults={setResults}
@@ -630,7 +568,7 @@ export function Exercise({ slug }: ExerciseProps) {
 
       {/* Solution revealed indicator */}
       {showSolution && (
-        <p className="text-xs mt-3 italic" style={{ color: "#F0C75E" }}>
+        <p className="text-xs mt-3 italic text-yellow-400">
           Solution revealed — try modifying it to deepen your understanding.
         </p>
       )}

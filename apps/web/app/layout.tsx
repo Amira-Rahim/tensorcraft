@@ -117,10 +117,10 @@ export default function RootLayout({
       <body className="min-h-screen flex flex-col">
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-full focus:text-sm focus:font-medium"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:text-sm focus:font-mono focus:font-medium"
           style={{
-            background: "var(--tc-accent, #00D4FF)",
-            color: "#080B16",
+            background: "var(--tc-primary, #6BAA8A)",
+            color: "#1C1C1C",
           }}
         >
           Skip to content

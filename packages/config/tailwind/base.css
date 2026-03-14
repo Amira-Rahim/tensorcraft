@@ -15,6 +15,7 @@
   --color-surface: var(--tc-bg);
   --color-surface-raised: var(--tc-surface);
   --color-surface-overlay: var(--tc-surface-overlay);
+  --color-code-bg: var(--tc-code-bg);
 
   /* Text */
   --color-text-primary: var(--tc-text);
@@ -23,10 +24,6 @@
   /* Theme colors */
   --color-primary: var(--tc-primary);
   --color-accent: var(--tc-accent);
-
-  /* Neon effects */
-  --color-glow: var(--tc-glow);
-  --color-neon-line: var(--tc-neon-line);
 
   /* Semantic */
   --color-success: #10b981;
@@ -41,9 +38,9 @@
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
 
-  /* Border radius */
-  --radius-sm: 0.25rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
+  /* Border radius — brutalist: no rounding */
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
 }

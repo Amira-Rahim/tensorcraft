@@ -547,16 +547,16 @@ The **Progress Diagram** is a central visual element showing the learner's journ
 
 #### Active vs. Inactive States
 
-- **Completed modules**: Fully lit, animated, with particle effects. Color-saturated using the theme's primary palette.
-- **Current module**: Pulsing glow, slightly enlarged, with a beacon/marker animation. Draws the eye.
+- **Completed modules**: Fully lit, with particle effects. Color-saturated using the theme's primary palette. Brutalist offset shadow on node.
+- **Current module**: Pulsing border, slightly enlarged, with a beacon/marker animation. Draws the eye.
 - **Upcoming modules (unlocked)**: Dimmed but visible. Silhouette/outline of the environment. Subtle idle animation (e.g., flickering light).
 - **Locked modules**: Greyed out, no animation. Visible but clearly inaccessible. Silhouette only.
 
 #### Animation Timing
 
 - Transition between module states: 600ms ease-out
-- Idle animations: 2–4 second loops, subtle (breathing glow, drifting particles)
-- Completion celebration: 1.5 second burst animation (particles, light bloom), then settles into completed state
+- Idle animations: 2–4 second loops, subtle (drifting particles)
+- Completion celebration: 1.5 second burst animation (particles, confetti), then settles into completed state
 - Page load: Modules animate in sequentially from first to current, 150ms stagger
 
 #### Component Click Behavior
@@ -605,7 +605,7 @@ Each module contains **5 lessons**, following a consistent structure:
 Coming Soon cards are visually distinct from purchasable cards:
 
 - **Purchasable cards**: Full color, interactive hover effects, "Start Learning" CTA button, price displayed prominently.
-- **Coming Soon cards**: Desaturated color palette (40% saturation of theme colors), subtle frosted glass overlay, "Coming Soon" badge in upper right, no price displayed.
+- **Coming Soon cards**: Desaturated color palette (40% saturation of theme colors), muted border overlay, "Coming Soon" badge in upper right, no price displayed.
 
 #### Click Behavior
 

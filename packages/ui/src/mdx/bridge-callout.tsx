@@ -11,9 +11,9 @@ interface BridgeCalloutProps {
 }
 
 const tierColors: Record<Bridge["tier"], string> = {
-  identity: "#00D4FF",
-  structural: "#7B68EE",
-  intuition: "#F0C75E",
+  identity: "var(--tc-tier-identity)",
+  structural: "var(--tc-tier-structural)",
+  intuition: "var(--tc-tier-intuition)",
 };
 
 const tierLabels: Record<Bridge["tier"], string> = {
@@ -30,32 +30,16 @@ export function BridgeCallout({ bridge }: BridgeCalloutProps) {
   return (
     <div className="grid grid-cols-[1fr_48px_1fr] items-stretch my-8">
       {/* Frontend side */}
-      <div
-        className="rounded-[14px] p-5"
-        style={{
-          background: "var(--tc-surface, #0F1320)",
-          border: "1px solid rgba(255,255,255,0.06)",
-        }}
-      >
-        <h4
-          className="text-[11px] uppercase tracking-widest mb-3"
-          style={{ color: "var(--tc-muted, #8B92A5)" }}
-        >
+      <div className="p-5 brutalist-shadow bg-surface-raised border border-border">
+        <h4 className="text-[11px] font-mono uppercase tracking-widest mb-3 text-text-muted">
           Frontend
         </h4>
-        <h5
-          className="text-base font-semibold mb-2"
-          style={{ color: "var(--tc-text, #fff)" }}
-        >
+        <h5 className="text-base font-semibold mb-2 text-text-primary">
           {bridge.feTitle}
         </h5>
         <code
-          className="block rounded-lg p-3 text-[13px] leading-relaxed"
-          style={{
-            background: "var(--tc-bg, #0D1117)",
-            color: "var(--tc-accent, #00D4FF)",
-            border: "1px solid rgba(255,255,255,0.04)",
-          }}
+          className="block p-3 text-[13px] leading-relaxed bg-surface border border-border"
+          style={{ color }}
         >
           {bridge.feCode}
         </code>
@@ -63,14 +47,10 @@ export function BridgeCallout({ bridge }: BridgeCalloutProps) {
 
       {/* Connector */}
       <div className="flex items-center justify-center relative">
+        <div className="absolute w-px h-[60%] bg-border" />
         <div
-          className="absolute w-px h-[60%]"
-          style={{ background: "rgba(255,255,255,0.06)" }}
-        />
-        <div
-          className="relative z-10 w-7 h-7 rounded-full flex items-center justify-center text-xs"
+          className="relative z-10 w-7 h-7 flex items-center justify-center text-xs bg-surface-raised"
           style={{
-            background: "var(--tc-surface, #0F1320)",
             border: `1px solid ${color}`,
             color,
           }}
@@ -80,32 +60,16 @@ export function BridgeCallout({ bridge }: BridgeCalloutProps) {
       </div>
 
       {/* ML side */}
-      <div
-        className="rounded-[14px] p-5"
-        style={{
-          background: "var(--tc-surface, #0F1320)",
-          border: "1px solid rgba(255,255,255,0.06)",
-        }}
-      >
-        <h4
-          className="text-[11px] uppercase tracking-widest mb-3"
-          style={{ color: "var(--tc-muted, #8B92A5)" }}
-        >
+      <div className="p-5 brutalist-shadow bg-surface-raised border border-border">
+        <h4 className="text-[11px] font-mono uppercase tracking-widest mb-3 text-text-muted">
           Machine Learning
         </h4>
-        <h5
-          className="text-base font-semibold mb-2"
-          style={{ color: "var(--tc-text, #fff)" }}
-        >
+        <h5 className="text-base font-semibold mb-2 text-text-primary">
           {bridge.mlTitle}
         </h5>
         <code
-          className="block rounded-lg p-3 text-[13px] leading-relaxed"
-          style={{
-            background: "var(--tc-bg, #0D1117)",
-            color,
-            border: "1px solid rgba(255,255,255,0.04)",
-          }}
+          className="block p-3 text-[13px] leading-relaxed bg-surface border border-border"
+          style={{ color }}
         >
           {bridge.mlCode}
         </code>
@@ -114,7 +78,7 @@ export function BridgeCallout({ bridge }: BridgeCalloutProps) {
       {/* Tier label */}
       <div className="col-span-3 text-center mt-2">
         <span
-          className="text-[11px] uppercase tracking-widest"
+          className="text-[11px] font-mono uppercase tracking-widest"
           style={{ color }}
         >
           {tierLabels[bridge.tier]}

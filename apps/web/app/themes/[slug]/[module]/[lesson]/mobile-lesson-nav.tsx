@@ -38,10 +38,10 @@ export function MobileLessonNav({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="fixed bottom-6 right-6 z-40 lg:hidden w-12 h-12 rounded-full flex items-center justify-center shadow-lg"
+        className="fixed bottom-6 right-6 z-40 lg:hidden w-12 h-12 flex items-center justify-center brutalist-shadow"
         style={{
           background: accentColor,
-          color: "#080B16",
+          color: "var(--tc-bg)",
         }}
         aria-label="Open lesson navigation"
       >
@@ -63,32 +63,23 @@ export function MobileLessonNav({
       {/* Overlay */}
       {open && (
         <div
-          className="fixed inset-0 z-50 lg:hidden"
+          className="fixed inset-0 z-50 lg:hidden bg-black/60"
           onClick={handleClose}
-          style={{ background: "rgba(0,0,0,0.6)" }}
         >
           {/* Drawer */}
           <nav
-            className="absolute right-0 top-0 h-full w-72 overflow-y-auto p-5"
-            style={{
-              background: "var(--tc-surface, #0F1320)",
-              borderLeft: "1px solid rgba(255,255,255,0.06)",
-            }}
+            className="absolute right-0 top-0 h-full w-72 overflow-y-auto p-5 bg-surface-raised border-l border-border"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close button */}
             <div className="flex items-center justify-between mb-6">
-              <span
-                className="text-xs font-semibold uppercase tracking-widest"
-                style={{ color: mutedColor }}
-              >
+              <span className="text-xs font-semibold font-mono uppercase tracking-widest text-text-muted">
                 Lessons
               </span>
               <button
                 type="button"
                 onClick={handleClose}
-                className="w-8 h-8 flex items-center justify-center rounded-lg"
-                style={{ color: mutedColor }}
+                className="w-8 h-8 flex items-center justify-center text-text-muted hover:text-text-primary transition-colors"
                 aria-label="Close navigation"
               >
                 <svg
@@ -109,8 +100,7 @@ export function MobileLessonNav({
             {/* Back link */}
             <Link
               href={backHref}
-              className="text-xs mb-4 inline-flex items-center gap-1 block"
-              style={{ color: mutedColor }}
+              className="text-xs mb-4 inline-flex items-center gap-1 text-text-muted hover:text-text-primary transition-colors"
               onClick={handleClose}
             >
               ← Back to module
@@ -124,22 +114,18 @@ export function MobileLessonNav({
                   <Link
                     key={l.slug}
                     href={`/themes/${themeSlug}/${moduleSlug}/${l.slug}`}
-                    className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm transition-colors"
-                    style={{
-                      background: isActive
-                        ? "rgba(255,255,255,0.06)"
-                        : "transparent",
-                      color: isActive ? "#fff" : mutedColor,
-                    }}
+                    className={`flex items-center gap-2.5 px-3 py-2.5 text-sm transition-colors ${
+                      isActive
+                        ? "bg-primary/10 text-text-primary"
+                        : "text-text-muted hover:text-text-primary"
+                    }`}
                     onClick={handleClose}
                   >
                     <span
-                      className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-medium flex-shrink-0"
+                      className="w-5 h-5 flex items-center justify-center text-[10px] font-medium shrink-0"
                       style={{
-                        background: isActive
-                          ? accentColor
-                          : "rgba(255,255,255,0.06)",
-                        color: isActive ? "#000" : mutedColor,
+                        background: isActive ? accentColor : "var(--tc-border)",
+                        color: isActive ? "var(--tc-bg)" : mutedColor,
                       }}
                     >
                       {l.order}

@@ -76,17 +76,8 @@ export function SettingsForm({
   return (
     <div className="space-y-8">
       {/* Profile Section */}
-      <section
-        className="rounded-2xl p-6"
-        style={{
-          background: "var(--tc-surface, #0F1320)",
-          border: "1px solid rgba(255,255,255,0.06)",
-        }}
-      >
-        <h2
-          className="text-sm font-semibold uppercase tracking-widest mb-5"
-          style={{ color: "var(--tc-muted, #8B92A5)" }}
-        >
+      <section className="p-6 bg-surface-raised border border-border">
+        <h2 className="text-sm font-semibold font-mono uppercase tracking-widest mb-5 text-text-muted">
           Profile
         </h2>
 
@@ -94,8 +85,7 @@ export function SettingsForm({
           <div>
             <label
               htmlFor="settings-display-name"
-              className="block text-xs mb-1.5"
-              style={{ color: "var(--tc-muted, #8B92A5)" }}
+              className="block text-xs font-mono mb-1.5 text-text-muted"
             >
               Display Name
             </label>
@@ -104,19 +94,14 @@ export function SettingsForm({
               type="text"
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
-              className="w-full h-11 px-4 rounded-lg border text-sm text-white outline-none transition-colors focus:border-white/20"
-              style={{
-                background: "rgba(255,255,255,0.03)",
-                borderColor: "rgba(255,255,255,0.08)",
-              }}
+              className="w-full h-11 px-4 border border-border bg-surface text-sm text-text-primary outline-none transition-colors focus:border-primary/40"
             />
           </div>
 
           <div>
             <label
               htmlFor="settings-email"
-              className="block text-xs mb-1.5"
-              style={{ color: "var(--tc-muted, #8B92A5)" }}
+              className="block text-xs font-mono mb-1.5 text-text-muted"
             >
               Email
             </label>
@@ -125,20 +110,14 @@ export function SettingsForm({
               type="email"
               value={email}
               readOnly
-              className="w-full h-11 px-4 rounded-lg border text-sm outline-none cursor-not-allowed"
-              style={{
-                background: "rgba(255,255,255,0.02)",
-                borderColor: "rgba(255,255,255,0.05)",
-                color: "var(--tc-muted, #8B92A5)",
-              }}
+              className="w-full h-11 px-4 border border-border bg-surface text-sm text-text-muted outline-none cursor-not-allowed opacity-60"
             />
           </div>
 
           <div>
             <label
               htmlFor="settings-avatar-url"
-              className="block text-xs mb-1.5"
-              style={{ color: "var(--tc-muted, #8B92A5)" }}
+              className="block text-xs font-mono mb-1.5 text-text-muted"
             >
               Avatar URL
             </label>
@@ -148,31 +127,18 @@ export function SettingsForm({
               value={avatarUrl}
               onChange={(e) => setAvatarUrl(e.target.value)}
               placeholder="https://..."
-              className="w-full h-11 px-4 rounded-lg border text-sm text-white outline-none transition-colors focus:border-white/20"
-              style={{
-                background: "rgba(255,255,255,0.03)",
-                borderColor: "rgba(255,255,255,0.08)",
-              }}
+              className="w-full h-11 px-4 border border-border bg-surface text-sm text-text-primary outline-none transition-colors focus:border-primary/40"
             />
           </div>
         </div>
       </section>
 
       {/* Theme Preference */}
-      <section
-        className="rounded-2xl p-6"
-        style={{
-          background: "var(--tc-surface, #0F1320)",
-          border: "1px solid rgba(255,255,255,0.06)",
-        }}
-      >
-        <h2
-          className="text-sm font-semibold uppercase tracking-widest mb-1"
-          style={{ color: "var(--tc-muted, #8B92A5)" }}
-        >
+      <section className="p-6 bg-surface-raised border border-border">
+        <h2 className="text-sm font-semibold font-mono uppercase tracking-widest mb-1 text-text-muted">
           Default Theme
         </h2>
-        <p className="text-xs mb-5" style={{ color: "rgba(139,146,165,0.7)" }}>
+        <p className="text-xs mb-5 text-text-muted opacity-70">
           Theme applies to your learning content and code editor
         </p>
 
@@ -182,31 +148,22 @@ export function SettingsForm({
               key={t.id}
               type="button"
               onClick={() => setPreferredTheme(t.id)}
-              className={`rounded-lg p-3 text-left transition-all ${
+              className={`p-3 text-left border transition-all ${
                 preferredTheme === t.id
-                  ? "ring-1 ring-white/30"
-                  : "hover:bg-white/[0.02]"
+                  ? "border-primary bg-primary/5"
+                  : "border-border hover:bg-surface"
               }`}
-              style={{
-                background:
-                  preferredTheme === t.id
-                    ? "rgba(255,255,255,0.04)"
-                    : "transparent",
-                border: "1px solid rgba(255,255,255,0.06)",
-              }}
             >
               <div
-                className="w-full h-1 rounded-full mb-2"
+                className="w-full h-1 mb-2"
                 style={{ background: t.color }}
               />
               <span
-                className="text-xs font-medium"
-                style={{
-                  color:
-                    preferredTheme === t.id
-                      ? "#FFFFFF"
-                      : "var(--tc-muted, #8B92A5)",
-                }}
+                className={`text-xs font-medium font-mono ${
+                  preferredTheme === t.id
+                    ? "text-text-primary"
+                    : "text-text-muted"
+                }`}
               >
                 {t.name}
               </span>
@@ -221,45 +178,22 @@ export function SettingsForm({
           type="button"
           onClick={handleSave}
           disabled={saving}
-          className="h-11 px-6 rounded-full text-sm font-medium transition-all disabled:opacity-50"
-          style={{
-            border: "1px solid rgba(0,212,255,0.3)",
-            background: "rgba(0,212,255,0.08)",
-            color: "#FFFFFF",
-          }}
+          className="h-11 px-6 text-sm font-medium font-mono bg-primary text-surface border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover disabled:opacity-50"
         >
           {saving ? "Saving..." : "Save Changes"}
         </button>
-        {saved && (
-          <span className="text-sm" style={{ color: "#2ECC71" }}>
-            Saved
-          </span>
-        )}
+        {saved && <span className="text-sm text-primary font-mono">Saved</span>}
         {error && (
-          <span className="text-sm" style={{ color: "#EF4444" }}>
-            {error}
-          </span>
+          <span className="text-sm text-red-500 font-mono">{error}</span>
         )}
       </div>
 
       {/* Danger Zone */}
-      <section
-        className="rounded-2xl p-6"
-        style={{
-          background: "var(--tc-surface, #0F1320)",
-          border: "1px solid rgba(239,68,68,0.15)",
-        }}
-      >
-        <h2
-          className="text-sm font-semibold uppercase tracking-widest mb-2"
-          style={{ color: "#EF4444" }}
-        >
+      <section className="p-6 bg-surface-raised border border-red-500/15">
+        <h2 className="text-sm font-semibold font-mono uppercase tracking-widest mb-2 text-red-500">
           Danger Zone
         </h2>
-        <p
-          className="text-xs mb-4"
-          style={{ color: "var(--tc-muted, #8B92A5)" }}
-        >
+        <p className="text-xs mb-4 text-text-muted">
           Permanently delete your account and all associated data. This action
           cannot be undone.
         </p>
@@ -268,40 +202,23 @@ export function SettingsForm({
           <button
             type="button"
             onClick={handleSignOut}
-            className="h-9 px-4 rounded-full text-xs font-medium transition-all"
-            style={{
-              border: "1px solid rgba(255,255,255,0.12)",
-              background: "transparent",
-              color: "var(--tc-muted, #8B92A5)",
-            }}
+            className="h-9 px-4 text-xs font-medium font-mono border border-border text-text-muted hover:text-text-primary hover:border-primary/30 transition-all brutalist-hover"
           >
             Sign Out
           </button>
           <button
             type="button"
             onClick={() => setShowDeleteConfirm(!showDeleteConfirm)}
-            className="h-9 px-4 rounded-full text-xs font-medium transition-all"
-            style={{
-              border: "1px solid rgba(239,68,68,0.3)",
-              background: "rgba(239,68,68,0.08)",
-              color: "#EF4444",
-            }}
+            className="h-9 px-4 text-xs font-medium font-mono border border-red-500/30 bg-red-500/8 text-red-500 hover:bg-red-500/15 transition-all brutalist-hover"
           >
             Delete Account
           </button>
         </div>
 
         {showDeleteConfirm && (
-          <div
-            className="mt-4 rounded-lg p-4 text-xs"
-            style={{
-              background: "rgba(239,68,68,0.05)",
-              border: "1px solid rgba(239,68,68,0.15)",
-              color: "var(--tc-muted, #8B92A5)",
-            }}
-          >
+          <div className="mt-4 p-4 text-xs border border-red-500/15 bg-red-500/5 text-text-muted">
             Account deletion is not yet available. Please contact{" "}
-            <strong style={{ color: "#FFFFFF" }}>
+            <strong className="text-text-primary">
               support@tensorcraft.dev
             </strong>{" "}
             to request account deletion.

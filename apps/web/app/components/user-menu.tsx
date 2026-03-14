@@ -53,7 +53,7 @@ export function UserMenu() {
     return (
       <Link
         href="/auth/sign-in"
-        className="inline-flex items-center rounded-full border border-white/15 bg-transparent px-6 py-2.5 text-sm font-medium hover:bg-white/5 transition-colors"
+        className="inline-flex items-center border border-primary/30 bg-primary/8 px-6 py-2.5 text-sm font-mono font-medium hover:bg-primary/15 hover:border-primary/50 transition-all brutalist-hover"
       >
         Start now &rarr;
       </Link>
@@ -72,26 +72,18 @@ export function UserMenu() {
         aria-expanded={open}
         aria-haspopup="true"
         aria-label="User menu"
-        className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold transition-colors hover:ring-1 hover:ring-white/20"
-        style={{
-          background: "rgba(0,212,255,0.15)",
-          color: "var(--tc-accent, #00D4FF)",
-        }}
+        className="w-9 h-9 flex items-center justify-center text-sm font-mono font-bold border border-primary/30 bg-primary/10 text-primary transition-colors hover:bg-primary/20"
       >
         {initial}
       </button>
 
       {open && (
         <div
-          className="absolute right-0 top-12 w-56 rounded-xl border border-border overflow-hidden shadow-2xl z-50"
-          style={{ background: "var(--tc-surface, #0F1320)" }}
+          className="absolute right-0 top-12 w-56 border border-border overflow-hidden shadow-2xl z-50 bg-surface-raised"
           role="menu"
         >
           <div className="px-4 py-3 border-b border-border">
-            <p
-              className="text-xs truncate"
-              style={{ color: "var(--tc-muted, #8B92A5)" }}
-            >
+            <p className="text-xs font-mono truncate text-text-muted">
               {user.email}
             </p>
           </div>
@@ -100,8 +92,7 @@ export function UserMenu() {
             <Link
               href="/dashboard"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-3 px-4 py-2.5 text-sm transition-colors hover:bg-white/[0.04]"
-              style={{ color: "var(--tc-text, #FFFFFF)" }}
+              className="flex items-center gap-3 px-4 py-2.5 text-sm font-mono text-text-primary transition-colors hover:bg-white/4"
               role="menuitem"
             >
               Dashboard
@@ -109,8 +100,7 @@ export function UserMenu() {
             <Link
               href="/settings"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-3 px-4 py-2.5 text-sm transition-colors hover:bg-white/[0.04]"
-              style={{ color: "var(--tc-text, #FFFFFF)" }}
+              className="flex items-center gap-3 px-4 py-2.5 text-sm font-mono text-text-primary transition-colors hover:bg-white/4"
               role="menuitem"
             >
               Settings
@@ -121,8 +111,7 @@ export function UserMenu() {
             <button
               type="button"
               onClick={handleSignOut}
-              className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-left transition-colors hover:bg-white/[0.04]"
-              style={{ color: "var(--tc-muted, #8B92A5)" }}
+              className="flex items-center gap-3 w-full px-4 py-2.5 text-sm font-mono text-left text-text-muted transition-colors hover:bg-white/4"
               role="menuitem"
             >
               Sign out

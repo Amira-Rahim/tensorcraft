@@ -15,18 +15,15 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center px-6">
+    <div className="min-h-[80vh] flex items-center justify-center px-6 bg-surface">
       <div className="max-w-md w-full text-center">
-        <div
-          className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-6"
-          style={{ backgroundColor: "rgba(0, 212, 255, 0.1)" }}
-        >
+        <div className="inline-flex items-center justify-center w-16 h-16 mb-6 bg-primary/10">
           <svg
             width="32"
             height="32"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="#00D4FF"
+            stroke="var(--tc-primary)"
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -37,42 +34,26 @@ export default function Error({
           </svg>
         </div>
 
-        <h1
-          className="text-2xl font-semibold mb-3"
-          style={{ color: "#FFFFFF" }}
-        >
+        <h1 className="text-2xl font-semibold font-mono mb-3 text-text-primary">
           Something went wrong
         </h1>
 
-        <p className="text-base mb-8" style={{ color: "#8B92A5" }}>
+        <p className="text-base mb-8 text-text-muted">
           {error.message || "An unexpected error occurred. Please try again."}
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <button
+            type="button"
             onClick={reset}
-            className="px-6 py-3 text-sm font-medium transition-opacity hover:opacity-90"
-            style={{
-              backgroundColor: "#00D4FF",
-              color: "#080B16",
-              borderRadius: "999px",
-              border: "none",
-              cursor: "pointer",
-            }}
+            className="px-6 py-3 text-sm font-medium font-mono bg-primary text-surface border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover"
           >
             Try again
           </button>
 
           <Link
             href="/"
-            className="px-6 py-3 text-sm font-medium transition-opacity hover:opacity-90"
-            style={{
-              backgroundColor: "transparent",
-              color: "#8B92A5",
-              borderRadius: "999px",
-              border: "1px solid rgba(255, 255, 255, 0.06)",
-              textDecoration: "none",
-            }}
+            className="px-6 py-3 text-sm font-medium font-mono border border-border text-text-muted hover:text-text-primary hover:border-primary/30 transition-all brutalist-hover"
           >
             Go home
           </Link>

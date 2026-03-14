@@ -3,28 +3,46 @@ import Link from "next/link";
 export function SiteFooter() {
   return (
     <footer className="border-t border-border px-8 py-8">
-      <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-text-muted">
-        <div className="font-semibold text-text-primary tracking-wide">
-          &#9671; tensorcraft
+      <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-text-muted font-mono">
+        <div className="flex items-center gap-2 font-bold text-text-primary tracking-wider text-xs">
+          <span className="bg-primary text-surface px-1.5 py-0.5 text-[9px] font-bold">
+            T_
+          </span>
+          TENSORCRAFT
         </div>
         <div className="flex flex-wrap justify-center gap-6">
-          <Link href="/" className="hover:text-text-primary transition-colors">
-            Home
+          <Link
+            href="/themes"
+            className="text-[10px] hover:text-text-primary transition-colors"
+          >
+            Themes
+          </Link>
+          <Link
+            href="/bridges"
+            className="text-[10px] hover:text-text-primary transition-colors"
+          >
+            Bridges
+          </Link>
+          <Link
+            href="/pricing"
+            className="text-[10px] hover:text-text-primary transition-colors"
+          >
+            Pricing
           </Link>
           <Link
             href="/terms"
-            className="hover:text-text-primary transition-colors"
+            className="text-[10px] hover:text-text-primary transition-colors"
           >
             Terms
           </Link>
           <Link
             href="/privacy"
-            className="hover:text-text-primary transition-colors"
+            className="text-[10px] hover:text-text-primary transition-colors"
           >
             Privacy
           </Link>
         </div>
-        <div>&copy; 2026 Tensorcraft. All rights reserved.</div>
+        <div className="font-mono text-[10px]">&copy; 2026 Tensorcraft</div>
       </div>
     </footer>
   );

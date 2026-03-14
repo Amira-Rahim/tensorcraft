@@ -15,6 +15,7 @@ import { LessonContent } from "./lesson-content";
 import { LessonProgressTracker } from "./lesson-progress";
 import { LessonPaywall } from "./lesson-paywall";
 import { MobileLessonNav } from "./mobile-lesson-nav";
+import { AmbientBackground } from "@/app/components/ambient-background";
 import type { Metadata } from "next";
 
 interface Props {
@@ -48,8 +49,6 @@ export default async function LessonPage({ params }: Props) {
   const exercises = getLessonExercises(lessonSlug);
   const mod = getModule(slug, moduleSlug);
 
-  // Paywall: Module 1 is free, Module 2+ requires purchase
-  // Prerequisite: Module N+1 requires Module N completed
   let requiresPaywall = false;
   let requiresPrerequisite = false;
   let prevModuleSlug = moduleSlug;
@@ -64,7 +63,6 @@ export default async function LessonPage({ params }: Props) {
       const purchased = await hasThemePurchase(user.id, slug);
       requiresPaywall = !purchased;
 
-      // Check prerequisite: previous module must be completed
       if (!requiresPaywall) {
         const allModules = getModules(slug);
         const prevMod = allModules.find((m) => m.order === mod.order - 1);
@@ -84,23 +82,14 @@ export default async function LessonPage({ params }: Props) {
   }
 
   return (
-    <main
-      className="min-h-screen"
-      style={{ background: "var(--tc-bg, #080B16)" }}
-    >
-      <div className="flex">
+    <main className="min-h-screen bg-surface relative overflow-hidden">
+      <AmbientBackground count={180} />
+      <div className="flex relative z-10">
         {/* Sidebar — lesson navigation */}
-        <aside
-          className="hidden lg:flex flex-col w-64 min-h-screen p-5 sticky top-0 overflow-y-auto"
-          style={{
-            background: theme.palette.surface,
-            borderRight: "1px solid rgba(255,255,255,0.06)",
-          }}
-        >
+        <aside className="hidden lg:flex flex-col w-64 min-h-screen p-5 sticky top-0 overflow-y-auto bg-surface-raised border-r border-border">
           <Link
             href={`/themes/${slug}/${moduleSlug}`}
-            className="text-xs mb-6 inline-flex items-center gap-1"
-            style={{ color: "var(--tc-muted, #8B92A5)" }}
+            className="text-xs mb-6 inline-flex items-center gap-1 text-text-muted hover:text-text-primary transition-colors"
           >
             ← Back to module
           </Link>
@@ -112,21 +101,19 @@ export default async function LessonPage({ params }: Props) {
                 <Link
                   key={l.slug}
                   href={`/themes/${slug}/${moduleSlug}/${l.slug}`}
-                  className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors"
-                  style={{
-                    background: isActive
-                      ? "rgba(255,255,255,0.06)"
-                      : "transparent",
-                    color: isActive ? theme.palette.text : theme.palette.muted,
-                  }}
+                  className={`flex items-center gap-2.5 px-3 py-2 text-sm transition-colors ${
+                    isActive
+                      ? "bg-primary/10 text-text-primary"
+                      : "text-text-muted hover:text-text-primary"
+                  }`}
                 >
                   <span
-                    className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-medium flex-shrink-0"
+                    className="w-5 h-5 flex items-center justify-center text-[10px] font-medium shrink-0"
                     style={{
                       background: isActive
-                        ? theme.palette.accent
-                        : "rgba(255,255,255,0.06)",
-                      color: isActive ? "#000" : theme.palette.muted,
+                        ? "var(--tc-primary)"
+                        : "var(--tc-border)",
+                      color: isActive ? "var(--tc-bg)" : "var(--tc-muted)",
                     }}
                   >
                     {l.order}
@@ -141,10 +128,7 @@ export default async function LessonPage({ params }: Props) {
         {/* Main content */}
         <div className="flex-1 max-w-3xl mx-auto px-6 py-12">
           {/* Breadcrumb */}
-          <div
-            className="flex items-center gap-2 text-xs mb-8"
-            style={{ color: "var(--tc-muted, #8B92A5)" }}
-          >
+          <div className="flex items-center gap-2 text-xs mb-8 text-text-muted">
             <Link href={`/themes/${slug}`} className="hover:underline">
               {theme.displayName}
             </Link>
@@ -156,26 +140,23 @@ export default async function LessonPage({ params }: Props) {
               {moduleSlug}
             </Link>
             <span>/</span>
-            <span style={{ color: theme.palette.text }}>{lesson.title}</span>
+            <span className="text-text-primary">{lesson.title}</span>
           </div>
 
           {/* Lesson header */}
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-2">
-              <span className="text-xs" style={{ color: theme.palette.accent }}>
-                {theme.terminology.lesson} {lesson.order}
-              </span>
               <span
                 className="text-xs"
-                style={{ color: "var(--tc-muted, #8B92A5)" }}
+                style={{ color: theme.palette.primary }}
               >
+                {theme.terminology.lesson} {lesson.order}
+              </span>
+              <span className="text-xs text-text-muted">
                 {lesson.estimatedMinutes} min
               </span>
             </div>
-            <h1
-              className="text-3xl font-bold mb-4"
-              style={{ color: theme.palette.text }}
-            >
+            <h1 className="text-3xl font-bold font-mono mb-4 text-text-primary">
               {lesson.title}
             </h1>
           </div>
@@ -184,35 +165,22 @@ export default async function LessonPage({ params }: Props) {
             <LessonPaywall
               themeSlug={slug}
               themeName={theme.displayName}
-              accentColor={theme.palette.accent}
+              accentColor={theme.palette.primary}
             />
           ) : requiresPrerequisite ? (
-            <div
-              className="rounded-xl p-8 text-center"
-              style={{
-                background: theme.palette.surface,
-                border: "1px solid rgba(255,255,255,0.06)",
-              }}
-            >
+            <div className="p-8 text-center bg-surface-raised border border-border">
               <div className="text-3xl mb-4" aria-hidden="true">
                 &#x1F512;
               </div>
-              <h2
-                className="text-lg font-semibold mb-2"
-                style={{ color: theme.palette.text }}
-              >
+              <h2 className="text-lg font-semibold font-mono mb-2 text-text-primary">
                 Complete the previous module first
               </h2>
-              <p
-                className="text-sm mb-6"
-                style={{ color: "var(--tc-muted, #8B92A5)" }}
-              >
+              <p className="text-sm mb-6 text-text-muted">
                 Finish all lessons in the previous module to unlock this one.
               </p>
               <Link
                 href={`/themes/${slug}/${prevModuleSlug}`}
-                className="inline-flex items-center px-5 py-2.5 rounded-full text-sm font-medium transition-opacity hover:opacity-90"
-                style={{ background: theme.palette.accent, color: "#000" }}
+                className="inline-flex items-center px-5 py-2.5 text-sm font-medium font-mono bg-primary text-surface border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover"
               >
                 Go to previous module
               </Link>
@@ -225,30 +193,15 @@ export default async function LessonPage({ params }: Props) {
               </section>
 
               {/* 5C Loop: Consequence */}
-              <section
-                className="rounded-xl p-5 my-8"
-                style={{
-                  background: theme.palette.surface,
-                  borderLeft: `3px solid ${theme.palette.accent}`,
-                }}
-              >
-                <h3
-                  className="text-xs uppercase tracking-widest mb-2"
-                  style={{ color: theme.palette.accent }}
-                >
+              <section className="p-5 my-8 bg-surface-raised border-l-[3px] border-l-primary">
+                <h3 className="text-xs uppercase tracking-widest mb-2 text-primary font-mono">
                   Consequence
                 </h3>
-                <p
-                  className="text-sm leading-relaxed"
-                  style={{ color: "rgba(255,255,255,0.8)" }}
-                >
+                <p className="text-sm leading-relaxed text-text-primary/80">
                   {lesson.consequence.narrative}
                 </p>
                 {lesson.consequence.nextLessonTeaser && (
-                  <p
-                    className="text-xs mt-2 italic"
-                    style={{ color: "var(--tc-muted, #8B92A5)" }}
-                  >
+                  <p className="text-xs mt-2 italic text-text-muted">
                     {lesson.consequence.nextLessonTeaser}
                   </p>
                 )}
@@ -259,19 +212,15 @@ export default async function LessonPage({ params }: Props) {
                 themeId={slug}
                 moduleId={moduleSlug}
                 lessonId={lessonSlug}
-                accentColor={theme.palette.accent}
+                accentColor={theme.palette.primary}
               />
 
               {/* Navigation */}
-              <nav
-                className="flex items-center justify-between mt-12 pt-6"
-                style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
-              >
+              <nav className="flex items-center justify-between mt-12 pt-6 border-t border-border">
                 {prev ? (
                   <Link
                     href={`/themes/${slug}/${moduleSlug}/${prev.slug}`}
-                    className="text-sm"
-                    style={{ color: "var(--tc-muted, #8B92A5)" }}
+                    className="text-sm text-text-muted hover:text-text-primary transition-colors"
                   >
                     ← {prev.title}
                   </Link>
@@ -281,16 +230,14 @@ export default async function LessonPage({ params }: Props) {
                 {next ? (
                   <Link
                     href={`/themes/${slug}/${moduleSlug}/${next.slug}`}
-                    className="text-sm font-medium px-4 py-2 rounded-full"
-                    style={{ background: theme.palette.accent, color: "#000" }}
+                    className="text-sm font-medium font-mono px-4 py-2 bg-primary text-surface border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover"
                   >
                     Next: {next.title} →
                   </Link>
                 ) : (
                   <Link
                     href={`/themes/${slug}/${moduleSlug}`}
-                    className="text-sm font-medium px-4 py-2 rounded-full"
-                    style={{ background: theme.palette.accent, color: "#000" }}
+                    className="text-sm font-medium font-mono px-4 py-2 bg-primary text-surface border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover"
                   >
                     Module Complete ✓
                   </Link>
@@ -311,7 +258,7 @@ export default async function LessonPage({ params }: Props) {
         currentLessonSlug={lessonSlug}
         themeSlug={slug}
         moduleSlug={moduleSlug}
-        accentColor={theme.palette.accent}
+        accentColor={theme.palette.primary}
         mutedColor={theme.palette.muted}
         backHref={`/themes/${slug}/${moduleSlug}`}
       />

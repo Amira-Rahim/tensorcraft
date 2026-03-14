@@ -62,7 +62,7 @@ This marketing plan outlines the strategy for taking Tensorcraft from launch thr
 2. **Browser-native:** Zero setup. No Python, no Jupyter, no terminal. Open the URL and start learning. Exercises run in Sandpack.
 3. **Story-driven themes:** Each course has characters, narrative arcs, and a distinct visual identity. Learning feels like playing a game, not watching a lecture.
 4. **Per-theme pricing:** Pay once, own forever. No subscription fatigue. No "cancel before the trial ends" anxiety.
-5. **Dark/neon aesthetic:** Tensorcraft looks like nothing else in the education space. The visual identity itself is a marketing asset.
+5. **Dark brutalist aesthetic:** Tensorcraft looks like nothing else in the education space. The brutalist terminal visual identity — sharp edges, offset shadows, monospace-first — resonates with developers and is inherently shareable.
 6. **Free Module 1:** Every theme offers its first module free. Learners can experience the full quality before paying.
 
 ---
@@ -313,10 +313,10 @@ All paid traffic flows through a single, optimized funnel:
 
 ## 3.3 Ad Creative Principles
 
-- **Visual consistency:** All ads use Tensorcraft's dark/neon aesthetic. Ads should look like the product, not like ads.
+- **Visual consistency:** All ads use Tensorcraft's dark brutalist aesthetic. Ads should look like the product, not like ads.
 - **Lead with the bridge:** The highest-performing creative concept is the FE-to-ML bridge. "You already know 70% of ML. You just don't know it yet." Show a side-by-side of React code and neural network code with visual connections.
 - **Social proof variants:** Once testimonials are collected, run ad variants featuring learner quotes. "I learned more about ML in 2 hours on Tensorcraft than in 2 weeks on Coursera" performs better than feature-based copy.
-- **Video ads (Twitter, YouTube):** 15-30 second clips showing the bridge animation. Dark background, neon highlights, code morphing from React to ML. No voiceover needed — text overlay + music.
+- **Video ads (Twitter, YouTube):** 15-30 second clips showing the bridge animation. Dark background, brutalist terminal UI, code morphing from React to ML. No voiceover needed — text overlay + music.
 - **A/B test relentlessly:** Test 3-5 headline variants per campaign. Kill underperformers within 48 hours. Scale winners to 2x budget before testing new variants.
 
 ---
@@ -388,7 +388,7 @@ Target 2 podcast appearances per month starting in month 4. Prepare a concise "T
 Release three open-source packages that serve as permanent marketing assets:
 
 - **@tensorcraft/bridges** — The complete bridge database as a JSON/MDX package. MIT licensed. Any educator or content creator can use the bridges in their own work, with attribution. This spreads the Tensorcraft vocabulary ("bridge model", "FE-to-ML mapping") across the ecosystem.
-- **@tensorcraft/neon-ui** — The dark/neon React component library used in Tensorcraft. Developers who use these components in their own projects become familiar with the Tensorcraft aesthetic.
+- **@tensorcraft/brutalist-ui** — The dark brutalist React component library used in Tensorcraft. Developers who use these components in their own projects become familiar with the Tensorcraft aesthetic.
 - **@tensorcraft/sandbox** — The Sandpack-based ML exercise runner. Other educators can build interactive ML exercises. Every exercise built with this package is indirect marketing for Tensorcraft.
 
 ## 4.8 Newsletter Sponsorships
@@ -405,7 +405,7 @@ Sponsor developer newsletters to reach frontend engineers at scale. Allocate $2,
 
 Create a library of shareable visual assets that illustrate the FE-to-ML bridge concept. These are designed for social media virality and blog embedding.
 
-- **Shareable graphics specs:** 1200x675px (Twitter/LinkedIn optimal), dark background (#0B0D1A), neon accent matching the relevant theme color, JetBrains Mono for code, Inter for labels, side-by-side layout showing FE concept on left and ML concept on right with glowing bridge connector in the center. Include Tensorcraft watermark (bottom-right, subtle). Export as PNG and WebP. Each graphic is a self-contained explanation — useful even without clicking through to the site.
+- **Shareable graphics specs:** 1200x675px (Twitter/LinkedIn optimal), dark background (#1C1C1C), sage green accent (`#6BAA8A`) or theme-specific color, JetBrains Mono for code and headings, Inter for body labels, side-by-side layout showing FE concept on left and ML concept on right with bridge connector in the center. Brutalist styling: zero border-radius, offset shadows. Include Tensorcraft watermark (bottom-right, subtle). Export as PNG and WebP. Each graphic is a self-contained explanation — useful even without clicking through to the site.
 - **Bridge explorer page:** A dedicated page at `tensorcraft.dev/bridges` showing all 50+ bridges in a filterable, searchable grid. Each card shows the FE concept, the ML concept, and a one-sentence bridge statement. Clicking opens the full bridge explanation with interactive demo. This page is both a product showcase and an SEO asset (targets "ML concepts for frontend developers" and related queries).
 - **Social calendar:** Publish one bridge graphic every day for 50 days as the "50 Days of Bridges" campaign. Schedule across Twitter/X, LinkedIn, and Instagram simultaneously. Each post includes the graphic, a 2-3 sentence caption explaining the bridge, and a link to the full bridge page. Day 50 post announces the complete bridge explorer page. Target: 50 days of consistent, highly shareable visual content that establishes Tensorcraft as the definitive source for FE-to-ML bridges.
 - **Blog integration:** Every blog post that discusses a bridge concept includes the corresponding bridge graphic as the hero image. Open Graph meta tags use the bridge graphic, ensuring the visual appears in social media shares. This creates a consistent visual language across all channels.
@@ -418,7 +418,7 @@ Create a library of shareable visual assets that illustrate the FE-to-ML bridge 
 
 The waitlist page is the primary conversion asset during pre-launch. It lives at `tensorcraft.dev` and follows this structure:
 
-- **Hero section:** Full-width dark background with animated neon grid. Headline: "Machine Learning for Frontend Engineers." Subheadline: "50+ concept bridges that translate ML into the language you already speak." Single email input with "Join the Waitlist" CTA button (neon accent glow on hover). Waitlist count displayed below input ("Join 2,847 frontend developers").
+- **Hero section:** Full-width dark background (#1C1C1C) with ParticleField canvas animation. Headline: "Machine Learning for Frontend Devs, Finally." Subheadline: "50+ concept bridges that translate ML into the language you already speak." Single email input with "Join the Waitlist" CTA button (brutalist offset shadow on hover). Waitlist count displayed below input ("Join 2,847 frontend developers").
 - **Problem section:** Three-column layout. Column 1: "Every ML course starts with Python" (crossed-out Python logo). Column 2: "You've tried. You've quit." (abandoned Jupyter notebook illustration). Column 3: "It's not you. It's the teaching." (bridge metaphor illustration). Copy: "Machine learning courses weren't built for you. They assume you think in NumPy, not in components. Tensorcraft fixes that."
 - **What you'll build section:** Interactive carousel showing 3-4 real project outcomes from Tensorcraft lessons. Each slide shows a browser screenshot of the completed project (sentiment analyzer, image classifier, recommendation engine) with a "Built with JavaScript. No Python required." caption.
 - **Theme previews section:** Five cards, one per theme, showing the theme name, key art, narrative hook, and character illustrations. Deep Orbit and Neon Protocol are highlighted as "coming first." Other three show "Coming 2026" with faded styling.
@@ -523,6 +523,6 @@ After the first 30 days, settle into a sustainable weekly rhythm:
 
 Tensorcraft's marketing strategy is built on a simple insight: frontend developers are an underserved audience in ML education, and the FE-to-ML bridge concept is a genuinely novel approach that provides organic viral potential. By leading with free, high-value content (bridge posts, free Module 1, open source components), we build trust and audience before asking for money.
 
-The per-theme pricing model eliminates subscription fatigue and aligns incentives — we only get paid when we deliver a complete, valuable learning experience. The dark/neon aesthetic makes Tensorcraft visually distinctive and inherently shareable on social media.
+The per-theme pricing model eliminates subscription fatigue and aligns incentives — we only get paid when we deliver a complete, valuable learning experience. The dark brutalist aesthetic makes Tensorcraft visually distinctive and inherently shareable on social media.
 
 Success depends on consistent content production, authentic community engagement, and relentless focus on the core value proposition: you already know more about ML than you think, and Tensorcraft will show you why.

@@ -4,6 +4,7 @@ import { PRICING, THEME_CONTENT } from "@tensorcraft/shared";
 import type { Metadata } from "next";
 import { PaymentError } from "./payment-error";
 import { CheckoutButton } from "./checkout-button";
+import { AmbientBackground } from "@/app/components/ambient-background";
 
 export const metadata: Metadata = {
   title: "Pricing | Tensorcraft",
@@ -73,23 +74,66 @@ const tiers = [
       "Choose any 3 themes",
     ],
     description: "Any three themes",
-    note: "Save $68 vs buying separately",
+    note: "Save $68 vs buying separately \u2014 best value",
     cta: "Get Started",
     href: "/auth/sign-in?redirectTo=/pricing/checkout/threeBundle",
     recommended: false,
   },
 ];
 
+const comparisonRows = [
+  {
+    feature: "Modules",
+    values: [
+      "1",
+      `${THEME_CONTENT.modulesPerTheme}`,
+      `${THEME_CONTENT.modulesPerTheme} \u00d7 2`,
+      `${THEME_CONTENT.modulesPerTheme} \u00d7 3`,
+    ],
+  },
+  {
+    feature: "Lessons",
+    values: [
+      `${THEME_CONTENT.lessonsPerModule}`,
+      `${THEME_CONTENT.totalLessonsPerTheme}`,
+      `${THEME_CONTENT.totalLessonsPerTheme * 2}`,
+      `${THEME_CONTENT.totalLessonsPerTheme * 3}`,
+    ],
+  },
+  {
+    feature: "Interactive exercises",
+    values: [true, true, true, true],
+  },
+  {
+    feature: "Community access",
+    values: [true, true, true, true],
+  },
+  {
+    feature: "GitHub integration",
+    values: [false, true, true, true],
+  },
+  {
+    feature: "Lifetime updates",
+    values: [false, true, true, true],
+  },
+  {
+    feature: "Choose themes",
+    values: [false, false, true, true],
+  },
+];
+
+const columnHeaders = ["Free", "Single", "Two", "Three"];
+
 function FAQItem({ question, answer }: { question: string; answer: string }) {
   return (
-    <details className="group rounded-[14px] border border-border bg-surface-raised overflow-hidden">
-      <summary className="flex items-center justify-between w-full px-6 py-[18px] cursor-pointer text-[15px] font-semibold text-white list-none [&::-webkit-details-marker]:hidden">
+    <details className="group border border-border bg-surface-raised overflow-hidden transition-all hover:border-primary hover:shadow-[4px_4px_0px_0px_#6BAA8A]">
+      <summary className="flex items-center justify-between w-full px-6 py-[18px] cursor-pointer text-[15px] font-semibold text-text-primary list-none [&::-webkit-details-marker]:hidden font-mono">
         {question}
         <span className="text-text-muted text-sm transition-transform group-open:rotate-180">
           &#9662;
         </span>
       </summary>
-      <div className="px-6 pb-5 text-sm text-text-muted leading-relaxed">
+      <div className="px-6 pb-5 text-sm text-text-muted leading-relaxed font-sans">
         {answer}
       </div>
     </details>
@@ -98,10 +142,8 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
 
 export default function PricingPage() {
   return (
-    <main
-      className="min-h-screen"
-      style={{ background: "var(--tc-bg, #080B16)" }}
-    >
+    <main className="min-h-screen bg-surface relative overflow-hidden">
+      <AmbientBackground count={200} />
       {/* Payment Error Banner */}
       <div className="pt-24 px-6">
         <Suspense fallback={null}>
@@ -110,26 +152,14 @@ export default function PricingPage() {
       </div>
 
       {/* Hero */}
-      <section
-        className="pt-28 pb-16 px-6 text-center relative"
-        style={{
-          background:
-            "radial-gradient(ellipse 80% 50% at 50% 100%, rgba(0,212,255,0.10), transparent 60%), radial-gradient(ellipse 40% 30% at 50% 100%, rgba(0,212,255,0.06), transparent 50%), var(--tc-bg, #080B16)",
-        }}
-      >
-        <div className="inline-flex px-5 py-2 border border-border rounded-full text-[13px] text-text-muted tracking-wider mb-8">
+      <section className="pt-28 pb-16 px-6 text-center">
+        <div className="inline-flex px-5 py-2 border border-border font-mono text-[13px] text-text-muted tracking-wider mb-8">
           One Payment &middot; Lifetime Access &middot; No Subscriptions
         </div>
-        <h1
-          className="text-4xl sm:text-5xl font-bold mb-5"
-          style={{ color: "var(--tc-text, #FFFFFF)", letterSpacing: "-0.02em" }}
-        >
+        <h1 className="text-4xl sm:text-5xl font-bold mb-5 text-text-primary font-mono tracking-tight">
           Simple, Fair Pricing
         </h1>
-        <p
-          className="text-lg max-w-[520px] mx-auto"
-          style={{ color: "var(--tc-muted, #8B92A5)" }}
-        >
+        <p className="text-lg max-w-[520px] mx-auto text-text-muted font-sans">
           One payment. Lifetime access. Every future update included. No
           subscriptions, ever.
         </p>
@@ -140,71 +170,49 @@ export default function PricingPage() {
         <div className="max-w-[1200px] mx-auto grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
           {tiers.map((tier) => {
             const plan = PRICING[tier.id];
+            const isRecommended = tier.recommended;
+
             return (
               <div
                 key={tier.id}
-                className="rounded-2xl p-7 flex flex-col transition-all hover:-translate-y-0.5"
-                style={{
-                  background: "var(--tc-surface, #0F1320)",
-                  border: tier.recommended
-                    ? "1px solid rgba(0,212,255,0.25)"
-                    : "1px solid rgba(255,255,255,0.06)",
-                }}
+                className={`relative p-7 flex flex-col transition-all border hover:border-primary hover:shadow-[4px_4px_0px_0px_#6BAA8A] ${
+                  isRecommended
+                    ? "bg-[rgba(107,170,138,0.12)] border-primary"
+                    : "bg-surface border-border"
+                }`}
               >
-                {tier.recommended ? (
-                  <span
-                    className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-[11px] font-semibold uppercase tracking-wider w-fit mb-5"
-                    style={{
-                      background: "rgba(0,212,255,0.1)",
-                      color: "var(--tc-accent, #00D4FF)",
-                      border: "1px solid rgba(0,212,255,0.2)",
-                    }}
-                  >
-                    Recommended
+                {isRecommended && (
+                  <span className="absolute -top-3 left-6 inline-flex items-center px-3 py-1 font-mono text-[11px] font-bold uppercase tracking-wider bg-primary text-[#1C1C1C]">
+                    RECOMMENDED
                   </span>
-                ) : (
-                  <div className="min-h-[30px]" />
                 )}
 
-                <div
-                  className="text-[40px] font-bold leading-tight mb-2"
-                  style={{ color: "var(--tc-text, #FFFFFF)" }}
-                >
-                  ${plan.price}
+                <div className={`${isRecommended ? "mt-2" : ""} mb-2`}>
+                  <span className="text-[48px] font-bold leading-tight text-text-primary font-mono">
+                    ${plan.price}
+                  </span>
                 </div>
-                <div
-                  className="text-lg font-semibold mb-1"
-                  style={{ color: "var(--tc-text, #FFFFFF)" }}
-                >
+                <div className="text-lg font-semibold mb-1 text-text-primary font-mono">
                   {plan.label}
                 </div>
-                <p
-                  className="text-sm mb-2 leading-relaxed"
-                  style={{ color: "var(--tc-muted, #8B92A5)" }}
-                >
+                <p className="text-sm mb-2 leading-relaxed text-text-muted font-sans">
                   {tier.description}
                 </p>
-                {tier.note && (
-                  <p
-                    className="text-[13px] mb-6"
-                    style={{ color: "rgba(139,146,165,0.7)" }}
-                  >
+                {tier.note ? (
+                  <p className="text-[13px] mb-6 text-primary font-mono">
                     {tier.note}
                   </p>
+                ) : (
+                  <div className="mb-6" />
                 )}
-                {!tier.note && <div className="mb-6" />}
 
                 <ul className="flex-1 mb-7 space-y-2.5">
                   {tier.features.map((f) => (
                     <li
                       key={f}
-                      className="flex items-center gap-2.5 text-sm"
-                      style={{ color: "var(--tc-muted, #8B92A5)" }}
+                      className="flex items-center gap-2.5 text-sm text-text-muted font-sans"
                     >
-                      <span
-                        className="text-[13px] font-bold flex-shrink-0"
-                        style={{ color: "var(--tc-accent, #00D4FF)" }}
-                      >
+                      <span className="text-[13px] font-bold flex-shrink-0 text-primary">
                         &#10003;
                       </span>
                       {f}
@@ -215,20 +223,12 @@ export default function PricingPage() {
                 {tier.id === "free" ? (
                   <Link
                     href={tier.href}
-                    className="flex items-center justify-center w-full h-[52px] rounded-full text-[15px] font-medium transition-all"
-                    style={{
-                      border: "1px solid rgba(255,255,255,0.12)",
-                      background: "transparent",
-                      color: "#FFFFFF",
-                    }}
+                    className="flex items-center justify-center w-full h-[52px] font-mono text-[15px] font-medium transition-all border border-primary text-primary hover:bg-primary hover:text-[#1C1C1C]"
                   >
                     {tier.cta} &rarr;
                   </Link>
                 ) : (
-                  <CheckoutButton
-                    planId={tier.id}
-                    recommended={tier.recommended}
-                  >
+                  <CheckoutButton planId={tier.id} recommended={isRecommended}>
                     {tier.cta} &rarr;
                   </CheckoutButton>
                 )}
@@ -240,172 +240,89 @@ export default function PricingPage() {
 
       {/* Feature Comparison */}
       <section className="px-6 pb-24">
-        <div className="max-w-[900px] mx-auto">
-          <div
-            className="h-px max-w-[600px] mx-auto mb-14"
-            style={{
-              background:
-                "linear-gradient(90deg, transparent, rgba(0,212,255,0.2), transparent)",
-            }}
-          />
-          <p
-            className="text-[13px] uppercase tracking-[0.15em] text-center mb-3"
-            style={{ color: "var(--tc-muted, #8B92A5)" }}
-          >
+        <div className="max-w-[960px] mx-auto">
+          <div className="h-px max-w-[600px] mx-auto mb-14 bg-border" />
+          <p className="text-[13px] uppercase tracking-[0.15em] text-center mb-3 text-text-muted font-mono">
             Compare Plans
           </p>
-          <h2
-            className="text-3xl sm:text-[40px] font-bold text-center mb-14"
-            style={{ color: "var(--tc-text, #FFFFFF)" }}
-          >
+          <h2 className="text-3xl sm:text-[40px] font-bold text-center mb-14 text-text-primary font-mono tracking-tight">
             Feature Comparison
           </h2>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr
-                  style={{
-                    borderBottom: "1px solid rgba(255,255,255,0.06)",
-                  }}
-                >
-                  <th
-                    className="text-left py-4 px-3 text-[13px] font-semibold uppercase tracking-wider"
-                    style={{ color: "var(--tc-muted, #8B92A5)" }}
+            <div className="min-w-[600px]">
+              {/* Column Headers */}
+              <div className="grid grid-cols-5 border-b-2 border-border pb-4 mb-0">
+                <div className="text-[13px] font-semibold uppercase tracking-wider text-text-muted font-mono px-3">
+                  Feature
+                </div>
+                {columnHeaders.map((h) => (
+                  <div
+                    key={h}
+                    className="text-center text-[13px] font-semibold uppercase tracking-wider text-text-muted font-mono px-3"
                   >
-                    Feature
-                  </th>
-                  {["Free", "Single", "Two", "Three"].map((h) => (
-                    <th
-                      key={h}
-                      className="text-center py-4 px-3 text-[13px] font-semibold uppercase tracking-wider"
-                      style={{ color: "var(--tc-muted, #8B92A5)" }}
-                    >
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {[
-                  {
-                    feature: "Modules",
-                    values: [
-                      "1",
-                      `${THEME_CONTENT.modulesPerTheme}`,
-                      `${THEME_CONTENT.modulesPerTheme} \u00d7 2`,
-                      `${THEME_CONTENT.modulesPerTheme} \u00d7 3`,
-                    ],
-                  },
-                  {
-                    feature: "Lessons",
-                    values: [
-                      `${THEME_CONTENT.lessonsPerModule}`,
-                      `${THEME_CONTENT.totalLessonsPerTheme}`,
-                      `${THEME_CONTENT.totalLessonsPerTheme * 2}`,
-                      `${THEME_CONTENT.totalLessonsPerTheme * 3}`,
-                    ],
-                  },
-                  {
-                    feature: "Interactive exercises",
-                    values: [true, true, true, true],
-                  },
-                  {
-                    feature: "Community access",
-                    values: [true, true, true, true],
-                  },
-                  {
-                    feature: "GitHub integration",
-                    values: [false, true, true, true],
-                  },
-                  {
-                    feature: "Lifetime updates",
-                    values: [false, true, true, true],
-                  },
-                  {
-                    feature: "Choose themes",
-                    values: [false, false, true, true],
-                  },
-                ].map((row) => (
-                  <tr
-                    key={row.feature}
-                    style={{
-                      borderBottom: "1px solid rgba(255,255,255,0.03)",
-                    }}
-                  >
-                    <td
-                      className="py-3.5 px-3"
-                      style={{ color: "rgba(255,255,255,0.7)" }}
-                    >
-                      {row.feature}
-                    </td>
-                    {row.values.map((val, i) => (
-                      <td
-                        key={i}
-                        className="text-center py-3.5 px-3"
-                        style={{
-                          color:
-                            val === true
-                              ? "var(--tc-accent, #00D4FF)"
-                              : val === false
-                                ? "rgba(139,146,165,0.3)"
-                                : "var(--tc-muted, #8B92A5)",
-                        }}
-                      >
-                        {val === true
-                          ? "\u2713"
-                          : val === false
-                            ? "\u2014"
-                            : val}
-                      </td>
-                    ))}
-                  </tr>
+                    {h}
+                  </div>
                 ))}
-              </tbody>
-            </table>
+              </div>
+
+              {/* Rows */}
+              {comparisonRows.map((row, rowIndex) => (
+                <div
+                  key={row.feature}
+                  className={`grid grid-cols-5 items-center py-3.5 border-b border-border ${
+                    rowIndex % 2 === 0 ? "bg-surface" : "bg-transparent"
+                  }`}
+                >
+                  <div className="text-sm text-text-primary px-3 font-sans">
+                    {row.feature}
+                  </div>
+                  {row.values.map((val, i) => (
+                    <div
+                      key={i}
+                      className={`text-center text-sm px-3 font-mono ${
+                        val === true
+                          ? "text-primary font-bold"
+                          : val === false
+                            ? "text-text-muted"
+                            : "text-text-muted"
+                      }`}
+                    >
+                      {val === true ? "\u2713" : val === false ? "\u2717" : val}
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
       {/* PPP Note */}
       <section className="px-6 pb-24">
-        <div
-          className="max-w-[680px] mx-auto rounded-[14px] p-7 text-sm text-center leading-relaxed"
-          style={{
-            background: "var(--tc-surface, #0F1320)",
-            border: "1px solid rgba(255,255,255,0.06)",
-            color: "var(--tc-muted, #8B92A5)",
-          }}
-        >
-          <strong style={{ color: "var(--tc-text, #FFFFFF)" }}>
+        <div className="max-w-[680px] mx-auto p-7 text-sm text-center leading-relaxed bg-surface border border-border transition-all hover:border-primary hover:shadow-[4px_4px_0px_0px_#6BAA8A]">
+          <strong className="text-text-primary font-mono">
             Purchasing Power Parity
           </strong>
           <br />
-          We offer 20-70% purchasing power parity discounts automatically. If
-          you&apos;re in an eligible country, you&apos;ll see the adjusted price
-          at checkout.
+          <span className="text-text-muted font-sans">
+            We offer 20-70% purchasing power parity discounts automatically. If
+            you&apos;re in an eligible country, you&apos;ll see the adjusted
+            price at checkout.
+          </span>
         </div>
       </section>
 
       {/* FAQ */}
       <section className="px-6 pb-24">
         <div className="max-w-[720px] mx-auto">
-          <p
-            className="text-[13px] uppercase tracking-[0.15em] text-center mb-3"
-            style={{ color: "var(--tc-muted, #8B92A5)" }}
-          >
+          <p className="text-[13px] uppercase tracking-[0.15em] text-center mb-3 text-text-muted font-mono">
             Support
           </p>
-          <h2
-            className="text-3xl sm:text-[40px] font-bold text-center mb-4"
-            style={{ color: "var(--tc-text, #FFFFFF)" }}
-          >
+          <h2 className="text-3xl sm:text-[40px] font-bold text-center mb-4 text-text-primary font-mono tracking-tight">
             Frequently Asked Questions
           </h2>
-          <p
-            className="text-lg text-center mb-14 max-w-[560px] mx-auto"
-            style={{ color: "var(--tc-muted, #8B92A5)" }}
-          >
+          <p className="text-lg text-center mb-14 max-w-[560px] mx-auto text-text-muted font-sans">
             Everything you need to know about purchasing and access
           </p>
 
@@ -431,33 +348,16 @@ export default function PricingPage() {
       </section>
 
       {/* CTA Footer */}
-      <section
-        className="py-28 px-6 text-center"
-        style={{
-          background:
-            "radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0,212,255,0.10), transparent 60%), radial-gradient(ellipse 40% 30% at 50% 0%, rgba(0,212,255,0.06), transparent 50%), var(--tc-bg, #080B16)",
-        }}
-      >
-        <h2
-          className="text-2xl sm:text-[32px] font-bold mb-4"
-          style={{ color: "var(--tc-text, #FFFFFF)" }}
-        >
+      <section className="py-28 px-6 text-center border-t border-border">
+        <h2 className="text-2xl sm:text-[32px] font-bold mb-4 text-text-primary font-mono tracking-tight">
           Your frontend skills are the foundation.
         </h2>
-        <p
-          className="text-lg mb-10"
-          style={{ color: "var(--tc-muted, #8B92A5)" }}
-        >
+        <p className="text-lg mb-10 text-text-muted font-sans">
           Add machine learning to your engineering toolkit.
         </p>
         <Link
           href="/themes/deep-orbit"
-          className="inline-flex items-center rounded-full px-9 py-4 text-[17px] font-medium transition-all"
-          style={{
-            border: "1px solid rgba(0,212,255,0.3)",
-            background: "rgba(0,212,255,0.08)",
-            color: "#FFFFFF",
-          }}
+          className="inline-flex items-center font-mono px-9 py-4 text-[17px] font-medium transition-all bg-primary text-[#1C1C1C] border border-primary hover:shadow-[4px_4px_0px_0px_#C8C8C8] hover:-translate-x-0.5 hover:-translate-y-0.5"
         >
           Explore Deep Orbit &rarr;
         </Link>

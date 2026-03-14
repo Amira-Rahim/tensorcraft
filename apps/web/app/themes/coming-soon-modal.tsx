@@ -20,7 +20,8 @@ export function ComingSoonModal({
   specialization,
   description,
   accentColor,
-  surfaceColor,
+  // surfaceColor kept in interface for API compatibility
+  surfaceColor: _surfaceColor,
   open,
   onClose,
 }: ComingSoonModalProps) {
@@ -106,70 +107,55 @@ export function ComingSoonModal({
     >
       {/* Backdrop */}
       <div
-        className="absolute inset-0"
-        style={{ background: "rgba(0,0,0,0.7)" }}
+        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
         onClick={onClose}
       />
 
       {/* Modal */}
       <div
-        className="relative w-full max-w-md rounded-2xl p-8"
+        className="relative w-full max-w-md p-8 bg-surface-raised"
         style={{
-          background: surfaceColor,
-          border: `1px solid ${accentColor}20`,
+          border: `2px solid ${accentColor}`,
         }}
       >
         {/* Close button */}
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full transition-colors hover:bg-white/[0.06]"
-          style={{ color: "var(--tc-muted, #8B92A5)" }}
+          className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-text-muted transition-colors hover:text-text-primary font-mono"
           aria-label="Close"
         >
           &#x2715;
         </button>
 
         {/* Accent bar */}
-        <div
-          className="w-12 h-1 rounded-full mb-6"
-          style={{ background: accentColor }}
-        />
+        <div className="w-12 h-1 mb-6" style={{ background: accentColor }} />
 
         {/* Theme info */}
         <h2
-          className="text-xl font-bold mb-1"
-          style={{ color: "var(--tc-text, #FFFFFF)" }}
+          className="text-xl font-bold font-mono mb-1"
+          style={{ color: accentColor }}
         >
           {themeName}
         </h2>
-        <p className="text-sm font-medium mb-3" style={{ color: accentColor }}>
+        <p className="text-xs font-mono uppercase tracking-widest text-text-muted mb-3">
           {specialization}
         </p>
-        <p
-          className="text-sm leading-relaxed mb-6"
-          style={{ color: "var(--tc-muted, #8B92A5)" }}
-        >
+        <p className="text-sm leading-relaxed text-text-muted mb-6">
           {description}
         </p>
 
         {/* Status badge */}
-        <div
-          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-medium uppercase tracking-wider mb-6"
-          style={{
-            background: "rgba(255,255,255,0.05)",
-            color: "var(--tc-muted, #8B92A5)",
-          }}
-        >
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 text-[11px] font-semibold font-mono uppercase tracking-wider bg-surface-overlay text-text-muted mb-6">
           Coming Soon
         </div>
 
         {/* Email form or confirmation */}
         {status === "done" ? (
           <div
-            className="rounded-xl p-4 text-center text-sm"
+            className="p-4 text-center text-sm font-mono"
             style={{
-              background: `${accentColor}10`,
+              background: `${accentColor}15`,
               color: accentColor,
             }}
           >
@@ -177,10 +163,7 @@ export function ComingSoonModal({
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-3">
-            <p
-              className="text-xs"
-              style={{ color: "var(--tc-muted, #8B92A5)" }}
-            >
+            <p className="text-xs text-text-muted font-mono">
               Get notified when this theme launches:
             </p>
             <div className="flex gap-2">
@@ -194,23 +177,22 @@ export function ComingSoonModal({
                 placeholder="your@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="flex-1 h-10 px-4 rounded-full text-sm text-white outline-none"
-                style={{
-                  background: "rgba(255,255,255,0.04)",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                }}
+                className="flex-1 h-10 px-4 text-sm text-text-primary font-mono outline-none bg-surface border border-border placeholder:text-text-muted/50 focus:border-primary"
               />
               <button
                 type="submit"
                 disabled={status === "saving"}
-                className="h-10 px-5 rounded-full text-sm font-medium transition-opacity hover:opacity-90 disabled:opacity-50"
-                style={{ background: accentColor, color: "#000" }}
+                className="h-10 px-5 text-sm font-semibold font-mono text-black disabled:opacity-50 transition-all hover:translate-x-px hover:translate-y-px hover:shadow-none"
+                style={{
+                  background: accentColor,
+                  boxShadow: `3px 3px 0px ${accentColor}55`,
+                }}
               >
                 {status === "saving" ? "..." : "Notify Me"}
               </button>
             </div>
             {status === "error" && (
-              <p className="text-xs" style={{ color: "#EF4444" }}>
+              <p className="text-xs font-mono text-red-500">
                 Something went wrong. Please try again.
               </p>
             )}

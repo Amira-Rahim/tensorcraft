@@ -67,8 +67,8 @@ describe("BridgeCallout", () => {
 
   it("uses correct tier color for connector", () => {
     const { container } = render(<BridgeCallout bridge={identityBridge} />);
-    const connector = container.querySelector(".rounded-full");
-    expect(connector).toHaveStyle({ color: "#00D4FF" });
+    const connector = container.querySelector(".relative.z-10.w-7.h-7");
+    expect(connector).toHaveStyle({ color: "var(--tc-tier-identity)" });
   });
 
   it("has no accessibility violations", async () => {

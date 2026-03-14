@@ -4,6 +4,7 @@ import { themes } from "@tensorcraft/themes";
 import { getModule, getModuleLessons } from "@tensorcraft/content";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { getUserProgress } from "@/lib/progress";
+import { AmbientBackground } from "@/app/components/ambient-background";
 import type { Metadata } from "next";
 
 interface Props {
@@ -22,9 +23,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 const difficultyColors = {
-  beginner: "#00D4FF",
-  intermediate: "#7B68EE",
-  advanced: "#F0C75E",
+  beginner: "#6BAA8A",
+  intermediate: "#7096B0",
+  advanced: "#A89060",
 };
 
 export default async function ModuleOverviewPage({ params }: Props) {
@@ -35,7 +36,6 @@ export default async function ModuleOverviewPage({ params }: Props) {
 
   const lessons = getModuleLessons(slug, moduleSlug);
 
-  // Fetch user progress for this theme (if authenticated)
   const supabase = await getSupabaseServerClient();
   const {
     data: { user },
@@ -51,16 +51,11 @@ export default async function ModuleOverviewPage({ params }: Props) {
   ).length;
 
   return (
-    <main
-      className="min-h-screen px-6 py-20"
-      style={{ background: "var(--tc-bg, #080B16)" }}
-    >
-      <div className="max-w-4xl mx-auto">
+    <main className="min-h-screen px-6 py-20 bg-surface relative overflow-hidden">
+      <AmbientBackground count={180} />
+      <div className="max-w-4xl mx-auto relative z-10">
         {/* Breadcrumb */}
-        <div
-          className="flex items-center gap-2 text-sm mb-8"
-          style={{ color: "var(--tc-muted, #8B92A5)" }}
-        >
+        <div className="flex items-center gap-2 text-sm mb-8 text-text-muted">
           <Link href="/themes" className="hover:underline">
             Themes
           </Link>
@@ -69,34 +64,27 @@ export default async function ModuleOverviewPage({ params }: Props) {
             {theme.displayName}
           </Link>
           <span>/</span>
-          <span style={{ color: theme.palette.text }}>{mod.title}</span>
+          <span className="text-text-primary">{mod.title}</span>
         </div>
 
         {/* Module header */}
         <div className="mb-10">
           <span
             className="text-xs font-medium uppercase tracking-widest"
-            style={{ color: theme.palette.accent }}
+            style={{ color: theme.palette.primary }}
           >
             {theme.terminology.module} {mod.order}
           </span>
-          <h1
-            className="text-3xl font-bold mt-1 mb-3"
-            style={{ color: theme.palette.text }}
-          >
+          <h1 className="text-3xl font-bold font-mono mt-1 mb-3 text-text-primary">
             {mod.title}
           </h1>
-          <p
-            className="text-base leading-relaxed"
-            style={{ color: theme.palette.muted }}
-          >
+          <p className="text-base leading-relaxed text-text-muted">
             {mod.description}
           </p>
           {user && completedCount > 0 && (
             <div className="flex items-center gap-3 mt-4">
               <div
-                className="h-1.5 flex-1 max-w-[200px] rounded-full overflow-hidden"
-                style={{ background: "rgba(255,255,255,0.06)" }}
+                className="h-1.5 flex-1 max-w-[200px] overflow-hidden bg-border"
                 role="progressbar"
                 aria-valuenow={
                   lessons.length > 0
@@ -108,14 +96,13 @@ export default async function ModuleOverviewPage({ params }: Props) {
                 aria-label={`Module progress: ${completedCount} of ${lessons.length} completed`}
               >
                 <div
-                  className="h-full rounded-full transition-all"
+                  className="h-full transition-all bg-primary"
                   style={{
                     width: `${lessons.length > 0 ? (completedCount / lessons.length) * 100 : 0}%`,
-                    background: theme.palette.accent,
                   }}
                 />
               </div>
-              <span className="text-xs" style={{ color: theme.palette.muted }}>
+              <span className="text-xs text-text-muted">
                 {completedCount}/{lessons.length} completed
               </span>
             </div>
@@ -130,32 +117,28 @@ export default async function ModuleOverviewPage({ params }: Props) {
               <Link
                 key={lesson.slug}
                 href={`/themes/${slug}/${moduleSlug}/${lesson.slug}`}
-                className="rounded-xl p-5 flex items-center justify-between transition-colors hover:bg-white/[0.02]"
-                style={{
-                  background: theme.palette.surface,
-                  border: "1px solid rgba(255,255,255,0.06)",
-                }}
+                className="p-5 flex items-center justify-between transition-colors brutalist-hover border border-border bg-surface-raised"
               >
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-1">
                     {/* Progress node */}
                     <span
-                      className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium flex-shrink-0"
+                      className="w-6 h-6 flex items-center justify-center text-xs font-medium shrink-0"
                       style={
                         status === "completed"
                           ? {
-                              background: theme.palette.accent,
-                              color: "#000",
+                              background: "var(--tc-primary)",
+                              color: "var(--tc-bg)",
                             }
                           : status === "in_progress"
                             ? {
                                 background: "transparent",
-                                border: `2px solid ${theme.palette.accent}`,
-                                color: theme.palette.accent,
+                                border: "2px solid var(--tc-primary)",
+                                color: "var(--tc-primary)",
                               }
                             : {
-                                background: "rgba(255,255,255,0.06)",
-                                color: theme.palette.text,
+                                background: "var(--tc-border)",
+                                color: "var(--tc-text)",
                               }
                       }
                     >
@@ -174,22 +157,16 @@ export default async function ModuleOverviewPage({ params }: Props) {
                         lesson.order
                       )}
                     </span>
-                    <h3
-                      className="text-base font-medium"
-                      style={{ color: theme.palette.text }}
-                    >
+                    <h3 className="text-base font-medium font-mono text-text-primary">
                       {lesson.title}
                     </h3>
                   </div>
                   <div className="flex items-center gap-3 ml-9">
-                    <span
-                      className="text-xs"
-                      style={{ color: theme.palette.muted }}
-                    >
+                    <span className="text-xs text-text-muted">
                       {lesson.estimatedMinutes} min
                     </span>
                     <span
-                      className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded"
+                      className="text-[10px] uppercase tracking-wider px-1.5 py-0.5"
                       style={{
                         color: difficultyColors[lesson.difficulty],
                         background: `${difficultyColors[lesson.difficulty]}15`,
@@ -198,19 +175,13 @@ export default async function ModuleOverviewPage({ params }: Props) {
                       {lesson.difficulty}
                     </span>
                     {status === "in_progress" && (
-                      <span
-                        className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded"
-                        style={{
-                          color: theme.palette.accent,
-                          background: `${theme.palette.accent}15`,
-                        }}
-                      >
+                      <span className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 bg-primary/10 text-primary">
                         In Progress
                       </span>
                     )}
                   </div>
                 </div>
-                <span style={{ color: theme.palette.muted }}>→</span>
+                <span className="text-text-muted">→</span>
               </Link>
             );
           })}

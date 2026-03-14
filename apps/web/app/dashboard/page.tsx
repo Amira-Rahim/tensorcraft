@@ -92,150 +92,110 @@ export default async function DashboardPage() {
     (max, s) => Math.max(max, s.longest_streak ?? 0),
     0,
   );
+  const totalCompleted = themeProgress.reduce(
+    (sum, t) => sum + t.completedLessons,
+    0,
+  );
 
   const displayName =
     profile?.display_name || user.email?.split("@")[0] || "Explorer";
 
   return (
-    <main
-      className="min-h-screen"
-      style={{ background: "var(--tc-bg, #080B16)" }}
-    >
-      <div className="max-w-4xl mx-auto px-6 py-12">
+    <main className="min-h-screen bg-surface relative">
+      <div className="absolute inset-0 grid-bg pointer-events-none z-0" />
+      <div className="max-w-4xl mx-auto px-6 py-12 relative z-10">
         {/* Header */}
         <div className="mb-10">
-          <h1
-            className="text-2xl font-bold mb-1"
-            style={{ color: "var(--tc-text, #FFFFFF)" }}
-          >
+          <div className="font-mono text-[11px] text-text-muted tracking-wider mb-2 flex items-center gap-2">
+            <span className="inline-block w-[5px] h-[5px] bg-primary" />
+            Good to see you
+          </div>
+          <h1 className="text-2xl font-bold font-mono text-text-primary mb-1">
             Welcome back, {displayName}
           </h1>
-          <p className="text-sm" style={{ color: "var(--tc-muted, #8B92A5)" }}>
+          <p className="text-sm font-mono text-text-muted">
             Pick up where you left off or explore a new theme.
           </p>
         </div>
 
         {/* Streak Stats */}
         {totalStreak > 0 && (
-          <div className="flex gap-4 mb-10">
-            <div
-              className="rounded-[14px] px-5 py-4 flex-1"
-              style={{
-                background: "var(--tc-surface, #0F1320)",
-                border: "1px solid rgba(255,255,255,0.06)",
-              }}
-            >
+          <div className="grid grid-cols-3 border border-border mb-10">
+            {[
+              {
+                label: "Day Streak",
+                value: totalStreak,
+                accent: true,
+              },
+              {
+                label: "Best Streak",
+                value: longestStreak,
+                accent: false,
+              },
+              {
+                label: "Lessons Done",
+                value: totalCompleted,
+                accent: false,
+              },
+            ].map((stat, i) => (
               <div
-                className="text-2xl font-bold"
-                style={{ color: "var(--tc-accent, #00D4FF)" }}
+                key={stat.label}
+                className="px-6 py-5"
+                style={{
+                  borderRight: i < 2 ? "1px solid var(--tc-border)" : "none",
+                  background: stat.accent
+                    ? "rgba(107,170,138,0.03)"
+                    : "transparent",
+                }}
               >
-                {totalStreak}
+                <div className="font-mono text-[10px] font-bold text-text-muted tracking-wider uppercase mb-2">
+                  {stat.label}
+                </div>
+                <div
+                  className="font-mono text-3xl font-black leading-none"
+                  style={{
+                    color: stat.accent ? "var(--tc-primary)" : "var(--tc-text)",
+                  }}
+                >
+                  {stat.value}
+                </div>
               </div>
-              <div
-                className="text-xs mt-0.5"
-                style={{ color: "var(--tc-muted, #8B92A5)" }}
-              >
-                Day Streak
-              </div>
-            </div>
-            <div
-              className="rounded-[14px] px-5 py-4 flex-1"
-              style={{
-                background: "var(--tc-surface, #0F1320)",
-                border: "1px solid rgba(255,255,255,0.06)",
-              }}
-            >
-              <div
-                className="text-2xl font-bold"
-                style={{ color: "var(--tc-text, #FFFFFF)" }}
-              >
-                {longestStreak}
-              </div>
-              <div
-                className="text-xs mt-0.5"
-                style={{ color: "var(--tc-muted, #8B92A5)" }}
-              >
-                Best Streak
-              </div>
-            </div>
-            <div
-              className="rounded-[14px] px-5 py-4 flex-1"
-              style={{
-                background: "var(--tc-surface, #0F1320)",
-                border: "1px solid rgba(255,255,255,0.06)",
-              }}
-            >
-              <div
-                className="text-2xl font-bold"
-                style={{ color: "var(--tc-text, #FFFFFF)" }}
-              >
-                {themeProgress.reduce((sum, t) => sum + t.completedLessons, 0)}
-              </div>
-              <div
-                className="text-xs mt-0.5"
-                style={{ color: "var(--tc-muted, #8B92A5)" }}
-              >
-                Lessons Done
-              </div>
-            </div>
+            ))}
           </div>
         )}
 
         {/* Continue Learning */}
         {continueTheme && (
           <section className="mb-10">
-            <h2
-              className="text-xs font-semibold uppercase tracking-widest mb-4"
-              style={{ color: "var(--tc-muted, #8B92A5)" }}
-            >
-              Continue Learning
-            </h2>
+            <div className="font-mono text-[10px] font-bold text-text-muted tracking-wider uppercase mb-3">
+              // Continue Learning
+            </div>
             <Link
               href={`/themes/${continueTheme.themeSlug}/${continueTheme.lastModuleId}/${continueTheme.lastLessonId}`}
-              className="block rounded-[14px] p-6 transition-all hover:scale-[1.01]"
-              style={{
-                background: "var(--tc-surface, #0F1320)",
-                border: `1px solid ${continueTheme.accentColor}30`,
-              }}
+              className="block p-6 bg-surface-raised border-2 border-primary/30 transition-all brutalist-hover brutalist-shadow"
             >
               <div className="flex items-center justify-between mb-3">
-                <span
-                  className="text-sm font-semibold"
-                  style={{ color: continueTheme.accentColor }}
-                >
+                <span className="text-sm font-semibold font-mono text-primary">
                   {continueTheme.displayName}
                 </span>
-                <span
-                  className="text-xs px-2 py-0.5 rounded-full"
-                  style={{
-                    background: `${continueTheme.accentColor}15`,
-                    color: continueTheme.accentColor,
-                  }}
-                >
+                <span className="text-xs font-mono text-text-muted px-2.5 py-1 border border-border">
                   {continueTheme.completedLessons}/{continueTheme.totalLessons}{" "}
                   lessons
                 </span>
               </div>
 
               {/* Progress bar */}
-              <div
-                className="h-1.5 rounded-full overflow-hidden mb-3"
-                style={{ background: "rgba(255,255,255,0.06)" }}
-              >
+              <div className="h-1.5 bg-border overflow-hidden mb-3">
                 <div
-                  className="h-full rounded-full transition-all"
+                  className="h-full bg-primary transition-all"
                   style={{
                     width: `${continueTheme.totalLessons > 0 ? (continueTheme.completedLessons / continueTheme.totalLessons) * 100 : 0}%`,
-                    background: continueTheme.accentColor,
                   }}
                 />
               </div>
 
-              <span
-                className="text-sm font-medium"
-                style={{ color: "rgba(255,255,255,0.9)" }}
-              >
-                Resume →
+              <span className="text-sm font-bold font-mono text-primary uppercase tracking-wider">
+                Resume Lesson →
               </span>
             </Link>
           </section>
@@ -243,13 +203,10 @@ export default async function DashboardPage() {
 
         {/* All Themes */}
         <section>
-          <h2
-            className="text-xs font-semibold uppercase tracking-widest mb-4"
-            style={{ color: "var(--tc-muted, #8B92A5)" }}
-          >
-            Your Themes
-          </h2>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="font-mono text-[10px] font-bold text-text-muted tracking-wider uppercase mb-3">
+            // Your Themes
+          </div>
+          <div className="grid gap-0.5 sm:grid-cols-2">
             {themeProgress.map((tp) => {
               const percent =
                 tp.totalLessons > 0
@@ -261,47 +218,28 @@ export default async function DashboardPage() {
                 <Link
                   key={tp.themeSlug}
                   href={`/themes/${tp.themeSlug}`}
-                  className="rounded-[14px] p-5 transition-all hover:scale-[1.01]"
-                  style={{
-                    background: "var(--tc-surface, #0F1320)",
-                    border: "1px solid rgba(255,255,255,0.06)",
-                  }}
+                  className="p-5 bg-surface-raised border border-border transition-all brutalist-hover"
                 >
                   <div className="flex items-center justify-between mb-3">
-                    <span
-                      className="text-sm font-semibold"
-                      style={{ color: tp.accentColor }}
-                    >
+                    <span className="text-sm font-semibold font-mono text-primary">
                       {tp.displayName}
                     </span>
                     {hasStarted && (
-                      <span
-                        className="text-xs font-mono"
-                        style={{ color: "var(--tc-muted, #8B92A5)" }}
-                      >
+                      <span className="text-xs font-mono text-primary font-bold">
                         {percent}%
                       </span>
                     )}
                   </div>
 
                   {/* Progress bar */}
-                  <div
-                    className="h-1 rounded-full overflow-hidden mb-2"
-                    style={{ background: "rgba(255,255,255,0.06)" }}
-                  >
+                  <div className="h-1 bg-border overflow-hidden mb-2">
                     <div
-                      className="h-full rounded-full transition-all"
-                      style={{
-                        width: `${percent}%`,
-                        background: tp.accentColor,
-                      }}
+                      className="h-full bg-primary transition-all"
+                      style={{ width: `${percent}%` }}
                     />
                   </div>
 
-                  <span
-                    className="text-xs"
-                    style={{ color: "var(--tc-muted, #8B92A5)" }}
-                  >
+                  <span className="text-xs font-mono text-text-muted">
                     {tp.completedLessons} of {tp.totalLessons} lessons
                     {!hasStarted && " — Start learning"}
                   </span>
@@ -313,36 +251,26 @@ export default async function DashboardPage() {
 
         {/* Coming Soon Themes */}
         <section className="mt-10">
-          <h2
-            className="text-xs font-semibold uppercase tracking-widest mb-4"
-            style={{ color: "var(--tc-muted, #8B92A5)" }}
-          >
-            Coming Soon
-          </h2>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="font-mono text-[10px] font-bold text-text-muted tracking-wider uppercase mb-3">
+            // Coming Soon
+          </div>
+          <div className="grid gap-0.5 sm:grid-cols-2">
             {Object.values(themes)
               .filter((t) => t.status === "coming-soon")
               .map((theme) => (
                 <div
                   key={theme.slug}
-                  className="rounded-[14px] p-5 opacity-60"
-                  style={{
-                    background: "var(--tc-surface, #0F1320)",
-                    border: "1px solid rgba(255,255,255,0.04)",
-                  }}
+                  className="p-5 bg-surface-raised border border-border opacity-50"
                 >
-                  <span
-                    className="text-sm font-semibold"
-                    style={{ color: theme.palette.accent }}
-                  >
+                  <span className="text-sm font-semibold font-mono text-text-primary">
                     {theme.displayName}
                   </span>
-                  <p
-                    className="text-xs mt-1"
-                    style={{ color: "var(--tc-muted, #8B92A5)" }}
-                  >
+                  <p className="text-xs font-mono text-text-muted mt-1">
                     {theme.specialization}
                   </p>
+                  <span className="inline-block mt-2 font-mono text-[9px] text-text-muted border border-border px-2 py-0.5 tracking-wider">
+                    COMING SOON
+                  </span>
                 </div>
               ))}
           </div>

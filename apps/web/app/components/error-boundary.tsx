@@ -38,15 +38,16 @@ export class ErrorBoundary extends Component<
       return (
         <div className="flex min-h-[200px] items-center justify-center p-8">
           <div className="text-center">
-            <h2 className="mb-2 text-lg font-semibold text-white">
+            <h2 className="mb-2 text-lg font-semibold font-mono text-text-primary">
               Something went wrong
             </h2>
-            <p className="mb-4 text-sm text-[#8B92A5]">
+            <p className="mb-4 text-sm text-text-muted">
               An unexpected error occurred. Please try refreshing the page.
             </p>
             <button
+              type="button"
               onClick={() => this.setState({ hasError: false, error: null })}
-              className="rounded-full bg-[#00D4FF]/10 px-4 py-2 text-sm text-[#00D4FF] transition-colors hover:bg-[#00D4FF]/20"
+              className="bg-primary/10 px-4 py-2 text-sm font-mono text-primary transition-colors hover:bg-primary/20 brutalist-hover"
             >
               Try again
             </button>

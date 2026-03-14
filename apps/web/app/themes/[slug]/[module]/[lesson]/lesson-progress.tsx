@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   markLessonStarted,
   markLessonCompleted,
@@ -30,7 +30,6 @@ export function LessonProgressTracker({
     let cancelled = false;
 
     async function trackStart() {
-      // First check current status
       const current = await getLessonStatus(themeId, lessonId);
       if (cancelled) return;
 
@@ -39,7 +38,6 @@ export function LessonProgressTracker({
           current.status as "not_started" | "in_progress" | "completed",
         );
       } else {
-        // Mark as started
         const result = await markLessonStarted(themeId, moduleId, lessonId);
         if (cancelled) return;
         if (result) setStatus("in_progress");
@@ -64,30 +62,11 @@ export function LessonProgressTracker({
   // Don't render anything if no auth (guest user)
   if (status === null) return null;
 
-  const completedStyle = useMemo(
-    () => ({
-      background: "rgba(74, 222, 128, 0.08)",
-      border: "1px solid rgba(74, 222, 128, 0.2)",
-    }),
-    [],
-  );
-
-  const buttonStyle = useMemo(
-    () => ({
-      background: completing ? "rgba(255,255,255,0.06)" : accentColor,
-      color: completing ? "rgba(255,255,255,0.4)" : "#080B16",
-    }),
-    [completing, accentColor],
-  );
-
   if (status === "completed") {
     return (
-      <div
-        className="flex items-center gap-2 px-4 py-3 rounded-xl my-6"
-        style={completedStyle}
-      >
-        <span className="text-sm">✓</span>
-        <span className="text-sm font-medium" style={{ color: "#4ADE80" }}>
+      <div className="flex items-center gap-2 px-4 py-3 my-6 bg-primary/8 border border-primary/20">
+        <span className="text-sm text-primary">✓</span>
+        <span className="text-sm font-medium text-primary">
           Lesson completed
         </span>
       </div>
@@ -100,8 +79,11 @@ export function LessonProgressTracker({
         type="button"
         onClick={handleComplete}
         disabled={completing}
-        className="w-full py-3 rounded-full text-sm font-semibold uppercase tracking-wider transition-all"
-        style={buttonStyle}
+        className="w-full py-3 text-sm font-semibold font-mono uppercase tracking-wider transition-all brutalist-hover disabled:opacity-50"
+        style={{
+          background: completing ? "var(--tc-border)" : accentColor,
+          color: completing ? "var(--tc-muted)" : "var(--tc-bg)",
+        }}
       >
         {completing ? "Saving..." : "Mark as Complete"}
       </button>

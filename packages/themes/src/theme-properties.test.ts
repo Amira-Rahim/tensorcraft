@@ -15,8 +15,7 @@ const REQUIRED_CSS_PROPS = [
   "--tc-text",
   "--tc-muted",
   "--tc-border",
-  "--tc-glow",
-  "--tc-neon-line",
+  "--tc-code-bg",
 ];
 
 const PALETTE_KEYS = [
@@ -24,10 +23,11 @@ const PALETTE_KEYS = [
   "primary",
   "accent",
   "surface",
+  "surfaceOverlay",
   "text",
   "muted",
-  "glow",
-  "neonLine",
+  "border",
+  "codeBg",
 ] as const;
 
 describe("Theme CSS custom properties", () => {
@@ -48,7 +48,7 @@ describe("Theme CSS custom properties", () => {
   );
 
   it.each([...themeSlugs])(
-    "theme '%s' defines all 10 required --tc-* properties",
+    "theme '%s' defines all 9 required --tc-* properties",
     (slug) => {
       // Extract the CSS block for this theme
       const selectorPattern =
@@ -112,13 +112,11 @@ describe("Theme manifest/CSS consistency", () => {
   );
 });
 
-describe("ThemePalette vs CSS property gap", () => {
-  it("documents that CSS has 10 properties but ThemePalette has 8 keys", () => {
-    // CSS defines: bg, primary, accent, surface, surface-overlay, text, muted, border, glow, neon-line (10)
-    // ThemePalette has: bg, primary, accent, surface, text, muted, glow, neonLine (8)
-    // Missing from TS: border, surfaceOverlay
-    expect(REQUIRED_CSS_PROPS.length).toBe(10);
-    expect(PALETTE_KEYS.length).toBe(8);
-    // This test documents the known gap — update when ThemePalette is extended
+describe("ThemePalette vs CSS property alignment", () => {
+  it("CSS and ThemePalette both have 9 properties", () => {
+    // CSS defines: bg, primary, accent, surface, surface-overlay, text, muted, border, code-bg (9)
+    // ThemePalette has: bg, primary, accent, surface, surfaceOverlay, text, muted, border, codeBg (9)
+    expect(REQUIRED_CSS_PROPS.length).toBe(9);
+    expect(PALETTE_KEYS.length).toBe(9);
   });
 });

@@ -7,14 +7,12 @@ interface NotifyMeButtonProps {
   themeId: string;
   themeName: string;
   accentColor: string;
-  mutedColor: string;
 }
 
 export function NotifyMeButton({
   themeId,
   themeName,
   accentColor,
-  mutedColor,
 }: NotifyMeButtonProps) {
   const [showForm, setShowForm] = useState(false);
   const [email, setEmail] = useState("");
@@ -34,7 +32,7 @@ export function NotifyMeButton({
   if (status === "done") {
     return (
       <span
-        className="inline-flex items-center justify-center px-5 py-2.5 rounded-full text-sm font-medium"
+        className="inline-flex items-center justify-center px-5 py-2.5 text-sm font-medium font-mono"
         style={{ color: accentColor }}
       >
         You&apos;ll be notified when {themeName} launches
@@ -51,17 +49,16 @@ export function NotifyMeButton({
           placeholder="your@email.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="flex-1 h-10 px-3 rounded-full text-sm text-white outline-none"
-          style={{
-            background: "rgba(255,255,255,0.04)",
-            border: "1px solid rgba(255,255,255,0.1)",
-          }}
+          className="flex-1 h-10 px-3 text-sm font-mono text-text-primary outline-none bg-surface border border-border placeholder:text-text-muted/50 focus:border-primary"
         />
         <button
           type="submit"
           disabled={status === "saving"}
-          className="h-10 px-4 rounded-full text-sm font-medium transition-opacity hover:opacity-90 disabled:opacity-50"
-          style={{ background: accentColor, color: "#000" }}
+          className="h-10 px-4 text-sm font-semibold font-mono text-black disabled:opacity-50 transition-all hover:translate-x-px hover:translate-y-px hover:shadow-none"
+          style={{
+            background: accentColor,
+            boxShadow: `3px 3px 0px ${accentColor}55`,
+          }}
         >
           {status === "saving" ? "..." : "Notify"}
         </button>
@@ -73,13 +70,13 @@ export function NotifyMeButton({
     <button
       type="button"
       onClick={() => setShowForm(true)}
-      className="inline-flex items-center justify-center px-5 py-2.5 rounded-full text-sm font-medium transition-colors hover:bg-white/[0.03]"
+      className="inline-flex items-center justify-center px-5 py-2.5 text-sm font-medium font-mono border border-border transition-all hover:translate-x-px hover:translate-y-px hover:shadow-none"
       style={{
-        border: "1px solid rgba(255,255,255,0.1)",
-        color: mutedColor,
+        color: accentColor,
+        boxShadow: `3px 3px 0px ${accentColor}33`,
       }}
     >
-      Notify Me
+      Join Waitlist &rarr;
     </button>
   );
 }

@@ -22,47 +22,16 @@ export function PaymentError() {
   return (
     <div
       role="alert"
-      style={{
-        background: "var(--tc-surface, #0F1320)",
-        border: "1px solid rgba(239,68,68,0.35)",
-        borderRadius: "14px",
-        padding: "16px 24px",
-        margin: "0 auto",
-        maxWidth: "720px",
-        display: "flex",
-        alignItems: "center",
-        gap: "14px",
-        position: "relative",
-      }}
+      className="flex items-center gap-3.5 relative mx-auto max-w-[720px] px-6 py-4 bg-surface-raised border border-red-500/35"
     >
       {/* Red indicator dot */}
-      <span
-        style={{
-          width: "8px",
-          height: "8px",
-          borderRadius: "50%",
-          background: "#EF4444",
-          flexShrink: 0,
-        }}
-      />
+      <span className="w-2 h-2 bg-red-500 shrink-0" />
 
-      <p
-        style={{
-          flex: 1,
-          margin: 0,
-          fontSize: "14px",
-          lineHeight: "1.5",
-          color: "var(--tc-text, #FFFFFF)",
-        }}
-      >
+      <p className="flex-1 m-0 text-sm leading-relaxed text-text-primary">
         Payment could not be completed. Please try again or{" "}
         <a
           href="mailto:support@tensorcraft.dev"
-          style={{
-            color: "#EF4444",
-            textDecoration: "underline",
-            textUnderlineOffset: "2px",
-          }}
+          className="text-red-500 underline underline-offset-2"
         >
           contact support
         </a>
@@ -72,23 +41,7 @@ export function PaymentError() {
       <button
         onClick={dismiss}
         aria-label="Dismiss error"
-        style={{
-          background: "transparent",
-          border: "1px solid rgba(255,255,255,0.06)",
-          borderRadius: "8px",
-          color: "var(--tc-muted, #8B92A5)",
-          cursor: "pointer",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          width: "32px",
-          height: "32px",
-          flexShrink: 0,
-          fontSize: "16px",
-          lineHeight: 1,
-          padding: 0,
-          transition: "border-color 0.15s",
-        }}
+        className="flex items-center justify-center w-8 h-8 shrink-0 bg-transparent border border-border text-text-muted hover:text-text-primary hover:border-primary/30 transition-colors cursor-pointer text-base leading-none p-0"
       >
         &#10005;
       </button>

@@ -10,6 +10,8 @@ export type ThemeStatus = "launched" | "coming-soon" | "beta" | "hidden";
 /**
  * Theme color palette — maps to CSS custom properties (--tc-*).
  * All colors are designed for dark backgrounds. No light mode.
+ *
+ * Brutalist Terminal aesthetic: sharp edges, offset shadows, monospace-first.
  */
 export interface ThemePalette {
   /** Page background */
@@ -20,14 +22,16 @@ export interface ThemePalette {
   accent: string;
   /** Raised surface (cards, panels) */
   surface: string;
+  /** Elevated surface (overlays, dropdowns) */
+  surfaceOverlay: string;
   /** Body text */
   text: string;
   /** Muted/secondary text */
   muted: string;
-  /** Neon glow color for box-shadow/text-shadow effects */
-  glow: string;
-  /** Neon line color for animated borders/dividers */
-  neonLine: string;
+  /** Border color */
+  border: string;
+  /** Code block background */
+  codeBg: string;
 }
 
 /**

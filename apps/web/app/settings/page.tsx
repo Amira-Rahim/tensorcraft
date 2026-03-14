@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { SettingsForm } from "./settings-form";
+import { AmbientBackground } from "@/app/components/ambient-background";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -26,15 +27,10 @@ export default async function SettingsPage() {
   const profileRecord = profile as Record<string, unknown> | null;
 
   return (
-    <main
-      className="min-h-screen"
-      style={{ background: "var(--tc-bg, #080B16)" }}
-    >
-      <div className="max-w-2xl mx-auto px-6 py-12">
-        <h1
-          className="text-2xl font-bold mb-8"
-          style={{ color: "var(--tc-text, #FFFFFF)" }}
-        >
+    <main className="min-h-screen bg-surface relative overflow-hidden">
+      <AmbientBackground count={160} />
+      <div className="max-w-2xl mx-auto px-6 py-12 relative z-10">
+        <h1 className="text-2xl font-bold mb-8 text-text-primary font-mono">
           Settings
         </h1>
 

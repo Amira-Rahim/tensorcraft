@@ -154,22 +154,25 @@ Lessons are authored in MDX and use a library of custom React components. These 
 
 ### 2.4 Theme Manifest Specification
 
-Each theme ships a `manifest.json` file at its package root. This manifest drives the theme selection UI, asset loading, and content resolution.
+Each theme is defined as a TypeScript `ThemeManifest` object in `packages/themes/src/<theme>.ts`. The manifest drives the theme selection UI, asset loading, and content resolution.
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `id` | `string` | Yes | Unique theme identifier (e.g., `cyberpunk`, `botanical`, `retro-arcade`) |
-| `name` | `string` | Yes | Display name shown in the theme picker (e.g., "Cyberpunk Neural Nets") |
-| `tagline` | `string` | Yes | One-line description for the theme selection card (max 120 chars) |
-| `description` | `string` | Yes | Full description shown on hover or expand (max 300 chars) |
-| `icon` | `string` | Yes | Path to theme icon SVG relative to package root |
-| `previewImage` | `string` | Yes | Path to theme preview image (16:9 ratio, min 800x450) |
-| `colorPrimary` | `string` | Yes | Primary brand color as hex (e.g., `#00FF41`) for UI accents |
-| `colorSecondary` | `string` | Yes | Secondary color as hex for gradients and backgrounds |
-| `colorSurface` | `string` | Yes | Surface/card background color as hex |
-| `mascot` | `string` | No | Path to mascot SVG/animated SVG if the theme has a mascot character |
-| `cssEntrypoint` | `string` | Yes | Path to the theme's main CSS file containing `@theme` overrides |
-| `supportedLocales` | `string[]` | Yes | Array of locale codes this theme is available in (e.g., `["en"]`) |
+| `id` | `string` | Yes | Unique theme identifier (e.g., `space`, `cyberpunk`) |
+| `slug` | `string` | Yes | URL-friendly slug (e.g., `deep-orbit`) |
+| `displayName` | `string` | Yes | Display name shown in the theme picker |
+| `tagline` | `string` | Yes | One-line description for the theme selection card |
+| `description` | `string` | Yes | Full description (narrative hook) |
+| `status` | `ThemeStatus` | Yes | `launched`, `coming-soon`, `beta`, or `hidden` |
+| `palette` | `ThemePalette` | Yes | Color palette: `bg`, `primary`, `accent`, `surface`, `surfaceOverlay`, `text`, `muted`, `border`, `codeBg` |
+| `terminology` | `ThemeTerminology` | Yes | UI label overrides (`lesson`, `module`, `exercise`) |
+| `protagonist` | `string` | Yes | Learner's role in the narrative |
+| `sandpackTheme` | `string` | Yes | Sandpack editor color theme |
+| `characters` | `ThemeCharacter[]` | Yes | Characters in the story (5 per theme) |
+| `comingSoon` | `ThemeComingSoon` | No | Preview content for non-launched themes |
+| `specialization` | `string` | Yes | ML specialization area |
+| `modelBuilt` | `string` | Yes | Model the learner builds |
+| `careerPaths` | `string[]` | Yes | Relevant career paths with salary ranges |
 
 #### Theme Selection UI Behavior
 

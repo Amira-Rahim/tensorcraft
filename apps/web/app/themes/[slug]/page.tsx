@@ -4,6 +4,7 @@ import { themes } from "@tensorcraft/themes";
 import { getModules, isFoundationsModule } from "@tensorcraft/content";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { hasThemePurchase } from "@/lib/progress";
+import { AmbientBackground } from "@/app/components/ambient-background";
 import type { Metadata } from "next";
 
 interface Props {
@@ -32,7 +33,6 @@ export default async function ThemeDetailPage({ params }: Props) {
 
   const themeModules = getModules(slug);
 
-  // Check if user has purchased this theme
   const supabase = await getSupabaseServerClient();
   const {
     data: { user },
@@ -40,67 +40,43 @@ export default async function ThemeDetailPage({ params }: Props) {
   const hasPurchased = user ? await hasThemePurchase(user.id, slug) : false;
 
   return (
-    <main
-      className="min-h-screen px-6 py-20"
-      style={{ background: "var(--tc-bg, #080B16)" }}
-    >
-      <div className="max-w-4xl mx-auto">
+    <main className="min-h-screen px-6 py-20 bg-surface relative overflow-hidden">
+      <AmbientBackground />
+      <div className="max-w-4xl mx-auto relative z-10">
         {/* Theme header */}
         <div className="mb-12">
           <Link
             href="/themes"
-            className="text-sm mb-4 inline-block"
-            style={{ color: "var(--tc-muted, #8B92A5)" }}
+            className="text-sm mb-4 inline-block text-text-muted hover:text-text-primary transition-colors"
           >
             ← All Themes
           </Link>
-          <h1
-            className="text-4xl font-bold mb-2"
-            style={{ color: theme.palette.text }}
-          >
+          <h1 className="text-4xl font-bold font-mono mb-2 text-text-primary">
             {theme.displayName}
           </h1>
-          <p className="text-lg mb-2" style={{ color: theme.palette.accent }}>
+          <p className="text-lg mb-2" style={{ color: theme.palette.primary }}>
             {theme.specialization}
           </p>
-          <p
-            className="text-base leading-relaxed max-w-2xl"
-            style={{ color: theme.palette.muted }}
-          >
+          <p className="text-base leading-relaxed max-w-2xl text-text-muted">
             {theme.description}
           </p>
         </div>
 
         {/* Characters */}
         <div className="mb-12">
-          <h2
-            className="text-sm uppercase tracking-widest mb-4"
-            style={{ color: "var(--tc-muted, #8B92A5)" }}
-          >
+          <h2 className="text-sm font-mono uppercase tracking-widest mb-4 text-text-muted">
             Your Crew
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
             {theme.characters.map((char) => (
               <div
                 key={char.name}
-                className="rounded-xl p-3 text-center"
-                style={{
-                  background: theme.palette.surface,
-                  border: "1px solid rgba(255,255,255,0.06)",
-                }}
+                className="p-3 text-center bg-surface-raised border border-border"
               >
-                <p
-                  className="text-sm font-medium"
-                  style={{ color: theme.palette.text }}
-                >
+                <p className="text-sm font-medium text-text-primary">
                   {char.name}
                 </p>
-                <p
-                  className="text-[11px]"
-                  style={{ color: theme.palette.muted }}
-                >
-                  {char.role}
-                </p>
+                <p className="text-[11px] text-text-muted">{char.role}</p>
               </div>
             ))}
           </div>
@@ -108,10 +84,7 @@ export default async function ThemeDetailPage({ params }: Props) {
 
         {/* Modules */}
         <div>
-          <h2
-            className="text-sm uppercase tracking-widest mb-4"
-            style={{ color: "var(--tc-muted, #8B92A5)" }}
-          >
+          <h2 className="text-sm font-mono uppercase tracking-widest mb-4 text-text-muted">
             {theme.terminology.module}s
           </h2>
           <div className="flex flex-col gap-4">
@@ -119,15 +92,9 @@ export default async function ThemeDetailPage({ params }: Props) {
               const isFree = isFoundationsModule(mod);
               const isLocked = !isFree && !hasPurchased;
 
-              const cardClass = `rounded-xl p-5 flex items-center justify-between transition-colors ${
-                isLocked ? "opacity-60 cursor-default" : "hover:bg-white/[0.02]"
+              const cardClass = `p-5 flex items-center justify-between transition-colors border border-border bg-surface-raised ${
+                isLocked ? "opacity-60 cursor-default" : "brutalist-hover"
               }`;
-              const cardStyle = {
-                background: theme.palette.surface,
-                border: isLocked
-                  ? "1px solid rgba(255,255,255,0.03)"
-                  : "1px solid rgba(255,255,255,0.06)",
-              };
 
               const cardContent = (
                 <>
@@ -138,36 +105,24 @@ export default async function ThemeDetailPage({ params }: Props) {
                         style={{
                           color: isLocked
                             ? theme.palette.muted
-                            : theme.palette.accent,
+                            : theme.palette.primary,
                         }}
                       >
                         {theme.terminology.module} {mod.order}
                       </span>
                       {isFree && (
-                        <span
-                          className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded"
-                          style={{
-                            background: "rgba(0,212,255,0.1)",
-                            color: "#00D4FF",
-                          }}
-                        >
+                        <span className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 bg-primary/10 text-primary">
                           Foundations
                         </span>
                       )}
                       {isLocked && (
-                        <span
-                          className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded flex items-center gap-1"
-                          style={{
-                            background: "rgba(255,255,255,0.04)",
-                            color: theme.palette.muted,
-                          }}
-                        >
+                        <span className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 flex items-center gap-1 bg-surface-overlay text-text-muted">
                           &#128274; Locked
                         </span>
                       )}
                     </div>
                     <h3
-                      className="text-lg font-semibold"
+                      className="text-lg font-semibold font-mono"
                       style={{
                         color: isLocked
                           ? theme.palette.muted
@@ -176,30 +131,24 @@ export default async function ThemeDetailPage({ params }: Props) {
                     >
                       {mod.title}
                     </h3>
-                    <p
-                      className="text-sm mt-1"
-                      style={{ color: theme.palette.muted }}
-                    >
+                    <p className="text-sm mt-1 text-text-muted">
                       {mod.description}
                     </p>
                     {isLocked && (
                       <Link
                         href="/pricing"
-                        className="inline-flex text-xs mt-2 underline underline-offset-2"
-                        style={{ color: theme.palette.accent }}
+                        className="inline-flex text-xs mt-2 underline underline-offset-2 text-primary"
                       >
                         Purchase to unlock
                       </Link>
                     )}
                   </div>
-                  {!isLocked && (
-                    <span style={{ color: theme.palette.muted }}>→</span>
-                  )}
+                  {!isLocked && <span className="text-text-muted">→</span>}
                 </>
               );
 
               return isLocked ? (
-                <div key={mod.slug} className={cardClass} style={cardStyle}>
+                <div key={mod.slug} className={cardClass}>
                   {cardContent}
                 </div>
               ) : (
@@ -207,7 +156,6 @@ export default async function ThemeDetailPage({ params }: Props) {
                   key={mod.slug}
                   href={`/themes/${slug}/${mod.slug}`}
                   className={cardClass}
-                  style={cardStyle}
                 >
                   {cardContent}
                 </Link>
@@ -215,10 +163,7 @@ export default async function ThemeDetailPage({ params }: Props) {
             })}
 
             {themeModules.length === 0 && (
-              <p
-                className="text-sm py-8 text-center"
-                style={{ color: "var(--tc-muted, #8B92A5)" }}
-              >
+              <p className="text-sm py-8 text-center text-text-muted">
                 Content coming soon. Check back after building the content
                 pipeline.
               </p>

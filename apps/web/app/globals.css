@@ -6,6 +6,7 @@
   --color-surface: var(--tc-bg);
   --color-surface-raised: var(--tc-surface);
   --color-surface-overlay: var(--tc-surface-overlay);
+  --color-code-bg: var(--tc-code-bg);
 
   /* Text */
   --color-text-primary: var(--tc-text);
@@ -14,10 +15,6 @@
   /* Theme colors */
   --color-primary: var(--tc-primary);
   --color-accent: var(--tc-accent);
-
-  /* Neon effects */
-  --color-glow: var(--tc-glow);
-  --color-neon-line: var(--tc-neon-line);
 
   /* Semantic */
   --color-success: #10b981;
@@ -32,16 +29,16 @@
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
 
-  /* Border radius */
-  --radius-sm: 0.25rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
+  /* Border radius — brutalist: no rounding */
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
 }
 
 /*
  * Tensorcraft Global Styles
- * Dark mode only. Neon aesthetic. Futuristic UI.
+ * Dark mode only. Brutalist terminal aesthetic.
  */
 
 html {
@@ -51,97 +48,41 @@ html {
 body {
   background-color: var(--tc-bg);
   color: var(--tc-text);
-  font-family: var(--font-sans);
+  font-family: var(--font-mono);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ===== Neon Utility Classes ===== */
+/* ===== Brutalist Utility Classes ===== */
 
-/* Neon text glow effect */
-.neon-text {
-  text-shadow:
-    0 0 7px var(--tc-glow),
-    0 0 10px var(--tc-glow),
-    0 0 21px var(--tc-glow),
-    0 0 42px var(--tc-glow);
+/* Offset box shadow (brutalist depth) */
+.brutalist-shadow {
+  box-shadow: 4px 4px 0 rgba(107, 170, 138, 0.25);
 }
 
-/* Subtle neon text (less intense) */
-.neon-text-subtle {
-  text-shadow:
-    0 0 5px color-mix(in srgb, var(--tc-glow) 40%, transparent),
-    0 0 10px color-mix(in srgb, var(--tc-glow) 20%, transparent);
+/* Brutalist hover: lift + larger shadow */
+.brutalist-hover {
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
-/* Neon box glow */
-.neon-box {
-  box-shadow:
-    0 0 5px color-mix(in srgb, var(--tc-glow) 30%, transparent),
-    0 0 15px color-mix(in srgb, var(--tc-glow) 15%, transparent),
-    inset 0 0 5px color-mix(in srgb, var(--tc-glow) 10%, transparent);
+.brutalist-hover:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 rgba(107, 170, 138, 0.35);
 }
 
-/* Neon border glow */
-.neon-border {
-  border: 1px solid var(--tc-glow);
-  box-shadow:
-    0 0 5px color-mix(in srgb, var(--tc-glow) 40%, transparent),
-    inset 0 0 5px color-mix(in srgb, var(--tc-glow) 10%, transparent);
+/* // COMMENT section label */
+.comment-label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--tc-muted);
 }
 
-/* Animated gradient background */
-@keyframes gradient-shift {
-  0%,
-  100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-}
-
-.animate-gradient {
-  background-size: 200% 200%;
-  animation: gradient-shift 15s ease infinite;
-}
-
-/* Animated neon line */
-@keyframes neon-pulse {
-  0%,
-  100% {
-    opacity: 0.4;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-
-.neon-line {
-  background: var(--tc-neon-line);
-  animation: neon-pulse 2s ease-in-out infinite;
-}
-
-/* Grid pattern overlay */
-.grid-pattern {
-  background-image:
-    linear-gradient(
-      color-mix(in srgb, var(--tc-primary) 8%, transparent) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      90deg,
-      color-mix(in srgb, var(--tc-primary) 8%, transparent) 1px,
-      transparent 1px
-    );
-  background-size: 60px 60px;
-}
-
-/* Frosted glass */
-.glass {
-  background: color-mix(in srgb, var(--tc-surface) 60%, transparent);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+.comment-label::before {
+  content: "// ";
 }
 
 /* Fade up animation */
@@ -160,28 +101,71 @@ body {
   animation: fade-up 0.5s ease both;
 }
 
-/* Hero breathing color washes */
-@keyframes breathe-left {
-  0%,
-  100% {
-    opacity: 0.6;
-    transform: translate(-50%, -50%) scale(1) translateX(0);
+/* ===== Ticker / Bridge System ===== */
+@keyframes ticker-scroll {
+  from {
+    transform: translateX(0);
   }
-  50% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1.15) translateX(30px);
+  to {
+    transform: translateX(-50%);
   }
 }
 
-@keyframes breathe-right {
+.ticker-track {
+  animation: ticker-scroll 38s linear infinite;
+  will-change: transform;
+}
+
+/* ===== Grid background overlay ===== */
+.grid-bg {
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 39px,
+      rgba(255, 255, 255, 0.018) 39px,
+      rgba(255, 255, 255, 0.018) 40px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 39px,
+      rgba(255, 255, 255, 0.018) 39px,
+      rgba(255, 255, 255, 0.018) 40px
+    );
+}
+
+/* ===== Heatmap cell pop ===== */
+@keyframes hpop {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ===== Code typing cursor blink ===== */
+@keyframes blink {
   0%,
   100% {
     opacity: 1;
-    transform: translate(-50%, -50%) scale(1.1) translateX(0);
   }
   50% {
-    opacity: 0.6;
-    transform: translate(-50%, -50%) scale(1) translateX(-30px);
+    opacity: 0;
+  }
+}
+
+/* ===== Pulse animation ===== */
+@keyframes pulse-soft {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
   }
 }
 

@@ -11,70 +11,86 @@
 /* ===== DEEP ORBIT (Space) — Default Theme ===== */
 :root,
 [data-theme="deep-orbit"] {
-  --tc-bg: #0B0D1A;
-  --tc-primary: #7B68EE;
-  --tc-accent: #F0C75E;
-  --tc-surface: #16213E;
-  --tc-surface-overlay: #1E2D4A;
-  --tc-text: #E2E8F0;
-  --tc-muted: #64748B;
-  --tc-border: #2A3A5C;
-  --tc-glow: #7B68EE;
-  --tc-neon-line: #F0C75E;
+  --tc-bg: #1c1c1c;
+  --tc-primary: #6baa8a;
+  --tc-accent: #a89060;
+  --tc-surface: #252525;
+  --tc-surface-overlay: #313131;
+  --tc-text: #c8c8c8;
+  --tc-muted: #5a5a5a;
+  --tc-border: #2a2a2a;
+  --tc-code-bg: #161616;
+
+  /* Secondary palette for bridge tiers */
+  --tc-tier-identity: #6baa8a;
+  --tc-tier-structural: #7096b0;
+  --tc-tier-intuition: #a89060;
 }
 
 /* ===== NEON PROTOCOL (Cyberpunk) ===== */
 [data-theme="neon-protocol"] {
-  --tc-bg: #0A0A0F;
-  --tc-primary: #00D4FF;
-  --tc-accent: #FF2D7B;
-  --tc-surface: #151520;
-  --tc-surface-overlay: #1F1F2E;
-  --tc-text: #E2E8F0;
-  --tc-muted: #6B7280;
-  --tc-border: #2A2A3D;
-  --tc-glow: #00D4FF;
-  --tc-neon-line: #FF2D7B;
+  --tc-bg: #1c1c1c;
+  --tc-primary: #4a90d9;
+  --tc-accent: #a07090;
+  --tc-surface: #252525;
+  --tc-surface-overlay: #313131;
+  --tc-text: #c8c8c8;
+  --tc-muted: #5a5a5a;
+  --tc-border: #2a2a2a;
+  --tc-code-bg: #161616;
+
+  --tc-tier-identity: #4a90d9;
+  --tc-tier-structural: #7096b0;
+  --tc-tier-intuition: #a89060;
 }
 
 /* ===== SIGNAL WARD (Medical) ===== */
 [data-theme="signal-ward"] {
-  --tc-bg: #0A1628;
-  --tc-primary: #2ECC71;
-  --tc-accent: #5B8DEF;
-  --tc-surface: #132238;
-  --tc-surface-overlay: #1A2E48;
-  --tc-text: #F0F4F8;
-  --tc-muted: #6B7280;
-  --tc-border: #1E3A5F;
-  --tc-glow: #2ECC71;
-  --tc-neon-line: #5B8DEF;
+  --tc-bg: #1c1c1c;
+  --tc-primary: #5baa70;
+  --tc-accent: #7096b0;
+  --tc-surface: #252525;
+  --tc-surface-overlay: #313131;
+  --tc-text: #c8c8c8;
+  --tc-muted: #5a5a5a;
+  --tc-border: #2a2a2a;
+  --tc-code-bg: #161616;
+
+  --tc-tier-identity: #5baa70;
+  --tc-tier-structural: #7096b0;
+  --tc-tier-intuition: #a89060;
 }
 
 /* ===== NOVA CANVAS (Creative AI) ===== */
 [data-theme="nova-canvas"] {
-  --tc-bg: #0D0D1A;
-  --tc-primary: #FF6B6B;
-  --tc-accent: #A78BFA;
-  --tc-surface: #1A1A30;
-  --tc-surface-overlay: #242440;
-  --tc-text: #E2E8F0;
-  --tc-muted: #6B7280;
-  --tc-border: #2D2D4A;
-  --tc-glow: #FF6B6B;
-  --tc-neon-line: #A78BFA;
+  --tc-bg: #1c1c1c;
+  --tc-primary: #c06060;
+  --tc-accent: #7868a8;
+  --tc-surface: #252525;
+  --tc-surface-overlay: #313131;
+  --tc-text: #c8c8c8;
+  --tc-muted: #5a5a5a;
+  --tc-border: #2a2a2a;
+  --tc-code-bg: #161616;
+
+  --tc-tier-identity: #c06060;
+  --tc-tier-structural: #7096b0;
+  --tc-tier-intuition: #a89060;
 }
 
 /* ===== TERRA GRID (Industrial) ===== */
 [data-theme="terra-grid"] {
-  --tc-bg: #111827;
-  --tc-primary: #F59E0B;
-  --tc-accent: #10B981;
-  --tc-surface: #1F2937;
-  --tc-surface-overlay: #2D3748;
-  --tc-text: #E5E7EB;
-  --tc-muted: #6B7280;
-  --tc-border: #374151;
-  --tc-glow: #F59E0B;
-  --tc-neon-line: #10B981;
+  --tc-bg: #1c1c1c;
+  --tc-primary: #b08030;
+  --tc-accent: #6baa8a;
+  --tc-surface: #252525;
+  --tc-surface-overlay: #313131;
+  --tc-text: #c8c8c8;
+  --tc-muted: #5a5a5a;
+  --tc-border: #2a2a2a;
+  --tc-code-bg: #161616;
+
+  --tc-tier-identity: #b08030;
+  --tc-tier-structural: #7096b0;
+  --tc-tier-intuition: #a89060;
 }

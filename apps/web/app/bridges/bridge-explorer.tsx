@@ -3,14 +3,21 @@
 import { useState, useMemo } from "react";
 import {
   BRIDGES,
-  BRIDGE_TIER_COLORS,
   BRIDGE_TIER_LABELS,
   BRIDGE_CATEGORY_LABELS,
 } from "@tensorcraft/shared";
 import type { Bridge, BridgeTier, BridgeCategory } from "@tensorcraft/shared";
+import { AmbientBackground } from "@/app/components/ambient-background";
 
 type TierFilter = BridgeTier | "all";
 type CategoryFilter = BridgeCategory | "all";
+
+/** Tier colors using CSS custom properties */
+const TIER_COLORS: Record<BridgeTier, string> = {
+  identity: "var(--tc-tier-identity)",
+  structural: "var(--tc-tier-structural)",
+  intuition: "var(--tc-tier-intuition)",
+};
 
 export function BridgeExplorer() {
   const [search, setSearch] = useState("");
@@ -35,40 +42,84 @@ export function BridgeExplorer() {
   }, [search, tierFilter, categoryFilter]);
 
   return (
-    <div>
-      {/* Controls */}
-      <div className="flex flex-col sm:flex-row gap-4 mb-10">
-        {/* Search */}
+    <div className="font-sans relative">
+      <AmbientBackground count={200} />
+      {/* Header */}
+      <div className="mb-10">
+        <p className="text-xs tracking-widest mb-2 text-text-muted font-mono">
+          {"// BRIDGE SYSTEM — " + BRIDGES.length + " MAPPINGS"}
+        </p>
+        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-3 text-text-primary font-mono">
+          BRIDGE EXPLORER
+        </h1>
+        <p className="text-sm max-w-xl text-text-muted">
+          Every ML concept mapped to a frontend pattern you already know.
+          Search, filter, and expand any bridge to see the connection.
+        </p>
+      </div>
+
+      {/* Search */}
+      <div className="mb-6">
         <label htmlFor="bridge-search" className="sr-only">
           Search bridges
         </label>
-        <input
-          id="bridge-search"
-          type="text"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder='Search bridges... (e.g. "ReLU", "middleware", "canvas")'
-          className="flex-1 rounded-full bg-surface border border-border px-5 py-3 text-sm text-text-primary placeholder:text-text-muted/60 outline-none focus:border-accent/40 transition-colors"
-        />
+        <div className="relative">
+          <input
+            id="bridge-search"
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="search bridges..."
+            className="w-full px-4 py-3 text-sm outline-none transition-colors font-mono bg-surface-raised border border-border text-text-primary"
+          />
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] px-1.5 py-0.5 text-text-muted border border-border font-mono">
+            ⌘K
+          </span>
+        </div>
+      </div>
 
-        {/* Tier filter */}
-        <div className="flex items-center gap-2">
-          <TierPill
+      {/* Filter bar + count */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+        {/* Tier segmented control */}
+        <div
+          className="flex items-center border border-border"
+          role="group"
+          aria-label="Filter by tier"
+        >
+          <TierButton
             active={tierFilter === "all"}
             onClick={() => setTierFilter("all")}
-            color="#8B92A5"
-            label="All tiers"
+            label="All"
           />
           {(Object.keys(BRIDGE_TIER_LABELS) as BridgeTier[]).map((tier) => (
-            <TierPill
+            <TierButton
               key={tier}
               active={tierFilter === tier}
               onClick={() => setTierFilter(tierFilter === tier ? "all" : tier)}
-              color={BRIDGE_TIER_COLORS[tier]}
               label={BRIDGE_TIER_LABELS[tier]}
             />
           ))}
         </div>
+
+        {/* Count */}
+        <p className="text-xs text-text-muted font-mono">
+          {filtered.length} bridge{filtered.length !== 1 ? "s" : ""}
+        </p>
+      </div>
+
+      {/* Category legend */}
+      <div className="flex flex-wrap items-center gap-4 mb-8">
+        {(Object.keys(TIER_COLORS) as BridgeTier[]).map((tier) => (
+          <div key={tier} className="flex items-center gap-1.5">
+            <span
+              className="inline-block w-2.5 h-2.5"
+              style={{ background: TIER_COLORS[tier] }}
+            />
+            <span className="text-[11px] uppercase tracking-wide text-text-muted font-mono">
+              {BRIDGE_TIER_LABELS[tier]}
+            </span>
+          </div>
+        ))}
       </div>
 
       {/* Category tabs */}
@@ -84,10 +135,10 @@ export function BridgeExplorer() {
             key={cat}
             onClick={() => setCategoryFilter(cat)}
             aria-pressed={categoryFilter === cat}
-            className={`px-4 py-1.5 text-xs font-medium rounded-full border transition-colors ${
+            className={`px-4 py-1.5 text-xs font-medium transition-colors font-mono border border-border ${
               categoryFilter === cat
-                ? "border-accent/40 text-accent bg-accent/10"
-                : "border-border text-text-muted hover:text-text-primary hover:border-white/15"
+                ? "bg-primary text-surface"
+                : "bg-transparent text-text-muted"
             }`}
           >
             {cat === "all"
@@ -97,18 +148,13 @@ export function BridgeExplorer() {
         ))}
       </div>
 
-      {/* Count */}
-      <p className="text-text-muted text-sm mb-6">
-        {filtered.length} bridge{filtered.length !== 1 ? "s" : ""}
-      </p>
-
       {/* Grid */}
       {filtered.length === 0 ? (
-        <div className="text-center py-20 text-text-muted">
+        <div className="text-center py-20 text-sm text-text-muted">
           No bridges match your search. Try a different term.
         </div>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2">
           {filtered.map((bridge) => (
             <BridgeCard key={bridge.id} bridge={bridge} />
           ))}
@@ -122,101 +168,99 @@ export function BridgeExplorer() {
 
 function BridgeCard({ bridge }: { bridge: Bridge }) {
   const [expanded, setExpanded] = useState(false);
-  const color = BRIDGE_TIER_COLORS[bridge.tier];
+  const color = TIER_COLORS[bridge.tier];
 
   return (
     <button
       onClick={() => setExpanded(!expanded)}
-      aria-expanded={expanded ? "true" : "false"}
-      className="text-left rounded-2xl p-5 border border-border bg-surface hover:border-white/15 transition-colors cursor-pointer"
+      aria-expanded={expanded}
+      className={`text-left w-full transition-all cursor-pointer border border-border p-5 ${
+        expanded ? "bg-surface-raised" : "bg-surface-overlay"
+      }`}
+      style={{
+        transform: "translate(0, 0)",
+        boxShadow: "none",
+        transition: "transform 0.15s ease, box-shadow 0.15s ease",
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = "translate(-2px, -2px)";
+        e.currentTarget.style.boxShadow = `4px 4px 0 ${color}`;
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = "translate(0, 0)";
+        e.currentTarget.style.boxShadow = "none";
+      }}
     >
-      {/* Tier badge + category */}
+      {/* Category label */}
       <div className="flex items-center justify-between mb-4">
         <span
-          className="text-[10px] uppercase tracking-widest font-semibold px-2.5 py-0.5 rounded-full"
+          className="text-[10px] uppercase tracking-widest font-semibold px-2 py-0.5 font-mono"
           style={{
             color,
-            background: `${color}15`,
-            border: `1px solid ${color}30`,
+            background: `color-mix(in srgb, ${color} 12%, transparent)`,
           }}
         >
           {BRIDGE_TIER_LABELS[bridge.tier]}
         </span>
-        <span className="text-[10px] uppercase tracking-widest text-text-muted">
+        <span className="text-[10px] uppercase tracking-widest text-text-muted font-mono">
           {BRIDGE_CATEGORY_LABELS[bridge.category]}
         </span>
       </div>
 
-      {/* Two-side layout */}
-      <div className="grid grid-cols-[1fr_24px_1fr] items-center gap-0 mb-3">
-        <div>
-          <p className="text-[10px] uppercase tracking-widest text-text-muted mb-1">
-            Frontend
-          </p>
-          <p className="text-sm font-medium text-text-primary leading-snug">
-            {bridge.feConcept}
-          </p>
-        </div>
-
-        <div className="flex justify-center">
-          <span
-            className="w-5 h-5 rounded-full flex items-center justify-center text-[10px]"
-            style={{
-              border: `1px solid ${color}`,
-              color,
-            }}
-          >
-            ⇄
-          </span>
-        </div>
-
-        <div className="text-right">
-          <p className="text-[10px] uppercase tracking-widest text-text-muted mb-1">
-            ML
-          </p>
-          <p className="text-sm font-medium text-text-primary leading-snug">
-            {bridge.mlConcept}
-          </p>
-        </div>
+      {/* FE concept → ML concept */}
+      <div className="flex items-center gap-3 mb-3">
+        <span className="text-sm font-medium text-text-primary font-mono">
+          {bridge.feConcept}
+        </span>
+        <span className="text-xs font-mono" style={{ color }}>
+          →
+        </span>
+        <span className="text-sm font-medium text-text-primary font-mono">
+          {bridge.mlConcept}
+        </span>
       </div>
 
-      {/* Expandable connection */}
-      {expanded && (
-        <p className="text-xs leading-relaxed text-text-muted mt-3 pt-3 border-t border-border">
+      {/* Description */}
+      {expanded ? (
+        <div className="mt-3 pt-3 border-t border-border">
+          <p className="text-xs leading-relaxed mb-3 text-text-muted">
+            {bridge.connection}
+          </p>
+          {/* Code-style block */}
+          <div className="px-3 py-2 text-[11px] leading-relaxed bg-surface border border-border text-text-muted font-mono">
+            <span style={{ color }}>{"// "}</span>
+            <span className="text-text-primary">{bridge.feConcept}</span>
+            <span style={{ color }}>{" ≈ "}</span>
+            <span className="text-text-primary">{bridge.mlConcept}</span>
+          </div>
+        </div>
+      ) : (
+        <p className="text-[11px] mt-1 truncate text-text-muted">
           {bridge.connection}
         </p>
-      )}
-
-      {!expanded && (
-        <p className="text-[11px] text-text-muted/50 mt-2">Click to expand</p>
       )}
     </button>
   );
 }
 
-/* ── Tier Pill ─────────────────────────────────────────────────────── */
+/* ── Tier Segmented Button ────────────────────────────────────────── */
 
-function TierPill({
+function TierButton({
   active,
   onClick,
-  color,
   label,
 }: {
   active: boolean;
   onClick: () => void;
-  color: string;
   label: string;
 }) {
   return (
     <button
       onClick={onClick}
       aria-pressed={active}
-      className="px-3 py-1.5 text-xs font-medium rounded-full border transition-colors"
-      style={{
-        borderColor: active ? `${color}60` : "rgba(255,255,255,0.06)",
-        color: active ? color : "#8B92A5",
-        background: active ? `${color}10` : "transparent",
-      }}
+      className={`px-4 py-2 text-xs font-medium transition-colors font-mono border-r border-border ${
+        active ? "bg-primary text-surface" : "bg-transparent text-text-muted"
+      }`}
     >
       {label}
     </button>

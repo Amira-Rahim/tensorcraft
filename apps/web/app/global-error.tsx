@@ -19,10 +19,9 @@ export default function GlobalError({
         style={{
           margin: 0,
           padding: 0,
-          backgroundColor: "#080B16",
-          color: "#FFFFFF",
-          fontFamily:
-            '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+          backgroundColor: "#1C1C1C",
+          color: "#C8C8C8",
+          fontFamily: "ui-monospace, monospace",
           minHeight: "100vh",
           display: "flex",
           alignItems: "center",
@@ -44,8 +43,7 @@ export default function GlobalError({
               justifyContent: "center",
               width: "4rem",
               height: "4rem",
-              borderRadius: "50%",
-              backgroundColor: "rgba(0, 212, 255, 0.1)",
+              backgroundColor: "rgba(107, 170, 138, 0.1)",
               marginBottom: "1.5rem",
             }}
           >
@@ -54,7 +52,7 @@ export default function GlobalError({
               height="32"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="#00D4FF"
+              stroke="#6BAA8A"
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -70,7 +68,7 @@ export default function GlobalError({
               fontSize: "1.5rem",
               fontWeight: 600,
               marginBottom: "0.75rem",
-              color: "#FFFFFF",
+              color: "#C8C8C8",
             }}
           >
             Something went wrong
@@ -79,7 +77,7 @@ export default function GlobalError({
           <p
             style={{
               fontSize: "1rem",
-              color: "#8B92A5",
+              color: "#5A5A5A",
               marginBottom: "2rem",
               lineHeight: 1.6,
             }}
@@ -90,14 +88,16 @@ export default function GlobalError({
           <button
             onClick={reset}
             style={{
-              backgroundColor: "#00D4FF",
-              color: "#080B16",
-              border: "none",
-              borderRadius: "999px",
+              backgroundColor: "#6BAA8A",
+              color: "#1C1C1C",
+              border: "2px solid #6BAA8A",
               padding: "0.75rem 1.5rem",
               fontSize: "0.875rem",
-              fontWeight: 500,
+              fontWeight: 600,
               cursor: "pointer",
+              fontFamily: "ui-monospace, monospace",
+              letterSpacing: "0.05em",
+              textTransform: "uppercase",
             }}
           >
             Try again
