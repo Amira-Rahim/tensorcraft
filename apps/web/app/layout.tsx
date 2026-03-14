@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
+import { Nav } from "./components/nav";
 import { CookieConsent } from "./components/cookie-consent";
 import { SiteFooter } from "./components/site-footer";
 import { SessionListener } from "../lib/supabase/session-listener";
@@ -125,6 +126,7 @@ export default function RootLayout({
         >
           Skip to content
         </a>
+        <Nav />
         <div className="flex-1" id="main-content">
           {children}
         </div>

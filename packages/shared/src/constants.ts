@@ -42,7 +42,6 @@ export const ROUTES = {
     `/themes/${themeSlug}/${moduleSlug}` as const,
   lesson: (themeSlug: ThemeSlug, moduleSlug: string, lessonSlug: string) =>
     `/themes/${themeSlug}/${moduleSlug}/${lessonSlug}` as const,
-  bridges: "/bridges",
   dashboard: "/dashboard",
   settings: "/settings",
 } as const;

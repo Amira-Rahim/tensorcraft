@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Nav } from "./components/nav";
 import { Ticker } from "./components/ticker";
 import { AmbientBackground } from "./components/ambient-background";
 
@@ -160,7 +159,6 @@ const fadeUp = {
 export default function Home() {
   return (
     <>
-      <Nav />
       <Ticker />
 
       <main className="relative z-2">

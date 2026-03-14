@@ -6,9 +6,11 @@ export default function SignInPage() {
   return (
     <main className="flex min-h-screen items-center justify-center px-6 py-16 relative overflow-hidden">
       <AmbientBackground count={220} />
-      <Suspense>
-        <AuthForm mode="sign-in" />
-      </Suspense>
+      <div className="relative z-10">
+        <Suspense>
+          <AuthForm mode="sign-in" />
+        </Suspense>
+      </div>
     </main>
   );
 }

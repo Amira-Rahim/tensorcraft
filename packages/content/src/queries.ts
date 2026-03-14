@@ -72,6 +72,28 @@ export function getLessonExercises(lessonSlug: string) {
   return exercises.filter((e) => e.lessonSlug === lessonSlug);
 }
 
+/** Bridge collectible shape returned by getLessonsWithBridges */
+export interface CollectibleBridge {
+  lessonSlug: string;
+  moduleSlug: string;
+  feTitle: string;
+  mlTitle: string;
+  tier: "identity" | "structural" | "intuition";
+}
+
+/** Get all lessons with bridges for a theme (for dashboard collectibles) */
+export function getLessonsWithBridges(themeSlug: string): CollectibleBridge[] {
+  return lessons
+    .filter((l) => l.themeId === themeSlug && l.concept?.bridge)
+    .map((l) => ({
+      lessonSlug: l.slug,
+      moduleSlug: l.moduleId,
+      feTitle: l.concept.bridge!.feTitle,
+      mlTitle: l.concept.bridge!.mlTitle,
+      tier: l.concept.bridge!.tier,
+    }));
+}
+
 /** Get prev/next lessons for navigation */
 export function getAdjacentLessons(lesson: {
   themeId: string;

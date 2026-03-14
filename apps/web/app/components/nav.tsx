@@ -25,12 +25,6 @@ export function Nav() {
           Themes
         </Link>
         <Link
-          href="/bridges"
-          className="text-[13px] text-text-muted hover:text-text-primary transition-colors"
-        >
-          Bridges
-        </Link>
-        <Link
           href="/pricing"
           className="text-[13px] text-text-muted hover:text-text-primary transition-colors"
         >

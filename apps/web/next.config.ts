@@ -1,4 +1,9 @@
 import type { NextConfig } from "next";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const velitePath = path.resolve(__dirname, "../../packages/content/.velite");
 
 const nextConfig: NextConfig = {
   transpilePackages: [
@@ -8,6 +13,20 @@ const nextConfig: NextConfig = {
     "@tensorcraft/content",
     "@tensorcraft/shared",
   ],
+  webpack: (config) => {
+    // Treat .velite output as managed (immutable) so webpack doesn't
+    // watch it for changes — prevents dev server crashes when Velite
+    // regenerates large JSON files (2MB+)
+    config.snapshot = {
+      ...config.snapshot,
+      managedPaths: [...(config.snapshot?.managedPaths || []), velitePath],
+    };
+    config.watchOptions = {
+      ...config.watchOptions,
+      ignored: ["**/.velite/**"],
+    };
+    return config;
+  },
   headers: async () => [
     {
       source: "/(.*)",

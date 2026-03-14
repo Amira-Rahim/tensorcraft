@@ -24,4 +24,6 @@ export {
   getExercise,
   getLessonExercises,
   getAdjacentLessons,
+  getLessonsWithBridges,
 } from "./queries";
+export type { CollectibleBridge } from "./queries";

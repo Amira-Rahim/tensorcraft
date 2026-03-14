@@ -18,12 +18,6 @@ export function SiteFooter() {
             Themes
           </Link>
           <Link
-            href="/bridges"
-            className="text-[10px] hover:text-text-primary transition-colors"
-          >
-            Bridges
-          </Link>
-          <Link
             href="/pricing"
             className="text-[10px] hover:text-text-primary transition-colors"
           >

@@ -1,9 +1,14 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { themes } from "@tensorcraft/themes";
-import { getModules, getModuleLessons } from "@tensorcraft/content";
+import {
+  getModules,
+  getModuleLessons,
+  getLessonsWithBridges,
+} from "@tensorcraft/content";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import type { Metadata } from "next";
+import { BridgeCollection } from "./bridge-collection";
 
 export const metadata: Metadata = {
   title: "Dashboard | Tensorcraft",
@@ -97,6 +102,21 @@ export default async function DashboardPage() {
     0,
   );
 
+  // Build bridge collectibles from all launched themes
+  const completedLessonKeys = new Set(
+    (progressRecords ?? [])
+      .filter((r) => r.status === "completed")
+      .map((r) => `${r.theme_id}/${r.lesson_id}`),
+  );
+
+  const allBridges = launchedThemes.flatMap((theme) => {
+    const bridgeLessons = getLessonsWithBridges(theme.slug);
+    return bridgeLessons.map((b) => ({
+      ...b,
+      collected: completedLessonKeys.has(`${theme.slug}/${b.lessonSlug}`),
+    }));
+  });
+
   const displayName =
     profile?.display_name || user.email?.split("@")[0] || "Explorer";
 
@@ -163,6 +183,9 @@ export default async function DashboardPage() {
             ))}
           </div>
         )}
+
+        {/* Bridges Collected */}
+        {allBridges.length > 0 && <BridgeCollection bridges={allBridges} />}
 
         {/* Continue Learning */}
         {continueTheme && (
