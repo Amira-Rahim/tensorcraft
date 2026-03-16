@@ -191,13 +191,16 @@ Tables use Supabase Auth for user management. Row-Level Security (RLS) enforced 
 | Column | Type | Notes |
 | --- | --- | --- |
 | id | uuid (PK) | References `auth.users.id` |
-| display_name | text | |
+| email | text | Not null |
+| display_name | text | Nullable |
 | avatar_url | text | Nullable |
-| preferred_theme | text | Default: `'deep-orbit'` |
+| preferred_theme_id | text | Nullable (added in migration 002) |
 | github_connected | boolean | Default: `false` |
 | github_username | text | Nullable |
-| github_repo_id | bigint | Nullable |
 | onboarding_completed | boolean | Default: `false` |
+| role | user_role enum | `'user'` or `'admin'`, default: `'user'` (added in migration 006) |
+| last_active_at | timestamptz | Nullable (added in migration 002) |
+| total_lessons_completed | integer | Default: `0` (added in migration 002) |
 | created_at | timestamptz | Default: `now()` |
 | updated_at | timestamptz | Default: `now()` |
 
@@ -207,12 +210,12 @@ Tables use Supabase Auth for user management. Row-Level Security (RLS) enforced 
 | --- | --- | --- |
 | id | uuid (PK) | |
 | user_id | uuid (FK) | References `profiles.id` |
-| theme_ids | text[] | Array of purchased theme slugs |
-| amount_cents | integer | Amount in cents |
-| currency | text | Default: `'usd'` |
+| plan_id | text | Not null |
+| theme_ids | text[] | Array of purchased theme slugs, default: `'{}'` |
+| amount | numeric(10,2) | Not null, must be > 0 |
+| currency | text | Default: `'USD'` |
 | stripe_session_id | text | Unique |
-| status | text | `completed`, `refunded` |
-| ppp_discount_pct | integer | 0–70 |
+| status | purchase_status enum | `'pending'`, `'completed'`, `'failed'`, `'refunded'`; default: `'pending'` |
 | created_at | timestamptz | Default: `now()` |
 
 #### `theme_progress`
@@ -221,24 +224,28 @@ Tables use Supabase Auth for user management. Row-Level Security (RLS) enforced 
 | --- | --- | --- |
 | id | uuid (PK) | |
 | user_id | uuid (FK) | References `profiles.id` |
-| theme_id | text | Theme slug |
-| module_id | text | Module slug (e.g., `foundations`) |
-| lesson_id | text | Lesson slug (e.g., `what-is-a-tensor`) |
-| status | text | `not_started`, `in_progress`, `completed` |
-| score | integer | 0–100, nullable |
-| hints_used | integer | Default: 0 |
+| theme_id | text | Not null |
+| module_id | text | Not null |
+| lesson_id | text | Not null |
+| status | progress_status enum | `'not_started'`, `'in_progress'`, `'completed'`; default: `'not_started'` |
+| score | numeric(5,2) | 0--100, nullable |
+| hints_used | integer | Default: `0`, must be >= 0 |
+| attempts | integer | Default: `0`, must be >= 0 |
 | started_at | timestamptz | Nullable |
 | completed_at | timestamptz | Nullable |
+| created_at | timestamptz | Default: `now()` |
+| updated_at | timestamptz | Default: `now()` |
 
-**Unique constraint:** `(user_id, theme_id, module_id, lesson_id)`
+**Unique constraint:** `(user_id, theme_id, lesson_id)`
 
-#### `waitlist_signups`
+#### `waitlist`
 
 | Column | Type | Notes |
 | --- | --- | --- |
 | id | uuid (PK) | |
-| email | text | |
-| theme_id | text | Theme slug they're interested in |
+| email | text | Not null |
+| theme_id | text | Nullable |
+| source | text | Nullable |
 | created_at | timestamptz | Default: `now()` |
 
 **Unique constraint:** `(email, theme_id)`
@@ -249,12 +256,13 @@ Tables use Supabase Auth for user management. Row-Level Security (RLS) enforced 
 | --- | --- | --- |
 | id | uuid (PK) | |
 | user_id | uuid (FK) | References `profiles.id` |
-| theme_id | text | Theme slug |
-| current_streak | integer | Default: 0 |
-| longest_streak | integer | Default: 0 |
+| theme_id | text | Not null |
+| current_streak | integer | Default: `0` |
+| longest_streak | integer | Default: `0` |
 | last_activity_date | date | Nullable |
-| created_at | timestamptz | Default: `now()` |
 | updated_at | timestamptz | Default: `now()` |
+
+**Unique constraint:** `(user_id, theme_id)`
 
 #### `achievements`
 
@@ -262,11 +270,11 @@ Tables use Supabase Auth for user management. Row-Level Security (RLS) enforced 
 | --- | --- | --- |
 | id | uuid (PK) | |
 | user_id | uuid (FK) | References `profiles.id` |
-| achievement_type | text | e.g., "first_lesson", "streak_7" |
+| achievement_type | text | Not null |
 | theme_id | text | Nullable |
-| metadata | jsonb | Nullable |
-| earned_at | timestamptz | Default: `now()` |
-| created_at | timestamptz | Default: `now()` |
+| unlocked_at | timestamptz | Default: `now()` |
+
+**Unique constraint:** `(user_id, achievement_type, theme_id)`
 
 #### `exercise_attempts`
 
@@ -274,15 +282,31 @@ Tables use Supabase Auth for user management. Row-Level Security (RLS) enforced 
 | --- | --- | --- |
 | id | uuid (PK) | |
 | user_id | uuid (FK) | References `profiles.id` |
-| exercise_slug | text | |
-| lesson_id | text | |
-| theme_id | text | |
-| score | integer | 0-100 |
-| hints_used | integer | Default: 0 |
-| duration_ms | integer | Nullable |
-| submitted_code | text | |
+| exercise_slug | text | Not null |
+| lesson_id | text | Not null |
+| theme_id | text | Not null |
+| passed | boolean | Default: `false` |
+| score | integer | 0--100, default: `0` |
+| hints_used | integer | Default: `0`, must be >= 0 |
+| solution_viewed | boolean | Default: `false` |
+| submitted_code | text | Nullable |
+| duration_ms | integer | Nullable, must be >= 0 |
 | attempted_at | timestamptz | Default: `now()` |
-| created_at | timestamptz | Default: `now()` |
+
+#### `theme_progress_summary` (view)
+
+Aggregated completion stats per user per theme for fast dashboard reads.
+
+| Column | Type | Notes |
+| --- | --- | --- |
+| user_id | uuid | Grouped key |
+| theme_id | text | Grouped key |
+| total_lessons | bigint | Count of all progress records |
+| completed_lessons | bigint | Count where status = `'completed'` |
+| in_progress_lessons | bigint | Count where status = `'in_progress'` |
+| first_started_at | timestamptz | Earliest `started_at` |
+| last_completed_at | timestamptz | Latest `completed_at` |
+| completion_percent | numeric | Rounded to 1 decimal place |
 
 ---
 
@@ -601,6 +625,8 @@ These are the engineering deliverables required to unblock content. Each compone
 ---
 
 ## 7. Internationalization
+
+> **Status: Descoped** — Internationalization is deferred to post-V1.0. The platform will launch as English-only. The architectural notes below are retained for future reference when i18n work begins.
 
 ### 7.1 Architecture (English Only at Launch)
 

@@ -14,7 +14,7 @@ export const signalWard: ThemeManifest = {
     accent: "#7096B0",
     surface: "#252525",
     text: "#C8C8C8",
-    muted: "#5A5A5A",
+    muted: "#8A8A8A",
     surfaceOverlay: "#313131",
     border: "#2A2A2A",
     codeBg: "#161616",

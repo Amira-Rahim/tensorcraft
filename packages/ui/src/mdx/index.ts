@@ -1,9 +1,14 @@
-export { Dialogue } from "./dialogue";
 export { BridgeCallout } from "./bridge-callout";
 export { CodeBlock } from "./code-block";
+export { Concept } from "./concept";
+export { Dialogue } from "./dialogue";
 export { Exercise, ExerciseDataProvider } from "./exercise";
 export type { ExerciseData } from "./exercise";
 export { HintPanel } from "./hint-panel";
+export { InteractiveDemo } from "./interactive-demo";
 export { KeyTakeaways } from "./key-takeaways";
 export { LearningObjectives } from "./learning-objectives";
+export { MathBlock } from "./math-block";
+export { NextLesson } from "./next-lesson";
 export { Quiz } from "./quiz";
+export { RecallPrompt } from "./recall-prompt";

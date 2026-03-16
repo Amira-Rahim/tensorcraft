@@ -3,15 +3,20 @@
 import { useMemo } from "react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 import {
+  Concept,
   Dialogue,
   BridgeCallout,
   CodeBlock,
   Exercise,
   ExerciseDataProvider,
   HintPanel,
+  InteractiveDemo,
   KeyTakeaways,
   LearningObjectives,
+  MathBlock,
+  NextLesson,
   Quiz,
+  RecallPrompt,
 } from "@tensorcraft/ui";
 import type { ExerciseData } from "@tensorcraft/ui";
 
@@ -38,14 +43,19 @@ interface LessonContentProps {
 
 /** MDX components available in lesson content */
 const mdxComponents = {
+  Concept,
   Dialogue,
   BridgeCallout,
   CodeBlock,
   Exercise,
   HintPanel,
+  InteractiveDemo,
   KeyTakeaways,
   LearningObjectives,
+  MathBlock,
+  NextLesson,
   Quiz,
+  RecallPrompt,
 };
 
 /**

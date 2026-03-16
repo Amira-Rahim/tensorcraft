@@ -10,6 +10,8 @@ import { payments } from "./routes/payments";
 import { profiles } from "./routes/profiles";
 import { exerciseAttempts } from "./routes/exercise-attempts";
 import { admin } from "./routes/admin";
+import { github } from "./routes/github";
+// V1: import { newsletter } from "./routes/newsletter";
 
 const app = new Hono();
 
@@ -33,6 +35,8 @@ app.route("/api/payments", payments);
 app.route("/api/profiles", profiles);
 app.route("/api/exercise-attempts", exerciseAttempts);
 app.route("/api/admin", admin);
+app.route("/api/github", github);
+// V1: app.route("/api/newsletter", newsletter);
 
 // Root
 app.get("/", (c) => {

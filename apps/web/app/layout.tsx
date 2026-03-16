@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { Nav } from "./components/nav";
 import { CookieConsent } from "./components/cookie-consent";
 import { SiteFooter } from "./components/site-footer";
+import { PostHogProvider } from "./providers/posthog-provider";
 import { SessionListener } from "../lib/supabase/session-listener";
 import "./globals.css";
 
@@ -116,23 +118,33 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen flex flex-col">
-        <a
-          href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:text-sm focus:font-mono focus:font-medium"
-          style={{
-            background: "var(--tc-primary, #6BAA8A)",
-            color: "#1C1C1C",
-          }}
-        >
-          Skip to content
-        </a>
-        <Nav />
-        <div className="flex-1" id="main-content">
-          {children}
-        </div>
-        <SessionListener />
-        <SiteFooter />
-        <CookieConsent />
+        <Script
+          defer
+          data-domain={
+            process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN || "tensorcraft.dev"
+          }
+          src="https://plausible.io/js/script.js"
+          strategy="afterInteractive"
+        />
+        <PostHogProvider>
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:text-sm focus:font-mono focus:font-medium"
+            style={{
+              background: "var(--tc-primary, #6BAA8A)",
+              color: "#1C1C1C",
+            }}
+          >
+            Skip to content
+          </a>
+          <Nav />
+          <div className="flex-1" id="main-content">
+            {children}
+          </div>
+          <SessionListener />
+          <SiteFooter />
+          <CookieConsent />
+        </PostHogProvider>
       </body>
     </html>
   );

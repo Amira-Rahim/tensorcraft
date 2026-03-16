@@ -315,7 +315,7 @@ All paid traffic flows through a single, optimized funnel:
 
 - **Visual consistency:** All ads use Tensorcraft's dark brutalist aesthetic. Ads should look like the product, not like ads.
 - **Lead with the bridge:** The highest-performing creative concept is the FE-to-ML bridge. "You already know 70% of ML. You just don't know it yet." Show a side-by-side of React code and neural network code with visual connections.
-- **Social proof variants:** Once testimonials are collected, run ad variants featuring learner quotes. "I learned more about ML in 2 hours on Tensorcraft than in 2 weeks on Coursera" performs better than feature-based copy.
+- **Social proof variants:** > **Status: Descoped** — Deferred until beta tester testimonials are collected. Placeholder section will be added post-launch. ~~Once testimonials are collected, run ad variants featuring learner quotes. "I learned more about ML in 2 hours on Tensorcraft than in 2 weeks on Coursera" performs better than feature-based copy.~~
 - **Video ads (Twitter, YouTube):** 15-30 second clips showing the bridge animation. Dark background, brutalist terminal UI, code morphing from React to ML. No voiceover needed — text overlay + music.
 - **A/B test relentlessly:** Test 3-5 headline variants per campaign. Kill underperformers within 48 hours. Scale winners to 2x budget before testing new variants.
 
@@ -423,7 +423,7 @@ The waitlist page is the primary conversion asset during pre-launch. It lives at
 - **What you'll build section:** Interactive carousel showing 3-4 real project outcomes from Tensorcraft lessons. Each slide shows a browser screenshot of the completed project (sentiment analyzer, image classifier, recommendation engine) with a "Built with JavaScript. No Python required." caption.
 - **Theme previews section:** Five cards, one per theme, showing the theme name, key art, narrative hook, and character illustrations. Deep Orbit and Neon Protocol are highlighted as "coming first." Other three show "Coming 2026" with faded styling.
 - **FAQ section:** Expandable accordion with 6-8 questions: "Do I need to know Python?", "How is this different from Coursera/fast.ai?", "Is this for beginners?", "What will I be able to build?", "How much does it cost?", "When does it launch?", "Can I try it for free?", "Do you offer team pricing?"
-- **Social proof section:** Grid of testimonials from beta testers and early reviewers. If pre-launch (no testimonials yet), use: logos of companies where beta testers work, a quote from the creator explaining the mission, and an "As seen on" row with dev.to, Hacker News, and Twitter/X logos once coverage is earned.
+- **Social proof section:** > **Status: Descoped** — Deferred until beta tester testimonials are collected. Placeholder section will be added post-launch. ~~Grid of testimonials from beta testers and early reviewers. If pre-launch (no testimonials yet), use: logos of companies where beta testers work, a quote from the creator explaining the mission, and an "As seen on" row with dev.to, Hacker News, and Twitter/X logos once coverage is earned.~~
 
 ## 5.2 Promotion Playbook
 

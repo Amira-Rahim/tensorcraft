@@ -1,7 +1,15 @@
 import type { MetadataRoute } from "next";
 import { themeSlugs } from "@tensorcraft/themes";
+import { BRIDGES } from "@tensorcraft/shared";
 
 const BASE_URL = "https://tensorcraft.dev";
+
+function slugify(term: string): string {
+  return term
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes: MetadataRoute.Sitemap = [
@@ -24,6 +32,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
+      url: `${BASE_URL}/blog`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.7,
+    },
+    {
+      url: `${BASE_URL}/glossary`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
       url: `${BASE_URL}/terms`,
       lastModified: new Date(),
       changeFrequency: "yearly",
@@ -44,5 +64,28 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  return [...staticRoutes, ...themeRoutes];
+  // Glossary term pages (both FE and ML terms)
+  const glossarySlugs = new Set<string>();
+  for (const b of BRIDGES) {
+    glossarySlugs.add(slugify(b.mlConcept));
+    glossarySlugs.add(slugify(b.feConcept));
+  }
+  const glossaryRoutes: MetadataRoute.Sitemap = Array.from(glossarySlugs).map(
+    (term) => ({
+      url: `${BASE_URL}/glossary/${term}`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.5,
+    }),
+  );
+
+  // Bridge concept pages (one per bridge, keyed by ML concept)
+  const bridgeRoutes: MetadataRoute.Sitemap = BRIDGES.map((b) => ({
+    url: `${BASE_URL}/bridges/${slugify(b.mlConcept)}`,
+    lastModified: new Date(),
+    changeFrequency: "monthly" as const,
+    priority: 0.6,
+  }));
+
+  return [...staticRoutes, ...themeRoutes, ...glossaryRoutes, ...bridgeRoutes];
 }

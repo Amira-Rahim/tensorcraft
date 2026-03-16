@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
+import { trackCheckoutStarted } from "@/lib/analytics";
 
 interface CheckoutButtonProps {
   planId: string;
@@ -26,6 +27,7 @@ export function CheckoutButton({
   async function handleCheckout() {
     setLoading(true);
     setError(null);
+    trackCheckoutStarted(planId);
 
     try {
       const supabase = getSupabaseBrowserClient();

@@ -44,6 +44,11 @@ export const ROUTES = {
     `/themes/${themeSlug}/${moduleSlug}/${lessonSlug}` as const,
   dashboard: "/dashboard",
   settings: "/settings",
+  blog: "/blog",
+  blogPost: (slug: string) => `/blog/${slug}` as const,
+  glossary: "/glossary",
+  glossaryTerm: (term: string) => `/glossary/${term}` as const,
+  bridgeConcept: (concept: string) => `/bridges/${concept}` as const,
 } as const;
 
 /**

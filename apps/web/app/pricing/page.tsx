@@ -23,7 +23,7 @@ const tiers = [
       "Quizzes included",
     ],
     description:
-      "Module 1 of any launched theme (5 lessons). Full code editor, bridges, and quizzes.",
+      "Module 1 of Deep Orbit (5 lessons). Full code editor, bridges, and quizzes.",
     note: "No credit card required",
     cta: "Start Free",
     href: "/themes/deep-orbit",

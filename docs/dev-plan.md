@@ -1,6 +1,6 @@
 # Tensorcraft — Development Plan
 
-> Last updated: 2026-03-13 (all 11 Deep Orbit modules authored, Bridge Explorer built, prototype count corrected, PRD aligned with implementation)
+> Last updated: 2026-03-16 (all 11 Deep Orbit modules authored, Bridge Explorer replaced with dashboard bridge collectibles, prototype count corrected, PRD aligned with implementation)
 
 This document is the single source of truth for all development work needed to ship Tensorcraft. It covers every phase from repo initialization to post-launch operations, sourced from the PRD, tech-spec, product-plan, theme scripts, and two rounds of DeepSeek reviews.
 
@@ -309,7 +309,7 @@ All blocking decisions have been resolved. This table documents the final choice
 
 ### 5a. Progress Tracking & Completion States
 
-> **CRITICAL GAP:** `POST /api/progress` exists but is NEVER called from any frontend page. Progress is never saved to the database. The lesson viewer is pure read — opening a lesson doesn't create a `started_at` record, finishing doesn't set `completed_at`.
+> **~~CRITICAL GAP~~ RESOLVED:** Progress is now saved via `lesson-progress.tsx`, which calls `markLessonStarted()` on lesson open and `markLessonCompleted()` on completion through the `/api/progress` endpoint. Both `started_at` and `completed_at` are written to the database.
 
 - [x] Client-side progress lib (`apps/web/lib/progress-client.ts`) — markLessonStarted, markLessonCompleted, updateExerciseProgress, getLessonStatus
 - [x] LessonProgressTracker client component — auto-marks `in_progress` on lesson open, shows "Mark as Complete" button
@@ -411,10 +411,10 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] `@media (prefers-reduced-motion: reduce)` — disable/simplify all animations globally
 - [ ] Screen reader testing (VoiceOver on macOS, NVDA on Windows)
 - [x] Automated accessibility testing: vitest-axe (unit — 8 components), @axe-core/playwright (E2E — 9 routes)
-- [x] Form labels (`sr-only` or visible) on all form inputs (auth-form, settings-form, bridge-explorer, coming-soon-modal)
+- [x] Form labels (`sr-only` or visible) on all form inputs (auth-form, settings-form, coming-soon-modal) _(bridge-explorer removed; `/bridges` route no longer exists)_
 - [x] Skip-to-content link as first child of body in root layout
 - [x] `aria-label` on OAuth buttons, `aria-hidden` on decorative SVGs
-- [x] `aria-pressed` on filter toggle buttons (bridge explorer tier/category pills)
+- [x] `aria-pressed` on filter toggle buttons _(bridge explorer removed; filters now N/A)_
 - [x] Focus trap and focus restore on coming-soon modal
 - [x] `role="progressbar"` with `aria-valuenow/min/max` on module progress bars
 - [ ] Color contrast audit (4.5:1 minimum for text, 3:1 for UI components)
@@ -527,12 +527,14 @@ All blocking decisions have been resolved. This table documents the final choice
 
 ## Phase 7: Post-V0.5 Features
 
-### 7a. Bridge Explorer (COMPLETE)
+### 7a. Bridge Explorer — REMOVED (replaced with dashboard bridge collectibles)
 
-- [x] Build from `prototypes/bridge-explorer.html` — `/bridges` route with `bridge-explorer.tsx`
-- [x] Browse all 56+ FE-to-ML bridges with filters and search
-- [x] Bridge quality tier color coding (Identity=#00D4FF, Structural=#7B68EE, Intuition=#F0C75E)
-- [x] Shipped as read-only reference page in V0.5 (no feature flag needed)
+> **Refactored:** The standalone `/bridges` route and `bridge-explorer.tsx` page were intentionally removed. Bridge discovery is now integrated into the dashboard as collectible bridge cards via the `bridge-collection.tsx` component on the dashboard page. This surfaces bridges in context of the learner's progress rather than as a separate reference page.
+
+- ~~[x] Build from `prototypes/bridge-explorer.html` — `/bridges` route with `bridge-explorer.tsx`~~
+- ~~[x] Browse all 56+ FE-to-ML bridges with filters and search~~
+- ~~[x] Bridge quality tier color coding (Identity=#00D4FF, Structural=#7B68EE, Intuition=#F0C75E)~~
+- ~~[x] Shipped as read-only reference page in V0.5 (no feature flag needed)~~
 
 ### 7b. Capstone Completion
 
@@ -1023,8 +1025,8 @@ Based on comprehensive audit of codebase, user journeys, database, and security:
 
 1. **Sandpack exercises** (Phase 3f) — #1 gap, 14 exercises authored but none interactive
 2. **Syntax highlighting** (Phase 3h) — code platform needs colored code
-3. **Wire progress tracking** (Phase 5a) — lesson viewer must write to `/api/progress`
-4. **Mark Complete button** (Phase 5a) — explicit completion action in lesson viewer
+3. ~~**Wire progress tracking** (Phase 5a) — lesson viewer must write to `/api/progress`~~ RESOLVED — wired via `lesson-progress.tsx`
+4. ~~**Mark Complete button** (Phase 5a) — explicit completion action in lesson viewer~~ RESOLVED
 
 ### Tier 2: Security & Payments
 

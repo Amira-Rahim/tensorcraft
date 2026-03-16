@@ -6,6 +6,7 @@ import {
   markLessonCompleted,
   getLessonStatus,
 } from "@/lib/progress-client";
+import { trackLessonStarted, trackLessonCompleted } from "@/lib/analytics";
 
 interface LessonProgressProps {
   themeId: string;
@@ -40,7 +41,10 @@ export function LessonProgressTracker({
       } else {
         const result = await markLessonStarted(themeId, moduleId, lessonId);
         if (cancelled) return;
-        if (result) setStatus("in_progress");
+        if (result) {
+          trackLessonStarted(themeId, moduleId, lessonId);
+          setStatus("in_progress");
+        }
       }
     }
 
@@ -54,6 +58,7 @@ export function LessonProgressTracker({
     setCompleting(true);
     const result = await markLessonCompleted(themeId, moduleId, lessonId);
     if (result) {
+      trackLessonCompleted(themeId, moduleId, lessonId);
       setStatus("completed");
     }
     setCompleting(false);

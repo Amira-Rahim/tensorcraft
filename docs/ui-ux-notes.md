@@ -194,7 +194,7 @@ All sizes use a 1.25 ratio (Major Third) scale anchored at 16px body text.
 | `--text-2xl` | 32px / 2rem | 700 | Page titles, theme names on selection screen, hero headings |
 | `--text-3xl` | 40px / 2.5rem | 700 | Landing page hero headline, marketing pages only (not used in app) |
 
-**Font stack:** `'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif` for all UI text. `'JetBrains Mono', 'Fira Code', 'SF Mono', 'Cascadia Code', monospace` for all code (editor, inline code, code blocks). Inter is loaded via `next/font/google` with `display: 'swap'` and subsets `['latin']`. JetBrains Mono is loaded similarly.
+**Font stack:** `'JetBrains Mono', ui-monospace, monospace` is the primary body font (set on `<body>` via `var(--font-mono)`). `'Inter', ui-sans-serif, system-ui, sans-serif` is available via `var(--font-sans)` for long-form prose paragraphs only. Both are loaded via `next/font/google` with `display: 'swap'` and subsets `['latin']`.
 
 **Line heights:**
 
@@ -204,60 +204,61 @@ All sizes use a 1.25 ratio (Major Third) scale anchored at 16px body text.
 - UI labels and buttons: `line-height: 1.4`
 - Captions (12px): `line-height: 1.5`
 
-### 5.2 Color System
+### 5.2 Color System — Brutalist Terminal Aesthetic
 
-Each theme defines six CSS custom properties. All five themes share the same property names, enabling instant theme switching via a single class change on the root element.
+Tensorcraft uses a unified "Brutalist Terminal" aesthetic across the entire application. All themes share the same shell tokens; only `--tc-primary` and `--tc-accent` vary per theme. Theme switching is done via `data-theme="<slug>"` on `<html>`. Deep Orbit is the default (applied on `:root`).
 
-| Theme | `--theme-bg` | `--theme-text` | `--theme-accent` | `--theme-accent-hover` | `--theme-border` | `--theme-muted` |
-|-------|-------------|---------------|------------------|----------------------|-----------------|----------------|
-| Deep Orbit | `#0B0D1A` | `#E2E8F0` | `#6C63FF` | `#8B83FF` | `#1E293B` | `#64748B` |
-| Neon Protocol | `#0A0E12` | `#E0E7EE` | `#00FFC8` | `#33FFD6` | `#1A2332` | `#5E7A8A` |
-| Signal Ward | `#0D0B14` | `#E4E0F0` | `#FF6B6B` | `#FF8A8A` | `#221E2E` | `#7A6B8A` |
-| Ghost Lattice | `#080C10` | `#DCE4EC` | `#FFD93D` | `#FFE066` | `#182028` | `#5A6A7A` |
-| Axiom Shelf | `#0C0A0F` | `#E8E2F0` | `#A78BFA` | `#C4B5FD` | `#201C28` | `#6E6480` |
+CSS custom properties are defined in `packages/themes/src/css/themes.css` and consumed by the Tailwind `@theme` block in `apps/web/app/globals.css`.
 
-**Accessibility requirements:**
+#### 5.2.1 Shared Shell Tokens (identical across all themes)
 
-- `--theme-text` on `--theme-bg` must meet WCAG AA contrast ratio (4.5:1 minimum). All themes exceed this: Deep Orbit = 13.2:1, Neon Protocol = 12.8:1, Signal Ward = 12.5:1, Ghost Lattice = 13.0:1, Axiom Shelf = 12.9:1.
-- `--theme-accent` on `--theme-bg` must meet WCAG AA for large text (3:1 minimum). Verified for all themes. For small text using accent color, always pair with a background that ensures 4.5:1. If accent color alone does not meet contrast on `--theme-bg` for small text, use `--theme-text` instead and reserve `--theme-accent` for borders, icons, and large headings.
-- `--theme-muted` is intentionally lower contrast and must NOT be used for essential information. It is for decorative borders, disabled states, and supplementary labels only. Users must be able to complete all tasks without reading `--theme-muted` text.
-- Focus indicators: All interactive elements use a 2px `--theme-accent` outline with 2px offset on `:focus-visible`. This is a global style applied in the base CSS. Never suppress or override focus indicators.
+| Token | CSS Variable | Value | Notes |
+| ------- | ------------- | ------- | ------- |
+| Background | `--tc-bg` | `#1C1C1C` | Page background for all screens |
+| Surface | `--tc-surface` | `#252525` | Cards, panels, modals |
+| Surface Overlay | `--tc-surface-overlay` | `#313131` | Elevated surfaces, overlays |
+| Text | `--tc-text` | `#C8C8C8` | Body text |
+| Muted | `--tc-muted` | `#8A8A8A` | Decorative borders, disabled states, supplementary labels |
+| Border | `--tc-border` | `#2A2A2A` | Subtle, low-contrast dividers |
+| Code BG | `--tc-code-bg` | `#161616` | Code block backgrounds |
 
-**Dark mode note:** Tensorcraft is dark-mode only. There is no light mode. The dark aesthetic is a core brand element. All design decisions assume a dark background. The `color-scheme: dark` meta tag is set in the document head to inform the browser (affects scrollbar styling, form controls, etc.). System-level forced colors (Windows High Contrast Mode) are respected via `@media (forced-colors: active)` -- in this mode, all custom colors are replaced with system colors and borders become visible.
+#### 5.2.2 Per-Theme Tokens (only primary and accent vary)
 
-### 5.3 Prototype Design System — Brutalist Terminal Aesthetic
+| Theme | `--tc-primary` | `--tc-accent` |
+| ------- | --------------- | -------------- |
+| Deep Orbit | `#6BAA8A` (sage green) | `#A89060` (warm gold) |
+| Neon Protocol | `#4A90D9` (steel blue) | `#A07090` (muted mauve) |
+| Signal Ward | `#5BAA70` (medical green) | `#7096B0` (slate blue) |
+| Nova Canvas | `#C06060` (warm red) | `#7868A8` (soft purple) |
+| Terra Grid | `#B08030` (industrial amber) | `#6BAA8A` (sage green) |
 
-As of March 2026, all 15 prototype pages use a unified "Brutalist Terminal" aesthetic. This is a sharp, developer-tool-oriented design that feels like a terminal, not a marketing page.
+Each theme also defines three bridge-tier tokens derived from the palette: `--tc-tier-identity` (matches primary), `--tc-tier-structural` (`#7096B0`), and `--tc-tier-intuition` (`#A89060`).
 
-| Token | Value | Notes |
-|-------|-------|-------|
-| Background | `#1C1C1C` | Shell background for all pages |
-| Surface (Panel) | `#252525` | Cards, panels, modals |
-| Surface (Card) | `#313131` | Elevated surfaces, overlays |
-| Primary | `#6BAA8A` | Sage green; buttons, links, active states |
-| Text | `#C8C8C8` | Body text |
-| Muted text | `#8A8A8A` | Secondary labels, captions (WCAG AA compliant) |
-| Border | `#2A2A2A` | Subtle, low-contrast dividers |
-| Code BG | `#161616` | Code block backgrounds |
+### 5.3 Design Rules
 
 **Key style rules:**
 
-- Zero border-radius everywhere (sharp edges)
+- Zero border-radius everywhere (`--radius-sm` through `--radius-xl` all set to `0`)
 - Offset box shadows: `4px 4px 0 rgba(107,170,138,0.25)`
-- JetBrains Mono as primary font (Inter for body paragraphs only)
+- JetBrains Mono as primary body font (Inter available for long-form prose only)
 - Solid navigation bar: 60px height, no blur or glassmorphism
-- `// COMMENT` style monospace uppercase section labels
+- `// COMMENT` style monospace uppercase section labels (`.comment-label` utility)
 - Buttons: square, offset shadow on hover, `translate(-2px,-2px)` hover state
-- No glow effects, no neon lines, no animated gradients
+- No glow effects, no neon lines, no animated gradients, no glassmorphism
 
 **ThemePalette interface** (in `packages/themes/src/types.ts`):
 
 - `bg`, `primary`, `accent`, `surface`, `surfaceOverlay`, `text`, `muted`, `border`, `codeBg`
 - Removed: `glow`, `neonLine` (no longer part of the design system)
 
-**WCAG Note:** Prototype muted color `#5A5A5A` on `#1C1C1C` = 2.8:1 contrast (fails AA). Use `#8A8A8A` (5.1:1) for body text; reserve `#5A5A5A` for decorative/large text only.
+**Accessibility requirements:**
 
-> **Note:** The per-theme color system in Section 5.2 still applies within the lesson viewer and progress diagram. The Brutalist Terminal aesthetic governs the shell: marketing, auth, onboarding, pricing, landing, nav, and footer.
+- `--tc-text` (`#C8C8C8`) on `--tc-bg` (`#1C1C1C`) = 9.5:1 contrast ratio, exceeds WCAG AA (4.5:1).
+- `--tc-primary` on `--tc-bg` must meet WCAG AA for large text (3:1 minimum). Verified for all themes.
+- `--tc-muted` (`#8A8A8A`) on `--tc-bg` (`#1C1C1C`) = 4.5:1 contrast (meets AA). Safe for body text, labels, and secondary information. Still recommended to use `--tc-text` for primary content.
+- Focus indicators: All interactive elements use a 2px `--tc-primary` outline with 2px offset on `:focus-visible`. This is a global style applied in the base CSS. Never suppress or override focus indicators.
+
+**Dark mode note:** Tensorcraft is dark-mode only. There is no light mode. The dark aesthetic is a core brand element. All design decisions assume a dark background. The `color-scheme: dark` meta tag is set in the document head to inform the browser (affects scrollbar styling, form controls, etc.). System-level forced colors (Windows High Contrast Mode) are respected via `@media (forced-colors: active)` -- in this mode, all custom colors are replaced with system colors and borders become visible.
 
 ---
 

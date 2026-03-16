@@ -1,9 +1,14 @@
+"use client";
+
+import { useEffect } from "react";
 import Link from "next/link";
+import { trackPaywallShown } from "@/lib/analytics";
 
 interface LessonPaywallProps {
   themeSlug: string;
   themeName: string;
   accentColor: string;
+  moduleId?: string;
 }
 
 /**
@@ -14,7 +19,12 @@ export function LessonPaywall({
   themeSlug,
   themeName,
   accentColor,
+  moduleId,
 }: LessonPaywallProps) {
+  useEffect(() => {
+    trackPaywallShown(themeSlug, moduleId || "unknown");
+  }, [themeSlug, moduleId]);
+
   return (
     <div
       className="p-10 text-center my-12 bg-surface-raised"

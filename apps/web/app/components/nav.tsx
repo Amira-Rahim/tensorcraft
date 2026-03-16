@@ -30,6 +30,12 @@ export function Nav() {
         >
           Pricing
         </Link>
+        <Link
+          href="/blog"
+          className="text-[13px] text-text-muted hover:text-text-primary transition-colors"
+        >
+          Blog
+        </Link>
       </div>
 
       <UserMenu />

@@ -22,9 +22,9 @@ Each theme places the learner inside a narrative world where they build a real M
 | Theme | World | Specialization | Model Built | Relevant Career Paths | Salary Range |
 |-------|-------|---------------|-------------|----------------------|--------------|
 | **Deep Orbit** | Space exploration & celestial navigation | Time-series & signals | Multi-stage signal classifier for anomaly detection | ML-Enhanced Frontend Engineer, Time-Series Specialist | $120K–$160K |
-| **Neon Protocol** | Cyberpunk city & digital underworld | Computer vision | Real-time surveillance detection system | ML-Enhanced Frontend Engineer, Computer Vision Specialist | $120K–$160K |
-| **Signal Ward** | Medical research station & clinical NLP | NLP & text | Clinical text analysis and decision support system | ML-Enhanced Frontend Engineer, NLP Specialist | $120K–$160K |
-| **Nova Canvas** | Art colony & generative design studio | Multimodal & generative models | Real-time multimodal creative installation | ML-Enhanced Frontend Engineer, Creative Technologist | $120K–$160K |
+| **Neon Protocol** | Cyberpunk city & digital underworld | Real-Time Computer Vision | Real-time surveillance detection system | ML-Enhanced Frontend Engineer, Computer Vision Specialist | $120K–$160K |
+| **Signal Ward** | Medical research station & clinical NLP | NLP & Text Intelligence | Clinical text analysis and decision support system | ML-Enhanced Frontend Engineer, NLP Specialist | $120K–$160K |
+| **Nova Canvas** | Art colony & generative design studio | Multimodal & Generative AI | Real-time multimodal creative installation | ML-Enhanced Frontend Engineer, Creative Technologist | $120K–$160K |
 | **Terra Grid** | Industrial infrastructure & edge computing | Edge AI & production ML | Distributed edge anomaly detection system | ML-Enhanced Frontend Engineer, Edge ML Specialist | $120K–$160K |
 
 **Every theme teaches ALL ML fundamentals.** Regardless of which theme a learner starts with, they will cover:
@@ -46,10 +46,10 @@ The specialization (roughly 40% of each curriculum) goes deeper into the theme's
 |---------|---------|--------|--------|
 | **V0.5** | Deep Orbit — Modules 1–3 (15 lessons, free tier) | Q2 2026 | In development |
 | **V1.0** | Deep Orbit — Full 11 modules | Q3 2026 | Planned |
-| **V2.0** | Neon Protocol — Full 11 modules | Q4 2026 | Planned |
-| **V3.0** | Signal Ward — Full 11 modules | Q1 2027 | Planned |
-| **V4.0** | Nova Canvas — Full 11 modules | Q2 2027 | Planned |
-| **V5.0** | Terra Grid — Full 11 modules | Q3 2027 | Planned |
+| **V2.0** | Neon Protocol — Full 11 modules | Q1 2027 | Planned |
+| **V3.0** | Signal Ward — Full 11 modules | Q3 2027 | Planned |
+| **V4.0** | Nova Canvas — Full 11 modules | Q1 2028 | Planned |
+| **V5.0** | Terra Grid — Full 11 modules | Q3 2028 | Planned |
 
 #### Coming Soon Preview Content
 

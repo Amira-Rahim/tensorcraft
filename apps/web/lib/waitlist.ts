@@ -14,7 +14,10 @@ export async function submitWaitlist(
     .insert({ email: email.trim(), theme_id: themeId, source });
 
   if (error && error.code === "23505") {
-    return "done"; // duplicate — already signed up
+    return "done";
   }
-  return error ? "error" : "done";
+
+  if (error) return "error";
+
+  return "done";
 }
