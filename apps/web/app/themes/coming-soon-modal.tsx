@@ -182,7 +182,7 @@ export function ComingSoonModal({
                 className="h-10 px-5 text-sm font-semibold font-mono text-black disabled:opacity-50 transition-all hover:translate-x-px hover:translate-y-px hover:shadow-none"
                 style={{
                   background: accentColor,
-                  boxShadow: `3px 3px 0px ${accentColor}55`,
+                  boxShadow: `3px 3px 0px ${accentColor}`,
                 }}
               >
                 {status === "saving" ? "..." : "Notify Me"}

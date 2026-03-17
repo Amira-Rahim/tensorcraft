@@ -210,7 +210,7 @@ export default async function ThemeDetailPage({ params }: Props) {
         className="relative z-10 px-12 pt-10 pb-9"
         style={{
           borderBottom: `1px solid ${theme.palette.border}`,
-          background: `${theme.palette.bg}B3`,
+          background: `color-mix(in srgb, ${theme.palette.bg} 70%, transparent)`,
         }}
       >
         <p
@@ -220,7 +220,7 @@ export default async function ThemeDetailPage({ params }: Props) {
           // {theme.displayName} &mdash; {themeModules.length} MODULES
         </p>
         <h1
-          className="font-mono text-[32px] font-bold mb-2.5"
+          className="font-mono text-3xl font-bold mb-2.5"
           style={{ color: theme.palette.text, letterSpacing: "-0.02em" }}
         >
           MODULE MAP

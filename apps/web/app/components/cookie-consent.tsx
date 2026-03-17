@@ -62,7 +62,7 @@ export function CookieConsent() {
         <div className="flex items-center gap-3">
           <button
             onClick={accept}
-            className="border border-primary/30 bg-primary/8 px-5 py-2 text-sm font-mono font-medium hover:bg-primary/15 hover:border-primary/50 transition-all brutalist-hover"
+            className="border border-primary/30 bg-primary/8 px-5 py-2 text-sm font-mono font-medium hover:bg-primary/25 hover:border-primary/50 transition-all brutalist-hover"
           >
             Accept all
           </button>

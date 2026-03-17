@@ -301,7 +301,7 @@ export function AuthForm({ mode: initialMode }: AuthFormProps) {
               type="button"
               onClick={() => handleOAuth("github")}
               aria-label="Continue with GitHub"
-              className="flex w-full items-center justify-center gap-3 h-13 border border-border bg-transparent text-text-primary text-[15px] font-mono font-medium hover:border-primary/50 hover:translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[4px_4px_0_0_rgba(107,170,138,0.2)] transition-all"
+              className="flex w-full items-center justify-center gap-3 h-13 border border-border bg-transparent text-text-primary text-[15px] font-mono font-medium hover:border-primary/50 hover:translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[4px_4px_0_0_var(--tc-primary)] transition-all"
             >
               <svg
                 width="20"
@@ -320,7 +320,7 @@ export function AuthForm({ mode: initialMode }: AuthFormProps) {
               type="button"
               onClick={() => handleOAuth("google")}
               aria-label="Continue with Google"
-              className="flex w-full items-center justify-center gap-3 h-13 border border-border bg-transparent text-text-primary text-[15px] font-mono font-medium hover:border-primary/50 hover:translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[4px_4px_0_0_rgba(107,170,138,0.2)] transition-all mt-3"
+              className="flex w-full items-center justify-center gap-3 h-13 border border-border bg-transparent text-text-primary text-[15px] font-mono font-medium hover:border-primary/50 hover:translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[4px_4px_0_0_var(--tc-primary)] transition-all mt-3"
             >
               <svg
                 width="20"
@@ -370,7 +370,7 @@ export function AuthForm({ mode: initialMode }: AuthFormProps) {
                 placeholder="you@example.com"
                 autoComplete="email"
                 required
-                className="w-full h-13 px-5 border border-border bg-code-bg text-text-primary text-[15px] font-mono placeholder:text-text-muted/60 outline-none focus:border-primary/50 focus:bg-surface transition-all"
+                className="w-full h-13 px-5 border border-border bg-code-bg text-text-primary text-[15px] font-mono placeholder:text-text-muted/60 outline-none focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 focus:border-primary/50 focus:bg-surface transition-all"
               />
               <button
                 type="submit"

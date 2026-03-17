@@ -414,7 +414,7 @@ function ExerciseControls({
         type="button"
         onClick={handleRun}
         disabled={running}
-        className="px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider transition-all brutalist-hover bg-primary text-surface border-2 border-primary hover:bg-transparent hover:text-primary disabled:opacity-60"
+        className="px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider transition-colors duration-100 brutalist-hover bg-primary text-surface border-2 border-primary hover:bg-transparent hover:text-primary disabled:opacity-60"
       >
         {running ? "Running..." : "Run Tests"}
       </button>
@@ -542,7 +542,7 @@ export function Exercise({ slug }: ExerciseProps) {
               string: "#c3e88d",
             },
             font: {
-              body: '-apple-system, "Segoe UI", Roboto, sans-serif',
+              body: '"JetBrains Mono", ui-monospace, monospace',
               mono: '"JetBrains Mono", "Fira Code", Menlo, monospace',
               size: "13px",
               lineHeight: "1.6",

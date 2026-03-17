@@ -8,12 +8,12 @@ interface DialogueProps {
 export function Dialogue({ speaker, children }: DialogueProps) {
   return (
     <blockquote
-      className="my-5 border-l-2 pl-5 italic"
-      style={{ borderColor: "var(--tc-accent, #7B68EE)" }}
+      className="my-5 border-l-2 pl-5 text-primary"
+      style={{ borderColor: "var(--tc-accent, #A89060)" }}
     >
       <span
         className="not-italic text-xs font-semibold uppercase tracking-widest block mb-1"
-        style={{ color: "var(--tc-accent, #7B68EE)" }}
+        style={{ color: "var(--tc-accent, #A89060)" }}
       >
         {speaker}
       </span>

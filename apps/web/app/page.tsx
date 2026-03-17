@@ -9,64 +9,64 @@ const bridges = [
     fe: "useState()",
     ml: "Model Weights",
     tier: "Structural",
-    col: "#7096B0",
+    col: "var(--tc-tier-structural, #7096B0)",
     eq: "w ∈ ℝⁿ",
   },
   {
     fe: "Event propagation",
     ml: "Forward Pass",
     tier: "Structural",
-    col: "#7096B0",
+    col: "var(--tc-tier-structural, #7096B0)",
     eq: "ŷ = f(Wx+b)",
   },
   {
     fe: "Event bubbling",
     ml: "Backpropagation",
     tier: "Structural",
-    col: "#7096B0",
+    col: "var(--tc-tier-structural, #7096B0)",
     eq: "∂L/∂w",
   },
   {
     fe: "React diff algo",
     ml: "Loss Function",
     tier: "Identity",
-    col: "#6BAA8A",
+    col: "var(--tc-tier-identity, #6BAA8A)",
     eq: "L = Σ(y−ŷ)²",
   },
   {
     fe: "transition-duration",
     ml: "Learning Rate η",
     tier: "Intuition",
-    col: "#A89060",
+    col: "var(--tc-tier-intuition, #A89060)",
     eq: "η = 0.01",
   },
   {
     fe: "Re-render cycle",
     ml: "Training Epoch",
     tier: "Structural",
-    col: "#7096B0",
+    col: "var(--tc-tier-structural, #7096B0)",
     eq: "T = {1..N}",
   },
   {
     fe: "Array.map()",
     ml: "Tensor Operation",
     tier: "Identity",
-    col: "#6BAA8A",
+    col: "var(--tc-tier-identity, #6BAA8A)",
     eq: "T: ℝⁿ→ℝᵐ",
   },
   {
     fe: "CSS clamp()",
     ml: "Activation σ(x)",
     tier: "Intuition",
-    col: "#A89060",
+    col: "var(--tc-tier-intuition, #A89060)",
     eq: "σ(x)∈[0,1]",
   },
 ];
 
 const tierCol: Record<string, string> = {
-  Identity: "#6BAA8A",
-  Structural: "#7096B0",
-  Intuition: "#A89060",
+  Identity: "var(--tc-tier-identity, #6BAA8A)",
+  Structural: "var(--tc-tier-structural, #7096B0)",
+  Intuition: "var(--tc-tier-intuition, #A89060)",
 };
 
 const themes = [
@@ -76,7 +76,7 @@ const themes = [
     spec: "RNN / LSTM / Signals",
     status: "LIVE",
     price: "$79",
-    col: "#6BAA8A",
+    col: "var(--tc-primary, #6BAA8A)",
     live: true,
   },
   {
@@ -174,7 +174,7 @@ export default function Home() {
               Deep Orbit is live · Launch cohort open
             </div>
 
-            <h1 className="text-5xl md:text-[68px] font-mono font-black leading-[0.93] tracking-[-0.045em] mb-10 uppercase">
+            <h1 className="text-5xl md:text-6xl font-mono font-black leading-[0.93] tracking-[-0.045em] mb-10 uppercase">
               <span className="block">
                 Machine <span className="text-primary">Learning</span>
               </span>
@@ -238,7 +238,7 @@ export default function Home() {
         <section className="border-b border-border">
           <div className="px-10 md:px-20 pt-16 pb-10">
             <div className="flex items-baseline gap-6 mb-2 flex-wrap">
-              <h2 className="text-[32px] font-mono font-black tracking-tight">
+              <h2 className="text-3xl font-mono font-black tracking-tight">
                 The Bridge System
               </h2>
               <div className="flex gap-5 ml-auto">
@@ -330,7 +330,7 @@ export default function Home() {
         {/* ===== THEMES ===== */}
         <section className="border-b border-border">
           <div className="px-10 md:px-20 pt-16 pb-12">
-            <h2 className="text-[32px] font-mono font-black tracking-tight mb-3">
+            <h2 className="text-3xl font-mono font-black tracking-tight mb-3">
               Five Worlds
             </h2>
             <p className="text-[15px] text-text-muted leading-relaxed max-w-[480px] mb-12">
@@ -371,9 +371,9 @@ export default function Home() {
                   <span
                     className="font-mono text-[10px] font-bold tracking-wider px-2.5 py-1"
                     style={{
-                      color: t.live ? "#6BAA8A" : "var(--tc-muted)",
+                      color: t.live ? "var(--tc-primary)" : "var(--tc-muted)",
                       border: t.live
-                        ? "1px solid rgba(107,170,138,0.35)"
+                        ? "1px solid color-mix(in srgb, var(--tc-primary) 35%, transparent)"
                         : "1px solid var(--tc-border)",
                     }}
                   >
@@ -407,7 +407,7 @@ export default function Home() {
         {/* ===== 5C LOOP ===== */}
         <section id="how-it-works" className="border-b border-border">
           <div className="px-10 md:px-20 pt-16 pb-12">
-            <h2 className="text-[32px] font-mono font-black tracking-tight mb-3">
+            <h2 className="text-3xl font-mono font-black tracking-tight mb-3">
               The 5C Learning Loop
             </h2>
             <p className="text-[15px] text-text-muted leading-relaxed max-w-[480px]">
@@ -441,7 +441,7 @@ export default function Home() {
           <div className="font-mono text-[11px] text-text-muted tracking-wider">
             // module 1 · free · no account required
           </div>
-          <h2 className="text-5xl md:text-[64px] font-mono font-black tracking-[-0.045em] leading-[0.95] uppercase">
+          <h2 className="text-5xl md:text-6xl font-mono font-black tracking-[-0.045em] leading-[0.95] uppercase">
             Bridge
             <br />
             <span className="text-primary">the gap.</span>

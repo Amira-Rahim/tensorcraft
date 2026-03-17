@@ -80,7 +80,9 @@ export function ModuleMapClient({
               disabled={isLocked}
               className="w-full text-left flex items-start gap-5 mb-0.5"
               style={{
-                background: isActive ? palette.surface : `${palette.surface}99`,
+                background: isActive
+                  ? palette.surface
+                  : `color-mix(in srgb, ${palette.surface} 60%, transparent)`,
                 border: `2px solid ${isActive ? palette.primary : isExp ? dotColor : palette.border}`,
                 padding: "18px 24px",
                 cursor: isLocked ? "default" : "pointer",
@@ -157,7 +159,7 @@ export function ModuleMapClient({
                       className="font-mono text-[9px] ml-auto px-2 py-0.5"
                       style={{
                         color: palette.primary,
-                        background: `${palette.primary}22`,
+                        background: `color-mix(in srgb, ${palette.primary} 13%, transparent)`,
                         border: `1px solid ${palette.primary}`,
                       }}
                     >
@@ -187,7 +189,7 @@ export function ModuleMapClient({
                         <div
                           className="flex items-center gap-3 py-2 px-4"
                           style={{
-                            background: `${palette.bg}CC`,
+                            background: `color-mix(in srgb, ${palette.bg} 80%, transparent)`,
                             border: `1px solid ${palette.border}`,
                           }}
                         >

@@ -1,6 +1,16 @@
 @import "tailwindcss";
 @import "@tensorcraft/themes/css/themes.css";
 
+::selection {
+  background-color: var(--tc-primary, #6baa8a);
+  color: var(--tc-bg, #1c1c1c);
+}
+
+*:focus-visible {
+  outline: 2px solid var(--tc-primary, #6baa8a);
+  outline-offset: 2px;
+}
+
 @theme {
   /* Background surfaces */
   --color-surface: var(--tc-bg);
@@ -57,14 +67,14 @@ body {
 
 /* Offset box shadow (brutalist depth) */
 .brutalist-shadow {
-  box-shadow: 4px 4px 0 rgba(107, 170, 138, 0.25);
+  box-shadow: 4px 4px 0 var(--tc-primary, #6baa8a);
 }
 
 /* Brutalist hover: lift + larger shadow */
 .brutalist-hover {
   transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
+    transform 0.15s linear,
+    box-shadow 0.15s linear;
 }
 
 .brutalist-hover:hover {
@@ -98,7 +108,7 @@ body {
 }
 
 .animate-fade-up {
-  animation: fade-up 0.5s ease both;
+  animation: fade-up 0.15s linear both;
 }
 
 /* ===== Ticker / Bridge System ===== */
@@ -167,6 +177,24 @@ body {
   50% {
     opacity: 0.5;
   }
+}
+
+/* ===== Neon Utility Classes ===== */
+.neon-text {
+  text-shadow:
+    0 0 7px var(--tc-glow, #7b68ee),
+    0 0 20px var(--tc-glow, #7b68ee);
+}
+
+.neon-box {
+  box-shadow:
+    0 0 7px var(--tc-glow, #7b68ee),
+    inset 0 0 7px var(--tc-glow, #7b68ee);
+}
+
+.neon-border {
+  box-shadow: 0 0 4px var(--tc-glow, #7b68ee);
+  border-color: var(--tc-glow, #7b68ee);
 }
 
 /* Respect reduced motion */

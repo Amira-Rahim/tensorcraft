@@ -79,7 +79,7 @@ export function UserMenu() {
 
       {open && (
         <div
-          className="absolute right-0 top-12 w-56 border border-border overflow-hidden shadow-2xl z-50 bg-surface-raised"
+          className="absolute right-0 top-12 w-56 border border-border overflow-hidden brutalist-shadow z-50 bg-surface-raised"
           role="menu"
         >
           <div className="px-4 py-3 border-b border-border">
@@ -92,7 +92,7 @@ export function UserMenu() {
             <Link
               href="/dashboard"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-3 px-4 py-2.5 text-sm font-mono text-text-primary transition-colors hover:bg-white/4"
+              className="flex items-center gap-3 px-4 py-2.5 text-sm font-mono text-text-primary transition-colors hover:bg-surface-raised"
               role="menuitem"
             >
               Dashboard
@@ -100,7 +100,7 @@ export function UserMenu() {
             <Link
               href="/settings"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-3 px-4 py-2.5 text-sm font-mono text-text-primary transition-colors hover:bg-white/4"
+              className="flex items-center gap-3 px-4 py-2.5 text-sm font-mono text-text-primary transition-colors hover:bg-surface-raised"
               role="menuitem"
             >
               Settings
@@ -111,7 +111,7 @@ export function UserMenu() {
             <button
               type="button"
               onClick={handleSignOut}
-              className="flex items-center gap-3 w-full px-4 py-2.5 text-sm font-mono text-left text-text-muted transition-colors hover:bg-white/4"
+              className="flex items-center gap-3 w-full px-4 py-2.5 text-sm font-mono text-left text-text-muted transition-colors hover:bg-surface-raised"
               role="menuitem"
             >
               Sign out

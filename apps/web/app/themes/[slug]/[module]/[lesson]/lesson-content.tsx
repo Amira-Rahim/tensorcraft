@@ -102,7 +102,7 @@ export function LessonContent({ lesson, exercises = [] }: LessonContentProps) {
 
   return (
     <ExerciseDataProvider exercises={exerciseMap}>
-      <div className="prose prose-invert max-w-none">
+      <div className="max-w-none">
         <Content />
         {lesson.hints && <HintPanel hints={lesson.hints} />}
       </div>

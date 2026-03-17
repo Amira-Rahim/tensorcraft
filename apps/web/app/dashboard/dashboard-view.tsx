@@ -5,14 +5,15 @@ import Link from "next/link";
 
 /* ── Design tokens (use CSS vars from theme system) ── */
 const LIME = "var(--tc-primary)";
-const LIME_RAW = "#6BAA8A"; // needed for canvas/rgba
+// Canvas 2D context can't resolve CSS custom properties — hardcoded values must match --tc-primary and --tc-border
+const LIME_RAW = "#6BAA8A";
 const BG = "var(--tc-bg)";
 const PANEL = "var(--tc-surface)";
 const CARD = "var(--tc-surface-overlay)";
 const WHITE = "var(--tc-text)";
 const MUTED = "var(--tc-muted)";
 const BORDER_VAR = "var(--tc-border)";
-const BORDER_RAW = "#2A2A2A";
+const BORDER_RAW = "#2A2A2A"; // must match --tc-border — canvas can't resolve CSS vars
 const MONO = "var(--font-mono), 'JetBrains Mono', monospace";
 
 const TIER_COLORS: Record<string, string> = {
@@ -403,7 +404,6 @@ export function DashboardView(props: DashboardProps) {
       style={{
         background: BG,
         color: WHITE,
-        fontFamily: "'Inter', system-ui, sans-serif",
         WebkitFontSmoothing: "antialiased",
         minHeight: "100vh",
         display: "flex",

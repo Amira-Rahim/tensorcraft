@@ -356,7 +356,7 @@ export function SettingsForm({
                     padding: "12px 28px",
                     cursor: "pointer",
                     boxShadow: hovSave
-                      ? "4px 4px 0 rgba(107,170,138,0.3)"
+                      ? "4px 4px 0 var(--tc-primary, #6BAA8A)"
                       : "none",
                     transform: hovSave ? "translate(-2px,-2px)" : "none",
                     transition: "all 0.1s ease",
@@ -377,8 +377,8 @@ export function SettingsForm({
                 )}
                 {error && (
                   <span
-                    className="font-mono"
-                    style={{ fontSize: 11, color: "#F87171" }}
+                    className="font-mono text-red-400"
+                    style={{ fontSize: 11 }}
                   >
                     {error}
                   </span>
@@ -695,10 +695,9 @@ export function SettingsForm({
               style={{ borderTop: "1px solid var(--tc-border)" }}
             >
               <div
-                className="font-mono mb-4"
+                className="font-mono mb-4 text-red-400"
                 style={{
                   fontSize: 9,
-                  color: "#F87171",
                   letterSpacing: "0.12em",
                 }}
               >
@@ -723,13 +722,10 @@ export function SettingsForm({
                 <button
                   type="button"
                   onClick={() => setShowDeleteConfirm(!showDeleteConfirm)}
-                  className="font-mono"
+                  className="font-mono text-red-400 border-2 border-red-400 bg-red-400/10"
                   style={{
                     fontSize: 10,
                     padding: "8px 20px",
-                    border: "2px solid rgba(248,113,113,0.3)",
-                    background: "rgba(248,113,113,0.06)",
-                    color: "#F87171",
                     cursor: "pointer",
                   }}
                 >
@@ -738,12 +734,10 @@ export function SettingsForm({
               </div>
               {showDeleteConfirm && (
                 <div
-                  className="font-mono mt-4"
+                  className="font-mono mt-4 border border-red-400/30 bg-red-400/10"
                   style={{
                     fontSize: 11,
                     padding: "16px 20px",
-                    border: "1px solid rgba(248,113,113,0.15)",
-                    background: "rgba(248,113,113,0.04)",
                     color: "var(--tc-muted)",
                   }}
                 >

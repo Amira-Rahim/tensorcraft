@@ -150,7 +150,7 @@ export default function PricingPage() {
               return (
                 <div
                   key={tier.id}
-                  className={`relative p-7 flex flex-col transition-all border hover:border-primary hover:shadow-[4px_4px_0px_0px_#6BAA8A] ${
+                  className={`relative p-7 flex flex-col transition-all border hover:border-primary hover:shadow-[4px_4px_0_var(--tc-primary)] ${
                     isRecommended
                       ? "bg-[rgba(107,170,138,0.12)] border-primary"
                       : "bg-surface border-border"
@@ -163,7 +163,7 @@ export default function PricingPage() {
                   )}
 
                   <div className={`${isRecommended ? "mt-2" : ""} mb-2`}>
-                    <span className="text-[48px] font-bold leading-tight text-text-primary font-mono">
+                    <span className="text-5xl font-bold leading-tight text-text-primary font-mono">
                       ${plan.price}
                     </span>
                   </div>
@@ -223,7 +223,7 @@ export default function PricingPage() {
             <p className="text-[13px] uppercase tracking-[0.15em] text-center mb-3 text-text-muted font-mono">
               Compare Plans
             </p>
-            <h2 className="text-3xl sm:text-[40px] font-bold text-center mb-14 text-text-primary font-mono tracking-tight">
+            <h2 className="text-3xl sm:text-4xl font-bold text-center mb-14 text-text-primary font-mono tracking-tight">
               Feature Comparison
             </h2>
 
@@ -282,7 +282,7 @@ export default function PricingPage() {
 
         {/* CTA Footer */}
         <section className="py-28 px-6 text-center border-t border-border">
-          <h2 className="text-2xl sm:text-[32px] font-bold mb-4 text-text-primary font-mono tracking-tight">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-text-primary font-mono tracking-tight">
             Your frontend skills are the foundation.
           </h2>
           <p className="text-lg mb-10 text-text-muted font-mono">
@@ -290,7 +290,7 @@ export default function PricingPage() {
           </p>
           <Link
             href="/themes/deep-orbit"
-            className="inline-flex items-center font-mono px-9 py-4 text-[17px] font-medium transition-all bg-primary text-[#1C1C1C] border border-primary hover:shadow-[4px_4px_0px_0px_#C8C8C8] hover:-translate-x-0.5 hover:-translate-y-0.5"
+            className="inline-flex items-center font-mono px-9 py-4 text-base font-medium transition-all bg-primary text-[#1C1C1C] border border-primary hover:shadow-[4px_4px_0_var(--tc-primary)] hover:-translate-x-0.5 hover:-translate-y-0.5"
           >
             Explore Deep Orbit &rarr;
           </Link>

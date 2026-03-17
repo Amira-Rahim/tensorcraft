@@ -24,7 +24,7 @@ export function RecallPrompt({ question, children }: RecallPromptProps) {
         <button
           type="button"
           onClick={() => setRevealed(true)}
-          className="px-4 py-2 text-sm font-mono font-medium bg-primary text-surface border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover"
+          className="px-4 py-2 text-sm font-mono font-medium bg-primary text-surface border-2 border-primary hover:bg-transparent hover:text-primary transition-colors duration-100 brutalist-hover"
         >
           Reveal Answer
         </button>
@@ -32,7 +32,7 @@ export function RecallPrompt({ question, children }: RecallPromptProps) {
 
       {revealed && (
         <div
-          className="transition-all duration-300"
+          className="transition-colors duration-75"
           style={{ opacity: revealed ? 1 : 0 }}
         >
           <div className="p-4 bg-surface border-l-[3px] border-l-primary text-sm leading-relaxed text-text-primary/80">

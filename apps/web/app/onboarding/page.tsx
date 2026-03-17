@@ -133,7 +133,7 @@ export default function OnboardingPage() {
             <div className="font-mono text-[9px] text-primary tracking-[0.15em] mb-3.5">
               // MISSION BRIEFING
             </div>
-            <h1 className="font-mono text-4xl md:text-[38px] font-bold text-text-primary tracking-tight leading-tight mb-4">
+            <h1 className="font-mono text-4xl md:text-4xl font-bold text-text-primary tracking-tight leading-tight mb-4">
               Welcome Aboard
               <br />
               the <span className="text-primary">Archimedes</span>
@@ -171,7 +171,7 @@ export default function OnboardingPage() {
             <div className="font-mono text-[9px] text-primary tracking-[0.15em] mb-3.5">
               // CREW ASSESSMENT
             </div>
-            <h2 className="font-mono text-[28px] font-bold text-text-primary tracking-tight mb-2.5">
+            <h2 className="font-mono text-3xl font-bold text-text-primary tracking-tight mb-2.5">
               What&apos;s your background?
             </h2>
             <p className="text-sm text-text-muted mb-10">
@@ -183,12 +183,7 @@ export default function OnboardingPage() {
                   key={b}
                   type="button"
                   onClick={() => setBg(b)}
-                  className="flex items-center gap-4 px-6 py-4 text-left transition-all"
-                  style={{
-                    background:
-                      bg === b ? "rgba(107,170,138,0.13)" : "var(--tc-surface)",
-                    border: `2px solid ${bg === b ? "var(--tc-primary)" : "var(--tc-border)"}`,
-                  }}
+                  className={`flex items-center gap-4 px-6 py-4 text-left transition-all border-2 ${bg === b ? "bg-primary/10 border-primary" : "bg-surface border-border"}`}
                 >
                   <div
                     className="w-4 h-4 shrink-0"
@@ -218,7 +213,7 @@ export default function OnboardingPage() {
             <div className="font-mono text-[9px] text-primary tracking-[0.15em] mb-3.5">
               // MISSION OBJECTIVE
             </div>
-            <h2 className="font-mono text-[28px] font-bold text-text-primary tracking-tight mb-2.5">
+            <h2 className="font-mono text-3xl font-bold text-text-primary tracking-tight mb-2.5">
               What&apos;s your goal?
             </h2>
             <p className="text-sm text-text-muted mb-10">
@@ -230,14 +225,7 @@ export default function OnboardingPage() {
                   key={g}
                   type="button"
                   onClick={() => setGoal(g)}
-                  className="flex items-center gap-4 px-6 py-4 text-left transition-all"
-                  style={{
-                    background:
-                      goal === g
-                        ? "rgba(107,170,138,0.13)"
-                        : "var(--tc-surface)",
-                    border: `2px solid ${goal === g ? "var(--tc-primary)" : "var(--tc-border)"}`,
-                  }}
+                  className={`flex items-center gap-4 px-6 py-4 text-left transition-all border-2 ${goal === g ? "bg-primary/10 border-primary" : "bg-surface border-border"}`}
                 >
                   <div
                     className="w-4 h-4 shrink-0"
@@ -267,7 +255,7 @@ export default function OnboardingPage() {
             <div className="font-mono text-[9px] text-primary tracking-[0.15em] mb-3.5">
               // CHOOSE YOUR WORLD
             </div>
-            <h2 className="font-mono text-[28px] font-bold text-text-primary tracking-tight mb-2.5">
+            <h2 className="font-mono text-3xl font-bold text-text-primary tracking-tight mb-2.5">
               Choose your theme
             </h2>
             <p className="text-sm text-text-muted mb-10">
@@ -280,13 +268,8 @@ export default function OnboardingPage() {
                   type="button"
                   onClick={() => th.available && setSelectedTheme(th.id)}
                   disabled={!th.available}
-                  className="flex items-center gap-4 px-6 py-4.5 text-left transition-all"
+                  className={`flex items-center gap-4 px-6 py-4.5 text-left transition-all border-2 ${selectedTheme === th.id ? "bg-primary/8 border-primary" : "bg-surface border-border"}`}
                   style={{
-                    background:
-                      selectedTheme === th.id
-                        ? "rgba(107,170,138,0.08)"
-                        : "var(--tc-surface)",
-                    border: `2px solid ${selectedTheme === th.id ? "var(--tc-primary)" : "var(--tc-border)"}`,
                     opacity: th.available ? 1 : 0.45,
                     cursor: th.available ? "pointer" : "default",
                   }}

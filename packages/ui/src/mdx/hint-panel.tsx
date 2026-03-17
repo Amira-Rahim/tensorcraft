@@ -65,7 +65,7 @@ export function HintPanel({ hints }: HintPanelProps) {
                   onClick={() => {
                     setRevealedLevel(index);
                   }}
-                  className="w-full text-left p-3 transition-colors hover:bg-surface border border-dashed border-border brutalist-hover"
+                  className="w-full text-left p-3 transition-colors duration-100 hover:bg-surface border border-dashed border-border brutalist-hover"
                   style={{
                     color: config.color,
                   }}
