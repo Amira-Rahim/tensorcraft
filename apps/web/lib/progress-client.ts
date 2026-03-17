@@ -24,31 +24,23 @@ export async function markLessonStarted(
   } = await supabase.auth.getUser();
   if (!user) return null;
 
-  // Check if already exists
-  const { data: existing } = await supabase
-    .from("theme_progress")
-    .select("status")
-    .eq("user_id", user.id)
-    .eq("theme_id", themeId)
-    .eq("lesson_id", lessonId)
-    .single();
-
-  // Don't overwrite existing progress
-  if (existing) return existing;
-
+  // Use upsert with ignoreDuplicates to avoid SELECT→INSERT race condition
   const { data, error } = await supabase
     .from("theme_progress")
-    .insert({
-      user_id: user.id,
-      theme_id: themeId,
-      module_id: moduleId,
-      lesson_id: lessonId,
-      status: "in_progress",
-      score: null,
-      hints_used: 0,
-      attempts: 0,
-      started_at: new Date().toISOString(),
-    })
+    .upsert(
+      {
+        user_id: user.id,
+        theme_id: themeId,
+        module_id: moduleId,
+        lesson_id: lessonId,
+        status: "in_progress",
+        score: null,
+        hints_used: 0,
+        attempts: 0,
+        started_at: new Date().toISOString(),
+      },
+      { onConflict: "user_id,theme_id,lesson_id", ignoreDuplicates: true },
+    )
     .select()
     .single();
 
@@ -68,6 +60,15 @@ export async function markLessonCompleted(
   } = await supabase.auth.getUser();
   if (!user) return null;
 
+  // Preserve original started_at if the record already exists
+  const { data: existingProgress } = await supabase
+    .from("theme_progress")
+    .select("started_at, hints_used, attempts")
+    .eq("user_id", user.id)
+    .eq("theme_id", themeId)
+    .eq("lesson_id", lessonId)
+    .single();
+
   const { data, error } = await supabase
     .from("theme_progress")
     .upsert(
@@ -77,9 +78,9 @@ export async function markLessonCompleted(
         module_id: moduleId,
         lesson_id: lessonId,
         status: "completed" as const,
-        hints_used: 0,
-        attempts: 0,
-        started_at: new Date().toISOString(),
+        hints_used: existingProgress?.hints_used ?? 0,
+        attempts: existingProgress?.attempts ?? 0,
+        started_at: existingProgress?.started_at ?? new Date().toISOString(),
         completed_at: new Date().toISOString(),
       },
       { onConflict: "user_id,theme_id,lesson_id" },

@@ -223,42 +223,40 @@ payments.post("/webhook", async (c) => {
         break;
       }
 
-      // Idempotency: skip if already processed
-      const { data: existing } = await supabase
-        .from("purchases")
-        .select("id")
-        .eq("stripe_session_id", sessionId)
-        .single();
+      // Idempotency: use upsert with ON CONFLICT to avoid TOCTOU race
+      const paymentIntent =
+        typeof session.payment_intent === "string"
+          ? session.payment_intent
+          : (session.payment_intent?.id ?? null);
 
-      if (existing) {
-        // Already processed — acknowledge
-        break;
-      }
-
-      await supabase.from("purchases").insert({
-        user_id: userId,
-        plan_id: metadata.planId,
-        theme_ids: themeIds,
-        amount: amount ? amount / 100 : plan.price,
-        stripe_session_id: sessionId,
-        status: "completed",
-      });
+      await supabase.from("purchases").upsert(
+        {
+          user_id: userId,
+          plan_id: metadata.planId,
+          theme_ids: themeIds,
+          amount: amount ? amount / 100 : plan.price,
+          stripe_session_id: sessionId,
+          stripe_payment_intent: paymentIntent,
+          status: "completed",
+        },
+        { onConflict: "stripe_session_id", ignoreDuplicates: true },
+      );
 
       break;
     }
 
     case "charge.refunded": {
       const charge = event.data.object as Stripe.Charge;
-      const paymentIntent =
+      const refundPaymentIntent =
         typeof charge.payment_intent === "string"
           ? charge.payment_intent
           : charge.payment_intent?.id;
 
-      if (paymentIntent) {
+      if (refundPaymentIntent) {
         await supabase
           .from("purchases")
           .update({ status: "refunded" })
-          .eq("stripe_session_id", paymentIntent);
+          .eq("stripe_payment_intent", refundPaymentIntent);
       }
 
       break;

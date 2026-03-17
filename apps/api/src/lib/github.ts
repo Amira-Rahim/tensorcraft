@@ -183,6 +183,10 @@ export async function getGitHubUsername(
     headers: headers(accessToken),
   });
 
+  if (res.status === 401) {
+    throw new Error("401 Unauthorized — GitHub token expired or revoked");
+  }
+
   if (!res.ok) return null;
 
   const user = (await res.json()) as { login: string };
