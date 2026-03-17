@@ -1,6 +1,13 @@
 "use client";
 
-import { useState, useCallback, createContext, useContext } from "react";
+import {
+  useState,
+  useCallback,
+  useRef,
+  createContext,
+  useContext,
+} from "react";
+
 import {
   SandpackProvider,
   SandpackCodeEditor,
@@ -354,6 +361,7 @@ function ExerciseControls({
 }) {
   const { sandpack } = useSandpack();
   const [running, setRunning] = useState(false);
+  const hasAttempted = useRef(false);
 
   const handleRun = useCallback(() => {
     setRunning(true);
@@ -375,6 +383,7 @@ function ExerciseControls({
       const results = parseAndRunTests(code, exercise.testCode);
       clearTimeout(timeout);
       onResults(results);
+      hasAttempted.current = true;
     } catch (err) {
       clearTimeout(timeout);
       onResults([
@@ -384,6 +393,7 @@ function ExerciseControls({
           error: err instanceof Error ? err.message : String(err),
         },
       ]);
+      hasAttempted.current = true;
     }
     setRunning(false);
   }, [sandpack, exercise.testCode, onResults]);

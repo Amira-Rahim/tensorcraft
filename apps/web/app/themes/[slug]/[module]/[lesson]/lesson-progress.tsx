@@ -6,7 +6,6 @@ import {
   markLessonCompleted,
   getLessonStatus,
 } from "@/lib/progress-client";
-import { trackLessonStarted, trackLessonCompleted } from "@/lib/analytics";
 
 interface LessonProgressProps {
   themeId: string;
@@ -31,6 +30,7 @@ export function LessonProgressTracker({
     let cancelled = false;
 
     async function trackStart() {
+      // First check current status
       const current = await getLessonStatus(themeId, lessonId);
       if (cancelled) return;
 
@@ -39,12 +39,10 @@ export function LessonProgressTracker({
           current.status as "not_started" | "in_progress" | "completed",
         );
       } else {
+        // Mark as started
         const result = await markLessonStarted(themeId, moduleId, lessonId);
         if (cancelled) return;
-        if (result) {
-          trackLessonStarted(themeId, moduleId, lessonId);
-          setStatus("in_progress");
-        }
+        if (result) setStatus("in_progress");
       }
     }
 
@@ -58,7 +56,6 @@ export function LessonProgressTracker({
     setCompleting(true);
     const result = await markLessonCompleted(themeId, moduleId, lessonId);
     if (result) {
-      trackLessonCompleted(themeId, moduleId, lessonId);
       setStatus("completed");
     }
     setCompleting(false);
@@ -69,9 +66,15 @@ export function LessonProgressTracker({
 
   if (status === "completed") {
     return (
-      <div className="flex items-center gap-2 px-4 py-3 my-6 bg-primary/8 border border-primary/20">
-        <span className="text-sm text-primary">✓</span>
-        <span className="text-sm font-medium text-primary">
+      <div
+        className="flex items-center gap-2 px-4 py-3 rounded-xl my-6"
+        style={{
+          background: "rgba(74, 222, 128, 0.08)",
+          border: "1px solid rgba(74, 222, 128, 0.2)",
+        }}
+      >
+        <span className="text-sm">✓</span>
+        <span className="text-sm font-medium" style={{ color: "#4ADE80" }}>
           Lesson completed
         </span>
       </div>
@@ -84,10 +87,10 @@ export function LessonProgressTracker({
         type="button"
         onClick={handleComplete}
         disabled={completing}
-        className="w-full py-3 text-sm font-semibold font-mono uppercase tracking-wider transition-all brutalist-hover disabled:opacity-50"
+        className="w-full py-3 rounded-full text-sm font-semibold uppercase tracking-wider transition-all"
         style={{
-          background: completing ? "var(--tc-border)" : accentColor,
-          color: completing ? "var(--tc-muted)" : "var(--tc-bg)",
+          background: completing ? "rgba(255,255,255,0.06)" : accentColor,
+          color: completing ? "rgba(255,255,255,0.4)" : "#080B16",
         }}
       >
         {completing ? "Saving..." : "Mark as Complete"}

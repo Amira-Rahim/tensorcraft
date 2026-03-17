@@ -10,7 +10,6 @@ interface RecallPromptProps {
 export function RecallPrompt({ question, answer }: RecallPromptProps) {
   const [revealed, setRevealed] = useState(false);
   const [result, setResult] = useState<"got-it" | "review" | null>(null);
-
   function handleReveal() {
     setRevealed(true);
   }

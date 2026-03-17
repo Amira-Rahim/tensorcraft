@@ -27,7 +27,6 @@ const levelConfig = {
 
 export function HintPanel({ hints }: HintPanelProps) {
   const [revealedLevel, setRevealedLevel] = useState(-1);
-
   if (!hints || hints.length === 0) return null;
 
   return (
@@ -63,7 +62,9 @@ export function HintPanel({ hints }: HintPanelProps) {
                 </div>
               ) : isNext ? (
                 <button
-                  onClick={() => setRevealedLevel(index)}
+                  onClick={() => {
+                    setRevealedLevel(index);
+                  }}
                   className="w-full text-left p-3 transition-colors hover:bg-surface border border-dashed border-border brutalist-hover"
                   style={{
                     color: config.color,

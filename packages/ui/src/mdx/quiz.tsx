@@ -15,7 +15,6 @@ interface QuizProps {
 export function Quiz({ question, options }: QuizProps) {
   const [selected, setSelected] = useState<number | null>(null);
   const [submitted, setSubmitted] = useState(false);
-
   const isCorrect = selected !== null && options[selected]?.correct === true;
 
   function handleSubmit() {

@@ -1,9 +1,13 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { themes } from "@tensorcraft/themes";
-import { getModules, isFoundationsModule } from "@tensorcraft/content";
+import {
+  getModules,
+  getModuleLessons,
+  isFoundationsModule,
+} from "@tensorcraft/content";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
-import { hasThemePurchase } from "@/lib/progress";
+import { hasThemePurchase, getUserProgress } from "@/lib/progress";
 import { AmbientBackground } from "@/app/components/ambient-background";
 import type { Metadata } from "next";
 
@@ -39,10 +43,60 @@ export default async function ThemeDetailPage({ params }: Props) {
   } = await supabase.auth.getUser();
   const hasPurchased = user ? await hasThemePurchase(user.id, slug) : false;
 
+  // Check if all modules are complete (for capstone banner)
+  let isThemeComplete = false;
+  if (user && hasPurchased) {
+    const progress = await getUserProgress(user.id, slug);
+    const completedByModule = new Map<string, number>();
+    for (const p of progress) {
+      if (p.status === "completed") {
+        completedByModule.set(
+          p.module_id,
+          (completedByModule.get(p.module_id) ?? 0) + 1,
+        );
+      }
+    }
+    isThemeComplete = themeModules.every((mod) => {
+      const modLessons = getModuleLessons(slug, mod.slug);
+      return (completedByModule.get(mod.slug) ?? 0) >= modLessons.length;
+    });
+  }
+
   return (
     <main className="min-h-screen px-6 py-20 bg-surface relative overflow-hidden">
       <AmbientBackground />
       <div className="max-w-4xl mx-auto relative z-10">
+        {/* Capstone banner */}
+        {isThemeComplete && (
+          <Link
+            href={`/themes/${slug}/capstone`}
+            className="flex items-center justify-between p-5 mb-8 border-2 brutalist-hover"
+            style={{
+              borderColor: theme.palette.primary,
+              background: theme.palette.surface,
+            }}
+          >
+            <div>
+              <span
+                className="text-xs font-mono uppercase tracking-widest"
+                style={{ color: theme.palette.primary }}
+              >
+                // Mission Complete
+              </span>
+              <p
+                className="text-sm font-mono font-semibold mt-1"
+                style={{ color: theme.palette.text }}
+              >
+                All {theme.terminology.module.toLowerCase()}s completed — view
+                your capstone &rarr;
+              </p>
+            </div>
+            <span style={{ color: theme.palette.primary, fontSize: 24 }}>
+              &#x25CE;
+            </span>
+          </Link>
+        )}
+
         {/* Theme header */}
         <div className="mb-12">
           <Link
