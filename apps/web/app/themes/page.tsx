@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { themes } from "@tensorcraft/themes";
+import { BRIDGES } from "@tensorcraft/shared";
 import { ComingSoonCard } from "./coming-soon-card";
 import { AmbientBackground } from "@/app/components/ambient-background";
 import type { Metadata } from "next";
@@ -71,7 +72,7 @@ export default function ThemesPage() {
                 {/* Badge */}
                 <div className="flex items-center gap-2 mb-4">
                   <span className="inline-flex items-center gap-1.5 px-3 py-1 text-[11px] font-mono font-semibold uppercase tracking-wider bg-primary/10 text-primary">
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                    <span className="w-1.5 h-1.5 bg-primary" />
                     Available Now
                   </span>
                 </div>
@@ -109,7 +110,9 @@ export default function ThemesPage() {
                     Lessons
                   </span>
                   <span>
-                    <span className="text-text-primary font-semibold">26</span>{" "}
+                    <span className="text-text-primary font-semibold">
+                      {BRIDGES.length}
+                    </span>{" "}
                     FE Bridges
                   </span>
                 </div>

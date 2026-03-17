@@ -10,7 +10,11 @@ import {
   getLessonExercises,
 } from "@tensorcraft/content";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
-import { hasThemePurchase, isModuleCompleted } from "@/lib/progress";
+import {
+  getUserProgress,
+  hasThemePurchase,
+  isModuleCompleted,
+} from "@/lib/progress";
 import { LessonContent } from "./lesson-content";
 import { LessonProgressTracker } from "./lesson-progress";
 import { LessonPaywall } from "./lesson-paywall";
@@ -83,10 +87,43 @@ export default async function LessonPage({ params }: Props) {
     }
   }
 
+  // Compute which lessons are completed to enforce sequential locking
+  const completedLessonSlugs = new Set<string>();
+  {
+    const supabase = await getSupabaseServerClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (user) {
+      const progress = await getUserProgress(user.id, slug);
+      for (const p of progress) {
+        if (p.module_id === moduleSlug && p.status === "completed") {
+          completedLessonSlugs.add(p.lesson_id);
+        }
+      }
+    }
+  }
+
+  // A lesson is locked if a previous lesson (by order) is not completed,
+  // unless it's the very first lesson or the current lesson.
+  function isLessonLocked(
+    lessonOrder: number,
+    lessonSlugToCheck: string,
+  ): boolean {
+    if (lessonSlugToCheck === lessonSlug) return false; // current lesson is always accessible
+    if (lessonOrder === 1) return false; // first lesson is always open
+    // Check that all previous lessons are completed
+    for (const l of moduleLessons) {
+      if (l.order >= lessonOrder) break;
+      if (!completedLessonSlugs.has(l.slug)) return true;
+    }
+    return false;
+  }
+
   return (
     <main
       className="min-h-screen"
-      style={{ background: "var(--tc-bg, #080B16)" }}
+      style={{ background: "var(--tc-bg, #1C1C1C)" }}
     >
       <div className="flex">
         {/* Sidebar — lesson navigation */}
@@ -94,13 +131,13 @@ export default async function LessonPage({ params }: Props) {
           className="hidden lg:flex flex-col w-64 min-h-screen p-5 sticky top-0 overflow-y-auto"
           style={{
             background: theme.palette.surface,
-            borderRight: "1px solid rgba(255,255,255,0.06)",
+            borderRight: "1px solid var(--tc-border, rgba(255,255,255,0.06))",
           }}
         >
           <Link
             href={`/themes/${slug}/${moduleSlug}`}
             className="text-xs mb-6 inline-flex items-center gap-1"
-            style={{ color: "var(--tc-muted, #8B92A5)" }}
+            style={{ color: "var(--tc-muted, #8A8A8A)" }}
           >
             ← Back to module
           </Link>
@@ -108,25 +145,52 @@ export default async function LessonPage({ params }: Props) {
           <nav className="flex flex-col gap-1">
             {moduleLessons.map((l) => {
               const isActive = l.slug === lessonSlug;
+              const locked = isLessonLocked(l.order, l.slug);
+              if (locked) {
+                return (
+                  <div
+                    key={l.slug}
+                    className="flex items-center gap-2.5 px-3 py-2 text-sm cursor-not-allowed opacity-40"
+                  >
+                    <span
+                      className="w-5 h-5 flex items-center justify-center text-[10px] font-medium shrink-0"
+                      style={{
+                        background: "var(--tc-border, rgba(255,255,255,0.06))",
+                        color: theme.palette.muted,
+                      }}
+                    >
+                      &#x1F512;
+                    </span>
+                    <span
+                      className="truncate"
+                      style={{ color: theme.palette.muted }}
+                    >
+                      {l.title}
+                    </span>
+                  </div>
+                );
+              }
               return (
                 <Link
                   key={l.slug}
                   href={`/themes/${slug}/${moduleSlug}/${l.slug}`}
-                  className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors"
+                  className="flex items-center gap-2.5 px-3 py-2 text-sm transition-colors"
                   style={{
                     background: isActive
-                      ? "rgba(255,255,255,0.06)"
+                      ? "var(--tc-border, rgba(255,255,255,0.06))"
                       : "transparent",
                     color: isActive ? theme.palette.text : theme.palette.muted,
                   }}
                 >
                   <span
-                    className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-medium flex-shrink-0"
+                    className="w-5 h-5 flex items-center justify-center text-[10px] font-medium shrink-0"
                     style={{
                       background: isActive
                         ? theme.palette.accent
-                        : "rgba(255,255,255,0.06)",
-                      color: isActive ? "#000" : theme.palette.muted,
+                        : "var(--tc-border, rgba(255,255,255,0.06))",
+                      color: isActive
+                        ? "var(--tc-bg, #1C1C1C)"
+                        : theme.palette.muted,
                     }}
                   >
                     {l.order}
@@ -143,7 +207,7 @@ export default async function LessonPage({ params }: Props) {
           {/* Breadcrumb */}
           <div
             className="flex items-center gap-2 text-xs mb-8"
-            style={{ color: "var(--tc-muted, #8B92A5)" }}
+            style={{ color: "var(--tc-muted, #8A8A8A)" }}
           >
             <Link href={`/themes/${slug}`} className="hover:underline">
               {theme.displayName}
@@ -153,7 +217,7 @@ export default async function LessonPage({ params }: Props) {
               href={`/themes/${slug}/${moduleSlug}`}
               className="hover:underline"
             >
-              {moduleSlug}
+              {mod?.title ?? moduleSlug}
             </Link>
             <span>/</span>
             <span style={{ color: theme.palette.text }}>{lesson.title}</span>
@@ -167,7 +231,7 @@ export default async function LessonPage({ params }: Props) {
               </span>
               <span
                 className="text-xs"
-                style={{ color: "var(--tc-muted, #8B92A5)" }}
+                style={{ color: "var(--tc-muted, #8A8A8A)" }}
               >
                 {lesson.estimatedMinutes} min
               </span>
@@ -188,10 +252,10 @@ export default async function LessonPage({ params }: Props) {
             />
           ) : requiresPrerequisite ? (
             <div
-              className="rounded-xl p-8 text-center"
+              className="p-8 text-center"
               style={{
                 background: theme.palette.surface,
-                border: "1px solid rgba(255,255,255,0.06)",
+                border: "1px solid var(--tc-border, rgba(255,255,255,0.06))",
               }}
             >
               <div className="text-3xl mb-4" aria-hidden="true">
@@ -205,14 +269,17 @@ export default async function LessonPage({ params }: Props) {
               </h2>
               <p
                 className="text-sm mb-6"
-                style={{ color: "var(--tc-muted, #8B92A5)" }}
+                style={{ color: "var(--tc-muted, #8A8A8A)" }}
               >
                 Finish all lessons in the previous module to unlock this one.
               </p>
               <Link
                 href={`/themes/${slug}/${prevModuleSlug}`}
-                className="inline-flex items-center px-5 py-2.5 rounded-full text-sm font-medium transition-opacity hover:opacity-90"
-                style={{ background: theme.palette.accent, color: "#000" }}
+                className="inline-flex items-center px-5 py-2.5 text-sm font-medium transition-opacity hover:opacity-90"
+                style={{
+                  background: theme.palette.accent,
+                  color: "var(--tc-bg, #1C1C1C)",
+                }}
               >
                 Go to previous module
               </Link>
@@ -221,12 +288,18 @@ export default async function LessonPage({ params }: Props) {
             <>
               {/* 5C Loop: Context */}
               <section className="mb-8">
+                <h3
+                  className="text-xs uppercase tracking-widest mb-2"
+                  style={{ color: theme.palette.accent }}
+                >
+                  Context
+                </h3>
                 <LessonContent lesson={lesson} exercises={exercises} />
               </section>
 
               {/* 5C Loop: Consequence */}
               <section
-                className="rounded-xl p-5 my-8"
+                className="p-5 my-8"
                 style={{
                   background: theme.palette.surface,
                   borderLeft: `3px solid ${theme.palette.accent}`,
@@ -247,7 +320,7 @@ export default async function LessonPage({ params }: Props) {
                 {lesson.consequence.nextLessonTeaser && (
                   <p
                     className="text-xs mt-2 italic"
-                    style={{ color: "var(--tc-muted, #8B92A5)" }}
+                    style={{ color: "var(--tc-muted, #8A8A8A)" }}
                   >
                     {lesson.consequence.nextLessonTeaser}
                   </p>
@@ -265,13 +338,16 @@ export default async function LessonPage({ params }: Props) {
               {/* Navigation */}
               <nav
                 className="flex items-center justify-between mt-12 pt-6"
-                style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
+                style={{
+                  borderTop:
+                    "1px solid var(--tc-border, rgba(255,255,255,0.06))",
+                }}
               >
                 {prev ? (
                   <Link
                     href={`/themes/${slug}/${moduleSlug}/${prev.slug}`}
                     className="text-sm"
-                    style={{ color: "var(--tc-muted, #8B92A5)" }}
+                    style={{ color: "var(--tc-muted, #8A8A8A)" }}
                   >
                     ← {prev.title}
                   </Link>
@@ -281,16 +357,22 @@ export default async function LessonPage({ params }: Props) {
                 {next ? (
                   <Link
                     href={`/themes/${slug}/${moduleSlug}/${next.slug}`}
-                    className="text-sm font-medium px-4 py-2 rounded-full"
-                    style={{ background: theme.palette.accent, color: "#000" }}
+                    className="text-sm font-medium px-4 py-2"
+                    style={{
+                      background: theme.palette.accent,
+                      color: "var(--tc-bg, #1C1C1C)",
+                    }}
                   >
                     Next: {next.title} →
                   </Link>
                 ) : (
                   <Link
                     href={`/themes/${slug}/${moduleSlug}`}
-                    className="text-sm font-medium px-4 py-2 rounded-full"
-                    style={{ background: theme.palette.accent, color: "#000" }}
+                    className="text-sm font-medium px-4 py-2"
+                    style={{
+                      background: theme.palette.accent,
+                      color: "var(--tc-bg, #1C1C1C)",
+                    }}
                   >
                     Module Complete ✓
                   </Link>
@@ -307,6 +389,7 @@ export default async function LessonPage({ params }: Props) {
           slug: l.slug,
           title: l.title,
           order: l.order,
+          locked: isLessonLocked(l.order, l.slug),
         }))}
         currentLessonSlug={lessonSlug}
         themeSlug={slug}

@@ -1,29 +1,25 @@
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import { themes } from "@tensorcraft/themes";
 import {
   getModules,
+  getModule,
   getModuleLessons,
+  getLesson,
   getLessonsWithBridges,
 } from "@tensorcraft/content";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import type { Metadata } from "next";
-import { BridgeCollection } from "./bridge-collection";
+import {
+  DashboardView,
+  type DashboardModule,
+  type DashboardBridge,
+  type ActivityRecord,
+} from "./dashboard-view";
 
 export const metadata: Metadata = {
   title: "Dashboard | Tensorcraft",
   description: "Track your ML learning progress across themes.",
 };
-
-interface ThemeProgress {
-  themeSlug: string;
-  displayName: string;
-  accentColor: string;
-  totalLessons: number;
-  completedLessons: number;
-  lastLessonId: string | null;
-  lastModuleId: string | null;
-}
 
 export default async function DashboardPage() {
   const supabase = await getSupabaseServerClient();
@@ -33,272 +29,293 @@ export default async function DashboardPage() {
 
   if (!user) redirect("/auth/sign-in");
 
-  // Fetch user profile
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("display_name, avatar_url")
-    .eq("id", user.id)
-    .single();
+  // Fetch profile, progress, streaks, and exercise attempts in parallel
+  const [
+    { data: profile },
+    { data: progressRecords },
+    { data: streaksRaw },
+    { data: exerciseAttempts },
+  ] = await Promise.all([
+    supabase
+      .from("profiles")
+      .select("display_name, avatar_url")
+      .eq("id", user.id)
+      .single(),
+    supabase
+      .from("theme_progress")
+      .select("theme_id, module_id, lesson_id, status, updated_at")
+      .eq("user_id", user.id)
+      .order("updated_at", { ascending: false }),
+    supabase
+      .from("streaks")
+      .select("theme_id, current_streak, longest_streak")
+      .eq("user_id", user.id),
+    supabase
+      .from("exercise_attempts")
+      .select("score, attempted_at, lesson_id, theme_id")
+      .eq("user_id", user.id)
+      .order("attempted_at", { ascending: false })
+      .limit(500),
+  ]);
 
-  // Fetch all progress records for this user
-  const { data: progressRecords } = await supabase
-    .from("theme_progress")
-    .select("theme_id, module_id, lesson_id, status, updated_at")
-    .eq("user_id", user.id)
-    .order("updated_at", { ascending: false });
+  const streaks = streaksRaw ?? [];
+  const records = progressRecords ?? [];
+  const attempts = exerciseAttempts ?? [];
 
-  // Build per-theme progress summaries
+  // Use first launched theme for the dashboard (Deep Orbit)
   const launchedThemes = Object.values(themes).filter(
     (t) => t.status === "launched",
   );
+  const activeTheme = launchedThemes[0];
 
-  const themeProgress: ThemeProgress[] = launchedThemes.map((theme) => {
-    const modules = getModules(theme.slug);
-    let totalLessons = 0;
-    for (const mod of modules) {
-      totalLessons += getModuleLessons(theme.slug, mod.slug).length;
+  if (!activeTheme) redirect("/themes");
+
+  // Build module map
+  const contentModules = getModules(activeTheme.slug);
+  const completedLessonKeys = new Set(
+    records
+      .filter((r) => r.status === "completed")
+      .map((r) => `${r.theme_id}/${r.module_id}/${r.lesson_id}`),
+  );
+
+  // Build a map of module slug -> exercise scores for per-module averages
+  const moduleScoreMap = new Map<string, number[]>();
+  for (const attempt of attempts) {
+    if (attempt.theme_id !== activeTheme.slug) continue;
+    // Find which module this lesson belongs to
+    for (const mod of contentModules) {
+      const modLessons = getModuleLessons(activeTheme.slug, mod.slug);
+      if (modLessons.some((l) => l.slug === attempt.lesson_id)) {
+        const existing = moduleScoreMap.get(mod.slug) ?? [];
+        existing.push(attempt.score ?? 0);
+        moduleScoreMap.set(mod.slug, existing);
+        break;
+      }
     }
+  }
 
-    const themeRecords = (progressRecords ?? []).filter(
-      (r) => r.theme_id === theme.slug,
-    );
-    const completedLessons = themeRecords.filter(
-      (r) => r.status === "completed",
+  // Find current module (first non-complete module)
+  let foundActive = false;
+  const dashModules: DashboardModule[] = contentModules.map((mod, i) => {
+    const modLessons = getModuleLessons(activeTheme.slug, mod.slug);
+    const completedInMod = modLessons.filter((l) =>
+      completedLessonKeys.has(`${activeTheme.slug}/${mod.slug}/${l.slug}`),
     ).length;
 
-    // Most recently updated record = resume point
-    const lastRecord = themeRecords[0] ?? null;
+    let score: number | null = null;
+    if (completedInMod === modLessons.length && modLessons.length > 0) {
+      // Module complete — derive score from real exercise attempts
+      const modScores = moduleScoreMap.get(mod.slug);
+      if (modScores && modScores.length > 0) {
+        score = Math.round(
+          modScores.reduce((sum, s) => sum + s, 0) / modScores.length,
+        );
+      } else {
+        score = 0;
+      }
+    }
 
+    let status: "done" | "active" | "locked";
+    if (completedInMod === modLessons.length && modLessons.length > 0) {
+      status = "done";
+    } else if (!foundActive && (completedInMod > 0 || i === 0)) {
+      status = "active";
+      foundActive = true;
+    } else if (!foundActive && i === 0) {
+      status = "active";
+      foundActive = true;
+    } else {
+      status = foundActive ? "locked" : "locked";
+      // If no module has been started, make the first one active
+    }
+
+    const num = String(i + 1).padStart(2, "0");
     return {
-      themeSlug: theme.slug,
-      displayName: theme.displayName,
-      accentColor: theme.palette.accent,
-      totalLessons,
-      completedLessons,
-      lastLessonId: lastRecord?.lesson_id ?? null,
-      lastModuleId: lastRecord?.module_id ?? null,
+      number: `M${num}`,
+      name: mod.title,
+      status,
+      score,
+      formula: mod.description?.slice(0, 20) ?? "",
+      slug: mod.slug,
     };
   });
 
-  // Find the theme to continue (most recent activity)
-  const continueTheme = themeProgress.find((t) => t.lastLessonId) ?? null;
+  // Ensure at least one module is active
+  if (!dashModules.some((m) => m.status === "active")) {
+    const firstLocked = dashModules.find((m) => m.status === "locked");
+    if (firstLocked) firstLocked.status = "active";
+  }
 
-  const { data: streaksRaw } = await supabase
-    .from("streaks")
-    .select("theme_id, current_streak, longest_streak")
-    .eq("user_id", user.id);
-  const streaks = streaksRaw ?? [];
+  const completedModules = dashModules.filter(
+    (m) => m.status === "done",
+  ).length;
 
-  const totalStreak = streaks.reduce(
+  // Current module info
+  const activeModule = dashModules.find((m) => m.status === "active");
+  let currentModuleInfo: {
+    number: number;
+    name: string;
+    lessonNumber: number;
+    totalLessons: number;
+    estimatedMinutes: number;
+    topic: string;
+  } | null = null;
+
+  let resumeUrl: string | null = null;
+
+  if (activeModule) {
+    const modIndex = dashModules.indexOf(activeModule);
+    const modLessons = getModuleLessons(activeTheme.slug, activeModule.slug);
+
+    // Find first incomplete lesson in module
+    const firstIncompleteLessonIndex = modLessons.findIndex(
+      (l) =>
+        !completedLessonKeys.has(
+          `${activeTheme.slug}/${activeModule.slug}/${l.slug}`,
+        ),
+    );
+    const lessonIndex =
+      firstIncompleteLessonIndex >= 0 ? firstIncompleteLessonIndex : 0;
+    const currentLesson = modLessons[lessonIndex];
+
+    if (currentLesson) {
+      currentModuleInfo = {
+        number: modIndex + 1,
+        name: activeModule.name,
+        lessonNumber: lessonIndex + 1,
+        totalLessons: modLessons.length,
+        estimatedMinutes: currentLesson.estimatedMinutes ?? 18,
+        topic: currentLesson.title ?? "",
+      };
+
+      resumeUrl = `/themes/${activeTheme.slug}/${activeModule.slug}/${currentLesson.slug}`;
+    }
+  }
+
+  // Stats
+  const totalLessons = contentModules.reduce(
+    (sum, mod) => sum + getModuleLessons(activeTheme.slug, mod.slug).length,
+    0,
+  );
+  const completedLessonsCount = records.filter(
+    (r) => r.theme_id === activeTheme.slug && r.status === "completed",
+  ).length;
+  const themeProgressPercent =
+    totalLessons > 0
+      ? Math.round((completedLessonsCount / totalLessons) * 100)
+      : 0;
+
+  const currentStreak = streaks.reduce(
     (max, s) => Math.max(max, s.current_streak ?? 0),
     0,
   );
-  const longestStreak = streaks.reduce(
+  const bestStreak = streaks.reduce(
     (max, s) => Math.max(max, s.longest_streak ?? 0),
     0,
   );
-  const totalCompleted = themeProgress.reduce(
-    (sum, t) => sum + t.completedLessons,
-    0,
-  );
 
-  // Build bridge collectibles from all launched themes
-  const completedLessonKeys = new Set(
-    (progressRecords ?? [])
+  const averageScore =
+    attempts.length > 0
+      ? attempts.reduce((sum, a) => sum + (a.score ?? 0), 0) / attempts.length
+      : 0;
+
+  // Bridge collectibles
+  const completedLessonKeysSimple = new Set(
+    records
       .filter((r) => r.status === "completed")
       .map((r) => `${r.theme_id}/${r.lesson_id}`),
   );
 
-  const allBridges = launchedThemes.flatMap((theme) => {
+  const allBridges: DashboardBridge[] = launchedThemes.flatMap((theme) => {
     const bridgeLessons = getLessonsWithBridges(theme.slug);
     return bridgeLessons.map((b) => ({
       ...b,
-      collected: completedLessonKeys.has(`${theme.slug}/${b.lessonSlug}`),
+      collected: completedLessonKeysSimple.has(`${theme.slug}/${b.lessonSlug}`),
     }));
+  });
+
+  // Activity heatmap (last 30 days)
+  const now = new Date();
+  const activityDays: number[] = [];
+  for (let d = 29; d >= 0; d--) {
+    const date = new Date(now);
+    date.setDate(date.getDate() - d);
+    const dateStr = date.toISOString().slice(0, 10);
+
+    // Count records updated on this date
+    const dayCount = records.filter(
+      (r) => r.updated_at && r.updated_at.slice(0, 10) === dateStr,
+    ).length;
+
+    // Map count to 0-4 intensity
+    if (dayCount === 0) activityDays.push(0);
+    else if (dayCount <= 1) activityDays.push(1);
+    else if (dayCount <= 3) activityDays.push(2);
+    else if (dayCount <= 5) activityDays.push(3);
+    else activityDays.push(4);
+  }
+
+  // Recent activity (from progress records) — resolve slugs to titles
+  const recentActivity: ActivityRecord[] = records.slice(0, 6).map((r) => {
+    const timeAgo = getTimeAgo(r.updated_at);
+    const event =
+      r.status === "completed" ? "lesson_completed" : "lesson_started";
+
+    const mod = getModule(r.theme_id, r.module_id);
+    const lesson = getLesson(r.theme_id, r.module_id, r.lesson_id);
+    const moduleTitle = mod?.title ?? r.module_id;
+    const lessonTitle = lesson?.title ?? r.lesson_id;
+
+    return {
+      time: timeAgo,
+      event,
+      detail: `${moduleTitle} · ${lessonTitle}`,
+      score: r.status === "completed" ? null : null,
+    };
   });
 
   const displayName =
     profile?.display_name || user.email?.split("@")[0] || "Explorer";
 
   return (
-    <main className="min-h-screen bg-surface relative">
-      <div className="absolute inset-0 grid-bg pointer-events-none z-0" />
-      <div className="max-w-4xl mx-auto px-6 py-12 relative z-10">
-        {/* Header */}
-        <div className="mb-10">
-          <div className="font-mono text-[11px] text-text-muted tracking-wider mb-2 flex items-center gap-2">
-            <span className="inline-block w-[5px] h-[5px] bg-primary" />
-            Good to see you
-          </div>
-          <h1 className="text-2xl font-bold font-mono text-text-primary mb-1">
-            Welcome back, {displayName}
-          </h1>
-          <p className="text-sm font-mono text-text-muted">
-            Pick up where you left off or explore a new theme.
-          </p>
-        </div>
-
-        {/* Streak Stats */}
-        {totalStreak > 0 && (
-          <div className="grid grid-cols-3 border border-border mb-10">
-            {[
-              {
-                label: "Day Streak",
-                value: totalStreak,
-                accent: true,
-              },
-              {
-                label: "Best Streak",
-                value: longestStreak,
-                accent: false,
-              },
-              {
-                label: "Lessons Done",
-                value: totalCompleted,
-                accent: false,
-              },
-            ].map((stat, i) => (
-              <div
-                key={stat.label}
-                className="px-6 py-5"
-                style={{
-                  borderRight: i < 2 ? "1px solid var(--tc-border)" : "none",
-                  background: stat.accent
-                    ? "rgba(107,170,138,0.03)"
-                    : "transparent",
-                }}
-              >
-                <div className="font-mono text-[10px] font-bold text-text-muted tracking-wider uppercase mb-2">
-                  {stat.label}
-                </div>
-                <div
-                  className="font-mono text-3xl font-black leading-none"
-                  style={{
-                    color: stat.accent ? "var(--tc-primary)" : "var(--tc-text)",
-                  }}
-                >
-                  {stat.value}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Bridges Collected */}
-        {allBridges.length > 0 && <BridgeCollection bridges={allBridges} />}
-
-        {/* Continue Learning */}
-        {continueTheme && (
-          <section className="mb-10">
-            <div className="font-mono text-[10px] font-bold text-text-muted tracking-wider uppercase mb-3">
-              // Continue Learning
-            </div>
-            <Link
-              href={`/themes/${continueTheme.themeSlug}/${continueTheme.lastModuleId}/${continueTheme.lastLessonId}`}
-              className="block p-6 bg-surface-raised border-2 border-primary/30 transition-all brutalist-hover brutalist-shadow"
-            >
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-sm font-semibold font-mono text-primary">
-                  {continueTheme.displayName}
-                </span>
-                <span className="text-xs font-mono text-text-muted px-2.5 py-1 border border-border">
-                  {continueTheme.completedLessons}/{continueTheme.totalLessons}{" "}
-                  lessons
-                </span>
-              </div>
-
-              {/* Progress bar */}
-              <div className="h-1.5 bg-border overflow-hidden mb-3">
-                <div
-                  className="h-full bg-primary transition-all"
-                  style={{
-                    width: `${continueTheme.totalLessons > 0 ? (continueTheme.completedLessons / continueTheme.totalLessons) * 100 : 0}%`,
-                  }}
-                />
-              </div>
-
-              <span className="text-sm font-bold font-mono text-primary uppercase tracking-wider">
-                Resume Lesson →
-              </span>
-            </Link>
-          </section>
-        )}
-
-        {/* All Themes */}
-        <section>
-          <div className="font-mono text-[10px] font-bold text-text-muted tracking-wider uppercase mb-3">
-            // Your Themes
-          </div>
-          <div className="grid gap-0.5 sm:grid-cols-2">
-            {themeProgress.map((tp) => {
-              const percent =
-                tp.totalLessons > 0
-                  ? Math.round((tp.completedLessons / tp.totalLessons) * 100)
-                  : 0;
-              const hasStarted = tp.completedLessons > 0 || tp.lastLessonId;
-
-              return (
-                <Link
-                  key={tp.themeSlug}
-                  href={`/themes/${tp.themeSlug}`}
-                  className="p-5 bg-surface-raised border border-border transition-all brutalist-hover"
-                >
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-sm font-semibold font-mono text-primary">
-                      {tp.displayName}
-                    </span>
-                    {hasStarted && (
-                      <span className="text-xs font-mono text-primary font-bold">
-                        {percent}%
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Progress bar */}
-                  <div className="h-1 bg-border overflow-hidden mb-2">
-                    <div
-                      className="h-full bg-primary transition-all"
-                      style={{ width: `${percent}%` }}
-                    />
-                  </div>
-
-                  <span className="text-xs font-mono text-text-muted">
-                    {tp.completedLessons} of {tp.totalLessons} lessons
-                    {!hasStarted && " — Start learning"}
-                  </span>
-                </Link>
-              );
-            })}
-          </div>
-        </section>
-
-        {/* Coming Soon Themes */}
-        <section className="mt-10">
-          <div className="font-mono text-[10px] font-bold text-text-muted tracking-wider uppercase mb-3">
-            // Coming Soon
-          </div>
-          <div className="grid gap-0.5 sm:grid-cols-2">
-            {Object.values(themes)
-              .filter((t) => t.status === "coming-soon")
-              .map((theme) => (
-                <div
-                  key={theme.slug}
-                  className="p-5 bg-surface-raised border border-border opacity-50"
-                >
-                  <span className="text-sm font-semibold font-mono text-text-primary">
-                    {theme.displayName}
-                  </span>
-                  <p className="text-xs font-mono text-text-muted mt-1">
-                    {theme.specialization}
-                  </p>
-                  <span className="inline-block mt-2 font-mono text-[9px] text-text-muted border border-border px-2 py-0.5 tracking-wider">
-                    COMING SOON
-                  </span>
-                </div>
-              ))}
-          </div>
-        </section>
-      </div>
-    </main>
+    <DashboardView
+      displayName={displayName}
+      themeName={activeTheme.displayName}
+      themeSlug={activeTheme.slug}
+      modules={dashModules}
+      currentModule={currentModuleInfo}
+      themeProgressPercent={themeProgressPercent}
+      themePoints={{
+        current: Math.round(
+          (completedLessonsCount / Math.max(totalLessons, 1)) * 100,
+        ),
+        total: 100,
+      }}
+      currentStreak={currentStreak}
+      bestStreak={bestStreak}
+      averageScore={averageScore}
+      bridges={allBridges}
+      activityDays={activityDays}
+      recentActivity={recentActivity}
+      resumeUrl={resumeUrl}
+      totalModules={contentModules.length}
+      completedModules={completedModules}
+    />
   );
+}
+
+function getTimeAgo(dateStr: string): string {
+  const date = new Date(dateStr);
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMins / 60);
+  const diffDays = Math.floor(diffHours / 24);
+
+  if (diffMins < 1) return "just now";
+  if (diffMins < 60) return `${diffMins}m ago`;
+  if (diffHours < 24) return `${diffHours}h ago`;
+  if (diffDays === 1) return "yesterday";
+  if (diffDays < 7) return `${diffDays} days ago`;
+  return `${Math.floor(diffDays / 7)}w ago`;
 }

@@ -20,7 +20,7 @@ export default async function SettingsPage() {
   const { data: profile } = await supabase
     .from("profiles")
     .select(
-      "display_name, avatar_url, preferred_theme_id, github_username, github_connected",
+      "display_name, avatar_url, preferred_theme_id, github_username, github_connected, email_alerts, weekly_digest",
     )
     .eq("id", user.id)
     .single();
@@ -45,6 +45,7 @@ export default async function SettingsPage() {
   return (
     <main className="min-h-screen bg-surface relative overflow-hidden">
       <AmbientBackground count={160} />
+      <div className="absolute inset-0 grid-bg pointer-events-none z-0" />
       <div className="max-w-[1000px] mx-auto px-8 py-10 relative z-10">
         <SettingsForm
           email={user.email ?? ""}
@@ -57,6 +58,8 @@ export default async function SettingsPage() {
           githubConnected={
             (profileRecord?.github_connected as boolean) ?? false
           }
+          emailAlerts={(profileRecord?.email_alerts as boolean) ?? false}
+          weeklyDigest={(profileRecord?.weekly_digest as boolean) ?? true}
           purchases={purchases}
         />
       </div>

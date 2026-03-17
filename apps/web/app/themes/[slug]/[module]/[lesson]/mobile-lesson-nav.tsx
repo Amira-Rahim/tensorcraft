@@ -7,6 +7,7 @@ interface LessonNavItem {
   slug: string;
   title: string;
   order: number;
+  locked?: boolean;
 }
 
 interface MobileLessonNavProps {
@@ -110,6 +111,30 @@ export function MobileLessonNav({
             <div className="flex flex-col gap-1 mt-4">
               {lessons.map((l) => {
                 const isActive = l.slug === currentLessonSlug;
+                if (l.locked) {
+                  return (
+                    <div
+                      key={l.slug}
+                      className="flex items-center gap-2.5 px-3 py-2.5 text-sm cursor-not-allowed opacity-40"
+                    >
+                      <span
+                        className="w-5 h-5 flex items-center justify-center text-[10px] font-medium shrink-0"
+                        style={{
+                          background: "var(--tc-border)",
+                          color: mutedColor,
+                        }}
+                      >
+                        &#x1F512;
+                      </span>
+                      <span
+                        className="leading-snug"
+                        style={{ color: mutedColor }}
+                      >
+                        {l.title}
+                      </span>
+                    </div>
+                  );
+                }
                 return (
                   <Link
                     key={l.slug}

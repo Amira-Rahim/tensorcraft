@@ -117,6 +117,7 @@ export default function PricingPage() {
   return (
     <main className="min-h-screen bg-surface relative overflow-hidden">
       <AmbientBackground count={200} />
+      <div className="absolute inset-0 grid-bg pointer-events-none z-0" />
       <div className="relative z-10">
         {/* Payment Error Banner */}
         <div className="pt-24 px-6">
@@ -133,7 +134,7 @@ export default function PricingPage() {
           <h1 className="text-4xl sm:text-5xl font-bold mb-5 text-text-primary font-mono tracking-tight">
             Simple, Fair Pricing
           </h1>
-          <p className="text-lg max-w-[520px] mx-auto text-text-muted font-sans">
+          <p className="text-lg max-w-[520px] mx-auto text-text-muted font-mono">
             One payment. Lifetime access. Every future update included. No
             subscriptions, ever.
           </p>
@@ -169,7 +170,7 @@ export default function PricingPage() {
                   <div className="text-lg font-semibold mb-1 text-text-primary font-mono">
                     {plan.label}
                   </div>
-                  <p className="text-sm mb-2 leading-relaxed text-text-muted font-sans">
+                  <p className="text-sm mb-2 leading-relaxed text-text-muted font-mono">
                     {tier.description}
                   </p>
                   {tier.note ? (
@@ -184,7 +185,7 @@ export default function PricingPage() {
                     {tier.features.map((f) => (
                       <li
                         key={f}
-                        className="flex items-center gap-2.5 text-sm text-text-muted font-sans"
+                        className="flex items-center gap-2.5 text-sm text-text-muted font-mono"
                       >
                         <span className="text-[13px] font-bold flex-shrink-0 text-primary">
                           &#10003;
@@ -251,7 +252,7 @@ export default function PricingPage() {
                       rowIndex % 2 === 0 ? "bg-surface" : "bg-transparent"
                     }`}
                   >
-                    <div className="text-sm text-text-primary px-3 font-sans">
+                    <div className="text-sm text-text-primary px-3 font-mono">
                       {row.feature}
                     </div>
                     {row.values.map((val, i) => (
@@ -284,7 +285,7 @@ export default function PricingPage() {
           <h2 className="text-2xl sm:text-[32px] font-bold mb-4 text-text-primary font-mono tracking-tight">
             Your frontend skills are the foundation.
           </h2>
-          <p className="text-lg mb-10 text-text-muted font-sans">
+          <p className="text-lg mb-10 text-text-muted font-mono">
             Add machine learning to your engineering toolkit.
           </p>
           <Link

@@ -8,8 +8,9 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <main className="min-h-screen px-6 py-24">
-      <article className="max-w-[720px] mx-auto">
+    <main className="min-h-screen px-6 py-24 relative">
+      <div className="absolute inset-0 grid-bg pointer-events-none z-0" />
+      <article className="max-w-[720px] mx-auto relative z-10">
         <Link
           href="/"
           className="text-sm text-text-muted hover:text-text-primary transition-colors mb-12 inline-block"
@@ -37,10 +38,11 @@ export default function PrivacyPage() {
               lessons completed, exercise scores, and hints used.
             </p>
             <p>
-              <strong className="text-text-primary">Analytics data:</strong> We
-              use privacy-focused analytics (PostHog EU, Plausible) to
-              understand how the platform is used. We do not sell your data to
-              third parties.
+              <strong className="text-text-primary">Analytics data:</strong>{" "}
+              When configured, we use privacy-focused analytics tools (PostHog
+              and Plausible) to understand how the platform is used. These
+              services are only active when explicitly enabled by our team. We
+              do not sell your data to third parties.
             </p>
           </section>
 
@@ -83,12 +85,12 @@ export default function PrivacyPage() {
                 processing
               </li>
               <li>
-                <strong className="text-text-primary">PostHog (EU)</strong> —
-                Product analytics (GDPR-compliant)
+                <strong className="text-text-primary">PostHog</strong> — Product
+                analytics (only active when configured; GDPR-compliant)
               </li>
               <li>
                 <strong className="text-text-primary">Plausible</strong> —
-                Marketing analytics (cookie-free)
+                Marketing analytics (cookie-free, only active when configured)
               </li>
               <li>
                 <strong className="text-text-primary">Vercel</strong> — Hosting
@@ -103,8 +105,9 @@ export default function PrivacyPage() {
             </h2>
             <p>
               We use essential cookies for authentication session management.
-              Analytics cookies (PostHog) are only set with your explicit
-              consent. Plausible does not use cookies.
+              When PostHog analytics is active, analytics cookies are only set
+              with your explicit consent via our cookie banner. Plausible does
+              not use cookies.
             </p>
           </section>
 

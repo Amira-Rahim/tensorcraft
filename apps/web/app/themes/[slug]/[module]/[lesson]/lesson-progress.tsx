@@ -67,14 +67,17 @@ export function LessonProgressTracker({
   if (status === "completed") {
     return (
       <div
-        className="flex items-center gap-2 px-4 py-3 rounded-xl my-6"
+        className="flex items-center gap-2 px-4 py-3 my-6"
         style={{
-          background: "rgba(74, 222, 128, 0.08)",
-          border: "1px solid rgba(74, 222, 128, 0.2)",
+          background: "rgba(107, 170, 138, 0.08)",
+          border: "1px solid rgba(107, 170, 138, 0.2)",
         }}
       >
         <span className="text-sm">✓</span>
-        <span className="text-sm font-medium" style={{ color: "#4ADE80" }}>
+        <span
+          className="text-sm font-medium"
+          style={{ color: "var(--tc-primary, #6BAA8A)" }}
+        >
           Lesson completed
         </span>
       </div>
@@ -87,14 +90,24 @@ export function LessonProgressTracker({
         type="button"
         onClick={handleComplete}
         disabled={completing}
-        className="w-full py-3 rounded-full text-sm font-semibold uppercase tracking-wider transition-all"
+        className="w-full py-3 text-sm font-semibold uppercase tracking-wider transition-all font-mono"
         style={{
-          background: completing ? "rgba(255,255,255,0.06)" : accentColor,
-          color: completing ? "rgba(255,255,255,0.4)" : "#080B16",
+          background: completing
+            ? "var(--tc-border, rgba(255,255,255,0.06))"
+            : accentColor,
+          color: completing
+            ? "var(--tc-muted, #8A8A8A)"
+            : "var(--tc-bg, #1C1C1C)",
         }}
       >
-        {completing ? "Saving..." : "Mark as Complete"}
+        {completing ? "Saving..." : "Mark Lesson as Complete"}
       </button>
+      <p
+        className="text-xs mt-2 text-center"
+        style={{ color: "var(--tc-muted, #8A8A8A)" }}
+      >
+        Complete all exercises before marking this lesson as done.
+      </p>
     </div>
   );
 }

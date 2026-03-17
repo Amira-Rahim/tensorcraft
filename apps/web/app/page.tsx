@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Ticker } from "./components/ticker";
 import { AmbientBackground } from "./components/ambient-background";
 
 const bridges = [
@@ -159,8 +158,6 @@ const fadeUp = {
 export default function Home() {
   return (
     <>
-      <Ticker />
-
       <main className="relative z-2">
         {/* ===== HERO ===== */}
         <section className="min-h-screen flex items-center px-10 md:px-20 pt-24 pb-28 border-b border-border relative overflow-hidden">
@@ -389,7 +386,7 @@ export default function Home() {
                   )}
                 </div>
                 {t.live && (
-                  <div className="absolute top-4 right-4 w-[7px] h-[7px] bg-primary rounded-full" />
+                  <div className="absolute top-4 right-4 w-[7px] h-[7px] bg-primary" />
                 )}
               </div>
             ))}

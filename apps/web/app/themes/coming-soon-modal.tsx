@@ -106,10 +106,7 @@ export function ComingSoonModal({
       aria-label={`${themeName} — Coming Soon`}
     >
       {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
-        onClick={onClose}
-      />
+      <div className="absolute inset-0 bg-black/90" onClick={onClose} />
 
       {/* Modal */}
       <div

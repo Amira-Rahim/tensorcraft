@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { themes, themeSlugs } from "@tensorcraft/themes";
@@ -61,6 +61,8 @@ interface SettingsFormProps {
   preferredThemeId: string;
   githubUsername: string;
   githubConnected: boolean;
+  emailAlerts: boolean;
+  weeklyDigest: boolean;
   purchases: Array<{
     planId: string;
     themeIds: string[];
@@ -72,25 +74,35 @@ interface SettingsFormProps {
 export function SettingsForm({
   email,
   displayName: initialName,
-  avatarUrl: _initialAvatar,
+  avatarUrl: initialAvatar,
   preferredThemeId: initialTheme,
   githubUsername: initialGithub,
   githubConnected: initialGithubConnected,
+  emailAlerts: initialEmailAlerts,
+  weeklyDigest: initialWeeklyDigest,
   purchases,
 }: SettingsFormProps) {
   const router = useRouter();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [section, setSection] = useState<Section>("Profile");
   const [displayName, setDisplayName] = useState(initialName);
+  const [avatarUrl, setAvatarUrl] = useState(initialAvatar);
   const [githubUser, setGithubUser] = useState(initialGithub);
+  const [githubConnected, setGithubConnected] = useState(
+    initialGithubConnected,
+  );
   const [preferredTheme, setPreferredTheme] = useState(initialTheme);
   const [autoPush, setAutoPush] = useState(true);
-  const [emailAlerts, setEmailAlerts] = useState(false);
-  const [weeklyDigest, setWeeklyDigest] = useState(true);
+  const [emailAlerts, setEmailAlerts] = useState(initialEmailAlerts);
+  const [weeklyDigest, setWeeklyDigest] = useState(initialWeeklyDigest);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hovSave, setHovSave] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [deleting, setDeleting] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   const initial = displayName.charAt(0).toUpperCase() || "?";
 

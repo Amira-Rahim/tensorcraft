@@ -9,6 +9,7 @@ import {
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { hasThemePurchase, getUserProgress } from "@/lib/progress";
 import { AmbientBackground } from "@/app/components/ambient-background";
+import { ModuleMapClient } from "./module-map-client";
 import type { Metadata } from "next";
 
 interface Props {
@@ -20,7 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const theme = themes[slug];
   if (!theme) return {};
   return {
-    title: `${theme.displayName} | Tensorcraft`,
+    title: `${theme.displayName} — Module Map | Tensorcraft`,
     description: theme.description,
     openGraph: {
       images: [
@@ -43,34 +44,224 @@ export default async function ThemeDetailPage({ params }: Props) {
   } = await supabase.auth.getUser();
   const hasPurchased = user ? await hasThemePurchase(user.id, slug) : false;
 
-  // Check if all modules are complete (for capstone banner)
-  let isThemeComplete = false;
-  if (user && hasPurchased) {
-    const progress = await getUserProgress(user.id, slug);
-    const completedByModule = new Map<string, number>();
-    for (const p of progress) {
-      if (p.status === "completed") {
-        completedByModule.set(
-          p.module_id,
-          (completedByModule.get(p.module_id) ?? 0) + 1,
-        );
+  // Fetch progress
+  const progress = user ? await getUserProgress(user.id, slug) : [];
+  const progressByLesson = new Map(
+    progress.map((p) => [
+      p.lesson_id,
+      { status: p.status as string, score: p.score as number | null },
+    ]),
+  );
+
+  // Compute per-module data
+  type ModuleStatus = "completed" | "active" | "available" | "locked";
+
+  const completedByModule = new Map<string, number>();
+  const scoresByModule = new Map<string, number[]>();
+  for (const p of progress) {
+    if (p.status === "completed") {
+      completedByModule.set(
+        p.module_id,
+        (completedByModule.get(p.module_id) ?? 0) + 1,
+      );
+      if (p.score != null) {
+        const scores = scoresByModule.get(p.module_id) ?? [];
+        scores.push(p.score as number);
+        scoresByModule.set(p.module_id, scores);
       }
     }
-    isThemeComplete = themeModules.every((mod) => {
-      const modLessons = getModuleLessons(slug, mod.slug);
-      return (completedByModule.get(mod.slug) ?? 0) >= modLessons.length;
-    });
   }
 
+  const startedByModule = new Map<string, number>();
+  for (const p of progress) {
+    startedByModule.set(
+      p.module_id,
+      (startedByModule.get(p.module_id) ?? 0) + 1,
+    );
+  }
+
+  // Determine module statuses (sequential unlock)
+  let foundFirstIncomplete = false;
+  const moduleMapItems = themeModules.map((mod) => {
+    const modLessons = getModuleLessons(slug, mod.slug);
+    const totalLessons = modLessons.length;
+    const completedCount = completedByModule.get(mod.slug) ?? 0;
+    const hasStarted = (startedByModule.get(mod.slug) ?? 0) > 0;
+    const isFree = isFoundationsModule(mod);
+
+    let status: ModuleStatus;
+    if (completedCount >= totalLessons && totalLessons > 0) {
+      status = "completed";
+    } else if (!foundFirstIncomplete) {
+      foundFirstIncomplete = true;
+      if (!user) {
+        status = isFree ? "available" : "locked";
+      } else if (!hasPurchased && !isFree) {
+        status = "locked";
+      } else {
+        status = hasStarted ? "active" : "available";
+      }
+    } else {
+      status = "locked";
+    }
+
+    // Compute average score for completed modules
+    const modScores = scoresByModule.get(mod.slug) ?? [];
+    const avgScore =
+      modScores.length > 0
+        ? Math.round(
+            (modScores.reduce((a, b) => a + b, 0) / modScores.length) * 10,
+          ) / 10
+        : null;
+
+    // Compute lesson statuses
+    let foundFirstIncompleteLessonInModule = false;
+    const lessonItems = modLessons.map((lesson) => {
+      const lessonProgress = progressByLesson.get(lesson.slug);
+      const progressStatus = lessonProgress?.status;
+
+      let lessonStatus: "completed" | "in_progress" | "available" | "locked";
+      if (progressStatus === "completed") {
+        lessonStatus = "completed";
+      } else if (progressStatus === "in_progress") {
+        lessonStatus = "in_progress";
+        foundFirstIncompleteLessonInModule = true;
+      } else if (
+        !foundFirstIncompleteLessonInModule &&
+        (status === "active" || status === "available")
+      ) {
+        foundFirstIncompleteLessonInModule = true;
+        lessonStatus = "available";
+      } else {
+        lessonStatus = "locked";
+      }
+
+      return {
+        slug: lesson.slug,
+        title: lesson.title,
+        moduleSlug: mod.slug,
+        status: lessonStatus,
+      };
+    });
+
+    return {
+      slug: mod.slug,
+      title: mod.title,
+      order: mod.order,
+      description: mod.description,
+      status,
+      completedLessons: completedCount,
+      totalLessons,
+      avgScore,
+      lessons: lessonItems,
+    };
+  });
+
+  // Compute stats
+  const completedModuleCount = moduleMapItems.filter(
+    (m) => m.status === "completed",
+  ).length;
+  const activeModuleIndex = moduleMapItems.findIndex(
+    (m) => m.status === "active" || m.status === "available",
+  );
+  const allScores = progress
+    .filter((p) => p.status === "completed" && p.score != null)
+    .map((p) => p.score as number);
+  const avgScore =
+    allScores.length > 0
+      ? Math.round(
+          (allScores.reduce((a, b) => a + b, 0) / allScores.length) * 10,
+        ) / 10
+      : 0;
+
+  // Check capstone eligibility
+  const isThemeComplete = moduleMapItems.every((m) => m.status === "completed");
+
+  // Find active module for "Continue" CTA
+  const activeModule = moduleMapItems.find(
+    (m) => m.status === "active" || m.status === "available",
+  );
+  const activeLesson = activeModule?.lessons.find(
+    (l) => l.status === "in_progress" || l.status === "available",
+  );
+
+  // Continue CTA info
+  const continueHref =
+    activeModule && activeLesson
+      ? `/themes/${slug}/${activeModule.slug}/${activeLesson.slug}`
+      : isThemeComplete
+        ? `/themes/${slug}/capstone`
+        : `/themes/${slug}/${themeModules[0]?.slug}`;
+  const continueLabel = activeModule
+    ? `Continue M${activeModule.order}`
+    : isThemeComplete
+      ? "View Capstone"
+      : "Start Learning";
+
   return (
-    <main className="min-h-screen px-6 py-20 bg-surface relative overflow-hidden">
-      <AmbientBackground />
-      <div className="max-w-4xl mx-auto relative z-10">
-        {/* Capstone banner */}
-        {isThemeComplete && (
+    <main
+      className="min-h-screen relative overflow-hidden"
+      style={{ background: theme.palette.bg }}
+    >
+      <AmbientBackground count={160} />
+
+      {/* Page header */}
+      <header
+        className="relative z-10 px-12 pt-10 pb-9"
+        style={{
+          borderBottom: `1px solid ${theme.palette.border}`,
+          background: `${theme.palette.bg}B3`,
+        }}
+      >
+        <p
+          className="font-mono text-[9px] uppercase mb-2.5"
+          style={{ color: theme.palette.primary, letterSpacing: "0.15em" }}
+        >
+          // {theme.displayName} &mdash; {themeModules.length} MODULES
+        </p>
+        <h1
+          className="font-mono text-[32px] font-bold mb-2.5"
+          style={{ color: theme.palette.text, letterSpacing: "-0.02em" }}
+        >
+          MODULE MAP
+        </h1>
+        <p className="text-sm" style={{ color: theme.palette.muted }}>
+          Track your journey from frontend engineer to ML engineer.
+        </p>
+
+        <div className="flex gap-8 mt-6">
+          {[
+            [String(completedModuleCount), "Completed"],
+            [
+              activeModuleIndex >= 0 ? String(activeModuleIndex + 1) : "—",
+              "Active Now",
+            ],
+            [allScores.length > 0 ? String(avgScore) : "—", "Avg Score"],
+          ].map(([value, label]) => (
+            <div key={label}>
+              <div
+                className="font-mono text-xl font-bold"
+                style={{ color: theme.palette.primary }}
+              >
+                {value}
+              </div>
+              <div
+                className="font-mono text-[10px] mt-0.5"
+                style={{ color: theme.palette.muted }}
+              >
+                {label}
+              </div>
+            </div>
+          ))}
+        </div>
+      </header>
+
+      {/* Capstone banner */}
+      {isThemeComplete && (
+        <div className="max-w-[900px] mx-auto px-8 relative z-10 mt-6">
           <Link
             href={`/themes/${slug}/capstone`}
-            className="flex items-center justify-between p-5 mb-8 border-2 brutalist-hover"
+            className="flex items-center justify-between p-5 border-2 brutalist-hover"
             style={{
               borderColor: theme.palette.primary,
               background: theme.palette.surface,
@@ -87,144 +278,41 @@ export default async function ThemeDetailPage({ params }: Props) {
                 className="text-sm font-mono font-semibold mt-1"
                 style={{ color: theme.palette.text }}
               >
-                All {theme.terminology.module.toLowerCase()}s completed — view
-                your capstone &rarr;
+                All modules completed &mdash; view your capstone &rarr;
               </p>
             </div>
             <span style={{ color: theme.palette.primary, fontSize: 24 }}>
               &#x25CE;
             </span>
           </Link>
-        )}
-
-        {/* Theme header */}
-        <div className="mb-12">
-          <Link
-            href="/themes"
-            className="text-sm mb-4 inline-block text-text-muted hover:text-text-primary transition-colors"
-          >
-            ← All Themes
-          </Link>
-          <h1 className="text-4xl font-bold font-mono mb-2 text-text-primary">
-            {theme.displayName}
-          </h1>
-          <p className="text-lg mb-2" style={{ color: theme.palette.primary }}>
-            {theme.specialization}
-          </p>
-          <p className="text-base leading-relaxed max-w-2xl text-text-muted">
-            {theme.description}
-          </p>
         </div>
+      )}
 
-        {/* Characters */}
-        <div className="mb-12">
-          <h2 className="text-sm font-mono uppercase tracking-widest mb-4 text-text-muted">
-            Your Crew
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-            {theme.characters.map((char) => (
-              <div
-                key={char.name}
-                className="p-3 text-center bg-surface-raised border border-border"
-              >
-                <p className="text-sm font-medium text-text-primary">
-                  {char.name}
-                </p>
-                <p className="text-[11px] text-text-muted">{char.role}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Modules */}
-        <div>
-          <h2 className="text-sm font-mono uppercase tracking-widest mb-4 text-text-muted">
-            {theme.terminology.module}s
-          </h2>
-          <div className="flex flex-col gap-4">
-            {themeModules.map((mod) => {
-              const isFree = isFoundationsModule(mod);
-              const isLocked = !isFree && !hasPurchased;
-
-              const cardClass = `p-5 flex items-center justify-between transition-colors border border-border bg-surface-raised ${
-                isLocked ? "opacity-60 cursor-default" : "brutalist-hover"
-              }`;
-
-              const cardContent = (
-                <>
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <span
-                        className="text-xs font-medium"
-                        style={{
-                          color: isLocked
-                            ? theme.palette.muted
-                            : theme.palette.primary,
-                        }}
-                      >
-                        {theme.terminology.module} {mod.order}
-                      </span>
-                      {isFree && (
-                        <span className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 bg-primary/10 text-primary">
-                          Foundations
-                        </span>
-                      )}
-                      {isLocked && (
-                        <span className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 flex items-center gap-1 bg-surface-overlay text-text-muted">
-                          &#128274; Locked
-                        </span>
-                      )}
-                    </div>
-                    <h3
-                      className="text-lg font-semibold font-mono"
-                      style={{
-                        color: isLocked
-                          ? theme.palette.muted
-                          : theme.palette.text,
-                      }}
-                    >
-                      {mod.title}
-                    </h3>
-                    <p className="text-sm mt-1 text-text-muted">
-                      {mod.description}
-                    </p>
-                    {isLocked && (
-                      <Link
-                        href="/pricing"
-                        className="inline-flex text-xs mt-2 underline underline-offset-2 text-primary"
-                      >
-                        Purchase to unlock
-                      </Link>
-                    )}
-                  </div>
-                  {!isLocked && <span className="text-text-muted">→</span>}
-                </>
-              );
-
-              return isLocked ? (
-                <div key={mod.slug} className={cardClass}>
-                  {cardContent}
-                </div>
-              ) : (
-                <Link
-                  key={mod.slug}
-                  href={`/themes/${slug}/${mod.slug}`}
-                  className={cardClass}
-                >
-                  {cardContent}
-                </Link>
-              );
-            })}
-
-            {themeModules.length === 0 && (
-              <p className="text-sm py-8 text-center text-text-muted">
-                Content coming soon. Check back after building the content
-                pipeline.
-              </p>
-            )}
-          </div>
-        </div>
+      {/* Module List */}
+      <div className="relative z-10 max-w-[900px] mx-auto px-8 pt-10 pb-20">
+        <ModuleMapClient
+          modules={moduleMapItems}
+          themeSlug={slug}
+          palette={{
+            bg: theme.palette.bg,
+            primary: theme.palette.primary,
+            accent: theme.palette.accent,
+            surface: theme.palette.surface,
+            text: theme.palette.text,
+            muted: theme.palette.muted,
+            border: theme.palette.border,
+          }}
+          continueHref={continueHref}
+          continueLabel={continueLabel}
+        />
       </div>
+
+      <style>{`
+        @keyframes ticker-scroll {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+      `}</style>
     </main>
   );
 }

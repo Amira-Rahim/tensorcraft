@@ -1,9 +1,30 @@
 import posthog from "posthog-js";
 
-function capture(event: string, properties?: Record<string, unknown>) {
+/**
+ * Generic event capture — wraps posthog.capture with a guard.
+ * No-ops on the server and when PostHog is not initialized.
+ */
+export function capture(
+  event: string,
+  properties?: Record<string, unknown>,
+): void {
   if (typeof window === "undefined") return;
   posthog?.capture(event, properties);
 }
+
+/**
+ * Identify a user — wraps posthog.identify with a guard.
+ * Call after login or signup so events are attributed to the user.
+ */
+export function identify(
+  userId: string,
+  traits?: Record<string, unknown>,
+): void {
+  if (typeof window === "undefined") return;
+  posthog?.identify(userId, traits);
+}
+
+/* ── Domain-specific helpers ── */
 
 export function trackLessonStarted(
   themeId: string,

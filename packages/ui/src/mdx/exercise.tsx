@@ -522,7 +522,7 @@ export function Exercise({ slug }: ExerciseProps) {
               surface1: "#252525",
               surface2: "#1C1C1C",
               surface3: "#313131",
-              clickable: "#5A5A5A",
+              clickable: "#8A8A8A",
               base: "#C8C8C8",
               disabled: "#3a3a3a",
               hover: "#6BAA8A",
@@ -532,7 +532,7 @@ export function Exercise({ slug }: ExerciseProps) {
             },
             syntax: {
               plain: "#C8C8C8",
-              comment: { color: "#5A5A5A", fontStyle: "italic" },
+              comment: { color: "#8A8A8A", fontStyle: "italic" },
               keyword: "#c792ea",
               tag: "#f07178",
               punctuation: "#89ddff",

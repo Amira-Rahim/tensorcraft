@@ -1,0 +1,122 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+const NAV_LINKS = [
+  { href: "/themes", label: "THEMES" },
+  { href: "/pricing", label: "PRICING" },
+  { href: "/blog", label: "BLOG" },
+  { href: "/glossary", label: "GLOSSARY" },
+] as const;
+
+export function MobileNav() {
+  const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+
+  // Close menu on route change
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
+
+  // Prevent body scroll when menu is open
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
+  return (
+    <div className="md:hidden">
+      {/* Hamburger button */}
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        aria-label="Open menu"
+        aria-expanded={open}
+        className="flex flex-col justify-center items-center gap-[5px] w-10 h-10 border border-border bg-surface hover:bg-white/4 transition-colors"
+      >
+        <span className="block w-5 h-[2px] bg-text-primary" />
+        <span className="block w-5 h-[2px] bg-text-primary" />
+        <span className="block w-5 h-[2px] bg-text-primary" />
+      </button>
+
+      {/* Full-screen overlay */}
+      {open && (
+        <div className="fixed inset-0 z-50 bg-surface flex flex-col">
+          {/* Header row */}
+          <div className="flex items-center justify-between h-15 px-8 border-b border-border">
+            <Link
+              href="/"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-2.5 font-mono text-sm font-medium tracking-wider text-text-primary"
+            >
+              <span className="bg-primary text-surface px-1.5 py-0.5 text-[10px] font-bold">
+                T_
+              </span>
+              TENSORCRAFT
+            </Link>
+
+            {/* Close button */}
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              aria-label="Close menu"
+              className="flex items-center justify-center w-10 h-10 border border-border bg-surface hover:bg-white/4 transition-colors"
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 18 18"
+                fill="none"
+                className="text-text-primary"
+              >
+                <path
+                  d="M1 1L17 17M17 1L1 17"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="square"
+                />
+              </svg>
+            </button>
+          </div>
+
+          {/* Navigation links */}
+          <nav className="flex-1 flex flex-col justify-center px-8 gap-2">
+            {NAV_LINKS.map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                onClick={() => setOpen(false)}
+                className={`block py-4 text-xl font-mono font-medium tracking-wider uppercase border-b border-border transition-colors ${
+                  pathname === href
+                    ? "text-primary"
+                    : "text-text-muted hover:text-text-primary"
+                }`}
+              >
+                {label}
+              </Link>
+            ))}
+          </nav>
+
+          {/* Bottom section with sign-in */}
+          <div className="px-8 pb-10 border-t border-border pt-6">
+            <Link
+              href="/auth/sign-in"
+              onClick={() => setOpen(false)}
+              className="block w-full text-center border border-primary/30 bg-primary/8 px-6 py-3.5 text-sm font-mono font-medium uppercase tracking-wider hover:bg-primary/15 hover:border-primary/50 transition-all"
+            >
+              Start now &rarr;
+            </Link>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

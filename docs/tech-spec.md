@@ -15,7 +15,7 @@
 4. [Analytics Layer (Day One)](#4-analytics-layer-day-one)
 5. [GitHub Integration Architecture](#5-github-integration-architecture)
 6. [Content Calendar with Dependencies](#6-content-calendar-with-dependencies)
-7. [Internationalization](#7-internationalization)
+7. [Internationalization [DESCOPED TO POST-V1.0]](#7-internationalization-descoped-to-post-v10)
 
 ---
 
@@ -624,7 +624,7 @@ These are the engineering deliverables required to unblock content. Each compone
 
 ---
 
-## 7. Internationalization
+## 7. Internationalization [DESCOPED TO POST-V1.0]
 
 > **Status: Descoped** — Internationalization is deferred to post-V1.0. The platform will launch as English-only. The architectural notes below are retained for future reference when i18n work begins.
 

@@ -3,21 +3,23 @@
 import { useMemo } from "react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 import {
-  Concept,
   Dialogue,
   BridgeCallout,
   CodeBlock,
   Exercise,
   ExerciseDataProvider,
   HintPanel,
-  InteractiveDemo,
   KeyTakeaways,
   LearningObjectives,
+  Quiz,
+} from "@tensorcraft/ui";
+import {
+  Concept,
+  InteractiveDemo,
   MathBlock,
   NextLesson,
-  Quiz,
   RecallPrompt,
-} from "@tensorcraft/ui";
+} from "@/app/components/mdx";
 import type { ExerciseData } from "@tensorcraft/ui";
 
 interface LessonContentProps {

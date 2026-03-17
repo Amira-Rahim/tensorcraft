@@ -9,6 +9,7 @@ import {
 import { getSupabaseAdminClient } from "@tensorcraft/supabase";
 import { authMiddleware } from "../middleware/auth";
 import type { AppEnv } from "../types";
+import { createOrGetRepo, pushFile, getGitHubUsername } from "../lib/github";
 
 const github = new Hono<AppEnv>();
 
@@ -187,6 +188,158 @@ github.post("/commit", async (c) => {
       500,
     );
   }
+});
+
+// ──────────────────────────────────────────────
+// POST /api/github/push — Push exercise code to user's repo via REST API
+// ──────────────────────────────────────────────
+
+github.use("/push", authMiddleware);
+
+github.post("/push", async (c) => {
+  const userId = c.get("userId");
+
+  let body: {
+    exerciseSlug: string;
+    code: string;
+    themeId: string;
+    moduleId: string;
+  };
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: "Invalid JSON body" }, 400);
+  }
+
+  const { exerciseSlug, code, themeId, moduleId } = body;
+
+  if (!exerciseSlug || !code || !themeId || !moduleId) {
+    return c.json(
+      { error: "exerciseSlug, code, themeId, and moduleId are required" },
+      400,
+    );
+  }
+
+  // Limit code size (100KB)
+  if (code.length > 102_400) {
+    return c.json({ error: "Code exceeds maximum size (100KB)" }, 400);
+  }
+
+  // Get the user's GitHub access token from Supabase auth provider
+  const supabase = getSupabaseAdminClient();
+  const { data: userData, error: userError } =
+    await supabase.auth.admin.getUserById(userId);
+
+  if (userError || !userData?.user) {
+    return c.json({ error: "Failed to retrieve user data" }, 500);
+  }
+
+  // Extract GitHub access token from user's identity
+  const githubIdentity = userData.user.identities?.find(
+    (id) => id.provider === "github",
+  );
+
+  if (!githubIdentity) {
+    return c.json(
+      { error: "GitHub account not connected. Please sign in with GitHub." },
+      403,
+    );
+  }
+
+  const providerToken = githubIdentity.identity_data?.provider_token as
+    | string
+    | undefined;
+
+  if (!providerToken) {
+    return c.json(
+      {
+        error:
+          "GitHub access token not available. Please reconnect your GitHub account.",
+      },
+      403,
+    );
+  }
+
+  try {
+    // Get GitHub username
+    const username = await getGitHubUsername(providerToken);
+    if (!username) {
+      return c.json({ error: "Failed to fetch GitHub username" }, 500);
+    }
+
+    // Create or get the exercises repo
+    const repoName = "tensorcraft-exercises";
+    await createOrGetRepo(providerToken, repoName);
+
+    // Build file path and commit message
+    const filePath = `${themeId}/${moduleId}/${exerciseSlug}.ts`;
+    const commitMessage = `feat(${moduleId}): Complete exercise -- ${exerciseSlug}`;
+
+    // Push the file
+    const result = await pushFile(
+      providerToken,
+      username,
+      repoName,
+      filePath,
+      code,
+      commitMessage,
+    );
+
+    return c.json({ success: true, url: result.url });
+  } catch (err) {
+    const errorMessage = err instanceof Error ? err.message : "Unknown error";
+    console.error("GitHub push failed:", {
+      error: errorMessage,
+      userId,
+    });
+
+    if (
+      errorMessage.includes("401") ||
+      errorMessage.includes("Bad credentials")
+    ) {
+      return c.json(
+        {
+          error: "GitHub token expired. Please reconnect your GitHub account.",
+        },
+        401,
+      );
+    }
+
+    return c.json(
+      {
+        error: "Failed to push code to GitHub",
+        requestId: c.res.headers.get("X-Request-Id"),
+      },
+      500,
+    );
+  }
+});
+
+// ──────────────────────────────────────────────
+// GET /api/github/status — Check if user has GitHub connected
+// ──────────────────────────────────────────────
+
+github.use("/status", authMiddleware);
+
+github.get("/status", async (c) => {
+  const userId = c.get("userId");
+
+  const supabase = getSupabaseAdminClient();
+
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("github_username, github_connected")
+    .eq("id", userId)
+    .single();
+
+  if (error || !data) {
+    return c.json({ connected: false });
+  }
+
+  return c.json({
+    connected: !!data.github_connected,
+    username: data.github_username ?? undefined,
+  });
 });
 
 export { github };

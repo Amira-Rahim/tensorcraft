@@ -4,6 +4,7 @@ import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { themes, themeSlugs } from "@tensorcraft/themes";
+import { BRIDGES } from "@tensorcraft/shared";
 import { AmbientBackground } from "@/app/components/ambient-background";
 
 const STEPS = [
@@ -41,7 +42,7 @@ const ONBOARDING_THEMES = themeSlugs.map((slug) => ({
 const FEATURES = [
   {
     icon: "◎",
-    name: "26 FE Bridges",
+    name: `${BRIDGES.length} FE Bridges`,
     desc: "Every concept mapped to React/JS",
   },
   { icon: "◉", name: "Story-Driven", desc: "11 modules aboard the Archimedes" },

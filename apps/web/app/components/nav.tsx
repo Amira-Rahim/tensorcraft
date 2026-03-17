@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { UserMenu } from "./user-menu";
+import { MobileNav } from "./mobile-nav";
 
 export function Nav() {
   return (
@@ -30,15 +31,14 @@ export function Nav() {
         >
           Pricing
         </Link>
-        <Link
-          href="/blog"
-          className="text-[13px] text-text-muted hover:text-text-primary transition-colors"
-        >
-          Blog
-        </Link>
       </div>
 
-      <UserMenu />
+      <div className="flex items-center gap-4">
+        <div className="hidden md:block">
+          <UserMenu />
+        </div>
+        <MobileNav />
+      </div>
     </nav>
   );
 }

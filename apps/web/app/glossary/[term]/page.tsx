@@ -88,14 +88,53 @@ export default async function GlossaryTermPage({ params }: TermPageProps) {
   const data = findTermSide(term);
 
   if (!data) {
-    notFound();
+    return (
+      <main className="min-h-screen relative px-8 md:px-20 pt-24 pb-28">
+        <div className="absolute inset-0 grid-bg pointer-events-none z-0" />
+
+        <div className="max-w-3xl relative z-10">
+          <div className="font-mono text-[11px] text-text-muted tracking-wider mb-10 flex items-center gap-2">
+            <Link
+              href="/glossary"
+              className="hover:text-primary transition-colors"
+            >
+              Glossary
+            </Link>
+            <span>/</span>
+            <span className="text-text-primary">{term}</span>
+          </div>
+
+          <div className="border border-border bg-surface p-10">
+            <div className="font-mono text-[11px] text-primary tracking-wider uppercase mb-4">
+              // 404
+            </div>
+            <h1 className="text-2xl font-mono font-black tracking-[-0.03em] mb-4 uppercase text-text-primary">
+              Term not found
+            </h1>
+            <p className="text-sm text-text-muted leading-relaxed mb-8">
+              This term does not exist in the glossary yet. Browse the full
+              glossary to find ML and frontend concepts explained through the
+              bridge system.
+            </p>
+            <Link
+              href="/glossary"
+              className="inline-flex items-center gap-2 px-7 py-3.5 border-2 border-border text-text-primary font-bold text-sm font-mono tracking-wider uppercase hover:text-primary hover:border-primary/30 transition-all"
+            >
+              &larr; Back to glossary
+            </Link>
+          </div>
+        </div>
+      </main>
+    );
   }
 
   const { bridge, domain } = data;
 
   return (
-    <main className="min-h-screen px-8 md:px-20 pt-24 pb-28">
-      <div className="max-w-3xl">
+    <main className="min-h-screen relative px-8 md:px-20 pt-24 pb-28">
+      <div className="absolute inset-0 grid-bg pointer-events-none z-0" />
+
+      <div className="max-w-3xl relative z-10">
         {/* Breadcrumb */}
         <div className="font-mono text-[11px] text-text-muted tracking-wider mb-10 flex items-center gap-2">
           <Link
@@ -128,7 +167,7 @@ export default async function GlossaryTermPage({ params }: TermPageProps) {
 
         {/* Bridge mapping */}
         <div className="border border-border mb-10">
-          <div className="px-6 py-4 border-b border-border bg-surface-raised">
+          <div className="px-6 py-4 border-b border-border bg-surface">
             <span className="font-mono text-[10px] font-bold text-text-muted tracking-wider uppercase">
               Bridge mapping
             </span>
@@ -185,7 +224,7 @@ export default async function GlossaryTermPage({ params }: TermPageProps) {
 
         {/* Connection explanation */}
         <div className="border border-border mb-10">
-          <div className="px-6 py-4 border-b border-border bg-surface-raised">
+          <div className="px-6 py-4 border-b border-border bg-surface">
             <span className="font-mono text-[10px] font-bold text-text-muted tracking-wider uppercase">
               How they connect
             </span>
@@ -197,12 +236,12 @@ export default async function GlossaryTermPage({ params }: TermPageProps) {
           </div>
         </div>
 
-        {/* Link to full bridge page */}
+        {/* Back to glossary */}
         <Link
-          href={`/bridges/${slugify(bridge.mlConcept)}`}
+          href="/glossary"
           className="inline-flex items-center gap-2 px-7 py-3.5 border-2 border-border text-text-primary font-bold text-sm font-mono tracking-wider uppercase hover:text-primary hover:border-primary/30 transition-all"
         >
-          View full bridge page
+          &larr; Back to glossary
         </Link>
       </div>
     </main>

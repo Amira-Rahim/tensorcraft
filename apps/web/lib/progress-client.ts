@@ -95,10 +95,32 @@ export async function markLessonCompleted(
   return data;
 }
 
+/** Get a YYYY-MM-DD string in the user's local timezone */
+function getLocalDateStr(date: Date = new Date()): string {
+  return date.toLocaleDateString("en-CA"); // returns YYYY-MM-DD
+}
+
+/** Parse a YYYY-MM-DD string to a UTC-midnight Date, or null if malformed */
+function parseDate(dateStr: string | null | undefined): Date | null {
+  if (!dateStr || !/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return null;
+  const parsed = new Date(dateStr + "T00:00:00Z");
+  if (isNaN(parsed.getTime())) return null;
+  return parsed;
+}
+
+/** Get the difference in calendar days between two YYYY-MM-DD strings (local tz) */
+function daysBetween(dateStrA: string, dateStrB: string): number | null {
+  const a = parseDate(dateStrA);
+  const b = parseDate(dateStrB);
+  if (!a || !b) return null;
+  const msPerDay = 86_400_000;
+  return Math.round((b.getTime() - a.getTime()) / msPerDay);
+}
+
 /** Update streak for a theme after lesson completion */
 async function updateStreak(userId: string, themeId: string) {
   const supabase = getSupabaseBrowserClient();
-  const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+  const today = getLocalDateStr();
 
   const { data: existing } = await supabase
     .from("streaks")
@@ -119,15 +141,30 @@ async function updateStreak(userId: string, themeId: string) {
   }
 
   const lastDate = existing.last_activity_date;
+
+  // If last_activity_date is null or malformed, treat as a new streak starting today
+  if (!lastDate || !parseDate(lastDate)) {
+    await supabase
+      .from("streaks")
+      .update({
+        current_streak: 1,
+        longest_streak: Math.max(existing.longest_streak ?? 0, 1),
+        last_activity_date: today,
+      })
+      .eq("user_id", userId)
+      .eq("theme_id", themeId);
+    return;
+  }
+
+  // Already logged activity today — nothing to update
   if (lastDate === today) return;
 
-  const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
-  const yesterdayStr = yesterday.toISOString().slice(0, 10);
-
+  const diff = daysBetween(lastDate, today);
   const currentStreak = existing.current_streak ?? 0;
   const bestStreak = existing.longest_streak ?? 0;
-  const newStreak = lastDate === yesterdayStr ? currentStreak + 1 : 1;
+
+  // diff === 1 means consecutive day; anything else resets
+  const newStreak = diff === 1 ? currentStreak + 1 : 1;
   const newLongest = Math.max(bestStreak, newStreak);
 
   await supabase

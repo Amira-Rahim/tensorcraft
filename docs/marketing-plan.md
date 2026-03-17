@@ -182,7 +182,7 @@ Implement structured data across all page types to enhance search appearance and
 
 | Concern | Strategy |
 |---------|----------|
-| Rendering | SSG for all public content pages (bridges, glossary, blog). ISR with 1-hour revalidation for dynamic pages (user counts, testimonials). SSR only for authenticated dashboard. |
+| Rendering | SSG for all public content pages (bridges, glossary, blog). ISR with 1-hour revalidation for dynamic pages (user counts, testimonials — **testimonials descoped until real testimonials are available**). SSR only for authenticated dashboard. |
 | Sitemap | Auto-generated `sitemap.xml` via `next-sitemap`. Separate sitemaps for blog, bridges, glossary, themes. Submit to Google Search Console and Bing Webmaster Tools. |
 | Core Web Vitals | LCP < 2.5s (preload hero images, font-display: swap). CLS < 0.1 (explicit dimensions on all images, skeleton loaders). INP < 200ms (defer non-critical JS, use `React.lazy` for below-fold components). |
 | Crawl Budget | `robots.txt` blocks `/dashboard`, `/api`, `/admin`. Canonical tags on all pages. `noindex` on paginated archive pages beyond page 3. |
@@ -446,11 +446,11 @@ Post-waitlist-signup email sequence to keep subscribers engaged until launch.
 | 4 | Day 14 | Meet Deep Orbit: your first Tensorcraft theme | Introduce the theme narrative, characters, visual style, and Module 1 outline | Build excitement for the product |
 | 5 | Day 21 | 5 things you can build with JavaScript ML | Practical project showcase (sentiment analysis, image classification, anomaly detection, recommendations, search ranking) | Demonstrate practical value |
 | 6 | Day 30 | Behind the scenes: how we built Tensorcraft | Technical deep-dive on the platform (Next.js, Sandpack, TensorFlow.js, design system) | Build trust through transparency |
-| 7 | Day 45 | The bridge that surprised us most | Highlight an unexpected FE-to-ML bridge that beta testers loved, include their quotes | Social proof + engagement |
+| 7 | Day 45 | The bridge that surprised us most | Highlight an unexpected FE-to-ML bridge that beta testers loved, include their quotes. **Note: Testimonials/quotes descoped until real testimonials are available.** | Social proof + engagement |
 | 8 | Day 60 | Tensorcraft launch date announcement | Announce the launch date, full theme pricing ($79), and what's included | Create anticipation |
 | 9 | Day 75 | 1 week until launch: here's your plan | Pre-launch checklist for the reader (block 2 hours, bookmark the URL, prepare your dev environment — just kidding, it's browser-based) | Build urgency with humor |
 | 10 | Launch Day | Tensorcraft is LIVE. Your bridge awaits. | Launch announcement, launch pricing ($79), direct link to free Module 1, 48-hour launch discount | Convert to signup/purchase |
-| 11 | Launch +7 | How the first week went (honest numbers) | Transparent update on launch results, learner count, first testimonials, what's next | Build community through transparency |
+| 11 | Launch +7 | How the first week went (honest numbers) | Transparent update on launch results, learner count, first testimonials, what's next. **Note: Testimonials descoped until real testimonials are available.** | Build community through transparency |
 
 ## 5.4 Waitlist Target
 

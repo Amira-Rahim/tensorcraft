@@ -47,7 +47,7 @@ export async function GET(req: NextRequest) {
             {title}
           </h1>
           {subtitle && (
-            <p tw="text-2xl mt-4 m-0" style={{ color: "#5A5A5A" }}>
+            <p tw="text-2xl mt-4 m-0" style={{ color: "#8A8A8A" }}>
               {subtitle}
             </p>
           )}

@@ -77,7 +77,7 @@ export default function GlobalError({
           <p
             style={{
               fontSize: "1rem",
-              color: "#5A5A5A",
+              color: "#8A8A8A",
               marginBottom: "2rem",
               lineHeight: 1.6,
             }}
