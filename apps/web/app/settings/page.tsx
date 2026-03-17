@@ -19,21 +19,33 @@ export default async function SettingsPage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("display_name, avatar_url")
+    .select(
+      "display_name, avatar_url, preferred_theme_id, github_username, github_connected",
+    )
     .eq("id", user.id)
     .single();
 
-  // preferred_theme_id may not exist yet (added in migration 002)
+  // Fetch completed purchases
+  const { data: purchaseRows } = await supabase
+    .from("purchases")
+    .select("plan_id, theme_ids, amount, created_at")
+    .eq("user_id", user.id)
+    .eq("status", "completed")
+    .order("created_at", { ascending: false });
+
+  const purchases = (purchaseRows ?? []).map((p) => ({
+    planId: p.plan_id,
+    themeIds: p.theme_ids,
+    amount: p.amount,
+    createdAt: p.created_at,
+  }));
+
   const profileRecord = profile as Record<string, unknown> | null;
 
   return (
     <main className="min-h-screen bg-surface relative overflow-hidden">
       <AmbientBackground count={160} />
-      <div className="max-w-2xl mx-auto px-6 py-12 relative z-10">
-        <h1 className="text-2xl font-bold mb-8 text-text-primary font-mono">
-          Settings
-        </h1>
-
+      <div className="max-w-[1000px] mx-auto px-8 py-10 relative z-10">
         <SettingsForm
           email={user.email ?? ""}
           displayName={profile?.display_name ?? ""}
@@ -41,6 +53,11 @@ export default async function SettingsPage() {
           preferredThemeId={
             (profileRecord?.preferred_theme_id as string) ?? "deep-orbit"
           }
+          githubUsername={(profileRecord?.github_username as string) ?? ""}
+          githubConnected={
+            (profileRecord?.github_connected as boolean) ?? false
+          }
+          purchases={purchases}
         />
       </div>
     </main>
