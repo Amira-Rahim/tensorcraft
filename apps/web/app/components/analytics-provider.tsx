@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { Suspense, useEffect, useRef } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import posthog from "posthog-js";
 
@@ -15,7 +15,7 @@ function hasAnalyticsConsent(): boolean {
   }
 }
 
-export function AnalyticsProvider({ children }: { children: React.ReactNode }) {
+function AnalyticsInner() {
   const initialized = useRef(false);
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -51,5 +51,16 @@ export function AnalyticsProvider({ children }: { children: React.ReactNode }) {
     posthog.capture("$pageview", { $current_url: url });
   }, [pathname, searchParams]);
 
-  return <>{children}</>;
+  return null;
+}
+
+export function AnalyticsProvider({ children }: { children: React.ReactNode }) {
+  return (
+    <>
+      <Suspense fallback={null}>
+        <AnalyticsInner />
+      </Suspense>
+      {children}
+    </>
+  );
 }

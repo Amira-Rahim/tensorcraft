@@ -29,8 +29,17 @@ export interface ExerciseData {
   difficulty: "beginner" | "intermediate" | "advanced";
 }
 
+export interface ExerciseSubmitResult {
+  exerciseSlug: string;
+  code: string;
+  passed: boolean;
+  score: number;
+  solutionViewed: boolean;
+}
+
 interface ExerciseProps {
   slug: string;
+  onSubmit?: (result: ExerciseSubmitResult) => void;
 }
 
 interface TestResult {
@@ -212,7 +221,7 @@ function parseAndRunTests(userCode: string, testCode: string): TestResult[] {
         softmax: function(x) { var d=Array.from(x.dataSync()); var max=Math.max.apply(null,d); var exp=d.map(function(v){return Math.exp(v-max);}); var sum=exp.reduce(function(a,b){return a+b;},0); return tf.tensor(exp.map(function(v){return v/sum;}), x.shape); },
         scalar: function(v) { return tf.tensor([v]); },
         zeros: function(shape) { return tf.tensor(new Array(shape.reduce(function(a,b){return a*b;},1)).fill(0), shape); },
-        ones: function(shape) { return tf.tensor(new Array(shape.reduce(function(a,b){return a+b;},1)).fill(1), shape); },
+        ones: function(shape) { return tf.tensor(new Array(shape.reduce(function(a,b){return a*b;},1)).fill(1), shape); },
         sequential: function() {
           var layers = [];
           return {
@@ -352,11 +361,13 @@ function ExerciseControls({
   exercise,
   onResults,
   onShowSolution,
+  onAttempt,
   showSolution,
 }: {
   exercise: ExerciseData;
   onResults: (results: TestResult[]) => void;
   onShowSolution: () => void;
+  onAttempt?: (result: ExerciseSubmitResult) => void;
   showSolution: boolean;
 }) {
   const { sandpack } = useSandpack();
@@ -384,6 +395,24 @@ function ExerciseControls({
       clearTimeout(timeout);
       onResults(results);
       hasAttempted.current = true;
+
+      // Report attempt to parent for persistence
+      if (onAttempt) {
+        const passed = results.length > 0 && results.every((r) => r.passed);
+        const score =
+          results.length > 0
+            ? Math.round(
+                (results.filter((r) => r.passed).length / results.length) * 100,
+              )
+            : 0;
+        onAttempt({
+          exerciseSlug: exercise.slug,
+          code,
+          passed,
+          score,
+          solutionViewed: showSolution,
+        });
+      }
     } catch (err) {
       clearTimeout(timeout);
       onResults([
@@ -396,7 +425,14 @@ function ExerciseControls({
       hasAttempted.current = true;
     }
     setRunning(false);
-  }, [sandpack, exercise.testCode, onResults]);
+  }, [
+    sandpack,
+    exercise.testCode,
+    exercise.slug,
+    onResults,
+    onAttempt,
+    showSolution,
+  ]);
 
   const handleReset = useCallback(() => {
     sandpack.updateFile("/index.js", exercise.starterCode);
@@ -444,7 +480,7 @@ function ExerciseControls({
 /*  Main Exercise component                                            */
 /* ------------------------------------------------------------------ */
 
-export function Exercise({ slug }: ExerciseProps) {
+export function Exercise({ slug, onSubmit }: ExerciseProps) {
   const exerciseMap = useContext(ExerciseDataContext);
   const exercise = exerciseMap.get(slug);
 
@@ -567,6 +603,7 @@ export function Exercise({ slug }: ExerciseProps) {
               exercise={exercise}
               onResults={setResults}
               onShowSolution={() => setShowSolution(true)}
+              onAttempt={onSubmit}
               showSolution={showSolution}
             />
           </div>

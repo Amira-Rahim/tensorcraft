@@ -15,10 +15,13 @@ export function UserMenu() {
   useEffect(() => {
     const supabase = getSupabaseBrowserClient();
 
+    // Initial user fetch
     supabase.auth.getUser().then(({ data }) => {
       setUser(data.user);
     });
 
+    // Listen for auth changes — SessionListener handles TOKEN_REFRESHED and
+    // SIGNED_OUT routing, so we only need this for updating local user state.
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {

@@ -16,4 +16,4 @@ export {
   LearningObjectives,
   Quiz,
 } from "./mdx";
-export type { ExerciseData } from "./mdx";
+export type { ExerciseData, ExerciseSubmitResult } from "./mdx";

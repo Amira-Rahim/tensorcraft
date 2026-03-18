@@ -13,7 +13,7 @@ export async function isAdmin(userId: string): Promise<boolean> {
   const supabase = getSupabaseAdminClient();
   const { data, error } = await supabase
     .from("profiles")
-    .select("*")
+    .select("role")
     .eq("id", userId)
     .single();
 
@@ -28,7 +28,7 @@ export async function getUserRole(userId: string): Promise<UserRole | null> {
   const supabase = getSupabaseAdminClient();
   const { data, error } = await supabase
     .from("profiles")
-    .select("*")
+    .select("role")
     .eq("id", userId)
     .single();
 

@@ -4,11 +4,22 @@ import { useState, type ReactNode } from "react";
 
 interface RecallPromptProps {
   question: string;
-  children: ReactNode;
+  /** App-level API: arbitrary React children as the answer */
+  children?: ReactNode;
+  /** Package-level API: plain string answer */
+  answer?: string;
 }
 
-export function RecallPrompt({ question, children }: RecallPromptProps) {
+export function RecallPrompt({
+  question,
+  children,
+  answer,
+}: RecallPromptProps) {
   const [revealed, setRevealed] = useState(false);
+
+  const answerContent = children ?? (
+    <p className="text-sm leading-relaxed text-text-primary/80">{answer}</p>
+  );
 
   return (
     <div className="p-5 my-6 brutalist-shadow bg-surface-raised border border-border">
@@ -36,7 +47,7 @@ export function RecallPrompt({ question, children }: RecallPromptProps) {
           style={{ opacity: revealed ? 1 : 0 }}
         >
           <div className="p-4 bg-surface border-l-[3px] border-l-primary text-sm leading-relaxed text-text-primary/80">
-            {children}
+            {answerContent}
           </div>
 
           <button

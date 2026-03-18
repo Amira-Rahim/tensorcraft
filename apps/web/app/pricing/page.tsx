@@ -202,10 +202,21 @@ export default function PricingPage() {
                     >
                       {tier.cta} &rarr;
                     </Link>
+                  ) : tier.id === "single" ? (
+                    <CheckoutButton
+                      planId={tier.id}
+                      themeIds={["deep-orbit"]}
+                      recommended={isRecommended}
+                    >
+                      {tier.cta} &rarr;
+                    </CheckoutButton>
                   ) : (
                     <CheckoutButton
                       planId={tier.id}
+                      themeIds={["deep-orbit"]}
                       recommended={isRecommended}
+                      disabled
+                      disabledReason="Available when more themes launch"
                     >
                       {tier.cta} &rarr;
                     </CheckoutButton>

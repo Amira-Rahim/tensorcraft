@@ -154,7 +154,14 @@ export function DashboardView(props: DashboardProps) {
       ctx.scale(2, 2);
     };
     resize();
-    window.addEventListener("resize", resize);
+
+    // Debounce resize to avoid excessive canvas recalculations
+    let resizeTimer: ReturnType<typeof setTimeout>;
+    const debouncedResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(resize, 150);
+    };
+    window.addEventListener("resize", debouncedResize);
 
     const draw = () => {
       const W = canvas.offsetWidth,
@@ -236,7 +243,10 @@ export function DashboardView(props: DashboardProps) {
         ctx.stroke();
         ctx.setLineDash([]);
 
-        if (vis >= CURVE.length - 1) plotProg.current = 0;
+        if (vis >= CURVE.length - 1) {
+          // Animation complete — stop the loop instead of restarting
+          return;
+        }
 
         // Current values
         const cur = CURVE[vis];
@@ -267,7 +277,8 @@ export function DashboardView(props: DashboardProps) {
     lossRaf.current = requestAnimationFrame(draw);
     return () => {
       cancelAnimationFrame(lossRaf.current);
-      window.removeEventListener("resize", resize);
+      clearTimeout(resizeTimer);
+      window.removeEventListener("resize", debouncedResize);
     };
   }, []);
 
@@ -816,6 +827,8 @@ export function DashboardView(props: DashboardProps) {
             </div>
             <canvas
               ref={lossCanvasRef}
+              role="img"
+              aria-label="Training loss curve visualization showing model training and validation loss decreasing over epochs"
               style={{ width: "100%", height: 220, display: "block" }}
             />
           </div>

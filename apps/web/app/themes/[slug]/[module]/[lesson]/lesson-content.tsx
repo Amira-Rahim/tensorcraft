@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 import {
   Dialogue,
@@ -20,7 +20,7 @@ import {
   NextLesson,
   RecallPrompt,
 } from "@/app/components/mdx";
-import type { ExerciseData } from "@tensorcraft/ui";
+import type { ExerciseData, ExerciseSubmitResult } from "@tensorcraft/ui";
 
 interface LessonContentProps {
   lesson: {
@@ -41,6 +41,8 @@ interface LessonContentProps {
     };
   };
   exercises?: ExerciseData[];
+  themeId?: string;
+  lessonId?: string;
 }
 
 /** MDX components available in lesson content */
@@ -65,7 +67,12 @@ const mdxComponents = {
  * Velite's s.mdx() compiles MDX to a function body string that receives
  * { Fragment, jsx, jsxs } as arguments[0] and uses components from arguments[0].components.
  */
-export function LessonContent({ lesson, exercises = [] }: LessonContentProps) {
+export function LessonContent({
+  lesson,
+  exercises = [],
+  themeId,
+  lessonId,
+}: LessonContentProps) {
   const exerciseMap = useMemo(() => {
     const map = new Map<string, ExerciseData>();
     for (const ex of exercises) {
@@ -73,6 +80,42 @@ export function LessonContent({ lesson, exercises = [] }: LessonContentProps) {
     }
     return map;
   }, [exercises]);
+
+  const handleExerciseSubmit = useCallback(
+    (result: ExerciseSubmitResult) => {
+      if (!themeId || !lessonId) return;
+
+      // Fire-and-forget — don't block the UI on persistence
+      fetch("/api/exercise-attempts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          themeId,
+          lessonId,
+          exerciseSlug: result.exerciseSlug,
+          submittedCode: result.code,
+          passed: result.passed,
+          score: result.score,
+          solutionViewed: result.solutionViewed,
+        }),
+      }).catch(() => {
+        // Silently ignore — attempt recording is best-effort.
+        // The user can still use the exercise without auth.
+      });
+    },
+    [themeId, lessonId],
+  );
+
+  // Build MDX components with the onSubmit handler wired in
+  const components = useMemo(() => {
+    if (!themeId || !lessonId) return mdxComponents;
+    return {
+      ...mdxComponents,
+      Exercise: (props: { slug: string }) => (
+        <Exercise {...props} onSubmit={handleExerciseSubmit} />
+      ),
+    };
+  }, [themeId, lessonId, handleExerciseSubmit]);
 
   const Content = useMemo(() => {
     try {
@@ -89,7 +132,7 @@ export function LessonContent({ lesson, exercises = [] }: LessonContentProps) {
       };
       const MDXDefault = mod.default;
       return function MDXContent() {
-        return MDXDefault({ components: mdxComponents });
+        return MDXDefault({ components });
       };
     } catch {
       return function Fallback() {
@@ -98,7 +141,7 @@ export function LessonContent({ lesson, exercises = [] }: LessonContentProps) {
         );
       };
     }
-  }, [lesson.body]);
+  }, [lesson.body, lesson.concept, lesson.hints, components]);
 
   return (
     <ExerciseDataProvider exercises={exerciseMap}>

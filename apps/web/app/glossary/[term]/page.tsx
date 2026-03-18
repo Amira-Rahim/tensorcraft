@@ -88,44 +88,7 @@ export default async function GlossaryTermPage({ params }: TermPageProps) {
   const data = findTermSide(term);
 
   if (!data) {
-    return (
-      <main className="min-h-screen relative px-8 md:px-20 pt-24 pb-28">
-        <div className="absolute inset-0 grid-bg pointer-events-none z-0" />
-
-        <div className="max-w-3xl relative z-10">
-          <div className="font-mono text-[11px] text-text-muted tracking-wider mb-10 flex items-center gap-2">
-            <Link
-              href="/glossary"
-              className="hover:text-primary transition-colors"
-            >
-              Glossary
-            </Link>
-            <span>/</span>
-            <span className="text-text-primary">{term}</span>
-          </div>
-
-          <div className="border border-border bg-surface p-10">
-            <div className="font-mono text-[11px] text-primary tracking-wider uppercase mb-4">
-              // 404
-            </div>
-            <h1 className="text-2xl font-mono font-black tracking-[-0.03em] mb-4 uppercase text-text-primary">
-              Term not found
-            </h1>
-            <p className="text-sm text-text-muted leading-relaxed mb-8">
-              This term does not exist in the glossary yet. Browse the full
-              glossary to find ML and frontend concepts explained through the
-              bridge system.
-            </p>
-            <Link
-              href="/glossary"
-              className="inline-flex items-center gap-2 px-7 py-3.5 border-2 border-border text-text-primary font-bold text-sm font-mono tracking-wider uppercase hover:text-primary hover:border-primary/30 transition-all"
-            >
-              &larr; Back to glossary
-            </Link>
-          </div>
-        </div>
-      </main>
-    );
+    notFound();
   }
 
   const { bridge, domain } = data;

@@ -17,5 +17,8 @@ export async function securityHeadersMiddleware(c: Context, next: Next) {
     "max-age=63072000; includeSubDomains; preload",
   );
 
+  c.header("Referrer-Policy", "strict-origin-when-cross-origin");
+  c.header("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+
   await next();
 }

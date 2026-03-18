@@ -294,7 +294,12 @@ export default async function LessonPage({ params }: Props) {
                 >
                   Context
                 </h3>
-                <LessonContent lesson={lesson} exercises={exercises} />
+                <LessonContent
+                  lesson={lesson}
+                  exercises={exercises}
+                  themeId={slug}
+                  lessonId={lessonSlug}
+                />
               </section>
 
               {/* 5C Loop: Consequence */}
@@ -333,6 +338,7 @@ export default async function LessonPage({ params }: Props) {
                 moduleId={moduleSlug}
                 lessonId={lessonSlug}
                 accentColor={theme.palette.accent}
+                exerciseCount={exercises.length}
               />
 
               {/* Navigation */}

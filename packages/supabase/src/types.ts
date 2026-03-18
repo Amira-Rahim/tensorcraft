@@ -1,7 +1,7 @@
 /**
  * Tensorcraft Database Types
  *
- * These types mirror the Supabase schema defined in migrations 001–006.
+ * These types mirror the Supabase schema defined in migrations 001–008.
  * In production, these should be auto-generated via `supabase gen types typescript`.
  * For now, they're manually maintained to match the migrations.
  */
@@ -19,10 +19,11 @@ export interface Database {
           avatar_url: string | null;
           github_username: string | null;
           github_connected: boolean;
+          github_token: string | null;
           onboarding_completed: boolean;
+          email_alerts: boolean;
+          weekly_digest: boolean;
           preferred_theme_id: string | null;
-          last_active_at: string | null;
-          total_lessons_completed: number;
           role: UserRole;
           created_at: string;
           updated_at: string;
@@ -34,10 +35,11 @@ export interface Database {
           avatar_url?: string | null;
           github_username?: string | null;
           github_connected?: boolean;
+          github_token?: string | null;
           onboarding_completed?: boolean;
+          email_alerts?: boolean;
+          weekly_digest?: boolean;
           preferred_theme_id?: string | null;
-          last_active_at?: string | null;
-          total_lessons_completed?: number;
           role?: UserRole;
         };
         Update: {
@@ -45,10 +47,11 @@ export interface Database {
           avatar_url?: string | null;
           github_username?: string | null;
           github_connected?: boolean;
+          github_token?: string | null;
           onboarding_completed?: boolean;
+          email_alerts?: boolean;
+          weekly_digest?: boolean;
           preferred_theme_id?: string | null;
-          last_active_at?: string | null;
-          total_lessons_completed?: number;
           role?: UserRole;
           updated_at?: string;
         };
@@ -109,7 +112,14 @@ export interface Database {
           amount: number;
           currency: string;
           stripe_session_id: string | null;
-          status: "pending" | "completed" | "failed" | "refunded";
+          stripe_payment_intent: string | null;
+          status:
+            | "pending"
+            | "completed"
+            | "failed"
+            | "refunded"
+            | "partially_refunded"
+            | "disputed";
           created_at: string;
         };
         Insert: {
@@ -119,11 +129,25 @@ export interface Database {
           amount: number;
           currency?: string;
           stripe_session_id?: string | null;
-          status?: "pending" | "completed" | "failed" | "refunded";
+          stripe_payment_intent?: string | null;
+          status?:
+            | "pending"
+            | "completed"
+            | "failed"
+            | "refunded"
+            | "partially_refunded"
+            | "disputed";
         };
         Update: {
           stripe_session_id?: string | null;
-          status?: "pending" | "completed" | "failed" | "refunded";
+          stripe_payment_intent?: string | null;
+          status?:
+            | "pending"
+            | "completed"
+            | "failed"
+            | "refunded"
+            | "partially_refunded"
+            | "disputed";
         };
         Relationships: [
           {
@@ -281,6 +305,10 @@ export interface Database {
       is_admin: {
         Args: Record<string, never>;
         Returns: boolean;
+      };
+      record_streak_activity: {
+        Args: { p_theme_id: string };
+        Returns: void;
       };
     };
   };

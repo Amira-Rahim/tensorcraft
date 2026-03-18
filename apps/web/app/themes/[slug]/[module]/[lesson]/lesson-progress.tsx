@@ -5,6 +5,7 @@ import {
   markLessonStarted,
   markLessonCompleted,
   getLessonStatus,
+  getLessonExerciseStatus,
 } from "@/lib/progress-client";
 
 interface LessonProgressProps {
@@ -12,6 +13,7 @@ interface LessonProgressProps {
   moduleId: string;
   lessonId: string;
   accentColor: string;
+  exerciseCount: number;
 }
 
 export function LessonProgressTracker({
@@ -19,11 +21,16 @@ export function LessonProgressTracker({
   moduleId,
   lessonId,
   accentColor,
+  exerciseCount,
 }: LessonProgressProps) {
   const [status, setStatus] = useState<
     "not_started" | "in_progress" | "completed" | null
   >(null);
   const [completing, setCompleting] = useState(false);
+  const [exercisesComplete, setExercisesComplete] = useState(
+    exerciseCount === 0,
+  );
+  const [completedExercises, setCompletedExercises] = useState(0);
 
   // Auto-mark as started when lesson loads
   useEffect(() => {
@@ -44,22 +51,48 @@ export function LessonProgressTracker({
         if (cancelled) return;
         if (result) setStatus("in_progress");
       }
+
+      // Check exercise completion status
+      if (exerciseCount > 0) {
+        const exerciseStatus = await getLessonExerciseStatus(
+          themeId,
+          lessonId,
+          exerciseCount,
+        );
+        if (cancelled) return;
+        setExercisesComplete(exerciseStatus.allComplete);
+        setCompletedExercises(exerciseStatus.completedCount);
+      }
     }
 
     trackStart();
     return () => {
       cancelled = true;
     };
-  }, [themeId, moduleId, lessonId]);
+  }, [themeId, moduleId, lessonId, exerciseCount]);
 
   const handleComplete = useCallback(async () => {
+    // Re-check exercise status right before completing to prevent race conditions
+    if (exerciseCount > 0) {
+      const exerciseStatus = await getLessonExerciseStatus(
+        themeId,
+        lessonId,
+        exerciseCount,
+      );
+      if (!exerciseStatus.allComplete) {
+        setExercisesComplete(false);
+        setCompletedExercises(exerciseStatus.completedCount);
+        return;
+      }
+    }
+
     setCompleting(true);
     const result = await markLessonCompleted(themeId, moduleId, lessonId);
     if (result) {
       setStatus("completed");
     }
     setCompleting(false);
-  }, [themeId, moduleId, lessonId]);
+  }, [themeId, moduleId, lessonId, exerciseCount]);
 
   // Don't render anything if no auth (guest user)
   if (status === null) return null;
@@ -84,30 +117,39 @@ export function LessonProgressTracker({
     );
   }
 
+  const buttonDisabled = completing || !exercisesComplete;
+
   return (
     <div className="my-6">
       <button
         type="button"
         onClick={handleComplete}
-        disabled={completing}
+        disabled={buttonDisabled}
         className="w-full py-3 text-sm font-semibold uppercase tracking-wider transition-all font-mono"
         style={{
-          background: completing
+          background: buttonDisabled
             ? "var(--tc-border, rgba(255,255,255,0.06))"
             : accentColor,
-          color: completing
+          color: buttonDisabled
             ? "var(--tc-muted, #8A8A8A)"
             : "var(--tc-bg, #1C1C1C)",
+          cursor: buttonDisabled ? "not-allowed" : "pointer",
         }}
       >
-        {completing ? "Saving..." : "Mark Lesson as Complete"}
+        {completing
+          ? "Saving..."
+          : exercisesComplete
+            ? "Mark Lesson as Complete"
+            : `Complete all exercises first (${completedExercises}/${exerciseCount})`}
       </button>
-      <p
-        className="text-xs mt-2 text-center"
-        style={{ color: "var(--tc-muted, #8A8A8A)" }}
-      >
-        Complete all exercises before marking this lesson as done.
-      </p>
+      {!exercisesComplete && (
+        <p
+          className="text-xs mt-2 text-center"
+          style={{ color: "var(--tc-muted, #8A8A8A)" }}
+        >
+          Pass all exercises before marking this lesson as done.
+        </p>
+      )}
     </div>
   );
 }

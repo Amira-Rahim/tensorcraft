@@ -73,20 +73,21 @@ export async function updateSession(request: NextRequest) {
   );
 
   if (isAuthRoute && user) {
-    const redirectTo =
+    const rawRedirectTo =
       request.nextUrl.searchParams.get("redirectTo") || "/dashboard";
+    const redirectTo =
+      rawRedirectTo.startsWith("/") && !rawRedirectTo.startsWith("//")
+        ? rawRedirectTo
+        : "/dashboard";
     const url = request.nextUrl.clone();
     url.pathname = redirectTo;
     url.search = "";
     return NextResponse.redirect(url);
   }
 
-  // Redirect to onboarding if user hasn't completed it
-  if (
-    user &&
-    !request.nextUrl.pathname.startsWith("/onboarding") &&
-    !isAuthRoute
-  ) {
+  // Redirect to onboarding if user hasn't completed it (only on protected routes
+  // to avoid a DB query on every single page load like landing, pricing, blog, etc.)
+  if (user && isProtected) {
     const { data: profile } = await supabase
       .from("profiles")
       .select("onboarding_completed")

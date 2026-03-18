@@ -10,11 +10,14 @@ import type { AppEnv } from "../types";
 
 const payments = new Hono<AppEnv>();
 
-/** Lazily initialized Stripe client */
+/** Lazily initialized Stripe client (singleton) */
+let stripeInstance: Stripe | null = null;
 function getStripe(): Stripe {
+  if (stripeInstance) return stripeInstance;
   const key = process.env.STRIPE_SECRET_KEY;
   if (!key) throw new Error("STRIPE_SECRET_KEY not configured");
-  return new Stripe(key);
+  stripeInstance = new Stripe(key);
+  return stripeInstance;
 }
 
 /** Validate that all theme IDs are known slugs */
@@ -63,9 +66,29 @@ payments.post("/checkout", async (c) => {
     return c.json({ error: "Invalid theme ID(s)" }, 400);
   }
 
+  // Check for duplicate purchases — prevent buying themes user already owns
+  const supabase = getSupabaseServerClient(c.get("accessToken"));
+  const { data: existingPurchases } = await supabase
+    .from("purchases")
+    .select("theme_ids")
+    .eq("user_id", userId)
+    .eq("status", "completed");
+
+  if (existingPurchases && existingPurchases.length > 0) {
+    const ownedThemes = existingPurchases.flatMap(
+      (p: { theme_ids: string[] }) => p.theme_ids,
+    );
+    const alreadyOwned = body.themeIds.filter((id) => ownedThemes.includes(id));
+    if (alreadyOwned.length > 0) {
+      return c.json(
+        { error: "You already own this theme", themes: alreadyOwned },
+        400,
+      );
+    }
+  }
+
   const stripe = getStripe();
-  const origin =
-    c.req.header("origin") || process.env.APP_URL || "http://localhost:3000";
+  const appUrl = process.env.APP_URL || "http://localhost:3000";
 
   const session = await stripe.checkout.sessions.create({
     mode: "payment",
@@ -87,8 +110,8 @@ payments.post("/checkout", async (c) => {
       planId: body.planId,
       themeIds: body.themeIds.join(","),
     },
-    success_url: `${origin}/dashboard/purchase-success`,
-    cancel_url: `${origin}/pricing?purchase=cancelled`,
+    success_url: `${appUrl}/dashboard/purchase-success`,
+    cancel_url: `${appUrl}/pricing?purchase=cancelled`,
   });
 
   return c.json({ url: session.url });
@@ -194,12 +217,15 @@ payments.post("/webhook", async (c) => {
 
       if (!userId || !sessionId) {
         console.error("Webhook: Missing client_reference_id or session id");
-        break;
+        return c.json(
+          { error: "Missing client_reference_id or session id" },
+          500,
+        );
       }
 
       if (!metadata?.planId) {
         console.error("Webhook: Missing planId in metadata");
-        break;
+        return c.json({ error: "Missing planId in metadata" }, 500);
       }
 
       const themeIds = metadata.themeIds ? metadata.themeIds.split(",") : [];
@@ -229,7 +255,7 @@ payments.post("/webhook", async (c) => {
           ? session.payment_intent
           : (session.payment_intent?.id ?? null);
 
-      await supabase.from("purchases").upsert(
+      const { error: upsertError } = await supabase.from("purchases").upsert(
         {
           user_id: userId,
           plan_id: metadata.planId,
@@ -242,6 +268,11 @@ payments.post("/webhook", async (c) => {
         { onConflict: "stripe_session_id", ignoreDuplicates: true },
       );
 
+      if (upsertError) {
+        console.error("Webhook: Failed to upsert purchase:", upsertError);
+        return c.json({ error: "Database error" }, 500);
+      }
+
       break;
     }
 
@@ -253,12 +284,100 @@ payments.post("/webhook", async (c) => {
           : charge.payment_intent?.id;
 
       if (refundPaymentIntent) {
-        await supabase
+        // Only fully revoke access on full refund; partial refunds preserve access
+        const isFullRefund = charge.amount_refunded >= charge.amount;
+        const newStatus = isFullRefund ? "refunded" : "partially_refunded";
+
+        const { error: refundError } = await supabase
           .from("purchases")
-          .update({ status: "refunded" })
+          .update({ status: newStatus })
           .eq("stripe_payment_intent", refundPaymentIntent);
+
+        if (refundError) {
+          console.error(
+            "Webhook: Failed to update refund status:",
+            refundError,
+          );
+          return c.json({ error: "Database error" }, 500);
+        }
       }
 
+      break;
+    }
+
+    case "charge.dispute.created": {
+      const dispute = event.data.object as Stripe.Dispute;
+      const disputePaymentIntent =
+        typeof dispute.payment_intent === "string"
+          ? dispute.payment_intent
+          : dispute.payment_intent?.id;
+
+      if (disputePaymentIntent) {
+        // Immediately revoke access on dispute to protect against fraud
+        const { error: disputeError } = await supabase
+          .from("purchases")
+          .update({ status: "disputed" })
+          .eq("stripe_payment_intent", disputePaymentIntent);
+
+        if (disputeError) {
+          console.error(
+            "Webhook: Failed to update dispute status:",
+            disputeError,
+          );
+          return c.json({ error: "Database error" }, 500);
+        }
+      }
+
+      break;
+    }
+
+    case "checkout.session.async_payment_succeeded": {
+      // Handle delayed payment methods (bank transfers, etc.)
+      const asyncSession = event.data.object as Stripe.Checkout.Session;
+      const asyncUserId = asyncSession.client_reference_id;
+      const asyncMetadata = asyncSession.metadata;
+
+      if (asyncUserId && asyncMetadata?.planId) {
+        const asyncThemeIds = asyncMetadata.themeIds
+          ? asyncMetadata.themeIds.split(",")
+          : [];
+        const asyncPlan = PRICING[asyncMetadata.planId as keyof typeof PRICING];
+
+        if (
+          asyncPlan &&
+          (asyncThemeIds.length === 0 || validateThemeIds(asyncThemeIds))
+        ) {
+          const asyncPaymentIntent =
+            typeof asyncSession.payment_intent === "string"
+              ? asyncSession.payment_intent
+              : (asyncSession.payment_intent?.id ?? null);
+
+          await supabase.from("purchases").upsert(
+            {
+              user_id: asyncUserId,
+              plan_id: asyncMetadata.planId,
+              theme_ids: asyncThemeIds,
+              amount: asyncSession.amount_total
+                ? asyncSession.amount_total / 100
+                : asyncPlan.price,
+              stripe_session_id: asyncSession.id,
+              stripe_payment_intent: asyncPaymentIntent,
+              status: "completed",
+            },
+            { onConflict: "stripe_session_id", ignoreDuplicates: true },
+          );
+        }
+      }
+
+      break;
+    }
+
+    case "checkout.session.async_payment_failed": {
+      const failedSession = event.data.object as Stripe.Checkout.Session;
+      console.warn("Async payment failed:", {
+        sessionId: failedSession.id,
+        userId: failedSession.client_reference_id,
+      });
       break;
     }
 

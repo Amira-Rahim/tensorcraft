@@ -4,11 +4,19 @@ import { getSupabaseServerClient } from "@/lib/supabase/server";
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
-  const next = searchParams.get("next") ?? "/onboarding";
+  const rawNext = searchParams.get("next") ?? "/onboarding";
+  const next =
+    rawNext.startsWith("/") && !rawNext.startsWith("//")
+      ? rawNext
+      : "/onboarding";
 
   if (code) {
     const supabase = await getSupabaseServerClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
+
+    if (error) {
+      console.error("Auth callback: exchangeCodeForSession failed", error);
+    }
 
     if (!error) {
       const forwardedHost = request.headers.get("x-forwarded-host");

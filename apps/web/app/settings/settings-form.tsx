@@ -128,6 +128,8 @@ export function SettingsForm({
         display_name: displayName,
         preferred_theme_id: preferredTheme,
         github_username: githubUser || null,
+        email_alerts: emailAlerts,
+        weekly_digest: weeklyDigest,
       })
       .eq("id", user.id);
 
@@ -144,6 +146,7 @@ export function SettingsForm({
     const supabase = getSupabaseBrowserClient();
     await supabase.auth.signOut();
     router.push("/");
+    router.refresh();
   }
 
   return (
@@ -234,14 +237,15 @@ export function SettingsForm({
                 </div>
                 <button
                   type="button"
-                  className="font-mono mt-2"
+                  disabled
+                  className="font-mono mt-2 disabled:opacity-40 disabled:cursor-not-allowed"
+                  title="Photo upload coming soon"
                   style={{
                     fontSize: 10,
                     color: "var(--tc-primary)",
                     background: "transparent",
                     border: "1px solid var(--tc-primary)",
                     padding: "3px 10px",
-                    cursor: "pointer",
                   }}
                 >
                   Change photo
@@ -464,14 +468,15 @@ export function SettingsForm({
 
             <button
               type="button"
-              className="font-mono mt-5"
+              disabled
+              className="font-mono mt-5 disabled:opacity-40 disabled:cursor-not-allowed"
+              title="GitHub integration coming soon"
               style={{
                 background: "transparent",
                 color: "var(--tc-muted)",
                 border: "2px solid var(--tc-border)",
                 fontSize: 10,
                 padding: "8px 20px",
-                cursor: "pointer",
               }}
             >
               {initialGithubConnected ? "Disconnect" : "Connect GitHub"}

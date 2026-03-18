@@ -1,11 +1,4 @@
 import { Hono } from "hono";
-import {
-  getInstallationGraphqlClient,
-  createCommitOnBranch,
-  getBranchHeadOid,
-  buildCommitPayload,
-  buildRepoName,
-} from "@tensorcraft/github";
 import { getSupabaseAdminClient } from "@tensorcraft/supabase";
 import { authMiddleware } from "../middleware/auth";
 import type { AppEnv } from "../types";
@@ -13,28 +6,38 @@ import { createOrGetRepo, pushFile, getGitHubUsername } from "../lib/github";
 
 const github = new Hono<AppEnv>();
 
+/**
+ * Validates that a slug contains only lowercase alphanumeric characters and hyphens.
+ * Rejects path traversal attempts and any unsafe characters.
+ */
+function isValidSlug(slug: string): boolean {
+  return /^[a-z0-9-]+$/.test(slug);
+}
+
 // ──────────────────────────────────────────────
-// POST /api/github/connect — Store GitHub installation ID for user
+// POST /api/github/token — Persist GitHub OAuth provider token
 // ──────────────────────────────────────────────
 
-github.use("/connect", authMiddleware);
+github.use("/token", authMiddleware);
 
-github.post("/connect", async (c) => {
+github.post("/token", async (c) => {
   const userId = c.get("userId");
 
-  let body: { installationId: number; githubUsername: string };
+  let body: { github_token: string };
   try {
     body = await c.req.json();
   } catch {
     return c.json({ error: "Invalid JSON body" }, 400);
   }
 
-  if (!body.installationId || typeof body.installationId !== "number") {
-    return c.json({ error: "installationId (number) is required" }, 400);
+  if (!body.github_token || typeof body.github_token !== "string") {
+    return c.json({ error: "github_token (string) is required" }, 400);
   }
 
-  if (!body.githubUsername || typeof body.githubUsername !== "string") {
-    return c.json({ error: "githubUsername (string) is required" }, 400);
+  // Validate the token by fetching the GitHub user
+  const username = await getGitHubUsername(body.github_token);
+  if (!username) {
+    return c.json({ error: "Invalid GitHub token" }, 400);
   }
 
   const supabase = getSupabaseAdminClient();
@@ -42,152 +45,19 @@ github.post("/connect", async (c) => {
   const { error } = await supabase
     .from("profiles")
     .update({
-      github_username: body.githubUsername,
+      github_token: body.github_token,
+      github_username: username,
       github_connected: true,
       updated_at: new Date().toISOString(),
     })
     .eq("id", userId);
 
   if (error) {
-    console.error("Failed to store GitHub connection:", error);
-    return c.json(
-      {
-        error: "Failed to store GitHub connection",
-        requestId: c.res.headers.get("X-Request-Id"),
-      },
-      500,
-    );
+    console.error("Failed to persist GitHub token:", error);
+    return c.json({ error: "Failed to store GitHub token" }, 500);
   }
 
-  return c.json({ connected: true });
-});
-
-// ──────────────────────────────────────────────
-// POST /api/github/commit — Push exercise solution to user's repo
-// ──────────────────────────────────────────────
-
-github.use("/commit", authMiddleware);
-
-github.post("/commit", async (c) => {
-  const userId = c.get("userId");
-
-  let body: {
-    themeSlug: string;
-    moduleSlug: string;
-    lessonSlug: string;
-    code: string;
-    fileName?: string;
-    installationId: number;
-    repoOwner: string;
-  };
-  try {
-    body = await c.req.json();
-  } catch {
-    return c.json({ error: "Invalid JSON body" }, 400);
-  }
-
-  // Validate required fields
-  const { themeSlug, moduleSlug, lessonSlug, code, installationId, repoOwner } =
-    body;
-
-  if (!themeSlug || !moduleSlug || !lessonSlug || !code) {
-    return c.json(
-      { error: "themeSlug, moduleSlug, lessonSlug, and code are required" },
-      400,
-    );
-  }
-
-  if (!installationId || typeof installationId !== "number") {
-    return c.json({ error: "installationId (number) is required" }, 400);
-  }
-
-  if (!repoOwner || typeof repoOwner !== "string") {
-    return c.json({ error: "repoOwner (string) is required" }, 400);
-  }
-
-  // Build commit payload
-  const { files, message } = buildCommitPayload({
-    themeSlug,
-    moduleSlug,
-    lessonSlug,
-    code,
-    fileName: body.fileName,
-  });
-
-  const repoName = buildRepoName(themeSlug);
-
-  // Get installation-scoped GraphQL client
-  const graphqlClient = getInstallationGraphqlClient(installationId);
-
-  // Get the current HEAD OID for the default branch
-  const branchInfo = await getBranchHeadOid(graphqlClient, {
-    repoOwner,
-    repoName,
-  });
-
-  if (!branchInfo) {
-    return c.json(
-      {
-        error: `Repository ${repoOwner}/${repoName} not found or has no default branch. Please install the GitHub App on this repository.`,
-      },
-      404,
-    );
-  }
-
-  // Create the commit
-  try {
-    const commit = await createCommitOnBranch(graphqlClient, {
-      repoOwner,
-      repoName,
-      branchName: branchInfo.branchName,
-      expectedHeadOid: branchInfo.oid,
-      message,
-      files,
-    });
-
-    return c.json({
-      commitUrl: commit.url,
-      commitOid: commit.oid,
-      repoUrl: `https://github.com/${repoOwner}/${repoName}`,
-    });
-  } catch (err) {
-    const errorMessage = err instanceof Error ? err.message : "Unknown error";
-    console.error("GitHub commit failed:", {
-      error: errorMessage,
-      userId,
-      repoOwner,
-      repoName,
-    });
-
-    // Provide actionable error messages
-    if (errorMessage.includes("NOT_FOUND")) {
-      return c.json(
-        {
-          error:
-            "Repository not found. Please ensure the GitHub App is installed on the target repository.",
-        },
-        404,
-      );
-    }
-
-    if (errorMessage.includes("FORBIDDEN") || errorMessage.includes("403")) {
-      return c.json(
-        {
-          error:
-            "Permission denied. Please check the GitHub App installation permissions.",
-        },
-        403,
-      );
-    }
-
-    return c.json(
-      {
-        error: "Failed to create commit on GitHub",
-        requestId: c.res.headers.get("X-Request-Id"),
-      },
-      500,
-    );
-  }
+  return c.json({ stored: true, username });
 });
 
 // ──────────────────────────────────────────────
@@ -220,41 +90,61 @@ github.post("/push", async (c) => {
     );
   }
 
+  // Validate slugs to prevent path traversal and injection
+  if (!isValidSlug(exerciseSlug)) {
+    return c.json(
+      {
+        error:
+          "Invalid exerciseSlug. Only lowercase letters, numbers, and hyphens are allowed.",
+      },
+      400,
+    );
+  }
+
+  if (!isValidSlug(themeId)) {
+    return c.json(
+      {
+        error:
+          "Invalid themeId. Only lowercase letters, numbers, and hyphens are allowed.",
+      },
+      400,
+    );
+  }
+
+  if (!isValidSlug(moduleId)) {
+    return c.json(
+      {
+        error:
+          "Invalid moduleId. Only lowercase letters, numbers, and hyphens are allowed.",
+      },
+      400,
+    );
+  }
+
   // Limit code size (100KB)
   if (code.length > 102_400) {
     return c.json({ error: "Code exceeds maximum size (100KB)" }, 400);
   }
 
-  // Get the user's GitHub access token from Supabase auth provider
+  // Get the user's GitHub token from the profiles table
   const supabase = getSupabaseAdminClient();
-  const { data: userData, error: userError } =
-    await supabase.auth.admin.getUserById(userId);
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("github_token")
+    .eq("id", userId)
+    .single();
 
-  if (userError || !userData?.user) {
-    return c.json({ error: "Failed to retrieve user data" }, 500);
+  if (profileError || !profile) {
+    return c.json({ error: "Failed to retrieve user profile" }, 500);
   }
 
-  // Extract GitHub access token from user's identity
-  const githubIdentity = userData.user.identities?.find(
-    (id) => id.provider === "github",
-  );
-
-  if (!githubIdentity) {
-    return c.json(
-      { error: "GitHub account not connected. Please sign in with GitHub." },
-      403,
-    );
-  }
-
-  const providerToken = githubIdentity.identity_data?.provider_token as
-    | string
-    | undefined;
+  const providerToken = profile.github_token as string | null;
 
   if (!providerToken) {
     return c.json(
       {
         error:
-          "GitHub access token not available. Please reconnect your GitHub account.",
+          "GitHub access token not available. Please sign out and sign back in with GitHub to reconnect.",
       },
       403,
     );
@@ -299,7 +189,8 @@ github.post("/push", async (c) => {
     ) {
       return c.json(
         {
-          error: "GitHub token expired. Please reconnect your GitHub account.",
+          error:
+            "GitHub token expired. Please sign out and sign back in to reconnect.",
         },
         401,
       );
@@ -328,7 +219,7 @@ github.get("/status", async (c) => {
 
   const { data, error } = await supabase
     .from("profiles")
-    .select("github_username, github_connected")
+    .select("github_username, github_connected, github_token")
     .eq("id", userId)
     .single();
 
@@ -337,7 +228,7 @@ github.get("/status", async (c) => {
   }
 
   return c.json({
-    connected: !!data.github_connected,
+    connected: !!data.github_connected && !!data.github_token,
     username: data.github_username ?? undefined,
   });
 });

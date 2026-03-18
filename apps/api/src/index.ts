@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { bodyLimit } from "hono/body-limit";
 import { serve } from "@hono/node-server";
 import { corsMiddleware } from "./middleware/cors";
 import { rateLimitMiddleware } from "./middleware/rate-limit";
@@ -18,6 +19,7 @@ const app = new Hono();
 // Global middleware
 app.use("*", securityHeadersMiddleware);
 app.use("*", corsMiddleware);
+app.use("*", bodyLimit({ maxSize: 1024 * 1024 })); // 1 MB global limit
 
 // Rate limit all routes EXCEPT the Stripe webhook (Stripe retries on failure)
 app.use("*", async (c, next) => {
@@ -25,6 +27,23 @@ app.use("*", async (c, next) => {
     return next();
   }
   return rateLimitMiddleware(c, next);
+});
+
+// Global error handler — sanitize errors, never leak internals
+app.onError((err, c) => {
+  console.error("Unhandled error:", {
+    message: err.message,
+    path: c.req.path,
+    method: c.req.method,
+    timestamp: new Date().toISOString(),
+  });
+  return c.json(
+    {
+      error: "Internal server error",
+      requestId: c.res.headers.get("X-Request-ID"),
+    },
+    500,
+  );
 });
 
 // Routes

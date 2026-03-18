@@ -4,6 +4,7 @@
  */
 
 const GITHUB_API = "https://api.github.com";
+const FETCH_TIMEOUT_MS = 15_000; // 15-second timeout for all GitHub API calls
 
 interface GitHubFileResponse {
   sha: string;
@@ -58,10 +59,11 @@ export async function createOrGetRepo(
   const createRes = await fetch(`${GITHUB_API}/user/repos`, {
     method: "POST",
     headers: headers(accessToken),
+    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
     body: JSON.stringify({
       name: repoName,
       description: `Tensorcraft exercise solutions — ${repoName}`,
-      private: false,
+      private: true,
       auto_init: true,
     }),
   });
@@ -84,7 +86,10 @@ export async function createOrGetRepo(
 
     const repoRes = await fetch(
       `${GITHUB_API}/repos/${user.login}/${repoName}`,
-      { headers: headers(accessToken) },
+      {
+        headers: headers(accessToken),
+        signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+      },
     );
 
     if (!repoRes.ok) {
@@ -110,7 +115,10 @@ export async function getFile(
 ): Promise<{ sha: string; content: string } | null> {
   const res = await fetch(
     `${GITHUB_API}/repos/${owner}/${repo}/contents/${path}`,
-    { headers: headers(accessToken) },
+    {
+      headers: headers(accessToken),
+      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+    },
   );
 
   if (res.status === 404) {
@@ -157,6 +165,7 @@ export async function pushFile(
     {
       method: "PUT",
       headers: headers(accessToken),
+      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
       body: JSON.stringify(body),
     },
   );
@@ -181,6 +190,7 @@ export async function getGitHubUsername(
 ): Promise<string | null> {
   const res = await fetch(`${GITHUB_API}/user`, {
     headers: headers(accessToken),
+    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
   });
 
   if (res.status === 401) {

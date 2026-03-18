@@ -228,7 +228,7 @@ progress.get("/summary", async (c) => {
   const totalCompleted = themes.reduce((sum, t) => sum + t.completed, 0);
   const totalLessons = themes.reduce((sum, t) => sum + t.total, 0);
   const bestStreak = streaks.reduce(
-    (max, s) => Math.max(max, s.current_streak ?? 0),
+    (max, s) => Math.max(max, s.longest_streak ?? 0),
     0,
   );
 

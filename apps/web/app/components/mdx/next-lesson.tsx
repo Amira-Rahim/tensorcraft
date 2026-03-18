@@ -3,10 +3,18 @@ import Link from "next/link";
 interface NextLessonProps {
   title: string;
   href: string;
+  /** App-level API */
   teaser?: string;
+  /** Package-level API */
+  moduleTitle?: string;
 }
 
-export function NextLesson({ title, href, teaser }: NextLessonProps) {
+export function NextLesson({
+  title,
+  href,
+  teaser,
+  moduleTitle,
+}: NextLessonProps) {
   return (
     <Link
       href={href}
@@ -22,6 +30,12 @@ export function NextLesson({ title, href, teaser }: NextLessonProps) {
 
       {teaser && (
         <span className="text-sm text-text-muted block mt-1">{teaser}</span>
+      )}
+
+      {moduleTitle && !teaser && (
+        <span className="text-xs text-text-muted block mt-1">
+          {moduleTitle}
+        </span>
       )}
     </Link>
   );

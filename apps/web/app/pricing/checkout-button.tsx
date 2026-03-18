@@ -7,17 +7,21 @@ import { trackCheckoutStarted } from "@/lib/analytics";
 
 interface CheckoutButtonProps {
   planId: string;
-  themeIds?: string[];
+  themeIds: string[];
   children: React.ReactNode;
   recommended?: boolean;
+  disabled?: boolean;
+  disabledReason?: string;
   className?: string;
 }
 
 export function CheckoutButton({
   planId,
-  themeIds = ["deep-orbit"],
+  themeIds,
   children,
   recommended = false,
+  disabled = false,
+  disabledReason,
   className = "",
 }: CheckoutButtonProps) {
   const [loading, setLoading] = useState(false);
@@ -25,6 +29,8 @@ export function CheckoutButton({
   const router = useRouter();
 
   async function handleCheckout() {
+    if (disabled) return;
+
     setLoading(true);
     setError(null);
     trackCheckoutStarted(planId);
@@ -82,12 +88,14 @@ export function CheckoutButton({
     }
   }
 
+  const isDisabled = disabled || loading;
+
   return (
     <div>
       <button
         type="button"
         onClick={handleCheckout}
-        disabled={loading}
+        disabled={isDisabled}
         className={`flex items-center justify-center w-full h-[52px] text-[15px] font-medium font-mono transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
           recommended
             ? "bg-primary text-[#1C1C1C] border border-primary hover:shadow-[4px_4px_0px_0px_#C8C8C8] hover:-translate-x-0.5 hover:-translate-y-0.5"
@@ -96,6 +104,11 @@ export function CheckoutButton({
       >
         {loading ? "Redirecting..." : children}
       </button>
+      {disabled && disabledReason && (
+        <p className="mt-2 text-xs text-center text-text-muted font-mono">
+          {disabledReason}
+        </p>
+      )}
       {error && (
         <p className="mt-2 text-xs text-center text-red-500" role="alert">
           {error}

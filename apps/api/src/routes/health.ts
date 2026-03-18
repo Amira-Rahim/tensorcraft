@@ -31,7 +31,7 @@ health.get("/", async (c) => {
       status,
       service: "tensorcraft-api",
       timestamp: new Date().toISOString(),
-      checks: { db: dbStatus, ...(dbError ? { dbError } : {}) },
+      checks: { db: dbStatus },
     },
     code,
   );
