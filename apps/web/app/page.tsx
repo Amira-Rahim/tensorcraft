@@ -113,39 +113,6 @@ const themes = [
   },
 ];
 
-const loop5C = [
-  {
-    id: "C1",
-    name: "Context",
-    desc: "Mission briefing from ARIA. You learn what problem the station is facing today, grounding the ML concept in a concrete narrative.",
-    sym: "📰",
-  },
-  {
-    id: "C2",
-    name: "Concept",
-    desc: "The bridge is revealed. Your existing frontend mental model maps directly to an ML concept — no prior ML knowledge required.",
-    sym: "⇄",
-  },
-  {
-    id: "C3",
-    name: "Code",
-    desc: "You write real TensorFlow.js in the browser. Not pseudocode — a real model you can run. The IDE checks your work automatically.",
-    sym: "{}",
-  },
-  {
-    id: "C4",
-    name: "Check",
-    desc: "A short checkpoint quiz gates your progress. You must pass to continue. Hints are available but each one costs 10 points.",
-    sym: "✓",
-  },
-  {
-    id: "C5",
-    name: "Connect",
-    desc: "The bridge is revisited. You preview the next lesson. Your DEEP SCAN signal classifier advances one detection stage.",
-    sym: "→",
-  },
-];
-
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
   visible: (i: number) => ({
@@ -201,7 +168,7 @@ export default function Home() {
                 href="#how-it-works"
                 className="inline-flex items-center gap-2 px-8 py-4 border-2 border-border text-text-primary font-bold text-sm tracking-wider uppercase hover:text-primary hover:border-primary/30 transition-all brutalist-hover"
               >
-                See how it works
+                See what you&apos;ll build
               </Link>
             </div>
 
@@ -404,35 +371,93 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ===== 5C LOOP ===== */}
+        {/* ===== WHAT YOU'LL BUILD ===== */}
         <section id="how-it-works" className="border-b border-border">
           <div className="px-10 md:px-20 pt-16 pb-12">
             <h2 className="text-3xl font-mono font-black tracking-tight mb-3">
-              The 5C Learning Loop
+              What You&apos;ll Build
             </h2>
             <p className="text-[15px] text-text-muted leading-relaxed max-w-[480px]">
-              Every lesson follows the same five-step structure. You always know
-              where you are and what comes next.
+              By Module 11, you&apos;ll have a real-time anomaly detection
+              system — trained, tested, and deployed entirely in the browser.
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-5 border-t border-border">
-            {loop5C.map((s, i) => (
-              <div
-                key={i}
-                className="px-9 pt-12 pb-14"
-                style={{
-                  borderRight: i < 4 ? "1px solid var(--tc-border)" : "none",
-                }}
-              >
-                <div className="text-[28px] mb-5 leading-none">{s.sym}</div>
-                <div className="font-mono text-[11px] text-primary font-bold tracking-wider mb-3">
-                  {s.id} — {s.name}
-                </div>
-                <p className="text-sm text-text-muted leading-relaxed">
-                  {s.desc}
-                </p>
+          <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr] border-t border-border">
+            {/* Left: Project showcase */}
+            <div className="px-10 md:px-14 py-12 border-b md:border-b-0 md:border-r border-border">
+              <div className="font-mono text-[9px] text-primary tracking-[0.15em] mb-6">
+                // DEEP SCAN — ANOMALY DETECTOR
               </div>
-            ))}
+              {/* Code mockup */}
+              <div className="bg-code-bg border border-border p-5 mb-6">
+                <div className="font-mono text-[10px] text-text-muted mb-3 flex items-center gap-2">
+                  <span className="w-2 h-2 bg-primary opacity-60 inline-block" />
+                  deep-scan.ts
+                </div>
+                <pre className="font-mono text-[12px] leading-relaxed text-text-primary overflow-x-auto">
+                  <code>
+                    <span className="text-primary">const</span> model ={" "}
+                    <span className="text-primary">await</span>{" "}
+                    tf.loadLayersModel(
+                    <span style={{ color: "var(--tc-tier-intuition)" }}>
+                      &apos;/deep-scan/model.json&apos;
+                    </span>
+                    );{"\n\n"}
+                    <span className="text-text-muted">
+                      // Real-time signal classification
+                    </span>
+                    {"\n"}
+                    <span className="text-primary">const</span> prediction =
+                    model.predict(signalTensor);{"\n"}
+                    <span className="text-primary">const</span> isAnomaly =
+                    prediction.dataSync()[0]{" "}
+                    <span style={{ color: "var(--tc-tier-structural)" }}>
+                      &gt;
+                    </span>{" "}
+                    THRESHOLD;
+                  </code>
+                </pre>
+              </div>
+              {/* Status indicator */}
+              <div className="flex items-center gap-3 font-mono text-[11px]">
+                <span className="w-2 h-2 bg-primary inline-block animate-pulse" />
+                <span className="text-primary">LIVE</span>
+                <span className="text-text-muted">
+                  — runs at 60fps in your browser
+                </span>
+              </div>
+            </div>
+
+            {/* Right: Capabilities */}
+            <div className="px-10 md:px-14 py-12 flex flex-col justify-center gap-8">
+              {[
+                {
+                  label: "Train",
+                  desc: "Build and train a neural network from scratch using TensorFlow.js. No Python, no backend, no GPU required.",
+                },
+                {
+                  label: "Detect",
+                  desc: "Classify real-time signal data as normal or anomalous using your own trained LSTM autoencoder.",
+                },
+                {
+                  label: "Deploy",
+                  desc: "Ship a production-ready model that runs entirely client-side. Inference at 60fps via WebGL acceleration.",
+                },
+                {
+                  label: "Own it",
+                  desc: "Every line of code is yours. Auto-commit to GitHub. Add it to your portfolio. Show it in interviews.",
+                },
+              ].map((item) => (
+                <div key={item.label}>
+                  <div className="font-mono text-[11px] text-primary font-bold tracking-wider mb-2">
+                    {item.label}
+                  </div>
+                  <p className="text-sm text-text-muted leading-relaxed">
+                    {item.desc}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
