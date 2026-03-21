@@ -72,6 +72,7 @@ export const BRIDGES: Bridge[] = [
       },
       vanilla: {
         feCode: `function Card(props) {\n  el.textContent = props.title;\n}`,
+        feConcept: "Function parameters",
       },
     },
   },
