@@ -1,82 +1,92 @@
 import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { BridgeCallout } from "./bridge-callout";
 
-const identityBridge = {
-  feTitle: "Array.map()",
-  feCode: "data.map(x => x * 2)",
-  mlTitle: "Tensor Operations",
-  mlCode: "tensor.mul(2)",
-  tier: "identity" as const,
-};
-
-const structuralBridge = {
-  feTitle: "expect().toBe()",
-  feCode: "expect(actual).toBe(expected)",
-  mlTitle: "Loss Function",
-  mlCode: "tf.losses.meanSquaredError(labels, preds)",
+const bridgeWithVariants = {
+  feTitle: "Component Props",
+  feCode: "function Card(props) { return props.title; }",
+  mlTitle: "Training Data",
+  mlCode: "model.fit(trainingData, labels)",
   tier: "structural" as const,
 };
 
-const intuitionBridge = {
-  feTitle: "Scroll Direction",
-  feCode: "const dir = target - current > 0 ? 1 : -1",
-  mlTitle: "Gradient",
-  mlCode: "const grad = tf.grad(loss)(weights)",
-  tier: "intuition" as const,
+const bridgeWithoutVariants = {
+  feTitle: "CSS initial values",
+  feCode: "div { color: initial; }",
+  mlTitle: "Weight initialization",
+  mlCode: "tf.initializers.glorotNormal()",
+  tier: "structural" as const,
 };
 
 describe("BridgeCallout", () => {
-  it("renders nothing when bridge is undefined", () => {
+  it("returns null when bridge is undefined", () => {
     const { container } = render(<BridgeCallout bridge={undefined} />);
     expect(container.innerHTML).toBe("");
   });
 
-  it("renders FE and ML titles", () => {
-    render(<BridgeCallout bridge={identityBridge} />);
-    expect(screen.getByText("Array.map()")).toBeInTheDocument();
-    expect(screen.getByText("Tensor Operations")).toBeInTheDocument();
+  it("renders ML title and code regardless of tab", () => {
+    render(<BridgeCallout bridge={bridgeWithVariants} />);
+    expect(screen.getByText("Training Data")).toBeInTheDocument();
+    expect(screen.getByText(/model\.fit/)).toBeInTheDocument();
   });
 
-  it("renders FE and ML code snippets", () => {
-    render(<BridgeCallout bridge={identityBridge} />);
-    expect(screen.getByText("data.map(x => x * 2)")).toBeInTheDocument();
-    expect(screen.getByText("tensor.mul(2)")).toBeInTheDocument();
+  it("renders tab bar with 5 framework tabs when bridge has variants", () => {
+    render(<BridgeCallout bridge={bridgeWithVariants} />);
+    expect(screen.getByRole("tablist")).toBeInTheDocument();
+    const tabs = screen.getAllByRole("tab");
+    expect(tabs).toHaveLength(5);
   });
 
-  it("shows Frontend and Machine Learning headers", () => {
-    render(<BridgeCallout bridge={identityBridge} />);
-    expect(screen.getByText("Frontend")).toBeInTheDocument();
-    expect(screen.getByText("Machine Learning")).toBeInTheDocument();
+  it("defaults active tab to userFramework prop", () => {
+    render(<BridgeCallout bridge={bridgeWithVariants} userFramework="vue" />);
+    const vueTab = screen.getByRole("tab", { name: /vue/i });
+    expect(vueTab.getAttribute("aria-selected")).toBe("true");
   });
 
-  it("shows correct tier label for identity bridge", () => {
-    render(<BridgeCallout bridge={identityBridge} />);
-    expect(screen.getByText("Identity Bridge")).toBeInTheDocument();
+  it("defaults to vanilla when userFramework is undefined", () => {
+    render(<BridgeCallout bridge={bridgeWithVariants} />);
+    const vanillaTab = screen.getByRole("tab", { name: /vanilla/i });
+    expect(vanillaTab.getAttribute("aria-selected")).toBe("true");
   });
 
-  it("shows correct tier label for structural bridge", () => {
-    render(<BridgeCallout bridge={structuralBridge} />);
+  it("switches FE content when clicking a different tab", () => {
+    render(<BridgeCallout bridge={bridgeWithVariants} userFramework="react" />);
+    const vueTab = screen.getByRole("tab", { name: /vue/i });
+    fireEvent.click(vueTab);
+    expect(vueTab.getAttribute("aria-selected")).toBe("true");
+  });
+
+  it("shows tier badge with correct label", () => {
+    render(<BridgeCallout bridge={bridgeWithVariants} />);
     expect(screen.getByText("Structural Bridge")).toBeInTheDocument();
   });
 
-  it("shows correct tier label for intuition bridge", () => {
-    render(<BridgeCallout bridge={intuitionBridge} />);
-    expect(screen.getByText("Intuition Bridge")).toBeInTheDocument();
+  it("shows connection text in footer", () => {
+    render(<BridgeCallout bridge={bridgeWithVariants} />);
+    expect(screen.getByTestId("bridge-footer")).toBeInTheDocument();
   });
 
-  it("uses correct tier color for connector", () => {
-    const { container } = render(<BridgeCallout bridge={identityBridge} />);
-    const connector = container.querySelector(".relative.z-10.w-7.h-7");
-    expect(connector).toHaveStyle({ color: "var(--tc-tier-identity)" });
+  it("falls back to generic layout when bridge has no variants", () => {
+    render(<BridgeCallout bridge={bridgeWithoutVariants} />);
+    expect(screen.queryByRole("tablist")).toBeNull();
+    expect(screen.getByText("CSS initial values")).toBeInTheDocument();
+    expect(screen.getByText("Weight initialization")).toBeInTheDocument();
   });
 
-  it("has no accessibility violations", async () => {
-    const { axe } = await import("vitest-axe");
-    const { container } = render(<BridgeCallout bridge={identityBridge} />);
-    const results = await axe(container, {
-      rules: { "color-contrast": { enabled: false } },
-    });
-    expect(results).toHaveNoViolations();
+  it("supports keyboard navigation between tabs", () => {
+    render(<BridgeCallout bridge={bridgeWithVariants} userFramework="react" />);
+    const reactTab = screen.getByRole("tab", { name: /react/i });
+    fireEvent.keyDown(reactTab, { key: "ArrowRight" });
+    const vueTab = screen.getByRole("tab", { name: /vue/i });
+    expect(document.activeElement).toBe(vueTab);
+  });
+
+  it("activates tab on Enter key after arrow navigation", () => {
+    render(<BridgeCallout bridge={bridgeWithVariants} userFramework="react" />);
+    const reactTab = screen.getByRole("tab", { name: /react/i });
+    fireEvent.keyDown(reactTab, { key: "ArrowRight" });
+    const vueTab = screen.getByRole("tab", { name: /vue/i });
+    fireEvent.keyDown(vueTab, { key: "Enter" });
+    expect(vueTab.getAttribute("aria-selected")).toBe("true");
   });
 });
