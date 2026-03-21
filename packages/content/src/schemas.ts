@@ -49,6 +49,21 @@ export const lessonSchema = z.object({
 
   // Keywords for search/tagging
   keywords: z.array(z.string()).default([]),
+
+  // Skill Genome: which axes this lesson affects (optional, for event tracking)
+  skillAxes: z
+    .array(
+      z.enum([
+        "data_prep",
+        "model_arch",
+        "training",
+        "evaluation",
+        "deployment",
+        "fe_integration",
+      ]),
+    )
+    .optional()
+    .default([]),
 });
 
 export const exerciseSchema = z.object({
@@ -61,6 +76,18 @@ export const exerciseSchema = z.object({
   testCode: z.string().min(1),
   estimatedMinutes: z.number().int().positive(),
   difficulty: z.enum(["beginner", "intermediate", "advanced"]),
+
+  // Skill Genome: primary axis this exercise affects (optional, for event tracking)
+  skillAxis: z
+    .enum([
+      "data_prep",
+      "model_arch",
+      "training",
+      "evaluation",
+      "deployment",
+      "fe_integration",
+    ])
+    .optional(),
 });
 
 export const moduleSchema = z.object({

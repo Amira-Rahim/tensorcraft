@@ -88,7 +88,9 @@ export default async function LessonPage({ params }: Props) {
   }
 
   // Compute which lessons are completed to enforce sequential locking
+  // Also fetch user's framework preference for adaptive bridges
   const completedLessonSlugs = new Set<string>();
+  let userFramework: string | undefined;
   {
     const supabase = await getSupabaseServerClient();
     const {
@@ -101,6 +103,14 @@ export default async function LessonPage({ params }: Props) {
           completedLessonSlugs.add(p.lesson_id);
         }
       }
+
+      // Fetch framework preference for adaptive bridges
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("fe_framework")
+        .eq("id", user.id)
+        .single();
+      userFramework = profile?.fe_framework ?? undefined;
     }
   }
 
@@ -299,6 +309,11 @@ export default async function LessonPage({ params }: Props) {
                   exercises={exercises}
                   themeId={slug}
                   lessonId={lessonSlug}
+                  userFramework={
+                    userFramework as
+                      | import("@tensorcraft/shared").Framework
+                      | undefined
+                  }
                 />
               </section>
 

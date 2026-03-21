@@ -7,3 +7,4 @@ solutionCode: "const a = tf.tensor([1, 2, 3]);\nconst b = tf.tensor([4, 5, 6]);\
 testCode: "describe('Add', () => { it('produces correct sum', () => { expect(Array.from(result.dataSync())).toEqual([5, 7, 9]); }); });"
 estimatedMinutes: 8
 difficulty: intermediate
+skillAxis: data_prep

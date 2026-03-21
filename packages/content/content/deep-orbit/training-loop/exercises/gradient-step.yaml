@@ -7,3 +7,4 @@ solutionCode: "const weight = tf.variable(tf.scalar(5.0));\nconst learningRate =
 testCode: "describe('Gradient Step', () => { it('weight is defined', () => { expect(weight).toBeDefined(); }); it('weight decreased', () => { const val = weight.dataSync()[0]; expect(val).toBeCloseTo(4.0, 4); }); });"
 estimatedMinutes: 10
 difficulty: beginner
+skillAxis: training

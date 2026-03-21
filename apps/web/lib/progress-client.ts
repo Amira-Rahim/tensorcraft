@@ -177,6 +177,34 @@ export async function getLessonStatus(themeId: string, lessonId: string) {
   return data;
 }
 
+/** Emit a skill event for the Skill Genome (fire-and-forget) */
+export function emitSkillEvent(
+  themeId: string,
+  eventType: string,
+  skillAxis: string | undefined,
+  metadata: Record<string, unknown> = {},
+) {
+  // Skip if no skill axis is defined (unannotated content)
+  if (!skillAxis) return;
+
+  const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+
+  // Fire-and-forget — don't await, don't block UI
+  fetch(`${apiBase}/api/skill-events`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({
+      themeId,
+      eventType,
+      skillAxis,
+      metadata,
+    }),
+  }).catch(() => {
+    // Silently fail — skill events are non-critical
+  });
+}
+
 /** Check how many exercises in a lesson have a passing attempt */
 export async function getLessonExerciseStatus(
   themeId: string,

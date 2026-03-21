@@ -7,3 +7,4 @@ solutionCode: "const model = tf.sequential();\nmodel.add(tf.layers.dense({ units
 testCode: "describe('Evaluation', () => { it('evalResult exists', () => { expect(evalResult).toBeDefined(); }); it('returns loss and metric', () => { expect(Array.isArray(evalResult)).toBe(true); expect(evalResult.length).toBe(2); }); it('prediction exists', () => { expect(prediction).toBeDefined(); }); it('prediction has correct shape', () => { expect(prediction.shape).toEqual([1, 1]); }); });"
 estimatedMinutes: 15
 difficulty: advanced
+skillAxis: evaluation

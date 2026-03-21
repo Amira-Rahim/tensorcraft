@@ -48,6 +48,21 @@ const lessons = defineCollection({
 
     keywords: s.array(s.string()).default([]),
 
+    // Skill Genome: which axes this lesson affects (optional, for event tracking)
+    skillAxes: s
+      .array(
+        s.enum([
+          "data_prep",
+          "model_arch",
+          "training",
+          "evaluation",
+          "deployment",
+          "fe_integration",
+        ]),
+      )
+      .optional()
+      .default([]),
+
     // Velite-specific: compiled MDX body and metadata
     body: s.mdx(),
     metadata: s.metadata(),
@@ -67,6 +82,18 @@ const exercises = defineCollection({
     testCode: s.string().min(1),
     estimatedMinutes: s.number().int().positive(),
     difficulty: s.enum(["beginner", "intermediate", "advanced"]),
+
+    // Skill Genome: primary axis this exercise affects (optional, for event tracking)
+    skillAxis: s
+      .enum([
+        "data_prep",
+        "model_arch",
+        "training",
+        "evaluation",
+        "deployment",
+        "fe_integration",
+      ])
+      .optional(),
   }),
 });
 

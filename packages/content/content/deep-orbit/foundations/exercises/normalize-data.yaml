@@ -7,3 +7,4 @@ solutionCode: "const data = tf.tensor([10, 20, 30, 40, 50]);\nconst normalized =
 testCode: "describe('Normalize', () => { it('has mean ~0', () => { expect(Math.abs(normalized.mean().dataSync()[0])).toBeLessThan(0.01); }); });"
 estimatedMinutes: 12
 difficulty: advanced
+skillAxis: data_prep

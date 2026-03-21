@@ -22,9 +22,12 @@ import {
 } from "@/app/components/mdx";
 import type { ExerciseData, ExerciseSubmitResult } from "@tensorcraft/ui";
 
+import type { Framework } from "@tensorcraft/shared";
+
 interface LessonContentProps {
   lesson: {
     body: string;
+    skillAxes?: string[];
     hints?: Array<{
       level: "nudge" | "guidance" | "solution";
       content: string;
@@ -43,6 +46,7 @@ interface LessonContentProps {
   exercises?: ExerciseData[];
   themeId?: string;
   lessonId?: string;
+  userFramework?: Framework;
 }
 
 /** MDX components available in lesson content */
@@ -72,6 +76,7 @@ export function LessonContent({
   exercises = [],
   themeId,
   lessonId,
+  userFramework,
 }: LessonContentProps) {
   const exerciseMap = useMemo(() => {
     const map = new Map<string, ExerciseData>();
@@ -106,16 +111,25 @@ export function LessonContent({
     [themeId, lessonId],
   );
 
-  // Build MDX components with the onSubmit handler wired in
+  // Build MDX components with the onSubmit handler and framework wired in
   const components = useMemo(() => {
-    if (!themeId || !lessonId) return mdxComponents;
-    return {
+    const base = {
       ...mdxComponents,
+      BridgeCallout: (props: { bridge: unknown }) => (
+        <BridgeCallout
+          {...(props as { bridge: undefined })}
+          userFramework={userFramework}
+        />
+      ),
+    };
+    if (!themeId || !lessonId) return base;
+    return {
+      ...base,
       Exercise: (props: { slug: string }) => (
         <Exercise {...props} onSubmit={handleExerciseSubmit} />
       ),
     };
-  }, [themeId, lessonId, handleExerciseSubmit]);
+  }, [themeId, lessonId, handleExerciseSubmit, userFramework]);
 
   const Content = useMemo(() => {
     try {

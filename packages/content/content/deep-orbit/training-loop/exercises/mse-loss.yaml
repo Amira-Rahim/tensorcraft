@@ -7,3 +7,4 @@ solutionCode: "const predictions = tf.tensor([2.5, 0.0, 2.1, 1.3]);\nconst label
 testCode: "describe('MSE Loss', () => { it('produces a loss value', () => { expect(loss).toBeDefined(); }); it('is a scalar', () => { expect(loss.shape).toEqual([]); }); it('computes correct MSE', () => { const val = loss.dataSync()[0]; expect(val).toBeCloseTo(0.1475, 3); }); });"
 estimatedMinutes: 10
 difficulty: beginner
+skillAxis: training

@@ -1,0 +1,383 @@
+<h2>Onboarding: "Your Framework" Step</h2>
+<p class="subtitle">
+  Currently a plain radio list, same as every other step. How should we
+  differentiate it?
+</p>
+
+<div class="cards">
+  <!-- Option A: Icon Cards Grid -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div
+      class="card-image"
+      style="
+        background: #1c1c1c;
+        padding: 24px;
+        font-family: monospace;
+        min-height: 300px;
+      "
+    >
+      <div style="text-align: center; margin-bottom: 20px">
+        <div
+          style="
+            color: #6baa8a;
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 8px;
+          "
+        >
+          // PRIMARY TOOLKIT
+        </div>
+        <div
+          style="
+            color: #c8c8c8;
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 4px;
+          "
+        >
+          What's your primary framework?
+        </div>
+        <div style="color: #8a8a8a; font-size: 12px">
+          We'll tailor code examples and bridges to your stack.
+        </div>
+      </div>
+      <!-- Grid of framework cards -->
+      <div
+        style="
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 2px;
+          max-width: 420px;
+          margin: 0 auto;
+        "
+      >
+        <!-- React - selected -->
+        <div
+          style="
+            background: #252525;
+            border: 2px solid #6baa8a;
+            padding: 20px 12px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+          "
+        >
+          <div
+            style="
+              position: absolute;
+              top: 0;
+              left: 0;
+              right: 0;
+              height: 2px;
+              background: #6baa8a;
+            "
+          ></div>
+          <div style="font-size: 28px; margin-bottom: 8px">⚛</div>
+          <div style="color: #c8c8c8; font-size: 12px; font-weight: 600">
+            React
+          </div>
+          <div style="color: #8a8a8a; font-size: 9px; margin-top: 3px">
+            Hooks, JSX, Components
+          </div>
+        </div>
+        <!-- Vue -->
+        <div
+          style="
+            background: #252525;
+            border: 2px solid #2a2a2a;
+            padding: 20px 12px;
+            text-align: center;
+          "
+        >
+          <div style="font-size: 28px; margin-bottom: 8px; opacity: 0.6">◆</div>
+          <div style="color: #8a8a8a; font-size: 12px; font-weight: 600">
+            Vue
+          </div>
+          <div
+            style="
+              color: #8a8a8a;
+              font-size: 9px;
+              margin-top: 3px;
+              opacity: 0.6;
+            "
+          >
+            Composition API, SFC
+          </div>
+        </div>
+        <!-- Angular -->
+        <div
+          style="
+            background: #252525;
+            border: 2px solid #2a2a2a;
+            padding: 20px 12px;
+            text-align: center;
+          "
+        >
+          <div style="font-size: 28px; margin-bottom: 8px; opacity: 0.6">▲</div>
+          <div style="color: #8a8a8a; font-size: 12px; font-weight: 600">
+            Angular
+          </div>
+          <div
+            style="
+              color: #8a8a8a;
+              font-size: 9px;
+              margin-top: 3px;
+              opacity: 0.6;
+            "
+          >
+            Signals, DI, Services
+          </div>
+        </div>
+        <!-- Svelte -->
+        <div
+          style="
+            background: #252525;
+            border: 2px solid #2a2a2a;
+            padding: 20px 12px;
+            text-align: center;
+          "
+        >
+          <div style="font-size: 28px; margin-bottom: 8px; opacity: 0.6">◐</div>
+          <div style="color: #8a8a8a; font-size: 12px; font-weight: 600">
+            Svelte
+          </div>
+          <div
+            style="
+              color: #8a8a8a;
+              font-size: 9px;
+              margin-top: 3px;
+              opacity: 0.6;
+            "
+          >
+            Runes, Compiled
+          </div>
+        </div>
+        <!-- Vanilla -->
+        <div
+          style="
+            background: #252525;
+            border: 2px solid #2a2a2a;
+            padding: 20px 12px;
+            text-align: center;
+          "
+        >
+          <div style="font-size: 28px; margin-bottom: 8px; opacity: 0.6">
+            { }
+          </div>
+          <div style="color: #8a8a8a; font-size: 12px; font-weight: 600">
+            Vanilla JS
+          </div>
+          <div
+            style="
+              color: #8a8a8a;
+              font-size: 9px;
+              margin-top: 3px;
+              opacity: 0.6;
+            "
+          >
+            ES2024, Web APIs
+          </div>
+        </div>
+      </div>
+      <!-- Preview -->
+      <div
+        style="
+          margin-top: 16px;
+          max-width: 420px;
+          margin-left: auto;
+          margin-right: auto;
+          padding: 10px 14px;
+          background: #6baa8a10;
+          border: 1px solid #6baa8a30;
+          font-size: 10px;
+          color: #6baa8a;
+        "
+      >
+        ✓ Bridges will use React hooks, JSX, and component patterns
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A: Icon Cards Grid with Preview</h3>
+      <p>
+        3-column grid with framework icons, subtitles showing key APIs, and a
+        preview of what choosing this framework means. More visual, more
+        informative.
+      </p>
+    </div>
+  </div>
+
+  <!-- Option B: Code Preview Selector -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div
+      class="card-image"
+      style="
+        background: #1c1c1c;
+        padding: 24px;
+        font-family: monospace;
+        min-height: 300px;
+      "
+    >
+      <div style="text-align: center; margin-bottom: 20px">
+        <div
+          style="
+            color: #6baa8a;
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 8px;
+          "
+        >
+          // PRIMARY TOOLKIT
+        </div>
+        <div
+          style="
+            color: #c8c8c8;
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 4px;
+          "
+        >
+          What's your primary framework?
+        </div>
+        <div style="color: #8a8a8a; font-size: 12px">
+          Pick yours — we'll show you a bridge preview.
+        </div>
+      </div>
+      <!-- Selector + Preview layout -->
+      <div
+        style="
+          display: grid;
+          grid-template-columns: 180px 1fr;
+          gap: 2px;
+          max-width: 520px;
+          margin: 0 auto;
+        "
+      >
+        <!-- Left: framework list -->
+        <div style="display: flex; flex-direction: column; gap: 2px">
+          <div
+            style="
+              background: #6baa8a15;
+              border: 2px solid #6baa8a;
+              padding: 10px 14px;
+              display: flex;
+              align-items: center;
+              gap: 8px;
+            "
+          >
+            <span style="color: #6baa8a">⚛</span>
+            <span style="color: #c8c8c8; font-size: 12px; font-weight: 600"
+              >React</span
+            >
+          </div>
+          <div
+            style="
+              background: #252525;
+              border: 2px solid #2a2a2a;
+              padding: 10px 14px;
+              display: flex;
+              align-items: center;
+              gap: 8px;
+            "
+          >
+            <span style="color: #8a8a8a">◆</span>
+            <span style="color: #8a8a8a; font-size: 12px">Vue</span>
+          </div>
+          <div
+            style="
+              background: #252525;
+              border: 2px solid #2a2a2a;
+              padding: 10px 14px;
+              display: flex;
+              align-items: center;
+              gap: 8px;
+            "
+          >
+            <span style="color: #8a8a8a">▲</span>
+            <span style="color: #8a8a8a; font-size: 12px">Angular</span>
+          </div>
+          <div
+            style="
+              background: #252525;
+              border: 2px solid #2a2a2a;
+              padding: 10px 14px;
+              display: flex;
+              align-items: center;
+              gap: 8px;
+            "
+          >
+            <span style="color: #8a8a8a">◐</span>
+            <span style="color: #8a8a8a; font-size: 12px">Svelte</span>
+          </div>
+          <div
+            style="
+              background: #252525;
+              border: 2px solid #2a2a2a;
+              padding: 10px 14px;
+              display: flex;
+              align-items: center;
+              gap: 8px;
+            "
+          >
+            <span style="color: #8a8a8a">{ }</span>
+            <span style="color: #8a8a8a; font-size: 12px">Vanilla JS</span>
+          </div>
+        </div>
+        <!-- Right: live bridge preview -->
+        <div
+          style="background: #252525; border: 1px solid #2a2a2a; padding: 16px"
+        >
+          <div
+            style="
+              color: #8a8a8a;
+              font-size: 9px;
+              text-transform: uppercase;
+              letter-spacing: 0.15em;
+              margin-bottom: 10px;
+            "
+          >
+            // BRIDGE PREVIEW
+          </div>
+          <div
+            style="
+              color: #c8c8c8;
+              font-size: 11px;
+              margin-bottom: 6px;
+              font-weight: 600;
+            "
+          >
+            Training Data ⇄ Component Props
+          </div>
+          <div
+            style="
+              background: #161616;
+              border: 1px solid #2a2a2a;
+              padding: 10px;
+              font-size: 11px;
+              color: #6baa8a;
+              line-height: 1.6;
+              margin-bottom: 10px;
+            "
+          >
+            <span style="color: #7b68ee">function</span> Card({ title }) {<br />
+            &nbsp;&nbsp;<span style="color: #7b68ee">return</span>
+            &lt;div&gt;{title}&lt;/div&gt;;<br />
+            }
+          </div>
+          <div style="font-size: 9px; color: #8a8a8a">
+            This is how bridges will look in your lessons →
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B: Side-by-Side Selector + Live Bridge Preview</h3>
+      <p>
+        Framework list on left, live bridge preview on right. Selecting a
+        framework immediately shows what a bridge looks like in that language.
+        "Try before you commit."
+      </p>
+    </div>
+  </div>
+</div>

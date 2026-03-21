@@ -12,6 +12,7 @@ import { profiles } from "./routes/profiles";
 import { exerciseAttempts } from "./routes/exercise-attempts";
 import { admin } from "./routes/admin";
 import { github } from "./routes/github";
+import { skillEvents } from "./routes/skill-events";
 // V1: import { newsletter } from "./routes/newsletter";
 
 const app = new Hono();
@@ -55,6 +56,7 @@ app.route("/api/profiles", profiles);
 app.route("/api/exercise-attempts", exerciseAttempts);
 app.route("/api/admin", admin);
 app.route("/api/github", github);
+app.route("/api/skill-events", skillEvents);
 // V1: app.route("/api/newsletter", newsletter);
 
 // Root

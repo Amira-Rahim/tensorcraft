@@ -22,4 +22,10 @@ export {
   BRIDGE_TIER_LABELS,
   BRIDGE_CATEGORY_LABELS,
 } from "./bridges";
-export type { Bridge, BridgeTier, BridgeCategory } from "./bridges";
+export type {
+  Bridge,
+  BridgeTier,
+  BridgeCategory,
+  Framework,
+  BridgeVariant,
+} from "./bridges";
