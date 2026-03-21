@@ -11,6 +11,7 @@ const STEPS = [
   "Welcome",
   "Your Background",
   "Your Goal",
+  "Your Framework",
   "Choose Theme",
   "Ready",
 ];
@@ -30,6 +31,14 @@ const GOALS = [
   "Research & experiments",
   "Just curious",
 ];
+
+const FRAMEWORKS = [
+  { id: "react", label: "React" },
+  { id: "vue", label: "Vue" },
+  { id: "angular", label: "Angular" },
+  { id: "svelte", label: "Svelte" },
+  { id: "vanilla", label: "Vanilla JS" },
+] as const;
 
 const ONBOARDING_THEMES = themeSlugs.map((slug) => ({
   id: slug,
@@ -54,6 +63,7 @@ export default function OnboardingPage() {
   const [step, setStep] = useState(0);
   const [bg, setBg] = useState<string | null>(null);
   const [goal, setGoal] = useState<string | null>(null);
+  const [framework, setFramework] = useState<string | null>(null);
   const [selectedTheme, setSelectedTheme] = useState("deep-orbit");
   const [saving, setSaving] = useState(false);
 
@@ -74,12 +84,15 @@ export default function OnboardingPage() {
         .update({
           onboarding_completed: true,
           preferred_theme_id: selectedTheme,
+          fe_background: bg,
+          learning_goal: goal,
+          fe_framework: framework,
         })
         .eq("id", user.id);
     }
 
     router.push(`/themes/${selectedTheme}`);
-  }, [selectedTheme, router]);
+  }, [selectedTheme, bg, goal, framework, router]);
 
   return (
     <div className="min-h-screen bg-surface flex flex-col items-center px-6 py-16 relative overflow-hidden">
@@ -249,8 +262,96 @@ export default function OnboardingPage() {
           </div>
         )}
 
-        {/* Step 3: Choose Theme */}
+        {/* Step 3: Framework */}
         {step === 3 && (
+          <div className="flex flex-col items-center text-center w-full animate-fade-up">
+            <div className="font-mono text-[9px] text-primary tracking-[0.15em] mb-3.5">
+              // PRIMARY TOOLKIT
+            </div>
+            <h2 className="font-mono text-3xl font-bold text-text-primary tracking-tight mb-2.5">
+              What&apos;s your primary framework?
+            </h2>
+            <p className="text-sm text-text-muted mb-10">
+              Pick yours — we&apos;ll show you a bridge preview.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-[180px_1fr] gap-0.5 w-full max-w-140 text-left">
+              {/* Framework list */}
+              <div className="flex flex-col gap-0.5">
+                {FRAMEWORKS.map((f) => (
+                  <button
+                    key={f.id}
+                    type="button"
+                    onClick={() => setFramework(f.id)}
+                    className={`flex items-center gap-3 px-5 py-3.5 text-left transition-all border-2 ${
+                      framework === f.id
+                        ? "bg-primary/10 border-primary"
+                        : "bg-surface border-border"
+                    }`}
+                  >
+                    <span
+                      className={`font-mono text-base w-6 text-center ${framework === f.id ? "text-primary" : "text-text-muted"}`}
+                    >
+                      {f.id === "react"
+                        ? "⚛"
+                        : f.id === "vue"
+                          ? "◆"
+                          : f.id === "angular"
+                            ? "▲"
+                            : f.id === "svelte"
+                              ? "◐"
+                              : "{ }"}
+                    </span>
+                    <span
+                      className={`font-mono text-xs ${framework === f.id ? "text-text-primary" : "text-text-muted"}`}
+                    >
+                      {f.label}
+                    </span>
+                  </button>
+                ))}
+              </div>
+              {/* Bridge preview */}
+              <div className="bg-surface-raised border border-border p-4">
+                {framework ? (
+                  (() => {
+                    const previewBridge = BRIDGES.find((b) => b.id === 1);
+                    const variant =
+                      previewBridge?.variants?.[
+                        framework as keyof typeof previewBridge.variants
+                      ];
+                    return (
+                      <>
+                        <div className="font-mono text-[9px] uppercase tracking-[0.15em] text-text-muted mb-3">
+                          // BRIDGE PREVIEW
+                        </div>
+                        <div className="font-mono text-[11px] font-semibold text-text-primary mb-2">
+                          {previewBridge?.mlConcept} ⇄{" "}
+                          {variant?.feConcept || previewBridge?.feConcept}
+                        </div>
+                        <div className="bg-code-bg border border-border p-3 font-mono text-[11px] text-primary leading-relaxed whitespace-pre-wrap mb-3">
+                          {variant?.feCode || previewBridge?.connection}
+                        </div>
+                        <div className="font-mono text-[9px] text-text-muted">
+                          This is how bridges will look in your lessons →
+                        </div>
+                      </>
+                    );
+                  })()
+                ) : (
+                  <div className="flex items-center justify-center h-full min-h-40">
+                    <p className="font-mono text-[11px] text-text-muted text-center">
+                      Select a framework to preview
+                      <br />
+                      your bridges
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Step 4: Choose Theme */}
+        {step === 4 && (
           <div className="flex flex-col items-center text-center w-full animate-fade-up">
             <div className="font-mono text-[9px] text-primary tracking-[0.15em] mb-3.5">
               // CHOOSE YOUR WORLD
@@ -312,8 +413,8 @@ export default function OnboardingPage() {
           </div>
         )}
 
-        {/* Step 4: Ready */}
-        {step === 4 && (
+        {/* Step 5: Ready */}
+        {step === 5 && (
           <div className="flex flex-col items-center text-center w-full animate-fade-up">
             <div className="font-mono text-[9px] text-primary tracking-[0.15em] mb-3.5">
               // LAUNCH SEQUENCE
@@ -336,6 +437,11 @@ export default function OnboardingPage() {
                 ["Theme", selectedThemeData.name],
                 ["Background", bg || "Not set"],
                 ["Goal", goal || "Not set"],
+                [
+                  "Framework",
+                  FRAMEWORKS.find((f) => f.id === framework)?.label ||
+                    "Not set",
+                ],
                 ["Start", "M01 · L01 · First Contact"],
               ].map(([k, v]) => (
                 <div key={k} className="flex gap-4 mb-2">
@@ -382,7 +488,7 @@ export default function OnboardingPage() {
           )}
         </div>
 
-        {step === 4 && (
+        {step === 5 && (
           <p className="text-[13px] text-text-muted opacity-70 font-mono">
             You can change your theme anytime in Settings
           </p>
