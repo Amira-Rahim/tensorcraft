@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { SkillGenome } from "./skill-genome";
 
 /* ── Design tokens (use CSS vars from theme system) ── */
 const LIME = "var(--tc-primary)";
@@ -72,6 +73,11 @@ export interface DashboardProps {
   resumeUrl: string | null;
   totalModules: number;
   completedModules: number;
+  genomeData: Array<{
+    skill_axis: string;
+    proficiency: number;
+    velocity: number;
+  }>;
 }
 
 /* ── Loss curve data (visualisation) ── */
@@ -121,6 +127,7 @@ export function DashboardView(props: DashboardProps) {
     resumeUrl,
     totalModules,
     completedModules,
+    genomeData,
   } = props;
 
   const lossCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -966,6 +973,9 @@ export function DashboardView(props: DashboardProps) {
               </div>
             </div>
           </div>
+
+          {/* Skill Genome */}
+          <SkillGenome data={genomeData} />
 
           {/* Recent activity */}
           {recentActivity.length > 0 && (

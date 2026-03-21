@@ -70,6 +70,13 @@ export default async function DashboardPage() {
 
   if (!activeTheme) redirect("/themes");
 
+  // Fetch skill genome data for the user's active theme
+  const { data: genomeData } = await supabase
+    .from("skill_genome")
+    .select("skill_axis, proficiency, velocity")
+    .eq("user_id", user.id)
+    .eq("theme_id", activeTheme.slug);
+
   // Build module map
   const contentModules = getModules(activeTheme.slug);
   const completedLessonKeys = new Set(
@@ -300,6 +307,7 @@ export default async function DashboardPage() {
       resumeUrl={resumeUrl}
       totalModules={contentModules.length}
       completedModules={completedModules}
+      genomeData={genomeData ?? []}
     />
   );
 }
