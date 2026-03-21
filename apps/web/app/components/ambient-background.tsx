@@ -1,127 +1,156 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
+
+/* ── Particle types ─────────────────────────────────────── */
+
+interface Particle {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  r: number;
+  alpha: number;
+  life: number;
+  maxLife: number;
+  col: [number, number, number];
+}
 
 const PALETTES: [number, number, number][] = [
-  [107, 170, 138],
-  [112, 150, 176],
-  [168, 144, 96],
+  [107, 170, 138], // primary teal
+  [112, 150, 176], // blue-grey
+  [168, 144, 96], // warm amber
 ];
 
+function spawn(w: number, h: number): Particle {
+  const life = 250 + Math.random() * 400;
+  const col = PALETTES[Math.floor(Math.random() * PALETTES.length)];
+  return {
+    x: Math.random() * w,
+    y: Math.random() * h,
+    vx: (Math.random() - 0.5) * 0.3,
+    vy: -0.12 - Math.random() * 0.25,
+    r: Math.random() < 0.18 ? 2.0 : 0.9,
+    alpha: 0.3 + Math.random() * 0.5,
+    life,
+    maxLife: life,
+    col,
+  };
+}
+
+/* ── Component ──────────────────────────────────────────── */
+
 /**
- * ParticleField — canvas-based flow field background.
- * Matches the prototype's ParticleField component exactly.
+ * Transparent particle atmosphere background.
+ * Uses clearRect so particles blend naturally over the page.
+ * Matches the AtmosphereCanvas system from Five Worlds.
  */
 export function AmbientBackground({ count = 200 }: { count?: number }) {
   const ref = useRef<HTMLCanvasElement>(null);
+  const particles = useRef<Particle[]>([]);
+  const frame = useRef(0);
+  const timeRef = useRef(0);
 
-  useEffect(() => {
-    const canvas = ref.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d")!;
-    let raf: number;
+  const draw = useCallback(() => {
+    const c = ref.current;
+    if (!c) return;
+    const ctx = c.getContext("2d");
+    if (!ctx) return;
+    const w = c.width;
+    const h = c.height;
+    timeRef.current += 0.003;
+    const t = timeRef.current;
 
-    type Dot = {
-      x: number;
-      y: number;
-      vx: number;
-      vy: number;
-      life: number;
-      maxLife: number;
-      col: [number, number, number];
-      spd: number;
-    };
+    // Fully transparent clear — blends with page background
+    ctx.clearRect(0, 0, w, h);
 
-    let W = 0;
-    let H = 0;
-    const dots: Dot[] = [];
+    const ps = particles.current;
 
-    const makeDot = (w: number, h: number): Dot => ({
-      x: Math.random() * w,
-      y: Math.random() * h,
-      vx: 0,
-      vy: 0,
-      life: Math.random(),
-      maxLife: 0.65 + Math.random() * 0.35,
-      col: PALETTES[Math.floor(Math.random() * PALETTES.length)],
-      spd: 0.18 + Math.random() * 0.25,
-    });
+    for (let i = ps.length - 1; i >= 0; i--) {
+      const p = ps[i];
 
-    const resize = () => {
-      W = canvas.offsetWidth;
-      H = canvas.offsetHeight;
-      canvas.width = W;
-      canvas.height = H;
-      dots.length = 0;
-      for (let i = 0; i < count; i++) dots.push(makeDot(W, H));
-    };
-    resize();
-    window.addEventListener("resize", resize);
+      // Flow field influence (organic movement)
+      const nx = p.x / w;
+      const ny = p.y / h;
+      const angle =
+        Math.sin(nx * 3.1 + t) * Math.cos(ny * 2.4 - t * 0.7) * Math.PI * 2 +
+        Math.sin(ny * 2.7 + t * 1.1) * Math.PI;
+      p.vx = p.vx * 0.96 + Math.cos(angle) * 0.04;
+      p.vy = p.vy * 0.96 + Math.sin(angle) * 0.04;
 
-    let t = 0;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.life--;
 
-    const tick = () => {
-      t += 0.003;
-      ctx.fillStyle = "rgba(28,28,28,0.13)";
-      ctx.fillRect(0, 0, W, H);
+      const lr = p.life / p.maxLife;
+      const fade =
+        lr > 0.85 ? (1 - lr) * (1 / 0.15) : lr > 0.15 ? 1 : lr * (1 / 0.15);
+      const alpha = p.alpha * fade * 1.3;
 
-      for (let i = 0; i < dots.length; i++) {
-        const p = dots[i];
-        const nx = p.x / W;
-        const ny = p.y / H;
-        const angle =
-          Math.sin(nx * 3.1 + t) * Math.cos(ny * 2.4 - t * 0.7) * Math.PI * 2 +
-          Math.sin(ny * 2.7 + t * 1.1) * Math.PI;
-
-        p.vx = p.vx * 0.92 + Math.cos(angle) * 0.15;
-        p.vy = p.vy * 0.92 + Math.sin(angle) * 0.15;
-        p.x += p.vx * p.spd;
-        p.y += p.vy * p.spd;
-        p.life += 0.004;
-
-        if (p.life > p.maxLife || p.x < 0 || p.x > W || p.y < 0 || p.y > H) {
-          dots[i] = makeDot(W, H);
-          continue;
-        }
-
-        const env =
-          p.life < 0.15
-            ? p.life / 0.15
-            : p.life > p.maxLife - 0.15
-              ? (p.maxLife - p.life) / 0.15
-              : 1;
-        const alpha =
-          env * (0.1 + Math.sin((p.life * Math.PI) / p.maxLife) * 0.12);
-        const [r, g, b] = p.col;
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, 1.5, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
-        ctx.fill();
+      if (
+        p.life <= 0 ||
+        p.x < -20 ||
+        p.x > w + 20 ||
+        p.y < -20 ||
+        p.y > h + 20
+      ) {
+        ps[i] = spawn(w, h);
+        continue;
       }
 
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
+      const [r, g, b] = p.col;
 
+      // Main dot
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
+      ctx.fill();
+
+      // Soft glow halo on larger particles
+      if (p.r > 1.2) {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r * 4, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${r},${g},${b},${alpha * 0.1})`;
+        ctx.fill();
+      }
+    }
+
+    frame.current = requestAnimationFrame(draw);
+  }, []);
+
+  useEffect(() => {
+    const c = ref.current;
+    if (!c) return;
+
+    const resize = () => {
+      const parent = c.parentElement;
+      if (!parent) return;
+      const rect = parent.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio, 2);
+      c.width = rect.width * dpr;
+      c.height = rect.height * dpr;
+      c.style.width = rect.width + "px";
+      c.style.height = rect.height + "px";
+      particles.current = Array.from({ length: count }, () =>
+        spawn(c.width, c.height),
+      );
+    };
+
+    resize();
+    frame.current = requestAnimationFrame(draw);
+    window.addEventListener("resize", resize);
     return () => {
-      cancelAnimationFrame(raf);
+      cancelAnimationFrame(frame.current);
       window.removeEventListener("resize", resize);
     };
-  }, [count]);
+  }, [count, draw]);
 
   return (
     <canvas
       ref={ref}
       aria-hidden="true"
-      style={{
-        position: "absolute",
-        inset: 0,
-        width: "100%",
-        height: "100%",
-        zIndex: 0,
-        pointerEvents: "none",
-      }}
+      className="absolute inset-0 pointer-events-none"
+      style={{ zIndex: 0 }}
     />
   );
 }
