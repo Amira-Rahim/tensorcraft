@@ -102,6 +102,7 @@ export const BRIDGES: Bridge[] = [
       },
       vanilla: {
         feCode: `let count = 0;\nfunction setState(n) {\n  count = n;\n  render();\n}`,
+        feConcept: "Mutable variable",
       },
     },
   },
@@ -160,6 +161,7 @@ export const BRIDGES: Bridge[] = [
       },
       vanilla: {
         feCode: `// Manual DOM patching\nfunction reconcile(oldNode, newNode) {\n  if (oldNode.text !== newNode.text)\n    oldNode.el.textContent = newNode.text;\n}`,
+        feConcept: "DOM patching",
       },
     },
   },
@@ -265,6 +267,7 @@ export const BRIDGES: Bridge[] = [
       },
       vanilla: {
         feCode: `// Hardcoded to specific data structure\nfunction UserCard(user) {\n  el.textContent = user.name.first + ' ' + user.name.last;\n  // Fails if user.name is a string\n}`,
+        feConcept: "Overspecialized function",
       },
     },
   },
@@ -454,6 +457,7 @@ export const BRIDGES: Bridge[] = [
       },
       vanilla: {
         feCode: `window.addEventListener('error', (e) => {\n  // Error bubbles up the DOM tree\n});`,
+        feConcept: "Event bubbling (error propagation)",
       },
     },
   },
@@ -480,6 +484,7 @@ export const BRIDGES: Bridge[] = [
       },
       vanilla: {
         feCode: `// Server renders HTML in one pass\nconst html = renderToString(data);`,
+        feConcept: "Single-pass rendering",
       },
     },
   },
@@ -558,6 +563,7 @@ export const BRIDGES: Bridge[] = [
       },
       vanilla: {
         feCode: `// Categorize errors by type\nconst errorMatrix = {\n  render: 0, network: 0, auth: 0,\n};`,
+        feConcept: "Error categorization",
       },
     },
   },
