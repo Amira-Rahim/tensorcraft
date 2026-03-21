@@ -5,47 +5,50 @@ import { motion } from "framer-motion";
 import { AmbientBackground } from "./components/ambient-background";
 import { BridgePreviewSection } from "./components/bridge-preview-section";
 
-const themes = [
-  {
-    code: "01",
-    name: "Deep Orbit",
-    spec: "RNN / LSTM / Signals",
-    status: "LIVE",
-    price: "$79",
-    col: "var(--tc-primary, #6BAA8A)",
-    live: true,
-  },
+const heroTheme = {
+  code: "01",
+  name: "Deep Orbit",
+  spec: "RNN / LSTM / Signals",
+  tagline:
+    "Detect anomalies in deep-space telemetry aboard the research vessel Archimedes.",
+  status: "LIVE",
+  price: "$79",
+  col: "var(--tc-primary, #6BAA8A)",
+  modules: "11 modules · 55 lessons · ~22 hours",
+};
+
+const comingSoonThemes = [
   {
     code: "02",
     name: "Neon Protocol",
     spec: "CNN / Computer Vision",
+    tagline: "Hunt rogue surveillance in a cyberpunk cityscape.",
     status: "Q4 '26",
     col: "#A07090",
-    live: false,
   },
   {
     code: "03",
     name: "Signal Ward",
     spec: "NLP / Transformers",
+    tagline: "Build a clinical NLP assistant in a medical crisis.",
     status: "Q1 '27",
     col: "#A89060",
-    live: false,
   },
   {
     code: "04",
     name: "Nova Canvas",
     spec: "GAN / Diffusion",
+    tagline: "Create a generative art installation for a digital biennale.",
     status: "Q2 '27",
     col: "#7868A8",
-    live: false,
   },
   {
     code: "05",
     name: "Terra Grid",
     spec: "Edge AI / MLOps",
+    tagline: "Monitor industrial infrastructure at the network edge.",
     status: "Q3 '27",
     col: "#907040",
-    live: false,
   },
 ];
 
@@ -142,78 +145,117 @@ export default function Home() {
 
         {/* ===== THEMES ===== */}
         <section className="border-b border-border">
-          <div className="px-10 md:px-20 pt-16 pb-12">
-            <h2 className="text-3xl font-mono font-black tracking-tight mb-3">
+          <div className="px-10 md:px-20 pt-20 pb-6 text-center">
+            <div className="font-mono text-[9px] text-primary tracking-[0.2em] uppercase mb-4">
+              // CHOOSE YOUR WORLD
+            </div>
+            <h2 className="text-4xl md:text-5xl font-mono font-black tracking-tight mb-4">
               Five Worlds
             </h2>
-            <p className="text-[15px] text-text-muted leading-relaxed max-w-[480px] mb-12">
-              Same syllabus, different story universe. Each theme immerses you
-              in a world where the ML problem feels inevitable.
+            <p className="text-[15px] text-text-muted leading-relaxed max-w-[480px] mx-auto">
+              Same ML syllabus. Five story universes. Each one makes the problem
+              feel real.
             </p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-5 border-t border-border">
-            {themes.map((t, i) => (
+
+          {/* Hero theme + coming soon grid */}
+          <div className="px-10 md:px-20 py-10">
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-0.5">
+              {/* Deep Orbit — hero card */}
               <div
-                key={i}
-                className="px-9 pt-10 pb-12 transition-colors"
-                style={{
-                  borderRight: i < 4 ? "1px solid var(--tc-border)" : "none",
-                }}
+                className="border-2 bg-surface-raised p-8 md:p-10 flex flex-col justify-between relative overflow-hidden"
+                style={{ borderColor: heroTheme.col }}
               >
                 <div
-                  className="font-mono text-[28px] font-black mb-5 leading-none"
-                  style={{
-                    color: t.col,
-                    opacity: t.live ? 1 : 0.35,
-                  }}
-                >
-                  {t.code}
+                  className="absolute top-0 left-0 right-0 h-1"
+                  style={{ background: heroTheme.col }}
+                />
+                <div>
+                  <div className="flex items-center gap-3 mb-6">
+                    <span
+                      className="font-mono text-[32px] font-black leading-none"
+                      style={{ color: heroTheme.col }}
+                    >
+                      {heroTheme.code}
+                    </span>
+                    <div>
+                      <div className="text-lg font-bold tracking-tight uppercase text-text-primary">
+                        {heroTheme.name}
+                      </div>
+                      <div className="font-mono text-[11px] text-text-muted">
+                        {heroTheme.spec}
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-[14px] text-text-muted leading-relaxed mb-6 max-w-sm">
+                    {heroTheme.tagline}
+                  </p>
+                  <div className="font-mono text-[10px] text-text-muted mb-8">
+                    {heroTheme.modules}
+                  </div>
                 </div>
-                <div
-                  className="text-[15px] font-bold tracking-tight mb-2 uppercase"
-                  style={{
-                    color: t.live ? "var(--tc-text)" : "var(--tc-muted)",
-                  }}
-                >
-                  {t.name}
-                </div>
-                <div className="font-mono text-[11px] text-text-muted leading-relaxed mb-6">
-                  {t.spec}
-                </div>
-                <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <Link
+                    href="/themes/deep-orbit"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-surface font-bold text-xs font-mono tracking-wider uppercase border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow"
+                  >
+                    Start Deep Orbit →
+                  </Link>
+                  <span className="font-mono text-sm font-black text-primary">
+                    {heroTheme.price}
+                  </span>
                   <span
-                    className="font-mono text-[10px] font-bold tracking-wider px-2.5 py-1"
+                    className="font-mono text-[9px] font-bold tracking-wider px-2 py-0.5 ml-auto"
                     style={{
-                      color: t.live ? "var(--tc-primary)" : "var(--tc-muted)",
-                      border: t.live
-                        ? "1px solid color-mix(in srgb, var(--tc-primary) 35%, transparent)"
-                        : "1px solid var(--tc-border)",
+                      color: heroTheme.col,
+                      border: `1px solid color-mix(in srgb, ${heroTheme.col} 35%, transparent)`,
                     }}
                   >
-                    {t.status}
+                    LIVE
                   </span>
-                  {t.price && (
-                    <span className="font-mono text-sm font-black text-primary">
-                      {t.price}
-                    </span>
-                  )}
                 </div>
-                {t.live && (
-                  <div className="absolute top-4 right-4 w-[7px] h-[7px] bg-primary" />
-                )}
               </div>
-            ))}
+
+              {/* Coming soon — 2x2 grid */}
+              <div className="grid grid-cols-2 gap-0.5">
+                {comingSoonThemes.map((t) => (
+                  <div
+                    key={t.code}
+                    className="border border-border bg-surface p-6 flex flex-col justify-between"
+                  >
+                    <div>
+                      <div
+                        className="font-mono text-[22px] font-black mb-3 leading-none opacity-40"
+                        style={{ color: t.col }}
+                      >
+                        {t.code}
+                      </div>
+                      <div className="text-[13px] font-bold tracking-tight uppercase text-text-muted mb-1">
+                        {t.name}
+                      </div>
+                      <div className="font-mono text-[10px] text-text-muted opacity-70 mb-3">
+                        {t.spec}
+                      </div>
+                      <p className="text-[11px] text-text-muted leading-relaxed opacity-60">
+                        {t.tagline}
+                      </p>
+                    </div>
+                    <div className="mt-4">
+                      <span className="font-mono text-[9px] text-text-muted tracking-wider px-2 py-0.5 border border-border">
+                        {t.status}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
-          <div className="border-t border-border px-10 md:px-20 py-8 flex flex-wrap justify-between items-center gap-4">
-            <p className="font-mono text-xs text-text-muted">
-              // Deep Orbit is live now. Others are coming — join waitlists.
+
+          {/* Footer */}
+          <div className="border-t border-border px-10 md:px-20 py-5">
+            <p className="font-mono text-[11px] text-text-muted text-center">
+              // Module 1 of Deep Orbit is free. Others coming — join waitlists.
             </p>
-            <Link
-              href="/themes/deep-orbit"
-              className="inline-flex items-center gap-2 px-7 py-3.5 bg-primary text-surface font-bold text-sm font-mono tracking-wider uppercase border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow"
-            >
-              Enrol in Deep Orbit →
-            </Link>
           </div>
         </section>
 
