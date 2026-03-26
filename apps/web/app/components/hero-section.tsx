@@ -1,0 +1,60 @@
+"use client";
+
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { AmbientBackground } from "./ambient-background";
+
+export function HeroSection() {
+  return (
+    <section className="min-h-screen flex items-center px-10 md:px-20 pt-24 pb-28 border-b border-border relative overflow-hidden">
+      <AmbientBackground count={260} />
+      <div className="absolute inset-0 grid-bg pointer-events-none z-1" />
+      <motion.div
+        className="max-w-[620px] w-full relative z-10"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.9 }}
+      >
+        <div className="font-mono text-[11px] text-primary tracking-[0.14em] uppercase mb-9 flex items-center gap-3">
+          <span className="inline-block w-[7px] h-[7px] bg-primary" />
+          Deep Orbit is live · Launch cohort open
+        </div>
+
+        <h1 className="text-5xl md:text-6xl font-mono font-black leading-[0.93] tracking-[-0.045em] mb-10 uppercase">
+          <span className="block">
+            Machine <span className="text-primary">Learning</span>
+          </span>
+          <span className="block">for Frontend</span>
+          <span className="block">
+            Devs, <span className="text-primary">Finally.</span>
+          </span>
+        </h1>
+
+        <p className="text-lg text-text-muted max-w-[480px] mb-12 leading-relaxed">
+          Every ML concept mapped to a frontend analogy you already know. Eleven
+          modules. Fifty-five lessons. One real model — built entirely in
+          JavaScript.
+        </p>
+
+        <div className="flex gap-4 flex-wrap mb-14">
+          <Link
+            href="/auth/sign-in"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-surface font-bold text-sm tracking-wider uppercase border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow"
+          >
+            Start Module 1 — Free →
+          </Link>
+          <Link
+            href="#how-it-works"
+            className="inline-flex items-center gap-2 px-8 py-4 border-2 border-border text-text-primary font-bold text-sm tracking-wider uppercase hover:text-primary hover:border-primary/30 transition-all brutalist-hover"
+          >
+            See what you&apos;ll build
+          </Link>
+        </div>
+
+        <p className="font-mono text-xs text-text-muted">
+          No credit card. No account for module 1. No Python.
+        </p>
+      </motion.div>
+    </section>
+  );
+}

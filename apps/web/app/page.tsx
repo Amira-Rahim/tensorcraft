@@ -1,8 +1,5 @@
-"use client";
-
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { AmbientBackground } from "./components/ambient-background";
+import { HeroSection } from "./components/hero-section";
 import { BridgePreviewSection } from "./components/bridge-preview-section";
 import { FiveWorldsSection } from "./components/five-worlds-section";
 
@@ -10,59 +7,10 @@ export default function Home() {
   return (
     <>
       <main className="relative z-2">
-        {/* ===== HERO ===== */}
-        <section className="min-h-screen flex items-center px-10 md:px-20 pt-24 pb-28 border-b border-border relative overflow-hidden">
-          <AmbientBackground count={260} />
-          <div className="absolute inset-0 grid-bg pointer-events-none z-1" />
-          <motion.div
-            className="max-w-[620px] w-full relative z-10"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9 }}
-          >
-            <div className="font-mono text-[11px] text-primary tracking-[0.14em] uppercase mb-9 flex items-center gap-3">
-              <span className="inline-block w-[7px] h-[7px] bg-primary" />
-              Deep Orbit is live · Launch cohort open
-            </div>
+        {/* ===== HERO (client island — framer-motion + canvas) ===== */}
+        <HeroSection />
 
-            <h1 className="text-5xl md:text-6xl font-mono font-black leading-[0.93] tracking-[-0.045em] mb-10 uppercase">
-              <span className="block">
-                Machine <span className="text-primary">Learning</span>
-              </span>
-              <span className="block">for Frontend</span>
-              <span className="block">
-                Devs, <span className="text-primary">Finally.</span>
-              </span>
-            </h1>
-
-            <p className="text-lg text-text-muted max-w-[480px] mb-12 leading-relaxed">
-              Every ML concept mapped to a frontend analogy you already know.
-              Eleven modules. Fifty-five lessons. One real model — built
-              entirely in JavaScript.
-            </p>
-
-            <div className="flex gap-4 flex-wrap mb-14">
-              <Link
-                href="/auth/sign-in"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-surface font-bold text-sm tracking-wider uppercase border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow"
-              >
-                Start Module 1 — Free →
-              </Link>
-              <Link
-                href="#how-it-works"
-                className="inline-flex items-center gap-2 px-8 py-4 border-2 border-border text-text-primary font-bold text-sm tracking-wider uppercase hover:text-primary hover:border-primary/30 transition-all brutalist-hover"
-              >
-                See what you&apos;ll build
-              </Link>
-            </div>
-
-            <p className="font-mono text-xs text-text-muted">
-              No credit card. No account for module 1. No Python.
-            </p>
-          </motion.div>
-        </section>
-
-        {/* ===== STATS ===== */}
+        {/* ===== STATS (server-rendered — zero JS) ===== */}
         <section className="grid grid-cols-2 md:grid-cols-4 border-b border-border">
           {[
             ["55", "Lessons per theme"],
@@ -85,13 +33,13 @@ export default function Home() {
           ))}
         </section>
 
-        {/* ===== BRIDGE SYSTEM ===== */}
+        {/* ===== BRIDGE SYSTEM (client island — framework picker) ===== */}
         <BridgePreviewSection />
 
-        {/* ===== FIVE WORLDS ===== */}
+        {/* ===== FIVE WORLDS (client island — canvas animations) ===== */}
         <FiveWorldsSection />
 
-        {/* ===== WHAT YOU'LL BUILD ===== */}
+        {/* ===== WHAT YOU'LL BUILD (server-rendered — zero JS) ===== */}
         <section id="how-it-works" className="border-b border-border">
           <div className="px-10 md:px-20 pt-16 pb-12">
             <h2 className="text-3xl font-mono font-black tracking-tight mb-3">
@@ -181,7 +129,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ===== FINAL CTA ===== */}
+        {/* ===== FINAL CTA (server-rendered — zero JS) ===== */}
         <section className="px-10 md:px-20 py-28 flex flex-col items-start gap-10">
           <div className="font-mono text-[11px] text-text-muted tracking-wider">
             // module 1 · free · no account required

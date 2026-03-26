@@ -1,8 +1,52 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { UserMenu } from "./user-menu";
 import { MobileNav } from "./mobile-nav";
 
+function NavLink({
+  href,
+  children,
+}: {
+  href: string;
+  children: React.ReactNode;
+}) {
+  const pathname = usePathname();
+  const isActive = href === "/" ? pathname === "/" : pathname.startsWith(href);
+
+  return (
+    <Link
+      href={href}
+      className={`text-[13px] transition-colors ${
+        isActive
+          ? "text-primary font-semibold"
+          : "text-text-muted hover:text-text-primary"
+      }`}
+    >
+      {children}
+    </Link>
+  );
+}
+
 export function Nav() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const supabase = getSupabaseBrowserClient();
+    supabase.auth.getUser().then(({ data }) => {
+      setIsAuthenticated(!!data.user);
+    });
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAuthenticated(!!session?.user);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
   return (
     <nav
       className="sticky top-0 z-50 h-15 flex items-center justify-between px-8 bg-surface border-b border-border"
@@ -19,18 +63,9 @@ export function Nav() {
       </Link>
 
       <div className="hidden md:flex items-center gap-7 font-mono">
-        <Link
-          href="/themes"
-          className="text-[13px] text-text-muted hover:text-text-primary transition-colors"
-        >
-          Themes
-        </Link>
-        <Link
-          href="/pricing"
-          className="text-[13px] text-text-muted hover:text-text-primary transition-colors"
-        >
-          Pricing
-        </Link>
+        {isAuthenticated && <NavLink href="/dashboard">Dashboard</NavLink>}
+        <NavLink href="/themes">Themes</NavLink>
+        <NavLink href="/pricing">Pricing</NavLink>
       </div>
 
       <div className="flex items-center gap-4">

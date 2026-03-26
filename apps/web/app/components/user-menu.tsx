@@ -93,14 +93,6 @@ export function UserMenu() {
 
           <div className="py-1">
             <Link
-              href="/dashboard"
-              onClick={() => setOpen(false)}
-              className="flex items-center gap-3 px-4 py-2.5 text-sm font-mono text-text-primary transition-colors hover:bg-surface-raised"
-              role="menuitem"
-            >
-              Dashboard
-            </Link>
-            <Link
               href="/settings"
               onClick={() => setOpen(false)}
               className="flex items-center gap-3 px-4 py-2.5 text-sm font-mono text-text-primary transition-colors hover:bg-surface-raised"
