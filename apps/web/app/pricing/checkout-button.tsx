@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { trackCheckoutStarted } from "@/lib/analytics";
@@ -26,10 +26,30 @@ export function CheckoutButton({
 }: CheckoutButtonProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [alreadyOwned, setAlreadyOwned] = useState(false);
   const router = useRouter();
 
+  // Check if user already owns all themes in this plan
+  useEffect(() => {
+    const supabase = getSupabaseBrowserClient();
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) return;
+      supabase
+        .from("purchases")
+        .select("theme_ids")
+        .eq("user_id", session.user.id)
+        .eq("status", "completed")
+        .then(({ data }) => {
+          if (!data) return;
+          const owned = new Set(data.flatMap((p) => p.theme_ids));
+          const allOwned = themeIds.every((t) => owned.has(t));
+          setAlreadyOwned(allOwned);
+        });
+    });
+  }, [themeIds]);
+
   async function handleCheckout() {
-    if (disabled) return;
+    if (disabled || alreadyOwned) return;
 
     setLoading(true);
     setError(null);
@@ -88,7 +108,7 @@ export function CheckoutButton({
     }
   }
 
-  const isDisabled = disabled || loading;
+  const isDisabled = disabled || loading || alreadyOwned;
 
   return (
     <div>
@@ -96,13 +116,19 @@ export function CheckoutButton({
         type="button"
         onClick={handleCheckout}
         disabled={isDisabled}
-        className={`flex items-center justify-center w-full h-[52px] text-[15px] font-medium font-mono transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
-          recommended
-            ? "bg-primary text-[#1C1C1C] border border-primary hover:shadow-[4px_4px_0px_0px_#C8C8C8] hover:-translate-x-0.5 hover:-translate-y-0.5"
-            : "bg-transparent text-primary border border-primary hover:bg-primary hover:text-[#1C1C1C]"
+        className={`flex items-center justify-center w-full h-13 text-[15px] font-medium font-mono transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
+          alreadyOwned
+            ? "bg-transparent text-text-muted border border-border cursor-default"
+            : recommended
+              ? "bg-primary text-[#1C1C1C] border border-primary hover:shadow-[4px_4px_0px_0px_#C8C8C8] hover:-translate-x-0.5 hover:-translate-y-0.5"
+              : "bg-transparent text-primary border border-primary hover:bg-primary hover:text-[#1C1C1C]"
         } ${className}`}
       >
-        {loading ? "Redirecting..." : children}
+        {alreadyOwned
+          ? "Already Owned ✓"
+          : loading
+            ? "Redirecting..."
+            : children}
       </button>
       {disabled && disabledReason && (
         <p className="mt-2 text-xs text-center text-text-muted font-mono">

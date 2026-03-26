@@ -179,24 +179,6 @@ body {
   }
 }
 
-/* ===== Neon Utility Classes ===== */
-.neon-text {
-  text-shadow:
-    0 0 7px var(--tc-glow, #7b68ee),
-    0 0 20px var(--tc-glow, #7b68ee);
-}
-
-.neon-box {
-  box-shadow:
-    0 0 7px var(--tc-glow, #7b68ee),
-    inset 0 0 7px var(--tc-glow, #7b68ee);
-}
-
-.neon-border {
-  box-shadow: 0 0 4px var(--tc-glow, #7b68ee);
-  border-color: var(--tc-glow, #7b68ee);
-}
-
 /* Respect reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *,

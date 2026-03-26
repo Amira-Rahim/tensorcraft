@@ -6,22 +6,41 @@ import { SkillGenome } from "./skill-genome";
 
 /* ── Design tokens (use CSS vars from theme system) ── */
 const LIME = "var(--tc-primary)";
-// Canvas 2D context can't resolve CSS custom properties — hardcoded values must match --tc-primary and --tc-border
-const LIME_RAW = "#6BAA8A";
 const BG = "var(--tc-bg)";
 const PANEL = "var(--tc-surface)";
 const CARD = "var(--tc-surface-overlay)";
 const WHITE = "var(--tc-text)";
 const MUTED = "var(--tc-muted)";
 const BORDER_VAR = "var(--tc-border)";
-const BORDER_RAW = "#2A2A2A"; // must match --tc-border — canvas can't resolve CSS vars
 const MONO = "var(--font-mono), 'JetBrains Mono', monospace";
 
 const TIER_COLORS: Record<string, string> = {
-  identity: "#6BAA8A",
-  structural: "#7096B0",
-  intuition: "#A89060",
+  identity: "var(--tc-tier-identity, #6BAA8A)",
+  structural: "var(--tc-tier-structural, #7096B0)",
+  intuition: "var(--tc-tier-intuition, #A89060)",
 };
+
+/** Resolve a CSS custom property to a hex/rgb string for Canvas 2D context */
+function resolveVar(varName: string, fallback: string): string {
+  if (typeof window === "undefined") return fallback;
+  const resolved = getComputedStyle(document.documentElement)
+    .getPropertyValue(varName)
+    .trim();
+  return resolved || fallback;
+}
+
+/** Resolve CSS var to RGB tuple for canvas rgba() usage */
+function resolveRGB(
+  varName: string,
+  fallback: [number, number, number],
+): [number, number, number] {
+  const hex = resolveVar(varName, "");
+  if (!hex || !hex.startsWith("#")) return fallback;
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return [r, g, b];
+}
 
 /* ── Types ── */
 export interface DashboardModule {
@@ -174,6 +193,7 @@ export function DashboardView(props: DashboardProps) {
       const W = canvas.offsetWidth,
         H = canvas.offsetHeight;
       ctx.clearRect(0, 0, W, H);
+      const [pr, pg, pb] = resolveRGB("--tc-primary", [107, 170, 138]);
       plotProg.current = Math.min(CURVE.length - 1, plotProg.current + 0.55);
       const vis = Math.floor(plotProg.current);
       const CX = W * 0.07,
@@ -219,8 +239,8 @@ export function DashboardView(props: DashboardProps) {
       if (vis > 0) {
         // Fill
         const gf = ctx.createLinearGradient(0, CY, 0, CY + CH);
-        gf.addColorStop(0, "rgba(107,170,138,0.1)");
-        gf.addColorStop(1, "rgba(107,170,138,0)");
+        gf.addColorStop(0, `rgba(${pr},${pg},${pb},0.1)`);
+        gf.addColorStop(1, `rgba(${pr},${pg},${pb},0)`);
         ctx.beginPath();
         ctx.moveTo(toX(0), CY + CH);
         CURVE.slice(0, vis + 1).forEach((p, i) => ctx.lineTo(toX(i), toY(p.l)));
@@ -235,7 +255,7 @@ export function DashboardView(props: DashboardProps) {
         CURVE.slice(0, vis + 1).forEach((p, i) =>
           i === 0 ? ctx.moveTo(toX(i), toY(p.l)) : ctx.lineTo(toX(i), toY(p.l)),
         );
-        ctx.strokeStyle = "rgba(107,170,138,0.65)";
+        ctx.strokeStyle = `rgba(${pr},${pg},${pb},0.65)`;
         ctx.lineWidth = 1.5;
         ctx.stroke();
 
@@ -259,7 +279,7 @@ export function DashboardView(props: DashboardProps) {
         const cur = CURVE[vis];
         ctx.font = `9px JetBrains Mono, monospace`;
         ctx.textAlign = "left";
-        ctx.fillStyle = "rgba(107,170,138,0.6)";
+        ctx.fillStyle = `rgba(${pr},${pg},${pb},0.6)`;
         ctx.fillText(`train ${cur.l.toFixed(4)}`, toX(vis) + 4, toY(cur.l) - 4);
         ctx.fillStyle = "rgba(90,90,90,0.55)";
         ctx.fillText(
@@ -272,7 +292,7 @@ export function DashboardView(props: DashboardProps) {
       // Legend
       ctx.font = `9px JetBrains Mono, monospace`;
       ctx.textAlign = "left";
-      ctx.fillStyle = "rgba(107,170,138,0.5)";
+      ctx.fillStyle = "color-mix(in srgb, var(--tc-primary) 50%, transparent)";
       ctx.fillRect(CX, CY + 6, 18, 1.5);
       ctx.fillText("train loss", CX + 24, CY + 10);
       ctx.fillStyle = "rgba(90,90,90,0.5)";
@@ -334,7 +354,7 @@ export function DashboardView(props: DashboardProps) {
               key={ri}
               d={d}
               fill="none"
-              stroke={BORDER_RAW}
+              stroke={resolveVar("--tc-border", "#2A2A2A")}
               strokeWidth="0.8"
             />
           );
@@ -349,15 +369,15 @@ export function DashboardView(props: DashboardProps) {
               y1={cy}
               x2={pt.x.toFixed(1)}
               y2={pt.y.toFixed(1)}
-              stroke={BORDER_RAW}
+              stroke={resolveVar("--tc-border", "#2A2A2A")}
               strokeWidth="0.8"
             />
           );
         })}
         <path
           d={scorePath}
-          fill="rgba(107,170,138,0.08)"
-          stroke={LIME_RAW}
+          fill="color-mix(in srgb, var(--tc-primary) 8%, transparent)"
+          stroke={resolveVar("--tc-primary", "#6BAA8A")}
           strokeWidth="1.5"
         />
         {scorePts.map((p, i) => (
@@ -366,7 +386,7 @@ export function DashboardView(props: DashboardProps) {
             cx={p.x.toFixed(1)}
             cy={p.y.toFixed(1)}
             r="3"
-            fill={LIME_RAW}
+            fill={resolveVar("--tc-primary", "#6BAA8A")}
             stroke="#252525"
             strokeWidth="2"
           />
@@ -406,7 +426,7 @@ export function DashboardView(props: DashboardProps) {
               y={(pt.y + 3).toFixed(1)}
               textAnchor="middle"
               fontSize="7"
-              fill="rgba(107,170,138,0.45)"
+              fill="color-mix(in srgb, var(--tc-primary) 45%, transparent)"
               fontFamily="JetBrains Mono,monospace"
             >
               {Math.round(s * 100)}%
@@ -501,7 +521,7 @@ export function DashboardView(props: DashboardProps) {
                 cursor: m.status === "locked" ? "default" : "pointer",
                 background:
                   m.status === "active"
-                    ? "rgba(107,170,138,0.03)"
+                    ? "color-mix(in srgb, var(--tc-primary) 3%, transparent)"
                     : hovM === i && m.status !== "locked"
                       ? "rgba(255,255,255,0.02)"
                       : "transparent",
@@ -535,7 +555,9 @@ export function DashboardView(props: DashboardProps) {
                     fontFamily: MONO,
                     fontSize: 9,
                     color:
-                      m.status === "done" ? "rgba(107,170,138,0.5)" : "#8A8A8A",
+                      m.status === "done"
+                        ? "color-mix(in srgb, var(--tc-primary) 50%, transparent)"
+                        : "#8A8A8A",
                     letterSpacing: "0.06em",
                     marginBottom: 3,
                   }}
@@ -651,6 +673,24 @@ export function DashboardView(props: DashboardProps) {
                     {currentModule.estimatedMinutes} min · {currentModule.topic}
                   </p>
                 </>
+              ) : modules.every((m) => m.status === "done") ? (
+                <>
+                  <h1
+                    style={{
+                      fontSize: 24,
+                      fontWeight: 900,
+                      letterSpacing: "-0.03em",
+                      textTransform: "uppercase",
+                      marginBottom: 6,
+                      color: LIME,
+                    }}
+                  >
+                    Mission Complete
+                  </h1>
+                  <p style={{ fontFamily: MONO, fontSize: 12, color: MUTED }}>
+                    All {modules.length} modules finished. View your capstone.
+                  </p>
+                </>
               ) : (
                 <>
                   <h1
@@ -692,8 +732,8 @@ export function DashboardView(props: DashboardProps) {
                   border: `2px solid ${LIME}`,
                   boxShadow:
                     hovBtn === "resume"
-                      ? `5px 5px 0 rgba(107,170,138,0.3)`
-                      : `3px 3px 0 rgba(107,170,138,0.2)`,
+                      ? `5px 5px 0 color-mix(in srgb, var(--tc-primary) 30%, transparent)`
+                      : `3px 3px 0 color-mix(in srgb, var(--tc-primary) 20%, transparent)`,
                   transform:
                     hovBtn === "resume" ? "translate(-2px,-2px)" : "none",
                   transition: "all 0.12s ease",
@@ -704,7 +744,11 @@ export function DashboardView(props: DashboardProps) {
               </Link>
             ) : (
               <Link
-                href={`/themes/${themeSlug}`}
+                href={
+                  modules.every((m) => m.status === "done")
+                    ? `/themes/${themeSlug}/capstone`
+                    : `/themes/${themeSlug}`
+                }
                 onMouseEnter={() => setHovBtn("resume")}
                 onMouseLeave={() => setHovBtn(null)}
                 style={{
@@ -724,15 +768,17 @@ export function DashboardView(props: DashboardProps) {
                   border: `2px solid ${LIME}`,
                   boxShadow:
                     hovBtn === "resume"
-                      ? `5px 5px 0 rgba(107,170,138,0.3)`
-                      : `3px 3px 0 rgba(107,170,138,0.2)`,
+                      ? `5px 5px 0 color-mix(in srgb, var(--tc-primary) 30%, transparent)`
+                      : `3px 3px 0 color-mix(in srgb, var(--tc-primary) 20%, transparent)`,
                   transform:
                     hovBtn === "resume" ? "translate(-2px,-2px)" : "none",
                   transition: "all 0.12s ease",
                   textDecoration: "none",
                 }}
               >
-                {"Start Learning →"}
+                {modules.every((m) => m.status === "done")
+                  ? "View Capstone →"
+                  : "Start Learning →"}
               </Link>
             )}
           </div>
@@ -770,7 +816,7 @@ export function DashboardView(props: DashboardProps) {
                   padding: "36px 40px",
                   borderRight: i < 2 ? `1px solid ${BORDER_VAR}` : "none",
                   background: s.accent
-                    ? "rgba(107,170,138,0.025)"
+                    ? "color-mix(in srgb, var(--tc-primary) 2.5%, transparent)"
                     : "transparent",
                 }}
               >
@@ -917,7 +963,7 @@ export function DashboardView(props: DashboardProps) {
                         background:
                           v === 0
                             ? CARD
-                            : `rgba(107,170,138,${[0.18, 0.38, 0.62, 0.9][v - 1]})`,
+                            : `color-mix(in srgb, var(--tc-primary) ${[18, 38, 62, 90][v - 1]}%, transparent)`,
                         border: `1px solid ${BORDER_VAR}`,
                         animation: heatVis
                           ? `hpop .2s ${i * 0.01}s ease both`
@@ -945,7 +991,7 @@ export function DashboardView(props: DashboardProps) {
                       style={{
                         width: 10,
                         height: 10,
-                        background: `rgba(107,170,138,${o})`,
+                        background: `color-mix(in srgb, var(--tc-primary) ${Math.round(o * 100)}%, transparent)`,
                         border: `1px solid ${BORDER_VAR}`,
                       }}
                     />

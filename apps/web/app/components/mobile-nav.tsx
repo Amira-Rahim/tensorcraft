@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
 const NAV_LINKS = [
   { href: "/themes", label: "THEMES" },
@@ -13,12 +14,25 @@ const NAV_LINKS = [
 
 export function MobileNav() {
   const [open, setOpen] = useState(false);
+  const [user, setUser] = useState<{ email?: string } | null>(null);
   const pathname = usePathname();
 
   // Close menu on route change
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
+
+  // Check auth state
+  useEffect(() => {
+    const supabase = getSupabaseBrowserClient();
+    supabase.auth.getUser().then(({ data }) => setUser(data.user));
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) =>
+      setUser(session?.user ?? null),
+    );
+    return () => subscription.unsubscribe();
+  }, []);
 
   // Prevent body scroll when menu is open
   useEffect(() => {
@@ -105,15 +119,45 @@ export function MobileNav() {
             ))}
           </nav>
 
-          {/* Bottom section with sign-in */}
+          {/* Bottom section — auth-aware */}
           <div className="px-8 pb-10 border-t border-border pt-6">
-            <Link
-              href="/auth/sign-in"
-              onClick={() => setOpen(false)}
-              className="block w-full text-center border border-primary/30 bg-primary/8 px-6 py-3.5 text-sm font-mono font-medium uppercase tracking-wider hover:bg-primary/15 hover:border-primary/50 transition-all"
-            >
-              Start now &rarr;
-            </Link>
+            {user ? (
+              <div className="flex flex-col gap-2">
+                <Link
+                  href="/dashboard"
+                  onClick={() => setOpen(false)}
+                  className={`block w-full text-center px-6 py-3.5 text-sm font-mono font-medium uppercase tracking-wider transition-all border ${
+                    pathname === "/dashboard"
+                      ? "border-primary bg-primary/10 text-primary"
+                      : "border-border text-text-muted hover:border-primary/30 hover:text-text-primary"
+                  }`}
+                >
+                  Dashboard
+                </Link>
+                <Link
+                  href="/settings"
+                  onClick={() => setOpen(false)}
+                  className={`block w-full text-center px-6 py-3.5 text-sm font-mono font-medium uppercase tracking-wider transition-all border ${
+                    pathname === "/settings"
+                      ? "border-primary bg-primary/10 text-primary"
+                      : "border-border text-text-muted hover:border-primary/30 hover:text-text-primary"
+                  }`}
+                >
+                  Settings
+                </Link>
+                <div className="font-mono text-[10px] text-text-muted text-center mt-2 truncate">
+                  {user.email}
+                </div>
+              </div>
+            ) : (
+              <Link
+                href="/auth/sign-in"
+                onClick={() => setOpen(false)}
+                className="block w-full text-center border border-primary/30 bg-primary/8 px-6 py-3.5 text-sm font-mono font-medium uppercase tracking-wider hover:bg-primary/15 hover:border-primary/50 transition-all"
+              >
+                Start now &rarr;
+              </Link>
+            )}
           </div>
         </div>
       )}

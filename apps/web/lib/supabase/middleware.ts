@@ -94,9 +94,19 @@ export async function updateSession(request: NextRequest) {
       .eq("id", user.id)
       .single();
 
-    if (profile && !profile.onboarding_completed) {
+    const isOnboarding = request.nextUrl.pathname.startsWith("/onboarding");
+
+    // Incomplete onboarding → force to /onboarding (unless already there)
+    if (profile && !profile.onboarding_completed && !isOnboarding) {
       const url = request.nextUrl.clone();
       url.pathname = "/onboarding";
+      return NextResponse.redirect(url);
+    }
+
+    // Completed onboarding → block re-entry to /onboarding
+    if (profile && profile.onboarding_completed && isOnboarding) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/dashboard";
       return NextResponse.redirect(url);
     }
   }
