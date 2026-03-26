@@ -119,6 +119,11 @@ payments.post("/checkout", async (c) => {
 
 // ──────────────────────────────────────────────
 // GET /api/payments/purchases — Check user's purchases
+//
+// NOTE: As of V0.5, the Next.js frontend checks purchases directly via
+// Supabase client in lib/progress.ts (hasThemePurchase). This endpoint
+// is retained for future admin dashboards, mobile clients, or external
+// API consumers that can't use the Supabase client directly.
 // ──────────────────────────────────────────────
 
 payments.use("/purchases", authMiddleware);

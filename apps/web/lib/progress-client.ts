@@ -189,20 +189,32 @@ export function emitSkillEvent(
 
   const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
-  // Fire-and-forget — don't await, don't block UI
-  fetch(`${apiBase}/api/skill-events`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
-    body: JSON.stringify({
-      themeId,
-      eventType,
-      skillAxis,
-      metadata,
-    }),
-  }).catch(() => {
-    // Silently fail — skill events are non-critical
-  });
+  // Get the access token for Bearer auth, then fire-and-forget
+  const supabase = getSupabaseBrowserClient();
+  supabase.auth
+    .getSession()
+    .then(({ data: { session } }) => {
+      if (!session?.access_token) return;
+
+      fetch(`${apiBase}/api/skill-events`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({
+          themeId,
+          eventType,
+          skillAxis,
+          metadata,
+        }),
+      }).catch(() => {
+        // Silently fail — skill events are non-critical
+      });
+    })
+    .catch(() => {
+      // No session — skip event
+    });
 }
 
 /** Check how many exercises in a lesson have a passing attempt */

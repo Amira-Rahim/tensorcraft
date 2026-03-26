@@ -1,6 +1,6 @@
 # Tensorcraft — Development Plan
 
-> Last updated: 2026-03-16 (all 11 Deep Orbit modules authored, Bridge Explorer replaced with dashboard bridge collectibles, prototype count corrected, PRD aligned with implementation)
+> Last updated: 2026-03-26 (full-stack audit: migration 011 adds github_token + purchase_status enum fix, types.ts aligned with migrations 001-011, dead endpoints documented, onboarding verified complete, all 5 themes fully authored)
 
 This document is the single source of truth for all development work needed to ship Tensorcraft. It covers every phase from repo initialization to post-launch operations, sourced from the PRD, tech-spec, product-plan, theme scripts, and two rounds of DeepSeek reviews.
 
@@ -29,7 +29,7 @@ All blocking decisions have been resolved. This table documents the final choice
 
 | # | Decision | Resolution | Rationale |
 | --- | --- | --- | --- |
-| 1 | **V0.5 module scope** | Modules 1–3 (15 lessons) | Matches PRD. Buildable in 4 months solo. |
+| 1 | **V0.5 module scope** | All 11 Deep Orbit modules (55 lessons) authored; all 5 themes content-complete (275 lessons total). V0.5 gates access to Deep Orbit only. | Originally M1–3; content authoring exceeded plan. |
 | 2 | **Database** | Supabase (PostgreSQL + Auth + RLS) | Already implemented in architecture. Auth + RLS from day one. |
 | 3 | **Bundle pricing** | $79 single / $129 two / $169 three | Simpler. No 4-theme or 5-theme bundles until themes exist. |
 | 4 | **Payment processor** | Stripe Checkout + Webhooks | One-time purchases. No subscriptions. Webhook-driven fulfillment. |
@@ -79,11 +79,17 @@ All blocking decisions have been resolved. This table documents the final choice
 ### 1c. Database Setup (COMPLETE)
 
 - [x] Set up Supabase project (Postgres + Auth)
-- [x] Create database tables per tech-spec schema:
-  - `profiles` (id, email, display_name, avatar_url, github_username, github_connected, onboarding_completed, timestamps)
-  - `purchases` (id, user_id, plan_id, theme_ids[], amount, currency, stripe_session_id, status, created_at)
+- [x] Create database tables (9 tables, 1 view, across 11 migrations):
+  - `profiles` (id, email, display_name, avatar_url, github_username, github_connected, github_token, onboarding_completed, role, fe_background, fe_framework, learning_goal, fe_experience_years, email_alerts, weekly_digest, preferred_theme_id, timestamps)
+  - `purchases` (id, user_id, plan_id, theme_ids[], amount, currency, stripe_session_id, stripe_payment_intent, status [pending/completed/failed/refunded/partially_refunded/disputed], timestamps)
   - `theme_progress` (id, user_id, theme_id, module_id, lesson_id, status, score, hints_used, attempts, timestamps)
   - `waitlist` (id, email, theme_id, source, created_at)
+  - `streaks` (id, user_id, theme_id, current_streak, longest_streak, last_activity_date) — secured via RPC function
+  - `achievements` (id, user_id, achievement_type, theme_id, unlocked_at) — created, not yet used
+  - `exercise_attempts` (id, user_id, exercise_slug, lesson_id, theme_id, passed, score, hints_used, solution_viewed, submitted_code, duration_ms)
+  - `skill_genome` (id, user_id, theme_id, skill_axis, proficiency, confidence, velocity) — reads only, computation deferred
+  - `skill_events` (id, user_id, theme_id, event_type, skill_axis, metadata) — append-only signal log
+  - `theme_progress_summary` (VIEW — aggregated completion stats, not yet queried from code)
 - [x] Row-Level Security (RLS) policies on all tables (user can only read/write own data)
 - [x] Indexing strategy: user_id on all tables, compound index on (user_id, theme_id) for theme_progress
 - [x] Auto-create profile trigger on auth.users insert
@@ -93,7 +99,7 @@ All blocking decisions have been resolved. This table documents the final choice
 ### 1d. Security Foundations (COMPLETE)
 
 - [x] CORS configuration for API endpoints
-- [x] Rate limiting on API routes — Upstash Redis adapter with in-memory fallback, 60 req/min per IP. Stripe webhook exempt.
+- [x] Rate limiting on API routes — in-memory store, 60 req/min per IP. Stripe webhook exempt. (Redis upgrade deferred to 6j.)
 
 ---
 
@@ -119,12 +125,15 @@ All blocking decisions have been resolved. This table documents the final choice
 
 ### 2b. Onboarding Flow (COMPLETE)
 
-- [x] 3-step post-signup flow (`/onboarding`) — from `prototypes/onboarding.html`:
-  1. Welcome screen — headline "You Already Think Like an ML Engineer" + 3 feature cards
-  2. Theme selection — Deep Orbit pre-selected, 4 others disabled (Coming Soon)
-  3. Confirmation — theme summary, module/lesson counts, "Start your first lesson" CTA
-- [x] Onboarding completion persistence — sets `onboarding_completed` flag in `profiles` table
-- [x] Stepper indicator showing progress through 3 steps (dot + line UI)
+- [x] 6-step post-signup flow (`/onboarding`) — from `prototypes/onboarding.html`:
+  1. Welcome screen — headline "Welcome Aboard the Archimedes" + 3 feature cards
+  2. Your Background — 5 options (beginner to ML-adjacent), saved to `profiles.fe_background`
+  3. Your Goal — 5 options (understand concepts to just curious), saved to `profiles.learning_goal`
+  4. Your Framework — React/Vue/Angular/Svelte/Vanilla with live bridge preview, saved to `profiles.fe_framework`
+  5. Choose Theme — Deep Orbit available, 4 others disabled (Coming Soon), saved to `profiles.preferred_theme_id`
+  6. Ready — configuration summary + "Begin First Lesson" CTA
+- [x] Onboarding completion persistence — sets `onboarding_completed` flag + all preferences in `profiles` table
+- [x] Stepper indicator showing progress through 6 steps (dot + line UI)
 
 ### 2c. Legal & Compliance (COMPLETE)
 
@@ -250,7 +259,7 @@ All blocking decisions have been resolved. This table documents the final choice
 
 ### 4b. Stripe Integration
 
-> **SECURITY CRITICAL:** The current webhook at `apps/api/src/routes/payments.ts` parses raw JSON without Stripe signature verification. Anyone can fake a `checkout.session.completed` event. This MUST be fixed before any real payments.
+> **~~SECURITY CRITICAL~~ RESOLVED:** Webhook now uses `stripe.webhooks.constructEvent()` with signing secret for full signature verification. Idempotent via UPSERT on `stripe_session_id`.
 
 - [x] **SECURITY: Replace stubbed webhook with `stripe.webhooks.constructEvent()` using signing secret**
 - [x] Stripe Checkout sessions for one-time payments
@@ -329,7 +338,7 @@ All blocking decisions have been resolved. This table documents the final choice
 
 ### 5b. Dashboard
 
-> **GAP:** Dashboard page doesn't exist — `/dashboard` route is referenced in ROUTES constants but not implemented. Users have no way to see progress or resume learning.
+> **~~GAP~~ RESOLVED:** Dashboard page implemented with progress stats, streak display, skill genome radar, and resume learning CTA.
 
 - [x] Dashboard page (`apps/web/app/dashboard/page.tsx`) — server component with auth guard
 - [x] "Resume learning" — Continue Learning card links to last in-progress lesson
@@ -341,14 +350,14 @@ All blocking decisions have been resolved. This table documents the final choice
 - [ ] Activity feed (recent lesson completions, achievements)
 - [x] Add `achievements` table (user_id, achievement_type, theme_id, unlocked_at) — milestones and badges
 - [ ] Track `streak_achieved` event (3-day, 7-day, 30-day milestones)
-- [ ] Skill radar: radar chart showing proficiency across 6 axes (PRD 3.4)
+- [~] Skill radar: radar chart + progress bars rendering on dashboard (`skill-genome.tsx`). Tables `skill_genome` + `skill_events` created (migration 010). Events logged via `/api/skill-events`. **Missing:** proficiency computation pipeline to populate `skill_genome` from `skill_events`. Chart currently shows zeros.
 - [ ] Progress ring: circular SVG indicator (from dashboard.html prototype)
 - [ ] Share snapshot: html2canvas 2x PNG with watermark, share modal with Clipboard API + Web Share API fallback (ui-ux-notes 2.5)
 - [ ] Activity heatmap (post-V0.5 — query `theme_progress` by `completed_at` date, render SVG)
 
 ### 5c. Settings
 
-> **GAP:** Settings page doesn't exist — `/settings` route is referenced but not implemented.
+> **~~GAP~~ RESOLVED:** Settings page implemented with profile editing, theme preference, and account management.
 
 - [x] Build from `prototypes/settings.html`
 - [x] `PATCH /api/profiles/:userId` endpoint — update profile fields
@@ -373,8 +382,10 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] `GET /api/exercise-attempts?lessonId=...` endpoint — get user's exercise history
 - [ ] Add `VARCHAR(n)` constraints or API-level length checks on text fields
 - [x] Add `CHECK (amount > 0)` constraint on purchases
-- [x] Supabase types updated for streaks, achievements, exercise_attempts tables
-- [x] Write migration file for all schema changes
+- [x] Supabase types updated for streaks, achievements, exercise_attempts, skill_genome, skill_events tables + new profile columns (fe_background, fe_framework, learning_goal, fe_experience_years)
+- [x] Write migration files for all schema changes (migrations 001–011)
+- [x] Migration 010: skill_genome, skill_events tables + profile onboarding columns
+- [x] Migration 011: github_token column on profiles + purchase_status enum expansion (partially_refunded, disputed)
 
 ### 5e. Theme Selection
 
@@ -422,7 +433,7 @@ All blocking decisions have been resolved. This table documents the final choice
 
 ### 6b. Mobile Responsiveness
 
-> **GAP:** Lesson sidebar is `hidden lg:flex` — mobile users see content but can't navigate between lessons without going back to the module overview.
+> **~~GAP~~ RESOLVED:** Mobile lesson nav implemented — floating menu button + slide-in drawer with full lesson list.
 
 - [x] Mobile lesson navigation drawer (`MobileLessonNav`) — floating accent-colored menu button, slide-in drawer with full lesson list
 - [x] Hamburger menu button (fixed bottom-right, `lg:hidden`) + overlay + close button
@@ -454,7 +465,7 @@ All blocking decisions have been resolved. This table documents the final choice
 
 ### 6e. Error Handling
 
-> **GAP:** No session error handling UI — expired tokens show nothing useful. API errors return generic 500s.
+> **~~GAP~~ PARTIALLY RESOLVED:** Session expiry detection + redirect implemented. Global error boundary + custom 404/500 pages exist. Remaining: user-friendly error messages for payment/auth/GitHub failures.
 
 - [x] Global error boundary component (React)
 - [x] Custom 404 page (themed, with navigation back to dashboard)
@@ -575,10 +586,11 @@ All blocking decisions have been resolved. This table documents the final choice
 
 ### 7f. Additional Themes
 
-- [ ] V2.0: Neon Protocol (Cyberpunk — Computer Vision) — Q4 2026
-- [ ] V3.0: Signal Ward (Medical — NLP & Text) — Q1 2027
-- [ ] V3.0: Nova Canvas (Creative AI — Multimodal & Generative) — Q2 2027
-- [ ] V4.0: Terra Grid (Industrial — Edge AI & Production ML) — Q3 2027
+- [x] Neon Protocol (Cyberpunk — Computer Vision) content authored (55 lessons, 55 exercises) — gated behind "coming soon" status, launch Q4 2026
+- [x] Signal Ward (Medical — NLP & Text) content authored (55 lessons, 55 exercises) — launch Q1 2027
+- [x] Nova Canvas (Creative AI — Multimodal & Generative) content authored (55 lessons, 55 exercises) — launch Q2 2027
+- [x] Terra Grid (Industrial — Edge AI & Production ML) content authored (55 lessons, 55 exercises) — launch Q3 2027
+- [ ] Theme launch = flip `status` from "coming-soon" to "launched" in theme manifests + enable Stripe checkout
 
 ### 7g. Bundle & Team Pricing
 

@@ -1,5 +1,10 @@
 -- Tensorcraft Streaks & Achievements Migration
 -- Adds streak tracking and achievement system
+--
+-- NOTE: The `achievements` table is created here but NOT YET USED by
+-- application code (as of V0.5). It is reserved for the V1.0 milestone
+-- and badge system (unlockable achievements on streak milestones,
+-- module completion, and capstone projects). Do not remove.
 
 -- ============================================================
 -- STREAKS

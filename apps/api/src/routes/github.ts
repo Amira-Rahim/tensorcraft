@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { getSupabaseAdminClient } from "@tensorcraft/supabase";
+import { getSupabaseServerClient } from "@tensorcraft/supabase";
 import { authMiddleware } from "../middleware/auth";
 import type { AppEnv } from "../types";
 import { createOrGetRepo, pushFile, getGitHubUsername } from "../lib/github";
@@ -22,6 +22,7 @@ github.use("/token", authMiddleware);
 
 github.post("/token", async (c) => {
   const userId = c.get("userId");
+  const token = c.get("accessToken");
 
   let body: { github_token: string };
   try {
@@ -40,7 +41,7 @@ github.post("/token", async (c) => {
     return c.json({ error: "Invalid GitHub token" }, 400);
   }
 
-  const supabase = getSupabaseAdminClient();
+  const supabase = getSupabaseServerClient(token);
 
   const { error } = await supabase
     .from("profiles")
@@ -127,7 +128,7 @@ github.post("/push", async (c) => {
   }
 
   // Get the user's GitHub token from the profiles table
-  const supabase = getSupabaseAdminClient();
+  const supabase = getSupabaseServerClient(c.get("accessToken"));
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
     .select("github_token")
@@ -215,7 +216,7 @@ github.use("/status", authMiddleware);
 github.get("/status", async (c) => {
   const userId = c.get("userId");
 
-  const supabase = getSupabaseAdminClient();
+  const supabase = getSupabaseServerClient(c.get("accessToken"));
 
   const { data, error } = await supabase
     .from("profiles")

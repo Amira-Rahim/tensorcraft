@@ -11,6 +11,11 @@ progress.use("*", authMiddleware);
 
 /**
  * GET /api/progress?themeId=deep-orbit — Get user's progress for a theme.
+ *
+ * NOTE: As of V0.5, the Next.js frontend queries Supabase directly via
+ * lib/progress-client.ts rather than using this endpoint. This route is
+ * retained for future mobile/external API consumers and admin tooling.
+ * It provides server-side validation that the direct client calls do not.
  */
 progress.get("/", async (c) => {
   const userId = c.get("userId");
@@ -50,6 +55,11 @@ progress.get("/", async (c) => {
 
 /**
  * POST /api/progress — Create or update lesson progress.
+ *
+ * NOTE: As of V0.5, the Next.js frontend writes progress directly via
+ * Supabase client in lib/progress-client.ts. This endpoint is retained
+ * for future mobile/external API consumers. It includes server-side
+ * validation and the started_at preservation fix (CRITICAL #4).
  */
 progress.post("/", async (c) => {
   const userId = c.get("userId");
@@ -167,6 +177,10 @@ progress.post("/", async (c) => {
 /**
  * GET /api/progress/summary — Aggregated progress across all themes.
  * Returns per-theme counts of completed/total lessons and current streak.
+ *
+ * NOTE: As of V0.5, the dashboard queries Supabase directly (server
+ * component in dashboard/page.tsx). This endpoint aggregates the same
+ * data and is retained for future mobile/external API consumers.
  */
 progress.get("/summary", async (c) => {
   const userId = c.get("userId");

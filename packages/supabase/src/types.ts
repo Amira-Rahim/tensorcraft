@@ -1,7 +1,7 @@
 /**
  * Tensorcraft Database Types
  *
- * These types mirror the Supabase schema defined in migrations 001–008.
+ * These types mirror the Supabase schema defined in migrations 001–011.
  * In production, these should be auto-generated via `supabase gen types typescript`.
  * For now, they're manually maintained to match the migrations.
  */
@@ -25,6 +25,16 @@ export interface Database {
           weekly_digest: boolean;
           preferred_theme_id: string | null;
           role: UserRole;
+          fe_background: string | null;
+          learning_goal: string | null;
+          fe_framework:
+            | "react"
+            | "vue"
+            | "angular"
+            | "svelte"
+            | "vanilla"
+            | null;
+          fe_experience_years: number | null;
           created_at: string;
           updated_at: string;
         };
@@ -41,6 +51,16 @@ export interface Database {
           weekly_digest?: boolean;
           preferred_theme_id?: string | null;
           role?: UserRole;
+          fe_background?: string | null;
+          learning_goal?: string | null;
+          fe_framework?:
+            | "react"
+            | "vue"
+            | "angular"
+            | "svelte"
+            | "vanilla"
+            | null;
+          fe_experience_years?: number | null;
         };
         Update: {
           display_name?: string | null;
@@ -53,6 +73,16 @@ export interface Database {
           weekly_digest?: boolean;
           preferred_theme_id?: string | null;
           role?: UserRole;
+          fe_background?: string | null;
+          learning_goal?: string | null;
+          fe_framework?:
+            | "react"
+            | "vue"
+            | "angular"
+            | "svelte"
+            | "vanilla"
+            | null;
+          fe_experience_years?: number | null;
           updated_at?: string;
         };
         Relationships: [];
@@ -278,6 +308,108 @@ export interface Database {
         Relationships: [
           {
             foreignKeyName: "exercise_attempts_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      skill_genome: {
+        Row: {
+          id: string;
+          user_id: string;
+          theme_id: string;
+          skill_axis:
+            | "data_prep"
+            | "model_arch"
+            | "training"
+            | "evaluation"
+            | "deployment"
+            | "fe_integration";
+          proficiency: number;
+          confidence: number;
+          velocity: number;
+          updated_at: string;
+          created_at: string;
+        };
+        Insert: {
+          user_id: string;
+          theme_id: string;
+          skill_axis:
+            | "data_prep"
+            | "model_arch"
+            | "training"
+            | "evaluation"
+            | "deployment"
+            | "fe_integration";
+          proficiency?: number;
+          confidence?: number;
+          velocity?: number;
+        };
+        Update: {
+          proficiency?: number;
+          confidence?: number;
+          velocity?: number;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "skill_genome_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      skill_events: {
+        Row: {
+          id: string;
+          user_id: string;
+          theme_id: string;
+          event_type:
+            | "exercise_pass"
+            | "exercise_fail"
+            | "hint_reveal"
+            | "solution_view"
+            | "lesson_complete"
+            | "bridge_interaction"
+            | "review_recall";
+          skill_axis:
+            | "data_prep"
+            | "model_arch"
+            | "training"
+            | "evaluation"
+            | "deployment"
+            | "fe_integration";
+          metadata: Record<string, unknown>;
+          created_at: string;
+        };
+        Insert: {
+          user_id: string;
+          theme_id: string;
+          event_type:
+            | "exercise_pass"
+            | "exercise_fail"
+            | "hint_reveal"
+            | "solution_view"
+            | "lesson_complete"
+            | "bridge_interaction"
+            | "review_recall";
+          skill_axis:
+            | "data_prep"
+            | "model_arch"
+            | "training"
+            | "evaluation"
+            | "deployment"
+            | "fe_integration";
+          metadata?: Record<string, unknown>;
+        };
+        Update: Record<string, never>;
+        Relationships: [
+          {
+            foreignKeyName: "skill_events_user_id_fkey";
             columns: ["user_id"];
             isOneToOne: false;
             referencedRelation: "profiles";

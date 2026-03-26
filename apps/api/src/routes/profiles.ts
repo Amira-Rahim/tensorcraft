@@ -15,6 +15,8 @@ const ALLOWED_FIELDS = [
   "avatar_url",
   "preferred_theme_id",
   "github_username",
+  "email_alerts",
+  "weekly_digest",
 ] as const;
 
 type AllowedField = (typeof ALLOWED_FIELDS)[number];
@@ -61,6 +63,13 @@ function validateField(field: AllowedField, value: unknown): string | null {
         !/^[a-zA-Z0-9]([a-zA-Z0-9-]{0,37}[a-zA-Z0-9])?$/.test(value)
       ) {
         return "github_username must be a valid GitHub username (alphanumeric and hyphens, max 39 chars)";
+      }
+      return null;
+
+    case "email_alerts":
+    case "weekly_digest":
+      if (typeof value !== "boolean") {
+        return `${field} must be a boolean`;
       }
       return null;
 
