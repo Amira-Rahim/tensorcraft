@@ -94,7 +94,10 @@ export function ReportIssueButton() {
       return;
     }
     setScreenshot(file);
-    if (status === "error") setStatus("idle");
+    if (status === "error") {
+      setStatus("idle");
+      setErrorMessage("");
+    }
   }
 
   async function handleSubmit() {
@@ -221,6 +224,7 @@ export function ReportIssueButton() {
           overflowY: "auto",
           background: "var(--tc-surface)",
           border: "2px solid var(--tc-border)",
+          borderRadius: 12,
           padding: 24,
           transform: open ? "translateY(0)" : "translateY(20px)",
           opacity: open ? 1 : 0,
