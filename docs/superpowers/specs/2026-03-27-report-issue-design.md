@@ -65,27 +65,24 @@ Anchored bottom-right, slides up from the button position with CSS transition. U
 - **Public endpoint** — no auth required, but auth middleware runs to capture `userId` if available
 - **Rate limit:** 5 reports per minute per IP (stricter than default 120/min to prevent spam)
 - **Mounted in:** `apps/api/src/index.ts`
+- **Content type:** `multipart/form-data` (not JSON) — the global body limit is 1MB for JSON, but screenshots can be up to 5MB. Using multipart with a route-specific body limit override (8MB to account for overhead) avoids the global constraint.
 
-**Request body:**
+**Request fields (multipart/form-data):**
 
-```json
-{
-  "category": "bug | feature_request | content_issue | payment_problem | other",
-  "description": "string (10–2000 chars)",
-  "severity": "low | medium | high | critical",
-  "email": "string (required if unauthenticated)",
-  "screenshot": "base64 string (optional, max 5MB decoded)",
-  "context": {
-    "url": "string",
-    "userAgent": "string",
-    "viewport": { "width": "number", "height": "number" }
-  }
-}
-```
+| Field         | Type        | Required    | Notes                                                                                |
+| ------------- | ----------- | ----------- | ------------------------------------------------------------------------------------ |
+| `category`    | string      | Yes         | bug, feature_request, content_issue, payment_problem, other                          |
+| `description` | string      | Yes         | 10–2000 chars                                                                        |
+| `severity`    | string      | Yes         | low, medium, high, critical                                                          |
+| `email`       | string      | Conditional | Required if unauthenticated; always populated for authenticated users (from session) |
+| `screenshot`  | file        | No          | `image/*`, max 5MB                                                                   |
+| `context`     | JSON string | Yes         | `{ url, userAgent, viewport: { width, height } }`                                    |
 
-**Validation:** Same pattern as other Hono routes — JSON parse with try-catch, field-by-field checks (length, enum membership, email format, base64 size), structured error responses.
+**Email handling:** The API always stores an email in the `issues.email` column. For authenticated users, the API reads the email from the Supabase session (`auth.users.email`) — the frontend does not send it. For anonymous users, the email field is required in the form submission. This ensures every issue has a contact email for follow-up.
 
-**Screenshot handling:** If provided, decode base64, upload to Supabase Storage bucket (`issue-screenshots`), store resulting URL in the DB row.
+**Validation:** Same pattern as other Hono routes — field-by-field checks (length, enum membership, email format, file size/type), structured error responses.
+
+**Screenshot handling:** If provided, upload the file directly to Supabase Storage bucket (`issue-screenshots`), store resulting URL in the DB row.
 
 **Response:** `201 { id: string, message: "Issue reported successfully" }`
 
