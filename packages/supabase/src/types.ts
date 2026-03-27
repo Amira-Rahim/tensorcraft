@@ -454,6 +454,10 @@ export interface Database {
         Args: { p_theme_id: string };
         Returns: void;
       };
+      refresh_dashboard_stats: {
+        Args: Record<string, never>;
+        Returns: void;
+      };
     };
   };
 }

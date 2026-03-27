@@ -127,10 +127,13 @@ exerciseAttempts.get("/", async (c) => {
 
   let query = supabase
     .from("exercise_attempts")
-    .select("*")
+    .select(
+      "id, exercise_slug, lesson_id, theme_id, passed, score, hints_used, solution_viewed, duration_ms, attempted_at",
+    )
     .eq("user_id", userId)
     .eq("lesson_id", lessonId)
-    .order("attempted_at", { ascending: false });
+    .order("attempted_at", { ascending: false })
+    .limit(100);
 
   if (themeId) {
     query = query.eq("theme_id", themeId);

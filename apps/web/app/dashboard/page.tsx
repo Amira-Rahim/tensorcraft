@@ -29,7 +29,8 @@ export default async function DashboardPage() {
 
   if (!user) redirect("/auth/sign-in");
 
-  // Fetch profile, progress, streaks, and exercise attempts in parallel
+  // Fetch profile, progress, streaks, and exercise attempts in parallel.
+  // Queries are scoped to the user and limited to prevent unbounded fetches.
   const [
     { data: profile },
     { data: progressRecords },
@@ -45,7 +46,8 @@ export default async function DashboardPage() {
       .from("theme_progress")
       .select("theme_id, module_id, lesson_id, status, updated_at")
       .eq("user_id", user.id)
-      .order("updated_at", { ascending: false }),
+      .order("updated_at", { ascending: false })
+      .limit(300),
     supabase
       .from("streaks")
       .select("theme_id, current_streak, longest_streak")
@@ -55,7 +57,7 @@ export default async function DashboardPage() {
       .select("score, attempted_at, lesson_id, theme_id")
       .eq("user_id", user.id)
       .order("attempted_at", { ascending: false })
-      .limit(500),
+      .limit(200),
   ]);
 
   const streaks = streaksRaw ?? [];

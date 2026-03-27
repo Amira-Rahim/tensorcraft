@@ -20,7 +20,11 @@ RUN pnpm --filter @tensorcraft/api build
 FROM node:20-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
+# Cap V8 heap at 200MB (80% of 256MB container) to prevent OOM kills
+ENV NODE_OPTIONS="--max-old-space-size=200"
 COPY --from=build /app/apps/api/dist ./dist
 COPY --from=build /app/node_modules ./node_modules
+HEALTHCHECK --interval=15s --timeout=5s --start-period=10s --retries=3 \
+  CMD wget -qO- http://localhost:3001/api/health || exit 1
 EXPOSE 3001
 CMD ["node", "dist/index.js"]

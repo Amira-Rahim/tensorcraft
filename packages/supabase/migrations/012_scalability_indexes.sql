@@ -39,7 +39,22 @@ GROUP BY user_id, theme_id;
 CREATE UNIQUE INDEX IF NOT EXISTS idx_dashboard_stats_user_theme
   ON dashboard_stats(user_id, theme_id);
 
+-- First refresh must omit CONCURRENTLY
 REFRESH MATERIALIZED VIEW dashboard_stats;
+
+-- RPC function for refreshing the view from application code or Inngest.
+-- After the first refresh above, all subsequent refreshes use CONCURRENTLY
+-- to avoid blocking reads during refresh.
+CREATE OR REPLACE FUNCTION public.refresh_dashboard_stats()
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  REFRESH MATERIALIZED VIEW CONCURRENTLY dashboard_stats;
+END;
+$$;
 
 -- ============================================================
 -- STREAK RACE CONDITION FIX

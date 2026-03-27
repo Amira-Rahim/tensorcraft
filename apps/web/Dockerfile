@@ -25,10 +25,14 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV HOSTNAME="0.0.0.0"
 ENV PORT=3000
+# Cap V8 heap at 400MB (80% of 512MB container) to prevent OOM kills
+ENV NODE_OPTIONS="--max-old-space-size=400"
 
 COPY --from=build /app/apps/web/.next/standalone ./
 COPY --from=build /app/apps/web/.next/static ./apps/web/.next/static
 COPY --from=build /app/apps/web/public ./apps/web/public
 
+HEALTHCHECK --interval=15s --timeout=5s --start-period=15s --retries=3 \
+  CMD wget -qO- http://localhost:3000/ || exit 1
 EXPOSE 3000
 CMD ["node", "apps/web/server.js"]

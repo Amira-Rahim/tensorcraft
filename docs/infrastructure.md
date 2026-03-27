@@ -83,6 +83,23 @@ fly secrets set SUPABASE_URL="..." SUPABASE_SERVICE_ROLE_KEY="..." \
 
 ## Supabase Configuration
 
+### Tier Requirements
+
+| Users | Min Tier | Why |
+|-------|----------|-----|
+| <10K | Pro ($25/mo) | 500K requests/month sufficient |
+| 10K-100K | Pro + compute add-on ($75-150/mo) | Need larger connection pool + more compute |
+| 100K-500K | Team ($599/mo) or Enterprise | 1M+ requests/month, read replicas, priority support |
+| 500K+ | Enterprise (custom) | Custom connection limits, dedicated compute, SLA |
+
+**Current bottleneck:** Supabase REST API requests are metered. Each Supabase query from the frontend or API counts as one request. The dashboard page makes 5 queries per load. At 100K monthly active users × 10 page loads/month × 5 queries = 5M requests/month — exceeds Pro tier limits.
+
+**Mitigation strategies (already implemented or planned):**
+- Dashboard query limits (300 rows max) — reduces data transfer
+- JWT caching (30s) — reduces auth validation calls by ~95%
+- Materialized view — replaces 4 queries with 1 (Phase 3)
+- Redis cache layer — intercepts hot reads before Supabase (Phase 4)
+
 ### Connection Pooling
 
 - **Pooler:** Supavisor (transaction mode)
