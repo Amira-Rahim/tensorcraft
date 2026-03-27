@@ -111,6 +111,14 @@ export function ReportIssueButton() {
       setStatus("error");
       return;
     }
+    if (
+      !isAuthenticated &&
+      (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()))
+    ) {
+      setErrorMessage("A valid email is required");
+      setStatus("error");
+      return;
+    }
 
     setStatus("loading");
     setErrorMessage("");
@@ -265,7 +273,12 @@ export function ReportIssueButton() {
             <div>
               <div
                 className="font-mono mb-1.5"
-                style={{ fontSize: 10, color: "var(--tc-muted)" }}
+                style={{
+                  fontSize: 10,
+                  color: "var(--tc-muted)",
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase" as const,
+                }}
               >
                 <label htmlFor="report-category">Category</label>
               </div>
@@ -281,6 +294,7 @@ export function ReportIssueButton() {
                   color: "var(--tc-text)",
                   fontSize: 12,
                   padding: "10px 14px",
+                  borderRadius: 0,
                 }}
               >
                 {CATEGORIES.map((c) => (
@@ -295,7 +309,12 @@ export function ReportIssueButton() {
             <div>
               <div
                 className="font-mono mb-1.5"
-                style={{ fontSize: 10, color: "var(--tc-muted)" }}
+                style={{
+                  fontSize: 10,
+                  color: "var(--tc-muted)",
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase" as const,
+                }}
               >
                 <label htmlFor="report-description">Description</label>
               </div>
@@ -337,7 +356,12 @@ export function ReportIssueButton() {
             <div>
               <div
                 className="font-mono mb-1.5"
-                style={{ fontSize: 10, color: "var(--tc-muted)" }}
+                style={{
+                  fontSize: 10,
+                  color: "var(--tc-muted)",
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase" as const,
+                }}
               >
                 Severity
               </div>
@@ -376,7 +400,12 @@ export function ReportIssueButton() {
             <div>
               <div
                 className="font-mono mb-1.5"
-                style={{ fontSize: 10, color: "var(--tc-muted)" }}
+                style={{
+                  fontSize: 10,
+                  color: "var(--tc-muted)",
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase" as const,
+                }}
               >
                 Screenshot
               </div>
@@ -397,7 +426,7 @@ export function ReportIssueButton() {
                   border: `2px dashed ${dragging ? "var(--tc-primary)" : "var(--tc-border)"}`,
                   padding: "16px 12px",
                   cursor: "pointer",
-                  fontSize: 10,
+                  fontSize: 11,
                   color: "var(--tc-muted)",
                   transition: "border-color 0.15s ease",
                 }}
@@ -446,9 +475,14 @@ export function ReportIssueButton() {
               <div>
                 <div
                   className="font-mono mb-1.5"
-                  style={{ fontSize: 10, color: "var(--tc-muted)" }}
+                  style={{
+                    fontSize: 10,
+                    color: "var(--tc-muted)",
+                    letterSpacing: "0.12em",
+                    textTransform: "uppercase" as const,
+                  }}
                 >
-                  <label htmlFor="report-email">Email (optional)</label>
+                  <label htmlFor="report-email">Email (for follow-up)</label>
                 </div>
                 <input
                   id="report-email"
