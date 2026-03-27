@@ -177,44 +177,85 @@ export async function getLessonStatus(themeId: string, lessonId: string) {
   return data;
 }
 
-/** Emit a skill event for the Skill Genome (fire-and-forget) */
+/** ── Skill Event Buffer ────────────────────────────── */
+
+interface BufferedEvent {
+  themeId: string;
+  eventType: string;
+  skillAxis: string;
+  metadata: Record<string, unknown>;
+}
+
+let eventBuffer: BufferedEvent[] = [];
+let flushTimer: ReturnType<typeof setTimeout> | null = null;
+const FLUSH_INTERVAL_MS = 5_000;
+const MAX_BUFFER_SIZE = 50;
+
+async function flushEventBuffer() {
+  if (eventBuffer.length === 0) return;
+
+  const events = [...eventBuffer];
+  eventBuffer = [];
+
+  const supabase = getSupabaseBrowserClient();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  if (!session?.access_token) return;
+
+  const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+
+  // keepalive: true ensures the request survives page navigation/unload
+  fetch(`${apiBase}/api/skill-events/batch`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${session.access_token}`,
+    },
+    body: JSON.stringify({ events }),
+    keepalive: true,
+  }).catch(() => {
+    // Silently fail — skill events are non-critical
+  });
+}
+
+// Flush on page visibility change (user navigating away)
+if (typeof document !== "undefined") {
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") {
+      flushEventBuffer();
+    }
+  });
+}
+
+/** Emit a skill event — buffered, flushed every 5s or on page leave */
 export function emitSkillEvent(
   themeId: string,
   eventType: string,
   skillAxis: string | undefined,
   metadata: Record<string, unknown> = {},
 ) {
-  // Skip if no skill axis is defined (unannotated content)
   if (!skillAxis) return;
 
-  const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+  eventBuffer.push({ themeId, eventType, skillAxis, metadata });
 
-  // Get the access token for Bearer auth, then fire-and-forget
-  const supabase = getSupabaseBrowserClient();
-  supabase.auth
-    .getSession()
-    .then(({ data: { session } }) => {
-      if (!session?.access_token) return;
+  // Flush immediately if buffer is full
+  if (eventBuffer.length >= MAX_BUFFER_SIZE) {
+    if (flushTimer) {
+      clearTimeout(flushTimer);
+      flushTimer = null;
+    }
+    flushEventBuffer();
+    return;
+  }
 
-      fetch(`${apiBase}/api/skill-events`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify({
-          themeId,
-          eventType,
-          skillAxis,
-          metadata,
-        }),
-      }).catch(() => {
-        // Silently fail — skill events are non-critical
-      });
-    })
-    .catch(() => {
-      // No session — skip event
-    });
+  // Schedule flush
+  if (!flushTimer) {
+    flushTimer = setTimeout(() => {
+      flushTimer = null;
+      flushEventBuffer();
+    }, FLUSH_INTERVAL_MS);
+  }
 }
 
 /** Check how many exercises in a lesson have a passing attempt */

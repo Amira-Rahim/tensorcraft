@@ -1,0 +1,20 @@
+app = "tensorcraft-api"
+primary_region = "iad"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[http_service]
+  internal_port = 3001
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 2
+
+[checks]
+  [checks.health]
+    type = "http"
+    port = 3001
+    path = "/api/health"
+    interval = "10s"
+    timeout = "5s"

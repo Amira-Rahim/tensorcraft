@@ -603,6 +603,30 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] Drive all module/lesson counts from content source (THEME_CONTENT constant in shared package)
 - [x] Never hardcode — pricing page derives counts from THEME_CONTENT constant
 
+### 7h-2. Scalability Infrastructure
+
+> See `docs/infrastructure.md` for full deployment architecture and `docs/superpowers/specs/2026-03-27-scalability-design.md` for the design spec.
+
+**Phase 1-2 (Complete):**
+
+- [x] Migration 012: Missing indexes (exercise_attempts, skill_events, theme_progress)
+- [x] Migration 012: Materialized view `dashboard_stats` for aggregated progress
+- [x] Migration 012: Streak advisory lock race condition fix
+- [x] Migration 013: skill_events monthly partitioning
+- [x] Upstash Redis client singleton + cache-through helper
+- [x] Mandatory Redis rate limiting (removed in-memory fallback)
+- [x] JWT token caching (30s TTL via Redis)
+- [x] Batch skill events endpoint + client-side event buffering
+- [x] Dockerfiles for API and web (Fly.io deployment-ready)
+- [x] Fly.io configs (fly.toml) for both services
+- [x] Next.js standalone output mode
+
+**Phase 3-5 (Pending):**
+
+- [ ] Phase 3: ISR lesson pages + SWR dashboard (Week 5-6)
+- [ ] Phase 4: Redis cache layer + read replica routing (Week 7-8)
+- [ ] Phase 5: Inngest background workers — genome computation, event archival (Week 9-10)
+
 ### 7i. Arena (V1.0+)
 
 - [ ] Arena: weekly ML challenges with community leaderboard

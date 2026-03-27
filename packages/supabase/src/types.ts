@@ -432,6 +432,18 @@ export interface Database {
         };
         Relationships: [];
       };
+      dashboard_stats: {
+        Row: {
+          user_id: string;
+          theme_id: string;
+          total_lessons: number;
+          completed_lessons: number;
+          in_progress_lessons: number;
+          completion_pct: number | null;
+          last_activity: string | null;
+        };
+        Relationships: [];
+      };
     };
     Functions: {
       is_admin: {
