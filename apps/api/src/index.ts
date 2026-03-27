@@ -13,6 +13,7 @@ import { exerciseAttempts } from "./routes/exercise-attempts";
 import { admin } from "./routes/admin";
 import { github } from "./routes/github";
 import { skillEvents } from "./routes/skill-events";
+import { issues } from "./routes/issues";
 // V1: Newsletter endpoint — Kit integration + waitlist dual-write.
 // Unmounted until email sequences are ready. See routes/newsletter.ts.
 // import { newsletter } from "./routes/newsletter";
@@ -22,7 +23,13 @@ const app = new Hono();
 // Global middleware
 app.use("*", securityHeadersMiddleware);
 app.use("*", corsMiddleware);
-app.use("*", bodyLimit({ maxSize: 1024 * 1024 })); // 1 MB global limit
+// Body limit all routes EXCEPT /api/issues (needs 8MB for screenshot uploads)
+app.use("*", async (c, next) => {
+  if (c.req.path.startsWith("/api/issues")) {
+    return next();
+  }
+  return bodyLimit({ maxSize: 1024 * 1024 })(c, next);
+});
 
 // Rate limit all routes EXCEPT the Stripe webhook (Stripe retries on failure)
 app.use("*", async (c, next) => {
@@ -59,6 +66,7 @@ app.route("/api/exercise-attempts", exerciseAttempts);
 app.route("/api/admin", admin);
 app.route("/api/github", github);
 app.route("/api/skill-events", skillEvents);
+app.route("/api/issues", issues);
 // V1: app.route("/api/newsletter", newsletter); // Unmounted — see line 16
 
 // Root
