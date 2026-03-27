@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import { Nav } from "./components/nav";
 import { Ticker } from "./components/ticker";
 import { CookieConsent } from "./components/cookie-consent";
+import { ReportIssueButton } from "./components/report-issue-button";
 import { SiteFooter } from "./components/site-footer";
 import { AnalyticsProvider } from "./components/analytics-provider";
 import { PlausibleScript } from "./components/plausible-script";
@@ -139,6 +140,7 @@ export default function RootLayout({
           <SessionListener />
           <SiteFooter />
           <CookieConsent />
+          <ReportIssueButton />
         </AnalyticsProvider>
       </body>
     </html>
