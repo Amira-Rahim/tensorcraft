@@ -7,7 +7,9 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "vitest run --config ../../vitest.config.ts",
+    "test:watch": "vitest --config ../../vitest.config.ts"
   },
   "dependencies": {
     "@hono/node-server": "^1.13.0",
@@ -16,6 +18,7 @@
     "@tensorcraft/supabase": "workspace:*",
     "@upstash/redis": "^1.37.0",
     "hono": "^4.7.0",
+    "resend": "^6.9.4",
     "stripe": "^20.4.1"
   },
   "devDependencies": {
