@@ -1,6 +1,7 @@
 "use client";
 
 import { getSupabaseBrowserClient } from "./supabase/client";
+import { trackStreakAchieved } from "@/lib/analytics";
 
 interface ProgressUpdate {
   themeId: string;
@@ -107,9 +108,20 @@ export async function markLessonCompleted(
 
   if (error) return null;
 
-  // Update streak via secure RPC (fire-and-forget)
+  // Streak update + genome recomputation + analytics (all fire-and-forget)
   supabase
     .rpc("record_streak_activity", { p_theme_id: themeId })
+    .then(() => {
+      trackStreakAchieved(1);
+    })
+    .catch(() => {});
+
+  supabase
+    .rpc("compute_user_skill_genome", {
+      p_user_id: user.id,
+      p_theme_id: themeId,
+    })
+    .then(() => {})
     .catch(() => {});
 
   return data;

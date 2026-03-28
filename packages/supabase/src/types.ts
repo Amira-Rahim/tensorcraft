@@ -458,6 +458,10 @@ export interface Database {
         Args: Record<string, never>;
         Returns: void;
       };
+      compute_user_skill_genome: {
+        Args: { p_user_id: string; p_theme_id: string };
+        Returns: void;
+      };
     };
   };
 }

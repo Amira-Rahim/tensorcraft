@@ -23,6 +23,7 @@ import {
 import type { ExerciseData, ExerciseSubmitResult } from "@tensorcraft/ui";
 
 import type { Framework } from "@tensorcraft/shared";
+import { trackExerciseSubmitted } from "@/lib/analytics";
 
 interface LessonContentProps {
   lesson: {
@@ -107,6 +108,8 @@ export function LessonContent({
         // Silently ignore — attempt recording is best-effort.
         // The user can still use the exercise without auth.
       });
+
+      trackExerciseSubmitted(themeId, lessonId, result.passed, result.score);
     },
     [themeId, lessonId],
   );

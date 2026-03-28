@@ -146,6 +146,22 @@ export default async function CapstonePage({ params }: Props) {
         overflow: "hidden",
       }}
     >
+      <style>{`
+        @media print {
+          nav, footer, .ambient-bg, .no-print { display: none !important; }
+          body { background: white !important; color: black !important; }
+          .print-certificate {
+            border: 2px solid #333 !important;
+            background: white !important;
+            color: black !important;
+            padding: 48px !important;
+            box-shadow: none !important;
+          }
+          .print-certificate * { color: black !important; }
+          .print-certificate .cert-accent { color: #6BAA8A !important; }
+          @page { size: landscape; margin: 1cm; }
+        }
+      `}</style>
       <AmbientBackground count={260} />
 
       {/* Nav */}
@@ -175,7 +191,7 @@ export default async function CapstonePage({ params }: Props) {
 
       {/* Hero */}
       <div
-        className="relative z-[1] text-center"
+        className="relative z-[1] text-center no-print"
         style={{
           padding: "80px 32px 60px",
           borderBottom: `1px solid ${P.border}`,
@@ -226,7 +242,7 @@ export default async function CapstonePage({ params }: Props) {
 
       {/* Stats */}
       <div
-        className="relative z-[1]"
+        className="relative z-[1] no-print"
         style={{ borderBottom: `1px solid ${P.border}` }}
       >
         <div className="max-w-[1000px] mx-auto grid grid-cols-2 md:grid-cols-4">
@@ -273,7 +289,7 @@ export default async function CapstonePage({ params }: Props) {
         style={{ padding: "56px 32px 80px" }}
       >
         <div
-          className="font-mono mb-2"
+          className="font-mono mb-2 no-print"
           style={{
             fontSize: 9,
             color: P.muted,
@@ -283,7 +299,7 @@ export default async function CapstonePage({ params }: Props) {
           // YOUR JOURNEY
         </div>
         <h2
-          className="font-mono font-bold mb-10"
+          className="font-mono font-bold mb-10 no-print"
           style={{
             fontSize: 22,
             color: P.text,
@@ -294,7 +310,7 @@ export default async function CapstonePage({ params }: Props) {
         </h2>
 
         {/* Timeline row */}
-        <div className="flex mb-14 overflow-x-auto">
+        <div className="flex mb-14 overflow-x-auto no-print">
           {journey.map((m, i) => (
             <div
               key={m.id}
@@ -351,7 +367,7 @@ export default async function CapstonePage({ params }: Props) {
 
         {/* Certificate card */}
         <div
-          className="relative overflow-hidden"
+          className="relative overflow-hidden print-certificate"
           style={{
             border: `2px solid ${P.primary}`,
             background: P.surface,
@@ -419,6 +435,11 @@ export default async function CapstonePage({ params }: Props) {
           </div>
         </div>
 
+        {/* Download button */}
+        <div className="mt-8 no-print">
+          <CapstoneClient.CertificateDownloadButton />
+        </div>
+
         {/* Next theme teaser */}
         {teaserTheme && (
           <Link
@@ -427,7 +448,7 @@ export default async function CapstonePage({ params }: Props) {
                 ? `/themes/${teaserTheme.slug}`
                 : "/themes"
             }
-            className="flex items-center gap-6 mt-8"
+            className="flex items-center gap-6 mt-8 no-print"
             style={{
               border: `2px solid ${P.border}`,
               background: P.surface,

@@ -66,4 +66,20 @@ function ShareButton({ border, text }: { border: string; text: string }) {
   );
 }
 
-export const CapstoneClient = { DashboardButton, ShareButton };
+function CertificateDownloadButton() {
+  return (
+    <button
+      type="button"
+      onClick={() => window.print()}
+      className="inline-flex items-center gap-2 px-6 py-3 text-sm font-mono font-semibold border-2 border-primary text-primary transition-all hover:bg-primary hover:text-[#1C1C1C]"
+    >
+      Download Certificate (PDF) ↓
+    </button>
+  );
+}
+
+export const CapstoneClient = {
+  DashboardButton,
+  ShareButton,
+  CertificateDownloadButton,
+};

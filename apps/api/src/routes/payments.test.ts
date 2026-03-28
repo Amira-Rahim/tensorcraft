@@ -151,7 +151,7 @@ describe("POST /api/payments/webhook", () => {
 
     expect(res.status).toBe(200);
     expect(mockUpdate).toHaveBeenCalledWith({ status: "refunded" });
-    expect(mockEq).toHaveBeenCalledWith("stripe_session_id", "pi_789");
+    expect(mockEq).toHaveBeenCalledWith("stripe_payment_intent", "pi_789");
   });
 
   it("acknowledges unhandled event types", async () => {

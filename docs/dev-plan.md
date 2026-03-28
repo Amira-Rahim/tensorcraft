@@ -87,7 +87,7 @@ All blocking decisions have been resolved. This table documents the final choice
   - `streaks` (id, user_id, theme_id, current_streak, longest_streak, last_activity_date) — secured via RPC function
   - `achievements` (id, user_id, achievement_type, theme_id, unlocked_at) — created, not yet used
   - `exercise_attempts` (id, user_id, exercise_slug, lesson_id, theme_id, passed, score, hints_used, solution_viewed, submitted_code, duration_ms)
-  - `skill_genome` (id, user_id, theme_id, skill_axis, proficiency, confidence, velocity) — reads only, computation deferred
+  - `skill_genome` (id, user_id, theme_id, skill_axis, proficiency, confidence, velocity) — computed via `compute_user_skill_genome()` RPC after lesson completion
   - `skill_events` (id, user_id, theme_id, event_type, skill_axis, metadata) — append-only signal log
   - `theme_progress_summary` (VIEW — aggregated completion stats, not yet queried from code)
 - [x] Row-Level Security (RLS) policies on all tables (user can only read/write own data)
@@ -99,7 +99,7 @@ All blocking decisions have been resolved. This table documents the final choice
 ### 1d. Security Foundations (COMPLETE)
 
 - [x] CORS configuration for API endpoints
-- [x] Rate limiting on API routes — in-memory store, 60 req/min per IP. Stripe webhook exempt. (Redis upgrade deferred to 6j.)
+- [x] Rate limiting on API routes — Redis-backed sliding window, 120 req/min per IP, graceful fallback if Redis unavailable. Stripe webhook exempt.
 
 ---
 
@@ -295,8 +295,8 @@ All blocking decisions have been resolved. This table documents the final choice
 
 ### 4e. Email System
 
-- [ ] Kit integration for transactional + marketing emails
-- [ ] Email flows:
+- [x] Kit integration for purchase confirmation emails (V0.5 — webhook tags subscriber, Kit dashboard sends email)
+- [ ] Additional email flows:
   - Welcome series (post-signup, 3-email sequence)
   - Purchase confirmation (immediate, includes receipt)
   - Capstone achievement (congratulations + certificate link)
@@ -350,7 +350,7 @@ All blocking decisions have been resolved. This table documents the final choice
 - [ ] Activity feed (recent lesson completions, achievements)
 - [x] Add `achievements` table (user_id, achievement_type, theme_id, unlocked_at) — milestones and badges
 - [ ] Track `streak_achieved` event (3-day, 7-day, 30-day milestones)
-- [~] Skill radar: radar chart + progress bars rendering on dashboard (`skill-genome.tsx`). Tables `skill_genome` + `skill_events` created (migration 010). Events logged via `/api/skill-events`. **Missing:** proficiency computation pipeline to populate `skill_genome` from `skill_events`. Chart currently shows zeros.
+- [x] Skill radar: radar chart + progress bars rendering on dashboard (`skill-genome.tsx`). Proficiency computed via `compute_user_skill_genome()` SQL function (migration 014), called via RPC after each lesson completion. Weighted scoring: pass=+3, complete=+2, bridge=+1, fail=-0.5, hint=-0.25, solution=-1. Confidence scales with event count.
 - [ ] Progress ring: circular SVG indicator (from dashboard.html prototype)
 - [ ] Share snapshot: html2canvas 2x PNG with watermark, share modal with Clipboard API + Web Share API fallback (ui-ux-notes 2.5)
 - [ ] Activity heatmap (post-V0.5 — query `theme_progress` by `completed_at` date, render SVG)
@@ -515,8 +515,8 @@ All blocking decisions have been resolved. This table documents the final choice
 
 ### 6i. Analytics Event Tracking
 
-- [ ] Implement analytics events: lesson_started, lesson_completed, scroll depth
-- [ ] Track onboarding_completed event
+- [x] Implement analytics events: lesson_started, lesson_completed, exercise_submitted, checkout_completed, theme_selected, streak_achieved (wired in lesson-progress.tsx, lesson-content.tsx, purchase-success, onboarding, progress-client.ts)
+- [x] Track onboarding theme_selected event (onboarding/page.tsx)
 - [ ] PostHog event verification (test each event → appears in dashboard)
 
 ### 6j. API Deployment
