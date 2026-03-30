@@ -35,7 +35,6 @@ export function ReportIssueButton() {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Check auth on mount
   useEffect(() => {
     const supabase = getSupabaseBrowserClient();
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -44,7 +43,6 @@ export function ReportIssueButton() {
     });
   }, []);
 
-  // Close on Escape
   useEffect(() => {
     if (!open) return;
     function handleKey(e: KeyboardEvent) {
@@ -54,7 +52,6 @@ export function ReportIssueButton() {
     return () => document.removeEventListener("keydown", handleKey);
   }, [open]);
 
-  // Close on click outside
   useEffect(() => {
     if (!open) return;
     function handleClick(e: MouseEvent) {
@@ -112,7 +109,7 @@ export function ReportIssueButton() {
       return;
     }
     if (
-      !isAuthenticated &&
+      isAuthenticated === false &&
       (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()))
     ) {
       setErrorMessage("A valid email is required");
@@ -187,7 +184,6 @@ export function ReportIssueButton() {
 
   return (
     <>
-      {/* Inject keyframes */}
       <style>{`
         @keyframes ri-slide-up {
           from { opacity: 0; transform: translateY(16px) scale(0.98); }
@@ -279,11 +275,9 @@ export function ReportIssueButton() {
           maxHeight: "80vh",
           overflowY: open ? "auto" : "hidden",
           overflowX: "hidden",
-          // Glass surface
           background: "color-mix(in srgb, var(--tc-surface) 85%, transparent)",
           backdropFilter: "blur(16px)",
           WebkitBackdropFilter: "blur(16px)",
-          // Neon border glow
           border:
             "1px solid color-mix(in srgb, var(--tc-glow) 30%, transparent)",
           borderRadius: 8,
@@ -293,7 +287,6 @@ export function ReportIssueButton() {
                inset 0 0 8px color-mix(in srgb, var(--tc-glow) 5%, transparent),
                0 24px 48px rgba(0,0,0,0.4)`
             : "none",
-          // Animation
           animation: open ? "ri-slide-up 0.25s ease-out both" : "none",
           opacity: open ? 1 : 0,
           pointerEvents: open ? "auto" : "none",

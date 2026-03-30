@@ -90,18 +90,14 @@ issues.post("/", async (c) => {
     if (token) {
       try {
         const supabase = getSupabaseServerClient(token);
-        const { data, error: authError } = await supabase.auth.getUser();
-        console.log("[issues] getUser result:", {
-          userId: data?.user?.id,
-          email: data?.user?.email,
-          error: authError?.message,
-        });
-        if (data?.user) {
-          userId = data.user.id;
-          userEmail = data.user.email ?? null;
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (user) {
+          userId = user.id;
+          userEmail = user.email ?? null;
         }
-      } catch (err) {
-        console.error("[issues] getUser threw:", err);
+      } catch {
         // Non-fatal — treat as anonymous
       }
     }
