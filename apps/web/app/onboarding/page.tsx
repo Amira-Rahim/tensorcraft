@@ -6,6 +6,7 @@ import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { themes, themeSlugs } from "@tensorcraft/themes";
 import { BRIDGES } from "@tensorcraft/shared";
 import { AmbientBackground } from "@/app/components/ambient-background";
+import { trackThemeSelected } from "@/lib/analytics";
 
 const STEPS = [
   "Welcome",
@@ -91,6 +92,7 @@ export default function OnboardingPage() {
         .eq("id", user.id);
     }
 
+    trackThemeSelected(selectedTheme);
     router.push(`/themes/${selectedTheme}`);
   }, [selectedTheme, bg, goal, framework, router]);
 

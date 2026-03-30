@@ -10,9 +10,9 @@ This document covers the production deployment architecture, scaling configurati
 ## Deployment Topology
 
 ```
-[Cloudflare CDN] → Edge cache (static assets, ISR pages, bridges, glossary)
+[Cloudflare CDN] → Edge cache (static assets, bridges, glossary)
        ↓ (cache miss or dynamic)
-[Fly.io: Next.js Standalone ×2-4] → ISR file cache (per-machine)
+[Fly.io: Next.js Standalone ×2-4] → SSR (ISR planned for Phase 3)
        ↓ (client-side API calls)
 [Cloudflare CDN] → [Fly.io: Hono API ×3-5]
                          → [Upstash Redis] (rate limiting + JWT cache + query cache)
@@ -75,7 +75,7 @@ fly secrets set SUPABASE_URL="..." SUPABASE_SERVICE_ROLE_KEY="..." \
 |------------|-----------|-----|
 | `/_next/static/*` | Cache Everything | 1 year (immutable content hash) |
 | `/bridges/*`, `/glossary/*` | Cache Everything | 24 hours |
-| Lesson pages (ISR) | Respect Origin Headers | 1 hour (`s-maxage=3600`) |
+| Lesson pages (SSR, ISR planned Phase 3) | Bypass Cache | 0 (currently SSR; will use `s-maxage=3600` after ISR) |
 | `/api/*` | Bypass Cache | 0 (pass through to Fly.io) |
 | Dashboard, settings | Bypass Cache | 0 (authenticated, dynamic) |
 
@@ -125,7 +125,7 @@ fly secrets set SUPABASE_URL="..." SUPABASE_SERVICE_ROLE_KEY="..." \
 
 ### Materialized View: `dashboard_stats`
 
-Pre-computed aggregation replacing 4 parallel queries on dashboard load. Refreshes every 5 minutes via pg_cron (Supabase Pro) or Inngest worker (Phase 5).
+Pre-computed aggregation prepared to replace 4 parallel queries on dashboard load. The view is created and populated (migration 012) but the dashboard page has **not yet been migrated** to query it — it still makes 4 parallel Supabase queries with `.limit(300)` and `.limit(200)`. Migration to use the view is planned for Phase 4. Refreshes every 5 minutes via pg_cron (Supabase Pro) or Inngest worker (Phase 5).
 
 **First refresh** after creation must omit `CONCURRENTLY`. Subsequent refreshes use `REFRESH MATERIALIZED VIEW CONCURRENTLY dashboard_stats`.
 
@@ -146,8 +146,9 @@ Pre-computed aggregation replacing 4 parallel queries on dashboard load. Refresh
 
 ### Rate Limiting
 
-Sliding-window algorithm using sorted sets. 60 requests/minute per IP. Consistent across all API instances. Headers returned:
-- `X-RateLimit-Limit: 60`
+Sliding-window algorithm using sorted sets. 120 requests/minute per IP (increased from 60 to support multi-tab usage). Consistent across all API instances. Graceful degradation: if Redis is unavailable, requests are allowed through (logged for monitoring). Headers returned:
+
+- `X-RateLimit-Limit: 120`
 - `X-RateLimit-Remaining: N`
 - `Retry-After: 60` (on 429)
 
@@ -167,6 +168,30 @@ Client-side events are buffered in memory and flushed:
 - On page visibility change / navigation (with `keepalive: true`)
 
 API endpoint `POST /api/skill-events/batch` accepts 1–50 events per request with per-event validation. Reduces DB write pressure by ~5× at scale.
+
+---
+
+## Skill Genome Computation
+
+After each lesson completion, the client calls `compute_user_skill_genome(p_user_id, p_theme_id)` via Supabase RPC (fire-and-forget). The SQL function (migration 014):
+- Reads skill_events from the last 90 days for the user+theme
+- Computes weighted proficiency per skill axis (pass=+3, complete=+2, bridge=+1, fail=-0.5, hint=-0.25, solution=-1)
+- Normalizes to 0–100, computes confidence (event_count/50, capped at 1.0) and velocity (delta from previous)
+- Upserts into `skill_genome` table
+
+The dashboard radar chart reads from `skill_genome` on page load, so proficiency updates appear within seconds of lesson completion.
+
+---
+
+## Email Integration (Kit)
+
+After `checkout.session.completed` in the Stripe webhook handler:
+1. User email is looked up from the `profiles` table
+2. `addSubscriber(email)` adds/updates the subscriber in Kit
+3. `tagSubscriber(email, tagId)` tags them with a purchase tag (numeric ID from env var `KIT_TAG_PURCHASED_DEEP_ORBIT`)
+4. Kit automation triggers the confirmation email based on the tag
+
+Email delivery is fire-and-forget — Kit failures do not block the purchase flow. All email content and design is managed in the Kit dashboard, not in code.
 
 ---
 

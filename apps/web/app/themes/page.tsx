@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { themes } from "@tensorcraft/themes";
-import { BRIDGES } from "@tensorcraft/shared";
+import { PRICING, THEME_CONTENT } from "@tensorcraft/shared";
 import { ComingSoonCard } from "./coming-soon-card";
 import { AmbientBackground } from "@/app/components/ambient-background";
 import type { Metadata } from "next";
@@ -11,15 +11,6 @@ export const metadata: Metadata = {
     "Choose your learning path — 5 themed courses from frontend to ML.",
 };
 
-/** Map theme slugs to display icons */
-const themeIcons: Record<string, string> = {
-  "deep-orbit": "🛸",
-  "neon-protocol": "🌆",
-  "signal-ward": "🩺",
-  "nova-canvas": "🎨",
-  "terra-grid": "⚡",
-};
-
 export default function ThemesPage() {
   const themeList = Object.values(themes);
   const featured = themeList.find((t) => t.status === "launched");
@@ -28,7 +19,7 @@ export default function ThemesPage() {
   return (
     <main className="min-h-screen bg-surface px-6 py-20 relative overflow-hidden">
       <AmbientBackground count={240} />
-      <div className="max-w-5xl mx-auto relative z-10">
+      <div className="max-w-4xl mx-auto relative z-10">
         {/* Hero */}
         <p className="font-mono text-sm text-text-muted mb-2">
           {"// FIVE THEMED WORLDS"}
@@ -37,97 +28,108 @@ export default function ThemesPage() {
           Choose Your World
         </h1>
         <p className="text-lg text-text-muted mb-14 max-w-2xl">
-          Each theme teaches ML through a unique story, domain specialization,
-          and the model you build along the way.
+          Each theme teaches a different ML specialization through a unique
+          narrative. Same depth, different career outcomes.
         </p>
 
         {/* Featured card — Deep Orbit */}
         {featured && (
-          <div className="border-2 border-primary mb-10">
-            <div className="grid grid-cols-1 md:grid-cols-2">
-              {/* Art panel */}
-              <div
-                className="relative flex items-center justify-center p-10 md:p-14"
-                style={{
-                  background: `
-                    linear-gradient(rgba(107,170,138,0.06) 1px, transparent 1px),
-                    linear-gradient(90deg, rgba(107,170,138,0.06) 1px, transparent 1px),
-                    #1A1A1A
-                  `,
-                  backgroundSize: "24px 24px, 24px 24px, 100% 100%",
-                }}
-              >
-                <div className="text-center">
-                  <span className="text-6xl md:text-7xl block mb-4">
-                    {themeIcons[featured.slug] ?? "🚀"}
-                  </span>
-                  <span className="font-mono text-xs uppercase tracking-widest text-primary">
-                    {featured.displayName}
-                  </span>
+          <div className="border-2 border-primary mb-10 bg-surface-raised">
+            {/* Top bar */}
+            <div className="flex items-center justify-between px-7 py-4 border-b border-border">
+              <div className="flex items-center gap-3">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 text-[11px] font-mono font-semibold uppercase tracking-wider bg-primary/10 text-primary">
+                  <span className="w-1.5 h-1.5 bg-primary" />
+                  Available Now
+                </span>
+                <span className="font-mono text-[11px] text-text-muted uppercase tracking-wider">
+                  {featured.specialization}
+                </span>
+              </div>
+              <span className="font-mono text-sm text-text-muted">
+                ${PRICING.single.price}
+              </span>
+            </div>
+
+            {/* Body */}
+            <div className="px-7 py-8 md:px-10 md:py-10">
+              {/* Name + hook */}
+              <h2 className="text-3xl md:text-4xl font-mono font-bold text-primary mb-3 tracking-tight">
+                {featured.displayName}
+              </h2>
+              <p className="text-base text-text-muted mb-6 max-w-xl leading-relaxed">
+                Build a real-time signal classifier entirely in JavaScript.
+                Train, test, and deploy a neural network that runs at 60fps in
+                the browser.
+              </p>
+
+              {/* Career paths — the primary motivator */}
+              <div className="mb-6">
+                <p className="text-[10px] font-mono uppercase tracking-widest text-text-muted mb-2">
+                  Career paths this unlocks
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {featured.careerPaths.map((path) => (
+                    <span
+                      key={path}
+                      className="inline-flex px-3 py-1.5 text-xs font-mono border border-primary/30 text-primary bg-primary/5"
+                    >
+                      {path}
+                    </span>
+                  ))}
                 </div>
               </div>
 
-              {/* Info panel */}
-              <div className="bg-surface-raised p-8 md:p-10 flex flex-col">
-                {/* Badge */}
-                <div className="flex items-center gap-2 mb-4">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 text-[11px] font-mono font-semibold uppercase tracking-wider bg-primary/10 text-primary">
-                    <span className="w-1.5 h-1.5 bg-primary" />
-                    Available Now
-                  </span>
-                </div>
+              {/* What you'll build — concrete, one line */}
+              <p className="text-sm font-mono text-text-muted mb-6">
+                <span className="text-text-primary font-semibold">
+                  Final project:
+                </span>{" "}
+                {featured.modelBuilt}
+              </p>
 
-                <p className="text-xs font-mono uppercase tracking-widest text-text-muted mb-1">
-                  {featured.specialization}
-                </p>
-                <h2 className="text-2xl md:text-3xl font-mono font-bold text-primary mb-3">
-                  {featured.displayName}
-                </h2>
-                <p className="text-sm leading-relaxed text-text-muted mb-4">
-                  {featured.description}
-                </p>
+              {/* Stats */}
+              <div className="flex flex-wrap gap-x-8 gap-y-2 mb-8 text-sm font-mono text-text-muted">
+                <span>
+                  <span className="text-text-primary font-bold">
+                    {THEME_CONTENT.modulesPerTheme}
+                  </span>{" "}
+                  modules
+                </span>
+                <span>
+                  <span className="text-text-primary font-bold">
+                    {THEME_CONTENT.totalLessonsPerTheme}
+                  </span>{" "}
+                  lessons
+                </span>
+                <span>
+                  <span className="text-text-primary font-bold">~25</span> hours
+                </span>
+              </div>
 
-                {/* Build info */}
-                <p className="text-xs font-mono text-text-muted mb-4">
-                  <span className="text-text-primary">You&apos;ll build:</span>{" "}
-                  {featured.modelBuilt}
-                </p>
-
-                {/* Characters */}
-                <p className="text-xs text-text-muted mb-5">
-                  <span className="font-mono text-text-primary">Crew: </span>
-                  {featured.characters.map((c) => c.name).join(", ")}
-                </p>
-
-                {/* Stats row */}
-                <div className="flex gap-6 mb-6 text-xs font-mono text-text-muted">
-                  <span>
-                    <span className="text-text-primary font-semibold">11</span>{" "}
-                    Modules
-                  </span>
-                  <span>
-                    <span className="text-text-primary font-semibold">55</span>{" "}
-                    Lessons
-                  </span>
-                  <span>
-                    <span className="text-text-primary font-semibold">
-                      {BRIDGES.length}
-                    </span>{" "}
-                    FE Bridges
-                  </span>
-                </div>
-
-                {/* CTA */}
+              {/* Dual CTA */}
+              <div className="flex flex-wrap gap-3">
                 <Link
                   href={`/themes/${featured.slug}`}
-                  className="inline-flex items-center justify-center px-6 py-3 text-sm font-mono font-semibold bg-primary text-black transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none"
-                  style={{
-                    boxShadow: "4px 4px 0px rgba(107,170,138,0.4)",
-                  }}
+                  className="inline-flex items-center justify-center px-8 py-3.5 text-sm font-mono font-bold bg-primary text-[#1C1C1C] border-2 border-primary transition-all hover:shadow-[4px_4px_0_var(--tc-primary)] hover:-translate-x-0.5 hover:-translate-y-0.5"
                 >
-                  Begin Learning &rarr;
+                  Try Module 1 Free &rarr;
+                </Link>
+                <Link
+                  href="/pricing"
+                  className="inline-flex items-center justify-center px-8 py-3.5 text-sm font-mono font-bold text-primary border-2 border-primary transition-all hover:bg-primary hover:text-[#1C1C1C]"
+                >
+                  ${PRICING.single.price} &mdash; Full Access
                 </Link>
               </div>
+
+              {/* Story teaser — secondary, for immersion-curious users */}
+              <p className="mt-8 pt-6 border-t border-border text-xs text-text-muted leading-relaxed max-w-xl">
+                <span className="font-mono text-text-primary text-[10px] uppercase tracking-wider">
+                  The story:{" "}
+                </span>
+                {featured.description}
+              </p>
             </div>
           </div>
         )}
@@ -145,9 +147,8 @@ export default function ThemesPage() {
                 accentColor={theme.palette.accent}
                 surfaceColor={theme.palette.surface}
                 mutedColor={theme.palette.muted}
-                icon={themeIcons[theme.slug] ?? "📦"}
                 modelBuilt={theme.modelBuilt}
-                characters={theme.characters.map((c) => c.name)}
+                careerPaths={theme.careerPaths}
               />
             ))}
           </div>

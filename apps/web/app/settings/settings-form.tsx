@@ -659,9 +659,9 @@ export function SettingsForm({
                       &mdash;{" "}
                       {purchase.planId === "single"
                         ? "Single Theme"
-                        : purchase.planId === "double"
+                        : purchase.planId === "twoBundle"
                           ? "Two Themes"
-                          : purchase.planId === "triple"
+                          : purchase.planId === "threeBundle"
                             ? "Three Themes"
                             : purchase.planId}
                     </div>

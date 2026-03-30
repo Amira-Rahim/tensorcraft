@@ -5,6 +5,7 @@ import { getModules } from "@tensorcraft/content";
 import { themes } from "@tensorcraft/themes";
 import { AmbientBackground } from "@/app/components/ambient-background";
 import type { Metadata } from "next";
+import { PurchaseAnalytics } from "./purchase-analytics";
 
 export const metadata: Metadata = {
   title: "Purchase Confirmed | Tensorcraft",
@@ -56,6 +57,10 @@ export default async function PurchaseSuccessPage() {
 
         {purchase && (
           <div className="inline-flex items-center gap-2 px-4 py-2 text-sm font-mono mb-12 border border-border bg-surface-raised text-text-muted">
+            <PurchaseAnalytics
+              planId={purchase.plan_id}
+              amount={purchase.amount}
+            />
             <span className="text-text-primary">{purchase.plan_id}</span>
             <span>&middot;</span>
             <span>${purchase.amount}</span>

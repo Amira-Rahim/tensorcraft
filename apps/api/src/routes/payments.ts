@@ -6,6 +6,7 @@ import {
 } from "@tensorcraft/supabase";
 import { PRICING, isValidThemeSlug } from "@tensorcraft/shared";
 import { authMiddleware } from "../middleware/auth";
+import { addSubscriber, tagSubscriber } from "../lib/kit";
 import type { AppEnv } from "../types";
 
 const payments = new Hono<AppEnv>();
@@ -243,8 +244,8 @@ payments.post("/webhook", async (c) => {
 
       // Validate amount matches known price points
       const plan = PRICING[metadata.planId as keyof typeof PRICING];
-      if (!plan) {
-        console.error("Webhook: Unknown planId:", metadata.planId);
+      if (!plan || metadata.planId === "free") {
+        console.error("Webhook: Invalid planId:", metadata.planId);
         break;
       }
 
@@ -276,6 +277,28 @@ payments.post("/webhook", async (c) => {
       if (upsertError) {
         console.error("Webhook: Failed to upsert purchase:", upsertError);
         return c.json({ error: "Database error" }, 500);
+      }
+
+      // Send purchase confirmation email via Kit (fire-and-forget)
+      try {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("email")
+          .eq("id", userId)
+          .single();
+
+        if (profile?.email) {
+          await addSubscriber(profile.email);
+          const purchaseTagId = process.env.KIT_TAG_PURCHASED_DEEP_ORBIT;
+          if (purchaseTagId) {
+            await tagSubscriber(profile.email, purchaseTagId);
+          }
+        }
+      } catch (emailErr) {
+        console.warn(
+          "Kit email failed (non-blocking):",
+          emailErr instanceof Error ? emailErr.message : emailErr,
+        );
       }
 
       break;
