@@ -109,20 +109,20 @@ export async function markLessonCompleted(
   if (error) return null;
 
   // Streak update + genome recomputation + analytics (all fire-and-forget)
-  supabase
-    .rpc("record_streak_activity", { p_theme_id: themeId })
+  Promise.resolve(
+    supabase.rpc("record_streak_activity", { p_theme_id: themeId }),
+  )
     .then(() => {
       trackStreakAchieved(1);
     })
     .catch(() => {});
 
-  supabase
-    .rpc("compute_user_skill_genome", {
+  Promise.resolve(
+    supabase.rpc("compute_user_skill_genome", {
       p_user_id: user.id,
       p_theme_id: themeId,
-    })
-    .then(() => {})
-    .catch(() => {});
+    }),
+  ).catch(() => {});
 
   return data;
 }

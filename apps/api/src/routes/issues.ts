@@ -188,7 +188,7 @@ issues.post("/", async (c) => {
       screenshot_url: screenshotUrl,
       page_url: context.url ?? "",
       user_agent: context.userAgent ?? "",
-      viewport: context.viewport ?? null,
+      viewport: (context.viewport as Record<string, unknown>) ?? null,
     })
     .select()
     .single();
@@ -210,7 +210,7 @@ issues.post("/", async (c) => {
     category,
     severity,
     description,
-    email,
+    email: email || "",
     pageUrl: context.url ?? "",
     screenshotUrl,
   }).catch((err) => {

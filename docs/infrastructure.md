@@ -1,6 +1,6 @@
 # Tensorcraft — Infrastructure & Deployment
 
-> Last updated: 2026-03-27 (Scalability Phase 1-2 complete)
+> Last updated: 2026-04-06 (Scalability Phase 1-2 complete, Fly.io deploy from root)
 > Design spec: `docs/superpowers/specs/2026-03-27-scalability-design.md`
 
 This document covers the production deployment architecture, scaling configuration, and operational runbook for TensorCraft.
@@ -51,21 +51,26 @@ This document covers the production deployment architecture, scaling configurati
 
 ### Deploying
 
+Both apps must be deployed **from the monorepo root** so that the Docker build context includes all `packages/*` dependencies. Each Dockerfile uses root-relative `COPY` paths (e.g., `COPY packages/shared/package.json packages/shared/`).
+
 ```bash
-# API
-cd apps/api
-fly deploy
+# Deploy from monorepo root — always use --config and --dockerfile flags
+fly deploy --config apps/api/fly.toml --dockerfile apps/api/Dockerfile
+fly deploy --config apps/web/fly.toml --dockerfile apps/web/Dockerfile
 
-# Web
-cd apps/web
-fly deploy
-
-# Set secrets (first deploy only)
-fly secrets set SUPABASE_URL="..." SUPABASE_SERVICE_ROLE_KEY="..." \
+# Set secrets (first deploy only, per app)
+fly secrets set -a tensorcraft-api \
+  SUPABASE_URL="..." SUPABASE_SERVICE_ROLE_KEY="..." \
   STRIPE_SECRET_KEY="..." STRIPE_WEBHOOK_SECRET="..." \
   UPSTASH_REDIS_REST_URL="..." UPSTASH_REDIS_REST_TOKEN="..." \
-  NEXT_PUBLIC_SUPABASE_URL="..." NEXT_PUBLIC_SUPABASE_ANON_KEY="..."
+  ADMIN_API_KEY="..."
+
+fly secrets set -a tensorcraft-web \
+  NEXT_PUBLIC_SUPABASE_URL="..." NEXT_PUBLIC_SUPABASE_ANON_KEY="..." \
+  NEXT_PUBLIC_API_URL="..."
 ```
+
+> **Why from root?** The `.dockerignore` at the repo root controls what enters the build context. Deploying from a subdirectory would make `packages/*` paths invisible to Docker.
 
 ---
 

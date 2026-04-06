@@ -64,7 +64,9 @@ export default function OnboardingPage() {
   const [step, setStep] = useState(0);
   const [bg, setBg] = useState<string | null>(null);
   const [goal, setGoal] = useState<string | null>(null);
-  const [framework, setFramework] = useState<string | null>(null);
+  const [framework, setFramework] = useState<
+    "react" | "vue" | "angular" | "svelte" | "vanilla" | null
+  >(null);
   const [selectedTheme, setSelectedTheme] = useState("deep-orbit");
   const [saving, setSaving] = useState(false);
 

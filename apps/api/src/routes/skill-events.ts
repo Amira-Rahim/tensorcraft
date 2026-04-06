@@ -75,8 +75,8 @@ skillEvents.post("/", async (c) => {
   const { error } = await supabase.from("skill_events").insert({
     user_id: userId,
     theme_id: body.themeId,
-    event_type: body.eventType,
-    skill_axis: body.skillAxis,
+    event_type: body.eventType as EventType,
+    skill_axis: body.skillAxis as SkillAxis,
     metadata: body.metadata ?? {},
   });
 
@@ -140,8 +140,8 @@ skillEvents.post("/batch", async (c) => {
     events.map((e) => ({
       user_id: userId,
       theme_id: e.themeId,
-      event_type: e.eventType,
-      skill_axis: e.skillAxis,
+      event_type: e.eventType as EventType,
+      skill_axis: e.skillAxis as SkillAxis,
       metadata: e.metadata ?? {},
     })),
   );

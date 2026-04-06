@@ -56,7 +56,7 @@ admin.use("*", async (c, next) => {
   try {
     // Run authMiddleware to extract userId
     let authPassed = false;
-    await authMiddleware(c, async () => {
+    await authMiddleware(c as any, async () => {
       authPassed = true;
     });
 

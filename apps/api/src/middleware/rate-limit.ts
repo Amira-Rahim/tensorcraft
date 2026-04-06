@@ -1,6 +1,5 @@
 import type { Context, Next } from "hono";
 import { getRedis } from "../lib/redis";
-import type { AppEnv } from "../types";
 
 const WINDOW_MS = 60_000; // 1 minute
 const MAX_REQUESTS = 120; // 120 req/min per IP (allows multi-tab usage)
@@ -13,7 +12,7 @@ const MAX_REQUESTS = 120; // 120 req/min per IP (allows multi-tab usage)
  * A brief window without rate limiting is better than a total API outage.
  */
 export async function rateLimitMiddleware(
-  c: Context<AppEnv>,
+  c: Context,
   next: Next,
 ): Promise<Response | void> {
   const ip =

@@ -363,6 +363,38 @@ export interface Database {
           },
         ];
       };
+      issues: {
+        Row: {
+          id: string;
+          user_id: string | null;
+          category: string;
+          description: string;
+          severity: string;
+          email: string | null;
+          screenshot_url: string | null;
+          page_url: string;
+          user_agent: string;
+          viewport: Record<string, unknown> | null;
+          created_at: string;
+        };
+        Insert: {
+          user_id?: string | null;
+          category: string;
+          description: string;
+          severity: string;
+          email?: string | null;
+          screenshot_url?: string | null;
+          page_url: string;
+          user_agent?: string;
+          viewport?: Record<string, unknown> | null;
+        };
+        Update: {
+          category?: string;
+          severity?: string;
+          screenshot_url?: string | null;
+        };
+        Relationships: [];
+      };
       skill_events: {
         Row: {
           id: string;

@@ -224,7 +224,8 @@ function AtmosphereCanvas({
           Math.sin((x * 0.05 + t) * 4) *
           Math.exp(-((((x + t * 40) % 120) - 60) ** 2) / 200);
         const y = h * 0.45 + blip * (hot ? 28 : 14);
-        x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        if (x === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
       }
       ctx.stroke();
     }

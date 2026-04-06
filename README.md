@@ -41,6 +41,7 @@ tensorcraft/
 │   ├── themes/       # Theme configuration (colors, assets)
 │   ├── shared/       # Shared utilities and types
 │   ├── config/       # Shared config (ESLint, TypeScript)
+│   ├── github/       # GitHub integration (commit builder)
 │   └── supabase/     # Supabase client and types
 ├── supabase/         # Database migrations
 ├── prototypes/       # HTML design prototypes
@@ -94,6 +95,17 @@ pnpm format         # Format with Prettier
 pnpm test           # Run unit tests (Vitest)
 pnpm test:e2e       # Run end-to-end tests (Playwright)
 ```
+
+## Deployment
+
+Both apps deploy to Fly.io from the **monorepo root** using Docker multi-stage builds:
+
+```bash
+fly deploy --config apps/api/fly.toml --dockerfile apps/api/Dockerfile
+fly deploy --config apps/web/fly.toml --dockerfile apps/web/Dockerfile
+```
+
+See [docs/deployment-guide.md](docs/deployment-guide.md) for environment variables and secrets, and [docs/infrastructure.md](docs/infrastructure.md) for the full production architecture.
 
 ## Content Authoring
 

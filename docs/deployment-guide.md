@@ -6,8 +6,7 @@
 - pnpm 10+
 - Supabase project (with Auth enabled)
 - Stripe account (with webhook endpoint configured)
-- Vercel account (for frontend)
-- Fly.io or Railway account (for API)
+- Fly.io account (for API and web)
 
 ---
 
@@ -15,7 +14,7 @@
 
 ### Frontend (`apps/web`)
 
-Set these in Vercel dashboard or `.env.local`:
+Set these in Fly.io secrets or `.env.local` for local dev:
 
 | Variable | Required | Description |
 |----------|----------|-------------|
@@ -25,7 +24,7 @@ Set these in Vercel dashboard or `.env.local`:
 
 ### API (`apps/api`)
 
-Set these in Fly.io/Railway dashboard or `.env`:
+Set these in Fly.io secrets or `.env` for local dev:
 
 | Variable | Required | Description |
 |----------|----------|-------------|
@@ -70,29 +69,32 @@ pnpm format
 
 ## Deployment Targets
 
-### Frontend (Vercel)
+### API & Web (Fly.io)
 
-The Next.js app deploys to Vercel via Git integration:
+Both apps deploy to Fly.io using multi-stage Docker builds. **Deploy from the monorepo root** so the build context includes all workspace packages:
 
-1. Connect the repository to Vercel
-2. Set root directory to `apps/web`
-3. Set build command: `cd ../.. && pnpm build --filter @tensorcraft/web`
-4. Set output directory: `apps/web/.next`
-5. Add environment variables in Vercel dashboard
-6. Enable preview deployments for PRs
+```bash
+# From the monorepo root
+fly deploy --config apps/api/fly.toml --dockerfile apps/api/Dockerfile
+fly deploy --config apps/web/fly.toml --dockerfile apps/web/Dockerfile
+```
 
-Turborepo handles package dependencies — Vercel's build will compile all workspace packages first.
+Each app has its own `fly.toml` and `Dockerfile` in its directory. The root `.dockerignore` controls what enters the build context.
 
-### API (Fly.io / Railway)
+**API (`tensorcraft-api`):**
 
-The Hono API runs as a long-lived Node.js process:
+- Hono + Node.js, 256MB machines, port 3001
+- Health check: `GET /api/health`
+- V8 heap capped at 200MB
 
-1. Create a Fly.io app or Railway service
-2. Set the root directory to `apps/api`
-3. Build command: `pnpm build`
-4. Start command: `node dist/index.js`
-5. Add environment variables in the platform dashboard
-6. Configure health check endpoint: `GET /api/health`
+**Web (`tensorcraft-web`):**
+
+- Next.js standalone output, 512MB machines, port 3000
+- Static assets served via Fly `[[statics]]` directive
+- V8 heap capped at 400MB
+- ESLint runs in CI, not during `next build` (configured via `eslint.ignoreDuringBuilds`)
+
+Set secrets per app with `fly secrets set -a <app-name> KEY=VALUE`.
 
 ### Database (Supabase)
 

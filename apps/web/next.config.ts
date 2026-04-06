@@ -7,6 +7,10 @@ const velitePath = path.resolve(__dirname, "../../packages/content/.velite");
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  eslint: {
+    // Prototype pages have intentional scaffolding vars — lint in CI, not build
+    ignoreDuringBuilds: true,
+  },
   transpilePackages: [
     "@tensorcraft/ui",
     "@tensorcraft/themes",
