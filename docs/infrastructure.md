@@ -1,6 +1,6 @@
 # Tensorcraft — Infrastructure & Deployment
 
-> Last updated: 2026-04-06 (Scalability Phase 1-2 complete, Fly.io deploy from root)
+> Last updated: 2026-04-07 (Vercel migration for web app; API remains on Fly.io)
 > Design spec: `docs/superpowers/specs/2026-03-27-scalability-design.md`
 
 This document covers the production deployment architecture, scaling configuration, and operational runbook for TensorCraft.
@@ -12,7 +12,7 @@ This document covers the production deployment architecture, scaling configurati
 ```
 [Cloudflare CDN] → Edge cache (static assets, bridges, glossary)
        ↓ (cache miss or dynamic)
-[Fly.io: Next.js Standalone ×2-4] → SSR (ISR planned for Phase 3)
+[Vercel: Next.js App] → SSR (ISR planned for Phase 3)
        ↓ (client-side API calls)
 [Cloudflare CDN] → [Fly.io: Hono API ×3-5]
                          → [Upstash Redis] (rate limiting + JWT cache + query cache)
@@ -37,37 +37,35 @@ This document covers the production deployment architecture, scaling configurati
 | Config | `apps/api/fly.toml` |
 | Dockerfile | `apps/api/Dockerfile` |
 
-### Web Service (`tensorcraft-web`)
+---
+
+## Vercel (Web App)
 
 | Property | Value |
 |----------|-------|
-| Image | Next.js standalone (`output: "standalone"`) |
-| Instances | 2–4 |
-| Memory | 512MB |
-| Regions | `iad` (US-East), `cdg` (EU), `nrt` (Asia) |
-| Static assets | Served via `[[statics]]` directive |
-| Config | `apps/web/fly.toml` |
-| Dockerfile | `apps/web/Dockerfile` |
+| Platform | Vercel (Hobby plan, free tier) |
+| Framework | Next.js (auto-detected) |
+| Root directory | `apps/web` |
+| Deploy trigger | Auto-deploy from GitHub `main` branch |
+| Custom domains | `tensorcraft.app`, `www.tensorcraft.app` |
+| Environment variables | Managed in Vercel dashboard |
 
 ### Deploying
 
-Both apps must be deployed **from the monorepo root** so that the Docker build context includes all `packages/*` dependencies. Each Dockerfile uses root-relative `COPY` paths (e.g., `COPY packages/shared/package.json packages/shared/`).
+**Web app (Vercel):** Pushing to the `main` branch on GitHub triggers an automatic Vercel deployment. No manual deploy commands needed. Environment variables (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_API_URL`) are managed in the Vercel dashboard.
+
+**API (Fly.io):** Must be deployed **from the monorepo root** so that the Docker build context includes all `packages/*` dependencies. The Dockerfile uses root-relative `COPY` paths (e.g., `COPY packages/shared/package.json packages/shared/`).
 
 ```bash
 # Deploy from monorepo root — always use --config and --dockerfile flags
 fly deploy --config apps/api/fly.toml --dockerfile apps/api/Dockerfile
-fly deploy --config apps/web/fly.toml --dockerfile apps/web/Dockerfile
 
-# Set secrets (first deploy only, per app)
+# Set secrets (first deploy only)
 fly secrets set -a tensorcraft-api \
   SUPABASE_URL="..." SUPABASE_SERVICE_ROLE_KEY="..." \
   STRIPE_SECRET_KEY="..." STRIPE_WEBHOOK_SECRET="..." \
   UPSTASH_REDIS_REST_URL="..." UPSTASH_REDIS_REST_TOKEN="..." \
   ADMIN_API_KEY="..."
-
-fly secrets set -a tensorcraft-web \
-  NEXT_PUBLIC_SUPABASE_URL="..." NEXT_PUBLIC_SUPABASE_ANON_KEY="..." \
-  NEXT_PUBLIC_API_URL="..."
 ```
 
 > **Why from root?** The `.dockerignore` at the repo root controls what enters the build context. Deploying from a subdirectory would make `packages/*` paths invisible to Docker.
@@ -76,13 +74,11 @@ fly secrets set -a tensorcraft-web \
 
 ## Cloudflare CDN Rules
 
+Vercel handles CDN and edge caching for the web app (`tensorcraft.app`). Cloudflare is now used only to proxy the API subdomain (`api.tensorcraft.app`) to Fly.io.
+
 | Asset Type | Cache Rule | TTL |
 |------------|-----------|-----|
-| `/_next/static/*` | Cache Everything | 1 year (immutable content hash) |
-| `/bridges/*`, `/glossary/*` | Cache Everything | 24 hours |
-| Lesson pages (SSR, ISR planned Phase 3) | Bypass Cache | 0 (currently SSR; will use `s-maxage=3600` after ISR) |
-| `/api/*` | Bypass Cache | 0 (pass through to Fly.io) |
-| Dashboard, settings | Bypass Cache | 0 (authenticated, dynamic) |
+| `/api/*` (via `api.tensorcraft.app`) | Bypass Cache | 0 (pass through to Fly.io) |
 
 ---
 
@@ -204,13 +200,13 @@ Email delivery is fire-and-forget — Kit failures do not block the purchase flo
 
 | Component | 100K Users | 500K Users | 1M Users |
 |-----------|-----------|-----------|---------|
-| Fly.io (web, 2–4 machines) | $15/mo | $60/mo | $150/mo |
+| Vercel (web, Hobby) | $0/mo | $0/mo | $0/mo |
 | Fly.io (API, 3–5 machines) | $15/mo | $75/mo | $200/mo |
 | Cloudflare Pro | $20/mo | $20/mo | $20/mo |
 | Supabase Pro + Compute + Read Replica | $50/mo | $175/mo | $400/mo |
 | Upstash Redis | $10/mo | $60/mo | $200/mo |
 | Inngest (Phase 5) | Free | $50/mo | $150/mo |
-| **Total** | **~$110/mo** | **~$440/mo** | **~$1,120/mo** |
+| **Total** | **~$95/mo** | **~$380/mo** | **~$970/mo** |
 
 ---
 

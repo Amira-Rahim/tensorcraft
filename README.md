@@ -98,11 +98,12 @@ pnpm test:e2e       # Run end-to-end tests (Playwright)
 
 ## Deployment
 
-Both apps deploy to Fly.io from the **monorepo root** using Docker multi-stage builds:
+Web: Vercel (auto-deploy from main), API: Fly.io
 
 ```bash
+# Web deploys to Vercel automatically on git push — no manual deploy needed
+# API deploys to Fly.io:
 fly deploy --config apps/api/fly.toml --dockerfile apps/api/Dockerfile
-fly deploy --config apps/web/fly.toml --dockerfile apps/web/Dockerfile
 ```
 
 See [docs/deployment-guide.md](docs/deployment-guide.md) for environment variables and secrets, and [docs/infrastructure.md](docs/infrastructure.md) for the full production architecture.

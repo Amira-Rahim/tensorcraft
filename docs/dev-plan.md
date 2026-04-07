@@ -1,6 +1,6 @@
 # Tensorcraft — Development Plan
 
-> Last updated: 2026-03-26 (full-stack audit: migration 011 adds github_token + purchase_status enum fix, types.ts aligned with migrations 001-011, dead endpoints documented, onboarding verified complete, all 5 themes fully authored)
+> Last updated: 2026-04-07 (architecture: web moved to Vercel, API stays on Fly.io, domain tensorcraft.app, Cloudflare DNS active, external services audit)
 
 This document is the single source of truth for all development work needed to ship Tensorcraft. It covers every phase from repo initialization to post-launch operations, sourced from the PRD, tech-spec, product-plan, theme scripts, and two rounds of DeepSeek reviews.
 
@@ -484,7 +484,7 @@ All blocking decisions have been resolved. This table documents the final choice
 
 - [x] GitHub Actions: lint, typecheck, test on every PR
 - [x] E2E tests (Playwright) added to CI workflow
-- [ ] Vercel deployment configuration (preview + production)
+- [x] Vercel deployment configuration (preview + production) — auto-deploys from main, custom domain tensorcraft.app
 - [ ] Branch protection rules (require PR reviews, passing CI)
 - [ ] Broken link checking in CI
 - [ ] Exercise validation in CI (starter compiles, solution passes tests, 10s timeout)
@@ -504,7 +504,7 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] Content Security Policy (CSP) headers
 - [ ] XSS prevention in MDX rendering pipeline
 - [ ] API versioning headers
-- [ ] Fix rate limiter IP spoofing — use trusted proxy header or Cloudflare `CF-Connecting-IP` instead of `X-Forwarded-For`
+- [x] Fix rate limiter IP spoofing — uses `cf-connecting-ip` header (Cloudflare) with `x-forwarded-for` fallback
 - [x] Add TTL-based cleanup to in-memory rate limiter (or replace with Redis — see 6j)
 - [x] Move hardcoded CORS origins to environment variable
 - [x] Add `X-Request-ID` middleware for request tracing
@@ -521,9 +521,12 @@ All blocking decisions have been resolved. This table documents the final choice
 
 ### 6j. API Deployment
 
-- [ ] Deploy Hono API to Fly.io or Railway (separate from Vercel)
+- [x] Deploy Hono API to Fly.io (`tensorcraft-api`, iad region, tsx runtime)
+- [x] Deploy Next.js web to Vercel (auto-deploy from GitHub main)
+- [x] Custom domain `tensorcraft.app` — Vercel (web) + Cloudflare (API proxy)
+- [x] SSL certificates provisioned (Vercel auto + Fly.io Let's Encrypt)
+- [x] Redis for production rate limiting (Upstash, replaces in-memory store)
 - [ ] ISR/caching strategy for content pages
-- [ ] Redis for production rate limiting (replace in-memory store)
 
 ### 6k. Community & External Links
 
@@ -618,8 +621,8 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] JWT token caching (30s TTL via Redis)
 - [x] Batch skill events endpoint + client-side event buffering
 - [x] Dockerfiles for API and web (Fly.io deployment-ready)
-- [x] Fly.io configs (fly.toml) for both services
-- [x] Next.js standalone output mode
+- [x] Fly.io configs (fly.toml) for API service (web fly.toml removed — now deployed on Vercel)
+- [x] ~~Next.js standalone output mode~~ (removed — now on Vercel, standalone not needed)
 
 **Phase 3-5 (Pending):**
 
@@ -833,8 +836,8 @@ All blocking decisions have been resolved. This table documents the final choice
 - [ ] All exercises pass automated validation
 - [ ] Lighthouse scores meet thresholds (Performance ≥90, A11y ≥95)
 - [ ] Core Web Vitals within targets (LCP < 2.5s, CLS < 0.1, INP < 200ms)
-- [ ] Sentry error tracking verified (test error → appears in dashboard)
-- [ ] PostHog events verified (test each of 10 events → appears in dashboard)
+- [ ] Error tracking verified — currently stub (console logging); Sentry integration deferred to post-launch
+- [ ] PostHog events verified (test each of 10 events → appears in dashboard) — PostHog setup deferred to post-launch (§10e)
 - [ ] Email flows tested (welcome, purchase confirmation)
 - [ ] GitHub integration tested (repo creation, commit push, retroactive push)
 - [ ] Mobile tested on target devices (iPhone SE, iPad Air, Pixel 7)
@@ -873,7 +876,7 @@ All blocking decisions have been resolved. This table documents the final choice
 ### 10e. Post-Launch External Service Setup
 
 - [ ] Kit (ConvertKit): Create Form (`KIT_FORM_ID`) and "Purchased Deep Orbit" Tag (`KIT_TAG_PURCHASED_DEEP_ORBIT`) — API keys already configured. Without this, purchases work but subscribers aren't tagged for email automation.
-- [ ] PostHog: Create project, add `NEXT_PUBLIC_POSTHOG_KEY` to web `.env.local` and Fly.io. Free tier = 1M events/month.
+- [ ] PostHog: Create project, add `NEXT_PUBLIC_POSTHOG_KEY` to web `.env.local` and Vercel environment variables. Free tier = 1M events/month.
 - [ ] Plausible: Add site `tensorcraft.app`, set `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`. ~EUR 9/mo.
 
 ### 10f. Post-Launch Operations

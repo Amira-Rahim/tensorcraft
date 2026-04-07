@@ -6,7 +6,7 @@
 - pnpm 10+
 - Supabase project (with Auth enabled)
 - Stripe account (with webhook endpoint configured)
-- Fly.io account (for API and web)
+- Fly.io account (API), Vercel account (web)
 
 ---
 
@@ -14,7 +14,7 @@
 
 ### Frontend (`apps/web`)
 
-Set these in Fly.io secrets or `.env.local` for local dev:
+Set these in Vercel Environment Variables dashboard or `.env.local` for local dev:
 
 | Variable | Required | Description |
 |----------|----------|-------------|
@@ -69,17 +69,25 @@ pnpm format
 
 ## Deployment Targets
 
-### API & Web (Fly.io)
+### Web (Vercel)
 
-Both apps deploy to Fly.io using multi-stage Docker builds. **Deploy from the monorepo root** so the build context includes all workspace packages:
+The Next.js web app deploys to Vercel:
+
+- **Automatic deploys:** Pushes to `main` trigger a production deployment automatically.
+- **Manual deploys:** Go to Vercel dashboard → Deployments → Redeploy.
+- **Environment variables:** Set in Vercel dashboard (Settings → Environment Variables).
+- ESLint runs in CI, not during `next build` (configured via `eslint.ignoreDuringBuilds`).
+
+### API (Fly.io)
+
+The Hono API deploys to Fly.io using a multi-stage Docker build. **Deploy from the monorepo root** so the build context includes all workspace packages:
 
 ```bash
 # From the monorepo root
 fly deploy --config apps/api/fly.toml --dockerfile apps/api/Dockerfile
-fly deploy --config apps/web/fly.toml --dockerfile apps/web/Dockerfile
 ```
 
-Each app has its own `fly.toml` and `Dockerfile` in its directory. The root `.dockerignore` controls what enters the build context.
+The API has its own `fly.toml` and `Dockerfile` in its directory. The root `.dockerignore` controls what enters the build context.
 
 **API (`tensorcraft-api`):**
 
@@ -87,14 +95,7 @@ Each app has its own `fly.toml` and `Dockerfile` in its directory. The root `.do
 - Health check: `GET /api/health`
 - V8 heap capped at 200MB
 
-**Web (`tensorcraft-web`):**
-
-- Next.js standalone output, 512MB machines, port 3000
-- Static assets served via Fly `[[statics]]` directive
-- V8 heap capped at 400MB
-- ESLint runs in CI, not during `next build` (configured via `eslint.ignoreDuringBuilds`)
-
-Set secrets per app with `fly secrets set -a <app-name> KEY=VALUE`.
+Set secrets with `fly secrets set -a tensorcraft-api KEY=VALUE`.
 
 ### Database (Supabase)
 
