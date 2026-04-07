@@ -19,7 +19,7 @@ export async function generateMetadata({
     description: `Read "${slug.replace(/-/g, " ")}" on the Tensorcraft blog.`,
     openGraph: {
       title: `${slug.replace(/-/g, " ")} — Tensorcraft Blog`,
-      url: `https://tensorcraft.dev/blog/${slug}`,
+      url: `https://tensorcraft.app/blog/${slug}`,
     },
   };
 }

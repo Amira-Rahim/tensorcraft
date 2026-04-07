@@ -325,7 +325,7 @@ Estimated production time: 1 day to generate + 1 day to review/edit.
 
 ### V0.8: Portfolio Generator + Spaced Repetition
 
-**Portfolio Generator** — public profile at `tensorcraft.dev/@username`:
+**Portfolio Generator** — public profile at `tensorcraft.app/@username`:
 
 - Skill Radar (6-axis SVG from Genome data)
 - Completed capstones with embedded Sandpack demos

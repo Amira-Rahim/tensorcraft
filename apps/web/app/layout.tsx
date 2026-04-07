@@ -35,11 +35,11 @@ export const metadata: Metadata = {
     "TensorFlow.js",
     "Transformers.js",
   ],
-  metadataBase: new URL("https://tensorcraft.dev"),
+  metadataBase: new URL("https://tensorcraft.app"),
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://tensorcraft.dev",
+    url: "https://tensorcraft.app",
     siteName: "Tensorcraft",
     title: "Tensorcraft — Learn ML Through Code You Already Know",
     description:
@@ -82,8 +82,8 @@ export default function RootLayout({
                 "@context": "https://schema.org",
                 "@type": "Organization",
                 name: "Tensorcraft",
-                url: "https://tensorcraft.dev",
-                logo: "https://tensorcraft.dev/logo.png",
+                url: "https://tensorcraft.app",
+                logo: "https://tensorcraft.app/logo.png",
                 description:
                   "Interactive, story-driven ML education for frontend engineers.",
                 sameAs: [],
@@ -97,9 +97,9 @@ export default function RootLayout({
                 provider: {
                   "@type": "Organization",
                   name: "Tensorcraft",
-                  url: "https://tensorcraft.dev",
+                  url: "https://tensorcraft.app",
                 },
-                url: "https://tensorcraft.dev/themes/deep-orbit",
+                url: "https://tensorcraft.app/themes/deep-orbit",
                 educationalLevel: "Intermediate",
                 programmingLanguage: ["JavaScript", "TypeScript"],
                 teaches: [

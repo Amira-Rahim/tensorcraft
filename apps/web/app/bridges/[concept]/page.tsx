@@ -63,7 +63,7 @@ export async function generateMetadata({
     openGraph: {
       title,
       description,
-      url: `https://tensorcraft.dev/bridges/${concept}`,
+      url: `https://tensorcraft.app/bridges/${concept}`,
     },
     keywords: [
       bridge.feConcept,

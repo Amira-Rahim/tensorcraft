@@ -6,7 +6,7 @@ test.describe("Legal Pages", () => {
     await expect(page.getByText("Terms of Service")).toBeVisible();
     await expect(page.getByText("1. Acceptance of Terms")).toBeVisible();
     await expect(page.getByText("9. Contact")).toBeVisible();
-    await expect(page.getByText("legal@tensorcraft.dev")).toBeVisible();
+    await expect(page.getByText("legal@tensorcraft.app")).toBeVisible();
   });
 
   test("terms page has back link to home", async ({ page }) => {

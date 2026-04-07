@@ -49,7 +49,7 @@ async function seedProfiles() {
   const profiles = [
     {
       id: USER_IDS.alex,
-      email: "alex.chen@demo.tensorcraft.dev",
+      email: "alex.chen@demo.tensorcraft.app",
       display_name: "Alex Chen",
       onboarding_completed: true,
       preferred_theme_id: "deep-orbit",
@@ -57,7 +57,7 @@ async function seedProfiles() {
     },
     {
       id: USER_IDS.jordan,
-      email: "jordan.park@demo.tensorcraft.dev",
+      email: "jordan.park@demo.tensorcraft.app",
       display_name: "Jordan Park",
       onboarding_completed: true,
       preferred_theme_id: "deep-orbit",
@@ -65,7 +65,7 @@ async function seedProfiles() {
     },
     {
       id: USER_IDS.sam,
-      email: "sam.rivera@demo.tensorcraft.dev",
+      email: "sam.rivera@demo.tensorcraft.app",
       display_name: "Sam Rivera",
       onboarding_completed: false,
       total_lessons_completed: 0,

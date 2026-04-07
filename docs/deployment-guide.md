@@ -20,7 +20,7 @@ Set these in Fly.io secrets or `.env.local` for local dev:
 |----------|----------|-------------|
 | `NEXT_PUBLIC_SUPABASE_URL` | Yes | Supabase project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Supabase anonymous (public) key |
-| `NEXT_PUBLIC_API_URL` | Yes | API service URL (e.g., `https://api.tensorcraft.dev`) |
+| `NEXT_PUBLIC_API_URL` | Yes | API service URL (e.g., `https://api.tensorcraft.app`) |
 
 ### API (`apps/api`)
 

@@ -1,6 +1,6 @@
 # Tensorcraft API Reference
 
-**Base URL:** `http://localhost:3001` (dev) / `https://api.tensorcraft.dev` (prod)
+**Base URL:** `http://localhost:3001` (dev) / `https://api.tensorcraft.app` (prod)
 
 **Authentication:** Most endpoints require a Supabase JWT in the `Authorization: Bearer <token>` header. Admin endpoints require an `x-admin-key` header.
 
@@ -247,7 +247,7 @@ Paginated waitlist entries.
 All requests (except `/api/payments/webhook`) pass through:
 
 1. **Security Headers** — CSP, X-Frame-Options, etc.
-2. **CORS** — Allows `localhost:3000` (dev) and `tensorcraft.dev` (prod)
+2. **CORS** — Allows `localhost:3000` (dev) and `tensorcraft.app` (prod)
 3. **Rate Limiting** — 60 req/min per IP. Uses Upstash Redis when `UPSTASH_REDIS_REST_URL` is set, otherwise falls back to in-memory Map.
 
 ---

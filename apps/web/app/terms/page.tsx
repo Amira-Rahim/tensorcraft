@@ -124,10 +124,10 @@ export default function TermsPage() {
             <p>
               Questions about these terms? Contact us at{" "}
               <a
-                href="mailto:legal@tensorcraft.dev"
+                href="mailto:legal@tensorcraft.app"
                 className="text-accent hover:underline"
               >
-                legal@tensorcraft.dev
+                legal@tensorcraft.app
               </a>
               .
             </p>

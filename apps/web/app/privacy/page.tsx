@@ -126,10 +126,10 @@ export default function PrivacyPage() {
             <p className="mt-3">
               To exercise these rights, email{" "}
               <a
-                href="mailto:privacy@tensorcraft.dev"
+                href="mailto:privacy@tensorcraft.app"
                 className="text-accent hover:underline"
               >
-                privacy@tensorcraft.dev
+                privacy@tensorcraft.app
               </a>
               .
             </p>
@@ -175,10 +175,10 @@ export default function PrivacyPage() {
             <p>
               Questions about privacy? Contact our data protection team at{" "}
               <a
-                href="mailto:privacy@tensorcraft.dev"
+                href="mailto:privacy@tensorcraft.app"
                 className="text-accent hover:underline"
               >
-                privacy@tensorcraft.dev
+                privacy@tensorcraft.app
               </a>
               .
             </p>

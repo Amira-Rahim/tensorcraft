@@ -44,7 +44,7 @@ Append to `apps/api/.env.example`:
 ```
 # Resend (issue report email notifications)
 RESEND_API_KEY=re_...
-SUPPORT_EMAIL=support@tensorcraft.dev
+SUPPORT_EMAIL=support@tensorcraft.app
 ```
 
 - [ ] **Step 3: Commit**
@@ -92,7 +92,7 @@ export async function sendIssueNotification(
   params: IssueEmailParams,
 ): Promise<void> {
   const client = getResend();
-  const to = process.env.SUPPORT_EMAIL || "support@tensorcraft.dev";
+  const to = process.env.SUPPORT_EMAIL || "support@tensorcraft.app";
   if (!client) {
     console.warn("Resend not configured — skipping issue notification email");
     return;
@@ -133,7 +133,7 @@ export async function sendIssueNotification(
 
   try {
     await client.emails.send({
-      from: "Tensorcraft <noreply@tensorcraft.dev>",
+      from: "Tensorcraft <noreply@tensorcraft.app>",
       to,
       subject,
       text,
@@ -242,7 +242,7 @@ const validFields = {
   severity: "high",
   email: "user@example.com",
   context: JSON.stringify({
-    url: "https://tensorcraft.dev/themes/deep-orbit/1/1",
+    url: "https://tensorcraft.app/themes/deep-orbit/1/1",
     userAgent: "Mozilla/5.0",
     viewport: JSON.stringify({ width: 1920, height: 1080 }),
   }),

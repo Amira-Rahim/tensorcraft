@@ -870,7 +870,13 @@ All blocking decisions have been resolved. This table documents the final choice
   - Paywall conversion rate
 - [ ] Set up PostHog alerts for metrics falling below thresholds
 
-### 10e. Post-Launch Operations
+### 10e. Post-Launch External Service Setup
+
+- [ ] Kit (ConvertKit): Create Form (`KIT_FORM_ID`) and "Purchased Deep Orbit" Tag (`KIT_TAG_PURCHASED_DEEP_ORBIT`) — API keys already configured. Without this, purchases work but subscribers aren't tagged for email automation.
+- [ ] PostHog: Create project, add `NEXT_PUBLIC_POSTHOG_KEY` to web `.env.local` and Fly.io. Free tier = 1M events/month.
+- [ ] Plausible: Add site `tensorcraft.app`, set `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`. ~EUR 9/mo.
+
+### 10f. Post-Launch Operations
 
 - [ ] Weekly metrics review: completion rates, hint dependency, time-on-page, conversion
 - [ ] Cohort analysis: performance by difficulty, theme, learner background

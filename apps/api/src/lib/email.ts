@@ -26,7 +26,7 @@ export async function sendIssueNotification(
   params: IssueEmailParams,
 ): Promise<void> {
   const client = getResend();
-  const to = process.env.SUPPORT_EMAIL || "support@tensorcraft.dev";
+  const to = process.env.SUPPORT_EMAIL || "support@tensorcraft.app";
   if (!client) {
     console.warn("Resend not configured — skipping issue notification email");
     return;
@@ -67,7 +67,7 @@ export async function sendIssueNotification(
 
   try {
     await client.emails.send({
-      from: "Tensorcraft <noreply@tensorcraft.dev>",
+      from: "Tensorcraft <noreply@tensorcraft.app>",
       to,
       subject,
       text,

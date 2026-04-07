@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { themeSlugs } from "@tensorcraft/themes";
 import { BRIDGES } from "@tensorcraft/shared";
 
-const BASE_URL = "https://tensorcraft.dev";
+const BASE_URL = "https://tensorcraft.app";
 
 function slugify(term: string): string {
   return term

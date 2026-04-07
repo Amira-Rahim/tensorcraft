@@ -127,7 +127,7 @@ Anchored bottom-right, slides up from the button position with CSS transition. U
 - Triggered after successful DB insert
 - **Non-blocking** — if email fails, the request still succeeds (same pattern as Kit integration)
 - **Provider:** Resend SDK (`resend` npm package in `apps/api`)
-- **Recipient:** `support@tensorcraft.dev`
+- **Recipient:** `support@tensorcraft.app`
 - **Content:** Category, severity, description, page URL, reporter email, screenshot link (if present)
 - **Template:** Simple HTML + plain-text fallback — no complex rendering
 

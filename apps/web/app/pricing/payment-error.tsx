@@ -30,7 +30,7 @@ export function PaymentError() {
       <p className="flex-1 m-0 text-sm leading-relaxed text-text-primary">
         Payment could not be completed. Please try again or{" "}
         <a
-          href="mailto:support@tensorcraft.dev"
+          href="mailto:support@tensorcraft.app"
           className="text-red-500 underline underline-offset-2"
         >
           contact support

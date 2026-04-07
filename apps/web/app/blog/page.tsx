@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: "The Bridge — Frontend-to-ML Insights | Tensorcraft",
     description:
       "Articles, tutorials, and deep dives bridging frontend engineering and machine learning.",
-    url: "https://tensorcraft.dev/blog",
+    url: "https://tensorcraft.app/blog",
   },
 };
 

@@ -428,7 +428,7 @@ Each theme has a distinct color palette within the lesson content area. Colors a
 | Week 3–4 | Module 2 authoring | 5 lessons: Layers, Activations, Forward Pass, Loss Functions, Gradient Descent |
 | Week 5–6 | Module 3 authoring | 5 lessons: CNN Basics, Kernels, Pooling, Feature Maps, Image Classification Capstone |
 | Week 7 | Integration testing | Full walkthrough of 15 lessons; fix content bugs; accessibility audit. **CI pipeline includes:** Playwright E2E tests (auth flows, lesson navigation, checkout) run on every PR; content completeness validation tests (verify all modules have 5 lessons, required frontmatter fields present, exercise files exist); ESLint enforced via pre-commit hooks (Husky + lint-staged). |
-| Week 8 | Beta launch | Deploy to `beta.tensorcraft.dev`; invite 500 waitlist users |
+| Week 8 | Beta launch | Deploy to `beta.tensorcraft.app`; invite 500 waitlist users |
 
 ---
 
@@ -481,7 +481,7 @@ Automatic regional discounts of 20–70% applied via ParityDeals based on IP geo
 ### 9.1 SEO Strategy
 
 - **Primary keywords:** "learn machine learning JavaScript", "TensorFlow.js tutorial", "ML for front-end developers", "machine learning for web developers"
-- **Content marketing:** Publish 2 blog posts per week on `tensorcraft.dev/blog` covering FE-to-ML bridge concepts, beginner ML guides, and project showcases
+- **Content marketing:** Publish 2 blog posts per week on `tensorcraft.app/blog` covering FE-to-ML bridge concepts, beginner ML guides, and project showcases
 - **Technical SEO:** SSG landing pages with structured data (Course schema); optimized Core Web Vitals targeting LCP < 2.5s, CLS < 0.1, INP < 200ms
 - **Backlink strategy:** Guest posts on Smashing Magazine, CSS-Tricks, Dev.to; open-source bridge card library on GitHub
 

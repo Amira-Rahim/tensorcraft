@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/api/", "/auth/", "/onboarding", "/settings", "/dashboard"],
     },
-    sitemap: "https://tensorcraft.dev/sitemap.xml",
+    sitemap: "https://tensorcraft.app/sitemap.xml",
   };
 }

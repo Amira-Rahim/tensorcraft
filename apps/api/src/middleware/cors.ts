@@ -1,7 +1,7 @@
 import { cors } from "hono/cors";
 
 const DEFAULT_ORIGINS =
-  "http://localhost:3000,https://tensorcraft.dev,https://www.tensorcraft.dev";
+  "http://localhost:3000,https://tensorcraft.app,https://www.tensorcraft.app";
 
 /**
  * CORS middleware for the Tensorcraft API.

@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { Hono } from "hono";
 
 // Need to set env before importing cors module (since it reads env at module level)
-vi.stubEnv("CORS_ORIGINS", "http://localhost:3000,https://tensorcraft.dev");
+vi.stubEnv("CORS_ORIGINS", "http://localhost:3000,https://tensorcraft.app");
 
 const { corsMiddleware } = await import("../cors");
 

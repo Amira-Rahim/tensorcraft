@@ -325,12 +325,12 @@ All paid traffic flows through a single, optimized funnel:
 
 ## 4.1 Technical Blog
 
-The Tensorcraft blog is the primary SEO and thought leadership asset. Hosted at `tensorcraft.dev/blog`, rendered with MDX, and indexed by search engines.
+The Tensorcraft blog is the primary SEO and thought leadership asset. Hosted at `tensorcraft.app/blog`, rendered with MDX, and indexed by search engines.
 
 - **Publishing cadence:** 2 articles per week minimum. 1 bridge post + 1 tutorial or concept explainer.
 - **Content length:** 1,500-3,000 words. Longer is better for SEO but only if the content earns its length. No padding.
 - **Code examples:** Every article includes runnable code. Use embedded Sandpack playgrounds for interactive examples. Static code blocks use Shiki with the Tensorcraft dark theme.
-- **Cross-posting:** All articles are cross-posted to dev.to (primary) and Hashnode (secondary) with canonical URL pointing to tensorcraft.dev. Cross-post 48 hours after original publication.
+- **Cross-posting:** All articles are cross-posted to dev.to (primary) and Hashnode (secondary) with canonical URL pointing to tensorcraft.app. Cross-post 48 hours after original publication.
 
 ## 4.2 Substack Newsletter
 
@@ -353,7 +353,7 @@ Weekly newsletter sent every Tuesday at 10 AM ET. "The Bridge" newsletter covers
 
 ## 4.4 Interactive Demos
 
-Build 3-5 standalone interactive demos that showcase the bridge concept. These are not gated — they live at `tensorcraft.dev/demos/[name]` and are freely accessible.
+Build 3-5 standalone interactive demos that showcase the bridge concept. These are not gated — they live at `tensorcraft.app/demos/[name]` and are freely accessible.
 
 - **Demo 1:** "React State vs Neural Network Weights" — side-by-side interactive showing how useState and model weights both store and update values
 - **Demo 2:** "Virtual DOM Diffing vs Gradient Descent" — animated visualization showing the parallel optimization strategies
@@ -406,7 +406,7 @@ Sponsor developer newsletters to reach frontend engineers at scale. Allocate $2,
 Create a library of shareable visual assets that illustrate the FE-to-ML bridge concept. These are designed for social media virality and blog embedding.
 
 - **Shareable graphics specs:** 1200x675px (Twitter/LinkedIn optimal), dark background (#1C1C1C), sage green accent (`#6BAA8A`) or theme-specific color, JetBrains Mono for code and headings, Inter for body labels, side-by-side layout showing FE concept on left and ML concept on right with bridge connector in the center. Brutalist styling: zero border-radius, offset shadows. Include Tensorcraft watermark (bottom-right, subtle). Export as PNG and WebP. Each graphic is a self-contained explanation — useful even without clicking through to the site.
-- **Bridge explorer page:** A dedicated page at `tensorcraft.dev/bridges` showing all 50+ bridges in a filterable, searchable grid. Each card shows the FE concept, the ML concept, and a one-sentence bridge statement. Clicking opens the full bridge explanation with interactive demo. This page is both a product showcase and an SEO asset (targets "ML concepts for frontend developers" and related queries).
+- **Bridge explorer page:** A dedicated page at `tensorcraft.app/bridges` showing all 50+ bridges in a filterable, searchable grid. Each card shows the FE concept, the ML concept, and a one-sentence bridge statement. Clicking opens the full bridge explanation with interactive demo. This page is both a product showcase and an SEO asset (targets "ML concepts for frontend developers" and related queries).
 - **Social calendar:** Publish one bridge graphic every day for 50 days as the "50 Days of Bridges" campaign. Schedule across Twitter/X, LinkedIn, and Instagram simultaneously. Each post includes the graphic, a 2-3 sentence caption explaining the bridge, and a link to the full bridge page. Day 50 post announces the complete bridge explorer page. Target: 50 days of consistent, highly shareable visual content that establishes Tensorcraft as the definitive source for FE-to-ML bridges.
 - **Blog integration:** Every blog post that discusses a bridge concept includes the corresponding bridge graphic as the hero image. Open Graph meta tags use the bridge graphic, ensuring the visual appears in social media shares. This creates a consistent visual language across all channels.
 
@@ -416,7 +416,7 @@ Create a library of shareable visual assets that illustrate the FE-to-ML bridge 
 
 ## 5.1 Waitlist Page Structure
 
-The waitlist page is the primary conversion asset during pre-launch. It lives at `tensorcraft.dev` and follows this structure:
+The waitlist page is the primary conversion asset during pre-launch. It lives at `tensorcraft.app` and follows this structure:
 
 - **Hero section:** Full-width dark background (#1C1C1C) with ParticleField canvas animation. Headline: "Machine Learning for Frontend Devs, Finally." Subheadline: "50+ concept bridges that translate ML into the language you already speak." Single email input with "Join the Waitlist" CTA button (brutalist offset shadow on hover). Waitlist count displayed below input ("Join 2,847 frontend developers").
 - **Problem section:** Three-column layout. Column 1: "Every ML course starts with Python" (crossed-out Python logo). Column 2: "You've tried. You've quit." (abandoned Jupyter notebook illustration). Column 3: "It's not you. It's the teaching." (bridge metaphor illustration). Copy: "Machine learning courses weren't built for you. They assume you think in NumPy, not in components. Tensorcraft fixes that."

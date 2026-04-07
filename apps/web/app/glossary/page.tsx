@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     title: "ML Glossary for Frontend Engineers — Tensorcraft",
     description:
       "Every ML term explained through the lens of concepts you already know.",
-    url: "https://tensorcraft.dev/glossary",
+    url: "https://tensorcraft.app/glossary",
   },
 };
 

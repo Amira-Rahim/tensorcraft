@@ -131,7 +131,7 @@ Separate backend service running on port 3001. Communicates with Supabase using 
 ### Middleware
 
 - **Security Headers**: Sets CSP, HSTS, X-Content-Type-Options, X-Frame-Options, and generates a unique `X-Request-ID` per request (`security-headers.ts`)
-- **CORS**: Allows `localhost:3000` (dev) and `tensorcraft.dev` (prod). Configurable via `CORS_ORIGINS` env var.
+- **CORS**: Allows `localhost:3000` (dev) and `tensorcraft.app` (prod). Configurable via `CORS_ORIGINS` env var.
 - **Auth**: Validates Supabase JWT from Authorization header, sets `userId` and `accessToken` on context
 - **Rate Limiting**: Upstash Redis adapter (distributed, production-ready) with in-memory fallback when `UPSTASH_REDIS_REST_URL` not set. 60 req/min per IP. Stripe webhook route exempt.
 

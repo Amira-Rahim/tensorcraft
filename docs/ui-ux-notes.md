@@ -76,7 +76,7 @@ The stats panel provides an at-a-glance summary of the learner's progress within
 Learners can capture and share their progress diagram as an image.
 
 - **Capture method:** Use `html2canvas` to render the progress diagram (excluding the stats panel and UI chrome) to a canvas element. Scale factor: 2x for retina-quality output. Output format: PNG.
-- **Watermark:** Bottom-right corner of the captured image includes a subtle Tensorcraft watermark: the Tensorcraft logo (24px height) + "tensorcraft.dev" text in `--theme-muted` at 50% opacity. The watermark is added programmatically after canvas capture, not rendered in the DOM.
+- **Watermark:** Bottom-right corner of the captured image includes a subtle Tensorcraft watermark: the Tensorcraft logo (24px height) + "tensorcraft.app" text in `--theme-muted` at 50% opacity. The watermark is added programmatically after canvas capture, not rendered in the DOM.
 - **Share:** After capture, display a share modal with options: "Download PNG" (primary), "Copy to Clipboard" (using the Clipboard API), and "Share" (using the Web Share API where supported, falling back to Twitter/X and LinkedIn share URLs with pre-filled text). The pre-filled share text: "I've completed [X]% of [Theme Name] on Tensorcraft! Learning ML through frontend concepts." Include the captured image as the share attachment when the Web Share API supports files.
 - **Output:** 2x PNG at the diagram's rendered dimensions. Typical output: 2400x1600px for a desktop-width diagram. File name: `tensorcraft-[theme]-progress.png`.
 

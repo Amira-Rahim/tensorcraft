@@ -78,7 +78,7 @@ export async function generateMetadata({
     openGraph: {
       title,
       description,
-      url: `https://tensorcraft.dev/glossary/${term}`,
+      url: `https://tensorcraft.app/glossary/${term}`,
     },
   };
 }

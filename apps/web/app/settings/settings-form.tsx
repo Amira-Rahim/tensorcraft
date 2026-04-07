@@ -748,7 +748,7 @@ export function SettingsForm({
                 >
                   Account deletion is not yet available. Contact{" "}
                   <strong style={{ color: "var(--tc-text)" }}>
-                    support@tensorcraft.dev
+                    support@tensorcraft.app
                   </strong>{" "}
                   to request deletion.
                 </div>
