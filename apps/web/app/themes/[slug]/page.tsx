@@ -126,6 +126,9 @@ export default async function ThemeDetailPage({ params }: Props) {
       } else if (progressStatus === "in_progress") {
         lessonStatus = "in_progress";
         foundFirstIncompleteLessonInModule = true;
+      } else if (isFree) {
+        // All lessons in free modules are accessible without sequential unlock
+        lessonStatus = "available";
       } else if (
         !foundFirstIncompleteLessonInModule &&
         (status === "active" || status === "available")

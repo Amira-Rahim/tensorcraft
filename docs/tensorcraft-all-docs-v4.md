@@ -3662,7 +3662,7 @@ All blocking decisions have been resolved. This table documents the final choice
 | 12 | **Team pricing** | Deferred to post-V1.0 | No team tiers at launch. Added to product plan as future phase. |
 | 13 | **Early Access tier** | Removed | V0.5 uses Free (M1) + $79 (full theme). No intermediate tier. |
 | 14 | **Ship name** | Archimedes | Consistent across all docs and prototypes. |
-| 15 | **Nova Canvas model** | Nova Canvas (not "Nova Canvas AI" or "Nova Gen Engine") | Simplified. |
+| 15 | **Nova Canvas model** | Nova Canvas (not "Nova Canvas" or "Nova Gen Engine") | Simplified. |
 
 ---
 
@@ -3898,7 +3898,7 @@ All blocking decisions have been resolved. This table documents the final choice
 - [ ] Module 5: Time-Series Intro, Signal Processing, FFT, Sliding Windows, Signal Classification Capstone (5 lessons)
 - [ ] All 15 lessons follow 5C Loop structure
 - [ ] All FE-to-ML bridges present (20 shared + 6 Deep Orbit-specific)
-- [ ] Character voices consistent: Commander Adaeza, Dr. Hana Sato, Chief Maria Torres, Echo (AI)
+- [ ] Character voices consistent: Commander Mirza, Dr. Farah, Chief Nazari, Echo (AI)
 - [ ] Narrative arc: setup (M1-2) → rising action (M3-4) → midpoint (M5 capstone)
 
 ---
@@ -4652,20 +4652,20 @@ Bridges are classified into three quality tiers:
 
 | Name | Role | Description |
 |---|---|---|
-| **Commander Adaeze Okafor** | Mentor / Mission Commander | Ship captain. Calm, authoritative, three prior deep-space missions. Sets context — she explains *why* the crew needs each capability but never dives into technical detail. Speaks in clear, deliberate sentences. |
-| **Dr. Hana Sato** | Astrophysicist / Concept Explainer | Lead scientist. Puzzle-lover, deeply curious, sometimes lost in abstractions. Uses analogies liberally, lights up when a student grasps a concept. Introduces ML theory via holographic whiteboard diagrams. |
-| **Chief Maria Torres** | Ship Engineer / Implementation Lead | Maintains all systems. Pragmatic skeptic — trusts things that work, distrusts "clever." Dry humor, no-nonsense. Handles TensorFlow.js, ONNX, quantization, performance. Backstory: 18 years in fleet engineering, refused two promotions to stay hands-on. On the ISS Vanguard, Torres trusted a rule-based navigation system through an asteroid field. It froze on an edge case — a tumbling fragment with irregular spin. Two crew members didn't make it to the escape pods. She carries that loss as armor against any system that promises more than it can deliver. Warms up once she sees results. |
-| **Ensign Joon Park** | Comms Officer / Student Avatar | The player character. Skilled frontend engineer reassigned to the Archimedes to maintain comms. No ML background but strong JS/TS skills. Eager, occasionally overwhelmed, grows in confidence across 11 modules. Asks clarifying questions and makes FE analogies. |
+| **Commander Mirza** | Mentor / Mission Commander | Ship captain. Calm, authoritative, three prior deep-space missions. Sets context — she explains *why* the crew needs each capability but never dives into technical detail. Speaks in clear, deliberate sentences. |
+| **Dr. Farah** | Astrophysicist / Concept Explainer | Lead scientist. Puzzle-lover, deeply curious, sometimes lost in abstractions. Uses analogies liberally, lights up when a student grasps a concept. Introduces ML theory via holographic whiteboard diagrams. |
+| **Chief Nazari** | Ship Engineer / Implementation Lead | Maintains all systems. Pragmatic skeptic — trusts things that work, distrusts "clever." Dry humor, no-nonsense. Handles TensorFlow.js, ONNX, quantization, performance. Backstory: 18 years in fleet engineering, refused two promotions to stay hands-on. On the ISS Vanguard, Nazari trusted a rule-based navigation system through an asteroid field. It froze on an edge case — a tumbling fragment with irregular spin. Two crew members didn't make it to the escape pods. She carries that loss as armor against any system that promises more than it can deliver. Warms up once she sees results. |
+| **Ensign Demir** | Comms Officer / Student Avatar | The player character. Skilled frontend engineer reassigned to the Archimedes to maintain comms. No ML background but strong JS/TS skills. Eager, occasionally overwhelmed, grows in confidence across 11 modules. Asks clarifying questions and makes FE analogies. |
 | **ARIA** | Ship AI / Tutorial Guide | Onboard AI. Dry-witted, precise, occasionally sardonic. Voice of the code editor and terminal. Provides tutorials, documentation, hints, and commentary. |
 
-#### Park — Dialogue Evolution
+#### Demir — Dialogue Evolution
 
-Park's voice changes across the course as his ML fluency grows. His dialogue should reflect this progression:
+Demir's voice changes across the course as his ML fluency grows. His dialogue should reflect this progression:
 
 - **Early (M1–M3):** *"Wait, so training a neural network is basically like running a build step?"* — Analogy-seeking, uncertain. Every ML concept gets filtered through frontend metaphors because that is all he has.
-- **Mid (M4–M6):** *"The sliding window approach reminds me of IntersectionObserver — we only process what's in view."* — Making connections independently. The analogies are sharper, more specific, and he volunteers them rather than needing Sato to supply them.
+- **Mid (M4–M6):** *"The sliding window approach reminds me of IntersectionObserver — we only process what's in view."* — Making connections independently. The analogies are sharper, more specific, and he volunteers them rather than needing Farah to supply them.
 - **Late (M7–M9):** *"We need to check for data leakage in the validation set before we trust these anomaly scores."* — Using ML terminology natively. The frontend analogies drop away. He thinks in the domain now.
-- **Capstone (M10–M11):** *"Int8 quantization on the signal processor — the inference budget is too tight for float32 on this band."* — ML practitioner. He no longer needs FE analogies. He speaks Torres's optimization language fluently.
+- **Capstone (M10–M11):** *"Int8 quantization on the signal processor — the inference budget is too tight for float32 on this band."* — ML practitioner. He no longer needs FE analogies. He speaks Nazari's optimization language fluently.
 
 ### Career Paths & Salaries
 
@@ -4705,7 +4705,7 @@ Park's voice changes across the course as his ML fluency grows. His dialogue sho
 
 ## MODULE 1: ML THROUGH SIGNALS (FREE)
 
-*The crew arrives at Kepler-442. Park is introduced to the mission and begins learning ML basics through ship telemetry data.*
+*The crew arrives at Kepler-442. Demir is introduced to the mission and begins learning ML basics through ship telemetry data.*
 
 ---
 
@@ -4715,23 +4715,23 @@ Park's voice changes across the course as his ML fluency grows. His dialogue sho
 
 #### CONTEXT
 
-The Archimedes drops out of FTL transit in the Kepler-442 system. Commander Okafor convenes the crew on the bridge. Long-range sensor arrays have detected structured electromagnetic signals that do not match any known natural phenomenon — not pulsars, not magnetars, not stellar noise. The signals are organized into frequency bands and repeat at irregular intervals.
+The Archimedes drops out of FTL transit in the Kepler-442 system. Commander Mirza convenes the crew on the bridge. Long-range sensor arrays have detected structured electromagnetic signals that do not match any known natural phenomenon — not pulsars, not magnetars, not stellar noise. The signals are organized into frequency bands and repeat at irregular intervals.
 
-Park is the newest crew member. He was assigned as comms officer based on his frontend engineering background — the ship's communication systems run on a browser-based dashboard built in TypeScript. He has no ML background. Okafor explains the mission: build a signal classification system (DEEP SCAN) that can categorize incoming signals in real time, so Dr. Sato can focus on analysis instead of manual sorting.
+Demir is the newest crew member. He was assigned as comms officer based on his frontend engineering background — the ship's communication systems run on a browser-based dashboard built in TypeScript. He has no ML background. Mirza explains the mission: build a signal classification system (DEEP SCAN) that can categorize incoming signals in real time, so Dr. Farah can focus on analysis instead of manual sorting.
 
-> **OKAFOR:** "Every signal is a question the universe is asking. Our job is to build a system that can hear the question clearly — and suggest an answer."
+> **MIRZA:** "Every signal is a question the universe is asking. Our job is to build a system that can hear the question clearly — and suggest an answer."
 
-Torres, in the back of the bridge, mutters:
+Nazari, in the back of the bridge, mutters:
 
 > **TORRES:** "Another frontend dev touching the compute cluster. Wonderful."
 
-ARIA boots up Park's workstation.
+ARIA boots up Demir's workstation.
 
 > **ARIA:** "Welcome aboard, Ensign. I have prepared your development environment. I see you prefer tabs over spaces. We will need to discuss that."
 
 #### CHALLENGE
 
-Park must understand what machine learning is and how it differs from traditional programming. The lesson establishes the core mental model: in traditional programming, the developer writes rules; in ML, the developer provides data and the system learns the rules.
+Demir must understand what machine learning is and how it differs from traditional programming. The lesson establishes the core mental model: in traditional programming, the developer writes rules; in ML, the developer provides data and the system learns the rules.
 
 #### CONCEPT
 
@@ -4746,7 +4746,7 @@ Three components of every ML system:
 
 #### CHECKPOINT
 
-> **ARIA:** "Ensign, let me verify your understanding before we proceed. I would hate for you to build something on a shaky foundation. Well — I would find it entertaining, actually, but Commander Okafor would not."
+> **ARIA:** "Ensign, let me verify your understanding before we proceed. I would hate for you to build something on a shaky foundation. Well — I would find it entertaining, actually, but Commander Mirza would not."
 
 Quiz:
 1. In ML, what replaces hand-written rules? → **Data + training**
@@ -4801,7 +4801,7 @@ const trainingData: TrainingExample[] = [
 
 #### CONSEQUENCE
 
-Park stares at the telemetry feed scrolling across his monitor. Thousands of signals per minute. Each one a waveform — amplitude, frequency, duration, harmonic content.
+Demir stares at the telemetry feed scrolling across his monitor. Thousands of signals per minute. Each one a waveform — amplitude, frequency, duration, harmonic content.
 
 > **PARK:** "There's no way I can write rules for all of these. There are too many patterns."
 
@@ -4811,7 +4811,7 @@ ARIA overlays a visualization: the same signal data, but now color-coded by cate
 
 > **ARIA:** "The ship's previous classification system used 847 hand-written rules. It achieved 61% accuracy. I believe we can do better."
 
-The scene ends with Park looking at the signal feed with new eyes. He does not see data anymore. He sees a training set.
+The scene ends with Demir looking at the signal feed with new eyes. He does not see data anymore. He sees a training set.
 
 ---
 
@@ -4822,12 +4822,12 @@ The scene ends with Park looking at the signal feed with new eyes. He does not s
 #### RECALL
 
 > **ARIA:** "Before we proceed — what are the three components of every ML system?"
-> Park: "Data, model, objective."
+> Demir: "Data, model, objective."
 > **ARIA:** "Acceptable. You may continue."
 
 #### CONTEXT
 
-Dr. Sato pulls Park into the science lab. On the holographic display, she shows three different scenarios the crew will face, each requiring a different learning approach:
+Dr. Farah pulls Demir into the science lab. On the holographic display, she shows three different scenarios the crew will face, each requiring a different learning approach:
 
 1. **Labeled signal data** — 5,000 signals that a previous mission already categorized (radiation burst, stellar wind, communication artifact, unknown). This is **supervised learning** — you have inputs and correct answers.
 
@@ -4874,7 +4874,7 @@ interface RLStep {
 
 > **SATO:** "For DEEP SCAN, we will primarily use supervised learning — we have Dr. Nakamura's labeled dataset from the previous mission. But Module 7 will need unsupervised learning for anomaly detection. And the real-time feedback loop? That is reinforcement thinking."
 
-Park nods. Three paradigms, one system. The architecture is already more complex than he imagined.
+Demir nods. Three paradigms, one system. The architecture is already more complex than he imagined.
 
 > **PARK:** "So DEEP SCAN isn't just one model. It's multiple approaches combined."
 
@@ -4886,17 +4886,17 @@ Park nods. Three paradigms, one system. The architecture is already more complex
 
 **Format:** Broken Code First | **5C Variation:** Broken Code First
 
-Park arrives at his workstation to find ARIA has pre-loaded a broken neural network implementation. The code has intentional errors. Park must understand neural networks by fixing them.
+Demir arrives at his workstation to find ARIA has pre-loaded a broken neural network implementation. The code has intentional errors. Demir must understand neural networks by fixing them.
 
 #### RECALL
 
 > **ARIA:** "Quick check, Ensign. Name one scenario where unsupervised learning is more appropriate than supervised."
-> Park: "When you have data but no labels — like our unlabeled signal archive."
+> Demir: "When you have data but no labels — like our unlabeled signal archive."
 > **ARIA:** "Correct. Now let us break something."
 
 #### CONTEXT
 
-Dr. Sato introduces neural networks using the holographic whiteboard. She draws a diagram: layers of connected nodes, each receiving inputs, applying weights and biases, and passing results through an activation function.
+Dr. Farah introduces neural networks using the holographic whiteboard. She draws a diagram: layers of connected nodes, each receiving inputs, applying weights and biases, and passing results through an activation function.
 
 > **SATO:** "Think of a neural network as a series of transformations. Each layer takes the data, warps it slightly, and passes it on. By the time data has passed through all the layers, it has been transformed from raw input into a useful representation."
 
@@ -4924,7 +4924,7 @@ A **neural network** is a function composed of layers. Each layer applies a line
 
 #### CODE
 
-ARIA presents the broken code. Park must fix three bugs:
+ARIA presents the broken code. Demir must fix three bugs:
 
 ```typescript
 // BROKEN CODE — 3 bugs to find and fix
@@ -4974,7 +4974,7 @@ class Layer {
 
 #### CONSEQUENCE
 
-Park fixes all three bugs. ARIA runs the corrected network on a small subset of signal data.
+Demir fixes all three bugs. ARIA runs the corrected network on a small subset of signal data.
 
 > **ARIA:** "Three bugs, Ensign. You found them all. The corrected network achieves 72% accuracy on the test signal batch. Not impressive by any measure, but functional."
 
@@ -4982,7 +4982,7 @@ Park fixes all three bugs. ARIA runs the corrected network on a small subset of 
 
 > **ARIA:** "A low bar, but technically correct. We will improve it."
 
-Torres passes by the lab, glances at the screen.
+Nazari passes by the lab, glances at the screen.
 
 > **TORRES:** "72%? Wake me when it is above 90."
 
@@ -4994,7 +4994,7 @@ Torres passes by the lab, glances at the screen.
 
 #### CONTEXT
 
-Dr. Sato explains that real signal data is not a flat array of numbers — it has structure. A single signal reading might have amplitude, frequency, phase, and duration. A batch of signals adds another dimension. A time sequence of batches adds yet another. This multi-dimensional structure is called a **tensor**.
+Dr. Farah explains that real signal data is not a flat array of numbers — it has structure. A single signal reading might have amplitude, frequency, phase, and duration. A batch of signals adds another dimension. A time sequence of batches adds yet another. This multi-dimensional structure is called a **tensor**.
 
 > **SATO:** "You have worked with arrays, yes? And arrays of arrays? A tensor is the generalization. A 0D tensor is a scalar. 1D is a vector. 2D is a matrix. 3D, 4D — those are the shapes of real-world data."
 
@@ -5055,7 +5055,7 @@ const modelUrl = 'https://tfhub.dev/google/universal-sentence-encoder/4';
 
 #### CONSEQUENCE
 
-Park explores the Hugging Face Model Zoo and TF Hub. He finds pre-trained signal classifiers, audio models, and general-purpose architectures.
+Demir explores the Hugging Face Model Zoo and TF Hub. He finds pre-trained signal classifiers, audio models, and general-purpose architectures.
 
 > **PARK:** "This is like browsing npm. There are models for everything."
 
@@ -5069,21 +5069,21 @@ Park explores the Hugging Face Model Zoo and TF Hub. He finds pre-trained signal
 
 **Format:** Flashback | **5C Variation:** Standard (with debrief elements)
 
-The lesson opens with a flashback: before Park boarded the Archimedes, he built a simple demo at a web conference — a browser-based ML classifier using TensorFlow.js. That experience is why he was assigned to this mission.
+The lesson opens with a flashback: before Demir boarded the Archimedes, he built a simple demo at a web conference — a browser-based ML classifier using TensorFlow.js. That experience is why he was assigned to this mission.
 
 #### RECALL
 
 > **ARIA:** "Before we deploy to the browser, Ensign — what is the shape of a 2D tensor representing 50 signals with 8 features each?"
-> Park: "`[50, 8]`"
+> Demir: "`[50, 8]`"
 > **ARIA:** "Correct. Proceed."
 
 #### CONTEXT
 
-Torres walks Park through deploying their Module 1 neural network to the ship's browser-based dashboard. This is the first time DEEP SCAN runs in the browser.
+Nazari walks Demir through deploying their Module 1 neural network to the ship's browser-based dashboard. This is the first time DEEP SCAN runs in the browser.
 
 > **TORRES:** "The bridge crew uses a web dashboard. If DEEP SCAN cannot run in the browser, it does not exist to them. No Python notebooks, no server dependencies. The model runs client-side or it does not run."
 
-Park loads the trained model into TensorFlow.js. He builds a minimal inference pipeline: ingest signal data from the telemetry WebSocket, convert to tensor, run prediction, render classification result.
+Demir loads the trained model into TensorFlow.js. He builds a minimal inference pipeline: ingest signal data from the telemetry WebSocket, convert to tensor, run prediction, render classification result.
 
 #### CODE
 
@@ -5129,28 +5129,28 @@ ws.onmessage = async (event) => {
 
 #### CONSEQUENCE
 
-Park deploys DEEP SCAN v0.1 to the bridge dashboard. The crew watches as signals are classified in real time. The first results:
+Demir deploys DEEP SCAN v0.1 to the bridge dashboard. The crew watches as signals are classified in real time. The first results:
 
 - **67%** classified as radiation bursts (expected — normal background)
 - **18%** classified as stellar wind patterns
 - **12%** classified as communication artifacts (probably echoes from the Archimedes itself)
 - **3%** classified as unknown
 
-That 3% catches Sato's attention.
+That 3% catches Farah's attention.
 
 > **SATO:** "Three percent unknown. That is what we came here for."
 
-> **OKAFOR:** "How confident is the model on those unknowns?"
+> **MIRZA:** "How confident is the model on those unknowns?"
 
 > **ARIA:** "Confidence ranges from 34% to 51%. The model is uncertain. It has never seen signals like these in its training data."
 
-> **OKAFOR:** "Then we need a better model. Park, Sato — get to work."
+> **MIRZA:** "Then we need a better model. Demir, Farah — get to work."
 
 > **TORRES:** (examining the dashboard) "Inference time is 23 milliseconds per signal. Acceptable, for now."
 
 #### DEBRIEF
 
-Module 1 complete. Park has learned:
+Module 1 complete. Demir has learned:
 - What ML is and how it differs from traditional programming
 - The three paradigms: supervised, unsupervised, reinforcement
 - Neural network fundamentals: neurons, layers, weights, biases, activations
@@ -5186,13 +5186,13 @@ End-of-module animation: a spectrogram visualization fills the screen. Signal wa
 
 ### Narrative
 
-The first batch of raw sensor data arrives from the long-range arrays — and it is a mess. Missing values where sensors dropped out. Noise spikes from the ship's own engines. Outliers that might be real anomalies or might be sensor errors. Park discovers that real-world data is nothing like the clean datasets in tutorials.
+The first batch of raw sensor data arrives from the long-range arrays — and it is a mess. Missing values where sensors dropped out. Noise spikes from the ship's own engines. Outliers that might be real anomalies or might be sensor errors. Demir discovers that real-world data is nothing like the clean datasets in tutorials.
 
 > **SATO:** "Welcome to the reality of data science, Ensign. 80% of the work is cleaning data. The remaining 20% is complaining about cleaning data."
 
 > **TORRES:** "If I cannot rebuild it from source, it does not exist. Every transform must be logged, versioned, and reproducible."
 
-**Unique content:** Park builds a full preprocessing pipeline for signal data — handling missing values via interpolation, removing engine noise through band-pass filtering, normalizing amplitude ranges, engineering time-domain features (zero-crossing rate, RMS energy, spectral centroid), and splitting data with stratification to preserve the rare "unknown" class.
+**Unique content:** Demir builds a full preprocessing pipeline for signal data — handling missing values via interpolation, removing engine noise through band-pass filtering, normalizing amplitude ranges, engineering time-domain features (zero-crossing rate, RMS energy, spectral centroid), and splitting data with stratification to preserve the rare "unknown" class.
 
 ### Lessons
 
@@ -5206,7 +5206,7 @@ The first batch of raw sensor data arrives from the long-range arrays — and it
 
 **FE BRIDGE (Module-Level):** A Web Audio API node graph is the perfect analogy for a data preprocessing pipeline. Each `AudioNode` transforms the signal — gain, filter, analyser — just like Express middleware transforms a request. Data flows through a chain of transforms, each one modifying the signal before passing it to the next node.
 
-**Inter-Lesson Hook:** Park's preprocessing pipeline works — until Torres feeds it raw data from an uncharted frequency band.
+**Inter-Lesson Hook:** Demir's preprocessing pipeline works — until Nazari feeds it raw data from an uncharted frequency band.
 
 ### GITHUB
 
@@ -5220,7 +5220,7 @@ The first batch of raw sensor data arrives from the long-range arrays — and it
 - `src/data/pipeline.ts`
 - `tests/data/preprocessing.test.ts`
 
-**Cliffhanger:** During preprocessing, Sato notices a recurring amplitude spike buried in the noise floor — it appears exactly every 73.4 seconds. "That periodicity... that is not instrument error."
+**Cliffhanger:** During preprocessing, Farah notices a recurring amplitude spike buried in the noise floor — it appears exactly every 73.4 seconds. "That periodicity... that is not instrument error."
 
 ---
 
@@ -5230,11 +5230,11 @@ The first batch of raw sensor data arrives from the long-range arrays — and it
 
 ### Narrative
 
-Park builds the first real DEEP SCAN classifier — a feedforward neural network with multiple hidden layers. Sato explains backpropagation using the ship's navigation correction system as an analogy: "When the ship drifts off course, the nav system measures the error, calculates how to adjust, and fires the thrusters in the right direction. Backpropagation does the same thing — it measures the error, calculates how each weight contributed to it, and adjusts accordingly."
+Demir builds the first real DEEP SCAN classifier — a feedforward neural network with multiple hidden layers. Farah explains backpropagation using the ship's navigation correction system as an analogy: "When the ship drifts off course, the nav system measures the error, calculates how to adjust, and fires the thrusters in the right direction. Backpropagation does the same thing — it measures the error, calculates how each weight contributed to it, and adjusts accordingly."
 
-The model reaches 78% accuracy. Okafor says: "Good enough to trust? Not yet. Keep going."
+The model reaches 78% accuracy. Mirza says: "Good enough to trust? Not yet. Keep going."
 
-**Unique content:** Park implements 1D convolutions for signal pattern detection — applying convolutional kernels across time-series data rather than images. This is the "1D CNN" approach that excels at finding local patterns in sequential data, like detecting a specific waveform shape regardless of where it appears in the signal.
+**Unique content:** Demir implements 1D convolutions for signal pattern detection — applying convolutional kernels across time-series data rather than images. This is the "1D CNN" approach that excels at finding local patterns in sequential data, like detecting a specific waveform shape regardless of where it appears in the signal.
 
 ### Lessons
 
@@ -5277,13 +5277,13 @@ This module covers foundational concepts shared across all themes: network archi
 
 ### Narrative
 
-Torres takes the lead. She challenges Park to get the classifier running on the ship's browser-based dashboard with real performance requirements.
+Nazari takes the lead. She challenges Demir to get the classifier running on the ship's browser-based dashboard with real performance requirements.
 
 > **TORRES:** "The bridge crew needs this in their UI, not a Python notebook. Your model is 400 MB. The browser tab will crash before the first inference. We are fixing this."
 
-Park discovers the joy and pain of browser ML — the freedom of client-side inference versus the constraints of browser memory, single-threaded JavaScript, and the cold-start problem of loading large models.
+Demir discovers the joy and pain of browser ML — the freedom of client-side inference versus the constraints of browser memory, single-threaded JavaScript, and the cold-start problem of loading large models.
 
-**Unique content:** Park compares TensorFlow.js, ONNX Runtime Web, and raw WebAssembly runtimes. Each has tradeoffs: TF.js has the best ecosystem, ONNX has the best interop with Python-trained models, and WASM offers the most control. Torres makes Park benchmark all three.
+**Unique content:** Demir compares TensorFlow.js, ONNX Runtime Web, and raw WebAssembly runtimes. Each has tradeoffs: TF.js has the best ecosystem, ONNX has the best interop with Python-trained models, and WASM offers the most control. Nazari makes Demir benchmark all three.
 
 ### Lessons
 
@@ -5311,7 +5311,7 @@ Park discovers the joy and pain of browser ML — the freedom of client-side inf
 - `src/runtime/model-loader.ts`
 - `tests/runtime/benchmark.test.ts`
 
-**Cliffhanger:** DEEP SCAN, now running in the browser dashboard, misclassifies cosmic background noise as a signal pattern. Torres: "If it cannot tell noise from data, it is useless. Fix it."
+**Cliffhanger:** DEEP SCAN, now running in the browser dashboard, misclassifies cosmic background noise as a signal pattern. Nazari: "If it cannot tell noise from data, it is useless. Fix it."
 
 ---
 
@@ -5321,13 +5321,13 @@ Park discovers the joy and pain of browser ML — the freedom of client-side inf
 
 ### Narrative
 
-Dr. Sato discovers hidden sub-bands in the signals. "There is structure here we are missing in the time domain." She introduces Park to signal processing: the Fourier Transform, spectrograms, and the idea that every signal has two representations — time and frequency.
+Dr. Farah discovers hidden sub-bands in the signals. "There is structure here we are missing in the time domain." She introduces Demir to signal processing: the Fourier Transform, spectrograms, and the idea that every signal has two representations — time and frequency.
 
 > **SATO:** "Think of a chord on a piano. The FFT tells you which individual notes make up that chord. We need to decompose these signals the same way."
 
-Park builds a spectrogram visualizer and feeds FFT features into the classifier. Accuracy jumps from 78% to 87%.
+Demir builds a spectrogram visualizer and feeds FFT features into the classifier. Accuracy jumps from 78% to 87%.
 
-**Unique content:** Park implements FFT (Fast Fourier Transform), STFT (Short-Time Fourier Transform), windowing functions (Hamming, Hanning, Blackman), and digital filtering (low-pass, high-pass, band-pass). He learns that windowing prevents spectral leakage, and that the choice of window function is a tradeoff between frequency resolution and spectral leakage — just like responsive design is a tradeoff between fidelity and performance.
+**Unique content:** Demir implements FFT (Fast Fourier Transform), STFT (Short-Time Fourier Transform), windowing functions (Hamming, Hanning, Blackman), and digital filtering (low-pass, high-pass, band-pass). He learns that windowing prevents spectral leakage, and that the choice of window function is a tradeoff between frequency resolution and spectral leakage — just like responsive design is a tradeoff between fidelity and performance.
 
 ### Lessons
 
@@ -5361,7 +5361,7 @@ Covers signal processing fundamentals shared with audio/signal themes: sampling 
 - `src/visualization/spectrogram.ts`
 - `tests/signal/fft.test.ts`
 
-**Cliffhanger:** The frequency analysis reveals a pattern too regular to be natural. Dr. Sato whispers: "That's not noise. That's structure."
+**Cliffhanger:** The frequency analysis reveals a pattern too regular to be natural. Dr. Farah whispers: "That's not noise. That's structure."
 
 ---
 
@@ -5371,13 +5371,13 @@ Covers signal processing fundamentals shared with audio/signal themes: sampling 
 
 ### Narrative
 
-Signals start showing temporal patterns — a rhythm. Sato is excited:
+Signals start showing temporal patterns — a rhythm. Farah is excited:
 
 > **SATO:** "This is not random noise. Something is repeating. The pattern spans dozens of time steps — our feedforward network only sees one snapshot at a time. We need a model with memory."
 
-Park builds an LSTM (Long Short-Term Memory) network to predict the next signal values. The predictions are eerily accurate.
+Demir builds an LSTM (Long Short-Term Memory) network to predict the next signal values. The predictions are eerily accurate.
 
-**Unique content:** Park implements three recurrent architectures — vanilla RNNs, LSTMs, and GRUs (Gated Recurrent Units). He learns the vanishing gradient problem firsthand when his simple RNN fails on long sequences, motivating the LSTM's gate mechanism. GRUs are introduced as the "lighter" alternative — fewer parameters, often comparable performance.
+**Unique content:** Demir implements three recurrent architectures — vanilla RNNs, LSTMs, and GRUs (Gated Recurrent Units). He learns the vanishing gradient problem firsthand when his simple RNN fails on long sequences, motivating the LSTM's gate mechanism. GRUs are introduced as the "lighter" alternative — fewer parameters, often comparable performance.
 
 ### Lessons
 
@@ -5426,9 +5426,9 @@ The midpoint twist. DEEP SCAN's anomaly detector fires on a signal that does not
 > **TORRES:** "Either our model is broken, or..."
 > **SATO:** (finishing the sentence) "...or we found something new."
 
-Okafor convenes the crew. The unknown signal has a structure that is unlike anything in the training data — it is too regular to be natural but does not match any known artificial pattern.
+Mirza convenes the crew. The unknown signal has a structure that is unlike anything in the training data — it is too regular to be natural but does not match any known artificial pattern.
 
-**Unique content:** Park builds an autoencoder — a neural network that learns to compress and reconstruct "normal" signals. When a new signal has high reconstruction error, it is flagged as anomalous. Park also implements an isolation forest as a complementary approach — instead of modeling normality, it directly isolates outliers by randomly partitioning the feature space.
+**Unique content:** Demir builds an autoencoder — a neural network that learns to compress and reconstruct "normal" signals. When a new signal has high reconstruction error, it is flagged as anomalous. Demir also implements an isolation forest as a complementary approach — instead of modeling normality, it directly isolates outliers by randomly partitioning the feature space.
 
 ### Lessons
 
@@ -5458,7 +5458,7 @@ Covers anomaly detection fundamentals shared across themes: autoencoders (vanill
 - `src/visualization/reconstruction.ts`
 - `tests/anomaly/detector.test.ts`
 
-**Cliffhanger:** The mathematical structure embedded in the anomaly mirrors the Fibonacci sequence — the same sequence used in the Archimedes' own sensor calibration algorithm. Sato's hands are shaking. "It's not just structured. It's structured like *us*."
+**Cliffhanger:** The mathematical structure embedded in the anomaly mirrors the Fibonacci sequence — the same sequence used in the Archimedes' own sensor calibration algorithm. Farah's hands are shaking. "It's not just structured. It's structured like *us*."
 
 ---
 
@@ -5468,13 +5468,13 @@ Covers anomaly detection fundamentals shared across themes: autoencoders (vanill
 
 ### Narrative
 
-The crew attempts to predict the anomalous signal's next occurrence. Park builds increasingly sophisticated forecasting models. When the signal repeats exactly when predicted — the crew confirms it is structured, not random.
+The crew attempts to predict the anomalous signal's next occurrence. Demir builds increasingly sophisticated forecasting models. When the signal repeats exactly when predicted — the crew confirms it is structured, not random.
 
 > **SATO:** "If we can predict it, it has structure. If it has structure, it is not noise. And if it is not noise..."
 
-> **OKAFOR:** "Then someone — or something — is sending it."
+> **MIRZA:** "Then someone — or something — is sending it."
 
-**Unique content:** Park implements Temporal Convolutional Networks (TCNs) as an alternative to LSTMs — faster to train, parallelizable, and often more accurate for long-range dependencies. He builds a Kalman filter for state estimation under noise, and implements Dynamic Time Warping (DTW) to compare signal patterns that may be stretched or compressed in time.
+**Unique content:** Demir implements Temporal Convolutional Networks (TCNs) as an alternative to LSTMs — faster to train, parallelizable, and often more accurate for long-range dependencies. He builds a Kalman filter for state estimation under noise, and implements Dynamic Time Warping (DTW) to compare signal patterns that may be stretched or compressed in time.
 
 ### Lessons
 
@@ -5516,13 +5516,13 @@ Covers advanced temporal modeling shared across themes: attention mechanisms, mu
 
 ### Narrative
 
-Okafor needs to transmit findings to Earth Command. The report must be precise, structured, and grounded in the data. Sato suggests using an LLM to help generate and verify scientific reports from DEEP SCAN's data — not to replace human analysis, but to accelerate it.
+Mirza needs to transmit findings to Earth Command. The report must be precise, structured, and grounded in the data. Farah suggests using an LLM to help generate and verify scientific reports from DEEP SCAN's data — not to replace human analysis, but to accelerate it.
 
 > **SATO:** "We have 47 days of signal data, 12,000 classified signals, and one anomaly that could change everything. I cannot write a comprehensive report in the 6 hours before the next transmission window. But I can guide a language model to draft one."
 
-Park integrates LLM capabilities into DEEP SCAN: prompt engineering for signal analysis queries, RAG (Retrieval-Augmented Generation) over the signal log database, and a multi-model pipeline that combines the signal classifier with a language model for natural language querying.
+Demir integrates LLM capabilities into DEEP SCAN: prompt engineering for signal analysis queries, RAG (Retrieval-Augmented Generation) over the signal log database, and a multi-model pipeline that combines the signal classifier with a language model for natural language querying.
 
-**Unique content:** Park builds a RAG pipeline that indexes classified signals, allowing the crew to ask natural language questions like "Show me all anomalous signals in Band-7 from the last 72 hours with confidence below 60%." The LLM retrieves relevant signals, synthesizes a response, and cites its sources.
+**Unique content:** Demir builds a RAG pipeline that indexes classified signals, allowing the crew to ask natural language questions like "Show me all anomalous signals in Band-7 from the last 72 hours with confidence below 60%." The LLM retrieves relevant signals, synthesizes a response, and cites its sources.
 
 ### Lessons
 
@@ -5560,17 +5560,17 @@ Covers LLM integration fundamentals shared across themes: tokenization, embeddin
 
 ### Narrative
 
-Torres's module. She has been waiting for this.
+Nazari's module. She has been waiting for this.
 
 > **TORRES:** "Your model works. Now make it fast. The bridge dashboard has 512 MB of RAM. Your model alone is 340 MB. Do the math."
 
-Park learns to quantize (reduce numerical precision from 32-bit to 8-bit), prune (remove weights that contribute little to accuracy), and distill (train a small model to mimic a large one). The model shrinks from 340 MB to 42 MB with only 2% accuracy loss.
+Demir learns to quantize (reduce numerical precision from 32-bit to 8-bit), prune (remove weights that contribute little to accuracy), and distill (train a small model to mimic a large one). The model shrinks from 340 MB to 42 MB with only 2% accuracy loss.
 
-The optimization work is no longer academic. Remaining fuel reserves limit compute time — the ship's reactor powers both the engines and the compute cluster, and every unnecessary training epoch is fuel the crew needs to get home. Okafor has posted the fuel gauge on the bridge dashboard next to the DEEP SCAN metrics. The two numbers move in opposite directions.
+The optimization work is no longer academic. Remaining fuel reserves limit compute time — the ship's reactor powers both the engines and the compute cluster, and every unnecessary training epoch is fuel the crew needs to get home. Mirza has posted the fuel gauge on the bridge dashboard next to the DEEP SCAN metrics. The two numbers move in opposite directions.
 
 > **TORRES:** (grudgingly) "Not bad, for a frontend dev."
 
-**Unique content:** Park implements post-training quantization (PTQ) and quantization-aware training (QAT). He builds a pruning pipeline that removes 60% of weights while maintaining 94% of accuracy. He distills the full DEEP SCAN model into a lightweight "student" model that runs inference in under 5ms.
+**Unique content:** Demir implements post-training quantization (PTQ) and quantization-aware training (QAT). He builds a pruning pipeline that removes 60% of weights while maintaining 94% of accuracy. He distills the full DEEP SCAN model into a lightweight "student" model that runs inference in under 5ms.
 
 ### Lessons
 
@@ -5598,7 +5598,7 @@ Covers optimization fundamentals shared across themes: profiling, quantization (
 - `src/runtime/webgpu-backend.ts`
 - `tests/optimization/quantize.test.ts`
 
-**Cliffhanger:** Fuel reserves hit critical. Okafor gives the order: "We have 72 hours to decode this signal or we turn for home."
+**Cliffhanger:** Fuel reserves hit critical. Mirza gives the order: "We have 72 hours to decode this signal or we turn for home."
 
 ---
 
@@ -5608,7 +5608,7 @@ Covers optimization fundamentals shared across themes: profiling, quantization (
 
 ### Narrative
 
-Park deploys the final DEEP SCAN system. Everything the crew has built across 10 modules comes together: the preprocessing pipeline, the neural network classifier, the FFT feature extractor, the LSTM sequence predictor, the autoencoder anomaly detector, the attention-based forecaster, the LLM reporting system, and the optimized runtime. All deployed to a static site on GitHub Pages.
+Demir deploys the final DEEP SCAN system. Everything the crew has built across 10 modules comes together: the preprocessing pipeline, the neural network classifier, the FFT feature extractor, the LSTM sequence predictor, the autoencoder anomaly detector, the attention-based forecaster, the LLM reporting system, and the optimized runtime. All deployed to a static site on GitHub Pages.
 
 DEEP SCAN classifies the anomalous signal definitively. The crew stares at the output in silence.
 
@@ -5626,11 +5626,11 @@ DEEP SCAN classifies the anomalous signal definitively. The crew stares at the o
 
 The final classification result appears on every screen on the bridge. The anomalous signal contains a mathematical structure that mirrors the Fibonacci sequence — the same recursive ratio used in the Archimedes' own sensor calibration algorithm. Not a coincidence of mathematics. A reflection. Whatever sent this signal used a pattern that only makes sense if the source has been observing the ship's transmissions.
 
-> **OKAFOR:** "What am I looking at, Dr. Sato?"
+> **MIRZA:** "What am I looking at, Dr. Farah?"
 
 > **SATO:** "Fibonacci ratios. 1, 1, 2, 3, 5, 8, 13... encoded as pulse-interval proportions. But that is not the unsettling part." She pulls up the Archimedes' own calibration spec. "These ratios match our sensor calibration harmonics exactly — the same coefficients, the same convergence pattern. This signal was not just sent. It was composed *for us*."
 
-Silence on the bridge. Torres is the first to speak.
+Silence on the bridge. Nazari is the first to speak.
 
 > **TORRES:** "Could it be echo? Our own calibration signal bouncing off something?"
 
@@ -5640,7 +5640,7 @@ Silence on the bridge. Torres is the first to speak.
 
 > **PARK:** "So which is it? Are we being watched, or are we seeing patterns because we want to?"
 
-> **OKAFOR:** (long pause) "Send it to Earth. All of it. Every data point, every model weight, every analysis. Both hypotheses. Let them verify independently. We do not get to decide this alone."
+> **MIRZA:** (long pause) "Send it to Earth. All of it. Every data point, every model weight, every analysis. Both hypotheses. Let them verify independently. We do not get to decide this alone."
 
 The Archimedes turns for home. But the signal keeps transmitting. And now, DEEP SCAN is listening — and the crew cannot stop wondering whether something is listening back.
 
@@ -5668,23 +5668,23 @@ Final animation: the bridge of the Archimedes. Every holographic display shows a
 
 These are specific narrative beats where DEEP SCAN fails, teaching the crew (and the learner) that ML systems are fallible.
 
-1. **M4 — False Signal Classification:** DEEP SCAN, now running in the browser, misclassifies cosmic background noise as a signal pattern. The crew wastes hours investigating nothing. Torres is furious. Park learns about the difference between training accuracy and real-world performance — and the cost of false positives.
+1. **M4 — False Signal Classification:** DEEP SCAN, now running in the browser, misclassifies cosmic background noise as a signal pattern. The crew wastes hours investigating nothing. Nazari is furious. Demir learns about the difference between training accuracy and real-world performance — and the cost of false positives.
 
-2. **M8 — Failed Prediction:** The time-series model predicts the anomalous signal will repeat at a specific time. It does not. The crew stares at empty readouts. Sato explains non-stationary data: "The signal's timing is changing. Our model assumed the future would look like the past. It will not always." Park retrains with a model that accounts for temporal drift.
+2. **M8 — Failed Prediction:** The time-series model predicts the anomalous signal will repeat at a specific time. It does not. The crew stares at empty readouts. Farah explains non-stationary data: "The signal's timing is changing. Our model assumed the future would look like the past. It will not always." Demir retrains with a model that accounts for temporal drift.
 
 ---
 
-## Character Arcs — Chief Torres (Skeptic)
+## Character Arcs — Chief Nazari (Skeptic)
 
-Torres's arc traces a pragmatic engineer learning to trust ML — not blindly, but through evidence.
+Nazari's arc traces a pragmatic engineer learning to trust ML — not blindly, but through evidence.
 
-1. **M3 — Grudging Admission:** After the neural network reaches 78% accuracy on signal classification, Torres grudgingly admits the model caught a subtle pattern in the sensor data that her rule-based filters missed. She does not celebrate — but she stops actively dismissing the approach.
+1. **M3 — Grudging Admission:** After the neural network reaches 78% accuracy on signal classification, Nazari grudgingly admits the model caught a subtle pattern in the sensor data that her rule-based filters missed. She does not celebrate — but she stops actively dismissing the approach.
 
-2. **M5 — Volunteering:** When Sato needs someone to calibrate the signal filters for the FFT pipeline, Torres volunteers. "If this frequency analysis is going to run on my ship, I want the filters tuned properly." This is the first time she proactively contributes to the ML effort.
+2. **M5 — Volunteering:** When Farah needs someone to calibrate the signal filters for the FFT pipeline, Nazari volunteers. "If this frequency analysis is going to run on my ship, I want the filters tuned properly." This is the first time she proactively contributes to the ML effort.
 
-3. **M7 — Defending the Model:** When the anomaly detector flags the unknown signal and Okafor questions whether to trust it, Torres surprises everyone by defending the model's classification. "The reconstruction error is off the charts. I have checked the sensor calibration three times. This is not instrument noise — the model is right."
+3. **M7 — Defending the Model:** When the anomaly detector flags the unknown signal and Mirza questions whether to trust it, Nazari surprises everyone by defending the model's classification. "The reconstruction error is off the charts. I have checked the sensor calibration three times. This is not instrument noise — the model is right."
 
-4. **M10 — Full Advocate:** Torres suggests using ML for fuel optimization — an area she previously considered sacred engineering territory. "If the model can compress from 340 MB to 42 MB with 2% accuracy loss, it can probably find efficiencies in our fuel burn calculations too." Park and Sato exchange a look. Torres has come around.
+4. **M10 — Full Advocate:** Nazari suggests using ML for fuel optimization — an area she previously considered sacred engineering territory. "If the model can compress from 340 MB to 42 MB with 2% accuracy loss, it can probably find efficiencies in our fuel burn calculations too." Demir and Farah exchange a look. Nazari has come around.
 
 ---
 

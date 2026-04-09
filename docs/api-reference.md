@@ -248,7 +248,7 @@ All requests (except `/api/payments/webhook`) pass through:
 
 1. **Security Headers** — CSP, X-Frame-Options, etc.
 2. **CORS** — Allows `localhost:3000` (dev) and `tensorcraft.app` (prod)
-3. **Rate Limiting** — 60 req/min per IP. Uses Upstash Redis when `UPSTASH_REDIS_REST_URL` is set, otherwise falls back to in-memory Map.
+3. **Rate Limiting** — 120 req/min per IP (increased from 60 to support multi-tab usage). Uses Upstash Redis (mandatory). Stripe webhook exempt.
 
 ---
 
@@ -280,9 +280,9 @@ Common status codes:
 
 ## Rate Limiting
 
-All endpoints (except `/api/payments/webhook`) are rate limited to **60 requests per minute per IP**.
+All endpoints (except `/api/payments/webhook`) are rate limited to **120 requests per minute per IP**.
 
-- **Primary store:** Upstash Redis (when `UPSTASH_REDIS_REST_URL` is configured) for distributed limiting across multiple API instances.
+- **Primary store:** Upstash Redis (mandatory) for distributed limiting across multiple API instances.
 - **Fallback store:** In-memory Map when Redis is not configured. Suitable for single-instance deployments and local development.
 - Rate-limited responses return `429 Too Many Requests` with a `Retry-After` header.
 

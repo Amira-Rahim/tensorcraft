@@ -43,7 +43,7 @@ All blocking decisions have been resolved. This table documents the final choice
 | 12 | **Team pricing** | Deferred to post-V1.0 | No team tiers at launch. Added to product plan as future phase. |
 | 13 | **Early Access tier** | Removed | V0.5 uses Free (M1) + $79 (full theme). No intermediate tier. |
 | 14 | **Ship name** | Archimedes | Consistent across all docs and prototypes. |
-| 15 | **Nova Canvas model** | Nova Canvas (not "Nova Canvas AI" or "Nova Gen Engine") | Simplified. |
+| 15 | **Nova Canvas model** | Nova Canvas (not "Nova Canvas" or "Nova Gen Engine") | Simplified. |
 
 ---
 
@@ -240,7 +240,7 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] Module 3 (Training Loop): Loss Functions, Gradient Descent, Backpropagation, Training Loop, Evaluating DEEP SCAN (5 lessons + 5 exercises)
 - [x] All 15 lessons follow 5C Loop structure with YAML frontmatter
 - [x] FE-to-ML bridges present across all 3 tiers (identity, structural, intuition)
-- [x] Character voices: Commander Okafor, Dr. Sato, ARIA (AI), Chief Torres, Ensign Park
+- [x] Character voices: Commander Mirza, Dr. Farah, ARIA (AI), Chief Nazari, Ensign Demir
 - [x] 3 module.yaml metadata files
 - [x] 14 exercise YAML files with starterCode, solutionCode, testCode
 - [x] Velite compiles all 15 lessons without errors
@@ -878,6 +878,14 @@ All blocking decisions have been resolved. This table documents the final choice
 - [ ] Kit (ConvertKit): Create Form (`KIT_FORM_ID`) and "Purchased Deep Orbit" Tag (`KIT_TAG_PURCHASED_DEEP_ORBIT`) — API keys already configured. Without this, purchases work but subscribers aren't tagged for email automation.
 - [ ] PostHog: Create project, add `NEXT_PUBLIC_POSTHOG_KEY` to web `.env.local` and Vercel environment variables. Free tier = 1M events/month.
 - [ ] Plausible: Add site `tensorcraft.app`, set `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`. ~EUR 9/mo.
+- [ ] Blog posts — write and publish first batch of articles
+- [ ] Twitter/X account — create @tensorcraft
+- [ ] 14-day refund guarantee badge on pricing cards
+- [ ] PPP (Purchasing Power Parity) indicator on pricing page
+- [ ] Payment plans (installments) — evaluate Klarna/Afterpay integration
+- [ ] Social proof on landing page — add user counts once real data exists
+- [ ] Product Hunt upcoming page
+- [ ] JSON-LD FAQPage schema on pricing page
 
 ### 10f. Post-Launch Operations
 

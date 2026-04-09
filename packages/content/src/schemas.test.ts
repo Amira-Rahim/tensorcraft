@@ -12,7 +12,7 @@ describe("lessonSchema", () => {
     difficulty: "beginner" as const,
     context: {
       narrative: "The ship receives a mysterious data stream",
-      speaker: "Commander Okafor",
+      speaker: "Commander Mirza",
     },
     concept: {
       explanation: "Tensors are multi-dimensional arrays",

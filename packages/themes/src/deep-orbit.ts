@@ -6,7 +6,7 @@ export const deepOrbit: ThemeManifest = {
   displayName: "Deep Orbit",
   tagline: "Navigate the unknown through signals",
   description:
-    "Research vessel Artemis VII has entered an uncharted nebula. The ship's AI is failing. Build DEEP SCAN — a deep-space signal classifier.",
+    "Research vessel Archimedes has entered an uncharted nebula. The ship's AI is failing. Build DEEP SCAN — a deep-space signal classifier.",
   status: "launched",
   palette: {
     bg: "#1C1C1C",
@@ -28,23 +28,23 @@ export const deepOrbit: ThemeManifest = {
   sandpackTheme: "nightOwl",
   characters: [
     {
-      name: "Commander Okafor",
+      name: "Commander Mirza",
       role: "Mentor",
       personality: "Calm authority, measured decisions",
     },
     {
-      name: "Dr. Sato",
+      name: "Dr. Farah",
       role: "Astrophysicist",
       personality: "Curious, data-driven",
     },
     {
-      name: "Chief Torres",
+      name: "Chief Nazari",
       role: "Skeptic",
       personality:
         "Distrusts ML — a rule-based system froze on his last mission",
     },
     {
-      name: "Ensign Park",
+      name: "Ensign Demir",
       role: "Communications",
       personality: "Eager, quick learner",
     },

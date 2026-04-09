@@ -696,7 +696,7 @@ This structure eliminates redundancy across multi-theme purchases and makes pric
 
 **Unique Narrative:**
 - Crew of the research vessel *Archimedes* encounters anomalous deep-space signals
-- Commander Okafor introduces the mission; ARIA (AI assistant) guides initial concepts
+- Commander Mirza introduces the mission; ARIA (AI assistant) guides initial concepts
 - Bridge: TypedArray = Tensor (identity)
 
 ---
@@ -709,8 +709,8 @@ This structure eliminates redundancy across multi-theme purchases and makes pric
 - Building and composing network architectures
 
 **Unique Narrative:**
-- Dr. Sato proposes using neural networks to classify signal types
-- Chief Torres skeptical: "We have rules-based systems that work"
+- Dr. Farah proposes using neural networks to classify signal types
+- Chief Nazari skeptical: "We have rules-based systems that work"
 - Bridge: Express middleware chain = NN layers (structural)
 
 ---
@@ -723,8 +723,8 @@ This structure eliminates redundancy across multi-theme purchases and makes pric
 - Gradient descent variants (SGD, Adam) and training loops
 
 **Unique Narrative:**
-- First model training reveals overfitting — Torres vindicated temporarily
-- ARIA introduces evaluation metrics; Park begins speaking ML natively
+- First model training reveals overfitting — Nazari vindicated temporarily
+- ARIA introduces evaluation metrics; Demir begins speaking ML natively
 - Bridge: Component state updates = weight updates (structural)
 
 ---
@@ -738,7 +738,7 @@ This structure eliminates redundancy across multi-theme purchases and makes pric
 
 **Unique Narrative:**
 - Signal spectrograms require visual pattern detection
-- Torres grudgingly admits CNN detects patterns rules missed
+- Nazari grudgingly admits CNN detects patterns rules missed
 - Bridge: CSS blur() = convolution kernel (structural)
 
 ---
@@ -765,7 +765,7 @@ This structure eliminates redundancy across multi-theme purchases and makes pric
 - Inference optimization and profiling
 
 **Unique Narrative:**
-- Torres demands the system run on constrained shipboard hardware
+- Nazari demands the system run on constrained shipboard hardware
 - Benchmarking runtimes under real conditions
 - Bridge: React vs Vue vs Svelte = TF.js vs ONNX vs WASM (structural)
 
@@ -847,7 +847,7 @@ This structure eliminates redundancy across multi-theme purchases and makes pric
 The module order follows a deliberate pedagogical arc:
 
 1. **Modules 1–3** (Foundations → Neural Networks → Training Loop): Build core ML literacy using signal data as context. The learner gains confidence with fundamentals before encountering domain-specific challenges.
-2. **Modules 4–6** (CNNs → Optimization → Browser Runtimes): Deepen the toolkit and introduce browser-native ML execution. Torres's skepticism drives rigor in evaluation and runtime selection.
+2. **Modules 4–6** (CNNs → Optimization → Browser Runtimes): Deepen the toolkit and introduce browser-native ML execution. Nazari's skepticism drives rigor in evaluation and runtime selection.
 3. **Modules 7–8** (Signal Processing → Sequence Models): Enter the Deep Orbit specialization — time-series and sequential data. The learner applies core knowledge to domain-specific architectures.
 4. **Modules 9–10** (Attention & Anomaly Detection → Model Optimization): Advanced techniques for real-world deployment. Each module includes an "AI-Wrong Moment" that teaches edge case awareness.
 5. **Module 11** (DEEP SCAN Capstone): Full pipeline synthesis and deployment. The learner builds, deploys, and evaluates a complete system.

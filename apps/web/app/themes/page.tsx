@@ -103,7 +103,7 @@ export default function ThemesPage() {
                   lessons
                 </span>
                 <span>
-                  <span className="text-text-primary font-bold">~25</span> hours
+                  <span className="text-text-primary font-bold">~22</span> hours
                 </span>
               </div>
 

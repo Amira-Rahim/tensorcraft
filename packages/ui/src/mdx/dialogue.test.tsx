@@ -9,7 +9,7 @@ describe("Dialogue", () => {
   });
 
   it("renders children content", () => {
-    render(<Dialogue speaker="Dr. Sato">The signal is fading.</Dialogue>);
+    render(<Dialogue speaker="Dr. Farah">The signal is fading.</Dialogue>);
     expect(screen.getByText("The signal is fading.")).toBeInTheDocument();
   });
 
@@ -19,8 +19,8 @@ describe("Dialogue", () => {
   });
 
   it("displays speaker in uppercase tracking style", () => {
-    render(<Dialogue speaker="Ensign Park">Report ready.</Dialogue>);
-    const speaker = screen.getByText("Ensign Park");
+    render(<Dialogue speaker="Ensign Demir">Report ready.</Dialogue>);
+    const speaker = screen.getByText("Ensign Demir");
     expect(speaker).toHaveClass("uppercase", "tracking-widest");
   });
 

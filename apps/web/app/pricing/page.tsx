@@ -170,19 +170,6 @@ export default function PricingPage() {
                         price: PRICING.threeBundle.price,
                         perTheme: Math.round(PRICING.threeBundle.price / 3),
                       },
-                      {
-                        label: "All 5",
-                        price:
-                          PRICING.threeBundle.price +
-                          PRICING.twoBundle.price -
-                          PRICING.single.price,
-                        perTheme: Math.round(
-                          (PRICING.threeBundle.price +
-                            PRICING.twoBundle.price -
-                            PRICING.single.price) /
-                            5,
-                        ),
-                      },
                     ].map((b) => (
                       <div
                         key={b.label}

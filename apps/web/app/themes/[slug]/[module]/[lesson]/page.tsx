@@ -8,6 +8,7 @@ import {
   getModule,
   getModules,
   getLessonExercises,
+  isFoundationsModule,
 } from "@tensorcraft/content";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import {
@@ -115,11 +116,13 @@ export default async function LessonPage({ params }: Props) {
   }
 
   // A lesson is locked if a previous lesson (by order) is not completed,
-  // unless it's the very first lesson or the current lesson.
+  // unless it's the very first lesson, the current lesson, or the module is free (foundations).
+  const isFreeModule = isFoundationsModule(mod);
   function isLessonLocked(
     lessonOrder: number,
     lessonSlugToCheck: string,
   ): boolean {
+    if (isFreeModule) return false; // all lessons in free modules are accessible
     if (lessonSlugToCheck === lessonSlug) return false; // current lesson is always accessible
     if (lessonOrder === 1) return false; // first lesson is always open
     // Check that all previous lessons are completed
