@@ -137,7 +137,7 @@ The API uses a two-tier rate limiting strategy:
 1. **Primary: Upstash Redis** — When `UPSTASH_REDIS_REST_URL` is set, rate limits are stored in Redis for distributed, production-ready limiting across multiple instances.
 2. **Fallback: In-memory Map** — When Redis is not configured, an in-memory Map tracks request counts per IP. Suitable for single-instance deployments and local development.
 
-Limit: 60 requests per minute per IP. The Stripe webhook route is exempt.
+Limit: 120 requests per minute per IP. The Stripe webhook route is exempt.
 
 ---
 

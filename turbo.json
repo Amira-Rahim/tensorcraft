@@ -6,11 +6,11 @@
       "inputs": ["content/**", "velite.config.ts"]
     },
     "build": {
-      "dependsOn": ["^build", "^build:content"],
+      "dependsOn": ["^build", "build:content"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"]
     },
     "dev": {
-      "dependsOn": ["^build", "^build:content"],
+      "dependsOn": ["^build", "build:content"],
       "cache": false,
       "persistent": true
     },
