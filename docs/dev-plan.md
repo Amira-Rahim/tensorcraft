@@ -31,7 +31,7 @@ All blocking decisions have been resolved. This table documents the final choice
 | --- | --- | --- | --- |
 | 1 | **V0.5 module scope** | All 11 Deep Orbit modules (55 lessons) authored; all 5 themes content-complete (275 lessons total). V0.5 gates access to Deep Orbit only. | Originally M1–3; content authoring exceeded plan. |
 | 2 | **Database** | Supabase (PostgreSQL + Auth + RLS) | Already implemented in architecture. Auth + RLS from day one. |
-| 3 | **Bundle pricing** | $79 single / $129 two / $169 three | Simpler. No 4-theme or 5-theme bundles until themes exist. |
+| 3 | **Bundle pricing** | $79 single / $129 two / $169 three / $219 all five | Diminishing per-theme cost. All tiers are one-time purchases. |
 | 4 | **Payment processor** | Stripe Checkout + Webhooks | One-time purchases. No subscriptions. Webhook-driven fulfillment. |
 | 5 | **Code execution** | TensorFlow.js in Sandpack | Client-side only. No server sandbox. |
 | 6 | **Narrative branching** | Convergent (single path) | Simpler content pipeline. All 5C variations are structural, not branching. |
@@ -252,7 +252,7 @@ All blocking decisions have been resolved. This table documents the final choice
 ### 4a. Pricing Page
 
 - [x] Build from `prototypes/pricing.html`
-- [x] 4 individual tiers: Free Preview ($0), Single Theme ($79), Two Themes ($129), Three Themes ($169)
+- [x] 5 individual tiers: Free Preview ($0), Single Theme ($79), Two Themes ($129), Three Themes ($169), All 5 Themes ($219)
 - [ ] Team pricing: Deferred to post-V1.0. Design based on enterprise demand data.
 - [x] FAQ accordion (interactive)
 - [x] Feature comparison table

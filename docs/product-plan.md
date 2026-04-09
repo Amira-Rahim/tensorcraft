@@ -268,6 +268,7 @@ These statistics inform our marketing, pricing, and curriculum design — the $7
 | **Single Model** | One theme, full 11 modules | $79 |
 | **Two Models** | Any two themes | $129 (save $29) |
 | **Three Models** | Any three themes | $169 (save $68) |
+| **All 5 Models** | All five themes | $219 (save $176) |
 
 #### Upgrade Path
 
@@ -287,50 +288,7 @@ Team and enterprise pricing (5-seat, 10-seat, and site licenses) will be introdu
 
 ### 2.2 Revenue Projections
 
-#### Year 1 Revenue Projection
-
-| Line Item | Units | Price | Revenue |
-|-----------|-------|-------|---------|
-| Deep Orbit — Single | 2,500 | $79 | $197,500 |
-| Neon Protocol — Single | 1,800 | $79 | $142,200 |
-| Two Model Bundles | 600 | $129 | $77,400 |
-| Three Model Bundles | 200 | $169 | $33,800 |
-| Arena Subscriptions | 500 | $29 | $14,500 |
-| PPP Discount Adjustment | — | — | –$45,000 |
-| **Year 1 Total** | | | **$420,400** |
-
-#### Year 2 Revenue Projection
-
-| Line Item | Units | Price | Revenue |
-|-----------|-------|-------|---------|
-| Deep Orbit — Single | 3,200 | $79 | $252,800 |
-| Neon Protocol — Single | 2,800 | $79 | $221,200 |
-| Signal Ward — Single | 2,000 | $79 | $158,000 |
-| Nova Canvas — Single | 1,500 | $79 | $118,500 |
-| Two Model Bundles | 1,200 | $129 | $154,800 |
-| Three Model Bundles | 600 | $169 | $101,400 |
-| Arena Subscriptions | 2,000 | $29 | $58,000 |
-| PPP Discount Adjustment | — | — | –$95,000 |
-| **Year 2 Total** | | | **$969,700** |
-
-#### Year 3 Revenue Projection
-
-| Line Item | Units | Price | Revenue |
-|-----------|-------|-------|---------|
-| Deep Orbit — Single | 4,000 | $79 | $316,000 |
-| Neon Protocol — Single | 3,500 | $79 | $276,500 |
-| Signal Ward — Single | 3,000 | $79 | $237,000 |
-| Nova Canvas — Single | 2,800 | $79 | $221,200 |
-| Terra Grid — Single | 2,000 | $79 | $158,000 |
-| Two Model Bundles | 1,800 | $129 | $232,200 |
-| Three Model Bundles | 1,000 | $169 | $169,000 |
-| Arena Subscriptions | 5,000 | $29 | $145,000 |
-| PPP Discount Adjustment | — | — | –$150,000 |
-| **Year 3 Total** | | | **$1,604,900** |
-
-#### 3-Year Cumulative Revenue
-
-**Conservative estimate: $2,995,000**
+*Revenue projections removed — will be revisited with real data after launch.*
 **Optimistic estimate (1.2x multiplier on units): $3,594,000**
 **High-growth estimate (1.8x multiplier on units + Arena expansion + Team pricing): $5,400,000+**
 

@@ -21,6 +21,7 @@ export const PRICING = {
   single: { price: 79, themes: 1, label: "Single Theme" },
   twoBundle: { price: 129, themes: 2, label: "Two Themes" },
   threeBundle: { price: 169, themes: 3, label: "Three Themes" },
+  allFive: { price: 219, themes: 5, label: "All 5 Themes" },
 } as const;
 
 export type PricingTier = keyof typeof PRICING;

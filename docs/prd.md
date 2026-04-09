@@ -43,7 +43,7 @@ Deliver a gamified, project-based curriculum that meets FE developers where they
 - **Motivation:** AI is transforming the industry. Wants to understand ML without switching to Python or abandoning their frontend identity. Wants a portfolio project that proves ML skills to employers.
 - **Job to be done:** "Help me learn ML using the tools and mental models I already have, so I can build ML-powered features and expand my career options."
 - **Pain points:** Existing ML courses assume Python + math background. Academic courses are dry and theoretical. No courses teach browser-based ML. No interactive courses for Transformers.js/WebGPU/ONNX Runtime Web.
-- **Willingness to pay:** $79 one-time for a complete theme. $129–$169 for bundles.
+- **Willingness to pay:** $79 one-time for a complete theme. $129–$219 for bundles (2, 3, or all 5 themes).
 
 ### Secondary: The Career Transitioner
 
@@ -221,7 +221,7 @@ Monetization layer supporting free and paid tiers.
 | # | Requirement | Priority | Description |
 |---|---|---|---|
 | 1 | Payment processor | P0 | Integrate Stripe for one-time payments; support credit card and Google Pay / Apple Pay |
-| 2 | Tier definitions | P0 | Three tiers: **Free Preview** ($0 — Module 1 of one theme, 5 lessons), **Single Theme** ($79 — all 11 modules, lifetime access, GitHub integration), **Bundle** ($129–$169 — 2 or 3 themes at a discount) |
+| 2 | Tier definitions | P0 | Five tiers: **Free Preview** ($0 — Module 1 of one theme, 5 lessons), **Single Theme** ($79 — all 11 modules, lifetime access, GitHub integration), **Two Themes** ($129), **Three Themes** ($169), **All 5 Themes** ($219) |
 | 3 | Purchasing-power parity (PPP) | P1 | Apply automatic regional discounts (up to 60% off) based on IP geolocation using a PPP index table; display original and discounted price |
 | 4 | Upgrade prompts | P1 | When a free-tier user reaches the paywall (end of Module 2), show an in-context upgrade modal with benefit comparison, testimonial, and a 7-day free trial CTA |
 | 5 | Webhook handling | P0 | Listen for Stripe webhooks (`checkout.session.completed`, `charge.refunded`, `charge.failed`) to update user entitlements in real time |
