@@ -117,7 +117,7 @@ export default async function LessonPage({ params }: Props) {
 
   // A lesson is locked if a previous lesson (by order) is not completed,
   // unless it's the very first lesson, the current lesson, or the module is free (foundations).
-  const isFreeModule = isFoundationsModule(mod);
+  const isFreeModule = mod ? isFoundationsModule(mod) : false;
   function isLessonLocked(
     lessonOrder: number,
     lessonSlugToCheck: string,
