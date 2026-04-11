@@ -45,7 +45,7 @@ export function SessionListener() {
       }
 
       if (event === "SIGNED_OUT") {
-        router.push("/auth/sign-in");
+        router.push("/auth");
       }
 
       // Capture the GitHub provider token at sign-in and persist it.

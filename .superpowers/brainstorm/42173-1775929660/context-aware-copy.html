@@ -1,0 +1,276 @@
+<h2>Context-Aware Auth Copy</h2>
+<p class="subtitle">
+  The same form adapts its messaging based on user context. Which copy strategy
+  feels right?
+</p>
+
+<div class="split">
+  <div class="mockup" data-choice="new-user" onclick="toggleSelect(this)">
+    <div class="mockup-header">New Visitor (no cookie / first visit)</div>
+    <div
+      class="mockup-body"
+      style="background: #0f1320; padding: 32px; font-family: monospace"
+    >
+      <div style="text-align: center; margin-bottom: 24px">
+        <div
+          style="
+            font-size: 11px;
+            letter-spacing: 2px;
+            color: #00d4ff;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+          "
+        >
+          T_ tensorcraft
+        </div>
+        <div
+          style="
+            font-size: 22px;
+            color: #fff;
+            font-weight: 600;
+            margin-bottom: 8px;
+          "
+        >
+          Start Learning
+        </div>
+        <div style="font-size: 13px; color: #8b92a5">
+          Create an account to begin your ML journey
+        </div>
+      </div>
+
+      <div
+        style="
+          border: 1px solid rgba(255, 255, 255, 0.06);
+          padding: 12px 16px;
+          margin-bottom: 12px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          cursor: pointer;
+        "
+      >
+        <span style="color: #fff">⬤</span>
+        <span style="color: #fff; font-size: 14px">Continue with GitHub</span>
+      </div>
+      <div
+        style="
+          border: 1px solid rgba(255, 255, 255, 0.06);
+          padding: 12px 16px;
+          margin-bottom: 16px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          cursor: pointer;
+        "
+      >
+        <span style="color: #fff">⬤</span>
+        <span style="color: #fff; font-size: 14px">Continue with Google</span>
+      </div>
+
+      <div
+        style="
+          text-align: center;
+          color: #8b92a5;
+          font-size: 12px;
+          margin: 16px 0;
+        "
+      >
+        or
+      </div>
+
+      <div
+        style="
+          border: 1px solid rgba(255, 255, 255, 0.06);
+          padding: 12px 16px;
+          margin-bottom: 12px;
+          color: #8b92a5;
+          font-size: 13px;
+        "
+      >
+        you@example.com
+      </div>
+      <div
+        style="
+          background: #00d4ff;
+          color: #080b16;
+          text-align: center;
+          padding: 12px;
+          font-size: 13px;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+        "
+      >
+        Send Magic Link
+      </div>
+
+      <div
+        style="
+          margin-top: 16px;
+          padding: 12px 16px;
+          border-left: 2px solid #00d4ff;
+          background: rgba(0, 212, 255, 0.05);
+        "
+      >
+        <span style="font-size: 11px; color: #00d4ff; letter-spacing: 1px"
+          >// MODULE 1 · FREE · NO CARD</span
+        >
+      </div>
+
+      <div
+        style="
+          text-align: center;
+          margin-top: 16px;
+          font-size: 12px;
+          color: #8b92a5;
+        "
+      >
+        Already have an account?
+        <span style="color: #00d4ff; text-decoration: underline">Sign in</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup" data-choice="returning-user" onclick="toggleSelect(this)">
+    <div class="mockup-header">Returning User (has tc_visited cookie)</div>
+    <div
+      class="mockup-body"
+      style="background: #0f1320; padding: 32px; font-family: monospace"
+    >
+      <div style="text-align: center; margin-bottom: 24px">
+        <div
+          style="
+            font-size: 11px;
+            letter-spacing: 2px;
+            color: #00d4ff;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+          "
+        >
+          T_ tensorcraft
+        </div>
+        <div
+          style="
+            font-size: 22px;
+            color: #fff;
+            font-weight: 600;
+            margin-bottom: 8px;
+          "
+        >
+          Welcome Back
+        </div>
+        <div style="font-size: 13px; color: #8b92a5">
+          Sign in to continue learning
+        </div>
+      </div>
+
+      <div
+        style="
+          border: 1px solid rgba(255, 255, 255, 0.06);
+          padding: 12px 16px;
+          margin-bottom: 12px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          cursor: pointer;
+        "
+      >
+        <span style="color: #fff">⬤</span>
+        <span style="color: #fff; font-size: 14px">Continue with GitHub</span>
+      </div>
+      <div
+        style="
+          border: 1px solid rgba(255, 255, 255, 0.06);
+          padding: 12px 16px;
+          margin-bottom: 16px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          cursor: pointer;
+        "
+      >
+        <span style="color: #fff">⬤</span>
+        <span style="color: #fff; font-size: 14px">Continue with Google</span>
+      </div>
+
+      <div
+        style="
+          text-align: center;
+          color: #8b92a5;
+          font-size: 12px;
+          margin: 16px 0;
+        "
+      >
+        or
+      </div>
+
+      <div
+        style="
+          border: 1px solid rgba(255, 255, 255, 0.06);
+          padding: 12px 16px;
+          margin-bottom: 12px;
+          color: #8b92a5;
+          font-size: 13px;
+        "
+      >
+        you@example.com
+      </div>
+      <div
+        style="
+          background: #00d4ff;
+          color: #080b16;
+          text-align: center;
+          padding: 12px;
+          font-size: 13px;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+        "
+      >
+        Send Magic Link
+      </div>
+
+      <div
+        style="
+          margin-top: 16px;
+          padding: 12px 16px;
+          border-left: 2px solid #00d4ff;
+          background: rgba(0, 212, 255, 0.05);
+        "
+      >
+        <span style="font-size: 11px; color: #00d4ff; letter-spacing: 1px"
+          >// PICK UP WHERE YOU LEFT OFF</span
+        >
+      </div>
+
+      <div
+        style="
+          text-align: center;
+          margin-top: 16px;
+          font-size: 12px;
+          color: #8b92a5;
+        "
+      >
+        New here?
+        <span style="color: #00d4ff; text-decoration: underline"
+          >Learn more</span
+        >
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="margin-top: 24px">
+  <h3>How Context Detection Works</h3>
+  <p class="subtitle" style="font-size: 13px; line-height: 1.6">
+    On first auth completion, set a <code>tc_visited</code> localStorage flag.
+    When the auth page loads: <br />• <strong>No flag</strong> → "Start
+    Learning" heading, "MODULE 1 · FREE · NO CARD" callout, "Already have an
+    account?" link <br />• <strong>Has flag</strong> → "Welcome Back" heading,
+    "PICK UP WHERE YOU LEFT OFF" callout, "New here?" link <br />•
+    <strong>URL has <code>?redirectTo=/pricing</code></strong> → "Complete Your
+    Purchase" heading, context about checkout <br /><br />
+    The "Already have an account?" and "New here?" links don't navigate — they
+    just swap the copy state, since the form itself is identical either way.
+  </p>
+</div>

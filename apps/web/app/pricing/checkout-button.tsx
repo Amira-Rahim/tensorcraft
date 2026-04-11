@@ -63,7 +63,7 @@ export function CheckoutButton({
 
       if (!session) {
         router.push(
-          `/auth/sign-in?redirectTo=${encodeURIComponent(`/pricing?plan=${planId}`)}`,
+          `/auth?redirectTo=${encodeURIComponent(`/pricing?plan=${planId}`)}`,
         );
         return;
       }

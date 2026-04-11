@@ -50,7 +50,7 @@ export async function updateSession(request: NextRequest) {
   if (authError && !user) {
     if (isProtected) {
       const url = request.nextUrl.clone();
-      url.pathname = "/auth/sign-in";
+      url.pathname = "/auth";
       url.searchParams.set("redirectTo", request.nextUrl.pathname);
       url.searchParams.set("error", "session_expired");
       return NextResponse.redirect(url);
@@ -61,13 +61,13 @@ export async function updateSession(request: NextRequest) {
   // Redirect unauthenticated users away from protected routes
   if (isProtected && !user) {
     const url = request.nextUrl.clone();
-    url.pathname = "/auth/sign-in";
+    url.pathname = "/auth";
     url.searchParams.set("redirectTo", request.nextUrl.pathname);
     return NextResponse.redirect(url);
   }
 
   // Redirect authenticated users away from auth pages
-  const authRoutes = ["/auth/sign-in", "/auth/sign-up"];
+  const authRoutes = ["/auth/sign-in", "/auth/sign-up", "/auth"];
   const isAuthRoute = authRoutes.some((route) =>
     request.nextUrl.pathname.startsWith(route),
   );

@@ -4,11 +4,11 @@ import { getSupabaseServerClient } from "@/lib/supabase/server";
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
-  const rawNext = searchParams.get("next") ?? "/onboarding";
+  const rawNext = searchParams.get("next") ?? "/dashboard";
   const next =
     rawNext.startsWith("/") && !rawNext.startsWith("//")
       ? rawNext
-      : "/onboarding";
+      : "/dashboard";
 
   if (code) {
     const supabase = await getSupabaseServerClient();
@@ -33,7 +33,5 @@ export async function GET(request: Request) {
   }
 
   // Auth error — redirect to sign in with error
-  return NextResponse.redirect(
-    `${origin}/auth/sign-in?error=auth_callback_error`,
-  );
+  return NextResponse.redirect(`${origin}/auth?error=auth_callback_error`);
 }

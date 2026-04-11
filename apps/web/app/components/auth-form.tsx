@@ -5,10 +5,6 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
-interface AuthFormProps {
-  mode: "sign-in" | "sign-up";
-}
-
 /* ------------------------------------------------------------------ */
 /*  Gradient-descent loss landscape canvas                            */
 /* ------------------------------------------------------------------ */
@@ -122,24 +118,64 @@ const bridgeMappings = [
 ];
 
 /* ------------------------------------------------------------------ */
+/*  Context-aware copy                                                */
+/* ------------------------------------------------------------------ */
+const COPY = {
+  new: {
+    heading: "Start Learning",
+    subtitle: "Create an account to begin your ML journey",
+    calloutPrefix: "// ",
+    callout: "MODULE 1 · FREE · NO CARD",
+    bottomText: "Already have an account?",
+    bottomAction: "Sign in",
+    terms: "creating an account",
+  },
+  returning: {
+    heading: "Welcome Back",
+    subtitle: "Sign in to continue learning",
+    calloutPrefix: "// ",
+    callout: "PICK UP WHERE YOU LEFT OFF",
+    bottomText: "New here?",
+    bottomAction: "Learn more",
+    terms: "signing in",
+  },
+};
+
+/* ------------------------------------------------------------------ */
 /*  Main AuthForm component                                           */
 /* ------------------------------------------------------------------ */
-export function AuthForm({ mode: initialMode }: AuthFormProps) {
-  const [activeMode, setActiveMode] = useState<"sign-in" | "sign-up">(
-    initialMode,
-  );
+export function AuthForm() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [magicLinkSent, setMagicLinkSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isReturning, setIsReturning] = useState(false);
   const searchParams = useSearchParams();
-  const redirectTo = searchParams.get("redirectTo") || "/onboarding";
+  const redirectTo = searchParams.get("redirectTo") || "/dashboard";
 
   const callbackUrl = `${typeof window !== "undefined" ? window.location.origin : ""}/auth/callback?next=${encodeURIComponent(redirectTo)}`;
 
-  const isSignIn = activeMode === "sign-in";
+  // Detect returning user via localStorage
+  useEffect(() => {
+    try {
+      setIsReturning(localStorage.getItem("tc_visited") === "1");
+    } catch {
+      // localStorage unavailable (e.g. private browsing)
+    }
+  }, []);
+
+  const copy = isReturning ? COPY.returning : COPY.new;
+
+  function markVisited() {
+    try {
+      localStorage.setItem("tc_visited", "1");
+    } catch {
+      // localStorage unavailable
+    }
+  }
 
   async function handleOAuth(provider: "github" | "google") {
+    markVisited();
     const supabase = getSupabaseBrowserClient();
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
@@ -155,6 +191,7 @@ export function AuthForm({ mode: initialMode }: AuthFormProps) {
     setLoading(true);
     setError(null);
 
+    markVisited();
     const supabase = getSupabaseBrowserClient();
     const { error } = await supabase.auth.signInWithOtp({
       email,
@@ -171,13 +208,25 @@ export function AuthForm({ mode: initialMode }: AuthFormProps) {
     }
   }
 
-  function switchMode(mode: "sign-in" | "sign-up") {
-    setActiveMode(mode);
+  async function handleResend() {
+    setLoading(true);
     setError(null);
-    setMagicLinkSent(false);
+
+    const supabase = getSupabaseBrowserClient();
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        emailRedirectTo: callbackUrl,
+      },
+    });
+
+    setLoading(false);
+    if (error) {
+      setError(error.message);
+    }
   }
 
-  const authError = isSignIn ? searchParams.get("error") : null;
+  const authError = searchParams.get("error");
 
   return (
     <div className="flex w-full max-w-240 min-h-160 border border-border bg-surface relative z-10">
@@ -231,30 +280,12 @@ export function AuthForm({ mode: initialMode }: AuthFormProps) {
           T_ tensorcraft
         </div>
 
-        {/* Mode toggle tabs */}
-        <div className="flex border border-border mb-8">
-          <button
-            type="button"
-            onClick={() => switchMode("sign-in")}
-            className={`flex-1 h-11 font-mono text-sm font-medium uppercase tracking-wider transition-colors ${
-              isSignIn
-                ? "bg-primary text-code-bg"
-                : "bg-transparent text-text-muted hover:text-text-primary"
-            }`}
-          >
-            Sign in
-          </button>
-          <button
-            type="button"
-            onClick={() => switchMode("sign-up")}
-            className={`flex-1 h-11 font-mono text-sm font-medium uppercase tracking-wider transition-colors border-l border-border ${
-              !isSignIn
-                ? "bg-primary text-code-bg"
-                : "bg-transparent text-text-muted hover:text-text-primary"
-            }`}
-          >
-            Create account
-          </button>
+        {/* Context-aware heading */}
+        <div className="text-center mb-8">
+          <h1 className="text-2xl font-mono font-semibold text-text-primary mb-2">
+            {copy.heading}
+          </h1>
+          <p className="text-sm font-mono text-text-muted">{copy.subtitle}</p>
         </div>
 
         {/* Error messages */}
@@ -279,16 +310,31 @@ export function AuthForm({ mode: initialMode }: AuthFormProps) {
               &#9993;
             </div>
             <h2 className="text-xl font-mono font-semibold text-text-primary mb-2">
-              Check your email
+              Check your inbox
             </h2>
-            <p className="text-text-muted text-sm font-mono mb-6">
+            <p className="text-text-muted text-sm font-mono mb-4">
               We sent a magic link to{" "}
               <strong className="text-text-primary">{email}</strong>. Click the
-              link to {isSignIn ? "sign in" : "create your account"}.
+              link and you&apos;ll be taken to your dashboard automatically.
+            </p>
+            <p className="text-text-muted/60 text-xs font-mono mb-6">
+              Didn&apos;t receive it? Check your spam folder or{" "}
+              <button
+                type="button"
+                onClick={handleResend}
+                disabled={loading}
+                className="text-primary hover:underline underline-offset-[3px] disabled:opacity-50"
+              >
+                {loading ? "sending..." : "resend the link"}
+              </button>
+              .
             </p>
             <button
               type="button"
-              onClick={() => setMagicLinkSent(false)}
+              onClick={() => {
+                setMagicLinkSent(false);
+                setError(null);
+              }}
               className="text-sm font-mono text-text-muted hover:text-primary transition-colors"
             >
               Use a different email
@@ -381,44 +427,36 @@ export function AuthForm({ mode: initialMode }: AuthFormProps) {
               </button>
             </form>
 
-            {/* Bottom toggle link */}
+            {/* Context-aware bottom link */}
             <div className="text-center mt-8 text-sm text-text-muted font-mono">
-              {isSignIn ? (
-                <>
-                  No account?{" "}
-                  <button
-                    type="button"
-                    onClick={() => switchMode("sign-up")}
-                    className="text-primary hover:underline underline-offset-[3px]"
-                  >
-                    Create one free
-                  </button>
-                </>
+              {copy.bottomText}{" "}
+              {isReturning ? (
+                <Link
+                  href="/"
+                  className="text-primary hover:underline underline-offset-[3px]"
+                >
+                  {copy.bottomAction}
+                </Link>
               ) : (
-                <>
-                  Already have one?{" "}
-                  <button
-                    type="button"
-                    onClick={() => switchMode("sign-in")}
-                    className="text-primary hover:underline underline-offset-[3px]"
-                  >
-                    Sign in
-                  </button>
-                </>
+                <button
+                  type="button"
+                  onClick={() => setIsReturning(true)}
+                  className="text-primary hover:underline underline-offset-[3px]"
+                >
+                  {copy.bottomAction}
+                </button>
               )}
             </div>
 
-            {/* Info box with green left border */}
+            {/* Context-aware callout */}
             <div className="mt-6 border border-border bg-code-bg px-4 py-3 font-mono text-[13px] text-text-muted border-l-2 border-l-primary">
-              <span className="text-primary">{"//"}</span> MODULE 1{" "}
-              <span className="text-text-muted/50">&middot;</span> FREE{" "}
-              <span className="text-text-muted/50">&middot;</span> NO CARD
+              <span className="text-primary">{copy.calloutPrefix}</span>
+              {copy.callout}
             </div>
 
             {/* Terms */}
             <div className="text-center mt-5 text-xs text-text-muted/60 font-mono">
-              By {isSignIn ? "signing in" : "creating an account"}, you agree to
-              our{" "}
+              By {copy.terms}, you agree to our{" "}
               <Link
                 href="/terms"
                 className="text-text-muted underline underline-offset-2 decoration-text-muted/30 hover:text-text-primary transition-colors"

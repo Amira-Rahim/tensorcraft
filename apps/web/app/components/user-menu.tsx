@@ -55,7 +55,7 @@ export function UserMenu() {
   if (!user) {
     return (
       <Link
-        href="/auth/sign-in"
+        href="/auth"
         className="inline-flex items-center border border-primary/30 bg-primary/8 px-6 py-2.5 text-sm font-mono font-medium hover:bg-primary/15 hover:border-primary/50 transition-all brutalist-hover"
       >
         Start now &rarr;

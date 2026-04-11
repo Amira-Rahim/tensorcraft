@@ -27,7 +27,7 @@ export default async function DashboardPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) redirect("/auth/sign-in");
+  if (!user) redirect("/auth");
 
   // Fetch profile, progress, streaks, and exercise attempts in parallel.
   // Queries are scoped to the user and limited to prevent unbounded fetches.

@@ -18,7 +18,7 @@ export default async function PurchaseSuccessPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) redirect("/auth/sign-in");
+  if (!user) redirect("/auth");
 
   // Get most recent purchase
   const { data: purchase } = await supabase

@@ -33,8 +33,9 @@ export const ROUTES = {
   home: "/",
   pricing: "/pricing",
   auth: {
-    signIn: "/auth/sign-in",
-    signUp: "/auth/sign-up",
+    root: "/auth",
+    signIn: "/auth",
+    signUp: "/auth",
     callback: "/auth/callback",
   },
   themes: "/themes",

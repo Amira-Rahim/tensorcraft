@@ -57,7 +57,7 @@ describe("Nav", () => {
   it("renders the sign-in CTA", () => {
     render(<Nav />);
     const cta = screen.getByRole("link", { name: /start now/i });
-    expect(cta).toHaveAttribute("href", "/auth/sign-in");
+    expect(cta).toHaveAttribute("href", "/auth");
   });
 
   it("CTA href matches ROUTES.auth.signIn", async () => {

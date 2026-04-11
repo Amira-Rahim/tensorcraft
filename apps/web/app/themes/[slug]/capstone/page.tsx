@@ -42,7 +42,7 @@ export default async function CapstonePage({ params }: Props) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) redirect("/auth/sign-in");
+  if (!user) redirect("/auth");
 
   // Fetch all data
   const modules = getModules(slug);

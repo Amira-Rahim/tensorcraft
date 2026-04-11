@@ -1,16 +1,11 @@
-import { Suspense } from "react";
-import { AuthForm } from "../../components/auth-form";
-import { AmbientBackground } from "../../components/ambient-background";
+import { redirect } from "next/navigation";
 
-export default function SignUpPage() {
-  return (
-    <main className="flex min-h-screen items-center justify-center px-6 py-16 relative overflow-hidden">
-      <AmbientBackground count={220} />
-      <div className="relative z-10">
-        <Suspense>
-          <AuthForm mode="sign-up" />
-        </Suspense>
-      </div>
-    </main>
-  );
+export default async function SignUpRedirect({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string>>;
+}) {
+  const params = await searchParams;
+  const query = new URLSearchParams(params).toString();
+  redirect(query ? `/auth?${query}` : "/auth");
 }

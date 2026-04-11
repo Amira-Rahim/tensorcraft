@@ -46,8 +46,9 @@ describe("PRICING", () => {
 
 describe("ROUTES", () => {
   it("has correct auth routes", () => {
-    expect(ROUTES.auth.signIn).toBe("/auth/sign-in");
-    expect(ROUTES.auth.signUp).toBe("/auth/sign-up");
+    expect(ROUTES.auth.root).toBe("/auth");
+    expect(ROUTES.auth.signIn).toBe("/auth");
+    expect(ROUTES.auth.signUp).toBe("/auth");
     expect(ROUTES.auth.callback).toBe("/auth/callback");
   });
 
