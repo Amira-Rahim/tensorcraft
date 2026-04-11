@@ -215,7 +215,8 @@ async function flushEventBuffer() {
   } = await supabase.auth.getSession();
   if (!session?.access_token) return;
 
-  const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+  const { getApiUrl } = await import("./api-url");
+  const apiBase = getApiUrl();
 
   // keepalive: true ensures the request survives page navigation/unload
   fetch(`${apiBase}/api/skill-events/batch`, {

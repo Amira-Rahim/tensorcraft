@@ -1,12 +1,15 @@
 import { cors } from "hono/cors";
 
-const DEFAULT_ORIGINS =
-  "http://localhost:3000,https://tensorcraft.app,https://www.tensorcraft.app";
+const prodOrigins = ["https://tensorcraft.app", "https://www.tensorcraft.app"];
+const devOrigins =
+  process.env.NODE_ENV === "production" ? [] : ["http://localhost:3000"];
+const DEFAULT_ORIGINS = [...prodOrigins, ...devOrigins].join(",");
 
 /**
  * CORS middleware for the Tensorcraft API.
  * Origins are read from CORS_ORIGINS env var (comma-separated).
  * Falls back to default origins if not set.
+ * In development, localhost:3000 is included automatically.
  */
 const origins = (process.env.CORS_ORIGINS ?? DEFAULT_ORIGINS)
   .split(",")

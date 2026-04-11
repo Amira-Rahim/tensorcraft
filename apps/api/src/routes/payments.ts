@@ -89,7 +89,13 @@ payments.post("/checkout", async (c) => {
   }
 
   const stripe = getStripe();
-  const appUrl = process.env.APP_URL || "http://localhost:3000";
+  let appUrl = process.env.APP_URL;
+  if (!appUrl) {
+    if (process.env.NODE_ENV === "production") {
+      throw new Error("APP_URL is required in production");
+    }
+    appUrl = "http://localhost:3000";
+  }
 
   const session = await stripe.checkout.sessions.create({
     mode: "payment",

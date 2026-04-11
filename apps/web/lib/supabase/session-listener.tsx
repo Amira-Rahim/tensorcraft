@@ -14,7 +14,8 @@ async function persistProviderToken(
   providerToken: string,
   accessToken: string,
 ) {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+  const { getApiUrl } = await import("../api-url");
+  const apiUrl = getApiUrl();
 
   try {
     await fetch(`${apiUrl}/api/github/token`, {

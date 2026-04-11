@@ -1,8 +1,9 @@
 "use client";
 
 import { getSupabaseBrowserClient } from "./supabase/client";
+import { getApiUrl } from "./api-url";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+const API_URL = getApiUrl();
 
 /**
  * Gets the current user's access token from Supabase.

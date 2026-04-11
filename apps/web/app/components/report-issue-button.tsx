@@ -149,7 +149,8 @@ export function ReportIssueButton() {
         headers["Authorization"] = `Bearer ${accessToken}`;
       }
 
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+      const { getApiUrl } = await import("@/lib/api-url");
+      const apiUrl = getApiUrl();
       const response = await fetch(`${apiUrl}/api/issues`, {
         method: "POST",
         headers,
