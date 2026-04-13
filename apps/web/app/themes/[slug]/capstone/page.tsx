@@ -171,7 +171,7 @@ export default async function CapstonePage({ params }: Props) {
           style={{ color: P.text }}
         >
           <span
-            className="px-1.5 py-0.5 text-[10px] font-bold"
+            className="px-1.5 py-0.5 text-xs font-bold"
             style={{ background: P.primary, color: P.bg }}
           >
             T_

@@ -40,7 +40,7 @@ function BridgeSection({ bridge }: { bridge: BridgeMapping }) {
       style={{ borderLeftWidth: 3, borderLeftColor: color }}
     >
       <span
-        className="text-[11px] font-mono font-semibold uppercase tracking-widest block mb-3"
+        className="text-xs font-mono font-semibold uppercase tracking-widest block mb-3"
         style={{ color }}
       >
         {tierLabels[bridge.tier]}
@@ -49,7 +49,7 @@ function BridgeSection({ bridge }: { bridge: BridgeMapping }) {
       <div className="grid grid-cols-[1fr_24px_1fr] items-center gap-2">
         {/* FE side */}
         <div>
-          <span className="text-[11px] font-mono uppercase tracking-widest text-text-muted block mb-1">
+          <span className="text-xs font-mono uppercase tracking-widest text-text-muted block mb-1">
             Frontend
           </span>
           <span className="text-sm font-semibold text-text-primary block">
@@ -72,7 +72,7 @@ function BridgeSection({ bridge }: { bridge: BridgeMapping }) {
 
         {/* ML side */}
         <div>
-          <span className="text-[11px] font-mono uppercase tracking-widest text-text-muted block mb-1">
+          <span className="text-xs font-mono uppercase tracking-widest text-text-muted block mb-1">
             ML
           </span>
           <span className="text-sm font-semibold text-text-primary block">

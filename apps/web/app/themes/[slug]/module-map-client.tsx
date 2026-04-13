@@ -104,7 +104,7 @@ export function ModuleMapClient({
               >
                 {isDone && (
                   <span
-                    className="font-mono text-[11px] font-bold"
+                    className="font-mono text-xs font-bold"
                     style={{ color: palette.bg }}
                   >
                     &#x2713;
@@ -112,7 +112,7 @@ export function ModuleMapClient({
                 )}
                 {isActive && (
                   <span
-                    className="font-mono text-[10px] font-bold"
+                    className="font-mono text-xs font-bold"
                     style={{ color: palette.primary }}
                   >
                     {">"}
@@ -120,7 +120,7 @@ export function ModuleMapClient({
                 )}
                 {isLocked && (
                   <span
-                    className="font-mono text-[10px]"
+                    className="font-mono text-xs"
                     style={{ color: palette.muted }}
                   >
                     &#x25CB;
@@ -132,7 +132,7 @@ export function ModuleMapClient({
               <div className="flex-1 min-w-0">
                 <div className="flex items-baseline gap-3">
                   <span
-                    className="font-mono text-[9px]"
+                    className="font-mono text-xs"
                     style={{
                       color:
                         isDone || isActive ? palette.primary : palette.muted,
@@ -148,7 +148,7 @@ export function ModuleMapClient({
                   </span>
                   {isDone && mod.avgScore != null && (
                     <span
-                      className="font-mono text-[10px] ml-auto"
+                      className="font-mono text-xs ml-auto"
                       style={{ color: palette.primary }}
                     >
                       {mod.avgScore}%
@@ -156,7 +156,7 @@ export function ModuleMapClient({
                   )}
                   {isActive && (
                     <span
-                      className="font-mono text-[9px] ml-auto px-2 py-0.5"
+                      className="font-mono text-xs ml-auto px-2 py-0.5"
                       style={{
                         color: palette.primary,
                         background: `color-mix(in srgb, ${palette.primary} 13%, transparent)`,
@@ -168,7 +168,7 @@ export function ModuleMapClient({
                   )}
                 </div>
                 <div
-                  className="font-mono text-[10px] mt-1"
+                  className="font-mono text-xs mt-1"
                   style={{ color: palette.muted }}
                 >
                   {mod.description}
@@ -194,7 +194,7 @@ export function ModuleMapClient({
                           }}
                         >
                           <span
-                            className="font-mono text-[9px]"
+                            className="font-mono text-xs"
                             style={{
                               color: lessonDone
                                 ? palette.primary
@@ -210,7 +210,7 @@ export function ModuleMapClient({
                                 : `${li + 1}`}
                           </span>
                           <span
-                            className="font-mono text-[11px]"
+                            className="font-mono text-xs"
                             style={{
                               color:
                                 lessonDone || lessonActive

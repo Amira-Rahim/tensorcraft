@@ -21,9 +21,7 @@ vi.mock("next/link", () => ({
 describe("Privacy page accessibility", () => {
   it("has no accessibility violations", async () => {
     const { container } = render(<PrivacyPage />);
-    const results = await axe(container, {
-      rules: { "color-contrast": { enabled: false } },
-    });
+    const results = await axe(container);
     expect(results).toHaveNoViolations();
   });
 });

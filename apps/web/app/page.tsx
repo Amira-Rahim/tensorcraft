@@ -45,7 +45,7 @@ export default function Home() {
             <h2 className="text-3xl font-mono font-black tracking-tight mb-3">
               What You&apos;ll Build
             </h2>
-            <p className="text-[15px] text-text-muted leading-relaxed max-w-[480px]">
+            <p className="text-[15px] text-text-muted leading-relaxed max-w-[480px] font-sans">
               By Module 11, you&apos;ll have a real-time anomaly detection
               system — trained, tested, and deployed entirely in the browser.
             </p>
@@ -53,12 +53,12 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr] border-t border-border">
             {/* Left: Project showcase */}
             <div className="px-10 md:px-14 py-12 border-b md:border-b-0 md:border-r border-border">
-              <div className="font-mono text-[9px] text-primary tracking-[0.15em] mb-6">
+              <div className="font-mono text-xs text-primary tracking-[0.15em] mb-6">
                 // DEEP SCAN — ANOMALY DETECTOR
               </div>
               {/* Code mockup */}
               <div className="bg-code-bg border border-border p-5 mb-6">
-                <div className="font-mono text-[10px] text-text-muted mb-3 flex items-center gap-2">
+                <div className="font-mono text-xs text-text-muted mb-3 flex items-center gap-2">
                   <span className="w-2 h-2 bg-primary opacity-60 inline-block" />
                   deep-scan.ts
                 </div>
@@ -87,7 +87,7 @@ export default function Home() {
                 </pre>
               </div>
               {/* Status indicator */}
-              <div className="flex items-center gap-3 font-mono text-[11px]">
+              <div className="flex items-center gap-3 font-mono text-xs">
                 <span className="w-2 h-2 bg-primary inline-block animate-pulse" />
                 <span className="text-primary">LIVE</span>
                 <span className="text-text-muted">
@@ -117,10 +117,10 @@ export default function Home() {
                 },
               ].map((item) => (
                 <div key={item.label}>
-                  <div className="font-mono text-[11px] text-primary font-bold tracking-wider mb-2">
+                  <div className="font-mono text-xs text-primary font-bold tracking-wider mb-2">
                     {item.label}
                   </div>
-                  <p className="text-sm text-text-muted leading-relaxed">
+                  <p className="text-sm text-text-muted leading-relaxed font-sans">
                     {item.desc}
                   </p>
                 </div>
@@ -131,7 +131,7 @@ export default function Home() {
 
         {/* ===== FINAL CTA (server-rendered — zero JS) ===== */}
         <section className="px-10 md:px-20 py-28 flex flex-col items-start gap-10">
-          <div className="font-mono text-[11px] text-text-muted tracking-wider">
+          <div className="font-mono text-xs text-text-muted tracking-wider">
             // module 1 · free · no account required
           </div>
           <h2 className="text-5xl md:text-6xl font-mono font-black tracking-[-0.045em] leading-[0.95] uppercase">
@@ -139,7 +139,7 @@ export default function Home() {
             <br />
             <span className="text-primary">the gap.</span>
           </h2>
-          <p className="text-base text-text-muted max-w-[420px] leading-relaxed">
+          <p className="text-base text-text-muted max-w-[420px] leading-relaxed font-sans">
             Module 1 is completely free. No account, no card, no setup. Just
             open the lesson and start reading.
           </p>

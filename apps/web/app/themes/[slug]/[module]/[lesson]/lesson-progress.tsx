@@ -134,7 +134,7 @@ export function LessonProgressTracker({
             ? "var(--tc-border, rgba(255,255,255,0.06))"
             : accentColor,
           color: buttonDisabled
-            ? "var(--tc-muted, #8A8A8A)"
+            ? "var(--tc-muted, #A0A0A0)"
             : "var(--tc-bg, #1C1C1C)",
           cursor: buttonDisabled ? "not-allowed" : "pointer",
         }}
@@ -148,7 +148,7 @@ export function LessonProgressTracker({
       {!exercisesComplete && (
         <p
           className="text-xs mt-2 text-center"
-          style={{ color: "var(--tc-muted, #8A8A8A)" }}
+          style={{ color: "var(--tc-muted, #A0A0A0)" }}
         >
           Pass all exercises before marking this lesson as done.
         </p>

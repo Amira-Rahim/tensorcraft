@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
           </div>
           <span
             tw="text-2xl font-bold tracking-tight"
-            style={{ color: "#C8C8C8" }}
+            style={{ color: "#E0E0E0" }}
           >
             TENSORCRAFT
           </span>
@@ -43,12 +43,12 @@ export async function GET(req: NextRequest) {
         <div tw="flex flex-col mt-auto mb-8">
           <h1
             tw="text-6xl font-bold leading-tight m-0"
-            style={{ color: "#C8C8C8" }}
+            style={{ color: "#E0E0E0" }}
           >
             {title}
           </h1>
           {subtitle && (
-            <p tw="text-2xl mt-4 m-0" style={{ color: "#8A8A8A" }}>
+            <p tw="text-2xl mt-4 m-0" style={{ color: "#A0A0A0" }}>
               {subtitle}
             </p>
           )}

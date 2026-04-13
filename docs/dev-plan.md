@@ -428,7 +428,10 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] `aria-pressed` on filter toggle buttons _(bridge explorer removed; filters now N/A)_
 - [x] Focus trap and focus restore on coming-soon modal
 - [x] `role="progressbar"` with `aria-valuenow/min/max` on module progress bars
-- [ ] Color contrast audit (4.5:1 minimum for text, 3:1 for UI components)
+- [x] Color contrast audit (4.5:1 minimum for text, 3:1 for UI components)
+
+  **COMPLETED (2026-04-13):** Minimum font size 12px, contrast improved, prose switched to Inter. Text updated to `#E0E0E0` (11.4:1), muted to `#A0A0A0` (5.3:1), Signal Ward primary to `#65C07D`, Terra Grid primary to `#C49535`.
+
 - [ ] Image alt-text on all images
 
 ### 6b. Mobile Responsiveness
@@ -699,7 +702,7 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] Unit-level axe checks on all components: nav, footer, cookie-consent, dialogue, bridge-callout, hint-panel, learning-objectives, key-takeaways
 - [x] Page-level a11y tests: terms (`page.a11y.test.tsx`), privacy (`page.a11y.test.tsx`)
 - [x] E2E axe audits on 9 routes: /, /auth/sign-in, /auth/sign-up, /terms, /privacy, /themes, /themes/deep-orbit, /themes/deep-orbit/foundations, /themes/deep-orbit/foundations/introduction-to-tensors
-- [ ] Color contrast audit (4.5:1 minimum for text, 3:1 for UI components) _(manual audit pre-launch)_
+- [x] Color contrast audit (4.5:1 minimum for text, 3:1 for UI components) — **COMPLETED (2026-04-13)**
 
 ### 8e. Content Validation Tests (COMPLETE)
 

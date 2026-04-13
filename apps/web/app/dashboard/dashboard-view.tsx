@@ -409,7 +409,7 @@ export function DashboardView(props: DashboardProps) {
               y={(pt.y + 3).toFixed(1)}
               textAnchor={anchor}
               fontSize="7.5"
-              fill="#8A8A8A"
+              fill="#A0A0A0"
               fontFamily="JetBrains Mono,monospace"
             >
               {label}
@@ -560,7 +560,7 @@ export function DashboardView(props: DashboardProps) {
                     color:
                       m.status === "done"
                         ? "color-mix(in srgb, var(--tc-primary) 50%, transparent)"
-                        : "#8A8A8A",
+                        : "#A0A0A0",
                     letterSpacing: "0.06em",
                     marginBottom: 3,
                   }}

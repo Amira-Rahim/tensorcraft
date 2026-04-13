@@ -32,10 +32,10 @@ export function BridgeCollection({ bridges }: { bridges: BridgeItem[] }) {
   return (
     <section className="mb-10">
       <div className="flex items-center justify-between mb-3">
-        <div className="font-mono text-[10px] font-bold text-text-muted tracking-wider uppercase">
+        <div className="font-mono text-xs font-bold text-text-muted tracking-wider uppercase">
           // Bridges Collected
         </div>
-        <div className="font-mono text-[11px] text-text-muted">
+        <div className="font-mono text-xs text-text-muted">
           <span className="text-primary font-bold">{collected.length}</span>
           <span className="opacity-60">/{total}</span>
         </div>
@@ -63,7 +63,7 @@ export function BridgeCollection({ bridges }: { bridges: BridgeItem[] }) {
                 key={bridge.lessonSlug}
                 className="aspect-square bg-surface-raised border border-border flex items-center justify-center opacity-25"
               >
-                <span className="font-mono text-[10px] text-text-muted">?</span>
+                <span className="font-mono text-xs text-text-muted">?</span>
               </div>
             );
           }
@@ -80,10 +80,7 @@ export function BridgeCollection({ bridges }: { bridges: BridgeItem[] }) {
               }}
               title={`${bridge.feTitle} → ${bridge.mlTitle}`}
             >
-              <span
-                className="font-mono text-[9px] font-bold"
-                style={{ color }}
-              >
+              <span className="font-mono text-xs font-bold" style={{ color }}>
                 {bridge.tier[0].toUpperCase()}
               </span>
 
@@ -93,13 +90,13 @@ export function BridgeCollection({ bridges }: { bridges: BridgeItem[] }) {
                   className="absolute z-20 left-0 top-full mt-1 w-48 p-3 bg-surface border border-border shadow-lg text-left"
                   style={{ borderTopColor: color, borderTopWidth: 2 }}
                 >
-                  <div className="font-mono text-[10px] text-text-primary font-bold mb-1">
+                  <div className="font-mono text-xs text-text-primary font-bold mb-1">
                     {bridge.feTitle}
                   </div>
-                  <div className="font-mono text-[9px] mb-1" style={{ color }}>
+                  <div className="font-mono text-xs mb-1" style={{ color }}>
                     →
                   </div>
-                  <div className="font-mono text-[10px] text-text-primary font-bold mb-2">
+                  <div className="font-mono text-xs text-text-primary font-bold mb-2">
                     {bridge.mlTitle}
                   </div>
                   <span

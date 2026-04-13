@@ -10,7 +10,7 @@ export function NextLesson({ href, title, moduleTitle }: NextLessonProps) {
       href={href}
       className="group block p-5 my-8 brutalist-shadow bg-surface-raised border border-border transition-all hover:shadow-[6px_6px_0_var(--tc-primary)]"
     >
-      <span className="text-[11px] font-mono font-semibold uppercase tracking-widest text-text-muted block mb-2">
+      <span className="text-xs font-mono font-semibold uppercase tracking-widest text-text-muted block mb-2">
         Next Lesson
       </span>
 

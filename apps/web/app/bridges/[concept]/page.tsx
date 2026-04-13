@@ -95,7 +95,7 @@ export default async function BridgeConceptPage({
     <main className="min-h-screen px-8 md:px-20 pt-24 pb-28">
       <div className="max-w-3xl">
         {/* Breadcrumb */}
-        <div className="font-mono text-[11px] text-text-muted tracking-wider mb-10 flex items-center gap-2">
+        <div className="font-mono text-xs text-text-muted tracking-wider mb-10 flex items-center gap-2">
           <Link
             href="/bridges"
             className="hover:text-primary transition-colors"
@@ -108,7 +108,7 @@ export default async function BridgeConceptPage({
 
         {/* Tier badge */}
         <div
-          className="inline-block font-mono text-[10px] font-bold tracking-wider uppercase px-3 py-1.5 border mb-6"
+          className="inline-block font-mono text-xs font-bold tracking-wider uppercase px-3 py-1.5 border mb-6"
           style={{
             color: TIER_COLORS[bridge.tier],
             borderColor: `${TIER_COLORS[bridge.tier]}55`,
@@ -126,14 +126,14 @@ export default async function BridgeConceptPage({
           {bridge.mlConcept}
         </h1>
 
-        <div className="font-mono text-[11px] text-text-muted tracking-wider mb-12">
+        <div className="font-mono text-xs text-text-muted tracking-wider mb-12">
           {BRIDGE_CATEGORY_LABELS[bridge.category]} // Bridge #{bridge.id}
         </div>
 
         {/* Connection — the core content */}
         <div className="border border-border mb-10">
           <div className="px-6 py-4 border-b border-border bg-surface-raised">
-            <span className="font-mono text-[10px] font-bold text-text-muted tracking-wider uppercase">
+            <span className="font-mono text-xs font-bold text-text-muted tracking-wider uppercase">
               The connection
             </span>
           </div>
@@ -147,7 +147,7 @@ export default async function BridgeConceptPage({
         {/* Tier explanation */}
         <div className="border border-border mb-10">
           <div className="px-6 py-4 border-b border-border bg-surface-raised">
-            <span className="font-mono text-[10px] font-bold text-text-muted tracking-wider uppercase">
+            <span className="font-mono text-xs font-bold text-text-muted tracking-wider uppercase">
               Why &quot;{BRIDGE_TIER_LABELS[bridge.tier]}&quot;?
             </span>
           </div>
@@ -164,7 +164,7 @@ export default async function BridgeConceptPage({
             className="px-6 py-6"
             style={{ borderRight: "1px solid var(--tc-border)" }}
           >
-            <div className="font-mono text-[10px] text-text-muted tracking-wider uppercase mb-3">
+            <div className="font-mono text-xs text-text-muted tracking-wider uppercase mb-3">
               Frontend concept
             </div>
             <div className="text-base font-mono font-bold text-text-primary mb-3">
@@ -172,13 +172,13 @@ export default async function BridgeConceptPage({
             </div>
             <Link
               href={`/glossary/${slugify(bridge.feConcept)}`}
-              className="font-mono text-[11px] text-primary hover:underline"
+              className="font-mono text-xs text-primary hover:underline"
             >
               View in glossary
             </Link>
           </div>
           <div className="px-6 py-6">
-            <div className="font-mono text-[10px] text-text-muted tracking-wider uppercase mb-3">
+            <div className="font-mono text-xs text-text-muted tracking-wider uppercase mb-3">
               ML concept
             </div>
             <div className="text-base font-mono font-bold text-text-primary mb-3">
@@ -186,7 +186,7 @@ export default async function BridgeConceptPage({
             </div>
             <Link
               href={`/glossary/${slugify(bridge.mlConcept)}`}
-              className="font-mono text-[11px] text-primary hover:underline"
+              className="font-mono text-xs text-primary hover:underline"
             >
               View in glossary
             </Link>
@@ -197,7 +197,7 @@ export default async function BridgeConceptPage({
         {related.length > 0 && (
           <div className="border border-border">
             <div className="px-6 py-4 border-b border-border bg-surface-raised">
-              <span className="font-mono text-[10px] font-bold text-text-muted tracking-wider uppercase">
+              <span className="font-mono text-xs font-bold text-text-muted tracking-wider uppercase">
                 Related bridges in {BRIDGE_CATEGORY_LABELS[bridge.category]}
               </span>
             </div>
@@ -223,7 +223,7 @@ export default async function BridgeConceptPage({
                   </span>
                 </div>
                 <span
-                  className="font-mono text-[10px] font-bold tracking-wider"
+                  className="font-mono text-xs font-bold tracking-wider"
                   style={{ color: TIER_COLORS[r.tier] }}
                 >
                   {BRIDGE_TIER_LABELS[r.tier]}

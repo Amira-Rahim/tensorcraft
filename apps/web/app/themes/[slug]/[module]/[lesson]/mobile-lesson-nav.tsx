@@ -118,7 +118,7 @@ export function MobileLessonNav({
                       className="flex items-center gap-2.5 px-3 py-2.5 text-sm cursor-not-allowed opacity-40"
                     >
                       <span
-                        className="w-5 h-5 flex items-center justify-center text-[10px] font-medium shrink-0"
+                        className="w-5 h-5 flex items-center justify-center text-xs font-medium shrink-0"
                         style={{
                           background: "var(--tc-border)",
                           color: mutedColor,
@@ -147,7 +147,7 @@ export function MobileLessonNav({
                     onClick={handleClose}
                   >
                     <span
-                      className="w-5 h-5 flex items-center justify-center text-[10px] font-medium shrink-0"
+                      className="w-5 h-5 flex items-center justify-center text-xs font-medium shrink-0"
                       style={{
                         background: isActive ? accentColor : "var(--tc-border)",
                         color: isActive ? "var(--tc-bg)" : mutedColor,

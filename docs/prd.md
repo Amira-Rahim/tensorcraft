@@ -366,8 +366,8 @@ The UI follows a "Brutalist Terminal" aesthetic: sharp edges, offset shadows, mo
 | Surface (Panel) | `#252525` | Cards, panels |
 | Surface (Overlay) | `#313131` | Elevated surfaces, dropdowns |
 | Primary | `#6BAA8A` | Buttons, links, active states |
-| Text | `#C8C8C8` | Body text |
-| Muted | `#8A8A8A` | Secondary text (WCAG AA on `#1C1C1C`) |
+| Text | `#E0E0E0` | Body text |
+| Muted | `#A0A0A0` | Secondary text (WCAG AA on `#1C1C1C`) |
 | Border | `#2A2A2A` | Dividers, card borders |
 | Code BG | `#161616` | Code block backgrounds |
 

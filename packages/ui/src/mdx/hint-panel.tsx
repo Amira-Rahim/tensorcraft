@@ -51,7 +51,7 @@ export function HintPanel({ hints }: HintPanelProps) {
                   }}
                 >
                   <span
-                    className="text-[11px] font-mono font-semibold uppercase tracking-widest block mb-1"
+                    className="text-xs font-mono font-semibold uppercase tracking-widest block mb-1"
                     style={{ color: config.color }}
                   >
                     {config.icon} {config.label}

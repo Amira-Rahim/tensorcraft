@@ -34,9 +34,7 @@ describe("LearningObjectives", () => {
     const { container } = render(
       <LearningObjectives objectives={objectives} />,
     );
-    const results = await axe(container, {
-      rules: { "color-contrast": { enabled: false } },
-    });
+    const results = await axe(container);
     expect(results).toHaveNoViolations();
   });
 });

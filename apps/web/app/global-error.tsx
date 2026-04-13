@@ -20,7 +20,7 @@ export default function GlobalError({
           margin: 0,
           padding: 0,
           backgroundColor: "#1C1C1C",
-          color: "#C8C8C8",
+          color: "#E0E0E0",
           fontFamily: "ui-monospace, monospace",
           minHeight: "100vh",
           display: "flex",
@@ -68,7 +68,7 @@ export default function GlobalError({
               fontSize: "1.5rem",
               fontWeight: 600,
               marginBottom: "0.75rem",
-              color: "#C8C8C8",
+              color: "#E0E0E0",
             }}
           >
             Something went wrong
@@ -77,7 +77,7 @@ export default function GlobalError({
           <p
             style={{
               fontSize: "1rem",
-              color: "#8A8A8A",
+              color: "#A0A0A0",
               marginBottom: "2rem",
               lineHeight: 1.6,
             }}

@@ -266,7 +266,7 @@ export function FiveWorldsSection() {
     <section className="border-b border-border">
       {/* Header */}
       <div className="px-10 md:px-20 pt-16 pb-10">
-        <div className="font-mono text-[9px] text-primary tracking-[0.2em] uppercase mb-3">
+        <div className="font-mono text-xs text-primary tracking-[0.2em] uppercase mb-3">
           // CHOOSE YOUR WORLD
         </div>
         <h2 className="text-3xl font-mono font-black tracking-tight mb-3">
@@ -312,7 +312,7 @@ export function FiveWorldsSection() {
                   {t.code}
                 </span>
                 <span
-                  className="font-mono text-[9px] font-bold tracking-wider px-2 py-0.5"
+                  className="font-mono text-xs font-bold tracking-wider px-2 py-0.5"
                   style={{
                     color: t.col,
                     background: `color-mix(in srgb, ${t.col} 10%, transparent)`,
@@ -328,14 +328,14 @@ export function FiveWorldsSection() {
               >
                 {t.name}
               </div>
-              <div className="font-mono text-[10px] text-text-muted opacity-50 mb-3">
+              <div className="font-mono text-xs text-text-muted opacity-50 mb-3">
                 {t.spec}
               </div>
               <p className="text-[12px] text-text-muted leading-relaxed opacity-40 group-hover:opacity-65 transition-opacity mb-4">
                 {t.tagline}
               </p>
               <span
-                className="font-mono text-[10px] tracking-wider opacity-0 group-hover:opacity-100 transition-opacity"
+                className="font-mono text-xs tracking-wider opacity-0 group-hover:opacity-100 transition-opacity"
                 style={{ color: t.col }}
               >
                 Explore &rarr;
@@ -347,7 +347,7 @@ export function FiveWorldsSection() {
 
       {/* Footer */}
       <div className="border-t border-border px-10 md:px-20 py-4">
-        <p className="font-mono text-[10px] text-text-muted text-center">
+        <p className="font-mono text-xs text-text-muted text-center">
           // Module 1 of every theme is free. No account needed.
         </p>
       </div>

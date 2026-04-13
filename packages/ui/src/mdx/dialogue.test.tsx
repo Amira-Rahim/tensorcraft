@@ -29,9 +29,7 @@ describe("Dialogue", () => {
     const { container } = render(
       <Dialogue speaker="ARIA">Scanning for anomalies.</Dialogue>,
     );
-    const results = await axe(container, {
-      rules: { "color-contrast": { enabled: false } },
-    });
+    const results = await axe(container);
     expect(results).toHaveNoViolations();
   });
 });

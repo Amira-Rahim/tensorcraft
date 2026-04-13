@@ -19,7 +19,7 @@ export default function GlossaryIndexPage() {
       <div className="absolute inset-0 grid-bg pointer-events-none z-0" />
 
       <div className="max-w-4xl relative z-10">
-        <div className="font-mono text-[11px] text-primary tracking-[0.14em] uppercase mb-6 flex items-center gap-3">
+        <div className="font-mono text-xs text-primary tracking-[0.14em] uppercase mb-6 flex items-center gap-3">
           <span className="inline-block w-[7px] h-[7px] bg-primary" />
           Glossary
         </div>

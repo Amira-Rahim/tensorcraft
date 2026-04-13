@@ -166,7 +166,7 @@ export default async function ModuleOverviewPage({ params }: Props) {
                       {lesson.estimatedMinutes} min
                     </span>
                     <span
-                      className="text-[10px] uppercase tracking-wider px-1.5 py-0.5"
+                      className="text-xs uppercase tracking-wider px-1.5 py-0.5"
                       style={{
                         color: difficultyColors[lesson.difficulty],
                         background: `${difficultyColors[lesson.difficulty]}15`,
@@ -175,7 +175,7 @@ export default async function ModuleOverviewPage({ params }: Props) {
                       {lesson.difficulty}
                     </span>
                     {status === "in_progress" && (
-                      <span className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 bg-primary/10 text-primary">
+                      <span className="text-xs uppercase tracking-wider px-1.5 py-0.5 bg-primary/10 text-primary">
                         In Progress
                       </span>
                     )}

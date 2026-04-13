@@ -27,7 +27,7 @@ export function BridgePreviewSection() {
     <section className="border-b border-border">
       {/* Header */}
       <div className="px-10 md:px-20 pt-20 pb-6 text-center">
-        <div className="font-mono text-[9px] text-primary tracking-[0.2em] uppercase mb-4">
+        <div className="font-mono text-xs text-primary tracking-[0.2em] uppercase mb-4">
           // THE BRIDGE SYSTEM
         </div>
         <h2 className="text-4xl md:text-5xl font-mono font-black tracking-tight mb-4">
@@ -47,7 +47,7 @@ export function BridgePreviewSection() {
               key={f.id}
               type="button"
               onClick={() => setSelected(f.id)}
-              className={`flex items-center gap-2 px-5 py-2.5 font-mono text-[11px] uppercase tracking-wider transition-all border-2 ${
+              className={`flex items-center gap-2 px-5 py-2.5 font-mono text-xs uppercase tracking-wider transition-all border-2 ${
                 selected === f.id
                   ? "bg-primary/10 border-primary text-primary font-bold"
                   : "bg-surface border-border text-text-muted hover:border-primary/20 hover:text-text-primary"
@@ -66,7 +66,7 @@ export function BridgePreviewSection() {
           {/* FE side */}
           <div className="px-10 md:px-16 py-12 md:py-16">
             <div className="max-w-md ml-auto">
-              <div className="font-mono text-[9px] text-primary uppercase tracking-[0.15em] mb-3">
+              <div className="font-mono text-xs text-primary uppercase tracking-[0.15em] mb-3">
                 // YOUR {selectedLabel.toUpperCase()} CODE
               </div>
               <h3 className="font-mono text-xl font-bold text-text-primary mb-4">
@@ -75,7 +75,7 @@ export function BridgePreviewSection() {
               <div className="bg-code-bg border border-border p-5 font-mono text-[13px] text-primary leading-relaxed whitespace-pre-wrap">
                 {feCode}
               </div>
-              <div className="font-mono text-[10px] text-text-muted mt-3">
+              <div className="font-mono text-xs text-text-muted mt-3">
                 You write this every day.
               </div>
             </div>
@@ -112,7 +112,7 @@ export function BridgePreviewSection() {
           {/* ML side */}
           <div className="px-10 md:px-16 py-12 md:py-16">
             <div className="max-w-md">
-              <div className="font-mono text-[9px] uppercase tracking-[0.15em] mb-3 text-text-muted">
+              <div className="font-mono text-xs uppercase tracking-[0.15em] mb-3 text-text-muted">
                 // ML EQUIVALENT
               </div>
               <h3 className="font-mono text-xl font-bold text-text-primary mb-4">
@@ -126,7 +126,7 @@ export function BridgePreviewSection() {
                   "model.fit(trainingData, labels);\n// data shapes model behavior"
                 }
               </div>
-              <div className="font-mono text-[10px] text-text-muted mt-3">
+              <div className="font-mono text-xs text-text-muted mt-3">
                 It&apos;s the same pattern.
               </div>
             </div>
@@ -141,7 +141,7 @@ export function BridgePreviewSection() {
           {PREVIEW_BRIDGE.connection.split(".")[0]}.
         </p>
         <div
-          className="shrink-0 px-4 py-2 font-mono text-[10px]"
+          className="shrink-0 px-4 py-2 font-mono text-xs"
           style={{
             background:
               "color-mix(in srgb, var(--tc-tier-structural) 8%, transparent)",

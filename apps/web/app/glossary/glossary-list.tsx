@@ -70,7 +70,7 @@ export function GlossaryList() {
     <>
       {/* Search input */}
       <div className="relative mb-8">
-        <div className="absolute left-4 top-1/2 -translate-y-1/2 font-mono text-[11px] text-text-muted tracking-wider pointer-events-none">
+        <div className="absolute left-4 top-1/2 -translate-y-1/2 font-mono text-xs text-text-muted tracking-wider pointer-events-none">
           //
         </div>
         <input
@@ -92,7 +92,7 @@ export function GlossaryList() {
 
       {/* Alphabet navigation */}
       <div className="flex flex-wrap gap-1 mb-12 border border-border bg-surface p-4">
-        <div className="font-mono text-[10px] text-text-muted tracking-wider uppercase mr-3 flex items-center">
+        <div className="font-mono text-xs text-text-muted tracking-wider uppercase mr-3 flex items-center">
           // jump to
         </div>
         {ALPHABET.map((letter) => {
@@ -116,7 +116,7 @@ export function GlossaryList() {
         })}
       </div>
 
-      <p className="font-mono text-[11px] text-text-muted tracking-wider uppercase mb-6">
+      <p className="font-mono text-xs text-text-muted tracking-wider uppercase mb-6">
         {filteredTerms.length} terms from {BRIDGES.length} bridges
         {query && ` matching "${query}"`}
       </p>
@@ -126,7 +126,7 @@ export function GlossaryList() {
         {["Term", "Domain", "Bridge to", "Tier"].map((h, i) => (
           <div
             key={h}
-            className="px-5 py-3 font-mono text-[10px] font-bold text-text-muted tracking-wider uppercase"
+            className="px-5 py-3 font-mono text-xs font-bold text-text-muted tracking-wider uppercase"
             style={{
               borderRight: i < 3 ? "1px solid var(--tc-border)" : "none",
             }}
@@ -149,7 +149,7 @@ export function GlossaryList() {
       {ALPHABET.filter((letter) => termsByLetter.has(letter)).map((letter) => (
         <div key={letter} id={`letter-${letter}`}>
           <div className="px-5 py-2 bg-surface border-b border-border">
-            <span className="font-mono text-[11px] font-bold text-primary tracking-wider">
+            <span className="font-mono text-xs font-bold text-primary tracking-wider">
               {letter}
             </span>
           </div>
@@ -166,7 +166,7 @@ export function GlossaryList() {
                 {t.term}
               </div>
               <div
-                className="px-5 py-4 font-mono text-[10px] font-bold tracking-wider uppercase"
+                className="px-5 py-4 font-mono text-xs font-bold tracking-wider uppercase"
                 style={{
                   borderRight: "1px solid var(--tc-border)",
                   color: t.type === "ml" ? "#7096B0" : "#6BAA8A",
@@ -182,7 +182,7 @@ export function GlossaryList() {
               </div>
               <div className="px-5 py-4">
                 <span
-                  className="font-mono text-[10px] font-bold tracking-wider"
+                  className="font-mono text-xs font-bold tracking-wider"
                   style={{ color: TIER_COLORS[t.tier] }}
                 >
                   {BRIDGE_TIER_LABELS[t.tier]}

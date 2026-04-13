@@ -80,7 +80,7 @@ function GenericBridgeLayout({ bridge }: { bridge: Bridge }) {
     <div className="my-8 brutalist-shadow bg-surface-raised border border-border overflow-hidden">
       <div className="grid grid-cols-1 sm:grid-cols-[1fr_1fr] divide-y sm:divide-y-0 sm:divide-x divide-border">
         <div className="p-5">
-          <h4 className="text-[11px] font-mono uppercase tracking-widest mb-3 text-text-muted">
+          <h4 className="text-xs font-mono uppercase tracking-widest mb-3 text-text-muted">
             Frontend
           </h4>
           <h5 className="text-base font-semibold mb-2 text-text-primary">
@@ -94,7 +94,7 @@ function GenericBridgeLayout({ bridge }: { bridge: Bridge }) {
           </code>
         </div>
         <div className="p-5">
-          <h4 className="text-[11px] font-mono uppercase tracking-widest mb-3 text-text-muted">
+          <h4 className="text-xs font-mono uppercase tracking-widest mb-3 text-text-muted">
             Machine Learning
           </h4>
           <h5 className="text-base font-semibold mb-2 text-text-primary">
@@ -110,7 +110,7 @@ function GenericBridgeLayout({ bridge }: { bridge: Bridge }) {
       </div>
       <div className="text-center py-2 border-t border-border">
         <span
-          className="text-[11px] font-mono uppercase tracking-widest"
+          className="text-xs font-mono uppercase tracking-widest"
           style={{ color }}
         >
           {tierLabels[bridge.tier]}
@@ -181,7 +181,7 @@ function TabbedBridgeLayout({
               disabled={!hasVariant}
               onClick={() => hasVariant && setActiveTab(fw)}
               onKeyDown={(e) => handleKeyDown(e, i)}
-              className="px-4 py-2 font-mono text-[10px] uppercase tracking-widest transition-colors whitespace-nowrap"
+              className="px-4 py-2 font-mono text-xs uppercase tracking-widest transition-colors whitespace-nowrap"
               style={{
                 color: isActive ? color : undefined,
                 borderBottom: isActive
@@ -204,7 +204,7 @@ function TabbedBridgeLayout({
             style={{ background: color }}
           />
           <span
-            className="font-mono text-[9px] uppercase tracking-widest"
+            className="font-mono text-xs uppercase tracking-widest"
             style={{ color }}
           >
             {tierLabels[bridge.tier]}
@@ -218,7 +218,7 @@ function TabbedBridgeLayout({
         className="grid grid-cols-1 sm:grid-cols-[1fr_1fr] divide-y sm:divide-y-0 sm:divide-x divide-border"
       >
         <div className="p-5">
-          <h4 className="text-[10px] font-mono uppercase tracking-widest mb-3 text-text-muted">
+          <h4 className="text-xs font-mono uppercase tracking-widest mb-3 text-text-muted">
             Your Framework
           </h4>
           <h5 className="text-sm font-semibold mb-2 text-text-primary">
@@ -232,7 +232,7 @@ function TabbedBridgeLayout({
           </code>
         </div>
         <div className="p-5">
-          <h4 className="text-[10px] font-mono uppercase tracking-widest mb-3 text-text-muted">
+          <h4 className="text-xs font-mono uppercase tracking-widest mb-3 text-text-muted">
             ML Equivalent
           </h4>
           <h5 className="text-sm font-semibold mb-2 text-text-primary">
@@ -252,7 +252,7 @@ function TabbedBridgeLayout({
           data-testid="bridge-footer"
           className="px-5 py-3 border-t border-border bg-code-bg"
         >
-          <span className="font-mono text-[11px] leading-relaxed text-text-muted">
+          <span className="font-mono text-xs leading-relaxed text-text-muted">
             <span style={{ color }}>// bridge:</span> {sharedBridge.connection}
           </span>
         </div>

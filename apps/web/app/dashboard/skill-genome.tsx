@@ -161,7 +161,7 @@ export function SkillGenome({ data }: SkillGenomeProps) {
   if (data.length === 0) {
     return (
       <div className="brutalist-shadow bg-surface-raised border border-border p-5 my-6">
-        <div className="font-mono text-[9px] uppercase tracking-widest text-text-muted mb-6">
+        <div className="font-mono text-xs uppercase tracking-widest text-text-muted mb-6">
           // SKILL GENOME
         </div>
         <div className="flex flex-col items-center justify-center py-8">
@@ -173,7 +173,7 @@ export function SkillGenome({ data }: SkillGenomeProps) {
           </p>
           <div className="w-full max-w-[240px]">
             <div className="h-1 bg-border w-full" />
-            <div className="font-mono text-[9px] text-text-muted text-center mt-2">
+            <div className="font-mono text-xs text-text-muted text-center mt-2">
               0 / 6 axes active
             </div>
           </div>
@@ -200,7 +200,7 @@ export function SkillGenome({ data }: SkillGenomeProps) {
   return (
     <div className="brutalist-shadow bg-surface-raised border border-border overflow-hidden my-6">
       <div className="p-5">
-        <div className="font-mono text-[9px] uppercase tracking-widest text-text-muted mb-4">
+        <div className="font-mono text-xs uppercase tracking-widest text-text-muted mb-4">
           // SKILL GENOME
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-[200px_1fr] gap-6">
@@ -216,11 +216,11 @@ export function SkillGenome({ data }: SkillGenomeProps) {
             {axisData.map((axis, i) => (
               <div key={axis.key}>
                 <div className="flex justify-between mb-1">
-                  <span className="font-mono text-[9px] text-text-primary">
+                  <span className="font-mono text-xs text-text-primary">
                     {axis.label}
                   </span>
                   <span
-                    className="font-mono text-[9px] font-semibold"
+                    className="font-mono text-xs font-semibold"
                     style={{ color: axis.color }}
                   >
                     {Math.round(axis.proficiency)}%
@@ -243,11 +243,11 @@ export function SkillGenome({ data }: SkillGenomeProps) {
         </div>
       </div>
       <div className="px-5 py-2 border-t border-border bg-surface flex justify-between">
-        <span className="font-mono text-[9px] text-text-muted uppercase tracking-widest">
+        <span className="font-mono text-xs text-text-muted uppercase tracking-widest">
           Velocity
         </span>
         <span
-          className="font-mono text-[9px] font-semibold"
+          className="font-mono text-xs font-semibold"
           style={{
             color:
               avgVelocity > 0

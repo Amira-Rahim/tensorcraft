@@ -105,7 +105,7 @@ export default function OnboardingPage() {
 
       {/* Logo */}
       <div className="flex items-center gap-2 font-mono text-sm font-bold tracking-wider text-text-primary mb-12 relative z-10">
-        <span className="bg-primary text-surface px-1.5 py-0.5 text-[10px] font-bold">
+        <span className="bg-primary text-surface px-1.5 py-0.5 text-xs font-bold">
           T_
         </span>
         TENSORCRAFT
@@ -125,7 +125,7 @@ export default function OnboardingPage() {
                 }}
               />
               {i === step && (
-                <span className="absolute top-5 font-mono text-[9px] text-primary whitespace-nowrap">
+                <span className="absolute top-5 font-mono text-xs text-primary whitespace-nowrap">
                   {s}
                 </span>
               )}
@@ -148,7 +148,7 @@ export default function OnboardingPage() {
         {/* Step 0: Welcome */}
         {step === 0 && (
           <div className="flex flex-col items-center text-center w-full animate-fade-up">
-            <div className="font-mono text-[9px] text-primary tracking-[0.15em] mb-3.5">
+            <div className="font-mono text-xs text-primary tracking-[0.15em] mb-3.5">
               // MISSION BRIEFING
             </div>
             <h1 className="font-mono text-4xl md:text-4xl font-bold text-text-primary tracking-tight leading-tight mb-4">
@@ -156,7 +156,7 @@ export default function OnboardingPage() {
               <br />
               the <span className="text-primary">Archimedes</span>
             </h1>
-            <p className="text-base text-text-muted leading-relaxed max-w-[500px] mb-12">
+            <p className="text-base text-text-muted leading-relaxed max-w-[500px] mb-12 font-sans">
               You&apos;re a frontend engineer. You&apos;re about to learn ML —
               not by re-learning math, but by mapping it to what you already
               know.
@@ -171,7 +171,7 @@ export default function OnboardingPage() {
                   <div className="font-mono text-[22px] text-primary mb-3">
                     {f.icon}
                   </div>
-                  <div className="font-mono text-[11px] font-bold text-text-primary mb-1.5">
+                  <div className="font-mono text-xs font-bold text-text-primary mb-1.5">
                     {f.name}
                   </div>
                   <div className="text-xs text-text-muted leading-relaxed">
@@ -186,13 +186,13 @@ export default function OnboardingPage() {
         {/* Step 1: Background */}
         {step === 1 && (
           <div className="flex flex-col items-center text-center w-full animate-fade-up">
-            <div className="font-mono text-[9px] text-primary tracking-[0.15em] mb-3.5">
+            <div className="font-mono text-xs text-primary tracking-[0.15em] mb-3.5">
               // CREW ASSESSMENT
             </div>
             <h2 className="font-mono text-3xl font-bold text-text-primary tracking-tight mb-2.5">
               What&apos;s your background?
             </h2>
-            <p className="text-sm text-text-muted mb-10">
+            <p className="text-sm text-text-muted mb-10 font-sans">
               We&apos;ll calibrate the bridge analogies to your level.
             </p>
             <div className="flex flex-col gap-0.5 w-full text-left">
@@ -228,13 +228,13 @@ export default function OnboardingPage() {
         {/* Step 2: Goal */}
         {step === 2 && (
           <div className="flex flex-col items-center text-center w-full animate-fade-up">
-            <div className="font-mono text-[9px] text-primary tracking-[0.15em] mb-3.5">
+            <div className="font-mono text-xs text-primary tracking-[0.15em] mb-3.5">
               // MISSION OBJECTIVE
             </div>
             <h2 className="font-mono text-3xl font-bold text-text-primary tracking-tight mb-2.5">
               What&apos;s your goal?
             </h2>
-            <p className="text-sm text-text-muted mb-10">
+            <p className="text-sm text-text-muted mb-10 font-sans">
               This shapes which bridges we highlight first.
             </p>
             <div className="flex flex-col gap-0.5 w-full text-left">
@@ -270,13 +270,13 @@ export default function OnboardingPage() {
         {/* Step 3: Framework */}
         {step === 3 && (
           <div className="flex flex-col items-center text-center w-full animate-fade-up">
-            <div className="font-mono text-[9px] text-primary tracking-[0.15em] mb-3.5">
+            <div className="font-mono text-xs text-primary tracking-[0.15em] mb-3.5">
               // PRIMARY TOOLKIT
             </div>
             <h2 className="font-mono text-3xl font-bold text-text-primary tracking-tight mb-2.5">
               What&apos;s your primary framework?
             </h2>
-            <p className="text-sm text-text-muted mb-10">
+            <p className="text-sm text-text-muted mb-10 font-sans">
               Pick yours — we&apos;ll show you a bridge preview.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-[180px_1fr] gap-0.5 w-full max-w-140 text-left">
@@ -325,17 +325,17 @@ export default function OnboardingPage() {
                       ];
                     return (
                       <>
-                        <div className="font-mono text-[9px] uppercase tracking-[0.15em] text-text-muted mb-3">
+                        <div className="font-mono text-xs uppercase tracking-[0.15em] text-text-muted mb-3">
                           // BRIDGE PREVIEW
                         </div>
-                        <div className="font-mono text-[11px] font-semibold text-text-primary mb-2">
+                        <div className="font-mono text-xs font-semibold text-text-primary mb-2">
                           {previewBridge?.mlConcept} ⇄{" "}
                           {variant?.feConcept || previewBridge?.feConcept}
                         </div>
-                        <div className="bg-code-bg border border-border p-3 font-mono text-[11px] text-primary leading-relaxed whitespace-pre-wrap mb-3">
+                        <div className="bg-code-bg border border-border p-3 font-mono text-xs text-primary leading-relaxed whitespace-pre-wrap mb-3">
                           {variant?.feCode || previewBridge?.connection}
                         </div>
-                        <div className="font-mono text-[9px] text-text-muted">
+                        <div className="font-mono text-xs text-text-muted">
                           This is how bridges will look in your lessons →
                         </div>
                       </>
@@ -343,7 +343,7 @@ export default function OnboardingPage() {
                   })()
                 ) : (
                   <div className="flex items-center justify-center h-full min-h-40">
-                    <p className="font-mono text-[11px] text-text-muted text-center">
+                    <p className="font-mono text-xs text-text-muted text-center">
                       Select a framework to preview
                       <br />
                       your bridges
@@ -358,13 +358,13 @@ export default function OnboardingPage() {
         {/* Step 4: Choose Theme */}
         {step === 4 && (
           <div className="flex flex-col items-center text-center w-full animate-fade-up">
-            <div className="font-mono text-[9px] text-primary tracking-[0.15em] mb-3.5">
+            <div className="font-mono text-xs text-primary tracking-[0.15em] mb-3.5">
               // CHOOSE YOUR WORLD
             </div>
             <h2 className="font-mono text-3xl font-bold text-text-primary tracking-tight mb-2.5">
               Choose your theme
             </h2>
-            <p className="text-sm text-text-muted mb-10">
+            <p className="text-sm text-text-muted mb-10 font-sans">
               Each theme teaches the full ML toolkit through a unique narrative.
             </p>
             <div className="flex flex-col gap-0.5 w-full">
@@ -393,12 +393,12 @@ export default function OnboardingPage() {
                     <div className="font-mono text-xs font-bold text-text-primary">
                       {th.name}
                     </div>
-                    <div className="font-mono text-[10px] text-text-muted mt-0.5">
+                    <div className="font-mono text-xs text-text-muted mt-0.5">
                       {th.domain}
                     </div>
                   </div>
                   {selectedTheme === th.id && (
-                    <span className="font-mono text-[9px] text-primary border border-primary px-2 py-0.5">
+                    <span className="font-mono text-xs text-primary border border-primary px-2 py-0.5">
                       SELECTED
                     </span>
                   )}
@@ -411,21 +411,21 @@ export default function OnboardingPage() {
         {/* Step 5: Ready */}
         {step === 5 && (
           <div className="flex flex-col items-center text-center w-full animate-fade-up">
-            <div className="font-mono text-[9px] text-primary tracking-[0.15em] mb-3.5">
+            <div className="font-mono text-xs text-primary tracking-[0.15em] mb-3.5">
               // LAUNCH SEQUENCE
             </div>
             <div className="font-mono text-5xl text-primary mb-4">◎</div>
             <h2 className="font-mono text-[30px] font-bold text-text-primary tracking-tight mb-3.5">
               All Systems Go
             </h2>
-            <p className="text-[15px] text-text-muted leading-relaxed max-w-[460px] mb-10">
+            <p className="text-[15px] text-text-muted leading-relaxed max-w-[460px] mb-10 font-sans">
               Your first mission: understand what tensors are and why frontend
               engineers have already been thinking about them.
             </p>
 
             {/* Configuration summary */}
             <div className="border-2 border-primary bg-surface-raised px-8 py-6 mb-10 text-left w-full max-w-md">
-              <div className="font-mono text-[9px] text-primary tracking-[0.1em] mb-3.5">
+              <div className="font-mono text-xs text-primary tracking-[0.1em] mb-3.5">
                 // YOUR CONFIGURATION
               </div>
               {[
@@ -440,10 +440,10 @@ export default function OnboardingPage() {
                 ["Start", "M01 · L01 · First Contact"],
               ].map(([k, v]) => (
                 <div key={k} className="flex gap-4 mb-2">
-                  <span className="font-mono text-[11px] text-text-muted min-w-[100px]">
+                  <span className="font-mono text-xs text-text-muted min-w-[100px]">
                     {k}
                   </span>
-                  <span className="font-mono text-[11px] text-text-primary">
+                  <span className="font-mono text-xs text-text-primary">
                     {v}
                   </span>
                 </div>

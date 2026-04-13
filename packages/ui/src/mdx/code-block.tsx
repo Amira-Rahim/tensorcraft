@@ -82,7 +82,7 @@ export function CodeBlock({
           {title && (
             <span className="text-xs font-medium text-text-muted">{title}</span>
           )}
-          <span className="text-[10px] font-mono uppercase tracking-wider px-1.5 py-0.5 text-primary bg-primary/10">
+          <span className="text-xs font-mono uppercase tracking-wider px-1.5 py-0.5 text-primary bg-primary/10">
             {language}
           </span>
         </div>

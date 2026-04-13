@@ -71,7 +71,7 @@ export function MobileNav() {
               onClick={() => setOpen(false)}
               className="flex items-center gap-2.5 font-mono text-sm font-medium tracking-wider text-text-primary"
             >
-              <span className="bg-primary text-surface px-1.5 py-0.5 text-[10px] font-bold">
+              <span className="bg-primary text-surface px-1.5 py-0.5 text-xs font-bold">
                 T_
               </span>
               TENSORCRAFT
@@ -145,7 +145,7 @@ export function MobileNav() {
                 >
                   Settings
                 </Link>
-                <div className="font-mono text-[10px] text-text-muted text-center mt-2 truncate">
+                <div className="font-mono text-xs text-text-muted text-center mt-2 truncate">
                   {user.email}
                 </div>
               </div>

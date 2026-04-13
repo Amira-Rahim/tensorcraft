@@ -16,8 +16,8 @@
   --tc-accent: #a89060;
   --tc-surface: #252525;
   --tc-surface-overlay: #313131;
-  --tc-text: #c8c8c8;
-  --tc-muted: #8a8a8a;
+  --tc-text: #e0e0e0;
+  --tc-muted: #a0a0a0;
   --tc-border: #2a2a2a;
   --tc-code-bg: #161616;
 
@@ -35,7 +35,7 @@
   --tc-axis-model-arch: var(--tc-tier-structural);
   --tc-axis-training: var(--tc-tier-intuition);
   --tc-axis-evaluation: #c06060;
-  --tc-axis-deployment: #b08030;
+  --tc-axis-deployment: #c49535;
   --tc-axis-fe-integration: #4a90d9;
 }
 
@@ -46,8 +46,8 @@
   --tc-accent: #a07090;
   --tc-surface: #252525;
   --tc-surface-overlay: #313131;
-  --tc-text: #c8c8c8;
-  --tc-muted: #8a8a8a;
+  --tc-text: #e0e0e0;
+  --tc-muted: #a0a0a0;
   --tc-border: #2a2a2a;
   --tc-code-bg: #161616;
 
@@ -63,23 +63,23 @@
   --tc-axis-model-arch: var(--tc-tier-structural);
   --tc-axis-training: var(--tc-tier-intuition);
   --tc-axis-evaluation: #c06060;
-  --tc-axis-deployment: #b08030;
+  --tc-axis-deployment: #c49535;
   --tc-axis-fe-integration: #4a90d9;
 }
 
 /* ===== SIGNAL WARD (Medical) ===== */
 [data-theme="signal-ward"] {
   --tc-bg: #1c1c1c;
-  --tc-primary: #5baa70;
+  --tc-primary: #65c07d;
   --tc-accent: #7096b0;
   --tc-surface: #252525;
   --tc-surface-overlay: #313131;
-  --tc-text: #c8c8c8;
-  --tc-muted: #8a8a8a;
+  --tc-text: #e0e0e0;
+  --tc-muted: #a0a0a0;
   --tc-border: #2a2a2a;
   --tc-code-bg: #161616;
 
-  --tc-tier-identity: #5baa70;
+  --tc-tier-identity: #65c07d;
   --tc-tier-structural: #7096b0;
   --tc-tier-intuition: #a89060;
 
@@ -91,7 +91,7 @@
   --tc-axis-model-arch: var(--tc-tier-structural);
   --tc-axis-training: var(--tc-tier-intuition);
   --tc-axis-evaluation: #c06060;
-  --tc-axis-deployment: #b08030;
+  --tc-axis-deployment: #c49535;
   --tc-axis-fe-integration: #4a90d9;
 }
 
@@ -102,8 +102,8 @@
   --tc-accent: #7868a8;
   --tc-surface: #252525;
   --tc-surface-overlay: #313131;
-  --tc-text: #c8c8c8;
-  --tc-muted: #8a8a8a;
+  --tc-text: #e0e0e0;
+  --tc-muted: #a0a0a0;
   --tc-border: #2a2a2a;
   --tc-code-bg: #161616;
 
@@ -119,23 +119,23 @@
   --tc-axis-model-arch: var(--tc-tier-structural);
   --tc-axis-training: var(--tc-tier-intuition);
   --tc-axis-evaluation: #c06060;
-  --tc-axis-deployment: #b08030;
+  --tc-axis-deployment: #c49535;
   --tc-axis-fe-integration: #4a90d9;
 }
 
 /* ===== TERRA GRID (Industrial) ===== */
 [data-theme="terra-grid"] {
   --tc-bg: #1c1c1c;
-  --tc-primary: #b08030;
+  --tc-primary: #c49535;
   --tc-accent: #6baa8a;
   --tc-surface: #252525;
   --tc-surface-overlay: #313131;
-  --tc-text: #c8c8c8;
-  --tc-muted: #8a8a8a;
+  --tc-text: #e0e0e0;
+  --tc-muted: #a0a0a0;
   --tc-border: #2a2a2a;
   --tc-code-bg: #161616;
 
-  --tc-tier-identity: #b08030;
+  --tc-tier-identity: #c49535;
   --tc-tier-structural: #7096b0;
   --tc-tier-intuition: #a89060;
 
@@ -147,6 +147,6 @@
   --tc-axis-model-arch: var(--tc-tier-structural);
   --tc-axis-training: var(--tc-tier-intuition);
   --tc-axis-evaluation: #c06060;
-  --tc-axis-deployment: #b08030;
+  --tc-axis-deployment: #c49535;
   --tc-axis-fe-integration: #4a90d9;
 }

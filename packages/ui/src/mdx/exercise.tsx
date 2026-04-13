@@ -527,7 +527,7 @@ export function Exercise({ slug, onSubmit }: ExerciseProps) {
         </div>
         <div className="flex items-center gap-3">
           <span
-            className="text-[11px] font-mono font-medium px-2 py-0.5"
+            className="text-xs font-mono font-medium px-2 py-0.5"
             style={{
               background: `${diffConfig.color}15`,
               color: diffConfig.color,
@@ -535,7 +535,7 @@ export function Exercise({ slug, onSubmit }: ExerciseProps) {
           >
             {diffConfig.label}
           </span>
-          <span className="text-[11px] text-text-muted">
+          <span className="text-xs text-text-muted">
             ~{exercise.estimatedMinutes} min
           </span>
         </div>
@@ -558,8 +558,8 @@ export function Exercise({ slug, onSubmit }: ExerciseProps) {
               surface1: "#252525",
               surface2: "#1C1C1C",
               surface3: "#313131",
-              clickable: "#8A8A8A",
-              base: "#C8C8C8",
+              clickable: "#A0A0A0",
+              base: "#E0E0E0",
               disabled: "#3a3a3a",
               hover: "#6BAA8A",
               accent: "#6BAA8A",
@@ -567,8 +567,8 @@ export function Exercise({ slug, onSubmit }: ExerciseProps) {
               errorSurface: "#2d1515",
             },
             syntax: {
-              plain: "#C8C8C8",
-              comment: { color: "#8A8A8A", fontStyle: "italic" },
+              plain: "#E0E0E0",
+              comment: { color: "#A0A0A0", fontStyle: "italic" },
               keyword: "#c792ea",
               tag: "#f07178",
               punctuation: "#89ddff",

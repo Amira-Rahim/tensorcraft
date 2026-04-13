@@ -42,7 +42,7 @@ export function Concept({ explanation, bridge }: ConceptProps) {
           }}
         >
           <span
-            className="text-[11px] font-mono font-semibold uppercase tracking-widest block mb-3"
+            className="text-xs font-mono font-semibold uppercase tracking-widest block mb-3"
             style={{ color: tierColors[bridge.tier] }}
           >
             {tierLabels[bridge.tier]}
@@ -51,7 +51,7 @@ export function Concept({ explanation, bridge }: ConceptProps) {
           <div className="grid grid-cols-[1fr_24px_1fr] items-center gap-2">
             {/* FE side */}
             <div>
-              <span className="text-[11px] font-mono uppercase tracking-widest text-text-muted block mb-1">
+              <span className="text-xs font-mono uppercase tracking-widest text-text-muted block mb-1">
                 Frontend
               </span>
               <span className="text-sm font-semibold text-text-primary block">
@@ -77,7 +77,7 @@ export function Concept({ explanation, bridge }: ConceptProps) {
 
             {/* ML side */}
             <div>
-              <span className="text-[11px] font-mono uppercase tracking-widest text-text-muted block mb-1">
+              <span className="text-xs font-mono uppercase tracking-widest text-text-muted block mb-1">
                 ML
               </span>
               <span className="text-sm font-semibold text-text-primary block">

@@ -39,7 +39,7 @@ export default function ThemesPage() {
             >
               <div className="flex items-center justify-between px-6 py-3 border-b border-border">
                 <span
-                  className="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-[10px] font-mono font-semibold uppercase tracking-wider"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-xs font-mono font-semibold uppercase tracking-wider"
                   style={{
                     color: theme.palette.primary,
                     background: `${theme.palette.primary}15`,
@@ -51,7 +51,7 @@ export default function ThemesPage() {
                   />
                   LIVE
                 </span>
-                <span className="font-mono text-[11px] text-text-muted uppercase tracking-wider">
+                <span className="font-mono text-xs text-text-muted uppercase tracking-wider">
                   {theme.specialization}
                 </span>
               </div>

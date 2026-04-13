@@ -150,7 +150,7 @@ export default async function LessonPage({ params }: Props) {
           <Link
             href={`/themes/${slug}/${moduleSlug}`}
             className="text-xs mb-6 inline-flex items-center gap-1"
-            style={{ color: "var(--tc-muted, #8A8A8A)" }}
+            style={{ color: "var(--tc-muted, #A0A0A0)" }}
           >
             ← Back to module
           </Link>
@@ -166,7 +166,7 @@ export default async function LessonPage({ params }: Props) {
                     className="flex items-center gap-2.5 px-3 py-2 text-sm cursor-not-allowed opacity-40"
                   >
                     <span
-                      className="w-5 h-5 flex items-center justify-center text-[10px] font-medium shrink-0"
+                      className="w-5 h-5 flex items-center justify-center text-xs font-medium shrink-0"
                       style={{
                         background: "var(--tc-border, rgba(255,255,255,0.06))",
                         color: theme.palette.muted,
@@ -196,7 +196,7 @@ export default async function LessonPage({ params }: Props) {
                   }}
                 >
                   <span
-                    className="w-5 h-5 flex items-center justify-center text-[10px] font-medium shrink-0"
+                    className="w-5 h-5 flex items-center justify-center text-xs font-medium shrink-0"
                     style={{
                       background: isActive
                         ? theme.palette.accent
@@ -216,11 +216,11 @@ export default async function LessonPage({ params }: Props) {
         </aside>
 
         {/* Main content */}
-        <div className="flex-1 max-w-3xl mx-auto px-6 py-12">
+        <div className="flex-1 max-w-3xl mx-auto px-6 py-12 font-sans">
           {/* Breadcrumb */}
           <div
             className="flex items-center gap-2 text-xs mb-8"
-            style={{ color: "var(--tc-muted, #8A8A8A)" }}
+            style={{ color: "var(--tc-muted, #A0A0A0)" }}
           >
             <Link href={`/themes/${slug}`} className="hover:underline">
               {theme.displayName}
@@ -244,7 +244,7 @@ export default async function LessonPage({ params }: Props) {
               </span>
               <span
                 className="text-xs"
-                style={{ color: "var(--tc-muted, #8A8A8A)" }}
+                style={{ color: "var(--tc-muted, #A0A0A0)" }}
               >
                 {lesson.estimatedMinutes} min
               </span>
@@ -282,7 +282,7 @@ export default async function LessonPage({ params }: Props) {
               </h2>
               <p
                 className="text-sm mb-6"
-                style={{ color: "var(--tc-muted, #8A8A8A)" }}
+                style={{ color: "var(--tc-muted, #A0A0A0)" }}
               >
                 Finish all lessons in the previous module to unlock this one.
               </p>
@@ -343,7 +343,7 @@ export default async function LessonPage({ params }: Props) {
                 {lesson.consequence.nextLessonTeaser && (
                   <p
                     className="text-xs mt-2 italic"
-                    style={{ color: "var(--tc-muted, #8A8A8A)" }}
+                    style={{ color: "var(--tc-muted, #A0A0A0)" }}
                   >
                     {lesson.consequence.nextLessonTeaser}
                   </p>
@@ -371,7 +371,7 @@ export default async function LessonPage({ params }: Props) {
                   <Link
                     href={`/themes/${slug}/${moduleSlug}/${prev.slug}`}
                     className="text-sm"
-                    style={{ color: "var(--tc-muted, #8A8A8A)" }}
+                    style={{ color: "var(--tc-muted, #A0A0A0)" }}
                   >
                     ← {prev.title}
                   </Link>

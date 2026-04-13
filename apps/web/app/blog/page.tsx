@@ -18,7 +18,7 @@ export default function BlogIndexPage() {
       <div className="absolute inset-0 grid-bg pointer-events-none z-0" />
 
       <div className="max-w-3xl relative z-10">
-        <div className="font-mono text-[11px] text-primary tracking-[0.14em] uppercase mb-6 flex items-center gap-3">
+        <div className="font-mono text-xs text-primary tracking-[0.14em] uppercase mb-6 flex items-center gap-3">
           <span className="inline-block w-[7px] h-[7px] bg-primary" />
           Blog
         </div>
@@ -33,7 +33,7 @@ export default function BlogIndexPage() {
         </p>
 
         <div className="border border-border bg-surface p-10">
-          <div className="font-mono text-[11px] text-text-muted tracking-wider uppercase mb-4">
+          <div className="font-mono text-xs text-text-muted tracking-wider uppercase mb-4">
             // status: pending
           </div>
           <p className="text-sm text-text-muted leading-relaxed mb-6">
@@ -46,7 +46,7 @@ export default function BlogIndexPage() {
               (tag) => (
                 <span
                   key={tag}
-                  className="font-mono text-[10px] text-text-muted tracking-wider uppercase border border-border px-3 py-1.5"
+                  className="font-mono text-xs text-text-muted tracking-wider uppercase border border-border px-3 py-1.5"
                 >
                   {tag}
                 </span>

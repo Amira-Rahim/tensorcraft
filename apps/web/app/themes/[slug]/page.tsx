@@ -217,7 +217,7 @@ export default async function ThemeDetailPage({ params }: Props) {
         }}
       >
         <p
-          className="font-mono text-[9px] uppercase mb-2.5"
+          className="font-mono text-xs uppercase mb-2.5"
           style={{ color: theme.palette.primary, letterSpacing: "0.15em" }}
         >
           // {theme.displayName} &mdash; {themeModules.length} MODULES
@@ -249,7 +249,7 @@ export default async function ThemeDetailPage({ params }: Props) {
                 {value}
               </div>
               <div
-                className="font-mono text-[10px] mt-0.5"
+                className="font-mono text-xs mt-0.5"
                 style={{ color: theme.palette.muted }}
               >
                 {label}

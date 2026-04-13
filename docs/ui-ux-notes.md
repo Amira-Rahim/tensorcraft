@@ -217,8 +217,8 @@ CSS custom properties are defined in `packages/themes/src/css/themes.css` and co
 | Background | `--tc-bg` | `#1C1C1C` | Page background for all screens |
 | Surface | `--tc-surface` | `#252525` | Cards, panels, modals |
 | Surface Overlay | `--tc-surface-overlay` | `#313131` | Elevated surfaces, overlays |
-| Text | `--tc-text` | `#C8C8C8` | Body text |
-| Muted | `--tc-muted` | `#8A8A8A` | Decorative borders, disabled states, supplementary labels |
+| Text | `--tc-text` | `#E0E0E0` | Body text |
+| Muted | `--tc-muted` | `#A0A0A0` | Decorative borders, disabled states, supplementary labels |
 | Border | `--tc-border` | `#2A2A2A` | Subtle, low-contrast dividers |
 | Code BG | `--tc-code-bg` | `#161616` | Code block backgrounds |
 
@@ -228,9 +228,9 @@ CSS custom properties are defined in `packages/themes/src/css/themes.css` and co
 | ------- | --------------- | -------------- |
 | Deep Orbit | `#6BAA8A` (sage green) | `#A89060` (warm gold) |
 | Neon Protocol | `#4A90D9` (steel blue) | `#A07090` (muted mauve) |
-| Signal Ward | `#5BAA70` (medical green) | `#7096B0` (slate blue) |
+| Signal Ward | `#65C07D` (medical green) | `#7096B0` (slate blue) |
 | Nova Canvas | `#C06060` (warm red) | `#7868A8` (soft purple) |
-| Terra Grid | `#B08030` (industrial amber) | `#6BAA8A` (sage green) |
+| Terra Grid | `#C49535` (industrial amber) | `#6BAA8A` (sage green) |
 
 Each theme also defines three bridge-tier tokens derived from the palette: `--tc-tier-identity` (matches primary), `--tc-tier-structural` (`#7096B0`), and `--tc-tier-intuition` (`#A89060`).
 
@@ -253,9 +253,9 @@ Each theme also defines three bridge-tier tokens derived from the palette: `--tc
 
 **Accessibility requirements:**
 
-- `--tc-text` (`#C8C8C8`) on `--tc-bg` (`#1C1C1C`) = 9.5:1 contrast ratio, exceeds WCAG AA (4.5:1).
+- `--tc-text` (`#E0E0E0`) on `--tc-bg` (`#1C1C1C`) = 11.4:1 contrast ratio, exceeds WCAG AA (4.5:1).
 - `--tc-primary` on `--tc-bg` must meet WCAG AA for large text (3:1 minimum). Verified for all themes.
-- `--tc-muted` (`#8A8A8A`) on `--tc-bg` (`#1C1C1C`) = 4.5:1 contrast (meets AA). Safe for body text, labels, and secondary information. Still recommended to use `--tc-text` for primary content.
+- `--tc-muted` (`#A0A0A0`) on `--tc-bg` (`#1C1C1C`) = 5.3:1 contrast (meets AA). Safe for body text, labels, and secondary information. Still recommended to use `--tc-text` for primary content.
 - Focus indicators: All interactive elements use a 2px `--tc-primary` outline with 2px offset on `:focus-visible`. This is a global style applied in the base CSS. Never suppress or override focus indicators.
 
 **Dark mode note:** Tensorcraft is dark-mode only. There is no light mode. The dark aesthetic is a core brand element. All design decisions assume a dark background. The `color-scheme: dark` meta tag is set in the document head to inform the browser (affects scrollbar styling, form controls, etc.). System-level forced colors (Windows High Contrast Mode) are respected via `@media (forced-colors: active)` -- in this mode, all custom colors are replaced with system colors and borders become visible.

@@ -70,7 +70,7 @@ export function PricingTiers() {
       <section className="px-6 pb-16">
         <div className="max-w-[800px] mx-auto">
           <div className="relative p-7 flex flex-col border border-primary bg-[rgba(107,170,138,0.12)] hover:shadow-[4px_4px_0_var(--tc-primary)] transition-all">
-            <span className="absolute -top-3 left-6 inline-flex items-center px-3 py-1 font-mono text-[11px] font-bold uppercase tracking-wider bg-primary text-[#1C1C1C]">
+            <span className="absolute -top-3 left-6 inline-flex items-center px-3 py-1 font-mono text-xs font-bold uppercase tracking-wider bg-primary text-[#1C1C1C]">
               RECOMMENDED
             </span>
             <div className="mt-2 mb-2">
@@ -109,7 +109,7 @@ export function PricingTiers() {
               ))}
             </ul>
 
-            <p className="text-[11px] font-mono text-text-muted uppercase tracking-wider mb-3">
+            <p className="text-xs font-mono text-text-muted uppercase tracking-wider mb-3">
               Choose your theme
             </p>
             <ThemePicker
@@ -156,7 +156,7 @@ export function PricingTiers() {
                 Save ${PRICING.single.price * 2 - PRICING.twoBundle.price}
               </p>
               <div className="flex-1">
-                <p className="text-[11px] font-mono text-text-muted uppercase tracking-wider mb-2">
+                <p className="text-xs font-mono text-text-muted uppercase tracking-wider mb-2">
                   Choose 2 themes
                 </p>
                 <ThemePicker
@@ -194,7 +194,7 @@ export function PricingTiers() {
                 Save ${PRICING.single.price * 3 - PRICING.threeBundle.price}
               </p>
               <div className="flex-1">
-                <p className="text-[11px] font-mono text-text-muted uppercase tracking-wider mb-2">
+                <p className="text-xs font-mono text-text-muted uppercase tracking-wider mb-2">
                   Choose 3 themes
                 </p>
                 <ThemePicker

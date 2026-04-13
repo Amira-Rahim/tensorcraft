@@ -36,9 +36,7 @@ describe("KeyTakeaways", () => {
   it("has no accessibility violations", async () => {
     const { axe } = await import("vitest-axe");
     const { container } = render(<KeyTakeaways takeaways={takeaways} />);
-    const results = await axe(container, {
-      rules: { "color-contrast": { enabled: false } },
-    });
+    const results = await axe(container);
     expect(results).toHaveNoViolations();
   });
 });

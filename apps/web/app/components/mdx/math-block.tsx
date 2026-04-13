@@ -29,7 +29,7 @@ export function MathBlock({
     return (
       <div className="p-5 my-6 brutalist-shadow bg-surface-raised border border-border">
         {label && (
-          <span className="text-[11px] font-mono uppercase tracking-widest text-text-muted block mb-3">
+          <span className="text-xs font-mono uppercase tracking-widest text-text-muted block mb-3">
             {label}
           </span>
         )}
@@ -44,7 +44,7 @@ export function MathBlock({
   return (
     <div className="p-5 my-6 brutalist-shadow bg-surface-raised border border-border">
       {label && (
-        <span className="text-[11px] font-mono uppercase tracking-widest text-text-muted block mb-3">
+        <span className="text-xs font-mono uppercase tracking-widest text-text-muted block mb-3">
           {label}
         </span>
       )}

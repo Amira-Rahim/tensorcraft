@@ -33,7 +33,7 @@ export default function PricingPage() {
           <h1 className="text-4xl sm:text-5xl font-bold mb-5 text-text-primary font-mono tracking-tight">
             Simple, Fair Pricing
           </h1>
-          <p className="text-lg max-w-[520px] mx-auto text-text-muted font-mono">
+          <p className="text-lg max-w-[520px] mx-auto text-text-muted font-sans">
             Each theme teaches a different ML specialization. Buy what you need.
             Lifetime access, every future update included.
           </p>
@@ -51,7 +51,7 @@ export default function PricingPage() {
               <div className="text-lg font-semibold mb-1 text-text-primary font-mono">
                 Free Preview
               </div>
-              <p className="text-sm mb-2 leading-relaxed text-text-muted font-mono">
+              <p className="text-sm mb-2 leading-relaxed text-text-muted font-sans">
                 Module 1 of any theme (5 lessons). Full code editor, bridges,
                 and quizzes.
               </p>
@@ -163,7 +163,7 @@ export default function PricingPage() {
           <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-text-primary font-mono tracking-tight">
             Your frontend skills are the foundation.
           </h2>
-          <p className="text-lg mb-10 text-text-muted font-mono">
+          <p className="text-lg mb-10 text-text-muted font-sans">
             Add machine learning to your engineering toolkit.
           </p>
           <Link

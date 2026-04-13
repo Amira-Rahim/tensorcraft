@@ -255,7 +255,7 @@ export function AuthForm() {
 
         {/* Bottom: Bridge mappings */}
         <div className="relative z-10 space-y-2">
-          <div className="font-mono text-[11px] uppercase tracking-widest text-text-muted mb-3">
+          <div className="font-mono text-xs uppercase tracking-widest text-text-muted mb-3">
             // concept bridges
           </div>
           {bridgeMappings.map((b) => (

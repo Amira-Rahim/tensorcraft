@@ -119,7 +119,7 @@ export function Ticker() {
     <div className="h-8 bg-surface-raised border-b border-border flex items-center overflow-hidden sticky top-15 z-49">
       <TickerCanvas />
       <div className="shrink-0 px-4 h-full flex items-center border-r border-border bg-surface z-2 relative">
-        <span className="font-mono text-[9px] font-bold text-primary tracking-[0.14em] uppercase whitespace-nowrap">
+        <span className="font-mono text-xs font-bold text-primary tracking-[0.14em] uppercase whitespace-nowrap">
           // bridge system
         </span>
       </div>
@@ -129,13 +129,11 @@ export function Ticker() {
             const parts = item.split("→");
             return (
               <span key={i} className="inline-flex items-center gap-0">
-                <span className="font-mono text-[11px] text-text-primary pl-8">
+                <span className="font-mono text-xs text-text-primary pl-8">
                   {parts[0].trim()}
                 </span>
-                <span className="font-mono text-[11px] text-primary px-2">
-                  →
-                </span>
-                <span className="font-mono text-[11px] text-primary">
+                <span className="font-mono text-xs text-primary px-2">→</span>
+                <span className="font-mono text-xs text-primary">
                   {parts[1]?.trim()}
                 </span>
                 <span className="text-border ml-8 text-base opacity-40">·</span>

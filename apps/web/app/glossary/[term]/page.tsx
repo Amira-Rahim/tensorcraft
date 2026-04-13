@@ -99,7 +99,7 @@ export default async function GlossaryTermPage({ params }: TermPageProps) {
 
       <div className="max-w-3xl relative z-10">
         {/* Breadcrumb */}
-        <div className="font-mono text-[11px] text-text-muted tracking-wider mb-10 flex items-center gap-2">
+        <div className="font-mono text-xs text-text-muted tracking-wider mb-10 flex items-center gap-2">
           <Link
             href="/glossary"
             className="hover:text-primary transition-colors"
@@ -112,7 +112,7 @@ export default async function GlossaryTermPage({ params }: TermPageProps) {
 
         {/* Domain badge */}
         <div
-          className="inline-block font-mono text-[10px] font-bold tracking-wider uppercase px-3 py-1.5 border mb-6"
+          className="inline-block font-mono text-xs font-bold tracking-wider uppercase px-3 py-1.5 border mb-6"
           style={{
             color: domain === "ml" ? "#7096B0" : "#6BAA8A",
             borderColor:
@@ -131,14 +131,14 @@ export default async function GlossaryTermPage({ params }: TermPageProps) {
         {/* Bridge mapping */}
         <div className="border border-border mb-10">
           <div className="px-6 py-4 border-b border-border bg-surface">
-            <span className="font-mono text-[10px] font-bold text-text-muted tracking-wider uppercase">
+            <span className="font-mono text-xs font-bold text-text-muted tracking-wider uppercase">
               Bridge mapping
             </span>
           </div>
 
           <div className="grid grid-cols-[1fr_40px_1fr]">
             <div className="px-6 py-6">
-              <div className="font-mono text-[10px] text-text-muted tracking-wider uppercase mb-2">
+              <div className="font-mono text-xs text-text-muted tracking-wider uppercase mb-2">
                 Frontend
               </div>
               <div className="text-base font-mono font-bold text-text-primary">
@@ -149,7 +149,7 @@ export default async function GlossaryTermPage({ params }: TermPageProps) {
               =
             </div>
             <div className="px-6 py-6">
-              <div className="font-mono text-[10px] text-text-muted tracking-wider uppercase mb-2">
+              <div className="font-mono text-xs text-text-muted tracking-wider uppercase mb-2">
                 ML Concept
               </div>
               <div className="text-base font-mono font-bold text-text-primary">
@@ -165,7 +165,7 @@ export default async function GlossaryTermPage({ params }: TermPageProps) {
             className="px-6 py-5"
             style={{ borderRight: "1px solid var(--tc-border)" }}
           >
-            <div className="font-mono text-[10px] text-text-muted tracking-wider uppercase mb-2">
+            <div className="font-mono text-xs text-text-muted tracking-wider uppercase mb-2">
               Tier
             </div>
             <span
@@ -176,7 +176,7 @@ export default async function GlossaryTermPage({ params }: TermPageProps) {
             </span>
           </div>
           <div className="px-6 py-5">
-            <div className="font-mono text-[10px] text-text-muted tracking-wider uppercase mb-2">
+            <div className="font-mono text-xs text-text-muted tracking-wider uppercase mb-2">
               Category
             </div>
             <span className="font-mono text-sm font-bold text-text-primary">
@@ -188,7 +188,7 @@ export default async function GlossaryTermPage({ params }: TermPageProps) {
         {/* Connection explanation */}
         <div className="border border-border mb-10">
           <div className="px-6 py-4 border-b border-border bg-surface">
-            <span className="font-mono text-[10px] font-bold text-text-muted tracking-wider uppercase">
+            <span className="font-mono text-xs font-bold text-text-muted tracking-wider uppercase">
               How they connect
             </span>
           </div>

@@ -56,7 +56,7 @@ export function Nav() {
         href="/"
         className="flex items-center gap-2.5 font-mono text-sm font-medium tracking-wider text-text-primary"
       >
-        <span className="bg-primary text-surface px-1.5 py-0.5 text-[10px] font-bold">
+        <span className="bg-primary text-surface px-1.5 py-0.5 text-xs font-bold">
           T_
         </span>
         TENSORCRAFT
