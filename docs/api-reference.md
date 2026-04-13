@@ -34,7 +34,7 @@ Add an email to the waitlist. No authentication required.
 {
   "email": "user@example.com",
   "themeId": "neon-protocol",
-  "source": "coming-soon-modal"
+  "source": "newsletter"
 }
 ```
 
@@ -230,7 +230,7 @@ Paginated waitlist entries.
       "id": "uuid",
       "email": "user@example.com",
       "theme_id": "neon-protocol",
-      "source": "coming-soon-modal",
+      "source": "newsletter",
       "created_at": "2026-03-13T12:00:00Z"
     }
   ],

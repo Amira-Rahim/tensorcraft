@@ -8,7 +8,6 @@ export {
   THEME_SLUGS,
   PRICING,
   ROUTES,
-  V05_SCOPE,
   THEME_CONTENT,
   DEFAULT_THEME,
   isValidThemeSlug,

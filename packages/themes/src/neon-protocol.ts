@@ -7,7 +7,6 @@ export const neonProtocol: ThemeManifest = {
   tagline: "See the city through the eyes of AI",
   description:
     "NeuralCore HQ. 200 surveillance cameras went dark overnight. Rebuild Protocol Sentinel — an urban anomaly detection system.",
-  status: "coming-soon",
   palette: {
     bg: "#1C1C1C",
     primary: "#4A90D9",
@@ -53,14 +52,6 @@ export const neonProtocol: ThemeManifest = {
       personality: "Sarcastic, deadpan humor",
     },
   ],
-  comingSoon: {
-    previewArt: "/themes/cyberpunk/preview.webp",
-    storySummary:
-      "NeuralCore builds the AI that runs the city. 200 surveillance cameras went dark overnight. You're the new Protocol Engineer assigned to rebuild it. You'll build Protocol Sentinel — an urban anomaly detection system processing real-time video feeds.",
-    modelPreview:
-      "Protocol Sentinel: real-time urban anomaly detection with CNNs, YOLO, SAM, and MediaPipe",
-    estimatedLaunchDate: "2027-Q1",
-  },
   specialization: "Real-Time Computer Vision",
   modelBuilt: "Protocol Sentinel — urban anomaly detector",
   careerPaths: [

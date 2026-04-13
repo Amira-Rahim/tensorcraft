@@ -1,13 +1,4 @@
 /**
- * Theme status controls visibility in the UI.
- * - launched: fully playable, shown with full card
- * - coming-soon: preview art + email capture
- * - beta: available to testers only via direct URL
- * - hidden: not shown anywhere
- */
-export type ThemeStatus = "launched" | "coming-soon" | "beta" | "hidden";
-
-/**
  * Theme color palette — maps to CSS custom properties (--tc-*).
  * All colors are designed for dark backgrounds. No light mode.
  *
@@ -53,16 +44,6 @@ export interface ThemeCharacter {
 }
 
 /**
- * Content shown for "Coming Soon" themes.
- */
-export interface ThemeComingSoon {
-  previewArt: string;
-  storySummary: string;
-  modelPreview: string;
-  estimatedLaunchDate: string;
-}
-
-/**
  * Full theme manifest matching the technical spec.
  * Each theme defines visual identity, narrative context, and launch status.
  */
@@ -77,8 +58,6 @@ export interface ThemeManifest {
   tagline: string;
   /** Theme description */
   description: string;
-  /** Controls visibility in the app */
-  status: ThemeStatus;
   /** Color palette */
   palette: ThemePalette;
   /** UI label overrides */
@@ -89,8 +68,6 @@ export interface ThemeManifest {
   sandpackTheme: string;
   /** Characters in the story */
   characters: ThemeCharacter[];
-  /** Preview content for non-launched themes */
-  comingSoon?: ThemeComingSoon;
   /** ML specialization area */
   specialization: string;
   /** Model the learner builds */

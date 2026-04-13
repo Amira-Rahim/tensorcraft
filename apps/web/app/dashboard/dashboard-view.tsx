@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { SkillGenome } from "./skill-genome";
+import { UserAvatar } from "@/app/components/user-avatar";
 
 /* ── Design tokens (use CSS vars from theme system) ── */
 const LIME = "var(--tc-primary)";
@@ -70,6 +71,7 @@ export interface ActivityRecord {
 
 export interface DashboardProps {
   displayName: string;
+  avatarUrl?: string | null;
   themeName: string;
   themeSlug: string;
   modules: DashboardModule[];
@@ -131,6 +133,7 @@ const rpt = (scores: number[], cx: number, cy: number, R: number) =>
 export function DashboardView(props: DashboardProps) {
   const {
     displayName,
+    avatarUrl,
     themeName,
     themeSlug,
     modules,
@@ -634,25 +637,34 @@ export function DashboardView(props: DashboardProps) {
             <div>
               <div
                 style={{
-                  fontFamily: MONO,
-                  fontSize: 11,
-                  color: MUTED,
-                  letterSpacing: "0.08em",
-                  marginBottom: 8,
                   display: "flex",
                   alignItems: "center",
-                  gap: 8,
+                  gap: 12,
+                  marginBottom: 8,
                 }}
               >
-                <span
+                <UserAvatar url={avatarUrl} name={displayName} size={36} />
+                <div
                   style={{
-                    display: "inline-block",
-                    width: 5,
-                    height: 5,
-                    background: LIME,
+                    fontFamily: MONO,
+                    fontSize: 11,
+                    color: MUTED,
+                    letterSpacing: "0.08em",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
                   }}
-                />
-                Good to see you, {displayName}
+                >
+                  <span
+                    style={{
+                      display: "inline-block",
+                      width: 5,
+                      height: 5,
+                      background: LIME,
+                    }}
+                  />
+                  Good to see you, {displayName}
+                </div>
               </div>
               {currentModule ? (
                 <>

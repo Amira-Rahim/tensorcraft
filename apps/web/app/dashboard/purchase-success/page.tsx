@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { getModules } from "@tensorcraft/content";
 import { themes } from "@tensorcraft/themes";
+import { DEFAULT_THEME } from "@tensorcraft/shared";
 import { AmbientBackground } from "@/app/components/ambient-background";
 import type { Metadata } from "next";
 import { PurchaseAnalytics } from "./purchase-analytics";
@@ -31,7 +32,7 @@ export default async function PurchaseSuccessPage() {
     .single();
 
   const purchasedThemeIds: string[] = purchase?.theme_ids ?? [];
-  const firstTheme = purchasedThemeIds[0] ?? "deep-orbit";
+  const firstTheme = purchasedThemeIds[0] ?? DEFAULT_THEME;
   const theme = themes[firstTheme];
   const themeModules = theme ? getModules(firstTheme) : [];
 

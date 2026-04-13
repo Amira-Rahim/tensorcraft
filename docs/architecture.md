@@ -72,7 +72,7 @@ Each theme (`packages/themes/src/<theme>.ts`) exports a `ThemeManifest` with:
 - **Palette**: bg, primary, accent, surface, surfaceOverlay, text, muted, border, codeBg colors
 - **Characters**: 5 per theme (4 human mentors + 1 AI companion)
 - **Terminology**: Theme-specific names for modules/lessons/exercises (e.g., Deep Orbit uses "Mission", "Sector", "Simulation")
-- **Career paths** and **coming soon** metadata
+- **Career paths** and metadata
 
 ## Database Schema (Supabase)
 

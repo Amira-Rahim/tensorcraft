@@ -1,6 +1,5 @@
 /**
  * Theme slugs — the 5 themed courses.
- * Deep Orbit launches first (V0.5). Others are coming soon.
  */
 export const THEME_SLUGS = [
   "deep-orbit",
@@ -51,15 +50,6 @@ export const ROUTES = {
   glossary: "/glossary",
   glossaryTerm: (term: string) => `/glossary/${term}` as const,
   bridgeConcept: (concept: string) => `/bridges/${concept}` as const,
-} as const;
-
-/**
- * V0.5 scope — Deep Orbit, Modules 1–3 (15 lessons).
- */
-export const V05_SCOPE = {
-  theme: "deep-orbit" as ThemeSlug,
-  modules: 3,
-  lessons: 15,
 } as const;
 
 /**

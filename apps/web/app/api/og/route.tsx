@@ -1,17 +1,18 @@
 import { ImageResponse } from "next/og";
 import type { NextRequest } from "next/server";
 import { themes } from "@tensorcraft/themes";
+import { DEFAULT_THEME } from "@tensorcraft/shared";
 
 export const runtime = "edge";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
   const title = searchParams.get("title") || "Tensorcraft";
-  const theme = searchParams.get("theme") || "deep-orbit";
+  const theme = searchParams.get("theme") || DEFAULT_THEME;
   const subtitle = searchParams.get("subtitle") || "";
 
   const accentColor =
-    themes[theme]?.palette.primary || themes["deep-orbit"].palette.primary;
+    themes[theme]?.palette.primary || themes[DEFAULT_THEME].palette.primary;
 
   return new ImageResponse(
     <div

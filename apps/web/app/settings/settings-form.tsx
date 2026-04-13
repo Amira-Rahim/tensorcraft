@@ -4,6 +4,8 @@ import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { themes, themeSlugs } from "@tensorcraft/themes";
+import { UserAvatar } from "@/app/components/user-avatar";
+import { resizeImage } from "@/lib/resize-image";
 
 const SIDEBAR_ITEMS = [
   "Profile",
@@ -104,7 +106,49 @@ export function SettingsForm({
   const [deleting, setDeleting] = useState(false);
   const [uploading, setUploading] = useState(false);
 
-  const initial = displayName.charAt(0).toUpperCase() || "?";
+  async function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Reset input so re-selecting same file triggers onChange
+    if (fileInputRef.current) fileInputRef.current.value = "";
+
+    setUploading(true);
+    setError(null);
+
+    try {
+      const blob = await resizeImage(file);
+      const supabase = getSupabaseBrowserClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+
+      const filePath = `${user.id}.webp`;
+      const { error: uploadError } = await supabase.storage
+        .from("avatars")
+        .upload(filePath, blob, { upsert: true, contentType: "image/webp" });
+
+      if (uploadError) throw uploadError;
+
+      const { data: urlData } = supabase.storage
+        .from("avatars")
+        .getPublicUrl(filePath);
+
+      const newUrl = `${urlData.publicUrl}?t=${Date.now()}`;
+
+      await supabase
+        .from("profiles")
+        .update({ avatar_url: newUrl })
+        .eq("id", user.id);
+
+      setAvatarUrl(newUrl);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Upload failed");
+    } finally {
+      setUploading(false);
+    }
+  }
 
   async function handleSave() {
     setSaving(true);
@@ -126,6 +170,7 @@ export function SettingsForm({
       .from("profiles")
       .update({
         display_name: displayName,
+        avatar_url: avatarUrl || null,
         preferred_theme_id: preferredTheme,
         github_username: githubUser || null,
         email_alerts: emailAlerts,
@@ -209,19 +254,7 @@ export function SettingsForm({
 
             {/* Avatar row */}
             <div className="flex items-center gap-5 mb-8">
-              <div
-                className="flex-shrink-0 flex items-center justify-center font-mono"
-                style={{
-                  width: 56,
-                  height: 56,
-                  background: "rgba(107,170,138,0.12)",
-                  border: "2px solid var(--tc-primary)",
-                  fontSize: 22,
-                  color: "var(--tc-primary)",
-                }}
-              >
-                {initial}
-              </div>
+              <UserAvatar url={avatarUrl} name={displayName} size={56} />
               <div>
                 <div
                   className="font-mono"
@@ -237,20 +270,30 @@ export function SettingsForm({
                 </div>
                 <button
                   type="button"
-                  disabled
-                  className="font-mono mt-2 disabled:opacity-40 disabled:cursor-not-allowed"
-                  title="Photo upload coming soon"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading}
+                  className="font-mono mt-2"
                   style={{
                     fontSize: 10,
                     color: "var(--tc-primary)",
                     background: "transparent",
                     border: "1px solid var(--tc-primary)",
                     padding: "3px 10px",
+                    cursor: uploading ? "not-allowed" : "pointer",
+                    opacity: uploading ? 0.4 : 1,
                   }}
                 >
-                  Change photo
+                  {uploading ? "Uploading..." : "Change photo"}
                 </button>
               </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                aria-label="Upload profile photo"
+                onChange={handleFileSelect}
+              />
             </div>
 
             {/* Fields */}

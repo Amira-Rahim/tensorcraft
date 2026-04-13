@@ -88,7 +88,6 @@ describe("Theme TypeScript manifests", () => {
       expect(theme.slug).toBe(slug);
       expect(theme.displayName).toBeTruthy();
       expect(theme.tagline).toBeTruthy();
-      expect(theme.status).toMatch(/^(launched|coming-soon|beta|hidden)$/);
       expect(theme.characters.length).toBeGreaterThan(0);
     },
   );

@@ -46,7 +46,6 @@ const ONBOARDING_THEMES = themeSlugs.map((slug) => ({
   name: themes[slug].displayName,
   domain: themes[slug].specialization,
   color: themes[slug].palette.primary,
-  available: themes[slug].status === "launched",
 }));
 
 const FEATURES = [
@@ -67,12 +66,12 @@ export default function OnboardingPage() {
   const [framework, setFramework] = useState<
     "react" | "vue" | "angular" | "svelte" | "vanilla" | null
   >(null);
-  const [selectedTheme, setSelectedTheme] = useState("deep-orbit");
+  const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
   const selectedThemeData = ONBOARDING_THEMES.find(
     (t) => t.id === selectedTheme,
-  )!;
+  );
 
   const completeOnboarding = useCallback(async () => {
     setSaving(true);
@@ -94,8 +93,10 @@ export default function OnboardingPage() {
         .eq("id", user.id);
     }
 
-    trackThemeSelected(selectedTheme);
-    router.push(`/themes/${selectedTheme}`);
+    if (selectedTheme) {
+      trackThemeSelected(selectedTheme);
+      router.push(`/themes/${selectedTheme}`);
+    }
   }, [selectedTheme, bg, goal, framework, router]);
 
   return (
@@ -371,13 +372,8 @@ export default function OnboardingPage() {
                 <button
                   key={th.id}
                   type="button"
-                  onClick={() => th.available && setSelectedTheme(th.id)}
-                  disabled={!th.available}
+                  onClick={() => setSelectedTheme(th.id)}
                   className={`flex items-center gap-4 px-6 py-4.5 text-left transition-all border-2 ${selectedTheme === th.id ? "bg-primary/8 border-primary" : "bg-surface border-border"}`}
-                  style={{
-                    opacity: th.available ? 1 : 0.45,
-                    cursor: th.available ? "pointer" : "default",
-                  }}
                 >
                   <div
                     className="w-9 h-9 flex items-center justify-center shrink-0"
@@ -401,12 +397,7 @@ export default function OnboardingPage() {
                       {th.domain}
                     </div>
                   </div>
-                  {!th.available && (
-                    <span className="font-mono text-[9px] text-text-muted border border-border px-2 py-0.5">
-                      SOON
-                    </span>
-                  )}
-                  {th.available && selectedTheme === th.id && (
+                  {selectedTheme === th.id && (
                     <span className="font-mono text-[9px] text-primary border border-primary px-2 py-0.5">
                       SELECTED
                     </span>
@@ -438,7 +429,7 @@ export default function OnboardingPage() {
                 // YOUR CONFIGURATION
               </div>
               {[
-                ["Theme", selectedThemeData.name],
+                ["Theme", selectedThemeData?.name || "Not set"],
                 ["Background", bg || "Not set"],
                 ["Goal", goal || "Not set"],
                 [
@@ -476,7 +467,8 @@ export default function OnboardingPage() {
             <button
               type="button"
               onClick={() => setStep((s) => s + 1)}
-              className="px-7 py-3 font-mono text-xs font-bold text-surface bg-primary border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow"
+              disabled={step === 4 && !selectedTheme}
+              className="px-7 py-3 font-mono text-xs font-bold text-surface bg-primary border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {step === 0 ? "Continue →" : `Next: ${STEPS[step + 1]} →`}
             </button>
@@ -484,7 +476,7 @@ export default function OnboardingPage() {
             <button
               type="button"
               onClick={completeOnboarding}
-              disabled={saving}
+              disabled={saving || !selectedTheme}
               className="px-7 py-3 font-mono text-xs font-bold text-surface bg-primary border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow disabled:opacity-50"
             >
               {saving ? "Loading..." : "Begin First Lesson →"}

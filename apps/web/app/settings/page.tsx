@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
+import { DEFAULT_THEME } from "@tensorcraft/shared";
 import { SettingsForm } from "./settings-form";
 import { AmbientBackground } from "@/app/components/ambient-background";
 import type { Metadata } from "next";
@@ -52,7 +53,7 @@ export default async function SettingsPage() {
           displayName={profile?.display_name ?? ""}
           avatarUrl={profile?.avatar_url ?? ""}
           preferredThemeId={
-            (profileRecord?.preferred_theme_id as string) ?? "deep-orbit"
+            (profileRecord?.preferred_theme_id as string) ?? DEFAULT_THEME
           }
           githubUsername={(profileRecord?.github_username as string) ?? ""}
           githubConnected={

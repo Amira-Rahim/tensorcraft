@@ -7,7 +7,6 @@ export const deepOrbit: ThemeManifest = {
   tagline: "Navigate the unknown through signals",
   description:
     "Research vessel Archimedes has entered an uncharted nebula. The ship's AI is failing. Build DEEP SCAN — a deep-space signal classifier.",
-  status: "launched",
   palette: {
     bg: "#1C1C1C",
     primary: "#6BAA8A",

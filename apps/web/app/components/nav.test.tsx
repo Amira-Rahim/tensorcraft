@@ -10,6 +10,13 @@ vi.mock("../../lib/supabase/client", () => ({
         data: { subscription: { unsubscribe: vi.fn() } },
       }),
     },
+    from: () => ({
+      select: () => ({
+        eq: () => ({
+          single: () => Promise.resolve({ data: null, error: null }),
+        }),
+      }),
+    }),
   }),
 }));
 

@@ -7,7 +7,6 @@ export const novaCanvas: ThemeManifest = {
   tagline: "Where AI learns to imagine",
   description:
     "NOVA LABS' AI co-creation system crashed during a major exhibition. Build Nova Canvas — a multimodal creative assistant.",
-  status: "coming-soon",
   palette: {
     bg: "#1C1C1C",
     primary: "#C06060",
@@ -53,14 +52,6 @@ export const novaCanvas: ThemeManifest = {
       personality: "Poetic and eccentric",
     },
   ],
-  comingSoon: {
-    previewArt: "/themes/creative/preview.webp",
-    storySummary:
-      "NOVA LABS is where AI and human artists collaborate. Their AI co-creation system crashed during a major exhibition. Director Yara Okonkwo brings you in to rebuild it. You'll build Nova Canvas — a multimodal creative assistant that generates, transforms, and composes across text, image, and audio.",
-    modelPreview:
-      "Nova Canvas: multimodal generation using GANs, VAEs, diffusion models, CLIP, and cross-modal transformers",
-    estimatedLaunchDate: "2028-Q1",
-  },
   specialization: "Multimodal & Generative AI",
   modelBuilt: "Nova Canvas — multimodal creative assistant",
   careerPaths: [

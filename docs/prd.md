@@ -66,13 +66,13 @@ Deliver a gamified, project-based curriculum that meets FE developers where they
 
 TensorCraft organizes its curriculum into five thematic worlds. Each theme wraps a core ML syllabus in a domain-specific narrative, dataset, and set of projects. Learners choose a theme at onboarding and can switch or run multiple themes in parallel.
 
-| # | Theme | World | Specialization | Primary Model Types | V0.5 Status |
+| # | Theme | World | Specialization | Primary Model Types | Status |
 |---|---|---|---|---|---|
-| 1 | Deep Orbit | Space exploration | Time-Series & Signals | RNN, LSTM, Autoencoder, Anomaly Detection | **Launch theme** |
-| 2 | Neon Protocol | Cyberpunk | Computer Vision | CNN, Object Detection, Segmentation, GAN | Coming soon |
-| 3 | Signal Ward | Medical | NLP & Text | RNN, LSTM, Transformer, BERT, NER | Coming soon |
-| 4 | Nova Canvas | Creative AI | Multimodal & Generative | GAN, VAE, Diffusion, CLIP | Coming soon |
-| 5 | Terra Grid | Industrial | Edge AI & Production ML | Quantization, Pruning, Federated Learning | Coming soon |
+| 1 | Deep Orbit | Space exploration | Time-Series & Signals | RNN, LSTM, Autoencoder, Anomaly Detection | Available |
+| 2 | Neon Protocol | Cyberpunk | Computer Vision | CNN, Object Detection, Segmentation, GAN | Available |
+| 3 | Signal Ward | Medical | NLP & Text | RNN, LSTM, Transformer, BERT, NER | Available |
+| 4 | Nova Canvas | Creative AI | Multimodal & Generative | GAN, VAE, Diffusion, CLIP | Available |
+| 5 | Terra Grid | Industrial | Edge AI & Production ML | Quantization, Pruning, Federated Learning | Available |
 
 ### 3.2 Curriculum Structure
 

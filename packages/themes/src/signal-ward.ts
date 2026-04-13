@@ -7,7 +7,6 @@ export const signalWard: ThemeManifest = {
   tagline: "Decode language. Save lives.",
   description:
     "Meridian General Hospital's diagnostic AI crashed during a patient surge. Build Diagnostic One — a clinical text intelligence assistant.",
-  status: "coming-soon",
   palette: {
     bg: "#1C1C1C",
     primary: "#5BAA70",
@@ -53,14 +52,6 @@ export const signalWard: ThemeManifest = {
       personality: "Gentle, careful with uncertainty",
     },
   ],
-  comingSoon: {
-    previewArt: "/themes/medical/preview.webp",
-    storySummary:
-      "Meridian General Hospital's AI diagnostic system crashed during the worst patient surge in a decade. You're a Clinical Engineer brought in to rebuild Diagnostic One. You'll build an NLP-powered clinical text assistant — browser-based, privacy-preserving.",
-    modelPreview:
-      "Diagnostic One: clinical text intelligence using transformers, NER, RAG, and multimodal analysis",
-    estimatedLaunchDate: "2027-Q3",
-  },
   specialization: "NLP & Text Intelligence",
   modelBuilt: "Diagnostic One — clinical text assistant",
   careerPaths: ["NLP Engineer ($114K–$237K)", "LLM/AI Engineer ($174K–$350K)"],

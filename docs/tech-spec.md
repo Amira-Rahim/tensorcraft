@@ -156,6 +156,8 @@ Lessons are authored in MDX and use a library of custom React components. These 
 
 Each theme is defined as a TypeScript `ThemeManifest` object in `packages/themes/src/<theme>.ts`. The manifest drives the theme selection UI, asset loading, and content resolution.
 
+All themes are available. No status field — theme manifests contain only content and visual identity.
+
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `id` | `string` | Yes | Unique theme identifier (e.g., `space`, `cyberpunk`) |
@@ -163,13 +165,11 @@ Each theme is defined as a TypeScript `ThemeManifest` object in `packages/themes
 | `displayName` | `string` | Yes | Display name shown in the theme picker |
 | `tagline` | `string` | Yes | One-line description for the theme selection card |
 | `description` | `string` | Yes | Full description (narrative hook) |
-| `status` | `ThemeStatus` | Yes | `launched`, `coming-soon`, `beta`, or `hidden` |
 | `palette` | `ThemePalette` | Yes | Color palette: `bg`, `primary`, `accent`, `surface`, `surfaceOverlay`, `text`, `muted`, `border`, `codeBg` |
 | `terminology` | `ThemeTerminology` | Yes | UI label overrides (`lesson`, `module`, `exercise`) |
 | `protagonist` | `string` | Yes | Learner's role in the narrative |
 | `sandpackTheme` | `string` | Yes | Sandpack editor color theme |
 | `characters` | `ThemeCharacter[]` | Yes | Characters in the story (5 per theme) |
-| `comingSoon` | `ThemeComingSoon` | No | Preview content for non-launched themes |
 | `specialization` | `string` | Yes | ML specialization area |
 | `modelBuilt` | `string` | Yes | Model the learner builds |
 | `careerPaths` | `string[]` | Yes | Relevant career paths with salary ranges |

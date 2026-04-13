@@ -1,10 +1,8 @@
 export type {
   ThemeManifest,
   ThemePalette,
-  ThemeStatus,
   ThemeTerminology,
   ThemeCharacter,
-  ThemeComingSoon,
 } from "./types";
 
 export { deepOrbit } from "./deep-orbit";

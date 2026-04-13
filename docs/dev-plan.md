@@ -29,7 +29,7 @@ All blocking decisions have been resolved. This table documents the final choice
 
 | # | Decision | Resolution | Rationale |
 | --- | --- | --- | --- |
-| 1 | **V0.5 module scope** | All 11 Deep Orbit modules (55 lessons) authored; all 5 themes content-complete (275 lessons total). V0.5 gates access to Deep Orbit only. | Originally M1–3; content authoring exceeded plan. |
+| 1 | **V0.5 module scope** | All 11 Deep Orbit modules (55 lessons) authored; all 5 themes content-complete (275 lessons total). V0.5 gates access to Deep Orbit only. *(OBSOLETE: all themes launch simultaneously as of 2026-04-13)* | Originally M1–3; content authoring exceeded plan. |
 | 2 | **Database** | Supabase (PostgreSQL + Auth + RLS) | Already implemented in architecture. Auth + RLS from day one. |
 | 3 | **Bundle pricing** | $79 single / $129 two / $169 three / $219 all five | Diminishing per-theme cost. All tiers are one-time purchases. |
 | 4 | **Payment processor** | Stripe Checkout + Webhooks | One-time purchases. No subscriptions. Webhook-driven fulfillment. |
@@ -130,7 +130,7 @@ All blocking decisions have been resolved. This table documents the final choice
   2. Your Background — 5 options (beginner to ML-adjacent), saved to `profiles.fe_background`
   3. Your Goal — 5 options (understand concepts to just curious), saved to `profiles.learning_goal`
   4. Your Framework — React/Vue/Angular/Svelte/Vanilla with live bridge preview, saved to `profiles.fe_framework`
-  5. Choose Theme — Deep Orbit available, 4 others disabled (Coming Soon), saved to `profiles.preferred_theme_id`
+  5. Choose Theme — Deep Orbit available, 4 others disabled (Coming Soon), saved to `profiles.preferred_theme_id` *(OBSOLETE: all themes launch simultaneously as of 2026-04-13)*
   6. Ready — configuration summary + "Begin First Lesson" CTA
 - [x] Onboarding completion persistence — sets `onboarding_completed` flag + all preferences in `profiles` table
 - [x] Stepper indicator showing progress through 6 steps (dot + line UI)
@@ -594,6 +594,8 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] Nova Canvas (Creative AI — Multimodal & Generative) content authored (55 lessons, 55 exercises) — launch Q2 2027
 - [x] Terra Grid (Industrial — Edge AI & Production ML) content authored (55 lessons, 55 exercises) — launch Q3 2027
 - [ ] Theme launch = flip `status` from "coming-soon" to "launched" in theme manifests + enable Stripe checkout
+
+> **OBSOLETE (2026-04-13):** All 5 themes now launch simultaneously. Theme status field removed.
 
 ### 7g. Bundle & Team Pricing
 

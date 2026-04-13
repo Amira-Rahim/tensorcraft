@@ -5,10 +5,13 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import type { User } from "@supabase/supabase-js";
+import { UserAvatar } from "./user-avatar";
 
 export function UserMenu() {
   const [user, setUser] = useState<User | null>(null);
   const [open, setOpen] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [displayName, setDisplayName] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
@@ -18,6 +21,17 @@ export function UserMenu() {
     // Initial user fetch
     supabase.auth.getUser().then(({ data }) => {
       setUser(data.user);
+      if (data.user) {
+        supabase
+          .from("profiles")
+          .select("avatar_url, display_name")
+          .eq("id", data.user.id)
+          .single()
+          .then(({ data: profile }) => {
+            setAvatarUrl(profile?.avatar_url ?? null);
+            setDisplayName(profile?.display_name ?? null);
+          });
+      }
     });
 
     // Listen for auth changes — SessionListener handles TOKEN_REFRESHED and
@@ -63,10 +77,6 @@ export function UserMenu() {
     );
   }
 
-  const initial = (user.user_metadata?.display_name || user.email || "U")
-    .charAt(0)
-    .toUpperCase();
-
   return (
     <div ref={menuRef} className="relative">
       <button
@@ -75,9 +85,13 @@ export function UserMenu() {
         aria-expanded={open}
         aria-haspopup="true"
         aria-label="User menu"
-        className="w-9 h-9 flex items-center justify-center text-sm font-mono font-bold border border-primary/30 bg-primary/10 text-primary transition-colors hover:bg-primary/20"
+        className="w-9 h-9 flex items-center justify-center border border-primary/30 bg-primary/10 text-primary transition-colors hover:bg-primary/20 overflow-hidden"
       >
-        {initial}
+        <UserAvatar
+          url={avatarUrl}
+          name={displayName || user.email || "U"}
+          size={32}
+        />
       </button>
 
       {open && (

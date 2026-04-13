@@ -1,4 +1,10 @@
 import { Hono } from "hono";
+/**
+ * Waitlist route — originally designed for "coming soon" theme interest capture.
+ * All 5 themes now launch simultaneously, so theme-specific waitlist signups
+ * are no longer needed. This route is kept for general newsletter signups
+ * and may be repurposed in the future.
+ */
 import { getSupabaseAdminClient } from "@tensorcraft/supabase";
 
 const waitlist = new Hono();

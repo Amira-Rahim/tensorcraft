@@ -115,17 +115,9 @@ export default async function CapstonePage({ params }: Props) {
       })
     : "2026";
 
-  // Next theme teaser — find a launched theme that isn't the current one
-  const otherThemes = Object.values(themes).filter(
-    (t) => t.slug !== slug && t.status === "launched",
-  );
-  const nextTheme = otherThemes[0] ?? null;
-
-  // Coming soon themes
-  const comingSoonThemes = Object.values(themes).filter(
-    (t) => t.status === "coming-soon",
-  );
-  const teaserTheme = nextTheme ?? comingSoonThemes[0] ?? null;
+  // Next theme teaser — pick another theme that isn't the current one
+  const otherThemes = Object.values(themes).filter((t) => t.slug !== slug);
+  const teaserTheme = otherThemes[0] ?? null;
 
   const displayName = profile?.display_name ?? "Engineer";
   const P = theme.palette;
@@ -443,11 +435,7 @@ export default async function CapstonePage({ params }: Props) {
         {/* Next theme teaser */}
         {teaserTheme && (
           <Link
-            href={
-              teaserTheme.status === "launched"
-                ? `/themes/${teaserTheme.slug}`
-                : "/themes"
-            }
+            href={`/themes/${teaserTheme.slug}`}
             className="flex items-center gap-6 mt-8 no-print"
             style={{
               border: `2px solid ${P.border}`,
@@ -492,7 +480,7 @@ export default async function CapstonePage({ params }: Props) {
                 padding: "6px 14px",
               }}
             >
-              {teaserTheme.status === "launched" ? "Explore →" : "Coming Soon"}
+              Explore &rarr;
             </div>
           </Link>
         )}

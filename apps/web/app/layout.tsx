@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
+import { DEFAULT_THEME } from "@tensorcraft/shared";
 import { Nav } from "./components/nav";
 import { Ticker } from "./components/ticker";
 import { CookieConsent } from "./components/cookie-consent";
@@ -71,7 +72,7 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${inter.variable} ${jetbrainsMono.variable}`}
-      data-theme="deep-orbit"
+      data-theme={DEFAULT_THEME}
     >
       <head>
         <script

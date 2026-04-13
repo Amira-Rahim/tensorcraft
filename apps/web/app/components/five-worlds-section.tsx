@@ -3,59 +3,31 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useRef, useEffect, useCallback, useState } from "react";
+import { themes, themeSlugs } from "@tensorcraft/themes";
 
-/* ── Theme data ─────────────────────────────────────────── */
+/* ── Theme card data derived from manifests ──────────────── */
 
-const HERO = {
-  code: "01",
-  name: "Deep Orbit",
-  spec: "RNN / LSTM / Signals",
-  tagline:
-    "Detect anomalies in deep-space telemetry aboard the research vessel Archimedes.",
-  modules: "11 modules · 55 lessons · ~22h",
-  price: "$79",
-  col: "var(--tc-primary, #6BAA8A)",
-  rgb: [107, 170, 138] as [number, number, number],
-};
+const THEME_CARDS = themeSlugs.map((slug, i) => {
+  const t = themes[slug];
+  return {
+    code: String(i + 1).padStart(2, "0"),
+    name: t.displayName,
+    slug: t.slug,
+    spec: t.specialization,
+    tagline: t.tagline,
+    col: t.palette.primary,
+    rgb: hexToRgb(t.palette.primary),
+  };
+});
 
-const COMING = [
-  {
-    code: "02",
-    name: "Neon Protocol",
-    spec: "CNN / Computer Vision",
-    tagline: "Hunt rogue surveillance in a cyberpunk city.",
-    status: "Q4 '26",
-    col: "#A07090",
-    rgb: [160, 112, 144] as [number, number, number],
-  },
-  {
-    code: "03",
-    name: "Signal Ward",
-    spec: "NLP / Transformers",
-    tagline: "Build a clinical NLP assistant under pressure.",
-    status: "Q1 '27",
-    col: "#A89060",
-    rgb: [168, 144, 96] as [number, number, number],
-  },
-  {
-    code: "04",
-    name: "Nova Canvas",
-    spec: "GAN / Diffusion",
-    tagline: "Create generative art for a digital biennale.",
-    status: "Q2 '27",
-    col: "#7868A8",
-    rgb: [120, 104, 168] as [number, number, number],
-  },
-  {
-    code: "05",
-    name: "Terra Grid",
-    spec: "Edge AI / MLOps",
-    tagline: "Monitor infrastructure at the network edge.",
-    status: "Q3 '27",
-    col: "#907040",
-    rgb: [144, 112, 64] as [number, number, number],
-  },
-];
+function hexToRgb(hex: string): [number, number, number] {
+  const h = hex.replace("#", "");
+  return [
+    parseInt(h.slice(0, 2), 16),
+    parseInt(h.slice(2, 4), 16),
+    parseInt(h.slice(4, 6), 16),
+  ];
+}
 
 /* ── Transparent canvas overlay ─────────────────────────── */
 
@@ -151,7 +123,6 @@ function AtmosphereCanvas({
     const h = c.height;
     const hot = hovRef.current;
 
-    // Fully transparent clear — canvas sits over page bg
     ctx.clearRect(0, 0, w, h);
 
     const [r, g, b] = rgb;
@@ -293,7 +264,7 @@ export function FiveWorldsSection() {
 
   return (
     <section className="border-b border-border">
-      {/* Header — left-aligned, matches other sections */}
+      {/* Header */}
       <div className="px-10 md:px-20 pt-16 pb-10">
         <div className="font-mono text-[9px] text-primary tracking-[0.2em] uppercase mb-3">
           // CHOOSE YOUR WORLD
@@ -307,160 +278,32 @@ export function FiveWorldsSection() {
         </p>
       </div>
 
-      {/* Deep Orbit — featured row with canvas atmosphere */}
-      <div
-        className="border-t border-border relative overflow-hidden"
-        onMouseEnter={() => setHovered(0)}
-        onMouseLeave={() => setHovered(null)}
-      >
-        <AtmosphereCanvas kind={0} rgb={HERO.rgb} hovered={hovered === 0} />
-        <div className="relative z-10 grid grid-cols-1 md:grid-cols-[1fr_340px]">
-          {/* Left — content */}
-          <div className="px-10 md:px-20 py-10 md:border-r border-border">
-            <div className="flex items-center gap-4 mb-5">
-              <span className="font-mono text-[56px] font-black leading-none text-primary opacity-20">
-                {HERO.code}
-              </span>
-              <div>
-                <div className="flex items-center gap-3">
-                  <h3 className="text-xl font-bold tracking-tight uppercase text-text-primary">
-                    {HERO.name}
-                  </h3>
-                  <span className="font-mono text-[9px] font-bold tracking-wider px-2 py-0.5 text-primary bg-primary/10 border border-primary/25">
-                    LIVE
-                  </span>
-                </div>
-                <div className="font-mono text-[11px] text-text-muted mt-0.5">
-                  {HERO.spec}
-                </div>
-              </div>
-            </div>
-            <p className="text-[14px] text-text-muted leading-relaxed max-w-md mb-6">
-              {HERO.tagline}
-            </p>
-            <div className="flex items-center gap-5">
-              <Link
-                href="/themes/deep-orbit"
-                className="inline-flex items-center gap-2 px-7 py-3.5 bg-primary text-surface font-bold text-xs font-mono tracking-wider uppercase border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow"
-              >
-                Start Deep Orbit →
-              </Link>
-              <span className="font-mono text-base font-black text-primary">
-                {HERO.price}
-              </span>
-              <span className="font-mono text-[10px] text-text-muted">
-                one-time
-              </span>
-            </div>
-            <div className="font-mono text-[10px] text-text-muted mt-5">
-              {HERO.modules}
-            </div>
-          </div>
-
-          {/* Right — terminal */}
-          <div className="hidden md:block">
-            <div className="flex items-center gap-2 px-4 py-2.5 border-b border-border">
-              <div className="flex gap-1.5">
-                <div className="w-[7px] h-[7px] rounded-full bg-[#ff5f57] opacity-50" />
-                <div className="w-[7px] h-[7px] rounded-full bg-[#febc2e] opacity-50" />
-                <div className="w-[7px] h-[7px] rounded-full bg-[#28c840] opacity-50" />
-              </div>
-              <span className="font-mono text-[9px] text-text-muted tracking-wider ml-2">
-                deep-scan.ts
-              </span>
-            </div>
-            <div className="p-5 font-mono text-[11px] leading-[1.8]">
-              <div className="text-text-muted opacity-30">
-                {"// anomaly detection — your capstone"}
-              </div>
-              <div className="mt-2">
-                <span className="text-[#c586c0]">import</span>
-                <span className="text-text-muted">{" { "}</span>
-                <span className="text-[#9cdcfe]">sequential</span>
-                <span className="text-text-muted">{", "}</span>
-                <span className="text-[#9cdcfe]">layers</span>
-                <span className="text-text-muted">{" } "}</span>
-                <span className="text-[#c586c0]">from</span>
-                <span className="text-[#ce9178]">
-                  {" "}
-                  &apos;@tensorflow/tfjs&apos;
-                </span>
-              </div>
-              <div className="mt-3">
-                <span className="text-[#c586c0]">const</span>
-                <span className="text-[#4fc1ff]"> model</span>
-                <span className="text-text-muted"> = </span>
-                <span className="text-[#dcdcaa]">sequential</span>
-                <span className="text-text-muted">({"{"}</span>
-              </div>
-              <div className="pl-4">
-                <span className="text-[#9cdcfe]">layers</span>
-                <span className="text-text-muted">{": ["}</span>
-              </div>
-              <div className="pl-8">
-                <span className="text-[#9cdcfe]">layers</span>
-                <span className="text-text-muted">.</span>
-                <span className="text-[#dcdcaa]">lstm</span>
-                <span className="text-text-muted">{"({ "}</span>
-                <span className="text-[#9cdcfe]">units</span>
-                <span className="text-text-muted">{": "}</span>
-                <span className="text-[#b5cea8]">64</span>
-                <span className="text-text-muted">{" }),"}</span>
-              </div>
-              <div className="pl-8">
-                <span className="text-[#9cdcfe]">layers</span>
-                <span className="text-text-muted">.</span>
-                <span className="text-[#dcdcaa]">dense</span>
-                <span className="text-text-muted">{"({ "}</span>
-                <span className="text-[#9cdcfe]">units</span>
-                <span className="text-text-muted">{": "}</span>
-                <span className="text-[#b5cea8]">1</span>
-                <span className="text-text-muted">{" }),"}</span>
-              </div>
-              <div className="pl-4">
-                <span className="text-text-muted">{"]"}</span>
-              </div>
-              <div>
-                <span className="text-text-muted">{"});"}</span>
-              </div>
-              <div className="mt-3 text-text-muted opacity-30">
-                {"// "}
-                <span className="text-primary">{"▸ DEEP SCAN online"}</span>
-                <span
-                  className="inline-block w-[6px] h-[14px] ml-0.5 align-middle bg-primary"
-                  style={{ animation: "blink 1.1s step-end infinite" }}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Coming soon — 4 columns with per-card canvas atmospheres */}
-      <div className="grid grid-cols-2 md:grid-cols-4 border-t border-border">
-        {COMING.map((t, i) => (
+      {/* All themes — equal grid with per-card canvas atmospheres */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 border-t border-border">
+        {THEME_CARDS.map((t, i) => (
           <motion.div
             key={t.code}
-            className="relative overflow-hidden px-8 md:px-10 py-10 group cursor-default"
+            className="relative overflow-hidden group"
             style={{
-              borderRight: i < 3 ? "1px solid var(--tc-border)" : "none",
+              borderRight:
+                i < THEME_CARDS.length - 1
+                  ? "1px solid var(--tc-border)"
+                  : "none",
+              borderBottom: "1px solid var(--tc-border)",
             }}
-            onMouseEnter={() => setHovered(i + 1)}
+            onMouseEnter={() => setHovered(i)}
             onMouseLeave={() => setHovered(null)}
             initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.08, duration: 0.4 }}
           >
-            {/* Canvas — transparent, sits behind content */}
-            <AtmosphereCanvas
-              kind={i + 1}
-              rgb={t.rgb}
-              hovered={hovered === i + 1}
-            />
+            <AtmosphereCanvas kind={i} rgb={t.rgb} hovered={hovered === i} />
 
-            {/* Content — on top */}
-            <div className="relative z-10">
+            <Link
+              href={`/themes/${t.slug}`}
+              className="block relative z-10 px-8 md:px-10 py-10"
+            >
               <div className="flex items-center justify-between mb-4">
                 <span
                   className="font-mono text-[32px] font-black leading-none opacity-15 group-hover:opacity-30 transition-opacity"
@@ -469,14 +312,14 @@ export function FiveWorldsSection() {
                   {t.code}
                 </span>
                 <span
-                  className="font-mono text-[9px] tracking-wider px-2 py-0.5"
+                  className="font-mono text-[9px] font-bold tracking-wider px-2 py-0.5"
                   style={{
                     color: t.col,
-                    border: `1px solid color-mix(in srgb, ${t.col} 20%, transparent)`,
-                    opacity: 0.6,
+                    background: `color-mix(in srgb, ${t.col} 10%, transparent)`,
+                    border: `1px solid color-mix(in srgb, ${t.col} 25%, transparent)`,
                   }}
                 >
-                  {t.status}
+                  LIVE
                 </span>
               </div>
               <div
@@ -488,10 +331,16 @@ export function FiveWorldsSection() {
               <div className="font-mono text-[10px] text-text-muted opacity-50 mb-3">
                 {t.spec}
               </div>
-              <p className="text-[12px] text-text-muted leading-relaxed opacity-40 group-hover:opacity-65 transition-opacity">
+              <p className="text-[12px] text-text-muted leading-relaxed opacity-40 group-hover:opacity-65 transition-opacity mb-4">
                 {t.tagline}
               </p>
-            </div>
+              <span
+                className="font-mono text-[10px] tracking-wider opacity-0 group-hover:opacity-100 transition-opacity"
+                style={{ color: t.col }}
+              >
+                Explore &rarr;
+              </span>
+            </Link>
           </motion.div>
         ))}
       </div>
@@ -499,8 +348,7 @@ export function FiveWorldsSection() {
       {/* Footer */}
       <div className="border-t border-border px-10 md:px-20 py-4">
         <p className="font-mono text-[10px] text-text-muted text-center">
-          // Module 1 is free. No account needed. Others coming — join
-          waitlists.
+          // Module 1 of every theme is free. No account needed.
         </p>
       </div>
     </section>

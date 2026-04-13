@@ -64,11 +64,9 @@ export default async function DashboardPage() {
   const records = progressRecords ?? [];
   const attempts = exerciseAttempts ?? [];
 
-  // Use first launched theme for the dashboard (Deep Orbit)
-  const launchedThemes = Object.values(themes).filter(
-    (t) => t.status === "launched",
-  );
-  const activeTheme = launchedThemes[0];
+  // Use first theme for the dashboard
+  const allThemes = Object.values(themes);
+  const activeTheme = allThemes[0];
 
   if (!activeTheme) redirect("/themes");
 
@@ -235,7 +233,7 @@ export default async function DashboardPage() {
       .map((r) => `${r.theme_id}/${r.lesson_id}`),
   );
 
-  const allBridges: DashboardBridge[] = launchedThemes.flatMap((theme) => {
+  const allBridges: DashboardBridge[] = allThemes.flatMap((theme) => {
     const bridgeLessons = getLessonsWithBridges(theme.slug);
     return bridgeLessons.map((b) => ({
       ...b,
@@ -285,10 +283,12 @@ export default async function DashboardPage() {
 
   const displayName =
     profile?.display_name || user.email?.split("@")[0] || "Explorer";
+  const avatarUrl = profile?.avatar_url || null;
 
   return (
     <DashboardView
       displayName={displayName}
+      avatarUrl={avatarUrl}
       themeName={activeTheme.displayName}
       themeSlug={activeTheme.slug}
       modules={dashModules}

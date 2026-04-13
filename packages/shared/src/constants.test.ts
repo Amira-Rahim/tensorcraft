@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { THEME_SLUGS, PRICING, ROUTES, V05_SCOPE } from "./constants";
+import { THEME_SLUGS, PRICING, ROUTES } from "./constants";
 
 describe("THEME_SLUGS", () => {
   it("contains exactly 5 themes", () => {
@@ -67,16 +67,5 @@ describe("ROUTES", () => {
     expect(ROUTES.dashboard).toBe("/dashboard");
     expect(ROUTES.settings).toBe("/settings");
     expect(ROUTES.pricing).toBe("/pricing");
-  });
-});
-
-describe("V05_SCOPE", () => {
-  it("scopes to Deep Orbit", () => {
-    expect(V05_SCOPE.theme).toBe("deep-orbit");
-  });
-
-  it("scopes to 3 modules and 15 lessons", () => {
-    expect(V05_SCOPE.modules).toBe(3);
-    expect(V05_SCOPE.lessons).toBe(15);
   });
 });

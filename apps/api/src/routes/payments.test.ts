@@ -20,7 +20,7 @@ vi.mock("@tensorcraft/supabase", () => ({
     from: (table: string) => {
       if (table === "purchases") {
         return {
-          insert: mockInsert,
+          upsert: mockInsert,
           update: (data: unknown) => {
             mockUpdate(data);
             return { eq: mockEq };
@@ -44,6 +44,7 @@ vi.mock("@tensorcraft/shared", () => ({
     single: { price: 79, themes: 1, label: "Single Theme" },
     twoBundle: { price: 129, themes: 2, label: "Two Themes" },
     threeBundle: { price: 169, themes: 3, label: "Three Themes" },
+    allFive: { price: 219, themes: 5, label: "All 5 Themes" },
   },
   isValidThemeSlug: (slug: string) =>
     [

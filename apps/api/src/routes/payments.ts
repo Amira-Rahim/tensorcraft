@@ -72,8 +72,7 @@ payments.post("/checkout", async (c) => {
   const { data: existingPurchases } = await supabase
     .from("purchases")
     .select("theme_ids")
-    .eq("user_id", userId)
-    .eq("status", "completed");
+    .eq("user_id", userId);
 
   if (existingPurchases && existingPurchases.length > 0) {
     const ownedThemes = existingPurchases.flatMap(
@@ -245,20 +244,20 @@ payments.post("/webhook", async (c) => {
       // Validate theme IDs from metadata
       if (themeIds.length > 0 && !validateThemeIds(themeIds)) {
         console.error("Webhook: Invalid theme IDs in metadata:", themeIds);
-        break;
+        return c.json({ error: "Webhook: Invalid theme IDs in metadata" }, 400);
       }
 
       // Validate amount matches known price points
       const plan = PRICING[metadata.planId as keyof typeof PRICING];
       if (!plan || metadata.planId === "free") {
         console.error("Webhook: Invalid planId:", metadata.planId);
-        break;
+        return c.json({ error: "Webhook: Invalid planId in metadata" }, 400);
       }
 
       // Validate Stripe session ID format
       if (!sessionId.startsWith("cs_test_") && !sessionId.startsWith("cs_")) {
         console.error("Webhook: Invalid stripe_session_id format:", sessionId);
-        break;
+        return c.json({ error: "Webhook: Invalid session ID format" }, 400);
       }
 
       // Idempotency: use upsert with ON CONFLICT to avoid TOCTOU race
@@ -295,7 +294,7 @@ payments.post("/webhook", async (c) => {
 
         if (profile?.email) {
           await addSubscriber(profile.email);
-          const purchaseTagId = process.env.KIT_TAG_PURCHASED_DEEP_ORBIT;
+          const purchaseTagId = process.env.KIT_TAG_PURCHASED;
           if (purchaseTagId) {
             await tagSubscriber(profile.email, purchaseTagId);
           }
