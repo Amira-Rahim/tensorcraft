@@ -283,7 +283,7 @@ Track learning behavior, engagement, and conversion events.
 | Styling | Tailwind CSS 4 + CSS custom properties | Tailwind for utility-first layout; CSS custom properties for per-theme theming via `data-theme` attribute |
 | ML runtime | TensorFlow.js (tfjs-core + tfjs-layers) | Runs models in-browser via WebGL backend; WASM fallback for unsupported GPUs |
 | Code editor / exercises | Sandpack (@codesandbox/sandpack-react) | Browser-based sandbox for interactive exercises with custom async test runner and TensorFlow.js mock. 295 exercises across all themes. |
-| Syntax highlighting | Shiki 4.x | Lazy-loaded, cached singleton; `github-dark-default` theme; supports TS/JS/Python/JSON/Bash/YAML/MDX |
+| Syntax highlighting | Shiki 4.x | Lazy-loaded, cached singleton; custom `tensorcraft-dark` theme; supports TS/JS/Python/JSON/Bash/YAML/MDX |
 | API layer | Hono (separate service, port 3001) | REST API on `@hono/node-server`; independent deployment and scaling from Next.js frontend |
 | Database | Supabase (PostgreSQL) | Serverless-friendly; row-level security for multi-tenant data. Additional tables: `streaks` (per-theme streak tracking with `current_streak`, `longest_streak`, `last_activity_date`), `achievements` (user achievement badges with `badge_type`, `earned_at`, `theme_id`), `exercise_attempts` (exercise submission history with `user_id`, `exercise_slug`, `submitted_code`, `passed`, `score`, `attempted_at`) |
 | Auth | Supabase Auth via `@supabase/ssr` | Providers: GitHub OAuth (PKCE), Google OAuth, email magic link. Cookie-based session management via Next.js middleware. |

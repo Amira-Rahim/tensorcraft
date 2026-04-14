@@ -1,7 +1,6 @@
 # Tensorcraft — Infrastructure & Deployment
 
 > Last updated: 2026-04-07 (Vercel migration for web app; API remains on Fly.io)
-> Design spec: `docs/superpowers/specs/2026-03-27-scalability-design.md`
 
 This document covers the production deployment architecture, scaling configuration, and operational runbook for TensorCraft.
 

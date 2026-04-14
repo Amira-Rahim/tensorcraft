@@ -274,6 +274,8 @@ These statistics inform our marketing, pricing, and curriculum design — the $7
 
 #### Upgrade Path
 
+> **Implemented (2026-04-14):** Credit from prior purchases is calculated automatically. Adjusted price charged via Stripe. Auto-grant when credit covers full price.
+
 Learners who purchase a single theme can upgrade to a bundle at any time. The price they already paid is credited toward the bundle price. For example, a learner who bought Deep Orbit for $79 can upgrade to the Two Models tier by paying $70 ($129 – $79). This removes purchase anxiety and encourages starting with one theme.
 
 #### Purchasing Power Parity (PPP)

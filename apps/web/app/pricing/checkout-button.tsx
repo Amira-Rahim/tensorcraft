@@ -95,9 +95,14 @@ export function CheckoutButton({
         return;
       }
 
-      const { url } = await response.json();
-      if (url) {
-        window.location.href = url;
+      const data = await response.json();
+      if (data.granted) {
+        // Auto-grant — themes were granted instantly, redirect to success
+        window.location.href = "/dashboard/purchase-success";
+        return;
+      }
+      if (data.url) {
+        window.location.href = data.url;
       } else {
         setError("No checkout URL received. Please try again.");
       }

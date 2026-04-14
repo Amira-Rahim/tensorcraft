@@ -150,12 +150,31 @@ Create a Stripe Checkout session. **Authenticated.**
 }
 ```
 
-**Response:**
+**Upgrade credit behavior:** If the user already owns themes that overlap with the requested bundle, the amount paid for those themes is credited toward the new plan price. The adjusted price is charged via Stripe. If the total credit covers the full plan price, no Stripe session is created — themes are granted immediately.
+
+**Response (normal checkout):**
 ```json
 {
   "url": "https://checkout.stripe.com/c/pay/cs_..."
 }
 ```
+
+**Response (auto-grant when credit covers full price):**
+```json
+{
+  "granted": true,
+  "themes": ["deep-orbit", "neon-protocol"]
+}
+```
+
+**Stripe session metadata (when checkout session is created):**
+
+| Field | Description |
+|-------|-------------|
+| `planId` | The plan ID (e.g. `twoBundle`) |
+| `themeIds` | Comma-separated theme slugs |
+| `creditApplied` | Credit amount applied (in dollars) |
+| `originalPrice` | Original plan price before credit (in dollars) |
 
 ### `GET /api/payments/purchases`
 

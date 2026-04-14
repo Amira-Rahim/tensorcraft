@@ -14,9 +14,6 @@ import { admin } from "./routes/admin";
 import { github } from "./routes/github";
 import { skillEvents } from "./routes/skill-events";
 import { issues } from "./routes/issues";
-// V1: Newsletter endpoint — Kit integration + waitlist dual-write.
-// Unmounted until email sequences are ready. See routes/newsletter.ts.
-// import { newsletter } from "./routes/newsletter";
 
 const app = new Hono();
 
@@ -67,7 +64,6 @@ app.route("/api/admin", admin);
 app.route("/api/github", github);
 app.route("/api/skill-events", skillEvents);
 app.route("/api/issues", issues);
-// V1: app.route("/api/newsletter", newsletter); // Unmounted — see line 16
 
 // Root
 app.get("/", (c) => {

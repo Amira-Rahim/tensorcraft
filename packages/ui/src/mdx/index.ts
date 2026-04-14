@@ -7,3 +7,4 @@ export { HintPanel } from "./hint-panel";
 export { KeyTakeaways } from "./key-takeaways";
 export { LearningObjectives } from "./learning-objectives";
 export { Quiz } from "./quiz";
+export { SceneHeading } from "./scene-heading";

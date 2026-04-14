@@ -15,5 +15,6 @@ export {
   KeyTakeaways,
   LearningObjectives,
   Quiz,
+  SceneHeading,
 } from "./mdx";
 export type { ExerciseData, ExerciseSubmitResult } from "./mdx";

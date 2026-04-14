@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { themes, themeSlugs } from "@tensorcraft/themes";
 import { PRICING, THEME_CONTENT } from "@tensorcraft/shared";
 import { CheckoutButton } from "./checkout-button";
+import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
 const themeList = themeSlugs.map((slug) => ({
   slug,
@@ -15,31 +16,41 @@ function ThemePicker({
   max,
   selected,
   onToggle,
+  ownedThemes,
 }: {
   max: number;
   selected: string[];
   onToggle: (slug: string) => void;
+  ownedThemes?: Set<string>;
 }) {
   return (
     <div className="flex flex-wrap gap-2 mb-5">
       {themeList.map((t) => {
-        const isSelected = selected.includes(t.slug);
+        const isOwned = ownedThemes?.has(t.slug) ?? false;
+        const isSelected = isOwned || selected.includes(t.slug);
         const isFull = selected.length >= max && !isSelected;
         return (
           <button
             key={t.slug}
             type="button"
-            onClick={() => !isFull && onToggle(t.slug)}
-            disabled={isFull}
+            onClick={() => !isOwned && !isFull && onToggle(t.slug)}
+            disabled={isOwned || isFull}
             className={`px-3 py-1.5 text-xs font-mono border transition-all ${
-              isSelected
-                ? "border-primary bg-primary/10 text-primary font-semibold"
-                : isFull
-                  ? "border-border text-text-muted/40 cursor-not-allowed"
-                  : "border-border text-text-muted hover:border-primary/50 hover:text-text-primary"
+              isOwned
+                ? "border-primary/50 bg-primary/5 text-primary/70 cursor-default"
+                : isSelected
+                  ? "border-primary bg-primary/10 text-primary font-semibold"
+                  : isFull
+                    ? "border-border text-text-muted/40 cursor-not-allowed"
+                    : "border-border text-text-muted hover:border-primary/50 hover:text-text-primary"
             }`}
           >
             {t.name}
+            {isOwned && (
+              <span className="ml-1.5 text-[10px] uppercase tracking-wider opacity-70">
+                OWNED
+              </span>
+            )}
           </button>
         );
       })}
@@ -51,6 +62,35 @@ export function PricingTiers() {
   const [singleTheme, setSingleTheme] = useState<string | null>(null);
   const [twoThemes, setTwoThemes] = useState<string[]>([]);
   const [threeThemes, setThreeThemes] = useState<string[]>([]);
+  const [ownedThemes, setOwnedThemes] = useState<Set<string>>(new Set());
+  const [totalCredit, setTotalCredit] = useState(0);
+
+  useEffect(() => {
+    const supabase = getSupabaseBrowserClient();
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) return;
+      supabase
+        .from("purchases")
+        .select("theme_ids, amount")
+        .eq("user_id", session.user.id)
+        .eq("status", "completed")
+        .then(({ data }) => {
+          if (!data || data.length === 0) return;
+          const owned = new Set<string>();
+          let credit = 0;
+          for (const p of data) {
+            for (const t of p.theme_ids) owned.add(t);
+            credit += Number(p.amount);
+          }
+          setOwnedThemes(owned);
+          setTotalCredit(credit);
+        });
+    });
+  }, []);
+
+  function adjustedPrice(planPrice: number): number {
+    return Math.max(0, planPrice - totalCredit);
+  }
 
   function toggleInList(
     list: string[],
@@ -77,6 +117,13 @@ export function PricingTiers() {
               <span className="text-5xl font-bold leading-tight text-text-primary font-mono">
                 ${PRICING.single.price}
               </span>
+              {totalCredit > 0 && (
+                <p className="text-xs font-mono text-primary mt-1">
+                  {adjustedPrice(PRICING.single.price) === 0
+                    ? "Covered by your credit!"
+                    : `Pay $${adjustedPrice(PRICING.single.price)} (includes $${totalCredit} credit)`}
+                </p>
+              )}
             </div>
             <div className="text-lg font-semibold mb-1 text-text-primary font-mono">
               Single Theme
@@ -118,6 +165,7 @@ export function PricingTiers() {
               onToggle={(slug) =>
                 setSingleTheme(singleTheme === slug ? null : slug)
               }
+              ownedThemes={ownedThemes}
             />
             <CheckoutButton
               planId="single"
@@ -148,6 +196,13 @@ export function PricingTiers() {
                 <span className="text-sm text-text-muted font-mono ml-2">
                   (${Math.round(PRICING.twoBundle.price / 2)}/theme)
                 </span>
+                {totalCredit > 0 && (
+                  <p className="text-xs font-mono text-primary mt-1">
+                    {adjustedPrice(PRICING.twoBundle.price) === 0
+                      ? "Covered by your credit!"
+                      : `Pay $${adjustedPrice(PRICING.twoBundle.price)} (includes $${totalCredit} credit)`}
+                  </p>
+                )}
               </div>
               <div className="text-base font-semibold mb-1 text-text-primary font-mono">
                 2 Themes
@@ -165,6 +220,7 @@ export function PricingTiers() {
                   onToggle={(slug) =>
                     toggleInList(twoThemes, setTwoThemes, slug)
                   }
+                  ownedThemes={ownedThemes}
                 />
               </div>
               <CheckoutButton
@@ -186,6 +242,13 @@ export function PricingTiers() {
                 <span className="text-sm text-text-muted font-mono ml-2">
                   (${Math.round(PRICING.threeBundle.price / 3)}/theme)
                 </span>
+                {totalCredit > 0 && (
+                  <p className="text-xs font-mono text-primary mt-1">
+                    {adjustedPrice(PRICING.threeBundle.price) === 0
+                      ? "Covered by your credit!"
+                      : `Pay $${adjustedPrice(PRICING.threeBundle.price)} (includes $${totalCredit} credit)`}
+                  </p>
+                )}
               </div>
               <div className="text-base font-semibold mb-1 text-text-primary font-mono">
                 3 Themes
@@ -203,6 +266,7 @@ export function PricingTiers() {
                   onToggle={(slug) =>
                     toggleInList(threeThemes, setThreeThemes, slug)
                   }
+                  ownedThemes={ownedThemes}
                 />
               </div>
               <CheckoutButton
@@ -224,6 +288,13 @@ export function PricingTiers() {
                 <span className="text-sm text-text-muted font-mono ml-2">
                   (${Math.round(PRICING.allFive.price / 5)}/theme)
                 </span>
+                {totalCredit > 0 && (
+                  <p className="text-xs font-mono text-primary mt-1">
+                    {adjustedPrice(PRICING.allFive.price) === 0
+                      ? "Covered by your credit!"
+                      : `Pay $${adjustedPrice(PRICING.allFive.price)} (includes $${totalCredit} credit)`}
+                  </p>
+                )}
               </div>
               <div className="text-base font-semibold mb-1 text-text-primary font-mono">
                 All 5 Themes

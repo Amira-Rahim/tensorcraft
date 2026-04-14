@@ -7,6 +7,7 @@ import { markLessonStarted, markLessonCompleted } from "@/lib/progress-client";
 import { trackLessonStarted, trackLessonCompleted } from "@/lib/analytics";
 import type { Framework } from "@tensorcraft/shared";
 import type { ExerciseData } from "@tensorcraft/ui";
+import { SceneHeading } from "@tensorcraft/ui";
 
 interface LessonStepsProps {
   lesson: {
@@ -26,6 +27,11 @@ interface LessonStepsProps {
       };
     };
     consequence: { narrative: string; nextLessonTeaser?: string };
+    scene?: {
+      location: string;
+      time?: string;
+      epilogueLocation?: string;
+    };
     hints?: Array<{
       level: "nudge" | "guidance" | "solution";
       content: string;
@@ -407,13 +413,6 @@ function StepBriefing({
         {highlightFirstLongWord(lesson.title, theme.palette.primary)}
       </h1>
 
-      <p
-        className="text-lg leading-[1.8] mb-6"
-        style={{ color: theme.palette.muted }}
-      >
-        {lesson.context.narrative}
-      </p>
-
       <div
         className="flex flex-wrap gap-3 mb-8 pt-5"
         style={{ borderTop: `1px solid ${theme.palette.border}` }}
@@ -431,7 +430,24 @@ function StepBriefing({
         )}
       </div>
 
-      {/* Dialogue — rendered inline from MDX with prose visible */}
+      {/* Scene heading — only if scene frontmatter exists */}
+      {lesson.scene && (
+        <SceneHeading
+          prefix="Int."
+          location={lesson.scene.location}
+          time={lesson.scene.time}
+        />
+      )}
+
+      {/* Narrative as stage direction */}
+      <p
+        className="text-sm italic leading-[1.85] mb-7 max-w-[520px]"
+        style={{ color: theme.palette.muted }}
+      >
+        {lesson.context.narrative}
+      </p>
+
+      {/* Dialogue — screenplay beats from MDX */}
       <LessonContent
         lesson={lesson}
         exercises={exercises}
@@ -636,40 +652,61 @@ function StepConsequence({
 }) {
   return (
     <div className="text-center py-12">
+      {/* FADE OUT marker */}
       <div
-        className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-[2px] px-4 py-1.5 mb-6"
+        className="font-mono text-[9px] uppercase tracking-[3px] mb-8"
+        style={{ color: theme.palette.border }}
+      >
+        Fade Out
+      </div>
+
+      {/* Epilogue scene heading */}
+      {lesson.scene && (
+        <SceneHeading
+          prefix="Epilogue"
+          location={lesson.scene.epilogueLocation ?? lesson.scene.location}
+        />
+      )}
+
+      {/* Mission complete badge */}
+      <div
+        className="inline-flex items-center gap-2 text-[10px] font-mono uppercase tracking-[2px] px-4 py-1.5 mb-6"
         style={{
           color: theme.palette.primary,
-          border: `1px solid rgba(107,170,138,0.2)`,
-          background: `rgba(107,170,138,0.08)`,
+          border: `1px solid ${theme.palette.primary}25`,
+          background: `${theme.palette.primary}0F`,
         }}
       >
-        MISSION COMPLETE
+        <span
+          className="w-1.5 h-1.5 inline-block"
+          style={{ background: theme.palette.primary }}
+        />
+        Mission Complete
       </div>
 
       <h2
-        className="text-[26px] font-bold mb-3"
+        className="text-[26px] font-bold mb-5"
         style={{ color: theme.palette.text }}
       >
         {lesson.title}
       </h2>
 
+      {/* Narrative as italic cinematic narration */}
       <p
-        className="text-base leading-[1.8] max-w-[480px] mx-auto mb-9"
+        className="text-[15px] italic leading-[1.9] max-w-[520px] mx-auto mb-8"
         style={{ color: theme.palette.muted }}
       >
         {lesson.consequence.narrative}
       </p>
 
+      {/* Next lesson teaser */}
       {lesson.consequence.nextLessonTeaser && (
-        <p
-          className="text-xs italic mb-6"
-          style={{ color: theme.palette.muted }}
-        >
+        <p className="text-[13px] mb-7" style={{ color: theme.palette.border }}>
           {lesson.consequence.nextLessonTeaser}
         </p>
       )}
 
+      {/* Next lesson card */}
       {nextLesson && (
         <Link
           href={`/themes/${themeSlug}/${moduleSlug}/${nextLesson.slug}`}

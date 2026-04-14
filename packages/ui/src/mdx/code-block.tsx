@@ -8,7 +8,9 @@ interface CodeBlockProps {
   children: ReactNode;
 }
 
-// Lazy-loaded Shiki highlighter
+import { tensorcraftTheme } from "./tensorcraft-theme";
+
+// Lazy-loaded Shiki highlighter with custom Tensorcraft theme
 let highlighterPromise: Promise<{
   codeToHtml: (code: string, opts: { lang: string; theme: string }) => string;
 }> | null = null;
@@ -17,7 +19,7 @@ function getHighlighter() {
   if (!highlighterPromise) {
     highlighterPromise = import("shiki").then((shiki) =>
       shiki.createHighlighter({
-        themes: ["github-dark-default"],
+        themes: [tensorcraftTheme],
         langs: [
           "typescript",
           "javascript",
@@ -55,7 +57,7 @@ export function CodeBlock({
         if (cancelled) return;
         const html = highlighter.codeToHtml(code, {
           lang: language,
-          theme: "github-dark-default",
+          theme: "tensorcraft-dark",
         });
         setHighlightedHtml(html);
       })

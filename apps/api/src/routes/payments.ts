@@ -67,24 +67,55 @@ payments.post("/checkout", async (c) => {
     return c.json({ error: "Invalid theme ID(s)" }, 400);
   }
 
-  // Check for duplicate purchases — prevent buying themes user already owns
+  // Calculate upgrade credit from prior purchases
   const supabase = getSupabaseServerClient(c.get("accessToken"));
   const { data: existingPurchases } = await supabase
     .from("purchases")
-    .select("theme_ids")
-    .eq("user_id", userId);
+    .select("theme_ids, amount")
+    .eq("user_id", userId)
+    .eq("status", "completed");
+
+  const ownedThemes = new Set<string>();
+  let credit = 0;
 
   if (existingPurchases && existingPurchases.length > 0) {
-    const ownedThemes = existingPurchases.flatMap(
-      (p: { theme_ids: string[] }) => p.theme_ids,
-    );
-    const alreadyOwned = body.themeIds.filter((id) => ownedThemes.includes(id));
-    if (alreadyOwned.length > 0) {
-      return c.json(
-        { error: "You already own this theme", themes: alreadyOwned },
-        400,
-      );
+    for (const p of existingPurchases as {
+      theme_ids: string[];
+      amount: number;
+    }[]) {
+      const hasOverlap = p.theme_ids.some((id) => body.themeIds.includes(id));
+      for (const id of p.theme_ids) {
+        ownedThemes.add(id);
+      }
+      if (hasOverlap) {
+        credit += p.amount;
+      }
     }
+
+    const allOwned = body.themeIds.every((id) => ownedThemes.has(id));
+    if (allOwned) {
+      return c.json({ error: "You already own all these themes" }, 400);
+    }
+  }
+
+  credit = Math.min(credit, plan.price);
+  const adjustedPrice = Math.max(0, plan.price - credit);
+  const isUpgrade = credit > 0;
+
+  // Auto-grant if credit fully covers the price
+  if (adjustedPrice === 0) {
+    const { error: grantError } = await supabase.from("purchases").insert({
+      user_id: userId,
+      plan_id: body.planId,
+      theme_ids: body.themeIds,
+      amount: 0,
+      status: "completed",
+      stripe_session_id: `auto_grant_${crypto.randomUUID()}`,
+    });
+    if (grantError) {
+      return c.json({ error: "Failed to grant themes" }, 500);
+    }
+    return c.json({ granted: true, themes: body.themeIds });
   }
 
   const stripe = getStripe();
@@ -104,10 +135,12 @@ payments.post("/checkout", async (c) => {
         price_data: {
           currency: "usd",
           product_data: {
-            name: `Tensorcraft — ${plan.label}`,
+            name: isUpgrade
+              ? `Tensorcraft — Upgrade to ${plan.label}`
+              : `Tensorcraft — ${plan.label}`,
             description: `Access to ${body.themeIds.join(", ")}`,
           },
-          unit_amount: plan.price * 100, // cents
+          unit_amount: adjustedPrice * 100, // cents
         },
         quantity: 1,
       },
@@ -115,6 +148,8 @@ payments.post("/checkout", async (c) => {
     metadata: {
       planId: body.planId,
       themeIds: body.themeIds.join(","),
+      creditApplied: String(credit),
+      originalPrice: String(plan.price),
     },
     success_url: `${appUrl}/dashboard/purchase-success`,
     cancel_url: `${appUrl}/pricing?purchase=cancelled`,
@@ -254,6 +289,9 @@ payments.post("/webhook", async (c) => {
         return c.json({ error: "Webhook: Invalid planId in metadata" }, 400);
       }
 
+      const creditApplied = Number(metadata.creditApplied || "0");
+      const expectedAmount = plan.price - creditApplied;
+
       // Validate Stripe session ID format
       if (!sessionId.startsWith("cs_test_") && !sessionId.startsWith("cs_")) {
         console.error("Webhook: Invalid stripe_session_id format:", sessionId);
@@ -271,7 +309,7 @@ payments.post("/webhook", async (c) => {
           user_id: userId,
           plan_id: metadata.planId,
           theme_ids: themeIds,
-          amount: amount ? amount / 100 : plan.price,
+          amount: amount ? amount / 100 : expectedAmount,
           stripe_session_id: sessionId,
           stripe_payment_intent: paymentIntent,
           status: "completed",

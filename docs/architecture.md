@@ -36,7 +36,7 @@ tensorcraft/
 | Styling | Tailwind CSS 4 | CSS-native `@theme` directive, zero-JS theming |
 | Animation | Framer Motion | Declarative, layout animations, gesture support |
 | Content | MDX 3 + Velite (Zod schemas) | Type-safe content with build-time validation. 3 collections: lessons, exercises, modules |
-| Code Highlighting | Shiki (via CodeBlock component) | V0.5 uses basic syntax highlighting; Code Hike deferred |
+| Code Highlighting | Shiki 4.x (via CodeBlock component) | Custom `tensorcraft-dark` theme; lazy-loaded singleton; 11 languages. Code Hike deferred to post-V1 |
 | Code Exercises | Sandpack (CodeSandbox) | Browser-based code playgrounds with custom async test runner and TF.js mock (295 exercises) |
 | Payments | Stripe Checkout + Webhooks | One-time purchases, webhook-driven fulfillment |
 | Email | Kit (ConvertKit) | Waitlist, per-theme segmented lists, nurture sequences |

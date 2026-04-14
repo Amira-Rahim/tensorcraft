@@ -63,4 +63,11 @@ describe("CodeBlock", () => {
     expect(pre).toBeInTheDocument();
     expect(code).toBeInTheDocument();
   });
+
+  it("uses tensorcraft-dark theme (not github-dark-default)", async () => {
+    const { tensorcraftTheme } = await import("./tensorcraft-theme");
+    expect(tensorcraftTheme.name).toBe("tensorcraft-dark");
+    expect(tensorcraftTheme.type).toBe("dark");
+    expect(tensorcraftTheme.tokenColors.length).toBeGreaterThan(10);
+  });
 });

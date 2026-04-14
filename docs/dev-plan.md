@@ -229,7 +229,7 @@ All blocking decisions have been resolved. This table documents the final choice
 
 - [x] Shiki integration in CodeBlock with lazy-loaded highlighter (client-side, cached singleton)
 - [x] Supports TypeScript, JavaScript, TSX, JSX, Python, JSON, Bash, HTML, CSS, YAML, Markdown
-- [x] `github-dark-default` theme (dark, matches Zensman DeFi aesthetic)
+- [x] Custom `tensorcraft-dark` Shiki theme — uses Tensorcraft color palette (primary green keywords, accent strings, muted comments). Replaced generic `github-dark-default`. UPDATED 2026-04-14.
 - [x] Graceful fallback — renders plain code while Shiki loads, no layout shift
 - [x] Copy button preserved
 
@@ -604,7 +604,7 @@ All blocking decisions have been resolved. This table documents the final choice
 
 - [ ] Bundle purchase flow ($129 two themes, $169 three themes)
 - [ ] Team license management (admin dashboard, seat assignment, progress reports)
-- [ ] Upgrade credit logic (pay difference when moving to higher tier)
+- [x] Upgrade credit logic (pay difference when moving to higher tier). COMPLETED 2026-04-14.
 
 ### 7h. Module Count Dynamic Updates
 
@@ -613,7 +613,7 @@ All blocking decisions have been resolved. This table documents the final choice
 
 ### 7h-2. Scalability Infrastructure
 
-> See `docs/infrastructure.md` for full deployment architecture and `docs/superpowers/specs/2026-03-27-scalability-design.md` for the design spec.
+> See `docs/infrastructure.md` for full deployment architecture.
 
 **Phase 1-2 (Complete):**
 
