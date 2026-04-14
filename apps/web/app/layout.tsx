@@ -9,6 +9,7 @@ import { SiteFooter } from "./components/site-footer";
 import { AnalyticsProvider } from "./components/analytics-provider";
 import { PlausibleScript } from "./components/plausible-script";
 import { SessionListener } from "../lib/supabase/session-listener";
+import { SessionToast } from "./components/session-toast";
 import "./globals.css";
 
 const inter = Inter({
@@ -47,7 +48,7 @@ export const metadata: Metadata = {
       "Interactive, story-driven ML education for frontend engineers. Build real models in the browser using JavaScript, TypeScript, and tools you already love.",
     images: [
       {
-        url: "/og-image.png",
+        url: "/api/og?title=Learn%20ML%20Through%20Code%20You%20Already%20Know&theme=deep-orbit&subtitle=Interactive%2C%20story-driven%20ML%20education",
         width: 1200,
         height: 630,
         alt: "Tensorcraft — ML for Frontend Engineers",
@@ -59,7 +60,12 @@ export const metadata: Metadata = {
     title: "Tensorcraft — Learn ML Through Code You Already Know",
     description:
       "Interactive, story-driven ML education for frontend engineers.",
-    images: ["/og-image.png"],
+    images: [
+      "/api/og?title=Learn%20ML%20Through%20Code%20You%20Already%20Know&theme=deep-orbit&subtitle=Interactive%2C%20story-driven%20ML%20education",
+    ],
+  },
+  alternates: {
+    canonical: "https://tensorcraft.app",
   },
 };
 
@@ -94,7 +100,7 @@ export default function RootLayout({
                 "@type": "Course",
                 name: "Deep Orbit — Time-Series & Signals",
                 description:
-                  "A story-driven course teaching time-series analysis and signal processing using browser-based ML. Built for frontend engineers.",
+                  "Build a deep-space signal classifier using RNNs and LSTMs. A story-driven course teaching time-series analysis and signal processing using browser-based ML. Built for frontend engineers.",
                 provider: {
                   "@type": "Organization",
                   name: "Tensorcraft",
@@ -106,6 +112,7 @@ export default function RootLayout({
                 teaches: [
                   "Time-series analysis",
                   "Signal processing",
+                  "RNNs and LSTMs",
                   "Browser-based machine learning",
                   "TensorFlow.js",
                 ],
@@ -115,6 +122,156 @@ export default function RootLayout({
                   priceCurrency: "USD",
                   availability: "https://schema.org/InStock",
                 },
+              },
+              {
+                "@context": "https://schema.org",
+                "@type": "Course",
+                name: "Neon Protocol — Computer Vision",
+                description:
+                  "Build an urban anomaly detection system using CNNs. A story-driven course teaching computer vision and image processing using browser-based ML. Built for frontend engineers.",
+                provider: {
+                  "@type": "Organization",
+                  name: "Tensorcraft",
+                  url: "https://tensorcraft.app",
+                },
+                url: "https://tensorcraft.app/themes/neon-protocol",
+                educationalLevel: "Intermediate",
+                programmingLanguage: ["JavaScript", "TypeScript"],
+                teaches: [
+                  "Computer vision",
+                  "Convolutional neural networks",
+                  "Image classification",
+                  "Object detection",
+                  "Browser-based machine learning",
+                ],
+                offers: {
+                  "@type": "Offer",
+                  price: "79",
+                  priceCurrency: "USD",
+                  availability: "https://schema.org/InStock",
+                },
+              },
+              {
+                "@context": "https://schema.org",
+                "@type": "Course",
+                name: "Signal Ward — NLP & Text Intelligence",
+                description:
+                  "Build a clinical text intelligence assistant using transformers. A story-driven course teaching NLP and text processing using browser-based ML. Built for frontend engineers.",
+                provider: {
+                  "@type": "Organization",
+                  name: "Tensorcraft",
+                  url: "https://tensorcraft.app",
+                },
+                url: "https://tensorcraft.app/themes/signal-ward",
+                educationalLevel: "Intermediate",
+                programmingLanguage: ["JavaScript", "TypeScript"],
+                teaches: [
+                  "Natural language processing",
+                  "Transformer models",
+                  "Text classification",
+                  "Sentiment analysis",
+                  "Transformers.js",
+                ],
+                offers: {
+                  "@type": "Offer",
+                  price: "79",
+                  priceCurrency: "USD",
+                  availability: "https://schema.org/InStock",
+                },
+              },
+              {
+                "@context": "https://schema.org",
+                "@type": "Course",
+                name: "Nova Canvas — Multimodal & Generative AI",
+                description:
+                  "Build a multimodal creative assistant using GANs and diffusion. A story-driven course teaching generative AI and multimodal systems using browser-based ML. Built for frontend engineers.",
+                provider: {
+                  "@type": "Organization",
+                  name: "Tensorcraft",
+                  url: "https://tensorcraft.app",
+                },
+                url: "https://tensorcraft.app/themes/nova-canvas",
+                educationalLevel: "Intermediate",
+                programmingLanguage: ["JavaScript", "TypeScript"],
+                teaches: [
+                  "Generative adversarial networks",
+                  "Diffusion models",
+                  "Multimodal AI",
+                  "Image generation",
+                  "Browser-based machine learning",
+                ],
+                offers: {
+                  "@type": "Offer",
+                  price: "79",
+                  priceCurrency: "USD",
+                  availability: "https://schema.org/InStock",
+                },
+              },
+              {
+                "@context": "https://schema.org",
+                "@type": "Course",
+                name: "Terra Grid — Edge AI & Production ML",
+                description:
+                  "Build an edge-deployed monitoring system with MLOps. A story-driven course teaching Edge AI and production ML systems using browser-based ML. Built for frontend engineers.",
+                provider: {
+                  "@type": "Organization",
+                  name: "Tensorcraft",
+                  url: "https://tensorcraft.app",
+                },
+                url: "https://tensorcraft.app/themes/terra-grid",
+                educationalLevel: "Intermediate",
+                programmingLanguage: ["JavaScript", "TypeScript"],
+                teaches: [
+                  "Edge AI deployment",
+                  "MLOps",
+                  "Model optimization",
+                  "Production machine learning",
+                  "TensorFlow.js",
+                ],
+                offers: {
+                  "@type": "Offer",
+                  price: "79",
+                  priceCurrency: "USD",
+                  availability: "https://schema.org/InStock",
+                },
+              },
+              {
+                "@context": "https://schema.org",
+                "@type": "FAQPage",
+                mainEntity: [
+                  {
+                    "@type": "Question",
+                    name: "Can I learn machine learning with JavaScript?",
+                    acceptedAnswer: {
+                      "@type": "Answer",
+                      text: "Yes. Tensorcraft teaches ML entirely in JavaScript and TypeScript using TensorFlow.js. Models train and run in the browser — no Python required.",
+                    },
+                  },
+                  {
+                    "@type": "Question",
+                    name: "How does Tensorcraft teach ML to frontend developers?",
+                    acceptedAnswer: {
+                      "@type": "Answer",
+                      text: "Tensorcraft uses 50+ 'bridge' analogies that map frontend concepts you already know (like useState, Array.map, and fetch) to their ML equivalents (model weights, tensor operations, and inference APIs). Each course is a story-driven narrative where you build real ML models.",
+                    },
+                  },
+                  {
+                    "@type": "Question",
+                    name: "Is Tensorcraft free?",
+                    acceptedAnswer: {
+                      "@type": "Answer",
+                      text: "Module 1 of every theme is free — no account or credit card required. Full themes cost $79 each, with bundle discounts available up to $219 for all 5 themes.",
+                    },
+                  },
+                  {
+                    "@type": "Question",
+                    name: "What ML topics does Tensorcraft cover?",
+                    acceptedAnswer: {
+                      "@type": "Answer",
+                      text: "Five specializations: Time-Series & Signals (RNNs, LSTMs), Computer Vision (CNNs, YOLO), NLP & Text Intelligence (Transformers, BERT), Multimodal & Generative AI (GANs, Diffusion), and Edge AI & Production ML (quantization, MLOps).",
+                    },
+                  },
+                ],
               },
             ]),
           }}
@@ -139,6 +296,7 @@ export default function RootLayout({
             {children}
           </div>
           <SessionListener />
+          <SessionToast />
           <SiteFooter />
           <CookieConsent />
           <ReportIssueButton />

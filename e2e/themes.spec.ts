@@ -6,15 +6,19 @@ test.describe("Themes Page", () => {
     await expect(page.getByText(/deep orbit/i).first()).toBeVisible();
   });
 
-  test("shows coming soon badges for locked themes", async ({ page }) => {
+  test("shows LIVE badges for all themes", async ({ page }) => {
     await page.goto("/themes");
-    const comingSoon = page.getByText(/coming soon/i);
-    await expect(comingSoon.first()).toBeVisible();
+    const liveBadges = page.getByText(/live/i);
+    await expect(liveBadges.first()).toBeVisible();
   });
 
   test("Deep Orbit links to its theme page", async ({ page }) => {
     await page.goto("/themes");
-    await page.getByRole("link", { name: /start learning/i }).click();
+    // Theme cards link to /themes/{slug} — click on the Deep Orbit card link
+    const deepOrbitLink = page
+      .getByRole("link", { name: /deep orbit/i })
+      .first();
+    await deepOrbitLink.click();
     await expect(page).toHaveURL(/\/themes\/deep-orbit/);
   });
 });
@@ -71,24 +75,25 @@ test.describe("Lesson Viewer Page", () => {
     ).toBeVisible();
   });
 
-  test("shows lesson narrative dialogue", async ({ page }) => {
+  test("shows progress bar", async ({ page }) => {
     await page.goto("/themes/deep-orbit/foundations/introduction-to-tensors");
-    // Lesson should render dialogue from MDX
-    const blockquote = page.locator("blockquote");
-    await expect(blockquote.first()).toBeVisible();
+    const progressBar = page.getByRole("progressbar");
+    await expect(progressBar).toBeVisible();
   });
 
-  test("shows sidebar navigation with lesson list", async ({ page }) => {
+  test("shows Continue button", async ({ page }) => {
     await page.goto("/themes/deep-orbit/foundations/introduction-to-tensors");
-    // Should see other lessons in the sidebar
-    await expect(page.getByText(/tensor shapes/i).first()).toBeVisible();
+    const continueButton = page.getByRole("button", { name: /continue/i });
+    await expect(continueButton).toBeVisible();
   });
 
-  test("has prev/next navigation", async ({ page }) => {
-    await page.goto("/themes/deep-orbit/foundations/tensor-shapes");
-    // Second lesson: prev shows "← Introduction to Tensors", next shows "Next: ..."
-    await expect(page.getByText(/← Introduction to Tensors/i)).toBeVisible();
-    await expect(page.getByText(/Next:/i).first()).toBeVisible();
+  test("shows Back or Module link", async ({ page }) => {
+    await page.goto("/themes/deep-orbit/foundations/introduction-to-tensors");
+    // First step shows a link back to the module; later steps show "← Back"
+    const backLink = page
+      .getByRole("link", { name: /back|module|foundations/i })
+      .first();
+    await expect(backLink).toBeVisible();
   });
 
   test("returns 404 for unknown lesson", async ({ page }) => {

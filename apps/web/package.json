@@ -9,7 +9,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "clean": "rm -rf .next .turbo node_modules/.cache"
+    "clean": "rm -rf .next .turbo node_modules/.cache",
+    "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
     "@supabase/ssr": "^0.9.0",
@@ -27,6 +28,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.0.0",
+    "@next/bundle-analyzer": "^16.2.3",
     "@tailwindcss/postcss": "^4.0.0",
     "@tensorcraft/config": "workspace:*",
     "@types/react": "^19.0.0",

@@ -331,7 +331,7 @@ Lesson content is authored in **MDX** files stored in the `@tensorcraft/content`
 
 | Breakpoint | Width | Layout |
 |---|---|---|
-| Mobile | < 640px | Single column, stacked cards, tabbed lesson view |
+| Mobile | < 640px | Single column, stacked cards, tabbed lesson view; swipe gestures for step nav + bottom drawer for lesson list |
 | Tablet | 640px – 1023px | Two-column grid, side-by-side editor + preview |
 | Desktop | 1024px – 1439px | Three-column lesson layout |
 | Wide | >= 1440px | Three-column with expanded sidebar |

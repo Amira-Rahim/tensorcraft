@@ -10,6 +10,8 @@ export const metadata: Metadata = {
     "Choose your learning path — 5 themed courses from frontend to ML.",
 };
 
+export const revalidate = 3600;
+
 export default function ThemesPage() {
   const themeList = Object.values(themes);
 

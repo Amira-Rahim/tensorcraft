@@ -206,6 +206,29 @@ Stripe webhook handler. **Not authenticated** (uses Stripe signature verificatio
 
 ---
 
+## Email
+
+### `POST /api/email`
+
+Tag a user for Kit email automation.
+
+**Auth:** Required (Bearer token)
+
+**Body:**
+```json
+{ "event": "signed_up" | "onboarded" | "first_lesson" | "capstone" }
+```
+
+**Response:**
+
+```json
+{ "ok": true, "event": "signed_up" }
+```
+
+or `{ "ok": true, "skipped": true }` when the corresponding tag env var is not configured.
+
+---
+
 ## Profiles
 
 ### `GET /api/profiles/me`

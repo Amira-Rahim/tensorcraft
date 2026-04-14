@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { LessonContent } from "./lesson-content";
 import { markLessonStarted, markLessonCompleted } from "@/lib/progress-client";
@@ -8,6 +8,7 @@ import { trackLessonStarted, trackLessonCompleted } from "@/lib/analytics";
 import type { Framework } from "@tensorcraft/shared";
 import type { ExerciseData } from "@tensorcraft/ui";
 import { SceneHeading } from "@tensorcraft/ui";
+import { LessonDrawer } from "./lesson-drawer";
 
 interface LessonStepsProps {
   lesson: {
@@ -59,6 +60,13 @@ interface LessonStepsProps {
   prevLesson: { slug: string; title: string } | null;
   nextLesson: { slug: string; title: string } | null;
   userFramework?: Framework;
+  lessons?: Array<{
+    slug: string;
+    title: string;
+    order: number;
+    locked: boolean;
+    completed: boolean;
+  }>;
 }
 
 const TOTAL_STEPS = 6;
@@ -85,6 +93,7 @@ export function LessonSteps({
   prevLesson,
   nextLesson,
   userFramework,
+  lessons,
 }: LessonStepsProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [exercisePassed, setExercisePassed] = useState(false);
@@ -145,6 +154,34 @@ export function LessonSteps({
         moduleSlug,
         getLessonSlugFromTitle(lesson.title),
       );
+
+      // Tag first lesson complete in Kit (fire once)
+      try {
+        if (!localStorage.getItem("tc_first_lesson_tagged")) {
+          localStorage.setItem("tc_first_lesson_tagged", "1");
+          import("@/lib/api-url").then(({ getApiUrl }) => {
+            import("@/lib/supabase/client").then(
+              ({ getSupabaseBrowserClient }) => {
+                const supabase = getSupabaseBrowserClient();
+                supabase.auth.getSession().then(({ data: { session } }) => {
+                  if (session?.access_token) {
+                    fetch(`${getApiUrl()}/api/email`, {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${session.access_token}`,
+                      },
+                      body: JSON.stringify({ event: "first_lesson" }),
+                    }).catch(() => {});
+                  }
+                });
+              },
+            );
+          });
+        }
+      } catch {
+        // localStorage unavailable
+      }
     }
   }, [currentStep, themeSlug, moduleSlug, lesson.title]);
 
@@ -168,6 +205,28 @@ export function LessonSteps({
       setCurrentStep((s) => s - 1);
     }
   }, [currentStep]);
+
+  // Swipe gesture handling for mobile navigation
+  const touchStartX = useRef(0);
+  const touchStartY = useRef(0);
+
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  }, []);
+
+  const handleTouchEnd = useCallback(
+    (e: React.TouchEvent) => {
+      const deltaX = e.changedTouches[0].clientX - touchStartX.current;
+      const deltaY = e.changedTouches[0].clientY - touchStartY.current;
+      // Only horizontal swipes (ignore vertical scrolling)
+      if (Math.abs(deltaX) < 50 || Math.abs(deltaY) > Math.abs(deltaX)) return;
+      if (deltaX < 0)
+        goNext(); // swipe left = next
+      else goBack(); // swipe right = back
+    },
+    [goNext, goBack],
+  );
 
   const progressPercent = ((currentStep + 1) / TOTAL_STEPS) * 100;
 
@@ -197,10 +256,24 @@ export function LessonSteps({
   const isStoryStep = currentStep === 0 || currentStep === 5;
 
   return (
-    <div className="flex-1 overflow-y-auto">
+    <div
+      className="flex-1 overflow-y-auto"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
       <div className="w-full max-w-[900px] mx-auto px-6 md:px-12 py-6">
         {/* Top nav: back + progress + counter */}
         <div className="flex items-center gap-4 mb-6">
+          {lessons && (
+            <LessonDrawer
+              lessons={lessons}
+              currentLessonSlug={lessonSlug}
+              themeSlug={themeSlug}
+              moduleSlug={moduleSlug}
+              moduleName={moduleName ?? "Module"}
+              theme={theme}
+            />
+          )}
           <Link
             href={`/themes/${themeSlug}/${moduleSlug}`}
             className="text-sm font-mono flex items-center gap-2 shrink-0 transition-colors px-3 py-2 hover:opacity-80"

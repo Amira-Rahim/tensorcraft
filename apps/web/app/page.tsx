@@ -3,6 +3,8 @@ import { HeroSection } from "./components/hero-section";
 import { BridgePreviewSection } from "./components/bridge-preview-section";
 import { FiveWorldsSection } from "./components/five-worlds-section";
 
+export const revalidate = 3600;
+
 export default function Home() {
   return (
     <>

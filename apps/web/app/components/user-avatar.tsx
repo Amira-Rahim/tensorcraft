@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 interface UserAvatarProps {
   url?: string | null;
   name: string;
@@ -9,11 +11,12 @@ export function UserAvatar({ url, name, size }: UserAvatarProps) {
 
   if (url) {
     return (
-      <img
+      <Image
         src={url}
         alt={`${name}'s avatar`}
         width={size}
         height={size}
+        unoptimized
         style={{
           objectFit: "cover",
           border: "2px solid var(--tc-primary)",

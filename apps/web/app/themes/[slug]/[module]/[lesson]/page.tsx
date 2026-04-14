@@ -33,6 +33,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${lesson.title} — ${theme.displayName} | Tensorcraft`,
     description: lesson.concept.explanation,
+    alternates: {
+      canonical: `https://tensorcraft.app/themes/${slug}/${moduleSlug}/${lessonSlug}`,
+    },
     openGraph: {
       images: [
         `/api/og?title=${encodeURIComponent(lesson.title)}&theme=${slug}&subtitle=${encodeURIComponent(theme.displayName)}`,
@@ -220,6 +223,13 @@ export default async function LessonPage({ params }: Props) {
           userFramework={
             userFramework as import("@tensorcraft/shared").Framework | undefined
           }
+          lessons={moduleLessons.map((l) => ({
+            slug: l.slug,
+            title: l.title,
+            order: l.order,
+            locked: isLessonLocked(l.order, l.slug),
+            completed: completedLessonSlugs.has(l.slug),
+          }))}
         />
       </Suspense>
     </main>

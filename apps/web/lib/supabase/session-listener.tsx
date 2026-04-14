@@ -58,6 +58,38 @@ export function SessionListener() {
       ) {
         persistProviderToken(session.provider_token, session.access_token);
       }
+
+      // Tag new signups in Kit (fire once per browser)
+      if (event === "SIGNED_IN" && session?.access_token) {
+        try {
+          if (!localStorage.getItem("tc_signup_tagged")) {
+            localStorage.setItem("tc_signup_tagged", "1");
+            import("../api-url").then(({ getApiUrl }) => {
+              const apiUrl = getApiUrl();
+              fetch(`${apiUrl}/api/email`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${session.access_token}`,
+                },
+                body: JSON.stringify({ event: "signed_up" }),
+              }).catch(() => {});
+            });
+          }
+        } catch {
+          // localStorage unavailable
+        }
+
+        // Identify user in PostHog for analytics
+        import("../analytics").then(({ identify }) => {
+          if (session.user) {
+            identify(session.user.id, {
+              email: session.user.email,
+              created_at: session.user.created_at,
+            });
+          }
+        });
+      }
     });
 
     return () => {

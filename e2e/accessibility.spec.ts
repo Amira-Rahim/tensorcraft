@@ -3,8 +3,7 @@ import AxeBuilder from "@axe-core/playwright";
 
 const pages = [
   { name: "Landing", path: "/" },
-  { name: "Sign In", path: "/auth/sign-in" },
-  { name: "Sign Up", path: "/auth/sign-up" },
+  { name: "Auth", path: "/auth" },
   { name: "Terms", path: "/terms" },
   { name: "Privacy", path: "/privacy" },
   { name: "Themes", path: "/themes" },

@@ -296,6 +296,7 @@ All blocking decisions have been resolved. This table documents the final choice
 ### 4e. Email System
 
 - [x] Kit integration for purchase confirmation emails (V0.5 — webhook tags subscriber, Kit dashboard sends email)
+- [x] Email lifecycle tags (signed_up, onboarded, first_lesson, capstone) via Kit. COMPLETED 2026-04-14.
 - [ ] Additional email flows:
   - Welcome series (post-signup, 3-email sequence)
   - Purchase confirmation (immediate, includes receipt)
@@ -447,24 +448,30 @@ All blocking decisions have been resolved. This table documents the final choice
 
 ### 6c. Performance Optimization
 
-- [ ] Bundle size budgets — monitor with @next/bundle-analyzer
+- [x] Bundle size budgets — monitor with @next/bundle-analyzer. COMPLETED 2026-04-14.
 - [ ] Code splitting: per-page chunks, per-theme CSS, dynamic imports for Sandpack
-- [ ] Sandpack lazy loading: dynamic import (ssr: false), Intersection Observer (200px threshold), preload hint
+- [x] Sandpack lazy loading with React.lazy. COMPLETED 2026-04-14.
 - [ ] Image optimization: next/image with automatic format selection, CDN delivery
 - [ ] Max 3 simultaneous animations per viewport
+- [x] Core Web Vitals monitoring via PostHog (capture_performance: web_vitals). COMPLETED 2026-04-14.
 - [ ] Core Web Vitals targets: LCP < 2.5s, CLS < 0.1, INP < 200ms
 - [ ] Lighthouse CI in GitHub Actions (fail build if score drops below threshold)
 
 ### 6d. SEO & Marketing Infrastructure
 
 - [x] Structured data: Course schema, Organization schema (JSON-LD)
+- [x] All 5 themes in structured data (JSON-LD). COMPLETED 2026-04-14.
 - [x] Dynamic OG images via Vercel OG (per-page, per-lesson)
+- [x] Dynamic OG image as default root OG (no static /og-image.png fallback needed). COMPLETED 2026-04-14.
 - [x] Sitemap generation (next-sitemap)
+- [x] Individual lesson URLs in sitemap (275 lesson routes across all 5 themes). COMPLETED 2026-04-14.
 - [x] robots.txt with crawl directives
 - [x] Canonical URLs on all pages
+- [x] Canonical URLs added to root layout, theme, lesson, and capstone pages. COMPLETED 2026-04-14.
 - [ ] Blog infrastructure (MDX-based, target: 2 posts/week)
 - [ ] Google Search Console setup
 - [ ] Target keywords: "learn machine learning JavaScript", "TensorFlow.js tutorial", "ML for front-end developers"
+- [x] GEO/AEO — llms.txt, ai-plugin.json, FAQ schema, /learn content page. COMPLETED 2026-04-14.
 
 ### 6e. Error Handling
 
@@ -496,7 +503,7 @@ All blocking decisions have been resolved. This table documents the final choice
 
 - [x] Error tracking utility stub (structured JSON logging, Sentry-compatible API)
 - [ ] Sentry integration for error tracking (separate projects for web + API)
-- [ ] Vercel Analytics for Core Web Vitals
+- [x] Core Web Vitals monitoring via PostHog (capture_performance: web_vitals). COMPLETED 2026-04-14.
 - [ ] PostHog setup (EU instance) for product analytics
 - [ ] Data processing agreements (GDPR compliance for analytics)
 
@@ -520,6 +527,7 @@ All blocking decisions have been resolved. This table documents the final choice
 
 - [x] Implement analytics events: lesson_started, lesson_completed, exercise_submitted, checkout_completed, theme_selected, streak_achieved (wired in lesson-progress.tsx, lesson-content.tsx, purchase-success, onboarding, progress-client.ts)
 - [x] Track onboarding theme_selected event (onboarding/page.tsx)
+- [x] Analytics (PostHog + Plausible) — user identification on sign-in, lesson completion tracking, Plausible consent gating. COMPLETED 2026-04-14.
 - [ ] PostHog event verification (test each event → appears in dashboard)
 
 ### 6j. API Deployment
@@ -529,7 +537,7 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] Custom domain `tensorcraft.app` — Vercel (web) + Cloudflare (API proxy)
 - [x] SSL certificates provisioned (Vercel auto + Fly.io Let's Encrypt)
 - [x] Redis for production rate limiting (Upstash, replaces in-memory store)
-- [ ] ISR/caching strategy for content pages
+- [x] ISR revalidation on content pages (landing, themes, pricing — revalidate: 3600). COMPLETED 2026-04-14.
 
 ### 6k. Community & External Links
 
@@ -679,14 +687,17 @@ All blocking decisions have been resolved. This table documents the final choice
 - [ ] Auth flows (login, signup, logout, session refresh)
 - [ ] Progress calculation logic (streak, completion %)
 
-### 8c. E2E Tests (5 spec files)
+### 8c. E2E Tests (7 spec files)
 
 > **NOTE:** Some E2E tests in `landing.spec.ts`, `auth.spec.ts`, and `legal.spec.ts` have selector precision issues (`getByText()` resolving to multiple elements in Playwright strict mode). These are test bugs, not app bugs, but they'll block CI.
 
 - [x] Landing page: hero, nav, themes, footer, CTA navigation
 - [x] Auth pages: sign-in/sign-up rendering, OAuth buttons, magic link, guest link
 - [x] Legal pages: terms/privacy content, back links, cookie consent banner
-- [x] Learning routes (14 tests): themes listing, theme detail with modules, module overview with lesson cards, lesson viewer with dialogue/sidebar/navigation, 404 handling
+- [x] Learning routes: themes listing (LIVE badges), theme detail with modules, module overview with lesson cards, lesson viewer with 6-step progression (progress bar, Continue button, Back link), 404 handling
+- [x] Pricing page: all tiers ($0/$79/$129/$169/$219), feature comparison, CTA
+- [x] Onboarding page: auth redirect for unauthenticated users
+- [x] E2E test suite — fixed broken tests for 6-step lesson UI, added pricing + onboarding specs. COMPLETED 2026-04-14.
 - [ ] Fix E2E selector precision issues — use `getByRole` over `getByText` where multiple matches exist
 - [ ] Full user journeys:
   - New user: landing → signup → onboarding → Module 1 lesson → complete exercise
@@ -701,7 +712,7 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] `@axe-core/playwright` installed — for e2e a11y scans
 - [x] Unit-level axe checks on all components: nav, footer, cookie-consent, dialogue, bridge-callout, hint-panel, learning-objectives, key-takeaways
 - [x] Page-level a11y tests: terms (`page.a11y.test.tsx`), privacy (`page.a11y.test.tsx`)
-- [x] E2E axe audits on 9 routes: /, /auth/sign-in, /auth/sign-up, /terms, /privacy, /themes, /themes/deep-orbit, /themes/deep-orbit/foundations, /themes/deep-orbit/foundations/introduction-to-tensors
+- [x] E2E axe audits on 8 routes: /, /auth, /terms, /privacy, /themes, /themes/deep-orbit, /themes/deep-orbit/foundations, /themes/deep-orbit/foundations/introduction-to-tensors (updated: merged /auth/sign-in + /auth/sign-up → /auth)
 - [x] Color contrast audit (4.5:1 minimum for text, 3:1 for UI components) — **COMPLETED (2026-04-13)**
 
 ### 8e. Content Validation Tests (COMPLETE)
@@ -962,7 +973,7 @@ Full design system overhaul from "Zensman DeFi Neon" to "Brutalist Terminal" aes
 
 - [ ] Update theme-properties test for new palette shape (9 keys, no glow/neonLine)
 - [ ] Update snapshot tests for all redesigned components
-- [ ] Update E2E tests for new page structure
+- [x] Update E2E tests for new page structure — **COMPLETED 2026-04-14** (removed sidebar tests, added 6-step progression tests, fixed auth routes, added pricing + onboarding specs)
 - [ ] Add tests for new components (ParticleField, BridgeTicker, Narrator, visualizations)
 
 ### 11g. Documentation Updates
@@ -1096,9 +1107,9 @@ Based on comprehensive audit of codebase, user journeys, database, and security:
 ### Tier 3: User Experience
 
 9. **Dashboard page** (Phase 5b) — progress overview, resume learning
-10. **Mobile lesson navigation** (Phase 6b) — drawer for lesson-to-lesson on mobile
-11. **Fix E2E tests** (Phase 8c) — unblock CI pipeline
-12. **Session error handling** (Phase 6e) — graceful token refresh, error UI
+10. ~~**Mobile lesson navigation** (Phase 6b) — drawer for lesson-to-lesson on mobile~~ **[x] COMPLETED 2026-04-14** — swipe gestures for step nav + bottom drawer for lesson list (`lesson-drawer.tsx`). Drawer hidden on desktop (`md:hidden`).
+11. ~~**Fix E2E tests** (Phase 8c) — unblock CI pipeline~~ **[x] COMPLETED 2026-04-14** — fixed broken lesson viewer tests (sidebar removed, 6-step progression), fixed auth route in a11y tests, added pricing + onboarding spec files (7 spec files total).
+12. ~~**Session error handling** (Phase 6e) — graceful token refresh, error UI~~ **[x] COMPLETED 2026-04-14** — `apiFetch` wrapper with auth header + `tc:session-expired` CustomEvent on 401, `SessionToast` dismissable banner, exercise POST switched to `apiFetch`.
 
 ### Tier 4: Post-V0.5
 

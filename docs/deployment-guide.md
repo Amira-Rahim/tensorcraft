@@ -21,6 +21,9 @@ Set these in Vercel Environment Variables dashboard or `.env.local` for local de
 | `NEXT_PUBLIC_SUPABASE_URL` | Yes | Supabase project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Supabase anonymous (public) key |
 | `NEXT_PUBLIC_API_URL` | Yes | API service URL (e.g., `https://api.tensorcraft.app`) |
+| `NEXT_PUBLIC_POSTHOG_KEY` | No | PostHog project API key for product analytics |
+| `NEXT_PUBLIC_POSTHOG_HOST` | No | PostHog instance URL (default: `https://eu.posthog.com`) |
+| `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` | No | Domain registered in Plausible (e.g., `tensorcraft.app`) |
 
 ### API (`apps/api`)
 
@@ -58,6 +61,10 @@ Set these in Fly.io secrets or `.env` for local dev:
 | `KIT_API_SECRET` | No | Kit API secret |
 | `KIT_FORM_ID` | No | Kit signup form ID |
 | `KIT_TAG_PURCHASED` | No | Numeric tag ID for purchase confirmation email |
+| `KIT_TAG_SIGNED_UP` | No | Numeric tag ID for signed_up lifecycle event |
+| `KIT_TAG_ONBOARDED` | No | Numeric tag ID for onboarded lifecycle event |
+| `KIT_TAG_FIRST_LESSON` | No | Numeric tag ID for first_lesson lifecycle event |
+| `KIT_TAG_CAPSTONE` | No | Numeric tag ID for capstone lifecycle event |
 
 #### Resend (Issue Notifications)
 

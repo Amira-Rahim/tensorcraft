@@ -1,6 +1,8 @@
 "use client";
 
 import {
+  lazy,
+  Suspense,
   useState,
   useCallback,
   useRef,
@@ -8,11 +10,18 @@ import {
   useContext,
 } from "react";
 
-import {
-  SandpackProvider,
-  SandpackCodeEditor,
-  useSandpack,
-} from "@codesandbox/sandpack-react";
+import { useSandpack } from "@codesandbox/sandpack-react";
+
+const SandpackProvider = lazy(() =>
+  import("@codesandbox/sandpack-react").then((m) => ({
+    default: m.SandpackProvider,
+  })),
+);
+const SandpackCodeEditor = lazy(() =>
+  import("@codesandbox/sandpack-react").then((m) => ({
+    default: m.SandpackCodeEditor,
+  })),
+);
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -655,6 +664,21 @@ function ExerciseControls({
 }
 
 /* ------------------------------------------------------------------ */
+/*  Loading skeleton                                                   */
+/* ------------------------------------------------------------------ */
+
+function ExerciseLoadingSkeleton() {
+  return (
+    <div className="border border-border p-6 animate-pulse">
+      <div className="h-5 w-32 bg-border mb-4" />
+      <div className="h-4 w-64 bg-border mb-6" />
+      <div className="h-32 bg-code-bg border border-border mb-4" />
+      <div className="h-10 w-28 bg-border" />
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /*  Main Exercise component                                            */
 /* ------------------------------------------------------------------ */
 
@@ -728,65 +752,67 @@ export function Exercise({ slug, onSubmit }: ExerciseProps) {
       </p>
 
       {/* Sandpack Editor */}
-      <div className="overflow-hidden border border-border">
-        <SandpackProvider
-          template="vanilla"
-          theme={{
-            colors: {
-              surface1: "#252525",
-              surface2: "#1C1C1C",
-              surface3: "#313131",
-              clickable: "#A0A0A0",
-              base: "#E0E0E0",
-              disabled: "#3a3a3a",
-              hover: "#6BAA8A",
-              accent: "#6BAA8A",
-              error: "#F87171",
-              errorSurface: "#2d1515",
-            },
-            syntax: {
-              plain: "#E0E0E0",
-              comment: { color: "#A0A0A0", fontStyle: "italic" },
-              keyword: "#c792ea",
-              tag: "#f07178",
-              punctuation: "#89ddff",
-              definition: "#82aaff",
-              property: "#82aaff",
-              static: "#f78c6c",
-              string: "#c3e88d",
-            },
-            font: {
-              body: '"JetBrains Mono", ui-monospace, monospace',
-              mono: '"JetBrains Mono", "Fira Code", Menlo, monospace',
-              size: "13px",
-              lineHeight: "1.6",
-            },
-          }}
-          files={{
-            "/index.js": { code: exercise.starterCode, active: true },
-          }}
-        >
-          <SandpackCodeEditor
-            showLineNumbers
-            showTabs={false}
-            style={{
-              minHeight: 200,
-              maxHeight: 400,
+      <Suspense fallback={<ExerciseLoadingSkeleton />}>
+        <div className="overflow-hidden border border-border">
+          <SandpackProvider
+            template="vanilla"
+            theme={{
+              colors: {
+                surface1: "#252525",
+                surface2: "#1C1C1C",
+                surface3: "#313131",
+                clickable: "#A0A0A0",
+                base: "#E0E0E0",
+                disabled: "#3a3a3a",
+                hover: "#6BAA8A",
+                accent: "#6BAA8A",
+                error: "#F87171",
+                errorSurface: "#2d1515",
+              },
+              syntax: {
+                plain: "#E0E0E0",
+                comment: { color: "#A0A0A0", fontStyle: "italic" },
+                keyword: "#c792ea",
+                tag: "#f07178",
+                punctuation: "#89ddff",
+                definition: "#82aaff",
+                property: "#82aaff",
+                static: "#f78c6c",
+                string: "#c3e88d",
+              },
+              font: {
+                body: '"JetBrains Mono", ui-monospace, monospace',
+                mono: '"JetBrains Mono", "Fira Code", Menlo, monospace',
+                size: "13px",
+                lineHeight: "1.6",
+              },
             }}
-          />
-
-          {/* Controls inside Sandpack context */}
-          <div className="px-4 py-3 bg-surface-raised border-t border-border">
-            <ExerciseControls
-              exercise={exercise}
-              onResults={setResults}
-              onShowSolution={() => setShowSolution(true)}
-              onAttempt={onSubmit}
-              showSolution={showSolution}
+            files={{
+              "/index.js": { code: exercise.starterCode, active: true },
+            }}
+          >
+            <SandpackCodeEditor
+              showLineNumbers
+              showTabs={false}
+              style={{
+                minHeight: 200,
+                maxHeight: 400,
+              }}
             />
-          </div>
-        </SandpackProvider>
-      </div>
+
+            {/* Controls inside Sandpack context */}
+            <div className="px-4 py-3 bg-surface-raised border-t border-border">
+              <ExerciseControls
+                exercise={exercise}
+                onResults={setResults}
+                onShowSolution={() => setShowSolution(true)}
+                onAttempt={onSubmit}
+                showSolution={showSolution}
+              />
+            </div>
+          </SandpackProvider>
+        </div>
+      </Suspense>
 
       {/* Test Results */}
       {results.length > 0 && <TestResultsPanel results={results} />}

@@ -11,6 +11,7 @@ import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { getUserProgress } from "@/lib/progress";
 import { AmbientBackground } from "@/app/components/ambient-background";
 import { CapstoneClient } from "./capstone-client";
+import { CapstoneEmailTag } from "./capstone-email-tag";
 import type { Metadata } from "next";
 
 interface Props {
@@ -24,6 +25,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `Mission Complete — ${theme.displayName} | Tensorcraft`,
     description: `You've completed every module of ${theme.displayName}. View your certificate and stats.`,
+    alternates: {
+      canonical: `https://tensorcraft.app/themes/${slug}/capstone`,
+    },
     openGraph: {
       images: [
         `/api/og?title=${encodeURIComponent("Mission Complete")}&theme=${slug}&subtitle=${encodeURIComponent(theme.displayName)}`,
@@ -155,6 +159,7 @@ export default async function CapstonePage({ params }: Props) {
         }
       `}</style>
       <AmbientBackground count={260} />
+      <CapstoneEmailTag themeSlug={slug} />
 
       {/* Nav */}
       <nav

@@ -12,6 +12,8 @@ export const metadata: Metadata = {
     "One payment. Lifetime access. Learn browser-based ML through familiar frontend concepts.",
 };
 
+export const revalidate = 3600;
+
 export default function PricingPage() {
   return (
     <main className="min-h-screen bg-surface relative overflow-hidden">

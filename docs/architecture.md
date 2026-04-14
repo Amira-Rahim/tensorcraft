@@ -40,7 +40,7 @@ tensorcraft/
 | Code Exercises | Sandpack (CodeSandbox) | Browser-based code playgrounds with custom async test runner and TF.js mock (295 exercises) |
 | Payments | Stripe Checkout + Webhooks | One-time purchases, webhook-driven fulfillment |
 | Email | Kit (ConvertKit) | Waitlist, per-theme segmented lists, nurture sequences |
-| Analytics | PostHog + Plausible | Product analytics + privacy-friendly marketing analytics |
+| Analytics | PostHog + Plausible | PostHog (product analytics, consent-gated) with user identification on sign-in. Plausible (marketing analytics, consent-gated via `tc-cookie-consent` localStorage key). 8 domain events tracked: lesson_started, lesson_completed, exercise_submitted, paywall_shown, checkout_started, checkout_completed, theme_selected, streak_achieved. |
 | Fonts | Inter + JetBrains Mono | Clean UI + monospace for code/technical content |
 
 ## Theme System
@@ -175,6 +175,15 @@ Client component with Framer Motion animations:
 - `whileInView` for scroll-triggered entries
 - `whileHover` for interactive hover states
 
+### SEO Setup
+
+- **Canonical URLs**: Set on root layout (`https://tensorcraft.app`), all theme pages, all lesson pages, and capstone pages via Next.js `alternates.canonical` in `generateMetadata`.
+- **Structured Data (JSON-LD)**: Root layout emits an Organization schema and one Course schema per theme (5 courses total), each with pricing ($79), educational level, and `teaches` fields. Script tag in `<head>` via `dangerouslySetInnerHTML`.
+- **Dynamic OG Images**: All pages use `/api/og` (Vercel OG) with per-page `title`, `theme`, and `subtitle` query params. No static `/og-image.png` fallback.
+- **Sitemap** (`app/sitemap.ts`): Static routes + 5 theme pages + 275 lesson pages (all themes) + glossary term pages + bridge concept pages. Lesson routes built from `getThemeLessons` at build time.
+- **robots.txt**: Crawl directives configured.
+- **AI Discoverability**: `llms.txt` (product description for AI crawlers), `.well-known/ai-plugin.json` (OpenAI plugin metadata), FAQ schema in JSON-LD, `/learn` page for answer engine queries.
+
 ### Accessibility (WCAG 2.1 AA)
 
 - Skip-to-content link on all pages
@@ -241,7 +250,7 @@ Velite compiles MDX to function body strings. The `LessonContent` client compone
 
 | Route | Page | Purpose |
 |-------|------|---------|
-| `/themes` | Theme listing | Grid of 5 themes, Deep Orbit active, 4 "Coming Soon" |
+| `/themes` | Theme listing | Grid of 5 themes, all LIVE |
 | `/themes/[slug]` | Theme detail | Module list with characters, layout sets `data-theme` |
 | `/themes/[slug]/[module]` | Module overview | Lesson cards with order, title, time, difficulty |
 | `/themes/[slug]/[module]/[lesson]` | Lesson viewer | 6-step progression (no sidebar); step-based nav with progress bar |
@@ -265,10 +274,12 @@ The lesson page uses a three-component split:
 5. StepTakeaways
 6. StepConsequence
 
+**Mobile:** swipe gestures for step navigation + bottom drawer for lesson list (`lesson-drawer.tsx`). Drawer hidden on desktop (`md:hidden`).
+
 ### Test Categories
 
 - **Unit tests** (211 passing): API routes, middleware, components, MDX components, content queries, Zod schemas, shared constants
-- **E2E tests** (4 spec files): Landing page, auth pages, legal pages, learning routes (themes/modules/lessons)
+- **E2E tests** (7 spec files): Landing page, auth pages, legal pages, learning routes (themes/modules/lessons), accessibility audits, pricing page, onboarding page
 - **Accessibility tests**: axe-core on components (unit) + full page audits (e2e)
 - **Content contract tests**: Validate content fixtures against Zod schemas
 - **Content completeness tests**: Validates every module has 5 lessons, every exercise references a valid lesson
@@ -343,6 +354,10 @@ Bridges are classified into three quality tiers:
 
 26 shared bridges + 30+ theme-specific bridges across 5 themes. See [product-plan.md](product-plan.md) for the complete catalog.
 
+## Session Error Handling
+
+Session errors: `apiFetch` utility (`apps/web/lib/api-fetch.ts`) auto-includes the Supabase auth header and emits a `tc:session-expired` CustomEvent on 401 responses. The `SessionToast` component (`apps/web/app/components/session-toast.tsx`) listens for this event and shows a dismissable banner with a sign-in link that preserves the current URL as redirect target.
+
 ## Key Architectural Decisions
 
 1. **Hono as separate backend** — Not embedded in Next.js API routes. Allows independent scaling, deployment, and technology evolution.
@@ -351,3 +366,7 @@ Bridges are classified into three quality tiers:
 4. **Dark + brutalist aesthetic** — All themes are dark with solid backgrounds. Brutalist Terminal style: zero border-radius, offset box shadows, monospace-first typography. No glow or neon effects.
 5. **Framer Motion over CSS animations** — Needed for scroll-triggered reveals, layout animations, and gesture-based interactions that CSS alone can't handle cleanly.
 6. **Document as we build** — This file is maintained alongside code, updated with each significant architectural change.
+
+## Performance
+
+PostHog captures Core Web Vitals (LCP, CLS, INP). Sandpack lazy-loaded via React.lazy. Content pages use ISR (revalidate: 3600). Bundle analysis via @next/bundle-analyzer.

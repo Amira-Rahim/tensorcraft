@@ -96,21 +96,23 @@ export function LessonContent({
       if (!themeId || !lessonId) return;
 
       // Fire-and-forget — don't block the UI on persistence
-      fetch("/api/exercise-attempts", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          themeId,
-          lessonId,
-          exerciseSlug: result.exerciseSlug,
-          submittedCode: result.code,
-          passed: result.passed,
-          score: result.score,
-          solutionViewed: result.solutionViewed,
-        }),
-      }).catch(() => {
-        // Silently ignore — attempt recording is best-effort.
-        // The user can still use the exercise without auth.
+      // Dynamic import to avoid making this callback async
+      import("@/lib/api-fetch").then(({ apiFetch }) => {
+        apiFetch("/api/exercise-attempts", {
+          method: "POST",
+          body: JSON.stringify({
+            themeId,
+            lessonId,
+            exerciseSlug: result.exerciseSlug,
+            submittedCode: result.code,
+            passed: result.passed,
+            score: result.score,
+            solutionViewed: result.solutionViewed,
+          }),
+        }).catch(() => {
+          // Silently ignore — attempt recording is best-effort.
+          // The user can still use the exercise without auth.
+        });
       });
 
       trackExerciseSubmitted(themeId, lessonId, result.passed, result.score);

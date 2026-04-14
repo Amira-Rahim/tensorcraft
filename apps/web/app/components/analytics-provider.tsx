@@ -35,6 +35,7 @@ function AnalyticsInner() {
       capture_pageview: false,
       persistence: "localStorage+cookie",
       autocapture: false,
+      capture_performance: { web_vitals: true },
     });
 
     initialized.current = true;

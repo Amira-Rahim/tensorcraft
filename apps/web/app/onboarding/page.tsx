@@ -93,6 +93,23 @@ export default function OnboardingPage() {
         .eq("id", user.id);
     }
 
+    // Tag onboarding complete in Kit
+    const {
+      data: { session: authSession },
+    } = await supabase.auth.getSession();
+    if (authSession) {
+      const { getApiUrl } = await import("@/lib/api-url");
+      const apiUrl = getApiUrl();
+      fetch(`${apiUrl}/api/email`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authSession.access_token}`,
+        },
+        body: JSON.stringify({ event: "onboarded" }),
+      }).catch(() => {});
+    }
+
     if (selectedTheme) {
       trackThemeSelected(selectedTheme);
       router.push(`/themes/${selectedTheme}`);

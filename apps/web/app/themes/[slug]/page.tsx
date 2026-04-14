@@ -23,6 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${theme.displayName} — Module Map | Tensorcraft`,
     description: theme.description,
+    alternates: { canonical: `https://tensorcraft.app/themes/${slug}` },
     openGraph: {
       images: [
         `/api/og?title=${encodeURIComponent(theme.displayName)}&theme=${slug}&subtitle=${encodeURIComponent(theme.specialization)}`,

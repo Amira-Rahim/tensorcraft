@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { themeSlugs } from "@tensorcraft/themes";
 import { BRIDGES } from "@tensorcraft/shared";
+import { getThemeLessons } from "@tensorcraft/content";
 
 const BASE_URL = "https://tensorcraft.app";
 
@@ -29,6 +30,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${BASE_URL}/themes`,
       lastModified: new Date(),
       changeFrequency: "weekly",
+      priority: 0.9,
+    },
+    {
+      url: `${BASE_URL}/learn`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
       priority: 0.9,
     },
     {
@@ -87,5 +94,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.6,
   }));
 
-  return [...staticRoutes, ...themeRoutes, ...glossaryRoutes, ...bridgeRoutes];
+  // Individual lesson pages (55 lessons per theme × 5 themes = 275 total)
+  const lessonRoutes: MetadataRoute.Sitemap = themeSlugs.flatMap((slug) =>
+    getThemeLessons(slug).map((lesson) => ({
+      url: `${BASE_URL}/themes/${slug}/${lesson.moduleId}/${lesson.slug}`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+  );
+
+  return [
+    ...staticRoutes,
+    ...themeRoutes,
+    ...lessonRoutes,
+    ...glossaryRoutes,
+    ...bridgeRoutes,
+  ];
 }
