@@ -204,6 +204,8 @@ All blocking decisions have been resolved. This table documents the final choice
 
 ### 3e. Lesson Viewer (COMPLETE)
 
+> **COMPLETED (2026-04-14):** Lesson page redesigned to 7-step Duolingo-style progression. Sidebar removed, step-based navigation with progress bar.
+
 - [x] Build lesson viewer (`apps/web/app/themes/[slug]/[module]/[lesson]/page.tsx`)
 - [x] Sidebar navigation with lesson list and active state highlighting
 - [x] Real MDX content rendering via `LessonContent` client component
@@ -211,6 +213,7 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] Prev/next lesson navigation
 - [x] Breadcrumb navigation (theme → module → lesson)
 - [x] Responsive sidebar — hidden on mobile (`hidden lg:flex`), visible on desktop
+- [x] Redesigned to 7-step Duolingo-style progression: Step 1 (Mission Briefing/Context) → Step 2 (Crew Dialogue/Context) → Step 3 (Concept) → Step 4 (Code) → Step 5 (Challenge/Exercise) → Step 6 (Key Takeaways/Check) → Step 7 (Consequence). Sidebar removed; step-based navigation with progress bar via `lesson-steps.tsx`.
 
 ### 3f. Exercise Editor (COMPLETE)
 
@@ -938,7 +941,7 @@ Full design system overhaul from "Zensman DeFi Neon" to "Brutalist Terminal" aes
 - [ ] Landing page: ParticleField bg, BridgeTicker, bridge table with tiers, 5C loop section, brutalist buttons
 - [ ] Auth pages: split layout, LossLandscape left, form right, "You already think like an ML engineer"
 - [ ] Dashboard: module sidebar, LossCurve, SkillRadar, ActivityHeatmap, activity log
-- [ ] LessonViewer: 5C nav indicators, timer, side-by-side bridge panel, checkpoint quiz w/ confetti, ARIANarrator
+- [x] LessonViewer: redesigned to 7-step Duolingo-style progression (sidebar removed, step-based nav with progress bar) — **COMPLETED (2026-04-14)**
 - [ ] Exercise: line numbers, test results panel, bridge hint, console output
 - [ ] BridgeExplorer: category filter (Identity/Structural/Intuition), search, expandable cards
 - [ ] Pricing: 4-tier grid, comparison table, "Simple, Fair Pricing"

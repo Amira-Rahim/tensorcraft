@@ -95,6 +95,66 @@ body {
   content: "// ";
 }
 
+/* ===== Lesson Prose Styles ===== */
+/* Applied to MDX-rendered content inside lessons for readable typography */
+.lesson-prose p {
+  margin-bottom: 1.5em;
+  line-height: 1.8;
+  font-size: 1rem;
+}
+
+.lesson-prose h2 {
+  margin-top: 2.5em;
+  margin-bottom: 0.75em;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--tc-text);
+}
+
+.lesson-prose h3 {
+  margin-top: 2em;
+  margin-bottom: 0.5em;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--tc-text);
+}
+
+.lesson-prose ul,
+.lesson-prose ol {
+  margin-bottom: 1.5em;
+  padding-left: 1.5em;
+}
+
+.lesson-prose li {
+  margin-bottom: 0.5em;
+  line-height: 1.7;
+}
+
+/* Only style plain blockquotes (markdown >), not Dialogue components.
+   Dialogue blockquotes have inline borderLeft style set by the component. */
+.lesson-prose > blockquote:not([style]) {
+  margin: 1.5em 0;
+  padding: 1em 1.5em;
+  border-left: 3px solid var(--tc-primary);
+  background: var(--tc-surface);
+  color: var(--tc-muted);
+}
+
+.lesson-prose pre {
+  margin: 1.5em 0;
+}
+
+.lesson-prose strong {
+  color: var(--tc-text);
+  font-weight: 600;
+}
+
+.lesson-prose a {
+  color: var(--tc-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 /* Fade up animation */
 @keyframes fade-up {
   from {
@@ -109,6 +169,33 @@ body {
 
 .animate-fade-up {
   animation: fade-up 0.15s linear both;
+}
+
+/* Hide top-level prose in lesson steps when not in a prose-visible step.
+   Uses CSS instead of React component overrides so content inside
+   named components (like Dialogue) is not affected. */
+.lesson-step-content[data-show-prose="false"] > p,
+.lesson-step-content[data-show-prose="false"] > h2,
+.lesson-step-content[data-show-prose="false"] > h3,
+.lesson-step-content[data-show-prose="false"] > ul,
+.lesson-step-content[data-show-prose="false"] > ol,
+.lesson-step-content[data-show-prose="false"] > blockquote:not([style]) {
+  display: none;
+}
+
+/* Step-in animation for lesson steps */
+@keyframes step-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-step-in {
+  animation: step-in 0.3s ease-out both;
 }
 
 /* ===== Ticker / Bridge System ===== */

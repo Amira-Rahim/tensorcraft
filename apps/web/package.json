@@ -4,11 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "predev": "rm -rf .next/server/vendor-chunks",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "clean": "rm -rf .next .turbo"
+    "clean": "rm -rf .next .turbo node_modules/.cache"
   },
   "dependencies": {
     "@supabase/ssr": "^0.9.0",

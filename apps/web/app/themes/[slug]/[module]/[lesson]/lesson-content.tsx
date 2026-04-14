@@ -48,6 +48,8 @@ interface LessonContentProps {
   themeId?: string;
   lessonId?: string;
   userFramework?: Framework;
+  visibleComponents?: Set<string>;
+  onExerciseComplete?: () => void;
 }
 
 /** MDX components available in lesson content */
@@ -78,6 +80,8 @@ export function LessonContent({
   themeId,
   lessonId,
   userFramework,
+  visibleComponents,
+  onExerciseComplete,
 }: LessonContentProps) {
   const exerciseMap = useMemo(() => {
     const map = new Map<string, ExerciseData>();
@@ -114,25 +118,84 @@ export function LessonContent({
     [themeId, lessonId],
   );
 
+  // Visibility helpers for step-based rendering
+  const shouldShow = useCallback(
+    (name: string) =>
+      !visibleComponents ||
+      visibleComponents.size === 0 ||
+      visibleComponents.has(name),
+    [visibleComponents],
+  );
+  const showProse =
+    !visibleComponents ||
+    visibleComponents.size === 0 ||
+    visibleComponents.has("prose");
+
   // Build MDX components with the onSubmit handler and framework wired in
   const components = useMemo(() => {
-    const base = {
-      ...mdxComponents,
-      BridgeCallout: (props: { bridge: unknown }) => (
-        <BridgeCallout
-          {...(props as { bridge: undefined })}
-          userFramework={userFramework}
-        />
-      ),
+    const wrapVisibility = <P extends object>(
+      name: string,
+      Component: React.ComponentType<P>,
+    ) => {
+      const Wrapped = (props: P) =>
+        shouldShow(name) ? <Component {...props} /> : null;
+      Wrapped.displayName = `Visible(${name})`;
+      return Wrapped;
     };
-    if (!themeId || !lessonId) return base;
-    return {
-      ...base,
-      Exercise: (props: { slug: string }) => (
-        <Exercise {...props} onSubmit={handleExerciseSubmit} />
+
+    const base: Record<
+      string,
+      React.ComponentType</* eslint-disable-line @typescript-eslint/no-explicit-any */ any>
+    > = {
+      Concept: wrapVisibility("Concept", Concept),
+      Dialogue: wrapVisibility("Dialogue", Dialogue),
+      CodeBlock: wrapVisibility("CodeBlock", CodeBlock),
+      HintPanel: wrapVisibility("HintPanel", HintPanel),
+      InteractiveDemo: wrapVisibility("InteractiveDemo", InteractiveDemo),
+      KeyTakeaways: wrapVisibility("KeyTakeaways", KeyTakeaways),
+      LearningObjectives: wrapVisibility(
+        "LearningObjectives",
+        LearningObjectives,
       ),
+      MathBlock: wrapVisibility("MathBlock", MathBlock),
+      NextLesson: wrapVisibility("NextLesson", NextLesson),
+      Quiz: wrapVisibility("Quiz", Quiz),
+      RecallPrompt: wrapVisibility("RecallPrompt", RecallPrompt),
+      BridgeCallout: (props: { bridge: unknown }) =>
+        shouldShow("BridgeCallout") ? (
+          <BridgeCallout
+            {...(props as { bridge: undefined })}
+            userFramework={userFramework}
+          />
+        ) : null,
     };
-  }, [themeId, lessonId, handleExerciseSubmit, userFramework]);
+
+    if (themeId && lessonId) {
+      base.Exercise = (props: { slug: string }) =>
+        shouldShow("Exercise") ? (
+          <Exercise
+            {...props}
+            onSubmit={(result: ExerciseSubmitResult) => {
+              handleExerciseSubmit(result);
+              if (result.passed) {
+                onExerciseComplete?.();
+              }
+            }}
+          />
+        ) : null;
+    } else {
+      base.Exercise = wrapVisibility("Exercise", Exercise);
+    }
+
+    return base;
+  }, [
+    themeId,
+    lessonId,
+    handleExerciseSubmit,
+    userFramework,
+    shouldShow,
+    onExerciseComplete,
+  ]);
 
   const Content = useMemo(() => {
     try {
@@ -162,9 +225,14 @@ export function LessonContent({
 
   return (
     <ExerciseDataProvider exercises={exerciseMap}>
-      <div className="max-w-none">
+      <div
+        className="max-w-none lesson-prose lesson-step-content"
+        data-show-prose={showProse ? "true" : "false"}
+      >
         <Content />
-        {lesson.hints && <HintPanel hints={lesson.hints} />}
+        {shouldShow("HintPanel") && lesson.hints && (
+          <HintPanel hints={lesson.hints} />
+        )}
       </div>
     </ExerciseDataProvider>
   );

@@ -244,7 +244,26 @@ Velite compiles MDX to function body strings. The `LessonContent` client compone
 | `/themes` | Theme listing | Grid of 5 themes, Deep Orbit active, 4 "Coming Soon" |
 | `/themes/[slug]` | Theme detail | Module list with characters, layout sets `data-theme` |
 | `/themes/[slug]/[module]` | Module overview | Lesson cards with order, title, time, difficulty |
-| `/themes/[slug]/[module]/[lesson]` | Lesson viewer | Sidebar nav + MDX content + 5C Loop sections + prev/next nav |
+| `/themes/[slug]/[module]/[lesson]` | Lesson viewer | 7-step Duolingo-style progression (no sidebar); step-based nav with progress bar |
+
+### Lesson Page Architecture (`app/themes/[slug]/[module]/[lesson]/`)
+
+The lesson page uses a three-component split:
+
+| File | Type | Responsibility |
+|------|------|----------------|
+| `page.tsx` | Server component | Data fetching (Velite), paywall enforcement, prerequisite gating, passes props to client components |
+| `lesson-steps.tsx` | Client component | Manages 7-step progression state, renders progress bar, handles step navigation (prev/next/complete) |
+| `lesson-content.tsx` | Client component | MDX renderer; accepts a `visibleComponents` prop to filter which 5C sections render for the current step |
+
+**Step-to-component mapping:**
+1. Mission Briefing — `<LearningObjectives>` + context frontmatter
+2. Crew Dialogue — `<Dialogue>` components
+3. Concept — `<BridgeCallout>` + concept MDX body
+4. Code — `<CodeBlock>` sections
+5. Challenge — `<Exercise>` (Sandpack)
+6. Key Takeaways — `<KeyTakeaways>`
+7. Consequence — consequence frontmatter + next-lesson preview
 
 ### Test Categories
 

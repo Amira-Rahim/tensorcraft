@@ -1,0 +1,975 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mission 1: Introduction to Tensors</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --bg: #141618;
+        --surface: #1c1e22;
+        --card: #22252a;
+        --border: #2e3238;
+        --text: #e2e4e8;
+        --muted: #8b919e;
+        --primary: #6baa8a;
+        --primary-soft: rgba(107, 170, 138, 0.12);
+        --accent: #c9a96e;
+        --accent-soft: rgba(201, 169, 110, 0.12);
+        --correct: #6baa8a;
+        --font: "DM Sans", system-ui, sans-serif;
+        --mono: "DM Mono", monospace;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--font);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* ═══════════════════════════════
+     LAYOUT: Fixed progress + scrollable step
+     ═══════════════════════════════ */
+      .lesson-shell {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      /* ── Top bar: progress + nav ── */
+      .top-bar {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 0 24px;
+        height: 52px;
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        flex-shrink: 0;
+      }
+      .top-bar-back {
+        font-family: var(--mono);
+        font-size: 12px;
+        color: var(--muted);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-shrink: 0;
+      }
+      .top-bar-back:hover {
+        color: var(--text);
+      }
+
+      .progress-track {
+        flex: 1;
+        height: 4px;
+        background: var(--border);
+        border-radius: 2px;
+        overflow: hidden;
+      }
+      .progress-fill {
+        height: 100%;
+        background: var(--primary);
+        border-radius: 2px;
+        transition: width 0.5s ease;
+      }
+
+      .step-count {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--muted);
+        flex-shrink: 0;
+        letter-spacing: 0.5px;
+      }
+
+      /* ── Step container ── */
+      .step-viewport {
+        flex: 1;
+        overflow-y: auto;
+        display: flex;
+        justify-content: center;
+        padding: 40px 24px 100px;
+      }
+
+      .step-card {
+        width: 100%;
+        max-width: 680px;
+      }
+
+      /* ── Bottom bar: continue ── */
+      .bottom-bar {
+        padding: 16px 24px;
+        background: var(--surface);
+        border-top: 1px solid var(--border);
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 16px;
+        flex-shrink: 0;
+      }
+      .btn {
+        font-family: var(--mono);
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        padding: 12px 32px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .btn-continue {
+        background: var(--primary);
+        color: var(--bg);
+      }
+      .btn-continue:hover {
+        filter: brightness(1.1);
+      }
+      .btn-continue:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+      }
+      .btn-ghost {
+        background: none;
+        color: var(--muted);
+        border: 1px solid var(--border);
+      }
+
+      /* ═══════════════════════════════
+     STEP TYPES
+     ═══════════════════════════════ */
+
+      /* ── STORY step (dialogue) ── */
+      .story-dialogue {
+        background: var(--card);
+        padding: 28px 32px;
+        margin-bottom: 20px;
+        border-left: 3px solid var(--accent);
+        animation: stepIn 0.3s ease-out;
+      }
+      .story-dialogue.ai {
+        border-left-color: var(--primary);
+      }
+
+      .story-speaker {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+      .story-avatar {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--mono);
+        font-size: 11px;
+        font-weight: 700;
+      }
+      .story-name {
+        font-family: var(--mono);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+      }
+      .story-role {
+        font-family: var(--mono);
+        font-size: 10px;
+        color: var(--muted);
+        margin-left: 6px;
+      }
+      .story-text {
+        font-size: 16px;
+        line-height: 1.8;
+        color: var(--text);
+      }
+
+      .story-narrator {
+        font-size: 16px;
+        line-height: 1.85;
+        color: var(--muted);
+        padding: 20px 0;
+        animation: stepIn 0.3s 0.2s ease-out both;
+      }
+
+      /* ── LEARN step (concept) ── */
+      .learn-header {
+        margin-bottom: 28px;
+        animation: stepIn 0.3s ease-out;
+      }
+      .learn-phase {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--primary);
+        margin-bottom: 12px;
+      }
+      .learn-title {
+        font-size: 26px;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+      }
+
+      .learn-body {
+        animation: stepIn 0.3s 0.1s ease-out both;
+      }
+      .learn-body p {
+        font-size: 16px;
+        line-height: 1.85;
+        margin-bottom: 20px;
+      }
+      .learn-body code {
+        font-family: var(--mono);
+        font-size: 14px;
+        color: var(--primary);
+        background: var(--primary-soft);
+        padding: 2px 7px;
+      }
+      .learn-body strong {
+        color: var(--text);
+        font-weight: 600;
+      }
+
+      /* Bridge */
+      .bridge {
+        border: 1px solid var(--border);
+        margin: 28px 0;
+        overflow: hidden;
+        animation: stepIn 0.3s 0.15s ease-out both;
+      }
+      .bridge-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 18px;
+        background: var(--card);
+        border-bottom: 1px solid var(--border);
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+      .bridge-cols {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+      .bridge-col {
+        padding: 18px;
+      }
+      .bridge-col + .bridge-col {
+        border-left: 1px solid var(--border);
+      }
+      .bridge-label {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 6px;
+      }
+      .bridge-concept {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+      .bridge-code {
+        font-family: var(--mono);
+        font-size: 13px;
+        padding: 12px 14px;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        color: var(--primary);
+        line-height: 1.5;
+      }
+
+      /* Code block */
+      .code-block {
+        margin: 24px 0;
+        border: 1px solid var(--border);
+        animation: stepIn 0.3s 0.1s ease-out both;
+      }
+      .code-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 16px;
+        background: var(--card);
+        border-bottom: 1px solid var(--border);
+      }
+      .code-file {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .code-lang {
+        font-family: var(--mono);
+        font-size: 10px;
+        color: var(--primary);
+        background: var(--primary-soft);
+        padding: 2px 8px;
+        letter-spacing: 0.5px;
+      }
+      .code-body {
+        padding: 20px;
+        background: var(--bg);
+        font-family: var(--mono);
+        font-size: 13px;
+        line-height: 1.9;
+        overflow-x: auto;
+      }
+
+      /* ── EXERCISE step ── */
+      .exercise-intro {
+        margin-bottom: 24px;
+        animation: stepIn 0.3s ease-out;
+      }
+      .exercise-phase {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--primary);
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .exercise-title {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+      .exercise-desc {
+        font-size: 15px;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+      .exercise-workspace {
+        border: 1px solid var(--primary);
+        background: var(--primary-soft);
+        animation: stepIn 0.3s 0.1s ease-out both;
+      }
+      .exercise-editor-bar {
+        padding: 10px 18px;
+        border-bottom: 1px solid rgba(107, 170, 138, 0.2);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .exercise-editor-label {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--primary);
+      }
+      .exercise-meta-pills {
+        display: flex;
+        gap: 8px;
+        font-family: var(--mono);
+        font-size: 10px;
+        color: var(--muted);
+      }
+      .exercise-editor {
+        padding: 20px;
+        background: var(--bg);
+        font-family: var(--mono);
+        font-size: 13px;
+        line-height: 1.9;
+        color: var(--muted);
+        min-height: 110px;
+        margin: 0 1px;
+      }
+      .exercise-actions {
+        display: flex;
+        gap: 10px;
+        padding: 14px 18px;
+        border-top: 1px solid rgba(107, 170, 138, 0.2);
+      }
+
+      /* ── CHECK step (takeaways) ── */
+      .check-header {
+        margin-bottom: 24px;
+        animation: stepIn 0.3s ease-out;
+      }
+      .check-phase {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--primary);
+        margin-bottom: 12px;
+      }
+      .check-title {
+        font-size: 22px;
+        font-weight: 700;
+      }
+
+      .takeaway-list {
+        animation: stepIn 0.3s 0.1s ease-out both;
+      }
+      .takeaway {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        padding: 16px 20px;
+        background: var(--card);
+        margin-bottom: 8px;
+        border-left: 3px solid var(--primary);
+      }
+      .takeaway-icon {
+        color: var(--primary);
+        font-size: 16px;
+        margin-top: 1px;
+        flex-shrink: 0;
+      }
+      .takeaway-text {
+        font-size: 15px;
+        line-height: 1.65;
+      }
+
+      /* ── CONSEQUENCE step ── */
+      .consequence-card {
+        text-align: center;
+        padding: 48px 32px;
+        animation: stepIn 0.4s ease-out;
+      }
+      .consequence-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--primary);
+        padding: 6px 16px;
+        border: 1px solid var(--primary-soft);
+        background: var(--primary-soft);
+        margin-bottom: 24px;
+      }
+      .consequence-title {
+        font-size: 26px;
+        font-weight: 700;
+        margin-bottom: 12px;
+      }
+      .consequence-text {
+        font-size: 16px;
+        line-height: 1.8;
+        color: var(--muted);
+        max-width: 480px;
+        margin: 0 auto 36px;
+      }
+
+      .next-card {
+        text-align: left;
+        padding: 20px 24px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+        color: inherit;
+        max-width: 420px;
+        margin: 0 auto;
+      }
+      .next-card:hover {
+        border-color: var(--primary-soft);
+        transform: translate(-2px, -2px);
+        box-shadow: 3px 3px 0 var(--primary-soft);
+      }
+      .next-tag {
+        font-family: var(--mono);
+        font-size: 9px;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 4px;
+      }
+      .next-title {
+        font-size: 15px;
+        font-weight: 600;
+        margin-bottom: 3px;
+      }
+      .next-desc {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .next-arrow {
+        font-size: 16px;
+        color: var(--primary);
+        margin-left: auto;
+      }
+
+      /* ═══ Animations ═══ */
+      @keyframes stepIn {
+        from {
+          opacity: 0;
+          transform: translateY(12px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* ═══ Step navigation indicators ═══ */
+      .step-dots {
+        display: flex;
+        gap: 6px;
+        justify-content: center;
+        margin-bottom: 32px;
+      }
+      .step-dot {
+        width: 8px;
+        height: 8px;
+        background: var(--border);
+        border-radius: 0;
+        transition: all 0.3s;
+      }
+      .step-dot.done {
+        background: var(--primary);
+        opacity: 0.4;
+      }
+      .step-dot.active {
+        background: var(--primary);
+        width: 28px;
+      }
+      .step-dot.upcoming {
+        background: var(--border);
+      }
+
+      @media (max-width: 640px) {
+        .step-viewport {
+          padding: 24px 16px 80px;
+        }
+        .bridge-cols {
+          grid-template-columns: 1fr;
+        }
+        .bridge-col + .bridge-col {
+          border-left: none;
+          border-top: 1px solid var(--border);
+        }
+        .story-dialogue {
+          padding: 20px 22px;
+        }
+        .consequence-card {
+          padding: 32px 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="lesson-shell">
+      <!-- ═══ TOP BAR ═══ -->
+      <div class="top-bar">
+        <a href="#" class="top-bar-back">← Module</a>
+        <div class="progress-track">
+          <div class="progress-fill" style="width: 42%"></div>
+        </div>
+        <div class="step-count">3 / 7</div>
+      </div>
+
+      <!-- ═══ STEP VIEWPORT ═══ -->
+      <div class="step-viewport">
+        <div class="step-card">
+          <!-- Step dots -->
+          <div class="step-dots">
+            <div class="step-dot done"></div>
+            <div class="step-dot done"></div>
+            <div class="step-dot active"></div>
+            <div class="step-dot upcoming"></div>
+            <div class="step-dot upcoming"></div>
+            <div class="step-dot upcoming"></div>
+            <div class="step-dot upcoming"></div>
+          </div>
+
+          <!-- ═══════════════════════════════
+           SHOWING: STEP 3 — CONCEPT
+           (swap this content per step)
+           ═══════════════════════════════ -->
+
+          <div class="learn-header">
+            <div class="learn-phase">◎ Concept</div>
+            <div class="learn-title">What Is a Tensor?</div>
+          </div>
+
+          <div class="learn-body">
+            <p>
+              A tensor is simply a multi-dimensional array. That's it. If you
+              can work with arrays in JavaScript, you already understand the
+              core concept.
+            </p>
+
+            <div class="bridge">
+              <div class="bridge-top">
+                <span style="color: var(--primary)">Identity Bridge</span>
+                <span style="color: var(--muted)">Frontend → ML</span>
+              </div>
+              <div class="bridge-cols">
+                <div class="bridge-col">
+                  <div class="bridge-label">Your Code</div>
+                  <div class="bridge-concept">TypedArray</div>
+                  <div class="bridge-code">
+                    const arr = new Float32Array([1, 2, 3])
+                  </div>
+                </div>
+                <div class="bridge-col">
+                  <div class="bridge-label">ML Equivalent</div>
+                  <div class="bridge-concept">Tensor</div>
+                  <div class="bridge-code">const t = tf.tensor([1, 2, 3])</div>
+                </div>
+              </div>
+            </div>
+
+            <p>
+              <code>Float32Array</code> and <code>tf.tensor</code> both store
+              numbers in contiguous memory. The difference? Tensors know their
+              <strong>shape</strong>
+              and come with GPU-accelerated math.
+            </p>
+
+            <div class="code-block">
+              <div class="code-top">
+                <span class="code-file">tensors-are-arrays.ts</span>
+                <span class="code-lang">TypeScript</span>
+              </div>
+              <div class="code-body">
+                <span style="color: #c586c0">import</span> *
+                <span style="color: #c586c0">as</span> tf
+                <span style="color: #c586c0">from</span>
+                <span style="color: #ce9178">'@tensorflow/tfjs'</span>;
+
+                <span style="color: #546e7a"
+                  >// scalar (0D) — just a number</span
+                >
+                <span style="color: #569cd6">const</span> s = tf.<span
+                  style="color: #dcdcaa"
+                  >scalar</span
+                >(<span style="color: #b5cea8">42</span>);
+                <span style="color: #546e7a">// rank: 0</span>
+
+                <span style="color: #546e7a"
+                  >// vector (1D) — like a regular array</span
+                >
+                <span style="color: #569cd6">const</span> v = tf.<span
+                  style="color: #dcdcaa"
+                  >tensor1d</span
+                >([<span style="color: #b5cea8">1, 2, 3, 4, 5</span>]);
+                <span style="color: #546e7a">// rank: 1</span>
+
+                <span style="color: #546e7a"
+                  >// matrix (2D) — array of arrays</span
+                >
+                <span style="color: #569cd6">const</span> m = tf.<span
+                  style="color: #dcdcaa"
+                  >tensor2d</span
+                >([[<span style="color: #b5cea8">1, 2</span>], [<span
+                  style="color: #b5cea8"
+                  >3, 4</span
+                >]]); <span style="color: #546e7a">// rank: 2</span>
+              </div>
+            </div>
+
+            <p style="color: var(--muted)">
+              You already use <code>HTMLElement[]</code> for DOM nodes. A tensor
+              is that — but typed, n-dimensional, and with built-in math.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ BOTTOM BAR ═══ -->
+      <div class="bottom-bar">
+        <button class="btn btn-ghost">← Back</button>
+        <button class="btn btn-continue">Continue →</button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+     BELOW: Preview of what other steps look like
+     (not part of the app — just for this mockup)
+     ═══════════════════════════════════════ -->
+    <div
+      style="
+        background: #0a0c0e;
+        padding: 64px 24px;
+        border-top: 4px solid var(--primary);
+      "
+    >
+      <div style="max-width: 680px; margin: 0 auto">
+        <h2
+          style="
+            font-family: var(--mono);
+            font-size: 12px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--primary);
+            margin-bottom: 32px;
+          "
+        >
+          ↓ Preview: All 7 steps in this lesson
+        </h2>
+
+        <div style="display: grid; gap: 12px">
+          <div
+            style="
+              padding: 16px 20px;
+              background: var(--card);
+              border-left: 3px solid var(--accent);
+              display: flex;
+              align-items: center;
+              gap: 12px;
+            "
+          >
+            <span
+              style="
+                font-family: var(--mono);
+                font-size: 11px;
+                color: var(--accent);
+                width: 24px;
+              "
+              >01</span
+            >
+            <span style="font-size: 14px; font-weight: 500"
+              >Mission Briefing</span
+            >
+            <span
+              style="
+                font-family: var(--mono);
+                font-size: 10px;
+                color: var(--muted);
+                margin-left: auto;
+              "
+              >STORY</span
+            >
+          </div>
+          <div
+            style="
+              padding: 16px 20px;
+              background: var(--card);
+              border-left: 3px solid var(--accent);
+              display: flex;
+              align-items: center;
+              gap: 12px;
+            "
+          >
+            <span
+              style="
+                font-family: var(--mono);
+                font-size: 11px;
+                color: var(--accent);
+                width: 24px;
+              "
+              >02</span
+            >
+            <span style="font-size: 14px; font-weight: 500">Crew Dialogue</span>
+            <span
+              style="
+                font-family: var(--mono);
+                font-size: 10px;
+                color: var(--muted);
+                margin-left: auto;
+              "
+              >STORY</span
+            >
+          </div>
+          <div
+            style="
+              padding: 16px 20px;
+              background: var(--primary-soft);
+              border-left: 3px solid var(--primary);
+              display: flex;
+              align-items: center;
+              gap: 12px;
+            "
+          >
+            <span
+              style="
+                font-family: var(--mono);
+                font-size: 11px;
+                color: var(--primary);
+                width: 24px;
+              "
+              >03</span
+            >
+            <span
+              style="font-size: 14px; font-weight: 600; color: var(--primary)"
+              >Concept: What Is a Tensor?</span
+            >
+            <span
+              style="
+                font-family: var(--mono);
+                font-size: 10px;
+                color: var(--primary);
+                margin-left: auto;
+              "
+              >← YOU ARE HERE</span
+            >
+          </div>
+          <div
+            style="
+              padding: 16px 20px;
+              background: var(--card);
+              border-left: 3px solid var(--primary);
+              display: flex;
+              align-items: center;
+              gap: 12px;
+            "
+          >
+            <span
+              style="
+                font-family: var(--mono);
+                font-size: 11px;
+                color: var(--muted);
+                width: 24px;
+              "
+              >04</span
+            >
+            <span style="font-size: 14px; font-weight: 500"
+              >Code: Tensor Operations</span
+            >
+            <span
+              style="
+                font-family: var(--mono);
+                font-size: 10px;
+                color: var(--muted);
+                margin-left: auto;
+              "
+              >LEARN</span
+            >
+          </div>
+          <div
+            style="
+              padding: 16px 20px;
+              background: var(--card);
+              border-left: 3px solid var(--primary);
+              display: flex;
+              align-items: center;
+              gap: 12px;
+            "
+          >
+            <span
+              style="
+                font-family: var(--mono);
+                font-size: 11px;
+                color: var(--muted);
+                width: 24px;
+              "
+              >05</span
+            >
+            <span style="font-size: 14px; font-weight: 500"
+              >Challenge: Create a Tensor</span
+            >
+            <span
+              style="
+                font-family: var(--mono);
+                font-size: 10px;
+                color: var(--muted);
+                margin-left: auto;
+              "
+              >EXERCISE</span
+            >
+          </div>
+          <div
+            style="
+              padding: 16px 20px;
+              background: var(--card);
+              border-left: 3px solid var(--primary);
+              display: flex;
+              align-items: center;
+              gap: 12px;
+            "
+          >
+            <span
+              style="
+                font-family: var(--mono);
+                font-size: 11px;
+                color: var(--muted);
+                width: 24px;
+              "
+              >06</span
+            >
+            <span style="font-size: 14px; font-weight: 500">Key Takeaways</span>
+            <span
+              style="
+                font-family: var(--mono);
+                font-size: 10px;
+                color: var(--muted);
+                margin-left: auto;
+              "
+              >CHECK</span
+            >
+          </div>
+          <div
+            style="
+              padding: 16px 20px;
+              background: var(--card);
+              border-left: 3px solid var(--accent);
+              display: flex;
+              align-items: center;
+              gap: 12px;
+            "
+          >
+            <span
+              style="
+                font-family: var(--mono);
+                font-size: 11px;
+                color: var(--muted);
+                width: 24px;
+              "
+              >07</span
+            >
+            <span style="font-size: 14px; font-weight: 500"
+              >The Signal Takes Shape</span
+            >
+            <span
+              style="
+                font-family: var(--mono);
+                font-size: 10px;
+                color: var(--muted);
+                margin-left: auto;
+              "
+              >STORY</span
+            >
+          </div>
+        </div>
+
+        <p
+          style="
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 24px;
+            line-height: 1.6;
+          "
+        >
+          Each lesson is 7 steps. Story steps are full-screen focused moments.
+          Learn/Exercise steps scroll within the viewport. "Continue →" advances
+          to the next step. Progress bar fills as you go.
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

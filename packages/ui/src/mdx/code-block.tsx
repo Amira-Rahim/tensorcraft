@@ -75,9 +75,9 @@ export function CodeBlock({
   }
 
   return (
-    <div className="overflow-hidden my-6 brutalist-shadow bg-surface border border-border">
+    <div className="overflow-hidden my-8 brutalist-shadow bg-surface border border-border">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-2 border-b border-border">
+      <div className="flex items-center justify-between px-5 py-3 border-b border-border">
         <div className="flex items-center gap-2">
           {title && (
             <span className="text-xs font-medium text-text-muted">{title}</span>
@@ -100,12 +100,12 @@ export function CodeBlock({
       {/* Code — highlighted or fallback */}
       {highlightedHtml ? (
         <div
-          className="overflow-x-auto [&_pre]:p-4 [&_pre]:m-0 [&_pre]:bg-transparent [&_code]:text-sm [&_code]:leading-relaxed"
+          className="overflow-x-auto [&_pre]:p-5 [&_pre]:m-0 [&_pre]:bg-transparent [&_code]:text-sm [&_code]:leading-loose"
           dangerouslySetInnerHTML={{ __html: highlightedHtml }}
         />
       ) : (
-        <pre className="overflow-x-auto p-4">
-          <code className="text-sm leading-relaxed text-text-primary/85">
+        <pre className="overflow-x-auto p-5">
+          <code className="text-sm leading-loose text-text-primary/85">
             {code}
           </code>
         </pre>

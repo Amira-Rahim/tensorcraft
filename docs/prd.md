@@ -94,15 +94,17 @@ Each theme contains **11 modules** with **5 lessons per module**, totaling **55 
 
 ### 3.3 The 5C Lesson Loop
 
-Every lesson follows the **5C pedagogical loop**, with five variations depending on lesson position within a module.
+Every lesson follows the **5C pedagogical loop**, implemented as a **7-step Duolingo-style progression** with a progress bar and step-based navigation (sidebar removed). Steps vary by lesson position within a module.
 
-| Step | Name | Description | Variations by Position |
-|---|---|---|---|
-| 1 | **Context** | Set the scene within the theme narrative; state the learning objective | Lesson 1 of module: extended world-building intro; Lessons 2–4: brief recap + new objective; Lesson 5 (capstone): project brief |
-| 2 | **Concept** | Teach the ML idea using the FE-to-ML bridge | Odd lessons: analogy-first; Even lessons: code-first |
-| 3 | **Code** | Hands-on editor exercise | Lessons 1–3: scaffolded (fill-in-the-blank); Lesson 4: guided (fewer hints); Lesson 5: open (build from scratch) |
-| 4 | **Check** | Assessment checkpoint | Lessons 1–4: inline quiz; Lesson 5: project rubric + automated tests |
-| 5 | **Connect** | Tie ML concept back to FE world; preview next lesson | All lessons: bridge card + "What's next" teaser |
+| Step | Name | 5C Phase | Description | Variations by Position |
+|---|---|---|---|---|
+| 1 | **Mission Briefing** | Context | Set the scene within the theme narrative; state the learning objective | Lesson 1 of module: extended world-building intro; Lessons 2–4: brief recap + new objective; Lesson 5 (capstone): project brief |
+| 2 | **Crew Dialogue** | Context | Character dialogue deepening the narrative and framing the problem | All lessons: 2–4 exchanges between theme characters |
+| 3 | **Concept** | Concept | Teach the ML idea using the FE-to-ML bridge | Odd lessons: analogy-first; Even lessons: code-first |
+| 4 | **Code** | Code | Hands-on editor exercise | Lessons 1–3: scaffolded (fill-in-the-blank); Lesson 4: guided (fewer hints); Lesson 5: open (build from scratch) |
+| 5 | **Challenge** | Code/Check | Interactive exercise with automated tests | Lessons 1–4: inline exercise; Lesson 5: open project |
+| 6 | **Key Takeaways** | Check | Summary card recapping core concepts and bridge connections | All lessons: 3–5 bullet takeaways |
+| 7 | **Consequence** | Connect | Narrative consequence; tie ML concept back to FE world; preview next lesson | All lessons: story beat + "What's next" teaser |
 
 #### Variation Frequency
 
