@@ -199,8 +199,8 @@ Tables use Supabase Auth for user management. Row-Level Security (RLS) enforced 
 | github_username | text | Nullable |
 | onboarding_completed | boolean | Default: `false` |
 | role | user_role enum | `'user'` or `'admin'`, default: `'user'` (added in migration 006) |
-| last_active_at | timestamptz | Nullable (added in migration 002) |
-| total_lessons_completed | integer | Default: `0` (added in migration 002) |
+| email_alerts | boolean | Default: `true` (added in migration 009) |
+| weekly_digest | boolean | Default: `true` (added in migration 009) |
 | created_at | timestamptz | Default: `now()` |
 | updated_at | timestamptz | Default: `now()` |
 

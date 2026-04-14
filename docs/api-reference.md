@@ -29,6 +29,8 @@ Health check endpoint. No authentication required.
 
 Add an email to the waitlist. No authentication required.
 
+> **Note:** Originally designed for "coming soon" theme interest capture. Now used for general newsletter signups. All themes are available.
+
 **Request Body:**
 ```json
 {
@@ -131,11 +133,48 @@ Create a Stripe Checkout session. **Authenticated.**
 }
 ```
 
+**Supported plan IDs:**
+
+| `planId` | `themeIds` | Price |
+|----------|-----------|-------|
+| `single` | Any one theme | $79 |
+| `two` | Any two themes | $129 |
+| `three` | Any three themes | $169 |
+| `allFive` | `["deep-orbit", "neon-protocol", "signal-ward", "nova-canvas", "terra-grid"]` | $219 |
+
+**Example — All 5 Themes:**
+```json
+{
+  "planId": "allFive",
+  "themeIds": ["deep-orbit", "neon-protocol", "signal-ward", "nova-canvas", "terra-grid"]
+}
+```
+
 **Response:**
 ```json
 {
   "url": "https://checkout.stripe.com/c/pay/cs_..."
 }
+```
+
+### `GET /api/payments/purchases`
+
+Get the authenticated user's purchase history. **Authenticated.**
+
+**Response:**
+```json
+[
+  {
+    "id": "uuid",
+    "plan_id": "allFive",
+    "theme_ids": ["deep-orbit", "neon-protocol", "signal-ward", "nova-canvas", "terra-grid"],
+    "amount": 21900,
+    "currency": "usd",
+    "stripe_session_id": "cs_...",
+    "status": "completed",
+    "created_at": "2026-03-13T12:00:00Z"
+  }
+]
 ```
 
 ### `POST /api/payments/webhook`
@@ -170,6 +209,72 @@ Update current user's profile. **Authenticated.**
 ---
 
 ## Exercise Attempts
+
+### `POST /api/github/token`
+
+Persist a GitHub OAuth provider token for the authenticated user. **Authenticated.**
+
+**Request Body:**
+```json
+{
+  "token": "gho_..."
+}
+```
+
+**Responses:**
+
+- `200` — `{ "message": "Token saved" }`
+- `401` — Unauthorized
+
+---
+
+### `POST /api/skill-events/batch`
+
+Batch-submit skill tracking events. **Authenticated.**
+
+**Request Body:**
+```json
+{
+  "events": [
+    {
+      "skillId": "tensor-operations",
+      "themeId": "deep-orbit",
+      "eventType": "practiced",
+      "metadata": {}
+    }
+  ]
+}
+```
+
+**Responses:**
+
+- `200` — `{ "processed": 3 }`
+- `400` — Bad request (invalid event shape)
+
+---
+
+### `POST /api/issues`
+
+Submit an issue report. No authentication required.
+
+**Request Body:**
+```json
+{
+  "type": "bug",
+  "description": "The code editor fails to run on Firefox.",
+  "url": "https://tensorcraft.app/themes/deep-orbit/foundations/what-is-a-tensor",
+  "email": "user@example.com"
+}
+```
+
+**Responses:**
+
+- `201` — `{ "message": "Issue submitted" }`
+- `400` — Bad request (missing required fields)
+
+---
+
+## Exercise Attempts (User)
 
 ### `GET /api/exercise-attempts?themeId=<theme>`
 

@@ -485,6 +485,7 @@ function StepConcept({
               "Concept",
               "InteractiveDemo",
               "prose",
+              "code-tensors",
             ])
           }
         />
@@ -521,7 +522,15 @@ function StepCode({
           themeId={themeSlug}
           lessonId={lessonSlug}
           userFramework={userFramework}
-          visibleComponents={new Set(["CodeBlock", "MathBlock", "prose"])}
+          visibleComponents={
+            new Set([
+              "CodeBlock",
+              "MathBlock",
+              "prose",
+              "code-tensors",
+              "code-shapes",
+            ])
+          }
         />
       </div>
     </div>
@@ -558,7 +567,7 @@ function StepChallenge({
           themeId={themeSlug}
           lessonId={lessonSlug}
           userFramework={userFramework}
-          visibleComponents={new Set(["Exercise"])}
+          visibleComponents={new Set(["Exercise", "challenge"])}
           onExerciseComplete={onExerciseComplete}
         />
       </div>

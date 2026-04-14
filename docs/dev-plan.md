@@ -204,16 +204,13 @@ All blocking decisions have been resolved. This table documents the final choice
 
 ### 3e. Lesson Viewer (COMPLETE)
 
-> **COMPLETED (2026-04-14):** Lesson page redesigned to 7-step Duolingo-style progression. Sidebar removed, step-based navigation with progress bar.
+> **COMPLETED (2026-04-14):** Lesson page redesigned to 6-step Duolingo-style progression. Sidebar removed, step-based navigation with progress bar.
 
 - [x] Build lesson viewer (`apps/web/app/themes/[slug]/[module]/[lesson]/page.tsx`)
-- [x] Sidebar navigation with lesson list and active state highlighting
 - [x] Real MDX content rendering via `LessonContent` client component
-- [x] 5C Loop structure: Context (narrative dialogue) → Concept (bridge callout) → Code → Challenge → Consequence
 - [x] Prev/next lesson navigation
 - [x] Breadcrumb navigation (theme → module → lesson)
-- [x] Responsive sidebar — hidden on mobile (`hidden lg:flex`), visible on desktop
-- [x] Redesigned to 7-step Duolingo-style progression: Step 1 (Mission Briefing/Context) → Step 2 (Crew Dialogue/Context) → Step 3 (Concept) → Step 4 (Code) → Step 5 (Challenge/Exercise) → Step 6 (Key Takeaways/Check) → Step 7 (Consequence). Sidebar removed; step-based navigation with progress bar via `lesson-steps.tsx`.
+- [x] Redesigned to 6-step Duolingo-style progression: Step 1 (Briefing) → Step 2 (Concept) → Step 3 (Code) → Step 4 (Challenge) → Step 5 (Takeaways) → Step 6 (Consequence). Sidebar removed; step-based navigation with progress bar via `lesson-steps.tsx`.
 
 ### 3f. Exercise Editor (COMPLETE)
 
@@ -941,7 +938,7 @@ Full design system overhaul from "Zensman DeFi Neon" to "Brutalist Terminal" aes
 - [ ] Landing page: ParticleField bg, BridgeTicker, bridge table with tiers, 5C loop section, brutalist buttons
 - [ ] Auth pages: split layout, LossLandscape left, form right, "You already think like an ML engineer"
 - [ ] Dashboard: module sidebar, LossCurve, SkillRadar, ActivityHeatmap, activity log
-- [x] LessonViewer: redesigned to 7-step Duolingo-style progression (sidebar removed, step-based nav with progress bar) — **COMPLETED (2026-04-14)**
+- [x] LessonViewer: redesigned to 6-step Duolingo-style progression (sidebar removed, step-based nav with progress bar) — **COMPLETED (2026-04-14)**
 - [ ] Exercise: line numbers, test results panel, bridge hint, console output
 - [ ] BridgeExplorer: category filter (Identity/Structural/Intuition), search, expandable cards
 - [ ] Pricing: 4-tier grid, comparison table, "Simple, Fair Pricing"
@@ -1084,7 +1081,7 @@ Based on comprehensive audit of codebase, user journeys, database, and security:
 
 ### Tier 1: Learning Loop Must Work
 
-1. **Sandpack exercises** (Phase 3f) — #1 gap, 14 exercises authored but none interactive
+1. [x] **Sandpack exercises** (Phase 3f) — async test execution, expanded TF.js mock, import stripping. COMPLETED 2026-04-14.
 2. **Syntax highlighting** (Phase 3h) — code platform needs colored code
 3. ~~**Wire progress tracking** (Phase 5a) — lesson viewer must write to `/api/progress`~~ RESOLVED — wired via `lesson-progress.tsx`
 4. ~~**Mark Complete button** (Phase 5a) — explicit completion action in lesson viewer~~ RESOLVED

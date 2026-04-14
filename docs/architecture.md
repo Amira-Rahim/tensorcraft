@@ -37,7 +37,7 @@ tensorcraft/
 | Animation | Framer Motion | Declarative, layout animations, gesture support |
 | Content | MDX 3 + Velite (Zod schemas) | Type-safe content with build-time validation. 3 collections: lessons, exercises, modules |
 | Code Highlighting | Shiki (via CodeBlock component) | V0.5 uses basic syntax highlighting; Code Hike deferred |
-| Code Exercises | Sandpack (CodeSandbox) | Browser-based code playgrounds with Jest |
+| Code Exercises | Sandpack (CodeSandbox) | Browser-based code playgrounds with custom async test runner and TF.js mock (295 exercises) |
 | Payments | Stripe Checkout + Webhooks | One-time purchases, webhook-driven fulfillment |
 | Email | Kit (ConvertKit) | Waitlist, per-theme segmented lists, nurture sequences |
 | Analytics | PostHog + Plausible | Product analytics + privacy-friendly marketing analytics |
@@ -51,13 +51,13 @@ Dark mode only. Brutalist Terminal aesthetic with sharp edges (zero border-radiu
 
 ### 5 Themed Courses
 
-| Theme | Specialization | Primary | Accent | Status |
-|-------|---------------|---------|--------|--------|
-| Deep Orbit | Time-Series & Signals | `#6BAA8A` | `#A89060` | Launched |
-| Neon Protocol | Computer Vision | `#4A90D9` | `#A07090` | Coming Soon |
-| Signal Ward | NLP & Text Intelligence | `#65C07D` | `#7096B0` | Coming Soon |
-| Nova Canvas | Multimodal & GenAI | `#C06060` | `#7868A8` | Coming Soon |
-| Terra Grid | Edge AI & MLOps | `#C49535` | `#6BAA8A` | Coming Soon |
+| Theme | Specialization | Primary | Accent |
+|-------|---------------|---------|--------|
+| Deep Orbit | Time-Series & Signals | `#6BAA8A` | `#A89060` |
+| Neon Protocol | Computer Vision | `#4A90D9` | `#A07090` |
+| Signal Ward | NLP & Text Intelligence | `#65C07D` | `#7096B0` |
+| Nova Canvas | Multimodal & GenAI | `#C06060` | `#7868A8` |
+| Terra Grid | Edge AI & MLOps | `#C49535` | `#6BAA8A` |
 
 ### How Theming Works
 
@@ -233,9 +233,9 @@ Velite compiles MDX to function body strings. The `LessonContent` client compone
 
 ### V0.5 Content Scope
 
-- 3 modules (Foundations, Neural Networks, Training Loop)
-- 15 lessons following 5C Loop structure
-- 14 exercises with starter/solution/test code
+- 11 modules per theme, 55 lessons each (275 total across 5 themes)
+- 295 exercises with starter/solution/test code
+- Exercises use async test runner with TensorFlow.js mock for in-browser execution
 
 ## Learning Routes (`apps/web/app/themes/`)
 
@@ -244,7 +244,7 @@ Velite compiles MDX to function body strings. The `LessonContent` client compone
 | `/themes` | Theme listing | Grid of 5 themes, Deep Orbit active, 4 "Coming Soon" |
 | `/themes/[slug]` | Theme detail | Module list with characters, layout sets `data-theme` |
 | `/themes/[slug]/[module]` | Module overview | Lesson cards with order, title, time, difficulty |
-| `/themes/[slug]/[module]/[lesson]` | Lesson viewer | 7-step Duolingo-style progression (no sidebar); step-based nav with progress bar |
+| `/themes/[slug]/[module]/[lesson]` | Lesson viewer | 6-step progression (no sidebar); step-based nav with progress bar |
 
 ### Lesson Page Architecture (`app/themes/[slug]/[module]/[lesson]/`)
 
@@ -253,17 +253,17 @@ The lesson page uses a three-component split:
 | File | Type | Responsibility |
 |------|------|----------------|
 | `page.tsx` | Server component | Data fetching (Velite), paywall enforcement, prerequisite gating, passes props to client components |
-| `lesson-steps.tsx` | Client component | Manages 7-step progression state, renders progress bar, handles step navigation (prev/next/complete) |
+| `lesson-steps.tsx` | Client component | Manages 6-step progression state, renders progress bar, handles step navigation (prev/next/complete) |
 | `lesson-content.tsx` | Client component | MDX renderer; accepts a `visibleComponents` prop to filter which 5C sections render for the current step |
 
 **Step-to-component mapping:**
-1. Mission Briefing — `<LearningObjectives>` + context frontmatter
-2. Crew Dialogue — `<Dialogue>` components
-3. Concept — `<BridgeCallout>` + concept MDX body
-4. Code — `<CodeBlock>` sections
-5. Challenge — `<Exercise>` (Sandpack)
-6. Key Takeaways — `<KeyTakeaways>`
-7. Consequence — consequence frontmatter + next-lesson preview
+
+1. StepBriefing (Context + Dialogue)
+2. StepConcept
+3. StepCode
+4. StepChallenge
+5. StepTakeaways
+6. StepConsequence
 
 ### Test Categories
 

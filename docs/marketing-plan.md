@@ -71,12 +71,13 @@ This marketing plan outlines the strategy for taking Tensorcraft from launch thr
 
 ### Individual Pricing
 
-| Tier | Price | Includes |
-|------|-------|----------|
-
-| Single Theme | $79 | All modules of one theme |
-| Two Themes | $129 | Any two themes ($18 savings) |
-| Three Themes | $169 | Any three themes ($68 savings) |
+| Tier          | Price | Includes                                    |
+|---------------|-------|---------------------------------------------|
+| Free Preview  | $0    | Module 1 of any theme (5 lessons)           |
+| Single Theme  | $79   | All modules of one theme                    |
+| Two Themes    | $129  | Any two themes ($18 savings)                |
+| Three Themes  | $169  | Any three themes ($68 savings)              |
+| All 5 Themes  | $219  | Lifetime access to all themes (best value)  |
 
 ### Team Pricing
 

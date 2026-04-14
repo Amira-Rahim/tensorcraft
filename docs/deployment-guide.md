@@ -39,6 +39,33 @@ Set these in Fly.io secrets or `.env` for local dev:
 | `UPSTASH_REDIS_REST_TOKEN` | No | Upstash Redis REST API token |
 | `ADMIN_API_KEY` | Yes | API key for admin endpoints (used by CI/scripts as fallback to role-based auth) |
 
+### Optional Integrations (`apps/api`)
+
+#### GitHub Integration
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `GITHUB_APP_ID` | No | GitHub App ID for exercise solution push |
+| `GITHUB_PRIVATE_KEY` | No | GitHub App private key (RSA) |
+| `GITHUB_CLIENT_ID` | No | GitHub OAuth client ID |
+| `GITHUB_CLIENT_SECRET` | No | GitHub OAuth client secret |
+
+#### Kit (ConvertKit) Email
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `KIT_API_KEY` | No | Kit API key |
+| `KIT_API_SECRET` | No | Kit API secret |
+| `KIT_FORM_ID` | No | Kit signup form ID |
+| `KIT_TAG_PURCHASED` | No | Numeric tag ID for purchase confirmation email |
+
+#### Resend (Issue Notifications)
+
+| Variable          | Required | Description                                    |
+|-------------------|----------|------------------------------------------------|
+| `RESEND_API_KEY`  | No       | Resend API key                                 |
+| `SUPPORT_EMAIL`   | No       | Email address for issue report notifications   |
+
 ---
 
 ## Local Development

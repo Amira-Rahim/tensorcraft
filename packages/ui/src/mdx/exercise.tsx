@@ -82,7 +82,10 @@ const difficultyConfig = {
 /*  Test runner — evaluates user code against test assertions           */
 /* ------------------------------------------------------------------ */
 
-function parseAndRunTests(userCode: string, testCode: string): TestResult[] {
+export async function parseAndRunTests(
+  userCode: string,
+  testCode: string,
+): Promise<TestResult[]> {
   const results: TestResult[] = [];
 
   // Build a minimal test harness that captures results
@@ -91,16 +94,16 @@ function parseAndRunTests(userCode: string, testCode: string): TestResult[] {
     var __results = [];
     var __currentDescribe = '';
 
-    function describe(name, fn) {
+    async function describe(name, fn) {
       __currentDescribe = name;
-      try { fn(); } catch(e) { /* individual its handle errors */ }
+      try { await fn(); } catch(e) { /* individual its handle errors */ }
       __currentDescribe = '';
     }
 
-    function it(name, fn) {
+    async function it(name, fn) {
       var fullName = __currentDescribe ? __currentDescribe + ' > ' + name : name;
       try {
-        fn();
+        await fn();
         __results.push({ name: fullName, passed: true });
       } catch(e) {
         __results.push({ name: fullName, passed: false, error: e.message || String(e) });
@@ -157,6 +160,12 @@ function parseAndRunTests(userCode: string, testCode: string): TestResult[] {
           try { actual(); } catch(e) { threw = true; }
           if (!threw) throw new Error('Expected function to throw');
         },
+        toBeCloseTo: function(expected, precision) {
+          precision = precision === undefined ? 5 : precision;
+          var diff = Math.abs(actual - expected);
+          var limit = Math.pow(10, -precision) / 2;
+          if (diff >= limit) throw new Error('Expected ' + actual + ' to be close to ' + expected + ' (precision: ' + precision + ')');
+        },
         not: {
           toBe: function(expected) {
             if (actual === expected) throw new Error('Expected value to not be ' + JSON.stringify(expected));
@@ -190,62 +199,244 @@ function parseAndRunTests(userCode: string, testCode: string): TestResult[] {
   try {
     // Create a mock tf object for exercises that reference TensorFlow.js
     const tfMock = `
-      var tf = {
-        tensor: function(data, shape) {
-          var flat = Array.isArray(data) ? data.flat(Infinity) : [data];
-          var s = shape || [flat.length];
+      var tf = (function() {
+        // Helper: build nested array from flat data matching shape
+        function toNested(flat, shape) {
+          if (shape.length === 0) return flat[0];
+          if (shape.length === 1) return Array.from(flat.slice(0, shape[0]));
+          var outer = shape[0];
+          var innerSize = shape.slice(1).reduce(function(a,b){return a*b;},1);
+          var result = [];
+          for (var i = 0; i < outer; i++) {
+            result.push(toNested(flat.slice(i * innerSize, (i + 1) * innerSize), shape.slice(1)));
+          }
+          return result;
+        }
+
+        function makeTensor(flat, s) {
           return {
             dataSync: function() { return Float32Array.from(flat); },
             data: function() { return Promise.resolve(Float32Array.from(flat)); },
+            arraySync: function() { return toNested(Array.from(flat), s); },
+            array: function() { return Promise.resolve(toNested(Array.from(flat), s)); },
             shape: s,
             dtype: 'float32',
             rank: s.length,
-            size: flat.reduce(function(a,b){ return a*b; }, 1),
-            reshape: function(newShape) { return tf.tensor(flat, newShape); },
-            add: function(other) { return tf.add(this, other); },
-            sub: function(other) { return tf.sub(this, other); },
-            mul: function(other) { return tf.mul(this, other); },
-            div: function(other) { return tf.div(this, other); },
-            mean: function() { var m = flat.reduce(function(a,b){return a+b;},0)/flat.length; return tf.tensor([m]); },
-            std: function() { var m = flat.reduce(function(a,b){return a+b;},0)/flat.length; var v = flat.reduce(function(a,b){return a+(b-m)*(b-m);},0)/flat.length; return tf.tensor([Math.sqrt(v)]); },
+            size: s.reduce(function(a,b){ return a*b; }, 1),
+            reshape: function(newShape) { return makeTensor(Array.from(flat), newShape); },
+            flatten: function() { return makeTensor(Array.from(flat), [flat.length]); },
+            squeeze: function() {
+              var newShape = s.filter(function(d) { return d !== 1; });
+              if (newShape.length === 0) newShape = [1];
+              return makeTensor(Array.from(flat), newShape);
+            },
+            add: function(other) { return _tf.add(this, other); },
+            sub: function(other) { return _tf.sub(this, other); },
+            mul: function(other) { return _tf.mul(this, other); },
+            div: function(other) { return _tf.div(this, other); },
+            sum: function() { return _tf.sum(this); },
+            mean: function() { return _tf.mean(this); },
+            max: function() { return _tf.max(this); },
+            min: function() { return _tf.min(this); },
+            argMax: function(axis) { return _tf.argMax(this, axis); },
+            argMin: function(axis) { return _tf.argMin(this, axis); },
+            exp: function() { return _tf.exp(this); },
+            log: function() { return _tf.log(this); },
+            abs: function() { return _tf.abs(this); },
+            sqrt: function() { return _tf.sqrt(this); },
+            std: function() {
+              var m = flat.reduce(function(a,b){return a+b;},0)/flat.length;
+              var v = flat.reduce(function(a,b){return a+(b-m)*(b-m);},0)/flat.length;
+              return _tf.tensor([Math.sqrt(v)]);
+            },
             print: function() {},
             dispose: function() {},
           };
-        },
-        add: function(a,b) { var ad=Array.from(a.dataSync()), bd=Array.from(b.dataSync()); return tf.tensor(ad.map(function(v,i){return v+bd[i];}), a.shape); },
-        sub: function(a,b) { var ad=Array.from(a.dataSync()), bd=Array.from(b.dataSync()); return tf.tensor(ad.map(function(v,i){return v-bd[i];}), a.shape); },
-        mul: function(a,b) { var ad=Array.from(a.dataSync()), bd=Array.from(b.dataSync()); return tf.tensor(ad.map(function(v,i){return v*bd[i];}), a.shape); },
-        div: function(a,b) { var ad=Array.from(a.dataSync()), bd=Array.from(b.dataSync()); return tf.tensor(ad.map(function(v,i){return v/bd[i];}), a.shape); },
-        relu: function(x) { var d=Array.from(x.dataSync()); return tf.tensor(d.map(function(v){return Math.max(0,v);}), x.shape); },
-        sigmoid: function(x) { var d=Array.from(x.dataSync()); return tf.tensor(d.map(function(v){return 1/(1+Math.exp(-v));}), x.shape); },
-        softmax: function(x) { var d=Array.from(x.dataSync()); var max=Math.max.apply(null,d); var exp=d.map(function(v){return Math.exp(v-max);}); var sum=exp.reduce(function(a,b){return a+b;},0); return tf.tensor(exp.map(function(v){return v/sum;}), x.shape); },
-        scalar: function(v) { return tf.tensor([v]); },
-        zeros: function(shape) { return tf.tensor(new Array(shape.reduce(function(a,b){return a*b;},1)).fill(0), shape); },
-        ones: function(shape) { return tf.tensor(new Array(shape.reduce(function(a,b){return a*b;},1)).fill(1), shape); },
-        sequential: function() {
-          var layers = [];
-          return {
-            add: function(layer) { layers.push(layer); },
-            compile: function() {},
-            fit: function(x,y,opts) { return Promise.resolve({ history: { loss: [0.5, 0.3, 0.1] } }); },
-            predict: function(x) { return tf.zeros([1, 1]); },
-            layers: layers,
-          };
-        },
-        layers: {
-          dense: function(config) { return { units: config.units, activation: config.activation || 'linear' }; },
-          dropout: function(config) { return { rate: config.rate }; },
-          flatten: function() { return {}; },
-        },
-        matMul: function(a,b) { return tf.zeros([a.shape[0], b.shape[1] || 1]); },
-      };
+        }
+
+        var _tf = {
+          tensor: function(data, shape) {
+            var flat = Array.isArray(data) ? data.flat(Infinity) : [data];
+            var s = shape || [flat.length];
+            return makeTensor(flat, s);
+          },
+
+          tensor1d: function(values) {
+            return _tf.tensor(values, [values.length]);
+          },
+
+          tensor2d: function(values, shape) {
+            var flat = values.flat(Infinity);
+            var s = shape || [values.length, values[0].length];
+            return _tf.tensor(flat, s);
+          },
+
+          scalar: function(v) { return _tf.tensor([v], []); },
+
+          zeros: function(shape) {
+            var size = shape.reduce(function(a,b){return a*b;},1);
+            return _tf.tensor(new Array(size).fill(0), shape);
+          },
+
+          ones: function(shape) {
+            var size = shape.reduce(function(a,b){return a*b;},1);
+            return _tf.tensor(new Array(size).fill(1), shape);
+          },
+
+          randomNormal: function(shape) {
+            var size = shape.reduce(function(a,b){return a*b;},1);
+            var data = [];
+            for (var i = 0; i < size; i += 2) {
+              var u1 = Math.random(), u2 = Math.random();
+              var z0 = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+              var z1 = Math.sqrt(-2 * Math.log(u1)) * Math.sin(2 * Math.PI * u2);
+              data.push(z0);
+              if (i + 1 < size) data.push(z1);
+            }
+            return _tf.tensor(data, shape);
+          },
+
+          linspace: function(start, stop, num) {
+            var data = [];
+            var step = num > 1 ? (stop - start) / (num - 1) : 0;
+            for (var i = 0; i < num; i++) data.push(start + step * i);
+            return _tf.tensor(data, [num]);
+          },
+
+          range: function(start, limit, delta) {
+            delta = delta || 1;
+            var data = [];
+            for (var v = start; delta > 0 ? v < limit : v > limit; v += delta) data.push(v);
+            return _tf.tensor(data, [data.length]);
+          },
+
+          oneHot: function(indices, depth) {
+            var idx = Array.isArray(indices) ? indices : Array.from(indices.dataSync());
+            var data = [];
+            for (var i = 0; i < idx.length; i++) {
+              for (var j = 0; j < depth; j++) {
+                data.push(j === idx[i] ? 1 : 0);
+              }
+            }
+            return _tf.tensor(data, [idx.length, depth]);
+          },
+
+          concat: function(tensors, axis) {
+            axis = axis || 0;
+            var allData = [];
+            for (var i = 0; i < tensors.length; i++) {
+              allData = allData.concat(Array.from(tensors[i].dataSync()));
+            }
+            if (axis === 0) {
+              var restShape = tensors[0].shape.slice(1);
+              var totalFirst = 0;
+              for (var t = 0; t < tensors.length; t++) totalFirst += tensors[t].shape[0];
+              return _tf.tensor(allData, [totalFirst].concat(restShape));
+            }
+            return _tf.tensor(allData, [allData.length]);
+          },
+
+          // Element-wise ops
+          add: function(a,b) { var ad=Array.from(a.dataSync()), bd=Array.from(b.dataSync()); return _tf.tensor(ad.map(function(v,i){return v+bd[i];}), a.shape); },
+          sub: function(a,b) { var ad=Array.from(a.dataSync()), bd=Array.from(b.dataSync()); return _tf.tensor(ad.map(function(v,i){return v-bd[i];}), a.shape); },
+          mul: function(a,b) { var ad=Array.from(a.dataSync()), bd=Array.from(b.dataSync()); return _tf.tensor(ad.map(function(v,i){return v*bd[i];}), a.shape); },
+          div: function(a,b) { var ad=Array.from(a.dataSync()), bd=Array.from(b.dataSync()); return _tf.tensor(ad.map(function(v,i){return v/bd[i];}), a.shape); },
+
+          // Activation functions
+          relu: function(x) { var d=Array.from(x.dataSync()); return _tf.tensor(d.map(function(v){return Math.max(0,v);}), x.shape); },
+          sigmoid: function(x) { var d=Array.from(x.dataSync()); return _tf.tensor(d.map(function(v){return 1/(1+Math.exp(-v));}), x.shape); },
+          softmax: function(x) { var d=Array.from(x.dataSync()); var max=Math.max.apply(null,d); var exp=d.map(function(v){return Math.exp(v-max);}); var sum=exp.reduce(function(a,b){return a+b;},0); return _tf.tensor(exp.map(function(v){return v/sum;}), x.shape); },
+          tanh: function(x) { var d=Array.from(x.dataSync()); return _tf.tensor(d.map(function(v){return Math.tanh(v);}), x.shape); },
+
+          // Math ops
+          exp: function(x) { var d=Array.from(x.dataSync()); return _tf.tensor(d.map(function(v){return Math.exp(v);}), x.shape); },
+          log: function(x) { var d=Array.from(x.dataSync()); return _tf.tensor(d.map(function(v){return Math.log(v);}), x.shape); },
+          abs: function(x) { var d=Array.from(x.dataSync()); return _tf.tensor(d.map(function(v){return Math.abs(v);}), x.shape); },
+          sqrt: function(x) { var d=Array.from(x.dataSync()); return _tf.tensor(d.map(function(v){return Math.sqrt(v);}), x.shape); },
+          pow: function(x, e) { var d=Array.from(x.dataSync()); return _tf.tensor(d.map(function(v){return Math.pow(v, e);}), x.shape); },
+          neg: function(x) { var d=Array.from(x.dataSync()); return _tf.tensor(d.map(function(v){return -v;}), x.shape); },
+
+          // Reduction ops
+          sum: function(x) { var d=Array.from(x.dataSync()); var s=d.reduce(function(a,b){return a+b;},0); return _tf.tensor([s]); },
+          mean: function(x) { var d=Array.from(x.dataSync()); var s=d.reduce(function(a,b){return a+b;},0)/d.length; return _tf.tensor([s]); },
+          max: function(x) { var d=Array.from(x.dataSync()); return _tf.tensor([Math.max.apply(null,d)]); },
+          min: function(x) { var d=Array.from(x.dataSync()); return _tf.tensor([Math.min.apply(null,d)]); },
+          argMax: function(x) { var d=Array.from(x.dataSync()); var idx=0; for(var i=1;i<d.length;i++){if(d[i]>d[idx])idx=i;} return _tf.tensor([idx]); },
+          argMin: function(x) { var d=Array.from(x.dataSync()); var idx=0; for(var i=1;i<d.length;i++){if(d[i]<d[idx])idx=i;} return _tf.tensor([idx]); },
+
+          // Matrix multiplication
+          matMul: function(a, b) {
+            if (a.shape[a.shape.length-1] !== b.shape[0]) {
+              throw new Error('matMul: inner dimensions must match: [' + a.shape + '] vs [' + b.shape + ']');
+            }
+            var M = a.shape[0], K = a.shape[1] || 1, N = b.shape[1] || 1;
+            var ad = Array.from(a.dataSync()), bd = Array.from(b.dataSync());
+            var result = [];
+            for (var i = 0; i < M; i++) {
+              for (var j = 0; j < N; j++) {
+                var s = 0;
+                for (var k = 0; k < K; k++) {
+                  s += ad[i * K + k] * bd[k * N + j];
+                }
+                result.push(s);
+              }
+            }
+            return _tf.tensor(result, [M, N]);
+          },
+
+          // Model API
+          sequential: function() {
+            var layers = [];
+            return {
+              add: function(layer) { layers.push(layer); },
+              compile: function() {},
+              fit: function(x,y,opts) { return Promise.resolve({ history: { loss: [0.5, 0.3, 0.1] } }); },
+              predict: function(x) {
+                var batchSize = x.shape[0];
+                var lastUnits = layers.length > 0 && layers[layers.length-1].units ? layers[layers.length-1].units : 1;
+                return _tf.zeros([batchSize, lastUnits]);
+              },
+              summary: function() {
+                console.log('_________________________________________________________________');
+                console.log('Layer (type)                 Output Shape              Param #');
+                console.log('=================================================================');
+                for (var i = 0; i < layers.length; i++) {
+                  var l = layers[i];
+                  var name = l.units ? 'dense' : (l.rate !== undefined ? 'dropout' : 'flatten');
+                  console.log(name + '                          varies                    0');
+                }
+                console.log('=================================================================');
+              },
+              layers: layers,
+            };
+          },
+
+          layers: {
+            dense: function(config) { return { units: config.units, activation: config.activation || 'linear', type: 'dense' }; },
+            dropout: function(config) { return { rate: config.rate, type: 'dropout' }; },
+            flatten: function() { return { type: 'flatten' }; },
+          },
+        };
+
+        return _tf;
+      })();
     `;
 
-    // Combine: tf mock + user code + test harness + test code
-    const fullCode = `${tfMock}\n${harness}\n${userCode}\n${testCode}\nreturn __results;`;
+    // Strip import statements from user code
+    const cleanCode = userCode.replace(
+      /^import\s+.*from\s+['"].*['"];?\s*$/gm,
+      "",
+    );
+
+    // Combine: tf mock + harness + clean user code + async IIFE wrapping test code
+    const fullCode = `${tfMock}\n${harness}\n${cleanCode}\n;(async function() {\n${testCode}\nreturn __results;\n})()`;
 
     const fn = new Function(fullCode);
-    const rawResults = fn() as TestResult[];
+    const resultPromise = fn() as Promise<TestResult[]>;
+    const timeoutPromise = new Promise<TestResult[]>((_, reject) =>
+      setTimeout(() => reject(new Error("Timed out after 10 seconds")), 10_000),
+    );
+    const rawResults = await Promise.race([resultPromise, timeoutPromise]);
     results.push(...rawResults);
   } catch (err) {
     results.push({
@@ -374,25 +565,12 @@ function ExerciseControls({
   const [running, setRunning] = useState(false);
   const hasAttempted = useRef(false);
 
-  const handleRun = useCallback(() => {
+  const handleRun = useCallback(async () => {
     setRunning(true);
     const code = sandpack.files["/index.js"]?.code ?? "";
 
-    // Run with a 10s timeout
-    const timeout = setTimeout(() => {
-      onResults([
-        {
-          name: "Execution",
-          passed: false,
-          error: "Timed out after 10 seconds",
-        },
-      ]);
-      setRunning(false);
-    }, 10_000);
-
     try {
-      const results = parseAndRunTests(code, exercise.testCode);
-      clearTimeout(timeout);
+      const results = await parseAndRunTests(code, exercise.testCode);
       onResults(results);
       hasAttempted.current = true;
 
@@ -414,7 +592,6 @@ function ExerciseControls({
         });
       }
     } catch (err) {
-      clearTimeout(timeout);
       onResults([
         {
           name: "Execution",
@@ -423,8 +600,9 @@ function ExerciseControls({
         },
       ]);
       hasAttempted.current = true;
+    } finally {
+      setRunning(false);
     }
-    setRunning(false);
   }, [
     sandpack,
     exercise.testCode,

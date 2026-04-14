@@ -187,6 +187,9 @@ export function LessonContent({
       base.Exercise = wrapVisibility("Exercise", Exercise);
     }
 
+    base.Section = (props: { name: string; children: React.ReactNode }) =>
+      shouldShow(props.name) ? <div>{props.children}</div> : null;
+
     return base;
   }, [
     themeId,

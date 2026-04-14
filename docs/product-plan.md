@@ -42,6 +42,8 @@ The specialization (roughly 40% of each curriculum) goes deeper into the theme's
 
 ### 1.3 Launch Strategy
 
+> **Updated (2026-04-14):** All 5 themes now launch simultaneously. The V0.5 phased approach was replaced with a simultaneous launch as of April 2026.
+
 | Version | Content | Timing | Status |
 |---------|---------|--------|--------|
 | **V0.5** | Deep Orbit — Modules 1–3 (15 lessons, free tier) | Q2 2026 | In development |
@@ -558,6 +560,8 @@ Each module contains **5 lessons**, following a consistent structure:
 
 ### 3.7 UI/UX Design Notes: Coming Soon Theme Cards
 
+> **Updated (2026-04-14):** All 5 themes now launch simultaneously. The V0.5 phased approach was replaced with a simultaneous launch as of April 2026.
+
 #### Visual Distinction
 
 Coming Soon cards are visually distinct from purchasable cards:
@@ -797,6 +801,8 @@ This structure eliminates redundancy across multi-theme purchases and makes pric
 | 11. Capstone: DEEP SCAN | Not started | 0 | 0 |
 
 **Total:** 25/55 lessons written (45%), 24 exercises. Remaining: 6 modules (30 lessons).
+
+> **Updated (2026-04-14):** All 11 modules for all 5 themes are now fully authored with complete lesson content.
 
 ---
 
@@ -1157,42 +1163,52 @@ For students who want deeper foundations. Each lesson companions a core module: 
 
 ### 5.1 Deep Orbit
 
-- **Primary Color:** #1A1A4E (deep space indigo)
-- **Accent Color:** #4FC3F7 (stellar blue)
-- **Secondary Accent:** #FFD54F (solar gold)
-- **Background:** Near-black with subtle star field particle effect
+- **Primary Color:** #6BAA8A
+- **Accent Color:** #A89060
+- **Background:** #1C1C1C (shared)
+- **Surface:** #252525 (shared)
+- **Text:** #E0E0E0 (shared)
+- **Muted:** #A0A0A0 (shared)
 - **Mood:** Vast, awe-inspiring, scientifically precise. The feeling of staring through a telescope at something impossibly far away. Clean interfaces with data-heavy readouts, reminiscent of mission control. Typography is monospaced for data, clean sans-serif for narrative.
 
 ### 5.2 Neon Protocol
 
-- **Primary Color:** #0D0D1A (dark cyber navy)
-- **Accent Color:** #E040FB (neon magenta)
-- **Secondary Accent:** #00E5FF (electric cyan)
-- **Background:** Dark with subtle scan-line overlay and occasional glitch effects
+- **Primary Color:** #4A90D9
+- **Accent Color:** #A07090
+- **Background:** #1C1C1C (shared)
+- **Surface:** #252525 (shared)
+- **Text:** #E0E0E0 (shared)
+- **Muted:** #A0A0A0 (shared)
 - **Mood:** Tense, cyberpunk noir, digitally charged. Rain-slicked streets reflected in neon. Interfaces feel like hacking terminals — monospaced text, blinking cursors, matrix-style data cascades. Typography mixes monospaced (code/data) with compressed sans-serif (headlines).
 
 ### 5.3 Signal Ward
 
-- **Primary Color:** #1B2631 (clinical dark slate)
-- **Accent Color:** #26A69A (medical teal)
-- **Secondary Accent:** #EF5350 (alert red)
-- **Background:** Dark with subtle pulse/waveform animation along edges
+- **Primary Color:** #65C07D
+- **Accent Color:** #7096B0
+- **Background:** #1C1C1C (shared)
+- **Surface:** #252525 (shared)
+- **Text:** #E0E0E0 (shared)
+- **Muted:** #A0A0A0 (shared)
 - **Mood:** Focused, clinical, high-stakes calm. The quiet tension of a monitoring station at 3 AM. Interfaces are clean and medical — waveform displays, vital sign readouts, clean grid layouts. Typography is highly legible sans-serif throughout, prioritizing readability.
 
 ### 5.4 Nova Canvas
 
-- **Primary Color:** #1A1A2E (gallery midnight)
-- **Accent Color:** #FF6F61 (creative coral)
-- **Secondary Accent:** #A78BFA (artistic violet)
-- **Background:** Dark with subtle generative art patterns that shift slowly
+- **Primary Color:** #C06060
+- **Accent Color:** #7868A8
+- **Background:** #1C1C1C (shared)
+- **Surface:** #252525 (shared)
+- **Text:** #E0E0E0 (shared)
+- **Muted:** #A0A0A0 (shared)
 - **Mood:** Creative, expressive, visually rich. The feeling of walking through an interactive art exhibition at night. Interfaces are gallery-like — generous whitespace, large image displays, elegant typography. Mixed typography: serif for narrative, sans-serif for UI, display fonts for headings.
 
 ### 5.5 Terra Grid
 
-- **Primary Color:** #1B2A1B (forest dark green)
-- **Accent Color:** #66BB6A (terrain green)
-- **Secondary Accent:** #FFA726 (amber/earth orange)
-- **Background:** Dark with subtle topographic contour lines and terrain textures
+- **Primary Color:** #C49535
+- **Accent Color:** #6BAA8A
+- **Background:** #1C1C1C (shared)
+- **Surface:** #252525 (shared)
+- **Text:** #E0E0E0 (shared)
+- **Muted:** #A0A0A0 (shared)
 - **Mood:** Grounded, earthy, purposeful. The feeling of standing at a monitoring outpost overlooking a vast landscape. Interfaces incorporate map elements — contour lines, coordinate grids, terrain indicators. Typography is rugged sans-serif, with data displayed in clean monospaced fonts.
 
 ### 5.6 Shared Constraints

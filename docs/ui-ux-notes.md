@@ -274,7 +274,7 @@ The signup and login screen provides three authentication methods.
 - **Layout:** Centered card (max-width: 420px) on the `#080B16` background. Card uses `#0F1320` surface with `rgba(255,255,255,0.06)` border. Tensorcraft logo above the card. Headline: "Welcome to Tensorcraft". Subtext toggles between "Sign up" and "Log in" modes via a text link below the form.
 - **Post-auth:** Successful signup redirects to the onboarding flow (Section 6.2). Returning users who have completed onboarding are redirected to their dashboard.
 
-### 6.2 Onboarding Flow (`onboarding.html`)
+### 6.2 Onboarding Flow (`/onboarding` route)
 
 A 3-step post-signup flow that orients the new user.
 

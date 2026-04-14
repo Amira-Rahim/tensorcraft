@@ -47,6 +47,7 @@ Every time you call `getImageData()` on a canvas context, you get back a `Uint8C
 
 <LearningObjectives objectives={["Understand that images are multi-dimensional arrays (tensors) of pixel values", "Convert between canvas pixel data and TensorFlow.js tensors", "Identify the shape of image data: [height, width, channels]", "Recognize that frontend canvas work is already image tensor manipulation"]} />
 
+<Section name="code-tensors">
 ## Images Are Tensors
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
@@ -82,7 +83,9 @@ console.log(tensor.dtype); // 'int32' — pixel values as integers
 const withAlpha = tf.browser.fromPixels(canvas, 4);
 console.log(withAlpha.shape); // [224, 224, 4]`}
 </CodeBlock>
+</Section>
 
+<Section name="code-shapes">
 ## Image Shapes
 
 <CodeBlock language="typescript" title="image-shapes.ts">
@@ -111,11 +114,14 @@ const cameraFrame = tf.randomNormal([480, 640, 3]);
 const resized = tf.image.resizeBilinear(cameraFrame.expandDims(0), [224, 224]);
 console.log('Resized for model:', resized.shape); // [1, 224, 224, 3]`}
 </CodeBlock>
+</Section>
 
+<Section name="challenge">
 ## Challenge
 
 Convert canvas pixel data to a tensor and inspect its shape.
 
 <Exercise slug="canvas-to-tensor" />
+</Section>
 
 <KeyTakeaways takeaways={["Images are multi-dimensional arrays: [height, width, channels] — the same data as canvas getImageData()", "tf.browser.fromPixels() converts a canvas element to a TensorFlow.js tensor", "Models expect batched input: [batch, height, width, channels] — use expandDims() for single images", "You've been working with image tensors every time you used the Canvas API"]} />

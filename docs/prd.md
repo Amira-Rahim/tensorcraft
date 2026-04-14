@@ -94,17 +94,16 @@ Each theme contains **11 modules** with **5 lessons per module**, totaling **55 
 
 ### 3.3 The 5C Lesson Loop
 
-Every lesson follows the **5C pedagogical loop**, implemented as a **7-step Duolingo-style progression** with a progress bar and step-based navigation (sidebar removed). Steps vary by lesson position within a module.
+Every lesson follows the **5C pedagogical loop**, implemented as a **6-step Duolingo-style progression** with a progress bar and step-based navigation (sidebar removed). Steps vary by lesson position within a module.
 
 | Step | Name | 5C Phase | Description | Variations by Position |
 |---|---|---|---|---|
-| 1 | **Mission Briefing** | Context | Set the scene within the theme narrative; state the learning objective | Lesson 1 of module: extended world-building intro; Lessons 2–4: brief recap + new objective; Lesson 5 (capstone): project brief |
-| 2 | **Crew Dialogue** | Context | Character dialogue deepening the narrative and framing the problem | All lessons: 2–4 exchanges between theme characters |
-| 3 | **Concept** | Concept | Teach the ML idea using the FE-to-ML bridge | Odd lessons: analogy-first; Even lessons: code-first |
-| 4 | **Code** | Code | Hands-on editor exercise | Lessons 1–3: scaffolded (fill-in-the-blank); Lesson 4: guided (fewer hints); Lesson 5: open (build from scratch) |
-| 5 | **Challenge** | Code/Check | Interactive exercise with automated tests | Lessons 1–4: inline exercise; Lesson 5: open project |
-| 6 | **Key Takeaways** | Check | Summary card recapping core concepts and bridge connections | All lessons: 3–5 bullet takeaways |
-| 7 | **Consequence** | Connect | Narrative consequence; tie ML concept back to FE world; preview next lesson | All lessons: story beat + "What's next" teaser |
+| 1 | **Briefing** | Context | Set the scene within the theme narrative (Context + Dialogue merged); state the learning objective; character dialogue frames the problem | Lesson 1 of module: extended world-building intro + dialogue; Lessons 2–4: brief recap + new objective + dialogue; Lesson 5 (capstone): project brief |
+| 2 | **Concept** | Concept | Teach the ML idea using the FE-to-ML bridge | Odd lessons: analogy-first; Even lessons: code-first |
+| 3 | **Code** | Code | Hands-on editor exercise | Lessons 1–3: scaffolded (fill-in-the-blank); Lesson 4: guided (fewer hints); Lesson 5: open (build from scratch) |
+| 4 | **Challenge** | Code/Check | Interactive exercise with automated tests | Lessons 1–4: inline exercise; Lesson 5: open project |
+| 5 | **Takeaways** | Check | Summary card recapping core concepts and bridge connections | All lessons: 3–5 bullet takeaways |
+| 6 | **Consequence** | Connect | Narrative consequence; tie ML concept back to FE world; preview next lesson | All lessons: story beat + "What's next" teaser |
 
 #### Variation Frequency
 
@@ -156,11 +155,9 @@ The entry point where learners browse, preview, and enroll in themes.
 
 | # | Requirement | Priority | Description |
 |---|---|---|---|
-| 1 | Launched theme cards | P0 | Display launched themes (V0.5: Deep Orbit only) as fully interactive cards with title, world illustration, specialization tagline, lesson count, estimated duration, and "Start Learning" CTA |
-| 2 | Coming soon cards | P0 | Display upcoming themes (Neon Protocol, Signal Ward, Nova Canvas, Terra Grid) as visually distinct cards with a blurred or dimmed preview illustration, "Coming Soon" badge, and "Notify Me" CTA |
-| 3 | Email capture | P1 | Clicking "Notify Me" opens a minimal modal or inline form capturing email address; stored in mailing list segmented by theme interest |
-| 4 | Responsive layout | P0 | Grid adapts from 3-column (desktop) to 2-column (tablet) to single-column stacked (mobile); cards maintain aspect ratio |
-| 5 | Status-driven rendering | P1 | Card appearance (CTA text, illustration treatment, badge) is driven by a `status` field (`launched`, `coming_soon`, `beta`) in the theme config; no hard-coded conditionals per theme |
+| 1 | Theme cards | P0 | Display all 5 themes as fully interactive cards with title, world illustration, specialization tagline, lesson count, estimated duration, and "Start Learning" CTA |
+| 2 | Responsive layout | P0 | Grid adapts from 3-column (desktop) to 2-column (tablet) to single-column stacked (mobile); cards maintain aspect ratio |
+| 3 | No status gating | P0 | All 5 themes are available simultaneously. No theme status gating. |
 
 ### 4.2 Lesson Experience
 
@@ -285,7 +282,7 @@ Track learning behavior, engagement, and conversion events.
 | Language | TypeScript 5.x | Strict mode enabled; no `any` types in production code |
 | Styling | Tailwind CSS 4 + CSS custom properties | Tailwind for utility-first layout; CSS custom properties for per-theme theming via `data-theme` attribute |
 | ML runtime | TensorFlow.js (tfjs-core + tfjs-layers) | Runs models in-browser via WebGL backend; WASM fallback for unsupported GPUs |
-| Code editor / exercises | Sandpack (@codesandbox/sandpack-react) | Browser-based sandbox for interactive exercises with Jest-style test runner |
+| Code editor / exercises | Sandpack (@codesandbox/sandpack-react) | Browser-based sandbox for interactive exercises with custom async test runner and TensorFlow.js mock. 295 exercises across all themes. |
 | Syntax highlighting | Shiki 4.x | Lazy-loaded, cached singleton; `github-dark-default` theme; supports TS/JS/Python/JSON/Bash/YAML/MDX |
 | API layer | Hono (separate service, port 3001) | REST API on `@hono/node-server`; independent deployment and scaling from Next.js frontend |
 | Database | Supabase (PostgreSQL) | Serverless-friendly; row-level security for multi-tenant data. Additional tables: `streaks` (per-theme streak tracking with `current_streak`, `longest_streak`, `last_activity_date`), `achievements` (user achievement badges with `badge_type`, `earned_at`, `theme_id`), `exercise_attempts` (exercise submission history with `user_id`, `exercise_slug`, `submitted_code`, `passed`, `score`, `attempted_at`) |
@@ -390,11 +387,13 @@ Each theme has a distinct color palette within the lesson content area. Colors a
 
 | Theme | Primary | Accent | Background | Surface |
 |---|---|---|---|---|
-| Deep Orbit | `#7B68EE` | `#F0C75E` | `#0B0D1A` | `#16213E` |
-| Neon Protocol | `#00D4FF` | `#FF2D7B` | `#0A0A0F` | `#151520` |
-| Signal Ward | `#2ECC71` | `#5B8DEF` | `#0A1628` | `#132238` |
-| Nova Canvas | `#FF6B6B` | `#A78BFA` | `#0D0D1A` | `#1A1A30` |
-| Terra Grid | `#F59E0B` | `#10B981` | `#111827` | `#1F2937` |
+| Deep Orbit | `#6BAA8A` | `#A89060` | `#1C1C1C` | `#252525` |
+| Neon Protocol | `#4A90D9` | `#A07090` | `#1C1C1C` | `#252525` |
+| Signal Ward | `#65C07D` | `#7096B0` | `#1C1C1C` | `#252525` |
+| Nova Canvas | `#C06060` | `#7868A8` | `#1C1C1C` | `#252525` |
+| Terra Grid | `#C49535` | `#6BAA8A` | `#1C1C1C` | `#252525` |
+
+**Shared palette:** text `#E0E0E0`, muted `#A0A0A0`, border `#2A2A2A`, codeBg `#161616`.
 
 ### 6.3 Typography
 
@@ -448,8 +447,9 @@ Tensorcraft uses a **per-theme, one-time purchase model**. Each theme is a stand
 | Single Theme | $79 | All 11 modules (55 lessons) of one theme. Lifetime access. GitHub integration. Progress sharing. |
 | Two Themes | $129 | Any two themes. Save $29 vs buying separately. |
 | Three Themes | $169 | Any three themes. Save $68 vs buying separately. |
+| All 5 Themes | $219 | All five themes. Save $176 vs buying separately. |
 
-*Deep Orbit available now. Other themes unlock upon release for bundle purchasers.*
+*All 5 themes are available simultaneously.*
 
 ### Team Pricing
 
