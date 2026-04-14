@@ -36,6 +36,15 @@ export const lessonSchema = z.object({
     nextLessonTeaser: z.string().optional(),
   }),
 
+  // Screenplay scene metadata (optional — falls back gracefully)
+  scene: z
+    .object({
+      location: z.string(),
+      time: z.string().optional(),
+      epilogueLocation: z.string().optional(),
+    })
+    .optional(),
+
   // Hints (manual 3-level progressive disclosure)
   hints: z
     .array(

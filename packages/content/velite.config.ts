@@ -35,6 +35,15 @@ const lessons = defineCollection({
       nextLessonTeaser: s.string().optional(),
     }),
 
+    // Screenplay scene metadata (optional — falls back gracefully)
+    scene: s
+      .object({
+        location: s.string(),
+        time: s.string().optional(),
+        epilogueLocation: s.string().optional(),
+      })
+      .optional(),
+
     // 3-level progressive hints
     hints: s
       .array(
