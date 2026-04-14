@@ -2,32 +2,34 @@ import type { ReactNode } from "react";
 
 interface DialogueProps {
   speaker: string;
+  direction?: string;
   children: ReactNode;
 }
 
-export function Dialogue({ speaker, children }: DialogueProps) {
+export function Dialogue({ speaker, direction, children }: DialogueProps) {
   return (
-    <blockquote
-      className="my-8 pl-6 py-4 not-italic"
-      style={{
-        borderLeft: "3px solid var(--tc-accent, #A89060)",
-        background: "var(--tc-surface, #252525)",
-        marginLeft: 0,
-        marginRight: 0,
-      }}
-    >
-      <span
-        className="not-italic text-xs font-bold uppercase tracking-widest block mb-2"
-        style={{ color: "var(--tc-accent, #A89060)" }}
+    <div className="mb-7">
+      <div
+        className="font-mono text-xs font-bold uppercase tracking-[2px] mb-1.5"
+        style={{ color: "var(--tc-text, #E0E0E0)" }}
       >
         {speaker}
-      </span>
+      </div>
+      {direction && (
+        <div
+          className="text-[13px] italic mb-1"
+          style={{ color: "var(--tc-muted, #A0A0A0)" }}
+          data-testid="direction"
+        >
+          ({direction})
+        </div>
+      )}
       <div
-        className="text-base leading-relaxed font-sans"
-        style={{ color: "var(--tc-text, #E0E0E0)" }}
+        className="text-[15px] leading-relaxed max-w-[560px]"
+        style={{ color: "var(--tc-text, #c8c8c8)" }}
       >
         {children}
       </div>
-    </blockquote>
+    </div>
   );
 }

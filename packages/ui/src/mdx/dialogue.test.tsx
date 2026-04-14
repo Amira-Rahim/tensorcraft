@@ -13,15 +13,32 @@ describe("Dialogue", () => {
     expect(screen.getByText("The signal is fading.")).toBeInTheDocument();
   });
 
-  it("renders as a blockquote", () => {
+  it("renders as a div, not a blockquote", () => {
     const { container } = render(<Dialogue speaker="ARIA">Test</Dialogue>);
-    expect(container.querySelector("blockquote")).toBeInTheDocument();
+    expect(container.querySelector("blockquote")).not.toBeInTheDocument();
+    expect(container.querySelector("div")).toBeInTheDocument();
   });
 
-  it("displays speaker in uppercase tracking style", () => {
+  it("displays speaker in uppercase monospace style", () => {
     render(<Dialogue speaker="Ensign Demir">Report ready.</Dialogue>);
     const speaker = screen.getByText("Ensign Demir");
-    expect(speaker).toHaveClass("uppercase", "tracking-widest");
+    expect(speaker).toHaveClass("uppercase", "tracking-[2px]");
+  });
+
+  it("renders optional direction as parenthetical", () => {
+    render(
+      <Dialogue speaker="Imran" direction="pulling up the chart">
+        The note said PCN allergy.
+      </Dialogue>,
+    );
+    expect(screen.getByText("(pulling up the chart)")).toBeInTheDocument();
+  });
+
+  it("omits parenthetical when no direction prop", () => {
+    const { container } = render(<Dialogue speaker="ARIA">Scanning.</Dialogue>);
+    expect(
+      container.querySelector("[data-testid='direction']"),
+    ).not.toBeInTheDocument();
   });
 
   it("has no accessibility violations", async () => {
