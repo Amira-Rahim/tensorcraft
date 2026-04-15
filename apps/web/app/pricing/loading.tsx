@@ -1,6 +1,6 @@
 export default function PricingLoading() {
   return (
-    <main className="min-h-screen bg-surface relative">
+    <main className="min-h-screen bg-page relative">
       <div className="absolute inset-0 grid-bg pointer-events-none z-0" />
       <div className="relative z-10">
         {/* Hero skeleton */}

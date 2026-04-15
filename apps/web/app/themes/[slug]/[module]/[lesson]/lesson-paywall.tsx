@@ -45,7 +45,7 @@ export function LessonPaywall({
       <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
         <Link
           href="/pricing"
-          className="inline-flex items-center justify-center h-11 px-6 text-sm font-medium font-mono bg-primary text-surface border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover"
+          className="inline-flex items-center justify-center h-11 px-6 text-sm font-medium font-mono bg-primary text-page border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover"
         >
           View Pricing &rarr;
         </Link>

@@ -33,7 +33,7 @@ export function UserAvatar({ url, name, size }: UserAvatarProps) {
       style={{
         width: size,
         height: size,
-        background: "rgba(107,170,138,0.12)",
+        background: "color-mix(in srgb, var(--tc-primary) 12%, transparent)",
         border: "2px solid var(--tc-primary)",
         fontSize: size * 0.4,
         color: "var(--tc-primary)",

@@ -37,7 +37,7 @@ const tierLabels: Record<string, string> = {
 
 export default function BridgesPage() {
   return (
-    <main className="min-h-screen bg-surface px-6 py-20">
+    <main className="min-h-screen bg-page px-6 py-20">
       <div className="max-w-4xl mx-auto">
         <p className="font-mono text-xs text-primary tracking-wider uppercase mb-3">
           // {BRIDGES.length} bridges

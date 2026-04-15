@@ -7,7 +7,7 @@ export function SiteFooter() {
         {/* Bottom bar */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-text-muted font-mono">
           <div className="flex items-center gap-2 font-bold text-text-primary tracking-wider text-xs">
-            <span className="bg-primary text-surface px-1.5 py-0.5 text-xs font-bold">
+            <span className="bg-primary text-page px-1.5 py-0.5 text-xs font-bold">
               T_
             </span>
             TENSORCRAFT

@@ -63,7 +63,7 @@ export function MobileNav() {
 
       {/* Full-screen overlay */}
       {open && (
-        <div className="fixed inset-0 z-50 bg-surface flex flex-col">
+        <div className="fixed inset-0 z-50 bg-page flex flex-col">
           {/* Header row */}
           <div className="flex items-center justify-between h-15 px-8 border-b border-border">
             <Link
@@ -71,7 +71,7 @@ export function MobileNav() {
               onClick={() => setOpen(false)}
               className="flex items-center gap-2.5 font-mono text-sm font-medium tracking-wider text-text-primary"
             >
-              <span className="bg-primary text-surface px-1.5 py-0.5 text-xs font-bold">
+              <span className="bg-primary text-page px-1.5 py-0.5 text-xs font-bold">
                 T_
               </span>
               TENSORCRAFT

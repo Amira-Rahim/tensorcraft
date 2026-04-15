@@ -1,6 +1,6 @@
 export default function LessonLoading() {
   return (
-    <main className="min-h-screen bg-surface">
+    <main className="min-h-screen bg-page">
       <div className="w-full max-w-[900px] mx-auto px-6 md:px-12 py-6 animate-pulse">
         {/* Top nav skeleton */}
         <div className="flex items-center gap-4 mb-6">

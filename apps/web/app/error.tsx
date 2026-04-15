@@ -15,7 +15,7 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center px-6 bg-surface">
+    <div className="min-h-[80vh] flex items-center justify-center px-6 bg-page">
       <div className="max-w-md w-full text-center">
         <div className="inline-flex items-center justify-center w-16 h-16 mb-6 bg-primary/10">
           <svg
@@ -46,7 +46,7 @@ export default function Error({
           <button
             type="button"
             onClick={reset}
-            className="px-6 py-3 text-sm font-medium font-mono bg-primary text-surface border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover"
+            className="px-6 py-3 text-sm font-medium font-mono bg-primary text-page border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover"
           >
             Try again
           </button>

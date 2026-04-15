@@ -23,9 +23,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 const difficultyColors = {
-  beginner: "#6BAA8A",
-  intermediate: "#7096B0",
-  advanced: "#A89060",
+  beginner: "var(--tc-tier-identity)",
+  intermediate: "var(--tc-tier-structural)",
+  advanced: "var(--tc-tier-intuition)",
 };
 
 export default async function ModuleOverviewPage({ params }: Props) {
@@ -51,7 +51,7 @@ export default async function ModuleOverviewPage({ params }: Props) {
   ).length;
 
   return (
-    <main className="min-h-screen px-6 py-20 bg-surface relative overflow-hidden">
+    <main className="min-h-screen px-6 py-20 bg-page relative overflow-hidden">
       <AmbientBackground count={180} />
       <div className="max-w-4xl mx-auto relative z-10">
         {/* Breadcrumb */}
@@ -169,7 +169,7 @@ export default async function ModuleOverviewPage({ params }: Props) {
                       className="text-xs uppercase tracking-wider px-1.5 py-0.5"
                       style={{
                         color: difficultyColors[lesson.difficulty],
-                        background: `${difficultyColors[lesson.difficulty]}15`,
+                        background: `color-mix(in srgb, ${difficultyColors[lesson.difficulty]} 8%, transparent)`,
                       }}
                     >
                       {lesson.difficulty}

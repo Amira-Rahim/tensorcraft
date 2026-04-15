@@ -1,6 +1,6 @@
 export default function ThemeDetailLoading() {
   return (
-    <main className="min-h-screen px-6 py-20 bg-surface">
+    <main className="min-h-screen px-6 py-20 bg-page">
       <div className="max-w-4xl mx-auto animate-pulse">
         {/* Back link skeleton */}
         <div className="h-4 w-24 bg-border mb-4" />

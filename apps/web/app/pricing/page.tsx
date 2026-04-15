@@ -17,7 +17,7 @@ export const revalidate = 3600;
 
 export default function PricingPage() {
   return (
-    <main className="min-h-screen bg-surface relative overflow-hidden">
+    <main className="min-h-screen bg-page relative overflow-hidden">
       <AmbientBackground count={200} />
       <div className="absolute inset-0 grid-bg pointer-events-none z-0" />
       <div className="relative z-10">

@@ -3,26 +3,18 @@
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
-import { themes, themeSlugs } from "@tensorcraft/themes";
+import { themes } from "@tensorcraft/themes";
 import { UserAvatar } from "@/app/components/user-avatar";
 import { resizeImage } from "@/lib/resize-image";
 
 const SIDEBAR_ITEMS = [
   "Profile",
   "GitHub",
-  "Theme",
   "Notifications",
   "Billing",
 ] as const;
 
 type Section = (typeof SIDEBAR_ITEMS)[number];
-
-const THEME_OPTIONS = themeSlugs.map((slug) => ({
-  id: slug,
-  name: themes[slug].displayName,
-  bg: themes[slug].palette.bg,
-  accent: themes[slug].palette.primary,
-}));
 
 function Toggle({ on, onChange }: { on: boolean; onChange: () => void }) {
   return (
@@ -60,7 +52,6 @@ interface SettingsFormProps {
   email: string;
   displayName: string;
   avatarUrl: string;
-  preferredThemeId: string;
   githubUsername: string;
   githubConnected: boolean;
   emailAlerts: boolean;
@@ -77,7 +68,6 @@ export function SettingsForm({
   email,
   displayName: initialName,
   avatarUrl: initialAvatar,
-  preferredThemeId: initialTheme,
   githubUsername: initialGithub,
   githubConnected: initialGithubConnected,
   emailAlerts: initialEmailAlerts,
@@ -93,7 +83,6 @@ export function SettingsForm({
   const [githubConnected, setGithubConnected] = useState(
     initialGithubConnected,
   );
-  const [preferredTheme, setPreferredTheme] = useState(initialTheme);
   const [autoPush, setAutoPush] = useState(true);
   const [emailAlerts, setEmailAlerts] = useState(initialEmailAlerts);
   const [weeklyDigest, setWeeklyDigest] = useState(initialWeeklyDigest);
@@ -171,7 +160,6 @@ export function SettingsForm({
       .update({
         display_name: displayName,
         avatar_url: avatarUrl || null,
-        preferred_theme_id: preferredTheme,
         github_username: githubUser || null,
         email_alerts: emailAlerts,
         weekly_digest: weeklyDigest,
@@ -402,9 +390,7 @@ export function SettingsForm({
                     fontSize: 11,
                     padding: "12px 28px",
                     cursor: "pointer",
-                    boxShadow: hovSave
-                      ? "4px 4px 0 var(--tc-primary, #6BAA8A)"
-                      : "none",
+                    boxShadow: hovSave ? "4px 4px 0 var(--tc-primary)" : "none",
                     transform: hovSave ? "translate(-2px,-2px)" : "none",
                     transition: "all 0.1s ease",
                   }}
@@ -524,83 +510,6 @@ export function SettingsForm({
             >
               {initialGithubConnected ? "Disconnect" : "Connect GitHub"}
             </button>
-          </div>
-        )}
-
-        {/* Theme */}
-        {section === "Theme" && (
-          <div
-            className="border-2 bg-surface-raised"
-            style={{ borderColor: "var(--tc-border)", padding: 32 }}
-          >
-            <div
-              className="font-mono mb-6"
-              style={{
-                fontSize: 9,
-                color: "var(--tc-primary)",
-                letterSpacing: "0.12em",
-              }}
-            >
-              // DEFAULT THEME
-            </div>
-
-            <div className="flex flex-col gap-0.5">
-              {THEME_OPTIONS.map((th) => (
-                <button
-                  key={th.id}
-                  type="button"
-                  onClick={() => setPreferredTheme(th.id)}
-                  className="flex items-center gap-4 text-left transition-all"
-                  style={{
-                    padding: "16px 20px",
-                    background:
-                      preferredTheme === th.id
-                        ? "rgba(107,170,138,0.06)"
-                        : "var(--tc-surface-overlay)",
-                    border: `2px solid ${preferredTheme === th.id ? "var(--tc-primary)" : "var(--tc-border)"}`,
-                    cursor: "pointer",
-                  }}
-                >
-                  <div
-                    className="flex-shrink-0"
-                    style={{
-                      width: 32,
-                      height: 32,
-                      background: th.bg,
-                      border: `2px solid ${th.accent}40`,
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        background: `${th.accent}15`,
-                      }}
-                    />
-                  </div>
-                  <span
-                    className="font-mono"
-                    style={{
-                      fontSize: 12,
-                      color: "var(--tc-text)",
-                    }}
-                  >
-                    {th.name}
-                  </span>
-                  {preferredTheme === th.id && (
-                    <span
-                      className="font-mono ml-auto"
-                      style={{
-                        fontSize: 9,
-                        color: "var(--tc-primary)",
-                      }}
-                    >
-                      ACTIVE
-                    </span>
-                  )}
-                </button>
-              ))}
-            </div>
           </div>
         )}
 

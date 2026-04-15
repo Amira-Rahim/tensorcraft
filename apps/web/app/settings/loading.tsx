@@ -1,6 +1,6 @@
 export default function SettingsLoading() {
   return (
-    <main className="min-h-screen bg-surface">
+    <main className="min-h-screen bg-page">
       <div className="max-w-2xl mx-auto px-6 py-12 animate-pulse">
         <div className="h-7 w-40 bg-border mb-2" />
         <div className="h-4 w-64 bg-border opacity-50 mb-10" />

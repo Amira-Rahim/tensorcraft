@@ -40,7 +40,7 @@ export function HeroSection() {
         <div className="flex gap-4 flex-wrap mb-14">
           <Link
             href="/themes/deep-orbit/foundations/introduction-to-tensors"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-surface font-bold text-sm tracking-wider uppercase border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-page font-bold text-sm tracking-wider uppercase border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow"
           >
             Start Module 1 — Free →
           </Link>

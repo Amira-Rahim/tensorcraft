@@ -1,5 +1,7 @@
 import { notFound } from "next/navigation";
 import { themes } from "@tensorcraft/themes";
+import { ThemeSync } from "@/app/components/theme-sync";
+import type { ThemeSlug } from "@tensorcraft/shared";
 
 export default async function ThemeLayout({
   children,
@@ -12,5 +14,10 @@ export default async function ThemeLayout({
   const theme = themes[slug];
   if (!theme) notFound();
 
-  return <div data-theme={slug}>{children}</div>;
+  return (
+    <>
+      <ThemeSync slug={slug as ThemeSlug} />
+      {children}
+    </>
+  );
 }

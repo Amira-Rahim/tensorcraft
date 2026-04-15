@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
-import { DEFAULT_THEME } from "@tensorcraft/shared";
+
 import { SettingsForm } from "./settings-form";
 import { AmbientBackground } from "@/app/components/ambient-background";
 import type { Metadata } from "next";
@@ -44,7 +44,7 @@ export default async function SettingsPage() {
   const profileRecord = profile as Record<string, unknown> | null;
 
   return (
-    <main className="min-h-screen bg-surface relative overflow-hidden">
+    <main className="min-h-screen bg-page relative overflow-hidden">
       <AmbientBackground count={160} />
       <div className="absolute inset-0 grid-bg pointer-events-none z-0" />
       <div className="max-w-[1000px] mx-auto px-8 py-10 relative z-10">
@@ -52,9 +52,6 @@ export default async function SettingsPage() {
           email={user.email ?? ""}
           displayName={profile?.display_name ?? ""}
           avatarUrl={profile?.avatar_url ?? ""}
-          preferredThemeId={
-            (profileRecord?.preferred_theme_id as string) ?? DEFAULT_THEME
-          }
           githubUsername={(profileRecord?.github_username as string) ?? ""}
           githubConnected={
             (profileRecord?.github_connected as boolean) ?? false

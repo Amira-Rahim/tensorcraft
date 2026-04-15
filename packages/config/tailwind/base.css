@@ -11,9 +11,13 @@
  */
 
 @theme {
-  /* Background surfaces */
-  --color-surface: var(--tc-bg);
-  --color-surface-raised: var(--tc-surface);
+  /* Background surfaces — REMAPPED for clarity */
+  /* bg-page: explicit page background (#181818) */
+  --color-page: var(--tc-bg);
+  /* bg-surface: card/panel/nav backgrounds (#232323) — was var(--tc-bg), now var(--tc-surface) */
+  --color-surface: var(--tc-surface);
+  /* bg-surface-raised: ticker, elevated non-modal content (#2C2C2C) — was var(--tc-surface), now var(--tc-surface-raised) */
+  --color-surface-raised: var(--tc-surface-raised);
   --color-surface-overlay: var(--tc-surface-overlay);
   --color-code-bg: var(--tc-code-bg);
 
@@ -33,6 +37,12 @@
   /* Border */
   --color-border: var(--tc-border);
   --color-border-focus: var(--tc-primary);
+
+  /* Theme-derived accent borders and surfaces */
+  --color-border-active: var(--tc-border-active);
+  --color-border-subtle: var(--tc-border-subtle);
+  --color-glow: var(--tc-glow);
+  --color-primary-muted: var(--tc-primary-muted);
 
   /* Fonts — loaded via next/font, variables injected on <html> */
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;

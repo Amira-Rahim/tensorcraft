@@ -37,7 +37,7 @@ export default async function PurchaseSuccessPage() {
   const themeModules = theme ? getModules(firstTheme) : [];
 
   return (
-    <main className="min-h-screen bg-surface relative overflow-hidden">
+    <main className="min-h-screen bg-page relative overflow-hidden">
       <AmbientBackground count={220} />
       <div className="max-w-2xl mx-auto px-6 py-20 text-center relative z-10">
         {/* Confirmation hero */}
@@ -111,7 +111,7 @@ export default async function PurchaseSuccessPage() {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <Link
             href={`/themes/${firstTheme}`}
-            className="inline-flex items-center justify-center h-12 px-8 text-[15px] font-medium font-mono bg-primary text-surface border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow"
+            className="inline-flex items-center justify-center h-12 px-8 text-[15px] font-medium font-mono bg-primary text-page border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow"
           >
             Start Learning &rarr;
           </Link>

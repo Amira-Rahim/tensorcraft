@@ -115,11 +115,14 @@ export default async function GlossaryTermPage({ params }: TermPageProps) {
         <div
           className="inline-block font-mono text-xs font-bold tracking-wider uppercase px-3 py-1.5 border mb-6"
           style={{
-            color: domain === "ml" ? "#7096B0" : "#6BAA8A",
+            color:
+              domain === "ml"
+                ? "var(--tc-tier-structural)"
+                : "var(--tc-tier-identity)",
             borderColor:
               domain === "ml"
-                ? "rgba(112,150,176,0.3)"
-                : "rgba(107,170,138,0.3)",
+                ? "color-mix(in srgb, var(--tc-tier-structural) 30%, transparent)"
+                : "color-mix(in srgb, var(--tc-tier-identity) 30%, transparent)",
           }}
         >
           {domain === "ml" ? "Machine Learning" : "Frontend"}

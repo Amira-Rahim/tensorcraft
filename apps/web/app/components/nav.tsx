@@ -49,14 +49,14 @@ export function Nav() {
 
   return (
     <nav
-      className="sticky top-0 z-50 h-15 flex items-center justify-between px-8 bg-surface border-b border-border"
+      className="sticky top-0 z-50 h-15 flex items-center justify-between px-8 bg-surface border-b border-border-active"
       aria-label="Main navigation"
     >
       <Link
         href="/"
         className="flex items-center gap-2.5 font-mono text-sm font-medium tracking-wider text-text-primary"
       >
-        <span className="bg-primary text-surface px-1.5 py-0.5 text-xs font-bold">
+        <span className="bg-primary text-page px-1.5 py-0.5 text-xs font-bold">
           T_
         </span>
         TENSORCRAFT
@@ -76,6 +76,15 @@ export function Nav() {
         </div>
         <MobileNav />
       </div>
+
+      {/* Theme-tinted downward glow */}
+      <div
+        className="absolute -bottom-2 left-0 right-0 h-2 pointer-events-none z-49"
+        style={{
+          background: "linear-gradient(to bottom, var(--tc-glow), transparent)",
+        }}
+        aria-hidden="true"
+      />
     </nav>
   );
 }

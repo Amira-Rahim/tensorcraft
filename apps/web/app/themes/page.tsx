@@ -16,7 +16,7 @@ export default function ThemesPage() {
   const themeList = Object.values(themes);
 
   return (
-    <main className="min-h-screen bg-surface px-6 py-20 relative overflow-hidden">
+    <main className="min-h-screen bg-page px-6 py-20 relative overflow-hidden">
       <AmbientBackground count={240} />
       <div className="max-w-4xl mx-auto relative z-10">
         {/* Hero */}

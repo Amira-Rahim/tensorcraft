@@ -1,6 +1,6 @@
 export default function ModuleOverviewLoading() {
   return (
-    <main className="min-h-screen px-6 py-20 bg-surface">
+    <main className="min-h-screen px-6 py-20 bg-page">
       <div className="max-w-4xl mx-auto animate-pulse">
         {/* Breadcrumb skeleton */}
         <div className="flex items-center gap-2 mb-8">

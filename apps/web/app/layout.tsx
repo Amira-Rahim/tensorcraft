@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { DEFAULT_THEME } from "@tensorcraft/shared";
+import { ThemeProvider } from "./components/theme-provider";
 import { Nav } from "./components/nav";
 import { Ticker } from "./components/ticker";
 import { CookieConsent } from "./components/cookie-consent";
@@ -81,6 +82,11 @@ export default function RootLayout({
       data-theme={DEFAULT_THEME}
     >
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem("tc-active-theme");if(t&&["deep-orbit","neon-protocol","signal-ward","nova-canvas","terra-grid"].includes(t)){document.documentElement.dataset.theme=t}}catch(e){}})()`,
+          }}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -294,28 +300,30 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen flex flex-col">
         <PlausibleScript />
-        <AnalyticsProvider>
-          <a
-            href="#main-content"
-            className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:text-sm focus:font-mono focus:font-medium"
-            style={{
-              background: "var(--tc-primary, #6BAA8A)",
-              color: "#1C1C1C",
-            }}
-          >
-            Skip to content
-          </a>
-          <Nav />
-          <Ticker />
-          <div className="flex-1" id="main-content">
-            {children}
-          </div>
-          <SessionListener />
-          <SessionToast />
-          <SiteFooter />
-          <CookieConsent />
-          <ReportIssueButton />
-        </AnalyticsProvider>
+        <ThemeProvider>
+          <AnalyticsProvider>
+            <a
+              href="#main-content"
+              className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:text-sm focus:font-mono focus:font-medium"
+              style={{
+                background: "var(--tc-primary, #6BAA8A)",
+                color: "var(--tc-bg, #181818)",
+              }}
+            >
+              Skip to content
+            </a>
+            <Nav />
+            <Ticker />
+            <div className="flex-1" id="main-content">
+              {children}
+            </div>
+            <SessionListener />
+            <SessionToast />
+            <SiteFooter />
+            <CookieConsent />
+            <ReportIssueButton />
+          </AnalyticsProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

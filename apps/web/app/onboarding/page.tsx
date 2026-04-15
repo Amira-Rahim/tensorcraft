@@ -117,12 +117,12 @@ export default function OnboardingPage() {
   }, [selectedTheme, bg, goal, framework, router]);
 
   return (
-    <div className="min-h-screen bg-surface flex flex-col items-center px-6 py-16 relative overflow-hidden">
+    <div className="min-h-screen bg-page flex flex-col items-center px-6 py-16 relative overflow-hidden">
       <AmbientBackground count={160} />
 
       {/* Logo */}
       <div className="flex items-center gap-2 font-mono text-sm font-bold tracking-wider text-text-primary mb-12 relative z-10">
-        <span className="bg-primary text-surface px-1.5 py-0.5 text-xs font-bold">
+        <span className="bg-primary text-page px-1.5 py-0.5 text-xs font-bold">
           T_
         </span>
         TENSORCRAFT
@@ -485,7 +485,7 @@ export default function OnboardingPage() {
               type="button"
               onClick={() => setStep((s) => s + 1)}
               disabled={step === 4 && !selectedTheme}
-              className="px-7 py-3 font-mono text-xs font-bold text-surface bg-primary border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-7 py-3 font-mono text-xs font-bold text-page bg-primary border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {step === 0 ? "Continue →" : `Next: ${STEPS[step + 1]} →`}
             </button>
@@ -494,7 +494,7 @@ export default function OnboardingPage() {
               type="button"
               onClick={completeOnboarding}
               disabled={saving || !selectedTheme}
-              className="px-7 py-3 font-mono text-xs font-bold text-surface bg-primary border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow disabled:opacity-50"
+              className="px-7 py-3 font-mono text-xs font-bold text-page bg-primary border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow disabled:opacity-50"
             >
               {saving ? "Loading..." : "Begin First Lesson →"}
             </button>

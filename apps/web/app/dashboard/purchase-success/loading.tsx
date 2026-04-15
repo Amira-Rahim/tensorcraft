@@ -1,6 +1,6 @@
 export default function PurchaseSuccessLoading() {
   return (
-    <main className="min-h-screen bg-surface">
+    <main className="min-h-screen bg-page">
       <div className="max-w-2xl mx-auto px-6 py-20 text-center animate-pulse">
         <div className="h-10 w-10 bg-border mx-auto mb-6" />
         <div className="h-8 w-64 bg-border mx-auto mb-3" />

@@ -7,6 +7,7 @@ import { useEffect, useRef, useCallback } from "react";
 function TickerCanvas() {
   const ref = useRef<HTMLCanvasElement>(null);
   const frame = useRef(0);
+  const primaryRgb = useRef("107,170,138");
 
   interface Streak {
     x: number;
@@ -52,7 +53,7 @@ function TickerCanvas() {
       ctx.beginPath();
       ctx.moveTo(s.x, s.y);
       ctx.lineTo(s.x + s.len, s.y);
-      ctx.strokeStyle = `rgba(107,170,138,${s.alpha})`;
+      ctx.strokeStyle = `rgba(${primaryRgb.current},${s.alpha})`;
       ctx.lineWidth = 0.5;
       ctx.stroke();
     }
@@ -79,11 +80,29 @@ function TickerCanvas() {
     };
 
     resize();
+
+    // Read theme primary RGB from CSS variable
+    const readPrimaryRgb = () => {
+      const rgb = getComputedStyle(c)
+        .getPropertyValue("--tc-primary-rgb")
+        .trim();
+      if (rgb) primaryRgb.current = rgb;
+    };
+    readPrimaryRgb();
+
+    // Re-read when theme changes (data-theme attribute on <html>)
+    const observer = new MutationObserver(readPrimaryRgb);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+
     frame.current = requestAnimationFrame(draw);
     window.addEventListener("resize", resize);
     return () => {
       cancelAnimationFrame(frame.current);
       window.removeEventListener("resize", resize);
+      observer.disconnect();
     };
   }, [draw, spawn]);
 

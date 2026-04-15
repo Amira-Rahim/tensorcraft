@@ -160,7 +160,7 @@ export default function Home() {
           </p>
           <Link
             href="/auth"
-            className="inline-flex items-center gap-2 px-11 py-[18px] bg-primary text-surface font-bold text-base tracking-wider uppercase border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow"
+            className="inline-flex items-center gap-2 px-11 py-[18px] bg-primary text-page font-bold text-base tracking-wider uppercase border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow"
           >
             Start learning now →
           </Link>

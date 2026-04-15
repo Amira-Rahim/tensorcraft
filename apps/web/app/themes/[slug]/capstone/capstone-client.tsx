@@ -18,7 +18,9 @@ function DashboardButton({ primary, bg }: { primary: string; bg: string }) {
         border: `2px solid ${primary}`,
         fontSize: 11,
         padding: "8px 20px",
-        boxShadow: hov ? `4px 4px 0 rgba(107,170,138,0.3)` : "none",
+        boxShadow: hov
+          ? `4px 4px 0 color-mix(in srgb, var(--tc-primary) 30%, transparent)`
+          : "none",
         transform: hov ? "translate(-2px,-2px)" : "none",
         transition: "all 0.1s ease",
       }}
@@ -56,7 +58,9 @@ function ShareButton({ border, text }: { border: string; text: string }) {
         fontSize: 12,
         padding: "12px 28px",
         cursor: "pointer",
-        boxShadow: hov ? `3px 3px 0 rgba(107,170,138,0.15)` : "none",
+        boxShadow: hov
+          ? `3px 3px 0 color-mix(in srgb, var(--tc-primary) 15%, transparent)`
+          : "none",
         transform: hov ? "translate(-1px,-1px)" : "none",
         transition: "all 0.1s ease",
       }}

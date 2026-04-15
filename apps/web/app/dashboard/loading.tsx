@@ -1,6 +1,6 @@
 export default function DashboardLoading() {
   return (
-    <div className="min-h-screen bg-surface flex flex-col animate-pulse">
+    <div className="min-h-screen bg-page flex flex-col animate-pulse">
       {/* Ticker skeleton */}
       <div className="h-8 bg-surface-raised border-b border-border" />
 
