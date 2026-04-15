@@ -275,7 +275,7 @@ export function LessonSteps({
             />
           )}
           <Link
-            href={`/themes/${themeSlug}/${moduleSlug}`}
+            href={`/themes/${themeSlug}`}
             className="text-sm font-mono flex items-center gap-2 shrink-0 transition-colors px-3 py-2 hover:opacity-80"
             style={{
               color: theme.palette.text,
@@ -432,7 +432,7 @@ export function LessonSteps({
             </Link>
           ) : (
             <Link
-              href={`/themes/${themeSlug}/${moduleSlug}`}
+              href={`/themes/${themeSlug}`}
               className="text-sm font-mono font-bold px-8 py-3 transition-all inline-flex items-center"
               style={{
                 background: theme.palette.primary,

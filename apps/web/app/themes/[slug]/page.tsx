@@ -144,7 +144,14 @@ export default async function ThemeDetailPage({ params }: Props) {
         slug: lesson.slug,
         title: lesson.title,
         moduleSlug: mod.slug,
+        order: lesson.order,
+        estimatedMinutes: lesson.estimatedMinutes,
+        difficulty: lesson.difficulty,
         status: lessonStatus,
+        sceneLocation: lesson.scene?.location,
+        narrative: lesson.context?.narrative,
+        bridgeFe: lesson.concept?.bridge?.feTitle,
+        bridgeMl: lesson.concept?.bridge?.mlTitle,
       };
     });
 
@@ -297,6 +304,10 @@ export default async function ThemeDetailPage({ params }: Props) {
         <ModuleMapClient
           modules={moduleMapItems}
           themeSlug={slug}
+          terminology={{
+            lesson: theme.terminology.lesson,
+            module: theme.terminology.module,
+          }}
           palette={{
             bg: theme.palette.bg,
             primary: theme.palette.primary,
