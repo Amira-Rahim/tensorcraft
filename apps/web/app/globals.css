@@ -79,7 +79,7 @@ body {
 
 .brutalist-hover:hover {
   transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 rgba(107, 170, 138, 0.35);
+  box-shadow: 6px 6px 0 color-mix(in srgb, var(--tc-primary) 35%, transparent);
 }
 
 /* // COMMENT section label */
