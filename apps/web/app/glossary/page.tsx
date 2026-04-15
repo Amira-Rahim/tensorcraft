@@ -5,11 +5,15 @@ export const metadata: Metadata = {
   title: "ML Glossary for Frontend Engineers — Tensorcraft",
   description:
     "Every ML term explained through the lens of concepts you already know. 50+ terms mapped from JavaScript, React, and CSS to ML equivalents.",
+  alternates: { canonical: "https://tensorcraft.app/glossary" },
   openGraph: {
     title: "ML Glossary for Frontend Engineers — Tensorcraft",
     description:
       "Every ML term explained through the lens of concepts you already know.",
     url: "https://tensorcraft.app/glossary",
+    images: [
+      "/api/og?title=ML%20Glossary&theme=deep-orbit&subtitle=50%2B%20terms%20for%20frontend%20engineers",
+    ],
   },
 };
 

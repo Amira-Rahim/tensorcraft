@@ -32,10 +32,22 @@ export function SiteFooter() {
               Blog
             </Link>
             <Link
+              href="/learn"
+              className="text-xs hover:text-text-primary transition-colors"
+            >
+              Learn
+            </Link>
+            <Link
               href="/glossary"
               className="text-xs hover:text-text-primary transition-colors"
             >
               Glossary
+            </Link>
+            <Link
+              href="/bridges"
+              className="text-xs hover:text-text-primary transition-colors"
+            >
+              Bridges
             </Link>
             <Link
               href="/terms"

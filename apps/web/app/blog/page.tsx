@@ -10,6 +10,7 @@ export const metadata: Metadata = {
       "Articles, tutorials, and deep dives bridging frontend engineering and machine learning.",
     url: "https://tensorcraft.app/blog",
   },
+  alternates: { canonical: "https://tensorcraft.app/blog" },
 };
 
 export default function BlogIndexPage() {

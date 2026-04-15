@@ -5,7 +5,7 @@ import { AmbientBackground } from "@/app/components/ambient-background";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Themes | Tensorcraft",
+  title: "5 ML Courses for Frontend Developers | Tensorcraft",
   description:
     "Choose your learning path — 5 themed courses from frontend to ML.",
 };
@@ -26,9 +26,15 @@ export default function ThemesPage() {
         <h1 className="text-4xl md:text-5xl font-mono font-bold text-text-primary mb-3">
           Choose Your World
         </h1>
-        <p className="text-lg text-text-muted mb-14 max-w-2xl">
+        <p className="text-lg text-text-muted mb-6 max-w-2xl">
           Each theme teaches a different ML specialization through a unique
           narrative. Same depth, different career outcomes.
+        </p>
+        <p className="text-base text-text-muted mb-14 max-w-2xl leading-relaxed">
+          Whether you&apos;re a React developer exploring neural networks or a
+          Vue engineer building computer vision, each theme teaches a complete
+          ML specialization through JavaScript and TensorFlow.js — no Python
+          required.
         </p>
 
         {/* All themes grid */}
@@ -96,6 +102,29 @@ export default function ThemesPage() {
             </Link>
           ))}
         </div>
+
+        {/* Why 5 Themes? */}
+        <section className="mt-20">
+          <h2 className="text-2xl font-mono font-bold text-text-primary mb-4 tracking-tight">
+            Why 5 Themes?
+          </h2>
+          <p className="text-base text-text-muted leading-relaxed max-w-2xl mb-4">
+            Machine learning is not one skill — it&apos;s a family of
+            specializations. Time-series analysis, computer vision, NLP,
+            generative AI, and edge deployment each demand different mental
+            models, architectures, and tooling. One course can&apos;t cover them
+            all with the depth you need.
+          </p>
+          <p className="text-base text-text-muted leading-relaxed max-w-2xl">
+            Each Tensorcraft theme maps to a different ML career path. Deep
+            Orbit prepares you for signal processing roles. Neon Protocol covers
+            the vision pipeline from convolutions to real-time object detection.
+            Signal Ward builds NLP skills from tokenization to transformers.
+            Nova Canvas explores multimodal and generative models. Terra Grid
+            focuses on deploying and optimizing models at the edge. Pick the
+            path that matches where you want to go.
+          </p>
+        </section>
       </div>
     </main>
   );

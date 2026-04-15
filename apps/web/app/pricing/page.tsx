@@ -7,9 +7,10 @@ import { PricingTiers } from "./pricing-tiers";
 import { AmbientBackground } from "@/app/components/ambient-background";
 
 export const metadata: Metadata = {
-  title: "Pricing | Tensorcraft",
+  title: "ML Course Pricing — From $0 to $219 | Tensorcraft",
   description:
     "One payment. Lifetime access. Learn browser-based ML through familiar frontend concepts.",
+  alternates: { canonical: "https://tensorcraft.app/pricing" },
 };
 
 export const revalidate = 3600;

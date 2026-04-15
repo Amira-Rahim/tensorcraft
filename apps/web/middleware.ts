@@ -2,7 +2,19 @@ import { updateSession } from "@/lib/supabase/middleware";
 import type { NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
-  return await updateSession(request);
+  const response = await updateSession(request);
+
+  // Set tc_theme cookie when visiting a theme page
+  const themeMatch = request.nextUrl.pathname.match(/^\/themes\/([^/]+)/);
+  if (themeMatch) {
+    response.cookies.set("tc_theme", themeMatch[1], {
+      path: "/",
+      maxAge: 60 * 60 * 24 * 365,
+      sameSite: "lax",
+    });
+  }
+
+  return response;
 }
 
 export const config = {

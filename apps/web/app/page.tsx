@@ -12,6 +12,19 @@ export default function Home() {
         {/* ===== HERO (client island — framer-motion + canvas) ===== */}
         <HeroSection />
 
+        {/* ===== HOW IT WORKS LINK ===== */}
+        <div className="px-10 md:px-20 py-6 border-b border-border">
+          <p className="text-sm text-text-muted font-sans">
+            New to ML?{" "}
+            <Link
+              href="/learn"
+              className="text-primary underline underline-offset-4 hover:opacity-80 transition-opacity"
+            >
+              See how it works
+            </Link>
+          </p>
+        </div>
+
         {/* ===== STATS (server-rendered — zero JS) ===== */}
         <section className="grid grid-cols-2 md:grid-cols-4 border-b border-border">
           {[
@@ -151,6 +164,16 @@ export default function Home() {
           >
             Start learning now →
           </Link>
+          <p className="text-sm text-text-muted font-sans mt-6">
+            Or explore our{" "}
+            <Link
+              href="/glossary"
+              className="text-primary underline underline-offset-4 hover:opacity-80 transition-opacity"
+            >
+              ML Glossary
+            </Link>{" "}
+            to get started
+          </p>
         </section>
       </main>
     </>

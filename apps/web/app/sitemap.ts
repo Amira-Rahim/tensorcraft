@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { themeSlugs } from "@tensorcraft/themes";
 import { BRIDGES } from "@tensorcraft/shared";
-import { getThemeLessons } from "@tensorcraft/content";
+import { getThemeLessons, getModules } from "@tensorcraft/content";
 
 const BASE_URL = "https://tensorcraft.app";
 
@@ -104,10 +104,36 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })),
   );
 
+  // Module overview pages (55 total — one per module per theme)
+  const moduleRoutes: MetadataRoute.Sitemap = themeSlugs.flatMap((slug) =>
+    getModules(slug).map((mod) => ({
+      url: `${BASE_URL}/themes/${slug}/${mod.slug}`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.65,
+    })),
+  );
+
+  // Capstone pages (one per theme)
+  const capstoneRoutes: MetadataRoute.Sitemap = themeSlugs.map((slug) => ({
+    url: `${BASE_URL}/themes/${slug}/capstone`,
+    lastModified: new Date(),
+    changeFrequency: "monthly" as const,
+    priority: 0.5,
+  }));
+
   return [
     ...staticRoutes,
+    {
+      url: `${BASE_URL}/bridges`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    },
     ...themeRoutes,
+    ...moduleRoutes,
     ...lessonRoutes,
+    ...capstoneRoutes,
     ...glossaryRoutes,
     ...bridgeRoutes,
   ];

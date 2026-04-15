@@ -8,8 +8,8 @@ import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 const NAV_LINKS = [
   { href: "/themes", label: "THEMES" },
   { href: "/pricing", label: "PRICING" },
+  { href: "/learn", label: "LEARN" },
   { href: "/blog", label: "BLOG" },
-  { href: "/glossary", label: "GLOSSARY" },
 ] as const;
 
 export function MobileNav() {

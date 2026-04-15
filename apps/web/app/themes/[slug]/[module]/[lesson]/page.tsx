@@ -210,6 +210,54 @@ export default async function LessonPage({ params }: Props) {
       className="min-h-screen"
       style={{ background: "var(--tc-bg, #1C1C1C)" }}
     >
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([
+            {
+              "@context": "https://schema.org",
+              "@type": "LearningResource",
+              name: lesson.title,
+              description: lesson.concept.explanation,
+              educationalLevel: lesson.difficulty || "beginner",
+              learningResourceType: "lesson",
+              timeRequired: `PT${lesson.estimatedMinutes}M`,
+              isPartOf: {
+                "@type": "Course",
+                name: `${theme.displayName} — ${theme.specialization || "ML Course"}`,
+                url: `https://tensorcraft.app/themes/${slug}`,
+              },
+              provider: { "@type": "Organization", name: "Tensorcraft" },
+              url: `https://tensorcraft.app/themes/${slug}/${moduleSlug}/${lessonSlug}`,
+            },
+            {
+              "@context": "https://schema.org",
+              "@type": "BreadcrumbList",
+              itemListElement: [
+                {
+                  "@type": "ListItem",
+                  position: 1,
+                  name: "Home",
+                  item: "https://tensorcraft.app",
+                },
+                {
+                  "@type": "ListItem",
+                  position: 2,
+                  name: theme.displayName,
+                  item: `https://tensorcraft.app/themes/${slug}`,
+                },
+                {
+                  "@type": "ListItem",
+                  position: 3,
+                  name: mod?.title || moduleSlug,
+                  item: `https://tensorcraft.app/themes/${slug}/${moduleSlug}`,
+                },
+                { "@type": "ListItem", position: 4, name: lesson.title },
+              ],
+            },
+          ]),
+        }}
+      />
       <Suspense>
         <LessonSteps
           lesson={lesson}

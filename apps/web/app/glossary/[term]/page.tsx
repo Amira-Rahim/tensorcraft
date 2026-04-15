@@ -75,6 +75,7 @@ export async function generateMetadata({
   return {
     title,
     description,
+    alternates: { canonical: `https://tensorcraft.app/glossary/${term}` },
     openGraph: {
       title,
       description,

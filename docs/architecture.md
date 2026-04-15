@@ -178,11 +178,12 @@ Client component with Framer Motion animations:
 ### SEO Setup
 
 - **Canonical URLs**: Set on root layout (`https://tensorcraft.app`), all theme pages, all lesson pages, and capstone pages via Next.js `alternates.canonical` in `generateMetadata`.
-- **Structured Data (JSON-LD)**: Root layout emits an Organization schema and one Course schema per theme (5 courses total), each with pricing ($79), educational level, and `teaches` fields. Script tag in `<head>` via `dangerouslySetInnerHTML`.
+- **Structured Data (JSON-LD)**: Root layout emits an Organization schema and one Course schema per theme (5 courses total), each with pricing ($79), educational level, and `teaches` fields. Script tag in `<head>` via `dangerouslySetInnerHTML`. Lesson pages additionally emit `LearningResource` schema (name, description, educationalLevel, timeRequired, isPartOf Course) and `BreadcrumbList` schema (Home > Theme > Module > Lesson).
 - **Dynamic OG Images**: All pages use `/api/og` (Vercel OG) with per-page `title`, `theme`, and `subtitle` query params. No static `/og-image.png` fallback.
 - **Sitemap** (`app/sitemap.ts`): Static routes + 5 theme pages + 275 lesson pages (all themes) + glossary term pages + bridge concept pages. Lesson routes built from `getThemeLessons` at build time.
 - **robots.txt**: Crawl directives configured.
 - **AI Discoverability**: `llms.txt` (product description for AI crawlers), `.well-known/ai-plugin.json` (OpenAI plugin metadata), FAQ schema in JSON-LD, `/learn` page for answer engine queries.
+- **Internal Linking Strategy**: Landing page links to `/learn` (below hero) and `/glossary` (final CTA). `/learn` page links to all 5 theme pages, `/glossary`, and `/pricing`. `/themes` page includes enriched intro copy and a "Why 5 Themes?" explainer section for topical depth.
 
 ### Accessibility (WCAG 2.1 AA)
 

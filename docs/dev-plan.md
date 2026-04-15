@@ -470,7 +470,16 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] Canonical URLs added to root layout, theme, lesson, and capstone pages. COMPLETED 2026-04-14.
 - [ ] Blog infrastructure (MDX-based, target: 2 posts/week)
 - [ ] Google Search Console setup
-- [ ] Target keywords: "learn machine learning JavaScript", "TensorFlow.js tutorial", "ML for front-end developers"
+- [x] Target keywords: "learn machine learning JavaScript", "TensorFlow.js tutorial", "ML for front-end developers". H1 updated, title tags optimized, internal linking added. COMPLETED 2026-04-14.
+- [x] LearningResource + BreadcrumbList structured data on lesson pages (JSON-LD). COMPLETED 2026-04-14.
+- [x] WebSite schema with SearchAction in root layout JSON-LD. COMPLETED 2026-04-15.
+- [x] Module overview pages (55) + capstone pages (5) added to sitemap. COMPLETED 2026-04-15.
+- [x] Canonical URLs on glossary terms, bridge concepts, blog, pricing pages. COMPLETED 2026-04-15.
+- [x] /bridges index page created with full metadata. COMPLETED 2026-04-15.
+- [x] Desktop/mobile nav parity — Learn, Blog, Glossary links added to desktop nav. COMPLETED 2026-04-15.
+- [x] /learn and /bridges added to footer. COMPLETED 2026-04-15.
+- [x] OG images on /learn and /glossary pages. COMPLETED 2026-04-15.
+- [x] Internal linking strategy: landing page links to /learn and /glossary, /learn links to all 5 themes + /glossary + /pricing, /themes enriched with intro copy and "Why 5 Themes?" section. COMPLETED 2026-04-14.
 - [x] GEO/AEO — llms.txt, ai-plugin.json, FAQ schema, /learn content page. COMPLETED 2026-04-14.
 
 ### 6e. Error Handling
@@ -650,6 +659,20 @@ All blocking decisions have been resolved. This table documents the final choice
 - [ ] $29/year subscription (separate from theme purchases)
 - [ ] Community solution viewing after submission deadline
 - [ ] Challenge authoring pipeline and scheduling
+
+### 7k. AI-Generated Video Scenes (Post-V1, budget-dependent)
+
+> See `docs/future-ai-video-scenes.md` for full design spec.
+
+- [ ] Replace text-based narrative (Dialogue, SceneHeading, narrative prose) with short AI-generated stylized video clips
+- [ ] New `<VideoScene>` MDX component with caption-based fallback to current text rendering
+- [ ] Per-theme animated art styles via Runway Gen-3/4 style reference packs
+- [ ] AI voice acting (ElevenLabs) + ambient soundscapes per theme
+- [ ] CLI generation pipeline: `tc-video generate` / `review` / `upload`
+- [ ] Cloudflare R2 CDN for video storage (zero egress fees)
+- [ ] Estimated cost: $540-1,140 one-time generation, <$1/mo ongoing
+- [ ] Rollout: proof of concept (1 lesson) → single theme (Neon Protocol) → all 5 themes
+- [ ] Subsumes deferred audio narration idea (video includes voice acting)
 
 ### 7j. Internationalization (V3.0+)
 

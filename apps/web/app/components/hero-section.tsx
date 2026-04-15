@@ -21,13 +21,14 @@ export function HeroSection() {
         </div>
 
         <h1 className="text-5xl md:text-6xl font-mono font-black leading-[0.93] tracking-[-0.045em] mb-10 uppercase">
+          <span className="block">The Bridge from</span>
           <span className="block">
-            Machine <span className="text-primary">Learning</span>
+            Frontend to <span className="text-primary">Machine</span>
           </span>
-          <span className="block">for Frontend</span>
           <span className="block">
-            Devs, <span className="text-primary">Finally.</span>
+            <span className="text-primary">Learning</span> Is Shorter
           </span>
+          <span className="block">Than You Think</span>
         </h1>
 
         <p className="text-lg text-text-muted max-w-[480px] mb-12 leading-relaxed font-sans">

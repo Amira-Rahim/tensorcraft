@@ -66,6 +66,8 @@ export function Nav() {
         {isAuthenticated && <NavLink href="/dashboard">Dashboard</NavLink>}
         <NavLink href="/themes">Themes</NavLink>
         <NavLink href="/pricing">Pricing</NavLink>
+        <NavLink href="/learn">Learn</NavLink>
+        <NavLink href="/blog">Blog</NavLink>
       </div>
 
       <div className="flex items-center gap-4">

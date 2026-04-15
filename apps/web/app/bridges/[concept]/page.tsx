@@ -60,6 +60,7 @@ export async function generateMetadata({
   return {
     title,
     description,
+    alternates: { canonical: `https://tensorcraft.app/bridges/${concept}` },
     openGraph: {
       title,
       description,

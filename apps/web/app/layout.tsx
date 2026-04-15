@@ -273,6 +273,21 @@ export default function RootLayout({
                   },
                 ],
               },
+              {
+                "@context": "https://schema.org",
+                "@type": "WebSite",
+                name: "Tensorcraft",
+                url: "https://tensorcraft.app",
+                potentialAction: {
+                  "@type": "SearchAction",
+                  target: {
+                    "@type": "EntryPoint",
+                    urlTemplate:
+                      "https://tensorcraft.app/glossary?q={search_term_string}",
+                  },
+                  "query-input": "required name=search_term_string",
+                },
+              },
             ]),
           }}
         />

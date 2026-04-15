@@ -8,6 +8,11 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://tensorcraft.app/learn",
   },
+  openGraph: {
+    images: [
+      "/api/og?title=Learn%20ML%20with%20JavaScript&theme=deep-orbit&subtitle=A%20frontend%20developer%27s%20guide",
+    ],
+  },
 };
 
 export const revalidate = 3600;
@@ -91,6 +96,79 @@ export default function LearnPage() {
         <p className="text-base text-text-muted font-sans leading-relaxed mb-6">
           Module 1 of every theme is completely free — no account, no credit
           card. Just open a lesson and start learning.
+        </p>
+
+        <h2 className="text-2xl font-bold text-text-primary mb-4 font-mono">
+          5 Themed Learning Paths
+        </h2>
+        <p className="text-base text-text-muted font-sans leading-relaxed mb-4">
+          Each theme teaches a different ML specialization through an immersive
+          narrative. Pick the one that matches your interests:
+        </p>
+        <ul className="space-y-2 mb-8 text-base text-text-muted font-sans">
+          <li>
+            <Link
+              href="/themes/deep-orbit"
+              className="text-primary underline underline-offset-4 hover:opacity-80 transition-opacity"
+            >
+              Deep Orbit
+            </Link>{" "}
+            — Time-Series &amp; Signals
+          </li>
+          <li>
+            <Link
+              href="/themes/neon-protocol"
+              className="text-primary underline underline-offset-4 hover:opacity-80 transition-opacity"
+            >
+              Neon Protocol
+            </Link>{" "}
+            — Computer Vision
+          </li>
+          <li>
+            <Link
+              href="/themes/signal-ward"
+              className="text-primary underline underline-offset-4 hover:opacity-80 transition-opacity"
+            >
+              Signal Ward
+            </Link>{" "}
+            — NLP &amp; Text Intelligence
+          </li>
+          <li>
+            <Link
+              href="/themes/nova-canvas"
+              className="text-primary underline underline-offset-4 hover:opacity-80 transition-opacity"
+            >
+              Nova Canvas
+            </Link>{" "}
+            — Multimodal &amp; Generative AI
+          </li>
+          <li>
+            <Link
+              href="/themes/terra-grid"
+              className="text-primary underline underline-offset-4 hover:opacity-80 transition-opacity"
+            >
+              Terra Grid
+            </Link>{" "}
+            — Edge AI &amp; Production ML
+          </li>
+        </ul>
+
+        <p className="text-base text-text-muted font-sans leading-relaxed mb-8">
+          Browse our{" "}
+          <Link
+            href="/glossary"
+            className="text-primary underline underline-offset-4 hover:opacity-80 transition-opacity"
+          >
+            ML Glossary
+          </Link>{" "}
+          for quick definitions of every concept, or check out our{" "}
+          <Link
+            href="/pricing"
+            className="text-primary underline underline-offset-4 hover:opacity-80 transition-opacity"
+          >
+            pricing
+          </Link>{" "}
+          to see what each plan includes.
         </p>
 
         <Link
