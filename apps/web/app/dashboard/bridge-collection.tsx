@@ -3,9 +3,9 @@
 import { useState } from "react";
 
 const TIER_COLORS: Record<string, string> = {
-  identity: "#6BAA8A",
-  structural: "#7096B0",
-  intuition: "#A89060",
+  identity: "var(--tc-tier-identity)",
+  structural: "var(--tc-tier-structural)",
+  intuition: "var(--tc-tier-intuition)",
 };
 
 interface BridgeItem {

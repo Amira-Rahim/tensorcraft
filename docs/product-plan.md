@@ -42,24 +42,12 @@ The specialization (roughly 40% of each curriculum) goes deeper into the theme's
 
 ### 1.3 Launch Strategy
 
-> **Updated (2026-04-14):** All 5 themes now launch simultaneously. The V0.5 phased approach was replaced with a simultaneous launch as of April 2026.
+**All 5 themes launch simultaneously at V1.0.** There is no phased theme rollout. Every theme (Deep Orbit, Neon Protocol, Signal Ward, Nova Canvas, Terra Grid) ships with all 11 modules (55 lessons each, 275 lessons total) at V1.0.
 
-| Version | Content | Timing | Status |
-|---------|---------|--------|--------|
-| **V0.5** | Deep Orbit — Modules 1–3 (15 lessons, free tier) | Q2 2026 | In development |
-| **V1.0** | Deep Orbit — Full 11 modules | Q3 2026 | Planned |
-| **V2.0** | Neon Protocol — Full 11 modules | Q1 2027 | Planned |
-| **V3.0** | Signal Ward — Full 11 modules | Q3 2027 | Planned |
-| **V4.0** | Nova Canvas — Full 11 modules | Q1 2028 | Planned |
-| **V5.0** | Terra Grid — Full 11 modules | Q3 2028 | Planned |
-
-#### Coming Soon Preview Content
-
-1. **Theme Landing Pages** — Each upcoming theme gets a visually rich preview page with world art, narrative teaser, and specialization overview.
-2. **Email Capture** — "Notify me when this theme launches" sign-up on each Coming Soon card.
-3. **Concept Preview Cards** — 3–5 interactive concept cards per upcoming theme, giving a taste of the FE-to-ML bridge style.
-4. **Story Prologue** — A short narrative prologue (500–800 words) for each upcoming theme, setting the world and stakes.
-5. **Curriculum Outline** — Public module list showing what each theme covers, without revealing lesson-level detail.
+| Version  | Content                                                  | Timing  | Status         |
+|----------|----------------------------------------------------------|---------|----------------|
+| **V0.5** | All 5 themes — Modules 1–3 (15 lessons each, free tier)  | Q2 2026 | In development |
+| **V1.0** | All 5 themes — Full 11 modules each (275 lessons total)  | Q3 2026 | Planned        |
 
 ### 1.4 Theme Concept Disclaimers
 
@@ -560,48 +548,13 @@ Each module contains **5 lessons**, following a consistent structure:
 
 - **Lesson 5 — Capstone**: Module capstone project. Synthesizes all concepts from the module into a single larger exercise. Story reaches a module-level climax. Graded automatically with detailed feedback.
 
-### 3.7 UI/UX Design Notes: Coming Soon Theme Cards
+### 3.7 UI/UX Design Notes: Theme Cards
 
-> **Updated (2026-04-14):** All 5 themes now launch simultaneously. The V0.5 phased approach was replaced with a simultaneous launch as of April 2026.
-
-#### Visual Distinction
-
-Coming Soon cards are visually distinct from purchasable cards:
-
-- **Purchasable cards**: Full color, interactive hover effects, "Start Learning" CTA button, price displayed prominently.
-- **Coming Soon cards**: Desaturated color palette (40% saturation of theme colors), muted border overlay, "Coming Soon" badge in upper right, no price displayed.
-
-#### Click Behavior
-
-Clicking a Coming Soon card:
-
-1. Opens a modal (not a new page) with:
-   - Theme artwork (full color in the modal)
-   - World description (2–3 paragraphs)
-   - Specialization overview
-   - Module list (titles only)
-   - Estimated launch date
-2. Below the info: email capture form
-
-#### Email Capture
-
-- Single field: email address
-- CTA: "Notify me when {Theme Name} launches"
-- Confirmation: Inline success message with estimated launch date
-- Backend: Adds to theme-specific email list for launch notifications
-- No spam: Only one email on launch day, plus one optional "1 week away" reminder
+All 5 themes launch simultaneously. There are no "Coming Soon" cards — every theme card is fully interactive and purchasable from V1.0.
 
 #### Card Layout
 
-On the main themes page, cards are arranged in launch order:
-
-1. Deep Orbit (purchasable from V1.0)
-2. Neon Protocol (purchasable from V2.0, Coming Soon before that)
-3. Signal Ward (Coming Soon)
-4. Nova Canvas (Coming Soon)
-5. Terra Grid (Coming Soon)
-
-Cards use a responsive grid: 3 columns on desktop, 2 on tablet, 1 on mobile. All cards are the same size regardless of status.
+On the main themes page, all 5 theme cards are arranged in a responsive grid: 3 columns on desktop, 2 on tablet, 1 on mobile. All cards are the same size with full color, interactive hover effects, "Start Learning" CTA button, and price displayed prominently.
 
 ### 3.8 UI/UX Design Notes: FE Bridge Visual Pedagogy
 
@@ -1167,8 +1120,8 @@ For students who want deeper foundations. Each lesson companions a core module: 
 
 - **Primary Color:** #6BAA8A
 - **Accent Color:** #A89060
-- **Background:** #1C1C1C (shared)
-- **Surface:** #252525 (shared)
+- **Background:** #181818 (shared)
+- **Surface:** #232323 (shared)
 - **Text:** #E0E0E0 (shared)
 - **Muted:** #A0A0A0 (shared)
 - **Mood:** Vast, awe-inspiring, scientifically precise. The feeling of staring through a telescope at something impossibly far away. Clean interfaces with data-heavy readouts, reminiscent of mission control. Typography is monospaced for data, clean sans-serif for narrative.
@@ -1177,8 +1130,8 @@ For students who want deeper foundations. Each lesson companions a core module: 
 
 - **Primary Color:** #4A90D9
 - **Accent Color:** #A07090
-- **Background:** #1C1C1C (shared)
-- **Surface:** #252525 (shared)
+- **Background:** #181818 (shared)
+- **Surface:** #232323 (shared)
 - **Text:** #E0E0E0 (shared)
 - **Muted:** #A0A0A0 (shared)
 - **Mood:** Tense, cyberpunk noir, digitally charged. Rain-slicked streets reflected in neon. Interfaces feel like hacking terminals — monospaced text, blinking cursors, matrix-style data cascades. Typography mixes monospaced (code/data) with compressed sans-serif (headlines).
@@ -1187,8 +1140,8 @@ For students who want deeper foundations. Each lesson companions a core module: 
 
 - **Primary Color:** #65C07D
 - **Accent Color:** #7096B0
-- **Background:** #1C1C1C (shared)
-- **Surface:** #252525 (shared)
+- **Background:** #181818 (shared)
+- **Surface:** #232323 (shared)
 - **Text:** #E0E0E0 (shared)
 - **Muted:** #A0A0A0 (shared)
 - **Mood:** Focused, clinical, high-stakes calm. The quiet tension of a monitoring station at 3 AM. Interfaces are clean and medical — waveform displays, vital sign readouts, clean grid layouts. Typography is highly legible sans-serif throughout, prioritizing readability.
@@ -1197,8 +1150,8 @@ For students who want deeper foundations. Each lesson companions a core module: 
 
 - **Primary Color:** #C06060
 - **Accent Color:** #7868A8
-- **Background:** #1C1C1C (shared)
-- **Surface:** #252525 (shared)
+- **Background:** #181818 (shared)
+- **Surface:** #232323 (shared)
 - **Text:** #E0E0E0 (shared)
 - **Muted:** #A0A0A0 (shared)
 - **Mood:** Creative, expressive, visually rich. The feeling of walking through an interactive art exhibition at night. Interfaces are gallery-like — generous whitespace, large image displays, elegant typography. Mixed typography: serif for narrative, sans-serif for UI, display fonts for headings.
@@ -1207,8 +1160,8 @@ For students who want deeper foundations. Each lesson companions a core module: 
 
 - **Primary Color:** #C49535
 - **Accent Color:** #6BAA8A
-- **Background:** #1C1C1C (shared)
-- **Surface:** #252525 (shared)
+- **Background:** #181818 (shared)
+- **Surface:** #232323 (shared)
 - **Text:** #E0E0E0 (shared)
 - **Muted:** #A0A0A0 (shared)
 - **Mood:** Grounded, earthy, purposeful. The feeling of standing at a monitoring outpost overlooking a vast landscape. Interfaces incorporate map elements — contour lines, coordinate grids, terrain indicators. Typography is rugged sans-serif, with data displayed in clean monospaced fonts.
@@ -1234,25 +1187,21 @@ All five themes share these visual design constraints to maintain platform coher
 
 #### In Scope
 
-- Deep Orbit — Modules 1–3 (15 lessons)
-- Full 5C Loop for all 15 lessons
+- All 5 themes — Modules 1–3 (15 lessons each, 75 lessons total)
+- Full 5C Loop for all lessons
 - Interactive animations for core ML concepts (at least 10)
-- FE-to-ML bridges: all 20 shared bridges + 6 Deep Orbit bridges
-- Progress diagram (Deep Orbit, modules 1–5 only)
+- FE-to-ML bridges: all 20 shared bridges + per-theme bridges
+- Progress diagram (all themes, modules 1–3)
 - GitHub integration (auto-repo, auto-commit)
-- Module capstone projects (modules 1–5)
+- Module capstone projects (modules 1–3 per theme)
 - User authentication and payment (Stripe)
-- Single-model purchase ($79)
-- Coming Soon cards for Neon Protocol, Signal Ward, Nova Canvas, Terra Grid
-- Email capture for Coming Soon themes
+- Single-model and bundle purchases
 - Basic analytics (completion rates, lesson time, capstone scores)
 - Responsive design (mobile, tablet, desktop)
 
 #### Not in Scope
 
-- Deep Orbit Modules 6–11
-- Any theme other than Deep Orbit
-- Bundle pricing (no bundles until at least 2 themes exist)
+- Modules 4–11 for any theme
 - Team licenses
 - Arena
 - PPP pricing (added in V1.0)
@@ -1307,7 +1256,7 @@ All five themes share these visual design constraints to maintain platform coher
 | 5 | **Technical complexity of interactive animations**: Building high-quality interactive ML concept visualizations takes longer and costs more than estimated. | Medium | Medium | Prototype the 3 most complex animations first (neural network forward pass, backpropagation, gradient descent). If any takes more than 2x estimated time, simplify or use pre-rendered alternatives. |
 | 6 | **GitHub integration reliability**: GitHub API rate limits, authentication edge cases, or merge conflicts break the auto-commit flow. | Medium | Low | Implement robust error handling and retry logic. GitHub integration is optional — if it breaks, the learner's progress is unaffected. Queue commits and retry on failure. |
 | 7 | **Content quality at scale**: Maintaining writing quality across 55 lessons (V0.5) and eventually 275 lessons (all themes) is challenging. | Medium | High | Establish a style guide and content templates. First 10 lessons set the quality bar. All subsequent lessons reviewed against the first 10. Consider hiring a narrative writer for story content. |
-| 8 | **Low conversion from Coming Soon to purchase**: Learners sign up for notifications but don't purchase when a theme launches. | Medium | Medium | Nurture email list with monthly content (free bridge cards, concept previews, story teasers). Offer early-bird pricing (10% off) for first 48 hours after launch. |
+| 8 | **Low free-to-paid conversion across themes**: Learners try free modules but don't purchase any theme. | Medium | Medium | Nurture email list with monthly content (free bridge cards, concept previews, story teasers). Offer launch-week pricing (10% off) for first 48 hours. A/B test paywall placement. |
 | 9 | **Platform performance under load**: Interactive animations and code execution environments strain client/server resources at scale. | Low | High | Load test before launch. Code execution uses client-side WASM (Pyodide) — no server-side compute for exercises. Animations are CSS/Canvas — GPU-accelerated. CDN for all static assets. |
 
 ---

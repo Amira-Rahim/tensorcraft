@@ -110,7 +110,7 @@ export function PricingTiers() {
       <section className="px-6 pb-16">
         <div className="max-w-[800px] mx-auto">
           <div className="relative p-7 flex flex-col border border-primary bg-primary-muted hover:shadow-[4px_4px_0_var(--tc-primary)] transition-all">
-            <span className="absolute -top-3 left-6 inline-flex items-center px-3 py-1 font-mono text-xs font-bold uppercase tracking-wider bg-primary text-[#1C1C1C]">
+            <span className="absolute -top-3 left-6 inline-flex items-center px-3 py-1 font-mono text-xs font-bold uppercase tracking-wider bg-primary text-page">
               RECOMMENDED
             </span>
             <div className="mt-2 mb-2">

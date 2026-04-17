@@ -357,7 +357,7 @@ export function DashboardView(props: DashboardProps) {
               key={ri}
               d={d}
               fill="none"
-              stroke={resolveVar("--tc-border", "#2A2A2A")}
+              stroke={resolveVar("--tc-border", "#3D3D3D")}
               strokeWidth="0.8"
             />
           );
@@ -372,7 +372,7 @@ export function DashboardView(props: DashboardProps) {
               y1={cy}
               x2={pt.x.toFixed(1)}
               y2={pt.y.toFixed(1)}
-              stroke={resolveVar("--tc-border", "#2A2A2A")}
+              stroke={resolveVar("--tc-border", "#3D3D3D")}
               strokeWidth="0.8"
             />
           );
@@ -390,7 +390,7 @@ export function DashboardView(props: DashboardProps) {
             cy={p.y.toFixed(1)}
             r="3"
             fill={resolveVar("--tc-primary", "#6BAA8A")}
-            stroke="#252525"
+            stroke="#232323"
             strokeWidth="2"
           />
         ))}

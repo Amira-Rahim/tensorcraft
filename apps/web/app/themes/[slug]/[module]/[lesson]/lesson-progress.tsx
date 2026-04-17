@@ -105,8 +105,9 @@ export function LessonProgressTracker({
       <div
         className="flex items-center gap-2 px-4 py-3 my-6"
         style={{
-          background: "rgba(107, 170, 138, 0.08)",
-          border: "1px solid rgba(107, 170, 138, 0.2)",
+          background: "color-mix(in srgb, var(--tc-primary) 8%, transparent)",
+          border:
+            "1px solid color-mix(in srgb, var(--tc-primary) 20%, transparent)",
         }}
       >
         <span className="text-sm">✓</span>
@@ -135,7 +136,7 @@ export function LessonProgressTracker({
             : accentColor,
           color: buttonDisabled
             ? "var(--tc-muted, #A0A0A0)"
-            : "var(--tc-bg, #1C1C1C)",
+            : "var(--tc-bg, #181818)",
           cursor: buttonDisabled ? "not-allowed" : "pointer",
         }}
       >

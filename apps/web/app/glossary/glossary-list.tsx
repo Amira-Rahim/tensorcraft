@@ -6,9 +6,9 @@ import { BRIDGES, BRIDGE_TIER_LABELS } from "@tensorcraft/shared";
 import type { BridgeTier } from "@tensorcraft/shared";
 
 const TIER_COLORS: Record<BridgeTier, string> = {
-  identity: "#6BAA8A",
-  structural: "#7096B0",
-  intuition: "#A89060",
+  identity: "var(--tc-tier-identity)",
+  structural: "var(--tc-tier-structural)",
+  intuition: "var(--tc-tier-intuition)",
 };
 
 const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
@@ -169,7 +169,10 @@ export function GlossaryList() {
                 className="px-5 py-4 font-mono text-xs font-bold tracking-wider uppercase"
                 style={{
                   borderRight: "1px solid var(--tc-border)",
-                  color: t.type === "ml" ? "#7096B0" : "#6BAA8A",
+                  color:
+                    t.type === "ml"
+                      ? "var(--tc-tier-structural)"
+                      : "var(--tc-tier-identity)",
                 }}
               >
                 {t.type === "ml" ? "ML" : "FE"}

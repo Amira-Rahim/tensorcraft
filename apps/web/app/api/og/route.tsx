@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
   return new ImageResponse(
     <div
       tw="flex flex-col w-full h-full"
-      style={{ backgroundColor: "#1C1C1C" }}
+      style={{ backgroundColor: "#181818" }}
     >
       {/* Top section with branding and content */}
       <div tw="flex flex-col flex-1 px-16 pt-14 pb-8">
@@ -27,7 +27,7 @@ export async function GET(req: NextRequest) {
             tw="w-10 h-10 mr-4 flex items-center justify-center"
             style={{ backgroundColor: accentColor }}
           >
-            <span tw="text-xl font-bold" style={{ color: "#1C1C1C" }}>
+            <span tw="text-xl font-bold" style={{ color: "#181818" }}>
               T_
             </span>
           </div>

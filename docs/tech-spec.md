@@ -177,10 +177,10 @@ All themes are available. No status field — theme manifests contain only conte
 #### Theme Selection UI Behavior
 
 1. **First Visit:** Users are presented with the theme picker as a full-screen modal during onboarding. All available themes are shown as cards with preview image, name, tagline, and primary color accent.
-2. **Selection:** Clicking a theme card applies it immediately via CSS custom property injection and stores the preference in the user's Supabase profile (`preferred_theme` column).
+2. **Selection:** Navigating to a theme route (`/themes/[slug]`) applies it immediately via CSS custom property injection on `<html data-theme>` and stores the preference in `localStorage` (`tc-active-theme`).
 3. **Switching:** Users can switch themes at any time from Settings. The switch is instant (CSS-only, no page reload) and persists across sessions.
 4. **Fallback:** If a theme does not yet have content for a specific lesson, the core (unthemed) version is rendered with a subtle banner: "This lesson is not yet available in your selected theme. Showing the standard version."
-5. **Guest Users:** Theme preference is stored in `localStorage` and synced to Supabase upon account creation.
+5. **All Users:** Theme preference is stored in `localStorage` and applied via a FOUC-prevention script in `<head>`. The theme persists across navigation until the user views a different theme.
 
 ### Database Schema (Supabase / PostgreSQL)
 
@@ -194,7 +194,7 @@ Tables use Supabase Auth for user management. Row-Level Security (RLS) enforced 
 | email | text | Not null |
 | display_name | text | Nullable |
 | avatar_url | text | Nullable |
-| preferred_theme_id | text | Nullable (added in migration 002) |
+| preferred_theme_id | text | Nullable (added in migration 002). Runtime theme switching uses `localStorage` (`tc-active-theme`) via client-side `ThemeProvider`. This column is retained for potential server-side personalization but is not used for real-time theme application. |
 | github_connected | boolean | Default: `false` |
 | github_username | text | Nullable |
 | onboarding_completed | boolean | Default: `false` |

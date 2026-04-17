@@ -15,7 +15,7 @@ Add a favicon (browser tab icon) and apple touch icon to tensorcraft.app. The fa
 
 ### Icon Mark
 
-Solid square with `T_` text — the existing brand mark from the nav and OG image. Dark text (#1C1C1C) on a theme-colored background.
+Solid square with `T_` text — the existing brand mark from the nav and OG image. Dark text (#181818) on a theme-colored background.
 
 ### Dynamic Favicon — `app/icon.tsx`
 

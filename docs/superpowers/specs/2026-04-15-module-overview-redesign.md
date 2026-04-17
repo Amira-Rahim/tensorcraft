@@ -1,3 +1,5 @@
+> **Status: MERGED** — This design was merged into the module map accordion at `/themes/[slug]` (file: `module-map-client.tsx`). The standalone module overview page was deleted 2026-04-15.
+
 # Module Overview Page Redesign
 
 **Date:** 2026-04-15

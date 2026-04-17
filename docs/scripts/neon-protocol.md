@@ -1,6 +1,6 @@
 # Neon Protocol — Computer Vision
 
-> **COMING SOON** — Neon Protocol is the second theme in TensorCraft. It is currently in development. The script below contains the full narrative design, character profiles, and module outlines. Lesson-level detail will be added during production.
+> Neon Protocol is the second theme in Tensorcraft. The script below contains the full narrative design, character profiles, and module outlines.
 
 ---
 
@@ -38,7 +38,7 @@
 
 ---
 
-## COMING SOON PREVIEW
+## THEME PREVIEW
 
 ### Preview Art
 

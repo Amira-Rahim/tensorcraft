@@ -173,7 +173,7 @@ export default function LearnPage() {
 
         <Link
           href="/themes"
-          className="inline-flex items-center px-8 py-4 bg-primary text-[#1C1C1C] font-mono font-bold text-sm uppercase tracking-wider transition-all hover:shadow-[4px_4px_0_var(--tc-primary)] hover:-translate-x-0.5 hover:-translate-y-0.5"
+          className="inline-flex items-center px-8 py-4 bg-primary text-page font-mono font-bold text-sm uppercase tracking-wider transition-all hover:shadow-[4px_4px_0_var(--tc-primary)] hover:-translate-x-0.5 hover:-translate-y-0.5"
         >
           Explore All Themes →
         </Link>

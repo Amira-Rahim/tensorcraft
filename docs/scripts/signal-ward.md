@@ -1,6 +1,6 @@
 # Signal Ward — NLP & Medical Text
 
-> **COMING SOON** — Signal Ward is the third theme in TensorCraft. It is currently in development. The script below contains the full narrative design, character profiles, and module outlines. Lesson-level detail will be added during production.
+> Signal Ward is the third theme in Tensorcraft. The script below contains the full narrative design, character profiles, and module outlines.
 
 ---
 
@@ -50,7 +50,7 @@ Signal Ward deliberately includes moments where the AI system produces incorrect
 
 ---
 
-## COMING SOON PREVIEW
+## THEME PREVIEW
 
 ### Preview Art
 

@@ -19,7 +19,7 @@ export default function GlobalError({
         style={{
           margin: 0,
           padding: 0,
-          backgroundColor: "#1C1C1C",
+          backgroundColor: "var(--tc-bg, #181818)",
           color: "#E0E0E0",
           fontFamily: "ui-monospace, monospace",
           minHeight: "100vh",
@@ -43,7 +43,8 @@ export default function GlobalError({
               justifyContent: "center",
               width: "4rem",
               height: "4rem",
-              backgroundColor: "rgba(107, 170, 138, 0.1)",
+              backgroundColor:
+                "color-mix(in srgb, var(--tc-primary, #6BAA8A) 10%, transparent)",
               marginBottom: "1.5rem",
             }}
           >
@@ -52,7 +53,7 @@ export default function GlobalError({
               height="32"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="#6BAA8A"
+              stroke="var(--tc-primary, #6BAA8A)"
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -88,9 +89,9 @@ export default function GlobalError({
           <button
             onClick={reset}
             style={{
-              backgroundColor: "#6BAA8A",
-              color: "#1C1C1C",
-              border: "2px solid #6BAA8A",
+              backgroundColor: "var(--tc-primary, #6BAA8A)",
+              color: "var(--tc-bg, #181818)",
+              border: "2px solid var(--tc-primary, #6BAA8A)",
               padding: "0.75rem 1.5rem",
               fontSize: "0.875rem",
               fontWeight: 600,

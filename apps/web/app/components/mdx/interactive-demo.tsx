@@ -18,7 +18,7 @@ export function InteractiveDemo({
       {/* Title bar */}
       <div
         className="flex items-center gap-2 px-4 py-3 border-b border-border"
-        style={{ background: "var(--tc-surface, #252525)" }}
+        style={{ background: "var(--tc-surface, #232323)" }}
       >
         <span className="w-2 h-2 bg-primary" />
         <span className="text-xs font-mono font-semibold uppercase tracking-widest text-primary">

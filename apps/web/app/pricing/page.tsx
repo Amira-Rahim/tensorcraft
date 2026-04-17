@@ -82,7 +82,7 @@ export default function PricingPage() {
               </ul>
               <Link
                 href="/themes"
-                className="flex items-center justify-center w-full h-13 font-mono text-[15px] font-medium transition-all border border-primary text-primary hover:bg-primary hover:text-[#1C1C1C]"
+                className="flex items-center justify-center w-full h-13 font-mono text-[15px] font-medium transition-all border border-primary text-primary hover:bg-primary hover:text-page"
               >
                 Start Free &rarr;
               </Link>
@@ -171,7 +171,7 @@ export default function PricingPage() {
           </p>
           <Link
             href="/themes"
-            className="inline-flex items-center font-mono px-9 py-4 text-base font-medium transition-all bg-primary text-[#1C1C1C] border border-primary hover:shadow-[4px_4px_0_var(--tc-primary)] hover:-translate-x-0.5 hover:-translate-y-0.5"
+            className="inline-flex items-center font-mono px-9 py-4 text-base font-medium transition-all bg-primary text-page border border-primary hover:shadow-[4px_4px_0_var(--tc-primary)] hover:-translate-x-0.5 hover:-translate-y-0.5"
           >
             Explore All Themes &rarr;
           </Link>

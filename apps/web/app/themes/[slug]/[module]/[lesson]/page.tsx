@@ -139,7 +139,7 @@ export default async function LessonPage({ params }: Props) {
     return (
       <main
         className="min-h-screen"
-        style={{ background: "var(--tc-bg, #1C1C1C)" }}
+        style={{ background: "var(--tc-bg, #181818)" }}
       >
         <div className="flex-1 max-w-3xl mx-auto px-8 md:px-14 py-16 font-sans">
           <div className="mb-12">
@@ -164,7 +164,7 @@ export default async function LessonPage({ params }: Props) {
     return (
       <main
         className="min-h-screen"
-        style={{ background: "var(--tc-bg, #1C1C1C)" }}
+        style={{ background: "var(--tc-bg, #181818)" }}
       >
         <div className="flex-1 max-w-3xl mx-auto px-8 md:px-14 py-16 font-sans">
           <div
@@ -194,7 +194,7 @@ export default async function LessonPage({ params }: Props) {
               className="inline-flex items-center px-5 py-2.5 text-sm font-medium transition-opacity hover:opacity-90"
               style={{
                 background: theme.palette.accent,
-                color: "var(--tc-bg, #1C1C1C)",
+                color: "var(--tc-bg, #181818)",
               }}
             >
               Go to previous module
@@ -208,7 +208,7 @@ export default async function LessonPage({ params }: Props) {
   return (
     <main
       className="min-h-screen"
-      style={{ background: "var(--tc-bg, #1C1C1C)" }}
+      style={{ background: "var(--tc-bg, #181818)" }}
     >
       <script
         type="application/ld+json"

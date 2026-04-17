@@ -75,7 +75,7 @@ function CertificateDownloadButton() {
     <button
       type="button"
       onClick={() => window.print()}
-      className="inline-flex items-center gap-2 px-6 py-3 text-sm font-mono font-semibold border-2 border-primary text-primary transition-all hover:bg-primary hover:text-[#1C1C1C]"
+      className="inline-flex items-center gap-2 px-6 py-3 text-sm font-mono font-semibold border-2 border-primary text-primary transition-all hover:bg-primary hover:text-page"
     >
       Download Certificate (PDF) ↓
     </button>

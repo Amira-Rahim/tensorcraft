@@ -10,24 +10,8 @@ This document specifies the interaction design, layout, animation, and visual sy
 
 The theme selection screen is the first meaningful interaction after signup. It presents all five Tensorcraft themes as selectable cards.
 
-- **Desktop (1280px+):** 5-column grid with equal-width cards. `grid-template-columns: repeat(5, 1fr)`. Gap: 24px. Max container width: 1200px, centered. Each card is approximately 216px wide. Cards have a 3:4 aspect ratio enforced via `aspect-ratio: 3/4`.
-- **Tablet (768px-1279px):** 2-column grid. `grid-template-columns: repeat(2, 1fr)`. Gap: 20px. Container padding: 32px. The fifth card spans full width on its own row: `&:last-child { grid-column: 1 / -1; max-width: 50%; margin: 0 auto; }`.
-- **Mobile (< 768px):** Single-column stack. Each card is full-width. Gap: 16px. Container padding: 16px. Cards switch to a horizontal layout on mobile: artwork on the left (40%), text on the right (60%), using `flex-direction: row`. Card height is fixed at 120px on mobile to prevent excessive scrolling.
-
-### 1.2 Coming Soon Card Design
-
-Themes not yet released display a "Coming Soon" state that conveys anticipation without frustration.
-
-- **Visual treatment:** Card artwork is rendered at 40% opacity with a CSS `grayscale(60%)` filter applied. A diagonal ribbon in the top-right corner reads "Coming Soon" in the theme's accent color on a dark background (`rgba(0,0,0,0.7)`). Ribbon is 120px wide, rotated 45deg, positioned with `overflow: hidden` on the card container. The theme title and one-sentence narrative hook are visible but rendered in `--theme-muted` color (see Part 5).
-- **Hover state:** On hover, the card opacity increases to 60% and the grayscale reduces to 30%. A subtle pulse animation plays on the ribbon (opacity oscillates between 0.8 and 1.0, 2s infinite). Cursor changes to `pointer` to indicate the card is interactive. A tooltip appears below the cursor: "Click to get notified when this theme launches."
-
-### 1.3 Coming Soon Click Interaction
-
-Clicking a Coming Soon card opens a slide-up panel (mobile) or a popover card (desktop/tablet) anchored to the clicked card.
-
-- **Panel contents:** Theme key art (full color, no grayscale -- this is the reveal moment). Theme title in `--theme-accent` color. Narrative hook paragraph (2-3 sentences). "Notify me when this launches" email input with submit button. The email input is pre-filled if the user is logged in. A "Learn more about this theme" expandable section with character previews and module outline.
-- **Post-submission:** The email input is replaced with a confirmation message: "You're on the list. We'll email you the moment [Theme Name] goes live." The card's ribbon text changes from "Coming Soon" to "Notified" with a checkmark icon. This state persists across sessions (stored in user profile via API, or localStorage for anonymous users).
-- **Dismiss:** Click outside the panel, press Escape, or tap the X button. On mobile, swipe down to dismiss the slide-up panel. The panel has a drag handle at the top for swipe affordance.
+- **Mobile (default):** Single-column stack (`grid grid-cols-1`). Each card is full-width. Gap: 16px. Container padding: 16px. Cards switch to a horizontal layout on mobile: artwork on the left (40%), text on the right (60%), using `flex-direction: row`. Card height is fixed at 120px on mobile to prevent excessive scrolling.
+- **md breakpoint (768px+):** 2-column grid (`md:grid-cols-2`). Gap: 20px. Container padding: 32px. The fifth card spans full width on its own row: `&:last-child { grid-column: 1 / -1; max-width: 50%; margin: 0 auto; }`. Cards have a 3:4 aspect ratio enforced via `aspect-ratio: 3/4`.
 
 ---
 
@@ -214,13 +198,25 @@ CSS custom properties are defined in `packages/themes/src/css/themes.css` and co
 
 | Token | CSS Variable | Value | Notes |
 | ------- | ------------- | ------- | ------- |
-| Background | `--tc-bg` | `#1C1C1C` | Page background for all screens |
-| Surface | `--tc-surface` | `#252525` | Cards, panels, modals |
+| Background | `--tc-bg` | `#181818` | Page background for all screens |
+| Surface | `--tc-surface` | `#232323` | Cards, panels, modals |
 | Surface Overlay | `--tc-surface-overlay` | `#313131` | Elevated surfaces, overlays |
 | Text | `--tc-text` | `#E0E0E0` | Body text |
 | Muted | `--tc-muted` | `#A0A0A0` | Decorative borders, disabled states, supplementary labels |
-| Border | `--tc-border` | `#2A2A2A` | Subtle, low-contrast dividers |
-| Code BG | `--tc-code-bg` | `#161616` | Code block backgrounds |
+| Border | `--tc-border` | `#3D3D3D` | Subtle, low-contrast dividers |
+| Code BG | `--tc-code-bg` | `#141414` | Code block backgrounds |
+
+#### 5.2.1b Additional Shell Tokens (derived from primary)
+
+| Token | CSS Variable | Value | Notes |
+| ------- | ------------- | ------- | ------- |
+| Surface Raised | `--tc-surface-raised` | `#2C2C2C` | Ticker, elevated non-modal content |
+| Border Active | `--tc-border-active` | `color-mix(in srgb, var(--tc-primary) 25%, transparent)` | Active card borders |
+| Border Subtle | `--tc-border-subtle` | `color-mix(in srgb, var(--tc-primary) 12%, transparent)` | Internal dividers |
+| Glow | `--tc-glow` | `color-mix(in srgb, var(--tc-primary) 10%, transparent)` | Header glow |
+| Primary Muted | `--tc-primary-muted` | `color-mix(in srgb, var(--tc-primary) 8%, transparent)` | Tinted backgrounds |
+
+> **Rename note:** The old `--tc-glow` (which held a per-theme neon hex value) was renamed to `--tc-neon-glow`. The new `--tc-glow` above is a primary-derived `color-mix` token used for header glow effects.
 
 #### 5.2.2 Per-Theme Tokens (only primary and accent vary)
 
@@ -233,6 +229,14 @@ CSS custom properties are defined in `packages/themes/src/css/themes.css` and co
 | Terra Grid | `#C49535` (industrial amber) | `#6BAA8A` (sage green) |
 
 Each theme also defines three bridge-tier tokens derived from the palette: `--tc-tier-identity` (matches primary), `--tc-tier-structural` (`#7096B0`), and `--tc-tier-intuition` (`#A89060`).
+
+#### 5.2.3 Tailwind Utility Remapping
+
+The Tailwind `@theme` block in `apps/web/app/globals.css` maps CSS custom properties to utility classes:
+
+- `bg-surface` maps to `--tc-surface` (`#232323`) — used for card and panel backgrounds.
+- `bg-page` maps to `--tc-bg` (`#181818`) — used for page-level backgrounds.
+- `bg-surface-raised` maps to `--tc-surface-raised` (`#2C2C2C`) — used for ticker and elevated non-modal content.
 
 ### 5.3 Design Rules
 
@@ -253,9 +257,9 @@ Each theme also defines three bridge-tier tokens derived from the palette: `--tc
 
 **Accessibility requirements:**
 
-- `--tc-text` (`#E0E0E0`) on `--tc-bg` (`#1C1C1C`) = 11.4:1 contrast ratio, exceeds WCAG AA (4.5:1).
+- `--tc-text` (`#E0E0E0`) on `--tc-bg` (`#181818`) = 12.1:1 contrast ratio, exceeds WCAG AA (4.5:1).
 - `--tc-primary` on `--tc-bg` must meet WCAG AA for large text (3:1 minimum). Verified for all themes.
-- `--tc-muted` (`#A0A0A0`) on `--tc-bg` (`#1C1C1C`) = 5.3:1 contrast (meets AA). Safe for body text, labels, and secondary information. Still recommended to use `--tc-text` for primary content.
+- `--tc-muted` (`#A0A0A0`) on `--tc-bg` (`#181818`) = 5.6:1 contrast (meets AA). Safe for body text, labels, and secondary information. Still recommended to use `--tc-text` for primary content.
 - Focus indicators: All interactive elements use a 2px `--tc-primary` outline with 2px offset on `:focus-visible`. This is a global style applied in the base CSS. Never suppress or override focus indicators.
 
 **Dark mode note:** Tensorcraft is dark-mode only. There is no light mode. The dark aesthetic is a core brand element. All design decisions assume a dark background. The `color-scheme: dark` meta tag is set in the document head to inform the browser (affects scrollbar styling, form controls, etc.). System-level forced colors (Windows High Contrast Mode) are respected via `@media (forced-colors: active)` -- in this mode, all custom colors are replaced with system colors and borders become visible.

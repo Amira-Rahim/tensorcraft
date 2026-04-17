@@ -361,14 +361,14 @@ The UI follows a "Brutalist Terminal" aesthetic: sharp edges, offset shadows, mo
 
 | Token | Value | Usage |
 |---|---|---|
-| Background | `#1C1C1C` | Page background |
-| Surface (Panel) | `#252525` | Cards, panels |
+| Background | `#181818` | Page background |
+| Surface (Panel) | `#232323` | Cards, panels |
 | Surface (Overlay) | `#313131` | Elevated surfaces, dropdowns |
 | Primary | `#6BAA8A` | Buttons, links, active states |
 | Text | `#E0E0E0` | Body text |
-| Muted | `#A0A0A0` | Secondary text (WCAG AA on `#1C1C1C`) |
-| Border | `#2A2A2A` | Dividers, card borders |
-| Code BG | `#161616` | Code block backgrounds |
+| Muted | `#A0A0A0` | Secondary text (WCAG AA on `#181818`) |
+| Border | `#3D3D3D` | Dividers, card borders |
+| Code BG | `#141414` | Code block backgrounds |
 
 **Key design rules:**
 
@@ -387,13 +387,13 @@ Each theme has a distinct color palette within the lesson content area. Colors a
 
 | Theme | Primary | Accent | Background | Surface |
 |---|---|---|---|---|
-| Deep Orbit | `#6BAA8A` | `#A89060` | `#1C1C1C` | `#252525` |
-| Neon Protocol | `#4A90D9` | `#A07090` | `#1C1C1C` | `#252525` |
-| Signal Ward | `#65C07D` | `#7096B0` | `#1C1C1C` | `#252525` |
-| Nova Canvas | `#C06060` | `#7868A8` | `#1C1C1C` | `#252525` |
-| Terra Grid | `#C49535` | `#6BAA8A` | `#1C1C1C` | `#252525` |
+| Deep Orbit | `#6BAA8A` | `#A89060` | `#181818` | `#232323` |
+| Neon Protocol | `#4A90D9` | `#A07090` | `#181818` | `#232323` |
+| Signal Ward | `#65C07D` | `#7096B0` | `#181818` | `#232323` |
+| Nova Canvas | `#C06060` | `#7868A8` | `#181818` | `#232323` |
+| Terra Grid | `#C49535` | `#6BAA8A` | `#181818` | `#232323` |
 
-**Shared palette:** text `#E0E0E0`, muted `#A0A0A0`, border `#2A2A2A`, codeBg `#161616`.
+**Shared palette:** text `#E0E0E0`, muted `#A0A0A0`, border `#3D3D3D`, codeBg `#141414`.
 
 ### 6.3 Typography
 
@@ -411,12 +411,14 @@ Each theme has a distinct color palette within the lesson content area. Colors a
 
 ## 7. Release Plan
 
+> **All 5 themes are available simultaneously at V1.0.** There is no phased theme rollout.
+
 | Version | Codename | Scope | Target Date | Gate Criteria |
 |---|---|---|---|---|
-| V0.5 | Ignition | Deep Orbit theme (Modules 1–3, 15 lessons); free tier only; basic progress diagram; no payments | 2026-Q2 | 500 beta sign-ups; lesson completion rate >= 50% in internal testing |
-| V1.0 | Liftoff | Deep Orbit full (all 11 modules, 55 lessons); Pro tier + Stripe payments; GitHub integration; skill radar | 2026-Q3 | 2,000 free users; 3% conversion to Pro; NPS >= 40 |
-| V2.0 | Constellation | Add Neon Protocol + Signal Ward themes; Team tier; admin dashboard; PPP pricing | 2027-Q1 | 10,000 free users; $30K monthly revenue; 30-day retention >= 45% |
-| V3.0 | Galaxy | Add Nova Canvas + Terra Grid themes; mobile app (React Native); offline lesson caching | 2027-Q3 | 25,000 free users; $80K monthly revenue; 5 themes fully authored |
+| V0.5 | Ignition | All 5 themes (Modules 1–3, 15 lessons each); free tier only; basic progress diagram; no payments | 2026-Q2 | 500 beta sign-ups; lesson completion rate >= 50% in internal testing |
+| V1.0 | Liftoff | All 5 themes full (all 11 modules, 55 lessons each, 275 lessons total); Pro tier + Stripe payments; GitHub integration; skill radar | 2026-Q3 | 2,000 free users; 3% conversion to Pro; NPS >= 40 |
+| V2.0 | Constellation | Team tier; admin dashboard; PPP pricing | 2027-Q1 | 10,000 free users; $30K monthly revenue; 30-day retention >= 45% |
+| V3.0 | Galaxy | Mobile app (React Native); offline lesson caching | 2027-Q3 | 25,000 free users; $80K monthly revenue |
 | V4.0 | Nebula | AI tutor (LLM-assisted hints); community features (forums, code reviews); advanced analytics dashboard | 2028-Q1 | 50,000 free users; $150K monthly revenue; AI tutor beta positive feedback >= 70% |
 | V5.0 | Universe | Certification program; employer partnerships; custom theme SDK for third-party content | 2028-Q3 | 100,000 free users; $250K monthly revenue; at least 2 employer partnerships signed |
 | i18n | Babel | Localization: Spanish, Portuguese, Japanese, Hindi; RTL support for future Arabic/Hebrew | 2028-Q4 | Community translation volunteers onboarded; i18n framework integrated by V3.0 |
@@ -474,7 +476,7 @@ Automatic regional discounts of 20–70% applied via ParityDeals based on IP geo
 | Year 3 | $1,000,000 | $1,400,000 | $1,900,000 |
 | 3-Year Cumulative | $1,500,000 | $2,100,000 | $2,870,000 |
 
-*Note: Revenue scales significantly with theme launches (V2.0+). Projections assume 1 theme in Y1, 3 themes in Y2, 5 themes in Y3. Team pricing not included — will be added post-V1.0.*
+*Note: Projections assume all 5 themes available from Y1 (simultaneous launch). Team pricing not included — will be added post-V1.0.*
 
 ---
 

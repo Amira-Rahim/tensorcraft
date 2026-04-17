@@ -197,7 +197,7 @@ All blocking decisions have been resolved. This table documents the final choice
 
 ### 3d. Module Overview (COMPLETE)
 
-- [x] Build module overview page (`apps/web/app/themes/[slug]/[module]/page.tsx`)
+- [x] ~~Build module overview page~~ MERGED: Module lessons now shown in module map accordion at /themes/[slug] (standalone page deleted 2026-04-15)
 - [x] Lesson cards with order, title, time estimate, difficulty badges
 - [x] Breadcrumb navigation (theme → module)
 - [x] V0.5: Show Modules 1–3 for Deep Orbit
@@ -345,7 +345,7 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] "Resume learning" — Continue Learning card links to last in-progress lesson
 - [x] Real progress stats from `theme_progress` table per theme (completed/total lessons, progress bar)
 - [x] Per-theme progress cards with percentage and lesson counts
-- [x] Coming Soon themes section (shows non-launched themes)
+- [x] ~~Coming Soon themes section~~ OBSOLETE: All 5 themes launch simultaneously — no "coming soon" concept (ThemeStatus removed 2026-04-13)
 - [x] Streak calculation from `completed_at` timestamps
 - [x] Add `streaks` table (user_id, theme_id, current_streak, longest_streak, last_activity_date) — denormalized for fast reads
 - [ ] Activity feed (recent lesson completions, achievements)
@@ -364,7 +364,7 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] `PATCH /api/profiles/:userId` endpoint — update profile fields
 - [x] Profile editing (display name, avatar)
 - [ ] GitHub connection toggle with retroactive push
-- [x] Theme preference switching ("Theme applies to your learning content and code editor")
+- [-] ~~Theme preference switching~~ REMOVED: Theme now follows last-viewed theme via localStorage, no settings selector needed (2026-04-15)
 - [ ] Notification preferences
 - [x] Account management (danger zone: delete account, export data)
 
@@ -391,7 +391,7 @@ All blocking decisions have been resolved. This table documents the final choice
 ### 5e. Theme Selection
 
 - [x] Build from `prototypes/theme-selection.html`
-- [x] Deep Orbit as available, 4 themes as "Coming Soon"
+- [x] ~~Deep Orbit as available, 4 themes as "Coming Soon"~~ All 5 themes shown as available (simultaneous launch)
 - [x] "Notify Me" email capture → `waitlist_signups` table with theme_id, confirmation toast
 - [x] Coming-soon modal with theme preview + email input
 - [ ] Track `theme_selected` event
@@ -609,13 +609,13 @@ All blocking decisions have been resolved. This table documents the final choice
 
 ### 7f. Additional Themes
 
-- [x] Neon Protocol (Cyberpunk — Computer Vision) content authored (55 lessons, 55 exercises) — gated behind "coming soon" status, launch Q4 2026
-- [x] Signal Ward (Medical — NLP & Text) content authored (55 lessons, 55 exercises) — launch Q1 2027
-- [x] Nova Canvas (Creative AI — Multimodal & Generative) content authored (55 lessons, 55 exercises) — launch Q2 2027
-- [x] Terra Grid (Industrial — Edge AI & Production ML) content authored (55 lessons, 55 exercises) — launch Q3 2027
-- [ ] Theme launch = flip `status` from "coming-soon" to "launched" in theme manifests + enable Stripe checkout
+> **ALL 5 THEMES LAUNCH SIMULTANEOUSLY (2026-04-13).** There is no staggered launch. The ThemeStatus type and "coming soon" concept have been removed from the codebase. All themes are LIVE at launch.
 
-> **OBSOLETE (2026-04-13):** All 5 themes now launch simultaneously. Theme status field removed.
+- [x] Neon Protocol (Cyberpunk — Computer Vision) content authored (55 lessons, 55 exercises)
+- [x] Signal Ward (Medical — NLP & Text) content authored (55 lessons, 55 exercises)
+- [x] Nova Canvas (Creative AI — Multimodal & Generative) content authored (55 lessons, 55 exercises)
+- [x] Terra Grid (Industrial — Edge AI & Production ML) content authored (55 lessons, 55 exercises)
+- ~~Theme launch = flip `status` from "coming-soon" to "launched" in theme manifests + enable Stripe checkout~~ N/A — all themes launch simultaneously
 
 ### 7g. Bundle & Team Pricing
 
@@ -1104,7 +1104,7 @@ All `href="#"` links in prototypes that need real routes:
 | 5 | Interactive animation complexity | Medium | Medium | Prototype 3 most complex first. If >2x time, simplify or pre-render |
 | 6 | GitHub integration reliability | Medium | Low | Robust retry logic. GitHub integration optional. Queue commits + retry on failure |
 | 7 | Content quality at scale | Medium | High | Style guide + templates. First 10 lessons set bar. Hire narrative writer |
-| 8 | Low Coming Soon conversion | Medium | Medium | Nurture email: monthly free content. Early-bird 10% off for 48h |
+| 8 | Low free-to-paid conversion | Medium | Medium | Nurture email: monthly free content. Early-bird 10% off for 48h |
 | 9 | Platform performance under load | Low | High | Load test before launch. Client-side WASM (Pyodide). CSS/Canvas animations GPU-accelerated. CDN for static assets |
 
 ---

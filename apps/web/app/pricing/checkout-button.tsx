@@ -125,8 +125,8 @@ export function CheckoutButton({
           alreadyOwned
             ? "bg-transparent text-text-muted border border-border cursor-default"
             : recommended
-              ? "bg-primary text-[#1C1C1C] border border-primary hover:shadow-[4px_4px_0px_0px_#E0E0E0] hover:-translate-x-0.5 hover:-translate-y-0.5"
-              : "bg-transparent text-primary border border-primary hover:bg-primary hover:text-[#1C1C1C]"
+              ? "bg-primary text-page border border-primary hover:shadow-[4px_4px_0px_0px_#E0E0E0] hover:-translate-x-0.5 hover:-translate-y-0.5"
+              : "bg-transparent text-primary border border-primary hover:bg-primary hover:text-page"
         } ${className}`}
       >
         {alreadyOwned

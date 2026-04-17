@@ -482,7 +482,7 @@ boxShadow: hov ? `3px 3px 0 color-mix(in srgb, var(--tc-primary) 15%, transparen
 
 Check each page with multiple themes:
 - Pricing page: recommended tier card has theme-colored tint
-- Settings: theme selector uses theme-colored background
+- Settings: profile and notification preferences render correctly
 - User avatar: fallback background matches theme
 - Glossary term: domain badge colors use theme palette
 - Capstone: hover shadows use theme color

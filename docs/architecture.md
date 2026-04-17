@@ -17,7 +17,8 @@ tensorcraft/
 │   ├── shared/       Shared types, utilities, constants
 │   ├── themes/       5 themed course manifests + CSS custom properties
 │   ├── ui/           Shared React component library + MDX components
-│   └── supabase/     Database types, clients, migrations
+│   ├── supabase/     Database types, clients, migrations
+│   └── github/       GitHub integration utilities
 ├── docs/             Project documentation
 ├── e2e/              Playwright E2E tests
 ├── turbo.json        Turborepo task configuration
@@ -85,6 +86,8 @@ Each theme (`packages/themes/src/<theme>.ts`) exports a `ThemeManifest` with:
 - **`streaks`** — Per-theme streak tracking. Fields: user_id, theme_id, current_streak, longest_streak, last_activity_date, timestamps.
 - **`achievements`** — User achievements. Fields: user_id, achievement_type, theme_id, metadata (JSONB), earned_at, timestamps.
 - **`exercise_attempts`** — Exercise submission history. Fields: user_id, exercise_slug, lesson_id, theme_id, score, hints_used, duration_ms, submitted_code, attempted_at, timestamps.
+- **`skill_genome`** — Stores computed skill genome scores per user per theme. Fields: user_id, theme_id, axis scores. Created in migration 010.
+- **`skill_events`** — Partitioned table for tracking skill axis events. Fields: themeId, skillAxis, eventType, metadata, timestamp. Created in migration 013.
 
 ### Row-Level Security
 
@@ -252,8 +255,7 @@ Velite compiles MDX to function body strings. The `LessonContent` client compone
 | Route | Page | Purpose |
 |-------|------|---------|
 | `/themes` | Theme listing | Grid of 5 themes, all LIVE |
-| `/themes/[slug]` | Theme detail | Module list with characters, layout sets `data-theme` |
-| `/themes/[slug]/[module]` | Module overview | Lesson cards with order, title, time, difficulty |
+| `/themes/[slug]` | Theme detail | Module map with dossier accordion (shows all modules + expandable lesson lists), layout sets `data-theme` |
 | `/themes/[slug]/[module]/[lesson]` | Lesson viewer | 6-step progression (no sidebar); step-based nav with progress bar |
 
 ### Lesson Page Architecture (`app/themes/[slug]/[module]/[lesson]/`)

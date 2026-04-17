@@ -1,6 +1,6 @@
 # Nova Canvas — Multimodal & Generative AI
 
-> **COMING SOON** — Nova Canvas is the fourth theme in TensorCraft. It is currently in development. The script below contains the full narrative design, character profiles, and module outlines. Lesson-level detail will be added during production.
+> Nova Canvas is the fourth theme in Tensorcraft. The script below contains the full narrative design, character profiles, and module outlines.
 
 ---
 
@@ -38,7 +38,7 @@
 
 ---
 
-## COMING SOON PREVIEW
+## THEME PREVIEW
 
 ### Preview Art
 

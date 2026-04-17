@@ -28,6 +28,12 @@ function LossLandscapeCanvas() {
     resize();
     window.addEventListener("resize", resize);
 
+    // Read theme primary RGB for canvas drawing
+    const rgb =
+      getComputedStyle(document.documentElement)
+        .getPropertyValue("--tc-primary-rgb")
+        .trim() || "107, 170, 138";
+
     function draw() {
       if (!ctx || !canvas) return;
       const w = canvas.width;
@@ -52,7 +58,7 @@ function LossLandscapeCanvas() {
           0,
           Math.PI * 2,
         );
-        ctx.strokeStyle = `rgba(107, 170, 138, ${alpha})`;
+        ctx.strokeStyle = `rgba(${rgb}, ${alpha})`;
         ctx.lineWidth = 1.2;
         ctx.stroke();
       }
@@ -70,18 +76,18 @@ function LossLandscapeCanvas() {
 
         ctx.beginPath();
         ctx.arc(px, py, dotSize, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(107, 170, 138, ${dotAlpha})`;
+        ctx.fillStyle = `rgba(${rgb}, ${dotAlpha})`;
         ctx.fill();
       }
 
       // Center minimum marker
       ctx.beginPath();
       ctx.arc(cx, cy, 4, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(107, 170, 138, 0.8)";
+      ctx.fillStyle = `rgba(${rgb}, 0.8)`;
       ctx.fill();
       ctx.beginPath();
       ctx.arc(cx, cy, 8, 0, Math.PI * 2);
-      ctx.strokeStyle = "rgba(107, 170, 138, 0.3)";
+      ctx.strokeStyle = `rgba(${rgb}, 0.3)`;
       ctx.lineWidth = 1;
       ctx.stroke();
 

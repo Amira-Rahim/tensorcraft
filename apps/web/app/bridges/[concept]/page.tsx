@@ -9,9 +9,9 @@ import {
 import type { BridgeTier } from "@tensorcraft/shared";
 
 const TIER_COLORS: Record<BridgeTier, string> = {
-  identity: "#6BAA8A",
-  structural: "#7096B0",
-  intuition: "#A89060",
+  identity: "var(--tc-tier-identity)",
+  structural: "var(--tc-tier-structural)",
+  intuition: "var(--tc-tier-intuition)",
 };
 
 const TIER_DESCRIPTIONS: Record<BridgeTier, string> = {
