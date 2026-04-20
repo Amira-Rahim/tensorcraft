@@ -50,7 +50,7 @@ describe("Nav", () => {
     render(<Nav />);
     const brandLinks = screen
       .getAllByRole("link")
-      .filter((el) => el.textContent?.includes("tensorcraft"));
+      .filter((el) => /tensorcraft/i.test(el.textContent ?? ""));
     expect(brandLinks.length).toBeGreaterThan(0);
     expect(brandLinks[0]).toHaveAttribute("href", "/");
   });

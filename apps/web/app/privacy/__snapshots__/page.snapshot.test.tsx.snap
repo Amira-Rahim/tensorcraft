@@ -2,10 +2,13 @@
 
 exports[`Privacy page snapshots > matches snapshot 1`] = `
 <main
-  class="min-h-screen px-6 py-24"
+  class="min-h-screen px-6 py-24 relative"
 >
+  <div
+    class="absolute inset-0 grid-bg pointer-events-none z-0"
+  />
   <article
-    class="max-w-[720px] mx-auto"
+    class="max-w-[720px] mx-auto relative z-10"
   >
     <a
       class="text-sm text-text-muted hover:text-text-primary transition-colors mb-12 inline-block"
@@ -58,7 +61,8 @@ exports[`Privacy page snapshots > matches snapshot 1`] = `
           >
             Analytics data:
           </strong>
-           We use privacy-focused analytics (PostHog EU, Plausible) to understand how the platform is used. We do not sell your data to third parties.
+           
+          When configured, we use privacy-focused analytics tools (PostHog and Plausible) to understand how the platform is used. These services are only active when explicitly enabled by our team. We do not sell your data to third parties.
         </p>
       </section>
       <section>
@@ -113,9 +117,9 @@ exports[`Privacy page snapshots > matches snapshot 1`] = `
             <strong
               class="text-text-primary"
             >
-              PostHog (EU)
+              PostHog
             </strong>
-             — Product analytics (GDPR-compliant)
+             — Product analytics (only active when configured; GDPR-compliant)
           </li>
           <li>
             <strong
@@ -123,7 +127,7 @@ exports[`Privacy page snapshots > matches snapshot 1`] = `
             >
               Plausible
             </strong>
-             — Marketing analytics (cookie-free)
+             — Marketing analytics (cookie-free, only active when configured)
           </li>
           <li>
             <strong
@@ -142,7 +146,7 @@ exports[`Privacy page snapshots > matches snapshot 1`] = `
           5. Cookies
         </h2>
         <p>
-          We use essential cookies for authentication session management. Analytics cookies (PostHog) are only set with your explicit consent. Plausible does not use cookies.
+          We use essential cookies for authentication session management. When PostHog analytics is active, analytics cookies are only set with your explicit consent via our cookie banner. Plausible does not use cookies.
         </p>
       </section>
       <section>

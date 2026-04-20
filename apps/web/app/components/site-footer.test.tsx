@@ -26,13 +26,11 @@ describe("SiteFooter", () => {
     );
   });
 
-  it("renders Home, Terms, and Privacy links", () => {
+  it("renders Terms and Privacy links", () => {
     render(<SiteFooter />);
-    const homeLink = screen.getByRole("link", { name: /home/i });
     const termsLink = screen.getByRole("link", { name: /terms/i });
     const privacyLink = screen.getByRole("link", { name: /privacy/i });
 
-    expect(homeLink).toHaveAttribute("href", "/");
     expect(termsLink).toHaveAttribute("href", "/terms");
     expect(privacyLink).toHaveAttribute("href", "/privacy");
   });
@@ -45,9 +43,21 @@ describe("SiteFooter", () => {
   it("footer hrefs match ROUTES constants", async () => {
     const { ROUTES } = await import("@tensorcraft/shared");
     render(<SiteFooter />);
-    expect(screen.getByRole("link", { name: /home/i })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: /themes/i })).toHaveAttribute(
       "href",
-      ROUTES.home,
+      ROUTES.themes,
+    );
+    expect(screen.getByRole("link", { name: /pricing/i })).toHaveAttribute(
+      "href",
+      ROUTES.pricing,
+    );
+    expect(screen.getByRole("link", { name: /blog/i })).toHaveAttribute(
+      "href",
+      ROUTES.blog,
+    );
+    expect(screen.getByRole("link", { name: /glossary/i })).toHaveAttribute(
+      "href",
+      ROUTES.glossary,
     );
   });
 

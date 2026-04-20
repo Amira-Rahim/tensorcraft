@@ -225,7 +225,7 @@ CSS custom properties are defined in `packages/themes/src/css/themes.css` and co
 | Deep Orbit | `#6BAA8A` (sage green) | `#A89060` (warm gold) |
 | Neon Protocol | `#4A90D9` (steel blue) | `#A07090` (muted mauve) |
 | Signal Ward | `#65C07D` (medical green) | `#7096B0` (slate blue) |
-| Nova Canvas | `#C06060` (warm red) | `#7868A8` (soft purple) |
+| Nova Canvas | `#D07070` (warm red) | `#7868A8` (soft purple) |
 | Terra Grid | `#C49535` (industrial amber) | `#6BAA8A` (sage green) |
 
 Each theme also defines three bridge-tier tokens derived from the palette: `--tc-tier-identity` (matches primary), `--tc-tier-structural` (`#7096B0`), and `--tc-tier-intuition` (`#A89060`).

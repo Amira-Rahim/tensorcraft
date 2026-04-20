@@ -1,4 +1,4 @@
-# Accessibility Audit — 2026-04-19
+# Accessibility Audit — 2026-04-20
 
 **Auditor:** Claude (static code audit, read-only)
 **Scope:** `apps/web/app/**`, `packages/ui/src/**`, `packages/themes/src/**`
@@ -88,7 +88,7 @@ The dominant gaps are **(a) font sizes well below the documented 12px minimum** 
 | `apps/web/app/pricing/checkout-button.tsx:144` | `role="alert"` — good, but the `<p>` carries the role; `aria-live="polite"` or `assertive` not set explicitly (defaults are implementation-defined for `alert`, but `assertive` is standard for `alert`). | 4.1.3 | Minor | Fine; optionally add explicit `aria-live="assertive"` for clarity. |
 | `apps/web/app/globals.css:9-12` | Global `*:focus-visible { outline: 2px solid var(--tc-primary); outline-offset: 2px }` — excellent. |  | ✓ good |  |
 | `apps/web/app/globals.css:283-292` | CSS `prefers-reduced-motion` zeroes animation & transition durations — good for CSS-driven motion. Does not cover JS rAF canvases. | 2.3.3 | Moderate | Add a JS helper or hook (`useReducedMotion`) and guard all rAF loops. |
-| `packages/themes/src/css/themes.css` | Nova Canvas primary `#C06060` on surface `#232323` ≈ 4.3:1 (fails AA for normal text, passes for large 18pt+). Terra Grid primary `#C49535` on surface ≈ 5.1:1 (passes). Signal Ward `#65C07D` on surface ≈ 5.4:1 (passes). Deep Orbit `#6BAA8A` on surface ≈ 4.9:1 (passes). Neon Protocol `#4A90D9` on surface ≈ 4.5:1 (borderline). | 1.4.3 | Serious | Bump Nova Canvas primary by ~8–10% luminance; consider raising Neon Protocol too. Dev-plan line 434 claims all pairs pass — this audit says Nova Canvas fails AA for normal text. |
+| `packages/themes/src/css/themes.css` | Nova Canvas primary `#D07070` on surface `#232323` ≈ 4.85:1 (passes AA 4.5:1) — FIXED 2026-04-20 via Phase 11 §11a foundation work. Terra Grid primary `#C49535` on surface ≈ 5.1:1 (passes). Signal Ward `#65C07D` on surface ≈ 5.4:1 (passes). Deep Orbit `#6BAA8A` on surface ≈ 4.9:1 (passes). Neon Protocol `#4A90D9` on surface ≈ 4.5:1 (borderline). | 1.4.3 | ✓ resolved | Nova Canvas bumped from `#C06060` → `#D07070`. Neon Protocol still borderline — consider further bump in future pass. |
 
 ---
 

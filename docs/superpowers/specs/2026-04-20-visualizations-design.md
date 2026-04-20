@@ -1,6 +1,6 @@
 # Visualizations Design — SkillRadar + LossCurve
 
-**Date:** 2026-04-19
+**Date:** 2026-04-20
 **Status:** Approved for implementation planning
 **Scope:** Phase 11 (Brutalist Terminal Redesign) §11b — new data-visualization components for the dashboard
 **Supersedes:** Parts of dev-plan §11b line 974 (original list included `LossLandscape` and `ActivityHeatmap`; both deferred — see §10 below)
@@ -9,7 +9,7 @@
 
 ## 1. Context
 
-Phase 11 of the Tensorcraft redesign originally called for four visualization components: `LossLandscape`, `SkillRadar`, `ActivityHeatmap`, and `LossCurve`. During brainstorming on 2026-04-19, scope was reduced to two components (`SkillRadar`, `LossCurve`) for V0.5. The remaining two are explicitly deferred with reasons documented in §10.
+Phase 11 of the Tensorcraft redesign originally called for four visualization components: `LossLandscape`, `SkillRadar`, `ActivityHeatmap`, and `LossCurve`. During brainstorming on 2026-04-20, scope was reduced to two components (`SkillRadar`, `LossCurve`) for V0.5. The remaining two are explicitly deferred with reasons documented in §10.
 
 The retained visualizations are data-driven widgets for the authenticated user Dashboard (`apps/web/app/dashboard/page.tsx`). They render a user's current ML skill profile and their learning independence trend over time, using data already present in the Supabase schema.
 
@@ -17,7 +17,7 @@ The retained visualizations are data-driven widgets for the authenticated user D
 
 **In scope:**
 - `LossCurve` — new React component in `packages/ui/src/visualizations/`. Staircase line chart showing rolling 7-day average hints-used per exercise over the last 12 weeks.
-- Refactor of the existing [`apps/web/app/dashboard/skill-genome.tsx`](apps/web/app/dashboard/skill-genome.tsx) widget — apply the Option C "Code Comment" style (no concentric rings, no data-point dots, stroke-only polygon, monospace legend table) to the `RadarChart` subcomponent inside it. **Updated 2026-04-19:** this is a refactor-in-place, not a new `SkillRadar` file in `packages/ui` (the existing widget already ships — see §4).
+- Refactor of the existing [`apps/web/app/dashboard/skill-genome.tsx`](apps/web/app/dashboard/skill-genome.tsx) widget — apply the Option C "Code Comment" style (no concentric rings, no data-point dots, stroke-only polygon, monospace legend table) to the `RadarChart` subcomponent inside it. **Updated 2026-04-20:** this is a refactor-in-place, not a new `SkillRadar` file in `packages/ui` (the existing widget already ships — see §4).
 - Shared geometry helpers (`hexCorners`, `stepPath`, `SKILL_AXIS_ORDER`) extracted to `packages/ui/src/visualizations/helpers.ts` so both the refactored SkillGenome and the new LossCurve reuse them.
 - Data helpers in `apps/web/app/dashboard/_lib/` for weekly hint-bucketing and skill-axis padding.
 - Integration into the existing Dashboard server component.
@@ -58,7 +58,7 @@ apps/web/app/dashboard/
     └── viz-data.test.ts              # NEW
 ```
 
-**Naming:** throughout this spec, earlier drafts used "SkillRadar" for the widget. Post-brainstorm (2026-04-19) we confirmed the existing widget keeps its `SkillGenome` export name. When this document says "SkillRadar" in §5, §6, §7.1, §9, §11, or §12, read it as "the refactored radar inside `skill-genome.tsx`". The consumer API (the exported `<SkillGenome>` component) stays stable.
+**Naming:** throughout this spec, earlier drafts used "SkillRadar" for the widget. Post-brainstorm (2026-04-20) we confirmed the existing widget keeps its `SkillGenome` export name. When this document says "SkillRadar" in §5, §6, §7.1, §9, §11, or §12, read it as "the refactored radar inside `skill-genome.tsx`". The consumer API (the exported `<SkillGenome>` component) stays stable.
 
 `LossCurve` is a **pure function of props** (no state, no fetch). Both the refactored SkillGenome and LossCurve render SVG that is hydration-safe (identical server and client output).
 
@@ -179,7 +179,7 @@ SVG (viewBox 0 0 260 130):
 - X positions: evenly spaced across available weeks.
 - Two text labels: start value at top-left (`<text x="30" y="14">5.0 W1</text>` in muted color); end value at line terminus in primary color.
 - Header label: `<text x="30" y="10" fill="var(--tc-muted)">// loss.hints — 12wk</text>` (rendered above the chart area).
-- Null-value weeks (no exercises) are **filtered out** of the polyline — the staircase connects only non-null points. **Updated 2026-04-19 (YAGNI):** an earlier draft specified a dashed placeholder bridge across null weeks; dropped to simplify the typical-user case. Revisit only if sparse-data rendering reads as confusing in the wild.
+- Null-value weeks (no exercises) are **filtered out** of the polyline — the staircase connects only non-null points. **Updated 2026-04-20 (YAGNI):** an earlier draft specified a dashed placeholder bridge across null weeks; dropped to simplify the typical-user case. Revisit only if sparse-data rendering reads as confusing in the wild.
 
 ### 7.3 Pure helpers
 
@@ -224,12 +224,12 @@ Content:
 
 Because all numerical values are also visible as text in the SVG/legend per decision #6, screen-reader output mirrors visual output — no information asymmetry. No `aria-live` needed (static per page load).
 
-Addresses specific findings from `docs/audits/accessibility-audit-2026-04-19.md` (sub-12px text avoided — min 10px for comment labels, which is a mono-specific concession; we'll use 11px minimum for axis values).
+Addresses specific findings from `docs/audits/accessibility-audit-2026-04-20.md` (sub-12px text avoided — min 10px for comment labels, which is a mono-specific concession; we'll use 11px minimum for axis values).
 
 ## 10. Out of scope (deferred)
 
 ### 10.1 LossLandscape (auth page atmospheric decoration)
-**Deferred 2026-04-19.** Reason: atmospheric-only; auth page already works; not in the functional/data critical path. Revisit during a dedicated polish pass once other Phase 11 work lands.
+**Deferred 2026-04-20.** Reason: atmospheric-only; auth page already works; not in the functional/data critical path. Revisit during a dedicated polish pass once other Phase 11 work lands.
 
 ### 10.2 ActivityHeatmap (GitHub-style daily activity grid)
 **Deferred per dev-plan §5b line 357** (pre-existing decision). Reason: post-V0.5 per product plan; requires daily activity aggregation infrastructure (dev-plan §11e) that itself is pending.
@@ -280,5 +280,5 @@ Addresses specific findings from `docs/audits/accessibility-audit-2026-04-19.md`
 
 - Dev plan: `docs/dev-plan.md` §11b (new shared components), §5b (dashboard), §5a (progress tracking)
 - Prior Phase 11 decisions: `docs/superpowers/specs/2026-04-15-design-system-color-overhaul.md`
-- Accessibility audit: `docs/audits/accessibility-audit-2026-04-19.md`
+- Accessibility audit: `docs/audits/accessibility-audit-2026-04-20.md`
 - Schema source: `apps/api/src/routes/skill-events.ts:17` (`VALID_SKILL_AXES`), `packages/supabase/migrations/` (skill_genome, exercise_attempts tables)

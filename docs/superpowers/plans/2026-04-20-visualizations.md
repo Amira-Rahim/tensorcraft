@@ -4,13 +4,13 @@
 >
 > **User's commit rule:** Per `CLAUDE.md`, NEVER run `git add`, `git commit`, or `git push` on behalf of the user. Each task ends with "Report completion and stop" — the user commits manually after review.
 
-**Spec:** [docs/superpowers/specs/2026-04-19-visualizations-design.md](../specs/2026-04-19-visualizations-design.md)
+**Spec:** [docs/superpowers/specs/2026-04-20-visualizations-design.md](../specs/2026-04-20-visualizations-design.md)
 
 **Goal:** Build two static SVG dashboard visualizations — `SkillRadar` (6-axis hex radar for active theme's skill proficiency) and `LossCurve` (staircase line of rolling 7-day avg hints per exercise over 12 weeks) — with hand-rolled SVG, zero new deps, brutalist code-comment aesthetic.
 
 **Architecture:** New `LossCurve` component + shared geometry helpers live in `packages/ui/src/visualizations/`. Existing [`apps/web/app/dashboard/skill-genome.tsx`](../../../apps/web/app/dashboard/skill-genome.tsx) gets refactored in place to apply the Option C "Code Comment" style (no concentric rings, no data-point dots, stroke-only polygon, monospace legend table). Dashboard server component adds a single new query (`exercise_attempts`) for LossCurve; the existing `skill_genome` query stays. No state, no hover/click, all values rendered as visible labels.
 
-**Post-brainstorm updates (2026-04-19):** Plan reviewer flagged that `skill-genome.tsx` + `SkillGenome` component already ship. User confirmed "iterate in place" (Decision 1-B). Null-week dashed placeholder dropped per YAGNI (Decision 2-B). File layout simplified — no separate `skill-radar.tsx` file.
+**Post-brainstorm updates (2026-04-20):** Plan reviewer flagged that `skill-genome.tsx` + `SkillGenome` component already ship. User confirmed "iterate in place" (Decision 1-B). Null-week dashed placeholder dropped per YAGNI (Decision 2-B). File layout simplified — no separate `skill-radar.tsx` file.
 
 **Tech Stack:** TypeScript, React (server + client), Vitest + React Testing Library (colocated `.test.tsx`), Supabase JS client, CSS custom properties for theming (`var(--tc-primary)` etc.).
 
@@ -243,7 +243,7 @@ describe("computeWeeklyHints", () => {
         { attempted_at: "2026-04-16T22:00:00Z", hints_used: 5 },
       ],
       12,
-      new Date("2026-04-19T00:00:00Z"),
+      new Date("2026-04-20T00:00:00Z"),
     );
     expect(result).toHaveLength(12);
     // Week-of-2026-04-13 should have avg (3+5)/2 = 4
@@ -252,13 +252,13 @@ describe("computeWeeklyHints", () => {
   });
 
   it("returns null avgHints for weeks with no attempts", () => {
-    const result = computeWeeklyHints([], 12, new Date("2026-04-19T00:00:00Z"));
+    const result = computeWeeklyHints([], 12, new Date("2026-04-20T00:00:00Z"));
     expect(result).toHaveLength(12);
     expect(result.every((w) => w.avgHints === null)).toBe(true);
   });
 
   it("orders weeks oldest → newest", () => {
-    const result = computeWeeklyHints([], 12, new Date("2026-04-19T00:00:00Z"));
+    const result = computeWeeklyHints([], 12, new Date("2026-04-20T00:00:00Z"));
     const starts = result.map((w) => w.weekStart);
     const sorted = [...starts].sort();
     expect(starts).toEqual(sorted);
@@ -489,7 +489,7 @@ Changes inside `skill-genome.tsx` (keep everything else — imports, wrapping pa
 4. **Change** the data polygon: `fill="none"` (was `fill="var(--tc-primary)" fillOpacity="0.15"`), keep `stroke="var(--tc-primary)" strokeWidth="1.5"` (down from 2).
 5. **Delete** the `dataPoints.map((p, i) => <circle ... r="4" />)` dot rendering block.
 6. **Delete** the `labelPositions.map((lp, i) => <text ... />)` short-label rendering block around the SVG edges.
-7. **Add** an adjacent HTML legend (outside the SVG) formatted as mono table — see the Option C reference in `docs/superpowers/specs/2026-04-19-visualizations-design.md` §7.1. Layout: horizontal flex, SVG on left (55%), legend on right (45%). Header: `<div style={{color: "var(--tc-muted)", fontFamily: MONO}}># skill_genome</div>`. Rows: one per axis, flex space-between, axis name in body color, value in primary color, values formatted as `(proficiency / 100).toFixed(2)`.
+7. **Add** an adjacent HTML legend (outside the SVG) formatted as mono table — see the Option C reference in `docs/superpowers/specs/2026-04-20-visualizations-design.md` §7.1. Layout: horizontal flex, SVG on left (55%), legend on right (45%). Header: `<div style={{color: "var(--tc-muted)", fontFamily: MONO}}># skill_genome</div>`. Rows: one per axis, flex space-between, axis name in body color, value in primary color, values formatted as `(proficiency / 100).toFixed(2)`.
 8. **Add** `role="img"`, a `<title>`, and a `<desc>` to the root SVG. Title: `"Skill profile"` (or include the theme name if available in props). Desc: `"Skill profile. " + axes.map(a => \`${a.name} ${(a.proficiency/100).toFixed(2)}\`).join(", ") + "."`.
 9. **Empty state:** if all proficiencies are 0, render the center-text `"No activity yet"` in the SVG (currently the widget may render a different empty state — match that behavior if it already exists, else add this).
 10. Remove any references to `color: axis.color` or `var(--tc-axis-*)` on the data polygon — Option C uses a single `var(--tc-primary)` for the whole polygon.
@@ -925,7 +925,7 @@ In `docs/dev-plan.md`:
 
 2. In §11f "Test Updates", mark the viz-tests line `[x]` if both component test files exist and pass.
 
-3. In §5b "Dashboard", add a sub-bullet under the completed dashboard entry: "Added SkillRadar and LossCurve widgets YYYY-MM-DD (see `docs/superpowers/specs/2026-04-19-visualizations-design.md`)."
+3. In §5b "Dashboard", add a sub-bullet under the completed dashboard entry: "Added SkillRadar and LossCurve widgets YYYY-MM-DD (see `docs/superpowers/specs/2026-04-20-visualizations-design.md`)."
 
 - [ ] **Step 2: Append a short entry to the Session log** (top of dev-plan.md)
 
@@ -954,8 +954,8 @@ Because each task ends without a commit, rollback is just a revert of the workin
 
 ## References
 
-- Spec: [docs/superpowers/specs/2026-04-19-visualizations-design.md](../specs/2026-04-19-visualizations-design.md)
-- A11y audit: [docs/audits/accessibility-audit-2026-04-19.md](../../audits/accessibility-audit-2026-04-19.md)
+- Spec: [docs/superpowers/specs/2026-04-20-visualizations-design.md](../specs/2026-04-20-visualizations-design.md)
+- A11y audit: [docs/audits/accessibility-audit-2026-04-20.md](../../audits/accessibility-audit-2026-04-20.md)
 - Skill axis enum: [apps/api/src/routes/skill-events.ts:17](../../../apps/api/src/routes/skill-events.ts)
 - Supabase schema: `packages/supabase/migrations/010_skill_genome.sql`, `004_exercise_attempts.sql`
 - Related skills: @superpowers:test-driven-development, @superpowers:verification-before-completion, @superpowers:subagent-driven-development

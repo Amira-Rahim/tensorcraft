@@ -1,5 +1,36 @@
 import { describe, it, expect } from "vitest";
-import { parseAndRunTests } from "./exercise";
+
+// Patch CSSStyleSheet.insertRule to swallow unknown/unsupported CSS rules
+// (e.g. stitches/Sandpack emits `--sxs{--sxs:6}` which jsdom's CSSOM parser
+// rejects). Stitches expects inserted rules to be retrievable via cssRules,
+// so on parse failure we fall back to inserting a harmless placeholder rule
+// at the same index to keep indices in sync.
+// Must run before importing the module under test, which transitively loads
+// @codesandbox/sandpack-react → @stitches/core at module scope.
+if (
+  typeof CSSStyleSheet !== "undefined" &&
+  CSSStyleSheet.prototype.insertRule
+) {
+  const originalInsertRule = CSSStyleSheet.prototype.insertRule;
+  CSSStyleSheet.prototype.insertRule = function patchedInsertRule(
+    rule: string,
+    index?: number,
+  ): number {
+    try {
+      return originalInsertRule.call(this, rule, index);
+    } catch {
+      // Swallow CSS parse errors from libraries that emit non-standard rules.
+      // Insert a harmless placeholder so cssRules indices remain consistent.
+      try {
+        return originalInsertRule.call(this, ".__sxs_stub__{}", index);
+      } catch {
+        return index ?? 0;
+      }
+    }
+  };
+}
+
+const { parseAndRunTests } = await import("./exercise");
 
 describe("parseAndRunTests", () => {
   it("runs a passing synchronous test", async () => {

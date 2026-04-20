@@ -1,6 +1,6 @@
 # Tensorcraft — Development Plan
 
-> Last updated: 2026-04-19 (Batch 1+2 landing, Phase 11 visualization spec, prototypes retired, ARIANarrator cut)
+> Last updated: 2026-04-20 (Batch 1+2 landing, Phase 11 visualization spec, prototypes retired, ARIANarrator cut)
 
 This document is the single source of truth for all development work needed to ship Tensorcraft. It covers every phase from repo initialization to post-launch operations, sourced from the PRD, tech-spec, product-plan, theme scripts, and two rounds of DeepSeek reviews.
 
@@ -10,7 +10,7 @@ This document is the single source of truth for all development work needed to s
 
 ## Session log
 
-### 2026-04-19 — Batch 1 + 2 + small fixes + Phase 11 viz design
+### 2026-04-20 — Batch 1 + 2 + small fixes + Phase 11 viz design
 
 **Landed (code, uncommitted — awaiting user review):**
 
@@ -18,18 +18,18 @@ This document is the single source of truth for all development work needed to s
 - §4c Paywall redirect contract — Module 2+ lesson attempts redirect to `/auth` (unauth) or `/pricing?locked={slug}` (authed-but-locked); `<PaywallNotice>` banner wired on `/pricing`
 - §5b Dashboard page — server component with parallel Supabase queries, `theme-cards.tsx` grid showing owned/locked states, 8 new tests
 - §5f GitHub integration backend — `/connect`, `/callback`, `/disconnect`, `/commit`, `/retroactive-push` endpoints with retry + structured error codes; 35 new tests
-- §6a WCAG 2.1 AA audit report at `docs/audits/accessibility-audit-2026-04-19.md` — 37 findings (6 Critical, 14 Serious)
+- §6a WCAG 2.1 AA audit report at `docs/audits/accessibility-audit-2026-04-20.md` — 37 findings (6 Critical, 14 Serious)
 - §6d SEO metadata gaps filled on pricing/terms/privacy; `robots: noindex` on dashboard/settings/auth/onboarding/purchase-success; per-theme `Course` JSON-LD; OG route unit-tested
 - Pre-existing test-suite repair: rate-limit 120→60 req/min with in-memory Redis mock, email-tags env read bug + auth ordering fix, exercise-attempts Supabase mock `.limit()` fix, `apps/api/vitest.setup.ts` path regression fixed — API test suite: 114/114 passing
-- Phase 11 visualizations brainstormed and spec'd — see `docs/superpowers/specs/2026-04-19-visualizations-design.md`
+- Phase 11 visualizations brainstormed and spec'd — see `docs/superpowers/specs/2026-04-20-visualizations-design.md`
 
 **Still to apply (user action):**
 
-- ~~Migration `017_purchases_referential_integrity.sql`~~ → **APPLIED** 2026-04-19. CHECK constraint `chk_purchases_valid_theme_ids` now live. Unique-index half was effectively a noop — a pre-existing `uq_stripe_session_id` already guaranteed uniqueness; migration 017's `idx_purchases_stripe_unique` now coexists as a harmless duplicate. Optional cleanup: `DROP INDEX IF EXISTS public.idx_purchases_stripe_unique;`
-- Review and commit uncommitted working-tree changes (27 files as of 2026-04-19)
+- ~~Migration `017_purchases_referential_integrity.sql`~~ → **APPLIED** 2026-04-20. CHECK constraint `chk_purchases_valid_theme_ids` now live. Unique-index half was effectively a noop — a pre-existing `uq_stripe_session_id` already guaranteed uniqueness; migration 017's `idx_purchases_stripe_unique` now coexists as a harmless duplicate. Optional cleanup: `DROP INDEX IF EXISTS public.idx_purchases_stripe_unique;`
+- Review and commit uncommitted working-tree changes (27 files as of 2026-04-20)
 - Resolve rate-limit MAX_REQUESTS authoritative value (was 120, now 60 per user decision)
 
-**Visualizations implementation (Tasks 1.1 → 3.2, landed 2026-04-19):**
+**Visualizations implementation (Tasks 1.1 → 3.2, landed 2026-04-20):**
 
 - Files created (6): `packages/ui/src/visualizations/helpers.ts`, `packages/ui/src/visualizations/loss-curve.tsx`, `packages/ui/src/visualizations/index.ts` (+ colocated tests + snapshots), `apps/web/app/dashboard/_lib/viz-data.ts`, `apps/web/app/dashboard/__tests__/dashboard-view.test.tsx`, `apps/web/app/dashboard/__tests__/page.test.tsx` (new file tracked via `__tests__/` dir).
 - Files modified: `apps/web/app/dashboard/page.tsx` (added `exercise_attempts` query + `lossCurveData` computation), `apps/web/app/dashboard/dashboard-view.tsx` (accepts `lossCurveData` prop, renders LEARNING TREND section after SkillGenome), `apps/web/app/dashboard/skill-genome.tsx` (269→207 lines, Option C refactor consuming `hexCorners` from `@tensorcraft/ui/visualizations`), `packages/ui/package.json` (added `./visualizations` subpath export), `docs/dev-plan.md`.
@@ -50,7 +50,7 @@ This document is the single source of truth for all development work needed to s
 - **Stage 1 — Foundation (serialized, 1 agent):** §11a palette CSS, Tailwind `@theme` update, 5 theme manifests verification, Nova Canvas contrast fix, `theme-properties.test.ts` update, replace neon utilities with brutalist utilities
 - **Stage 2a — Backend (parallel with 2b, 1 agent):** §11e profiles migration (experience_level, learning_goal), certificates table migration, certificate endpoints, daily activity aggregation, onboarding update endpoint
 - **Stage 2b — Shell + primitives (3 parallel agents after Stage 1):** Nav/Footer/AuthForm/CookieConsent/UserMenu/layout.tsx updates; ParticleField + BridgeTicker components; SkillRadar + LossCurve implementation per visualizations spec
-- **Stage 3 — Page integration passes (3 waves of 3–4 agents, after Stage 2):** Landing (ParticleField + BridgeTicker), Auth, Pricing, Dashboard (visualizations), ModuleOverview, ThemeSelection, Exercise, BridgeExplorer, Onboarding, Settings, Paywall (NEW), Capstone (NEW), PurchaseConfirmation
+- **Stage 3 — Page integration passes (3 waves of 3–4 agents, after Stage 2):** Landing (ParticleField + BridgeTicker), Auth, Pricing, Dashboard (visualizations), ModuleOverview, ThemeSelection, Exercise, Onboarding, Settings, Paywall (NEW), Capstone (NEW), PurchaseConfirmation (BridgeExplorer removed per §7a)
 - **Stage 4 — Docs + tests (1 agent, last):** update tech-spec, product-plan, marketing-plan; verify all snapshots green
 
 ---
@@ -323,9 +323,9 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] Checkout button client component (`apps/web/app/pricing/checkout-button.tsx`) — initiates Stripe session and redirects
 - [ ] Webhook retry logic / dead-letter queue for failed deliveries
 - [x] `GET /api/purchases/:userId` endpoint — verify user has purchased a theme
-- [x] `GET /api/purchases/access` endpoint — returns `{ themeIds, hasFullBundle }` for the authenticated user, filters unknown slugs defensively. COMPLETED 2026-04-19.
-- [x] Fix purchases upsert race condition — webhook now pre-checks for terminal statuses (refunded / partially_refunded / disputed / failed) and skips upsert to prevent status regression; otherwise `ON CONFLICT (stripe_session_id) DO UPDATE` via `ignoreDuplicates: false`. Migration 017 promotes `stripe_session_id` to a UNIQUE index so concurrent Stripe retries serialize at the DB level. COMPLETED 2026-04-19.
-- [x] Purchase-to-theme referential integrity (API + DB) — `validateThemeIds` now rejects empty arrays and unknown slugs on both checkout and webhook paths; migration 017 adds a `chk_purchases_valid_theme_ids` CHECK constraint so even direct SQL writes cannot land an unknown slug. COMPLETED 2026-04-19.
+- [x] `GET /api/purchases/access` endpoint — returns `{ themeIds, hasFullBundle }` for the authenticated user, filters unknown slugs defensively. COMPLETED 2026-04-20.
+- [x] Fix purchases upsert race condition — webhook now pre-checks for terminal statuses (refunded / partially_refunded / disputed / failed) and skips upsert to prevent status regression; otherwise `ON CONFLICT (stripe_session_id) DO UPDATE` via `ignoreDuplicates: false`. Migration 017 promotes `stripe_session_id` to a UNIQUE index so concurrent Stripe retries serialize at the DB level. COMPLETED 2026-04-20.
+- [x] Purchase-to-theme referential integrity (API + DB) — `validateThemeIds` now rejects empty arrays and unknown slugs on both checkout and webhook paths; migration 017 adds a `chk_purchases_valid_theme_ids` CHECK constraint so even direct SQL writes cannot land an unknown slug. COMPLETED 2026-04-20.
 - [x] Payment failure error modal on pricing page (PRD 4.6)
 - [x] Upgrade path: credit amount already paid toward higher tier — see §7g (completed 2026-04-14)
 - [ ] Track `purchase_completed` and `refund_requested` events
@@ -335,7 +335,7 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] Route guard middleware — check `purchases` table for theme access
 - [x] Paywall modal when free-tier user attempts Module 2+ (from `prototypes/paywall.html`)
 - [x] Upgrade path from paywall → pricing page
-- [x] Redirect-based paywall on `themes/[slug]/[module]/[lesson]`: unauthenticated → `/auth?redirectTo=<path>`, authenticated-but-locked → `/pricing?locked=<themeSlug>` with a canonical-slug-validated `PaywallNotice` banner surfacing which theme is gated. COMPLETED 2026-04-19.
+- [x] Redirect-based paywall on `themes/[slug]/[module]/[lesson]`: unauthenticated → `/auth?redirectTo=<path>`, authenticated-but-locked → `/pricing?locked=<themeSlug>` with a canonical-slug-validated `PaywallNotice` banner surfacing which theme is gated. COMPLETED 2026-04-20.
 - [ ] Track `paywall_hit` and `upgrade_modal_shown` events
 
 ### 4d. Post-Purchase Confirmation
@@ -399,13 +399,13 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] ~~Coming Soon themes section~~ OBSOLETE: All 5 themes launch simultaneously — no "coming soon" concept (ThemeStatus removed 2026-04-13)
 - [x] Streak calculation from `completed_at` timestamps
 - [x] Add `streaks` table (user_id, theme_id, current_streak, longest_streak, last_activity_date) — denormalized for fast reads
-- [x] Activity feed (recent lesson completions) — rendered on dashboard via `recentActivity` derived from `theme_progress`, resolved to lesson/module titles. Achievements feed still pending (see below). COMPLETED 2026-04-19.
+- [x] Activity feed (recent lesson completions) — rendered on dashboard via `recentActivity` derived from `theme_progress`, resolved to lesson/module titles. Achievements feed still pending (see below). COMPLETED 2026-04-20.
 - [x] Add `achievements` table (user_id, achievement_type, theme_id, unlocked_at) — milestones and badges
 - [ ] Track `streak_achieved` event (3-day, 7-day, 30-day milestones) — Deferred post-V0.5 per dev-plan (achievements surfacing not wired into dashboard yet)
 - [x] Skill radar: radar chart + progress bars rendering on dashboard (`skill-genome.tsx`). Proficiency computed via `compute_user_skill_genome()` SQL function (migration 014), called via RPC after each lesson completion. Weighted scoring: pass=+3, complete=+2, bridge=+1, fail=-0.5, hint=-0.25, solution=-1. Confidence scales with event count.
-  - SkillRadar visualization refactored in place + LossCurve widget added 2026-04-19 (see `docs/superpowers/specs/2026-04-19-visualizations-design.md`).
-- [x] Per-theme grid with owned/locked states (`theme-cards.tsx`) — owned themes link into `/themes/{slug}`, locked themes link to `/pricing?locked={slug}` with pre-selected paywall context. Full-bundle state collapses the header summary. COMPLETED 2026-04-19.
-- [x] Progress ring: animated circular progress indicator on main dashboard stat (`themeProgressPercent` → `ring` state in `dashboard-view.tsx`). COMPLETED 2026-04-19.
+  - SkillRadar visualization refactored in place + LossCurve widget added 2026-04-20 (see `docs/superpowers/specs/2026-04-20-visualizations-design.md`).
+- [x] Per-theme grid with owned/locked states (`theme-cards.tsx`) — owned themes link into `/themes/{slug}`, locked themes link to `/pricing?locked={slug}` with pre-selected paywall context. Full-bundle state collapses the header summary. COMPLETED 2026-04-20.
+- [x] Progress ring: animated circular progress indicator on main dashboard stat (`themeProgressPercent` → `ring` state in `dashboard-view.tsx`). COMPLETED 2026-04-20.
 - [ ] Share snapshot: html2canvas 2x PNG with watermark, share modal with Clipboard API + Web Share API fallback (ui-ux-notes 2.5) — Deferred post-V0.5 per dev-plan
 - [ ] Activity heatmap (post-V0.5 — query `theme_progress` by `completed_at` date, render SVG) — Deferred post-V0.5 per dev-plan (current 30-day heatmap uses `updated_at` as a stopgap)
 
@@ -455,17 +455,17 @@ All blocking decisions have been resolved. This table documents the final choice
   - Fine-grained, per-repository permissions
   - Short-lived installation tokens (1-hour auto-refresh)
   - Rate limit: 5,000 req/hr per installation (separate quota per user)
-  - *Deferred: requires live GitHub App registration + secrets. Env var scaffolding landed in `apps/api/.env.example` (2026-04-19).*
-- [x] Commit lesson artifacts on completion (2026-04-19) — `POST /api/github/commit` in `apps/api/src/routes/github.ts`
-- [x] Repo naming: `tensorcraft-{theme-slug}` (2026-04-19) — `buildRepoName` helper in `apps/api/src/lib/github.ts`
-- [x] Retroactive push (tech-spec 5.3) endpoint (2026-04-19) — `POST /api/github/retroactive-push` iterates `theme_progress` chronologically and pushes each lesson. Returns synchronous progress report.
+  - *Deferred: requires live GitHub App registration + secrets. Env var scaffolding landed in `apps/api/.env.example` (2026-04-20).*
+- [x] Commit lesson artifacts on completion (2026-04-20) — `POST /api/github/commit` in `apps/api/src/routes/github.ts`
+- [x] Repo naming: `tensorcraft-{theme-slug}` (2026-04-20) — `buildRepoName` helper in `apps/api/src/lib/github.ts`
+- [x] Retroactive push (tech-spec 5.3) endpoint (2026-04-20) — `POST /api/github/retroactive-push` iterates `theme_progress` chronologically and pushes each lesson. Returns synchronous progress report.
   - [ ] Move to a real background job (Upstash QStash / Fly Machines cron) for large backlogs — deferred until job-queue infra is chosen.
-- [x] Opt-out and disconnect flow (2026-04-19) — `POST /api/github/disconnect` revokes the OAuth grant against `/applications/{client_id}/grant` and clears DB columns
-- [x] Graceful degradation if repo access is revoked (2026-04-19) — 401 → `github_token_expired`, 403/404 → `github_repo_access_revoked` (structured error codes)
-- [x] Retry logic on GitHub API failures (2026-04-19) — `withRetry` helper with exponential backoff, max 3 retries, honours 5xx/429 as transient
-- [x] Repo creation flow on first commit (2026-04-19) — `ensureThemeRepo` creates the per-theme repo if missing, with auto-generated README
-- [x] Auto-generated README.md template (2026-04-19) — `buildReadmeTemplate`: theme badge, module list, description, `https://tensorcraft.app` link
-- [x] OAuth connect flow scaffolding (2026-04-19) — `POST /api/github/connect` returns authorize URL; `GET /api/github/callback` exchanges code → stores token in `profiles.github_token`
+- [x] Opt-out and disconnect flow (2026-04-20) — `POST /api/github/disconnect` revokes the OAuth grant against `/applications/{client_id}/grant` and clears DB columns
+- [x] Graceful degradation if repo access is revoked (2026-04-20) — 401 → `github_token_expired`, 403/404 → `github_repo_access_revoked` (structured error codes)
+- [x] Retry logic on GitHub API failures (2026-04-20) — `withRetry` helper with exponential backoff, max 3 retries, honours 5xx/429 as transient
+- [x] Repo creation flow on first commit (2026-04-20) — `ensureThemeRepo` creates the per-theme repo if missing, with auto-generated README
+- [x] Auto-generated README.md template (2026-04-20) — `buildReadmeTemplate`: theme badge, module list, description, `https://tensorcraft.app` link
+- [x] OAuth connect flow scaffolding (2026-04-20) — `POST /api/github/connect` returns authorize URL; `GET /api/github/callback` exchanges code → stores token in `profiles.github_token`
 - [ ] Frontend UI wiring for connect/disconnect toggle in Settings (deferred to the web-app batch)
 
 ---
@@ -474,7 +474,7 @@ All blocking decisions have been resolved. This table documents the final choice
 
 ### 6a. Accessibility
 
-**Static a11y audit completed 2026-04-19** — see [`docs/audits/accessibility-audit-2026-04-19.md`](audits/accessibility-audit-2026-04-19.md). 37 findings (6 Critical, 14 Serious, 11 Moderate, 6 Minor). Top 5 to tackle: (1) `aria-live` on TestResultsPanel + Quiz verdict, (2) remove `outline-none` without focus-visible replacement on form inputs (settings, report-issue, glossary), (3) sweep sub-12px text across lesson-steps / report-issue / settings / dashboard / scene-heading, (4) standardize dialog focus-trap+restore pattern and apply to report-issue, user-menu, mobile-nav, lesson-drawer, (5) verify Nova Canvas primary contrast (est. 4.3:1 on surface — fails AA).
+**Static a11y audit completed 2026-04-20** — see [`docs/audits/accessibility-audit-2026-04-20.md`](audits/accessibility-audit-2026-04-20.md). 37 findings (6 Critical, 14 Serious, 11 Moderate, 6 Minor). Top 5 to tackle: (1) `aria-live` on TestResultsPanel + Quiz verdict, (2) remove `outline-none` without focus-visible replacement on form inputs (settings, report-issue, glossary), (3) sweep sub-12px text across lesson-steps / report-issue / settings / dashboard / scene-heading, (4) standardize dialog focus-trap+restore pattern and apply to report-issue, user-menu, mobile-nav, lesson-drawer, (5) verify Nova Canvas primary contrast (est. 4.3:1 on surface — fails AA).
 
 - [ ] WCAG 2.1 AA compliance across all pages
 - [ ] 44px minimum touch targets for all interactive elements
@@ -527,8 +527,6 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] robots.txt with crawl directives
 - [x] Canonical URLs on all pages
 - [x] Canonical URLs added to root layout, theme, lesson, and capstone pages. COMPLETED 2026-04-14.
-- [ ] Blog infrastructure (MDX-based, target: 2 posts/week)
-- [ ] Google Search Console setup
 - [x] Target keywords: "learn machine learning JavaScript", "TensorFlow.js tutorial", "ML for front-end developers". H1 updated, title tags optimized, internal linking added. COMPLETED 2026-04-14.
 - [x] LearningResource + BreadcrumbList structured data on lesson pages (JSON-LD). COMPLETED 2026-04-14.
 - [x] WebSite schema with SearchAction in root layout JSON-LD. COMPLETED 2026-04-15.
@@ -540,7 +538,7 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] OG images on /learn and /glossary pages. COMPLETED 2026-04-15.
 - [x] Internal linking strategy: landing page links to /learn and /glossary, /learn links to all 5 themes + /glossary + /pricing, /themes enriched with intro copy and "Why 5 Themes?" section. COMPLETED 2026-04-14.
 - [x] GEO/AEO — llms.txt, ai-plugin.json, FAQ schema, /learn content page. COMPLETED 2026-04-14.
-- [x] Metadata audit pass — OG/Twitter/canonical added to /terms, /privacy, /pricing; `robots: noindex` added to /dashboard, /settings, /dashboard/purchase-success, /auth (new layout), /onboarding (new layout); per-theme `Course` JSON-LD embedded inline on /themes/[slug] (in addition to aggregated schema in root layout); OG route (`/api/og`) unit-tested at `apps/web/app/api/og/route.test.ts` (1200x630, param handling, cache headers). COMPLETED 2026-04-19.
+- [x] Metadata audit pass — OG/Twitter/canonical added to /terms, /privacy, /pricing; `robots: noindex` added to /dashboard, /settings, /dashboard/purchase-success, /auth (new layout), /onboarding (new layout); per-theme `Course` JSON-LD embedded inline on /themes/[slug] (in addition to aggregated schema in root layout); OG route (`/api/og`) unit-tested at `apps/web/app/api/og/route.test.ts` (1200x630, param handling, cache headers). COMPLETED 2026-04-20.
 - [ ] Blog infrastructure (MDX-based, target: 2 posts/week) — DEFERRED: separate phase, not part of SEO infra pass.
 - [ ] Google Search Console setup — DEFERRED: requires production domain verification, do post-launch.
 
@@ -592,7 +590,7 @@ All blocking decisions have been resolved. This table documents the final choice
 - [ ] Add structured error logging (Pino or Winston with request context)
 - [x] Add graceful shutdown handler (`process.on('SIGTERM')`)
 - [x] Health check endpoint: add `SELECT 1` DB probe (currently doesn't verify DB connection)
-- [x] Purchase-to-theme referential integrity — validate `theme_ids[]` against known themes. API-level validation in `validateThemeIds` (rejects empty arrays and unknown slugs on both checkout and webhook paths); DB-level `chk_purchases_valid_theme_ids` CHECK constraint in migration 017. COMPLETED 2026-04-19.
+- [x] Purchase-to-theme referential integrity — validate `theme_ids[]` against known themes. API-level validation in `validateThemeIds` (rejects empty arrays and unknown slugs on both checkout and webhook paths); DB-level `chk_purchases_valid_theme_ids` CHECK constraint in migration 017. COMPLETED 2026-04-20.
 
 ### 6i. Analytics Event Tracking
 
@@ -976,7 +974,7 @@ All blocking decisions have been resolved. This table documents the final choice
 
 ### 10e. Post-Launch External Service Setup
 
-- [ ] Kit (ConvertKit): Create Form (`KIT_FORM_ID`) and "Purchased Deep Orbit" Tag (`KIT_TAG_PURCHASED_DEEP_ORBIT`) — API keys already configured. Without this, purchases work but subscribers aren't tagged for email automation.
+- [ ] Kit (ConvertKit): Manually create Form + "Purchased Deep Orbit" Tag in Kit dashboard, then set `KIT_FORM_ID` + `KIT_TAG_PURCHASED_DEEP_ORBIT` env vars. API keys already configured. Without this, purchases work but subscribers aren't tagged for email automation.
 - [ ] PostHog: Create project, add `NEXT_PUBLIC_POSTHOG_KEY` to web `.env.local` and Vercel environment variables. Free tier = 1M events/month.
 - [ ] Plausible: Add site `tensorcraft.app`, set `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`. ~EUR 9/mo.
 - [ ] Blog posts — write and publish first batch of articles
@@ -1008,20 +1006,20 @@ Full design system overhaul from "Zensman DeFi Neon" to "Brutalist Terminal" aes
 ### 11a. Design System Foundation
 
 - [x] Update `ThemePalette` interface in `packages/themes/src/types.ts`: remove `glow`/`neonLine`, add `surfaceOverlay`/`border`/`codeBg` — **COMPLETED** (9-key brutalist shape in place)
-- [x] Update `packages/themes/src/css/themes.css` with new brutalist shell tokens and remove `--tc-glow`/`--tc-neon-line` — **COMPLETED 2026-04-19** (also removed `--tc-neon-glow` from all 5 theme blocks)
-- [x] Update all 5 theme manifest files (deep-orbit, neon-protocol, signal-ward, nova-canvas, terra-grid) to match new `ThemePalette` interface — **COMPLETED 2026-04-19** (all 5 already conform to 9-key shape; Nova Canvas primary swapped `#C06060` → `#D07070` for WCAG AA)
-- [x] Update `packages/config/tailwind/base.css` `@theme` block: remove glow/neon-line tokens, set all radius to `0`, add code-bg token — **COMPLETED 2026-04-19** (removed `--color-glow`; `--radius-*: 0` and `--color-code-bg` already present)
-- [x] Replace neon utilities in `apps/web/app/globals.css` with brutalist utilities (`.brutalist-shadow`, `.brutalist-hover`, `.comment-label`) — **COMPLETED 2026-04-19** (brutalist utilities already present; no `.neon-*` classes to remove)
-- [x] Update `packages/themes/src/theme-properties.test.ts` for new palette shape — **COMPLETED 2026-04-19** (case-insensitive hex match + new "no removed keys" + "exactly 9 keys" assertions; 43/43 passing)
+- [x] Update `packages/themes/src/css/themes.css` with new brutalist shell tokens and remove `--tc-glow`/`--tc-neon-line` — **COMPLETED 2026-04-20** (also removed `--tc-neon-glow` from all 5 theme blocks)
+- [x] Update all 5 theme manifest files (deep-orbit, neon-protocol, signal-ward, nova-canvas, terra-grid) to match new `ThemePalette` interface — **COMPLETED 2026-04-20** (all 5 already conform to 9-key shape; Nova Canvas primary swapped `#C06060` → `#D07070` for WCAG AA)
+- [x] Update `packages/config/tailwind/base.css` `@theme` block: remove glow/neon-line tokens, set all radius to `0`, add code-bg token — **COMPLETED 2026-04-20** (removed `--color-glow`; `--radius-*: 0` and `--color-code-bg` already present)
+- [x] Replace neon utilities in `apps/web/app/globals.css` with brutalist utilities (`.brutalist-shadow`, `.brutalist-hover`, `.comment-label`) — **COMPLETED 2026-04-20** (brutalist utilities already present; no `.neon-*` classes to remove)
+- [x] Update `packages/themes/src/theme-properties.test.ts` for new palette shape — **COMPLETED 2026-04-20** (case-insensitive hex match + new "no removed keys" + "exactly 9 keys" assertions; 43/43 passing)
 
 ### 11b. New Shared Components
 
 - [ ] Build `ParticleField` canvas component (`packages/ui/src/particle-field.tsx`)
 - [ ] Build `BridgeTicker` scrolling ticker (`packages/ui/src/bridge-ticker.tsx`)
-- [x] Build `SkillRadar` + `LossCurve` visualization components (`packages/ui/src/visualizations/`) — **COMPLETED 2026-04-19** — see `docs/superpowers/specs/2026-04-19-visualizations-design.md`. SkillRadar refactored in place as `apps/web/app/dashboard/skill-genome.tsx` (Option C: page-local component consuming shared `hexCorners` helper); LossCurve landed as new shared component + Dashboard section. Note: per-axis palette color tokens remain in theme manifests but are largely unused after Option C refactor — flagged for future §11a cleanup.
-- ~~`LossLandscape`~~ — **DEFERRED 2026-04-19** (atmospheric-only, auth page already works; revisit post-V1)
+- [x] Build `SkillRadar` + `LossCurve` visualization components (`packages/ui/src/visualizations/`) — **COMPLETED 2026-04-20** — see `docs/superpowers/specs/2026-04-20-visualizations-design.md`. SkillRadar refactored in place as `apps/web/app/dashboard/skill-genome.tsx` (Option C: page-local component consuming shared `hexCorners` helper); LossCurve landed as new shared component + Dashboard section. Note: per-axis palette color tokens remain in theme manifests but are largely unused after Option C refactor — flagged for future §11a cleanup.
+- ~~`LossLandscape`~~ — **DEFERRED 2026-04-20** (atmospheric-only, auth page already works; revisit post-V1)
 - ~~`ActivityHeatmap`~~ — **DEFERRED** (already deferred per §5b line 357 — post-V0.5)
-- ~~ARIANarrator dual robot companion~~ — **REMOVED from scope 2026-04-19** (cut by user)
+- ~~ARIANarrator dual robot companion~~ — **REMOVED from scope 2026-04-20** (cut by user)
 
 ### 11c. Shell Component Updates
 
@@ -1031,14 +1029,14 @@ Full design system overhaul from "Zensman DeFi Neon" to "Brutalist Terminal" aes
 - [ ] Update CookieConsent, UserMenu: brutalist card styling
 - [ ] Update layout.tsx: body class, font priority
 
-### 11d. Page Component Updates (15 pages)
+### 11d. Page Component Updates (13 pages)
 
 - [ ] Landing page: ParticleField bg, BridgeTicker, bridge table with tiers, 5C loop section, brutalist buttons
-- [ ] Auth pages: split layout, LossLandscape left, form right, "You already think like an ML engineer"
-- [ ] Dashboard: module sidebar, LossCurve, SkillRadar, ActivityHeatmap, activity log
+- [ ] Auth pages: split layout, form right, "You already think like an ML engineer" (LossLandscape deferred per §11b — skip decorative left pane for V0.5)
+- [x] Dashboard: LossCurve, SkillGenome (radar), activity log — COMPLETED 2026-04-20 (ActivityHeatmap deferred post-V0.5 per §5b L357)
 - [x] LessonViewer: redesigned to 6-step Duolingo-style progression (sidebar removed, step-based nav with progress bar) — **COMPLETED (2026-04-14)**
 - [ ] Exercise: line numbers, test results panel, bridge hint, console output
-- [ ] BridgeExplorer: category filter (Identity/Structural/Intuition), search, expandable cards
+- ~~BridgeExplorer~~ — REMOVED per §7a (standalone `/bridges` route deleted; bridge cards now live on dashboard)
 - [ ] Pricing: 4-tier grid, comparison table, "Simple, Fair Pricing"
 - [ ] ThemeSelection: Equal 5-card grid (all themes LIVE), per-theme particle canvas atmospheres, newsletter modal
 - [ ] Onboarding: expand to 5 steps (Welcome, Background, Goal, Theme, Ready)
@@ -1058,11 +1056,11 @@ Full design system overhaul from "Zensman DeFi Neon" to "Brutalist Terminal" aes
 
 ### 11f. Test Updates
 
-- [x] Update theme-properties test for new palette shape (9 keys, no glow/neonLine) — **COMPLETED 2026-04-19** (see §11a)
+- [x] Update theme-properties test for new palette shape (9 keys, no glow/neonLine) — **COMPLETED 2026-04-20** (see §11a)
 - [ ] Update snapshot tests for all redesigned components
 - [x] Update E2E tests for new page structure — **COMPLETED 2026-04-14** (removed sidebar tests, added 6-step progression tests, fixed auth routes, added pricing + onboarding specs)
-- [x] Add tests for SkillRadar (SkillGenome) + LossCurve — **COMPLETED 2026-04-19** (viz helpers 7 tests, loss-curve 5 tests, skill-genome 9 tests, viz-data 7 tests, dashboard-view 3 tests, page.test.tsx +2 tests)
-- [ ] Add tests for ParticleField + BridgeTicker (Stage 2b other components) — viz test strategy defined in `docs/superpowers/specs/2026-04-19-visualizations-design.md` §7
+- [x] Add tests for SkillRadar (SkillGenome) + LossCurve — **COMPLETED 2026-04-20** (viz helpers 7 tests, loss-curve 5 tests, skill-genome 9 tests, viz-data 7 tests, dashboard-view 3 tests, page.test.tsx +2 tests)
+- [ ] Add tests for ParticleField + BridgeTicker (Stage 2b other components) — viz test strategy defined in `docs/superpowers/specs/2026-04-20-visualizations-design.md` §7
 
 ### 11g. Documentation Updates
 
@@ -1078,7 +1076,7 @@ Full design system overhaul from "Zensman DeFi Neon" to "Brutalist Terminal" aes
 
 ## Appendix A: Placeholder Links Reference
 
-All `href="#"` links in prototypes that need real routes:
+Historical placeholder-link inventory (prototypes deleted; links now embedded in live `page.tsx` files):
 
 | Link | Pages | Target |
 | --- | --- | --- |
@@ -1181,20 +1179,20 @@ Based on comprehensive audit of codebase, user journeys, database, and security:
 ### Tier 1: Learning Loop Must Work
 
 1. [x] **Sandpack exercises** (Phase 3f) — async test execution, expanded TF.js mock, import stripping. COMPLETED 2026-04-14.
-2. **Syntax highlighting** (Phase 3h) — code platform needs colored code
+2. [x] **Syntax highlighting** (Phase 3h) — COMPLETED 2026-04-14 (Shiki integration; Code Hike scrollytelling deferred to §7c post-V0.5)
 3. ~~**Wire progress tracking** (Phase 5a) — lesson viewer must write to `/api/progress`~~ RESOLVED — wired via `lesson-progress.tsx`
 4. ~~**Mark Complete button** (Phase 5a) — explicit completion action in lesson viewer~~ RESOLVED
 
 ### Tier 2: Security & Payments
 
-5. **Fix CRITICAL security issues** — Stripe webhook verification, input validation, race conditions
-6. **Stripe checkout flow** (Phase 4b) — create session endpoint + checkout page
-7. **Paywall enforcement** (Phase 4c) — Module 1 free, Module 2+ requires purchase
-8. **Purchase verification endpoint** (Phase 4b) — frontend needs to check access
+5. [x] **Fix CRITICAL security issues** — COMPLETED 2026-04-20 (webhook sig verify, upsert race fix, input validation) — see §4b
+6. [x] **Stripe checkout flow** (Phase 4b) — COMPLETED (found already implemented at `POST /api/payments/checkout`; paywall redirect contract landed 2026-04-20)
+7. [x] **Paywall enforcement** (Phase 4c) — COMPLETED 2026-04-20 (redirect contract on lesson routes + `<PaywallNotice>` on /pricing)
+8. [x] **Purchase verification endpoint** (Phase 4b) — COMPLETED 2026-04-20 (`GET /api/purchases/access`)
 
 ### Tier 3: User Experience
 
-9. **Dashboard page** (Phase 5b) — progress overview, resume learning
+9. [x] **Dashboard page** (Phase 5b) — COMPLETED 2026-04-20 (server component + theme cards + SkillGenome + LossCurve)
 10. ~~**Mobile lesson navigation** (Phase 6b) — drawer for lesson-to-lesson on mobile~~ **[x] COMPLETED 2026-04-14** — swipe gestures for step nav + bottom drawer for lesson list (`lesson-drawer.tsx`). Drawer hidden on desktop (`md:hidden`).
 11. ~~**Fix E2E tests** (Phase 8c) — unblock CI pipeline~~ **[x] COMPLETED 2026-04-14** — fixed broken lesson viewer tests (sidebar removed, 6-step progression), fixed auth route in a11y tests, added pricing + onboarding spec files (7 spec files total).
 12. ~~**Session error handling** (Phase 6e) — graceful token refresh, error UI~~ **[x] COMPLETED 2026-04-14** — `apiFetch` wrapper with auth header + `tc:session-expired` CustomEvent on 401, `SessionToast` dismissable banner, exercise POST switched to `apiFetch`.

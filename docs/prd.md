@@ -390,7 +390,7 @@ Each theme has a distinct color palette within the lesson content area. Colors a
 | Deep Orbit | `#6BAA8A` | `#A89060` | `#181818` | `#232323` |
 | Neon Protocol | `#4A90D9` | `#A07090` | `#181818` | `#232323` |
 | Signal Ward | `#65C07D` | `#7096B0` | `#181818` | `#232323` |
-| Nova Canvas | `#C06060` | `#7868A8` | `#181818` | `#232323` |
+| Nova Canvas | `#D07070` | `#7868A8` | `#181818` | `#232323` |
 | Terra Grid | `#C49535` | `#6BAA8A` | `#181818` | `#232323` |
 
 **Shared palette:** text `#E0E0E0`, muted `#A0A0A0`, border `#3D3D3D`, codeBg `#141414`.

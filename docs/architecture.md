@@ -57,7 +57,7 @@ Dark mode only. Brutalist Terminal aesthetic with sharp edges (zero border-radiu
 | Deep Orbit | Time-Series & Signals | `#6BAA8A` | `#A89060` |
 | Neon Protocol | Computer Vision | `#4A90D9` | `#A07090` |
 | Signal Ward | NLP & Text Intelligence | `#65C07D` | `#7096B0` |
-| Nova Canvas | Multimodal & GenAI | `#C06060` | `#7868A8` |
+| Nova Canvas | Multimodal & GenAI | `#D07070` | `#7868A8` |
 | Terra Grid | Edge AI & MLOps | `#C49535` | `#6BAA8A` |
 
 ### How Theming Works
