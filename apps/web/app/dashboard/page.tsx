@@ -18,6 +18,7 @@ import {
   type ActivityRecord,
 } from "./dashboard-view";
 import { ThemeCards, type ThemeCardData } from "./theme-cards";
+import { computeWeeklyHints } from "./_lib/viz-data";
 
 export const metadata: Metadata = {
   title: "Dashboard | Tensorcraft",
@@ -61,18 +62,32 @@ export default async function DashboardPage() {
       .from("streaks")
       .select("theme_id, current_streak, longest_streak")
       .eq("user_id", user.id),
+    // One query serves both averageScore/moduleScoreMap (whole-history) and
+    // lossCurveData (client-side filtered to the last 12 weeks). Keeping the
+    // query unbounded by time preserves the existing averageScore semantics
+    // (overall per-user average across all attempts).
     supabase
       .from("exercise_attempts")
-      .select("score, attempted_at, lesson_id, theme_id")
+      .select("score, attempted_at, lesson_id, theme_id, hints_used")
       .eq("user_id", user.id)
       .order("attempted_at", { ascending: false })
-      .limit(200),
+      .limit(800),
     supabase
       .from("purchases")
       .select("theme_ids")
       .eq("user_id", user.id)
       .eq("status", "completed"),
   ]);
+
+  const twelveWeeksAgoMs = Date.now() - 12 * 7 * 24 * 60 * 60 * 1000;
+  const lossCurveData = {
+    weekly: computeWeeklyHints(
+      (exerciseAttempts ?? []).filter(
+        (a) => new Date(a.attempted_at).getTime() >= twelveWeeksAgoMs,
+      ),
+      12,
+    ),
+  };
 
   // Compute owned theme set (defensive: only accept known theme slugs so
   // an anomalous DB row cannot grant access to an unknown theme).
@@ -365,6 +380,7 @@ export default async function DashboardPage() {
       totalModules={contentModules.length}
       completedModules={completedModules}
       genomeData={genomeData ?? []}
+      lossCurveData={lossCurveData}
       themeCards={
         <ThemeCards cards={themeCardsData} hasFullBundle={hasFullBundle} />
       }

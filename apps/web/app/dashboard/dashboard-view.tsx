@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect, useRef, type ReactNode } from "react";
+import { useState, useEffect, type ReactNode } from "react";
 import Link from "next/link";
 import { SkillGenome } from "./skill-genome";
+import { LossCurve, type WeeklyHints } from "@tensorcraft/ui/visualizations";
 import { UserAvatar } from "@/app/components/user-avatar";
 
 /* ── Design tokens (use CSS vars from theme system) ── */
@@ -14,34 +15,6 @@ const WHITE = "var(--tc-text)";
 const MUTED = "var(--tc-muted)";
 const BORDER_VAR = "var(--tc-border)";
 const MONO = "var(--font-mono), 'JetBrains Mono', monospace";
-
-const TIER_COLORS: Record<string, string> = {
-  identity: "var(--tc-tier-identity, #6BAA8A)",
-  structural: "var(--tc-tier-structural, #7096B0)",
-  intuition: "var(--tc-tier-intuition, #A89060)",
-};
-
-/** Resolve a CSS custom property to a hex/rgb string for Canvas 2D context */
-function resolveVar(varName: string, fallback: string): string {
-  if (typeof window === "undefined") return fallback;
-  const resolved = getComputedStyle(document.documentElement)
-    .getPropertyValue(varName)
-    .trim();
-  return resolved || fallback;
-}
-
-/** Resolve CSS var to RGB tuple for canvas rgba() usage */
-function resolveRGB(
-  varName: string,
-  fallback: [number, number, number],
-): [number, number, number] {
-  const hex = resolveVar(varName, "");
-  if (!hex || !hex.startsWith("#")) return fallback;
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
-  return [r, g, b];
-}
 
 /* ── Types ── */
 export interface DashboardModule {
@@ -99,37 +72,9 @@ export interface DashboardProps {
     proficiency: number;
     velocity: number;
   }>;
+  lossCurveData: { weekly: WeeklyHints[] };
   themeCards?: ReactNode;
 }
-
-/* ── Loss curve data (visualisation) ── */
-const CURVE = (() => {
-  const a: { l: number; v: number }[] = [];
-  let l = 2.5,
-    v = 2.8;
-  for (let i = 0; i <= 140; i++) {
-    const n = (Math.sin(i * 7.3) + Math.sin(i * 2.1)) * 0.011;
-    l = Math.max(0.04, l * 0.915 + n);
-    v = Math.max(0.08, v * 0.928 + n * 1.4);
-    a.push({ l, v });
-  }
-  return a;
-})();
-
-/* ── Radar helper ── */
-const radarAxes = [
-  "Data Prep",
-  "Model Arch",
-  "Training",
-  "Evaluation",
-  "Deployment",
-  "FE Integ.",
-];
-const rpt = (scores: number[], cx: number, cy: number, R: number) =>
-  scores.map((s, i) => {
-    const a = (i / scores.length) * Math.PI * 2 - Math.PI / 2;
-    return { x: cx + Math.cos(a) * s * R, y: cy + Math.sin(a) * s * R };
-  });
 
 export function DashboardView(props: DashboardProps) {
   const {
@@ -151,12 +96,10 @@ export function DashboardView(props: DashboardProps) {
     totalModules,
     completedModules,
     genomeData,
+    lossCurveData,
     themeCards,
   } = props;
 
-  const lossCanvasRef = useRef<HTMLCanvasElement>(null);
-  const lossRaf = useRef(0);
-  const plotProg = useRef(0);
   const [heatVis, setHeatVis] = useState(false);
   const [hovM, setHovM] = useState<number | null>(null);
   const [hovBtn, setHovBtn] = useState<string | null>(null);
@@ -172,275 +115,6 @@ export function DashboardView(props: DashboardProps) {
     setTimeout(() => setHeatVis(true), 400);
     return () => clearInterval(ri);
   }, [themeProgressPercent]);
-
-  /* ── Loss curve canvas ── */
-  useEffect(() => {
-    const canvas = lossCanvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d")!;
-
-    const resize = () => {
-      canvas.width = canvas.offsetWidth * 2;
-      canvas.height = canvas.offsetHeight * 2;
-      ctx.scale(2, 2);
-    };
-    resize();
-
-    // Debounce resize to avoid excessive canvas recalculations
-    let resizeTimer: ReturnType<typeof setTimeout>;
-    const debouncedResize = () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(resize, 150);
-    };
-    window.addEventListener("resize", debouncedResize);
-
-    const draw = () => {
-      const W = canvas.offsetWidth,
-        H = canvas.offsetHeight;
-      ctx.clearRect(0, 0, W, H);
-      const [pr, pg, pb] = resolveRGB("--tc-primary", [107, 170, 138]);
-      plotProg.current = Math.min(CURVE.length - 1, plotProg.current + 0.55);
-      const vis = Math.floor(plotProg.current);
-      const CX = W * 0.07,
-        CY = H * 0.12,
-        CW = W * 0.86,
-        CH = H * 0.74;
-      const maxL = 2.8;
-      const toX = (i: number) => CX + (i / (CURVE.length - 1)) * CW;
-      const toY = (v: number) => CY + CH - Math.min(1, v / maxL) * CH;
-
-      // Grid
-      ctx.strokeStyle = "rgba(42,42,42,0.7)";
-      ctx.lineWidth = 1;
-      for (let i = 0; i <= 4; i++) {
-        const y = CY + (i / 4) * CH;
-        ctx.beginPath();
-        ctx.moveTo(CX, y);
-        ctx.lineTo(CX + CW, y);
-        ctx.stroke();
-      }
-      for (let i = 0; i <= 6; i++) {
-        const x = CX + (i / 6) * CW;
-        ctx.beginPath();
-        ctx.moveTo(x, CY);
-        ctx.lineTo(x, CY + CH);
-        ctx.stroke();
-      }
-
-      // Axis labels
-      ctx.font = `9px JetBrains Mono, monospace`;
-      ctx.fillStyle = "rgba(90,90,90,0.6)";
-      ctx.textAlign = "right";
-      for (let i = 0; i <= 4; i++) {
-        ctx.fillText(
-          ((maxL * (4 - i)) / 4).toFixed(1),
-          CX - 6,
-          CY + (i / 4) * CH + 3,
-        );
-      }
-      ctx.textAlign = "center";
-      ctx.fillText("<- epochs ->", CX + CW / 2, CY + CH + 14);
-
-      if (vis > 0) {
-        // Fill
-        const gf = ctx.createLinearGradient(0, CY, 0, CY + CH);
-        gf.addColorStop(0, `rgba(${pr},${pg},${pb},0.1)`);
-        gf.addColorStop(1, `rgba(${pr},${pg},${pb},0)`);
-        ctx.beginPath();
-        ctx.moveTo(toX(0), CY + CH);
-        CURVE.slice(0, vis + 1).forEach((p, i) => ctx.lineTo(toX(i), toY(p.l)));
-        ctx.lineTo(toX(vis), CY + CH);
-        ctx.closePath();
-        ctx.fillStyle = gf;
-        ctx.fill();
-
-        // Train line
-        ctx.beginPath();
-        ctx.setLineDash([]);
-        CURVE.slice(0, vis + 1).forEach((p, i) =>
-          i === 0 ? ctx.moveTo(toX(i), toY(p.l)) : ctx.lineTo(toX(i), toY(p.l)),
-        );
-        ctx.strokeStyle = `rgba(${pr},${pg},${pb},0.65)`;
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
-
-        // Val line
-        ctx.beginPath();
-        ctx.setLineDash([4, 3]);
-        CURVE.slice(0, vis + 1).forEach((p, i) =>
-          i === 0 ? ctx.moveTo(toX(i), toY(p.v)) : ctx.lineTo(toX(i), toY(p.v)),
-        );
-        ctx.strokeStyle = "rgba(90,90,90,0.45)";
-        ctx.lineWidth = 1;
-        ctx.stroke();
-        ctx.setLineDash([]);
-
-        if (vis >= CURVE.length - 1) {
-          // Animation complete — stop the loop instead of restarting
-          return;
-        }
-
-        // Current values
-        const cur = CURVE[vis];
-        ctx.font = `9px JetBrains Mono, monospace`;
-        ctx.textAlign = "left";
-        ctx.fillStyle = `rgba(${pr},${pg},${pb},0.6)`;
-        ctx.fillText(`train ${cur.l.toFixed(4)}`, toX(vis) + 4, toY(cur.l) - 4);
-        ctx.fillStyle = "rgba(90,90,90,0.55)";
-        ctx.fillText(
-          `val   ${cur.v.toFixed(4)}`,
-          toX(vis) + 4,
-          toY(cur.v) + 12,
-        );
-      }
-
-      // Legend
-      ctx.font = `9px JetBrains Mono, monospace`;
-      ctx.textAlign = "left";
-      ctx.fillStyle = "color-mix(in srgb, var(--tc-primary) 50%, transparent)";
-      ctx.fillRect(CX, CY + 6, 18, 1.5);
-      ctx.fillText("train loss", CX + 24, CY + 10);
-      ctx.fillStyle = "rgba(90,90,90,0.5)";
-      ctx.fillRect(CX, CY + 20, 18, 1.5);
-      ctx.fillText("val loss", CX + 24, CY + 24);
-
-      lossRaf.current = requestAnimationFrame(draw);
-    };
-    lossRaf.current = requestAnimationFrame(draw);
-    return () => {
-      cancelAnimationFrame(lossRaf.current);
-      clearTimeout(resizeTimer);
-      window.removeEventListener("resize", debouncedResize);
-    };
-  }, []);
-
-  /* ── Radar SVG ── */
-  const radarScores = (() => {
-    // Derive rough skill scores from module completion
-    const done = modules.filter((m) => m.status === "done").length;
-    const total = modules.length;
-    const base = total > 0 ? done / total : 0;
-    return [
-      Math.min(1, base * 1.2), // Data Prep
-      Math.min(1, base * 0.9), // Model Arch
-      Math.min(1, base * 0.8), // Training
-      Math.min(1, base * 0.7), // Evaluation
-      Math.min(1, base * 0.3), // Deployment
-      Math.min(1, base * 1.3), // FE Integ.
-    ];
-  })();
-
-  const radarSVG = () => {
-    const cx = 100,
-      cy = 100,
-      R = 76;
-    const rings = [0.25, 0.5, 0.75, 1];
-    const scorePts = rpt(radarScores, cx, cy, R);
-    const scorePath =
-      scorePts
-        .map(
-          (p, i) => `${i === 0 ? "M" : "L"}${p.x.toFixed(1)},${p.y.toFixed(1)}`,
-        )
-        .join(" ") + "Z";
-
-    return (
-      <svg viewBox="0 0 200 200" width="100%" height="100%">
-        {rings.map((r, ri) => {
-          const pts = rpt(Array(6).fill(r), cx, cy, R);
-          const d =
-            pts
-              .map(
-                (p, i) =>
-                  `${i === 0 ? "M" : "L"}${p.x.toFixed(1)},${p.y.toFixed(1)}`,
-              )
-              .join(" ") + "Z";
-          return (
-            <path
-              key={ri}
-              d={d}
-              fill="none"
-              stroke={resolveVar("--tc-border", "#3D3D3D")}
-              strokeWidth="0.8"
-            />
-          );
-        })}
-        {radarAxes.map((_, i) => {
-          const a = (i / 6) * Math.PI * 2 - Math.PI / 2;
-          const pt = { x: cx + Math.cos(a) * R, y: cy + Math.sin(a) * R };
-          return (
-            <line
-              key={i}
-              x1={cx}
-              y1={cy}
-              x2={pt.x.toFixed(1)}
-              y2={pt.y.toFixed(1)}
-              stroke={resolveVar("--tc-border", "#3D3D3D")}
-              strokeWidth="0.8"
-            />
-          );
-        })}
-        <path
-          d={scorePath}
-          fill="color-mix(in srgb, var(--tc-primary) 8%, transparent)"
-          stroke={resolveVar("--tc-primary", "#6BAA8A")}
-          strokeWidth="1.5"
-        />
-        {scorePts.map((p, i) => (
-          <circle
-            key={i}
-            cx={p.x.toFixed(1)}
-            cy={p.y.toFixed(1)}
-            r="3"
-            fill={resolveVar("--tc-primary", "#6BAA8A")}
-            stroke="#232323"
-            strokeWidth="2"
-          />
-        ))}
-        {radarAxes.map((label, i) => {
-          const a = (i / 6) * Math.PI * 2 - Math.PI / 2;
-          const pt = {
-            x: cx + Math.cos(a) * (R + 15),
-            y: cy + Math.sin(a) * (R + 15),
-          };
-          const anchor =
-            Math.abs(pt.x - cx) < 5 ? "middle" : pt.x < cx ? "end" : "start";
-          return (
-            <text
-              key={i}
-              x={pt.x.toFixed(1)}
-              y={(pt.y + 3).toFixed(1)}
-              textAnchor={anchor}
-              fontSize="7.5"
-              fill="#A0A0A0"
-              fontFamily="JetBrains Mono,monospace"
-            >
-              {label}
-            </text>
-          );
-        })}
-        {radarScores.map((s, i) => {
-          const a = (i / 6) * Math.PI * 2 - Math.PI / 2;
-          const pt = {
-            x: cx + Math.cos(a) * (s * R - 10),
-            y: cy + Math.sin(a) * (s * R - 10),
-          };
-          return (
-            <text
-              key={i}
-              x={pt.x.toFixed(1)}
-              y={(pt.y + 3).toFixed(1)}
-              textAnchor="middle"
-              fontSize="7"
-              fill="color-mix(in srgb, var(--tc-primary) 45%, transparent)"
-              fontFamily="JetBrains Mono,monospace"
-            >
-              {Math.round(s * 100)}%
-            </text>
-          );
-        })}
-      </svg>
-    );
-  };
 
   return (
     <div
@@ -866,15 +540,12 @@ export function DashboardView(props: DashboardProps) {
             ))}
           </div>
 
-          {/* Loss curve */}
+          {/* Heatmap */}
           <div style={{ borderBottom: `1px solid ${BORDER_VAR}` }}>
             <div
               style={{
                 padding: "20px 40px",
                 borderBottom: `1px solid ${BORDER_VAR}`,
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
               }}
             >
               <span
@@ -886,149 +557,77 @@ export function DashboardView(props: DashboardProps) {
                   letterSpacing: "0.12em",
                 }}
               >
-                TRAINING LOSS CURVE
-              </span>
-              <span style={{ fontFamily: MONO, fontSize: 11, color: MUTED }}>
-                {"// re-render cost ↔ model loss"}
+                ACTIVITY · 30 DAYS
               </span>
             </div>
-            <canvas
-              ref={lossCanvasRef}
-              role="img"
-              aria-label="Training loss curve visualization showing model training and validation loss decreasing over epochs"
-              style={{ width: "100%", height: 220, display: "block" }}
-            />
-          </div>
-
-          {/* Radar + Heatmap */}
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              borderBottom: `1px solid ${BORDER_VAR}`,
-            }}
-          >
-            {/* Radar */}
-            <div style={{ borderRight: `1px solid ${BORDER_VAR}` }}>
+            <div style={{ padding: "32px 40px" }}>
               <div
                 style={{
-                  padding: "20px 40px",
-                  borderBottom: `1px solid ${BORDER_VAR}`,
+                  display: "grid",
+                  gridTemplateColumns: "repeat(10, 1fr)",
+                  gap: 6,
+                  marginBottom: 16,
                 }}
               >
-                <span
-                  style={{
-                    fontFamily: MONO,
-                    fontSize: 10,
-                    fontWeight: 700,
-                    color: MUTED,
-                    letterSpacing: "0.12em",
-                  }}
-                >
-                  SKILL RADAR
-                </span>
+                {activityDays.map((v, i) => (
+                  <div
+                    key={i}
+                    style={{
+                      aspectRatio: "1",
+                      background:
+                        v === 0
+                          ? CARD
+                          : `color-mix(in srgb, var(--tc-primary) ${[18, 38, 62, 90][v - 1]}%, transparent)`,
+                      border: `1px solid ${BORDER_VAR}`,
+                      animation: heatVis
+                        ? `hpop .2s ${i * 0.01}s ease both`
+                        : "none",
+                      opacity: heatVis ? 1 : 0,
+                    }}
+                  />
+                ))}
               </div>
               <div
                 style={{
-                  padding: "24px 40px",
-                  height: 260,
+                  fontFamily: MONO,
+                  fontSize: 9,
+                  color: MUTED,
                   display: "flex",
+                  gap: 6,
                   alignItems: "center",
+                  marginBottom: 20,
                 }}
               >
-                {radarSVG()}
+                Less
+                {[0.18, 0.38, 0.62, 0.9].map((o, i) => (
+                  <div
+                    key={i}
+                    style={{
+                      width: 10,
+                      height: 10,
+                      background: `color-mix(in srgb, var(--tc-primary) ${Math.round(o * 100)}%, transparent)`,
+                      border: `1px solid ${BORDER_VAR}`,
+                    }}
+                  />
+                ))}
+                More
               </div>
-            </div>
-
-            {/* Heatmap */}
-            <div>
               <div
                 style={{
-                  padding: "20px 40px",
-                  borderBottom: `1px solid ${BORDER_VAR}`,
+                  fontFamily: MONO,
+                  fontSize: 12,
+                  color: MUTED,
+                  lineHeight: 2.0,
                 }}
               >
-                <span
-                  style={{
-                    fontFamily: MONO,
-                    fontSize: 10,
-                    fontWeight: 700,
-                    color: MUTED,
-                    letterSpacing: "0.12em",
-                  }}
-                >
-                  ACTIVITY · 30 DAYS
-                </span>
-              </div>
-              <div style={{ padding: "32px 40px" }}>
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(10, 1fr)",
-                    gap: 6,
-                    marginBottom: 16,
-                  }}
-                >
-                  {activityDays.map((v, i) => (
-                    <div
-                      key={i}
-                      style={{
-                        aspectRatio: "1",
-                        background:
-                          v === 0
-                            ? CARD
-                            : `color-mix(in srgb, var(--tc-primary) ${[18, 38, 62, 90][v - 1]}%, transparent)`,
-                        border: `1px solid ${BORDER_VAR}`,
-                        animation: heatVis
-                          ? `hpop .2s ${i * 0.01}s ease both`
-                          : "none",
-                        opacity: heatVis ? 1 : 0,
-                      }}
-                    />
-                  ))}
+                <div>
+                  <span style={{ color: LIME }}>{"→ "}</span>
+                  {currentStreak}-day streak active
                 </div>
-                <div
-                  style={{
-                    fontFamily: MONO,
-                    fontSize: 9,
-                    color: MUTED,
-                    display: "flex",
-                    gap: 6,
-                    alignItems: "center",
-                    marginBottom: 20,
-                  }}
-                >
-                  Less
-                  {[0.18, 0.38, 0.62, 0.9].map((o, i) => (
-                    <div
-                      key={i}
-                      style={{
-                        width: 10,
-                        height: 10,
-                        background: `color-mix(in srgb, var(--tc-primary) ${Math.round(o * 100)}%, transparent)`,
-                        border: `1px solid ${BORDER_VAR}`,
-                      }}
-                    />
-                  ))}
-                  More
-                </div>
-                <div
-                  style={{
-                    fontFamily: MONO,
-                    fontSize: 12,
-                    color: MUTED,
-                    lineHeight: 2.0,
-                  }}
-                >
-                  <div>
-                    <span style={{ color: LIME }}>{"→ "}</span>
-                    {currentStreak}-day streak active
-                  </div>
-                  <div>
-                    <span style={{ color: MUTED }}>{"→ "}</span>
-                    {activityDays.filter((d) => d > 0).length} of{" "}
-                    {activityDays.length} days studied
-                  </div>
+                <div>
+                  <span style={{ color: MUTED }}>{"→ "}</span>
+                  {activityDays.filter((d) => d > 0).length} of{" "}
+                  {activityDays.length} days studied
                 </div>
               </div>
             </div>
@@ -1036,6 +635,37 @@ export function DashboardView(props: DashboardProps) {
 
           {/* Skill Genome */}
           <SkillGenome data={genomeData} />
+
+          {/* Learning trend — rolling 7-day avg hints per exercise */}
+          <section
+            aria-labelledby="loss-curve-heading"
+            style={{ borderBottom: `1px solid ${BORDER_VAR}` }}
+          >
+            <div
+              style={{
+                padding: "20px 40px",
+                borderBottom: `1px solid ${BORDER_VAR}`,
+              }}
+            >
+              <h2
+                id="loss-curve-heading"
+                style={{
+                  fontFamily: MONO,
+                  fontSize: 10,
+                  fontWeight: 700,
+                  color: MUTED,
+                  letterSpacing: "0.12em",
+                  margin: 0,
+                  textTransform: "uppercase",
+                }}
+              >
+                LEARNING TREND
+              </h2>
+            </div>
+            <div style={{ padding: "24px 40px" }}>
+              <LossCurve weekly={lossCurveData.weekly} />
+            </div>
+          </section>
 
           {/* Theme catalog — owned vs locked */}
           {themeCards}

@@ -9,7 +9,7 @@ export const novaCanvas: ThemeManifest = {
     "NOVA LABS' AI co-creation system crashed during a major exhibition. Build Nova Canvas — a multimodal creative assistant.",
   palette: {
     bg: "#1C1C1C",
-    primary: "#C06060",
+    primary: "#D07070",
     accent: "#7868A8",
     surface: "#252525",
     text: "#E0E0E0",

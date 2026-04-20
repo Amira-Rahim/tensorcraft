@@ -20,20 +20,43 @@ vi.mock("next/navigation", () => ({
 // the shape used in its auth guard / queries.
 const getUserMock = vi.fn();
 
+// Per-table query results. Tests override specific tables; unknown tables
+// default to empty arrays so the page's `?? []` fallbacks kick in.
+const tableData: Record<string, unknown> = {};
+function resetTableData() {
+  for (const key of Object.keys(tableData)) delete tableData[key];
+}
+
+/**
+ * Build a chainable thenable query-builder that returns `{ data }` regardless
+ * of which combination of `.select().eq().eq().order().limit().single().gte()`
+ * is invoked. Supports `await` via the top-level `then` so callers that treat
+ * the builder itself as a promise (e.g. `Promise.all([supabase.from(...)])`)
+ * receive the same `{ data }` payload.
+ */
+function buildQuery(data: unknown) {
+  const result = { data };
+  const api: Record<string, unknown> = {};
+  const chain = () => api;
+  api.select = chain;
+  api.eq = chain;
+  api.gte = chain;
+  api.order = chain;
+  api.limit = chain;
+  api.single = () => result;
+  api.then = (
+    onFulfilled: (value: { data: unknown }) => unknown,
+    onRejected?: (err: unknown) => unknown,
+  ) => Promise.resolve(result).then(onFulfilled, onRejected);
+  return api;
+}
+
 vi.mock("@/lib/supabase/server", () => ({
   getSupabaseServerClient: async () => ({
     auth: {
       getUser: getUserMock,
     },
-    from: () => ({
-      select: () => ({
-        eq: () => ({
-          eq: () => ({ data: [] }),
-          order: () => ({ limit: () => ({ data: [] }) }),
-          single: () => ({ data: null }),
-        }),
-      }),
-    }),
+    from: (table: string) => buildQuery(tableData[table] ?? []),
   }),
 }));
 
@@ -48,9 +71,39 @@ vi.mock("@tensorcraft/content", () => ({
   getLessonsWithBridges: () => [],
 }));
 
+// We inspect the React element returned by DashboardPage directly to read
+// the props handed to `<DashboardView>` without needing to render the full
+// client tree (which pulls in canvas / styling / hooks).
+vi.mock("../dashboard-view", () => ({
+  DashboardView: function DashboardViewMock() {
+    return null;
+  },
+}));
+
+// `theme-cards` is rendered as JSX inside the page; stub it out so tests
+// don't need its full props surface.
+vi.mock("../theme-cards", () => ({
+  ThemeCards: () => null,
+}));
+
+/**
+ * The dashboard page is a React server component that returns a
+ * `<DashboardView .../>` element. We don't render that element — we just
+ * read `.props` off the returned React element to assert on what the page
+ * would pass to the view.
+ */
+function getDashboardViewProps(
+  element: unknown,
+): Record<string, unknown> | null {
+  if (!element || typeof element !== "object") return null;
+  const el = element as { props?: Record<string, unknown> };
+  return el.props ?? null;
+}
+
 describe("dashboard/page (server component)", () => {
   beforeEach(() => {
     getUserMock.mockReset();
+    resetTableData();
   });
 
   it("redirects unauthenticated users to /auth", async () => {
@@ -84,5 +137,56 @@ describe("dashboard/page (server component)", () => {
       }
       // Any non-redirect error is irrelevant to this assertion.
     }
+  });
+
+  it("passes lossCurveData to DashboardView with 12 weekly buckets", async () => {
+    getUserMock.mockResolvedValue({
+      data: { user: { id: "u-1", email: "x@example.com" } },
+      error: null,
+    });
+
+    tableData.exercise_attempts = [
+      { attempted_at: "2026-04-14T10:00:00Z", hints_used: 3 },
+      { attempted_at: "2026-04-16T22:00:00Z", hints_used: 5 },
+    ];
+
+    const { default: DashboardPage } = await import("../page");
+
+    const element = await DashboardPage();
+    const props = getDashboardViewProps(element);
+
+    expect(props).not.toBeNull();
+    const lossCurveData = props!.lossCurveData as {
+      weekly: Array<{ weekStart: string; avgHints: number | null }>;
+    };
+    expect(lossCurveData).toBeDefined();
+    expect(Array.isArray(lossCurveData.weekly)).toBe(true);
+    expect(lossCurveData.weekly).toHaveLength(12);
+    // Each entry has the canonical weekly-hints shape.
+    for (const w of lossCurveData.weekly) {
+      expect(typeof w.weekStart).toBe("string");
+      expect(w.avgHints === null || typeof w.avgHints === "number").toBe(true);
+    }
+  });
+
+  it("yields 12 null-avgHints buckets when exercise_attempts is empty", async () => {
+    getUserMock.mockResolvedValue({
+      data: { user: { id: "u-1", email: "x@example.com" } },
+      error: null,
+    });
+
+    tableData.exercise_attempts = [];
+
+    const { default: DashboardPage } = await import("../page");
+
+    const element = await DashboardPage();
+    const props = getDashboardViewProps(element);
+
+    expect(props).not.toBeNull();
+    const lossCurveData = props!.lossCurveData as {
+      weekly: Array<{ weekStart: string; avgHints: number | null }>;
+    };
+    expect(lossCurveData.weekly).toHaveLength(12);
+    expect(lossCurveData.weekly.every((w) => w.avgHints === null)).toBe(true);
   });
 });

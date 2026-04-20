@@ -236,7 +236,7 @@ export function ReportIssueButton() {
             : "color-mix(in srgb, var(--tc-surface) 80%, transparent)",
           backdropFilter: "blur(12px)",
           WebkitBackdropFilter: "blur(12px)",
-          border: `1px solid ${open ? "var(--tc-primary)" : "color-mix(in srgb, var(--tc-neon-glow) 30%, transparent)"}`,
+          border: `1px solid ${open ? "var(--tc-primary)" : "var(--tc-border)"}`,
           color: open ? "var(--tc-bg)" : "var(--tc-text)",
           fontSize: 11,
           fontWeight: 600,
@@ -244,8 +244,8 @@ export function ReportIssueButton() {
           cursor: "pointer",
           letterSpacing: "0.05em",
           boxShadow: hovButton
-            ? `4px 4px 0 color-mix(in srgb, var(--tc-primary) 35%, transparent), 0 0 20px color-mix(in srgb, var(--tc-neon-glow) 25%, transparent)`
-            : `0 0 12px color-mix(in srgb, var(--tc-neon-glow) 15%, transparent), inset 0 0 4px color-mix(in srgb, var(--tc-neon-glow) 5%, transparent)`,
+            ? `4px 4px 0 color-mix(in srgb, var(--tc-primary) 35%, transparent)`
+            : "none",
           transform: hovButton ? "translate(-2px, -2px)" : "none",
           transition: "all 0.15s ease",
         }}
@@ -279,14 +279,10 @@ export function ReportIssueButton() {
           background: "color-mix(in srgb, var(--tc-surface) 85%, transparent)",
           backdropFilter: "blur(16px)",
           WebkitBackdropFilter: "blur(16px)",
-          border:
-            "1px solid color-mix(in srgb, var(--tc-neon-glow) 30%, transparent)",
+          border: "1px solid var(--tc-border)",
           borderRadius: 8,
           boxShadow: open
-            ? `0 0 5px color-mix(in srgb, var(--tc-neon-glow) 20%, transparent),
-               0 0 30px color-mix(in srgb, var(--tc-neon-glow) 8%, transparent),
-               inset 0 0 8px color-mix(in srgb, var(--tc-neon-glow) 5%, transparent),
-               0 24px 48px rgba(0,0,0,0.4)`
+            ? `4px 4px 0 color-mix(in srgb, var(--tc-primary) 35%, transparent), 0 24px 48px rgba(0,0,0,0.4)`
             : "none",
           animation: open ? "ri-slide-up 0.25s ease-out both" : "none",
           opacity: open ? 1 : 0,
@@ -343,7 +339,7 @@ export function ReportIssueButton() {
               style={{
                 width: "100%",
                 height: 1,
-                background: `linear-gradient(90deg, transparent, color-mix(in srgb, var(--tc-neon-glow) 20%, transparent), transparent)`,
+                background: `linear-gradient(90deg, transparent, color-mix(in srgb, var(--tc-primary) 20%, transparent), transparent)`,
                 animation: "ri-scan 3s linear infinite",
               }}
             />
@@ -358,7 +354,7 @@ export function ReportIssueButton() {
             left: "10%",
             right: "10%",
             height: 1,
-            background: `linear-gradient(90deg, transparent, var(--tc-neon-line), transparent)`,
+            background: `linear-gradient(90deg, transparent, var(--tc-primary), transparent)`,
             animation: "ri-glow-pulse 2s ease-in-out infinite",
             zIndex: 1,
           }}
@@ -420,8 +416,6 @@ export function ReportIssueButton() {
                   alignItems: "center",
                   justifyContent: "center",
                   margin: "0 auto 12px",
-                  boxShadow:
-                    "0 0 12px color-mix(in srgb, var(--tc-neon-glow) 30%, transparent)",
                 }}
               >
                 <span style={{ fontSize: 16 }}>&#10003;</span>
@@ -536,7 +530,7 @@ export function ReportIssueButton() {
                     fontSize: 8,
                     color:
                       description.length > 1900
-                        ? "var(--tc-neon-line)"
+                        ? "var(--tc-primary)"
                         : "var(--tc-muted)",
                     marginTop: 2,
                     opacity: 0.6,
@@ -591,7 +585,7 @@ export function ReportIssueButton() {
                           letterSpacing: "0.05em",
                           transition: "all 0.1s ease",
                           boxShadow: selected
-                            ? "0 0 8px color-mix(in srgb, var(--tc-neon-glow) 15%, transparent)"
+                            ? "2px 2px 0 color-mix(in srgb, var(--tc-primary) 35%, transparent)"
                             : "none",
                         }}
                       >
@@ -737,11 +731,11 @@ export function ReportIssueButton() {
                   className="font-mono"
                   style={{
                     fontSize: 10,
-                    color: "var(--tc-neon-line)",
+                    color: "var(--tc-primary)",
                     background:
-                      "color-mix(in srgb, var(--tc-neon-line) 6%, transparent)",
+                      "color-mix(in srgb, var(--tc-primary) 6%, transparent)",
                     border:
-                      "1px solid color-mix(in srgb, var(--tc-neon-line) 20%, transparent)",
+                      "1px solid color-mix(in srgb, var(--tc-primary) 20%, transparent)",
                     padding: "8px 12px",
                     borderRadius: 2,
                     animation: "ri-shake 0.3s ease-out",
@@ -772,7 +766,7 @@ export function ReportIssueButton() {
                   textTransform: "uppercase",
                   boxShadow: hovSubmit
                     ? `4px 4px 0 color-mix(in srgb, var(--tc-primary) 35%, transparent)`
-                    : `0 0 12px color-mix(in srgb, var(--tc-neon-glow) 10%, transparent)`,
+                    : "none",
                   transform: hovSubmit ? "translate(-2px, -2px)" : "none",
                   transition: "all 0.1s ease",
                 }}

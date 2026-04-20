@@ -25,9 +25,16 @@ This document is the single source of truth for all development work needed to s
 
 **Still to apply (user action):**
 
-- Migration `017_purchases_referential_integrity.sql` → paste into Supabase SQL editor (`purchases` table verified empty — zero violation risk)
+- ~~Migration `017_purchases_referential_integrity.sql`~~ → **APPLIED** 2026-04-19. CHECK constraint `chk_purchases_valid_theme_ids` now live. Unique-index half was effectively a noop — a pre-existing `uq_stripe_session_id` already guaranteed uniqueness; migration 017's `idx_purchases_stripe_unique` now coexists as a harmless duplicate. Optional cleanup: `DROP INDEX IF EXISTS public.idx_purchases_stripe_unique;`
 - Review and commit uncommitted working-tree changes (27 files as of 2026-04-19)
 - Resolve rate-limit MAX_REQUESTS authoritative value (was 120, now 60 per user decision)
+
+**Visualizations implementation (Tasks 1.1 → 3.2, landed 2026-04-19):**
+
+- Files created (6): `packages/ui/src/visualizations/helpers.ts`, `packages/ui/src/visualizations/loss-curve.tsx`, `packages/ui/src/visualizations/index.ts` (+ colocated tests + snapshots), `apps/web/app/dashboard/_lib/viz-data.ts`, `apps/web/app/dashboard/__tests__/dashboard-view.test.tsx`, `apps/web/app/dashboard/__tests__/page.test.tsx` (new file tracked via `__tests__/` dir).
+- Files modified: `apps/web/app/dashboard/page.tsx` (added `exercise_attempts` query + `lossCurveData` computation), `apps/web/app/dashboard/dashboard-view.tsx` (accepts `lossCurveData` prop, renders LEARNING TREND section after SkillGenome), `apps/web/app/dashboard/skill-genome.tsx` (269→207 lines, Option C refactor consuming `hexCorners` from `@tensorcraft/ui/visualizations`), `packages/ui/package.json` (added `./visualizations` subpath export), `docs/dev-plan.md`.
+- Test counts: +28 new tests across 4 new files (helpers 7, loss-curve 5, viz-data 7, skill-genome 9) + 2 new tests in `page.test.tsx` + 3 new tests in `dashboard-view.test.tsx` — ~33 tests added.
+- Deferred (non-blocking, from code-quality review): LossCurve `yMax` padding `+0.5` → `+1.0` (end-label/comment-header collision in rare all-increasing curves); LossCurve single-data-point test — add assertion that "1 of 3+ exercises" text renders.
 
 **Scope decisions this session:**
 
@@ -396,6 +403,7 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] Add `achievements` table (user_id, achievement_type, theme_id, unlocked_at) — milestones and badges
 - [ ] Track `streak_achieved` event (3-day, 7-day, 30-day milestones) — Deferred post-V0.5 per dev-plan (achievements surfacing not wired into dashboard yet)
 - [x] Skill radar: radar chart + progress bars rendering on dashboard (`skill-genome.tsx`). Proficiency computed via `compute_user_skill_genome()` SQL function (migration 014), called via RPC after each lesson completion. Weighted scoring: pass=+3, complete=+2, bridge=+1, fail=-0.5, hint=-0.25, solution=-1. Confidence scales with event count.
+  - SkillRadar visualization refactored in place + LossCurve widget added 2026-04-19 (see `docs/superpowers/specs/2026-04-19-visualizations-design.md`).
 - [x] Per-theme grid with owned/locked states (`theme-cards.tsx`) — owned themes link into `/themes/{slug}`, locked themes link to `/pricing?locked={slug}` with pre-selected paywall context. Full-bundle state collapses the header summary. COMPLETED 2026-04-19.
 - [x] Progress ring: animated circular progress indicator on main dashboard stat (`themeProgressPercent` → `ring` state in `dashboard-view.tsx`). COMPLETED 2026-04-19.
 - [ ] Share snapshot: html2canvas 2x PNG with watermark, share modal with Clipboard API + Web Share API fallback (ui-ux-notes 2.5) — Deferred post-V0.5 per dev-plan
@@ -1000,17 +1008,17 @@ Full design system overhaul from "Zensman DeFi Neon" to "Brutalist Terminal" aes
 ### 11a. Design System Foundation
 
 - [x] Update `ThemePalette` interface in `packages/themes/src/types.ts`: remove `glow`/`neonLine`, add `surfaceOverlay`/`border`/`codeBg` — **COMPLETED** (9-key brutalist shape in place)
-- [ ] Update `packages/themes/src/css/themes.css` with new brutalist shell tokens and remove `--tc-glow`/`--tc-neon-line`
-- [ ] Update all 5 theme manifest files (deep-orbit, neon-protocol, signal-ward, nova-canvas, terra-grid) to match new `ThemePalette` interface
-- [ ] Update `packages/config/tailwind/base.css` `@theme` block: remove glow/neon-line tokens, set all radius to `0`, add code-bg token
-- [ ] Replace neon utilities in `apps/web/app/globals.css` with brutalist utilities (`.brutalist-shadow`, `.brutalist-hover`, `.comment-label`)
-- [ ] Update `packages/themes/src/theme-properties.test.ts` for new palette shape
+- [x] Update `packages/themes/src/css/themes.css` with new brutalist shell tokens and remove `--tc-glow`/`--tc-neon-line` — **COMPLETED 2026-04-19** (also removed `--tc-neon-glow` from all 5 theme blocks)
+- [x] Update all 5 theme manifest files (deep-orbit, neon-protocol, signal-ward, nova-canvas, terra-grid) to match new `ThemePalette` interface — **COMPLETED 2026-04-19** (all 5 already conform to 9-key shape; Nova Canvas primary swapped `#C06060` → `#D07070` for WCAG AA)
+- [x] Update `packages/config/tailwind/base.css` `@theme` block: remove glow/neon-line tokens, set all radius to `0`, add code-bg token — **COMPLETED 2026-04-19** (removed `--color-glow`; `--radius-*: 0` and `--color-code-bg` already present)
+- [x] Replace neon utilities in `apps/web/app/globals.css` with brutalist utilities (`.brutalist-shadow`, `.brutalist-hover`, `.comment-label`) — **COMPLETED 2026-04-19** (brutalist utilities already present; no `.neon-*` classes to remove)
+- [x] Update `packages/themes/src/theme-properties.test.ts` for new palette shape — **COMPLETED 2026-04-19** (case-insensitive hex match + new "no removed keys" + "exactly 9 keys" assertions; 43/43 passing)
 
 ### 11b. New Shared Components
 
 - [ ] Build `ParticleField` canvas component (`packages/ui/src/particle-field.tsx`)
 - [ ] Build `BridgeTicker` scrolling ticker (`packages/ui/src/bridge-ticker.tsx`)
-- [ ] Build `SkillRadar` + `LossCurve` visualization components (`packages/ui/src/visualizations/`) — **spec'd 2026-04-19** — see `docs/superpowers/specs/2026-04-19-visualizations-design.md`
+- [x] Build `SkillRadar` + `LossCurve` visualization components (`packages/ui/src/visualizations/`) — **COMPLETED 2026-04-19** — see `docs/superpowers/specs/2026-04-19-visualizations-design.md`. SkillRadar refactored in place as `apps/web/app/dashboard/skill-genome.tsx` (Option C: page-local component consuming shared `hexCorners` helper); LossCurve landed as new shared component + Dashboard section. Note: per-axis palette color tokens remain in theme manifests but are largely unused after Option C refactor — flagged for future §11a cleanup.
 - ~~`LossLandscape`~~ — **DEFERRED 2026-04-19** (atmospheric-only, auth page already works; revisit post-V1)
 - ~~`ActivityHeatmap`~~ — **DEFERRED** (already deferred per §5b line 357 — post-V0.5)
 - ~~ARIANarrator dual robot companion~~ — **REMOVED from scope 2026-04-19** (cut by user)
@@ -1050,10 +1058,11 @@ Full design system overhaul from "Zensman DeFi Neon" to "Brutalist Terminal" aes
 
 ### 11f. Test Updates
 
-- [ ] Update theme-properties test for new palette shape (9 keys, no glow/neonLine)
+- [x] Update theme-properties test for new palette shape (9 keys, no glow/neonLine) — **COMPLETED 2026-04-19** (see §11a)
 - [ ] Update snapshot tests for all redesigned components
 - [x] Update E2E tests for new page structure — **COMPLETED 2026-04-14** (removed sidebar tests, added 6-step progression tests, fixed auth routes, added pricing + onboarding specs)
-- [ ] Add tests for new components (ParticleField, BridgeTicker, SkillRadar, LossCurve) — viz test strategy defined in `docs/superpowers/specs/2026-04-19-visualizations-design.md` §7
+- [x] Add tests for SkillRadar (SkillGenome) + LossCurve — **COMPLETED 2026-04-19** (viz helpers 7 tests, loss-curve 5 tests, skill-genome 9 tests, viz-data 7 tests, dashboard-view 3 tests, page.test.tsx +2 tests)
+- [ ] Add tests for ParticleField + BridgeTicker (Stage 2b other components) — viz test strategy defined in `docs/superpowers/specs/2026-04-19-visualizations-design.md` §7
 
 ### 11g. Documentation Updates
 

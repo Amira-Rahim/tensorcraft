@@ -1,0 +1,196 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`SkillGenome (Option C) > matches snapshot for typical data 1`] = `
+<div
+  class="brutalist-shadow bg-surface-raised border border-border overflow-hidden my-6"
+>
+  <div
+    class="p-5"
+  >
+    <div
+      class="font-mono text-xs uppercase tracking-widest text-text-muted mb-4"
+    >
+      // SKILL GENOME
+    </div>
+    <div
+      class="grid grid-cols-1 sm:grid-cols-[55%_45%] gap-6 items-center"
+    >
+      <div
+        class="flex justify-center sm:justify-start"
+      >
+        <svg
+          aria-describedby="sg-desc"
+          aria-labelledby="sg-title"
+          role="img"
+          style="width: 100%; max-width: 200px; height: auto;"
+          viewBox="0 0 200 200"
+        >
+          <title
+            id="sg-title"
+          >
+            Skill profile
+          </title>
+          <desc
+            id="sg-desc"
+          >
+            Skill profile. data_prep 0.60, model_arch 0.30, training 0.45, evaluation 0.20, deployment 0.15, fe_integration 0.85.
+          </desc>
+          <path
+            d="M100,100 L100,16"
+            stroke="var(--tc-border)"
+            stroke-width="0.5"
+          />
+          <path
+            d="M100,100 L172.74613391789285,58.00000000000001"
+            stroke="var(--tc-border)"
+            stroke-width="0.5"
+          />
+          <path
+            d="M100,100 L172.74613391789285,142"
+            stroke="var(--tc-border)"
+            stroke-width="0.5"
+          />
+          <path
+            d="M100,100 L100,184"
+            stroke="var(--tc-border)"
+            stroke-width="0.5"
+          />
+          <path
+            d="M100,100 L27.25386608210715,142"
+            stroke="var(--tc-border)"
+            stroke-width="0.5"
+          />
+          <path
+            d="M100,100 L27.25386608210715,58.00000000000001"
+            stroke="var(--tc-border)"
+            stroke-width="0.5"
+          />
+          <circle
+            cx="100"
+            cy="100"
+            fill="none"
+            r="42"
+            stroke="var(--tc-border)"
+            stroke-dasharray="1 3"
+          />
+          <polygon
+            fill="none"
+            points="100,49.6 121.82384017536785,87.4 132.7357602630518,118.9 100,116.8 89.08807991231608,106.3 38.16578616979108,64.30000000000001"
+            stroke="var(--tc-primary)"
+            stroke-width="1.5"
+          />
+        </svg>
+      </div>
+      <div
+        class="flex flex-col gap-1 font-mono text-xs"
+      >
+        <div
+          class="text-text-muted pb-1 border-b border-border"
+          style="color: var(--tc-muted);"
+        >
+          # skill_genome
+        </div>
+        <div
+          class="flex justify-between py-0.5"
+        >
+          <span
+            style="color: var(--tc-text);"
+          >
+            data_prep
+          </span>
+          <span
+            style="color: var(--tc-primary);"
+          >
+            0.60
+          </span>
+        </div>
+        <div
+          class="flex justify-between py-0.5"
+        >
+          <span
+            style="color: var(--tc-text);"
+          >
+            model_arch
+          </span>
+          <span
+            style="color: var(--tc-primary);"
+          >
+            0.30
+          </span>
+        </div>
+        <div
+          class="flex justify-between py-0.5"
+        >
+          <span
+            style="color: var(--tc-text);"
+          >
+            training
+          </span>
+          <span
+            style="color: var(--tc-primary);"
+          >
+            0.45
+          </span>
+        </div>
+        <div
+          class="flex justify-between py-0.5"
+        >
+          <span
+            style="color: var(--tc-text);"
+          >
+            evaluation
+          </span>
+          <span
+            style="color: var(--tc-primary);"
+          >
+            0.20
+          </span>
+        </div>
+        <div
+          class="flex justify-between py-0.5"
+        >
+          <span
+            style="color: var(--tc-text);"
+          >
+            deployment
+          </span>
+          <span
+            style="color: var(--tc-primary);"
+          >
+            0.15
+          </span>
+        </div>
+        <div
+          class="flex justify-between py-0.5"
+        >
+          <span
+            style="color: var(--tc-text);"
+          >
+            fe_integration
+          </span>
+          <span
+            style="color: var(--tc-primary);"
+          >
+            0.85
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="px-5 py-2 border-t border-border bg-surface flex justify-between"
+  >
+    <span
+      class="font-mono text-xs text-text-muted uppercase tracking-widest"
+    >
+      Velocity
+    </span>
+    <span
+      class="font-mono text-xs font-semibold"
+      style="color: var(--tc-muted);"
+    >
+      — 0.0 /week
+    </span>
+  </div>
+</div>
+`;

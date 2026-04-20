@@ -94,11 +94,17 @@ describe("Theme TypeScript manifests", () => {
 });
 
 describe("Theme manifest/CSS consistency", () => {
+  // Hex values are compared case-insensitively — manifests use uppercase
+  // (#6BAA8A) while CSS uses lowercase (#6baa8a). Both are valid CSS.
+  const cssContentLower = cssContent.toLowerCase();
+
   it.each([...themeSlugs])(
     "theme '%s' palette.primary matches CSS --tc-primary",
     (slug) => {
       const theme = themes[slug];
-      expect(cssContent).toContain(`--tc-primary: ${theme.palette.primary}`);
+      expect(cssContentLower).toContain(
+        `--tc-primary: ${theme.palette.primary.toLowerCase()}`,
+      );
     },
   );
 
@@ -106,9 +112,32 @@ describe("Theme manifest/CSS consistency", () => {
     "theme '%s' palette.accent matches CSS --tc-accent",
     (slug) => {
       const theme = themes[slug];
-      expect(cssContent).toContain(`--tc-accent: ${theme.palette.accent}`);
+      expect(cssContentLower).toContain(
+        `--tc-accent: ${theme.palette.accent.toLowerCase()}`,
+      );
     },
   );
+});
+
+describe("Theme palette shape (brutalist 9-key)", () => {
+  // Old palette had 11 keys including glow/neonLine. The new brutalist shape
+  // has exactly 9 keys — no glow, no neonLine. This test locks the shape.
+  const REMOVED_KEYS = ["glow", "neonLine"];
+
+  it.each([...themeSlugs])(
+    "theme '%s' has no removed keys (glow/neonLine)",
+    (slug) => {
+      const palette = themes[slug].palette as Record<string, unknown>;
+      REMOVED_KEYS.forEach((key) => {
+        expect(palette[key]).toBeUndefined();
+      });
+    },
+  );
+
+  it.each([...themeSlugs])("theme '%s' palette has exactly 9 keys", (slug) => {
+    const palette = themes[slug].palette;
+    expect(Object.keys(palette)).toHaveLength(9);
+  });
 });
 
 describe("ThemePalette vs CSS property alignment", () => {

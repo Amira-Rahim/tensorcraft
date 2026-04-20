@@ -76,15 +76,6 @@ export function Nav() {
         </div>
         <MobileNav />
       </div>
-
-      {/* Theme-tinted downward glow */}
-      <div
-        className="absolute -bottom-2 left-0 right-0 h-2 pointer-events-none z-49"
-        style={{
-          background: "linear-gradient(to bottom, var(--tc-glow), transparent)",
-        }}
-        aria-hidden="true"
-      />
     </nav>
   );
 }

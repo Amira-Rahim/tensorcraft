@@ -30,7 +30,6 @@
   /* Derived accent variables */
   --tc-border-active: color-mix(in srgb, var(--tc-primary) 25%, transparent);
   --tc-border-subtle: color-mix(in srgb, var(--tc-primary) 12%, transparent);
-  --tc-glow: color-mix(in srgb, var(--tc-primary) 10%, transparent);
   --tc-primary-muted: color-mix(in srgb, var(--tc-primary) 8%, transparent);
 
   /* Secondary palette for bridge tiers */
@@ -38,15 +37,11 @@
   --tc-tier-structural: #7096b0;
   --tc-tier-intuition: #a89060;
 
-  /* Neon glow tokens */
-  --tc-neon-glow: #7b68ee;
-  --tc-neon-line: #f0c75e;
-
   /* Skill Genome axis colors */
   --tc-axis-data-prep: var(--tc-primary);
   --tc-axis-model-arch: var(--tc-tier-structural);
   --tc-axis-training: var(--tc-tier-intuition);
-  --tc-axis-evaluation: #c06060;
+  --tc-axis-evaluation: #d07070;
   --tc-axis-deployment: #c49535;
   --tc-axis-fe-integration: #4a90d9;
 }
@@ -72,21 +67,17 @@
   /* Derived accent variables */
   --tc-border-active: color-mix(in srgb, var(--tc-primary) 25%, transparent);
   --tc-border-subtle: color-mix(in srgb, var(--tc-primary) 12%, transparent);
-  --tc-glow: color-mix(in srgb, var(--tc-primary) 10%, transparent);
   --tc-primary-muted: color-mix(in srgb, var(--tc-primary) 8%, transparent);
 
   --tc-tier-identity: #4a90d9;
   --tc-tier-structural: #7096b0;
   --tc-tier-intuition: #a89060;
 
-  --tc-neon-glow: #00d4ff;
-  --tc-neon-line: #ff2d7b;
-
   /* Skill Genome axis colors */
   --tc-axis-data-prep: var(--tc-primary);
   --tc-axis-model-arch: var(--tc-tier-structural);
   --tc-axis-training: var(--tc-tier-intuition);
-  --tc-axis-evaluation: #c06060;
+  --tc-axis-evaluation: #d07070;
   --tc-axis-deployment: #c49535;
   --tc-axis-fe-integration: #4a90d9;
 }
@@ -112,21 +103,17 @@
   /* Derived accent variables */
   --tc-border-active: color-mix(in srgb, var(--tc-primary) 25%, transparent);
   --tc-border-subtle: color-mix(in srgb, var(--tc-primary) 12%, transparent);
-  --tc-glow: color-mix(in srgb, var(--tc-primary) 10%, transparent);
   --tc-primary-muted: color-mix(in srgb, var(--tc-primary) 8%, transparent);
 
   --tc-tier-identity: #65c07d;
   --tc-tier-structural: #7096b0;
   --tc-tier-intuition: #a89060;
 
-  --tc-neon-glow: #2dd4bf;
-  --tc-neon-line: #818cf8;
-
   /* Skill Genome axis colors */
   --tc-axis-data-prep: var(--tc-primary);
   --tc-axis-model-arch: var(--tc-tier-structural);
   --tc-axis-training: var(--tc-tier-intuition);
-  --tc-axis-evaluation: #c06060;
+  --tc-axis-evaluation: #d07070;
   --tc-axis-deployment: #c49535;
   --tc-axis-fe-integration: #4a90d9;
 }
@@ -134,7 +121,7 @@
 /* ===== NOVA CANVAS (Creative AI) ===== */
 [data-theme="nova-canvas"] {
   --tc-bg: #181818;
-  --tc-primary: #c06060;
+  --tc-primary: #d07070;
   --tc-accent: #7868a8;
   --tc-surface: #232323;
   --tc-surface-overlay: #313131;
@@ -147,26 +134,22 @@
   --tc-surface-raised: #2c2c2c;
 
   /* RGB triplet for canvas/inline rgba() usage — must stay in sync with --tc-primary */
-  --tc-primary-rgb: 192, 96, 96;
+  --tc-primary-rgb: 208, 112, 112;
 
   /* Derived accent variables */
   --tc-border-active: color-mix(in srgb, var(--tc-primary) 25%, transparent);
   --tc-border-subtle: color-mix(in srgb, var(--tc-primary) 12%, transparent);
-  --tc-glow: color-mix(in srgb, var(--tc-primary) 10%, transparent);
   --tc-primary-muted: color-mix(in srgb, var(--tc-primary) 8%, transparent);
 
-  --tc-tier-identity: #c06060;
+  --tc-tier-identity: #d07070;
   --tc-tier-structural: #7096b0;
   --tc-tier-intuition: #a89060;
-
-  --tc-neon-glow: #f472b6;
-  --tc-neon-line: #34d399;
 
   /* Skill Genome axis colors */
   --tc-axis-data-prep: var(--tc-primary);
   --tc-axis-model-arch: var(--tc-tier-structural);
   --tc-axis-training: var(--tc-tier-intuition);
-  --tc-axis-evaluation: #c06060;
+  --tc-axis-evaluation: #d07070;
   --tc-axis-deployment: #c49535;
   --tc-axis-fe-integration: #4a90d9;
 }
@@ -192,21 +175,17 @@
   /* Derived accent variables */
   --tc-border-active: color-mix(in srgb, var(--tc-primary) 25%, transparent);
   --tc-border-subtle: color-mix(in srgb, var(--tc-primary) 12%, transparent);
-  --tc-glow: color-mix(in srgb, var(--tc-primary) 10%, transparent);
   --tc-primary-muted: color-mix(in srgb, var(--tc-primary) 8%, transparent);
 
   --tc-tier-identity: #c49535;
   --tc-tier-structural: #7096b0;
   --tc-tier-intuition: #a89060;
 
-  --tc-neon-glow: #fb923c;
-  --tc-neon-line: #38bdf8;
-
   /* Skill Genome axis colors */
   --tc-axis-data-prep: var(--tc-primary);
   --tc-axis-model-arch: var(--tc-tier-structural);
   --tc-axis-training: var(--tc-tier-intuition);
-  --tc-axis-evaluation: #c06060;
+  --tc-axis-evaluation: #d07070;
   --tc-axis-deployment: #c49535;
   --tc-axis-fe-integration: #4a90d9;
 }
