@@ -82,7 +82,7 @@ Each theme (`packages/themes/src/<theme>.ts`) exports a `ThemeManifest` with:
 - **`profiles`** — Extends `auth.users`. Auto-created via trigger on signup. Fields: display_name, avatar_url, github_username.
 - **`theme_progress`** — Per-lesson tracking. Fields: theme_id, module_id, lesson_id, status (not_started/in_progress/completed), score, hints_used, timestamps. Unique constraint on (user_id, theme_id, module_id, lesson_id).
 - **`purchases`** — Payment records from Stripe webhooks. Fields: plan_id, theme_ids (text[]), amount, currency, stripe_session_id, status.
-- **`waitlist`** — Email capture for coming-soon themes. Public insert policy.
+- **`waitlist`** — General newsletter signups (originally for coming-soon theme capture; repurposed since all 5 themes launch simultaneously). Public insert policy.
 - **`streaks`** — Per-theme streak tracking. Fields: user_id, theme_id, current_streak, longest_streak, last_activity_date, timestamps.
 - **`achievements`** — User achievements. Fields: user_id, achievement_type, theme_id, metadata (JSONB), earned_at, timestamps.
 - **`exercise_attempts`** — Exercise submission history. Fields: user_id, exercise_slug, lesson_id, theme_id, score, hints_used, duration_ms, submitted_code, attempted_at, timestamps.

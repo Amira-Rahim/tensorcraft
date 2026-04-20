@@ -2,7 +2,7 @@ import type { Context, Next } from "hono";
 import { getRedis } from "../lib/redis";
 
 const WINDOW_MS = 60_000; // 1 minute
-const MAX_REQUESTS = 120; // 120 req/min per IP (allows multi-tab usage)
+const MAX_REQUESTS = 60; // 60 req/min per IP
 
 /**
  * Sliding-window rate limiter backed by Upstash Redis.

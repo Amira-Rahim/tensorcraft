@@ -28,6 +28,7 @@ vi.mock("@tensorcraft/supabase", () => ({
         select: () => chainable,
         eq: () => chainable,
         order: () => chainable,
+        limit: () => chainable,
         then: (resolve: (v: unknown) => void) => {
           return mockSelectQuery().then(resolve);
         },

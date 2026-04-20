@@ -3,7 +3,33 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Privacy Policy — Tensorcraft",
-  description: "Tensorcraft Privacy Policy",
+  description:
+    "How Tensorcraft collects, uses, and stores account, progress, and analytics data — plus your GDPR and CCPA rights.",
+  alternates: { canonical: "https://tensorcraft.app/privacy" },
+  openGraph: {
+    type: "article",
+    url: "https://tensorcraft.app/privacy",
+    siteName: "Tensorcraft",
+    title: "Privacy Policy — Tensorcraft",
+    description:
+      "Data practices, third-party services, cookies, retention, and your rights.",
+    images: [
+      {
+        url: "/api/og?title=Privacy%20Policy&subtitle=Tensorcraft%20legal&theme=deep-orbit",
+        width: 1200,
+        height: 630,
+        alt: "Tensorcraft Privacy Policy",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Privacy Policy — Tensorcraft",
+    description: "Data practices, third-party services, cookies, and rights.",
+    images: [
+      "/api/og?title=Privacy%20Policy&subtitle=Tensorcraft%20legal&theme=deep-orbit",
+    ],
+  },
 };
 
 export default function PrivacyPage() {

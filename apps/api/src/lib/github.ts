@@ -1,9 +1,19 @@
 /**
  * GitHub REST API client helpers.
  * Uses plain fetch — no external packages required.
+ *
+ * Covers:
+ *   - OAuth connect / callback exchange / token revocation (GitHub App)
+ *   - Repository creation with auto-generated README
+ *   - File push (create or update)
+ *   - Commit retry with exponential backoff
+ *
+ * All external credentials live in env vars — see `.env.example`.
  */
 
 const GITHUB_API = "https://api.github.com";
+const GITHUB_OAUTH_AUTHORIZE = "https://github.com/login/oauth/authorize";
+const GITHUB_OAUTH_TOKEN = "https://github.com/login/oauth/access_token";
 const FETCH_TIMEOUT_MS = 15_000; // 15-second timeout for all GitHub API calls
 
 interface GitHubFileResponse {
@@ -47,6 +57,186 @@ function headers(accessToken: string): HeadersInit {
   };
 }
 
+// ──────────────────────────────────────────────────────────────────────────
+// Retry helper — exponential backoff (max 3 retries) for transient failures
+// ──────────────────────────────────────────────────────────────────────────
+
+/** Errors we should retry on. 5xx and 429 are transient; 4xx (except 429) are not. */
+export function isTransientStatus(status: number): boolean {
+  return status === 429 || (status >= 500 && status < 600);
+}
+
+/**
+ * Runs `fn` with exponential-backoff retries on transient failures.
+ * Defaults: max 3 retries (4 total attempts), 250ms base delay.
+ *
+ * `fn` should throw a `GitHubApiError` with `.status` for HTTP errors
+ * so we can decide whether to retry.
+ */
+export async function withRetry<T>(
+  fn: () => Promise<T>,
+  opts: { maxRetries?: number; baseDelayMs?: number } = {},
+): Promise<T> {
+  const maxRetries = opts.maxRetries ?? 3;
+  const baseDelay = opts.baseDelayMs ?? 250;
+  let attempt = 0;
+
+  while (true) {
+    try {
+      return await fn();
+    } catch (err) {
+      const status = (err as { status?: number })?.status;
+      const isTransient =
+        typeof status === "number" ? isTransientStatus(status) : true;
+
+      if (!isTransient || attempt >= maxRetries) {
+        throw err;
+      }
+
+      const delay = baseDelay * Math.pow(2, attempt);
+      await new Promise((resolve) => setTimeout(resolve, delay));
+      attempt++;
+    }
+  }
+}
+
+/** Typed error for GitHub HTTP failures — carries `.status` for retry logic. */
+export class GitHubApiError extends Error {
+  status: number;
+  body: string;
+  constructor(status: number, body: string, message?: string) {
+    super(message ?? `GitHub API error (${status}): ${body}`);
+    this.name = "GitHubApiError";
+    this.status = status;
+    this.body = body;
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// OAuth flow — GitHub App (not OAuth App)
+// ──────────────────────────────────────────────────────────────────────────
+
+/**
+ * Builds the GitHub App authorization URL. The frontend redirects the user here.
+ * `state` is a CSRF token the caller must also store (e.g., in a signed cookie)
+ * and verify during the callback.
+ */
+export function buildOAuthAuthorizeUrl(params: {
+  clientId: string;
+  redirectUri: string;
+  state: string;
+}): string {
+  const qs = new URLSearchParams({
+    client_id: params.clientId,
+    redirect_uri: params.redirectUri,
+    state: params.state,
+  });
+  return `${GITHUB_OAUTH_AUTHORIZE}?${qs.toString()}`;
+}
+
+/**
+ * Exchanges an OAuth code for a user access token.
+ * For GitHub Apps this is a short-lived user-to-server token.
+ */
+export async function exchangeCodeForToken(params: {
+  clientId: string;
+  clientSecret: string;
+  code: string;
+  redirectUri: string;
+}): Promise<{
+  access_token: string;
+  token_type: string;
+  scope?: string;
+  refresh_token?: string;
+}> {
+  const res = await fetch(GITHUB_OAUTH_TOKEN, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "User-Agent": "Tensorcraft-API",
+    },
+    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+    body: JSON.stringify({
+      client_id: params.clientId,
+      client_secret: params.clientSecret,
+      code: params.code,
+      redirect_uri: params.redirectUri,
+    }),
+  });
+
+  if (!res.ok) {
+    throw new GitHubApiError(res.status, await res.text());
+  }
+
+  const data = (await res.json()) as {
+    access_token?: string;
+    token_type?: string;
+    scope?: string;
+    refresh_token?: string;
+    error?: string;
+    error_description?: string;
+  };
+
+  if (data.error || !data.access_token) {
+    throw new GitHubApiError(
+      400,
+      JSON.stringify(data),
+      data.error_description ??
+        data.error ??
+        "Missing access_token in response",
+    );
+  }
+
+  return {
+    access_token: data.access_token,
+    token_type: data.token_type ?? "bearer",
+    scope: data.scope,
+    refresh_token: data.refresh_token,
+  };
+}
+
+/**
+ * Revokes a user's token against GitHub's grant endpoint.
+ * Uses the App's client_id/client_secret (Basic auth).
+ * 204 = revoked. 404 = already invalid (treat as success).
+ */
+export async function revokeUserToken(params: {
+  clientId: string;
+  clientSecret: string;
+  accessToken: string;
+}): Promise<void> {
+  const basic = Buffer.from(
+    `${params.clientId}:${params.clientSecret}`,
+  ).toString("base64");
+
+  const res = await fetch(
+    `${GITHUB_API}/applications/${params.clientId}/grant`,
+    {
+      method: "DELETE",
+      headers: {
+        Authorization: `Basic ${basic}`,
+        Accept: "application/vnd.github.v3+json",
+        "Content-Type": "application/json",
+        "User-Agent": "Tensorcraft-API",
+      },
+      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+      body: JSON.stringify({ access_token: params.accessToken }),
+    },
+  );
+
+  // 204 No Content is success. 404 means the grant is already gone — also success.
+  if (res.status === 204 || res.status === 404) {
+    return;
+  }
+
+  throw new GitHubApiError(res.status, await res.text());
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// Repo + file operations
+// ──────────────────────────────────────────────────────────────────────────
+
 /**
  * Creates a new repository or returns an existing one.
  * If the repo already exists (422), fetches and returns it.
@@ -54,16 +244,17 @@ function headers(accessToken: string): HeadersInit {
 export async function createOrGetRepo(
   accessToken: string,
   repoName: string,
+  opts?: { description?: string; isPrivate?: boolean },
 ): Promise<GitHubRepoResponse> {
-  // Try to create the repo
   const createRes = await fetch(`${GITHUB_API}/user/repos`, {
     method: "POST",
     headers: headers(accessToken),
     signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
     body: JSON.stringify({
       name: repoName,
-      description: `Tensorcraft exercise solutions — ${repoName}`,
-      private: true,
+      description:
+        opts?.description ?? `Tensorcraft exercise solutions — ${repoName}`,
+      private: opts?.isPrivate ?? false,
       auto_init: true,
     }),
   });
@@ -76,10 +267,11 @@ export async function createOrGetRepo(
   if (createRes.status === 422) {
     const userRes = await fetch(`${GITHUB_API}/user`, {
       headers: headers(accessToken),
+      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
     });
 
     if (!userRes.ok) {
-      throw new Error("Failed to fetch GitHub user");
+      throw new GitHubApiError(userRes.status, await userRes.text());
     }
 
     const user = (await userRes.json()) as { login: string };
@@ -93,14 +285,13 @@ export async function createOrGetRepo(
     );
 
     if (!repoRes.ok) {
-      throw new Error(`Failed to fetch existing repo: ${repoRes.status}`);
+      throw new GitHubApiError(repoRes.status, await repoRes.text());
     }
 
     return repoRes.json() as Promise<GitHubRepoResponse>;
   }
 
-  const errorBody = await createRes.text();
-  throw new Error(`Failed to create repo (${createRes.status}): ${errorBody}`);
+  throw new GitHubApiError(createRes.status, await createRes.text());
 }
 
 /**
@@ -126,7 +317,7 @@ export async function getFile(
   }
 
   if (!res.ok) {
-    throw new Error(`Failed to get file (${res.status})`);
+    throw new GitHubApiError(res.status, await res.text());
   }
 
   const data = (await res.json()) as GitHubFileResponse;
@@ -148,7 +339,6 @@ export async function pushFile(
   content: string,
   message: string,
 ): Promise<{ url: string; commitSha: string }> {
-  // Check if file already exists to get its SHA (required for updates)
   const existing = await getFile(accessToken, owner, repo, path);
 
   const body: Record<string, string> = {
@@ -171,8 +361,7 @@ export async function pushFile(
   );
 
   if (!res.ok) {
-    const errorBody = await res.text();
-    throw new Error(`Failed to push file (${res.status}): ${errorBody}`);
+    throw new GitHubApiError(res.status, await res.text());
   }
 
   const data = (await res.json()) as GitHubPushResponse;
@@ -194,11 +383,183 @@ export async function getGitHubUsername(
   });
 
   if (res.status === 401) {
-    throw new Error("401 Unauthorized — GitHub token expired or revoked");
+    throw new GitHubApiError(
+      401,
+      "Unauthorized — GitHub token expired or revoked",
+    );
   }
 
   if (!res.ok) return null;
 
   const user = (await res.json()) as { login: string };
   return user.login;
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// README + repo name helpers (per tech-spec 5.4)
+// ──────────────────────────────────────────────────────────────────────────
+
+/** Builds the canonical repo name for a theme: tensorcraft-{theme-slug} */
+export function buildRepoName(themeSlug: string): string {
+  return `tensorcraft-${themeSlug}`;
+}
+
+/**
+ * Auto-generates the README template for a Tensorcraft theme repo.
+ * Includes theme badge, description, module list, and a link back to the platform.
+ */
+export function buildReadmeTemplate(params: {
+  themeSlug: string;
+  themeName?: string;
+  description?: string;
+  /** Optional module list for the theme; omitted → default "Modules 01–11". */
+  modules?: Array<{ slug: string; title: string }>;
+}): string {
+  const { themeSlug } = params;
+  const themeName =
+    params.themeName ??
+    themeSlug
+      .split("-")
+      .map((p) => p.charAt(0).toUpperCase() + p.slice(1))
+      .join(" ");
+  const description =
+    params.description ??
+    `Exercise solutions for the Tensorcraft ${themeName} course.`;
+  const badge = `![Theme](https://img.shields.io/badge/Tensorcraft-${encodeURIComponent(
+    themeName,
+  )}-0a84ff)`;
+
+  const modulesSection = (() => {
+    if (!params.modules || params.modules.length === 0) {
+      return Array.from({ length: 11 }, (_, i) => {
+        const n = String(i + 1).padStart(2, "0");
+        return `- Module ${n}`;
+      }).join("\n");
+    }
+    return params.modules.map((m) => `- \`${m.slug}\` — ${m.title}`).join("\n");
+  })();
+
+  return [
+    `# tensorcraft-${themeSlug}`,
+    "",
+    badge,
+    "",
+    description,
+    "",
+    "## Modules",
+    "",
+    modulesSection,
+    "",
+    "## About",
+    "",
+    "This repository is automatically maintained by [Tensorcraft](https://tensorcraft.app) —",
+    "an interactive, story-driven platform teaching frontend engineers browser-based ML.",
+    "Each commit corresponds to a completed lesson exercise.",
+    "",
+    "> Learn more at https://tensorcraft.app",
+    "",
+  ].join("\n");
+}
+
+/**
+ * Creates (or fetches) the per-theme repo and writes the README template if
+ * the repo was just created. Safe to call repeatedly.
+ */
+export async function ensureThemeRepo(
+  accessToken: string,
+  username: string,
+  themeSlug: string,
+  opts?: { themeName?: string; description?: string; isPrivate?: boolean },
+): Promise<GitHubRepoResponse> {
+  const repoName = buildRepoName(themeSlug);
+  const repo = await createOrGetRepo(accessToken, repoName, {
+    description: opts?.description,
+    isPrivate: opts?.isPrivate,
+  });
+
+  // Write the README if it doesn't already exist.
+  const existing = await getFile(accessToken, username, repoName, "README.md");
+  if (!existing) {
+    const readme = buildReadmeTemplate({
+      themeSlug,
+      themeName: opts?.themeName,
+      description: opts?.description,
+    });
+    await pushFile(
+      accessToken,
+      username,
+      repoName,
+      "README.md",
+      readme,
+      "docs: initialize Tensorcraft README",
+    );
+  }
+
+  return repo;
+}
+
+/**
+ * Commits a single lesson artifact to the user's per-theme repo with
+ * exponential-backoff retries on transient failures. Optionally appends
+ * `readmeDelta` to `PROGRESS.md` (not README.md, to avoid churn).
+ */
+export async function commitLessonArtifact(params: {
+  accessToken: string;
+  username: string;
+  themeSlug: string;
+  moduleId: string;
+  lessonId: string;
+  code: string;
+  /** Optional one-line progress delta to append to `PROGRESS.md`. */
+  readmeDelta?: string;
+  /** File extension for the solution, default .ts */
+  fileExt?: string;
+}): Promise<{ url: string; commitSha: string }> {
+  const {
+    accessToken,
+    username,
+    themeSlug,
+    moduleId,
+    lessonId,
+    code,
+    readmeDelta,
+    fileExt = "ts",
+  } = params;
+
+  const repoName = buildRepoName(themeSlug);
+  const filePath = `${moduleId}/${lessonId}.${fileExt}`;
+  const commitMessage = `feat(${moduleId}): Complete exercise -- ${lessonId}`;
+
+  const result = await withRetry(() =>
+    pushFile(accessToken, username, repoName, filePath, code, commitMessage),
+  );
+
+  if (readmeDelta) {
+    try {
+      const progressPath = "PROGRESS.md";
+      const existing = await getFile(
+        accessToken,
+        username,
+        repoName,
+        progressPath,
+      );
+      const prev = existing?.content ?? "# Progress\n\n";
+      const next = `${prev}${prev.endsWith("\n") ? "" : "\n"}${readmeDelta}\n`;
+      await withRetry(() =>
+        pushFile(
+          accessToken,
+          username,
+          repoName,
+          progressPath,
+          next,
+          `docs(${moduleId}): update PROGRESS for ${lessonId}`,
+        ),
+      );
+    } catch (err) {
+      // Progress-file updates are best-effort — never block the artifact commit.
+      console.warn("Failed to update PROGRESS.md:", err);
+    }
+  }
+
+  return result;
 }

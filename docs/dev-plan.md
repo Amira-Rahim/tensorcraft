@@ -1,10 +1,50 @@
 # Tensorcraft — Development Plan
 
-> Last updated: 2026-04-07 (architecture: web moved to Vercel, API stays on Fly.io, domain tensorcraft.app, Cloudflare DNS active, external services audit)
+> Last updated: 2026-04-19 (Batch 1+2 landing, Phase 11 visualization spec, prototypes retired, ARIANarrator cut)
 
 This document is the single source of truth for all development work needed to ship Tensorcraft. It covers every phase from repo initialization to post-launch operations, sourced from the PRD, tech-spec, product-plan, theme scripts, and two rounds of DeepSeek reviews.
 
 **Status key:** `[ ]` not started · `[~]` in progress · `[x]` done
+
+---
+
+## Session log
+
+### 2026-04-19 — Batch 1 + 2 + small fixes + Phase 11 viz design
+
+**Landed (code, uncommitted — awaiting user review):**
+
+- §4b Stripe webhook signature verification, purchases upsert race-condition fix (`ON CONFLICT` + UNIQUE index), `GET /api/purchases/access` endpoint, purchase-to-theme referential integrity (migration `017_purchases_referential_integrity.sql`)
+- §4c Paywall redirect contract — Module 2+ lesson attempts redirect to `/auth` (unauth) or `/pricing?locked={slug}` (authed-but-locked); `<PaywallNotice>` banner wired on `/pricing`
+- §5b Dashboard page — server component with parallel Supabase queries, `theme-cards.tsx` grid showing owned/locked states, 8 new tests
+- §5f GitHub integration backend — `/connect`, `/callback`, `/disconnect`, `/commit`, `/retroactive-push` endpoints with retry + structured error codes; 35 new tests
+- §6a WCAG 2.1 AA audit report at `docs/audits/accessibility-audit-2026-04-19.md` — 37 findings (6 Critical, 14 Serious)
+- §6d SEO metadata gaps filled on pricing/terms/privacy; `robots: noindex` on dashboard/settings/auth/onboarding/purchase-success; per-theme `Course` JSON-LD; OG route unit-tested
+- Pre-existing test-suite repair: rate-limit 120→60 req/min with in-memory Redis mock, email-tags env read bug + auth ordering fix, exercise-attempts Supabase mock `.limit()` fix, `apps/api/vitest.setup.ts` path regression fixed — API test suite: 114/114 passing
+- Phase 11 visualizations brainstormed and spec'd — see `docs/superpowers/specs/2026-04-19-visualizations-design.md`
+
+**Still to apply (user action):**
+
+- Migration `017_purchases_referential_integrity.sql` → paste into Supabase SQL editor (`purchases` table verified empty — zero violation risk)
+- Review and commit uncommitted working-tree changes (27 files as of 2026-04-19)
+- Resolve rate-limit MAX_REQUESTS authoritative value (was 120, now 60 per user decision)
+
+**Scope decisions this session:**
+
+- HTML/JSX prototypes retired — `apps/web/app/**/page.tsx` is now authoritative (see `project_prototypes_removed.md` memory)
+- ARIANarrator dual robot companion **cut from Phase 11**
+- ActivityHeatmap confirmed deferred post-V0.5 (also removed from §11b)
+- LossLandscape deferred (atmospheric-only; revisit post-V1)
+- Phase 11 visualizations reduced from 4 → 2 (SkillRadar + LossCurve)
+- Nova Canvas primary `#C06060` identified as failing WCAG AA 4.5:1; replacement `#D07070` proposed (~4.8:1) — to be baked into Stage 1 foundation agent
+
+**Still to do (Phase 11 roadmap):**
+
+- **Stage 1 — Foundation (serialized, 1 agent):** §11a palette CSS, Tailwind `@theme` update, 5 theme manifests verification, Nova Canvas contrast fix, `theme-properties.test.ts` update, replace neon utilities with brutalist utilities
+- **Stage 2a — Backend (parallel with 2b, 1 agent):** §11e profiles migration (experience_level, learning_goal), certificates table migration, certificate endpoints, daily activity aggregation, onboarding update endpoint
+- **Stage 2b — Shell + primitives (3 parallel agents after Stage 1):** Nav/Footer/AuthForm/CookieConsent/UserMenu/layout.tsx updates; ParticleField + BridgeTicker components; SkillRadar + LossCurve implementation per visualizations spec
+- **Stage 3 — Page integration passes (3 waves of 3–4 agents, after Stage 2):** Landing (ParticleField + BridgeTicker), Auth, Pricing, Dashboard (visualizations), ModuleOverview, ThemeSelection, Exercise, BridgeExplorer, Onboarding, Settings, Paywall (NEW), Capstone (NEW), PurchaseConfirmation
+- **Stage 4 — Docs + tests (1 agent, last):** update tech-spec, product-plan, marketing-plan; verify all snapshots green
 
 ---
 
@@ -99,7 +139,7 @@ All blocking decisions have been resolved. This table documents the final choice
 ### 1d. Security Foundations (COMPLETE)
 
 - [x] CORS configuration for API endpoints
-- [x] Rate limiting on API routes — Redis-backed sliding window, 120 req/min per IP, graceful fallback if Redis unavailable. Stripe webhook exempt.
+- [x] Rate limiting on API routes — Redis-backed sliding window, 60 req/min per IP, graceful fallback if Redis unavailable. Stripe webhook exempt.
 
 ---
 
@@ -200,7 +240,7 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] ~~Build module overview page~~ MERGED: Module lessons now shown in module map accordion at /themes/[slug] (standalone page deleted 2026-04-15)
 - [x] Lesson cards with order, title, time estimate, difficulty badges
 - [x] Breadcrumb navigation (theme → module)
-- [x] V0.5: Show Modules 1–3 for Deep Orbit
+- [x] V0.5: Show Modules 1–3 for all 5 themes (free tier); V1.0 unlocks Modules 4–11 per purchased theme
 
 ### 3e. Lesson Viewer (COMPLETE)
 
@@ -276,8 +316,11 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] Checkout button client component (`apps/web/app/pricing/checkout-button.tsx`) — initiates Stripe session and redirects
 - [ ] Webhook retry logic / dead-letter queue for failed deliveries
 - [x] `GET /api/purchases/:userId` endpoint — verify user has purchased a theme
+- [x] `GET /api/purchases/access` endpoint — returns `{ themeIds, hasFullBundle }` for the authenticated user, filters unknown slugs defensively. COMPLETED 2026-04-19.
+- [x] Fix purchases upsert race condition — webhook now pre-checks for terminal statuses (refunded / partially_refunded / disputed / failed) and skips upsert to prevent status regression; otherwise `ON CONFLICT (stripe_session_id) DO UPDATE` via `ignoreDuplicates: false`. Migration 017 promotes `stripe_session_id` to a UNIQUE index so concurrent Stripe retries serialize at the DB level. COMPLETED 2026-04-19.
+- [x] Purchase-to-theme referential integrity (API + DB) — `validateThemeIds` now rejects empty arrays and unknown slugs on both checkout and webhook paths; migration 017 adds a `chk_purchases_valid_theme_ids` CHECK constraint so even direct SQL writes cannot land an unknown slug. COMPLETED 2026-04-19.
 - [x] Payment failure error modal on pricing page (PRD 4.6)
-- [ ] Upgrade path: credit amount already paid toward higher tier
+- [x] Upgrade path: credit amount already paid toward higher tier — see §7g (completed 2026-04-14)
 - [ ] Track `purchase_completed` and `refund_requested` events
 
 ### 4c. Paywall & Access Control
@@ -285,6 +328,7 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] Route guard middleware — check `purchases` table for theme access
 - [x] Paywall modal when free-tier user attempts Module 2+ (from `prototypes/paywall.html`)
 - [x] Upgrade path from paywall → pricing page
+- [x] Redirect-based paywall on `themes/[slug]/[module]/[lesson]`: unauthenticated → `/auth?redirectTo=<path>`, authenticated-but-locked → `/pricing?locked=<themeSlug>` with a canonical-slug-validated `PaywallNotice` banner surfacing which theme is gated. COMPLETED 2026-04-19.
 - [ ] Track `paywall_hit` and `upgrade_modal_shown` events
 
 ### 4d. Post-Purchase Confirmation
@@ -306,7 +350,7 @@ All blocking decisions have been resolved. This table documents the final choice
 - [ ] Unsubscribe / preference management
 - [ ] Email deliverability monitoring
 
-### 4f. PPP Discounts (Post-V0.5)
+### 4f. PPP Discounts (V2.0 — Constellation)
 
 - [ ] ParityDeals integration for automatic regional discounts (20–70%)
 - [ ] Vercel Edge Function for geo-lookup
@@ -348,13 +392,14 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] ~~Coming Soon themes section~~ OBSOLETE: All 5 themes launch simultaneously — no "coming soon" concept (ThemeStatus removed 2026-04-13)
 - [x] Streak calculation from `completed_at` timestamps
 - [x] Add `streaks` table (user_id, theme_id, current_streak, longest_streak, last_activity_date) — denormalized for fast reads
-- [ ] Activity feed (recent lesson completions, achievements)
+- [x] Activity feed (recent lesson completions) — rendered on dashboard via `recentActivity` derived from `theme_progress`, resolved to lesson/module titles. Achievements feed still pending (see below). COMPLETED 2026-04-19.
 - [x] Add `achievements` table (user_id, achievement_type, theme_id, unlocked_at) — milestones and badges
-- [ ] Track `streak_achieved` event (3-day, 7-day, 30-day milestones)
+- [ ] Track `streak_achieved` event (3-day, 7-day, 30-day milestones) — Deferred post-V0.5 per dev-plan (achievements surfacing not wired into dashboard yet)
 - [x] Skill radar: radar chart + progress bars rendering on dashboard (`skill-genome.tsx`). Proficiency computed via `compute_user_skill_genome()` SQL function (migration 014), called via RPC after each lesson completion. Weighted scoring: pass=+3, complete=+2, bridge=+1, fail=-0.5, hint=-0.25, solution=-1. Confidence scales with event count.
-- [ ] Progress ring: circular SVG indicator (from dashboard.html prototype)
-- [ ] Share snapshot: html2canvas 2x PNG with watermark, share modal with Clipboard API + Web Share API fallback (ui-ux-notes 2.5)
-- [ ] Activity heatmap (post-V0.5 — query `theme_progress` by `completed_at` date, render SVG)
+- [x] Per-theme grid with owned/locked states (`theme-cards.tsx`) — owned themes link into `/themes/{slug}`, locked themes link to `/pricing?locked={slug}` with pre-selected paywall context. Full-bundle state collapses the header summary. COMPLETED 2026-04-19.
+- [x] Progress ring: animated circular progress indicator on main dashboard stat (`themeProgressPercent` → `ring` state in `dashboard-view.tsx`). COMPLETED 2026-04-19.
+- [ ] Share snapshot: html2canvas 2x PNG with watermark, share modal with Clipboard API + Web Share API fallback (ui-ux-notes 2.5) — Deferred post-V0.5 per dev-plan
+- [ ] Activity heatmap (post-V0.5 — query `theme_progress` by `completed_at` date, render SVG) — Deferred post-V0.5 per dev-plan (current 30-day heatmap uses `updated_at` as a stopgap)
 
 ### 5c. Settings
 
@@ -398,24 +443,30 @@ All blocking decisions have been resolved. This table documents the final choice
 
 ### 5f. GitHub Integration
 
-- [ ] GitHub App setup (tech-spec 5.1–5.2):
+- [ ] GitHub App setup (tech-spec 5.1–5.2): create the App in GitHub and provision production secrets
   - Fine-grained, per-repository permissions
   - Short-lived installation tokens (1-hour auto-refresh)
   - Rate limit: 5,000 req/hr per installation (separate quota per user)
-- [ ] Commit lesson artifacts on completion
-- [ ] Repo naming: `tensorcraft-{theme-slug}`, internal project folder = theme-specific name
-- [ ] Retroactive push (tech-spec 5.3): when user connects GitHub after completing modules, background job queues all completed artifacts for push in chronological order with progress indicator
-- [ ] Opt-out and disconnect flow: token revocation on disconnect
-- [ ] Graceful degradation if repo access is revoked (PRD risk #6)
-- [ ] Retry logic on GitHub API failures (exponential backoff, max 3 retries, queue commits)
-- [ ] Repo creation flow: if no repo connected, prompt to create new `tensorcraft-{theme-slug}` repo from within Tensorcraft
-- [ ] Auto-generated README.md template: badge, module list, course description, Tensorcraft link (tech-spec 5.4)
+  - *Deferred: requires live GitHub App registration + secrets. Env var scaffolding landed in `apps/api/.env.example` (2026-04-19).*
+- [x] Commit lesson artifacts on completion (2026-04-19) — `POST /api/github/commit` in `apps/api/src/routes/github.ts`
+- [x] Repo naming: `tensorcraft-{theme-slug}` (2026-04-19) — `buildRepoName` helper in `apps/api/src/lib/github.ts`
+- [x] Retroactive push (tech-spec 5.3) endpoint (2026-04-19) — `POST /api/github/retroactive-push` iterates `theme_progress` chronologically and pushes each lesson. Returns synchronous progress report.
+  - [ ] Move to a real background job (Upstash QStash / Fly Machines cron) for large backlogs — deferred until job-queue infra is chosen.
+- [x] Opt-out and disconnect flow (2026-04-19) — `POST /api/github/disconnect` revokes the OAuth grant against `/applications/{client_id}/grant` and clears DB columns
+- [x] Graceful degradation if repo access is revoked (2026-04-19) — 401 → `github_token_expired`, 403/404 → `github_repo_access_revoked` (structured error codes)
+- [x] Retry logic on GitHub API failures (2026-04-19) — `withRetry` helper with exponential backoff, max 3 retries, honours 5xx/429 as transient
+- [x] Repo creation flow on first commit (2026-04-19) — `ensureThemeRepo` creates the per-theme repo if missing, with auto-generated README
+- [x] Auto-generated README.md template (2026-04-19) — `buildReadmeTemplate`: theme badge, module list, description, `https://tensorcraft.app` link
+- [x] OAuth connect flow scaffolding (2026-04-19) — `POST /api/github/connect` returns authorize URL; `GET /api/github/callback` exchanges code → stores token in `profiles.github_token`
+- [ ] Frontend UI wiring for connect/disconnect toggle in Settings (deferred to the web-app batch)
 
 ---
 
 ## Phase 6: Polish & Launch Prep
 
 ### 6a. Accessibility
+
+**Static a11y audit completed 2026-04-19** — see [`docs/audits/accessibility-audit-2026-04-19.md`](audits/accessibility-audit-2026-04-19.md). 37 findings (6 Critical, 14 Serious, 11 Moderate, 6 Minor). Top 5 to tackle: (1) `aria-live` on TestResultsPanel + Quiz verdict, (2) remove `outline-none` without focus-visible replacement on form inputs (settings, report-issue, glossary), (3) sweep sub-12px text across lesson-steps / report-issue / settings / dashboard / scene-heading, (4) standardize dialog focus-trap+restore pattern and apply to report-issue, user-menu, mobile-nav, lesson-drawer, (5) verify Nova Canvas primary contrast (est. 4.3:1 on surface — fails AA).
 
 - [ ] WCAG 2.1 AA compliance across all pages
 - [ ] 44px minimum touch targets for all interactive elements
@@ -481,6 +532,9 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] OG images on /learn and /glossary pages. COMPLETED 2026-04-15.
 - [x] Internal linking strategy: landing page links to /learn and /glossary, /learn links to all 5 themes + /glossary + /pricing, /themes enriched with intro copy and "Why 5 Themes?" section. COMPLETED 2026-04-14.
 - [x] GEO/AEO — llms.txt, ai-plugin.json, FAQ schema, /learn content page. COMPLETED 2026-04-14.
+- [x] Metadata audit pass — OG/Twitter/canonical added to /terms, /privacy, /pricing; `robots: noindex` added to /dashboard, /settings, /dashboard/purchase-success, /auth (new layout), /onboarding (new layout); per-theme `Course` JSON-LD embedded inline on /themes/[slug] (in addition to aggregated schema in root layout); OG route (`/api/og`) unit-tested at `apps/web/app/api/og/route.test.ts` (1200x630, param handling, cache headers). COMPLETED 2026-04-19.
+- [ ] Blog infrastructure (MDX-based, target: 2 posts/week) — DEFERRED: separate phase, not part of SEO infra pass.
+- [ ] Google Search Console setup — DEFERRED: requires production domain verification, do post-launch.
 
 ### 6e. Error Handling
 
@@ -530,7 +584,7 @@ All blocking decisions have been resolved. This table documents the final choice
 - [ ] Add structured error logging (Pino or Winston with request context)
 - [x] Add graceful shutdown handler (`process.on('SIGTERM')`)
 - [x] Health check endpoint: add `SELECT 1` DB probe (currently doesn't verify DB connection)
-- [ ] Purchase-to-theme referential integrity — validate `theme_ids[]` against known themes
+- [x] Purchase-to-theme referential integrity — validate `theme_ids[]` against known themes. API-level validation in `validateThemeIds` (rejects empty arrays and unknown slugs on both checkout and webhook paths); DB-level `chk_purchases_valid_theme_ids` CHECK constraint in migration 017. COMPLETED 2026-04-19.
 
 ### 6i. Analytics Event Tracking
 
@@ -619,8 +673,8 @@ All blocking decisions have been resolved. This table documents the final choice
 
 ### 7g. Bundle & Team Pricing
 
-- [ ] Bundle purchase flow ($129 two themes, $169 three themes)
-- [ ] Team license management (admin dashboard, seat assignment, progress reports)
+- [x] Bundle purchase flow ($129 two themes, $169 three themes, $219 all five) — `checkout-button.tsx` accepts `themeIds: string[]`; `/api/payments/checkout` handles multi-theme plans; pricing page ships all four paid tiers live at tensorcraft.app/pricing
+- [ ] Team license management (admin dashboard, seat assignment, progress reports) — deferred to V2.0 Constellation
 - [x] Upgrade credit logic (pay difference when moving to higher tier). COMPLETED 2026-04-14.
 
 ### 7h. Module Count Dynamic Updates
@@ -941,11 +995,11 @@ All blocking decisions have been resolved. This table documents the final choice
 
 ## Phase 11: Brutalist Terminal Redesign
 
-Full design system overhaul from "Zensman DeFi Neon" to "Brutalist Terminal" aesthetic. Driven by 15 new JSX prototypes.
+Full design system overhaul from "Zensman DeFi Neon" to "Brutalist Terminal" aesthetic. Source of truth for layouts is existing `apps/web/app/**/page.tsx` implementations plus the tokens defined in §11a — HTML/JSX prototypes were deleted 2026 (diverged from product).
 
 ### 11a. Design System Foundation
 
-- [~] Update `ThemePalette` interface in `packages/themes/src/types.ts`: remove `glow`/`neonLine`, add `surfaceOverlay`/`border`/`codeBg`
+- [x] Update `ThemePalette` interface in `packages/themes/src/types.ts`: remove `glow`/`neonLine`, add `surfaceOverlay`/`border`/`codeBg` — **COMPLETED** (9-key brutalist shape in place)
 - [ ] Update `packages/themes/src/css/themes.css` with new brutalist shell tokens and remove `--tc-glow`/`--tc-neon-line`
 - [ ] Update all 5 theme manifest files (deep-orbit, neon-protocol, signal-ward, nova-canvas, terra-grid) to match new `ThemePalette` interface
 - [ ] Update `packages/config/tailwind/base.css` `@theme` block: remove glow/neon-line tokens, set all radius to `0`, add code-bg token
@@ -956,8 +1010,10 @@ Full design system overhaul from "Zensman DeFi Neon" to "Brutalist Terminal" aes
 
 - [ ] Build `ParticleField` canvas component (`packages/ui/src/particle-field.tsx`)
 - [ ] Build `BridgeTicker` scrolling ticker (`packages/ui/src/bridge-ticker.tsx`)
-- [ ] Build `ARIANarrator` dual robot companion system (`packages/ui/src/narrator/`)
-- [ ] Build visualization components: `LossLandscape`, `SkillRadar`, `ActivityHeatmap`, `LossCurve` (`packages/ui/src/visualizations/`)
+- [ ] Build `SkillRadar` + `LossCurve` visualization components (`packages/ui/src/visualizations/`) — **spec'd 2026-04-19** — see `docs/superpowers/specs/2026-04-19-visualizations-design.md`
+- ~~`LossLandscape`~~ — **DEFERRED 2026-04-19** (atmospheric-only, auth page already works; revisit post-V1)
+- ~~`ActivityHeatmap`~~ — **DEFERRED** (already deferred per §5b line 357 — post-V0.5)
+- ~~ARIANarrator dual robot companion~~ — **REMOVED from scope 2026-04-19** (cut by user)
 
 ### 11c. Shell Component Updates
 
@@ -976,7 +1032,7 @@ Full design system overhaul from "Zensman DeFi Neon" to "Brutalist Terminal" aes
 - [ ] Exercise: line numbers, test results panel, bridge hint, console output
 - [ ] BridgeExplorer: category filter (Identity/Structural/Intuition), search, expandable cards
 - [ ] Pricing: 4-tier grid, comparison table, "Simple, Fair Pricing"
-- [ ] ThemeSelection: Featured Deep Orbit hero, 2x2 coming-soon grid, waitlist modal
+- [ ] ThemeSelection: Equal 5-card grid (all themes LIVE), per-theme particle canvas atmospheres, newsletter modal
 - [ ] Onboarding: expand to 5 steps (Welcome, Background, Goal, Theme, Ready)
 - [ ] ModuleOverview: expandable modules, lesson lists, node indicators, formulas
 - [ ] Settings: 5-tab sidebar, toggle components, theme previews
@@ -997,7 +1053,7 @@ Full design system overhaul from "Zensman DeFi Neon" to "Brutalist Terminal" aes
 - [ ] Update theme-properties test for new palette shape (9 keys, no glow/neonLine)
 - [ ] Update snapshot tests for all redesigned components
 - [x] Update E2E tests for new page structure — **COMPLETED 2026-04-14** (removed sidebar tests, added 6-step progression tests, fixed auth routes, added pricing + onboarding specs)
-- [ ] Add tests for new components (ParticleField, BridgeTicker, Narrator, visualizations)
+- [ ] Add tests for new components (ParticleField, BridgeTicker, SkillRadar, LossCurve) — viz test strategy defined in `docs/superpowers/specs/2026-04-19-visualizations-design.md` §7
 
 ### 11g. Documentation Updates
 
@@ -1006,7 +1062,7 @@ Full design system overhaul from "Zensman DeFi Neon" to "Brutalist Terminal" aes
 - [x] Update `docs/prd.md` — design system section with new tokens and typography
 - [~] Update `docs/dev-plan.md` — add Phase 11 for brutalist redesign
 - [ ] Update `docs/tech-spec.md` — theme manifest spec, component architecture
-- [ ] Update `docs/product-plan.md` — UI/UX section, narrator characters
+- [ ] Update `docs/product-plan.md` — UI/UX section
 - [ ] Update `docs/marketing-plan.md` — brand guidelines for brutalist aesthetic
 
 ---
@@ -1146,13 +1202,16 @@ Based on comprehensive audit of codebase, user journeys, database, and security:
 
 ## Version Roadmap
 
-| Version | Content | Target |
+> **Source of truth:** [`docs/prd.md` §7 Release Plan](prd.md). Summary below; refer to PRD for codenames, gate criteria, and feature scope.
+
+| Version | Scope | Target |
 | --- | --- | --- |
-| V0.5 | Deep Orbit Modules 1–3 (15 lessons, MVP) | Q2 2026 |
-| V1.0 | Deep Orbit Modules 1–11 (55 lessons, full) | Q3 2026 |
-| V2.0 | + Neon Protocol (55 lessons) | Q4 2026 |
-| V3.0 | + Signal Ward + Nova Canvas (110 lessons) | Q1–Q2 2027 |
-| V4.0 | + Terra Grid (55 lessons) | Q3 2027 |
+| V0.5 (Ignition) | All 5 themes, Modules 1–3 (75 lessons); free tier only; no payments | 2026-Q2 |
+| V1.0 (Liftoff) | All 5 themes full (275 lessons); Stripe payments; GitHub integration; skill radar | 2026-Q3 |
+| V2.0 (Constellation) | Team tier; admin dashboard; PPP pricing | 2027-Q1 |
+| V3.0 (Galaxy) | Mobile app (React Native); offline lesson caching | 2027-Q3 |
+| V4.0 (Nebula) | AI tutor (LLM-assisted hints); community features | 2028-Q1 |
+| V5.0 (Universe) | Certification program; employer partnerships; theme SDK | 2028-Q3 |
 
 ---
 

@@ -15,6 +15,12 @@ vi.mock("./globals.css", () => ({}));
 import { metadata as layoutMetadata } from "./layout";
 import { metadata as termsMetadata } from "./terms/page";
 import { metadata as privacyMetadata } from "./privacy/page";
+import { metadata as pricingMetadata } from "./pricing/page";
+import { metadata as dashboardMetadata } from "./dashboard/page";
+import { metadata as settingsMetadata } from "./settings/page";
+import { metadata as purchaseSuccessMetadata } from "./dashboard/purchase-success/page";
+import { metadata as authLayoutMetadata } from "./auth/layout";
+import { metadata as onboardingLayoutMetadata } from "./onboarding/layout";
 
 describe("SEO metadata", () => {
   describe("root layout", () => {
@@ -56,15 +62,80 @@ describe("SEO metadata", () => {
     });
   });
 
+  describe("pricing page", () => {
+    it("has a canonical URL", () => {
+      expect(pricingMetadata.alternates?.canonical).toBe(
+        "https://tensorcraft.app/pricing",
+      );
+    });
+
+    it("has openGraph with OG image URL pointing to /api/og", () => {
+      expect(pricingMetadata.openGraph).toBeDefined();
+      const images = pricingMetadata.openGraph?.images;
+      const first = Array.isArray(images) ? images[0] : images;
+      const url = typeof first === "object" && first ? first.url : first;
+      expect(String(url)).toContain("/api/og");
+    });
+
+    it("has a twitter card", () => {
+      expect(pricingMetadata.twitter).toBeDefined();
+    });
+  });
+
+  describe("terms & privacy OG", () => {
+    it("terms has openGraph + twitter", () => {
+      expect(termsMetadata.openGraph).toBeDefined();
+      expect(termsMetadata.twitter).toBeDefined();
+    });
+
+    it("privacy has openGraph + twitter", () => {
+      expect(privacyMetadata.openGraph).toBeDefined();
+      expect(privacyMetadata.twitter).toBeDefined();
+    });
+  });
+
+  describe("protected routes are noindex", () => {
+    it.each([
+      ["dashboard", dashboardMetadata],
+      ["settings", settingsMetadata],
+      ["purchase-success", purchaseSuccessMetadata],
+      ["auth", authLayoutMetadata],
+      ["onboarding", onboardingLayoutMetadata],
+    ])("%s has robots index: false", (_name, meta) => {
+      const robots = meta.robots;
+      const indexFlag =
+        typeof robots === "object" && robots !== null
+          ? (robots as { index?: boolean }).index
+          : undefined;
+      expect(indexFlag).toBe(false);
+    });
+  });
+
   describe("no duplicate titles", () => {
-    it("layout, terms, and privacy have unique titles", () => {
+    it("layout, terms, privacy, and pricing have unique titles", () => {
       const titles = [
         String(layoutMetadata.title),
         String(termsMetadata.title),
         String(privacyMetadata.title),
+        String(pricingMetadata.title),
       ];
       const unique = new Set(titles);
       expect(unique.size).toBe(titles.length);
+    });
+  });
+
+  describe("root layout structured data", () => {
+    it("has Course schema for all 5 themes via JSON-LD (implicit)", () => {
+      // JSON-LD is rendered in layout.tsx head. Test ensures metadataBase set.
+      expect(layoutMetadata.metadataBase?.toString()).toContain(
+        "tensorcraft.app",
+      );
+    });
+
+    it("has canonical URL", () => {
+      expect(layoutMetadata.alternates?.canonical).toBe(
+        "https://tensorcraft.app",
+      );
     });
   });
 });

@@ -1,0 +1,87 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Nav snapshots > matches snapshot 1`] = `
+<nav
+  aria-label="Main navigation"
+  class="sticky top-0 z-50 h-15 flex items-center justify-between px-8 bg-surface border-b border-border-active"
+>
+  <a
+    class="flex items-center gap-2.5 font-mono text-sm font-medium tracking-wider text-text-primary"
+    href="/"
+  >
+    <span
+      class="bg-primary text-page px-1.5 py-0.5 text-xs font-bold"
+    >
+      T_
+    </span>
+    TENSORCRAFT
+  </a>
+  <div
+    class="hidden md:flex items-center gap-7 font-mono"
+  >
+    <a
+      class="text-[13px] transition-colors text-text-muted hover:text-text-primary"
+      href="/themes"
+    >
+      Themes
+    </a>
+    <a
+      class="text-[13px] transition-colors text-text-muted hover:text-text-primary"
+      href="/pricing"
+    >
+      Pricing
+    </a>
+    <a
+      class="text-[13px] transition-colors text-text-muted hover:text-text-primary"
+      href="/learn"
+    >
+      Learn
+    </a>
+    <a
+      class="text-[13px] transition-colors text-text-muted hover:text-text-primary"
+      href="/blog"
+    >
+      Blog
+    </a>
+  </div>
+  <div
+    class="flex items-center gap-4"
+  >
+    <div
+      class="hidden md:block"
+    >
+      <a
+        class="inline-flex items-center border border-primary/30 bg-primary/8 px-6 py-2.5 text-sm font-mono font-medium hover:bg-primary/15 hover:border-primary/50 transition-all brutalist-hover"
+        href="/auth"
+      >
+        Start now →
+      </a>
+    </div>
+    <div
+      class="md:hidden"
+    >
+      <button
+        aria-expanded="false"
+        aria-label="Open menu"
+        class="flex flex-col justify-center items-center gap-[5px] w-10 h-10 border border-border bg-surface hover:bg-surface-raised transition-colors"
+        type="button"
+      >
+        <span
+          class="block w-5 h-[2px] bg-text-primary"
+        />
+        <span
+          class="block w-5 h-[2px] bg-text-primary"
+        />
+        <span
+          class="block w-5 h-[2px] bg-text-primary"
+        />
+      </button>
+    </div>
+  </div>
+  <div
+    aria-hidden="true"
+    class="absolute -bottom-2 left-0 right-0 h-2 pointer-events-none z-49"
+    style="background: linear-gradient(to bottom, var(--tc-glow), transparent);"
+  />
+</nav>
+`;

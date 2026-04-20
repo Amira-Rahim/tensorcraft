@@ -5,8 +5,10 @@ import {
   getModule,
   getModuleLessons,
   getLesson,
+  getThemeLessons,
   getLessonsWithBridges,
 } from "@tensorcraft/content";
+import { isValidThemeSlug, THEME_SLUGS } from "@tensorcraft/shared";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import type { Metadata } from "next";
 import {
@@ -15,10 +17,12 @@ import {
   type DashboardBridge,
   type ActivityRecord,
 } from "./dashboard-view";
+import { ThemeCards, type ThemeCardData } from "./theme-cards";
 
 export const metadata: Metadata = {
   title: "Dashboard | Tensorcraft",
   description: "Track your ML learning progress across themes.",
+  robots: { index: false, follow: false },
 };
 
 export default async function DashboardPage() {
@@ -29,13 +33,18 @@ export default async function DashboardPage() {
 
   if (!user) redirect("/auth");
 
-  // Fetch profile, progress, streaks, and exercise attempts in parallel.
-  // Queries are scoped to the user and limited to prevent unbounded fetches.
+  // Fetch profile, progress, streaks, exercise attempts, and purchases in
+  // parallel. Queries are scoped to the user and limited to prevent
+  // unbounded fetches. Purchases are queried directly via Supabase (same
+  // pattern as settings / pricing / purchase-success) rather than
+  // GET /api/purchases/access — avoids an extra hop and keeps RLS as
+  // the single source of truth for access gating.
   const [
     { data: profile },
     { data: progressRecords },
     { data: streaksRaw },
     { data: exerciseAttempts },
+    { data: purchaseRows },
   ] = await Promise.all([
     supabase
       .from("profiles")
@@ -58,7 +67,23 @@ export default async function DashboardPage() {
       .eq("user_id", user.id)
       .order("attempted_at", { ascending: false })
       .limit(200),
+    supabase
+      .from("purchases")
+      .select("theme_ids")
+      .eq("user_id", user.id)
+      .eq("status", "completed"),
   ]);
+
+  // Compute owned theme set (defensive: only accept known theme slugs so
+  // an anomalous DB row cannot grant access to an unknown theme).
+  const ownedThemes = new Set<string>();
+  for (const row of purchaseRows ?? []) {
+    if (!Array.isArray(row.theme_ids)) continue;
+    for (const slug of row.theme_ids) {
+      if (isValidThemeSlug(slug)) ownedThemes.add(slug);
+    }
+  }
+  const hasFullBundle = THEME_SLUGS.every((slug) => ownedThemes.has(slug));
 
   const streaks = streaksRaw ?? [];
   const records = progressRecords ?? [];
@@ -285,6 +310,36 @@ export default async function DashboardPage() {
     profile?.display_name || user.email?.split("@")[0] || "Explorer";
   const avatarUrl = profile?.avatar_url || null;
 
+  // Build per-theme card data: owned themes get real per-theme progress,
+  // locked themes just show their total lesson count and a pricing link.
+  const themeCardsData: ThemeCardData[] = allThemes.map((theme) => {
+    const themeLessons = getThemeLessons(theme.slug);
+    const totalLessonsForTheme = themeLessons.length;
+    const owned = ownedThemes.has(theme.slug);
+    const completedForTheme = owned
+      ? records.filter(
+          (r) => r.theme_id === theme.slug && r.status === "completed",
+        ).length
+      : 0;
+    const progressPercent =
+      owned && totalLessonsForTheme > 0
+        ? Math.round((completedForTheme / totalLessonsForTheme) * 100)
+        : 0;
+
+    return {
+      slug: theme.slug,
+      displayName: theme.displayName,
+      tagline: theme.tagline,
+      specialization: theme.specialization,
+      primary: theme.palette.primary,
+      owned,
+      isActive: theme.slug === activeTheme.slug && owned,
+      completedLessons: completedForTheme,
+      totalLessons: totalLessonsForTheme,
+      progressPercent,
+    };
+  });
+
   return (
     <DashboardView
       displayName={displayName}
@@ -310,6 +365,9 @@ export default async function DashboardPage() {
       totalModules={contentModules.length}
       completedModules={completedModules}
       genomeData={genomeData ?? []}
+      themeCards={
+        <ThemeCards cards={themeCardsData} hasFullBundle={hasFullBundle} />
+      }
     />
   );
 }

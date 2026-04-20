@@ -209,11 +209,44 @@ export default async function ThemeDetailPage({ params }: Props) {
       ? "View Capstone"
       : "Start Learning";
 
+  const courseJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    name: `${theme.displayName} — ${theme.specialization}`,
+    description: theme.description,
+    provider: {
+      "@type": "Organization",
+      name: "Tensorcraft",
+      url: "https://tensorcraft.app",
+    },
+    url: `https://tensorcraft.app/themes/${slug}`,
+    educationalLevel: "Intermediate",
+    programmingLanguage: ["JavaScript", "TypeScript"],
+    numberOfCredits: themeModules.length,
+    teaches: theme.specialization,
+    offers: {
+      "@type": "Offer",
+      price: "79",
+      priceCurrency: "USD",
+      availability: "https://schema.org/InStock",
+      url: "https://tensorcraft.app/pricing",
+    },
+    hasCourseInstance: {
+      "@type": "CourseInstance",
+      courseMode: "online",
+      courseWorkload: "PT22H",
+    },
+  };
+
   return (
     <main
       className="min-h-screen relative overflow-hidden"
       style={{ background: theme.palette.bg }}
     >
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(courseJsonLd) }}
+      />
       <AmbientBackground count={160} />
 
       {/* Page header */}

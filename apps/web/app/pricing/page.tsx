@@ -3,14 +3,40 @@ import { Suspense } from "react";
 import { THEME_CONTENT } from "@tensorcraft/shared";
 import type { Metadata } from "next";
 import { PaymentError } from "./payment-error";
+import { PaywallNotice } from "./paywall-notice";
 import { PricingTiers } from "./pricing-tiers";
 import { AmbientBackground } from "@/app/components/ambient-background";
 
 export const metadata: Metadata = {
   title: "ML Course Pricing — From $0 to $219 | Tensorcraft",
   description:
-    "One payment. Lifetime access. Learn browser-based ML through familiar frontend concepts.",
+    "One payment. Lifetime access. Learn browser-based ML through familiar frontend concepts. Free preview, $79 per theme, bundles up to $219.",
   alternates: { canonical: "https://tensorcraft.app/pricing" },
+  openGraph: {
+    type: "website",
+    url: "https://tensorcraft.app/pricing",
+    siteName: "Tensorcraft",
+    title: "Simple, Fair Pricing — Tensorcraft",
+    description:
+      "One payment. Lifetime access. $0 preview, $79 per theme, bundles up to $219.",
+    images: [
+      {
+        url: "/api/og?title=Simple%2C%20Fair%20Pricing&subtitle=One%20payment.%20Lifetime%20access.&theme=deep-orbit",
+        width: 1200,
+        height: 630,
+        alt: "Tensorcraft — Simple, Fair Pricing",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Simple, Fair Pricing — Tensorcraft",
+    description:
+      "One payment. Lifetime access. $0 preview, $79 per theme, bundles up to $219.",
+    images: [
+      "/api/og?title=Simple%2C%20Fair%20Pricing&subtitle=One%20payment.%20Lifetime%20access.&theme=deep-orbit",
+    ],
+  },
 };
 
 export const revalidate = 3600;
@@ -21,10 +47,13 @@ export default function PricingPage() {
       <AmbientBackground count={200} />
       <div className="absolute inset-0 grid-bg pointer-events-none z-0" />
       <div className="relative z-10">
-        {/* Payment Error Banner */}
-        <div className="pt-24 px-6">
+        {/* Payment Error / Paywall Context Banner */}
+        <div className="pt-24 px-6 space-y-4">
           <Suspense fallback={null}>
             <PaymentError />
+          </Suspense>
+          <Suspense fallback={null}>
+            <PaywallNotice />
           </Suspense>
         </div>
 

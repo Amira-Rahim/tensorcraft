@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, type ReactNode } from "react";
 import Link from "next/link";
 import { SkillGenome } from "./skill-genome";
 import { UserAvatar } from "@/app/components/user-avatar";
@@ -99,6 +99,7 @@ export interface DashboardProps {
     proficiency: number;
     velocity: number;
   }>;
+  themeCards?: ReactNode;
 }
 
 /* ── Loss curve data (visualisation) ── */
@@ -150,6 +151,7 @@ export function DashboardView(props: DashboardProps) {
     totalModules,
     completedModules,
     genomeData,
+    themeCards,
   } = props;
 
   const lossCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -1034,6 +1036,9 @@ export function DashboardView(props: DashboardProps) {
 
           {/* Skill Genome */}
           <SkillGenome data={genomeData} />
+
+          {/* Theme catalog — owned vs locked */}
+          {themeCards}
 
           {/* Recent activity */}
           {recentActivity.length > 0 && (

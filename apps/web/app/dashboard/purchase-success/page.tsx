@@ -11,6 +11,7 @@ import { PurchaseAnalytics } from "./purchase-analytics";
 export const metadata: Metadata = {
   title: "Purchase Confirmed | Tensorcraft",
   description: "Your theme is now fully unlocked.",
+  robots: { index: false, follow: false },
 };
 
 export default async function PurchaseSuccessPage() {

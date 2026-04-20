@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { themes } from "@tensorcraft/themes";
 import {
@@ -57,6 +57,12 @@ export default async function LessonPage({ params }: Props) {
 
   // Paywall: Module 1 is free, Module 2+ requires purchase
   // Prerequisite: Module N+1 requires Module N completed
+  //
+  // Per dev-plan §4c, the paywall uses redirect-based enforcement:
+  //   - Unauthenticated → /auth?redirectTo=<current-path>
+  //   - Authenticated but locked → /pricing?locked=<themeSlug>
+  // Module 1 stays fully accessible to all authenticated users, and
+  // content within Module 1 lessons is never gated.
   let requiresPaywall = false;
   let requiresPrerequisite = false;
   let prevModuleSlug = moduleSlug;
@@ -66,9 +72,13 @@ export default async function LessonPage({ params }: Props) {
       data: { user },
     } = await supabase.auth.getUser();
     if (!user) {
-      requiresPaywall = true;
+      const currentPath = `/themes/${slug}/${moduleSlug}/${lessonSlug}`;
+      redirect(`/auth?redirectTo=${encodeURIComponent(currentPath)}`);
     } else {
       const purchased = await hasThemePurchase(user.id, slug);
+      if (!purchased) {
+        redirect(`/pricing?locked=${encodeURIComponent(slug)}`);
+      }
       requiresPaywall = !purchased;
 
       // Check prerequisite: previous module must be completed

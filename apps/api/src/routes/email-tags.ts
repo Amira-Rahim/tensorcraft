@@ -2,14 +2,21 @@ import { Hono } from "hono";
 import { getSupabaseServerClient } from "@tensorcraft/supabase";
 import { addSubscriber, tagSubscriber } from "../lib/kit";
 
-const EMAIL_TAG_MAP: Record<string, string | undefined> = {
-  signed_up: process.env.KIT_TAG_SIGNED_UP,
-  onboarded: process.env.KIT_TAG_ONBOARDED,
-  first_lesson: process.env.KIT_TAG_FIRST_LESSON,
-  capstone: process.env.KIT_TAG_CAPSTONE,
+// Read env vars at request time (not module load) so tests can stub them
+// and so Fly.io secret rotations take effect without a redeploy.
+const EMAIL_TAG_ENV_KEYS: Record<string, string> = {
+  signed_up: "KIT_TAG_SIGNED_UP",
+  onboarded: "KIT_TAG_ONBOARDED",
+  first_lesson: "KIT_TAG_FIRST_LESSON",
+  capstone: "KIT_TAG_CAPSTONE",
 };
 
-const VALID_EVENTS = Object.keys(EMAIL_TAG_MAP);
+const VALID_EVENTS = Object.keys(EMAIL_TAG_ENV_KEYS);
+
+function getTagIdForEvent(event: string): string | undefined {
+  const envKey = EMAIL_TAG_ENV_KEYS[event];
+  return envKey ? process.env[envKey] : undefined;
+}
 
 export const emailTags = new Hono();
 
@@ -28,14 +35,14 @@ emailTags.post("/", async (c) => {
     );
   }
 
-  const tagId = EMAIL_TAG_MAP[body.event];
-  if (!tagId) {
-    return c.json({ ok: true, skipped: true });
-  }
-
   const authHeader = c.req.header("Authorization");
   if (!authHeader?.startsWith("Bearer ")) {
     return c.json({ error: "Unauthorized" }, 401);
+  }
+
+  const tagId = getTagIdForEvent(body.event);
+  if (!tagId) {
+    return c.json({ ok: true, skipped: true });
   }
 
   try {

@@ -3,7 +3,33 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Terms of Service — Tensorcraft",
-  description: "Tensorcraft Terms of Service",
+  description:
+    "Read the Tensorcraft Terms of Service covering account use, one-time theme purchases, refunds, intellectual property, and acceptable use.",
+  alternates: { canonical: "https://tensorcraft.app/terms" },
+  openGraph: {
+    type: "article",
+    url: "https://tensorcraft.app/terms",
+    siteName: "Tensorcraft",
+    title: "Terms of Service — Tensorcraft",
+    description:
+      "Terms covering accounts, purchases, refunds, IP, and acceptable use.",
+    images: [
+      {
+        url: "/api/og?title=Terms%20of%20Service&subtitle=Tensorcraft%20legal&theme=deep-orbit",
+        width: 1200,
+        height: 630,
+        alt: "Tensorcraft Terms of Service",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Terms of Service — Tensorcraft",
+    description: "Accounts, purchases, refunds, IP, and acceptable use.",
+    images: [
+      "/api/og?title=Terms%20of%20Service&subtitle=Tensorcraft%20legal&theme=deep-orbit",
+    ],
+  },
 };
 
 export default function TermsPage() {

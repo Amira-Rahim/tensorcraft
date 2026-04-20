@@ -8,6 +8,14 @@ const mockEq = vi.fn();
 const mockConstructEvent = vi.fn();
 const mockSessionCreate = vi.fn();
 
+/**
+ * Controls the admin-client pre-check query
+ *   supabase.from("purchases").select("status").eq(...).maybeSingle()
+ * used by the webhook's race-condition no-regression logic (§338).
+ * Default null means "row does not exist".
+ */
+let mockAdminExistingRow: { status: string } | null = null;
+
 // Controls what the server-client purchases query resolves to for upgrade tests
 let mockExistingPurchases: { theme_ids: string[]; amount: number }[] | null =
   null;
@@ -39,6 +47,9 @@ vi.mock("@tensorcraft/supabase", () => ({
           },
           select: () => ({
             eq: () => ({
+              // pre-check for race-condition no-regression (§338)
+              maybeSingle: () =>
+                Promise.resolve({ data: mockAdminExistingRow, error: null }),
               single: () => Promise.resolve({ data: null, error: null }),
             }),
           }),
@@ -115,6 +126,7 @@ describe("POST /api/payments/webhook", () => {
     mockConstructEvent.mockReset();
     mockServerInsert.mockReset();
     mockExistingPurchases = null;
+    mockAdminExistingRow = null;
   });
 
   it("returns 400 without stripe-signature header", async () => {
@@ -208,6 +220,139 @@ describe("POST /api/payments/webhook", () => {
     expect(res.status).toBe(200);
     expect(mockUpdate).toHaveBeenCalledWith({ status: "refunded" });
     expect(mockEq).toHaveBeenCalledWith("stripe_payment_intent", "pi_789");
+  });
+
+  it("rejects webhook with empty theme_ids metadata (§6h)", async () => {
+    // An empty themeIds array must be rejected — every paid purchase
+    // grants at least one theme. Guards against a future bug in the
+    // checkout handler emitting a malformed metadata blob.
+    const event = {
+      type: "checkout.session.completed",
+      data: {
+        object: {
+          id: "cs_test_empty",
+          client_reference_id: "user_empty",
+          amount_total: 7900,
+          metadata: { planId: "single", themeIds: "" },
+        },
+      },
+    };
+    mockConstructEvent.mockReturnValue(event);
+
+    const res = await app.request("/api/payments/webhook", {
+      method: "POST",
+      headers: {
+        "stripe-signature": "sig_test",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(event),
+    });
+
+    expect(res.status).toBe(400);
+    expect(mockInsert).not.toHaveBeenCalled();
+  });
+
+  it("rejects webhook with unknown theme slug in metadata (§6h)", async () => {
+    const event = {
+      type: "checkout.session.completed",
+      data: {
+        object: {
+          id: "cs_test_bad",
+          client_reference_id: "user_bad",
+          amount_total: 7900,
+          metadata: { planId: "single", themeIds: "not-a-real-theme" },
+        },
+      },
+    };
+    mockConstructEvent.mockReturnValue(event);
+
+    const res = await app.request("/api/payments/webhook", {
+      method: "POST",
+      headers: {
+        "stripe-signature": "sig_test",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(event),
+    });
+
+    expect(res.status).toBe(400);
+    expect(mockInsert).not.toHaveBeenCalled();
+  });
+
+  it("skips upsert when row is already in a terminal status (§338)", async () => {
+    // Simulate a Stripe retry arriving AFTER a refund landed. The
+    // webhook must NOT regress status=refunded back to completed.
+    mockAdminExistingRow = { status: "refunded" };
+    mockInsert.mockResolvedValue({ error: null });
+
+    const event = {
+      type: "checkout.session.completed",
+      data: {
+        object: {
+          id: "cs_test_retry",
+          client_reference_id: "user_retry",
+          amount_total: 7900,
+          metadata: { planId: "single", themeIds: "deep-orbit" },
+        },
+      },
+    };
+    mockConstructEvent.mockReturnValue(event);
+
+    const res = await app.request("/api/payments/webhook", {
+      method: "POST",
+      headers: {
+        "stripe-signature": "sig_test",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(event),
+    });
+
+    expect(res.status).toBe(200);
+    // Critical: upsert MUST NOT have run, otherwise a concurrent
+    // retry-after-refund would flip status back to "completed".
+    expect(mockInsert).not.toHaveBeenCalled();
+  });
+
+  it("upserts with ON CONFLICT DO UPDATE (not DO NOTHING) on retry (§338)", async () => {
+    // Non-terminal prior status — the upsert must still run and use
+    // ignoreDuplicates: false so the ON CONFLICT branch DOes UPDATE.
+    mockAdminExistingRow = { status: "completed" };
+    mockInsert.mockResolvedValue({ error: null });
+
+    const event = {
+      type: "checkout.session.completed",
+      data: {
+        object: {
+          id: "cs_test_update",
+          client_reference_id: "user_update",
+          amount_total: 7900,
+          payment_intent: "pi_late_arriving",
+          metadata: { planId: "single", themeIds: "deep-orbit" },
+        },
+      },
+    };
+    mockConstructEvent.mockReturnValue(event);
+
+    const res = await app.request("/api/payments/webhook", {
+      method: "POST",
+      headers: {
+        "stripe-signature": "sig_test",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(event),
+    });
+
+    expect(res.status).toBe(200);
+    expect(mockInsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        stripe_session_id: "cs_test_update",
+        stripe_payment_intent: "pi_late_arriving",
+      }),
+      expect.objectContaining({
+        onConflict: "stripe_session_id",
+        ignoreDuplicates: false,
+      }),
+    );
   });
 
   it("acknowledges unhandled event types", async () => {

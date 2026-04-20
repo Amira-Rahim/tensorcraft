@@ -4,7 +4,7 @@ import {
   getSupabaseAdminClient,
   getSupabaseServerClient,
 } from "@tensorcraft/supabase";
-import { PRICING, isValidThemeSlug } from "@tensorcraft/shared";
+import { PRICING, THEME_SLUGS, isValidThemeSlug } from "@tensorcraft/shared";
 import { authMiddleware } from "../middleware/auth";
 import { addSubscriber, tagSubscriber } from "../lib/kit";
 import type { AppEnv } from "../types";
@@ -21,10 +21,26 @@ function getStripe(): Stripe {
   return stripeInstance;
 }
 
-/** Validate that all theme IDs are known slugs */
+/**
+ * Validate that every theme ID is a known, canonical theme slug.
+ * Rejects empty arrays — paid plans must carry at least one theme.
+ * See dev-plan §6h "Purchase-to-theme referential integrity".
+ */
 function validateThemeIds(ids: string[]): boolean {
+  if (!Array.isArray(ids) || ids.length === 0) return false;
   return ids.every((id) => isValidThemeSlug(id));
 }
+
+/**
+ * Terminal purchase statuses — once set, a retry of the same webhook
+ * must NOT regress the row (e.g. back to "completed"). See §338.
+ */
+const TERMINAL_STATUSES = new Set([
+  "refunded",
+  "partially_refunded",
+  "disputed",
+  "failed",
+]);
 
 // ──────────────────────────────────────────────
 // POST /api/payments/checkout — Create a Stripe Checkout session
@@ -274,10 +290,14 @@ payments.post("/webhook", async (c) => {
         return c.json({ error: "Missing planId in metadata" }, 500);
       }
 
-      const themeIds = metadata.themeIds ? metadata.themeIds.split(",") : [];
+      const themeIds = metadata.themeIds
+        ? metadata.themeIds.split(",").filter(Boolean)
+        : [];
 
-      // Validate theme IDs from metadata
-      if (themeIds.length > 0 && !validateThemeIds(themeIds)) {
+      // Validate theme IDs from metadata against canonical slug list.
+      // Empty array is rejected — every paid purchase must grant at
+      // least one theme (§6h referential integrity).
+      if (!validateThemeIds(themeIds)) {
         console.error("Webhook: Invalid theme IDs in metadata:", themeIds);
         return c.json({ error: "Webhook: Invalid theme IDs in metadata" }, 400);
       }
@@ -298,11 +318,45 @@ payments.post("/webhook", async (c) => {
         return c.json({ error: "Webhook: Invalid session ID format" }, 400);
       }
 
-      // Idempotency: use upsert with ON CONFLICT to avoid TOCTOU race
+      // ──────────────────────────────────────────────────────────
+      // Idempotent upsert — §338 "Fix upsert race condition".
+      //
+      // Stripe delivers webhooks at-least-once and will retry any
+      // non-2xx response. Under concurrent retries we MUST NOT create
+      // duplicate rows and MUST NOT regress a terminal status
+      // (refunded / partially_refunded / disputed / failed) back to
+      // "completed". Resolution policy:
+      //
+      //   1. Pre-check for an existing row at `stripe_session_id`.
+      //   2. If it already has a terminal status, acknowledge and exit.
+      //   3. Otherwise UPSERT with `ignoreDuplicates: false` so the
+      //      underlying `ON CONFLICT (stripe_session_id) DO UPDATE`
+      //      deterministically sets the latest fields (e.g. a
+      //      payment_intent that was missing on first delivery).
+      //
+      // The `stripe_session_id` column is UNIQUE (migration 001 +
+      // migration 017 adds the UNIQUE constraint), so concurrent
+      // inserts serialize at the DB level.
+      // ──────────────────────────────────────────────────────────
       const paymentIntent =
         typeof session.payment_intent === "string"
           ? session.payment_intent
           : (session.payment_intent?.id ?? null);
+
+      const { data: existingRow } = await supabase
+        .from("purchases")
+        .select("status")
+        .eq("stripe_session_id", sessionId)
+        .maybeSingle();
+
+      if (existingRow && TERMINAL_STATUSES.has(existingRow.status)) {
+        // Already settled in a terminal state — do not regress.
+        console.info(
+          "Webhook: skipping upsert — row already in terminal status",
+          { sessionId, status: existingRow.status },
+        );
+        break;
+      }
 
       const { error: upsertError } = await supabase.from("purchases").upsert(
         {
@@ -314,7 +368,7 @@ payments.post("/webhook", async (c) => {
           stripe_payment_intent: paymentIntent,
           status: "completed",
         },
-        { onConflict: "stripe_session_id", ignoreDuplicates: true },
+        { onConflict: "stripe_session_id", ignoreDuplicates: false },
       );
 
       if (upsertError) {
@@ -414,28 +468,42 @@ payments.post("/webhook", async (c) => {
           : [];
         const asyncPlan = PRICING[asyncMetadata.planId as keyof typeof PRICING];
 
-        if (
-          asyncPlan &&
-          (asyncThemeIds.length === 0 || validateThemeIds(asyncThemeIds))
-        ) {
+        if (asyncPlan && validateThemeIds(asyncThemeIds)) {
           const asyncPaymentIntent =
             typeof asyncSession.payment_intent === "string"
               ? asyncSession.payment_intent
               : (asyncSession.payment_intent?.id ?? null);
 
-          await supabase.from("purchases").upsert(
-            {
-              user_id: asyncUserId,
-              plan_id: asyncMetadata.planId,
-              theme_ids: asyncThemeIds,
-              amount: asyncSession.amount_total
-                ? asyncSession.amount_total / 100
-                : asyncPlan.price,
-              stripe_session_id: asyncSession.id,
-              stripe_payment_intent: asyncPaymentIntent,
-              status: "completed",
-            },
-            { onConflict: "stripe_session_id", ignoreDuplicates: true },
+          // Same no-regression guard as the sync path — §338.
+          const { data: existingAsyncRow } = await supabase
+            .from("purchases")
+            .select("status")
+            .eq("stripe_session_id", asyncSession.id)
+            .maybeSingle();
+
+          if (
+            !existingAsyncRow ||
+            !TERMINAL_STATUSES.has(existingAsyncRow.status)
+          ) {
+            await supabase.from("purchases").upsert(
+              {
+                user_id: asyncUserId,
+                plan_id: asyncMetadata.planId,
+                theme_ids: asyncThemeIds,
+                amount: asyncSession.amount_total
+                  ? asyncSession.amount_total / 100
+                  : asyncPlan.price,
+                stripe_session_id: asyncSession.id,
+                stripe_payment_intent: asyncPaymentIntent,
+                status: "completed",
+              },
+              { onConflict: "stripe_session_id", ignoreDuplicates: false },
+            );
+          }
+        } else if (asyncPlan) {
+          console.error(
+            "Webhook async: invalid theme IDs in metadata:",
+            asyncThemeIds,
           );
         }
       }

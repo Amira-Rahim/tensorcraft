@@ -1,0 +1,83 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`SiteFooter snapshots > matches snapshot 1`] = `
+<footer
+  class="border-t border-border px-8 py-8"
+>
+  <div
+    class="max-w-6xl mx-auto flex flex-col gap-6"
+  >
+    <div
+      class="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-text-muted font-mono"
+    >
+      <div
+        class="flex items-center gap-2 font-bold text-text-primary tracking-wider text-xs"
+      >
+        <span
+          class="bg-primary text-page px-1.5 py-0.5 text-xs font-bold"
+        >
+          T_
+        </span>
+        TENSORCRAFT
+      </div>
+      <div
+        class="flex flex-wrap justify-center gap-6"
+      >
+        <a
+          class="text-xs hover:text-text-primary transition-colors"
+          href="/themes"
+        >
+          Themes
+        </a>
+        <a
+          class="text-xs hover:text-text-primary transition-colors"
+          href="/pricing"
+        >
+          Pricing
+        </a>
+        <a
+          class="text-xs hover:text-text-primary transition-colors"
+          href="/blog"
+        >
+          Blog
+        </a>
+        <a
+          class="text-xs hover:text-text-primary transition-colors"
+          href="/learn"
+        >
+          Learn
+        </a>
+        <a
+          class="text-xs hover:text-text-primary transition-colors"
+          href="/glossary"
+        >
+          Glossary
+        </a>
+        <a
+          class="text-xs hover:text-text-primary transition-colors"
+          href="/bridges"
+        >
+          Bridges
+        </a>
+        <a
+          class="text-xs hover:text-text-primary transition-colors"
+          href="/terms"
+        >
+          Terms
+        </a>
+        <a
+          class="text-xs hover:text-text-primary transition-colors"
+          href="/privacy"
+        >
+          Privacy
+        </a>
+      </div>
+      <div
+        class="font-mono text-xs"
+      >
+        © 2026 Tensorcraft
+      </div>
+    </div>
+  </div>
+</footer>
+`;
