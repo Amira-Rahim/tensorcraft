@@ -74,6 +74,46 @@ describe("Nav", () => {
     expect(cta).toHaveAttribute("href", ROUTES.auth.signIn);
   });
 
+  it("renders 60px nav bar (h-15)", () => {
+    const { container } = render(<Nav />);
+    const nav = container.querySelector('[data-testid="site-nav"]');
+    expect(nav).not.toBeNull();
+    expect(nav?.className).toContain("h-15");
+  });
+
+  it("brand link href is `/`", () => {
+    render(<Nav />);
+    const brandLinks = screen
+      .getAllByRole("link")
+      .filter((el) => /tensorcraft/i.test(el.textContent ?? ""));
+    expect(brandLinks[0]).toHaveAttribute("href", "/");
+  });
+
+  it("T_ logo badge is a square bordered block with mono font", () => {
+    const { container } = render(<Nav />);
+    const badge = container.querySelector('[data-testid="nav-logo-badge"]');
+    expect(badge).not.toBeNull();
+    expect(badge?.textContent).toBe("T_");
+    expect(badge?.className).toMatch(/w-7/);
+    expect(badge?.className).toMatch(/h-7/);
+    expect(badge?.className).toMatch(/font-mono/);
+    expect(badge?.className).toMatch(/rounded-none/);
+    expect(badge?.className).toMatch(/border/);
+  });
+
+  it("uses solid bg-surface (no gradient)", () => {
+    const { container } = render(<Nav />);
+    const nav = container.querySelector('[data-testid="site-nav"]');
+    expect(nav?.className).toContain("bg-surface");
+    expect(nav?.className).not.toMatch(/gradient/);
+  });
+
+  it("has no `outline: none` or `outline-none` on any descendant", () => {
+    const { container } = render(<Nav />);
+    expect(container.innerHTML).not.toMatch(/outline-none/);
+    expect(container.innerHTML).not.toMatch(/outline:\s*none/);
+  });
+
   it("has no accessibility violations", async () => {
     const { axe } = await import("vitest-axe");
     const { container } = render(<Nav />);

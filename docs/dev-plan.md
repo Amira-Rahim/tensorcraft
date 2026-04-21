@@ -1023,11 +1023,11 @@ Full design system overhaul from "Zensman DeFi Neon" to "Brutalist Terminal" aes
 
 ### 11c. Shell Component Updates
 
-- [ ] Update Nav: solid bg, square edges, `T_` logo badge, JetBrains Mono, 60px height
-- [ ] Update Footer: brutalist typography, remove neon effects
-- [ ] Update AuthForm: square inputs/buttons, zero border-radius
-- [ ] Update CookieConsent, UserMenu: brutalist card styling
-- [ ] Update layout.tsx: body class, font priority
+- [x] Update Nav: solid bg, square edges, `T_` logo badge, JetBrains Mono, 60px height — **COMPLETED 2026-04-21** (solid `bg-surface`, border-bottom `border-border`, 28×28 bordered `T_` badge, mono NavLinks with focus-visible ring, `data-testid="site-nav"`)
+- [x] Update Footer: brutalist typography, remove neon effects — **COMPLETED 2026-04-21** (mono link labels with `rounded-none` + focus-visible ring, square bordered logo badge, `aria-label="Site footer"`, dead `/bridges` link removed)
+- [x] Update AuthForm: square inputs/buttons, zero border-radius — **COMPLETED 2026-04-21** (all inputs/buttons `rounded-none`, email input `outline-none` class removed, focus-visible ring preserved across email/submit/OAuth/secondary buttons)
+- [x] Update CookieConsent, UserMenu: brutalist card styling — **COMPLETED 2026-04-21** (both use `rounded-none` + `brutalist-shadow` cards with mono labels; CookieConsent gains `role="region"` + `aria-label`, buttons have `type="button"`; UserMenu dropdown + trigger square-edge with focus-visible ring)
+- [x] Update layout.tsx: body class, font priority — **COMPLETED 2026-04-21** (body `font-sans` default → Inter; `--font-sans` / `--font-mono` variables wired via `next/font/google` on `<html>`; globals.css body font-family switched from mono → sans)
 
 ### 11d. Page Component Updates (13 pages)
 

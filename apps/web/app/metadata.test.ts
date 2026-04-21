@@ -73,7 +73,10 @@ describe("SEO metadata", () => {
       expect(pricingMetadata.openGraph).toBeDefined();
       const images = pricingMetadata.openGraph?.images;
       const first = Array.isArray(images) ? images[0] : images;
-      const url = typeof first === "object" && first ? first.url : first;
+      const url =
+        first && typeof first === "object" && "url" in first
+          ? first.url
+          : first;
       expect(String(url)).toContain("/api/og");
     });
 

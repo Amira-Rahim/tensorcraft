@@ -61,6 +61,34 @@ describe("SiteFooter", () => {
     );
   });
 
+  it("renders all links with mono font class", () => {
+    const { container } = render(<SiteFooter />);
+    const links = container.querySelectorAll("a");
+    expect(links.length).toBeGreaterThan(0);
+    for (const link of Array.from(links)) {
+      expect(link.className).toMatch(/font-mono/);
+    }
+  });
+
+  it("does not render the dead /bridges link", () => {
+    render(<SiteFooter />);
+    expect(
+      screen.queryByRole("link", { name: /^bridges$/i }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("footer element carries aria-label", () => {
+    const { container } = render(<SiteFooter />);
+    const footer = container.querySelector("footer");
+    expect(footer).toHaveAttribute("aria-label", "Site footer");
+  });
+
+  it("has no `outline-none` / `outline: none` on any descendant", () => {
+    const { container } = render(<SiteFooter />);
+    expect(container.innerHTML).not.toMatch(/outline-none/);
+    expect(container.innerHTML).not.toMatch(/outline:\s*none/);
+  });
+
   it("has no accessibility violations", async () => {
     const { axe } = await import("vitest-axe");
     const { container } = render(<SiteFooter />);

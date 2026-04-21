@@ -70,7 +70,7 @@ export function UserMenu() {
     return (
       <Link
         href="/auth"
-        className="inline-flex items-center border border-primary/30 bg-primary/8 px-6 py-2.5 text-sm font-mono font-medium hover:bg-primary/15 hover:border-primary/50 transition-all brutalist-hover"
+        className="inline-flex items-center border border-primary/30 bg-primary/8 px-6 py-2.5 text-sm font-mono font-medium rounded-none hover:bg-primary/15 hover:border-primary/50 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 transition-all brutalist-hover"
       >
         Start now &rarr;
       </Link>
@@ -85,7 +85,7 @@ export function UserMenu() {
         aria-expanded={open}
         aria-haspopup="true"
         aria-label="User menu"
-        className="w-9 h-9 flex items-center justify-center border border-primary/30 bg-primary/10 text-primary transition-colors hover:bg-primary/20 overflow-hidden"
+        className="w-9 h-9 flex items-center justify-center border border-primary/30 bg-primary/10 text-primary rounded-none transition-colors hover:bg-primary/20 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 overflow-hidden"
       >
         <UserAvatar
           url={avatarUrl}
@@ -96,7 +96,8 @@ export function UserMenu() {
 
       {open && (
         <div
-          className="absolute right-0 top-12 w-56 border border-border overflow-hidden brutalist-shadow z-50 bg-surface-raised"
+          data-testid="user-menu-card"
+          className="absolute right-0 top-12 w-56 border border-border overflow-hidden rounded-none brutalist-shadow z-50 bg-surface-raised"
           role="menu"
         >
           <div className="px-4 py-3 border-b border-border">
@@ -109,7 +110,7 @@ export function UserMenu() {
             <Link
               href="/settings"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-3 px-4 py-2.5 text-sm font-mono text-text-primary transition-colors hover:bg-surface-raised"
+              className="flex items-center gap-3 px-4 py-2.5 text-sm font-mono text-text-primary rounded-none transition-colors hover:bg-surface-raised focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
               role="menuitem"
             >
               Settings
@@ -120,7 +121,7 @@ export function UserMenu() {
             <button
               type="button"
               onClick={handleSignOut}
-              className="flex items-center gap-3 w-full px-4 py-2.5 text-sm font-mono text-left text-text-muted transition-colors hover:bg-surface-raised"
+              className="flex items-center gap-3 w-full px-4 py-2.5 text-sm font-mono text-left text-text-muted rounded-none transition-colors hover:bg-surface-raised focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
               role="menuitem"
             >
               Sign out

@@ -471,6 +471,9 @@ function TestResultsPanel({ results }: { results: TestResult[] }) {
 
   return (
     <div
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
       className={`p-4 mt-3 brutalist-shadow border ${
         allPassed
           ? "bg-green-400/8 border-green-400/20"

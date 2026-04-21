@@ -6,7 +6,8 @@
   "exports": {
     ".": "./src/index.ts",
     "./visualizations": "./src/visualizations/index.ts",
-    "./effects": "./src/effects/index.ts"
+    "./effects": "./src/effects/index.ts",
+    "./a11y": "./src/a11y/index.ts"
   },
   "scripts": {
     "build": "tsc",

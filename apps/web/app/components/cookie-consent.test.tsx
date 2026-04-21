@@ -64,6 +64,38 @@ describe("CookieConsent", () => {
     expect(link).toHaveAttribute("href", "/privacy");
   });
 
+  it("renders a brutalist card (rounded-none + brutalist-shadow)", () => {
+    const { container } = render(<CookieConsent />);
+    const card = container.querySelector('[data-testid="cookie-consent-card"]');
+    expect(card).not.toBeNull();
+    expect(card?.className).toMatch(/rounded-none/);
+    expect(card?.className).toMatch(/brutalist-shadow/);
+    expect(card?.className).toMatch(/border/);
+  });
+
+  it("buttons use brutalist square-edge style (rounded-none, font-mono, type=button)", () => {
+    render(<CookieConsent />);
+    const accept = screen.getByRole("button", { name: /accept all/i });
+    const decline = screen.getByRole("button", { name: /essential only/i });
+    for (const btn of [accept, decline]) {
+      expect(btn.className).toMatch(/rounded-none/);
+      expect(btn.className).toMatch(/font-mono/);
+      expect(btn).toHaveAttribute("type", "button");
+    }
+  });
+
+  it("banner is announced as region with aria-label", () => {
+    const { container } = render(<CookieConsent />);
+    const region = container.querySelector('[role="region"]');
+    expect(region).toHaveAttribute("aria-label", "Cookie consent");
+  });
+
+  it("has no `outline-none` / `outline: none` on any descendant", () => {
+    const { container } = render(<CookieConsent />);
+    expect(container.innerHTML).not.toMatch(/outline-none/);
+    expect(container.innerHTML).not.toMatch(/outline:\s*none/);
+  });
+
   it("has no accessibility violations", async () => {
     const { axe } = await import("vitest-axe");
     const { container } = render(<CookieConsent />);

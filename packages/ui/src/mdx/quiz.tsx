@@ -85,6 +85,9 @@ export function Quiz({ question, options }: QuizProps) {
         ) : (
           <>
             <span
+              role="status"
+              aria-live="polite"
+              aria-atomic="true"
               className={`text-sm font-medium ${isCorrect ? "text-primary" : "text-red-400"}`}
             >
               {isCorrect ? "Correct!" : "Not quite — try again"}

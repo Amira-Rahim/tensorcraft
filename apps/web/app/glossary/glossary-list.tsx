@@ -78,7 +78,7 @@ export function GlossaryList() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search terms or concepts..."
-          className="w-full bg-surface border border-border px-10 py-3.5 font-mono text-sm text-text-primary placeholder:text-text-muted/50 focus:outline-none focus:border-primary/40 transition-colors"
+          className="w-full bg-surface border border-border px-10 py-3.5 font-mono text-sm text-text-primary placeholder:text-text-muted/50 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 focus:border-primary/40 transition-colors"
         />
         {query && (
           <button

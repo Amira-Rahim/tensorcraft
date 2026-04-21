@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { FocusTrap } from "@tensorcraft/ui/a11y";
 
 interface LessonDrawerProps {
   lessons: Array<{
@@ -63,15 +64,19 @@ export function LessonDrawer({
 
       {/* Backdrop + Drawer */}
       {open && (
-        <>
+        <FocusTrap active={open} onEscape={() => setOpen(false)}>
           {/* Backdrop */}
           <div
             className="fixed inset-0 z-50 bg-black/50"
             onClick={() => setOpen(false)}
+            aria-hidden="true"
           />
 
           {/* Bottom sheet */}
           <div
+            role="dialog"
+            aria-modal="true"
+            aria-label={`${moduleName} lessons`}
             className="fixed bottom-0 left-0 right-0 z-50 max-h-[70vh] overflow-y-auto animate-slide-up"
             style={{
               background: theme.palette.surface,
@@ -179,7 +184,7 @@ export function LessonDrawer({
               })}
             </div>
           </div>
-        </>
+        </FocusTrap>
       )}
     </>
   );

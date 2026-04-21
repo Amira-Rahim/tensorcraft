@@ -2,7 +2,8 @@
 
 exports[`SiteFooter snapshots > matches snapshot 1`] = `
 <footer
-  class="border-t border-border px-8 py-8"
+  aria-label="Site footer"
+  class="border-t border-border px-8 py-8 rounded-none"
 >
   <div
     class="max-w-6xl mx-auto flex flex-col gap-6"
@@ -14,7 +15,8 @@ exports[`SiteFooter snapshots > matches snapshot 1`] = `
         class="flex items-center gap-2 font-bold text-text-primary tracking-wider text-xs"
       >
         <span
-          class="bg-primary text-page px-1.5 py-0.5 text-xs font-bold"
+          class="flex items-center justify-center w-7 h-7 border border-primary bg-primary text-page font-mono text-[13px] font-bold rounded-none"
+          data-testid="footer-logo-badge"
         >
           T_
         </span>
@@ -24,49 +26,43 @@ exports[`SiteFooter snapshots > matches snapshot 1`] = `
         class="flex flex-wrap justify-center gap-6"
       >
         <a
-          class="text-xs hover:text-text-primary transition-colors"
+          class="font-mono text-xs rounded-none hover:text-text-primary transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
           href="/themes"
         >
           Themes
         </a>
         <a
-          class="text-xs hover:text-text-primary transition-colors"
+          class="font-mono text-xs rounded-none hover:text-text-primary transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
           href="/pricing"
         >
           Pricing
         </a>
         <a
-          class="text-xs hover:text-text-primary transition-colors"
+          class="font-mono text-xs rounded-none hover:text-text-primary transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
           href="/blog"
         >
           Blog
         </a>
         <a
-          class="text-xs hover:text-text-primary transition-colors"
+          class="font-mono text-xs rounded-none hover:text-text-primary transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
           href="/learn"
         >
           Learn
         </a>
         <a
-          class="text-xs hover:text-text-primary transition-colors"
+          class="font-mono text-xs rounded-none hover:text-text-primary transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
           href="/glossary"
         >
           Glossary
         </a>
         <a
-          class="text-xs hover:text-text-primary transition-colors"
-          href="/bridges"
-        >
-          Bridges
-        </a>
-        <a
-          class="text-xs hover:text-text-primary transition-colors"
+          class="font-mono text-xs rounded-none hover:text-text-primary transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
           href="/terms"
         >
           Terms
         </a>
         <a
-          class="text-xs hover:text-text-primary transition-colors"
+          class="font-mono text-xs rounded-none hover:text-text-primary transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
           href="/privacy"
         >
           Privacy

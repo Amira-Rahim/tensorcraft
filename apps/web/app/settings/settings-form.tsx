@@ -298,7 +298,7 @@ export function SettingsForm({
                   type="text"
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
-                  className="w-full font-mono outline-none"
+                  className="w-full font-mono focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
                   style={{
                     background: "var(--tc-surface-overlay)",
                     border: "2px solid var(--tc-border)",
@@ -321,7 +321,7 @@ export function SettingsForm({
                   type="email"
                   value={email}
                   readOnly
-                  className="w-full font-mono outline-none cursor-not-allowed"
+                  className="w-full font-mono cursor-not-allowed focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
                   style={{
                     background: "var(--tc-code-bg)",
                     border: "2px solid var(--tc-border)",
@@ -362,7 +362,7 @@ export function SettingsForm({
                     type="text"
                     value={githubUser}
                     onChange={(e) => setGithubUser(e.target.value)}
-                    className="flex-1 font-mono outline-none"
+                    className="flex-1 font-mono focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
                     style={{
                       background: "transparent",
                       border: "none",

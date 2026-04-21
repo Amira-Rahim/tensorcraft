@@ -20,7 +20,7 @@ function NavLink({
   return (
     <Link
       href={href}
-      className={`text-[13px] transition-colors ${
+      className={`font-mono text-[13px] tracking-wider uppercase rounded-none transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 ${
         isActive
           ? "text-primary font-semibold"
           : "text-text-muted hover:text-text-primary"
@@ -49,14 +49,18 @@ export function Nav() {
 
   return (
     <nav
-      className="sticky top-0 z-50 h-15 flex items-center justify-between px-8 bg-surface border-b border-border-active"
+      data-testid="site-nav"
+      className="sticky top-0 z-50 h-15 flex items-center justify-between px-8 bg-surface border-b border-border rounded-none"
       aria-label="Main navigation"
     >
       <Link
         href="/"
-        className="flex items-center gap-2.5 font-mono text-sm font-medium tracking-wider text-text-primary"
+        className="flex items-center gap-2.5 font-mono text-sm font-medium tracking-wider text-text-primary rounded-none focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
       >
-        <span className="bg-primary text-page px-1.5 py-0.5 text-xs font-bold">
+        <span
+          data-testid="nav-logo-badge"
+          className="flex items-center justify-center w-7 h-7 border border-primary bg-primary text-page font-mono text-[13px] font-bold rounded-none"
+        >
           T_
         </span>
         TENSORCRAFT

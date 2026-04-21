@@ -458,7 +458,7 @@ export function ReportIssueButton() {
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
                   disabled={isLoading}
-                  className="w-full font-mono outline-none"
+                  className="w-full font-mono focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
                   style={{
                     background:
                       "color-mix(in srgb, var(--tc-bg) 60%, transparent)",
@@ -513,7 +513,7 @@ export function ReportIssueButton() {
                   maxLength={2000}
                   placeholder="Describe the issue..."
                   rows={4}
-                  className="w-full font-mono outline-none resize-y"
+                  className="w-full font-mono resize-y focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
                   style={{
                     background:
                       "color-mix(in srgb, var(--tc-bg) 60%, transparent)",
@@ -711,7 +711,7 @@ export function ReportIssueButton() {
                     onChange={(e) => setEmail(e.target.value)}
                     disabled={isLoading}
                     placeholder="your@email.com"
-                    className="w-full font-mono outline-none"
+                    className="w-full font-mono focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
                     style={{
                       background:
                         "color-mix(in srgb, var(--tc-bg) 60%, transparent)",
