@@ -35,6 +35,12 @@ export interface Database {
             | "vanilla"
             | null;
           fe_experience_years: number | null;
+          experience_level:
+            | "beginner"
+            | "intermediate"
+            | "advanced"
+            | "expert"
+            | null;
           created_at: string;
           updated_at: string;
         };
@@ -61,6 +67,12 @@ export interface Database {
             | "vanilla"
             | null;
           fe_experience_years?: number | null;
+          experience_level?:
+            | "beginner"
+            | "intermediate"
+            | "advanced"
+            | "expert"
+            | null;
         };
         Update: {
           display_name?: string | null;
@@ -83,7 +95,36 @@ export interface Database {
             | "vanilla"
             | null;
           fe_experience_years?: number | null;
+          experience_level?:
+            | "beginner"
+            | "intermediate"
+            | "advanced"
+            | "expert"
+            | null;
           updated_at?: string;
+        };
+        Relationships: [];
+      };
+      certificates: {
+        Row: {
+          id: string;
+          user_id: string;
+          theme_id: string;
+          issued_at: string;
+          cert_hash: string;
+          pdf_url: string | null;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          theme_id: string;
+          issued_at?: string;
+          cert_hash: string;
+          pdf_url?: string | null;
+        };
+        Update: {
+          cert_hash?: string;
+          pdf_url?: string | null;
         };
         Relationships: [];
       };
@@ -493,6 +534,17 @@ export interface Database {
       compute_user_skill_genome: {
         Args: { p_user_id: string; p_theme_id: string };
         Returns: void;
+      };
+      get_shared_certificate: {
+        Args: { p_id: string };
+        Returns: Array<{
+          id: string;
+          theme_id: string;
+          issued_at: string;
+          cert_hash: string;
+          user_display_name: string | null;
+          user_avatar_url: string | null;
+        }>;
       };
     };
   };

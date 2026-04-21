@@ -83,17 +83,26 @@ function RadarChart({
         strokeDasharray="1 3"
       />
       {isEmpty ? (
-        <text
-          x={cx}
-          y={cy}
-          fill="var(--tc-muted)"
-          fontSize="10"
-          fontFamily="monospace"
-          textAnchor="middle"
-          dominantBaseline="middle"
-        >
-          No activity yet
-        </text>
+        <>
+          <rect
+            x={cx - 44}
+            y={cy - 9}
+            width={88}
+            height={18}
+            fill="var(--tc-surface-raised)"
+          />
+          <text
+            x={cx}
+            y={cy}
+            fill="var(--tc-muted)"
+            fontSize="10"
+            fontFamily="monospace"
+            textAnchor="middle"
+            dominantBaseline="middle"
+          >
+            No activity yet
+          </text>
+        </>
       ) : (
         <polygon
           points={dataPolygon}
@@ -142,16 +151,16 @@ export function SkillGenome({ data }: SkillGenomeProps) {
         <div className="font-mono text-xs uppercase tracking-widest text-text-muted mb-4">
           // SKILL GENOME
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-[55%_45%] gap-6 items-center">
-          <div className="flex justify-center sm:justify-start">
+        <div className="flex flex-wrap items-center gap-x-12 gap-y-6">
+          <div className="shrink-0">
             <RadarChart
               values={radarValues}
-              size={200}
+              size={220}
               desc={desc}
               isEmpty={isEmpty}
             />
           </div>
-          <div className="flex flex-col gap-1 font-mono text-xs">
+          <div className="flex flex-col gap-1 font-mono text-xs w-full max-w-70 min-w-55">
             <div
               className="text-text-muted pb-1 border-b border-border"
               style={{ color: "var(--tc-muted)" }}
@@ -159,7 +168,7 @@ export function SkillGenome({ data }: SkillGenomeProps) {
               # skill_genome
             </div>
             {axisValues.map((axis) => (
-              <div key={axis.key} className="flex justify-between py-0.5">
+              <div key={axis.key} className="flex justify-between gap-4 py-0.5">
                 <span style={{ color: "var(--tc-text)" }}>{axis.key}</span>
                 <span style={{ color: "var(--tc-primary)" }}>
                   {(axis.proficiency / 100).toFixed(2)}

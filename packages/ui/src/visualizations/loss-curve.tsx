@@ -62,7 +62,7 @@ export function LossCurve({ weekly, className }: LossCurveProps) {
       aria-labelledby={titleId}
       aria-describedby={descId}
       className={className}
-      style={{ width: "100%" }}
+      style={{ width: "100%", maxWidth: 560, display: "block" }}
     >
       <title id={titleId}>Rolling 7-day average hints per exercise</title>
       <desc id={descId}>{desc}</desc>

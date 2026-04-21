@@ -256,4 +256,123 @@ progress.get("/summary", async (c) => {
   });
 });
 
+/**
+ * GET /api/progress/activity/daily?days=30&themeId=?
+ *
+ * Returns one row per UTC date covering the last N days (default 30,
+ * max 365). Each row contains:
+ *   - date: YYYY-MM-DD (UTC)
+ *   - lessonsCompleted: lessons marked `completed` on that date
+ *   - exercisesAttempted: rows in exercise_attempts with that
+ *     `attempted_at` date (passed or failed — any attempt counts)
+ *
+ * Missing days are included with zero counts so consumers can render
+ * a heat-map / sparkline without client-side bucketing.
+ *
+ * If `themeId` is provided, only that theme's activity is counted.
+ */
+progress.get("/activity/daily", async (c) => {
+  const userId = c.get("userId");
+  const token = c.get("accessToken");
+
+  const daysRaw = c.req.query("days");
+  const themeId = c.req.query("themeId");
+
+  const days = daysRaw === undefined ? 30 : Number(daysRaw);
+  if (!Number.isInteger(days) || days < 1 || days > 365) {
+    return c.json({ error: "days must be an integer between 1 and 365" }, 400);
+  }
+
+  if (themeId !== undefined && !isValidThemeSlug(themeId)) {
+    return c.json({ error: "Invalid themeId" }, 400);
+  }
+
+  // Compute the inclusive UTC window [startDate, today].
+  const today = new Date();
+  const todayUtc = new Date(
+    Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()),
+  );
+  const startUtc = new Date(todayUtc);
+  startUtc.setUTCDate(startUtc.getUTCDate() - (days - 1));
+  const startIso = startUtc.toISOString();
+
+  const supabase = getSupabaseServerClient(token);
+
+  // Fetch completions
+  let completionsQuery = supabase
+    .from("theme_progress")
+    .select("completed_at, theme_id")
+    .eq("user_id", userId)
+    .eq("status", "completed")
+    .not("completed_at", "is", null)
+    .gte("completed_at", startIso);
+  if (themeId) completionsQuery = completionsQuery.eq("theme_id", themeId);
+
+  const { data: completions, error: completionsErr } = await completionsQuery;
+  if (completionsErr) {
+    return c.json(
+      {
+        error: "Failed to fetch lesson completions",
+        requestId: c.res.headers.get("X-Request-Id"),
+      },
+      500,
+    );
+  }
+
+  // Fetch attempts
+  let attemptsQuery = supabase
+    .from("exercise_attempts")
+    .select("attempted_at, theme_id")
+    .eq("user_id", userId)
+    .gte("attempted_at", startIso);
+  if (themeId) attemptsQuery = attemptsQuery.eq("theme_id", themeId);
+
+  const { data: attempts, error: attemptsErr } = await attemptsQuery;
+  if (attemptsErr) {
+    return c.json(
+      {
+        error: "Failed to fetch exercise attempts",
+        requestId: c.res.headers.get("X-Request-Id"),
+      },
+      500,
+    );
+  }
+
+  // Bucket into { date: {lessons, exercises} }
+  const bucket: Record<
+    string,
+    { lessonsCompleted: number; exercisesAttempted: number }
+  > = {};
+
+  // Seed zeros for every day in the window.
+  for (let i = 0; i < days; i++) {
+    const d = new Date(startUtc);
+    d.setUTCDate(d.getUTCDate() + i);
+    const key = d.toISOString().slice(0, 10);
+    bucket[key] = { lessonsCompleted: 0, exercisesAttempted: 0 };
+  }
+
+  for (const row of (completions ?? []) as Array<{
+    completed_at: string | null;
+  }>) {
+    if (!row.completed_at) continue;
+    const key = row.completed_at.slice(0, 10); // UTC date bucket
+    if (bucket[key]) bucket[key].lessonsCompleted++;
+  }
+
+  for (const row of (attempts ?? []) as Array<{
+    attempted_at: string | null;
+  }>) {
+    if (!row.attempted_at) continue;
+    const key = row.attempted_at.slice(0, 10);
+    if (bucket[key]) bucket[key].exercisesAttempted++;
+  }
+
+  const result = Object.entries(bucket)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([date, counts]) => ({ date, ...counts }));
+
+  return c.json({ activity: result });
+});
+
 export { progress };

@@ -1048,11 +1048,11 @@ Full design system overhaul from "Zensman DeFi Neon" to "Brutalist Terminal" aes
 
 ### 11e. Backend & Database
 
-- [ ] Migration: add `experience_level`, `learning_goal` to `profiles` (expanded onboarding)
-- [ ] Migration: new `certificates` table
-- [ ] API: certificate endpoints (`POST /certificates`, `GET /certificates/:id`)
-- [ ] API: daily activity aggregation for heatmap
-- [ ] API: onboarding update (accept `experience_level`, `learning_goal`)
+- [x] Migration: add `experience_level`, `learning_goal` to `profiles` (expanded onboarding) — **COMPLETED 2026-04-21** (migration 018)
+- [x] Migration: new `certificates` table — **COMPLETED 2026-04-21** (migration 019 + `get_shared_certificate` RPC)
+- [x] API: certificate endpoints (`POST /certificates`, `GET /certificates/:id`) — **COMPLETED 2026-04-21** (9 tests)
+- [x] API: daily activity aggregation for heatmap — **COMPLETED 2026-04-21** (`GET /api/progress/activity/daily`, 6 tests)
+- [x] API: onboarding update (accept `experience_level`, `learning_goal`) — **COMPLETED 2026-04-21** (`PATCH /api/onboarding`, 6 tests)
 
 ### 11f. Test Updates
 

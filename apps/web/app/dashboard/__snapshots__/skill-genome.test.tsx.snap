@@ -13,17 +13,17 @@ exports[`SkillGenome (Option C) > matches snapshot for typical data 1`] = `
       // SKILL GENOME
     </div>
     <div
-      class="grid grid-cols-1 sm:grid-cols-[55%_45%] gap-6 items-center"
+      class="flex flex-wrap items-center gap-x-12 gap-y-6"
     >
       <div
-        class="flex justify-center sm:justify-start"
+        class="shrink-0"
       >
         <svg
           aria-describedby="sg-desc"
           aria-labelledby="sg-title"
           role="img"
-          style="width: 100%; max-width: 200px; height: auto;"
-          viewBox="0 0 200 200"
+          style="width: 100%; max-width: 220px; height: auto;"
+          viewBox="0 0 220 220"
         >
           <title
             id="sg-title"
@@ -36,53 +36,53 @@ exports[`SkillGenome (Option C) > matches snapshot for typical data 1`] = `
             Skill profile. data_prep 0.60, model_arch 0.30, training 0.45, evaluation 0.20, deployment 0.15, fe_integration 0.85.
           </desc>
           <path
-            d="M100,100 L100,16"
+            d="M110,110 L110,16"
             stroke="var(--tc-border)"
             stroke-width="0.5"
           />
           <path
-            d="M100,100 L172.74613391789285,58.00000000000001"
+            d="M110,110 L191.40638795573724,63.00000000000001"
             stroke="var(--tc-border)"
             stroke-width="0.5"
           />
           <path
-            d="M100,100 L172.74613391789285,142"
+            d="M110,110 L191.40638795573724,157"
             stroke="var(--tc-border)"
             stroke-width="0.5"
           />
           <path
-            d="M100,100 L100,184"
+            d="M110,110 L110,204"
             stroke="var(--tc-border)"
             stroke-width="0.5"
           />
           <path
-            d="M100,100 L27.25386608210715,142"
+            d="M110,110 L28.593612044262755,157"
             stroke="var(--tc-border)"
             stroke-width="0.5"
           />
           <path
-            d="M100,100 L27.25386608210715,58.00000000000001"
+            d="M110,110 L28.593612044262755,63.00000000000001"
             stroke="var(--tc-border)"
             stroke-width="0.5"
           />
           <circle
-            cx="100"
-            cy="100"
+            cx="110"
+            cy="110"
             fill="none"
-            r="42"
+            r="47"
             stroke="var(--tc-border)"
             stroke-dasharray="1 3"
           />
           <polygon
             fill="none"
-            points="100,49.6 121.82384017536785,87.4 132.7357602630518,118.9 100,116.8 89.08807991231608,106.3 38.16578616979108,64.30000000000001"
+            points="110,53.6 134.42191638672116,95.9 146.63287458008176,131.15 110,128.8 97.78904180663942,117.05 40.80457023762334,70.05000000000001"
             stroke="var(--tc-primary)"
             stroke-width="1.5"
           />
         </svg>
       </div>
       <div
-        class="flex flex-col gap-1 font-mono text-xs"
+        class="flex flex-col gap-1 font-mono text-xs w-full max-w-70 min-w-55"
       >
         <div
           class="text-text-muted pb-1 border-b border-border"
@@ -91,7 +91,7 @@ exports[`SkillGenome (Option C) > matches snapshot for typical data 1`] = `
           # skill_genome
         </div>
         <div
-          class="flex justify-between py-0.5"
+          class="flex justify-between gap-4 py-0.5"
         >
           <span
             style="color: var(--tc-text);"
@@ -105,7 +105,7 @@ exports[`SkillGenome (Option C) > matches snapshot for typical data 1`] = `
           </span>
         </div>
         <div
-          class="flex justify-between py-0.5"
+          class="flex justify-between gap-4 py-0.5"
         >
           <span
             style="color: var(--tc-text);"
@@ -119,7 +119,7 @@ exports[`SkillGenome (Option C) > matches snapshot for typical data 1`] = `
           </span>
         </div>
         <div
-          class="flex justify-between py-0.5"
+          class="flex justify-between gap-4 py-0.5"
         >
           <span
             style="color: var(--tc-text);"
@@ -133,7 +133,7 @@ exports[`SkillGenome (Option C) > matches snapshot for typical data 1`] = `
           </span>
         </div>
         <div
-          class="flex justify-between py-0.5"
+          class="flex justify-between gap-4 py-0.5"
         >
           <span
             style="color: var(--tc-text);"
@@ -147,7 +147,7 @@ exports[`SkillGenome (Option C) > matches snapshot for typical data 1`] = `
           </span>
         </div>
         <div
-          class="flex justify-between py-0.5"
+          class="flex justify-between gap-4 py-0.5"
         >
           <span
             style="color: var(--tc-text);"
@@ -161,7 +161,7 @@ exports[`SkillGenome (Option C) > matches snapshot for typical data 1`] = `
           </span>
         </div>
         <div
-          class="flex justify-between py-0.5"
+          class="flex justify-between gap-4 py-0.5"
         >
           <span
             style="color: var(--tc-text);"

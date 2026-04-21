@@ -1,0 +1,177 @@
+import { Hono } from "hono";
+import { getSupabaseAdminClient } from "@tensorcraft/supabase";
+import { authMiddleware } from "../middleware/auth";
+import type { AppEnv } from "../types";
+
+/**
+ * Onboarding survey persistence.
+ *
+ * PATCH /api/onboarding — authenticated. Accepts any subset of the
+ * onboarding fields and writes them via the service-role client.
+ *
+ * Validation enforces the same enum lists that the DB CHECK constraints
+ * on `profiles.experience_level`, `profiles.learning_goal`, and
+ * `profiles.fe_framework` enforce — a malformed request is rejected
+ * before the DB sees it so we can return a friendly 400.
+ */
+const onboarding = new Hono<AppEnv>();
+
+onboarding.use("*", authMiddleware);
+
+const EXPERIENCE_LEVELS = [
+  "beginner",
+  "intermediate",
+  "advanced",
+  "expert",
+] as const;
+type ExperienceLevel = (typeof EXPERIENCE_LEVELS)[number];
+
+const LEARNING_GOALS = [
+  "hobby",
+  "career",
+  "research",
+  "team",
+  "curiosity",
+] as const;
+type LearningGoal = (typeof LEARNING_GOALS)[number];
+
+const FE_FRAMEWORKS = ["react", "vue", "angular", "svelte", "vanilla"] as const;
+type FeFramework = (typeof FE_FRAMEWORKS)[number];
+
+function isExperienceLevel(v: unknown): v is ExperienceLevel {
+  return (
+    typeof v === "string" &&
+    (EXPERIENCE_LEVELS as readonly string[]).includes(v)
+  );
+}
+
+function isLearningGoal(v: unknown): v is LearningGoal {
+  return (
+    typeof v === "string" && (LEARNING_GOALS as readonly string[]).includes(v)
+  );
+}
+
+function isFeFramework(v: unknown): v is FeFramework {
+  return (
+    typeof v === "string" && (FE_FRAMEWORKS as readonly string[]).includes(v)
+  );
+}
+
+type OnboardingUpdate = {
+  experience_level?: ExperienceLevel;
+  learning_goal?: LearningGoal;
+  fe_background?: string;
+  fe_framework?: FeFramework;
+  fe_experience_years?: number;
+  updated_at: string;
+};
+
+onboarding.patch("/", async (c) => {
+  const userId = c.get("userId");
+
+  let body: Record<string, unknown>;
+  try {
+    body = (await c.req.json()) as Record<string, unknown>;
+  } catch {
+    return c.json({ error: "Invalid JSON body" }, 400);
+  }
+
+  const updates: OnboardingUpdate = {
+    updated_at: new Date().toISOString(),
+  };
+
+  if ("experience_level" in body) {
+    const v = body.experience_level;
+    if (!isExperienceLevel(v)) {
+      return c.json(
+        {
+          error: `experience_level must be one of: ${EXPERIENCE_LEVELS.join(", ")}`,
+        },
+        400,
+      );
+    }
+    updates.experience_level = v;
+  }
+
+  if ("learning_goal" in body) {
+    const v = body.learning_goal;
+    if (!isLearningGoal(v)) {
+      return c.json(
+        {
+          error: `learning_goal must be one of: ${LEARNING_GOALS.join(", ")}`,
+        },
+        400,
+      );
+    }
+    updates.learning_goal = v;
+  }
+
+  if ("fe_background" in body) {
+    const v = body.fe_background;
+    if (typeof v !== "string" || v.length === 0 || v.length > 200) {
+      return c.json(
+        { error: "fe_background must be a string of 1–200 characters" },
+        400,
+      );
+    }
+    updates.fe_background = v;
+  }
+
+  if ("fe_framework" in body) {
+    const v = body.fe_framework;
+    if (!isFeFramework(v)) {
+      return c.json(
+        { error: `fe_framework must be one of: ${FE_FRAMEWORKS.join(", ")}` },
+        400,
+      );
+    }
+    updates.fe_framework = v;
+  }
+
+  if ("fe_experience_years" in body) {
+    const v = body.fe_experience_years;
+    if (typeof v !== "number" || !Number.isInteger(v) || v < 0 || v > 50) {
+      return c.json(
+        {
+          error: "fe_experience_years must be an integer between 0 and 50",
+        },
+        400,
+      );
+    }
+    updates.fe_experience_years = v;
+  }
+
+  const touchedFields = Object.keys(updates).filter((k) => k !== "updated_at");
+  if (touchedFields.length === 0) {
+    return c.json(
+      {
+        error:
+          "No valid fields to update. Allowed: experience_level, learning_goal, fe_background, fe_framework, fe_experience_years",
+      },
+      400,
+    );
+  }
+
+  const admin = getSupabaseAdminClient();
+  const { data, error } = await admin
+    .from("profiles")
+    .update(updates)
+    .eq("id", userId)
+    .select()
+    .single();
+
+  if (error || !data) {
+    console.error("Onboarding PATCH failed:", error?.message);
+    return c.json(
+      {
+        error: "Failed to update onboarding fields",
+        requestId: c.res.headers.get("X-Request-Id"),
+      },
+      500,
+    );
+  }
+
+  return c.json({ profile: data });
+});
+
+export { onboarding };

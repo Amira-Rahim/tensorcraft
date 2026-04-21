@@ -16,6 +16,8 @@ import { github } from "./routes/github";
 import { skillEvents } from "./routes/skill-events";
 import { issues } from "./routes/issues";
 import { emailTags } from "./routes/email-tags";
+import { certificates } from "./routes/certificates";
+import { onboarding } from "./routes/onboarding";
 
 const app = new Hono();
 
@@ -68,6 +70,8 @@ app.route("/api/github", github);
 app.route("/api/skill-events", skillEvents);
 app.route("/api/issues", issues);
 app.route("/api/email", emailTags);
+app.route("/api/certificates", certificates);
+app.route("/api/onboarding", onboarding);
 
 // Root
 app.get("/", (c) => {
