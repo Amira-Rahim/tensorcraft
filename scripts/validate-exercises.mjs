@@ -59,31 +59,207 @@ function stripTypeScript(code) {
   s = s.replace(/^\s*import\s+.*?from\s+['"][^'"]+['"];?\s*$/gm, "");
   s = s.replace(/^\s*import\s+['"][^'"]+['"];?\s*$/gm, "");
 
-  // Drop top-level `type Foo = ...;` / `interface Foo { ... }` declarations.
-  s = s.replace(/^\s*(export\s+)?type\s+\w+(\s*<[^>]*>)?\s*=\s*[\s\S]*?;\s*$/gm, "");
+  // Drop top-level `interface Foo { ... }` and `type Foo = ...;` declarations
+  // using bracket-balancing (robust against nested braces, union types, tuple
+  // types, and multi-line type aliases).
+  s = stripInterfaceAndTypeDecls(s);
+
+  // Turn top-level `export` into nothing so declarations become visible in
+  // the sandbox global scope. Handle `export default` too (rarely used).
+  s = s.replace(/^\s*export\s+default\s+/gm, "");
+  s = s.replace(/^\s*export\s+(?=(async\s+)?(function|class|const|let|var|abstract\s+class|interface|type|enum)\b)/gm, "");
+  s = s.replace(/^\s*export\s*\{[^}]*\};?\s*$/gm, "");
+
+  // Drop `enum Foo { ... }` — treat like interface.
+  s = stripEnumDecls(s);
+
+  // Drop generic type params on function/class declarations and call sites.
+  //   function foo<T>(…)     → function foo(…)
+  //   class  LRUCache<T> {   → class  LRUCache {
+  //   foo<T>(arg)            → foo(arg)
+  s = s.replace(/\b(function\s+\w+)\s*<[^<>]*(?:<[^<>]*>[^<>]*)*>/g, "$1");
+  s = s.replace(/\b(class\s+\w+)\s*<[^<>]*(?:<[^<>]*>[^<>]*)*>/g, "$1");
+  s = s.replace(/\b(\w+)<[A-Z][\w$]*(?:\s*,\s*[A-Z][\w$]*)*>(?=\s*\()/g, "$1");
+
+  // Strip TS-only class member modifiers (`private`, `public`, `protected`,
+  // `readonly`, `override`, `abstract`) so Node's parser sees plain class
+  // fields.  Applied within class bodies only — cheap heuristic keyed on
+  // start-of-line.
   s = s.replace(
-    /^\s*(export\s+)?interface\s+\w+(\s*<[^>]*>)?\s*\{[\s\S]*?\n\}\s*$/gm,
-    "",
+    /^(\s*)(public|private|protected|readonly|override|abstract)\s+(?=(public|private|protected|readonly|override|abstract|static|async|\*|get|set|constructor|\w|\[))/gm,
+    "$1",
+  );
+  // Multiple modifiers in a row (e.g. `private readonly`) — run again.
+  s = s.replace(
+    /^(\s*)(public|private|protected|readonly|override|abstract)\s+(?=(public|private|protected|readonly|override|abstract|static|async|\*|get|set|constructor|\w|\[))/gm,
+    "$1",
   );
 
-  // Drop generic type params like `<T>`, `<T extends Foo>` on declarations.
-  // Only inside contexts that look like function/call generics — skip JSX.
-  s = s.replace(/\b(function\s+\w+)<[^>]+>/g, "$1");
-  s = s.replace(/\b(\w+)<[A-Z]\w*(?:\s*,\s*[A-Z]\w*)*>(?=\s*\()/g, "$1");
+  // Constructor-parameter modifiers: `constructor(private readonly foo: T)` —
+  // strip the modifier so the parameter name survives.
+  s = s.replace(
+    /(\(|,)\s*(public|private|protected|readonly)\s+(public|private|protected|readonly)\s+/g,
+    "$1 ",
+  );
+  s = s.replace(
+    /(\(|,)\s*(public|private|protected|readonly)\s+/g,
+    "$1 ",
+  );
+
+  // Remove `!` non-null assertions on identifier ends (`foo!.bar` → `foo.bar`,
+  // `x!` in expression position is harder — handle the common dot form).
+  s = s.replace(/([A-Za-z_$][\w$]*)!(\.|\[)/g, "$1$2");
 
   // Remove `as SomeType` assertions (non-greedy up to boundary).
   s = s.replace(
-    /\s+as\s+[A-Za-z_$][\w$]*(?:\s*<[^>]*>)?(?:\s*\[\s*\])*/g,
+    /\s+as\s+[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)*(?:\s*<[^<>]*(?:<[^<>]*>[^<>]*)*>)?(?:\s*\[\s*\])*/g,
     "",
   );
+  // `as const`
+  s = s.replace(/\s+as\s+const\b/g, "");
+
+  // Optional property / parameter markers: `foo?: number` — the `?` must be
+  // removed before we strip the type annotation so the parser is happy.
+  // Only targets `?:` to avoid optional chaining / ternary.
+  s = s.replace(/([A-Za-z_$][\w$]*)\?:/g, "$1:");
 
   // Remove `: TypeAnnotation` from variables and function params/returns.
-  // Walk the string and, at each `:` that looks like a type annotation,
-  // consume until the matching `,`, `)`, `=`, `;`, `{`, or newline — while
-  // balancing `[]`, `<>`, `()`, `{}` so nested generics don't escape.
   s = stripTypeAnnotations(s);
 
+  // Remove `<Type>value` TSX-style assertions that survived (rare).
+  // Skip — would collide with JSX; not needed for these exercises.
+
   return s;
+}
+
+/**
+ * Strip `interface Name<…>? extends … { … }` and `type Name<…>? = …;`
+ * declarations at any indentation level, using brace/bracket balancing so
+ * nested braces (object types, union types with `{…}`) don't escape.
+ */
+function stripInterfaceAndTypeDecls(src) {
+  let out = "";
+  let i = 0;
+  const n = src.length;
+  while (i < n) {
+    // Only consider declaration starts at beginning-of-line (after optional ws).
+    const lineStart = i === 0 || src[i - 1] === "\n";
+    if (lineStart) {
+      // Skip leading spaces to peek at the keyword.
+      let j = i;
+      while (j < n && (src[j] === " " || src[j] === "\t")) j++;
+      const rest = src.slice(j);
+      const ifaceMatch = /^(export\s+)?interface\s+\w+/.exec(rest);
+      const typeMatch = /^(export\s+)?type\s+\w+/.exec(rest);
+      if (ifaceMatch) {
+        // Find the opening brace, then balance until the matching close.
+        let k = j + ifaceMatch[0].length;
+        while (k < n && src[k] !== "{") k++;
+        if (k < n && src[k] === "{") {
+          let depth = 1;
+          k++;
+          while (k < n && depth > 0) {
+            const ch = src[k];
+            if (ch === "{") depth++;
+            else if (ch === "}") depth--;
+            k++;
+          }
+          // Also swallow a trailing newline to keep output tidy.
+          if (k < n && src[k] === "\n") k++;
+          i = k;
+          continue;
+        }
+      }
+      if (typeMatch) {
+        // `type Foo<...> = <type>;` — skip until top-level `;` or newline
+        // (whichever comes after the `=`), balancing brackets.
+        let k = j + typeMatch[0].length;
+        // Skip optional generic params `<…>`.
+        while (k < n && /\s/.test(src[k])) k++;
+        if (src[k] === "<") {
+          let d = 1;
+          k++;
+          while (k < n && d > 0) {
+            if (src[k] === "<") d++;
+            else if (src[k] === ">") d--;
+            k++;
+          }
+        }
+        while (k < n && /\s/.test(src[k])) k++;
+        if (src[k] === "=") {
+          k++;
+          let depthAngle = 0, depthBrace = 0, depthBracket = 0, depthParen = 0;
+          while (k < n) {
+            const ch = src[k];
+            if (depthAngle === 0 && depthBrace === 0 && depthBracket === 0 && depthParen === 0) {
+              if (ch === ";" || ch === "\n") {
+                // Verify next non-space char isn't `|` or `&` (union continues).
+                let m = k + 1;
+                while (m < n && (src[m] === " " || src[m] === "\t" || src[m] === "\n")) m++;
+                if (ch === ";" || src[m] === "|" || src[m] === "&") {
+                  if (ch === ";") { k++; break; }
+                  // Continue on the union / intersection.
+                  k = m;
+                  continue;
+                }
+                // Newline ends the type alias when no continuation.
+                break;
+              }
+            }
+            if (ch === "<") depthAngle++;
+            else if (ch === ">") depthAngle = Math.max(0, depthAngle - 1);
+            else if (ch === "{") depthBrace++;
+            else if (ch === "}") depthBrace = Math.max(0, depthBrace - 1);
+            else if (ch === "[") depthBracket++;
+            else if (ch === "]") depthBracket = Math.max(0, depthBracket - 1);
+            else if (ch === "(") depthParen++;
+            else if (ch === ")") depthParen = Math.max(0, depthParen - 1);
+            k++;
+          }
+          if (k < n && src[k] === "\n") k++;
+          i = k;
+          continue;
+        }
+      }
+    }
+    out += src[i];
+    i++;
+  }
+  return out;
+}
+
+function stripEnumDecls(src) {
+  let out = "";
+  let i = 0;
+  const n = src.length;
+  while (i < n) {
+    const lineStart = i === 0 || src[i - 1] === "\n";
+    if (lineStart) {
+      let j = i;
+      while (j < n && (src[j] === " " || src[j] === "\t")) j++;
+      const rest = src.slice(j);
+      const enumMatch = /^(export\s+)?(const\s+)?enum\s+\w+/.exec(rest);
+      if (enumMatch) {
+        let k = j + enumMatch[0].length;
+        while (k < n && src[k] !== "{") k++;
+        if (k < n && src[k] === "{") {
+          let depth = 1;
+          k++;
+          while (k < n && depth > 0) {
+            if (src[k] === "{") depth++;
+            else if (src[k] === "}") depth--;
+            k++;
+          }
+          if (k < n && src[k] === "\n") k++;
+          i = k;
+          continue;
+        }
+      }
+    }
+    out += src[i];
+    i++;
+  }
+  return out;
 }
 
 function stripTypeAnnotations(src) {
@@ -169,15 +345,61 @@ function stripTypeAnnotations(src) {
 
       if (isAnnotationContext && looksLikeType) {
         // Consume the type, balancing brackets.
+        // NOTE: when the annotation begins with `{` (object type), we must
+        // consume through the matching `}` — otherwise stripping would stop
+        // at the first `{` and leave an orphan `}` behind.  Similarly for
+        // `(a: number) => ...` arrow types that open with `(`.
         i = j;
         let depthAngle = 0;
         let depthBracket = 0;
         let depthParen = 0;
         let depthBrace = 0;
+        const startsWithObject = src[j] === "{";
+        const startsWithParen = src[j] === "(";
+        // Pre-enter the opening bracket/brace so the balanced-boundary
+        // check doesn't fire immediately on the first iteration.
+        if (startsWithObject) {
+          depthBrace++;
+          i++;
+        } else if (startsWithParen) {
+          depthParen++;
+          i++;
+        }
         while (i < n) {
           const ch = src[i];
-          if (depthAngle === 0 && depthBracket === 0 && depthParen === 0 && depthBrace === 0) {
-            if (ch === "," || ch === ")" || ch === "=" || ch === ";" || ch === "\n" || ch === "{") break;
+          const balanced =
+            depthAngle === 0 &&
+            depthBracket === 0 &&
+            depthParen === 0 &&
+            depthBrace === 0;
+          if (balanced) {
+            // `=>` is the arrow-function-type separator — do NOT treat the
+            // `=` as a boundary when immediately followed by `>`.  This
+            // handles annotations like `(x: T) => U`.
+            if (ch === "=" && src[i + 1] === ">") {
+              i += 2;
+              continue;
+            }
+            if (
+              ch === "," ||
+              ch === ")" ||
+              ch === "=" ||
+              ch === ";" ||
+              ch === "\n" ||
+              ch === "{"
+            ) {
+              // Check for union/intersection continuation: `: A | B` should
+              // keep consuming past newlines when followed by `|` or `&`.
+              if (ch === "\n") {
+                let m = i + 1;
+                while (m < n && (src[m] === " " || src[m] === "\t")) m++;
+                if (src[m] === "|" || src[m] === "&") {
+                  i = m;
+                  continue;
+                }
+              }
+              break;
+            }
           }
           if (ch === "<") depthAngle++;
           else if (ch === ">") depthAngle = Math.max(0, depthAngle - 1);
@@ -187,7 +409,19 @@ function stripTypeAnnotations(src) {
           else if (ch === ")") depthParen = Math.max(0, depthParen - 1);
           else if (ch === "{") depthBrace++;
           else if (ch === "}") depthBrace = Math.max(0, depthBrace - 1);
+          // String literals inside types (e.g. `'foo' | 'bar'`) — skip past.
+          else if (ch === '"' || ch === "'" || ch === "`") {
+            const q = ch;
+            i++;
+            while (i < n && src[i] !== q) {
+              if (src[i] === "\\") i++;
+              i++;
+            }
+          }
           i++;
+        }
+        if (startsWithObject || startsWithParen) {
+          out += " ";
         }
         continue; // skip emitting the annotation
       }
@@ -225,18 +459,46 @@ const HARNESS = `
   var __results = [];
   var __pending = [];
   var __currentDescribe = '';
+  var __beforeEach = [];
+  var __afterEach = [];
+  var __beforeAll = [];
+  var __afterAll = [];
 
   async function describe(name, fn) {
     __currentDescribe = name;
+    var savedBE = __beforeEach.slice();
+    var savedAE = __afterEach.slice();
+    var savedBA = __beforeAll.slice();
+    var savedAA = __afterAll.slice();
     try { await fn(); } catch(e) {}
+    // Fire beforeAll hooks once (after describe body has registered them).
+    for (var i = savedBA.length; i < __beforeAll.length; i++) {
+      try { await __beforeAll[i](); } catch(e) {}
+    }
+    // Let registered test() promises settle for this describe.
+    // (The top-level outer loop calls Promise.all(__pending) for the batch.)
     __currentDescribe = '';
+    // Restore hook stacks so sibling describes don't inherit.
+    __beforeEach = savedBE;
+    __afterEach = savedAE;
+    __beforeAll = savedBA;
+    __afterAll = savedAA;
   }
+
+  function beforeEach(fn) { __beforeEach.push(fn); }
+  function afterEach(fn) { __afterEach.push(fn); }
+  function beforeAll(fn) { __beforeAll.push(fn); try { fn && fn(); } catch(e) {} }
+  function afterAll(fn) { __afterAll.push(fn); }
 
   function it(name, fn) {
     var fullName = __currentDescribe ? __currentDescribe + ' > ' + name : name;
+    var beforeEachSnapshot = __beforeEach.slice();
+    var afterEachSnapshot = __afterEach.slice();
     var p = (async function() {
       try {
+        for (var i = 0; i < beforeEachSnapshot.length; i++) await beforeEachSnapshot[i]();
         await fn();
+        for (var j = 0; j < afterEachSnapshot.length; j++) await afterEachSnapshot[j]();
         __results.push({ name: fullName, passed: true });
       } catch(e) {
         __results.push({ name: fullName, passed: false, error: e.message || String(e) });
@@ -246,6 +508,43 @@ const HARNESS = `
     return p;
   }
   var test = it;
+  it.skip = function(){};
+  it.only = it;
+  test.skip = function(){};
+  test.only = it;
+  describe.skip = function(){};
+  describe.only = describe;
+
+  // Jest compatibility stubs.
+  var jest = {
+    fn: function(impl) {
+      var calls = [];
+      var instances = [];
+      var f = function() {
+        var args = Array.prototype.slice.call(arguments);
+        calls.push(args);
+        instances.push(this);
+        return impl ? impl.apply(this, args) : undefined;
+      };
+      f.mock = { calls: calls, instances: instances, results: [] };
+      f.mockReturnValue = function(v) { impl = function(){ return v; }; return f; };
+      f.mockResolvedValue = function(v) { impl = function(){ return Promise.resolve(v); }; return f; };
+      f.mockImplementation = function(i) { impl = i; return f; };
+      f.mockClear = function() { calls.length = 0; instances.length = 0; };
+      return f;
+    },
+    spyOn: function(obj, method) {
+      var original = obj[method];
+      var spy = jest.fn(original);
+      obj[method] = spy;
+      spy.mockRestore = function() { obj[method] = original; };
+      return spy;
+    },
+    clearAllMocks: function() {},
+    resetAllMocks: function() {},
+    useFakeTimers: function() {},
+    useRealTimers: function() {},
+  };
 
   function expect(actual) {
     return {
@@ -302,6 +601,55 @@ const HARNESS = `
         var limit = Math.pow(10, -precision) / 2;
         if (diff >= limit) throw new Error('Expected ' + actual + ' to be close to ' + expected + ' (precision: ' + precision + ')');
       },
+      toHaveProperty: function(key, value) {
+        var path = String(key).split('.');
+        var cur = actual;
+        for (var i = 0; i < path.length; i++) {
+          if (cur == null || !(path[i] in cur)) throw new Error('Expected property ' + key);
+          cur = cur[path[i]];
+        }
+        if (arguments.length > 1 && JSON.stringify(cur) !== JSON.stringify(value))
+          throw new Error('Property ' + key + ' expected ' + JSON.stringify(value) + ' but got ' + JSON.stringify(cur));
+      },
+      toMatch: function(pattern) {
+        var re = pattern instanceof RegExp ? pattern : new RegExp(pattern);
+        if (typeof actual !== 'string' || !re.test(actual)) throw new Error('Expected ' + JSON.stringify(actual) + ' to match ' + pattern);
+      },
+      toMatchObject: function(expected) {
+        function match(a, e) {
+          if (e == null || typeof e !== 'object') return a === e;
+          if (Array.isArray(e)) {
+            if (!Array.isArray(a) || a.length < e.length) return false;
+            for (var i = 0; i < e.length; i++) if (!match(a[i], e[i])) return false;
+            return true;
+          }
+          for (var k in e) if (!match(a && a[k], e[k])) return false;
+          return true;
+        }
+        if (!match(actual, expected)) throw new Error('Object does not match');
+      },
+      toBeInstanceOf: function(ctor) {
+        if (!(actual instanceof ctor)) throw new Error('Expected instanceof ' + (ctor && ctor.name));
+      },
+      toHaveBeenCalled: function() {
+        if (!actual || !actual.mock || actual.mock.calls.length === 0) throw new Error('Expected mock to have been called');
+      },
+      toHaveBeenCalledTimes: function(n) {
+        if (!actual || !actual.mock || actual.mock.calls.length !== n) throw new Error('Expected mock to have been called ' + n + ' times');
+      },
+      toHaveBeenCalledWith: function() {
+        if (!actual || !actual.mock) throw new Error('Expected a mock');
+        var expectedArgs = Array.prototype.slice.call(arguments);
+        var ok = actual.mock.calls.some(function(c){ return JSON.stringify(c) === JSON.stringify(expectedArgs); });
+        if (!ok) throw new Error('Expected mock call with ' + JSON.stringify(expectedArgs));
+      },
+      resolves: {
+        toBe: async function(expected) { var v = await actual; if (v !== expected) throw new Error('Expected resolved ' + expected); },
+        toEqual: async function(expected) { var v = await actual; if (JSON.stringify(v) !== JSON.stringify(expected)) throw new Error('Expected resolved equal'); },
+      },
+      rejects: {
+        toThrow: async function() { try { await actual; } catch(e) { return; } throw new Error('Expected promise to reject'); },
+      },
       not: {
         toBe: function(expected) {
           if (actual === expected) throw new Error('Expected value to not be ' + JSON.stringify(expected));
@@ -318,9 +666,33 @@ const HARNESS = `
         toBeTruthy: function() {
           if (actual) throw new Error('Expected falsy value');
         },
+        toContain: function(expected) {
+          if (Array.isArray(actual) && actual.includes(expected)) throw new Error('Expected array not to contain');
+          if (typeof actual === 'string' && actual.includes(expected)) throw new Error('Expected string not to contain');
+        },
+        toMatch: function(pattern) {
+          var re = pattern instanceof RegExp ? pattern : new RegExp(pattern);
+          if (typeof actual === 'string' && re.test(actual)) throw new Error('Expected ' + JSON.stringify(actual) + ' not to match ' + pattern);
+        },
+        toHaveProperty: function(key) {
+          var path = String(key).split('.');
+          var cur = actual;
+          for (var i = 0; i < path.length; i++) {
+            if (cur == null || !(path[i] in cur)) return;
+            cur = cur[path[i]];
+          }
+          throw new Error('Expected not to have property ' + key);
+        },
+        toHaveBeenCalled: function() {
+          if (actual && actual.mock && actual.mock.calls.length > 0) throw new Error('Expected mock not called');
+        },
       }
     };
   }
+  expect.any = function(ctor) { return { asymmetricMatch: function(a){ return a != null && (typeof a === ctor.name.toLowerCase() || a instanceof ctor); } }; };
+  expect.anything = function() { return { asymmetricMatch: function(a){ return a != null; } }; };
+  expect.stringContaining = function(s) { return { asymmetricMatch: function(a){ return typeof a === 'string' && a.includes(s); } }; };
+  expect.stringMatching = function(re) { return { asymmetricMatch: function(a){ return typeof a === 'string' && (re instanceof RegExp ? re : new RegExp(re)).test(a); } }; };
 
   expect.closeTo = function(expected, precision) {
     precision = precision || 2;
@@ -346,7 +718,7 @@ const TF_MOCK = `
       return result;
     }
     function makeTensor(flat, s) {
-      return {
+      var t = {
         dataSync: function() { return Float32Array.from(flat); },
         data: function() { return Promise.resolve(Float32Array.from(flat)); },
         arraySync: function() { return toNested(Array.from(flat), s); },
@@ -362,6 +734,33 @@ const TF_MOCK = `
           if (newShape.length === 0) newShape = [1];
           return makeTensor(Array.from(flat), newShape);
         },
+        expandDims: function(axis) {
+          axis = axis == null ? 0 : axis;
+          var newShape = s.slice();
+          newShape.splice(axis, 0, 1);
+          return makeTensor(Array.from(flat), newShape);
+        },
+        transpose: function() {
+          // Only implements 2D transpose; identity for higher-rank.
+          if (s.length !== 2) return makeTensor(Array.from(flat), s);
+          var rows = s[0], cols = s[1];
+          var out = new Array(rows * cols);
+          for (var r = 0; r < rows; r++)
+            for (var c = 0; c < cols; c++)
+              out[c * rows + r] = flat[r * cols + c];
+          return makeTensor(out, [cols, rows]);
+        },
+        cast: function() { return this; },
+        clone: function() { return makeTensor(Array.from(flat), s.slice()); },
+        slice: function(start, size) {
+          // Minimal 1D slice support
+          if (typeof start === 'number') {
+            var len = typeof size === 'number' ? size : flat.length - start;
+            return makeTensor(flat.slice(start, start + len), [len]);
+          }
+          return makeTensor(Array.from(flat), s.slice());
+        },
+        gather: function() { return this; },
         add: function(other) { return _tf.add(this, other); },
         sub: function(other) { return _tf.sub(this, other); },
         mul: function(other) { return _tf.mul(this, other); },
@@ -376,7 +775,14 @@ const TF_MOCK = `
         log: function() { return _tf.log(this); },
         abs: function() { return _tf.abs(this); },
         sqrt: function() { return _tf.sqrt(this); },
+        square: function() { return _tf.pow(this, 2); },
+        pow: function(e) { return _tf.pow(this, typeof e === 'number' ? e : 2); },
+        neg: function() { return _tf.neg(this); },
         softmax: function() { return _tf.softmax(this); },
+        sigmoid: function() { return _tf.sigmoid(this); },
+        tanh: function() { return _tf.tanh(this); },
+        relu: function() { return _tf.relu(this); },
+        norm: function() { return _tf.norm(this); },
         std: function() {
           var m = flat.reduce(function(a,b){return a+b;},0)/flat.length;
           var v = flat.reduce(function(a,b){return a+(b-m)*(b-m);},0)/flat.length;
@@ -385,6 +791,7 @@ const TF_MOCK = `
         print: function() {},
         dispose: function() {},
       };
+      return t;
     }
     var _tf = {
       tensor: function(data, shape) {
@@ -490,27 +897,254 @@ const TF_MOCK = `
         }
         return _tf.tensor(result, [M, N]);
       },
-      sequential: function() {
-        var layers = [];
-        return {
+      // Shape/construction helpers exercises call frequently.
+      fill: function(shape, value) {
+        var size = shape.reduce(function(a,b){return a*b;},1);
+        return _tf.tensor(new Array(size).fill(value), shape);
+      },
+      randomUniform: function(shape, minval, maxval) {
+        minval = minval == null ? 0 : minval;
+        maxval = maxval == null ? 1 : maxval;
+        var size = shape.reduce(function(a,b){return a*b;},1);
+        var data = [];
+        for (var i = 0; i < size; i++) data.push(minval + Math.random() * (maxval - minval));
+        return _tf.tensor(data, shape);
+      },
+      truncatedNormal: function(shape) { return _tf.randomNormal(shape); },
+      norm: function(x, ord, axis) {
+        var d = Array.from(x.dataSync());
+        var s = 0;
+        for (var i = 0; i < d.length; i++) s += d[i] * d[i];
+        return _tf.tensor([Math.sqrt(s)]);
+      },
+      maximum: function(a, b) {
+        var ad = Array.from(a.dataSync());
+        var bIsTensor = b && typeof b.dataSync === 'function';
+        var bd = bIsTensor ? Array.from(b.dataSync()) : null;
+        return _tf.tensor(ad.map(function(v,i){ return Math.max(v, bIsTensor ? bd[i % bd.length] : b); }), a.shape);
+      },
+      minimum: function(a, b) {
+        var ad = Array.from(a.dataSync());
+        var bIsTensor = b && typeof b.dataSync === 'function';
+        var bd = bIsTensor ? Array.from(b.dataSync()) : null;
+        return _tf.tensor(ad.map(function(v,i){ return Math.min(v, bIsTensor ? bd[i % bd.length] : b); }), a.shape);
+      },
+      clipByValue: function(x, lo, hi) {
+        var d = Array.from(x.dataSync());
+        return _tf.tensor(d.map(function(v){ return Math.min(hi, Math.max(lo, v)); }), x.shape);
+      },
+      stack: function(tensors, axis) {
+        axis = axis || 0;
+        var allData = [];
+        for (var i = 0; i < tensors.length; i++) allData = allData.concat(Array.from(tensors[i].dataSync()));
+        return _tf.tensor(allData, [tensors.length].concat(tensors[0].shape));
+      },
+      // Execution / environment stubs.
+      tidy: function(nameOrFn, fnMaybe) {
+        var fn = typeof nameOrFn === 'function' ? nameOrFn : fnMaybe;
+        return fn();
+      },
+      keep: function(t) { return t; },
+      dispose: function() {},
+      disposeVariables: function() {},
+      ready: function() { return Promise.resolve(); },
+      setBackend: function() { return Promise.resolve(true); },
+      getBackend: function() { return 'cpu'; },
+      memory: function() { return { numTensors: 0, numBytes: 0 }; },
+      version: { tfjs: '4.0.0' },
+      env: function() { return { get: function(){ return false; }, set: function(){}, getBool: function(){ return false; }, getNumber: function(){ return 0; } }; },
+      engine: function() { return { startScope: function(){}, endScope: function(){} }; },
+      variable: function(t) {
+        var v = t;
+        v.assign = function() {};
+        return v;
+      },
+      grad: function(fn) { return function(x) { return _tf.zerosLike(x); }; },
+      grads: function(fn) { return function() { return { value: _tf.scalar(0), grads: [] }; }; },
+      valueAndGrad: function(fn) { return function(x) { return { value: _tf.scalar(0), grad: _tf.zerosLike(x) }; }; },
+      zerosLike: function(x) { return _tf.zeros(x.shape); },
+      onesLike: function(x) { return _tf.ones(x.shape); },
+      // Losses namespace used by reconstruction-error, etc.
+      losses: {
+        meanSquaredError: function(a, b) {
+          var ad = Array.from(a.dataSync()), bd = Array.from(b.dataSync());
+          var s = 0;
+          for (var i = 0; i < ad.length; i++) s += (ad[i] - bd[i]) * (ad[i] - bd[i]);
+          return _tf.scalar(s / ad.length);
+        },
+        absoluteDifference: function(a, b) {
+          var ad = Array.from(a.dataSync()), bd = Array.from(b.dataSync());
+          var s = 0;
+          for (var i = 0; i < ad.length; i++) s += Math.abs(ad[i] - bd[i]);
+          return _tf.scalar(s / ad.length);
+        },
+      },
+      // Model I/O.
+      loadLayersModel: function() { return Promise.resolve(_layersModelStub()); },
+      loadGraphModel: function() { return Promise.resolve(_layersModelStub()); },
+      io: {
+        browserHTTPRequest: function() { return {}; },
+        withSaveHandler: function() { return {}; },
+      },
+      // Functional API: tf.input() + tf.model().
+      input: function(config) {
+        var shape = config && config.shape ? config.shape : [null];
+        return _makeSymbolic([null].concat(shape || []));
+      },
+      model: function(config) {
+        return _layersModelStub(config);
+      },
+      sequential: function(config) {
+        var layers = (config && config.layers) ? config.layers.slice() : [];
+        var m = {
           add: function(layer) { layers.push(layer); },
-          compile: function() {},
-          fit: function(x,y,opts) { return Promise.resolve({ history: { loss: [0.5, 0.3, 0.1] } }); },
+          compile: function(opts) { m._compiled = opts || {}; },
+          fit: function(x,y,opts) { return Promise.resolve({ history: { loss: [0.5, 0.3, 0.1], acc: [0.5, 0.7, 0.9], accuracy: [0.5, 0.7, 0.9] } }); },
+          evaluate: function() { return [_tf.scalar(0.1), _tf.scalar(0.9)]; },
           predict: function(x) {
-            var batchSize = x.shape[0];
+            var batchSize = (x && x.shape) ? x.shape[0] : 1;
             var lastUnits = layers.length > 0 && layers[layers.length-1].units ? layers[layers.length-1].units : 1;
             return _tf.zeros([batchSize, lastUnits]);
           },
           summary: function() {},
+          save: function() { return Promise.resolve({ modelArtifactsInfo: {} }); },
+          getWeights: function() { return []; },
+          setWeights: function() {},
           layers: layers,
+          inputs: [{ shape: [null].concat(layers[0] && layers[0].inputShape ? layers[0].inputShape : []) }],
+          get outputs() {
+            var last = layers[layers.length - 1];
+            return [{ shape: [null, last && last.units ? last.units : 1] }];
+          },
+          trainable: true,
+          countParams: function() {
+            var total = 0;
+            for (var i = 0; i < layers.length; i++) total += (layers[i].units || 0);
+            return total;
+          },
         };
+        return m;
       },
       layers: {
-        dense: function(config) { return { units: config.units, activation: config.activation || 'linear', type: 'dense' }; },
-        dropout: function(config) { return { rate: config.rate, type: 'dropout' }; },
-        flatten: function() { return { type: 'flatten' }; },
+        dense: _layerFactory('dense', ['units', 'activation', 'useBias', 'kernelInitializer', 'inputShape', 'name']),
+        dropout: _layerFactory('dropout', ['rate', 'name']),
+        flatten: _layerFactory('flatten', ['name']),
+        reshape: _layerFactory('reshape', ['targetShape', 'name']),
+        activation: _layerFactory('activation', ['activation', 'name']),
+        embedding: _layerFactory('embedding', ['inputDim', 'outputDim', 'inputLength', 'name']),
+        conv1d: _layerFactory('conv1d', ['filters', 'kernelSize', 'strides', 'padding', 'activation', 'inputShape', 'name']),
+        conv2d: _layerFactory('conv2d', ['filters', 'kernelSize', 'strides', 'padding', 'activation', 'inputShape', 'name']),
+        conv2dTranspose: _layerFactory('conv2dTranspose', ['filters', 'kernelSize', 'strides', 'padding', 'activation', 'inputShape', 'name']),
+        separableConv2d: _layerFactory('separableConv2d', ['filters', 'kernelSize', 'strides', 'padding', 'activation', 'name']),
+        depthwiseConv2d: _layerFactory('depthwiseConv2d', ['kernelSize', 'strides', 'padding', 'activation', 'name']),
+        maxPooling2d: _layerFactory('maxPooling2d', ['poolSize', 'strides', 'name']),
+        averagePooling2d: _layerFactory('averagePooling2d', ['poolSize', 'strides', 'name']),
+        globalAveragePooling1d: _layerFactory('globalAveragePooling1d', ['name']),
+        globalAveragePooling2d: _layerFactory('globalAveragePooling2d', ['name']),
+        globalMaxPooling1d: _layerFactory('globalMaxPooling1d', ['name']),
+        globalMaxPooling2d: _layerFactory('globalMaxPooling2d', ['name']),
+        upSampling2d: _layerFactory('upSampling2d', ['size', 'name']),
+        batchNormalization: _layerFactory('batchNormalization', ['axis', 'momentum', 'epsilon', 'name']),
+        layerNormalization: _layerFactory('layerNormalization', ['axis', 'epsilon', 'name']),
+        leakyReLU: _layerFactory('leakyReLU', ['alpha', 'name']),
+        reLU: _layerFactory('reLU', ['maxValue', 'name']),
+        prelu: _layerFactory('prelu', ['name']),
+        elu: _layerFactory('elu', ['alpha', 'name']),
+        simpleRNN: _layerFactory('simpleRNN', ['units', 'returnSequences', 'activation', 'name']),
+        lstm: _layerFactory('lstm', ['units', 'returnSequences', 'returnState', 'activation', 'recurrentActivation', 'name']),
+        gru: _layerFactory('gru', ['units', 'returnSequences', 'activation', 'name']),
+        bidirectional: _layerFactory('bidirectional', ['layer', 'mergeMode', 'name']),
+        timeDistributed: _layerFactory('timeDistributed', ['layer', 'name']),
+        concatenate: _layerFactory('concatenate', ['axis', 'name']),
+        add: _layerFactory('add', ['name']),
+        multiply: _layerFactory('multiply', ['name']),
+        average: _layerFactory('average', ['name']),
+        dot: _layerFactory('dot', ['axes', 'name']),
+        masking: _layerFactory('masking', ['maskValue', 'name']),
+        spatialDropout1d: _layerFactory('spatialDropout1d', ['rate', 'name']),
+      },
+      initializers: {
+        glorotUniform: function() { return 'glorot_uniform'; },
+        glorotNormal: function() { return 'glorot_normal'; },
+        heNormal: function() { return 'he_normal'; },
+        heUniform: function() { return 'he_uniform'; },
+        randomNormal: function() { return 'random_normal'; },
+        zeros: function() { return 'zeros'; },
+        ones: function() { return 'ones'; },
+      },
+      train: {
+        adam: function() { return { applyGradients: function(){} }; },
+        sgd: function() { return { applyGradients: function(){} }; },
+        rmsprop: function() { return { applyGradients: function(){} }; },
+        adagrad: function() { return { applyGradients: function(){} }; },
+      },
+      regularizers: {
+        l1: function() { return {}; },
+        l2: function() { return {}; },
+        l1l2: function() { return {}; },
       },
     };
+
+    function _layerFactory(type, keys) {
+      return function(config) {
+        config = config || {};
+        var layer = { type: type };
+        for (var i = 0; i < keys.length; i++) {
+          if (config[keys[i]] !== undefined) layer[keys[i]] = config[keys[i]];
+        }
+        layer.apply = function(input) {
+          // Return a symbolic tensor with whatever output shape we can guess.
+          if (input && input.shape) {
+            var shape = input.shape.slice();
+            if (config.units) shape[shape.length - 1] = config.units;
+            return _makeSymbolic(shape);
+          }
+          return _makeSymbolic([null, config.units || 1]);
+        };
+        layer.getClassName = function() {
+          // Mirror TF.js class names used by tests (capitalized type).
+          var map = { dense: 'Dense', dropout: 'Dropout', flatten: 'Flatten', embedding: 'Embedding', conv2d: 'Conv2D', lstm: 'LSTM', gru: 'GRU', simpleRNN: 'SimpleRNN' };
+          return map[type] || (type.charAt(0).toUpperCase() + type.slice(1));
+        };
+        layer.getConfig = function() { return Object.assign({}, config); };
+        layer.trainable = true;
+        layer.inputSpec = [{ shape: [null].concat(config.inputShape || []) }];
+        return layer;
+      };
+    }
+
+    function _makeSymbolic(shape) {
+      return {
+        shape: shape,
+        _isSymbolic: true,
+        // Allow chained .apply() returns to be treated as layer inputs too.
+      };
+    }
+
+    function _layersModelStub(config) {
+      var inputs = (config && config.inputs) ? (Array.isArray(config.inputs) ? config.inputs : [config.inputs]) : [{ shape: [null, 1] }];
+      var outputs = (config && config.outputs) ? (Array.isArray(config.outputs) ? config.outputs : [config.outputs]) : [{ shape: [null, 1] }];
+      return {
+        layers: [],
+        inputs: inputs,
+        outputs: outputs,
+        compile: function() {},
+        fit: function() { return Promise.resolve({ history: { loss: [0.5, 0.3, 0.1], acc: [0.5, 0.7, 0.9] } }); },
+        evaluate: function() { return [_tf.scalar(0.1), _tf.scalar(0.9)]; },
+        predict: function(x) {
+          var batchSize = (x && x.shape) ? x.shape[0] : 1;
+          var outShape = outputs[0].shape.slice();
+          outShape[0] = batchSize;
+          return _tf.zeros(outShape.map(function(v){return v == null ? 1 : v;}));
+        },
+        summary: function() {},
+        save: function() { return Promise.resolve({ modelArtifactsInfo: {} }); },
+        getWeights: function() { return []; },
+        setWeights: function() {},
+        countParams: function() { return 0; },
+        trainable: true,
+      };
+    }
     return _tf;
   })();
 `;
@@ -541,10 +1175,48 @@ async function runSolutionTests(userCode, testCode) {
     Boolean,
     Error,
     Promise,
+    Symbol,
+    Map,
+    Set,
+    WeakMap,
+    WeakSet,
+    RegExp,
+    Date,
     setTimeout,
+    clearTimeout,
+    setInterval,
+    clearInterval,
+    queueMicrotask,
     Float32Array,
+    Float64Array,
+    Int8Array,
+    Int16Array,
     Int32Array,
     Uint8Array,
+    Uint8ClampedArray,
+    Uint16Array,
+    Uint32Array,
+    ArrayBuffer,
+    DataView,
+    performance: { now: () => Date.now() },
+    navigator: { gpu: undefined, userAgent: 'validator', hardwareConcurrency: 4 },
+    process: { env: {}, hrtime: () => [0, 0] },
+    URL,
+    URLSearchParams,
+    TextEncoder,
+    TextDecoder,
+    atob: typeof atob !== 'undefined' ? atob : (s) => Buffer.from(s, 'base64').toString('binary'),
+    btoa: typeof btoa !== 'undefined' ? btoa : (s) => Buffer.from(s, 'binary').toString('base64'),
+    fetch: () => Promise.resolve({ ok: true, json: () => Promise.resolve({}), text: () => Promise.resolve(''), arrayBuffer: () => Promise.resolve(new ArrayBuffer(0)) }),
+    // ONNX runtime-web shim.
+    ort: {
+      InferenceSession: {
+        create: () => Promise.resolve({
+          run: () => Promise.resolve({ output: { data: new Float32Array([0.5]) } }),
+        }),
+      },
+      Tensor: function(type, data, dims) { this.type = type; this.data = data; this.dims = dims; },
+    },
   };
   vm.createContext(context);
 

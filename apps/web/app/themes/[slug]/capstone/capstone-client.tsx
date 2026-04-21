@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { getApiUrl } from "@/lib/api-url";
+import { EVENTS, track } from "@/lib/analytics-events";
 
 function DashboardButton({ primary, bg }: { primary: string; bg: string }) {
   const [hov, setHov] = useState(false);
@@ -32,7 +33,15 @@ function DashboardButton({ primary, bg }: { primary: string; bg: string }) {
   );
 }
 
-function ShareButton({ border, text }: { border: string; text: string }) {
+function ShareButton({
+  border,
+  text,
+  themeSlug,
+}: {
+  border: string;
+  text: string;
+  themeSlug?: string;
+}) {
   const [hov, setHov] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -40,6 +49,11 @@ function ShareButton({ border, text }: { border: string; text: string }) {
     try {
       await navigator.clipboard.writeText(window.location.href);
       setCopied(true);
+      // Fire progress_shared — user copied the capstone URL (not a cert-specific link).
+      track(EVENTS.PROGRESS_SHARED, {
+        platform: "copy",
+        ...(themeSlug ? { themeId: themeSlug } : {}),
+      });
       setTimeout(() => setCopied(false), 2000);
     } catch {
       // Fallback: do nothing
@@ -190,6 +204,11 @@ function CertificateCard({
       const shareUrl = `${window.location.origin}/certificates/${cert.id}`;
       await navigator.clipboard.writeText(shareUrl);
       setShareCopied(true);
+      // Fire progress_shared — user copied a certificate share link.
+      track(EVENTS.PROGRESS_SHARED, {
+        platform: "copy",
+        themeId: themeSlug,
+      });
       setTimeout(() => setShareCopied(false), 2000);
     } catch {
       // noop

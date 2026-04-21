@@ -2,9 +2,11 @@
  * Error tracking utility — structured error logging.
  *
  * Drop-in compatible with Sentry's captureException API shape.
- * When ready to integrate Sentry, replace the console calls with
+ * When ready to integrate Sentry, replace the logger calls with
  * Sentry.captureException / Sentry.captureMessage.
  */
+
+import { logger } from "./logger";
 
 interface ErrorContext {
   /** Where the error occurred (e.g. "payments.webhook", "progress.update") */
@@ -19,14 +21,15 @@ export function captureException(error: unknown, context: ErrorContext): void {
   const timestamp = new Date().toISOString();
   const err = error instanceof Error ? error : new Error(String(error));
 
-  console.error(
-    JSON.stringify({
+  logger.error(
+    {
       level: "error",
       timestamp,
-      message: err.message,
       stack: err.stack,
+      err,
       ...context,
-    }),
+    },
+    err.message,
   );
 }
 
@@ -37,18 +40,17 @@ export function captureMessage(
 ): void {
   const timestamp = new Date().toISOString();
 
-  const payload = JSON.stringify({
+  const payload = {
     level,
     timestamp,
-    message,
     ...context,
-  });
+  };
 
   if (level === "error") {
-    console.error(payload);
+    logger.error(payload, message);
   } else if (level === "warning") {
-    console.warn(payload);
+    logger.warn(payload, message);
   } else {
-    console.log(payload);
+    logger.info(payload, message);
   }
 }

@@ -11,6 +11,8 @@
  * All external credentials live in env vars — see `.env.example`.
  */
 
+import { logger } from "./logger";
+
 const GITHUB_API = "https://api.github.com";
 const GITHUB_OAUTH_AUTHORIZE = "https://github.com/login/oauth/authorize";
 const GITHUB_OAUTH_TOKEN = "https://github.com/login/oauth/access_token";
@@ -557,7 +559,17 @@ export async function commitLessonArtifact(params: {
       );
     } catch (err) {
       // Progress-file updates are best-effort — never block the artifact commit.
-      console.warn("Failed to update PROGRESS.md:", err);
+      logger.warn(
+        {
+          err,
+          source: "github.commitLessonArtifact",
+          themeSlug,
+          moduleId,
+          lessonId,
+          githubRepo: repoName,
+        },
+        "Failed to update PROGRESS.md",
+      );
     }
   }
 

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { AmbientBackground } from "@/app/components/ambient-background";
+import { PaywallAnalytics, PaywallCtaTracker } from "./paywall-analytics";
 
 /**
  * Dedicated paywall / upsell page — Phase 11 §11d Wave 3.
@@ -105,6 +106,7 @@ function renderPaidCell(value: ComparisonRow["paid"]) {
 export default function PaywallPage() {
   return (
     <main className="min-h-screen bg-page relative overflow-hidden">
+      <PaywallAnalytics />
       <AmbientBackground count={180} />
       <div className="absolute inset-0 grid-bg pointer-events-none z-0" />
       <div className="relative z-10">
@@ -125,13 +127,15 @@ export default function PaywallPage() {
             learning, and a capstone you run in production.
           </p>
           <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Link
-              href="/pricing"
-              data-testid="paywall-primary-cta"
-              className="inline-flex items-center font-mono px-8 py-4 text-sm font-medium uppercase tracking-wider transition-all bg-primary text-page border border-primary rounded-none hover:brutalist-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 brutalist-hover"
-            >
-              See Plans &rarr;
-            </Link>
+            <PaywallCtaTracker>
+              <Link
+                href="/pricing"
+                data-testid="paywall-primary-cta"
+                className="inline-flex items-center font-mono px-8 py-4 text-sm font-medium uppercase tracking-wider transition-all bg-primary text-page border border-primary rounded-none hover:brutalist-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 brutalist-hover"
+              >
+                See Plans &rarr;
+              </Link>
+            </PaywallCtaTracker>
             <Link
               href="/themes/deep-orbit"
               className="inline-flex items-center font-mono px-8 py-4 text-sm font-medium uppercase tracking-wider text-text-primary border border-border rounded-none hover:border-primary focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 transition-colors"
@@ -275,13 +279,15 @@ export default function PaywallPage() {
             Single theme, a bundle, or all five &mdash; no subscriptions, no
             expiring access.
           </p>
-          <Link
-            href="/pricing"
-            data-testid="paywall-footer-cta"
-            className="inline-flex items-center font-mono px-8 py-4 text-sm font-medium uppercase tracking-wider transition-all bg-primary text-page border border-primary rounded-none hover:brutalist-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 brutalist-hover"
-          >
-            See Plans &rarr;
-          </Link>
+          <PaywallCtaTracker>
+            <Link
+              href="/pricing"
+              data-testid="paywall-footer-cta"
+              className="inline-flex items-center font-mono px-8 py-4 text-sm font-medium uppercase tracking-wider transition-all bg-primary text-page border border-primary rounded-none hover:brutalist-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 brutalist-hover"
+            >
+              See Plans &rarr;
+            </Link>
+          </PaywallCtaTracker>
         </section>
       </div>
     </main>

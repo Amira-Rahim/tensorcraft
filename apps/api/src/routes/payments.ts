@@ -239,7 +239,10 @@ payments.post("/webhook", async (c) => {
 
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
   if (!webhookSecret) {
-    console.error("STRIPE_WEBHOOK_SECRET not configured");
+    logger.error(
+      { route: "payments.webhook" },
+      "STRIPE_WEBHOOK_SECRET not configured",
+    );
     return c.json(
       {
         error: "Webhook not configured",
@@ -258,12 +261,16 @@ payments.post("/webhook", async (c) => {
     event = stripe.webhooks.constructEvent(rawBody, signature, webhookSecret);
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
-    console.error("Webhook signature verification failed:", {
-      error: message,
-      timestamp: new Date().toISOString(),
-      hasSignature: !!signature,
-      bodyLength: rawBody.length,
-    });
+    logger.error(
+      {
+        err,
+        route: "payments.webhook",
+        message,
+        hasSignature: !!signature,
+        bodyLength: rawBody.length,
+      },
+      "Webhook signature verification failed",
+    );
     return c.json({ error: "Invalid signature" }, 400);
   }
 
@@ -280,7 +287,10 @@ payments.post("/webhook", async (c) => {
       const metadata = session.metadata;
 
       if (!userId || !sessionId) {
-        console.error("Webhook: Missing client_reference_id or session id");
+        logger.error(
+          { route: "payments.webhook", eventType: event.type },
+          "Webhook: Missing client_reference_id or session id",
+        );
         return c.json(
           { error: "Missing client_reference_id or session id" },
           500,
@@ -288,7 +298,15 @@ payments.post("/webhook", async (c) => {
       }
 
       if (!metadata?.planId) {
-        console.error("Webhook: Missing planId in metadata");
+        logger.error(
+          {
+            route: "payments.webhook",
+            eventType: event.type,
+            userId,
+            stripeSessionId: sessionId,
+          },
+          "Webhook: Missing planId in metadata",
+        );
         return c.json({ error: "Missing planId in metadata" }, 500);
       }
 
@@ -300,14 +318,30 @@ payments.post("/webhook", async (c) => {
       // Empty array is rejected — every paid purchase must grant at
       // least one theme (§6h referential integrity).
       if (!validateThemeIds(themeIds)) {
-        console.error("Webhook: Invalid theme IDs in metadata:", themeIds);
+        logger.error(
+          {
+            route: "payments.webhook",
+            userId,
+            stripeSessionId: sessionId,
+            themeIds,
+          },
+          "Webhook: Invalid theme IDs in metadata",
+        );
         return c.json({ error: "Webhook: Invalid theme IDs in metadata" }, 400);
       }
 
       // Validate amount matches known price points
       const plan = PRICING[metadata.planId as keyof typeof PRICING];
       if (!plan || metadata.planId === "free") {
-        console.error("Webhook: Invalid planId:", metadata.planId);
+        logger.error(
+          {
+            route: "payments.webhook",
+            userId,
+            stripeSessionId: sessionId,
+            planId: metadata.planId,
+          },
+          "Webhook: Invalid planId",
+        );
         return c.json({ error: "Webhook: Invalid planId in metadata" }, 400);
       }
 
@@ -316,7 +350,10 @@ payments.post("/webhook", async (c) => {
 
       // Validate Stripe session ID format
       if (!sessionId.startsWith("cs_test_") && !sessionId.startsWith("cs_")) {
-        console.error("Webhook: Invalid stripe_session_id format:", sessionId);
+        logger.error(
+          { route: "payments.webhook", userId, stripeSessionId: sessionId },
+          "Webhook: Invalid stripe_session_id format",
+        );
         return c.json({ error: "Webhook: Invalid session ID format" }, 400);
       }
 
@@ -353,9 +390,14 @@ payments.post("/webhook", async (c) => {
 
       if (existingRow && TERMINAL_STATUSES.has(existingRow.status)) {
         // Already settled in a terminal state — do not regress.
-        console.info(
+        logger.info(
+          {
+            route: "payments.webhook",
+            userId,
+            stripeSessionId: sessionId,
+            status: existingRow.status,
+          },
           "Webhook: skipping upsert — row already in terminal status",
-          { sessionId, status: existingRow.status },
         );
         break;
       }
@@ -374,7 +416,16 @@ payments.post("/webhook", async (c) => {
       );
 
       if (upsertError) {
-        console.error("Webhook: Failed to upsert purchase:", upsertError);
+        logger.error(
+          {
+            err: upsertError,
+            route: "payments.webhook",
+            userId,
+            stripeSessionId: sessionId,
+            planId: metadata.planId,
+          },
+          "Webhook: Failed to upsert purchase",
+        );
         return c.json({ error: "Database error" }, 500);
       }
 
@@ -408,9 +459,14 @@ payments.post("/webhook", async (c) => {
           }
         }
       } catch (emailErr) {
-        console.warn(
-          "Kit email failed (non-blocking):",
-          emailErr instanceof Error ? emailErr.message : emailErr,
+        logger.warn(
+          {
+            err: emailErr,
+            route: "payments.webhook",
+            userId,
+            stripeSessionId: sessionId,
+          },
+          "Kit email failed (non-blocking)",
         );
       }
 
@@ -435,9 +491,14 @@ payments.post("/webhook", async (c) => {
           .eq("stripe_payment_intent", refundPaymentIntent);
 
         if (refundError) {
-          console.error(
-            "Webhook: Failed to update refund status:",
-            refundError,
+          logger.error(
+            {
+              err: refundError,
+              route: "payments.webhook",
+              eventType: event.type,
+              paymentIntent: refundPaymentIntent,
+            },
+            "Webhook: Failed to update refund status",
           );
           return c.json({ error: "Database error" }, 500);
         }
@@ -478,9 +539,14 @@ payments.post("/webhook", async (c) => {
           .eq("stripe_payment_intent", disputePaymentIntent);
 
         if (disputeError) {
-          console.error(
-            "Webhook: Failed to update dispute status:",
-            disputeError,
+          logger.error(
+            {
+              err: disputeError,
+              route: "payments.webhook",
+              eventType: event.type,
+              paymentIntent: disputePaymentIntent,
+            },
+            "Webhook: Failed to update dispute status",
           );
           return c.json({ error: "Database error" }, 500);
         }
@@ -534,9 +600,15 @@ payments.post("/webhook", async (c) => {
             );
           }
         } else if (asyncPlan) {
-          console.error(
-            "Webhook async: invalid theme IDs in metadata:",
-            asyncThemeIds,
+          logger.error(
+            {
+              route: "payments.webhook",
+              eventType: event.type,
+              userId: asyncUserId,
+              stripeSessionId: asyncSession.id,
+              themeIds: asyncThemeIds,
+            },
+            "Webhook async: invalid theme IDs in metadata",
           );
         }
       }
@@ -546,10 +618,15 @@ payments.post("/webhook", async (c) => {
 
     case "checkout.session.async_payment_failed": {
       const failedSession = event.data.object as Stripe.Checkout.Session;
-      console.warn("Async payment failed:", {
-        sessionId: failedSession.id,
-        userId: failedSession.client_reference_id,
-      });
+      logger.warn(
+        {
+          route: "payments.webhook",
+          eventType: event.type,
+          stripeSessionId: failedSession.id,
+          userId: failedSession.client_reference_id,
+        },
+        "Async payment failed",
+      );
       if (failedSession.client_reference_id) {
         captureServer(
           SERVER_EVENTS.PAYMENT_FAILED,

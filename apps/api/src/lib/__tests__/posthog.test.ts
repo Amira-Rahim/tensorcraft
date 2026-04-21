@@ -69,4 +69,30 @@ describe("api/lib/posthog", () => {
       expect(name, name).toMatch(SNAKE);
     }
   });
+
+  it("captureServer forwards code_pushed with expected shape", () => {
+    vi.stubEnv("POSTHOG_KEY", "phc_server");
+
+    captureServer(
+      SERVER_EVENTS.CODE_PUSHED,
+      {
+        themeId: "deep-orbit",
+        lessonId: "intro-tensors",
+        exerciseSlug: "intro-tensors",
+        commitSha: "abc1234",
+      },
+      "user-77",
+    );
+
+    expect(captureMock).toHaveBeenCalledWith({
+      distinctId: "user-77",
+      event: "code_pushed",
+      properties: {
+        themeId: "deep-orbit",
+        lessonId: "intro-tensors",
+        exerciseSlug: "intro-tensors",
+        commitSha: "abc1234",
+      },
+    });
+  });
 });

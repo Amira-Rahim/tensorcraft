@@ -52,7 +52,7 @@ export function ThemeCardsGrid({ cards }: ThemeCardsGridProps) {
             <Link
               href={`/themes/${card.slug}`}
               aria-label={`${card.displayName} — ${card.tagline}`}
-              className="group relative block h-full border-2 border-border bg-surface-raised rounded-none overflow-hidden brutalist-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+              className="group relative flex flex-col h-full border-2 border-border bg-surface-raised rounded-none overflow-hidden brutalist-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
               style={
                 {
                   ["--tc-primary" as string]: card.primary,
@@ -88,7 +88,7 @@ export function ThemeCardsGrid({ cards }: ThemeCardsGridProps) {
               </div>
 
               {/* Body */}
-              <div className="relative z-10 px-4 py-5 flex flex-col h-full">
+              <div className="relative z-10 px-4 py-5 flex flex-col flex-1">
                 <h2
                   className="text-xl font-mono font-bold mb-2 tracking-tight"
                   style={{ color: card.primary }}

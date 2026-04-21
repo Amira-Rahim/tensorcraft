@@ -175,12 +175,16 @@ export interface EventProperties {
     themeId?: string;
   };
   [EVENTS.SESSION_STARTED]: {
-    /** Optional — may be absent on anonymous sessions. */
+    /** Client-generated correlation id shared with the matching session_ended. */
+    sessionId: string;
+    /** Optional — absent on anonymous sessions. */
     userId?: string;
   };
   [EVENTS.SESSION_ENDED]: {
+    sessionId: string;
+    /** Wall-clock duration from mount to end event, in milliseconds. */
+    durationMs: number;
     userId?: string;
-    durationMs?: number;
   };
   [EVENTS.STREAK_ACHIEVED]: {
     streakDays: number;

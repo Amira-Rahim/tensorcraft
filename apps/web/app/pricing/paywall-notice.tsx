@@ -1,7 +1,9 @@
 "use client";
 
+import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { themes, themeSlugs } from "@tensorcraft/themes";
+import { EVENTS, track } from "@/lib/analytics-events";
 
 /**
  * Banner shown on /pricing when a user was redirected here from a
@@ -11,13 +13,27 @@ import { themes, themeSlugs } from "@tensorcraft/themes";
  *
  * Renders nothing when `locked` is absent or not a canonical slug —
  * we never want to render a banner for an arbitrary user-supplied value.
+ *
+ * Fires `upgrade_cta_shown` (source=`paywall`) on mount when the banner is
+ * rendered. The click-through CTA itself is the plan picker below; that
+ * button fires `upgrade_cta_clicked` when the user engages.
  */
 export function PaywallNotice() {
   const searchParams = useSearchParams();
   const locked = searchParams.get("locked");
+  const isValidLocked =
+    !!locked && (themeSlugs as readonly string[]).includes(locked);
+
+  useEffect(() => {
+    if (!isValidLocked) return;
+    track(EVENTS.UPGRADE_CTA_SHOWN, {
+      source: "paywall",
+      themeId: locked ?? undefined,
+    });
+  }, [isValidLocked, locked]);
 
   if (!locked) return null;
-  if (!(themeSlugs as readonly string[]).includes(locked)) return null;
+  if (!isValidLocked) return null;
 
   const displayName = themes[locked as keyof typeof themes].displayName;
 

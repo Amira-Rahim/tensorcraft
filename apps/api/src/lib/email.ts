@@ -1,6 +1,7 @@
 // apps/api/src/lib/email.ts
 import { Resend } from "resend";
 import { captureException } from "./error-tracking";
+import { logger } from "./logger";
 
 let resend: Resend | null = null;
 
@@ -28,7 +29,10 @@ export async function sendIssueNotification(
   const client = getResend();
   const to = process.env.SUPPORT_EMAIL || "support@tensorcraft.app";
   if (!client) {
-    console.warn("Resend not configured — skipping issue notification email");
+    logger.warn(
+      { source: "email.sendIssueNotification", issueId: params.id },
+      "Resend not configured — skipping issue notification email",
+    );
     return;
   }
 

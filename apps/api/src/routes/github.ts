@@ -15,6 +15,8 @@ import {
   pushFile,
   revokeUserToken,
 } from "../lib/github";
+import { logger } from "../lib/logger";
+import { captureServer, SERVER_EVENTS } from "../lib/posthog";
 
 const github = new Hono<AppEnv>();
 
@@ -208,7 +210,10 @@ github.get("/callback", async (c) => {
       .eq("id", userId);
 
     if (dbError) {
-      console.error("Failed to persist GitHub token (callback):", dbError);
+      logger.error(
+        { err: dbError, route: "github.callback", userId },
+        "Failed to persist GitHub token (callback)",
+      );
       return c.json(
         structuredError("internal_error", "Failed to store GitHub token"),
         500,
@@ -259,7 +264,10 @@ github.post("/disconnect", async (c) => {
         accessToken: token,
       });
     } catch (err) {
-      console.warn("Token revocation failed (continuing to clear DB):", err);
+      logger.warn(
+        { err, route: "github.disconnect", userId },
+        "Token revocation failed (continuing to clear DB)",
+      );
     }
   }
 
@@ -377,15 +385,35 @@ github.post("/commit", async (c) => {
       readmeDelta,
     });
 
+    // Authoritative engagement event — fires only on a confirmed GitHub push.
+    // Matches the server-side pattern used for payment_completed (§6i).
+    captureServer(
+      SERVER_EVENTS.CODE_PUSHED,
+      {
+        themeId,
+        lessonId,
+        // No explicit exerciseSlug on this endpoint; the artifact is stored at
+        // `${moduleId}/${lessonId}` so lessonId doubles as the exercise id.
+        exerciseSlug: lessonId,
+        commitSha: result.commitSha,
+      },
+      userId,
+    );
+
     return c.json({ success: true, ...result });
   } catch (err) {
     const mapped = mapGitHubError(err);
-    console.error("GitHub commit failed:", {
-      userId,
-      themeId,
-      lessonId,
-      status: mapped.status,
-    });
+    logger.error(
+      {
+        err,
+        route: "github.commit",
+        userId,
+        themeId,
+        lessonId,
+        status: mapped.status,
+      },
+      "GitHub commit failed",
+    );
     return c.json(mapped.body, mapped.status);
   }
 });
@@ -549,6 +577,16 @@ github.post("/retroactive-push", async (c) => {
       });
       pushed++;
       results.push({ lessonId, status: "pushed", ...res });
+      captureServer(
+        SERVER_EVENTS.CODE_PUSHED,
+        {
+          themeId: body.themeId,
+          lessonId,
+          exerciseSlug: lessonId,
+          commitSha: res.commitSha,
+        },
+        userId,
+      );
     } catch (err) {
       failed++;
       const mapped = mapGitHubError(err);
@@ -616,7 +654,10 @@ github.post("/token", async (c) => {
     .eq("id", userId);
 
   if (error) {
-    console.error("Failed to persist GitHub token:", error);
+    logger.error(
+      { err: error, route: "github.token", userId },
+      "Failed to persist GitHub token",
+    );
     return c.json({ error: "Failed to store GitHub token" }, 500);
   }
 
@@ -715,7 +756,10 @@ github.post("/push", async (c) => {
       const mapped = mapGitHubError(err);
       return c.json(mapped.body, mapped.status);
     }
-    console.error("GitHub push failed:", err);
+    logger.error(
+      { err, route: "github.push", userId, themeId, moduleId, exerciseSlug },
+      "GitHub push failed",
+    );
     return c.json(
       {
         error: "Failed to push code to GitHub",

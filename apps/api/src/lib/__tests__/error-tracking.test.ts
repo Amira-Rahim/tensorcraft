@@ -1,17 +1,28 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
+
+// Mock the logger BEFORE importing the module under test so error-tracking
+// picks up the spied instance via module-mock resolution.
+vi.mock("../logger", () => ({
+  logger: {
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+  },
+}));
+
 import { captureException, captureMessage } from "../error-tracking";
+import { logger } from "../logger";
 
 describe("error-tracking", () => {
   beforeEach(() => {
-    vi.restoreAllMocks();
+    vi.mocked(logger.info).mockReset();
+    vi.mocked(logger.warn).mockReset();
+    vi.mocked(logger.error).mockReset();
   });
 
   describe("captureException", () => {
     it("logs error with correct format", () => {
-      const consoleSpy = vi
-        .spyOn(console, "error")
-        .mockImplementation(() => {});
-
       const error = new Error("Something broke");
       captureException(error, {
         source: "payments.webhook",
@@ -19,75 +30,84 @@ describe("error-tracking", () => {
         extra: { orderId: "order_456" },
       });
 
-      expect(consoleSpy).toHaveBeenCalledOnce();
+      expect(logger.error).toHaveBeenCalledOnce();
 
-      const logged = JSON.parse(consoleSpy.mock.calls[0][0] as string);
-      expect(logged.level).toBe("error");
-      expect(logged.message).toBe("Something broke");
-      expect(logged.source).toBe("payments.webhook");
-      expect(logged.userId).toBe("user_123");
-      expect(logged.extra.orderId).toBe("order_456");
-      expect(logged.timestamp).toBeDefined();
-      expect(logged.stack).toBeDefined();
+      const [context, message] = vi.mocked(logger.error).mock.calls[0] as [
+        Record<string, unknown>,
+        string,
+      ];
+      expect(message).toBe("Something broke");
+      expect(context.level).toBe("error");
+      expect(context.source).toBe("payments.webhook");
+      expect(context.userId).toBe("user_123");
+      expect((context.extra as { orderId: string }).orderId).toBe("order_456");
+      expect(context.timestamp).toBeDefined();
+      expect(context.stack).toBeDefined();
     });
 
     it("handles non-Error objects", () => {
-      const consoleSpy = vi
-        .spyOn(console, "error")
-        .mockImplementation(() => {});
-
       captureException("string error", { source: "test" });
 
-      const logged = JSON.parse(consoleSpy.mock.calls[0][0] as string);
-      expect(logged.message).toBe("string error");
+      const [, message] = vi.mocked(logger.error).mock.calls[0] as [
+        Record<string, unknown>,
+        string,
+      ];
+      expect(message).toBe("string error");
     });
   });
 
   describe("captureMessage", () => {
-    it("logs info message with console.log", () => {
-      const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
-
+    it("logs info message via logger.info", () => {
       captureMessage("User signed up", { source: "auth.signup" }, "info");
 
-      expect(logSpy).toHaveBeenCalledOnce();
+      expect(logger.info).toHaveBeenCalledOnce();
 
-      const logged = JSON.parse(logSpy.mock.calls[0][0] as string);
-      expect(logged.level).toBe("info");
-      expect(logged.message).toBe("User signed up");
-      expect(logged.source).toBe("auth.signup");
-      expect(logged.timestamp).toBeDefined();
+      const [context, message] = vi.mocked(logger.info).mock.calls[0] as [
+        Record<string, unknown>,
+        string,
+      ];
+      expect(message).toBe("User signed up");
+      expect(context.level).toBe("info");
+      expect(context.source).toBe("auth.signup");
+      expect(context.timestamp).toBeDefined();
     });
 
-    it("uses correct console method per level", () => {
-      const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
-      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
-      const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-
+    it("uses correct logger method per level", () => {
       captureMessage("info msg", { source: "test" }, "info");
       captureMessage("warning msg", { source: "test" }, "warning");
       captureMessage("error msg", { source: "test" }, "error");
 
-      expect(logSpy).toHaveBeenCalledOnce();
-      expect(warnSpy).toHaveBeenCalledOnce();
-      expect(errorSpy).toHaveBeenCalledOnce();
+      expect(logger.info).toHaveBeenCalledOnce();
+      expect(logger.warn).toHaveBeenCalledOnce();
+      expect(logger.error).toHaveBeenCalledOnce();
 
-      const infoLog = JSON.parse(logSpy.mock.calls[0][0] as string);
-      expect(infoLog.level).toBe("info");
+      const [infoCtx] = vi.mocked(logger.info).mock.calls[0] as [
+        Record<string, unknown>,
+        string,
+      ];
+      expect(infoCtx.level).toBe("info");
 
-      const warningLog = JSON.parse(warnSpy.mock.calls[0][0] as string);
-      expect(warningLog.level).toBe("warning");
+      const [warnCtx] = vi.mocked(logger.warn).mock.calls[0] as [
+        Record<string, unknown>,
+        string,
+      ];
+      expect(warnCtx.level).toBe("warning");
 
-      const errorLog = JSON.parse(errorSpy.mock.calls[0][0] as string);
-      expect(errorLog.level).toBe("error");
+      const [errCtx] = vi.mocked(logger.error).mock.calls[0] as [
+        Record<string, unknown>,
+        string,
+      ];
+      expect(errCtx.level).toBe("error");
     });
 
     it("defaults to info level when not specified", () => {
-      const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
-
       captureMessage("default level", { source: "test" });
 
-      const logged = JSON.parse(logSpy.mock.calls[0][0] as string);
-      expect(logged.level).toBe("info");
+      const [context] = vi.mocked(logger.info).mock.calls[0] as [
+        Record<string, unknown>,
+        string,
+      ];
+      expect(context.level).toBe("info");
     });
   });
 });

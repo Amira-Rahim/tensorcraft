@@ -330,7 +330,11 @@ export default async function CapstonePage({ params }: Props) {
           the {theme.modelBuilt.split("—")[0].trim()}. You explored{" "}
           {bridgesExplored} frontend bridges to ML.
         </p>
-        <CapstoneClient.ShareButton border={P.border} text={P.text} />
+        <CapstoneClient.ShareButton
+          border={P.border}
+          text={P.text}
+          themeSlug={slug}
+        />
       </div>
 
       {/* Stats — 4-card brutalist grid */}

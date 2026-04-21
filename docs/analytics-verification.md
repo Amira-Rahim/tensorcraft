@@ -48,8 +48,12 @@ production release.
 | `payment_failed` | Server-side: Stripe `async_payment_failed` (use a test card) | `sessionId`, `reason` |
 | `payment_refunded` | Server-side: issue a refund in Stripe dashboard | `paymentIntentId`, `isFullRefund` |
 | `streak_achieved` | Complete a lesson after 24h of prior completion | `streakDays` |
-| `progress_shared` | Click any share CTA (post-V0.5) | `platform` |
-| `code_pushed` | Push an exercise to GitHub (post-V0.5) | `themeId`, `commitSha` |
+| `session_started` | App load / route into any page (fires from `AnalyticsProvider`) | `sessionId` |
+| `session_ended` | Close/hide tab or navigate away (`visibilitychange`→hidden, `beforeunload`) | `sessionId`, `durationMs` |
+| `upgrade_cta_shown` | `/pricing?locked=<slug>` banner renders, OR `/paywall` mounts | `source="paywall"`, `themeId?` |
+| `upgrade_cta_clicked` | Click "See Plans" on `/paywall` hero or footer | `source="paywall"` |
+| `progress_shared` | Capstone "Share" button OR "Share Link" on certificate card (copy to clipboard) | `platform="copy"`, `themeId` |
+| `code_pushed` | Server-side: `POST /api/github/commit` or `/retroactive-push` succeeds | `themeId`, `lessonId`, `exerciseSlug`, `commitSha` |
 
 ## Stripe server-side events
 
@@ -63,6 +67,18 @@ stripe trigger charge.refunded
 
 Confirm each event lands within ~30s under the originating user's
 `distinct_id` (not a session-level anonymous id).
+
+## GitHub server-side events
+
+`code_pushed` is emitted from the Hono API (`apps/api/src/routes/github.ts`)
+whenever `commitLessonArtifact` succeeds — same authoritative pattern as
+`payment_completed`. Verify in staging by:
+
+1. Connect GitHub from `/settings` (OAuth round-trip).
+2. `curl -X POST $API_URL/api/github/commit -H 'Authorization: Bearer <jwt>' \
+   -d '{"themeId":"deep-orbit","lessonId":"intro-tensors","code":"// noop"}'`.
+3. Confirm a `code_pushed` event appears under your Supabase `auth.users.id`
+   with `themeId`, `lessonId`, `exerciseSlug`, `commitSha`.
 
 ## Diagnosing a missing event
 

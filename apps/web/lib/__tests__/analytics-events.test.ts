@@ -34,10 +34,13 @@ describe("lib/analytics-events", () => {
     expect(EVENTS.PAYMENT_COMPLETED).toBe("payment_completed");
     expect(EVENTS.PAYMENT_FAILED).toBe("payment_failed");
     expect(EVENTS.PAYWALL_HIT).toBe("paywall_hit");
+    expect(EVENTS.UPGRADE_CTA_SHOWN).toBe("upgrade_cta_shown");
+    expect(EVENTS.UPGRADE_CTA_CLICKED).toBe("upgrade_cta_clicked");
     expect(EVENTS.CODE_PUSHED).toBe("code_pushed");
     expect(EVENTS.THEME_SELECTED).toBe("theme_selected");
     expect(EVENTS.PROGRESS_SHARED).toBe("progress_shared");
     expect(EVENTS.SESSION_STARTED).toBe("session_started");
+    expect(EVENTS.SESSION_ENDED).toBe("session_ended");
     expect(EVENTS.STREAK_ACHIEVED).toBe("streak_achieved");
   });
 
@@ -110,6 +113,75 @@ describe("lib/analytics-events", () => {
     });
     expect(posthog.capture).toHaveBeenCalledWith("hint_requested", {
       hintLevel: 2,
+    });
+  });
+
+  it("track forwards session_started + session_ended with sessionId", () => {
+    vi.stubEnv("NEXT_PUBLIC_POSTHOG_KEY", "phc_test");
+    initPostHog();
+
+    track(EVENTS.SESSION_STARTED, { sessionId: "s-123" });
+    track(EVENTS.SESSION_ENDED, { sessionId: "s-123", durationMs: 4321 });
+
+    expect(posthog.capture).toHaveBeenCalledWith("session_started", {
+      sessionId: "s-123",
+    });
+    expect(posthog.capture).toHaveBeenCalledWith("session_ended", {
+      sessionId: "s-123",
+      durationMs: 4321,
+    });
+  });
+
+  it("track forwards progress_shared with platform + themeId", () => {
+    vi.stubEnv("NEXT_PUBLIC_POSTHOG_KEY", "phc_test");
+    initPostHog();
+
+    track(EVENTS.PROGRESS_SHARED, {
+      platform: "copy",
+      themeId: "deep-orbit",
+    });
+
+    expect(posthog.capture).toHaveBeenCalledWith("progress_shared", {
+      platform: "copy",
+      themeId: "deep-orbit",
+    });
+  });
+
+  it("track forwards upgrade_cta_shown + upgrade_cta_clicked with source", () => {
+    vi.stubEnv("NEXT_PUBLIC_POSTHOG_KEY", "phc_test");
+    initPostHog();
+
+    track(EVENTS.UPGRADE_CTA_SHOWN, {
+      source: "paywall",
+      themeId: "signal-ward",
+    });
+    track(EVENTS.UPGRADE_CTA_CLICKED, { source: "paywall" });
+
+    expect(posthog.capture).toHaveBeenCalledWith("upgrade_cta_shown", {
+      source: "paywall",
+      themeId: "signal-ward",
+    });
+    expect(posthog.capture).toHaveBeenCalledWith("upgrade_cta_clicked", {
+      source: "paywall",
+    });
+  });
+
+  it("track forwards code_pushed payload verbatim", () => {
+    vi.stubEnv("NEXT_PUBLIC_POSTHOG_KEY", "phc_test");
+    initPostHog();
+
+    track(EVENTS.CODE_PUSHED, {
+      themeId: "deep-orbit",
+      lessonId: "l1",
+      exerciseSlug: "l1",
+      commitSha: "abc1234",
+    });
+
+    expect(posthog.capture).toHaveBeenCalledWith("code_pushed", {
+      themeId: "deep-orbit",
+      lessonId: "l1",
+      exerciseSlug: "l1",
+      commitSha: "abc1234",
     });
   });
 });

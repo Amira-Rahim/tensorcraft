@@ -1,6 +1,5 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { PaywallNotice } from "../paywall-notice";
 
 // Controls what useSearchParams returns for each test
 let mockLocked: string | null = null;
@@ -28,7 +27,23 @@ vi.mock("@tensorcraft/themes", () => ({
   },
 }));
 
+// Spy on analytics so we can assert the upgrade_cta_shown wire-up.
+const trackMock = vi.fn();
+vi.mock("@/lib/analytics-events", () => ({
+  track: (...args: unknown[]) => trackMock(...args),
+  EVENTS: {
+    UPGRADE_CTA_SHOWN: "upgrade_cta_shown",
+    UPGRADE_CTA_CLICKED: "upgrade_cta_clicked",
+  },
+}));
+
+import { PaywallNotice } from "../paywall-notice";
+
 describe("PaywallNotice", () => {
+  beforeEach(() => {
+    trackMock.mockClear();
+  });
+
   it("renders nothing when no ?locked param is present", () => {
     mockLocked = null;
     const { container } = render(<PaywallNotice />);
@@ -54,5 +69,20 @@ describe("PaywallNotice", () => {
     mockLocked = "signal-ward";
     render(<PaywallNotice />);
     expect(screen.getByText(/Pick a plan below/i)).toBeInTheDocument();
+  });
+
+  it("fires upgrade_cta_shown on mount when the banner renders for a known slug", () => {
+    mockLocked = "nova-canvas";
+    render(<PaywallNotice />);
+    expect(trackMock).toHaveBeenCalledWith("upgrade_cta_shown", {
+      source: "paywall",
+      themeId: "nova-canvas",
+    });
+  });
+
+  it("does not fire upgrade_cta_shown when the banner is suppressed", () => {
+    mockLocked = null;
+    render(<PaywallNotice />);
+    expect(trackMock).not.toHaveBeenCalled();
   });
 });

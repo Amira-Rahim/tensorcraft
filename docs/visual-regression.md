@@ -20,6 +20,28 @@ Auth-required pages (dashboard, lesson viewer, settings, etc.) are **not**
 covered in V0.5 — they would require a mocked auth session. Deferred to
 launch polish.
 
+## Current baseline set
+
+Baselines generated **2026-04-21** locally on macOS (darwin, Chromium via
+Playwright). 18 PNGs committed:
+
+- `e2e/visual/key-pages.spec.ts-snapshots/` — 5 files (landing, pricing,
+  themes-index, auth-sign-in, paywall).
+- `e2e/visual/themes.spec.ts-snapshots/` — 5 files (one per theme slug).
+- `e2e/visual/responsive.spec.ts-snapshots/` — 8 files (landing + pricing
+  × 320/768/1024/1440 widths).
+
+Note: Playwright writes snapshots to `<spec>.ts-snapshots/` by default
+(not the `__screenshots__/` path name used elsewhere in this doc). The
+filename suffix `-chromium-darwin` encodes the browser + platform, so
+Linux CI will not match these PNGs — see "CI integration" below.
+
+**Platform caveat**: these baselines are darwin-only. Linux CI will need
+a separate baseline set because pixel-level font hinting, subpixel
+rendering, and even emoji glyphs differ between macOS and Linux.
+Regenerate on the target platform (or in a pinned CI container) before
+enabling `RUN_VISUAL=1` on CI.
+
 ## Why tests are gated on `RUN_VISUAL=1`
 
 Baselines must be generated locally against a running dev server before the

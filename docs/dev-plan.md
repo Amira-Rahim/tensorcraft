@@ -612,6 +612,7 @@ All blocking decisions have been resolved. This table documents the final choice
 - [x] Typed event taxonomy module (`apps/web/lib/analytics-events.ts`) — full Appendix B inventory w/ per-event property interfaces; `track()` is compile-time safe. Legacy `analytics.ts` helpers now delegate. COMPLETED 2026-04-21.
 - [x] Server-side event helper (`apps/api/src/lib/posthog.ts` → `captureServer`) — wired into Stripe webhook to emit `payment_completed`, `payment_failed`, `payment_refunded` with the user's Supabase id. COMPLETED 2026-04-21.
 - [x] Wire additional call sites: `hint_requested` (HintPanel callback), `pricing_page_viewed` (PricingAnalytics w/ source inference), `exercise_attempted` / `exercise_completed` (routed via `trackExerciseSubmitted`). COMPLETED 2026-04-21.
+- [x] Wire deferred call sites: `session_started`/`session_ended` (AnalyticsProvider lifecycle + `visibilitychange`/`beforeunload`), `progress_shared` (capstone Share + CertificateCard "Share Link"), `upgrade_cta_shown`/`upgrade_cta_clicked` (PaywallNotice mount + `/paywall` page CTAs), `code_pushed` (server-side in `/api/github/commit` + `/retroactive-push`, `captureServer` with the user's Supabase id — mirrors the `payment_completed` pattern). COMPLETED 2026-04-21.
 - [x] PostHog event verification — checklist at `docs/analytics-verification.md`. Automated Playwright intercept deferred (rationale documented); manual dashboard verification is the accepted protocol. COMPLETED 2026-04-21.
 
 ### 6j. API Deployment
