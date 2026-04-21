@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { getSupabaseAdminClient } from "@tensorcraft/supabase";
 import { authMiddleware } from "../middleware/auth";
+import { logger } from "../lib/logger";
 import type { AppEnv } from "../types";
 
 /**
@@ -161,7 +162,10 @@ onboarding.patch("/", async (c) => {
     .single();
 
   if (error || !data) {
-    console.error("Onboarding PATCH failed:", error?.message);
+    logger.error(
+      { err: error, route: "onboarding.patch" },
+      "Onboarding PATCH failed",
+    );
     return c.json(
       {
         error: "Failed to update onboarding fields",

@@ -46,6 +46,9 @@ jobs:
       - name: Run tests
         run: pnpm test
 
+      - name: Validate exercises (starter compiles + solution passes within 10s)
+        run: node scripts/validate-exercises.mjs
+
       - name: Upload test results
         if: failure()
         uses: actions/upload-artifact@v4
@@ -89,3 +92,25 @@ jobs:
             playwright-report/
             test-results/
           retention-days: 7
+
+  links:
+    name: Broken-link check (docs + markdown)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # lychee scans every .md file in the repo. Internal dead links fail the
+      # job; external 4xx/5xx responses are reported as warnings only via the
+      # accept + skip config in .lychee.toml. Runs as a GitHub Action so we do
+      # not add a devDependency for it.
+      - name: Run lychee link checker
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: >-
+            --config .lychee.toml
+            --no-progress
+            --verbose
+            './**/*.md'
+          fail: true
+          jobSummary: true

@@ -1,0 +1,275 @@
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+
+// ─── Mocks ─────────────────────────────────────────────────────────────
+
+vi.mock("next/link", () => ({
+  default: ({
+    children,
+    href,
+    ...rest
+  }: {
+    children: React.ReactNode;
+    href: string;
+    [key: string]: unknown;
+  }) => (
+    <a href={href} {...rest}>
+      {children}
+    </a>
+  ),
+}));
+
+vi.mock("@/app/components/ambient-background", () => ({
+  AmbientBackground: () => <div data-testid="ambient-bg" />,
+}));
+
+// Particle canvas is a visual decoration only — stub it to avoid jsdom
+// canvas / IntersectionObserver work in the test environment.
+vi.mock("@tensorcraft/ui/effects", () => ({
+  ParticleField: ({ density }: { density?: number }) => (
+    <div data-testid="particle-field" data-density={density ?? "default"} />
+  ),
+}));
+
+// FocusTrap: keep the Escape + onEscape contract but render children
+// directly. This mirrors the real primitive's behavior for the portions
+// the modal depends on (container div, onKeyDown → Escape handler).
+vi.mock("@tensorcraft/ui/a11y", () => ({
+  FocusTrap: ({
+    children,
+    onEscape,
+  }: {
+    children: React.ReactNode;
+    active?: boolean;
+    onEscape?: () => void;
+  }) => (
+    <div
+      data-focus-trap="active"
+      onKeyDown={(e) => {
+        if (e.key === "Escape" && onEscape) onEscape();
+      }}
+    >
+      {children}
+    </div>
+  ),
+}));
+
+// Waitlist helper — we only care that it was called correctly.
+const submitWaitlistMock = vi.fn();
+vi.mock("@/lib/waitlist", () => ({
+  submitWaitlist: (...args: unknown[]) => submitWaitlistMock(...args),
+}));
+
+// Server supabase helper: empty user → ownedThemes is empty.
+const getUserMock = vi.fn();
+const purchasesResultRef: { data: Array<{ theme_ids: string[] }> } = {
+  data: [],
+};
+
+function buildQuery(data: unknown) {
+  const result = { data };
+  const api: Record<string, unknown> = {};
+  const chain = () => api;
+  api.select = chain;
+  api.eq = chain;
+  api.limit = chain;
+  api.order = chain;
+  api.single = () => result;
+  api.then = (
+    onFulfilled: (value: { data: unknown }) => unknown,
+    onRejected?: (err: unknown) => unknown,
+  ) => Promise.resolve(result).then(onFulfilled, onRejected);
+  return api;
+}
+
+vi.mock("@/lib/supabase/server", () => ({
+  getSupabaseServerClient: async () => ({
+    auth: { getUser: getUserMock },
+    from: (table: string) =>
+      buildQuery(table === "purchases" ? purchasesResultRef.data : []),
+  }),
+}));
+
+// Next metadata types aren't exercised here.
+vi.mock("next", () => ({}));
+
+import ThemesPage from "../page";
+import { NewsletterModal } from "../newsletter-modal";
+
+beforeEach(() => {
+  getUserMock.mockReset();
+  getUserMock.mockResolvedValue({ data: { user: null } });
+  purchasesResultRef.data = [];
+  submitWaitlistMock.mockReset();
+  submitWaitlistMock.mockResolvedValue("done");
+});
+
+// ─── Tests ─────────────────────────────────────────────────────────────
+
+describe("ThemesPage (Phase 11 §11d Wave 2)", () => {
+  it("renders all 5 theme cards with displayName", async () => {
+    render(await ThemesPage());
+    for (const name of [
+      "Deep Orbit",
+      "Neon Protocol",
+      "Signal Ward",
+      "Nova Canvas",
+      "Terra Grid",
+    ]) {
+      expect(screen.getByText(name)).toBeInTheDocument();
+    }
+  });
+
+  it("renders a card per theme slug via test-id", async () => {
+    render(await ThemesPage());
+    for (const slug of [
+      "deep-orbit",
+      "neon-protocol",
+      "signal-ward",
+      "nova-canvas",
+      "terra-grid",
+    ]) {
+      expect(screen.getByTestId(`theme-card-${slug}`)).toBeInTheDocument();
+    }
+  });
+
+  it("shows no 'coming soon' or 'launched' status labels (all themes LIVE)", async () => {
+    render(await ThemesPage());
+    expect(screen.queryByText(/coming soon/i)).toBeNull();
+    expect(screen.queryByText(/launched/i)).toBeNull();
+    // The prior design rendered a "LIVE" chip on each card — the Wave 2
+    // redesign removes it since all 5 themes launch simultaneously.
+    expect(screen.queryByText(/^LIVE$/)).toBeNull();
+  });
+
+  it("renders a ParticleField atmosphere per card (5 total, density 0.15)", async () => {
+    render(await ThemesPage());
+    const fields = screen.getAllByTestId("particle-field");
+    expect(fields).toHaveLength(5);
+    for (const field of fields) {
+      expect(field.getAttribute("data-density")).toBe("0.15");
+    }
+  });
+
+  it("applies rounded-none (brutalist) to each card link", async () => {
+    render(await ThemesPage());
+    for (const slug of [
+      "deep-orbit",
+      "neon-protocol",
+      "signal-ward",
+      "nova-canvas",
+      "terra-grid",
+    ]) {
+      const card = screen.getByTestId(`theme-card-${slug}`);
+      const link = card.querySelector("a");
+      expect(link).not.toBeNull();
+      expect(link!.className).toContain("rounded-none");
+    }
+  });
+
+  it("CTA label defaults to 'Start →' for unauthenticated visitors", async () => {
+    render(await ThemesPage());
+    const ctas = screen.getAllByTestId(/^theme-cta-/);
+    expect(ctas).toHaveLength(5);
+    for (const cta of ctas) {
+      expect(cta.textContent).toContain("Start");
+    }
+  });
+
+  it("CTA label flips to 'Continue →' for owned themes", async () => {
+    getUserMock.mockResolvedValue({ data: { user: { id: "u1" } } });
+    purchasesResultRef.data = [{ theme_ids: ["deep-orbit", "nova-canvas"] }];
+
+    render(await ThemesPage());
+
+    expect(screen.getByTestId("theme-cta-deep-orbit").textContent).toContain(
+      "Continue",
+    );
+    expect(screen.getByTestId("theme-cta-nova-canvas").textContent).toContain(
+      "Continue",
+    );
+    expect(screen.getByTestId("theme-cta-neon-protocol").textContent).toContain(
+      "Start",
+    );
+    expect(screen.getByTestId("theme-cta-signal-ward").textContent).toContain(
+      "Start",
+    );
+    expect(screen.getByTestId("theme-cta-terra-grid").textContent).toContain(
+      "Start",
+    );
+  });
+
+  it("opens the newsletter modal when 'Get updates' is clicked", async () => {
+    render(await ThemesPage());
+    expect(screen.queryByTestId("newsletter-modal")).toBeNull();
+
+    fireEvent.click(screen.getByTestId("open-newsletter-modal"));
+
+    const dialog = await screen.findByTestId("newsletter-modal");
+    expect(dialog).toBeInTheDocument();
+    expect(dialog).toHaveAttribute("role", "dialog");
+    expect(dialog).toHaveAttribute("aria-modal", "true");
+  });
+
+  it("newsletter modal sits inside an active FocusTrap", async () => {
+    render(await ThemesPage());
+    fireEvent.click(screen.getByTestId("open-newsletter-modal"));
+    const dialog = await screen.findByTestId("newsletter-modal");
+    // The FocusTrap mock sets this data attribute on its container.
+    const trap = dialog.closest("[data-focus-trap]");
+    expect(trap).not.toBeNull();
+    expect(trap!.getAttribute("data-focus-trap")).toBe("active");
+  });
+
+  it("newsletter modal uses rounded-none (brutalist)", async () => {
+    render(await ThemesPage());
+    fireEvent.click(screen.getByTestId("open-newsletter-modal"));
+    const dialog = await screen.findByTestId("newsletter-modal");
+    expect(dialog.className).toContain("rounded-none");
+  });
+});
+
+describe("NewsletterModal — interactions", () => {
+  it("submits the waitlist with the entered email and the 'theme-selection' source", async () => {
+    const onClose = vi.fn();
+    render(<NewsletterModal open={true} onClose={onClose} />);
+
+    fireEvent.change(screen.getByTestId("newsletter-email-input"), {
+      target: { value: "jane@example.com" },
+    });
+    fireEvent.click(screen.getByTestId("newsletter-submit"));
+
+    await waitFor(() => {
+      expect(submitWaitlistMock).toHaveBeenCalledWith(
+        "jane@example.com",
+        "all",
+        "theme-selection",
+      );
+    });
+
+    // Success state should render afterward.
+    expect(await screen.findByTestId("newsletter-success")).toBeInTheDocument();
+  });
+
+  it("Escape key triggers onClose (FocusTrap onEscape contract)", () => {
+    const onClose = vi.fn();
+    render(<NewsletterModal open={true} onClose={onClose} />);
+    fireEvent.keyDown(screen.getByTestId("newsletter-modal"), {
+      key: "Escape",
+    });
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it("click on backdrop triggers onClose, click on panel does not", () => {
+    const onClose = vi.fn();
+    render(<NewsletterModal open={true} onClose={onClose} />);
+
+    // Click inside the dialog panel — should NOT close.
+    fireEvent.click(screen.getByTestId("newsletter-modal"));
+    expect(onClose).not.toHaveBeenCalled();
+
+    // Click on the backdrop (outside the panel) — should close.
+    fireEvent.click(screen.getByTestId("newsletter-modal-backdrop"));
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+});

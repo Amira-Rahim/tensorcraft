@@ -1,0 +1,206 @@
+/**
+ * Analytics Event Taxonomy — canonical, type-safe registry of every
+ * product event fired from the Tensorcraft web client.
+ *
+ * Source of truth: `docs/dev-plan.md` Appendix B + PRD 4.7.
+ *
+ * Design rules:
+ *  - Event names are `snake_case` (PostHog convention).
+ *  - Properties are flat, JSON-serializable primitives.
+ *  - No PII (email, full name) — user IDs (UUIDs) are fine.
+ *  - Adding a new event = append to {@link EVENTS} + its matching
+ *    entry in the {@link EventProperties} interface. TypeScript will
+ *    then force call sites to pass the correct payload.
+ *
+ * See also:
+ *  - `apps/web/lib/posthog.ts` — init / consent-gated capture
+ *  - `apps/api/src/lib/posthog.ts` — server-side captures (webhook)
+ *  - `docs/analytics-verification.md` — per-event verification checklist
+ */
+
+import { capture } from "./posthog";
+
+// ──────────────────────────────────────────────
+// Canonical event-name registry
+// ──────────────────────────────────────────────
+
+export const EVENTS = {
+  // Learning
+  LESSON_STARTED: "lesson_started",
+  LESSON_COMPLETED: "lesson_completed",
+  EXERCISE_ATTEMPTED: "exercise_attempted",
+  EXERCISE_COMPLETED: "exercise_completed",
+  HINT_REQUESTED: "hint_requested",
+  CHECKPOINT_SUBMITTED: "checkpoint_submitted",
+  RECALL_ANSWERED: "recall_answered",
+  MODULE_COMPLETED: "module_completed",
+
+  // Conversion
+  PRICING_PAGE_VIEWED: "pricing_page_viewed",
+  PLAN_SELECTED: "plan_selected",
+  CHECKOUT_STARTED: "checkout_started",
+  PAYMENT_COMPLETED: "payment_completed",
+  PAYMENT_FAILED: "payment_failed",
+  PAYWALL_HIT: "paywall_hit",
+  UPGRADE_CTA_SHOWN: "upgrade_cta_shown",
+  UPGRADE_CTA_CLICKED: "upgrade_cta_clicked",
+
+  // Engagement
+  CODE_PUSHED: "code_pushed",
+  THEME_SELECTED: "theme_selected",
+  PROGRESS_SHARED: "progress_shared",
+  SESSION_STARTED: "session_started",
+  SESSION_ENDED: "session_ended",
+  STREAK_ACHIEVED: "streak_achieved",
+} as const;
+
+export type EventName = (typeof EVENTS)[keyof typeof EVENTS];
+
+// ──────────────────────────────────────────────
+// Per-event property contracts
+// ──────────────────────────────────────────────
+
+export interface EventProperties {
+  [EVENTS.LESSON_STARTED]: {
+    themeId: string;
+    moduleId: string;
+    lessonId: string;
+  };
+  [EVENTS.LESSON_COMPLETED]: {
+    themeId: string;
+    moduleId: string;
+    lessonId: string;
+    /** Optional time-on-lesson (ms). Absent when not instrumented. */
+    durationMs?: number;
+    /** Number of hints revealed before completion, if tracked. */
+    hintsUsed?: number;
+  };
+  [EVENTS.EXERCISE_ATTEMPTED]: {
+    themeId: string;
+    lessonId: string;
+    exerciseSlug: string;
+    passed: boolean;
+    score: number;
+    hintsUsed?: number;
+  };
+  [EVENTS.EXERCISE_COMPLETED]: {
+    themeId: string;
+    lessonId: string;
+    exerciseSlug: string;
+    score: number;
+    hintsUsed?: number;
+  };
+  [EVENTS.HINT_REQUESTED]: {
+    exerciseSlug?: string;
+    lessonId?: string;
+    themeId?: string;
+    /** 1 = nudge, 2 = guidance, 3 = solution */
+    hintLevel: 1 | 2 | 3;
+  };
+  [EVENTS.CHECKPOINT_SUBMITTED]: {
+    themeId?: string;
+    lessonId?: string;
+    checkpointId?: string;
+    passed: boolean;
+    attempts: number;
+  };
+  [EVENTS.RECALL_ANSWERED]: {
+    themeId?: string;
+    lessonId?: string;
+    /** What the user did with the prompt. */
+    action: "revealed" | "hidden";
+  };
+  [EVENTS.MODULE_COMPLETED]: {
+    themeId: string;
+    moduleId: string;
+    lessonsCount: number;
+  };
+
+  [EVENTS.PRICING_PAGE_VIEWED]: {
+    /** How the user arrived at /pricing (direct, paywall redirect, etc.) */
+    source?: "direct" | "paywall" | "dashboard" | "landing" | "upgrade_cta";
+    /** Populated when the user was redirected from a locked theme. */
+    lockedThemeId?: string;
+  };
+  [EVENTS.PLAN_SELECTED]: {
+    planId: string;
+    themeIds: string[];
+    price: number;
+  };
+  [EVENTS.CHECKOUT_STARTED]: {
+    planId: string;
+    themeIds?: string[];
+    price?: number;
+  };
+  [EVENTS.PAYMENT_COMPLETED]: {
+    planId: string;
+    themeIds: string[];
+    amount: number;
+    /** Stripe checkout session id (cs_...). */
+    sessionId?: string;
+  };
+  [EVENTS.PAYMENT_FAILED]: {
+    planId?: string;
+    /** Stripe failure reason / decline code, if available. */
+    reason?: string;
+    sessionId?: string;
+  };
+  [EVENTS.PAYWALL_HIT]: {
+    themeId: string;
+    moduleId: string;
+    lessonId?: string;
+  };
+  [EVENTS.UPGRADE_CTA_SHOWN]: {
+    source: "paywall" | "pricing" | "dashboard" | "lesson_footer";
+    themeId?: string;
+  };
+  [EVENTS.UPGRADE_CTA_CLICKED]: {
+    source: "paywall" | "pricing" | "dashboard" | "lesson_footer";
+    themeId?: string;
+  };
+
+  [EVENTS.CODE_PUSHED]: {
+    themeId: string;
+    lessonId: string;
+    exerciseSlug: string;
+    /** Resulting commit SHA from GitHub. */
+    commitSha: string;
+  };
+  [EVENTS.THEME_SELECTED]: {
+    themeId: string;
+    source: "onboarding" | "themes_grid" | "dashboard" | "settings";
+  };
+  [EVENTS.PROGRESS_SHARED]: {
+    platform: "twitter" | "linkedin" | "copy" | "other";
+    themeId?: string;
+  };
+  [EVENTS.SESSION_STARTED]: {
+    /** Optional — may be absent on anonymous sessions. */
+    userId?: string;
+  };
+  [EVENTS.SESSION_ENDED]: {
+    userId?: string;
+    durationMs?: number;
+  };
+  [EVENTS.STREAK_ACHIEVED]: {
+    streakDays: number;
+  };
+}
+
+// ──────────────────────────────────────────────
+// Typed capture helper
+// ──────────────────────────────────────────────
+
+/**
+ * Emit a typed analytics event to PostHog.
+ *
+ * Type-safe: the compiler rejects unknown event names and mismatched
+ * property shapes. No-ops when PostHog is not initialized (dev without
+ * a key, SSR, before init runs).
+ */
+export function track<K extends EventName>(
+  event: K,
+  properties: EventProperties[K],
+): void {
+  capture(event, properties as Record<string, unknown>);
+}

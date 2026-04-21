@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 const FOOTER_LINK_CLASS =
-  "font-mono text-xs rounded-none hover:text-text-primary transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2";
+  "inline-flex items-center min-h-11 font-mono text-xs rounded-none hover:text-text-primary transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2";
 
 export function SiteFooter() {
   return (

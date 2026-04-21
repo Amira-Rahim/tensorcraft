@@ -25,16 +25,16 @@ exports[`CookieConsent snapshots > matches snapshot when visible 1`] = `
       for details.
     </p>
     <div
-      class="flex items-center gap-3"
+      class="flex flex-wrap items-center gap-3"
     >
       <button
-        class="border border-primary/30 bg-primary/8 px-5 py-2 text-sm font-mono font-medium rounded-none hover:bg-primary/25 hover:border-primary/50 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 transition-all brutalist-hover"
+        class="min-h-11 border border-primary/30 bg-primary/8 px-5 py-2 text-sm font-mono font-medium rounded-none hover:bg-primary/25 hover:border-primary/50 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 transition-all brutalist-hover"
         type="button"
       >
         Accept all
       </button>
       <button
-        class="border border-border px-5 py-2 text-sm font-mono font-medium text-text-muted rounded-none hover:text-text-primary hover:border-text-muted focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 transition-all"
+        class="min-h-11 border border-border px-5 py-2 text-sm font-mono font-medium text-text-muted rounded-none hover:text-text-primary hover:border-text-muted focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 transition-all"
         type="button"
       >
         Essential only

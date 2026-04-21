@@ -46,15 +46,33 @@ export interface ExerciseSubmitResult {
   solutionViewed: boolean;
 }
 
+export interface ExerciseBridge {
+  feTitle: string;
+  mlTitle: string;
+  tier: "identity" | "structural" | "intuition";
+}
+
 interface ExerciseProps {
   slug: string;
   onSubmit?: (result: ExerciseSubmitResult) => void;
+  /** Optional FE↔ML bridge hint shown below the editor. */
+  bridge?: ExerciseBridge;
 }
 
 interface TestResult {
   name: string;
   passed: boolean;
   error?: string;
+}
+
+interface ConsoleEntry {
+  level: "log" | "warn" | "error";
+  message: string;
+}
+
+export interface TestRunOutcome {
+  results: TestResult[];
+  logs: ConsoleEntry[];
 }
 
 /* ------------------------------------------------------------------ */
@@ -94,8 +112,36 @@ const difficultyConfig = {
 export async function parseAndRunTests(
   userCode: string,
   testCode: string,
-): Promise<TestResult[]> {
+): Promise<TestRunOutcome> {
   const results: TestResult[] = [];
+  const logs: ConsoleEntry[] = [];
+
+  // Capture console output from the user code / test harness
+  const stringifyArg = (a: unknown): string => {
+    if (typeof a === "string") return a;
+    try {
+      return JSON.stringify(a);
+    } catch {
+      return String(a);
+    }
+  };
+  const capturedConsole = {
+    log: (...args: unknown[]) => {
+      logs.push({ level: "log", message: args.map(stringifyArg).join(" ") });
+    },
+    warn: (...args: unknown[]) => {
+      logs.push({ level: "warn", message: args.map(stringifyArg).join(" ") });
+    },
+    error: (...args: unknown[]) => {
+      logs.push({ level: "error", message: args.map(stringifyArg).join(" ") });
+    },
+    info: (...args: unknown[]) => {
+      logs.push({ level: "log", message: args.map(stringifyArg).join(" ") });
+    },
+    debug: (...args: unknown[]) => {
+      logs.push({ level: "log", message: args.map(stringifyArg).join(" ") });
+    },
+  };
 
   // Build a minimal test harness that captures results
   // Tests use Jest-style describe/it/expect syntax
@@ -437,11 +483,13 @@ export async function parseAndRunTests(
       "",
     );
 
-    // Combine: tf mock + harness + clean user code + async IIFE wrapping test code
+    // Combine: tf mock + harness + clean user code + async IIFE wrapping test code.
+    // `console` is shadowed by the parameter we pass in so user/harness
+    // logs land in our captured array instead of the browser console.
     const fullCode = `${tfMock}\n${harness}\n${cleanCode}\n;(async function() {\n${testCode}\nreturn __results;\n})()`;
 
-    const fn = new Function(fullCode);
-    const resultPromise = fn() as Promise<TestResult[]>;
+    const fn = new Function("console", fullCode);
+    const resultPromise = fn(capturedConsole) as Promise<TestResult[]>;
     const timeoutPromise = new Promise<TestResult[]>((_, reject) =>
       setTimeout(() => reject(new Error("Timed out after 10 seconds")), 10_000),
     );
@@ -455,7 +503,7 @@ export async function parseAndRunTests(
     });
   }
 
-  return results;
+  return { results, logs };
 }
 
 /* ------------------------------------------------------------------ */
@@ -474,7 +522,8 @@ function TestResultsPanel({ results }: { results: TestResult[] }) {
       role="status"
       aria-live="polite"
       aria-atomic="true"
-      className={`p-4 mt-3 brutalist-shadow border ${
+      data-testid="test-results-panel"
+      className={`p-4 mt-3 brutalist-shadow border rounded-none ${
         allPassed
           ? "bg-green-400/8 border-green-400/20"
           : partial
@@ -482,9 +531,14 @@ function TestResultsPanel({ results }: { results: TestResult[] }) {
             : "bg-red-400/8 border-red-400/20"
       }`}
     >
+      {/* Section label */}
+      <div className="text-[10px] font-mono uppercase tracking-widest text-text-muted mb-2">
+        # tests
+      </div>
+
       {/* Partial credit progress bar */}
       {total > 1 && (
-        <div className="h-1 overflow-hidden mb-3 bg-border">
+        <div className="h-1 overflow-hidden mb-3 bg-border rounded-none">
           <div
             className={`h-full transition-all ${
               allPassed
@@ -515,7 +569,7 @@ function TestResultsPanel({ results }: { results: TestResult[] }) {
               : `${passed} of ${total} tests passed`}
         </span>
         <span
-          className={`text-xs font-mono px-2 py-0.5 ${
+          className={`text-xs font-mono px-2 py-0.5 rounded-none ${
             allPassed
               ? "bg-green-400/15 text-green-400"
               : partial
@@ -530,15 +584,20 @@ function TestResultsPanel({ results }: { results: TestResult[] }) {
       <div className="flex flex-col gap-1.5">
         {results.map((result, i) => (
           <div key={i} className="flex items-start gap-2 text-sm">
-            <span className="flex-shrink-0 mt-0.5">
+            <span
+              aria-hidden="true"
+              className={`flex-shrink-0 mt-0.5 font-mono font-bold ${
+                result.passed ? "text-primary" : "text-text-muted"
+              }`}
+            >
               {result.passed ? "✓" : "✗"}
             </span>
             <div className="flex-1 min-w-0">
               <span
                 className={
                   result.passed
-                    ? "text-text-primary/70"
-                    : "text-text-primary/90"
+                    ? "text-text-primary/70 font-mono text-xs"
+                    : "text-text-primary/90 font-mono text-xs"
                 }
               >
                 {result.name}
@@ -557,18 +616,103 @@ function TestResultsPanel({ results }: { results: TestResult[] }) {
 }
 
 /* ------------------------------------------------------------------ */
+/*  ConsolePanel — runtime console.log / console.error output          */
+/* ------------------------------------------------------------------ */
+
+function ConsolePanel({ logs }: { logs: ConsoleEntry[] }) {
+  if (logs.length === 0) return null;
+  return (
+    <div
+      data-testid="console-panel"
+      className="p-4 mt-3 border border-border bg-code-bg rounded-none brutalist-shadow"
+    >
+      <div className="text-[10px] font-mono uppercase tracking-widest text-text-muted mb-2">
+        # console
+      </div>
+      <div className="flex flex-col gap-1 font-mono text-xs leading-relaxed">
+        {logs.map((entry, i) => (
+          <div key={i} className="flex items-start gap-2">
+            <span
+              aria-hidden="true"
+              className={
+                entry.level === "error"
+                  ? "text-red-400 flex-shrink-0"
+                  : entry.level === "warn"
+                    ? "text-yellow-400 flex-shrink-0"
+                    : "text-primary flex-shrink-0"
+              }
+            >
+              {entry.level === "error"
+                ? "!"
+                : entry.level === "warn"
+                  ? "?"
+                  : ">"}
+            </span>
+            <span
+              className={
+                entry.level === "error"
+                  ? "text-red-400 whitespace-pre-wrap break-all"
+                  : entry.level === "warn"
+                    ? "text-yellow-400 whitespace-pre-wrap break-all"
+                    : "text-text-primary/85 whitespace-pre-wrap break-all"
+              }
+            >
+              {entry.message}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  BridgeHint — FE↔ML bridge reminder below the editor                */
+/* ------------------------------------------------------------------ */
+
+const bridgeTierColors: Record<ExerciseBridge["tier"], string> = {
+  identity: "var(--tc-tier-identity)",
+  structural: "var(--tc-tier-structural)",
+  intuition: "var(--tc-tier-intuition)",
+};
+
+function BridgeHint({ bridge }: { bridge: ExerciseBridge }) {
+  const color = bridgeTierColors[bridge.tier];
+  return (
+    <div
+      data-testid="bridge-hint"
+      className="p-4 mt-3 border border-border bg-surface-overlay rounded-none"
+      style={{ borderLeft: `3px solid ${color}` }}
+    >
+      <div className="text-[10px] font-mono uppercase tracking-widest text-text-muted mb-1.5">
+        # bridge
+      </div>
+      <p className="text-xs font-mono leading-relaxed text-text-primary/80">
+        <span className="text-text-primary">{bridge.feTitle}</span>
+        <span className="mx-2" style={{ color }} aria-hidden="true">
+          ↔
+        </span>
+        <span className="text-text-primary">{bridge.mlTitle}</span>
+      </p>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /*  RunButton — inside Sandpack context to access code                 */
 /* ------------------------------------------------------------------ */
 
 function ExerciseControls({
   exercise,
   onResults,
+  onLogs,
   onShowSolution,
   onAttempt,
   showSolution,
 }: {
   exercise: ExerciseData;
   onResults: (results: TestResult[]) => void;
+  onLogs: (logs: ConsoleEntry[]) => void;
   onShowSolution: () => void;
   onAttempt?: (result: ExerciseSubmitResult) => void;
   showSolution: boolean;
@@ -582,8 +726,9 @@ function ExerciseControls({
     const code = sandpack.files["/index.js"]?.code ?? "";
 
     try {
-      const results = await parseAndRunTests(code, exercise.testCode);
+      const { results, logs } = await parseAndRunTests(code, exercise.testCode);
       onResults(results);
+      onLogs(logs);
       hasAttempted.current = true;
 
       // Report attempt to parent for persistence
@@ -611,6 +756,7 @@ function ExerciseControls({
           error: err instanceof Error ? err.message : String(err),
         },
       ]);
+      onLogs([]);
       hasAttempted.current = true;
     } finally {
       setRunning(false);
@@ -620,6 +766,7 @@ function ExerciseControls({
     exercise.testCode,
     exercise.slug,
     onResults,
+    onLogs,
     onAttempt,
     showSolution,
   ]);
@@ -627,7 +774,8 @@ function ExerciseControls({
   const handleReset = useCallback(() => {
     sandpack.updateFile("/index.js", exercise.starterCode);
     onResults([]);
-  }, [sandpack, exercise.starterCode, onResults]);
+    onLogs([]);
+  }, [sandpack, exercise.starterCode, onResults, onLogs]);
 
   const handleShowSolution = useCallback(() => {
     sandpack.updateFile("/index.js", exercise.solutionCode);
@@ -640,7 +788,7 @@ function ExerciseControls({
         type="button"
         onClick={handleRun}
         disabled={running}
-        className="px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider transition-colors duration-100 brutalist-hover bg-primary text-surface border-2 border-primary hover:bg-transparent hover:text-primary disabled:opacity-60"
+        className="px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider transition-colors duration-100 brutalist-hover bg-primary text-surface border-2 border-primary rounded-none hover:bg-transparent hover:text-primary disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-raised"
       >
         {running ? "Running..." : "Run Tests"}
       </button>
@@ -648,7 +796,7 @@ function ExerciseControls({
       <button
         type="button"
         onClick={handleReset}
-        className="px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider transition-colors brutalist-hover bg-surface-overlay text-text-muted"
+        className="px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider transition-colors brutalist-hover bg-surface-overlay text-text-muted rounded-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-raised"
       >
         Reset
       </button>
@@ -657,7 +805,7 @@ function ExerciseControls({
         <button
           type="button"
           onClick={handleShowSolution}
-          className="px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider transition-colors ml-auto brutalist-hover bg-yellow-400/10 text-yellow-400 border border-yellow-400/20"
+          className="px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider transition-colors ml-auto brutalist-hover bg-yellow-400/10 text-yellow-400 border border-yellow-400/20 rounded-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-raised"
         >
           Show Solution
         </button>
@@ -685,11 +833,12 @@ function ExerciseLoadingSkeleton() {
 /*  Main Exercise component                                            */
 /* ------------------------------------------------------------------ */
 
-export function Exercise({ slug, onSubmit }: ExerciseProps) {
+export function Exercise({ slug, onSubmit, bridge }: ExerciseProps) {
   const exerciseMap = useContext(ExerciseDataContext);
   const exercise = exerciseMap.get(slug);
 
   const [results, setResults] = useState<TestResult[]>([]);
+  const [logs, setLogs] = useState<ConsoleEntry[]>([]);
   const [showSolution, setShowSolution] = useState(false);
 
   // Fallback if exercise data not provided via context
@@ -718,7 +867,7 @@ export function Exercise({ slug, onSubmit }: ExerciseProps) {
 
   return (
     <div
-      className={`p-6 my-6 brutalist-shadow bg-surface-raised border ${
+      className={`p-6 my-6 brutalist-shadow bg-surface-raised border rounded-none ${
         allPassed ? "border-green-400/30" : "border-border"
       }`}
     >
@@ -756,7 +905,7 @@ export function Exercise({ slug, onSubmit }: ExerciseProps) {
 
       {/* Sandpack Editor */}
       <Suspense fallback={<ExerciseLoadingSkeleton />}>
-        <div className="overflow-hidden border border-border">
+        <div className="overflow-hidden border border-border rounded-none">
           <SandpackProvider
             template="vanilla"
             theme={{
@@ -808,6 +957,7 @@ export function Exercise({ slug, onSubmit }: ExerciseProps) {
               <ExerciseControls
                 exercise={exercise}
                 onResults={setResults}
+                onLogs={setLogs}
                 onShowSolution={() => setShowSolution(true)}
                 onAttempt={onSubmit}
                 showSolution={showSolution}
@@ -820,9 +970,15 @@ export function Exercise({ slug, onSubmit }: ExerciseProps) {
       {/* Test Results */}
       {results.length > 0 && <TestResultsPanel results={results} />}
 
+      {/* Console output */}
+      <ConsolePanel logs={logs} />
+
+      {/* Bridge hint */}
+      {bridge && <BridgeHint bridge={bridge} />}
+
       {/* Solution revealed indicator */}
       {showSolution && (
-        <p className="text-xs mt-3 italic text-yellow-400">
+        <p className="text-xs mt-3 italic text-yellow-400 font-mono">
           Solution revealed — try modifying it to deepen your understanding.
         </p>
       )}

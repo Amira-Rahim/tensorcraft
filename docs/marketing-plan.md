@@ -1,4 +1,4 @@
-# Tensorcraft Marketing Plan v3.2
+# Tensorcraft Marketing Plan v3.3
 
 ## Executive Summary
 
@@ -504,6 +504,66 @@ After the first 30 days, settle into a sustainable weekly rhythm:
 **Biweekly:** One long-form tutorial (2,000-3,000 words) with interactive code examples. One podcast pitch or guest post submission.
 
 **Monthly:** One behind-the-scenes deep-dive. One content performance review (identify top-performing pieces, double down on what works). One competitive landscape scan (what are others publishing in the ML education space?).
+
+---
+
+# PART 7: BRAND GUIDELINES
+
+The Tensorcraft brand is **brutalist terminal** — sharp, technical, anti-hype. It deliberately looks nothing like the dominant ed-tech aesthetics (gradient-heavy SaaS landing pages, pastel bootcamp marketing, DeFi-neon product pages). These guidelines apply to every customer-facing surface: the product UI, marketing site, blog, social assets, ads, conference slides, and merch.
+
+## 7.1 Visual Identity
+
+- **Sharp edges, zero border-radius.** Corners are always 90 degrees. No `rounded-md`/`rounded-lg`. This is a non-negotiable brand marker.
+- **Hard offset shadows only.** The signature shadow is a `4px 4px 0` offset in the theme's border color. No blurred shadows, no drop-shadows, no soft glows.
+- **No gradients.** Backgrounds are solid. Cards are solid. Buttons are solid.
+- **No glow effects.** The prior "neon" direction (glow halos, `--tc-glow`, `--tc-neon-glow`, `--tc-neon-line`) has been removed from the product and must not appear in marketing assets.
+- **Monospace-first for code, data, numbers, and accents.** Body prose is Inter, but anything that represents technical content or serves as an accent label uses JetBrains Mono.
+- **Comment-style section labels.** Uppercase, tracking-wider, muted color. Examples: `# skill_genome`, `// loss.hints`, `— 12wk`, `// why it matters`. These replace decorative section icons and are the visual signature of the brand.
+
+## 7.2 Typography
+
+- **Body:** Inter, regular weight, generous line-height. Used for prose, descriptive copy, and longer-form reading.
+- **Code, data, numbers, accent labels:** JetBrains Mono. Always. This includes pricing numbers on the marketing site, waitlist counts, stats in ads, and section headers in the brutalist "comment" style.
+- **Section headers:** Uppercase + `tracking-wider` in JetBrains Mono when used as accent/structural labels; Inter when used as prose headings.
+- **Maximum two font families per theme** — Inter + JetBrains Mono is the global default; themes do not introduce additional display faces.
+
+## 7.3 Color
+
+- **Shared dark surface:** `#232323` is the primary surface color across all themes. Background is `#181818`. Text is `#E0E0E0`. Muted is `#A0A0A0`. These are the platform-wide neutrals and should appear in every marketing asset.
+- **Per-theme primary accents:**
+  - Deep Orbit — `#6BAA8A`
+  - Neon Protocol — `#4A90D9`
+  - Signal Ward — `#65C07D`
+  - Nova Canvas — `#D07070` (bumped from `#C06060` on 2026-04-20 to meet WCAG AA against `#232323`)
+  - Terra Grid — `#C49535`
+- **Contrast floor:** 4.5:1 for body text, 3:1 for large text. The Nova Canvas primary bump is a reminder: never ship a theme color that fails AA against the shared surface.
+- **No gradient fills anywhere**, including on social-media graphics. Color transitions are always solid blocks.
+
+## 7.4 Voice & Tone
+
+- **Technical, honest, anti-hype.** We assume the reader is an engineer. We don't oversell outcomes. When we defer or cut something, we say so.
+- **Anti-marketing-speak.** No "unlock your potential," "revolutionize your career," "AI-powered everything." Write the way a senior engineer would write a thoughtful README.
+- **Brutalist mono labels for flavor.** Copy accents like `# skill_genome`, `// loss.hints`, `— 12wk`, `// why it matters` live in code-comment voice and carry the brand's visual signature into language.
+- **First person when relevant.** The newsletter, blog, and waitlist emails are written in first person. The product UI is second person ("your skill genome," "your loss curve"). Neither ever uses corporate "we are thrilled to announce."
+
+## 7.5 What Tensorcraft Is NOT Like
+
+Explicit comparisons for marketing and design critique:
+
+- **Not like Zensman / DeFi Neon landing pages.** Tensorcraft previously prototyped in that direction and rejected it. Glow effects, gradients, and neon outlines are off-brand.
+- **Not like typical ed-tech SaaS (Coursera, Udemy, Skillshare).** No pastel illustrations, no stock photos of diverse smiling learners, no hero gradients, no rounded cards.
+- **Not like bootcamp marketing.** No outcome guarantees, no confetti celebrations, no "testimonial carousel of six-figure hires."
+
+When in doubt: does it look like it was rendered by a terminal with a hard shadow, or does it look like a Lottie animation? Only the first one ships.
+
+## 7.6 Social & Ad Assets
+
+- **Matching dark surface.** All social graphics use `#181818` or `#232323` backgrounds. The platform's look is the brand's look; there is no separate "marketing palette."
+- **Mono accents always visible.** Every graphic includes at least one monospace accent label (section header, ticker line, code snippet, bridge statement in mono).
+- **Offset shadows on cards and CTAs.** Flat solid backgrounds plus a `4px 4px 0` shadow in border color. Never blurred.
+- **Sharp corners on every element.** Cards, buttons, image crops, everything.
+- **Per-theme primary accent tints** ambient effects (e.g., `ParticleField` atmosphere) on theme-specific assets, but the layout, typography, and shadows are identical across all five themes.
+- **Bridge graphics** (see §4.9) conform to these rules: `#181818` background, per-theme primary accent, JetBrains Mono for code and headings, Inter for body labels, side-by-side layout with a bridge connector, zero border-radius, offset shadow.
 
 ---
 

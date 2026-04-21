@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { trackCheckoutStarted } from "@/lib/analytics";
+import { errorMessageForCode, ERROR_MESSAGES } from "@/lib/error-messages";
 
 interface CheckoutButtonProps {
   planId: string;
@@ -79,19 +80,25 @@ export function CheckoutButton({
           body: JSON.stringify({ planId, themeIds }),
         });
       } catch {
-        setError("Network error. Please check your connection and try again.");
+        setError(ERROR_MESSAGES.network);
         return;
       }
 
       if (!response.ok) {
-        let errorMessage = "Failed to create checkout session";
+        // Prefer a server-supplied code; fall back to HTTP status heuristics.
+        let code: string | undefined;
         try {
           const data = await response.json();
-          errorMessage = data.error || errorMessage;
+          code = data.code ?? data.error;
         } catch {
           // Response wasn't valid JSON
         }
-        setError(errorMessage);
+        if (!code) {
+          if (response.status === 401) code = "session_expired";
+          else if (response.status === 403) code = "forbidden";
+          else if (response.status === 429) code = "rate_limited";
+        }
+        setError(errorMessageForCode(code));
         return;
       }
 
@@ -104,10 +111,10 @@ export function CheckoutButton({
       if (data.url) {
         window.location.href = data.url;
       } else {
-        setError("No checkout URL received. Please try again.");
+        setError(ERROR_MESSAGES.unknown);
       }
     } catch {
-      setError("Something went wrong. Please try again.");
+      setError(ERROR_MESSAGES.unknown);
     } finally {
       setLoading(false);
     }
@@ -121,11 +128,11 @@ export function CheckoutButton({
         type="button"
         onClick={handleCheckout}
         disabled={isDisabled}
-        className={`flex items-center justify-center w-full h-13 text-[15px] font-medium font-mono transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
+        className={`flex items-center justify-center w-full h-11 text-[13px] font-medium font-mono uppercase tracking-wider rounded-none transition-all disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 ${
           alreadyOwned
             ? "bg-transparent text-text-muted border border-border cursor-default"
             : recommended
-              ? "bg-primary text-page border border-primary hover:shadow-[4px_4px_0px_0px_#E0E0E0] hover:-translate-x-0.5 hover:-translate-y-0.5"
+              ? "bg-primary text-page border border-primary hover:brutalist-shadow hover:-translate-x-0.5 hover:-translate-y-0.5"
               : "bg-transparent text-primary border border-primary hover:bg-primary hover:text-page"
         } ${className}`}
       >

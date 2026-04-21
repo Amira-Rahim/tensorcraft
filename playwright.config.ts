@@ -17,6 +17,24 @@ export default defineConfig({
     {
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
+      testIgnore: /mobile\.spec\.ts/,
+    },
+    // Mobile device emulation per dev-plan §6b. Runs a scoped mobile smoke
+    // suite (see `e2e/mobile.spec.ts`) against the 3 reference devices.
+    {
+      name: "mobile-iphone-se",
+      use: { ...devices["iPhone SE"] },
+      testMatch: /mobile\.spec\.ts/,
+    },
+    {
+      name: "mobile-pixel-7",
+      use: { ...devices["Pixel 7"] },
+      testMatch: /mobile\.spec\.ts/,
+    },
+    {
+      name: "tablet-ipad",
+      use: { ...devices["iPad (gen 7)"] },
+      testMatch: /mobile\.spec\.ts/,
     },
   ],
   webServer: {

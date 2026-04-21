@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useRef } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import posthog from "posthog-js";
+import { initPostHog, isInitialized } from "../../lib/posthog";
 
 const CONSENT_KEY = "tc-cookie-consent";
 
@@ -20,30 +21,20 @@ function AnalyticsInner() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  // Initialize PostHog
+  // Initialize PostHog (EU instance via lib/posthog — no-op without key).
   useEffect(() => {
     if (initialized.current) return;
-
-    const key = process.env.NEXT_PUBLIC_POSTHOG_KEY;
-    const host = process.env.NEXT_PUBLIC_POSTHOG_HOST;
-
-    if (!key || !host) return;
     if (!hasAnalyticsConsent()) return;
 
-    posthog.init(key, {
-      api_host: host,
-      capture_pageview: false,
-      persistence: "localStorage+cookie",
-      autocapture: false,
-      capture_performance: { web_vitals: true },
-    });
-
-    initialized.current = true;
+    const instance = initPostHog();
+    if (instance) {
+      initialized.current = true;
+    }
   }, []);
 
   // Capture page views on route changes
   useEffect(() => {
-    if (!initialized.current) return;
+    if (!isInitialized()) return;
 
     const url = searchParams?.toString()
       ? `${pathname}?${searchParams.toString()}`

@@ -31,6 +31,14 @@ export default defineConfig({
       "@tensorcraft/themes": path.resolve(__dirname, "packages/themes/src"),
       "@tensorcraft/ui": path.resolve(__dirname, "packages/ui/src"),
       "@tensorcraft/content": path.resolve(__dirname, "packages/content/src"),
+      // Hoist React to the root node_modules (resolved via packages/ui)
+      // so tests in packages without a local react install (e.g.
+      // packages/content/__tests__/) still resolve the JSX runtime.
+      react: path.resolve(__dirname, "packages/ui/node_modules/react"),
+      "react-dom": path.resolve(
+        __dirname,
+        "packages/ui/node_modules/react-dom",
+      ),
     },
   },
 });

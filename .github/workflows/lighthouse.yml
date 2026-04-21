@@ -28,6 +28,17 @@ jobs:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co' }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder' }}
 
+      - name: Start Next.js server
+        run: pnpm --filter @tensorcraft/web start &
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co' }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder' }}
+
+      - name: Wait for server
+        run: npx wait-on http://localhost:3000 -t 60000
+
+      # Dashboard/settings require auth — skipped here. Add once a test-mode
+      # session is plumbed through the middleware (Phase 6c follow-up).
       - name: Run Lighthouse
         uses: treosh/lighthouse-ci-action@v12
         with:
@@ -35,6 +46,7 @@ jobs:
             http://localhost:3000/
             http://localhost:3000/pricing
             http://localhost:3000/themes
+            http://localhost:3000/learn
           budgetPath: .github/lighthouse-budget.json
           uploadArtifacts: true
           configPath: .github/lighthouserc.json

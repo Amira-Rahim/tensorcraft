@@ -1,7 +1,7 @@
-# Tensorcraft Technical Specification v3.3
+# Tensorcraft Technical Specification v3.4
 
-**Version:** 3.3
-**Last Updated:** 2026-03-13
+**Version:** 3.4
+**Last Updated:** 2026-04-21
 **Status:** Active Development
 **Audience:** Engineering, Product, Content
 
@@ -15,7 +15,8 @@
 4. [Analytics Layer (Day One)](#4-analytics-layer-day-one)
 5. [GitHub Integration Architecture](#5-github-integration-architecture)
 6. [Content Calendar with Dependencies](#6-content-calendar-with-dependencies)
-7. [Internationalization [DESCOPED TO POST-V1.0]](#7-internationalization-descoped-to-post-v10)
+7. [UI Components, Visualizations, and Accessibility](#7-ui-components-visualizations-and-accessibility)
+8. [Internationalization [DESCOPED TO POST-V1.0]](#8-internationalization-descoped-to-post-v10)
 
 ---
 
@@ -47,6 +48,13 @@
 > - `GET /api/admin/stats` --- Dashboard stats (waitlist, users, purchases, revenue). Requires `x-admin-key` header.
 > - `GET /api/admin/waitlist` --- Paginated waitlist entries. Requires `x-admin-key` header. Query params: `page`, `limit`.
 >
+> **Product API Endpoints (landed Phase 11):**
+>
+> - `POST /api/certificates` --- Generate a completion certificate for a user + theme (called automatically from the capstone page on completion). Returns the certificate id + verification URL.
+> - `GET /api/certificates/:id` --- Public, unauthenticated fetch of a certificate payload for verification rendering.
+> - `GET /api/progress/activity/daily` --- Daily lesson/exercise activity buckets for dashboard and streak display.
+> - `PATCH /api/onboarding` --- Persists the 5-step onboarding state. Accepts `experience_level` (enum: `beginner` | `intermediate` | `advanced` | `expert`) and `learning_goal` (enum: `hobby` | `career` | `research` | `team` | `curiosity`) per migration 018, in addition to the existing `display_name`, `github_username`, and `preferred_theme_id` fields.
+>
 > **Note:** Tailwind CSS 4 (not Tailwind + CSS Modules) is used with the `@theme` directive for CSS-native theming. Theme tokens are defined in CSS custom properties and consumed via `@theme` blocks, eliminating the need for JavaScript-based theme switching or CSS Modules. Each theme package exports a CSS file with its `@theme` overrides.
 
 ### 1.2 Monorepo Structure
@@ -55,7 +63,7 @@
 |---------|---------|-------------|
 | `apps/web` | Next.js 15 frontend application | Pages, layouts, route groups, client components, MDX rendering |
 | `apps/api` | Hono backend service | REST endpoints, middleware, auth callbacks, Stripe webhooks, Supabase client |
-| `packages/ui` | Shared UI component library | Design system primitives (Button, Card, Modal, CodeBlock, ProgressBar) |
+| `packages/ui` | Shared UI component library (`@tensorcraft/ui`) | Design system primitives (Button, Card, Modal, CodeBlock, ProgressBar) plus subpath exports: `./visualizations` (SkillRadar, LossCurve), `./effects` (ParticleField, BridgeTicker), `./a11y` (FocusTrap). See §7 for component inventory. |
 | `packages/config` | Shared configuration | TypeScript configs, ESLint presets, Tailwind theme tokens, shared constants |
 | `packages/supabase` | Database layer | Schema migrations, seed data, typed client, RLS policies, Edge Functions |
 | `packages/themes` | Theme asset packages | Per-theme CSS (`@theme` overrides), illustrations, mascot SVGs, copy variants |
@@ -165,7 +173,7 @@ All themes are available. No status field — theme manifests contain only conte
 | `displayName` | `string` | Yes | Display name shown in the theme picker |
 | `tagline` | `string` | Yes | One-line description for the theme selection card |
 | `description` | `string` | Yes | Full description (narrative hook) |
-| `palette` | `ThemePalette` | Yes | Color palette: `bg`, `primary`, `accent`, `surface`, `surfaceOverlay`, `text`, `muted`, `border`, `codeBg` |
+| `palette` | `ThemePalette` | Yes | 9-key color palette: `bg`, `primary`, `accent`, `surface`, `surfaceOverlay`, `text`, `muted`, `border`, `codeBg`. Nova Canvas `primary` is `#D07070` (bumped from `#C06060` on 2026-04-20 to satisfy WCAG AA against `#232323` surface). Neon tokens (`--tc-glow`, `--tc-neon-glow`, `--tc-neon-line`) were removed from `themes.css` during the brutalist redesign; theme styling is driven entirely by the 9 palette keys plus shared brutalist utilities. |
 | `terminology` | `ThemeTerminology` | Yes | UI label overrides (`lesson`, `module`, `exercise`) |
 | `protagonist` | `string` | Yes | Learner's role in the narrative |
 | `sandpackTheme` | `string` | Yes | Sandpack editor color theme |
@@ -201,6 +209,8 @@ Tables use Supabase Auth for user management. Row-Level Security (RLS) enforced 
 | role | user_role enum | `'user'` or `'admin'`, default: `'user'` (added in migration 006) |
 | email_alerts | boolean | Default: `true` (added in migration 009) |
 | weekly_digest | boolean | Default: `true` (added in migration 009) |
+| experience_level | experience_level enum | `'beginner'` \| `'intermediate'` \| `'advanced'` \| `'expert'`, nullable (added in migration 018, captured in onboarding Step 2 — Background) |
+| learning_goal | learning_goal enum | `'hobby'` \| `'career'` \| `'research'` \| `'team'` \| `'curiosity'`, nullable (added in migration 018, captured in onboarding Step 3 — Goal) |
 | created_at | timestamptz | Default: `now()` |
 | updated_at | timestamptz | Default: `now()` |
 
@@ -624,7 +634,86 @@ These are the engineering deliverables required to unblock content. Each compone
 
 ---
 
-## 7. Internationalization [DESCOPED TO POST-V1.0]
+## 7. UI Components, Visualizations, and Accessibility
+
+This section documents the shared UI surface landed during the Phase 11 brutalist redesign (2026-04-13 → 2026-04-20). It is the canonical component inventory and import reference for engineers working on `apps/web`.
+
+### 7.1 `@tensorcraft/ui` Subpath Exports
+
+The shared UI package ships three subpath entry points in addition to the root. Import the narrowest path that serves the use case — tree-shaking works per-entry.
+
+| Import | Purpose | Contents |
+| --- | --- | --- |
+| `@tensorcraft/ui` | Core primitives | `Button`, `Card`, `Modal`, `CodeBlock`, `ProgressBar`, and other theme-aware building blocks |
+| `@tensorcraft/ui/visualizations` | SVG data visualizations | `SkillRadar`, `LossCurve` |
+| `@tensorcraft/ui/effects` | Background / ambient effects | `ParticleField`, `BridgeTicker` |
+| `@tensorcraft/ui/a11y` | Accessibility primitives | `FocusTrap` |
+
+Example:
+
+```ts
+import { Button } from '@tensorcraft/ui'
+import { SkillRadar, LossCurve } from '@tensorcraft/ui/visualizations'
+import { ParticleField, BridgeTicker } from '@tensorcraft/ui/effects'
+import { FocusTrap } from '@tensorcraft/ui/a11y'
+```
+
+### 7.2 Visualization Components
+
+| Component | Location | Purpose |
+| --- | --- | --- |
+| `SkillRadar` | `@tensorcraft/ui/visualizations` | Reusable hexagonal skill radar SVG. Consumers pass an array of `{ label, value }` and palette colors. |
+| `SkillGenome` | `apps/web/app/dashboard/skill-genome.tsx` | Dashboard-specific wrapper around `SkillRadar` that renders the learner's live skill distribution. Shares a `hexCorners` helper with `SkillRadar` to keep geometry identical across surfaces. |
+| `LossCurve` | `@tensorcraft/ui/visualizations` | Animated SVG line chart for training-loss visualization on the dashboard and capstone pages. |
+| `ParticleField` | `@tensorcraft/ui/effects` | Canvas particle atmosphere used on the landing hero, auth pages, and per-theme selection cards. Respects `prefers-reduced-motion`. |
+| `BridgeTicker` | `@tensorcraft/ui/effects` | Horizontal scrolling ticker of FE→ML bridge statements used as ambient marketing flavor. |
+
+**Removed / deferred:**
+
+- `LossLandscape` — deferred after Phase 11 (complexity vs. pedagogical value). Replaced on auth pages by `ParticleField`.
+- `ActivityHeatmap` — deferred per §5b audit. Daily activity is now surfaced via the `GET /api/progress/activity/daily` endpoint and a simpler streak strip on the dashboard; full GitHub-style heatmap is post-V1.0.
+- ARIA dual-robot narrator — cut 2026-04-20. Narrative assistance now relies on inline theme-specific character copy (MEDI, NEON, MUSE, GRID, ARIA-as-in-lesson-character) rather than a persistent dual-robot narrator widget.
+
+### 7.3 Accessibility Conventions
+
+**SVG visualizations** (`SkillRadar`, `LossCurve`, `SkillGenome`, progress diagrams):
+
+- Root `<svg>` carries `role="img"` plus both `aria-labelledby` and `aria-describedby` pointing at id'd `<title>` and `<desc>` children (first two children of the SVG).
+- `<title>` gives a short name ("Skill genome for ML fundamentals"). `<desc>` gives a one-sentence summary of the data being displayed.
+- Decorative particle backgrounds use `aria-hidden="true"`.
+
+**Dialogs / modals / paywall sheets:**
+
+- Wrap with `FocusTrap` from `@tensorcraft/ui/a11y`. It captures Tab/Shift+Tab cycling, restores focus on close, and pairs with `aria-modal="true"` + `role="dialog"`.
+- The trigger element must receive focus on dismiss; `FocusTrap` exposes a `restoreFocus` prop for the origin element.
+
+**Focus styling (universal):**
+
+- Every interactive element uses the pattern `focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2`. No `focus:ring-*` — brutalist outlines only.
+
+### 7.4 Brutalist CSS Conventions
+
+The Phase 11 redesign replaced the prior "Zensman DeFi Neon" direction (glows, gradients, rounded corners) with a brutalist terminal aesthetic.
+
+| Rule | Convention |
+| --- | --- |
+| Corners | `rounded-none` everywhere. No `rounded-md`, `rounded-lg`, etc. |
+| Shadows | Hard offset shadows only. Use utility `.brutalist-shadow` (e.g., `4px 4px 0 var(--tc-border)`), never `shadow-lg` / blurred shadows. |
+| Hover | `.brutalist-hover` — a combined translate + shadow shift on hover to preserve the offset-shadow effect. |
+| Comment labels | `.comment-label` — uppercase, tracking-wider, JetBrains Mono, muted color. Used for section headers like `# skill_genome`, `// loss.hints`, `— 12wk`. |
+| Focus | `focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2` (see §7.3). |
+| Glow effects | Removed. Tokens `--tc-glow`, `--tc-neon-glow`, `--tc-neon-line` were deleted from `themes.css` 2026-04-13 → 2026-04-20. |
+
+### 7.5 Settings & Onboarding Routes
+
+- **Onboarding** (`/onboarding`) — 5 steps: Welcome → Background → Goal → Theme → Ready. Persisted via `PATCH /api/onboarding` with `experience_level` and `learning_goal` enum fields (see §1.3 API notes and the `profiles` schema).
+- **Paywall** (`/paywall`) — standalone locked-content route; complements the `/pricing?locked=<theme>` banner used for deep-links.
+- **Settings** (`/settings`) — 5-tab layout: Profile / Notifications / GitHub / Theme / Account.
+- **Capstone completion** — triggers `POST /api/certificates` to generate the learner's verifiable certificate; the returned id is rendered on the capstone page and is publicly retrievable via `GET /api/certificates/:id`.
+
+---
+
+## 8. Internationalization [DESCOPED TO POST-V1.0]
 
 > **Status: Descoped** — Internationalization is deferred to post-V1.0. The platform will launch as English-only. The architectural notes below are retained for future reference when i18n work begins.
 

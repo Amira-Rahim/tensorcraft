@@ -1,5 +1,6 @@
 import type { Context, Next } from "hono";
 import { getRedis } from "../lib/redis";
+import { logger } from "../lib/logger";
 
 const WINDOW_MS = 60_000; // 1 minute
 const MAX_REQUESTS = 60; // 60 req/min per IP
@@ -52,7 +53,7 @@ export async function rateLimitMiddleware(
   } catch {
     // Redis unavailable — allow request through (graceful degradation).
     // Log for monitoring but don't block the user.
-    console.warn("Rate limiter: Redis unavailable, allowing request through");
+    logger.warn("Rate limiter: Redis unavailable, allowing request through");
   }
 
   return next();

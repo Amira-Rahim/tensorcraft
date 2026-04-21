@@ -14,6 +14,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
+    "test:exercises": "pnpm turbo build:content && node scripts/validate-exercises.mjs",
     "prepare": "husky"
   },
   "devDependencies": {

@@ -44,7 +44,7 @@ export function LessonDrawer({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="md:hidden flex items-center justify-center w-9 h-9 shrink-0"
+        className="md:hidden flex items-center justify-center w-11 h-11 shrink-0"
         style={{
           background: theme.palette.surface,
           border: `1px solid ${theme.palette.border}`,
@@ -102,7 +102,7 @@ export function LessonDrawer({
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="text-sm font-mono px-3 py-1"
+                className="min-h-11 min-w-11 text-sm font-mono px-3 py-1"
                 style={{ color: theme.palette.muted }}
               >
                 Close

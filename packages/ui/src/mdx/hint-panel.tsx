@@ -9,7 +9,19 @@ interface Hint {
 
 interface HintPanelProps {
   hints: Hint[] | undefined;
+  /**
+   * Called when the user reveals a hint tier. The consumer wires this up
+   * to analytics — kept here as a pure callback so the UI package has no
+   * PostHog dependency (Session 8b rule).
+   */
+  onHintRevealed?: (hintLevel: 1 | 2 | 3) => void;
 }
+
+const HINT_LEVEL_TO_INDEX: Record<Hint["level"], 1 | 2 | 3> = {
+  nudge: 1,
+  guidance: 2,
+  solution: 3,
+};
 
 const levelConfig = {
   nudge: { label: "Nudge", color: "var(--tc-tier-identity)", icon: "💡" },
@@ -25,7 +37,7 @@ const levelConfig = {
   },
 };
 
-export function HintPanel({ hints }: HintPanelProps) {
+export function HintPanel({ hints, onHintRevealed }: HintPanelProps) {
   const [revealedLevel, setRevealedLevel] = useState(-1);
   if (!hints || hints.length === 0) return null;
 
@@ -64,6 +76,7 @@ export function HintPanel({ hints }: HintPanelProps) {
                 <button
                   onClick={() => {
                     setRevealedLevel(index);
+                    onHintRevealed?.(HINT_LEVEL_TO_INDEX[hint.level]);
                   }}
                   className="w-full text-left p-3 transition-colors duration-100 hover:bg-surface border border-dashed border-border brutalist-hover"
                   style={{

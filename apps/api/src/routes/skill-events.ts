@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { getSupabaseServerClient } from "@tensorcraft/supabase";
 import { isValidThemeSlug } from "@tensorcraft/shared";
 import { authMiddleware } from "../middleware/auth";
+import { logger } from "../lib/logger";
 import type { AppEnv } from "../types";
 
 const VALID_EVENT_TYPES = [
@@ -147,7 +148,10 @@ skillEvents.post("/batch", async (c) => {
   );
 
   if (error) {
-    console.error("Failed to batch insert skill events:", error);
+    logger.error(
+      { err: error, route: "skill-events.batch" },
+      "Failed to batch insert skill events",
+    );
     return c.json({ error: "Failed to record events" }, 500);
   }
 

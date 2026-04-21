@@ -22,7 +22,8 @@ Set these in Vercel Environment Variables dashboard or `.env.local` for local de
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Supabase anonymous (public) key |
 | `NEXT_PUBLIC_API_URL` | Yes | API service URL (e.g., `https://api.tensorcraft.app`) |
 | `NEXT_PUBLIC_POSTHOG_KEY` | No | PostHog project API key for product analytics |
-| `NEXT_PUBLIC_POSTHOG_HOST` | No | PostHog instance URL (default: `https://eu.posthog.com`) |
+| `NEXT_PUBLIC_POSTHOG_HOST` | No | PostHog instance URL — **must be EU** (`https://eu.posthog.com`) for GDPR residency |
+| `NEXT_PUBLIC_SENTRY_DSN` | No | Sentry DSN for client + server + edge error tracking (EU-region project) |
 | `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` | No | Domain registered in Plausible (e.g., `tensorcraft.app`) |
 
 ### API (`apps/api`)
@@ -41,6 +42,9 @@ Set these in Fly.io secrets or `.env` for local dev:
 | `UPSTASH_REDIS_REST_URL` | No | Upstash Redis REST API URL for distributed rate limiting |
 | `UPSTASH_REDIS_REST_TOKEN` | No | Upstash Redis REST API token |
 | `ADMIN_API_KEY` | Yes | API key for admin endpoints (used by CI/scripts as fallback to role-based auth) |
+| `SENTRY_DSN` | No | Sentry DSN for the API (EU-region project) |
+| `POSTHOG_KEY` | No | PostHog server-side key for webhook-triggered conversion events |
+| `POSTHOG_HOST` | No | PostHog host — **must be EU** (`https://eu.posthog.com`) |
 
 ### Optional Integrations (`apps/api`)
 
@@ -55,6 +59,9 @@ Set these in Fly.io secrets or `.env` for local dev:
 
 #### Kit (ConvertKit) Email
 
+See [`email-setup.md`](./email-setup.md) for SPF / DKIM / DMARC wiring and the
+bounce-webhook configuration.
+
 | Variable | Required | Description |
 |----------|----------|-------------|
 | `KIT_API_KEY` | No | Kit API key |
@@ -65,6 +72,9 @@ Set these in Fly.io secrets or `.env` for local dev:
 | `KIT_TAG_ONBOARDED` | No | Numeric tag ID for onboarded lifecycle event |
 | `KIT_TAG_FIRST_LESSON` | No | Numeric tag ID for first_lesson lifecycle event |
 | `KIT_TAG_CAPSTONE` | No | Numeric tag ID for capstone lifecycle event |
+| `KIT_TAG_EMAIL_ALERTS` | No | Tag ID for "email on lesson complete" (toggled in /settings) |
+| `KIT_TAG_WEEKLY_DIGEST` | No | Tag ID for Sunday progress digest (toggled in /settings) |
+| `KIT_WEBHOOK_SECRET` | No | Shared secret for `POST /api/webhooks/kit-bounce` (required for bounce monitoring) |
 
 #### Resend (Issue Notifications)
 
@@ -177,22 +187,59 @@ Limit: 120 requests per minute per IP. The Stripe webhook route is exempt.
 
 ## Monitoring
 
-### Error Tracking
+### Error Tracking — Sentry
 
-The API includes a structured error logging utility (`apps/api/src/lib/error-tracking.ts`) that outputs JSON-formatted errors:
+Both apps are wired to Sentry (Phase 6 §6g). Initialization is gated
+on the DSN env vars, so dev/preview without a DSN runs as a complete
+no-op.
 
-```json
-{
-  "level": "error",
-  "timestamp": "2026-03-13T12:00:00.000Z",
-  "message": "Payment processing failed",
-  "source": "payments.webhook",
-  "userId": "uuid",
-  "stack": "Error: ..."
-}
-```
+- **Web (`apps/web`)** — `@sentry/nextjs` initialized via
+  `sentry.client.config.ts`, `sentry.server.config.ts`, and
+  `sentry.edge.config.ts`. Registered through `instrumentation.ts`.
+  DSN: `NEXT_PUBLIC_SENTRY_DSN`.
+  - `tracesSampleRate: 0.1`
+  - `replaysSessionSampleRate: 0`
+  - `replaysOnErrorSampleRate: 1.0`
+  - Hydration-mismatch and browser-extension noise are filtered out
+    via `ignoreErrors`.
+  - `error.tsx` and `global-error.tsx` call `Sentry.captureException`
+    so both route-level and app-level boundaries report.
+- **API (`apps/api`)** — `@sentry/node` initialized at the top of
+  `src/index.ts` (before Hono). DSN: `SENTRY_DSN`.
+  - A `sentryMiddleware` tags each request's Sentry scope with
+    `requestId`, `route`, and `method` so every captured error is
+    correlated to a Hono request ID.
+  - `unhandledRejection` and `uncaughtException` are forwarded.
+  - `app.onError` calls `Sentry.captureException` with the same tags.
 
-This is designed as a drop-in replacement for Sentry — when ready, swap the console calls with `Sentry.captureException()`.
+**PII scrubbing**: `beforeSend` hooks in every config strip
+`event.user` (id/email/username/ip), `cookie`/`authorization` headers,
+and any `extra.email` / `extra.user_id` before the event leaves the
+runtime. See `docs/privacy-compliance.md` for the full policy.
+
+Separate Sentry projects must be created for web and API, both in the
+EU region. Data Processing Agreement with Sentry must be signed before
+production launch (see `docs/privacy-compliance.md`).
+
+### Product Analytics — PostHog (EU instance)
+
+- **Web** — `apps/web/lib/posthog.ts` handles client-side init,
+  mounted via `apps/web/app/posthog-provider.tsx`. Consent-gated via
+  the `tc-cookie-consent` localStorage flag.
+- **API** — `apps/api/src/lib/posthog.ts` exposes a `posthog-node`
+  client for webhook-triggered conversion events. Only constructed
+  when `POSTHOG_KEY` is set.
+
+Host **must** be `https://eu.posthog.com` (enforced by default in
+both init paths) for GDPR data residency. DPA required — see
+`docs/privacy-compliance.md`.
+
+### Legacy stub
+
+The earlier `apps/api/src/lib/error-tracking.ts` utility remains as a
+plain structured-JSON logger for call sites that predate Sentry. New
+code should use `Sentry.captureException` or the per-request
+`c.get("logger")` Pino child instead.
 
 ### Health Check
 
@@ -210,3 +257,66 @@ This is designed as a drop-in replacement for Sentry — when ready, swap the co
 - [ ] Admin API key set for admin endpoints
 - [ ] Rate limiting configured (Redis for multi-instance)
 - [ ] HTTPS enforced on all endpoints
+
+---
+
+## Performance & Bundle Budgets
+
+### Core Web Vitals (Phase 6c targets)
+
+- LCP (Largest Contentful Paint) < 2.5s
+- CLS (Cumulative Layout Shift) < 0.1
+- INP (Interaction to Next Paint) < 200ms
+
+Enforced via Lighthouse CI on every pull request — see
+`.github/workflows/lighthouse.yml`, `.github/lighthouserc.json`, and
+`.github/lighthouse-budget.json`. Category thresholds:
+
+| Category | Min score |
+|----------|-----------|
+| Performance | 0.90 |
+| Accessibility | 0.95 |
+| Best Practices | 0.90 |
+| SEO | 0.90 |
+
+Tested URLs: `/`, `/pricing`, `/themes`, `/learn`. Dashboard + settings
+require auth and are skipped until a test-mode session is plumbed through
+the middleware.
+
+### First-load JS budgets
+
+Measured from `next build` output (`apps/web/`). Budgets are ceilings — if a
+PR exceeds them, investigate before merging. Values below reflect
+2026-04-21 baseline.
+
+| Route | First-load JS | Budget |
+|-------|---------------|--------|
+| `/` (landing) | ~163 kB | **≤ 200 kB** |
+| `/pricing` | ~240 kB | **≤ 250 kB** |
+| `/onboarding` | ~237 kB | **≤ 250 kB** |
+| `/themes` | ~170 kB | **≤ 200 kB** |
+| `/dashboard` | ~120 kB | **≤ 200 kB** |
+| `/themes/[slug]/[module]/[lesson]` (exercise) | ~473 kB | **≤ 500 kB** |
+| Shared chunks | ~106 kB | **≤ 120 kB** |
+
+The lesson route is heaviest because it lazy-loads Sandpack
+(`@codesandbox/sandpack-react`, ~500 kB gzipped on first use) via
+`React.lazy` — it is code-split and not on the critical path. See
+`packages/ui/src/mdx/exercise.tsx`.
+
+### Running bundle analysis locally
+
+```bash
+pnpm --filter @tensorcraft/web analyze
+```
+
+This runs `ANALYZE=true next build`, which opens HTML treemaps for
+client/server/edge chunks. Use them to identify regressions before PR.
+
+### Animation budget
+
+Decorative effects in `@tensorcraft/ui` (see
+`packages/ui/src/effects/index.ts`) respect `prefers-reduced-motion` and
+pause via `IntersectionObserver` when scrolled out of view. At most 3
+animations should run per viewport at any time; keep this in mind when
+composing landing / marketing pages.

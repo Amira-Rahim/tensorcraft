@@ -13,9 +13,11 @@ vi.mock("next/font/google", () => ({
 vi.mock("./globals.css", () => ({}));
 
 import { metadata as layoutMetadata } from "./layout";
+import { metadata as homeMetadata } from "./page";
 import { metadata as termsMetadata } from "./terms/page";
 import { metadata as privacyMetadata } from "./privacy/page";
 import { metadata as pricingMetadata } from "./pricing/page";
+import { metadata as themesMetadata } from "./themes/page";
 import { metadata as dashboardMetadata } from "./dashboard/page";
 import { metadata as settingsMetadata } from "./settings/page";
 import { metadata as purchaseSuccessMetadata } from "./dashboard/purchase-success/page";
@@ -135,9 +137,19 @@ describe("SEO metadata", () => {
       );
     });
 
-    it("has canonical URL", () => {
-      expect(layoutMetadata.alternates?.canonical).toBe(
+    it("root layout does not set a canonical (avoids cascading to all pages)", () => {
+      expect(layoutMetadata.alternates?.canonical).toBeUndefined();
+    });
+
+    it("home page owns the root canonical URL", () => {
+      expect(homeMetadata.alternates?.canonical).toBe(
         "https://tensorcraft.app",
+      );
+    });
+
+    it("themes index has its own canonical URL", () => {
+      expect(themesMetadata.alternates?.canonical).toBe(
+        "https://tensorcraft.app/themes",
       );
     });
   });

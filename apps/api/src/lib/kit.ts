@@ -131,6 +131,63 @@ export async function tagSubscriber(
 }
 
 /**
+ * Remove a tag from a subscriber.
+ *
+ * Kit v3: `POST /tags/{tag_id}/unsubscribe` with `{ email }`. This is
+ * how we de-list a user from a lifecycle/notification sequence when
+ * they toggle the corresponding preference OFF in /settings.
+ *
+ * Returns `null` if the subscriber wasn't tagged to begin with — Kit
+ * returns a 404/422 for that case and we treat it as a no-op rather
+ * than a failure (idempotent from the caller's perspective).
+ */
+export async function removeTagFromSubscriber(
+  email: string,
+  tagId: string,
+): Promise<KitSubscriber | null> {
+  try {
+    const data = await kitFetch<KitSubscriberResponse>(
+      `/tags/${tagId}/unsubscribe`,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          api_secret: getApiSecret(),
+          email,
+        }),
+      },
+    );
+    return data.subscriber;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Fully unsubscribe a subscriber from the account (all sequences).
+ *
+ * Kit v3: `PUT /unsubscribe` with `{ email }`. Use this only for a
+ * full opt-out; per-tag preference toggling should prefer
+ * `removeTagFromSubscriber` so the user can re-enable a single
+ * sequence later without losing the rest of their subscription state.
+ */
+export async function unsubscribeFromAll(
+  email: string,
+): Promise<KitSubscriber | null> {
+  try {
+    const data = await kitFetch<KitSubscriberResponse>("/unsubscribe", {
+      method: "PUT",
+      body: JSON.stringify({
+        api_secret: getApiSecret(),
+        email,
+      }),
+    });
+    return data.subscriber;
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Look up a subscriber by email address.
  * Returns null if the subscriber is not found.
  */

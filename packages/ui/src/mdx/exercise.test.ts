@@ -38,10 +38,11 @@ describe("parseAndRunTests", () => {
     const testCode =
       "it('adds numbers', function() { expect(add(1, 2)).toBe(3); });";
 
-    const results = await parseAndRunTests(userCode, testCode);
+    const { results, logs } = await parseAndRunTests(userCode, testCode);
     expect(results).toHaveLength(1);
     expect(results[0].passed).toBe(true);
     expect(results[0].name).toBe("adds numbers");
+    expect(logs).toEqual([]);
   });
 
   it("runs a failing test with error message", async () => {
@@ -49,7 +50,7 @@ describe("parseAndRunTests", () => {
     const testCode =
       "it('adds numbers', function() { expect(add(1, 2)).toBe(3); });";
 
-    const results = await parseAndRunTests(userCode, testCode);
+    const { results } = await parseAndRunTests(userCode, testCode);
     expect(results).toHaveLength(1);
     expect(results[0].passed).toBe(false);
     expect(results[0].error).toBeDefined();
@@ -61,7 +62,7 @@ describe("parseAndRunTests", () => {
     const testCode =
       "it('resolves value', async function() { var v = await fetchValue(); expect(v).toBe(42); });";
 
-    const results = await parseAndRunTests(userCode, testCode);
+    const { results } = await parseAndRunTests(userCode, testCode);
     expect(results).toHaveLength(1);
     expect(results[0].passed).toBe(true);
   });
@@ -75,7 +76,7 @@ describe("parseAndRunTests", () => {
       });
     `;
 
-    const results = await parseAndRunTests(userCode, testCode);
+    const { results } = await parseAndRunTests(userCode, testCode);
     expect(results).toHaveLength(2);
     expect(results.every((r) => r.passed)).toBe(true);
     expect(results[0].name).toBe("double > doubles 2");
@@ -86,7 +87,7 @@ describe("parseAndRunTests", () => {
     const testCode =
       "it('is close to 0.3', function() { expect(result).toBeCloseTo(0.3, 5); });";
 
-    const results = await parseAndRunTests(userCode, testCode);
+    const { results } = await parseAndRunTests(userCode, testCode);
     expect(results).toHaveLength(1);
     expect(results[0].passed).toBe(true);
   });
@@ -97,7 +98,7 @@ var t = tf.tensor([1, 2, 3]);`;
     const testCode =
       "it('creates tensor', function() { expect(t.shape).toEqual([3]); });";
 
-    const results = await parseAndRunTests(userCode, testCode);
+    const { results } = await parseAndRunTests(userCode, testCode);
     expect(results).toHaveLength(1);
     expect(results[0].passed).toBe(true);
   });
@@ -112,7 +113,7 @@ var t = tf.tensor([1, 2, 3]);`;
       });
     `;
 
-    const results = await parseAndRunTests(userCode, testCode);
+    const { results } = await parseAndRunTests(userCode, testCode);
     expect(results).toHaveLength(2);
     expect(results.every((r) => r.passed)).toBe(true);
   });
@@ -126,7 +127,7 @@ var t = tf.tensor([1, 2, 3]);`;
     const testCode =
       "it('adds element-wise', function() { expect(Array.from(c.dataSync())).toEqual([5, 7, 9]); });";
 
-    const results = await parseAndRunTests(userCode, testCode);
+    const { results } = await parseAndRunTests(userCode, testCode);
     expect(results).toHaveLength(1);
     expect(results[0].passed).toBe(true);
   });
@@ -135,7 +136,7 @@ var t = tf.tensor([1, 2, 3]);`;
     const userCode = "function broken( { return }";
     const testCode = "it('runs', function() { expect(true).toBe(true); });";
 
-    const results = await parseAndRunTests(userCode, testCode);
+    const { results } = await parseAndRunTests(userCode, testCode);
     expect(results).toHaveLength(1);
     expect(results[0].passed).toBe(false);
     expect(results[0].name).toBe("Code execution");
@@ -145,9 +146,37 @@ var t = tf.tensor([1, 2, 3]);`;
     const userCode = "while(true) {}";
     const testCode = "it('runs', function() { expect(true).toBe(true); });";
 
-    const results = await parseAndRunTests(userCode, testCode);
+    const { results } = await parseAndRunTests(userCode, testCode);
     expect(results).toHaveLength(1);
     expect(results[0].passed).toBe(false);
     expect(results[0].error).toMatch(/timed out/i);
   }, 15_000);
+
+  // Phase 11 §11d Wave 3 — parseAndRunTests now returns { results, logs }
+  // so the Exercise component can render a ConsolePanel. The existing tests
+  // above exercise the `results` shape; these cover the new `logs` shape.
+  it("always returns a { results, logs } outcome object", async () => {
+    const userCode = "var x = 1;";
+    const testCode = "it('ok', function() { expect(1).toBe(1); });";
+
+    const outcome = await parseAndRunTests(userCode, testCode);
+    expect(outcome).toHaveProperty("results");
+    expect(outcome).toHaveProperty("logs");
+    expect(Array.isArray(outcome.results)).toBe(true);
+    expect(Array.isArray(outcome.logs)).toBe(true);
+  });
+
+  it("captures console.error as an error-level log entry", async () => {
+    // `console.error` runs during harness setup (no test-level `expect` needed
+    // to fail), so even if the surrounding harness is misbehaving the log
+    // capture path still fires before any failure.
+    const userCode = "console.error('boom');";
+    const testCode = "it('runs', function() { expect(true).toBe(true); });";
+
+    const { logs } = await parseAndRunTests(userCode, testCode);
+    expect(logs.length).toBeGreaterThanOrEqual(1);
+    const errorEntries = logs.filter((l) => l.level === "error");
+    expect(errorEntries.length).toBeGreaterThanOrEqual(1);
+    expect(errorEntries[0].message).toContain("boom");
+  });
 });

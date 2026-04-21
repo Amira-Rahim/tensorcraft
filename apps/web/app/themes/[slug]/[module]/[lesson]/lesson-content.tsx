@@ -23,7 +23,7 @@ import {
 import type { ExerciseData, ExerciseSubmitResult } from "@tensorcraft/ui";
 
 import type { Framework } from "@tensorcraft/shared";
-import { trackExerciseSubmitted } from "@/lib/analytics";
+import { trackExerciseSubmitted, trackHintRequested } from "@/lib/analytics";
 
 interface LessonContentProps {
   lesson: {
@@ -115,7 +115,20 @@ export function LessonContent({
         });
       });
 
-      trackExerciseSubmitted(themeId, lessonId, result.passed, result.score);
+      trackExerciseSubmitted(
+        themeId,
+        lessonId,
+        result.passed,
+        result.score,
+        result.exerciseSlug,
+      );
+    },
+    [themeId, lessonId],
+  );
+
+  const handleHintRevealed = useCallback(
+    (hintLevel: 1 | 2 | 3) => {
+      trackHintRequested(hintLevel, { themeId, lessonId });
     },
     [themeId, lessonId],
   );
@@ -152,7 +165,13 @@ export function LessonContent({
       Concept: wrapVisibility("Concept", Concept),
       Dialogue: wrapVisibility("Dialogue", Dialogue),
       CodeBlock: wrapVisibility("CodeBlock", CodeBlock),
-      HintPanel: wrapVisibility("HintPanel", HintPanel),
+      HintPanel: (props: { hints: unknown }) =>
+        shouldShow("HintPanel") ? (
+          <HintPanel
+            {...(props as { hints: undefined })}
+            onHintRevealed={handleHintRevealed}
+          />
+        ) : null,
       InteractiveDemo: wrapVisibility("InteractiveDemo", InteractiveDemo),
       KeyTakeaways: wrapVisibility("KeyTakeaways", KeyTakeaways),
       LearningObjectives: wrapVisibility(
@@ -172,11 +191,23 @@ export function LessonContent({
         ) : null,
     };
 
+    // Derive the optional bridge-hint payload from lesson.concept.bridge
+    // so the Exercise can surface the FE↔ML reminder without reading
+    // frontmatter itself.
+    const bridgeHint = lesson.concept.bridge
+      ? {
+          feTitle: lesson.concept.bridge.feTitle,
+          mlTitle: lesson.concept.bridge.mlTitle,
+          tier: lesson.concept.bridge.tier,
+        }
+      : undefined;
+
     if (themeId && lessonId) {
       base.Exercise = (props: { slug: string }) =>
         shouldShow("Exercise") ? (
           <Exercise
             {...props}
+            bridge={bridgeHint}
             onSubmit={(result: ExerciseSubmitResult) => {
               handleExerciseSubmit(result);
               if (result.passed) {
@@ -186,7 +217,10 @@ export function LessonContent({
           />
         ) : null;
     } else {
-      base.Exercise = wrapVisibility("Exercise", Exercise);
+      base.Exercise = (props: { slug: string }) =>
+        shouldShow("Exercise") ? (
+          <Exercise {...props} bridge={bridgeHint} />
+        ) : null;
     }
 
     base.Section = (props: { name: string; children: React.ReactNode }) =>
@@ -197,9 +231,11 @@ export function LessonContent({
     themeId,
     lessonId,
     handleExerciseSubmit,
+    handleHintRevealed,
     userFramework,
     shouldShow,
     onExerciseComplete,
+    lesson.concept.bridge,
   ]);
 
   const Content = useMemo(() => {
@@ -236,7 +272,7 @@ export function LessonContent({
       >
         <Content />
         {shouldShow("HintPanel") && lesson.hints && (
-          <HintPanel hints={lesson.hints} />
+          <HintPanel hints={lesson.hints} onHintRevealed={handleHintRevealed} />
         )}
       </div>
     </ExerciseDataProvider>

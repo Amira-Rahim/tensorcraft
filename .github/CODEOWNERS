@@ -1,0 +1,19 @@
+# Tensorcraft CODEOWNERS
+#
+# Default ownership: repository owner reviews everything unless a more specific
+# rule matches below. Branch protection should require at least one review from
+# these owners before merging to main.
+#
+# Syntax: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-configuration/customizing-your-repository/about-code-owners
+
+# Default owner for the entire repo
+* @amirasalah
+
+# CI/CD and infrastructure changes warrant extra scrutiny
+/.github/ @amirasalah
+/docs/deployment-guide.md @amirasalah
+/docs/ci-cd.md @amirasalah
+/supabase/ @amirasalah
+
+# Content (lessons, exercises) — owner approves pedagogy changes
+/packages/content/ @amirasalah

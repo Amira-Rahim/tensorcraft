@@ -14,7 +14,48 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function PurchaseSuccessPage() {
+/**
+ * Format a USD amount for the receipt. Purchases are stored in dollars
+ * (not cents), so we pass the number directly to Intl.NumberFormat.
+ */
+function formatCurrency(amount: number, currency = "USD"): string {
+  try {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(amount);
+  } catch {
+    return `$${amount.toFixed(2)} ${currency}`;
+  }
+}
+
+/**
+ * Format a date as `YYYY-MM-DD HH:MM UTC` in mono-friendly ISO-ish form.
+ * Falls back to the raw string if parsing fails.
+ */
+function formatReceiptDate(raw: string): string {
+  const d = new Date(raw);
+  if (Number.isNaN(d.getTime())) return raw;
+  const pad = (n: number): string => String(n).padStart(2, "0");
+  return (
+    `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())} ` +
+    `${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())} UTC`
+  );
+}
+
+/** Last-8 hash for `stripe_session_id`, safe for display. */
+function shortenSessionId(sessionId: string | null | undefined): string {
+  if (!sessionId) return "—";
+  return sessionId.length <= 8 ? sessionId : sessionId.slice(-8);
+}
+
+export default async function PurchaseSuccessPage({
+  searchParams,
+}: {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+}) {
   const supabase = await getSupabaseServerClient();
   const {
     data: { user },
@@ -22,105 +63,259 @@ export default async function PurchaseSuccessPage() {
 
   if (!user) redirect("/auth");
 
-  // Get most recent purchase
-  const { data: purchase } = await supabase
-    .from("purchases")
-    .select("plan_id, theme_ids, amount, created_at")
-    .eq("user_id", user.id)
-    .eq("status", "completed")
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .single();
+  // Stripe's success_url embeds `?session_id={CHECKOUT_SESSION_ID}`.
+  // When present we look up the exact purchase row; otherwise fall back to
+  // the user's most recent completed purchase (defends against users who
+  // land here via direct nav or refresh without the query param).
+  const params = (await searchParams) ?? {};
+  const rawSessionId = params.session_id;
+  const sessionId =
+    typeof rawSessionId === "string"
+      ? rawSessionId
+      : Array.isArray(rawSessionId)
+        ? rawSessionId[0]
+        : undefined;
+
+  const selectCols =
+    "plan_id, theme_ids, amount, created_at, stripe_session_id";
+
+  let purchase: {
+    plan_id: string;
+    theme_ids: string[];
+    amount: number;
+    created_at: string;
+    stripe_session_id: string | null;
+  } | null = null;
+
+  if (sessionId) {
+    const { data } = await supabase
+      .from("purchases")
+      .select(selectCols)
+      .eq("user_id", user.id)
+      .eq("stripe_session_id", sessionId)
+      .eq("status", "completed")
+      .maybeSingle();
+    purchase = data ?? null;
+  }
+
+  if (!purchase) {
+    const { data } = await supabase
+      .from("purchases")
+      .select(selectCols)
+      .eq("user_id", user.id)
+      .eq("status", "completed")
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    purchase = data ?? null;
+  }
 
   const purchasedThemeIds: string[] = purchase?.theme_ids ?? [];
-  const firstTheme = purchasedThemeIds[0] ?? DEFAULT_THEME;
-  const theme = themes[firstTheme];
-  const themeModules = theme ? getModules(firstTheme) : [];
+  const firstThemeSlug = purchasedThemeIds[0] ?? DEFAULT_THEME;
+  const firstTheme = themes[firstThemeSlug];
+  const firstThemeModules = firstTheme ? getModules(firstThemeSlug) : [];
+
+  // Build the access-card rows (one per purchased theme) so we can
+  // render a "Start Now" CTA for each.
+  const accessThemes = purchasedThemeIds
+    .map((slug) => ({ slug, manifest: themes[slug] }))
+    .filter(
+      (
+        entry,
+      ): entry is {
+        slug: string;
+        manifest: (typeof themes)[string];
+      } => Boolean(entry.manifest),
+    );
 
   return (
     <main className="min-h-screen bg-page relative overflow-hidden">
       <AmbientBackground count={220} />
-      <div className="max-w-2xl mx-auto px-6 py-20 text-center relative z-10">
-        {/* Confirmation hero */}
-        <div
-          className="text-5xl mb-6"
-          style={{ color: theme?.palette.primary ?? "var(--tc-primary)" }}
-        >
-          &#10003;
+      <div className="max-w-3xl mx-auto px-6 py-20 relative z-10">
+        {/* ── Hero ─────────────────────────────────── */}
+        <div className="text-center mb-12">
+          <div
+            className="text-5xl mb-6"
+            style={{
+              color: firstTheme?.palette.primary ?? "var(--tc-primary)",
+            }}
+          >
+            &#10003;
+          </div>
+          <h1 className="text-4xl sm:text-6xl font-bold font-mono uppercase tracking-tight mb-4 text-text-primary">
+            You&apos;re In
+          </h1>
+          <p className="text-base sm:text-lg text-text-muted max-w-xl mx-auto">
+            {firstTheme
+              ? `${firstTheme.displayName} is now fully unlocked. All ${firstThemeModules.length} modules are ready.`
+              : "Your purchase is confirmed. All content is now unlocked."}
+          </p>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-bold font-mono mb-3 text-text-primary">
-          You&apos;re In
-        </h1>
-        <p className="text-lg mb-8 text-text-muted">
-          {theme
-            ? `${theme.displayName} is now fully unlocked. All ${themeModules.length} modules are ready.`
-            : "Your purchase is confirmed. All content is now unlocked."}
-        </p>
 
         {purchase && (
-          <div className="inline-flex items-center gap-2 px-4 py-2 text-sm font-mono mb-12 border border-border bg-surface-raised text-text-muted">
-            <PurchaseAnalytics
-              planId={purchase.plan_id}
-              amount={purchase.amount}
-            />
-            <span className="text-text-primary">{purchase.plan_id}</span>
-            <span>&middot;</span>
-            <span>${purchase.amount}</span>
-            <span>&middot;</span>
-            <span>Lifetime access</span>
-          </div>
+          <PurchaseAnalytics
+            planId={purchase.plan_id}
+            amount={purchase.amount}
+          />
         )}
 
-        {/* Unlocked modules list */}
-        {theme && themeModules.length > 0 && (
-          <div className="p-6 mb-10 text-left bg-surface-raised border border-border">
-            <h2 className="text-xs font-semibold font-mono uppercase tracking-widest mb-4 text-text-muted">
-              Unlocked Modules
-            </h2>
-            <ul className="space-y-2">
-              {themeModules.map((mod) => (
-                <li key={mod.slug} className="flex items-center gap-3">
-                  <span
-                    className="w-5 h-5 flex items-center justify-center"
-                    style={{
-                      background: `${theme.palette.primary}20`,
-                      color: theme.palette.primary,
-                    }}
-                  >
-                    <svg
-                      width="10"
-                      height="10"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="3"
-                    >
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
-                  </span>
-                  <span className="text-xs font-mono text-text-muted">
-                    M{mod.order}
-                  </span>
-                  <span className="text-sm text-text-primary">{mod.title}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        {/* Next steps */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-          <Link
-            href={`/themes/${firstTheme}`}
-            className="inline-flex items-center justify-center h-12 px-8 text-[15px] font-medium font-mono bg-primary text-page border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow"
+        {/* ── Access Card ──────────────────────────── */}
+        {accessThemes.length > 0 && (
+          <section
+            aria-labelledby="access-card-heading"
+            className="rounded-none border-2 border-border bg-surface-raised brutalist-shadow p-6 sm:p-8 mb-10"
           >
-            Start Learning &rarr;
+            <div className="flex items-baseline justify-between mb-6">
+              <h2
+                id="access-card-heading"
+                className="text-xs font-semibold font-mono uppercase tracking-widest text-text-muted"
+              >
+                Access Granted
+              </h2>
+              <span className="text-xs font-mono text-text-muted">
+                {accessThemes.length}
+                {accessThemes.length === 1 ? " theme" : " themes"}
+              </span>
+            </div>
+            <ul className="space-y-3">
+              {accessThemes.map(({ slug, manifest }) => {
+                const moduleCount = getModules(slug).length;
+                return (
+                  <li
+                    key={slug}
+                    className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border border-border p-4 bg-page"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <span
+                        aria-hidden="true"
+                        className="inline-block w-3 h-3 shrink-0"
+                        style={{ background: manifest.palette.primary }}
+                      />
+                      <div className="min-w-0">
+                        <div className="text-sm sm:text-base font-semibold text-text-primary truncate">
+                          {manifest.displayName}
+                        </div>
+                        <div className="text-xs font-mono text-text-muted">
+                          {moduleCount} modules &middot; {slug}
+                        </div>
+                      </div>
+                    </div>
+                    <Link
+                      href={`/themes/${slug}`}
+                      data-testid={`access-start-${slug}`}
+                      className="inline-flex items-center justify-center h-11 px-5 text-sm font-medium font-mono rounded-none border-2 border-primary bg-primary text-page hover:bg-transparent hover:text-primary transition-colors brutalist-hover"
+                    >
+                      Start Now &rarr;
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        )}
+
+        {/* ── Receipt ──────────────────────────────── */}
+        {purchase && (
+          <section
+            aria-labelledby="receipt-heading"
+            data-testid="purchase-receipt"
+            className="rounded-none border-2 border-border bg-surface-raised p-6 sm:p-8 mb-10 font-mono"
+          >
+            <div className="flex items-baseline justify-between mb-5">
+              <h2
+                id="receipt-heading"
+                className="text-xs font-semibold uppercase tracking-widest text-text-muted"
+              >
+                Receipt
+              </h2>
+              <span className="text-xs text-text-muted">
+                TC-{shortenSessionId(purchase.stripe_session_id)}
+              </span>
+            </div>
+            <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3 text-sm">
+              <div className="flex justify-between sm:block border-b sm:border-none border-border/50 pb-2 sm:pb-0">
+                <dt className="text-xs uppercase tracking-wider text-text-muted">
+                  Amount
+                </dt>
+                <dd
+                  data-testid="receipt-amount"
+                  className="text-text-primary sm:mt-1"
+                >
+                  {formatCurrency(purchase.amount)}
+                </dd>
+              </div>
+              <div className="flex justify-between sm:block border-b sm:border-none border-border/50 pb-2 sm:pb-0">
+                <dt className="text-xs uppercase tracking-wider text-text-muted">
+                  Currency
+                </dt>
+                <dd className="text-text-primary sm:mt-1">USD</dd>
+              </div>
+              <div className="flex justify-between sm:block border-b sm:border-none border-border/50 pb-2 sm:pb-0">
+                <dt className="text-xs uppercase tracking-wider text-text-muted">
+                  Plan
+                </dt>
+                <dd className="text-text-primary sm:mt-1">
+                  {purchase.plan_id}
+                </dd>
+              </div>
+              <div className="flex justify-between sm:block border-b sm:border-none border-border/50 pb-2 sm:pb-0">
+                <dt className="text-xs uppercase tracking-wider text-text-muted">
+                  Date
+                </dt>
+                <dd
+                  data-testid="receipt-date"
+                  className="text-text-primary sm:mt-1"
+                >
+                  {formatReceiptDate(purchase.created_at)}
+                </dd>
+              </div>
+              <div className="flex justify-between sm:block border-b sm:border-none border-border/50 pb-2 sm:pb-0 sm:col-span-2">
+                <dt className="text-xs uppercase tracking-wider text-text-muted">
+                  Themes
+                </dt>
+                <dd
+                  data-testid="receipt-themes"
+                  className="text-text-primary sm:mt-1 break-all"
+                >
+                  {purchase.theme_ids.length > 0
+                    ? purchase.theme_ids.join(", ")
+                    : "—"}
+                </dd>
+              </div>
+              <div className="flex justify-between sm:block sm:col-span-2">
+                <dt className="text-xs uppercase tracking-wider text-text-muted">
+                  Session
+                </dt>
+                <dd
+                  data-testid="receipt-session"
+                  className="text-text-primary sm:mt-1"
+                >
+                  …{shortenSessionId(purchase.stripe_session_id)}
+                </dd>
+              </div>
+            </dl>
+            <p className="mt-6 pt-5 border-t border-border/50 text-xs text-text-muted">
+              Lifetime access. No subscription. Keep this receipt for your
+              records.
+            </p>
+          </section>
+        )}
+
+        {/* ── CTAs ─────────────────────────────────── */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3">
+          <Link
+            href={`/themes/${firstThemeSlug}`}
+            data-testid="cta-first-lesson"
+            className="inline-flex items-center justify-center h-12 px-8 text-[15px] font-medium font-mono rounded-none border-2 border-primary bg-primary text-page hover:bg-transparent hover:text-primary transition-colors brutalist-hover brutalist-shadow"
+          >
+            Start your first lesson &rarr;
           </Link>
           <Link
-            href="/dashboard"
-            className="inline-flex items-center justify-center h-12 px-8 text-[15px] font-medium font-mono border border-border text-text-muted hover:text-text-primary hover:border-primary/30 transition-all brutalist-hover"
+            href="/themes"
+            data-testid="cta-view-all-themes"
+            className="inline-flex items-center justify-center h-12 px-8 text-[15px] font-medium font-mono rounded-none border-2 border-border text-text-muted hover:text-text-primary hover:border-primary transition-colors brutalist-hover"
           >
-            Go to Dashboard
+            View all themes
           </Link>
         </div>
       </div>

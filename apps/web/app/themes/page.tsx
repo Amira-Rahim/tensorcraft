@@ -1,29 +1,55 @@
-import Link from "next/link";
 import { themes } from "@tensorcraft/themes";
-import { PRICING, THEME_CONTENT } from "@tensorcraft/shared";
+import { PRICING, THEME_CONTENT, isValidThemeSlug } from "@tensorcraft/shared";
 import { AmbientBackground } from "@/app/components/ambient-background";
+import { getSupabaseServerClient } from "@/lib/supabase/server";
+import { ThemeCardsGrid, type ThemeCardData } from "./theme-cards-grid";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "5 ML Courses for Frontend Developers | Tensorcraft",
   description:
     "Choose your learning path — 5 themed courses from frontend to ML.",
+  alternates: { canonical: "https://tensorcraft.app/themes" },
 };
 
-export const revalidate = 3600;
+/**
+ * ThemeSelection page (Phase 11 §11d Wave 2).
+ *
+ * - Equal 5-card brutalist grid (all themes launch simultaneously — no
+ *   "coming soon" / "launched" labels per `project_launch_strategy.md`).
+ * - Per-theme <ParticleField> atmosphere driven by each theme's own
+ *   `--tc-primary` CSS variable.
+ * - Newsletter signup modal with trapped focus + Escape/click-outside close.
+ * - Per-user "Start" vs "Continue" CTA: users who own a theme see Continue.
+ */
+export default async function ThemesPage() {
+  // Resolve per-user ownership so each card can show Start vs Continue. This
+  // is a no-op (empty set) for logged-out visitors, which is fine — they
+  // simply see "Start →" everywhere.
+  const ownedThemes = await loadOwnedThemes();
 
-export default function ThemesPage() {
   const themeList = Object.values(themes);
+  const cards: ThemeCardData[] = themeList.map((theme) => ({
+    slug: theme.slug,
+    displayName: theme.displayName,
+    tagline: theme.tagline,
+    specialization: theme.specialization,
+    primary: theme.palette.primary,
+    owned: ownedThemes.has(theme.slug),
+    modulesCount: THEME_CONTENT.modulesPerTheme,
+    lessonsCount: THEME_CONTENT.totalLessonsPerTheme,
+    price: PRICING.single.price,
+  }));
 
   return (
     <main className="min-h-screen bg-page px-6 py-20 relative overflow-hidden">
       <AmbientBackground count={240} />
-      <div className="max-w-4xl mx-auto relative z-10">
+      <div className="max-w-7xl mx-auto relative z-10">
         {/* Hero */}
         <p className="font-mono text-sm text-text-muted mb-2">
           {"// FIVE THEMED WORLDS"}
         </p>
-        <h1 className="text-4xl md:text-5xl font-mono font-bold text-text-primary mb-3">
+        <h1 className="text-4xl md:text-5xl font-mono font-bold text-text-primary mb-3 tracking-tight">
           Choose Your World
         </h1>
         <p className="text-lg text-text-muted mb-6 max-w-2xl">
@@ -37,74 +63,11 @@ export default function ThemesPage() {
           required.
         </p>
 
-        {/* All themes grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {themeList.map((theme) => (
-            <Link
-              key={theme.slug}
-              href={`/themes/${theme.slug}`}
-              className="group border-2 border-border bg-surface-raised hover:border-primary/50 hover:shadow-[4px_4px_0_var(--tc-primary)] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all"
-            >
-              <div className="flex items-center justify-between px-6 py-3 border-b border-border">
-                <span
-                  className="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-xs font-mono font-semibold uppercase tracking-wider"
-                  style={{
-                    color: theme.palette.primary,
-                    background: `${theme.palette.primary}15`,
-                  }}
-                >
-                  <span
-                    className="w-1.5 h-1.5"
-                    style={{ background: theme.palette.primary }}
-                  />
-                  LIVE
-                </span>
-                <span className="font-mono text-xs text-text-muted uppercase tracking-wider">
-                  {theme.specialization}
-                </span>
-              </div>
-              <div className="px-6 py-6">
-                <h2
-                  className="text-xl font-mono font-bold mb-2 tracking-tight group-hover:text-text-primary transition-colors"
-                  style={{ color: theme.palette.primary }}
-                >
-                  {theme.displayName}
-                </h2>
-                <p className="text-sm text-text-muted mb-4 leading-relaxed line-clamp-2">
-                  {theme.description}
-                </p>
-                <p className="text-xs font-mono text-text-muted mb-4">
-                  <span className="text-text-primary font-semibold">
-                    Final project:
-                  </span>{" "}
-                  {theme.modelBuilt}
-                </p>
-                <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs font-mono text-text-muted">
-                  <span>
-                    <span className="text-text-primary font-bold">
-                      {THEME_CONTENT.modulesPerTheme}
-                    </span>{" "}
-                    modules
-                  </span>
-                  <span>
-                    <span className="text-text-primary font-bold">
-                      {THEME_CONTENT.totalLessonsPerTheme}
-                    </span>{" "}
-                    lessons
-                  </span>
-                  <span>
-                    <span className="text-text-primary font-bold">
-                      ${PRICING.single.price}
-                    </span>
-                  </span>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
+        {/* Equal 5-card grid + newsletter modal */}
+        <ThemeCardsGrid cards={cards} />
 
         {/* Why 5 Themes? */}
-        <section className="mt-20">
+        <section className="mt-24">
           <h2 className="text-2xl font-mono font-bold text-text-primary mb-4 tracking-tight">
             Why 5 Themes?
           </h2>
@@ -128,4 +91,36 @@ export default function ThemesPage() {
       </div>
     </main>
   );
+}
+
+/**
+ * Fetch the set of theme slugs the current user owns. Falls back to an empty
+ * set when no session is present or the Supabase call throws (e.g. during
+ * tests that stub only part of the client surface).
+ */
+async function loadOwnedThemes(): Promise<Set<string>> {
+  try {
+    const supabase = await getSupabaseServerClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return new Set();
+
+    const { data } = await supabase
+      .from("purchases")
+      .select("theme_ids")
+      .eq("user_id", user.id)
+      .eq("status", "completed");
+
+    const owned = new Set<string>();
+    for (const row of data ?? []) {
+      if (!Array.isArray(row.theme_ids)) continue;
+      for (const slug of row.theme_ids) {
+        if (isValidThemeSlug(slug)) owned.add(slug);
+      }
+    }
+    return owned;
+  } catch {
+    return new Set();
+  }
 }

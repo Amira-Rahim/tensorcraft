@@ -1,6 +1,7 @@
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { themes } from "@tensorcraft/themes";
+import { isValidThemeSlug, THEME_SLUGS } from "@tensorcraft/shared";
 import {
   getModules,
   getModuleLessons,
@@ -48,46 +49,83 @@ export default async function CapstonePage({ params }: Props) {
   } = await supabase.auth.getUser();
   if (!user) redirect("/auth");
 
-  // Fetch all data
+  // Content
   const modules = getModules(slug);
   const allLessons = getThemeLessons(slug);
   const bridges = getLessonsWithBridges(slug);
+
+  // Progress
   const progress = await getUserProgress(user.id, slug);
   const completedLessons = progress.filter((p) => p.status === "completed");
 
-  // Group completed lessons by module
+  // Group completed lessons by module + latest completion per module
   const completedByModule = new Map<string, number>();
+  const lastCompletedAtByModule = new Map<string, string>();
   for (const p of completedLessons) {
     completedByModule.set(
       p.module_id,
       (completedByModule.get(p.module_id) ?? 0) + 1,
     );
+    if (p.completed_at) {
+      const prev = lastCompletedAtByModule.get(p.module_id);
+      if (!prev || p.completed_at > prev) {
+        lastCompletedAtByModule.set(p.module_id, p.completed_at);
+      }
+    }
   }
 
-  // Check if theme is fully complete
+  // Gate: theme must be fully complete to view the capstone
   const completedModuleCount = modules.filter((mod) => {
     const modLessons = getModuleLessons(slug, mod.slug);
-    return (completedByModule.get(mod.slug) ?? 0) >= modLessons.length;
+    return (
+      modLessons.length > 0 &&
+      (completedByModule.get(mod.slug) ?? 0) >= modLessons.length
+    );
   }).length;
 
   const isThemeComplete = completedModuleCount === modules.length;
   if (!isThemeComplete) redirect(`/themes/${slug}`);
 
-  // Fetch user profile for name
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("display_name")
-    .eq("id", user.id)
-    .single();
+  // Parallel: profile, certificate, exercise attempts, purchases
+  const [
+    { data: profile },
+    { data: certRow },
+    { data: exerciseAttemptRows },
+    { data: purchaseRows },
+  ] = await Promise.all([
+    supabase.from("profiles").select("display_name").eq("id", user.id).single(),
+    supabase
+      .from("certificates")
+      .select("id, issued_at, cert_hash, pdf_url")
+      .eq("user_id", user.id)
+      .eq("theme_id", slug)
+      .maybeSingle(),
+    supabase
+      .from("exercise_attempts")
+      .select("passed, hints_used")
+      .eq("user_id", user.id)
+      .eq("theme_id", slug)
+      .limit(1000),
+    supabase
+      .from("purchases")
+      .select("theme_ids")
+      .eq("user_id", user.id)
+      .eq("status", "completed"),
+  ]);
 
-  // Compute stats
+  const attempts = exerciseAttemptRows ?? [];
+  const exercisesPassed = attempts.filter((a) => a.passed).length;
+  const hintsUsed = attempts.reduce((sum, a) => sum + (a.hints_used ?? 0), 0);
+
+  // Bridges explored — bridges that belong to lessons the user completed.
   const completedLessonSlugs = new Set(
     completedLessons.map((p) => p.lesson_id),
   );
-  const bridgesMastered = bridges.filter((b) =>
+  const bridgesExplored = bridges.filter((b) =>
     completedLessonSlugs.has(b.lessonSlug),
   ).length;
 
+  // Average score (used in certificate footer)
   const scores = completedLessons
     .filter((p) => p.score != null)
     .map((p) => p.score as number);
@@ -96,42 +134,99 @@ export default async function CapstonePage({ params }: Props) {
       ? (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(1)
       : null;
 
-  // Time invested — sum estimated minutes from content for completed lessons
-  const lessonMinutesMap = new Map(
-    allLessons.map((l) => [l.slug, l.estimatedMinutes]),
+  // Derive owned themes for the "next theme" teaser.
+  const ownedThemes = new Set<string>();
+  for (const row of purchaseRows ?? []) {
+    if (!Array.isArray(row.theme_ids)) continue;
+    for (const t of row.theme_ids) {
+      if (isValidThemeSlug(t)) ownedThemes.add(t);
+    }
+  }
+
+  // Next theme: first theme (in canonical order) the user has not
+  // purchased and is not the current one. If the user owns them all,
+  // surface a "V1.0 coming" placeholder below.
+  const nextThemeSlug = THEME_SLUGS.find(
+    (t) => t !== slug && !ownedThemes.has(t),
   );
-  const totalMinutes = completedLessons.reduce(
-    (sum, p) => sum + (lessonMinutesMap.get(p.lesson_id) ?? 0),
-    0,
-  );
-  const totalHours = Math.round(totalMinutes / 60);
-
-  // Completion date — latest completed_at
-  const completionDate = completedLessons.reduce((latest, p) => {
-    if (!p.completed_at) return latest;
-    return !latest || p.completed_at > latest ? p.completed_at : latest;
-  }, "" as string);
-
-  const formattedDate = completionDate
-    ? new Date(completionDate).toLocaleDateString("en-US", {
-        month: "long",
-        year: "numeric",
-      })
-    : "2026";
-
-  // Next theme teaser — pick another theme that isn't the current one
-  const otherThemes = Object.values(themes).filter((t) => t.slug !== slug);
-  const teaserTheme = otherThemes[0] ?? null;
+  const nextTheme = nextThemeSlug ? themes[nextThemeSlug] : null;
+  const ownsAll = THEME_SLUGS.every((t) => ownedThemes.has(t));
 
   const displayName = profile?.display_name ?? "Engineer";
   const P = theme.palette;
 
-  // Journey data for client component
-  const journey = modules.map((mod, i) => ({
-    id: `M${String(i + 1).padStart(2, "0")}`,
-    name: mod.title.replace(/^Capstone:\s*/, ""),
-    slug: mod.slug,
-  }));
+  // Timeline data — numbered nodes with titles, completion dates, and
+  // per-module bridge titles pulled from content.
+  const bridgesByModule = new Map<string, Array<{ fe: string; ml: string }>>();
+  for (const b of bridges) {
+    const existing = bridgesByModule.get(b.moduleSlug) ?? [];
+    existing.push({ fe: b.feTitle, ml: b.mlTitle });
+    bridgesByModule.set(b.moduleSlug, existing);
+  }
+
+  const journey = modules.map((mod, i) => {
+    const rawDate = lastCompletedAtByModule.get(mod.slug);
+    const formatted = rawDate
+      ? new Date(rawDate).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+        })
+      : null;
+    const modBridges = bridgesByModule.get(mod.slug) ?? [];
+    const keyBridge = modBridges[0] ?? null;
+    return {
+      id: `M${String(i + 1).padStart(2, "0")}`,
+      name: mod.title.replace(/^Capstone:\s*/, ""),
+      slug: mod.slug,
+      completedOn: formatted,
+      keyBridgeFe: keyBridge?.fe ?? null,
+      keyBridgeMl: keyBridge?.ml ?? null,
+    };
+  });
+
+  // Certificate initial state (server). The client component will POST
+  // `/api/certificates` on mount if no row exists yet.
+  const initialCertificate = certRow
+    ? {
+        id: certRow.id as string,
+        issued_at: certRow.issued_at as string,
+        cert_hash: certRow.cert_hash as string,
+        pdf_url: (certRow.pdf_url as string | null) ?? null,
+      }
+    : null;
+
+  // Stats cards — 4-card brutalist grid.
+  const statsCards = [
+    {
+      value: `${completedLessons.length} / ${allLessons.length}`,
+      label: "Lessons Completed",
+    },
+    {
+      value: String(bridgesExplored),
+      label: "Bridges Explored",
+    },
+    {
+      value: String(hintsUsed),
+      label: "Hints Used",
+    },
+    {
+      value: String(exercisesPassed),
+      label: "Exercises Passed",
+    },
+  ];
+
+  // Certificate card stats (internal to the cert).
+  const certificateStats = [
+    {
+      value: String(completedLessons.length),
+      label: `${theme.terminology.lesson}s Completed`,
+    },
+    {
+      value: String(bridgesExplored),
+      label: "FE Bridges Mastered",
+    },
+    ...(avgScore ? [{ value: avgScore, label: "Average Score" }] : []),
+  ];
 
   return (
     <main
@@ -172,7 +267,7 @@ export default async function CapstonePage({ params }: Props) {
       >
         <Link
           href="/"
-          className="flex items-center gap-2 font-mono text-sm font-medium tracking-wider"
+          className="flex items-center gap-2 font-mono text-sm font-medium tracking-wider rounded-none focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
           style={{ color: P.text }}
         >
           <span
@@ -197,6 +292,7 @@ export default async function CapstonePage({ params }: Props) {
         <div
           className="font-mono leading-none mb-5"
           style={{ fontSize: 64, color: P.primary }}
+          aria-hidden="true"
         >
           &#x25CE;
         </div>
@@ -227,37 +323,28 @@ export default async function CapstonePage({ params }: Props) {
             fontSize: 16,
             color: P.muted,
             lineHeight: 1.7,
-            maxWidth: 500,
+            maxWidth: 520,
           }}
         >
           You&apos;ve completed every module of {theme.displayName}. You built
-          the {theme.modelBuilt.split("—")[0].trim()}. You mastered{" "}
-          {bridgesMastered} frontend bridges to ML.
+          the {theme.modelBuilt.split("—")[0].trim()}. You explored{" "}
+          {bridgesExplored} frontend bridges to ML.
         </p>
         <CapstoneClient.ShareButton border={P.border} text={P.text} />
       </div>
 
-      {/* Stats */}
+      {/* Stats — 4-card brutalist grid */}
       <div
         className="relative z-[1] no-print"
         style={{ borderBottom: `1px solid ${P.border}` }}
+        data-testid="capstone-stats"
       >
         <div className="max-w-[1000px] mx-auto grid grid-cols-2 md:grid-cols-4">
-          {[
-            [
-              `${completedModuleCount} / ${modules.length}`,
-              `${theme.terminology.module}s`,
-            ],
-            [
-              `${completedLessons.length} / ${allLessons.length}`,
-              `${theme.terminology.lesson}s`,
-            ],
-            [String(bridgesMastered), "Bridges Mastered"],
-            [`${totalHours} h`, "Time Invested"],
-          ].map(([val, label], i) => (
+          {statsCards.map((s, i) => (
             <div
-              key={label}
+              key={s.label}
               className="text-center"
+              data-testid={`stat-card-${i}`}
               style={{
                 padding: "40px 32px",
                 borderRight: i < 3 ? `1px solid ${P.border}` : "none",
@@ -267,23 +354,27 @@ export default async function CapstonePage({ params }: Props) {
                 className="font-mono font-bold mb-2"
                 style={{ fontSize: 28, color: P.primary }}
               >
-                {val}
+                {s.value}
               </div>
               <div
                 className="font-mono"
-                style={{ fontSize: 10, color: P.muted }}
+                style={{
+                  fontSize: 10,
+                  color: P.muted,
+                  letterSpacing: "0.1em",
+                }}
               >
-                {label}
+                {s.label}
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Journey timeline */}
+      {/* Journey timeline — brutalist numbered boxes with connectors */}
       <div
-        className="relative z-[1] max-w-[900px] mx-auto"
-        style={{ padding: "56px 32px 80px" }}
+        className="relative z-[1] max-w-[980px] mx-auto"
+        style={{ padding: "56px 32px 40px" }}
       >
         <div
           className="font-mono mb-2 no-print"
@@ -303,145 +394,127 @@ export default async function CapstonePage({ params }: Props) {
             letterSpacing: "-0.01em",
           }}
         >
-          All Systems Mapped
+          All {modules.length} Modules Completed
         </h2>
 
-        {/* Timeline row */}
-        <div className="flex mb-14 overflow-x-auto no-print">
+        {/* Timeline (horizontal for desktop; wraps naturally) */}
+        <ol
+          className="flex flex-wrap gap-y-6 no-print"
+          data-testid="capstone-timeline"
+        >
           {journey.map((m, i) => (
-            <div
+            <li
               key={m.id}
-              className="flex flex-col items-center relative"
-              style={{ flex: 1, minWidth: 70 }}
+              data-testid={`timeline-node-${i}`}
+              className="relative flex flex-col items-stretch"
+              style={{ flex: "1 1 160px", minWidth: 160 }}
             >
+              {/* Node box */}
               <div
-                className="flex items-center justify-center mb-1"
+                className="rounded-none flex items-center justify-between"
                 style={{
-                  width: 28,
-                  height: 28,
-                  background: P.primary,
                   border: `2px solid ${P.primary}`,
+                  background: P.surface,
+                  padding: "14px 14px",
+                  height: 48,
                 }}
               >
                 <span
                   className="font-mono font-bold"
-                  style={{ fontSize: 10, color: P.bg }}
+                  style={{ fontSize: 11, color: P.primary }}
+                >
+                  {m.id}
+                </span>
+                <span
+                  className="font-mono font-bold"
+                  style={{ fontSize: 12, color: P.primary }}
+                  aria-label="completed"
                 >
                   &#10003;
                 </span>
               </div>
+
+              {/* Connector line */}
               {i < journey.length - 1 && (
                 <div
+                  aria-hidden="true"
                   style={{
                     position: "absolute",
+                    top: 23,
+                    right: -10,
+                    width: 10,
                     height: 2,
                     background: P.primary,
-                    top: 13,
-                    left: "calc(50% + 14px)",
-                    right: "calc(-50% + 14px)",
                   }}
                 />
               )}
-              <span
-                className="font-mono"
-                style={{ fontSize: 9, color: P.primary }}
-              >
-                {m.id}
-              </span>
-              <span
-                className="font-mono text-center mt-1"
+
+              {/* Title */}
+              <div
+                className="font-mono mt-2"
                 style={{
-                  fontSize: 9,
-                  color: P.muted,
-                  lineHeight: 1.3,
+                  fontSize: 11,
+                  color: P.text,
+                  lineHeight: 1.4,
+                  paddingRight: 8,
                 }}
               >
                 {m.name}
-              </span>
-            </div>
-          ))}
-        </div>
-
-        {/* Certificate card */}
-        <div
-          className="relative overflow-hidden print-certificate"
-          style={{
-            border: `2px solid ${P.primary}`,
-            background: P.surface,
-            padding: "40px 48px",
-          }}
-        >
-          <div
-            style={{
-              position: "absolute",
-              top: -20,
-              right: -20,
-              width: 120,
-              height: 120,
-              background: `${P.primary}0A`,
-              borderRadius: "50%",
-            }}
-          />
-          <div
-            className="font-mono mb-5"
-            style={{
-              fontSize: 9,
-              color: P.primary,
-              letterSpacing: "0.15em",
-            }}
-          >
-            // CERTIFICATE OF COMPLETION
-          </div>
-          <div
-            className="font-mono font-bold mb-1.5"
-            style={{ fontSize: 20, color: P.text }}
-          >
-            {theme.displayName} &mdash; {theme.specialization}
-          </div>
-          <div
-            className="font-mono mb-6"
-            style={{ fontSize: 12, color: P.muted }}
-          >
-            Issued to: {displayName} &middot; {formattedDate} &middot;
-            Tensorcraft
-          </div>
-          <div className="flex gap-8">
-            {[
-              [
-                String(completedLessons.length),
-                `${theme.terminology.lesson}s Completed`,
-              ],
-              [String(bridgesMastered), "FE Bridges Mastered"],
-              ...(avgScore ? [[avgScore, "Average Score"]] : []),
-            ].map(([v, l]) => (
-              <div key={l}>
-                <div
-                  className="font-mono font-bold"
-                  style={{ fontSize: 18, color: P.primary }}
-                >
-                  {v}
-                </div>
-                <div
-                  className="font-mono mt-0.5"
-                  style={{ fontSize: 9, color: P.muted }}
-                >
-                  {l}
-                </div>
               </div>
-            ))}
-          </div>
-        </div>
+              {/* Completion date */}
+              <div
+                className="font-mono mt-1"
+                style={{
+                  fontSize: 9,
+                  color: P.muted,
+                  letterSpacing: "0.05em",
+                }}
+              >
+                {m.completedOn ? `Completed ${m.completedOn}` : "Completed"}
+              </div>
+              {/* Key bridge */}
+              {m.keyBridgeFe && m.keyBridgeMl && (
+                <div
+                  className="font-mono mt-1"
+                  style={{
+                    fontSize: 9,
+                    color: P.primary,
+                    letterSpacing: "0.03em",
+                  }}
+                >
+                  {m.keyBridgeFe} &rarr; {m.keyBridgeMl}
+                </div>
+              )}
+            </li>
+          ))}
+        </ol>
+      </div>
 
-        {/* Download button */}
-        <div className="mt-8 no-print">
-          <CapstoneClient.CertificateDownloadButton />
-        </div>
+      {/* Certificate card + teaser */}
+      <div
+        className="relative z-[1] max-w-[980px] mx-auto"
+        style={{ padding: "24px 32px 80px" }}
+      >
+        <CapstoneClient.CertificateCard
+          themeSlug={slug}
+          themeDisplayName={theme.displayName}
+          themeSpecialization={theme.specialization}
+          displayName={displayName}
+          initialCertificate={initialCertificate}
+          primary={P.primary}
+          text={P.text}
+          muted={P.muted}
+          surface={P.surface}
+          bg={P.bg}
+          stats={certificateStats}
+        />
 
         {/* Next theme teaser */}
-        {teaserTheme && (
+        {nextTheme ? (
           <Link
-            href={`/themes/${teaserTheme.slug}`}
-            className="flex items-center gap-6 mt-8 no-print"
+            href={`/themes/${nextTheme.slug}`}
+            data-testid="next-theme-teaser"
+            className="flex items-center gap-6 mt-8 no-print rounded-none brutalist-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
             style={{
               border: `2px solid ${P.border}`,
               background: P.surface,
@@ -463,7 +536,7 @@ export default async function CapstonePage({ params }: Props) {
                 className="font-mono font-bold mb-1"
                 style={{ fontSize: 14, color: P.text }}
               >
-                {teaserTheme.displayName} &mdash; {teaserTheme.specialization}
+                {nextTheme.displayName} &mdash; {nextTheme.specialization}
               </div>
               <div
                 style={{
@@ -472,12 +545,12 @@ export default async function CapstonePage({ params }: Props) {
                   color: P.muted,
                 }}
               >
-                {teaserTheme.description.slice(0, 120)}
-                {teaserTheme.description.length > 120 ? "..." : ""}
+                {nextTheme.description.slice(0, 140)}
+                {nextTheme.description.length > 140 ? "..." : ""}
               </div>
             </div>
             <div
-              className="font-mono flex-shrink-0"
+              className="font-mono flex-shrink-0 rounded-none"
               style={{
                 fontSize: 10,
                 color: P.muted,
@@ -488,7 +561,44 @@ export default async function CapstonePage({ params }: Props) {
               Explore &rarr;
             </div>
           </Link>
-        )}
+        ) : ownsAll ? (
+          <div
+            data-testid="next-theme-placeholder"
+            className="mt-8 no-print rounded-none"
+            style={{
+              border: `2px dashed ${P.border}`,
+              background: P.surface,
+              padding: "28px 32px",
+            }}
+          >
+            <div
+              className="font-mono mb-2"
+              style={{
+                fontSize: 9,
+                color: P.muted,
+                letterSpacing: "0.1em",
+              }}
+            >
+              // NEXT MISSION
+            </div>
+            <div
+              className="font-mono font-bold mb-1"
+              style={{ fontSize: 14, color: P.text }}
+            >
+              V1.0 coming
+            </div>
+            <div
+              style={{
+                fontFamily: "'Inter', sans-serif",
+                fontSize: 12,
+                color: P.muted,
+              }}
+            >
+              You&apos;ve completed every mission in every theme. New V1.0
+              content lands on the roadmap &mdash; watch your inbox.
+            </div>
+          </div>
+        ) : null}
       </div>
     </main>
   );

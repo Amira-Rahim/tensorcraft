@@ -48,7 +48,7 @@ export default async function SettingsPage() {
     <main className="min-h-screen bg-page relative overflow-hidden">
       <AmbientBackground count={160} />
       <div className="absolute inset-0 grid-bg pointer-events-none z-0" />
-      <div className="max-w-[1000px] mx-auto px-8 py-10 relative z-10">
+      <div className="max-w-[1100px] mx-auto px-6 md:px-8 py-10 relative z-10">
         <SettingsForm
           email={user.email ?? ""}
           displayName={profile?.display_name ?? ""}
@@ -59,6 +59,9 @@ export default async function SettingsPage() {
           }
           emailAlerts={(profileRecord?.email_alerts as boolean) ?? false}
           weeklyDigest={(profileRecord?.weekly_digest as boolean) ?? true}
+          preferredThemeId={
+            (profileRecord?.preferred_theme_id as string) ?? "deep-orbit"
+          }
           purchases={purchases}
         />
       </div>

@@ -20,7 +20,7 @@ function NavLink({
   return (
     <Link
       href={href}
-      className={`font-mono text-[13px] tracking-wider uppercase rounded-none transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 ${
+      className={`inline-flex items-center min-h-11 font-mono text-[13px] tracking-wider uppercase rounded-none transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 ${
         isActive
           ? "text-primary font-semibold"
           : "text-text-muted hover:text-text-primary"

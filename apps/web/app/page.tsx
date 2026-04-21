@@ -1,16 +1,33 @@
 import Link from "next/link";
-import { HeroSection } from "./components/hero-section";
+import type { Metadata } from "next";
+import { LandingHero } from "./components/landing-hero";
+import { LandingBridgeTicker } from "./components/landing-bridge-ticker";
+import { LandingBridgeTiers } from "./components/landing-bridge-tiers";
+import { LandingFiveCLoop } from "./components/landing-five-c-loop";
 import { BridgePreviewSection } from "./components/bridge-preview-section";
 import { FiveWorldsSection } from "./components/five-worlds-section";
 
 export const revalidate = 3600;
 
+export const metadata: Metadata = {
+  alternates: { canonical: "https://tensorcraft.app" },
+};
+
 export default function Home() {
   return (
     <>
       <main className="relative z-2">
-        {/* ===== HERO (client island — framer-motion + canvas) ===== */}
-        <HeroSection />
+        {/* ===== HERO — brutalist, ParticleField bg (client island) ===== */}
+        <LandingHero />
+
+        <h2 className="sr-only">
+          Learn machine learning for frontend developers with JavaScript and
+          TensorFlow.js — browser-based ML tutorials, TensorFlow JS courses, and
+          Transformers.js guides.
+        </h2>
+
+        {/* ===== BRIDGE TICKER — scrolling FE→ML band (client island) ===== */}
+        <LandingBridgeTicker />
 
         {/* ===== HOW IT WORKS LINK ===== */}
         <div className="px-10 md:px-20 py-6 border-b border-border">
@@ -48,6 +65,12 @@ export default function Home() {
           ))}
         </section>
 
+        {/* ===== BRIDGE TIERS — static 3-tier table (server-rendered) ===== */}
+        <LandingBridgeTiers />
+
+        {/* ===== 5C LESSON LOOP (server-rendered — zero JS) ===== */}
+        <LandingFiveCLoop />
+
         {/* ===== BRIDGE SYSTEM (client island — framework picker) ===== */}
         <BridgePreviewSection />
 
@@ -67,7 +90,7 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr] border-t border-border">
             {/* Left: Project showcase */}
-            <div className="px-10 md:px-14 py-12 border-b md:border-b-0 md:border-r border-border">
+            <div className="px-10 md:px-14 py-12 border-b md:border-b-0 md:border-r border-border min-w-0">
               <div className="font-mono text-xs text-primary tracking-[0.15em] mb-6">
                 // DEEP SCAN — ANOMALY DETECTOR
               </div>
@@ -112,7 +135,7 @@ export default function Home() {
             </div>
 
             {/* Right: Capabilities */}
-            <div className="px-10 md:px-14 py-12 flex flex-col justify-center gap-8">
+            <div className="px-10 md:px-14 py-12 flex flex-col justify-center gap-8 min-w-0">
               {[
                 {
                   label: "Train",
@@ -160,7 +183,8 @@ export default function Home() {
           </p>
           <Link
             href="/auth"
-            className="inline-flex items-center gap-2 px-11 py-[18px] bg-primary text-page font-bold text-base tracking-wider uppercase border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow"
+            data-testid="landing-cta-final"
+            className="rounded-none inline-flex items-center gap-2 px-11 py-[18px] bg-primary text-page font-mono font-bold text-base tracking-wider uppercase border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-page"
           >
             Start learning now →
           </Link>

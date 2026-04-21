@@ -1,9 +1,19 @@
+// Sentry must be initialized BEFORE any other imports that might touch
+// Node internals we want auto-instrumented (http, fetch, etc.).
+import { initSentry } from "./lib/sentry";
+import * as Sentry from "@sentry/node";
+initSentry();
+
 import { Hono } from "hono";
 import { bodyLimit } from "hono/body-limit";
 import { serve } from "@hono/node-server";
 import { corsMiddleware } from "./middleware/cors";
 import { rateLimitMiddleware } from "./middleware/rate-limit";
 import { securityHeadersMiddleware } from "./middleware/security-headers";
+import { versionMiddleware } from "./middleware/version";
+import { requestIdMiddleware } from "./middleware/request-id";
+import { sentryMiddleware } from "./middleware/sentry";
+import { logger } from "./lib/logger";
 import { health } from "./routes/health";
 import { waitlist } from "./routes/waitlist";
 import { progress } from "./routes/progress";
@@ -18,10 +28,19 @@ import { issues } from "./routes/issues";
 import { emailTags } from "./routes/email-tags";
 import { certificates } from "./routes/certificates";
 import { onboarding } from "./routes/onboarding";
+import { preferences } from "./routes/preferences";
+import { webhooks } from "./routes/webhooks";
 
 const app = new Hono();
 
 // Global middleware
+// Request-ID runs first so every response carries X-Request-Id and every
+// downstream handler can log with the correlation id baked in.
+app.use("*", requestIdMiddleware);
+// Sentry runs right after request-id so every captured event inherits the
+// correlation tags set by sentryMiddleware.
+app.use("*", sentryMiddleware);
+app.use("*", versionMiddleware);
 app.use("*", securityHeadersMiddleware);
 app.use("*", corsMiddleware);
 // Body limit all routes EXCEPT /api/issues (needs 8MB for screenshot uploads)
@@ -32,9 +51,14 @@ app.use("*", async (c, next) => {
   return bodyLimit({ maxSize: 1024 * 1024 })(c, next);
 });
 
-// Rate limit all routes EXCEPT the Stripe webhook (Stripe retries on failure)
+// Rate limit all routes EXCEPT third-party webhooks (which retry on failure).
+// Both Stripe and Kit webhooks retry aggressively — rate-limiting them risks
+// dropping retry attempts and desyncing our DB from the provider's state.
 app.use("*", async (c, next) => {
-  if (c.req.path === "/api/payments/webhook") {
+  if (
+    c.req.path === "/api/payments/webhook" ||
+    c.req.path.startsWith("/api/webhooks/")
+  ) {
     return next();
   }
   return rateLimitMiddleware(c, next);
@@ -42,16 +66,28 @@ app.use("*", async (c, next) => {
 
 // Global error handler — sanitize errors, never leak internals
 app.onError((err, c) => {
-  console.error("Unhandled error:", {
-    message: err.message,
-    path: c.req.path,
-    method: c.req.method,
-    timestamp: new Date().toISOString(),
+  const requestId = c.res.headers.get("X-Request-Id");
+  logger.error(
+    {
+      err,
+      requestId,
+      route: c.req.path,
+      method: c.req.method,
+    },
+    "Unhandled error",
+  );
+  // Capture to Sentry (no-op if SENTRY_DSN not set).
+  Sentry.captureException(err, {
+    tags: {
+      requestId: requestId ?? "unknown",
+      route: c.req.path,
+      method: c.req.method,
+    },
   });
   return c.json(
     {
       error: "Internal server error",
-      requestId: c.res.headers.get("X-Request-ID"),
+      requestId,
     },
     500,
   );
@@ -72,6 +108,8 @@ app.route("/api/issues", issues);
 app.route("/api/email", emailTags);
 app.route("/api/certificates", certificates);
 app.route("/api/onboarding", onboarding);
+app.route("/api/preferences", preferences);
+app.route("/api/webhooks", webhooks);
 
 // Root
 app.get("/", (c) => {
@@ -84,7 +122,7 @@ app.get("/", (c) => {
 
 const port = Number(process.env.PORT) || 3001;
 
-console.log(`Tensorcraft API running on http://localhost:${port}`);
+logger.info({ port }, `Tensorcraft API running on http://localhost:${port}`);
 
 const server = serve({
   fetch: app.fetch,
@@ -93,15 +131,15 @@ const server = serve({
 
 // Graceful shutdown
 function shutdown(signal: string) {
-  console.log(`\n${signal} received — shutting down gracefully`);
+  logger.info({ signal }, `${signal} received — shutting down gracefully`);
   server.close(() => {
-    console.log("Server closed");
+    logger.info("Server closed");
     process.exit(0);
   });
 
   // Force exit after 10s if connections are still hanging
   setTimeout(() => {
-    console.error("Forcing exit after timeout");
+    logger.error("Forcing exit after timeout");
     process.exit(1);
   }, 10_000).unref();
 }

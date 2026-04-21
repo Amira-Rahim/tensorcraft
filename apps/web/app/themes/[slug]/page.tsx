@@ -341,15 +341,6 @@ export default async function ThemeDetailPage({ params }: Props) {
             lesson: theme.terminology.lesson,
             module: theme.terminology.module,
           }}
-          palette={{
-            bg: theme.palette.bg,
-            primary: theme.palette.primary,
-            accent: theme.palette.accent,
-            surface: theme.palette.surface,
-            text: theme.palette.text,
-            muted: theme.palette.muted,
-            border: theme.palette.border,
-          }}
           continueHref={continueHref}
           continueLabel={continueLabel}
         />

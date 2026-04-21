@@ -41,7 +41,7 @@ export function PaymentError() {
       <button
         onClick={dismiss}
         aria-label="Dismiss error"
-        className="flex items-center justify-center w-8 h-8 shrink-0 bg-transparent border border-border text-text-muted hover:text-text-primary hover:border-primary/30 transition-colors cursor-pointer text-base leading-none p-0"
+        className="flex items-center justify-center w-11 h-11 shrink-0 bg-transparent border border-border text-text-muted hover:text-text-primary hover:border-primary/30 transition-colors cursor-pointer text-base leading-none p-0"
       >
         &#10005;
       </button>

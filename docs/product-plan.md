@@ -1,4 +1,4 @@
-# Tensorcraft — Product Plan v3.2
+# Tensorcraft — Product Plan v3.3
 
 ---
 
@@ -360,7 +360,7 @@ Arena participants see anonymized peer comparisons: how their solution compares 
 
 #### 3.2.6 Completion Certificates
 
-Upon completing all 11 modules in a theme, learners receive a verifiable completion certificate. The certificate includes:
+Upon completing all 11 modules in a theme, learners receive a verifiable completion certificate. The certificate is auto-generated on the capstone page via `POST /api/certificates` and publicly retrievable (no auth) via `GET /api/certificates/:id` for verification. It includes:
 
 - Theme name and specialization
 - Completion date
@@ -586,6 +586,66 @@ Each bridge has a shareable graphic (Open Graph-optimized) that learners can sha
 - The one-sentence deep structural connection
 - Tensorcraft branding and theme color
 - A URL to the full bridge explanation (public, no login required — serves as marketing)
+
+### 3.9 UI/UX Design Notes: Brutalist Terminal Aesthetic
+
+As of the Phase 11 redesign (2026-04-13 → 2026-04-20), Tensorcraft's UI/UX direction is **brutalist terminal**, replacing the earlier Zensman-DeFi-Neon direction. The redesign is load-bearing: marketing copy, onboarding, dashboard, theme picker, lesson surfaces, paywall, and settings all share a single visual language.
+
+**Core principles:**
+
+- Sharp edges everywhere — `rounded-none`, no `rounded-md`/`rounded-lg`.
+- Hard offset shadows (`4px 4px 0 var(--tc-border)`), never blurred or glow shadows.
+- Monospace-first for code, data, numbers, and accent labels; Inter for body text.
+- Comment-style section labels (`# skill_genome`, `// loss.hints`, `— 12wk`) in uppercase tracking-wider JetBrains Mono.
+- No gradients. No glow effects. Neon CSS tokens (`--tc-glow`, `--tc-neon-glow`, `--tc-neon-line`) were removed from `themes.css` during the redesign.
+- Focus outlines are brutalist (`focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2`), not `ring`-based.
+
+**Onboarding (5 steps):**
+
+1. **Welcome** — product introduction, anti-hype framing.
+2. **Background** — captures `experience_level` (enum: `beginner`, `intermediate`, `advanced`, `expert`).
+3. **Goal** — captures `learning_goal` (enum: `hobby`, `career`, `research`, `team`, `curiosity`).
+4. **Theme** — theme picker (see below).
+5. **Ready** — confirmation and launch into the dashboard.
+
+State is persisted via `PATCH /api/onboarding` per migration 018. The dual-robot ARIA narrator previously proposed as an onboarding companion was cut on 2026-04-20; narration is now handled inline by each theme's in-lesson character.
+
+**Theme Selection:**
+
+- Responsive 5-card grid (1-col mobile → 2/3-col tablet → 3-col desktop) with every theme **LIVE simultaneously** — no "Coming Soon" cards.
+- Each card renders a per-theme `ParticleField` atmosphere tinted to the theme's primary color.
+- Cards share a brutalist layout: offset shadow, sharp corners, monospace accent labels, theme-specific primary and accent colors.
+
+**Dashboard:**
+
+- `SkillGenome` — hexagonal radar rendering the learner's skill distribution (lives at `apps/web/app/dashboard/skill-genome.tsx`; shares a `hexCorners` helper with the reusable `SkillRadar` visualization in `@tensorcraft/ui/visualizations`).
+- `LossCurve` — animated SVG training-loss chart for the learner's capstone runs.
+- Streak / activity strip driven by `GET /api/progress/activity/daily`.
+- **Removed:** `LossLandscape` (deferred) and `ActivityHeatmap` (deferred per accessibility audit §5b). A full GitHub-style heatmap is post-V1.0.
+
+**Lesson page (6-step Duolingo progression):**
+
+- Each lesson is authored as a single MDX source but presented as a stepwise flow (intro → concept → bridge → code → quiz → summary). MDX is step-filtered at render time.
+- Exercise surface pairs the Sandpack editor with a bridge-hint panel and a console/output panel alongside test results.
+
+**Capstone completion:**
+
+- Timeline summary of the 11 modules.
+- Auto-generated **certificate card** (triggered by `POST /api/certificates` on completion) with unique id + public verification URL fetched via `GET /api/certificates/:id`.
+- Summary stats (lessons, exercises, score, time) and a teaser for the next theme.
+
+**Paywall & Pricing:**
+
+- Standalone `/paywall` route for gated content, complementing the `/pricing?locked=<theme>` banner used on deep links.
+- **PurchaseConfirmation** — brutalist "access card" showing the granted theme(s) plus a receipt; confirms entitlement before routing back into content.
+
+**Settings (5-tab layout):**
+
+1. **Profile** — display name, avatar, preferred theme.
+2. **Notifications** — `email_alerts`, `weekly_digest`.
+3. **GitHub** — connection state + `tensorcraft-{theme}` repo link.
+4. **Theme** — runtime theme switch (persisted in `localStorage` as `tc-active-theme`, FOUC-prevention script hydrates on load).
+5. **Account** — email, password, sign-out, delete account.
 
 ---
 
@@ -1148,7 +1208,7 @@ For students who want deeper foundations. Each lesson companions a core module: 
 
 ### 5.4 Nova Canvas
 
-- **Primary Color:** #C06060
+- **Primary Color:** #D07070 (bumped from `#C06060` on 2026-04-20 to meet WCAG AA contrast against the shared `#232323` surface)
 - **Accent Color:** #7868A8
 - **Background:** #181818 (shared)
 - **Surface:** #232323 (shared)
@@ -1198,6 +1258,11 @@ All five themes share these visual design constraints to maintain platform coher
 - Single-model and bundle purchases
 - Basic analytics (completion rates, lesson time, capstone scores)
 - Responsive design (mobile, tablet, desktop)
+- 5-step onboarding with `experience_level` + `learning_goal` capture (migration 018)
+- 5-tab Settings (Profile / Notifications / GitHub / Theme / Account)
+- Standalone `/paywall` route + PurchaseConfirmation access card
+- Dashboard: `SkillGenome` radar, `LossCurve`, daily activity strip (via `GET /api/progress/activity/daily`)
+- Auto-generated completion certificates on capstone completion (via `POST /api/certificates`, publicly verifiable via `GET /api/certificates/:id`)
 
 #### Not in Scope
 
@@ -1208,7 +1273,9 @@ All five themes share these visual design constraints to maintain platform coher
 - Bridge Explorer page (added in V1.0)
 - Shareable bridge graphics (added in V1.0)
 - Peer comparison features
-- Completion certificates
+- `ActivityHeatmap` (deferred per a11y audit §5b — replaced by a simpler daily-activity strip for V0.5/V1.0)
+- `LossLandscape` visualization (deferred after Phase 11 — replaced by `ParticleField` on auth pages)
+- ARIA dual-robot narrator (cut 2026-04-20 — narration handled inline by per-theme characters)
 - Light mode
 - Localization / i18n
 - Native mobile app

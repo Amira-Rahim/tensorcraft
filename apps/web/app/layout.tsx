@@ -3,11 +3,11 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import { DEFAULT_THEME } from "@tensorcraft/shared";
 import { ThemeProvider } from "./components/theme-provider";
 import { Nav } from "./components/nav";
-import { Ticker } from "./components/ticker";
 import { CookieConsent } from "./components/cookie-consent";
 import { ReportIssueButton } from "./components/report-issue-button";
 import { SiteFooter } from "./components/site-footer";
 import { AnalyticsProvider } from "./components/analytics-provider";
+import { PostHogProvider } from "./posthog-provider";
 import { PlausibleScript } from "./components/plausible-script";
 import { SessionListener } from "../lib/supabase/session-listener";
 import { SessionToast } from "./components/session-toast";
@@ -26,17 +26,29 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Tensorcraft — Learn ML Through Code You Already Know",
+  title:
+    "Tensorcraft — Learn Machine Learning for Frontend Developers in JavaScript",
   description:
-    "Interactive, story-driven ML education for frontend engineers. Build real models in the browser using JavaScript, TypeScript, and tools you already love.",
+    "Learn machine learning with JavaScript and TensorFlow.js. Story-driven ML courses for frontend developers — train real models in the browser, no Python required. Covers TensorFlow JS, Transformers.js, LSTMs, CNNs, and transformer tutorials.",
   keywords: [
-    "machine learning",
-    "frontend",
-    "javascript",
-    "browser ML",
-    "interactive course",
-    "TensorFlow.js",
-    "Transformers.js",
+    "machine learning for frontend developers",
+    "machine learning javascript",
+    "learn machine learning javascript",
+    "tensorflow js",
+    "tensorflow.js",
+    "tensorflow js tutorial",
+    "transformers.js",
+    "transformers js tutorial",
+    "browser machine learning",
+    "browser ml",
+    "ml tutorial javascript",
+    "javascript ml course",
+    "learn ml frontend",
+    "lstm javascript",
+    "cnn javascript",
+    "neural network javascript",
+    "interactive ml course",
+    "typescript machine learning",
   ],
   metadataBase: new URL("https://tensorcraft.app"),
   openGraph: {
@@ -44,9 +56,10 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://tensorcraft.app",
     siteName: "Tensorcraft",
-    title: "Tensorcraft — Learn ML Through Code You Already Know",
+    title:
+      "Tensorcraft — Learn Machine Learning for Frontend Developers in JavaScript",
     description:
-      "Interactive, story-driven ML education for frontend engineers. Build real models in the browser using JavaScript, TypeScript, and tools you already love.",
+      "Learn machine learning with JavaScript and TensorFlow.js. Story-driven ML courses for frontend developers — train real models in the browser, no Python required.",
     images: [
       {
         url: "/api/og?title=Learn%20ML%20Through%20Code%20You%20Already%20Know&theme=deep-orbit&subtitle=Interactive%2C%20story-driven%20ML%20education",
@@ -58,15 +71,13 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Tensorcraft — Learn ML Through Code You Already Know",
+    title:
+      "Tensorcraft — Learn Machine Learning for Frontend Developers in JavaScript",
     description:
-      "Interactive, story-driven ML education for frontend engineers.",
+      "Learn machine learning with JavaScript and TensorFlow.js. Train real models in the browser — no Python required.",
     images: [
       "/api/og?title=Learn%20ML%20Through%20Code%20You%20Already%20Know&theme=deep-orbit&subtitle=Interactive%2C%20story-driven%20ML%20education",
     ],
-  },
-  alternates: {
-    canonical: "https://tensorcraft.app",
   },
 };
 
@@ -250,7 +261,7 @@ export default function RootLayout({
                     name: "Can I learn machine learning with JavaScript?",
                     acceptedAnswer: {
                       "@type": "Answer",
-                      text: "Yes. Tensorcraft teaches ML entirely in JavaScript and TypeScript using TensorFlow.js. Models train and run in the browser — no Python required.",
+                      text: "Yes. Tensorcraft teaches machine learning entirely in JavaScript and TypeScript using TensorFlow JS (TensorFlow.js). Models train and run in the browser — no Python required. The curriculum covers neural networks, LSTMs, CNNs, and transformers through hands-on tutorials built for frontend developers.",
                     },
                   },
                   {
@@ -301,28 +312,29 @@ export default function RootLayout({
       <body className="min-h-screen flex flex-col font-sans">
         <PlausibleScript />
         <ThemeProvider>
-          <AnalyticsProvider>
-            <a
-              href="#main-content"
-              className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:text-sm focus:font-mono focus:font-medium"
-              style={{
-                background: "var(--tc-primary, #6BAA8A)",
-                color: "var(--tc-bg, #181818)",
-              }}
-            >
-              Skip to content
-            </a>
-            <Nav />
-            <Ticker />
-            <div className="flex-1" id="main-content">
-              {children}
-            </div>
-            <SessionListener />
-            <SessionToast />
-            <SiteFooter />
-            <CookieConsent />
-            <ReportIssueButton />
-          </AnalyticsProvider>
+          <PostHogProvider>
+            <AnalyticsProvider>
+              <a
+                href="#main-content"
+                className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:text-sm focus:font-mono focus:font-medium"
+                style={{
+                  background: "var(--tc-primary, #6BAA8A)",
+                  color: "var(--tc-bg, #181818)",
+                }}
+              >
+                Skip to content
+              </a>
+              <Nav />
+              <div className="flex-1" id="main-content">
+                {children}
+              </div>
+              <SessionListener />
+              <SessionToast />
+              <SiteFooter />
+              <CookieConsent />
+              <ReportIssueButton />
+            </AnalyticsProvider>
+          </PostHogProvider>
         </ThemeProvider>
       </body>
     </html>

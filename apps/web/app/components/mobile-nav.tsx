@@ -54,7 +54,7 @@ export function MobileNav() {
         onClick={() => setOpen(true)}
         aria-label="Open menu"
         aria-expanded={open}
-        className="flex flex-col justify-center items-center gap-[5px] w-10 h-10 border border-border bg-surface hover:bg-surface-raised transition-colors"
+        className="flex flex-col justify-center items-center gap-[5px] w-11 h-11 border border-border bg-surface hover:bg-surface-raised transition-colors"
       >
         <span className="block w-5 h-[2px] bg-text-primary" />
         <span className="block w-5 h-[2px] bg-text-primary" />
@@ -82,7 +82,7 @@ export function MobileNav() {
               type="button"
               onClick={() => setOpen(false)}
               aria-label="Close menu"
-              className="flex items-center justify-center w-10 h-10 border border-border bg-surface hover:bg-surface-raised transition-colors"
+              className="flex items-center justify-center w-11 h-11 border border-border bg-surface hover:bg-surface-raised transition-colors"
             >
               <svg
                 width="18"

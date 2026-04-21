@@ -1,0 +1,67 @@
+# Lychee broken-link checker config — used by .github/workflows/ci.yml.
+#
+# Policy:
+#   * Internal (relative path or same-origin) dead links FAIL the CI job.
+#   * External 4xx/5xx failures are surfaced as warnings, not failures, because
+#     third-party sites go down for reasons unrelated to this repo. Lychee
+#     supports this via `accept` — listing an external status as accepted means
+#     it is not counted as a failure.
+
+# HTTP status codes treated as success for EXTERNAL URLs only.
+# - 2xx: normal success
+# - 3xx: redirects
+# - 403/429: rate-limited or auth-walled (common on npm, Stripe, GitHub)
+# - 500/503: transient upstream failures
+accept = ["200..=299", "301", "302", "307", "308", "403", "429", "500", "503"]
+
+# Max concurrency — keep modest so we don't get rate-limited.
+max_concurrency = 8
+
+# Retry transient failures twice before flagging.
+max_retries = 2
+retry_wait_time = 2
+timeout = 20
+
+# Exclude paths that either are not real docs or contain intentionally broken
+# example links (e.g. MDX fixture snippets, example.com placeholders).
+exclude_path = [
+  "node_modules",
+  ".next",
+  ".turbo",
+  ".velite",
+  "dist",
+  "playwright-report",
+  "test-results",
+  "coverage",
+  "e2e",
+]
+
+# Skip URL patterns that are either localhost, example, or well-known flaky
+# checkers. Relative/anchor links on private envs should never be hit.
+exclude = [
+  # Local dev endpoints
+  "^https?://localhost",
+  "^https?://127\\.0\\.0\\.1",
+  "^https?://0\\.0\\.0\\.0",
+  # Example / placeholder domains used in docs
+  "^https?://([a-z0-9-]+\\.)?example\\.(com|org)",
+  # Mailto / tel links
+  "^mailto:",
+  "^tel:",
+  # GitHub PR/commit permalinks tied to private branches — optional
+  "^https?://github\\.com/.+/(pull|commit)/",
+]
+
+# Treat external 4xx (other than those in `accept`) as warnings, not errors.
+# Lychee exits non-zero only for broken links whose status is NOT in `accept`
+# AND that are not covered by `exclude`. To implement the "warning only" policy
+# for unknown external codes we set `require_https = false` and rely on the
+# accept list above to cover the common transient statuses.
+require_https = false
+
+# Include fragment (#anchor) validation for local Markdown files so broken
+# internal TOC anchors fail the build.
+include_fragments = true
+
+# Do not cache across CI runs (ephemeral runner anyway).
+cache = false

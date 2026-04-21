@@ -6,6 +6,7 @@ import {
 } from "@tensorcraft/supabase";
 import { isValidThemeSlug, THEME_CONTENT } from "@tensorcraft/shared";
 import { authMiddleware } from "../middleware/auth";
+import { logger } from "../lib/logger";
 import type { AppEnv } from "../types";
 
 /**
@@ -56,7 +57,8 @@ certificates.post("/", async (c) => {
 
   const secret = process.env.CERT_SIGNING_SECRET;
   if (!secret) {
-    console.error(
+    logger.error(
+      { route: "certificates.issue" },
       "CERT_SIGNING_SECRET is not set — refusing to issue a certificate",
     );
     return c.json(

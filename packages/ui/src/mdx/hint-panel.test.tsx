@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { HintPanel } from "./hint-panel";
 
@@ -79,6 +79,29 @@ describe("HintPanel", () => {
     ).toBeInTheDocument();
     expect(
       screen.getByText("Use tf.tensor() to create tensors"),
+    ).toBeInTheDocument();
+  });
+
+  it("fires onHintRevealed with the numeric hint level on reveal", () => {
+    const onHintRevealed = vi.fn();
+    render(<HintPanel hints={hints} onHintRevealed={onHintRevealed} />);
+
+    fireEvent.click(screen.getByText(/Reveal Nudge/));
+    expect(onHintRevealed).toHaveBeenNthCalledWith(1, 1);
+
+    fireEvent.click(screen.getByText(/Reveal Guidance/));
+    expect(onHintRevealed).toHaveBeenNthCalledWith(2, 2);
+
+    fireEvent.click(screen.getByText(/Reveal Solution/));
+    expect(onHintRevealed).toHaveBeenNthCalledWith(3, 3);
+  });
+
+  it("does not require onHintRevealed (back-compat)", () => {
+    render(<HintPanel hints={hints} />);
+    // Should not throw when callback is absent.
+    fireEvent.click(screen.getByText(/Reveal Nudge/));
+    expect(
+      screen.getByText("Think about array operations"),
     ).toBeInTheDocument();
   });
 

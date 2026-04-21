@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import * as Sentry from "@sentry/nextjs";
 
 export default function GlobalError({
   error,
@@ -11,6 +12,11 @@ export default function GlobalError({
 }) {
   useEffect(() => {
     console.error("[Tensorcraft Global Error]", error);
+    // Forward to Sentry (no-op if DSN is not configured).
+    Sentry.captureException(error, {
+      tags: { boundary: "global-error" },
+      extra: { digest: error.digest },
+    });
   }, [error]);
 
   return (

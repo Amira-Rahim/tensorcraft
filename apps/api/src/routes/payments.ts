@@ -7,6 +7,8 @@ import {
 import { PRICING, THEME_SLUGS, isValidThemeSlug } from "@tensorcraft/shared";
 import { authMiddleware } from "../middleware/auth";
 import { addSubscriber, tagSubscriber } from "../lib/kit";
+import { logger } from "../lib/logger";
+import { captureServer, SERVER_EVENTS } from "../lib/posthog";
 import type { AppEnv } from "../types";
 
 const payments = new Hono<AppEnv>();
@@ -167,7 +169,7 @@ payments.post("/checkout", async (c) => {
       creditApplied: String(credit),
       originalPrice: String(plan.price),
     },
-    success_url: `${appUrl}/dashboard/purchase-success`,
+    success_url: `${appUrl}/dashboard/purchase-success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${appUrl}/pricing?purchase=cancelled`,
   });
 
@@ -376,6 +378,20 @@ payments.post("/webhook", async (c) => {
         return c.json({ error: "Database error" }, 500);
       }
 
+      // Fire authoritative server-side conversion event (§6i).
+      // Client may also fire one, but this is the revenue source of truth.
+      captureServer(
+        SERVER_EVENTS.PAYMENT_COMPLETED,
+        {
+          planId: metadata.planId,
+          themeIds,
+          amount: amount ? amount / 100 : expectedAmount,
+          sessionId,
+          isUpgrade: creditApplied > 0,
+        },
+        userId,
+      );
+
       // Send purchase confirmation email via Kit (fire-and-forget)
       try {
         const { data: profile } = await supabase
@@ -424,6 +440,23 @@ payments.post("/webhook", async (c) => {
             refundError,
           );
           return c.json({ error: "Database error" }, 500);
+        }
+
+        // Look up owning user to correctly attribute the event.
+        const { data: refundedRow } = await supabase
+          .from("purchases")
+          .select("user_id")
+          .eq("stripe_payment_intent", refundPaymentIntent)
+          .maybeSingle();
+        if (refundedRow?.user_id) {
+          captureServer(
+            SERVER_EVENTS.PAYMENT_REFUNDED,
+            {
+              paymentIntentId: refundPaymentIntent,
+              isFullRefund,
+            },
+            refundedRow.user_id,
+          );
         }
       }
 
@@ -517,6 +550,17 @@ payments.post("/webhook", async (c) => {
         sessionId: failedSession.id,
         userId: failedSession.client_reference_id,
       });
+      if (failedSession.client_reference_id) {
+        captureServer(
+          SERVER_EVENTS.PAYMENT_FAILED,
+          {
+            planId: failedSession.metadata?.planId,
+            sessionId: failedSession.id,
+            reason: "async_payment_failed",
+          },
+          failedSession.client_reference_id,
+        );
+      }
       break;
     }
 

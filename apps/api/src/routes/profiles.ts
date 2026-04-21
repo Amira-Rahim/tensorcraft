@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { getSupabaseServerClient } from "@tensorcraft/supabase";
 import { isValidThemeSlug } from "@tensorcraft/shared";
 import { authMiddleware } from "../middleware/auth";
+import { logger } from "../lib/logger";
 import type { AppEnv } from "../types";
 
 const profiles = new Hono<AppEnv>();
@@ -134,7 +135,10 @@ profiles.patch("/:userId", async (c) => {
     .single();
 
   if (error) {
-    console.error("Profile update failed:", error.message);
+    logger.error(
+      { err: error, route: "profiles.update" },
+      "Profile update failed",
+    );
     return c.json(
       {
         error: "Failed to update profile",

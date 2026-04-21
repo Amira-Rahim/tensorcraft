@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
+import { ERROR_MESSAGES } from "@/lib/error-messages";
 
 /* ------------------------------------------------------------------ */
 /*  Gradient-descent loss landscape canvas                            */
@@ -298,7 +299,7 @@ export function AuthForm() {
         {authError && (
           <div className="mb-6 border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400 font-mono">
             {authError === "session_expired"
-              ? "Your session has expired. Please sign in again."
+              ? ERROR_MESSAGES.session_expired
               : "Authentication failed. Please try again."}
           </div>
         )}

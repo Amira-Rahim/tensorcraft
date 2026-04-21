@@ -22,25 +22,25 @@ exports[`Nav snapshots > matches snapshot 1`] = `
     class="hidden md:flex items-center gap-7 font-mono"
   >
     <a
-      class="font-mono text-[13px] tracking-wider uppercase rounded-none transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 text-text-muted hover:text-text-primary"
+      class="inline-flex items-center min-h-11 font-mono text-[13px] tracking-wider uppercase rounded-none transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 text-text-muted hover:text-text-primary"
       href="/themes"
     >
       Themes
     </a>
     <a
-      class="font-mono text-[13px] tracking-wider uppercase rounded-none transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 text-text-muted hover:text-text-primary"
+      class="inline-flex items-center min-h-11 font-mono text-[13px] tracking-wider uppercase rounded-none transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 text-text-muted hover:text-text-primary"
       href="/pricing"
     >
       Pricing
     </a>
     <a
-      class="font-mono text-[13px] tracking-wider uppercase rounded-none transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 text-text-muted hover:text-text-primary"
+      class="inline-flex items-center min-h-11 font-mono text-[13px] tracking-wider uppercase rounded-none transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 text-text-muted hover:text-text-primary"
       href="/learn"
     >
       Learn
     </a>
     <a
-      class="font-mono text-[13px] tracking-wider uppercase rounded-none transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 text-text-muted hover:text-text-primary"
+      class="inline-flex items-center min-h-11 font-mono text-[13px] tracking-wider uppercase rounded-none transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 text-text-muted hover:text-text-primary"
       href="/blog"
     >
       Blog
@@ -53,7 +53,7 @@ exports[`Nav snapshots > matches snapshot 1`] = `
       class="hidden md:block"
     >
       <a
-        class="inline-flex items-center border border-primary/30 bg-primary/8 px-6 py-2.5 text-sm font-mono font-medium rounded-none hover:bg-primary/15 hover:border-primary/50 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 transition-all brutalist-hover"
+        class="inline-flex items-center justify-center min-h-11 border border-primary/30 bg-primary/8 px-6 py-2.5 text-sm font-mono font-medium rounded-none hover:bg-primary/15 hover:border-primary/50 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 transition-all brutalist-hover"
         href="/auth"
       >
         Start now →
@@ -65,7 +65,7 @@ exports[`Nav snapshots > matches snapshot 1`] = `
       <button
         aria-expanded="false"
         aria-label="Open menu"
-        class="flex flex-col justify-center items-center gap-[5px] w-10 h-10 border border-border bg-surface hover:bg-surface-raised transition-colors"
+        class="flex flex-col justify-center items-center gap-[5px] w-11 h-11 border border-border bg-surface hover:bg-surface-raised transition-colors"
         type="button"
       >
         <span

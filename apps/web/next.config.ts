@@ -18,6 +18,29 @@ const nextConfig: NextConfig = {
     "@tensorcraft/content",
     "@tensorcraft/shared",
   ],
+  // Phase 6c: image optimization. AVIF/WebP auto-selection via next/image;
+  // remotePatterns lists CDNs we pull avatars / content imagery from.
+  // Supabase storage host derives from NEXT_PUBLIC_SUPABASE_URL so we can't
+  // hardcode it — configure via env at deploy time if Supabase-hosted media
+  // is added. For now, only same-origin + explicit trusted sources.
+  images: {
+    formats: ["image/avif", "image/webp"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**.supabase.co",
+        pathname: "/storage/v1/object/public/**",
+      },
+      {
+        protocol: "https",
+        hostname: "avatars.githubusercontent.com",
+      },
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+      },
+    ],
+  },
   webpack: (config) => {
     // Treat .velite output as managed (immutable) so webpack doesn't
     // watch it for changes — prevents dev server crashes when Velite
