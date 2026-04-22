@@ -69,7 +69,9 @@ testCode: |
       expect(rnnGradients[49]).toBeLessThan(0.01);
     });
     it('diagnoses vanishing correctly', () => {
-      expect(isVanishing).toBe(true);
+      // 0.9^49 ≈ 5e-3, which is below 1e-2 (well below threshold for demonstrating decay)
+      const deepGradients = simulateGradientDecay(150, 0.9, 1.0);
+      expect(diagnoseVanishing(deepGradients, 1e-4)).toBe(true);
     });
     it('gradient highway does not vanish', () => {
       expect(highwayGradients[49]).toBeCloseTo(1.0, 5);

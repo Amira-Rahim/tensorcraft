@@ -22,7 +22,7 @@ Each theme contains 11 modules × 5 lessons (~22 hours of content) with hands-in
 - **Monorepo:** Turborepo + pnpm workspaces
 - **Content:** MDX v3 + Velite (Zod-validated content pipeline)
 - **Exercises:** Sandpack (in-browser code) + Jest (validation)
-- **Styling:** Tailwind CSS + CSS Modules, dark mode only
+- **Styling:** Tailwind CSS 4 with `@theme` directive (CSS custom properties); no CSS Modules in use. Dark mode only.
 - **Auth & DB:** Supabase (Postgres + Auth)
 - **Payments:** Stripe (one-time per-theme purchases)
 - **Analytics:** PostHog + Plausible
@@ -42,9 +42,7 @@ tensorcraft/
 │   ├── shared/       # Shared utilities and types
 │   ├── config/       # Shared config (ESLint, TypeScript)
 │   ├── github/       # GitHub integration (commit builder)
-│   └── supabase/     # Supabase client and types
-├── supabase/         # Database migrations
-├── prototypes/       # HTML design prototypes
+│   └── supabase/     # Supabase client, types, and database migrations
 ├── docs/             # PRD, product plan, scripts
 └── e2e/              # Playwright end-to-end tests
 ```

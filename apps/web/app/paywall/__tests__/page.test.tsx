@@ -72,15 +72,22 @@ describe("PaywallPage (Phase 11 §11d Wave 3 NEW)", () => {
     }
   });
 
-  it("renders the social proof section with at least 3 testimonials", () => {
+  it("renders a social proof placeholder (real beta quotes land post-launch)", () => {
     render(<PaywallPage />);
     expect(screen.getByTestId("social-proof-section")).toBeInTheDocument();
-    expect(screen.getByTestId("testimonial-beta_user_01")).toBeInTheDocument();
-    expect(screen.getByTestId("testimonial-beta_user_02")).toBeInTheDocument();
-    expect(screen.getByTestId("testimonial-beta_user_03")).toBeInTheDocument();
+    const placeholder = screen.getByTestId("social-proof-placeholder");
+    expect(placeholder).toBeInTheDocument();
+    expect(placeholder.textContent).toMatch(/social proof pending/i);
   });
 
-  it("uses rounded-none (brutalist) on CTAs and testimonial cards", () => {
+  it("does not ship invented beta-user testimonials", () => {
+    render(<PaywallPage />);
+    expect(screen.queryByTestId("testimonial-beta_user_01")).toBeNull();
+    expect(screen.queryByTestId("testimonial-beta_user_02")).toBeNull();
+    expect(screen.queryByTestId("testimonial-beta_user_03")).toBeNull();
+  });
+
+  it("uses rounded-none (brutalist) on CTAs and the placeholder card", () => {
     render(<PaywallPage />);
     expect(screen.getByTestId("paywall-primary-cta").className).toMatch(
       /rounded-none/,
@@ -88,7 +95,7 @@ describe("PaywallPage (Phase 11 §11d Wave 3 NEW)", () => {
     expect(screen.getByTestId("paywall-footer-cta").className).toMatch(
       /rounded-none/,
     );
-    expect(screen.getByTestId("testimonial-beta_user_01").className).toMatch(
+    expect(screen.getByTestId("social-proof-placeholder").className).toMatch(
       /rounded-none/,
     );
   });

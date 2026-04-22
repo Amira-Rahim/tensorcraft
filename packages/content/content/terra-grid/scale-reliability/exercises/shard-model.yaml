@@ -15,7 +15,8 @@ starterCode: |
   }
 
   class ShardPlanner {
-    constructor(private maxShardSizeMB: number) {}
+    private maxShardSizeMB: number;
+    constructor(maxShardSizeMB: number) { this.maxShardSizeMB = maxShardSizeMB; }
 
     plan(layers: Layer[]): Shard[] {
       // Group consecutive layers into shards
@@ -38,7 +39,8 @@ solutionCode: |
   }
 
   class ShardPlanner {
-    constructor(private maxShardSizeMB: number) {}
+    private maxShardSizeMB: number;
+    constructor(maxShardSizeMB: number) { this.maxShardSizeMB = maxShardSizeMB; }
 
     plan(layers: Layer[]): Shard[] {
       const shards: Shard[] = [];

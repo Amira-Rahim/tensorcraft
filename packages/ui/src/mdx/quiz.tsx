@@ -2,24 +2,66 @@
 
 import { useState } from "react";
 
+/**
+ * Per-option config. Authors may mark the correct option via either:
+ *   - per-option `correct: true` flag, or
+ *   - top-level `correct` index on the Quiz (preferred for MDX authoring).
+ */
 interface QuizOption {
   text: string;
   correct?: boolean;
 }
 
+export type QuizTier = "identity" | "structural" | "intuition";
+
+export interface QuizSubmitResult {
+  passed: boolean;
+  attempts: number;
+  selected: number;
+}
+
 interface QuizProps {
   question: string;
   options: QuizOption[];
+  /** Index of the correct option. Overrides per-option `correct` if set. */
+  correct?: number;
+  /** Shown once the learner submits, regardless of correctness. */
+  explanation?: string;
+  /** Bridge tier hint for themed styling — currently informational. */
+  tier?: QuizTier;
+  /** Fired on every submit so the host app can wire analytics. */
+  onSubmit?: (result: QuizSubmitResult) => void;
 }
 
-export function Quiz({ question, options }: QuizProps) {
+export function Quiz({
+  question,
+  options,
+  correct,
+  explanation,
+  tier,
+  onSubmit,
+}: QuizProps) {
   const [selected, setSelected] = useState<number | null>(null);
   const [submitted, setSubmitted] = useState(false);
-  const isCorrect = selected !== null && options[selected]?.correct === true;
+  const [attempts, setAttempts] = useState(0);
+
+  const correctIndex =
+    typeof correct === "number"
+      ? correct
+      : options.findIndex((o) => o.correct === true);
+
+  const isCorrect = selected !== null && selected === correctIndex;
 
   function handleSubmit() {
     if (selected === null) return;
+    const nextAttempts = attempts + 1;
+    setAttempts(nextAttempts);
     setSubmitted(true);
+    onSubmit?.({
+      passed: selected === correctIndex,
+      attempts: nextAttempts,
+      selected,
+    });
   }
 
   function handleReset() {
@@ -28,13 +70,20 @@ export function Quiz({ question, options }: QuizProps) {
   }
 
   return (
-    <div className="p-6 my-6 brutalist-shadow bg-surface-raised border border-border">
+    <div
+      className="p-6 my-6 brutalist-shadow bg-surface-raised border border-border"
+      data-tier={tier}
+    >
       <h3 className="text-base font-semibold mb-2 text-text-primary">
         Quick Check
       </h3>
       <p className="text-[15px] mb-4 text-text-primary/80">{question}</p>
 
-      <div className="flex flex-col gap-2">
+      <div
+        className="flex flex-col gap-2"
+        role="radiogroup"
+        aria-label={question}
+      >
         {options.map((option, i) => {
           let borderClass = "border-border";
           let bgClass = "bg-transparent";
@@ -54,6 +103,9 @@ export function Quiz({ question, options }: QuizProps) {
           return (
             <button
               key={i}
+              type="button"
+              role="radio"
+              aria-checked={i === selected ? "true" : "false"}
               disabled={submitted}
               onClick={() => setSelected(i)}
               className={`flex items-center gap-3 p-3 text-left transition-colors border ${borderClass} ${bgClass}`}
@@ -76,6 +128,7 @@ export function Quiz({ question, options }: QuizProps) {
       <div className="mt-4 flex items-center gap-3">
         {!submitted ? (
           <button
+            type="button"
             onClick={handleSubmit}
             disabled={selected === null}
             className="px-4 py-2 text-sm font-mono font-medium bg-primary text-surface border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover disabled:opacity-40"
@@ -94,6 +147,7 @@ export function Quiz({ question, options }: QuizProps) {
             </span>
             {!isCorrect && (
               <button
+                type="button"
                 onClick={handleReset}
                 className="text-sm underline text-text-muted"
               >
@@ -103,6 +157,15 @@ export function Quiz({ question, options }: QuizProps) {
           </>
         )}
       </div>
+
+      {submitted && explanation && (
+        <div
+          data-testid="quiz-explanation"
+          className="mt-4 pt-4 border-t border-border text-sm text-text-primary/80 font-sans leading-relaxed"
+        >
+          {explanation}
+        </div>
+      )}
     </div>
   );
 }

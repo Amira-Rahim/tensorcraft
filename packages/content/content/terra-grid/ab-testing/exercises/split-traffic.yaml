@@ -29,11 +29,15 @@ starterCode: |
   }
 solutionCode: |
   class ModelRouter {
-    constructor(
-      private controlVersion: string,
-      private treatmentVersion: string,
-      private treatmentPercent: number,
-    ) {}
+    private controlVersion: string;
+    private treatmentVersion: string;
+    private treatmentPercent: number;
+
+    constructor(controlVersion: string, treatmentVersion: string, treatmentPercent: number) {
+      this.controlVersion = controlVersion;
+      this.treatmentVersion = treatmentVersion;
+      this.treatmentPercent = treatmentPercent;
+    }
 
     private hashCode(str: string): number {
       let hash = 0;

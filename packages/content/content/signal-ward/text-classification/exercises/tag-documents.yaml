@@ -134,8 +134,8 @@ testCode: |
 
     it('returns active tags above threshold', async () => {
       const input = tf.randomNormal([1, 32]) as tf.Tensor2D;
-      const result = await tagDocument(model, input, 0.0);
-      // With threshold 0, all tags should be active (all sigmoids > 0)
+      const result = await tagDocument(model, input, -0.1);
+      // With a threshold below 0, all tags should be active
       expect(result.activeTags.length).toBe(CLINICAL_TAGS.length);
       input.dispose();
     });

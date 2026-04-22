@@ -104,9 +104,9 @@ testCode: |
 
     it('classifies as URGENT when score exceeds threshold', async () => {
       const input = tf.randomNormal([1, 32]) as tf.Tensor2D;
-      const result = await classifyUrgency(model, input, 0.0);
+      const result = await classifyUrgency(model, input, -0.1);
       expect(result.label).toBe('URGENT');
-      expect(result.score).toBeGreaterThan(0);
+      expect(result.score).toBeGreaterThanOrEqual(0);
       input.dispose();
     });
 

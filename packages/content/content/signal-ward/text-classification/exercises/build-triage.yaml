@@ -203,7 +203,7 @@ testCode: |
       const input = tf.randomNormal([1, 32]) as tf.Tensor2D;
       const result = await pipeline.classify(input);
       expect(DEPARTMENTS).toContain(result.department.label);
-      expect(result.department.score).toBeGreaterThan(0);
+      expect(result.department.score).toBeGreaterThanOrEqual(0);
       input.dispose();
     });
 

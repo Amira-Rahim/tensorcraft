@@ -6,14 +6,24 @@ starterCode: |
   class AutoScaler {
     private workerCount: number;
     private lastScaleTime: number = 0;
+    private minWorkers: number;
+    private maxWorkers: number;
+    private scaleUpLatencyMs: number;
+    private scaleDownLatencyMs: number;
+    private cooldownMs: number;
 
     constructor(
-      private minWorkers: number,
-      private maxWorkers: number,
-      private scaleUpLatencyMs: number,
-      private scaleDownLatencyMs: number,
-      private cooldownMs: number,
+      minWorkers: number,
+      maxWorkers: number,
+      scaleUpLatencyMs: number,
+      scaleDownLatencyMs: number,
+      cooldownMs: number,
     ) {
+      this.minWorkers = minWorkers;
+      this.maxWorkers = maxWorkers;
+      this.scaleUpLatencyMs = scaleUpLatencyMs;
+      this.scaleDownLatencyMs = scaleDownLatencyMs;
+      this.cooldownMs = cooldownMs;
       this.workerCount = minWorkers;
     }
 
@@ -36,14 +46,24 @@ solutionCode: |
   class AutoScaler {
     private workerCount: number;
     private lastScaleTime: number = 0;
+    private minWorkers: number;
+    private maxWorkers: number;
+    private scaleUpLatencyMs: number;
+    private scaleDownLatencyMs: number;
+    private cooldownMs: number;
 
     constructor(
-      private minWorkers: number,
-      private maxWorkers: number,
-      private scaleUpLatencyMs: number,
-      private scaleDownLatencyMs: number,
-      private cooldownMs: number,
+      minWorkers: number,
+      maxWorkers: number,
+      scaleUpLatencyMs: number,
+      scaleDownLatencyMs: number,
+      cooldownMs: number,
     ) {
+      this.minWorkers = minWorkers;
+      this.maxWorkers = maxWorkers;
+      this.scaleUpLatencyMs = scaleUpLatencyMs;
+      this.scaleDownLatencyMs = scaleDownLatencyMs;
+      this.cooldownMs = cooldownMs;
       this.workerCount = minWorkers;
     }
 

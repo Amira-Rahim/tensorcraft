@@ -136,7 +136,8 @@ testCode: |
         { name: 'ibuprofen', source: 'C', prescriber: 'Dr. C' }
       ];
       const alerts = detectInteractions(drugs);
-      expect(alerts.length).toBe(3);
+      // aspirin+warfarin (HIGH), aspirin+ibuprofen (MODERATE) — ibuprofen+warfarin not in DB
+      expect(alerts.length).toBe(2);
     });
   });
 estimatedMinutes: 15

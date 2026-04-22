@@ -4,6 +4,15 @@ import type { AppEnv } from "../../types";
 
 const mockGetUser = vi.fn();
 const mockAdminUpdate = vi.fn();
+const mockTagSubscriber = vi.fn();
+
+// Profile row returned by the initial SELECT before the UPDATE. Tests
+// override this to flip `onboarding_completed` between false (the
+// first-time transition case) and true (the retry/no-op case).
+let mockProfileRow: { onboarding_completed: boolean; email: string } = {
+  onboarding_completed: false,
+  email: "user@test.dev",
+};
 
 vi.mock("@tensorcraft/supabase", () => ({
   getSupabaseServerClient: () => ({
@@ -14,6 +23,12 @@ vi.mock("@tensorcraft/supabase", () => ({
     from: (table: string) => {
       if (table === "profiles") {
         return {
+          select: () => ({
+            eq: () => ({
+              single: () =>
+                Promise.resolve({ data: mockProfileRow, error: null }),
+            }),
+          }),
           update: (data: unknown) => {
             mockAdminUpdate(data);
             return {
@@ -45,9 +60,19 @@ vi.mock("../../lib/redis", () => ({
   }),
 }));
 
+vi.mock("../../lib/kit", () => ({
+  tagSubscriber: (...args: unknown[]) => {
+    mockTagSubscriber(...args);
+    return Promise.resolve({ id: 1, email_address: "user@test.dev" });
+  },
+}));
+
 beforeEach(() => {
   mockGetUser.mockReset();
   mockAdminUpdate.mockReset();
+  mockTagSubscriber.mockReset();
+  mockProfileRow = { onboarding_completed: false, email: "user@test.dev" };
+  vi.unstubAllEnvs();
 });
 
 const { onboarding } = await import("../onboarding");
@@ -166,5 +191,111 @@ describe("PATCH /api/onboarding", () => {
       body: JSON.stringify({ fe_experience_years: 99 }),
     });
     expect(res.status).toBe(400);
+  });
+
+  it("rejects non-boolean onboarding_completed", async () => {
+    authedUser();
+    const res = await createApp().request("/api/onboarding", {
+      method: "PATCH",
+      headers: {
+        Authorization: "Bearer valid",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ onboarding_completed: "yes" }),
+    });
+    expect(res.status).toBe(400);
+  });
+
+  it("fires Kit onboarded tag on false -> true transition", async () => {
+    authedUser();
+    vi.stubEnv("KIT_TAG_ONBOARDED", "9999");
+    mockProfileRow = {
+      onboarding_completed: false,
+      email: "first-timer@test.dev",
+    };
+
+    const res = await createApp().request("/api/onboarding", {
+      method: "PATCH",
+      headers: {
+        Authorization: "Bearer valid",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ onboarding_completed: true }),
+    });
+
+    expect(res.status).toBe(200);
+    // Allow the best-effort .catch() promise to settle.
+    await new Promise((r) => setTimeout(r, 0));
+    expect(mockTagSubscriber).toHaveBeenCalledTimes(1);
+    expect(mockTagSubscriber).toHaveBeenCalledWith(
+      "first-timer@test.dev",
+      "9999",
+    );
+  });
+
+  it("does NOT fire Kit onboarded tag on repeat (true -> true)", async () => {
+    authedUser();
+    vi.stubEnv("KIT_TAG_ONBOARDED", "9999");
+    mockProfileRow = {
+      onboarding_completed: true,
+      email: "already-done@test.dev",
+    };
+
+    const res = await createApp().request("/api/onboarding", {
+      method: "PATCH",
+      headers: {
+        Authorization: "Bearer valid",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ onboarding_completed: true }),
+    });
+
+    expect(res.status).toBe(200);
+    await new Promise((r) => setTimeout(r, 0));
+    expect(mockTagSubscriber).not.toHaveBeenCalled();
+  });
+
+  it("does NOT fire Kit onboarded tag when KIT_TAG_ONBOARDED is unset", async () => {
+    authedUser();
+    mockProfileRow = {
+      onboarding_completed: false,
+      email: "no-kit-config@test.dev",
+    };
+    // KIT_TAG_ONBOARDED intentionally unstubbed / undefined.
+
+    const res = await createApp().request("/api/onboarding", {
+      method: "PATCH",
+      headers: {
+        Authorization: "Bearer valid",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ onboarding_completed: true }),
+    });
+
+    expect(res.status).toBe(200);
+    await new Promise((r) => setTimeout(r, 0));
+    expect(mockTagSubscriber).not.toHaveBeenCalled();
+  });
+
+  it("does NOT fire Kit onboarded tag when onboarding_completed is not in the payload", async () => {
+    authedUser();
+    vi.stubEnv("KIT_TAG_ONBOARDED", "9999");
+    mockProfileRow = {
+      onboarding_completed: false,
+      email: "partial-update@test.dev",
+    };
+
+    const res = await createApp().request("/api/onboarding", {
+      method: "PATCH",
+      headers: {
+        Authorization: "Bearer valid",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ experience_level: "beginner" }),
+    });
+
+    expect(res.status).toBe(200);
+    await new Promise((r) => setTimeout(r, 0));
+    expect(mockTagSubscriber).not.toHaveBeenCalled();
   });
 });

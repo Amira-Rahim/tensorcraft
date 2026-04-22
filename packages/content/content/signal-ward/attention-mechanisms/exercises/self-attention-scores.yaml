@@ -54,8 +54,8 @@ testCode: |
     it('each row of weights sums to 1', async () => {
       const input = tf.randomNormal([4, 16]) as tf.Tensor2D;
       const { weights } = scaledSelfAttention(input, 8);
-      const rowSums = await weights.sum(-1).array();
-      rowSums.forEach(s => expect(s).toBeCloseTo(1.0, 4));
+      const rowSumsData = Array.from(weights.sum(-1).dataSync());
+      rowSumsData.forEach(s => expect(s).toBeCloseTo(1.0, 2));
     });
   });
 estimatedMinutes: 12

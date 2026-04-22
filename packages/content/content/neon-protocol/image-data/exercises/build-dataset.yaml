@@ -83,13 +83,8 @@ solutionCode: |
   }
 testCode: |
   describe('DatasetBuilder', () => {
-    let builder: DatasetBuilder;
-
-    beforeEach(() => {
-      builder = new DatasetBuilder();
-    });
-
     it('should add valid samples', () => {
+      const builder = new DatasetBuilder();
       builder.addSample({ id: '1', label: 'dome', path: 'img/dome_001.png', width: 224, height: 224 });
       builder.addSample({ id: '2', label: 'bullet', path: 'img/bullet_001.png', width: 224, height: 224 });
       const summary = builder.getSummary();
@@ -97,18 +92,21 @@ testCode: |
     });
 
     it('should throw on empty label', () => {
+      const builder = new DatasetBuilder();
       expect(() => {
         builder.addSample({ id: '1', label: '', path: 'img/test.png', width: 224, height: 224 });
       }).toThrow();
     });
 
     it('should throw on empty path', () => {
+      const builder = new DatasetBuilder();
       expect(() => {
         builder.addSample({ id: '1', label: 'dome', path: '', width: 224, height: 224 });
       }).toThrow();
     });
 
     it('should filter samples by label', () => {
+      const builder = new DatasetBuilder();
       builder.addSample({ id: '1', label: 'dome', path: 'img/dome_001.png', width: 224, height: 224 });
       builder.addSample({ id: '2', label: 'bullet', path: 'img/bullet_001.png', width: 224, height: 224 });
       builder.addSample({ id: '3', label: 'dome', path: 'img/dome_002.png', width: 224, height: 224 });
@@ -118,6 +116,7 @@ testCode: |
     });
 
     it('should return correct summary statistics', () => {
+      const builder = new DatasetBuilder();
       builder.addSample({ id: '1', label: 'dome', path: 'img/dome_001.png', width: 224, height: 224 });
       builder.addSample({ id: '2', label: 'dome', path: 'img/dome_002.png', width: 224, height: 224 });
       builder.addSample({ id: '3', label: 'bullet', path: 'img/bullet_001.png', width: 224, height: 224 });
@@ -131,6 +130,7 @@ testCode: |
     });
 
     it('should return empty results for non-existent label', () => {
+      const builder = new DatasetBuilder();
       builder.addSample({ id: '1', label: 'dome', path: 'img/dome_001.png', width: 224, height: 224 });
       expect(builder.getSamplesByLabel('hidden').length).toBe(0);
     });

@@ -59,11 +59,13 @@ solutionCode: |
   class CanaryManager {
     private stage: 'canary' | 'promoted' | 'rolled-back' = 'canary';
     private healthyChecks: number = 0;
+    private thresholds: StageThresholds;
+    private requiredHealthyChecks: number;
 
-    constructor(
-      private thresholds: StageThresholds,
-      private requiredHealthyChecks: number,
-    ) {}
+    constructor(thresholds: StageThresholds, requiredHealthyChecks: number) {
+      this.thresholds = thresholds;
+      this.requiredHealthyChecks = requiredHealthyChecks;
+    }
 
     checkHealth(metrics: HealthMetrics): { healthy: boolean; failures: string[] } {
       const failures: string[] = [];

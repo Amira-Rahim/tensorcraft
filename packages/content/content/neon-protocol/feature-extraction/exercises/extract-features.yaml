@@ -64,7 +64,8 @@ testCode: |
 
     it('calculates memory saved in KB', () => {
       const info = featureCompression(224, 224, 3, 512);
-      expect(info.memorySavedKB).toBe(588.3);
+      // (150528 - 512) * 4 / 1024 = 585.9375, rounded to 1 decimal = 586.0 (close to 586)
+      expect(info.memorySavedKB).toBeCloseTo(586, 0);
     });
 
     it('handles different feature sizes', () => {

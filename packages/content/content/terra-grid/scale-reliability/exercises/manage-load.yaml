@@ -16,7 +16,8 @@ starterCode: |
       ['critical', []], ['high', []], ['normal', []], ['low', []],
     ]);
 
-    constructor(private maxSize: number) {}
+    private maxSize: number;
+    constructor(maxSize: number) { this.maxSize = maxSize; }
 
     enqueue(item: QueueItem): boolean {
       // Add item to appropriate priority queue
@@ -50,7 +51,8 @@ solutionCode: |
       ['critical', []], ['high', []], ['normal', []], ['low', []],
     ]);
 
-    constructor(private maxSize: number) {}
+    private maxSize: number;
+    constructor(maxSize: number) { this.maxSize = maxSize; }
 
     enqueue(item: QueueItem): boolean {
       if (this.size() >= this.maxSize && item.priority === 'low') {

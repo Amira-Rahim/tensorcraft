@@ -1,6 +1,6 @@
 # Tensorcraft — Development Plan
 
-> Last updated: 2026-04-20 (Batch 1+2 landing, Phase 11 visualization spec, prototypes retired, ARIANarrator cut)
+> Last updated: 2026-04-21 (content audit 210→0 allowlist, copy/legal/email cleanup, post-session doc staleness fixes)
 
 This document is the single source of truth for all development work needed to ship Tensorcraft. It covers every phase from repo initialization to post-launch operations, sourced from the PRD, tech-spec, product-plan, theme scripts, and two rounds of DeepSeek reviews.
 
@@ -9,6 +9,15 @@ This document is the single source of truth for all development work needed to s
 ---
 
 ## Session log
+
+### 2026-04-21 — DB + integration fixes (deep-audit follow-up)
+
+**Landed (code, uncommitted — awaiting user review):**
+
+- **Migration 020 `issues` table** — created `packages/supabase/migrations/020_issues_table.sql`. The API's `POST /api/issues` route had no backing table; production writes would have 500'd. Shape mirrors `Database.public.Tables.issues` in `packages/supabase/src/types.ts`: `id`, `user_id` (nullable for anonymous reports), `category`, `description`, `severity`, `email`, `screenshot_url`, `page_url`, `user_agent`, `viewport` (jsonb), `created_at`. CHECK constraints on `category` + `severity` enums, `(user_id OR email) NOT NULL`, and description length 10–2000. RLS enabled with zero user-facing policies — service role only (anon + authenticated cannot read/write). Indexes: `created_at DESC` for admin list queries + partial `user_id WHERE NOT NULL`. **User action:** apply via Supabase SQL editor.
+- **Seed cleanup** — removed `total_lessons_completed` from `packages/supabase/seed.ts` profiles upserts (column dropped in migration 009; was silently ignored by upsert but semantically stale). No other stale column references remain.
+- **Kit `onboarded` tag wired** — `apps/api/src/routes/onboarding.ts` now accepts `onboarding_completed: boolean` in the PATCH body, reads the current profile row first to detect the `false → true` edge, and fires `tagSubscriber(email, KIT_TAG_ONBOARDED)` on that edge only. Silent-fails on Kit API errors (logged via `logger.warn`). Retry requests (where `onboarding_completed` was already `true`) no-op. Missing `KIT_TAG_ONBOARDED` env var also no-ops.
+- **Tests** — `onboarding.test.ts` extended from 6 → 11 tests: covers the tag fire on transition, no-fire on repeat, no-fire when tag env unset, no-fire when payload omits `onboarding_completed`, and 400 on non-boolean `onboarding_completed`. Full API suite: **194/194 passing**. `pnpm --filter @tensorcraft/api build` green.
 
 ### 2026-04-20 — Batch 1 + 2 + small fixes + Phase 11 viz design
 
@@ -224,7 +233,7 @@ All blocking decisions have been resolved. This table documents the final choice
   - `<LearningObjectives>` — checklist with accent-colored markers
   - `<KeyTakeaways>` — summary card with checkmarks and accent left border
   - `<Exercise>` — placeholder for Sandpack (loading skeleton)
-  - `<Quiz>` — multiple-choice with correct/wrong feedback and retry (client component)
+  - `<Quiz>` — multiple-choice with correct/wrong feedback and retry (client component); accepts `correct` (index), `explanation`, `tier`, and `onSubmit` — lesson-content wrapper fires `trackCheckpointSubmitted` on submit (2026-04-21)
 - [x] Lesson content rendering via `new Function()` with `react/jsx-runtime` injection
 
 ### 3b. Content Authoring Workflow (COMPLETE)
@@ -626,12 +635,12 @@ All blocking decisions have been resolved. This table documents the final choice
 
 ### 6k. Community & External Links
 
-- [ ] Create Discord server with channels: #general, #deep-orbit, #help, #feedback, #beta-testers
-- [ ] Replace all Community placeholder `href="#"` links with Discord invite URL
-- [ ] Purchase confirmation Discord CTA with invite link
-- [ ] Create Twitter/X account
-- [ ] Replace all Twitter placeholder `href="#"` links across 9 pages
-- [ ] Set up social media OG meta tags
+- [x] Set up social media OG meta tags — COMPLETED 2026-04-20 (§6d metadata pass).
+- ~~Create Discord server with channels~~ — **DEFERRED to V1.0** (solo dev; community scaffolding not needed at launch).
+- ~~Replace Community placeholder `href="#"` links with Discord invite URL~~ — **DEFERRED to V1.0**.
+- ~~Purchase confirmation Discord CTA with invite link~~ — **DEFERRED to V1.0**.
+- ~~Create Twitter/X account~~ — **DEFERRED to V1.0**.
+- ~~Replace Twitter placeholder `href="#"` links across 9 pages~~ — **DEFERRED to V1.0**.
 
 ---
 
@@ -999,11 +1008,11 @@ All blocking decisions have been resolved. This table documents the final choice
 
 ### 10e. Post-Launch External Service Setup
 
-- [ ] Kit (ConvertKit): Manually create Form + "Purchased Deep Orbit" Tag in Kit dashboard, then set `KIT_FORM_ID` + `KIT_TAG_PURCHASED_DEEP_ORBIT` env vars. API keys already configured. Without this, purchases work but subscribers aren't tagged for email automation.
+- [ ] Kit (ConvertKit): Manually create the Form + the seven lifecycle Tags in the Kit dashboard (`signed_up`, `onboarded`, `first_lesson`, `capstone`, `purchased`, `email_alerts`, `weekly_digest`), then set `KIT_FORM_ID` + `KIT_TAG_SIGNED_UP` / `KIT_TAG_ONBOARDED` / `KIT_TAG_FIRST_LESSON` / `KIT_TAG_CAPSTONE` / `KIT_TAG_PURCHASED` / `KIT_TAG_EMAIL_ALERTS` / `KIT_TAG_WEEKLY_DIGEST` env vars (numeric tag IDs). API keys already configured. Also set `KIT_WEBHOOK_SECRET` and register the bounce webhook per `docs/email-setup.md` §3. Purchase is a **single** theme-agnostic tag — we no longer scope per-theme in V1 (per-theme sequences would require 5× `KIT_TAG_PURCHASED_{THEME}` + 5 Kit sequences and were deferred). Without this, purchases succeed but subscribers are never tagged and no lifecycle email fires. Templates in Kit must follow `docs/email-templates.md`.
 - [ ] PostHog: Create project, add `NEXT_PUBLIC_POSTHOG_KEY` to web `.env.local` and Vercel environment variables. Free tier = 1M events/month.
 - [ ] Plausible: Add site `tensorcraft.app`, set `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`. ~EUR 9/mo.
 - [ ] Blog posts — write and publish first batch of articles
-- [ ] Twitter/X account — create @tensorcraft
+- ~~Twitter/X account — create @tensorcraft~~ — **DEFERRED to V1.0**.
 - [ ] 14-day refund guarantee badge on pricing cards
 - [ ] PPP (Purchasing Power Parity) indicator on pricing page
 - [ ] Payment plans (installments) — evaluate Klarna/Afterpay integration

@@ -130,7 +130,7 @@ const bridgeMappings = [
 const COPY = {
   new: {
     heading: "Start Learning",
-    subtitle: "Create an account to begin your ML journey",
+    subtitle: "Create an account to start learning",
     calloutPrefix: "// ",
     callout: "MODULE 1 · FREE · NO CARD",
     bottomText: "Already have an account?",

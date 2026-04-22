@@ -23,7 +23,11 @@ import {
 import type { ExerciseData, ExerciseSubmitResult } from "@tensorcraft/ui";
 
 import type { Framework } from "@tensorcraft/shared";
-import { trackExerciseSubmitted, trackHintRequested } from "@/lib/analytics";
+import {
+  trackCheckpointSubmitted,
+  trackExerciseSubmitted,
+  trackHintRequested,
+} from "@/lib/analytics";
 
 interface LessonContentProps {
   lesson: {
@@ -180,7 +184,19 @@ export function LessonContent({
       ),
       MathBlock: wrapVisibility("MathBlock", MathBlock),
       NextLesson: wrapVisibility("NextLesson", NextLesson),
-      Quiz: wrapVisibility("Quiz", Quiz),
+      Quiz: (props: React.ComponentProps<typeof Quiz>) =>
+        shouldShow("Quiz") ? (
+          <Quiz
+            {...props}
+            onSubmit={(result) => {
+              trackCheckpointSubmitted(result.passed, result.attempts, {
+                themeId,
+                lessonId,
+              });
+              props.onSubmit?.(result);
+            }}
+          />
+        ) : null,
       RecallPrompt: wrapVisibility("RecallPrompt", RecallPrompt),
       BridgeCallout: (props: { bridge: unknown }) =>
         shouldShow("BridgeCallout") ? (

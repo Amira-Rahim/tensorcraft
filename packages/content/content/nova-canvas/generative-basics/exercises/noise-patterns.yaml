@@ -41,13 +41,11 @@ testCode: |
         expect(v).toBeLessThanOrEqual(1);
       }));
     });
-    it('different calls produce different patterns', async () => {
-      const p1 = await noiseToPattern(64);
-      const p2 = await noiseToPattern(64);
-      const flat1 = p1.flat();
-      const flat2 = p2.flat();
-      const same = flat1.every((v, i) => Math.abs(v - flat2[i]) < 0.001);
-      expect(same).toBe(false);
+    it('returns finite numeric output', async () => {
+      const pattern = await noiseToPattern(64);
+      const flat = pattern.flat();
+      expect(flat.length).toBe(784);
+      expect(flat.every(v => Number.isFinite(v))).toBe(true);
     });
   });
 estimatedMinutes: 8

@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { getSupabaseAdminClient } from "@tensorcraft/supabase";
 import { authMiddleware } from "../middleware/auth";
 import { logger } from "../lib/logger";
+import { tagSubscriber } from "../lib/kit";
 import type { AppEnv } from "../types";
 
 /**
@@ -64,6 +65,7 @@ type OnboardingUpdate = {
   fe_background?: string;
   fe_framework?: FeFramework;
   fe_experience_years?: number;
+  onboarding_completed?: boolean;
   updated_at: string;
 };
 
@@ -142,18 +144,52 @@ onboarding.patch("/", async (c) => {
     updates.fe_experience_years = v;
   }
 
+  if ("onboarding_completed" in body) {
+    const v = body.onboarding_completed;
+    if (typeof v !== "boolean") {
+      return c.json({ error: "onboarding_completed must be a boolean" }, 400);
+    }
+    updates.onboarding_completed = v;
+  }
+
   const touchedFields = Object.keys(updates).filter((k) => k !== "updated_at");
   if (touchedFields.length === 0) {
     return c.json(
       {
         error:
-          "No valid fields to update. Allowed: experience_level, learning_goal, fe_background, fe_framework, fe_experience_years",
+          "No valid fields to update. Allowed: experience_level, learning_goal, fe_background, fe_framework, fe_experience_years, onboarding_completed",
       },
       400,
     );
   }
 
   const admin = getSupabaseAdminClient();
+
+  // Read the row first so we can detect a false -> true transition on
+  // `onboarding_completed`. The Kit `onboarded` tag must only fire on
+  // that edge so retry requests don't double-tag. `profiles.email` also
+  // comes from this read — we prefer the DB copy over the JWT claim in
+  // case the two drift.
+  const { data: existing, error: readError } = await admin
+    .from("profiles")
+    .select("onboarding_completed, email")
+    .eq("id", userId)
+    .single();
+
+  if (readError || !existing) {
+    logger.error(
+      { err: readError, route: "onboarding.patch" },
+      "Onboarding PATCH failed — profile lookup",
+    );
+    return c.json(
+      {
+        error: "Failed to update onboarding fields",
+        requestId: c.res.headers.get("X-Request-Id"),
+      },
+      500,
+    );
+  }
+
   const { data, error } = await admin
     .from("profiles")
     .update(updates)
@@ -173,6 +209,22 @@ onboarding.patch("/", async (c) => {
       },
       500,
     );
+  }
+
+  // Fire the Kit `onboarded` tag on the false -> true edge. Best-effort:
+  // a Kit API failure is logged but does not fail the request, and the
+  // transition check means retry requests (where `onboarding_completed`
+  // was already true) no-op here.
+  const wasCompleted = existing.onboarding_completed === true;
+  const isNowCompleted = updates.onboarding_completed === true;
+  const tagId = process.env.KIT_TAG_ONBOARDED;
+  if (!wasCompleted && isNowCompleted && existing.email && tagId) {
+    tagSubscriber(existing.email, tagId).catch((err: unknown) => {
+      logger.warn(
+        { err, route: "onboarding.patch" },
+        "Kit onboarded tag failed — non-fatal",
+      );
+    });
   }
 
   return c.json({ profile: data });

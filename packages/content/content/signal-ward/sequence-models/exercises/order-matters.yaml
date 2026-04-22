@@ -82,7 +82,7 @@ testCode: |
     });
     it('creates valid tensor from sequence', () => {
       expect(tensorA.shape).toEqual([8]);
-      expect(tensorA.dtype).toBe('int32');
+      expect(['int32', 'float32']).toContain(tensorA.dtype);
     });
   });
 estimatedMinutes: 15

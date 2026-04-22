@@ -324,6 +324,8 @@ All paid traffic flows through a single, optimized funnel:
 
 # PART 4: ORGANIC CHANNELS
 
+> **STATUS: Deferred to V1.0 (decision 2026-04-20).** Discord community server and Twitter/X primary push are post-launch. V0.5 focuses on organic dev.to + Hacker News + email. Content below remains for future reference but is NOT in the V0.5 launch scope.
+
 ## 4.1 Technical Blog
 
 The Tensorcraft blog is the primary SEO and thought leadership asset. Hosted at `tensorcraft.app/blog`, rendered with MDX, and indexed by search engines.

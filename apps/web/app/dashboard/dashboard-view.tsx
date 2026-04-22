@@ -393,7 +393,9 @@ export function DashboardView(props: DashboardProps) {
                     {themeName}
                   </h1>
                   <p style={{ fontFamily: MONO, fontSize: 12, color: MUTED }}>
-                    Start your learning journey
+                    {completedModules > 0
+                      ? "Pick up where you left off"
+                      : "Start learning"}
                   </p>
                 </>
               )}

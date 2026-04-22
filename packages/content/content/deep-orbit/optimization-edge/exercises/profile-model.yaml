@@ -39,7 +39,7 @@ solutionCode: |
       const input = createInput();
       const start = performance.now();
       model.predict(input);
-      times.push(performance.now() - start);
+      times.push(Math.max(0, performance.now() - start));
     }
 
     const avgInferenceMs = times.reduce((a, b) => a + b, 0) / times.length;

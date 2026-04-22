@@ -56,6 +56,23 @@ export const lessonSchema = z.object({
     .length(3)
     .optional(),
 
+  // Pedagogical pattern — drives alternate 5C presentations.
+  // "standard"          → conventional Context→Concept→Code→Challenge→Consequence
+  // "broken_code_first" → lesson opens with a bug to fix before exposition
+  // "discovery"         → learner explores examples/prompts before the concept is named
+  // "flashback"         → narrative loops back to an earlier scene before advancing
+  // "peer_review"       → learner critiques someone else's code
+  pattern: z
+    .enum([
+      "standard",
+      "broken_code_first",
+      "discovery",
+      "flashback",
+      "peer_review",
+    ])
+    .optional()
+    .default("standard"),
+
   // Keywords for search/tagging
   keywords: z.array(z.string()).default([]),
 

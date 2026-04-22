@@ -53,7 +53,6 @@ async function seedProfiles() {
       display_name: "Alex Chen",
       onboarding_completed: true,
       preferred_theme_id: "deep-orbit",
-      total_lessons_completed: 8,
     },
     {
       id: USER_IDS.jordan,
@@ -61,14 +60,12 @@ async function seedProfiles() {
       display_name: "Jordan Park",
       onboarding_completed: true,
       preferred_theme_id: "deep-orbit",
-      total_lessons_completed: 0,
     },
     {
       id: USER_IDS.sam,
       email: "sam.rivera@demo.tensorcraft.app",
       display_name: "Sam Rivera",
       onboarding_completed: false,
-      total_lessons_completed: 0,
     },
   ];
 

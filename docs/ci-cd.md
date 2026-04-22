@@ -1,21 +1,39 @@
 # Tensorcraft CI/CD
 
-This doc covers continuous integration checks and the branch-protection
-settings GitHub requires for them to block bad merges.
+Solo-developer workflow. No branch protection, no required-check gating.
+Local git hooks + advisory CI + Vercel previews give all the safety a solo
+author needs without the PR-review ceremony overhead.
 
 For the runtime deployment pipeline (Vercel web, Fly.io API, Supabase
 migrations, release rollouts), see [`deployment-guide.md`](./deployment-guide.md).
 
 ---
 
+## Solo workflow summary
+
+```text
+git commit  →  pre-commit hook (husky + lint-staged)   ← fast, per-file
+git push    →  pre-push hook   (husky: typecheck+test) ← ~30s guardrail
+            →  Vercel preview  (per branch)            ← visual verify
+            →  CI (advisory)                           ← email on fail
+            →  main merge      (direct push OK)        ← no PR needed
+```
+
+Failure recovery: `git revert HEAD` + `git push` OR Vercel dashboard "Promote
+to production" on a prior deploy.
+
+---
+
 ## CI pipeline overview
 
 Defined in [`.github/workflows/ci.yml`](../.github/workflows/ci.yml).
+**Advisory only** — runs post-push, emails on fail. Not wired to branch
+protection, so nothing blocks merge.
 
 | Job | What it does | Blocking? |
 | --- | ------------ | --------- |
-| `ci` | Install, `pnpm lint`, `pnpm typecheck`, `pnpm turbo build:content`, `pnpm build`, `pnpm test`, exercise validator, `pnpm test:e2e` (Playwright). | Yes |
-| `links` | Runs `lychee` over every markdown file in the repo using [`.lychee.toml`](../.lychee.toml). Internal dead links fail; external 4xx/5xx are tolerated per the `accept` list. | Yes |
+| `ci` | Install, `pnpm lint`, `pnpm typecheck`, `pnpm turbo build:content`, `pnpm build`, `pnpm test`, exercise validator, `pnpm test:e2e` (Playwright). | Advisory |
+| `links` | Runs `lychee` over every markdown file in the repo using [`.lychee.toml`](../.lychee.toml). Internal dead links fail; external 4xx/5xx are tolerated per the `accept` list. | Advisory |
 
 ### Exercise validator
 
@@ -61,53 +79,70 @@ lychee --config .lychee.toml './**/*.md'
 
 ---
 
-## Branch protection rules (GitHub settings — set manually)
+## Local git hooks (primary guardrail)
 
-**This must be applied through the GitHub UI.** Branch protection cannot be
-configured from repo code and requires admin on the repository.
+Managed by [husky](https://typicode.github.io/husky). Auto-installed via
+`package.json` `prepare` script on `pnpm install`.
 
-Navigate: `Settings` → `Branches` → `Branch protection rules` → `Add rule`.
+### Pre-commit — [`.husky/pre-commit`](../.husky/pre-commit)
 
-### Rule: `main`
+Runs `pnpm exec lint-staged` on staged files only. Fast (<2s typical):
 
-Target branch: `main`.
+- `*.{ts,tsx,mts}` → `prettier --write` (see `package.json` `lint-staged` block
+  for the full glob set).
 
-Enable the following:
+Catches 90% of formatting/obvious-typo mistakes before the commit lands.
 
-- [x] **Require a pull request before merging**
-  - Required approvals: **1**
-  - [x] Dismiss stale pull request approvals when new commits are pushed
-  - [x] Require review from Code Owners (uses
-    [`.github/CODEOWNERS`](../.github/CODEOWNERS))
-- [x] **Require status checks to pass before merging**
-  - [x] Require branches to be up to date before merging
-  - Required status checks (add each one after it has run once on a PR, so
-    GitHub knows the check name):
-    - `Lint, Typecheck & Build` (from the `ci` job)
-    - `Broken-link check (docs + markdown)` (from the `links` job)
-- [x] **Require conversation resolution before merging**
-- [x] **Do not allow bypassing the above settings**
-- [ ] Allow force pushes — **leave off**
-- [ ] Allow deletions — **leave off**
-- [x] **Restrict who can push to matching branches** — only the repo owner and
-  the GitHub Actions bot (for release tagging, if used).
+### Pre-push — [`.husky/pre-push`](../.husky/pre-push)
 
-> Direct pushes to `main` are blocked by the combination of "Require a pull
-> request before merging" + "Do not allow bypassing the above settings".
+Runs workspace-wide checks before `git push`:
 
-### One-time setup checklist
+- `pnpm turbo typecheck --continue=never`
+- `pnpm turbo test --continue=never`
 
-1. Open a throwaway PR against `main` so CI runs once and both job names
-   appear in the status-checks picker.
-2. Apply the rule above with both jobs added as required checks.
-3. Verify by opening a second PR and confirming merge is blocked until both
-   checks pass and a review is left.
+~30s cold, incremental-cached ~5s. Blocks push on failure.
+
+**Skip in emergencies** — `git push --no-verify`. Use sparingly; the hook is
+the only pre-production gate in the solo flow.
+
+---
+
+## Branch protection: intentionally OFF
+
+A single-maintainer repo gains nothing from branch-protection's PR-review +
+required-check model. It would force self-approved PRs (pure ceremony) or
+outright block merges (pure friction). The pre-push hook + CI advisory + Vercel
+preview is strictly more useful for one author.
+
+If a second maintainer joins later, revisit this section and re-enable
+protection — `.github/CODEOWNERS` is already in place as a no-op scaffold.
+
+### Vercel preview workflow for risky work
+
+For anything touching shared routes, payments, or data shape:
+
+1. `git checkout -b feature/<short-name>`
+2. `git push -u origin feature/<short-name>` → Vercel auto-deploys preview.
+3. Verify in browser at `https://<project>-git-<branch>.vercel.app` (URL shows
+   in Vercel dashboard + GitHub branch check).
+4. `git checkout main && git merge --ff-only feature/<short-name> && git push`.
+5. Production deploy kicks off.
+
+No PR required. Preview URL is the "visual review" step.
+
+### Rollback paths
+
+- **Bad commit**: `git revert HEAD && git push` (re-triggers Vercel production).
+- **Bad deploy**: Vercel dashboard → Deployments → prior green deploy →
+  "Promote to Production" (zero-downtime, bypasses CI).
+- **Bad migration**: hand-written rollback SQL via Supabase dashboard. Keep
+  migrations small so rollback is bounded.
 
 ### CODEOWNERS
 
-The [`.github/CODEOWNERS`](../.github/CODEOWNERS) file assigns default repo
-ownership to the repo owner and scopes CI/infra and content directories for
-extra review. Update it when additional collaborators come aboard.
+The [`.github/CODEOWNERS`](../.github/CODEOWNERS) file is a placeholder for
+future multi-maintainer use. Does nothing without branch protection. Leave it
+in place.
 
 ---
 
@@ -120,4 +155,8 @@ pnpm test                 # unit + integration (vitest)
 pnpm test:e2e             # Playwright end-to-end
 pnpm test:exercises       # validate all exercise starter/solution pairs
 node scripts/validate-exercises.mjs <slug>  # validate a single exercise
+
+# Hook bypass (emergencies only)
+git commit --no-verify    # skip pre-commit (lint-staged)
+git push --no-verify      # skip pre-push (typecheck + test)
 ```

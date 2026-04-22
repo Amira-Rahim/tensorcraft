@@ -82,7 +82,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "Component state",
     tier: "structural",
     connection:
-      "Both are internal values that change over time based on inputs. State updates in response to user events; weights update in response to training data. Both persist across render/training cycles.",
+      "Both are internal, learned-at-runtime values the system owns and mutates in response to inputs. State updates from user events; weights update from training data. Distinct from props (external config, see bridge #1) and from overfitting (generalization failure, see bridge #8) — this bridge is about where the mutable internal values live.",
     category: "shared",
     variants: {
       react: {
@@ -381,10 +381,10 @@ export const BRIDGES: Bridge[] = [
   {
     id: 13,
     mlConcept: "Neural network layers",
-    feConcept: "Middleware / pipeline stages",
+    feConcept: "Express-style middleware chain",
     tier: "structural",
     connection:
-      "Both are sequential processing steps where each transforms its input and passes the result forward. Express middleware and neural network layers are structurally identical: input \u2192 transform \u2192 output \u2192 next.",
+      "Both are sequential processing steps where each transforms its input and passes the result forward: input \u2192 transform \u2192 output \u2192 next. The canonical FE anchor is Express/Koa/Next middleware; the same shape appears as React HOC composition, Vue/Angular plugin pipelines, Angular HTTP interceptors, and Redux middleware (see variants). Neural network layers fold over activations the way these fold over requests.",
     category: "shared",
     variants: {
       react: {

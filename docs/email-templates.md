@@ -95,6 +95,35 @@ that reads naturally and includes the same CTA as a bare URL.
 | `email_alerts` | _(lesson-complete nudges — Kit sequence)_ | Short nudge copy, one link |
 | `weekly_digest` | `Your Tensorcraft week.` | Bridges learned, streak, next recommendation |
 
+### Voice rules (apply to every template)
+
+- **Anti-hype.** No "🎉", "Congrats!!", exclamation stacking, or "You did it!!" —
+  one full stop per sentence maximum. The brutalist palette + mono markers
+  already do the celebrating.
+- **Technical + concrete.** Count modules/lessons. Name the bridge or artefact
+  the user produced. "One down. 54 to go." beats "Great job on your first lesson!".
+- **Second person, active voice.** "Your access is live." not "Access has been
+  granted to your account."
+- **Mono accent strings.** Use a single monospaced marker per email (e.g.
+  `// PURCHASE · {plan_id}`) to echo the product UI. Do not stack multiple.
+- **No price-anchoring language.** Pricing values live in `project_pricing`
+  memory and on-site; do not hard-code "$79" in a Kit template — reference
+  "your plan" and link to the dashboard receipt instead. Protects against
+  stale copy when tiers move.
+
+### Relationship to in-product screens
+
+- **Purchase-confirm email is supplementary, not authoritative.** The primary
+  confirmation surface is `/dashboard/purchase-success` (rendered after Stripe
+  redirects). The Kit email exists for the user's inbox archive + receipt link
+  only — it must not block any product flow.
+- **Capstone email must include the shareable certificate URL** from
+  `/certificates/{id}`. This URL is generated server-side with
+  `CERT_SIGNING_SECRET`; do not generate a fresh URL in the template.
+- **Welcome email's CTA** is `/onboarding`, not `/dashboard`. The onboarding
+  flow gates the theme picker — dropping a user on `/dashboard` bypasses the
+  `tc_visited` context gate documented in `project_auth_flow` memory.
+
 ## Footer (every template)
 
 - Company: `Tensorcraft` + `support@tensorcraft.app`.
@@ -113,6 +142,32 @@ that reads naturally and includes the same CTA as a bare URL.
   muted-on-surface can fail — boost `--tc-muted` to `#a0a0a0` inside emails
   where it appears at small sizes.
 - Every `<img>` must carry an `alt`.
+
+## Post-Launch Verification Protocol
+
+Before flipping `KIT_TAG_*` env vars on in production Fly.io secrets, walk this
+checklist in a staging Kit account (or a dry-run sequence with a
+`tag: qa_seed` trigger tag):
+
+1. **Render in three clients minimum** — Gmail (web + iOS), Apple Mail
+   (macOS Sonoma+), Outlook.com. Log any client where the brutalist border
+   drops out or the CTA renders as blue underline text.
+2. **Unsubscribe link works end-to-end** — click `{{ unsubscribe_url }}` from
+   each template's rendered output and confirm the Kit unsubscribe confirmation
+   renders. If Kit shows "subscriber not found" the merge-tag placeholder is
+   leaking; fix the template before go-live.
+3. **Plain-text alternative reads cleanly** — view source in Gmail's "Show
+   original" and confirm the text/plain part is the hand-written fallback, not
+   the auto-flattened HTML.
+4. **Domain auth aligns** — check headers for `SPF=pass`, `DKIM=pass`,
+   `DMARC=pass` (per `docs/email-setup.md` §1d).
+5. **CTA URL hits the correct product surface** — Welcome → `/onboarding`,
+   Purchase → `/dashboard`, Capstone → `/certificates/{id}`. Broken links here
+   are the most common launch-day regression because the template lives
+   outside the repo.
+6. **Log a test send** — fire each template to a seed address, screenshot the
+   rendered inbox view, and paste into the launch checklist PR description.
+   Keeps a visual baseline for the next template edit.
 
 ## Deferred / Out-of-Scope
 

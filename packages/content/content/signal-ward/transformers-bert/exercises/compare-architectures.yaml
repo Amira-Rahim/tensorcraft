@@ -49,16 +49,16 @@ solutionCode: |
     const embedDim = tokens.shape[1];
     const Wih = tf.randomNormal([embedDim, hiddenDim]);
     const Whh = tf.randomNormal([hiddenDim, hiddenDim]);
-    let hidden = tf.zeros([hiddenDim]);
+    let hidden = tf.zeros([1, hiddenDim]);
 
     for (let t = 0; t < seqLen; t++) {
-      const token = tokens.slice([t, 0], [1, -1]).squeeze() as tf.Tensor1D;
-      const inputContrib = tf.matMul(token.reshape([1, -1]), Wih).squeeze();
-      const hiddenContrib = tf.matMul(hidden.reshape([1, -1]), Whh).squeeze();
-      hidden = tf.tanh(inputContrib.add(hiddenContrib)) as tf.Tensor1D;
+      const token = tokens.slice([t, 0], [1, embedDim]);
+      const inputContrib = tf.matMul(token, Wih);
+      const hiddenContrib = tf.matMul(hidden, Whh);
+      hidden = tf.tanh(inputContrib.add(hiddenContrib));
     }
 
-    return hidden;
+    return hidden.reshape([hiddenDim]) as tf.Tensor1D;
   }
 
   function transformerProcess(

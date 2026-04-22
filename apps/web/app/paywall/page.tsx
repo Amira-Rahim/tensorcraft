@@ -47,34 +47,6 @@ const COMPARISON_ROWS: ComparisonRow[] = [
   { feature: "Lifetime updates", free: false, paid: true },
 ];
 
-type Testimonial = {
-  quote: string;
-  attribution: string;
-  role: string;
-};
-
-// V0.5 placeholder testimonials — swap for real beta quotes post-launch.
-const TESTIMONIALS: Testimonial[] = [
-  {
-    quote:
-      "The frontend bridges finally made tensors click. I stopped translating ML into React and started reading ML directly.",
-    attribution: "BETA_USER_01",
-    role: "Senior FE Engineer",
-  },
-  {
-    quote:
-      "Shipped my first ONNX model to production in week three. The course structure mirrors how I already ship shipping features.",
-    attribution: "BETA_USER_02",
-    role: "Full-stack Developer",
-  },
-  {
-    quote:
-      "Dense, but never hand-wavy. Every lesson has a runnable exercise and a bridge to something I already know.",
-    attribution: "BETA_USER_03",
-    role: "Staff Frontend Engineer",
-  },
-];
-
 function renderFreeCell(value: ComparisonRow["free"]) {
   if (value === false) {
     return (
@@ -155,7 +127,7 @@ export default function PaywallPage() {
               Free vs Paid
             </h2>
             <p className="text-center text-sm text-text-muted font-mono uppercase tracking-wider mb-10">
-              // what you unlock when you upgrade
+              // what&rsquo;s included at each tier
             </p>
             <div
               className="overflow-x-auto border border-border rounded-none"
@@ -230,39 +202,18 @@ export default function PaywallPage() {
           </div>
         </section>
 
-        {/* Social Proof */}
+        {/* Social Proof — placeholder until real beta quotes arrive. */}
         <section
           className="px-6 pb-24 border-t border-border pt-20"
           data-testid="social-proof-section"
         >
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-2xl sm:text-3xl font-bold text-center mb-3 text-text-primary font-mono tracking-tight">
-              Frontend Engineers Who Shipped ML
-            </h2>
-            <p className="text-center text-sm text-text-muted font-mono uppercase tracking-wider mb-12">
-              // placeholder quotes during beta &middot; real testimonials
+            <div
+              data-testid="social-proof-placeholder"
+              className="border border-border bg-surface/40 px-6 py-5 rounded-none font-mono text-[13px] text-text-muted uppercase tracking-[0.15em]"
+            >
+              // SOCIAL PROOF PENDING &mdash; real beta quotes arrive
               post-launch
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {TESTIMONIALS.map((t) => (
-                <figure
-                  key={t.attribution}
-                  data-testid={`testimonial-${t.attribution.toLowerCase()}`}
-                  className="flex flex-col justify-between border border-border bg-surface/40 p-6 rounded-none"
-                >
-                  <blockquote className="text-sm text-text-primary font-sans leading-relaxed mb-6">
-                    &ldquo;{t.quote}&rdquo;
-                  </blockquote>
-                  <figcaption className="pt-4 border-t border-border">
-                    <div className="text-[11px] font-mono uppercase tracking-[0.15em] text-primary">
-                      {t.attribution}
-                    </div>
-                    <div className="mt-1 text-xs font-mono text-text-muted">
-                      {t.role}
-                    </div>
-                  </figcaption>
-                </figure>
-              ))}
             </div>
           </div>
         </section>

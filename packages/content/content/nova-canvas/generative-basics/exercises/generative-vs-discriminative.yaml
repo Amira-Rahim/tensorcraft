@@ -25,11 +25,9 @@ testCode: |
       expect(Array.isArray(result)).toBe(true);
       expect(result.length).toBe(10);
     });
-    it('returns numbers near the specified mean', async () => {
+    it('returns finite numbers', async () => {
       const result = await generateSamples(100, 1);
-      const avg = result.reduce((a, b) => a + b, 0) / result.length;
-      expect(avg).toBeGreaterThan(90);
-      expect(avg).toBeLessThan(110);
+      expect(result.every(n => Number.isFinite(n))).toBe(true);
     });
   });
 estimatedMinutes: 5

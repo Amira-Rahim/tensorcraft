@@ -476,7 +476,7 @@ function WelcomeStep() {
             className="border-2 border-border bg-surface-raised p-7 text-center rounded-none"
           >
             <div className="font-mono text-[22px] text-primary mb-3">
-              {f.icon}
+              <span aria-hidden="true">{f.icon}</span>
             </div>
             <div className="font-mono text-xs font-bold text-text-primary mb-1.5">
               {f.name}

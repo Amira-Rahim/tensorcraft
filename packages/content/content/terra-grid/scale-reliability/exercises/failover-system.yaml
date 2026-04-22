@@ -6,12 +6,19 @@ starterCode: |
   class FailoverController {
     private onFallback: boolean = false;
     private consecutiveFailures: number = 0;
+    private primary: (input: number) => number;
+    private fallback: (input: number) => number;
+    private maxFailures: number;
 
     constructor(
-      private primary: (input: number) => number,
-      private fallback: (input: number) => number,
-      private maxFailures: number,
-    ) {}
+      primary: (input: number) => number,
+      fallback: (input: number) => number,
+      maxFailures: number,
+    ) {
+      this.primary = primary;
+      this.fallback = fallback;
+      this.maxFailures = maxFailures;
+    }
 
     execute(input: number): { result: number; source: 'primary' | 'fallback' } {
       // If on fallback, use fallback
@@ -36,12 +43,19 @@ solutionCode: |
   class FailoverController {
     private onFallback: boolean = false;
     private consecutiveFailures: number = 0;
+    private primary: (input: number) => number;
+    private fallback: (input: number) => number;
+    private maxFailures: number;
 
     constructor(
-      private primary: (input: number) => number,
-      private fallback: (input: number) => number,
-      private maxFailures: number,
-    ) {}
+      primary: (input: number) => number,
+      fallback: (input: number) => number,
+      maxFailures: number,
+    ) {
+      this.primary = primary;
+      this.fallback = fallback;
+      this.maxFailures = maxFailures;
+    }
 
     execute(input: number): { result: number; source: 'primary' | 'fallback' } {
       if (this.onFallback) {

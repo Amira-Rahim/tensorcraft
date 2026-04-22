@@ -55,6 +55,19 @@ const lessons = defineCollection({
       .length(3)
       .optional(),
 
+    // Pedagogical pattern — drives alternate 5C presentations.
+    // Absent frontmatter defaults to "standard".
+    pattern: s
+      .enum([
+        "standard",
+        "broken_code_first",
+        "discovery",
+        "flashback",
+        "peer_review",
+      ])
+      .optional()
+      .default("standard"),
+
     keywords: s.array(s.string()).default([]),
 
     // Skill Genome: which axes this lesson affects (optional, for event tracking)

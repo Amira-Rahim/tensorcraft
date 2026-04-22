@@ -45,7 +45,7 @@ export function PaywallNotice() {
       <span className="w-2 h-2 bg-primary shrink-0" aria-hidden="true" />
       <p className="flex-1 m-0 text-sm leading-relaxed text-text-primary">
         Module 2 and beyond in <strong>{displayName}</strong> require a
-        purchase. Pick a plan below to unlock all 11 modules and 55 lessons.
+        purchase. Pick a plan below to access all 11 modules and 55 lessons.
       </p>
     </div>
   );

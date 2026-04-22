@@ -63,11 +63,12 @@ solutionCode: |
   }
 testCode: |
   describe('measureDiversity', () => {
-    it('returns a positive number', async () => {
+    it('returns a finite non-negative number', async () => {
       const gen = tf.sequential();
       gen.add(tf.layers.dense({ inputShape: [10], units: 50, activation: 'sigmoid' }));
       const diversity = await measureDiversity(gen, 10, 5);
-      expect(diversity).toBeGreaterThan(0);
+      expect(Number.isFinite(diversity)).toBe(true);
+      expect(diversity).toBeGreaterThanOrEqual(0);
     });
   });
   describe('smoothLabels', () => {

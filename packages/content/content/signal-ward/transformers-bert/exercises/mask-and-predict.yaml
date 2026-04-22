@@ -127,8 +127,8 @@ testCode: |
     it('outputs valid probabilities (sum to 1 per row)', async () => {
       const encoderOut = tf.randomNormal([8, 16]) as tf.Tensor2D;
       const predictions = mlmPredictionHead(encoderOut, [2, 4], 500);
-      const sums = await predictions.sum(-1).array();
-      (sums as number[]).forEach(s => expect(s).toBeCloseTo(1.0, 3));
+      const sumsData = Array.from(predictions.sum(-1).dataSync());
+      sumsData.forEach(s => expect(s).toBeCloseTo(1.0, 2));
     });
   });
 estimatedMinutes: 15

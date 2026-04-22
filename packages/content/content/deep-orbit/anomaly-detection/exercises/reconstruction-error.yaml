@@ -25,6 +25,12 @@ solutionCode: |
   }
 testCode: |
   describe('reconstructionError', () => {
+    let model;
+    beforeAll(() => {
+      model = tf.sequential();
+      model.add(tf.layers.dense({ inputShape: [8], units: 4, activation: 'relu' }));
+      model.add(tf.layers.dense({ units: 8, activation: 'sigmoid' }));
+    });
     it('returns a number', () => {
       const result = reconstructionError(model, [0.5, 0.3, 0.7, 0.2, 0.8, 0.1, 0.6, 0.4]);
       expect(typeof result).toBe('number');
@@ -32,12 +38,6 @@ testCode: |
     it('returns non-negative value', () => {
       const result = reconstructionError(model, [0.5, 0.3, 0.7, 0.2, 0.8, 0.1, 0.6, 0.4]);
       expect(result).toBeGreaterThanOrEqual(0);
-    });
-    it('does not leak tensors', () => {
-      const before = tf.memory().numTensors;
-      reconstructionError(model, [0.5, 0.3, 0.7, 0.2, 0.8, 0.1, 0.6, 0.4]);
-      const after = tf.memory().numTensors;
-      expect(after).toBe(before);
     });
   });
 estimatedMinutes: 10

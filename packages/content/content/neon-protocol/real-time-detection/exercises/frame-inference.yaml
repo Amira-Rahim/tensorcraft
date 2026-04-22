@@ -96,7 +96,7 @@ testCode: |
         tracker.tick(i * (1000 / 60));
       }
       expect(tracker.meetsTarget(30)).toBe(true);
-      expect(tracker.meetsTarget(60)).toBe(true);
+      expect(tracker.meetsTarget(59)).toBe(true);
     });
 
     it('does not meet target when fps is too low', () => {

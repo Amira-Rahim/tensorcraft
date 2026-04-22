@@ -92,7 +92,7 @@ testCode: |
 
     it('returns undefined for missing runbook', () => {
       const registry = new RunbookRegistry();
-      expect(registry.get('missing')).toBeUndefined();
+      expect(registry.get('missing')).toBe(undefined);
     });
 
     it('finds runbooks by trigger keyword', () => {

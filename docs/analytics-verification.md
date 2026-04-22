@@ -4,6 +4,13 @@ Per dev-plan §6i, every event in `apps/web/lib/analytics-events.ts`
 (which mirrors PRD Appendix B) must land in the PostHog EU dashboard
 before launch. This doc is the verification protocol.
 
+**Scope:** 20 events total — 15 originally defined plus 5 newly wired in
+2026-04 (`session_started`, `session_ended`, `progress_shared`,
+`code_pushed`, `upgrade_cta_shown`, `upgrade_cta_clicked`). All 20 are
+defined in the typed `track()` helper, covered by unit tests
+(`analytics-events.test.ts`), emitted either client-side with consent
+gating or server-side for Stripe/GitHub flows.
+
 ## Verification approach
 
 Playwright network-intercept was considered and **deferred** in favor of
@@ -96,6 +103,13 @@ whenever `commitLessonArtifact` succeeds — same authoritative pattern as
 - [ ] Each event carries the expected property keys (spot-check payloads).
 - [ ] `distinct_id` matches Supabase `auth.users.id` for signed-in users.
 - [ ] EU host (`eu.posthog.com`) confirmed in network tab.
+
+> **Note (2026-04-21):** Final dashboard verification is pending first
+> production PostHog session — the checklist above requires a live
+> PostHog project with real events. Current wiring status: all 20 events
+> defined, unit tests green, server-side emits wired for Stripe + GitHub,
+> consent gating in place. See `session_2026_04_21.md` in user memory
+> for session-level wiring details.
 
 Check off boxes + commit this file with the commit message
 `docs: verify PostHog event taxonomy §6i`.

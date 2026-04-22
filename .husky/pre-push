@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+# Pre-push guardrail for solo dev workflow.
+# Blocks push if typecheck/tests fail. Adds ~30s but catches CI breakage
+# before it lands on Vercel.
+#
+# Skip in emergencies: `git push --no-verify`.
+
+set -e
+
+echo "→ typecheck"
+pnpm turbo typecheck --continue=never
+
+echo "→ unit tests"
+pnpm turbo test --continue=never
+
+echo "✓ pre-push checks passed"

@@ -217,12 +217,49 @@ export default function PricingPage() {
           </h1>
           <p className="text-base sm:text-lg max-w-140 mx-auto text-text-muted font-sans">
             Each theme is a separate ML specialization. Buy one, bundle a few,
-            or unlock all five &mdash; one payment, lifetime access.
+            or all five themes, one payment &mdash; lifetime access.
           </p>
         </section>
 
         {/* 5-tier Pricing Grid */}
         <PricingTiers />
+
+        {/* Refund guarantee badge */}
+        <section
+          className="px-6 pt-2 pb-10"
+          data-testid="refund-guarantee-section"
+        >
+          <div className="max-w-4xl mx-auto min-w-0">
+            <div
+              data-testid="refund-guarantee-badge"
+              className="flex items-center gap-3 border border-border bg-surface/60 px-5 py-4 font-mono text-[13px] text-text-muted rounded-none"
+            >
+              <span
+                aria-hidden="true"
+                className="text-primary font-bold shrink-0"
+              >
+                &#10003;
+              </span>
+              <p className="m-0 text-text-primary leading-relaxed min-w-0">
+                <span className="text-primary font-bold">
+                  14-day money-back guarantee
+                </span>
+                <span className="text-text-muted">
+                  {" "}
+                  &mdash; full refund if you&rsquo;ve used less than 20% of a
+                  theme.{" "}
+                </span>
+                <Link
+                  href="/terms#refunds"
+                  className="underline underline-offset-[3px] decoration-text-muted/40 hover:text-primary hover:decoration-primary transition-colors"
+                >
+                  See terms
+                </Link>
+                .
+              </p>
+            </div>
+          </div>
+        </section>
 
         {/* Comparison Table */}
         <section className="px-6 pb-24" data-testid="comparison-table-section">

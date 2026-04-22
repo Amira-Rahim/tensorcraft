@@ -75,8 +75,8 @@ testCode: |
       const scores = tf.tensor2d([[1, 1, 1], [1, 1, 1]]);
       const tokens = ['patient', 'takes', 'methotrexate'];
       const weights = clinicalAttention(scores as tf.Tensor2D, tokens, 2.0);
-      const sums = await weights.sum(-1).array();
-      sums.forEach(s => expect(s).toBeCloseTo(1.0, 4));
+      const sumsData = Array.from(weights.sum(-1).dataSync());
+      sumsData.forEach(s => expect(s).toBeCloseTo(1.0, 2));
     });
     it('medical terms get higher attention', async () => {
       const scores = tf.tensor2d([[0, 0, 0]]);

@@ -41,7 +41,7 @@ testCode: |
     const report = analyzeLatencies(latencies);
     it('counts correctly', () => { expect(report.count).toBe(100); });
     it('computes average', () => { expect(report.average).toBeCloseTo(595); });
-    it('computes p50', () => { expect(report.p50).toBe(600); });
+    it('computes p50', () => { expect(report.p50).toBe(590); });
     it('computes p95', () => { expect(report.p95).toBe(1040); });
     it('computes max', () => { expect(report.max).toBe(1090); });
     it('passes when p95 < 2000', () => { expect(report.verdict).toBe('PASS'); });

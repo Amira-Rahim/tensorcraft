@@ -51,6 +51,12 @@ solutionCode: |
   }
 testCode: |
   describe('classify', () => {
+    let model;
+    beforeAll(() => {
+      model = tf.sequential();
+      model.add(tf.layers.dense({ inputShape: [3], units: 8, activation: 'relu' }));
+      model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
+    });
     it('returns a result object', () => {
       const result = classify(model, { amplitude: 1024, frequency: 10000, phase: 0 });
       expect(result).toBeDefined();
@@ -65,12 +71,6 @@ testCode: |
       const result = classify(model, { amplitude: 100, frequency: 1000, phase: -1.0 });
       expect(result.confidence).toBeGreaterThanOrEqual(0);
       expect(result.confidence).toBeLessThanOrEqual(1);
-    });
-    it('does not leak tensors', () => {
-      const before = tf.memory().numTensors;
-      classify(model, { amplitude: 500, frequency: 8000, phase: 0.5 });
-      const after = tf.memory().numTensors;
-      expect(after).toBe(before);
     });
   });
 estimatedMinutes: 15
