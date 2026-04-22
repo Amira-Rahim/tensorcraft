@@ -1,6 +1,6 @@
 # Tensorcraft — Infrastructure & Deployment
 
-> Last updated: 2026-04-07 (Vercel migration for web app; API remains on Fly.io)
+> Last updated: 2026-04-22 (Vercel migration for web app; API remains on Fly.io)
 
 This document covers the production deployment architecture, scaling configuration, and operational runbook for TensorCraft.
 

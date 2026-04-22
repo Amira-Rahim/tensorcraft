@@ -83,6 +83,30 @@ const nextConfig: NextConfig = {
           key: "Strict-Transport-Security",
           value: "max-age=63072000; includeSubDomains; preload",
         },
+        {
+          // CSP for the web app. Allows: Stripe Checkout (script + frame +
+          // form-action), PostHog EU, Sentry (browser SDK + ingest), Plausible,
+          // Supabase (auth + storage + realtime), our own api.tensorcraft.app,
+          // Google Fonts via next/font (inline-style pragma required), and
+          // data:/blob: images for OG previews and canvas exports.
+          // 'unsafe-inline' + 'unsafe-eval' for scripts are required by Next.js
+          // hydration and PostHog's dynamic loader; revisit after launch with
+          // nonce-based inline once we have telemetry on what actually needs it.
+          key: "Content-Security-Policy",
+          value: [
+            "default-src 'self'",
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://checkout.stripe.com https://eu.posthog.com https://plausible.io https://browser.sentry-cdn.com",
+            "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.tensorcraft.app https://api.stripe.com https://checkout.stripe.com https://eu.posthog.com https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://plausible.io",
+            "frame-src https://js.stripe.com https://checkout.stripe.com",
+            "img-src 'self' data: blob: https:",
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+            "font-src 'self' data: https://fonts.gstatic.com",
+            "base-uri 'self'",
+            "form-action 'self' https://checkout.stripe.com",
+            "frame-ancestors 'none'",
+            "object-src 'none'",
+          ].join("; "),
+        },
       ],
     },
   ],

@@ -127,12 +127,7 @@ export function FocusTrap({
 
     const focusables = Array.from(
       container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR),
-    ).filter(
-      (el) =>
-        (!el.hasAttribute("data-focus-trap-ignore") &&
-          el.offsetParent !== null) ||
-        el === document.activeElement,
-    );
+    ).filter((el) => !el.hasAttribute("data-focus-trap-ignore"));
 
     if (focusables.length === 0) {
       // Nothing focusable — prevent tab from leaving the trap.

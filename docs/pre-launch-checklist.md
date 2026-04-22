@@ -94,7 +94,7 @@ where table_schema='public' and table_name in (
 **Stripe (live mode — not test):**
 - `STRIPE_SECRET_KEY` (`sk_live_...`)
 - `STRIPE_WEBHOOK_SECRET` (from live-mode webhook endpoint)
-- `STRIPE_PRICE_SINGLE`, `STRIPE_PRICE_TWO`, `STRIPE_PRICE_THREE`, `STRIPE_PRICE_FIVE`
+- (No `STRIPE_PRICE_*` vars — checkout uses inline `price_data` with amounts from `packages/shared/src/constants.ts` `PRICING`. If we migrate to Stripe-hosted Products/Prices later, add them here.)
 
 **Monitoring:**
 - `SENTRY_DSN` (API project)
@@ -143,7 +143,7 @@ Five services need projects created + DSN/keys captured:
    - Create 7 Tags (names in §A3 above)
    - Build 3 Sequences (welcome / purchase confirmation / capstone achievement)
    - Configure bounce/complaint Automation → webhook to `https://api.tensorcraft.app/api/webhooks/kit-bounce` with `KIT_WEBHOOK_SECRET` header
-5. **Stripe** — flip to live mode. Create 4 Products × 4 Prices ($79/$129/$169/$219). Configure webhook endpoint pointing at `https://api.tensorcraft.app/api/payments/webhook` with event filter: `checkout.session.completed`, `charge.refunded`, `checkout.session.async_payment_failed`.
+5. **Stripe** — flip to live mode. (No Products/Prices needed in the dashboard — checkout uses inline `price_data` with amounts from `packages/shared/src/constants.ts` `PRICING`: $79/$129/$169/$219. Stripe still records each charge as a line item for receipts + refunds.) Configure webhook endpoint pointing at `https://api.tensorcraft.app/api/payments/webhook` with event filter: `checkout.session.completed`, `charge.refunded`, `checkout.session.async_payment_failed`.
 
 ### A6. Real-money Stripe smoke test
 
