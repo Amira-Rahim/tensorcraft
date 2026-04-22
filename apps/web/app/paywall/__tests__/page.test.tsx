@@ -66,7 +66,7 @@ describe("PaywallPage (Phase 11 §11d Wave 3 NEW)", () => {
       "GitHub push flow",
       "Certificate of completion",
       "Capstone project",
-      "Discord community access",
+      "Priority email support",
     ]) {
       expect(table).toHaveTextContent(feature);
     }

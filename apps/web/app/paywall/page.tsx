@@ -43,7 +43,7 @@ const COMPARISON_ROWS: ComparisonRow[] = [
   { feature: "GitHub push flow", free: false, paid: true },
   { feature: "Capstone project", free: false, paid: true },
   { feature: "Certificate of completion", free: false, paid: true },
-  { feature: "Discord community access", free: false, paid: true },
+  { feature: "Priority email support", free: false, paid: true },
   { feature: "Lifetime updates", free: false, paid: true },
 ];
 

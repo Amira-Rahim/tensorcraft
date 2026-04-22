@@ -11,6 +11,6 @@ echo "→ typecheck"
 pnpm turbo typecheck --continue=never
 
 echo "→ unit tests"
-pnpm turbo test --continue=never
+pnpm test
 
 echo "✓ pre-push checks passed"

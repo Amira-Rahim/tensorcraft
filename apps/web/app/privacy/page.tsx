@@ -45,7 +45,7 @@ export default function PrivacyPage() {
         </Link>
 
         <h1 className="text-4xl font-bold mb-2">Privacy Policy</h1>
-        <p className="text-text-muted mb-12">Last updated: March 10, 2026</p>
+        <p className="text-text-muted mb-12">Last updated: April 21, 2026</p>
 
         <div className="space-y-8 text-[15px] leading-relaxed text-text-muted">
           <section>
@@ -111,16 +111,40 @@ export default function PrivacyPage() {
                 processing
               </li>
               <li>
+                <strong className="text-text-primary">Kit (ConvertKit)</strong>{" "}
+                — Transactional and lifecycle email delivery
+              </li>
+              <li>
+                <strong className="text-text-primary">Sentry</strong> — Error
+                monitoring via DSN; captures errors and stack traces. PII
+                (emails, user IDs) is scrubbed via a{" "}
+                <code className="font-mono text-text-primary">beforeSend</code>{" "}
+                hook before transmission.
+              </li>
+              <li>
                 <strong className="text-text-primary">PostHog</strong> — Product
-                analytics (only active when configured; GDPR-compliant)
+                analytics on the EU instance (
+                <code className="font-mono text-text-primary">
+                  eu.posthog.com
+                </code>
+                ) for GDPR-compliant data residency. Cookie-consent-gated.
               </li>
               <li>
                 <strong className="text-text-primary">Plausible</strong> —
-                Marketing analytics (cookie-free, only active when configured)
+                Privacy-first pageview analytics. Cookie-free and EU-hosted.
               </li>
               <li>
-                <strong className="text-text-primary">Vercel</strong> — Hosting
-                and deployment
+                <strong className="text-text-primary">Vercel</strong> — Web
+                hosting and deployment
+              </li>
+              <li>
+                <strong className="text-text-primary">Fly.io</strong> — API
+                hosting
+              </li>
+              <li>
+                <strong className="text-text-primary">GitHub App</strong> —
+                Optional user integration for exercise push flow (only when
+                explicitly authorized by you)
               </li>
             </ul>
           </section>
