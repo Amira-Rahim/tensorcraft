@@ -7,3 +7,4 @@ solutionCode: "import * as tf from '@tensorflow/tfjs';\n\nexport function manual
 testCode: "describe('Compute Gradients', () => { it('manualGradient computes correct gradient for positive z1', () => { const grad = manualGradient(2, 1, 0.5, -0.3); expect(grad).toBeCloseTo(1.56, 4); }); it('manualGradient returns 0 when ReLU is inactive (z1 <= 0)', () => { const grad = manualGradient(2, 1, -0.5, 0.3); expect(grad).toBe(0); }); it('autoGradient returns a finite tensor', async () => { const auto = await autoGradient(2, 1, 0.5, -0.3).array(); expect(Number.isFinite(auto)).toBe(true); }); });"
 estimatedMinutes: 20
 difficulty: advanced
+mlContent: training

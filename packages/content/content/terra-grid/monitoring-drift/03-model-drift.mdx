@@ -138,4 +138,10 @@ Build a model drift detector that tracks prediction accuracy over time.
 
 <Exercise slug="detect-model-drift" />
 
+## On-Call Scenario
+
+You are the on-call engineer when the prediction-distribution drift alarm fires at 2am. The exercise below mirrors the first 30 seconds of triage: classify severity, identify the worst-affected class, decide whether to wake the model owner.
+
+<Exercise slug="incident-drift-detection" />
+
 <KeyTakeaways takeaways={["Model drift means the correct answers changed — same inputs, different ground truth, like a visual regression from a design system update", "Data drift is detectable immediately (input stats change); model drift requires ground truth labels that often arrive delayed", "Prediction distribution monitoring catches drift even before ground truth arrives — if the model suddenly predicts more 'critical' events, investigate", "Seasonal patterns are a common cause of concept drift in industrial systems — build temporal awareness into your monitoring"]} />

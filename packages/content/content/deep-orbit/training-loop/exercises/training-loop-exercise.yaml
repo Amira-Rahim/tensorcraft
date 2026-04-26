@@ -7,4 +7,5 @@ solutionCode: "const model = tf.sequential();\nmodel.add(tf.layers.dense({ units
 testCode: "describe('Training', () => { it('returns history', () => { expect(history).toBeDefined(); }); it('has loss history', () => { expect(history.history.loss).toBeDefined(); expect(history.history.loss.length).toBeGreaterThan(0); }); it('loss decreased', () => { const losses = history.history.loss; expect(losses[losses.length - 1]).toBeLessThan(losses[0]); }); });"
 estimatedMinutes: 15
 difficulty: intermediate
+mlContent: training
 skillAxis: training

@@ -104,6 +104,20 @@ export const exerciseSchema = z.object({
   estimatedMinutes: z.number().int().positive(),
   difficulty: z.enum(["beginner", "intermediate", "advanced"]),
 
+  // ML-content axis (independent of cognitive difficulty).
+  mlContent: z
+    .enum([
+      "arithmetic",
+      "data",
+      "model",
+      "training",
+      "evaluation",
+      "deployment",
+      "systems",
+    ])
+    .optional()
+    .default("arithmetic"),
+
   // Skill Genome: primary axis this exercise affects (optional, for event tracking)
   skillAxis: z
     .enum([

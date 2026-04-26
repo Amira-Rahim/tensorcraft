@@ -72,6 +72,18 @@ console.log('Perfect MSE:', perfectLoss.dataSync()); // 0`}
 
 Think of loss as the "distance" between where you are and where you want to be. Training a neural network = minimizing this distance.
 
+<DerivationDrawer summary="MSE and cross-entropy from first principles" companionSlug="information-theory">
+**Why squared error?** MSE squares the residuals so positive and negative errors don't cancel, AND so large errors are penalized more than small ones (a 0.4 error counts 4× more than a 0.2 error). The formula:
+
+`MSE = (1/n) Σ (yᵢ - ŷᵢ)²`
+
+**Why cross-entropy for classification?** Squaring works for continuous outputs, but for probabilities it produces a flat gradient near 0 and 1 that stalls learning. Cross-entropy uses log to keep gradients steep where the model is most wrong:
+
+`BCE = -(1/n) Σ [ yᵢ log(ŷᵢ) + (1-yᵢ) log(1-ŷᵢ) ]`
+
+When the true label is 1 and the model predicts 0.01, `-log(0.01) ≈ 4.6` — a strong gradient signal. When MSE would say "off by 0.99² ≈ 0.98", BCE says "off by 4.6". The loss curve shape is what trains.
+</DerivationDrawer>
+
 ## Challenge
 
 Calculate the loss for the DEEP SCAN classifier's initial predictions.

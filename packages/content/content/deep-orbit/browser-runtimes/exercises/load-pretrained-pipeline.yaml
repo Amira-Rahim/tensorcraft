@@ -1,0 +1,77 @@
+slug: load-pretrained-pipeline
+lessonSlug: transformers-js
+title: "Sentiment Classifier via Transformers.js"
+instructions: "Build a function `classifyReports(reports)` that takes an array of report strings, classifies each via a (mocked) Transformers.js sentiment pipeline, and returns an array of `{ text, label, score }` objects ordered by score descending. Treat `pipeline()` as a no-arg async function that returns a callable classifier; the test harness provides a stub. Sort results so the most-confident classification appears first regardless of label."
+starterCode: |
+  async function classifyReports(reports, pipelineFactory) {
+    // 1. Load the sentiment-analysis pipeline (await pipelineFactory())
+    // 2. Run it over reports (the classifier accepts an array)
+    // 3. Pair each report with its prediction
+    // 4. Sort by score descending and return
+    return [];
+  }
+solutionCode: |
+  async function classifyReports(reports, pipelineFactory) {
+    const classifier = await pipelineFactory();
+    const predictions = await classifier(reports);
+    const paired = reports.map((text, i) => ({
+      text,
+      label: predictions[i].label,
+      score: predictions[i].score,
+    }));
+    paired.sort((a, b) => b.score - a.score);
+    return paired;
+  }
+testCode: |
+  describe('classifyReports', () => {
+    function makeStubPipeline(scoresByReport) {
+      return async () => {
+        return async (reports) => reports.map((r, i) => ({
+          label: scoresByReport[i].label,
+          score: scoresByReport[i].score,
+        }));
+      };
+    }
+
+    it('returns one result per report', async () => {
+      const reports = ['a', 'b', 'c'];
+      const stub = makeStubPipeline([
+        { label: 'POS', score: 0.9 },
+        { label: 'NEG', score: 0.8 },
+        { label: 'POS', score: 0.7 },
+      ]);
+      const out = await classifyReports(reports, stub);
+      expect(out).toHaveLength(3);
+    });
+
+    it('sorts by score descending', async () => {
+      const reports = ['a', 'b', 'c'];
+      const stub = makeStubPipeline([
+        { label: 'POS', score: 0.5 },
+        { label: 'NEG', score: 0.99 },
+        { label: 'POS', score: 0.7 },
+      ]);
+      const out = await classifyReports(reports, stub);
+      expect(out[0].score).toBe(0.99);
+      expect(out[1].score).toBe(0.7);
+      expect(out[2].score).toBe(0.5);
+    });
+
+    it('preserves original report text alongside prediction', async () => {
+      const reports = ['Diagnostic flagged the interaction.'];
+      const stub = makeStubPipeline([{ label: 'POS', score: 0.95 }]);
+      const out = await classifyReports(reports, stub);
+      expect(out[0].text).toBe('Diagnostic flagged the interaction.');
+      expect(out[0].label).toBe('POS');
+    });
+
+    it('handles empty input', async () => {
+      const stub = makeStubPipeline([]);
+      const out = await classifyReports([], stub);
+      expect(out).toEqual([]);
+    });
+  });
+estimatedMinutes: 12
+difficulty: intermediate
+mlContent: arithmetic
+skillAxis: fe_integration

@@ -7,3 +7,4 @@ solutionCode: "function profileModel(model) {\n  const totalParams = model.count
 testCode: "describe('profileModel', () => { const m = tf.sequential(); m.add(tf.layers.dense({ inputShape: [4], units: 8 })); m.add(tf.layers.dense({ units: 1 })); const result = profileModel(m); it('reports a positive param count', () => { expect(result.totalParams).toBeGreaterThan(0); }); it('calculates size from params', () => { expect(result.totalSizeMB).toBeCloseTo((result.totalParams * 4) / (1024 * 1024), 6); }); });"
 estimatedMinutes: 10
 difficulty: intermediate
+mlContent: arithmetic

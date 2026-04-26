@@ -7,4 +7,5 @@ solutionCode: "const preActivation = tf.tensor([-2.0, -0.5, 0.0, 1.5, 3.0]);\n\n
 testCode: "describe('ReLU', () => { it('produces output', () => { expect(activated).toBeDefined(); }); it('zeros out negatives', () => { const vals = activated.dataSync(); expect(vals[0]).toBe(0); expect(vals[1]).toBe(0); }); it('keeps positives', () => { const vals = activated.dataSync(); expect(vals[3]).toBeCloseTo(1.5); expect(vals[4]).toBeCloseTo(3.0); }); });"
 estimatedMinutes: 8
 difficulty: beginner
+mlContent: data
 skillAxis: model_arch

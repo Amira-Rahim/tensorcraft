@@ -7,3 +7,4 @@ solutionCode: "function naiveModel() {\n  const model = tf.sequential();\n  mode
 testCode: "describe('compareModels', () => { const result = compareModels(); it('reports parameter counts for both models', () => { expect(result.naiveParams).toBeGreaterThan(0); expect(result.efficientParams).toBeGreaterThan(0); }); it('params are finite numbers', () => { expect(Number.isFinite(result.naiveParams)).toBe(true); expect(Number.isFinite(result.efficientParams)).toBe(true); }); });"
 estimatedMinutes: 15
 difficulty: intermediate
+mlContent: model

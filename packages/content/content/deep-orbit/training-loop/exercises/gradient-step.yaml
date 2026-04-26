@@ -7,4 +7,5 @@ solutionCode: "const weight = tf.variable(tf.scalar(5.0));\nconst learningRate =
 testCode: "describe('Gradient Step', () => { it('weight is defined', () => { expect(weight).toBeDefined(); }); it('gradient computation produced a tensor', () => { expect(gradient).toBeDefined(); }); });"
 estimatedMinutes: 10
 difficulty: beginner
+mlContent: data
 skillAxis: training

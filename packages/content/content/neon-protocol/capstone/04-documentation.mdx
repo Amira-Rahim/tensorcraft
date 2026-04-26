@@ -16,7 +16,8 @@ concept:
     feCode: "## Installation\n## Usage\n## API Reference\n## Known Issues\n## Contributing"
     mlTitle: "Model Card"
     mlCode: "## Model Details\n## Intended Use\n## Training Data\n## Performance Metrics\n## Limitations\n## Ethical Considerations"
-    tier: identity
+    tier: structural
+    breaks: "OpenAPI documents an API contract that the server enforces. A model card documents intended use, training data composition, and known disparities — but nothing enforces that operators read it before shipping the model into a new context. The doc is advisory; the contract is statistical. Misreading a model card causes a fairness incident, not a 400 error."
 consequence:
   narrative: "Noor writes the documentation through the night. Model cards for each component. API docs for every stage. A deployment runbook with step-by-step instructions. By morning, any resistance cell with a browser and an internet connection can deploy Protocol Sentinel. The Architect built a surveillance empire on proprietary, undocumented systems. The resistance fights back with open documentation."
   nextLessonTeaser: "Next: launch — Protocol Sentinel goes live across Neon City"

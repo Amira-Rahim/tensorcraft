@@ -16,7 +16,8 @@ concept:
     feCode: "// Pre-flight: tests pass, staging verified, monitoring ready, rollback tested"
     mlTitle: "ML Production Launch"
     mlCode: "// Pre-flight: accuracy verified, edge tested, monitoring ready, rollback tested"
-    tier: identity
+    tier: structural
+    breaks: "Web pre-flight verifies a deterministic build artifact against reproducible tests. ML pre-flight verifies a probabilistic model against a static benchmark — and 'monitoring ready' typically means accuracy/drift monitors that only catch problems hours-to-days after they manifest. The checklist shape transfers; the time-to-detect-failure does not, and that latency is what determines whether your launch is actually safe."
 consequence:
   narrative: "Two days after launch. Substation 7-Alpha. Temperature spike triggers a cascading anomaly across 3 regions. Terra Grid Intelligence identifies the root cause in 11.7 seconds. Manual analysis would have taken 2-3 hours. GRID reports: 'Time to detection: 4.2 seconds. Time to root cause: 11.7 seconds. Model size: 4.2MB. Running on 12,400 edge devices across 47 sites.' Hassan: 'This is what it looks like when the system works.'"
   nextLessonTeaser: "Congratulations — you have completed Terra Grid."

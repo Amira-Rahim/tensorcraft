@@ -16,7 +16,8 @@ concept:
     feCode: "npm run build && gh-pages -d dist // bundle, optimize, ship"
     mlTitle: "ML App Deploy"
     mlCode: "npm run build && gh-pages -d dist // same — model is a static asset"
-    tier: identity
+    tier: structural
+    breaks: "The file copy is identical; the operational contract is not. Static deploys roll back by reverting the artifact and the user gets the prior page. Model rollback restores the weights but not the world the model was trained on — drift accumulates from the training cutoff, not from the deploy time. CDN cache eviction is bounded by TTL; model staleness is unbounded until you retrain."
 consequence:
   narrative: "DEEP SCAN goes live. The anomalous signal is classified. The result appears on every display on the bridge. Silence. Then Mirza speaks."
   nextLessonTeaser: "Mission complete. But the signal keeps transmitting."

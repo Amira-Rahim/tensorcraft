@@ -7,4 +7,5 @@ solutionCode: "const w = tf.variable(tf.scalar(3.0));\n\nconst { value: loss, gr
 testCode: "describe('Backprop', () => { it('computes loss', () => { expect(loss).toBeDefined(); expect(loss.dataSync()[0]).toBeCloseTo(9.0, 4); }); it('returns a grads object', () => { expect(grads).toBeDefined(); expect(typeof grads).toBe('object'); }); });"
 estimatedMinutes: 15
 difficulty: intermediate
+mlContent: training
 skillAxis: training

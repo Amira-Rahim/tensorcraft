@@ -7,3 +7,4 @@ solutionCode: "function totalSizeMB(layers) {\n  const bytes = { float32: 4, flo
 testCode: "describe('totalSizeMB', () => { it('calculates mixed precision size', () => { const layers = [{ params: 1048576, precision: 'float16' }, { params: 1048576, precision: 'int8' }, { params: 1048576, precision: 'float16' }]; expect(totalSizeMB(layers)).toBe(5); }); it('handles all float32', () => { const layers = [{ params: 1048576, precision: 'float32' }]; expect(totalSizeMB(layers)).toBe(4); }); });"
 estimatedMinutes: 10
 difficulty: intermediate
+mlContent: evaluation

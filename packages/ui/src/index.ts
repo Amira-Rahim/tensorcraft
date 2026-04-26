@@ -9,6 +9,7 @@ export {
   Dialogue,
   BridgeCallout,
   CodeBlock,
+  DerivationDrawer,
   Exercise,
   ExerciseDataProvider,
   HintPanel,

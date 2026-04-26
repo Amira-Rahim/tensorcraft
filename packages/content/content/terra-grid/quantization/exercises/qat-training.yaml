@@ -7,3 +7,4 @@ solutionCode: "function fakeQuantize(value, min, max, levels) {\n  const clamped
 testCode: "describe('fakeQuantize', () => { it('preserves min', () => { expect(fakeQuantize(-1.0, -1.0, 1.0, 256)).toBeCloseTo(-1.0, 2); }); it('preserves max', () => { expect(fakeQuantize(1.0, -1.0, 1.0, 256)).toBeCloseTo(1.0, 2); }); it('rounds to nearest level', () => { const q = fakeQuantize(0.123, -1.0, 1.0, 256); expect(Math.abs(q - 0.123)).toBeLessThan(0.01); }); it('clamps out of range', () => { expect(fakeQuantize(2.0, -1.0, 1.0, 256)).toBeCloseTo(1.0, 2); }); });"
 estimatedMinutes: 15
 difficulty: intermediate
+mlContent: deployment

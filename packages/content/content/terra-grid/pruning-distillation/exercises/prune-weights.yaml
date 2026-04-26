@@ -7,3 +7,4 @@ solutionCode: "function pruneByMagnitude(weights, threshold) {\n  return weights
 testCode: "describe('Pruning', () => { const w = [0.9, -0.01, 0.003, -0.8, 0.05]; const pruned = pruneByMagnitude(w, 0.1); it('keeps large weights', () => { expect(pruned[0]).toBe(0.9); expect(pruned[3]).toBe(-0.8); }); it('zeros small weights', () => { expect(pruned[1]).toBe(0); expect(pruned[2]).toBe(0); expect(pruned[4]).toBe(0); }); it('calculates sparsity', () => { expect(sparsity(pruned)).toBeCloseTo(0.6); }); });"
 estimatedMinutes: 10
 difficulty: intermediate
+mlContent: arithmetic

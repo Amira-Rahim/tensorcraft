@@ -16,7 +16,8 @@ concept:
     feCode: "on: push → npm test → npm build → deploy // automated web app pipeline"
     mlTitle: "ML CI/CD"
     mlCode: "on: push → test → validate-model → benchmark → deploy // + model checks"
-    tier: identity
+    tier: structural
+    breaks: "GitHub Actions ships immutable build artifacts; rollback restores prior bytes exactly. The model-validation step runs in CI but the model itself is non-deterministic — the same training pipeline produces a different model each run. Pinning a CI workflow does not pin the model; you must version weights separately and treat 'model passing CI' as one signal among several, not a green-light to ship."
 consequence:
   narrative: "The pipeline passes: unit tests, integration tests, model validation, performance benchmarks — all green. Nazari: 'Now I trust it.'"
   nextLessonTeaser: "Next: monitoring — watching the system in production"

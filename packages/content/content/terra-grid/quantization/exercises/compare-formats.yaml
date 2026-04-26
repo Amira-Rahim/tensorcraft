@@ -7,3 +7,4 @@ solutionCode: "function modelSize(paramCount, bytesPerParam) {\n  return (paramC
 testCode: "describe('compareSizes', () => { const sizes = compareSizes(1048576); it('calculates Float32', () => { expect(sizes.float32).toBe(4); }); it('calculates Float16', () => { expect(sizes.float16).toBe(2); }); it('calculates Int8', () => { expect(sizes.int8).toBe(1); }); });"
 estimatedMinutes: 10
 difficulty: intermediate
+mlContent: arithmetic

@@ -7,3 +7,4 @@ solutionCode: "interface DataPoint {\n  features: number[];\n  label: number;\n}
 testCode: "describe('Decision Tree', () => { it('pure group has gini 0', () => { expect(pureGini).toBe(0); }); it('evenly mixed group has gini 0.5', () => { expect(mixedGini).toBe(0.5); }); it('empty group has gini 0', () => { expect(giniImpurity([])).toBe(0); }); it('findBestSplit returns a valid feature index', () => { expect(split.featureIndex).toBeGreaterThanOrEqual(0); expect(split.featureIndex).toBeLessThan(2); }); it('split separates classes', () => { const left = dataset.filter(d => d.features[split.featureIndex] <= split.threshold); const right = dataset.filter(d => d.features[split.featureIndex] > split.threshold); expect(giniImpurity(left.map(d => d.label))).toBeLessThan(mixedGini); expect(giniImpurity(right.map(d => d.label))).toBeLessThan(mixedGini); }); });"
 estimatedMinutes: 15
 difficulty: beginner
+mlContent: arithmetic

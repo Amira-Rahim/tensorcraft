@@ -7,3 +7,4 @@ solutionCode: "interface DataPoint {\n  features: number[];\n  label: string;\n}
 testCode: "describe('KNN', () => { it('euclidean distance between same point is 0', () => { expect(euclideanDistance([1, 1], [1, 1])).toBe(0); }); it('euclidean distance is correct', () => { expect(euclideanDistance([0, 0], [3, 4])).toBeCloseTo(5); }); it('classifies test point as A', () => { expect(prediction).toBe('A'); }); it('classifies a point near B cluster as B', () => { expect(knnClassify([9, 8], trainingData, 3)).toBe('B'); }); it('handles k=1', () => { expect(knnClassify([1, 1], trainingData, 1)).toBe('A'); }); });"
 estimatedMinutes: 15
 difficulty: beginner
+mlContent: arithmetic

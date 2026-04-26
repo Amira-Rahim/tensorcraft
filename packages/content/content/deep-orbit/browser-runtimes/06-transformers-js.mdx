@@ -1,0 +1,115 @@
+---
+slug: transformers-js
+title: "Transformers.js for Pretrained Models"
+moduleId: browser-runtimes
+themeId: deep-orbit
+order: 6
+estimatedMinutes: 25
+difficulty: intermediate
+context:
+  narrative: "Demir asks Nazari: 'What if I don't want to train a model? What if I just want a sentiment classifier in five lines?' Nazari smiles. 'Then you don't need TF.js at all.'"
+  speaker: "Demir"
+concept:
+  explanation: "Transformers.js ships pretrained Hugging Face models that run in the browser — like importing a fully-built React component instead of authoring one from scratch."
+  bridge:
+    feTitle: "npm install component-library"
+    feCode: "import { DatePicker } from 'react-datepicker'"
+    mlTitle: "Transformers.js pipeline"
+    mlCode: "import { pipeline } from '@xenova/transformers'\nconst classifier = await pipeline('sentiment-analysis')"
+    tier: structural
+    breaks: "An npm component renders deterministic markup once you pass props. A pretrained model returns probabilistic output that varies with input distribution — the 'API' looks identical, but you cannot unit-test the output value, only its shape and confidence range. The model file (50MB+) is also user-side bandwidth, not server-side. Caching strategy matters far more than for a typical npm import."
+consequence:
+  narrative: "Demir prototypes a feedback classifier in 12 lines. Nazari: 'Now you know which tool fits which job. Train when the task is custom; install when the task is well-known.'"
+  nextLessonTeaser: "Module complete — head to Signal Processing or pick a specialization theme."
+hints:
+  - level: nudge
+    content: "pipeline() is the entry point — pass a task name like 'sentiment-analysis' or 'translation_en_to_fr'."
+  - level: guidance
+    content: "Pipelines lazily download and cache the model on first call. Subsequent calls hit the IndexedDB cache."
+  - level: solution
+    content: "const classifier = await pipeline('sentiment-analysis'); const result = await classifier('I love this signal');"
+keywords:
+  - transformers-js
+  - pretrained
+  - huggingface
+  - pipeline
+  - model-hub
+skillAxes: [fe_integration, deployment]
+---
+
+<Dialogue speaker="Demir">
+We spent ten modules learning to train models from scratch. But the resistance leaders just need a sentiment classifier on field reports. Do I really train one for that?
+</Dialogue>
+
+<Dialogue speaker="Chief Nazari">
+No. Transformers.js. Pretrained models from the Hugging Face Hub, running in the browser via ONNX Runtime Web. You install, import, call. No training loop, no labeled data, no GPU.
+</Dialogue>
+
+<LearningObjectives objectives={["Understand when to reach for Transformers.js vs TFJS or ONNX Runtime", "Use `pipeline()` to run pretrained models in the browser", "Know which tasks have ready-made pipelines (sentiment, NER, translation, summarization, image classification, ASR)", "Reason about the bandwidth + latency cost of shipping pretrained models client-side"]} />
+
+## Three Browser ML Runtimes, Three Jobs
+
+By now you've seen TFJS and ONNX Runtime Web. Transformers.js is the third tool. They are not competitors — they solve different problems.
+
+<BridgeCallout bridge={frontmatter.concept.bridge} />
+
+| Runtime | When to use | Cost shape |
+|---|---|---|
+| **TensorFlow.js** | You trained your own model and want to ship it | Your model size + your domain expertise |
+| **ONNX Runtime Web** | Your team built a PyTorch model; you want it in the browser without Python | Conversion friction + op-set risk |
+| **Transformers.js** | You need a well-known NLP/vision/audio task done well | 50–500MB model download per task |
+
+The right answer depends on whether the task is **custom** (TFJS) or **commodity** (Transformers.js).
+
+## Pipeline in Five Lines
+
+<CodeBlock language="typescript" title="sentiment-pipeline.ts">
+{`import { pipeline } from '@xenova/transformers';
+
+// First call: downloads ~80MB model + tokenizer to IndexedDB.
+// Subsequent calls: instant from cache.
+const classifier = await pipeline('sentiment-analysis');
+
+const result = await classifier('Diagnostic One flagged the methotrexate interaction.');
+console.log(result);
+// [{ label: 'POSITIVE', score: 0.9991 }]
+
+// Batch inference: pass an array.
+const reports = [
+  'Sensor array is functioning within tolerance.',
+  'Catastrophic failure on the port-side coupling.',
+  'Signal classification: anomalous.',
+];
+const batched = await classifier(reports);
+// [
+//   { label: 'POSITIVE', score: 0.987 },
+//   { label: 'NEGATIVE', score: 0.999 },
+//   { label: 'NEGATIVE', score: 0.852 },
+// ]`}
+</CodeBlock>
+
+## Tasks the Pipeline Handles Out of the Box
+
+```
+sentiment-analysis          NER (named entities)        question-answering
+translation                 summarization               text-generation
+image-classification        image-segmentation          image-to-text (caption)
+zero-shot-classification    feature-extraction          automatic-speech-recognition
+```
+
+Each pipeline is one line. Each downloads a model file the first time and caches it. The library ships ONNX Runtime Web underneath — TFJS is not involved at all when you use Transformers.js.
+
+## When NOT to Use Transformers.js
+
+- **Your task is not in the standard list.** A custom regression on sensor readings has no pretrained pipeline. Train your own with TFJS.
+- **Bandwidth-sensitive users.** A 200MB model on a 3G connection is a UX failure. Inspect model sizes at [huggingface.co/models](https://huggingface.co/models) before committing.
+- **Strict latency budgets on cold start.** First-call latency includes model download. Pre-warm via service worker if you need cold-start guarantees.
+- **You need fine-tuning.** Transformers.js runs models, it doesn't train them. Fine-tune in Python, export to ONNX, ship via Transformers.js.
+
+## Challenge
+
+Build a sentiment classifier for field reports using Transformers.js.
+
+<Exercise slug="load-pretrained-pipeline" />
+
+<KeyTakeaways takeaways={["Transformers.js ships pretrained models; TFJS ships models you trained yourself", "pipeline(taskName) is the canonical entry point — one line, lazy model download, IndexedDB cache", "Use it for commodity tasks (sentiment, NER, translation); train your own for custom domains", "Model bandwidth (50–500MB) is the dominant cost — measure before shipping to mobile users"]} />

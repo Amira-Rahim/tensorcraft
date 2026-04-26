@@ -7,3 +7,4 @@ solutionCode: "function quantize(value, min, max) {\n  const scale = (max - min)
 testCode: "describe('quantize', () => { it('maps min to -128', () => { expect(quantize(-1.0, -1.0, 1.0)).toBe(-128); }); it('maps max to 127', () => { expect(quantize(1.0, -1.0, 1.0)).toBe(127); }); it('maps zero to near 0', () => { const q = quantize(0, -1.0, 1.0); expect(q).toBeGreaterThan(-2); expect(q).toBeLessThan(2); }); });"
 estimatedMinutes: 15
 difficulty: intermediate
+mlContent: deployment

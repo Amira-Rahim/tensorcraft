@@ -1,0 +1,88 @@
+slug: incident-drift-detection
+lessonSlug: model-drift
+title: "Incident — Drift Detection in Production"
+instructions: |
+  PAGER: prediction distribution shifted overnight. You receive `predictions` (last 24h, 1000 samples, predicted-class indices 0-4) and `baseline` (same shape, established 30 days ago). Build `diagnoseDrift(predictions, baseline)` that returns:
+
+    {
+      shifted: boolean,         // true if any class freq changed by ≥5 pp (percentage points)
+      worstClass: number,       // class index with largest absolute shift
+      worstShiftPp: number,     // shift magnitude in percentage points (rounded to 1 decimal)
+      severity: 'low'|'med'|'high',  // <5pp = low, 5-15pp = med, >15pp = high
+    }
+
+  Use Math.round(x * 10) / 10 for one-decimal rounding. This is how a real on-call engineer triages a drift alert in 30 seconds.
+mlContent: systems
+starterCode: |
+  function diagnoseDrift(predictions, baseline) {
+    // 1. Count class frequencies in both arrays
+    // 2. Compute percentage-point shift per class (current% - baseline%)
+    // 3. Return { shifted, worstClass, worstShiftPp, severity }
+    return { shifted: false, worstClass: 0, worstShiftPp: 0, severity: 'low' };
+  }
+solutionCode: |
+  function diagnoseDrift(predictions, baseline) {
+    const classes = new Set([...predictions, ...baseline]);
+    const total = (arr) => arr.length;
+    const freq = (arr, c) => arr.filter(v => v === c).length / total(arr);
+    let worstClass = 0;
+    let worstShift = 0;
+    for (const c of classes) {
+      const shift = (freq(predictions, c) - freq(baseline, c)) * 100;
+      if (Math.abs(shift) > Math.abs(worstShift)) {
+        worstShift = shift;
+        worstClass = c;
+      }
+    }
+    const worstShiftPp = Math.round(Math.abs(worstShift) * 10) / 10;
+    const shifted = worstShiftPp >= 5;
+    let severity = 'low';
+    if (worstShiftPp >= 5 && worstShiftPp < 15) severity = 'med';
+    else if (worstShiftPp >= 15) severity = 'high';
+    return { shifted, worstClass, worstShiftPp, severity };
+  }
+testCode: |
+  describe('diagnoseDrift incident', () => {
+    function makeDist(weights) {
+      const out = [];
+      weights.forEach((w, c) => { for (let i = 0; i < w; i++) out.push(c); });
+      return out;
+    }
+
+    it('detects no drift when distributions match', () => {
+      const baseline = makeDist([200, 200, 200, 200, 200]);
+      const predictions = makeDist([200, 200, 200, 200, 200]);
+      const result = diagnoseDrift(predictions, baseline);
+      expect(result.shifted).toBe(false);
+      expect(result.severity).toBe('low');
+    });
+
+    it('flags severity high when one class shifts by ≥15pp', () => {
+      const baseline = makeDist([200, 200, 200, 200, 200]);  // 20% each
+      const predictions = makeDist([400, 150, 150, 150, 150]);  // class 0 = 40%, others ~15%
+      const result = diagnoseDrift(predictions, baseline);
+      expect(result.shifted).toBe(true);
+      expect(result.worstClass).toBe(0);
+      expect(result.severity).toBe('high');
+    });
+
+    it('flags severity med for 5-15pp shift', () => {
+      const baseline = makeDist([200, 200, 200, 200, 200]);
+      const predictions = makeDist([260, 200, 180, 180, 180]);  // class 0 ~+6pp
+      const result = diagnoseDrift(predictions, baseline);
+      expect(result.shifted).toBe(true);
+      expect(result.severity).toBe('med');
+    });
+
+    it('reports worst class regardless of direction (drop or surge)', () => {
+      const baseline = makeDist([200, 200, 200, 200, 200]);
+      // class 3 disappears entirely (-20pp), class 0 surges (+20pp)
+      const predictions = makeDist([400, 200, 200, 0, 200]);
+      const result = diagnoseDrift(predictions, baseline);
+      expect([0, 3]).toContain(result.worstClass);
+      expect(result.worstShiftPp).toBeGreaterThanOrEqual(15);
+    });
+  });
+estimatedMinutes: 18
+difficulty: advanced
+skillAxis: evaluation

@@ -1,0 +1,88 @@
+slug: incident-data-poisoning
+lessonSlug: data-versioning
+title: "Incident — Suspected Training Data Poisoning"
+instructions: |
+  PAGER: a model retrained yesterday is suddenly mislabeling a specific class. Suspicion: poisoned samples in the training set. You have `samples` (each `{ id, label, ingestedBy, ingestedAt, contentHash }`) and `trustedSources` (set of known-good `ingestedBy` IDs). Build `auditTrainingSet(samples, trustedSources, suspectClass)` that returns:
+
+    {
+      suspect: Sample[],         // samples in suspectClass from untrusted sources
+      hashCollisions: string[],  // contentHash values appearing more than once across samples
+      untrustedRatio: number,    // fraction of suspectClass samples from untrusted sources (1 decimal)
+      requiresQuarantine: boolean,  // true if untrustedRatio > 0.05 OR hashCollisions.length > 0
+    }
+
+  This is the first 5 minutes of a real data-poisoning investigation. You isolate, you don't retrain.
+mlContent: systems
+starterCode: |
+  function auditTrainingSet(samples, trustedSources, suspectClass) {
+    // 1. Filter samples in suspectClass
+    // 2. Among those, find ones with ingestedBy NOT in trustedSources
+    // 3. Find duplicate contentHash across the full sample set (poisoning often dupes)
+    // 4. Compute untrustedRatio of suspectClass
+    // 5. Flag for quarantine if ratio > 5% or any hash collision
+    return { suspect: [], hashCollisions: [], untrustedRatio: 0, requiresQuarantine: false };
+  }
+solutionCode: |
+  function auditTrainingSet(samples, trustedSources, suspectClass) {
+    const trusted = new Set(trustedSources);
+    const inClass = samples.filter(s => s.label === suspectClass);
+    const suspect = inClass.filter(s => !trusted.has(s.ingestedBy));
+    const untrustedRatio = inClass.length > 0
+      ? Math.round((suspect.length / inClass.length) * 10) / 10
+      : 0;
+    const hashCounts = {};
+    for (const s of samples) {
+      hashCounts[s.contentHash] = (hashCounts[s.contentHash] || 0) + 1;
+    }
+    const hashCollisions = Object.keys(hashCounts).filter(h => hashCounts[h] > 1);
+    const requiresQuarantine = untrustedRatio > 0.05 || hashCollisions.length > 0;
+    return { suspect, hashCollisions, untrustedRatio, requiresQuarantine };
+  }
+testCode: |
+  describe('auditTrainingSet incident', () => {
+    const trusted = ['internal-pipeline', 'verified-partner'];
+
+    it('flags untrusted sources in suspect class', () => {
+      const samples = [
+        { id: 1, label: 'A', ingestedBy: 'internal-pipeline', ingestedAt: 0, contentHash: 'h1' },
+        { id: 2, label: 'A', ingestedBy: 'unknown-feed',     ingestedAt: 0, contentHash: 'h2' },
+        { id: 3, label: 'A', ingestedBy: 'unknown-feed',     ingestedAt: 0, contentHash: 'h3' },
+      ];
+      const r = auditTrainingSet(samples, trusted, 'A');
+      expect(r.suspect).toHaveLength(2);
+      expect(r.requiresQuarantine).toBe(true);
+    });
+
+    it('detects content-hash collisions across the full set', () => {
+      const samples = [
+        { id: 1, label: 'A', ingestedBy: 'internal-pipeline', ingestedAt: 0, contentHash: 'dup' },
+        { id: 2, label: 'B', ingestedBy: 'internal-pipeline', ingestedAt: 0, contentHash: 'dup' },
+      ];
+      const r = auditTrainingSet(samples, trusted, 'A');
+      expect(r.hashCollisions).toContain('dup');
+      expect(r.requiresQuarantine).toBe(true);
+    });
+
+    it('returns clean when fully trusted and no collisions', () => {
+      const samples = [
+        { id: 1, label: 'A', ingestedBy: 'internal-pipeline', ingestedAt: 0, contentHash: 'h1' },
+        { id: 2, label: 'A', ingestedBy: 'verified-partner',  ingestedAt: 0, contentHash: 'h2' },
+      ];
+      const r = auditTrainingSet(samples, trusted, 'A');
+      expect(r.suspect).toEqual([]);
+      expect(r.hashCollisions).toEqual([]);
+      expect(r.requiresQuarantine).toBe(false);
+    });
+
+    it('handles empty suspect class', () => {
+      const samples = [
+        { id: 1, label: 'B', ingestedBy: 'internal-pipeline', ingestedAt: 0, contentHash: 'h1' },
+      ];
+      const r = auditTrainingSet(samples, trusted, 'A');
+      expect(r.untrustedRatio).toBe(0);
+      expect(r.requiresQuarantine).toBe(false);
+    });
+  });
+estimatedMinutes: 18
+difficulty: advanced
+skillAxis: data_prep

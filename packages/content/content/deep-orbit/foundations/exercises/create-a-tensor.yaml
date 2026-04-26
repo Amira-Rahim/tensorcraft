@@ -7,4 +7,5 @@ solutionCode: "const tensor = tf.tensor([1, 2, 3, 4, 5]);"
 testCode: "describe('Tensor', () => { it('exists', () => { expect(tensor).toBeDefined(); }); it('has correct shape', () => { expect(tensor.shape).toEqual([5]); }); });"
 estimatedMinutes: 10
 difficulty: beginner
+mlContent: data
 skillAxis: data_prep

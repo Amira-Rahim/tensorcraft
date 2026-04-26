@@ -7,4 +7,5 @@ solutionCode: "const flat = tf.tensor([1, 2, 3, 4, 5, 6]);\nconst matrix = flat.
 testCode: "describe('Reshape', () => { it('has shape [2,3]', () => { expect(matrix.shape).toEqual([2, 3]); }); });"
 estimatedMinutes: 10
 difficulty: beginner
+mlContent: data
 skillAxis: data_prep

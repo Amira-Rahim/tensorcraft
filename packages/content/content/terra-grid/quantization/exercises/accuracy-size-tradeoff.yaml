@@ -7,3 +7,4 @@ solutionCode: "function bestQuantization(originalAccuracy, minAccuracy) {\n  if 
 testCode: "describe('bestQuantization', () => { it('returns int8 when accuracy allows', () => { expect(bestQuantization(0.99, 0.97)).toBe('int8'); }); it('returns float16 when int8 too lossy', () => { expect(bestQuantization(0.98, 0.97)).toBe('float16'); }); it('returns float32 when precision critical', () => { expect(bestQuantization(0.9705, 0.97)).toBe('float32'); }); });"
 estimatedMinutes: 10
 difficulty: intermediate
+mlContent: arithmetic

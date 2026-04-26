@@ -49,11 +49,11 @@ export function LandingHero() {
         </h1>
 
         <p className="text-lg text-text-muted max-w-[520px] mb-12 leading-relaxed font-sans">
-          Every ML concept mapped to a frontend analogy you already know — and
-          every analogy labeled with{" "}
-          <span className="text-text-primary">where it breaks</span>, so you
-          never carry the wrong mental model into production. Eleven modules.
-          Fifty-five lessons. One real model — built entirely in JavaScript.
+          Every ML concept maps to a frontend analogy you already know. Every
+          analogy ships with a label that says{" "}
+          <span className="text-text-primary">where it lies</span>, so you stop
+          past the honest limit. Eleven modules, fifty-five lessons, one
+          deployable model. Built in JavaScript.
         </p>
 
         <div className="flex gap-4 flex-wrap mb-14">
@@ -75,6 +75,10 @@ export function LandingHero() {
 
         <p className="font-mono text-xs text-text-muted">
           No credit card. No account for module 1. No Python.
+        </p>
+        <p className="font-mono text-[11px] text-text-muted/60 mt-3 max-w-[460px] leading-relaxed">
+          Want to be a research ML engineer in PyTorch? This is not your course.
+          Want to ship ML in your web app this quarter? It is.
         </p>
       </motion.div>
     </section>

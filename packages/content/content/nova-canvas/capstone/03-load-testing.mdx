@@ -16,7 +16,8 @@ concept:
     feCode: "// k6: export default function() { http.post('/api/generate', payload); }"
     mlTitle: "Generation Load Test"
     mlCode: "// Simulate 300 concurrent visitors generating simultaneously"
-    tier: identity
+    tier: structural
+    breaks: "k6 load tests measure latency and throughput under known input shapes. ML load testing must additionally vary input distribution — the same RPS with adversarial prompts degrades output quality without changing latency. A load test that returns green on synthetic prompts can pass while the production prompt mix exhausts memory or triggers content-safety classifiers. Load shape AND content shape both need stress."
 consequence:
   narrative: "The load test reveals three critical issues: WebSocket reconnection fails after 180 connections, tensor memory leaks after 500 generations, and the audio pipeline blocks the main thread at high concurrency. All fixable. All caught before opening night."
   nextLessonTeaser: "Next: monitoring and failover for a running installation"

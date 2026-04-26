@@ -7,3 +7,4 @@ solutionCode: "function chooseTarget(maxLatencyMs, requiresOffline, modelSizeMB)
 testCode: "describe('chooseTarget', () => { it('returns edge for offline', () => { expect(chooseTarget(5000, true, 50)).toBe('edge'); }); it('returns edge for low latency', () => { expect(chooseTarget(50, false, 50)).toBe('edge'); }); it('returns cloud for large models', () => { expect(chooseTarget(5000, false, 500)).toBe('cloud'); }); it('returns hybrid otherwise', () => { expect(chooseTarget(5000, false, 50)).toBe('hybrid'); }); });"
 estimatedMinutes: 10
 difficulty: beginner
+mlContent: deployment

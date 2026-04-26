@@ -7,3 +7,4 @@ solutionCode: "function classifyCompute(latencyMs, needsOffline) {\n  if (latenc
 testCode: "describe('classifyCompute', () => { it('returns edge for low latency', () => { expect(classifyCompute(50, false)).toBe('edge'); }); it('returns edge for offline', () => { expect(classifyCompute(5000, true)).toBe('edge'); }); it('returns cloud otherwise', () => { expect(classifyCompute(5000, false)).toBe('cloud'); }); });"
 estimatedMinutes: 10
 difficulty: beginner
+mlContent: deployment

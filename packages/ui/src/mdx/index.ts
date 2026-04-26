@@ -1,5 +1,6 @@
 export { BridgeCallout } from "./bridge-callout";
 export { CodeBlock } from "./code-block";
+export { DerivationDrawer } from "./derivation-drawer";
 export { Dialogue } from "./dialogue";
 export { Exercise, ExerciseDataProvider } from "./exercise";
 export type {

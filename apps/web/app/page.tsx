@@ -182,25 +182,25 @@ export default function Home() {
             <span className="text-primary">the gap.</span>
           </h2>
           <p className="text-base text-text-muted max-w-[420px] leading-relaxed font-sans">
-            Module 1 is completely free. No account, no card, no setup. Just
-            open the lesson and start reading.
+            Module 1 is free. No account, no card, no setup. Open the lesson and
+            start reading.
           </p>
           <Link
             href="/auth"
             data-testid="landing-cta-final"
             className="rounded-none inline-flex items-center gap-2 px-11 py-[18px] bg-primary text-page font-mono font-bold text-base tracking-wider uppercase border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-page"
           >
-            Start learning now →
+            Start Module 1 →
           </Link>
           <p className="text-sm text-text-muted font-sans mt-6">
-            Or explore our{" "}
+            Want a glossary first?{" "}
             <Link
               href="/glossary"
               className="text-primary underline underline-offset-4 hover:opacity-80 transition-opacity"
             >
-              ML Glossary
-            </Link>{" "}
-            to get started
+              Browse 50 ML terms with FE bridges
+            </Link>
+            .
           </p>
         </section>
       </main>

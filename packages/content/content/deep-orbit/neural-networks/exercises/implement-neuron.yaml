@@ -7,4 +7,5 @@ solutionCode: "const inputs = tf.tensor([1.0, 2.0, 3.0]);\nconst weights = tf.te
 testCode: "describe('Neuron', () => { it('produces output', () => { expect(output).toBeDefined(); }); it('computes correct value', () => { const val = output.dataSync()[0]; expect(val).toBeCloseTo(0.4, 4); }); });"
 estimatedMinutes: 10
 difficulty: beginner
+mlContent: data
 skillAxis: model_arch

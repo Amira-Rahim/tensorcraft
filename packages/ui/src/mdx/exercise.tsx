@@ -27,6 +27,15 @@ const SandpackCodeEditor = lazy(() =>
 /*  Types                                                              */
 /* ------------------------------------------------------------------ */
 
+export type MLContent =
+  | "arithmetic"
+  | "data"
+  | "model"
+  | "training"
+  | "evaluation"
+  | "deployment"
+  | "systems";
+
 export interface ExerciseData {
   slug: string;
   title: string;
@@ -36,6 +45,13 @@ export interface ExerciseData {
   testCode: string;
   estimatedMinutes: number;
   difficulty: "beginner" | "intermediate" | "advanced";
+  /**
+   * ML content axis — orthogonal to cognitive difficulty. Tells learners
+   * whether the exercise uses real TFJS primitives or is arithmetic-grade
+   * JavaScript with ML framing. See
+   * docs/audits/exercise-mlcontent-audit-2026-04-26.md.
+   */
+  mlContent?: MLContent;
 }
 
 export interface ExerciseSubmitResult {
@@ -97,6 +113,16 @@ const difficultyConfig = {
   beginner: { label: "Beginner", color: "#4ADE80" },
   intermediate: { label: "Intermediate", color: "#FBBF24" },
   advanced: { label: "Advanced", color: "#F87171" },
+};
+
+const mlContentConfig: Record<MLContent, { label: string; tone: string }> = {
+  arithmetic: { label: "Arithmetic", tone: "#9CA3AF" },
+  data: { label: "Tensor Data", tone: "#60A5FA" },
+  model: { label: "Model Build", tone: "#A78BFA" },
+  training: { label: "Training", tone: "#F472B6" },
+  evaluation: { label: "Evaluation", tone: "#FB923C" },
+  deployment: { label: "Deployment", tone: "#34D399" },
+  systems: { label: "Systems", tone: "#F59E0B" },
 };
 
 /* ------------------------------------------------------------------ */
@@ -479,9 +505,23 @@ export function Exercise({ slug, onSubmit, bridge }: ExerciseProps) {
               background: `${diffConfig.color}15`,
               color: diffConfig.color,
             }}
+            title="Cognitive difficulty"
           >
             {diffConfig.label}
           </span>
+          {exercise.mlContent && (
+            <span
+              className="text-xs font-mono font-medium px-2 py-0.5"
+              style={{
+                background: `${mlContentConfig[exercise.mlContent].tone}15`,
+                color: mlContentConfig[exercise.mlContent].tone,
+              }}
+              title="ML content axis — what skill the exercise actually builds"
+              data-testid="mlcontent-badge"
+            >
+              {mlContentConfig[exercise.mlContent].label}
+            </span>
+          )}
           <span className="text-xs text-text-muted">
             ~{exercise.estimatedMinutes} min
           </span>

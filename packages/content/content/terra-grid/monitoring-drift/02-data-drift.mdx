@@ -144,4 +144,10 @@ Build a data drift detector that monitors feature distributions against a baseli
 
 <Exercise slug="detect-data-drift" />
 
+## On-Call Scenario
+
+Production model accuracy is degrading slowly over 2 weeks. Suspect: training/serving skew. The scenario below walks the on-call diagnostic — z-score per feature, identify the worst, decide whether retrain is required.
+
+<Exercise slug="incident-feature-skew" />
+
 <KeyTakeaways takeaways={["Data drift means the input distribution changed — the model is correct, but the world moved underneath it", "KL divergence quantifies distribution shift, like Lighthouse CI quantifies performance regression", "Per-feature monitoring pinpoints exactly which inputs drifted — enabling targeted fixes instead of full retraining", "The fix for data drift is often preprocessing (rescaling), not retraining — understand the root cause first"]} />

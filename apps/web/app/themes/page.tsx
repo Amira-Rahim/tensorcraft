@@ -57,10 +57,9 @@ export default async function ThemesPage() {
           narrative. Same depth, different career outcomes.
         </p>
         <p className="text-base text-text-muted mb-14 max-w-2xl leading-relaxed">
-          Whether you&apos;re a React developer exploring neural networks or a
-          Vue engineer building computer vision, each theme teaches a complete
-          ML specialization through JavaScript and TensorFlow.js — no Python
-          required.
+          React, Vue, Svelte, Angular — pick the theme that maps to the ML
+          problem you actually want to solve. Each one teaches a complete
+          specialization through JavaScript and TensorFlow.js. No Python.
         </p>
 
         {/* Equal 5-card grid + newsletter modal */}

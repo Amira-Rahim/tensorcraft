@@ -16,7 +16,8 @@ concept:
     feCode: "/** @param input - Signal array */ function classify(input) {} // API docs"
     mlTitle: "Model Card"
     mlCode: "/** Model: DEEP SCAN v1.0 | Accuracy: 91.8% | Size: 42MB */ // model docs"
-    tier: identity
+    tier: structural
+    breaks: "JSDoc comments describe deterministic functions whose behavior is verifiable from the source. A model card describes statistical performance over a held-out distribution that the production data may not match. Reading the docs tells you how the function behaves; reading the model card tells you how the model performed yesterday on a benchmark that may already be stale. Documentation discipline transfers; verifiability does not."
 consequence:
   narrative: "The documentation is complete. Every crew member can operate, maintain, and troubleshoot DEEP SCAN. Farah: 'Now it survives beyond any single engineer.'"
   nextLessonTeaser: "Next: launch — deploying DEEP SCAN and classifying the anomalous signal"

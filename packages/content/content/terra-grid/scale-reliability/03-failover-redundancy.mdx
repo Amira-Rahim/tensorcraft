@@ -151,4 +151,10 @@ Build a failover controller with automatic recovery.
 
 <Exercise slug="failover-system" />
 
+## On-Call Scenario
+
+Primary model server returns 503s. Pick a fallback that respects the latency budget AND the accuracy floor. The exercise walks the decision tree on-call engineers actually use.
+
+<Exercise slug="incident-failover" />
+
 <KeyTakeaways takeaways={["Model failover mirrors React error boundaries — catch failures, switch to fallback, keep the system operational", "Consecutive failure thresholds prevent flapping between primary and fallback on transient errors", "Recovery checks periodically test whether the primary model is available again", "Degraded accuracy from a fallback model is always better than no predictions at all"]} />

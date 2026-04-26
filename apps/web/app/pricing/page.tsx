@@ -369,8 +369,13 @@ export default function PricingPage() {
             href="/themes"
             className="inline-flex items-center font-mono px-8 py-4 text-sm font-medium uppercase tracking-wider transition-all bg-primary text-page border border-primary rounded-none hover:brutalist-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 brutalist-hover"
           >
-            Explore All Themes &rarr;
+            See All 5 Themes &rarr;
           </Link>
+          <p className="mt-12 text-xs text-text-muted/70 font-mono max-w-150 mx-auto leading-relaxed">
+            What you don&rsquo;t get: Python ecosystem coverage, GPU training,
+            paper-grade math derivations beyond chain rule. If you need those,
+            fast.ai and Karpathy&rsquo;s Zero-to-Hero are excellent and free.
+          </p>
         </section>
       </div>
     </main>

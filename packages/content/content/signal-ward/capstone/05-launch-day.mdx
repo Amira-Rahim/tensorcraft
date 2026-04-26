@@ -16,7 +16,8 @@ concept:
     feCode: "// npm run build && deploy --monitor --rollback-on-error"
     mlTitle: "Clinical Deployment"
     mlCode: "// npm run build && deploy --monitor --rollback-on-error // same command, model is a static asset"
-    tier: identity
+    tier: structural
+    breaks: "The deploy command is identical; the recovery semantics are not. Web app rollback restores the prior bundle and the next request renders correctly. Model rollback restores the prior weights but if the new model already wrote predictions to the EHR, those records persist. ML rollback in clinical settings requires both weight rollback AND a forward-correction process for predictions issued during the bad window."
 consequence:
   narrative: "Day 30. Diagnostic One has processed 2,847 clinical notes. 12 confirmed drug interactions caught. 3 false positives investigated and dismissed. Zero missed interactions in the validation set. Dr. Karimi presents the pilot results to the hospital board. 'Diagnostic One is not replacing clinicians. It is giving us a second pair of eyes that never gets tired, never skips a chart, and never forgets a drug interaction. The false positive on Day 9 — methotrexate and trimethoprim — proved that the system works. It flagged a real interaction. I overrode it because the clinical context was safe. That is exactly how this should work.' Imran closes her laptop. Eleven modules. From tokenizing her first clinical note to deploying a production NLP system. Khalil was right — she was already thinking like an ML engineer. She just needed to see it."
   nextLessonTeaser: "Mission complete. Diagnostic One is live. And you — you think like an ML engineer now."

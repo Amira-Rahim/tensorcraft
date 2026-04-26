@@ -86,6 +86,38 @@ const history = await model.fit(trainX, trainY, {
 - **batchSize**: How many samples to process before updating weights. 32 is a good default.
 - **validationSplit**: Fraction of data held out to check for overfitting.
 
+<DerivationDrawer summary="The 7-step SGD loop that fit() hides">
+**`model.fit()` is a wrapper around this loop**, repeated `epochs × (datasetSize / batchSize)` times:
+
+```
+for epoch in 1..N:
+  shuffle(trainX, trainY)
+  for batch in chunks(trainX, batchSize):
+      // 1. Forward pass: predictions for this batch
+      ŷ = model.forward(batch.x)
+
+      // 2. Loss: how wrong on this batch
+      L = lossFn(ŷ, batch.y)
+
+      // 3. Backward pass: gradients via chain rule
+      ∇w = backward(L, model.params)
+
+      // 4. Update: step opposite to gradient
+      for w in model.params:
+          w := w - learningRate * ∇w[w]
+
+      // 5. Log batch metrics
+  // 6. End-of-epoch: validate on heldout set
+  if val_loss not improving for K epochs:
+      // 7. Stop early
+      break
+```
+
+**Why mini-batch (not full-batch or single-sample)?** Full-batch is exact but uses too much memory and takes one step per epoch. Single-sample (true SGD) is noisy and underuses GPU parallelism. Mini-batches of 16–512 are the empirical sweet spot — enough samples for a smooth gradient estimate, small enough to fit in memory, large enough to saturate the GPU.
+
+**Why shuffle each epoch?** Without shuffling, the model sees batches in the same order every epoch, which biases learning toward whatever pattern is in the file order. Shuffle breaks the correlation between adjacent batches.
+</DerivationDrawer>
+
 ## Challenge
 
 Train the DEEP SCAN network and watch the loss decrease.

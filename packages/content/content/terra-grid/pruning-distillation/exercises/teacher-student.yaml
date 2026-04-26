@@ -7,3 +7,4 @@ solutionCode: "function combinedLoss(distillLoss, taskLoss, alpha, temperature) 
 testCode: "describe('combinedLoss', () => { it('balances losses with alpha', () => { const loss = combinedLoss(0.5, 0.3, 0.7, 3); expect(loss).toBeCloseTo(0.7 * 0.5 * 9 + 0.3 * 0.3); }); it('returns only task loss when alpha=0', () => { expect(combinedLoss(0.5, 0.3, 0, 3)).toBeCloseTo(0.3); }); it('scales distill loss by T^2', () => { const l1 = combinedLoss(1.0, 0, 1, 2); const l2 = combinedLoss(1.0, 0, 1, 4); expect(l2).toBeGreaterThan(l1); }); });"
 estimatedMinutes: 10
 difficulty: intermediate
+mlContent: deployment

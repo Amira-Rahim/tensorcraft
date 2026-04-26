@@ -16,7 +16,8 @@ concept:
     feCode: "// Launch checklist: staging verified, rollback ready, monitoring active, team on standby"
     mlTitle: "Installation Launch"
     mlCode: "// All models loaded, caches warm, health checks green, failover tested"
-    tier: identity
+    tier: structural
+    breaks: "Pre-launch checklists for web apps verify config, certs, dependencies — all reproducible. Generative-model pre-launch must additionally verify content-safety thresholds, prompt-injection defenses, and rate-limits per user — none of which are reproducible by replaying logs because the model output varies per call. 'Green checks' for a generative system is a snapshot, not a guarantee."
 consequence:
   narrative: "The exhibition runs for three months. 12,847 unique visitors. 31,209 generations. The system crashes twice — both times, the circuit breakers engage and recover within 30 seconds. Rohan: 'Tomorrow we fix the memory leak in the WebSocket handler.' There is always a tomorrow."
   nextLessonTeaser: "You have completed Nova Canvas. The bridge from frontend to ML is shorter than you thought."

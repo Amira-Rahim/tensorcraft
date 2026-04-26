@@ -7,3 +7,4 @@ solutionCode: "function softmax(logits, temperature) {\n  const scaled = logits.
 testCode: "describe('softmax', () => { it('sums to 1', () => { const result = softmax([2.0, 1.0, 0.5], 1); expect(result.reduce((a, b) => a + b)).toBeCloseTo(1.0); }); it('higher temp produces softer distribution', () => { const hard = softmax([5, 1, 0], 1); const soft = softmax([5, 1, 0], 5); expect(soft[0]).toBeLessThan(hard[0]); expect(soft[1]).toBeGreaterThan(hard[1]); }); it('max element has highest probability', () => { const result = softmax([3, 1, 2], 1); expect(result[0]).toBeGreaterThan(result[1]); expect(result[0]).toBeGreaterThan(result[2]); }); });"
 estimatedMinutes: 15
 difficulty: intermediate
+mlContent: arithmetic

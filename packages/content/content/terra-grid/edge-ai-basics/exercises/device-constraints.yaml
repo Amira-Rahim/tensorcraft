@@ -7,3 +7,4 @@ solutionCode: "function canDeploy(deviceRamMB, modelRamMB) {\n  return modelRamM
 testCode: "describe('canDeploy', () => { it('allows model within budget', () => { expect(canDeploy(512, 200)).toBe(true); }); it('rejects model over budget', () => { expect(canDeploy(512, 400)).toBe(false); }); it('allows exactly 60%', () => { expect(canDeploy(512, 307.2)).toBe(true); }); });"
 estimatedMinutes: 10
 difficulty: beginner
+mlContent: deployment

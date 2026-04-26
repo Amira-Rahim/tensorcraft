@@ -1,0 +1,83 @@
+slug: incident-failover
+lessonSlug: failover-redundancy
+title: "Incident — Model Serving Outage Failover"
+instructions: |
+  PAGER: primary model server returning 503s. You have a fallback hierarchy and must pick a fallback strategy that respects:
+
+    - latency budget (max acceptable ms),
+    - quality floor (min acceptable accuracy),
+    - dependency health (each fallback has an `available` flag).
+
+  Build `pickFallback(primary, fallbacks, budget)` that returns the highest-quality available fallback whose `latencyMs ≤ budget.latencyMs` AND `accuracy ≥ budget.minAccuracy`. Prefer higher accuracy on tie. If none qualify, return `null` (meaning: serve cached / degraded UX rather than a worse model). This is how on-call engineers escalate during a model serving outage.
+mlContent: systems
+starterCode: |
+  function pickFallback(primary, fallbacks, budget) {
+    // 1. Filter fallbacks by available + latency budget + accuracy floor
+    // 2. Sort by accuracy descending
+    // 3. Return best, or null if no candidate
+    return null;
+  }
+solutionCode: |
+  function pickFallback(primary, fallbacks, budget) {
+    const eligible = fallbacks.filter(f =>
+      f.available &&
+      f.latencyMs <= budget.latencyMs &&
+      f.accuracy >= budget.minAccuracy
+    );
+    if (eligible.length === 0) return null;
+    eligible.sort((a, b) => b.accuracy - a.accuracy);
+    return eligible[0];
+  }
+testCode: |
+  describe('pickFallback incident', () => {
+    const primary = { name: 'primary', accuracy: 0.95, latencyMs: 50, available: false };
+    const budget = { latencyMs: 200, minAccuracy: 0.85 };
+
+    it('returns highest-accuracy available fallback within budget', () => {
+      const fallbacks = [
+        { name: 'cache', accuracy: 0.88, latencyMs: 5, available: true },
+        { name: 'distilled', accuracy: 0.92, latencyMs: 100, available: true },
+        { name: 'rule-based', accuracy: 0.70, latencyMs: 1, available: true },
+      ];
+      const out = pickFallback(primary, fallbacks, budget);
+      expect(out.name).toBe('distilled');
+    });
+
+    it('skips unavailable candidates', () => {
+      const fallbacks = [
+        { name: 'a', accuracy: 0.95, latencyMs: 10, available: false },
+        { name: 'b', accuracy: 0.88, latencyMs: 50, available: true },
+      ];
+      const out = pickFallback(primary, fallbacks, budget);
+      expect(out.name).toBe('b');
+    });
+
+    it('skips candidates exceeding latency budget', () => {
+      const fallbacks = [
+        { name: 'slow-but-good', accuracy: 0.99, latencyMs: 500, available: true },
+        { name: 'fast-ok', accuracy: 0.86, latencyMs: 30, available: true },
+      ];
+      const out = pickFallback(primary, fallbacks, budget);
+      expect(out.name).toBe('fast-ok');
+    });
+
+    it('returns null when no candidate meets accuracy floor', () => {
+      const fallbacks = [
+        { name: 'too-bad', accuracy: 0.80, latencyMs: 10, available: true },
+      ];
+      const out = pickFallback(primary, fallbacks, budget);
+      expect(out).toBeNull();
+    });
+
+    it('returns null when none available', () => {
+      const fallbacks = [
+        { name: 'a', accuracy: 0.99, latencyMs: 10, available: false },
+        { name: 'b', accuracy: 0.99, latencyMs: 10, available: false },
+      ];
+      const out = pickFallback(primary, fallbacks, budget);
+      expect(out).toBeNull();
+    });
+  });
+estimatedMinutes: 15
+difficulty: advanced
+skillAxis: deployment

@@ -1,0 +1,91 @@
+slug: incident-feature-skew
+lessonSlug: data-drift
+title: "Incident — Training/Serving Feature Skew"
+instructions: |
+  PAGER: model accuracy degrading slowly over 2 weeks. You suspect training/serving skew — the feature pipeline behaves differently in prod than during training. You receive `trainStats` and `prodStats` (per-feature mean + stddev objects). Build `detectSkew(trainStats, prodStats, threshold = 2)` that returns:
+
+    {
+      skewed: string[],            // feature names where |meanDiff/trainStd| > threshold (z-score)
+      worstFeature: string|null,   // feature with largest |z|
+      worstZ: number,              // its z-score (1 decimal)
+      requiresRetrain: boolean,    // true if any feature exceeds 3σ
+    }
+
+  Z-score = (prod.mean - train.mean) / train.std. This is the field method for catching skew before it eats your model's accuracy.
+mlContent: systems
+starterCode: |
+  function detectSkew(trainStats, prodStats, threshold = 2) {
+    // For each feature in trainStats:
+    //   z = (prodStats[f].mean - trainStats[f].mean) / trainStats[f].std
+    //   if |z| > threshold, add to skewed[]
+    //   track worst |z| feature
+    // requiresRetrain: any |z| > 3
+    return { skewed: [], worstFeature: null, worstZ: 0, requiresRetrain: false };
+  }
+solutionCode: |
+  function detectSkew(trainStats, prodStats, threshold = 2) {
+    const skewed = [];
+    let worstFeature = null;
+    let worstZ = 0;
+    for (const f of Object.keys(trainStats)) {
+      if (!prodStats[f]) continue;
+      const std = trainStats[f].std || 1e-9;
+      const z = (prodStats[f].mean - trainStats[f].mean) / std;
+      const absZ = Math.abs(z);
+      if (absZ > threshold) skewed.push(f);
+      if (absZ > Math.abs(worstZ)) {
+        worstZ = z;
+        worstFeature = f;
+      }
+    }
+    return {
+      skewed,
+      worstFeature,
+      worstZ: Math.round(worstZ * 10) / 10,
+      requiresRetrain: Math.abs(worstZ) > 3,
+    };
+  }
+testCode: |
+  describe('detectSkew incident', () => {
+    it('returns no skew when distributions match', () => {
+      const train = { temp: { mean: 50, std: 5 }, humidity: { mean: 60, std: 10 } };
+      const prod = { temp: { mean: 50, std: 5 }, humidity: { mean: 60, std: 10 } };
+      const r = detectSkew(train, prod);
+      expect(r.skewed).toEqual([]);
+      expect(r.requiresRetrain).toBe(false);
+    });
+
+    it('flags feature beyond 2σ', () => {
+      const train = { temp: { mean: 50, std: 5 }, humidity: { mean: 60, std: 10 } };
+      const prod = { temp: { mean: 65, std: 5 }, humidity: { mean: 60, std: 10 } };  // temp z=3
+      const r = detectSkew(train, prod);
+      expect(r.skewed).toContain('temp');
+      expect(r.worstFeature).toBe('temp');
+    });
+
+    it('flags requiresRetrain when any feature exceeds 3σ', () => {
+      const train = { temp: { mean: 50, std: 5 } };
+      const prod = { temp: { mean: 70, std: 5 } };  // z = 4
+      const r = detectSkew(train, prod);
+      expect(r.requiresRetrain).toBe(true);
+    });
+
+    it('returns worst feature when multiple skewed', () => {
+      const train = { a: { mean: 0, std: 1 }, b: { mean: 0, std: 1 } };
+      const prod = { a: { mean: 2.5, std: 1 }, b: { mean: 4.2, std: 1 } };
+      const r = detectSkew(train, prod);
+      expect(r.worstFeature).toBe('b');
+    });
+
+    it('respects custom threshold', () => {
+      const train = { a: { mean: 0, std: 1 } };
+      const prod = { a: { mean: 1.5, std: 1 } };  // z = 1.5
+      const lax = detectSkew(train, prod, 2);   // 1.5 < 2 → no skew
+      const strict = detectSkew(train, prod, 1); // 1.5 > 1 → skewed
+      expect(lax.skewed).toEqual([]);
+      expect(strict.skewed).toEqual(['a']);
+    });
+  });
+estimatedMinutes: 20
+difficulty: advanced
+skillAxis: evaluation

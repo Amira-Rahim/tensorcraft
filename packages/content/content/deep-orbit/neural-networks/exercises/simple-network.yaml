@@ -7,4 +7,5 @@ solutionCode: "const model = tf.sequential();\nmodel.add(tf.layers.dense({ units
 testCode: "describe('Network', () => { it('exists', () => { expect(model).toBeDefined(); }); it('has 3 layers', () => { expect(model.layers.length).toBe(3); }); it('is compiled', () => { expect(model.optimizer).toBeDefined(); }); it('has correct output shape', () => { expect(model.outputShape).toEqual([null, 1]); }); });"
 estimatedMinutes: 15
 difficulty: advanced
+mlContent: model
 skillAxis: model_arch

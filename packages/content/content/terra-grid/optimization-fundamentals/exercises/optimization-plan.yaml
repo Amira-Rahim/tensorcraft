@@ -7,3 +7,4 @@ solutionCode: "function getOptimizationSteps(currentSizeMB, targetSizeMB) {\n  i
 testCode: "describe('getOptimizationSteps', () => { it('returns all steps for large reduction', () => { expect(getOptimizationSteps(1800, 100)).toEqual(['architecture', 'pruning', 'quantization', 'distillation']); }); it('returns quantization only for small reduction', () => { expect(getOptimizationSteps(150, 100)).toEqual(['quantization']); }); it('returns pruning + quantization for medium', () => { expect(getOptimizationSteps(250, 100)).toEqual(['pruning', 'quantization']); }); });"
 estimatedMinutes: 10
 difficulty: intermediate
+mlContent: deployment

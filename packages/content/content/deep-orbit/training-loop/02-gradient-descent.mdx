@@ -75,6 +75,23 @@ for (let step = 0; step < 20; step++) {
 
 **Learning rate** is crucial: too high and you overshoot the minimum (like scrolling past your target), too low and training takes forever (like scrolling one pixel at a time).
 
+<DerivationDrawer summary="Why the gradient is the steepest-ascent direction" companionSlug="optimization-landscape">
+**The gradient is a vector of partial derivatives.** For loss `L(w₁, w₂, ..., wₙ)`:
+
+`∇L = [ ∂L/∂w₁, ∂L/∂w₂, ..., ∂L/∂wₙ ]`
+
+Each `∂L/∂wᵢ` answers: "if I nudge wᵢ by ε, how much does L change?" The vector of all these answers points in the direction where L grows fastest. **Subtracting it walks you toward where L shrinks fastest.**
+
+**Why the update rule `w := w - η·∇L`?** The Taylor expansion of L around the current point:
+
+`L(w + Δw) ≈ L(w) + ∇L · Δw`
+
+To minimize the linear approximation, pick Δw opposite to ∇L. The learning rate η scales the step:
+- η too large → Taylor approximation breaks down, you overshoot the minimum
+- η too small → many steps to converge
+- Adaptive optimizers (Adam, RMSprop) tune η per-parameter using gradient history.
+</DerivationDrawer>
+
 ## Challenge
 
 Implement gradient descent to minimize a loss function.

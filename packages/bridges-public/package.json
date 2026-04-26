@@ -1,0 +1,48 @@
+{
+  "name": "@tensorcraft/bridges",
+  "version": "0.1.0",
+  "description": "50 canonical FE↔ML bridges with explicit failure-mode statements. The bridge-tier system from tensorcraft.app, MIT-licensed.",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [
+    "machine-learning",
+    "tensorflow",
+    "tensorflow-js",
+    "tfjs",
+    "frontend",
+    "javascript",
+    "ml",
+    "education",
+    "analogies"
+  ],
+  "homepage": "https://tensorcraft.app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tensorcraft/tensorcraft"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@tensorcraft/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3"
+  }
+}

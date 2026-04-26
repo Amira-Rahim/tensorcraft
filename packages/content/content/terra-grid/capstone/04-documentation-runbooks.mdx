@@ -16,7 +16,8 @@ concept:
     feCode: "// Runbook: 'High CPU Alert' → check top → identify process → scale/restart"
     mlTitle: "ML Runbook"
     mlCode: "// Runbook: 'Model Drift Alert' → check metrics → compare baseline → retrain/rollback"
-    tier: identity
+    tier: structural
+    breaks: "On-call runbooks for web services have deterministic remediation steps you can rehearse. ML runbooks have remediation classes (retrain / recalibrate / rollback / accept) but choosing the right one requires diagnosis you cannot pre-script — drift type, severity, business cost. The runbook structure transfers; the decision tree at each step has more branches and harder evidence requirements."
 consequence:
   narrative: "The documentation covers 12 runbooks: model deployment, rollback, drift response, federated learning sync, security incident, device failure, and 6 more. Tariq reviews them from the field. 'I could hand these to a new engineer and they could operate the system by day two.'"
   nextLessonTeaser: "Next: global launch — deploying Terra Grid Intelligence to all 47 sites"

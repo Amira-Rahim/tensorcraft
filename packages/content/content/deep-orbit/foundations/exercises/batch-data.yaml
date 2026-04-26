@@ -7,4 +7,5 @@ solutionCode: "function* sensorGen() {\n  for (let i = 0; i < 16; i++) {\n    yi
 testCode: "describe('Batch Data', () => { it('creates a dataset', () => { expect(dataset).toBeDefined(); }); it('produces batches of 4', async () => { let batchShape; await dataset.forEachAsync((b) => { batchShape = b.xs.shape; }); expect(batchShape[0]).toBe(4); }); });"
 estimatedMinutes: 12
 difficulty: intermediate
+mlContent: data
 skillAxis: data_prep

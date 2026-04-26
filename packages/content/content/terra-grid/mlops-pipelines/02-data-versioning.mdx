@@ -147,4 +147,10 @@ Implement a data versioning system with content hashing and lineage tracking.
 
 <Exercise slug="version-data" />
 
+## On-Call Scenario
+
+A retrained model is suddenly mislabeling one class. You suspect poisoned training samples. The exercise walks the first 5 minutes of a real data-poisoning audit — isolate untrusted sources, find content-hash collisions, decide whether to quarantine.
+
+<Exercise slug="incident-data-poisoning" />
+
 <KeyTakeaways takeaways={["Data versioning uses content hashing just like git — every dataset gets a unique SHA based on its contents", "Dataset lineage traces any model back to its exact training data, enabling reproducible debugging", "Dataset diffs reveal distribution shifts that explain model regressions — like git diff explains code bugs", "Version everything: code, data, hyperparameters, and model artifacts — or you cannot reproduce results"]} />

@@ -7,3 +7,4 @@ solutionCode: "function benchmarkInference(times) {\n  const meanMs = times.redu
 testCode: "describe('benchmarkInference', () => { const times = Array.from({ length: 100 }, (_, i) => 10 + i * 0.5); const result = benchmarkInference(times); it('calculates mean', () => { expect(result.meanMs).toBeCloseTo(34.75, 1); }); it('calculates p95', () => { expect(result.p95Ms).toBe(times[95]); }); it('calculates p99', () => { expect(result.p99Ms).toBe(times[99]); }); });"
 estimatedMinutes: 10
 difficulty: intermediate
+mlContent: arithmetic

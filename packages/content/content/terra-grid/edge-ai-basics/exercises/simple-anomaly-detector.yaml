@@ -7,3 +7,4 @@ solutionCode: "const model = tf.sequential();\nmodel.add(tf.layers.dense({ input
 testCode: "describe('Anomaly Detector', () => { it('has 2 layers', () => { expect(model.layers.length).toBe(2); }); it('accepts input shape [4]', () => { expect(model.inputs[0].shape).toEqual([null, 4]); }); it('outputs shape [1]', () => { expect(model.outputs[0].shape).toEqual([null, 1]); }); });"
 estimatedMinutes: 15
 difficulty: beginner
+mlContent: model

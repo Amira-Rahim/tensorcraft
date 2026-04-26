@@ -53,10 +53,10 @@ export function LandingAnalogyBreaks() {
           <span className="text-primary">where it lies.</span>
         </h2>
         <p className="text-[15px] text-text-muted leading-relaxed max-w-[640px] font-sans">
-          Other courses leave you to discover the gap between the analogy and
-          the real ML the hard way. Tensorcraft labels the failure mode of every
-          structural and intuition bridge inline — so you stop carrying the
-          wrong mental model into production.
+          Most ML courses use analogies and let you find the gaps in production.
+          Tensorcraft labels the failure mode of every structural and intuition
+          bridge inline. You stop carrying the wrong mental model past its
+          honest limit.
         </p>
       </div>
 

@@ -153,6 +153,23 @@ const exercises = defineCollection({
     estimatedMinutes: s.number().int().positive(),
     difficulty: s.enum(["beginner", "intermediate", "advanced"]),
 
+    // ML-content axis (independent of cognitive difficulty). Distinguishes
+    // exercises that exercise real ML primitives (model/training/...) from
+    // those that are arithmetic-grade JavaScript wrapped in ML framing. See
+    // docs/audits/exercise-mlcontent-audit-2026-04-26.md.
+    mlContent: s
+      .enum([
+        "arithmetic",
+        "data",
+        "model",
+        "training",
+        "evaluation",
+        "deployment",
+        "systems",
+      ])
+      .optional()
+      .default("arithmetic"),
+
     // Skill Genome: primary axis this exercise affects (optional, for event tracking)
     skillAxis: s
       .enum([

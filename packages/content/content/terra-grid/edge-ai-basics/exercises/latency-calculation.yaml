@@ -7,3 +7,4 @@ solutionCode: "function cloudLatency(dataSizeKB, uploadMbps, serverMs) {\n  cons
 testCode: "describe('Latency', () => { it('calculates cloud latency', () => { expect(cloudLatency(250, 2, 50)).toBeCloseTo(1050, 0); }); it('edge is faster for satellite link', () => { expect(isFasterOnEdge(250, 2, 50)).toBe(true); }); });"
 estimatedMinutes: 10
 difficulty: beginner
+mlContent: deployment
