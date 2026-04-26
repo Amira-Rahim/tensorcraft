@@ -17,6 +17,7 @@ concept:
     mlTitle: "Binary Classifier"
     mlCode: "// if (sigmoid(score) > 0.5) { 'URGENT' } else { 'ROUTINE' }\n// Learned decision with calibrated threshold"
     tier: structural
+    breaks: "Form validation produces hand-written boolean output. Binary classifiers output a probability — calibration matters because '0.51' and '0.99' carry different action implications, and rounding to a binary decision discards calibration information."
 consequence:
   narrative: "The first filter is live — MEDI now flags urgent documents before they hit the pile. But some documents need more than a binary label."
   nextLessonTeaser: "Next: routing documents to multiple departments with multi-class classification."

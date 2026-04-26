@@ -17,6 +17,7 @@ concept:
     mlTitle: "Forecasting"
     mlCode: "future = model.predict(pastWindow) // predict what comes next"
     tier: intuition
+    breaks: "Prefetching loads known assets you can name in advance. Forecasting predicts future values from a learned distribution; predictions widen in uncertainty with horizon (the prediction interval grows roughly with √horizon for many models) and may diverge entirely past a few steps. There is no cache hit — only a probability cone whose width is itself a forecast."
 consequence:
   narrative: "The forecast predicts the anomaly will repeat at a specific time. It does not. The crew learns about non-stationary data — the signal's timing is changing."
   nextLessonTeaser: "Next: Kalman filters — tracking a moving target under noise"

@@ -17,6 +17,7 @@ concept:
     mlTitle: "Anomaly Threshold"
     mlCode: "if (reconstructionError > threshold) flag('anomaly')"
     tier: structural
+    breaks: "Alert thresholds are static numbers you set in config. Anomaly thresholds must trade off false positives against false negatives across a continuous distribution and the right value depends on the cost asymmetry, not just the data."
 consequence:
   narrative: "Demir sets the threshold at the 99th percentile of normal errors. DEEP SCAN is precise — it flags only the signals that truly don't belong."
   nextLessonTeaser: "Next: the moment of truth — DEEP SCAN encounters the unclassifiable signal"

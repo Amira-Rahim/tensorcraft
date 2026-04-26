@@ -17,6 +17,7 @@ concept:
     mlTitle: "YOLO Single-Shot Detection"
     mlCode: "const allDetections = model.predict(image); // one pass, all objects"
     tier: structural
+    breaks: "Single-pass rendering produces final HTML in one server pass. YOLO does single-shot detection in one forward pass but pays for it with anchor-grid design choices, multi-scale prediction heads, and harder training compared to two-stage detectors."
 consequence:
   narrative: "The resistance's browser-based detector goes live. On Noor's laptop, running in a web worker with WebGL acceleration, it processes drone footage at 24 FPS. NEON watches the feed. 'For the first time, you see them before they see you. Meridian will not expect detection coming from a browser tab.' Dilan smiles. 'This changes everything.'"
   nextLessonTeaser: "Module complete. Next module: tracking objects across frames in real-time"

@@ -17,6 +17,7 @@ concept:
     mlTitle: "Reconstruction Error"
     mlCode: "error = MSE(original, autoencoder.predict(original))"
     tier: intuition
+    breaks: "git diff names exact line changes you can patch. Reconstruction error is a single L2 distance scalar — high error tells you something is off but not which feature, position, or channel caused it. Debugging requires per-dimension error maps you compute separately."
 consequence:
   narrative: "The reconstruction error for the anomalous signal is 12x the normal threshold. Nazari checks the sensors three times — this is not instrument noise. The model is right."
   nextLessonTeaser: "Next: tuning the detection threshold — how sensitive should DEEP SCAN be?"

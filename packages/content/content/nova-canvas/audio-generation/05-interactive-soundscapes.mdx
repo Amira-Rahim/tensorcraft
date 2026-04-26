@@ -17,6 +17,7 @@ concept:
     mlTitle: "Input-Driven Generation"
     mlCode: "const z = tf.tensor2d([[x / width, y / height, ...params]]); model.predict(z);"
     tier: structural
+    breaks: "Pointer events fire deterministically per user action. Input-driven generation conditions a probabilistic model on the user's input — the same gesture twice produces different audio. Coherence across interactions requires explicit state (seed, latent persistence), not just feeding input to the model each frame."
 consequence:
   narrative: "A visitor reaches toward the screen. The soundscape shifts — lower tones as their hand descends, crystalline chimes as it rises. They laugh, startled. They reach again. The installation has found its voice."
   nextLessonTeaser: "Next module: scaling this for 200 simultaneous visitors"

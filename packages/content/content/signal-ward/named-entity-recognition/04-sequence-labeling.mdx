@@ -17,6 +17,7 @@ concept:
     mlTitle: "Token Classification"
     mlCode: "tokens.forEach(t => t.label = classify(t, context)); // context-aware labeling"
     tier: structural
+    breaks: "CSS class assignment per element is deterministic — you wrote it. Token classification is per-position softmax, often using BiLSTM or transformer encoders, and adjacent token decisions are not independent (CRF layers model the joint distribution)."
 consequence:
   narrative: "Diagnostic One can now use surrounding context to resolve ambiguous tokens — 'cold' as a CONDITION vs. 'cold' as an adjective."
   nextLessonTeaser: "Next: the breakthrough — your NER pipeline catches a drug interaction three doctors missed."

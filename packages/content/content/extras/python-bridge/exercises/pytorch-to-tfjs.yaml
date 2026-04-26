@@ -76,7 +76,9 @@ testCode: |
     it('first layer is dense with 128 units and inputShape [256]', () => {
       expect(layers[0].getClassName()).toBe('Dense');
       expect(layers[0].units).toBe(128);
-      expect(layers[0].inputSpec[0].shape[1]).toBe(256);
+      // TFJS exposes input width via the layer's batchInputShape (set when
+      // inputShape is provided to the first layer of a Sequential model).
+      expect(layers[0].batchInputShape[1]).toBe(256);
     });
 
     it('has dropout layers with rate 0.2', () => {

@@ -17,6 +17,7 @@ concept:
     mlTitle: "Discriminator Network"
     mlCode: "const realness = discriminator.predict(image)  // → 0.0 to 1.0"
     tier: structural
+    breaks: "Form validation runs hand-written rules against user input. Discriminators learn to distinguish real from generated samples and the decision boundary is implicit, dataset-dependent, and shifts as the generator improves during training."
 consequence:
   narrative: "The critic network is complete. Samir now has both halves of the GAN — a creator and a judge, ready to train together."
   nextLessonTeaser: "Next: the adversarial training loop — making both networks dance"

@@ -17,6 +17,7 @@ concept:
     mlTitle: "Class Balancing"
     mlCode: "sampler.balance(dataset, { strategy: 'oversample-minority' })"
     tier: structural
+    breaks: "Load balancing distributes equal work across servers. Class balancing matters because models minimize average loss — if 99% of samples are class A, the model can hit 99% accuracy by always predicting A. Resampling, reweighting, or focal loss are required, not optional."
 consequence:
   narrative: "After rebalancing, the Protocol Sentinel's recall on hidden micro-cameras jumps from 12% to 87%. Dilan allows herself a rare smile. 'Now it sees what matters most — the cameras designed not to be seen.'"
   nextLessonTeaser: "Next: Data Loaders — feeding your balanced dataset to the model efficiently."

@@ -17,6 +17,7 @@ concept:
     mlTitle: "Inference Stream"
     mlCode: "feedStream.onFrame((frame) => { const result = model.predict(preprocess(frame)); emit(result); });"
     tier: structural
+    breaks: "WebSocket/SSE streams discrete messages over an open connection. Inference streams must additionally manage frame skipping under load, batched-vs-streaming tradeoffs, and backpressure — every dropped frame is a missed detection, not a missed UI update."
 consequence:
   narrative: "Protocol Sentinel processes 12 feeds simultaneously — 8 locally, 4 via relay. NEON identifies a Meridian agent by gait analysis. Noor reaches for the alert button — Amir stops her. 'That person is limping from an injury. The model is wrong.' The cost of trusting vision without verification."
   nextLessonTeaser: "Module 9 awaits: generative vision — art that fights back"

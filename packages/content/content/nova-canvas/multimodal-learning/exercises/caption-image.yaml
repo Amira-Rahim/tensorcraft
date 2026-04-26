@@ -59,8 +59,10 @@ testCode: |
       // Mock decoder that always predicts index 3 ('a') then 5 ('city') then 2 ('<end>')
       const wordInput = tf.input({ shape: [1], name: 'word' });
       const ctxInput = tf.input({ shape: [8], name: 'ctx' });
+      // wordInput and ctxInput are both rank-2 (batch, features). Real TFJS
+      // flatten layer requires min_ndim=3, so concatenate them directly.
       const concat = tf.layers.concatenate().apply([
-        tf.layers.flatten().apply(wordInput) as tf.SymbolicTensor,
+        wordInput,
         ctxInput
       ]) as tf.SymbolicTensor;
       const output = tf.layers.dense({ units: vocab.length, activation: 'softmax' }).apply(concat) as tf.SymbolicTensor;
@@ -73,8 +75,10 @@ testCode: |
       const vocab = ['<pad>', '<start>', 'word1', 'word2', 'word3'];
       const wordInput = tf.input({ shape: [1], name: 'word' });
       const ctxInput = tf.input({ shape: [4], name: 'ctx' });
+      // wordInput and ctxInput are both rank-2 (batch, features). Real TFJS
+      // flatten layer requires min_ndim=3, so concatenate them directly.
       const concat = tf.layers.concatenate().apply([
-        tf.layers.flatten().apply(wordInput) as tf.SymbolicTensor,
+        wordInput,
         ctxInput
       ]) as tf.SymbolicTensor;
       const output = tf.layers.dense({ units: vocab.length, activation: 'softmax' }).apply(concat) as tf.SymbolicTensor;

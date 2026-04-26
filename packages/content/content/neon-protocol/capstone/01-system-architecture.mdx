@@ -17,6 +17,7 @@ concept:
     mlTitle: "System Architecture Diagram"
     mlCode: "Ingest → Preprocess → Detect → Classify → AdversarialGuard → Broadcast"
     tier: structural
+    breaks: "Component architecture diagrams describe code you wrote. ML system architecture diagrams must include data flow, model versions, feature stores, training pipelines, and monitoring — the boxes carry far more state and the arrows have schema contracts."
 consequence:
   narrative: "The architecture crystallizes on screen. Six stages, typed interfaces between each. NEON overlays failure scenarios — what happens when a camera goes dark, when a model returns garbage, when Meridian jams the signal. Every edge case accounted for. Zara grins: 'Now that is engineering.'"
   nextLessonTeaser: "Next: integration — wiring detection, classification, and adversarial modules into a single pipeline"

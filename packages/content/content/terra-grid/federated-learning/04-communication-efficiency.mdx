@@ -17,6 +17,7 @@ concept:
     mlTitle: "Gradient Compression"
     mlCode: "sendTopKGradients(k=0.01) // send only significant updates"
     tier: structural
+    breaks: "GraphQL selective queries fetch only requested fields. Gradient compression in federated learning trades communication cost for convergence speed — too aggressive compression slows training; too little blows network budget. The tradeoff is empirical per setting."
 consequence:
   narrative: "Communication cost drops from 180MB to 22MB per training cycle. The satellite budget holds."
   nextLessonTeaser: "Next: protecting individual updates during aggregation"

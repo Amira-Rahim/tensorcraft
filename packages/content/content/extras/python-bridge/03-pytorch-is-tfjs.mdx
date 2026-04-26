@@ -16,6 +16,7 @@ concept:
     mlTitle: "PyTorch nn.Module"
     mlCode: "self.fc = nn.Linear(input_dim, 64)"
     tier: structural
+    breaks: "PyTorch nn.Module and tf.sequential both compose layers, but PyTorch is dynamic-graph (define-by-run) and TFJS leans static. Autograd, training loop syntax, and model serialization formats differ enough that direct ports rarely work without rewriting."
 consequence:
   narrative: "You can now read PyTorch code and understand the architecture. nn.Linear is dense, nn.Conv2d is conv2d, forward() is predict(). The concepts are identical."
   nextLessonTeaser: "Next: pandas DataFrames are arrays of objects with built-in data wrangling"

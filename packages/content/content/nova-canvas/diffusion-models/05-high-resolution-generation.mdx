@@ -17,6 +17,7 @@ concept:
     mlTitle: "Cascaded diffusion (low-res + super-res)"
     mlCode: "const lowRes = generate(64); const highRes = upscale(lowRes, 256);"
     tier: structural
+    breaks: "srcset selects from pre-rendered image variants. Cascaded diffusion runs an entirely separate super-resolution model conditioned on the low-res output — the high-res image is generated, not selected. Each cascade stage adds compute on the order of the base generation."
 consequence:
   narrative: "3.4 seconds. Low-res generation plus a fast upscaler. The gallery kiosks hum with life. Erdem's hands are shaking — not from panic this time, but from something closer to awe. 'We open in three days,' he says quietly. 'We are ready.'"
   nextLessonTeaser: "Next module: Style Transfer — can MUSE paint in the style of Monet?"

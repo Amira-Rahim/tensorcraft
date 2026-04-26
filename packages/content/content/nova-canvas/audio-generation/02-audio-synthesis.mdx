@@ -17,6 +17,7 @@ concept:
     mlTitle: "Neural Oscillator"
     mlCode: "const latent = tf.randomNormal([1, 64]); const waveform = decoder.predict(latent);"
     tier: structural
+    breaks: "OscillatorNode generates fixed waveforms from authored frequency, type, and detune parameters — output is exactly predictable. Neural audio synthesis generates samples from a learned model and can glitch (sample-rate mismatch), drift in pitch (cumulative error in autoregressive sampling), or produce artifacts not present in training data. Quality is measured per-output, not per-config."
 consequence:
   narrative: "The first neural tone fills the gallery — not a sine wave, but something richer, textured, alive. Yara closes her eyes. 'That is not a sound. That is a feeling.'"
   nextLessonTeaser: "Next: composing melodies and harmonies"

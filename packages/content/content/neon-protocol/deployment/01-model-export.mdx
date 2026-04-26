@@ -17,6 +17,7 @@ concept:
     mlTitle: "Model Serialization"
     mlCode: "await model.save('localstorage://sentinel'); const loaded = await tf.loadLayersModel('localstorage://sentinel');"
     tier: structural
+    breaks: "JSON.stringify/parse round-trips structured values losslessly. Model serialization writes weights + topology in framework-specific formats (SavedModel, ONNX, GGUF) and conversion between formats can drop ops, change numerics, or fail entirely."
 consequence:
   narrative: "The model is saved. Amir sends the exported files to Dilan, who loads Protocol Sentinel on a completely different machine in District 4. The first remote detection lights up her screen. NEON: 'Now it is portable. Next, make it small enough to run everywhere.'"
   nextLessonTeaser: "Next: shrinking the model so it runs on every device in the resistance network"

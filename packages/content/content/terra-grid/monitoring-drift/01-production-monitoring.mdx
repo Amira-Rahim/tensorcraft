@@ -17,6 +17,7 @@ concept:
     mlTitle: "Model Monitoring"
     mlCode: "monitor.logPrediction({ latency, confidence, distribution })"
     tier: structural
+    breaks: "Sentry surfaces unhandled exceptions and stack traces. Model monitoring tracks prediction distributions, feature distributions, and proxy metrics for accuracy when ground-truth labels are delayed — most model failures throw zero exceptions."
 consequence:
   narrative: "The monitoring dashboard lights up. Hassan can see every sector's model health in real time."
   nextLessonTeaser: "Next: detecting when input data starts to change"

@@ -17,6 +17,7 @@ concept:
     mlTitle: "Reparameterization"
     mlCode: "z = mu + exp(logVar * 0.5) * epsilon  // epsilon is external noise"
     tier: structural
+    breaks: "Seeded random is a tool for reproducibility. The reparameterization trick is a math hack to make stochastic sampling differentiable — without it, gradients cannot flow through the sample step. The trick is structural to training, not a debugging convenience."
 consequence:
   narrative: "The trick works — gradients flow through mu and logVar while epsilon provides the randomness. The VAE can now train end-to-end."
   nextLessonTeaser: "Next: KL divergence — the regularizer that keeps the latent space well-organized"

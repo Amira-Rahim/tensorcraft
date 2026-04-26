@@ -17,6 +17,7 @@ concept:
     mlTitle: "Post-Training Quantization"
     mlCode: "// After training: convert Float32 → Int8\n// 0.123456789 → 31 (scaled integer)\n// No retraining needed"
     tier: structural
+    breaks: "Webpack minification rewrites code to equivalent shorter syntax — runtime behavior is preserved exactly. Post-training quantization rounds float weights to int8 and changes numeric output: accuracy can drop several percent, requiring calibration data to mitigate."
 consequence:
   narrative: "The model is now 4x smaller. But you notice accuracy dropped on extreme values."
   nextLessonTeaser: "Next: training with quantization in mind"

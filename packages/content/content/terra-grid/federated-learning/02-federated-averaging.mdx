@@ -17,6 +17,7 @@ concept:
     mlTitle: "Federated Averaging"
     mlCode: "aggregate(localUpdates) // merge weights from multiple trainers"
     tier: structural
+    breaks: "BroadcastChannel state sync across tabs assumes symmetric peers with identical data shapes. Federated averaging weights client gradient updates by local dataset size and aggregates server-side; clients with non-IID data (e.g. one hospital's patient mix vs another's) drag the global model in different directions and naive averaging may not converge — methods like FedProx or FedAvgM are required."
 consequence:
   narrative: "The federated model outperforms any single company's local model. More data, better generalization, zero data sharing."
   nextLessonTeaser: "Next: ensuring data privacy during federated training"

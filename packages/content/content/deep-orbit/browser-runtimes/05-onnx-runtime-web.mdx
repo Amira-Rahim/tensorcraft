@@ -17,6 +17,7 @@ concept:
     mlTitle: "Cross-Runtime Models"
     mlCode: "// Same ONNX model runs in TF.js, ONNX Runtime, PyTorch"
     tier: structural
+    breaks: "Cross-browser compat is solved by polyfills and feature detection — the same code with shims. Cross-runtime models require operator-set support: an op present in PyTorch but absent from ONNX or TFJS makes the model fail to load entirely. There is no polyfill for a missing op; you must rewrite the model architecture."
 consequence:
   narrative: "Demir presents the benchmark results. ONNX Runtime wins on cold start; TF.js wins on sustained inference. Nazari chooses TF.js for the dashboard, ONNX for the backup system."
   nextLessonTeaser: "Next module: the signals hold hidden structure — Dr. Farah introduces frequency-domain analysis"

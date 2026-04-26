@@ -17,6 +17,7 @@ concept:
     mlTitle: "Model Ensemble"
     mlCode: "prediction = average(lstm.predict(x), attention.predict(x), kalman.predict(x))"
     tier: structural
+    breaks: "Micro-frontends serve different routes — each handles its own slice. Model ensembles run all members on every input and combine predictions (vote, average, stack). Compute is multiplied per inference, not partitioned."
 consequence:
   narrative: "The ensemble catches the timing drift that the LSTM alone missed. Multiple perspectives yield a more complete picture."
   nextLessonTeaser: "Module 9: adding language model capabilities to interpret and report DEEP SCAN findings"

@@ -18,6 +18,7 @@ concept:
     mlTitle: "Linear Map"
     mlCode: "const result = tf.matMul(transformMatrix, vector)"
     tier: structural
+    breaks: "CSS transforms apply hand-coded matrices to 2D positions. Tensor linear maps act on n-dimensional spaces with learned matrices and are composed automatically through the network — the matrices are huge, opaque, and meaningful only in aggregate."
 consequence:
   narrative: "With vector spaces in your toolkit, tensor operations stop being black boxes."
   nextLessonTeaser: "Next: the calculus that makes neural networks learn"

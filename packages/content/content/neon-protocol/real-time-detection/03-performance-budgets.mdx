@@ -17,6 +17,7 @@ concept:
     mlTitle: "Inference Performance Budget"
     mlCode: "// Budget per frame at 30fps: preprocess < 5ms, inference < 20ms, postprocess < 5ms"
     tier: structural
+    breaks: "Lighthouse budgets are bytes and milliseconds with hard pass/fail thresholds. Inference budgets must trade off latency vs accuracy, and the same model meets budget on a desktop GPU but misses by 10× on mobile — single-budget targets hide device variance. Budgets must be set per-device-class and monitored separately."
 consequence:
   narrative: "Noor profiles Protocol Sentinel. Preprocessing: 3ms. Inference: 28ms. Postprocessing: 4ms. Total: 35ms — over the 33ms budget for 30fps. She needs to shave 2ms somewhere. NEON: 'Welcome to the optimization game. Every millisecond counts.'"
   nextLessonTeaser: "Next: WebGL acceleration — using the GPU to break through the performance ceiling"

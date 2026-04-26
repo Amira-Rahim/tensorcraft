@@ -17,6 +17,7 @@ concept:
     mlTitle: "Text Normalization"
     mlCode: "const normalize = (text) => stripHtml(text).replace(/[^a-z0-9\\s]/g, '').trim()"
     tier: structural
+    breaks: "Input sanitization removes known dangerous characters with explicit rules. Text normalization for ML can over-clean (removing case loses information for NER) or under-clean (leaving artifacts that confuse the model) — there is no one-size-fits-all clean function."
 consequence:
   narrative: "After the cleaning pipeline is applied, Diagnostic One's accuracy on the legacy data recovers to match the clean dataset — proving that garbage in, garbage out is not inevitable."
   nextLessonTeaser: "Next: chaining all these steps into a reusable preprocessing pipeline."

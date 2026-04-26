@@ -17,6 +17,7 @@ concept:
     mlTitle: "LSTM Forget Gate"
     mlCode: "forgetGate = sigmoid(W_f * [hidden, input]) // learn what to discard"
     tier: structural
+    breaks: "localStorage TTL is a hard expiry — value gone after timeout. LSTM forget gates output a continuous value in [0,1] per dimension that scales the cell state — partial forgetting, learned per-input, with no fixed timeout."
 consequence:
   narrative: "The LSTM remembers the anomalous pattern from 72 hours ago. When it appears again, the network catches it immediately — long-range memory works."
   nextLessonTeaser: "Next: preparing sequential data with sliding windows"

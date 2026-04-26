@@ -17,6 +17,7 @@ concept:
     mlTitle: "Model Failover"
     mlCode: "modelFailover.wrap(primaryModel, fallbackModel) // auto-switch on failure"
     tier: structural
+    breaks: "Error boundaries catch render errors and show fallback UI. Model failover must decide between fallback to a simpler model (worse but available), cached predictions (stale), or returning no prediction — each fallback has its own correctness implications."
 consequence:
   narrative: "Device-3 goes offline. Within 200ms, the failover controller routes shard-2 inference to the backup device. Accuracy drops 0.3% running the simplified fallback model, but the system stays operational. Hassan: 'That is what graceful degradation looks like.'"
   nextLessonTeaser: "Next: load management — handling traffic spikes without dropping predictions"

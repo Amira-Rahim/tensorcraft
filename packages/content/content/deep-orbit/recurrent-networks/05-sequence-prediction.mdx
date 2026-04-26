@@ -17,6 +17,7 @@ concept:
     mlTitle: "Sequence Forecast"
     mlCode: "nextValue = model.predict(recentWindow) // predict next signal"
     tier: structural
+    breaks: "Autocomplete picks from a finite list of pre-indexed completions you control. Sequence forecasting generates novel continuations from a learned distribution — predictions are unbounded, often invent values outside the training range, and confidence drops sharply with horizon. You must bound predictions with domain constraints (clip to physical limits, etc.)."
 consequence:
   narrative: "The LSTM predicts the anomalous signal will repeat in exactly 47 minutes. The crew waits. At 47 minutes and 3 seconds — it arrives."
   nextLessonTeaser: "Module 7 dives deeper: if we can predict signals, can we detect ones that don't belong at all?"

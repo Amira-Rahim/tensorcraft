@@ -17,6 +17,7 @@ concept:
     mlTitle: "Triage Pipeline"
     mlCode: "// pipeline.classify(doc) → urgency, dept, tags\n// High urgency → fast-tracked\n// Low confidence → human review"
     tier: structural
+    breaks: "Priority queues sort by an authored priority value. Triage pipelines sort by predicted urgency from a model — the priority is a probability with calibration error and miscategorizing a critical case as low priority is a clinical safety risk, not a UX bug."
 consequence:
   narrative: "The triage pipeline is operational. MEDI processes incoming documents in seconds, routing urgent cases immediately and flagging uncertain ones for human review. The ward runs faster and safer."
   nextLessonTeaser: "The text-classification module is complete. Your triage system is live."

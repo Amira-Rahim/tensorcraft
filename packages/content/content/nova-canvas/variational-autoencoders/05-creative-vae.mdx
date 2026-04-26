@@ -17,6 +17,7 @@ concept:
     mlTitle: "VAE Latent Controls"
     mlCode: "z: { warmth: 0.3, complexity: -0.8, symmetry: 1.2 }"
     tier: structural
+    breaks: "Design system tokens are discrete authored variables with semantic names (`--color-primary`). VAE latent dimensions are unnamed continuous learned axes; identifying which dimension controls smile vs. age requires running attribution experiments. You cannot rename a dimension to give it meaning."
 consequence:
   narrative: "The creative VAE powers the centerpiece of the exhibition. Visitors walk through a space where every surface displays generated art that responds to their presence — unique, controllable, and running entirely in the browser."
   nextLessonTeaser: "You have mastered the foundations of generative AI. Next modules explore advanced architectures and real-world deployment."

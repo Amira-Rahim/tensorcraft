@@ -17,6 +17,7 @@ concept:
     mlTitle: "Model Monitoring"
     mlCode: "// monitor: tensor count, inference latency, generation quality, error rate"
     tier: structural
+    breaks: "Uptime monitoring detects request failures. Generative model monitoring also detects content quality drift, NSFW rate changes, and prompt-injection attempts — many failure modes return 200 OK with bad content."
 consequence:
   narrative: "The monitoring dashboard goes live. Twelve tablet health indicators, generation latency graphs, memory usage trends, error rate alerts. Erdem can watch the entire installation from his phone."
   nextLessonTeaser: "Next: opening night"

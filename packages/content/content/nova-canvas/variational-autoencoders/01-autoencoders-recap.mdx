@@ -17,6 +17,7 @@ concept:
     mlTitle: "Autoencoder"
     mlCode: "const z = encoder.predict(image); const reconstruction = decoder.predict(z);"
     tier: structural
+    breaks: "gzip/Brotli are lossless: decode reproduces input exactly. Autoencoders are lossy by design — the bottleneck forces information loss and the reconstruction fidelity is the training objective, not a free byproduct."
 consequence:
   narrative: "Samir has a working autoencoder that compresses and reconstructs patterns. But it cannot generate NEW patterns — only reproduce existing ones. That limitation sets the stage for the variational part."
   nextLessonTeaser: "Next: adding the 'variational' to make autoencoders generative"

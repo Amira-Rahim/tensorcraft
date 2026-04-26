@@ -17,6 +17,7 @@ concept:
     mlTitle: "Teacher-Student Training"
     mlCode: "// Teacher provides soft predictions\n// Student learns patterns, not just labels\n// Knowledge transfers through distillation loss"
     tier: intuition
+    breaks: "Mentor pair programming transfers explicit reasoning the mentor articulates. Teacher-student distillation transfers soft predictions (logits, attention maps) — the student learns to mimic the teacher's outputs without learning the teacher's reasoning. The student inherits the teacher's confidently-wrong cases as easily as its correct ones."
 consequence:
   narrative: "The student model is trained and ready for edge deployment."
   nextLessonTeaser: "Next: combining all optimization techniques"

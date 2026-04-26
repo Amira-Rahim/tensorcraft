@@ -17,6 +17,7 @@ concept:
     mlTitle: "Fine-Tuning BERT"
     mlCode: "// Inherit pre-trained weights, add classification head\nconst model = addHead(bertBase, numLabels);"
     tier: structural
+    breaks: "Extending a class adds methods deterministically while preserving base behavior. Fine-tuning updates the model's weights — including those that encoded base capabilities — and may degrade them silently (catastrophic forgetting). Validation must check that pre-existing capabilities the new task doesn't exercise still work, not just that the new task's metric improved."
 consequence:
   narrative: "Diagnostic One can now classify clinical conditions — but the team must be careful not to destroy the pre-trained knowledge in the process."
   nextLessonTeaser: "Next: MEDI makes a dangerous mistake — and we learn what happens when a model's limitations are ignored."

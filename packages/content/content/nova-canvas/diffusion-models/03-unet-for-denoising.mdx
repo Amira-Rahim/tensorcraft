@@ -17,6 +17,7 @@ concept:
     mlTitle: "U-Net architecture"
     mlCode: "skip = encoder(x); output = decoder(bottleneck, skip);"
     tier: structural
+    breaks: "Encoder-decoder UI patterns separate write from read. U-Net adds skip connections that fuse encoder activations directly into the decoder at matching resolutions — information bypasses the bottleneck. The 'middle' of a U-Net is not a clean handoff; it is a multi-resolution merge."
 consequence:
   narrative: "The U-Net predictions are sharp. Skip connections preserve the edges and textures that the bottleneck alone would blur. Erdem examines the output: 'The brushstrokes. It remembers the brushstrokes.'"
   nextLessonTeaser: "Next: classifier-free guidance — steering generation with text prompts"

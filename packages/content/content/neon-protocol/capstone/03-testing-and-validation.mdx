@@ -17,6 +17,7 @@ concept:
     mlTitle: "ML Testing Pyramid"
     mlCode: "// Unit: expect(preprocess(frame).shape).toEqual([1,224,224,3])  Integration: pipeline.run(frame) → detections  E2E: camera → pipeline → broadcast → verify"
     tier: structural
+    breaks: "Frontend testing pyramid (unit/integration/e2e) checks deterministic behaviors. ML testing pyramid adds data validation, model evaluation, fairness audits, and shadow deployments — many tests return continuous metrics, not pass/fail."
 consequence:
   narrative: "Two hundred tests pass. Six fail — edge cases Noor never considered. A frame with zero detections crashes the classifier. A grayscale camera feed breaks the preprocessor. An adversarial patch with exactly 0.8 variance slips through the guard. Zara fixes each one. 'Testing is not bureaucracy. It is how you earn trust.'"
   nextLessonTeaser: "Next: documentation — model cards, system docs, and handoff to the resistance network"

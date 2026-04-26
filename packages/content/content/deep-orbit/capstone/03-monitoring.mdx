@@ -17,6 +17,7 @@ concept:
     mlTitle: "Model Monitoring"
     mlCode: "monitor.trackPrediction({ confidence, latency, drift }); // track accuracy, speed, data shift"
     tier: structural
+    breaks: "App monitoring tracks errors, latency, and throughput — observable system metrics. Model monitoring also tracks input distribution drift, prediction distribution drift, and label feedback delays. Many model failures produce no exception and no latency change."
 consequence:
   narrative: "The monitoring dashboard lights up. Confidence scores, inference latency, drift detection — all streaming in real-time. ARIA: 'Now we will know when DEEP SCAN needs retraining before the crew notices degradation.'"
   nextLessonTeaser: "Next: documentation — making the system understandable for the entire crew"

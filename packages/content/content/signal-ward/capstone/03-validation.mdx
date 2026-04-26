@@ -17,6 +17,7 @@ concept:
     mlTitle: "Clinical Validation"
     mlCode: "expect(model.predict(note)).toMatchAnnotations(expertLabels); // compare against expert ground truth"
     tier: structural
+    breaks: "End-to-end tests assert specific behaviors that pass or fail at known input. Clinical validation requires institutional review (IRB), prospective studies on real patient populations, and statistical evidence of improved patient outcomes — you cannot 'pass' clinical validation by adding more test cases. Test pass rate has no correlation with clinical safety."
 consequence:
   narrative: "The validation suite finishes running. Precision: 0.89. Recall: 0.84. F1: 0.86. Dr. Karimi studies the confusion matrix. 'The system is cautious — it flags things that are not there more often than it misses things that are. For a clinical system, that is the right trade-off. I would rather investigate a false alarm than miss a real interaction.' She signs the validation report. 'Approved for pilot deployment.'"
   nextLessonTeaser: "Next: writing the clinical documentation and model card"

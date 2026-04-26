@@ -17,6 +17,7 @@ concept:
     mlTitle: "Report Generation"
     mlCode: "const report = await llm.generate({ sections, signalData, format })"
     tier: structural
+    breaks: "Template rendering substitutes known values into known slots — the schema is enforced. Generated reports invent facts, omit caveats, and round-trip uncertainty into confident prose. Human review is required for any report shown to a user, regardless of model quality."
 consequence:
   narrative: "The generated report covers all 47 days of observations with proper citations. Farah approves it after reviewing and correcting three factual claims."
   nextLessonTeaser: "Next: orchestrating multiple models — signal classifier + LLM + anomaly detector"

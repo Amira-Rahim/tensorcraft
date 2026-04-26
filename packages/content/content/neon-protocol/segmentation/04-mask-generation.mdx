@@ -17,6 +17,7 @@ concept:
     mlTitle: "Binary Mask Generation"
     mlCode: "const mask = prediction.greater(threshold); // binary: 0 or 1"
     tier: structural
+    breaks: "SVG mask and clipPath define exact author-drawn geometry. Generated binary masks come from per-pixel softmax and require thresholding; boundaries are typically noisy and post-processing (CRF, morphological ops) is often needed for usable output."
 consequence:
   narrative: "The jagged edges sharpen into clean silhouettes. Each drone is outlined with sub-pixel precision. Noor overlays the masks on the live feed — perfect cutouts floating over the city grid."
   nextLessonTeaser: "Next: scene understanding — combining segmentation with spatial reasoning to understand full scenes"

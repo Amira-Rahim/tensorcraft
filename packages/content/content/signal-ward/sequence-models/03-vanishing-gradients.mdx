@@ -17,6 +17,7 @@ concept:
     mlTitle: "Gradient Vanishes Over Time"
     mlCode: "grad_t0 = grad_tN * W^N // shrinks exponentially with depth"
     tier: structural
+    breaks: "Event bubbling decays only when a handler calls stopPropagation. Vanishing gradients shrink multiplicatively at every layer (sigmoid derivative caps at 0.25) — by layer 10 the gradient is below float32 precision and weights stop updating. The fix is architectural (residuals, ReLU, LSTM gates), not stylistic."
 consequence:
   narrative: "The team understands why the simple RNN fails on long discharge summaries. They need a more robust architecture."
   nextLessonTeaser: "Next: LSTM and GRU — architectures with gates that solve the vanishing gradient problem."

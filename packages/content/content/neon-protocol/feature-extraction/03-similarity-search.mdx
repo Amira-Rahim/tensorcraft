@@ -17,6 +17,7 @@ concept:
     mlTitle: "Similarity Search"
     mlCode: "const nearest = findKNearest(queryVector, database, k); // k most similar images"
     tier: structural
+    breaks: "Fuzzy text search compares string edit distance — semantically meaningless. Similarity search compares embedding-vector distance and 'similar' depends on what the embedding was trained to capture. Visual embeddings rank a red apple near a red car; semantic embeddings rank it near a green apple. Pick the embedding whose similarity matches your task definition."
 consequence:
   narrative: "The search returns 47 matches across three weeks of footage. The same drone model, captured from different angles, different lighting, different districts. Zara maps the results to timestamps and locations. A patrol pattern emerges. 'Now we know where it flies,' she says. 'And when.'"
   nextLessonTeaser: "Next: backbone networks — the pre-trained feature extractors that power production search systems"

@@ -17,6 +17,7 @@ concept:
     mlTitle: "Medical Entity Types"
     mlCode: "type MedEntity = 'DRUG' | 'CONDITION' | 'PROCEDURE'; // each type has distinct patterns"
     tier: structural
+    breaks: "TypeScript union types are checked at compile time against an exact list. Medical entity types come from controlled vocabularies (UMLS, SNOMED) with thousands of overlapping terms — the model must learn fuzzy mappings, not enforce a literal union."
 consequence:
   narrative: "Diagnostic One can now parse complex clinical notes, correctly distinguishing between drugs, conditions, procedures, and dosages even when they look similar."
   nextLessonTeaser: "Next: sequence labeling with neural networks — training a model to assign these types automatically."

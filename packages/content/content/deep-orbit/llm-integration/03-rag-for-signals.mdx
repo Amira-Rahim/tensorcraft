@@ -17,6 +17,7 @@ concept:
     mlTitle: "RAG Pipeline"
     mlCode: "const context = await db.search(query); const answer = await llm.complete(prompt + context);"
     tier: structural
+    breaks: "Server Components render server-side and ship deterministic HTML. RAG retrieves passages then conditions an LLM on them — the answer is generated, not extracted. Models routinely contradict the retrieved passages while citing them. Confidence in RAG output requires verifying the answer matches the cited chunks, not just trusting the citation exists."
 consequence:
   narrative: "The RAG pipeline lets the crew ask natural language questions about signal data: 'Show me all anomalous signals in Band-7 from the last 72 hours.' The LLM answers with cited data."
   nextLessonTeaser: "Next: auto-generating scientific reports from signal data"

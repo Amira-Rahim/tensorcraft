@@ -17,6 +17,7 @@ concept:
     mlTitle: "Prompt Design"
     mlCode: "// Bad: 'analyze signal' → vague, unfocused output"
     tier: structural
+    breaks: "Search queries match against an index with deterministic ranking. Prompts steer a probabilistic generator and tiny wording changes can change output drastically (prompt sensitivity). There is no result page to inspect — only one generated answer per call."
 consequence:
   narrative: "Structured prompts with role, context, and format instructions produce analysis that Farah only needs to lightly edit rather than rewrite."
   nextLessonTeaser: "Next: RAG — grounding LLM responses in actual signal data"

@@ -18,6 +18,7 @@ concept:
     mlTitle: "Entropy"
     mlCode: "const H = -probs.reduce((s, p) => s + p * Math.log2(p), 0)"
     tier: structural
+    breaks: "Gzip compression measures redundancy in a single file. Entropy in ML measures expected information across a distribution and shows up in cross-entropy loss, mutual information, and KL divergence. Gzip is a useful intuition for compressibility but does not yield gradients."
 consequence:
   narrative: "Understanding information theory turns loss function selection from guesswork into principled choice."
   nextLessonTeaser: "Next: probability and Bayesian thinking for ML"

@@ -81,7 +81,7 @@ testCode: |
 
     it('encoder compresses: 64 → 32 → 16 → 8', () => {
       expect(layers[0].units).toBe(32);
-      expect(layers[0].inputSpec[0].shape[1]).toBe(64);
+      expect(layers[0].batchInputShape[1]).toBe(64);
       expect(layers[1].units).toBe(16);
       expect(layers[2].units).toBe(8);
     });

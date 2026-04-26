@@ -17,6 +17,7 @@ concept:
     mlTitle: "Reading Comprehension"
     mlCode: "model.comprehend({ question: 'active allergies?', context: record }) // understands scope"
     tier: structural
+    breaks: "GraphQL resolvers fetch named fields from defined sources. Reading-comprehension models infer answers from passages and routinely fabricate plausible-sounding answers ungrounded in the source — fluent output is no evidence of correct comprehension. Ground-truth verification requires checking the cited span exists in the input passage."
 consequence:
   narrative: "The comprehension model correctly distinguishes 'patient allergic to penicillin' from 'patient's mother allergic to penicillin.' Vikram nods. 'Now it reads like a clinician, not a search engine.'"
   nextLessonTeaser: "Next: RAG architecture — when the answer isn't in a single document"

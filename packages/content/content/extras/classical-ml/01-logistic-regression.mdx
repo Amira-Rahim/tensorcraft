@@ -16,6 +16,7 @@ concept:
     mlTitle: "Binary classification"
     mlCode: "const prob = sigmoid(weights.dot(features) + bias)"
     tier: structural
+    breaks: "if/else with confidence is a hand-written threshold on a feature you chose. Logistic regression learns coefficients per feature from data and outputs a calibrated probability — the decision boundary moves with retraining, not with code edits."
 consequence:
   narrative: "You now have a baseline classifier. In production, this is always your first model — if logistic regression solves the problem, ship it."
   nextLessonTeaser: "Next: decision trees — models you can actually explain to stakeholders"

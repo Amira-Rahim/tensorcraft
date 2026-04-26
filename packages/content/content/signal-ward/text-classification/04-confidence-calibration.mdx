@@ -17,6 +17,7 @@ concept:
     mlTitle: "Model Calibration"
     mlCode: "// calibrated model: flag uncertain predictions\n// High confidence on wrong answers is dangerous"
     tier: structural
+    breaks: "TypeScript strict mode flags missing type information at compile time. Model calibration measures how well predicted probabilities match empirical frequencies and well-calibrated probabilities are not free — they require explicit calibration techniques (temperature scaling, isotonic regression)."
 consequence:
   narrative: "MEDI now knows what it doesn't know. Documents that fall below the confidence threshold get routed to human review instead of being silently misclassified."
   nextLessonTeaser: "Next: combining everything into a complete triage pipeline."

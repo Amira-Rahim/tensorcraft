@@ -17,6 +17,7 @@ concept:
     mlTitle: "Sequence Prediction"
     mlCode: "const nextNote = model.predict(tf.tensor2d([noteSequence]));"
     tier: structural
+    breaks: "setTimeout sequences fire fixed callbacks at fixed intervals. Sequence prediction models generate the next token conditioned on prior tokens — the resulting music is structured by what the model learned about training data, not by an authored timeline."
 consequence:
   narrative: "A melody emerges — not random, not composed, but grown. Each note follows from the last with a logic that feels almost like intention. Erdem pauses his optimization work to listen."
   nextLessonTeaser: "Next: synchronizing audio and visual generation"

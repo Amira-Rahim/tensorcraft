@@ -17,6 +17,7 @@ concept:
     mlTitle: "GAN Training Balance"
     mlCode: "if (dLoss < 0.1) skipDStep(); // D is too strong"
     tier: intuition
+    breaks: "Load balancing aims for equal utilization across servers. GAN training balance between generator and discriminator is unstable — if the discriminator gets too strong, generator gradients vanish; too weak, the generator stops improving. There's no homeostatic algorithm."
 consequence:
   narrative: "After hours of training and tuning, the GAN produces its first recognizable patterns. Crude, but alive. Erdem approves the approach for the exhibition."
   nextLessonTeaser: "Next: when things go wrong — mode collapse and how to fix it"

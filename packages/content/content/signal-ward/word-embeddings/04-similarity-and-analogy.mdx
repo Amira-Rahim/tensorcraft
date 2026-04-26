@@ -17,6 +17,7 @@ concept:
     mlTitle: "Vector Similarity"
     mlCode: "cosineSim(vec('aspirin'), vec('ibuprofen')) // semantic similarity = 0.95"
     tier: intuition
+    breaks: "String similarity (Levenshtein) compares character edits — surface-level only. Vector similarity (cosine) compares learned semantic representations — 'doctor' and 'physician' score high; 'doctor' and 'doctored' score low despite shared letters. Embedding choice determines what 'similar' means; one model's similarity is another's irrelevance."
 consequence:
   narrative: "Diagnostic One can now find related medications, detect analogy-based relationships, and flag when a patient's medication list contains semantically conflicting terms."
   nextLessonTeaser: "Next: training custom embedding layers inside a neural network."

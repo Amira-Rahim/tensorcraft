@@ -17,6 +17,7 @@ concept:
     mlTitle: "Token Order in Sequences"
     mlCode: "tokens.forEach((token, pos) => hidden = rnnStep(hidden, token));"
     tier: structural
+    breaks: "Async execution order is enforced by promise resolution semantics. Token order in sequences is part of the input meaning ('not bad' vs 'bad not') and the model must learn order-dependent representations — there is no Promise.all that preserves meaning while reordering."
 consequence:
   narrative: "The team realizes bag-of-words is insufficient for clinical safety. They need models that understand sequence."
   nextLessonTeaser: "Next: building a simple RNN that processes text one word at a time."

@@ -17,6 +17,7 @@ concept:
     mlTitle: "Model Traffic Split"
     mlCode: "// router: modelV1 weight=95, modelV2 weight=5 — gradual rollout"
     tier: structural
+    breaks: "Canary deployments compare identical code at different rollout %. Model traffic splitting compares two different models, so confounding from input distribution shifts contaminates the result — you need stratified sampling and longer observation windows than canary code rollouts demand."
 consequence:
   narrative: "After 24 hours at 5%, the metrics are clear: v3.1 catches anomalies 12% faster with no false positive increase. Tariq bumps the split to 20%. 'Let it run for a week. If the numbers hold, we go wider.'"
   nextLessonTeaser: "Next: statistical significance — knowing when results are meaningful"

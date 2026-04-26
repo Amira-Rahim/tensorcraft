@@ -46,17 +46,21 @@ solutionCode: |
     const noise = tf.randomNormal([batchSize, noiseDim]);
     const fakeBatch = generator.predict(noise) as tf.Tensor;
 
-    const dLossReal = (await discriminator.trainOnBatch(
+    // trainOnBatch returns `number` when the model has no metrics or
+    // `number[]` when it does — extract the scalar loss either way.
+    const asScalar = (r: number | number[]) => Array.isArray(r) ? r[0] : r;
+
+    const dLossReal = asScalar(await discriminator.trainOnBatch(
       realBatch, tf.ones([batchSize, 1])
-    ) as number[])[0];
-    const dLossFake = (await discriminator.trainOnBatch(
+    ) as number | number[]);
+    const dLossFake = asScalar(await discriminator.trainOnBatch(
       fakeBatch, tf.zeros([batchSize, 1])
-    ) as number[])[0];
+    ) as number | number[]);
 
     const genNoise = tf.randomNormal([batchSize, noiseDim]);
-    const gLoss = (await gan.trainOnBatch(
+    const gLoss = asScalar(await gan.trainOnBatch(
       genNoise, tf.ones([batchSize, 1])
-    ) as number[])[0];
+    ) as number | number[]);
 
     tf.dispose([noise, fakeBatch, genNoise]);
 

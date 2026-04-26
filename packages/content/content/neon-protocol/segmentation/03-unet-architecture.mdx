@@ -17,6 +17,7 @@ concept:
     mlTitle: "U-Net: Encode down, decode up"
     mlCode: "// Encoder compresses, decoder expands, skip connections preserve detail"
     tier: structural
+    breaks: "Layout flow ships content down and styles up — a one-way render. U-Net adds skip connections that fuse encoder feature maps directly into matching-resolution decoder layers — the merge is concatenation, not pass-through."
 consequence:
   narrative: "The U-Net trains on District 7 feeds. After 50 epochs, it segments drones from sky with pixel-perfect boundaries. Zara smiles: 'The skip connections preserved the edges. Without them, every drone would be a blurry blob.'"
   nextLessonTeaser: "Next: mask generation — producing pixel-precise boundaries for each detected object"

@@ -89,4 +89,68 @@ describe("BridgeCallout", () => {
     fireEvent.keyDown(vueTab, { key: "Enter" });
     expect(vueTab.getAttribute("aria-selected")).toBe("true");
   });
+
+  describe("breaks footer", () => {
+    it("omits breaks footer when bridge has no breaks and registry has none", () => {
+      render(<BridgeCallout bridge={bridgeWithoutVariants} />);
+      expect(screen.queryByTestId("bridge-breaks")).toBeNull();
+    });
+
+    it("renders inline breaks in generic layout", () => {
+      const bridge = {
+        ...bridgeWithoutVariants,
+        breaks:
+          "CSS initial values reset visual properties; weight initialization sets numerical starting points for gradient descent.",
+      };
+      render(<BridgeCallout bridge={bridge} />);
+      const footer = screen.getByTestId("bridge-breaks");
+      expect(footer).toBeInTheDocument();
+      expect(footer.textContent).toMatch(/Where this breaks/i);
+      expect(footer.textContent).toMatch(/gradient descent/);
+    });
+
+    it("renders inline breaks in tabbed layout", () => {
+      const bridge = {
+        ...bridgeWithVariants,
+        breaks:
+          "Props are external and immutable per render; training data is consumed once and shapes mutable internal weights.",
+      };
+      render(<BridgeCallout bridge={bridge} />);
+      const footer = screen.getByTestId("bridge-breaks");
+      expect(footer).toBeInTheDocument();
+      expect(footer.textContent).toMatch(/mutable internal weights/);
+    });
+
+    it("falls back to canonical registry breaks when inline absent", () => {
+      // Bridge #4 in registry: Gradient descent ↔ Reconciliation, has breaks
+      const bridge = {
+        feTitle: "Reconciliation",
+        feCode: "// react reconciles",
+        mlTitle: "Gradient descent",
+        mlCode: "optimizer.step()",
+        tier: "intuition" as const,
+      };
+      render(<BridgeCallout bridge={bridge} />);
+      const footer = screen.getByTestId("bridge-breaks");
+      expect(footer).toBeInTheDocument();
+      expect(footer.textContent).toMatch(
+        /stochastic|local minimum|deterministic/i,
+      );
+    });
+
+    it("inline breaks overrides canonical registry breaks", () => {
+      const bridge = {
+        feTitle: "Reconciliation",
+        feCode: "// react reconciles",
+        mlTitle: "Gradient descent",
+        mlCode: "optimizer.step()",
+        tier: "intuition" as const,
+        breaks: "INLINE OVERRIDE TEXT",
+      };
+      render(<BridgeCallout bridge={bridge} />);
+      const footer = screen.getByTestId("bridge-breaks");
+      expect(footer.textContent).toMatch(/INLINE OVERRIDE TEXT/);
+      expect(footer.textContent).not.toMatch(/local minimum/);
+    });
+  });
 });

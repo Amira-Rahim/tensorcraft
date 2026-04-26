@@ -17,6 +17,7 @@ concept:
     mlTitle: "Model Orchestration"
     mlCode: "// Pipeline: classifier → anomaly detector → LLM reporter"
     tier: structural
+    breaks: "Microservices have stable contracts and explicit error responses. Model orchestration passes outputs (often natural-language) between probabilistic models — errors compound silently and one weak model degrades the entire chain without raising an exception."
 consequence:
   narrative: "The complete DEEP SCAN pipeline processes signals end-to-end: classify, detect anomalies, predict timing, and generate reports — all automatically."
   nextLessonTeaser: "Module 10: making the whole system fast enough for production — optimization and edge deployment"

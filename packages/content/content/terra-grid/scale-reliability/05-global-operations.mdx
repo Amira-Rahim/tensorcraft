@@ -17,6 +17,7 @@ concept:
     mlTitle: "Model Multi-Region"
     mlCode: "// Edge: replicate models to regions, coordinate updates, handle drift"
     tier: structural
+    breaks: "CDN multi-region serves identical static content from the closest PoP. Multi-region model serving must handle data residency (regional models cannot leave their region), latency-vs-staleness tradeoff for model updates, and cross-region traffic shaping for warm-up."
 consequence:
   narrative: "The global coordination system manages model deployments across 8 time zones. Region-aware rollouts avoid deploying during peak industrial hours. Model version consistency is maintained within 15 minutes across all 47 sites."
   nextLessonTeaser: "Next module: Capstone — deploying Terra Grid Intelligence to production"

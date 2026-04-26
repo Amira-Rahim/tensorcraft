@@ -17,6 +17,7 @@ concept:
     mlTitle: "Model Evaluation"
     mlCode: "const results = model.evaluate(testX, testY)"
     tier: structural
+    breaks: "E2E tests assert exact behaviors that pass or fail — green build means safe to ship. Model evaluation reports continuous metrics (accuracy, precision, recall) over a held-out set, and good aggregate metrics routinely hide failure modes on production-distribution subgroups. Sliced eval (per-class, per-cohort, per-feature-bin) is required before production."
 consequence:
   narrative: "DEEP SCAN achieves 94% accuracy on unseen signals. Commander Mirza authorizes deployment. Module complete — the foundations of ML are yours."
 hints:

@@ -17,6 +17,7 @@ concept:
     mlTitle: "Noise schedule (beta schedule)"
     mlCode: "const betas = cosineSchedule(timesteps);"
     tier: structural
+    breaks: "Animation easing curves interpolate one value over a fixed time. Noise schedules control variance added to the entire latent at every timestep and the schedule shape (linear, cosine, sigmoid) materially changes generation quality. Tuning matters far more than picking an animation easing."
 consequence:
   narrative: "With the cosine schedule, the images are noticeably sharper. Same number of steps, better allocation of the noise budget. Erdem leans in: 'The details in the shadows — those were not there before.'"
   nextLessonTeaser: "Next: the U-Net — the architecture that actually predicts the noise"

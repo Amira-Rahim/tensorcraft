@@ -17,6 +17,7 @@ concept:
     mlTitle: "OTA Model Update"
     mlCode: "otaUpdate({ download, verify, stage, activate }) // same lifecycle"
     tier: structural
+    breaks: "Service worker updates ship code that runs against current data deterministically. OTA model updates ship new weights that may suddenly shift prediction distribution — staged rollout, shadow inference (running both old and new in parallel), and accuracy gating against a holdout set are required to detect regressions before full deployment."
 consequence:
   narrative: "GRID confirms: 847 of 847 devices updated. Zero downtime. Tariq exhales."
   nextLessonTeaser: "Next: keeping models running when connectivity drops"

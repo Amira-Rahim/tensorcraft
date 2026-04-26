@@ -17,6 +17,7 @@ concept:
     mlTitle: "Input → Predict → Display"
     mlCode: "const prediction = model.predict(tensor); updateUI(prediction);"
     tier: structural
+    breaks: "Event → Process → Render runs once per user input with code you wrote. Input → Predict → Display passes data through a learned model whose internals you cannot inspect step-by-step. Debugging shifts from breakpoints to interpretation tools (saliency maps, attention viz)."
 consequence:
   narrative: "The dashboard shows live classifications. Green for normal, amber for anomalous. The crew watches as signals stream in."
   nextLessonTeaser: "Next: comparing runtimes — is TF.js the only option?"

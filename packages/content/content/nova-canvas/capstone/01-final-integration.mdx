@@ -17,6 +17,7 @@ concept:
     mlTitle: "Multi-Modal Pipeline"
     mlCode: "const image = await imageModel.predict(z); const audio = await audioModel.predict(z);"
     tier: structural
+    breaks: "Monorepo integration ships when packages publish and tests pass. Multi-modal pipelines must validate that each model handles outputs from upstream models without compounding error — failure modes propagate silently across modalities."
 consequence:
   narrative: "For the first time, all modalities run together. A visitor speaks a prompt. Text becomes an image. The image generates a soundscape. The soundscape drives visual effects. A complete creative loop."
   nextLessonTeaser: "Next: designing the visitor experience"

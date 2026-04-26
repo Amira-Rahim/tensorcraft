@@ -17,6 +17,7 @@ concept:
     mlTitle: "Mixed Precision"
     mlCode: "// First layer: Float16 (sensitive)\n// Middle layers: Int8 (robust)\n// Last layer: Float16 (sensitive)"
     tier: structural
+    breaks: "Responsive images deliver different assets per breakpoint. Mixed-precision training mixes float16 and float32 within a single forward/backward pass: most ops in fp16 for speed, accumulation in fp32 for numerical stability. The 'switching' is per-op, not per-environment."
 consequence:
   narrative: "Mixed precision gives you 3x compression instead of 4x, but preserves critical accuracy."
   nextLessonTeaser: "Next: managing the accuracy vs size tradeoff"

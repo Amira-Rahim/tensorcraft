@@ -1,4 +1,51 @@
 import { defineCollection, defineConfig, s } from "velite";
+import ts from "typescript";
+
+/**
+ * Transpile TS-flavored exercise code to plain JS so the runtime worker
+ * (which uses `new Function(...)` and cannot parse TS syntax) can execute
+ * solutions and tests authored in TypeScript. Also strips ES module
+ * `import`/`export` statements which the worker bundles its own globals for.
+ */
+function tsToJs(src: string): string {
+  if (!src) return src;
+  // Strip imports first — the worker injects globals (tf, expect, describe, it).
+  // Stripping pre-transpile prevents TS from emitting CJS namespace-import helpers
+  // (__importStar, __createBinding, etc.) which would then call require() and fail.
+  const noImports = src
+    .replace(/^\s*import\s+.*\s+from\s+['"][^'"]+['"];?\s*$/gm, "")
+    .replace(/^\s*import\s+['"][^'"]+['"];?\s*$/gm, "")
+    .replace(/^\s*export\s+\{[^}]*\};?\s*$/gm, "")
+    // Drop `export ` prefix on declarations — keep the declaration itself.
+    .replace(
+      /^(\s*)export\s+(default\s+)?(?=(?:async\s+)?(?:function|const|let|var|class|interface|type|enum)\b)/gm,
+      "$1",
+    );
+  const out = ts.transpileModule(noImports, {
+    compilerOptions: {
+      target: ts.ScriptTarget.ES2020,
+      module: ts.ModuleKind.None,
+      removeComments: false,
+      esModuleInterop: true,
+      isolatedModules: false,
+      noEmitOnError: false,
+    },
+  });
+  // Strip any residual `export` keywords on declarations (isolatedModules emit may keep them as `Object.defineProperty`).
+  return (
+    out.outputText
+      .replace(/^"use strict";\s*\n?/m, "")
+      .replace(/^Object\.defineProperty\(exports,.*$/gm, "")
+      .replace(/^exports\.\w+\s*=\s*(?:void 0|\w+);?\s*$/gm, "")
+      // Strip CommonJS require() that TS emits for `import` statements — the worker
+      // injects globals (tf, expect, describe, it) so any external import is wrong.
+      .replace(
+        /^(?:const|var|let)\s+[\w{}\s,*:]+\s*=\s*require\(['"][^'"]+['"]\);?\s*$/gm,
+        "",
+      )
+      .replace(/^require\(['"][^'"]+['"]\);?\s*$/gm, "")
+  );
+}
 
 const lessons = defineCollection({
   name: "Lesson",
@@ -26,6 +73,7 @@ const lessons = defineCollection({
           mlTitle: s.string(),
           mlCode: s.string(),
           tier: s.enum(["identity", "structural", "intuition"]),
+          breaks: s.string().optional(),
         })
         .optional(),
     }),
@@ -99,9 +147,9 @@ const exercises = defineCollection({
     lessonSlug: s.string().min(1),
     title: s.string().min(1),
     instructions: s.string().min(1),
-    starterCode: s.string().min(1),
-    solutionCode: s.string().min(1),
-    testCode: s.string().min(1),
+    starterCode: s.string().min(1).transform(tsToJs),
+    solutionCode: s.string().min(1).transform(tsToJs),
+    testCode: s.string().min(1).transform(tsToJs),
     estimatedMinutes: s.number().int().positive(),
     difficulty: s.enum(["beginner", "intermediate", "advanced"]),
 

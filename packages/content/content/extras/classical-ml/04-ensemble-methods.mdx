@@ -16,6 +16,7 @@ concept:
     mlTitle: "Random forest"
     mlCode: "forest.predict(x) // each tree votes, majority wins"
     tier: structural
+    breaks: "Promise.allSettled runs known async tasks in parallel and votes the results you defined. Random forest trains many decorrelated decision trees on bootstrapped samples and votes — the diversity is the entire point and comes from the training procedure, not the call site."
 consequence:
   narrative: "You now understand why random forests and gradient boosting dominate Kaggle competitions and production ML systems alike."
   nextLessonTeaser: "Next: the decision framework for choosing the right model for any problem"

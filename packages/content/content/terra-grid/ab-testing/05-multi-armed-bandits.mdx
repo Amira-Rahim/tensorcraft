@@ -17,6 +17,7 @@ concept:
     mlTitle: "Adaptive Model Selection"
     mlCode: "// Route to best model more often, explore alternatives with epsilon"
     tier: structural
+    breaks: "Dynamic ad rotation has clear short-term reward signals. Multi-armed bandits for model selection face delayed rewards (long-term retention), non-stationary arms (model drift), and exploration cost — Thompson sampling and UCB algorithms are not interchangeable knobs."
 consequence:
   narrative: "The bandit algorithm converges within 3 days. Model v3.1 receives 87% of traffic because it consistently outperforms. Priya: 'The algorithm found the winner faster than a fixed A/B test would have, and fewer devices were exposed to the worse model.'"
   nextLessonTeaser: "Next module: Scale & Reliability — building infrastructure that survives the worst day"

@@ -17,6 +17,7 @@ concept:
     mlTitle: "Model Optimization"
     mlCode: "// quantize + distill + prune: 50MB → 5MB, similar quality"
     tier: structural
+    breaks: "Webpack production build minifies and tree-shakes deterministically. Model optimization (quantization, pruning, distillation) trades accuracy for size and the right tradeoff depends on the use case — there is no '--mode production' that always works."
 consequence:
   narrative: "The optimized model runs in 340ms — down from 3.2 seconds. Erdem: 'Ten times faster. The quality drop is barely visible. Ship it.'"
   nextLessonTeaser: "Next: caching and precomputation for instant responses"

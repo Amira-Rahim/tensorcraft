@@ -17,6 +17,7 @@ concept:
     mlTitle: "Anomaly Detection"
     mlCode: "function isAnomaly(reading, mean, std) {\n  return Math.abs(reading - mean) > 3 * std;\n}"
     tier: structural
+    breaks: "Client-side validation runs deterministic rule checks. Edge anomaly detection runs a learned threshold that drifts as input distribution changes — a model that hits 1% false-positive rate at deploy can silently rise to 15% three weeks later with no code change. Threshold recalibration is required, not optional."
 consequence:
   narrative: "Your first edge model is deployed to Site 12. It detects anomalies in real time."
   nextLessonTeaser: "Next: understanding when to use edge vs cloud"

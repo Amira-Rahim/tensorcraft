@@ -17,6 +17,7 @@ concept:
     mlTitle: "EHR Integration"
     mlCode: "// FHIR API: adapt your ClinicalNote model to FHIR's Observation resource schema"
     tier: structural
+    breaks: "Third-party API integration is bounded by published OpenAPI specs. EHR integration involves HL7/FHIR variants per vendor, PHI handling requirements, and clinical workflow constraints that no spec captures — most cost is in the integration, not the model."
 consequence:
   narrative: "The FHIR adapter passes its first integration test. A MedicationRequest resource flows in, gets transformed to Diagnostic One's internal format, runs through the NLP pipeline, and produces a drug interaction alert. Vikram watches the data flow on his monitor. 'It is like watching a webhook fire for the first time. Except the webhook might save someone's life.' Dr. Karimi reviews the adapter's error handling. 'What happens when the EHR sends malformed data?' Khalil shows her the validation layer. 'Same thing that happens when Stripe sends a malformed webhook — we log it, reject it, and alert the team.'"
   nextLessonTeaser: "Next: validating Diagnostic One against expert annotations"

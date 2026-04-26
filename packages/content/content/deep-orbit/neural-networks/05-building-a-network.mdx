@@ -17,6 +17,7 @@ concept:
     mlTitle: "Model Compilation"
     mlCode: "model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy' })"
     tier: structural
+    breaks: "createRoot().render() mounts a component tree once and React handles updates. model.compile() does not run training — it attaches optimizer + loss configuration that fit() will use. Compilation is a setup step; the real work happens in fit/train."
 consequence:
   narrative: "Module complete. The DEEP SCAN network is assembled and ready for training. The crew holds their breath."
 hints:

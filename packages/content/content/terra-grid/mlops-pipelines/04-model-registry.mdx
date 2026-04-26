@@ -17,6 +17,7 @@ concept:
     mlTitle: "Model Registry"
     mlCode: "registry.publish(model, { version, metrics, stage })"
     tier: structural
+    breaks: "npm registry serves immutable versioned packages. Model registries must additionally track training metadata, eval metrics per version, deployment lineage, and approval status — and there is no canonical 'latest' since model selection is performance-driven, not chronological."
 consequence:
   narrative: "The registry shows one model in production, two in staging, and 44 archived. Tariq pulls the production model for deployment."
   nextLessonTeaser: "Next: automating retraining so the pipeline runs itself"

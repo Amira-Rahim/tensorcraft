@@ -16,6 +16,7 @@ concept:
     mlTitle: "KNN"
     mlCode: "knn.classify(point, k) // find k nearest, majority vote"
     tier: structural
+    breaks: "Sort and slice runs in O(n log n) over data already in memory. KNN lookups need a distance metric, scale poorly with dimensionality (curse of dimensionality), and require all training data at query time — there is no model artifact, only the dataset."
 consequence:
   narrative: "You now have a model that requires no training at all. For small datasets with clear clusters, KNN is hard to beat."
   nextLessonTeaser: "Next: ensemble methods — combining many weak models into one strong one"

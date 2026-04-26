@@ -17,6 +17,7 @@ concept:
     mlTitle: "Sequence Order"
     mlCode: "model.predict(tf.tensor2d([t1, t2, t3, t4, t5]))"
     tier: structural
+    breaks: "React list keys identify elements for diffing — order matters for reconciliation but not for the values themselves. In sequences, position is part of the meaning ('not good' vs 'good not') and the model must learn order-dependent patterns, not just track identity."
 consequence:
   narrative: "Demir realizes the feedforward network is blind to temporal patterns. Each reading is processed in isolation — the model has no memory of what came before."
   nextLessonTeaser: "Next: building a network that remembers — the Simple RNN"

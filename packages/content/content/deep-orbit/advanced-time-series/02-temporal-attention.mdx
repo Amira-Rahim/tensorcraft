@@ -17,6 +17,7 @@ concept:
     mlTitle: "Temporal Attention"
     mlCode: "attentionWeights = softmax(scores) // focus on relevant time steps"
     tier: intuition
+    breaks: "scrollIntoView jumps to one element you target by ID. Temporal attention learns soft weights over every prior timestep at every layer — the model decides relevance per query, weights are continuous, and the cost is quadratic in sequence length."
 consequence:
   narrative: "The attention weights reveal the model focuses on two specific time ranges: the initial amplitude spike and the frequency shift 73 seconds later. The pattern is confirmed."
   nextLessonTeaser: "Next: forecasting — predicting when the anomaly will appear next"

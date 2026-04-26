@@ -17,6 +17,7 @@ concept:
     mlTitle: "Contrastive learning"
     mlCode: "loss = -log(sim(pos) / sum(sim(pos) + sim(negatives)));"
     tier: intuition
+    breaks: "A/B testing measures user behavior across two known variants. Contrastive learning trains a model to pull matched pairs together and push unmatched pairs apart in embedding space — the 'A' and 'B' are dynamically sampled from the dataset, not user-assigned."
 consequence:
   narrative: "The model stops confusing 'city at night' with 'melancholy cityscape at twilight.' The contrastive loss teaches it that mood matters — the difference between a description and an evocation. Rohan: 'Mood is a direction in a 512-dimensional vector space.'"
   nextLessonTeaser: "Next: the CLIP architecture — how to build this at scale"

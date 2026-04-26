@@ -17,6 +17,7 @@ concept:
     mlTitle: "Model Monitoring"
     mlCode: "trackMetric('prediction_confidence', 0.72);\ntrackMetric('inference_latency_ms', 45);\ndetectDrift(currentDistribution, baselineDistribution);"
     tier: structural
+    breaks: "Sentry/DataDog catch exceptions and latency spikes — observable failures. Drift produces no errors: predictions remain confident but get steadily worse as input distribution shifts. Detection requires comparing against a baseline you set, not waiting for an alarm."
 consequence:
   narrative: "Amir sets up automated drift alerts. When District 9's confidence scores drop below 80%, the system flags it immediately. Dilan begins collecting new samples of Meridian's updated drones. NEON: 'The model is not broken. The world moved. Now you can see it moving.'"
   nextLessonTeaser: "Next: stress-testing Sentinel to make sure it survives anything Meridian throws at it"

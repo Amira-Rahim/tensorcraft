@@ -17,6 +17,7 @@ concept:
     mlTitle: "Multiple Attention Heads"
     mlCode: "// Head 1: drug-condition links\n// Head 2: dosage-frequency links\n// Head 3: temporal relationships"
     tier: structural
+    breaks: "Multiple event listeners run independently and don't interact. Multiple attention heads process the same input in parallel with different learned projections, then concatenate — heads specialize during training (some attend to syntax, some to semantics) but you cannot assign roles."
 consequence:
   narrative: "Diagnostic One can now simultaneously track drug-condition relationships, temporal sequences, and dosage patterns."
   nextLessonTeaser: "Next: visualizing what the model focuses on."

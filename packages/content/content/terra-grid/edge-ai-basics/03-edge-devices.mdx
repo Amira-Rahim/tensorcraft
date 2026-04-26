@@ -17,6 +17,7 @@ concept:
     mlTitle: "Edge Device Specs"
     mlCode: "// Gateway: 512MB RAM, ARM Cortex-A53\n// Must profile on real hardware"
     tier: structural
+    breaks: "Device testing matrices use feature detection at runtime. Edge device model selection must match model size to RAM, ops to NPU/GPU support, quantization to supported numeric formats, and thermal envelope to inference cadence — a model that loads on one device fails to load on a 'similar' one with less RAM."
 consequence:
   narrative: "You now understand exactly what hardware your models must run on."
   nextLessonTeaser: "Next: building your first edge model"

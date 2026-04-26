@@ -17,6 +17,7 @@ concept:
     mlTitle: "tf.add()"
     mlCode: "tf.add(tensor1, tensor2)"
     tier: structural
+    breaks: "Array.map runs JavaScript per element on the CPU. tf.add operates on whole tensors with hardware-accelerated kernels (WebGL, WASM, WebGPU) and a single op covers millions of elements. Same elementwise idea; different execution model and orders-of-magnitude different cost profile."
 consequence:
   narrative: "The processed signal reveals a pattern in the noise."
 hints:

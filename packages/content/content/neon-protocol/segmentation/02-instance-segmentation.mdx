@@ -17,6 +17,7 @@ concept:
     mlTitle: "Instance Segmentation"
     mlCode: "// Same class 'person', but instance IDs: person-1, person-2, person-3"
     tier: structural
+    breaks: "DOM identity (querySelector) and class (className) are author-assigned and unique by construction. Instance segmentation must distinguish overlapping objects of the same class from raw pixels — the model assigns instance IDs that may merge two adjacent cars or split one car into multiple instances. ID stability across frames requires explicit tracking, not just per-frame segmentation."
 consequence:
   narrative: "The red blob separates into distinct silhouettes — each person outlined individually. NEON chimes in: 'I can now track 14 individuals in this frame. Meridian tracks 14 million. But ours run in the browser.'"
   nextLessonTeaser: "Next: U-Net architecture — the encoder-decoder structure that makes dense prediction possible"

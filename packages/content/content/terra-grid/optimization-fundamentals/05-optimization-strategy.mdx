@@ -17,6 +17,7 @@ concept:
     mlTitle: "Model Optimization Checklist"
     mlCode: "// 1. Architecture → 2. Prune → 3. Quantize\n// 4. Distill → 5. Benchmark → 6. Deploy"
     tier: structural
+    breaks: "Build optimization checklists have ordered, deterministic steps. Model optimization is iterative and order-dependent (quantize then prune vs prune then quantize give different results) — and many techniques compound or interfere in non-obvious ways."
 consequence:
   narrative: "You have a systematic optimization plan. Time to execute it."
   nextLessonTeaser: "Next module: quantization — the most impactful compression technique"

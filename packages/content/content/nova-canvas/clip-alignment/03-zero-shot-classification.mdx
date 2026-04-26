@@ -17,6 +17,7 @@ concept:
     mlTitle: "Zero-shot classification"
     mlCode: "const label = categories[argmax(similarity(image, categoryTexts))];"
     tier: structural
+    breaks: "Dynamic routing sends unknown paths to a default route — fallback is explicit. Zero-shot classification ranks input against text-prompt embeddings of class names and confidently picks the closest match even when the input doesn't belong to any class. There is no 'unknown' bucket; you must threshold the similarity score and treat low confidence as out-of-distribution."
 consequence:
   narrative: "MUSE tags every gallery piece without being trained on a single example. Abstract expressionism. Digital impressionism. Geometric minimalism. Erdem checks the tags against his own labels: 94% agreement. 'Better than the interns,' he mutters."
   nextLessonTeaser: "Next: CLIP-guided generation — using CLIP to steer what the model creates"

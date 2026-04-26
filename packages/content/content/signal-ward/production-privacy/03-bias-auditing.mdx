@@ -17,6 +17,7 @@ concept:
     mlTitle: "Bias Audit (Fairness)"
     mlCode: "// Fairness audit: test across demographics, languages, writing styles — score each group, flag disparities"
     tier: structural
+    breaks: "Lighthouse accessibility audit checks against fixed WCAG criteria. Bias audits require disaggregated evaluation across demographic groups, choosing fairness metrics (which are mutually incompatible), and there is no checklist that guarantees fairness."
 consequence:
   narrative: "The bias audit reveals three failure modes: non-standard English, abbreviation-heavy ICU notes, and Spanish-language records. Khalil implements data augmentation for underperforming slices and retrains. The gap drops from 12% to 2.3%. Karimi reviews the fairness card. 'Two percent is not zero, but it is honest. Document the remaining gap and ship it with the model card.'"
   nextLessonTeaser: "Next: human-in-the-loop — designing approval gates for clinical predictions"

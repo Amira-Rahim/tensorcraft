@@ -17,6 +17,7 @@ concept:
     mlTitle: "Model Profiler"
     mlCode: "// model.summary() — layer-by-layer breakdown\n// Parameters, memory, output shapes"
     tier: structural
+    breaks: "Bundle analyzer shows static module sizes from build artifacts. Model profiling traces per-op latency at inference time and bottlenecks shift across hardware — what is slow on CPU is fast on GPU and vice versa."
 consequence:
   narrative: "You now see exactly where the model's bulk is. 82% of parameters are in two layers."
   nextLessonTeaser: "Next: choosing efficient architectures"

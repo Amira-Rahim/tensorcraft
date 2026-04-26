@@ -17,6 +17,7 @@ concept:
     mlTitle: "RNN to Transformer"
     mlCode: "// RNN: sequential hidden states\n// Transformer: parallel self-attention"
     tier: structural
+    breaks: "Class → hooks was a refactor — same component behavior, cleaner code. RNN → Transformer is an architectural break: parallelism over sequence steps replaces sequential state, attention replaces hidden-state passing. The output capability shifts (long-range dependencies), not just the API."
 consequence:
   narrative: "The team commits to the transformer architecture, knowing it can process entire clinical notes at once."
   nextLessonTeaser: "Next: building the transformer encoder block from scratch."

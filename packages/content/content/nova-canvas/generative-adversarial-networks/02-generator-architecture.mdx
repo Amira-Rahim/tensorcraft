@@ -17,6 +17,7 @@ concept:
     mlTitle: "Generator Network"
     mlCode: "const image = generator.predict(tf.randomNormal([1, 100]))"
     tier: structural
+    breaks: "Template engines fill known slots with provided values. Generator networks map noise vectors to images via learned upsampling — the output structure is implicit in the architecture and weights, not in any template."
 consequence:
   narrative: "The generator architecture takes shape — a pipeline that transforms a 100-dimensional whisper of randomness into a 28x28 image. Rough, but unmistakably structured."
   nextLessonTeaser: "Next: building the discriminator — the critic that judges the generator's work"

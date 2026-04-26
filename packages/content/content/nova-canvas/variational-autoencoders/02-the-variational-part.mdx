@@ -17,6 +17,7 @@ concept:
     mlTitle: "Variational Encoding"
     mlCode: "const [mu, logVar] = encoder.predict(image) // distribution, not point"
     tier: structural
+    breaks: "URL encoding maps each character to a fixed escape sequence. Variational encoding outputs parameters of a probability distribution (mean + variance) per dimension — encoding the same input twice draws different latent samples."
 consequence:
   narrative: "The distinction clicks — instead of memorizing exact positions, the VAE learns regions of possibility. Every point in the space decodes to something meaningful."
   nextLessonTeaser: "Next: the reparameterization trick — making randomness differentiable"

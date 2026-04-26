@@ -17,6 +17,7 @@ concept:
     mlTitle: "Feedforward style network"
     mlCode: "const stylized = styleNet.predict(contentImage);"
     tier: structural
+    breaks: "CSS filter chains compose deterministic per-pixel operations. Feedforward style networks learn one fixed style end-to-end — adding a new style requires retraining the entire network, not adding a filter to a chain."
 consequence:
   narrative: "One forward pass. 85 milliseconds. The photograph transforms into a Monet in the time it takes to blink. Yara stares at the kiosk screen, watching visitors' photographs become paintings in real time. 'This is what I dreamed it could be.'"
   nextLessonTeaser: "Next: blending multiple styles — combining Monet and Basquiat in a single image"

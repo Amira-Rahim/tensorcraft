@@ -17,6 +17,7 @@ concept:
     mlTitle: "Quantization Quality"
     mlCode: "// Int8: 1.2% accuracy loss, 4x smaller\n// Int4: 5% accuracy loss, 8x smaller"
     tier: structural
+    breaks: "Lossy image compression has a perceptual quality target — the user sees the result and judges it directly. Quantization tradeoffs are measured against held-out test accuracy; a 1% drop may be invisible to the developer running locally on familiar inputs but unacceptable in production where it manifests as silently wrong predictions on edge cases."
 consequence:
   narrative: "You define the minimum acceptable accuracy for each use case. The Site 23 lesson is learned."
   nextLessonTeaser: "Next module: pruning and distillation for even more compression"

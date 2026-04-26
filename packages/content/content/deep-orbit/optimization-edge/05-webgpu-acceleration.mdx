@@ -17,6 +17,7 @@ concept:
     mlTitle: "WebGPU Compute"
     mlCode: "const device = await navigator.gpu.requestAdapter() // compute-oriented GPU access"
     tier: structural
+    breaks: "Canvas WebGL renders pixels via fragment shaders for display. WebGPU compute shaders run general-purpose tensor math (matmul, conv) for inference — different shading language, different memory model, different driver maturity. Browser support is far narrower than WebGL."
 consequence:
   narrative: "WebGPU cuts inference time by 3x over WebGL. Nazari: 'Not bad, for a frontend dev.' DEEP SCAN is production-ready."
   nextLessonTeaser: "Module 11: the capstone — deploying the complete DEEP SCAN system"

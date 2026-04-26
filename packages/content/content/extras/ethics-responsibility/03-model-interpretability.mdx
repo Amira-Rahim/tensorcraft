@@ -17,6 +17,7 @@ concept:
     mlTitle: "Feature Importance (SHAP)"
     mlCode: "// SHAP: 'income' contributes +0.32 to loan approval prediction"
     tier: intuition
+    breaks: "DevTools Performance tab shows actual measured execution down to the function call. SHAP feature importances are estimates from input perturbation and different SHAP variants (Tree, Kernel, Deep) disagree on the same prediction. The 'explanation' is itself a model approximating the model — verify with multiple techniques before trusting it."
 consequence:
   narrative: "You can now look inside the black box and explain model decisions."
   nextLessonTeaser: "Next: responsible deployment — what happens when your model meets the real world"

@@ -17,6 +17,7 @@ concept:
     mlTitle: "Drift Response"
     mlCode: "rollback(model, 'v2.1.0') // revert to last known good model"
     tier: structural
+    breaks: "Incident response runbooks have known mitigation steps. Drift response must decide between rollback, retrain, recalibrate, or accept — each has different costs and the right choice depends on root cause analysis you must do, not a runbook entry."
 consequence:
   narrative: "Region 4 accuracy restored to 95.8% within 2 hours. Post-mortem identifies the firmware update as root cause. New preprocessing pipeline handles the sensor scale change."
   nextLessonTeaser: "Module 8: federated learning when data cannot be centralized"

@@ -17,6 +17,7 @@ concept:
     mlTitle: "Multi-Label Classifier"
     mlCode: "// sigmoid([cardiac, respiratory, renal, neuro])\n// Each label is independent — any combination possible"
     tier: structural
+    breaks: "Checkbox groups let users explicitly select any subset. Multi-label classifiers output independent sigmoid per label and label correlations are not modeled by default — the wrong loss (softmax) on multi-label produces silently wrong results."
 consequence:
   narrative: "Documents now carry full tag sets. A chest-pain case gets tagged as cardiac, emergency, and pain-management simultaneously."
   nextLessonTeaser: "Next: confidence calibration — knowing when the model isn't sure about its tags."

@@ -17,6 +17,7 @@ concept:
     mlTitle: "Grounded Answer"
     mlCode: "{ answer: 'Reduces risk by 40%', evidence: [{ docId: 12345, span: '...', score: 0.95 }] }"
     tier: structural
+    breaks: "Hyperlinks are author-asserted references the reader can follow. Grounded answers cite sources the model claims support the answer — but the model frequently misattributes, partial-quotes out of context, or cites a passage that does not actually contain the claim. Grounding requires programmatic verification that the answer text appears in the cited chunk."
 consequence:
   narrative: "The grounded QA system now refuses to answer when evidence is insufficient. Vikram's fabricated interaction test returns: 'No supporting evidence found in patient records. Confidence: 0.12. Deferring to clinician.' Karimi approves. 'A system that knows when it does not know is safer than one that always has an answer.'"
   nextLessonTeaser: "Next: clinical queries — doctors asking questions in natural language"

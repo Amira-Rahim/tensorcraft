@@ -17,6 +17,7 @@ concept:
     mlTitle: "Adversarial Examples"
     mlCode: "const patch = optimizePatch(model, targetClass, epsilon); // Input crafted to exploit the classifier"
     tier: structural
+    breaks: "XSS attacks exploit unsanitized inputs to inject code. Adversarial patches add imperceptible pixel perturbations that fool the model while looking unchanged to humans — the attack surface is the model's learned manifold, not parser bugs."
 consequence:
   narrative: "The patch works. A 32x32 pixel sticker makes Meridian's cameras classify a person as a traffic cone. Amir stares at it: 'At Meridian, Director Yates called this a feature — stress-testing the competition. Now I see it for what it is: a weapon.' Dilan: 'Which is exactly why we scope it. Patches bound to Meridian's architecture fingerprints only. No collateral capability.' The team agrees unanimously."
   nextLessonTeaser: "Next: Dilan's ethics review — responsible deployment of everything we have built"

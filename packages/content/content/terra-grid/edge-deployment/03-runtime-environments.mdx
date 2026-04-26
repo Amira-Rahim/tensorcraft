@@ -17,6 +17,7 @@ concept:
     mlTitle: "ML Runtimes"
     mlCode: "// TFLite (mobile/ARM), ONNX (x86), WASM (browser)"
     tier: structural
+    breaks: "Browser engines (V8, JSC) implement the same EcmaScript spec — code runs identically. ML runtimes (TFLite, ONNX Runtime, Core ML) support different operator subsets — a model with a single unsupported op fails to load entirely on that runtime. Op-set audit is required before targeting a runtime."
 consequence:
   narrative: "Tariq maps each device tier to its optimal runtime. The deployment matrix is complete."
   nextLessonTeaser: "Next: pushing model updates over the air to remote devices"

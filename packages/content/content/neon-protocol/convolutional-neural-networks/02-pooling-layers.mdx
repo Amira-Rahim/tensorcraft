@@ -17,6 +17,7 @@ concept:
     mlTitle: "Max Pooling"
     mlCode: "const pooled = tf.maxPool(featureMap, poolSize, strides, 'valid'); // halves spatial dims"
     tier: structural
+    breaks: "srcset picks one image variant based on viewport — the alternatives still exist. Max pooling discards information permanently: only the strongest activation in each region survives forward. The downsampled tensor cannot reconstruct the original."
 consequence:
   narrative: "The pooled feature maps are a quarter of the size but retain the sharpest activations. NEON calculates the memory savings: 'From 6.4 million values to 1.6 million. Your browser will thank you.'"
   nextLessonTeaser: "Next: stacking conv and pool layers into a complete CNN architecture"

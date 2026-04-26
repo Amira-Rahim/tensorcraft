@@ -13,6 +13,7 @@ interface Bridge {
   mlTitle: string;
   mlCode: string;
   tier: "identity" | "structural" | "intuition";
+  breaks?: string;
 }
 
 interface BridgeCalloutProps {
@@ -60,8 +61,10 @@ export function BridgeCallout({ bridge, userFramework }: BridgeCalloutProps) {
   const hasVariants =
     sharedBridge?.variants && Object.keys(sharedBridge.variants).length > 0;
 
+  const breaks = bridge.breaks || sharedBridge?.breaks;
+
   if (!hasVariants) {
-    return <GenericBridgeLayout bridge={bridge} />;
+    return <GenericBridgeLayout bridge={bridge} breaks={breaks} />;
   }
 
   return (
@@ -69,11 +72,40 @@ export function BridgeCallout({ bridge, userFramework }: BridgeCalloutProps) {
       bridge={bridge}
       sharedBridge={sharedBridge!}
       userFramework={userFramework}
+      breaks={breaks}
     />
   );
 }
 
-function GenericBridgeLayout({ bridge }: { bridge: Bridge }) {
+function BridgeBreaks({ breaks, color }: { breaks: string; color: string }) {
+  return (
+    <div
+      data-testid="bridge-breaks"
+      className="px-5 py-3 border-t border-border bg-code-bg"
+      style={{
+        borderTop: `1px dashed ${color}`,
+      }}
+    >
+      <div
+        className="font-mono text-xs uppercase tracking-widest mb-1"
+        style={{ color }}
+      >
+        ⚠ Where this breaks
+      </div>
+      <div className="font-mono text-xs leading-relaxed text-text-muted">
+        {breaks}
+      </div>
+    </div>
+  );
+}
+
+function GenericBridgeLayout({
+  bridge,
+  breaks,
+}: {
+  bridge: Bridge;
+  breaks?: string;
+}) {
   const color = tierColors[bridge.tier];
 
   return (
@@ -116,6 +148,7 @@ function GenericBridgeLayout({ bridge }: { bridge: Bridge }) {
           {tierLabels[bridge.tier]}
         </span>
       </div>
+      {breaks && <BridgeBreaks breaks={breaks} color={color} />}
     </div>
   );
 }
@@ -124,10 +157,12 @@ function TabbedBridgeLayout({
   bridge,
   sharedBridge,
   userFramework,
+  breaks,
 }: {
   bridge: Bridge;
   sharedBridge: (typeof BRIDGES)[number];
   userFramework?: Framework;
+  breaks?: string;
 }) {
   const defaultTab = userFramework || "vanilla";
   const [activeTab, setActiveTab] = useState<Framework>(defaultTab);
@@ -257,6 +292,7 @@ function TabbedBridgeLayout({
           </span>
         </div>
       )}
+      {breaks && <BridgeBreaks breaks={breaks} color={color} />}
     </div>
   );
 }

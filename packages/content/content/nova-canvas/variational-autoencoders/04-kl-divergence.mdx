@@ -17,6 +17,7 @@ concept:
     mlTitle: "KL Divergence"
     mlCode: "klLoss = -0.5 * sum(1 + logVar - mu^2 - exp(logVar))"
     tier: intuition
+    breaks: "CSS specificity is a hand-tunable balance between rules. KL divergence is an asymmetric distance between distributions used as a regularization term in VAEs — the weight on KL vs reconstruction loss is a hyperparameter that materially shapes the latent space."
 consequence:
   narrative: "With KL divergence in the loss, the latent space smooths out. Random samples decode into coherent art. MUSE generates an 'original' that eerily resembles a famous painting — memorization vs generalization."
   nextLessonTeaser: "Next: putting it all together — a creative VAE for the exhibition"

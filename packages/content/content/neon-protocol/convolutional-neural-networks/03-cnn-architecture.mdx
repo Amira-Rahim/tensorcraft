@@ -17,6 +17,7 @@ concept:
     mlTitle: "CNN Layer Stack"
     mlCode: "model.add(tf.layers.conv2d()); model.add(tf.layers.maxPooling2d()); model.add(tf.layers.dense());"
     tier: structural
+    breaks: "Components are stateless pure functions of props; CNN layers carry mutable learned weights. Reorder React children → layout shifts predictably. Reorder CNN layers → the model loses its learned feature hierarchy and must retrain from scratch."
 consequence:
   narrative: "The architecture is complete: three conv-pool blocks feeding into a dense classifier. NEON estimates the parameter count: '34,826 trainable weights. Lean enough to run in the browser.'"
   nextLessonTeaser: "Next: training the CNN end-to-end on surveillance camera images"

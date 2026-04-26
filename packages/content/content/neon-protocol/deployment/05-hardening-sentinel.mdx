@@ -17,6 +17,7 @@ concept:
     mlTitle: "Load Testing Models"
     mlCode: "// Stress test: concurrent predictions\nconst results = await Promise.all(\n  Array(50).fill(null).map(() => sentinel.predict(randomInput))\n);\nassert(results.every(r => r.confidence >= 0));"
     tier: structural
+    breaks: "Load testing APIs hits known endpoints with known payloads — success means latency stays under SLO. Load testing models also requires representative input distributions; the same RPS with adversarial inputs degrades accuracy without changing latency, and that's still a production failure. You must measure both latency under load AND accuracy under representative-vs-adversarial input mixes."
 consequence:
   narrative: "Sentinel survives every test. Memory stays stable under 200 concurrent requests. Corrupted inputs return errors instead of crashes. Timeout handling works. Amir marks the system as deployment-ready. NEON: 'Protocol Sentinel is hardened. Deploy to all districts.'"
   nextLessonTeaser: "The deployment module is complete. Protocol Sentinel is production-ready."

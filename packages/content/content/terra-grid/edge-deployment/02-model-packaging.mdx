@@ -17,6 +17,7 @@ concept:
     mlTitle: "Model Package"
     mlCode: "packageModel({ weights, config, version, checksum })"
     tier: structural
+    breaks: "npm pack bundles code with metadata. Model packaging bundles weights + topology + tokenizer + preprocessing + version metadata and the format must match the runtime exactly (TFLite, Core ML, ONNX) — mismatches fail at load time."
 consequence:
   narrative: "The first model package passes integrity validation. Tariq queues it for deployment to Sector 7."
   nextLessonTeaser: "Next: choosing the right runtime environment for each device"

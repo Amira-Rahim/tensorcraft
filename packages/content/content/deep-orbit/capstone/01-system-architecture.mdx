@@ -17,6 +17,7 @@ concept:
     mlTitle: "Pipeline Dependencies"
     mlCode: "// pipeline: preprocess → featureExtract → classify → report — declare, connect, validate"
     tier: structural
+    breaks: "Package dependencies are resolved deterministically by a manifest and lockfile. ML pipeline dependencies include data shapes, schema contracts, model versions, and feature freshness — schema breaks are silent (predictions become wrong, not errors) and surface days later as accuracy regressions, not stack traces."
 consequence:
   narrative: "The architecture diagram fills the main display. Every component is accounted for: preprocessing, feature extraction, classification, anomaly detection, reporting. Mirza nods. 'Build it.'"
   nextLessonTeaser: "Next: CI/CD pipeline — automated testing and deployment"

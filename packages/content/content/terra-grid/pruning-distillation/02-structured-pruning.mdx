@@ -17,6 +17,7 @@ concept:
     mlTitle: "Structured Pruning"
     mlCode: "// Remove entire neurons/filters\n// Not just individual weights\n// Layer shrinks: 512 units → 256 units"
     tier: structural
+    breaks: "Dead code elimination removes unreferenced symbols at build time. Structured pruning removes entire neurons/channels and the model must be retrained or fine-tuned to recover accuracy — pruning more aggressively without fine-tuning collapses the model."
 consequence:
   narrative: "Structured pruning produces a physically smaller model that runs faster on ARM hardware."
   nextLessonTeaser: "Next: knowledge distillation — teaching a small model"

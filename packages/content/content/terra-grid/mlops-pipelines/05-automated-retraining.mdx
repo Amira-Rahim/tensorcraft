@@ -17,6 +17,7 @@ concept:
     mlTitle: "Retraining Trigger"
     mlCode: "on: data-change: drift-score > 0.3 // event-triggered training"
     tier: structural
+    breaks: "GitHub Actions trigger on commit events. Retraining triggers come from drift detectors, scheduled cadences, or label feedback — and retraining without performance gating can ship a worse model on schedule."
 consequence:
   narrative: "The pipeline detects the Sector 9 data shift, triggers retraining, and produces a new model that passes all gates. Priya reviews and approves."
   nextLessonTeaser: "Module 7: monitoring production models and detecting when they start to degrade"

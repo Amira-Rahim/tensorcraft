@@ -17,6 +17,7 @@ concept:
     mlTitle: "Anchor Grid"
     mlCode: "anchors = generateAnchors(gridSize: 7, scales: [0.5, 1.0, 2.0])"
     tier: structural
+    breaks: "CSS Grid template areas are author-defined regions. Anchor boxes are predefined box shapes the model learns to refine — choosing the right anchor scales and aspect ratios for your dataset is a hyperparameter that materially changes recall."
 consequence:
   narrative: "NEON flickers. 'Meridian uses a 13x13 anchor grid with 5 anchors per cell. That is 845 candidate boxes per frame. I used to evaluate all 845 in 4 milliseconds. You will need to be faster.'"
   nextLessonTeaser: "Next: IoU — measuring how well your predicted boxes match the real targets"

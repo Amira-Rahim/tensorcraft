@@ -17,6 +17,7 @@ concept:
     mlTitle: "Edge Hardware Detection"
     mlCode: "if (device.ram < 256) { loadLiteModel(); }"
     tier: structural
+    breaks: "Cross-browser testing checks against documented compatibility tables. Edge hardware detection must determine NPU presence, supported ops, available memory, and thermal headroom — many capabilities require running probes, not reading a user-agent string."
 consequence:
   narrative: "Tariq maps the hardware landscape. Three tiers: high-power substations, mid-range sensors, low-power remote monitors."
   nextLessonTeaser: "Next: packaging models for these diverse targets"

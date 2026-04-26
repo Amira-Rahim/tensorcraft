@@ -17,6 +17,7 @@ concept:
     mlTitle: "Offline Edge Model"
     mlCode: "// Model cached locally, runs without network\nconst pred = localModel.predict(input)"
     tier: structural
+    breaks: "Offline-first PWAs cache static assets via service worker. Offline edge models bundle weights (often megabytes) and inference runs entirely locally — model updates require a download, and stale models silently produce outdated predictions."
 consequence:
   narrative: "You understand why Terra Grid cannot rely on the cloud. Every site must be self-sufficient."
   nextLessonTeaser: "Next: understanding the hardware you're deploying to"

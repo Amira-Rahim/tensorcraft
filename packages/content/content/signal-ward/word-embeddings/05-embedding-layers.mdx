@@ -17,6 +17,7 @@ concept:
     mlTitle: "Embedding Layer"
     mlCode: "tf.layers.embedding({ inputDim: vocabSize, outputDim: 64 });"
     tier: structural
+    breaks: "Lookup tables map known keys to known values authored at write time. Embedding layers are trainable parameter matrices indexed by token ID — the values update during training and an out-of-vocabulary token has no entry and must be handled (UNK token, subword fallback)."
 consequence:
   narrative: "Diagnostic One now has a trainable embedding layer initialized with medical vectors. As the model trains on hospital data, the embeddings fine-tune to capture institution-specific terminology."
   nextLessonTeaser: "Next module: sequence models — because word order changes the meaning of clinical text."

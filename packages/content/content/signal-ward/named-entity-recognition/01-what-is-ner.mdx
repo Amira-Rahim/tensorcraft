@@ -17,6 +17,7 @@ concept:
     mlTitle: "Named Entity Recognition"
     mlCode: "ner(tokens); // find specific entities in a sea of words"
     tier: structural
+    breaks: "querySelectorAll matches DOM nodes by an exact CSS selector. NER tags spans by learned token-classification probabilities — novel entities are missed, compound entities (e.g. 'New York City Hall') get fragmented or merged incorrectly, and overlapping entity types collide. Post-processing must dedupe, merge, and validate against gazetteers."
 consequence:
   narrative: "Khalil understands that NER transforms free text into structured, computable data — the same way querySelectorAll turns a DOM tree into a usable collection."
   nextLessonTeaser: "Next: BIO tagging — marking where entities begin and end."

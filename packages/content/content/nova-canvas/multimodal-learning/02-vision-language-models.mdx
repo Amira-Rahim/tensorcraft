@@ -17,6 +17,7 @@ concept:
     mlTitle: "Vision-language model"
     mlCode: "const caption = visionLanguageModel(image); // 'A golden sunset...'"
     tier: intuition
+    breaks: "Alt-text is author-written description bound to one image at publish time. Vision-language models generate captions from learned cross-modal alignment and routinely hallucinate objects not in the image, miss salient details (especially small or partially-occluded), or describe a related image instead. Model output must be filtered through human review for accessibility-critical use cases."
 consequence:
   narrative: "MUSE processes the sunset image and outputs: 'warm colors, horizon line, city silhouette.' Not poetic. Not wrong. Yara laughs: 'It has the vocabulary of a real estate listing. But it can see and speak. That is a start.'"
   nextLessonTeaser: "Next: cross-modal embeddings — building a shared representation space"

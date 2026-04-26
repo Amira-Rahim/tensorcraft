@@ -17,6 +17,7 @@ concept:
     mlTitle: "Mode Collapse"
     mlCode: "generator.predict(noise1) ≈ generator.predict(noise2) // same output!"
     tier: intuition
+    breaks: "Non-random random (e.g. seeded RNG) is a known reproducibility tool. Mode collapse is an unintended GAN failure where the generator produces only a tiny subset of valid outputs — the model is technically working but lost diversity. Fixes are heuristic, not guaranteed."
 consequence:
   narrative: "Samir applies minibatch discrimination and the GAN starts producing diverse patterns again. The exhibition installation now generates unique art for every visitor."
   nextLessonTeaser: "Next module: VAEs — a different approach to generation with controllable, structured latent spaces"

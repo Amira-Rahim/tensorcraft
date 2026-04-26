@@ -17,6 +17,7 @@ concept:
     mlTitle: "IoU Score"
     mlCode: "const iou = intersectionArea / unionArea; // 0 = no overlap, 1 = perfect match"
     tier: structural
+    breaks: "Drag-and-drop hit testing uses bounding-box overlap as a binary gate. IoU is a continuous score in [0,1] used both as a training loss and as a threshold for matching predictions to ground truth — the threshold value (typically 0.5) is a tunable knob with significant effect on metrics."
 consequence:
   narrative: "Noor runs her model and computes IoU against the ground truth. Average IoU: 0.72. NEON chirps: 'Meridian demands 0.85 or higher. We need to do better. But at least now we can measure it.'"
   nextLessonTeaser: "Next: Non-Max Suppression — eliminating duplicate detections when anchors overlap"

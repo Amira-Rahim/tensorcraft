@@ -48,10 +48,12 @@ export function LandingHero() {
           <span className="block">You Think</span>
         </h1>
 
-        <p className="text-lg text-text-muted max-w-[480px] mb-12 leading-relaxed font-sans">
-          Every ML concept mapped to a frontend analogy you already know. Eleven
-          modules. Fifty-five lessons. One real model — built entirely in
-          JavaScript.
+        <p className="text-lg text-text-muted max-w-[520px] mb-12 leading-relaxed font-sans">
+          Every ML concept mapped to a frontend analogy you already know — and
+          every analogy labeled with{" "}
+          <span className="text-text-primary">where it breaks</span>, so you
+          never carry the wrong mental model into production. Eleven modules.
+          Fifty-five lessons. One real model — built entirely in JavaScript.
         </p>
 
         <div className="flex gap-4 flex-wrap mb-14">

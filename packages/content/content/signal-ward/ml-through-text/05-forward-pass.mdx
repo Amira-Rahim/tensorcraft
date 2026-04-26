@@ -17,6 +17,7 @@ concept:
     mlTitle: "Forward Pass"
     mlCode: "tokenize(text).then(embed).then(model).then(classify)"
     tier: structural
+    breaks: "Promise chains pass values forward through pure async functions. Forward pass through a text model passes activations through learned weight matrices and the same input always produces the same output (given fixed weights) but the intermediate values are not human-readable."
 consequence:
   narrative: "Diagnostic One runs its first successful end-to-end classification. Dr. Karimi is cautiously optimistic."
   nextLessonTeaser: "Next module: handling the messy reality of clinical text with advanced tokenization."

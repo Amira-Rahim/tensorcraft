@@ -17,6 +17,7 @@ concept:
     mlTitle: "Extractive QA"
     mlCode: "model.predict({ question, context }) // → { answer: 'allergic to penicillin', start: 142, end: 163 }"
     tier: structural
+    breaks: "Ctrl+F finds exact substrings. Extractive QA selects a span from a passage by predicting start and end token indices — the predicted span often boundary-cuts mid-word, includes punctuation, or selects the wrong of two valid answers. Post-processing must clip to word boundaries and rerank candidate spans."
 consequence:
   narrative: "The QA model highlights a span in the patient's discharge summary from 2019: 'Patient reported severe allergic reaction to penicillin-class antibiotics.' Imran pages the attending physician immediately."
   nextLessonTeaser: "Next: reading comprehension — understanding context beyond keyword matching"

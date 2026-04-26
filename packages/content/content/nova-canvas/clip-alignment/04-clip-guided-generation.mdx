@@ -17,6 +17,7 @@ concept:
     mlTitle: "CLIP guidance"
     mlCode: "gradient = clipScore(image, prompt); image += lr * gradient;"
     tier: structural
+    breaks: "ESLint surfaces deterministic rule violations. CLIP guidance steers a generator by backpropagating through CLIP similarity — guidance strength is a continuous knob and too much causes mode collapse, too little ignores the prompt."
 consequence:
   narrative: "With CLIP guidance, the images come alive. 'A melancholy cityscape at twilight' now produces deep blues, long shadows, a sense of solitude in the architecture. Erdem stares at the gallery wall. 'It feels something now,' he says. But then, the AI-Wrong moment: a style transfer produces technically perfect but emotionally hollow output. 'Technically competent,' Erdem repeats. 'Artistically dead.' The team realizes CLIP alignment is not the same as artistic truth."
   nextLessonTeaser: "Next: prompt engineering for images — writing text that produces exactly the visuals you want"

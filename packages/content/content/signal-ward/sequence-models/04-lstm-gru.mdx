@@ -17,6 +17,7 @@ concept:
     mlTitle: "LSTM Gates"
     mlCode: "cellState = forgetGate * cellState + inputGate * candidate; // controls what persists"
     tier: structural
+    breaks: "useMemo/useCallback skip recomputation when deps are unchanged. LSTM gates are learned continuous weights in [0,1] applied every timestep — they always compute, never skip, and the gating function adapts during training to the data distribution."
 consequence:
   narrative: "The team's model can now process long discharge summaries without forgetting the diagnosis at the top."
   nextLessonTeaser: "Next: bidirectional models — reading clinical text forwards AND backwards for complete context."

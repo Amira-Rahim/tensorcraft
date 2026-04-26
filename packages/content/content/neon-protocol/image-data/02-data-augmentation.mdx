@@ -17,6 +17,7 @@ concept:
     mlTitle: "Image Augmentation"
     mlCode: "augment(image, { rotate: 15, scale: 0.9, shear: 5 })"
     tier: structural
+    breaks: "CSS transforms are visual changes to authored elements. Image augmentation generates new training samples to teach invariance — the wrong augmentation (e.g. flipping medical images) can teach the model the wrong invariance and silently hurt accuracy."
 consequence:
   narrative: "The augmentation pipeline transforms 2,000 images into an effective training set of 16,000. Amir nods approvingly at the augmented samples scrolling across the screen. 'Same cameras, but the Sentinel will see them from every angle, in every light.'"
   nextLessonTeaser: "Next: Normalization — scaling pixel values so the model can consume them consistently."

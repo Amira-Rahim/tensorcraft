@@ -17,6 +17,7 @@ concept:
     mlTitle: "Latent Noise Vector"
     mlCode: "const z = tf.randomNormal([1, 100])"
     tier: structural
+    breaks: "Perlin noise produces visually coherent random fields from a deterministic algorithm — every input gives an aesthetic output. Latent noise vectors only decode to coherent images near the training data manifold; vectors sampled outside that region decode to garbage. The noise distribution must match training (typically standard normal) exactly."
 consequence:
   narrative: "Samir builds a canvas sketch driven by noise vectors and sees the parallel — noise is the clay, the model is the sculptor."
   nextLessonTeaser: "Next: putting it all together to build your first generator"

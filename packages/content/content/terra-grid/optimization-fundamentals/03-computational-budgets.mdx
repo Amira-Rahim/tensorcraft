@@ -17,6 +17,7 @@ concept:
     mlTitle: "Model Budget"
     mlCode: "// model-budget.json\n{ \"maxSizeMB\": 50, \"maxLatencyMs\": 89, \"maxRamMB\": 307 }"
     tier: structural
+    breaks: "Lighthouse budgets are static thresholds for build artifacts. Model budgets must trade off compute, memory, accuracy, and latency simultaneously across target devices — single-axis budgets hide the tradeoff space."
 consequence:
   narrative: "Every model now has a deployment budget. No exceptions."
   nextLessonTeaser: "Next: standardized benchmarking"

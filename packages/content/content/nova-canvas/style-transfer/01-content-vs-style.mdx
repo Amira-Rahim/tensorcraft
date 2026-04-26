@@ -17,6 +17,7 @@ concept:
     mlTitle: "Content vs style representations"
     mlCode: "const content = extractContent(image); const style = extractStyle(image);"
     tier: intuition
+    breaks: "HTML and CSS are cleanly separable by language. Content and style in images are entangled in pixel values; the separation is computed from intermediate CNN activations and the boundary between 'content' and 'style' is fuzzy and layer-dependent."
 consequence:
   narrative: "Yara gets it. She has been separating content from style her entire career — first with paint, now with code. 'So the network learns what the painting shows and how it shows it as separate things?' Samir nods: 'Different layers, different representations.'"
   nextLessonTeaser: "Next: neural style transfer — applying one image's style to another's content"

@@ -27,6 +27,7 @@ export const lessonSchema = z.object({
         mlTitle: z.string(),
         mlCode: z.string(),
         tier: z.enum(["identity", "structural", "intuition"]),
+        breaks: z.string().optional(),
       })
       .optional(),
   }),

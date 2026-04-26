@@ -17,6 +17,7 @@ concept:
     mlTitle: "Embedding Space"
     mlCode: "// 512-dimensional positions encode visual similarity"
     tier: structural
+    breaks: "2D scatter plot positioning uses two axes you assign meaning to. Embedding spaces have hundreds to thousands of dimensions, no human-readable axes, and meaningful directions emerge from training — visualizing requires lossy projection (UMAP, t-SNE) that distorts distances."
 consequence:
   narrative: "Noor rotates the holographic point cloud. She zooms into the drone cluster — hundreds of points, tightly packed. 'If we can find this cluster,' she says, 'we can identify any drone from a single frame. We do not need labels. Just proximity.'"
   nextLessonTeaser: "Next: similarity search — using distance in embedding space to find visually similar images"

@@ -17,6 +17,7 @@ concept:
     mlTitle: "Efficient Layers"
     mlCode: "// depthwiseConv2d: fewer multiplications\n// Same result, less compute"
     tier: structural
+    breaks: "Avoiding re-renders reduces wasted React reconciliation. Efficient layer choices affect FLOPS, memory bandwidth, and cache behavior — and the most FLOPS-efficient layer (depthwise conv) is not always the fastest in wall-clock time on a given accelerator."
 consequence:
   narrative: "The redesigned model is 60% smaller with comparable accuracy."
   nextLessonTeaser: "Next: setting computational budgets"

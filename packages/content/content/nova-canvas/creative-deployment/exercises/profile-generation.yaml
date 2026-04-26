@@ -26,12 +26,22 @@ solutionCode: |
       { name: 'postprocessing', fn: postprocess },
     ];
     for (const stage of stages) {
-      performance.mark(`${stage.name}-start`);
+      const startMark = `${stage.name}-start`;
+      const endMark = `${stage.name}-end`;
+      performance.mark(startMark);
       await stage.fn();
-      performance.mark(`${stage.name}-end`);
-      performance.measure(stage.name, `${stage.name}-start`, `${stage.name}-end`);
-      const entry = performance.getEntriesByName(stage.name, 'measure')[0];
-      metrics[stage.name] = entry.duration;
+      performance.mark(endMark);
+      performance.measure(stage.name, startMark, endMark);
+      // performance.getEntriesByName behavior varies across runtimes
+      // (some workers return empty); fall back to direct mark math.
+      const entries = performance.getEntriesByName(stage.name, 'measure');
+      if (entries.length > 0) {
+        metrics[stage.name] = entries[entries.length - 1].duration;
+      } else {
+        const startEntry = performance.getEntriesByName(startMark, 'mark')[0];
+        const endEntry = performance.getEntriesByName(endMark, 'mark')[0];
+        metrics[stage.name] = (endEntry?.startTime ?? 0) - (startEntry?.startTime ?? 0);
+      }
     }
     performance.clearMarks();
     performance.clearMeasures();

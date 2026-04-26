@@ -17,6 +17,7 @@ concept:
     mlTitle: "Quantization-Aware Training"
     mlCode: "// Train with quantization noise\n// Model learns to be robust to Int8 precision\nsimulateQuantization(weights)"
     tier: structural
+    breaks: "Mobile-first design is a layout strategy you write once. Quantization-aware training simulates int8 rounding during training so the model learns weights that survive quantization — it changes the training loop and adds compute, not just the output build."
 consequence:
   narrative: "The QAT model handles the bearing failure case correctly — quantization noise made it more robust."
   nextLessonTeaser: "Next: mixed precision — different precision for different layers"

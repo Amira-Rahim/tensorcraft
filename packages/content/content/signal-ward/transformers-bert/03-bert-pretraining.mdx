@@ -17,6 +17,7 @@ concept:
     mlTitle: "Masked Language Modeling"
     mlCode: "// MLM: predict masked token from context\n// 'Patient has [MASK] diabetes' → 'type-2'"
     tier: structural
+    breaks: "IntelliSense uses a static index keyed by symbol names. Masked language modeling learns continuous embeddings that capture context-dependent meaning — 'bank' next to 'river' embeds differently than 'bank' next to 'money'. The lookup is contextual, not key-based."
 consequence:
   narrative: "The team realizes that BERT's pre-training on general text gives it a foundation — but clinical language requires domain-specific fine-tuning."
   nextLessonTeaser: "Next: fine-tuning BERT to specialize in clinical text."

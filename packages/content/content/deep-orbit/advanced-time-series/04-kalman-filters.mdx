@@ -17,6 +17,7 @@ concept:
     mlTitle: "Kalman Update"
     mlCode: "estimate = gain * measurement + (1 - gain) * prediction"
     tier: structural
+    breaks: "EMA blends a single fixed-weight average over past values. Kalman updates jointly track state and uncertainty using a state-transition model and a measurement model, with weights computed dynamically from the current covariance. Same weighted-update shape, very different machinery."
 consequence:
   narrative: "The Kalman filter tracks the timing drift — the interval between anomaly pulses is increasing by 0.3 seconds per cycle. Something is changing."
   nextLessonTeaser: "Next: ensemble methods — combining models for more robust predictions"

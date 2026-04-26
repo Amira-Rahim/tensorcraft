@@ -17,6 +17,7 @@ concept:
     mlTitle: "Domain Adaptation"
     mlCode: "augment(image, { domain: 'night' }); // same model, different conditions"
     tier: intuition
+    breaks: "i18n swaps text strings via key-based lookup — deterministic and total. Domain adaptation must align learned feature distributions across source and target domains; methods (fine-tuning, adversarial loss, distribution matching) all require labeled or unlabeled target data and may degrade source-domain performance. There is no key-value table; alignment is empirical and partial."
 consequence:
   narrative: "After augmenting training data with synthetic night transforms — reduced brightness, increased contrast, sensor noise — and re-fine-tuning, the model handles rain, fog, and neon lighting. NEON tests it on a week of overnight footage. 96% accuracy across all conditions. 'The domain gap is closed,' NEON says. 'Day or night, this model sees drones.'"
   nextLessonTeaser: "Next: the heist — repurposing Meridian's own model against them"

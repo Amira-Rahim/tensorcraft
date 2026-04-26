@@ -17,6 +17,7 @@ concept:
     mlTitle: "Autoencoder"
     mlCode: "encoded = encoder(signal); decoded = decoder(encoded)"
     tier: structural
+    breaks: "Compression algorithms (gzip) decode losslessly back to the input. Autoencoders are lossy and reconstruct only what they learned to reconstruct well — inputs unlike training data come back distorted, which is the entire point of using them for anomaly detection."
 consequence:
   narrative: "The autoencoder reconstructs normal signals perfectly. But the anomalous signal? The reconstruction is mangled — the error is 12x the normal baseline."
   nextLessonTeaser: "Next: measuring reconstruction error to quantify how anomalous a signal truly is"

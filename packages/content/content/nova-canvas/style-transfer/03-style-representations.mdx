@@ -17,6 +17,7 @@ concept:
     mlTitle: "Gram matrix style encoding"
     mlCode: "const style = layers.map(l => gramMatrix(getActivation(l)));"
     tier: structural
+    breaks: "Design tokens are an authored list of named values. Gram matrices encode style by computing feature correlations across spatial positions in CNN layers — the representation is automatically derived, opaque, and only meaningful as a loss target, not as a swap-in style."
 consequence:
   narrative: "Yara creates a library of style tokens — Gram matrices extracted from her favorite paintings. Each one is a reusable identity. 'I can apply any of these to any photograph,' she realizes. 'An infinite palette.'"
   nextLessonTeaser: "Next: real-time style transfer — fast enough for the browser"

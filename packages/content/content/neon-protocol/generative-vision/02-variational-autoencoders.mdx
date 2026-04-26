@@ -17,6 +17,7 @@ concept:
     mlTitle: "Latent Space Encoding"
     mlCode: "const [mean, logVar] = encoder.predict(image); // Compressed representation of image"
     tier: structural
+    breaks: "URL query params encode known key-value state. VAE latent vectors are continuous, learned, and only meaningful inside the trained decoder — there is no schema, the same coordinates in a different model produce unrelated images."
 consequence:
   narrative: "Amir encodes a surveillance frame into a 64-dimensional latent vector. He tweaks dimension 23 — the reconstructed image shifts from day to night. Dimension 41 changes the camera angle. Zara grins: 'A 64-number address for every possible image. Now we can navigate the space of all images like a map.'"
   nextLessonTeaser: "Next: style transfer — applying artistic styles to images as camouflage"

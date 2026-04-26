@@ -18,6 +18,7 @@ concept:
     mlTitle: "Toeplitz Matrix"
     mlCode: "const output = tf.matMul(toeplitzMatrix, inputVector)"
     tier: structural
+    breaks: "CSS transform matrix is a fixed 3x3 you wrote. The Toeplitz matrix that represents a convolution is automatically derived from the kernel, sparse, structured, and used only as a mathematical equivalence — practical implementations exploit the structure to avoid the explicit matrix."
 consequence:
   narrative: "Seeing convolution as matrix multiplication reveals why GPUs are perfect for neural networks."
   nextLessonTeaser: "Next: information theory and why cross-entropy loss works"

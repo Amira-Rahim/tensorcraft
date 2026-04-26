@@ -17,6 +17,7 @@ concept:
     mlTitle: "Feature Vector"
     mlCode: "const features = model.predict(image); // [1, 512] — fixed-size embedding"
     tier: structural
+    breaks: "Hash functions deterministically map input to a fixed-size output that has no semantic meaning. Feature vectors place inputs in a learned space where distance encodes similarity — the geometry is the point, hash collisions are a bug."
 consequence:
   narrative: "Noor stares at the feature database. Millions of rows. Each row a 512-number fingerprint of a moment in someone's life. 'They compressed entire lives into vectors,' she says quietly. Amir nods. 'And we are going to use that same technique to track their drones.'"
   nextLessonTeaser: "Next: embedding spaces — understanding the geometry where similar images cluster together"

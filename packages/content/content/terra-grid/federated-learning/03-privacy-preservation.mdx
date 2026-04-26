@@ -17,6 +17,7 @@ concept:
     mlTitle: "Differential Privacy"
     mlCode: "addNoise(gradients, epsilon) // prevent data leakage from updates"
     tier: structural
+    breaks: "Cookie isolation enforces same-origin scope. Differential privacy adds calibrated noise to outputs — there is a quantified privacy budget (epsilon) that depletes with each query and noise materially reduces utility, especially for small subgroups."
 consequence:
   narrative: "With differential privacy enabled, Elif's security audit confirms: no individual sensor reading can be reconstructed from the shared weight updates."
   nextLessonTeaser: "Next: minimizing communication costs during federated training"

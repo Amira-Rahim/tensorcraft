@@ -17,6 +17,7 @@ concept:
     mlTitle: "Anomaly Threshold"
     mlCode: "if (reconstructionError > threshold) flag('anomaly')"
     tier: structural
+    breaks: "Performance baselines are deterministic measurements compared against a fixed threshold. Anomaly thresholds are statistics over a learned distribution where 'normal' itself drifts (concept drift) — yesterday's anomaly is today's baseline. Continuous threshold recalibration is required; static thresholds silently flip from 'too sensitive' to 'too permissive' over weeks."
 consequence:
   narrative: "The crew agrees: they need a formal definition of 'normal' before they can reliably detect 'anomalous.' Demir begins building a model of normality."
   nextLessonTeaser: "Next: autoencoders — learning to compress and reconstruct normal signals"

@@ -24,8 +24,10 @@ solutionCode: |
 
   function buildGenerator(): tf.Sequential {
     const model = tf.sequential();
-    model.add(tf.layers.dense({ inputShape: [64], units: 256, activation: 'leakyReLU' }));
-    model.add(tf.layers.dense({ units: 512, activation: 'leakyReLU' }));
+    model.add(tf.layers.dense({ inputShape: [64], units: 256 }));
+    model.add(tf.layers.leakyReLU());
+    model.add(tf.layers.dense({ units: 512 }));
+    model.add(tf.layers.leakyReLU());
     model.add(tf.layers.dense({ units: 784, activation: 'sigmoid' }));
     return model;
   }
@@ -34,7 +36,10 @@ testCode: |
     it('returns a sequential model', () => {
       const gen = buildGenerator();
       expect(gen).toBeDefined();
-      expect(gen.layers.length).toBe(3);
+      // Three trainable transforms (interleaved with LeakyReLU activation
+      // layers since real TFJS exposes LeakyReLU only as a layer, not as
+      // an activation string).
+      expect(gen.layers.length).toBe(5);
     });
     it('accepts input shape [null, 64]', () => {
       const gen = buildGenerator();

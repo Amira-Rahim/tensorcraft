@@ -17,6 +17,7 @@ concept:
     mlTitle: "Data Versioning"
     mlCode: "dvc log --oneline // trace every change to training data"
     tier: structural
+    breaks: "Git versions text well via line-level diffs. Data versioning must handle large binaries, schema evolution, and reproducible sampling — git-LFS and DVC exist but require disciplined commit practices that text-version control does not need."
 consequence:
   narrative: "Priya traces the regression to a corrupted sensor batch from Sector 3. She reverts to the previous data version and retrains."
   nextLessonTeaser: "Next: tracking experiments so you know which training run produced which model"

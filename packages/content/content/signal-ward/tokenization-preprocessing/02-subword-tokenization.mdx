@@ -17,6 +17,7 @@ concept:
     mlTitle: "Subword Tokenizer"
     mlCode: "'cardiology' → ['cardio', '##logy']"
     tier: structural
+    breaks: "Route parsing splits URLs at known delimiters (`/`, `?`). Subword tokenizers (BPE, WordPiece) learn merge rules from a training corpus — the same word tokenizes differently across model versions ('chatgpt' is 1 token in GPT-4, 3 tokens in earlier vocab). There is no canonical tokenization; you must pin the tokenizer to your model version."
 consequence:
   narrative: "Diagnostic One can now handle medical terminology it hasn't seen before by breaking words into known sub-parts."
   nextLessonTeaser: "Next: handling the specific challenges of medical abbreviations."

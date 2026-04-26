@@ -17,6 +17,7 @@ concept:
     mlTitle: "Secure Aggregation"
     mlCode: "// Server: aggregates updates but cannot see individual ones"
     tier: structural
+    breaks: "End-to-end encryption hides content from intermediaries. Secure aggregation lets a server sum client updates without seeing individuals — but the server still sees the aggregate, and aggregates can leak info about contributors via reconstruction or membership-inference attacks."
 consequence:
   narrative: "The federated system passes Elif's security audit. The server computes the global average without seeing any individual update. Three companies, zero data exposure, one shared model."
   nextLessonTeaser: "Module 9: bringing it all together in a production deployment"

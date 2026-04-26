@@ -17,6 +17,7 @@ concept:
     mlTitle: "Training Loop"
     mlCode: "for (epoch) { const loss = model.trainOnBatch(images, labels); } // forward -> loss -> backward -> update"
     tier: structural
+    breaks: "A build pipeline runs deterministic steps — same input, same artifact. A training loop is stochastic (random init, shuffled batches, dropout) and produces a different model on each run. 'Re-run the pipeline' restores a build; 'retrain' produces a new model with new behavior."
 consequence:
   narrative: "After 50 epochs, the Protocol Sentinel hits 89% accuracy on camera type classification. Noor watches the loss curve flatten. 'It learned,' she whispers. Dilan nods: 'Now make it see what it learned.'"
   nextLessonTeaser: "Next: visualizing what the CNN actually learned — peering inside the black box"

@@ -17,6 +17,7 @@ concept:
     mlTitle: "Edge vs Cloud"
     mlCode: "// Edge: runs on device, low latency\n// Cloud: runs on GPU, more capable"
     tier: structural
+    breaks: "CSR vs SSR is a rendering location decision. Edge vs cloud for ML trades latency + privacy against model size + compute — and unlike rendering, you cannot easily fall back from edge to cloud at runtime; the choice is architectural."
 consequence:
   narrative: "You design a hybrid strategy: edge for real-time alerts, cloud for deep analysis."
   nextLessonTeaser: "Next module: optimizing models to fit edge constraints"

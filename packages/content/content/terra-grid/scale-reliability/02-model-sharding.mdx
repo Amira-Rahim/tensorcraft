@@ -17,6 +17,7 @@ concept:
     mlTitle: "Model Sharding"
     mlCode: "const shard = await loadShard('./model-part-2.bin'); // load model chunk on demand"
     tier: structural
+    breaks: "Dynamic imports split bundles by route — each chunk runs independently. Model sharding splits a single model across devices and shards must communicate per inference (tensor parallelism, pipeline parallelism) — interconnect bandwidth becomes the bottleneck."
 consequence:
   narrative: "The ensemble runs across 3 devices, each handling a 6MB shard. Coordinated inference adds 4ms of overhead but fits within the 64MB memory budget on every device. Priya: 'Sharding solved the memory constraint without sacrificing model capability.'"
   nextLessonTeaser: "Next: failover and redundancy — what happens when a shard goes offline"

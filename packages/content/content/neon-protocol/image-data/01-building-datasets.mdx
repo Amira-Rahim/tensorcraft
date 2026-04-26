@@ -17,6 +17,7 @@ concept:
     mlTitle: "Dataset Structure"
     mlCode: "dataset/{class_label}/{image_id}.png"
     tier: structural
+    breaks: "Asset pipelines bundle authored files. Dataset construction requires labeling decisions, sampling strategy to avoid bias, train/val/test splitting that prevents leakage, and licensing — most dataset failures are silent and surface only as poor model performance."
 consequence:
   narrative: "The team's first dataset takes shape — 2,000 images across four camera types, each labeled and verified. Zara inspects the catalog with quiet satisfaction. 'Quality data is the difference between a model that guesses and one that sees,' she says."
   nextLessonTeaser: "Next: Data Augmentation — multiply your dataset without collecting a single new image."

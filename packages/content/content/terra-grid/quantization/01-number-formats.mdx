@@ -17,6 +17,7 @@ concept:
     mlTitle: "Number Formats"
     mlCode: "// Float32: full precision, 4 bytes\n// Float16: half precision, 2 bytes\n// Int8: quantized, 1 byte"
     tier: structural
+    breaks: "Image format choice is per-file at save time and lossy formats keep visual fidelity. Number-format choice in models propagates through every weight, activation, and gradient computation, and the wrong choice can collapse model accuracy entirely. Format change is invasive in models, cosmetic in images."
 consequence:
   narrative: "You understand the precision-size spectrum. Int8 gives you 4x compression."
   nextLessonTeaser: "Next: applying post-training quantization"

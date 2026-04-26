@@ -98,9 +98,23 @@ github.use("/connect", authMiddleware);
 
 github.post("/connect", async (c) => {
   const clientId = process.env.GITHUB_CLIENT_ID;
-  const redirectUri =
-    process.env.GITHUB_CALLBACK_URL ??
-    `${process.env.APP_URL ?? "http://localhost:3000"}/api/github/callback`;
+  let redirectUri = process.env.GITHUB_CALLBACK_URL;
+  if (!redirectUri) {
+    let appUrl = process.env.APP_URL;
+    if (!appUrl) {
+      if (process.env.NODE_ENV === "production") {
+        return c.json(
+          structuredError(
+            "internal_error",
+            "GitHub callback URL is not configured",
+          ),
+          500,
+        );
+      }
+      appUrl = "http://localhost:3000";
+    }
+    redirectUri = `${appUrl}/api/github/callback`;
+  }
 
   if (!clientId) {
     return c.json(

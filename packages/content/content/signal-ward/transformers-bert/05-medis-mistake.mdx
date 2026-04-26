@@ -17,6 +17,7 @@ concept:
     mlTitle: "Model Hallucination"
     mlCode: "// Model returns outdated classification despite context change\npredict('diabetes, resolved'); // → 'Active' (ignores 'resolved')"
     tier: structural
+    breaks: "A stale cache serves data the system once knew was correct. Model hallucinations are confidently generated outputs the model never had — the model invents plausible-sounding text from patterns, not from any cached source. There is no underlying 'correct' value to refresh."
 consequence:
   narrative: "The team implements confidence thresholds, negation detection, and human-in-the-loop safeguards — turning MEDI's failure into a safer system."
   nextLessonTeaser: "Next module: Named Entity Recognition — extracting structured information from unstructured clinical text."

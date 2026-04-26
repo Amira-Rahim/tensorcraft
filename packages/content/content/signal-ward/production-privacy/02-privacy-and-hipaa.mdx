@@ -17,6 +17,7 @@ concept:
     mlTitle: "HIPAA Compliance"
     mlCode: "// PHI encryption, access logging, data minimization, on-device inference — regulatory compliance for medical data"
     tier: structural
+    breaks: "GDPR cookie consent is a UI banner and a data export endpoint. HIPAA compliance involves access controls, audit logs, BAAs, and de-identification — and ML models can re-identify individuals from de-identified data, so removing PHI is not sufficient."
 consequence:
   narrative: "Khalil demonstrates the privacy architecture: all inference runs in the browser, no PHI leaves the device, model weights contain no patient data, and every access is logged. The compliance officer reviews the audit trail and the PHI redaction pipeline. 'This is the most privacy-forward ML system I have reviewed. Approved for pilot.'"
   nextLessonTeaser: "Next: bias auditing — ensuring the model works fairly for everyone"

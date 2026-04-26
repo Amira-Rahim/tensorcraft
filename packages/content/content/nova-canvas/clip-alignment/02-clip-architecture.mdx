@@ -17,6 +17,7 @@ concept:
     mlTitle: "CLIP dual encoder"
     mlCode: "const results = clip.search(textQuery, imageDatabase);"
     tier: structural
+    breaks: "Multi-index search routes queries to indices you built. CLIP dual-encoder runs both modalities through separate networks into a shared embedding space — there is no index lookup, only learned proximity in continuous space."
 consequence:
   narrative: "CLIP understands nuance. 'A melancholy cityscape at twilight' and 'a city at night' produce different embeddings — the model encodes mood, not just content. Rohan smiles: 'Mood is a direction in a 512-dimensional vector space.'"
   nextLessonTeaser: "Next: zero-shot classification — classifying images without any training examples"

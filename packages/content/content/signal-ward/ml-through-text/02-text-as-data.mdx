@@ -17,6 +17,7 @@ concept:
     mlTitle: "Bag of Words"
     mlCode: "const bow = textToVector('patient takes aspirin daily')"
     tier: structural
+    breaks: "JSON.parse converts a known string into a known structure. Bag-of-words discards order and frequency-encodes tokens — useful baseline but loses every syntactic and contextual cue that newer text models exploit."
 consequence:
   narrative: "Khalil successfully converts his first batch of clinical notes into numerical vectors."
   nextLessonTeaser: "Next: building a simple classifier that can categorize these vectors."

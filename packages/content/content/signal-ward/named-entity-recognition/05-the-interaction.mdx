@@ -17,6 +17,7 @@ concept:
     mlTitle: "Drug Interaction Detection"
     mlCode: "nerPipeline(notes) // ALERT: interaction between warfarin and aspirin"
     tier: structural
+    breaks: "package.json dependency resolution is deterministic given lockfile. Drug interaction detection requires entity linking, relation extraction across sentences, and a reliable knowledge base — most interactions are documented but novel pairs require inference, not lookup."
 consequence:
   narrative: "Diagnostic One proves its clinical value — augmenting human judgment by systematically catching dangerous combinations across siloed medical records."
   nextLessonTeaser: "Next module: Text Classification and Triage — routing clinical documents by urgency."

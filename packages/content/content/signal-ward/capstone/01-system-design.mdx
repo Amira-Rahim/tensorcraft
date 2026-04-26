@@ -17,6 +17,7 @@ concept:
     mlTitle: "ML Pipeline Architecture"
     mlCode: "// Tokenizer → NER → Classifier → QA → Reviewer — independent models, typed interfaces"
     tier: structural
+    breaks: "Microservices have versioned API contracts and explicit error semantics. ML pipeline architecture has implicit data contracts (schemas, distributions) that fail silently and a model is itself a microservice with non-deterministic outputs."
 consequence:
   narrative: "The architecture diagram fills the entire wall. Six stages, twelve components, typed interfaces at every boundary. Dr. Karimi reviews it and nods. 'This is how you build a system that can catch a drug interaction at 3 AM when no one is watching. Each piece does one thing well. Together they do something none of them could do alone.' Vikram photographs the wall. MEDI logs the architecture. Diagnostic One has a blueprint."
   nextLessonTeaser: "Next: integrating Diagnostic One with hospital EHR systems"

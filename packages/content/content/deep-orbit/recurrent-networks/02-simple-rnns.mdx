@@ -17,6 +17,7 @@ concept:
     mlTitle: "RNN Cell"
     mlCode: "newHidden = tanh(W_h * prevHidden + W_x * input + bias)"
     tier: structural
+    breaks: "useReducer is a deterministic pure function you wrote. RNN cells learn the reducer logic from data, carry hidden state across timesteps, and the same input produces different outputs depending on what came before. The 'reducer' is opaque and trained, not authored."
 consequence:
   narrative: "The RNN detects short-range patterns — it notices the signal rises before each anomalous burst. But longer patterns slip away."
   nextLessonTeaser: "Next: LSTM gates — solving the vanishing gradient problem with selective memory"

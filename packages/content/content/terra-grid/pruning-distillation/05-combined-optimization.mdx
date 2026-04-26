@@ -17,6 +17,7 @@ concept:
     mlTitle: "Full Model Optimization"
     mlCode: "// Distill + prune + quantize\n// Student model, structured pruning, Int8\n// Combined: 40x smaller"
     tier: structural
+    breaks: "Webpack production config combines minification + tree-shaking + chunk splitting orthogonally. Combined model optimization (prune + quantize + distill) interactions are non-orthogonal — the order and parameter values must be tuned jointly to recover acceptable accuracy."
 consequence:
   narrative: "The 200MB cloud model becomes a 5MB edge model. It passes all deployment budgets."
   nextLessonTeaser: "Module complete. The foundation for edge deployment is set."

@@ -17,6 +17,7 @@ concept:
     mlTitle: "Medical Normalization"
     mlCode: "const normalize = (s) => abbrevMap.get(s) ?? s"
     tier: structural
+    breaks: "Domain parsing rules are author-written regex per domain. Medical normalization handles synonyms (MI ↔ myocardial infarction), abbreviations with multiple expansions (RA = rheumatoid arthritis OR right atrium), dose units across institutions, and negation scope ('no chest pain' is critical context). Rule-based normalization fails on cases the model could catch via context."
 consequence:
   narrative: "Diagnostic One now handles the most common clinical abbreviations, dramatically reducing misclassification."
   nextLessonTeaser: "Next: building the vocabulary dictionary that maps all these tokens to numbers."
