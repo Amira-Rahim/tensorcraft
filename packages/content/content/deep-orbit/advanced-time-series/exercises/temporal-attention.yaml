@@ -1,35 +1,38 @@
 slug: temporal-attention
 lessonSlug: temporal-attention
-title: "Find Top Attention Steps"
-instructions: "Write a function that takes an array of attention weights and returns the indices of the top-K highest-weighted time steps, sorted by weight descending."
+title: "Temporal Attention Weighted Summary"
+mlContent: data
+instructions: "Build `temporalSummary(sequence, attentionWeights)` taking [T, d] sequence + [T] attention weights, and returning a [d] weighted summary."
 starterCode: |
-  function topKSteps(weights: number[], k: number): number[] {
-    // Return the indices of the K highest weights, sorted descending by weight
-    return null; // your code here
+  function temporalSummary(sequence, attentionWeights) {
+    return null;
   }
 solutionCode: |
-  function topKSteps(weights: number[], k: number): number[] {
-    return weights
-      .map((w, i) => ({ weight: w, index: i }))
-      .sort((a, b) => b.weight - a.weight)
-      .slice(0, k)
-      .map(item => item.index);
+  function temporalSummary(sequence, attentionWeights) {
+    const weightsCol = attentionWeights.reshape([1, attentionWeights.shape[0]]);
+    return tf.matMul(weightsCol, sequence).squeeze();
   }
 testCode: |
-  describe('topKSteps', () => {
-    it('returns K indices', () => {
-      expect(topKSteps([0.1, 0.5, 0.2, 0.8, 0.3], 2).length).toBe(2);
+  describe('temporalSummary (real tf.matMul)', () => {
+    it('returns [d] shape', () => {
+      const seq = tf.randomNormal([10, 16]);
+      const w = tf.softmax(tf.randomNormal([10]));
+      const out = temporalSummary(seq, w);
+      expect(out.shape).toEqual([16]);
     });
-    it('returns highest first', () => {
-      const result = topKSteps([0.1, 0.5, 0.2, 0.8, 0.3], 2);
-      expect(result[0]).toBe(3);
-      expect(result[1]).toBe(1);
+    it('attention=[1,0,0] selects first timestep', () => {
+      const seq = tf.tensor2d([[1, 2], [3, 4], [5, 6]]);
+      const w = tf.tensor1d([1, 0, 0]);
+      const out = temporalSummary(seq, w);
+      expect(Array.from(out.dataSync())).toEqual([1, 2]);
     });
-    it('handles k=1', () => {
-      expect(topKSteps([0.1, 0.9, 0.5], 1)).toEqual([1]);
+    it('uniform attention → average', () => {
+      const seq = tf.tensor2d([[2, 4], [4, 8]]);
+      const w = tf.tensor1d([0.5, 0.5]);
+      const out = temporalSummary(seq, w);
+      expect(Array.from(out.dataSync())).toEqual([3, 6]);
     });
   });
-estimatedMinutes: 8
+estimatedMinutes: 12
 difficulty: beginner
-mlContent: arithmetic
 skillAxis: model_arch

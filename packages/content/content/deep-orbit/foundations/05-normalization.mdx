@@ -97,4 +97,14 @@ Normalize the Archimedes sensor data using z-score normalization.
 
 <Exercise slug="normalize-data" />
 
+## Knowledge check
+
+<Quiz
+  question="Why normalize features before training?"
+  options={[{"text":"To make training run faster on the GPU"},{"text":"Different feature scales make gradients pull weights unevenly — normalization gives all features comparable update magnitudes — correct"},{"text":"Required by TensorFlow.js"},{"text":"Reduces model size"}]}
+  correct={1}
+  explanation="Without normalization, a feature on scale 0-1000 produces gradients 1000× larger than one on scale 0-1. The optimizer tunes the larger-gradient feature first while smaller-scale features stagnate. Normalization (z-score or min-max) fixes the scale disparity."
+  tier="structural"
+/>
+
 <KeyTakeaways takeaways={["Normalization is the CSS reset of data — it creates a consistent baseline", "Z-score: subtract mean, divide by std — centers data at 0", "Min-max: scales data to a 0-1 range", "Always normalize before training — unnormalized data causes biased models"]} />

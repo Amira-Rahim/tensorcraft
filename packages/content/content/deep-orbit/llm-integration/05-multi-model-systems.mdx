@@ -160,4 +160,14 @@ Wire together a multi-model pipeline with error handling.
 
 <Exercise slug="model-pipeline" />
 
+## Knowledge check
+
+<Quiz
+  question="Best way to chain LLM calls reliably?"
+  options={[{"text":"Single big prompt with all instructions"},{"text":"Decompose into small focused calls + validate output of each before next — correct"},{"text":"Always use the largest available model"},{"text":"Run all calls in parallel, then merge"}]}
+  correct={1}
+  explanation="Long prompts increase cost AND error rate. Each LLM call is probabilistic — chaining 5 unchecked calls with 95% reliability per call yields 77% end-to-end. Validate output (JSON schema, length, format) between steps; retry on failure. Production LLM systems read like microservice architectures."
+  tier="structural"
+/>
+
 <KeyTakeaways takeaways={["Multi-model systems are micro-service architectures — each model handles its domain, an orchestrator coordinates", "Define clear interfaces between stages: classifier output becomes anomaly detector input", "Graceful degradation: if one model fails, fall back to simpler methods rather than failing entirely", "The complete DEEP SCAN pipeline: classify → detect anomalies → predict → report — end-to-end automation"]} />

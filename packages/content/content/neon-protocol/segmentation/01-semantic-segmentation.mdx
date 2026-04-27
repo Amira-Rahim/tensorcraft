@@ -118,4 +118,26 @@ Build a function that converts raw segmentation logits into a class-index mask.
 
 <Exercise slug="semantic-segmentation" />
 
+<DerivationDrawer summary="Pixel-wise softmax + class-balanced cross-entropy">
+**Semantic segmentation output:** per-pixel class predictions. For input [H, W, 3], output is [H, W, num_classes] logits → softmax along channel axis → argmax = predicted class per pixel.
+
+**Loss function** — per-pixel cross-entropy summed over the image:
+
+`L = − Σ_{h, w} log(softmax(logits[h, w])[true_class[h, w]])`
+
+**Class imbalance problem:** in many datasets, one class (background, road) covers 90%+ of pixels. A model can score high accuracy by predicting background everywhere.
+
+**Class-balanced cross-entropy:**
+
+`L = − Σ_{h, w} w_{class} · log(softmax(logits[h, w])[true_class[h, w]])`
+
+Where `w_class = 1 / sqrt(class_pixel_count)` or `1 / class_frequency`.
+
+**Focal loss** (for extreme imbalance):
+
+`L = − (1 − p_true)^γ · log(p_true)`
+
+Where γ ≥ 1 (typical 2). Down-weights easy examples (high p_true) → focuses gradient on hard examples. Standard in object detection (RetinaNet) and applies to segmentation too.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["Semantic segmentation assigns a class label to every pixel, producing a dense [H, W] mask", "Model output is [H, W, numClasses] — use argMax to pick the winning class per pixel", "Rendering a mask is like applying color-coded clip-path regions across the entire image", "This gives the resistance full scene understanding, not just object locations"]} />

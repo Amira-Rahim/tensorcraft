@@ -162,4 +162,18 @@ Create an embedding layer and compute cosine similarity between word vectors.
 
 <Exercise slug="train-word2vec" />
 
+<DerivationDrawer summary="Dense vector geometry: cosine similarity + dot product">
+Word embeddings are dense vectors of dimension d (typically 100-1000). Two operations dominate:
+
+**Dot product:** `a · b = Σ a_i · b_i` — sensitive to vector magnitude.
+
+**Cosine similarity:** normalizes for magnitude:
+
+`cos(a, b) = (a · b) / (||a|| · ||b||)`
+
+Cosine returns values in [-1, 1]. Most embedding similarity comparisons use cosine because it ignores how 'long' the vectors are and focuses on direction (semantic meaning) rather than magnitude (frequency artifact).
+
+**Why dimension matters:** in a d-dimensional space, random vectors have expected cosine ~0. Two vectors are 'similar' when their cosine is meaningfully above this baseline. Higher d gives more room to encode distinctions but also more noise in the baseline.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["Word2Vec learns dense vectors where similar words have similar representations — like similar colors in RGB space", "The distributional hypothesis: words appearing in similar contexts develop similar vectors", "An embedding layer is a trainable lookup table mapping integer IDs to dense float vectors", "Cosine similarity measures semantic relatedness: 1.0 = same meaning, 0.0 = unrelated"]} />

@@ -1,42 +1,38 @@
 slug: tokenize-text
 lessonSlug: tokens-and-vocabulary
-title: "Tokenize Text"
-instructions: "Implement an encode function that takes a text string and a vocabulary Map<string, number>, tokenizes the text (lowercase, split on whitespace), and returns an array of token IDs. Use 1 as the ID for unknown words."
+title: "Tokenize + Pad to Fixed Length"
+mlContent: data
+instructions: "Build `tokenizeAndPad(text, vocab, maxLen)` that tokenizes by whitespace, looks up vocab (0 for unknown), truncates to maxLen if longer, pads with 0 if shorter, and returns a 1D int32 tensor of length maxLen."
 starterCode: |
-  function tokenize(text: string): string[] {
-    return text.toLowerCase().replace(/[.,!?;:]/g, ' ').split(/\s+/).filter(Boolean);
+  function tokenizeAndPad(text, vocab, maxLen) {
+    return null;
   }
-
-  function encode(text: string, vocab: Map<string, number>): number[] {
-    // 1. Tokenize the text
-    // 2. Map each token to its vocab index (use 1 for unknown)
-    return null; // your code here
-  }
-
-  const vocab = new Map([['<PAD>', 0], ['<UNK>', 1], ['patient', 2], ['reports', 3], ['chest', 4], ['pain', 5]]);
-  const ids = encode('Patient reports chest pain', vocab);
 solutionCode: |
-  function tokenize(text: string): string[] {
-    return text.toLowerCase().replace(/[.,!?;:]/g, ' ').split(/\s+/).filter(Boolean);
+  function tokenizeAndPad(text, vocab, maxLen) {
+    const words = text.toLowerCase().split(/\s+/).filter(w => w.length > 0);
+    const ids = words.map(w => vocab.get(w) ?? 0);
+    while (ids.length < maxLen) ids.push(0);
+    if (ids.length > maxLen) ids.length = maxLen;
+    return tf.tensor1d(ids, 'int32');
   }
-
-  function encode(text: string, vocab: Map<string, number>): number[] {
-    return tokenize(text).map(t => vocab.get(t) ?? 1);
-  }
-
-  const vocab = new Map([['<PAD>', 0], ['<UNK>', 1], ['patient', 2], ['reports', 3], ['chest', 4], ['pain', 5]]);
-  const ids = encode('Patient reports chest pain', vocab);
 testCode: |
-  describe('Tokenize Text', () => {
-    it('returns an array', () => { expect(Array.isArray(ids)).toBe(true); });
-    it('has correct length', () => { expect(ids.length).toBe(4); });
-    it('maps known words correctly', () => { expect(ids).toEqual([2, 3, 4, 5]); });
-    it('handles unknown words', () => {
-      const result = encode('patient has unknown symptoms', vocab);
-      expect(result[0]).toBe(2);
-      expect(result[1]).toBe(1);
+  describe('tokenizeAndPad (real tf.tensor1d)', () => {
+    it('pads shorter inputs to maxLen', () => {
+      const vocab = new Map([['hi', 1]]);
+      const t = tokenizeAndPad('hi', vocab, 5);
+      expect(Array.from(t.dataSync())).toEqual([1, 0, 0, 0, 0]);
+    });
+    it('truncates longer inputs', () => {
+      const vocab = new Map([['a', 1], ['b', 2], ['c', 3], ['d', 4]]);
+      const t = tokenizeAndPad('a b c d', vocab, 2);
+      expect(Array.from(t.dataSync())).toEqual([1, 2]);
+    });
+    it('exactly fits maxLen', () => {
+      const vocab = new Map([['x', 7]]);
+      const t = tokenizeAndPad('x x x', vocab, 3);
+      expect(Array.from(t.dataSync())).toEqual([7, 7, 7]);
     });
   });
-estimatedMinutes: 7
+estimatedMinutes: 12
 difficulty: beginner
-mlContent: arithmetic
+skillAxis: data_prep

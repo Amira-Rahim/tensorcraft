@@ -16,7 +16,8 @@ concept:
     feCode: "object-fit: cover // center-crop to fill container"
     mlTitle: "Image Preprocessing"
     mlCode: "tf.image.cropAndResize(image, boxes, [224, 224]) // crop and resize to model input"
-    tier: identity
+    tier: structural
+    breaks: "object-fit: cover crops to fill the container at display time, deterministically. tf.image.cropAndResize crops + resamples for model input with sub-pixel interpolation, and the resampling algorithm choice (bilinear, nearest) materially affects model accuracy on small features. Same intent; different fidelity controls."
 consequence:
   narrative: "The transforms reveal something: Meridian's cameras all output images at an unusual resolution — one optimized for a specific model architecture."
   nextLessonTeaser: "Next: your first classifier — threshold-based image classification"

@@ -113,4 +113,17 @@ Build a multi-head attention layer with configurable head count.
 
 <Exercise slug="multi-head-attention" />
 
+<DerivationDrawer summary="Multi-head: parallel attentions concatenated then projected">
+Single attention computes one weighted view. **Multi-head** runs h parallel attentions with separate projections, then concatenates and projects:
+
+```
+head_i = Attention(X · W_Q^i, X · W_K^i, X · W_V^i)   for i in 1..h
+MultiHead(X) = Concat(head_1, ..., head_h) · W_O
+```
+
+**Dimensions:** if `d_model = 512` and `h = 8`, each head's `d_k = d_model / h = 64`. Total parameter count of multi-head is similar to a single full-dim attention, so this is a way to express richer relationships without paying a parameter cost.
+
+**Why heads specialize:** different heads end up attending to different patterns (some to syntax, some to semantics, some to position). The specialization is emergent — you can't assign roles.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["Multi-head attention runs parallel attention operations, each learning different patterns", "Dimensions are split across heads: d_k = d_model / numHeads", "Heads naturally specialize — some track syntax, others track entities or negation", "Concatenation followed by linear projection merges all perspectives"]} />

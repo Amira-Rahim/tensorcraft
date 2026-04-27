@@ -223,4 +223,30 @@ Build a neural network model with a trainable embedding layer and initialize it 
 
 <Exercise slug="build-embedding-layer" />
 
+<DerivationDrawer summary="Embedding layer = lookup table = single matrix multiply">
+A neural network 'embedding layer' is a learnable matrix `E` of shape `[vocab_size, d_embed]`. Looking up the embedding for token id `t` is row indexing:
+
+`embedding(t) = E[t, :]`
+
+**Equivalent matrix view:** if `t` is one-hot encoded as a vector with 1 at position t and 0 elsewhere, then:
+
+`embedding(t) = one_hot(t) · E`
+
+This is a single matrix multiply — sparse, but mathematically the same as the lookup. Backprop updates only the row corresponding to the input token.
+
+**Storage cost:** `vocab_size × d_embed × 4 bytes`. For 50k vocab and d=768, that's ~150MB just for the embedding table. Larger LLMs have embedding tables that dominate parameter count.
+
+**Tied embeddings:** language models often tie the input embedding with the output (next-token prediction) projection — same matrix used for both. Halves the parameter count and often improves quality.
+</DerivationDrawer>
+
+## Knowledge check
+
+<Quiz
+  question="What does an embedding layer's gradient update do?"
+  options={[{"text":"Updates all rows"},{"text":"Updates only rows for tokens present in the batch (sparse update) — correct"},{"text":"Backprops to the input"},{"text":"Updates the optimizer state"}]}
+  correct={1}
+  explanation="Embedding lookup is row-indexing. Backprop only updates the rows that were looked up in the forward pass. For 50k vocab + batch with 128 unique tokens, only 128 rows update per step. Efficient — sparse-aware optimizers exploit this."
+  tier="structural"
+/>
+
 <KeyTakeaways takeaways={["An embedding layer is a trainable lookup table: Map<tokenID, Vector> where values update during training", "Initialize with pre-trained weights to give your model a head start on medical vocabulary", "Freeze embeddings for small datasets; fine-tune for large datasets; train from scratch for very large datasets", "The embedding layer is typically the first layer in a text classification neural network"]} />

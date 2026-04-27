@@ -1,54 +1,45 @@
 slug: canvas-to-tensor
 lessonSlug: seeing-like-a-machine
-title: "Convert Canvas to Tensor"
-instructions: "Write a function that takes image dimensions (width, height, channels) and a flat pixel array, and returns an object with the tensor shape and total number of elements."
+title: "Convert Canvas Pixels to a Tensor"
+instructions: "Build `pixelsToTensor(pixelData, width, height)` that takes a flat Uint8 RGBA array (length = width*height*4), creates an RGB tensor of shape [height, width, 3] (drop alpha channel), and normalizes to [0, 1] (divide by 255). This is the canonical preprocessing for browser-based vision models."
+mlContent: data
 starterCode: |
-  interface TensorInfo {
-    shape: [number, number, number];
-    totalElements: number;
-  }
-
-  function describeTensor(width: number, height: number, channels: number): TensorInfo {
-    // shape is [height, width, channels] (note: height first!)
-    // totalElements = height * width * channels
-    return null; // your code here
+  function pixelsToTensor(pixelData, width, height) {
+    return null;
   }
 solutionCode: |
-  interface TensorInfo {
-    shape: [number, number, number];
-    totalElements: number;
-  }
-
-  function describeTensor(width: number, height: number, channels: number): TensorInfo {
-    return {
-      shape: [height, width, channels],
-      totalElements: height * width * channels,
-    };
+  function pixelsToTensor(pixelData, width, height) {
+    const rgb = [];
+    for (let i = 0; i < pixelData.length; i += 4) {
+      rgb.push(pixelData[i], pixelData[i + 1], pixelData[i + 2]);
+    }
+    const t = tf.tensor3d(rgb, [height, width, 3]);
+    return t.div(255);
   }
 testCode: |
-  describe('describeTensor', () => {
-    it('returns correct shape for RGB image', () => {
-      const info = describeTensor(224, 224, 3);
-      expect(info.shape).toEqual([224, 224, 3]);
+  describe('pixelsToTensor (real tf.tensor3d + div)', () => {
+    it('returns shape [height, width, 3] dropping alpha', () => {
+      const data = new Uint8Array([255,0,0,255, 0,255,0,255]);   // 2 pixels: red, green
+      const t = pixelsToTensor(data, 2, 1);
+      expect(t.shape).toEqual([1, 2, 3]);
     });
 
-    it('puts height before width', () => {
-      const info = describeTensor(640, 480, 3);
-      expect(info.shape[0]).toBe(480);
-      expect(info.shape[1]).toBe(640);
+    it('normalizes to [0,1]', () => {
+      const data = new Uint8Array([255, 0, 128, 255]);   // 1 pixel
+      const t = pixelsToTensor(data, 1, 1);
+      const arr = t.arraySync();
+      expect(arr[0][0][0]).toBeCloseTo(1, 4);
+      expect(arr[0][0][1]).toBeCloseTo(0, 4);
+      expect(arr[0][0][2]).toBeCloseTo(128 / 255, 3);
     });
 
-    it('calculates total elements', () => {
-      const info = describeTensor(224, 224, 3);
-      expect(info.totalElements).toBe(224 * 224 * 3);
-    });
-
-    it('handles grayscale', () => {
-      const info = describeTensor(100, 100, 1);
-      expect(info.shape).toEqual([100, 100, 1]);
-      expect(info.totalElements).toBe(10000);
+    it('drops alpha channel entirely', () => {
+      const data = new Uint8Array([100, 100, 100, 1]);
+      const t = pixelsToTensor(data, 1, 1);
+      const arr = t.arraySync();
+      expect(arr[0][0].length).toBe(3);
     });
   });
-estimatedMinutes: 5
+estimatedMinutes: 12
 difficulty: beginner
-mlContent: arithmetic
+skillAxis: data_prep

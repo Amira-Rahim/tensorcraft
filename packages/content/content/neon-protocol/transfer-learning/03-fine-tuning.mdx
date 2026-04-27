@@ -16,7 +16,8 @@ concept:
     feCode: "Object.freeze(baseConfig); // locked. const myConfig = { ...baseConfig, theme: 'dark' };"
     mlTitle: "Layer Freezing"
     mlCode: "layer.trainable = false; // frozen. newHead.trainable = true; // adapts"
-    tier: identity
+    tier: structural
+    breaks: "`Object.freeze` prevents JS object property mutation at runtime. `layer.trainable = false` prevents the optimizer from updating that layer's weights during the backward pass — but the layer still participates in the forward pass and contributes to gradient computation for unfrozen layers. Different mechanism, different blast radius."
 consequence:
   narrative: "After 20 epochs on 500 labeled drone images, the fine-tuned model hits 94% accuracy on Meridian's drone fleet. Amir leans back. 'Two million credits of pre-training. Twenty minutes of fine-tuning. That is the exchange rate of transfer learning.' Noor watches the loss curve flatten. 'What if we unfroze a few more layers?'"
   nextLessonTeaser: "Next: domain adaptation — making the model work in Neon City's rain, fog, and neon lighting"

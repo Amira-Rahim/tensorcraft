@@ -149,4 +149,26 @@ Add noise to an image tensor at a given timestep.
 
 <Exercise slug="add-noise" />
 
+<DerivationDrawer summary="Forward and reverse diffusion processes">
+**Forward process (noising):** at each timestep t we add Gaussian noise:
+
+`q(x_t | x_{t-1}) = N( x_t; √(1 - β_t) · x_{t-1},  β_t · I )`
+
+After T steps (typically 1000), x_T is approximately pure noise N(0, I).
+
+**Closed form for any t** (skip the iteration):
+
+`q(x_t | x_0) = N( x_t; √ᾱ_t · x_0,  (1 - ᾱ_t) · I )`
+
+Where `ᾱ_t = ∏_{s=1..t} (1 - β_s)`. So we can sample x_t directly:
+
+`x_t = √ᾱ_t · x_0 + √(1 - ᾱ_t) · ε,    ε ~ N(0, I)`
+
+**Reverse process (denoising)** — what the model learns:
+
+`p_θ(x_{t-1} | x_t) = N( x_{t-1}; μ_θ(x_t, t),  Σ_θ(x_t, t) )`
+
+The network predicts the mean (and sometimes variance) of the reverse step. Generation = start from pure noise and apply the reverse step T times.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["Diffusion = progressive image loading in reverse: noise sharpens into an image over many steps", "The forward process adds Gaussian noise incrementally until only static remains", "The reverse process uses a neural network to predict and subtract that noise step by step", "Each denoising step is small — the model only has to remove a little noise at a time, making the task learnable"]} />

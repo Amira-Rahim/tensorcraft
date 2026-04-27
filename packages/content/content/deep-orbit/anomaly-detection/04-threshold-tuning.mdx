@@ -126,4 +126,10 @@ Find the optimal anomaly detection threshold using F1 score.
 
 <Exercise slug="find-threshold" />
 
+## On-Call Scenario
+
+Anomaly detector fired 1000 alerts in one hour — clearly noise, not a real outbreak. Diagnose whether the cause is sensor change, threshold drift, or model staleness.
+
+<Exercise slug="incident-false-alarm-storm" />
+
 <KeyTakeaways takeaways={["Threshold tuning balances false positives (alert fatigue) against false negatives (missed anomalies)", "Use the normal error distribution to set thresholds — 99th percentile is a common starting point", "F1 score combines precision and recall into a single metric for comparing thresholds", "The optimal threshold depends on the cost of each error type — for DEEP SCAN, missing an anomaly is costlier"]} />

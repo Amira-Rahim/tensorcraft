@@ -111,6 +111,25 @@ const COL_LABELS = [
 export default function ComparePage() {
   return (
     <main className="min-h-screen bg-page px-6 md:px-10 py-20">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            headline:
+              "Tensorcraft vs fast.ai, Karpathy, Coursera, Hugging Face: honest comparison",
+            description:
+              "Honest, table-format comparison across 8 dimensions. Names where Tensorcraft loses, not just where it wins.",
+            author: { "@type": "Organization", name: "Tensorcraft" },
+            publisher: { "@type": "Organization", name: "Tensorcraft" },
+            datePublished: "2026-04-26",
+            dateModified: "2026-04-27",
+            url: "https://tensorcraft.app/compare",
+            mainEntityOfPage: "https://tensorcraft.app/compare",
+          }),
+        }}
+      />
       <div className="max-w-7xl mx-auto">
         <div className="mb-10">
           <p className="font-mono text-xs text-primary tracking-[0.18em] uppercase mb-3">

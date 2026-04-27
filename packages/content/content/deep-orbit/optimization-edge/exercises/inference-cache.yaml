@@ -1,115 +1,64 @@
 slug: inference-cache
 lessonSlug: caching-strategies
-title: "Build an Inference Cache"
-instructions: "Build an LRU inference cache with a max size and TTL (time-to-live). The cache should hash inputs by quantizing to 2 decimal places, evict the oldest entry when full, and expire entries older than the TTL."
+title: "Inference Result Cache (Quantized Input Hash)"
+mlContent: deployment
+instructions: "Build a cache that hashes input tensors (after quantization) so semantically-similar inputs hit the same cache entry. `makeInferenceCache(model, decimals = 2)` returns `{ predict(input), stats }` where predict returns model.predict result + caches by hash of decimals-rounded values."
 starterCode: |
-  class InferenceCache {
-    private cache = new Map<string, { result: string; timestamp: number }>();
-    private maxSize: number;
-    private ttlMs: number;
-
-    constructor(maxSize: number, ttlMs: number) {
-      this.maxSize = maxSize;
-      this.ttlMs = ttlMs;
-    }
-
-    private hashInput(input: number[]): string {
-      // Quantize to 2 decimal places and join with commas
-      return null; // your code here
-    }
-
-    get(input: number[], now: number = Date.now()): string | null {
-      // Return cached result if exists and not expired, else null
-      return null; // your code here
-    }
-
-    set(input: number[], result: string, now: number = Date.now()): void {
-      // Evict oldest if at capacity, then store
-      return null; // your code here
-    }
-
-    get size(): number {
-      return this.cache.size;
-    }
+  function makeInferenceCache(model, decimals = 2) {
+    return { predict(input) { return model.predict(input); }, stats: { hits: 0, misses: 0 } };
   }
 solutionCode: |
-  class InferenceCache {
-    private cache = new Map<string, { result: string; timestamp: number }>();
-    private maxSize: number;
-    private ttlMs: number;
-
-    constructor(maxSize: number, ttlMs: number) {
-      this.maxSize = maxSize;
-      this.ttlMs = ttlMs;
-    }
-
-    private hashInput(input: number[]): string {
-      const quantized = input.map(v => Math.round(v * 100) / 100);
-      return quantized.join(',');
-    }
-
-    get(input: number[], now: number = Date.now()): string | null {
-      const key = this.hashInput(input);
-      const entry = this.cache.get(key);
-      if (!entry) return null;
-      if (now - entry.timestamp > this.ttlMs) {
-        this.cache.delete(key);
-        return null;
-      }
-      return entry.result;
-    }
-
-    set(input: number[], result: string, now: number = Date.now()): void {
-      const key = this.hashInput(input);
-      if (this.cache.size >= this.maxSize && !this.cache.has(key)) {
-        const oldest = this.cache.keys().next().value;
-        if (oldest) this.cache.delete(oldest);
-      }
-      this.cache.set(key, { result, timestamp: now });
-    }
-
-    get size(): number {
-      return this.cache.size;
-    }
+  function makeInferenceCache(model, decimals = 2) {
+    const cache = new Map();
+    const stats = { hits: 0, misses: 0 };
+    const factor = Math.pow(10, decimals);
+    return {
+      stats,
+      predict(input) {
+        const data = Array.from(input.dataSync());
+        const key = data.map(v => Math.round(v * factor) / factor).join(',');
+        if (cache.has(key)) {
+          stats.hits++;
+          return cache.get(key);
+        }
+        stats.misses++;
+        const out = model.predict(input);
+        cache.set(key, out);
+        return out;
+      },
+    };
   }
 testCode: |
-  describe('InferenceCache', () => {
-    it('caches and retrieves results', () => {
-      const cache = new InferenceCache(10, 60000);
-      cache.set([1.0, 2.0, 3.0], 'anomaly', 1000);
-      expect(cache.get([1.0, 2.0, 3.0], 2000)).toBe('anomaly');
+  describe('makeInferenceCache (real model.predict + hash)', () => {
+    function makeModel() {
+      const m = tf.sequential();
+      m.add(tf.layers.dense({ units: 1, inputShape: [2] }));
+      return m;
+    }
+    it('caches identical inputs', () => {
+      const m = makeModel();
+      const cache = makeInferenceCache(m);
+      const input = tf.tensor2d([[0.5, 0.5]]);
+      cache.predict(input);
+      cache.predict(input);
+      expect(cache.stats.hits).toBe(1);
+      expect(cache.stats.misses).toBe(1);
     });
-
-    it('returns null for missing entries', () => {
-      const cache = new InferenceCache(10, 60000);
-      expect(cache.get([1.0, 2.0], 1000)).toBeNull();
+    it('caches near-identical inputs (post-rounding)', () => {
+      const m = makeModel();
+      const cache = makeInferenceCache(m, 1);  // 1 decimal place
+      cache.predict(tf.tensor2d([[0.51, 0.5]]));
+      cache.predict(tf.tensor2d([[0.49, 0.5]]));   // both round to 0.5
+      expect(cache.stats.hits).toBe(1);
     });
-
-    it('expires entries after TTL', () => {
-      const cache = new InferenceCache(10, 5000);
-      cache.set([1.0], 'result', 1000);
-      expect(cache.get([1.0], 5000)).toBe('result');
-      expect(cache.get([1.0], 7000)).toBeNull();
-    });
-
-    it('quantizes inputs for near-match hits', () => {
-      const cache = new InferenceCache(10, 60000);
-      cache.set([1.001, 2.009], 'hit', 1000);
-      expect(cache.get([1.001, 2.009], 2000)).toBe('hit');
-    });
-
-    it('evicts oldest when full', () => {
-      const cache = new InferenceCache(2, 60000);
-      cache.set([1.0], 'first', 1000);
-      cache.set([2.0], 'second', 2000);
-      cache.set([3.0], 'third', 3000);
-      expect(cache.size).toBe(2);
-      expect(cache.get([1.0], 4000)).toBeNull();
-      expect(cache.get([2.0], 4000)).toBe('second');
-      expect(cache.get([3.0], 4000)).toBe('third');
+    it('separate cache for very different inputs', () => {
+      const m = makeModel();
+      const cache = makeInferenceCache(m);
+      cache.predict(tf.tensor2d([[0.1, 0.1]]));
+      cache.predict(tf.tensor2d([[0.9, 0.9]]));
+      expect(cache.stats.misses).toBe(2);
     });
   });
-estimatedMinutes: 12
+estimatedMinutes: 18
 difficulty: intermediate
-mlContent: arithmetic
 skillAxis: deployment

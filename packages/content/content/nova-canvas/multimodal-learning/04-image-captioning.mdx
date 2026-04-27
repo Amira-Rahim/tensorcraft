@@ -135,4 +135,41 @@ Implement the autoregressive caption generation loop.
 
 <Exercise slug="caption-image" />
 
+<DerivationDrawer summary="Encoder-decoder for image captioning: cross-attention math">
+**Image captioning architecture:**
+
+```
+encoder:   image → [n_patches, d] visual tokens (e.g. ViT or CNN)
+decoder:   start with [BOS] token, autoregressively predict next word using
+           - self-attention over caption-so-far
+           - cross-attention over image visual tokens
+```
+
+**Cross-attention computation per decoder layer:**
+
+```
+Q = caption_features · W_Q              // [n_caption, d]
+K = image_features · W_K                // [n_image, d]
+V = image_features · W_V                // [n_image, d]
+attn = softmax(Q · K^T / √d_k)          // [n_caption, n_image]
+out = attn · V                          // [n_caption, d]
+```
+
+Each decoder position attends to all image patches, weighted by relevance. The model learns to attend to different image regions while generating each word.
+
+**Generation loop:**
+
+```
+tokens = [BOS]
+for t in 1..max_len:
+  logits = decoder(image_features, tokens)   // condition on image + history
+  next_token = argmax(logits[-1])             // or sample
+  tokens.append(next_token)
+  if next_token == EOS: break
+return detokenize(tokens)
+```
+
+**Beam search** (see `bidirectional-models` lesson) typically used for higher-quality captions than greedy.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["Image captioning is automated alt-text generation — describing images in words for accessibility", "The architecture is encoder-decoder: image encoder produces context, text decoder generates words", "Generation is autoregressive: each word depends on the previous words and the image context", "Every generated image in the gallery now has a description — accessibility built into the creative pipeline"]} />

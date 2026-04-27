@@ -121,4 +121,25 @@ A generative model's entire job is to learn the probability distribution of its 
 
 <Exercise slug="sample-distribution" />
 
+<DerivationDrawer summary="Likelihood vs probability: a practitioner's view">
+**Probability:** P(x | θ) — given fixed parameters θ, probability of observing x. Function of x.
+
+**Likelihood:** L(θ | x) = P(x | θ) — given observed x, how plausible is θ. Function of θ. Same formula, different role.
+
+**Maximum Likelihood Estimation (MLE):** choose θ that maximizes L(θ | x_observed):
+
+`θ_MLE = argmax_θ Π_i p(x_i | θ)`
+
+In log space (numerically stable):
+
+`θ_MLE = argmax_θ Σ_i log p(x_i | θ)`
+
+**Connection to ML training:**
+- **Gaussian likelihood + MLE = MSE loss** (regression)
+- **Categorical likelihood + MLE = cross-entropy loss** (classification)
+- **Bernoulli likelihood + MLE = binary cross-entropy** (binary)
+
+Every standard ML loss function is the negative log-likelihood under some assumed distribution. Picking a loss = picking a noise model for your data.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["A probability distribution describes the likelihood of each possible value", "Uniform distributions give equal probability; normal distributions cluster around a mean", "Real data follows complex distributions that generative models must learn", "TensorFlow.js provides tf.randomNormal() and tf.randomUniform() for sampling"]} />

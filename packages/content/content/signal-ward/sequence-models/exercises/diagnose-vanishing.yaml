@@ -1,86 +1,44 @@
 slug: diagnose-vanishing
 lessonSlug: vanishing-gradients
-title: "Diagnose Vanishing Gradients"
-instructions: "Implement simulateGradientDecay that multiplies an initial gradient by a weight factor for each timestep, returning an array of gradient magnitudes at each step. Then implement diagnoseVanishing that returns true if the gradient at the first timestep is below a threshold (1e-4). Finally, compare gradient decay for a simpleRNN weight (0.9) vs a perfect gradient highway (1.0) over 50 timesteps."
+title: "Detect Vanishing Gradients via tf.grad"
+instructions: "Build `measureGradientMagnitude(depth)` that constructs a depth-layer chain of sigmoid activations applied to a single scalar variable, computes the gradient via tf.grad, and returns the gradient magnitude. Demonstrate empirically that gradient shrinks toward zero as depth grows."
+mlContent: training
 starterCode: |
-  import * as tf from '@tensorflow/tfjs';
-
-  function simulateGradientDecay(
-    seqLength: number,
-    weightFactor: number,
-    initialGradient: number
-  ): number[] {
-    // Return array of gradient magnitudes at each timestep
-    // Starting from the END (where loss is computed) back to the START
-    // Each step: gradient *= weightFactor
-    return []; // your code here
+  function measureGradientMagnitude(depth) {
+    return 0;
   }
-
-  function diagnoseVanishing(gradients: number[], threshold: number): boolean {
-    // Return true if the gradient at the FIRST timestep (last element)
-    // is below the threshold — meaning early tokens can't learn
-    return false; // your code here
-  }
-
-  const rnnGradients = simulateGradientDecay(50, 0.9, 1.0);
-  const highwayGradients = simulateGradientDecay(50, 1.0, 1.0);
-  const isVanishing = diagnoseVanishing(rnnGradients, 1e-4);
-  const isHighwayVanishing = diagnoseVanishing(highwayGradients, 1e-4);
-
-  // Bonus: visualize with TensorFlow.js tensors
-  const gradTensor = tf.tensor1d(rnnGradients);
 solutionCode: |
-  import * as tf from '@tensorflow/tfjs';
-
-  function simulateGradientDecay(
-    seqLength: number,
-    weightFactor: number,
-    initialGradient: number
-  ): number[] {
-    const gradients: number[] = [initialGradient];
-    let grad = initialGradient;
-    for (let t = 1; t < seqLength; t++) {
-      grad *= weightFactor;
-      gradients.push(grad);
-    }
-    return gradients;
+  function measureGradientMagnitude(depth) {
+    const f = (x) => {
+      let h = x;
+      for (let i = 0; i < depth; i++) {
+        h = tf.sigmoid(h);
+      }
+      return h;
+    };
+    const grad = tf.grad(f);
+    const x = tf.scalar(0.5);
+    const g = grad(x);
+    return Math.abs(g.dataSync()[0]);
   }
-
-  function diagnoseVanishing(gradients: number[], threshold: number): boolean {
-    return gradients[gradients.length - 1] < threshold;
-  }
-
-  const rnnGradients = simulateGradientDecay(50, 0.9, 1.0);
-  const highwayGradients = simulateGradientDecay(50, 1.0, 1.0);
-  const isVanishing = diagnoseVanishing(rnnGradients, 1e-4);
-  const isHighwayVanishing = diagnoseVanishing(highwayGradients, 1e-4);
-
-  const gradTensor = tf.tensor1d(rnnGradients);
 testCode: |
-  describe('Diagnose Vanishing Gradients', () => {
-    it('returns correct number of gradient values', () => {
-      expect(rnnGradients.length).toBe(50);
+  describe('measureGradientMagnitude (real tf.grad)', () => {
+    it('returns positive magnitude for shallow chain', () => {
+      const g = measureGradientMagnitude(1);
+      expect(g).toBeGreaterThan(0);
     });
-    it('first gradient equals initial value', () => {
-      expect(rnnGradients[0]).toBeCloseTo(1.0, 5);
+
+    it('gradient shrinks with depth (vanishing)', () => {
+      const shallow = measureGradientMagnitude(2);
+      const deep = measureGradientMagnitude(10);
+      expect(deep).toBeLessThan(shallow);
     });
-    it('gradients decay with weight < 1', () => {
-      expect(rnnGradients[49]).toBeLessThan(rnnGradients[0]);
-      expect(rnnGradients[49]).toBeLessThan(0.01);
-    });
-    it('diagnoses vanishing correctly', () => {
-      // 0.9^49 ≈ 5e-3, which is below 1e-2 (well below threshold for demonstrating decay)
-      const deepGradients = simulateGradientDecay(150, 0.9, 1.0);
-      expect(diagnoseVanishing(deepGradients, 1e-4)).toBe(true);
-    });
-    it('gradient highway does not vanish', () => {
-      expect(highwayGradients[49]).toBeCloseTo(1.0, 5);
-      expect(isHighwayVanishing).toBe(false);
-    });
-    it('creates valid tensor from gradients', () => {
-      expect(gradTensor.shape).toEqual([50]);
+
+    it('very deep chain produces tiny gradient', () => {
+      const g = measureGradientMagnitude(20);
+      expect(g).toBeLessThan(0.01);
     });
   });
 estimatedMinutes: 15
-difficulty: intermediate
-mlContent: arithmetic
+difficulty: advanced
+skillAxis: training

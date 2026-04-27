@@ -191,4 +191,16 @@ Create ordered sequence representations that preserve word position and demonstr
 
 <Exercise slug="order-matters" />
 
+<DerivationDrawer summary="Why position matters for recurrence and attention">
+Sequence models receive a sequence x_1, x_2, ..., x_n. Two architectural choices:
+
+**Recurrent (RNN):** position is implicit. `h_t = f(h_{t-1}, x_t)`. Order is enforced because `h_t` depends on `h_{t-1}`.
+
+**Attention (Transformer):** position is NOT inherent. The attention formula is permutation-equivariant: shuffling input tokens shuffles output tokens but produces the same per-token computation. To break this and let attention learn order, we add **positional encodings** — fixed sinusoidal vectors or learned embeddings — to the token embeddings before the first attention layer.
+
+`x_t' = embedding(x_t) + positional(t)`
+
+Without positional encoding, a transformer treats "not good" and "good not" identically. With it, the model can learn that order matters.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["Word order determines meaning — 'denied pain' is the opposite of 'reported pain'", "Bag-of-words fails on negation, the most dangerous pattern in clinical NLP", "Sequence representations preserve token positions for order-aware processing", "Execution order in async code maps directly to token order in sequences"]} />

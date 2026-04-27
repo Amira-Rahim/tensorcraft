@@ -1,60 +1,42 @@
 slug: contrastive-pairs
 lessonSlug: contrastive-learning
-title: "Compute Contrastive Similarity Scores"
-instructions: "Given a batch of image embeddings and text embeddings (both normalized), compute the similarity matrix (all-pairs cosine similarity) and scale it by a temperature parameter. Return the scaled logits matrix."
+title: "Contrastive Loss Over a Batch of Pairs"
+mlContent: training
+instructions: "Build `contrastiveLoss(anchor, positive, negatives, temperature = 0.07)` that computes the InfoNCE-style contrastive loss: similarity(anchor, positive) should be high; similarity to negatives should be low. Inputs are 1D tensors of equal dim. Use cosine similarity scaled by temperature, then -log(softmax) over [pos, ...negs]."
 starterCode: |
-  import * as tf from '@tensorflow/tfjs';
-
-  function contrastiveLogits(
-    imageEmbeddings: tf.Tensor2D,
-    textEmbeddings: tf.Tensor2D,
-    temperature: number
-  ): tf.Tensor2D {
-    // 1. Compute similarity matrix: matMul(images, texts^T)
-    // 2. Scale by temperature: similarities / temperature
-    // Return the logits matrix
-    return null; // your code here
+  function contrastiveLoss(anchor, positive, negatives, temperature = 0.07) {
+    return 0;
   }
 solutionCode: |
-  import * as tf from '@tensorflow/tfjs';
-
-  function contrastiveLogits(
-    imageEmbeddings: tf.Tensor2D,
-    textEmbeddings: tf.Tensor2D,
-    temperature: number
-  ): tf.Tensor2D {
-    const similarities = tf.matMul(imageEmbeddings, textEmbeddings, false, true);
-    return tf.div(similarities, tf.scalar(temperature)) as tf.Tensor2D;
+  function contrastiveLoss(anchor, positive, negatives, temperature = 0.07) {
+    const allCandidates = tf.stack([positive, ...negatives]);
+    const anchorRow = anchor.reshape([1, anchor.shape[0]]);
+    const dots = tf.matMul(anchorRow, allCandidates, false, true).squeeze();
+    const anchorNorm = tf.norm(anchor);
+    const candidateNorms = allCandidates.norm('euclidean', 1);
+    const sims = dots.div(anchorNorm.mul(candidateNorms));
+    const logits = sims.div(tf.scalar(temperature));
+    const probs = tf.softmax(logits);
+    const positiveProb = probs.dataSync()[0];
+    return -Math.log(Math.max(positiveProb, 1e-9));
   }
 testCode: |
-  describe('contrastiveLogits', () => {
-    it('returns correct shape', () => {
-      const imgs = tf.randomNormal([4, 8]) as tf.Tensor2D;
-      const txts = tf.randomNormal([4, 8]) as tf.Tensor2D;
-      const logits = contrastiveLogits(imgs, txts, 0.07);
-      expect(logits.shape).toEqual([4, 4]);
+  describe('contrastiveLoss (real tf.matMul + softmax)', () => {
+    it('low loss when positive aligns and negatives differ', () => {
+      const anchor = tf.tensor1d([1, 0]);
+      const positive = tf.tensor1d([1, 0]);
+      const negatives = [tf.tensor1d([0, 1]), tf.tensor1d([-1, 0])];
+      const loss = contrastiveLoss(anchor, positive, negatives);
+      expect(loss).toBeLessThan(1);
     });
-    it('scales by temperature', () => {
-      const a = tf.tensor2d([[1, 0]]);
-      const b = tf.tensor2d([[1, 0]]);
-      const logits1 = contrastiveLogits(a, b, 1.0);
-      const logits2 = contrastiveLogits(a, b, 0.1);
-      expect(logits2.dataSync()[0]).toBeCloseTo(logits1.dataSync()[0] * 10, 3);
-    });
-    it('diagonal has highest values for matched pairs', () => {
-      const imgs = tf.eye(4) as tf.Tensor2D;
-      const txts = tf.eye(4) as tf.Tensor2D;
-      const logits = contrastiveLogits(imgs, txts, 0.07);
-      const data = logits.arraySync() as number[][];
-      for (let i = 0; i < 4; i++) {
-        for (let j = 0; j < 4; j++) {
-          if (i === j) {
-            expect(data[i][j]).toBeGreaterThan(data[i][(j + 1) % 4]);
-          }
-        }
-      }
+    it('high loss when positive misaligns', () => {
+      const anchor = tf.tensor1d([1, 0]);
+      const positive = tf.tensor1d([-1, 0]);   // far from anchor
+      const negatives = [tf.tensor1d([1, 0])];
+      const loss = contrastiveLoss(anchor, positive, negatives);
+      expect(loss).toBeGreaterThan(1);
     });
   });
-estimatedMinutes: 10
-difficulty: intermediate
-mlContent: arithmetic
+estimatedMinutes: 18
+difficulty: advanced
+skillAxis: training

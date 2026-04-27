@@ -203,4 +203,22 @@ Build an LSTM model that handles long clinical sequences where simple RNNs fail.
 
 <Exercise slug="sw-build-lstm" />
 
+<DerivationDrawer summary="LSTM cell equations + why gates fix vanishing gradients">
+**LSTM cell** at timestep t:
+
+```
+f_t = σ(W_f · [h_{t-1}, x_t] + b_f)     // forget gate (what to drop from cell state)
+i_t = σ(W_i · [h_{t-1}, x_t] + b_i)     // input gate (what to write)
+o_t = σ(W_o · [h_{t-1}, x_t] + b_o)     // output gate (what to expose)
+ĉ_t = tanh(W_c · [h_{t-1}, x_t] + b_c)  // candidate cell state
+
+c_t = f_t ⊙ c_{t-1} + i_t ⊙ ĉ_t          // cell state (gradient highway)
+h_t = o_t ⊙ tanh(c_t)
+```
+
+**Why this fixes vanishing gradients:** the cell state path `c_t = f_t · c_{t-1} + ...` has an additive update with a gate-controlled multiplicative term. When `f_t ≈ 1`, gradients flow through unchanged across many timesteps. The model learns when to forget by adjusting `f_t`.
+
+**GRU** is a simpler variant — merges forget and input into a single update gate, no separate cell state — fewer params, similar performance for many tasks.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["LSTM gates control information flow like useMemo controls what persists across React renders", "The forget gate discards irrelevant info, the input gate adds new info, the output gate controls exposure", "The cell state provides a gradient highway that solves vanishing gradients", "GRU is a lighter alternative with 2 gates instead of 3 — better for browser performance"]} />

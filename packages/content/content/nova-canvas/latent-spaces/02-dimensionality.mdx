@@ -113,4 +113,23 @@ async function measureReconstruction(
 
 <Exercise slug="count-dimensions" />
 
+<DerivationDrawer summary="Intrinsic dimension: why N-dim data may live on a much smaller manifold">
+**Ambient dimension:** the number of features in the data (e.g. 784 for MNIST 28x28 grayscale).
+
+**Intrinsic dimension:** the actual degrees of freedom. For MNIST handwritten digits, the intrinsic dim is estimated at ~7-15 — even though pixels have 784 axes, valid digits live on a 10-dim manifold.
+
+**How to estimate:**
+
+- **PCA:** count components needed to capture 95% variance. Linear, fast, lower-bound on true dim.
+- **Local PCA:** PCA in a neighborhood of each sample. Captures local manifold dimension.
+- **TwoNN, MLE estimators:** information-theoretic. More accurate for nonlinear manifolds.
+
+**Implication for latent dim choice:**
+- Latent dim ≪ intrinsic dim: information loss, blurry reconstructions
+- Latent dim ≈ intrinsic dim: clean reconstruction, disentangled axes
+- Latent dim ≫ intrinsic dim: redundancy, collapse to subspace, harder to interpret
+
+For most natural-image datasets, intrinsic dim is 50-200; latent dim 64-256 is the empirical sweet spot.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["Dimensionality is the number of independent axes in a latent space", "The bottleneck forces the model to learn the most important features", "Too few dimensions lose information; too many fail to create useful compression", "Measure reconstruction error to find the optimal latent dimension"]} />

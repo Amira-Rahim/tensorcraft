@@ -90,4 +90,14 @@ Calculate the loss for the DEEP SCAN classifier's initial predictions.
 
 <Exercise slug="mse-loss" />
 
+## Knowledge check
+
+<Quiz
+  question="For binary classification, why use binary cross-entropy instead of mean squared error?"
+  options={[{"text":"BCE is faster to compute"},{"text":"BCE produces meaningful gradients near the decision boundary, MSE saturates near 0 and 1 — correct"},{"text":"MSE only works with regression"},{"text":"BCE is required by TensorFlow.js"}]}
+  correct={1}
+  explanation="MSE gradient ∝ (pred − label) shrinks to zero when predictions are near 0 or 1, even when wrong. BCE uses log, keeping gradients steep where the model is most wrong. This is the difference between a model that converges and one that stalls."
+  tier="structural"
+/>
+
 <KeyTakeaways takeaways={["Loss functions quantify prediction error — like test assertion diffs", "MSE: good for regression, penalizes large errors quadratically", "Binary crossentropy: better for classification (0/1 outputs)", "Training goal: minimize loss toward zero"]} />

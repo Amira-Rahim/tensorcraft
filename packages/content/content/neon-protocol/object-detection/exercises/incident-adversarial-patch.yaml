@@ -1,0 +1,71 @@
+slug: incident-adversarial-patch
+lessonSlug: yolo-architecture
+title: "Incident — Adversarial Patch Defeated the Detector"
+mlContent: systems
+instructions: |
+  PAGER: detector misclassified a stop sign as yield (confidence 0.91). Suspect: adversarial patch. Build `flagSuspiciousDetection(detection, baseline)` returning:
+
+    {
+      suspicious: boolean,
+      reasons: string[],
+      severity: 'low' | 'high',
+    }
+
+  Reasons to flag: (a) confidence > 0.95 AND class is in baseline.frequentMisclasses, (b) detection bbox area is < 5% of image, (c) detection is in image edge region (within 5% of border).
+
+  Severity high if 2+ reasons fire.
+starterCode: |
+  function flagSuspiciousDetection(detection, baseline) {
+    return { suspicious: false, reasons: [], severity: 'low' };
+  }
+solutionCode: |
+  function flagSuspiciousDetection(detection, baseline) {
+    const reasons = [];
+    if (detection.confidence > 0.95 && baseline.frequentMisclasses.includes(detection.class)) {
+      reasons.push('High confidence on class with known confusion history');
+    }
+    const imageArea = baseline.imageWidth * baseline.imageHeight;
+    const bboxArea = (detection.bbox.x2 - detection.bbox.x1) * (detection.bbox.y2 - detection.bbox.y1);
+    if (bboxArea / imageArea < 0.05) {
+      reasons.push('Bounding box is unusually small (< 5% of image area)');
+    }
+    const edgeMargin = 0.05;
+    const inEdge = (
+      detection.bbox.x1 / baseline.imageWidth < edgeMargin ||
+      detection.bbox.y1 / baseline.imageHeight < edgeMargin ||
+      detection.bbox.x2 / baseline.imageWidth > (1 - edgeMargin) ||
+      detection.bbox.y2 / baseline.imageHeight > (1 - edgeMargin)
+    );
+    if (inEdge) reasons.push('Detection in image edge region (within 5% of border)');
+    return {
+      suspicious: reasons.length > 0,
+      reasons,
+      severity: reasons.length >= 2 ? 'high' : 'low',
+    };
+  }
+testCode: |
+  describe('flagSuspiciousDetection', () => {
+    const baseline = { imageWidth: 1000, imageHeight: 1000, frequentMisclasses: ['yield'] };
+
+    it('flags small high-confidence detection on misclass-history class', () => {
+      const det = { confidence: 0.97, class: 'yield', bbox: { x1: 100, y1: 100, x2: 150, y2: 150 } };
+      const r = flagSuspiciousDetection(det, baseline);
+      expect(r.suspicious).toBe(true);
+      expect(r.severity).toBe('high');
+    });
+
+    it('passes large normal-confidence detection in center', () => {
+      const det = { confidence: 0.85, class: 'stop', bbox: { x1: 200, y1: 200, x2: 800, y2: 800 } };
+      const r = flagSuspiciousDetection(det, baseline);
+      expect(r.suspicious).toBe(false);
+    });
+
+    it('flags edge-region detection', () => {
+      const det = { confidence: 0.85, class: 'stop', bbox: { x1: 5, y1: 5, x2: 100, y2: 100 } };
+      const r = flagSuspiciousDetection(det, baseline);
+      expect(r.reasons.some(reason => reason.includes('edge'))).toBe(true);
+    });
+  });
+estimatedMinutes: 18
+difficulty: advanced
+skillAxis: evaluation

@@ -144,4 +144,26 @@ function vaeLoss(
 
 <Exercise slug="kl-loss" />
 
+<DerivationDrawer summary="KL between two Gaussians — closed form">
+VAE's KL term has a closed-form solution when q(z|x) and p(z) are both Gaussian. For q = N(μ, σ²) and p = N(0, 1) (standard normal prior), per latent dimension:
+
+`KL[ q || p ] = ½ · ( σ² + μ² - 1 - log(σ²) )`
+
+Summed across all latent dimensions, this is the regularization loss VAE pays to keep the encoder's distribution close to the prior.
+
+**Asymmetry of KL:** `KL(q || p) ≠ KL(p || q)`. VAE uses the forward direction `KL(q || p)`, which encourages q to cover only regions where p has mass — so the encoder's distribution stays tight around the prior. The reverse direction would encourage q to cover all of p, which gives blurry, mode-averaged samples.
+
+**β-VAE** scales this term: `L = recon + β · KL`. β > 1 forces a tighter encoder, encouraging disentanglement at the cost of reconstruction quality.
+</DerivationDrawer>
+
+## Knowledge check
+
+<Quiz
+  question="In β-VAE, what does increasing β do?"
+  options={[{"text":"Improves reconstruction at cost of disentanglement"},{"text":"Forces tighter encoder distribution → better disentanglement at cost of reconstruction quality — correct"},{"text":"Speeds up training"},{"text":"Reduces KL divergence to zero"}]}
+  correct={1}
+  explanation="β scales the KL term: L = recon + β · KL. Higher β pushes encoder distribution closer to N(0,I), reducing latent capacity. This often improves disentanglement (each dimension captures one factor of variation) but loses reconstruction detail. The tradeoff is empirical and dataset-dependent."
+  tier="structural"
+/>
+
 <KeyTakeaways takeaways={["KL divergence measures how far the learned distribution is from standard normal", "VAE loss = reconstruction loss + beta * KL divergence", "Beta controls the balance: sharp reconstructions vs smooth latent space", "Too little KL regularization leads to memorization instead of generalization"]} />

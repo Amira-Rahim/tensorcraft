@@ -105,4 +105,18 @@ Implement the combined distillation loss function.
 
 <Exercise slug="teacher-student" />
 
+<DerivationDrawer summary="Why distillation works (information theory)">
+**Hard labels carry less information than soft labels.** A hard label says "this is class 7." A soft distribution from a well-trained teacher says "this is class 7 (0.82), but it shares features with class 1 (0.10) and class 9 (0.05)."
+
+**Information content:**
+- Hard one-hot label: log₂(num_classes) bits per sample
+- Soft distribution: depends on entropy. For ImageNet (1000 classes), a calibrated teacher distribution might carry 4-6 bits per sample of useful gradient signal
+
+**Implication:** the student can learn from far fewer samples when supervised by a teacher's soft labels, because each sample carries more information. Empirically: a student with 10% of the teacher's parameters can recover 90%+ of the teacher's accuracy with the same training data when trained via distillation.
+
+**Dark knowledge** (Hinton's term): the implicit similarity structure encoded in the soft labels ("cats look more like dogs than like cars") that hard labels destroy. Distillation transfers this structure.
+
+**Limits:** distillation can't transfer skills the teacher doesn't have. If the teacher is wrong on a class, the student learns to be wrong the same way.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["Combined loss = alpha * distillation_loss + (1-alpha) * task_loss", "Alpha controls how much the student trusts the teacher vs ground truth", "Temperature scaling (T^2) compensates for softened gradient magnitudes", "Typical setup: temperature=3-5, alpha=0.5-0.7"]} />

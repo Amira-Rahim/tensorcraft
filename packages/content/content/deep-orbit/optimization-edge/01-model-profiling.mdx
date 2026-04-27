@@ -16,7 +16,8 @@ concept:
     feCode: "performance.mark('start'); doWork(); performance.measure('task', 'start')"
     mlTitle: "Model Profiling"
     mlCode: "const t0 = performance.now(); model.predict(x); const ms = performance.now() - t0;"
-    tier: identity
+    tier: structural
+    breaks: "performance.mark API is identical for both. But profiling a model means measuring per-op latency, kernel launch overhead, GPU memory bandwidth, and tensor-disposal cost — concerns that don't appear in browser perf budgets. The API transfers; the diagnostic skill set does not."
 consequence:
   narrative: "The profile reveals: 340 MB model size, 45ms inference, 80% of time in the first Dense layer. Nazari knows exactly where to optimize."
   nextLessonTeaser: "Next: quantization — shrinking the model by reducing numerical precision"

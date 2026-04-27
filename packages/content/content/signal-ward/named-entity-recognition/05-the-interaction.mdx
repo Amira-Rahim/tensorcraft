@@ -189,4 +189,10 @@ Build a drug interaction detection pipeline that catches dangerous combinations 
 
 <Exercise slug="detect-interaction" />
 
+## On-Call Scenario
+
+Post-mortem: a known drug interaction (warfarin + aspirin) slipped through the NER + interaction pipeline last Tuesday. Diagnose where in the pipeline the failure occurred.
+
+<Exercise slug="incident-missed-interaction" />
+
 <KeyTakeaways takeaways={["Drug interaction detection is dependency resolution — checking all pairs against known conflicts", "Cross-document extraction catches what siloed systems miss, like cross-package dependency conflicts", "The NER-to-interaction pipeline mirrors tokenize → parse → resolve → alert", "Automated safety checks augment clinical judgment — systematic where humans are inconsistent"]} />

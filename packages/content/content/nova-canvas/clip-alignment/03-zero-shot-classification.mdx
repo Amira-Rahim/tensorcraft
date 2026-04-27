@@ -116,4 +116,27 @@ Implement zero-shot classification by comparing image embeddings to text label e
 
 <Exercise slug="zero-shot-classify" />
 
+<DerivationDrawer summary="Prompt engineering for zero-shot: ensembling templates">
+Zero-shot classification with CLIP: encode the input image, encode each class as a text prompt, pick the prompt with highest cosine similarity.
+
+**Naive prompt:**
+
+`text = ["cat", "dog", "car"]`     // works but ~5pp lower accuracy
+
+**Templated prompt:**
+
+`text = ["a photo of a {c}" for c in classes]`     // CLIP paper: +5pp accuracy
+
+**Why "a photo of a" helps:** the text encoder was trained on captions, not bare nouns. Captions in training data follow templates like "a photo of...", "an image of...". The prompt template puts the encoder in distribution.
+
+**Prompt ensembling:** average embeddings from multiple templates per class:
+
+```
+templates = ["a photo of a {c}", "a picture of a {c}", "an image of a {c}", ...]
+class_embedding[c] = mean(text_encoder(t.format(c=c)) for t in templates)
+```
+
+CLIP paper used 80 templates and gained another 1-3pp accuracy. The cost: 80× text encodes per class, but cached once at startup.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["Zero-shot classification = dynamic routing for categories: no hardcoded labels, just flexible matching", "Encode the image and candidate labels as text, pick the closest match in embedding space", "Prompt templates (a photo of {category}) significantly improve accuracy", "Categories are just text — change them anytime without retraining the model"]} />

@@ -16,7 +16,8 @@ concept:
     feCode: "transition: transform 0.3s ease-in-out"
     mlTitle: "Latent Interpolation"
     mlCode: "const mid = z1.mul(1 - t).add(z2.mul(t))"
-    tier: identity
+    tier: structural
+    breaks: "CSS transitions interpolate pixel-level numeric properties along defined easing curves between two valid CSS states. Latent interpolation walks a path in a learned vector space where intermediate points may decode to coherent images, garbage, or sudden category jumps — the latent manifold is not convex, and easing assumptions don't transfer."
 consequence:
   narrative: "The walkway prototype shows visitors a seamless morph between styles — abstract geometry flowing into organic curves — all generated from latent interpolation."
   nextLessonTeaser: "Next: separating the factors — making each dimension control one thing"

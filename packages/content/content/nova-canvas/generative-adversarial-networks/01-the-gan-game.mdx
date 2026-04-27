@@ -117,4 +117,17 @@ The beauty of GANs is that you do not need to define what "good" output looks li
 
 <Exercise slug="gan-game" />
 
+<DerivationDrawer summary="GAN minimax objective (the formal game)">
+**The GAN minimax objective:**
+
+`min_G max_D V(D, G) = E_{x~p_data} [log D(x)] + E_{z~p_z} [log(1 - D(G(z)))]`
+
+- **D (discriminator):** wants to maximize V — assign high D(x) to real samples, low D(G(z)) to fakes.
+- **G (generator):** wants to minimize V — make D(G(z)) close to 1 (fool the discriminator).
+
+**Why it's a game and not joint optimization:** D and G have opposing objectives. There is no single function whose gradient both descend on. Training alternates: 1 step on D (fix G), 1 step on G (fix D). Equilibrium is a saddle point of V — much harder to reach than a single minimum.
+
+**Optimal D for fixed G:** `D*(x) = p_data(x) / (p_data(x) + p_G(x))`. With this D, the inner max becomes Jensen-Shannon divergence between p_data and p_G — what G ends up minimizing.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["GANs pit a generator against a discriminator in an adversarial game", "The generator creates fakes; the discriminator judges real vs fake", "Training alternates: improve discriminator, then improve generator", "No hand-crafted loss needed — the discriminator IS the learned loss function"]} />

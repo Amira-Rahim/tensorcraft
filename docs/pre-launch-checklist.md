@@ -1,11 +1,11 @@
 # Tensorcraft V0.5 — Pre-Launch Checklist
 
-> **Last updated: 2026-04-26** (third audit round — internal + external)
+> **Last updated: 2026-04-27** (fourth audit round — re-verify after Round 3 fixes)
 > **Audience: solo dev preparing to flip V0.5 live before executing marketing plan.**
 
 This is the definitive gate-list. Work it top to bottom. When every **BLOCKING** item is ✓, you are cleared to execute [`marketing-plan.md`](./marketing-plan.md).
 
-**Deep-audit rounds completed:** 2026-04-21 (Round 1: 36 E2E scenarios, docs, DB schema) + 2026-04-22 (Round 2: E2E verify + docs rescan + 38-point infra audit) + 2026-04-26 (Round 3: 215 uncommitted file delta + new gaps A12, A13). Every blocking issue either fixed or documented below.
+**Deep-audit rounds completed:** 2026-04-21 (Round 1) + 2026-04-22 (Round 2) + 2026-04-26 (Round 3: A12/A13/A14 fixes, OAuth guards) + 2026-04-27 (Round 4: re-verify, validator stripper fixed, 297/300 exercises pass with 3 unrelated logic bugs §A14b).
 
 ---
 
@@ -14,7 +14,7 @@ This is the definitive gate-list. Work it top to bottom. When every **BLOCKING**
 | Area | Status |
 |---|---|
 | Engineering code | ✅ complete (Phase 11 §11a–§11g, §6a–§6k, §8j–§8l) |
-| Content validator | ⚠ 218/295 pass, 77 fail with `Unexpected token ')'` (regression — see §A14) |
+| Content validator | ⚠ 297/300 pass, 3 fail with logic-bug errors (see §A14b) — stripper regression resolved 2026-04-26 |
 | Tests | ✅ unit + integration + e2e + mobile + visual regression green |
 | DB migrations (local SQL files) | ✅ 001–020 exist; 007/009–017 applied; **018/019/020 pending** |
 | Copy + legal | ✅ cleaned; paywall Discord removed + privacy policy dated 2026-04-21 |
@@ -216,7 +216,21 @@ If any violation: update CSP directive in `next.config.ts` headers block + redep
 
 `apps/web/app/auth/callback/route.ts` previously redirected to `https://${forwardedHost}${next}` with no host validation — open-redirect risk if upstream proxy ever forwarded an attacker-controlled value. `forwardedHost` now validated against `["tensorcraft.app", "www.tensorcraft.app"]`; falls back to `origin` if the header is missing or unrecognized.
 
-### A14. Exercise validator regression — 77 failures (NEW 2026-04-26) — BLOCKING
+### A14. ~~Exercise validator regression — 77 failures~~ ✅ FIXED 2026-04-26 (stripper); 3 unrelated failures remain (§A14b)
+
+Original 77 `Unexpected token ')'` parse errors from `stripTypeScript` regex regression: fixed (committed 8cb63e4). Validator now reports **297/300 pass**.
+
+### A14b. Three remaining solution-test failures — BLOCKING
+
+`node scripts/validate-exercises.mjs` shows 3 logic/test bugs unrelated to the stripper:
+
+- `normalize-data` (normalization): `Normalize > has mean ~0: Expected 30 < 0.01` — solution code has wrong centering math.
+- `pytorch-to-tfjs` (pytorch-is-tfjs): `Cannot read properties of undefined (reading '1')` — model layer config missing.
+- `read-paper` (reading-ml-papers): same `undefined.1` autoencoder layer config issue.
+
+**Do:** Open each YAML in `packages/content/content/**/exercises/`, fix solution code, re-run validator until 300/300. Do **not** allowlist — these are real solutions a learner will check against.
+
+### A14-OLD. Exercise validator regression — 77 failures (resolved) — historical
 
 `node scripts/validate-exercises.mjs` reports **218 passed, 77 failed, 0 allowlisted, 295 total**. Memory says 295/295 was last green at 2026-04-21; commit `508f98f` changed `stripTypeScript` (added `stripGenericCallArgs`, `stripAsTupleAssertions`, expanded `!` non-null operator regex). All 77 failures share the same parse error: `Unexpected token ')'` in `solution-run` or `starter-syntax`.
 

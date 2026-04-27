@@ -1,64 +1,45 @@
 slug: implement-max-pool
 lessonSlug: pooling-layers
-title: "Implement Max Pooling"
-instructions: "Implement a function maxPool2D that takes a 2D feature map (number[][]) and a pool size (number), and returns the max-pooled result. Divide the input into non-overlapping blocks of poolSize x poolSize and take the maximum value from each block."
+title: "Apply 2D Max Pooling"
+instructions: "Apply 2D max-pooling to a feature map using TensorFlow.js. Build `maxPool2D(input, poolSize, stride)` that takes a [H, W] tensor, reshapes to [1, H, W, 1], runs tf.maxPool with the given pool size and stride, and returns the squeezed [outH, outW] result."
+mlContent: data
 starterCode: |
-  function maxPool2D(input: number[][], poolSize: number): number[][] {
-    // Output height = Math.floor(inputHeight / poolSize)
-    // Output width = Math.floor(inputWidth / poolSize)
-    // For each block, find the maximum value.
-    return null; // your code here
+  function maxPool2D(input, poolSize, stride) {
+    return null;
   }
 solutionCode: |
-  function maxPool2D(input: number[][], poolSize: number): number[][] {
-    const iH = input.length;
-    const iW = input[0].length;
-    const oH = Math.floor(iH / poolSize);
-    const oW = Math.floor(iW / poolSize);
-
-    const output: number[][] = [];
-    for (let r = 0; r < oH; r++) {
-      output[r] = [];
-      for (let c = 0; c < oW; c++) {
-        let maxVal = -Infinity;
-        for (let pr = 0; pr < poolSize; pr++) {
-          for (let pc = 0; pc < poolSize; pc++) {
-            const val = input[r * poolSize + pr][c * poolSize + pc];
-            if (val > maxVal) maxVal = val;
-          }
-        }
-        output[r][c] = maxVal;
-      }
-    }
-    return output;
+  function maxPool2D(input, poolSize, stride) {
+    const [H, W] = input.shape;
+    const reshaped = input.reshape([1, H, W, 1]);
+    const pooled = tf.maxPool(reshaped, [poolSize, poolSize], [stride, stride], 'valid');
+    return pooled.squeeze([0, 3]);
   }
 testCode: |
-  describe('maxPool2D', () => {
-    it('returns correct output dimensions', () => {
-      const input = [[1,2,3,4],[5,6,7,8],[9,10,11,12],[13,14,15,16]];
-      const result = maxPool2D(input, 2);
-      expect(result.length).toBe(2);
-      expect(result[0].length).toBe(2);
+  describe('maxPool2D (real tf.maxPool)', () => {
+    it('reduces 4x4 to 2x2 with poolSize=2 stride=2', () => {
+      const input = tf.tensor2d([[1,2,3,4],[5,6,7,8],[9,10,11,12],[13,14,15,16]]);
+      const result = maxPool2D(input, 2, 2);
+      expect(result.shape).toEqual([2, 2]);
+      const arr = result.arraySync();
+      expect(arr[0][0]).toBe(6);
+      expect(arr[0][1]).toBe(8);
+      expect(arr[1][0]).toBe(14);
+      expect(arr[1][1]).toBe(16);
     });
 
-    it('takes maximum from each block', () => {
-      const input = [[1,3,2,1],[4,6,5,2],[7,2,1,8],[3,1,4,9]];
-      const result = maxPool2D(input, 2);
-      expect(result).toEqual([[6,5],[7,9]]);
+    it('selects max per window', () => {
+      const input = tf.tensor2d([[1,9],[3,4]]);
+      const result = maxPool2D(input, 2, 2);
+      expect(result.shape).toEqual([1, 1]);
+      expect(result.arraySync()[0][0]).toBe(9);
     });
 
-    it('handles pool size of 1 (identity)', () => {
-      const input = [[5,3],[1,7]];
-      const result = maxPool2D(input, 1);
-      expect(result).toEqual([[5,3],[1,7]]);
-    });
-
-    it('handles negative values', () => {
-      const input = [[-4,-2,-3,-1],[-8,-6,-7,-5],[-1,-3,-2,-4],[-5,-7,-6,-8]];
-      const result = maxPool2D(input, 2);
-      expect(result).toEqual([[-2,-1],[-1,-2]]);
+    it('handles overlapping stride', () => {
+      const input = tf.tensor2d([[1,2,3],[4,5,6],[7,8,9]]);
+      const result = maxPool2D(input, 2, 1);
+      expect(result.shape).toEqual([2, 2]);
     });
   });
-estimatedMinutes: 8
+estimatedMinutes: 12
 difficulty: intermediate
-mlContent: arithmetic
+skillAxis: model_arch

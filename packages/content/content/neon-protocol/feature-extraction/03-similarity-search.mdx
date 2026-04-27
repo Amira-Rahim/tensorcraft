@@ -135,4 +135,16 @@ Implement a k-nearest neighbor search function.
 
 <Exercise slug="similarity-search" />
 
+<DerivationDrawer summary="Approximate nearest neighbor (ANN): why exact search doesn't scale">
+**Exact search** for nearest neighbor in N points: O(N · d) per query. For N=10M and d=768, that's ~8 billion ops per query. At 1ms per query budget, exact search caps at ~10K vectors.
+
+**ANN approaches:**
+
+- **HNSW (Hierarchical Navigable Small World):** layered graph; navigate from coarse to fine. Recall ~99% at 10× speedup. Memory cost ~2× the dataset size. Standard in pgvector, Qdrant, Weaviate.
+- **IVF (Inverted File):** k-means clusters the dataset. Query: find nearest centroid, search within cluster. Tunable recall/speed via `nprobe` (number of clusters to search).
+- **PQ (Product Quantization):** compresses vectors to bytes via codebooks. 4-32× memory reduction at the cost of approximate distances.
+
+**Recall vs latency tradeoff:** ANN is parameterized — pick higher recall (slower) or lower recall (faster) per query. Production systems target 95-99% recall at 10-100× speedup over exact.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["Similarity search finds the closest feature vectors in a database — like fuzzy text search for images", "k-nearest neighbors ranks all candidates by distance and returns the top k", "Cosine similarity is the standard distance metric for visual feature comparison", "The resistance can now track specific drones across weeks of footage with a single query image"]} />

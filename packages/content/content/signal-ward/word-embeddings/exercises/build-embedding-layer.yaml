@@ -1,120 +1,31 @@
 slug: build-embedding-layer
 lessonSlug: embedding-layers
-title: "Build an Embedding Layer"
-instructions: "Build a TensorFlow.js sequential model with three layers: (1) an embedding layer mapping a vocabulary of 200 words to 32-dimensional vectors with an input length of 10, (2) a global average pooling layer, and (3) a dense output layer with 1 unit and sigmoid activation. Then implement buildEmbeddingMatrix that takes a vocabulary Map, a pretrained vectors Record, and an embedding dimension, returning a 2D array where each row uses the pretrained vector if available or zeros otherwise."
+title: "Build a Trainable Embedding Layer"
+instructions: "Build `embedTokens(tokenIds, vocabSize, embedDim)` that creates a tf.layers.embedding layer of size [vocabSize, embedDim], applies it to a [batch, seqLen] tensor of token IDs, and returns the output of shape [batch, seqLen, embedDim]."
+mlContent: model
 starterCode: |
-  import * as tf from '@tensorflow/tfjs';
-
-  const vocabSize = 200;
-  const embeddingDim = 32;
-  const maxSeqLength = 10;
-
-  // Step 1: Build the model
-  const model = tf.sequential();
-  // Add embedding layer (inputDim, outputDim, inputLength)
-  // Add global average pooling layer
-  // Add dense layer (units: 1, activation: 'sigmoid')
-  // your code here
-
-  // Step 2: Build an embedding matrix from pretrained vectors
-  const vocab = new Map([
-    ['<PAD>', 0], ['<UNK>', 1], ['aspirin', 2],
-    ['pain', 3], ['fever', 4], ['allergy', 5],
-  ]);
-
-  const pretrained: Record<string, number[]> = {
-    'aspirin': [0.82, 0.21, -0.11],
-    'pain':    [0.55, -0.33, 0.22],
-    'allergy': [0.45, 0.67, -0.23],
-  };
-
-  function buildEmbeddingMatrix(
-    v: Map<string, number>,
-    pre: Record<string, number[]>,
-    dim: number
-  ): number[][] {
-    // 1. Create a matrix of v.size rows, each a zero-filled array of length dim
-    // 2. For each word in vocab, if pretrained vector exists, copy it
-    // 3. Return the matrix
-    return null; // your code here
+  function embedTokens(tokenIds, vocabSize, embedDim) {
+    return null;
   }
-
-  const matrix = buildEmbeddingMatrix(vocab, pretrained, 3);
 solutionCode: |
-  import * as tf from '@tensorflow/tfjs';
-
-  const vocabSize = 200;
-  const embeddingDim = 32;
-  const maxSeqLength = 10;
-
-  const model = tf.sequential();
-  model.add(tf.layers.embedding({
-    inputDim: vocabSize,
-    outputDim: embeddingDim,
-    inputLength: maxSeqLength,
-  }));
-  model.add(tf.layers.globalAveragePooling1d());
-  model.add(tf.layers.dense({
-    units: 1,
-    activation: 'sigmoid',
-  }));
-
-  const vocab = new Map([
-    ['<PAD>', 0], ['<UNK>', 1], ['aspirin', 2],
-    ['pain', 3], ['fever', 4], ['allergy', 5],
-  ]);
-
-  const pretrained: Record<string, number[]> = {
-    'aspirin': [0.82, 0.21, -0.11],
-    'pain':    [0.55, -0.33, 0.22],
-    'allergy': [0.45, 0.67, -0.23],
-  };
-
-  function buildEmbeddingMatrix(
-    v: Map<string, number>,
-    pre: Record<string, number[]>,
-    dim: number
-  ): number[][] {
-    const matrix = Array.from({ length: v.size }, () => new Array(dim).fill(0));
-    for (const [word, idx] of v) {
-      if (pre[word]) matrix[idx] = [...pre[word]];
-    }
-    return matrix;
+  function embedTokens(tokenIds, vocabSize, embedDim) {
+    const layer = tf.layers.embedding({ inputDim: vocabSize, outputDim: embedDim });
+    return layer.apply(tokenIds);
   }
-
-  const matrix = buildEmbeddingMatrix(vocab, pretrained, 3);
 testCode: |
-  describe('Build Embedding Layer', () => {
-    it('model has 3 layers', () => {
-      expect(model.layers.length).toBe(3);
+  describe('embedTokens (real tf.layers.embedding)', () => {
+    it('output shape is [batch, seqLen, embedDim]', () => {
+      const tokens = tf.tensor2d([[1, 2, 3, 4]], [1, 4], 'int32');
+      const out = embedTokens(tokens, 100, 16);
+      expect(out.shape).toEqual([1, 4, 16]);
     });
-    it('first layer is embedding', () => {
-      expect(model.layers[0].getClassName()).toBe('Embedding');
-    });
-    it('embedding has correct config', () => {
-      const config = model.layers[0].getConfig();
-      expect(config.inputDim).toBe(200);
-      expect(config.outputDim).toBe(32);
-    });
-    it('last layer is dense with sigmoid', () => {
-      const config = model.layers[2].getConfig();
-      expect(config.units).toBe(1);
-      expect(config.activation).toBe('sigmoid');
-    });
-    it('matrix has correct dimensions', () => {
-      expect(matrix.length).toBe(6);
-      expect(matrix[0].length).toBe(3);
-    });
-    it('PAD row is zeros', () => {
-      expect(matrix[0]).toEqual([0, 0, 0]);
-    });
-    it('aspirin has pretrained values', () => {
-      expect(matrix[2]).toEqual([0.82, 0.21, -0.11]);
-    });
-    it('fever (no pretrained) is zeros', () => {
-      expect(matrix[4]).toEqual([0, 0, 0]);
+
+    it('handles batch dimension', () => {
+      const tokens = tf.tensor2d([[1, 2], [3, 4], [5, 6]], [3, 2], 'int32');
+      const out = embedTokens(tokens, 100, 8);
+      expect(out.shape).toEqual([3, 2, 8]);
     });
   });
 estimatedMinutes: 12
 difficulty: intermediate
-mlContent: arithmetic
+skillAxis: model_arch

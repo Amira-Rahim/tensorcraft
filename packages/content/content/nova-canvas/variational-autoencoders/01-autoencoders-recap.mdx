@@ -131,4 +131,16 @@ async function trainAutoencoder(
 
 <Exercise slug="nc-build-autoencoder" />
 
+<DerivationDrawer summary="Bottleneck dimension as compression bound">
+An autoencoder learns to map input x → latent z → reconstruction x̂. Loss is reconstruction:
+
+`L = ||x - x̂||²`
+
+The **bottleneck dimension** dim(z) constrains how much information the model can route through. If x is a 784-pixel MNIST digit and z is dim 8, the autoencoder must compress 784 floats into 8 floats with minimal loss.
+
+**Information-theoretic lower bound:** if z is dim k, the autoencoder can at best preserve k principal components of variance. PCA achieves this bound exactly. A vanilla autoencoder's solution can collapse to a learned PCA when it has no nonlinear capacity to do better.
+
+**What changes with VAE (next lesson):** the latent is no longer a single vector but a distribution, which forces the model to learn smooth latent geometry.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["Autoencoders learn to compress and reconstruct data through a bottleneck", "The compression pipeline mirrors gzip/Brotli: encode, compress, decode", "Training minimizes reconstruction error — the difference between input and output", "Limitation: autoencoders cannot generate new data because the latent space has gaps"]} />

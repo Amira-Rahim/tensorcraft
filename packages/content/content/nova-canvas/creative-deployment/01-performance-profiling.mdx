@@ -16,7 +16,8 @@ concept:
     feCode: "performance.mark('start'); doWork(); performance.mark('end'); performance.measure('work', 'start', 'end');"
     mlTitle: "Inference Profiling"
     mlCode: "performance.mark('inference-start'); model.predict(input); performance.mark('inference-end');"
-    tier: identity
+    tier: structural
+    breaks: "performance.mark API is the same. Profiling a generative model adds: per-step inference cost over many denoising iterations, latent memory pressure, queue backpressure under concurrent users — none of which web-app perf measurement encounters."
 consequence:
   narrative: "The flame chart reveals the truth: 60% of time is spent on tensor allocation, not computation. Erdem smiles grimly. 'We have been optimizing the wrong thing. Memory allocation is our enemy.'"
   nextLessonTeaser: "Next: model optimization through distillation and quantization"

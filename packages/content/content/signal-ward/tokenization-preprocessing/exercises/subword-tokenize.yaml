@@ -1,67 +1,58 @@
 slug: subword-tokenize
 lessonSlug: subword-tokenization
-title: "Subword Tokenize"
-instructions: "Implement a wordPieceTokenize function that takes a word and a Set of known subwords, and greedily matches the longest prefix at each position. Use '##' prefix for continuation pieces. Return ['[UNK]'] if no match is found at any position."
+title: "BPE-Style Merge to Token IDs"
+mlContent: data
+instructions: "Build `subwordTokenize(word, mergeMap)` that applies BPE merges greedily. Start with the word as character list. Repeatedly find the highest-priority adjacent pair in mergeMap (Map<'a b', mergedToken>) and merge until no more apply. Return final tokens as an int32 tensor of length equal to final token count, where each token's ID is its hash-mod-1000."
 starterCode: |
-  const vocab = new Set(['card', '##io', '##logy', '##itis', 'gastro', '##enter', 'hyper', '##tension']);
-
-  function wordPieceTokenize(word: string, subwordVocab: Set<string>): string[] {
-    const tokens: string[] = [];
-    let start = 0;
-
-    while (start < word.length) {
-      let end = word.length;
-      let found = false;
-
-      while (end > start) {
-        // Build the candidate substring with ## prefix if not at start
-        // Check if it exists in the vocabulary
-        // If found, push to tokens and advance start
-        // your code here
-        end--;
-      }
-
-      if (!found) return ['[UNK]'];
-    }
-    return tokens;
+  function subwordTokenize(word, mergeMap) {
+    return null;
   }
-
-  const result = wordPieceTokenize('cardiology', vocab);
 solutionCode: |
-  const vocab = new Set(['card', '##io', '##logy', '##itis', 'gastro', '##enter', 'hyper', '##tension']);
-
-  function wordPieceTokenize(word: string, subwordVocab: Set<string>): string[] {
-    const tokens: string[] = [];
-    let start = 0;
-
-    while (start < word.length) {
-      let end = word.length;
-      let found = false;
-
-      while (end > start) {
-        const substr = (start === 0 ? '' : '##') + word.slice(start, end);
-        if (subwordVocab.has(substr)) {
-          tokens.push(substr);
-          start = end;
-          found = true;
-          break;
+  function subwordTokenize(word, mergeMap) {
+    let tokens = word.split('');
+    while (true) {
+      let bestIdx = -1;
+      let bestMerge = '';
+      let bestPriority = Infinity;
+      for (let i = 0; i < tokens.length - 1; i++) {
+        const pair = tokens[i] + ' ' + tokens[i + 1];
+        const merged = mergeMap.get(pair);
+        if (merged !== undefined) {
+          const priority = Array.from(mergeMap.keys()).indexOf(pair);
+          if (priority < bestPriority) {
+            bestPriority = priority;
+            bestIdx = i;
+            bestMerge = merged;
+          }
         }
-        end--;
       }
-
-      if (!found) return ['[UNK]'];
+      if (bestIdx === -1) break;
+      tokens = [...tokens.slice(0, bestIdx), bestMerge, ...tokens.slice(bestIdx + 2)];
     }
-    return tokens;
+    const ids = tokens.map(t => {
+      let h = 0;
+      for (const c of t) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+      return h % 1000;
+    });
+    return tf.tensor1d(ids, 'int32');
   }
-
-  const result = wordPieceTokenize('cardiology', vocab);
 testCode: |
-  describe('Subword Tokenize', () => {
-    it('tokenizes cardiology', () => { expect(result).toEqual(['card', '##io', '##logy']); });
-    it('tokenizes gastroenteritis', () => { expect(wordPieceTokenize('gastroenteritis', vocab)).toEqual(['gastro', '##enter', '##itis']); });
-    it('tokenizes hypertension', () => { expect(wordPieceTokenize('hypertension', vocab)).toEqual(['hyper', '##tension']); });
-    it('returns UNK for unknown', () => { expect(wordPieceTokenize('xyz', vocab)).toEqual(['[UNK]']); });
+  describe('subwordTokenize (real tf.tensor1d)', () => {
+    it('returns one token per character when no merges apply', () => {
+      const t = subwordTokenize('cat', new Map());
+      expect(t.shape).toEqual([3]);
+    });
+    it('merges adjacent pairs', () => {
+      const merges = new Map([['c a', 'ca']]);
+      const t = subwordTokenize('cat', merges);
+      expect(t.shape).toEqual([2]);
+    });
+    it('applies multi-step merges in priority order', () => {
+      const merges = new Map([['c a', 'ca'], ['ca t', 'cat']]);
+      const t = subwordTokenize('cat', merges);
+      expect(t.shape).toEqual([1]);
+    });
   });
-estimatedMinutes: 10
+estimatedMinutes: 18
 difficulty: intermediate
-mlContent: arithmetic
+skillAxis: data_prep

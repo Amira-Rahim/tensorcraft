@@ -94,4 +94,14 @@ Assemble and compile the complete DEEP SCAN signal classifier.
 
 <Exercise slug="simple-network" />
 
+## Knowledge check
+
+<Quiz
+  question="model.compile() runs which of these?"
+  options={[{"text":"Forward pass on training data"},{"text":"Backpropagation initialization"},{"text":"Sets optimizer + loss + metrics for fit() — does NOT train — correct"},{"text":"Validates model architecture"}]}
+  correct={2}
+  explanation="compile() is configuration only. It attaches optimizer, loss function, and metrics. Training happens in model.fit(). A compiled-but-untrained model has random weights."
+  tier="structural"
+/>
+
 <KeyTakeaways takeaways={["Building a network: create → add layers → compile → predict", "Compilation prepares the model for training (optimizer + loss + metrics)", "Adam optimizer is the default choice — adapts learning rate automatically", "Binary crossentropy for classification, MSE for regression"]} />

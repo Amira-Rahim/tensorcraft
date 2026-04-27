@@ -1,80 +1,41 @@
 slug: kl-loss
 lessonSlug: kl-divergence
-title: "KL Divergence Loss"
-instructions: "Implement the KL divergence loss for a VAE. Given mu and logVar tensors, compute KL = -0.5 * mean(sum(1 + logVar - mu^2 - exp(logVar))). Also implement the combined VAE loss (reconstruction + beta * KL)."
+title: "KL Divergence Between Two Gaussians"
+mlContent: training
+instructions: "Build `klGaussian(mu, logVar)` returning the per-batch KL divergence from N(mu, var) to N(0, 1) where var = exp(logVar). Formula: -0.5 * sum(1 + logVar - mu^2 - exp(logVar)) along the latent axis. Inputs are [batch, latent] tensors. Return a [batch] tensor of KL values."
 starterCode: |
-  import * as tf from '@tensorflow/tfjs';
-
-  function klDivergence(mu: tf.Tensor, logVar: tf.Tensor): tf.Scalar {
-    // KL = -0.5 * mean(sum(1 + logVar - mu^2 - exp(logVar)))
-    // Sum over latent dims, mean over batch
-    return null; // your code here
-  }
-
-  function vaeLoss(
-    original: tf.Tensor,
-    reconstructed: tf.Tensor,
-    mu: tf.Tensor,
-    logVar: tf.Tensor,
-    beta: number
-  ): tf.Scalar {
-    // Reconstruction loss (MSE) + beta * KL divergence
-    return null; // your code here
+  function klGaussian(mu, logVar) {
+    return null;
   }
 solutionCode: |
-  import * as tf from '@tensorflow/tfjs';
-
-  function klDivergence(mu: tf.Tensor, logVar: tf.Tensor): tf.Scalar {
-    return logVar.add(1).sub(mu.square()).sub(logVar.exp())
-      .mul(-0.5)
-      .sum(1)
-      .mean() as tf.Scalar;
-  }
-
-  function vaeLoss(
-    original: tf.Tensor,
-    reconstructed: tf.Tensor,
-    mu: tf.Tensor,
-    logVar: tf.Tensor,
-    beta: number
-  ): tf.Scalar {
-    const reconLoss = original.sub(reconstructed).square().sum(1).mean();
-    const kl = klDivergence(mu, logVar);
-    return reconLoss.add(kl.mul(beta)) as tf.Scalar;
+  function klGaussian(mu, logVar) {
+    const muSq = mu.square();
+    const variance = logVar.exp();
+    const inner = tf.scalar(1).add(logVar).sub(muSq).sub(variance);
+    return inner.sum(-1).mul(-0.5);
   }
 testCode: |
-  describe('klDivergence', () => {
-    it('returns 0 for standard normal (mu=0, logVar=0)', async () => {
-      const mu = tf.zeros([10, 4]);
-      const logVar = tf.zeros([10, 4]);
-      const kl = await klDivergence(mu, logVar).array();
-      expect(Math.abs(kl)).toBeLessThan(0.01);
+  describe('klGaussian (real tf math)', () => {
+    it('zero mu + zero logVar → KL=0 (matches N(0,1))', () => {
+      const mu = tf.zeros([3, 4]);
+      const logVar = tf.zeros([3, 4]);
+      const kl = klGaussian(mu, logVar);
+      const arr = kl.dataSync();
+      for (const v of arr) expect(v).toBeCloseTo(0, 4);
     });
-    it('returns positive value for non-standard distributions', async () => {
-      const mu = tf.fill([10, 4], 2.0);
-      const logVar = tf.fill([10, 4], 1.0);
-      const kl = await klDivergence(mu, logVar).array();
-      expect(kl).toBeGreaterThan(0);
+    it('returns [batch] shape', () => {
+      const mu = tf.randomNormal([5, 8]);
+      const logVar = tf.zeros([5, 8]);
+      const kl = klGaussian(mu, logVar);
+      expect(kl.shape).toEqual([5]);
     });
-  });
-  describe('vaeLoss', () => {
-    it('returns a scalar', async () => {
-      const orig = tf.randomUniform([4, 784]);
-      const recon = tf.randomUniform([4, 784]);
-      const mu = tf.zeros([4, 16]);
-      const logVar = tf.zeros([4, 16]);
-      const loss = vaeLoss(orig, recon, mu, logVar, 1.0);
-      expect(loss.shape).toEqual([]);
-    });
-    it('higher beta increases loss for non-standard latent', async () => {
-      const orig = tf.randomUniform([4, 784]);
-      const mu = tf.fill([4, 16], 3.0);
-      const logVar = tf.fill([4, 16], 2.0);
-      const loss1 = await vaeLoss(orig, orig, mu, logVar, 0.1).array();
-      const loss2 = await vaeLoss(orig, orig, mu, logVar, 10.0).array();
-      expect(loss2).toBeGreaterThan(loss1);
+    it('non-zero mu produces positive KL', () => {
+      const mu = tf.tensor2d([[1, 1, 1, 1]]);
+      const logVar = tf.zeros([1, 4]);
+      const kl = klGaussian(mu, logVar);
+      expect(kl.dataSync()[0]).toBeGreaterThan(0);
     });
   });
-estimatedMinutes: 10
+estimatedMinutes: 18
 difficulty: advanced
-mlContent: arithmetic
+skillAxis: training

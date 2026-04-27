@@ -1,61 +1,51 @@
 slug: compute-attention
 lessonSlug: the-attention-problem
-title: "Compute Attention Weights"
-instructions: "Given a query vector and a set of key vectors (hidden states), compute attention weights using dot-product similarity and softmax normalization. Return both the weights and the attended output (weighted sum of values)."
+title: "Compute Scaled Dot-Product Attention"
+instructions: "Implement scaled dot-product attention using TensorFlow.js. Given query Q [N, d], key K [N, d], value V [N, d_v], compute Attention(Q,K,V) = softmax(Q·K^T / sqrt(d)) · V."
+mlContent: data
 starterCode: |
-  import * as tf from '@tensorflow/tfjs';
-
-  function computeAttention(
-    query: tf.Tensor1D,   // [hiddenDim]
-    keys: tf.Tensor2D,    // [seqLen, hiddenDim]
-    values: tf.Tensor2D   // [seqLen, hiddenDim]
-  ): { weights: tf.Tensor1D; output: tf.Tensor1D } {
-    // Step 1: Compute raw scores via dot product of query with each key
-    // Step 2: Apply softmax to get normalized weights
-    // Step 3: Compute weighted sum of values
-    // Return both weights and output
-    return { weights: null, output: null };
+  function scaledDotProductAttention(Q, K, V) {
+    return null;
   }
 solutionCode: |
-  import * as tf from '@tensorflow/tfjs';
-
-  function computeAttention(
-    query: tf.Tensor1D,
-    keys: tf.Tensor2D,
-    values: tf.Tensor2D
-  ): { weights: tf.Tensor1D; output: tf.Tensor1D } {
-    const scores = tf.matMul(keys, query.reshape([-1, 1])).squeeze();
-    const weights = tf.softmax(scores) as tf.Tensor1D;
-    const output = tf.matMul(weights.reshape([1, -1]), values).squeeze() as tf.Tensor1D;
-    return { weights, output };
+  function scaledDotProductAttention(Q, K, V) {
+    const dK = K.shape[K.shape.length - 1];
+    const scores = tf.matMul(Q, K, false, true);
+    const scaled = scores.div(tf.scalar(Math.sqrt(dK)));
+    const weights = tf.softmax(scaled);
+    return tf.matMul(weights, V);
   }
 testCode: |
-  describe('computeAttention', () => {
-    it('returns weights that sum to 1', async () => {
-      const query = tf.tensor1d([1, 0, 0, 0]);
-      const keys = tf.tensor2d([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0]]);
-      const values = tf.tensor2d([[10, 0, 0, 0], [0, 10, 0, 0], [0, 0, 10, 0]]);
-      const { weights } = computeAttention(query, keys, values);
-      const sum = await weights.sum().array();
-      expect(sum).toBeCloseTo(1.0, 4);
+  describe('scaledDotProductAttention (real tf.matMul + softmax)', () => {
+    it('output shape matches V shape', () => {
+      const Q = tf.randomNormal([4, 8]);
+      const K = tf.randomNormal([4, 8]);
+      const V = tf.randomNormal([4, 16]);
+      const out = scaledDotProductAttention(Q, K, V);
+      expect(out.shape).toEqual([4, 16]);
     });
-    it('attends most to the matching key', async () => {
-      const query = tf.tensor1d([1, 0, 0, 0]);
-      const keys = tf.tensor2d([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0]]);
-      const values = tf.tensor2d([[10, 0, 0, 0], [0, 10, 0, 0], [0, 0, 10, 0]]);
-      const { weights } = computeAttention(query, keys, values);
-      const w = await weights.array();
-      expect(w[0]).toBeGreaterThan(w[1]);
-      expect(w[0]).toBeGreaterThan(w[2]);
+
+    it('attention weights sum to 1 per row (softmax property)', () => {
+      const Q = tf.eye(3);
+      const K = tf.eye(3);
+      const V = tf.eye(3);
+      const out = scaledDotProductAttention(Q, K, V);
+      const rowSums = out.sum(1).arraySync();
+      for (const sum of rowSums) {
+        expect(sum).toBeCloseTo(1, 3);
+      }
     });
-    it('output shape matches value dimension', async () => {
-      const query = tf.tensor1d([1, 0, 0, 0]);
-      const keys = tf.tensor2d([[1, 0, 0, 0], [0, 1, 0, 0]]);
-      const values = tf.tensor2d([[1, 2, 3, 4], [5, 6, 7, 8]]);
-      const { output } = computeAttention(query, keys, values);
-      expect(output.shape).toEqual([4]);
+
+    it('identical Q and K produce diagonal-heavy attention', () => {
+      const Q = tf.tensor2d([[1, 0], [0, 1]]);
+      const K = tf.tensor2d([[1, 0], [0, 1]]);
+      const V = tf.tensor2d([[10, 0], [0, 20]]);
+      const out = scaledDotProductAttention(Q, K, V);
+      const arr = out.arraySync();
+      expect(arr[0][0]).toBeGreaterThan(arr[0][1]);
+      expect(arr[1][1]).toBeGreaterThan(arr[1][0]);
     });
   });
-estimatedMinutes: 10
-difficulty: intermediate
-mlContent: arithmetic
+estimatedMinutes: 18
+difficulty: advanced
+skillAxis: model_arch

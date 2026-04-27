@@ -129,4 +129,22 @@ function controlsToLatent(controls: ArtControls): number[] {
 
 <Exercise slug="disentangle-factors" />
 
+<DerivationDrawer summary="Disentanglement: why it's hard to measure">
+**Goal:** each latent dimension corresponds to one human-interpretable factor of variation (smile, age, lighting, pose).
+
+**Why it's hard:**
+
+1. **Identifiability:** without inductive bias, infinitely many disentangled solutions exist (rotation in latent space changes the basis). Vanilla VAE picks an arbitrary one.
+2. **Definition is contested:** total correlation? mutual information per dim? β-VAE provides a tradeoff knob but no canonical metric.
+3. **Evaluation requires labels:** we can only measure disentanglement on datasets with known generative factors (dSprites, 3DShapes, MPI3D). On CelebA we GUESS at smile/age/etc.
+
+**Common metrics (all flawed):**
+
+- **DCI** (Disentanglement, Completeness, Informativeness): trains a regressor per factor, scores feature importance.
+- **MIG** (Mutual Information Gap): MI between top-2 latent dims for each factor; penalizes spread across many dims.
+- **β-VAE metric:** classifier accuracy on a fixed-factor batch.
+
+**Locatello et al. 2019:** showed empirically that disentanglement without inductive bias is impossible. β-VAE, FactorVAE, TCVAE all produce LOOK-disentangled latents on toy data but fail to generalize to real data without explicit factor labels.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["Disentanglement means each latent dimension controls one independent factor", "Component props are the frontend analogy — each prop controls one visual aspect", "Test disentanglement by sweeping one dimension while fixing the rest", "Disentangled spaces enable intuitive creative control for end users"]} />

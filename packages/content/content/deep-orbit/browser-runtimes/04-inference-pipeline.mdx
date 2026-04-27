@@ -181,4 +181,14 @@ Build a complete inference pipeline with preprocessing and memory management.
 
 <Exercise slug="inference-pipeline" />
 
+## Knowledge check
+
+<Quiz
+  question="Why call await tensor.data() instead of tensor.dataSync()?"
+  options={[{"text":"data() is faster"},{"text":"dataSync() blocks the main thread; data() yields, keeping UI responsive — correct"},{"text":"data() returns better precision"},{"text":"dataSync() doesn't work in workers"}]}
+  correct={1}
+  explanation="dataSync() is synchronous — blocks JS execution until tensor data is read back from GPU. data() returns a Promise — yields control, lets UI/RAF callbacks run. For inference loops, always prefer await data()."
+  tier="intuition"
+/>
+
 <KeyTakeaways takeaways={["Inference follows the event → process → render pattern: receive input, run model.predict(), update UI", "tf.tidy() is essential — it auto-disposes intermediate tensors, preventing GPU memory leaks", "Always preprocess input to match training format — normalize values to the same ranges used during training", "tf.memory() lets you monitor tensor count and memory usage, like the DevTools memory tab"]} />

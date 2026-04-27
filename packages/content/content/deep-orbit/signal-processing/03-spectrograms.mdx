@@ -164,4 +164,22 @@ Compute a spectrogram and identify when a frequency appears.
 
 <Exercise slug="build-spectrogram" />
 
+<DerivationDrawer summary="Short-time Fourier transform (STFT) math">
+A spectrogram is a sequence of FFTs computed on overlapping windows of the signal:
+
+```
+for each window position t:
+  windowed = x[t:t+W] · w(W)              // multiply by window function
+  X[t, k]  = FFT(windowed)
+spectrogram[t, k] = |X[t, k]|²            // magnitude squared
+```
+
+**Parameters:**
+- **W (window size):** larger W = better frequency resolution, worse time resolution. Heisenberg uncertainty for signal processing.
+- **Hop (stride between windows):** smaller hop = more overlap, smoother spectrogram, more compute. Common: hop = W/4 (75% overlap).
+- **w(W) (window function):** Hann, Hamming, Blackman — all taper edges to reduce spectral leakage when the signal isn't periodic in W.
+
+**Output shape:** `[num_windows, num_frequencies]`. With sample rate fs and window W, frequency resolution is `fs / W`. Time resolution is `hop / fs`.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["A spectrogram is many FFTs stacked over time — showing how frequency content evolves, like a DevTools waterfall", "The STFT slides a window across the signal and computes the FFT at each position", "Window size is a tradeoff: large windows = better frequency detail, small windows = better time detail", "For DEEP SCAN, the spectrogram reveals the anomaly pulses periodically — not a constant signal"]} />

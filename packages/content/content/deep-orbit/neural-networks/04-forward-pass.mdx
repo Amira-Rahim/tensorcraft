@@ -78,4 +78,14 @@ Run a forward pass through the signal classifier.
 
 <Exercise slug="forward-pass" />
 
+## Knowledge check
+
+<Quiz
+  question="Your model expects input shape [null, 8] but you pass a tensor of shape [8]. What happens?"
+  options={[{"text":"It works — TFJS auto-batches"},{"text":"Shape mismatch error: missing batch dimension — correct"},{"text":"It silently produces wrong predictions"},{"text":"It produces a NaN output"}]}
+  correct={1}
+  explanation="The first dimension is the batch axis. A single sample of 8 features must be passed as shape [1, 8]: `tensor.reshape([1, 8])` or `tensor.expandDims(0)`."
+  tier="intuition"
+/>
+
 <KeyTakeaways takeaways={["Forward pass = data flows through layers, each transforming it", "model.predict() runs inference — input in, prediction out", "Shape flows: [batch, inputFeatures] → ... → [batch, outputFeatures]", "Shape mismatches are the #1 neural network debugging issue"]} />

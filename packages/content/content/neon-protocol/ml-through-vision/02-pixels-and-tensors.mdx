@@ -16,7 +16,8 @@ concept:
     feCode: "imageData.data[i * 4 + 0] // Red channel of pixel i (flat array)"
     mlTitle: "Tensor Indexing"
     mlCode: "tensor.slice([y, x, 0], [1, 1, 1]) // Red channel of pixel (y, x)"
-    tier: identity
+    tier: structural
+    breaks: "Uint8ClampedArray is a flat byte array with no inherent dimensionality — you compute pixel offsets manually. Tensor indexing uses tf.slice with explicit shape and strides — the operation knows what dimension is what. Same data, different access semantics."
 consequence:
   narrative: "Noor realizes the pixel patterns in Meridian's feeds are familiar — too familiar. NEON says: 'I have seen this encoding before. At Meridian.'"
   nextLessonTeaser: "Next: color channels — RGB, grayscale, and hidden data in color spaces"

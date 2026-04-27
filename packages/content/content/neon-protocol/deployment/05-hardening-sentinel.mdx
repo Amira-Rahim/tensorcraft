@@ -250,4 +250,14 @@ Write a stress test that validates memory stability and error handling under loa
 
 <Exercise slug="stress-test" />
 
+## Knowledge check
+
+<Quiz
+  question="How does adversarial input differ from normal input load testing?"
+  options={[{"text":"Same — both stress test latency"},{"text":"Adversarial inputs are crafted to FOOL the model, not stress compute — different threat model — correct"},{"text":"Adversarial requires GPU testing"},{"text":"Only language models have adversarial inputs"}]}
+  correct={1}
+  explanation="Load testing: high RPS with normal data → measures throughput + latency. Adversarial testing: low RPS with crafted perturbations → measures robustness against gaming. Both required for production."
+  tier="structural"
+/>
+
 <KeyTakeaways takeaways={["Stress-test models the same way you load-test APIs — concurrent requests, edge cases, failure injection", "Memory leaks from undisposed tensors are the most common production failure in browser ML", "Circuit breakers and timeouts prevent cascading failures when the model is under pressure", "Always validate inputs before inference — corrupted data should return errors, not crashes"]} />

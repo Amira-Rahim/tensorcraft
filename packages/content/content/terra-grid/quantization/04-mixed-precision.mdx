@@ -103,4 +103,26 @@ Assign precision levels to model layers and calculate total size.
 
 <Exercise slug="mixed-precision" />
 
+<DerivationDrawer summary="Mixed-precision training — loss scaling math">
+**Mixed precision** keeps FP32 master weights but does forward/backward in FP16 for speed.
+
+**The problem:** FP16 has range `~6e-8` to `~65504`. Most ML gradients fall in `1e-8` to `1e-3` — partly below FP16's smallest normal value → **gradient underflow** (gradients become 0).
+
+**Loss scaling fix:**
+
+```
+1. Compute loss L in FP16
+2. Scale: L_scaled = L · S         where S is a large constant (e.g. 2^15 = 32768)
+3. Backprop on L_scaled — gradients are ALSO scaled by S (chain rule)
+4. Gradients in FP16 are now in a representable range
+5. Before applying optimizer step, unscale: g_unscaled = g_scaled / S
+6. Apply optimizer step on FP32 master weights using unscaled gradients
+7. Cast updated FP32 weights back to FP16 for next forward pass
+```
+
+**Dynamic loss scaling:** S is adjusted automatically. If any gradient overflows (NaN/Inf), skip the step and halve S. If many steps pass without overflow, double S. PyTorch's `GradScaler` and TF's `LossScaleOptimizer` do this.
+
+**Why FP32 master weights?** Optimizer state (Adam's m, v) and weight updates need full precision — accumulating tiny updates (`-α · g`) in FP16 loses them to roundoff. Master weights are FP32; only the forward/backward arithmetic uses FP16.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["First and last layers are typically more sensitive to quantization", "Mixed precision balances compression ratio with accuracy preservation", "Per-layer precision assignment mirrors responsive image srcset strategies", "Mixed precision gives ~3x compression vs 4x for full Int8, but better accuracy"]} />

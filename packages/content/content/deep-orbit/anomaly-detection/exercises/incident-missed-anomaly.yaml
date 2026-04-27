@@ -1,0 +1,64 @@
+slug: incident-missed-anomaly
+lessonSlug: reconstruction-error
+title: "Incident — True Anomaly Slipped Through"
+mlContent: systems
+instructions: |
+  PAGER: signal at 14:33 was confirmed anomalous post-hoc, but the autoencoder did not flag it (reconstruction error below threshold). Build `auditReconstruction(input, reconstruction, perFeatureBaseline)` returning:
+
+    {
+      perFeatureError: number[],          // |input - reconstruction| per feature
+      suspiciouslyLowFeatures: number[],  // feature indices where reconstruction < baseline by 50%
+      requiresRetrain: boolean,            // true if any feature in suspiciouslyLowFeatures
+    }
+
+  The model may have memorized patterns specific to the anomaly type during training. Suspiciously low reconstruction error on a feature that should be hard suggests overfitting.
+starterCode: |
+  function auditReconstruction(input, reconstruction, perFeatureBaseline) {
+    return { perFeatureError: [], suspiciouslyLowFeatures: [], requiresRetrain: false };
+  }
+solutionCode: |
+  function auditReconstruction(input, reconstruction, perFeatureBaseline) {
+    const perFeatureError = input.map((v, i) => Math.abs(v - reconstruction[i]));
+    const suspiciouslyLowFeatures = [];
+    for (let i = 0; i < perFeatureError.length; i++) {
+      const baseline = perFeatureBaseline[i];
+      if (baseline > 0 && perFeatureError[i] < baseline * 0.5) {
+        suspiciouslyLowFeatures.push(i);
+      }
+    }
+    return {
+      perFeatureError,
+      suspiciouslyLowFeatures,
+      requiresRetrain: suspiciouslyLowFeatures.length > 0,
+    };
+  }
+testCode: |
+  describe('auditReconstruction', () => {
+    it('flags features where reconstruction is suspiciously good', () => {
+      const input = [1, 2, 3, 4];
+      const recon = [1.001, 2.001, 3.001, 4.001];   // tiny errors
+      const baseline = [0.1, 0.1, 0.1, 0.1];        // expected error
+      const r = auditReconstruction(input, recon, baseline);
+      expect(r.suspiciouslyLowFeatures).toEqual([0, 1, 2, 3]);
+      expect(r.requiresRetrain).toBe(true);
+    });
+
+    it('does not flag normal reconstruction error', () => {
+      const input = [1, 2, 3];
+      const recon = [1.1, 2.1, 3.1];
+      const baseline = [0.1, 0.1, 0.1];
+      const r = auditReconstruction(input, recon, baseline);
+      expect(r.suspiciouslyLowFeatures).toEqual([]);
+    });
+
+    it('reports per-feature errors', () => {
+      const input = [10, 20];
+      const recon = [12, 18];
+      const baseline = [1, 1];
+      const r = auditReconstruction(input, recon, baseline);
+      expect(r.perFeatureError).toEqual([2, 2]);
+    });
+  });
+estimatedMinutes: 15
+difficulty: advanced
+skillAxis: evaluation

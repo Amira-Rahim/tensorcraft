@@ -16,7 +16,8 @@ concept:
     feCode: "const data = await fetch(url).then(r => r.json())"
     mlTitle: "Model Loading"
     mlCode: "const model = await tf.loadLayersModel(url)"
-    tier: identity
+    tier: structural
+    breaks: "fetch returns a parsed JSON object; loadLayersModel returns a `LayersModel` instance with `predict`, `evaluate`, weights, and a compute graph. The HTTP call shape matches; the resolved value type does not. Subsequent code paths diverge — you call `.json()` once, you call `.predict()` many times, and the model holds onto GPU memory until disposed."
 consequence:
   narrative: "The DEEP SCAN model loads in 340ms. Nazari nods — within budget. Demir caches it in IndexedDB for offline use."
   nextLessonTeaser: "Next: running real-time inference with the loaded model"

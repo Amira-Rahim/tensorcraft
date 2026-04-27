@@ -13,6 +13,26 @@ export const revalidate = 86400;
 export default function AboutPage() {
   return (
     <main className="min-h-screen bg-page px-6 md:px-10 py-20">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "AboutPage",
+            name: "About Tensorcraft",
+            description:
+              "Why Tensorcraft was built, the bridge-tier method, and what we deliberately left out.",
+            url: "https://tensorcraft.app/about",
+            mainEntity: {
+              "@type": "EducationalOrganization",
+              name: "Tensorcraft",
+              url: "https://tensorcraft.app",
+              description:
+                "Browser-based machine learning course for frontend developers. JavaScript / TensorFlow.js. 297 lessons across 5 themes.",
+            },
+          }),
+        }}
+      />
       <article className="max-w-3xl mx-auto prose-invert">
         <p className="font-mono text-xs text-primary tracking-[0.18em] uppercase mb-3">
           // ABOUT

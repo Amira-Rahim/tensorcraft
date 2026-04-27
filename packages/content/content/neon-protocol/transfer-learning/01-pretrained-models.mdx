@@ -16,7 +16,8 @@ concept:
     feCode: "npm install lodash // thousands of hours of work, one command"
     mlTitle: "Pre-trained Model"
     mlCode: "const model = await tf.loadLayersModel('mobilenet_v2'); // millions of $ of training"
-    tier: identity
+    tier: structural
+    breaks: "An npm package ships versioned code that runs deterministically. A pretrained model ships weights from a specific training run on a specific dataset distribution — and inherits every bias, blind spot, and license constraint of that training. `npm install lodash` is reproducible; `loadLayersModel('mobilenet')` carries baggage."
 consequence:
   narrative: "The download completes. 25 megabytes. Amir holds up the drive, its status LED blinking green. 'Two million credits of training on this drive. Meridian trained it on their server farm over three weeks. We just downloaded it in forty seconds. That is the power of pre-trained models.'"
   nextLessonTeaser: "Next: feature reuse — why the patterns this model learned transfer to tasks it was never trained on"

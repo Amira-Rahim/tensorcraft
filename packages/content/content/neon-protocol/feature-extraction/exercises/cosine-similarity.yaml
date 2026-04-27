@@ -1,112 +1,40 @@
 slug: cosine-similarity
 lessonSlug: similarity-search
-title: "Implement Cosine Similarity Search"
-instructions: "Write a function that finds all items in a database whose cosine similarity to a query vector exceeds a given threshold. Return matching items sorted by similarity (descending), each with index, label, and similarity score rounded to 4 decimal places. This is how the resistance filters drone matches from camera feeds — only frames above the threshold are flagged."
+title: "Cosine Similarity Between Feature Vectors"
+mlContent: data
+instructions: "Build `cosineSim(a, b)` taking two 1D tensors and returning the cosine of the angle between them. Use tf.dot for the inner product and tf.norm for magnitudes. Return a JS number."
 starterCode: |
-  interface Match {
-    index: number;
-    label: string;
-    similarity: number;
-  }
-
-  interface DbEntry {
-    vector: number[];
-    label: string;
-  }
-
-  function findAboveThreshold(
-    query: number[],
-    database: DbEntry[],
-    threshold: number
-  ): Match[] {
-    // 1. Compute cosine similarity between query and each database entry
-    // 2. Filter to entries with similarity >= threshold
-    // 3. Round similarity to 4 decimal places
-    // 4. Sort by similarity descending
-    return [];
+  function cosineSim(a, b) {
+    return 0;
   }
 solutionCode: |
-  interface Match {
-    index: number;
-    label: string;
-    similarity: number;
-  }
-
-  interface DbEntry {
-    vector: number[];
-    label: string;
-  }
-
-  function cosineSim(a: number[], b: number[]): number {
-    let dot = 0, normA = 0, normB = 0;
-    for (let i = 0; i < a.length; i++) {
-      dot += a[i] * b[i];
-      normA += a[i] * a[i];
-      normB += b[i] * b[i];
-    }
-    return dot / (Math.sqrt(normA) * Math.sqrt(normB));
-  }
-
-  function findAboveThreshold(
-    query: number[],
-    database: DbEntry[],
-    threshold: number
-  ): Match[] {
-    const matches: Match[] = [];
-    for (let i = 0; i < database.length; i++) {
-      const sim = cosineSim(query, database[i].vector);
-      const rounded = Math.round(sim * 10000) / 10000;
-      if (rounded >= threshold) {
-        matches.push({ index: i, label: database[i].label, similarity: rounded });
-      }
-    }
-    matches.sort((a, b) => b.similarity - a.similarity);
-    return matches;
+  function cosineSim(a, b) {
+    const dot = tf.dot(a, b);
+    const denom = tf.norm(a).mul(tf.norm(b));
+    return dot.div(denom).dataSync()[0];
   }
 testCode: |
-  describe('findAboveThreshold', () => {
-    const db: DbEntry[] = [
-      { vector: [1, 0, 0], label: 'drone-x7' },
-      { vector: [0.95, 0.05, 0], label: 'drone-x7-alt' },
-      { vector: [0.5, 0.5, 0], label: 'unknown' },
-      { vector: [0, 1, 0], label: 'vehicle' },
-      { vector: [0, 0, 1], label: 'person' },
-    ];
-
-    it('returns only items above threshold', () => {
-      const results = findAboveThreshold([1, 0, 0], db, 0.9);
-      expect(results.length).toBe(2);
-      expect(results.every(r => r.similarity >= 0.9)).toBe(true);
+  describe('cosineSim (real tf.dot + tf.norm)', () => {
+    it('identical vectors → 1', () => {
+      const v = tf.tensor1d([3, 4]);
+      expect(cosineSim(v, v)).toBeCloseTo(1, 4);
     });
-
-    it('results are sorted by similarity descending', () => {
-      const results = findAboveThreshold([1, 0, 0], db, 0.5);
-      for (let i = 1; i < results.length; i++) {
-        expect(results[i].similarity).toBeLessThanOrEqual(results[i - 1].similarity);
-      }
+    it('orthogonal → 0', () => {
+      const a = tf.tensor1d([1, 0]);
+      const b = tf.tensor1d([0, 1]);
+      expect(cosineSim(a, b)).toBeCloseTo(0, 4);
     });
-
-    it('returns empty array when nothing matches', () => {
-      const results = findAboveThreshold([0, 0, 1], db, 0.99);
-      expect(results.length).toBe(1);
-      expect(results[0].label).toBe('person');
+    it('opposite direction → -1', () => {
+      const a = tf.tensor1d([1, 1]);
+      const b = tf.tensor1d([-1, -1]);
+      expect(cosineSim(a, b)).toBeCloseTo(-1, 4);
     });
-
-    it('includes correct index and label', () => {
-      const results = findAboveThreshold([1, 0, 0], db, 0.99);
-      expect(results[0].index).toBe(0);
-      expect(results[0].label).toBe('drone-x7');
-    });
-
-    it('similarities are rounded to 4 decimal places', () => {
-      const results = findAboveThreshold([1, 0, 0], db, 0.0);
-      results.forEach(r => {
-        const str = r.similarity.toString();
-        const decimals = str.includes('.') ? str.split('.')[1].length : 0;
-        expect(decimals).toBeLessThanOrEqual(4);
-      });
+    it('scale-invariant', () => {
+      const a = tf.tensor1d([1, 2]);
+      const b = tf.tensor1d([100, 200]);
+      expect(cosineSim(a, b)).toBeCloseTo(1, 4);
     });
   });
 estimatedMinutes: 10
 difficulty: intermediate
-mlContent: arithmetic
+skillAxis: data_prep

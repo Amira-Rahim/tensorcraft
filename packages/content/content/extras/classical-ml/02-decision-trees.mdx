@@ -15,7 +15,8 @@ concept:
     feCode: "if (age > 30) { if (income > 50k) { return 'approve'; } }"
     mlTitle: "Decision tree"
     mlCode: "tree.split('age', 30).split('income', 50000).predict()"
-    tier: identity
+    tier: structural
+    breaks: "Hand-written if/else encodes rules YOU chose. A decision tree learns split features and thresholds from data via algorithms like CART (Gini impurity, information gain). The runtime shape rhymes; the authoring story is opposite — one is engineered, one is fitted."
 consequence:
   narrative: "You can now build models that explain their reasoning. In regulated industries, this isn't optional — it's required."
   nextLessonTeaser: "Next: k-nearest neighbors — classification without any training at all"

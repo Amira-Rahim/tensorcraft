@@ -116,4 +116,25 @@ Build a projection head that maps encoder outputs to a shared normalized embeddi
 
 <Exercise slug="cross-modal-embed" />
 
+<DerivationDrawer summary="Why CLIP-style alignment generalizes to unseen modalities">
+**CLIP**: aligns image embeddings with text embeddings via contrastive learning over 400M image-text pairs.
+
+**Why this generalizes to zero-shot tasks:** the shared embedding space is dense — for any new (image, text) pair, both can be encoded and their cosine similarity computed directly. No retraining needed.
+
+**Math: what alignment gives you:**
+
+`sim(image, text) = cos(image_encoder(image), text_encoder(text))`
+
+- **Zero-shot classification:** rank classes by `sim(image, prompt(class))`.
+- **Image retrieval:** rank a corpus of images by `sim(image_i, query_text)`.
+- **Image generation guidance:** maximize `sim(generator(z), prompt)` over z.
+
+**Limits of CLIP-style alignment:**
+- The embedding space is shared but not perfectly aligned — same concept may have slightly different vectors per modality.
+- Long-tail concepts (rare nouns, specialized vocab) are under-represented in training data, embed poorly.
+- The cosine geometry forces all relationships to be "similarity" — no notion of negation, hierarchy, or temporal order.
+
+Newer approaches (LLaVA, BLIP-2) keep CLIP's image encoder but replace the alignment with a generative LLM that can reason about multimodal input.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["Cross-modal embeddings map different data types to the same vector space, like shared interfaces across platforms", "Projection heads adapt modality-specific features to the shared space dimensionality", "L2 normalization ensures all embeddings live on a unit hypersphere, making cosine similarity meaningful", "After alignment, you can directly compare an image to a text description using vector distance"]} />

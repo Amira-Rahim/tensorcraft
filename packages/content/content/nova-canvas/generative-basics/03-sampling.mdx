@@ -116,4 +116,21 @@ Think of temperature like a thermostat for creativity. Rohan uses it in his audi
 
 <Exercise slug="random-sampling" />
 
+<DerivationDrawer summary="Inverse CDF, rejection, Gibbs, MCMC: when to use which">
+**Inverse CDF sampling:** if F(x) is the cumulative distribution and you can compute F^(-1), sample u ~ Uniform(0,1) then x = F^(-1)(u). Works for: 1D distributions with closed-form inverse CDF (exponential, normal, etc).
+
+**Box-Muller transform:** generate two standard normals from two uniforms:
+```
+z_1 = √(−2 · ln(u_1)) · cos(2π · u_2)
+z_2 = √(−2 · ln(u_1)) · sin(2π · u_2)
+```
+Used inside `tf.randomNormal`.
+
+**Rejection sampling:** sample from a proposal q, accept with probability p(x)/(M · q(x)). Works for any p you can evaluate but can't directly sample. Inefficient if M (envelope constant) is large.
+
+**MCMC (Metropolis-Hastings, Gibbs):** chain of samples that converges to target distribution. Essential for high-dim distributions where exact sampling is intractable. Modern variants: NUTS, HMC.
+
+**For generative models:** ancestral sampling (sample latent, decode) is the standard. VAE: z ~ N(0,I), x = decoder(z). GAN: z ~ N(0,I), x = G(z). Diffusion: T-step ancestral chain.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["Sampling draws concrete values from abstract probability distributions", "Temperature controls the randomness-creativity tradeoff", "Low temperature produces conservative output; high temperature produces diverse output", "Seeded randomness enables reproducible generation for debugging and testing"]} />

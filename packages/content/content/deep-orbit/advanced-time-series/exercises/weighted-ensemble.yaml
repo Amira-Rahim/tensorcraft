@@ -1,38 +1,22 @@
 slug: weighted-ensemble
 lessonSlug: time-series-ensemble-methods
-title: "Build a Weighted Ensemble"
-instructions: "Write a function that takes an array of model predictions (each with a confidence score) and returns the confidence-weighted average prediction."
+title: "Confidence-Weighted Ensemble with tf"
+mlContent: data
+instructions: "Build `weightedEnsemble(predictions)` taking an array of {prediction: number[], confidence: number} and returning a JS number array. Stack predictions with tf.tensor2d, multiply by confidence weights, sum across the model axis, divide by total confidence, and read back as arraySync()."
 starterCode: |
-  interface ModelPred {
-    prediction: number[];
-    confidence: number;
-  }
-
-  function weightedEnsemble(predictions: ModelPred[]): number[] {
-    // Weight each prediction by its confidence
-    // result[i] = sum(pred[i] * confidence) / sum(confidence)
-    return null; // your code here
+  function weightedEnsemble(predictions) {
+    return [];
   }
 solutionCode: |
-  interface ModelPred {
-    prediction: number[];
-    confidence: number;
-  }
-
-  function weightedEnsemble(predictions: ModelPred[]): number[] {
-    const totalConf = predictions.reduce((s, p) => s + p.confidence, 0);
-    const dim = predictions[0].prediction.length;
-    const result = new Array(dim).fill(0);
-    for (const p of predictions) {
-      const weight = p.confidence / totalConf;
-      for (let i = 0; i < dim; i++) {
-        result[i] += p.prediction[i] * weight;
-      }
-    }
-    return result;
+  function weightedEnsemble(predictions) {
+    const stacked = tf.tensor2d(predictions.map(p => p.prediction));
+    const conf = tf.tensor1d(predictions.map(p => p.confidence));
+    const total = conf.sum();
+    const weights = conf.div(total).expandDims(1);
+    return stacked.mul(weights).sum(0).arraySync();
   }
 testCode: |
-  describe('weightedEnsemble', () => {
+  describe('weightedEnsemble (tf stacked weighted sum)', () => {
     it('returns correct dimension', () => {
       const result = weightedEnsemble([
         { prediction: [1, 2], confidence: 1 },
@@ -45,17 +29,16 @@ testCode: |
         { prediction: [10], confidence: 1 },
         { prediction: [20], confidence: 1 },
       ]);
-      expect(result[0]).toBeCloseTo(15);
+      expect(result[0]).toBeCloseTo(15, 4);
     });
     it('higher confidence has more influence', () => {
       const result = weightedEnsemble([
         { prediction: [10], confidence: 0.9 },
         { prediction: [20], confidence: 0.1 },
       ]);
-      expect(result[0]).toBeCloseTo(11);
+      expect(result[0]).toBeCloseTo(11, 4);
     });
   });
 estimatedMinutes: 10
 difficulty: intermediate
-mlContent: arithmetic
 skillAxis: model_arch

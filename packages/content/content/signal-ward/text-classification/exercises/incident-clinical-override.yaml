@@ -1,0 +1,75 @@
+slug: incident-clinical-override
+lessonSlug: confidence-calibration
+title: "Incident — Clinical Overrides Outpacing Calibration"
+mlContent: systems
+instructions: |
+  PAGER: clinician override rate on model flags jumped from 8% to 47% over 2 weeks. Triage which overrides are signal (calibration drift the model needs to learn) vs noise (clinician disagreement on edge cases).
+
+  Build `triageOverrides(overrides, calibrationBaseline)` returning:
+
+    {
+      retrainCandidates: Override[],   // overrides where model confidence > 0.85 AND clinician disagreed
+      noisyOverrides: Override[],      // overrides where model confidence in [0.5, 0.7] (uncertain region — disagreement expected)
+      retrainRecommended: boolean,     // true if retrainCandidates.length / overrides.length > 0.05
+      driftSignal: number,             // |observedRate - baseline.expectedOverrideRate|, 1 decimal
+    }
+
+  Each override: `{ caseId, modelConfidence, clinicianAccept }`. baseline.expectedOverrideRate is a fraction in [0, 1].
+starterCode: |
+  function triageOverrides(overrides, calibrationBaseline) {
+    return { retrainCandidates: [], noisyOverrides: [], retrainRecommended: false, driftSignal: 0 };
+  }
+solutionCode: |
+  function triageOverrides(overrides, calibrationBaseline) {
+    const retrainCandidates = overrides.filter(o => o.modelConfidence > 0.85 && !o.clinicianAccept);
+    const noisyOverrides = overrides.filter(o => o.modelConfidence >= 0.5 && o.modelConfidence <= 0.7);
+    const observedRate = overrides.length > 0
+      ? overrides.filter(o => !o.clinicianAccept).length / overrides.length
+      : 0;
+    const driftSignal = Math.round(Math.abs(observedRate - calibrationBaseline.expectedOverrideRate) * 10) / 10;
+    const retrainRecommended = overrides.length > 0
+      ? (retrainCandidates.length / overrides.length) > 0.05
+      : false;
+    return { retrainCandidates, noisyOverrides, retrainRecommended, driftSignal };
+  }
+testCode: |
+  describe('triageOverrides clinical incident', () => {
+    const baseline = { expectedOverrideRate: 0.08 };
+    it('flags retrain when high-confidence flags get overridden', () => {
+      const overrides = [
+        { caseId: 1, modelConfidence: 0.92, clinicianAccept: false },
+        { caseId: 2, modelConfidence: 0.88, clinicianAccept: false },
+        { caseId: 3, modelConfidence: 0.90, clinicianAccept: false },
+      ];
+      const r = triageOverrides(overrides, baseline);
+      expect(r.retrainCandidates).toHaveLength(3);
+      expect(r.retrainRecommended).toBe(true);
+    });
+
+    it('isolates noisy mid-confidence overrides', () => {
+      const overrides = [
+        { caseId: 1, modelConfidence: 0.6, clinicianAccept: false },
+        { caseId: 2, modelConfidence: 0.65, clinicianAccept: true },
+      ];
+      const r = triageOverrides(overrides, baseline);
+      expect(r.noisyOverrides).toHaveLength(2);
+    });
+
+    it('computes drift signal as deviation from baseline', () => {
+      const overrides = [
+        { caseId: 1, modelConfidence: 0.9, clinicianAccept: false },
+        { caseId: 2, modelConfidence: 0.9, clinicianAccept: false },
+        { caseId: 3, modelConfidence: 0.9, clinicianAccept: true },
+      ];
+      const r = triageOverrides(overrides, baseline);
+      expect(r.driftSignal).toBeGreaterThan(0.5);
+    });
+
+    it('handles empty input', () => {
+      const r = triageOverrides([], baseline);
+      expect(r.retrainRecommended).toBe(false);
+    });
+  });
+estimatedMinutes: 18
+difficulty: advanced
+skillAxis: evaluation

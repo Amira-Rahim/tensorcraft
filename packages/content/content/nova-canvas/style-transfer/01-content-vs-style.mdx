@@ -116,4 +116,20 @@ Compute a Gram matrix from CNN feature activations to capture an image's style.
 
 <Exercise slug="separate-content-style" />
 
+<DerivationDrawer summary="Content + style decomposition via CNN feature maps">
+**Gatys et al. observation:** in a pretrained CNN (like VGG-19), different layers capture different aspects of an image:
+
+- **Mid-deep layers (conv4_2 in VGG):** content features. Spatial layout of objects, large structures. L2 distance between feature maps preserves "what's where".
+- **All layers' Gram matrices:** style features. Texture statistics regardless of position. L2 distance between Grams preserves "how it looks".
+
+**The decomposition is empirical, not theoretical:** there's no proof that VGG features cleanly separate content from style. It's that VGG was trained on object recognition (content-focused), and deeper layers became spatially-coarse + content-aware.
+
+**Implication:** style transfer quality depends on:
+- The choice of content layer (typically conv4_2 for VGG-19; varies for other backbones)
+- The choice of style layers (typically conv1_1 + conv2_1 + conv3_1 + conv4_1 + conv5_1)
+- The relative weight α : β between content loss and style loss
+
+There is no universal "correct" decomposition — you tune for the visual effect you want.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["CNNs naturally separate content (deep layers) from style (early layers), like HTML separates from CSS", "Content is captured by activations of deep convolutional layers — what objects and structures are present", "Style is captured by Gram matrices — correlations between feature channels that encode textures and patterns", "The same content can be rendered in any style, just like the same HTML can wear any stylesheet"]} />

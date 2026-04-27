@@ -1,30 +1,37 @@
 slug: word-tokenize
 lessonSlug: word-tokenization
-title: "Word Tokenize"
-instructions: "Implement a wordTokenize function that splits clinical text into tokens. It should: lowercase the input, preserve hyphenated words (e.g., 'non-insulin'), preserve decimal numbers (e.g., '98.6'), and strip other punctuation. Return an array of token strings."
+title: "Tokenize Text + Convert to ID Tensor"
+mlContent: data
+instructions: "Build `tokenizeToTensor(text, vocab)` that splits text on whitespace, looks up each word in vocab (a Map<string, number>), uses 0 for unknown words, and returns a 1D int32 tensor of IDs."
 starterCode: |
-  function wordTokenize(text: string): string[] {
-    // 1. Lowercase the text
-    // 2. Use a regex to match words (with hyphens) and numbers (with decimals)
-    // 3. Return the matches or empty array
-    return null; // your code here
+  function tokenizeToTensor(text, vocab) {
+    return null;
   }
-
-  const tokens = wordTokenize('Pt started on non-insulin therapy. Temp 98.6F.');
 solutionCode: |
-  function wordTokenize(text: string): string[] {
-    return text.toLowerCase().match(/[a-z]+(?:-[a-z]+)*|[0-9]+(?:\.[0-9]+)?/g) || [];
+  function tokenizeToTensor(text, vocab) {
+    const words = text.toLowerCase().split(/\s+/).filter(w => w.length > 0);
+    const ids = words.map(w => vocab.get(w) ?? 0);
+    return tf.tensor1d(ids, 'int32');
   }
-
-  const tokens = wordTokenize('Pt started on non-insulin therapy. Temp 98.6F.');
 testCode: |
-  describe('Word Tokenize', () => {
-    it('returns an array', () => { expect(Array.isArray(tokens)).toBe(true); });
-    it('lowercases tokens', () => { tokens.forEach(t => { if (/[a-z]/.test(t)) expect(t).toBe(t.toLowerCase()); }); });
-    it('preserves hyphenated words', () => { expect(tokens).toContain('non-insulin'); });
-    it('preserves decimal numbers', () => { expect(tokens).toContain('98.6'); });
-    it('removes punctuation', () => { expect(tokens.some(t => t.includes('.')  && !/^[0-9]/.test(t))).toBe(false); });
+  describe('tokenizeToTensor (real tf.tensor1d)', () => {
+    it('looks up known tokens', () => {
+      const vocab = new Map([['hello', 1], ['world', 2]]);
+      const t = tokenizeToTensor('hello world', vocab);
+      expect(Array.from(t.dataSync())).toEqual([1, 2]);
+    });
+    it('uses 0 for unknown tokens', () => {
+      const vocab = new Map([['hello', 1]]);
+      const t = tokenizeToTensor('hello unknown', vocab);
+      expect(Array.from(t.dataSync())).toEqual([1, 0]);
+    });
+    it('returns int32 tensor', () => {
+      const vocab = new Map([['x', 5]]);
+      const t = tokenizeToTensor('x x x', vocab);
+      expect(t.dtype).toBe('int32');
+      expect(t.shape).toEqual([3]);
+    });
   });
-estimatedMinutes: 7
+estimatedMinutes: 10
 difficulty: beginner
-mlContent: arithmetic
+skillAxis: data_prep

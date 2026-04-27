@@ -125,4 +125,30 @@ Implement CLIP-guided image generation that steers diffusion toward prompt align
 
 <Exercise slug="clip-guided" />
 
+<DerivationDrawer summary="CLIP guidance: backprop through CLIP score">
+**CLIP-guided generation:** steer a generator (GAN, diffusion) toward an image whose CLIP embedding matches a target text embedding.
+
+**Setup:**
+```
+target_text_emb = clip.encode_text(prompt)
+x = generator(z)                              // current generation
+image_emb = clip.encode_image(x)
+loss = − cosine(image_emb, target_text_emb)
+```
+
+**Optimization:** backprop through CLIP back to either z (latent) or x (pixel space):
+```
+z ← z − η · ∇_z loss        // latent-space guidance (smoother)
+or
+x ← x − η · ∇_x loss        // pixel-space guidance (more flexible)
+```
+
+**Issues:**
+- CLIP gradients are noisy → result has "CLIP look" (oversaturated, hallucinated text fragments).
+- Adversarial pixel patterns can satisfy CLIP without looking right to humans.
+- Fix: combine with a perceptual loss (LPIPS) or content prior.
+
+**Modern: diffusion guidance.** Classifier-free guidance (CFG) is the dominant technique now — see diffusion lessons. CLIP guidance was the bridge between old GAN-based art and modern diffusion.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["CLIP-guided generation uses CLIP as a scoring critic, like ESLint guides code toward patterns", "At each denoising step, compute the gradient of CLIP similarity and nudge the image toward the prompt", "Guidance strength controls how aggressively the image is steered — too much causes artifacts", "The AI-Wrong moment: high CLIP score does not guarantee artistic quality — alignment is not truth"]} />

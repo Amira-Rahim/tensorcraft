@@ -145,4 +145,14 @@ Build an ensemble anomaly detector combining multiple methods.
 
 <Exercise slug="ensemble-detector" />
 
+## Knowledge check
+
+<Quiz
+  question="How do autoencoders detect anomalies without anomaly labels?"
+  options={[{"text":"They use clustering on the latent space"},{"text":"Train on normal data only — high reconstruction error on a new sample = anomaly — correct"},{"text":"They require labeled examples of both normal + anomalous"},{"text":"They flag samples below a confidence threshold"}]}
+  correct={1}
+  explanation="Train autoencoder to reconstruct normal samples (low error). Anomalies don't fit the learned representation — high reconstruction error. Threshold the error to flag anomalies. Unsupervised: only need normal data."
+  tier="intuition"
+/>
+
 <KeyTakeaways takeaways={["Ensemble detection combines multiple methods — majority vote gives higher confidence than any single detector", "Three complementary approaches: statistics (simple), autoencoder (learned), LSTM (temporal)", "100% detector agreement = highest confidence, like multiple independent tests confirming the same bug", "The model detects and quantifies — interpretation (alien or coincidence?) remains a human decision"]} />

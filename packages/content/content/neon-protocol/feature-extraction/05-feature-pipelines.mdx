@@ -224,4 +224,14 @@ Build a feature pipeline class that chains preprocessing, extraction, and normal
 
 <Exercise slug="build-pipeline" />
 
+## Knowledge check
+
+<Quiz
+  question="What's training/serving skew?"
+  options={[{"text":"Model trained on different data than evaluated"},{"text":"Preprocessing in production differs from training — same input, different features — correct"},{"text":"Train/test split that overlaps"},{"text":"Model loss is unstable"}]}
+  correct={1}
+  explanation="If training preprocessing applies normalize→onehot but production applies onehot→normalize, the model sees different features in production. Subtle, silent. Catch via shadow inference (run prod preprocessing on training samples, compare features)."
+  tier="structural"
+/>
+
 <KeyTakeaways takeaways={["Feature pipelines chain preprocess, extract, normalize, and index stages — exactly like Express middleware", "L2 normalization makes cosine similarity equivalent to dot product, simplifying search", "The pipeline pattern decouples stages so you can swap backbones or change normalization independently", "The resistance now has a complete in-browser surveillance detection system — ingest to query — with no server dependency"]} />

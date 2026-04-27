@@ -134,4 +134,31 @@ Build a neural synthesizer that generates audio from latent vectors and plays it
 
 <Exercise slug="neural-synth" />
 
+<DerivationDrawer summary="WaveNet vs Mel-VAE vs Diffusion: audio synthesis tradeoffs">
+**WaveNet (autoregressive):** predicts one sample at a time, conditioned on all previous samples. Sample-level quality, very slow inference (44100 forward passes per second of audio).
+
+```
+p(x_t | x_1, ..., x_{t-1})       // sample-by-sample
+```
+
+**Mel-conditioned vocoder (WaveGlow, HiFi-GAN):** predicts waveform from a mel spectrogram in parallel. Much faster (one forward pass per ~256 samples) at the cost of slight quality reduction.
+
+```
+spectrogram = text-to-mel(text)
+waveform = vocoder(spectrogram)        // parallel decode
+```
+
+**Diffusion (DiffWave, WaveGrad):** denoising chain, similar to image diffusion. Quality on par with WaveNet, parallel sample-step inference. Modern systems (Bark, MusicGen) use diffusion or autoregressive token models on neural audio codecs (EnCodec, SoundStream).
+
+**Latency vs quality table:**
+```
+                      Quality   Inference latency
+WaveNet (sample-by-sample): 5/5     50× real-time (way too slow live)
+WaveGlow (mel vocoder):     4.5/5   0.05× real-time (very fast)
+HiFi-GAN:                   4.7/5   0.02× real-time
+DiffWave:                   4.8/5   0.5× real-time (fastest with quality)
+EnCodec + autoregressive:   4.8/5   0.2× real-time
+```
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["Neural audio synthesis maps latent vectors to waveforms — same architecture as image generation", "OscillatorNode produces 4 fixed waveform types; neural networks produce infinite timbres", "Generated Float32Array samples connect directly to AudioBuffer for playback", "Latent space interpolation creates smooth morphing between sounds, just like image morphing"]} />

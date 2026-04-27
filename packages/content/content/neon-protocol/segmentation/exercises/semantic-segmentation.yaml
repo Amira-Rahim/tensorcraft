@@ -1,74 +1,39 @@
 slug: semantic-segmentation
 lessonSlug: semantic-segmentation
-title: "Build a Semantic Segmentation Mask"
-instructions: "Write a function that takes raw segmentation logits (a 3D array of shape [height, width, numClasses]) and returns a 2D mask where each pixel contains the index of the class with the highest score."
+title: "Per-Pixel Class Prediction via argMax"
+mlContent: data
+instructions: "Build `segmentImage(logits)` taking [H, W, numClasses] logits tensor and returning [H, W] int32 class assignments via argMax along the channel axis."
 starterCode: |
-  function segmentationMask(
-    logits: number[][][],
-    height: number,
-    width: number,
-    numClasses: number
-  ): number[][] {
-    // For each pixel, find the class with the highest logit value
-    // Return a 2D array [height][width] of class indices
-    return []; // your code here
+  function segmentImage(logits) {
+    return null;
   }
 solutionCode: |
-  function segmentationMask(
-    logits: number[][][],
-    height: number,
-    width: number,
-    numClasses: number
-  ): number[][] {
-    const mask: number[][] = [];
-    for (let y = 0; y < height; y++) {
-      const row: number[] = [];
-      for (let x = 0; x < width; x++) {
-        let maxIdx = 0;
-        let maxVal = logits[y][x][0];
-        for (let c = 1; c < numClasses; c++) {
-          if (logits[y][x][c] > maxVal) {
-            maxVal = logits[y][x][c];
-            maxIdx = c;
-          }
-        }
-        row.push(maxIdx);
-      }
-      mask.push(row);
-    }
-    return mask;
+  function segmentImage(logits) {
+    return logits.argMax(-1).cast('int32');
   }
 testCode: |
-  describe('segmentationMask', () => {
-    it('returns correct class for single pixel', () => {
-      const logits = [[[0.1, 0.9, 0.3]]];
-      const mask = segmentationMask(logits, 1, 1, 3);
-      expect(mask[0][0]).toBe(1);
+  describe('segmentImage (real tf.argMax)', () => {
+    it('reduces channel axis', () => {
+      const logits = tf.tensor3d([
+        [[10, 0, 0], [0, 10, 0]],
+        [[0, 0, 10], [10, 0, 0]]
+      ]);
+      const seg = segmentImage(logits);
+      expect(seg.shape).toEqual([2, 2]);
+      const arr = seg.arraySync();
+      expect(arr).toEqual([[0, 1], [2, 0]]);
     });
-
-    it('handles a 2x2 image', () => {
-      const logits = [
-        [[0.8, 0.1, 0.1], [0.1, 0.7, 0.2]],
-        [[0.2, 0.2, 0.6], [0.3, 0.3, 0.4]],
-      ];
-      const mask = segmentationMask(logits, 2, 2, 3);
-      expect(mask[0][0]).toBe(0);
-      expect(mask[0][1]).toBe(1);
-      expect(mask[1][0]).toBe(2);
-      expect(mask[1][1]).toBe(2);
-    });
-
-    it('returns 2D array with correct dimensions', () => {
-      const logits = [
-        [[0.5, 0.5], [0.3, 0.7]],
-        [[0.9, 0.1], [0.4, 0.6]],
-        [[0.2, 0.8], [0.6, 0.4]],
-      ];
-      const mask = segmentationMask(logits, 3, 2, 2);
-      expect(mask.length).toBe(3);
-      expect(mask[0].length).toBe(2);
+    it('handles 5 classes', () => {
+      const logits = tf.randomNormal([4, 4, 5]);
+      const seg = segmentImage(logits);
+      expect(seg.shape).toEqual([4, 4]);
+      const flat = Array.from(seg.dataSync());
+      for (const v of flat) {
+        expect(v).toBeGreaterThanOrEqual(0);
+        expect(v).toBeLessThan(5);
+      }
     });
   });
-estimatedMinutes: 8
+estimatedMinutes: 10
 difficulty: intermediate
-mlContent: arithmetic
+skillAxis: model_arch

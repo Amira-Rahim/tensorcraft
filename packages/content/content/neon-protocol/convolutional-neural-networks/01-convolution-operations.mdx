@@ -159,4 +159,31 @@ Implement a 2D convolution function that applies a kernel to a grayscale image.
 
 <Exercise slug="apply-convolution" />
 
+<DerivationDrawer summary="Convolution output size and stride math">
+For input width W, kernel size K, padding P, stride S, the output width is:
+
+`W_out = floor((W - K + 2P) / S) + 1`
+
+**Common patterns:**
+- `K=3, P=1, S=1` → `W_out = W` ("same" padding — preserves size)
+- `K=3, P=0, S=1` → `W_out = W - 2` ("valid" padding — shrinks by 2)
+- `K=3, P=1, S=2` → `W_out = ceil(W / 2)` (downsample by 2)
+
+**Number of learnable parameters** in one conv layer with `F` filters, kernel `KxK`, input channels `C`:
+
+`params = (K · K · C + 1) · F`     // +1 for bias per filter
+
+For a 3×3 conv with 32 filters on RGB input: `(9 · 3 + 1) · 32 = 896` learnable scalars.
+</DerivationDrawer>
+
+## Knowledge check
+
+<Quiz
+  question="For a 28×28 input with a 3×3 conv kernel, stride 1, valid padding — what's the output size?"
+  options={[{"text":"28×28"},{"text":"26×26 — correct"},{"text":"30×30"},{"text":"14×14"}]}
+  correct={1}
+  explanation="Output size = (W − K + 2P) / S + 1. With W=28, K=3, P=0, S=1: (28 − 3) / 1 + 1 = 26. Valid padding (P=0) shrinks by K−1 each dimension."
+  tier="structural"
+/>
+
 <KeyTakeaways takeaways={["A convolution slides a kernel across an image, computing weighted sums — the same operation as CSS blur and sharpen filters", "Different kernels detect different features: edges, textures, gradients", "Padding controls whether the output shrinks (valid) or stays the same size (same)", "In a CNN, the kernel weights are learned during training instead of being hardcoded"]} />

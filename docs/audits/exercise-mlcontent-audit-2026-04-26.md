@@ -1,7 +1,7 @@
 # Exercise mlContent Audit — 2026-04-26
 
-Total exercises: **300**
-Exercises updated with new `mlContent` field: **4**
+Total exercises: **315**
+Exercises updated with new `mlContent` field: **0**
 
 ## Heuristic
 
@@ -18,12 +18,12 @@ Auto-classified by `tf.*` API surface in the solution code:
 
 | mlContent | Count | % |
 |---|---:|---:|
-| arithmetic | 252 | 84.0% |
-| data | 17 | 5.7% |
-| model | 8 | 2.7% |
-| training | 3 | 1.0% |
-| evaluation | 7 | 2.3% |
-| deployment | 13 | 4.3% |
+| arithmetic | 232 | 73.7% |
+| data | 42 | 13.3% |
+| model | 12 | 3.8% |
+| training | 4 | 1.3% |
+| evaluation | 11 | 3.5% |
+| deployment | 14 | 4.4% |
 | systems | 0 | 0.0% |
 
 ## Difficulty/content mismatches (0)
@@ -40,12 +40,15 @@ Recommend either: (a) downgrade difficulty to `beginner`, or (b) strengthen exer
 |---|---|---|
 |  |  | arithmetic |
 |  |  | arithmetic |
+|  |  | data |
+|  |  | data |
 |  |  | arithmetic |
 |  |  | arithmetic |
 |  |  | arithmetic |
 |  |  | arithmetic |
 |  |  | arithmetic |
-|  |  | arithmetic |
+|  |  | evaluation |
+|  |  | evaluation |
 |  |  | arithmetic |
 |  |  | arithmetic |
 |  |  | arithmetic |
@@ -75,13 +78,10 @@ Recommend either: (a) downgrade difficulty to `beginner`, or (b) strengthen exer
 |  |  | data |
 |  |  | model |
 |  |  | arithmetic |
-|  |  | arithmetic |
+|  |  | model |
 |  |  | arithmetic |
 |  |  | arithmetic |
 |  |  | deployment |
-|  |  | arithmetic |
-|  |  | arithmetic |
-|  |  | arithmetic |
 |  |  | arithmetic |
 |  |  | arithmetic |
 |  |  | arithmetic |
@@ -89,4 +89,4 @@ Recommend either: (a) downgrade difficulty to `beginner`, or (b) strengthen exer
 |  |  | arithmetic |
 |  |  | arithmetic |
 
-_Showing first 50 of 300. Full list in `packages/content/.velite/exercises.json` after build._
+_Showing first 50 of 315. Full list in `packages/content/.velite/exercises.json` after build._

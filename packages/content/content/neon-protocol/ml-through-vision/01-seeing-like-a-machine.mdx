@@ -16,7 +16,8 @@ concept:
     feCode: "const pixels = ctx.getImageData(0, 0, w, h).data; // Uint8ClampedArray"
     mlTitle: "Image Tensor"
     mlCode: "const tensor = tf.browser.fromPixels(canvas); // [height, width, channels]"
-    tier: identity
+    tier: structural
+    breaks: "`getImageData` returns `Uint8ClampedArray` with values 0-255. `tf.browser.fromPixels` returns a float32 tensor with shape `[h, w, channels]` — and most models then need normalization to [0,1] or per-channel mean/std before inference. The pixels are the same; the numeric type, range, and rank are not."
 consequence:
   narrative: "NEON boots up — glitchy, disoriented, but functional. 'I used to track 14 million faces simultaneously. Now I am helping you debug a tensor shape mismatch. How the mighty have fallen.'"
   nextLessonTeaser: "Next: pixels and tensors — understanding the shape of image data"

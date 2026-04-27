@@ -1,51 +1,55 @@
 slug: cross-modal-embed
 lessonSlug: cross-modal-embeddings
-title: "Build a Projection Head"
-instructions: "Build a projection head model that takes a feature vector of inputDim, passes it through a dense layer (outputDim units, relu), another dense layer (outputDim units, linear), and applies layer normalization. This maps encoder outputs to a shared embedding space."
+title: "Build a Cross-Modal Projection Head"
+instructions: "Build `projectToShared(vector, projectionMatrix)` that takes a per-modality vector (shape [d_in]) and projects it to a shared embedding space (shape [d_out]) via matrix multiplication. Then build `crossModalSimilarity(textVec, imageVec, textProj, imageProj)` that projects both and returns cosine similarity."
+mlContent: data
 starterCode: |
-  import * as tf from '@tensorflow/tfjs';
-
-  function buildProjectionHead(inputDim: number, outputDim: number): tf.LayersModel {
-    const input = tf.input({ shape: [inputDim] });
-    // 1. Dense: outputDim units, relu activation
-    // 2. Dense: outputDim units, linear activation
-    // 3. Layer normalization
-    return null; // your code here
+  function projectToShared(vector, projectionMatrix) {
+    return null;
+  }
+  function crossModalSimilarity(textVec, imageVec, textProj, imageProj) {
+    return 0;
   }
 solutionCode: |
-  import * as tf from '@tensorflow/tfjs';
-
-  function buildProjectionHead(inputDim: number, outputDim: number): tf.LayersModel {
-    const input = tf.input({ shape: [inputDim] });
-    let x = tf.layers.dense({
-      units: outputDim, activation: 'relu'
-    }).apply(input) as tf.SymbolicTensor;
-    x = tf.layers.dense({
-      units: outputDim, activation: 'linear'
-    }).apply(x) as tf.SymbolicTensor;
-    const normalized = tf.layers.layerNormalization().apply(x) as tf.SymbolicTensor;
-    return tf.model({ inputs: input, outputs: normalized });
+  function projectToShared(vector, projectionMatrix) {
+    const reshaped = vector.reshape([1, vector.shape[0]]);
+    const projected = tf.matMul(reshaped, projectionMatrix);
+    return projected.squeeze();
+  }
+  function crossModalSimilarity(textVec, imageVec, textProj, imageProj) {
+    const t = projectToShared(textVec, textProj);
+    const i = projectToShared(imageVec, imageProj);
+    const dot = tf.dot(t, i);
+    const cos = dot.div(tf.norm(t).mul(tf.norm(i)));
+    return cos.dataSync()[0];
   }
 testCode: |
-  describe('buildProjectionHead', () => {
-    it('maps inputDim to outputDim', () => {
-      const model = buildProjectionHead(512, 256);
-      expect(model.inputShape).toEqual([null, 512]);
-      expect(model.outputShape).toEqual([null, 256]);
-    });
-    it('produces normalized outputs', () => {
-      const model = buildProjectionHead(64, 32);
-      const input = tf.randomUniform([4, 64]);
-      const output = model.predict(input) as tf.Tensor;
-      expect(output.shape).toEqual([4, 32]);
-    });
-    it('works with different dimensions', () => {
-      const model = buildProjectionHead(128, 64);
-      const input = tf.randomNormal([2, 128]);
-      const output = model.predict(input) as tf.Tensor;
-      expect(output.shape).toEqual([2, 64]);
+  describe('projectToShared (real tf.matMul)', () => {
+    it('projects to specified output dimension', () => {
+      const v = tf.tensor1d([1, 2, 3]);
+      const W = tf.randomNormal([3, 5]);
+      const out = projectToShared(v, W);
+      expect(out.shape).toEqual([5]);
     });
   });
-estimatedMinutes: 10
-difficulty: intermediate
-mlContent: arithmetic
+
+  describe('crossModalSimilarity', () => {
+    it('aligned projections produce high similarity', () => {
+      const text = tf.tensor1d([1, 0]);
+      const image = tf.tensor1d([1, 0]);
+      const sameProj = tf.eye(2);
+      const sim = crossModalSimilarity(text, image, sameProj, sameProj);
+      expect(sim).toBeCloseTo(1, 4);
+    });
+
+    it('orthogonal projections yield low similarity', () => {
+      const text = tf.tensor1d([1, 0]);
+      const image = tf.tensor1d([0, 1]);
+      const sameProj = tf.eye(2);
+      const sim = crossModalSimilarity(text, image, sameProj, sameProj);
+      expect(sim).toBeCloseTo(0, 4);
+    });
+  });
+estimatedMinutes: 15
+difficulty: advanced
+skillAxis: model_arch

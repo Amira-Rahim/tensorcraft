@@ -1,0 +1,75 @@
+slug: incident-misclassification-audit
+lessonSlug: non-max-suppression
+title: "Incident — Wrong Match Returned by Face System"
+mlContent: systems
+instructions: |
+  PAGER: face match returned subject B for a search of subject A. Build `auditMatch(rankedCandidates, returnedId, threshold)` returning:
+
+    {
+      returnedConfidence: number,
+      topConfidence: number,
+      matchedAtTop: boolean,
+      thresholdAdequate: boolean,    // gap between top-1 and top-2 score >= 0.1
+      recommendation: string,
+    }
+
+  rankedCandidates is sorted by score descending. Recommendation: 'reject-and-flag' if not matchedAtTop, 'tighten-threshold' if matchedAtTop but gap < 0.05, 'human-review' otherwise.
+starterCode: |
+  function auditMatch(rankedCandidates, returnedId, threshold) {
+    return { returnedConfidence: 0, topConfidence: 0, matchedAtTop: false, thresholdAdequate: false, recommendation: '' };
+  }
+solutionCode: |
+  function auditMatch(rankedCandidates, returnedId, threshold) {
+    const top = rankedCandidates[0];
+    const second = rankedCandidates[1] || { score: 0 };
+    const returned = rankedCandidates.find(c => c.id === returnedId) || { score: 0 };
+    const matchedAtTop = top.id === returnedId;
+    const gap = top.score - second.score;
+    const thresholdAdequate = gap >= 0.1;
+    let recommendation;
+    if (!matchedAtTop) recommendation = 'reject-and-flag';
+    else if (gap < 0.05) recommendation = 'tighten-threshold';
+    else recommendation = 'human-review';
+    return {
+      returnedConfidence: Math.round(returned.score * 100) / 100,
+      topConfidence: Math.round(top.score * 100) / 100,
+      matchedAtTop,
+      thresholdAdequate,
+      recommendation,
+    };
+  }
+testCode: |
+  describe('auditMatch', () => {
+    it('flags non-top match for rejection', () => {
+      const candidates = [
+        { id: 'A', score: 0.92 },
+        { id: 'B', score: 0.71 },
+      ];
+      const r = auditMatch(candidates, 'B', 0.7);
+      expect(r.matchedAtTop).toBe(false);
+      expect(r.recommendation).toBe('reject-and-flag');
+    });
+
+    it('flags tight gap for threshold tightening', () => {
+      const candidates = [
+        { id: 'A', score: 0.85 },
+        { id: 'B', score: 0.82 },
+      ];
+      const r = auditMatch(candidates, 'A', 0.8);
+      expect(r.matchedAtTop).toBe(true);
+      expect(r.recommendation).toBe('tighten-threshold');
+    });
+
+    it('recommends human review when match is clear', () => {
+      const candidates = [
+        { id: 'A', score: 0.95 },
+        { id: 'B', score: 0.40 },
+      ];
+      const r = auditMatch(candidates, 'A', 0.7);
+      expect(r.thresholdAdequate).toBe(true);
+      expect(r.recommendation).toBe('human-review');
+    });
+  });
+estimatedMinutes: 15
+difficulty: advanced
+skillAxis: evaluation

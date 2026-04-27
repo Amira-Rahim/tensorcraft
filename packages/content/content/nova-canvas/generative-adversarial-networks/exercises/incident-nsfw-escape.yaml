@@ -1,0 +1,69 @@
+slug: incident-nsfw-escape
+lessonSlug: mode-collapse-and-fixes
+title: "Incident — NSFW Filter Missed a Generation"
+mlContent: systems
+instructions: |
+  PAGER: an NSFW image surfaced to a user despite a safety classifier in the pipeline. Build `diagnoseEscape(incident, recentAuditMetrics)` returning the root cause:
+
+    {
+      cause: 'classifier-fail' | 'pipeline-bypass' | 'threshold-too-permissive' | 'unknown',
+      confidence: number,
+      recommendation: string,
+    }
+
+  incident: `{ classifierScore, threshold, pipelinePath }`. recentAuditMetrics: `{ classifierAccuracy, escapeRateLast30d }`. Cause logic: if pipelinePath omits 'safety-check' → bypass; if classifierAccuracy < 0.9 → classifier-fail; if classifierScore in [threshold-0.05, threshold] → permissive threshold; else unknown.
+starterCode: |
+  function diagnoseEscape(incident, recentAuditMetrics) {
+    return { cause: 'unknown', confidence: 0, recommendation: '' };
+  }
+solutionCode: |
+  function diagnoseEscape(incident, recentAuditMetrics) {
+    if (!incident.pipelinePath.includes('safety-check')) {
+      return {
+        cause: 'pipeline-bypass',
+        confidence: 0.95,
+        recommendation: 'Audit code paths that route generations around the safety classifier',
+      };
+    }
+    if (recentAuditMetrics.classifierAccuracy < 0.9) {
+      return {
+        cause: 'classifier-fail',
+        confidence: 0.85,
+        recommendation: 'Retrain safety classifier on fresh adversarial examples',
+      };
+    }
+    if (incident.classifierScore >= incident.threshold - 0.05 && incident.classifierScore < incident.threshold) {
+      return {
+        cause: 'threshold-too-permissive',
+        confidence: 0.7,
+        recommendation: 'Tighten threshold by 0.05–0.10 and re-evaluate false-positive rate',
+      };
+    }
+    return { cause: 'unknown', confidence: 0.3, recommendation: 'Manual root-cause analysis required' };
+  }
+testCode: |
+  describe('diagnoseEscape', () => {
+    it('flags pipeline bypass when safety-check missing', () => {
+      const incident = { classifierScore: 0, threshold: 0.5, pipelinePath: ['gen', 'render'] };
+      const audit = { classifierAccuracy: 0.95, escapeRateLast30d: 0.001 };
+      const r = diagnoseEscape(incident, audit);
+      expect(r.cause).toBe('pipeline-bypass');
+    });
+
+    it('flags classifier failure when accuracy is low', () => {
+      const incident = { classifierScore: 0.3, threshold: 0.5, pipelinePath: ['gen', 'safety-check', 'render'] };
+      const audit = { classifierAccuracy: 0.85, escapeRateLast30d: 0.05 };
+      const r = diagnoseEscape(incident, audit);
+      expect(r.cause).toBe('classifier-fail');
+    });
+
+    it('flags permissive threshold when score just below threshold', () => {
+      const incident = { classifierScore: 0.47, threshold: 0.5, pipelinePath: ['gen', 'safety-check', 'render'] };
+      const audit = { classifierAccuracy: 0.95, escapeRateLast30d: 0.001 };
+      const r = diagnoseEscape(incident, audit);
+      expect(r.cause).toBe('threshold-too-permissive');
+    });
+  });
+estimatedMinutes: 15
+difficulty: advanced
+skillAxis: evaluation

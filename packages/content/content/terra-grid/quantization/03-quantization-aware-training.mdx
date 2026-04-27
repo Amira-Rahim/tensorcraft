@@ -92,4 +92,27 @@ Implement a fake quantization function for quantization-aware training.
 
 <Exercise slug="qat-training" />
 
+<DerivationDrawer summary="Straight-through estimator for QAT gradients">
+**Quantization-aware training (QAT)** simulates INT8 rounding during training so the model learns weights that survive quantization.
+
+**Forward pass** (per tensor):
+```
+x_quantized = round((x − zp) / scale) · scale + zp     // simulate INT8 round-trip
+```
+
+**Backward pass problem:** `round` has zero gradient almost everywhere — backprop would block learning entirely.
+
+**Straight-through estimator (STE):** during backward, treat round as identity:
+
+`∂x_quantized / ∂x = 1`     (during backward only)
+
+The forward pass quantizes (so the model adapts to rounding errors), the backward pass acts like quantization wasn't there (so gradients flow). This is a deliberate gradient lie that works empirically.
+
+**Refinements:**
+- Clip the gradient to the range `[scale_min, scale_max]` to prevent activations outside the quantizable range from receiving signal.
+- **Learnable step-size quantization (LSQ):** make `scale` itself a trainable parameter — model jointly learns weights AND optimal quantization scale.
+
+QAT typically recovers 90-95% of the accuracy loss from PTQ at the cost of needing labeled training data + extra training time.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["QAT trains with simulated quantization noise — mobile-first for models", "Fake quantization: quantize in forward pass, straight-through gradients in backward pass", "QAT typically achieves 0.5-1% better accuracy than post-training quantization", "Design for constraints from the start — do not retrofit precision later"]} />

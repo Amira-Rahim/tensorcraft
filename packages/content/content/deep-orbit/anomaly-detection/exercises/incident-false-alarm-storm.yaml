@@ -1,0 +1,81 @@
+slug: incident-false-alarm-storm
+lessonSlug: threshold-tuning
+title: "Incident — False Alarm Storm"
+mlContent: systems
+instructions: |
+  PAGER: 1000 anomaly alerts in 1 hour, normal baseline is ~10/hour. Diagnose root cause via `diagnoseStorm(currentAlerts, baselineAlerts, sensorAuditLog)`:
+
+    {
+      rate: number,                 // alerts per hour, 1 decimal
+      ratio: number,                // current / baseline, 1 decimal
+      cause: 'sensor-change' | 'threshold-drift' | 'model-stale' | 'real-event',
+      action: string,
+    }
+
+  Cause logic: if sensorAuditLog.recentChanges.length > 0 → sensor-change; if baseline.modelAge > 90 (days) → model-stale; if ratio between 5 and 20 → threshold-drift; if ratio > 50 with no other cause → real-event.
+starterCode: |
+  function diagnoseStorm(currentAlerts, baselineAlerts, sensorAuditLog) {
+    return { rate: 0, ratio: 0, cause: 'real-event', action: '' };
+  }
+solutionCode: |
+  function diagnoseStorm(currentAlerts, baselineAlerts, sensorAuditLog) {
+    const rate = Math.round(currentAlerts.alertsPerHour * 10) / 10;
+    const ratio = Math.round((currentAlerts.alertsPerHour / Math.max(baselineAlerts.alertsPerHour, 0.1)) * 10) / 10;
+    let cause;
+    let action;
+    if (sensorAuditLog.recentChanges.length > 0) {
+      cause = 'sensor-change';
+      action = 'Investigate sensor calibration changes in audit log; recompute baseline from post-change data';
+    } else if (baselineAlerts.modelAge > 90) {
+      cause = 'model-stale';
+      action = 'Retrain anomaly model on data from the last 30 days';
+    } else if (ratio >= 5 && ratio <= 20) {
+      cause = 'threshold-drift';
+      action = 'Recalibrate threshold using rolling 7-day baseline';
+    } else {
+      cause = 'real-event';
+      action = 'Escalate to incident response — investigate the underlying signal';
+    }
+    return { rate, ratio, cause, action };
+  }
+testCode: |
+  describe('diagnoseStorm', () => {
+    it('attributes to sensor change when audit has recent changes', () => {
+      const r = diagnoseStorm(
+        { alertsPerHour: 1000 },
+        { alertsPerHour: 10, modelAge: 30 },
+        { recentChanges: [{ sensorId: 'A1', changedAt: 0 }] },
+      );
+      expect(r.cause).toBe('sensor-change');
+    });
+
+    it('attributes to stale model after 90 days', () => {
+      const r = diagnoseStorm(
+        { alertsPerHour: 100 },
+        { alertsPerHour: 10, modelAge: 120 },
+        { recentChanges: [] },
+      );
+      expect(r.cause).toBe('model-stale');
+    });
+
+    it('attributes to threshold drift for moderate ratios', () => {
+      const r = diagnoseStorm(
+        { alertsPerHour: 80 },
+        { alertsPerHour: 10, modelAge: 30 },
+        { recentChanges: [] },
+      );
+      expect(r.cause).toBe('threshold-drift');
+    });
+
+    it('escalates to real-event for extreme ratio', () => {
+      const r = diagnoseStorm(
+        { alertsPerHour: 1000 },
+        { alertsPerHour: 10, modelAge: 30 },
+        { recentChanges: [] },
+      );
+      expect(r.cause).toBe('real-event');
+    });
+  });
+estimatedMinutes: 18
+difficulty: advanced
+skillAxis: evaluation

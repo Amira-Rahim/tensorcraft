@@ -16,7 +16,8 @@ concept:
     feCode: "'hello world'.split(/\\s+/)"
     mlTitle: "Word Tokenizer"
     mlCode: "tokenizer.tokenize('patient reports chest pain')"
-    tier: identity
+    tier: structural
+    breaks: "`String.split(/\\s+/)` uses a regex YOU control. A subword tokenizer (BPE, WordPiece, SentencePiece) learns merge rules from a training corpus and the same word can tokenize to 1 token in one model and 5 tokens in another. Tokenization is part of the model artifact; you cannot regex your way out of a tokenizer mismatch at inference."
 consequence:
   narrative: "Diagnostic One can now reliably split clinical notes into word tokens, handling punctuation and edge cases."
   nextLessonTeaser: "Next: subword tokenization — what happens when words themselves need breaking apart."

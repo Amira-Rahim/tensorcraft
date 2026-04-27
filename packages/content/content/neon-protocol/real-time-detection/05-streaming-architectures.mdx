@@ -185,4 +185,14 @@ Build a streaming pipeline that manages multiple feeds with backpressure handlin
 
 <Exercise slug="stream-pipeline" />
 
+## Knowledge check
+
+<Quiz
+  question="Why frame-skip during high CPU load?"
+  options={[{"text":"Saves disk space"},{"text":"Falling behind real-time queues frames; processing stale frames is wasted compute — correct"},{"text":"Required by WebRTC"},{"text":"Improves model accuracy"}]}
+  correct={1}
+  explanation="If inference takes 50ms but frames arrive at 33ms (30fps), the queue grows. Eventually you process frames seconds behind real-time — useless for live detection. Skip-to-latest keeps you current. Tradeoff: temporal continuity (some tracking algorithms need every frame)."
+  tier="structural"
+/>
+
 <KeyTakeaways takeaways={["Streaming inference follows the same pattern as WebSocket event processing — receive, process, emit", "Backpressure handling (dropping old frames) prevents memory buildup when inference is slower than input", "Hybrid architectures combine local GPU inference for priority feeds with server relay for the rest", "Graceful degradation means the system keeps working when server nodes go down — the browser picks up the load"]} />

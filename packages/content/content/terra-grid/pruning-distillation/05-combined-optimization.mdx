@@ -130,4 +130,14 @@ Calculate combined optimization results for a full pipeline.
 
 <Exercise slug="combined-optimize" />
 
+## Knowledge check
+
+<Quiz
+  question="Why prune BEFORE quantizing instead of after?"
+  options={[{"text":"Pruning produces zero weights → quantization can use the gained dynamic range for non-zero weights — correct"},{"text":"Quantization breaks pruning"},{"text":"Pruning requires FP32"},{"text":"Order doesn't matter"}]}
+  correct={0}
+  explanation="Pruning sets ~50%+ weights to zero. Quantization then bins the remaining non-zero weights with finer resolution (256 INT8 values for the surviving ~50% instead of all 100%). Reverse order: quantize first → pruning has fewer values to work with → less effective."
+  tier="structural"
+/>
+
 <KeyTakeaways takeaways={["Combined techniques compound: 10x * 2x * 4x = 80x total reduction", "Order: distillation first, then pruning, then quantization", "Always fine-tune after each step to recover accuracy", "The full pipeline mirrors Webpack production: tree-shake → minify → compress → split"]} />

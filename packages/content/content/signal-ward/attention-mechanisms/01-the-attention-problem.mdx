@@ -100,4 +100,16 @@ Compute attention weights for a sequence of clinical tokens.
 
 <Exercise slug="compute-attention" />
 
+<DerivationDrawer summary="Attention as a soft argmax over a similarity score">
+Attention answers: "given query Q, how much should I weight each key K?" The weight per key is a scaled dot product passed through softmax:
+
+`weight_i = softmax( Q · K_i / √d_k )`
+
+**Why scale by √d_k?** Without it, dot products grow with dimension (variance scales with d_k), which pushes softmax into saturation regions where gradients vanish. Dividing by √d_k keeps the variance ~1 so the softmax stays in its useful range during training.
+
+The attention output is a weighted sum of values:
+
+`Attention(Q, K, V) = softmax(Q · Kᵀ / √d_k) · V`
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["Attention lets models focus on relevant parts of input, like CSS :focus directs user attention", "Dot product similarity measures how well each input matches a query", "Softmax normalizes raw scores into weights that sum to 1", "Weighted combination produces a context-aware representation"]} />

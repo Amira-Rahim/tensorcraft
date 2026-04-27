@@ -224,4 +224,10 @@ Implement confidence calibration and uncertainty detection for a clinical classi
 
 <Exercise slug="calibrate-confidence" />
 
+## On-Call Scenario
+
+A clinician overrode 12 of 15 model flags last week. Was the model wrong, or was the clinician? Build a function that decides whether each override warrants a model retrain trigger.
+
+<Exercise slug="incident-clinical-override" />
+
 <KeyTakeaways takeaways={["Raw model confidence scores are often overconfident and should not be trusted at face value", "Temperature scaling is the simplest method to improve calibration — divide logits by a learned temperature", "Entropy of the prediction distribution measures uncertainty — high entropy means the model is unsure", "In clinical systems, uncertain predictions should route to human review rather than be silently classified"]} />

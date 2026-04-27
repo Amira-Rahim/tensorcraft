@@ -124,4 +124,34 @@ Build an encoder-decoder block with a skip connection.
 
 <Exercise slug="np-build-unet" />
 
+<DerivationDrawer summary="U-Net detailed architecture: skip connections math">
+**U-Net structure:**
+
+```
+Input [256, 256, 3]
+  └── Conv block 1 [256, 256, 64] ──────────┐
+        └── MaxPool                         │
+          └── Conv block 2 [128, 128, 128] ─┼──┐
+                └── MaxPool                 │  │
+                  └── Conv block 3 [64, 64, 256] ─┐
+                        └── MaxPool         │  │  │
+                          └── Bottleneck [32, 32, 512]
+                          └── UpSample      │  │  │
+                  ┌── Concat ──[Conv block 3 features]──┘  │  │
+                Conv [64, 64, 256]                          │  │
+                └── UpSample                               │  │
+          ┌── Concat ──[Conv block 2 features]─────────────┘  │
+        Conv [128, 128, 128]                                  │
+        └── UpSample                                          │
+  ┌── Concat ──[Conv block 1 features]─────────────────────┘
+Conv [256, 256, num_classes]
+```
+
+**Why skip connections matter:** the bottleneck loses spatial detail (32×32 from 256×256). The decoder upsamples back, but without skips it would have to invent fine details from coarse features. Skips concatenate the original high-resolution features at each upsample stage, restoring boundary detail.
+
+**Concatenation channel math:** decoder layer at resolution R has `C_decoder` channels. The corresponding encoder layer has `C_encoder` channels. After concatenation: `C_decoder + C_encoder`. Then a conv layer reduces back to `C_decoder` for the next upsample stage.
+
+**Variants:** U-Net++ adds dense skip connections, ResUNet adds residual blocks within each conv block, Attention U-Net adds gating at skip connections to filter noisy features.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["U-Net compresses images through an encoder then expands through a decoder back to full resolution", "Skip connections concatenate encoder features with decoder features, preserving spatial detail", "The output has the same spatial dimensions as the input: [H, W, numClasses]", "The architecture mirrors layout flow — content descends through containers, rendering ascends to the viewport"]} />

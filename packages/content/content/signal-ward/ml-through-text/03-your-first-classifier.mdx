@@ -16,7 +16,8 @@ concept:
     feCode: "items.map(x => x * weight + bias)"
     mlTitle: "Linear Classifier"
     mlCode: "prediction = tf.add(tf.mul(input, weights), bias)"
-    tier: identity
+    tier: structural
+    breaks: "`items.map(x => x * weight + bias)` applies a function YOU wrote. A linear classifier learns the weight + bias from labeled data via gradient descent — and adds a decision rule (sign, softmax) that .map doesn't have. The arithmetic shape matches; the authoring direction (you write vs model learns) is opposite."
 consequence:
   narrative: "The first classifier correctly categorizes 3 out of 4 test notes. It's rough, but it works."
   nextLessonTeaser: "Next: understanding how tokenization breaks text into processable units."

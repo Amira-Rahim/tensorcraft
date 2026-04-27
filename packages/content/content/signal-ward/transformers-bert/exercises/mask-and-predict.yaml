@@ -1,136 +1,34 @@
 slug: mask-and-predict
 lessonSlug: bert-pretraining
-title: "Mask and Predict"
-instructions: "Implement BERT's masked language modeling pipeline: (1) createMLMBatch — takes token IDs and applies the 80/10/10 masking strategy (80% [MASK] token, 10% random token, 10% unchanged) to 15% of eligible tokens (skip first and last positions for [CLS]/[SEP]). (2) mlmPredictionHead — takes encoder output and masked positions, gathers hidden states at those positions, projects to vocabulary size, and returns softmax probabilities."
+title: "Apply MLM Masking + Run Prediction"
+mlContent: model
+instructions: "Build `maskAndPredict(tokenIds, maskTokenId, position, model)` that creates a copy of the token sequence with position replaced by maskTokenId, runs the model (which expects shape [batch, seqLen]), and returns the predicted token ID at the masked position."
 starterCode: |
-  import * as tf from '@tensorflow/tfjs';
-
-  interface MLMBatch {
-    inputIds: number[];
-    maskedPositions: number[];
-    trueLabels: number[];
-  }
-
-  /**
-   * Apply 80/10/10 masking strategy to token IDs.
-   * Skip positions 0 (CLS) and last (SEP).
-   */
-  function createMLMBatch(
-    tokenIds: number[],
-    vocabSize: number,
-    maskTokenId: number,
-    maskRate: number
-  ): MLMBatch {
-    // Step 1: Copy tokenIds
-    // Step 2: For each eligible position (skip first and last), with probability maskRate:
-    //   - 80% chance: replace with maskTokenId
-    //   - 10% chance: replace with random token ID (0 to vocabSize-1)
-    //   - 10% chance: keep original
-    // Step 3: Track masked positions and true labels
-    return { inputIds: [], maskedPositions: [], trueLabels: [] };
-  }
-
-  /**
-   * Predict masked tokens from encoder output.
-   * Returns softmax probabilities over vocabulary for each masked position.
-   */
-  function mlmPredictionHead(
-    encoderOutput: tf.Tensor2D,  // [seqLen, dModel]
-    maskedPositions: number[],
-    vocabSize: number
-  ): tf.Tensor2D {
-    // Step 1: Gather hidden states at masked positions
-    // Step 2: Project to vocabulary size with a weight matrix
-    // Step 3: Apply softmax
-    return null;
+  function maskAndPredict(tokenIds, maskTokenId, position, model) {
+    return 0;
   }
 solutionCode: |
-  import * as tf from '@tensorflow/tfjs';
-
-  interface MLMBatch {
-    inputIds: number[];
-    maskedPositions: number[];
-    trueLabels: number[];
-  }
-
-  function createMLMBatch(
-    tokenIds: number[],
-    vocabSize: number,
-    maskTokenId: number,
-    maskRate: number
-  ): MLMBatch {
-    const inputIds = [...tokenIds];
-    const maskedPositions: number[] = [];
-    const trueLabels: number[] = [];
-
-    for (let i = 1; i < tokenIds.length - 1; i++) {
-      if (Math.random() < maskRate) {
-        maskedPositions.push(i);
-        trueLabels.push(tokenIds[i]);
-
-        const r = Math.random();
-        if (r < 0.8) {
-          inputIds[i] = maskTokenId;
-        } else if (r < 0.9) {
-          inputIds[i] = Math.floor(Math.random() * vocabSize);
-        }
-        // else: keep original (10%)
-      }
-    }
-
-    return { inputIds, maskedPositions, trueLabels };
-  }
-
-  function mlmPredictionHead(
-    encoderOutput: tf.Tensor2D,
-    maskedPositions: number[],
-    vocabSize: number
-  ): tf.Tensor2D {
-    const dModel = encoderOutput.shape[1];
-    const maskedStates = tf.gather(encoderOutput, maskedPositions);
-    const projection = tf.randomNormal([dModel, vocabSize]);
-    const logits = tf.matMul(maskedStates, projection);
-    return tf.softmax(logits, -1) as tf.Tensor2D;
+  function maskAndPredict(tokenIds, maskTokenId, position, model) {
+    const arr = Array.from(tokenIds.dataSync());
+    arr[position] = maskTokenId;
+    const masked = tf.tensor2d([arr], [1, arr.length], 'int32');
+    const logits = model.predict(masked);
+    const positionLogits = logits.slice([0, position, 0], [1, 1, -1]).squeeze();
+    return positionLogits.argMax().dataSync()[0];
   }
 testCode: |
-  describe('createMLMBatch', () => {
-    it('does not mask first position (CLS)', () => {
-      const tokenIds = [101, 50, 60, 70, 80, 102];
-      const batch = createMLMBatch(tokenIds, 1000, 103, 1.0);
-      expect(batch.inputIds[0]).toBe(101);
-    });
-    it('does not mask last position (SEP)', () => {
-      const tokenIds = [101, 50, 60, 70, 80, 102];
-      const batch = createMLMBatch(tokenIds, 1000, 103, 1.0);
-      expect(batch.inputIds[tokenIds.length - 1]).toBe(102);
-    });
-    it('tracks masked positions and true labels', () => {
-      const tokenIds = [101, 50, 60, 70, 80, 102];
-      const batch = createMLMBatch(tokenIds, 1000, 103, 1.0);
-      expect(batch.maskedPositions.length).toBeGreaterThan(0);
-      expect(batch.maskedPositions.length).toBe(batch.trueLabels.length);
-    });
-    it('true labels match original token IDs', () => {
-      const tokenIds = [101, 50, 60, 70, 80, 102];
-      const batch = createMLMBatch(tokenIds, 1000, 103, 1.0);
-      batch.maskedPositions.forEach((pos, idx) => {
-        expect(batch.trueLabels[idx]).toBe(tokenIds[pos]);
-      });
+  describe('maskAndPredict (real tf.tensor2d + model.predict)', () => {
+    it('returns argmax token id from model output', () => {
+      const tokens = tf.tensor1d([1, 2, 3, 4], 'int32');
+      const model = tf.sequential();
+      model.add(tf.layers.embedding({ inputDim: 100, outputDim: 8, inputLength: 4 }));
+      model.add(tf.layers.dense({ units: 100 }));
+      const out = maskAndPredict(tokens, 99, 1, model);
+      expect(typeof out).toBe('number');
+      expect(out).toBeGreaterThanOrEqual(0);
+      expect(out).toBeLessThan(100);
     });
   });
-  describe('mlmPredictionHead', () => {
-    it('returns shape [numMasked, vocabSize]', () => {
-      const encoderOut = tf.randomNormal([10, 32]) as tf.Tensor2D;
-      const predictions = mlmPredictionHead(encoderOut, [1, 3, 5], 1000);
-      expect(predictions.shape).toEqual([3, 1000]);
-    });
-    it('outputs valid probabilities (sum to 1 per row)', async () => {
-      const encoderOut = tf.randomNormal([8, 16]) as tf.Tensor2D;
-      const predictions = mlmPredictionHead(encoderOut, [2, 4], 500);
-      const sumsData = Array.from(predictions.sum(-1).dataSync());
-      sumsData.forEach(s => expect(s).toBeCloseTo(1.0, 2));
-    });
-  });
-estimatedMinutes: 15
+estimatedMinutes: 18
 difficulty: intermediate
-mlContent: arithmetic
+skillAxis: model_arch

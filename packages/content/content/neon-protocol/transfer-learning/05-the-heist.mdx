@@ -224,4 +224,14 @@ Build the complete Protocol Sentinel pipeline by combining all transfer learning
 
 <Exercise slug="repurpose-model" />
 
+## Knowledge check
+
+<Quiz
+  question="Catastrophic forgetting in fine-tuning happens when?"
+  options={[{"text":"Learning rate is too low"},{"text":"Fine-tuning with high LR for too long — overwrites pretrained features the new task doesn't exercise — correct"},{"text":"Model is too small"},{"text":"Always — unavoidable"}]}
+  correct={1}
+  explanation="Fine-tuning trains existing weights on new data. If LR is too high or training too long, the optimizer destroys representations the new task doesn't need. The fix: small LR, early stopping, or layer-freezing for general features."
+  tier="structural"
+/>
+
 <KeyTakeaways takeaways={["Repurposing a model is forking a project: clone the weights, strip the old head, add your own", "Protocol Sentinel combines every technique: pre-training, feature reuse, freezing, domain adaptation, and fine-tuning", "500 images and 20 minutes of training leverages 3 years and $2M of Meridian's compute", "The model runs entirely in the browser — no servers, no cloud, no surveillance trail"]} />

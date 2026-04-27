@@ -16,7 +16,8 @@ concept:
     feCode: "rgb(255, 0, 0) === hsl(0, 100%, 50%) === oklch(0.63, 0.26, 29) // same red"
     mlTitle: "Color Spaces"
     mlCode: "RGB [255, 0, 0] === HSV [0, 1, 1] === LAB [53, 80, 67] // same red"
-    tier: identity
+    tier: structural
+    breaks: "RGB, HSL, LAB describe the same color spaces in browser and ML. But ML models care about channel ordering (RGB vs BGR), value range (0-1 vs 0-255), and learned per-channel normalization. The math of color is identity; the per-model preprocessing requirements are not."
 consequence:
   narrative: "Noor isolates the hidden data channel. Meridian is embedding tracking metadata directly into their camera feeds — invisible to the human eye but readable by their models."
   nextLessonTeaser: "Next: image operations — resize, crop, and transform for model input"

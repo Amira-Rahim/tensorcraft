@@ -115,4 +115,24 @@ Build a basic transformer-style parallel processor and compare it to sequential 
 
 <Exercise slug="transformer-block" />
 
+<DerivationDrawer summary="Sinusoidal positional encoding (the formula)">
+Self-attention is permutation-equivariant — shuffle input tokens, output shuffles the same way. To break this and inject position information, add a positional encoding vector to each token embedding:
+
+```
+PE(pos, 2i)   = sin(pos / 10000^(2i/d_model))
+PE(pos, 2i+1) = cos(pos / 10000^(2i/d_model))
+```
+
+- `pos` is the token's position (0, 1, 2, ...)
+- `i` indexes the embedding dimension (0 to d_model/2)
+- The frequencies span from `1` (i=0) to `1/10000` (i=d_model/2) on a geometric scale
+
+**Why sinusoids?** 
+- Each pair of dimensions (2i, 2i+1) is a rotation by angle `pos / 10000^(2i/d_model)`. Different pairs rotate at different frequencies — like a clock with multiple hands.
+- **Relative-position invariance:** `PE(pos+k)` is a fixed linear function of `PE(pos)` (rotation matrix at angle `k / 10000^(...)`). The model can learn to attend by relative position.
+- Generalizes to longer sequences than seen in training (sinusoids are defined for any pos).
+
+**Modern alternatives:** RoPE (Rotary Position Embeddings) and ALiBi modify attention scores directly using position, instead of adding to embeddings. Most modern LLMs use RoPE.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["RNNs process sequentially, creating information bottlenecks on long text", "Transformers process all tokens in parallel via self-attention", "Any two tokens are connected in O(1) steps, not O(n)", "This paradigm shift mirrors React's move from class components to hooks"]} />

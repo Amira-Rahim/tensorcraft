@@ -138,4 +138,24 @@ Build encoder and decoder blocks with skip connections.
 
 <Exercise slug="nc-build-unet" />
 
+<DerivationDrawer summary="U-Net architecture math + skip connections">
+U-Net is the standard backbone for diffusion denoising. It maps noisy input x_t (and timestep t) to a noise prediction ε_θ(x_t, t) of the same shape as x_t.
+
+**Architecture:**
+
+```
+encoder:  256→128→64→32→16     (downsample 4×, doubling channels each step)
+bottleneck: 16→16              (deep processing at low resolution)
+decoder:  16→32→64→128→256     (upsample 4×, halving channels)
+```
+
+**Skip connections** concatenate encoder activations into matching-resolution decoder layers:
+
+`decoder_layer_k_input = concat(prev_decoder_output, encoder_layer_k_activation)`
+
+Without skips, fine spatial detail is lost in the bottleneck. Skips re-inject high-resolution information at each upsample.
+
+**Time conditioning:** the timestep t is embedded (sinusoidal embedding → MLP) and added to every block's activations as a bias. The same network handles all timesteps; the time embedding tells it where in the schedule we are.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["U-Net is an encoder-decoder with skip connections — like a layout component that passes children through", "The encoder compresses spatial dimensions to capture context; the decoder expands back to full resolution", "Skip connections carry fine-grained detail from encoder to decoder at matching resolution levels", "The output has the same shape as the input — the model predicts the noise to subtract"]} />

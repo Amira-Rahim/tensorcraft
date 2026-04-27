@@ -170,4 +170,24 @@ Build a synchronized audio-visual loop that drives canvas rendering from real-ti
 
 <Exercise slug="sync-av" />
 
+<DerivationDrawer summary="Drift compensation: keeping audio + visual aligned">
+Audio and visual events sampled by separate clocks drift over time. Even tiny rate mismatches (e.g. 44099 vs 44100 Hz) accumulate to seconds over minutes.
+
+**Audio-visual sync requirements (ITU-R BT.1359):**
+- Lip-sync acceptable: audio between 45ms before and 125ms after video
+- Imperceptible: audio between 15ms before and 45ms after video
+
+**Drift estimation:** tag both streams with timestamps from a shared monotonic clock (`performance.now()` for browser). Compare expected vs actual sample-time gap:
+
+`drift_per_minute = (actual_audio_samples − expected_audio_samples) / total_minutes`
+
+**Compensation strategies:**
+- **Resampling:** stretch/shrink audio to match video timeline (use sinc interpolation, ~5ms latency).
+- **Drop/duplicate samples:** crude but cheap. Audible at high drift rates.
+- **Phase Vocoder:** time-stretch without pitch change. Preserves audio quality at the cost of phasey artifacts.
+- **PLL (phase-locked loop):** continuously micro-adjust playback rate to track video clock. Used in OS-level audio mixers.
+
+For browser inference, `AudioContext.outputLatency` reports actual sample queue depth → use to compute drift in real-time.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["AudioContext.currentTime and requestAnimationFrame are the browser's two timing systems — sync them for AV coherence", "AnalyserNode extracts real-time frequency and amplitude data without interrupting playback", "Shared latent spaces ensure audio and visual generation are semantically linked, not just temporally", "Audio-reactive visuals use the same data-binding pattern as reactive UI frameworks"]} />

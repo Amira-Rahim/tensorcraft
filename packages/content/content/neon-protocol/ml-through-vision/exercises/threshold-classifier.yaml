@@ -1,80 +1,66 @@
 slug: threshold-classifier
 lessonSlug: np-your-first-classifier
-title: "Build a Threshold Classifier"
-instructions: "Write a threshold-based image classifier that categorizes images based on mean brightness. Return 'dark' for mean < 64, 'dim' for mean < 128, 'bright' for mean < 192, and 'overexposed' for mean >= 192."
+title: "Threshold Classifier on Pixel Tensors"
+mlContent: data
+instructions: "Build `classifyBrightness(pixels)` that takes a 1D pixel-value tensor (uint8 range 0-255) and returns a string: 'dark' (mean < 64), 'dim' (< 128), 'bright' (< 192), or 'overexposed' (>= 192). Use tf.mean to compute the mean. Then build `measureAccuracy(classifier, testData)` that returns fraction correct over a list of `{ pixels: tf.Tensor, label: string }` samples."
 starterCode: |
-  function classifyBrightness(pixels: number[]): string {
-    // 1. Compute the mean of all pixel values
-    // 2. Classify based on thresholds:
-    //    mean < 64    → 'dark'
-    //    mean < 128   → 'dim'
-    //    mean < 192   → 'bright'
-    //    mean >= 192  → 'overexposed'
-    return null; // your code here
+  function classifyBrightness(pixels) {
+    return null;
   }
-
-  function measureAccuracy(
-    classifier: (pixels: number[]) => string,
-    testData: { pixels: number[]; label: string }[]
-  ): number {
-    // Return the fraction of correct predictions
-    return null; // your code here
+  function measureAccuracy(classifier, testData) {
+    return 0;
   }
 solutionCode: |
-  function classifyBrightness(pixels: number[]): string {
-    const mean = pixels.reduce((sum, p) => sum + p, 0) / pixels.length;
-    if (mean < 64) return 'dark';
-    if (mean < 128) return 'dim';
-    if (mean < 192) return 'bright';
+  function classifyBrightness(pixels) {
+    const meanVal = pixels.mean().dataSync()[0];
+    if (meanVal < 64) return 'dark';
+    if (meanVal < 128) return 'dim';
+    if (meanVal < 192) return 'bright';
     return 'overexposed';
   }
-
-  function measureAccuracy(
-    classifier: (pixels: number[]) => string,
-    testData: { pixels: number[]; label: string }[]
-  ): number {
+  function measureAccuracy(classifier, testData) {
     let correct = 0;
     for (const sample of testData) {
       if (classifier(sample.pixels) === sample.label) correct++;
     }
-    return correct / testData.length;
+    return testData.length > 0 ? correct / testData.length : 0;
   }
 testCode: |
-  describe('classifyBrightness', () => {
+  describe('classifyBrightness (real tf.mean)', () => {
     it('classifies dark images', () => {
-      expect(classifyBrightness([10, 20, 30])).toBe('dark');
+      const pixels = tf.tensor1d([10, 20, 30]);
+      expect(classifyBrightness(pixels)).toBe('dark');
     });
-
     it('classifies dim images', () => {
-      expect(classifyBrightness([100, 110, 120])).toBe('dim');
+      const pixels = tf.tensor1d([100, 110, 120]);
+      expect(classifyBrightness(pixels)).toBe('dim');
     });
-
     it('classifies bright images', () => {
-      expect(classifyBrightness([150, 160, 170])).toBe('bright');
+      const pixels = tf.tensor1d([150, 160, 170]);
+      expect(classifyBrightness(pixels)).toBe('bright');
     });
-
     it('classifies overexposed images', () => {
-      expect(classifyBrightness([200, 220, 240])).toBe('overexposed');
+      const pixels = tf.tensor1d([200, 220, 240]);
+      expect(classifyBrightness(pixels)).toBe('overexposed');
     });
   });
 
   describe('measureAccuracy', () => {
     it('returns 1.0 for perfect predictions', () => {
       const data = [
-        { pixels: [10, 20], label: 'dark' },
-        { pixels: [200, 210], label: 'overexposed' },
+        { pixels: tf.tensor1d([10, 20]), label: 'dark' },
+        { pixels: tf.tensor1d([200, 210]), label: 'overexposed' },
       ];
       expect(measureAccuracy(classifyBrightness, data)).toBe(1.0);
     });
-
     it('returns 0.5 for half correct', () => {
       const data = [
-        { pixels: [10, 20], label: 'dark' },
-        { pixels: [10, 20], label: 'bright' },
+        { pixels: tf.tensor1d([10, 20]), label: 'dark' },
+        { pixels: tf.tensor1d([10, 20]), label: 'bright' },
       ];
       expect(measureAccuracy(classifyBrightness, data)).toBe(0.5);
     });
   });
-estimatedMinutes: 10
+estimatedMinutes: 12
 difficulty: beginner
-mlContent: arithmetic
+skillAxis: model_arch

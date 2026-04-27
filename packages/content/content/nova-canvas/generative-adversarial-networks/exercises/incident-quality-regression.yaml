@@ -1,0 +1,60 @@
+slug: incident-quality-regression
+lessonSlug: training-dynamics
+title: "Incident — Generation Quality Regressed Post-Update"
+mlContent: systems
+instructions: |
+  PAGER: post-update FID (Frechet Inception Distance) jumped from 18 to 31, user satisfaction dropped 22%. Build `triageRegression(currentMetrics, baselineMetrics, rollbackBudget)` returning:
+
+    {
+      severity: 'critical' | 'major' | 'minor',
+      action: 'rollback' | 'finetune' | 'monitor',
+      estimatedFixHours: number,
+    }
+
+  Severity: critical if FID delta > 10 OR satisfaction drop > 0.20; major if FID delta > 5; minor otherwise. Action: rollback if severity critical AND rollbackBudget.allowed; finetune if severity major OR (critical AND !rollbackBudget.allowed); monitor if minor. Estimated fix: rollback=1h, finetune=24h, monitor=0h.
+starterCode: |
+  function triageRegression(currentMetrics, baselineMetrics, rollbackBudget) {
+    return { severity: 'minor', action: 'monitor', estimatedFixHours: 0 };
+  }
+solutionCode: |
+  function triageRegression(currentMetrics, baselineMetrics, rollbackBudget) {
+    const fidDelta = currentMetrics.fid - baselineMetrics.fid;
+    const satisfactionDrop = baselineMetrics.satisfaction - currentMetrics.satisfaction;
+    let severity;
+    if (fidDelta > 10 || satisfactionDrop > 0.20) severity = 'critical';
+    else if (fidDelta > 5) severity = 'major';
+    else severity = 'minor';
+    let action;
+    if (severity === 'critical' && rollbackBudget.allowed) action = 'rollback';
+    else if (severity === 'major' || severity === 'critical') action = 'finetune';
+    else action = 'monitor';
+    const estimatedFixHours = action === 'rollback' ? 1 : action === 'finetune' ? 24 : 0;
+    return { severity, action, estimatedFixHours };
+  }
+testCode: |
+  describe('triageRegression', () => {
+    const baseline = { fid: 18, satisfaction: 0.82 };
+
+    it('rolls back critical regression when allowed', () => {
+      const current = { fid: 31, satisfaction: 0.60 };
+      const r = triageRegression(current, baseline, { allowed: true });
+      expect(r.severity).toBe('critical');
+      expect(r.action).toBe('rollback');
+    });
+
+    it('finetunes when critical but rollback blocked', () => {
+      const current = { fid: 31, satisfaction: 0.60 };
+      const r = triageRegression(current, baseline, { allowed: false });
+      expect(r.action).toBe('finetune');
+    });
+
+    it('monitors minor regression', () => {
+      const current = { fid: 19, satisfaction: 0.81 };
+      const r = triageRegression(current, baseline, { allowed: true });
+      expect(r.severity).toBe('minor');
+      expect(r.action).toBe('monitor');
+    });
+  });
+estimatedMinutes: 15
+difficulty: advanced
+skillAxis: evaluation

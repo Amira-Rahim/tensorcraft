@@ -144,4 +144,32 @@ function decayLR(baseLR: number, epoch: number, decay: number): number {
 
 <Exercise slug="fix-mode-collapse" />
 
+## On-Call Scenario
+
+An NSFW filter missed a generation that surfaced to a user. Diagnose whether the cause was filter bypass, classifier degradation, or pipeline misconfiguration.
+
+<Exercise slug="incident-nsfw-escape" />
+
+<DerivationDrawer summary="Mode collapse: math of why and prevention">
+**Mode collapse:** generator outputs only a small subset of valid samples (e.g. always the same digit). Mathematically, p_G concentrates mass on a few modes of p_data while ignoring others.
+
+**Why it happens:** if D punishes one specific pattern ("too few 7s"), G learns to produce more 7s — but if D doesn't punish ignoring entire classes (because one class is enough to reduce average loss), G may collapse to one mode and never explore others. Optimization finds a local equilibrium, not the global one.
+
+**Common fixes:**
+- **Mini-batch discrimination:** D sees a batch and can detect lack of diversity (similarity between samples).
+- **Unrolled GAN:** G optimizes against a future D (k steps ahead) — anticipates D's adaptation to a single mode.
+- **Diversity loss:** add `L_div = −λ · ||G(z_1) − G(z_2)||` for two random latents — penalize identical outputs.
+- **Spectral normalization on D:** controls Lipschitz constant, makes D's loss landscape smoother and easier for G to navigate.
+</DerivationDrawer>
+
+## Knowledge check
+
+<Quiz
+  question="Diversity loss prevents mode collapse by?"
+  options={[{"text":"Adding noise to inputs"},{"text":"Penalizing the generator when two latent samples produce identical outputs — correct"},{"text":"Increasing batch size"},{"text":"Using a larger discriminator"}]}
+  correct={1}
+  explanation="Add `L_div = -λ · ||G(z_1) - G(z_2)||` for two random latents. Generator pays for producing similar outputs across different latents → forced to spread. Combined with mini-batch discrimination on D-side. Imperfect — mode collapse is multi-causal."
+  tier="intuition"
+/>
+
 <KeyTakeaways takeaways={["Mode collapse: generator produces identical output for different inputs", "Detect by measuring pairwise distances between generated samples", "Label smoothing prevents the discriminator from becoming overconfident", "Instance noise and minibatch discrimination encourage output diversity"]} />

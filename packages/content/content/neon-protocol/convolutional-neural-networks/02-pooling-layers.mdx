@@ -178,4 +178,18 @@ Implement max pooling on a 2D feature map.
 
 <Exercise slug="max-pooling" />
 
+<DerivationDrawer summary="Pooling output size + parameter count">
+**Pooling has zero learnable parameters.** It downsamples by taking the max or mean over each window.
+
+For input width W, pool size K, stride S (often S = K):
+
+`W_out = floor((W - K) / S) + 1`
+
+With `K = S = 2` (the standard), `W_out = floor(W/2)`. A 224×224 input becomes 112×112 after one max-pool.
+
+**Information loss is permanent:** max-pool keeps only the highest activation per window. The downsampled tensor cannot reconstruct the original. This is by design — pooling enforces translation invariance and reduces compute.
+
+**Average pooling** preserves more low-frequency information; max pooling preserves the strongest activation regardless of position. Which one to use depends on whether the task cares about edge-like features (max) or texture-like features (average).
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["Pooling reduces spatial dimensions while preserving important features — like srcset serving smaller responsive images", "Max pooling keeps the strongest activation in each region and is the most common pooling type", "A 2x2 max pool with stride 2 reduces each spatial dimension by half, cutting total values by 75%", "Pooling makes CNNs more efficient and adds translation invariance — a feature detected anywhere in a region still activates"]} />

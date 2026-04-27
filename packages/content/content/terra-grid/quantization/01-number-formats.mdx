@@ -89,4 +89,30 @@ Calculate model sizes across different number formats.
 
 <Exercise slug="compare-formats" />
 
+<DerivationDrawer summary="FP32 vs FP16 vs INT8 vs FP8 representations">
+**IEEE 754 layout:**
+
+```
+FP32: 1 sign bit | 8 exponent bits | 23 mantissa bits   = 32 bits total
+FP16: 1 sign bit | 5 exponent bits | 10 mantissa bits   = 16 bits total
+FP8 (E4M3): 1 + 4 + 3 = 8 bits
+INT8: signed 8-bit integer, range [-128, 127]
+```
+
+**Dynamic range** (largest representable / smallest nonzero):
+- FP32: ~10^76
+- FP16: ~10^9 (overflow risk above 65504, underflow below 6e-8)
+- FP8: ~10^4 (very narrow — needs careful per-tensor scaling)
+- INT8: 256 distinct values, scale-shift to map to model's value range
+
+**Quantization formula** (FP32 → INT8 with affine quantization):
+
+```
+x_int = round((x_float − zero_point) / scale)
+x_recovered = x_int · scale + zero_point
+```
+
+Where `scale = (x_max − x_min) / 255` and `zero_point = round(−x_min / scale)`. Per-tensor (one scale for the whole tensor) is simpler; per-channel (one scale per output channel of conv/dense) is more accurate but more compute.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["Float32 (4 bytes), Float16 (2 bytes), Int8 (1 byte) per parameter", "Float32 → Int8 quantization gives 4x size reduction", "Typical accuracy loss from Int8 quantization: 0-2%", "The precision-size tradeoff mirrors image format quality-size tradeoffs"]} />

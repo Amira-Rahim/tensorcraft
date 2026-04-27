@@ -1,115 +1,35 @@
 slug: compute-word-similarity
 lessonSlug: similarity-and-analogy
-title: "Compute Word Similarity and Analogies"
-instructions: "Implement two functions: (1) findMostSimilar, which returns the word most similar to a query word using cosine similarity, and (2) solveAnalogy, which performs vector arithmetic (a - b + c) and returns the word closest to the result. Use the provided medical embeddings to solve: aspirin is to headache as penicillin is to ???"
+title: "Word Embedding Cosine Similarity"
+mlContent: data
+instructions: "Build `wordSimilarity(embedding, idA, idB)` that takes a [vocab, dim] embedding tensor and two token IDs, slices out the two row vectors, and returns their cosine similarity as a number."
 starterCode: |
-  const embeddings: Record<string, number[]> = {
-    'aspirin':      [0.82, 0.21, -0.11, 0.53],
-    'ibuprofen':    [0.74, 0.29, -0.18, 0.45],
-    'penicillin':   [-0.12, 0.81, 0.62, -0.22],
-    'amoxicillin':  [-0.15, 0.85, 0.68, -0.25],
-    'headache':     [0.55, -0.31, 0.22, 0.78],
-    'infection':    [0.12, 0.95, 0.25, -0.35],
-  };
-
-  function cosineSim(a: number[], b: number[]): number {
-    const dot = a.reduce((s, v, i) => s + v * b[i], 0);
-    const nA = Math.sqrt(a.reduce((s, v) => s + v * v, 0));
-    const nB = Math.sqrt(b.reduce((s, v) => s + v * v, 0));
-    return dot / (nA * nB);
+  function wordSimilarity(embedding, idA, idB) {
+    return 0;
   }
-
-  function findMostSimilar(word: string, emb: Record<string, number[]>): string {
-    // Find the word with highest cosine similarity (excluding the query word)
-    return null; // your code here
-  }
-
-  function solveAnalogy(
-    a: string, b: string, c: string,
-    emb: Record<string, number[]>
-  ): string {
-    // Compute result vector = emb[a] - emb[b] + emb[c]
-    // Find the closest word to the result (excluding a, b, c)
-    return null; // your code here
-  }
-
-  const mostSimilarToAspirin = findMostSimilar('aspirin', embeddings);
-  const analogyResult = solveAnalogy('aspirin', 'headache', 'penicillin', embeddings);
 solutionCode: |
-  const embeddings: Record<string, number[]> = {
-    'aspirin':      [0.82, 0.21, -0.11, 0.53],
-    'ibuprofen':    [0.74, 0.29, -0.18, 0.45],
-    'penicillin':   [-0.12, 0.81, 0.62, -0.22],
-    'amoxicillin':  [-0.15, 0.85, 0.68, -0.25],
-    'headache':     [0.55, -0.31, 0.22, 0.78],
-    'infection':    [0.12, 0.95, 0.25, -0.35],
-  };
-
-  function cosineSim(a: number[], b: number[]): number {
-    const dot = a.reduce((s, v, i) => s + v * b[i], 0);
-    const nA = Math.sqrt(a.reduce((s, v) => s + v * v, 0));
-    const nB = Math.sqrt(b.reduce((s, v) => s + v * v, 0));
-    return dot / (nA * nB);
+  function wordSimilarity(embedding, idA, idB) {
+    const a = embedding.slice([idA, 0], [1, -1]).squeeze();
+    const b = embedding.slice([idB, 0], [1, -1]).squeeze();
+    const dot = tf.dot(a, b);
+    const denom = tf.norm(a).mul(tf.norm(b));
+    return dot.div(denom).dataSync()[0];
   }
-
-  function findMostSimilar(word: string, emb: Record<string, number[]>): string {
-    let bestWord = '';
-    let bestSim = -Infinity;
-    for (const [w, vec] of Object.entries(emb)) {
-      if (w === word) continue;
-      const sim = cosineSim(emb[word], vec);
-      if (sim > bestSim) {
-        bestSim = sim;
-        bestWord = w;
-      }
-    }
-    return bestWord;
-  }
-
-  function solveAnalogy(
-    a: string, b: string, c: string,
-    emb: Record<string, number[]>
-  ): string {
-    const resultVec = emb[a].map((v, i) => v - emb[b][i] + emb[c][i]);
-    const exclude = new Set([a, b, c]);
-    let bestWord = '';
-    let bestSim = -Infinity;
-    for (const [w, vec] of Object.entries(emb)) {
-      if (exclude.has(w)) continue;
-      const sim = cosineSim(resultVec, vec);
-      if (sim > bestSim) {
-        bestSim = sim;
-        bestWord = w;
-      }
-    }
-    return bestWord;
-  }
-
-  const mostSimilarToAspirin = findMostSimilar('aspirin', embeddings);
-  const analogyResult = solveAnalogy('aspirin', 'headache', 'penicillin', embeddings);
 testCode: |
-  describe('Compute Word Similarity', () => {
-    it('most similar to aspirin is ibuprofen', () => {
-      expect(mostSimilarToAspirin).toBe('ibuprofen');
+  describe('wordSimilarity (real tf.slice + dot + norm)', () => {
+    it('identical rows → 1', () => {
+      const E = tf.tensor2d([[1, 0, 0], [1, 0, 0], [0, 1, 0]]);
+      expect(wordSimilarity(E, 0, 1)).toBeCloseTo(1, 4);
     });
-    it('analogy aspirin:headache :: penicillin:? = infection', () => {
-      expect(analogyResult).toBe('infection');
+    it('orthogonal rows → 0', () => {
+      const E = tf.tensor2d([[1, 0, 0], [0, 1, 0]]);
+      expect(wordSimilarity(E, 0, 1)).toBeCloseTo(0, 4);
     });
-    it('findMostSimilar excludes query word', () => {
-      expect(mostSimilarToAspirin).not.toBe('aspirin');
-    });
-    it('findMostSimilar returns a string', () => {
-      expect(typeof mostSimilarToAspirin).toBe('string');
-    });
-    it('solveAnalogy excludes input words', () => {
-      expect(analogyResult).not.toBe('aspirin');
-      expect(analogyResult).not.toBe('headache');
-      expect(analogyResult).not.toBe('penicillin');
-    });
-    it('findMostSimilar works for penicillin', () => {
-      expect(findMostSimilar('penicillin', embeddings)).toBe('amoxicillin');
+    it('handles 5-dim embeddings', () => {
+      const E = tf.tensor2d([[1,1,1,1,1], [-1,-1,-1,-1,-1]]);
+      expect(wordSimilarity(E, 0, 1)).toBeCloseTo(-1, 4);
     });
   });
 estimatedMinutes: 12
 difficulty: intermediate
-mlContent: arithmetic
+skillAxis: data_prep

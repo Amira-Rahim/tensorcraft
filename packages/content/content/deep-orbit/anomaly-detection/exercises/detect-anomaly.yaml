@@ -1,35 +1,33 @@
 slug: detect-anomaly
 lessonSlug: normal-vs-anomalous
 title: "Detect Anomalies with Z-Score"
-instructions: "Write a function that computes the z-score of a value given the mean and standard deviation of normal data, and returns whether it's anomalous (z-score > 3)."
+mlContent: data
+instructions: "Write `isAnomaly(value, mean, std)` that returns true if the absolute z-score is greater than 3. Use tf.scalar to wrap inputs, tf.abs and arithmetic ops, then read back with .dataSync()[0]."
 starterCode: |
-  function isAnomaly(value: number, mean: number, std: number): boolean {
-    // Compute z-score = |value - mean| / std
-    // Return true if z-score > 3
-    return null; // your code here
+  function isAnomaly(value, mean, std) {
+    return null;
   }
 solutionCode: |
-  function isAnomaly(value: number, mean: number, std: number): boolean {
-    const zScore = Math.abs(value - mean) / std;
-    return zScore > 3;
+  function isAnomaly(value, mean, std) {
+    const z = tf.scalar(value).sub(tf.scalar(mean)).div(tf.scalar(std)).abs();
+    return z.dataSync()[0] > 3;
   }
 testCode: |
-  describe('isAnomaly', () => {
+  describe('isAnomaly (real tf.scalar arithmetic)', () => {
     it('flags values far from mean', () => {
       expect(isAnomaly(100, 50, 10)).toBe(true);
     });
     it('does not flag normal values', () => {
       expect(isAnomaly(52, 50, 10)).toBe(false);
     });
-    it('handles exact boundary', () => {
+    it('handles boundary z=3', () => {
       expect(isAnomaly(80, 50, 10)).toBe(false);
       expect(isAnomaly(81, 50, 10)).toBe(true);
     });
-    it('handles negative deviations', () => {
+    it('handles negative deviations symmetrically', () => {
       expect(isAnomaly(10, 50, 10)).toBe(true);
     });
   });
 estimatedMinutes: 8
 difficulty: beginner
-mlContent: arithmetic
 skillAxis: model_arch

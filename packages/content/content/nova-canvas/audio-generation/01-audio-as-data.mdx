@@ -16,7 +16,8 @@ concept:
     feCode: "const ctx = new AudioContext(); const buffer = ctx.createBuffer(1, 44100, 44100);"
     mlTitle: "Audio Tensor"
     mlCode: "const waveform = tf.tensor1d(new Float32Array(44100)); // 1 second at 44.1kHz"
-    tier: identity
+    tier: structural
+    breaks: "AudioContext + AudioBuffer manages sample rate, channel layout, and playback timing. tf.tensor1d on Float32Array drops all of that metadata — sample rate must be tracked separately, and feeding audio into a model requires resampling to the model's expected rate. Same float storage; very different metadata."
 consequence:
   narrative: "Rohan grins as raw audio streams into tensors on screen. 'A waveform is just a Float32Array. We already speak this language.'"
   nextLessonTeaser: "Next: generating sound with neural networks"
@@ -121,5 +122,28 @@ A spectrogram is an image. That single insight is the bridge between everything 
 Convert a raw audio waveform into a tensor and compute its basic properties.
 
 <Exercise slug="audio-to-tensor" />
+
+<DerivationDrawer summary="Sample rate, Nyquist, and why audio is rank-2 for ML">
+**Audio as a function:** continuous-time pressure wave x(t).
+
+**Digital audio:** sample x(t) at discrete intervals. Sample rate fs (samples/second):
+
+- 8 kHz: telephone quality (limited to 4 kHz audible content)
+- 16 kHz: speech recognition standard
+- 22.05 kHz: low-quality music
+- 44.1 kHz: CD-quality (humans can hear up to ~20 kHz)
+- 48 kHz: video/professional audio standard
+
+**Nyquist–Shannon sampling theorem:** to represent frequencies up to F, you need sample rate ≥ 2F. Sampling at 44.1 kHz captures up to ~22 kHz (the audible range). Aliasing (frequencies above fs/2 wrapping into the lower band) is why audio engineering puts an anti-aliasing low-pass filter before the ADC.
+
+**Tensor shapes for ML:**
+- Mono waveform: [time]                            shape [N]
+- Stereo waveform: [time, channel]                 shape [N, 2]
+- Batched mono: [batch, time]                      shape [B, N]
+- Spectrogram: [time, frequency]                   shape [T, F]
+- Mel spectrogram: [time, mel_bins]                 shape [T, M] (M=80 typical)
+
+Most speech/audio models work on mel spectrograms, not raw waveforms — mel binning compresses 22 kHz into ~80 perceptually-meaningful bands.
+</DerivationDrawer>
 
 <KeyTakeaways takeaways={["Audio waveforms are Float32Arrays — identical to the data type tensors use internally", "A spectrogram is a 2D tensor (image) representing frequency content over time", "The Web Audio API's getChannelData() output maps directly to tf.tensor1d()", "If you can generate images, you can generate audio — spectrograms bridge the two domains"]} />

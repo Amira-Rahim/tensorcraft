@@ -1,0 +1,44 @@
+slug: embedding-distance
+lessonSlug: embedding-spaces
+title: "Compute Pairwise Embedding Distance"
+instructions: "Build `pairwiseDistance(query, candidates)` that takes a [d] query tensor and a [N, d] candidates tensor, and returns a [N] tensor of cosine distances (1 - cosine similarity) from query to each candidate. Used for similarity search."
+mlContent: data
+starterCode: |
+  function pairwiseDistance(query, candidates) {
+    return null;
+  }
+solutionCode: |
+  function pairwiseDistance(query, candidates) {
+    const queryRow = query.reshape([1, query.shape[0]]);
+    const dotProducts = tf.matMul(queryRow, candidates, false, true).squeeze();
+    const queryNorm = tf.norm(query);
+    const candidateNorms = candidates.norm('euclidean', 1);
+    const similarities = dotProducts.div(queryNorm.mul(candidateNorms));
+    return tf.scalar(1).sub(similarities);
+  }
+testCode: |
+  describe('pairwiseDistance (real tf.matMul + tf.norm)', () => {
+    it('returns [N] distances', () => {
+      const query = tf.tensor1d([1, 0, 0]);
+      const candidates = tf.tensor2d([[1, 0, 0], [0, 1, 0], [0, 0, 1]]);
+      const dists = pairwiseDistance(query, candidates);
+      expect(dists.shape).toEqual([3]);
+    });
+
+    it('distance to self is 0', () => {
+      const query = tf.tensor1d([1, 1, 1]);
+      const candidates = tf.tensor2d([[1, 1, 1]]);
+      const dists = pairwiseDistance(query, candidates);
+      expect(dists.dataSync()[0]).toBeCloseTo(0, 4);
+    });
+
+    it('distance to orthogonal is 1', () => {
+      const query = tf.tensor1d([1, 0]);
+      const candidates = tf.tensor2d([[0, 1]]);
+      const dists = pairwiseDistance(query, candidates);
+      expect(dists.dataSync()[0]).toBeCloseTo(1, 4);
+    });
+  });
+estimatedMinutes: 12
+difficulty: intermediate
+skillAxis: data_prep

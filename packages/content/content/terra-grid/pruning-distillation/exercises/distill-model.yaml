@@ -1,10 +1,32 @@
 slug: distill-model
 lessonSlug: knowledge-distillation
-title: "Generate Soft Targets"
-instructions: "Write a function softmax(logits, temperature) that computes temperature-scaled softmax. For numerical stability, subtract the max logit before exponentiating. Return an array of probabilities that sum to 1."
-starterCode: "function softmax(logits, temperature) {\n  // Scale by temperature, subtract max, exponentiate, normalize\n  return null; // your code here\n}"
-solutionCode: "function softmax(logits, temperature) {\n  const scaled = logits.map(l => l / temperature);\n  const maxVal = Math.max(...scaled);\n  const exps = scaled.map(s => Math.exp(s - maxVal));\n  const sum = exps.reduce((a, b) => a + b, 0);\n  return exps.map(e => e / sum);\n}"
-testCode: "describe('softmax', () => { it('sums to 1', () => { const result = softmax([2.0, 1.0, 0.5], 1); expect(result.reduce((a, b) => a + b)).toBeCloseTo(1.0); }); it('higher temp produces softer distribution', () => { const hard = softmax([5, 1, 0], 1); const soft = softmax([5, 1, 0], 5); expect(soft[0]).toBeLessThan(hard[0]); expect(soft[1]).toBeGreaterThan(hard[1]); }); it('max element has highest probability', () => { const result = softmax([3, 1, 2], 1); expect(result[0]).toBeGreaterThan(result[1]); expect(result[0]).toBeGreaterThan(result[2]); }); });"
-estimatedMinutes: 15
+title: "Temperature-Scaled Softmax for Distillation"
+mlContent: data
+instructions: "Build `softmax(logits, temperature)` returning a number array. Wrap logits as tf.tensor1d, divide by temperature, and use tf.softmax. Read back with arraySync()."
+starterCode: |
+  function softmax(logits, temperature) {
+    return [];
+  }
+solutionCode: |
+  function softmax(logits, temperature) {
+    return tf.tensor1d(logits).div(temperature).softmax().arraySync();
+  }
+testCode: |
+  describe('temperature softmax (tf.softmax)', () => {
+    it('sums to 1', () => {
+      const p = softmax([2, 1, 0.5], 1);
+      const s = p[0] + p[1] + p[2];
+      expect(s).toBeCloseTo(1, 4);
+    });
+    it('low temperature concentrates probability', () => {
+      const p = softmax([2, 1, 0.5], 0.1);
+      expect(p[0]).toBeGreaterThan(0.99);
+    });
+    it('high temperature flattens probability', () => {
+      const p = softmax([2, 1, 0.5], 10);
+      expect(p[0]).toBeLessThan(0.4);
+      expect(p[2]).toBeGreaterThan(0.25);
+    });
+  });
+estimatedMinutes: 10
 difficulty: intermediate
-mlContent: arithmetic

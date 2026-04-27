@@ -1,92 +1,36 @@
 slug: visualize-attention
 lessonSlug: attention-visualization
-title: "Visualize Attention Weights"
-instructions: "Given a list of tokens and a 2D attention weight matrix, create a function that returns a structured visualization object. Each cell should contain the source token, target token, and attention weight. Also implement a function to find the top-k attended token pairs."
+title: "Build Attention Matrix for Visualization"
+mlContent: model
+instructions: "Build `buildAttentionMatrix(Q, K)` taking query Q [N, d] and key K [N, d] tensors, returning the [N, N] softmax-normalized attention matrix that downstream visualization code can render as a heatmap."
 starterCode: |
-  import * as tf from '@tensorflow/tfjs';
-
-  interface AttentionCell {
-    source: string;
-    target: string;
-    weight: number;
-  }
-
-  function buildAttentionGrid(
-    tokens: string[],
-    weights: number[][]
-  ): AttentionCell[] {
-    // Build a flat array of AttentionCell objects for every (i, j) pair
-    return [];
-  }
-
-  function topKAttentionPairs(
-    grid: AttentionCell[],
-    k: number
-  ): AttentionCell[] {
-    // Return the top k pairs sorted by weight descending
-    return [];
+  function buildAttentionMatrix(Q, K) {
+    return null;
   }
 solutionCode: |
-  import * as tf from '@tensorflow/tfjs';
-
-  interface AttentionCell {
-    source: string;
-    target: string;
-    weight: number;
-  }
-
-  function buildAttentionGrid(
-    tokens: string[],
-    weights: number[][]
-  ): AttentionCell[] {
-    const grid: AttentionCell[] = [];
-    for (let i = 0; i < tokens.length; i++) {
-      for (let j = 0; j < tokens.length; j++) {
-        grid.push({
-          source: tokens[i],
-          target: tokens[j],
-          weight: weights[i][j]
-        });
-      }
-    }
-    return grid;
-  }
-
-  function topKAttentionPairs(
-    grid: AttentionCell[],
-    k: number
-  ): AttentionCell[] {
-    return [...grid].sort((a, b) => b.weight - a.weight).slice(0, k);
+  function buildAttentionMatrix(Q, K) {
+    const dK = K.shape[K.shape.length - 1];
+    const scores = tf.matMul(Q, K, false, true).div(tf.scalar(Math.sqrt(dK)));
+    return tf.softmax(scores);
   }
 testCode: |
-  describe('buildAttentionGrid', () => {
-    it('returns correct number of cells', () => {
-      const tokens = ['a', 'b', 'c'];
-      const weights = [[0.5, 0.3, 0.2], [0.1, 0.7, 0.2], [0.3, 0.3, 0.4]];
-      const grid = buildAttentionGrid(tokens, weights);
-      expect(grid.length).toBe(9);
+  describe('buildAttentionMatrix (real tf.matMul + softmax)', () => {
+    it('returns [N, N] square matrix', () => {
+      const Q = tf.randomNormal([5, 8]);
+      const K = tf.randomNormal([5, 8]);
+      const A = buildAttentionMatrix(Q, K);
+      expect(A.shape).toEqual([5, 5]);
     });
-    it('cells contain correct source and target', () => {
-      const tokens = ['drug', 'condition'];
-      const weights = [[0.6, 0.4], [0.3, 0.7]];
-      const grid = buildAttentionGrid(tokens, weights);
-      expect(grid[0]).toEqual({ source: 'drug', target: 'drug', weight: 0.6 });
-      expect(grid[1]).toEqual({ source: 'drug', target: 'condition', weight: 0.4 });
-    });
-  });
-  describe('topKAttentionPairs', () => {
-    it('returns top k pairs by weight', () => {
-      const grid = [
-        { source: 'a', target: 'b', weight: 0.9 },
-        { source: 'a', target: 'a', weight: 0.1 },
-        { source: 'b', target: 'a', weight: 0.5 }
-      ];
-      const top = topKAttentionPairs(grid, 2);
-      expect(top.length).toBe(2);
-      expect(top[0].weight).toBe(0.9);
-      expect(top[1].weight).toBe(0.5);
+    it('rows sum to 1 (softmax)', () => {
+      const Q = tf.randomNormal([3, 4]);
+      const K = tf.randomNormal([3, 4]);
+      const A = buildAttentionMatrix(Q, K);
+      const rowSums = A.sum(-1).arraySync();
+      for (const sum of rowSums) {
+        expect(sum).toBeCloseTo(1, 3);
+      }
     });
   });
-estimatedMinutes: 10
+estimatedMinutes: 12
 difficulty: intermediate
-mlContent: arithmetic
+skillAxis: model_arch

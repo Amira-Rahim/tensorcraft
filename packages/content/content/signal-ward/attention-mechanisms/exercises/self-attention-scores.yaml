@@ -1,63 +1,46 @@
 slug: self-attention-scores
 lessonSlug: self-attention
-title: "Self-Attention Scores"
-instructions: "Implement scaled dot-product self-attention. Given an input tensor and a dimension dk, create Q, K, V projections, compute scaled scores, apply softmax, and return the weighted output."
+title: "Compute Self-Attention Scores from Input"
+instructions: "Implement self-attention from a single input X. Build `selfAttention(X, Wq, Wk, Wv)` that projects X through three weight matrices to get Q, K, V, then runs scaled dot-product attention."
+mlContent: data
 starterCode: |
-  import * as tf from '@tensorflow/tfjs';
-
-  function scaledSelfAttention(
-    input: tf.Tensor2D,  // [seqLen, embedDim]
-    dk: number
-  ): { output: tf.Tensor2D; weights: tf.Tensor2D } {
-    const embedDim = input.shape[1];
-    // Step 1: Create Q, K, V projection matrices [embedDim, dk]
-    // Step 2: Project input to get Q, K, V
-    // Step 3: Compute scores = (Q * K^T) / sqrt(dk)
-    // Step 4: Apply softmax to get weights
-    // Step 5: Compute output = weights * V
-    return { output: null, weights: null };
+  function selfAttention(X, Wq, Wk, Wv) {
+    return null;
   }
 solutionCode: |
-  import * as tf from '@tensorflow/tfjs';
-
-  function scaledSelfAttention(
-    input: tf.Tensor2D,
-    dk: number
-  ): { output: tf.Tensor2D; weights: tf.Tensor2D } {
-    const embedDim = input.shape[1];
-    const Wq = tf.randomNormal([embedDim, dk]);
-    const Wk = tf.randomNormal([embedDim, dk]);
-    const Wv = tf.randomNormal([embedDim, dk]);
-
-    const Q = tf.matMul(input, Wq) as tf.Tensor2D;
-    const K = tf.matMul(input, Wk) as tf.Tensor2D;
-    const V = tf.matMul(input, Wv) as tf.Tensor2D;
-
-    const scores = tf.matMul(Q, K.transpose()).div(Math.sqrt(dk));
-    const weights = tf.softmax(scores, -1) as tf.Tensor2D;
-    const output = tf.matMul(weights, V) as tf.Tensor2D;
-
-    return { output, weights };
+  function selfAttention(X, Wq, Wk, Wv) {
+    const Q = tf.matMul(X, Wq);
+    const K = tf.matMul(X, Wk);
+    const V = tf.matMul(X, Wv);
+    const dK = K.shape[K.shape.length - 1];
+    const scores = tf.matMul(Q, K, false, true).div(tf.scalar(Math.sqrt(dK)));
+    const weights = tf.softmax(scores);
+    return tf.matMul(weights, V);
   }
 testCode: |
-  describe('scaledSelfAttention', () => {
-    it('output has shape [seqLen, dk]', () => {
-      const input = tf.randomNormal([5, 16]) as tf.Tensor2D;
-      const { output } = scaledSelfAttention(input, 8);
-      expect(output.shape).toEqual([5, 8]);
+  describe('selfAttention (real tf.matMul + softmax)', () => {
+    it('output preserves sequence length', () => {
+      const X = tf.randomNormal([5, 8]);
+      const Wq = tf.randomNormal([8, 4]);
+      const Wk = tf.randomNormal([8, 4]);
+      const Wv = tf.randomNormal([8, 6]);
+      const out = selfAttention(X, Wq, Wk, Wv);
+      expect(out.shape).toEqual([5, 6]);
     });
-    it('weights have shape [seqLen, seqLen]', () => {
-      const input = tf.randomNormal([5, 16]) as tf.Tensor2D;
-      const { weights } = scaledSelfAttention(input, 8);
-      expect(weights.shape).toEqual([5, 5]);
-    });
-    it('each row of weights sums to 1', async () => {
-      const input = tf.randomNormal([4, 16]) as tf.Tensor2D;
-      const { weights } = scaledSelfAttention(input, 8);
-      const rowSumsData = Array.from(weights.sum(-1).dataSync());
-      rowSumsData.forEach(s => expect(s).toBeCloseTo(1.0, 2));
+
+    it('zero input produces uniform attention', () => {
+      const X = tf.zeros([3, 4]);
+      const Wq = tf.eye(4);
+      const Wk = tf.eye(4);
+      const Wv = tf.tensor2d([[1, 2], [3, 4], [5, 6], [7, 8]]);
+      const out = selfAttention(X, Wq, Wk, Wv);
+      // With zero X, Q = K = 0 → softmax over zeros is uniform → weighted V sum
+      const arr = out.arraySync();
+      // All output rows identical
+      expect(arr[0][0]).toBeCloseTo(arr[1][0], 4);
+      expect(arr[0][1]).toBeCloseTo(arr[1][1], 4);
     });
   });
-estimatedMinutes: 12
-difficulty: intermediate
-mlContent: arithmetic
+estimatedMinutes: 18
+difficulty: advanced
+skillAxis: model_arch

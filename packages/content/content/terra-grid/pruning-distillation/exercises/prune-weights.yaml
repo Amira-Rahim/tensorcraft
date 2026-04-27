@@ -1,10 +1,41 @@
 slug: tg-prune-weights
 lessonSlug: weight-pruning
-title: "Prune Weights by Magnitude"
-instructions: "Write a function pruneByMagnitude(weights, threshold) that returns a new array where any weight with Math.abs(weight) < threshold is set to 0. Also write sparsity(weights) that returns the fraction of zero values."
-starterCode: "function pruneByMagnitude(weights, threshold) {\n  // Set weights below threshold to 0\n  return null; // your code here\n}\n\nfunction sparsity(weights) {\n  // Return fraction of zero values\n  return null; // your code here\n}"
-solutionCode: "function pruneByMagnitude(weights, threshold) {\n  return weights.map(w => Math.abs(w) < threshold ? 0 : w);\n}\n\nfunction sparsity(weights) {\n  return weights.filter(w => w === 0).length / weights.length;\n}"
-testCode: "describe('Pruning', () => { const w = [0.9, -0.01, 0.003, -0.8, 0.05]; const pruned = pruneByMagnitude(w, 0.1); it('keeps large weights', () => { expect(pruned[0]).toBe(0.9); expect(pruned[3]).toBe(-0.8); }); it('zeros small weights', () => { expect(pruned[1]).toBe(0); expect(pruned[2]).toBe(0); expect(pruned[4]).toBe(0); }); it('calculates sparsity', () => { expect(sparsity(pruned)).toBeCloseTo(0.6); }); });"
+title: "Magnitude Pruning with tf.where"
+mlContent: data
+instructions: "Build `pruneByMagnitude(weights, threshold)` that returns a JS array with values whose absolute magnitude is below threshold replaced by 0. Use tf.tensor1d, tf.abs, tf.less, tf.zerosLike and tf.where. Build `sparsity(weights)` returning the fraction of zero values using tf.equal + tf.mean."
+starterCode: |
+  function pruneByMagnitude(weights, threshold) {
+    return [];
+  }
+  function sparsity(weights) {
+    return 0;
+  }
+solutionCode: |
+  function pruneByMagnitude(weights, threshold) {
+    const w = tf.tensor1d(weights);
+    const mask = w.abs().less(threshold);
+    return tf.where(mask, tf.zerosLike(w), w).arraySync();
+  }
+  function sparsity(weights) {
+    const w = tf.tensor1d(weights);
+    return w.equal(0).mean().dataSync()[0];
+  }
+testCode: |
+  describe('Pruning (tf.where + tf.mean)', () => {
+    const w = [0.9, -0.01, 0.003, -0.8, 0.05];
+    const pruned = pruneByMagnitude(w, 0.1);
+    it('keeps large weights', () => {
+      expect(pruned[0]).toBeCloseTo(0.9, 4);
+      expect(pruned[3]).toBeCloseTo(-0.8, 4);
+    });
+    it('zeros small weights', () => {
+      expect(pruned[1]).toBe(0);
+      expect(pruned[2]).toBe(0);
+      expect(pruned[4]).toBe(0);
+    });
+    it('calculates sparsity', () => {
+      expect(sparsity(pruned)).toBeCloseTo(0.6, 4);
+    });
+  });
 estimatedMinutes: 10
 difficulty: intermediate
-mlContent: arithmetic

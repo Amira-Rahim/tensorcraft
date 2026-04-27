@@ -125,4 +125,22 @@ Extract Gram matrices from multiple CNN layers to build a multi-scale style repr
 
 <Exercise slug="extract-style" />
 
+<DerivationDrawer summary="Why Gram matrix captures style">
+**Gram matrix is a feature-correlation matrix:**
+
+`G[i, j] = ⟨F[:, i], F[:, j]⟩`     (inner product of channels i and j across all spatial positions)
+
+**What this captures:**
+- Which feature channels fire together (e.g., "diagonal edges" + "red color" co-occur in this style)
+- Independent of WHERE in the image they fire (sums over spatial positions destroys location)
+
+**What it discards:**
+- Spatial arrangement (which corner has the brushstroke)
+- Object identity (whether the texture covers a face or a tree)
+
+**This is exactly the right tradeoff for style:** style is about texture statistics that should be uniform across an image regardless of content layout. Content loss (single feature map L2) preserves spatial arrangement.
+
+**Computational note:** G is `[C, C]` where C is the number of channels (typically 64-512). For VGG layer with 256 channels, G is 256×256 = 65k entries. Computing G_style for one image once + caching is a major speedup.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["Gram matrices at different CNN layers capture style at different scales — like design tokens at different levels", "Early layers encode fine textures (brushstrokes, color patches); deep layers encode large-scale patterns", "Multi-scale style representations produce richer, more faithful style transfer", "Style tokens are reusable: extract once from a painting, apply to any content image"]} />

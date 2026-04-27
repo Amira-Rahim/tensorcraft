@@ -115,4 +115,19 @@ function cosineSimilarity(a: tf.Tensor1D, b: tf.Tensor1D): tf.Scalar {
 
 <Exercise slug="encode-decode-latent" />
 
+<DerivationDrawer summary="Latent variables: the bottleneck principle">
+A **latent variable** is an unobserved variable inferred from observations. The bottleneck principle: if a model must reconstruct/predict X from a smaller representation z, z is forced to capture only the most-information-preserving features of X.
+
+**Information-theoretic view:**
+
+`I(X; z) = H(X) − H(X | z)`     (mutual information)
+
+The encoder maximizes I(X; z) subject to a capacity constraint on z (small dim, or KL penalty). This is the **information bottleneck** — discard noise, keep signal.
+
+**Practical consequence:**
+- Small latent dim → forced compression, learns most-salient features (good for downstream tasks).
+- Large latent dim → more reconstruction fidelity, less generalization, easier overfitting.
+- VAE adds Gaussian prior → latent space is smooth (interpolations decode coherently).
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["A latent space is a compressed representation where similar data points are nearby", "Encoders compress high-dimensional data; decoders reconstruct from the compressed form", "URL shorteners and zip compression are frontend analogies for encoding", "Structure in latent space emerges from training — similar items cluster naturally"]} />

@@ -113,4 +113,36 @@ Evaluate quantization options against accuracy thresholds for different use case
 
 <Exercise slug="accuracy-size-tradeoff" />
 
+<DerivationDrawer summary="Bits per parameter vs accuracy curve">
+**Empirical accuracy-vs-bits curve** (ImageNet ResNet-50, common reference):
+
+```
+FP32 (32 bits):  76.1% top-1 accuracy   100% size (~100 MB)
+FP16 (16 bits):  76.1% top-1 accuracy   50% size (~50 MB)
+INT8  (8 bits):  75.2% top-1 accuracy   25% size (~25 MB)
+INT4  (4 bits):  ~73% top-1 accuracy    12.5% size (~12.5 MB)  -- requires QAT
+INT2  (2 bits):  ~67% top-1 accuracy    6.25% size              -- experimental
+Binary (1 bit): ~50% top-1 accuracy     3.1% size               -- specialized
+```
+
+**Pattern:** going from FP32→FP16 is essentially free (no accuracy hit, half the size). FP16→INT8 typically loses 0.5-2% accuracy. Below INT8, accuracy degrades superlinearly with bit reduction.
+
+**The right operating point depends on:**
+- Inference budget (memory + latency)
+- Accuracy floor (regulatory, business, safety)
+- Calibration data availability (for PTQ) or labeled data (for QAT)
+
+**Per-layer mixed quantization:** sensitive layers (attention output projection, first/last layers) stay FP16; bulk of network is INT8. Common in production. Results in ~30-40% size reduction with minimal accuracy hit.
+</DerivationDrawer>
+
+## Knowledge check
+
+<Quiz
+  question="When does INT8 quantization NOT work?"
+  options={[{"text":"Always works"},{"text":"When model has narrow dynamic range layers (attention output, layernorm) — INT8 rounding destroys them — correct"},{"text":"Only on CPUs"},{"text":"Requires special hardware"}]}
+  correct={1}
+  explanation="Most layers tolerate INT8 (0.5-2% accuracy drop). Some don't: attention scores have huge dynamic range, layernorm parameters are tiny. Per-layer mixed quantization (sensitive layers stay FP16, bulk goes INT8) is the production fix."
+  tier="structural"
+/>
+
 <KeyTakeaways takeaways={["Define accuracy thresholds before compressing — safety-critical vs non-critical", "QAT preserves ~0.7% more accuracy than post-training quantization at the same size", "Find the knee of the accuracy-size curve: maximum compression above your threshold", "The Site 23 lesson: always validate quantized models against edge cases"]} />

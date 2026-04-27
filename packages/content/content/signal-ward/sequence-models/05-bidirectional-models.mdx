@@ -194,4 +194,40 @@ Build a bidirectional LSTM that reads clinical text in both directions for impro
 
 <Exercise slug="bidirectional-scan" />
 
+<DerivationDrawer summary="Beam search vs greedy decoding">
+When generating sequences token-by-token (translation, summarization, story generation), the search space is exponential — for vocab V and length T, V^T possible outputs. Practical decoding strategies:
+
+**Greedy decoding:** at each step, pick `argmax_v p(v | history)`. O(T · V). Fast but myopic — local choices can paint the model into a corner.
+
+**Beam search:** maintain top-K hypotheses at each step. For each, expand to V continuations, score, keep top-K total.
+
+```
+beams = [(start_token, score=0)]
+for step in 1..T:
+  candidates = []
+  for (sequence, score) in beams:
+    next_log_probs = log p(• | sequence)         // shape: vocab
+    for v in vocab:
+      candidates.append( (sequence + [v], score + next_log_probs[v]) )
+  beams = top-K by score from candidates
+return beams[0]
+```
+
+**Length normalization:** sum-of-log-probs penalizes longer sequences. Normalize by length:
+
+`final_score = sum_log_prob / length^α`     (α typically 0.6-0.7)
+
+**Trade-offs:** Beam K=4 typically captures most of the gain over greedy. K>10 has diminishing returns and risks producing bland "safe" outputs. Modern LLMs often use **sampling** (top-k, top-p / nucleus) instead of beam for diversity.
+</DerivationDrawer>
+
+## Knowledge check
+
+<Quiz
+  question="Why aren't bidirectional RNNs used for autoregressive generation?"
+  options={[{"text":"Too slow"},{"text":"Bidirectional needs the full sequence in advance — incompatible with token-by-token generation — correct"},{"text":"Don't support attention"},{"text":"Use too much memory"}]}
+  correct={1}
+  explanation="Bidirectional RNN needs to see future tokens to compute backward state. For generation, future tokens don't exist yet. Bidirectional is for understanding/labeling tasks (NER, classification). Forward-only or transformers (with causal mask) for generation."
+  tier="structural"
+/>
+
 <KeyTakeaways takeaways={["Bidirectional models combine reduce() and reduceRight() — processing sequences in both directions", "Each token gets context from the entire sequence, not just preceding tokens", "Bidirectional is ideal for clinical text where complete notes are available before analysis", "Tradeoff: 2x parameters and compute, but significantly better accuracy on context-dependent patterns"]} />

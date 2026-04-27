@@ -98,4 +98,14 @@ Implement gradient descent to minimize a loss function.
 
 <Exercise slug="gradient-step" />
 
+## Knowledge check
+
+<Quiz
+  question="Your training loss explodes after a few steps. Most likely cause?"
+  options={[{"text":"Learning rate too high — correct"},{"text":"Learning rate too low"},{"text":"Batch size too small"},{"text":"Network too deep"}]}
+  correct={0}
+  explanation="Loss explosion = optimizer is overshooting the minimum. The fix is to lower the learning rate (try 10× smaller). Learning rate too low causes slow convergence, not divergence. Batch size affects gradient noise but rarely causes pure explosion."
+  tier="intuition"
+/>
+
 <KeyTakeaways takeaways={["Gradients = slope of the loss with respect to each weight", "Gradient descent: move weights opposite to the gradient direction", "Learning rate controls step size — the key hyperparameter", "tf.variableGrads() computes gradients automatically"]} />

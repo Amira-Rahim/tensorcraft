@@ -185,4 +185,20 @@ Implement cosine similarity and a word analogy solver for clinical vocabulary.
 
 <Exercise slug="compute-word-similarity" />
 
+<DerivationDrawer summary="Vector arithmetic for analogies">
+The famous analogy `king - man + woman ≈ queen` holds because well-trained embeddings put related concepts in linearly-related directions. Procedure:
+
+```
+target_vector = embed('king') - embed('man') + embed('woman')
+result = argmax over vocab v of cosine(embed(v), target_vector)
+         excluding v in {king, man, woman}
+```
+
+**Why excluding inputs:** without exclusion, the closest vocabulary word is often `king` (since the math doesn't perfectly cancel) — not interesting.
+
+**Why this works geometrically:** if the gender axis (man → woman) is roughly the same direction across pairs (king → queen, brother → sister, ...), then subtracting the male direction from king and adding the female direction lands near queen.
+
+**Why this often fails:** the math is approximate. Modern contextual embeddings (BERT, GPT) don't use single vectors per word — meaning depends on context — so static-vector analogies are a property of older Word2Vec/GloVe-style embeddings, not modern LLMs.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["Cosine similarity measures the angle between vectors: 1.0 = same meaning, 0.0 = unrelated", "Nearest-neighbor search finds semantically related words by ranking cosine similarities", "Vector arithmetic enables analogies: king - man + woman = queen works for clinical terms too", "String similarity (Levenshtein) measures spelling closeness; vector similarity measures meaning closeness"]} />

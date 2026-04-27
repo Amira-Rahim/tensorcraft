@@ -1,0 +1,86 @@
+slug: incident-missed-interaction
+lessonSlug: the-interaction
+title: "Incident — Drug Interaction Missed in Production"
+mlContent: systems
+instructions: |
+  PAGER: a known drug interaction (warfarin + aspirin) was not flagged by the pipeline last week. Build `diagnoseMiss(pipelineLog, knownInteraction)` returning the failure stage:
+
+    {
+      stage: 'tokenization' | 'ner' | 'normalization' | 'interaction-lookup' | 'unknown',
+      detail: string,
+      recoverable: boolean,
+    }
+
+  pipelineLog has shape `{ tokens, entities, normalizedEntities, interactionsChecked }`. Walk the pipeline and identify the earliest stage where the interaction's entities went missing.
+starterCode: |
+  function diagnoseMiss(pipelineLog, knownInteraction) {
+    return { stage: 'unknown', detail: '', recoverable: false };
+  }
+solutionCode: |
+  function diagnoseMiss(pipelineLog, knownInteraction) {
+    const [drugA, drugB] = knownInteraction;
+    const tokensIncludeAny = (drug) => pipelineLog.tokens.some(t => t.toLowerCase().includes(drug.toLowerCase()));
+    if (!tokensIncludeAny(drugA) || !tokensIncludeAny(drugB)) {
+      return { stage: 'tokenization', detail: 'Drug name not in tokens — input did not contain the drug', recoverable: false };
+    }
+    const entityNames = pipelineLog.entities.map(e => e.text.toLowerCase());
+    if (!entityNames.includes(drugA.toLowerCase()) || !entityNames.includes(drugB.toLowerCase())) {
+      return { stage: 'ner', detail: 'NER did not tag the drug as an entity (likely OOV or context confusion)', recoverable: true };
+    }
+    const normNames = pipelineLog.normalizedEntities.map(e => e.canonical.toLowerCase());
+    if (!normNames.includes(drugA.toLowerCase()) || !normNames.includes(drugB.toLowerCase())) {
+      return { stage: 'normalization', detail: 'Drug name not normalized to canonical form (synonym table miss)', recoverable: true };
+    }
+    const checked = pipelineLog.interactionsChecked.map(p => p.map(s => s.toLowerCase()).sort().join('|'));
+    const expected = [drugA.toLowerCase(), drugB.toLowerCase()].sort().join('|');
+    if (!checked.includes(expected)) {
+      return { stage: 'interaction-lookup', detail: 'Interaction pair not in lookup set (database stale or pair missing)', recoverable: true };
+    }
+    return { stage: 'unknown', detail: 'All stages produced expected outputs; interaction was checked but not flagged — investigate threshold logic', recoverable: false };
+  }
+testCode: |
+  describe('diagnoseMiss', () => {
+    const known = ['warfarin', 'aspirin'];
+
+    it('flags tokenization when drug not in tokens', () => {
+      const log = { tokens: ['patient', 'on', 'aspirin'], entities: [], normalizedEntities: [], interactionsChecked: [] };
+      const r = diagnoseMiss(log, known);
+      expect(r.stage).toBe('tokenization');
+    });
+
+    it('flags ner when drug present in tokens but not tagged', () => {
+      const log = {
+        tokens: ['patient', 'on', 'warfarin', 'and', 'aspirin'],
+        entities: [{ text: 'aspirin' }],
+        normalizedEntities: [],
+        interactionsChecked: [],
+      };
+      const r = diagnoseMiss(log, known);
+      expect(r.stage).toBe('ner');
+    });
+
+    it('flags normalization when entity tagged but not normalized', () => {
+      const log = {
+        tokens: ['warfarin', 'aspirin'],
+        entities: [{ text: 'warfarin' }, { text: 'aspirin' }],
+        normalizedEntities: [{ canonical: 'aspirin' }],
+        interactionsChecked: [],
+      };
+      const r = diagnoseMiss(log, known);
+      expect(r.stage).toBe('normalization');
+    });
+
+    it('flags lookup when normalized but pair not checked', () => {
+      const log = {
+        tokens: ['warfarin', 'aspirin'],
+        entities: [{ text: 'warfarin' }, { text: 'aspirin' }],
+        normalizedEntities: [{ canonical: 'warfarin' }, { canonical: 'aspirin' }],
+        interactionsChecked: [],
+      };
+      const r = diagnoseMiss(log, known);
+      expect(r.stage).toBe('interaction-lookup');
+    });
+  });
+estimatedMinutes: 18
+difficulty: advanced
+skillAxis: evaluation

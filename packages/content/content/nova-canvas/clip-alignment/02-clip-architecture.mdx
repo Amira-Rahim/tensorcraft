@@ -135,4 +135,33 @@ Build CLIP-style dual encoders that produce normalized embeddings in a shared sp
 
 <Exercise slug="clip-embeddings" />
 
+<DerivationDrawer summary="CLIP dual-encoder + temperature-scaled cosine">
+**CLIP architecture:**
+
+```
+image → image_encoder (ViT or ResNet) → image_features ∈ R^d
+text  → text_encoder (transformer)    → text_features  ∈ R^d
+```
+
+Both encoders project into the same `d`-dimensional shared space (typically d=512 or d=1024). After encoding, both feature sets are L2-normalized so they live on the unit sphere.
+
+**Similarity score** between image i and text j:
+
+`sim_{i,j} = image_features[i] · text_features[j] · exp(t)`
+
+Where `t` is a learned **temperature** scalar. The exp is to keep `t` always positive. CLIP's t starts at log(1/0.07) and is clipped to a max value during training.
+
+**Training**: matrix `[batch, batch]` of all pairwise similarities. Diagonals are positive pairs (image i ↔ caption i). Apply softmax + cross-entropy in both directions (image-as-query, text-as-query). Symmetric InfoNCE.
+
+**Inference for zero-shot classification:**
+```
+classes = ['cat', 'dog', 'car']
+text_prompts = [f'a photo of a {c}' for c in classes]
+text_features = text_encoder(text_prompts)
+image_features = image_encoder(image)
+logits = image_features @ text_features.T * exp(t)
+prediction = argmax(softmax(logits))
+```
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["CLIP = dual encoders (image + text) trained with contrastive loss on massive paired data", "Like Algolia multi-index search: different content types, one unified ranking space", "The learned temperature parameter controls how sharp the similarity distribution is", "After training, CLIP enables cross-modal search, zero-shot classification, and guided generation"]} />

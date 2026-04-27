@@ -184,4 +184,14 @@ Implement a training loop that tracks loss and accuracy across epochs.
 
 <Exercise slug="train-cnn" />
 
+<DerivationDrawer summary="FLOPs vs parameters — why a small model can still be slow">
+**Parameters** = total weights to learn. **FLOPs** = floating-point operations per forward pass.
+
+For a conv layer: `FLOPs ≈ K · K · C_in · C_out · H_out · W_out`
+
+A conv layer with 32 filters, K=3, 16 input channels, output 56×56 costs `9 · 16 · 32 · 56 · 56 = ~14.4M FLOPs` for ~4,640 parameters.
+
+**Implication:** parameter count tells you memory cost; FLOPs tell you inference time. A 1M-parameter model with high spatial resolution can be slower than a 10M-parameter model with low resolution. Mobile-targeted architectures (MobileNet, EfficientNet) optimize both axes; pruning a model for memory may not speed it up if the FLOP profile is unchanged.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["Training is an iterative pipeline: forward pass, loss, backprop, weight update — one full cycle per epoch", "Cross-entropy loss measures how wrong the predicted probabilities are for the true class", "Softmax converts raw model outputs (logits) into probabilities that sum to 1", "Monitor both loss (should decrease) and accuracy (should increase) to verify training is working"]} />

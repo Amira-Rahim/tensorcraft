@@ -129,4 +129,19 @@ The key insight is that `z = mu + sigma * epsilon` is a deterministic function o
 
 <Exercise slug="reparameterize" />
 
+<DerivationDrawer summary="Why reparameterization is required for backprop">
+VAE encoder outputs `μ(x), σ(x)` — parameters of a distribution. To compute the loss we need a sample `z ~ N(μ, σ²)`. But **sampling is non-differentiable** — there's no gradient through a random number.
+
+**The trick:** rewrite the sample as a deterministic function of μ, σ, and a noise variable ε ~ N(0, 1):
+
+`z = μ + σ · ε`
+
+Now z depends on μ and σ via deterministic operations (add, multiply), and ε is independent of model parameters. The gradient flows:
+
+`∂L / ∂μ = ∂L / ∂z · 1`
+`∂L / ∂σ = ∂L / ∂z · ε`
+
+**Without this trick** the VAE cannot train end-to-end with backprop. With it, sampling becomes a differentiable layer. The same idea reappears in normalizing flows, Gumbel-softmax, and concrete distributions for discrete latents.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["Random sampling blocks gradient flow — backprop cannot pass through randomness", "The reparameterization trick: z = mu + exp(logVar/2) * epsilon", "Epsilon is sampled independently and treated as a constant during backprop", "This separates randomness from learnable parameters, just like seeded random"]} />

@@ -99,4 +99,14 @@ Each factor is local to one layer. `tf.variableGrads()` builds the computational
 **Vanishing gradients = the chain product collapsing.** If `σ'(z₂) ≈ 0.1`, `ReLU'(z₁) ∈ {0,1}`, and you have 20 layers, the product can be `0.1²⁰ ≈ 10⁻²⁰`. The early-layer weights stop updating. Residual connections add `+1` to each link in the chain to prevent this collapse.
 </DerivationDrawer>
 
+## Knowledge check
+
+<Quiz
+  question="What does tf.variableGrads() return?"
+  options={[{"text":"The loss value only"},{"text":"{ value: loss, grads: { var1: tensor, var2: tensor, ... } } — correct"},{"text":"The updated weights"},{"text":"A new optimizer instance"}]}
+  correct={1}
+  explanation="tf.variableGrads(fn) runs fn() in a recording context, returns the loss value AND a dict of gradients keyed by variable name. You then use the grads to update weights via an optimizer or manual subtraction."
+  tier="structural"
+/>
+
 <KeyTakeaways takeaways={["Backpropagation computes all gradients in one backward pass", "It works by applying the chain rule from output to input", "tf.variableGrads() handles it automatically — you define forward, it computes backward", "This made deep learning practical — efficient gradient computation for millions of parameters"]} />

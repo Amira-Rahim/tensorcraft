@@ -112,4 +112,25 @@ Implement contrastive pair scoring using cosine similarity and temperature scali
 
 <Exercise slug="contrastive-pairs" />
 
+<DerivationDrawer summary="InfoNCE / NT-Xent contrastive loss formula">
+**InfoNCE loss** for a batch of N pairs `(anchor_i, positive_i)`, with all other positives in the batch acting as negatives:
+
+```
+L_i = −log( exp(sim(a_i, p_i) / τ) / Σ_{j=1..N} exp(sim(a_i, p_j) / τ) )
+```
+
+- `sim(a, b)`: cosine similarity, often `a · b / (||a|| · ||b||)`
+- `τ`: temperature, controls sharpness (typical 0.05 to 0.5; lower = harder negatives matter more)
+- Numerator: similarity to true positive
+- Denominator: similarity to all candidates (including the positive)
+
+**Effective batch size matters massively.** Larger batch = more negatives per positive = harder learning task = better representations. CLIP trained with batch size 32,768. SimCLR showed batch 4096+ is needed for ImageNet-quality representations.
+
+**Symmetric loss** (CLIP-style, both directions):
+
+`L_total = (L_image-to-text + L_text-to-image) / 2`
+
+For a batch of (image, caption) pairs: image_i should match caption_i (and only caption_i), AND caption_i should match image_i.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["Contrastive learning = A/B testing for embeddings: learn by comparing matched and mismatched pairs", "InfoNCE loss maximizes similarity of positive pairs relative to all negative pairs in the batch", "Temperature controls how sharp the similarity distribution is — like confidence threshold in A/B testing", "Larger batches provide more negative pairs, improving the quality of learned representations"]} />

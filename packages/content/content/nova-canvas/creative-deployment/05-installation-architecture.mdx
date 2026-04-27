@@ -16,7 +16,8 @@ concept:
     feCode: "navigator.serviceWorker.register('/sw.js'); // offline-first, installable"
     mlTitle: "Installation Architecture"
     mlCode: "// offline inference, local models, sync results when connected"
-    tier: identity
+    tier: structural
+    breaks: "PWA installation gives offline asset access. ML installation must additionally bundle model weights (often 50-500MB), handle model-version updates separately from app updates, and gate inference on weight-load completion. The service-worker pattern transfers; the payload size and update lifecycle do not."
 consequence:
   narrative: "Twelve tablets, each running Nova Canvas as a PWA with local model inference. No server dependency. No internet required. Erdem: 'If the Wi-Fi dies, the art keeps running. That is the standard.'"
   nextLessonTeaser: "Next module: the Biennale opens"

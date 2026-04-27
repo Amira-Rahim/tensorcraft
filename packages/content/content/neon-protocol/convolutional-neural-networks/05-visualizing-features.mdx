@@ -220,4 +220,25 @@ Implement activation map extraction and normalization for feature visualization.
 
 <Exercise slug="visualize-features" />
 
+<DerivationDrawer summary="What feature-map magnitude actually means">
+A feature map is the output of one filter, shape `[H_out, W_out]` per filter per layer. Visualizing it as an image: bright pixels = high activation = strong response of that filter at that spatial position.
+
+**Caveats:**
+- Magnitude is not normalized — comparing brightness across filters or layers is misleading without per-channel rescaling.
+- A bright pixel at position (i, j) means the filter's pattern was detected in the receptive field around (i, j) of the input. The receptive field grows with depth: a layer-3 filter integrates over a much larger input region than a layer-1 filter.
+- Multiple filters can fire on the same input region. "This is the dog filter" is post-hoc storytelling about what a high-magnitude filter responded to, not a guarantee.
+
+**For interpretability**, combine feature maps with gradient-based methods (Grad-CAM, integrated gradients) that show which input pixels caused the activation, not just where the activation was.
+</DerivationDrawer>
+
+## Knowledge check
+
+<Quiz
+  question="Why do early CNN layers learn edge detectors regardless of task?"
+  options={[{"text":"Predetermined by initialization"},{"text":"Edges are universal low-level features in natural images — task-agnostic — correct"},{"text":"Required by ReLU activation"},{"text":"Encoded in TensorFlow.js"}]}
+  correct={1}
+  explanation="Natural images share statistics: edges, gradients, oriented patterns. The most efficient first-layer features are universal regardless of whether the network classifies cats, X-rays, or satellite imagery. This is why ImageNet-pretrained early layers transfer to most vision tasks."
+  tier="structural"
+/>
+
 <KeyTakeaways takeaways={["Feature visualization is the neural network equivalent of DevTools element inspection — see what each layer contributes", "Early conv layers learn edges and gradients, middle layers learn shapes, deep layers learn object parts", "Normalizing activation maps to 0-1 range makes them comparable and visualizable", "Interpretability matters — a model that works for the wrong reasons will fail on new data"]} />

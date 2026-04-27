@@ -16,7 +16,8 @@ concept:
     feCode: "caches.match(request) || fetch(request).then(cache) // cache-first"
     mlTitle: "Inference Cache"
     mlCode: "cache.get(inputHash) || model.predict(input).then(cache) // cache-first"
-    tier: identity
+    tier: structural
+    breaks: "Service worker cache keys requests by URL — exact-match. Inference cache keys must include input hash (post-quantization), model version, and runtime parameters (batch size, fp precision). The cache-first pattern transfers; cache-key design does not."
 consequence:
   narrative: "Caching eliminates 40% of inference calls — the signal patterns repeat regularly enough that cached results are valid."
   nextLessonTeaser: "Next: WebGPU acceleration — using the GPU for maximum inference speed"

@@ -120,4 +120,14 @@ Set up the best available GPU backend and benchmark inference speed.
 
 <Exercise slug="gpu-backend" />
 
+## Knowledge check
+
+<Quiz
+  question="When does WebGPU outperform WebGL for ML inference?"
+  options={[{"text":"Always — WebGPU is newer"},{"text":"Compute-heavy ops (matmul, conv) where WebGPU's compute shaders avoid graphics-pipeline overhead — correct"},{"text":"When the model is small (under 10MB)"},{"text":"Only on Chrome desktop"}]}
+  correct={1}
+  explanation="WebGL repurposes graphics pipeline for compute via fragment shaders — overhead per op. WebGPU has dedicated compute shaders + better memory model. For matmul-heavy workloads (transformers, large CNNs), WebGPU is 2-5× faster. For small models, the setup cost dominates and there's no win."
+  tier="structural"
+/>
+
 <KeyTakeaways takeaways={["WebGPU provides 2-3x speedup over WebGL for ML inference — designed for compute, not graphics", "Always implement graceful fallback: WebGPU → WebGL → WASM, like progressive enhancement", "The full optimization stack (quantize + prune + cache + WebGPU) achieves 8x size reduction and 9x speed improvement", "Nazari approves: DEEP SCAN is production-ready at 42 MB and 5ms inference"]} />

@@ -124,4 +124,14 @@ Train the DEEP SCAN network and watch the loss decrease.
 
 <Exercise slug="training-loop-exercise" />
 
+## Knowledge check
+
+<Quiz
+  question="Why use mini-batch (32-512) instead of full-batch or single-sample?"
+  options={[{"text":"Mini-batch is faster on CPU"},{"text":"Tradeoff: smooth-enough gradient estimate + GPU saturation + memory fits — correct"},{"text":"Required by Adam optimizer"},{"text":"Standard for online learning"}]}
+  correct={1}
+  explanation="Full-batch is exact but slow (one step per epoch + huge memory). Single-sample is noisy + underuses GPU parallelism. Mini-batch 16-512 hits the sweet spot — enough samples for low-variance gradient estimate, small enough to fit, large enough to saturate GPU compute."
+  tier="structural"
+/>
+
 <KeyTakeaways takeaways={["model.fit() runs the full training loop: forward → loss → backprop → update", "Epochs = full passes through the dataset, batches = chunks within each epoch", "Validation split catches overfitting — if val_loss increases while loss decreases, you're memorizing", "Callbacks let you monitor progress, like console.log in a rAF loop"]} />

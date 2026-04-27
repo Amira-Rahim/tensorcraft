@@ -150,4 +150,10 @@ Build a profiler that measures inference pipeline stages and determines if you a
 
 <Exercise slug="measure-fps" />
 
+## On-Call Scenario
+
+Inference latency doubled overnight after a model update. Forensic-debug which stage of the inference pipeline regressed.
+
+<Exercise slug="incident-latency-spike" />
+
 <KeyTakeaways takeaways={["At 30fps, your total frame budget is 33.3ms — every stage of the pipeline counts", "Profile with performance.now() to identify exactly where time is spent", "Inference is usually the bottleneck — preprocessing and postprocessing should be under 5ms each", "Adaptive strategies like frame skipping trade detection frequency for consistent responsiveness"]} />

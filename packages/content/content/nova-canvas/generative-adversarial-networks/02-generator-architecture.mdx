@@ -139,4 +139,18 @@ function buildGeneratorV2(noiseDim: number): tf.Sequential {
 
 <Exercise slug="build-generator" />
 
+<DerivationDrawer summary="Transposed convolution math (upsampling)">
+GAN generators upsample noise into images. The standard tool is **transposed convolution** (sometimes mis-called "deconvolution"). It's the gradient of a regular convolution, used in the forward direction:
+
+```
+Input:  H × W × C_in
+Output: H_out × W_out × C_out
+  where H_out = stride · (H − 1) + K − 2P
+```
+
+With stride 2, K=4, P=1: each input pixel becomes a 4×4 patch in the output, multiplied by a learned kernel and summed where patches overlap. The result is upsampled.
+
+**Checkerboard artifacts:** when K is not divisible by stride, overlap regions get more contributions than non-overlap → visible grid pattern in generated images. Fix: use K = 2·stride (e.g. K=4 with stride=2) or replace transposed conv with `bilinear upsample + regular conv` ("sub-pixel convolution").
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["Generators progressively upscale from noise to full-resolution output", "LeakyReLU prevents dead neurons; BatchNorm stabilizes training", "Output activation must be bounded — sigmoid for [0,1], tanh for [-1,1]", "The architecture mirrors a template engine: compact input to structured output"]} />

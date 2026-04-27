@@ -266,7 +266,7 @@ export function SettingsForm({
 
     setSaving(false);
     if (updateError || prefsError) {
-      setError(prefsError ?? "Failed to save settings");
+      setError(prefsError ?? updateError?.message ?? "Failed to save settings");
     } else {
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);

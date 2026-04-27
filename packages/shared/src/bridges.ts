@@ -710,9 +710,11 @@ export const BRIDGES: Bridge[] = [
     id: 27,
     mlConcept: "Image tensors",
     feConcept: "canvas.getImageData()",
-    tier: "identity",
+    tier: "structural",
     connection:
-      "Both represent images as flat arrays of pixel values (RGBA channels). Uint8ClampedArray from getImageData() is literally an image tensor. Same data, same structure.",
+      "Both represent images as numeric arrays of pixel values. getImageData returns a flat Uint8ClampedArray (0-255 RGBA). An image tensor returns a shaped float32 tensor (often [h, w, 3]).",
+    breaks:
+      "getImageData ships uint8 (0-255) interleaved RGBA. Most models need float32 normalized to [0,1] (or per-channel mean/std). Skipping the cast and normalization gives an image whose pixels are 100x larger than training distribution, and the model returns nonsense.",
     category: "neon-protocol",
   },
   {
@@ -774,9 +776,11 @@ export const BRIDGES: Bridge[] = [
     id: 33,
     mlConcept: "Tokenization",
     feConcept: "URL parsing / route splitting",
-    tier: "identity",
+    tier: "structural",
     connection:
-      "Both break continuous input into discrete structured parts. A URL parser splits /path/:param/ into segments; a tokenizer splits text into tokens. Same operation, different input.",
+      "Both break continuous input into discrete structured parts. URL parsing splits at known delimiters with deterministic regex. Subword tokenizers split text using learned merge rules.",
+    breaks:
+      "URL parsing uses regex YOU control. Subword tokenizers (BPE, WordPiece, SentencePiece) learn merge rules from a training corpus and the same word can tokenize to 1 token in one model and 5 in another. Tokenization is part of the model artifact; you cannot regex your way out of a tokenizer mismatch at inference.",
     category: "signal-ward",
   },
   {
@@ -794,9 +798,11 @@ export const BRIDGES: Bridge[] = [
     id: 35,
     mlConcept: "RNN state accumulation",
     feConcept: "Array.reduce()",
-    tier: "identity",
+    tier: "structural",
     connection:
-      "Both process a sequence element-by-element, carrying forward an accumulated state. reduce() builds a result by folding over an array; RNNs build a hidden state by folding over a sequence. Identical pattern.",
+      "Both fold a sequence element-by-element, carrying forward accumulated state. reduce() builds a result by folding with a function YOU define; an RNN folds with a learned cell.",
+    breaks:
+      "reduce folds with a pure function YOU define. An RNN cell folds with a LEARNED step function whose weights, gates, and activation come from training; the same input sequence can produce different hidden states across model versions. The fold shape transfers; the cell content is opaque and stochastic.",
     category: "signal-ward",
   },
   {
@@ -838,9 +844,11 @@ export const BRIDGES: Bridge[] = [
     id: 39,
     mlConcept: "Sampling from distributions",
     feConcept: "Math.random()",
-    tier: "identity",
+    tier: "structural",
     connection:
-      "Both generate values from probability distributions. Math.random() samples uniformly; generative models sample from learned distributions. Same operation with learned parameters.",
+      "Both generate values from probability distributions. Math.random() samples uniformly from [0,1); generative models sample from a learned distribution.",
+    breaks:
+      "Math.random() samples uniformly from [0,1) with no parameters to learn. Generative models sample from a high-dimensional learned distribution that may have multiple modes, an unrepresentable tail, or unsafe regions. Sampling temperature, top-k, top-p — all knobs Math.random() does not have.",
     category: "nova-canvas",
   },
   {
@@ -924,9 +932,11 @@ export const BRIDGES: Bridge[] = [
     id: 47,
     mlConcept: "Weight pruning",
     feConcept: "Tree-shaking",
-    tier: "identity",
+    tier: "structural",
     connection:
-      "Both remove unused parts to reduce size without changing behavior. Tree-shaking eliminates dead code; pruning eliminates near-zero weights. Same optimization, different artifact.",
+      "Both remove components to reduce size. Tree-shaking eliminates statically unreferenced code via exact analysis. Pruning removes weights below a numeric threshold.",
+    breaks:
+      "Tree-shaking removes statically unreferenced code (analysis is exact, behavior unchanged). Weight pruning removes weights below a numeric threshold and the model usually requires fine-tuning to recover accuracy after pruning — sometimes accuracy never fully recovers. Tree-shaking is safe; pruning has a quality cost.",
     category: "terra-grid",
   },
   {

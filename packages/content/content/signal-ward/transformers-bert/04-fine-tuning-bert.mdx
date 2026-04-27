@@ -201,4 +201,20 @@ Build a fine-tuning pipeline with a pre-trained encoder, classification head, an
 
 <Exercise slug="fine-tune-clinical" />
 
+<DerivationDrawer summary="Fine-tuning learning rate schedule">
+Fine-tuning a pretrained model uses a **much smaller learning rate** than training from scratch — typically 1e-5 to 5e-5 for BERT, vs 1e-3 for from-scratch training.
+
+**Why so small?** Pretrained weights are already in a useful region of the loss landscape. A large LR would overshoot and destroy what was learned (catastrophic forgetting). Small LR refines instead of restructures.
+
+**Standard schedule:**
+```
+warmup: linearly increase LR from 0 to peak over first 10% of steps
+decay:  linearly decrease LR from peak to 0 over remaining 90% of steps
+```
+
+**Layer-wise LR decay:** different LRs per layer — top layers (closer to output) get higher LR, bottom layers (closer to input, more general features) get lower LR. Bottom = features you want to preserve; top = features specific to the new task. Common decay factor: 0.95 per layer downward.
+
+**Discriminative learning rate** is the same idea — fast.ai popularized this for vision transfer learning.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["Fine-tuning extends a pre-trained model with task-specific capabilities — like class inheritance", "Use small learning rates (2e-5) and few epochs (3-4) to prevent catastrophic forgetting", "Gradual unfreezing trains the head first, then progressively unfreezes encoder layers", "Discriminative learning rates apply smaller updates to lower (more general) layers"]} />

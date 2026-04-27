@@ -118,4 +118,33 @@ Build image and text encoders that produce embeddings of the same dimensionality
 
 <Exercise slug="multimodal-input" />
 
+<DerivationDrawer summary="Multimodal fusion strategies: early, late, attention">
+**Three fusion strategies** for combining modalities (image + text, audio + visual, etc):
+
+**1. Early fusion** — concatenate raw features at input:
+```
+input = concat(image_features, text_features)     // shape [B, d_img + d_text]
+output = mlp(input)
+```
+Simple. Loses modality-specific structure. Works for low-dim modalities (sensor fusion).
+
+**2. Late fusion** — process each modality separately, combine predictions:
+```
+p_image = image_classifier(image)
+p_text  = text_classifier(text)
+p_final = α · p_image + (1 − α) · p_text
+```
+Easy to implement, modalities independent. Misses cross-modal interactions.
+
+**3. Cross-attention fusion** — let one modality attend to the other:
+```
+image_features = image_encoder(image)            // [n_img_tokens, d]
+text_features  = text_encoder(text)              // [n_text_tokens, d]
+fused = cross_attention(query=text_features, key=image_features, value=image_features)
+```
+Most flexible. Powers BLIP, Flamingo, GPT-4V. Expensive: O(n_text · n_img · d) per layer.
+
+**Modern recipe:** project both modalities into a shared embedding space (CLIP-style), then add cross-attention layers in a transformer. Most modern multimodal LLMs (LLaVA, Qwen-VL) use this hybrid.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["Multimodal = multiple data types in one system, like a full-stack app connecting frontend, backend, and database", "Each modality has its own encoder, but all map to a shared embedding space of the same dimensionality", "The shared space is where different modalities meet — text and images become comparable vectors", "This architecture enables cross-modal tasks: text-to-image, image-to-text, image-text matching"]} />

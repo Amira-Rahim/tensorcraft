@@ -174,4 +174,28 @@ Apply a Hann window to a signal before computing the FFT.
 
 <Exercise slug="apply-window" />
 
+<DerivationDrawer summary="Why window + overlap matters">
+**Windowing:** multiplying the signal segment by a window function (Hann, Hamming, ...) before FFT reduces **spectral leakage** — energy from real frequencies smearing into adjacent FFT bins. Without windowing, a sinusoid that doesn't fit perfectly in the window produces a wide smeared response.
+
+**Window math (Hann):**
+
+`w[n] = 0.5 · (1 - cos(2π · n / (W - 1)))`
+
+**Overlap:** consecutive FFT windows share data. With 50% overlap (hop = W/2), each sample appears in 2 windows. With 75% overlap (hop = W/4), each sample appears in 4. More overlap = smoother spectrogram, more compute.
+
+**Constant-overlap-add (COLA) condition:** for perfect signal reconstruction from STFT, the windows must satisfy `Σ_t w[t - hop·k] = constant`. Hann window with 75% overlap satisfies COLA; rectangular window with 50% overlap does not.
+
+For real-time inference: smaller hop = lower latency between input and STFT availability, at the cost of more FFTs per second.
+</DerivationDrawer>
+
+## Knowledge check
+
+<Quiz
+  question="Why apply a Hann window before FFT?"
+  options={[{"text":"To reduce computation"},{"text":"To reduce spectral leakage when signal isn't periodic in the window — correct"},{"text":"To increase frequency resolution"},{"text":"Required by Cooley-Tukey algorithm"}]}
+  correct={1}
+  explanation="FFT assumes the input is one period of a periodic signal. Real signals usually aren't — the discontinuity at window edges creates spurious frequencies (spectral leakage). Tapering the edges (Hann, Hamming, Blackman) suppresses this. Cost: slight loss of frequency resolution."
+  tier="structural"
+/>
+
 <KeyTakeaways takeaways={["Spectral leakage creates false frequencies when signal edges are discontinuous — like visual artifacts from hard-clipping in virtual scroll", "Windowing functions (Hann, Hamming) taper signal edges to zero, eliminating leakage artifacts", "50% overlap between windows ensures no information is lost at tapered edges — like overscan in virtualized lists", "The 73.4 Hz anomaly, now clean after windowing, is confirmed as real structure — not an artifact"]} />

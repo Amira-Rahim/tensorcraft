@@ -103,4 +103,14 @@ Evaluate DEEP SCAN on unseen signal data and make predictions.
 
 <Exercise slug="deep-scan-eval" />
 
+## Knowledge check
+
+<Quiz
+  question="A model has 95% training accuracy and 60% test accuracy. What's the diagnosis?"
+  options={[{"text":"Underfitting — model is too simple"},{"text":"Overfitting — model memorized training data — correct"},{"text":"Data leakage"},{"text":"Wrong loss function"}]}
+  correct={1}
+  explanation="Large gap between train and test accuracy is the signature of overfitting. Fixes: more training data, regularization (dropout, L2), reduced model capacity, or early stopping. Underfitting shows as both accuracies being low."
+  tier="structural"
+/>
+
 <KeyTakeaways takeaways={["model.evaluate() tests on unseen data — the true measure of performance", "Training accuracy ≠ real-world accuracy — always test on held-out data", "Overfitting: train acc high, test acc low. Underfitting: both low.", "model.predict() makes predictions on new data — your model is deployed!"]} />

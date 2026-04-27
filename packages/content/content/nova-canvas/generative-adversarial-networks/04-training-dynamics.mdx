@@ -147,4 +147,26 @@ function diagnose(metrics: TrainingMetrics): string {
 
 <Exercise slug="train-gan" />
 
+## On-Call Scenario
+
+After a model update, generated outputs lost coherence — text in images garbled, faces distorted. Decide whether to roll back or fine-tune.
+
+<Exercise slug="incident-quality-regression" />
+
+<DerivationDrawer summary="Why GAN training is unstable + Wasserstein fix">
+**JS divergence is undefined when supports don't overlap:** if real-data manifold and generated manifold lie in different regions of pixel space (typical at start of training), JS = log 2 (constant) → zero gradient → no learning signal. Vanilla GANs depend on initial overlap which is fragile.
+
+**Wasserstein GAN (WGAN)** replaces JS with **Earth Mover's distance:**
+
+`W(P, Q) = inf_{γ ∈ Π(P,Q)} E_{(x,y)~γ} [||x − y||]`
+
+Intuition: minimum cost to transform distribution P into Q (move mass from P-locations to Q-locations).
+
+Via Kantorovich-Rubinstein duality, this becomes a tractable formulation requiring **D to be 1-Lipschitz** (bounded slope). Enforced via weight clipping (original WGAN) or gradient penalty (WGAN-GP, modern standard):
+
+`L_GP = λ · E_{x̂} [(||∇_{x̂} D(x̂)||_2 − 1)²]`
+
+Where x̂ is sampled along straight lines between real and generated samples. WGAN-GP is the most stable training recipe most modern GANs use.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["GAN training alternates between discriminator and generator updates", "Healthy training shows both losses fluctuating, neither collapsing to zero", "D loss near 0.5 means the discriminator is uncertain — this is good", "Monitor both losses and adjust learning rates to maintain balance"]} />

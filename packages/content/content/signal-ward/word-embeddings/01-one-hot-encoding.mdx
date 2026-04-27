@@ -16,7 +16,8 @@ concept:
     feCode: "enum Drug { Aspirin = 0, Ibuprofen = 1, Appendectomy = 2 }"
     mlTitle: "One-Hot Vector"
     mlCode: "aspirin = [1, 0, 0]  // unique ID, no relationships"
-    tier: identity
+    tier: structural
+    breaks: "An enum value is a small integer with named identity. A one-hot vector is a length-N sparse vector with a single 1 — N grows with vocabulary size, distance between any two encodings is identical (no notion of similarity), and storage is wasteful for large N. The integer ID is the link; the geometry is not."
 consequence:
   narrative: "The team sees that one-hot encoding works for identification but is wasteful and blind to meaning. 10,000 words means 10,000-dimensional vectors with no semantic structure."
   nextLessonTeaser: "Next: dense vectors that place similar words near each other in space."

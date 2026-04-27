@@ -238,4 +238,20 @@ Build a YOLO output decoder that converts grid predictions into bounding boxes.
 
 <Exercise slug="yolo-detect" />
 
+## On-Call Scenario
+
+An adversarial patch on a stop sign caused the detector to classify it as a yield sign. Build a detector for confidence anomalies that signal adversarial input.
+
+<Exercise slug="incident-adversarial-patch" />
+
+## Knowledge check
+
+<Quiz
+  question="What does YOLO's 'You Only Look Once' actually mean?"
+  options={[{"text":"Single forward pass produces all bounding boxes + classes — no proposal stage — correct"},{"text":"Trained on one image only"},{"text":"Single-class detection"},{"text":"Inference happens once per video"}]}
+  correct={0}
+  explanation="Two-stage detectors (R-CNN family) first propose regions, then classify each. YOLO does both in one forward pass via grid-based prediction. Faster but historically less accurate. Modern YOLO (v8+) closes the accuracy gap."
+  tier="structural"
+/>
+
 <KeyTakeaways takeaways={["YOLO performs all detection in a single forward pass — like batching DOM updates into one requestAnimationFrame", "The output is a grid tensor: each cell predicts bounding boxes, confidence, and class probabilities simultaneously", "The full pipeline is predict, decode, threshold, NMS — each step maps to a familiar frontend pattern", "Browser-based YOLO runs at 15-24 FPS with WebGL and WebGPU — fast enough for the resistance to see drones first"]} />

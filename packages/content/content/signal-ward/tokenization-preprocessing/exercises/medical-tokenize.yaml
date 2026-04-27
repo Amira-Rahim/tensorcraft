@@ -1,56 +1,45 @@
 slug: medical-tokenize
 lessonSlug: medical-tokenization
-title: "Medical Tokenize"
-instructions: "Implement a clinicalTokenize function that processes medical text in three steps: (1) lowercase the input, (2) tokenize by matching sequences of letters (including hyphens between letters) and numbers (including decimals), and (3) expand abbreviations using the provided CLINICAL_ABBREVS map. Return the array of processed tokens."
+title: "Medical Text Normalization to ID Tensor"
+mlContent: data
+instructions: "Build `medicalTokenize(text, synonymMap, vocab)` that splits text on whitespace, applies synonymMap (e.g. 'mi' → 'myocardial infarction'), then looks up each resulting word in vocab (0 for unknown), and returns a 1D int32 tensor of IDs."
 starterCode: |
-  const CLINICAL_ABBREVS = new Map([
-    ['pt', 'patient'], ['pts', 'patients'],
-    ['hx', 'history'], ['dx', 'diagnosis'],
-    ['rx', 'prescription'], ['tx', 'treatment'],
-    ['sx', 'symptoms'], ['pcn', 'penicillin'],
-    ['abx', 'antibiotics'], ['bp', 'blood-pressure'],
-    ['hr', 'heart-rate'], ['prn', 'as-needed'],
-    ['bid', 'twice-daily'], ['tid', 'three-times-daily'],
-  ]);
-
-  function clinicalTokenize(text: string): string[] {
-    // 1. Lowercase the text
-    // 2. Tokenize: match letter sequences (with hyphens) and numbers (with decimals)
-    // 3. Map each token through the abbreviation map
-    return []; // your code here
+  function medicalTokenize(text, synonymMap, vocab) {
+    return null;
   }
-
-  const result = clinicalTokenize('Pt hx of chest pain. HR 72 bpm, BP 120/80. Rx PCN bid.');
 solutionCode: |
-  const CLINICAL_ABBREVS = new Map([
-    ['pt', 'patient'], ['pts', 'patients'],
-    ['hx', 'history'], ['dx', 'diagnosis'],
-    ['rx', 'prescription'], ['tx', 'treatment'],
-    ['sx', 'symptoms'], ['pcn', 'penicillin'],
-    ['abx', 'antibiotics'], ['bp', 'blood-pressure'],
-    ['hr', 'heart-rate'], ['prn', 'as-needed'],
-    ['bid', 'twice-daily'], ['tid', 'three-times-daily'],
-  ]);
-
-  function clinicalTokenize(text: string): string[] {
-    const tokens = text.toLowerCase().match(/[a-z]+(?:-[a-z]+)*|[0-9]+(?:\.[0-9]+)?/g) || [];
-    return tokens.map(t => CLINICAL_ABBREVS.get(t) ?? t);
+  function medicalTokenize(text, synonymMap, vocab) {
+    const words = text.toLowerCase().split(/\s+/).filter(w => w.length > 0);
+    const expanded = [];
+    for (const w of words) {
+      const exp = synonymMap.get(w);
+      if (exp) {
+        for (const part of exp.split(/\s+/)) expanded.push(part);
+      } else {
+        expanded.push(w);
+      }
+    }
+    const ids = expanded.map(w => vocab.get(w) ?? 0);
+    return tf.tensor1d(ids, 'int32');
   }
-
-  const result = clinicalTokenize('Pt hx of chest pain. HR 72 bpm, BP 120/80. Rx PCN bid.');
 testCode: |
-  describe('Clinical Tokenize', () => {
-    it('returns an array', () => { expect(Array.isArray(result)).toBe(true); });
-    it('expands pt to patient', () => { expect(result[0]).toBe('patient'); });
-    it('expands hx to history', () => { expect(result[1]).toBe('history'); });
-    it('expands hr to heart-rate', () => { expect(result).toContain('heart-rate'); });
-    it('expands bp to blood-pressure', () => { expect(result).toContain('blood-pressure'); });
-    it('expands rx to prescription', () => { expect(result).toContain('prescription'); });
-    it('expands pcn to penicillin', () => { expect(result).toContain('penicillin'); });
-    it('expands bid to twice-daily', () => { expect(result).toContain('twice-daily'); });
-    it('preserves numbers', () => { expect(result).toContain('72'); });
-    it('leaves non-abbreviations unchanged', () => { expect(result).toContain('chest'); });
+  describe('medicalTokenize (real tf.tensor1d)', () => {
+    it('expands abbreviations', () => {
+      const syn = new Map([['mi', 'myocardial infarction']]);
+      const vocab = new Map([['myocardial', 1], ['infarction', 2]]);
+      const t = medicalTokenize('mi', syn, vocab);
+      expect(Array.from(t.dataSync())).toEqual([1, 2]);
+    });
+    it('passes unknown synonyms through', () => {
+      const t = medicalTokenize('aspirin', new Map(), new Map([['aspirin', 5]]));
+      expect(Array.from(t.dataSync())).toEqual([5]);
+    });
+    it('case-insensitive', () => {
+      const vocab = new Map([['fever', 8]]);
+      const t = medicalTokenize('FEVER', new Map(), vocab);
+      expect(Array.from(t.dataSync())).toEqual([8]);
+    });
   });
 estimatedMinutes: 12
 difficulty: intermediate
-mlContent: arithmetic
+skillAxis: data_prep

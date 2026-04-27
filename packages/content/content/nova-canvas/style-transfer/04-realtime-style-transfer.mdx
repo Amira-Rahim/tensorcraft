@@ -119,4 +119,28 @@ Build a feedforward style transfer network with residual blocks.
 
 <Exercise slug="realtime-style" />
 
+<DerivationDrawer summary="Instance normalization — why styles use it">
+Style transfer uses **Instance Normalization (IN)** instead of BatchNorm. Both normalize activations, but along different axes.
+
+**For input shape `[N, C, H, W]`:**
+
+```
+BatchNorm: normalize over (N, H, W) per channel — uses batch statistics
+  μ_c = mean over batch + spatial          (one mean per channel)
+  σ_c = std over batch + spatial            (one std per channel)
+
+InstanceNorm: normalize over (H, W) per sample, per channel
+  μ_{n,c} = mean over spatial only          (separate mean per (sample, channel))
+  σ_{n,c} = std over spatial only           (separate std per (sample, channel))
+```
+
+**Why InstanceNorm for style transfer?** Style is captured by per-image feature statistics (Gram matrix). BatchNorm averages across the batch, mixing styles together. InstanceNorm preserves each image's statistics.
+
+**Adaptive Instance Normalization (AdaIN)** generalizes IN by replacing the learned per-channel scale/shift with style-image-derived scale/shift:
+
+`AdaIN(content, style) = σ(style) · (content − μ(content)) / σ(content) + μ(style)`
+
+Applied at each layer of the generator. This is the basis for arbitrary style transfer (one model, any style).
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["Iterative style transfer optimizes from scratch each time — like computing CSS by gradient descent on page load", "Feedforward networks pre-compile a style into learned weights — single-pass inference, like CSS filters", "The architecture: encoder (downsample) -> residual blocks (transform) -> decoder (upsample)", "Result: 2000x speedup, from minutes per image to 85 milliseconds — true real-time performance"]} />

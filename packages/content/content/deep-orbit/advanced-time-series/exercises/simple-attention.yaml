@@ -1,51 +1,37 @@
 slug: simple-attention
 lessonSlug: beyond-lstm
-title: "Implement Simple Attention"
-instructions: "Write a function that computes attention weights over a sequence of values. Given an array of scores (one per time step), apply softmax to get normalized weights, then compute the weighted sum of the corresponding values."
+title: "Simple Attention Over RNN Hidden States"
+mlContent: model
+instructions: "Build `simpleAttention(query, hiddenStates)` taking a [d] query vector and a [T, d] sequence of hidden states. Compute attention weights via dot product + softmax, then return the weighted sum of hidden states (a [d] vector)."
 starterCode: |
-  function softmax(scores: number[]): number[] {
-    const max = Math.max(...scores);
-    const exps = scores.map(s => Math.exp(s - max));
-    const sum = exps.reduce((a, b) => a + b, 0);
-    return exps.map(e => e / sum);
-  }
-
-  function attend(scores: number[], values: number[]): { weights: number[]; output: number } {
-    // 1. Apply softmax to scores to get attention weights
-    // 2. Compute weighted sum: sum(weights[i] * values[i])
-    return null; // your code here
+  function simpleAttention(query, hiddenStates) {
+    return null;
   }
 solutionCode: |
-  function softmax(scores: number[]): number[] {
-    const max = Math.max(...scores);
-    const exps = scores.map(s => Math.exp(s - max));
-    const sum = exps.reduce((a, b) => a + b, 0);
-    return exps.map(e => e / sum);
-  }
-
-  function attend(scores: number[], values: number[]): { weights: number[]; output: number } {
-    const weights = softmax(scores);
-    const output = weights.reduce((sum, w, i) => sum + w * values[i], 0);
-    return { weights, output };
+  function simpleAttention(query, hiddenStates) {
+    const queryRow = query.reshape([1, query.shape[0]]);
+    const scores = tf.matMul(queryRow, hiddenStates, false, true);
+    const weights = tf.softmax(scores);
+    const weighted = tf.matMul(weights, hiddenStates);
+    return weighted.squeeze();
   }
 testCode: |
-  describe('attend', () => {
-    it('returns weights that sum to 1', () => {
-      const { weights } = attend([1, 2, 3], [10, 20, 30]);
-      const sum = weights.reduce((a, b) => a + b, 0);
-      expect(sum).toBeCloseTo(1.0);
+  describe('simpleAttention (real tf.matMul + softmax)', () => {
+    it('output shape matches query dim', () => {
+      const q = tf.randomNormal([8]);
+      const H = tf.randomNormal([5, 8]);
+      const out = simpleAttention(q, H);
+      expect(out.shape).toEqual([8]);
     });
-    it('highest score gets highest weight', () => {
-      const { weights } = attend([1, 5, 2], [10, 20, 30]);
-      expect(weights[1]).toBeGreaterThan(weights[0]);
-      expect(weights[1]).toBeGreaterThan(weights[2]);
-    });
-    it('output is weighted sum', () => {
-      const { output } = attend([0, 0, 0], [10, 20, 30]);
-      expect(output).toBeCloseTo(20);
+    it('uniform attention with zero query → average of hidden states', () => {
+      const q = tf.zeros([4]);
+      const H = tf.tensor2d([[1, 1, 1, 1], [3, 3, 3, 3]]);
+      const out = simpleAttention(q, H);
+      const arr = out.dataSync();
+      // softmax of all-zero scores is uniform → average row = [2, 2, 2, 2]
+      expect(arr[0]).toBeCloseTo(2, 4);
     });
   });
-estimatedMinutes: 10
+estimatedMinutes: 15
 difficulty: intermediate
-mlContent: arithmetic
 skillAxis: model_arch

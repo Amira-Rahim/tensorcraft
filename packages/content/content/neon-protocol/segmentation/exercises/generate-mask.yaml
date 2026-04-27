@@ -1,68 +1,30 @@
 slug: generate-mask
 lessonSlug: mask-generation
-title: "Generate a Binary Mask"
-instructions: "Write a function that takes a 2D probability map (values 0-1) and a threshold, and returns a binary mask where values above the threshold are 1 and values at or below are 0. Also count the number of positive pixels."
+title: "Generate Binary Segmentation Mask"
+mlContent: data
+instructions: "Build `generateMask(probs, threshold)` taking [H, W] probability tensor + threshold, returning a [H, W] int32 mask with values {0, 1}."
 starterCode: |
-  interface MaskResult {
-    mask: number[][];
-    positiveCount: number;
-  }
-
-  function generateMask(probMap: number[][], threshold: number): MaskResult {
-    // Convert probability values to binary: > threshold = 1, else 0
-    // Count how many pixels are positive (1)
-    return { mask: [], positiveCount: 0 }; // your code here
+  function generateMask(probs, threshold) {
+    return null;
   }
 solutionCode: |
-  interface MaskResult {
-    mask: number[][];
-    positiveCount: number;
-  }
-
-  function generateMask(probMap: number[][], threshold: number): MaskResult {
-    let positiveCount = 0;
-    const mask = probMap.map(row =>
-      row.map(val => {
-        const binary = val > threshold ? 1 : 0;
-        positiveCount += binary;
-        return binary;
-      })
-    );
-    return { mask, positiveCount };
+  function generateMask(probs, threshold) {
+    return tf.greater(probs, tf.scalar(threshold)).cast('int32');
   }
 testCode: |
-  describe('generateMask', () => {
-    it('thresholds values correctly', () => {
-      const probs = [[0.8, 0.3], [0.6, 0.1]];
-      const result = generateMask(probs, 0.5);
-      expect(result.mask).toEqual([[1, 0], [1, 0]]);
+  describe('generateMask (real tf.greater + cast)', () => {
+    it('preserves shape', () => {
+      const probs = tf.randomUniform([8, 8]);
+      const mask = generateMask(probs, 0.5);
+      expect(mask.shape).toEqual([8, 8]);
     });
-
-    it('counts positive pixels', () => {
-      const probs = [[0.9, 0.9], [0.9, 0.1]];
-      const result = generateMask(probs, 0.5);
-      expect(result.positiveCount).toBe(3);
-    });
-
-    it('handles threshold of 0', () => {
-      const probs = [[0.1, 0.0], [0.5, 0.0]];
-      const result = generateMask(probs, 0);
-      expect(result.mask).toEqual([[1, 0], [1, 0]]);
-    });
-
-    it('value equal to threshold is 0', () => {
-      const probs = [[0.5]];
-      const result = generateMask(probs, 0.5);
-      expect(result.mask).toEqual([[0]]);
-      expect(result.positiveCount).toBe(0);
-    });
-
-    it('handles all-positive mask', () => {
-      const probs = [[1.0, 0.9], [0.8, 0.7]];
-      const result = generateMask(probs, 0.5);
-      expect(result.positiveCount).toBe(4);
+    it('binarizes correctly', () => {
+      const probs = tf.tensor2d([[0.1, 0.9], [0.7, 0.3]]);
+      const mask = generateMask(probs, 0.5);
+      const arr = mask.arraySync();
+      expect(arr).toEqual([[0, 1], [1, 0]]);
     });
   });
-estimatedMinutes: 6
+estimatedMinutes: 8
 difficulty: intermediate
-mlContent: arithmetic
+skillAxis: data_prep

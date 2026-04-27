@@ -16,7 +16,8 @@ concept:
     feCode: "const arr = new Float32Array([1, 2, 3])"
     mlTitle: "Tensor"
     mlCode: "const t = tf.tensor([1, 2, 3])"
-    tier: identity
+    tier: structural
+    breaks: "Float32Array stores numbers in a flat memory layout. A Tensor stores numbers AND tracks shape (rank, dimensions), backend (CPU/WebGL/WASM), gradient information for autograd, and ownership for memory disposal. The byte storage is similar; the API and lifecycle are not — you can iterate Float32Array directly, but you cannot iterate a Tensor without dataSync()."
 consequence:
   narrative: "The signal begins to take shape as structured data."
   nextLessonTeaser: "Next: understanding tensor shapes"
@@ -81,5 +82,15 @@ Think of it like this: you already use `HTMLElement[]` to represent a list of DO
 Now it's your turn. Create your first tensor from a JavaScript array.
 
 <Exercise slug="create-a-tensor" />
+
+## Knowledge check
+
+<Quiz
+  question="What is the rank of `tf.tensor2d([[1, 2, 3], [4, 5, 6]])`?"
+  options={[{"text":"0 (scalar)"},{"text":"1 (vector)"},{"text":"2 (matrix) — correct"},{"text":"3 (3D tensor)"}]}
+  correct={2}
+  explanation="Rank = number of dimensions. tf.tensor2d creates a 2D tensor (matrix). Shape is [2, 3] but rank is 2."
+  tier="identity"
+/>
 
 <KeyTakeaways takeaways={["Tensors are multi-dimensional arrays — the building blocks of ML", "TensorFlow.js tensors are created from regular JavaScript arrays", "Tensor rank = number of dimensions (scalar=0, vector=1, matrix=2)", "You can convert freely between tensors and JS arrays with .array()"]} />

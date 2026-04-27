@@ -1,0 +1,71 @@
+slug: incident-latency-spike
+lessonSlug: performance-budgets
+title: "Incident — Inference Latency Doubled Overnight"
+mlContent: systems
+instructions: |
+  PAGER: p95 inference latency went from 25ms to 62ms after a model update. Build `pinpointRegression(currentTimings, baselineTimings)` returning:
+
+    {
+      worstStage: string,            // stage name with largest absolute regression
+      regressionMs: number,          // current median - baseline median (rounded to 1 decimal)
+      regressionPct: number,         // (current/baseline - 1) * 100, 1 decimal
+      requiresRollback: boolean,     // true if any stage > 50% slower than baseline
+    }
+
+  Each timings object: `{ preprocess: number[], inference: number[], postprocess: number[] }` (arrays of measured ms). Use median per stage.
+starterCode: |
+  function pinpointRegression(currentTimings, baselineTimings) {
+    return { worstStage: '', regressionMs: 0, regressionPct: 0, requiresRollback: false };
+  }
+solutionCode: |
+  function pinpointRegression(currentTimings, baselineTimings) {
+    const median = (arr) => {
+      const s = [...arr].sort((a, b) => a - b);
+      const m = Math.floor(s.length / 2);
+      return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
+    };
+    const stages = Object.keys(currentTimings);
+    let worstStage = stages[0];
+    let worstAbs = -Infinity;
+    let worstPct = 0;
+    let requiresRollback = false;
+    for (const stage of stages) {
+      const cur = median(currentTimings[stage]);
+      const base = median(baselineTimings[stage] || [1]);
+      const abs = cur - base;
+      const pct = base > 0 ? (cur / base - 1) * 100 : 0;
+      if (abs > worstAbs) {
+        worstAbs = abs;
+        worstStage = stage;
+        worstPct = pct;
+      }
+      if (pct > 50) requiresRollback = true;
+    }
+    return {
+      worstStage,
+      regressionMs: Math.round(worstAbs * 10) / 10,
+      regressionPct: Math.round(worstPct * 10) / 10,
+      requiresRollback,
+    };
+  }
+testCode: |
+  describe('pinpointRegression', () => {
+    it('identifies stage with largest regression', () => {
+      const baseline = { preprocess: [5, 5, 5], inference: [15, 15, 15], postprocess: [3, 3, 3] };
+      const current = { preprocess: [5, 5, 5], inference: [40, 40, 40], postprocess: [3, 3, 3] };
+      const r = pinpointRegression(current, baseline);
+      expect(r.worstStage).toBe('inference');
+      expect(r.regressionMs).toBeCloseTo(25, 0);
+      expect(r.requiresRollback).toBe(true);
+    });
+
+    it('does not require rollback for small regression', () => {
+      const baseline = { inference: [20, 20, 20] };
+      const current = { inference: [22, 22, 22] };
+      const r = pinpointRegression(current, baseline);
+      expect(r.requiresRollback).toBe(false);
+    });
+  });
+estimatedMinutes: 15
+difficulty: advanced
+skillAxis: evaluation

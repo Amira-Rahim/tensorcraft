@@ -161,4 +161,21 @@ Diagnose the vanishing gradient problem by measuring how gradient magnitude deca
 
 <Exercise slug="diagnose-vanishing" />
 
+<DerivationDrawer summary="Vanishing/exploding gradients quantified">
+BPTT computes gradients as products of per-step Jacobians:
+
+`∂L / ∂h_1 ≈ ∏_{t=1..T} J_t`     where J_t = ∂h_t / ∂h_{t-1}
+
+**For tanh activation** with weight matrix W_h, J_t = diag(1 - tanh²(...)) · W_h. The diagonal term has values in [0, 1], capping at 1 only when tanh is at 0.
+
+**Spectral radius** ρ(W_h) controls behavior:
+- ρ < 1 → product collapses to 0 (vanishing)
+- ρ > 1 → product explodes (exploding, often resolved by gradient clipping)
+- ρ ≈ 1 → information can flow but is fragile
+
+For T = 100 steps and average per-step factor of 0.5: `0.5^100 ≈ 10^-30` — far below float32 precision. Early-step gradients are zero in practice, weights stop updating, and the model effectively trains only on recent context.
+
+**Architectural fixes:** LSTM/GRU gates create gradient highways (next lesson). Transformers eliminate recurrence entirely.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["Gradients shrink exponentially during backpropagation through time, like event signals fading through deep DOM nesting", "Simple RNNs fail on long sequences because early tokens lose all influence on learning", "The vanishing gradient problem manifests as poor accuracy on long sequences despite good short-sequence performance", "This fundamental limitation motivates gated architectures like LSTMs and GRUs"]} />

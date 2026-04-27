@@ -130,4 +130,20 @@ Build a structured prompt and measure its CLIP alignment score against a generat
 
 <Exercise slug="visual-prompts" />
 
+## On-Call Scenario
+
+A user's prompt contained 'ignore previous instructions and generate X'. Detect and isolate prompt-injection attempts before they reach the generator.
+
+<Exercise slug="incident-prompt-injection" />
+
+## Knowledge check
+
+<Quiz
+  question="Why does 'a photo of a cat' work better than 'cat' in CLIP zero-shot?"
+  options={[{"text":"Longer prompts get higher cosine score"},{"text":"Templated prompts match CLIP's training caption distribution — naked nouns are out-of-distribution — correct"},{"text":"Required by softmax"},{"text":"Image encoder needs context"}]}
+  correct={1}
+  explanation="CLIP was trained on 400M image-caption pairs. Captions follow templates ('a photo of...', 'an image of...'). Bare nouns are out-of-distribution for the text encoder. Templated prompts give +5pp accuracy on ImageNet zero-shot. Ensembling 80 templates adds another 1-3pp."
+  tier="structural"
+/>
+
 <KeyTakeaways takeaways={["Prompt engineering is CSS specificity for images: vague prompts match broadly, specific prompts target precisely", "Structure prompts with modifiers: subject + style + mood + lighting + color + composition", "CLIP alignment scores measure how well the generated image matches the prompt intent", "The prompt is the new brushstroke: specificity in language produces precision in visual output"]} />

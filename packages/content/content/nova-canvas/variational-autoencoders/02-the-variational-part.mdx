@@ -108,4 +108,18 @@ function latentSample(mu: tf.Tensor, logVar: tf.Tensor): tf.Tensor {
 
 <Exercise slug="variational-encoding" />
 
+<DerivationDrawer summary="ELBO: the loss VAE actually minimizes">
+VAE training maximizes the **Evidence Lower Bound (ELBO)** on log p(x):
+
+`log p(x) ≥ E_{q(z|x)}[ log p(x|z) ] - KL[ q(z|x) || p(z) ]`
+
+Two terms:
+- **Reconstruction:** `E_{q(z|x)}[log p(x|z)]` — how well does z decode back to x? Equivalent to MSE for Gaussian likelihood, BCE for Bernoulli.
+- **KL regularization:** `KL[ q(z|x) || p(z) ]` — how far is the encoder's distribution q(z|x) from the prior p(z) = N(0, I)?
+
+The encoder outputs `μ(x), σ(x)` for each z dimension. We sample `z ~ N(μ, σ²)` (via the reparameterization trick — next lesson) and decode.
+
+**Why both terms?** Without KL, the encoder could spike σ → 0 and place each x at a unique point — a deterministic autoencoder. Without reconstruction, the encoder ignores x entirely. The β-VAE variant scales the KL term to control the tradeoff: high β = more disentangled latent, lower reconstruction quality.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["Regular autoencoders encode to points, creating gaps in latent space", "VAEs encode to distributions (mean + variance), creating smooth continuous spaces", "The encoder outputs two vectors: mu (mean) and logVar (log-variance)", "Log-variance ensures the variance is always positive after exponentiation"]} />

@@ -119,4 +119,16 @@ Build a function that calculates compression ratios for feature extraction.
 
 <Exercise slug="extract-features" />
 
+<DerivationDrawer summary="Why dense vectors carry meaning a flat array doesn't">
+A feature vector is a point in d-dimensional space chosen so that **distances encode similarity**. Two embeddings have small distance ⟺ they share semantic structure.
+
+**Mathematical property required:** the embedding map `f: input → R^d` should preserve a meaningful relation. Common choices:
+
+- **Triplet loss:** `||f(a) − f(p)|| < ||f(a) − f(n)||` for anchor a, positive p, negative n.
+- **Contrastive (NT-Xent):** see CLIP lesson.
+- **Reconstruction (autoencoder):** preserves variance via `||x − decode(f(x))||²`.
+
+**Curse of dimensionality:** in high d, all random vectors become near-orthogonal (cosine ≈ 0). Useful structure must be learned, not assumed. Random initialization gives uniform-distance embeddings — meaningless until trained.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["Feature vectors are compact numerical fingerprints of images — like hash digests, but similarity-preserving", "Extracting features means removing the classification head from a pre-trained model", "A 224x224 image (150K values) compresses to ~512-2048 values — a 300x reduction", "Meridian stores features instead of images: faster to search, smaller to store, impossible to reverse"]} />

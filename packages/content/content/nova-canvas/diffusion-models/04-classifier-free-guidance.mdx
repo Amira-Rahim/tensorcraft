@@ -150,4 +150,22 @@ Implement the classifier-free guidance formula to steer image generation with te
 
 <Exercise slug="guided-generation" />
 
+<DerivationDrawer summary="CFG: interpolating conditional and unconditional predictions">
+Classifier-free guidance steers generation toward a condition (text prompt, class label) without using a separate classifier.
+
+**Training:** randomly drop the condition with probability ~0.1, training the model to do BOTH conditional `ε_θ(x_t, t, c)` and unconditional `ε_θ(x_t, t, ∅)` denoising.
+
+**Sampling:** at each step, compute both predictions and combine:
+
+`ε̂(x_t, t, c) = ε_θ(x_t, t, ∅) + w · (ε_θ(x_t, t, c) - ε_θ(x_t, t, ∅))`
+
+Where `w` is the **guidance scale**:
+- w = 0 → unconditional (ignores prompt)
+- w = 1 → standard conditional
+- w > 1 → over-conditional, sharpens to prompt at the cost of diversity
+- w >> 1 → mode collapse, oversaturated colors, prompt-faithful but unnatural
+
+**Common values: w = 7-12** for text-to-image. The cost is doubled inference compute (two model calls per step).
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["Classifier-free guidance amplifies text prompt influence, like CSS !important overrides defaults", "The formula: guided = unconditioned + scale * (conditioned - unconditioned)", "Guidance scale controls the tradeoff: low = natural but unfaithful, high = faithful but may artifact", "Cost: two model forward passes per denoising step — one conditioned, one unconditioned"]} />

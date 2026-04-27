@@ -244,4 +244,14 @@ Build a reusable preprocessing pipeline with pluggable steps.
 
 <Exercise slug="build-preprocessor" />
 
+## Knowledge check
+
+<Quiz
+  question="Why must tokenization be DETERMINISTIC across train/serve?"
+  options={[{"text":"Same input → same tokens → same model behavior; differs and the model sees a different problem — correct"},{"text":"Required by BPE"},{"text":"Faster cache lookups"},{"text":"Reduces GPU memory"}]}
+  correct={0}
+  explanation="Tokenizer is part of the model artifact. Train with vocab v1, serve with vocab v2 → same word may tokenize differently → embedding lookup hits different IDs → unpredictable predictions. Pin tokenizer version with model checkpoint."
+  tier="structural"
+/>
+
 <KeyTakeaways takeaways={["A preprocessing pipeline is Express middleware for text — each step transforms and passes data forward", "Functional pipe() and class-based Pipeline are both valid patterns", "Logging and error handling in pipelines make debugging model issues tractable", "Step ordering matters — lowercase before abbreviation lookup, clean before tokenize", "Reusable pipelines ensure consistent preprocessing across training and inference"]} />

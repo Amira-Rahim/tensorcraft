@@ -108,4 +108,33 @@ Implement self-attention scores for a sequence of token embeddings.
 
 <Exercise slug="self-attention-scores" />
 
+<DerivationDrawer summary="Self-attention: Q, K, V from the same input">
+**Self-attention** applies the attention formula where Q, K, V all come from the same input X via three learned projection matrices:
+
+`Q = X · W_Q,   K = X · W_K,   V = X · W_V`
+
+Then:
+
+`SelfAttention(X) = softmax(Q · Kᵀ / √d_k) · V`
+
+**Shape walk** for input X with shape `[seq_len, d_model]`:
+- W_Q, W_K, W_V each `[d_model, d_k]`
+- Q, K, V each `[seq_len, d_k]`
+- Q · Kᵀ → `[seq_len, seq_len]` (the attention matrix — every token's attention to every other)
+- softmax row-wise
+- · V → `[seq_len, d_k]` (output, same length as input)
+
+**Cost:** O(seq_len² · d_k). Quadratic in sequence length is why long contexts hurt.
+</DerivationDrawer>
+
+## Knowledge check
+
+<Quiz
+  question="Why divide attention scores by √d_k before softmax?"
+  options={[{"text":"To make scores positive"},{"text":"To control variance — without scaling, dot products grow with d_k and push softmax into saturation regions where gradients vanish — correct"},{"text":"To match the residual connection scale"},{"text":"To prevent overflow in the softmax"}]}
+  correct={1}
+  explanation="Q·K^T values have variance proportional to d_k. Softmax of large values approaches a one-hot distribution where gradients are nearly zero. Dividing by √d_k normalizes variance to ~1, keeping softmax in its useful gradient range."
+  tier="structural"
+/>
+
 <KeyTakeaways takeaways={["Self-attention lets every token attend to every other token in the sequence", "Q, K, V are linear projections of the same input — three different views", "Scaling by sqrt(d_k) prevents gradient vanishing in softmax", "Self-attention captures long-range dependencies that RNNs struggle with"]} />

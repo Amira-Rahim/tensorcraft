@@ -15,7 +15,8 @@ concept:
     feCode: "const shape = [arr.length, arr[0].length]"
     mlTitle: "Tensor.shape"
     mlCode: "tensor.shape // [3, 4]"
-    tier: identity
+    tier: structural
+    breaks: "`Array.length` returns one number for a 1D structure. `Tensor.shape` returns an array of dimensions (`[batch, features]`, `[batch, h, w, channels]`, etc) and the rank itself can vary. Reading shape is multi-dimensional; broadcasting rules depend on the full shape vector, not a single length."
 consequence:
   narrative: "The data dimensions are now clear — a 3D tensor of sensor readings."
 hints:
@@ -72,5 +73,15 @@ The golden rule: **reshaping never changes the data, only how it's organized**. 
 Reshape a flat tensor into a matrix.
 
 <Exercise slug="reshape-tensor" />
+
+## Knowledge check
+
+<Quiz
+  question="If a tensor has shape `[8, 224, 224, 3]`, what does each dimension represent for a typical image batch?"
+  options={[{"text":"[batch, height, width, channels] — correct"},{"text":"[channels, height, width, batch]"},{"text":"[height, width, batch, channels]"},{"text":"[batch, channels, height, width] (PyTorch style)"}]}
+  correct={0}
+  explanation="TensorFlow uses NHWC (batch, height, width, channels) by default. PyTorch uses NCHW. Knowing the convention matters when porting models."
+  tier="structural"
+/>
 
 <KeyTakeaways takeaways={["Shape is a tuple describing the size of each tensor dimension", "Reshaping rearranges data layout without changing values", "Total elements must match: product of old shape = product of new shape", "Common ML shapes: [batch, height, width, channels] for images"]} />

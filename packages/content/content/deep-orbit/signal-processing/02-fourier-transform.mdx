@@ -187,4 +187,20 @@ Compute the FFT of a signal and find its dominant frequency.
 
 <Exercise slug="compute-fft" />
 
+<DerivationDrawer summary="Discrete Fourier Transform (DFT)" companionSlug="information-theory">
+The DFT decomposes a length-N signal into N complex coefficients, one per frequency:
+
+`X[k] = Σ_{n=0..N-1} x[n] · e^(-2π·i·k·n/N)`
+
+For each frequency index k, this is a sum of input samples weighted by complex sinusoids. The output `X[k]` is complex — the magnitude `|X[k]|` is the amount of frequency k present, the phase `arg(X[k])` is its alignment.
+
+**Inverse:**
+
+`x[n] = (1/N) · Σ_{k=0..N-1} X[k] · e^(2π·i·k·n/N)`
+
+A signal is fully reconstructible from its DFT — no information is lost.
+
+**Cost of naive DFT:** O(N²) — for each of N frequencies, sum over N inputs. The FFT (next) drops this to O(N log N), which is what makes real-time spectrograms possible.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["The FFT decomposes a time-domain signal into frequency components — like decomposing an animation into @keyframes steps", "Each frequency bin = binIndex × (sampleRate / fftSize) Hz — a simple linear mapping", "The Nyquist frequency (sampleRate / 2) is the highest detectable frequency — like a resolution limit", "For DEEP SCAN, the FFT reveals an anomalous 73.4 Hz component hidden in the time-domain noise"]} />

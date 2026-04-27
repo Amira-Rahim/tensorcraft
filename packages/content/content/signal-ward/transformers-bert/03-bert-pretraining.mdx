@@ -203,4 +203,23 @@ Implement the MLM masking strategy with the 80/10/10 split and build a predictio
 
 <Exercise slug="mask-and-predict" />
 
+<DerivationDrawer summary="BERT MLM loss + 80/10/10 masking strategy">
+BERT pre-training uses **Masked Language Modeling (MLM)**: randomly mask 15% of tokens and predict them from context.
+
+**Loss for one masked position i:**
+
+`L_MLM = −log p(x_i | context)`
+
+Summed over all masked positions in the batch.
+
+**The 80/10/10 masking trick** — instead of always replacing with [MASK]:
+- 80%: replace with `[MASK]` token
+- 10%: replace with a random token
+- 10%: keep the original token unchanged
+
+**Why?** The downstream fine-tuning task never sees `[MASK]` tokens (real text). If the model only learned to fill in `[MASK]`, it would degrade on real input. The 10/10/80 mix forces the model to maintain rich representations for ALL tokens, not just masked ones — because it can't tell which tokens are "real" and which were swapped.
+
+**Combined with NSP** (Next Sentence Prediction, since dropped in RoBERTa) for the original BERT objective. Modern models (RoBERTa, DeBERTa) keep MLM with 80/10/10 but skip NSP.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["BERT pre-trains with two self-supervised tasks: MLM (predict masked tokens) and NSP (predict sentence order)", "MLM uses an 80/10/10 masking strategy: [MASK] token, random token, or unchanged", "NSP teaches the model to understand document structure and sentence relationships", "Pre-training on general text creates universal language representations that can be specialized through fine-tuning"]} />

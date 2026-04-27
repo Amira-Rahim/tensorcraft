@@ -142,4 +142,17 @@ function buildGAN(generator: tf.Sequential, discriminator: tf.Sequential) {
 
 <Exercise slug="build-discriminator" />
 
+<DerivationDrawer summary="Discriminator gradient math + label smoothing">
+**Discriminator loss** (binary cross-entropy formulation):
+
+`L_D = −E[log D(x)] − E[log(1 − D(G(z)))]`
+
+- First term: minimized when D(x) → 1 on real samples.
+- Second term: minimized when D(G(z)) → 0 on fakes.
+
+**Gradient:** `∂L_D / ∂θ_D` updates D to better separate. When D becomes too strong, `D(G(z)) ≈ 0` → second-term gradient vanishes (log(1-0) = 0) → G stops getting useful signal. This is the **vanishing generator gradient** problem.
+
+**Label smoothing fix:** replace target `1` with `0.9` for real labels (and `0` with `0.1` for fakes). Prevents D from being too confident, keeps gradients flowing to G. Common in modern GAN training.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["The discriminator compresses images down to a single real/fake probability", "Architecture mirrors the generator in reverse: wide to narrow", "Dropout prevents the discriminator from overpowering the generator", "Use binaryCrossentropy loss and sigmoid output for binary classification"]} />

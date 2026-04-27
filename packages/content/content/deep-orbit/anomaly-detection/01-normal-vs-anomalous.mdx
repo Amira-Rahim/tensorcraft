@@ -133,4 +133,10 @@ Compute baseline statistics and detect anomalies using z-scores.
 
 <Exercise slug="detect-anomaly" />
 
+## On-Call Scenario
+
+Yesterday's 95th percentile is today's median. The world drifted underneath the model. Recompute the baseline from the last 7 days of normal data and decide whether to roll forward.
+
+<Exercise slug="incident-baseline-drift" />
+
 <KeyTakeaways takeaways={["Anomaly detection models normality — you define what's expected, then flag deviations", "Z-score thresholding is the simplest approach: flag values beyond N standard deviations from the mean", "Precision vs recall is a tradeoff controlled by the threshold — lower catches more but raises false alarms", "For DEEP SCAN, recall matters more than precision — missing the signal is worse than a few false alerts"]} />

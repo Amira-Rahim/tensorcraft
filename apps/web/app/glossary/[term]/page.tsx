@@ -7,6 +7,45 @@ import {
   BRIDGE_CATEGORY_LABELS,
 } from "@tensorcraft/shared";
 import type { BridgeTier } from "@tensorcraft/shared";
+import { themeSlugs } from "@tensorcraft/themes";
+import { getThemeLessons } from "@tensorcraft/content";
+
+/**
+ * Find lessons that mention the term in their feTitle, mlTitle, keywords,
+ * or title. This is the bidirectional cross-link from glossary → lessons.
+ */
+function findRelatedLessons(termText: string, counterpartText: string) {
+  const term = termText.toLowerCase();
+  const counterpart = counterpartText.toLowerCase();
+  const matches: Array<{
+    themeSlug: string;
+    moduleId: string;
+    slug: string;
+    title: string;
+  }> = [];
+  for (const themeSlug of themeSlugs) {
+    const lessons = getThemeLessons(themeSlug);
+    for (const lesson of lessons) {
+      const title = (lesson.title || "").toLowerCase();
+      const fe = (lesson.concept?.bridge?.feTitle || "").toLowerCase();
+      const ml = (lesson.concept?.bridge?.mlTitle || "").toLowerCase();
+      const keywords = (lesson.keywords || []).map((k: string) =>
+        k.toLowerCase(),
+      );
+      const explanation = (lesson.concept?.explanation || "").toLowerCase();
+      const haystack = [title, fe, ml, explanation, ...keywords].join(" | ");
+      if (haystack.includes(term) || haystack.includes(counterpart)) {
+        matches.push({
+          themeSlug,
+          moduleId: lesson.moduleId,
+          slug: lesson.slug,
+          title: lesson.title,
+        });
+      }
+    }
+  }
+  return matches.slice(0, 12);
+}
 
 const TIER_COLORS: Record<BridgeTier, string> = {
   identity: "var(--tc-tier-identity)",
@@ -93,6 +132,7 @@ export default async function GlossaryTermPage({ params }: TermPageProps) {
   }
 
   const { bridge, domain } = data;
+  const relatedLessons = findRelatedLessons(data.term, data.counterpart);
 
   return (
     <main className="min-h-screen relative px-8 md:px-20 pt-24 pb-28">
@@ -202,6 +242,34 @@ export default async function GlossaryTermPage({ params }: TermPageProps) {
             </p>
           </div>
         </div>
+
+        {/* Lessons that teach this concept */}
+        {relatedLessons.length > 0 && (
+          <div className="border border-border mb-10">
+            <div className="px-6 py-4 border-b border-border bg-surface">
+              <span className="font-mono text-xs font-bold text-text-muted tracking-wider uppercase">
+                Lessons that teach this ({relatedLessons.length})
+              </span>
+            </div>
+            <ul className="divide-y divide-border">
+              {relatedLessons.map((l) => (
+                <li key={`${l.themeSlug}/${l.moduleId}/${l.slug}`}>
+                  <Link
+                    href={`/themes/${l.themeSlug}/${l.moduleId}/${l.slug}`}
+                    className="block px-6 py-3 hover:bg-surface transition-colors"
+                  >
+                    <div className="font-mono text-xs text-text-muted uppercase tracking-widest mb-1">
+                      {l.themeSlug} / {l.moduleId}
+                    </div>
+                    <div className="text-sm text-text-primary font-sans">
+                      {l.title}
+                    </div>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         {/* Back to glossary */}
         <Link

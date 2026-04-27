@@ -164,4 +164,14 @@ Build a global deployment coordinator with time-zone-aware scheduling.
 
 <Exercise slug="global-deploy" />
 
+## Knowledge check
+
+<Quiz
+  question="Why is data residency a constraint for ML serving?"
+  options={[{"text":"Faster local inference"},{"text":"GDPR/HIPAA require data not leave region — limits which model serving locations are valid — correct"},{"text":"Network bandwidth"},{"text":"Required by Kubernetes"}]}
+  correct={1}
+  explanation="GDPR (EU) and HIPAA (US healthcare) require data stay in-region. EU user data → EU model serving. Multi-region ML deployment: per-region model copies, careful traffic routing. Not just a network optimization — legal requirement."
+  tier="structural"
+/>
+
 <KeyTakeaways takeaways={["Global ML deployment mirrors CDN multi-region management — replicate models to edge nodes, coordinate updates", "Region-aware scheduling deploys during local maintenance windows to avoid disrupting peak operations", "Consistency checks verify all regions converge to the same model version after rollout", "If a region fails to update, it keeps running the previous version — availability over consistency"]} />

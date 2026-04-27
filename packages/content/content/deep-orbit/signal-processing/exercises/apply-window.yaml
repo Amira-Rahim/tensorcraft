@@ -1,66 +1,52 @@
 slug: apply-window
 lessonSlug: windowing-and-overlap
-title: "Apply a Hann Window"
-instructions: "Implement a Hann window function and apply it to a signal. The Hann window formula is: w[i] = 0.5 * (1 - cos(2 * PI * i / (N - 1))). Return the windowed signal (element-wise multiplication of signal and window)."
+title: "Vectorized Hann Window with tf"
+mlContent: data
+instructions: "Build `hannWindow(n)` returning a JS number array using tf.range and vectorized cos. Build `applyWindow(signal, window)` returning element-wise product as a JS number array using tf.tensor1d.mul."
 starterCode: |
-  function hannWindow(n: number): number[] {
-    // Generate a Hann window of length n
-    // w[i] = 0.5 * (1 - Math.cos(2 * Math.PI * i / (n - 1)))
-    return null; // your code here
+  function hannWindow(n) {
+    return [];
   }
-
-  function applyWindow(signal: number[], window: number[]): number[] {
-    // Multiply signal by window element-wise
-    return null; // your code here
+  function applyWindow(signal, window) {
+    return [];
   }
 solutionCode: |
-  function hannWindow(n: number): number[] {
-    return Array.from({ length: n }, (_, i) =>
-      0.5 * (1 - Math.cos(2 * Math.PI * i / (n - 1)))
-    );
+  function hannWindow(n) {
+    const i = tf.range(0, n);
+    const angle = i.mul(2 * Math.PI).div(n - 1);
+    return tf.scalar(0.5).mul(tf.scalar(1).sub(angle.cos())).arraySync();
   }
-
-  function applyWindow(signal: number[], window: number[]): number[] {
-    return signal.map((s, i) => s * window[i]);
+  function applyWindow(signal, window) {
+    return tf.tensor1d(signal).mul(tf.tensor1d(window)).arraySync();
   }
 testCode: |
-  describe('hannWindow', () => {
+  describe('hannWindow (vectorized tf cos)', () => {
     it('returns correct length', () => {
       expect(hannWindow(64).length).toBe(64);
     });
     it('starts at zero', () => {
-      const w = hannWindow(64);
-      expect(w[0]).toBeCloseTo(0, 5);
+      expect(hannWindow(64)[0]).toBeCloseTo(0, 4);
     });
     it('ends at zero', () => {
       const w = hannWindow(64);
-      expect(w[63]).toBeCloseTo(0, 5);
+      expect(w[63]).toBeCloseTo(0, 4);
     });
     it('peaks at center', () => {
       const w = hannWindow(65);
-      expect(w[32]).toBeCloseTo(1, 5);
+      expect(w[32]).toBeCloseTo(1, 4);
     });
   });
-  describe('applyWindow', () => {
+  describe('applyWindow (tf element-wise mul)', () => {
     it('returns same length', () => {
-      const s = [1, 2, 3, 4];
-      const w = [0.5, 1, 1, 0.5];
-      expect(applyWindow(s, w).length).toBe(4);
+      expect(applyWindow([1, 2, 3, 4], [0.5, 1, 1, 0.5]).length).toBe(4);
     });
     it('multiplies element-wise', () => {
-      const s = [2, 4, 6];
-      const w = [0.5, 1, 0.5];
-      expect(applyWindow(s, w)).toEqual([1, 4, 3]);
-    });
-    it('zeros edges with Hann window', () => {
-      const s = [1, 1, 1, 1, 1];
-      const w = hannWindow(5);
-      const result = applyWindow(s, w);
-      expect(result[0]).toBeCloseTo(0, 5);
-      expect(result[4]).toBeCloseTo(0, 5);
+      const out = applyWindow([2, 4, 6, 8], [0.5, 1, 1, 0.5]);
+      expect(out[0]).toBeCloseTo(1, 4);
+      expect(out[1]).toBeCloseTo(4, 4);
+      expect(out[3]).toBeCloseTo(4, 4);
     });
   });
 estimatedMinutes: 10
 difficulty: intermediate
-mlContent: arithmetic
 skillAxis: data_prep

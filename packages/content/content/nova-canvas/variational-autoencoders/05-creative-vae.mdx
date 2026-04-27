@@ -190,4 +190,31 @@ async function generateFromTokens(
 
 <Exercise slug="creative-vae" />
 
+<DerivationDrawer summary="Latent traversal mathematics">
+After training, you can sample from the prior `z ~ N(0, I)` and decode to generate new samples. Or you can traverse latent dimensions one at a time:
+
+```
+for d in 1..latent_dim:
+  for v in linspace(-3, 3, 10):
+    z = zero_vector_of_size(latent_dim)
+    z[d] = v
+    decoded = decoder(z)
+    show(decoded)
+```
+
+**Interpretation:** if dim d encodes a meaningful axis (e.g., "digit width" for MNIST), varying it should produce a smooth interpolation along that axis.
+
+**Disentanglement** is the property that distinct latent dimensions correspond to distinct semantic factors. Vanilla VAE often produces entangled latents (one factor smeared across many dims). β-VAE, FactorVAE, TCVAE all add penalties that push toward disentanglement — at the cost of reconstruction quality. There is no universal disentanglement metric; the term is empirical and contested.
+</DerivationDrawer>
+
+## Knowledge check
+
+<Quiz
+  question="What does increasing β in β-VAE do?"
+  options={[{"text":"Makes encoder + decoder bigger"},{"text":"Tighter encoder (closer to N(0,I)) → better disentanglement, worse reconstruction — correct"},{"text":"Speeds up training"},{"text":"Reduces latent dimension"}]}
+  correct={1}
+  explanation="L = recon + β · KL. Higher β forces the encoder distribution closer to the prior, reducing per-sample variance. Often improves disentanglement (each dim captures one factor) but loses reconstruction fidelity. Tradeoff is empirical and dataset-dependent."
+  tier="structural"
+/>
+
 <KeyTakeaways takeaways={["A complete VAE combines encoder, reparameterization, decoder, and dual loss", "Design system tokens are the perfect mental model for latent dimensions", "Custom training loops give you control over the VAE loss components", "tf.tidy() and dispose() are essential for real-time browser performance"]} />

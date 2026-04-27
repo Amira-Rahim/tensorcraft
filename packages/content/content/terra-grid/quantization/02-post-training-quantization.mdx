@@ -96,4 +96,18 @@ Implement post-training quantization on a weight array.
 
 <Exercise slug="post-training-quantize" />
 
+<DerivationDrawer summary="Calibration math for PTQ">
+**Post-training quantization (PTQ)** picks `scale` and `zero_point` per tensor by observing activations on a small calibration dataset. Methods:
+
+**Min-max:** `scale = (max − min) / 255`. Simple but sensitive to outliers — one extreme activation widens the range and reduces precision for the bulk of values.
+
+**Percentile:** `scale = (P99.9 − P0.1) / 255`. Clips outliers. Trades some accuracy on rare extreme inputs for better resolution on typical inputs.
+
+**Entropy (KL-divergence):** find scale that minimizes `KL(P_FP32 || P_INT8)` — choose the scale that makes the quantized distribution most similar to the original. Standard in TensorRT.
+
+**Symmetric quantization:** `zero_point = 0`, range `[-127, 127]`. Faster on hardware (no zero-point arithmetic) but loses one value. Per-channel symmetric quantization for weights + per-tensor asymmetric for activations is the common production setup.
+
+**Accuracy hit:** typically 0.5-2% top-1 accuracy drop on ImageNet for INT8 models. If unacceptable, move to QAT (next lesson).
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["Post-training quantization converts trained weights without retraining", "Min-max scaling maps Float32 range to Int8 [-128, 127]", "Scale and zero-point are stored alongside quantized weights for dequantization", "4x size reduction with typically 0-2% accuracy loss — like minification for models"]} />

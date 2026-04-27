@@ -109,4 +109,22 @@ console.log(await newSamples.array());
 
 <Exercise slug="generative-vs-discriminative" />
 
+<DerivationDrawer summary="Discriminative vs generative: model what?">
+**Discriminative model:** learns p(label | data). Cheap, accurate for classification. Examples: logistic regression, BERT for classification, CNN classifier.
+
+**Generative model:** learns p(data) or p(data | label). Expensive but enables generation, anomaly detection, semi-supervised learning. Examples: VAE, GAN, diffusion, autoregressive language models.
+
+**Bayes connection:**
+
+`p(label | data) = p(data | label) · p(label) / p(data)`
+
+A full generative model (p(data | label) + p(label)) lets you compute both directions. Discriminative models skip this and learn p(label | data) directly — cheaper, more accurate when you only need classification.
+
+**When generative is the right tool:**
+- You need new samples (image generation, music, text)
+- You have unlabeled data (self-supervised pretraining)
+- You need uncertainty calibration (anomaly detection: low p(data) = anomaly)
+- You need to handle missing data (impute by conditional sampling)
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["Generative models create new data; discriminative models classify existing data", "Generation starts from randomness and shapes it into structured output", "Frontend procedural generation is a conceptual bridge to ML generation", "TensorFlow.js lets you build generative models that run in the browser"]} />

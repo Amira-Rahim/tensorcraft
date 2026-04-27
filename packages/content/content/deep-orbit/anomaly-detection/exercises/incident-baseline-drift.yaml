@@ -1,0 +1,58 @@
+slug: incident-baseline-drift
+lessonSlug: normal-vs-anomalous
+title: "Incident — Baseline Distribution Drifted"
+mlContent: systems
+instructions: |
+  PAGER: anomaly detector now flags 30% of inputs as anomalous (was 1%). Investigate whether this is real anomalies or distribution drift. Build `recomputeBaseline(recentNormalData, currentBaseline)` returning:
+
+    {
+      newP95: number,             // new 95th percentile from recent normal data
+      oldP95: number,             // current baseline p95
+      driftMagnitude: number,     // |new - old| / old, 1 decimal
+      action: 'update-baseline' | 'investigate-real-anomaly' | 'no-action',
+    }
+
+  Action: 'update-baseline' if driftMagnitude < 0.5 (gradual drift); 'investigate-real-anomaly' if driftMagnitude > 1.0 (suspect a real event); 'no-action' otherwise.
+starterCode: |
+  function recomputeBaseline(recentNormalData, currentBaseline) {
+    return { newP95: 0, oldP95: 0, driftMagnitude: 0, action: 'no-action' };
+  }
+solutionCode: |
+  function recomputeBaseline(recentNormalData, currentBaseline) {
+    const sorted = [...recentNormalData].sort((a, b) => a - b);
+    const idx95 = Math.floor(sorted.length * 0.95);
+    const newP95 = sorted[Math.min(idx95, sorted.length - 1)];
+    const oldP95 = currentBaseline.p95;
+    const driftMagnitude = oldP95 > 0
+      ? Math.round((Math.abs(newP95 - oldP95) / oldP95) * 10) / 10
+      : 0;
+    let action;
+    if (driftMagnitude > 1.0) action = 'investigate-real-anomaly';
+    else if (driftMagnitude < 0.5) action = 'update-baseline';
+    else action = 'no-action';
+    return { newP95, oldP95, driftMagnitude, action };
+  }
+testCode: |
+  describe('recomputeBaseline', () => {
+    it('updates baseline for small drift', () => {
+      const data = Array.from({ length: 100 }, (_, i) => i / 100 + 0.05);  // 0.05..1.05
+      const r = recomputeBaseline(data, { p95: 0.95 });
+      expect(r.action).toBe('update-baseline');
+    });
+
+    it('investigates real anomaly for large drift', () => {
+      const data = Array.from({ length: 100 }, (_, i) => i + 50);  // shifted way up
+      const r = recomputeBaseline(data, { p95: 50 });
+      expect(r.action).toBe('investigate-real-anomaly');
+    });
+
+    it('reports both p95 values for comparison', () => {
+      const data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+      const r = recomputeBaseline(data, { p95: 8 });
+      expect(r.oldP95).toBe(8);
+      expect(r.newP95).toBeGreaterThanOrEqual(9);
+    });
+  });
+estimatedMinutes: 15
+difficulty: advanced
+skillAxis: evaluation

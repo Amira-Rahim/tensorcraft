@@ -161,4 +161,31 @@ For an exhibition, sliders are precise but not intuitive. A 2D map lets visitors
 
 <Exercise slug="latent-explorer" />
 
+<DerivationDrawer summary="Spherical interpolation (slerp) vs linear">
+**Linear interpolation:** `z(t) = (1-t) · z_a + t · z_b`. Simple but for normalized vectors, the path goes THROUGH the origin's vicinity — into a low-density region of the latent prior. Decoded outputs along the path become blurry/garbled at the midpoint.
+
+**Spherical linear interpolation (slerp):** parameterize the path along the great circle on the unit sphere:
+
+```
+θ = arccos(z_a · z_b)
+z(t) = (sin((1-t) · θ) / sin(θ)) · z_a + (sin(t · θ) / sin(θ)) · z_b
+```
+
+Result: path stays on the prior's high-density region (unit sphere if z is L2-normalized). Decoded outputs interpolate smoothly through valid samples.
+
+**Why this matters for VAE/GAN:** latent spaces have approximately spherical prior (for unit-Gaussian priors with high dim, mass concentrates near the unit sphere by concentration of measure). Slerp respects this geometry.
+
+**Modern usage:** Stable Diffusion's prompt interpolation uses slerp on text embeddings. Walking between two prompts produces coherent intermediate images instead of mush.
+</DerivationDrawer>
+
+## Knowledge check
+
+<Quiz
+  question="Why use slerp instead of linear interpolation in latent space?"
+  options={[{"text":"slerp is faster"},{"text":"Linear interpolation goes through low-density regions; slerp stays on the prior's high-density manifold — correct"},{"text":"Required by VAE"},{"text":"Better gradient flow"}]}
+  correct={1}
+  explanation="Standard normal prior in high-dim concentrates mass on a thin shell. Linear interpolation passes through the (low-density) origin region — decoded outputs become blurry mid-path. Slerp follows the great circle on the unit sphere, staying on-manifold. Result: smooth interpolation through valid samples."
+  tier="structural"
+/>
+
 <KeyTakeaways takeaways={["A latent space explorer is a slider-driven UI backed by a neural decoder", "Always dispose tensors to prevent GPU memory leaks — use tf.tidy()", "Debounce slider updates for smooth 60fps interaction", "2D maps provide intuitive exploration of two latent dimensions simultaneously"]} />

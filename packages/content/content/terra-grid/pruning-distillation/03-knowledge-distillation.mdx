@@ -86,4 +86,28 @@ Implement soft target generation using temperature-scaled softmax.
 
 <Exercise slug="distill-model" />
 
+<DerivationDrawer summary="Distillation loss with temperature softmax">
+**Knowledge distillation (KD)** trains a student model to match a teacher's soft predictions. The student loss combines two terms:
+
+```
+L = α · L_KD(student_soft, teacher_soft, T) + (1 − α) · L_CE(student_hard, true_labels)
+```
+
+**Softmax with temperature T:**
+
+`p_i = exp(z_i / T) / Σ_j exp(z_j / T)`
+
+- T = 1: standard softmax
+- T > 1: "softer" distribution — probabilities pulled toward uniform, exposing the relative ordering of low-probability classes
+- T → ∞: uniform
+
+**Why high T?** The teacher's most informative signal isn't the top-1 prediction (that matches the label). It's the relative confidence on alternative classes — "this image is mostly cat (0.85), then small dog (0.10), then nothing else (0.05)" tells you the cat-dog boundary. With T=1 those low values round to noise. With T=4 they expand to meaningful signal.
+
+**KD loss:**
+
+`L_KD = T² · KL(softmax(z_student / T) || softmax(z_teacher / T))`
+
+The T² factor compensates for the gradient scale change from temperature.
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["Knowledge distillation trains a small student to mimic a large teacher", "Soft targets (high temperature) carry more information than hard labels", "The student learns class relationships, not just correct answers", "Distillation can produce models at 2-5% of teacher size with 95%+ accuracy retention"]} />

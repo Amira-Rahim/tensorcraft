@@ -16,7 +16,8 @@ concept:
     feCode: "words.reduce((state, word) => updateState(state, word), initialState)"
     mlTitle: "RNN Step"
     mlCode: "tokens.reduce((hidden, token) => rnnCell(hidden, embed(token)), h0)"
-    tier: identity
+    tier: structural
+    breaks: "`reduce` folds with a pure function YOU define. An RNN step folds with a LEARNED cell that has trainable weights, an activation, and a hidden state vector — the cell behavior changes per training run. The fold shape transfers; the cell content is opaque and stochastic."
 consequence:
   narrative: "Diagnostic One can now process clinical notes sequentially, understanding that 'denied' before 'pain' negates the symptom."
   nextLessonTeaser: "Next: why simple RNNs struggle with long sequences — the vanishing gradient problem."
@@ -182,5 +183,25 @@ console.log('All hidden states shape:', allStates.shape);
 Build a simple RNN model that processes clinical text sequences and classifies them.
 
 <Exercise slug="sw-build-rnn" />
+
+<DerivationDrawer summary="RNN cell update equations">
+A vanilla RNN cell at timestep t:
+
+```
+h_t = tanh( W_h · h_{t-1} + W_x · x_t + b )
+y_t = W_y · h_t + b_y     // optional output projection
+```
+
+Where:
+- `h_{t-1}` is the previous hidden state (shape: hidden_size)
+- `x_t` is the input at this timestep (shape: input_size)
+- `W_h`, `W_x`, `W_y` are learned weight matrices
+
+**Backprop through time (BPTT):** unroll the recurrence over T steps and apply chain rule. The gradient at step 1 includes a product of T Jacobians:
+
+`∂L / ∂h_1 = ∏_{t=1..T} (∂h_{t+1} / ∂h_t)`
+
+If each Jacobian's spectral radius is < 1, the product shrinks exponentially → **vanishing gradients**. If > 1 → **exploding gradients**. Both are why vanilla RNNs struggle with long sequences and why LSTMs (gated) and Transformers (no recurrence) replaced them.
+</DerivationDrawer>
 
 <KeyTakeaways takeaways={["An RNN processes tokens sequentially, just like Array.reduce accumulates state", "The hidden state carries context forward — it 'remembers' what came before", "Embedding + SimpleRNN + Dense is a complete text classification pipeline", "Use returnSequences to inspect how hidden state evolves at each timestep"]} />

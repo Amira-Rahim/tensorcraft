@@ -120,4 +120,30 @@ Compare backbone networks and select the optimal one for browser deployment.
 
 <Exercise slug="use-backbone" />
 
+<DerivationDrawer summary="Transfer learning: why backbone features generalize">
+A pretrained backbone (e.g. ResNet-50 trained on ImageNet) learns features in this hierarchy:
+
+- **Layer 1-2:** edge detectors, color blobs (universal — transfer to any image task)
+- **Layer 3-4:** textures, simple shapes (transfer to most natural-image tasks)
+- **Layer 5+:** object parts, class-specific features (specific to ImageNet — may not transfer)
+
+**Transfer learning recipes:**
+
+```
+Feature extraction:  freeze backbone, train new head
+  - Cheap: O(forward pass + small head training)
+  - Works when target distribution ≈ source distribution
+
+Fine-tuning:  unfreeze top K layers, retrain with small LR
+  - More expensive: O(full backprop on K layers)
+  - Better when target distribution differs (medical, satellite, etc)
+
+Differential learning rates:  bottom layers tiny LR, top layers larger LR
+  - Preserves general features, adapts task-specific ones
+  - fast.ai standard practice
+```
+
+**When transfer fails:** target images very different from ImageNet (tiny grayscale microscopy, medical scans with fixed orientation). The hierarchy doesn't apply — pretrained features are random for your domain. Train from scratch, or use domain-specific backbones (RadImageNet, etc).
+</DerivationDrawer>
+
 <KeyTakeaways takeaways={["Backbone networks are pre-trained feature extractors — like importing a shared component library", "MobileNet is the browser-optimal backbone: small, fast, and accurate enough for real-time inference", "You build custom models by adding task-specific layers on top of a frozen backbone", "Choosing a backbone is like choosing a UI library: tradeoffs between power, speed, and bundle size"]} />

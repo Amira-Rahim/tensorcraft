@@ -1,121 +1,45 @@
 slug: frame-inference
 lessonSlug: frame-by-frame-inference
-title: "Build an Inference Loop"
-instructions: "Implement an FPS calculator class that tracks frame timing. It should calculate the current FPS based on a sliding window of frame timestamps and determine whether inference is meeting a target frame budget."
+title: "Frame-Per-Second Inference Loop"
+mlContent: deployment
+instructions: "Build async `measureFps(model, input, durationMs)` that runs model.predict in a tight loop for durationMs milliseconds, awaits each prediction, and returns the frames-per-second rate as a number. Use performance.now() for timing."
 starterCode: |
-  class FpsTracker {
-    private timestamps: number[] = [];
-    private windowSize: number;
-
-    constructor(windowSize: number = 60) {
-      this.windowSize = windowSize;
-    }
-
-    // Record a new frame timestamp
-    tick(timestamp: number): void {
-      // Add timestamp, keep only last windowSize entries
-    }
-
-    // Calculate current FPS from timestamps
-    getFps(): number {
-      // FPS = (count - 1) / (newest - oldest) * 1000
-      // Return 0 if fewer than 2 timestamps
-      return 0;
-    }
-
-    // Check if current FPS meets the target
-    meetsTarget(targetFps: number): boolean {
-      return false;
-    }
-
-    // Calculate ms per frame budget remaining
-    budgetRemaining(targetFps: number): number {
-      // How many ms remain in the frame budget?
-      // budget = 1000/targetFps, actual = 1000/currentFps
-      return 0;
-    }
+  async function measureFps(model, input, durationMs) {
+    return 0;
   }
 solutionCode: |
-  class FpsTracker {
-    private timestamps: number[] = [];
-    private windowSize: number;
-
-    constructor(windowSize: number = 60) {
-      this.windowSize = windowSize;
+  async function measureFps(model, input, durationMs) {
+    const start = performance.now();
+    let frames = 0;
+    while (performance.now() - start < durationMs) {
+      const out = model.predict(input);
+      await out.data();
+      out.dispose();
+      frames++;
     }
-
-    tick(timestamp: number): void {
-      this.timestamps.push(timestamp);
-      if (this.timestamps.length > this.windowSize) {
-        this.timestamps.shift();
-      }
-    }
-
-    getFps(): number {
-      if (this.timestamps.length < 2) return 0;
-      const oldest = this.timestamps[0];
-      const newest = this.timestamps[this.timestamps.length - 1];
-      const elapsed = newest - oldest;
-      if (elapsed === 0) return 0;
-      return ((this.timestamps.length - 1) / elapsed) * 1000;
-    }
-
-    meetsTarget(targetFps: number): boolean {
-      return this.getFps() >= targetFps;
-    }
-
-    budgetRemaining(targetFps: number): number {
-      const currentFps = this.getFps();
-      if (currentFps === 0) return 1000 / targetFps;
-      const budget = 1000 / targetFps;
-      const actual = 1000 / currentFps;
-      return budget - actual;
-    }
+    const elapsed = (performance.now() - start) / 1000;
+    return frames / elapsed;
   }
 testCode: |
-  describe('FpsTracker', () => {
-    it('returns 0 fps with fewer than 2 timestamps', () => {
-      const tracker = new FpsTracker();
-      expect(tracker.getFps()).toBe(0);
-      tracker.tick(0);
-      expect(tracker.getFps()).toBe(0);
+  describe('measureFps (real model.predict + perf.now)', () => {
+    function makeModel() {
+      const m = tf.sequential();
+      m.add(tf.layers.dense({ units: 1, inputShape: [4] }));
+      return m;
+    }
+    it('returns a positive fps number', async () => {
+      const m = makeModel();
+      const input = tf.tensor2d([[1, 2, 3, 4]]);
+      const fps = await measureFps(m, input, 100);
+      expect(fps).toBeGreaterThan(0);
     });
-
-    it('calculates fps from timestamps', () => {
-      const tracker = new FpsTracker();
-      // 30 frames over 1 second = 30fps
-      for (let i = 0; i <= 30; i++) {
-        tracker.tick(i * (1000 / 30));
-      }
-      expect(tracker.getFps()).toBeCloseTo(30, 0);
-    });
-
-    it('meets target when fps is sufficient', () => {
-      const tracker = new FpsTracker();
-      for (let i = 0; i <= 60; i++) {
-        tracker.tick(i * (1000 / 60));
-      }
-      expect(tracker.meetsTarget(30)).toBe(true);
-      expect(tracker.meetsTarget(59)).toBe(true);
-    });
-
-    it('does not meet target when fps is too low', () => {
-      const tracker = new FpsTracker();
-      for (let i = 0; i <= 10; i++) {
-        tracker.tick(i * 100);
-      }
-      expect(tracker.meetsTarget(30)).toBe(false);
-    });
-
-    it('respects window size', () => {
-      const tracker = new FpsTracker(5);
-      for (let i = 0; i < 10; i++) {
-        tracker.tick(i * 100);
-      }
-      // Only last 5 timestamps kept
-      expect(tracker.getFps()).toBeCloseTo(10, 0);
+    it('reports finite number', async () => {
+      const m = makeModel();
+      const input = tf.tensor2d([[0.5, 0.5, 0.5, 0.5]]);
+      const fps = await measureFps(m, input, 50);
+      expect(Number.isFinite(fps)).toBe(true);
     });
   });
-estimatedMinutes: 8
+estimatedMinutes: 15
 difficulty: intermediate
-mlContent: arithmetic
+skillAxis: deployment

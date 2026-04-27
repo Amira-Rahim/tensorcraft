@@ -19,7 +19,7 @@ exports[`Nav snapshots > matches snapshot 1`] = `
     TENSORCRAFT
   </a>
   <div
-    class="hidden md:flex items-center gap-7 font-mono"
+    class="hidden md:flex items-center gap-6 font-mono"
   >
     <a
       class="inline-flex items-center min-h-11 font-mono text-[13px] tracking-wider uppercase rounded-none transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 text-text-muted hover:text-text-primary"
@@ -29,21 +29,27 @@ exports[`Nav snapshots > matches snapshot 1`] = `
     </a>
     <a
       class="inline-flex items-center min-h-11 font-mono text-[13px] tracking-wider uppercase rounded-none transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 text-text-muted hover:text-text-primary"
+      href="/bridges"
+    >
+      Bridges
+    </a>
+    <a
+      class="inline-flex items-center min-h-11 font-mono text-[13px] tracking-wider uppercase rounded-none transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 text-text-muted hover:text-text-primary"
       href="/pricing"
     >
       Pricing
     </a>
     <a
       class="inline-flex items-center min-h-11 font-mono text-[13px] tracking-wider uppercase rounded-none transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 text-text-muted hover:text-text-primary"
-      href="/learn"
+      href="/compare"
     >
-      Learn
+      Compare
     </a>
     <a
       class="inline-flex items-center min-h-11 font-mono text-[13px] tracking-wider uppercase rounded-none transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 text-text-muted hover:text-text-primary"
-      href="/blog"
+      href="/learn"
     >
-      Blog
+      Learn
     </a>
   </div>
   <div

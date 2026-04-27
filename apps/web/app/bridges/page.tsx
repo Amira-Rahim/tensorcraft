@@ -36,19 +36,79 @@ const tierLabels: Record<string, string> = {
 };
 
 export default function BridgesPage() {
+  // Coverage stats: how many of each tier ship a `breaks` field.
+  const counts = BRIDGES.reduce(
+    (acc, b) => {
+      acc.byTier[b.tier] = (acc.byTier[b.tier] || 0) + 1;
+      if (b.breaks) {
+        acc.breaksByTier[b.tier] = (acc.breaksByTier[b.tier] || 0) + 1;
+      }
+      return acc;
+    },
+    {
+      byTier: {} as Record<string, number>,
+      breaksByTier: {} as Record<string, number>,
+    },
+  );
+  const totalRequired =
+    (counts.byTier.structural || 0) + (counts.byTier.intuition || 0);
+  const totalCovered =
+    (counts.breaksByTier.structural || 0) +
+    (counts.breaksByTier.intuition || 0);
+  const coveragePct =
+    totalRequired > 0 ? Math.round((totalCovered / totalRequired) * 100) : 0;
+
   return (
     <main className="min-h-screen bg-page px-6 py-20">
       <div className="max-w-4xl mx-auto">
         <p className="font-mono text-xs text-primary tracking-wider uppercase mb-3">
-          // {BRIDGES.length} bridges
+          // {BRIDGES.length} canonical bridges
         </p>
         <h1 className="text-4xl font-bold text-text-primary mb-4 font-mono tracking-tight">
           Frontend-to-ML Bridges
         </h1>
-        <p className="text-lg text-text-muted font-sans leading-relaxed mb-12 max-w-2xl">
-          Every ML concept has a frontend equivalent you already know. Browse
-          our bridge collection mapping JavaScript patterns to machine learning.
+        <p className="text-lg text-text-muted font-sans leading-relaxed mb-8 max-w-2xl">
+          Every ML concept has a frontend equivalent you already know. Each
+          bridge is labeled by tier, and structural and intuition bridges ship
+          with a &ldquo;where this breaks&rdquo; statement.
         </p>
+
+        {/* Coverage badge — auto-computed from BRIDGES registry */}
+        <section
+          data-testid="bridges-coverage-badge"
+          className="border border-border bg-surface-raised mb-12 p-5 grid grid-cols-2 sm:grid-cols-4 gap-4"
+        >
+          <div>
+            <div className="font-mono text-3xl font-black text-text-primary leading-none mb-1">
+              {coveragePct}%
+            </div>
+            <div className="text-xs text-text-muted font-mono uppercase tracking-wider">
+              Breaks coverage
+            </div>
+          </div>
+          {(["identity", "structural", "intuition"] as const).map((t) => {
+            const total = counts.byTier[t] || 0;
+            const withBreaks = counts.breaksByTier[t] || 0;
+            return (
+              <div key={t}>
+                <div
+                  className="font-mono text-2xl font-bold leading-none mb-1"
+                  style={{ color: tierColors[t] }}
+                >
+                  {total}
+                </div>
+                <div className="text-xs text-text-muted font-mono uppercase tracking-wider">
+                  {tierLabels[t]}
+                  {t !== "identity" && (
+                    <span className="block opacity-70 normal-case mt-0.5">
+                      {withBreaks}/{total} with breaks
+                    </span>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </section>
 
         <div className="grid gap-4 sm:grid-cols-2">
           {BRIDGES.map((bridge) => (
@@ -69,12 +129,24 @@ export default function BridgesPage() {
               <p className="text-xs text-text-muted leading-relaxed line-clamp-2 font-sans mb-3">
                 {bridge.connection}
               </p>
-              <span
-                className="text-xs font-mono uppercase tracking-wider"
-                style={{ color: tierColors[bridge.tier] || "var(--tc-muted)" }}
-              >
-                {tierLabels[bridge.tier] || bridge.tier} bridge
-              </span>
+              <div className="flex items-center justify-between">
+                <span
+                  className="text-xs font-mono uppercase tracking-wider"
+                  style={{
+                    color: tierColors[bridge.tier] || "var(--tc-muted)",
+                  }}
+                >
+                  {tierLabels[bridge.tier] || bridge.tier} bridge
+                </span>
+                {bridge.breaks && (
+                  <span
+                    className="text-[10px] font-mono uppercase tracking-widest text-text-muted/70"
+                    title="This bridge ships an explicit failure-mode statement"
+                  >
+                    ⚠ breaks
+                  </span>
+                )}
+              </div>
             </Link>
           ))}
         </div>

@@ -124,4 +124,14 @@ Train a prediction model and forecast the next signal value.
 
 <Exercise slug="predict-next" />
 
+## Knowledge check
+
+<Quiz
+  question="What's the dominant failure mode of vanilla RNNs on long sequences?"
+  options={[{"text":"Memory overflow"},{"text":"Vanishing gradients — gradient signal collapses through depth — correct"},{"text":"GPU thread contention"},{"text":"Slow inference"}]}
+  correct={1}
+  explanation="Backprop-through-time multiplies per-step Jacobians. If spectral radius < 1, the product shrinks exponentially. By step 100, gradients are below float32 precision. LSTM/GRU gates and Transformer's attention solve this by giving information additive paths instead of multiplicative ones."
+  tier="structural"
+/>
+
 <KeyTakeaways takeaways={["Sequence prediction forecasts the next values using the LSTM's learned temporal patterns — like autocomplete for signals", "Multi-step forecasting feeds predictions back as input, generating forecasts one step at a time", "MSE/MAE metrics quantify prediction accuracy — high error on specific signals may indicate anomalies", "The LSTM predicted the anomaly would repeat at minute 47 — and it did, confirming the signal has structure"]} />

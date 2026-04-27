@@ -137,4 +137,36 @@ Build a cascaded pipeline that generates low-res and upscales to high-res.
 
 <Exercise slug="high-res-generate" />
 
+<DerivationDrawer summary="Cascaded vs latent diffusion for high-res">
+**Naive scaling fails:** running a U-Net at 1024×1024 with reasonable batch size exceeds memory on most hardware. Two solutions:
+
+**Cascaded diffusion** (Imagen):
+```
+base model:    text → 64×64 image
+upsampler 1:  64×64 + text → 256×256
+upsampler 2:  256×256 + text → 1024×1024
+```
+Each stage is a separate diffusion model conditioned on the previous output.
+
+**Latent diffusion** (Stable Diffusion):
+```
+VAE encoder:  1024×1024 image → 128×128 latent  (8× downsample, 4 channels)
+diffusion in latent space:  128×128×4 → 128×128×4
+VAE decoder:  128×128 latent → 1024×1024 image
+```
+Diffusion runs on the small latent. The VAE adds quality loss (the latent can't represent every image perfectly) but compute is ~64× cheaper.
+
+**Tradeoff:** cascaded preserves detail better but costs more inference. Latent is cheaper but VAE quirks (color shifts, fine-detail blurring) become the bottleneck. Most modern systems use latent diffusion.
+</DerivationDrawer>
+
+## Knowledge check
+
+<Quiz
+  question="Why does Stable Diffusion run in latent space instead of pixel space?"
+  options={[{"text":"Latent space is more interpretable"},{"text":"VAE encodes 512×512 image to 64×64 latent — 64× cheaper diffusion compute — correct"},{"text":"Latent diffusion is more accurate"},{"text":"Required by classifier-free guidance"}]}
+  correct={1}
+  explanation="Naive 512×512 diffusion exhausts GPU memory. Stable Diffusion: VAE encodes image to 64×64×4 latent, runs diffusion there, VAE decodes back to image. ~64× compute savings at the cost of slight VAE quality loss (color shifts, fine-detail blurring)."
+  tier="structural"
+/>
+
 <KeyTakeaways takeaways={["Direct high-resolution diffusion is memory-prohibitive in the browser — pixels scale quadratically", "Cascaded pipelines generate at low resolution and upscale with super-resolution models, like srcset", "Fewer diffusion steps + lower base resolution + fast upscaler = 43 seconds down to 3.4 seconds", "The gallery kiosks are saved: high-quality images at interactive speed"]} />
