@@ -142,4 +142,14 @@ Simulate a data silo scenario and implement the federated alternative.
 
 <Exercise slug="data-silo-simulation" />
 
+## Knowledge check
+
+<Quiz
+  question="Federated learning is sometimes described as 'training where data stays on device.' Why is this stronger than just sending encrypted data to a central server?"
+  options={[{"text":"Encryption is computationally expensive at scale"},{"text":"In federated learning, raw data never leaves the device — only weight updates do, so even a fully compromised central server cannot directly observe individual records — correct"},{"text":"It avoids GDPR by definition"},{"text":"Encryption keys can be lost; weights cannot"}]}
+  correct={1}
+  explanation="Encryption protects data in transit/at rest but the central server holds the decryption capability and full data. Federated learning never collects raw data centrally — the server only sees aggregate weight updates, which leak less than the underlying records (and can be further protected with secure aggregation + DP). FL helps with GDPR but doesn't auto-comply."
+  tier="structural"
+/>
+
 <KeyTakeaways takeaways={["Data silos exist for valid regulatory, competitive, and legal reasons — like CORS exists for security", "The federated insight: send the model to the data, not the data to the model — respecting boundaries instead of breaking them", "Only model weight updates cross organizational boundaries — raw data never leaves its origin", "Federated learning unlocks 7.3M rows of training data that traditional centralized training could never access"]} />

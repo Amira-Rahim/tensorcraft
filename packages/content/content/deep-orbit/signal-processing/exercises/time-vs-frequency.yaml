@@ -1,7 +1,7 @@
 slug: time-vs-frequency
 lessonSlug: time-vs-frequency
 title: "Generate a Multi-Frequency Signal"
-instructions: "Write a function that generates a time-domain signal composed of multiple sine waves. Given an array of frequency/amplitude pairs and a sample rate, return an array of samples where each sample is the sum of all sine components at that time step."
+instructions: "Generate a discrete time-domain signal as the superposition of N sine wave components. Given an array of {hz, amplitude} pairs, a sample count, and a sample rate, return the resulting time-domain samples."
 starterCode: |
   interface Component { hz: number; amplitude: number; }
 

@@ -1,7 +1,7 @@
 slug: find-threshold
 lessonSlug: threshold-tuning
 title: "Find the Optimal Threshold"
-instructions: "Write a function that takes an array of reconstruction errors and corresponding boolean labels (true = anomaly), tries multiple thresholds, and returns the threshold with the highest F1 score."
+instructions: "Given parallel arrays of reconstruction errors and ground-truth boolean labels (true = anomaly), return the threshold value (from the candidate list) that yields the highest F1 score on the dataset."
 starterCode: |
   function findBestThreshold(
     errors: number[],

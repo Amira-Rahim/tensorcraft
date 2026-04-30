@@ -8,7 +8,7 @@ estimatedMinutes: 30
 difficulty: intermediate
 context:
   narrative: "Khalil builds a transformer encoder block — the core unit of modern NLP."
-  speaker: "Vikram Reddy"
+  speaker: "Vikram"
 concept:
   explanation: "A transformer encoder block combines multi-head attention with feedforward layers, skip connections, and layer normalization."
   bridge:
@@ -34,7 +34,7 @@ keywords:
   - feedforward
 ---
 
-<Dialogue speaker="Vikram Reddy">
+<Dialogue speaker="Vikram">
 Self-attention alone isn't enough. We need to wrap it in a complete encoder block — attention plus feedforward, with skip connections that preserve information. Think of it like React's virtual DOM: you diff the new state against the old and apply minimal, targeted updates.
 </Dialogue>
 
@@ -84,6 +84,15 @@ function simpleMultiHeadAttention(x: tf.Tensor2D, dModel: number, numHeads: numb
   return tf.matMul(concat, tf.randomNormal([dModel, dModel])) as tf.Tensor2D;
 }
 
+// Post-norm variant (original "Attention Is All You Need" paper, Vaswani 2017):
+//   x → attention → +residual → LayerNorm → FF → +residual → LayerNorm
+// Modern transformers (GPT-2 onward) use pre-norm:
+//   x → LayerNorm → attention → +residual → LayerNorm → FF → +residual
+// Empirical line: Vaswani 2017 trained 6 layers stably with post-norm; BERT-Large
+// (24 layers) needs warmup + careful init to converge with post-norm; GPT-2 (48+)
+// and modern models (96+) use pre-norm because post-norm gradient magnitudes
+// diverge past ~12 layers. This example uses post-norm for clarity —
+// switch the order if you stack ≥12 layers.
 function encoderBlock(x: tf.Tensor2D, dModel: number, numHeads: number, dFF: number): tf.Tensor2D {
   // Sub-layer 1: Multi-head attention + residual + norm
   const attnOut = simpleMultiHeadAttention(x, dModel, numHeads);
@@ -108,7 +117,7 @@ console.log('Encoder output:', x.shape); // [10, 64]`}
 
 The `x.add(attnOut)` step is critical. Without it, deep networks suffer from vanishing gradients — information from early layers fades. The residual connection provides a highway for gradients and information to flow through unchanged, while the attention layer adds refinements.
 
-<Dialogue speaker="Khalil Ansari">
+<Dialogue speaker="Khalil">
 That's like how React's reconciliation works — you don't rebuild the entire DOM. You keep the existing structure and apply only the changes. The residual connection is the existing DOM; the attention output is the diff.
 </Dialogue>
 

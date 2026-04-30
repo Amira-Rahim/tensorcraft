@@ -1,7 +1,7 @@
 slug: visualize-features
 lessonSlug: visualizing-features
 title: "Visualize CNN Feature Maps"
-instructions: "Extract and visualize intermediate feature maps from a CNN to see what patterns each layer detects. Implement three functions. buildCNN constructs a simple sequential CNN with two conv2d layers (8 and 16 filters, 3x3 kernel, 'same' padding, relu activation) that accepts 28x28x1 input. createFeatureExtractor takes the trained model and a target layer index, and returns a new tf.LayersModel whose input is the original model's input and whose output is the target layer's output. extractFeatureMaps takes the feature extractor model and a 28x28x1 image tensor, runs a forward pass, and returns an object with the output shape (as a number array) and the number of filters (the last dimension of the output)."
+instructions: "Build the toolkit for inspecting intermediate CNN feature maps. (1) `buildCNN()` returns a sequential model that takes a 28×28×1 image and contains two convolutional stages with 8 and 16 filters respectively. (2) `createFeatureExtractor(model, layerIndex)` returns a new model whose output is the chosen intermediate layer's activation. (3) `extractFeatureMaps(extractor, image)` runs a forward pass and returns `{ shape: number[], filterCount: number }` describing the activation tensor. Choose appropriate kernel/padding/activation for stable training on grayscale digits."
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 

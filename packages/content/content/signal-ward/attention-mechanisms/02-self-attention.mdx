@@ -8,7 +8,7 @@ estimatedMinutes: 25
 difficulty: intermediate
 context:
   narrative: "Vikram introduces self-attention — every word attending to every other word in a clinical note."
-  speaker: "Vikram Reddy"
+  speaker: "Vikram"
 concept:
   explanation: "Self-attention lets each token compute relevance scores against all other tokens in the same sequence."
   bridge:
@@ -34,15 +34,15 @@ keywords:
   - scaled-dot-product
 ---
 
-<Dialogue speaker="Vikram Reddy">
+<Dialogue speaker="Vikram">
 Basic attention uses an external query — we ask "what's the diagnosis?" and the model finds relevant words. But what if every word in the sentence could ask its own question about every other word?
 </Dialogue>
 
-<Dialogue speaker="Khalil Ansari">
+<Dialogue speaker="Khalil">
 Like when I use `scrollIntoView()` — any element can programmatically bring another element into focus, not just the user's click.
 </Dialogue>
 
-<Dialogue speaker="Vikram Reddy">
+<Dialogue speaker="Vikram">
 Perfect analogy. In self-attention, every word generates its own query, and every word is both a potential answer and a potential key. The result? Each word builds a representation that accounts for its full context.
 </Dialogue>
 
@@ -98,7 +98,7 @@ Without scaling, dot products grow large as dimensionality increases. Large valu
 
 It's the same reason you normalize CSS values. A `z-index: 999999` works, but it makes the system brittle and hard to reason about.
 
-<Dialogue speaker="Vikram Reddy">
+<Dialogue speaker="Vikram">
 In the note "Patient denied chest pain but reported nausea after starting methotrexate," self-attention lets "nausea" attend strongly to "methotrexate" — capturing that causal relationship even though four words separate them.
 </Dialogue>
 

@@ -52,17 +52,11 @@ export default function AboutPage() {
 
           <p>
             Every analogy ships with a label that names where it stops being
-            literal. We call this the{" "}
-            <Link
-              href="/bridges"
-              className="text-primary underline underline-offset-4"
-            >
-              bridge-tier system
-            </Link>{" "}
-            — identity (literally the same), structural (same shape, different
-            domain), intuition (same mental model, different math). Structural
-            and intuition bridges include a &ldquo;where this breaks&rdquo;
-            statement so you stop carrying the wrong model into production.
+            literal. We call this the bridge-tier system — identity (literally
+            the same), structural (same shape, different domain), intuition
+            (same mental model, different math). Structural and intuition
+            bridges include a &ldquo;where this breaks&rdquo; statement so you
+            stop carrying the wrong model into production.
           </p>
 
           <p>
@@ -147,12 +141,6 @@ export default function AboutPage() {
             className="rounded-none inline-flex items-center px-8 py-4 bg-primary text-page font-mono font-bold text-sm tracking-wider uppercase border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover"
           >
             Start Module 1 →
-          </Link>
-          <Link
-            href="/compare"
-            className="rounded-none inline-flex items-center px-8 py-4 border-2 border-border text-text-primary font-mono font-bold text-sm tracking-wider uppercase hover:text-primary hover:border-primary/30 transition-all"
-          >
-            Compare to other courses
           </Link>
         </div>
       </article>

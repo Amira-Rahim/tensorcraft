@@ -150,4 +150,14 @@ Production model accuracy is degrading slowly over 2 weeks. Suspect: training/se
 
 <Exercise slug="incident-feature-skew" />
 
+## Knowledge check
+
+<Quiz
+  question="Population Stability Index (PSI) on a feature reads 0.05 today, 0.12 yesterday, 0.31 a week ago. The classic threshold for 'major drift' is PSI > 0.25. What's the right read?"
+  options={[{"text":"Major drift is over — PSI dropped to 0.05, recovery confirmed"},{"text":"Cannot tell — PSI compares CURRENT distribution to a baseline, not consecutive days. Today's 0.05 means 'similar to baseline'; last week's 0.31 means 'very different from baseline'. The story is that things drifted then recovered"},{"text":"Major drift is now — 0.31 from last week still applies"},{"text":"PSI is ordered chronologically; 0.05 today vs 0.12 yesterday means drift increased"}]}
+  correct={1}
+  explanation="PSI is a snapshot comparison to a fixed baseline distribution, not a moving average across days. Each day's value reads 'how different is today's data from baseline?'. The trend (0.31 → 0.12 → 0.05) tells you the system drifted significantly a week ago, partially recovered yesterday, and is now back near baseline. Option A misreads the temporal interpretation. Option C ignores that today's value is what's relevant for shipping decisions now. Option D inverts the interpretation."
+  tier="structural"
+/>
+
 <KeyTakeaways takeaways={["Data drift means the input distribution changed — the model is correct, but the world moved underneath it", "KL divergence quantifies distribution shift, like Lighthouse CI quantifies performance regression", "Per-feature monitoring pinpoints exactly which inputs drifted — enabling targeted fixes instead of full retraining", "The fix for data drift is often preprocessing (rescaling), not retraining — understand the root cause first"]} />

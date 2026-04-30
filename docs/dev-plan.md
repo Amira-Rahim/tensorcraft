@@ -649,6 +649,8 @@ All blocking decisions have been resolved. This table documents the final choice
 ### 7a. Bridge Explorer — REMOVED (replaced with dashboard bridge collectibles)
 
 > **Refactored:** The standalone `/bridges` route and `bridge-explorer.tsx` page were intentionally removed. Bridge discovery is now integrated into the dashboard as collectible bridge cards via the `bridge-collection.tsx` component on the dashboard page. This surfaces bridges in context of the learner's progress rather than as a separate reference page.
+>
+> **2026-04-27:** `/bridges` was briefly reinstated as an SEO landing page, then removed again along with `/compare`. Both routes, their sitemap entries, the `bridgeConcept` route helper, and all nav/about-page links are now gone. Bridge discovery remains on the dashboard.
 
 - ~~[x] Build from `prototypes/bridge-explorer.html` — `/bridges` route with `bridge-explorer.tsx`~~
 - ~~[x] Browse all 56+ FE-to-ML bridges with filters and search~~

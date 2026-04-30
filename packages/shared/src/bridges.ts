@@ -30,6 +30,12 @@ export interface Bridge {
    * docs/patterns/analogy-breaks-pattern.md.
    */
   breaks?: string;
+  /**
+   * Concrete TFJS snippet illustrating the ML side of the bridge. Rendered on
+   * the /bridges page next to the per-framework FE variants so readers see
+   * both sides in real code, not prose. Optional but strongly preferred.
+   */
+  mlCode?: string;
 }
 
 export const BRIDGE_TIER_COLORS: Record<BridgeTier, string> = {
@@ -84,6 +90,8 @@ export const BRIDGES: Bridge[] = [
         feConcept: "Function parameters",
       },
     },
+    mlCode:
+      "const trainData = tf.tensor2d(features); model.fit(trainData, labels)",
   },
   {
     id: 2,
@@ -116,6 +124,7 @@ export const BRIDGES: Bridge[] = [
         feConcept: "Mutable variable",
       },
     },
+    mlCode: "model.getWeights().forEach(w => console.log(w.shape))",
   },
   {
     id: 3,
@@ -148,6 +157,7 @@ export const BRIDGES: Bridge[] = [
         feCode: `expect(actual).toBe(expected);\n// gap = |actual - expected|`,
       },
     },
+    mlCode: "const loss = tf.losses.meanSquaredError(yTrue, yPred)",
   },
   {
     id: 4,
@@ -179,34 +189,38 @@ export const BRIDGES: Bridge[] = [
         feConcept: "DOM patching",
       },
     },
+    mlCode:
+      "model.compile({ optimizer: tf.train.adam(0.001), loss: 'mse' });\nawait model.fit(x, y, { epochs: 50 }); // descend toward minimum",
   },
   {
     id: 5,
     mlConcept: "Learning rate",
-    feConcept: "Animation easing / step size",
+    feConcept: "Bisection / binary-search step halving",
     tier: "intuition",
     connection:
-      "Both control how aggressively a system moves toward its target per step. A large step overshoots; a small step converges slowly. Both require tuning.",
+      "Both shrink the step toward a target as you get closer. Binary search halves the search interval each iteration; learning-rate decay shrinks the gradient step as training approaches a minimum. Same intuition: take big steps when far, small steps when near.",
     breaks:
-      "The mechanisms are unrelated. Learning rate scales gradient magnitudes during weight updates; animation easing interpolates a value over time. Tuning intuition transfers, but the underlying math does not.",
+      "Binary search converges deterministically in log(n) steps because each step provably contains the answer. Gradient descent is stochastic — each step uses a noisy estimate of the gradient, so 'closer to the minimum' is never certain. LR too large: weights overshoot and training diverges. LR too small: weights settle in a local minimum or run out of budget before reaching it. Binary search has a guarantee; LR is a tuning problem with no closed-form right answer.",
     category: "shared",
     variants: {
       react: {
-        feCode: `// React Spring easing config\nuseSpring({\n  to: { x: 100 },\n  config: { tension: 170, friction: 26 },\n})`,
+        feCode: `// Binary search converges by halving each step\nfunction bsearch(arr, target) {\n  let lo = 0, hi = arr.length - 1;\n  while (lo <= hi) {\n    const mid = Math.floor((lo + hi) / 2);\n    if (arr[mid] === target) return mid;\n    if (arr[mid] < target) lo = mid + 1; else hi = mid - 1;\n  }\n}`,
       },
       vue: {
-        feCode: `<Transition name="fade" :duration="300">\n  <div v-if="show">content</div>\n</Transition>`,
+        feCode: `// Same algorithm — runtime-agnostic\nfunction bsearch(arr, target) {\n  let lo = 0, hi = arr.length - 1;\n  while (lo <= hi) {\n    const mid = (lo + hi) >> 1;\n    if (arr[mid] < target) lo = mid + 1; else hi = mid - 1;\n  }\n}`,
       },
       angular: {
-        feCode: `trigger('fadeIn', [\n  transition(':enter', [\n    style({ opacity: 0 }),\n    animate('300ms ease-in'),\n  ]),\n])`,
+        feCode: `// Same algorithm\nbinarySearch(arr: number[], target: number): number {\n  let lo = 0, hi = arr.length - 1;\n  while (lo <= hi) {\n    const mid = (lo + hi) >> 1;\n    if (arr[mid] < target) lo = mid + 1; else hi = mid - 1;\n  }\n  return -1;\n}`,
       },
       svelte: {
-        feCode: `<div transition:fade={{ duration: 300, easing: cubicOut }}>`,
+        feCode: `// Same algorithm\nfunction bsearch(arr, target) {\n  let lo = 0, hi = arr.length - 1;\n  while (lo <= hi) {\n    const mid = (lo + hi) >> 1;\n    if (arr[mid] < target) lo = mid + 1; else hi = mid - 1;\n  }\n}`,
       },
       vanilla: {
-        feCode: `el.style.transition = 'transform 0.3s ease-out';`,
+        feCode: `// Halving step interval — bisection's core trick\nlet lo = 0, hi = n - 1;\nwhile (lo < hi) {\n  const mid = (lo + hi) >> 1;\n  if (test(mid)) hi = mid; else lo = mid + 1;\n}`,
       },
     },
+    mlCode:
+      "// Step decay: halve the LR every K epochs as training nears convergence\nlet lr = 0.01;\nfor (let epoch = 0; epoch < 50; epoch++) {\n  if (epoch > 0 && epoch % 10 === 0) lr *= 0.5;\n  optimizer.learningRate = lr;\n}",
   },
   {
     id: 6,
@@ -235,6 +249,8 @@ export const BRIDGES: Bridge[] = [
         feCode: `function trainLoop() {\n  processEpoch(data);\n  if (!converged) requestAnimationFrame(trainLoop);\n}`,
       },
     },
+    mlCode:
+      "for (let epoch = 0; epoch < 50; epoch++) { await model.fit(x, y, { epochs: 1, batchSize: 32 }); }",
   },
   {
     id: 7,
@@ -264,6 +280,7 @@ export const BRIDGES: Bridge[] = [
         feCode: `const page = data.slice(offset, offset + PAGE_SIZE);`,
       },
     },
+    mlCode: "model.fit(x, y, { batchSize: 32 })",
   },
   {
     id: 8,
@@ -293,6 +310,7 @@ export const BRIDGES: Bridge[] = [
         feConcept: "Overspecialized function",
       },
     },
+    mlCode: "model.evaluate(testX, testY) // val loss diverges from train loss",
   },
   {
     id: 9,
@@ -321,6 +339,7 @@ export const BRIDGES: Bridge[] = [
         feCode: `// eslint: no-unused-vars, max-depth: 3\n// Like L2 regularization: penalize complexity`,
       },
     },
+    mlCode: "tf.layers.dropout({ rate: 0.2 })",
   },
   {
     id: 10,
@@ -349,6 +368,7 @@ export const BRIDGES: Bridge[] = [
         feCode: `const features = rawData.map(d => ({\n  normalized: (d.value - min) / (max - min),\n  category: d.type === 'A' ? 1 : 0,\n}));`,
       },
     },
+    mlCode: "const x = rawTensor.div(255).sub(0.5) // normalize",
   },
   {
     id: 11,
@@ -380,6 +400,8 @@ export const BRIDGES: Bridge[] = [
         feCode: `const apiUrl = location.hostname === 'localhost'\n  ? 'http://localhost:3001'\n  : 'https://api.prod.com';`,
       },
     },
+    mlCode:
+      "const split = Math.floor(data.length * 0.8); const train = data.slice(0, split)",
   },
   {
     id: 12,
@@ -408,6 +430,8 @@ export const BRIDGES: Bridge[] = [
         feCode: `// webpack.config.js — not learned, just tuned\nmodule.exports = {\n  output: { filename: '[name].[hash].js' },\n};`,
       },
     },
+    mlCode:
+      "tf.layers.dense({ units: 64, kernelRegularizer: tf.regularizers.l2() })",
   },
   {
     id: 13,
@@ -440,6 +464,8 @@ export const BRIDGES: Bridge[] = [
         feCode: `// Express-style middleware chain\napp.use(logger);\napp.use(auth);\napp.use(cors);\n// input → transform → next → transform → output`,
       },
     },
+    mlCode:
+      "const model = tf.sequential();\nmodel.add(tf.layers.dense({ units: 64, activation: 'relu' }));\nmodel.add(tf.layers.dense({ units: 1 })); // sequential layers",
   },
   {
     id: 14,
@@ -466,6 +492,7 @@ export const BRIDGES: Bridge[] = [
         feCode: `const relu = (x) => Math.max(0, x);`,
       },
     },
+    mlCode: "tf.relu(x) // identical to Math.max(0, x), elementwise",
   },
   {
     id: 15,
@@ -495,6 +522,7 @@ export const BRIDGES: Bridge[] = [
         feConcept: "Event bubbling (error propagation)",
       },
     },
+    mlCode: "tf.layers.dense({ units: 10, activation: 'softmax' })",
   },
   {
     id: 16,
@@ -524,34 +552,39 @@ export const BRIDGES: Bridge[] = [
         feConcept: "Single-pass rendering",
       },
     },
+    mlCode:
+      "const prediction = model.predict(x); // single forward pass, no training",
   },
   {
     id: 17,
     mlConcept: "Data augmentation",
-    feConcept: "Responsive design / media queries",
+    feConcept:
+      "Programmatic test fixture factories (Faker, factory-bot, fast-check generators)",
     tier: "intuition",
     connection:
-      "Both create variations of the input to handle diverse conditions. Media queries adapt layouts to screen sizes; data augmentation creates training variations for robustness. Both prevent brittleness.",
+      "Both generate a population of plausible variations from a single base example, drawn from a distribution. A user-factory emits 1000 different `{name, email, address}` records sampled from realistic distributions; data augmentation emits a different rotated / cropped / color-jittered version of every training image. Same intent: expose the consumer (test, model) to the variation it will see in production, not a single hand-picked example.",
     breaks:
-      "Media queries are conditional logic with discrete breakpoints; you write each rule. Data augmentation generates variations randomly from a continuous distribution; the model sees a different sample every epoch. Same robustness goal, but augmentation is statistical, not rule-based.",
+      "Test fixtures are consumed once per test run and discarded — the test asserts a property and either passes or fails on that batch of generated data. Augmented training images participate in gradient descent: the model's weights shift toward minimizing loss across the augmented distribution, baking that variation into its learned representation. Fixtures are ephemeral inputs to a deterministic check; augmentations are persistent shapes the model's parameters absorb. Both sample from a distribution; only one updates state.",
     category: "shared",
     variants: {
       react: {
-        feCode: `<div className="w-full md:w-1/2 lg:w-1/3">`,
+        feCode: `// Faker generates a population of users from a distribution\nimport { faker } from '@faker-js/faker';\nconst users = Array.from({ length: 100 }, () => ({\n  name: faker.person.fullName(),\n  email: faker.internet.email(),\n  age: faker.number.int({ min: 18, max: 80 }),\n}));`,
       },
       vue: {
-        feCode: `<div :class="isMobile ? 'w-full' : 'w-1/2'">`,
+        feCode: `// factory pattern: parameterize variation\nconst userFactory = (overrides = {}) => ({\n  id: faker.string.uuid(),\n  email: faker.internet.email(),\n  ...overrides,\n});\nconst users = Array.from({ length: 100 }, () => userFactory());`,
       },
       angular: {
-        feCode: `<div [ngClass]="{\n  'col-12': isMobile,\n  'col-6': !isMobile\n}">`,
+        feCode: `// fixtures across a parameter matrix\nconst products = ['xs', 's', 'm', 'l', 'xl'].flatMap(size =>\n  ['red', 'blue', 'green'].map(color => ({\n    sku: faker.string.alphanumeric(8),\n    size, color,\n    stock: faker.number.int({ min: 0, max: 50 }),\n  }))\n);`,
       },
       svelte: {
-        feCode: `<div class={isMobile ? 'w-full' : 'w-1/2'}>`,
+        feCode: `// random fixture per render\nimport { faker } from '@faker-js/faker';\nconst fixtures = Array.from({ length: 50 }, () => ({\n  title: faker.commerce.productName(),\n  price: faker.commerce.price(),\n}));`,
       },
       vanilla: {
-        feCode: `@media (min-width: 768px) {\n  .card { width: 50%; }\n}`,
+        feCode: `// generator yields a stream of variations\nfunction* userFactory() {\n  while (true) {\n    yield {\n      name: faker.person.fullName(),\n      city: faker.location.city(),\n    };\n  }\n}`,
       },
     },
+    mlCode:
+      "// Each epoch: emit a different transformation of every image, sampled from\n// a distribution of plausible variations the model will see at inference.\nconst augment = (img) => tf.tidy(() => {\n  const flipped = Math.random() > 0.5 ? tf.image.flipLeftRight(img) : img;\n  return flipped.add(tf.randomNormal(flipped.shape, 0, 0.03)).clipByValue(0, 1);\n});",
   },
   {
     id: 18,
@@ -580,6 +613,8 @@ export const BRIDGES: Bridge[] = [
         feCode: `// Randomly disable 20% of features during training\nconst dropout = (arr, rate = 0.2) =>\n  arr.map(v => Math.random() > rate ? v : 0);`,
       },
     },
+    mlCode:
+      "model.add(tf.layers.dropout({ rate: 0.3 })); // ~30% units zeroed each forward pass during training",
   },
   {
     id: 19,
@@ -609,6 +644,7 @@ export const BRIDGES: Bridge[] = [
         feConcept: "Error categorization",
       },
     },
+    mlCode: "model.compile({ metrics: ['accuracy'] })",
   },
   {
     id: 20,
@@ -637,6 +673,7 @@ export const BRIDGES: Bridge[] = [
         feCode: `// GitHub Actions: test → build → deploy\n// Same as: data → train → evaluate → deploy`,
       },
     },
+    mlCode: "tf.callbacks.earlyStopping({ monitor: 'val_loss', patience: 5 })",
   },
 
   // ── Deep Orbit Bridges ───────────────────────────────────────────────
@@ -647,7 +684,10 @@ export const BRIDGES: Bridge[] = [
     tier: "structural",
     connection:
       "Both set the starting point before any updates occur. Poor initial values lead to slow convergence or broken layouts. Both require deliberate defaults.",
+    breaks:
+      "CSS initial values are static defaults — `display: inline` for an unstyled `<span>` never changes by itself. Weight initialization controls the dynamics of training: He/Xavier init keeps activation variance stable across layers; bad init causes vanishing/exploding gradients or dead neurons that never recover. Init is a one-shot choice with multi-epoch consequences.",
     category: "deep-orbit",
+    mlCode: "tf.initializers.heNormal() // weight init for ReLU layers",
   },
   {
     id: 22,
@@ -659,6 +699,8 @@ export const BRIDGES: Bridge[] = [
     breaks:
       "CSS reset runs once at page load. Batch normalization runs every forward pass and uses learned scale/shift parameters that update during training. It is an active learnable transform per layer, not a one-time normalization.",
     category: "deep-orbit",
+    mlCode:
+      "model.add(tf.layers.batchNormalization()); // normalize activations per mini-batch",
   },
   {
     id: 23,
@@ -670,6 +712,8 @@ export const BRIDGES: Bridge[] = [
     breaks:
       "React children pass content unchanged through wrappers. Residual connections add the input to the output of a transformed block (`output = f(x) + x`) — the path is additive, not pass-through. The shortcut value is summed with the processed value; child rendering does not sum.",
     category: "deep-orbit",
+    mlCode:
+      "const out = layerNorm(input.add(attention(input))); // skip + transform",
   },
   {
     id: 24,
@@ -681,6 +725,7 @@ export const BRIDGES: Bridge[] = [
     breaks:
       "Callback hell is a code-organization problem visible at write time and fixed by refactoring (async/await). Vanishing gradients are a numerical problem during training — gradients shrink toward zero through depth and weights stop updating. The fix (residuals, normalization) is architectural, not stylistic.",
     category: "deep-orbit",
+    mlCode: "const grad = tf.grad(loss)(weights)",
   },
   {
     id: 25,
@@ -692,6 +737,8 @@ export const BRIDGES: Bridge[] = [
     breaks:
       "Easing interpolates a value over a fixed duration. LR schedulers vary learning rate over indefinite training time, often based on validation metrics (reduce-on-plateau) not step count. Time is bounded for animation; training time is unbounded until convergence.",
     category: "deep-orbit",
+    mlCode:
+      "const optimizer = tf.train.adam(0.001); // step decay via callback: lr *= 0.5 every 10 epochs",
   },
   {
     id: 26,
@@ -703,6 +750,8 @@ export const BRIDGES: Bridge[] = [
     breaks:
       "Routers map URLs to one route via exact-match rules. Classifiers output a probability distribution over all classes — softmax never returns zero confidence in any class. The selection is a confidence ranking, not a hard match.",
     category: "deep-orbit",
+    mlCode:
+      "const probs = model.predict(x).softmax(); // [batch, numClasses], rows sum to 1",
   },
 
   // ── Neon Protocol Bridges ────────────────────────────────────────────
@@ -716,6 +765,7 @@ export const BRIDGES: Bridge[] = [
     breaks:
       "getImageData ships uint8 (0-255) interleaved RGBA. Most models need float32 normalized to [0,1] (or per-channel mean/std). Skipping the cast and normalization gives an image whose pixels are 100x larger than training distribution, and the model returns nonsense.",
     category: "neon-protocol",
+    mlCode: "tf.browser.fromPixels(canvas).toFloat().div(255)",
   },
   {
     id: 28,
@@ -727,6 +777,8 @@ export const BRIDGES: Bridge[] = [
     breaks:
       "CSS blur uses a fixed Gaussian kernel hard-coded in the browser. CNN convolution uses learned kernels that update during training to detect features specific to the dataset. Same operation; one is hand-tuned, the other is data-tuned and changes per model.",
     category: "neon-protocol",
+    mlCode:
+      "model.add(tf.layers.conv2d({ filters: 32, kernelSize: 3, activation: 'relu', padding: 'same' }));",
   },
   {
     id: 29,
@@ -736,17 +788,19 @@ export const BRIDGES: Bridge[] = [
     connection:
       "Both define rectangular regions with x, y, width, height coordinates. DOM element bounds and object detection boxes use the same data structure.",
     category: "neon-protocol",
+    mlCode: "{ x, y, width, height } // bbox tuple",
   },
   {
     id: 30,
     mlConcept: "Non-Max Suppression",
-    feConcept: "debounce()",
-    tier: "structural",
+    feConcept: "Toast dedupe (suppressing overlapping notifications)",
+    tier: "intuition",
     connection:
-      "Both keep the highest-priority event and suppress redundant ones. Debounce keeps the last call; NMS keeps the highest-confidence box and removes overlapping detections.",
+      "Both apply a 'one winner per region' rule to a redundant feed. A toast system suppresses a new alert if a similar one is already onscreen; NMS suppresses a detection if it overlaps a higher-confidence one above an IoU threshold. Same intuition: pick the strongest, hide the rest.",
     breaks:
-      "Debounce keeps the most recent event regardless of value. NMS keeps the highest-confidence box regardless of order. Both suppress redundancy; the selection criterion differs (recency vs confidence).",
+      "Toast dedupe is single-axis (time + key match) — a boolean check on identifier. NMS is two-dimensional, runs IoU(boxA, boxB) over every kept pair, and the threshold is a tunable scalar that trades recall for precision (lower threshold → fewer kept boxes). Toasts dedupe by equality; NMS dedupes by geometric overlap.",
     category: "neon-protocol",
+    mlCode: "tf.image.nonMaxSuppression(boxes, scores, 100, 0.5)",
   },
   {
     id: 31,
@@ -758,6 +812,8 @@ export const BRIDGES: Bridge[] = [
     breaks:
       "CSS masks are author-defined geometry. Segmentation masks are model output — pixel-level predictions with confidence per pixel, often imperfect at boundaries. The mask must be thresholded and cleaned before use; CSS clip-paths do not need post-processing.",
     category: "neon-protocol",
+    mlCode:
+      "const mask = model.predict(image).argMax(-1) // [H, W] class per pixel",
   },
   {
     id: 32,
@@ -769,6 +825,7 @@ export const BRIDGES: Bridge[] = [
     breaks:
       "UI libraries are versioned, stable, and you compose them deterministically. Backbones are trained on specific datasets (ImageNet) and carry that bias forward — fine-tuning on different data may erase or compete with the pre-trained features. Reuse is not free of side effects.",
     category: "neon-protocol",
+    mlCode: "const backbone = await tf.loadLayersModel('mobilenet/model.json')",
   },
 
   // ── Signal Ward Bridges ──────────────────────────────────────────────
@@ -782,6 +839,8 @@ export const BRIDGES: Bridge[] = [
     breaks:
       "URL parsing uses regex YOU control. Subword tokenizers (BPE, WordPiece, SentencePiece) learn merge rules from a training corpus and the same word can tokenize to 1 token in one model and 5 in another. Tokenization is part of the model artifact; you cannot regex your way out of a tokenizer mismatch at inference.",
     category: "signal-ward",
+    mlCode:
+      "const tokens = tokenizer.encode('clinical text') // [101, 4321, ...]",
   },
   {
     id: 34,
@@ -793,6 +852,8 @@ export const BRIDGES: Bridge[] = [
     breaks:
       "i18n maps key → exact translated string with no semantic relationship between keys. Embeddings place tokens in a continuous vector space where distance encodes meaning (`king - man + woman ≈ queen`). The mapping has structure i18n does not.",
     category: "signal-ward",
+    mlCode:
+      "const embed = tf.layers.embedding({ inputDim: vocab, outputDim: 128 });\nconst vec = embed.apply(tokenIds); // [batch, seqLen, 128]",
   },
   {
     id: 35,
@@ -804,6 +865,7 @@ export const BRIDGES: Bridge[] = [
     breaks:
       "reduce folds with a pure function YOU define. An RNN cell folds with a LEARNED step function whose weights, gates, and activation come from training; the same input sequence can produce different hidden states across model versions. The fold shape transfers; the cell content is opaque and stochastic.",
     category: "signal-ward",
+    mlCode: "tf.layers.simpleRNN({ units: 64, returnSequences: false })",
   },
   {
     id: 36,
@@ -815,6 +877,7 @@ export const BRIDGES: Bridge[] = [
     breaks:
       "Session storage is a key-value store you write and read with explicit keys. LSTM cell state is a fixed-size vector with learned read/write gates — there is no key. The model decides what to remember; you do not address it.",
     category: "signal-ward",
+    mlCode: "tf.layers.lstm({ units: 128, returnSequences: true })",
   },
   {
     id: 37,
@@ -826,6 +889,8 @@ export const BRIDGES: Bridge[] = [
     breaks:
       "Search ranking is a one-shot scoring of documents against one query. Attention runs at every layer for every token, with each token attending to every other token — quadratic cost in sequence length. Same scoring shape, very different scale and frequency.",
     category: "signal-ward",
+    mlCode:
+      "const scores = tf.softmax(Q.matMul(K.transpose()).div(Math.sqrt(dk)), -1)",
   },
   {
     id: 38,
@@ -837,6 +902,8 @@ export const BRIDGES: Bridge[] = [
     breaks:
       "vDOM diffs current vs target tree once per render and applies known patches. Transformers compute soft attention weights every forward pass and the 'patches' are learned matrix operations on continuous activations. The reconciliation framing rhymes; the math does not.",
     category: "signal-ward",
+    mlCode:
+      "const Wq = tf.layers.dense({ units: dModel });\nconst attn = tf.softmax(Wq.apply(x).matMul(K.transpose()).div(Math.sqrt(dk)));\nconst out = layerNorm(x.add(attn.matMul(V)));",
   },
 
   // ── Nova Canvas Bridges ──────────────────────────────────────────────
@@ -850,6 +917,7 @@ export const BRIDGES: Bridge[] = [
     breaks:
       "Math.random() samples uniformly from [0,1) with no parameters to learn. Generative models sample from a high-dimensional learned distribution that may have multiple modes, an unrepresentable tail, or unsafe regions. Sampling temperature, top-k, top-p — all knobs Math.random() does not have.",
     category: "nova-canvas",
+    mlCode: "tf.randomNormal([latentDim]) // sample seed",
   },
   {
     id: 40,
@@ -861,6 +929,8 @@ export const BRIDGES: Bridge[] = [
     breaks:
       "CSS transitions interpolate fixed properties along defined easing curves. Latent interpolation walks a path in a learned space where dimensions have no human meaning — in-between points may be coherent or garbage depending on whether the trajectory stays on the data manifold.",
     category: "nova-canvas",
+    mlCode:
+      "const z = z1.mul(t).add(z2.mul(1 - t)); // linear walk between latent vectors",
   },
   {
     id: 41,
@@ -872,6 +942,8 @@ export const BRIDGES: Bridge[] = [
     breaks:
       "Fuzzers and validators have separate, hand-written goals. GAN generator and discriminator co-evolve and can collapse: generator finds one output that fools the discriminator and stops exploring (mode collapse). The adversarial loop is unstable in ways a fuzzer/validator pair is not.",
     category: "nova-canvas",
+    mlCode:
+      "const fakes = generator.predict(noise); const dLoss = bceLoss(disc(fakes), tf.zeros([batch]))",
   },
   {
     id: 42,
@@ -883,6 +955,8 @@ export const BRIDGES: Bridge[] = [
     breaks:
       "URL shorteners encode losslessly — decode reproduces the input exactly. VAEs encode lossy and probabilistic — the latent vector is a distribution, decoding samples from it. Reconstruction is approximate and nondeterministic.",
     category: "nova-canvas",
+    mlCode:
+      "const epsilon = tf.randomNormal(mu.shape);\nconst z = mu.add(tf.exp(logVar.mul(0.5)).mul(epsilon)); // reparameterization sample",
   },
   {
     id: 43,
@@ -894,17 +968,22 @@ export const BRIDGES: Bridge[] = [
     breaks:
       "Progressive JPEG decodes a fixed encoded payload from header to detail. Diffusion runs many denoising steps (50–1000), each a learned model call. Compute scales with quality, not file size. Same blurry-to-sharp visual, very different runtime cost.",
     category: "nova-canvas",
+    mlCode:
+      "const xT = sqrt(alphaBar).mul(x0).add(sqrt(1 - alphaBar).mul(noise))",
   },
   {
     id: 44,
     mlConcept: "Style transfer",
-    feConcept: "CSS theme switching",
-    tier: "structural",
+    feConcept:
+      "Auto-formatter pipeline (Prettier / eslint --fix rewriting code until it matches a style config)",
+    tier: "intuition",
     connection:
-      "Both apply a different appearance to the same underlying content. CSS theme switching changes colors/fonts while keeping HTML structure; style transfer changes visual style while preserving content.",
+      "Both iteratively rewrite a target until it matches a reference style. Prettier walks the AST and emits whitespace, quote, and bracket choices that match the configured style — applied repeatedly until the output is stable. Style transfer walks pixel updates that minimize the difference between the target image's feature statistics (Gram matrices) and the reference style image's. Same shape: take an input that already has CONTENT, transform it iteratively until its STYLE matches an exemplar, preserve the content semantics throughout.",
     breaks:
-      "CSS themes swap discrete tokens (color, font) you defined. Style transfer optimizes pixels to match a target style's statistical properties (Gram matrices) — no token list, only a continuous loss to minimize. Output is generative, not parameterized.",
+      "Prettier's transformation is symbolic + deterministic: parse the AST, emit canonical formatting per rule, converge in one pass. Style transfer's transformation is numerical + stochastic: gradient descent against a perceptual-loss network, hundreds of forward + backward passes through frozen VGG, no closed-form rule. Prettier's 'style' is a config file you can read; style transfer's 'style' is a [C, C] Gram matrix per VGG layer that has no human-readable interpretation. Output of Prettier is deterministic; output of style transfer depends on initialization, learning rate, and step count.",
     category: "nova-canvas",
+    mlCode:
+      "// Style transfer: optimize pixels until Gram-matrix features match the style image\nlet x = tf.variable(content.clone());\nfor (let step = 0; step < 200; step++) {\n  const { value: loss, grads } = tf.variableGrads(() =>\n    contentLoss(vgg(x), vgg(content)).add(\n      styleLoss(gram(vgg(x)), gram(vgg(style))).mul(1e3)\n    ) as tf.Scalar\n  );\n  optimizer.applyGradients(grads);\n}",
   },
 
   // ── Terra Grid Bridges ───────────────────────────────────────────────
@@ -915,7 +994,11 @@ export const BRIDGES: Bridge[] = [
     tier: "structural",
     connection:
       "Both move computation closer to the user/data source for lower latency. CDNs serve static assets from edge PoPs; edge ML runs inference on local devices. Same architecture, different payloads.",
+    breaks:
+      "CDN edge nodes serve immutable static assets with predictable per-region SLAs and centralized cache-purging. Edge inference runs on heterogeneous user devices — variable RAM, no GPU on most phones, intermittent connectivity, and OTA model updates that must succeed against possibly-stale runtimes. The same model can hit 30ms on desktop WebGL and 800ms on a budget Android in CPU mode.",
     category: "terra-grid",
+    mlCode:
+      "const model = await tf.loadLayersModel(indexedDBPath) // run inference on-device",
   },
   {
     id: 46,
@@ -927,6 +1010,8 @@ export const BRIDGES: Bridge[] = [
     breaks:
       "Image format choice is per-file at save time. Model quantization changes the numeric type of every weight and activation, requires calibration data, and may need quantization-aware training to recover accuracy. Far heavier than swapping a file extension.",
     category: "terra-grid",
+    mlCode:
+      "// Quantize via Python tfjs-converter at convert time:\n//   tensorflowjs_converter --quantize_uint8 saved_model/ web_model/\n// Then in browser: const m = await tf.loadGraphModel('web_model/model.json');",
   },
   {
     id: 47,
@@ -938,6 +1023,8 @@ export const BRIDGES: Bridge[] = [
     breaks:
       "Tree-shaking removes statically unreferenced code (analysis is exact, behavior unchanged). Weight pruning removes weights below a numeric threshold and the model usually requires fine-tuning to recover accuracy after pruning — sometimes accuracy never fully recovers. Tree-shaking is safe; pruning has a quality cost.",
     category: "terra-grid",
+    mlCode:
+      "tf.layers.dense({ units: 64, kernelRegularizer: tf.regularizers.l1({ l1: 0.01 }) })",
   },
   {
     id: 48,
@@ -949,6 +1036,8 @@ export const BRIDGES: Bridge[] = [
     breaks:
       "Code splitting decomposes one bundle into chunks of the same code. Distillation creates a different, smaller model that approximates the teacher — the student is not the teacher carved up; it is a separate model trained to mimic the teacher's outputs.",
     category: "terra-grid",
+    mlCode:
+      "const T = 4;\nconst pT = teacherLogits.div(T).softmax();\nconst pS = studentLogits.div(T).softmax();\nconst klLoss = pT.mul(pT.div(pS).log()).sum().mul(T * T); // T² scales gradient back",
   },
   {
     id: 49,
@@ -960,6 +1049,7 @@ export const BRIDGES: Bridge[] = [
     breaks:
       "CI/CD outputs are deterministic and identical given identical inputs. ML pipeline outputs (trained models) vary across runs even with fixed code due to random init, data shuffling, and GPU nondeterminism. Reproducibility requires extra effort (seeds, deterministic kernels).",
     category: "terra-grid",
+    mlCode: "model.save('file://./artifacts/v1/model'); // versioned export",
   },
   {
     id: 50,
@@ -968,6 +1058,9 @@ export const BRIDGES: Bridge[] = [
     tier: "structural",
     connection:
       "Both continuously monitor a production system for degradation against baselines. Lighthouse CI flags performance regressions; drift detection flags model accuracy regressions. Same monitoring pattern.",
+    breaks:
+      "Lighthouse runs a fixed test suite per PR and returns a deterministic pass/fail score. Drift detection compares incoming data distributions to a baseline using PSI/KL/KS — non-binary, threshold-tunable, and lagging because ground-truth labels arrive late or never. A drift alert is a hint that the model MAY be degrading; you still need a labelled holdout to confirm. Lighthouse failure is the bug; drift alert is a hypothesis.",
     category: "terra-grid",
+    mlCode: "const psi = computePSI(baselineDistribution, currentDistribution)",
   },
 ];

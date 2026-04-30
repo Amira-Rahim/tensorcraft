@@ -18,6 +18,7 @@ concept:
     mlTitle: "Gradient"
     mlCode: "const grad = tf.grad(loss)(weights)"
     tier: structural
+    breaks: "rAF velocity is a finite-difference of an observed position you authored frame by frame. tf.grad uses reverse-mode autodiff — it walks the computational graph backwards applying the chain rule to compute exact partial derivatives. Velocity tells you what already happened; the gradient tells you which direction to step in to reduce a loss you have not yet measured."
 consequence:
   narrative: "Once you see backpropagation as chain rule bookkeeping, debugging gradient issues becomes tractable."
   nextLessonTeaser: "Next: navigating the optimization landscape"

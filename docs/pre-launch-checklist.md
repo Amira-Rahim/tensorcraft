@@ -1,11 +1,19 @@
 # Tensorcraft V0.5 — Pre-Launch Checklist
 
-> **Last updated: 2026-04-27** (fourth audit round — re-verify after Round 3 fixes)
+> **Last updated: 2026-04-28** (sixth audit round — A+ confirmed across content quality)
 > **Audience: solo dev preparing to flip V0.5 live before executing marketing plan.**
 
 This is the definitive gate-list. Work it top to bottom. When every **BLOCKING** item is ✓, you are cleared to execute [`marketing-plan.md`](./marketing-plan.md).
 
-**Deep-audit rounds completed:** 2026-04-21 (Round 1) + 2026-04-22 (Round 2) + 2026-04-26 (Round 3: A12/A13/A14 fixes, OAuth guards) + 2026-04-27 (Round 4: re-verify, validator stripper fixed, 297/300 exercises pass with 3 unrelated logic bugs §A14b).
+**Deep-audit rounds completed:**
+- 2026-04-21 (Round 1)
+- 2026-04-22 (Round 2)
+- 2026-04-26 (Round 3 — A12/A13/A14 fixes, OAuth guards)
+- 2026-04-27 (Round 4 — validator stripper fixed, 297/300 exercises)
+- 2026-04-25 (Round 5 — content quality rubric audit, 18 P0 fixed)
+- 2026-04-28 (Round 6 — A+ confirmed: re-audit caught 6 mlCode P0s + 2 production blockers, all resolved). See `docs/audits/a-plus-confirmed-2026-04-28.md`.
+
+**Content quality grade: A+** (defensible). Math floor canonical, 315/315 grader pass on real TFJS, 71 quizzes Q1-Q4 verified, 50 bridges with mlCode + 100% breaks coverage on non-identity, 5 capstone artifacts shipped, /compare + /bridges + /pricing prerender static, 0 AI-slop across all dimensions.
 
 ---
 

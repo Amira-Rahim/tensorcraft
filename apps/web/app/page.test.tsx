@@ -67,14 +67,14 @@ vi.mock("framer-motion", () => ({
 
 describe("Landing page brutalist redesign (§11d Wave 1)", () => {
   describe("LandingHero", () => {
-    it("renders the iterated landing headline", () => {
+    it("renders the iterated landing headline (mental-model frame)", () => {
       render(<LandingHero />);
       // The headline is split across spans; match by combined text.
       expect(screen.getByRole("heading", { level: 1 }).textContent).toMatch(
-        /bridge from/i,
+        /same mental model/i,
       );
       expect(screen.getByRole("heading", { level: 1 }).textContent).toMatch(
-        /shorter than/i,
+        /new domain/i,
       );
     });
 

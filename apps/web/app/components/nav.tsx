@@ -69,9 +69,7 @@ export function Nav() {
       <div className="hidden md:flex items-center gap-6 font-mono">
         {isAuthenticated && <NavLink href="/dashboard">Dashboard</NavLink>}
         <NavLink href="/themes">Themes</NavLink>
-        <NavLink href="/bridges">Bridges</NavLink>
         <NavLink href="/pricing">Pricing</NavLink>
-        <NavLink href="/compare">Compare</NavLink>
         <NavLink href="/learn">Learn</NavLink>
       </div>
 

@@ -188,4 +188,14 @@ Generate an anchor grid with multiple scales.
 
 <Exercise slug="generate-anchors" />
 
+## Knowledge check
+
+<Quiz
+  question="Why do object detectors use multiple anchor boxes per spatial location instead of just one box?"
+  options={[{"text":"To average predictions across anchors and reduce variance"},{"text":"Because objects in real scenes have varying aspect ratios and scales — a single anchor cannot match a tall pedestrian and a wide bus equally well"},{"text":"To run detection in parallel on different GPU cores"},{"text":"To make the loss function differentiable"}]}
+  correct={1}
+  explanation="A single anchor shape can match either tall objects (pedestrians) OR wide objects (buses) but not both simultaneously. Multiple anchors per location (typically 3 scales × 3 ratios = 9 anchors) let the network specialize each anchor to a different shape; during training, only the anchor with highest IoU to the ground-truth gets the regression target. Variance reduction (A) is not the motivation; parallelism (C) is unrelated; loss differentiability (D) is independent of anchor count."
+  tier="structural"
+/>
+
 <KeyTakeaways takeaways={["Anchor boxes are pre-defined candidate regions laid out on a grid — like CSS Grid template areas", "Multiple scales and aspect ratios at each cell cover objects of different sizes and shapes", "Models predict offsets (deltas) from anchors rather than raw coordinates — like CSS transforms", "A 7x7 grid with 9 anchors per cell produces 441 candidates per image — the model scores all of them"]} />

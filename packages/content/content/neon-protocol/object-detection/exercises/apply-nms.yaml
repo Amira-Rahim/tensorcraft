@@ -1,7 +1,7 @@
 slug: apply-nms
 lessonSlug: non-max-suppression
 title: "Apply Non-Max Suppression to Filter Duplicate Targets"
-instructions: "Neon Protocol's sensor array generates redundant detections for the same target. Implement applyNMS that takes an array of detections (each with { box: [x1, y1, x2, y2], score: number, label: string }) and an iouThreshold. The function should: (1) sort detections by score in descending order, (2) iterate through detections, keeping a detection only if its IoU with all previously kept detections is below iouThreshold, (3) return the filtered array. Implement a helper computeIoU(boxA, boxB) that takes two [x1, y1, x2, y2] arrays and returns the IoU as a number."
+instructions: "Implement `applyNMS(detections, iouThreshold)` that returns a filtered array containing only the highest-scoring non-overlapping detections. Each detection is `{ box: [x1, y1, x2, y2], score: number, label: string }`. A detection is suppressed if its IoU with any kept higher-scoring detection exceeds the threshold. Output preserves descending score order. Also implement helper `computeIoU(boxA, boxB)` returning intersection-over-union as a number in [0, 1]."
 starterCode: |
   interface Detection {
     box: [number, number, number, number]; // [x1, y1, x2, y2]

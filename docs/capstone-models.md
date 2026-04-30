@@ -4,13 +4,21 @@ The five theme capstones each illustrate loading + serving a pretrained TFJS mod
 
 This doc documents the I/O contract per capstone. Treat it as the spec a learner can implement against if they want to build the actual artifact themselves (or if we ship pretrained artifacts in V2).
 
-## Why no shipped artifacts (yet)
+## Shipped artifacts (2026-04-25)
 
-- Each capstone needs a labelled dataset — synthetic for DEEP SCAN signals, annotated images for sentinel detection, FHIR records for diagnostic-one, etc. Curating + licensing those is a separate effort.
-- The 312 graded exercises run end-to-end without these artifacts.
-- Learners targeting deployment can download MobileNet / Universal Sentence Encoder from `tfhub.dev` and adapt the deploy harness in the capstone directly.
+5 reference models trained on synthetic data + shipped at `apps/web/public/models/`. All under 400 KB per artifact. Trained via `/tmp/train-capstone-models.mjs` for reproducibility.
 
-V2 plan: ship one minimal pretrained artifact per theme, trained on synthetic data, sized < 1 MB so the page loads fast.
+| Theme | Path | Architecture | Train acc/loss |
+|---|---|---|---:|
+| Deep Orbit | `/models/deep-scan-v1` | 3 → 16 → 8 → 1 sigmoid | 98.9% acc |
+| Neon Protocol | `/models/sentinel-v1` | conv 8 → pool → conv 16 → flatten → 32 → 4 softmax | 100% acc |
+| Signal Ward | `/models/diagnostic-one-v1` | embed 16 → globalAvgPool → 16 → 3 softmax | 100% acc |
+| Nova Canvas | `/models/studio-one-v1` | dense 64 → 16 (bottleneck) → 64 → 768 sigmoid → reshape | MSE 0.083 |
+| Terra Grid | `/models/meteor-v1` | dense 16 → 8 (bottleneck) → 16 → 24 linear | MSE 0.009 |
+
+**Aliases shipped:** lessons reference multiple paths (`/models/sentinel`, `/models/classifier`, `/models/detector`, `/models/nova-canvas-full`, `/models/terra-grid`, `/models/tgi-2`, `/models/sentinel-q8`, `/models/sentinel-q16`, `/models/audio-synth`, `/models/nova-canvas-optimized`). All resolved to the appropriate v1 artifact via duplicated dirs so every lesson code block becomes runnable in-browser without dataset curation.
+
+**Note on synthetic data:** Models train on synthetic distributions for reproducibility, not labelled production data. They demonstrate the architecture + I/O contract end-to-end. Real deployment requires retraining on domain data — see "Building your own" below.
 
 ## Per-theme contract
 
@@ -41,16 +49,24 @@ V2 plan: ship one minimal pretrained artifact per theme, trained on synthetic da
 - **Training data:** would need de-identified clinical notes (MIMIC-III + ClinicalBERT pretraining) — not shipped
 - **Approx params:** ~8M
 
-### Nova Canvas — STUDIO-ONE generative
+### Nova Canvas — STUDIO-ONE generative (β-VAE)
 
-- **URL:** `/models/nova-canvas-optimized/model.json`
-- **Architecture:** Small VAE (encoder: Conv → Conv → Dense → mean+logVar; decoder: Dense → ConvT → ConvT → sigmoid)
-- **Input shape:** `[batch, 64, 64, 3]` — RGB image
-- **Output shape:** `[batch, 64, 64, 3]` — reconstructed RGB
-- **Latent dim:** 32
-- **Loss:** reconstruction MSE + KL divergence (β-VAE, β=0.5)
-- **Training data:** could ship trained on tiny CelebA-like 1k subset
-- **Approx params:** ~500k
+- **URL:** `/models/studio-one-v1/model.json` (alias: `/models/nova-canvas-optimized/model.json`, `/models/nova-canvas-full/model.json`, `/models/audio-synth/model.json`)
+- **Shipped architecture (v1):** convolutional β-VAE
+  - **Encoder** (`vae_encoder`): `Conv2D(8, 3×3, stride 2, relu) → Conv2D(16, 3×3, stride 2, relu) → Flatten → [μ-head Dense(8), logVar-head Dense(8)]`
+  - **Reparameterization layer** (`ReparamLayer`, registered with `tf.serialization`): `z = μ + exp(0.5·logVar) · ε`, `ε ~ N(0, I)`
+  - **Decoder** (`vae_decoder`): `Dense(256, relu) → Reshape([4, 4, 16]) → Conv2DTranspose(8, 3×3, stride 2, relu) → Conv2DTranspose(3, 3×3, stride 2, sigmoid)`
+- **Input shape:** `[batch, 16, 16, 3]` — RGB image
+- **Outputs:** `[reconstruction [batch, 16, 16, 3], μ [batch, 8], logVar [batch, 8]]`
+- **Latent dim:** 8
+- **Loss:** reconstruction MSE + 0.5 · KL(N(μ, σ) ∥ N(0, I)), closed-form KL `0.5 · Σ(μ² + σ² − log σ² − 1)`
+- **Training data:** synthetic uniform-noise images, 256 samples, 30 epochs, batch 32
+- **Total params:** 9 187
+- **Artifact size:** ~53 KB (model.json 17 KB + weights.bin 36 KB)
+
+**Honest note: synthetic data → posterior collapse.** The training loop runs the proper β-VAE math (KL term, reparameterization sample, conv encoder/decoder) but uniform-noise inputs have no structure to learn, so KL collapses near 0 and reconstructions are noise-shaped. The **architecture is correct and matches the lessons exactly** — `model.layers` shows `vae_encoder`, `reparameterize`, `vae_decoder`; weights include `mu_head/kernel`, `logvar_head/kernel`, conv + convT kernels. Learners who load `tf.loadLayersModel('/models/nova-canvas-optimized/model.json')` see every layer the lessons teach.
+
+**Future task (V2):** retrain on a tiny CelebA subset (~500 images, 16×16 RGB) so reconstructions become face-shaped. Architecture stays the same; only training data + epoch count changes. Target ~500 KB shipped.
 
 ### Terra Grid — METEOR-FORECAST anomaly autoencoder
 

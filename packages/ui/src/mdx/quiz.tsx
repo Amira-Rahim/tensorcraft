@@ -118,7 +118,7 @@ export function Quiz({
                 {i === selected && <div className="w-2.5 h-2.5 bg-primary" />}
               </div>
               <span className="text-sm text-text-primary/80">
-                {option.text}
+                {option.text.replace(/\s*[—-]\s*correct\s*$/i, "")}
               </span>
             </button>
           );

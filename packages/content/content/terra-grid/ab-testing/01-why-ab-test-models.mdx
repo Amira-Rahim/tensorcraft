@@ -166,4 +166,14 @@ Build a model router with deterministic device assignment.
 
 <Exercise slug="split-traffic" />
 
+## Knowledge check
+
+<Quiz
+  question="You A/B test a new model variant against the current production model on 10% of traffic. After 3 days the variant shows +2% accuracy. Should you ship to 100%?"
+  options={[{"text":"Yes — 2% is meaningful, ship immediately"},{"text":"Not yet — check whether the difference is statistically significant given the sample size, and look for confounders (time-of-day mix, user segment shifts, day-of-week patterns) — correct"},{"text":"No — A/B tests need 90 days minimum"},{"text":"Run it on 100% to confirm"}]}
+  correct={1}
+  explanation="A 2% point estimate is meaningless without (a) a significance test on the actual sample size and (b) checking that the 10% slice is representative. Option A skips both. Option C invents a calendar rule. Option D defeats the purpose of A/B testing — ramp gradually and roll back if metrics drop."
+  tier="intuition"
+/>
+
 <KeyTakeaways takeaways={["A/B testing ML models follows the same pattern as frontend feature flags — route to variants, measure outcomes", "Deterministic assignment (hash-based) ensures each device always gets the same model version", "Collect prediction outcomes per version to compare accuracy, latency, and detection rate", "The $4.2 million lesson: never deploy a model update to 100% of devices without controlled comparison"]} />

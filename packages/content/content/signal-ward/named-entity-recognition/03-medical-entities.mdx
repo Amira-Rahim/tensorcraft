@@ -8,7 +8,7 @@ estimatedMinutes: 25
 difficulty: advanced
 context:
   narrative: "The team builds a medical NER model handling drugs, conditions, procedures, and dosages — the complex type system of clinical language."
-  speaker: "Vikram Reddy"
+  speaker: "Vikram"
 concept:
   explanation: "Medical NER requires domain-specific entity types, each with distinct patterns — like defining TypeScript union types where each variant has its own shape and validation rules."
   bridge:
@@ -35,11 +35,11 @@ keywords:
   - domain-specific
 ---
 
-<Dialogue speaker="Vikram Reddy">
+<Dialogue speaker="Vikram">
 General NER knows three types: Person, Location, Organization. Medical NER needs a much richer type system. "Methotrexate" is a DRUG. "RA" is an abbreviation for a CONDITION. "15mg PO q.d." contains a DOSAGE, a ROUTE, and a FREQUENCY. It's like going from JavaScript's loose typing to TypeScript's strict union types.
 </Dialogue>
 
-<Dialogue speaker="Khalil Ansari">
+<Dialogue speaker="Khalil">
 So each entity type is like a variant in a union: `type Entity = Drug | Condition | Procedure | Dosage`. Each variant has its own shape — drugs have generic names and brand names, dosages have numbers and units, conditions have standard codes.
 </Dialogue>
 
@@ -180,5 +180,15 @@ In a clinical setting, a false negative (missing a drug) can be as dangerous as 
 Build a medical entity classifier that handles drugs, conditions, dosages, frequencies, and abbreviations.
 
 <Exercise slug="extract-medical-entities" />
+
+## Knowledge check
+
+<Quiz
+  question="A NER model uses BIO tags: B-DRUG (begin), I-DRUG (inside), O (other). Why not just have a single DRUG tag for any drug-named token?"
+  options={[{"text":"BIO tags are required by the loss function"},{"text":"BIO tags let the decoder distinguish two adjacent drug mentions ('aspirin ibuprofen' = 2 entities) from a single multi-token drug ('lisinopril hydrochloride' = 1 entity) — correct"},{"text":"BIO tags speed up training"},{"text":"BIO tags reduce vocabulary size"}]}
+  correct={1}
+  explanation="Without BIO, two consecutive DRUG tokens are ambiguous — could be one drug name (multi-word) or two drugs side by side. B- marks the START of an entity span; I- marks continuation. So 'aspirin ibuprofen' tags as B-DRUG B-DRUG (two entities) while 'lisinopril hydrochloride' tags as B-DRUG I-DRUG (one entity)."
+  tier="structural"
+/>
 
 <KeyTakeaways takeaways={["Medical entity types form a union type system: Drug | Condition | Procedure | Dosage | Frequency", "Each type has distinct detection strategies: dictionaries, regex patterns, abbreviation maps", "Like TypeScript type guards, each strategy narrows the token to a specific entity type", "Precision catches false positives, recall catches false negatives — both matter clinically"]} />

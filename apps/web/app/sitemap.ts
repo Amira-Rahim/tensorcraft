@@ -51,16 +51,22 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
-      url: `${BASE_URL}/compare`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.8,
-    },
-    {
       url: `${BASE_URL}/about`,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.6,
+    },
+    {
+      url: `${BASE_URL}/compare`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
+    {
+      url: `${BASE_URL}/bridges`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
     },
     {
       url: `${BASE_URL}/extras`,
@@ -104,14 +110,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }),
   );
 
-  // Bridge concept pages (one per bridge, keyed by ML concept)
-  const bridgeRoutes: MetadataRoute.Sitemap = BRIDGES.map((b) => ({
-    url: `${BASE_URL}/bridges/${slugify(b.mlConcept)}`,
-    lastModified: new Date(),
-    changeFrequency: "monthly" as const,
-    priority: 0.6,
-  }));
-
   // Individual lesson pages (55 lessons per theme × 5 themes = 275 total)
   const lessonRoutes: MetadataRoute.Sitemap = themeSlugs.flatMap((slug) =>
     getThemeLessons(slug).map((lesson) => ({
@@ -143,16 +141,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     ...staticRoutes,
     ...extrasRoutes,
-    {
-      url: `${BASE_URL}/bridges`,
-      lastModified: new Date(),
-      changeFrequency: "monthly" as const,
-      priority: 0.8,
-    },
     ...themeRoutes,
     ...lessonRoutes,
     ...capstoneRoutes,
     ...glossaryRoutes,
-    ...bridgeRoutes,
   ];
 }

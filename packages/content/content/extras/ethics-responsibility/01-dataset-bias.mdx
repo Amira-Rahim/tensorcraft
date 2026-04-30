@@ -17,6 +17,7 @@ concept:
     mlTitle: "Biased Training Data"
     mlCode: "// Only trained on English text — fails on multilingual input"
     tier: intuition
+    breaks: "Cross-browser bugs surface immediately on a Firefox/Safari pageview — the failure mode is loud (broken layout, JS error). Dataset bias is silent: a face-recognition model trained mostly on light-skinned faces may still return a confident match on a darker-skinned face that is wrong. Detecting bias requires per-subgroup evaluation against a labelled holdout — there's no equivalent of 'open it in Firefox' that surfaces it on demand."
 consequence:
   narrative: "Understanding bias is the first step toward building ML systems that serve everyone."
   nextLessonTeaser: "Next: measuring fairness with concrete metrics"

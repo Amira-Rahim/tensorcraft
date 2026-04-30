@@ -39,7 +39,7 @@ keywords:
 Khalil, I reviewed 47 clinical notes this morning. Each one buries critical information in free text — drug names, dosages, conditions, procedures. I need that data structured. Searchable. Computable. Right now, it's like having a massive DOM tree with no class names, no IDs, no way to query it.
 </Dialogue>
 
-<Dialogue speaker="Khalil Ansari">
+<Dialogue speaker="Khalil">
 So you need the equivalent of `document.querySelectorAll()` for clinical text. Instead of finding all `.drug` elements in a DOM, you're finding all drug mentions in a paragraph.
 </Dialogue>
 
@@ -117,7 +117,7 @@ console.log('Found entities:', entities);
 
 ## Why NER Matters in Medicine
 
-<Dialogue speaker="Vikram Reddy">
+<Dialogue speaker="Vikram">
 Think of a hospital's electronic health records as one massive web page with millions of text nodes. Without NER, searching for "which patients are on warfarin?" means a human reading every note. With NER, it's a database query. That's the difference between hours and milliseconds.
 </Dialogue>
 

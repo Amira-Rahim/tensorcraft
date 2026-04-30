@@ -108,7 +108,7 @@ for epoch in 1..N:
 
       // 5. Log batch metrics
   // 6. End-of-epoch: validate on heldout set
-  if val_loss not improving for K epochs:
+  if val_loss not improving for K epochs:   // K = patience, typically 5–10
       // 7. Stop early
       break
 ```

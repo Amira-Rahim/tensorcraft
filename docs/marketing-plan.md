@@ -137,9 +137,7 @@ Generate hundreds of indexable pages from structured data patterns. Each templat
 
 | Template Type | URL Pattern | Est. Pages | Keyword Pattern |
 |---------------|-------------|------------|-----------------|
-| Bridge Pages | `/bridges/[fe-concept]-to-[ml-concept]` | 50-80 | "[FE concept] vs [ML concept]", "how [FE concept] relates to [ML concept]" |
 | Glossary Entries | `/glossary/[term]` | 120-200 | "what is [term] in machine learning", "[term] explained for developers" |
-| Comparison Pages | `/compare/[tool-a]-vs-[tool-b]` | 30-50 | "[tool A] vs [tool B] for JavaScript", "should I use [tool A] or [tool B]" |
 | Cheat Sheets | `/cheatsheets/[topic]` | 20-30 | "[topic] cheat sheet", "[topic] quick reference for JS devs" |
 | Code Examples | `/examples/[framework]/[ml-task]` | 150-300 | "[ml-task] in [framework]", "how to [ml-task] with [framework]" |
 | FAQ Collections | `/faq/[category]` | 80-120 | "can I [question] with JavaScript", "how to [question] without Python" |
@@ -409,8 +407,8 @@ Sponsor developer newsletters to reach frontend engineers at scale. Allocate $2,
 Create a library of shareable visual assets that illustrate the FE-to-ML bridge concept. These are designed for social media virality and blog embedding.
 
 - **Shareable graphics specs:** 1200x675px (Twitter/LinkedIn optimal), dark background (#181818), sage green accent (`#6BAA8A`) or theme-specific color, JetBrains Mono for code and headings, Inter for body labels, side-by-side layout showing FE concept on left and ML concept on right with bridge connector in the center. Brutalist styling: zero border-radius, offset shadows. Include Tensorcraft watermark (bottom-right, subtle). Export as PNG and WebP. Each graphic is a self-contained explanation — useful even without clicking through to the site.
-- **Bridge explorer page:** A dedicated page at `tensorcraft.app/bridges` showing all 50+ bridges in a filterable, searchable grid. Each card shows the FE concept, the ML concept, and a one-sentence bridge statement. Clicking opens the full bridge explanation with interactive demo. This page is both a product showcase and an SEO asset (targets "ML concepts for frontend developers" and related queries).
-- **Social calendar:** Publish one bridge graphic every day for 50 days as the "50 Days of Bridges" campaign. Schedule across Twitter/X, LinkedIn, and Instagram simultaneously. Each post includes the graphic, a 2-3 sentence caption explaining the bridge, and a link to the full bridge page. Day 50 post announces the complete bridge explorer page. Target: 50 days of consistent, highly shareable visual content that establishes Tensorcraft as the definitive source for FE-to-ML bridges.
+- **Bridge discovery surface:** Bridges live as collectible cards on the dashboard (`bridge-collection.tsx`), surfaced in context of learner progress rather than as a standalone reference page. The standalone `/bridges` route was removed.
+- **Social calendar:** Publish one bridge graphic every day for 50 days as the "50 Days of Bridges" campaign. Schedule across Twitter/X, LinkedIn, and Instagram simultaneously. Each post includes the graphic and a 2-3 sentence caption explaining the bridge. Target: 50 days of consistent, highly shareable visual content that establishes Tensorcraft as the definitive source for FE-to-ML bridges.
 - **Blog integration:** Every blog post that discusses a bridge concept includes the corresponding bridge graphic as the hero image. Open Graph meta tags use the bridge graphic, ensuring the visual appears in social media shares. This creates a consistent visual language across all channels.
 
 ---

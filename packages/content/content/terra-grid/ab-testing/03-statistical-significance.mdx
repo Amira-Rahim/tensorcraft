@@ -168,4 +168,14 @@ Implement a statistical significance test for model comparison.
 
 <Exercise slug="significance-test" />
 
+## Knowledge check
+
+<Quiz
+  question="Two-proportion z-test on click-through rate: control 8.0% (n=10000), treatment 8.5% (n=10000). The p-value comes out at 0.18. What can you conclude?"
+  options={[{"text":"Treatment is 0.5% better, ship it"},{"text":"Cannot reject the null — observed difference could plausibly come from random sampling. Either run longer to gather more data or accept the result is inconclusive"},{"text":"Treatment is significantly worse — high p-value means high probability the change is bad"},{"text":"P-value is irrelevant; effect size matters more"}]}
+  correct={1}
+  explanation="p=0.18 means there's an 18% chance of observing this difference (or larger) under the null hypothesis. At α=0.05, that's not significant — the data is consistent with no real effect. Option A ships on noise. Option C inverts what high p-value means (high p = weaker evidence against null, NOT evidence for harm). Option D is a real point but doesn't override significance — both effect size AND significance matter, and here neither supports shipping."
+  tier="structural"
+/>
+
 <KeyTakeaways takeaways={["Statistical significance prevents shipping models based on noise instead of signal", "The two-proportion z-test compares accuracy rates between control and treatment groups", "Sample size matters: too few predictions means wide confidence intervals and unreliable conclusions", "Always calculate required sample size before starting a test — know how long you need to run it"]} />

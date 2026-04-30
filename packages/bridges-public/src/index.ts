@@ -18,8 +18,6 @@
  *   const honestStructural = BRIDGES.filter(
  *     b => b.tier === 'structural' && b.breaks
  *   );
- *
- * Read the bridge-tier system: https://tensorcraft.app/bridges
  */
 export {
   BRIDGES,

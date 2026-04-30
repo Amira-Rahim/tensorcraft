@@ -143,4 +143,14 @@ Implement one-hot encoding for clinical vocabulary words.
 
 <Exercise slug="encode-one-hot" />
 
+## Knowledge check
+
+<Quiz
+  question="A vocabulary has 50,000 unique medical terms. One-hot encoding represents each token as a vector of which size?"
+  options={[{"text":"50,000 — one dimension per vocabulary item, exactly one 1 and 49,999 zeros"},{"text":"log₂(50000) ≈ 16 — most efficient binary encoding"},{"text":"512 — standard embedding dimension"},{"text":"50,000² — pairwise interactions"}]}
+  correct={0}
+  explanation="One-hot encoding allocates one dimension per vocabulary item. For 50K vocab → 50K-dim vectors with a single 1 and 49,999 zeros. This is precisely why one-hot doesn't scale and learned embeddings (typically 128-512 dims) are used in practice — option C is the embedding size, not one-hot size. Option B is binary encoding (different scheme; loses orthogonality between items). Option D invents a non-existent encoding."
+  tier="identity"
+/>
+
 <KeyTakeaways takeaways={["One-hot encoding assigns each word a unique vector — like enum values with unique IDs", "Every word is equally distant from every other word: no semantic relationships", "Memory cost scales linearly with vocabulary size (50K words = 50K dimensions per vector)", "We need denser representations that capture meaning — that is what word embeddings provide"]} />

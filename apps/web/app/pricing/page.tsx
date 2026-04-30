@@ -186,8 +186,66 @@ function renderCell(value: boolean | string) {
 }
 
 export default function PricingPage() {
+  const pricingJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "OfferCatalog",
+    name: "Tensorcraft course pricing",
+    url: "https://tensorcraft.app/pricing",
+    description:
+      "One-payment lifetime-access tiers for the Tensorcraft browser-ML course. Per-theme single purchase, multi-theme bundles, and an all-five bundle.",
+    itemListElement: [
+      {
+        "@type": "Offer",
+        name: "Free preview",
+        price: "0",
+        priceCurrency: "USD",
+        availability: "https://schema.org/InStock",
+        description:
+          "Preview lessons + sample exercises across all five themes.",
+      },
+      {
+        "@type": "Offer",
+        name: "Single theme",
+        price: "79",
+        priceCurrency: "USD",
+        availability: "https://schema.org/InStock",
+        description:
+          "One full theme: ~60 lessons, ~60 exercises, capstone, lifetime access.",
+      },
+      {
+        "@type": "Offer",
+        name: "Two-theme bundle",
+        price: "129",
+        priceCurrency: "USD",
+        availability: "https://schema.org/InStock",
+        description: "Any two themes bundled, lifetime access.",
+      },
+      {
+        "@type": "Offer",
+        name: "Three-theme bundle",
+        price: "169",
+        priceCurrency: "USD",
+        availability: "https://schema.org/InStock",
+        description: "Any three themes bundled, lifetime access.",
+      },
+      {
+        "@type": "Offer",
+        name: "All five themes",
+        price: "219",
+        priceCurrency: "USD",
+        availability: "https://schema.org/InStock",
+        description:
+          "All five themes (Deep Orbit, Neon Protocol, Signal Ward, Nova Canvas, Terra Grid). Lifetime access.",
+      },
+    ],
+  };
+
   return (
     <main className="min-h-screen bg-page relative overflow-hidden">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(pricingJsonLd) }}
+      />
       <AmbientBackground count={200} />
       <div className="absolute inset-0 grid-bg pointer-events-none z-0" />
       <div className="relative z-10">

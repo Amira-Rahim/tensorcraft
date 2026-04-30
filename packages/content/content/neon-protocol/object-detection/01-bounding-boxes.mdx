@@ -177,4 +177,14 @@ Build functions to create and convert bounding boxes.
 
 <Exercise slug="compute-bbox" />
 
+## Knowledge check
+
+<Quiz
+  question="A sentinel detector outputs a box at (x=120, y=80, width=60, height=40) on a 640×480 frame. To pass this box to a downstream model that expects normalized [x1, y1, x2, y2] coordinates in [0, 1], what is the correct conversion?"
+  options={[{"text":"[120/640, 80/480, 180/640, 120/480] — divide each (x, y) corner by image dimensions"},{"text":"[120/640, 80/480, 60/640, 40/480] — normalize all four values by their own axis"},{"text":"[120, 80, 180, 120] / 255 — scale by pixel intensity range"},{"text":"[120, 80, 60, 40] / max(640, 480) — divide everything by the longest side"}]}
+  correct={0}
+  explanation="The detector returned (x, y, width, height). To get [x1, y1, x2, y2] you compute x2 = x + width and y2 = y + height, then normalize each x by image width and each y by image height. The other options either keep the wh format (option B), confuse pixel value with coordinate (option C), or use a single divisor that distorts non-square images (option D)."
+  tier="structural"
+/>
+
 <KeyTakeaways takeaways={["Bounding boxes are the ML equivalent of DOMRect — four numbers that locate an object", "Normalized coordinates (0-1) make boxes resolution-independent, like CSS percentages", "Detection models output boxes in different formats (xywh, cxcywh, xyxy) that you convert between", "getBoundingClientRect() and model.predict() return fundamentally the same data structure"]} />

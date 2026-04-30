@@ -16,8 +16,8 @@ concept:
     feCode: "npm install lodash // thousands of hours of work, one command"
     mlTitle: "Pre-trained Model"
     mlCode: "const model = await tf.loadLayersModel('mobilenet_v2'); // millions of $ of training"
-    tier: structural
-    breaks: "An npm package ships versioned code that runs deterministically. A pretrained model ships weights from a specific training run on a specific dataset distribution — and inherits every bias, blind spot, and license constraint of that training. `npm install lodash` is reproducible; `loadLayersModel('mobilenet')` carries baggage."
+    tier: intuition
+    breaks: "An npm package ships versioned code that runs deterministically — `lodash@4.17.21` behaves the same on every machine. A pretrained model ships weights from a specific training run on a specific dataset distribution. ImageNet is biased toward Western consumer photography (overrepresentation of dogs, US suburbs, pizza); fine-tuning to non-Western contexts often shows accuracy drop. Loading the model also imports its license, its bias, and its failure modes. `loadLayersModel('mobilenet')` is *not* reproducible across data domains."
 consequence:
   narrative: "The download completes. 25 megabytes. Amir holds up the drive, its status LED blinking green. 'Two million credits of training on this drive. Meridian trained it on their server farm over three weeks. We just downloaded it in forty seconds. That is the power of pre-trained models.'"
   nextLessonTeaser: "Next: feature reuse — why the patterns this model learned transfer to tasks it was never trained on"

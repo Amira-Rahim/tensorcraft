@@ -17,7 +17,7 @@ concept:
     mlTitle: "FFT Decomposition"
     mlCode: "const frequencies = tf.spectral.rfft(signal)"
     tier: structural
-    breaks: "@keyframes decompose animation into authored timeline steps. FFT decomposes a signal into a learned-from-data set of sinusoidal basis components and the result is complex-valued (magnitude + phase). The basis is mathematical, not authored."
+    breaks: "@keyframes decompose animation into authored timeline steps. FFT decomposes a signal into a fixed mathematical basis of sinusoids (e^(-2πikn/N) for k = 0..N-1) and returns complex-valued coefficients (magnitude + phase). The basis is universal and not learned from data — the same N sinusoids decompose every signal."
 consequence:
   narrative: "The FFT output confirms Farah's suspicion — a sharp peak at 73.4 Hz that has no natural explanation. 'That is not stellar background,' she says quietly."
   nextLessonTeaser: "Next: visualizing frequency content over time with spectrograms"

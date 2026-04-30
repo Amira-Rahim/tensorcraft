@@ -16,7 +16,8 @@ concept:
     feCode: "const stream = await navigator.mediaDevices.getUserMedia({ video: true });"
     mlTitle: "Video Frame Pipeline"
     mlCode: "const frame = tf.browser.fromPixels(video); const prediction = model.predict(frame.expandDims(0));"
-    tier: identity
+    tier: structural
+    breaks: "`getUserMedia` returns a `MediaStream` — a continuous source of opaque encoded video frames. `tf.browser.fromPixels(video)` extracts a single frame as a `[H, W, 3]` uint8 tensor; you still need to resize, normalize (often `(x/127.5) - 1` or `x/255`), and add a batch dimension before `model.predict`. The stream is the input pipe; the tensor is what the model actually consumes. Skip the preprocessing and the model sees the wrong distribution."
 consequence:
   narrative: "The test feed shows three Meridian drones circling District 7. Protocol Sentinel tags each one. Noor grins — then the frame rate drops to 4fps. NEON: 'Congratulations. You can detect drones. Slowly.'"
   nextLessonTeaser: "Next: running inference on every frame without dropping below 30fps"

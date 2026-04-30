@@ -1,7 +1,8 @@
 slug: build-transformer-block
 lessonSlug: transformer-architecture
 title: "Build a Transformer Encoder Block"
-instructions: "Implement a complete transformer encoder block with two sub-layers: (1) multi-head self-attention with a residual connection and layer normalization, (2) position-wise feed-forward network with a residual connection and layer normalization. The feedforward network should expand to dFF dimensions with ReLU activation, then project back to dModel. Use the provided layerNorm helper."
+mlContent: model
+instructions: "Implement a transformer encoder block with two sub-layers: (1) multi-head self-attention with residual + layer norm, (2) position-wise feed-forward (dModel → dFF → dModel) with residual + layer norm. Use `tf.layers.dense` for ALL projection matrices so weights are trainable variables — DO NOT use raw `tf.randomNormal` inside the function body (that re-initializes weights every call and makes the block untrainable). Build projections once outside the closure or in a class. Use the provided layerNorm helper."
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
@@ -11,26 +12,16 @@ starterCode: |
     return x.sub(mean).div(variance.add(1e-6).sqrt()) as tf.Tensor2D;
   }
 
-  function multiHeadAttention(
-    x: tf.Tensor2D,
-    dModel: number,
-    numHeads: number
-  ): tf.Tensor2D {
-    // Step 1: Split dModel into numHeads heads of size dk = dModel / numHeads
-    // Step 2: For each head, compute Q, K, V projections and scaled dot-product attention
-    // Step 3: Concatenate heads and project back to dModel
-    return null;
-  }
-
-  function encoderBlock(
-    x: tf.Tensor2D,
-    dModel: number,
-    numHeads: number,
-    dFF: number
-  ): tf.Tensor2D {
-    // Sub-layer 1: Multi-head attention + residual + layer norm
-    // Sub-layer 2: Feed-forward (dModel → dFF → dModel) + residual + layer norm
-    return null;
+  function buildEncoderBlock(dModel: number, numHeads: number, dFF: number) {
+    const dk = dModel / numHeads;
+    // Build trainable projection layers ONCE here, not inside the returned function.
+    // Hint: one dense layer for Q, one for K, one for V, one output projection,
+    // one for the FF expansion (dFF), one for the FF projection back (dModel).
+    return function encoderBlock(x: tf.Tensor2D): tf.Tensor2D {
+      // Sub-layer 1: multi-head attention + residual + layer norm
+      // Sub-layer 2: feed-forward + residual + layer norm
+      return null as unknown as tf.Tensor2D;
+    };
   }
 solutionCode: |
   import * as tf from '@tensorflow/tfjs';
@@ -41,81 +32,80 @@ solutionCode: |
     return x.sub(mean).div(variance.add(1e-6).sqrt()) as tf.Tensor2D;
   }
 
-  function multiHeadAttention(
-    x: tf.Tensor2D,
-    dModel: number,
-    numHeads: number
-  ): tf.Tensor2D {
+  function buildEncoderBlock(dModel: number, numHeads: number, dFF: number) {
     const dk = dModel / numHeads;
-    const heads: tf.Tensor2D[] = [];
+    // Trainable layers built ONCE — every call to encoderBlock reuses these weights.
+    const Wq = tf.layers.dense({ units: dModel, useBias: false });
+    const Wk = tf.layers.dense({ units: dModel, useBias: false });
+    const Wv = tf.layers.dense({ units: dModel, useBias: false });
+    const Wo = tf.layers.dense({ units: dModel, useBias: false });
+    const Wff1 = tf.layers.dense({ units: dFF, activation: 'relu' });
+    const Wff2 = tf.layers.dense({ units: dModel });
 
-    for (let h = 0; h < numHeads; h++) {
-      const Wq = tf.randomNormal([dModel, dk]);
-      const Wk = tf.randomNormal([dModel, dk]);
-      const Wv = tf.randomNormal([dModel, dk]);
+    return function encoderBlock(x: tf.Tensor2D): tf.Tensor2D {
+      // Multi-head attention: project Q/K/V, split into heads, attend, concat, project.
+      const Q = Wq.apply(x) as tf.Tensor2D;
+      const K = Wk.apply(x) as tf.Tensor2D;
+      const V = Wv.apply(x) as tf.Tensor2D;
 
-      const Q = tf.matMul(x, Wq);
-      const K = tf.matMul(x, Wk);
-      const V = tf.matMul(x, Wv);
+      const heads: tf.Tensor2D[] = [];
+      for (let h = 0; h < numHeads; h++) {
+        const qh = Q.slice([0, h * dk], [-1, dk]);
+        const kh = K.slice([0, h * dk], [-1, dk]);
+        const vh = V.slice([0, h * dk], [-1, dk]);
+        const scores = tf.softmax(
+          tf.matMul(qh, kh.transpose()).div(Math.sqrt(dk)), -1
+        );
+        heads.push(tf.matMul(scores, vh) as tf.Tensor2D);
+      }
+      const concat = tf.concat(heads, 1) as tf.Tensor2D;
+      const attnOut = Wo.apply(concat) as tf.Tensor2D;
+      const norm1 = layerNorm(x.add(attnOut) as tf.Tensor2D);
 
-      const scores = tf.softmax(
-        tf.matMul(Q, K.transpose()).div(Math.sqrt(dk)), -1
-      );
-      heads.push(tf.matMul(scores, V) as tf.Tensor2D);
-    }
-
-    const concat = tf.concat(heads, 1) as tf.Tensor2D;
-    const Wo = tf.randomNormal([dModel, dModel]);
-    return tf.matMul(concat, Wo) as tf.Tensor2D;
-  }
-
-  function encoderBlock(
-    x: tf.Tensor2D,
-    dModel: number,
-    numHeads: number,
-    dFF: number
-  ): tf.Tensor2D {
-    // Sub-layer 1: attention + residual + norm
-    const attnOut = multiHeadAttention(x, dModel, numHeads);
-    const norm1 = layerNorm(x.add(attnOut) as tf.Tensor2D);
-
-    // Sub-layer 2: feed-forward + residual + norm
-    const W1 = tf.randomNormal([dModel, dFF]);
-    const W2 = tf.randomNormal([dFF, dModel]);
-    const ffHidden = tf.relu(tf.matMul(norm1, W1));
-    const ffOut = tf.matMul(ffHidden, W2) as tf.Tensor2D;
-    const norm2 = layerNorm(norm1.add(ffOut) as tf.Tensor2D);
-
-    return norm2;
+      // Feed-forward
+      const ffHidden = Wff1.apply(norm1) as tf.Tensor2D;
+      const ffOut = Wff2.apply(ffHidden) as tf.Tensor2D;
+      return layerNorm(norm1.add(ffOut) as tf.Tensor2D);
+    };
   }
 testCode: |
-  describe('multiHeadAttention', () => {
-    it('returns shape [seqLen, dModel]', () => {
-      const x = tf.randomNormal([6, 32]) as tf.Tensor2D;
-      const output = multiHeadAttention(x, 32, 4);
-      expect(output.shape).toEqual([6, 32]);
-    });
-  });
-  describe('encoderBlock', () => {
-    it('preserves input shape [seqLen, dModel]', () => {
+  describe('buildEncoderBlock', () => {
+    it('returns a function that preserves input shape', () => {
+      const block = buildEncoderBlock(32, 4, 128);
       const x = tf.randomNormal([8, 32]) as tf.Tensor2D;
-      const output = encoderBlock(x, 32, 4, 128);
+      const output = block(x);
       expect(output.shape).toEqual([8, 32]);
     });
-    it('output is normalized (mean close to 0)', async () => {
+    it('reuses weights across calls (deterministic for same input)', async () => {
+      const block = buildEncoderBlock(16, 2, 64);
+      const x = tf.tensor2d([[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]]);
+      const out1 = block(x);
+      const out2 = block(x);
+      const a = await out1.data();
+      const b = await out2.data();
+      // Same input + same weights → same output. Different per-call random weights would fail this.
+      for (let i = 0; i < a.length; i++) {
+        expect(Math.abs(a[i] - b[i])).toBeLessThan(1e-5);
+      }
+    });
+    it('output is normalized (mean close to 0 after layer norm)', async () => {
+      const block = buildEncoderBlock(16, 2, 64);
       const x = tf.randomNormal([4, 16]) as tf.Tensor2D;
-      const output = encoderBlock(x, 16, 2, 64);
-      const mean = await output.mean().array();
+      const output = block(x);
+      const mean = (await output.mean().array()) as number;
       expect(Math.abs(mean)).toBeLessThan(1.0);
     });
     it('stacking multiple blocks preserves shape', () => {
+      const block1 = buildEncoderBlock(32, 4, 128);
+      const block2 = buildEncoderBlock(32, 4, 128);
+      const block3 = buildEncoderBlock(32, 4, 128);
       let x = tf.randomNormal([6, 32]) as tf.Tensor2D;
-      for (let i = 0; i < 3; i++) {
-        x = encoderBlock(x, 32, 4, 128);
-      }
+      x = block1(x);
+      x = block2(x);
+      x = block3(x);
       expect(x.shape).toEqual([6, 32]);
     });
   });
-estimatedMinutes: 15
-difficulty: intermediate
-mlContent: data
+estimatedMinutes: 18
+difficulty: advanced
+skillAxis: model_arch

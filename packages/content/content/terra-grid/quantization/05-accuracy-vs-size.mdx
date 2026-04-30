@@ -145,4 +145,14 @@ Binary (1 bit): ~50% top-1 accuracy     3.1% size               -- specialized
   tier="structural"
 />
 
+## Knowledge check
+
+<Quiz
+  question="Quantizing a vision classifier from FP32 to INT8 dropped accuracy from 92% to 88%. The deployment latency budget is 50ms; FP32 takes 80ms; INT8 takes 25ms. What's the right call for an attention-driven UI feature where wrong predictions are recoverable?"
+  options={[{"text":"Stay on FP32 — never trade accuracy for speed"},{"text":"Ship INT8 — the latency budget is binding (FP32 misses it by 60%) and 4 points of accuracy is acceptable for the use case — correct"},{"text":"Train a smaller FP32 model from scratch to fit the latency budget"},{"text":"Quantize to INT4 to push latency below 25ms"}]}
+  correct={1}
+  explanation="The latency budget is the hard constraint — FP32 at 80ms ships nothing. INT8 hits 25ms with a 4-point accuracy drop in a low-stakes UI context. Option A ignores that no shipped model = no value. Option C is a bigger investment with no guarantee of better accuracy. Option D risks more accuracy drop without measurable additional benefit."
+  tier="intuition"
+/>
+
 <KeyTakeaways takeaways={["Define accuracy thresholds before compressing — safety-critical vs non-critical", "QAT preserves ~0.7% more accuracy than post-training quantization at the same size", "Find the knee of the accuracy-size curve: maximum compression above your threshold", "The Site 23 lesson: always validate quantized models against edge cases"]} />

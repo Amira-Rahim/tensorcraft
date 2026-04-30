@@ -26,7 +26,7 @@ Most ML analogies are right enough to start, wrong enough to mislead in
 production. This package ships the analogy-tier system from
 [tensorcraft.app](https://tensorcraft.app) — every structural and intuition
 bridge includes a `breaks` field that names the concrete failure mode if you
-push the analogy too far.
+push the analogy too far. The full bridge registry lives in this package.
 
 ## Tiers
 
@@ -83,7 +83,7 @@ Find every bridge with a documented failure mode:
 import { BRIDGES } from "@tensorcraft/bridges";
 
 const honest = BRIDGES.filter((b) => b.breaks);
-// 36+ entries — see them all at https://tensorcraft.app/bridges
+// 36+ entries with documented failure modes
 ```
 
 Group by tier:

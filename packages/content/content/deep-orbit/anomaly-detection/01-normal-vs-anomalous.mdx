@@ -139,4 +139,14 @@ Yesterday's 95th percentile is today's median. The world drifted underneath the 
 
 <Exercise slug="incident-baseline-drift" />
 
+## Knowledge check
+
+<Quiz
+  question="Z-score thresholding (|z| > 3 = anomaly) flags 0.27% of samples in normal Gaussian data. A signal monitor uses this and gets 100,000 readings per hour. About how many false-alarm anomalies will it generate per hour, assuming the data IS Gaussian?"
+  options={[{"text":"~0 — z>3 is rare enough it never fires falsely on normal data"},{"text":"~270 — 0.27% of 100,000, which is the cost of the threshold being a probability not a guarantee — correct"},{"text":"~3,000 — proportional to z-threshold"},{"text":"~10 — only for actual outliers"}]}
+  correct={1}
+  explanation="P(|Z| > 3) ≈ 0.0027 for standard normal. Multiply by 100,000 readings → ~270 false-positive flags/hour, even when nothing is wrong. This is the alert-fatigue cost of statistical thresholds at scale; production systems either raise the threshold (z>4 → ~63/hour) or use ensemble methods to confirm."
+  tier="structural"
+/>
+
 <KeyTakeaways takeaways={["Anomaly detection models normality — you define what's expected, then flag deviations", "Z-score thresholding is the simplest approach: flag values beyond N standard deviations from the mean", "Precision vs recall is a tradeoff controlled by the threshold — lower catches more but raises false alarms", "For DEEP SCAN, recall matters more than precision — missing the signal is worse than a few false alerts"]} />

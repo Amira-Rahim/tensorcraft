@@ -10,11 +10,13 @@ const bridgeWithVariants = {
   tier: "structural" as const,
 };
 
+// Fictional pair not present in the canonical registry — keeps "no breaks"
+// fallback assertion meaningful as we add breaks to real registry entries.
 const bridgeWithoutVariants = {
-  feTitle: "CSS initial values",
-  feCode: "div { color: initial; }",
-  mlTitle: "Weight initialization",
-  mlCode: "tf.initializers.glorotNormal()",
+  feTitle: "Fixture FE Concept",
+  feCode: "// fixture fe code",
+  mlTitle: "Fixture ML Concept",
+  mlCode: "// fixture ml code",
   tier: "structural" as const,
 };
 
@@ -69,8 +71,8 @@ describe("BridgeCallout", () => {
   it("falls back to generic layout when bridge has no variants", () => {
     render(<BridgeCallout bridge={bridgeWithoutVariants} />);
     expect(screen.queryByRole("tablist")).toBeNull();
-    expect(screen.getByText("CSS initial values")).toBeInTheDocument();
-    expect(screen.getByText("Weight initialization")).toBeInTheDocument();
+    expect(screen.getByText("Fixture FE Concept")).toBeInTheDocument();
+    expect(screen.getByText("Fixture ML Concept")).toBeInTheDocument();
   });
 
   it("supports keyboard navigation between tabs", () => {

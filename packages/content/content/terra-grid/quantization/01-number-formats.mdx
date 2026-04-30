@@ -115,4 +115,14 @@ x_recovered = x_int · scale + zero_point
 Where `scale = (x_max − x_min) / 255` and `zero_point = round(−x_min / scale)`. Per-tensor (one scale for the whole tensor) is simpler; per-channel (one scale per output channel of conv/dense) is more accurate but more compute.
 </DerivationDrawer>
 
+## Knowledge check
+
+<Quiz
+  question="A model has 10M parameters in FP32. You quantize to INT8. What's the approximate model size reduction?"
+  options={[{"text":"4× smaller (40 MB → 10 MB) — INT8 uses 1 byte per param vs 4 for FP32"},{"text":"2× smaller — INT8 halves the precision but not the size"},{"text":"8× smaller — bits not bytes"},{"text":"32× smaller — INT8 has 32× fewer representable values"}]}
+  correct={0}
+  explanation="FP32 = 4 bytes per parameter, INT8 = 1 byte per parameter. 10M params × 4 = 40 MB → 10M × 1 = 10 MB, a 4× reduction. Option C (8×) confuses bits and bytes. Option D conflates dynamic-range count with storage size. Option B is wrong; INT8 quarters not halves the storage."
+  tier="structural"
+/>
+
 <KeyTakeaways takeaways={["Float32 (4 bytes), Float16 (2 bytes), Int8 (1 byte) per parameter", "Float32 → Int8 quantization gives 4x size reduction", "Typical accuracy loss from Int8 quantization: 0-2%", "The precision-size tradeoff mirrors image format quality-size tradeoffs"]} />

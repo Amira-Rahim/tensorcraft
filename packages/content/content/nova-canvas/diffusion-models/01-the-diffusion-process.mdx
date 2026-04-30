@@ -58,38 +58,42 @@ You already know this pattern. Progressive image loading starts with a tiny, blu
 <CodeBlock language="typescript" title="forward-diffusion.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// The forward process: systematically add Gaussian noise
-// Like progressively blurring an image until it is pure static
+// The forward process: add Gaussian noise so total variance stays ~1.
+// DDPM closed form: x_t = sqrt(alphaBar_t) * x_0 + sqrt(1 - alphaBar_t) * eps
+// where alphaBar_t = product of (1 - beta_i) for i = 1..t. The √ scaling matters:
+// a naive linear blend (image * (1-t) + noise * t) would shrink the signal variance,
+// then the network would learn to denoise the wrong distribution.
 function addNoise(
   image: tf.Tensor4D,
-  timestep: number,
-  totalSteps: number
+  alphaBar: number          // cumulative product from the noise schedule
 ): tf.Tensor4D {
-  // How much noise to add at this step (more noise = later step)
-  const noiseLevel = timestep / totalSteps;
-
-  // Generate random Gaussian noise matching image shape
   const noise = tf.randomNormal(image.shape);
+  const signalScale = Math.sqrt(alphaBar);
+  const noiseScale = Math.sqrt(1 - alphaBar);
 
-  // Blend: original * (1 - noiseLevel) + noise * noiseLevel
-  const noisy = tf.add(
-    tf.mul(image, tf.scalar(1 - noiseLevel)),
-    tf.mul(noise, tf.scalar(noiseLevel))
-  );
+  return tf.add(
+    tf.mul(image, tf.scalar(signalScale)),
+    tf.mul(noise, tf.scalar(noiseScale))
+  ) as tf.Tensor4D;
+}
 
-  return noisy as tf.Tensor4D;
+// Cosine schedule (Nichol & Dhariwal 2021): alphaBar drops smoothly from 1 to ~0.
+function cosineAlphaBar(t: number, T: number, s = 0.008): number {
+  const angle = ((t / T + s) / (1 + s)) * (Math.PI / 2);
+  return Math.cos(angle) ** 2;
 }
 
 // Watch an image dissolve into noise over 10 steps
 const image = tf.randomUniform([1, 64, 64, 3]); // placeholder "image"
 for (let t = 0; t <= 10; t++) {
-  const noisy = addNoise(image, t, 10);
-  console.log(\`Step \${t}: noise level = \${(t / 10).toFixed(1)}\`);
+  const aBar = cosineAlphaBar(t, 10);
+  const noisy = addNoise(image, aBar);
+  console.log(\`Step \${t}: alphaBar = \${aBar.toFixed(3)}\`);
   noisy.dispose();
 }
-// Step 0: noise level = 0.0  (original image)
-// Step 5: noise level = 0.5  (half noise, half image)
-// Step 10: noise level = 1.0 (pure noise)`}
+// Step 0:  alphaBar = 1.000  (original image)
+// Step 5:  alphaBar = 0.450  (~half signal, half noise after sqrt)
+// Step 10: alphaBar = 0.000  (pure noise)`}
 </CodeBlock>
 
 ## The Reverse Process: Recovering the Image

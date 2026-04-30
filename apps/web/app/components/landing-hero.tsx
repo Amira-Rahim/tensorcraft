@@ -40,20 +40,27 @@ export function LandingHero() {
         </div>
 
         <h1 className="text-5xl md:text-6xl font-mono font-black leading-[0.93] tracking-[-0.045em] mb-10 uppercase">
-          <span className="block">The Bridge from</span>
-          <span className="block">
-            Frontend to <span className="text-primary">ML</span>
-          </span>
-          <span className="block">Is Shorter Than</span>
-          <span className="block">You Think</span>
+          <span className="block">Same Mental Model.</span>
+          <span className="block text-primary">New Domain.</span>
         </h1>
 
         <p className="text-lg text-text-muted max-w-[520px] mb-12 leading-relaxed font-sans">
-          Every ML concept maps to a frontend analogy you already know. Every
-          analogy ships with a label that says{" "}
-          <span className="text-text-primary">where it lies</span>, so you stop
-          past the honest limit. Eleven modules, fifty-five lessons, one
-          deployable model. Built in JavaScript.
+          You already debug state, optimize renders, reason about caches.
+          That&apos;s the mental model that ships browser ML —{" "}
+          <code className="font-mono text-text-primary text-base">
+            Math.max
+          </code>{" "}
+          becomes ReLU,{" "}
+          <code className="font-mono text-text-primary text-base">
+            TypedArray
+          </code>{" "}
+          becomes Tensor,{" "}
+          <code className="font-mono text-text-primary text-base">
+            Service Worker
+          </code>{" "}
+          becomes model cache. The bridge from frontend to ML is shorter than
+          you think. Eleven modules, fifty-five lessons, one deployable model.
+          Built in JavaScript.
         </p>
 
         <div className="flex gap-4 flex-wrap mb-14">
@@ -75,10 +82,6 @@ export function LandingHero() {
 
         <p className="font-mono text-xs text-text-muted">
           No credit card. No account for module 1. No Python.
-        </p>
-        <p className="font-mono text-[11px] text-text-muted/60 mt-3 max-w-[460px] leading-relaxed">
-          Want to be a research ML engineer in PyTorch? This is not your course.
-          Want to ship ML in your web app this quarter? It is.
         </p>
       </motion.div>
     </section>

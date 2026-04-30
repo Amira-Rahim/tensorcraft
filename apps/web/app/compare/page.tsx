@@ -2,248 +2,243 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title:
-    "Tensorcraft vs fast.ai, Karpathy, Coursera, Hugging Face | Honest Comparison",
+  title: "Tensorcraft vs fast.ai vs Karpathy vs Coursera | Course comparison",
   description:
-    "Honest, table-format comparison of Tensorcraft against fast.ai, Karpathy Zero-to-Hero, Coursera DL Specialization, Hugging Face NLP Course, and 3Blue1Brown. Each row names where Tensorcraft loses, not just where it wins.",
+    "Honest comparison: where Tensorcraft wins (FE-developer onboarding, browser-runtime focus, bridge-tier honesty), where the alternatives win (deeper math, larger pretrained ecosystem, formal credentials).",
   alternates: { canonical: "https://tensorcraft.app/compare" },
 };
 
 export const revalidate = 86400;
 
-type Cell = string;
 type Row = {
-  dimension: string;
-  tensorcraft: Cell;
-  fastai: Cell;
-  karpathy: Cell;
-  coursera: Cell;
-  huggingface: Cell;
-  threeblue: Cell;
-  note?: string;
+  feature: string;
+  tensorcraft: string;
+  fastai: string;
+  karpathy: string;
+  coursera: string;
 };
 
 const ROWS: Row[] = [
   {
-    dimension: "Time to first deployable model",
-    tensorcraft: "~25h (one theme, capstone deploys to GitHub Pages)",
-    fastai: "~50h (notebook, no deploy guidance)",
-    karpathy: "~80–100h (deepest, no deploy)",
-    coursera: "~80h × 4 courses (certificate, no deploy)",
-    huggingface: "~30h (notebook + Spaces deploy)",
-    threeblue: "Not applicable (educational videos, no shipping)",
+    feature: "Primary language / runtime",
+    tensorcraft: "JavaScript / TensorFlow.js (browser)",
+    fastai: "Python / PyTorch (Colab/local)",
+    karpathy: "Python / PyTorch (notebooks)",
+    coursera: "Python / TensorFlow + Keras",
   },
   {
-    dimension: "Math depth (calculus + linalg)",
-    tensorcraft: "Companion module — chain rule + tf.grad verification",
-    fastai: "Built into main path",
-    karpathy: "Derived from scratch in main path",
-    coursera: "Extensive — DL Spec was Andrew Ng's strength",
-    huggingface: "Light — covers concepts, skips derivations",
-    threeblue: "Visual + intuitive — best at chain rule explanation",
+    feature: "Audience starting point",
+    tensorcraft: "FE devs — useState, Array.reduce, Math.max",
+    fastai: "Anyone with Python comfort",
+    karpathy: "Anyone willing to read math",
+    coursera: "Anyone with college calculus",
   },
   {
-    dimension: "Browser-runnable (no Python)",
-    tensorcraft: "Yes — TFJS in-page exercises",
-    fastai: "No — Colab/Jupyter required",
-    karpathy: "No — Python required",
-    coursera: "No — Python notebooks",
-    huggingface: "Partial — Spaces preview, but practice is Python",
-    threeblue: "No code at all",
+    feature: "Bridge-tier honesty",
+    tensorcraft: "Identity / structural / intuition labels + breaks",
+    fastai: "Top-down practice; no formal tier system",
+    karpathy: "Bottom-up math; no analogy framing",
+    coursera: "Formal definitions, less analogy",
   },
   {
-    dimension: "Primary language",
-    tensorcraft: "TypeScript / JavaScript",
-    fastai: "Python",
-    karpathy: "Python",
-    coursera: "Python",
-    huggingface: "Python",
-    threeblue: "Math notation",
+    feature: "Math depth",
+    tensorcraft: "Chain rule, softmax, KL, ELBO, DDPM derived",
+    fastai: "Pragmatic depth, not paper-grade",
+    karpathy: "Paper-grade — autograd from scratch, attention from scratch",
+    coursera: "Theory + math, exam-grade",
   },
   {
-    dimension: "Capstone deliverable",
-    tensorcraft: "Deployable web app (DEEP SCAN, etc) per theme",
-    fastai: "Notebook",
-    karpathy: "GitHub repo (micrograd / nanoGPT)",
-    coursera: "Certificate",
-    huggingface: "Hugging Face Space",
-    threeblue: "None",
+    feature: "Browser-runtime + deployment",
+    tensorcraft: "Every exercise grades in real TFJS in a worker",
+    fastai: "Cloud notebooks; deploy via paid fast.ai or third-party",
+    karpathy: "Notebook only, no deployment story",
+    coursera: "Theory; deployment in separate specialization",
   },
   {
-    dimension: "Honesty signal — analogy limits",
-    tensorcraft:
-      "Every structural and intuition bridge labels its failure mode",
-    fastai: "No formal analogy-limit system",
-    karpathy: "No analogies — derived from math",
-    coursera: "Few analogies",
-    huggingface: "Few analogies",
-    threeblue: "Visual analogies; limits implied by visualization",
+    feature: "Capstone artifact you ship",
+    tensorcraft: "Five deployable browser-side ML apps",
+    fastai: "fast.ai notebooks shareable as Hugging Face Spaces",
+    karpathy: "Final notebook trained from scratch",
+    coursera: "Certificates",
   },
   {
-    dimension: "Price",
-    tensorcraft: "$0 preview, $79–219 lifetime",
+    feature: "Cost (full curriculum)",
+    tensorcraft: "$0 preview / $219 all five themes",
     fastai: "Free",
     karpathy: "Free",
-    coursera: "$59/mo · ~$236 to complete DL Spec",
-    huggingface: "Free",
-    threeblue: "Free",
+    coursera: "$49–79/mo (specialization $200–500)",
   },
   {
-    dimension: "Best fit for",
-    tensorcraft: "FE/JS dev who needs to ship browser ML this quarter",
-    fastai: "Anyone willing to invest in Python-first ML practice",
-    karpathy: "Someone who wants to build models from first principles",
-    coursera: "Career-changers wanting structured, accredited path",
-    huggingface: "NLP / production model deployment focus",
-    threeblue: "Visual learners building intuition before any course",
+    feature: "Credential",
+    tensorcraft: "None (your shipped artifact is the credential)",
+    fastai: "None",
+    karpathy: "None",
+    coursera: "Coursera certificate",
   },
 ];
 
-const COL_LABELS = [
-  ["tensorcraft", "Tensorcraft"],
-  ["fastai", "fast.ai"],
-  ["karpathy", "Karpathy Z2H"],
-  ["coursera", "Coursera DL"],
-  ["huggingface", "HF NLP"],
-  ["threeblue", "3Blue1Brown"],
-] as const;
-
 export default function ComparePage() {
+  const compareJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "Tensorcraft vs fast.ai vs Karpathy vs Coursera",
+    author: { "@type": "Organization", name: "Tensorcraft" },
+    publisher: {
+      "@type": "Organization",
+      name: "Tensorcraft",
+      url: "https://tensorcraft.app",
+    },
+    datePublished: "2026-04-25",
+    dateModified: "2026-04-28",
+    description:
+      "Honest comparison of Tensorcraft against fast.ai, Karpathy zero-to-hero, and Coursera for frontend developers learning ML.",
+    url: "https://tensorcraft.app/compare",
+  };
+
   return (
     <main className="min-h-screen bg-page px-6 md:px-10 py-20">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Article",
-            headline:
-              "Tensorcraft vs fast.ai, Karpathy, Coursera, Hugging Face: honest comparison",
-            description:
-              "Honest, table-format comparison across 8 dimensions. Names where Tensorcraft loses, not just where it wins.",
-            author: { "@type": "Organization", name: "Tensorcraft" },
-            publisher: { "@type": "Organization", name: "Tensorcraft" },
-            datePublished: "2026-04-26",
-            dateModified: "2026-04-27",
-            url: "https://tensorcraft.app/compare",
-            mainEntityOfPage: "https://tensorcraft.app/compare",
-          }),
-        }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(compareJsonLd) }}
       />
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-10">
-          <p className="font-mono text-xs text-primary tracking-[0.18em] uppercase mb-3">
-            // HONEST COMPARISON
+      <article className="max-w-5xl mx-auto">
+        <p className="font-mono text-xs text-primary tracking-[0.18em] uppercase mb-3">
+          // COMPARE
+        </p>
+        <h1 className="text-4xl md:text-5xl font-mono font-black tracking-tight text-text-primary mb-8">
+          Where each course wins.
+        </h1>
+
+        <section className="space-y-6 text-base text-text-muted leading-relaxed font-sans mb-12">
+          <p>
+            Tensorcraft is not the right course for everyone. If you want
+            paper-grade autograd internals, Karpathy&apos;s Zero-to-Hero is free
+            and excellent. If you want hands-on PyTorch with Hugging Face
+            superpowers, fast.ai is free and excellent. If you want a graded
+            credential for your CV, Coursera does that and we don&apos;t.
           </p>
-          <h1 className="text-4xl md:text-5xl font-mono font-black tracking-tight text-text-primary mb-4">
-            Tensorcraft vs every other ML course we respect.
-          </h1>
-          <p className="text-base md:text-lg text-text-muted leading-relaxed max-w-3xl font-sans">
-            We&apos;re not the right course for everyone. This page names where
-            Tensorcraft loses, not just where it wins. If a row points you to
-            fast.ai or Karpathy instead, take it. The right course is the one
-            that fits your goal, not the one that converts you.
+          <p>
+            Tensorcraft is the right course if you ship in the browser, you
+            already know JavaScript, and you want a course that respects what
+            you already know without watering down the ML. Every analogy ships
+            with a label naming where it stops being literal — that&apos;s the{" "}
+            <Link
+              href="/bridges"
+              className="text-primary underline underline-offset-4"
+            >
+              bridge-tier system
+            </Link>
+            .
           </p>
-        </div>
+        </section>
 
         <div className="overflow-x-auto border border-border">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border bg-surface-raised">
-                <th className="text-left font-mono text-xs uppercase tracking-widest text-text-muted px-4 py-3 sticky left-0 bg-surface-raised">
-                  Dimension
+          <table className="w-full font-mono text-sm">
+            <caption className="sr-only">
+              Course comparison: Tensorcraft vs fast.ai vs Karpathy zero-to-hero
+              vs Coursera, scored across language, audience, math depth,
+              deployment, capstone, cost, and credential.
+            </caption>
+            <thead className="bg-surface-raised">
+              <tr>
+                <th
+                  scope="col"
+                  className="text-left p-3 text-text-primary font-bold"
+                >
+                  Feature
                 </th>
-                {COL_LABELS.map(([key, label]) => (
-                  <th
-                    key={key}
-                    className={
-                      "text-left font-mono text-xs uppercase tracking-widest px-4 py-3 " +
-                      (key === "tensorcraft"
-                        ? "text-primary"
-                        : "text-text-muted")
-                    }
-                  >
-                    {label}
-                  </th>
-                ))}
+                <th
+                  scope="col"
+                  className="text-left p-3 text-primary font-bold"
+                >
+                  Tensorcraft
+                </th>
+                <th
+                  scope="col"
+                  className="text-left p-3 text-text-primary font-bold"
+                >
+                  fast.ai
+                </th>
+                <th
+                  scope="col"
+                  className="text-left p-3 text-text-primary font-bold"
+                >
+                  Karpathy
+                </th>
+                <th
+                  scope="col"
+                  className="text-left p-3 text-text-primary font-bold"
+                >
+                  Coursera
+                </th>
               </tr>
             </thead>
             <tbody>
               {ROWS.map((row) => (
                 <tr
-                  key={row.dimension}
-                  className="border-b border-border align-top"
+                  key={row.feature}
+                  className="border-t border-border align-top"
                 >
-                  <td className="font-mono text-xs text-text-primary px-4 py-4 sticky left-0 bg-page font-semibold">
-                    {row.dimension}
-                  </td>
-                  {COL_LABELS.map(([key]) => (
-                    <td
-                      key={key}
-                      className={
-                        "px-4 py-4 leading-relaxed font-sans text-[13px] " +
-                        (key === "tensorcraft"
-                          ? "text-text-primary"
-                          : "text-text-muted")
-                      }
-                    >
-                      {row[key as keyof Row] as string}
-                    </td>
-                  ))}
+                  <th
+                    scope="row"
+                    className="text-left p-3 text-text-primary font-bold"
+                  >
+                    {row.feature}
+                  </th>
+                  <td className="p-3 text-text-muted">{row.tensorcraft}</td>
+                  <td className="p-3 text-text-muted">{row.fastai}</td>
+                  <td className="p-3 text-text-muted">{row.karpathy}</td>
+                  <td className="p-3 text-text-muted">{row.coursera}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
 
-        <section className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div>
-            <div className="font-mono text-xs text-primary font-bold tracking-wider uppercase mb-2">
-              When to pick Tensorcraft
-            </div>
-            <p className="text-sm text-text-muted leading-relaxed font-sans">
-              You write JavaScript day-to-day. You want to ship ML in your web
-              app this quarter, not next year. You want analogies that name
-              their own limits.
-            </p>
-          </div>
-          <div>
-            <div className="font-mono text-xs text-text-muted font-bold tracking-wider uppercase mb-2">
-              When to pick fast.ai
-            </div>
-            <p className="text-sm text-text-muted leading-relaxed font-sans">
-              You want depth on training mechanics — SGD, optimizer internals,
-              backprop derivations — built into the main path. You&apos;re fine
-              with Python and Colab.
-            </p>
-          </div>
-          <div>
-            <div className="font-mono text-xs text-text-muted font-bold tracking-wider uppercase mb-2">
-              When to pick Karpathy
-            </div>
-            <p className="text-sm text-text-muted leading-relaxed font-sans">
-              You want to build models from raw math. micrograd to nanoGPT in
-              video form, free, deepest take available. Time investment is
-              substantial.
-            </p>
-          </div>
+        <section className="space-y-6 text-base text-text-muted leading-relaxed font-sans mt-12">
+          <h2 className="text-2xl font-mono font-bold text-text-primary">
+            What we deliberately did not try to be
+          </h2>
+          <ul className="list-disc pl-6 space-y-3">
+            <li>
+              <span className="text-text-primary font-mono text-sm">
+                A Python ecosystem replacement.
+              </span>{" "}
+              You will not learn pandas, PyTorch internals, or transformer
+              fine-tuning here. fast.ai or Hugging Face NLP Course are better.
+            </li>
+            <li>
+              <span className="text-text-primary font-mono text-sm">
+                A research methodology course.
+              </span>{" "}
+              We teach engineering practice, not how to design novel
+              experiments. The Karpathy + d2l.ai combo is your friend.
+            </li>
+            <li>
+              <span className="text-text-primary font-mono text-sm">
+                A credential.
+              </span>{" "}
+              Your capstone is a deployable browser-ML app you can show in an
+              interview. That&apos;s the credential we believe in.
+            </li>
+          </ul>
         </section>
 
-        <div className="mt-20 flex flex-wrap items-center gap-4">
+        <div className="mt-16 flex flex-wrap items-center gap-4">
           <Link
             href="/themes"
             className="rounded-none inline-flex items-center px-8 py-4 bg-primary text-page font-mono font-bold text-sm tracking-wider uppercase border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover"
           >
-            See All 5 Tensorcraft Themes →
+            Start the course →
           </Link>
           <Link
-            href="/pricing"
+            href="/about"
             className="rounded-none inline-flex items-center px-8 py-4 border-2 border-border text-text-primary font-mono font-bold text-sm tracking-wider uppercase hover:text-primary hover:border-primary/30 transition-all"
           >
-            Pricing
+            Why this exists
           </Link>
         </div>
-      </div>
+      </article>
     </main>
   );
 }

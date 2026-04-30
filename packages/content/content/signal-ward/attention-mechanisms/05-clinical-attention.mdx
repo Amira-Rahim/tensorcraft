@@ -8,7 +8,7 @@ estimatedMinutes: 25
 difficulty: intermediate
 context:
   narrative: "Vikram and Khalil apply attention to real clinical vocabulary, focusing on medically relevant terms."
-  speaker: "Vikram Reddy"
+  speaker: "Vikram"
 concept:
   explanation: "Clinical attention biases the model to prioritize medically significant tokens like drug names, conditions, and dosages."
   bridge:
@@ -35,11 +35,11 @@ keywords:
   - masked-attention
 ---
 
-<Dialogue speaker="Vikram Reddy">
+<Dialogue speaker="Vikram">
 General attention treats "the" and "methotrexate" as equally eligible for high scores. But we know clinical terms carry more diagnostic weight. Let's give the model a nudge — like how search engines boost exact-match results.
 </Dialogue>
 
-<Dialogue speaker="Khalil Ansari">
+<Dialogue speaker="Khalil">
 That's like search result highlighting. When a user searches for "arthritis," I use a regex to highlight matches in the results. We're doing the same thing — boosting attention on medically relevant tokens.
 </Dialogue>
 
@@ -107,7 +107,7 @@ console.log('Clinical attention weights shape:', weights.shape);`}
 
 ## Bias vs. Hard Masking
 
-<Dialogue speaker="Vikram Reddy">
+<Dialogue speaker="Vikram">
 We use a soft bias, not a hard mask. The model can still attend to function words like "denied" or "without" — those carry negation, which is clinically critical. We just make it easier for drug names and conditions to get attention. Think of it as raising their hand in a crowded room, not silencing everyone else.
 </Dialogue>
 

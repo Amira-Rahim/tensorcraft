@@ -40,7 +40,7 @@ keywords:
 The committee asked how clinicians would actually interact with Diagnostic One. I realized we had a model but no interface. We need a production API — same contract as any REST endpoint. POST a clinical note, GET back structured predictions. But this is not a CRUD app. We have a 200-millisecond SLA, and every request touches a patient's care.
 </Dialogue>
 
-<Dialogue speaker="Vikram Reddy">
+<Dialogue speaker="Vikram">
 You have built REST APIs with latency budgets before, yes? Rate limiting, request validation, error handling, health checks — it is the same discipline. The only difference is that between request and response, a neural network runs instead of a database query.
 </Dialogue>
 

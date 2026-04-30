@@ -10,9 +10,9 @@ Source data:
 
 | Tier | Count | % |
 |---|---:|---:|
-| identity | 16 | 5.4% |
+| identity | 15 | 5.1% |
 | structural | 249 | 84.1% |
-| intuition | 30 | 10.1% |
+| intuition | 31 | 10.5% |
 | missing | 1 | 0.3% |
 
 ## Tier distribution per theme
@@ -20,7 +20,7 @@ Source data:
 | Theme | identity | structural | intuition | missing | total |
 |---|---:|---:|---:|---:|---:|
 | deep-orbit | 2 | 42 | 11 | 1 | 56 |
-| neon-protocol | 5 | 46 | 3 | 0 | 54 |
+| neon-protocol | 4 | 46 | 4 | 0 | 54 |
 | nova-canvas | 1 | 45 | 9 | 0 | 55 |
 | shared | 0 | 17 | 4 | 0 | 21 |
 | signal-ward | 1 | 52 | 2 | 0 | 55 |
@@ -34,7 +34,7 @@ Source data:
 
 _None._
 
-## Orphan bridges (not in canonical 50-bridge registry) — 290
+## Orphan bridges (not in canonical 50-bridge registry) — 293
 
 Lesson-invented analogies. Each is a candidate to either (a) promote to the canonical registry if it's reusable across lessons, or (b) reword to align with an existing canonical entry.
 
@@ -139,7 +139,7 @@ Lesson-invented analogies. Each is a candidate to either (a) promote to the cano
 | [packages/content/content/neon-protocol/object-detection/03-intersection-over-union.mdx](../../packages/content/content/neon-protocol/object-detection/03-intersection-over-union.mdx) | Drag-and-Drop Hit Testing | IoU Score | structural |
 | [packages/content/content/neon-protocol/object-detection/04-non-max-suppression.mdx](../../packages/content/content/neon-protocol/object-detection/04-non-max-suppression.mdx) | debounce() | Non-Max Suppression | structural |
 | [packages/content/content/neon-protocol/object-detection/05-yolo-architecture.mdx](../../packages/content/content/neon-protocol/object-detection/05-yolo-architecture.mdx) | Single-Pass Rendering | YOLO Single-Shot Detection | structural |
-| [packages/content/content/neon-protocol/real-time-detection/01-video-stream-processing.mdx](../../packages/content/content/neon-protocol/real-time-detection/01-video-stream-processing.mdx) | getUserMedia() API | Video Frame Pipeline | identity |
+| [packages/content/content/neon-protocol/real-time-detection/01-video-stream-processing.mdx](../../packages/content/content/neon-protocol/real-time-detection/01-video-stream-processing.mdx) | getUserMedia() API | Video Frame Pipeline | structural |
 | [packages/content/content/neon-protocol/real-time-detection/02-frame-by-frame-inference.mdx](../../packages/content/content/neon-protocol/real-time-detection/02-frame-by-frame-inference.mdx) | requestAnimationFrame() Render Loop | Inference Loop | identity |
 | [packages/content/content/neon-protocol/real-time-detection/03-performance-budgets.mdx](../../packages/content/content/neon-protocol/real-time-detection/03-performance-budgets.mdx) | Lighthouse Performance Budgets | Inference Performance Budget | structural |
 | [packages/content/content/neon-protocol/real-time-detection/04-webgl-acceleration.mdx](../../packages/content/content/neon-protocol/real-time-detection/04-webgl-acceleration.mdx) | WebGL Rendering Pipeline | WebGL Compute Backend | structural |
@@ -149,7 +149,7 @@ Lesson-invented analogies. Each is a candidate to either (a) promote to the cano
 | [packages/content/content/neon-protocol/segmentation/03-unet-architecture.mdx](../../packages/content/content/neon-protocol/segmentation/03-unet-architecture.mdx) | Layout flow: content down, styles up | U-Net: Encode down, decode up | structural |
 | [packages/content/content/neon-protocol/segmentation/04-mask-generation.mdx](../../packages/content/content/neon-protocol/segmentation/04-mask-generation.mdx) | SVG mask and clipPath | Binary Mask Generation | structural |
 | [packages/content/content/neon-protocol/segmentation/05-scene-understanding.mdx](../../packages/content/content/neon-protocol/segmentation/05-scene-understanding.mdx) | Semantic HTML | Scene Understanding | intuition |
-| [packages/content/content/neon-protocol/transfer-learning/01-pretrained-models.mdx](../../packages/content/content/neon-protocol/transfer-learning/01-pretrained-models.mdx) | npm package | Pre-trained Model | structural |
+| [packages/content/content/neon-protocol/transfer-learning/01-pretrained-models.mdx](../../packages/content/content/neon-protocol/transfer-learning/01-pretrained-models.mdx) | npm package | Pre-trained Model | intuition |
 | [packages/content/content/neon-protocol/transfer-learning/02-feature-reuse.mdx](../../packages/content/content/neon-protocol/transfer-learning/02-feature-reuse.mdx) | Component libraries | Transfer Learning | structural |
 | [packages/content/content/neon-protocol/transfer-learning/03-fine-tuning.mdx](../../packages/content/content/neon-protocol/transfer-learning/03-fine-tuning.mdx) | Object.freeze() | Layer Freezing | structural |
 | [packages/content/content/neon-protocol/transfer-learning/04-domain-adaptation.mdx](../../packages/content/content/neon-protocol/transfer-learning/04-domain-adaptation.mdx) | i18n — adapting across locales | Domain Adaptation | intuition |
@@ -301,7 +301,7 @@ Lesson-invented analogies. Each is a candidate to either (a) promote to the cano
 | [packages/content/content/signal-ward/word-embeddings/04-similarity-and-analogy.mdx](../../packages/content/content/signal-ward/word-embeddings/04-similarity-and-analogy.mdx) | String Similarity | Vector Similarity | intuition |
 | [packages/content/content/signal-ward/word-embeddings/05-embedding-layers.mdx](../../packages/content/content/signal-ward/word-embeddings/05-embedding-layers.mdx) | Lookup Table / Map | Embedding Layer | structural |
 
-### terra-grid — 52 orphans
+### terra-grid — 55 orphans
 
 | Lesson | feTitle | mlTitle | tier |
 |---|---|---|---|
@@ -315,6 +315,7 @@ Lesson-invented analogies. Each is a candidate to either (a) promote to the cano
 | [packages/content/content/terra-grid/capstone/03-disaster-recovery.mdx](../../packages/content/content/terra-grid/capstone/03-disaster-recovery.mdx) | Backup & Restore | Model Recovery | structural |
 | [packages/content/content/terra-grid/capstone/04-documentation-runbooks.mdx](../../packages/content/content/terra-grid/capstone/04-documentation-runbooks.mdx) | Runbook Creation | ML Runbook | structural |
 | [packages/content/content/terra-grid/capstone/05-global-launch.mdx](../../packages/content/content/terra-grid/capstone/05-global-launch.mdx) | Production Launch | ML Production Launch | structural |
+| [packages/content/content/terra-grid/edge-ai-basics/01-welcome-to-the-grid.mdx](../../packages/content/content/terra-grid/edge-ai-basics/01-welcome-to-the-grid.mdx) | CDN Edge Location | Edge Inference | structural |
 | [packages/content/content/terra-grid/edge-ai-basics/02-why-the-edge.mdx](../../packages/content/content/terra-grid/edge-ai-basics/02-why-the-edge.mdx) | Offline-First PWA | Offline Edge Model | structural |
 | [packages/content/content/terra-grid/edge-ai-basics/03-edge-devices.mdx](../../packages/content/content/terra-grid/edge-ai-basics/03-edge-devices.mdx) | Device Testing Matrix | Edge Device Specs | structural |
 | [packages/content/content/terra-grid/edge-ai-basics/04-your-first-edge-model.mdx](../../packages/content/content/terra-grid/edge-ai-basics/04-your-first-edge-model.mdx) | Client-Side Validation | Anomaly Detection | structural |
@@ -335,6 +336,8 @@ Lesson-invented analogies. Each is a candidate to either (a) promote to the cano
 | [packages/content/content/terra-grid/mlops-pipelines/04-model-registry.mdx](../../packages/content/content/terra-grid/mlops-pipelines/04-model-registry.mdx) | npm Registry | Model Registry | structural |
 | [packages/content/content/terra-grid/mlops-pipelines/05-automated-retraining.mdx](../../packages/content/content/terra-grid/mlops-pipelines/05-automated-retraining.mdx) | GitHub Actions | Retraining Trigger | structural |
 | [packages/content/content/terra-grid/monitoring-drift/01-production-monitoring.mdx](../../packages/content/content/terra-grid/monitoring-drift/01-production-monitoring.mdx) | App Monitoring (Sentry) | Model Monitoring | structural |
+| [packages/content/content/terra-grid/monitoring-drift/02-data-drift.mdx](../../packages/content/content/terra-grid/monitoring-drift/02-data-drift.mdx) | Lighthouse CI Regression | Data Drift Detection | structural |
+| [packages/content/content/terra-grid/monitoring-drift/03-model-drift.mdx](../../packages/content/content/terra-grid/monitoring-drift/03-model-drift.mdx) | Visual Regression Testing | Model Drift Detection | structural |
 | [packages/content/content/terra-grid/monitoring-drift/04-alert-systems.mdx](../../packages/content/content/terra-grid/monitoring-drift/04-alert-systems.mdx) | Monitoring Thresholds | Drift Alert Thresholds | identity |
 | [packages/content/content/terra-grid/monitoring-drift/05-drift-response.mdx](../../packages/content/content/terra-grid/monitoring-drift/05-drift-response.mdx) | Incident Response | Drift Response | structural |
 | [packages/content/content/terra-grid/optimization-fundamentals/01-model-profiling.mdx](../../packages/content/content/terra-grid/optimization-fundamentals/01-model-profiling.mdx) | Bundle Analyzer | Model Profiler | structural |
@@ -359,7 +362,7 @@ Lesson-invented analogies. Each is a candidate to either (a) promote to the cano
 | [packages/content/content/terra-grid/scale-reliability/05-global-operations.mdx](../../packages/content/content/terra-grid/scale-reliability/05-global-operations.mdx) | CDN Multi-Region | Model Multi-Region | structural |
 
 
-## Identity-tier sanity check — 16 bridges claim literal equivalence
+## Identity-tier sanity check — 15 bridges claim literal equivalence
 
 Identity tier means the FE concept **literally is** the ML concept (e.g. `Math.max(0,x) === ReLU`). Each entry below should pass: "swap the names and the code is identical". Manual review recommended for any where the codes are NOT trivially interchangeable.
 
@@ -370,7 +373,6 @@ Identity tier means the FE concept **literally is** the ML concept (e.g. `Math.m
 | [packages/content/content/neon-protocol/deployment/03-inference-api.mdx](../../packages/content/content/neon-protocol/deployment/03-inference-api.mdx) | REST API Endpoint | Inference Endpoint | ORPHAN |
 | [packages/content/content/neon-protocol/ml-through-vision/05-your-first-classifier.mdx](../../packages/content/content/neon-protocol/ml-through-vision/05-your-first-classifier.mdx) | if/else Logic | Threshold Classifier | ORPHAN |
 | [packages/content/content/neon-protocol/object-detection/01-bounding-boxes.mdx](../../packages/content/content/neon-protocol/object-detection/01-bounding-boxes.mdx) | getBoundingClientRect() | Bounding Box | #29 |
-| [packages/content/content/neon-protocol/real-time-detection/01-video-stream-processing.mdx](../../packages/content/content/neon-protocol/real-time-detection/01-video-stream-processing.mdx) | getUserMedia() API | Video Frame Pipeline | ORPHAN |
 | [packages/content/content/neon-protocol/real-time-detection/02-frame-by-frame-inference.mdx](../../packages/content/content/neon-protocol/real-time-detection/02-frame-by-frame-inference.mdx) | requestAnimationFrame() Render Loop | Inference Loop | ORPHAN |
 | [packages/content/content/nova-canvas/latent-spaces/05-latent-space-exploration.mdx](../../packages/content/content/nova-canvas/latent-spaces/05-latent-space-exploration.mdx) | Slider UI with Live Preview | Interactive Latent Explorer | ORPHAN |
 | [packages/content/content/signal-ward/production-privacy/01-production-apis.mdx](../../packages/content/content/signal-ward/production-privacy/01-production-apis.mdx) | REST API with SLA | ML API with SLA | ORPHAN |
@@ -463,10 +465,10 @@ Total suspects: **189** of 249 structural bridges (75.9%).
 | [packages/content/content/neon-protocol/ml-through-vision/04-image-operations.mdx](../../packages/content/content/neon-protocol/ml-through-vision/04-image-operations.mdx) | CSS object-fit | Image Preprocessing | ORPHAN |
 | [packages/content/content/neon-protocol/object-detection/03-intersection-over-union.mdx](../../packages/content/content/neon-protocol/object-detection/03-intersection-over-union.mdx) | Drag-and-Drop Hit Testing | IoU Score | ORPHAN |
 | [packages/content/content/neon-protocol/object-detection/04-non-max-suppression.mdx](../../packages/content/content/neon-protocol/object-detection/04-non-max-suppression.mdx) | debounce() | Non-Max Suppression | ORPHAN |
+| [packages/content/content/neon-protocol/real-time-detection/01-video-stream-processing.mdx](../../packages/content/content/neon-protocol/real-time-detection/01-video-stream-processing.mdx) | getUserMedia() API | Video Frame Pipeline | ORPHAN |
 | [packages/content/content/neon-protocol/real-time-detection/05-streaming-architectures.mdx](../../packages/content/content/neon-protocol/real-time-detection/05-streaming-architectures.mdx) | WebSocket / Server-Sent Events | Inference Stream | ORPHAN |
 | [packages/content/content/neon-protocol/segmentation/01-semantic-segmentation.mdx](../../packages/content/content/neon-protocol/segmentation/01-semantic-segmentation.mdx) | CSS clip-path | Segmentation Mask | ORPHAN |
 | [packages/content/content/neon-protocol/segmentation/02-instance-segmentation.mdx](../../packages/content/content/neon-protocol/segmentation/02-instance-segmentation.mdx) | DOM element identity vs class | Instance Segmentation | ORPHAN |
-| [packages/content/content/neon-protocol/transfer-learning/01-pretrained-models.mdx](../../packages/content/content/neon-protocol/transfer-learning/01-pretrained-models.mdx) | npm package | Pre-trained Model | ORPHAN |
 | [packages/content/content/neon-protocol/transfer-learning/02-feature-reuse.mdx](../../packages/content/content/neon-protocol/transfer-learning/02-feature-reuse.mdx) | Component libraries | Transfer Learning | ORPHAN |
 | [packages/content/content/neon-protocol/transfer-learning/03-fine-tuning.mdx](../../packages/content/content/neon-protocol/transfer-learning/03-fine-tuning.mdx) | Object.freeze() | Layer Freezing | ORPHAN |
 | [packages/content/content/nova-canvas/audio-generation/02-audio-synthesis.mdx](../../packages/content/content/nova-canvas/audio-generation/02-audio-synthesis.mdx) | OscillatorNode | Neural Oscillator | ORPHAN |

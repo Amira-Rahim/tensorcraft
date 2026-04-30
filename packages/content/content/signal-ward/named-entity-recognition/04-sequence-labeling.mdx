@@ -39,7 +39,7 @@ keywords:
 Our dictionary-based classifier labels every instance of "cold" as a CONDITION. But in "patient has a cold" it's a condition, while in "cold compress applied" it's an adjective. Context matters. We need a model that looks at the surrounding words before deciding.
 </Dialogue>
 
-<Dialogue speaker="Khalil Ansari">
+<Dialogue speaker="Khalil">
 That's like CSS specificity. A bare `.highlight` selector might style the wrong elements. But `.medical-note > .symptom-list > .highlight` uses context — parent elements — to target precisely. Each element's class depends on where it sits in the DOM.
 </Dialogue>
 
@@ -148,7 +148,7 @@ model.summary();`}
 
 ## Training the Labeler
 
-<Dialogue speaker="Vikram Reddy">
+<Dialogue speaker="Vikram">
 The key insight: `returnSequences: true` on the LSTM means we get an output for every token, not just the last one. Without it, we'd get a single vector for the whole sentence — useful for classification, useless for labeling individual tokens.
 </Dialogue>
 

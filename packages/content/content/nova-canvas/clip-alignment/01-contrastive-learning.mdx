@@ -133,4 +133,14 @@ L_i = −log( exp(sim(a_i, p_i) / τ) / Σ_{j=1..N} exp(sim(a_i, p_j) / τ) )
 For a batch of (image, caption) pairs: image_i should match caption_i (and only caption_i), AND caption_i should match image_i.
 </DerivationDrawer>
 
+## Knowledge check
+
+<Quiz
+  question="CLIP trains on (image, caption) pairs using contrastive loss. Why does it use a temperature-scaled softmax over a batch of negatives, rather than just minimizing the distance to the matching caption?"
+  options={[{"text":"Temperature is a hyperparameter — has no architectural meaning"},{"text":"Without negatives, the model trivially collapses (all embeddings → constant) since 'distance to matching caption is 0' is satisfied by mapping everything to the same point. Negatives force the model to PUSH non-matching pairs apart, creating discriminative geometry"},{"text":"Softmax is computationally cheaper than direct distance"},{"text":"Captions are noisy; softmax denoises them"}]}
+  correct={1}
+  explanation="Pure attractive loss has a degenerate solution: map everything to the same vector and distance = 0 everywhere. Contrastive loss adds a repulsive force from in-batch negatives — for the matching pair to win the softmax, ALL other pairs must score lower. This forces the model to learn a metric where similar pairs cluster AND dissimilar pairs separate. Option A understates the role; option C is wrong; option D is unrelated."
+  tier="structural"
+/>
+
 <KeyTakeaways takeaways={["Contrastive learning = A/B testing for embeddings: learn by comparing matched and mismatched pairs", "InfoNCE loss maximizes similarity of positive pairs relative to all negative pairs in the batch", "Temperature controls how sharp the similarity distribution is — like confidence threshold in A/B testing", "Larger batches provide more negative pairs, improving the quality of learned representations"]} />

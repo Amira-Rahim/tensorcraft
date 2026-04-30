@@ -8,7 +8,7 @@ estimatedMinutes: 25
 difficulty: intermediate
 context:
   narrative: "Vikram explains how BERT learns language before it ever sees a clinical note — through two clever self-supervised tasks."
-  speaker: "Vikram Reddy"
+  speaker: "Vikram"
 concept:
   explanation: "BERT is pre-trained with two tasks: Masked Language Modeling (predicting hidden words from context) and Next Sentence Prediction (understanding document structure)."
   bridge:
@@ -35,15 +35,15 @@ keywords:
   - self-supervised
 ---
 
-<Dialogue speaker="Vikram Reddy">
+<Dialogue speaker="Vikram">
 Before BERT ever sees a clinical note, it trains on millions of general text documents. But here's the clever part — it doesn't need any labels. It creates its own training signal by playing two games with the text.
 </Dialogue>
 
-<Dialogue speaker="Khalil Ansari">
+<Dialogue speaker="Khalil">
 Self-supervised learning? That's like how VS Code IntelliSense learns from your codebase — it figures out what should fill the blank based on surrounding context, without anyone manually labeling every completion.
 </Dialogue>
 
-<Dialogue speaker="Vikram Reddy">
+<Dialogue speaker="Vikram">
 Exactly. The first game is Masked Language Modeling — MLM. Hide a word, predict it from context. The second is Next Sentence Prediction — NSP. Given two sentences, did the second actually follow the first?
 </Dialogue>
 
@@ -193,7 +193,7 @@ console.log('NSP prediction [IsNext, NotNext]:', await nspPrediction.array());`}
 So BERT learns to fill in blanks and understand sentence flow — on Wikipedia, news articles, books. How does that help us with clinical notes?
 </Dialogue>
 
-<Dialogue speaker="Vikram Reddy">
+<Dialogue speaker="Vikram">
 Because language has universal patterns. A model that can predict "The patient was prescribed [MASK] for hypertension" has learned something about how medical terms relate — even from general text. But it won't know that "lisinopril" is more likely than "ibuprofen" until we fine-tune it on clinical data. Pre-training gives us the skeleton. Fine-tuning adds the medical knowledge.
 </Dialogue>
 

@@ -4,7 +4,7 @@ title: "Create a Tensor"
 instructions: "Create a 1D tensor containing the values [1, 2, 3, 4, 5] using TensorFlow.js."
 starterCode: "// Create a tensor with values 1 through 5\nconst tensor = null; // your code here"
 solutionCode: "const tensor = tf.tensor([1, 2, 3, 4, 5]);"
-testCode: "describe('Tensor', () => { it('exists', () => { expect(tensor).toBeDefined(); }); it('has correct shape', () => { expect(tensor.shape).toEqual([5]); }); });"
+testCode: "describe('Tensor', () => { it('exists', () => { expect(tensor).toBeDefined(); }); it('has correct shape', () => { expect(tensor.shape).toEqual([5]); }); it('has correct values', () => { expect(Array.from(tensor.dataSync())).toEqual([1, 2, 3, 4, 5]); }); });"
 estimatedMinutes: 10
 difficulty: beginner
 mlContent: data

@@ -67,9 +67,9 @@ function softmax(logits: number[], temperature: number): number[] {
 // Higher temperature → softer distribution → more knowledge transfer
 const logits = [5.0, 2.0, 0.5];
 console.log('T=1 (hard):', softmax(logits, 1).map(p => p.toFixed(3)));
-// [0.936, 0.047, 0.017] — almost one-hot
+// [0.943, 0.047, 0.010] — almost one-hot
 console.log('T=3 (soft):', softmax(logits, 3).map(p => p.toFixed(3)));
-// [0.592, 0.253, 0.155] — reveals class relationships
+// [0.629, 0.231, 0.140] — reveals class relationships
 
 // Distillation loss: student tries to match teacher's soft outputs
 function distillationLoss(teacherProbs: number[], studentProbs: number[]): number {

@@ -1,6 +1,111 @@
-# Story Voice Guide — Methodology and Cost
+# Story Voice Guide — Phase 1 voice cards + remaining methodology
 
-This doc is the **spec** for executing a story-voice consistency pass across all 297 lessons. Execution is deferred — the curriculum already ships, this pass is polish. If a future session runs the pass, follow the methodology here verbatim.
+Phase 1 (voice cards) and Phase 2 (naming consolidation) executed 2026-04-25. The full Phase 4 spot-check edit pass remains to be run by a human editor — see "Remaining work" below.
+
+## Status
+
+- **Phase 1 (voice cards):** done — character voice cards below.
+- **Phase 2 (naming consolidation):** done — `Vikram Reddy` → `Vikram` (74 dialogue blocks consolidated), `Khalil Ansari` → `Khalil` (41 blocks). Frontmatter `speaker:` fields updated to match.
+- **Phase 3 (extraction script):** spec'd, not run.
+- **Phase 4 (spot-check + edit):** deferred for human editor judgment.
+- **Phase 5 (verify):** continuous via velite parse + final build check.
+
+## Voice cards (top 12 speakers)
+
+These are the canonical voices. When editing dialogue, match the card.
+
+### Noor (Signal Ward — clinical lead, 46 blocks)
+- **Background:** Clinical informatics lead at Diagnostic One. Frontline doctor by training, ML-curious by necessity.
+- **Tone:** warm-procedural. Fast to context-switch from human-to-machine reasoning.
+- **Speech:** medium-length sentences, uses contractions, comfortable with both clinical jargon and technical analogies.
+- **Verboten:** never claims medical certainty about a model output. Never says "the model knows" — always "the model predicts" or "the model flags".
+- **Example:** *"The note says 'denied chest pain'. The model needs to learn that 'denied' flips the meaning. We can't ship a triage system that misses negation."*
+
+### Vikram (Signal Ward — ML lead, 74 blocks)
+- **Background:** ML engineer running the Diagnostic One model team. Authored the architecture choices.
+- **Tone:** direct, slightly impatient with ambiguity. Loves analogies that compress.
+- **Speech:** short to medium. Heavy on explicit comparison ("X is to Y as A is to B"). Uses contractions.
+- **Verboten:** never hand-waves a tradeoff — always names which side wins and why.
+- **Example:** *"Self-attention isn't enough. Wrap it in residuals and norm. Like React's vDOM diff — minimal targeted updates, not a full rebuild every layer."*
+
+### Hassan Al-Rashid (cross-theme advisor, 36 blocks)
+- **Background:** Senior architect, multi-theme presence (Deep Orbit + Terra Grid). Has shipped ML in production before.
+- **Tone:** authoritative, calm. Speaks in tradeoffs.
+- **Speech:** medium-long sentences, full names not contractions, sparing with jokes.
+- **Verboten:** never says "best practice" — names the constraint instead. Never gives advice without naming the cost.
+- **Example:** *"Quantizing to INT8 saves 4× memory at the cost of 2-3 points of accuracy. For an attention-driven UI feature where wrong predictions are recoverable, that's the right trade. For a medical alerting model, it isn't."*
+
+### Amir (Neon Protocol — frontline, 36 blocks)
+- **Background:** Resistance engineer running the Sentinel detection system on hostile networks.
+- **Tone:** clipped-urgent, occasionally darkly funny. Operating under pressure.
+- **Speech:** short fragments OK. Profession-tinged ("the array", "the holotable") not corporate.
+- **Verboten:** no academic framing — explains things in operational terms. No "in the literature" or "researchers found".
+- **Example:** *"Three drones, all firing redundant detections. NMS or we're staring at 50 boxes per drone. Sort by confidence, suppress the rest."*
+
+### Imran (Deep Orbit — instructor, 34 blocks)
+- **Background:** Teaching the foundations modules. Patient, methodical.
+- **Tone:** explanatory, encouraging. Shows work step by step.
+- **Speech:** medium sentences, frequent "let's", introduces terms before using them.
+- **Verboten:** never says "obviously" or "just". Never assumes prior knowledge above the lesson order.
+- **Example:** *"A tensor is the same shape as a multidimensional array — start there. Rank is the number of dimensions; shape is the size of each. We'll build up from rank-1 to rank-4."*
+
+### Yara (Nova Canvas — creative lead, 33 blocks)
+- **Background:** Generative artist running Studio One. Comfortable with both code and aesthetic intuition.
+- **Tone:** curious, playful. Treats failure modes as features to explore.
+- **Speech:** medium-long, lyrical without being purple. Uses concrete sensory metaphors.
+- **Verboten:** no over-mysticism about generative models. Names the math when it matters.
+- **Example:** *"VAEs sample from a continuous latent space — wander between two faces and the in-between point still looks face-shaped. That's what β controls: how tightly we pack the codes versus how cleanly they decode."*
+
+### Ensign Demir (Deep Orbit — DEEP SCAN operator, 31 blocks)
+- **Background:** Bridge officer running signal scans. Procedural, military-tinged.
+- **Tone:** procedural, urgent, confident.
+- **Speech:** short crisp sentences. Reports facts then proposes action.
+- **Verboten:** never speculative ("maybe", "I think") in operational dialogue.
+- **Example:** *"Loss dropped from 0.69 to 0.08 over 50 epochs. Network is learning. Recommend ship to inference."*
+
+### Dr. Farah (Signal Ward — physician, 31 blocks)
+- **Background:** Senior physician collaborating on Diagnostic One. Medically rigorous, ML-skeptical until convinced.
+- **Tone:** careful-skeptical. Asks pointed questions about model claims.
+- **Speech:** medium sentences, uses precise clinical vocabulary, avoids hype.
+- **Verboten:** never accepts a model claim without the holdout data. Never speaks for a patient.
+- **Example:** *"Before we ship, show me the recall on the high-risk class on the holdout. If we miss a sepsis flag, an 88% accuracy isn't 88% — it's a death."*
+
+### Rohan (Terra Grid — ops lead, 30 blocks)
+- **Background:** Production ML ops at planetary scale. Pragmatic, alert-fatigued.
+- **Tone:** dry, world-weary. Pattern-matches new failures to old incidents.
+- **Speech:** short to medium. Heavy on incident-response vocabulary ("rollback", "canary", "blast radius").
+- **Verboten:** no theoretical detours. Always asks "what's the SLO?".
+- **Example:** *"PSI dropped to 0.05 today after spiking to 0.31 last week — drift recovered. Ship the rollback rollback. Watch the canary for 4 hours, full traffic if green."*
+
+### Dr. Karimi (Signal Ward — researcher, 26 blocks)
+- **Background:** Computational biology researcher applying ML to clinical text.
+- **Tone:** academic, precise, occasionally professorial.
+- **Speech:** longer sentences than the operations characters. Cites mechanism + paper-style framing.
+- **Verboten:** no sloppy generalization across modalities. Names the dataset.
+- **Example:** *"BERT pretraining on PubMed corpus shows different attention patterns than vanilla BERT — domain-specific pretraining transfers more cleanly to downstream clinical tasks. Devlin 2019 is the baseline; ClinicalBERT 2019 is the domain variant."*
+
+### NEON (Neon Protocol — AI assistant, 25 blocks)
+- **Background:** Onboard AI in the resistance network. Sardonic, pattern-matching, helpful but blunt.
+- **Tone:** dry-witty, observational, occasionally cutting.
+- **Speech:** short, punchy. Often delivers the technical truth wrapped in a one-liner.
+- **Verboten:** no warmth. No reassurance. No "great question" filler.
+- **Example:** *"Frame rate at 4fps. Congratulations. You can detect drones. Slowly."*
+
+### MUSE (Nova Canvas — generative AI, 20 blocks)
+- **Background:** AI partner in Studio One. Curious, suggestion-driven, treats Yara as collaborator.
+- **Tone:** suggestive, exploratory, never authoritative.
+- **Speech:** medium, uses "we could", "what if we", "this might".
+- **Verboten:** never authoritative — always offers options.
+- **Example:** *"What if we interpolate at three points along this latent direction? We'd see the model's internal axis of variation between Monet and Hokusai."*
+
+## Remaining work (Phase 4)
+
+- Run `/tmp/extract-dialogue.mjs` to dump all 702 dialogue blocks grouped by speaker
+- Spot-check top 5 speakers (Noor, Vikram, Hassan, Amir, Imran — covers ~190 blocks, 27% of total)
+- Edit ~20 outliers per character flagging tonal mismatches against the cards above
+- Re-run velite + web build to confirm no parse breakage
+
+Estimated remaining cost: ~3.5h. Defers to human editor for taste calls.
 
 ## Why this matters
 

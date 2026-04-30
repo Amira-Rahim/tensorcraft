@@ -115,4 +115,14 @@ The forward pass quantizes (so the model adapts to rounding errors), the backwar
 QAT typically recovers 90-95% of the accuracy loss from PTQ at the cost of needing labeled training data + extra training time.
 </DerivationDrawer>
 
+## Knowledge check
+
+<Quiz
+  question="Why does quantization-aware training (QAT) typically recover more accuracy than post-training quantization (PTQ) at the same bit width?"
+  options={[{"text":"QAT uses more training data than PTQ"},{"text":"QAT inserts fake-quantize ops during training so the model's gradients see quantization error and the weights adapt to compensate"},{"text":"PTQ uses INT8 while QAT uses FP16 — less aggressive compression"},{"text":"QAT runs more epochs of training"}]}
+  correct={1}
+  explanation="QAT simulates INT8 rounding during the forward pass while keeping FP32 weights for gradient updates. The model 'sees' quantization error during training and learns to position activations within ranges that survive quantization well. PTQ can't do this — it quantizes after training is done, so the trained weights weren't optimized for the quantized error budget. Option A is unrelated; option C inverts the bit widths; option D is incidental, not the mechanism."
+  tier="structural"
+/>
+
 <KeyTakeaways takeaways={["QAT trains with simulated quantization noise — mobile-first for models", "Fake quantization: quantize in forward pass, straight-through gradients in backward pass", "QAT typically achieves 0.5-1% better accuracy than post-training quantization", "Design for constraints from the start — do not retrofit precision later"]} />

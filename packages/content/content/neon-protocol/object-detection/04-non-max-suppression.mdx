@@ -125,7 +125,7 @@ function nms(
     for (let j = i + 1; j < sorted.length; j++) {
       if (suppressed.has(j)) continue;
       const iou = computeIoU(sorted[i].box, sorted[j].box);
-      if (iou >= iouThreshold) {
+      if (iou > iouThreshold) {
         suppressed.add(j);
       }
     }
@@ -208,5 +208,15 @@ Implement the Non-Max Suppression algorithm.
 Face matching system returned the wrong person for a flagged search. Audit the candidate ranking to determine whether the model output was wrong or the threshold was too lax.
 
 <Exercise slug="incident-misclassification-audit" />
+
+## Knowledge check
+
+<Quiz
+  question="A detector returns 50 boxes for the same vehicle, all overlapping. After NMS with iouThreshold=0.5, you expect 1 box. You set iouThreshold=0.95 instead. What happens?"
+  options={[{"text":"All 50 boxes are kept — only boxes with near-perfect overlap are suppressed"},{"text":"Exactly 1 box is kept regardless of threshold — NMS always converges"},{"text":"All 50 are suppressed — high threshold means more aggressive removal"},{"text":"The model becomes faster — higher threshold short-circuits the IoU comparison"}]}
+  correct={0}
+  explanation="iouThreshold is the minimum overlap required to suppress a competing box. At 0.5, anything overlapping the top box by ≥50% is removed — most of your 50 redundant boxes share >50% overlap, so 1 survives. At 0.95, only boxes overlapping by ≥95% are removed; boxes with 80-90% overlap survive, so most of the 50 get kept. Higher threshold = LESS suppression. Option C inverts the relation; option B ignores the threshold entirely; option D confuses semantics with performance."
+  tier="structural"
+/>
 
 <KeyTakeaways takeaways={["NMS is debounce for bounding boxes — suppress redundant detections, keep the best one", "The algorithm: sort by confidence, keep the top box, remove high-IoU overlaps, repeat", "IoU threshold controls suppression aggressiveness (0.5 is standard, like a 300ms debounce delay)", "Class-aware NMS only suppresses within the same object class, like debouncing each input independently"]} />

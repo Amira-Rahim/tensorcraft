@@ -151,4 +151,14 @@ Build a simple RNN that processes sequential signal data.
 
 <Exercise slug="build-rnn" />
 
+## Knowledge check
+
+<Quiz
+  question="An RNN sequence-to-sequence model is trained to translate sentences. At inference time you feed the encoder a 100-word input. The decoder outputs sequentially. Which is true about the decoder's inputs at step t > 0?"
+  options={[{"text":"The decoder sees the FULL ground-truth target sequence at each step"},{"text":"The decoder is fed its OWN previous output token (or top-k beam candidate) — at inference there's no ground truth, so generation is autoregressive — correct"},{"text":"The decoder takes the encoder's hidden state directly with no per-step input"},{"text":"The decoder uses random sampling at every step"}]}
+  correct={1}
+  explanation="At training time, teacher forcing feeds ground-truth previous tokens. At inference time, ground truth doesn't exist — the decoder feeds its own emitted token (or beam-search candidate) back as input. This causes 'exposure bias': errors compound because the model wasn't trained on its own mistaken outputs."
+  tier="structural"
+/>
+
 <KeyTakeaways takeaways={["An RNN is a learned reducer: (prevHidden, input) → newHidden, where the transition function is trained from data", "Hidden state carries memory across time steps — the network remembers what it has seen", "returnSequences: true gives output at every step; false gives only the final hidden state", "Simple RNNs suffer from vanishing gradients — they forget long-range patterns after ~10-20 steps"]} />
