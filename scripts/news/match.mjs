@@ -11,9 +11,10 @@
  *          per choice. Falls back to stage-1 ordering if the LLM call fails.
  *
  * Run:
- *   pnpm tsx scripts/news/match.mjs --week=2026-W18           # write to Supabase
- *   pnpm tsx scripts/news/match.mjs --fixture=path.json       # local dry-run
- *   pnpm tsx scripts/news/match.mjs --week=2026-W18 --no-llm  # skip rerank
+ *   node scripts/news/match.mjs --all-pending             # match every pending row
+ *   node scripts/news/match.mjs --week=2026-W18           # filter by week_iso
+ *   node scripts/news/match.mjs --fixture=path.json       # local dry-run, no DB
+ *   node scripts/news/match.mjs --all-pending --no-llm    # skip LLM rerank
  *
  * Required env:
  *   ANTHROPIC_API_KEY            — for the rerank call
@@ -304,13 +305,17 @@ async function main() {
     return;
   }
 
+  // --week filters by week_iso (only set on shortlist). Omit to match all
+  // pending items — typical post-scrape flow before any curation.
   const week = argv.week;
-  if (!week) {
-    console.error("[match] pass --week=YYYY-Www or --fixture=path.json");
+  if (!week && !argv["all-pending"]) {
+    console.error("[match] pass --week=YYYY-Www, --all-pending, or --fixture=path.json");
     process.exit(1);
   }
   const { supabase, items } = await loadPending(week);
-  console.log(`[match] ${items.length} pending items for ${week}`);
+  console.log(
+    `[match] ${items.length} pending items${week ? ` for ${week}` : " (all weeks)"}`,
+  );
 
   let updated = 0;
   for (const item of items) {
