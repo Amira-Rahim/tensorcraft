@@ -1,6 +1,25 @@
-import { lessons, exercises, modules } from "../.velite";
+import { lessons, exercises, modules, posts } from "../.velite";
+import {
+  buildConceptIndex,
+  findLessonsByConcepts,
+  normalizeConcept,
+  type ConceptIndex,
+} from "./concept-index";
 
-export type { Lesson, Exercise, Module } from "../.velite";
+export type { Lesson, Exercise, Module, Post } from "../.velite";
+
+/** Get all blog posts, sorted newest-first. */
+export function getPosts() {
+  return [...posts].sort(
+    (a, b) =>
+      new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime(),
+  );
+}
+
+/** Get a single blog post by slug. */
+export function getPost(slug: string) {
+  return posts.find((p) => p.slug === slug) ?? null;
+}
 
 /** Get all modules for a theme, sorted by order */
 export function getModules(themeSlug: string) {
@@ -92,6 +111,27 @@ export function getLessonsWithBridges(themeSlug: string): CollectibleBridge[] {
       mlTitle: l.concept.bridge!.mlTitle,
       tier: l.concept.bridge!.tier,
     }));
+}
+
+/**
+ * Look up lessons that teach a given set of free-text terms (e.g. ML news
+ * keywords like "WebGPU", "transformers.js"). Tokens are normalized via
+ * `normalizeConcept` before lookup, so callers can pass raw strings.
+ *
+ * Pass a pre-built `ConceptIndex` (loaded from `.velite/concept-index.json`).
+ * Falls back to building it on-demand if `index` is omitted — slow path,
+ * intended for tests or one-off scripts only.
+ */
+export function getLessonsByConcepts(
+  terms: string[],
+  options: { index?: ConceptIndex; limit?: number } = {},
+) {
+  const { limit = 10 } = options;
+  const normalized = terms.flatMap((t) => normalizeConcept(t));
+  if (normalized.length === 0) return [];
+
+  const index = options.index ?? buildConceptIndex(lessons);
+  return findLessonsByConcepts(index, normalized, { limit });
 }
 
 /** Get prev/next lessons for navigation */

@@ -3,6 +3,7 @@ import { timingSafeEqual } from "node:crypto";
 import { getSupabaseAdminClient } from "@tensorcraft/supabase";
 import { isAdmin } from "@tensorcraft/supabase";
 import { authMiddleware } from "../middleware/auth";
+import { sendDigestNewsletter } from "../lib/newsletter";
 
 // Use a broader env type since admin routes may authenticate via API key (no userId)
 type AdminEnv = {
@@ -139,6 +140,37 @@ admin.get("/waitlist", async (c) => {
     page,
     limit,
   });
+});
+
+/**
+ * POST /api/admin/newsletter/send — Send the weekly digest newsletter.
+ * Body: { weekIso: "2026-W18", dryRun?: boolean }
+ */
+admin.post("/newsletter/send", async (c) => {
+  let body: { weekIso?: string; dryRun?: boolean };
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: "Invalid JSON body" }, 400);
+  }
+  const weekIso = body.weekIso;
+  if (!weekIso || !/^\d{4}-W\d{2}$/.test(weekIso)) {
+    return c.json({ error: "weekIso must match YYYY-Www" }, 400);
+  }
+  try {
+    const result = await sendDigestNewsletter(weekIso, {
+      dryRun: !!body.dryRun,
+    });
+    return c.json(result);
+  } catch (err) {
+    return c.json(
+      {
+        error: err instanceof Error ? err.message : "send failed",
+        requestId: c.res.headers.get("X-Request-Id"),
+      },
+      500,
+    );
+  }
 });
 
 export { admin };

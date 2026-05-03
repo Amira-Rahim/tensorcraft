@@ -1,9 +1,18 @@
 import type { MetadataRoute } from "next";
 import { themeSlugs } from "@tensorcraft/themes";
 import { BRIDGES } from "@tensorcraft/shared";
-import { getThemeLessons } from "@tensorcraft/content";
+import { getThemeLessons, getPosts } from "@tensorcraft/content";
 
 const BASE_URL = "https://tensorcraft.app";
+
+// Phased sitemap to address "Discovered – currently not indexed" in Search
+// Console (414 URLs as of 2026-04-27). New domains have small crawl budgets;
+// listing 400+ URLs causes Google to defer most. Phase "core" lists ~22
+// high-value URLs so the budget concentrates on landing/theme/index pages.
+// Flip to "full" after Search Console shows the core set indexed.
+// Lessons/glossary/bridge-concept pages stay reachable via internal links —
+// only their sitemap inclusion is deferred.
+const SITEMAP_PHASE: "core" | "full" = "core";
 
 function slugify(term: string): string {
   return term
@@ -44,6 +53,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.7,
     },
+    ...getPosts().map((post) => ({
+      url: `${BASE_URL}/blog/${post.slug}`,
+      lastModified: new Date(post.publishedAt),
+      changeFrequency: "yearly" as const,
+      priority: 0.6,
+    })),
     {
       url: `${BASE_URL}/glossary`,
       lastModified: new Date(),
@@ -95,6 +110,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
+  // Capstone pages (one per theme) — high signal, kept in core phase.
+  const capstoneRoutes: MetadataRoute.Sitemap = themeSlugs.map((slug) => ({
+    url: `${BASE_URL}/themes/${slug}/capstone`,
+    lastModified: new Date(),
+    changeFrequency: "monthly" as const,
+    priority: 0.5,
+  }));
+
+  if (SITEMAP_PHASE === "core") {
+    return [...staticRoutes, ...themeRoutes, ...capstoneRoutes];
+  }
+
   // Glossary term pages (both FE and ML terms)
   const glossarySlugs = new Set<string>();
   for (const b of BRIDGES) {
@@ -110,6 +137,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }),
   );
 
+  // Bridge concept pages (one per bridge, keyed by ML concept)
+  const bridgeRoutes: MetadataRoute.Sitemap = BRIDGES.map((b) => ({
+    url: `${BASE_URL}/bridges/${slugify(b.mlConcept)}`,
+    lastModified: new Date(),
+    changeFrequency: "monthly" as const,
+    priority: 0.6,
+  }));
+
   // Individual lesson pages (55 lessons per theme × 5 themes = 275 total)
   const lessonRoutes: MetadataRoute.Sitemap = themeSlugs.flatMap((slug) =>
     getThemeLessons(slug).map((lesson) => ({
@@ -119,14 +154,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.6,
     })),
   );
-
-  // Capstone pages (one per theme)
-  const capstoneRoutes: MetadataRoute.Sitemap = themeSlugs.map((slug) => ({
-    url: `${BASE_URL}/themes/${slug}/capstone`,
-    lastModified: new Date(),
-    changeFrequency: "monthly" as const,
-    priority: 0.5,
-  }));
 
   // Extras lessons (math-deep-dive + classical-ml + ethics + python-bridge)
   const extrasRoutes: MetadataRoute.Sitemap = getThemeLessons("shared").map(
@@ -140,10 +167,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [
     ...staticRoutes,
-    ...extrasRoutes,
     ...themeRoutes,
-    ...lessonRoutes,
     ...capstoneRoutes,
+    ...lessonRoutes,
+    ...extrasRoutes,
     ...glossaryRoutes,
+    ...bridgeRoutes,
   ];
 }

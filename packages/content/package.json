@@ -9,6 +9,7 @@
   "scripts": {
     "build": "tsc",
     "build:content": "velite build",
+    "build:concept-index": "tsx scripts/build-concept-index.ts",
     "clean": "rm -rf dist .velite",
     "lint": "eslint src/",
     "typecheck": "tsc --noEmit",
@@ -20,6 +21,7 @@
   },
   "devDependencies": {
     "@tensorcraft/config": "workspace:*",
+    "tsx": "^4.19.2",
     "typescript": "^5.9.3"
   }
 }

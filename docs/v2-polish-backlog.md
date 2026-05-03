@@ -103,6 +103,19 @@ When new content patterns emerge (e.g., a new MDX component type, a new exercise
 
 `docs/audits/` accumulates a per-sprint audit. Don't delete prior audits — they show how the bar moved. Use the dated filename as the audit's identity. Index in `docs/audits/README.md` (TODO: write this index when next audit runs).
 
+## Future / V2 — Tensorcraft Pulse (content freshness via scraping)
+
+Daily-refreshed signal layer to keep Tensorcraft competitive against blogs/X/creators. Three surfaces: auto-published `/pulse` feed, in-lesson `<Currents>` block (editor-approved), `/admin/signals` for stale-lesson detection driven by GitHub release scans.
+
+- **Spec:** `~/.claude/plans/brainstorm-how-to-keep-giggly-lightning.md` (move to `docs/superpowers/specs/` on activation)
+- **Plan:** [`docs/superpowers/plans/2026-05-03-tensorcraft-pulse.md`](superpowers/plans/2026-05-03-tensorcraft-pulse.md) — 8 phases, ~40 bite-sized tasks
+- **Stack:** separate Fly.io worker (`tc-pulse`) + existing Supabase Postgres + pgvector + OpenAI embeddings + Claude Haiku
+- **Cost:** ~$5/mo all-in, hard daily budget cap
+- **Effort:** ~3–5 days end-to-end if executed sequentially
+- **Risk flags:** X/Nitter best-effort only (Nitter mostly dead post-2024), threshold tuning needed week 1, RLS policies must be reviewed before going live
+
+Reactivation: change plan header status from DEFERRED → ACTIVE, run `plan-document-reviewer`, then begin Task 0.1.
+
 ## Out of scope (V3+)
 
 - Video / audio narration (separate budgets, see memory `project_ai_video_scenes_deferred.md` and `project_audio_narration_deferred.md`)

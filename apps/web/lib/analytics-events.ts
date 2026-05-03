@@ -52,6 +52,10 @@ export const EVENTS = {
   SESSION_STARTED: "session_started",
   SESSION_ENDED: "session_ended",
   STREAK_ACHIEVED: "streak_achieved",
+
+  // Digest / blog (browser-ML news pipeline)
+  DIGEST_PUBLISHED: "digest_published",
+  DIGEST_LINK_CLICKED: "digest_link_clicked",
 } as const;
 
 export type EventName = (typeof EVENTS)[keyof typeof EVENTS];
@@ -188,6 +192,24 @@ export interface EventProperties {
   };
   [EVENTS.STREAK_ACHIEVED]: {
     streakDays: number;
+  };
+  [EVENTS.DIGEST_PUBLISHED]: {
+    /** ISO week label, e.g. "2026-W18". */
+    weekIso: string;
+    /** Blog post slug. */
+    postSlug: string;
+    /** How many news items the post covers. */
+    itemCount: number;
+  };
+  [EVENTS.DIGEST_LINK_CLICKED]: {
+    /** Blog post slug the click originated from. */
+    postSlug: string;
+    /** Lesson slug the user clicked through to. */
+    lessonSlug: string;
+    moduleId: string;
+    themeId: string;
+    /** ISO week label (used as utm_campaign). */
+    weekIso?: string;
   };
 }
 

@@ -7,12 +7,74 @@ export const runtime = "edge";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
+  const kind = searchParams.get("kind") || "default";
   const title = searchParams.get("title") || "Tensorcraft";
   const theme = searchParams.get("theme") || DEFAULT_THEME;
   const subtitle = searchParams.get("subtitle") || "";
 
   const accentColor =
     themes[theme]?.palette.primary || themes[DEFAULT_THEME].palette.primary;
+
+  if (kind === "digest") {
+    const lessonTitle = searchParams.get("lessonTitle") || "";
+    const sourceLabel = searchParams.get("sourceLabel") || "";
+    return new ImageResponse(
+      <div
+        tw="flex flex-col w-full h-full"
+        style={{ backgroundColor: "#181818" }}
+      >
+        {/* Top half: news headline */}
+        <div tw="flex flex-col flex-1 px-16 pt-14 pb-8">
+          <div tw="flex items-center justify-between mb-auto">
+            <span
+              tw="text-sm font-bold tracking-widest"
+              style={{ color: "#A0A0A0" }}
+            >
+              THE BRIDGE
+            </span>
+            {sourceLabel && (
+              <span tw="text-sm tracking-wider" style={{ color: "#A0A0A0" }}>
+                via {sourceLabel}
+              </span>
+            )}
+          </div>
+          <h1
+            tw="text-5xl font-bold leading-tight m-0 mt-auto"
+            style={{ color: "#E0E0E0" }}
+          >
+            {title}
+          </h1>
+        </div>
+
+        {/* Theme accent band */}
+        <div tw="w-full h-3" style={{ backgroundColor: accentColor }} />
+
+        {/* Bottom half: lesson teach */}
+        <div
+          tw="flex flex-col px-16 py-10"
+          style={{ backgroundColor: "#0E0E0E" }}
+        >
+          <span
+            tw="text-sm font-bold tracking-widest mb-3"
+            style={{ color: accentColor }}
+          >
+            TEACHES
+          </span>
+          <p
+            tw="text-3xl font-bold leading-snug m-0"
+            style={{ color: "#E0E0E0" }}
+          >
+            {lessonTitle || "Read the post →"}
+          </p>
+        </div>
+      </div>,
+      {
+        width: 1200,
+        height: 630,
+        headers: { "Cache-Control": "public, max-age=86400" },
+      },
+    );
+  }
 
   return new ImageResponse(
     <div

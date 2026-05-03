@@ -237,16 +237,22 @@ export interface Database {
           theme_id: string | null;
           source: string | null;
           created_at: string;
+          subscribed: boolean;
+          unsubscribe_token: string;
         };
         Insert: {
           email: string;
           theme_id?: string | null;
           source?: string | null;
+          subscribed?: boolean;
+          unsubscribe_token?: string;
         };
         Update: {
           email?: string;
           theme_id?: string | null;
           source?: string | null;
+          subscribed?: boolean;
+          unsubscribe_token?: string;
         };
         Relationships: [];
       };
@@ -433,6 +439,68 @@ export interface Database {
           category?: string;
           severity?: string;
           screenshot_url?: string | null;
+        };
+        Relationships: [];
+      };
+      news_items: {
+        Row: {
+          id: string;
+          source: string;
+          url: string;
+          title: string;
+          summary: string;
+          published_at: string | null;
+          raw_json: Record<string, unknown>;
+          matched_concepts: string[];
+          matched_lessons: Array<{
+            themeId: string;
+            moduleId: string;
+            slug: string;
+            title: string;
+            score: number;
+            rationale?: string;
+          }>;
+          status: "pending" | "shortlisted" | "published" | "rejected";
+          week_iso: string | null;
+          scraped_at: string;
+          curated_at: string | null;
+          published_blog_slug: string | null;
+        };
+        Insert: {
+          source: string;
+          url: string;
+          title: string;
+          summary?: string;
+          published_at?: string | null;
+          raw_json?: Record<string, unknown>;
+          matched_concepts?: string[];
+          matched_lessons?: Array<{
+            themeId: string;
+            moduleId: string;
+            slug: string;
+            title: string;
+            score: number;
+            rationale?: string;
+          }>;
+          status?: "pending" | "shortlisted" | "published" | "rejected";
+          week_iso?: string | null;
+          curated_at?: string | null;
+          published_blog_slug?: string | null;
+        };
+        Update: {
+          matched_concepts?: string[];
+          matched_lessons?: Array<{
+            themeId: string;
+            moduleId: string;
+            slug: string;
+            title: string;
+            score: number;
+            rationale?: string;
+          }>;
+          status?: "pending" | "shortlisted" | "published" | "rejected";
+          week_iso?: string | null;
+          curated_at?: string | null;
+          published_blog_slug?: string | null;
         };
         Relationships: [];
       };

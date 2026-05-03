@@ -1,0 +1,61 @@
+name: News Scrape
+
+# Weekly browser-ML news scrape for the digest pipeline.
+#
+# Pulls items from GitHub Releases, RSS feeds, HN Algolia, and ArXiv,
+# applies the editorial filter, and upserts rows into public.news_items.
+# Curators then shortlist via /admin/digest.
+#
+# Schedule: Mondays 09:00 UTC. Manual trigger also available via the
+# `workflow_dispatch` event.
+
+on:
+  schedule:
+    - cron: "0 9 * * 1"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Run without writing to Supabase"
+        required: false
+        default: "false"
+
+concurrency:
+  group: news-scrape
+  cancel-in-progress: false
+
+jobs:
+  scrape:
+    name: Scrape browser-ML news
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run scraper
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            node scripts/news/scrape.mjs --dry-run
+          else
+            node scripts/news/scrape.mjs
+          fi
+
+      - name: Job summary
+        if: always()
+        run: echo "News scrape completed at $(date -u)" >> $GITHUB_STEP_SUMMARY

@@ -49,7 +49,9 @@ function tsToJs(src: string): string {
 
 const lessons = defineCollection({
   name: "Lesson",
-  pattern: "**/*.mdx",
+  // Scoped to theme dirs so the new `blog/` dir doesn't fail lesson validation.
+  pattern:
+    "{deep-orbit,neon-protocol,signal-ward,nova-canvas,terra-grid,extras}/**/*.mdx",
   schema: s.object({
     slug: s.slug("lessons"),
     title: s.string().min(1),
@@ -204,6 +206,44 @@ const modules = defineCollection({
   }),
 });
 
+const posts = defineCollection({
+  name: "Post",
+  pattern: "blog/**/*.mdx",
+  schema: s.object({
+    slug: s.slug("posts"),
+    title: s.string().min(1),
+    publishedAt: s.isodate(),
+    weekIso: s.string().optional(),
+    sourceUrl: s.string().url().optional(),
+    sourceLabel: s.string().optional(),
+    primaryLessonSlug: s.string().optional(),
+    themeSlug: s
+      .enum([
+        "deep-orbit",
+        "neon-protocol",
+        "signal-ward",
+        "nova-canvas",
+        "terra-grid",
+      ])
+      .optional(),
+    summary: s.string().min(1),
+    matchedLessons: s
+      .array(
+        s.object({
+          themeId: s.string(),
+          moduleId: s.string(),
+          slug: s.string(),
+          title: s.string(),
+          rationale: s.string().optional(),
+        }),
+      )
+      .default([]),
+    tags: s.array(s.string()).default([]),
+    body: s.mdx(),
+    metadata: s.metadata(),
+  }),
+});
+
 export default defineConfig({
   root: "content",
   strict: true,
@@ -211,5 +251,5 @@ export default defineConfig({
     data: ".velite",
     clean: true,
   },
-  collections: { lessons, exercises, modules },
+  collections: { lessons, exercises, modules, posts },
 });
