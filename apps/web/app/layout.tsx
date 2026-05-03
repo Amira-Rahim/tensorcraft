@@ -12,6 +12,7 @@ import { PlausibleScript } from "./components/plausible-script";
 import { SessionListener } from "../lib/supabase/session-listener";
 import { SessionToast } from "./components/session-toast";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -311,6 +312,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen flex flex-col font-sans">
         <PlausibleScript />
+        <Analytics />
         <ThemeProvider>
           <PostHogProvider>
             <AnalyticsProvider>
