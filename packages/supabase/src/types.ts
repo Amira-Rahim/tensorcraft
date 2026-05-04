@@ -465,6 +465,9 @@ export interface Database {
           scraped_at: string;
           curated_at: string | null;
           published_blog_slug: string | null;
+          is_content_gap: boolean;
+          gap_concept: string | null;
+          gap_rationale: string | null;
         };
         Insert: {
           source: string;
@@ -486,6 +489,9 @@ export interface Database {
           week_iso?: string | null;
           curated_at?: string | null;
           published_blog_slug?: string | null;
+          is_content_gap?: boolean;
+          gap_concept?: string | null;
+          gap_rationale?: string | null;
         };
         Update: {
           matched_concepts?: string[];
@@ -501,6 +507,9 @@ export interface Database {
           week_iso?: string | null;
           curated_at?: string | null;
           published_blog_slug?: string | null;
+          is_content_gap?: boolean;
+          gap_concept?: string | null;
+          gap_rationale?: string | null;
         };
         Relationships: [];
       };

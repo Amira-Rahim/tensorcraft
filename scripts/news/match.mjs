@@ -10,6 +10,12 @@
  *          the model picks the best 3 lessons and writes a one-line rationale
  *          per choice. Falls back to stage-1 ordering if the LLM call fails.
  *
+ *          When the LLM returns picks=[] (no candidate lesson actually teaches
+ *          the concept), the matcher sets is_content_gap=true and writes
+ *          gap_concept + gap_rationale. Surfaced under /admin/digest?status=gap.
+ *          Gap detection ONLY runs when --no-llm is not set; without LLM the
+ *          deterministic top-3 always populates matched_lessons.
+ *
  * Run:
  *   node scripts/news/match.mjs --all-pending             # match every pending row
  *   node scripts/news/match.mjs --week=2026-W18           # filter by week_iso
@@ -146,6 +152,12 @@ Rules:
 - Rationale: <= 140 chars, practitioner voice, factual. Pattern: "Teaches X - read this if you want to Y." NEVER marketing language. NEVER "perfect", "amazing", "must-read".
 - Return { "picks": [] } when nothing in the candidate set actually teaches this. Empty is correct.
 
+When picks is empty, ALSO include a "gap" object:
+- gap.concept: <= 120 chars, 1-line description of what the news teaches that no candidate lesson covers. Practitioner voice. Examples: "WebGPU compute shaders for tensor inference", "GPU buffer lifecycle for on-device transformers".
+- gap.rationale: <= 240 chars, factual. Pattern: "Item teaches X; closest current lesson covers Y. Would fit in <theme>/<module> or as a new module." Suggests a curriculum placement.
+
+When picks is non-empty, OMIT the gap field entirely.
+
 Output: JSON only, conforming to the schema you've been given.`;
 
   const candidateList = candidates
@@ -184,13 +196,26 @@ const rerankSchema = {
         additionalProperties: false,
       },
     },
+    gap: {
+      type: "object",
+      properties: {
+        concept: { type: "string", maxLength: 120 },
+        rationale: { type: "string", maxLength: 240 },
+      },
+      required: ["concept", "rationale"],
+      additionalProperties: false,
+    },
   },
   required: ["picks"],
   additionalProperties: false,
 };
 
+/**
+ * Returns { picks: MatchedLesson[]; gap: { concept, rationale } | null }.
+ * `picks` empty + `gap` populated indicates a content-gap candidate.
+ */
 async function rerankWithLlm(item, candidates) {
-  if (candidates.length === 0) return [];
+  if (candidates.length === 0) return { picks: [], gap: null };
   const { default: Anthropic } = await import("@anthropic-ai/sdk");
   const client = new Anthropic();
   const { system, user } = buildRerankPrompt(item, candidates);
@@ -206,17 +231,17 @@ async function rerankWithLlm(item, candidates) {
   });
 
   const block = response.content.find((b) => b.type === "text");
-  if (!block) return [];
+  if (!block) return { picks: [], gap: null };
   let parsed;
   try {
     parsed = JSON.parse(block.text);
   } catch {
     console.warn(`[match] failed to parse rerank JSON for ${item.url}`);
-    return [];
+    return { picks: [], gap: null };
   }
 
   const bySlug = new Map(candidates.map((c) => [c.lesson.slug, c]));
-  return (parsed.picks ?? [])
+  const picks = (parsed.picks ?? [])
     .map((p, i) => {
       const cand = bySlug.get(p.lessonSlug);
       if (!cand) return null;
@@ -231,6 +256,11 @@ async function rerankWithLlm(item, candidates) {
     })
     .filter((x) => x !== null)
     .slice(0, TOP_K);
+
+  // Only honor `gap` when picks is empty (LLM should follow the prompt rule
+  // but defend against schema returning gap alongside non-empty picks).
+  const gap = picks.length === 0 && parsed.gap ? parsed.gap : null;
+  return { picks, gap };
 }
 
 /* ------------------------------------------------------------------ */
@@ -252,19 +282,44 @@ async function matchOne(item, conceptIndex) {
   const { matchedConcepts, candidates } = findCandidates(conceptIndex, terms);
 
   let matched_lessons;
+  let is_content_gap = false;
+  let gap_concept = null;
+  let gap_rationale = null;
+
   if (useLlm && candidates.length > 0) {
     try {
-      matched_lessons = await rerankWithLlm(item, candidates);
-      if (matched_lessons.length === 0) matched_lessons = fallbackTopK(candidates);
+      const { picks, gap } = await rerankWithLlm(item, candidates);
+      if (picks.length > 0) {
+        matched_lessons = picks;
+      } else if (gap) {
+        // LLM signaled content gap. Leave matched_lessons empty so curator
+        // sees explicitly that no lesson teaches this.
+        matched_lessons = [];
+        is_content_gap = true;
+        gap_concept = gap.concept;
+        gap_rationale = gap.rationale;
+      } else {
+        // LLM returned empty picks without a gap object — degraded LLM
+        // response. Fall back to deterministic top-3.
+        matched_lessons = fallbackTopK(candidates);
+      }
     } catch (err) {
       console.warn(`[match] rerank failed for ${item.url}: ${err.message}`);
       matched_lessons = fallbackTopK(candidates);
     }
   } else {
+    // --no-llm path or zero candidates. Gap detection requires LLM, so
+    // we never set is_content_gap here.
     matched_lessons = fallbackTopK(candidates);
   }
 
-  return { matched_concepts: matchedConcepts, matched_lessons };
+  return {
+    matched_concepts: matchedConcepts,
+    matched_lessons,
+    is_content_gap,
+    gap_concept,
+    gap_rationale,
+  };
 }
 
 async function loadPending(week) {
@@ -296,10 +351,15 @@ async function main() {
       const out = await matchOne(item, conceptIndex);
       console.log(`\n[${item.source}] ${item.title}`);
       console.log(`  concepts: ${out.matched_concepts.slice(0, 8).join(", ")}`);
-      for (const m of out.matched_lessons) {
-        console.log(
-          `  → ${m.themeId}/${m.moduleId}/${m.slug}  (${m.score})${m.rationale ? `  — ${m.rationale}` : ""}`,
-        );
+      if (out.is_content_gap) {
+        console.log(`  ⚠ CONTENT GAP: ${out.gap_concept}`);
+        console.log(`    ${out.gap_rationale}`);
+      } else {
+        for (const m of out.matched_lessons) {
+          console.log(
+            `  → ${m.themeId}/${m.moduleId}/${m.slug}  (${m.score})${m.rationale ? `  — ${m.rationale}` : ""}`,
+          );
+        }
       }
     }
     return;
@@ -325,6 +385,9 @@ async function main() {
       .update({
         matched_concepts: out.matched_concepts,
         matched_lessons: out.matched_lessons,
+        is_content_gap: out.is_content_gap,
+        gap_concept: out.gap_concept,
+        gap_rationale: out.gap_rationale,
       })
       .eq("id", item.id);
     if (error) {

@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-type StatusFilter = "pending" | "shortlisted" | "rejected" | "all";
+type StatusFilter = "pending" | "shortlisted" | "rejected" | "all" | "gap";
 
 interface MatchedLesson {
   themeId: string;
@@ -33,6 +33,9 @@ interface NewsItemRow {
   status: "pending" | "shortlisted" | "published" | "rejected";
   week_iso: string | null;
   scraped_at: string;
+  is_content_gap: boolean;
+  gap_concept: string | null;
+  gap_rationale: string | null;
 }
 
 export default async function DigestAdminPage({
@@ -57,7 +60,9 @@ export default async function DigestAdminPage({
     .select("*")
     .order("scraped_at", { ascending: false })
     .limit(200);
-  if (filter !== "all") {
+  if (filter === "gap") {
+    query = query.eq("is_content_gap", true);
+  } else if (filter !== "all") {
     query = query.eq("status", filter);
   }
   const { data, error } = await query;
@@ -78,21 +83,23 @@ export default async function DigestAdminPage({
       </header>
 
       <nav className="mb-6 flex gap-2 text-sm">
-        {(["pending", "shortlisted", "rejected", "all"] as StatusFilter[]).map(
-          (s) => (
-            <a
-              key={s}
-              href={`/admin/digest?status=${s}`}
-              className={`rounded border px-3 py-1 capitalize ${
-                filter === s
-                  ? "border-black bg-black text-white dark:border-white dark:bg-white dark:text-black"
+        {(
+          ["pending", "shortlisted", "gap", "rejected", "all"] as StatusFilter[]
+        ).map((s) => (
+          <a
+            key={s}
+            href={`/admin/digest?status=${s}`}
+            className={`rounded border px-3 py-1 capitalize ${
+              filter === s
+                ? "border-black bg-black text-white dark:border-white dark:bg-white dark:text-black"
+                : s === "gap"
+                  ? "border-yellow-600 text-yellow-700 dark:border-yellow-500 dark:text-yellow-400"
                   : "border-neutral-300 dark:border-neutral-700"
-              }`}
-            >
-              {s} ({counts[s] ?? 0})
-            </a>
-          ),
-        )}
+            }`}
+          >
+            {s === "gap" ? `gaps` : s} ({counts[s] ?? 0})
+          </a>
+        ))}
       </nav>
 
       {items.length === 0 ? (
@@ -139,7 +146,23 @@ function NewsItemCard({ item }: { item: NewsItemRow }) {
         <StatusActions id={item.id} status={item.status} />
       </div>
 
-      {item.matched_lessons.length > 0 ? (
+      {item.is_content_gap ? (
+        <div className="mt-4 rounded border border-yellow-600 bg-yellow-50 p-3 dark:border-yellow-500 dark:bg-yellow-950">
+          <p className="font-mono text-xs uppercase tracking-wider text-yellow-800 dark:text-yellow-300">
+            Content gap detected
+          </p>
+          {item.gap_concept && (
+            <p className="mt-1 text-sm font-semibold text-yellow-900 dark:text-yellow-100">
+              {item.gap_concept}
+            </p>
+          )}
+          {item.gap_rationale && (
+            <p className="mt-1 text-xs text-yellow-800 dark:text-yellow-200">
+              {item.gap_rationale}
+            </p>
+          )}
+        </div>
+      ) : item.matched_lessons.length > 0 ? (
         <ol className="mt-4 space-y-1 text-sm">
           {item.matched_lessons.map((m) => (
             <li key={`${m.themeId}/${m.moduleId}/${m.slug}`}>
@@ -240,9 +263,14 @@ async function getCounts(admin: ReturnType<typeof getSupabaseAdminClient>) {
       counts[s] = count ?? 0;
     }),
   );
-  const { count: total } = await admin
-    .from("news_items")
-    .select("*", { count: "exact", head: true });
+  const [{ count: total }, { count: gapCount }] = await Promise.all([
+    admin.from("news_items").select("*", { count: "exact", head: true }),
+    admin
+      .from("news_items")
+      .select("*", { count: "exact", head: true })
+      .eq("is_content_gap", true),
+  ]);
   counts.all = total ?? 0;
+  counts.gap = gapCount ?? 0;
   return counts;
 }
