@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { PRICING } from "@tensorcraft/shared";
 
 export const metadata: Metadata = {
   title: "Tensorcraft vs fast.ai vs Karpathy vs Coursera | Course comparison",
@@ -63,7 +64,7 @@ const ROWS: Row[] = [
   },
   {
     feature: "Cost (full curriculum)",
-    tensorcraft: "$0 preview / $219 all five themes",
+    tensorcraft: `$0 preview / $${PRICING.allFive.price} all five themes`,
     fastai: "Free",
     karpathy: "Free",
     coursera: "$49–79/mo (specialization $200–500)",
@@ -121,14 +122,8 @@ export default function ComparePage() {
             Tensorcraft is the right course if you ship in the browser, you
             already know JavaScript, and you want a course that respects what
             you already know without watering down the ML. Every analogy ships
-            with a label naming where it stops being literal — that&apos;s the{" "}
-            <Link
-              href="/bridges"
-              className="text-primary underline underline-offset-4"
-            >
-              bridge-tier system
-            </Link>
-            .
+            with a label naming where it stops being literal — the bridge-tier
+            system is woven directly into each lesson.
           </p>
         </section>
 

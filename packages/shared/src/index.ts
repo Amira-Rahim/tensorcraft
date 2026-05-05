@@ -6,14 +6,18 @@
 
 export {
   THEME_SLUGS,
+  LAUNCHED_THEMES,
+  COMING_SOON_THEMES,
   PRICING,
   ROUTES,
   THEME_CONTENT,
   DEFAULT_THEME,
   isValidThemeSlug,
   isValidSlug,
+  isLaunched,
+  isComingSoon,
 } from "./constants";
-export type { ThemeSlug, PricingTier } from "./constants";
+export type { ThemeSlug, LaunchedTheme, PricingTier } from "./constants";
 
 export {
   BRIDGES,

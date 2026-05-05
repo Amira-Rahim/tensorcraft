@@ -31,6 +31,7 @@ function makeCard(overrides: Partial<ThemeCardData> = {}): ThemeCardData {
     completedLessons: 0,
     totalLessons: 55,
     progressPercent: 0,
+    comingSoon: false,
     ...overrides,
   };
 }
@@ -50,21 +51,47 @@ describe("ThemeCards", () => {
     expect(screen.getByText("Neon Protocol")).toBeInTheDocument();
   });
 
-  it("shows bundle summary when all themes are owned", () => {
+  it("shows bundle summary when all available themes are owned", () => {
     const cards = [
       makeCard({ slug: "deep-orbit", owned: true, progressPercent: 50 }),
     ];
     render(<ThemeCards cards={cards} hasFullBundle={true} />);
-    expect(screen.getByText("All 5 themes unlocked")).toBeInTheDocument();
+    expect(
+      screen.getByText("All available themes unlocked"),
+    ).toBeInTheDocument();
   });
 
-  it("shows partial summary when not all themes are owned", () => {
+  it("partial summary excludes coming-soon themes from the unlocked count", () => {
     const cards = [
       makeCard({ slug: "deep-orbit", owned: true }),
-      makeCard({ slug: "neon-protocol", displayName: "Neon", owned: false }),
+      makeCard({
+        slug: "neon-protocol",
+        displayName: "Neon",
+        owned: false,
+        comingSoon: true,
+      }),
     ];
     render(<ThemeCards cards={cards} hasFullBundle={false} />);
-    expect(screen.getByText("1 of 2 unlocked")).toBeInTheDocument();
+    expect(screen.getByText(/1 of 1 unlocked/i)).toBeInTheDocument();
+    expect(screen.getByText(/1 coming soon/i)).toBeInTheDocument();
+  });
+
+  it("renders coming-soon card with waitlist CTA + theme stub link", () => {
+    const cards = [
+      makeCard({
+        slug: "neon-protocol",
+        displayName: "Neon Protocol",
+        owned: false,
+        totalLessons: 0,
+        comingSoon: true,
+      }),
+    ];
+    render(<ThemeCards cards={cards} hasFullBundle={false} />);
+    const link = screen.getByRole("link", {
+      name: /Neon Protocol coming soon, join waitlist/i,
+    });
+    expect(link).toHaveAttribute("href", "/themes/neon-protocol");
+    expect(within(link).getByText(/Notify me/i)).toBeInTheDocument();
   });
 
   it("owned card links into the theme landing page with progress info", () => {

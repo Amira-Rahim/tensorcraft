@@ -8,6 +8,7 @@ import {
 } from "@tensorcraft/shared";
 import type { BridgeTier } from "@tensorcraft/shared";
 import { themeSlugs } from "@tensorcraft/themes";
+import { isLaunched } from "@tensorcraft/shared";
 import { getThemeLessons } from "@tensorcraft/content";
 
 /**
@@ -23,7 +24,11 @@ function findRelatedLessons(termText: string, counterpartText: string) {
     slug: string;
     title: string;
   }> = [];
+  // Coming-soon themes have no compiled content (Velite excludes them).
+  // Filtering here keeps "Related lessons" empty for unlaunched themes
+  // instead of surfacing zero-result entries.
   for (const themeSlug of themeSlugs) {
+    if (!isLaunched(themeSlug)) continue;
     const lessons = getThemeLessons(themeSlug);
     for (const lesson of lessons) {
       const title = (lesson.title || "").toLowerCase();

@@ -6,10 +6,45 @@ test.describe("Themes Page", () => {
     await expect(page.getByText(/deep orbit/i).first()).toBeVisible();
   });
 
-  test("shows LIVE badges for all themes", async ({ page }) => {
+  test("Deep Orbit shows Live, the other 4 show Coming soon", async ({
+    page,
+  }) => {
     await page.goto("/themes");
-    const liveBadges = page.getByText(/live/i);
-    await expect(liveBadges.first()).toBeVisible();
+    await expect(page.getByTestId("theme-status-deep-orbit")).toContainText(
+      /live/i,
+    );
+    for (const slug of [
+      "neon-protocol",
+      "signal-ward",
+      "nova-canvas",
+      "terra-grid",
+    ]) {
+      await expect(page.getByTestId(`theme-status-${slug}`)).toContainText(
+        /coming soon/i,
+      );
+    }
+  });
+
+  test("coming-soon theme route renders waitlist stub, not 404", async ({
+    page,
+  }) => {
+    const response = await page.goto("/themes/neon-protocol");
+    expect(response?.status()).toBe(200);
+    await expect(
+      page.getByTestId("coming-soon-stub-neon-protocol"),
+    ).toBeVisible();
+    await expect(
+      page.getByTestId("theme-waitlist-input-neon-protocol"),
+    ).toBeVisible();
+  });
+
+  test("coming-soon lesson + capstone routes 404", async ({ page }) => {
+    const lesson = await page.goto(
+      "/themes/neon-protocol/foundations/introduction-to-tensors",
+    );
+    expect(lesson?.status()).toBe(404);
+    const capstone = await page.goto("/themes/neon-protocol/capstone");
+    expect(capstone?.status()).toBe(404);
   });
 
   test("Deep Orbit links to its theme page", async ({ page }) => {

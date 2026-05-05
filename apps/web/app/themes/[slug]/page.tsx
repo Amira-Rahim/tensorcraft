@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { themes } from "@tensorcraft/themes";
+import { PRICING, isLaunched, isComingSoon } from "@tensorcraft/shared";
 import {
   getModules,
   getModuleLessons,
@@ -10,6 +11,7 @@ import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { hasThemePurchase, getUserProgress } from "@/lib/progress";
 import { AmbientBackground } from "@/app/components/ambient-background";
 import { ModuleMapClient } from "./module-map-client";
+import { ComingSoonStub } from "./coming-soon-stub";
 import type { Metadata } from "next";
 
 interface Props {
@@ -36,6 +38,15 @@ export default async function ThemeDetailPage({ params }: Props) {
   const { slug } = await params;
   const theme = themes[slug];
   if (!theme) notFound();
+
+  // Coming-soon themes render a stub with waitlist capture instead of the
+  // module map. Velite excludes their content from the build, so getModules
+  // would return [] anyway — the explicit branch keeps the UX intentional.
+  if (isComingSoon(slug)) {
+    return <ComingSoonStub theme={theme} />;
+  }
+
+  if (!isLaunched(slug)) notFound();
 
   const themeModules = getModules(slug);
 
@@ -226,7 +237,7 @@ export default async function ThemeDetailPage({ params }: Props) {
     teaches: theme.specialization,
     offers: {
       "@type": "Offer",
-      price: "79",
+      price: String(PRICING.single.price),
       priceCurrency: "USD",
       availability: "https://schema.org/InStock",
       url: "https://tensorcraft.app/pricing",

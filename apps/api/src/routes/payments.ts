@@ -4,7 +4,7 @@ import {
   getSupabaseAdminClient,
   getSupabaseServerClient,
 } from "@tensorcraft/supabase";
-import { PRICING, THEME_SLUGS, isValidThemeSlug } from "@tensorcraft/shared";
+import { PRICING, isValidThemeSlug, isLaunched } from "@tensorcraft/shared";
 import { authMiddleware } from "../middleware/auth";
 import { addSubscriber, tagSubscriber } from "../lib/kit";
 import { logger } from "../lib/logger";
@@ -24,13 +24,14 @@ function getStripe(): Stripe {
 }
 
 /**
- * Validate that every theme ID is a known, canonical theme slug.
+ * Validate that every theme ID is launched (purchasable). Coming-soon themes
+ * still pass `isValidThemeSlug` (registry knows them) but must NOT be
+ * checkout-able. See packages/shared/src/constants.ts → LAUNCHED_THEMES.
  * Rejects empty arrays — paid plans must carry at least one theme.
- * See dev-plan §6h "Purchase-to-theme referential integrity".
  */
 function validateThemeIds(ids: string[]): boolean {
   if (!Array.isArray(ids) || ids.length === 0) return false;
-  return ids.every((id) => isValidThemeSlug(id));
+  return ids.every((id) => isValidThemeSlug(id) && isLaunched(id));
 }
 
 /**

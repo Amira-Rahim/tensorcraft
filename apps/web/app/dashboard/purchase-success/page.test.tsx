@@ -177,7 +177,7 @@ describe("dashboard/purchase-success/page", () => {
       user_id: "u-1",
       plan_id: "single",
       theme_ids: ["neon-protocol"],
-      amount: 79,
+      amount: 49,
       created_at: "2026-01-01T00:00:00.000Z",
       stripe_session_id: "cs_test_OLDOLDOLDOLDOLD0",
       status: "completed",
@@ -187,7 +187,7 @@ describe("dashboard/purchase-success/page", () => {
       user_id: "u-1",
       plan_id: "twoBundle",
       theme_ids: ["deep-orbit", "signal-ward"],
-      amount: 129,
+      amount: 79,
       created_at: "2026-04-21T10:30:00.000Z",
       stripe_session_id: "cs_test_TARGETXYZ9999999",
       status: "completed",
@@ -198,14 +198,14 @@ describe("dashboard/purchase-success/page", () => {
     });
 
     // Receipt renders the session-specific purchase.
-    expect(html).toContain("$129.00");
+    expect(html).toContain("$79.00");
     expect(html).toContain("twoBundle");
     expect(html).toContain("deep-orbit, signal-ward");
     // Last-8 chars of the session id appear; the full id does not.
     expect(html).toContain("Z9999999");
     expect(html).not.toContain("cs_test_TARGETXYZ9999999");
     // The older purchase did NOT leak through.
-    expect(html).not.toContain("$79.00");
+    expect(html).not.toContain("$49.00");
     expect(html).not.toContain("OLDOLDOLDOLDOLD0");
   });
 
@@ -218,7 +218,7 @@ describe("dashboard/purchase-success/page", () => {
       user_id: "u-1",
       plan_id: "single",
       theme_ids: ["neon-protocol"],
-      amount: 79,
+      amount: 49,
       created_at: "2026-01-01T00:00:00.000Z",
       stripe_session_id: "cs_test_OLD1234567890AB",
       status: "completed",
@@ -227,7 +227,7 @@ describe("dashboard/purchase-success/page", () => {
       user_id: "u-1",
       plan_id: "twoBundle",
       theme_ids: ["deep-orbit", "signal-ward"],
-      amount: 129,
+      amount: 79,
       created_at: "2026-04-21T10:30:00.000Z",
       stripe_session_id: "cs_test_NEW9876543210ZZ",
       status: "completed",
@@ -236,9 +236,9 @@ describe("dashboard/purchase-success/page", () => {
     const { html } = await renderPage();
 
     // Most recent purchase wins.
-    expect(html).toContain("$129.00");
+    expect(html).toContain("$79.00");
     expect(html).toContain("3210ZZ");
-    expect(html).not.toContain("$79.00");
+    expect(html).not.toContain("$49.00");
   });
 
   it("renders one access-card row per purchased theme with a Start Now CTA", async () => {
@@ -250,7 +250,7 @@ describe("dashboard/purchase-success/page", () => {
       user_id: "u-1",
       plan_id: "twoBundle",
       theme_ids: ["deep-orbit", "signal-ward"],
-      amount: 129,
+      amount: 79,
       created_at: "2026-04-21T10:30:00.000Z",
       stripe_session_id: "cs_test_abcdefgh12345678",
       status: "completed",
@@ -274,7 +274,7 @@ describe("dashboard/purchase-success/page", () => {
       user_id: "u-1",
       plan_id: "single",
       theme_ids: ["signal-ward"],
-      amount: 79,
+      amount: 49,
       created_at: "2026-04-21T10:30:00.000Z",
       stripe_session_id: "cs_test_abcdefgh12345678",
       status: "completed",
@@ -306,7 +306,7 @@ describe("dashboard/purchase-success/page", () => {
         "nova-canvas",
         "terra-grid",
       ],
-      amount: 219,
+      amount: 129,
       created_at: "2026-04-21T10:30:00.000Z",
       stripe_session_id: "cs_test_RECEIPTIDLAST8CH",
       status: "completed",
@@ -316,7 +316,7 @@ describe("dashboard/purchase-success/page", () => {
 
     expect(html).toContain('data-testid="purchase-receipt"');
     expect(html).toMatch(/data-testid="purchase-receipt"[^>]*font-mono/);
-    expect(html).toContain("$219.00");
+    expect(html).toContain("$129.00");
     expect(html).toContain("allFive");
     expect(html).toContain("LAST8CH");
     // Themes list is rendered in a mono block.

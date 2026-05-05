@@ -2,11 +2,12 @@ import { describe, it, expect, vi, beforeAll, beforeEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 
 /**
- * Phase 11 §11d Wave 2 — Onboarding page brutalist redesign tests.
+ * Onboarding page brutalist redesign tests.
  *
- * Covers the 5-step wizard (Welcome, Background, Goal, Theme, Ready), back
+ * Covers the 4-step wizard (Welcome, Background, Goal, Ready), back
  * navigation, canonical enum values from migration 018, and the final PATCH
- * to `/api/onboarding`.
+ * to `/api/onboarding`. Theme selection step was removed when launch was
+ * scoped to Deep Orbit only — every learner is auto-routed to that theme.
  */
 
 // ---------------------------------------------------------------------------
@@ -83,39 +84,26 @@ function clickBack() {
   fireEvent.click(btn);
 }
 
-/**
- * Scope theme-card lookups to the active theme radiogroup so we don't
- * accidentally match ambient elements outside the wizard.
- */
-function pickFirstTheme(): HTMLElement {
-  const group = screen.getByTestId("theme-radiogroup");
-  const radios = group.querySelectorAll('[role="radio"]');
-  if (radios.length === 0) throw new Error("No theme radios rendered");
-  return radios[0] as HTMLElement;
-}
-
-function allThemeRadios(): HTMLElement[] {
-  const group = screen.getByTestId("theme-radiogroup");
-  return Array.from(group.querySelectorAll('[role="radio"]')) as HTMLElement[];
-}
+// (Theme-step helpers removed — onboarding no longer asks the learner to
+//  pick a theme; Deep Orbit is auto-selected on submit.)
 
 // ---------------------------------------------------------------------------
 // Tests
 // ---------------------------------------------------------------------------
 
-describe("OnboardingPage — §11d Wave 2", () => {
+describe("OnboardingPage", () => {
   it("renders step 1 (Welcome) by default with mission briefing", async () => {
     await renderPage();
     expect(screen.getByTestId("step-welcome")).toBeTruthy();
     expect(screen.getByTestId("onboarding-step-text").textContent).toMatch(
-      /STEP 1 OF 5/,
+      /STEP 1 OF 4/,
     );
   });
 
-  it("progress indicator labels all 5 step names as user advances", async () => {
+  it("progress indicator labels all 4 step names as user advances", async () => {
     await renderPage();
-    const labels = ["WELCOME", "BACKGROUND", "GOAL", "THEME", "READY"];
-    for (let i = 0; i < 5; i++) {
+    const labels = ["WELCOME", "BACKGROUND", "GOAL", "READY"];
+    for (let i = 0; i < 4; i++) {
       const t = screen.getByTestId("onboarding-step-text").textContent ?? "";
       expect(t).toMatch(new RegExp(labels[i]));
       if (i === 1) {
@@ -124,18 +112,16 @@ describe("OnboardingPage — §11d Wave 2", () => {
       if (i === 2) {
         fireEvent.click(screen.getByTestId("goal-hobby"));
       }
-      if (i === 3) {
-        fireEvent.click(pickFirstTheme());
-      }
-      if (i < 4) clickNext();
+      if (i < 3) clickNext();
     }
   });
 
-  it("shows 5 pips in progress indicator", async () => {
+  it("shows 4 pips in progress indicator", async () => {
     await renderPage();
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 4; i++) {
       expect(screen.getByTestId(`step-pip-${i}`)).toBeTruthy();
     }
+    expect(screen.queryByTestId("step-pip-4")).toBeNull();
   });
 
   it("advances from Welcome to Background on Next click", async () => {
@@ -186,41 +172,27 @@ describe("OnboardingPage — §11d Wave 2", () => {
     );
   });
 
-  it("Theme step shows 5 theme cards", async () => {
+  it("does not render the legacy Theme step", async () => {
     await renderPage();
     clickNext();
     fireEvent.click(screen.getByTestId("experience-beginner"));
     clickNext();
     fireEvent.click(screen.getByTestId("goal-hobby"));
-    clickNext(); // -> Theme
-    expect(allThemeRadios()).toHaveLength(5);
+    clickNext(); // would have been -> Theme; now -> Ready
+    expect(screen.queryByTestId("step-theme")).toBeNull();
+    expect(screen.getByTestId("step-ready")).toBeTruthy();
   });
 
-  it("Theme step blocks advance without a theme", async () => {
+  it("Ready step renders a configuration summary with Deep Orbit auto-selected", async () => {
     await renderPage();
     clickNext();
     fireEvent.click(screen.getByTestId("experience-beginner"));
     clickNext();
     fireEvent.click(screen.getByTestId("goal-hobby"));
-    clickNext(); // -> Theme
-    clickNext();
-    expect(screen.getByTestId("step-theme")).toBeTruthy();
-    expect(screen.getByTestId("onboarding-step-error").textContent).toMatch(
-      /theme/i,
-    );
-  });
-
-  it("Ready step renders a configuration summary", async () => {
-    await renderPage();
-    clickNext();
-    fireEvent.click(screen.getByTestId("experience-beginner"));
-    clickNext();
-    fireEvent.click(screen.getByTestId("goal-hobby"));
-    clickNext();
-    fireEvent.click(pickFirstTheme());
     clickNext(); // -> Ready
     expect(screen.getByTestId("step-ready")).toBeTruthy();
-    expect(screen.getByTestId("ready-summary")).toBeTruthy();
+    const summary = screen.getByTestId("ready-summary");
+    expect(summary.textContent).toMatch(/deep orbit/i);
   });
 
   it("back button is absent on step 1, present on step 2", async () => {
@@ -261,8 +233,6 @@ describe("OnboardingPage — §11d Wave 2", () => {
     });
     clickNext(); // -> Goal
     fireEvent.click(screen.getByTestId("goal-career"));
-    clickNext(); // -> Theme
-    fireEvent.click(pickFirstTheme());
     clickNext(); // -> Ready
 
     fireEvent.click(screen.getByTestId("onboarding-submit"));
@@ -290,7 +260,7 @@ describe("OnboardingPage — §11d Wave 2", () => {
       fe_experience_years: 4,
     });
 
-    // Also writes preferred_theme_id + onboarding_completed via supabase client.
+    // Also writes onboarding_completed via supabase client.
     await waitFor(() => {
       expect(updateEqMock).toHaveBeenCalled();
     });

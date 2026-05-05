@@ -45,7 +45,8 @@ export interface ThemeCharacter {
 
 /**
  * Full theme manifest matching the technical spec.
- * Each theme defines visual identity, narrative context, and launch status.
+ * Each theme defines visual identity and narrative context. Launch status is
+ * tracked separately in @tensorcraft/shared → LAUNCHED_THEMES.
  */
 export interface ThemeManifest {
   /** Internal theme identifier (e.g., "space") */

@@ -94,18 +94,14 @@ export default function LearnPage() {
           Start Free
         </h2>
         <p className="text-base text-text-muted font-sans leading-relaxed mb-6">
-          Module 1 of every theme is completely free — no account, no credit
+          Module 1 of Deep Orbit is completely free — no account, no credit
           card. Just open a lesson and start learning.
         </p>
 
         <h2 className="text-2xl font-bold text-text-primary mb-4 font-mono">
-          5 Themed Learning Paths
+          Available Now
         </h2>
-        <p className="text-base text-text-muted font-sans leading-relaxed mb-4">
-          Each theme teaches a different ML specialization through an immersive
-          narrative. Pick the one that matches your interests:
-        </p>
-        <ul className="space-y-2 mb-8 text-base text-text-muted font-sans">
+        <ul className="space-y-2 mb-6 text-base text-text-muted font-sans">
           <li>
             <Link
               href="/themes/deep-orbit"
@@ -115,6 +111,16 @@ export default function LearnPage() {
             </Link>{" "}
             — Time-Series &amp; Signals
           </li>
+        </ul>
+
+        <h2 className="text-2xl font-bold text-text-primary mb-4 font-mono">
+          Coming Soon
+        </h2>
+        <p className="text-base text-text-muted font-sans leading-relaxed mb-3">
+          Four more themes ship in waves. Each links to a stub page where you
+          can join a per-theme waitlist:
+        </p>
+        <ul className="space-y-2 mb-8 text-base text-text-muted font-sans">
           <li>
             <Link
               href="/themes/neon-protocol"
@@ -122,7 +128,7 @@ export default function LearnPage() {
             >
               Neon Protocol
             </Link>{" "}
-            — Computer Vision
+            — Computer Vision (coming soon)
           </li>
           <li>
             <Link
@@ -131,7 +137,7 @@ export default function LearnPage() {
             >
               Signal Ward
             </Link>{" "}
-            — NLP &amp; Text Intelligence
+            — NLP &amp; Text Intelligence (coming soon)
           </li>
           <li>
             <Link
@@ -140,7 +146,7 @@ export default function LearnPage() {
             >
               Nova Canvas
             </Link>{" "}
-            — Multimodal &amp; Generative AI
+            — Multimodal &amp; Generative AI (coming soon)
           </li>
           <li>
             <Link
@@ -149,7 +155,7 @@ export default function LearnPage() {
             >
               Terra Grid
             </Link>{" "}
-            — Edge AI &amp; Production ML
+            — Edge AI &amp; Production ML (coming soon)
           </li>
         </ul>
 

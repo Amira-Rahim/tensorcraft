@@ -115,10 +115,10 @@ describe("PricingTiers (brutalist 5-tier grid)", () => {
   it("renders canonical dollar amounts on every tier", () => {
     render(<PricingTiers />);
     expect(screen.getByTestId("tier-card-free")).toHaveTextContent("$0");
-    expect(screen.getByTestId("tier-card-single")).toHaveTextContent("$79");
-    expect(screen.getByTestId("tier-card-two")).toHaveTextContent("$129");
-    expect(screen.getByTestId("tier-card-three")).toHaveTextContent("$169");
-    expect(screen.getByTestId("tier-card-all-five")).toHaveTextContent("$219");
+    expect(screen.getByTestId("tier-card-single")).toHaveTextContent("$49");
+    expect(screen.getByTestId("tier-card-two")).toHaveTextContent("$79");
+    expect(screen.getByTestId("tier-card-three")).toHaveTextContent("$99");
+    expect(screen.getByTestId("tier-card-all-five")).toHaveTextContent("$129");
   });
 
   it("maps plan ids to tier cards", () => {

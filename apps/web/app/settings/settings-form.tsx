@@ -1,25 +1,29 @@
 "use client";
 
 /**
- * Phase 11 §11d Wave 3 — Settings page brutalist redesign.
+ * Settings page brutalist redesign.
  *
- * 5-tab sidebar (Profile / Notifications / GitHub / Theme / Account), brutalist
- * square-track Toggle component, theme preview picker (writes
- * `profiles.preferred_theme_id`), and GitHub connect/disconnect wired to the
- * live API endpoints in `apps/api/src/routes/github.ts`:
+ * 4-tab sidebar (Profile / Notifications / GitHub / Account), brutalist
+ * square-track Toggle component, GitHub connect/disconnect wired to live API
+ * endpoints in `apps/api/src/routes/github.ts`:
  *   - POST /api/github/connect  — returns { url } → redirect into OAuth flow.
  *   - POST /api/github/disconnect — revokes token + clears DB columns.
+ *
+ * The "Theme" tab + preferred-theme picker were removed when the launch
+ * scoped down to one theme. Active theme is route-derived now (whichever
+ * theme the learner is currently inside), not user-selected. The
+ * `profiles.preferred_theme_id` column is left as a tombstone for revival.
  *
  * All controls use `rounded-none`, mono labels, CSS vars, and
  * `focus-visible:outline-2 focus-visible:outline-primary`. Purchases live on
  * the Account tab alongside sign-out + delete-account stub.
  */
 
-import { useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { getApiUrl } from "@/lib/api-url";
-import { themes, themeSlugs } from "@tensorcraft/themes";
+import { themes } from "@tensorcraft/themes";
 import { UserAvatar } from "@/app/components/user-avatar";
 import { resizeImage } from "@/lib/resize-image";
 
@@ -31,7 +35,6 @@ const TABS = [
   { id: "profile", label: "Profile" },
   { id: "notifications", label: "Notifications" },
   { id: "github", label: "GitHub" },
-  { id: "theme", label: "Theme" },
   { id: "account", label: "Account" },
 ] as const;
 
@@ -100,7 +103,6 @@ interface SettingsFormProps {
   githubConnected: boolean;
   emailAlerts: boolean;
   weeklyDigest: boolean;
-  preferredThemeId: string;
   purchases: Array<{
     planId: string;
     themeIds: string[];
@@ -117,7 +119,6 @@ export function SettingsForm({
   githubConnected: initialGithubConnected,
   emailAlerts: initialEmailAlerts,
   weeklyDigest: initialWeeklyDigest,
-  preferredThemeId: initialThemeId,
   purchases,
 }: SettingsFormProps) {
   const router = useRouter();
@@ -141,11 +142,6 @@ export function SettingsForm({
   );
   const [githubBusy, setGithubBusy] = useState(false);
   const [githubError, setGithubError] = useState<string | null>(null);
-
-  // Theme
-  const [themeId, setThemeId] = useState<string>(initialThemeId);
-  const [themeSaving, setThemeSaving] = useState(false);
-  const [themeSaved, setThemeSaved] = useState(false);
 
   // Save state (Profile + Notifications share one save button per tab)
   const [saving, setSaving] = useState(false);
@@ -274,33 +270,6 @@ export function SettingsForm({
   }
 
   // ------------------------------------------------------------------
-  // Theme picker save (writes preferred_theme_id)
-  // ------------------------------------------------------------------
-
-  async function handleThemeSelect(nextId: string) {
-    setThemeId(nextId);
-    setThemeSaving(true);
-    setThemeSaved(false);
-    const supabase = getSupabaseBrowserClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) {
-      setThemeSaving(false);
-      return;
-    }
-    const { error: upErr } = await supabase
-      .from("profiles")
-      .update({ preferred_theme_id: nextId })
-      .eq("id", user.id);
-    setThemeSaving(false);
-    if (!upErr) {
-      setThemeSaved(true);
-      setTimeout(() => setThemeSaved(false), 2000);
-    }
-  }
-
-  // ------------------------------------------------------------------
   // GitHub connect / disconnect — wired to apps/api/src/routes/github.ts
   // ------------------------------------------------------------------
 
@@ -387,29 +356,6 @@ export function SettingsForm({
     router.push("/");
     router.refresh();
   }
-
-  // ------------------------------------------------------------------
-  // Theme preview cards (derived once)
-  // ------------------------------------------------------------------
-
-  const themeCards = useMemo(
-    () =>
-      themeSlugs.map((slug) => {
-        const t = themes[slug];
-        return {
-          slug,
-          name: t.displayName,
-          tagline: t.tagline,
-          specialization: t.specialization,
-          primary: t.palette.primary,
-          accent: t.palette.accent,
-          surface: t.palette.surface,
-          bg: t.palette.bg,
-          border: t.palette.border,
-        };
-      }),
-    [],
-  );
 
   // ------------------------------------------------------------------
   // Render
@@ -717,126 +663,6 @@ export function SettingsForm({
                 </span>
               )}
             </div>
-          </Panel>
-        )}
-
-        {tab === "theme" && (
-          <Panel label="PREFERRED THEME">
-            <p
-              className="mb-6"
-              style={{
-                fontSize: 12,
-                color: "var(--tc-muted)",
-                lineHeight: 1.6,
-              }}
-            >
-              Pick the theme that powers your dashboard palette and ambient
-              effects. You can always switch per-theme while a lesson is open.
-            </p>
-
-            <div
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
-              role="radiogroup"
-              aria-label="Preferred theme"
-              data-testid="theme-grid"
-            >
-              {themeCards.map((t) => {
-                const active = t.slug === themeId;
-                return (
-                  <button
-                    key={t.slug}
-                    type="button"
-                    role="radio"
-                    aria-checked={active}
-                    data-testid={`theme-preview-${t.slug}`}
-                    onClick={() => handleThemeSelect(t.slug)}
-                    disabled={themeSaving}
-                    className="relative text-left rounded-none focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 brutalist-hover disabled:opacity-60"
-                    style={{
-                      background: t.surface,
-                      border: `2px solid ${active ? t.primary : t.border}`,
-                      padding: 16,
-                      cursor: themeSaving ? "wait" : "pointer",
-                    }}
-                  >
-                    {/* Palette swatches */}
-                    <div className="flex gap-0 mb-3">
-                      {[t.primary, t.accent, t.bg, t.border].map((c, i) => (
-                        <div
-                          key={i}
-                          aria-hidden="true"
-                          style={{
-                            width: 22,
-                            height: 22,
-                            background: c,
-                            border: "1px solid rgba(0,0,0,0.25)",
-                          }}
-                        />
-                      ))}
-                    </div>
-
-                    <div
-                      className="font-mono mb-1"
-                      style={{
-                        fontSize: 12,
-                        color: t.primary,
-                        letterSpacing: "0.08em",
-                        fontWeight: 700,
-                      }}
-                    >
-                      {t.name.toUpperCase()}
-                    </div>
-                    <div
-                      className="font-mono mb-2"
-                      style={{ fontSize: 10, color: "rgba(255,255,255,0.6)" }}
-                    >
-                      {t.specialization}
-                    </div>
-                    <div
-                      style={{
-                        fontSize: 11,
-                        color: "rgba(255,255,255,0.75)",
-                        lineHeight: 1.4,
-                      }}
-                    >
-                      {t.tagline}
-                    </div>
-
-                    {/* Active indicator */}
-                    <div
-                      className="absolute top-2 right-2 font-mono"
-                      style={{
-                        fontSize: 9,
-                        color: active ? t.primary : "transparent",
-                        letterSpacing: "0.1em",
-                        fontWeight: 700,
-                      }}
-                      aria-hidden="true"
-                    >
-                      ● ACTIVE
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-
-            {themeSaving && (
-              <div
-                className="font-mono mt-4"
-                style={{ fontSize: 10, color: "var(--tc-muted)" }}
-              >
-                Saving...
-              </div>
-            )}
-            {themeSaved && (
-              <div
-                className="font-mono mt-4"
-                style={{ fontSize: 10, color: "var(--tc-primary)" }}
-                data-testid="theme-saved"
-              >
-                Saved
-              </div>
-            )}
           </Panel>
         )}
 

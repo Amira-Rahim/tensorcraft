@@ -5,7 +5,7 @@
 
 ## Problem
 
-Users who buy a single theme ($79) cannot upgrade to a bundle. The checkout API rejects any purchase that includes already-owned themes with "You already own this theme" (400 error). The product plan explicitly promises "pay the difference" upgrades.
+Users who buy a single theme ($49) cannot upgrade to a bundle. The checkout API rejects any purchase that includes already-owned themes with "You already own this theme" (400 error). The product plan explicitly promises "pay the difference" upgrades.
 
 ## Solution
 
@@ -36,7 +36,7 @@ creditFromPriorPurchases = SUM(amount) FROM purchases
   AND theme_ids && requestedThemeIds  -- array overlap operator
 ```
 
-Credit is **capped at the target plan price** to prevent over-crediting. Example: a user who bought two separate bundles ($129 + $169 = $298) and upgrades to All 5 ($219) gets at most $219 credit, not $298. `adjustedPrice = max(0, plan.price - credit)`.
+Credit is **capped at the target plan price** to prevent over-crediting. Example: a user who bought two separate bundles ($79 + $99 = $178) and upgrades to All 5 ($129) gets at most $129 credit, not $178. `adjustedPrice = max(0, plan.price - credit)`.
 
 **Important:** Both the `ownedThemes` set and the credit query must filter by `status = 'completed'`. Pending, failed, or refunded purchases do not count as credit.
 
@@ -69,14 +69,14 @@ The webhook handler already validates `amount_total` against `plan.price`. For u
 When a user is logged in and owns themes:
 1. Fetch owned themes via the existing `purchases` query in `CheckoutButton`
 2. For each pricing tier, calculate the adjusted price
-3. Display: "Pay $50" with subtext "(includes $79 credit from Deep Orbit)" if the user has credit
+3. Display: "Pay $30" with subtext "(includes $49 credit from Deep Orbit)" if the user has credit
 4. The `themeIds` passed to `CheckoutButton` always includes ALL themes for the tier (owned + new)
 
 ### 5. Frontend: CheckoutButton changes (`checkout-button.tsx`)
 
 - Handle the `{ granted: true }` response from auto-grant — redirect to `/dashboard/purchase-success` without going through Stripe
 - Update the "Already Owned" state: only show when user owns ALL themes of the tier (already works this way)
-- Show adjusted price on the button text when credit applies: "Upgrade — $50 →" instead of "Get Started →"
+- Show adjusted price on the button text when credit applies: "Upgrade — $30 →" instead of "Get Started →"
 
 ### 6. Frontend: ThemePicker changes (`pricing-tiers.tsx`)
 
@@ -98,8 +98,8 @@ For multi-theme tiers (2, 3), when the user already owns some themes:
 
 1. `pnpm build` passes
 2. User with no purchases → sees full prices, normal checkout
-3. User who owns Deep Orbit ($79) → "Two Themes" shows "$50" (was $129), "All 5" shows "$140" (was $219)
-4. User clicks "Two Themes" upgrade → Stripe checkout for $50 → themes granted
+3. User who owns Deep Orbit ($49) → "Two Themes" shows "$30" (was $79), "All 5" shows "$80" (was $129)
+4. User clicks "Two Themes" upgrade → Stripe checkout for $30 → themes granted
 5. User who owns enough to cover a bundle → instant grant, no Stripe
 6. User who owns ALL themes → "Already Owned ✓"
 7. Tests cover: credit calculation, adjusted price, auto-grant, webhook validation

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { PRICING } from "@tensorcraft/shared";
 import { AmbientBackground } from "@/app/components/ambient-background";
 import { PaywallAnalytics, PaywallCtaTracker } from "./paywall-analytics";
 
@@ -21,8 +22,7 @@ import { PaywallAnalytics, PaywallCtaTracker } from "./paywall-analytics";
 
 export const metadata: Metadata = {
   title: "Continue Your ML Journey | Tensorcraft",
-  description:
-    "Unlock all 11 modules, the capstone, certificate, and GitHub push flow. One payment, lifetime access — from $79.",
+  description: `Unlock all 11 modules, the capstone, certificate, and GitHub push flow. One payment, lifetime access — from $${PRICING.single.price}.`,
   // Gated-content upsell page; not an SEO target.
   robots: { index: false, follow: false },
 };
@@ -116,7 +116,7 @@ export default function PaywallPage() {
             </Link>
           </div>
           <p className="mt-6 text-[11px] uppercase tracking-[0.15em] text-text-muted font-mono">
-            // one payment &middot; lifetime access &middot; from $79
+            {`// one payment · lifetime access · from $${PRICING.single.price}`}
           </p>
         </section>
 
@@ -166,7 +166,7 @@ export default function PaywallPage() {
                         Paid
                       </div>
                       <div className="mt-1 text-base font-bold text-primary">
-                        From $79
+                        From ${PRICING.single.price}
                       </div>
                     </th>
                   </tr>

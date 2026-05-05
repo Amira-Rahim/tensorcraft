@@ -13,6 +13,8 @@ export interface ThemeCardData {
   completedLessons: number;
   totalLessons: number;
   progressPercent: number;
+  /** When true, render as "Coming soon" — link routes to the per-theme stub. */
+  comingSoon: boolean;
 }
 
 export interface ThemeCardsProps {
@@ -64,9 +66,13 @@ export function ThemeCards({ cards, hasFullBundle }: ThemeCardsProps) {
             color: "var(--tc-muted)",
           }}
         >
-          {hasFullBundle
-            ? "All 5 themes unlocked"
-            : `${cards.filter((c) => c.owned).length} of ${cards.length} unlocked`}
+          {(() => {
+            const launched = cards.filter((c) => !c.comingSoon);
+            const ownedLaunched = launched.filter((c) => c.owned).length;
+            return hasFullBundle
+              ? "All available themes unlocked"
+              : `${ownedLaunched} of ${launched.length} unlocked · ${cards.filter((c) => c.comingSoon).length} coming soon`;
+          })()}
         </span>
       </div>
 
@@ -98,13 +104,17 @@ export function ThemeCards({ cards, hasFullBundle }: ThemeCardsProps) {
 }
 
 function ThemeCard({ card }: { card: ThemeCardData }) {
-  const href = card.owned
+  const href = card.comingSoon
     ? `/themes/${card.slug}`
-    : `/pricing?locked=${card.slug}`;
+    : card.owned
+      ? `/themes/${card.slug}`
+      : `/pricing?locked=${card.slug}`;
 
-  const label = card.owned
-    ? `${card.displayName}, ${card.progressPercent}% complete, open theme`
-    : `${card.displayName} locked, view pricing`;
+  const label = card.comingSoon
+    ? `${card.displayName} coming soon, join waitlist`
+    : card.owned
+      ? `${card.displayName}, ${card.progressPercent}% complete, open theme`
+      : `${card.displayName} locked, view pricing`;
 
   return (
     <Link
@@ -158,7 +168,12 @@ function ThemeCard({ card }: { card: ThemeCardData }) {
             {card.displayName}
           </div>
         </div>
-        <LockBadge owned={card.owned} active={card.isActive} />
+        <LockBadge
+          owned={card.owned}
+          active={card.isActive}
+          comingSoon={card.comingSoon}
+          primary={card.primary}
+        />
       </div>
 
       <p
@@ -175,7 +190,29 @@ function ThemeCard({ card }: { card: ThemeCardData }) {
       </p>
 
       <div style={{ marginTop: "auto" }}>
-        {card.owned ? (
+        {card.comingSoon ? (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              fontFamily: MONO,
+              fontSize: 12,
+              color: "var(--tc-muted)",
+            }}
+          >
+            <span>Waitlist open</span>
+            <span
+              style={{
+                color: card.primary,
+                fontWeight: 700,
+                letterSpacing: "0.05em",
+              }}
+            >
+              Notify me &rarr;
+            </span>
+          </div>
+        ) : card.owned ? (
           <>
             <div
               role="progressbar"
@@ -244,7 +281,36 @@ function ThemeCard({ card }: { card: ThemeCardData }) {
   );
 }
 
-function LockBadge({ owned, active }: { owned: boolean; active: boolean }) {
+function LockBadge({
+  owned,
+  active,
+  comingSoon,
+  primary,
+}: {
+  owned: boolean;
+  active: boolean;
+  comingSoon: boolean;
+  primary: string;
+}) {
+  if (comingSoon) {
+    return (
+      <span
+        style={{
+          fontFamily: MONO,
+          fontSize: 11,
+          fontWeight: 700,
+          color: primary,
+          border: `1px solid ${primary}`,
+          padding: "2px 8px",
+          letterSpacing: "0.06em",
+          textTransform: "uppercase",
+          whiteSpace: "nowrap",
+        }}
+      >
+        Coming soon
+      </span>
+    );
+  }
   if (active) {
     return (
       <span

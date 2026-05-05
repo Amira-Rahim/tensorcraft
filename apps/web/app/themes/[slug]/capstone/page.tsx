@@ -1,7 +1,7 @@
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { themes } from "@tensorcraft/themes";
-import { isValidThemeSlug, THEME_SLUGS } from "@tensorcraft/shared";
+import { isValidThemeSlug, THEME_SLUGS, isLaunched } from "@tensorcraft/shared";
 import {
   getModules,
   getModuleLessons,
@@ -39,6 +39,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CapstonePage({ params }: Props) {
   const { slug } = await params;
+  if (!isLaunched(slug)) notFound();
   const theme = themes[slug];
   if (!theme) notFound();
 

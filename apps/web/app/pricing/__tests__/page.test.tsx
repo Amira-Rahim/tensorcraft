@@ -108,10 +108,10 @@ describe("PricingPage (brutalist Phase 11 §11d)", () => {
     render(<PricingPage />);
     const table = screen.getByTestId("comparison-table");
     expect(table).toHaveTextContent("$0");
+    expect(table).toHaveTextContent("$49");
     expect(table).toHaveTextContent("$79");
+    expect(table).toHaveTextContent("$99");
     expect(table).toHaveTextContent("$129");
-    expect(table).toHaveTextContent("$169");
-    expect(table).toHaveTextContent("$219");
   });
 
   it("comparison table includes core feature rows", () => {

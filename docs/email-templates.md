@@ -107,7 +107,7 @@ that reads naturally and includes the same CTA as a bare URL.
 - **Mono accent strings.** Use a single monospaced marker per email (e.g.
   `// PURCHASE · {plan_id}`) to echo the product UI. Do not stack multiple.
 - **No price-anchoring language.** Pricing values live in `project_pricing`
-  memory and on-site; do not hard-code "$79" in a Kit template — reference
+  memory and on-site; do not hard-code "$49" in a Kit template — reference
   "your plan" and link to the dashboard receipt instead. Protects against
   stale copy when tiers move.
 

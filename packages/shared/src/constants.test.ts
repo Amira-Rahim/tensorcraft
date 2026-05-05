@@ -21,16 +21,18 @@ describe("PRICING", () => {
     expect(PRICING.free.themes).toBe(0);
   });
 
-  it("has correct single tier at $79", () => {
-    expect(PRICING.single.price).toBe(79);
+  it("has correct single tier at $49", () => {
+    expect(PRICING.single.price).toBe(49);
     expect(PRICING.single.themes).toBe(1);
   });
 
   it("has correct bundle tiers", () => {
-    expect(PRICING.twoBundle.price).toBe(129);
+    expect(PRICING.twoBundle.price).toBe(79);
     expect(PRICING.twoBundle.themes).toBe(2);
-    expect(PRICING.threeBundle.price).toBe(169);
+    expect(PRICING.threeBundle.price).toBe(99);
     expect(PRICING.threeBundle.themes).toBe(3);
+    expect(PRICING.allFive.price).toBe(129);
+    expect(PRICING.allFive.themes).toBe(5);
   });
 
   it("bundles are cheaper per-theme than single", () => {

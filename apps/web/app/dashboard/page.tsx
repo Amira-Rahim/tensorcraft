@@ -8,7 +8,12 @@ import {
   getThemeLessons,
   getLessonsWithBridges,
 } from "@tensorcraft/content";
-import { isValidThemeSlug, THEME_SLUGS } from "@tensorcraft/shared";
+import {
+  isValidThemeSlug,
+  LAUNCHED_THEMES,
+  isLaunched,
+  isComingSoon,
+} from "@tensorcraft/shared";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import type { Metadata } from "next";
 import {
@@ -98,15 +103,22 @@ export default async function DashboardPage() {
       if (isValidThemeSlug(slug)) ownedThemes.add(slug);
     }
   }
-  const hasFullBundle = THEME_SLUGS.every((slug) => ownedThemes.has(slug));
+  // "Full bundle" = all currently-launched themes owned. Coming-soon themes
+  // are excluded — they aren't purchasable. When a new theme launches and is
+  // added to LAUNCHED_THEMES, this check expands automatically.
+  const hasFullBundle = LAUNCHED_THEMES.every((slug) => ownedThemes.has(slug));
 
   const streaks = streaksRaw ?? [];
   const records = progressRecords ?? [];
   const attempts = exerciseAttempts ?? [];
 
-  // Use first theme for the dashboard
+  // Active-theme picks come from the LAUNCHED set only — coming-soon themes
+  // have no compiled content (Velite excludes them) so getModules/etc. would
+  // return empty arrays. Coming-soon themes still render as cards below for
+  // discoverability + waitlist capture, but never become the active surface.
   const allThemes = Object.values(themes);
-  const activeTheme = allThemes[0];
+  const launchedThemes = allThemes.filter((t) => isLaunched(t.slug));
+  const activeTheme = launchedThemes[0];
 
   if (!activeTheme) redirect("/themes");
 
@@ -273,7 +285,7 @@ export default async function DashboardPage() {
       .map((r) => `${r.theme_id}/${r.lesson_id}`),
   );
 
-  const allBridges: DashboardBridge[] = allThemes.flatMap((theme) => {
+  const allBridges: DashboardBridge[] = launchedThemes.flatMap((theme) => {
     const bridgeLessons = getLessonsWithBridges(theme.slug);
     return bridgeLessons.map((b) => ({
       ...b,
@@ -325,17 +337,22 @@ export default async function DashboardPage() {
     profile?.display_name || user.email?.split("@")[0] || "Explorer";
   const avatarUrl = profile?.avatar_url || null;
 
-  // Build per-theme card data: owned themes get real per-theme progress,
-  // locked themes just show their total lesson count and a pricing link.
+  // Build per-theme card data:
+  //   - launched + owned: real per-theme progress
+  //   - launched + locked: total lesson count + pricing link
+  //   - coming-soon: muted card linking to the per-theme stub w/ waitlist;
+  //                  totalLessons = 0 because Velite skipped that theme's content.
   const themeCardsData: ThemeCardData[] = allThemes.map((theme) => {
-    const themeLessons = getThemeLessons(theme.slug);
+    const comingSoon = isComingSoon(theme.slug);
+    const themeLessons = comingSoon ? [] : getThemeLessons(theme.slug);
     const totalLessonsForTheme = themeLessons.length;
     const owned = ownedThemes.has(theme.slug);
-    const completedForTheme = owned
-      ? records.filter(
-          (r) => r.theme_id === theme.slug && r.status === "completed",
-        ).length
-      : 0;
+    const completedForTheme =
+      owned && !comingSoon
+        ? records.filter(
+            (r) => r.theme_id === theme.slug && r.status === "completed",
+          ).length
+        : 0;
     const progressPercent =
       owned && totalLessonsForTheme > 0
         ? Math.round((completedForTheme / totalLessonsForTheme) * 100)
@@ -352,6 +369,7 @@ export default async function DashboardPage() {
       completedLessons: completedForTheme,
       totalLessons: totalLessonsForTheme,
       progressPercent,
+      comingSoon,
     };
   });
 

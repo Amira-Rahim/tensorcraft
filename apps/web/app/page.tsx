@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { PRICING } from "@tensorcraft/shared";
 import { LandingHero } from "./components/landing-hero";
 import { LandingBridgeTicker } from "./components/landing-bridge-ticker";
 import { LandingBridgeTiers } from "./components/landing-bridge-tiers";
@@ -48,8 +49,8 @@ export default function Home() {
           {[
             ["55", "Lessons per theme"],
             ["11", "Modules"],
-            ["$79", "One-time, no sub"],
-            ["5", "Themes total"],
+            [`$${PRICING.single.price}`, "One-time, no sub"],
+            ["1 / 5", "Themes live (4 coming)"],
           ].map(([v, l], i) => (
             <div
               key={l}

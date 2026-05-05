@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import type { Metadata } from "next";
+import { PRICING } from "@tensorcraft/shared";
 import { PaymentError } from "./payment-error";
 import { PaywallNotice } from "./paywall-notice";
 import { PricingAnalytics } from "./pricing-analytics";
@@ -8,17 +9,15 @@ import { PricingTiers } from "./pricing-tiers";
 import { AmbientBackground } from "@/app/components/ambient-background";
 
 export const metadata: Metadata = {
-  title: "ML Course Pricing — From $0 to $219 | Tensorcraft",
-  description:
-    "One payment. Lifetime access. Learn browser-based ML through familiar frontend concepts. Free preview, $79 per theme, bundles up to $219.",
+  title: `ML Course Pricing — From $0 to $${PRICING.allFive.price} | Tensorcraft`,
+  description: `One payment. Lifetime access. Learn browser-based ML through familiar frontend concepts. Free preview, $${PRICING.single.price} per theme, bundles up to $${PRICING.allFive.price}.`,
   alternates: { canonical: "https://tensorcraft.app/pricing" },
   openGraph: {
     type: "website",
     url: "https://tensorcraft.app/pricing",
     siteName: "Tensorcraft",
     title: "Simple, Fair Pricing — Tensorcraft",
-    description:
-      "One payment. Lifetime access. $0 preview, $79 per theme, bundles up to $219.",
+    description: `One payment. Lifetime access. $0 preview, $${PRICING.single.price} per theme, bundles up to $${PRICING.allFive.price}.`,
     images: [
       {
         url: "/api/og?title=Simple%2C%20Fair%20Pricing&subtitle=One%20payment.%20Lifetime%20access.&theme=deep-orbit",
@@ -31,8 +30,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Simple, Fair Pricing — Tensorcraft",
-    description:
-      "One payment. Lifetime access. $0 preview, $79 per theme, bundles up to $219.",
+    description: `One payment. Lifetime access. $0 preview, $${PRICING.single.price} per theme, bundles up to $${PRICING.allFive.price}.`,
     images: [
       "/api/og?title=Simple%2C%20Fair%20Pricing&subtitle=One%20payment.%20Lifetime%20access.&theme=deep-orbit",
     ],
@@ -154,11 +152,15 @@ const FEATURE_MATRIX: {
 ];
 
 const TIER_COLUMNS: { key: TierKey; label: string; price: string }[] = [
-  { key: "free", label: "Free", price: "$0" },
-  { key: "single", label: "Single", price: "$79" },
-  { key: "twoBundle", label: "Two", price: "$129" },
-  { key: "threeBundle", label: "Three", price: "$169" },
-  { key: "allFive", label: "All 5", price: "$219" },
+  { key: "free", label: "Free", price: `$${PRICING.free.price}` },
+  { key: "single", label: "Single", price: `$${PRICING.single.price}` },
+  { key: "twoBundle", label: "Two", price: `$${PRICING.twoBundle.price}` },
+  {
+    key: "threeBundle",
+    label: "Three",
+    price: `$${PRICING.threeBundle.price}`,
+  },
+  { key: "allFive", label: "All 5", price: `$${PRICING.allFive.price}` },
 ];
 
 function renderCell(value: boolean | string) {
@@ -197,7 +199,7 @@ export default function PricingPage() {
       {
         "@type": "Offer",
         name: "Free preview",
-        price: "0",
+        price: String(PRICING.free.price),
         priceCurrency: "USD",
         availability: "https://schema.org/InStock",
         description:
@@ -206,7 +208,7 @@ export default function PricingPage() {
       {
         "@type": "Offer",
         name: "Single theme",
-        price: "79",
+        price: String(PRICING.single.price),
         priceCurrency: "USD",
         availability: "https://schema.org/InStock",
         description:
@@ -215,7 +217,7 @@ export default function PricingPage() {
       {
         "@type": "Offer",
         name: "Two-theme bundle",
-        price: "129",
+        price: String(PRICING.twoBundle.price),
         priceCurrency: "USD",
         availability: "https://schema.org/InStock",
         description: "Any two themes bundled, lifetime access.",
@@ -223,7 +225,7 @@ export default function PricingPage() {
       {
         "@type": "Offer",
         name: "Three-theme bundle",
-        price: "169",
+        price: String(PRICING.threeBundle.price),
         priceCurrency: "USD",
         availability: "https://schema.org/InStock",
         description: "Any three themes bundled, lifetime access.",
@@ -231,7 +233,7 @@ export default function PricingPage() {
       {
         "@type": "Offer",
         name: "All five themes",
-        price: "219",
+        price: String(PRICING.allFive.price),
         priceCurrency: "USD",
         availability: "https://schema.org/InStock",
         description:

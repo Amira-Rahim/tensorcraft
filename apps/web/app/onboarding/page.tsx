@@ -1,9 +1,13 @@
 "use client";
 
 /**
- * Phase 11 §11d Wave 2 — Onboarding page brutalist redesign.
+ * Onboarding page brutalist redesign.
  *
- * 5-step wizard: Welcome → Background → Goal → Theme → Ready.
+ * 4-step wizard: Welcome → Background → Goal → Ready.
+ *
+ * Theme selection was removed when the launch was scoped down to Deep Orbit
+ * only. Every learner is auto-routed to /themes/deep-orbit on submit. When a
+ * second theme launches, restore a Theme step (filtered to LAUNCHED_THEMES).
  *
  * State is local-first; all selections are held in React state and committed
  * together on the final "Start Deep Orbit" CTA. The final submit:
@@ -11,11 +15,10 @@
  *      learning_goal, fe_background, fe_framework, fe_experience_years) so the
  *      server-side validator in `apps/api/src/routes/onboarding.ts` enforces the
  *      same CHECK constraints as the DB.
- *   2. Updates `profiles.preferred_theme_id` + `onboarding_completed` via the
- *      browser Supabase client (those columns are not part of the onboarding
- *      PATCH contract).
+ *   2. Marks `profiles.onboarding_completed = true` via the browser Supabase
+ *      client (the column is not part of the onboarding PATCH contract).
  *   3. Tags the user as onboarded in Kit via `/api/email`.
- *   4. Routes the learner to their chosen theme.
+ *   4. Routes the learner to /themes/deep-orbit.
  *
  * Keyboard navigation:
  *   - Enter (outside textareas) → advance to next step when allowed.
@@ -29,11 +32,13 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { KeyboardEvent as ReactKeyboardEvent } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
-import { themes, themeSlugs } from "@tensorcraft/themes";
 import { BRIDGES } from "@tensorcraft/shared";
 import { AmbientBackground } from "@/app/components/ambient-background";
 import { trackThemeSelected } from "@/lib/analytics";
 import { getApiUrl } from "@/lib/api-url";
+
+const LAUNCH_THEME_SLUG = "deep-orbit";
+const LAUNCH_THEME_NAME = "Deep Orbit";
 
 // ---------------------------------------------------------------------------
 // Canonical enum values — MUST match migration 018 CHECK constraints.
@@ -84,15 +89,8 @@ const FRAMEWORKS = [
 
 type Framework = (typeof FRAMEWORKS)[number]["id"];
 
-const ONBOARDING_THEMES = themeSlugs.map((slug) => ({
-  id: slug,
-  name: themes[slug].displayName,
-  domain: themes[slug].specialization,
-  color: themes[slug].palette.primary,
-}));
-
-const STEPS = ["Welcome", "Background", "Goal", "Theme", "Ready"] as const;
-type StepIndex = 0 | 1 | 2 | 3 | 4;
+const STEPS = ["Welcome", "Background", "Goal", "Ready"] as const;
+type StepIndex = 0 | 1 | 2 | 3;
 
 // ---------------------------------------------------------------------------
 // Component
@@ -112,17 +110,10 @@ export default function OnboardingPage() {
   // Goal step
   const [learningGoal, setLearningGoal] = useState<LearningGoal | null>(null);
 
-  // Theme step
-  const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
-
   // Submit state
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [stepError, setStepError] = useState<string | null>(null);
-
-  const selectedThemeData = ONBOARDING_THEMES.find(
-    (t) => t.id === selectedTheme,
-  );
 
   const yearsAsNumber = years === "" ? null : Number(years);
   const yearsValid =
@@ -131,13 +122,12 @@ export default function OnboardingPage() {
       yearsAsNumber >= 0 &&
       yearsAsNumber <= 50);
 
-  // Per-step validation. Only Background/Goal/Theme have required fields.
+  // Per-step validation. Only Background/Goal have required fields.
   const canAdvance = useCallback((): boolean => {
     if (step === 1) return experienceLevel !== null && yearsValid;
     if (step === 2) return learningGoal !== null;
-    if (step === 3) return selectedTheme !== null;
     return true;
-  }, [step, experienceLevel, yearsValid, learningGoal, selectedTheme]);
+  }, [step, experienceLevel, yearsValid, learningGoal]);
 
   const goNext = useCallback(() => {
     setStepError(null);
@@ -148,12 +138,10 @@ export default function OnboardingPage() {
         setStepError("Experience years must be a whole number 0–50.");
       } else if (step === 2) {
         setStepError("Pick a goal to continue.");
-      } else if (step === 3) {
-        setStepError("Pick a theme to continue.");
       }
       return;
     }
-    setStep((s) => Math.min(4, (s + 1) as StepIndex) as StepIndex);
+    setStep((s) => Math.min(3, (s + 1) as StepIndex) as StepIndex);
   }, [canAdvance, step, experienceLevel, yearsValid]);
 
   const goBack = useCallback(() => {
@@ -162,7 +150,7 @@ export default function OnboardingPage() {
   }, []);
 
   const completeOnboarding = useCallback(async () => {
-    if (!selectedTheme || !experienceLevel || !learningGoal) {
+    if (!experienceLevel || !learningGoal) {
       setError("Missing required fields.");
       return;
     }
@@ -213,19 +201,15 @@ export default function OnboardingPage() {
         return;
       }
 
-      // 2. Write preferred_theme_id + onboarding_completed directly — these
-      //    columns live on `profiles` but aren't part of the onboarding PATCH
-      //    contract, so we use the browser client w/ RLS.
+      // 2. Mark onboarding complete. preferred_theme_id is no longer set —
+      //    the active theme is route-derived now. (Column kept as tombstone.)
       const {
         data: { user },
       } = await supabase.auth.getUser();
       if (user) {
         await supabase
           .from("profiles")
-          .update({
-            onboarding_completed: true,
-            preferred_theme_id: selectedTheme,
-          })
+          .update({ onboarding_completed: true })
           .eq("id", user.id);
       }
 
@@ -239,9 +223,9 @@ export default function OnboardingPage() {
         body: JSON.stringify({ event: "onboarded" }),
       }).catch(() => {});
 
-      // 4. Route to chosen theme.
-      trackThemeSelected(selectedTheme);
-      router.push(`/themes/${selectedTheme}`);
+      // 4. Route to the launched theme.
+      trackThemeSelected(LAUNCH_THEME_SLUG);
+      router.push(`/themes/${LAUNCH_THEME_SLUG}`);
     } catch (e) {
       setError(
         e instanceof Error
@@ -251,7 +235,6 @@ export default function OnboardingPage() {
       setSaving(false);
     }
   }, [
-    selectedTheme,
     experienceLevel,
     learningGoal,
     feBackground,
@@ -273,7 +256,7 @@ export default function OnboardingPage() {
       if (tag === "TEXTAREA") return;
       if (tag === "BUTTON") return;
       e.preventDefault();
-      if (step === 4) {
+      if (step === 3) {
         void completeOnboarding();
       } else {
         goNext();
@@ -349,19 +332,12 @@ export default function OnboardingPage() {
           <GoalStep goal={learningGoal} setGoal={setLearningGoal} />
         )}
         {step === 3 && (
-          <ThemeStep
-            selectedTheme={selectedTheme}
-            setSelectedTheme={setSelectedTheme}
-          />
-        )}
-        {step === 4 && (
           <ReadyStep
             experienceLevel={experienceLevel}
             learningGoal={learningGoal}
             feBackground={feBackground}
             framework={framework}
             years={yearsAsNumber}
-            themeName={selectedThemeData?.name ?? null}
           />
         )}
 
@@ -398,7 +374,7 @@ export default function OnboardingPage() {
               ← Back
             </button>
           )}
-          {step < 4 ? (
+          {step < 3 ? (
             <button
               type="button"
               data-testid="onboarding-next"
@@ -412,23 +388,13 @@ export default function OnboardingPage() {
               type="button"
               data-testid="onboarding-submit"
               onClick={completeOnboarding}
-              disabled={saving || !selectedTheme}
+              disabled={saving}
               className="px-7 py-3 font-mono text-xs font-bold uppercase tracking-[0.1em] text-page bg-primary border-2 border-primary rounded-none hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {saving
-                ? "Launching..."
-                : selectedThemeData
-                  ? `Start ${selectedThemeData.name} →`
-                  : "Start Deep Orbit →"}
+              {saving ? "Launching..." : `Start ${LAUNCH_THEME_NAME} →`}
             </button>
           )}
         </div>
-
-        {step === 4 && (
-          <p className="text-[13px] text-text-muted opacity-70 font-mono">
-            You can change your theme anytime in Settings.
-          </p>
-        )}
       </div>
     </div>
   );
@@ -758,103 +724,18 @@ function GoalStep(props: {
   );
 }
 
-function ThemeStep(props: {
-  selectedTheme: string | null;
-  setSelectedTheme: (v: string) => void;
-}) {
-  const { selectedTheme, setSelectedTheme } = props;
-  return (
-    <div
-      className="flex flex-col items-center text-center w-full animate-fade-up"
-      data-testid="step-theme"
-    >
-      <div className="font-mono text-xs text-primary tracking-[0.15em] mb-3.5">
-        // CHOOSE YOUR WORLD
-      </div>
-      <h2 className="font-mono text-3xl font-bold text-text-primary tracking-tight mb-2.5">
-        Choose your starting theme
-      </h2>
-      <p className="text-sm text-text-muted mb-10 font-sans">
-        Each theme teaches the full ML toolkit through a unique narrative.
-      </p>
-      <div
-        role="radiogroup"
-        aria-label="Starting theme"
-        data-testid="theme-radiogroup"
-        className="flex flex-col gap-0.5 w-full"
-        onKeyDown={makeArrowHandler(
-          ONBOARDING_THEMES.map((t) => ({ id: t.id })),
-          selectedTheme,
-          (id) => setSelectedTheme(id as string),
-        )}
-      >
-        {ONBOARDING_THEMES.map((th) => {
-          const selected = selectedTheme === th.id;
-          return (
-            <button
-              key={th.id}
-              type="button"
-              role="radio"
-              aria-checked={selected}
-              data-testid={`theme-${th.id}`}
-              onClick={() => setSelectedTheme(th.id)}
-              className={`flex items-center gap-4 px-6 py-4 text-left transition-all border-2 rounded-none focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 ${
-                selected
-                  ? "bg-primary/10 border-primary"
-                  : "bg-surface border-border hover:border-primary/40"
-              }`}
-            >
-              <div
-                className="w-9 h-9 flex items-center justify-center shrink-0 rounded-none"
-                style={{
-                  background: `${th.color}20`,
-                  border: `2px solid ${th.color}40`,
-                }}
-              >
-                <span className="font-mono text-sm" style={{ color: th.color }}>
-                  ◎
-                </span>
-              </div>
-              <div className="flex-1 text-left">
-                <div className="font-mono text-xs font-bold text-text-primary">
-                  {th.name}
-                </div>
-                <div className="font-mono text-xs text-text-muted mt-0.5">
-                  {th.domain}
-                </div>
-              </div>
-              {selected && (
-                <span className="font-mono text-xs text-primary border border-primary px-2 py-0.5 rounded-none uppercase tracking-[0.1em]">
-                  Selected
-                </span>
-              )}
-            </button>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
 function ReadyStep(props: {
   experienceLevel: ExperienceLevel | null;
   learningGoal: LearningGoal | null;
   feBackground: string;
   framework: Framework | null;
   years: number | null;
-  themeName: string | null;
 }) {
-  const {
-    experienceLevel,
-    learningGoal,
-    feBackground,
-    framework,
-    years,
-    themeName,
-  } = props;
+  const { experienceLevel, learningGoal, feBackground, framework, years } =
+    props;
 
   const rows: Array<[string, string]> = [
-    ["Theme", themeName ?? "Not set"],
+    ["Theme", `${LAUNCH_THEME_NAME} (live now)`],
     [
       "Experience",
       experienceLevel

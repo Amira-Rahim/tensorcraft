@@ -12,10 +12,10 @@ test.describe("Pricing Page", () => {
     await expect(page.getByText(/\$0/)).toBeVisible();
   });
 
-  test("shows single theme tier at $79", async ({ page }) => {
+  test("shows single theme tier at $49", async ({ page }) => {
     await page.goto("/pricing");
     await expect(page.getByText(/Single Theme/i)).toBeVisible();
-    await expect(page.getByText(/\$79/)).toBeVisible();
+    await expect(page.getByText(/\$49/)).toBeVisible();
   });
 
   test("shows bundle tiers", async ({ page }) => {

@@ -47,11 +47,16 @@ function tsToJs(src: string): string {
   );
 }
 
+// V1 launched theme dirs — keep in sync with LAUNCHED_THEMES in
+// packages/shared/src/constants.ts. Coming-soon themes' .mdx/.yaml stay in the
+// repo (under packages/content/content/{slug}/) but are excluded from the build
+// so their content does not ship in `.velite/*` outputs.
+const LAUNCHED_THEME_DIRS = "{deep-orbit,extras}";
+
 const lessons = defineCollection({
   name: "Lesson",
-  // Scoped to theme dirs so the new `blog/` dir doesn't fail lesson validation.
-  pattern:
-    "{deep-orbit,neon-protocol,signal-ward,nova-canvas,terra-grid,extras}/**/*.mdx",
+  // Scoped to launched theme dirs (extras included for shared cross-theme content).
+  pattern: `${LAUNCHED_THEME_DIRS}/**/*.mdx`,
   schema: s.object({
     slug: s.slug("lessons"),
     title: s.string().min(1),
@@ -143,7 +148,7 @@ const lessons = defineCollection({
 
 const exercises = defineCollection({
   name: "Exercise",
-  pattern: "**/exercises/*.yaml",
+  pattern: `${LAUNCHED_THEME_DIRS}/**/exercises/*.yaml`,
   schema: s.object({
     slug: s.slug("exercises"),
     lessonSlug: s.string().min(1),
@@ -188,7 +193,7 @@ const exercises = defineCollection({
 
 const modules = defineCollection({
   name: "Module",
-  pattern: "**/module.yaml",
+  pattern: `${LAUNCHED_THEME_DIRS}/**/module.yaml`,
   schema: s.object({
     slug: s.slug("modules"),
     title: s.string().min(1),

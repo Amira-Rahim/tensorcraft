@@ -19,10 +19,13 @@ export default async function SettingsPage() {
 
   if (!user) redirect("/auth");
 
+  // Note: `preferred_theme_id` is no longer read or rendered. The column is
+  // kept on the table as a tombstone so a future re-introduction of theme
+  // preference doesn't require a destructive migration.
   const { data: profile } = await supabase
     .from("profiles")
     .select(
-      "display_name, avatar_url, preferred_theme_id, github_username, github_connected, email_alerts, weekly_digest",
+      "display_name, avatar_url, github_username, github_connected, email_alerts, weekly_digest",
     )
     .eq("id", user.id)
     .single();
@@ -59,9 +62,6 @@ export default async function SettingsPage() {
           }
           emailAlerts={(profileRecord?.email_alerts as boolean) ?? false}
           weeklyDigest={(profileRecord?.weekly_digest as boolean) ?? true}
-          preferredThemeId={
-            (profileRecord?.preferred_theme_id as string) ?? "deep-orbit"
-          }
           purchases={purchases}
         />
       </div>

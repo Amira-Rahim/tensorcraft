@@ -33,7 +33,7 @@ Fix broken tests to match the current UI. Add new tests for pricing and onboardi
 ### 3. Add `e2e/pricing.spec.ts`
 
 New test file covering:
-- Pricing page loads with all tiers visible (Free, Single $79, bundles)
+- Pricing page loads with all tiers visible (Free, Single $49, bundles)
 - Theme selector pills are clickable
 - "Get Started" button exists for each tier
 - Feature comparison table renders

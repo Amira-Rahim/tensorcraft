@@ -63,8 +63,8 @@ describe("Admin routes", () => {
               eq: () =>
                 Promise.resolve({
                   data: [
-                    { amount: 7900, status: "completed" },
-                    { amount: 7900, status: "completed" },
+                    { amount: 4900, status: "completed" },
+                    { amount: 4900, status: "completed" },
                   ],
                   error: null,
                 }),
@@ -83,7 +83,7 @@ describe("Admin routes", () => {
       expect(body.waitlistCount).toBe(42);
       expect(body.userCount).toBe(10);
       expect(body.purchaseCount).toBe(2);
-      expect(body.revenue).toBe(15800);
+      expect(body.revenue).toBe(9800);
     });
   });
 

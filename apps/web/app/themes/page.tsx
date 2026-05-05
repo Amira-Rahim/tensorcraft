@@ -1,31 +1,37 @@
 import { themes } from "@tensorcraft/themes";
-import { PRICING, THEME_CONTENT, isValidThemeSlug } from "@tensorcraft/shared";
+import {
+  PRICING,
+  THEME_CONTENT,
+  isValidThemeSlug,
+  isLaunched,
+} from "@tensorcraft/shared";
 import { AmbientBackground } from "@/app/components/ambient-background";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { ThemeCardsGrid, type ThemeCardData } from "./theme-cards-grid";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "5 ML Courses for Frontend Developers | Tensorcraft",
+  title: "Tensorcraft — Deep Orbit launches today, 4 more coming",
   description:
-    "Choose your learning path — 5 themed courses from frontend to ML.",
+    "Deep Orbit (time-series & signals) is live. Neon Protocol, Signal Ward, Nova Canvas, and Terra Grid follow in waves — join each waitlist.",
   alternates: { canonical: "https://tensorcraft.app/themes" },
 };
 
 /**
- * ThemeSelection page (Phase 11 §11d Wave 2).
+ * ThemeSelection page.
  *
- * - Equal 5-card brutalist grid (all themes launch simultaneously — no
- *   "coming soon" / "launched" labels per `project_launch_strategy.md`).
+ * - Hero card for the launched theme (Deep Orbit) + a muted 2-column grid
+ *   for coming-soon themes whose cards link to per-theme stub pages with
+ *   waitlist capture (see app/themes/[slug]/coming-soon-stub.tsx).
  * - Per-theme <ParticleField> atmosphere driven by each theme's own
  *   `--tc-primary` CSS variable.
  * - Newsletter signup modal with trapped focus + Escape/click-outside close.
- * - Per-user "Start" vs "Continue" CTA: users who own a theme see Continue.
+ * - Per-user "Start" vs "Continue" CTA on the live card; coming-soon cards
+ *   always show "Notify me →".
  */
 export default async function ThemesPage() {
   // Resolve per-user ownership so each card can show Start vs Continue. This
-  // is a no-op (empty set) for logged-out visitors, which is fine — they
-  // simply see "Start →" everywhere.
+  // is a no-op (empty set) for logged-out visitors.
   const ownedThemes = await loadOwnedThemes();
 
   const themeList = Object.values(themes);
@@ -39,6 +45,7 @@ export default async function ThemesPage() {
     modulesCount: THEME_CONTENT.modulesPerTheme,
     lessonsCount: THEME_CONTENT.totalLessonsPerTheme,
     price: PRICING.single.price,
+    status: isLaunched(theme.slug) ? "live" : "coming-soon",
   }));
 
   return (
@@ -47,14 +54,15 @@ export default async function ThemesPage() {
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Hero */}
         <p className="font-mono text-sm text-text-muted mb-2">
-          {"// FIVE THEMED WORLDS"}
+          {"// FIVE THEMED WORLDS — STAGGERED LAUNCH"}
         </p>
         <h1 className="text-4xl md:text-5xl font-mono font-bold text-text-primary mb-3 tracking-tight">
           Choose Your World
         </h1>
         <p className="text-lg text-text-muted mb-6 max-w-2xl">
-          Each theme teaches a different ML specialization through a unique
-          narrative. Same depth, different career outcomes.
+          Five ML specializations, each told through its own story universe.
+          Deep Orbit launches today. The other four ship in waves — sign up to
+          their waitlists below.
         </p>
         <p className="text-base text-text-muted mb-14 max-w-2xl leading-relaxed">
           React, Vue, Svelte, Angular — pick the theme that maps to the ML
@@ -62,13 +70,12 @@ export default async function ThemesPage() {
           specialization through JavaScript and TensorFlow.js. No Python.
         </p>
 
-        {/* Equal 5-card grid + newsletter modal */}
         <ThemeCardsGrid cards={cards} />
 
         {/* Why 5 Themes? */}
         <section className="mt-24">
           <h2 className="text-2xl font-mono font-bold text-text-primary mb-4 tracking-tight">
-            Why 5 Themes?
+            Why a staggered launch?
           </h2>
           <p className="text-base text-text-muted leading-relaxed max-w-2xl mb-4">
             Machine learning is not one skill — it&apos;s a family of
@@ -78,13 +85,13 @@ export default async function ThemesPage() {
             all with the depth you need.
           </p>
           <p className="text-base text-text-muted leading-relaxed max-w-2xl">
-            Each Tensorcraft theme maps to a different ML career path. Deep
-            Orbit prepares you for signal processing roles. Neon Protocol covers
-            the vision pipeline from convolutions to real-time object detection.
-            Signal Ward builds NLP skills from tokenization to transformers.
-            Nova Canvas explores multimodal and generative models. Terra Grid
-            focuses on deploying and optimizing models at the edge. Pick the
-            path that matches where you want to go.
+            Deep Orbit ships first because its narrative — anomaly detection in
+            satellite telemetry — was the strongest fit for end-to-end QA
+            against real TensorFlow.js models. Neon Protocol (vision), Signal
+            Ward (NLP), Nova Canvas (generative), and Terra Grid (edge
+            deployment) follow as each one clears the same bar. Join the
+            per-theme waitlist and we&apos;ll email you the moment yours is
+            live.
           </p>
         </section>
       </div>

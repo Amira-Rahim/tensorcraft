@@ -12,15 +12,39 @@ export const THEME_SLUGS = [
 export type ThemeSlug = (typeof THEME_SLUGS)[number];
 
 /**
+ * V1 launched themes. Other themes in THEME_SLUGS are "coming soon" — their
+ * registry metadata still loads (palettes, taglines, characters), but build,
+ * routing, payments, and dashboards gate on this set. Move a slug here when
+ * its content is QA'd and the theme is ready to ship.
+ */
+export const LAUNCHED_THEMES = ["deep-orbit"] as const;
+
+export type LaunchedTheme = (typeof LAUNCHED_THEMES)[number];
+
+/** Slugs not yet launched — derived so it stays in sync with THEME_SLUGS. */
+export const COMING_SOON_THEMES = THEME_SLUGS.filter(
+  (slug): slug is Exclude<ThemeSlug, LaunchedTheme> =>
+    !(LAUNCHED_THEMES as readonly string[]).includes(slug),
+);
+
+export function isLaunched(slug: string): slug is LaunchedTheme {
+  return (LAUNCHED_THEMES as readonly string[]).includes(slug);
+}
+
+export function isComingSoon(slug: string): boolean {
+  return (COMING_SOON_THEMES as readonly string[]).includes(slug);
+}
+
+/**
  * Pricing tiers — per-model, one-time purchase.
  * No subscriptions. Team pricing deferred to post-V1.0.
  */
 export const PRICING = {
   free: { price: 0, themes: 0, label: "Free Preview" },
-  single: { price: 79, themes: 1, label: "Single Theme" },
-  twoBundle: { price: 129, themes: 2, label: "Two Themes" },
-  threeBundle: { price: 169, themes: 3, label: "Three Themes" },
-  allFive: { price: 219, themes: 5, label: "All 5 Themes" },
+  single: { price: 49, themes: 1, label: "Single Theme" },
+  twoBundle: { price: 79, themes: 2, label: "Two Themes" },
+  threeBundle: { price: 99, themes: 3, label: "Three Themes" },
+  allFive: { price: 129, themes: 5, label: "All 5 Themes" },
 } as const;
 
 export type PricingTier = keyof typeof PRICING;

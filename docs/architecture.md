@@ -1,5 +1,13 @@
 # Tensorcraft — Architecture
 
+> **⚠ V1 launch-scope revert (2026-05-05):** This document still describes
+> the "all 5 themes simultaneously" model. The actual V1 ships **Deep Orbit
+> only**; the other 4 themes are gated behind a waitlist. The launched-set
+> source of truth lives in `packages/shared/src/constants.ts` →
+> `LAUNCHED_THEMES`. Treat any "5 themes live" assertion below as scoped
+> down to the launched subset until the docs are rewritten. See
+> [`docs/launch-scope.md`](./launch-scope.md).
+
 ## Overview
 
 Tensorcraft is an interactive, story-driven ML education platform for frontend engineers. Users learn machine learning through **50+ deep structural mappings** between frontend concepts they already know and ML concepts they're learning — not casual analogies, but real architectural parallels.
@@ -181,7 +189,7 @@ Client component with Framer Motion animations:
 ### SEO Setup
 
 - **Canonical URLs**: Set on root layout (`https://tensorcraft.app`), all theme pages, all lesson pages, and capstone pages via Next.js `alternates.canonical` in `generateMetadata`.
-- **Structured Data (JSON-LD)**: Root layout emits an Organization schema and one Course schema per theme (5 courses total), each with pricing ($79), educational level, and `teaches` fields. Script tag in `<head>` via `dangerouslySetInnerHTML`. Lesson pages additionally emit `LearningResource` schema (name, description, educationalLevel, timeRequired, isPartOf Course) and `BreadcrumbList` schema (Home > Theme > Module > Lesson).
+- **Structured Data (JSON-LD)**: Root layout emits an Organization schema and one Course schema per theme (5 courses total), each with pricing ($49), educational level, and `teaches` fields. Script tag in `<head>` via `dangerouslySetInnerHTML`. Lesson pages additionally emit `LearningResource` schema (name, description, educationalLevel, timeRequired, isPartOf Course) and `BreadcrumbList` schema (Home > Theme > Module > Lesson).
 - **Dynamic OG Images**: All pages use `/api/og` (Vercel OG) with per-page `title`, `theme`, and `subtitle` query params. No static `/og-image.png` fallback.
 - **Sitemap** (`app/sitemap.ts`): Static routes + 5 theme pages + 275 lesson pages (all themes) + glossary term pages + bridge concept pages. Lesson routes built from `getThemeLessons` at build time.
 - **robots.txt**: Crawl directives configured.

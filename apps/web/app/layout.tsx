@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
-import { DEFAULT_THEME } from "@tensorcraft/shared";
+import { DEFAULT_THEME, PRICING } from "@tensorcraft/shared";
 import { ThemeProvider } from "./components/theme-provider";
 import { Nav } from "./components/nav";
 import { CookieConsent } from "./components/cookie-consent";
@@ -136,7 +136,7 @@ export default function RootLayout({
                 ],
                 offers: {
                   "@type": "Offer",
-                  price: "79",
+                  price: String(PRICING.single.price),
                   priceCurrency: "USD",
                   availability: "https://schema.org/InStock",
                 },
@@ -164,9 +164,9 @@ export default function RootLayout({
                 ],
                 offers: {
                   "@type": "Offer",
-                  price: "79",
+                  price: String(PRICING.single.price),
                   priceCurrency: "USD",
-                  availability: "https://schema.org/InStock",
+                  availability: "https://schema.org/PreOrder",
                 },
               },
               {
@@ -192,9 +192,9 @@ export default function RootLayout({
                 ],
                 offers: {
                   "@type": "Offer",
-                  price: "79",
+                  price: String(PRICING.single.price),
                   priceCurrency: "USD",
-                  availability: "https://schema.org/InStock",
+                  availability: "https://schema.org/PreOrder",
                 },
               },
               {
@@ -220,9 +220,9 @@ export default function RootLayout({
                 ],
                 offers: {
                   "@type": "Offer",
-                  price: "79",
+                  price: String(PRICING.single.price),
                   priceCurrency: "USD",
-                  availability: "https://schema.org/InStock",
+                  availability: "https://schema.org/PreOrder",
                 },
               },
               {
@@ -248,9 +248,9 @@ export default function RootLayout({
                 ],
                 offers: {
                   "@type": "Offer",
-                  price: "79",
+                  price: String(PRICING.single.price),
                   priceCurrency: "USD",
-                  availability: "https://schema.org/InStock",
+                  availability: "https://schema.org/PreOrder",
                 },
               },
               {
@@ -278,7 +278,7 @@ export default function RootLayout({
                     name: "Is Tensorcraft free?",
                     acceptedAnswer: {
                       "@type": "Answer",
-                      text: "Module 1 of every theme is free — no account or credit card required. Full themes cost $79 each, with bundle discounts available up to $219 for all 5 themes.",
+                      text: `Module 1 of every theme is free — no account or credit card required. Full themes cost $${PRICING.single.price} each, with bundle discounts available up to $${PRICING.allFive.price} for all 5 themes.`,
                     },
                   },
                   {

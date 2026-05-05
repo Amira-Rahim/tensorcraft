@@ -33,7 +33,7 @@ describe("api/lib/posthog", () => {
 
   it("captureServerEvent no-ops when client is null", () => {
     vi.stubEnv("POSTHOG_KEY", "");
-    captureServerEvent("user-1", "payment_completed", { amount: 79 });
+    captureServerEvent("user-1", "payment_completed", { amount: 49 });
     expect(captureMock).not.toHaveBeenCalled();
   });
 
@@ -45,7 +45,7 @@ describe("api/lib/posthog", () => {
       {
         planId: "single",
         themeIds: ["deep-orbit"],
-        amount: 79,
+        amount: 49,
         sessionId: "cs_test_1",
       },
       "user-42",
@@ -57,7 +57,7 @@ describe("api/lib/posthog", () => {
       properties: {
         planId: "single",
         themeIds: ["deep-orbit"],
-        amount: 79,
+        amount: 49,
         sessionId: "cs_test_1",
       },
     });

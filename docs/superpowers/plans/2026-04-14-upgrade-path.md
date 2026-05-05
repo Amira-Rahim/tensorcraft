@@ -241,7 +241,7 @@ For bundle tiers, show adjusted price next to the original:
 
 ```tsx
 const twoAdjusted = Math.max(0, PRICING.twoBundle.price - totalCredit);
-// Show: "Pay $50" with "(includes $79 credit)" if credit applies
+// Show: "Pay $30" with "(includes $49 credit)" if credit applies
 ```
 
 - [ ] **Step 3: Lock owned themes in ThemePicker**

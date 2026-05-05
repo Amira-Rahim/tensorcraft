@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { themes } from "@tensorcraft/themes";
+import { isLaunched } from "@tensorcraft/shared";
 import {
   getLesson,
   getAdjacentLessons,
@@ -46,6 +47,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function LessonPage({ params }: Props) {
   const { slug, module: moduleSlug, lesson: lessonSlug } = await params;
+  if (!isLaunched(slug)) notFound();
   const theme = themes[slug];
   const lesson = getLesson(slug, moduleSlug, lessonSlug);
   if (!theme || !lesson) notFound();

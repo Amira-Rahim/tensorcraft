@@ -106,7 +106,7 @@ beforeEach(() => {
 
 // ─── Tests ─────────────────────────────────────────────────────────────
 
-describe("ThemesPage (Phase 11 §11d Wave 2)", () => {
+describe("ThemesPage (Deep Orbit launch + 4 coming-soon)", () => {
   it("renders all 5 theme cards with displayName", async () => {
     render(await ThemesPage());
     for (const name of [
@@ -133,22 +133,27 @@ describe("ThemesPage (Phase 11 §11d Wave 2)", () => {
     }
   });
 
-  it("shows no 'coming soon' or 'launched' status labels (all themes LIVE)", async () => {
+  it("marks Deep Orbit Live and the other 4 themes Coming soon", async () => {
     render(await ThemesPage());
-    expect(screen.queryByText(/coming soon/i)).toBeNull();
-    expect(screen.queryByText(/launched/i)).toBeNull();
-    // The prior design rendered a "LIVE" chip on each card — the Wave 2
-    // redesign removes it since all 5 themes launch simultaneously.
-    expect(screen.queryByText(/^LIVE$/)).toBeNull();
+    expect(screen.getByTestId("theme-status-deep-orbit").textContent).toMatch(
+      /live/i,
+    );
+    for (const slug of [
+      "neon-protocol",
+      "signal-ward",
+      "nova-canvas",
+      "terra-grid",
+    ]) {
+      expect(screen.getByTestId(`theme-status-${slug}`).textContent).toMatch(
+        /coming soon/i,
+      );
+    }
   });
 
-  it("renders a ParticleField atmosphere per card (5 total, density 0.15)", async () => {
+  it("renders a ParticleField atmosphere per card (5 total)", async () => {
     render(await ThemesPage());
     const fields = screen.getAllByTestId("particle-field");
     expect(fields).toHaveLength(5);
-    for (const field of fields) {
-      expect(field.getAttribute("data-density")).toBe("0.15");
-    }
   });
 
   it("applies rounded-none (brutalist) to each card link", async () => {
@@ -167,35 +172,35 @@ describe("ThemesPage (Phase 11 §11d Wave 2)", () => {
     }
   });
 
-  it("CTA label defaults to 'Start →' for unauthenticated visitors", async () => {
+  it("CTA: launched theme says Start, coming-soon themes say Notify me", async () => {
     render(await ThemesPage());
-    const ctas = screen.getAllByTestId(/^theme-cta-/);
-    expect(ctas).toHaveLength(5);
-    for (const cta of ctas) {
-      expect(cta.textContent).toContain("Start");
+    expect(screen.getByTestId("theme-cta-deep-orbit").textContent).toContain(
+      "Start",
+    );
+    for (const slug of [
+      "neon-protocol",
+      "signal-ward",
+      "nova-canvas",
+      "terra-grid",
+    ]) {
+      expect(screen.getByTestId(`theme-cta-${slug}`).textContent).toContain(
+        "Notify me",
+      );
     }
   });
 
-  it("CTA label flips to 'Continue →' for owned themes", async () => {
+  it("CTA flips to 'Continue →' on a launched theme the user owns", async () => {
     getUserMock.mockResolvedValue({ data: { user: { id: "u1" } } });
-    purchasesResultRef.data = [{ theme_ids: ["deep-orbit", "nova-canvas"] }];
+    purchasesResultRef.data = [{ theme_ids: ["deep-orbit"] }];
 
     render(await ThemesPage());
 
     expect(screen.getByTestId("theme-cta-deep-orbit").textContent).toContain(
       "Continue",
     );
-    expect(screen.getByTestId("theme-cta-nova-canvas").textContent).toContain(
-      "Continue",
-    );
+    // Coming-soon themes ignore ownership state — they always invite waitlist.
     expect(screen.getByTestId("theme-cta-neon-protocol").textContent).toContain(
-      "Start",
-    );
-    expect(screen.getByTestId("theme-cta-signal-ward").textContent).toContain(
-      "Start",
-    );
-    expect(screen.getByTestId("theme-cta-terra-grid").textContent).toContain(
-      "Start",
+      "Notify me",
     );
   });
 

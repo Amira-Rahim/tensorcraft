@@ -137,10 +137,10 @@ Create a Stripe Checkout session. **Authenticated.**
 
 | `planId` | `themeIds` | Price |
 |----------|-----------|-------|
-| `single` | Any one theme | $79 |
-| `two` | Any two themes | $129 |
-| `three` | Any three themes | $169 |
-| `allFive` | `["deep-orbit", "neon-protocol", "signal-ward", "nova-canvas", "terra-grid"]` | $219 |
+| `single` | Any one theme | $49 |
+| `two` | Any two themes | $79 |
+| `three` | Any three themes | $99 |
+| `allFive` | `["deep-orbit", "neon-protocol", "signal-ward", "nova-canvas", "terra-grid"]` | $129 |
 
 **Example — All 5 Themes:**
 ```json
@@ -187,7 +187,7 @@ Get the authenticated user's purchase history. **Authenticated.**
     "id": "uuid",
     "plan_id": "allFive",
     "theme_ids": ["deep-orbit", "neon-protocol", "signal-ward", "nova-canvas", "terra-grid"],
-    "amount": 21900,
+    "amount": 12900,
     "currency": "usd",
     "stripe_session_id": "cs_...",
     "status": "completed",

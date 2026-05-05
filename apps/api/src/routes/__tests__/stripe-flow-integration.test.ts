@@ -199,13 +199,13 @@ function buildCheckoutCompletedEvent(): string {
         id: SESSION_ID,
         object: "checkout.session",
         client_reference_id: USER_ID,
-        amount_total: 7900, // $79 in cents
+        amount_total: 4900, // $49 in cents
         payment_intent: PAYMENT_INTENT_ID,
         metadata: {
           planId: "single",
           themeIds: "deep-orbit",
           creditApplied: "0",
-          originalPrice: "79",
+          originalPrice: "49",
         },
       },
     },

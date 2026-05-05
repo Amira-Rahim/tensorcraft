@@ -2,12 +2,12 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 
 /**
- * Phase 11 §11d Wave 3 — Settings brutalist redesign tests.
+ * Settings brutalist redesign tests.
  *
- * Covers: 5-tab sidebar structure + panel wiring, Toggle component ON/OFF
- * states, theme preview radio group (5 cards, writes preferred_theme_id),
- * GitHub connect/disconnect wiring to `/api/github/*` endpoints, and
- * `rounded-none` brutalist surfaces.
+ * Covers: 4-tab sidebar (Profile / Notifications / GitHub / Account), Toggle
+ * component ON/OFF states, GitHub connect/disconnect wiring to
+ * `/api/github/*` endpoints, and `rounded-none` brutalist surfaces. The
+ * preferred-theme picker was removed when launch scoped to a single theme.
  */
 
 // ---------------------------------------------------------------------------
@@ -110,7 +110,6 @@ function defaultProps(
     githubConnected: false,
     emailAlerts: false,
     weeklyDigest: true,
-    preferredThemeId: "deep-orbit",
     purchases: [],
     ...overrides,
   };
@@ -127,14 +126,14 @@ async function renderForm(
 // Tests
 // ---------------------------------------------------------------------------
 
-describe("SettingsForm — §11d Wave 3", () => {
-  it("renders all 5 tabs in the sidebar (Profile / Notifications / GitHub / Theme / Account)", async () => {
+describe("SettingsForm", () => {
+  it("renders all 4 tabs in the sidebar (Profile / Notifications / GitHub / Account)", async () => {
     await renderForm();
     expect(screen.getByTestId("settings-tab-profile")).toBeTruthy();
     expect(screen.getByTestId("settings-tab-notifications")).toBeTruthy();
     expect(screen.getByTestId("settings-tab-github")).toBeTruthy();
-    expect(screen.getByTestId("settings-tab-theme")).toBeTruthy();
     expect(screen.getByTestId("settings-tab-account")).toBeTruthy();
+    expect(screen.queryByTestId("settings-tab-theme")).toBeNull();
   });
 
   it("defaults to the Profile tab and exposes display name + email fields", async () => {
@@ -163,8 +162,8 @@ describe("SettingsForm — §11d Wave 3", () => {
     await renderForm();
     fireEvent.click(screen.getByTestId("settings-tab-github"));
     expect(screen.getByTestId("github-status")).toBeTruthy();
-    fireEvent.click(screen.getByTestId("settings-tab-theme"));
-    expect(screen.getByTestId("theme-grid")).toBeTruthy();
+    fireEvent.click(screen.getByTestId("settings-tab-account"));
+    expect(screen.getByTestId("sign-out")).toBeTruthy();
   });
 
   it("Notifications tab renders two brutalist toggles (email + weekly)", async () => {
@@ -185,25 +184,10 @@ describe("SettingsForm — §11d Wave 3", () => {
     expect(emailToggle.getAttribute("aria-checked")).toBe("true");
   });
 
-  it("Theme tab renders a 5-card radiogroup with active selection", async () => {
+  it("does not render the deprecated Theme tab or theme picker grid", async () => {
     await renderForm();
-    fireEvent.click(screen.getByTestId("settings-tab-theme"));
-    const grid = screen.getByTestId("theme-grid");
-    const radios = grid.querySelectorAll('[role="radio"]');
-    expect(radios.length).toBe(5);
-    const active = screen.getByTestId("theme-preview-deep-orbit");
-    expect(active.getAttribute("aria-checked")).toBe("true");
-  });
-
-  it("selecting a different theme writes preferred_theme_id via supabase", async () => {
-    await renderForm();
-    fireEvent.click(screen.getByTestId("settings-tab-theme"));
-    fireEvent.click(screen.getByTestId("theme-preview-neon-protocol"));
-    await waitFor(() => {
-      expect(fromUpdateMock).toHaveBeenCalledWith({
-        preferred_theme_id: "neon-protocol",
-      });
-    });
+    expect(screen.queryByTestId("settings-tab-theme")).toBeNull();
+    expect(screen.queryByTestId("theme-grid")).toBeNull();
   });
 
   it("GitHub: shows NOT CONNECTED + Connect button when disconnected", async () => {
@@ -307,14 +291,14 @@ describe("SettingsForm — §11d Wave 3", () => {
         {
           planId: "single",
           themeIds: ["deep-orbit"],
-          amount: 79,
+          amount: 49,
           createdAt: "2026-04-01T00:00:00Z",
         },
       ],
     });
     fireEvent.click(screen.getByTestId("settings-tab-account"));
     expect(screen.getByText(/Deep Orbit/)).toBeTruthy();
-    expect(screen.getByText(/\$79/)).toBeTruthy();
+    expect(screen.getByText(/\$49/)).toBeTruthy();
   });
 
   it("Account tab: sign-out calls supabase signOut + pushes to /", async () => {

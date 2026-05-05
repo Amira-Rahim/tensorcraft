@@ -4,6 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { useRef, useEffect, useCallback, useState } from "react";
 import { themes, themeSlugs } from "@tensorcraft/themes";
+import { isLaunched } from "@tensorcraft/shared";
 
 /* ── Theme card data derived from manifests ──────────────── */
 
@@ -17,8 +18,14 @@ const THEME_CARDS = themeSlugs.map((slug, i) => {
     tagline: t.tagline,
     col: t.palette.primary,
     rgb: hexToRgb(t.palette.primary),
+    launched: isLaunched(t.slug),
+    // Atmosphere kind keyed off original index so each theme keeps its identity.
+    kind: i,
   };
 });
+
+const HERO_CARD = THEME_CARDS.find((c) => c.launched) ?? THEME_CARDS[0];
+const COMING_SOON_CARDS = THEME_CARDS.filter((c) => !c.launched);
 
 function hexToRgb(hex: string): [number, number, number] {
   const h = hex.replace("#", "");
@@ -260,7 +267,7 @@ function AtmosphereCanvas({
 /* ── Main section ──────────────────────────────────────── */
 
 export function FiveWorldsSection() {
-  const [hovered, setHovered] = useState<number | null>(null);
+  const [hovered, setHovered] = useState<string | null>(null);
 
   return (
     <section className="border-b border-border">
@@ -272,54 +279,123 @@ export function FiveWorldsSection() {
         <h2 className="text-3xl font-mono font-black tracking-tight mb-3">
           Five Worlds
         </h2>
-        <p className="text-[15px] text-text-muted leading-relaxed max-w-[480px]">
-          Same ML syllabus. Five story universes. Each one makes the problem
-          feel real.
+        <p className="text-[15px] text-text-muted leading-relaxed max-w-[520px]">
+          Same ML syllabus. Five story universes.{" "}
+          <span style={{ color: HERO_CARD.col }}>{HERO_CARD.name}</span>{" "}
+          launches today &mdash; the other four ship in waves.
         </p>
       </div>
 
-      {/* All themes — equal grid with per-card canvas atmospheres */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 border-t border-border">
-        {THEME_CARDS.map((t, i) => (
+      {/* Hero card — launched theme */}
+      <motion.div
+        className="relative overflow-hidden border-t border-border"
+        onMouseEnter={() => setHovered(HERO_CARD.slug)}
+        onMouseLeave={() => setHovered(null)}
+        initial={{ opacity: 0, y: 12 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.4 }}
+      >
+        <AtmosphereCanvas
+          kind={HERO_CARD.kind}
+          rgb={HERO_CARD.rgb}
+          hovered={hovered === HERO_CARD.slug}
+        />
+        <Link
+          href={`/themes/${HERO_CARD.slug}`}
+          className="block relative z-10 px-8 md:px-20 py-14 md:py-20 group"
+        >
+          <div className="flex items-start justify-between gap-6 mb-6">
+            <span
+              className="font-mono text-[80px] md:text-[120px] font-black leading-none opacity-15 group-hover:opacity-25 transition-opacity"
+              style={{ color: HERO_CARD.col }}
+            >
+              {HERO_CARD.code}
+            </span>
+            <span
+              className="font-mono text-xs font-bold tracking-wider px-3 py-1"
+              style={{
+                color: HERO_CARD.col,
+                background: `color-mix(in srgb, ${HERO_CARD.col} 12%, transparent)`,
+                border: `1px solid color-mix(in srgb, ${HERO_CARD.col} 35%, transparent)`,
+              }}
+            >
+              LIVE TODAY
+            </span>
+          </div>
+          <div
+            className="text-3xl md:text-5xl font-mono font-black tracking-tight mb-3"
+            style={{ color: HERO_CARD.col }}
+          >
+            {HERO_CARD.name}
+          </div>
+          <div className="font-mono text-sm text-text-muted opacity-70 mb-4">
+            {HERO_CARD.spec}
+          </div>
+          <p className="text-base md:text-lg text-text-muted leading-relaxed max-w-[640px] mb-6">
+            {HERO_CARD.tagline}
+          </p>
+          <span
+            className="font-mono text-sm tracking-wider"
+            style={{ color: HERO_CARD.col }}
+          >
+            Start the journey &rarr;
+          </span>
+        </Link>
+      </motion.div>
+
+      {/* Coming-soon themes — muted 2x2 grid */}
+      <div className="border-t border-border px-10 md:px-20 pt-10 pb-4">
+        <div className="font-mono text-xs text-text-muted tracking-[0.2em] uppercase">
+          // Coming next
+        </div>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 border-t border-border">
+        {COMING_SOON_CARDS.map((t, i) => (
           <motion.div
             key={t.code}
             className="relative overflow-hidden group"
             style={{
-              borderRight:
-                i < THEME_CARDS.length - 1
+              borderRight: i % 2 === 0 ? "1px solid var(--tc-border)" : "none",
+              borderBottom:
+                i < COMING_SOON_CARDS.length - 2
                   ? "1px solid var(--tc-border)"
                   : "none",
-              borderBottom: "1px solid var(--tc-border)",
+              opacity: 0.78,
             }}
-            onMouseEnter={() => setHovered(i)}
+            onMouseEnter={() => setHovered(t.slug)}
             onMouseLeave={() => setHovered(null)}
             initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            whileInView={{ opacity: 0.78, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: i * 0.08, duration: 0.4 }}
+            transition={{ delay: i * 0.06, duration: 0.4 }}
           >
-            <AtmosphereCanvas kind={i} rgb={t.rgb} hovered={hovered === i} />
-
+            <AtmosphereCanvas
+              kind={t.kind}
+              rgb={t.rgb}
+              hovered={hovered === t.slug}
+            />
             <Link
               href={`/themes/${t.slug}`}
               className="block relative z-10 px-8 md:px-10 py-10"
+              data-testid={`coming-soon-card-${t.slug}`}
             >
               <div className="flex items-center justify-between mb-4">
                 <span
-                  className="font-mono text-[32px] font-black leading-none opacity-15 group-hover:opacity-30 transition-opacity"
+                  className="font-mono text-[32px] font-black leading-none opacity-15 group-hover:opacity-25 transition-opacity"
                   style={{ color: t.col }}
                 >
                   {t.code}
                 </span>
                 <span
-                  className="font-mono text-xs font-bold tracking-wider px-2 py-0.5"
+                  className="font-mono text-[10px] font-bold tracking-wider px-2 py-0.5"
                   style={{
                     color: t.col,
-                    background: `color-mix(in srgb, ${t.col} 10%, transparent)`,
-                    border: `1px solid color-mix(in srgb, ${t.col} 25%, transparent)`,
+                    background: `color-mix(in srgb, ${t.col} 8%, transparent)`,
+                    border: `1px solid color-mix(in srgb, ${t.col} 22%, transparent)`,
                   }}
                 >
-                  LIVE
+                  COMING SOON
                 </span>
               </div>
               <div
@@ -338,7 +414,7 @@ export function FiveWorldsSection() {
                 className="font-mono text-xs tracking-wider opacity-0 group-hover:opacity-100 transition-opacity"
                 style={{ color: t.col }}
               >
-                Explore &rarr;
+                Notify me &rarr;
               </span>
             </Link>
           </motion.div>
@@ -348,7 +424,7 @@ export function FiveWorldsSection() {
       {/* Footer */}
       <div className="border-t border-border px-10 md:px-20 py-4">
         <p className="font-mono text-xs text-text-muted text-center">
-          // Module 1 of every theme is free. No account needed.
+          // Module 1 of {HERO_CARD.name} is free. No account needed.
         </p>
       </div>
     </section>
