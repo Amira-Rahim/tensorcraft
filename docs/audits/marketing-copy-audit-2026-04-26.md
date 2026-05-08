@@ -14,7 +14,7 @@ Goal: convert without sounding manufactured. AI-tells flagged + rewritten across
 | `apps/web/app/pricing/page.tsx` | edited — "Explore" → "See", honest "what you don't get" qualifier added |
 | `apps/web/app/auth/page.tsx` | clean — tagline already on-brand |
 | `apps/web/app/components/landing-bridge-tiers.tsx` | removed 2026-05-08 — section deleted from homepage; tier taxonomy stays in product (lesson callouts, dashboard, glossary) |
-| `apps/web/app/components/landing-five-c-loop.tsx` | not touched (out of scope this pass) |
+| `apps/web/app/components/landing-five-c-loop.tsx` | removed 2026-05-08 — section deleted from homepage; "5C" terminology was internal jargon, not user-facing copy |
 
 ## AI-tells found + actions
 

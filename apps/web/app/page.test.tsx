@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeAll } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { LandingHero } from "./components/landing-hero";
 import { LandingBridgeTicker } from "./components/landing-bridge-ticker";
-import { LandingFiveCLoop } from "./components/landing-five-c-loop";
 
 // jsdom ships without ResizeObserver / IntersectionObserver — shim so the
 // ParticleField canvas effect doesn't throw when it mounts.
@@ -119,33 +118,6 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
         expect(typeof item.fe).toBe("string");
         expect(typeof item.ml).toBe("string");
         expect(["identity", "structural", "intuition"]).toContain(item.tier);
-      }
-    });
-  });
-
-  describe("LandingFiveCLoop", () => {
-    it("renders exactly 5 stages (Context → Code → Callout → Checkpoint → Conclusion)", () => {
-      render(<LandingFiveCLoop />);
-      const stages = screen.getAllByTestId("five-c-stage");
-      expect(stages).toHaveLength(5);
-    });
-
-    it("stages are ordered 01..05", () => {
-      render(<LandingFiveCLoop />);
-      const stages = screen.getAllByTestId("five-c-stage");
-      const nums = stages.map((s) => s.getAttribute("data-stage-num"));
-      expect(nums).toEqual(["01", "02", "03", "04", "05"]);
-    });
-
-    it("each stage name appears in the rendered output", async () => {
-      const { FIVE_C_STAGES } =
-        await import("./components/landing-five-c-loop");
-      render(<LandingFiveCLoop />);
-      for (const stage of FIVE_C_STAGES) {
-        // Name is rendered uppercase — match case-insensitively.
-        expect(
-          screen.getAllByText(new RegExp(stage.name, "i")).length,
-        ).toBeGreaterThan(0);
       }
     });
   });

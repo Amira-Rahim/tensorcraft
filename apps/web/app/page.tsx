@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import { PRICING } from "@tensorcraft/shared";
 import { LandingHero } from "./components/landing-hero";
 import { LandingBridgeTicker } from "./components/landing-bridge-ticker";
-import { LandingFiveCLoop } from "./components/landing-five-c-loop";
 import { BridgePreviewSection } from "./components/bridge-preview-section";
 import { FiveWorldsSection } from "./components/five-worlds-section";
 
@@ -64,9 +63,6 @@ export default function Home() {
             </div>
           ))}
         </section>
-
-        {/* ===== 5C LESSON LOOP (server-rendered — zero JS) ===== */}
-        <LandingFiveCLoop />
 
         {/* ===== BRIDGE SYSTEM (client island — framework picker) ===== */}
         <BridgePreviewSection />
