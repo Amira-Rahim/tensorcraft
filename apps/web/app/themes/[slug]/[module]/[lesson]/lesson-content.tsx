@@ -29,6 +29,7 @@ import {
   trackExerciseSubmitted,
   trackHintRequested,
 } from "@/lib/analytics";
+import { recordRecallAttempt } from "@/lib/review-client";
 
 interface LessonContentProps {
   lesson: {
@@ -51,6 +52,7 @@ interface LessonContentProps {
   };
   exercises?: ExerciseData[];
   themeId?: string;
+  moduleId?: string;
   lessonId?: string;
   userFramework?: Framework;
   visibleComponents?: Set<string>;
@@ -84,6 +86,7 @@ export function LessonContent({
   lesson,
   exercises = [],
   themeId,
+  moduleId,
   lessonId,
   userFramework,
   visibleComponents,
@@ -199,7 +202,23 @@ export function LessonContent({
             }}
           />
         ) : null,
-      RecallPrompt: wrapVisibility("RecallPrompt", RecallPrompt),
+      RecallPrompt: (props: React.ComponentProps<typeof RecallPrompt>) => {
+        if (!shouldShow("RecallPrompt")) return null;
+        const skillAxis = lesson.skillAxes?.[0] ?? "evaluation";
+        const canRecord = Boolean(themeId && moduleId && lessonId);
+        const onRecall = canRecord
+          ? (success: boolean) => {
+              recordRecallAttempt({
+                themeId: themeId as string,
+                moduleId: moduleId as string,
+                lessonId: lessonId as string,
+                success,
+                skillAxis,
+              }).catch(() => {});
+            }
+          : undefined;
+        return <RecallPrompt {...props} onRecall={onRecall} />;
+      },
       BridgeCallout: (props: { bridge: unknown }) =>
         shouldShow("BridgeCallout") ? (
           <BridgeCallout
@@ -247,6 +266,7 @@ export function LessonContent({
     return base;
   }, [
     themeId,
+    moduleId,
     lessonId,
     handleExerciseSubmit,
     handleHintRevealed,
@@ -254,6 +274,7 @@ export function LessonContent({
     shouldShow,
     onExerciseComplete,
     lesson.concept.bridge,
+    lesson.skillAxes,
   ]);
 
   const Content = useMemo(() => {

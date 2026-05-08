@@ -12,8 +12,9 @@ import { ParticleField } from "@tensorcraft/ui/effects";
  *  - Square-edged CTAs (rounded-none) with hard brutalist-shadow.
  *  - Mono labels, uppercase tracking, focus-visible rings.
  *
- * The landing headline text is intentionally preserved from the iterated
- * copy baseline (`project_copy_lines.md`) — do not silently rewrite.
+ * The landing headline ("ML for Frontend Devs. / No Python Required.") is the
+ * iterated baseline as of 2026-05-08 — do not silently rewrite. Spec:
+ * docs/superpowers/specs/2026-05-08-landing-headline-audience-callout.md.
  */
 export function LandingHero() {
   return (
@@ -40,8 +41,8 @@ export function LandingHero() {
         </div>
 
         <h1 className="text-5xl md:text-6xl font-mono font-black leading-[0.93] tracking-[-0.045em] mb-10 uppercase">
-          <span className="block">Same Mental Model.</span>
-          <span className="block text-primary">New Domain.</span>
+          <span className="block">ML for Frontend Devs.</span>
+          <span className="block text-primary">No Python Required.</span>
         </h1>
 
         <p className="text-lg text-text-muted max-w-[520px] mb-12 leading-relaxed font-sans">
@@ -72,7 +73,7 @@ export function LandingHero() {
             Start Module 1 — Free →
           </Link>
           <Link
-            href="#five-c-loop"
+            href="/learn"
             data-testid="landing-cta-secondary"
             className="rounded-none inline-flex items-center gap-2 px-8 py-4 border-2 border-border text-text-primary font-mono font-bold text-sm tracking-wider uppercase hover:text-primary hover:border-primary/30 transition-all brutalist-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-page"
           >

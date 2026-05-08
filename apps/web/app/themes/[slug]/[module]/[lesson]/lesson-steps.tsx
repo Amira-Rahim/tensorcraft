@@ -333,6 +333,7 @@ export function LessonSteps({
               lesson={lesson}
               exercises={exercises}
               themeSlug={themeSlug}
+              moduleSlug={moduleSlug}
               lessonSlug={lessonSlug}
               userFramework={userFramework}
               theme={theme}
@@ -343,6 +344,7 @@ export function LessonSteps({
               lesson={lesson}
               exercises={exercises}
               themeSlug={themeSlug}
+              moduleSlug={moduleSlug}
               lessonSlug={lessonSlug}
               userFramework={userFramework}
               theme={theme}
@@ -353,6 +355,7 @@ export function LessonSteps({
               lesson={lesson}
               exercises={exercises}
               themeSlug={themeSlug}
+              moduleSlug={moduleSlug}
               lessonSlug={lessonSlug}
               userFramework={userFramework}
               theme={theme}
@@ -364,6 +367,7 @@ export function LessonSteps({
               lesson={lesson}
               exercises={exercises}
               themeSlug={themeSlug}
+              moduleSlug={moduleSlug}
               lessonSlug={lessonSlug}
               userFramework={userFramework}
               theme={theme}
@@ -525,6 +529,7 @@ function StepBriefing({
         lesson={lesson}
         exercises={exercises}
         themeId={themeSlug}
+        moduleId={moduleSlug}
         lessonId={lessonSlug}
         userFramework={userFramework}
         visibleComponents={new Set(["Dialogue", "prose"])}
@@ -540,6 +545,7 @@ function StepConcept({
   lesson,
   exercises,
   themeSlug,
+  moduleSlug,
   lessonSlug,
   userFramework,
   theme,
@@ -547,6 +553,7 @@ function StepConcept({
   lesson: LessonStepsProps["lesson"];
   exercises: ExerciseData[];
   themeSlug: string;
+  moduleSlug: string;
   lessonSlug: string;
   userFramework?: Framework;
   theme: LessonStepsProps["theme"];
@@ -565,6 +572,7 @@ function StepConcept({
           lesson={lesson}
           exercises={exercises}
           themeId={themeSlug}
+          moduleId={moduleSlug}
           lessonId={lessonSlug}
           userFramework={userFramework}
           visibleComponents={
@@ -590,6 +598,7 @@ function StepCode({
   lesson,
   exercises,
   themeSlug,
+  moduleSlug,
   lessonSlug,
   userFramework,
   theme,
@@ -597,6 +606,7 @@ function StepCode({
   lesson: LessonStepsProps["lesson"];
   exercises: ExerciseData[];
   themeSlug: string;
+  moduleSlug: string;
   lessonSlug: string;
   userFramework?: Framework;
   theme: LessonStepsProps["theme"];
@@ -609,6 +619,7 @@ function StepCode({
           lesson={lesson}
           exercises={exercises}
           themeId={themeSlug}
+          moduleId={moduleSlug}
           lessonId={lessonSlug}
           userFramework={userFramework}
           visibleComponents={
@@ -633,6 +644,7 @@ function StepChallenge({
   lesson,
   exercises,
   themeSlug,
+  moduleSlug,
   lessonSlug,
   userFramework,
   theme,
@@ -641,6 +653,7 @@ function StepChallenge({
   lesson: LessonStepsProps["lesson"];
   exercises: ExerciseData[];
   themeSlug: string;
+  moduleSlug: string;
   lessonSlug: string;
   userFramework?: Framework;
   theme: LessonStepsProps["theme"];
@@ -654,6 +667,7 @@ function StepChallenge({
           lesson={lesson}
           exercises={exercises}
           themeId={themeSlug}
+          moduleId={moduleSlug}
           lessonId={lessonSlug}
           userFramework={userFramework}
           visibleComponents={new Set(["Exercise", "challenge"])}
@@ -671,6 +685,7 @@ function StepTakeaways({
   lesson,
   exercises,
   themeSlug,
+  moduleSlug,
   lessonSlug,
   userFramework,
   theme,
@@ -678,6 +693,7 @@ function StepTakeaways({
   lesson: LessonStepsProps["lesson"];
   exercises: ExerciseData[];
   themeSlug: string;
+  moduleSlug: string;
   lessonSlug: string;
   userFramework?: Framework;
   theme: LessonStepsProps["theme"];
@@ -690,6 +706,7 @@ function StepTakeaways({
           lesson={lesson}
           exercises={exercises}
           themeId={themeSlug}
+          moduleId={moduleSlug}
           lessonId={lessonSlug}
           userFramework={userFramework}
           visibleComponents={

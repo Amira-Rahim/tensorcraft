@@ -124,6 +124,16 @@ export async function markLessonCompleted(
     }),
   ).catch(() => {});
 
+  // Spaced-recall: enqueue this lesson for review starting in 24h.
+  // Idempotent on the server — re-completion does not reset the schedule.
+  Promise.resolve(
+    supabase.rpc("enqueue_review", {
+      p_theme_id: themeId,
+      p_module_id: moduleId,
+      p_lesson_id: lessonId,
+    }),
+  ).catch(() => {});
+
   return data;
 }
 

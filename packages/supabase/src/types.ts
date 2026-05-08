@@ -623,6 +623,47 @@ export interface Database {
           user_avatar_url: string | null;
         }>;
       };
+      enqueue_review: {
+        Args: {
+          p_theme_id: string;
+          p_module_id: string;
+          p_lesson_id: string;
+        };
+        Returns: void;
+      };
+      record_recall_attempt: {
+        Args: {
+          p_theme_id: string;
+          p_module_id: string;
+          p_lesson_id: string;
+          p_success: boolean;
+          p_skill_axis: string;
+        };
+        Returns: string;
+      };
+      get_review_queue: {
+        Args: { p_theme_id: string; p_limit?: number };
+        Returns: Array<{
+          theme_id: string;
+          module_id: string;
+          lesson_id: string;
+          arm_pulls: number;
+          arm_successes: number;
+          last_reviewed_at: string | null;
+          next_review_at: string;
+          was_explored: boolean;
+        }>;
+      };
+      get_bandit_state_summary: {
+        Args: { p_theme_id: string };
+        Returns: Array<{
+          epsilon: number;
+          total_arms: number;
+          total_pulls: number;
+          total_successes: number;
+          due_count: number;
+        }>;
+      };
     };
   };
 }

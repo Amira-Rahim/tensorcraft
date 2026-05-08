@@ -1,7 +1,9 @@
 # Landing hero — mental-model rewrite
 
+> **SUPERSEDED 2026-05-08** — replaced by [2026-05-08-landing-headline-audience-callout.md](2026-05-08-landing-headline-audience-callout.md). User feedback found the "Same Mental Model. New Domain." framing too cryptic and missing an audience callout. Kept here for historical rationale only.
+
 **Date:** 2026-04-28
-**Status:** Spec, awaiting user review
+**Status:** Superseded 2026-05-08
 **Scope:** Copy-only rewrite of `LandingHero` to lead with mental-model framing
 
 ## Goal
