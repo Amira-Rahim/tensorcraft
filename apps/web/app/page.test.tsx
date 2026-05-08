@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeAll } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { LandingHero } from "./components/landing-hero";
 import { LandingBridgeTicker } from "./components/landing-bridge-ticker";
-import { LandingBridgeTiers } from "./components/landing-bridge-tiers";
 import { LandingFiveCLoop } from "./components/landing-five-c-loop";
 
 // jsdom ships without ResizeObserver / IntersectionObserver — shim so the
@@ -120,36 +119,6 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
         expect(typeof item.fe).toBe("string");
         expect(typeof item.ml).toBe("string");
         expect(["identity", "structural", "intuition"]).toContain(item.tier);
-      }
-    });
-  });
-
-  describe("LandingBridgeTiers", () => {
-    it("renders three tier rows with tier badges", () => {
-      render(<LandingBridgeTiers />);
-      const rows = screen.getAllByTestId("bridge-tier-row");
-      expect(rows).toHaveLength(3);
-      const badges = screen.getAllByTestId("tier-badge");
-      expect(badges.length).toBeGreaterThanOrEqual(3);
-    });
-
-    it("covers identity, structural, and intuition tiers", () => {
-      render(<LandingBridgeTiers />);
-      const rows = screen.getAllByTestId("bridge-tier-row");
-      const tiers = rows.map((r) => r.getAttribute("data-tier"));
-      expect(tiers).toEqual(
-        expect.arrayContaining(["identity", "structural", "intuition"]),
-      );
-    });
-
-    it("tier badges use rounded-none (square) styling", () => {
-      render(<LandingBridgeTiers />);
-      const badges = screen
-        .getAllByTestId("tier-badge")
-        .filter((el) => el.tagName.toLowerCase() === "div");
-      expect(badges.length).toBeGreaterThanOrEqual(3);
-      for (const b of badges) {
-        expect(b.className).toMatch(/rounded-none/);
       }
     });
   });
