@@ -227,6 +227,33 @@ class DiagnosticOneMonitor {
 
 ## The First Real Alert
 
+<BossBeat
+  beatId="signal-ward-launch-confidence-call"
+  prompt="Dr. Amara is on the phone. The model just flagged a methotrexate–trimethoprim interaction on a real patient chart with confidence 0.71. Threshold for clinical alert is 0.80. The clinician on duty is asking whether to surface it. The pharmacology textbook says: rare interaction, real risk. The model says: under-confident. Your call."
+  options={[
+    {
+      label: "cooperate",
+      display: "Hold the alert below threshold, log for post-launch review",
+      consequence: "The alert is suppressed. The clinician is unaware. Five days later, audit catches the interaction in a chart review — patient is fine, no harm done, but the case becomes the lead exhibit in a calibration retraining sprint. Cooperative play with the threshold contract; the threshold itself was wrong."
+    },
+    {
+      label: "defect",
+      display: "Override the threshold; surface the alert anyway",
+      consequence: "Alert fires. Clinician reviews. Confirms the interaction is plausible, switches the prescription, documents the override. Patient outcome: fine. Audit later: 'operator override produced a positive intervention but bypassed contract.' Dr. Amara files the case as why the threshold was wrong. Defection paid; the next override is harder to justify."
+    },
+    {
+      label: "random",
+      display: "Page the clinician for a manual call",
+      consequence: "Clinician makes the call without the alert structure. They surface the interaction. Same outcome as defect, but no audit trail of why your model didn't surface it. Mixed strategy at the clinical edge means you pushed the decision off your model and onto a human who didn't have your full evidence."
+    },
+    {
+      label: "dominant",
+      display: "Surface the alert with explicit 'low-confidence flag' tag",
+      consequence: "Alert fires with a banner: 'model confidence 0.71, below alert threshold; surfaced because pharmacology context suggests rare-but-serious interaction.' Clinician sees the calibration. Reviews. Switches the prescription, documents the override, and Dr. Amara now has a labeled training example for the next calibration pass. Dominant strategy = surface the signal with the metadata that lets the next recipient calibrate."
+    }
+  ]}
+/>
+
 <CodeBlock language="typescript" title="day-nine.ts">
 {`// Day 9 of the pilot. The moment Diagnostic One proves itself.
 
@@ -287,3 +314,9 @@ Write a deployment verification function that checks model health, latency, and 
 <Exercise slug="deploy-diagnostic-one" />
 
 <KeyTakeaways takeaways={["ML deployment is web deployment — the model is a static asset, the monitoring is observability, the rollback is a feature flag", "Feature flags enable gradual rollout (10% to 50% to 100%) and instant rollback if something breaks", "The methotrexate-trimethoprim alert proved Diagnostic One works: it flagged a real interaction, the clinician reviewed it, and made an informed override", "You started Signal Ward tokenizing your first clinical note. You end it deploying a production NLP system. You think like an ML engineer now."]} />
+
+<DispatchTease
+  toThemeId="nova-canvas"
+  toThemeName="Nova Canvas"
+  body="Operator. Cross-channel intel: Yara's collective just deployed a generator into a live exhibit and ran into the same retrieval-grounding problem Dr. Amara tuned out of Diagnostic One. The generator hallucinates when retrieval fails silently. Amara's pattern was 'cite or refuse.' Yara is asking how to apply that to creative output. Different stakes, identical contract. Continue the thread."
+/>

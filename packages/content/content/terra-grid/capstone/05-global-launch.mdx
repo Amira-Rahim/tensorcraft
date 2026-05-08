@@ -139,6 +139,33 @@ await launcher.launch();`}
 
 ## The Cascading Anomaly
 
+<BossBeat
+  beatId="terra-grid-launch-cascade-call"
+  prompt="Hassan is on incident-bridge. 47 of 12,400 edge devices are reporting drift PSI > 0.3 across three sites. Dr. Park's red team flagged the same pattern in pre-prod two weeks ago and called it benign. The on-call is asking: full rollback, geofence the affected sites, or trust Park's pre-prod call and watch?"
+  options={[
+    {
+      label: "cooperate",
+      display: "Trust Park's pre-prod read — keep everything live, increase telemetry sampling",
+      consequence: "Telemetry doubles. Drift stabilizes at PSI 0.31 over 6 hours, no accuracy regression in user-visible metrics. Park's call was right; the pattern was a sensor calibration drift, not model drift. Hassan: 'You read the pre-prod report and trusted the gate.' Cooperative play with the team's pre-prod discipline; payoff = no rollback churn."
+    },
+    {
+      label: "defect",
+      display: "Full global rollback — accept the operational cost",
+      consequence: "Rollback fires. 12,400 devices revert to last-known-good in 11.7 seconds (per the runbook). Service quality regresses ~2% for 18 hours during the re-investigation. Park: 'You bypassed pre-prod findings.' Hassan: 'You also kept the SLO sacred. Both readings stand.' Defection paid in safety; the next pre-prod report carries less weight in your future decisions."
+    },
+    {
+      label: "random",
+      display: "Geofence the 3 affected sites only",
+      consequence: "Geofence isolates the pattern. PSI normalizes in the geofenced segment within 4 hours; the rest of the fleet stays clean. Mid-strategy: not full rollback, not full trust. Hassan logs it as 'reasonable conservative call.' But the 3 sites lost 4 hours of inference; if the pattern was truly benign, you spent operational budget on caution."
+    },
+    {
+      label: "dominant",
+      display: "Geofence + trigger Park's pre-prod replay on live telemetry",
+      consequence: "Geofence isolates. Park's pre-prod test suite replays against the live telemetry from the 3 affected sites. Within 2 hours: pattern matches benign sensor drift. Geofence lifts. Total operational impact: 2 hours, 3 sites, no SLO breach. Hassan: 'You used the pre-prod gate as a live diagnostic.' Dominant strategy = treat the pre-prod call as a hypothesis you can test against production, not a verdict to obey or ignore."
+    }
+  ]}
+/>
+
 <CodeBlock language="typescript" title="incident-response.ts">
 {`// Two days post-launch: Substation 7-Alpha
 // Terra Grid Intelligence proves its worth
@@ -192,3 +219,9 @@ Build a launch controller with pre-flight checks and post-launch monitoring.
 <Exercise slug="global-launch" />
 
 <KeyTakeaways takeaways={["Production launch follows the same discipline as web app deployment — pre-flight, staged rollout, monitoring", "Pre-flight checks verify every system component before deployment begins", "Post-launch monitoring tracks deployment progress, accuracy, latency, and incident detection", "Terra Grid Intelligence: 4.2MB model, 12,400 devices, 47 sites, 11.7 seconds to root cause — this is what it looks like when the system works"]} />
+
+<DispatchTease
+  toThemeId="deep-orbit"
+  toThemeName="Deep Orbit"
+  body="Operator. Cross-channel intel: a long-mission vessel just transmitted a 7.83 Hz harmonic in their anomaly stream — the same frequency Hassan's edge fleet has been logging in localized power signatures. Operator Demir on the bridge is calling it deep-space; Hassan is calling it ground-station. Both can't be right. The mission ends where it began: time-series eyes catch what edge eyes miss. Continue the thread."
+/>

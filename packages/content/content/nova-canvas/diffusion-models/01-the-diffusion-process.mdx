@@ -176,3 +176,5 @@ The network predicts the mean (and sometimes variance) of the reverse step. Gene
 </DerivationDrawer>
 
 <KeyTakeaways takeaways={["Diffusion = progressive image loading in reverse: noise sharpens into an image over many steps", "The forward process adds Gaussian noise incrementally until only static remains", "The reverse process uses a neural network to predict and subtract that noise step by step", "Each denoising step is small — the model only has to remove a little noise at a time, making the task learnable"]} />
+
+> **DISPATCH archive · field intercept #28-G:** Operator Demir's anomaly cell uses the inverse contract — they add Gaussian noise to clean signals to test detector robustness. Same noise schedule, opposite direction. Where Yara denoises to create, Demir denoises to verify. The math is symmetric; the intent isn't.

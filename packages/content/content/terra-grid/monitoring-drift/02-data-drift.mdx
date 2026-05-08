@@ -161,3 +161,5 @@ Production model accuracy is degrading slowly over 2 weeks. Suspect: training/se
 />
 
 <KeyTakeaways takeaways={["Data drift means the input distribution changed — the model is correct, but the world moved underneath it", "KL divergence quantifies distribution shift, like Lighthouse CI quantifies performance regression", "Per-feature monitoring pinpoints exactly which inputs drifted — enabling targeted fixes instead of full retraining", "The fix for data drift is often preprocessing (rescaling), not retraining — understand the root cause first"]} />
+
+> **DISPATCH archive · field intercept #38-E:** Operator Demir on Deep Orbit logs drift differently — the world they sample doesn't have a 'training distribution' to drift away from. Their drift is anomaly. Hassan's drift is degradation. Same metric, opposite operational stance.

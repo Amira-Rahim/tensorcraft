@@ -215,6 +215,33 @@ async function handleIncident(scenario: string) {
 
 ## Opening Night Dashboard
 
+<BossBeat
+  beatId="nova-canvas-launch-curator-call"
+  prompt="Yara taps your shoulder. The generator just produced an output the curator says crosses the gallery's editorial line — content that's technically within model guardrails but contextually wrong for opening night. The room is full. The piece is on the wall in 90 seconds. Pull it now (curator override) or hold and let the generator try again (artistic process)?"
+  options={[
+    {
+      label: "cooperate",
+      display: "Pull the piece — respect the curator's editorial authority",
+      consequence: "Piece offline. Curator nods. The wall stays blank for 30 seconds; the generator retries and produces something that lands. Yara: 'The collective ships when the room is ready, not when the model is ready.' Cooperative play kept the gallery's artistic contract; the audience never sees the piece that almost broke trust."
+    },
+    {
+      label: "defect",
+      display: "Let it ride — generative output is the work",
+      consequence: "Piece displays. Audience reaction split: half intrigued, half annoyed. Curator publicly defends the choice; privately, the gallery board calls a closed meeting next week. Yara backs you. The next exhibit's editorial gate is tighter as a result. Defection paid in artistic statement; the operating budget for the next show shrinks by 12%."
+    },
+    {
+      label: "random",
+      display: "Coin flip — let the room decide via reaction sensor",
+      consequence: "Sensor reads 60% disengaged. Auto-pull triggers. Same outcome as cooperate, but the moment was decided by averaged audience attention rather than artistic intent. The gallery's role as filter became outsourced. Petrov in the back: 'Mixed strategies in art are how you get nothing on the wall.'"
+    },
+    {
+      label: "dominant",
+      display: "Pull but display the curator's note explaining the call",
+      consequence: "Piece offline. In its place: a one-line text card: 'Editorial gate triggered — generator produced output curated out of opening-night canon. Process visible, decision documented.' Audience reads it; conversation in the room shifts from 'what was the piece' to 'how does the gate work.' Yara: 'You made the discipline part of the artwork.' Dominant strategy = transparency as artistic statement."
+    }
+  ]}
+/>
+
 <CodeBlock language="typescript" title="dashboard.ts">
 {`// Real-time dashboard — the view from Erdem's phone
 function renderDashboard(canvas: HTMLCanvasElement, monitor: InstallationMonitor) {
@@ -250,3 +277,9 @@ Build a launch checklist and runbook for deploying a live installation.
 <Exercise slug="launch-biennale" />
 
 <KeyTakeaways takeaways={["Launch checklists verify every system component — critical items block launch, non-critical items get logged", "Runbooks turn panic into procedure — typed failure scenarios with step-by-step recovery", "Auto-recovery handles common issues without human intervention; escalation handles the rest", "The discipline of production operations is watching metrics and resisting the urge to make changes during peak load"]} />
+
+<DispatchTease
+  toThemeId="terra-grid"
+  toThemeName="Terra Grid"
+  body="Operator. Cross-channel intel: Hassan's edge cell just inherited the model Yara's collective shipped. Three days in: latency creeping, accuracy drifting, the runbook Yara wrote isn't covering the failure modes the field is producing. Yara built it for one room of museum-goers; Hassan deploys it across 12,000 devices. Generators don't transfer to edge the way trained models do. Continue the thread."
+/>

@@ -267,3 +267,5 @@ Build a diagnostic safety pipeline that combines confidence thresholds, negation
 <Exercise slug="debug-medi" />
 
 <KeyTakeaways takeaways={["Model hallucination is analogous to a stale cache serving outdated data — the representation doesn't reflect reality", "Negation detection catches cases where context words like 'resolved' or 'denied' invalidate a classification", "Confidence thresholds flag uncertain predictions for human review instead of auto-accepting", "Defense in depth — confidence, negation, human review — is essential for safety-critical ML applications"]} />
+
+> **DISPATCH archive · field intercept #18-N:** Hassan's edge fleet caught the same kind of confident hallucination — model surfaced a high-confidence prediction on a sensor that had silently disconnected. The signal was zero, the model was sure. Confidence is not validity; both modalities forget this at scale.

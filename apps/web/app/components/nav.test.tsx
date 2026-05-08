@@ -1,11 +1,16 @@
-import { describe, it, expect, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { render, screen, waitFor } from "@testing-library/react";
 import { Nav } from "./nav";
+
+// Mutable per-test auth state so a single mock can serve both
+// unauthenticated and authenticated cases.
+const authState: { user: { id: string } | null } = { user: null };
 
 vi.mock("../../lib/supabase/client", () => ({
   getSupabaseBrowserClient: () => ({
     auth: {
-      getUser: () => Promise.resolve({ data: { user: null }, error: null }),
+      getUser: () =>
+        Promise.resolve({ data: { user: authState.user }, error: null }),
       onAuthStateChange: () => ({
         data: { subscription: { unsubscribe: vi.fn() } },
       }),
@@ -19,6 +24,10 @@ vi.mock("../../lib/supabase/client", () => ({
     }),
   }),
 }));
+
+beforeEach(() => {
+  authState.user = null;
+});
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({
@@ -119,5 +128,33 @@ describe("Nav", () => {
     const { container } = render(<Nav />);
     const results = await axe(container);
     expect(results).toHaveNoViolations();
+  });
+
+  it("does NOT render the Review link when unauthenticated", () => {
+    render(<Nav />);
+    expect(screen.queryByText("Review")).not.toBeInTheDocument();
+  });
+
+  it("renders the Review link pointing to /review when authenticated", async () => {
+    authState.user = { id: "u-1" };
+    render(<Nav />);
+    const reviewLink = await waitFor(() =>
+      screen.getByRole("link", { name: /^review$/i }),
+    );
+    expect(reviewLink).toHaveAttribute("href", "/review");
+  });
+
+  it("does NOT render the Log link when unauthenticated", () => {
+    render(<Nav />);
+    expect(screen.queryByText("Log")).not.toBeInTheDocument();
+  });
+
+  it("renders the Log link pointing to /log when authenticated", async () => {
+    authState.user = { id: "u-1" };
+    render(<Nav />);
+    const logLink = await waitFor(() =>
+      screen.getByRole("link", { name: /^log$/i }),
+    );
+    expect(logLink).toHaveAttribute("href", "/log");
   });
 });

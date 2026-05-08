@@ -55,6 +55,13 @@ export async function recordRecallAttempt(args: {
   lessonId: string;
   success: boolean;
   skillAxis: string;
+  /**
+   * Whether the lesson was selected by the ε-greedy explore branch.
+   * Captured for the operator log's exploration-ratio metric. Defaults
+   * to false when caller doesn't know (e.g. recall fired outside the
+   * /review surface).
+   */
+  wasExplored?: boolean;
 }): Promise<string | null> {
   const supabase = getSupabaseBrowserClient();
   const {
@@ -68,6 +75,7 @@ export async function recordRecallAttempt(args: {
     p_lesson_id: args.lessonId,
     p_success: args.success,
     p_skill_axis: args.skillAxis,
+    p_was_explored: args.wasExplored ?? false,
   });
 
   if (error) return null;

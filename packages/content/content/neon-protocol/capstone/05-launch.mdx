@@ -339,6 +339,33 @@ monitor.onUpdate((health) => {
 
 ## The Launch
 
+<BossBeat
+  beatId="neon-protocol-launch-rollout-call"
+  prompt="Lin pings on comms. The model passed canary at 5%. Telemetry from the field has a 3% accuracy regression on low-light frames — exactly the edge case the previous model also struggled with. Promote to 50% now and own the regression, or hold at 5% and ask Ryo's red team for one more pass? Decision in 30 seconds."
+  options={[
+    {
+      label: "cooperate",
+      display: "Hold at 5% and ask Ryo for another red-team pass",
+      consequence: "Ryo runs another pass overnight. Surfaces two more low-light failure modes. You ship at 50% the next morning with a known regression curve and a planned mitigation. Lin's note: 'Slow ship, fewer surprises.' Cooperative play held the team posture; the schedule slipped 18 hours and the rollout is calibrated."
+    },
+    {
+      label: "defect",
+      display: "Promote to 50% now, own the regression in the post-mortem",
+      consequence: "Promote ships clean at 50%. Hour 3, two field cells log degraded confidence on low-light frames. You auto-rollback that segment. Post-mortem next week reads: 'Promote was the right call; rollback was the safety net.' Lin signs off but the trust ledger reads: 'operator over-promotes, has tooling to recover.' Defection paid in this trade; the next promote will face more scrutiny."
+    },
+    {
+      label: "random",
+      display: "Coin flip — 50% promote, 50% hold",
+      consequence: "Heads. You promote. Same outcome as defect, but the bridge logged that you couldn't decide. Mixed strategies are valid against an adversary; against your own deployment ladder they read as not having a thesis."
+    },
+    {
+      label: "dominant",
+      display: "Promote to 25% (mid-rung) with a hard rollback trigger on low-light segment",
+      consequence: "25% rollout buys you signal without doubling your blast radius. Low-light segment hits the rollback trigger at hour 2; you isolate it without affecting the 25% non-low-light traffic. Lin: 'You found the rung that lets you collect data and limit damage at the same time.' Dominant strategy = staged risk with explicit guardrails on the known failure mode."
+    }
+  ]}
+/>
+
 <Dialogue speaker="Dilan">
 District 7 — canary is green. Error rate 0.3%. P95 latency 42 milliseconds. 34 detections in the first hour, all confirmed by human operators. Zero false positives. All districts — go live.
 </Dialogue>
@@ -429,3 +456,9 @@ Implement a deployment configuration with feature flags, health checks, and auto
 />
 
 <KeyTakeaways takeaways={["ML model deployment uses the same strategies as frontend deployment: feature flags, canary rollout, monitoring, rollback", "Feature flags enable instant rollback — the previous model keeps running behind the flag", "Canary deployments limit blast radius — test on a subset before going global", "Real-time monitoring with automatic rollback triggers prevents bad models from reaching all users"]} />
+
+<DispatchTease
+  toThemeId="signal-ward"
+  toThemeName="Signal Ward"
+  body="Operator. Cross-channel intel: Dr. Amara just escalated an NLP triage case that's setting off the same softmax-confidence pattern Kira's vision model ran on last week's adversarial frames. Different sensor — text, not pixels — same failure mode: the model is too sure when it shouldn't be. Calibration is a property of the model, not the modality. Continue the thread."
+/>

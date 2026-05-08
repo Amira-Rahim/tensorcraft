@@ -133,3 +133,5 @@ Build a RAG pipeline that retrieves and contextualizes signal data.
 <Exercise slug="rag-pipeline" />
 
 <KeyTakeaways takeaways={["RAG = Retrieve → Augment → Generate: fetch real data, inject into prompt, generate grounded response", "Like Server Components: data access happens before generation, ensuring the output reflects reality", "Limit retrieved context to stay within token limits — retrieve the top-K most relevant records", "Instruct the LLM to cite sources and say 'insufficient data' when information is missing"]} />
+
+> **DISPATCH archive · field intercept #11-D:** Dr. Amara's clinical RAG pipeline runs the same retrieve-then-generate contract on patient records. Her note in the log: "the model that confabulates is the one that retrieved nothing and didn't say so." Different domain, identical failure mode.

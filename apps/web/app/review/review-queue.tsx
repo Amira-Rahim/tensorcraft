@@ -87,9 +87,11 @@ function ReviewCardItem({ card }: { card: ReviewCard }) {
 
   return (
     <Link
-      href={`/review/${card.themeId}/${card.moduleId}/${card.lessonId}`}
+      href={`/review/${card.themeId}/${card.moduleId}/${card.lessonId}${card.wasExplored ? "?explored=1" : ""}`}
       className="block p-5 brutalist-shadow bg-surface-raised border border-border hover:translate-x-[-2px] hover:translate-y-[-2px] transition-transform"
       style={{ borderLeft: `3px solid ${card.themePrimary}` }}
+      aria-label={`Recall ${card.lessonTitle} from ${card.themeName} · ${card.moduleName}`}
+      data-testid={`review-card-${card.themeId}-${card.lessonId}`}
     >
       <div className="flex items-center justify-between mb-2">
         <p className="text-[9px] font-mono uppercase tracking-[2px] text-text-muted">
@@ -99,6 +101,8 @@ function ReviewCardItem({ card }: { card: ReviewCard }) {
           <span
             className="text-[9px] font-mono uppercase tracking-[2px] text-yellow-400"
             title="Selected by the explore branch (probability ε=0.15)"
+            aria-label="Selected by the explore branch (probability ε equals 0.15)"
+            data-testid="review-card-explore-badge"
           >
             ε-explore
           </span>

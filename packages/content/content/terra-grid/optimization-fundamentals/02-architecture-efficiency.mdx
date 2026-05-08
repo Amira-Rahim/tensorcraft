@@ -86,3 +86,5 @@ Redesign a model using the bottleneck pattern to reduce parameters.
 <Exercise slug="measure-efficiency" />
 
 <KeyTakeaways takeaways={["Architecture efficiency is the first optimization — before compression", "Bottleneck layers (large → small → large) dramatically reduce parameters", "A 32-unit bottleneck in a 512-unit model cuts parameters by ~58%", "Efficient architecture design parallels avoiding unnecessary re-renders in React"]} />
+
+> **DISPATCH archive · field intercept #36-E:** Yara's autoencoder for latent walks runs the same bottleneck pattern — they're not optimizing for size, they're optimizing for representation. Same architecture, different reward function. The bottleneck that compresses for Hassan IS the latent that creates for Yara.

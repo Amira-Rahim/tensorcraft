@@ -114,3 +114,5 @@ Quantize model weights and measure the precision loss.
 <Exercise slug="quantize-weights" />
 
 <KeyTakeaways takeaways={["Quantization reduces precision: float32 (4B) → float16 (2B) → int8 (1B) per weight", "Like image compression: smaller files, barely noticeable quality loss for most use cases", "DEEP SCAN: 340 MB → 85 MB with int8, only 1.2% accuracy drop — a worthwhile trade", "Always measure accuracy after quantization — some models are more sensitive than others"]} />
+
+> **DISPATCH archive · field intercept #14-Q:** Hassan's edge cell quantizes everything before deploy — they hit 1.2% accuracy loss and called it a win. Operator Jin pushed back: "On a 50-million-row table that's 600,000 wrong calls per quarter." Hassan's reply: "We monitor for it. That's why we have drift detection." Both true.

@@ -256,6 +256,127 @@ export interface Database {
         };
         Relationships: [];
       };
+      lore_drops: {
+        Row: {
+          id: string;
+          user_id: string;
+          artifact_id: string;
+          dropped_at: string;
+          read_at: string | null;
+        };
+        Insert: {
+          user_id: string;
+          artifact_id: string;
+        };
+        Update: {
+          read_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "lore_drops_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      counterfactual_choices: {
+        Row: {
+          user_id: string;
+          theme_id: string;
+          lesson_id: string;
+          decision_node: string;
+          original_choice_index: number;
+          alternate_choice_index: number;
+          rewound_at: string;
+        };
+        Insert: {
+          user_id: string;
+          theme_id: string;
+          lesson_id: string;
+          decision_node: string;
+          original_choice_index: number;
+          alternate_choice_index: number;
+        };
+        Update: Record<string, never>;
+        Relationships: [
+          {
+            foreignKeyName: "counterfactual_choices_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      boss_beat_choices: {
+        Row: {
+          id: string;
+          user_id: string;
+          theme_id: string;
+          lesson_id: string;
+          beat_id: string;
+          choice_index: number;
+          choice_label: "cooperate" | "defect" | "random" | "dominant";
+          reaction_ms: number | null;
+          chosen_at: string;
+        };
+        Insert: {
+          user_id: string;
+          theme_id: string;
+          lesson_id: string;
+          beat_id: string;
+          choice_index: number;
+          choice_label: "cooperate" | "defect" | "random" | "dominant";
+          reaction_ms?: number | null;
+        };
+        Update: {
+          reaction_ms?: number | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "boss_beat_choices_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      dispatch_messages: {
+        Row: {
+          id: string;
+          user_id: string;
+          kind: "weekly_intel" | "milestone" | "cliffhanger";
+          subject: string;
+          body_mdx: string;
+          cta_label: string | null;
+          cta_href: string | null;
+          sent_at: string;
+          read_at: string | null;
+        };
+        Insert: {
+          user_id: string;
+          kind: "weekly_intel" | "milestone" | "cliffhanger";
+          subject: string;
+          body_mdx: string;
+          cta_label?: string | null;
+          cta_href?: string | null;
+        };
+        Update: {
+          read_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "dispatch_messages_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       review_queue: {
         Row: {
           user_id: string;
@@ -676,6 +797,7 @@ export interface Database {
           p_lesson_id: string;
           p_success: boolean;
           p_skill_axis: string;
+          p_was_explored?: boolean;
         };
         Returns: string;
       };
@@ -701,6 +823,74 @@ export interface Database {
           total_successes: number;
           due_count: number;
         }>;
+      };
+      mark_dispatch_read: {
+        Args: { p_message_id: string };
+        Returns: void;
+      };
+      dispatch_milestone: {
+        Args: {
+          p_user_id: string;
+          p_subject: string;
+          p_body_mdx: string;
+          p_cta_label?: string | null;
+          p_cta_href?: string | null;
+        };
+        Returns: string;
+      };
+      count_unread_dispatch: {
+        Args: Record<string, never>;
+        Returns: number;
+      };
+      record_boss_beat_choice: {
+        Args: {
+          p_theme_id: string;
+          p_lesson_id: string;
+          p_beat_id: string;
+          p_choice_index: number;
+          p_choice_label: "cooperate" | "defect" | "random" | "dominant";
+          p_reaction_ms?: number | null;
+        };
+        Returns: boolean;
+      };
+      get_boss_beat_choice: {
+        Args: { p_beat_id: string };
+        Returns: Array<{
+          beat_id: string;
+          choice_index: number;
+          choice_label: "cooperate" | "defect" | "random" | "dominant";
+          reaction_ms: number | null;
+          chosen_at: string;
+        }>;
+      };
+      record_counterfactual: {
+        Args: {
+          p_theme_id: string;
+          p_lesson_id: string;
+          p_decision_node: string;
+          p_original_choice_index: number;
+          p_alternate_choice_index: number;
+        };
+        Returns: boolean;
+      };
+      get_counterfactual: {
+        Args: { p_theme_id: string };
+        Returns: Array<{
+          theme_id: string;
+          lesson_id: string;
+          decision_node: string;
+          original_choice_index: number;
+          alternate_choice_index: number;
+          rewound_at: string;
+        }>;
+      };
+      try_drop_lore_artifact: {
+        Args: { p_artifact_id: string };
+        Returns: string | null;
+      };
+      mark_lore_read: {
+        Args: { p_artifact_id: string };
+        Returns: void;
       };
     };
   };

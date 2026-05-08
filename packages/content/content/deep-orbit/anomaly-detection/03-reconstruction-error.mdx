@@ -127,3 +127,5 @@ A true anomaly slipped through the autoencoder. Audit the per-feature reconstruc
 <Exercise slug="incident-missed-anomaly" />
 
 <KeyTakeaways takeaways={["Reconstruction error is the anomaly score — high error means the signal doesn't match learned normal patterns", "Like git diff: no diff = normal, large diff = anomaly, and you can see WHICH features differ most", "Normal signals cluster at low error; anomalies stand out at 10-100x the normal baseline", "Feature-level error analysis reveals exactly which aspects of the signal are anomalous"]} />
+
+> **DISPATCH archive · field intercept #08-A:** Operator Lin's CV cell logged a similar error spike last quarter — IoU residuals 12× baseline on a feed they marked 'unremarkable'. The signal was the model failing, not the world being weird. They retrained. The escalation never reached us.

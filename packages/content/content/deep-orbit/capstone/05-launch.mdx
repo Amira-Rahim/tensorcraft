@@ -45,6 +45,33 @@ Every web app you've built ends the same way: `npm run build`, push to productio
 
 <LearningObjectives objectives={["Configure a production build that includes model assets alongside web assets", "Deploy an ML-powered web app to GitHub Pages as a static site", "Verify the deployed system loads and runs inference correctly", "Complete the DEEP SCAN mission: classify the anomalous signal"]} />
 
+<BossBeat
+  beatId="deep-orbit-launch-deploy-call"
+  prompt="Mirza is on comms. Demir's finger is on Deploy. Telemetry shows the anomalous signal pulses every 30 seconds. The next pulse is the cleanest classification window the bridge will get tonight. What's your call, operator?"
+  options={[
+    {
+      label: "cooperate",
+      display: "Hold and let Demir's verification suite run one more pass",
+      consequence: "Demir reruns. The verification suite passes. The pulse window closes — you miss the cleanest classification, but DEEP SCAN deploys to a steady-state target two minutes later. Mirza nods: 'Good operators wait.' Cooperative play with the team yields a slightly noisier signal but zero deployment surprises."
+    },
+    {
+      label: "defect",
+      display: "Override Demir, push deploy now while the pulse window is open",
+      consequence: "DEEP SCAN ships. Classification lands inside the pulse window — sharpest signal of the run. Demir's face is unreadable. Mirza will sign off, but the trust ledger now carries a debt: you treated the team as a constraint, not a teammate. The science wins; the next deploy will be slower."
+    },
+    {
+      label: "random",
+      display: "Flip a coin — half the bridge crew is split on the call",
+      consequence: "Tails. You hold. Demir reruns; pulse window closes. Same outcome as cooperate, but the bridge logged that you couldn't decide. Game-theoretically: mixed strategies are valid against an adversary, but your team is not your adversary."
+    },
+    {
+      label: "dominant",
+      display: "Run a 30-second hot canary on the pulse, then full deploy if it holds",
+      consequence: "Canary on the live pulse passes 0.9987 correlation. Full deploy clears two minutes later. You captured the pulse window AND the verification rerun. Mirza: 'You found the third option. That's the work.' Dominant strategy here was the one that satisfied both objectives — Demir's safety net and the science window."
+    }
+  ]}
+/>
+
 ## Production Build
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
@@ -202,3 +229,9 @@ Write a deployment verification script for the complete system.
 <Exercise slug="verify-deployment" />
 
 <KeyTakeaways takeaways={["ML deployment is web deployment — the model is a static asset in your build output, served from a CDN", "Always verify deployments: model loads, inference works, performance meets budget", "DEEP SCAN v1.0: 42 MB model, 5ms inference, 91.8% accuracy — from 340 MB in Module 1 to production", "The signal is classified. The mission continues. And you — you think like an ML engineer now."]} />
+
+<DispatchTease
+  toThemeId="neon-protocol"
+  toThemeName="Neon Protocol"
+  body="Operator. Cross-channel intel: Kira at a partner cell just escalated a CV anomaly. The IoU heatmap she's reading carries the same harmonic structure DEEP SCAN classified an hour ago. She doesn't know yet. Time-series eyes catch what convolutional eyes miss; convolutional eyes catch what time-series eyes miss. Different sensors, same enemy."
+/>

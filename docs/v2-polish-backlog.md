@@ -4,9 +4,47 @@ P2 / V2 items deferred from the A+ launch sprint (2026-04-25 → 2026-04-28). No
 
 Items grouped by leverage. Highest leverage first.
 
+## Game-theory + storytelling expansion candidates (2026-05-08 brainstorm)
+
+Full design reference: `~/.claude/plans/do-you-think-game-reactive-hennessy.md`. Each entry below is implementation-ready (data model + UX + build estimate + ethics check) per that plan. Cohort split mirrors a launch-stage gate the user set: single-player ships now; multiplayer/teams gated to 1000-user milestone.
+
+**Status (2026-05-08):** all NOW-cohort slices shipped at infra + Deep Orbit content level — 6 slices in one session: #11 Operator log, #1+#13+#15 DISPATCH bundle, #6 Boss beats, #3 Counterfactual playthrough, #20 NPC cameos, #19 Lore artifacts. Migrations 028–032 added. Vitest 772/772. Polish checklist (axe/Lighthouse/Playwright auth flows) lives at `docs/gt-narrative-polish-checklist.md`. Per-theme launch content for Neon/Signal/Nova/Terra deferred to each theme's launch sprint — outline below under "Per-theme launch content sprint."
+
+### NOW (single-player, ship-now candidates)
+
+Suggested ship order: #11 → (#1 + #13 + #15 bundle) → #6 → #3. NOW spine (those four) totals ~36–50 days. Optional gap-fillers: #20, #19, #17. Defer in NOW: #5 (high authoring tax), #12 (weak SP without social), #16 ($$$$), #18 (3–4× MDX cost).
+
+- **#11 Operator log meta-screen** ⭐ — cross-theme regret summary, post-hoc strategy classification. Stands up DISPATCH narrator voice. Zero new tables. ~8–12d.
+- **#1 Free-reveal cliffhangers + cross-theme tease** — finale teases of next-theme characters; always reveals (soft gate per scoping). ~4–6d.
+- **#13 NPC DISPATCH inbox** — weekly intel push from DISPATCH; CTAs to /log, /review, /themes. ~3–5d.
+- **#15 Recall-as-narrative** — rewrite RecallPrompts as in-canon micro-beats. Per-prompt rewrite, no infra.
+- **#6 Time-pressure boss beats** — 30s 4-option strategy choice (cooperate/defect/random/dominant) at capstone moments. ~8–10d.
+- **#3 Counterfactual playthrough** — 1 rewind per theme; alternate timeline shown. Regret minimization made literal. ~10–14d.
+- **#5 Branching quizzes** — answer alters next 30s narrative. High authoring tax (~14–20d full curriculum).
+- **#12 Reputation currency (SP cosmetic only)** — rep ledger + cosmetics shop, NO leaderboard surface. Re-evaluate when LATER cohort opens.
+- **#17 Branching theme epilogues** — 3 variants per theme by trajectory band. ~6–8d.
+- **#19 Lore artifacts** — random drop on completion, in-canon journal entries, /library/lore. ~3–4d.
+- **#16 Voice-actor character cards** — $$$$ recurring per theme; defer.
+- **#18 Character-perspective re-render** — 3–4× MDX authoring cost; defer.
+- **#20 Inter-theme NPC cameos** — 10–20 single-line cameos. ~1–2d. Ship in any gap.
+
+### LATER (1000-user gated, deferred)
+
+Each idea is gated by a critical-mass dependency: teams, other-user data, or portfolio mass. Designs preserved verbatim in plan file.
+
+- **#2 Team layer (opt-in)** — teams/team_members/leadership_log + invite codes + opt-in public boards. Foundation for #10. ~10–14d.
+- **#10 Shared team bandit** — team_review_queue + federated forgetting score + TEAM RECALL section on /review. Hard dep on #2. ~5–7d.
+- **#4 Adversarial pair mode** — Supabase Realtime split-screen Sandpack + critique rubric + minimax payoff. Adds realtime/MP infra Tensorcraft doesn't have today. ~14–20d.
+- **#7 Mentor ghost mode** — anonymous overlay of other players' decision distributions. Needs decision_logs from #3/#5/#6. ~8–12d.
+- **#14 Capstone auction (Vickrey)** — second-price auction over capstone submissions w/ token economy. Needs auction lesson shipped first (deferred Slice C item). ~14–18d.
+- **#8 Trade-the-bridge gifting** — 24h preview gift to friend; rate-limited. ~3–5d.
+- **#9 Public capstone gallery** — opt-in portfolio at /gallery (public, no auth). ~5–8d.
+
 ## Game-theory spine — items deferred from Slice C (2026-05-08)
 
 Slice C shipped: bandit-driven `/review` queue, bandit lesson rewrite (regret/minimax framing + live `<BanditState />`), GAN ↔ bandit `<StrategyThread>` cross-link, streak polish (on-fire ≥7d, gentle at-risk nudge), reviews-due dashboard pill. Migration `027_review_queue.sql` adds `review_queue` table + four RPCs; algorithm lives in `packages/shared/src/bandit.ts` (mirrored in SQL).
+
+**Post-audit follow-up (2026-05-08):** verification sweep caught three drift items, all fixed in same session — bandit FE↔ML bridge added to central `BRIDGES` registry (`packages/shared/src/bridges.ts` id 51) so it surfaces in the landing-bridge-ticker / glossary / onboarding / sitemap (was lesson-frontmatter-only); ARIA + `data-testid` added to review-queue cards + ε-explore badge; `nav.test.tsx` extended with auth-gated Review-link visibility tests. Vitest 759/759 + web tsc clean.
 
 Deferred from that slice:
 

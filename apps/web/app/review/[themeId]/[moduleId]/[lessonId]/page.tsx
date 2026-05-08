@@ -10,6 +10,7 @@ import type { Metadata } from "next";
 
 interface Props {
   params: Promise<{ themeId: string; moduleId: string; lessonId: string }>;
+  searchParams: Promise<{ explored?: string }>;
 }
 
 export const metadata: Metadata = {
@@ -17,8 +18,13 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function ReviewLessonPage({ params }: Props) {
+export default async function ReviewLessonPage({
+  params,
+  searchParams,
+}: Props) {
   const { themeId, moduleId, lessonId } = await params;
+  const { explored } = await searchParams;
+  const wasExplored = explored === "1";
 
   if (!isValidThemeSlug(themeId) || !isLaunched(themeId)) notFound();
   const theme = themes[themeId];
@@ -69,6 +75,7 @@ export default async function ReviewLessonPage({ params }: Props) {
             themeId={themeId}
             moduleId={moduleId}
             lessonId={lessonId}
+            wasExplored={wasExplored}
             visibleComponents={
               new Set(["RecallPrompt", "KeyTakeaways", "BridgeCallout"])
             }

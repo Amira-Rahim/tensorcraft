@@ -165,3 +165,5 @@ Conv [256, 256, num_classes]
 />
 
 <KeyTakeaways takeaways={["U-Net compresses images through an encoder then expands through a decoder back to full resolution", "Skip connections concatenate encoder features with decoder features, preserving spatial detail", "The output has the same spatial dimensions as the input: [H, W, numClasses]", "The architecture mirrors layout flow — content descends through containers, rendering ascends to the viewport"]} />
+
+> **DISPATCH archive · field intercept #23-V:** Yara's collective uses U-Net variants for image-to-image generation. Skip connections preserve content the bottleneck would otherwise lose. Same architecture, opposite optimization target — they want the input back, you want the segmentation. Symmetry is structural, not semantic.

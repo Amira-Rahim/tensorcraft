@@ -1063,4 +1063,17 @@ export const BRIDGES: Bridge[] = [
     category: "terra-grid",
     mlCode: "const psi = computePSI(baselineDistribution, currentDistribution)",
   },
+  {
+    id: 51,
+    mlConcept: "Multi-armed bandit (ε-greedy / UCB1)",
+    feConcept: "Dynamic ad rotation",
+    tier: "structural",
+    connection:
+      "Both adaptively allocate traffic to whichever variant is performing best, while reserving a small fraction for exploration. Ad servers route impressions toward higher-CTR creatives; bandit schedulers route inference (or, in Tensorcraft's review queue, attention) toward higher-reward arms. Same explore-exploit tradeoff, same ε knob.",
+    breaks:
+      "Ad rotation has clear short-term reward signals and stationary arms over the test window. Production bandits face delayed rewards (long-term retention), non-stationary arms (model drift, new lessons appearing in the review queue), and exploration cost — Thompson sampling and UCB1 are not interchangeable knobs. Tensorcraft's review queue inherits the same failure modes: every new completed lesson adds an unpulled arm, and 'recall success' is a noisy proxy for 'remembered'.",
+    category: "terra-grid",
+    mlCode:
+      "// ε-greedy: 15% random exploration, 85% exploit highest-reward arm\nconst pick = Math.random() < 0.15 ? randomArm() : argmaxReward(arms);",
+  },
 ];

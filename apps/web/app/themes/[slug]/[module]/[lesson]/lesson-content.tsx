@@ -16,7 +16,9 @@ import {
 } from "@tensorcraft/ui";
 import {
   BanditState,
+  BossBeat,
   Concept,
+  DispatchTease,
   InteractiveDemo,
   MathBlock,
   NextLesson,
@@ -59,16 +61,24 @@ interface LessonContentProps {
   userFramework?: Framework;
   visibleComponents?: Set<string>;
   onExerciseComplete?: () => void;
+  /**
+   * True when the player navigated here from the /review queue and the
+   * lesson was selected by the ε-greedy explore branch. Captured in the
+   * recall event so the operator log can compute exploration ratio.
+   */
+  wasExplored?: boolean;
 }
 
 /** MDX components available in lesson content */
 const mdxComponents = {
   BanditState,
+  BossBeat,
   Concept,
   Dialogue,
   BridgeCallout,
   CodeBlock,
   DerivationDrawer,
+  DispatchTease,
   Exercise,
   HintPanel,
   InteractiveDemo,
@@ -95,6 +105,7 @@ export function LessonContent({
   userFramework,
   visibleComponents,
   onExerciseComplete,
+  wasExplored = false,
 }: LessonContentProps) {
   const exerciseMap = useMemo(() => {
     const map = new Map<string, ExerciseData>();
@@ -207,7 +218,24 @@ export function LessonContent({
           />
         ) : null,
       BanditState: wrapVisibility("BanditState", BanditState),
+      DispatchTease: wrapVisibility("DispatchTease", DispatchTease),
       StrategyThread: wrapVisibility("StrategyThread", StrategyThread),
+      BossBeat: (
+        props: Omit<
+          React.ComponentProps<typeof BossBeat>,
+          "themeId" | "lessonId"
+        >,
+      ) => {
+        if (!shouldShow("BossBeat")) return null;
+        if (!themeId || !lessonId) return null;
+        return (
+          <BossBeat
+            {...props}
+            themeId={themeId as string}
+            lessonId={lessonId as string}
+          />
+        );
+      },
       RecallPrompt: (props: React.ComponentProps<typeof RecallPrompt>) => {
         if (!shouldShow("RecallPrompt")) return null;
         const skillAxis = lesson.skillAxes?.[0] ?? "evaluation";
@@ -220,6 +248,7 @@ export function LessonContent({
                 lessonId: lessonId as string,
                 success,
                 skillAxis,
+                wasExplored,
               }).catch(() => {});
             }
           : undefined;
@@ -281,6 +310,7 @@ export function LessonContent({
     onExerciseComplete,
     lesson.concept.bridge,
     lesson.skillAxes,
+    wasExplored,
   ]);
 
   const Content = useMemo(() => {
