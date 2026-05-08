@@ -4,7 +4,6 @@ import { PRICING } from "@tensorcraft/shared";
 import { LandingHero } from "./components/landing-hero";
 import { LandingBridgeTicker } from "./components/landing-bridge-ticker";
 import { LandingBridgeTiers } from "./components/landing-bridge-tiers";
-import { LandingAnalogyBreaks } from "./components/landing-analogy-breaks";
 import { LandingFiveCLoop } from "./components/landing-five-c-loop";
 import { BridgePreviewSection } from "./components/bridge-preview-section";
 import { FiveWorldsSection } from "./components/five-worlds-section";
@@ -69,9 +68,6 @@ export default function Home() {
 
         {/* ===== BRIDGE TIERS — static 3-tier table (server-rendered) ===== */}
         <LandingBridgeTiers />
-
-        {/* ===== HONESTY — every analogy ships with a "where this breaks" footer ===== */}
-        <LandingAnalogyBreaks />
 
         {/* ===== 5C LESSON LOOP (server-rendered — zero JS) ===== */}
         <LandingFiveCLoop />

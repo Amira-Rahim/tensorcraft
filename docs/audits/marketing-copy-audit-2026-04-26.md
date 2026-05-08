@@ -8,7 +8,7 @@ Goal: convert without sounding manufactured. AI-tells flagged + rewritten across
 |---|---|
 | `apps/web/app/page.tsx` | edited — final CTA tightened, redundant "explore" CTA reframed |
 | `apps/web/app/components/landing-hero.tsx` | edited — subhead conversion + honest qualifier added |
-| `apps/web/app/components/landing-analogy-breaks.tsx` | edited — removed "discover the gap" filler, tightened claim |
+| `apps/web/app/components/landing-analogy-breaks.tsx` | removed 2026-05-08 — section deleted from homepage as redundant w/ BRIDGE TIERS + BRIDGE SYSTEM |
 | `apps/web/app/themes/page.tsx` | edited — "Whether you're..." pattern removed, direct address |
 | `apps/web/app/learn/page.tsx` | edited — "Explore" → "See" |
 | `apps/web/app/pricing/page.tsx` | edited — "Explore" → "See", honest "what you don't get" qualifier added |
