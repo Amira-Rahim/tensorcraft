@@ -51,6 +51,7 @@ export default async function DashboardPage() {
     { data: streaksRaw },
     { data: exerciseAttempts },
     { data: purchaseRows },
+    { data: reviewQueueRows },
   ] = await Promise.all([
     supabase
       .from("profiles")
@@ -82,7 +83,38 @@ export default async function DashboardPage() {
       .select("theme_ids")
       .eq("user_id", user.id)
       .eq("status", "completed"),
+    // Bandit-driven review queue. RLS scopes to the current user. We only
+    // need the count of due rows, so select the minimum and lte() against
+    // the database's now() via a sentinel ISO timestamp at request time.
+    supabase
+      .from("review_queue")
+      .select("lesson_id, next_review_at")
+      .eq("user_id", user.id)
+      .lte("next_review_at", new Date().toISOString()),
   ]);
+
+  const reviewsDueCount = (reviewQueueRows ?? []).length;
+
+  // Streak nudge: any of the user's per-theme streaks where last_activity_date
+  // is exactly yesterday — meaning the streak survives if they act today, dies
+  // tomorrow otherwise. Computed against the user's local-day boundary using
+  // UTC date components (server uses UTC; the streak RPC also uses date math
+  // without timezone, so this matches).
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setUTCDate(yesterday.getUTCDate() - 1);
+  const yesterdayKey = yesterday.toISOString().slice(0, 10);
+  const todayKey = today.toISOString().slice(0, 10);
+  const { data: streaksWithDate } = await supabase
+    .from("streaks")
+    .select("last_activity_date, current_streak")
+    .eq("user_id", user.id);
+  const streakAtRisk = (streaksWithDate ?? []).some(
+    (s) =>
+      (s.current_streak ?? 0) >= 1 &&
+      s.last_activity_date === yesterdayKey &&
+      s.last_activity_date !== todayKey,
+  );
 
   const twelveWeeksAgoMs = Date.now() - 12 * 7 * 24 * 60 * 60 * 1000;
   const lossCurveData = {
@@ -402,6 +434,8 @@ export default async function DashboardPage() {
       themeCards={
         <ThemeCards cards={themeCardsData} hasFullBundle={hasFullBundle} />
       }
+      reviewsDueCount={reviewsDueCount}
+      streakAtRisk={streakAtRisk}
     />
   );
 }

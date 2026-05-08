@@ -74,6 +74,13 @@ export interface DashboardProps {
   }>;
   lossCurveData: { weekly: WeeklyHints[] };
   themeCards?: ReactNode;
+  /** Bandit-driven review queue: total lessons due across all owned themes. */
+  reviewsDueCount?: number;
+  /**
+   * True when at least one streak's last_activity_date == today - 1 AND the
+   * user has not yet completed a lesson today. Renders a gentle nudge toast.
+   */
+  streakAtRisk?: boolean;
 }
 
 export function DashboardView(props: DashboardProps) {
@@ -98,6 +105,8 @@ export function DashboardView(props: DashboardProps) {
     genomeData,
     lossCurveData,
     themeCards,
+    reviewsDueCount = 0,
+    streakAtRisk = false,
   } = props;
 
   const [heatVis, setHeatVis] = useState(false);
@@ -298,6 +307,43 @@ export function DashboardView(props: DashboardProps) {
 
         {/* Main content */}
         <main className="grid-bg" style={{ flex: 1, overflow: "auto" }}>
+          {streakAtRisk && (
+            <div
+              data-testid="streak-at-risk-toast"
+              style={{
+                padding: "12px 40px",
+                background: "color-mix(in srgb, #FF8A2A 8%, transparent)",
+                borderBottom: `1px solid ${BORDER_VAR}`,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 16,
+                fontFamily: MONO,
+                fontSize: 12,
+              }}
+            >
+              <span style={{ color: WHITE }}>
+                <strong style={{ color: "#FF8A2A", fontWeight: 700 }}>
+                  Streak at risk.
+                </strong>{" "}
+                Yesterday you stayed active. Show up today to keep the count.
+              </span>
+              {resumeUrl && (
+                <Link
+                  href={resumeUrl}
+                  style={{
+                    color: "#FF8A2A",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.12em",
+                    fontSize: 10,
+                    textDecoration: "none",
+                  }}
+                >
+                  Resume now →
+                </Link>
+              )}
+            </div>
+          )}
           {/* Lesson header */}
           <div
             style={{
@@ -473,6 +519,43 @@ export function DashboardView(props: DashboardProps) {
             )}
           </div>
 
+          {reviewsDueCount > 0 && (
+            <Link
+              href="/review"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: "14px 24px",
+                background:
+                  "color-mix(in srgb, var(--tc-primary) 7%, transparent)",
+                borderTop: `1px solid ${BORDER_VAR}`,
+                borderBottom: `1px solid ${BORDER_VAR}`,
+                color: WHITE,
+                textDecoration: "none",
+                fontFamily: MONO,
+              }}
+              data-testid="dashboard-reviews-due-pill"
+            >
+              <span style={{ fontSize: 12, letterSpacing: "0.04em" }}>
+                <strong style={{ color: LIME, fontWeight: 700 }}>
+                  {reviewsDueCount}
+                </strong>{" "}
+                {reviewsDueCount === 1 ? "lesson" : "lessons"} due for recall
+              </span>
+              <span
+                style={{
+                  fontSize: 10,
+                  color: LIME,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.15em",
+                }}
+              >
+                Open queue →
+              </span>
+            </Link>
+          )}
+
           {/* Stats strip */}
           <div
             style={{
@@ -493,6 +576,7 @@ export function DashboardView(props: DashboardProps) {
                 val: `${currentStreak} day${currentStreak !== 1 ? "s" : ""}`,
                 sub:
                   bestStreak > 0 ? `Best: ${bestStreak} days` : "Start today",
+                onFire: currentStreak >= 7,
               },
               {
                 label: "Average score",
@@ -502,12 +586,16 @@ export function DashboardView(props: DashboardProps) {
             ].map((s, i) => (
               <div
                 key={s.label}
+                data-on-fire={s.onFire ? "true" : undefined}
                 style={{
                   padding: "36px 40px",
                   borderRight: i < 2 ? `1px solid ${BORDER_VAR}` : "none",
-                  background: s.accent
-                    ? "color-mix(in srgb, var(--tc-primary) 2.5%, transparent)"
-                    : "transparent",
+                  background: s.onFire
+                    ? "color-mix(in srgb, #FF8A2A 8%, transparent)"
+                    : s.accent
+                      ? "color-mix(in srgb, var(--tc-primary) 2.5%, transparent)"
+                      : "transparent",
+                  borderLeft: s.onFire ? "2px solid #FF8A2A" : undefined,
                 }}
               >
                 <div

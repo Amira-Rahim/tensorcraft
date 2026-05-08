@@ -4,20 +4,29 @@ title: "Multi-Armed Bandits"
 moduleId: ab-testing
 themeId: terra-grid
 order: 5
-estimatedMinutes: 25
+estimatedMinutes: 30
 difficulty: advanced
 context:
   narrative: "Priya proposes an improvement to the A/B framework. 'Standard A/B tests lock in the traffic split. Multi-armed bandits adapt. If one model is clearly better, the algorithm shifts traffic automatically. Less exposure to the worse model.'"
   speaker: "Priya Sharma"
 concept:
-  explanation: "Multi-armed bandits adaptively allocate traffic to the better-performing model variant — the same algorithm used for dynamic ad rotation on websites."
+  explanation: "Multi-armed bandits adaptively allocate traffic to the better-performing arm. Read another way: bandits are a one-player game against an adversarial environment, with regret as the loss function. The same algorithm reroutes ad rotation, model selection, and — as you will see — Tensorcraft's own spaced-recall queue."
   bridge:
     feTitle: "Dynamic Ad Rotation"
     feCode: "// Show ad with highest CTR more often, explore alternatives with epsilon"
     mlTitle: "Adaptive Model Selection"
     mlCode: "// Route to best model more often, explore alternatives with epsilon"
     tier: structural
-    breaks: "Dynamic ad rotation has clear short-term reward signals. Multi-armed bandits for model selection face delayed rewards (long-term retention), non-stationary arms (model drift), and exploration cost — Thompson sampling and UCB algorithms are not interchangeable knobs."
+    breaks: "Ad rotation has clear short-term reward signals. Production bandits face delayed rewards (long-term retention), non-stationary arms (model drift, new lessons appearing in your review queue), and exploration cost. Worth knowing: Tensorcraft's review queue inherits the same failure modes — every new lesson you complete adds an unpulled arm, and 'recall success' is a noisy proxy for 'remembered'."
+keywords:
+  - multi-armed-bandit
+  - epsilon-greedy
+  - ucb1
+  - regret-minimization
+  - exploration-exploitation
+  - game-theory
+skillAxes:
+  - evaluation
 consequence:
   narrative: "The bandit algorithm converges within 3 days. Model v3.1 receives 87% of traffic because it consistently outperforms. Priya: 'The algorithm found the winner faster than a fixed A/B test would have, and fewer devices were exposed to the worse model.'"
   nextLessonTeaser: "Next module: Scale & Reliability — building infrastructure that survives the worst day"
@@ -28,11 +37,6 @@ hints:
     content: "Track rewards (successful predictions) per model and select the one with highest average reward"
   - level: solution
     content: "Implement epsilon-greedy with decaying epsilon — explore more early, exploit more as confidence grows"
-keywords:
-  - multi-armed-bandit
-  - epsilon-greedy
-  - adaptive-allocation
-  - exploration-exploitation
 ---
 
 <Dialogue speaker="Priya Sharma">
@@ -45,14 +49,36 @@ If it reduces the time our devices spend on a worse model, I want it. Show me th
 
 You have seen dynamic ad rotation on websites: the system shows the highest-performing ad most of the time while occasionally testing alternatives. Multi-armed bandits apply the same explore-exploit tradeoff to model selection. Instead of fixed traffic splits, the algorithm adapts — sending more traffic to the model that is performing better while still exploring alternatives.
 
-<LearningObjectives objectives={["Implement an epsilon-greedy multi-armed bandit for model selection", "Understand the explore-exploit tradeoff in the context of model deployment", "Build a UCB1 (Upper Confidence Bound) bandit as an alternative strategy", "Compare bandit approaches to fixed A/B testing for model evaluation"]} />
+<LearningObjectives objectives={["Implement an epsilon-greedy multi-armed bandit for model selection", "Define regret and explain why minimizing it is a game-theoretic objective", "Build a UCB1 bandit and read its sub-linear regret bound", "See the same algorithm running live: Tensorcraft's spaced-recall queue"]} />
 
-## Epsilon-Greedy Bandit
+## The Bridge
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
+## Game Theory: Regret Minimization
+
+A bandit is the simplest game: one player (you) against an adversarial environment (the world's hidden reward distributions). Each round you pull an arm; the world reveals a reward. Your goal is not to win — there is no opponent — but to **minimize regret**.
+
+**Regret** is the gap between the reward you actually earned and the reward you would have earned if you had known the best arm from round one:
+
+```
+regret(T) = T · μ*  −  Σ rewards earned through round T
+```
+
+where `μ*` is the mean of the best arm and `T` is the round count. A clueless agent pulling random arms incurs **linear** regret — proportional to `T`. A perfect oracle has zero regret. The bandit algorithm's job: stay as close to zero as possible.
+
+**ε-greedy with fixed ε** has linear regret: every round there's a fixed `ε` chance of picking a suboptimal arm, so regret grows with `T`. **Decaying ε** does better but still trails the optimum. **UCB1** achieves **sub-linear** regret — `O(√(T log T))` — which is why it needs no `ε` to tune. The exploration bonus `√(2 ln(N) / pulls)` shrinks naturally as an arm is pulled more, so confident arms get exploited and uncertain arms get sampled.
+
+This is the same logical move the GAN lesson made: name the problem as a game with a formal payoff, then ask what strategy minimizes the loss.
+
+<StrategyThread links={["gan-game"]} />
+
+## Epsilon-Greedy Bandit
+
 <CodeBlock language="typescript" title="epsilon-greedy.ts">
-{`// Epsilon-greedy bandit — same algorithm as dynamic ad rotation
+{`// Epsilon-greedy bandit. Same algorithm Tensorcraft uses to pick which
+// lesson resurfaces in your review queue — see "You're Inside a Bandit
+// Right Now" below for your live state.
 
 interface ModelArm {
   version: string;
@@ -128,7 +154,7 @@ console.log('Traffic distribution:', bandit.getStats());`}
 ## UCB1 Strategy
 
 <CodeBlock language="typescript" title="ucb1.ts">
-{`// Upper Confidence Bound — balances exploitation with exploration bonus
+{`// Upper Confidence Bound — sub-linear regret, no epsilon tuning.
 
 class UCB1Bandit {
   private arms: ModelArm[] = [];
@@ -169,10 +195,24 @@ ucb.addArm('v3.0', modelV3.predict);
 ucb.addArm('v3.1', modelV3_1.predict);`}
 </CodeBlock>
 
+## You're Inside a Bandit Right Now
+
+The product running this lesson schedules your spaced-recall queue with the same ε-greedy algorithm above (`ε = 0.15`). Each lesson you've completed is an arm. Each "Got it / Review again" answer is a reward signal. The selector returns up to five due lessons per visit to `/review`, exploring 15% of slots at random and exploiting the rest by **forgetting score** — `(1 − recall_success_rate) × hours_since_review`.
+
+<BanditState themeId="terra-grid" />
+
+The schedule itself follows SM-2-lite: a successful recall multiplies the prior interval by 2.5; a failed recall resets to 24h. So the lesson teaching the algorithm is also the lesson the algorithm will pick when you forget it.
+
 ## Challenge
 
 Implement an epsilon-greedy bandit for adaptive model selection.
 
 <Exercise slug="bandit-algorithm" />
 
-<KeyTakeaways takeaways={["Multi-armed bandits adaptively route traffic to the better model, reducing exposure to worse variants", "Epsilon-greedy: exploit the best model (1-epsilon)% of the time, explore randomly epsilon% of the time", "UCB1 adds an exploration bonus that decreases as an arm is pulled more — no epsilon parameter to tune", "Bandits converge faster than fixed A/B tests and waste fewer predictions on clearly worse models"]} />
+<KeyTakeaways takeaways={["A bandit is a one-player game vs an adversarial environment; minimizing cumulative regret is the strategic objective", "ε-greedy with fixed ε has linear regret; UCB1 achieves O(√(T log T)) regret without tuning ε", "Tensorcraft schedules your spaced-recall queue with the same ε-greedy algorithm — ε = 0.15, SM-2-lite intervals", "Bandits converge faster than fixed A/B tests and waste fewer predictions on clearly worse models"]} />
+
+<RecallPrompt question="Define regret in a multi-armed bandit setting." answer="Regret(T) = T·μ* − Σ rewards earned, where μ* is the mean of the best arm. It quantifies how much reward you forfeited by not knowing the optimal arm in advance." />
+
+<RecallPrompt question="Why does UCB1 not need an ε hyperparameter?" answer="The exploration term √(2·ln(N)/pulls) shrinks naturally as an arm is pulled, so well-sampled arms get exploited and under-sampled arms get an automatic boost. The bonus replaces ε's role." />
+
+<RecallPrompt question="What's the regret order of fixed-ε ε-greedy vs UCB1?" answer="Fixed-ε ε-greedy is linear in T — every round has a constant probability of suboptimal pulls. UCB1 is O(√(T log T)), which is sub-linear and provably tight for stochastic bandits." />

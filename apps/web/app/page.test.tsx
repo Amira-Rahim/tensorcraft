@@ -65,14 +65,14 @@ vi.mock("framer-motion", () => ({
 
 describe("Landing page brutalist redesign (§11d Wave 1)", () => {
   describe("LandingHero", () => {
-    it("renders the audience-callout landing headline", () => {
+    it("renders the curiosity-hook landing headline", () => {
       render(<LandingHero />);
       // The headline is split across spans; match by combined text.
       expect(screen.getByRole("heading", { level: 1 }).textContent).toMatch(
-        /ml for frontend devs/i,
+        /ml speaks javascript/i,
       );
       expect(screen.getByRole("heading", { level: 1 }).textContent).toMatch(
-        /no python/i,
+        /turns out you'?re fluent/i,
       );
     });
 

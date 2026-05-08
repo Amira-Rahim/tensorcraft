@@ -4,6 +4,24 @@ P2 / V2 items deferred from the A+ launch sprint (2026-04-25 → 2026-04-28). No
 
 Items grouped by leverage. Highest leverage first.
 
+## Game-theory spine — items deferred from Slice C (2026-05-08)
+
+Slice C shipped: bandit-driven `/review` queue, bandit lesson rewrite (regret/minimax framing + live `<BanditState />`), GAN ↔ bandit `<StrategyThread>` cross-link, streak polish (on-fire ≥7d, gentle at-risk nudge), reviews-due dashboard pill. Migration `027_review_queue.sql` adds `review_queue` table + four RPCs; algorithm lives in `packages/shared/src/bandit.ts` (mirrored in SQL).
+
+Deferred from that slice:
+
+- **SHAP cross-link in `<StrategyThread>`** — the SHAP lesson at `packages/content/content/extras/ethics-responsibility/03-model-interpretability.mdx` has no `/themes/extras/...` route, so linking from the bandit / GAN lessons would 404. Two paths forward: (a) add a public route for `extras/*` content; (b) move SHAP into a launched theme. (a) is cheaper.
+- **Auction lesson (Terra Grid)** — second-price (Vickrey) auction; FE bridge `ad-bid auction = CSS specificity wars`. New lesson under `terra-grid/ab-testing/`.
+- **Stackelberg reframe of adversarial patches (Neon Protocol)** — currently framed as security; reframe as attacker→defender game w/ FE bridge `XSS sanitizer co-evolution`.
+- **RLHF preference-learning reframe (Signal Ward)** — Bradley–Terry pairwise / social choice; FE bridge `preference vote = thumbs-up A/B ranking`.
+- **Kalman / Bayesian-game reframe (Deep Orbit)** — Kalman filter as Bayesian game vs noise; FE bridge `optimistic UI w/ rollback`.
+- **Email nudge for streak-at-risk** — Resend transactional template + cron (Supabase scheduled function or external) to fire at `last_lesson_completed_at + 24h` when `current_streak >= 3` AND `email_alerts = true`. Slice C ships in-app toast only.
+- **PWA / push notifications** — currently web-only, no `manifest.json` / service worker. Push for review-due reminders is its own slice.
+- **Capstone leaderboard (opt-in)** — Kaggle-style scored holdout per capstone; top-N public. Needs hosting + cheating mitigations.
+- **Commitment device at checkout** — user picks finish-by date at purchase; opt-in nudges only.
+- **Cohort starts** — synchronized start dates, theme-mate pairing.
+- **Thompson-sampling scheduler upgrade** — current scheduler is ε-greedy (matches the lesson). Once a Bayesian intuition lesson exists, switch the production scheduler to Thompson sampling for tighter regret bounds and self-reference parity with the new lesson.
+
 ## ~~High leverage (~8h) — ship next post-launch sprint~~ → **Forced bridges + a11y polish DONE 2026-04-28**
 
 ### ~~Forced bridges still partially-forced (3)~~ — ✓ DONE 2026-04-28

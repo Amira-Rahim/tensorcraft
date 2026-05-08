@@ -15,11 +15,13 @@ import {
   Quiz,
 } from "@tensorcraft/ui";
 import {
+  BanditState,
   Concept,
   InteractiveDemo,
   MathBlock,
   NextLesson,
   RecallPrompt,
+  StrategyThread,
 } from "@/app/components/mdx";
 import type { ExerciseData, ExerciseSubmitResult } from "@tensorcraft/ui";
 
@@ -61,6 +63,7 @@ interface LessonContentProps {
 
 /** MDX components available in lesson content */
 const mdxComponents = {
+  BanditState,
   Concept,
   Dialogue,
   BridgeCallout,
@@ -75,6 +78,7 @@ const mdxComponents = {
   NextLesson,
   Quiz,
   RecallPrompt,
+  StrategyThread,
 };
 
 /**
@@ -202,6 +206,8 @@ export function LessonContent({
             }}
           />
         ) : null,
+      BanditState: wrapVisibility("BanditState", BanditState),
+      StrategyThread: wrapVisibility("StrategyThread", StrategyThread),
       RecallPrompt: (props: React.ComponentProps<typeof RecallPrompt>) => {
         if (!shouldShow("RecallPrompt")) return null;
         const skillAxis = lesson.skillAxes?.[0] ?? "evaluation";

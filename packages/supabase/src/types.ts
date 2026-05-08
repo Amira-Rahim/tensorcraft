@@ -256,6 +256,44 @@ export interface Database {
         };
         Relationships: [];
       };
+      review_queue: {
+        Row: {
+          user_id: string;
+          theme_id: string;
+          module_id: string;
+          lesson_id: string;
+          arm_pulls: number;
+          arm_successes: number;
+          last_reviewed_at: string | null;
+          next_review_at: string;
+          created_at: string;
+        };
+        Insert: {
+          user_id: string;
+          theme_id: string;
+          module_id: string;
+          lesson_id: string;
+          arm_pulls?: number;
+          arm_successes?: number;
+          last_reviewed_at?: string | null;
+          next_review_at?: string;
+        };
+        Update: {
+          arm_pulls?: number;
+          arm_successes?: number;
+          last_reviewed_at?: string | null;
+          next_review_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "review_queue_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       streaks: {
         Row: {
           id: string;

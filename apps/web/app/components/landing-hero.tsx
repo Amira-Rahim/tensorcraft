@@ -12,8 +12,8 @@ import { ParticleField } from "@tensorcraft/ui/effects";
  *  - Square-edged CTAs (rounded-none) with hard brutalist-shadow.
  *  - Mono labels, uppercase tracking, focus-visible rings.
  *
- * The landing headline ("ML for Frontend Devs. / No Python Required.") is the
- * iterated baseline as of 2026-05-08 — do not silently rewrite. Spec:
+ * The landing headline ("ML Speaks JavaScript. / Turns Out You're Fluent.") is
+ * the iterated baseline as of 2026-05-08 — do not silently rewrite. Spec:
  * docs/superpowers/specs/2026-05-08-landing-headline-audience-callout.md.
  */
 export function LandingHero() {
@@ -41,8 +41,10 @@ export function LandingHero() {
         </div>
 
         <h1 className="text-5xl md:text-6xl font-mono font-black leading-[0.93] tracking-[-0.045em] mb-10 uppercase">
-          <span className="block">ML for Frontend Devs.</span>
-          <span className="block text-primary">No Python Required.</span>
+          <span className="block">ML Speaks JavaScript.</span>
+          <span className="block text-primary">
+            Turns Out You&apos;re Fluent.
+          </span>
         </h1>
 
         <p className="text-lg text-text-muted max-w-[520px] mb-12 leading-relaxed font-sans">

@@ -41,6 +41,7 @@ function buildQuery(data: unknown) {
   api.select = chain;
   api.eq = chain;
   api.gte = chain;
+  api.lte = chain;
   api.order = chain;
   api.limit = chain;
   api.single = () => result;

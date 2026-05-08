@@ -7,7 +7,7 @@ Goal: convert without sounding manufactured. AI-tells flagged + rewritten across
 | File | Status |
 |---|---|
 | `apps/web/app/page.tsx` | edited — final CTA tightened, redundant "explore" CTA reframed |
-| `apps/web/app/components/landing-hero.tsx` | edited 2026-05-08 — headline rewrite (audience callout: "ML for Frontend Devs. No Python Required.") + secondary-CTA anchor fix (#five-c-loop → /learn). Spec: `docs/superpowers/specs/2026-05-08-landing-headline-audience-callout.md` |
+| `apps/web/app/components/landing-hero.tsx` | edited 2026-05-08 — headline rewrite (curiosity hook: "ML Speaks JavaScript. Turns Out You're Fluent.") + secondary-CTA anchor fix (#five-c-loop → /learn). Same-day audience-callout draft ("ML for Frontend Devs. No Python Required.") iterated past for hook strength. Spec: `docs/superpowers/specs/2026-05-08-landing-headline-audience-callout.md` |
 | `apps/web/app/components/landing-analogy-breaks.tsx` | removed 2026-05-08 — section deleted from homepage as redundant w/ BRIDGE TIERS + BRIDGE SYSTEM |
 | `apps/web/app/themes/page.tsx` | edited — "Whether you're..." pattern removed, direct address |
 | `apps/web/app/learn/page.tsx` | edited — "Explore" → "See" |
