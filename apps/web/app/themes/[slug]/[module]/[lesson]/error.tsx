@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import * as Sentry from "@sentry/nextjs";
 import { errorMessageForCode } from "@/lib/error-messages";
 
 export default function LessonError({
@@ -12,6 +13,13 @@ export default function LessonError({
 }) {
   useEffect(() => {
     console.error("[Tensorcraft Lesson Error]", error);
+    // Forward to Sentry (no-op if DSN is not configured). Lesson is the
+    // heaviest user-facing surface, so unreported crashes here mask real
+    // production issues.
+    Sentry.captureException(error, {
+      tags: { boundary: "lesson-error" },
+      extra: { digest: error.digest, code: error.code },
+    });
   }, [error]);
 
   const message = errorMessageForCode(error.code);

@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { getSupabaseServerClient } from "@tensorcraft/supabase";
-import { isValidThemeSlug } from "@tensorcraft/shared";
+import { isValidThemeSlug, isLaunched } from "@tensorcraft/shared";
 import { authMiddleware } from "../middleware/auth";
 import { logger } from "../lib/logger";
 import type { AppEnv } from "../types";
@@ -55,6 +55,9 @@ function validateField(field: AllowedField, value: unknown): string | null {
     case "preferred_theme_id":
       if (typeof value !== "string" || !isValidThemeSlug(value)) {
         return "preferred_theme_id must be a valid theme slug";
+      }
+      if (!isLaunched(value)) {
+        return "preferred_theme_id must be a launched theme";
       }
       return null;
 

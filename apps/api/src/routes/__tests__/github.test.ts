@@ -235,6 +235,11 @@ describe("GitHub routes — connect / callback / disconnect", () => {
 
       const res = await createApp().request(
         "/api/github/callback?code=ghcode&state=user_123.nonce",
+        {
+          // CSRF defense added 2026-05-05: callback requires the same
+          // `state` value as a HttpOnly cookie set by `/connect`.
+          headers: { Cookie: "tc_gh_oauth_state=user_123.nonce" },
+        },
       );
       expect(res.status).toBe(200);
       const body = (await res.json()) as {
@@ -264,6 +269,9 @@ describe("GitHub routes — connect / callback / disconnect", () => {
       };
       const res = await createApp().request(
         "/api/github/callback?code=bad&state=user_123.x",
+        {
+          headers: { Cookie: "tc_gh_oauth_state=user_123.x" },
+        },
       );
       // exchangeCodeForToken throws → mapped to 500 github_api_error
       expect(res.status).toBe(500);

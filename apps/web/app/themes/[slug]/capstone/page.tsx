@@ -144,14 +144,17 @@ export default async function CapstonePage({ params }: Props) {
     }
   }
 
-  // Next theme: first theme (in canonical order) the user has not
-  // purchased and is not the current one. If the user owns them all,
-  // surface a "V1.0 coming" placeholder below.
-  const nextThemeSlug = THEME_SLUGS.find(
+  // Next theme: first **launched** theme (in canonical order) the user has not
+  // purchased and is not the current one. Coming-soon themes intentionally
+  // excluded — V1 ships Deep Orbit only, so the teaser will be empty until
+  // a second theme launches. The "ownsAll" flag mirrors the same scope so
+  // the placeholder fires once the user owns every launched theme.
+  const launchedSlugs = THEME_SLUGS.filter((t) => isLaunched(t));
+  const nextThemeSlug = launchedSlugs.find(
     (t) => t !== slug && !ownedThemes.has(t),
   );
   const nextTheme = nextThemeSlug ? themes[nextThemeSlug] : null;
-  const ownsAll = THEME_SLUGS.every((t) => ownedThemes.has(t));
+  const ownsAll = launchedSlugs.every((t) => ownedThemes.has(t));
 
   const displayName = profile?.display_name ?? "Engineer";
   const P = theme.palette;

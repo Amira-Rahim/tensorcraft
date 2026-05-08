@@ -2,15 +2,20 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { themes, themeSlugs } from "@tensorcraft/themes";
-import { PRICING, THEME_CONTENT } from "@tensorcraft/shared";
+import { themes } from "@tensorcraft/themes";
+import { LAUNCHED_THEMES, PRICING, THEME_CONTENT } from "@tensorcraft/shared";
 import { CheckoutButton } from "./checkout-button";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
-const themeList = themeSlugs.map((slug) => ({
+// V1 scope-revert (2026-05-05): the picker shows only launched themes.
+// Bundle tiers (2/3/all) are auto-disabled below when fewer launched themes
+// exist than the bundle requires, so the cart can never produce a basket
+// the API would reject (`validateThemeIds` → `isLaunched`).
+const themeList = LAUNCHED_THEMES.map((slug) => ({
   slug,
   name: themes[slug].displayName,
 }));
+const launchedThemeCount = LAUNCHED_THEMES.length;
 
 function ThemePicker({
   max,
@@ -297,10 +302,14 @@ export function PricingTiers() {
             <CheckoutButton
               planId="twoBundle"
               themeIds={twoThemes}
-              disabled={twoThemes.length !== 2}
-              disabledReason={`Select ${2 - twoThemes.length} more theme${
-                2 - twoThemes.length !== 1 ? "s" : ""
-              }`}
+              disabled={launchedThemeCount < 2 || twoThemes.length !== 2}
+              disabledReason={
+                launchedThemeCount < 2
+                  ? "Available when more themes launch"
+                  : `Select ${2 - twoThemes.length} more theme${
+                      2 - twoThemes.length !== 1 ? "s" : ""
+                    }`
+              }
             >
               Get Two &rarr;
             </CheckoutButton>
@@ -360,10 +369,14 @@ export function PricingTiers() {
             <CheckoutButton
               planId="threeBundle"
               themeIds={threeThemes}
-              disabled={threeThemes.length !== 3}
-              disabledReason={`Select ${3 - threeThemes.length} more theme${
-                3 - threeThemes.length !== 1 ? "s" : ""
-              }`}
+              disabled={launchedThemeCount < 3 || threeThemes.length !== 3}
+              disabledReason={
+                launchedThemeCount < 3
+                  ? "Available when more themes launch"
+                  : `Select ${3 - threeThemes.length} more theme${
+                      3 - threeThemes.length !== 1 ? "s" : ""
+                    }`
+              }
             >
               Get Three &rarr;
             </CheckoutButton>
@@ -420,7 +433,13 @@ export function PricingTiers() {
             </ul>
             <CheckoutButton
               planId="allFive"
-              themeIds={[...themeSlugs]}
+              themeIds={[...LAUNCHED_THEMES]}
+              disabled={launchedThemeCount < 5}
+              disabledReason={
+                launchedThemeCount < 5
+                  ? "Available when all 5 themes launch"
+                  : undefined
+              }
               recommended
             >
               Get All 5 &rarr;

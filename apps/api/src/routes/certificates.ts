@@ -4,7 +4,11 @@ import {
   getSupabaseServerClient,
   getSupabaseAdminClient,
 } from "@tensorcraft/supabase";
-import { isValidThemeSlug, THEME_CONTENT } from "@tensorcraft/shared";
+import {
+  isValidThemeSlug,
+  isLaunched,
+  THEME_CONTENT,
+} from "@tensorcraft/shared";
 import { authMiddleware } from "../middleware/auth";
 import { logger } from "../lib/logger";
 import type { AppEnv } from "../types";
@@ -53,6 +57,9 @@ certificates.post("/", async (c) => {
   const themeId = body.themeId;
   if (!themeId || typeof themeId !== "string" || !isValidThemeSlug(themeId)) {
     return c.json({ error: "themeId must be a valid theme slug" }, 400);
+  }
+  if (!isLaunched(themeId)) {
+    return c.json({ error: "Theme is not yet launched" }, 400);
   }
 
   const secret = process.env.CERT_SIGNING_SECRET;

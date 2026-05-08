@@ -3,7 +3,7 @@ import Link from "next/link";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { getModules } from "@tensorcraft/content";
 import { themes } from "@tensorcraft/themes";
-import { DEFAULT_THEME } from "@tensorcraft/shared";
+import { DEFAULT_THEME, isLaunched } from "@tensorcraft/shared";
 import { AmbientBackground } from "@/app/components/ambient-background";
 import type { Metadata } from "next";
 import { PurchaseAnalytics } from "./purchase-analytics";
@@ -110,7 +110,12 @@ export default async function PurchaseSuccessPage({
     purchase = data ?? null;
   }
 
-  const purchasedThemeIds: string[] = purchase?.theme_ids ?? [];
+  // V1 scope-revert: filter to launched themes only. A DB anomaly or stale
+  // pre-revert purchase row could otherwise surface a coming-soon theme as
+  // owned, breaking the access-card render below.
+  const purchasedThemeIds: string[] = (purchase?.theme_ids ?? []).filter(
+    (slug: string) => isLaunched(slug),
+  );
   const firstThemeSlug = purchasedThemeIds[0] ?? DEFAULT_THEME;
   const firstTheme = themes[firstThemeSlug];
   const firstThemeModules = firstTheme ? getModules(firstThemeSlug) : [];

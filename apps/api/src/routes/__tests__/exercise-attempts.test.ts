@@ -47,6 +47,7 @@ vi.mock("@tensorcraft/shared", () => ({
       "nova-canvas",
       "terra-grid",
     ].includes(slug),
+  isLaunched: (slug: string) => slug === "deep-orbit",
   isValidSlug: (slug: string) =>
     typeof slug === "string" && /^[a-z0-9-]+$/.test(slug) && slug.length > 0,
 }));

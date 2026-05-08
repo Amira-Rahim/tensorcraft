@@ -16,6 +16,7 @@
 
 import { Resend } from "resend";
 import { getSupabaseAdminClient } from "@tensorcraft/supabase";
+import { isLaunched } from "@tensorcraft/shared";
 import { logger } from "./logger";
 import { captureException } from "./error-tracking";
 
@@ -70,7 +71,16 @@ async function loadDigestItems(weekIso: string): Promise<DigestItem[]> {
     .eq("week_iso", weekIso)
     .order("scraped_at", { ascending: false });
   if (error) throw new Error(`load digest items: ${error.message}`);
-  return (data ?? []) as DigestItem[];
+  // V1 scope-revert: strip matched_lessons for coming-soon themes so the
+  // digest never links to a 404'd lesson route. Curators can still tag a
+  // news item with a coming-soon lesson at draft time, but the rendered
+  // email + UTM chain only surface launched-theme lessons.
+  return (data ?? []).map((row) => ({
+    ...row,
+    matched_lessons: (row.matched_lessons ?? []).filter(
+      (m: { themeId: string }) => isLaunched(m.themeId),
+    ),
+  })) as DigestItem[];
 }
 
 function escapeHtml(s: string): string {

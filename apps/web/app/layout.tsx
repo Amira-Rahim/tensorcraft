@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
-import { DEFAULT_THEME, PRICING } from "@tensorcraft/shared";
+import { DEFAULT_THEME, LAUNCHED_THEMES, PRICING } from "@tensorcraft/shared";
 import { ThemeProvider } from "./components/theme-provider";
 import { Nav } from "./components/nav";
 import { CookieConsent } from "./components/cookie-consent";
@@ -96,7 +96,7 @@ export default function RootLayout({
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem("tc-active-theme");if(t&&["deep-orbit","neon-protocol","signal-ward","nova-canvas","terra-grid"].includes(t)){document.documentElement.dataset.theme=t}}catch(e){}})()`,
+            __html: `(function(){try{var t=localStorage.getItem("tc-active-theme");if(t&&${JSON.stringify(LAUNCHED_THEMES)}.includes(t)){document.documentElement.dataset.theme=t}}catch(e){}})()`,
           }}
         />
         <script

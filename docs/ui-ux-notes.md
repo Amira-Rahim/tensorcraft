@@ -1,5 +1,15 @@
 # Tensorcraft UI/UX Design Notes v3.2
 
+> **⚠ V1 launch-scope revert (2026-05-05):** Only **Deep Orbit** ships at V1.
+> Onboarding has **no theme picker** — new users auto-route to Deep Orbit
+> (see Part 1 below for the pre-revert spec, kept as historical reference
+> for when additional themes launch). The settings "active theme" tab is
+> removed; the `preferred_theme_id` column is retained as a tombstone.
+> Theme cards on the dashboard / `/themes` / `/learn` render the launched
+> theme as the live hero, with the other 4 themes shown as muted
+> "coming soon" cards that link to per-theme stub pages with email-capture
+> forms. Authoritative spec: [`launch-scope.md`](./launch-scope.md).
+
 This document specifies the interaction design, layout, animation, and visual system for the Tensorcraft learning platform. All measurements are in logical pixels unless otherwise noted. All colors reference CSS custom properties defined in the theme system (Part 5).
 
 ---

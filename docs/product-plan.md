@@ -1,5 +1,15 @@
 # Tensorcraft — Product Plan v3.3
 
+> **⚠ V1 launch-scope revert (2026-05-05):** Only **Deep Orbit** ships at V1.
+> The other 4 themes (Neon Protocol, Signal Ward, Nova Canvas, Terra Grid)
+> are gated to "coming soon" stub pages with email-capture waitlists. See
+> [`launch-scope.md`](./launch-scope.md) for the authoritative spec. Where
+> this document still says "five themes," "275 lessons," "all themes
+> simultaneously," or describes pricing tiers for 2-/3-/all-bundle, treat
+> those statements as describing the **post-V1 roadmap** rather than the V1
+> product. The shipped V1 surface is **1 theme / 11 modules / 55 lessons /
+> 1 capstone / ~65 exercises / single-theme purchase only**.
+
 ---
 
 ## Part 1: Product Overview

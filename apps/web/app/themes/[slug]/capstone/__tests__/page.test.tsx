@@ -374,12 +374,13 @@ describe("CapstonePage — Phase 11 §11d", () => {
     expect(notFoundMock).toHaveBeenCalled();
   });
 
-  it("renders a next-theme teaser for an unowned theme (owns deep-orbit only)", async () => {
+  it("renders the V1.0-coming placeholder when only Deep Orbit is launched and the user owns it", async () => {
+    // V1 scope-revert: the next-theme teaser is filtered to launched themes
+    // only. With deep-orbit the sole launched theme and the user owning it,
+    // the placeholder fires instead of a coming-soon teaser.
     await renderPage();
-    const teaser = screen.getByTestId("next-theme-teaser");
-    expect(teaser).toBeInTheDocument();
-    // First non-current, non-owned theme in THEME_SLUGS order is neon-protocol.
-    expect(teaser.getAttribute("href")).toBe("/themes/neon-protocol");
+    expect(screen.queryByTestId("next-theme-teaser")).toBeNull();
+    expect(screen.getByTestId("next-theme-placeholder")).toBeInTheDocument();
   });
 
   it("renders the V1.0-coming placeholder when the user owns every theme", async () => {

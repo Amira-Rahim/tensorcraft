@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { getSupabaseServerClient } from "@tensorcraft/supabase";
-import { isValidThemeSlug, isValidSlug } from "@tensorcraft/shared";
+import { isValidThemeSlug, isValidSlug, isLaunched } from "@tensorcraft/shared";
 import { authMiddleware } from "../middleware/auth";
 import type { AppEnv } from "../types";
 
@@ -42,6 +42,9 @@ exerciseAttempts.post("/", async (c) => {
 
   if (!isValidThemeSlug(body.themeId)) {
     return c.json({ error: "Invalid themeId" }, 400);
+  }
+  if (!isLaunched(body.themeId)) {
+    return c.json({ error: "Theme is not yet launched" }, 400);
   }
   if (!isValidSlug(body.exerciseSlug)) {
     return c.json({ error: "Invalid exerciseSlug" }, 400);

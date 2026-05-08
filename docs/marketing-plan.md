@@ -1,5 +1,14 @@
 # Tensorcraft Marketing Plan v3.3
 
+> **⚠ V1 launch-scope revert (2026-05-05):** Only **Deep Orbit** ships at V1.
+> The other 4 themes appear as "coming soon" cards with waitlist forms. The
+> bundled pricing tiers described below (2-theme / 3-theme / all-five) are
+> **unavailable at V1** — only the single-theme $49 SKU is purchasable.
+> Activate the bundle tiers when additional themes ship. Authoritative spec:
+> [`launch-scope.md`](./launch-scope.md). Treat any "five themes," "275
+> lessons," or "Discord community" claims below as **post-V1 roadmap**, not
+> launch messaging.
+
 ## Executive Summary
 
 Tensorcraft is an interactive machine learning education platform built specifically for frontend engineers. Unlike traditional ML courses that assume Python fluency and data science backgrounds, Tensorcraft meets developers where they are — in the browser, with JavaScript, using concepts they already understand from React, Vue, and Angular development.

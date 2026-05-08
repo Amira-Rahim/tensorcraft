@@ -1,6 +1,8 @@
 import { Hono } from "hono";
+import { setCookie, getCookie, deleteCookie } from "hono/cookie";
+import { timingSafeEqual } from "node:crypto";
 import { getSupabaseServerClient } from "@tensorcraft/supabase";
-import { isValidThemeSlug, isValidSlug } from "@tensorcraft/shared";
+import { isValidThemeSlug, isValidSlug, isLaunched } from "@tensorcraft/shared";
 import { authMiddleware } from "../middleware/auth";
 import type { AppEnv } from "../types";
 import {
@@ -126,9 +128,22 @@ github.post("/connect", async (c) => {
     );
   }
 
-  // Include user id in state so the callback can associate the token.
+  // Include user id in state so the callback can associate the token, and
+  // pin the same state to a short-lived HttpOnly cookie so the callback can
+  // verify the request originated from this server's `/connect` flow (CSRF
+  // defense — without the cookie pin, an attacker could craft a callback URL
+  // with their own userId and ride the victim's GitHub session into the
+  // attacker's profile).
   const userId = c.get("userId");
   const state = `${userId}.${crypto.randomUUID()}`;
+
+  setCookie(c, "tc_gh_oauth_state", state, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "Lax",
+    path: "/api/github",
+    maxAge: 600, // 10 min — covers the GitHub redirect round-trip
+  });
 
   const url = buildOAuthAuthorizeUrl({ clientId, redirectUri, state });
 
@@ -165,6 +180,33 @@ github.get("/callback", async (c) => {
       400,
     );
   }
+
+  // CSRF defense: the `state` query param must match the `tc_gh_oauth_state`
+  // cookie set by `/connect`. Without this check, an attacker could redirect
+  // the victim's browser to GitHub and complete the OAuth dance with an
+  // attacker-controlled `userId.uuid` state, binding the victim's GitHub
+  // identity to the attacker's profile row.
+  const cookieState = getCookie(c, "tc_gh_oauth_state");
+  if (!cookieState) {
+    return c.json(
+      structuredError(
+        "validation_error",
+        "OAuth state cookie missing — restart the GitHub connect flow",
+      ),
+      400,
+    );
+  }
+  const a = Buffer.from(state);
+  const b = Buffer.from(cookieState);
+  if (a.length !== b.length || !timingSafeEqual(a, b)) {
+    deleteCookie(c, "tc_gh_oauth_state", { path: "/api/github" });
+    return c.json(
+      structuredError("validation_error", "OAuth state mismatch"),
+      400,
+    );
+  }
+  // One-shot: invalidate cookie immediately so the same state can't be replayed.
+  deleteCookie(c, "tc_gh_oauth_state", { path: "/api/github" });
 
   const [userId] = state.split(".");
   if (!userId) {
@@ -345,6 +387,12 @@ github.post("/commit", async (c) => {
   if (!isValidThemeSlug(themeId)) {
     return c.json(structuredError("validation_error", "Invalid themeId"), 400);
   }
+  if (!isLaunched(themeId)) {
+    return c.json(
+      structuredError("validation_error", "Theme is not yet launched"),
+      400,
+    );
+  }
   if (!isValidSlug(lessonId)) {
     return c.json(structuredError("validation_error", "Invalid lessonId"), 400);
   }
@@ -458,6 +506,12 @@ github.post("/retroactive-push", async (c) => {
   if (!body.themeId || !isValidThemeSlug(body.themeId)) {
     return c.json(
       structuredError("validation_error", "themeId must be a valid theme slug"),
+      400,
+    );
+  }
+  if (!isLaunched(body.themeId)) {
+    return c.json(
+      structuredError("validation_error", "Theme is not yet launched"),
       400,
     );
   }

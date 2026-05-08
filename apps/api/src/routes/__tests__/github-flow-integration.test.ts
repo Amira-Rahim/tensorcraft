@@ -211,6 +211,10 @@ describe("GitHub flow — OAuth acquisition → commit → push", () => {
 
     const res = await createApp().request(
       "/api/github/callback?code=ghcode&state=user-A.nonce",
+      {
+        // CSRF defense added 2026-05-05.
+        headers: { Cookie: "tc_gh_oauth_state=user-A.nonce" },
+      },
     );
     expect(res.status).toBe(200);
     const body = (await res.json()) as {

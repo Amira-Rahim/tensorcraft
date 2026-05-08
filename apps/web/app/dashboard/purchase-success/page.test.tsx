@@ -241,11 +241,13 @@ describe("dashboard/purchase-success/page", () => {
     expect(html).not.toContain("$49.00");
   });
 
-  it("renders one access-card row per purchased theme with a Start Now CTA", async () => {
+  it("renders one access-card row per purchased launched theme with a Start Now CTA", async () => {
     getUserMock.mockResolvedValue({
       data: { user: { id: "u-1" } },
       error: null,
     });
+    // V1 scope-revert: coming-soon theme ids in `theme_ids` are stripped from
+    // the access-card list (they still appear in the raw receipt above).
     purchaseRows.push({
       user_id: "u-1",
       plan_id: "twoBundle",
@@ -259,17 +261,20 @@ describe("dashboard/purchase-success/page", () => {
     const { html } = await renderPage();
 
     expect(html).toContain('data-testid="access-start-deep-orbit"');
-    expect(html).toContain('data-testid="access-start-signal-ward"');
     expect(html).toContain('href="/themes/deep-orbit"');
-    expect(html).toContain('href="/themes/signal-ward"');
     expect(html).toContain("Start Now");
+    // Coming-soon theme has no access card at V1.
+    expect(html).not.toContain('data-testid="access-start-signal-ward"');
+    expect(html).not.toContain('href="/themes/signal-ward"');
   });
 
-  it("renders the primary CTA linking to the first purchased theme and a secondary link to /themes", async () => {
+  it("primary CTA falls back to default theme when only coming-soon themes are owned", async () => {
     getUserMock.mockResolvedValue({
       data: { user: { id: "u-1" } },
       error: null,
     });
+    // V1 scope-revert: only coming-soon themes purchased (e.g. via stale row)
+    // → access list is empty → primary CTA falls back to DEFAULT_THEME.
     purchaseRows.push({
       user_id: "u-1",
       plan_id: "single",
@@ -283,7 +288,7 @@ describe("dashboard/purchase-success/page", () => {
     const { html } = await renderPage();
 
     expect(html).toContain('data-testid="cta-first-lesson"');
-    expect(html).toContain('href="/themes/signal-ward"');
+    expect(html).toContain('href="/themes/deep-orbit"');
     expect(html).toContain("Start your first lesson");
 
     expect(html).toContain('data-testid="cta-view-all-themes"');

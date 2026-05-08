@@ -1,6 +1,6 @@
 # Tensorcraft V0.5 — Pre-Launch Checklist
 
-> **Last updated: 2026-05-05** (eighth audit round — validator real-tfjs swap, 315/315 + 749/749 + build green)
+> **Last updated: 2026-05-05** (eleventh audit round — full E2E sweep across 5 user flows; 2 BLOCKING fixes (auth Sentry + cert share page) landed; 80/80 + 748/748 + build green)
 > **Audience: solo dev preparing to flip V0.5 live before executing marketing plan.**
 
 > **⚠ V1 launch-scope revert (2026-05-05):** Only **Deep Orbit** ships at V1.
@@ -24,6 +24,9 @@ This is the definitive gate-list. Work it top to bottom. When every **BLOCKING**
 - 2026-04-28 (Round 6 — A+ confirmed: re-audit caught 6 mlCode P0s + 2 production blockers, all resolved). See `docs/audits/a-plus-confirmed-2026-04-28.md`.
 - 2026-05-04 (Round 7 — post news-pipeline re-verify: working tree clean, validator regressed 297/300 → 292/315 with 23 new failures from 15 added exercises + mock-TF gaps, see §A14c).
 - 2026-05-05 (Round 8 — validator mock retired, real `@tensorflow/tfjs` v4.22 wired through `vm.createContext` with `loadLayersModel`/`loadGraphModel` Proxy overrides + `inputShape` getter polyfill; 315/315 pass, vitest 749/749, `pnpm run build` green; e2e blocked by port :3000 collision with separate ops-portal dev server, requires user to free port).
+- 2026-05-05 (Round 9 — deep audit post V1 scope-revert: 8 theme-allowlist leaks fixed (§A15) across `layout.tsx`, `theme-provider.tsx`, `github.ts`, `certificates.ts`, `exercise-attempts.ts`, `profiles.ts`, `capstone/page.tsx`, `purchase-success/page.tsx`; tests + fixtures realigned; validator 80/80 (Deep Orbit + extras only per launch-scope), vitest 748/748, build green. Stripe `charge.dispute.created` case already implemented — audit-agent false positive, no code change needed).
+- 2026-05-05 (Round 10 — 5-agent deep audit covering flow leakage / security / DB-RLS / observability / privacy. 6 BLOCKING + STRONG fixes landed (§A16): Sentry server+edge config now read `SENTRY_DSN` first, lesson error boundary forwards to Sentry, orphaned `apps/web/app/providers/posthog-provider.tsx` removed (sole `posthog.init` callsite is now `lib/posthog.ts` singleton), pricing 2/3/all-five tiers auto-disable when `LAUNCHED_THEMES.length` is below the bundle size, newsletter `matched_lessons` filtered through `isLaunched` so digest never links to a 404'd lesson, GitHub OAuth `state` pinned to a HttpOnly `tc_gh_oauth_state` cookie + timing-safe comparison on callback. §II1 doc warnings added to `product-plan.md`, `marketing-plan.md`, `ui-ux-notes.md`. §B11 V1 visual + waitlist scope-revert smoke gate added. Tests + integration fixtures updated. vitest 748/748, build green).
+- 2026-05-05 (Round 11 — full end-to-end audit across all 5 user flows: signup→onboarding→dashboard, lesson→exercise→progress, paywall→checkout→email, capstone→certificate→GitHub, waitlist+digest pipeline. 5 parallel deep-Explore agents reviewed FE→BE→DB→content paths. 2 real BLOCKING fixes landed (§A17): auth callback now forwards Supabase exchange errors to Sentry (was console-only), and the missing public `/certificates/[id]` share page is now implemented (consumes `GET /api/certificates/:id` SECURITY DEFINER RPC, JSON-LD `EducationalOccupationalCredential`, no auth, OG tags). 3 audit-flagged "blockers" verified as false positives (paywall short-circuit was already correct via Next.js `redirect()` 307 short-circuit; exercise dedup is intentional UX with `disabled={running}` button gate; Stripe webhook subscriptions complete). Other Round-11 STRONG findings (Sandpack offline fallback, arrow-key support, refund-comms email, news-scrape failure alerts, newsletter retry queue, post-unsubscribe re-signup blocked by unique constraint, GitHub token plaintext column) parked on post-launch backlog — none gate launch. vitest 748/748, build green).
 
 **Content quality grade: A+** (defensible). Math floor canonical, 315/315 grader pass on real TFJS, 71 quizzes Q1-Q4 verified, 50 bridges with mlCode + 100% breaks coverage on non-identity, 5 capstone artifacts shipped, /compare + /bridges + /pricing prerender static, 0 AI-slop across all dimensions.
 
@@ -285,6 +288,126 @@ After the news-pipeline + content-dashboard work landed (commits `e3075a5` → `
 2. Walk each failing YAML; fix solution code or test expectations. ~2-3 hrs (19 exercises).
 3. Re-run validator until 315/315. **Do not allowlist** — same rationale as A14b.
 
+### A15. ~~V1 scope-revert theme-allowlist leaks~~ ✅ FIXED 2026-05-05
+
+The 2026-05-05 launch-scope revert (`LAUNCHED_THEMES = ["deep-orbit"]`) left 8 places still accepting any valid theme slug instead of gating on `isLaunched()`. Each could let a coming-soon theme reach production via direct API call, stale localStorage value, or DB anomaly. All fixed in this round; tests + fixtures realigned.
+
+| File | Before | After |
+| --- | --- | --- |
+| `apps/web/app/layout.tsx` line 99 | Inline script whitelist hardcoded all 5 theme slugs | `${JSON.stringify(LAUNCHED_THEMES)}.includes(t)` (build-time embed) |
+| `apps/web/app/components/theme-provider.tsx` line 15 | Iterated `themeSlugs` from `@tensorcraft/themes` (all 5) | `isLaunched(value)` |
+| `apps/api/src/routes/github.ts` lines 345 + 464 | Only `isValidThemeSlug` on commit + retroactive-push | Added `isLaunched` 400 gate after both validations |
+| `apps/api/src/routes/certificates.ts` line 54 | POST /api/certificates accepted coming-soon themes | Added `isLaunched` 400 gate |
+| `apps/api/src/routes/exercise-attempts.ts` line 43 | Logged attempts against any slug | Added `isLaunched` 400 gate |
+| `apps/api/src/routes/profiles.ts` line 56 | PATCH allowed `preferred_theme_id` to be coming-soon | Added `isLaunched` validator branch |
+| `apps/web/app/themes/[slug]/capstone/page.tsx` lines 150-154 | Next-theme teaser used full `THEME_SLUGS` (always picked coming-soon) | Filter to launched themes via `THEME_SLUGS.filter(isLaunched)` |
+| `apps/web/app/dashboard/purchase-success/page.tsx` line 116 | `purchasedThemeIds` rendered every theme on the purchase row | Filter through `isLaunched` upstream so access cards + first-theme CTA both stay launched-only |
+
+**Test fixtures updated:**
+
+- `apps/api/src/routes/__tests__/exercise-attempts.test.ts`: `vi.mock("@tensorcraft/shared")` now exports `isLaunched: (slug) => slug === "deep-orbit"`.
+- `apps/web/app/dashboard/purchase-success/page.test.tsx`: two access-card tests rewritten to assert that coming-soon themes are stripped from the access list and that the primary CTA falls back to `DEFAULT_THEME` when only coming-soon ids are owned.
+- `apps/web/app/themes/[slug]/capstone/__tests__/page.test.tsx`: "next-theme teaser to neon-protocol" test rewritten to assert that the V1.0-coming placeholder fires when only Deep Orbit is launched.
+
+**Note on §A16 (audit-agent false positive):** Round 9 audit flagged `charge.dispute.created` as a missing webhook case, but the handler is already implemented in `apps/api/src/routes/payments.ts:528-557` (sets `status='disputed'`). No code change needed.
+
+**Verification this round:**
+
+```bash
+node scripts/validate-exercises.mjs    # 80/80 (Deep Orbit + extras only post-revert)
+./node_modules/.bin/vitest run           # 748/748 (102 files)
+pnpm run build                           # 10 tasks green, web build clean
+```
+
+### A16. ~~Round-10 deep-audit findings~~ ✅ FIXED 2026-05-05
+
+Round 10 dispatched 5 parallel deep audits (flow leakage, security/auth, DB/RLS, observability/perf, privacy/legal/email). Six BLOCKING + STRONG code-side findings landed; the rest (DPAs, account-deletion UI, DNS TODOs, missing flow runbooks) carried over to user-action sections §B5/§B9/§G + §II2 of the Round 9 plan.
+
+| Finding | Severity | File:line | Fix |
+| --- | --- | --- | --- |
+| Sentry server + edge config read `NEXT_PUBLIC_SENTRY_DSN` instead of server-only `SENTRY_DSN` — server-side errors silently dropped if only the secret var is set | **BLOCKING** | `apps/web/sentry.server.config.ts:11`, `apps/web/sentry.edge.config.ts:11` | DSN now `SENTRY_DSN ?? NEXT_PUBLIC_SENTRY_DSN` |
+| Lesson error boundary only logged to console; root boundary already calls `Sentry.captureException` | **BLOCKING** | `apps/web/app/themes/[slug]/[module]/[lesson]/error.tsx:14` | Added `Sentry.captureException(error, { tags: { boundary: "lesson-error" }, ... })` |
+| Orphan `apps/web/app/providers/posthog-provider.tsx` called `posthog.init` directly, bypassing the `lib/posthog.ts` singleton — risk of double-init on future imports | **BLOCKING** | deleted | Orphan file + empty dir removed; `apps/web/app/posthog-provider.tsx` is the sole mount |
+| Pricing 2/3/all-five tiers were purchasable in UI; `themeIds={[...themeSlugs]}` for allFive would always send all 5 slugs and fail server-side `validateThemeIds` (UX bounce) | **BLOCKING** | `apps/web/app/pricing/pricing-tiers.tsx:10,423` | `themeList` now derived from `LAUNCHED_THEMES`; bundles auto-disable when `LAUNCHED_THEMES.length` is below the bundle size with "Available when more themes launch" copy |
+| Admin newsletter rendered `matched_lessons[0]` for any theme — curator picking a coming-soon lesson would email a 404 link | STRONG | `apps/api/src/lib/newsletter.ts:64-74,99` | `loadDigestItems` filters each row's `matched_lessons` through `isLaunched` |
+| GitHub OAuth `state` was returned to client without server-side pin; callback only extracted `userId` from the state string. Attacker could craft a callback with their own `userId.uuid` and bind the victim's GitHub identity to the attacker's profile (CSRF) | **BLOCKING** | `apps/api/src/routes/github.ts:131,169` | `/connect` now sets `tc_gh_oauth_state` HttpOnly + Secure + SameSite=Lax cookie (10-min TTL, scoped to `/api/github`); `/callback` rejects 400 if the cookie is missing or `timingSafeEqual` against `state` fails; cookie deleted after one-shot use |
+
+**Test fixture updates:**
+
+- `apps/api/src/routes/__tests__/github.test.ts` (2 callsites) + `apps/api/src/routes/__tests__/github-flow-integration.test.ts` now pass `Cookie: tc_gh_oauth_state=...` headers matching the `state` query param.
+- `apps/web/app/pricing/__tests__/pricing-tiers.test.tsx` "All 5 CTA" rewritten to assert the button is **disabled** at V1 with the launch-wait copy, instead of asserting a checkout fetch fires.
+
+**Round-10 false positives (no code change needed):**
+
+- Stripe `charge.dispute.created` already handled at `apps/api/src/routes/payments.ts:528-557` (sets `status='disputed'`).
+- Migrations 018–026 idempotent + RLS-correct + indexed; rollback SQL safe.
+- News pipeline has no auto-post path (social copy lands in `dist/social/{weekIso}.md` for manual review); admin still must trigger send-newsletter explicitly.
+- GitHub OAuth scope is already minimal (`contents: write`, `metadata: read`).
+- Pino redaction already covers `password`, `token`, `accessToken`, `apiKey`, `secret`.
+
+**Round-10 carried to user-action backlog:**
+
+- §B5 DPAs (Sentry, PostHog, Kit, Supabase, Vercel, Fly, Stripe, Plausible) — pre-launch gate, must execute before prod.
+- §B9 DNS records doc TODOs (registrar 2FA, Kit DKIM key, Fly host CNAME, CAA records, expiry reminder).
+- §G.4 account-deletion UI deferred — current workaround is Supabase admin dashboard `auth.admin.deleteUser`, which already cascades correctly per FK declarations.
+- Kit bounce handler currently logs only — adding `email_invalid` column + UX is a post-launch hardening item; for V1 the silent log is acceptable since Kit also unsubscribes the address on its side.
+- Newsletter `digests_sent` lock to prevent accidental double-send — admin discipline + `dryRun` flag sufficient for V1.
+
+**Round-10 STRONG findings tolerated for V1 (post-launch backlog):**
+
+- CSP allows `unsafe-inline` + `unsafe-eval` in `script-src` (PostHog + Next.js hydration require it).
+- `APP_VERSION = "0.0.0"` in API logger — bump on each release or read from `package.json`.
+- `analytics-provider` consent gate runs in `useEffect`; first `$pageview` may slip through if user declines after initial render. Mitigated by per-call `isInitialized()` guard but worth adding a hard top-of-module gate post-launch.
+- Newsletter send is idempotent **per call** (TERMINAL_STATUSES guard + per-row `subscribed` check) but lacks a persistent send-lock; rapid retrigger of the same `weekIso` would re-send.
+
+**Verification this round:**
+
+```bash
+node scripts/validate-exercises.mjs    # 80/80 (Deep Orbit + extras)
+./node_modules/.bin/vitest run           # 748/748 across 102 files
+pnpm run build                           # 10 tasks green
+```
+
+### A17. ~~Round-11 end-to-end flow audit~~ ✅ FIXED 2026-05-05
+
+Round 11 dispatched 5 parallel deep agents tracing every user journey end-to-end (FE → BE → DB → content). Two real BLOCKING gaps were found and fixed; three audit-flagged "blockers" verified as false positives; everything else parked on the post-launch backlog with explicit acceptance.
+
+#### Real fixes landed
+
+| File | Gap | Fix |
+| --- | --- | --- |
+| [apps/web/app/auth/callback/route.ts:18](apps/web/app/auth/callback/route.ts#L18) | Supabase `exchangeCodeForSession` failures only logged to `console.error` — auth callback is the entry path for every new account, so a silent prod failure masks real issues. | Added `Sentry.captureException(error, { tags: { route: "auth/callback" } })` (no-op when DSN unset; matches root + lesson error-boundary pattern). |
+| `apps/web/app/certificates/[id]/page.tsx` (NEW) | Capstone share button copies `${origin}/certificates/${cert.id}` ([capstone-client.tsx:204](apps/web/app/themes/[slug]/capstone/capstone-client.tsx#L204)) but the public page didn't exist — recipients would land on 404, breaking capstone email + share UX. | New SSR page consumes `GET /api/certificates/:id` (the `get_shared_certificate` SECURITY DEFINER RPC from migration 019), renders learner name / theme / issued date / cert number / hash preview, ships JSON-LD `EducationalOccupationalCredential` for SEO, generates OG image via `/api/og`. Cached for 5 min, no auth, UUID shape validated. |
+
+#### Audit-agent false positives (verified — no code change needed)
+
+- **Paywall "SSR-before-redirect" claim:** Next.js `redirect()` from `next/navigation` throws a redirect error before any RSC body streams; the response is a 307 well before content render. Lesson page at [apps/web/app/themes/[slug]/[module]/[lesson]/page.tsx:71-103](apps/web/app/themes/[slug]/[module]/[lesson]/page.tsx#L71-L103) handles unauth + unpurchased correctly.
+- **Exercise dedup claim:** `disabled={running}` on the Run button at [packages/ui/src/mdx/exercise.tsx:409](packages/ui/src/mdx/exercise.tsx#L409) blocks rapid re-clicks at the UI; multiple intentional attempts are by-design (learner iterating on a solution), so server-side dedup would be wrong.
+- **Stripe webhook subscription gap:** `charge.dispute.created` already implemented at [apps/api/src/routes/payments.ts:528-557](apps/api/src/routes/payments.ts#L528-L557) (Round 9 false positive too).
+
+#### Round-11 STRONG findings parked on post-launch backlog
+
+These are real but not BLOCKING for V1; document explicitly so future-you doesn't confuse them for new bugs:
+
+- **GitHub token plaintext column** (`profiles.github_token`) — Supabase TLS + at-rest encryption applies, but no column-level encryption (pgsodium / Vault). Compromise risk: if DB dump leaks, every connected user's GitHub token is exposed. Post-launch: migrate to encrypted column or external KMS.
+- **Sandpack offline / iframe-load failure** has no explicit timeout fallback — user sees an indefinite spinner. Add 10 s timeout → "Editor unavailable" message.
+- **Lesson-steps swipe gesture not arrow-key accessible** — `onKeyDown` left/right arrows on the step container would close the gap.
+- **Refund / dispute notification email** — webhook flips `purchases.status` and revokes access, but no Kit `refunded` tag fires. Acceptable for V1 (dashboard reflects status), polish later.
+- **News-scrape feed failures silent** — `scripts/news/scrape.mjs` `.catch(() => [])` swallows 5xx with no Sentry / Slack alert. Add a failure-rate alert post-launch.
+- **Newsletter send retry** — Resend 429/5xx counted but never re-played. Acceptable while volume is low; add a persistent job queue post-launch.
+- **Re-subscribe blocked post-unsubscribe** — `(email, theme_id)` UNIQUE constraint on `waitlist` rejects a fresh signup with `code: 23505`, masked as success. Either flip to `INSERT … ON CONFLICT DO UPDATE SET subscribed = true` or surface a "you're already on the list — manage preferences" UX.
+- **Onboarding step persistence** — already in `§G.8` known gaps. ~2-min flow, browser-close drop is rare; acceptable for V1.
+- **First-lesson-email vs completion-RPC race** ([lesson-steps.tsx:146-185](apps/web/app/themes/[slug]/[module]/[lesson]/lesson-steps.tsx#L146-L185)) — email fires even if `compute_user_skill_genome` RPC fails. Wrap in `Promise.allSettled` post-launch.
+- **APP_VERSION hardcoded `0.0.0`** in API logger — bump from `package.json` at build.
+
+#### Verification this round
+
+```bash
+node scripts/validate-exercises.mjs    # 80/80 (Deep Orbit + extras)
+./node_modules/.bin/vitest run           # 748/748 across 102 files
+pnpm run build                           # 10 tasks green (cert share page added to /certificates/[id])
+```
+
 ### A14-OLD. Exercise validator regression — 77 failures (resolved) — historical
 
 `node scripts/validate-exercises.mjs` reports **218 passed, 77 failed, 0 allowlisted, 295 total**. Memory says 295/295 was last green at 2026-04-21; commit `508f98f` changed `stripTypeScript` (added `stripGenericCallArgs`, `stripAsTupleAssertions`, expanded `!` non-null operator regex). All 77 failures share the same parse error: `Unexpected token ')'` in `solution-run` or `starter-syntax`.
@@ -390,6 +513,25 @@ Pre-wire 3 alerts in Sentry dashboard (web + API projects):
 - Any 5xx from `/api/payments/webhook` → immediate email (payment-critical)
 
 5 min of dashboard clicks in each Sentry project. Documented here because "open Sentry in a tab" isn't enough — need proactive alerting.
+
+### B11. V1 visual + waitlist scope-revert smoke (NEW 2026-05-05)
+
+Cross-browser (§B2) only covers rendering correctness; this gate validates that the V1 scope-revert is consistent across every surface and that the coming-soon waitlist actually captures email.
+
+Walk these flows manually in production after launch tag:
+
+1. **Landing (`/`):** Deep Orbit hero card renders LIVE; the other 4 themes render in a muted 2×2 "Coming soon" grid (no LIVE badge, no price).
+2. **`/themes`:** same shape — Deep Orbit hero + 4 coming-soon cards. Click a coming-soon card → lands on `/themes/{slug}` stub.
+3. **Coming-soon stub `/themes/neon-protocol` (and the 3 others):** hero art + tagline + character preview + waitlist email form render correctly. JSON-LD has `availability: "PreOrder"`. Lesson/capstone routes for that slug return **404**.
+4. **`/learn`:** Deep Orbit primary, the 4 others listed for SEO with "Coming soon" labels.
+5. **Dashboard (`/dashboard`):** Deep Orbit owned/locked card, the 4 others render as "Notify me" coming-soon cards.
+6. **Onboarding:** no theme-picker step (4 steps total, auto-routes to Deep Orbit on completion).
+7. **Settings:** no "active theme" tab (column kept as DB tombstone).
+8. **Waitlist round-trip:** submit a real email on a coming-soon stub → row appears in `waitlist` table with the right `theme_id` → Kit subscriber tagged with the matching theme tag → confirmation email arrives.
+9. **Payment:** attempt `POST /api/payments/checkout` with a coming-soon `theme_ids` (e.g. via curl) → 400 from `validateThemeIds`. Live UI hides this from learners, but the API guard is the last line of defense.
+10. **Sitemap (`/sitemap.xml`):** Deep Orbit lesson/capstone routes present at priority 0.9; coming-soon themes appear only at the `/themes/{slug}` level (priority 0.4).
+
+Any inconsistency = stop, fix, redeploy.
 
 ### B7. Replace paywall testimonials
 

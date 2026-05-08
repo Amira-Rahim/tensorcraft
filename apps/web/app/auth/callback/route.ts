@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 
 export async function GET(request: Request) {
@@ -16,6 +17,12 @@ export async function GET(request: Request) {
 
     if (error) {
       console.error("Auth callback: exchangeCodeForSession failed", error);
+      // Forward to Sentry — auth callback is a critical path; silent failures
+      // here mean users see only "auth_callback_error" with no trail in
+      // production. Sentry no-ops if DSN is unset.
+      Sentry.captureException(error, {
+        tags: { route: "auth/callback" },
+      });
     }
 
     if (!error) {

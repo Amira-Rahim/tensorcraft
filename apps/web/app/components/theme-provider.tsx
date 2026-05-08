@@ -6,14 +6,16 @@ import {
   useCallback,
   useSyncExternalStore,
 } from "react";
-import { DEFAULT_THEME } from "@tensorcraft/shared";
-import { themeSlugs } from "@tensorcraft/themes";
+import { DEFAULT_THEME, isLaunched } from "@tensorcraft/shared";
 import type { ThemeSlug } from "@tensorcraft/shared";
 
 const STORAGE_KEY = "tc-active-theme";
 
 function isValidTheme(value: string): value is ThemeSlug {
-  return (themeSlugs as readonly string[]).includes(value);
+  // V1 scope-revert (2026-05-05): only launched themes are settable as the
+  // active theme. Coming-soon slugs are stripped at the boundary so a stale
+  // localStorage value or hand-edited DOM attribute can't shift the palette.
+  return isLaunched(value);
 }
 
 function getStoredTheme(): ThemeSlug {

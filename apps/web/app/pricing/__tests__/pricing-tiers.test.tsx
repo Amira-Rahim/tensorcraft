@@ -160,19 +160,19 @@ describe("PricingTiers (brutalist 5-tier grid)", () => {
     }
   });
 
-  it("All 5 CTA calls checkout handler with planId=allFive", async () => {
+  it("All 5 CTA is disabled at V1 (only Deep Orbit launched) and shows wait copy", () => {
+    // V1 scope-revert: bundle tiers (2/3/all-five) are auto-disabled while
+    // `LAUNCHED_THEMES.length` is below the bundle size, so the cart can
+    // never produce a basket the API would reject. Re-enable this test as
+    // a positive checkout assertion when all 5 themes ship.
     render(<PricingTiers />);
     const card = screen.getByTestId("tier-card-all-five");
     const btn = Array.from(card.querySelectorAll("button")).find((b) =>
       /Get All 5/i.test(b.textContent ?? ""),
     ) as HTMLButtonElement | undefined;
     expect(btn).toBeTruthy();
-    fireEvent.click(btn!);
-    await waitFor(() => expect(fetchMock).toHaveBeenCalled());
-    const [, init] = fetchMock.mock.calls[0];
-    const body = JSON.parse(init.body);
-    expect(body.planId).toBe("allFive");
-    expect(body.themeIds).toHaveLength(5);
+    expect(btn!.disabled).toBe(true);
+    expect(card.textContent).toMatch(/Available when all 5 themes launch/i);
   });
 
   it("Single tier CTA sends planId=single with the picked theme", async () => {
