@@ -61,12 +61,12 @@ export async function GET(req: NextRequest) {
           <div tw="flex items-center justify-between mb-auto">
             <span
               tw="text-sm font-bold tracking-widest"
-              style={{ color: "#A0A0A0" }}
+              style={{ color: "#B0B0B0" }}
             >
               THE BRIDGE
             </span>
             {sourceLabel && (
-              <span tw="text-sm tracking-wider" style={{ color: "#A0A0A0" }}>
+              <span tw="text-sm tracking-wider" style={{ color: "#B0B0B0" }}>
                 via {sourceLabel}
               </span>
             )}
@@ -146,7 +146,7 @@ export async function GET(req: NextRequest) {
             {title}
           </h1>
           {subtitle && (
-            <p tw="text-2xl mt-4 m-0" style={{ color: "#A0A0A0" }}>
+            <p tw="text-2xl mt-4 m-0" style={{ color: "#B0B0B0" }}>
               {subtitle}
             </p>
           )}

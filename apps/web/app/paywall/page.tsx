@@ -202,21 +202,10 @@ export default function PaywallPage() {
           </div>
         </section>
 
-        {/* Social Proof — placeholder until real beta quotes arrive. */}
-        <section
-          className="px-6 pb-24 border-t border-border pt-20"
-          data-testid="social-proof-section"
-        >
-          <div className="max-w-6xl mx-auto">
-            <div
-              data-testid="social-proof-placeholder"
-              className="border border-border bg-surface/40 px-6 py-5 rounded-none font-mono text-[13px] text-text-muted uppercase tracking-[0.15em]"
-            >
-              // SOCIAL PROOF PENDING &mdash; real beta quotes arrive
-              post-launch
-            </div>
-          </div>
-        </section>
+        {/* Social-proof section removed for V1.
+            An empty "PENDING" placeholder hurts conversion more than the
+            absence of testimonials. Restore this block once 3+ real beta
+            quotes are in hand. */}
 
         {/* Final CTA */}
         <section className="py-24 px-6 text-center border-t border-border">

@@ -14,7 +14,13 @@ const dsn = process.env.SENTRY_DSN ?? process.env.NEXT_PUBLIC_SENTRY_DSN;
 if (dsn) {
   Sentry.init({
     dsn,
-    tracesSampleRate: 0.1,
+    // Server traces are lower-volume than client + harder to reproduce
+    // post-hoc, so we sample 30% at launch (vs 10% on the client) to keep
+    // launch-day incidents debuggable. Revert to 0.1 once daily traffic
+    // is well above 10k MAU and the spans become noise.
+    tracesSampleRate: 0.3,
+    maxBreadcrumbs: 50,
+    maxValueLength: 500,
     beforeSend(event) {
       if (event.user) {
         delete event.user.email;

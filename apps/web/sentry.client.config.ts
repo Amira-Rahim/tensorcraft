@@ -19,6 +19,8 @@ if (dsn) {
     tracesSampleRate: 0.1,
     replaysSessionSampleRate: 0,
     replaysOnErrorSampleRate: 1.0,
+    maxBreadcrumbs: 50,
+    maxValueLength: 500,
     ignoreErrors: [
       // Hydration mismatches are noisy in dev; real ones surface via the
       // Next.js error overlay and server logs.

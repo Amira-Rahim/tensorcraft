@@ -72,12 +72,13 @@ describe("PaywallPage (Phase 11 §11d Wave 3 NEW)", () => {
     }
   });
 
-  it("renders a social proof placeholder (real beta quotes land post-launch)", () => {
+  it("does not ship the V1 social-proof placeholder block", () => {
+    // Round 13: the "// SOCIAL PROOF PENDING" placeholder was removed —
+    // an empty placeholder hurts conversion more than no testimonials. The
+    // block returns once real beta quotes land.
     render(<PaywallPage />);
-    expect(screen.getByTestId("social-proof-section")).toBeInTheDocument();
-    const placeholder = screen.getByTestId("social-proof-placeholder");
-    expect(placeholder).toBeInTheDocument();
-    expect(placeholder.textContent).toMatch(/social proof pending/i);
+    expect(screen.queryByTestId("social-proof-section")).toBeNull();
+    expect(screen.queryByTestId("social-proof-placeholder")).toBeNull();
   });
 
   it("does not ship invented beta-user testimonials", () => {
@@ -87,15 +88,12 @@ describe("PaywallPage (Phase 11 §11d Wave 3 NEW)", () => {
     expect(screen.queryByTestId("testimonial-beta_user_03")).toBeNull();
   });
 
-  it("uses rounded-none (brutalist) on CTAs and the placeholder card", () => {
+  it("uses rounded-none (brutalist) on the primary + footer CTAs", () => {
     render(<PaywallPage />);
     expect(screen.getByTestId("paywall-primary-cta").className).toMatch(
       /rounded-none/,
     );
     expect(screen.getByTestId("paywall-footer-cta").className).toMatch(
-      /rounded-none/,
-    );
-    expect(screen.getByTestId("social-proof-placeholder").className).toMatch(
       /rounded-none/,
     );
   });
