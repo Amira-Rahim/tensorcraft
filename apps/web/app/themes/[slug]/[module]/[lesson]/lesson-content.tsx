@@ -1,21 +1,36 @@
 "use client";
 
 import { useCallback, useMemo } from "react";
+import dynamic from "next/dynamic";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 import {
   Dialogue,
   BridgeCallout,
   CodeBlock,
   DerivationDrawer,
-  Exercise,
   ExerciseDataProvider,
   HintPanel,
   KeyTakeaways,
   LearningObjectives,
   Quiz,
 } from "@tensorcraft/ui";
+
+// Round-12 perf fix: the `Exercise` component pulls in the full Sandpack
+// runtime + editor (~300 KB gzipped). Loading it dynamically with
+// `ssr: false` keeps it out of the lesson's initial chunk and defers the
+// fetch until the learner reaches the Challenge step.
+const Exercise = dynamic(
+  () => import("@tensorcraft/ui").then((m) => ({ default: m.Exercise })),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="my-8 border border-border bg-surface rounded-none p-6 text-xs font-mono text-text-muted uppercase tracking-wider">
+        // Loading editor…
+      </div>
+    ),
+  },
+);
 import {
-  BanditState,
   BossBeat,
   Concept,
   DispatchTease,
@@ -33,7 +48,6 @@ import {
   trackExerciseSubmitted,
   trackHintRequested,
 } from "@/lib/analytics";
-import { recordRecallAttempt } from "@/lib/review-client";
 
 interface LessonContentProps {
   lesson: {
@@ -61,17 +75,10 @@ interface LessonContentProps {
   userFramework?: Framework;
   visibleComponents?: Set<string>;
   onExerciseComplete?: () => void;
-  /**
-   * True when the player navigated here from the /review queue and the
-   * lesson was selected by the ε-greedy explore branch. Captured in the
-   * recall event so the operator log can compute exploration ratio.
-   */
-  wasExplored?: boolean;
 }
 
 /** MDX components available in lesson content */
 const mdxComponents = {
-  BanditState,
   BossBeat,
   Concept,
   Dialogue,
@@ -105,7 +112,6 @@ export function LessonContent({
   userFramework,
   visibleComponents,
   onExerciseComplete,
-  wasExplored = false,
 }: LessonContentProps) {
   const exerciseMap = useMemo(() => {
     const map = new Map<string, ExerciseData>();
@@ -217,7 +223,6 @@ export function LessonContent({
             }}
           />
         ) : null,
-      BanditState: wrapVisibility("BanditState", BanditState),
       DispatchTease: wrapVisibility("DispatchTease", DispatchTease),
       StrategyThread: wrapVisibility("StrategyThread", StrategyThread),
       BossBeat: (
@@ -236,24 +241,8 @@ export function LessonContent({
           />
         );
       },
-      RecallPrompt: (props: React.ComponentProps<typeof RecallPrompt>) => {
-        if (!shouldShow("RecallPrompt")) return null;
-        const skillAxis = lesson.skillAxes?.[0] ?? "evaluation";
-        const canRecord = Boolean(themeId && moduleId && lessonId);
-        const onRecall = canRecord
-          ? (success: boolean) => {
-              recordRecallAttempt({
-                themeId: themeId as string,
-                moduleId: moduleId as string,
-                lessonId: lessonId as string,
-                success,
-                skillAxis,
-                wasExplored,
-              }).catch(() => {});
-            }
-          : undefined;
-        return <RecallPrompt {...props} onRecall={onRecall} />;
-      },
+      RecallPrompt: (props: React.ComponentProps<typeof RecallPrompt>) =>
+        shouldShow("RecallPrompt") ? <RecallPrompt {...props} /> : null,
       BridgeCallout: (props: { bridge: unknown }) =>
         shouldShow("BridgeCallout") ? (
           <BridgeCallout
@@ -309,8 +298,6 @@ export function LessonContent({
     shouldShow,
     onExerciseComplete,
     lesson.concept.bridge,
-    lesson.skillAxes,
-    wasExplored,
   ]);
 
   const Content = useMemo(() => {

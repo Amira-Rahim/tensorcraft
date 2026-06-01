@@ -51,7 +51,6 @@ export default async function DashboardPage() {
     { data: streaksRaw },
     { data: exerciseAttempts },
     { data: purchaseRows },
-    { data: reviewQueueRows },
   ] = await Promise.all([
     supabase
       .from("profiles")
@@ -83,17 +82,7 @@ export default async function DashboardPage() {
       .select("theme_ids")
       .eq("user_id", user.id)
       .eq("status", "completed"),
-    // Bandit-driven review queue. RLS scopes to the current user. We only
-    // need the count of due rows, so select the minimum and lte() against
-    // the database's now() via a sentinel ISO timestamp at request time.
-    supabase
-      .from("review_queue")
-      .select("lesson_id, next_review_at")
-      .eq("user_id", user.id)
-      .lte("next_review_at", new Date().toISOString()),
   ]);
-
-  const reviewsDueCount = (reviewQueueRows ?? []).length;
 
   // Streak nudge: any of the user's per-theme streaks where last_activity_date
   // is exactly yesterday — meaning the streak survives if they act today, dies
@@ -434,7 +423,6 @@ export default async function DashboardPage() {
       themeCards={
         <ThemeCards cards={themeCardsData} hasFullBundle={hasFullBundle} />
       }
-      reviewsDueCount={reviewsDueCount}
       streakAtRisk={streakAtRisk}
     />
   );

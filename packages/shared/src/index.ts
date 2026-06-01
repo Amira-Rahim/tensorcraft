@@ -32,15 +32,3 @@ export type {
   Framework,
   BridgeVariant,
 } from "./bridges";
-
-export {
-  REVIEW_EPSILON,
-  SM2_SUCCESS_MULTIPLIER,
-  SM2_FAIL_INTERVAL_HOURS,
-  MIN_INTERVAL_HOURS,
-  FORGETTING_HOURS_CAP,
-  forgettingScore,
-  epsilonGreedy,
-  nextReviewAt,
-} from "./bandit";
-export type { BanditArm, SelectedArm } from "./bandit";

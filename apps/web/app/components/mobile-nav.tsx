@@ -135,28 +135,6 @@ export function MobileNav() {
                   Dashboard
                 </Link>
                 <Link
-                  href="/review"
-                  onClick={() => setOpen(false)}
-                  className={`block w-full text-center px-6 py-3.5 text-sm font-mono font-medium uppercase tracking-wider transition-all border ${
-                    pathname.startsWith("/review")
-                      ? "border-primary bg-primary/10 text-primary"
-                      : "border-border text-text-muted hover:border-primary/30 hover:text-text-primary"
-                  }`}
-                >
-                  Review
-                </Link>
-                <Link
-                  href="/log"
-                  onClick={() => setOpen(false)}
-                  className={`block w-full text-center px-6 py-3.5 text-sm font-mono font-medium uppercase tracking-wider transition-all border ${
-                    pathname.startsWith("/log")
-                      ? "border-primary bg-primary/10 text-primary"
-                      : "border-border text-text-muted hover:border-primary/30 hover:text-text-primary"
-                  }`}
-                >
-                  Log
-                </Link>
-                <Link
                   href="/inbox"
                   onClick={() => setOpen(false)}
                   className={`block w-full text-center px-6 py-3.5 text-sm font-mono font-medium uppercase tracking-wider transition-all border ${

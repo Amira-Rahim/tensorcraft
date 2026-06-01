@@ -10,14 +10,14 @@ context:
   narrative: "Priya proposes an improvement to the A/B framework. 'Standard A/B tests lock in the traffic split. Multi-armed bandits adapt. If one model is clearly better, the algorithm shifts traffic automatically. Less exposure to the worse model.'"
   speaker: "Priya Sharma"
 concept:
-  explanation: "Multi-armed bandits adaptively allocate traffic to the better-performing arm. Read another way: bandits are a one-player game against an adversarial environment, with regret as the loss function. The same algorithm reroutes ad rotation, model selection, and — as you will see — Tensorcraft's own spaced-recall queue."
+  explanation: "Multi-armed bandits adaptively allocate traffic to the better-performing arm. Read another way: bandits are a one-player game against an adversarial environment, with regret as the loss function. The same algorithm reroutes ad rotation and model selection."
   bridge:
     feTitle: "Dynamic Ad Rotation"
     feCode: "// Show ad with highest CTR more often, explore alternatives with epsilon"
     mlTitle: "Adaptive Model Selection"
     mlCode: "// Route to best model more often, explore alternatives with epsilon"
     tier: structural
-    breaks: "Ad rotation has clear short-term reward signals. Production bandits face delayed rewards (long-term retention), non-stationary arms (model drift, new lessons appearing in your review queue), and exploration cost. Worth knowing: Tensorcraft's review queue inherits the same failure modes — every new lesson you complete adds an unpulled arm, and 'recall success' is a noisy proxy for 'remembered'."
+    breaks: "Ad rotation has clear short-term reward signals. Production bandits face delayed rewards (long-term retention), non-stationary arms (model drift), and exploration cost — every fresh arm starts unpulled, and the reward signal is often a noisy proxy for the outcome you actually care about."
 keywords:
   - multi-armed-bandit
   - epsilon-greedy
@@ -49,7 +49,7 @@ If it reduces the time our devices spend on a worse model, I want it. Show me th
 
 You have seen dynamic ad rotation on websites: the system shows the highest-performing ad most of the time while occasionally testing alternatives. Multi-armed bandits apply the same explore-exploit tradeoff to model selection. Instead of fixed traffic splits, the algorithm adapts — sending more traffic to the model that is performing better while still exploring alternatives.
 
-<LearningObjectives objectives={["Implement an epsilon-greedy multi-armed bandit for model selection", "Define regret and explain why minimizing it is a game-theoretic objective", "Build a UCB1 bandit and read its sub-linear regret bound", "See the same algorithm running live: Tensorcraft's spaced-recall queue"]} />
+<LearningObjectives objectives={["Implement an epsilon-greedy multi-armed bandit for model selection", "Define regret and explain why minimizing it is a game-theoretic objective", "Build a UCB1 bandit and read its sub-linear regret bound"]} />
 
 ## The Bridge
 
@@ -76,9 +76,7 @@ This is the same logical move the GAN lesson made: name the problem as a game wi
 ## Epsilon-Greedy Bandit
 
 <CodeBlock language="typescript" title="epsilon-greedy.ts">
-{`// Epsilon-greedy bandit. Same algorithm Tensorcraft uses to pick which
-// lesson resurfaces in your review queue — see "You're Inside a Bandit
-// Right Now" below for your live state.
+{`// Epsilon-greedy bandit for adaptive model selection.
 
 interface ModelArm {
   version: string;
@@ -195,21 +193,13 @@ ucb.addArm('v3.0', modelV3.predict);
 ucb.addArm('v3.1', modelV3_1.predict);`}
 </CodeBlock>
 
-## You're Inside a Bandit Right Now
-
-The product running this lesson schedules your spaced-recall queue with the same ε-greedy algorithm above (`ε = 0.15`). Each lesson you've completed is an arm. Each "Got it / Review again" answer is a reward signal. The selector returns up to five due lessons per visit to `/review`, exploring 15% of slots at random and exploiting the rest by **forgetting score** — `(1 − recall_success_rate) × hours_since_review`.
-
-<BanditState themeId="terra-grid" />
-
-The schedule itself follows SM-2-lite: a successful recall multiplies the prior interval by 2.5; a failed recall resets to 24h. So the lesson teaching the algorithm is also the lesson the algorithm will pick when you forget it.
-
 ## Challenge
 
 Implement an epsilon-greedy bandit for adaptive model selection.
 
 <Exercise slug="bandit-algorithm" />
 
-<KeyTakeaways takeaways={["A bandit is a one-player game vs an adversarial environment; minimizing cumulative regret is the strategic objective", "ε-greedy with fixed ε has linear regret; UCB1 achieves O(√(T log T)) regret without tuning ε", "Tensorcraft schedules your spaced-recall queue with the same ε-greedy algorithm — ε = 0.15, SM-2-lite intervals", "Bandits converge faster than fixed A/B tests and waste fewer predictions on clearly worse models"]} />
+<KeyTakeaways takeaways={["A bandit is a one-player game vs an adversarial environment; minimizing cumulative regret is the strategic objective", "ε-greedy with fixed ε has linear regret; UCB1 achieves O(√(T log T)) regret without tuning ε", "Bandits converge faster than fixed A/B tests and waste fewer predictions on clearly worse models"]} />
 
 <RecallPrompt question="Priya pulls you aside: 'Hassan wants the regret bound on paper. How would you define it for our 3-model setup?'" answer="Regret(T) = T·μ* − Σ rewards earned. μ* is the mean reward of the best model. Sum the actual rewards your bandit collected; the gap is how much accuracy you sacrificed by not knowing which model would win from round 1." />
 

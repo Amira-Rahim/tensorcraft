@@ -184,7 +184,10 @@ export function ReportIssueButton() {
   const isLoading = status === "loading";
 
   return (
-    <>
+    // `display: contents` keeps the wrapper out of the box layout while
+    // letting the `data-ri-root` selector in the <style> block scope the
+    // reduced-motion override to this widget only.
+    <div data-ri-root style={{ display: "contents" }}>
       <style>{`
         @keyframes ri-slide-up {
           from { opacity: 0; transform: translateY(16px) scale(0.98); }
@@ -211,6 +214,18 @@ export function ReportIssueButton() {
           0%, 100% { transform: translateX(0); }
           20%, 60% { transform: translateX(-3px); }
           40%, 80% { transform: translateX(3px); }
+        }
+
+        /* Reduced-motion users: kill every animation in this widget. The
+           drawer, scan line, glow pulse, success pop, and shake are pure
+           decoration — the form remains usable without them. WCAG 2.3.3. */
+        @media (prefers-reduced-motion: reduce) {
+          [data-ri-root] *,
+          [data-ri-root] *::before,
+          [data-ri-root] *::after {
+            animation: none !important;
+            transition: none !important;
+          }
         }
       `}</style>
 
@@ -791,6 +806,6 @@ export function ReportIssueButton() {
           )}
         </div>
       </div>
-    </>
+    </div>
   );
 }

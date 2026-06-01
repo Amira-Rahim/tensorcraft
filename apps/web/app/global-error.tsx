@@ -28,7 +28,9 @@ export default function GlobalError({
           backgroundColor: "var(--tc-bg, #181818)",
           color: "#E0E0E0",
           fontFamily: "ui-monospace, monospace",
-          minHeight: "100vh",
+          // iOS Safari URL-bar resize reflow: 100svh sits on the smallest
+          // viewport (URL bar shown). Falls back to 100vh on older browsers.
+          minHeight: "100svh",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",

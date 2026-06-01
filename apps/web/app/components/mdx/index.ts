@@ -4,6 +4,5 @@ export { InteractiveDemo } from "./interactive-demo";
 export { RecallPrompt } from "./recall-prompt";
 export { NextLesson } from "./next-lesson";
 export { StrategyThread } from "./strategy-thread";
-export { BanditState } from "./bandit-state";
 export { DispatchTease } from "./dispatch-tease";
 export { BossBeat } from "./boss-beat";

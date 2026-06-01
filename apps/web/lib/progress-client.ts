@@ -124,32 +124,6 @@ export async function markLessonCompleted(
     }),
   ).catch(() => {});
 
-  // Spaced-recall: enqueue this lesson for review starting in 24h.
-  // Idempotent on the server — re-completion does not reset the schedule.
-  Promise.resolve(
-    supabase.rpc("enqueue_review", {
-      p_theme_id: themeId,
-      p_module_id: moduleId,
-      p_lesson_id: lessonId,
-    }),
-  ).catch(() => {});
-
-  // Lore drop attempt — server enforces 20% chance + 1/day cap. Dropped
-  // artifact_id (if any) is dispatched as a `tc:lore-drop` window event so
-  // the lesson page can surface a toast without a re-render path.
-  // Dynamic import keeps the lore catalog out of the markLessonCompleted
-  // hot path bundle.
-  import("./lore-client")
-    .then(async ({ tryDropLoreOnCompletion }) => {
-      const dropped = await tryDropLoreOnCompletion(themeId);
-      if (dropped && typeof window !== "undefined") {
-        window.dispatchEvent(
-          new CustomEvent("tc:lore-drop", { detail: { artifactId: dropped } }),
-        );
-      }
-    })
-    .catch(() => {});
-
   return data;
 }
 

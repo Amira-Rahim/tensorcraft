@@ -256,31 +256,6 @@ export interface Database {
         };
         Relationships: [];
       };
-      lore_drops: {
-        Row: {
-          id: string;
-          user_id: string;
-          artifact_id: string;
-          dropped_at: string;
-          read_at: string | null;
-        };
-        Insert: {
-          user_id: string;
-          artifact_id: string;
-        };
-        Update: {
-          read_at?: string | null;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "lore_drops_user_id_fkey";
-            columns: ["user_id"];
-            isOneToOne: false;
-            referencedRelation: "profiles";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
       counterfactual_choices: {
         Row: {
           user_id: string;
@@ -370,44 +345,6 @@ export interface Database {
         Relationships: [
           {
             foreignKeyName: "dispatch_messages_user_id_fkey";
-            columns: ["user_id"];
-            isOneToOne: false;
-            referencedRelation: "profiles";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
-      review_queue: {
-        Row: {
-          user_id: string;
-          theme_id: string;
-          module_id: string;
-          lesson_id: string;
-          arm_pulls: number;
-          arm_successes: number;
-          last_reviewed_at: string | null;
-          next_review_at: string;
-          created_at: string;
-        };
-        Insert: {
-          user_id: string;
-          theme_id: string;
-          module_id: string;
-          lesson_id: string;
-          arm_pulls?: number;
-          arm_successes?: number;
-          last_reviewed_at?: string | null;
-          next_review_at?: string;
-        };
-        Update: {
-          arm_pulls?: number;
-          arm_successes?: number;
-          last_reviewed_at?: string | null;
-          next_review_at?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "review_queue_user_id_fkey";
             columns: ["user_id"];
             isOneToOne: false;
             referencedRelation: "profiles";
@@ -782,48 +719,6 @@ export interface Database {
           user_avatar_url: string | null;
         }>;
       };
-      enqueue_review: {
-        Args: {
-          p_theme_id: string;
-          p_module_id: string;
-          p_lesson_id: string;
-        };
-        Returns: void;
-      };
-      record_recall_attempt: {
-        Args: {
-          p_theme_id: string;
-          p_module_id: string;
-          p_lesson_id: string;
-          p_success: boolean;
-          p_skill_axis: string;
-          p_was_explored?: boolean;
-        };
-        Returns: string;
-      };
-      get_review_queue: {
-        Args: { p_theme_id: string; p_limit?: number };
-        Returns: Array<{
-          theme_id: string;
-          module_id: string;
-          lesson_id: string;
-          arm_pulls: number;
-          arm_successes: number;
-          last_reviewed_at: string | null;
-          next_review_at: string;
-          was_explored: boolean;
-        }>;
-      };
-      get_bandit_state_summary: {
-        Args: { p_theme_id: string };
-        Returns: Array<{
-          epsilon: number;
-          total_arms: number;
-          total_pulls: number;
-          total_successes: number;
-          due_count: number;
-        }>;
-      };
       mark_dispatch_read: {
         Args: { p_message_id: string };
         Returns: void;
@@ -883,14 +778,6 @@ export interface Database {
           alternate_choice_index: number;
           rewound_at: string;
         }>;
-      };
-      try_drop_lore_artifact: {
-        Args: { p_artifact_id: string };
-        Returns: string | null;
-      };
-      mark_lore_read: {
-        Args: { p_artifact_id: string };
-        Returns: void;
       };
     };
   };

@@ -1,6 +1,6 @@
 # Tensorcraft V0.5 — Pre-Launch Checklist
 
-> **Last updated: 2026-05-05** (eleventh audit round — full E2E sweep across 5 user flows; 2 BLOCKING fixes (auth Sentry + cert share page) landed; 80/80 + 748/748 + build green)
+> **Last updated: 2026-05-05** (twelfth audit round — content/perf/a11y deep sweep; 11 fixes landed across BLOCKING + STRONG categories; 80/80 + 772/772 + build green)
 > **Audience: solo dev preparing to flip V0.5 live before executing marketing plan.**
 
 > **⚠ V1 launch-scope revert (2026-05-05):** Only **Deep Orbit** ships at V1.
@@ -27,6 +27,7 @@ This is the definitive gate-list. Work it top to bottom. When every **BLOCKING**
 - 2026-05-05 (Round 9 — deep audit post V1 scope-revert: 8 theme-allowlist leaks fixed (§A15) across `layout.tsx`, `theme-provider.tsx`, `github.ts`, `certificates.ts`, `exercise-attempts.ts`, `profiles.ts`, `capstone/page.tsx`, `purchase-success/page.tsx`; tests + fixtures realigned; validator 80/80 (Deep Orbit + extras only per launch-scope), vitest 748/748, build green. Stripe `charge.dispute.created` case already implemented — audit-agent false positive, no code change needed).
 - 2026-05-05 (Round 10 — 5-agent deep audit covering flow leakage / security / DB-RLS / observability / privacy. 6 BLOCKING + STRONG fixes landed (§A16): Sentry server+edge config now read `SENTRY_DSN` first, lesson error boundary forwards to Sentry, orphaned `apps/web/app/providers/posthog-provider.tsx` removed (sole `posthog.init` callsite is now `lib/posthog.ts` singleton), pricing 2/3/all-five tiers auto-disable when `LAUNCHED_THEMES.length` is below the bundle size, newsletter `matched_lessons` filtered through `isLaunched` so digest never links to a 404'd lesson, GitHub OAuth `state` pinned to a HttpOnly `tc_gh_oauth_state` cookie + timing-safe comparison on callback. §II1 doc warnings added to `product-plan.md`, `marketing-plan.md`, `ui-ux-notes.md`. §B11 V1 visual + waitlist scope-revert smoke gate added. Tests + integration fixtures updated. vitest 748/748, build green).
 - 2026-05-05 (Round 11 — full end-to-end audit across all 5 user flows: signup→onboarding→dashboard, lesson→exercise→progress, paywall→checkout→email, capstone→certificate→GitHub, waitlist+digest pipeline. 5 parallel deep-Explore agents reviewed FE→BE→DB→content paths. 2 real BLOCKING fixes landed (§A17): auth callback now forwards Supabase exchange errors to Sentry (was console-only), and the missing public `/certificates/[id]` share page is now implemented (consumes `GET /api/certificates/:id` SECURITY DEFINER RPC, JSON-LD `EducationalOccupationalCredential`, no auth, OG tags). 3 audit-flagged "blockers" verified as false positives (paywall short-circuit was already correct via Next.js `redirect()` 307 short-circuit; exercise dedup is intentional UX with `disabled={running}` button gate; Stripe webhook subscriptions complete). Other Round-11 STRONG findings (Sandpack offline fallback, arrow-key support, refund-comms email, news-scrape failure alerts, newsletter retry queue, post-unsubscribe re-signup blocked by unique constraint, GitHub token plaintext column) parked on post-launch backlog — none gate launch. vitest 748/748, build green).
+- 2026-05-05 (Round 12 — content/perf/a11y/SEO/mobile deep sweep via 3 parallel Explore agents. 11 fixes landed (§A18) across BLOCKING + STRONG categories: (1) `text-muted` palette token bumped `#a0a0a0 → #b0b0b0` to clear WCAG AA 4.5:1, (2) `Viewport` metadata export added to `layout.tsx`, (3) lesson page parallelizes auth+purchase+prereq+progress+profile via single `Promise.all`, (4) `generateStaticParams` enumerates all 55 launched lessons so first paint comes from edge cache, (5) `Exercise` lazy-loaded via `next/dynamic({ ssr: false })` from `lesson-content.tsx` — Sandpack runtime stays out of lesson chunk, (6) `100vh → 100svh` on `global-error.tsx` + `dashboard-view.tsx` + `capstone/page.tsx` for iOS Safari URL-bar stability, (7) `report-issue-button` keyframes scoped to `[data-ri-root]` + `prefers-reduced-motion` kill switch, (8) `AmbientBackground` renders one static frame when reduced motion preferred (skips rAF loop), (9) `/api/og` input clamps title/subtitle to 200 chars + theme allowlist + `s-maxage=86400 stale-while-revalidate=604800` cache directives, (10) `next.config.ts` headers add `Cache-Control` for `/_next/static/*` (immutable 1yr) + `/_next/image/*` (1d + 30d SWR), (11) `robots.txt` adds `/admin` disallow + intentionally allows `/certificates/` for SEO. False positives verified: onboarding `aria-checked` already present on all 3 radiogroups (Round-12 agent C wrong). Other Round-12 STRONG findings (HintPanel coverage 3/56 lessons, touch-target sweep, user-menu focus trap, Plausible+PostHog consolidation, sitemap "core→full" phase flip) deferred to post-launch backlog. vitest 772/772 (24 new tests added by sister session), `pnpm run build` green).
 
 **Content quality grade: A+** (defensible). Math floor canonical, 315/315 grader pass on real TFJS, 71 quizzes Q1-Q4 verified, 50 bridges with mlCode + 100% breaks coverage on non-identity, 5 capstone artifacts shipped, /compare + /bridges + /pricing prerender static, 0 AI-slop across all dimensions.
 
@@ -406,6 +407,50 @@ These are real but not BLOCKING for V1; document explicitly so future-you doesn'
 node scripts/validate-exercises.mjs    # 80/80 (Deep Orbit + extras)
 ./node_modules/.bin/vitest run           # 748/748 across 102 files
 pnpm run build                           # 10 tasks green (cert share page added to /certificates/[id])
+```
+
+### A18. ~~Round-12 content / perf / a11y deep sweep~~ ✅ FIXED 2026-05-05
+
+Three parallel deep-Explore agents covered ground untouched by Rounds 1–11: content + MDX rendering integrity, performance + Core Web Vitals + bundles, and accessibility + SEO + mobile UX. Eleven fixes landed across BLOCKING + STRONG categories; one finding was a false positive; remaining findings parked on post-launch backlog with explicit acceptance.
+
+#### Fixes landed
+
+| # | Category | File | Bug | Fix |
+| --- | --- | --- | --- | --- |
+| 1 | A11y BLOCKING | [packages/themes/src/css/themes.css](packages/themes/src/css/themes.css) | `--tc-muted: #a0a0a0` over `#181818` = 4.3:1 — fails WCAG AA 4.5:1 for normal text on auth, footer, prose, dashboard subtitles | Bumped to `#b0b0b0` (~4.7:1) across all 5 theme blocks via `replace_all` |
+| 2 | Mobile BLOCKING | [apps/web/app/layout.tsx](apps/web/app/layout.tsx) | No `Viewport` export — Next 15 needs explicit viewport config for mobile scaling | Added `export const viewport: Viewport = { width: "device-width", initialScale: 1, viewportFit: "cover" }`; user-zoom intentionally left enabled (WCAG 1.4.4) |
+| 3 | Perf STRONG (LCP) | [apps/web/app/themes/[slug]/[module]/[lesson]/page.tsx](apps/web/app/themes/[slug]/[module]/[lesson]/page.tsx) | Sequential `await` chain: getUser → purchase → prereq → getUser → progress → profile | Single `Promise.all([purchased, prevCompleted, progress, profile])` keyed off one client. Redirect order preserved; module-1 path skips purchase + prereq via constant promises |
+| 4 | Perf STRONG (LCP) | same file | No `generateStaticParams` — every lesson on-demand at cold start | Pre-renders all `LAUNCHED_THEMES` × `getThemeLessons()` pairs at build (~55 routes for V1) |
+| 5 | Perf STRONG (FID/INP) | [apps/web/app/themes/[slug]/[module]/[lesson]/lesson-content.tsx](apps/web/app/themes/[slug]/[module]/[lesson]/lesson-content.tsx) | `Exercise` static-imported from `@tensorcraft/ui` pulled the full Sandpack runtime into the lesson chunk regardless of inner `lazy()` boundaries | Wrapped via `dynamic(() => import("@tensorcraft/ui").then(m => ({ default: m.Exercise })), { ssr: false, loading: <Skeleton /> })` — Sandpack defers until learner reaches Step 3 |
+| 6 | Mobile STRONG | `apps/web/app/global-error.tsx`, `apps/web/app/dashboard/dashboard-view.tsx`, `apps/web/app/themes/[slug]/capstone/page.tsx` | `minHeight: "100vh"` triggers reflow when iOS Safari URL bar collapses | All three switched to `minHeight: "100svh"` (small viewport unit) |
+| 7 | A11y STRONG | [apps/web/app/components/report-issue-button.tsx](apps/web/app/components/report-issue-button.tsx) | 6 `@keyframes` declared via inline `<style>` bypassed the global `prefers-reduced-motion` media query | Added scoped `@media (prefers-reduced-motion: reduce)` kill switch inside the same `<style>` block; root wrapped in `<div data-ri-root style={{ display: "contents" }}>` so selector targets the widget only |
+| 8 | A11y STRONG | [apps/web/app/components/ambient-background.tsx](apps/web/app/components/ambient-background.tsx) | Canvas particle rAF loop ran at ~60fps for every visitor regardless of motion preference (~3% CPU) | Reads `window.matchMedia("(prefers-reduced-motion: reduce)")` on mount; if true, paints one static frame and skips the rAF loop entirely |
+| 9 | Security STRONG | [apps/web/app/api/og/route.tsx](apps/web/app/api/og/route.tsx) | No input bounds — `?title=<10 KB string>` is reflectable; no theme allowlist | Title/subtitle/lessonTitle/sourceLabel clamped to 200 chars via `clamp()` helper; theme validated against `themeSlugs`; `kind` validated against `{default, digest}`. Cache directives upgraded to `public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800` so repeats hit edge cache for a week |
+| 10 | Perf STRONG | [apps/web/next.config.ts](apps/web/next.config.ts) | `headers` only set security headers, no `Cache-Control` for static chunks or optimized images | Added: `/_next/static/:path*` → `public, max-age=31536000, immutable`; `/_next/image/:path*` → `public, max-age=86400, s-maxage=86400, stale-while-revalidate=2592000` |
+| 11 | SEO STRONG | [apps/web/app/robots.ts](apps/web/app/robots.ts) | Missing `/admin` disallow; needed to confirm `/certificates/` is intentionally crawlable | `/admin` added to disallow; `/certificates/` left allowed (JSON-LD `EducationalOccupationalCredential` is SEO-positive); comment added documenting why |
+
+#### Audit-agent false positives
+
+- **Onboarding ARIA `aria-checked`** ([apps/web/app/onboarding/page.tsx](apps/web/app/onboarding/page.tsx)) — all 3 radiogroups already render `aria-checked={selected}` on every option. Agent C grep was incomplete.
+
+#### Round-12 STRONG findings deferred to post-launch
+
+- **HintPanel coverage 3 / 56 lessons** — graceful null fallback means no crash, but 53 lessons skip the hint affordance. Content sprint post-launch.
+- **Touch-target sweep:** several footer / prose links measure ~32 – 36 px on mobile. WCAG 2.5.5 minimum is 44 × 44 css px. Polish.
+- **User-menu focus trap:** menu opens but focus stays on the trigger. Trap + restore on close. Polish.
+- **Plausible + PostHog dual analytics:** both consent-gated; consolidating is a network-contention win, not a launch gate.
+- **Avatar `unoptimized: true`** at [apps/web/app/components/user-avatar.tsx](apps/web/app/components/user-avatar.tsx) — drop to enable Next AVIF/WebP. Marginal.
+- **Sitemap `SITEMAP_PHASE = "core"`** ([apps/web/app/sitemap.ts:15](apps/web/app/sitemap.ts#L15)) — flip to `"full"` after Search Console indexes the 22 core URLs. Manual ops step.
+- **Supabase OTP rate-limit copy** — show "Too many attempts; try again in 1 hour" instead of generic `unknown` error.
+- **Hardcoded `en-US` locale** in 6 date-formatting callsites — extract to `formatLocaleDate(date, navigator.language)` helper. i18n future-proofing.
+- **External uptime monitor** — already in §G known gaps.
+
+#### Verification this round
+
+```bash
+node scripts/validate-exercises.mjs    # 80 / 80 (Deep Orbit + extras)
+./node_modules/.bin/vitest run           # 772 / 772 across 104 files
+pnpm run build                           # 10 tasks green; lesson chunk should drop ~300 KB after fix #5
 ```
 
 ### A14-OLD. Exercise validator regression — 77 failures (resolved) — historical

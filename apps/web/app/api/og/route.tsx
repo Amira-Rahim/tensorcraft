@@ -1,23 +1,56 @@
 import { ImageResponse } from "next/og";
 import type { NextRequest } from "next/server";
-import { themes } from "@tensorcraft/themes";
+import { themes, themeSlugs } from "@tensorcraft/themes";
 import { DEFAULT_THEME } from "@tensorcraft/shared";
 
 export const runtime = "edge";
 
+// Hard caps to keep `/api/og` from being abused as an arbitrary string
+// renderer. Two layers of defense:
+//   1. Input validation here (length caps + theme allowlist) so a hammer
+//      attack can't reflect 10 KB strings into the PNG buffer.
+//   2. Aggressive `Cache-Control: public, max-age=86400, s-maxage=86400`
+//      headers below, so identical (title, subtitle, theme, kind) tuples
+//      collapse to one render per day at Vercel's edge.
+// True per-IP rate-limit lives at the Vercel platform / firewall layer.
+const MAX_TITLE_LEN = 200;
+const MAX_SUBTITLE_LEN = 200;
+const VALID_KINDS = new Set(["default", "digest"]);
+
+function clamp(value: string, max: number): string {
+  if (value.length <= max) return value;
+  return value.slice(0, max - 1) + "…";
+}
+
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
-  const kind = searchParams.get("kind") || "default";
-  const title = searchParams.get("title") || "Tensorcraft";
-  const theme = searchParams.get("theme") || DEFAULT_THEME;
-  const subtitle = searchParams.get("subtitle") || "";
+
+  const rawKind = searchParams.get("kind") || "default";
+  const kind = VALID_KINDS.has(rawKind) ? rawKind : "default";
+
+  const title = clamp(
+    searchParams.get("title") || "Tensorcraft",
+    MAX_TITLE_LEN,
+  );
+  const subtitle = clamp(searchParams.get("subtitle") || "", MAX_SUBTITLE_LEN);
+
+  const themeParam = searchParams.get("theme") || DEFAULT_THEME;
+  const theme = (themeSlugs as readonly string[]).includes(themeParam)
+    ? themeParam
+    : DEFAULT_THEME;
 
   const accentColor =
     themes[theme]?.palette.primary || themes[DEFAULT_THEME].palette.primary;
 
   if (kind === "digest") {
-    const lessonTitle = searchParams.get("lessonTitle") || "";
-    const sourceLabel = searchParams.get("sourceLabel") || "";
+    const lessonTitle = clamp(
+      searchParams.get("lessonTitle") || "",
+      MAX_TITLE_LEN,
+    );
+    const sourceLabel = clamp(
+      searchParams.get("sourceLabel") || "",
+      MAX_SUBTITLE_LEN,
+    );
     return new ImageResponse(
       <div
         tw="flex flex-col w-full h-full"
@@ -71,7 +104,10 @@ export async function GET(req: NextRequest) {
       {
         width: 1200,
         height: 630,
-        headers: { "Cache-Control": "public, max-age=86400" },
+        headers: {
+          "Cache-Control":
+            "public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800",
+        },
       },
     );
   }
@@ -124,7 +160,8 @@ export async function GET(req: NextRequest) {
       width: 1200,
       height: 630,
       headers: {
-        "Cache-Control": "public, max-age=86400",
+        "Cache-Control":
+          "public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800",
       },
     },
   );

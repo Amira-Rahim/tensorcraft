@@ -57,6 +57,32 @@ const nextConfig: NextConfig = {
   },
   headers: async () => [
     {
+      // Long-lived immutable cache for build-hashed chunks. Filenames carry
+      // a content hash so the URL changes whenever bytes change — safe to
+      // pin for a year + tell the CDN to skip revalidation.
+      source: "/_next/static/:path*",
+      headers: [
+        {
+          key: "Cache-Control",
+          value: "public, max-age=31536000, immutable",
+        },
+      ],
+    },
+    {
+      // Optimized images: long client cache + edge cache, with SWR so a
+      // background revalidation refreshes the entry without stalling the
+      // user. 30 days of stale-while-revalidate is well within next/image
+      // expectations for theme art + lesson illustrations.
+      source: "/_next/image/:path*",
+      headers: [
+        {
+          key: "Cache-Control",
+          value:
+            "public, max-age=86400, s-maxage=86400, stale-while-revalidate=2592000",
+        },
+      ],
+    },
+    {
       source: "/(.*)",
       headers: [
         {

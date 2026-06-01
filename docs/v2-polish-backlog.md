@@ -10,13 +10,15 @@ Full design reference: `~/.claude/plans/do-you-think-game-reactive-hennessy.md`.
 
 **Status (2026-05-08):** all NOW-cohort slices shipped at infra + Deep Orbit content level — 6 slices in one session: #11 Operator log, #1+#13+#15 DISPATCH bundle, #6 Boss beats, #3 Counterfactual playthrough, #20 NPC cameos, #19 Lore artifacts. Migrations 028–032 added. Vitest 772/772. Polish checklist (axe/Lighthouse/Playwright auth flows) lives at `docs/gt-narrative-polish-checklist.md`. Per-theme launch content for Neon/Signal/Nova/Terra deferred to each theme's launch sprint — outline below under "Per-theme launch content sprint."
 
+> **REMOVED 2026-06-01:** #11 Operator log (`/log`), the review queue / bandit spaced-recall (`/review`, `packages/shared/src/bandit.ts`, `<BanditState />`), and #19 Lore artifacts (`/library/lore`) were cut entirely. Migration `033_drop_review_and_lore.sql` drops their tables/RPCs (027/028/032). #3 Counterfactual playthrough lost its `/log/rewind` UI but **keeps its data layer** (migration 031 + `counterfactual-client.ts`). DISPATCH (#1/#13/#15), boss beats (#6), and NPC cameos (#20) are unaffected.
+
 ### NOW (single-player, ship-now candidates)
 
 Suggested ship order: #11 → (#1 + #13 + #15 bundle) → #6 → #3. NOW spine (those four) totals ~36–50 days. Optional gap-fillers: #20, #19, #17. Defer in NOW: #5 (high authoring tax), #12 (weak SP without social), #16 ($$$$), #18 (3–4× MDX cost).
 
 - **#11 Operator log meta-screen** ⭐ — cross-theme regret summary, post-hoc strategy classification. Stands up DISPATCH narrator voice. Zero new tables. ~8–12d.
 - **#1 Free-reveal cliffhangers + cross-theme tease** — finale teases of next-theme characters; always reveals (soft gate per scoping). ~4–6d.
-- **#13 NPC DISPATCH inbox** — weekly intel push from DISPATCH; CTAs to /log, /review, /themes. ~3–5d.
+- **#13 NPC DISPATCH inbox** — weekly intel push from DISPATCH; CTAs to /themes, /inbox, etc. ~3–5d.
 - **#15 Recall-as-narrative** — rewrite RecallPrompts as in-canon micro-beats. Per-prompt rewrite, no infra.
 - **#6 Time-pressure boss beats** — 30s 4-option strategy choice (cooperate/defect/random/dominant) at capstone moments. ~8–10d.
 - **#3 Counterfactual playthrough** — 1 rewind per theme; alternate timeline shown. Regret minimization made literal. ~10–14d.

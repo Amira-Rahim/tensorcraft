@@ -68,13 +68,10 @@ export function Nav() {
 
       <div className="hidden md:flex items-center gap-6 font-mono">
         {isAuthenticated && <NavLink href="/dashboard">Dashboard</NavLink>}
-        {isAuthenticated && <NavLink href="/review">Review</NavLink>}
-        {isAuthenticated && <NavLink href="/log">Log</NavLink>}
         {isAuthenticated && <NavLink href="/inbox">Inbox</NavLink>}
         <NavLink href="/themes">Themes</NavLink>
         <NavLink href="/pricing">Pricing</NavLink>
         <NavLink href="/learn">Learn</NavLink>
-        {isAuthenticated && <NavLink href="/library/lore">Lore</NavLink>}
       </div>
 
       <div className="flex items-center gap-4">

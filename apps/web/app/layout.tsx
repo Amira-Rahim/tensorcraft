@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { DEFAULT_THEME, LAUNCHED_THEMES, PRICING } from "@tensorcraft/shared";
 import { ThemeProvider } from "./components/theme-provider";
@@ -80,6 +80,16 @@ export const metadata: Metadata = {
       "/api/og?title=Learn%20ML%20Through%20Code%20You%20Already%20Know&theme=deep-orbit&subtitle=Interactive%2C%20story-driven%20ML%20education",
     ],
   },
+};
+
+// Viewport metadata kept separate from `metadata` per Next.js 15 contract.
+// `viewportFit: "cover"` lets the layout extend behind the iOS notch when
+// pages opt in with `env(safe-area-inset-*)`. User-zoom is intentionally left
+// at the UA default (allowed) — disabling zoom violates WCAG SC 1.4.4.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({

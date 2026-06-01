@@ -12,7 +12,6 @@ const VALID_EVENT_TYPES = [
   "solution_view",
   "lesson_complete",
   "bridge_interaction",
-  "review_recall",
 ] as const;
 
 const VALID_SKILL_AXES = [

@@ -74,8 +74,6 @@ export interface DashboardProps {
   }>;
   lossCurveData: { weekly: WeeklyHints[] };
   themeCards?: ReactNode;
-  /** Bandit-driven review queue: total lessons due across all owned themes. */
-  reviewsDueCount?: number;
   /**
    * True when at least one streak's last_activity_date == today - 1 AND the
    * user has not yet completed a lesson today. Renders a gentle nudge toast.
@@ -105,7 +103,6 @@ export function DashboardView(props: DashboardProps) {
     genomeData,
     lossCurveData,
     themeCards,
-    reviewsDueCount = 0,
     streakAtRisk = false,
   } = props;
 
@@ -131,7 +128,8 @@ export function DashboardView(props: DashboardProps) {
         background: BG,
         color: WHITE,
         WebkitFontSmoothing: "antialiased",
-        minHeight: "100vh",
+        // iOS Safari URL-bar resize stays stable with 100svh.
+        minHeight: "100svh",
         display: "flex",
         flexDirection: "column",
       }}
@@ -518,43 +516,6 @@ export function DashboardView(props: DashboardProps) {
               </Link>
             )}
           </div>
-
-          {reviewsDueCount > 0 && (
-            <Link
-              href="/review"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                padding: "14px 24px",
-                background:
-                  "color-mix(in srgb, var(--tc-primary) 7%, transparent)",
-                borderTop: `1px solid ${BORDER_VAR}`,
-                borderBottom: `1px solid ${BORDER_VAR}`,
-                color: WHITE,
-                textDecoration: "none",
-                fontFamily: MONO,
-              }}
-              data-testid="dashboard-reviews-due-pill"
-            >
-              <span style={{ fontSize: 12, letterSpacing: "0.04em" }}>
-                <strong style={{ color: LIME, fontWeight: 700 }}>
-                  {reviewsDueCount}
-                </strong>{" "}
-                {reviewsDueCount === 1 ? "lesson" : "lessons"} due for recall
-              </span>
-              <span
-                style={{
-                  fontSize: 10,
-                  color: LIME,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.15em",
-                }}
-              >
-                Open queue →
-              </span>
-            </Link>
-          )}
 
           {/* Stats strip */}
           <div

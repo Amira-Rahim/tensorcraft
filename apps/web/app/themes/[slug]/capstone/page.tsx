@@ -236,7 +236,9 @@ export default async function CapstonePage({ params }: Props) {
     <main
       style={{
         background: P.bg,
-        minHeight: "100vh",
+        // 100svh sits on the smallest viewport (URL bar shown) — prevents
+        // iOS Safari reflow when the address bar collapses on scroll.
+        minHeight: "100svh",
         position: "relative",
         overflow: "hidden",
       }}

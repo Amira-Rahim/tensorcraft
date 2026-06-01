@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { themes } from "@tensorcraft/themes";
-import { isLaunched } from "@tensorcraft/shared";
+import { LAUNCHED_THEMES, isLaunched } from "@tensorcraft/shared";
 import {
   getLesson,
   getAdjacentLessons,
@@ -10,6 +10,7 @@ import {
   getModule,
   getModules,
   getLessonExercises,
+  getThemeLessons,
   isFoundationsModule,
 } from "@tensorcraft/content";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
@@ -24,6 +25,20 @@ import type { Metadata } from "next";
 
 interface Props {
   params: Promise<{ slug: string; module: string; lesson: string }>;
+}
+
+// Pre-render every launched-theme lesson at build time. Cold lesson loads
+// previously paid a full SSR + Supabase round-trip; with static params the
+// first paint is served from the edge cache. Coming-soon themes are
+// intentionally excluded — their routes still 404 via `isLaunched()` below.
+export function generateStaticParams() {
+  return LAUNCHED_THEMES.flatMap((slug) =>
+    getThemeLessons(slug).map((l) => ({
+      slug,
+      module: l.moduleId,
+      lesson: l.slug,
+    })),
+  );
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -63,71 +78,73 @@ export default async function LessonPage({ params }: Props) {
   // Per dev-plan §4c, the paywall uses redirect-based enforcement:
   //   - Unauthenticated → /auth?redirectTo=<current-path>
   //   - Authenticated but locked → /pricing?locked=<themeSlug>
-  // Module 1 stays fully accessible to all authenticated users, and
-  // content within Module 1 lessons is never gated.
-  let requiresPaywall = false;
-  let requiresPrerequisite = false;
-  let prevModuleSlug = moduleSlug;
-  if (mod && mod.order > 1) {
-    const supabase = await getSupabaseServerClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) {
-      const currentPath = `/themes/${slug}/${moduleSlug}/${lessonSlug}`;
-      redirect(`/auth?redirectTo=${encodeURIComponent(currentPath)}`);
-    } else {
-      const purchased = await hasThemePurchase(user.id, slug);
-      if (!purchased) {
-        redirect(`/pricing?locked=${encodeURIComponent(slug)}`);
-      }
-      requiresPaywall = !purchased;
+  // Module 1 stays fully accessible to all authenticated users.
+  //
+  // Round-12 perf fix: previously this page made three sequential blocks of
+  // Supabase round-trips (getUser → purchase → prereq → getUser → progress
+  // → profile). The fan-in below resolves auth once, then fans out the four
+  // independent queries in a single `Promise.all` so LCP doesn't pay for
+  // serial network hops.
+  const allModules = getModules(slug);
+  const prevMod =
+    mod && mod.order > 1
+      ? allModules.find((m) => m.order === mod.order - 1)
+      : undefined;
+  const prevLessonCount = prevMod
+    ? getModuleLessons(slug, prevMod.slug).length
+    : 0;
 
-      // Check prerequisite: previous module must be completed
-      if (!requiresPaywall) {
-        const allModules = getModules(slug);
-        const prevMod = allModules.find((m) => m.order === mod.order - 1);
-        if (prevMod) {
-          prevModuleSlug = prevMod.slug;
-          const prevLessons = getModuleLessons(slug, prevMod.slug);
-          const prevCompleted = await isModuleCompleted(
-            user.id,
-            slug,
-            prevMod.slug,
-            prevLessons.length,
-          );
-          requiresPrerequisite = !prevCompleted;
-        }
-      }
-    }
+  const supabase = await getSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (mod && mod.order > 1 && !user) {
+    const currentPath = `/themes/${slug}/${moduleSlug}/${lessonSlug}`;
+    redirect(`/auth?redirectTo=${encodeURIComponent(currentPath)}`);
   }
 
-  // Compute which lessons are completed to enforce sequential locking
-  // Also fetch user's framework preference for adaptive bridges
-  const completedLessonSlugs = new Set<string>();
-  let userFramework: string | undefined;
-  {
-    const supabase = await getSupabaseServerClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (user) {
-      const progress = await getUserProgress(user.id, slug);
-      for (const p of progress) {
-        if (p.module_id === moduleSlug && p.status === "completed") {
-          completedLessonSlugs.add(p.lesson_id);
-        }
-      }
-
-      // Fetch framework preference for adaptive bridges
-      const { data: profile } = await supabase
+  const purchasedPromise =
+    user && mod && mod.order > 1
+      ? hasThemePurchase(user.id, slug)
+      : Promise.resolve(true);
+  const prevCompletedPromise =
+    user && prevMod
+      ? isModuleCompleted(user.id, slug, prevMod.slug, prevLessonCount)
+      : Promise.resolve(true);
+  const progressPromise = user
+    ? getUserProgress(user.id, slug)
+    : Promise.resolve([]);
+  const profilePromise = user
+    ? supabase
         .from("profiles")
         .select("fe_framework")
         .eq("id", user.id)
-        .single();
-      userFramework = profile?.fe_framework ?? undefined;
+        .single()
+    : Promise.resolve({ data: null });
+
+  const [purchased, prevCompleted, progress, profileResult] = await Promise.all(
+    [purchasedPromise, prevCompletedPromise, progressPromise, profilePromise],
+  );
+
+  if (mod && mod.order > 1 && !purchased) {
+    redirect(`/pricing?locked=${encodeURIComponent(slug)}`);
+  }
+
+  const requiresPaywall = mod && mod.order > 1 ? !purchased : false;
+  const requiresPrerequisite =
+    mod && mod.order > 1 && !!prevMod && !purchased ? false : !prevCompleted;
+  const prevModuleSlug = prevMod?.slug ?? moduleSlug;
+
+  const completedLessonSlugs = new Set<string>();
+  for (const p of progress) {
+    if (p.module_id === moduleSlug && p.status === "completed") {
+      completedLessonSlugs.add(p.lesson_id);
     }
   }
+  const userFramework =
+    (profileResult as { data: { fe_framework?: string } | null }).data
+      ?.fe_framework ?? undefined;
 
   // A lesson is locked if a previous lesson (by order) is not completed,
   // unless it's the very first lesson, the current lesson, or the module is free (foundations).
