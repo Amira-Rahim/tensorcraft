@@ -194,11 +194,20 @@ export function PricingTiers() {
             className="relative flex flex-col border border-border bg-surface rounded-none p-6 transition-all hover:border-primary hover:brutalist-shadow"
           >
             <div className="mb-4">
-              <span className="block text-4xl font-bold leading-none text-text-primary font-mono">
-                ${PRICING.single.price}
-              </span>
-              <p className="mt-1 text-[11px] font-mono text-text-muted uppercase tracking-wider">
-                // one theme
+              <div className="flex items-baseline gap-2">
+                <span className="block text-4xl font-bold leading-none text-text-primary font-mono">
+                  ${PRICING.single.price}
+                </span>
+                <span
+                  className="text-lg font-mono text-text-muted/50 line-through"
+                  aria-label={`Regular price $${PRICING.single.regularPrice}`}
+                >
+                  ${PRICING.single.regularPrice}
+                </span>
+              </div>
+              <p className="mt-1 text-[11px] font-mono text-primary uppercase tracking-wider">
+                // founder price · save $
+                {PRICING.single.regularPrice - PRICING.single.price}
               </p>
               {creditLine(PRICING.single.price)}
             </div>

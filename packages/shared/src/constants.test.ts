@@ -26,6 +26,12 @@ describe("PRICING", () => {
     expect(PRICING.single.themes).toBe(1);
   });
 
+  it("single tier carries a display-only founder anchor above its price", () => {
+    // regularPrice is a marketing anchor only — must exceed the charged price
+    // and must never be what Stripe/webhook validation reads.
+    expect(PRICING.single.regularPrice).toBeGreaterThan(PRICING.single.price);
+  });
+
   it("has correct bundle tiers", () => {
     expect(PRICING.twoBundle.price).toBe(79);
     expect(PRICING.twoBundle.themes).toBe(2);
