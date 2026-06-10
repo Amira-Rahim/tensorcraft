@@ -91,6 +91,10 @@
   <30% normal, >70% anomalous, between = can't tell. Slider explainer now
   names the channels using lesson-05 canon (temperature, signal strength,
   normalized 0–1). Lesson embed unchanged — its story provides this context.
+- **Lesson screenshot CUT too (user call):** the free lesson is one click
+  away — the real thing beats a picture of it. Asset + capture script
+  deleted; WYB is now header + syllabus link + a 2×2
+  Train/Detect/Deploy/Own grid. E2e screenshot test removed (suite 11).
 - **Lab CUT entirely (final).** After moving to What You'll Build it made
   that section "trying too hard and way too busy" (user) — three deep-scan
   surfaces on one page. Deleted: `DeepScanLab`, presets, sliders, meter, AND

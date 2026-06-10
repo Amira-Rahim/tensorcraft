@@ -48,13 +48,6 @@ test.describe("Landing Page", () => {
     await expect(faq.getByText(/no python required/i).first()).toBeVisible();
   });
 
-  test("real lesson screenshot links to the free lesson", async ({ page }) => {
-    await page.goto("/");
-    const shot = page.getByTestId("lesson-screenshot-link");
-    await expect(shot).toBeAttached();
-    await expect(shot.locator("img")).toBeAttached();
-  });
-
   test("Deep Orbit card carries the sample-7741 story hook", async ({
     page,
   }) => {

@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import type { Metadata } from "next";
 import { LAUNCHED_THEMES, PRICING, THEME_SLUGS } from "@tensorcraft/shared";
 import { FAQ_ITEMS } from "./faq-data";
@@ -83,32 +82,10 @@ export default function Home() {
               See the full module-by-module syllabus →
             </Link>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr] border-t border-border">
-            {/* Left: real product shot — the actual free lesson, not a
-                mockup. Re-capture: node scripts/capture-lesson-shot.mjs */}
-            <div className="px-10 md:px-14 py-12 border-b md:border-b-0 md:border-r border-border min-w-0">
-              <div className="font-mono text-xs text-primary tracking-[0.15em] uppercase mb-3 flex items-center gap-2">
-                <span className="w-[7px] h-[7px] bg-primary inline-block" />
-                The lesson UI — the actual free lesson
-              </div>
-              <Link
-                href="/themes/deep-orbit/foundations/introduction-to-tensors"
-                data-testid="lesson-screenshot-link"
-                className="block border border-border brutalist-shadow hover:border-primary/40 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-              >
-                <Image
-                  src="/landing/lesson-screenshot.png"
-                  alt="Lesson 1, Introduction to Tensors — story dialogue between Commander Mirza and ARIA above a six-step lesson with progress bar"
-                  width={1440}
-                  height={900}
-                  className="w-full h-auto"
-                  sizes="(min-width: 768px) 50vw, 100vw"
-                />
-              </Link>
-            </div>
-
-            {/* Right: Capabilities */}
-            <div className="px-10 md:px-14 py-12 flex flex-col justify-center gap-8 min-w-0">
+          {/* Capabilities — no product screenshot here: the lesson is free
+              and one click away, the real thing beats a picture of it. */}
+          <div className="border-t border-border px-10 md:px-20 py-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-10 max-w-5xl">
               {[
                 {
                   label: "Train",
