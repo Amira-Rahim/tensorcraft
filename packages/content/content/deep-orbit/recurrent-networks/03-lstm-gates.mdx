@@ -4,7 +4,7 @@ title: "LSTM Gates"
 moduleId: recurrent-networks
 themeId: deep-orbit
 order: 3
-estimatedMinutes: 30
+estimatedMinutes: 14
 difficulty: advanced
 context:
   narrative: "The simple RNN forgets the anomaly pattern — it's too far back in the sequence. Farah introduces LSTMs: networks with gates that decide what to remember and what to forget."
@@ -20,7 +20,6 @@ concept:
     breaks: "localStorage TTL is a hard expiry — value gone after timeout. LSTM forget gates output a continuous value in [0,1] per dimension that scales the cell state — partial forgetting, learned per-input, with no fixed timeout."
 consequence:
   narrative: "The LSTM remembers the anomalous pattern from 72 hours ago. When it appears again, the network catches it immediately — long-range memory works."
-  nextLessonTeaser: "Next: preparing sequential data with sliding windows"
 hints:
   - level: nudge
     content: "LSTMs have three gates: forget (what to discard), input (what to add), output (what to expose)"
@@ -45,8 +44,12 @@ The simple RNN forgets. By the time it reaches time step 50, information from st
 Gates, like a cache with TTL? Keep the important entries, let the stale ones expire?
 </Dialogue>
 
+<Dialogue speaker="Chief Nazari">
+Don't tell me what it's like, Ensign. Tell me how far back it can hold a pattern, and what that costs after last night's six hours of nothing.
+</Dialogue>
+
 <Dialogue speaker="Dr. Farah">
-Almost. TTL forgets on a clock: after the timeout, the value is gone, all or nothing. A forget gate forgets on content. It reads the current input and outputs a number between 0 and 1 for every dimension of the cell state. Keep 90% of this, drop most of that. Partial, learned, no timer anywhere. That difference is why an LSTM can hold a pattern from 72 hours ago.
+Hundreds of steps, for roughly four times the parameters of the simple RNN. And there is no clock in it anywhere. A forget gate reads the current input and outputs a number between 0 and 1 for every dimension of the cell state: keep 90% of this, drop most of that. Partial and learned, with no timer. That is why it can hold a pattern from 72 hours ago.
 </Dialogue>
 
 The three gates (forget, input, output) are each a small sigmoid layer with its own learned weights. A sigmoid outputs values in [0,1], which is what lets a gate act as a dimmer rather than a switch.
@@ -61,18 +64,15 @@ The three gates (forget, input, output) are each a small sigmoid layer with its 
 {`// LSTM Cell — three gates controlling information flow
 
 // 1. FORGET GATE: what to discard from memory
-//    Like clearing expired localStorage entries
 //    forgetGate = sigmoid(W_f · [prevHidden, input])
 //    Output: values between 0 (forget completely) and 1 (keep fully)
 
 // 2. INPUT GATE: what new information to store
-//    Like calling localStorage.setItem() for new data
 //    inputGate = sigmoid(W_i · [prevHidden, input])
 //    candidate = tanh(W_c · [prevHidden, input])
 //    newCell = forgetGate * prevCell + inputGate * candidate
 
 // 3. OUTPUT GATE: what to expose as hidden state
-//    Like choosing which localStorage values to pass to a component
 //    outputGate = sigmoid(W_o · [prevHidden, input])
 //    newHidden = outputGate * tanh(newCell)
 
@@ -146,3 +146,13 @@ Build an LSTM that handles long signal sequences.
 <Exercise slug="build-lstm" />
 
 <KeyTakeaways takeaways={["LSTMs use three learned gates (forget, input, output); each is a sigmoid layer emitting per-dimension keep ratios in [0,1]", "The cell state provides a direct gradient highway, solving the vanishing gradient problem for long sequences", "GRUs are lighter (2 gates vs 3) with comparable performance — try both and compare", "For DEEP SCAN, LSTM catches the 73-second anomaly pattern that SimpleRNN missed entirely"]} />
+
+<Epilogue>
+
+The LSTM goes live against the archive at 1130, cleared through Nazari this time, with a cost estimate attached. Demir replays the full eleven days, and at the 72-hour mark the network flags the recurrence in a single step. The cell state carried the pattern the whole way. On the bridge channel, ARIA is silent for four full seconds before she speaks.
+
+<Dialogue speaker="ARIA">
+Observation. My rule tables log every reading since launch and can act on none of it. I store everything and retain nothing of use. The new model discards most of what it sees and remembers three days. I have no rule that explains why that works.
+</Dialogue>
+
+</Epilogue>

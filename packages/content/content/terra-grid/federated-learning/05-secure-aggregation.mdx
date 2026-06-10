@@ -158,7 +158,7 @@ Implement secure aggregation with pairwise masking.
 
 <Quiz
   question="Threat model that secure aggregation defends against?"
-  options={[{"text":"Curious server inferring individual client gradients from sum — correct"},{"text":"Network eavesdropping"},{"text":"Malicious clients"},{"text":"GPU side channels"}]}
+  options={[{"text":"Curious server inferring individual client gradients from sum"},{"text":"Network eavesdropping"},{"text":"Malicious clients"},{"text":"GPU side channels"}]}
   correct={0}
   explanation="Secure aggregation: server sees the SUM of client updates but not individuals. Defends against honest-but-curious server. Doesn't defend against: aggregate inference attacks (membership inference on the global model), or malicious-client poisoning. Different attacks require different mitigations."
   tier="structural"

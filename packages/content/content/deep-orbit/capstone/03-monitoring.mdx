@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "App monitoring tracks errors, latency, and throughput — observable system metrics. Model monitoring also tracks input distribution drift, prediction distribution drift, and label feedback delays. Many model failures produce no exception and no latency change."
 consequence:
-  narrative: "The monitoring dashboard lights up. Confidence scores, inference latency, drift detection — all streaming in real-time. ARIA: 'Now we will know when DEEP SCAN needs retraining before the crew notices degradation.'"
-  nextLessonTeaser: "Next: documentation — making the system understandable for the entire crew"
+  narrative: "The monitoring dashboard lights up. Confidence scores, inference latency, drift detection — all streaming in real-time. ARIA: 'Now we will know when DEEP SCAN begins to fail before the crew does.'"
 hints:
   - level: nudge
     content: "Monitor three things: prediction quality (confidence), performance (latency), and data health (drift)"
@@ -45,7 +44,7 @@ Commander, I must flag a concern. The model performs at 91.8% accuracy now. In t
 Same problem as any production app. I'll set up monitoring: track prediction confidence, inference latency, and input distribution. When the data drifts from what we trained on, we alert and retrain.
 </Dialogue>
 
-You monitor web apps with Sentry, DataDog, or Vercel Analytics: error rates, response times, user impact. ML monitoring adds model-specific metrics: prediction confidence trends, inference latency, and data drift, which detects when the real-world data no longer matches the training data.
+Monitoring exists on this ship for one reason, and the reason has a timestamp. At 0249 the dashboard didn't throw an exception, didn't log an error, didn't degrade gracefully: memory pressure killed it mid-frame, and the first alert anyone received was the screen going dark. Nobody will survive another 0247, so DEEP SCAN ships with instruments pointed at itself. The web-app half of this is familiar — Sentry, DataDog, error rates, response times. ML monitoring adds the failures that never throw: confidence decay, latency creep, and data drift, production inputs walking quietly away from the training distribution.
 
 <LearningObjectives objectives={["Implement prediction quality monitoring: confidence tracking and anomaly rates", "Build latency monitoring with P50/P95/P99 percentile tracking", "Detect data drift by comparing input feature distributions over time", "Configure alerts that trigger when model health metrics cross thresholds"]} />
 
@@ -197,3 +196,13 @@ Build a model monitor with drift detection.
 <KeyTakeaways takeaways={["ML monitoring extends app monitoring with prediction confidence, data drift, and model health metrics", "Data drift — when production inputs diverge from training data — is the #1 cause of silent model degradation", "Track P50/P95/P99 latency for inference just like you track API response times", "Alert on low confidence trends and high drift scores before users notice quality drops"]} />
 
 > **DISPATCH archive · field intercept #19-M:** Hassan's deployment dashboard runs the same drift check Demir wired here. His SRE team rotates monitoring duty weekly; the operator on rotation has 30 minutes to file a drift report whenever PSI > 0.2 fires. Same alert, different shift.
+
+<Epilogue>
+
+The monitor's first night on duty, it pages the bridge twice. Not for the model — confidence is steady at 0.94, latency flat at 5 milliseconds. Both alerts are drift: the input distribution is moving, and it is moving in one direction. Demir pulls the feature breakdown and finds the shift concentrated in a single feature, inter-pulse timing. The reading attached to the second alert: 32.8 seconds.
+
+<Dialogue speaker="Dr. Farah">
+We built this to catch the model degrading. It's catching the signal changing instead. Keep both alerts armed — I no longer trust either one of them to stay still.
+</Dialogue>
+
+</Epilogue>

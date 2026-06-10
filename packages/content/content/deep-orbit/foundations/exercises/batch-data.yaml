@@ -1,10 +1,24 @@
 slug: batch-data
 lessonSlug: data-loading
-title: "Batch Sensor Data"
-instructions: "Create a data pipeline that batches sensor readings into groups of 4. Use tf.data.generator() with the provided generator function, then shuffle with a buffer of 10 and batch into groups of 4."
-starterCode: "function* sensorGen() {\n  for (let i = 0; i < 16; i++) {\n    yield { xs: tf.tensor([i, i * 2]), ys: tf.tensor([i % 2]) };\n  }\n}\n\n// Create a dataset pipeline: shuffle(10) then batch(4)\nconst dataset = null; // your code here"
-solutionCode: "function* sensorGen() {\n  for (let i = 0; i < 16; i++) {\n    yield { xs: tf.tensor([i, i * 2]), ys: tf.tensor([i % 2]) };\n  }\n}\n\nconst dataset = tf.data.generator(sensorGen).shuffle(10).batch(4);"
-testCode: "describe('Batch Data', () => { it('creates a dataset', () => { expect(dataset).toBeDefined(); }); it('produces batches of 4', async () => { let batchShape; await dataset.forEachAsync((b) => { batchShape = b.xs.shape; }); expect(batchShape[0]).toBe(4); }); });"
+title: "Build the Lazy Pipeline"
+instructions: "The archive exposes readSample(i) — it returns { features: number[2], label: number } for reading i, and it counts how many times it's called. Build a LAZY generator that yields { xs, ys } tensors one sample at a time for all 16 samples (no pre-loading them into an array!), then build `dataset` = generator → shuffle(10) → batch(4). Finally, drain the dataset with forEachAsync, collecting every batch's xs shape into `batchShapes`."
+starterCode: "// Provided: lazy archive access (do NOT modify)\nlet readCount = 0;\nfunction readSample(i) {\n  readCount++;\n  return { features: [i, i * 2], label: i % 2 };\n}\n\n// 1. A generator that yields one sample per iteration — lazily\nfunction* sensorGen() {\n  // your code here (16 samples, use readSample(i))\n}\n\n// 2. Pipeline: generator -> shuffle(10) -> batch(4)\nconst dataset = null;\n\n// 3. Drain it, collecting xs shapes\nconst batchShapes = [];\n// await dataset.forEachAsync(...)"
+solutionCode: "let readCount = 0;\nfunction readSample(i) {\n  readCount++;\n  return { features: [i, i * 2], label: i % 2 };\n}\n\nfunction* sensorGen() {\n  for (let i = 0; i < 16; i++) {\n    const row = readSample(i);\n    yield { xs: tf.tensor(row.features), ys: tf.tensor([row.label]) };\n  }\n}\n\nconst dataset = tf.data.generator(sensorGen).shuffle(10).batch(4);\n\nconst batchShapes = [];\nawait dataset.forEachAsync((b) => {\n  batchShapes.push(b.xs.shape);\n});"
+testCode: |
+  describe('Lazy Pipeline', () => {
+    it('produced 4 batches of 4', () => {
+      expect(batchShapes.length).toBe(4);
+      expect(batchShapes[0]).toEqual([4, 2]);
+    });
+    it('every batch has the [batch, features] shape', () => {
+      for (const s of batchShapes) {
+        expect(s).toEqual([4, 2]);
+      }
+    });
+    it('read all 16 samples through the lazy reader', () => {
+      expect(readCount).toBe(16);
+    });
+  });
 estimatedMinutes: 12
 difficulty: intermediate
 mlContent: data

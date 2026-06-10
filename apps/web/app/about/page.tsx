@@ -68,9 +68,11 @@ export default function AboutPage() {
 
           <p>
             Five themes (Deep Orbit, Neon Protocol, Signal Ward, Nova Canvas,
-            Terra Grid) wrap the curriculum in narrative. Each one ends with a
-            deployable browser-side ML application. The story keeps you on the
-            page; the deployable artifact is what you take to interviews.
+            Terra Grid) wrap the curriculum in narrative. Each one builds toward
+            a working browser-side ML system — assembled piece by piece across
+            the modules, every solved exercise committed to your GitHub. The
+            story keeps you on the page; understanding every layer of what you
+            built is what you take to interviews.
           </p>
 
           <h2 className="text-2xl font-mono font-bold text-text-primary mt-12 mb-4">

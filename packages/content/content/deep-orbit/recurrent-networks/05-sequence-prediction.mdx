@@ -4,7 +4,7 @@ title: "Sequence Prediction"
 moduleId: recurrent-networks
 themeId: deep-orbit
 order: 5
-estimatedMinutes: 30
+estimatedMinutes: 15
 difficulty: advanced
 context:
   narrative: "Demir trains the LSTM to predict the next signal values. Prediction error on the anomalous pattern: under 3%. The LSTM remembers it from 72 hours ago."
@@ -20,7 +20,6 @@ concept:
     breaks: "Autocomplete picks from a finite list of pre-indexed completions you control. Sequence forecasting generates novel continuations from a learned distribution — predictions are unbounded, often invent values outside the training range, and confidence drops sharply with horizon. You must bound predictions with domain constraints (clip to physical limits, etc.)."
 consequence:
   narrative: "The LSTM predicts the anomalous signal will repeat in exactly 47 minutes. The crew waits. At 47 minutes and 3 seconds — it arrives."
-  nextLessonTeaser: "Module 7 dives deeper: if we can predict signals, can we detect ones that don't belong at all?"
 hints:
   - level: nudge
     content: "Sequence prediction is next-value forecasting — the LSTM outputs what it thinks comes next"
@@ -128,10 +127,22 @@ Train a prediction model and forecast the next signal value.
 
 <Quiz
   question="What's the dominant failure mode of vanilla RNNs on long sequences?"
-  options={[{"text":"Memory overflow"},{"text":"Vanishing gradients — gradient signal collapses through depth — correct"},{"text":"GPU thread contention"},{"text":"Slow inference"}]}
+  options={[{"text":"Memory overflow"},{"text":"Vanishing gradients — gradient signal collapses through depth"},{"text":"GPU thread contention"},{"text":"Slow inference"}]}
   correct={1}
   explanation="Backprop-through-time multiplies per-step Jacobians. If spectral radius < 1, the product shrinks exponentially. By step 100, gradients are below float32 precision. LSTM/GRU gates and Transformer's attention solve this by giving information additive paths instead of multiplicative ones."
   tier="structural"
 />
 
 <KeyTakeaways takeaways={["DEEP SCAN's LSTM called the anomaly's return at 47 minutes; it arrived at 47 minutes 3 seconds — structure, not noise", "Multi-step forecasting feeds predictions back as input, generating forecasts one step at a time", "MSE/MAE metrics quantify prediction accuracy — high error on specific signals may indicate anomalies", "Prediction error on the anomalous pattern came in under 3%: the LSTM reproduces a sequence it last saw 72 hours earlier"]} />
+
+<Epilogue>
+
+The forecast goes up on the main bridge display at 2010: predicted recurrence, 47 minutes. Nobody is assigned to watch the countdown; by 2050 the entire bridge crew is watching it anyway. Nazari kills the room audio. 46:59. 47:00, and the trace stays flat, and Demir feels the whole room not breathe. 47:01. 47:02. At 47:03 the spike walks onto the display exactly as drawn.
+
+<Dialogue speaker="Commander Mirza">
+Log the three seconds. I want to know whose error that is — ours or theirs.
+</Dialogue>
+
+It is the first time anyone on the bridge has said "theirs."
+
+</Epilogue>

@@ -109,7 +109,7 @@ Design a deployment strategy for different Terra Grid inference tasks.
 
 <Quiz
   question="Primary reason for edge inference vs cloud?"
-  options={[{"text":"Edge is always faster"},{"text":"Cloud inference adds network round-trip; edge eliminates it — critical for latency-sensitive UX — correct"},{"text":"Cloud is more secure"},{"text":"Edge models are smaller"}]}
+  options={[{"text":"Edge is always faster"},{"text":"Cloud inference adds network round-trip; edge eliminates it — critical for latency-sensitive UX"},{"text":"Cloud is more secure"},{"text":"Edge models are smaller"}]}
   correct={1}
   explanation="Cloud inference: 50-200ms network round-trip + cold start. Edge: 10-50ms total. For interactive UX (autocomplete, real-time AR), cloud is too slow. Tradeoff: edge model is constrained by device memory + compute, cloud has no such limit."
   tier="structural"

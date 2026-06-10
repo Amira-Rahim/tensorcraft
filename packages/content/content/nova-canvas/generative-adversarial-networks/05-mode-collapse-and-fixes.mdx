@@ -166,7 +166,7 @@ An NSFW filter missed a generation that surfaced to a user. Diagnose whether the
 
 <Quiz
   question="Diversity loss prevents mode collapse by?"
-  options={[{"text":"Adding noise to inputs"},{"text":"Penalizing the generator when two latent samples produce identical outputs — correct"},{"text":"Increasing batch size"},{"text":"Using a larger discriminator"}]}
+  options={[{"text":"Adding noise to inputs"},{"text":"Penalizing the generator when two latent samples produce identical outputs"},{"text":"Increasing batch size"},{"text":"Using a larger discriminator"}]}
   correct={1}
   explanation="Add `L_div = -λ · ||G(z_1) - G(z_2)||` for two random latents. Generator pays for producing similar outputs across different latents → forced to spread. Combined with mini-batch discrimination on D-side. Imperfect — mode collapse is multi-causal."
   tier="intuition"

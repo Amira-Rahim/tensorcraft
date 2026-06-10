@@ -4,7 +4,7 @@ title: "Windowing & Overlap"
 moduleId: signal-processing
 themeId: deep-orbit
 order: 5
-estimatedMinutes: 30
+estimatedMinutes: 15
 difficulty: advanced
 context:
   narrative: "Demir's FFT results show spurious frequencies that shouldn't exist. Farah diagnoses the problem: spectral leakage from abrupt signal edges. The fix is a windowing function."
@@ -20,7 +20,6 @@ concept:
     breaks: "Virtual scrolling renders only the visible viewport — off-screen DOM is not computed at all. Signal windowing computes overlapping FFTs over the entire signal at every position, with overlap ratio (50–75%) tunable to balance frequency resolution against time resolution. Compute scales with signal-length × overlap, not viewport size."
 consequence:
   narrative: "With Hann windowing, the spurious frequencies vanish. The 73.4 Hz anomaly stands clean and sharp. Farah whispers: 'That is not noise. That is structure.'"
-  nextLessonTeaser: "The frequency analysis has revealed something too regular to be natural. Module 6 will investigate temporal patterns."
 hints:
   - level: nudge
     content: "Windowing tapers signal edges to zero, preventing false frequencies from abrupt cutoffs"
@@ -45,7 +44,11 @@ Dr. Farah, the FFT is showing frequencies I know aren't real. There's energy sme
 Spectral leakage. When you slice a signal at arbitrary points, the abrupt edges create artificial high-frequency content. The FFT doesn't know where your signal ends and where an artifact begins. We need to taper the edges to zero with a windowing function.
 </Dialogue>
 
-You've solved this exact problem in frontend development. When you implement virtual scrolling, you render only the items in the viewport. But you can't hard-cut at the edges, or you get visual artifacts. You fade items at the boundaries. Windowing functions do the same thing for signals: they smoothly taper the edges to zero so the FFT doesn't see artificial discontinuities.
+<Dialogue speaker="Chief Nazari">
+Before you fix it: the dashboard filed two anomaly reports overnight against frequencies that do not exist. I spent eighty minutes standing down phantom contacts. Fix the edges before the next archive replay.
+</Dialogue>
+
+The smear, in other words, has already cost the mission something countable. Demir's instinct wasn't wrong by frontend rules — virtual scrolling hard-cuts the viewport constantly and nothing breaks. But pixels you cut just stay off-screen; samples you cut have mathematical consequences. The FFT treats your slice as one period of an infinite signal, so a hard edge becomes a real discontinuity, and a discontinuity is (false) frequency content. The part of his analogy that survives is the fix: taper the boundary smoothly, the way you'd fade items at the edge of a scroll viewport, so the transform never sees a cliff.
 
 <LearningObjectives objectives={["Understand spectral leakage: why abrupt signal edges create false frequencies in the FFT", "Apply windowing functions (Hann, Hamming) to taper signal edges before FFT", "Implement overlapping windows for continuous signal processing", "Choose the right window function based on the frequency resolution vs leakage tradeoff"]} />
 
@@ -192,10 +195,22 @@ For real-time inference: smaller hop = lower latency between input and STFT avai
 
 <Quiz
   question="Why apply a Hann window before FFT?"
-  options={[{"text":"To reduce computation"},{"text":"To reduce spectral leakage when signal isn't periodic in the window — correct"},{"text":"To increase frequency resolution"},{"text":"Required by Cooley-Tukey algorithm"}]}
+  options={[{"text":"To reduce computation"},{"text":"To reduce spectral leakage when signal isn't periodic in the window"},{"text":"To increase frequency resolution"},{"text":"Required by Cooley-Tukey algorithm"}]}
   correct={1}
   explanation="FFT assumes the input is one period of a periodic signal. Real signals usually aren't — the discontinuity at window edges creates spurious frequencies (spectral leakage). Tapering the edges (Hann, Hamming, Blackman) suppresses this. Cost: slight loss of frequency resolution."
   tier="structural"
 />
 
 <KeyTakeaways takeaways={["Leakage is measurable: a pure 10 Hz tone cut mid-period smears magnitude ~8.2 into bins 9 and 11, which should both read zero", "Windowing functions (Hann, Hamming) taper signal edges to zero, eliminating leakage artifacts", "50% overlap between windows ensures no information is lost at tapered edges — like overscan in virtualized lists", "The 73.4 Hz anomaly, now clean after windowing, is confirmed as real structure — not an artifact"]} />
+
+<Epilogue>
+
+With the Hann window applied, the spectrum goes quiet everywhere it should: bins 9 and 11 drop to 0.3, the smear dissolves, and what remains is a single slender line at 73.4 Hz, pulsing on its 73.4-second cycle. Farah prints the clean spectrum — actual paper, the first hard copy anyone aboard has seen her make — and pins it beside sample 7741's transform.
+
+<Dialogue speaker="Dr. Farah">
+We have proven the peak is real. Nobody has asked the better question, so I will: a signal this clean, at this distance, is meant to be found. Found by whom?
+</Dialogue>
+
+Down the hall, ARIA starts re-indexing all eleven days of archive against the new spectral pipeline. She does not announce why.
+
+</Epilogue>

@@ -4,7 +4,7 @@ title: "Loss Functions"
 moduleId: training-loop
 themeId: deep-orbit
 order: 1
-estimatedMinutes: 25
+estimatedMinutes: 15
 difficulty: beginner
 context:
   narrative: "The network makes its first predictions — they're terrible. Dr. Farah needs a way to measure exactly how wrong they are."
@@ -19,7 +19,6 @@ concept:
     tier: structural
 consequence:
   narrative: "Now we can quantify exactly how wrong the network is. The loss score becomes our north star for improvement."
-  nextLessonTeaser: "Next: using gradients to reduce the loss"
 hints:
   - level: nudge
     content: "MSE = average of squared differences between predicted and actual"
@@ -94,10 +93,20 @@ Calculate the loss for the DEEP SCAN classifier's initial predictions.
 
 <Quiz
   question="For binary classification, why use binary cross-entropy instead of mean squared error?"
-  options={[{"text":"BCE is faster to compute"},{"text":"BCE produces meaningful gradients near the decision boundary, MSE saturates near 0 and 1 — correct"},{"text":"MSE only works with regression"},{"text":"BCE is required by TensorFlow.js"}]}
+  options={[{"text":"BCE is faster to compute"},{"text":"BCE produces meaningful gradients near the decision boundary, MSE saturates near 0 and 1"},{"text":"MSE only works with regression"},{"text":"BCE is required by TensorFlow.js"}]}
   correct={1}
   explanation="MSE gradient ∝ (pred − label) shrinks to zero when predictions are near 0 or 1, even when wrong. BCE uses log, keeping gradients steep where the model is most wrong. This is the difference between a model that converges and one that stalls."
   tier="structural"
 />
 
 <KeyTakeaways takeaways={["A prediction of 0.52 on a true label of 1.0 is the starting problem: loss turns 'how wrong' into one number you can minimize", "MSE: good for regression, penalizes large errors quadratically", "Binary crossentropy: better for classification (0/1 outputs)", "Training goal: minimize loss toward zero"]} />
+
+<Epilogue>
+
+Farah writes the network's opening loss on the lab's glass wall in marker, dated and initialed: 0.6931. Demir asks why the number is so round. It isn't round, she tells him — it's ln(2) to four places, the exact cross-entropy of a coin flip, the score of a network that knows nothing at all. He'd guessed it was a fluke of the random seed; it's arithmetic.
+
+<Dialogue speaker="Dr. Farah">
+That number is our honesty. We don't get to claim the network learned anything until it moves.
+</Dialogue>
+
+</Epilogue>

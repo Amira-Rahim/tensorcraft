@@ -160,7 +160,7 @@ Summed across all latent dimensions, this is the regularization loss VAE pays to
 
 <Quiz
   question="In β-VAE, what does increasing β do?"
-  options={[{"text":"Improves reconstruction at cost of disentanglement"},{"text":"Forces tighter encoder distribution → better disentanglement at cost of reconstruction quality — correct"},{"text":"Speeds up training"},{"text":"Reduces KL divergence to zero"}]}
+  options={[{"text":"Improves reconstruction at cost of disentanglement"},{"text":"Forces tighter encoder distribution → better disentanglement at cost of reconstruction quality"},{"text":"Speeds up training"},{"text":"Reduces KL divergence to zero"}]}
   correct={1}
   explanation="β scales the KL term: L = recon + β · KL. Higher β pushes encoder distribution closer to N(0,I), reducing latent capacity. This often improves disentanglement (each dimension captures one factor of variation) but loses reconstruction detail. The tradeoff is empirical and dataset-dependent."
   tier="structural"

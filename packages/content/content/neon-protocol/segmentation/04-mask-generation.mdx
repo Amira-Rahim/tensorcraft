@@ -121,7 +121,7 @@ Build a mask generation pipeline that thresholds probabilities and cleans up the
 
 <Quiz
   question="A model outputs a binary mask with confident interior but jagged, isolated false-positive pixels around object boundaries. Which post-processing operation cleans this up most effectively?"
-  options={[{"text":"Sigmoid threshold at 0.5 — already applied, no further help"},{"text":"Morphological opening (erosion then dilation) — removes small isolated pixels while preserving large object shapes — correct"},{"text":"Global brightness adjustment of the input image"},{"text":"Increasing model temperature for softer predictions"}]}
+  options={[{"text":"Sigmoid threshold at 0.5 — already applied, no further help"},{"text":"Morphological opening (erosion then dilation) — removes small isolated pixels while preserving large object shapes"},{"text":"Global brightness adjustment of the input image"},{"text":"Increasing model temperature for softer predictions"}]}
   correct={1}
   explanation="Opening = erosion followed by dilation. Erosion removes pixels at boundaries (eliminates small isolated false positives). Dilation then restores the legitimate object size. The net effect: isolated noise pixels disappear, large objects stay intact. Option A is the operation that produced the jagged output. Options C and D operate on the wrong stage and don't address spatial noise."
   tier="structural"

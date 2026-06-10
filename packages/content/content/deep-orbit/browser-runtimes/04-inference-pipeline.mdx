@@ -4,7 +4,7 @@ title: "Inference Pipeline"
 moduleId: browser-runtimes
 themeId: deep-orbit
 order: 4
-estimatedMinutes: 30
+estimatedMinutes: 15
 difficulty: intermediate
 context:
   narrative: "The model is loaded. Demir wires it into the dashboard's real-time signal feed — every second, a new reading arrives and the model must classify it."
@@ -20,7 +20,6 @@ concept:
     breaks: "Event → Process → Render runs once per user input with code you wrote. Input → Predict → Display passes data through a learned model whose internals you cannot inspect step-by-step. Debugging shifts from breakpoints to interpretation tools (saliency maps, attention viz)."
 consequence:
   narrative: "The dashboard shows live classifications. Green for normal, amber for anomalous. The crew watches as signals stream in."
-  nextLessonTeaser: "Next: comparing runtimes — is TF.js the only option?"
 hints:
   - level: nudge
     content: "Treat each signal reading as an event — preprocess, predict, display"
@@ -45,7 +44,7 @@ Signal feed is connected. Every second, a new reading arrives: three values. I f
 And what happens to the tensors you create every second? If you don't dispose them, you'll leak memory until the tab crashes. This is not a lab experiment anymore.
 </Dialogue>
 
-You've built this exact pattern hundreds of times: an event fires, your handler processes the data, and the UI updates. ML inference in the browser is the same loop, with one critical addition: **memory management**. Tensors are GPU resources. If you don't clean them up, you'll leak memory until the tab crashes.
+One reading per second sounds gentle until you do the multiplication: 86,400 predictions a day, each allocating fresh tensors on the GPU. The loop itself is the event-handler pattern — event fires, handler processes, UI updates — with one critical addition that no garbage collector will save you from: **memory management**. Leak two tensors per reading and the dashboard is dead before the next shift change.
 
 <LearningObjectives objectives={["Build a real-time inference pipeline: input → preprocess → predict → display", "Use tf.tidy() for automatic tensor cleanup — preventing GPU memory leaks", "Preprocess raw input data to match model training format", "Measure and optimize inference latency for real-time requirements"]} />
 
@@ -185,10 +184,22 @@ Build a complete inference pipeline with preprocessing and memory management.
 
 <Quiz
   question="Why call await tensor.data() instead of tensor.dataSync()?"
-  options={[{"text":"data() is faster"},{"text":"dataSync() blocks the main thread; data() yields, keeping UI responsive — correct"},{"text":"data() returns better precision"},{"text":"dataSync() doesn't work in workers"}]}
+  options={[{"text":"data() is faster"},{"text":"dataSync() blocks the main thread; data() yields, keeping UI responsive"},{"text":"data() returns better precision"},{"text":"dataSync() doesn't work in workers"}]}
   correct={1}
   explanation="dataSync() is synchronous — blocks JS execution until tensor data is read back from GPU. data() returns a Promise — yields control, lets UI/RAF callbacks run. For inference loops, always prefer await data()."
   tier="intuition"
 />
 
 <KeyTakeaways takeaways={["Each reading is min-max normalized with the training-time feature ranges before model.predict() — mismatched preprocessing silently wrecks accuracy", "tf.tidy() is essential — it auto-disposes intermediate tensors, preventing GPU memory leaks", "Always preprocess input to match training format — normalize values to the same ranges used during training", "tf.memory() lets you monitor tensor count and memory usage, like the DevTools memory tab"]} />
+
+<Epilogue>
+
+The live pipeline clears its first hour without a leak: `numTensors` flat, latency holding at 3.4 ms. Then Demir replays the eleven-day archive through it as a soak test, and at 14:31 ship-time the feed flickers amber — one flag in twenty-eight thousand readings. The ID on the screen is sample 7741. Farah's calibration ghost, the one she filed and moved past, now glowing on the bridge dashboard where the whole crew can see it.
+
+<Dialogue speaker="Dr. Farah">
+It looks different on a screen than in a spreadsheet, doesn't it.
+</Dialogue>
+
+Confidence: 0.518. The model cannot make up its mind about that reading either.
+
+</Epilogue>

@@ -4,7 +4,7 @@ title: "The Forward Pass"
 moduleId: neural-networks
 themeId: deep-orbit
 order: 4
-estimatedMinutes: 25
+estimatedMinutes: 14
 difficulty: intermediate
 context:
   narrative: "The network architecture is ready. Dr. Farah feeds the first batch of signal data through the system."
@@ -19,7 +19,6 @@ concept:
     breaks: "DOM events bubble up; data flows down through layers. Event handlers run independently and can stop propagation; layer outputs are summed and multiplied through learned weights and cannot be stopped. The 'propagation' word matches; the data direction and combinator do not."
 consequence:
   narrative: "The first predictions emerge — rough, untrained, but the pipeline works. The network needs training."
-  nextLessonTeaser: "Next: putting it all together to build a complete network"
 hints:
   - level: nudge
     content: "model.predict() runs the forward pass"
@@ -36,14 +35,16 @@ skillAxes: [model_arch]
 ---
 
 <Dialogue speaker="Dr. Farah">
-The architecture is set. Let's feed data through and see what happens. Even untrained, the forward pass will show us the network's initial state: random weights producing random outputs.
+The architecture is fine. The demo wasn't. Run it again, properly this time — even untrained, the forward pass shows us the network's initial state, and I don't trust a system I haven't watched fail and recover.
 </Dialogue>
 
 <LearningObjectives objectives={["Trace data flow through a neural network layer by layer", "Use model.predict() to run inference", "Understand input and output tensor shapes at each layer", "Debug shape mismatches — the most common neural network error"]} />
 
 ## Data Flows Forward
 
-The forward pass is simple: data enters the first layer, gets transformed, and flows to the next layer until it reaches the output. It's like DOM event propagation, where each handler processes and passes forward.
+`ValueError: expected dense_Dense1_input to have shape [null,3] but got array with shape [3]`. That was the bridge display at 0940 this morning, four minutes into the demo slot Nazari had cleared, with Commander Mirza standing behind the console. Demir's reasoning was pure DOM: an event handler receives one event object, so `predict()` should receive one reading — he fed it a flat tensor of three values. Mirza left at minute four. Demir needed eleven more to find the missing batch dimension.
+
+The forward pass itself is the simple part: data enters the first layer, gets transformed, and flows on until it reaches the output. The part that bit Demir is the shapes.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -70,7 +71,11 @@ console.log(prediction.dataSync()); // ~0.5 (random, untrained)
 // Output:  [1, 1]  → probability of anomaly`}
 </CodeBlock>
 
-The most common error in ML is shape mismatches. If your input shape doesn't match `inputShape`, you'll get an error, just like passing the wrong prop type to a React component.
+Every input carries a batch dimension, even a batch of one: `[1, 3]`, not `[3]`. The network is built to process stacked readings in parallel, and a single reading is a stack of height one. Shape mismatches are the most common error in ML — and unlike a wrong prop, they fail loudly, at the worst possible moment.
+
+<Dialogue speaker="Ensign Demir">
+Events arrive one at a time. Tensors arrive in stacks. I owe Nazari a demo slot.
+</Dialogue>
 
 ## Challenge
 
@@ -82,10 +87,16 @@ Run a forward pass through the signal classifier.
 
 <Quiz
   question="Your model expects input shape [null, 8] but you pass a tensor of shape [8]. What happens?"
-  options={[{"text":"It works — TFJS auto-batches"},{"text":"Shape mismatch error: missing batch dimension — correct"},{"text":"It silently produces wrong predictions"},{"text":"It produces a NaN output"}]}
+  options={[{"text":"It works — TFJS auto-batches"},{"text":"Shape mismatch error: missing batch dimension"},{"text":"It silently produces wrong predictions"},{"text":"It produces a NaN output"}]}
   correct={1}
   explanation="The first dimension is the batch axis. A single sample of 8 features must be passed as shape [1, 8]: `tensor.reshape([1, 8])` or `tensor.expandDims(0)`."
   tier="intuition"
 />
 
 <KeyTakeaways takeaways={["Forward pass = data flows through layers, each transforming it", "model.predict() runs inference — input in, prediction out", "Shape flows: [batch, inputFeatures] → ... → [batch, outputFeatures]", "Shape mismatches are the #1 neural network debugging issue"]} />
+
+<Epilogue>
+
+2150. Demir reruns the demo for an audience of nobody, batch dimension in place. Predictions crawl across the screen — 0.49, 0.53, 0.51 — random weights shrugging at real telemetry. He watches the meaningless numbers longer than he means to, because these are the last days they stay meaningless, and he wants to remember exactly what the network looked like when it knew nothing.
+
+</Epilogue>

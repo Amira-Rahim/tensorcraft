@@ -4,7 +4,7 @@ title: "Understanding Tensor Shapes"
 moduleId: foundations
 themeId: deep-orbit
 order: 2
-estimatedMinutes: 20
+estimatedMinutes: 10
 difficulty: beginner
 context:
   narrative: "Dr. Farah analyzes the dimensional structure of the incoming data."
@@ -18,7 +18,7 @@ concept:
     tier: structural
     breaks: "`Array.length` returns one number for a 1D structure. `Tensor.shape` returns an array of dimensions (`[batch, features]`, `[batch, h, w, channels]`, etc) and the rank itself can vary. Reading shape is multi-dimensional; broadcasting rules depend on the full shape vector, not a single length."
 consequence:
-  narrative: "The data dimensions are now clear — a 3D tensor of sensor readings."
+  narrative: "The data dimensions are now clear — sensor readings across 64 channels."
 hints:
   - level: nudge
     content: "Count the nesting levels of your array"
@@ -30,22 +30,27 @@ keywords:
   - shape
   - dimensions
   - rank
+  - row-major
 skillAxes: [data_prep]
 ---
 
 <Dialogue speaker="Dr. Farah">
-The data stream has structure. I can see repeating patterns at different scales. We need to understand its dimensional layout before we can analyze it.
+The stream isn't a wall of numbers — it has structure. Repeating patterns at different scales. Before we analyze anything, I want to know its dimensional layout.
 </Dialogue>
 
 Every tensor has a **shape**: a tuple of numbers describing how many elements exist along each dimension. If you've ever checked `array.length` or calculated `rows × cols` for a grid layout, you already think in shapes.
 
-<LearningObjectives objectives={["Read and interpret tensor shapes", "Understand the relationship between shape and data layout", "Reshape tensors without changing their data", "Recognize common shapes in ML (batches, sequences, images)"]} />
+<LearningObjectives objectives={["Read and interpret tensor shapes", "Understand row-major order — where each value lands after a reshape", "Reshape tensors without changing their data", "Recognize common shapes in ML (batches, sequences, images)"]} />
 
 ## Shapes You Already Know
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 In frontend development, you work with shapes constantly. A responsive grid with 3 rows and 4 columns? That's shape `[3, 4]`. A list of 10 user cards? Shape `[10]`. A batch of 32 RGB images at 224×224 pixels? Shape `[32, 224, 224, 3]`.
+
+## Where Does Each Value Land?
+
+Here's the question that actually trips people up — not what the new shape *is*, but which value ends up *where*. The answer: tensors fill **row by row** (row-major order). Watch the values, not just the shapes:
 
 <CodeBlock language="typescript" title="tensor-shapes.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -54,19 +59,31 @@ In frontend development, you work with shapes constantly. A responsive grid with
 const flat = tf.tensor([1, 2, 3, 4, 5, 6]);
 console.log(flat.shape);  // [6]
 
-// Reshape to [2, 3] — same data, different layout
+// Reshape to [2, 3] — fills row by row
 const matrix = flat.reshape([2, 3]);
-console.log(matrix.shape);  // [2, 3]
+matrix.print();
+// [[1, 2, 3],
+//  [4, 5, 6]]
 
-// Reshape to [3, 2] — still the same 6 numbers
+// Reshape to [3, 2] — SAME flat order, different row breaks
 const tall = flat.reshape([3, 2]);
-console.log(tall.shape);  // [3, 2]
+tall.print();
+// [[1, 2],
+//  [3, 4],
+//  [5, 6]]
+
+// Note what did NOT happen: [3, 2] is not the transpose of [2, 3].
+// matrix.transpose() would give [[1, 4], [2, 5], [3, 6]] — different
+// values in different places. Reshape rewraps the line; transpose
+// reorders it.
 
 // The total elements must match: 2*3 = 3*2 = 6
 // This would throw: flat.reshape([2, 4]) — 2*4=8 ≠ 6`}
 </CodeBlock>
 
-The golden rule: **reshaping never changes the data, only how it's organized**. CSS Grid does the same thing, arranging identical child elements as 2×3 or 3×2 with one change to `grid-template-columns`.
+The golden rule: **reshaping never changes the data or its order — only where the line breaks fall.** The memory stays one flat sequence, exactly like the `Float32Array` from lesson 1; shape is just the reading instructions.
+
+One honesty note on the grid analogy: CSS Grid *reflows* — change `grid-template-columns` and items visually rearrange to fill the new tracks. Reshape never rearranges. If you remember one thing, remember that reshape is line-wrapping, not layout.
 
 ## Challenge
 
@@ -78,10 +95,22 @@ Reshape a flat tensor into a matrix.
 
 <Quiz
   question="If a tensor has shape `[8, 224, 224, 3]`, what does each dimension represent for a typical image batch?"
-  options={[{"text":"[batch, height, width, channels] — correct"},{"text":"[channels, height, width, batch]"},{"text":"[height, width, batch, channels]"},{"text":"[batch, channels, height, width] (PyTorch style)"}]}
+  options={[{"text":"[batch, height, width, channels]"},{"text":"[channels, height, width, batch]"},{"text":"[height, width, batch, channels]"},{"text":"[batch, channels, height, width] (PyTorch style)"}]}
   correct={0}
   explanation="TensorFlow uses NHWC (batch, height, width, channels) by default. PyTorch uses NCHW. Knowing the convention matters when porting models."
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Shape is a tuple describing the size of each tensor dimension", "Reshaping rearranges data layout without changing values", "Total elements must match: product of old shape = product of new shape", "Common ML shapes: [batch, height, width, channels] for images"]} />
+<KeyTakeaways takeaways={["Shape is a tuple describing the size of each tensor dimension", "Reshape fills row-major: same flat order, new line breaks — it is NOT a transpose", "Total elements must match: product of old shape = product of new shape", "Common ML shapes: [batch, height, width, channels] for images"]} />
+
+<Epilogue>
+
+Farah reshapes the first hour of the stream every way the element count allows. Most layouts are mush. Then `[450, 64]` — and the mush snaps into stripes. Four hundred fifty rows, sixty-four columns, and down every column a slow, regular swell, like something breathing.
+
+<Dialogue speaker="Dr. Farah">
+Sixty-four channels. Whatever sent this packed its data the way we pack ours.
+</Dialogue>
+
+A structure that deliberate doesn't happen by accident. Next: doing math on it.
+
+</Epilogue>

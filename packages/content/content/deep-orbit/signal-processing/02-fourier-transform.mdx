@@ -4,7 +4,7 @@ title: "Fourier Transform"
 moduleId: signal-processing
 themeId: deep-orbit
 order: 2
-estimatedMinutes: 30
+estimatedMinutes: 15
 difficulty: intermediate
 context:
   narrative: "Dr. Farah introduces the mathematical tool that converts between time and frequency: the Fourier Transform. 'Think of a chord — the FFT tells you which individual notes make it up.'"
@@ -20,7 +20,6 @@ concept:
     breaks: "@keyframes decompose animation into authored timeline steps. FFT decomposes a signal into a fixed mathematical basis of sinusoids (e^(-2πikn/N) for k = 0..N-1) and returns complex-valued coefficients (magnitude + phase). The basis is universal and not learned from data — the same N sinusoids decompose every signal."
 consequence:
   narrative: "The FFT output confirms Farah's suspicion — a sharp peak at 73.4 Hz that has no natural explanation. 'That is not stellar background,' she says quietly."
-  nextLessonTeaser: "Next: visualizing frequency content over time with spectrograms"
 hints:
   - level: nudge
     content: "FFT converts a time-domain array into frequency magnitudes — like decomposing an animation into its keyframe steps"
@@ -208,3 +207,15 @@ A signal is fully reconstructible from its DFT: no information is lost.
 </DerivationDrawer>
 
 <KeyTakeaways takeaways={["Peaks only count against a noise floor: DEEP SCAN flags bins above 5x the average magnitude, then checks them against known natural frequencies", "Each frequency bin = binIndex × (sampleRate / fftSize) Hz — a simple linear mapping", "The Nyquist frequency (sampleRate / 2) is the highest detectable frequency — like a resolution limit", "For DEEP SCAN, the FFT reveals an anomalous 73.4 Hz component hidden in the time-domain noise"]} />
+
+<Epilogue>
+
+The overnight transform finishes at 0612, and the lab display redraws itself as four clean peaks: 5, 12, 23, 47 Hz. Stellar background, textbook, exactly what eleven days of noise should look like. Demir is already reaching for the log entry when Farah catches his wrist — there is a fifth peak. It stands at 73.4 Hz, magnitude 3.2, a frequency that matches nothing in the catalog; she checks the catalog twice, then a third time, and the peak does not move.
+
+<Dialogue speaker="Dr. Farah">
+That is not stellar background.
+</Dialogue>
+
+She says it quietly, the way people say things they have already triple-checked. Demir runs the same transform on archive sample 7741 — her "calibration ghost" from the normalization sweep — and the 73.4 Hz peak is sitting in it, eleven days old, filed under equipment error the whole time.
+
+</Epilogue>

@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "E2E tests assert exact behaviors that pass or fail — green build means safe to ship. Model evaluation reports continuous metrics (accuracy, precision, recall) over a held-out set, and good aggregate metrics routinely hide failure modes on production-distribution subgroups. Sliced eval (per-class, per-cohort, per-feature-bin) is required before production."
 consequence:
-  narrative: "DEEP SCAN achieves 94% accuracy on unseen signals. Commander Mirza authorizes deployment. Module complete — five lessons from loss function to deployed evaluation."
+  narrative: "DEEP SCAN achieves 94% accuracy on unseen signals. Commander Mirza authorizes deployment — but one archived sample refuses to pick a side."
 hints:
   - level: nudge
     content: "Use model.evaluate() on data the model has never seen"
@@ -65,7 +65,7 @@ console.log('Test Accuracy:', (testAccuracy.dataSync()[0] * 100).toFixed(1) + '%
 const newSignals = tf.tensor2d([
   [0.9, 0.1, 0.8],   // possibly anomalous
   [0.1, 0.9, 0.2],   // probably normal
-  [0.5, 0.5, 0.5],   // ambiguous
+  [0.5, 0.5, 0.5],   // archive sample 7741 — Farah's calibration ghost
 ]);
 
 const predictions = model.predict(newSignals) as tf.Tensor;
@@ -75,7 +75,7 @@ results.forEach((prob, i) => {
 });
 // Signal 1: 87.3% anomalous
 // Signal 2: 12.1% anomalous
-// Signal 3: 51.8% anomalous`}
+// Signal 3: 51.8% anomalous  ← sample 7741. Neither normal nor alarm.`}
 </CodeBlock>
 
 **Interpreting results:**
@@ -107,10 +107,20 @@ Evaluate DEEP SCAN on unseen signal data and make predictions.
 
 <Quiz
   question="A model has 95% training accuracy and 60% test accuracy. What's the diagnosis?"
-  options={[{"text":"Underfitting — model is too simple"},{"text":"Overfitting — model memorized training data — correct"},{"text":"Data leakage"},{"text":"Wrong loss function"}]}
+  options={[{"text":"Underfitting — model is too simple"},{"text":"Overfitting — model memorized training data"},{"text":"Data leakage"},{"text":"Wrong loss function"}]}
   correct={1}
   explanation="Large gap between train and test accuracy is the signature of overfitting. Fixes: more training data, regularization (dropout, L2), reduced model capacity, or early stopping. Underfitting shows as both accuracies being low."
   tier="structural"
 />
 
 <KeyTakeaways takeaways={["model.evaluate() tests on unseen data — the true measure of performance", "Training accuracy ≠ real-world accuracy — always test on held-out data", "Overfitting: train acc high, test acc low. Underfitting: both low.", "model.predict() makes predictions on new data — your model is deployed!"]} />
+
+<Epilogue>
+
+Deployment authorized, the bridge gone quiet, Farah stays behind with the one number that won't leave her alone. Signal 3: 51.8% anomalous. Not normal enough to dismiss, not anomalous enough to alarm — a network that just scored 94% on everything else, refusing to commit. She traces the reading back through the archive index, and the ID stops her cold: sample 7741. The calibration ghost. The one she flagged before they had ever built a network, and told Demir to move on from, and didn't delete.
+
+<Dialogue speaker="Dr. Farah">
+Ninety-four percent accurate, and the one reading it can't decide on is the one I couldn't explain by hand. What are you?
+</Dialogue>
+
+</Epilogue>

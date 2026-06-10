@@ -211,7 +211,7 @@ for d in 1..latent_dim:
 
 <Quiz
   question="What does increasing β in β-VAE do?"
-  options={[{"text":"Makes encoder + decoder bigger"},{"text":"Tighter encoder (closer to N(0,I)) → better disentanglement, worse reconstruction — correct"},{"text":"Speeds up training"},{"text":"Reduces latent dimension"}]}
+  options={[{"text":"Makes encoder + decoder bigger"},{"text":"Tighter encoder (closer to N(0,I)) → better disentanglement, worse reconstruction"},{"text":"Speeds up training"},{"text":"Reduces latent dimension"}]}
   correct={1}
   explanation="L = recon + β · KL. Higher β forces the encoder distribution closer to the prior, reducing per-sample variance. Often improves disentanglement (each dim captures one factor) but loses reconstruction fidelity. Tradeoff is empirical and dataset-dependent."
   tier="structural"

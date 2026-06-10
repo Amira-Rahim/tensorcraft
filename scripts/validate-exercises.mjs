@@ -2331,6 +2331,21 @@ async function main() {
       continue;
     }
 
+    // 3. Grader strength: a test suite whose every assertion is
+    //    existence-only (toBeDefined/toBeTruthy) passes for ANY code that
+    //    declares the right variable names — it grades nothing. Fail loudly
+    //    so weak suites can't ship.
+    const strongAssertion =
+      /toBeCloseTo|toEqual|toBe\(|toHaveLength|toMatch|toBeGreaterThan|toBeLessThan|toContain|toBeInstanceOf|arrayContaining/i;
+    if (!strongAssertion.test(ex.testCode ?? "")) {
+      record(
+        ex,
+        "weak-grader",
+        "testCode contains no value-level assertions (existence checks only)",
+      );
+      continue;
+    }
+
     passed++;
     console.log(`  OK    ${label} (${run.results.length} tests)`);
   }

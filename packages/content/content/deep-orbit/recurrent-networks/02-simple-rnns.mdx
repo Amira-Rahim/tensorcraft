@@ -4,7 +4,7 @@ title: "Simple RNNs"
 moduleId: recurrent-networks
 themeId: deep-orbit
 order: 2
-estimatedMinutes: 30
+estimatedMinutes: 15
 difficulty: intermediate
 context:
   narrative: "Demir builds his first recurrent neural network — a network that maintains hidden state between time steps, processing the signal as a sequence rather than isolated snapshots."
@@ -20,7 +20,6 @@ concept:
     breaks: "useReducer is a deterministic pure function you wrote. RNN cells learn the reducer logic from data, carry hidden state across timesteps, and the same input produces different outputs depending on what came before. The 'reducer' is opaque and trained, not authored."
 consequence:
   narrative: "The RNN detects short-range patterns — it notices the signal rises before each anomalous burst. But longer patterns slip away."
-  nextLessonTeaser: "Next: LSTM gates — solving the vanishing gradient problem with selective memory"
 hints:
   - level: nudge
     content: "An RNN cell is just a function: (prevState, newInput) → newState"
@@ -42,7 +41,7 @@ So an RNN is just... a reducer? It takes the previous hidden state and the new i
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-Close, with one correction. Your reducer is a pure function you wrote. Same state, same action, same result, and you can read the logic. This one is learned from data. Nobody authored the transition function; the weights are the function. And the same input produces different outputs depending on everything that came before. The hidden state is the network's memory.
+The shape is right; the guarantees are gone. Your reducer is a pure function you wrote. Same state, same action, same result, and you can read the logic. This one is learned from data. Nobody authored the transition function; the weights are the function. And the same input produces different outputs depending on everything that came before. The hidden state is the network's memory.
 </Dialogue>
 
 The cell itself is small: a weight matrix for the previous hidden state, a weight matrix for the input, a bias, a `tanh`. What makes it recurrent is the wiring: the output loops back in as the hidden state at the next time step.
@@ -155,10 +154,22 @@ Build a simple RNN that processes sequential signal data.
 
 <Quiz
   question="An RNN sequence-to-sequence model is trained to translate sentences. At inference time you feed the encoder a 100-word input. The decoder outputs sequentially. Which is true about the decoder's inputs at step t > 0?"
-  options={[{"text":"The decoder sees the FULL ground-truth target sequence at each step"},{"text":"The decoder is fed its OWN previous output token (or top-k beam candidate) — at inference there's no ground truth, so generation is autoregressive — correct"},{"text":"The decoder takes the encoder's hidden state directly with no per-step input"},{"text":"The decoder uses random sampling at every step"}]}
+  options={[{"text":"The decoder sees the FULL ground-truth target sequence at each step"},{"text":"The decoder is fed its OWN previous output token (or top-k beam candidate) — at inference there's no ground truth, so generation is autoregressive"},{"text":"The decoder takes the encoder's hidden state directly with no per-step input"},{"text":"The decoder uses random sampling at every step"}]}
   correct={1}
   explanation="At training time, teacher forcing feeds ground-truth previous tokens. At inference time, ground truth doesn't exist — the decoder feeds its own emitted token (or beam-search candidate) back as input. This causes 'exposure bias': errors compound because the model wasn't trained on its own mistaken outputs."
   tier="structural"
 />
 
 <KeyTakeaways takeaways={["DEEP SCAN's anomaly repeats every ~73 seconds — at 1 sample/second that's a 73-step dependency, beyond a simple RNN's reach", "Hidden state carries memory across time steps — the network remembers what it has seen", "returnSequences: true gives output at every step; false gives only the final hidden state", "Simple RNNs suffer from vanishing gradients — they forget long-range patterns after ~10-20 steps"]} />
+
+<Epilogue>
+
+Demir queues the run before he leaves: the simple RNN on 80-step windows, long enough to span one full pulse interval. A reducer holds state, he figures, so catching the pattern is just a matter of epochs. At 0640 he checks the log: six hours, two hundred epochs, loss pinned at 0.693 since the first hour. The network is flipping a coin.
+
+<Dialogue speaker="Chief Nazari">
+Six hours of compute to learn nothing. The next overnight run gets cleared through me, with a number attached for what it costs if it fails.
+</Dialogue>
+
+The gradients die out around step twenty. The pattern lives at step seventy-three.
+
+</Epilogue>

@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "Canvas WebGL renders pixels via fragment shaders for display. WebGPU compute shaders run general-purpose tensor math (matmul, conv) for inference — different shading language, different memory model, different driver maturity. Browser support is far narrower than WebGL."
 consequence:
-  narrative: "WebGPU cuts inference from 15ms to 5ms. DEEP SCAN is production-ready."
-  nextLessonTeaser: "Module 11: the capstone — deploying the complete DEEP SCAN system"
+  narrative: "WebGPU cuts inference from 15ms to 5ms. The optimization stack is complete — and the 2.4% it cost stays paid."
 hints:
   - level: nudge
     content: "WebGPU is the successor to WebGL — designed for compute workloads, not just graphics"
@@ -42,6 +41,10 @@ WebGL was designed for rendering triangles, not multiplying matrices. WebGPU is 
 
 <Dialogue speaker="Ensign Demir">
 So WebGPU is to WebGL what Web Workers are to the main thread: purpose-built for the actual workload instead of shoehorning into a different API?
+</Dialogue>
+
+<Dialogue speaker="Dr. Farah">
+That analogy survives about one paragraph of scrutiny. Web Workers keep the language and memory model you already trust; WebGPU replaces both — new shader language, new memory semantics, drivers you don't control. Trust the shape of the win. Don't trust the cost of entry.
 </Dialogue>
 
 WebGL was designed for 3D graphics. ML inference works on it, but it's like using `<canvas>` to render a spreadsheet. WebGPU is designed for general-purpose GPU compute: matrix multiplications, parallel reductions, and the tensor operations that ML inference actually needs.
@@ -109,10 +112,12 @@ console.log('Result:');
 console.log('  Size:     340 MB → 42 MB (8x smaller)');
 console.log('  Speed:    45ms → 5ms (9x faster)');
 console.log('  Accuracy: 94.2% → 91.8% (2.4% loss)');
-console.log('  Fits in dashboard: YES ✓');
-console.log('');
-console.log('Nazari: "Not bad, for a frontend dev."');`}
+console.log('  Fits in dashboard: YES ✓');`}
 </CodeBlock>
+
+<Dialogue speaker="Chief Nazari">
+Read that last block like an invoice, not a scoreboard. 42 megabytes and 5 milliseconds, paid for with 2.4 points of accuracy that stay paid on every classification until someone retrains. It's good work, Ensign. That's the whole sentence.
+</Dialogue>
 
 ## Challenge
 
@@ -124,10 +129,22 @@ Set up the best available GPU backend and benchmark inference speed.
 
 <Quiz
   question="When does WebGPU outperform WebGL for ML inference?"
-  options={[{"text":"Always — WebGPU is newer"},{"text":"Compute-heavy ops (matmul, conv) where WebGPU's compute shaders avoid graphics-pipeline overhead — correct"},{"text":"When the model is small (under 10MB)"},{"text":"Only on Chrome desktop"}]}
+  options={[{"text":"Always — WebGPU is newer"},{"text":"Compute-heavy ops (matmul, conv) where WebGPU's compute shaders avoid graphics-pipeline overhead"},{"text":"When the model is small (under 10MB)"},{"text":"Only on Chrome desktop"}]}
   correct={1}
   explanation="WebGL repurposes graphics pipeline for compute via fragment shaders — overhead per op. WebGPU has dedicated compute shaders + better memory model. For matmul-heavy workloads (transformers, large CNNs), WebGPU is 2-5× faster. For small models, the setup cost dominates and there's no win."
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["WebGPU provides 2-3x speedup over WebGL for ML inference — designed for compute, not graphics", "Always implement graceful fallback: WebGPU → WebGL → WASM, like progressive enhancement", "The full optimization stack (quantize + prune + cache + WebGPU) achieves 8x size reduction and 9x speed improvement", "Nazari approves: DEEP SCAN is production-ready at 42 MB and 5ms inference"]} />
+<KeyTakeaways takeaways={["WebGPU provides 2-3x speedup over WebGL for ML inference — designed for compute, not graphics", "Always implement graceful fallback: WebGPU → WebGL → WASM, like progressive enhancement", "The full optimization stack (quantize + prune + cache + WebGPU) achieves 8x size reduction and 9x speed improvement", "DEEP SCAN ships at 42 MB and 5ms — and the 2.4% accuracy cost stays on the books until the next retrain"]} />
+
+<Epilogue>
+
+They run the rehearsal at 0247 on purpose. Full telemetry suite, live feeds, and the 42 MB build loading on the bridge dashboard where its predecessor died four nights ago. The first load comes up on WebGL at 15 milliseconds — the dashboard's GPU is hiding behind a disabled flag, and Demir spends twenty minutes finding it before the second load lands on WebGPU at 5. The dashboard holds. The capture from that night is still gone, and stays gone; the rehearsal only proves the next one doesn't have to be.
+
+<Dialogue speaker="Commander Mirza">
+The relay slot opens in fifteen days. Can you assemble the rest of the system in fourteen?
+</Dialogue>
+
+On the live feed behind him the pulse arrives, then arrives again, 47.9 seconds apart. Nobody in the room says what they're all thinking, which is that it used to be 73.4.
+
+</Epilogue>

@@ -1,11 +1,24 @@
 slug: create-a-tensor
 lessonSlug: introduction-to-tensors
-title: "Create a Tensor"
-instructions: "Create a 1D tensor containing the values [1, 2, 3, 4, 5] using TensorFlow.js."
-starterCode: "// Create a tensor with values 1 through 5\nconst tensor = null; // your code here"
-solutionCode: "const tensor = tf.tensor([1, 2, 3, 4, 5]);"
-testCode: "describe('Tensor', () => { it('exists', () => { expect(tensor).toBeDefined(); }); it('has correct shape', () => { expect(tensor.shape).toEqual([5]); }); it('has correct values', () => { expect(Array.from(tensor.dataSync())).toEqual([1, 2, 3, 4, 5]); }); });"
-estimatedMinutes: 10
+title: "First Contact: Tensor In, Memory Clean"
+instructions: "The first five readings from the Sector 7-G stream are [0.12, 0.94, 0.31, 0.88, 0.47]. Do three things: (1) create a 1D tensor `reading` from those values, (2) capture its shape into `shape` and its values into `values` (a plain JS array — remember dataSync()), (3) dispose the tensor when you're done with it. The GC won't clean GPU memory for you — prove you can."
+starterCode: "const streamValues = [0.12, 0.94, 0.31, 0.88, 0.47];\n\n// 1. Create the tensor\nconst reading = null; // your code here\n\n// 2. Capture shape and values BEFORE disposing\nconst shape = null;\nconst values = null;\n\n// 3. Release the GPU memory\n"
+solutionCode: "const streamValues = [0.12, 0.94, 0.31, 0.88, 0.47];\n\nconst reading = tf.tensor(streamValues);\n\nconst shape = reading.shape;\nconst values = Array.from(reading.dataSync());\n\nreading.dispose();"
+testCode: |
+  describe('First Contact', () => {
+    it('captured the correct shape', () => {
+      expect(shape).toEqual([5]);
+    });
+    it('captured the correct values', () => {
+      expect(values.length).toBe(5);
+      expect(values[0]).toBeCloseTo(0.12, 5);
+      expect(values[4]).toBeCloseTo(0.47, 5);
+    });
+    it('disposed the tensor — no GPU leak', () => {
+      expect(reading.isDisposed).toBe(true);
+    });
+  });
+estimatedMinutes: 6
 difficulty: beginner
 mlContent: data
 skillAxis: data_prep

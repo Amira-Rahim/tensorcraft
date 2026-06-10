@@ -135,7 +135,7 @@ Build a scene analysis function that detects contextual events from a segmentati
 
 <Quiz
   question="Difference between semantic and instance segmentation?"
-  options={[{"text":"Semantic is faster"},{"text":"Semantic: per-pixel class. Instance: per-pixel class + which instance of that class — correct"},{"text":"Instance only handles people"},{"text":"Semantic uses CNN, instance uses transformer"}]}
+  options={[{"text":"Semantic is faster"},{"text":"Semantic: per-pixel class. Instance: per-pixel class + which instance of that class"},{"text":"Instance only handles people"},{"text":"Semantic uses CNN, instance uses transformer"}]}
   correct={1}
   explanation="Semantic: 'all cat pixels'. Instance: 'cat #1 pixels vs cat #2 pixels'. Instance is harder — model must distinguish overlapping objects of the same class. Panoptic segmentation combines both."
   tier="structural"

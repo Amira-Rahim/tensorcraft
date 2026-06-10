@@ -4,7 +4,7 @@ title: "Backpropagation"
 moduleId: training-loop
 themeId: deep-orbit
 order: 3
-estimatedMinutes: 30
+estimatedMinutes: 16
 difficulty: intermediate
 context:
   narrative: "Gradient descent works for a single weight, but the network has hundreds. ARIA needs an efficient way to compute all gradients at once."
@@ -18,7 +18,6 @@ concept:
     tier: intuition
 consequence:
   narrative: "Backpropagation efficiently computes all 673 gradients in a single backward pass. The training engine is ready."
-  nextLessonTeaser: "Next: putting it all together in the training loop"
 hints:
   - level: nudge
     content: "Backprop uses the chain rule to propagate gradients backwards"
@@ -103,10 +102,20 @@ Each factor is local to one layer. `tf.variableGrads()` builds the computational
 
 <Quiz
   question="What does tf.variableGrads() return?"
-  options={[{"text":"The loss value only"},{"text":"{ value: loss, grads: { var1: tensor, var2: tensor, ... } } — correct"},{"text":"The updated weights"},{"text":"A new optimizer instance"}]}
+  options={[{"text":"The loss value only"},{"text":"{ value: loss, grads: { var1: tensor, var2: tensor, ... } }"},{"text":"The updated weights"},{"text":"A new optimizer instance"}]}
   correct={1}
   explanation="tf.variableGrads(fn) runs fn() in a recording context, returns the loss value AND a dict of gradients keyed by variable name. You then use the grads to update weights via an optimizer or manual subtraction."
   tier="structural"
 />
 
 <KeyTakeaways takeaways={["Backpropagation computes all gradients in one backward pass", "It works by applying the chain rule from output to input", "tf.variableGrads() handles it automatically — you define forward, it computes backward", "This made deep learning practical — efficient gradient computation for millions of parameters"]} />
+
+<Epilogue>
+
+Nazari times it herself, stopwatch against the console, because she doesn't trust benchmarks she didn't run. One backward pass: 11 milliseconds, all 673 gradients. Then she makes Demir run it the naive way — 673 separate forward passes, one nudged weight at a time — and stands there for the full 27 seconds, arms folded, watching the waste accumulate.
+
+<Dialogue speaker="Chief Nazari">
+Twenty-seven seconds against eleven milliseconds, a few thousand times per training run. That's the difference between an answer by morning and an answer next month. Use the eleven.
+</Dialogue>
+
+</Epilogue>

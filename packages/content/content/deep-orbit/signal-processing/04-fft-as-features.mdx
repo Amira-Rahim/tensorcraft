@@ -4,7 +4,7 @@ title: "FFT as Features"
 moduleId: signal-processing
 themeId: deep-orbit
 order: 4
-estimatedMinutes: 30
+estimatedMinutes: 15
 difficulty: advanced
 context:
   narrative: "Demir feeds FFT magnitudes into the classifier as additional features. Accuracy jumps from 78% to 87%. Farah smiles — 'The frequency domain is where the real information lives.'"
@@ -19,7 +19,6 @@ concept:
     tier: structural
 consequence:
   narrative: "DEEP SCAN 2.0 classifies with 87% accuracy. The frequency features reveal patterns the raw signal alone could never show."
-  nextLessonTeaser: "Next: windowing functions — preventing artifacts in the FFT"
 hints:
   - level: nudge
     content: "tf.abs(tf.spectral.rfft(signal)) carries the same information as the raw samples, reorganized into a form the classifier separates more easily"
@@ -40,7 +39,7 @@ What if we feed the FFT magnitudes directly into the model? Instead of just raw 
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-Feature engineering: deriving new inputs from raw data. This is exactly how I improved the signal analyzer on the Kepler mission. The raw data tells the model *what happened*. The FFT tells it *what patterns are present*. Together, the model sees the full picture.
+Feature engineering: deriving new inputs from raw data. I used it to rebuild the signal analyzer on the Kepler mission. One correction, though — you said "more information." The FFT adds no information; the samples already contain everything it computes. What it adds is access. The model no longer has to discover the frequency basis on its own, and I trust a model more when I know which part of the work I did for it.
 </Dialogue>
 
 You do this in React all the time. Raw props come in, but you compute derived values (sorted lists, filtered arrays, aggregated counts) because the derived form is more useful for rendering. Feature engineering is the same idea: you transform raw data into forms that make the model's job easier.
@@ -182,3 +181,15 @@ Extract FFT features from a signal and combine them with raw features.
 <Exercise slug="fft-features" />
 
 <KeyTakeaways takeaways={["The upgraded input is 11 features wide: 3 raw values plus the top 8 FFT magnitude bins from a 64-sample window", "FFT magnitudes capture frequency patterns invisible in the time domain, boosting accuracy from 78% to 87%", "Always normalize features to the same scale — otherwise the model overweights large-valued features", "Save normalization statistics from training data and reuse them during inference for consistency"]} />
+
+<Epilogue>
+
+Nazari reads the before-and-after the only way she reads anything. Seventy-eight to eighty-seven percent means roughly 2,600 fewer misclassified readings across the eleven-day archive — and by her ledger, about forty fewer hours of somebody chasing them down.
+
+<Dialogue speaker="Chief Nazari">
+Nine points. That is the first idea of yours that has paid for its own investigation time, Ensign. Do not let it become a habit to expect applause.
+</Dialogue>
+
+It goes to his head anyway, briefly. Farah is already sorting the residue — the readings even the frequency features cannot place. Most of them fall within a minute of a 73.4-second pulse, and nobody has an explanation for that yet.
+
+</Epilogue>

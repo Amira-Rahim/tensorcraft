@@ -4,7 +4,7 @@ title: "Sliding Windows"
 moduleId: recurrent-networks
 themeId: deep-orbit
 order: 4
-estimatedMinutes: 25
+estimatedMinutes: 12
 difficulty: intermediate
 context:
   narrative: "Demir needs to feed continuous signal data into the LSTM in fixed-size chunks. He builds a sliding window pipeline — the same pattern as IntersectionObserver watching elements enter and leave the viewport."
@@ -20,7 +20,6 @@ concept:
     breaks: "IntersectionObserver fires a discrete event when an element crosses a threshold. Signal sliding windows shift by a stride parameter (often 1 step) and overlap by a hop parameter — every position produces a new sample. Compute scales with sequence length × overlap ratio, not viewport size."
 consequence:
   narrative: "The sliding window pipeline feeds perfectly shaped data into the LSTM. Demir can now process the continuous signal feed in real time."
-  nextLessonTeaser: "Next: using the LSTM to predict future signal values"
 hints:
   - level: nudge
     content: "A sliding window moves through the signal one step at a time, creating overlapping subsequences"
@@ -125,3 +124,13 @@ Build a sliding window function for sequential data.
 <Exercise slug="sliding-window" />
 
 <KeyTakeaways takeaways={["Each window slice doubles as a training pair: the windowSize values are the input, the value right after them is the label", "Window size determines temporal context — must be larger than the pattern you want to detect", "Stride controls overlap: stride=1 maximizes training data, stride=windowSize gives no overlap", "A ring buffer provides real-time windowing for the streaming dashboard pipeline"]} />
+
+<Epilogue>
+
+The buffer fills at 1422: eighty readings deep, first complete window, first live inference. The dashboard draws the model's output a beat ahead of the incoming trace, and for ten straight minutes the two lines track each other, forecast leading, signal confirming. Demir does not touch anything. He is afraid to.
+
+<Dialogue speaker="Dr. Farah">
+Good. Now ask it something harder than the next second. Ask it when the pattern comes back.
+</Dialogue>
+
+</Epilogue>

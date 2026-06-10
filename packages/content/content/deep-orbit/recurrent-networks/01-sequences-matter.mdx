@@ -4,7 +4,7 @@ title: "Sequences Matter"
 moduleId: recurrent-networks
 themeId: deep-orbit
 order: 1
-estimatedMinutes: 25
+estimatedMinutes: 12
 difficulty: intermediate
 context:
   narrative: "The signals show a rhythm — a pattern that spans dozens of time steps. The feedforward network only sees one snapshot at a time. Farah says they need a model with memory."
@@ -20,7 +20,6 @@ concept:
     breaks: "React list keys identify elements for diffing — order matters for reconciliation but not for the values themselves. In sequences, position is part of the meaning ('not good' vs 'good not') and the model must learn order-dependent patterns, not just track identity."
 consequence:
   narrative: "Demir realizes the feedforward network is blind to temporal patterns. Each reading is processed in isolation — the model has no memory of what came before."
-  nextLessonTeaser: "Next: building a network that remembers — the Simple RNN"
 hints:
   - level: nudge
     content: "Shuffle a keyed React list and the UI breaks because order carried information. Shuffling time-series samples destroys the same thing: the temporal pattern"
@@ -133,3 +132,15 @@ Create time-step sequences from raw signal data.
 <Exercise slug="create-sequences" />
 
 <KeyTakeaways takeaways={["A feedforward network scores rise-fall-rise and fall-rise-rise identically: same values, and it never sees the order", "Feedforward networks process each input independently with no memory of previous inputs", "Sequential input adds a time dimension: shape goes from [batch, features] to [batch, timeSteps, features]", "Sliding windows convert a continuous signal stream into discrete sequences for model input"]} />
+
+<Epilogue>
+
+After the shift, Demir runs one more test. He feeds the classifier an hour of archived stream in order, then again with the readings shuffled into nonsense. The scores come back identical, reading for reading, not a digit of difference. The model never sees order, so destroying it costs nothing.
+
+<Dialogue speaker="Ensign Demir">
+It grades the scrambled signal the same as the real one. Everything we actually care about is in the part it can't see.
+</Dialogue>
+
+On the plot above his console, the rhythm keeps repeating, patient, unread.
+
+</Epilogue>

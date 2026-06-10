@@ -3,10 +3,11 @@ title: "Optimization & Edge"
 themeId: deep-orbit
 order: 10
 description: |
-  Nazari's module. Your model works — now make it fast. The bridge dashboard
-  has 512 MB of RAM and your model is 340 MB. You'll master quantization,
+  Nazari's module — and a penance. At 0247 the 340 MB model crashed the
+  512 MB bridge dashboard during a predicted pulse window; the capture was
+  lost and Earth's relay slot closed without it. You'll master quantization,
   pruning, caching, and WebGPU acceleration to shrink the model to 42 MB
-  with only 2% accuracy loss.
+  with only 2% accuracy loss — so it never happens again.
 lessonCount: 5
 prerequisites:
   - foundations

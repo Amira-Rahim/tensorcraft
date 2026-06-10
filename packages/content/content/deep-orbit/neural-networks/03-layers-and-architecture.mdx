@@ -4,7 +4,7 @@ title: "Layers and Architecture"
 moduleId: neural-networks
 themeId: deep-orbit
 order: 3
-estimatedMinutes: 30
+estimatedMinutes: 15
 difficulty: intermediate
 context:
   narrative: "A single neuron isn't enough. Chief Nazari demands a system that can handle the complexity of deep space signals."
@@ -35,7 +35,7 @@ skillAxes: [model_arch]
 ---
 
 <Dialogue speaker="Chief Nazari">
-One neuron can barely tell signal from noise. We need a system: multiple processing stages, each building on the last. Like how the ship's sensor array feeds through filters, amplifiers, then classifiers.
+One neuron cleared two calibration tones — the live stream is sixty-four channels and you're reading three of them. Last week ARIA's false flags cost me nine crew-hours of investigation. Build me stages, and quote me the parameter count before you quote me anything else.
 </Dialogue>
 
 <LearningObjectives objectives={["Build multi-layer neural networks using tf.sequential()", "Understand how layers compose like React components", "Configure layer sizes (units) and activations", "Visualize data flow through a network"]} />
@@ -90,3 +90,13 @@ Build a 3-layer network for signal classification.
 <Exercise slug="build-layer" />
 
 <KeyTakeaways takeaways={["DEEP SCAN's first network is 3 dense layers: 3 inputs to 16 relu units, then 8, then 1 sigmoid output", "tf.sequential() creates a linear stack of layers", "units = number of neurons in a layer (features it can detect)", "inputShape only needed on the first layer — rest are inferred"]} />
+
+<Epilogue>
+
+Nazari gets her quote: 209 parameters, printed from `model.summary()` and taped to the engineering board next to the duty roster. Demir does the arithmetic in the margin by hand — 64 weights into the first stage, 136 into the second, 9 for the verdict. Everything the ship will ever know about Sector 7-G has to fit inside those numbers.
+
+<Dialogue speaker="Chief Nazari">
+Two hundred nine. I have valves with more parts. Show me it earns them.
+</Dialogue>
+
+</Epilogue>

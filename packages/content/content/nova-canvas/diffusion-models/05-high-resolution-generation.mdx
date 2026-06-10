@@ -163,7 +163,7 @@ Diffusion runs on the small latent. The VAE adds quality loss (the latent can't 
 
 <Quiz
   question="Why does Stable Diffusion run in latent space instead of pixel space?"
-  options={[{"text":"Latent space is more interpretable"},{"text":"VAE encodes 512×512 image to 64×64 latent — 64× cheaper diffusion compute — correct"},{"text":"Latent diffusion is more accurate"},{"text":"Required by classifier-free guidance"}]}
+  options={[{"text":"Latent space is more interpretable"},{"text":"VAE encodes 512×512 image to 64×64 latent — 64× cheaper diffusion compute"},{"text":"Latent diffusion is more accurate"},{"text":"Required by classifier-free guidance"}]}
   correct={1}
   explanation="Naive 512×512 diffusion exhausts GPU memory. Stable Diffusion: VAE encodes image to 64×64×4 latent, runs diffusion there, VAE decodes back to image. ~64× compute savings at the cost of slight VAE quality loss (color shifts, fine-detail blurring)."
   tier="structural"

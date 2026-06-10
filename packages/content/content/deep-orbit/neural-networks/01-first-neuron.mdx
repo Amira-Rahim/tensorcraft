@@ -4,7 +4,7 @@ title: "Your First Neuron"
 moduleId: neural-networks
 themeId: deep-orbit
 order: 1
-estimatedMinutes: 25
+estimatedMinutes: 14
 difficulty: beginner
 context:
   narrative: "ARIA's rule-based detection system has failed. Dr. Farah proposes building an adaptive system — starting with a single computational unit."
@@ -19,7 +19,6 @@ concept:
     tier: structural
 consequence:
   narrative: "The single neuron can now distinguish between two types of signals. But Commander Mirza needs more — much more."
-  nextLessonTeaser: "Next: activation functions that give neurons decision-making power"
 hints:
   - level: nudge
     content: "A neuron multiplies each input by a weight, sums them, and adds bias"
@@ -75,3 +74,13 @@ Build your first neuron to classify signal readings.
 <Exercise slug="implement-neuron" />
 
 <KeyTakeaways takeaways={["Three inputs, three weights, one bias: tf.dot([0.5, 0.8, 0.2], [0.4, -0.2, 0.6]) + 0.1 = 0.18, the neuron's entire computation", "Weights control input importance, bias shifts the decision threshold", "tf.dot() computes the weighted sum efficiently on the GPU", "This single operation is the building block of all neural networks"]} />
+
+<Epilogue>
+
+2341 hours. Farah routes the neuron's output to a spare monitor above the galley coffee machine and feeds it the two calibration tones on a loop. Tone A holds at 0.81, tone B at 0.12 — twenty minutes of telemetry without a single crossover. Nazari stops under the monitor on her way off shift and watches it longer than she would admit to.
+
+<Dialogue speaker="Chief Nazari">
+Three weights and a bias can tell two tones apart. The stream from 7-G is sixty-four channels. How many weights before I trust this thing with my board?
+</Dialogue>
+
+</Epilogue>

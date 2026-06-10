@@ -4,7 +4,7 @@ title: "Introduction to Tensors"
 moduleId: foundations
 themeId: deep-orbit
 order: 1
-estimatedMinutes: 25
+estimatedMinutes: 12
 difficulty: beginner
 context:
   narrative: "The Archimedes receives a mysterious data stream from deep space."
@@ -20,7 +20,6 @@ concept:
     breaks: "Float32Array stores numbers in a flat memory layout. A Tensor stores numbers AND tracks shape (rank, dimensions), backend (CPU/WebGL/WASM), gradient information for autograd, and ownership for memory disposal. The byte storage is similar; the API and lifecycle are not — you can iterate Float32Array directly, but you cannot iterate a Tensor without dataSync()."
 consequence:
   narrative: "The signal begins to take shape as structured data."
-  nextLessonTeaser: "Next: understanding tensor shapes"
 hints:
   - level: nudge
     content: "A Float32Array stores numbers flat and contiguous in memory — tf.tensor() starts from that same layout"
@@ -32,24 +31,29 @@ keywords:
   - tensor
   - array
   - typed-array
+  - memory
 skillAxes: [data_prep]
 ---
 
 <Dialogue speaker="Commander Mirza">
-We're picking up a structured data stream from Sector 7-G. ARIA can't parse it with her rule-based systems. We need someone who can think in data structures.
+We're picking up a structured data stream from Sector 7-G. ARIA has been chewing on it for six hours.
 </Dialogue>
 
 <Dialogue speaker="ARIA">
-The stream contains numerical sequences, Commander. My pattern matching is insufficient. I need a new way to represent this data.
+Six hours, fourteen minutes. I have applied 4,096 parsing rules to the stream. All have failed. Whatever this is, nobody wrote a rule for it.
+</Dialogue>
+
+<Dialogue speaker="Commander Mirza">
+Then we need someone who doesn't start from rules. Demir — you think in data structures. Start there.
 </Dialogue>
 
 You've worked with arrays your entire career: DOM elements, API responses, pixel data. A tensor stores its numbers much the way a `Float32Array` does: flat, typed, contiguous. What it adds is shape tracking, GPU-backed math, and a memory lifecycle you have to manage. That's the whole gap this lesson closes.
 
-<LearningObjectives objectives={["Understand what a tensor is and how it relates to JavaScript arrays", "Create tensors from regular arrays using TensorFlow.js", "Identify the rank (number of dimensions) of a tensor", "Convert between tensors and JavaScript arrays"]} />
+<LearningObjectives objectives={["Understand what a tensor is and how it relates to JavaScript arrays", "Create tensors from regular arrays using TensorFlow.js", "Identify the rank (number of dimensions) of a tensor", "Manage tensor memory with dispose() and tf.tidy()"]} />
 
 ## What Is a Tensor?
 
-A tensor is simply a multi-dimensional array. That's it. If you can work with arrays in JavaScript, you already understand the core concept.
+A tensor is a multi-dimensional array with opinions. The numbers sit in contiguous memory exactly like a `Float32Array` — what's new is everything wrapped around them.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -77,6 +81,35 @@ console.log(jsArray);  // [1, 2, 3, 4, 5]`}
 
 One difference to internalize early: you can iterate a `Float32Array` directly, but a tensor's data lives on the backend. Call `await t.array()` (or `dataSync()`) to pull the values back into JavaScript.
 
+## The Part Garbage Collection Won't Do For You
+
+Here's the lifecycle promise from the top of the lesson, paid in full. When the WebGL backend is active, a tensor's numbers live in GPU texture memory — and the JavaScript garbage collector cannot see GPU memory. Drop your last reference to a tensor and the JS wrapper gets collected; the texture it owned does not. Create tensors in a loop and you have written a memory leak in a language you thought couldn't leak.
+
+Two tools fix this:
+
+<CodeBlock language="typescript" title="tensor-memory.ts">
+{`// Tool 1: dispose() — manual, surgical
+const reading = tf.tensor1d([0.3, 0.7, 0.1]);
+console.log(tf.memory().numTensors);  // 1
+reading.dispose();                     // GPU memory released
+console.log(tf.memory().numTensors);  // 0
+
+// Tool 2: tf.tidy() — automatic, for everything intermediate.
+// Every tensor created inside the callback is disposed when it
+// returns, EXCEPT the one you return.
+const result = tf.tidy(() => {
+  const a = tf.tensor1d([1, 2, 3]);   // disposed automatically
+  const b = tf.tensor1d([4, 5, 6]);   // disposed automatically
+  return a.add(b);                     // survives — it's the return value
+});
+
+// tf.memory().numTensors is your leak detector. If that number
+// climbs while your app idles, something is creating tensors
+// outside a tidy() and never disposing them.`}
+</CodeBlock>
+
+If `tf.tidy()` reminds you of a `useEffect` cleanup function, good — same contract: you acquired a resource the runtime can't track, so you say when it's done. We'll lean on `tidy()` in every lesson that touches real data.
+
 ## Challenge
 
 Now it's your turn. Create your first tensor from a JavaScript array.
@@ -87,12 +120,24 @@ Now it's your turn. Create your first tensor from a JavaScript array.
 
 <Quiz
   question="What is the rank of `tf.tensor2d([[1, 2, 3], [4, 5, 6]])`?"
-  options={[{"text":"0 (scalar)"},{"text":"1 (vector)"},{"text":"2 (matrix) — correct"},{"text":"3 (3D tensor)"}]}
+  options={[{"text":"0 (scalar)"},{"text":"1 (vector)"},{"text":"2 (matrix)"},{"text":"3 (3D tensor)"}]}
   correct={2}
   explanation="Rank = number of dimensions. tf.tensor2d creates a 2D tensor (matrix). Shape is [2, 3] but rank is 2."
   tier="identity"
 />
 
-<KeyTakeaways takeaways={["What a tensor adds over a Float32Array: shape tracking, GPU-backed math, and a memory lifecycle you manage yourself", "TensorFlow.js tensors are created from regular JavaScript arrays", "Tensor rank = number of dimensions (scalar=0, vector=1, matrix=2)", "You can convert freely between tensors and JS arrays with .array()"]} />
+<KeyTakeaways takeaways={["What a tensor adds over a Float32Array: shape tracking, GPU-backed math, and a memory lifecycle you manage yourself", "TensorFlow.js tensors are created from regular JavaScript arrays; convert back with .array()", "Tensor rank = number of dimensions (scalar=0, vector=1, matrix=2)", "The GC can't see GPU memory: dispose() what you keep, tf.tidy() everything else, and watch tf.memory().numTensors"]} />
 
 > **DISPATCH archive · field intercept #02-T:** Yara's collective uses the same shape contract for image latents in Nova Canvas: `[batch, channels, h, w]`. Different domain, same primitive. The tensor is the lingua franca; the meaning is the lesson.
+
+<Epilogue>
+
+Demir loads the first kilobyte of the stream into a tensor and prints its rank, just to feel the shape of the thing. Rank 2. Rows and columns. Whatever is out in Sector 7-G, it isn't shouting noise — it's sending tables.
+
+<Dialogue speaker="ARIA">
+Observation: my 4,096 rules assumed the stream was a message. You have just treated it as data. I will be watching what that buys you, Ensign.
+</Dialogue>
+
+Six hours of rules got nothing. One data structure got a shape. Tomorrow: what the shape means.
+
+</Epilogue>

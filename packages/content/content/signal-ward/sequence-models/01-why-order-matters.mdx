@@ -207,7 +207,7 @@ Without positional encoding, a transformer treats "not good" and "good not" iden
 
 <Quiz
   question="A bag-of-words representation treats 'patient denied chest pain' identically to 'patient denied chest. pain'. Why is this catastrophic for clinical NLP specifically?"
-  options={[{"text":"Punctuation changes token count"},{"text":"Negation scope ('denied' applies to 'chest pain') depends on word order and adjacency — bag-of-words destroys both, so 'denied chest pain' (negation) and 'denied chest. pain' (no negation, separate finding) become the same vector despite opposite clinical meaning — correct"},{"text":"Bag-of-words can't handle abbreviations"},{"text":"It's not catastrophic — order doesn't matter in NLP"}]}
+  options={[{"text":"Punctuation changes token count"},{"text":"Negation scope ('denied' applies to 'chest pain') depends on word order and adjacency — bag-of-words destroys both, so 'denied chest pain' (negation) and 'denied chest. pain' (no negation, separate finding) become the same vector despite opposite clinical meaning"},{"text":"Bag-of-words can't handle abbreviations"},{"text":"It's not catastrophic — order doesn't matter in NLP"}]}
   correct={1}
   explanation="Clinical text is dense with negation cues ('denied', 'no', 'without', 'ruled out'). Scope of negation depends on word order — destroying order destroys the meaning. Sequence models preserve order so negation can be learned."
   tier="structural"

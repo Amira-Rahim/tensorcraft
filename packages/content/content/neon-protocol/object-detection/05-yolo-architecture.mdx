@@ -248,7 +248,7 @@ An adversarial patch on a stop sign caused the detector to classify it as a yiel
 
 <Quiz
   question="What does YOLO's 'You Only Look Once' actually mean?"
-  options={[{"text":"Single forward pass produces all bounding boxes + classes — no proposal stage — correct"},{"text":"Trained on one image only"},{"text":"Single-class detection"},{"text":"Inference happens once per video"}]}
+  options={[{"text":"Single forward pass produces all bounding boxes + classes — no proposal stage"},{"text":"Trained on one image only"},{"text":"Single-class detection"},{"text":"Inference happens once per video"}]}
   correct={0}
   explanation="Two-stage detectors (R-CNN family) first propose regions, then classify each. YOLO does both in one forward pass via grid-based prediction. Faster but historically less accurate. Modern YOLO (v8+) closes the accuracy gap."
   tier="structural"

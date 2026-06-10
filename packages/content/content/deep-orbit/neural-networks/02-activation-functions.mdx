@@ -79,10 +79,20 @@ Apply ReLU activation to neuron outputs.
 
 <Quiz
   question="Why does a deep network without activation functions collapse to a linear model?"
-  options={[{"text":"Because matrix multiplication is commutative"},{"text":"Because composition of linear maps is itself a linear map — correct"},{"text":"Because gradients vanish"},{"text":"Because the optimizer can't find the minimum"}]}
+  options={[{"text":"Because matrix multiplication is commutative"},{"text":"Because composition of linear maps is itself a linear map"},{"text":"Because gradients vanish"},{"text":"Because the optimizer can't find the minimum"}]}
   correct={1}
   explanation="Without nonlinearity, layers compose as matrix multiplications: (W_n · ... · W_2 · W_1) · x is itself a single matrix W' times x. Activation functions like ReLU break this composition and let networks express nonlinear functions."
   tier="identity"
 />
 
 <KeyTakeaways takeaways={["Activation functions add non-linearity — without them, networks can't learn complex patterns", "ReLU = Math.max(0, x) — the most common activation function", "Sigmoid squashes output to 0-1 (probabilities), tanh to -1 to 1", "Choose ReLU for hidden layers, sigmoid for binary output layers"]} />
+
+<Epilogue>
+
+Demir wires the sigmoid output to the bridge feed before turning in: one bounded number per reading, zero to one, nothing screaming off toward infinity anymore. At 0316 the neuron scores archived reading 22146 at 0.91. ARIA's rule pipeline, still running in parallel because nobody has issued the order to stop it, scores the same reading nominal.
+
+<Dialogue speaker="ARIA">
+I have checked reading 22146 against all 14,202 of my rules. None of them fire. The neuron is responding to something I do not have a rule for. I am still running, and I am noting that.
+</Dialogue>
+
+</Epilogue>

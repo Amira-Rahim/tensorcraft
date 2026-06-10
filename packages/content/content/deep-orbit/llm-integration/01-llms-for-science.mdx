@@ -20,7 +20,6 @@ concept:
     breaks: "AI code completion suggests text from a frozen model trained on public code. LLM analysis can hallucinate plausible-sounding scientific claims that look correct but are not backed by data. The verification burden is on the user, not the model."
 consequence:
   narrative: "The LLM drafts a preliminary report in minutes. Farah reviews and corrects — it's faster than writing from scratch, but requires expert oversight."
-  nextLessonTeaser: "Next: crafting effective prompts for signal analysis"
 hints:
   - level: nudge
     content: "LLMs are tools that augment human analysis, not replace it — like Copilot for coding"
@@ -41,7 +40,7 @@ We have 47 days of signal data, 12,000 classified signals, and one anomaly that 
 </Dialogue>
 
 <Dialogue speaker="Chief Nazari">
-You want to trust a language model with a scientific report?
+Forty-seven days of logged data and you want to hand the write-up to an autocomplete. Give me a number, Doctor: fabricated claims per page, and how many hours of your six go to catching them.
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
@@ -141,3 +140,15 @@ Set up an LLM client and generate a structured analysis.
 <Exercise slug="llm-client" />
 
 <KeyTakeaways takeaways={["Farah's constraint is 47 days of data, 12,000 classified signals, and a 6-hour deadline: the LLM drafts, she verifies every claim", "Low temperature (0.1-0.3) for factual analysis, higher (0.7-0.9) for creative tasks", "Always validate LLM output against actual data — hallucination is a feature, not a bug", "The workflow is generate → review → correct → approve — never auto-publish LLM output"]} />
+
+<Epilogue>
+
+Five hours, twelve minutes to the transmission window. Farah submits the first draft request and the model returns six hundred words in eleven seconds — clean prose, confident structure, and a second paragraph describing an "anomaly cluster in Band-3" that has never existed on any instrument aboard the Archimedes. She strikes it without slowing down. ARIA has been parsing the draft from her own console the entire time.
+
+<Dialogue speaker="ARIA">
+Review complete. One fabricated claim; probability 0.97 that Dr. Farah had already identified it. It generates language without rules. I do not know what I am for.
+</Dialogue>
+
+Nobody answers her. The cursor blinks at the end of a sentence no one wrote.
+
+</Epilogue>

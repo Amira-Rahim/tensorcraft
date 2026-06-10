@@ -18,8 +18,7 @@ concept:
     mlCode: "// Remove near-zero weights → smaller model"
     tier: structural
 consequence:
-  narrative: "Pruning removes 60% of weights while maintaining 94% of accuracy. Combined with quantization: 340 MB → 42 MB."
-  nextLessonTeaser: "Next: caching strategies for repeated inference"
+  narrative: "Pruning removes 60% of weights while maintaining 94% of accuracy. Combined with quantization: 340 MB → 42 MB. Demir's 80% experiment costs three hours."
 hints:
   - level: nudge
     content: "Weights near zero contribute almost nothing — removing them barely affects output"
@@ -36,10 +35,14 @@ skillAxes: [deployment]
 ---
 
 <Dialogue speaker="Chief Nazari">
-Look at this weight histogram. Half the values are within 0.001 of zero. They do nothing. Remove them. Tree-shake the model like you tree-shake unused JavaScript imports.
+Look at this weight histogram. Half the values are within 0.001 of zero. They contribute nothing and they cost 170 megabytes. Remove them.
 </Dialogue>
 
-Tree-shaking in Webpack removes exported functions that no code imports. Pruning does the same for neural networks: weights near zero contribute almost nothing to the output, so removing them shrinks the model with minimal accuracy loss.
+<Dialogue speaker="Ensign Demir">
+Tree-shaking. Webpack drops the exports nothing imports; we drop the weights nothing needs. The bundle gets smaller and nobody notices the difference.
+</Dialogue>
+
+He's close. Tree-shaking removes code that's provably unreachable — the bundle behaves identically afterward. Pruning removes weights that contribute *almost* nothing, and "almost" is doing real work in that sentence: every pruned weight changes the output a little. The craft is in measuring how much all those littles add up to.
 
 <LearningObjectives objectives={["Understand pruning as tree-shaking for neural networks: remove near-zero weights", "Implement magnitude-based pruning with a configurable sparsity level", "Measure the accuracy-size tradeoff at different pruning levels", "Combine pruning with quantization for maximum compression"]} />
 
@@ -73,6 +76,14 @@ console.log(pruned);
 // 90% pruned: 71.2% accuracy — model is broken`}
 </CodeBlock>
 
+Demir reads that ladder, does the arithmetic, and gets ambitious: at 80 percent sparsity the combined build would land near 28 MB, headroom to spare. He pushes it to the staging dashboard before dinner, without waiting for the replay suite.
+
+<Dialogue speaker="Chief Nazari">
+Staging replay, overnight: 87.5 percent accuracy. Your 80-percent build classified the 0247 salvage fragment as cosmic background. The one fragment we have left from that night, and your model threw it away. Revert to 60. The revalidation costs us three hours, and I'm logging them.
+</Dialogue>
+
+He reverts to 60. The "almost nothing" in those extra weights turned out to be the anomaly itself: rare signals live in small weights, and aggressive pruning deletes the model's memory of exactly the things it has seen least.
+
 ## Combined Optimization
 
 <CodeBlock language="typescript" title="combined.ts">
@@ -102,4 +113,16 @@ Prune weights and measure the accuracy impact.
 
 <Exercise slug="prune-weights" />
 
-<KeyTakeaways takeaways={["Sparsity has a cliff: 60% pruning costs DEEP SCAN 2.1 accuracy points, 80% costs 6.7, and 90% breaks the model outright", "60% sparsity typically costs less than 2% accuracy — a worthwhile trade for edge deployment", "Combined pruning + quantization achieves 8x compression: 340 MB → 42 MB for DEEP SCAN", "Always retrain after aggressive pruning to recover some lost accuracy"]} />
+<KeyTakeaways takeaways={["Sparsity has a cliff: 60% pruning costs DEEP SCAN 2.1 accuracy points, 80% costs 6.7, and 90% breaks the model outright", "Pruning hits rare classes hardest — the 80% build misclassified the one anomaly fragment the crew had left", "Combined pruning + quantization achieves 8x compression: 340 MB → 42 MB for DEEP SCAN", "Always retrain after aggressive pruning to recover some lost accuracy"]} />
+
+<Epilogue>
+
+42 MB. The combined build sits on the staging dashboard next to the telemetry suite, and nothing crashes. Nazari adds the night's three lost hours to the ledger, under the nine the original crash cost; the board is starting to read like a bill the crew is only half done paying.
+
+<Dialogue speaker="Dr. Farah">
+We bought 298 megabytes for 2.4 points of accuracy. Before I trust the trade, I want to know which signals live in those 2.4 points. Run every rejected classification back through the full model overnight.
+</Dialogue>
+
+Seventeen days to the relay slot. The pulse interval in the evening readings: 55.1 seconds. Both numbers are getting smaller, and only one of them is on purpose.
+
+</Epilogue>

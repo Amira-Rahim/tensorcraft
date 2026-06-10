@@ -243,7 +243,7 @@ This is a single matrix multiply: sparse, but mathematically the same as the loo
 
 <Quiz
   question="What does an embedding layer's gradient update do?"
-  options={[{"text":"Updates all rows"},{"text":"Updates only rows for tokens present in the batch (sparse update) — correct"},{"text":"Backprops to the input"},{"text":"Updates the optimizer state"}]}
+  options={[{"text":"Updates all rows"},{"text":"Updates only rows for tokens present in the batch (sparse update)"},{"text":"Backprops to the input"},{"text":"Updates the optimizer state"}]}
   correct={1}
   explanation="Embedding lookup is row-indexing. Backprop only updates the rows that were looked up in the forward pass. For 50k vocab + batch with 128 unique tokens, only 128 rows update per step. Efficient — sparse-aware optimizers exploit this."
   tier="structural"

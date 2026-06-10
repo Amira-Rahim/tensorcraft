@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "JSDoc comments describe deterministic functions whose behavior is verifiable from the source. A model card describes statistical performance over a held-out distribution that the production data may not match. Reading the docs tells you how the function behaves; reading the model card tells you how the model performed yesterday on a benchmark that may already be stale. Documentation discipline transfers; verifiability does not."
 consequence:
-  narrative: "The documentation is complete. Every crew member can operate, maintain, and troubleshoot DEEP SCAN. Farah: 'Now it survives beyond any single engineer.'"
-  nextLessonTeaser: "Next: launch — deploying DEEP SCAN and classifying the anomalous signal"
+  narrative: "Demir writes the handover: a Model Card, an API reference, and a runbook precise enough that a rule-based system could execute it without him. One will review it."
 hints:
   - level: nudge
     content: "Model Cards document ML models the way README files document software projects"
@@ -45,7 +44,7 @@ Demir, if you were incapacitated tomorrow, could Nazari operate DEEP SCAN? Could
 Right, same rule as any codebase. If it's not documented, it doesn't exist. I'll write a Model Card for the ML model and API docs for the pipeline. Like a really thorough README, but covering training data, accuracy metrics, and known limitations too.
 </Dialogue>
 
-Every open source project needs a README. Every API needs docs. ML systems add a specific documentation format: the **Model Card**, a standardized document that describes what a model does, how it was trained, what its limitations are, and how to interpret its outputs. It's a README for your model.
+There is a version of the next two weeks in which Demir is not available to run DEEP SCAN: the crew busy surviving something, the bridge understaffed, the only operator still awake the one who does not sleep. This lesson writes the handover for that scenario. ML has a standard format for half of it — the **Model Card**, a README for the model: what it does, how it was trained, where it fails, how to read its outputs. The other half is a runbook written precisely enough that a rule-based system could execute it without you.
 
 <LearningObjectives objectives={["Write a Model Card documenting model purpose, training data, and performance", "Document pipeline API with typed interfaces and usage examples", "List known limitations and failure modes — what the model cannot do", "Create runbook documentation for common operational scenarios"]} />
 
@@ -191,3 +190,15 @@ Write a Model Card for the DEEP SCAN classifier.
 <Exercise slug="write-model-card" />
 
 <KeyTakeaways takeaways={["DEEP SCAN's card states the limits that matter: trained on Kepler-442 region only, 84% recall on the anomaly class, 15ms inference without WebGPU", "Document known limitations honestly — what the model cannot do is as important as what it can", "Pipeline API docs follow the same JSDoc patterns you use for any TypeScript library", "Runbooks bridge the gap between documentation and operations — if X happens, do Y"]} />
+
+<Epilogue>
+
+Demir finishes the first draft of the runbook at 0140 and assigns it a single reviewer.
+
+<Dialogue speaker="ARIA">
+Three of the four procedures parse as condition and action. The first instructs the operator to retrain "if drift is high." I do not have an intuition for "high." I have thresholds. Please provide one.
+</Dialogue>
+
+He rewrites it with a number — drift above 0.5, retrain, no judgment required — and reads the finished document back. It reads less like documentation and more like a will, which he supposes is the point: this is the version of him that stays behind if the crew can't. On the ticker the pulse interval touches 31.0 seconds. Tomorrow they deploy.
+
+</Epilogue>

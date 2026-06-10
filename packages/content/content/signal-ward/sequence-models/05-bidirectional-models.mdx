@@ -224,7 +224,7 @@ return beams[0]
 
 <Quiz
   question="Why aren't bidirectional RNNs used for autoregressive generation?"
-  options={[{"text":"Too slow"},{"text":"Bidirectional needs the full sequence in advance — incompatible with token-by-token generation — correct"},{"text":"Don't support attention"},{"text":"Use too much memory"}]}
+  options={[{"text":"Too slow"},{"text":"Bidirectional needs the full sequence in advance — incompatible with token-by-token generation"},{"text":"Don't support attention"},{"text":"Use too much memory"}]}
   correct={1}
   explanation="Bidirectional RNN needs to see future tokens to compute backward state. For generation, future tokens don't exist yet. Bidirectional is for understanding/labeling tasks (NER, classification). Forward-only or transformers (with causal mask) for generation."
   tier="structural"

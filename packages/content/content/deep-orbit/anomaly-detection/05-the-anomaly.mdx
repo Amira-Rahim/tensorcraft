@@ -4,10 +4,10 @@ title: "The Anomaly"
 moduleId: anomaly-detection
 themeId: deep-orbit
 order: 5
-estimatedMinutes: 30
+estimatedMinutes: 16
 difficulty: advanced
 context:
-  narrative: "DEEP SCAN fires its highest-confidence alert ever. The reconstruction error is twelve times baseline. Nazari checks the sensors three times. 'This is not instrument noise. The model is right.'"
+  narrative: "DEEP SCAN fires its highest-confidence alert ever. The reconstruction error is twelve times baseline. Nazari checks the sensors twice. 'This is not instrument noise. The model is right.'"
   speaker: "Chief Nazari"
 concept:
   explanation: "When an error boundary catches an unexpected throw, it means something genuinely new happened — the system encountered a case it was never designed for."
@@ -19,7 +19,6 @@ concept:
     tier: intuition
 consequence:
   narrative: "The mathematical structure embedded in the anomaly mirrors the Fibonacci sequence — the same sequence used in the ship's own sensor calibration. Farah runs the decomposition again. Same ratios."
-  nextLessonTeaser: "Module 8: advanced forecasting to predict when the anomaly will appear next"
 hints:
   - level: nudge
     content: "Combine all detection methods — statistical, autoencoder, and LSTM prediction error"
@@ -36,7 +35,7 @@ skillAxes: [model_arch, evaluation]
 ---
 
 <Dialogue speaker="Chief Nazari">
-I've checked the sensor calibration three times. This is not instrument noise. The model is right.
+I've checked the sensor calibration twice. This is not instrument noise. The model is right.
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
@@ -149,10 +148,22 @@ Build an ensemble anomaly detector combining multiple methods.
 
 <Quiz
   question="How do autoencoders detect anomalies without anomaly labels?"
-  options={[{"text":"They use clustering on the latent space"},{"text":"Train on normal data only — high reconstruction error on a new sample = anomaly — correct"},{"text":"They require labeled examples of both normal + anomalous"},{"text":"They flag samples below a confidence threshold"}]}
+  options={[{"text":"They use clustering on the latent space"},{"text":"Train on normal data only — high reconstruction error on a new sample = anomaly"},{"text":"They require labeled examples of both normal + anomalous"},{"text":"They flag samples below a confidence threshold"}]}
   correct={1}
   explanation="Train autoencoder to reconstruct normal samples (low error). Anomalies don't fit the learned representation — high reconstruction error. Threshold the error to flag anomalies. Unsupervised: only need normal data."
   tier="intuition"
 />
 
 <KeyTakeaways takeaways={["Ensemble detection combines multiple methods — majority vote gives higher confidence than any single detector", "Three complementary approaches: statistics (simple), autoencoder (learned), LSTM (temporal)", "100% detector agreement = highest confidence, like multiple independent tests confirming the same bug", "The model detects and quantifies — interpretation (alien or coincidence?) remains a human decision"]} />
+
+<Epilogue>
+
+Farah reruns the interval decomposition on a cold copy of the data, on a different machine, and the ratios come back unchanged: 1, 1, 2, 3, 5, 8, 13. Across the bridge, Nazari pulls the ship's own sensor calibration harmonics and lays them over the pulse train — her third pass through the calibration stack since the alert, and the first one nobody had to ask for. Correlation: 0.9987. The signal out of Sector 7-G is pulsing in the Archimedes' own ratios, the math the ship hums to itself every time it tunes its sensors.
+
+<Dialogue speaker="Dr. Farah">
+Two hypotheses. Either the universe simply likes this arithmetic — it builds sunflowers and shell spirals with it, why not pulse trains. Or something out there has been listening to us calibrate.
+</Dialogue>
+
+Nobody answers her. On the main display the two traces sit one on top of the other, ratio for ratio, and the question hanging over the bridge is one no model can score. Not "what is it" anymore. Is it answering us?
+
+</Epilogue>

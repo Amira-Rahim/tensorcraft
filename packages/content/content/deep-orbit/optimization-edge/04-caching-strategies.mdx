@@ -20,7 +20,6 @@ concept:
     breaks: "Service worker cache keys requests by URL — exact-match. Inference cache keys must include input hash (post-quantization), model version, and runtime parameters (batch size, fp precision). The cache-first pattern transfers; cache-key design does not."
 consequence:
   narrative: "Caching eliminates 40% of inference calls — the signal patterns repeat regularly enough that cached results are valid."
-  nextLessonTeaser: "Next: WebGPU acceleration — using the GPU for maximum inference speed"
 hints:
   - level: nudge
     content: "If you've seen this input before, return the cached result instead of running the model"
@@ -40,7 +39,7 @@ skillAxes: [deployment]
 Many signals are similar: cosmic background with minor variations. If I've already classified a signal with these features, why run the model again? I'll cache the results, like a Service Worker caching API responses.
 </Dialogue>
 
-DEEP SCAN spent last night reclassifying cosmic background radiation it had already classified. Same features, same verdict, full GPU cost every time. Roughly 40% of its inference calls were answering a question it had answered minutes earlier. Caching eliminates those calls, and the playbook is the one you know from Service Workers: cache-first, TTL expiry, hash the request, only do the expensive work on a miss.
+DEEP SCAN spent last night reclassifying cosmic background radiation it had already classified. Same features, same verdict, full GPU cost every time. The playbook for fixing this is one you know from Service Workers: cache-first, TTL expiry, hash the request, only do the expensive work on a miss.
 
 <LearningObjectives objectives={["Implement an LRU cache for inference results", "Hash model inputs for cache key generation", "Choose cache strategies: exact match, approximate match, TTL-based expiry", "Measure cache hit rate and its impact on effective inference latency"]} />
 
@@ -53,6 +52,8 @@ DEEP SCAN spent last night reclassifying cosmic background radiation it had alre
   private cache = new Map<string, { result: T; timestamp: number }>();
   private readonly maxSize: number;
   private readonly ttlMs: number;
+  private hits = 0;
+  private misses = 0;
 
   constructor(maxSize: number = 1000, ttlMs: number = 60000) {
     this.maxSize = maxSize;
@@ -68,20 +69,31 @@ DEEP SCAN spent last night reclassifying cosmic background radiation it had alre
   get(input: number[]): T | null {
     const key = this.hashInput(input);
     const entry = this.cache.get(key);
-    if (!entry) return null;
-    if (Date.now() - entry.timestamp > this.ttlMs) {
-      this.cache.delete(key);
+    if (!entry) {
+      this.misses++;
       return null;
     }
+    if (Date.now() - entry.timestamp > this.ttlMs) {
+      this.cache.delete(key);
+      this.misses++;
+      return null;
+    }
+    // True LRU: a Map iterates in insertion order, so delete + re-set
+    // moves this key to the back of the eviction line. This is the trick
+    // interviewers fish for — without it you've built FIFO, which evicts
+    // your hottest entry just because it arrived first.
+    this.cache.delete(key);
+    this.cache.set(key, entry);
+    this.hits++;
     return entry.result;
   }
 
   set(input: number[], result: T): void {
     const key = this.hashInput(input);
     if (this.cache.size >= this.maxSize) {
-      // Evict oldest entry (LRU approximation)
-      const oldest = this.cache.keys().next().value;
-      if (oldest) this.cache.delete(oldest);
+      // Map's first key = least recently used (get() refreshes position)
+      const lru = this.cache.keys().next().value;
+      if (lru) this.cache.delete(lru);
     }
     this.cache.set(key, { result, timestamp: Date.now() });
   }
@@ -89,8 +101,6 @@ DEEP SCAN spent last night reclassifying cosmic background radiation it had alre
   get hitRate(): number {
     return this.hits / (this.hits + this.misses) || 0;
   }
-  private hits = 0;
-  private misses = 0;
 }
 
 // Usage
@@ -103,9 +113,7 @@ function cachedClassify(signal: number[]): string {
   const result = classify(model, signal);
   cache.set(signal, result);
   return result;
-}
-
-// After 1 hour: cache hit rate ≈ 40% — 40% fewer model calls!`}
+}`}
 </CodeBlock>
 
 ## Challenge
@@ -114,4 +122,16 @@ Build an LRU inference cache with TTL expiry.
 
 <Exercise slug="inference-cache" />
 
-<KeyTakeaways takeaways={["DEEP SCAN's cache is 500 entries with a 30-second TTL: serving a stale classification of a drifting signal is worse than recomputing it", "Quantizing inputs before hashing increases cache hit rate by matching near-identical signals", "LRU eviction prevents unbounded memory growth — same as browser cache limits", "40% cache hit rate on DEEP SCAN signals means 40% fewer model inference calls"]} />
+<KeyTakeaways takeaways={["DEEP SCAN's cache is 500 entries with a 30-second TTL: serving a stale classification of a drifting signal is worse than recomputing it", "Quantizing inputs before hashing increases cache hit rate by matching near-identical signals", "True LRU needs the delete + re-set trick on get() — skip it and you've built FIFO, which evicts hot entries", "DEEP SCAN's 40% cache hit rate means 40% fewer model inference calls"]} />
+
+<Epilogue>
+
+Overnight the cache absorbs 40 percent of DEEP SCAN's inference calls: cosmic background, classified once, served from memory ever after. The dashboard's load graph flattens into something Nazari could almost call margin. Demir greps the cache log for the anomaly and finds it exactly zero times.
+
+<Dialogue speaker="Ensign Demir">
+Everything else out there repeats. The anomaly never has — not one cache hit, every pulse a new input, every interval a little shorter than the last. It's the only thing on the sensors the cache will never see twice.
+</Dialogue>
+
+Sixteen days to the relay slot. He sets a 30-second TTL and goes to bed, and lies awake doing extrapolations: at the current rate of shrink, the pulse interval reaches 30 seconds right around deployment week.
+
+</Epilogue>

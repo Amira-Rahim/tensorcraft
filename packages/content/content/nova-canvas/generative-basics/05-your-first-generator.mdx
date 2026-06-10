@@ -159,7 +159,7 @@ The final step: bringing the generated pattern into the browser where it belongs
 
 <Quiz
   question="Why is sampling from a learned distribution different from Math.random()?"
-  options={[{"text":"Slower"},{"text":"Math.random samples uniform; generative model samples from a high-dim learned distribution with modes, tails, and unsafe regions — correct"},{"text":"Less precise"},{"text":"Requires GPU"}]}
+  options={[{"text":"Slower"},{"text":"Math.random samples uniform; generative model samples from a high-dim learned distribution with modes, tails, and unsafe regions"},{"text":"Less precise"},{"text":"Requires GPU"}]}
   correct={1}
   explanation="Math.random samples a uniform [0,1]. Generative models sample from a learned distribution that may have multiple modes (multiple valid outputs), unrepresentable tails (rare classes), and adversarial regions (NSFW). Sampling temperature, top-k, top-p control this — all knobs Math.random doesn't have."
   tier="structural"

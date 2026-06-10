@@ -4,8 +4,8 @@ title: "Basic Tensor Operations"
 moduleId: foundations
 themeId: deep-orbit
 order: 3
-estimatedMinutes: 30
-difficulty: intermediate
+estimatedMinutes: 12
+difficulty: beginner
 context:
   narrative: "Chief Nazari needs to process the raw signal data."
   speaker: "Chief Nazari"
@@ -36,12 +36,12 @@ skillAxes: [data_prep]
 ---
 
 <Dialogue speaker="Chief Nazari">
-Raw data is useless. We need to clean it, combine sensor feeds, and amplify the signal. Every operation needs to be fast. We're processing millions of data points per second.
+Raw data is useless to me. Clean it, combine the feeds, amplify what matters. And it runs at sensor speed or it doesn't run — we take two million readings a minute.
 </Dialogue>
 
 Three operations cover almost everything Nazari just asked for: add two tensors, multiply them element by element, and matMul rows into columns. Each is a single call that the GPU executes across the entire tensor at once. The logic will feel familiar if you've chained `Array.map()` and `reduce()` over a list; what changes is the execution model, where one op covers millions of elements in parallel.
 
-<LearningObjectives objectives={["Perform element-wise tensor operations (add, multiply, subtract)", "Understand broadcasting — how tensors of different shapes interact", "Use matrix multiplication (matmul) for combining data", "Chain operations together to build data transformations"]} />
+<LearningObjectives objectives={["Perform element-wise tensor operations (add, multiply, subtract)", "Understand the matmul shape rule: [m,n] × [n,p] → [m,p]", "Use transpose to make shapes compatible", "Chain operations together to build data transformations"]} />
 
 ## Element-wise Operations
 
@@ -62,15 +62,34 @@ const diff = tf.sub(sensor2, sensor1);    // [3, 3, 3]
 
 // Chaining with method syntax
 const result = sensor1.add(sensor2).mul(tf.scalar(2));
-// [10, 14, 18]
-
-// Matrix multiplication — the workhorse of neural networks
-const weights = tf.tensor2d([[1, 2], [3, 4], [5, 6]]);  // [3, 2]
-const input = tf.tensor2d([[1], [1], [1]]);               // [3, 1]
-const output = weights.transpose().matMul(input);          // [2, 1]`}
+// [10, 14, 18]`}
 </CodeBlock>
 
-Matrix multiplication (`matMul`) is the operation that makes neural networks work. Every layer in a neural network is essentially: `output = matMul(input, weights) + bias`. You'll see this pattern everywhere from here on.
+## Matrix Multiplication — and Its One Rule
+
+`matMul` is different from `mul`. It doesn't multiply matching positions; it multiplies **rows into columns** — every row of the left tensor dot-producted with every column of the right. That gives it one inflexible shape rule:
+
+**`[m, n] × [n, p] → [m, p]` — the inner dimensions must match.**
+
+The left tensor's column count must equal the right tensor's row count. When they don't, you flip one with `transpose()` — which swaps a tensor's rows and columns, turning `[3, 2]` into `[2, 3]`:
+
+<CodeBlock language="typescript" title="matmul.ts">
+{`// weights: [3, 2], input: [3, 1]
+const weights = tf.tensor2d([[1, 2], [3, 4], [5, 6]]);  // [3, 2]
+const input = tf.tensor2d([[1], [1], [1]]);               // [3, 1]
+
+// weights.matMul(input) would throw:
+//   [3, 2] × [3, 1] — inner dims 2 ≠ 3. No deal.
+
+// transpose() flips [3, 2] → [2, 3]. Now the rule is satisfied:
+//   [2, 3] × [3, 1] → [2, 1] ✓
+const output = weights.transpose().matMul(input);
+output.print();
+// [[9],     ← 1+3+5: first column of weights, summed against input
+//  [12]]    ← 2+4+6: second column`}
+</CodeBlock>
+
+Why care? Every layer of every neural network you'll build is essentially `matMul(input, weights) + bias`. The shape rule above is the single most common source of errors in ML code — you'll meet `Error: inner dimensions must match` again, and now you know exactly what it's complaining about.
 
 ## Challenge
 
@@ -78,4 +97,16 @@ Add two tensors together to combine sensor readings.
 
 <Exercise slug="add-tensors" />
 
-<KeyTakeaways takeaways={["Shapes must agree before matMul: the [3,2] weights tensor needs a transpose() before it can multiply the [3,1] input", "Method chaining works: tensor.add(other).mul(scalar)", "Matrix multiplication (matMul) is the core operation of neural networks", "GPU acceleration means tensor ops scale to millions of elements"]} />
+<KeyTakeaways takeaways={["Element-wise ops (add, mul, sub) work like map + zip across any number of dimensions", "matMul rule: [m,n] × [n,p] → [m,p] — inner dimensions must match, transpose() to fix mismatches", "Method chaining works: tensor.add(other).mul(scalar)", "Every neural network layer is matMul(input, weights) + bias — this op is the workhorse"]} />
+
+<Epilogue>
+
+Demir wires the three feeds together — add to merge, scale to amplify — and pipes an hour of combined signal to Nazari's console. She watches it scroll for a long moment.
+
+<Dialogue speaker="Chief Nazari">
+There. Every few minutes, the same ripple across all sixty-four channels at once. Coordinated. Run it again — and Ensign, if this is a math error, I'm taking it out of your coffee ration.
+</Dialogue>
+
+It isn't a math error. It shows up on the second pass, and the third.
+
+</Epilogue>

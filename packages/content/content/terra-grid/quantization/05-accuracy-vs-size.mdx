@@ -139,7 +139,7 @@ Binary (1 bit): ~50% top-1 accuracy     3.1% size               -- specialized
 
 <Quiz
   question="When does INT8 quantization NOT work?"
-  options={[{"text":"Always works"},{"text":"When model has narrow dynamic range layers (attention output, layernorm) — INT8 rounding destroys them — correct"},{"text":"Only on CPUs"},{"text":"Requires special hardware"}]}
+  options={[{"text":"Always works"},{"text":"When model has narrow dynamic range layers (attention output, layernorm) — INT8 rounding destroys them"},{"text":"Only on CPUs"},{"text":"Requires special hardware"}]}
   correct={1}
   explanation="Most layers tolerate INT8 (0.5-2% accuracy drop). Some don't: attention scores have huge dynamic range, layernorm parameters are tiny. Per-layer mixed quantization (sensitive layers stay FP16, bulk goes INT8) is the production fix."
   tier="structural"
@@ -149,7 +149,7 @@ Binary (1 bit): ~50% top-1 accuracy     3.1% size               -- specialized
 
 <Quiz
   question="Quantizing a vision classifier from FP32 to INT8 dropped accuracy from 92% to 88%. The deployment latency budget is 50ms; FP32 takes 80ms; INT8 takes 25ms. What's the right call for an attention-driven UI feature where wrong predictions are recoverable?"
-  options={[{"text":"Stay on FP32 — never trade accuracy for speed"},{"text":"Ship INT8 — the latency budget is binding (FP32 misses it by 60%) and 4 points of accuracy is acceptable for the use case — correct"},{"text":"Train a smaller FP32 model from scratch to fit the latency budget"},{"text":"Quantize to INT4 to push latency below 25ms"}]}
+  options={[{"text":"Stay on FP32 — never trade accuracy for speed"},{"text":"Ship INT8 — the latency budget is binding (FP32 misses it by 60%) and 4 points of accuracy is acceptable for the use case"},{"text":"Train a smaller FP32 model from scratch to fit the latency budget"},{"text":"Quantize to INT4 to push latency below 25ms"}]}
   correct={1}
   explanation="The latency budget is the hard constraint — FP32 at 80ms ships nothing. INT8 hits 25ms with a 4-point accuracy drop in a low-stakes UI context. Option A ignores that no shipped model = no value. Option C is a bigger investment with no guarantee of better accuracy. Option D risks more accuracy drop without measurable additional benefit."
   tier="intuition"

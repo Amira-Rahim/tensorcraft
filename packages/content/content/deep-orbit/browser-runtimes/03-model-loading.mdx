@@ -4,7 +4,7 @@ title: "Model Loading"
 moduleId: browser-runtimes
 themeId: deep-orbit
 order: 3
-estimatedMinutes: 30
+estimatedMinutes: 15
 difficulty: intermediate
 context:
   narrative: "The trained DEEP SCAN model needs to be loaded into the browser dashboard. Demir discovers that loading a model is just another fetch — with a twist."
@@ -20,7 +20,6 @@ concept:
     breaks: "fetch returns a parsed JSON object; loadLayersModel returns a `LayersModel` instance with `predict`, `evaluate`, weights, and a compute graph. The HTTP call shape matches; the resolved value type does not. Subsequent code paths diverge — you call `.json()` once, you call `.predict()` many times, and the model holds onto GPU memory until disposed."
 consequence:
   narrative: "The DEEP SCAN model loads in 340ms. Nazari nods — within budget. Demir caches it in IndexedDB for offline use."
-  nextLessonTeaser: "Next: running real-time inference with the loaded model"
 hints:
   - level: nudge
     content: "tf.loadLayersModel(url) takes the URL of model.json and fetches the weight files listed in its manifest automatically"
@@ -176,3 +175,15 @@ Load a model with caching and verify its architecture.
 <Exercise slug="load-model" />
 
 <KeyTakeaways takeaways={["The DEEP SCAN model loads in 340ms from the network — model.summary() confirms the 673 parameters arrived intact", "Models are two parts: model.json (architecture) and .bin files (learned weights) — like code-splitting chunks", "IndexedDB caching prevents re-downloading — same pattern as service worker asset caching", "The onProgress callback gives loading feedback, just like fetch progress events"]} />
+
+<Epilogue>
+
+Retrained weights ship to the server at 0930. At 1247 Farah notices the dashboard disagreeing with her notebook: same reading, two different confidences. Demir cached the model the way he caches web fonts, and fonts never change, so he never versioned the key — the bridge has spent three hours and 10,800 readings running last week's weights while `deep-scan-v1` sat smug in IndexedDB.
+
+<Dialogue speaker="Chief Nazari">
+Three hours, Ensign. An asset that learns is an asset that ships new versions. Version the key, and add the removeModel call you skipped this morning.
+</Dialogue>
+
+He renames the cache `deep-scan-v2` before she finishes the sentence.
+
+</Epilogue>

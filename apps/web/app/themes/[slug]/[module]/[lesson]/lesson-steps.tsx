@@ -381,9 +381,12 @@ export function LessonSteps({
           {currentStep === 5 && (
             <StepConsequence
               lesson={lesson}
+              exercises={exercises}
               theme={theme}
               themeSlug={themeSlug}
               moduleSlug={moduleSlug}
+              lessonSlug={lessonSlug}
+              userFramework={userFramework}
               nextLesson={nextLesson}
             />
           )}
@@ -734,15 +737,21 @@ function StepTakeaways({
    ────────────────────────────────────────────── */
 function StepConsequence({
   lesson,
+  exercises,
   theme,
   themeSlug,
   moduleSlug,
+  lessonSlug,
+  userFramework,
   nextLesson,
 }: {
   lesson: LessonStepsProps["lesson"];
+  exercises: ExerciseData[];
   theme: LessonStepsProps["theme"];
   themeSlug: string;
   moduleSlug: string;
+  lessonSlug: string;
+  userFramework?: Framework;
   nextLesson: { slug: string; title: string } | null;
 }) {
   return (
@@ -793,6 +802,20 @@ function StepConsequence({
       >
         {lesson.consequence.narrative}
       </p>
+
+      {/* Closing scene from the MDX body (<Epilogue> blocks) — the story
+          beat the learner earns by finishing the work. */}
+      <div className="max-w-140 mx-auto text-left mb-8">
+        <LessonContent
+          lesson={lesson}
+          exercises={exercises}
+          themeId={themeSlug}
+          moduleId={moduleSlug}
+          lessonId={lessonSlug}
+          userFramework={userFramework}
+          visibleComponents={new Set(["Epilogue"])}
+        />
+      </div>
 
       {/* Next lesson teaser */}
       {lesson.consequence.nextLessonTeaser && (

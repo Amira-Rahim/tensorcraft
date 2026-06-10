@@ -71,7 +71,8 @@ const ROWS: Row[] = [
   },
   {
     feature: "Credential",
-    tensorcraft: "None (your shipped artifact is the credential)",
+    tensorcraft:
+      "Shareable certificate + a GitHub repo of every exercise you solved",
     fastai: "None",
     karpathy: "None",
     coursera: "Coursera certificate",

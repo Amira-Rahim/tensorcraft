@@ -168,7 +168,7 @@ Build a global deployment coordinator with time-zone-aware scheduling.
 
 <Quiz
   question="Why is data residency a constraint for ML serving?"
-  options={[{"text":"Faster local inference"},{"text":"GDPR/HIPAA require data not leave region — limits which model serving locations are valid — correct"},{"text":"Network bandwidth"},{"text":"Required by Kubernetes"}]}
+  options={[{"text":"Faster local inference"},{"text":"GDPR/HIPAA require data not leave region — limits which model serving locations are valid"},{"text":"Network bandwidth"},{"text":"Required by Kubernetes"}]}
   correct={1}
   explanation="GDPR (EU) and HIPAA (US healthcare) require data stay in-region. EU user data → EU model serving. Multi-region ML deployment: per-region model copies, careful traffic routing. Not just a network optimization — legal requirement."
   tier="structural"

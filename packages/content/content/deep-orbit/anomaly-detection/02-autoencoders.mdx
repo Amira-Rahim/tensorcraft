@@ -4,7 +4,7 @@ title: "Autoencoders"
 moduleId: anomaly-detection
 themeId: deep-orbit
 order: 2
-estimatedMinutes: 30
+estimatedMinutes: 13
 difficulty: advanced
 context:
   narrative: "Simple statistics miss complex patterns. Farah proposes an autoencoder — a network that learns to compress and reconstruct normal signals. High reconstruction error means the signal is unlike anything the model has learned."
@@ -20,7 +20,6 @@ concept:
     breaks: "Compression algorithms (gzip) decode losslessly back to the input. Autoencoders are lossy and reconstruct only what they learned to reconstruct well — inputs unlike training data come back distorted, which is the entire point of using them for anomaly detection."
 consequence:
   narrative: "The autoencoder reconstructs normal signals perfectly. But the anomalous signal? The reconstruction is mangled — the error is 12x the normal baseline."
-  nextLessonTeaser: "Next: measuring reconstruction error to quantify how anomalous a signal truly is"
 hints:
   - level: nudge
     content: "An autoencoder has two parts: encoder (compress) and decoder (reconstruct)"
@@ -115,3 +114,15 @@ Build and train an autoencoder on normal signal data.
 <Exercise slug="build-autoencoder" />
 
 <KeyTakeaways takeaways={["Autoencoders learn to compress and reconstruct — encoder squeezes data through a bottleneck, decoder rebuilds it", "Train on normal data only — the model learns the structure of normality", "The bottleneck forces the model to learn essential patterns, discarding noise", "Anomalous signals produce high reconstruction error because the model has never learned their patterns"]} />
+
+<Epilogue>
+
+First run: the loss curve is beautiful and the result is useless. Demir stripped every flagged reading, but the FFT features are computed over a surrounding window, so readings up to a minute on either side of the anomaly still carried its spectrum into the training set. The model learned the 73.4 Hz component obediently, like everything else it was shown, and now reconstructs the anomalous signal at 1.4x baseline. Close enough to normal to walk straight past any threshold. Farah finds the leak by cross-checking row timestamps against the flag log.
+
+<Dialogue speaker="Chief Nazari">
+Ninety minutes of training, 412 contaminated rows. Pad the exclusion margin by a full FFT window on each side, and make the margin a number in the config, not a hope.
+</Dialogue>
+
+The second run starts at 0115.
+
+</Epilogue>

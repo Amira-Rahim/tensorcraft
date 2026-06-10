@@ -449,7 +449,7 @@ Implement a deployment configuration with feature flags, health checks, and auto
 
 <Quiz
   question="Best metric for monitoring a deployed CNN classifier in production?"
-  options={[{"text":"Inference latency only"},{"text":"Per-class confusion matrix slices over rolling window — catches subgroup degradation aggregate accuracy hides — correct"},{"text":"GPU utilization"},{"text":"Total RPS"}]}
+  options={[{"text":"Inference latency only"},{"text":"Per-class confusion matrix slices over rolling window — catches subgroup degradation aggregate accuracy hides"},{"text":"GPU utilization"},{"text":"Total RPS"}]}
   correct={1}
   explanation="Aggregate accuracy moves slowly. A model can drop from 95% to 91% on one demographic subgroup while overall accuracy stays at 94%. Sliced monitoring catches this; aggregate doesn't. Plus: drift in the input feature distribution as a leading indicator."
   tier="structural"

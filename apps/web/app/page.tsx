@@ -132,11 +132,11 @@ export default function Home() {
               {[
                 {
                   label: "Train",
-                  desc: "Build and train a neural network from scratch using TensorFlow.js. No Python, no backend, no GPU required.",
+                  desc: "Build neural networks layer by layer in TensorFlow.js and train them in your browser tab. No Python, no backend, no GPU farm.",
                 },
                 {
                   label: "Detect",
-                  desc: "Classify real-time signal data as normal or anomalous using your own trained LSTM autoencoder.",
+                  desc: "Classify real-time signal data as normal or anomalous with an autoencoder + LSTM detector ensemble you assemble yourself.",
                 },
                 {
                   label: "Deploy",
@@ -144,7 +144,7 @@ export default function Home() {
                 },
                 {
                   label: "Own it",
-                  desc: "Every line of code is yours. Auto-commit to GitHub. Add it to your portfolio. Show it in interviews.",
+                  desc: "Every exercise you solve auto-commits to your GitHub. Walk into interviews able to explain every layer you built.",
                 },
               ].map((item) => (
                 <div key={item.label}>

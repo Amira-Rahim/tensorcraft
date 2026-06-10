@@ -147,7 +147,7 @@ The **bottleneck dimension** dim(z) constrains how much information the model ca
 
 <Quiz
   question="A vanilla autoencoder reconstructs input perfectly but generates garbage when you sample random points in its latent space. A VAE generates plausible new images. What's the architectural difference that fixes this?"
-  options={[{"text":"VAEs use bigger latent dimensions"},{"text":"VAEs encode each input as a distribution (μ, σ) instead of a single point, and the KL term forces the encoder's distributions to overlap and cover the prior — making the latent space continuous and samplable — correct"},{"text":"VAEs use ReLU instead of sigmoid"},{"text":"VAEs train longer than autoencoders"}]}
+  options={[{"text":"VAEs use bigger latent dimensions"},{"text":"VAEs encode each input as a distribution (μ, σ) instead of a single point, and the KL term forces the encoder's distributions to overlap and cover the prior — making the latent space continuous and samplable"},{"text":"VAEs use ReLU instead of sigmoid"},{"text":"VAEs train longer than autoencoders"}]}
   correct={1}
   explanation="Vanilla autoencoders learn point-to-point mappings — they leave the latent space full of holes between training points where decoding gives garbage. VAEs encode to a Gaussian (μ, σ) and the KL loss pulls every Gaussian toward N(0, I), filling the latent space with overlapping distributions. Sampling N(0, I) lands in well-trained regions."
   tier="structural"

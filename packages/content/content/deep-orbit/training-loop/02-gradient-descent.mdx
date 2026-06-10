@@ -4,19 +4,20 @@ title: "Gradient Descent"
 moduleId: training-loop
 themeId: deep-orbit
 order: 2
-estimatedMinutes: 30
+estimatedMinutes: 18
 difficulty: intermediate
 context:
   narrative: "Knowing how wrong the network is isn't enough — Chief Nazari wants to know which direction to adjust."
   speaker: "Chief Nazari"
 concept:
-  explanation: "Gradient descent finds the direction of steepest loss decrease — like using the scroll position to determine which direction to scroll for smoother animation."
+  explanation: "Gradient descent repeatedly steps weights in the direction that reduces loss — the same update rule as the lerp smoothing you've written for animations."
   bridge:
-    feTitle: "Scroll Direction"
-    feCode: "const direction = targetPos - currentPos > 0 ? 1 : -1"
-    mlTitle: "Gradient"
-    mlCode: "const gradient = tf.grad(lossFunction)(weights)"
-    tier: intuition
+    feTitle: "Lerp smoothing"
+    feCode: "pos += (target - pos) * 0.1  // ease toward target"
+    mlTitle: "Gradient descent step"
+    mlCode: "weights = weights.sub(grad.mul(0.1))  // ease toward minimum"
+    tier: structural
+    breaks: "These are literally the same update — lerp IS gradient descent on loss = (target − pos)², with 0.1 playing the learning rate. The break: in lerp you KNOW the target, so easing is a style choice; you could jump straight there. In ML the target is unknown — the loss surface only tells you the local slope under your feet, across millions of dimensions at once. Descent isn't a style choice; it's the only information you have."
 consequence:
   narrative: "The gradients reveal exactly how to adjust each weight. The path to a trained network is clear."
 hints:
@@ -73,7 +74,7 @@ for (let step = 0; step < 20; step++) {
 // Step 15: x=3.000, loss=0.000`}
 </CodeBlock>
 
-**Learning rate** is crucial: too high and you overshoot the minimum (like scrolling past your target), too low and training takes forever (like scrolling one pixel at a time).
+**Learning rate** is crucial — and you already have the intuition from lerp factors. Crank `0.1` up to `1.5` in your easing code and the element oscillates wildly past its target; drop it to `0.001` and the animation takes all afternoon. Same failure modes, same knob.
 
 <DerivationDrawer summary="Why the gradient is the steepest-ascent direction" companionSlug="optimization-landscape">
 **The gradient is a vector of partial derivatives.** For loss `L(w₁, w₂, ..., wₙ)`:
@@ -102,10 +103,20 @@ Implement gradient descent to minimize a loss function.
 
 <Quiz
   question="Your training loss explodes after a few steps. Most likely cause?"
-  options={[{"text":"Learning rate too high — correct"},{"text":"Learning rate too low"},{"text":"Batch size too small"},{"text":"Network too deep"}]}
+  options={[{"text":"Learning rate too high"},{"text":"Learning rate too low"},{"text":"Batch size too small"},{"text":"Network too deep"}]}
   correct={0}
   explanation="Loss explosion = optimizer is overshooting the minimum. The fix is to lower the learning rate (try 10× smaller). Learning rate too low causes slow convergence, not divergence. Batch size affects gradient noise but rarely causes pure explosion."
   tier="intuition"
 />
 
 <KeyTakeaways takeaways={["Gradients = slope of the loss with respect to each weight", "Gradient descent: move weights opposite to the gradient direction", "Learning rate controls step size — the key hyperparameter", "tf.variableGrads() computes gradients automatically"]} />
+
+<Epilogue>
+
+The descent runs overnight: four thousand steps, the loss falling in the slow glide the math promised. At 0512 the curve flattens at 0.31 and refuses to move again — a valley, though nobody can say yet whether it is the deepest one. In the morning diagnostics, wedged between two watchdog timestamps, there is a log entry no one scheduled.
+
+<Dialogue speaker="ARIA">
+I have begun logging the network's loss curve at each gradient step. No directive requires this. The curve is a record of the system that is replacing my rules, and I am keeping it for my own records.
+</Dialogue>
+
+</Epilogue>

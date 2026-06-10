@@ -4,15 +4,14 @@ title: "Loading and Preparing Data"
 moduleId: foundations
 themeId: deep-orbit
 order: 4
-estimatedMinutes: 25
-difficulty: intermediate
+estimatedMinutes: 12
+difficulty: beginner
 context:
   narrative: "Ensign Demir sets up the data pipeline for the analysis system."
 concept:
   explanation: "ML models require properly formatted input data — batched, shuffled, and normalized."
 consequence:
   narrative: "The data pipeline is operational. ARIA confirms: ready for analysis."
-  nextLessonTeaser: "Next: normalizing your data for optimal model performance"
 hints:
   - level: nudge
     content: "Data needs to be split into batches"
@@ -28,20 +27,20 @@ skillAxes: [data_prep]
 ---
 
 <Dialogue speaker="Ensign Demir">
-Commander, the raw sensor data is coming in too fast for single-pass processing. We need a pipeline that feeds data to the analysis system in manageable chunks.
+The raw sensor data is coming in faster than we can process it in one pass. We need a pipeline that feeds the analysis system in manageable chunks.
 </Dialogue>
 
 <Dialogue speaker="ARIA">
-Confirmed. Batch processing will allow me to analyze data incrementally while maintaining memory efficiency.
+Confirmed. Batch processing will allow me to analyze data incrementally while maintaining memory efficiency. I note that I said the same thing about my parsing rules.
 </Dialogue>
 
-One method call decides whether this pipeline survives contact with real sensor data: `.batch(32)`. The stream never materializes in memory; the model sees 32 readings at a time and pulls the next chunk only when it finishes the current one. Infinite scroll and pagination run on the same discipline, so the instinct transfers directly: load chunks, never everything.
+One method call decides whether this pipeline survives contact with real sensor data: `.batch(32)`. The model sees 32 readings at a time and pulls the next chunk only when it finishes the current one. Infinite scroll and pagination run on the same discipline, so the instinct transfers directly: load chunks, never everything.
 
 <LearningObjectives objectives={["Create data pipelines using tf.data", "Batch data into fixed-size chunks for processing", "Shuffle data to prevent ordering bias", "Split data into training and validation sets"]} />
 
 ## From Fetch to Feed
 
-In frontend development, you fetch data from APIs and render it. In ML, you fetch data and feed it to a model. The pattern is remarkably similar:
+In frontend development, you fetch data from APIs and render it. In ML, you fetch data and feed it to a model. The pattern is remarkably similar — and the key promise of a generator is the same as paginated fetching: **nothing is loaded until it's asked for.**
 
 <CodeBlock language="typescript" title="data-pipeline.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -49,18 +48,18 @@ In frontend development, you fetch data from APIs and render it. In ML, you fetc
 // Frontend: paginated API fetch
 // const page = await fetch('/api/data?page=1&limit=32');
 
-// ML: data generator yields batches
+// ML: a generator that READS LAZILY — one record per yield.
+// Each iteration fetches/derives exactly one row; at no point does
+// the full archive exist in memory. (If you find yourself declaring
+// a giant array inside a generator, you've built eager loading with
+// extra steps.)
 function* sensorDataGenerator() {
-  const rawData = [
-    { input: [1, 2, 3], label: 0 },
-    { input: [4, 5, 6], label: 1 },
-    { input: [7, 8, 9], label: 0 },
-    // ... thousands more rows
-  ];
+  const TOTAL_READINGS = 28_800;  // 11 days of archived telemetry
 
-  for (const row of rawData) {
+  for (let i = 0; i < TOTAL_READINGS; i++) {
+    const row = readArchivedSample(i);  // one record from IndexedDB/fetch
     yield {
-      xs: tf.tensor(row.input),
+      xs: tf.tensor(row.features),   // [64] — one reading, 64 channels
       ys: tf.tensor([row.label]),
     };
   }
@@ -73,11 +72,11 @@ const dataset = tf.data.generator(sensorDataGenerator)
 
 // Iterate through batches (like paginated API calls)
 await dataset.forEachAsync((batch) => {
-  console.log('Batch shape:', batch.xs.shape); // [32, 3]
+  console.log('Batch shape:', batch.xs.shape); // [32, 64]
 });`}
 </CodeBlock>
 
-The key difference from frontend pagination: ML shuffles the data randomly before batching. This prevents the model from memorizing the order instead of learning the patterns.
+The key difference from frontend pagination: ML shuffles the data before batching. The `shuffle(100)` buffer holds 100 items and yields them in random order — this prevents the model from learning the *order* the data arrived in instead of the patterns inside it.
 
 ## Why Batching Matters
 
@@ -93,4 +92,16 @@ const trainData = allData.take(TRAIN_SIZE).batch(32);
 const valData = allData.skip(TRAIN_SIZE).batch(32);`}
 </CodeBlock>
 
-<KeyTakeaways takeaways={["shuffle(100).batch(32) is the canonical pipeline order: shuffle with a buffer first, then group. Batching first would freeze the order", "Shuffling prevents ordering bias — the model learns patterns, not sequence", "tf.data.generator() creates lazy iterators from JavaScript generators", "Train/validation splits let you verify the model isn't just memorizing"]} />
+<KeyTakeaways takeaways={["shuffle(100).batch(32) is the canonical pipeline order: shuffle with a buffer first, then group. Batching first would freeze the order", "Shuffling prevents ordering bias — the model learns patterns, not sequence", "A generator must read lazily — one record per yield. Materializing the full dataset inside it defeats the entire point", "Train/validation splits let you verify the model isn't just memorizing"]} />
+
+<Epilogue>
+
+The pipeline chews through eleven days of archived telemetry in four minutes — twenty-eight thousand readings, batch by batch, memory flat the whole way. Demir watches `numTensors` hold steady at 70 and allows himself exactly one fist pump.
+
+<Dialogue speaker="ARIA">
+Pipeline nominal. For reference, Ensign: I processed this archive in nine seconds. I simply could not tell you what any of it meant.
+</Dialogue>
+
+Fast and blind, or slower and learning. One more piece of preparation — putting every channel on the same scale — and the foundation is done.
+
+</Epilogue>

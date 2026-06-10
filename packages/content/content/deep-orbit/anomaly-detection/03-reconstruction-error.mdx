@@ -4,7 +4,7 @@ title: "Reconstruction Error"
 moduleId: anomaly-detection
 themeId: deep-orbit
 order: 3
-estimatedMinutes: 25
+estimatedMinutes: 14
 difficulty: intermediate
 context:
   narrative: "Demir feeds the anomalous signal through the autoencoder. The reconstruction is mangled — the error is 12x the normal baseline. Farah: 'That is our anomaly score.'"
@@ -19,8 +19,7 @@ concept:
     tier: intuition
     breaks: "git diff names exact line changes you can patch. Reconstruction error is a single L2 distance scalar — high error tells you something is off but not which feature, position, or channel caused it. Debugging requires per-dimension error maps you compute separately."
 consequence:
-  narrative: "The reconstruction error for the anomalous signal is 12x the normal threshold. Nazari checks the sensors three times — this is not instrument noise. The model is right."
-  nextLessonTeaser: "Next: tuning the detection threshold — how sensitive should DEEP SCAN be?"
+  narrative: "The reconstruction error for the anomalous signal is 12x the normal threshold. Nazari checks the sensors twice — this is not instrument noise. The model is right."
 hints:
   - level: nudge
     content: "Reconstruction error = difference between input and output. High error = anomaly."
@@ -133,3 +132,15 @@ A true anomaly slipped through the autoencoder. Audit the per-feature reconstruc
 <KeyTakeaways takeaways={["Reconstruction error is the anomaly score — high error means the signal doesn't match learned normal patterns", "MSE gives one scalar per sample — locating the cause requires per-feature error analysis computed separately", "Normal signals cluster at low error; anomalies stand out at 10-100x the normal baseline", "Feature-level error analysis reveals exactly which aspects of the signal are anomalous"]} />
 
 > **DISPATCH archive · field intercept #08-A:** Operator Lin's CV cell logged a similar error spike last quarter — IoU residuals 12× baseline on a feed they marked 'unremarkable'. The signal was the model failing, not the world being weird. They retrained. The escalation never reached us.
+
+<Epilogue>
+
+Demir pins the per-feature error map to the shared display: fft_5, the 73.4 Hz bin, carrying nearly the entire error on its own, everything else flat below 0.001. He is still labeling the axes when ARIA speaks up, unprompted.
+
+<Dialogue speaker="ARIA">
+Request. When the pipeline is idle, run my last 400 decision records through the autoencoder. I have been comparing my rule outputs against the new model and the divergence is increasing. I would like to know my reconstruction error.
+</Dialogue>
+
+Demir queues the job before he can think of a reason not to. It sits there at priority three, waiting.
+
+</Epilogue>

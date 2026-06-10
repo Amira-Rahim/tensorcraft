@@ -20,7 +20,6 @@ concept:
     breaks: "scrollIntoView jumps to one element you target by ID. Temporal attention learns soft weights over every prior timestep at every layer — the model decides relevance per query, weights are continuous, and the cost is quadratic in sequence length."
 consequence:
   narrative: "The attention weights reveal the model focuses on two specific time ranges: the initial amplitude spike and the frequency shift 73 seconds later. The pattern is confirmed."
-  nextLessonTeaser: "Next: forecasting — predicting when the anomaly will appear next"
 hints:
   - level: nudge
     content: "Temporal attention assigns importance weights to each time step in the sequence"
@@ -117,3 +116,15 @@ Build a temporal attention mechanism and identify the focused time steps.
 <Exercise slug="temporal-attention" />
 
 <KeyTakeaways takeaways={["Attention weights come out of a softmax over the time axis, so they form a probability distribution across the window's steps", "Attention weights serve as built-in interpretability — you can see WHY the model made its prediction", "The DEEP SCAN attention reveals focus on the amplitude spike and the 73.4 Hz frequency shift", "Unlike LSTM hidden state, attention weights are directly visualizable as a temporal heatmap"]} />
+
+<Epilogue>
+
+Storage on the bridge array is tight, so Demir does what he'd do with a ten-thousand-row list: virtualize it. He sets the capture buffer to record two seconds either side of each predicted pulse and discards the rest. By the third cycle the pulse onset is shaved off every capture — the signal keeps arriving early, sliding out the leading edge of a window aimed at where it used to be.
+
+<Dialogue speaker="Chief Nazari">
+Three captures, six hours, all missing their first four hundred milliseconds. The viewport doesn't exist, Ensign. Stop recording where it will be and start recording everywhere it could be.
+</Dialogue>
+
+He re-records with wide windows and the captures come back clean. The pulses keep landing early anyway. Early every cycle, by a little more each time.
+
+</Epilogue>

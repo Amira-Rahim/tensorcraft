@@ -20,7 +20,6 @@ concept:
     breaks: "Microservices have stable contracts and explicit error responses. Model orchestration passes outputs (often natural-language) between probabilistic models — errors compound silently and one weak model degrades the entire chain without raising an exception."
 consequence:
   narrative: "The complete DEEP SCAN pipeline processes signals end-to-end: classify, detect anomalies, predict timing, and generate reports — all automatically."
-  nextLessonTeaser: "Module 10: making the whole system fast enough for production — optimization and edge deployment"
 hints:
   - level: nudge
     content: "Each model in the pipeline handles one task, passing its output to the next"
@@ -164,10 +163,22 @@ Wire together a multi-model pipeline with error handling.
 
 <Quiz
   question="Best way to chain LLM calls reliably?"
-  options={[{"text":"Single big prompt with all instructions"},{"text":"Decompose into small focused calls + validate output of each before next — correct"},{"text":"Always use the largest available model"},{"text":"Run all calls in parallel, then merge"}]}
+  options={[{"text":"Single big prompt with all instructions"},{"text":"Decompose into small focused calls + validate output of each before next"},{"text":"Always use the largest available model"},{"text":"Run all calls in parallel, then merge"}]}
   correct={1}
   explanation="Long prompts increase cost AND error rate. Each LLM call is probabilistic — chaining 5 unchecked calls with 95% reliability per call yields 77% end-to-end. Validate output (JSON schema, length, format) between steps; retry on failure. Production LLM systems read like microservice architectures."
   tier="structural"
 />
 
 <KeyTakeaways takeaways={["Chained probabilistic models compound error: five unchecked steps at 95% reliability each yield 77% end-to-end, so validate output between stages", "Define clear interfaces between stages: classifier output becomes anomaly detector input", "Graceful degradation: if one model fails, fall back to simpler methods rather than failing entirely", "The complete DEEP SCAN pipeline: classify → detect anomalies → predict → report — end-to-end automation"]} />
+
+<Epilogue>
+
+The first fully automated alert fires at 0317 the next night, while the bridge is dark and everyone who built the pipeline is asleep. Classifier, autoencoder, LSTM, language model — signal to finished summary with no human awake, Demir's checker signing off on every number in between. The alert's footer notes the pulse interval, shorter again than the night before. Mirza reads the whole chain of evidence over coffee at 0600 and asks exactly one question.
+
+<Dialogue speaker="Commander Mirza">
+How long from signal to report? Make it faster.
+</Dialogue>
+
+Fourteen seconds, Demir tells him, already knowing it isn't the right answer. The signal is accelerating. The pipeline will have to.
+
+</Epilogue>

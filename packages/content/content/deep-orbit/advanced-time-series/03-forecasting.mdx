@@ -19,8 +19,7 @@ concept:
     tier: intuition
     breaks: "Prefetching loads known assets you can name in advance. Forecasting predicts future values from a learned distribution; predictions widen in uncertainty with horizon (the prediction interval grows roughly with √horizon for many models) and may diverge entirely past a few steps. There is no cache hit — only a probability cone whose width is itself a forecast."
 consequence:
-  narrative: "The forecast predicts the anomaly will repeat at a specific time. It does not. The crew learns about non-stationary data — the signal's timing is changing."
-  nextLessonTeaser: "Next: Kalman filters — tracking a moving target under noise"
+  narrative: "The forecast predicts the anomaly will repeat at a specific time. It does not. The signal's timing is changing — and not randomly."
 hints:
   - level: nudge
     content: "Forecasting extends sequence prediction to multiple steps ahead"
@@ -132,3 +131,19 @@ Build a forecasting system and detect when predictions start drifting.
 <Exercise slug="forecast-signal" />
 
 <KeyTakeaways takeaways={["Forecasting extends prediction to multiple steps — confidence decreases with each step as errors compound", "Non-stationary data means patterns change over time — the model must adapt or be retrained", "Drift detection compares recent prediction errors to historical baselines, like monitoring for regressions", "The signal's timing is changing — it's not perfectly periodic, making simple forecasting insufficient"]} />
+
+<Epilogue>
+
+The forecast said 0312. The pulse came at 0309 — three minutes early, the third early arrival this week. Demir blames the model. Farah pulls every interval measurement since module 5 onto one display and stares at it for a long time.
+
+<Dialogue speaker="Dr. Farah">
+The model isn't wrong, Demir. The signal is changing. First measurement: a pulse every 73.4 seconds. The macro-cycle: 47 minutes. Both numbers have been shrinking ever since — same curve, same exponent. This isn't drift. It's compression.
+</Dialogue>
+
+<Dialogue speaker="Chief Nazari">
+Compression toward what? Give me the number, Doctor. When does the interval hit zero?
+</Dialogue>
+
+She doesn't answer. She's already running the extrapolation.
+
+</Epilogue>

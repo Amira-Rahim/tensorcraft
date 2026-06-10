@@ -227,7 +227,7 @@ Build the complete Protocol Sentinel pipeline by combining all transfer learning
 
 <Quiz
   question="Catastrophic forgetting in fine-tuning happens when?"
-  options={[{"text":"Learning rate is too low"},{"text":"Fine-tuning with high LR for too long — overwrites pretrained features the new task doesn't exercise — correct"},{"text":"Model is too small"},{"text":"Always — unavoidable"}]}
+  options={[{"text":"Learning rate is too low"},{"text":"Fine-tuning with high LR for too long — overwrites pretrained features the new task doesn't exercise"},{"text":"Model is too small"},{"text":"Always — unavoidable"}]}
   correct={1}
   explanation="Fine-tuning trains existing weights on new data. If LR is too high or training too long, the optimizer destroys representations the new task doesn't need. The fix: small LR, early stopping, or layer-freezing for general features."
   tier="structural"

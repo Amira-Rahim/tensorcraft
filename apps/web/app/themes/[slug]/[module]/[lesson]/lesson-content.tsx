@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
+import { createContext, useCallback, useContext, useMemo } from "react";
 import dynamic from "next/dynamic";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 import {
@@ -33,6 +33,7 @@ const Exercise = dynamic(
 import {
   BossBeat,
   Concept,
+  DeepScanDemo,
   DispatchTease,
   InteractiveDemo,
   MathBlock,
@@ -76,6 +77,16 @@ interface LessonContentProps {
   visibleComponents?: Set<string>;
   onExerciseComplete?: () => void;
 }
+
+/**
+ * True while rendering inside an <Epilogue> block. Components nested in an
+ * epilogue bypass the per-name visibility filter — the Epilogue wrapper
+ * itself is the gate. This is what lets a closing scene (prose + Dialogue)
+ * live in the MDX body but render only on the Consequence step, instead of
+ * leaking into Briefing (which shows Dialogue) and Concept (which shows
+ * prose).
+ */
+const EpilogueContext = createContext(false);
 
 /** MDX components available in lesson content */
 const mdxComponents = {
@@ -182,8 +193,14 @@ export function LessonContent({
       name: string,
       Component: React.ComponentType<P>,
     ) => {
-      const Wrapped = (props: P) =>
-        shouldShow(name) ? <Component {...props} /> : null;
+      const Wrapped = (props: P) => {
+        // Inside an <Epilogue>, the epilogue wrapper is the visibility gate;
+        // nested components render unconditionally.
+        const insideEpilogue = useContext(EpilogueContext);
+        return insideEpilogue || shouldShow(name) ? (
+          <Component {...props} />
+        ) : null;
+      };
       Wrapped.displayName = `Visible(${name})`;
       return Wrapped;
     };
@@ -203,6 +220,7 @@ export function LessonContent({
           />
         ) : null,
       InteractiveDemo: wrapVisibility("InteractiveDemo", InteractiveDemo),
+      DeepScanDemo: wrapVisibility("DeepScanDemo", DeepScanDemo),
       KeyTakeaways: wrapVisibility("KeyTakeaways", KeyTakeaways),
       LearningObjectives: wrapVisibility(
         "LearningObjectives",
@@ -286,6 +304,16 @@ export function LessonContent({
 
     base.Section = (props: { name: string; children: React.ReactNode }) =>
       shouldShow(props.name) ? <div>{props.children}</div> : null;
+
+    // Closing scene block — renders only on the Consequence step.
+    base.Epilogue = (props: { children: React.ReactNode }) =>
+      shouldShow("Epilogue") ? (
+        <EpilogueContext.Provider value={true}>
+          <div className="lesson-epilogue text-left" data-testid="epilogue">
+            {props.children}
+          </div>
+        </EpilogueContext.Provider>
+      ) : null;
 
     return base;
   }, [

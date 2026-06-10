@@ -262,7 +262,7 @@ Build a governance policy system that constrains model operations.
 
 <Quiz
   question="What's a content security policy (CSP) for ML models?"
-  options={[{"text":"A bandwidth quota"},{"text":"Documented limits on inputs the model SHOULDN'T be asked to handle (faces, minors, regulated decisions) — correct"},{"text":"An IP whitelist"},{"text":"Required by HTTPS"}]}
+  options={[{"text":"A bandwidth quota"},{"text":"Documented limits on inputs the model SHOULDN'T be asked to handle (faces, minors, regulated decisions)"},{"text":"An IP whitelist"},{"text":"Required by HTTPS"}]}
   correct={1}
   explanation="Web CSP gates resource loading. ML CSP gates inputs and outputs — explicit list of use cases the model is and isn't approved for. Without it, an image classifier shipped for product photos ends up classifying medical scans. Documentation IS the policy when there's no code-level enforcement."
   tier="intuition"

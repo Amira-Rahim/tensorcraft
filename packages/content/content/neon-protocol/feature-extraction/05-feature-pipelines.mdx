@@ -228,7 +228,7 @@ Build a feature pipeline class that chains preprocessing, extraction, and normal
 
 <Quiz
   question="What's training/serving skew?"
-  options={[{"text":"Model trained on different data than evaluated"},{"text":"Preprocessing in production differs from training — same input, different features — correct"},{"text":"Train/test split that overlaps"},{"text":"Model loss is unstable"}]}
+  options={[{"text":"Model trained on different data than evaluated"},{"text":"Preprocessing in production differs from training — same input, different features"},{"text":"Train/test split that overlaps"},{"text":"Model loss is unstable"}]}
   correct={1}
   explanation="If training preprocessing applies normalize→onehot but production applies onehot→normalize, the model sees different features in production. Subtle, silent. Catch via shadow inference (run prod preprocessing on training samples, compare features)."
   tier="structural"

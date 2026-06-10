@@ -4,7 +4,7 @@ title: "The Training Loop"
 moduleId: training-loop
 themeId: deep-orbit
 order: 4
-estimatedMinutes: 30
+estimatedMinutes: 18
 difficulty: advanced
 context:
   narrative: "All the pieces are in place. Ensign Demir initiates the training sequence — the network will learn from thousands of signal examples."
@@ -19,7 +19,6 @@ concept:
     tier: structural
 consequence:
   narrative: "Loss drops from 0.69 to 0.08 over 50 epochs. The network is learning. The signal becomes clearer with each iteration."
-  nextLessonTeaser: "Next: the final test — evaluating DEEP SCAN on real signals"
 hints:
   - level: nudge
     content: "model.fit() runs the training loop — forward pass, loss, backprop, update"
@@ -86,6 +85,12 @@ const history = await model.fit(trainX, trainY, {
 - **batchSize**: How many samples to process before updating weights. 32 is a good default.
 - **validationSplit**: Fraction of data held out to check for overfitting.
 
+"Up to a point" has a body count. Demir's first run was not the clean curve above: reasoning from animation loops, where more frames always means smoother easing, he set `epochs: 500` to be safe and went for coffee. He came back to a training loss of 0.0004 and a validation loss that had been climbing since epoch 60. Forty minutes of compute, and the model was worse on real signals than the twenty-minute version — it had stopped learning the pattern and started memorizing the dataset. An animation that runs longer gets closer to its target; a network that trains longer gets closer to its training data, which is not the same place.
+
+<Dialogue speaker="Chief Nazari">
+Forty minutes of compute to make it worse. That's coming out of your certification hours, Ensign. From now on, validation loss is the first number you read — and the first one you show me.
+</Dialogue>
+
 <DerivationDrawer summary="The 7-step SGD loop that fit() hides">
 **`model.fit()` is a wrapper around this loop**, repeated `epochs × (datasetSize / batchSize)` times:
 
@@ -128,10 +133,16 @@ Train the DEEP SCAN network and watch the loss decrease.
 
 <Quiz
   question="Why use mini-batch (32-512) instead of full-batch or single-sample?"
-  options={[{"text":"Mini-batch is faster on CPU"},{"text":"Tradeoff: smooth-enough gradient estimate + GPU saturation + memory fits — correct"},{"text":"Required by Adam optimizer"},{"text":"Standard for online learning"}]}
+  options={[{"text":"Mini-batch is faster on CPU"},{"text":"Tradeoff: smooth-enough gradient estimate + GPU saturation + memory fits"},{"text":"Required by Adam optimizer"},{"text":"Standard for online learning"}]}
   correct={1}
   explanation="Full-batch is exact but slow (one step per epoch + huge memory). Single-sample is noisy + underuses GPU parallelism. Mini-batch 16-512 hits the sweet spot — enough samples for low-variance gradient estimate, small enough to fit, large enough to saturate GPU compute."
   tier="structural"
 />
 
 <KeyTakeaways takeaways={["model.fit() runs the full training loop: forward → loss → backprop → update", "Epochs = full passes through the dataset, batches = chunks within each epoch", "Validation split catches overfitting — if val_loss increases while loss decreases, you're memorizing", "Callbacks let you monitor progress, like console.log in a rAF loop"]} />
+
+<Epilogue>
+
+The rerun stops itself at epoch 64, early-stopping on a validation loss of 0.081. Demir prints both curves and tapes them above his console: the 500-epoch run labeled MEMORIZING, the 64-epoch run labeled LEARNING. On his way out he stops at the archive terminal and pulls the manifest — 28,800 readings, eleven days of telemetry, all of it now folded into 673 trained weights. Somewhere in that archive, he thinks, is at least one reading the network now knows something about that nobody on board does.
+
+</Epilogue>

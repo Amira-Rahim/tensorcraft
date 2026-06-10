@@ -131,7 +131,7 @@ Clinical attention bias: the model learns to attend to features that correlate w
 
 <Quiz
   question="How do you audit attention bias in a clinical model?"
-  options={[{"text":"Inspect random samples"},{"text":"Compute attention statistics per demographic slice; flag if model attends to spurious features (machine ID, hospital metadata) — correct"},{"text":"Retrain with different seed"},{"text":"Use a bigger model"}]}
+  options={[{"text":"Inspect random samples"},{"text":"Compute attention statistics per demographic slice; flag if model attends to spurious features (machine ID, hospital metadata)"},{"text":"Retrain with different seed"},{"text":"Use a bigger model"}]}
   correct={1}
   explanation="Bias hides in WHAT the model attends to. A chest X-ray classifier may attend to the X-ray machine's metadata stamp (which differs by hospital) instead of lung tissue. Sliced attention statistics + comparison to clinician attention regions surface this."
   tier="structural"

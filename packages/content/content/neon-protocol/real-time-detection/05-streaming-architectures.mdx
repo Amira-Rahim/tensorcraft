@@ -189,7 +189,7 @@ Build a streaming pipeline that manages multiple feeds with backpressure handlin
 
 <Quiz
   question="Why frame-skip during high CPU load?"
-  options={[{"text":"Saves disk space"},{"text":"Falling behind real-time queues frames; processing stale frames is wasted compute — correct"},{"text":"Required by WebRTC"},{"text":"Improves model accuracy"}]}
+  options={[{"text":"Saves disk space"},{"text":"Falling behind real-time queues frames; processing stale frames is wasted compute"},{"text":"Required by WebRTC"},{"text":"Improves model accuracy"}]}
   correct={1}
   explanation="If inference takes 50ms but frames arrive at 33ms (30fps), the queue grows. Eventually you process frames seconds behind real-time — useless for live detection. Skip-to-latest keeps you current. Tradeoff: temporal continuity (some tracking algorithms need every frame)."
   tier="structural"

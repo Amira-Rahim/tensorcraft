@@ -135,7 +135,7 @@ Build a threshold-based classifier and measure its accuracy.
 
 <Quiz
   question="Why does a brightness-threshold classifier fail on real images?"
-  options={[{"text":"Brightness depends on lighting, not class — same object varies wildly across images — correct"},{"text":"Threshold is too strict"},{"text":"Requires more training data"},{"text":"Doesn't use TensorFlow.js"}]}
+  options={[{"text":"Brightness depends on lighting, not class — same object varies wildly across images"},{"text":"Threshold is too strict"},{"text":"Requires more training data"},{"text":"Doesn't use TensorFlow.js"}]}
   correct={0}
   explanation="A 'cat' photo at noon has different mean brightness than the same cat at dusk. Single-feature classifiers can't generalize across lighting/exposure. CNNs learn lighting-invariant features by composing local patterns into hierarchical representations."
   tier="intuition"

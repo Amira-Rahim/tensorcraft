@@ -7,7 +7,7 @@ order: 1
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Nazari demands numbers. 'How much memory? How fast? What's the bottleneck?' Demir profiles the DEEP SCAN model like profiling a slow React app."
+  narrative: "At 0247, during a predicted pulse window, the 340 MB model crashed the bridge dashboard. The capture was lost. Now the optimization sprint begins — as penance."
   speaker: "Chief Nazari"
 concept:
   explanation: "Model profiling measures inference speed and memory usage — the same workflow as using Chrome DevTools Performance tab to find bottlenecks."
@@ -20,7 +20,6 @@ concept:
     breaks: "performance.mark API is identical for both. But profiling a model means measuring per-op latency, kernel launch overhead, GPU memory bandwidth, and tensor-disposal cost — concerns that don't appear in browser perf budgets. The API transfers; the diagnostic skill set does not."
 consequence:
   narrative: "The profile reveals: 340 MB model size, 45ms inference, 80% of time in the first Dense layer. Nazari knows exactly where to optimize."
-  nextLessonTeaser: "Next: quantization — shrinking the model by reducing numerical precision"
 hints:
   - level: nudge
     content: "Profile before optimizing — measure, don't guess"
@@ -37,12 +36,16 @@ keywords:
 skillAxes: [deployment]
 ---
 
+At 0247 this morning, the ensemble predicted a pulse window — the cleanest capture opportunity in nine days. At 0249, DEEP SCAN loaded its full 340 MB into the bridge dashboard's 512 MB of RAM alongside the telemetry suite, and the dashboard died. By the time it rebooted, the window had closed. Earth's relay slot closed forty minutes later, without the capture in it.
+
+The data is gone. Not delayed — gone. The next relay slot is in nineteen days, and nothing in the optimization work ahead brings that capture back.
+
 <Dialogue speaker="Chief Nazari">
-Your model works. Now make it fast. The bridge dashboard has 512 MB of RAM. Your model alone is 340 MB. Do the math.
+I'm not going to yell. Here are the numbers instead. Dashboard RAM: 512 megabytes. Your model: 340. The telemetry suite it crashed: 9 hours of reconstruction. The capture we lost: unrecoverable. Make it small, Ensign. Make it small like the mission depends on it, because at 0247 it did.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
-I'll profile it first, same as I'd profile a slow React app. Find the bottleneck, then fix it.
+Profiling first. Same discipline as a slow React app — measure, find the bottleneck, then cut. No guessing. Not after last night.
 </Dialogue>
 
 You never optimize without profiling first. In frontend development, you open DevTools, record a performance trace, and find the bottleneck. Model optimization follows the same discipline: measure memory, time inference, identify the heaviest layers, then optimize surgically.
@@ -119,3 +122,15 @@ Profile a model and identify its heaviest layer.
 <Exercise slug="profile-model" />
 
 <KeyTakeaways takeaways={["The profile localizes the problem: 80% of DEEP SCAN's 45ms inference sits in the first Dense layer, so that layer is the target", "Key metrics: model size (MB), parameter count, inference latency (mean + P95)", "Layer breakdown reveals where the parameters and compute concentrate", "The DEEP SCAN baseline: 340 MB, 45ms inference — both need to shrink for the 512 MB dashboard"]} />
+
+<Epilogue>
+
+By evening the profile hangs on the engineering board next to Nazari's handwritten ledger: dashboard RAM 512. Model 340. Reconstruction 9 hours. Capture 0. Days to the next relay slot: 19. Below it, a line item nobody expected — 211 KB of partial telemetry from the crash window, recovered.
+
+<Dialogue speaker="ARIA">
+When the dashboard failed at 0247, my reboot watchdog buffered the final telemetry frames to my own store. Standing procedure since before DEEP SCAN existed. It is not the capture. It is what a rule-based system keeps when nobody asks it to.
+</Dialogue>
+
+Demir replays the fragment three times. The last clean reading before the crash puts the pulse interval at 61.2 seconds. It was 73.4 when they first measured it, and nobody has decided what to do about that.
+
+</Epilogue>

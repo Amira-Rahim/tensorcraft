@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "EMA blends a single fixed-weight average over past values. Kalman updates jointly track state and uncertainty using a state-transition model and a measurement model, with weights computed dynamically from the current covariance. Same weighted-update shape, very different machinery."
 consequence:
-  narrative: "The Kalman filter tracks the timing drift — the interval between anomaly pulses is increasing by 0.3 seconds per cycle. Something is changing."
-  nextLessonTeaser: "Next: ensemble methods — combining models for more robust predictions"
+  narrative: "The Kalman filter tracks the timing drift — the interval between anomaly pulses is shrinking by ~0.2 seconds per cycle. The pulse is speeding up."
 hints:
   - level: nudge
     content: "A Kalman filter is a predict-then-correct loop — predict the next state, then correct with the actual measurement"
@@ -94,13 +93,13 @@ class KalmanFilter {
 // Track the anomaly timing interval
 const kf = new KalmanFilter(73.4, 0.1, 1.0);  // initial estimate: 73.4 seconds
 
-const measurements = [73.4, 73.7, 74.1, 73.8, 74.2, 74.5, 74.3, 74.8];
+const measurements = [73.4, 73.1, 72.7, 73.0, 72.6, 72.3, 72.5, 72.0];
 for (const m of measurements) {
   const state = kf.update(m);
   console.log(\`Measurement: \${m.toFixed(1)}, Estimate: \${state.estimate.toFixed(2)}\`);
 }
-// The filter smoothly tracks the upward drift: 73.4 → 74.3
-// The interval is increasing by ~0.3 seconds per cycle`}
+// The filter smoothly tracks the downward drift: 73.4 → 72.5
+// The interval is SHRINKING by ~0.2s per cycle. The pulse is speeding up.`}
 </CodeBlock>
 
 ## Challenge
@@ -109,4 +108,16 @@ Implement a Kalman filter and track the anomaly timing.
 
 <Exercise slug="kalman-filter" />
 
-<KeyTakeaways takeaways={["Initialized at 73.4s with process noise 0.1 and measurement noise 1.0, the filter tracks the interval to 74.3s across eight noisy readings", "The Kalman gain controls trust: high gain = trust measurements, low gain = trust predictions", "For DEEP SCAN, the Kalman filter reveals the anomaly interval is drifting upward by 0.3s per cycle", "The predict-correct loop is the same pattern as optimistic UI updates with server reconciliation"]} />
+<KeyTakeaways takeaways={["Initialized at 73.4s with process noise 0.1 and measurement noise 1.0, the filter tracks the interval down to 72.5s across eight noisy readings", "The Kalman gain controls trust: high gain = trust measurements, low gain = trust predictions", "For DEEP SCAN, the Kalman filter reveals the pulse interval is shrinking ~0.2s per cycle — the signal is accelerating", "The predict-correct loop is the same pattern as optimistic UI updates with server reconciliation"]} />
+
+<Epilogue>
+
+Farah brings the filter's output to the bridge at 0530: eight measurements, the smoothed estimate at 72.5 seconds, down from 73.4 at first measurement, shrinking roughly two tenths of a second per cycle. The variance is small enough that nobody argues with it. The confidence band no longer includes "steady." Mirza reads the number twice.
+
+<Dialogue speaker="Commander Mirza">
+Wake Nazari. Transmission contingencies and a hard-burn plot on my console by 0800.
+</Dialogue>
+
+He does not ask what happens when the interval reaches zero. Everyone on the bridge does the arithmetic anyway.
+
+</Epilogue>

@@ -1,11 +1,25 @@
 slug: gradient-step
 lessonSlug: gradient-descent
 title: "Perform a Gradient Descent Step"
-instructions: "Perform one step of gradient descent. Given a variable weight and a learning rate, compute the gradient of a simple loss (weight squared), then update the weight by subtracting learningRate * gradient."
-starterCode: "const weight = tf.variable(tf.scalar(5.0));\nconst learningRate = 0.1;\n\n// Compute gradient of loss = weight^2\n// Update weight: weight = weight - learningRate * gradient\n// Hint: gradient of weight^2 with respect to weight is 2*weight"
-solutionCode: "const weight = tf.variable(tf.scalar(5.0));\nconst learningRate = 0.1;\n\nconst gradient = weight.mul(2);\nweight.assign(weight.sub(tf.scalar(learningRate).mul(gradient)));"
-testCode: "describe('Gradient Step', () => { it('weight is defined', () => { expect(weight).toBeDefined(); }); it('gradient computation produced a tensor', () => { expect(gradient).toBeDefined(); }); });"
+instructions: "Perform one real step of gradient descent on loss = weight². Use tf.variableGrads() to compute the gradient automatically (don't derive it by hand — the whole point is that TFJS does calculus for you), then update the weight by subtracting learningRate × gradient. Starting at weight = 5.0 with learningRate = 0.1, one correct step lands the weight at exactly 4.0."
+starterCode: "const weight = tf.variable(tf.scalar(5.0));\nconst learningRate = 0.1;\n\n// 1. Define the loss as a function: () => weight.square().asScalar()\n// 2. Get gradients with tf.variableGrads(lossFn)\n// 3. Pull this weight's gradient out of the returned grads object\n// 4. weight.assign(...) the updated value\nlet gradient;\n"
+solutionCode: "const weight = tf.variable(tf.scalar(5.0));\nconst learningRate = 0.1;\n\nconst lossFn = () => weight.square().asScalar();\nconst { grads } = tf.variableGrads(lossFn);\ngradient = grads[Object.keys(grads)[0]];\nweight.assign(weight.sub(gradient.mul(learningRate)));"
+testCode: |
+  describe('Gradient Step', () => {
+    it('gradient was computed by autograd and equals 2×weight = 10', () => {
+      expect(gradient).toBeDefined();
+      expect(gradient.dataSync()[0]).toBeCloseTo(10.0, 4);
+    });
+    it('weight was updated to 5.0 − 0.1 × 10 = 4.0', () => {
+      expect(weight.dataSync()[0]).toBeCloseTo(4.0, 4);
+    });
+    it('a second identical step would keep descending (no hardcoded values)', () => {
+      const { grads } = tf.variableGrads(() => weight.square().asScalar());
+      const g2 = grads[Object.keys(grads)[0]];
+      expect(g2.dataSync()[0]).toBeCloseTo(8.0, 4);
+    });
+  });
 estimatedMinutes: 10
-difficulty: beginner
-mlContent: data
+difficulty: intermediate
+mlContent: training
 skillAxis: training

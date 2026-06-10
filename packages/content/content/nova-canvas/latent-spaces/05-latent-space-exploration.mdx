@@ -182,7 +182,7 @@ Result: path stays on the prior's high-density region (unit sphere if z is L2-no
 
 <Quiz
   question="Why use slerp instead of linear interpolation in latent space?"
-  options={[{"text":"slerp is faster"},{"text":"Linear interpolation goes through low-density regions; slerp stays on the prior's high-density manifold — correct"},{"text":"Required by VAE"},{"text":"Better gradient flow"}]}
+  options={[{"text":"slerp is faster"},{"text":"Linear interpolation goes through low-density regions; slerp stays on the prior's high-density manifold"},{"text":"Required by VAE"},{"text":"Better gradient flow"}]}
   correct={1}
   explanation="Standard normal prior in high-dim concentrates mass on a thin shell. Linear interpolation passes through the (low-density) origin region — decoded outputs become blurry mid-path. Slerp follows the great circle on the unit sphere, staying on-manifold. Result: smooth interpolation through valid samples."
   tier="structural"

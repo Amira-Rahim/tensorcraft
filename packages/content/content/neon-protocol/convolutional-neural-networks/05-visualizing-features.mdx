@@ -235,7 +235,7 @@ A feature map is the output of one filter, shape `[H_out, W_out]` per filter per
 
 <Quiz
   question="Why do early CNN layers learn edge detectors regardless of task?"
-  options={[{"text":"Predetermined by initialization"},{"text":"Edges are universal low-level features in natural images — task-agnostic — correct"},{"text":"Required by ReLU activation"},{"text":"Encoded in TensorFlow.js"}]}
+  options={[{"text":"Predetermined by initialization"},{"text":"Edges are universal low-level features in natural images — task-agnostic"},{"text":"Required by ReLU activation"},{"text":"Encoded in TensorFlow.js"}]}
   correct={1}
   explanation="Natural images share statistics: edges, gradients, oriented patterns. The most efficient first-layer features are universal regardless of whether the network classifies cats, X-rays, or satellite imagery. This is why ImageNet-pretrained early layers transfer to most vision tasks."
   tier="structural"

@@ -4,7 +4,7 @@ title: "TensorFlow.js Setup"
 moduleId: browser-runtimes
 themeId: deep-orbit
 order: 2
-estimatedMinutes: 25
+estimatedMinutes: 12
 difficulty: intermediate
 context:
   narrative: "Demir begins wiring TensorFlow.js into the ship's dashboard. Nazari watches over his shoulder, timing every step."
@@ -19,7 +19,6 @@ concept:
     tier: identity
 consequence:
   narrative: "TensorFlow.js initializes on the dashboard. The WebGL backend activates, confirming GPU acceleration is available."
-  nextLessonTeaser: "Next: loading a pre-trained model into the browser"
 hints:
   - level: nudge
     content: "Start with npm install, then import and check the backend"
@@ -43,7 +42,7 @@ Installing TensorFlow.js feels exactly like adding any other dependency. npm ins
 Good. Because the hard part isn't installation. It's what comes after. Check the backend. If it falls back to CPU, our inference budget is blown.
 </Dialogue>
 
-You've added React, Vue, D3, Three.js; every library starts the same way. TensorFlow.js is no different. The only new concept is **backends**: TF.js can run on WebGL (GPU), WebAssembly (CPU, optimized), or plain JavaScript (CPU, slow).
+0.5 milliseconds, 3 milliseconds, 15 milliseconds. Same matrix multiply, same browser tab, a 30× spread — the only variable is which engine TF.js lands on. Installation is the part you already know; the new concept is **backends**: TF.js can run on WebGL (GPU), WebAssembly (CPU, optimized), or plain JavaScript (CPU, slow).
 
 <LearningObjectives objectives={["Install and import TensorFlow.js in a web project", "Understand TF.js backends (WebGL, WASM, CPU) and their performance characteristics", "Initialize TF.js and verify which backend is active", "Configure the optimal backend for your deployment target"]} />
 
@@ -143,3 +142,15 @@ Set up TensorFlow.js and verify the active backend.
 <Exercise slug="tfjs-setup" />
 
 <KeyTakeaways takeaways={["The same matmul costs ~0.5ms on webgl, ~3ms on wasm, ~15ms on cpu: check tf.getBackend() before trusting a latency budget", "Backends (WebGL, WASM, CPU) determine performance — like choosing GPU-accelerated CSS vs JS layout", "WebGL is fastest for most models; WASM is the reliable fallback for devices without good GPUs", "Always call tf.dispose() on tensors you're done with — browser memory is limited"]} />
+
+<Epilogue>
+
+Demir runs the backend check on every bridge station before he calls it done. Five consoles report `webgl`. The sixth — the engineering panel, oldest display on the ship — comes back `wasm`: 3.1 ms per matmul instead of 0.5.
+
+<Dialogue speaker="Chief Nazari">
+So the engineering chair sees the feed six times slower than the helm. Log it. If anyone ever has to watch from that station, I want to know what they are missing and by how much.
+</Dialogue>
+
+He logs it. Nobody plans to watch from that chair.
+
+</Epilogue>

@@ -1,11 +1,25 @@
 slug: add-tensors
 lessonSlug: tensor-operations
-title: "Add Two Tensors"
-instructions: "Add two tensors element-wise using tf.add()."
-starterCode: "const a = tf.tensor([1, 2, 3]);\nconst b = tf.tensor([4, 5, 6]);\nconst result = null; // add a and b"
-solutionCode: "const a = tf.tensor([1, 2, 3]);\nconst b = tf.tensor([4, 5, 6]);\nconst result = tf.add(a, b);"
-testCode: "describe('Add', () => { it('produces correct sum', () => { expect(Array.from(result.dataSync())).toEqual([5, 7, 9]); }); });"
+title: "Merge the Sensor Passes"
+instructions: "Nazari ran the same scan twice to cancel noise. Combine the two passes: (1) average them element-wise into `merged` — add, then divide by 2, (2) the signal is faint, so amplify the average by a gain of 2.5 into `boosted`. Chain the ops or use separate calls; the grader only cares that the numbers are right."
+starterCode: "const pass1 = tf.tensor([0.2, 0.6, 0.4, 0.8]);\nconst pass2 = tf.tensor([0.4, 0.2, 0.6, 0.6]);\nconst GAIN = 2.5;\n\n// 1. Element-wise average of the two passes\nconst merged = null; // your code here\n\n// 2. Amplify by GAIN\nconst boosted = null;"
+solutionCode: "const pass1 = tf.tensor([0.2, 0.6, 0.4, 0.8]);\nconst pass2 = tf.tensor([0.4, 0.2, 0.6, 0.6]);\nconst GAIN = 2.5;\n\nconst merged = pass1.add(pass2).div(2);\nconst boosted = merged.mul(GAIN);"
+testCode: |
+  describe('Sensor Merge', () => {
+    it('merged is the element-wise average', () => {
+      const v = Array.from(merged.dataSync());
+      expect(v[0]).toBeCloseTo(0.3, 5);
+      expect(v[1]).toBeCloseTo(0.4, 5);
+      expect(v[2]).toBeCloseTo(0.5, 5);
+      expect(v[3]).toBeCloseTo(0.7, 5);
+    });
+    it('boosted applies the 2.5x gain', () => {
+      const v = Array.from(boosted.dataSync());
+      expect(v[0]).toBeCloseTo(0.75, 5);
+      expect(v[3]).toBeCloseTo(1.75, 5);
+    });
+  });
 estimatedMinutes: 8
-difficulty: intermediate
+difficulty: beginner
 mlContent: data
 skillAxis: data_prep
