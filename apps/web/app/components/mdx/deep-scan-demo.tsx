@@ -44,6 +44,20 @@ const STREAM: { id: string; features: [number, number, number] }[] = [
 const ANOMALY_FEATURES = STREAM[STREAM.length - 1].features;
 const CHANNELS = ["ch-0", "ch-1", "ch-2"] as const;
 
+// Interactive-panel presets. Values are PROBED against the real model
+// (scripts/probe-deep-scan-model.mjs) so labels match actual output:
+// healthy → 15.3% NORMAL · 7741 → 51.3% NEITHER · anomaly → 91.5% ANOMALOUS.
+// Re-probe if the model is retrained.
+const PRESETS: {
+  id: string;
+  label: string;
+  values: [number, number, number];
+}[] = [
+  { id: "healthy", label: "healthy reading", values: [0.1, 0.9, 0.15] },
+  { id: "7741", label: "sample 7741", values: [0.5, 0.5, 0.5] },
+  { id: "anomaly", label: "deep anomaly", values: [0.95, 0.05, 0.95] },
+];
+
 // Minimal surface of the tfjs modules the user-reading panel needs.
 interface TfCore {
   tensor2d: (v: number[][]) => { dispose?: () => void };
@@ -240,11 +254,43 @@ export function DeepScanDemo({
         {interactive && status === "done" && (
           <div
             data-testid="demo-user-panel"
-            className="pt-3 border-t border-border mt-3 space-y-2"
+            className="pt-3 border-t border-border mt-3 space-y-2.5"
           >
-            <p className="text-xs uppercase tracking-widest text-primary">
-              // your reading — drag the channels, the model answers live
+            <p className="text-xs uppercase tracking-widest text-primary flex items-center gap-2">
+              <span className="w-[7px] h-[7px] bg-primary inline-block" />
+              Your turn — feed it a reading
             </p>
+            <p className="text-xs text-text-muted/80">
+              The model only ever sees these three sensor numbers. Try a preset,
+              then drag — no single channel decides, push two.
+            </p>
+
+            {/* Probed presets — labels match real model output (15% / 51% / 92%) */}
+            <div className="flex flex-wrap gap-2 pt-0.5">
+              {PRESETS.map((p) => {
+                const active = p.values.every((v, i) => v === userVals[i]);
+                return (
+                  <button
+                    key={p.label}
+                    type="button"
+                    data-testid={`demo-preset-${p.id}`}
+                    onClick={() => {
+                      setUserVals([...p.values]);
+                      void classifyUser([...p.values]);
+                    }}
+                    aria-pressed={active ? "true" : "false"}
+                    className={`px-3 py-1 text-xs border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
+                      active
+                        ? "border-primary text-primary bg-primary/10"
+                        : "border-border text-text-muted hover:text-text-primary hover:border-primary/30"
+                    }`}
+                  >
+                    {p.label}
+                  </button>
+                );
+              })}
+            </div>
+
             {CHANNELS.map((ch, i) => (
               <div key={ch} className="flex items-center gap-3">
                 <label
@@ -271,10 +317,38 @@ export function DeepScanDemo({
                 </span>
               </div>
             ))}
+
+            {/* Verdict meter — makes every drag visibly move something,
+                and shows WHERE the verdict zones live. */}
+            <div className="pt-1.5">
+              <div
+                className="relative h-3 flex border border-border"
+                aria-hidden="true"
+              >
+                <div className="w-[30%] border-r border-border bg-primary/15" />
+                <div className="w-[40%]" />
+                <div className="w-[30%] border-l border-border bg-warning/15" />
+                {userScore !== null && (
+                  <div
+                    data-testid="demo-meter-needle"
+                    className="absolute top-[-3px] bottom-[-3px] w-[3px] bg-text-primary transition-[left] duration-150"
+                    style={{
+                      left: `calc(${(userScore * 100).toFixed(1)}% - 1px)`,
+                    }}
+                  />
+                )}
+              </div>
+              <div className="flex text-[10px] uppercase tracking-wider text-text-muted/70 pt-1">
+                <span className="w-[30%]">normal</span>
+                <span className="w-[40%] text-center">— neither —</span>
+                <span className="w-[30%] text-right">anomalous</span>
+              </div>
+            </div>
+
             <div
               data-testid="demo-user-score"
               aria-live="polite"
-              className="flex items-baseline gap-3 pt-1"
+              className="flex items-baseline gap-3"
             >
               <span className="text-text-muted w-28 shrink-0">your sample</span>
               {userScore === null ? (
@@ -286,9 +360,9 @@ export function DeepScanDemo({
                   </span>
                   <span
                     className={
-                      verdict(userScore) === "— NEITHER —"
-                        ? "text-warning font-bold"
-                        : "text-text-muted"
+                      userScore < 0.3
+                        ? "text-primary font-bold"
+                        : "text-warning font-bold"
                     }
                   >
                     {verdict(userScore)}
@@ -296,9 +370,9 @@ export function DeepScanDemo({
                 </>
               )}
             </div>
-            <p className="text-xs text-text-muted/70 pt-1">
-              // you start on sample 7741&rsquo;s exact values. Find what fools
-              the model — that&rsquo;s lesson one&rsquo;s question.
+            <p className="text-xs text-text-muted/70">
+              Sample 7741 sits dead center — too odd to ignore, too ambiguous to
+              alarm. Module 1 teaches you why.
             </p>
           </div>
         )}

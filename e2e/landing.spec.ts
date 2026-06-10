@@ -40,6 +40,13 @@ test.describe("Landing Page", () => {
     await expect
       .poll(async () => score.textContent(), { timeout: 10_000 })
       .not.toBe(before);
+
+    // Probed presets must land in the zones their labels claim.
+    await page.getByTestId("demo-preset-anomaly").click();
+    await expect(score).toContainText(/ANOMALOUS/, { timeout: 10_000 });
+    await page.getByTestId("demo-preset-healthy").click();
+    await expect(score).toContainText(/NORMAL/, { timeout: 10_000 });
+    await expect(page.getByTestId("demo-meter-needle")).toBeAttached();
   });
 
   test("landing FAQ renders and answers expand", async ({ page }) => {
@@ -92,20 +99,6 @@ test.describe("Landing Page", () => {
     await page.goto("/");
     await page.getByTestId("landing-cta-final").click();
     await expect(page).toHaveURL(/\/themes\/deep-orbit\/foundations/);
-  });
-
-  test("account path survives as a secondary link in the final section", async ({
-    page,
-  }) => {
-    await page.goto("/");
-    await expect(
-      page.getByRole("link", { name: /create a free account/i }),
-    ).toBeAttached();
-  });
-
-  test("links to the /compare page", async ({ page }) => {
-    await page.goto("/");
-    await expect(page.locator('a[href="/compare"]').first()).toBeAttached();
   });
 
   test("page title contains Tensorcraft", async ({ page }) => {

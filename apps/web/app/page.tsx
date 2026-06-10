@@ -1,12 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { Metadata } from "next";
-import {
-  BRIDGES,
-  LAUNCHED_THEMES,
-  PRICING,
-  THEME_SLUGS,
-} from "@tensorcraft/shared";
+import { LAUNCHED_THEMES, PRICING, THEME_SLUGS } from "@tensorcraft/shared";
 import { FAQ_ITEMS } from "./faq-data";
 import { LandingHero } from "./components/landing-hero";
 import { LandingBridgeTicker } from "./components/landing-bridge-ticker";
@@ -129,15 +124,16 @@ export default function Home() {
               <div className="flex items-center gap-3 font-mono text-xs mb-8">
                 <span className="w-2 h-2 bg-primary inline-block" />
                 <span className="text-text-muted">
-                  // the hero demo up top is this system&apos;s 8 KB preview —
-                  it already ran in your tab
+                  The hero demo up top is this system&apos;s 8 KB preview — it
+                  already ran in your tab.
                 </span>
               </div>
 
               {/* Real product shot — the actual free lesson, not a mockup.
                   Re-capture: node scripts/capture-lesson-shot.mjs */}
-              <div className="font-mono text-xs text-primary tracking-[0.15em] mb-3">
-                // THE LESSON UI — this is the actual free lesson
+              <div className="font-mono text-xs text-primary tracking-[0.15em] uppercase mb-3 flex items-center gap-2">
+                <span className="w-[7px] h-[7px] bg-primary inline-block" />
+                The lesson UI — the actual free lesson
               </div>
               <Link
                 href="/themes/deep-orbit/foundations/introduction-to-tensors"
@@ -198,8 +194,9 @@ export default function Home() {
           data-testid="landing-faq"
           className="border-b border-border px-10 md:px-20 py-16"
         >
-          <div className="font-mono text-xs text-primary tracking-[0.2em] uppercase mb-3">
-            // BEFORE YOU ASK
+          <div className="font-mono text-xs text-primary tracking-[0.2em] uppercase mb-3 flex items-center gap-3">
+            <span className="w-[7px] h-[7px] bg-primary inline-block" />
+            Before you ask
           </div>
           <h2 className="text-3xl md:text-4xl font-mono font-black tracking-tight mb-8">
             Fair Questions
@@ -245,30 +242,6 @@ export default function Home() {
           >
             Start Module 1 →
           </Link>
-          <p className="text-sm text-text-muted font-sans mt-6">
-            Prefer to track progress across devices?{" "}
-            <Link
-              href="/auth"
-              className="text-primary underline underline-offset-4 hover:opacity-80 transition-opacity"
-            >
-              Create a free account
-            </Link>
-            . Want a glossary first?{" "}
-            <Link
-              href="/glossary"
-              className="text-primary underline underline-offset-4 hover:opacity-80 transition-opacity"
-            >
-              Browse {BRIDGES.length} ML terms with FE bridges
-            </Link>
-            . Weighing alternatives?{" "}
-            <Link
-              href="/compare"
-              className="text-primary underline underline-offset-4 hover:opacity-80 transition-opacity"
-            >
-              See how Tensorcraft compares to fast.ai, Karpathy, and Coursera
-            </Link>
-            .
-          </p>
         </section>
       </main>
     </>

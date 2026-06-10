@@ -73,6 +73,31 @@
 - vitest `page.test.tsx` 17/17; tsc clean (apps/web, same 6 pre-existing
   excluded); Playwright landing **14/14**.
 
+## Post-pass fixes (user feedback, same day)
+
+- **Slider panel felt dead.** Probed the real model's response surface
+  (`scripts/probe-deep-scan-model.mjs` — pure-JS tfjs, manual IOHandler):
+  single-channel drags move output ±16pp max, and the NEITHER verdict spans
+  30–70%, so most drags changed nothing visible. Redesign: zone meter bar
+  (NORMAL / NEITHER / ANOMALOUS with a moving needle — every drag now moves
+  something), three probed presets (healthy 15.3% / sample 7741 51.3% / deep
+  anomaly 91.5% — labels guaranteed by probe, re-run script if model is
+  retrained), and copy explaining the channels + "no single channel decides,
+  push two". E2e hardened: presets must land in their labeled zones.
+- **`//` comment-prefix on prose copy** flagged as an AI tell. All instances
+  added in this pass (demo panel eyebrow + closing line, WYB cross-ref +
+  lesson-UI label, FAQ eyebrow) replaced with the site's pre-existing ■
+  square-marker eyebrow convention or plain prose. Long-established `//`
+  eyebrows elsewhere left untouched.
+
+## Post-pass removal (user call, same day)
+
+Final-CTA secondary link block (account / glossary / compare) removed
+entirely at user request — section now ends on the primary button. Note:
+this was the landing page's only `/compare` link (2026-06-09 funnel fix);
+`/compare` and `/glossary` currently have no landing entry point. The two
+e2e tests covering those links were removed with it (suite now 12).
+
 ## Deferred
 
 - Social proof (still gated on real numbers).
