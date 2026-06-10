@@ -8,6 +8,16 @@ test.describe("Landing Page", () => {
     await expect(h1).toContainText(/turns out you'?re fluent/i);
   });
 
+  test("hero mounts the live inference demo panel", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.getByTestId("hero-demo-panel")).toBeVisible();
+    // tfjs loads async post-hydration; the demo shell should attach even
+    // before inference finishes.
+    await expect(page.getByTestId("deep-scan-demo")).toBeAttached({
+      timeout: 15_000,
+    });
+  });
+
   test("displays navigation with brand and CTA", async ({ page }) => {
     await page.goto("/");
     const nav = page.getByTestId("site-nav");

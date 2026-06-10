@@ -49,6 +49,15 @@ vi.mock("next/link", () => ({
   ),
 }));
 
+// next/dynamic would lazy-load the tfjs demo in jsdom; stub it out — the
+// demo has its own tests, here we only care that the hero mounts a panel.
+vi.mock("next/dynamic", () => ({
+  default: () => {
+    const DynamicStub = () => <div data-testid="deep-scan-demo-stub" />;
+    return DynamicStub;
+  },
+}));
+
 // framer-motion's motion.div just needs to pass children through for tests.
 vi.mock("framer-motion", () => ({
   motion: new Proxy(
@@ -95,6 +104,43 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
       render(<LandingHero />);
       const primary = screen.getByTestId("landing-cta-primary");
       expect(primary.className).toMatch(/focus-visible:ring-/);
+    });
+
+    // Conversion pass (2026-06-10) — spec:
+    // docs/superpowers/specs/2026-06-10-hero-conversion-pass.md
+    it("primary CTA uses outcome copy and keeps the free-lesson href", () => {
+      render(<LandingHero />);
+      const primary = screen.getByTestId("landing-cta-primary");
+      expect(primary.textContent).toMatch(/run your first tensor/i);
+      expect(primary.getAttribute("href")).toBe(
+        "/themes/deep-orbit/foundations/introduction-to-tensors",
+      );
+    });
+
+    it("eyebrow carries the No Python differentiator instead of pipeline talk", () => {
+      const { container } = render(<LandingHero />);
+      expect(container.textContent).toMatch(/no python required/i);
+      expect(container.textContent).not.toMatch(/pipeline/i);
+    });
+
+    it("renders the stat line (modules / lessons / deployable model)", () => {
+      render(<LandingHero />);
+      const stats = screen.getByTestId("hero-stat-line");
+      expect(stats.textContent).toMatch(/11 modules/i);
+      expect(stats.textContent).toMatch(/55 lessons/i);
+      expect(stats.textContent).toMatch(/1 deployable model/i);
+    });
+
+    it("renders the trust line under the CTAs", () => {
+      const { container } = render(<LandingHero />);
+      expect(container.textContent).toMatch(/no credit card/i);
+      expect(container.textContent).toMatch(/no account for module 1/i);
+    });
+
+    it("mounts the live-demo proof panel", () => {
+      render(<LandingHero />);
+      expect(screen.getByTestId("hero-demo-panel")).toBeInTheDocument();
+      expect(screen.getByTestId("deep-scan-demo-stub")).toBeInTheDocument();
     });
   });
 

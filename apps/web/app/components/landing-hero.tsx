@@ -1,16 +1,26 @@
 "use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { ParticleField } from "@tensorcraft/ui/effects";
 
+// The hero's proof panel is the free-tier Deep Scan demo: a real 8 KB TFJS
+// model classifying readings live in the visitor's tab. ssr:false — tfjs is
+// browser-only and the panel is post-LCP enhancement, not critical path.
+const DeepScanDemo = dynamic(
+  () => import("./mdx/deep-scan-demo").then((m) => m.DeepScanDemo),
+  { ssr: false },
+);
+
 /**
- * Brutalist landing hero (Phase 11 §11d Wave 1).
+ * Brutalist landing hero (Phase 11 §11d Wave 1; conversion pass 2026-06-10).
  *
- * Replaces the previous `HeroSection` when used from the landing page:
- *  - ParticleField canvas background (aria-hidden, z-0, low density).
- *  - Square-edged CTAs (rounded-none) with hard brutalist-shadow.
- *  - Mono labels, uppercase tracking, focus-visible rings.
+ * - ParticleField canvas background (aria-hidden, z-0, low density).
+ * - Square-edged CTAs (rounded-none) with hard brutalist-shadow.
+ * - Mono labels, uppercase tracking, focus-visible rings.
+ * - Right column embeds the live Deep Scan inference demo as proof of the
+ *   headline's claim. Spec: docs/superpowers/specs/2026-06-10-hero-conversion-pass.md.
  *
  * The landing headline ("ML Speaks JavaScript. / Turns Out You're Fluent.") is
  * the iterated baseline as of 2026-05-08 — do not silently rewrite. Spec:
@@ -29,64 +39,86 @@ export function LandingHero() {
       />
       <div className="absolute inset-0 grid-bg pointer-events-none z-1" />
 
-      <motion.div
-        className="max-w-[620px] w-full relative z-10"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.9 }}
-      >
-        <div className="font-mono text-xs text-primary tracking-[0.14em] uppercase mb-9 flex items-center gap-3">
-          <span className="inline-block w-[7px] h-[7px] bg-primary" />
-          Deep Orbit is live · 4 themes in the pipeline
-        </div>
+      <div className="w-full grid lg:grid-cols-[minmax(0,620px)_minmax(0,1fr)] gap-16 lg:gap-24 items-center relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9 }}
+        >
+          <div className="font-mono text-xs text-primary tracking-[0.14em] uppercase mb-9 flex items-center gap-3">
+            <span className="inline-block w-[7px] h-[7px] bg-primary" />
+            Deep Orbit is live · No Python required
+          </div>
 
-        <h1 className="text-5xl md:text-6xl font-mono font-black leading-[0.93] tracking-[-0.045em] mb-10 uppercase">
-          <span className="block">ML Speaks JavaScript.</span>
-          <span className="block text-primary">
-            Turns Out You&apos;re Fluent.
-          </span>
-        </h1>
+          <h1 className="text-5xl md:text-6xl font-mono font-black leading-[0.93] tracking-[-0.045em] mb-10 uppercase">
+            <span className="block">ML Speaks JavaScript.</span>
+            <span className="block text-primary">
+              Turns Out You&apos;re Fluent.
+            </span>
+          </h1>
 
-        <p className="text-lg text-text-muted max-w-[520px] mb-12 leading-relaxed font-sans">
-          You already debug state, optimize renders, reason about caches.
-          That&apos;s the mental model that ships browser ML —{" "}
-          <code className="font-mono text-text-primary text-base">
-            Math.max
-          </code>{" "}
-          becomes ReLU,{" "}
-          <code className="font-mono text-text-primary text-base">
-            TypedArray
-          </code>{" "}
-          becomes Tensor,{" "}
-          <code className="font-mono text-text-primary text-base">
-            Service Worker
-          </code>{" "}
-          becomes model cache. The bridge from frontend to ML is shorter than
-          you think. Eleven modules, fifty-five lessons, one deployable model.
-          Built in JavaScript.
-        </p>
+          <p className="text-lg text-text-muted max-w-[520px] mb-8 leading-relaxed font-sans">
+            You already debug state, optimize renders, reason about caches.
+            That&apos;s the mental model that ships browser ML —{" "}
+            <code className="font-mono text-text-primary text-base">
+              Math.max
+            </code>{" "}
+            becomes ReLU,{" "}
+            <code className="font-mono text-text-primary text-base">
+              TypedArray
+            </code>{" "}
+            becomes Tensor,{" "}
+            <code className="font-mono text-text-primary text-base">
+              Service Worker
+            </code>{" "}
+            becomes model cache.
+          </p>
 
-        <div className="flex gap-4 flex-wrap mb-14">
-          <Link
-            href="/themes/deep-orbit/foundations/introduction-to-tensors"
-            data-testid="landing-cta-primary"
-            className="rounded-none inline-flex items-center gap-2 px-8 py-4 bg-primary text-page font-mono font-bold text-sm tracking-wider uppercase border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-page"
+          <p
+            data-testid="hero-stat-line"
+            className="font-mono text-xs text-text-primary tracking-[0.14em] uppercase border-l-2 border-primary pl-4 mb-12"
           >
-            Start Module 1 — Free →
-          </Link>
-          <Link
-            href="/learn"
-            data-testid="landing-cta-secondary"
-            className="rounded-none inline-flex items-center gap-2 px-8 py-4 border-2 border-border text-text-primary font-mono font-bold text-sm tracking-wider uppercase hover:text-primary hover:border-primary/30 transition-all brutalist-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-page"
-          >
-            See how it works
-          </Link>
-        </div>
+            11 modules · 55 lessons · 1 deployable model
+          </p>
 
-        <p className="font-mono text-xs text-text-muted">
-          No credit card. No account for module 1. No Python.
-        </p>
-      </motion.div>
+          <div className="flex gap-4 flex-wrap mb-6">
+            <Link
+              href="/themes/deep-orbit/foundations/introduction-to-tensors"
+              data-testid="landing-cta-primary"
+              className="rounded-none inline-flex items-center gap-2 px-8 py-4 bg-primary text-page font-mono font-bold text-sm tracking-wider uppercase border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-page"
+            >
+              Run Your First Tensor — Free →
+            </Link>
+            <Link
+              href="/learn"
+              data-testid="landing-cta-secondary"
+              className="rounded-none inline-flex items-center gap-2 px-8 py-4 border-2 border-border text-text-primary font-mono font-bold text-sm tracking-wider uppercase hover:text-primary hover:border-primary/30 transition-all brutalist-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-page"
+            >
+              See how it works
+            </Link>
+          </div>
+
+          <p className="font-mono text-[13px] text-text-primary">
+            No credit card. No account for module 1.
+          </p>
+        </motion.div>
+
+        <motion.div
+          data-testid="hero-demo-panel"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, delay: 0.25 }}
+          className="max-w-[560px] w-full lg:justify-self-end"
+        >
+          <div className="font-mono text-xs text-primary tracking-[0.14em] uppercase mb-3 flex items-center gap-3">
+            <span className="inline-block w-[7px] h-[7px] bg-primary" />
+            Proof, not promise
+          </div>
+          <div className="[&_[data-testid=deep-scan-demo]]:my-0 brutalist-shadow">
+            <DeepScanDemo />
+          </div>
+        </motion.div>
+      </div>
     </section>
   );
 }
