@@ -26,6 +26,47 @@ test.describe("Landing Page", () => {
     });
   });
 
+  test("hero demo finishes and the interactive sliders classify a custom reading", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    // Real model load + staggered reveal takes a few seconds.
+    const panel = page.getByTestId("demo-user-panel");
+    await expect(panel).toBeVisible({ timeout: 30_000 });
+    const score = page.getByTestId("demo-user-score");
+    await expect(score).toContainText(/%/, { timeout: 10_000 });
+    const before = await score.textContent();
+    await page.getByTestId("demo-slider-0").fill("0.95");
+    await expect
+      .poll(async () => score.textContent(), { timeout: 10_000 })
+      .not.toBe(before);
+  });
+
+  test("landing FAQ renders and answers expand", async ({ page }) => {
+    await page.goto("/");
+    const faq = page.getByTestId("landing-faq");
+    await expect(faq).toBeVisible();
+    const first = faq.locator("summary").first();
+    await first.click();
+    await expect(faq.getByText(/no python required/i).first()).toBeVisible();
+  });
+
+  test("real lesson screenshot links to the free lesson", async ({ page }) => {
+    await page.goto("/");
+    const shot = page.getByTestId("lesson-screenshot-link");
+    await expect(shot).toBeAttached();
+    await expect(shot.locator("img")).toBeAttached();
+  });
+
+  test("Deep Orbit card carries the sample-7741 story hook", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await expect(page.getByTestId("deep-orbit-story-hook")).toContainText(
+      /7741/,
+    );
+  });
+
   test("displays navigation with brand and CTA", async ({ page }) => {
     await page.goto("/");
     const nav = page.getByTestId("site-nav");
@@ -45,10 +86,21 @@ test.describe("Landing Page", () => {
     await expect(footer.getByRole("link", { name: /privacy/i })).toBeVisible();
   });
 
-  test("final CTA navigates to auth page", async ({ page }) => {
+  test("final CTA opens the free lesson — copy promises no account", async ({
+    page,
+  }) => {
     await page.goto("/");
     await page.getByTestId("landing-cta-final").click();
-    await expect(page).toHaveURL(/\/auth/);
+    await expect(page).toHaveURL(/\/themes\/deep-orbit\/foundations/);
+  });
+
+  test("account path survives as a secondary link in the final section", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await expect(
+      page.getByRole("link", { name: /create a free account/i }),
+    ).toBeAttached();
   });
 
   test("links to the /compare page", async ({ page }) => {

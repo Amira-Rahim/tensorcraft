@@ -120,7 +120,10 @@ export function LandingHero() {
             Proof, not promise
           </div>
           <div className="[&_[data-testid=deep-scan-demo]]:my-0 brutalist-shadow">
-            <DeepScanDemo />
+            <DeepScanDemo
+              interactive
+              headerLabel="DEEP SCAN · live inference · running in your tab"
+            />
           </div>
         </motion.div>
       </div>

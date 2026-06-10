@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 /**
  * Free-tier magic moment: a REAL TensorFlow.js model (trained offline,
@@ -12,12 +12,24 @@ import { useEffect, useState } from "react";
  *
  * tfjs is dynamically imported on mount so it never touches the initial
  * bundle; the model itself is a static asset under /models/.
+ *
+ * `interactive` (landing hero only) appends a your-reading panel after the
+ * run: three channel sliders, pre-set to sample 7741's exact values, that
+ * re-classify live as the visitor drags. The lesson embed stays read-only —
+ * its narrative beat ends on the unanswered 51%.
  */
 
 interface Row {
   id: string;
   features: [number, number, number];
   score: number | null;
+}
+
+interface DeepScanDemoProps {
+  /** Show the drag-your-own-reading panel once the run finishes. */
+  interactive?: boolean;
+  /** Override the terminal header label (default: lesson preview wording). */
+  headerLabel?: string;
 }
 
 const STREAM: { id: string; features: [number, number, number] }[] = [
@@ -29,13 +41,40 @@ const STREAM: { id: string; features: [number, number, number] }[] = [
   { id: "7741", features: [0.5, 0.5, 0.5] },
 ];
 
-export function DeepScanDemo() {
+const ANOMALY_FEATURES = STREAM[STREAM.length - 1].features;
+const CHANNELS = ["ch-0", "ch-1", "ch-2"] as const;
+
+// Minimal surface of the tfjs modules the user-reading panel needs.
+interface TfCore {
+  tensor2d: (v: number[][]) => { dispose?: () => void };
+}
+interface LoadedModel {
+  predict: (t: unknown) => {
+    data: () => Promise<Float32Array>;
+    dispose?: () => void;
+  };
+}
+
+export function DeepScanDemo({
+  interactive = false,
+  headerLabel = "DEEP SCAN · preview build · live inference",
+}: DeepScanDemoProps = {}) {
   const [rows, setRows] = useState<Row[]>(
     STREAM.map((s) => ({ ...s, score: null })),
   );
   const [status, setStatus] = useState<
     "loading" | "running" | "done" | "error"
   >("loading");
+
+  // Kept for the interactive panel — re-classification reuses the same
+  // loaded model instead of re-importing tfjs.
+  const tfRef = useRef<TfCore | null>(null);
+  const modelRef = useRef<LoadedModel | null>(null);
+
+  const [userVals, setUserVals] = useState<[number, number, number]>([
+    ...ANOMALY_FEATURES,
+  ]);
+  const [userScore, setUserScore] = useState<number | null>(null);
 
   useEffect(() => {
     // No run-once ref guard here: under React StrictMode's dev
@@ -69,6 +108,8 @@ export function DeepScanDemo() {
           "/models/deep-scan-preview/model.json",
         );
         if (cancelled) return;
+        tfRef.current = tf as unknown as TfCore;
+        modelRef.current = model as unknown as LoadedModel;
         setStatus("running");
 
         const input = tf.tensor2d(STREAM.map((s) => s.features));
@@ -101,6 +142,35 @@ export function DeepScanDemo() {
     };
   }, []);
 
+  const classifyUser = useCallback(async (vals: [number, number, number]) => {
+    const tf = tfRef.current;
+    const model = modelRef.current;
+    if (!tf || !model) return;
+    const input = tf.tensor2d([vals]);
+    const out = model.predict(input);
+    const data = await out.data();
+    input.dispose?.();
+    out.dispose?.();
+    setUserScore(data[0]);
+  }, []);
+
+  // First classification of the user panel mirrors sample 7741 exactly —
+  // the visitor starts at the story's cliffhanger and drags away from it.
+  useEffect(() => {
+    if (interactive && status === "done") {
+      void classifyUser([...ANOMALY_FEATURES]);
+    }
+  }, [interactive, status, classifyUser]);
+
+  const setChannel = (i: number, value: number) => {
+    setUserVals((prev) => {
+      const next = [...prev] as [number, number, number];
+      next[i] = value;
+      void classifyUser(next);
+      return next;
+    });
+  };
+
   const verdict = (score: number) =>
     score > 0.7 ? "ANOMALOUS" : score < 0.3 ? "NORMAL" : "— NEITHER —";
 
@@ -114,7 +184,7 @@ export function DeepScanDemo() {
           className={`w-2 h-2 inline-block ${status === "running" ? "bg-primary animate-pulse" : "bg-primary"}`}
         />
         <span className="text-xs font-semibold uppercase tracking-widest text-primary">
-          DEEP SCAN · preview build · live inference
+          {headerLabel}
         </span>
       </div>
       <div className="p-4 space-y-1.5">
@@ -166,6 +236,71 @@ export function DeepScanDemo() {
             your tab just now. Five readings it understood. One it didn&rsquo;t.
             Teaching it to answer is the rest of the course.
           </p>
+        )}
+        {interactive && status === "done" && (
+          <div
+            data-testid="demo-user-panel"
+            className="pt-3 border-t border-border mt-3 space-y-2"
+          >
+            <p className="text-xs uppercase tracking-widest text-primary">
+              // your reading — drag the channels, the model answers live
+            </p>
+            {CHANNELS.map((ch, i) => (
+              <div key={ch} className="flex items-center gap-3">
+                <label
+                  htmlFor={`demo-slider-${i}`}
+                  className="text-text-muted w-28 shrink-0"
+                >
+                  {ch}
+                </label>
+                <input
+                  id={`demo-slider-${i}`}
+                  data-testid={`demo-slider-${i}`}
+                  type="range"
+                  min={0}
+                  max={1}
+                  step={0.01}
+                  value={userVals[i]}
+                  onChange={(e) => setChannel(i, Number(e.target.value))}
+                  className="w-full max-w-[220px]"
+                  style={{ accentColor: "var(--tc-primary)" }}
+                  aria-label={`Sensor channel ${i}`}
+                />
+                <span className="text-text-primary w-12 text-right tabular-nums">
+                  {userVals[i].toFixed(2)}
+                </span>
+              </div>
+            ))}
+            <div
+              data-testid="demo-user-score"
+              aria-live="polite"
+              className="flex items-baseline gap-3 pt-1"
+            >
+              <span className="text-text-muted w-28 shrink-0">your sample</span>
+              {userScore === null ? (
+                <span className="text-text-muted/50">…</span>
+              ) : (
+                <>
+                  <span className="text-text-primary w-14">
+                    {(userScore * 100).toFixed(1)}%
+                  </span>
+                  <span
+                    className={
+                      verdict(userScore) === "— NEITHER —"
+                        ? "text-warning font-bold"
+                        : "text-text-muted"
+                    }
+                  >
+                    {verdict(userScore)}
+                  </span>
+                </>
+              )}
+            </div>
+            <p className="text-xs text-text-muted/70 pt-1">
+              // you start on sample 7741&rsquo;s exact values. Find what fools
+              the model — that&rsquo;s lesson one&rsquo;s question.
+            </p>
+          </div>
         )}
       </div>
     </div>

@@ -14,7 +14,11 @@ import { getModules, getModuleLessons } from "@tensorcraft/content";
  */
 export function CurriculumPreview() {
   return (
-    <section className="px-6 pb-20" data-testid="curriculum-preview">
+    <section
+      id="curriculum"
+      className="px-6 pb-20 scroll-mt-24"
+      data-testid="curriculum-preview"
+    >
       <div className="max-w-4xl mx-auto">
         {LAUNCHED_THEMES.map((slug) => {
           const theme = themes[slug];

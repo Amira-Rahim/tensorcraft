@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { DEFAULT_THEME, LAUNCHED_THEMES, PRICING } from "@tensorcraft/shared";
+import { FAQ_ITEMS } from "./faq-data";
 import { ThemeProvider } from "./components/theme-provider";
 import { Nav } from "./components/nav";
 import { CookieConsent } from "./components/cookie-consent";
@@ -266,40 +267,13 @@ export default function RootLayout({
               {
                 "@context": "https://schema.org",
                 "@type": "FAQPage",
-                mainEntity: [
-                  {
-                    "@type": "Question",
-                    name: "Can I learn machine learning with JavaScript?",
-                    acceptedAnswer: {
-                      "@type": "Answer",
-                      text: "Yes. Tensorcraft teaches machine learning entirely in JavaScript and TypeScript using TensorFlow JS (TensorFlow.js). Models train and run in the browser — no Python required. The curriculum covers neural networks, LSTMs, CNNs, and transformers through hands-on tutorials built for frontend developers.",
-                    },
-                  },
-                  {
-                    "@type": "Question",
-                    name: "How does Tensorcraft teach ML to frontend developers?",
-                    acceptedAnswer: {
-                      "@type": "Answer",
-                      text: "Tensorcraft uses 50+ 'bridge' analogies that map frontend concepts you already know (like useState, Array.map, and fetch) to their ML equivalents (model weights, tensor operations, and inference APIs). Each course is a story-driven narrative where you build real ML models.",
-                    },
-                  },
-                  {
-                    "@type": "Question",
-                    name: "Is Tensorcraft free?",
-                    acceptedAnswer: {
-                      "@type": "Answer",
-                      text: `Module 1 of Deep Orbit, the live theme, is free — no account or credit card required. The other four themes ship in waves, each with a waitlist. Full themes cost $${PRICING.single.price} each, with bundle discounts available up to $${PRICING.allFive.price} for all 5 themes.`,
-                    },
-                  },
-                  {
-                    "@type": "Question",
-                    name: "What ML topics does Tensorcraft cover?",
-                    acceptedAnswer: {
-                      "@type": "Answer",
-                      text: "Five specializations: Time-Series & Signals (RNNs, LSTMs), Computer Vision (CNNs, YOLO), NLP & Text Intelligence (Transformers, BERT), Multimodal & Generative AI (GANs, Diffusion), and Edge AI & Production ML (quantization, MLOps).",
-                    },
-                  },
-                ],
+                // Mirrors the visible landing FAQ — single source in
+                // app/faq-data.ts so schema and page content can't drift.
+                mainEntity: FAQ_ITEMS.map((item) => ({
+                  "@type": "Question",
+                  name: item.q,
+                  acceptedAnswer: { "@type": "Answer", text: item.a },
+                })),
               },
               {
                 "@context": "https://schema.org",

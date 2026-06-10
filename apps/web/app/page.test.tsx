@@ -61,6 +61,9 @@ vi.mock("next/dynamic", () => ({
 
 // framer-motion's motion.div just needs to pass children through for tests.
 vi.mock("framer-motion", () => ({
+  AnimatePresence: ({ children }: { children?: React.ReactNode }) => (
+    <>{children}</>
+  ),
   motion: new Proxy(
     {},
     {
@@ -197,6 +200,17 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
       render(<BridgePreviewSection />);
       const h2 = screen.getByRole("heading", { level: 2 });
       expect(h2.textContent).not.toMatch(/you already/i);
+    });
+  });
+
+  describe("FAQ data (single source for visible FAQ + JSON-LD)", () => {
+    it("covers the core objections incl. math level and refunds", async () => {
+      const { FAQ_ITEMS } = await import("./faq-data");
+      expect(FAQ_ITEMS.length).toBeGreaterThanOrEqual(6);
+      const all = FAQ_ITEMS.map((i) => `${i.q} ${i.a}`).join(" ");
+      expect(all).toMatch(/math/i);
+      expect(all).toMatch(/14-day money-back/i);
+      expect(all).toMatch(/no python required/i);
     });
   });
 

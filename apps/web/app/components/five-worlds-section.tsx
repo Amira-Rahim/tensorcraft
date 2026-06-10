@@ -120,6 +120,10 @@ function AtmosphereCanvas({
   const frame = useRef(0);
   const hovRef = useRef(hovered);
   hovRef.current = hovered;
+  // Animation gates: rAF loop runs only while on-screen AND motion is OK.
+  // Reduced-motion users get a single static frame; off-screen cards stop
+  // burning CPU entirely (five cards × 55 particles otherwise run forever).
+  const runningRef = useRef(false);
 
   const draw = useCallback(() => {
     const c = ref.current;
@@ -226,7 +230,7 @@ function AtmosphereCanvas({
       }
     }
 
-    frame.current = requestAnimationFrame(draw);
+    if (runningRef.current) frame.current = requestAnimationFrame(draw);
   }, [rgb, kind]);
 
   useEffect(() => {
@@ -246,12 +250,49 @@ function AtmosphereCanvas({
       );
     };
 
-    resize();
-    frame.current = requestAnimationFrame(draw);
-    window.addEventListener("resize", resize);
-    return () => {
+    const mql = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+    let inView = true;
+
+    const stop = () => {
+      runningRef.current = false;
       cancelAnimationFrame(frame.current);
+    };
+    const sync = () => {
+      const reduced = !!mql?.matches;
+      if (reduced || !inView) {
+        stop();
+        // Reduced motion still deserves the atmosphere — one static frame.
+        if (reduced && inView) draw();
+        return;
+      }
+      if (!runningRef.current) {
+        runningRef.current = true;
+        frame.current = requestAnimationFrame(draw);
+      }
+    };
+
+    resize();
+    sync();
+    window.addEventListener("resize", resize);
+    mql?.addEventListener?.("change", sync);
+
+    const io =
+      typeof IntersectionObserver !== "undefined"
+        ? new IntersectionObserver(
+            ([entry]) => {
+              inView = entry.isIntersecting;
+              sync();
+            },
+            { rootMargin: "120px" },
+          )
+        : null;
+    io?.observe(c);
+
+    return () => {
+      stop();
       window.removeEventListener("resize", resize);
+      mql?.removeEventListener?.("change", sync);
+      io?.disconnect();
     };
   }, [draw, kind]);
 
@@ -276,7 +317,7 @@ export function FiveWorldsSection() {
         <div className="font-mono text-xs text-primary tracking-[0.2em] uppercase mb-3">
           // CHOOSE YOUR WORLD
         </div>
-        <h2 className="text-3xl font-mono font-black tracking-tight mb-3">
+        <h2 className="text-3xl md:text-4xl font-mono font-black tracking-tight mb-3">
           Five Worlds
         </h2>
         <p className="text-[15px] text-text-muted leading-relaxed max-w-[520px]">
@@ -335,6 +376,18 @@ export function FiveWorldsSection() {
           <p className="text-base md:text-lg text-text-muted leading-relaxed max-w-[640px] mb-6">
             {HERO_CARD.tagline}
           </p>
+          {/* Story hook — only true for Deep Orbit; the hero demo's ambiguous
+              reading IS this theme's inciting incident. */}
+          {HERO_CARD.slug === "deep-orbit" && (
+            <p
+              data-testid="deep-orbit-story-hook"
+              className="font-mono text-[13px] text-text-primary max-w-[560px] mb-6 border-l-2 pl-4"
+              style={{ borderColor: HERO_CARD.col }}
+            >
+              That ambiguous reading in the demo up top? Sample 7741 — the
+              anomaly this whole story chases. The demo was chapter one.
+            </p>
+          )}
           <span
             className="font-mono text-sm tracking-wider"
             style={{ color: HERO_CARD.col }}
@@ -410,8 +463,10 @@ export function FiveWorldsSection() {
               <p className="text-[12px] text-text-muted leading-relaxed opacity-40 group-hover:opacity-65 transition-opacity mb-4">
                 {t.tagline}
               </p>
+              {/* Always visible — hover-only meant touch devices (and anyone
+                  not mousing over) never saw the waitlist affordance. */}
               <span
-                className="font-mono text-xs tracking-wider opacity-0 group-hover:opacity-100 transition-opacity"
+                className="font-mono text-xs tracking-wider opacity-60 group-hover:opacity-100 transition-opacity"
                 style={{ color: t.col }}
               >
                 Notify me &rarr;
@@ -419,13 +474,6 @@ export function FiveWorldsSection() {
             </Link>
           </motion.div>
         ))}
-      </div>
-
-      {/* Footer */}
-      <div className="border-t border-border px-10 md:px-20 py-4">
-        <p className="font-mono text-xs text-text-muted text-center">
-          // Module 1 of {HERO_CARD.name} is free. No account needed.
-        </p>
       </div>
     </section>
   );

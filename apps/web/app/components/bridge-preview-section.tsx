@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 import { BRIDGES, type Framework } from "@tensorcraft/shared";
 
 const FRAMEWORKS: { id: Framework; label: string; icon: string }[] = [
@@ -46,16 +47,16 @@ export function BridgePreviewSection() {
   return (
     <section className="border-b border-border">
       {/* Header */}
-      <div className="px-10 md:px-20 pt-20 pb-6 text-center">
+      <div className="px-10 md:px-20 pt-16 pb-6 text-center">
         <div className="font-mono text-xs text-primary tracking-[0.2em] uppercase mb-4">
           // THE BRIDGE SYSTEM
         </div>
-        <h2 className="text-4xl md:text-5xl font-mono font-black tracking-tight mb-4">
+        <h2 className="text-3xl md:text-4xl font-mono font-black tracking-tight mb-4">
           Every ML Concept Has a Frontend Name
         </h2>
         <p className="text-[15px] text-text-muted leading-relaxed max-w-[500px] mx-auto">
-          50 bridges map ML concepts to the code you write daily. Pick your
-          framework — we&apos;ll prove it.
+          {BRIDGES.length} bridges map ML concepts to the code you write daily.
+          Pick your framework — we&apos;ll prove it.
         </p>
       </div>
 
@@ -84,8 +85,19 @@ export function BridgePreviewSection() {
         </div>
       </div>
 
-      {/* Bridge cycler controls */}
-      <div className="flex justify-center items-center gap-4 pb-8 font-mono text-xs text-text-muted">
+      {/* Bridge cycler controls — ←/→ keys work while focus is inside */}
+      <div
+        onKeyDown={(e) => {
+          if (e.key === "ArrowLeft") {
+            e.preventDefault();
+            cycle(-1);
+          } else if (e.key === "ArrowRight") {
+            e.preventDefault();
+            cycle(1);
+          }
+        }}
+        className="flex justify-center items-center gap-4 pb-8 font-mono text-xs text-text-muted"
+      >
         <button
           type="button"
           onClick={() => cycle(-1)}
@@ -112,79 +124,89 @@ export function BridgePreviewSection() {
         </button>
       </div>
 
-      {/* Bridge display — full width, centered */}
-      <div className="border-t border-border">
-        <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr]">
-          {/* FE side */}
-          <div className="px-10 md:px-16 py-12 md:py-16">
-            <div className="max-w-md mx-auto md:mx-0 md:ml-auto">
-              <div className="font-mono text-xs text-primary uppercase tracking-[0.15em] mb-3">
-                // YOUR {selectedLabel.toUpperCase()} CODE
-              </div>
-              <h3 className="font-mono text-xl font-bold text-text-primary mb-4">
-                {feTitle}
-              </h3>
-              <div className="bg-code-bg border border-border p-5 font-mono text-[13px] text-primary leading-relaxed whitespace-pre-wrap">
-                {feCode}
-              </div>
-              <div className="font-mono text-xs text-text-muted mt-3">
-                You write this every day.
+      {/* Bridge display — full width, centered. Keyed crossfade so a
+          framework/bridge switch reads as a transition, not a teleport. */}
+      <div className="border-t border-border overflow-hidden">
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={`${bridge.id}-${selected}`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+            className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr]"
+          >
+            {/* FE side */}
+            <div className="px-10 md:px-16 py-10 md:py-12">
+              <div className="max-w-lg mx-auto md:mx-0 md:ml-auto">
+                <div className="font-mono text-xs text-primary uppercase tracking-[0.15em] mb-3">
+                  // YOUR {selectedLabel.toUpperCase()} CODE
+                </div>
+                <h3 className="font-mono text-xl font-bold text-text-primary mb-4">
+                  {feTitle}
+                </h3>
+                <div className="bg-code-bg border border-border p-5 font-mono text-[13px] text-primary leading-relaxed whitespace-pre-wrap">
+                  {feCode}
+                </div>
+                <div className="font-mono text-xs text-text-muted mt-3">
+                  You write this every day.
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Connector */}
-          <div className="hidden md:flex flex-col items-center justify-center px-2 relative">
-            <div className="absolute top-0 bottom-0 w-px bg-border" />
-            <div
-              aria-hidden="true"
-              className="relative z-10 w-10 h-10 flex items-center justify-center bg-surface-raised border-2 font-mono text-sm"
-              style={{
-                borderColor: "var(--tc-tier-structural)",
-                color: "var(--tc-tier-structural)",
-                boxShadow:
-                  "0 0 20px color-mix(in srgb, var(--tc-tier-structural) 30%, transparent)",
-              }}
-            >
-              ⇄
-            </div>
-          </div>
-          {/* Mobile connector */}
-          <div className="md:hidden flex items-center justify-center py-3">
-            <div
-              aria-hidden="true"
-              className="w-8 h-8 flex items-center justify-center bg-surface-raised border-2 font-mono text-xs"
-              style={{
-                borderColor: "var(--tc-tier-structural)",
-                color: "var(--tc-tier-structural)",
-              }}
-            >
-              ⇄
-            </div>
-          </div>
-
-          {/* ML side */}
-          <div className="px-10 md:px-16 py-12 md:py-16">
-            <div className="max-w-md mx-auto md:mx-0">
-              <div className="font-mono text-xs uppercase tracking-[0.15em] mb-3 text-text-muted">
-                // ML EQUIVALENT
-              </div>
-              <h3 className="font-mono text-xl font-bold text-text-primary mb-4">
-                {bridge.mlConcept}
-              </h3>
+            {/* Connector */}
+            <div className="hidden md:flex flex-col items-center justify-center px-2 relative">
+              <div className="absolute top-0 bottom-0 w-px bg-border" />
               <div
-                className="bg-code-bg border border-border p-5 font-mono text-[13px] leading-relaxed whitespace-pre-wrap"
-                style={{ color: "var(--tc-tier-intuition)" }}
+                aria-hidden="true"
+                className="relative z-10 w-10 h-10 flex items-center justify-center bg-surface-raised border-2 font-mono text-sm"
+                style={{
+                  borderColor: "var(--tc-tier-structural)",
+                  color: "var(--tc-tier-structural)",
+                  boxShadow:
+                    "0 0 20px color-mix(in srgb, var(--tc-tier-structural) 30%, transparent)",
+                }}
               >
-                {bridge.mlCode}
-              </div>
-              <div className="font-mono text-xs text-text-muted mt-3">
-                It&apos;s the same pattern — switch frameworks above, this side
-                never changes.
+                ⇄
               </div>
             </div>
-          </div>
-        </div>
+            {/* Mobile connector */}
+            <div className="md:hidden flex items-center justify-center py-3">
+              <div
+                aria-hidden="true"
+                className="w-8 h-8 flex items-center justify-center bg-surface-raised border-2 font-mono text-xs"
+                style={{
+                  borderColor: "var(--tc-tier-structural)",
+                  color: "var(--tc-tier-structural)",
+                }}
+              >
+                ⇄
+              </div>
+            </div>
+
+            {/* ML side */}
+            <div className="px-10 md:px-16 py-10 md:py-12">
+              <div className="max-w-lg mx-auto md:mx-0">
+                <div className="font-mono text-xs uppercase tracking-[0.15em] mb-3 text-text-muted">
+                  // ML EQUIVALENT
+                </div>
+                <h3 className="font-mono text-xl font-bold text-text-primary mb-4">
+                  {bridge.mlConcept}
+                </h3>
+                <div
+                  className="bg-code-bg border border-border p-5 font-mono text-[13px] leading-relaxed whitespace-pre-wrap"
+                  style={{ color: "var(--tc-tier-intuition)" }}
+                >
+                  {bridge.mlCode}
+                </div>
+                <div className="font-mono text-xs text-text-muted mt-3">
+                  It&apos;s the same pattern — switch frameworks above, this
+                  side never changes.
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </AnimatePresence>
       </div>
 
       {/* Section exit CTA */}
