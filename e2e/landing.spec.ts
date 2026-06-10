@@ -26,27 +26,17 @@ test.describe("Landing Page", () => {
     });
   });
 
-  test("hero demo finishes and the interactive sliders classify a custom reading", async ({
+  test("hero demo runs the real model to the 7741 cliffhanger", async ({
     page,
   }) => {
     await page.goto("/");
     // Real model load + staggered reveal takes a few seconds.
-    const panel = page.getByTestId("demo-user-panel");
-    await expect(panel).toBeVisible({ timeout: 30_000 });
-    const score = page.getByTestId("demo-user-score");
-    await expect(score).toContainText(/%/, { timeout: 10_000 });
-    const before = await score.textContent();
-    await page.getByTestId("demo-slider-0").fill("0.95");
-    await expect
-      .poll(async () => score.textContent(), { timeout: 10_000 })
-      .not.toBe(before);
-
-    // Probed presets must land in the zones their labels claim.
-    await page.getByTestId("demo-preset-anomaly").click();
-    await expect(score).toContainText(/ANOMALOUS/, { timeout: 10_000 });
-    await page.getByTestId("demo-preset-healthy").click();
-    await expect(score).toContainText(/NORMAL/, { timeout: 10_000 });
-    await expect(page.getByTestId("demo-meter-needle")).toBeAttached();
+    await expect(page.getByTestId("demo-verdict-7741")).toBeVisible({
+      timeout: 30_000,
+    });
+    await expect(page.getByTestId("demo-verdict-7741")).toContainText(
+      /not an answer/i,
+    );
   });
 
   test("landing FAQ renders and answers expand", async ({ page }) => {

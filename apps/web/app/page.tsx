@@ -3,7 +3,6 @@ import Image from "next/image";
 import type { Metadata } from "next";
 import { LAUNCHED_THEMES, PRICING, THEME_SLUGS } from "@tensorcraft/shared";
 import { FAQ_ITEMS } from "./faq-data";
-import { DeepScanLab } from "./components/mdx/deep-scan-demo";
 import { LandingHero } from "./components/landing-hero";
 import { LandingBridgeTicker } from "./components/landing-bridge-ticker";
 import { BridgePreviewSection } from "./components/bridge-preview-section";
@@ -85,53 +84,9 @@ export default function Home() {
             </Link>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr] border-t border-border">
-            {/* Left: Project showcase */}
+            {/* Left: real product shot — the actual free lesson, not a
+                mockup. Re-capture: node scripts/capture-lesson-shot.mjs */}
             <div className="px-10 md:px-14 py-12 border-b md:border-b-0 md:border-r border-border min-w-0">
-              <div className="font-mono text-xs text-primary tracking-[0.15em] mb-6">
-                // DEEP SCAN — ANOMALY DETECTOR
-              </div>
-              {/* Code mockup */}
-              <div className="bg-code-bg border border-border p-5 mb-6">
-                <div className="font-mono text-xs text-text-muted mb-3 flex items-center gap-2">
-                  <span className="w-2 h-2 bg-primary opacity-60 inline-block" />
-                  deep-scan.ts
-                </div>
-                <pre className="font-mono text-[12px] leading-relaxed text-text-primary overflow-x-auto">
-                  <code>
-                    <span className="text-primary">const</span> model ={" "}
-                    <span className="text-primary">await</span>{" "}
-                    tf.loadLayersModel(
-                    <span style={{ color: "var(--tc-tier-intuition)" }}>
-                      &apos;/deep-scan/model.json&apos;
-                    </span>
-                    );{"\n\n"}
-                    <span className="text-text-muted">
-                      // Real-time signal classification
-                    </span>
-                    {"\n"}
-                    <span className="text-primary">const</span> prediction =
-                    model.predict(signalTensor);{"\n"}
-                    <span className="text-primary">const</span> isAnomaly =
-                    prediction.dataSync()[0]{" "}
-                    <span style={{ color: "var(--tc-tier-structural)" }}>
-                      &gt;
-                    </span>{" "}
-                    THRESHOLD;
-                  </code>
-                </pre>
-              </div>
-              {/* Cross-reference to the live hero demo — the proof for this
-                  promise already ran in the visitor's tab. */}
-              <div className="flex items-center gap-3 font-mono text-xs mb-8">
-                <span className="w-2 h-2 bg-primary inline-block" />
-                <span className="text-text-muted">
-                  The hero demo up top is this system&apos;s 8 KB preview — it
-                  already ran in your tab.
-                </span>
-              </div>
-
-              {/* Real product shot — the actual free lesson, not a mockup.
-                  Re-capture: node scripts/capture-lesson-shot.mjs */}
               <div className="font-mono text-xs text-primary tracking-[0.15em] uppercase mb-3 flex items-center gap-2">
                 <span className="w-[7px] h-[7px] bg-primary inline-block" />
                 The lesson UI — the actual free lesson
@@ -181,11 +136,6 @@ export default function Home() {
                   </p>
                 </div>
               ))}
-
-              {/* Hands-on lab — same model as the hero demo, singleton-loaded.
-                  Lives here, not the hero: hero proves, this section lets a
-                  warmed-up visitor touch it. */}
-              <DeepScanLab />
             </div>
           </div>
         </section>

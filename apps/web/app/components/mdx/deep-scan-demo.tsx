@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 /**
  * Free-tier magic moment: a REAL TensorFlow.js model (trained offline,
@@ -13,13 +13,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
  * tfjs is dynamically imported on first use so it never touches the initial
  * bundle; the model itself is a static asset under /models/.
  *
- * Two exports share one module-level model load:
- * - `DeepScanDemo` — the spectator table (lesson embed + landing hero).
- *   `framing` adds a one-line premise for visitors without story context.
- * - `DeepScanLab` — the hands-on panel (presets / sliders / verdict meter),
- *   mounted further down the landing page where a visitor has earned the
- *   invitation to play. Kept out of the hero: hero content must be
- *   glanceable, and the lab needs instructions.
+ * Used by the lesson embed (default) and the landing hero (`framing` adds a
+ * one-line premise for visitors without story context). An interactive
+ * slider lab existed briefly on the landing page and was cut 2026-06-10 —
+ * it made the page busy without earning it; the spectator run is the proof.
+ * The model probe script (scripts/probe-deep-scan-model.mjs) survives for
+ * verifying any future claims against real model output.
  */
 
 interface Row {
@@ -37,23 +36,6 @@ const STREAM: { id: string; features: [number, number, number] }[] = [
   { id: "7741", features: [0.5, 0.5, 0.5] },
 ];
 
-const ANOMALY_FEATURES = STREAM[STREAM.length - 1].features;
-const CHANNELS = ["ch-0", "ch-1", "ch-2"] as const;
-
-// Lab presets. Values are PROBED against the real model
-// (scripts/probe-deep-scan-model.mjs) so labels match actual output:
-// healthy → 15.3% NORMAL · 7741 → 51.3% NEITHER · anomaly → 91.5% ANOMALOUS.
-// Re-probe if the model is retrained.
-const PRESETS: {
-  id: string;
-  label: string;
-  values: [number, number, number];
-}[] = [
-  { id: "healthy", label: "healthy reading", values: [0.1, 0.9, 0.15] },
-  { id: "7741", label: "sample 7741", values: [0.5, 0.5, 0.5] },
-  { id: "anomaly", label: "deep anomaly", values: [0.95, 0.05, 0.95] },
-];
-
 // Minimal surface of the tfjs modules this file needs.
 interface TfCore {
   tensor2d: (v: number[][]) => { dispose?: () => void };
@@ -65,9 +47,8 @@ interface LoadedModel {
   };
 }
 
-// Module-level singleton: demo (hero/lesson) and lab (further down the
-// landing page) share one tfjs import + one model fetch. First caller pays;
-// everyone else awaits the same promise.
+// Module-level singleton: multiple mounts share one tfjs import + one model
+// fetch. First caller pays; everyone else awaits the same promise.
 let deepScanLoad: Promise<{ tf: TfCore; model: LoadedModel }> | null = null;
 
 function loadDeepScan(): Promise<{ tf: TfCore; model: LoadedModel }> {
@@ -110,8 +91,6 @@ function loadDeepScan(): Promise<{ tf: TfCore; model: LoadedModel }> {
 
 const verdict = (score: number) =>
   score > 0.7 ? "ANOMALOUS" : score < 0.3 ? "NORMAL" : "— NEITHER —";
-
-/* ── Spectator demo — lesson embed + landing hero ────────────────────── */
 
 interface DeepScanDemoProps {
   /** One-line premise for surfaces without the lesson's story context. */
@@ -244,209 +223,6 @@ export function DeepScanDemo({
             your tab just now. Five readings it understood. One it didn&rsquo;t.
             Teaching it to answer is the rest of the course.
           </p>
-        )}
-      </div>
-    </div>
-  );
-}
-
-/* ── Hands-on lab — landing "What You'll Build" section ──────────────── */
-
-export function DeepScanLab() {
-  const [status, setStatus] = useState<"loading" | "ready" | "error">(
-    "loading",
-  );
-  const tfRef = useRef<TfCore | null>(null);
-  const modelRef = useRef<LoadedModel | null>(null);
-
-  const [userVals, setUserVals] = useState<[number, number, number]>([
-    ...ANOMALY_FEATURES,
-  ]);
-  const [userScore, setUserScore] = useState<number | null>(null);
-
-  const classifyUser = useCallback(async (vals: [number, number, number]) => {
-    const tf = tfRef.current;
-    const model = modelRef.current;
-    if (!tf || !model) return;
-    const input = tf.tensor2d([vals]);
-    const out = model.predict(input);
-    const data = await out.data();
-    input.dispose?.();
-    out.dispose?.();
-    setUserScore(data[0]);
-  }, []);
-
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        const { tf, model } = await loadDeepScan();
-        if (cancelled) return;
-        tfRef.current = tf;
-        modelRef.current = model;
-        setStatus("ready");
-        // First classification mirrors sample 7741 exactly — the visitor
-        // starts at the story's cliffhanger and drags away from it.
-        void classifyUser([...ANOMALY_FEATURES]);
-      } catch {
-        if (!cancelled) setStatus("error");
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [classifyUser]);
-
-  const setChannel = (i: number, value: number) => {
-    setUserVals((prev) => {
-      const next = [...prev] as [number, number, number];
-      next[i] = value;
-      void classifyUser(next);
-      return next;
-    });
-  };
-
-  return (
-    <div
-      data-testid="demo-user-panel"
-      className="border border-border bg-code-bg font-mono text-[13px]"
-    >
-      <div className="flex items-center gap-2 px-4 py-2.5 border-b border-border bg-surface">
-        <span className="w-2 h-2 inline-block bg-primary" />
-        <span className="text-xs font-semibold uppercase tracking-widest text-primary">
-          Your turn — feed it a reading
-        </span>
-      </div>
-      <div className="p-4 space-y-2.5">
-        <p className="text-xs text-text-muted/80">
-          Same model as the hero demo up top. Each slider is one of the
-          ship&rsquo;s sensor feeds — temperature, signal strength and the like,
-          every value normalized to 0–1. These three numbers are all the model
-          ever sees. Try a preset, then drag — no single channel decides, push
-          two.
-        </p>
-
-        {status === "loading" && (
-          <p className="text-text-muted">// waiting for the model…</p>
-        )}
-        {status === "error" && (
-          <p className="text-text-muted">
-            // model failed to load — check your connection and refresh
-          </p>
-        )}
-
-        {status === "ready" && (
-          <>
-            {/* Probed presets — labels match real model output (15% / 51% / 92%) */}
-            <div className="flex flex-wrap gap-2 pt-0.5">
-              {PRESETS.map((p) => {
-                const active = p.values.every((v, i) => v === userVals[i]);
-                return (
-                  <button
-                    key={p.label}
-                    type="button"
-                    data-testid={`demo-preset-${p.id}`}
-                    onClick={() => {
-                      setUserVals([...p.values]);
-                      void classifyUser([...p.values]);
-                    }}
-                    aria-pressed={active ? "true" : "false"}
-                    className={`px-3 py-1 text-xs border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
-                      active
-                        ? "border-primary text-primary bg-primary/10"
-                        : "border-border text-text-muted hover:text-text-primary hover:border-primary/30"
-                    }`}
-                  >
-                    {p.label}
-                  </button>
-                );
-              })}
-            </div>
-
-            {CHANNELS.map((ch, i) => (
-              <div key={ch} className="flex items-center gap-3">
-                <label
-                  htmlFor={`demo-slider-${i}`}
-                  className="text-text-muted w-28 shrink-0"
-                >
-                  {ch}
-                </label>
-                <input
-                  id={`demo-slider-${i}`}
-                  data-testid={`demo-slider-${i}`}
-                  type="range"
-                  min={0}
-                  max={1}
-                  step={0.01}
-                  value={userVals[i]}
-                  onChange={(e) => setChannel(i, Number(e.target.value))}
-                  className="w-full max-w-[220px]"
-                  style={{ accentColor: "var(--tc-primary)" }}
-                  aria-label={`Sensor channel ${i}`}
-                />
-                <span className="text-text-primary w-12 text-right tabular-nums">
-                  {userVals[i].toFixed(2)}
-                </span>
-              </div>
-            ))}
-
-            {/* Verdict meter — makes every drag visibly move something,
-                and shows WHERE the verdict zones live. */}
-            <div className="pt-1.5">
-              <div
-                className="relative h-3 flex border border-border"
-                aria-hidden="true"
-              >
-                <div className="w-[30%] border-r border-border bg-primary/15" />
-                <div className="w-[40%]" />
-                <div className="w-[30%] border-l border-border bg-warning/15" />
-                {userScore !== null && (
-                  <div
-                    data-testid="demo-meter-needle"
-                    className="absolute top-[-3px] bottom-[-3px] w-[3px] bg-text-primary transition-[left] duration-150"
-                    style={{
-                      left: `calc(${(userScore * 100).toFixed(1)}% - 1px)`,
-                    }}
-                  />
-                )}
-              </div>
-              <div className="flex text-[10px] uppercase tracking-wider text-text-muted/70 pt-1">
-                <span className="w-[30%]">normal</span>
-                <span className="w-[40%] text-center">— neither —</span>
-                <span className="w-[30%] text-right">anomalous</span>
-              </div>
-            </div>
-
-            <div
-              data-testid="demo-user-score"
-              aria-live="polite"
-              className="flex items-baseline gap-3"
-            >
-              <span className="text-text-muted w-28 shrink-0">your sample</span>
-              {userScore === null ? (
-                <span className="text-text-muted/50">…</span>
-              ) : (
-                <>
-                  <span className="text-text-primary w-14">
-                    {(userScore * 100).toFixed(1)}%
-                  </span>
-                  <span
-                    className={
-                      userScore < 0.3
-                        ? "text-primary font-bold"
-                        : "text-warning font-bold"
-                    }
-                  >
-                    {verdict(userScore)}
-                  </span>
-                </>
-              )}
-            </div>
-            <p className="text-xs text-text-muted/70">
-              Sample 7741 sits dead center — too odd to ignore, too ambiguous to
-              alarm. Module 1 teaches you why.
-            </p>
-          </>
         )}
       </div>
     </div>

@@ -91,6 +91,15 @@
   <30% normal, >70% anomalous, between = can't tell. Slider explainer now
   names the channels using lesson-05 canon (temperature, signal strength,
   normalized 0–1). Lesson embed unchanged — its story provides this context.
+- **Lab CUT entirely (final).** After moving to What You'll Build it made
+  that section "trying too hard and way too busy" (user) — three deep-scan
+  surfaces on one page. Deleted: `DeepScanLab`, presets, sliders, meter, AND
+  the WYB code mockup + hero-cross-ref line. WYB is now just: header +
+  syllabus link | real lesson screenshot | Train/Detect/Deploy/Own. Hero
+  spectator demo (with one framing line) is the page's only model surface.
+  The probe script stays for verifying future claims. E2e slider test
+  replaced with a spectator-run assertion (7741 cliffhanger renders).
+  History below kept for the reasoning trail:
 - **Lab moved out of the hero.** The interactive panel had accreted (framing
   paragraph + presets + sliders + meter) past hero-glanceability — hero
   content that needs instructions is section content. Split: `DeepScanDemo`
