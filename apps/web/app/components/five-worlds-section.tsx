@@ -107,16 +107,19 @@ function spawn(w: number, h: number, kind: number): Particle {
 }
 
 /* ── Deep Orbit: 3D orbital system ─────────────────────────
-   Three tilted orbital rings rendered with real 3D math (perspective
+   Six tilted orbital rings rendered with real 3D math (perspective
    projection + slow Y-axis precession), drawn on the same 2D canvas —
    no three.js. Depth drives size/alpha so far-side particles dim and
    shrink behind the central body. Time-parameterized (no mutable
    particle state), so the reduced-motion static frame is just t=0. */
 
 const ORBIT_RINGS = [
-  { radius: 0.34, tilt: 1.18, speed: 0.45, precession: 0.05, count: 14 },
-  { radius: 0.55, tilt: 1.02, speed: 0.28, precession: -0.035, count: 20 },
-  { radius: 0.78, tilt: 1.3, speed: 0.18, precession: 0.022, count: 26 },
+  { radius: 0.16, tilt: 1.25, speed: 0.85, precession: 0.09, count: 10 },
+  { radius: 0.3, tilt: 1.05, speed: 0.6, precession: -0.07, count: 16 },
+  { radius: 0.45, tilt: 1.35, speed: 0.42, precession: 0.05, count: 20 },
+  { radius: 0.62, tilt: 0.95, speed: 0.3, precession: -0.04, count: 24 },
+  { radius: 0.8, tilt: 1.2, speed: 0.22, precession: 0.03, count: 28 },
+  { radius: 1.0, tilt: 1.12, speed: 0.15, precession: -0.022, count: 32 },
 ];
 
 function drawOrbit(
@@ -128,21 +131,24 @@ function drawOrbit(
   t: number,
 ) {
   const [r, g, b] = rgb;
-  // Center sits right of the card's text column.
-  const cx = w * 0.68;
-  const cy = h * 0.52;
-  const R = Math.min(w, h) * 0.62;
-  const f = R * 2.4; // perspective focal length
+  // Centered, sized off the larger card dimension so the outermost ring's
+  // projected ellipse spans the full background, not a corner ornament.
+  const cx = w * 0.5;
+  const cy = h * 0.5;
+  const R = Math.max(w, h) * 0.5;
+  const f = R * 2.6; // perspective focal length
   const boost = hot ? 1.6 : 1;
 
-  // Central body + glow.
+  // Central body + glow, with a slow breathing pulse so the system reads
+  // as alive even before the rings register.
+  const pulse = 1 + 0.1 * Math.sin(t * 1.8);
   ctx.beginPath();
-  ctx.arc(cx, cy, R * 0.045, 0, Math.PI * 2);
-  ctx.fillStyle = `rgba(${r},${g},${b},${0.5 * boost})`;
+  ctx.arc(cx, cy, R * 0.03 * pulse, 0, Math.PI * 2);
+  ctx.fillStyle = `rgba(${r},${g},${b},${0.55 * boost})`;
   ctx.fill();
   ctx.beginPath();
-  ctx.arc(cx, cy, R * 0.13, 0, Math.PI * 2);
-  ctx.fillStyle = `rgba(${r},${g},${b},${0.06 * boost})`;
+  ctx.arc(cx, cy, R * 0.09 * pulse, 0, Math.PI * 2);
+  ctx.fillStyle = `rgba(${r},${g},${b},${0.07 * boost})`;
   ctx.fill();
 
   for (const ring of ORBIT_RINGS) {
@@ -503,11 +509,6 @@ export function FiveWorldsSection() {
       </motion.div>
 
       {/* Coming-soon themes, muted 2x2 grid */}
-      <div className="border-t border-border px-10 md:px-20 pt-10 pb-4">
-        <div className="font-mono text-xs text-text-muted tracking-[0.2em] uppercase">
-          Coming next
-        </div>
-      </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 border-t border-border">
         {COMING_SOON_CARDS.map((t, i) => (
           <motion.div

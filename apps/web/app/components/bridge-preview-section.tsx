@@ -20,14 +20,6 @@ const PREVIEW_BRIDGES = BRIDGES.filter(
   (b) => b.mlCode && FRAMEWORKS.every((f) => b.variants?.[f.id]?.feCode),
 );
 
-// First sentence of the connection prose, robust against abbreviations and
-// decimals ("e.g.", "0.5"), a period only counts as a sentence boundary
-// when followed by whitespace + capital, or end of string.
-function firstSentence(text: string): string {
-  const match = text.match(/^.*?\.(?=\s+[A-Z]|$)/s);
-  return match ? match[0] : text;
-}
-
 export function BridgePreviewSection() {
   const [selected, setSelected] = useState<Framework>("react");
   const [index, setIndex] = useState(0);
@@ -218,29 +210,6 @@ export function BridgePreviewSection() {
         >
           Run a bridge yourself, module 1 is free →
         </Link>
-      </div>
-
-      {/* Bridge explanation footer */}
-      <div className="border-t border-border px-10 md:px-20 py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 xl:pr-44">
-        <p className="font-mono text-[12px] text-text-muted leading-relaxed max-w-lg">
-          <span style={{ color: "var(--tc-tier-structural)" }}>bridge:</span>{" "}
-          {firstSentence(bridge.connection)}
-        </p>
-        <div
-          className="shrink-0 px-4 py-2 font-mono text-xs"
-          style={{
-            background:
-              "color-mix(in srgb, var(--tc-tier-structural) 8%, transparent)",
-            borderLeft: "2px solid var(--tc-tier-structural)",
-          }}
-        >
-          <span style={{ color: "var(--tc-tier-structural)" }}>
-            {BRIDGES.length} bridges
-          </span>
-          <span className="text-text-muted">
-            , all shown in {selectedLabel}
-          </span>
-        </div>
       </div>
     </section>
   );

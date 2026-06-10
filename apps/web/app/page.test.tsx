@@ -186,14 +186,10 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
       );
     });
 
-    it("footer claims 'shown in', not 'personalized', and tracks framework", () => {
+    it("does not render the removed bridge-explanation footer", () => {
       const { container } = render(<BridgePreviewSection />);
-      expect(container.textContent).toMatch(/all shown in react/i);
+      expect(container.textContent).not.toMatch(/all shown in/i);
       expect(container.textContent).not.toMatch(/personalized/i);
-      fireEvent.click(
-        screen.getByRole("button", { name: /show bridges in svelte/i }),
-      );
-      expect(container.textContent).toMatch(/all shown in svelte/i);
     });
 
     it("h2 avoids the 'You already' template (used by hero + onboarding)", () => {
