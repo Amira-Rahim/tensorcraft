@@ -15,7 +15,7 @@ concept:
     feTitle: "Canary Deployments"
     feCode: "// nginx: upstream { server v1 weight=95; server v2 weight=5; }"
     mlTitle: "Model Traffic Split"
-    mlCode: "// router: modelV1 weight=95, modelV2 weight=5 — gradual rollout"
+    mlCode: "// router: modelV1 weight=95, modelV2 weight=5; gradual rollout"
     tier: structural
     breaks: "Canary deployments compare identical code at different rollout %. Model traffic splitting compares two different models, so confounding from input distribution shifts contaminates the result. You need stratified sampling and longer observation windows than canary code rollouts demand."
 consequence:
@@ -59,7 +59,7 @@ A canary, in deploy jargon, is the small first slice of traffic that absorbs the
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="traffic-splitter.ts">
-{`// Weighted traffic splitting — like nginx upstream weights
+{`// Weighted traffic splitting, like nginx upstream weights
 
 interface ModelEndpoint {
   version: string;
@@ -184,4 +184,4 @@ Implement a weighted traffic splitter with graduated rollout.
 
 <Exercise slug="route-models" />
 
-<KeyTakeaways takeaways={["Graduated rollout (5% -> 20% -> 50% -> 100%) limits blast radius: at 5%, only 620 of 12,400 devices ever see a bad model", "Automatic rollback triggers on accuracy drop, latency increase, or false positive spikes", "The control model always stays available — never remove the fallback until the test is conclusive"]} />
+<KeyTakeaways takeaways={["Graduated rollout (5% -> 20% -> 50% -> 100%) limits blast radius: at 5%, only 620 of 12,400 devices ever see a bad model", "Automatic rollback triggers on accuracy drop, latency increase, or false positive spikes", "The control model always stays available: never remove the fallback until the test is conclusive"]} />

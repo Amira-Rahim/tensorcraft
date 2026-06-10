@@ -58,7 +58,7 @@ Each pipeline step receives text (or tokens), transforms it, and passes the resu
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="functional-pipe.ts">
-{`// Functional pipe — identical to lodash/fp pipe or RxJS pipe
+{`// Functional pipe, identical to lodash/fp pipe or RxJS pipe
 type Transform = (input: string) => string;
 
 function pipe(...fns: Transform[]): Transform {
@@ -152,7 +152,7 @@ class TextPipeline {
   }
 }
 
-// Usage — reads like Express middleware
+// Usage: reads like Express middleware
 const pipeline = new TextPipeline()
   .add('stripHtml', (t) => t.replace(/<[^>]*>/g, ' '))
   .add('lowercase', (t) => t.toLowerCase())
@@ -233,8 +233,8 @@ const rightOrder = (text: string) => {
   return tokens.map(t => MEDICAL_ABBREVS.get(t) ?? t); // "pcn" matches
 };
 
-console.log(wrongOrder('PCN allergy'));  // ['pcn', 'allergy'] — not expanded!
-console.log(rightOrder('PCN allergy'));  // ['penicillin', 'allergy'] — correct`}
+console.log(wrongOrder('PCN allergy'));  // ['pcn', 'allergy']: not expanded!
+console.log(rightOrder('PCN allergy'));  // ['penicillin', 'allergy']: correct`}
 </CodeBlock>
 
 ## Challenge
@@ -253,4 +253,4 @@ Build a reusable preprocessing pipeline with pluggable steps.
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Pin pipeline and tokenizer versions together: drift between them changes the model's inputs without an error", "Functional pipe() and class-based Pipeline are both valid patterns", "Logging and error handling in pipelines make debugging model issues tractable", "Step ordering matters — lowercase before abbreviation lookup, clean before tokenize", "Reusable pipelines ensure consistent preprocessing across training and inference"]} />
+<KeyTakeaways takeaways={["Pin pipeline and tokenizer versions together: drift between them changes the model's inputs without an error", "Functional pipe() and class-based Pipeline are both valid patterns", "Logging and error handling in pipelines make debugging model issues tractable", "Step ordering matters: lowercase before abbreviation lookup, clean before tokenize", "Reusable pipelines ensure consistent preprocessing across training and inference"]} />

@@ -55,7 +55,7 @@ Last module's autoencoder left holes in its latent space: sample a random point 
 {`import * as tf from '@tensorflow/tfjs';
 
 // Regular autoencoder: input → single point in latent space
-// The space has gaps — random points may decode to garbage
+// The space has gaps; random points may decode to garbage
 function regularEncoder(inputDim: number, latentDim: number) {
   const model = tf.sequential();
   model.add(tf.layers.dense({ inputShape: [inputDim], units: 256, activation: 'relu' }));
@@ -64,7 +64,7 @@ function regularEncoder(inputDim: number, latentDim: number) {
 }
 
 // VAE encoder: input → distribution (mean + variance) in latent space
-// The space is forced to be smooth — every point decodes to something valid
+// The space is forced to be smooth; every point decodes to something valid
 function vaeEncoder(inputDim: number, latentDim: number) {
   const input = tf.input({ shape: [inputDim] });
   const hidden = tf.layers.dense({ units: 256, activation: 'relu' }).apply(input);
@@ -93,7 +93,7 @@ We output `log(variance)` instead of `variance` directly because variance must b
 
 // Frontend parallel: CSS uses log-like scales for font sizes
 // font-size: 0.75rem, 1rem, 1.25rem, 1.5rem, 2rem
-// The scale is exponential, not linear — small changes at small sizes,
+// The scale is exponential, not linear: small changes at small sizes,
 // big changes at large sizes. Same idea as exp(logVar).
 
 function latentSample(mu: tf.Tensor, logVar: tf.Tensor): tf.Tensor {
@@ -113,8 +113,8 @@ VAE training maximizes the **Evidence Lower Bound (ELBO)** on log p(x):
 `log p(x) ≥ E_{q(z|x)}[ log p(x|z) ] - KL[ q(z|x) || p(z) ]`
 
 Two terms:
-- **Reconstruction:** `E_{q(z|x)}[log p(x|z)]` — how well does z decode back to x? Equivalent to MSE for Gaussian likelihood, BCE for Bernoulli.
-- **KL regularization:** `KL[ q(z|x) || p(z) ]` — how far is the encoder's distribution q(z|x) from the prior p(z) = N(0, I)?
+- **Reconstruction:** `E_{q(z|x)}[log p(x|z)]`: how well does z decode back to x? Equivalent to MSE for Gaussian likelihood, BCE for Bernoulli.
+- **KL regularization:** `KL[ q(z|x) || p(z) ]`: how far is the encoder's distribution q(z|x) from the prior p(z) = N(0, I)?
 
 The encoder outputs `μ(x), σ(x)` for each z dimension. We sample `z ~ N(μ, σ²)` (via the reparameterization trick, next lesson) and decode.
 

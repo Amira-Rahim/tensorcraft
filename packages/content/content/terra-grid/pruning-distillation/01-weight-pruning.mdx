@@ -75,7 +75,7 @@ console.log('Non-zero after pruning:', result.nonZeroCount); // 4
 console.log('Sparsity:', (result.sparsity * 100).toFixed(0) + '%'); // 60%
 
 // The large weights (0.82, -0.91, 0.67, -0.73) carry the signal
-// The small weights (0.003, -0.002, 0.001) are noise — like unused imports`}
+// The small weights (0.003, -0.002, 0.001) are noise, like unused imports`}
 </CodeBlock>
 
 The insight is that most trained neural networks are over-parameterized. Just as a JavaScript bundle often contains unused code paths, a neural network often contains weights that contribute almost nothing to the output. Removing them has minimal impact on accuracy.

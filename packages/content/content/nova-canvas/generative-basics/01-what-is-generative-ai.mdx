@@ -79,7 +79,7 @@ function generateParticle() {
   };
 }
 
-// A generative model is like generateParticle() — but it has
+// A generative model is like generateParticle(), but it has
 // LEARNED the distribution of "good particles" from data`}
 </CodeBlock>
 
@@ -101,7 +101,7 @@ const std = variance.sqrt();
 // Generate new samples that look like the training data
 const newSamples = tf.randomNormal([10]).mul(std).add(mean);
 console.log(await newSamples.array());
-// Values clustered around 2.0 — new data, same distribution`}
+// Values clustered around 2.0: new data, same distribution`}
 </CodeBlock>
 
 ## Challenge

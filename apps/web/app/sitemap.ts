@@ -5,12 +5,12 @@ import { getThemeLessons, getPosts } from "@tensorcraft/content";
 
 const BASE_URL = "https://tensorcraft.app";
 
-// Phased sitemap to address "Discovered – currently not indexed" in Search
+// Phased sitemap to address "Discovered, currently not indexed" in Search
 // Console (414 URLs as of 2026-04-27). New domains have small crawl budgets;
 // listing 400+ URLs causes Google to defer most. Phase "core" lists ~22
 // high-value URLs so the budget concentrates on landing/theme/index pages.
 // Flip to "full" after Search Console shows the core set indexed.
-// Lessons/glossary/bridge-concept pages stay reachable via internal links —
+// Lessons/glossary/bridge-concept pages stay reachable via internal links -
 // only their sitemap inclusion is deferred.
 const SITEMAP_PHASE: "core" | "full" = "core";
 
@@ -107,7 +107,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: isLaunched(slug) ? 0.9 : 0.4,
   }));
 
-  // Capstone pages exist only for launched themes — coming-soon routes 404.
+  // Capstone pages exist only for launched themes, coming-soon routes 404.
   const capstoneRoutes: MetadataRoute.Sitemap = themeSlugs
     .filter((slug) => isLaunched(slug))
     .map((slug) => ({
@@ -136,7 +136,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }),
   );
 
-  // Lesson pages exist only for launched themes — coming-soon routes 404.
+  // Lesson pages exist only for launched themes, coming-soon routes 404.
   const lessonRoutes: MetadataRoute.Sitemap = themeSlugs
     .filter((slug) => isLaunched(slug))
     .flatMap((slug) =>

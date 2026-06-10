@@ -99,7 +99,7 @@ function leakyUpdate() {
   const z = getLatentVector();      // allocates GPU memory
   const output = decoder.predict(z); // allocates more GPU memory
   renderToCanvas(output);
-  // z and output are never disposed — memory leak!
+  // z and output are never disposed: memory leak!
 }
 
 // GOOD: tidy() automatically disposes intermediate tensors
@@ -108,7 +108,7 @@ function cleanUpdate() {
     const z = getLatentVector();
     return decoder.predict(z) as tf.Tensor;
   });
-  // Only 'output' survives — everything else is disposed
+  // Only 'output' survives; everything else is disposed
 
   renderToCanvas(output).then(() => output.dispose());
 }
@@ -189,4 +189,4 @@ Result: path stays on the prior's high-density region (unit sphere if z is L2-no
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["A latent space explorer is a slider-driven UI backed by a neural decoder", "Always dispose tensors to prevent GPU memory leaks — use tf.tidy()", "Debounce slider updates for smooth 60fps interaction", "2D maps provide intuitive exploration of two latent dimensions simultaneously"]} />
+<KeyTakeaways takeaways={["A latent space explorer is a slider-driven UI backed by a neural decoder", "Always dispose tensors to prevent GPU memory leaks; use tf.tidy()", "Debounce slider updates for smooth 60fps interaction", "2D maps provide intuitive exploration of two latent dimensions simultaneously"]} />

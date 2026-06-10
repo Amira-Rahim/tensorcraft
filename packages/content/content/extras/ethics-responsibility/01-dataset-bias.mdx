@@ -13,9 +13,9 @@ concept:
   explanation: "Dataset bias occurs when your training data doesn't represent the real world, leading to models that work well for some people and fail for others."
   bridge:
     feTitle: "Browser-Only Testing"
-    feCode: "// Only tested in Chrome on macOS — 'works for me!'"
+    feCode: "// Only tested in Chrome on macOS: 'works for me!'"
     mlTitle: "Biased Training Data"
-    mlCode: "// Only trained on English text — fails on multilingual input"
+    mlCode: "// Only trained on English text; fails on multilingual input"
     tier: intuition
     breaks: "Cross-browser bugs surface immediately on a Firefox/Safari pageview; the failure mode is loud (broken layout, JS error). Dataset bias is silent: a face-recognition model trained mostly on light-skinned faces may still return a confident match on a darker-skinned face that is wrong. Detecting bias requires per-subgroup evaluation against a labelled holdout. There's no equivalent of 'open it in Firefox' that surfaces it on demand."
 consequence:
@@ -108,7 +108,7 @@ function auditRepresentation(data: DataPoint[]) {
   return report;
 }
 
-// Also check label distribution per group — disparate outcomes signal bias
+// Also check label distribution per group; disparate outcomes signal bias
 function auditOutcomes(data: DataPoint[]) {
   const groupOutcomes: Record<string, { approved: number; total: number }> = {};
 

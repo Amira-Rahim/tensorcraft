@@ -91,6 +91,13 @@
   <30% normal, >70% anomalous, between = can't tell. Slider explainer now
   names the channels using lesson-05 canon (temperature, signal strength,
   normalized 0–1). Lesson embed unchanged — its story provides this context.
+- **WYB redesigned as a pipeline band** after the stripped version read as
+  floating paragraphs in dead space. One bordered grid
+  (`xl:grid-cols-[1.4fr_1fr_1fr_1fr_1fr]`): header owns the first cell
+  (kills the empty right half), steps 01–04 fill the rest with oversized
+  ghost numerals (Five Worlds grammar) + hard dividers (stats-bar rhythm).
+  Step copy tightened to fit cells; outcome line + syllabus link live in the
+  header cell. Server-rendered, zero JS, responsive 1→2→5 columns.
 - **Lesson screenshot CUT too (user call):** the free lesson is one click
   away — the real thing beats a picture of it. Asset + capture script
   deleted; WYB is now header + syllabus link + a 2×2

@@ -40,7 +40,7 @@ District 9 is reporting false negatives. Meridian drones flying right past Senti
 </Dialogue>
 
 <Dialogue speaker="NEON">
-The model has not changed. The world has. Meridian deployed new drone models — different shapes, different paint, different flight patterns. Your training data does not include them. This is data drift, and it will kill any deployed model that is not monitored.
+The model has not changed. The world has. Meridian deployed new drone models: different shapes, different paint, different flight patterns. Your training data does not include them. This is data drift, and it will kill any deployed model that is not monitored.
 </Dialogue>
 
 Deploying a model is not the end of the job. It is the beginning of a new one. Models decay. The real world changes. Data drift is the ML equivalent of an API breaking because a third-party service changed their response format. You need monitoring to catch it.
@@ -241,4 +241,4 @@ Build a drift detector that compares current prediction distributions against a 
 
 <Exercise slug="monitor-drift" />
 
-<KeyTakeaways takeaways={["Track confidence, latency, and accuracy as rolling time series; degradation shows up there before users report it", "Data drift means the real world has changed but your model has not — it causes silent accuracy decay", "Detect drift by comparing rolling statistics (mean, std dev) of predictions against a baseline", "Automated alerts on drift let you catch degradation before users report failures"]} />
+<KeyTakeaways takeaways={["Track confidence, latency, and accuracy as rolling time series; degradation shows up there before users report it", "Data drift means the real world has changed but your model has not; it causes silent accuracy decay", "Detect drift by comparing rolling statistics (mean, std dev) of predictions against a baseline", "Automated alerts on drift let you catch degradation before users report failures"]} />

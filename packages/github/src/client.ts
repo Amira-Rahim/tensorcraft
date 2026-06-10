@@ -2,7 +2,7 @@ import { createAppAuth } from "@octokit/auth-app";
 import { graphql } from "@octokit/graphql";
 
 /**
- * GitHub App configuration — reads from environment variables.
+ * GitHub App configuration, reads from environment variables.
  * Never hardcode secrets; all values come from process.env.
  */
 function getAppConfig() {

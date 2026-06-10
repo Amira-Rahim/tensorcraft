@@ -73,7 +73,7 @@ function RadarChart({
           strokeWidth="0.5"
         />
       ))}
-      {/* Single dashed tick at 50% — Option C uses one reference, not concentric rings. */}
+      {/* Single dashed tick at 50%, Option C uses one reference, not concentric rings. */}
       <circle
         cx={cx}
         cy={cy}
@@ -136,7 +136,7 @@ export function SkillGenome({ data }: SkillGenomeProps) {
       .join(", ") +
     ".";
 
-  // Velocity footer — unchanged; uses original prop data.
+  // Velocity footer, unchanged; uses original prop data.
   const velocities = data
     .filter((d) => d.velocity !== 0)
     .map((d) => d.velocity);
@@ -149,7 +149,7 @@ export function SkillGenome({ data }: SkillGenomeProps) {
     <div className="brutalist-shadow bg-surface-raised border border-border overflow-hidden my-6">
       <div className="p-5">
         <div className="font-mono text-xs uppercase tracking-widest text-text-muted mb-4">
-          // SKILL GENOME
+          SKILL GENOME
         </div>
         <div className="flex flex-wrap items-center gap-x-12 gap-y-6">
           <div className="shrink-0">
@@ -197,7 +197,7 @@ export function SkillGenome({ data }: SkillGenomeProps) {
             ? `▲ +${avgVelocity.toFixed(1)} /week`
             : avgVelocity < 0
               ? `▼ ${avgVelocity.toFixed(1)} /week`
-              : "— 0.0 /week"}
+              : "· 0.0 /week"}
         </span>
       </div>
     </div>

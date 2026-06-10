@@ -43,7 +43,7 @@ Concept drift. The relationship between inputs and the correct answer has change
 
 Visual regression testing catches a subtle but important class of bugs: the code is correct, the inputs are valid, but the output looks wrong. A CSS change shifted a button 3px left. The screenshot diff catches it. Model drift is the same: inputs look fine, the model runs correctly, but predictions are quietly degrading because the underlying patterns have shifted.
 
-<LearningObjectives objectives={["Distinguish model drift (concept drift) from data drift — same inputs, different correct answers", "Implement prediction distribution monitoring to detect silent accuracy degradation", "Use delayed ground truth to measure actual vs predicted accuracy over time", "Recognize seasonal and temporal patterns that cause concept drift"]} />
+<LearningObjectives objectives={["Distinguish model drift (concept drift) from data drift: same inputs, different correct answers", "Implement prediction distribution monitoring to detect silent accuracy degradation", "Use delayed ground truth to measure actual vs predicted accuracy over time", "Recognize seasonal and temporal patterns that cause concept drift"]} />
 
 ## Silent Degradation
 
@@ -114,7 +114,7 @@ class ModelDriftDetector {
 
 <CodeBlock language="typescript" title="ai-wrong-moment.ts">
 {`// The A/B test winner was trained on stale data from a decommissioned site.
-// It appeared to outperform the baseline — but only because the test set
+// It appeared to outperform the baseline, but only because the test set
 // came from the same stale distribution. In production, it failed.
 
 function demonstrateConceptDrift(): void {
@@ -127,7 +127,7 @@ function demonstrateConceptDrift(): void {
 
   // The model is not wrong. The world changed.
   // Without monitoring, this goes undetected for weeks.
-  console.log('Same inputs, different truth — concept drift detected');
+  console.log('Same inputs, different truth: concept drift detected');
 }`}
 </CodeBlock>
 
@@ -147,10 +147,10 @@ You are the on-call engineer when the prediction-distribution drift alarm fires 
 
 <Quiz
   question="Data drift = feature distributions shift. Concept drift = the relationship between features and label shifts. A spam classifier in production sees: feature distributions stable (PSI=0.04), but accuracy on labelled holdout drops from 95% → 82%. Which kind of drift is this?"
-  options={[{"text":"Data drift — accuracy drop must mean feature changes"},{"text":"Concept drift — features look the same but the mapping from features to spam/not-spam has changed (spammers adapted, language evolved)"},{"text":"Both — accuracy drop always means data drift"},{"text":"Neither — labelled holdout accuracy doesn't matter"}]}
+  options={[{"text":"Data drift: accuracy drop must mean feature changes"},{"text":"Concept drift: features look the same but the mapping from features to spam/not-spam has changed (spammers adapted, language evolved)"},{"text":"Both: accuracy drop always means data drift"},{"text":"Neither: labelled holdout accuracy doesn't matter"}]}
   correct={1}
-  explanation="PSI=0.04 says feature distributions ARE stable (no data drift detectable). Yet accuracy on labels dropped 13 points. The model's decision boundary is wrong now even though inputs look familiar — that's concept drift. Spammers' adversarial adaptation is a textbook concept-drift scenario: same words and metadata, different labels. Option A confuses cause/effect. Option C overstates: not every accuracy drop is data drift. Option D ignores that holdout accuracy is the truth signal."
+  explanation="PSI=0.04 says feature distributions ARE stable (no data drift detectable). Yet accuracy on labels dropped 13 points. The model's decision boundary is wrong now even though inputs look familiar: that's concept drift. Spammers' adversarial adaptation is a textbook concept-drift scenario: same words and metadata, different labels. Option A confuses cause/effect. Option C overstates: not every accuracy drop is data drift. Option D ignores that holdout accuracy is the truth signal."
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Model drift means the correct answers changed: same inputs, different ground truth, so accuracy decays while inputs still look normal", "Data drift is detectable immediately (input stats change); model drift requires ground truth labels that often arrive delayed", "Prediction distribution monitoring catches drift even before ground truth arrives — if the model suddenly predicts more 'critical' events, investigate", "Seasonal patterns are a common cause of concept drift in industrial systems — build temporal awareness into your monitoring"]} />
+<KeyTakeaways takeaways={["Model drift means the correct answers changed: same inputs, different ground truth, so accuracy decays while inputs still look normal", "Data drift is detectable immediately (input stats change); model drift requires ground truth labels that often arrive delayed", "Prediction distribution monitoring catches drift even before ground truth arrives: if the model suddenly predicts more 'critical' events, investigate", "Seasonal patterns are a common cause of concept drift in industrial systems; build temporal awareness into your monitoring"]} />

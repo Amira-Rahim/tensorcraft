@@ -100,7 +100,7 @@ testCode: |
     });
     it('LSTM has at least as many parameters as GRU', () => {
       // In real TFJS LSTM has 4 gates vs GRU's 3, so LSTM > GRU.
-      // The test harness mock may not reflect this exactly — accept equality too.
+      // The test harness mock may not reflect this exactly; accept equality too.
       expect(lstmParams).toBeGreaterThanOrEqual(gruParams);
     });
     it('LSTM produces valid prediction', async () => {

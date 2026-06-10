@@ -15,14 +15,14 @@ concept:
     feTitle: "Static Site Deploy"
     feCode: "npm run build && gh-pages -d dist // bundle, optimize, ship"
     mlTitle: "ML App Deploy"
-    mlCode: "npm run build && gh-pages -d dist // same — model is a static asset"
+    mlCode: "npm run build && gh-pages -d dist // same; model is a static asset"
     tier: structural
-    breaks: "The file copy is identical; the operational contract is not. Static deploys roll back by reverting the artifact and the user gets the prior page. Model rollback restores the weights but not the world the model was trained on — drift accumulates from the training cutoff, not from the deploy time. CDN cache eviction is bounded by TTL; model staleness is unbounded until you retrain."
+    breaks: "The file copy is identical; the operational contract is not. Static deploys roll back by reverting the artifact and the user gets the prior page. Model rollback restores the weights but not the world the model was trained on; drift accumulates from the training cutoff, not from the deploy time. CDN cache eviction is bounded by TTL; model staleness is unbounded until you retrain."
 consequence:
   narrative: "DEEP SCAN goes live. The anomalous signal is classified. The result appears on every display on the bridge."
 hints:
   - level: nudge
-    content: "The model file is a static asset — deploy it like any other file in your build output"
+    content: "The model file is a static asset; deploy it like any other file in your build output"
   - level: guidance
     content: "Build the app, include the model in the dist folder, deploy to GitHub Pages"
   - level: solution
@@ -55,22 +55,22 @@ Every web app you've built ends the same way: `npm run build`, push to productio
     {
       label: "cooperate",
       display: "Hold and let Demir's verification suite run one more pass",
-      consequence: "Demir reruns. The verification suite passes. The pulse window closes — you miss the cleanest classification, but DEEP SCAN deploys to a steady-state target two minutes later. Mirza nods: 'Good operators wait.' Cooperative play with the team yields a slightly noisier signal but zero deployment surprises."
+      consequence: "Demir reruns. The verification suite passes. The pulse window closes: you miss the cleanest classification, but DEEP SCAN deploys to a steady-state target two minutes later. Mirza nods: 'Good operators wait.' Cooperative play with the team yields a slightly noisier signal but zero deployment surprises."
     },
     {
       label: "defect",
       display: "Override Demir, push deploy now while the pulse window is open",
-      consequence: "DEEP SCAN ships. Classification lands inside the pulse window — sharpest signal of the run. Demir's face is unreadable. Mirza will sign off, but the trust ledger now carries a debt: you treated the team as a constraint, not a teammate. The science wins; the next deploy will be slower."
+      consequence: "DEEP SCAN ships. Classification lands inside the pulse window: sharpest signal of the run. Demir's face is unreadable. Mirza will sign off, but the trust ledger now carries a debt: you treated the team as a constraint, not a teammate. The science wins; the next deploy will be slower."
     },
     {
       label: "random",
-      display: "Flip a coin — half the bridge crew is split on the call",
+      display: "Flip a coin; half the bridge crew is split on the call",
       consequence: "Tails. You hold. Demir reruns; pulse window closes. Same outcome as cooperate, but the bridge logged that you couldn't decide. Game-theoretically: mixed strategies are valid against an adversary, but your team is not your adversary."
     },
     {
       label: "dominant",
       display: "Run a 30-second hot canary on the pulse, then full deploy if it holds",
-      consequence: "Canary on the live pulse passes 0.9987 correlation. Full deploy clears two minutes later. You captured the pulse window AND the verification rerun. Mirza: 'You found the third option. That's the work.' Dominant strategy here was the one that satisfied both objectives — Demir's safety net and the science window."
+      consequence: "Canary on the live pulse passes 0.9987 correlation. Full deploy clears two minutes later. You captured the pulse window AND the verification rerun. Mirza: 'You found the third option. That's the work.' Dominant strategy here was the one that satisfied both objectives: Demir's safety net and the science window."
     }
   ]}
 />
@@ -81,7 +81,7 @@ Every web app you've built ends the same way: `npm run build`, push to productio
 
 <CodeBlock language="typescript" title="build-config.ts">
 {`// Production build configuration
-// Model files are static assets — treat them like images or fonts
+// Model files are static assets; treat them like images or fonts
 
 interface BuildConfig {
   entry: string;
@@ -102,8 +102,8 @@ const config: BuildConfig = {
   output: 'dist',
   assets: {
     models: [
-      'models/deep-scan-v1/model.json',      // 2 KB — model topology
-      'models/deep-scan-v1/weights.bin',      // 42 MB — quantized + pruned
+      'models/deep-scan-v1/model.json',      // 2 KB: model topology
+      'models/deep-scan-v1/weights.bin',      // 42 MB: quantized + pruned
     ],
     testData: [
       'data/validation-sample.json',          // 100 samples for smoke test
@@ -130,7 +130,7 @@ const config: BuildConfig = {
 ## Deploy and Verify
 
 <CodeBlock language="typescript" title="deploy.ts">
-{`// Deployment verification — smoke test the live system
+{`// Deployment verification: smoke test the live system
 
 async function verifyDeployment(baseUrl: string): Promise<boolean> {
   console.log('=== DEEP SCAN Deployment Verification ===');
@@ -181,13 +181,13 @@ async function verifyDeployment(baseUrl: string): Promise<boolean> {
 // Classify the anomalous signal that the crew has tracked across 11 modules.
 
 async function classifyAnomalousSignal(): Promise<void> {
-  console.log('=== DEEP SCAN v1.0 — Final Classification ===');
+  console.log('=== DEEP SCAN v1.0: Final Classification ===');
   console.log('');
   console.log('Signal source: 4.2 light-years, bearing 127.3');
-  console.log('Pulse interval: 30.0s — down from 73.4s at first measurement');
+  console.log('Pulse interval: 30.0s, down from 73.4s at first measurement');
   console.log('');
 
-  // Load the anomalous signal — the one that started everything
+  // Load the anomalous signal, the one that started everything
   const anomalousSignal = await loadSignal('anomaly-kepler-442-001');
 
   // Run through the complete pipeline
@@ -221,7 +221,7 @@ async function classifyAnomalousSignal(): Promise<void> {
   console.log('Recommendation: Transmit all data to Earth for');
   console.log('independent verification.');
   console.log('');
-  console.log('DEEP SCAN v1.0 — Signal Classified. Mission Continues.');
+  console.log('DEEP SCAN v1.0: Signal Classified. Mission Continues.');
 }`}
 </CodeBlock>
 
@@ -231,12 +231,12 @@ Write a deployment verification script for the complete system.
 
 <Exercise slug="verify-deployment" />
 
-<KeyTakeaways takeaways={["Rolling back a model restores the weights, not the world — drift accumulates from the training cutoff, not the deploy time", "Always verify deployments: model loads, inference works, performance meets budget", "DEEP SCAN v1.0: 42 MB model, 5ms inference, 91.8% accuracy — from 340 MB in Module 1 to production", "The signal is classified: Fibonacci-ratio pulse intervals, 0.9987 correlation with the ship's own calibration harmonics. The mission continues."]} />
+<KeyTakeaways takeaways={["Rolling back a model restores the weights, not the world: drift accumulates from the training cutoff, not the deploy time", "Always verify deployments: model loads, inference works, performance meets budget", "DEEP SCAN v1.0: 42 MB model, 5ms inference, 91.8% accuracy: from 340 MB in Module 1 to production", "The signal is classified: Fibonacci-ratio pulse intervals, 0.9987 correlation with the ship's own calibration harmonics. The mission continues."]} />
 
 <DispatchTease
   toThemeId="neon-protocol"
   toThemeName="Neon Protocol"
-  body="Operator. Cross-channel intel: Kira at a partner cell just escalated a CV anomaly. The IoU heatmap she's reading carries the harmonic structure DEEP SCAN classified an hour ago — 73.4 Hz, Fibonacci pulse ratios. She doesn't know yet. She reads bounding boxes, not spectrograms. Someone who has watched this signal for eleven modules should look at her data."
+  body="Operator. Cross-channel intel: Kira at a partner cell just escalated a CV anomaly. The IoU heatmap she's reading carries the harmonic structure DEEP SCAN classified an hour ago: 73.4 Hz, Fibonacci pulse ratios. She doesn't know yet. She reads bounding boxes, not spectrograms. Someone who has watched this signal for eleven modules should look at her data."
 />
 
 <Epilogue>
@@ -248,11 +248,11 @@ Calibration's clean. I checked it four times. Those are our harmonics, in a sign
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-Then either the universe loves the same math we do, phyllotaxis and shell spirals and Fibonacci everywhere — or something out there heard us, and answered in our own voice. The model can't choose between those. That part was never going to be its job.
+Then either the universe loves the same math we do, phyllotaxis and shell spirals and Fibonacci everywhere; or something out there heard us, and answered in our own voice. The model can't choose between those. That part was never going to be its job.
 </Dialogue>
 
 <Dialogue speaker="ARIA">
-Final telemetry note. The pulse interval is now 29.7 seconds and falling. Eleven modules ago I could not parse this signal. I have spent every module since helping you build the thing that can. Whatever answers next — it will not be answering me.
+Final telemetry note. The pulse interval is now 29.7 seconds and falling. Eleven modules ago I could not parse this signal. I have spent every module since helping you build the thing that can. Whatever answers next, it will not be answering me.
 </Dialogue>
 
 <Dialogue speaker="Commander Mirza">

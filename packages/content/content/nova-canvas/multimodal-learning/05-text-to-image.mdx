@@ -125,7 +125,7 @@ class TextToImagePipeline {
       image = cleaned;
     }
 
-    // Step 4: Upscale (like SSR hydration — enhance the initial render)
+    // Step 4: Upscale (like SSR hydration: enhance the initial render)
     const highRes = this.superRes.predict(image) as tf.Tensor4D;
     image.dispose();
     tokens.dispose();
@@ -145,4 +145,4 @@ Wire up the text-to-image pipeline: encode text, condition diffusion, generate.
 
 <Exercise slug="text-to-image" />
 
-<KeyTakeaways takeaways={["The text embedding conditions the U-Net at every denoising step, not just the first one", "The pipeline combines text encoding, conditioned diffusion, classifier-free guidance, and super-resolution", "Text embeddings condition the U-Net at each denoising step, steering what the model generates", "MUSE's first text-to-image output is rough but recognizable — the bridge from words to art is crossed"]} />
+<KeyTakeaways takeaways={["The text embedding conditions the U-Net at every denoising step, not just the first one", "The pipeline combines text encoding, conditioned diffusion, classifier-free guidance, and super-resolution", "Text embeddings condition the U-Net at each denoising step, steering what the model generates", "MUSE's first text-to-image output is rough but recognizable; the bridge from words to art is crossed"]} />

@@ -15,7 +15,7 @@ concept:
     feTitle: "Scoped CSS Variables"
     feCode: ".clinical { --color-alert: #dc3545; } /* context-specific */"
     mlTitle: "Domain Embeddings"
-    mlCode: "// 'stat' near 'urgent', not 'statistics' — context-specific"
+    mlCode: "// 'stat' near 'urgent', not 'statistics'; context-specific"
     tier: structural
     breaks: "Scoped CSS variables override global ones within a selector subtree. Domain-adapted embeddings retrain or fine-tune on medical text, but mixing general and domain embeddings naively can degrade both, and the right blending strategy is empirical."
 consequence:
@@ -155,7 +155,7 @@ async function loadMedicalEmbeddings(
     inputDim: vocabSize,
     outputDim: embeddingDim,
     weights: [tf.tensor2d(pretrainedWeights)],
-    trainable: false,  // freeze — use as-is, do not modify during training
+    trainable: false,  // freeze: use as-is, do not modify during training
   });
 
   model.add(embeddingLayer);

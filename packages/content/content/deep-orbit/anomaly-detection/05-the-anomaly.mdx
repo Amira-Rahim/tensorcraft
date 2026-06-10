@@ -10,10 +10,10 @@ context:
   narrative: "DEEP SCAN fires its highest-confidence alert ever. The reconstruction error is twelve times baseline. Nazari checks the sensors twice. 'This is not instrument noise. The model is right.'"
   speaker: "Chief Nazari"
 concept:
-  explanation: "When an error boundary catches an unexpected throw, it means something genuinely new happened — the system encountered a case it was never designed for."
+  explanation: "When an error boundary catches an unexpected throw, it means something genuinely new happened: the system encountered a case it was never designed for."
   bridge:
     feTitle: "Error Boundary"
-    feCode: "componentDidCatch(error) { // unexpected error — show fallback UI }"
+    feCode: "componentDidCatch(error) { // unexpected error: show fallback UI }"
     mlTitle: "Anomaly Alert"
     mlCode: "if (error > 12 * baseline) { alert('UNKNOWN SIGNAL DETECTED') }"
     tier: intuition
@@ -21,7 +21,7 @@ consequence:
   narrative: "Fibonacci ratios, the same sequence the ship's own sensor calibration uses. Farah runs the decomposition again. Same ratios."
 hints:
   - level: nudge
-    content: "Combine all detection methods — statistical, autoencoder, and LSTM prediction error"
+    content: "Combine all detection methods: statistical, autoencoder, and LSTM prediction error"
   - level: guidance
     content: "An ensemble approach flags signals that multiple detectors agree on"
   - level: solution
@@ -48,7 +48,7 @@ What am I looking at, Dr. Farah?
 
 A React error boundary firing means the application hit a case no developer anticipated. DEEP SCAN's anomaly alert is the same class of event: every detector agrees this signal is unlike anything in the training data.
 
-<LearningObjectives objectives={["Combine multiple detection methods into an ensemble for robust anomaly detection", "Build a detection pipeline: statistical checks → autoencoder → LSTM verification", "Interpret ensemble agreement as confidence — more detectors flagging = higher confidence", "Deploy the full anomaly detection system on the DEEP SCAN dashboard"]} />
+<LearningObjectives objectives={["Combine multiple detection methods into an ensemble for robust anomaly detection", "Build a detection pipeline: statistical checks → autoencoder → LSTM verification", "Interpret ensemble agreement as confidence: more detectors flagging = higher confidence", "Deploy the full anomaly detection system on the DEEP SCAN dashboard"]} />
 
 ## Ensemble Detection
 
@@ -112,7 +112,7 @@ function detectAnomaly(
 
 // The anomalous signal:
 // statistical: z=8.7 ✓, autoencoder: error=0.062 ✓, lstm: predError=0.041 ✓
-// Confidence: 3/3 = 100% — all detectors agree`}
+// Confidence: 3/3 = 100%: all detectors agree`}
 </CodeBlock>
 
 ## The Discovery
@@ -148,20 +148,20 @@ Build an ensemble anomaly detector combining multiple methods.
 
 <Quiz
   question="How do autoencoders detect anomalies without anomaly labels?"
-  options={[{"text":"They use clustering on the latent space"},{"text":"Train on normal data only — high reconstruction error on a new sample = anomaly"},{"text":"They require labeled examples of both normal + anomalous"},{"text":"They flag samples below a confidence threshold"}]}
+  options={[{"text":"They use clustering on the latent space"},{"text":"Train on normal data only; high reconstruction error on a new sample = anomaly"},{"text":"They require labeled examples of both normal + anomalous"},{"text":"They flag samples below a confidence threshold"}]}
   correct={1}
-  explanation="Train autoencoder to reconstruct normal samples (low error). Anomalies don't fit the learned representation — high reconstruction error. Threshold the error to flag anomalies. Unsupervised: only need normal data."
+  explanation="Train autoencoder to reconstruct normal samples (low error). Anomalies don't fit the learned representation, so reconstruction error is high. Threshold the error to flag anomalies. Unsupervised: only need normal data."
   tier="intuition"
 />
 
-<KeyTakeaways takeaways={["Ensemble detection combines multiple methods — majority vote gives higher confidence than any single detector", "Three complementary approaches: statistics (simple), autoencoder (learned), LSTM (temporal)", "100% detector agreement = highest confidence, like multiple independent tests confirming the same bug", "The model detects and quantifies — interpretation (alien or coincidence?) remains a human decision"]} />
+<KeyTakeaways takeaways={["Ensemble detection combines multiple methods: majority vote gives higher confidence than any single detector", "Three complementary approaches: statistics (simple), autoencoder (learned), LSTM (temporal)", "100% detector agreement = highest confidence, like multiple independent tests confirming the same bug", "The model detects and quantifies; interpretation (alien or coincidence?) remains a human decision"]} />
 
 <Epilogue>
 
 Farah reruns the interval decomposition on a cold copy of the data, on a different machine, and the ratios come back unchanged: 1, 1, 2, 3, 5, 8, 13. Across the bridge, Nazari pulls the ship's own sensor calibration harmonics and lays them over the pulse train, unasked this time. Correlation: 0.9987. The signal out of Sector 7-G is pulsing in the Archimedes' own ratios, the math the ship hums to itself every time it tunes its sensors.
 
 <Dialogue speaker="Dr. Farah">
-Two hypotheses. Either the universe simply likes this arithmetic — it builds sunflowers and shell spirals with it, why not pulse trains. Or something out there has been listening to us calibrate.
+Two hypotheses. Either the universe simply likes this arithmetic; it builds sunflowers and shell spirals with it, why not pulse trains. Or something out there has been listening to us calibrate.
 </Dialogue>
 
 Nobody answers her; on the main display the two traces sit one on top of the other, ratio for ratio. The question hanging over the bridge is one no model can score. Not "what is it" anymore: is it answering us?

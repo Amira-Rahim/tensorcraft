@@ -53,7 +53,7 @@ KNN is the most intuitive ML algorithm because it maps directly to array operati
   label: string;
 }
 
-// Euclidean distance — Pythagorean theorem in N dimensions
+// Euclidean distance: Pythagorean theorem in N dimensions
 function euclideanDistance(a: number[], b: number[]): number {
   return Math.sqrt(
     a.reduce((sum, val, i) => sum + (val - b[i]) ** 2, 0)

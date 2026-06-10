@@ -1,6 +1,6 @@
 slug: incident-missed-anomaly
 lessonSlug: reconstruction-error
-title: "Incident — True Anomaly Slipped Through"
+title: "Incident: True Anomaly Slipped Through"
 mlContent: systems
 instructions: |
   PAGER: signal at 14:33 was confirmed anomalous post-hoc, but the autoencoder did not flag it (reconstruction error below threshold). Build `auditReconstruction(input, reconstruction, perFeatureBaseline)` returning:

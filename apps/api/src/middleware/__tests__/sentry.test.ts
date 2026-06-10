@@ -40,7 +40,7 @@ describe("sentryMiddleware", () => {
   });
 
   it("tags errors with requestId + route when the onError handler captures them", async () => {
-    // Mirrors the onError in apps/api/src/index.ts — the middleware sets the
+    // Mirrors the onError in apps/api/src/index.ts, the middleware sets the
     // scope, and the app-level onError calls Sentry.captureException with the
     // correlation tags. This is the real runtime flow (Hono re-dispatches
     // errors to onError rather than unwinding them through middleware).

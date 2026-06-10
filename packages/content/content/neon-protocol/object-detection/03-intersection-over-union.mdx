@@ -97,7 +97,7 @@ const predicted = [0.3, 0.2, 0.7, 0.8]; // [xmin, ymin, xmax, ymax]
 const actual    = [0.35, 0.25, 0.75, 0.85];
 
 const iou = computeIoU(predicted, actual);
-console.log(iou.toFixed(3)); // 0.680 — decent but not great`}
+console.log(iou.toFixed(3)); // 0.680, decent but not great`}
 </CodeBlock>
 
 ## IoU Thresholds
@@ -151,7 +151,7 @@ const truth: GroundTruth = {
 
 const result = evaluateDetection(droneDetection, truth);
 console.log(result);
-// { match: true, iou: 0.82 } — solid detection`}
+// { match: true, iou: 0.82 }, solid detection`}
 </CodeBlock>
 
 ## Batch Evaluation
@@ -197,9 +197,9 @@ Implement IoU computation between two bounding boxes.
 
 <Quiz
   question="Two predicted boxes both perfectly contain the same target. Box A is exactly the target's size; box B is 4× larger and centered on the target. What IoU does each have with the ground-truth box?"
-  options={[{"text":"A: 1.0, B: 1.0 — both contain the target so they're equally good"},{"text":"A: 1.0, B: 0.25 — IoU penalizes oversized boxes through the union term"},{"text":"A: 0.5, B: 0.25 — IoU is always less than 1 for non-identical boxes"},{"text":"A: 1.0, B: 4.0 — IoU scales with box area ratio"}]}
+  options={[{"text":"A: 1.0, B: 1.0; both contain the target so they're equally good"},{"text":"A: 1.0, B: 0.25; IoU penalizes oversized boxes through the union term"},{"text":"A: 0.5, B: 0.25; IoU is always less than 1 for non-identical boxes"},{"text":"A: 1.0, B: 4.0; IoU scales with box area ratio"}]}
   correct={1}
-  explanation="IoU = intersection / union. Box A is identical to the target, so intersection = union = target area, giving IoU = 1.0. Box B contains the target but extends to 4× the area, so intersection = target area but union = 4 × target area, giving IoU = 1/4 = 0.25. This is precisely why detectors need IoU rather than just 'does the box contain the target' — IoU penalizes loose boxes. Option D conflates IoU with raw area; option C invents a falsehood; option A misses that a too-large box wastes precision."
+  explanation="IoU = intersection / union. Box A is identical to the target, so intersection = union = target area, giving IoU = 1.0. Box B contains the target but extends to 4× the area, so intersection = target area but union = 4 × target area, giving IoU = 1/4 = 0.25. This is precisely why detectors need IoU rather than just 'does the box contain the target': IoU penalizes loose boxes. Option D conflates IoU with raw area; option C invents a falsehood; option A misses that a too-large box wastes precision."
   tier="structural"
 />
 

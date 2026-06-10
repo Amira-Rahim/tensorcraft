@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "Animation easing curves interpolate one value over a fixed time. Noise schedules control variance added to the entire latent at every timestep and the schedule shape (linear, cosine, sigmoid) materially changes generation quality. Tuning matters far more than picking an animation easing."
 consequence:
-  narrative: "With the cosine schedule, the images are noticeably sharper. Same number of steps, better allocation of the noise budget. Erdem leans in: 'The details in the shadows — those were not there before.'"
+  narrative: "With the cosine schedule, the images are noticeably sharper. Same number of steps, better allocation of the noise budget. Erdem leans in: 'The details in the shadows. Those were not there before.'"
 hints:
   - level: nudge
     content: "Plot your betas array before training: a cosine schedule keeps alpha_bar high through the early timesteps where a linear one has already destroyed the signal"
@@ -61,7 +61,7 @@ Rohan's correction sets the stakes. The noise schedule (also called the beta sch
 {`import * as tf from '@tensorflow/tfjs';
 
 // LINEAR SCHEDULE: constant rate of noise addition
-// Like transition-timing-function: linear — mechanical, unnatural
+// Like transition-timing-function: linear (mechanical, unnatural)
 function linearSchedule(timesteps: number): number[] {
   const betaStart = 0.0001;
   const betaEnd = 0.02;
@@ -73,7 +73,7 @@ function linearSchedule(timesteps: number): number[] {
 }
 
 // COSINE SCHEDULE: slow start, faster middle, slow end
-// Like transition-timing-function: ease-in-out — preserves structure
+// Like transition-timing-function: ease-in-out (preserves structure)
 function cosineSchedule(timesteps: number, s = 0.008): number[] {
   const alphaBar = (t: number) => {
     const angle = ((t / timesteps + s) / (1 + s)) * (Math.PI / 2);
@@ -156,4 +156,4 @@ The noise schedule β_1, β_2, ..., β_T controls how much noise is added at eac
 **T (number of steps)** trades quality for compute. T = 1000 is the original DDPM; sampling can be accelerated to T = 50 (DDIM) or even T = 4 (consistency models) at the cost of quality.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["The schedule is a tuned hyperparameter: its shape changes generation quality, so plot alpha_bar before you train", "Linear schedules destroy signal too quickly — cosine schedules preserve structure longer", "Cumulative alpha (alpha_bar) tells you how much original signal remains at any step", "The right schedule improves image quality without adding compute cost"]} />
+<KeyTakeaways takeaways={["The schedule is a tuned hyperparameter: its shape changes generation quality, so plot alpha_bar before you train", "Linear schedules destroy signal too quickly; cosine schedules preserve structure longer", "Cumulative alpha (alpha_bar) tells you how much original signal remains at any step", "The right schedule improves image quality without adding compute cost"]} />

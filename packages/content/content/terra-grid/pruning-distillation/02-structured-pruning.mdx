@@ -69,21 +69,21 @@ function structuredPrune(
 
 // Example: 8 neurons, prune 50%
 const weights = [
-  [0.9, -0.8, 0.7],   // L1 = 2.4 — keep
-  [0.01, 0.02, -0.01], // L1 = 0.04 — prune
-  [-0.6, 0.5, 0.8],   // L1 = 1.9 — keep
-  [0.003, -0.002, 0.001], // L1 = 0.006 — prune
-  [0.7, 0.6, -0.9],   // L1 = 2.2 — keep
-  [-0.01, 0.005, 0.008], // L1 = 0.023 — prune
-  [0.4, -0.5, 0.6],   // L1 = 1.5 — keep
-  [0.002, 0.001, -0.003], // L1 = 0.006 — prune
+  [0.9, -0.8, 0.7],   // L1 = 2.4: keep
+  [0.01, 0.02, -0.01], // L1 = 0.04: prune
+  [-0.6, 0.5, 0.8],   // L1 = 1.9: keep
+  [0.003, -0.002, 0.001], // L1 = 0.006: prune
+  [0.7, 0.6, -0.9],   // L1 = 2.2: keep
+  [-0.01, 0.005, 0.008], // L1 = 0.023: prune
+  [0.4, -0.5, 0.6],   // L1 = 1.5: keep
+  [0.002, 0.001, -0.003], // L1 = 0.006: prune
 ];
 
 const pruned = structuredPrune(weights, 0.5);
 console.log(\`Before: \${weights.length} neurons, \${weights.length * 3} params\`);
 console.log(\`After: \${pruned.length} neurons, \${pruned.length * 3} params\`);
 // Before: 8 neurons, 24 params → After: 4 neurons, 12 params
-// Physically smaller — actual speedup on ARM`}
+// Physically smaller: actual speedup on ARM`}
 </CodeBlock>
 
 <Dialogue speaker="Tariq Hussain">
@@ -98,4 +98,4 @@ Implement structured pruning that removes entire neurons.
 
 <Exercise slug="structured-prune" />
 
-<KeyTakeaways takeaways={["Structured pruning removes entire neurons — dead code elimination, not commenting out", "L1 norm scores neurons by the sum of absolute weight values", "Structured pruning produces physically smaller, faster models", "Dense smaller models run faster on ARM than sparse larger models"]} />
+<KeyTakeaways takeaways={["Structured pruning removes entire neurons: dead code elimination, not commenting out", "L1 norm scores neurons by the sum of absolute weight values", "Structured pruning produces physically smaller, faster models", "Dense smaller models run faster on ARM than sparse larger models"]} />

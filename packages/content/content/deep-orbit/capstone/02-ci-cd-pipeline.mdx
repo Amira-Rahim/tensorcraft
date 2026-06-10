@@ -7,7 +7,7 @@ order: 2
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "Nazari insists on automated testing. 'I am not deploying a signal classifier that was tested by hand. Automate it — every commit, every push, every merge.' Demir builds the CI/CD pipeline."
+  narrative: "Nazari insists on automated testing. 'I am not deploying a signal classifier that was tested by hand. Automate it: every commit, every push, every merge.' Demir builds the CI/CD pipeline."
   speaker: "Chief Nazari"
 concept:
   explanation: "CI/CD for ML extends the test-build-deploy workflow with model gates: accuracy thresholds, speed benchmarks, and a memory budget that blocks the merge."
@@ -17,9 +17,9 @@ concept:
     mlTitle: "ML CI/CD"
     mlCode: "on: push → test → validate-model → benchmark → deploy // + model checks"
     tier: structural
-    breaks: "GitHub Actions ships immutable build artifacts; rollback restores prior bytes exactly. The model-validation step runs in CI but the model itself is non-deterministic — the same training pipeline produces a different model each run. Pinning a CI workflow does not pin the model; you must version weights separately and treat 'model passing CI' as one signal among several, not a green-light to ship."
+    breaks: "GitHub Actions ships immutable build artifacts; rollback restores prior bytes exactly. The model-validation step runs in CI but the model itself is non-deterministic: the same training pipeline produces a different model each run. Pinning a CI workflow does not pin the model; you must version weights separately and treat 'model passing CI' as one signal among several, not a green-light to ship."
 consequence:
-  narrative: "The pipeline goes green twice — once on the wrong model, once on the right one. Only the second one counts, and Nazari logs the difference in hours."
+  narrative: "The pipeline goes green twice: once on the wrong model, once on the right one. Only the second one counts, and Nazari logs the difference in hours."
 hints:
   - level: nudge
     content: "CI/CD for ML adds model validation and benchmark steps to the standard test→build→deploy flow"
@@ -122,7 +122,7 @@ jobs:
 ## Validation Scripts
 
 <CodeBlock language="typescript" title="validate-model.ts">
-{`// Model accuracy gate — blocks deployment if accuracy drops
+{`// Model accuracy gate: blocks deployment if accuracy drops
 
 interface ValidationResult {
   accuracy: number;
@@ -171,7 +171,7 @@ console.log(\`Accuracy: \${(result.accuracy * 100).toFixed(1)}%\`);
 console.log(\`Gate: \${result.passed ? 'PASSED ✓' : 'FAILED ✗'}\`);
 
 if (!result.passed) {
-  console.error('Model accuracy below threshold — blocking deployment');
+  console.error('Model accuracy below threshold; blocking deployment');
   process.exit(1);
 }`}
 </CodeBlock>
@@ -182,7 +182,7 @@ The first full run goes green in eleven minutes, end to end.
 All gates passed, first try. Same as a web app: once CI is green, what's on main is what ships.
 </Dialogue>
 
-Nazari reads the logs instead of the badge. The validate-model step pulled `deep-scan-v1.json` from the CI cache — the build from eight days ago, before quantization, before pruning. The gate measured a model that no longer exists and called it healthy.
+Nazari reads the logs instead of the badge. The validate-model step pulled `deep-scan-v1.json` from the CI cache: the build from eight days ago, before quantization, before pruning. The gate measured a model that no longer exists and called it healthy.
 
 <Dialogue speaker="Chief Nazari">
 Your lockfile pins code. Nothing in this file pins weights. Hash the artifact, key the cache on the hash, and rerun. That's 40 minutes, and I'm adding them to the ledger next to the three hours your 80-percent prune cost us.
@@ -194,7 +194,7 @@ Write a model validation gate for CI/CD.
 
 <Exercise slug="ci-cd-gate" />
 
-<KeyTakeaways takeaways={["ML CI/CD extends standard web CI with model accuracy gates and performance benchmarks", "Accuracy gates prevent deployment when model quality regresses — same concept as test coverage thresholds", "A green workflow does not pin a model: version weights separately and key caches on the artifact hash", "GitHub Actions workflow: test → validate-model → benchmark → deploy, with each stage gating the next"]} />
+<KeyTakeaways takeaways={["ML CI/CD extends standard web CI with model accuracy gates and performance benchmarks", "Accuracy gates prevent deployment when model quality regresses, same concept as test coverage thresholds", "A green workflow does not pin a model: version weights separately and key caches on the artifact hash", "GitHub Actions workflow: test → validate-model → benchmark → deploy, with each stage gating the next"]} />
 
 <Epilogue>
 

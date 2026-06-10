@@ -1,6 +1,6 @@
 slug: incident-alert-fatigue
 lessonSlug: triage-system
-title: "Incident — Triage Alert Fatigue"
+title: "Incident: Triage Alert Fatigue"
 mlContent: systems
 instructions: |
   PAGER: triage nurses report ignoring alerts due to volume. Build `recalibrateThreshold(predictions, labels, targetPrecision)` returning the smallest threshold (0.0 - 1.0, in 0.05 steps) that achieves at least `targetPrecision` on held-out predictions.

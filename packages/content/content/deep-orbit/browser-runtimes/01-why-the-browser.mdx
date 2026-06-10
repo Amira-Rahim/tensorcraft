@@ -7,7 +7,7 @@ order: 1
 estimatedMinutes: 12
 difficulty: intermediate
 context:
-  narrative: "Nazari demands the classifier run on the bridge dashboard. No Python notebooks, no server round-trips — the model must run where the crew can use it."
+  narrative: "Nazari demands the classifier run on the bridge dashboard. No Python notebooks, no server round-trips: the model must run where the crew can use it."
   speaker: "Chief Nazari"
 concept:
   explanation: "Client-side ML inference keeps data on-device, eliminates server latency, and works offline. The cost moves to the download: heavy upfront, free after."
@@ -17,12 +17,12 @@ concept:
     mlTitle: "Client-Side Inference"
     mlCode: "const prediction = model.predict(inputTensor)"
     tier: structural
-    breaks: "Client-side rendering is one round-trip per route. Client-side inference downloads model weights once (often 5–50 MB), then every prediction runs locally with no network — the cost shape is inverted: heavy upfront, free after."
+    breaks: "Client-side rendering is one round-trip per route. Client-side inference downloads model weights once (often 5-50 MB), then every prediction runs locally with no network. The cost shape is inverted: heavy upfront, free after."
 consequence:
   narrative: "Nazari approves the browser deployment plan. Demir begins setting up the runtime."
 hints:
   - level: nudge
-    content: "fetch('/api/classify') pays a network round-trip per reading; model.predict() runs on the device — start by listing what each one costs"
+    content: "fetch('/api/classify') pays a network round-trip per reading; model.predict() runs on the device; start by listing what each one costs"
   - level: guidance
     content: "Client-side inference means the model runs in the browser, just like client-side rendering"
   - level: solution
@@ -54,7 +54,7 @@ You've faced this exact decision before as a frontend engineer. Server-side rend
 ML inference splits along the same line, with the same stakes of performance, privacy, and user experience:
 
 <CodeBlock language="typescript" title="inference-comparison.ts">
-{`// SERVER-SIDE INFERENCE — like SSR
+{`// SERVER-SIDE INFERENCE, like SSR
 // Data leaves the device, hits a server, waits for response
 async function serverInference(signalData: number[]) {
   const response = await fetch('/api/classify', {
@@ -64,7 +64,7 @@ async function serverInference(signalData: number[]) {
   return response.json(); // { class: 'anomaly', confidence: 0.94 }
 }
 
-// CLIENT-SIDE INFERENCE — like CSR
+// CLIENT-SIDE INFERENCE, like CSR
 // Data never leaves the browser. Model runs locally.
 async function clientInference(signalData: number[]) {
   const inputTensor = tf.tensor2d([signalData]);
@@ -123,7 +123,7 @@ Analyze the tradeoffs for a browser ML deployment scenario.
 
 <Exercise slug="browser-ml-tradeoffs" />
 
-<KeyTakeaways takeaways={["In-browser inference replaces a 50-500ms network round-trip with a 5-50ms local predict() call, and the data never leaves the device", "Browser constraints (memory, cold start, compute) mirror frontend performance concerns (bundle size, TTI, main thread)", "The right choice depends on latency requirements, data sensitivity, and model size — just like choosing CSR vs SSR", "For real-time dashboards like DEEP SCAN, client-side inference eliminates the network bottleneck"]} />
+<KeyTakeaways takeaways={["In-browser inference replaces a 50-500ms network round-trip with a 5-50ms local predict() call, and the data never leaves the device", "Browser constraints (memory, cold start, compute) mirror frontend performance concerns (bundle size, TTI, main thread)", "The right choice depends on latency requirements, data sensitivity, and model size, just like choosing CSR vs SSR", "For real-time dashboards like DEEP SCAN, client-side inference eliminates the network bottleneck"]} />
 
 <Epilogue>
 

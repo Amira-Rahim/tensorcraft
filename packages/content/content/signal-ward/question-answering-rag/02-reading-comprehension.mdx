@@ -1,6 +1,6 @@
 ---
 slug: reading-comprehension
-title: "Reading Comprehension — Understanding Context"
+title: "Reading Comprehension: Understanding Context"
 moduleId: question-answering-rag
 themeId: signal-ward
 order: 2
@@ -69,7 +69,7 @@ function crossAttention(
   // Normalize to probabilities
   const weights = tf.softmax(scores, -1);  // [questionLen, contextLen]
 
-  // Weighted sum of context — question-aware representation
+  // Weighted sum of context: question-aware representation
   const attended = tf.matMul(weights, contextEmb);  // [questionLen, dim]
   return attended as tf.Tensor2D;
 }

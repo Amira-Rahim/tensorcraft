@@ -131,8 +131,8 @@ Build a complete forward pass pipeline that takes raw clinical text and outputs 
   question="Why average pooling over token embeddings for sentence classification?"
   options={[{"text":"Faster than max pooling"},{"text":"Order-invariant + simple baseline; loses sequential info but gives strong starting point"},{"text":"Required by BERT"},{"text":"Always best for classification"}]}
   correct={1}
-  explanation="Mean pooling over token embeddings ignores word order — fine for bag-of-words baselines. Loses sentiment cues like 'not bad' vs 'bad not'. For modern systems, use [CLS] token embedding or attention pooling."
+  explanation="Mean pooling over token embeddings ignores word order; fine for bag-of-words baselines. Loses sentiment cues like 'not bad' vs 'bad not'. For modern systems, use [CLS] token embedding or attention pooling."
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["A forward pass chains tokenization → encoding → model → prediction", "With fixed weights, the same note always produces the same prediction: inference is deterministic", "Inference is just running data through learned functions — no magic involved", "The full pipeline: raw text in, probability out"]} />
+<KeyTakeaways takeaways={["A forward pass chains tokenization → encoding → model → prediction", "With fixed weights, the same note always produces the same prediction: inference is deterministic", "Inference is just running data through learned functions, no magic involved", "The full pipeline: raw text in, probability out"]} />

@@ -1,5 +1,5 @@
 /**
- * Visual regression tests — theme palette rendering.
+ * Visual regression tests, theme palette rendering.
  *
  * Per dev-plan §8k. Confirms the CSS-var cascade works for each of the 5
  * theme landing pages. One baseline per theme.
@@ -20,7 +20,7 @@ const THEME_SLUGS = [
   "terra-grid",
 ] as const;
 
-test.describe("Visual — Theme Landing Pages", () => {
+test.describe("Visual: Theme Landing Pages", () => {
   test.skip(!shouldRun, "Set RUN_VISUAL=1 after generating baselines");
 
   test.beforeEach(async ({ page }) => {

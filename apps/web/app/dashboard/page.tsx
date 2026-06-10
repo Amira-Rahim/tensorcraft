@@ -43,7 +43,7 @@ export default async function DashboardPage() {
   // parallel. Queries are scoped to the user and limited to prevent
   // unbounded fetches. Purchases are queried directly via Supabase (same
   // pattern as settings / pricing / purchase-success) rather than
-  // GET /api/purchases/access — avoids an extra hop and keeps RLS as
+  // GET /api/purchases/access, avoids an extra hop and keeps RLS as
   // the single source of truth for access gating.
   const [
     { data: profile },
@@ -85,7 +85,7 @@ export default async function DashboardPage() {
   ]);
 
   // Streak nudge: any of the user's per-theme streaks where last_activity_date
-  // is exactly yesterday — meaning the streak survives if they act today, dies
+  // is exactly yesterday, meaning the streak survives if they act today, dies
   // tomorrow otherwise. Computed against the user's local-day boundary using
   // UTC date components (server uses UTC; the streak RPC also uses date math
   // without timezone, so this matches).
@@ -125,7 +125,7 @@ export default async function DashboardPage() {
     }
   }
   // "Full bundle" = all currently-launched themes owned. Coming-soon themes
-  // are excluded — they aren't purchasable. When a new theme launches and is
+  // are excluded, they aren't purchasable. When a new theme launches and is
   // added to LAUNCHED_THEMES, this check expands automatically.
   const hasFullBundle = LAUNCHED_THEMES.every((slug) => ownedThemes.has(slug));
 
@@ -133,7 +133,7 @@ export default async function DashboardPage() {
   const records = progressRecords ?? [];
   const attempts = exerciseAttempts ?? [];
 
-  // Active-theme picks come from the LAUNCHED set only — coming-soon themes
+  // Active-theme picks come from the LAUNCHED set only, coming-soon themes
   // have no compiled content (Velite excludes them) so getModules/etc. would
   // return empty arrays. Coming-soon themes still render as cards below for
   // discoverability + waitlist capture, but never become the active surface.
@@ -184,7 +184,7 @@ export default async function DashboardPage() {
 
     let score: number | null = null;
     if (completedInMod === modLessons.length && modLessons.length > 0) {
-      // Module complete — derive score from real exercise attempts
+      // Module complete, derive score from real exercise attempts
       const modScores = moduleScoreMap.get(mod.slug);
       if (modScores && modScores.length > 0) {
         score = Math.round(
@@ -335,7 +335,7 @@ export default async function DashboardPage() {
     else activityDays.push(4);
   }
 
-  // Recent activity (from progress records) — resolve slugs to titles
+  // Recent activity (from progress records), resolve slugs to titles
   const recentActivity: ActivityRecord[] = records.slice(0, 6).map((r) => {
     const timeAgo = getTimeAgo(r.updated_at);
     const event =

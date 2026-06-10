@@ -2,7 +2,7 @@ slug: add-noise
 lessonSlug: the-diffusion-process
 title: "Apply DDPM Forward Noise"
 mlContent: data
-instructions: "Implement the DDPM forward-process noising step. Given a clean image, a Gaussian noise tensor, and the cumulative product `alphaBar` (a scalar in [0, 1] from the noise schedule), return `sqrt(alphaBar) * image + sqrt(1 - alphaBar) * noise`. This is the proper noise-signal relation that preserves total variance — NOT a linear blend (`image * (1-t) + noise * t` is wrong because the variance does not stay constant)."
+instructions: "Implement the DDPM forward-process noising step. Given a clean image, a Gaussian noise tensor, and the cumulative product `alphaBar` (a scalar in [0, 1] from the noise schedule), return `sqrt(alphaBar) * image + sqrt(1 - alphaBar) * noise`. This is the proper noise-signal relation that preserves total variance, NOT a linear blend (`image * (1-t) + noise * t` is wrong because the variance does not stay constant)."
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 

@@ -48,13 +48,13 @@ test.describe("Themes Page", () => {
   });
 
   test("Deep Orbit links to its theme page", async ({ page }) => {
-    // Pre-dismiss the cookie banner — under parallel load it can slide in
+    // Pre-dismiss the cookie banner, under parallel load it can slide in
     // mid-click and intercept the pointer event.
     await page.addInitScript(() => {
       localStorage.setItem("tc-cookie-consent", "declined");
     });
     await page.goto("/themes");
-    // Theme cards link to /themes/{slug} — click on the Deep Orbit card link
+    // Theme cards link to /themes/{slug}, click on the Deep Orbit card link
     const deepOrbitLink = page
       .getByRole("link", { name: /deep orbit/i })
       .first();
@@ -88,7 +88,7 @@ test.describe("Theme Detail Page", () => {
   });
 
   test("lessons link to lesson viewer", async ({ page }) => {
-    // Pre-dismiss the cookie banner — under parallel load it can slide in
+    // Pre-dismiss the cookie banner, under parallel load it can slide in
     // mid-click and intercept the pointer event.
     await page.addInitScript(() => {
       localStorage.setItem("tc-cookie-consent", "declined");
@@ -110,7 +110,7 @@ test.describe("Theme Detail Page", () => {
 });
 
 test.describe("Module Overview Route", () => {
-  // There is no standalone module page in the current design — the theme
+  // There is no standalone module page in the current design, the theme
   // page's module map is the module overview. The /themes/{slug}/{module}
   // route is a shim that redirects to the theme page so in-app links
   // (lesson prerequisite gate, breadcrumb JSON-LD) never 404.

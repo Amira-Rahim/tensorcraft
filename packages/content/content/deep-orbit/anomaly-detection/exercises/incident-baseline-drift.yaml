@@ -1,6 +1,6 @@
 slug: incident-baseline-drift
 lessonSlug: normal-vs-anomalous
-title: "Incident — Baseline Distribution Drifted"
+title: "Incident: Baseline Distribution Drifted"
 mlContent: systems
 instructions: |
   PAGER: anomaly detector now flags 30% of inputs as anomalous (was 1%). Investigate whether this is real anomalies or distribution drift. Build `recomputeBaseline(recentNormalData, currentBaseline)` returning:

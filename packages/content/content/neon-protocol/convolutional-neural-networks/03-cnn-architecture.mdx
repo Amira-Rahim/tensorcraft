@@ -53,17 +53,17 @@ A CNN is a pipeline of composed layers, each transforming its input and passing 
 
 <CodeBlock language="typescript" title="cnn-architecture.ts">
 {`// Component composition in React:
-// <Layout>         — wraps everything
-//   <Sidebar>      — transforms layout
-//     <NavList />   — renders final output
+// <Layout>         wraps everything
+//   <Sidebar>      transforms layout
+//     <NavList />   renders final output
 //   </Sidebar>
 // </Layout>
 
 // CNN layer composition follows the same pattern:
-// Conv Block 1    — extracts low-level features (edges)
-//   Conv Block 2  — extracts mid-level features (shapes)
-//     Conv Block 3  — extracts high-level features (objects)
-//       Dense      — classifies based on features
+// Conv Block 1    extracts low-level features (edges)
+//   Conv Block 2  extracts mid-level features (shapes)
+//     Conv Block 3  extracts high-level features (objects)
+//       Dense      classifies based on features
 //
 // One thing the tree picture hides: this stack is strictly
 // linear. No branching, no context providers, no portals.
@@ -164,7 +164,7 @@ const layers = designCNN([224, 224, 3]);
 layers.forEach((l, i) => {
   console.log(
     'Layer ' + i + ' (' + l.type + '): ' +
-    JSON.stringify(l.outputShape) + ' — ' + l.params + ' params'
+    JSON.stringify(l.outputShape) + ': ' + l.params + ' params'
   );
 });
 
@@ -182,17 +182,17 @@ const featureHierarchy = {
   block1: {
     learns: 'edges and gradients',
     example: 'horizontal lines, vertical lines, diagonal edges',
-    analogy: 'CSS border detection — where does one element end?',
+    analogy: 'CSS border detection: where does one element end?',
   },
   block2: {
     learns: 'textures and simple shapes',
     example: 'corners, curves, grids, parallel lines',
-    analogy: 'identifying UI components — is this a button or an input?',
+    analogy: 'identifying UI components: is this a button or an input?',
   },
   block3: {
     learns: 'object parts and complex patterns',
     example: 'camera lens shapes, housing outlines, antenna forms',
-    analogy: 'recognizing page sections — header, sidebar, content area',
+    analogy: 'recognizing page sections: header, sidebar, content area',
   },
 };
 
@@ -200,16 +200,16 @@ const featureHierarchy = {
 // "Given these high-level features, which camera type is this?"
 
 // Shape transformation through the network:
-// Input:  [224, 224, 3]    — raw RGB image
-// Conv1:  [224, 224, 8]    — 8 edge/gradient feature maps
-// Pool1:  [112, 112, 8]    — compressed
-// Conv2:  [112, 112, 16]   — 16 shape feature maps
-// Pool2:  [56, 56, 16]     — compressed
-// Conv3:  [56, 56, 32]     — 32 object-part feature maps
-// Pool3:  [28, 28, 32]     — compressed
-// Flat:   [25088]           — 1D vector
-// Dense1: [64]              — learned representation
-// Dense2: [5]               — class probabilities`}
+// Input:  [224, 224, 3]    (raw RGB image)
+// Conv1:  [224, 224, 8]    (8 edge/gradient feature maps)
+// Pool1:  [112, 112, 8]    (compressed)
+// Conv2:  [112, 112, 16]   (16 shape feature maps)
+// Pool2:  [56, 56, 16]     (compressed)
+// Conv3:  [56, 56, 32]     (32 object-part feature maps)
+// Pool3:  [28, 28, 32]     (compressed)
+// Flat:   [25088]           (1D vector)
+// Dense1: [64]              (learned representation)
+// Dense2: [5]               (class probabilities)`}
 </CodeBlock>
 
 ## Challenge
@@ -236,4 +236,4 @@ dense(C):  (64 + 1) · C
 **Where the parameters go:** the dense layer after flatten typically dominates parameter count, even though conv layers do most of the compute. This is why many architectures (Inception, ResNet, MobileNet) use global average pooling instead of flatten: replacing 25k features with 32 averages eliminates the dense bottleneck.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["A CNN composes layers in sequence — conv blocks extract features, flatten bridges to dense layers, dense layers classify", "Each conv block learns increasingly abstract features: edges, then shapes, then object parts", "Pooling layers have zero learnable parameters — they just compress spatial dimensions", "The flatten layer reshapes 3D feature maps into a 1D vector for the dense classifier"]} />
+<KeyTakeaways takeaways={["A CNN composes layers in sequence: conv blocks extract features, flatten bridges to dense layers, dense layers classify", "Each conv block learns increasingly abstract features: edges, then shapes, then object parts", "Pooling layers have zero learnable parameters; they just compress spatial dimensions", "The flatten layer reshapes 3D feature maps into a 1D vector for the dense classifier"]} />

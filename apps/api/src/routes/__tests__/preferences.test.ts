@@ -139,7 +139,7 @@ describe("PATCH /api/preferences", () => {
     expect(updateMock).toHaveBeenCalledWith(
       expect.objectContaining({ email_alerts: true }),
     );
-    // Fire-and-forget — resolve microtasks.
+    // Fire-and-forget, resolve microtasks.
     await Promise.resolve();
     await Promise.resolve();
     expect(tagSubscriberMock).toHaveBeenCalledWith(

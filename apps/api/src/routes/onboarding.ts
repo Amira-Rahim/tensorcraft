@@ -8,12 +8,12 @@ import type { AppEnv } from "../types";
 /**
  * Onboarding survey persistence.
  *
- * PATCH /api/onboarding — authenticated. Accepts any subset of the
+ * PATCH /api/onboarding, authenticated. Accepts any subset of the
  * onboarding fields and writes them via the service-role client.
  *
  * Validation enforces the same enum lists that the DB CHECK constraints
  * on `profiles.experience_level`, `profiles.learning_goal`, and
- * `profiles.fe_framework` enforce — a malformed request is rejected
+ * `profiles.fe_framework` enforce, a malformed request is rejected
  * before the DB sees it so we can return a friendly 400.
  */
 const onboarding = new Hono<AppEnv>();
@@ -113,7 +113,7 @@ onboarding.patch("/", async (c) => {
     const v = body.fe_background;
     if (typeof v !== "string" || v.length === 0 || v.length > 200) {
       return c.json(
-        { error: "fe_background must be a string of 1–200 characters" },
+        { error: "fe_background must be a string of 1-200 characters" },
         400,
       );
     }
@@ -168,7 +168,7 @@ onboarding.patch("/", async (c) => {
   // Read the row first so we can detect a false -> true transition on
   // `onboarding_completed`. The Kit `onboarded` tag must only fire on
   // that edge so retry requests don't double-tag. `profiles.email` also
-  // comes from this read — we prefer the DB copy over the JWT claim in
+  // comes from this read, we prefer the DB copy over the JWT claim in
   // case the two drift.
   const { data: existing, error: readError } = await admin
     .from("profiles")
@@ -179,7 +179,7 @@ onboarding.patch("/", async (c) => {
   if (readError || !existing) {
     logger.error(
       { err: readError, route: "onboarding.patch" },
-      "Onboarding PATCH failed — profile lookup",
+      "Onboarding PATCH failed, profile lookup",
     );
     return c.json(
       {
@@ -222,7 +222,7 @@ onboarding.patch("/", async (c) => {
     tagSubscriber(existing.email, tagId).catch((err: unknown) => {
       logger.warn(
         { err, route: "onboarding.patch" },
-        "Kit onboarded tag failed — non-fatal",
+        "Kit onboarded tag failed, non-fatal",
       );
     });
   }

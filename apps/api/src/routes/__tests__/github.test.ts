@@ -3,7 +3,7 @@ import { Hono } from "hono";
 import type { AppEnv } from "../../types";
 
 // ─────────────────────────────────────────────────────────────
-// Mocks — must be declared before `import("../github")` below.
+// Mocks, must be declared before `import("../github")` below.
 // ─────────────────────────────────────────────────────────────
 
 const mockGetUser = vi.fn();
@@ -105,7 +105,7 @@ vi.mock("../../lib/redis", () => ({
 }));
 
 // ─────────────────────────────────────────────────────────────
-// Global fetch mock — intercept all GitHub REST + OAuth calls.
+// Global fetch mock, intercept all GitHub REST + OAuth calls.
 // ─────────────────────────────────────────────────────────────
 
 type FetchHandler = (
@@ -162,7 +162,7 @@ function jsonResponse(body: unknown, init: ResponseInit = {}): Response {
   });
 }
 
-describe("GitHub routes — connect / callback / disconnect", () => {
+describe("GitHub routes, connect / callback / disconnect", () => {
   describe("POST /api/github/connect", () => {
     it("returns 401 without auth", async () => {
       mockGetUser.mockResolvedValue({
@@ -327,7 +327,7 @@ describe("GitHub routes — connect / callback / disconnect", () => {
   });
 });
 
-describe("GitHub routes — commit", () => {
+describe("GitHub routes, commit", () => {
   it("returns 400 when GitHub is not connected", async () => {
     authedUser();
     mockProfileRow = { github_token: null, github_username: null };
@@ -498,7 +498,7 @@ describe("GitHub routes — commit", () => {
 
     let repoCalls = 0;
     fetchHandler = async (url, init) => {
-      // ensureThemeRepo: createOrGetRepo — flaky first 2 tries (500), then OK
+      // ensureThemeRepo: createOrGetRepo, flaky first 2 tries (500), then OK
       if (
         url === "https://api.github.com/user/repos" &&
         init?.method === "POST"
@@ -550,7 +550,7 @@ describe("GitHub routes — commit", () => {
       throw new Error(`unexpected ${url}`);
     };
 
-    // ensureThemeRepo is *not* wrapped in withRetry directly — only
+    // ensureThemeRepo is *not* wrapped in withRetry directly, only
     // pushFile inside commitLessonArtifact is. We still verify retry is
     // exercised for the lesson PUT path by failing once.
     // For simplicity, this test just ensures the commit endpoint handles
@@ -575,7 +575,7 @@ describe("GitHub routes — commit", () => {
   });
 });
 
-describe("GitHub routes — retroactive push", () => {
+describe("GitHub routes, retroactive push", () => {
   it("returns 0 counts when no completed lessons", async () => {
     authedUser();
     mockProfileRow = { github_token: "ghu_x", github_username: "amira" };

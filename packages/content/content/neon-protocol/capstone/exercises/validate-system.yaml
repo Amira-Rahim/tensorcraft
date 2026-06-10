@@ -19,10 +19,10 @@ starterCode: |
     shape: number[],
     expectedRank: number
   ): ValidationReport {
-    // Check 1: "rank" — shape.length === expectedRank
-    // Check 2: "value-range" — all values >= 0 and <= 1
-    // Check 3: "no-nan" — no NaN values
-    // Check 4: "reasonable-mean" — mean between 0.05 and 0.95
+    // Check 1: "rank": shape.length === expectedRank
+    // Check 2: "value-range": all values >= 0 and <= 1
+    // Check 3: "no-nan": no NaN values
+    // Check 4: "reasonable-mean": mean between 0.05 and 0.95
     // Return { passed: all checks pass, checks: [...] }
     return { passed: false, checks: [] }; // your code here
   }

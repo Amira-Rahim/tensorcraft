@@ -17,7 +17,7 @@ describe("SceneHeading", () => {
   it("omits time separator when no time", () => {
     const { container } = render(<SceneHeading location="Lab" />);
     const text = container.textContent ?? "";
-    expect(text).not.toContain("—");
+    expect(text).not.toContain(" - ");
   });
 
   it("renders with optional prefix", () => {

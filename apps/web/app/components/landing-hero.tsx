@@ -7,7 +7,7 @@ import { ParticleField } from "@tensorcraft/ui/effects";
 import { THEME_CONTENT } from "@tensorcraft/shared";
 
 // The hero's proof panel is the free-tier Deep Scan demo: a real 8 KB TFJS
-// model classifying readings live in the visitor's tab. ssr:false — tfjs is
+// model classifying readings live in the visitor's tab. ssr:false, tfjs is
 // browser-only and the panel is post-LCP enhancement, not critical path.
 const DeepScanDemo = dynamic(
   () => import("./mdx/deep-scan-demo").then((m) => m.DeepScanDemo),
@@ -24,7 +24,7 @@ const DeepScanDemo = dynamic(
  *   headline's claim. Spec: docs/superpowers/specs/2026-06-10-hero-conversion-pass.md.
  *
  * The landing headline ("ML Speaks JavaScript. / Turns Out You're Fluent.") is
- * the iterated baseline as of 2026-05-08 — do not silently rewrite. Spec:
+ * the iterated baseline as of 2026-05-08, do not silently rewrite. Spec:
  * docs/superpowers/specs/2026-05-08-landing-headline-audience-callout.md.
  */
 export function LandingHero() {
@@ -33,7 +33,7 @@ export function LandingHero() {
       data-testid="landing-hero"
       className="min-h-screen flex items-center px-10 md:px-20 pt-24 pb-16 border-b border-border relative overflow-hidden"
     >
-      {/* Particle canvas background — pure decoration, low density */}
+      {/* Particle canvas background, pure decoration, low density */}
       <ParticleField
         density={0.3}
         className="absolute inset-0 z-0 pointer-events-none"
@@ -60,7 +60,7 @@ export function LandingHero() {
 
           <p className="text-lg text-text-muted max-w-[520px] mb-6 leading-relaxed font-sans">
             You already debug state, optimize renders, reason about caches.
-            That&apos;s the mental model that ships browser ML —{" "}
+            That&apos;s the mental model that ships browser ML:{" "}
             <code className="font-mono text-text-primary text-base">
               Math.max
             </code>{" "}
@@ -89,7 +89,7 @@ export function LandingHero() {
               data-testid="landing-cta-primary"
               className="rounded-none inline-flex items-center gap-2 px-8 py-4 bg-primary text-page font-mono font-bold text-sm tracking-wider uppercase border-2 border-primary hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-page"
             >
-              Run Your First Tensor — Free →
+              Run Your First Tensor (Free) →
             </Link>
             <Link
               href="/learn"

@@ -51,7 +51,7 @@ You have written disaster recovery plans for web applications: database backups 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="disaster-recovery.ts">
-{`// Disaster recovery planning — same framework as web infrastructure DR
+{`// Disaster recovery planning, same framework as web infrastructure DR
 
 interface FailureScenario {
   id: string;
@@ -161,4 +161,4 @@ Create a disaster recovery plan with failure scenarios and recovery procedures.
 
 <Exercise slug="disaster-recovery-plan" />
 
-<KeyTakeaways takeaways={["A DR plan enumerates failure modes and assigns each a detection mechanism, automated response, escalation path, and RTO", "Edge devices must operate autonomously when central coordination fails", "A model checkpoint is only restorable if the data version, training code, and framework version are pinned alongside the weights", "Test recovery procedures regularly — an untested DR plan is no plan at all"]} />
+<KeyTakeaways takeaways={["A DR plan enumerates failure modes and assigns each a detection mechanism, automated response, escalation path, and RTO", "Edge devices must operate autonomously when central coordination fails", "A model checkpoint is only restorable if the data version, training code, and framework version are pinned alongside the weights", "Test recovery procedures regularly: an untested DR plan is no plan at all"]} />

@@ -17,7 +17,7 @@ export async function GET(request: Request) {
 
     if (error) {
       console.error("Auth callback: exchangeCodeForSession failed", error);
-      // Forward to Sentry — auth callback is a critical path; silent failures
+      // Forward to Sentry, auth callback is a critical path; silent failures
       // here mean users see only "auth_callback_error" with no trail in
       // production. Sentry no-ops if DSN is unset.
       Sentry.captureException(error, {
@@ -40,6 +40,6 @@ export async function GET(request: Request) {
     }
   }
 
-  // Auth error — redirect to sign in with error
+  // Auth error, redirect to sign in with error
   return NextResponse.redirect(`${origin}/auth?error=auth_callback_error`);
 }

@@ -1,7 +1,7 @@
 slug: numpy-to-tfjs
 lessonSlug: numpy-is-typed-arrays
 title: "NumPy Operations in TensorFlow.js"
-instructions: "Translate these NumPy operations to TensorFlow.js. You're given a set of commented NumPy operations — implement each one using the tf.* API. The operations cover creation, reshaping, math, and broadcasting. All functions should return tensors."
+instructions: "Translate these NumPy operations to TensorFlow.js. You're given a set of commented NumPy operations; implement each one using the tf.* API. The operations cover creation, reshaping, math, and broadcasting. All functions should return tensors."
 starterCode: |
   // Translate each NumPy operation to TF.js
 
@@ -20,12 +20,12 @@ starterCode: |
     // TODO: reshape a from (3,4) to (2,6)
   }
 
-  // np.mean(a, axis=1) — mean along columns
+  // np.mean(a, axis=1): mean along columns
   function meanAlongAxis(a) {
     // TODO: compute mean along axis 1
   }
 
-  // np.concatenate([a, b], axis=0) — stack vertically
+  // np.concatenate([a, b], axis=0): stack vertically
   function concatTensors(a, b) {
     // TODO: concatenate a and b along axis 0
   }

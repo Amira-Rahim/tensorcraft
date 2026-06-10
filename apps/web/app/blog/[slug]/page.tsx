@@ -19,7 +19,7 @@ export async function generateMetadata({
   const { slug } = await params;
   const post = getPost(slug);
   if (!post) {
-    return { title: "Not found — Tensorcraft Blog" };
+    return { title: "Not found | Tensorcraft Blog" };
   }
   const lessonTitle = post.matchedLessons?.[0]?.title;
   const ogParams = new URLSearchParams({
@@ -31,7 +31,7 @@ export async function generateMetadata({
   if (post.sourceLabel) ogParams.set("sourceLabel", post.sourceLabel);
   const og = `/api/og?${ogParams.toString()}`;
   return {
-    title: `${post.title} — Tensorcraft Blog`,
+    title: `${post.title} | Tensorcraft Blog`,
     description: post.summary,
     openGraph: {
       title: post.title,

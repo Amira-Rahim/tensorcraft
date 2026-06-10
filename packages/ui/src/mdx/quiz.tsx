@@ -27,7 +27,7 @@ interface QuizProps {
   correct?: number;
   /** Shown once the learner submits, regardless of correctness. */
   explanation?: string;
-  /** Bridge tier hint for themed styling — currently informational. */
+  /** Bridge tier hint for themed styling, currently informational. */
   tier?: QuizTier;
   /** Fired on every submit so the host app can wire analytics. */
   onSubmit?: (result: QuizSubmitResult) => void;
@@ -146,7 +146,7 @@ export function Quiz({
               {isCorrect
                 ? "Correct!"
                 : explanation
-                  ? "Wrong answer — see why below"
+                  ? "Wrong answer, see why below"
                   : "Wrong answer"}
             </span>
             {!isCorrect && (

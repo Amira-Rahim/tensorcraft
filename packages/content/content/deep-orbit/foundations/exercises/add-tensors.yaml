@@ -1,7 +1,7 @@
 slug: add-tensors
 lessonSlug: tensor-operations
 title: "Merge the Sensor Passes"
-instructions: "Nazari ran the same scan twice to cancel noise. Combine the two passes: (1) average them element-wise into `merged` — add, then divide by 2, (2) the signal is faint, so amplify the average by a gain of 2.5 into `boosted`. Chain the ops or use separate calls; the grader only cares that the numbers are right."
+instructions: "Nazari ran the same scan twice to cancel noise. Combine the two passes: (1) average them element-wise into `merged` (add, then divide by 2), (2) the signal is faint, so amplify the average by a gain of 2.5 into `boosted`. Chain the ops or use separate calls; the grader only cares that the numbers are right."
 starterCode: "const pass1 = tf.tensor([0.2, 0.6, 0.4, 0.8]);\nconst pass2 = tf.tensor([0.4, 0.2, 0.6, 0.6]);\nconst GAIN = 2.5;\n\n// 1. Element-wise average of the two passes\nconst merged = null; // your code here\n\n// 2. Amplify by GAIN\nconst boosted = null;"
 solutionCode: "const pass1 = tf.tensor([0.2, 0.6, 0.4, 0.8]);\nconst pass2 = tf.tensor([0.4, 0.2, 0.6, 0.6]);\nconst GAIN = 2.5;\n\nconst merged = pass1.add(pass2).div(2);\nconst boosted = merged.mul(GAIN);"
 testCode: |

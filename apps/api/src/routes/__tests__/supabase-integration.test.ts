@@ -12,7 +12,7 @@
  *   2. Exposes the same chainable query builder contract used by the
  *      routes (`.select().eq().order()...`) so no route code needs to
  *      change.
- *   3. Accepts writes and round-trips them — a later SELECT can verify
+ *   3. Accepts writes and round-trips them, a later SELECT can verify
  *      what was written.
  *
  * RLS simulation: when a SELECT filters by a `user_id` that does not
@@ -65,7 +65,7 @@ function resetDb() {
 let currentAuthUserId: string | null = null;
 
 // ─────────────────────────────────────────────────────────────
-// Chainable query builder — mirrors the subset of the Supabase
+// Chainable query builder, mirrors the subset of the Supabase
 // JS client surface the routes actually use.
 // ─────────────────────────────────────────────────────────────
 
@@ -184,7 +184,7 @@ function buildQuery(table: Tables) {
     };
   };
   api.upsert = (_payload: Row) => {
-    // Not needed for this suite — skip.
+    // Not needed for this suite, skip.
     return Promise.resolve({ error: null, data: null });
   };
   // Top-level thenable so `await from('x').select().eq(...)` resolves.
@@ -292,9 +292,9 @@ afterEach(() => {
 // Tests
 // ─────────────────────────────────────────────────────────────
 
-describe("Supabase integration — per-table CRUD + RLS simulation", () => {
+describe("Supabase integration, per-table CRUD + RLS simulation", () => {
   describe("profiles", () => {
-    it("updates own profile (PATCH) — row round-trips via SELECT", async () => {
+    it("updates own profile (PATCH), row round-trips via SELECT", async () => {
       const userId = "user-A";
       db.profiles.push({
         id: userId,

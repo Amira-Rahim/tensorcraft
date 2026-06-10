@@ -101,14 +101,14 @@ class SentinelAPI {
     }
 
     return tf.tidy(() => {
-      // Preprocess — hidden from callers
+      // Preprocess, hidden from callers
       const tensor = this.preprocess(imageData);
 
       // Predict
       const output = this.model!.predict(tensor) as tf.Tensor;
       const scores = output.dataSync() as Float32Array;
 
-      // Postprocess — hidden from callers
+      // Postprocess, hidden from callers
       return this.postprocess(scores);
     });
   }
@@ -164,7 +164,7 @@ const sentinel = new SentinelAPI({
 });
 await sentinel.init();
 
-// Use anywhere — dashboard, scanner, alert system
+// Use anywhere: dashboard, scanner, alert system
 const canvas = document.getElementById('feed') as HTMLCanvasElement;
 const result = await sentinel.predict(canvas);
 
@@ -222,4 +222,4 @@ Build a typed inference API class that wraps model loading, preprocessing, and p
 
 <Exercise slug="build-inference-api" />
 
-<KeyTakeaways takeaways={["An inference API wraps your model behind a clean contract — callers never touch tensors directly", "Warmup the model on init to avoid slow first predictions from shader compilation", "The same API pattern works client-side (in-browser) and server-side (HTTP endpoint)", "Always handle loading states, errors, and disposal — models are resources like database connections"]} />
+<KeyTakeaways takeaways={["An inference API wraps your model behind a clean contract; callers never touch tensors directly", "Warmup the model on init to avoid slow first predictions from shader compilation", "The same API pattern works client-side (in-browser) and server-side (HTTP endpoint)", "Always handle loading states, errors, and disposal; models are resources like database connections"]} />

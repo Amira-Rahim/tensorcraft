@@ -30,7 +30,7 @@ interface Props {
 // Pre-render every launched-theme lesson at build time. Cold lesson loads
 // previously paid a full SSR + Supabase round-trip; with static params the
 // first paint is served from the edge cache. Coming-soon themes are
-// intentionally excluded — their routes still 404 via `isLaunched()` below.
+// intentionally excluded, their routes still 404 via `isLaunched()` below.
 export function generateStaticParams() {
   return LAUNCHED_THEMES.flatMap((slug) =>
     getThemeLessons(slug).map((l) => ({
@@ -43,7 +43,7 @@ export function generateStaticParams() {
 
 // Reject params outside generateStaticParams at the router level. Without
 // this, unknown/coming-soon lesson URLs stream a 200 shell (via loading.tsx)
-// before the page body's notFound() runs — a soft-404. Router-level
+// before the page body's notFound() runs, a soft-404. Router-level
 // rejection returns a real 404 status before anything is flushed.
 export const dynamicParams = false;
 
@@ -57,7 +57,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   // URLs into soft-404s (bad for crawlers and uptime checks alike).
   if (!isLaunched(slug) || !lesson || !theme) notFound();
   return {
-    title: `${lesson.title} — ${theme.displayName} | Tensorcraft`,
+    title: `${lesson.title} | ${theme.displayName} | Tensorcraft`,
     description: lesson.concept.explanation,
     alternates: {
       canonical: `https://tensorcraft.app/themes/${slug}/${moduleSlug}/${lessonSlug}`,
@@ -263,7 +263,7 @@ export default async function LessonPage({ params }: Props) {
               timeRequired: `PT${lesson.estimatedMinutes}M`,
               isPartOf: {
                 "@type": "Course",
-                name: `${theme.displayName} — ${theme.specialization || "ML Course"}`,
+                name: `${theme.displayName}: ${theme.specialization || "ML Course"}`,
                 url: `https://tensorcraft.app/themes/${slug}`,
               },
               provider: { "@type": "Organization", name: "Tensorcraft" },

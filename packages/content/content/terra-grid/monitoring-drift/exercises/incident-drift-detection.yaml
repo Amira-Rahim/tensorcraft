@@ -1,6 +1,6 @@
 slug: incident-drift-detection
 lessonSlug: model-drift
-title: "Incident — Drift Detection in Production"
+title: "Incident: Drift Detection in Production"
 instructions: |
   PAGER: prediction distribution shifted overnight. You receive `predictions` (last 24h, 1000 samples, predicted-class indices 0-4) and `baseline` (same shape, established 30 days ago). Build `diagnoseDrift(predictions, baseline)` that returns:
 

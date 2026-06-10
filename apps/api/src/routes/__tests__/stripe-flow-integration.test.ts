@@ -4,7 +4,7 @@
  * APPROACH
  * ────────
  * Exercises the full end-to-end webhook path with the REAL Stripe SDK
- * used for signature construction/verification — only outbound API
+ * used for signature construction/verification, only outbound API
  * calls are stubbed. We hand-craft a `stripe.webhooks.generateTestHeaderString()`
  * signature so the webhook handler takes the happy branch.
  *
@@ -29,7 +29,7 @@ const SESSION_ID = "cs_test_integration_abc123";
 const PAYMENT_INTENT_ID = "pi_test_integration_xyz";
 
 // ─────────────────────────────────────────────────────────────
-// In-memory Supabase mock (admin client only — webhook path).
+// In-memory Supabase mock (admin client only, webhook path).
 // ─────────────────────────────────────────────────────────────
 
 type Row = Record<string, unknown>;
@@ -118,7 +118,7 @@ vi.mock("../../lib/redis", () => ({
   }),
 }));
 
-// Kit client — assert it fires on checkout.session.completed
+// Kit client, assert it fires on checkout.session.completed
 const kitAddSubscriber = vi.fn().mockResolvedValue(undefined);
 const kitTagSubscriber = vi.fn().mockResolvedValue(undefined);
 const kitRemoveTag = vi.fn().mockResolvedValue(undefined);
@@ -129,7 +129,7 @@ vi.mock("../../lib/kit", () => ({
   removeTagFromSubscriber: (...args: unknown[]) => kitRemoveTag(...args),
 }));
 
-// PostHog — assert server event fires
+// PostHog, assert server event fires
 const captureServerMock = vi.fn();
 vi.mock("../../lib/posthog", () => ({
   captureServer: (...args: unknown[]) => captureServerMock(...args),

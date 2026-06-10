@@ -115,7 +115,7 @@ describe("GET /api/purchases/access", () => {
 
   it("filters out unknown slugs defensively (§6h)", async () => {
     // Even if a DB anomaly smuggles in an unknown slug, the endpoint
-    // must not surface it — only canonical themes flow to the client.
+    // must not surface it, only canonical themes flow to the client.
     mockPurchaseRows = [
       { theme_ids: ["deep-orbit", "not-a-theme", "neon-protocol"] },
     ];

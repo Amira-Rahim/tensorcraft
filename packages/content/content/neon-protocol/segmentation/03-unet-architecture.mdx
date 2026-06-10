@@ -157,7 +157,7 @@ Conv [256, 256, num_classes]
 
 <Quiz
   question="U-Net's defining feature is skip connections from encoder to decoder. Why are they essential for segmentation specifically (vs. a plain encoder-decoder)?"
-  options={[{"text":"They speed up training by reducing parameter count"},{"text":"They preserve high-resolution spatial detail that the encoder's downsampling discards — needed for precise mask boundaries"},{"text":"They prevent overfitting via implicit regularization"},{"text":"They allow gradient flow through deeper networks"}]}
+  options={[{"text":"They speed up training by reducing parameter count"},{"text":"They preserve high-resolution spatial detail that the encoder's downsampling discards, needed for precise mask boundaries"},{"text":"They prevent overfitting via implicit regularization"},{"text":"They allow gradient flow through deeper networks"}]}
   correct={1}
   explanation="The encoder's pooling layers throw away spatial detail (each 2×2 pool collapses 4 pixels into 1). For classification you don't need that detail, but for segmentation each output pixel needs precise localization. Skip connections forward the high-resolution feature maps from the encoder side directly to the decoder, restoring boundary precision the bottleneck would otherwise lose. Option D (gradient flow) is true for ResNets but isn't U-Net's primary motivation. Options A and C are incorrect."
   tier="structural"

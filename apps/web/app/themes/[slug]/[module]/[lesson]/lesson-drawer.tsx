@@ -40,7 +40,7 @@ export function LessonDrawer({
 
   return (
     <>
-      {/* Trigger — only visible on mobile */}
+      {/* Trigger, only visible on mobile */}
       <button
         type="button"
         onClick={() => setOpen(true)}
@@ -96,7 +96,7 @@ export function LessonDrawer({
                   className="text-xs font-mono uppercase tracking-wider"
                   style={{ color: theme.palette.muted }}
                 >
-                  // {moduleName}
+                  {moduleName}
                 </div>
               </div>
               <button

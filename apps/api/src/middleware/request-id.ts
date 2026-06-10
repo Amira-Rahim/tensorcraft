@@ -13,7 +13,7 @@ import { logger } from "../lib/logger";
  * load balancer) so traces span hops cleanly. Otherwise mints a fresh UUID.
  *
  * Phase 6 §6h. Supersedes the inline request-id generation that used to live
- * inside securityHeadersMiddleware — security-headers now delegates here.
+ * inside securityHeadersMiddleware, security-headers now delegates here.
  */
 export async function requestIdMiddleware(c: Context, next: Next) {
   const incoming = c.req.header("x-request-id");

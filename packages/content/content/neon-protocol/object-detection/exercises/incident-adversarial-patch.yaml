@@ -1,6 +1,6 @@
 slug: incident-adversarial-patch
 lessonSlug: yolo-architecture
-title: "Incident — Adversarial Patch Defeated the Detector"
+title: "Incident: Adversarial Patch Defeated the Detector"
 mlContent: systems
 instructions: |
   PAGER: detector misclassified a stop sign as yield (confidence 0.91). Suspect: adversarial patch. Build `flagSuspiciousDetection(detection, baseline)` returning:

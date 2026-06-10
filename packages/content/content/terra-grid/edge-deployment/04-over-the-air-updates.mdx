@@ -75,7 +75,7 @@ async function performOTAUpdate(
   const checksum = await computeChecksum(packageData);
   if (checksum !== expectedChecksum) {
     manager.state = 'failed';
-    console.error('Checksum mismatch — update rejected');
+    console.error('Checksum mismatch: update rejected');
     return false;
   }
 
@@ -104,7 +104,7 @@ async function performOTAUpdate(
   await copyStorage('staged-model', 'current-model');    // atomic swap
   manager.state = 'active';
 
-  console.log('OTA update complete — new model active');
+  console.log('OTA update complete; new model active');
   return true;
 }`}
 </CodeBlock>
@@ -124,7 +124,7 @@ Sending a full model over a $0.50/MB satellite link is expensive. Delta updates 
 }
 
 function applyDelta(currentWeights: ArrayBuffer, delta: DeltaUpdate): ArrayBuffer {
-  // Like applying a git patch — merge changes into existing weights
+  // Like applying a git patch: merge changes into existing weights
   const current = new Float32Array(currentWeights);
   const patch = new Float32Array(delta.delta);
 
@@ -154,4 +154,4 @@ Implement an OTA model update with integrity verification and rollback.
 
 <Exercise slug="ota-update" />
 
-<KeyTakeaways takeaways={["OTA updates download, verify, stage, then activate; the running model keeps serving until the new one passes verification", "Atomic swaps with rollback guarantee zero-downtime deployments — never leave a device with no working model", "Delta updates send only changed weights, reducing bandwidth by 60-80% — like git diffs vs full clones", "A delta patch is an attack surface: sign it, not just checksum it", "Always validate with test inference before activation — never trust a model you have not run"]} />
+<KeyTakeaways takeaways={["OTA updates download, verify, stage, then activate; the running model keeps serving until the new one passes verification", "Atomic swaps with rollback guarantee zero-downtime deployments: never leave a device with no working model", "Delta updates send only changed weights, reducing bandwidth by 60-80%, like git diffs vs full clones", "A delta patch is an attack surface: sign it, not just checksum it", "Always validate with test inference before activation: never trust a model you have not run"]} />

@@ -86,7 +86,7 @@ console.log('Quantized:', quantized.map(w => w.toFixed(5)));
 // and learns to produce correct outputs despite the rounding
 
 // Post-training: applies quantization AFTER the model has learned
-// QAT: applies quantization DURING learning — model adapts to it
+// QAT: applies quantization DURING learning; model adapts to it
 // Like mobile-first vs "make the desktop site responsive later"`}
 </CodeBlock>
 
@@ -125,10 +125,10 @@ QAT typically recovers 90-95% of the accuracy loss from PTQ at the cost of needi
 
 <Quiz
   question="Why does quantization-aware training (QAT) typically recover more accuracy than post-training quantization (PTQ) at the same bit width?"
-  options={[{"text":"QAT uses more training data than PTQ"},{"text":"QAT inserts fake-quantize ops during training so the model's gradients see quantization error and the weights adapt to compensate"},{"text":"PTQ uses INT8 while QAT uses FP16 — less aggressive compression"},{"text":"QAT runs more epochs of training"}]}
+  options={[{"text":"QAT uses more training data than PTQ"},{"text":"QAT inserts fake-quantize ops during training so the model's gradients see quantization error and the weights adapt to compensate"},{"text":"PTQ uses INT8 while QAT uses FP16, less aggressive compression"},{"text":"QAT runs more epochs of training"}]}
   correct={1}
-  explanation="QAT simulates INT8 rounding during the forward pass while keeping FP32 weights for gradient updates. The model 'sees' quantization error during training and learns to position activations within ranges that survive quantization well. PTQ can't do this — it quantizes after training is done, so the trained weights weren't optimized for the quantized error budget. Option A is unrelated; option C inverts the bit widths; option D is incidental, not the mechanism."
+  explanation="QAT simulates INT8 rounding during the forward pass while keeping FP32 weights for gradient updates. The model 'sees' quantization error during training and learns to position activations within ranges that survive quantization well. PTQ can't do this: it quantizes after training is done, so the trained weights weren't optimized for the quantized error budget. Option A is unrelated; option C inverts the bit widths; option D is incidental, not the mechanism."
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["QAT trains with simulated quantization noise so the model learns weights that survive Int8 rounding", "Fake quantization: quantize in forward pass, straight-through gradients in backward pass", "QAT typically achieves 0.5-1% better accuracy than post-training quantization", "Design for constraints from the start — do not retrofit precision later"]} />
+<KeyTakeaways takeaways={["QAT trains with simulated quantization noise so the model learns weights that survive Int8 rounding", "Fake quantization: quantize in forward pass, straight-through gradients in backward pass", "QAT typically achieves 0.5-1% better accuracy than post-training quantization", "Design for constraints from the start; do not retrofit precision later"]} />

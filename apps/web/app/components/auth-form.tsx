@@ -131,7 +131,6 @@ const COPY = {
   new: {
     heading: "Start Learning",
     subtitle: "Create an account to start learning",
-    calloutPrefix: "// ",
     callout: "MODULE 1 · FREE · NO CARD",
     bottomText: "Already have an account?",
     bottomAction: "Sign in",
@@ -140,7 +139,6 @@ const COPY = {
   returning: {
     heading: "Welcome Back",
     subtitle: "Sign in to continue learning",
-    calloutPrefix: "// ",
     callout: "PICK UP WHERE YOU LEFT OFF",
     bottomText: "New here?",
     bottomAction: "Learn more",
@@ -238,7 +236,7 @@ export function AuthForm() {
   return (
     <div className="flex w-full max-w-240 min-h-160 border border-border bg-surface rounded-none relative z-10">
       {/* ============================================================ */}
-      {/*  LEFT PANEL — Gradient descent visualization                 */}
+      {/*  LEFT PANEL, Gradient descent visualization                 */}
       {/* ============================================================ */}
       <div className="hidden lg:flex lg:w-1/2 flex-col justify-between p-10 relative overflow-hidden bg-code-bg border-r border-border">
         {/* Canvas visualization */}
@@ -263,7 +261,7 @@ export function AuthForm() {
         {/* Bottom: Bridge mappings */}
         <div className="relative z-10 space-y-2">
           <div className="font-mono text-xs uppercase tracking-widest text-text-muted mb-3">
-            // concept bridges
+            concept bridges
           </div>
           {bridgeMappings.map((b) => (
             <div
@@ -279,7 +277,7 @@ export function AuthForm() {
       </div>
 
       {/* ============================================================ */}
-      {/*  RIGHT PANEL — Auth form                                     */}
+      {/*  RIGHT PANEL, Auth form                                     */}
       {/* ============================================================ */}
       <div className="w-full lg:w-1/2 flex flex-col justify-center p-8 sm:p-10 bg-surface-raised">
         {/* Mobile logo (hidden on lg) */}
@@ -457,7 +455,6 @@ export function AuthForm() {
 
             {/* Context-aware callout */}
             <div className="mt-6 border border-border bg-code-bg px-4 py-3 font-mono text-[13px] text-text-muted border-l-2 border-l-primary">
-              <span className="text-primary">{copy.calloutPrefix}</span>
               {copy.callout}
             </div>
 

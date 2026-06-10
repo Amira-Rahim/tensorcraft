@@ -142,14 +142,14 @@ function calculateOutputSize(
   if (paddingMode === 'same') {
     return Math.ceil(inputSize / stride);
   }
-  // 'valid' — no padding
+  // 'valid' means no padding
   return Math.floor((inputSize - kernelSize) / stride) + 1;
 }
 
 // 224x224 image, 3x3 kernel:
-console.log(calculateOutputSize(224, 3, 1, 'valid')); // 222 — shrinks by 2
-console.log(calculateOutputSize(224, 3, 1, 'same'));  // 224 — stays the same
-console.log(calculateOutputSize(224, 3, 2, 'valid')); // 111 — halved (stride 2)`}
+console.log(calculateOutputSize(224, 3, 1, 'valid')); // 222, shrinks by 2
+console.log(calculateOutputSize(224, 3, 1, 'same'));  // 224, stays the same
+console.log(calculateOutputSize(224, 3, 2, 'valid')); // 111, halved (stride 2)`}
 </CodeBlock>
 
 ## Challenge
@@ -178,7 +178,7 @@ For a 3×3 conv with 32 filters on RGB input: `(9 · 3 + 1) · 32 = 896` learnab
 ## Knowledge check
 
 <Quiz
-  question="For a 28×28 input with a 3×3 conv kernel, stride 1, valid padding — what's the output size?"
+  question="For a 28×28 input with a 3×3 conv kernel, stride 1, valid padding: what's the output size?"
   options={[{"text":"28×28"},{"text":"26×26"},{"text":"30×30"},{"text":"14×14"}]}
   correct={1}
   explanation="Output size = (W − K + 2P) / S + 1. With W=28, K=3, P=0, S=1: (28 − 3) / 1 + 1 = 26. Valid padding (P=0) shrinks by K−1 each dimension."

@@ -1,7 +1,7 @@
 slug: extract-reusable-features
 lessonSlug: feature-reuse
 title: "Extract Reusable Features from a Layer Hierarchy"
-instructions: "Write a function that analyzes a model's layer hierarchy and determines which layers are reusable for a new task. Given an array of layers (each with name, depth as a fraction 0-1, and featureType), return an object with: universalLayers (depth < 0.3), reusableLayers (depth >= 0.3 and < 0.7), and taskSpecificLayers (depth >= 0.7). Also return a transferScore — the percentage of layers that are universal or reusable (rounded to nearest integer)."
+instructions: "Write a function that analyzes a model's layer hierarchy and determines which layers are reusable for a new task. Given an array of layers (each with name, depth as a fraction 0-1, and featureType), return an object with: universalLayers (depth < 0.3), reusableLayers (depth >= 0.3 and < 0.7), and taskSpecificLayers (depth >= 0.7). Also return a transferScore: the percentage of layers that are universal or reusable (rounded to nearest integer)."
 starterCode: |
   interface ModelLayer {
     name: string;

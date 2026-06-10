@@ -65,7 +65,7 @@ const df = tf.grad(f);
 
 const x = tf.scalar(3);
 const gradient = df(x);
-console.log(await gradient.array()); // 6 — because 2 * 3 = 6
+console.log(await gradient.array()); // 6, because 2 * 3 = 6
 // At x=3, increasing x by a tiny amount increases x^2 by ~6 times that amount`}
 </CodeBlock>
 

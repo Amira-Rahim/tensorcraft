@@ -5,7 +5,7 @@ export default function NotFound() {
     <div className="min-h-[80vh] flex items-center justify-center px-6">
       <div className="max-w-md w-full border border-border bg-surface p-10 rounded-none">
         <div className="font-mono text-xs text-text-muted tracking-wider uppercase mb-4">
-          // 404 · ROUTE NOT FOUND
+          404 · ROUTE NOT FOUND
         </div>
         <h1 className="text-xl font-mono font-black tracking-[-0.03em] mb-4 uppercase text-text-primary">
           Page not found

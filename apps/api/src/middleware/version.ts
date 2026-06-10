@@ -5,7 +5,7 @@ import type { Context, Next } from "hono";
  *
  * Adds an `X-API-Version` header to every response so clients can detect the
  * deployed API contract. We publish the major "v1" marker rather than the
- * package semver — clients care about API-contract compatibility, not release
+ * package semver, clients care about API-contract compatibility, not release
  * minutiae.
  *
  * Phase 6 §6h.

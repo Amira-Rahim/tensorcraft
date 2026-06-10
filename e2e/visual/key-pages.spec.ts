@@ -1,5 +1,5 @@
 /**
- * Visual regression tests — key unauth-safe pages.
+ * Visual regression tests, key unauth-safe pages.
  *
  * Per dev-plan §8k. Desktop viewport (1280×800). Full-page screenshots.
  *
@@ -18,7 +18,7 @@ import { test, expect } from "@playwright/test";
 // `fixme`'d so CI stays green. Set `RUN_VISUAL=1` to execute them.
 const shouldRun = process.env.RUN_VISUAL === "1";
 
-test.describe("Visual — Key Pages (desktop 1280×800)", () => {
+test.describe("Visual: Key Pages (desktop 1280×800)", () => {
   test.skip(!shouldRun, "Set RUN_VISUAL=1 after generating baselines");
 
   test.beforeEach(async ({ page }) => {

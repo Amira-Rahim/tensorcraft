@@ -13,7 +13,7 @@ interface DispatchTeaseProps {
 
 /**
  * Free-reveal cross-theme cliffhanger. Always shown to anyone who reaches
- * this lesson — soft-gate per scoping lock #1. Purchase = depth, not unlock.
+ * this lesson, soft-gate per scoping lock #1. Purchase = depth, not unlock.
  *
  * Renders inside the theme finale lesson MDX. CTA points at the next
  * theme's detail page; learners who already own it land in /themes/[slug],

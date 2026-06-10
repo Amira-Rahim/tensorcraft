@@ -65,7 +65,7 @@ Like TypeScript's type guards, each entity type has its own validation logic.
 <CodeBlock language="typescript" title="medical-entities.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Medical entity type system — like TypeScript union types
+// Medical entity type system, like TypeScript union types
 // type MedicalEntity = Drug | Condition | Dosage | Frequency | Procedure;
 
 const MEDICAL_ENTITIES = {
@@ -76,10 +76,10 @@ const MEDICAL_ENTITIES = {
   PROCEDURE: ['intubation', 'catheterization', 'biopsy', 'mri', 'ct']
 };
 
-// Pattern matchers — like TypeScript type guards
+// Pattern matchers, like TypeScript type guards
 const DOSAGE_PATTERN = /^\d+\.?\d*(mg|mcg|ml|g|units|iu)$/i;
 
-// Abbreviation resolver — like a type alias map
+// Abbreviation resolver, like a type alias map
 const ABBREV_MAP: Record<string, string> = {
   'RA': 'CONDITION',   // rheumatoid arthritis
   'DM': 'CONDITION',   // diabetes mellitus
@@ -93,18 +93,18 @@ const ABBREV_MAP: Record<string, string> = {
 function classifyToken(token: string): string {
   const lower = token.toLowerCase();
 
-  // Check each type's dictionary — like narrowing a union type
+  // Check each type's dictionary, like narrowing a union type
   for (const [type, terms] of Object.entries(MEDICAL_ENTITIES)) {
     if (terms.includes(lower)) return type;
   }
 
-  // Check pattern-based types — like regex type guards
+  // Check pattern-based types, like regex type guards
   if (DOSAGE_PATTERN.test(token)) return 'DOSAGE';
 
-  // Check abbreviation map — like type alias resolution
+  // Check abbreviation map, like type alias resolution
   if (token.toUpperCase() in ABBREV_MAP) return ABBREV_MAP[token.toUpperCase()];
 
-  return 'O'; // outside — no type match
+  return 'O'; // outside: no type match
 }
 
 // Classify an entire sentence
@@ -139,7 +139,7 @@ function buildMedicalNerModel(
     }) as tf.RNNLayer
   }).apply(embedding) as tf.SymbolicTensor;
 
-  // Dense layer per token — like assigning a type to each element
+  // Dense layer per token, like assigning a type to each element
   const output = tf.layers.timeDistributed({
     layer: tf.layers.dense({ units: numTags, activation: 'softmax' })
   }).apply(lstm) as tf.SymbolicTensor;
@@ -186,8 +186,8 @@ Build a medical entity classifier that handles drugs, conditions, dosages, frequ
   question="A NER model uses BIO tags: B-DRUG (begin), I-DRUG (inside), O (other). Why not just have a single DRUG tag for any drug-named token?"
   options={[{"text":"BIO tags are required by the loss function"},{"text":"BIO tags let the decoder distinguish two adjacent drug mentions ('aspirin ibuprofen' = 2 entities) from a single multi-token drug ('lisinopril hydrochloride' = 1 entity)"},{"text":"BIO tags speed up training"},{"text":"BIO tags reduce vocabulary size"}]}
   correct={1}
-  explanation="Without BIO, two consecutive DRUG tokens are ambiguous — could be one drug name (multi-word) or two drugs side by side. B- marks the START of an entity span; I- marks continuation. So 'aspirin ibuprofen' tags as B-DRUG B-DRUG (two entities) while 'lisinopril hydrochloride' tags as B-DRUG I-DRUG (one entity)."
+  explanation="Without BIO, two consecutive DRUG tokens are ambiguous: could be one drug name (multi-word) or two drugs side by side. B- marks the START of an entity span; I- marks continuation. So 'aspirin ibuprofen' tags as B-DRUG B-DRUG (two entities) while 'lisinopril hydrochloride' tags as B-DRUG I-DRUG (one entity)."
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Medical entity types come from controlled vocabularies (UMLS, SNOMED) with thousands of overlapping terms; the mapping is fuzzy, not a fixed enum", "Each type has distinct detection strategies: dictionaries, regex patterns, abbreviation maps", "Like TypeScript type guards, each strategy narrows the token to a specific entity type", "Precision catches false positives, recall catches false negatives — both matter clinically"]} />
+<KeyTakeaways takeaways={["Medical entity types come from controlled vocabularies (UMLS, SNOMED) with thousands of overlapping terms; the mapping is fuzzy, not a fixed enum", "Each type has distinct detection strategies: dictionaries, regex patterns, abbreviation maps", "Like TypeScript type guards, each strategy narrows the token to a specific entity type", "Precision catches false positives, recall catches false negatives; both matter clinically"]} />

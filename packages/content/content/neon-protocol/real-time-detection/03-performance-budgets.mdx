@@ -124,10 +124,10 @@ class AdaptiveInference {
 
   adjustForPerformance(frameTimeMs: number, budget: number) {
     if (frameTimeMs > budget * 1.2) {
-      // Over budget by 20%+ — skip more frames
+      // Over budget by 20%+, so skip more frames
       this.skipRate = Math.min(this.skipRate + 1, 4);
     } else if (frameTimeMs < budget * 0.7 && this.skipRate > 1) {
-      // Well under budget — process more frames
+      // Well under budget, so process more frames
       this.skipRate = Math.max(this.skipRate - 1, 1);
     }
   }
@@ -155,4 +155,4 @@ Inference latency doubled overnight after a model update. Forensic-debug which s
 
 <Exercise slug="incident-latency-spike" />
 
-<KeyTakeaways takeaways={["At 30fps, your total frame budget is 33.3ms — every stage of the pipeline counts", "Profile with performance.now() to identify exactly where time is spent", "Inference is usually the bottleneck — preprocessing and postprocessing should be under 5ms each", "Adaptive strategies like frame skipping trade detection frequency for consistent responsiveness"]} />
+<KeyTakeaways takeaways={["At 30fps, your total frame budget is 33.3ms; every stage of the pipeline counts", "Profile with performance.now() to identify exactly where time is spent", "Inference is usually the bottleneck; preprocessing and postprocessing should be under 5ms each", "Adaptive strategies like frame skipping trade detection frequency for consistent responsiveness"]} />

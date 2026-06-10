@@ -55,7 +55,7 @@ Before normalize.css, building cross-browser UIs was unpredictable. Each browser
 <CodeBlock language="typescript" title="css-vs-ml-normalization.ts">
 {`// Frontend: CSS reset normalizes browser defaults
 // Before: h1 { margin: 0.67em } in Chrome, different in Firefox
-// After:  h1 { margin: 0 } everywhere — consistent baseline
+// After:  h1 { margin: 0 } everywhere: consistent baseline
 
 // ML: pixel normalization does the same thing
 // Before: nighttime image pixels [3, 8, 12, 5]
@@ -65,7 +65,7 @@ Before normalize.css, building cross-browser UIs was unpredictable. Each browser
 // After normalization: both map to [0, 1] range
 // Night: [0.0, 0.56, 1.0, 0.22]
 // Day:   [0.0, 1.0, 0.66, 0.39]
-// Equal volume — the model can focus on patterns, not brightness`}
+// Equal volume: the model can focus on patterns, not brightness`}
 </CodeBlock>
 
 ## Why Raw Pixels Break Training
@@ -187,7 +187,7 @@ interface ChannelStats {
   std: [number, number, number];
 }
 
-// ImageNet standard values — the "normalize.css" of computer vision
+// ImageNet standard values: the "normalize.css" of computer vision
 const IMAGENET_STATS: ChannelStats = {
   mean: [0.485, 0.456, 0.406],
   std: [0.229, 0.224, 0.225],

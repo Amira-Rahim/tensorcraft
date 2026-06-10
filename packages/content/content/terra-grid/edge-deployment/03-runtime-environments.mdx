@@ -127,7 +127,7 @@ class TFJSEngine implements InferenceEngine {
   dispose() { this.model?.dispose(); }
 }
 
-// Same interface, different engine — like a polyfill
+// Same interface, different engine, like a polyfill
 class WASMEngine implements InferenceEngine {
   private session: any = null;
 
@@ -153,4 +153,4 @@ Set up a runtime configuration for a multi-architecture edge deployment.
 
 <Exercise slug="runtime-setup" />
 
-<KeyTakeaways takeaways={["One model file, several execution engines; the runtime choice changes latency and memory, not the predictions", "TFLite excels on ARM (mobile/embedded), ONNX on x86 (servers), WASM provides universal fallback", "An abstraction layer over TFLite (710 ARM devices) and ONNX Runtime (137 x86 servers) keeps inference code single-source", "Always benchmark on actual target hardware — simulated performance numbers lie, just like desktop Lighthouse scores"]} />
+<KeyTakeaways takeaways={["One model file, several execution engines; the runtime choice changes latency and memory, not the predictions", "TFLite excels on ARM (mobile/embedded), ONNX on x86 (servers), WASM provides universal fallback", "An abstraction layer over TFLite (710 ARM devices) and ONNX Runtime (137 x86 servers) keeps inference code single-source", "Always benchmark on actual target hardware: simulated performance numbers lie, just like desktop Lighthouse scores"]} />

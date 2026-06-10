@@ -68,7 +68,7 @@ type IndexFn = (vector: number[], label: string) => void;
 
 // Just like middleware signatures:
 // (req: Request, res: Response, next: NextFunction) => void
-// Each stage has a defined contract — swap implementations freely`}
+// Each stage has a defined contract; swap implementations freely`}
 </CodeBlock>
 
 ## Building Each Stage
@@ -76,7 +76,7 @@ type IndexFn = (vector: number[], label: string) => void;
 <CodeBlock language="typescript" title="pipeline-stages.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Stage 1: Preprocess — resize and normalize pixels
+// Stage 1: Preprocess. Resize and normalize pixels
 function preprocess(image: tf.Tensor3D): tf.Tensor4D {
   return tf.tidy(() => {
     const resized = tf.image.resizeBilinear(image, [224, 224]);
@@ -85,7 +85,7 @@ function preprocess(image: tf.Tensor3D): tf.Tensor4D {
   });
 }
 
-// Stage 2: Extract — run through backbone
+// Stage 2: Extract. Run through backbone
 async function extract(
   batch: tf.Tensor4D,
   backbone: tf.LayersModel
@@ -94,7 +94,7 @@ async function extract(
   return features; // [1, 1280]
 }
 
-// Stage 3: Normalize — L2 normalize the feature vector
+// Stage 3: Normalize. L2 normalize the feature vector
 // Makes cosine similarity equivalent to dot product
 function normalizeL2(features: tf.Tensor2D): tf.Tensor2D {
   return tf.tidy(() => {
@@ -103,7 +103,7 @@ function normalizeL2(features: tf.Tensor2D): tf.Tensor2D {
   });
 }
 
-// Stage 4: Index — store in the search index
+// Stage 4: Index. Store in the search index
 class FeatureIndex {
   private vectors: number[][] = [];
   private labels: string[] = [];
@@ -147,7 +147,7 @@ class FeaturePipeline {
     this.config = config;
   }
 
-  // Initialize — load the backbone (like app.listen())
+  // Initialize: load the backbone (like app.listen())
   async init(): Promise<void> {
     this.backbone = await tf.loadLayersModel(this.config.backboneUrl);
     console.log('Pipeline ready. Backbone loaded.');
@@ -192,7 +192,7 @@ class FeaturePipeline {
   }
 }
 
-// Usage — just like setting up an Express app:
+// Usage, just like setting up an Express app:
 // const app = express();
 // app.use(cors());
 // app.use(auth());
@@ -227,10 +227,10 @@ Build a feature pipeline class that chains preprocessing, extraction, and normal
 
 <Quiz
   question="What's training/serving skew?"
-  options={[{"text":"Model trained on different data than evaluated"},{"text":"Preprocessing in production differs from training — same input, different features"},{"text":"Train/test split that overlaps"},{"text":"Model loss is unstable"}]}
+  options={[{"text":"Model trained on different data than evaluated"},{"text":"Preprocessing in production differs from training: same input, different features"},{"text":"Train/test split that overlaps"},{"text":"Model loss is unstable"}]}
   correct={1}
   explanation="If training preprocessing applies normalize→onehot but production applies onehot→normalize, the model sees different features in production. Subtle, silent. Catch via shadow inference (run prod preprocessing on training samples, compare features)."
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["A feature pipeline chains preprocess, extract, normalize, and index so raw frames go in and queryable vectors come out", "L2 normalization makes cosine similarity equivalent to dot product, simplifying search", "The pipeline pattern decouples stages so you can swap backbones or change normalization independently", "The resistance now has a complete in-browser surveillance detection system — ingest to query — with no server dependency"]} />
+<KeyTakeaways takeaways={["A feature pipeline chains preprocess, extract, normalize, and index so raw frames go in and queryable vectors come out", "L2 normalization makes cosine similarity equivalent to dot product, simplifying search", "The pipeline pattern decouples stages so you can swap backbones or change normalization independently", "The resistance now has a complete in-browser surveillance detection system (ingest to query) with no server dependency"]} />

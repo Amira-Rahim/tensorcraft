@@ -7,7 +7,7 @@ order: 3
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "The LLM doesn't know about DEEP SCAN's specific signals. Farah builds a RAG pipeline — retrieving relevant signal data from the database and injecting it into the prompt."
+  narrative: "The LLM doesn't know about DEEP SCAN's specific signals. Farah builds a RAG pipeline: retrieving relevant signal data from the database and injecting it into the prompt."
   speaker: "Dr. Farah"
 concept:
   explanation: "RAG retrieves the relevant records first and hands them to the model, so answers can cite your data instead of the model's memory."
@@ -17,7 +17,7 @@ concept:
     mlTitle: "RAG Pipeline"
     mlCode: "const context = await db.search(query); const answer = await llm.complete(prompt + context);"
     tier: structural
-    breaks: "Server Components render server-side and ship deterministic HTML. RAG retrieves passages then conditions an LLM on them — the answer is generated, not extracted. Models routinely contradict the retrieved passages while citing them. Confidence in RAG output requires verifying the answer matches the cited chunks, not just trusting the citation exists."
+    breaks: "Server Components render server-side and ship deterministic HTML. RAG retrieves passages then conditions an LLM on them; the answer is generated, not extracted. Models routinely contradict the retrieved passages while citing them. Confidence in RAG output requires verifying the answer matches the cited chunks, not just trusting the citation exists."
 consequence:
   narrative: "The RAG pipeline lets the crew ask natural language questions about signal data: 'Show me all anomalous signals in Band-7 from the last 72 hours.' The LLM answers with cited data."
 hints:
@@ -43,7 +43,7 @@ The LLM has no knowledge of our specific signals. If I ask about Band-7 anomalie
 That's Server Components! Fetch data on the server, then render with it. RAG fetches data from the signal database, then generates a response with it.
 </Dialogue>
 
-Demir's mapping holds at the pipeline level: retrieve real records first, then generate from them instead of from whatever the model half-remembers. The step with no Server Component equivalent is the last one — a component can't contradict its props. A generator can.
+Demir's mapping holds at the pipeline level: retrieve real records first, then generate from them instead of from whatever the model half-remembers. The step with no Server Component equivalent is the last one: a component can't contradict its props. A generator can.
 
 <LearningObjectives objectives={["Understand RAG as retrieve → augment → generate: query data, inject into prompt, generate response", "Build a simple signal retrieval system using text and metadata matching", "Ground LLM responses in actual data to prevent hallucination", "Enable natural language queries over the DEEP SCAN signal database"]} />
 
@@ -63,7 +63,7 @@ Demir's mapping holds at the pipeline level: retrieve real records first, then g
   anomalyScore: number;
 }
 
-// Step 1: RETRIEVE — find relevant signals from the database
+// Step 1: RETRIEVE: find relevant signals from the database
 async function retrieveSignals(
   query: string,
   db: Signal[],
@@ -89,7 +89,7 @@ async function retrieveSignals(
   return results.slice(0, 20);  // limit context size
 }
 
-// Step 2: AUGMENT — inject retrieved data into prompt
+// Step 2: AUGMENT: inject retrieved data into prompt
 function buildRAGPrompt(query: string, signals: Signal[]): string {
   const signalContext = signals.map(s =>
     \`[\${s.timestamp}] Band \${s.band}: \${s.classification} (conf=\${s.confidence}, amp=\${s.amplitude}, freq=\${s.frequency}Hz, anomalyScore=\${s.anomalyScore})\`
@@ -110,7 +110,7 @@ If the data doesn't contain the answer, say "insufficient data."
 - Flag any uncertainty\`;
 }
 
-// Step 3: GENERATE — get grounded response
+// Step 3: GENERATE: get grounded response
 async function querySignals(query: string, db: Signal[], llm: LLMClient): Promise<string> {
   const relevant = await retrieveSignals(query, db);
   const prompt = buildRAGPrompt(query, relevant);
@@ -131,7 +131,7 @@ Build a RAG pipeline that retrieves and contextualizes signal data.
 
 <Exercise slug="rag-pipeline" />
 
-<KeyTakeaways takeaways={["RAG = Retrieve → Augment → Generate: fetch real data, inject into prompt, generate grounded response", "Like Server Components: data access happens before generation, ensuring the output reflects reality", "Limit retrieved context to stay within token limits — retrieve the top-K most relevant records", "Instruct the LLM to cite sources and say 'insufficient data' when information is missing"]} />
+<KeyTakeaways takeaways={["RAG = Retrieve → Augment → Generate: fetch real data, inject into prompt, generate grounded response", "Like Server Components: data access happens before generation, ensuring the output reflects reality", "Limit retrieved context to stay within token limits: retrieve the top-K most relevant records", "Instruct the LLM to cite sources and say 'insufficient data' when information is missing"]} />
 
 > **DISPATCH archive · field intercept #11-D:** Dr. Amara's clinical RAG pipeline runs the same retrieve-then-generate contract on patient records. Her note in the log: "the model that confabulates is the one that retrieved nothing and didn't say so." Different domain, identical failure mode.
 

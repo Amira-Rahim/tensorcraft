@@ -51,7 +51,7 @@ Eight time zones, one model, and a rollout that must never land in the middle of
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="global-coordinator.ts">
-{`// Global model deployment — like CDN edge node management
+{`// Global model deployment, like CDN edge node management
 
 interface Region {
   id: string;
@@ -169,10 +169,10 @@ Build a global deployment coordinator with time-zone-aware scheduling.
 
 <Quiz
   question="Why is data residency a constraint for ML serving?"
-  options={[{"text":"Faster local inference"},{"text":"GDPR/HIPAA require data not leave region — limits which model serving locations are valid"},{"text":"Network bandwidth"},{"text":"Required by Kubernetes"}]}
+  options={[{"text":"Faster local inference"},{"text":"GDPR/HIPAA require data not leave region; limits which model serving locations are valid"},{"text":"Network bandwidth"},{"text":"Required by Kubernetes"}]}
   correct={1}
-  explanation="GDPR (EU) and HIPAA (US healthcare) require data stay in-region. EU user data → EU model serving. Multi-region ML deployment: per-region model copies, careful traffic routing. Not just a network optimization — legal requirement."
+  explanation="GDPR (EU) and HIPAA (US healthcare) require data stay in-region. EU user data → EU model serving. Multi-region ML deployment: per-region model copies, careful traffic routing. Not just a network optimization: legal requirement."
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Models are not static assets: data residency can pin a region's model in place, and a fresh deployment serves cold until warmed", "Region-aware scheduling deploys during local maintenance windows to avoid disrupting peak operations", "Consistency checks verify all regions converge to the same model version after rollout", "If a region fails to update, it keeps running the previous version — availability over consistency"]} />
+<KeyTakeaways takeaways={["Models are not static assets: data residency can pin a region's model in place, and a fresh deployment serves cold until warmed", "Region-aware scheduling deploys during local maintenance windows to avoid disrupting peak operations", "Consistency checks verify all regions converge to the same model version after rollout", "If a region fails to update, it keeps running the previous version: availability over consistency"]} />

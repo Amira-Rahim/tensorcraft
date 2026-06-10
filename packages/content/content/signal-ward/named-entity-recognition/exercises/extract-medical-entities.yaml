@@ -1,7 +1,7 @@
 slug: extract-medical-entities
 lessonSlug: medical-entities
 title: "Extract Medical Entities"
-instructions: "Build a medical entity classifier with multiple detection strategies — like TypeScript type guards for clinical text. Implement classifyToken to identify entity types using dictionary lookup (drugs, conditions, procedures, frequencies), regex pattern matching (dosages), and abbreviation expansion. Then implement classifySentence to classify all tokens in an array."
+instructions: "Build a medical entity classifier with multiple detection strategies, like TypeScript type guards for clinical text. Implement classifyToken to identify entity types using dictionary lookup (drugs, conditions, procedures, frequencies), regex pattern matching (dosages), and abbreviation expansion. Then implement classifySentence to classify all tokens in an array."
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 

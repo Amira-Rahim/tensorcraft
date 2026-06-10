@@ -31,8 +31,8 @@ const skillEvents = new Hono<AppEnv>();
 skillEvents.use("*", authMiddleware);
 
 /**
- * POST /api/skill-events — Record a skill event.
- * Fire-and-forget from the client — logs learning signals for future Genome computation.
+ * POST /api/skill-events, Record a skill event.
+ * Fire-and-forget from the client, logs learning signals for future Genome computation.
  */
 skillEvents.post("/", async (c) => {
   const userId = c.get("userId");
@@ -94,7 +94,7 @@ skillEvents.post("/", async (c) => {
 });
 
 /**
- * POST /api/skill-events/batch — Record multiple skill events in one request.
+ * POST /api/skill-events/batch, Record multiple skill events in one request.
  * Client buffers events and flushes periodically to reduce DB write pressure.
  * Max 50 events per request.
  */

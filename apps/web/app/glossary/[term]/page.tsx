@@ -103,13 +103,13 @@ export async function generateMetadata({
   const data = findTermSide(term);
 
   if (!data) {
-    return { title: "Term Not Found — Tensorcraft Glossary" };
+    return { title: "Term Not Found | Tensorcraft Glossary" };
   }
 
   const title =
     data.domain === "ml"
-      ? `${data.term} — ML Glossary for Frontend Engineers`
-      : `${data.term} — Frontend Concept in ML Context`;
+      ? `${data.term} | ML Glossary for Frontend Engineers`
+      : `${data.term} | Frontend Concept in ML Context`;
 
   const description =
     data.domain === "ml"

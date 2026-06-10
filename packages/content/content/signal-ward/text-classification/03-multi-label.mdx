@@ -13,9 +13,9 @@ concept:
   explanation: "Multi-label classification assigns zero or more labels to each input, like tagging a document with every relevant topic, not just the primary one."
   bridge:
     feTitle: "Checkbox Groups (multiple selections)"
-    feCode: "// <input type='checkbox' /> Cardiac\n// <input type='checkbox' /> Respiratory\n// Each checkbox is independent — check any combination"
+    feCode: "// <input type='checkbox' /> Cardiac\n// <input type='checkbox' /> Respiratory\n// Each checkbox is independent: check any combination"
     mlTitle: "Multi-Label Classifier"
-    mlCode: "// sigmoid([cardiac, respiratory, renal, neuro])\n// Each label is independent — any combination possible"
+    mlCode: "// sigmoid([cardiac, respiratory, renal, neuro])\n// Each label is independent: any combination possible"
     tier: structural
     breaks: "Checkbox groups let users explicitly select any subset. Multi-label classifiers output independent sigmoid per label and label correlations are not modeled by default; the wrong loss (softmax) on multi-label produces silently wrong results."
 consequence:
@@ -83,7 +83,7 @@ function buildMultiLabelClassifier(
   // Sigmoid: each label is independent
   model.add(tf.layers.dense({
     units: numLabels,
-    activation: 'sigmoid'  // NOT softmax — labels are independent
+    activation: 'sigmoid'  // NOT softmax: labels are independent
   }));
 
   model.compile({
@@ -181,4 +181,4 @@ Build a multi-label classifier that tags clinical documents with all applicable 
 
 <Exercise slug="tag-documents" />
 
-<KeyTakeaways takeaways={["Multi-label classification uses sigmoid (not softmax) so each label is independent", "Binary crossentropy works per-label — each output is its own binary classifier", "A document can have zero, one, or many labels simultaneously", "Evaluate each label separately with precision, recall, and F1 to find weak spots"]} />
+<KeyTakeaways takeaways={["Multi-label classification uses sigmoid (not softmax) so each label is independent", "Binary crossentropy works per-label: each output is its own binary classifier", "A document can have zero, one, or many labels simultaneously", "Evaluate each label separately with precision, recall, and F1 to find weak spots"]} />

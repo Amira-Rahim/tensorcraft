@@ -100,7 +100,7 @@ testCode: |
         .use(async (ctx, next) => {
           ctx.log.push('runs');
           ctx.errors.push('short-circuit');
-          // Do NOT call next() — pipeline stops here
+          // Do NOT call next(); pipeline stops here
         })
         .use(async (ctx, next) => {
           ctx.log.push('should-not-run');

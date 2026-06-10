@@ -110,7 +110,7 @@ Interpreting GAN losses is different from normal training. You do not want eithe
 
 <CodeBlock language="typescript" title="loss-monitoring.ts">
 {`// Healthy training:
-// D loss hovers around 0.5-0.7 (it is unsure — good!)
+// D loss hovers around 0.5-0.7 (it is unsure, good!)
 // G loss hovers around 0.7-1.5 (it is learning)
 // Both fluctuate but neither collapses
 
@@ -134,10 +134,10 @@ interface TrainingMetrics {
 }
 
 function diagnose(metrics: TrainingMetrics): string {
-  if (metrics.dLoss < 0.1) return 'D too strong — reduce D learning rate';
-  if (metrics.gLoss < 0.1) return 'Possible mode collapse — check diversity';
+  if (metrics.dLoss < 0.1) return 'D too strong; reduce D learning rate';
+  if (metrics.gLoss < 0.1) return 'Possible mode collapse; check diversity';
   if (metrics.dAccuracyReal > 0.95 && metrics.dAccuracyFake > 0.95)
-    return 'D dominating — add dropout or skip D steps';
+    return 'D dominating; add dropout or skip D steps';
   return 'Training looks healthy';
 }`}
 </CodeBlock>
@@ -168,4 +168,4 @@ Via Kantorovich-Rubinstein duality, this becomes a tractable formulation requiri
 Where x̂ is sampled along straight lines between real and generated samples. WGAN-GP is the most stable training recipe most modern GANs use.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["GAN training alternates between discriminator and generator updates", "Healthy training shows both losses fluctuating, neither collapsing to zero", "D loss near 0.5 means the discriminator is uncertain — this is good", "Monitor both losses and adjust learning rates to maintain balance"]} />
+<KeyTakeaways takeaways={["GAN training alternates between discriminator and generator updates", "Healthy training shows both losses fluctuating, neither collapsing to zero", "D loss near 0.5 means the discriminator is uncertain, and this is good", "Monitor both losses and adjust learning rates to maintain balance"]} />

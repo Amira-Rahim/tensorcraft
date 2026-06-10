@@ -97,7 +97,7 @@ function extractContent(
 }
 
 // STYLE: how the image looks (textures, colors, patterns)
-// Captured as correlations between features — the Gram matrix
+// Captured as correlations between features: the Gram matrix
 function gramMatrix(features: tf.Tensor4D): tf.Tensor2D {
   const [batch, height, width, channels] = features.shape;
   // Reshape to 2D: (height * width) x channels
@@ -135,4 +135,4 @@ Compute a Gram matrix from CNN feature activations to capture an image's style.
 There is no universal "correct" decomposition. You tune for the visual effect you want.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["The content/style split is empirical and layer-dependent: deep activations hold structure, early-layer Gram matrices hold texture", "Content is captured by activations of deep convolutional layers — what objects and structures are present", "Style is captured by Gram matrices — correlations between feature channels that encode textures and patterns", "The same content can be rendered in any style: swap the style image and re-run the optimization"]} />
+<KeyTakeaways takeaways={["The content/style split is empirical and layer-dependent: deep activations hold structure, early-layer Gram matrices hold texture", "Content is captured by activations of deep convolutional layers: what objects and structures are present", "Style is captured by Gram matrices: correlations between feature channels that encode textures and patterns", "The same content can be rendered in any style: swap the style image and re-run the optimization"]} />

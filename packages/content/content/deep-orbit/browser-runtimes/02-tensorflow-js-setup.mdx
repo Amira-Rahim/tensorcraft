@@ -71,24 +71,24 @@ That's it: four lines to a full ML runtime in the browser. The fourth is the one
 
 ## Backends: The Runtime Engine
 
-Think of backends like rendering engines in browsers. Chrome uses Blink, Firefox uses Gecko — same web pages, different performance. TF.js backends work the same way:
+Think of backends like rendering engines in browsers. Chrome uses Blink, Firefox uses Gecko: same web pages, different performance. TF.js backends work the same way:
 
 <CodeBlock language="typescript" title="backends.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// WebGL backend — uses the GPU via WebGL shaders
+// WebGL backend: uses the GPU via WebGL shaders
 // Best for: most models, especially matrix-heavy operations
 // Like using CSS transforms (GPU-accelerated) instead of top/left (CPU)
 import '@tensorflow/tfjs-backend-webgl';
 
-// WASM backend — compiled C++ running in WebAssembly
+// WASM backend: compiled C++ running in WebAssembly
 // Best for: smaller models, devices without good GPU, SIMD support
 // Like using a Web Worker for heavy computation
 import '@tensorflow/tfjs-backend-wasm';
 import { setWasmPaths } from '@tensorflow/tfjs-backend-wasm';
 setWasmPaths('/wasm/');  // point to your WASM binary files
 
-// CPU backend — pure JavaScript, no acceleration
+// CPU backend: pure JavaScript, no acceleration
 // Best for: nothing in production (fallback only)
 // Like doing layout calculations in JS instead of CSS
 
@@ -111,7 +111,7 @@ async function benchmarkBackend(backendName: string) {
   await tf.setBackend(backendName);
   await tf.ready();
 
-  // Warm up — first operation is always slow (shader compilation for WebGL)
+  // Warm up: first operation is always slow (shader compilation for WebGL)
   const warmup = tf.randomNormal([100, 100]);
   tf.matMul(warmup, warmup.transpose()).dispose();
   warmup.dispose();
@@ -143,7 +143,7 @@ Set up TensorFlow.js and verify the active backend.
 
 <Exercise slug="tfjs-setup" />
 
-<KeyTakeaways takeaways={["The same matmul costs ~0.5ms on webgl, ~3ms on wasm, ~15ms on cpu: check tf.getBackend() before trusting a latency budget", "Backends (WebGL, WASM, CPU) determine performance — like choosing GPU-accelerated CSS vs JS layout", "WebGL is fastest for most models; WASM is the reliable fallback for devices without good GPUs", "Always call tf.dispose() on tensors you're done with — browser memory is limited"]} />
+<KeyTakeaways takeaways={["The same matmul costs ~0.5ms on webgl, ~3ms on wasm, ~15ms on cpu: check tf.getBackend() before trusting a latency budget", "Backends (WebGL, WASM, CPU) determine performance, like choosing GPU-accelerated CSS vs JS layout", "WebGL is fastest for most models; WASM is the reliable fallback for devices without good GPUs", "Always call tf.dispose() on tensors you're done with; browser memory is limited"]} />
 
 <Epilogue>
 

@@ -58,7 +58,7 @@ issues.use("*", async (c, next) => {
       );
     }
   } catch {
-    // Graceful degradation — allow request if Redis is unavailable
+    // Graceful degradation, allow request if Redis is unavailable
   }
 
   return next();
@@ -98,7 +98,7 @@ issues.post("/", async (c) => {
           userEmail = user.email ?? null;
         }
       } catch {
-        // Non-fatal — treat as anonymous
+        // Non-fatal, treat as anonymous
       }
     }
   }
@@ -165,7 +165,7 @@ issues.post("/", async (c) => {
 
     if (uploadError) {
       captureException(uploadError, { source: "issues.screenshot-upload" });
-      // Continue without screenshot — non-fatal
+      // Continue without screenshot, non-fatal
     } else {
       const {
         data: { publicUrl },

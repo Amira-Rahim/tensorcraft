@@ -50,7 +50,7 @@ Two fears, one protocol. Tariq is guarding against a bad model; Elif is guarding
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="canary-manager.ts">
-{`// Canary deployment manager — staged rollout with health gates
+{`// Canary deployment manager: staged rollout with health gates
 
 type DeploymentStage = 'canary' | 'early-access' | 'wide-rollout' | 'full' | 'rolled-back';
 
@@ -156,4 +156,4 @@ Build a canary deployment manager with health gates and automatic rollback.
 
 <Exercise slug="canary-deploy" />
 
-<KeyTakeaways takeaways={["Promote a model canary on production evidence: one region, a fixed observation window, thresholds set before rollout starts", "Health checks for ML include model-specific metrics: accuracy, false positive rate, missed anomalies", "Region-based staged rollout limits blast radius — one region fails, the others stay on the proven model", "Automatic rollback on health check failure means no human needs to be awake at 3 AM to kill a bad deployment"]} />
+<KeyTakeaways takeaways={["Promote a model canary on production evidence: one region, a fixed observation window, thresholds set before rollout starts", "Health checks for ML include model-specific metrics: accuracy, false positive rate, missed anomalies", "Region-based staged rollout limits blast radius: one region fails, the others stay on the proven model", "Automatic rollback on health check failure means no human needs to be awake at 3 AM to kill a bad deployment"]} />

@@ -1,6 +1,6 @@
 ---
 slug: production-apis
-title: "Production APIs — Building Clinical-Grade NLP Endpoints"
+title: "Production APIs: Building Clinical-Grade NLP Endpoints"
 moduleId: production-privacy
 themeId: signal-ward
 order: 1
@@ -54,7 +54,7 @@ The HTTP contract is the familiar part: validate the request, process it within 
 <CodeBlock language="typescript" title="nlp-api.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Typed request/response — same as any API contract
+// Typed request/response, same as any API contract
 interface NLPRequest {
   text: string;
   options?: {
@@ -84,7 +84,7 @@ interface APIError {
   statusCode: number;
 }
 
-// Request validation — same as Zod/Joi validation middleware
+// Request validation, same as Zod/Joi validation middleware
 function validateRequest(body: unknown): { valid: true; data: NLPRequest } | { valid: false; error: string } {
   if (!body || typeof body !== 'object') {
     return { valid: false, error: 'Request body must be a JSON object' };
@@ -99,7 +99,7 @@ function validateRequest(body: unknown): { valid: true; data: NLPRequest } | { v
   return { valid: true, data: req as unknown as NLPRequest };
 }
 
-// Latency budget enforcement — like a fetch() timeout wrapper
+// Latency budget enforcement, like a fetch() timeout wrapper
 function withTimeout<T>(promise: Promise<T>, budgetMs: number): Promise<T> {
   return Promise.race([
     promise,
@@ -129,18 +129,18 @@ class NLPAPIServer {
 
   async loadModel(url: string): Promise<void> {
     this.model = await tf.loadLayersModel(url);
-    // Warm-up inference — like preloading critical resources
+    // Warm-up inference, like preloading critical resources
     const warmup = tf.zeros([1, 128]);
     this.model.predict(warmup);
     warmup.dispose();
   }
 
-  // POST /api/predict — the core handler
+  // POST /api/predict: the core handler
   async predict(body: unknown): Promise<NLPResponse | APIError> {
     const requestId = \`req-\${++this.requestCount}\`;
     const startTime = performance.now();
 
-    // 1. Validate — same as Express validation middleware
+    // 1. Validate, same as Express validation middleware
     const validation = validateRequest(body);
     if (!validation.valid) {
       return { requestId, error: validation.error, code: 'VALIDATION_ERROR', statusCode: 400 };
@@ -151,7 +151,7 @@ class NLPAPIServer {
     }
 
     try {
-      // 2. Infer — with latency budget enforcement
+      // 2. Infer, with latency budget enforcement
       const result = await withTimeout(
         this.runInference(validation.data),
         this.latencyBudgetMs
@@ -198,7 +198,7 @@ class NLPAPIServer {
     };
   }
 
-  // GET /api/health — readiness probe
+  // GET /api/health: readiness probe
   health(): { status: string; modelLoaded: boolean; requestCount: number; tensorCount: number } {
     return {
       status: this.model ? 'healthy' : 'degraded',
@@ -213,7 +213,7 @@ class NLPAPIServer {
 ## Request Batching for Throughput
 
 <CodeBlock language="typescript" title="batch-api.ts">
-{`// Batch requests for GPU efficiency — like batching DB queries to avoid N+1
+{`// Batch requests for GPU efficiency, like batching DB queries to avoid N+1
 class BatchPredictor {
   private queue: { tokens: number[]; resolve: (r: number[]) => void }[] = [];
   private timer: ReturnType<typeof setTimeout> | null = null;
@@ -263,4 +263,4 @@ Build a production NLP API class that validates requests, runs inference, enforc
 
 <Exercise slug="build-nlp-api" />
 
-<KeyTakeaways takeaways={["Enforce the 200ms SLA with Promise.race: inference that overruns returns a clean 504, never a stalled request", "Cap input size at validation (here, 10,000 characters) — inference latency grows with token count", "Request batching collects up to 8 requests for at most 10ms and runs one GPU pass for all of them", "Health check endpoints for ML APIs monitor model readiness and tensor memory, not just uptime"]} />
+<KeyTakeaways takeaways={["Enforce the 200ms SLA with Promise.race: inference that overruns returns a clean 504, never a stalled request", "Cap input size at validation (here, 10,000 characters): inference latency grows with token count", "Request batching collects up to 8 requests for at most 10ms and runs one GPU pass for all of them", "Health check endpoints for ML APIs monitor model readiness and tensor memory, not just uptime"]} />

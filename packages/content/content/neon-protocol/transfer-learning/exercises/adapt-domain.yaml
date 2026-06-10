@@ -1,7 +1,7 @@
 slug: adapt-domain
 lessonSlug: domain-adaptation
 title: "Build Domain Augmentation Transforms"
-instructions: "Write a function that takes pixel values (0-255) and applies night-time domain augmentation: multiply by a brightness factor, add noise values, and clamp the result to 0-255. This simulates adapting training data from a daylight domain (source) to Neon City's night conditions (target) — like building i18n transforms that adapt your app for a new locale."
+instructions: "Write a function that takes pixel values (0-255) and applies night-time domain augmentation: multiply by a brightness factor, add noise values, and clamp the result to 0-255. This simulates adapting training data from a daylight domain (source) to Neon City's night conditions (target), like building i18n transforms that adapt your app for a new locale."
 starterCode: |
   interface AugmentConfig {
     brightnessFactor: number; // 0.3 to 0.7

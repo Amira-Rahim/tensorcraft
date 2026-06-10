@@ -1,6 +1,6 @@
 ---
 slug: bias-auditing
-title: "Bias Auditing — Lighthouse for Fairness"
+title: "Bias Auditing: Lighthouse for Fairness"
 moduleId: production-privacy
 themeId: signal-ward
 order: 3
@@ -13,9 +13,9 @@ concept:
   explanation: "Bias auditing for ML models follows the same methodology as running a Lighthouse accessibility audit: systematically testing across user groups to ensure no population is excluded or underserved."
   bridge:
     feTitle: "Accessibility Audit (Lighthouse)"
-    feCode: "// Lighthouse: test color contrast, keyboard nav, screen readers — score each category, flag failures"
+    feCode: "// Lighthouse: test color contrast, keyboard nav, screen readers; score each category, flag failures"
     mlTitle: "Bias Audit (Fairness)"
-    mlCode: "// Fairness audit: test across demographics, languages, writing styles — score each group, flag disparities"
+    mlCode: "// Fairness audit: test across demographics, languages, writing styles; score each group, flag disparities"
     tier: structural
     breaks: "Lighthouse accessibility audit checks against fixed WCAG criteria. Bias audits require disaggregated evaluation across demographic groups, choosing fairness metrics (which are mutually incompatible), and there is no checklist that guarantees fairness."
 consequence:
@@ -114,7 +114,7 @@ function computeSliceMetrics(
   };
 }
 
-// Run a complete fairness audit — like running Lighthouse across device profiles
+// Run a complete fairness audit, like running Lighthouse across device profiles
 async function auditFairness(
   model: tf.LayersModel,
   slices: AuditSlice[],
@@ -165,10 +165,10 @@ async function auditFairness(
 ## The Fairness Card
 
 <CodeBlock language="typescript" title="fairness-card.ts">
-{`// A fairness card is like a Lighthouse report — per-category scores with pass/fail
+{`// A fairness card is like a Lighthouse report: per-category scores with pass/fail
 function generateFairnessCard(report: AuditReport): string {
   const lines: string[] = [];
-  lines.push('=== Diagnostic One — Fairness Audit ===');
+  lines.push('=== Diagnostic One: Fairness Audit ===');
   lines.push(\`Overall Accuracy: \${(report.overall.accuracy * 100).toFixed(1)}%\`);
   lines.push('');
   lines.push('Per-Group Performance:');
@@ -229,4 +229,4 @@ Build a bias auditor that computes per-group accuracy and flags demographic disp
 
 <Exercise slug="audit-bias" />
 
-<KeyTakeaways takeaways={["Fairness metrics are mutually incompatible; a bias audit chooses which disparities to measure, and no checklist guarantees fairness", "Targeted augmentation and retraining cut this model's gap from 12% to 2.3% — measured, not assumed", "Fairness cards document per-group performance honestly — a known limitation is safer than a hidden one", "Aggregate metrics (overall accuracy) hide group-level failures; disaggregate by slice before trusting the average"]} />
+<KeyTakeaways takeaways={["Fairness metrics are mutually incompatible; a bias audit chooses which disparities to measure, and no checklist guarantees fairness", "Targeted augmentation and retraining cut this model's gap from 12% to 2.3%: measured, not assumed", "Fairness cards document per-group performance honestly; a known limitation is safer than a hidden one", "Aggregate metrics (overall accuracy) hide group-level failures; disaggregate by slice before trusting the average"]} />

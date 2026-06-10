@@ -9,7 +9,7 @@ difficulty: beginner
 context:
   narrative: "Ensign Demir sets up the data pipeline for the analysis system."
 concept:
-  explanation: "ML models require properly formatted input data — batched, shuffled, and normalized."
+  explanation: "ML models require properly formatted input data: batched, shuffled, and normalized."
 consequence:
   narrative: "Second attempt: the pipeline holds, memory flat. ARIA confirms: ready for analysis."
 hints:
@@ -42,7 +42,7 @@ One method call decides whether this pipeline survives contact with real sensor 
 
 ## From Fetch to Feed
 
-In frontend development, you fetch data from APIs and render it. In ML, you fetch data and feed it to a model. The pattern is remarkably similar — and the key promise of a generator is the same as paginated fetching: **nothing is loaded until it's asked for.**
+In frontend development, you fetch data from APIs and render it. In ML, you fetch data and feed it to a model. The pattern is remarkably similar, and the key promise of a generator is the same as paginated fetching: **nothing is loaded until it's asked for.**
 
 <CodeBlock language="typescript" title="data-pipeline.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -50,7 +50,7 @@ In frontend development, you fetch data from APIs and render it. In ML, you fetc
 // Frontend: paginated API fetch
 // const page = await fetch('/api/data?page=1&limit=32');
 
-// ML: a generator that READS LAZILY — one record per yield.
+// ML: a generator that READS LAZILY, one record per yield.
 // Each iteration fetches/derives exactly one row; at no point does
 // the full archive exist in memory. (If you find yourself declaring
 // a giant array inside a generator, you've built eager loading with
@@ -61,7 +61,7 @@ function* sensorDataGenerator() {
   for (let i = 0; i < TOTAL_READINGS; i++) {
     const row = readArchivedSample(i);  // one record from IndexedDB/fetch
     yield {
-      xs: tf.tensor(row.features),   // [64] — one reading, 64 channels
+      xs: tf.tensor(row.features),   // [64]: one reading, 64 channels
       ys: tf.tensor([row.label]),
     };
   }
@@ -78,7 +78,7 @@ await dataset.forEachAsync((batch) => {
 });`}
 </CodeBlock>
 
-The key difference from frontend pagination: ML shuffles the data before batching. The `shuffle(100)` buffer holds 100 items and yields them in random order — this prevents the model from learning the *order* the data arrived in instead of the patterns inside it.
+The key difference from frontend pagination: ML shuffles the data before batching. The `shuffle(100)` buffer holds 100 items and yields them in random order. This prevents the model from learning the *order* the data arrived in instead of the patterns inside it.
 
 ## Why Batching Matters
 
@@ -94,7 +94,7 @@ const trainData = allData.take(TRAIN_SIZE).batch(32);
 const valData = allData.skip(TRAIN_SIZE).batch(32);`}
 </CodeBlock>
 
-<KeyTakeaways takeaways={["shuffle(100).batch(32) is the canonical pipeline order: shuffle with a buffer first, then group. Batching first would freeze the order", "Shuffling prevents ordering bias — the model learns patterns, not sequence", "A generator must read lazily — one record per yield. Materializing the full dataset inside it defeats the entire point", "Train/validation splits let you verify the model isn't just memorizing"]} />
+<KeyTakeaways takeaways={["shuffle(100).batch(32) is the canonical pipeline order: shuffle with a buffer first, then group. Batching first would freeze the order", "Shuffling prevents ordering bias: the model learns patterns, not sequence", "A generator must read lazily: one record per yield. Materializing the full dataset inside it defeats the entire point", "Train/validation splits let you verify the model isn't just memorizing"]} />
 
 <Epilogue>
 

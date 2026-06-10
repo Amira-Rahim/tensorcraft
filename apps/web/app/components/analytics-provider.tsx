@@ -22,7 +22,7 @@ function AnalyticsInner() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  // Initialize PostHog (EU instance via lib/posthog — no-op without key).
+  // Initialize PostHog (EU instance via lib/posthog, no-op without key).
   useEffect(() => {
     if (initialized.current) return;
     if (!hasAnalyticsConsent()) return;
@@ -44,7 +44,7 @@ function AnalyticsInner() {
     posthog.capture("$pageview", { $current_url: url });
   }, [pathname, searchParams]);
 
-  // Session lifecycle — fires `session_started` on mount and `session_ended`
+  // Session lifecycle, fires `session_started` on mount and `session_ended`
   // on tab hide / navigation away. The `sessionId` correlates the two halves
   // in PostHog without any server state. PostHog no-ops when not initialized,
   // so these fire only after consent + key are available.

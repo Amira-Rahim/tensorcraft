@@ -61,7 +61,7 @@ The testing pyramid is identical. Unit tests at the base: fast, isolated, coveri
 <CodeBlock language="typescript" title="unit-tests.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// UNIT TESTS — test each stage in isolation
+// UNIT TESTS: test each stage in isolation
 // Same as testing a utility function or React hook
 
 describe('Preprocessor', () => {
@@ -130,7 +130,7 @@ function preprocess(frame: tf.Tensor3D): tf.Tensor4D {
 ## Integration Tests
 
 <CodeBlock language="typescript" title="integration-tests.ts">
-{`// INTEGRATION TESTS — test connected stages
+{`// INTEGRATION TESTS: test connected stages
 // Same as testing component composition in React Testing Library
 
 describe('Preprocess → Detect pipeline', () => {
@@ -161,7 +161,7 @@ describe('Preprocess → Detect pipeline', () => {
   });
 
   it('handles zero detections gracefully', async () => {
-    // Black frame — should produce no detections
+    // Black frame; should produce no detections
     const frame = createTestFrame(480, 640, 0);
     const processed = preprocess(frame);
     const detections = await detect(processed, detectorModel);
@@ -193,7 +193,7 @@ describe('Detect → Classify pipeline', () => {
   });
 });
 
-// Mock model for testing — deterministic output
+// Mock model for testing: deterministic output
 function createMockDetector(): tf.LayersModel {
   const input = tf.input({ shape: [224, 224, 3] });
   const flat = tf.layers.flatten().apply(input);
@@ -209,7 +209,7 @@ This is the layer frontend testing doesn't have. We validate the data itself. Is
 </Dialogue>
 
 <CodeBlock language="typescript" title="data-validation.ts">
-{`// DATA VALIDATION — unique to ML, no frontend equivalent
+{`// DATA VALIDATION: unique to ML, no frontend equivalent
 // Catches data issues before they become prediction errors
 
 interface ValidationReport {
@@ -291,7 +291,7 @@ if (!report.passed) {
 ## End-to-End Tests
 
 <CodeBlock language="typescript" title="e2e-tests.ts">
-{`// END-TO-END TESTS — full pipeline, realistic scenarios
+{`// END-TO-END TESTS: full pipeline, realistic scenarios
 // Same as Cypress/Playwright testing a complete user flow
 
 describe('Protocol Sentinel E2E', () => {
@@ -324,7 +324,7 @@ describe('Protocol Sentinel E2E', () => {
     const ctx = await pipeline.execute({
       feedId: 'test-cam-02',
       timestamp: Date.now(),
-      // No frame — camera offline
+      // No frame; camera offline
       errors: [],
     });
 
@@ -363,4 +363,4 @@ Write validation functions that check tensor shapes, value ranges, and data qual
 
 <Exercise slug="validate-system" />
 
-<KeyTakeaways takeaways={["Test in three layers: unit tests per stage, integration tests per connection, end-to-end tests on the full pipeline", "Deterministic test data (known tensor values) replaces random inputs for reproducible tests", "Data validation is the fourth layer unique to ML — checking shapes, ranges, NaN, mean, and variance", "Every test failure Zara found maps to a real-world scenario: zero detections, grayscale feeds, boundary adversarial scores"]} />
+<KeyTakeaways takeaways={["Test in three layers: unit tests per stage, integration tests per connection, end-to-end tests on the full pipeline", "Deterministic test data (known tensor values) replaces random inputs for reproducible tests", "Data validation is the fourth layer unique to ML: checking shapes, ranges, NaN, mean, and variance", "Every test failure Zara found maps to a real-world scenario: zero detections, grayscale feeds, boundary adversarial scores"]} />

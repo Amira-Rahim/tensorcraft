@@ -53,7 +53,7 @@ export interface FocusTrapProps {
 }
 
 /**
- * FocusTrap — traps Tab / Shift+Tab focus cycling within a container
+ * FocusTrap - traps Tab / Shift+Tab focus cycling within a container
  * while `active` is true. Used for dialogs, popovers, and bottom
  * sheets to satisfy WCAG 2.4.3 (Focus Order) and APG dialog guidance.
  */
@@ -130,7 +130,7 @@ export function FocusTrap({
     ).filter((el) => !el.hasAttribute("data-focus-trap-ignore"));
 
     if (focusables.length === 0) {
-      // Nothing focusable — prevent tab from leaving the trap.
+      // Nothing focusable, prevent tab from leaving the trap.
       event.preventDefault();
       return;
     }

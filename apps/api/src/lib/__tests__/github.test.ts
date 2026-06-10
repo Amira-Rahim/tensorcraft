@@ -31,8 +31,8 @@ describe("buildReadmeTemplate", () => {
         { slug: "mod-02", title: "Classification" },
       ],
     });
-    expect(md).toContain("`mod-01` — Foundations");
-    expect(md).toContain("`mod-02` — Classification");
+    expect(md).toContain("`mod-01`: Foundations");
+    expect(md).toContain("`mod-02`: Classification");
   });
 
   it("emits 11 placeholder modules when none provided", () => {

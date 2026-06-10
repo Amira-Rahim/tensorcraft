@@ -83,7 +83,7 @@ const embeddingLayer = tf.layers.embedding({
 // Same lookup operation
 const tokenId = tf.tensor2d([[0]], [1, 1], 'int32');
 const vector = embeddingLayer.apply(tokenId) as tf.Tensor;
-vector.print(); // Random initial values — will be learned during training
+vector.print(); // Random initial values; will be learned during training
 
 // Unlike the Map, these values update during training
 // to minimize the model's loss function.`}
@@ -101,7 +101,7 @@ const maxSeqLength = 20;
 // Build a simple clinical note classifier
 const model = tf.sequential();
 
-// Layer 1: Embedding — maps token IDs to dense vectors
+// Layer 1: Embedding; maps token IDs to dense vectors
 model.add(tf.layers.embedding({
   inputDim: vocabSize,
   outputDim: embeddingDim,
@@ -124,9 +124,9 @@ model.compile({
 });
 
 model.summary();
-// Layer 1: embedding — 500 * 32 = 16,000 trainable parameters
-// Layer 2: global_average_pooling1d — 0 parameters
-// Layer 3: dense — 33 parameters (32 weights + 1 bias)`}
+// Layer 1: embedding, 500 * 32 = 16,000 trainable parameters
+// Layer 2: global_average_pooling1d, 0 parameters
+// Layer 3: dense, 33 parameters (32 weights + 1 bias)`}
 </CodeBlock>
 
 ## Initializing with Pre-trained Weights
@@ -183,35 +183,35 @@ const weightMatrix = buildEmbeddingMatrix(vocab, pretrainedVectors, 3);`}
 ## Frozen vs. Fine-tuned
 
 <CodeBlock language="typescript" title="frozen-vs-finetuned.ts">
-{`// Option 1: Frozen embeddings — do not update during training
+{`// Option 1: Frozen embeddings; do not update during training
 // Use when: small dataset, pre-trained vectors match your domain well
 const frozenModel = tf.sequential();
 frozenModel.add(tf.layers.embedding({
   inputDim: vocab.size,
   outputDim: 3,
   weights: [tf.tensor2d(weightMatrix)],
-  trainable: false,  // locked — gradients will not flow here
+  trainable: false,  // locked: gradients will not flow here
 }));
 // Like importing a library and using it as-is
 
-// Option 2: Fine-tuned embeddings — allow small adjustments
+// Option 2: Fine-tuned embeddings; allow small adjustments
 // Use when: large dataset, need to adapt pre-trained vectors to your task
 const fineTunedModel = tf.sequential();
 fineTunedModel.add(tf.layers.embedding({
   inputDim: vocab.size,
   outputDim: 3,
   weights: [tf.tensor2d(weightMatrix)],
-  trainable: true,  // unlocked — will adjust during training
+  trainable: true,  // unlocked: will adjust during training
 }));
 // Like forking a library and customizing it
 
-// Option 3: From scratch — no pre-trained initialization
+// Option 3: From scratch, no pre-trained initialization
 // Use when: very large dataset, highly specialized domain
 const scratchModel = tf.sequential();
 scratchModel.add(tf.layers.embedding({
   inputDim: vocab.size,
   outputDim: 3,
-  // No weights — starts random, learns everything from your data
+  // No weights: starts random, learns everything from your data
 }));
 // Like writing a library from scratch`}
 </CodeBlock>
@@ -252,7 +252,7 @@ This is a single matrix multiply: sparse, but mathematically the same as the loo
   question="What does an embedding layer's gradient update do?"
   options={[{"text":"Updates all rows"},{"text":"Updates only rows for tokens present in the batch (sparse update)"},{"text":"Backprops to the input"},{"text":"Updates the optimizer state"}]}
   correct={1}
-  explanation="Embedding lookup is row-indexing. Backprop only updates the rows that were looked up in the forward pass. For 50k vocab + batch with 128 unique tokens, only 128 rows update per step. Efficient — sparse-aware optimizers exploit this."
+  explanation="Embedding lookup is row-indexing. Backprop only updates the rows that were looked up in the forward pass. For 50k vocab + batch with 128 unique tokens, only 128 rows update per step. Efficient: sparse-aware optimizers exploit this."
   tier="structural"
 />
 

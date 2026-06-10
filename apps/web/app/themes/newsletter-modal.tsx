@@ -10,7 +10,7 @@ export interface NewsletterModalProps {
 }
 
 /**
- * Newsletter signup modal — brutalist dialog, trapped focus, escape-to-close,
+ * Newsletter signup modal, brutalist dialog, trapped focus, escape-to-close,
  * click-outside-to-close. Submits to the shared waitlist helper
  * (`submitWaitlist`) which writes to Supabase.
  */
@@ -48,7 +48,7 @@ export function NewsletterModal({ open, onClose }: NewsletterModalProps) {
 
   const handleBackdropClick = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
-      // Only close when the backdrop itself is clicked — not its descendants.
+      // Only close when the backdrop itself is clicked, not its descendants.
       if (e.target === e.currentTarget) onClose();
     },
     [onClose],
@@ -73,7 +73,7 @@ export function NewsletterModal({ open, onClose }: NewsletterModalProps) {
         >
           <div className="flex items-center justify-between px-6 py-3 border-b border-border">
             <span className="font-mono text-xs uppercase tracking-[0.15em] text-text-muted">
-              // get updates
+              get updates
             </span>
             <button
               type="button"

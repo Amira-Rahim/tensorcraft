@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const theme = themes[slug];
   if (!theme) return {};
   return {
-    title: `${theme.displayName} — Module Map | Tensorcraft`,
+    title: `${theme.displayName}: Module Map | Tensorcraft`,
     description: theme.description,
     alternates: { canonical: `https://tensorcraft.app/themes/${slug}` },
     openGraph: {
@@ -41,7 +41,7 @@ export default async function ThemeDetailPage({ params }: Props) {
 
   // Coming-soon themes render a stub with waitlist capture instead of the
   // module map. Velite excludes their content from the build, so getModules
-  // would return [] anyway — the explicit branch keeps the UX intentional.
+  // would return [] anyway, the explicit branch keeps the UX intentional.
   if (isComingSoon(slug)) {
     return <ComingSoonStub theme={theme} />;
   }
@@ -223,7 +223,7 @@ export default async function ThemeDetailPage({ params }: Props) {
   const courseJsonLd = {
     "@context": "https://schema.org",
     "@type": "Course",
-    name: `${theme.displayName} — ${theme.specialization}`,
+    name: `${theme.displayName}: ${theme.specialization}`,
     description: theme.description,
     provider: {
       "@type": "Organization",
@@ -272,7 +272,7 @@ export default async function ThemeDetailPage({ params }: Props) {
           className="font-mono text-xs uppercase mb-2.5"
           style={{ color: theme.palette.primary, letterSpacing: "0.15em" }}
         >
-          // {theme.displayName} &mdash; {themeModules.length} MODULES
+          {theme.displayName} &middot; {themeModules.length} MODULES
         </p>
         <h1
           className="font-mono text-3xl font-bold mb-2.5"
@@ -289,10 +289,10 @@ export default async function ThemeDetailPage({ params }: Props) {
           {[
             [String(completedModuleCount), "Completed"],
             [
-              activeModuleIndex >= 0 ? String(activeModuleIndex + 1) : "—",
+              activeModuleIndex >= 0 ? String(activeModuleIndex + 1) : "–",
               "Active Now",
             ],
-            [allScores.length > 0 ? String(avgScore) : "—", "Avg Score"],
+            [allScores.length > 0 ? String(avgScore) : "–", "Avg Score"],
           ].map(([value, label]) => (
             <div key={label}>
               <div
@@ -328,13 +328,13 @@ export default async function ThemeDetailPage({ params }: Props) {
                 className="text-xs font-mono uppercase tracking-widest"
                 style={{ color: theme.palette.primary }}
               >
-                // Mission Complete
+                Mission Complete
               </span>
               <p
                 className="text-sm font-mono font-semibold mt-1"
                 style={{ color: theme.palette.text }}
               >
-                All modules completed &mdash; view your capstone &rarr;
+                All modules completed; view your capstone &rarr;
               </p>
             </div>
             <span style={{ color: theme.palette.primary, fontSize: 24 }}>

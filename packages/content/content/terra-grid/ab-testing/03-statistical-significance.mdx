@@ -13,9 +13,9 @@ concept:
   explanation: "Statistical significance tells you whether observed differences are real or random noise, the same confidence intervals you use in analytics dashboards, applied to model comparison."
   bridge:
     feTitle: "Analytics Confidence"
-    feCode: "// A/B test: conversion 4.2% vs 4.5%, p=0.23 — not significant yet"
+    feCode: "// A/B test: conversion 4.2% vs 4.5%, p=0.23; not significant yet"
     mlTitle: "Model Comparison"
-    mlCode: "// A/B test: accuracy 91.2% vs 93.8%, p=0.03 — significant, ship it"
+    mlCode: "// A/B test: accuracy 91.2% vs 93.8%, p=0.03; significant, ship it"
     tier: identity
 consequence:
   narrative: "Priya runs the significance test. 'p-value 0.003. With 8,400 predictions, the 2.6% accuracy improvement is statistically significant at 99% confidence. The new model is genuinely better.' Hassan: 'Now we have proof. Proceed to 20%.'"
@@ -51,7 +51,7 @@ Flip a fair coin 1,200 times and a 51.3% heads rate would surprise nobody. That 
 
 <CodeBlock language="typescript" title="significance.ts">
 {`// Statistical significance test for model A/B comparison
-// Same math as web A/B testing — two-proportion z-test
+// Same math as web A/B testing: two-proportion z-test
 
 interface ABResult {
   version: string;
@@ -171,9 +171,9 @@ Implement a statistical significance test for model comparison.
 
 <Quiz
   question="Two-proportion z-test on click-through rate: control 8.0% (n=10000), treatment 8.5% (n=10000). The p-value comes out at 0.18. What can you conclude?"
-  options={[{"text":"Treatment is 0.5% better, ship it"},{"text":"Cannot reject the null — observed difference could plausibly come from random sampling. Either run longer to gather more data or accept the result is inconclusive"},{"text":"Treatment is significantly worse — high p-value means high probability the change is bad"},{"text":"P-value is irrelevant; effect size matters more"}]}
+  options={[{"text":"Treatment is 0.5% better, ship it"},{"text":"Cannot reject the null: observed difference could plausibly come from random sampling. Either run longer to gather more data or accept the result is inconclusive"},{"text":"Treatment is significantly worse: high p-value means high probability the change is bad"},{"text":"P-value is irrelevant; effect size matters more"}]}
   correct={1}
-  explanation="p=0.18 means there's an 18% chance of observing this difference (or larger) under the null hypothesis. At α=0.05, that's not significant — the data is consistent with no real effect. Option A ships on noise. Option C inverts what high p-value means (high p = weaker evidence against null, NOT evidence for harm). Option D is a real point but doesn't override significance — both effect size AND significance matter, and here neither supports shipping."
+  explanation="p=0.18 means there's an 18% chance of observing this difference (or larger) under the null hypothesis. At α=0.05, that's not significant: the data is consistent with no real effect. Option A ships on noise. Option C inverts what high p-value means (high p = weaker evidence against null, NOT evidence for harm). Option D is a real point but doesn't override significance: both effect size AND significance matter, and here neither supports shipping."
   tier="structural"
 />
 

@@ -7,7 +7,7 @@ order: 5
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "Diagnostic One's NER pipeline catches a drug interaction that three doctors missed — the midpoint breakthrough."
+  narrative: "Diagnostic One's NER pipeline catches a drug interaction that three doctors missed: the midpoint breakthrough."
   speaker: "Dr. Karimi"
 concept:
   explanation: "Combining NER with relationship extraction and a drug interaction database creates a safety net: drugs extracted from separate documents, written by separate prescribers, get checked against each other before the combination reaches the patient."
@@ -67,7 +67,7 @@ The critical parallel: just like dependency conflicts span multiple `package.jso
 <CodeBlock language="typescript" title="drug-interaction-detector.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Known drug interactions — like a database of incompatible package versions
+// Known drug interactions, like a database of incompatible package versions
 const INTERACTION_DB: Record<string, { severity: string; effect: string }> = {
   'aspirin+warfarin': {
     severity: 'HIGH',
@@ -89,7 +89,7 @@ const INTERACTION_DB: Record<string, { severity: string; effect: string }> = {
 
 interface DrugEntity {
   name: string;
-  source: string;      // which clinical note — like which package.json
+  source: string;      // which clinical note, like which package.json
   prescriber: string;   // who added the dependency
   date: string;
 }
@@ -102,13 +102,13 @@ interface InteractionAlert {
   crossDocument: boolean;  // true = different prescribers, like cross-package conflicts
 }
 
-// Check all drug pairs — like npm checking all dependency pairs for conflicts
+// Check all drug pairs, like npm checking all dependency pairs for conflicts
 function checkInteractions(drugs: DrugEntity[]): InteractionAlert[] {
   const alerts: InteractionAlert[] = [];
 
   for (let i = 0; i < drugs.length; i++) {
     for (let j = i + 1; j < drugs.length; j++) {
-      // Sort alphabetically to create a canonical key — like normalizing package names
+      // Sort alphabetically to create a canonical key, like normalizing package names
       const pair = [drugs[i].name.toLowerCase(), drugs[j].name.toLowerCase()]
         .sort()
         .join('+');
@@ -126,7 +126,7 @@ function checkInteractions(drugs: DrugEntity[]): InteractionAlert[] {
     }
   }
 
-  // Sort by severity — HIGH first, like npm showing errors before warnings
+  // Sort by severity: HIGH first, like npm showing errors before warnings
   const severityOrder: Record<string, number> = { HIGH: 0, MODERATE: 1, LOW: 2 };
   return alerts.sort((a, b) => severityOrder[a.severity] - severityOrder[b.severity]);
 }
@@ -196,4 +196,4 @@ Post-mortem: a known drug interaction (warfarin + aspirin) slipped through the N
 
 <Exercise slug="incident-missed-interaction" />
 
-<KeyTakeaways takeaways={["Known interactions are a lookup; novel pairs need inference, which is why entity linking and cross-sentence relation extraction do the real work", "Cross-document extraction catches what siloed systems miss, like cross-package dependency conflicts", "The NER-to-interaction pipeline mirrors tokenize → parse → resolve → alert", "Automated safety checks augment clinical judgment — systematic where humans are inconsistent"]} />
+<KeyTakeaways takeaways={["Known interactions are a lookup; novel pairs need inference, which is why entity linking and cross-sentence relation extraction do the real work", "Cross-document extraction catches what siloed systems miss, like cross-package dependency conflicts", "The NER-to-interaction pipeline mirrors tokenize → parse → resolve → alert", "Automated safety checks augment clinical judgment: systematic where humans are inconsistent"]} />

@@ -5,7 +5,7 @@ import { AmbientBackground } from "@/app/components/ambient-background";
 import { PaywallAnalytics, PaywallCtaTracker } from "./paywall-analytics";
 
 /**
- * Dedicated paywall / upsell page — Phase 11 §11d Wave 3.
+ * Dedicated paywall / upsell page, Phase 11 §11d Wave 3.
  *
  * Separate from `/pricing?locked=<slug>` (which is a contextual banner shown
  * when a learner is redirected from a gated lesson). This page is the
@@ -22,7 +22,7 @@ import { PaywallAnalytics, PaywallCtaTracker } from "./paywall-analytics";
 
 export const metadata: Metadata = {
   title: "Module 1 Is Done. The Model Isn't. | Tensorcraft",
-  description: `All 11 modules, the capstone, certificate, and GitHub push flow. One payment, lifetime access — from $${PRICING.single.price}.`,
+  description: `All 11 modules, the capstone, certificate, and GitHub push flow. One payment, lifetime access, from $${PRICING.single.price}.`,
   // Gated-content upsell page; not an SEO target.
   robots: { index: false, follow: false },
 };
@@ -85,7 +85,7 @@ export default function PaywallPage() {
         {/* Hero */}
         <section className="pt-32 pb-16 px-6 text-center">
           <div className="inline-flex px-5 py-2 border border-border font-mono text-[13px] text-text-muted tracking-wider mb-8 rounded-none">
-            // module 1 complete &middot; the real work starts here
+            module 1 complete &middot; the real work starts here
           </div>
           <h1
             data-testid="paywall-heading"
@@ -94,8 +94,8 @@ export default function PaywallPage() {
             Module 1 is done. The model isn&rsquo;t.
           </h1>
           <p className="text-base sm:text-lg max-w-160 mx-auto text-text-muted font-sans leading-relaxed">
-            You&rsquo;ve seen the bridge. Modules 2&ndash;11 are where you stop
-            translating and start shipping &mdash; tensors, backprop, transfer
+            You&rsquo;ve seen the bridge. Modules 2-11 are where you stop
+            translating and start shipping: tensors, backprop, transfer
             learning, and a capstone: a working browser-side ML system you
             assemble piece by piece.
           </p>
@@ -128,7 +128,7 @@ export default function PaywallPage() {
               Free vs Paid
             </h2>
             <p className="text-center text-sm text-text-muted font-mono uppercase tracking-wider mb-10">
-              // what&rsquo;s included at each tier
+              what&rsquo;s included at each tier
             </p>
             <div
               className="overflow-x-auto border border-border rounded-none"
@@ -198,7 +198,7 @@ export default function PaywallPage() {
               </table>
             </div>
             <p className="mt-4 text-[11px] text-text-muted font-mono uppercase tracking-wider">
-              // scroll horizontally on small screens
+              scroll horizontally on small screens
             </p>
           </div>
         </section>
@@ -211,14 +211,14 @@ export default function PaywallPage() {
         {/* Final CTA */}
         <section className="py-24 px-6 text-center border-t border-border">
           <p className="text-[13px] uppercase tracking-[0.15em] mb-4 text-text-muted font-mono">
-            // ready when you are
+            ready when you are
           </p>
           <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-text-primary font-mono tracking-tight">
             Ready for Module 2?
           </h2>
           <p className="text-base mb-10 text-text-muted font-sans max-w-130 mx-auto">
-            Single theme, a bundle, or all five &mdash; no subscriptions, no
-            expiring access.
+            Single theme, a bundle, or all five: no subscriptions, no expiring
+            access.
           </p>
           <PaywallCtaTracker>
             <Link

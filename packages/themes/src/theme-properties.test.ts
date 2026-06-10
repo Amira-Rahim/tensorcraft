@@ -94,7 +94,7 @@ describe("Theme TypeScript manifests", () => {
 });
 
 describe("Theme manifest/CSS consistency", () => {
-  // Hex values are compared case-insensitively — manifests use uppercase
+  // Hex values are compared case-insensitively, manifests use uppercase
   // (#6BAA8A) while CSS uses lowercase (#6baa8a). Both are valid CSS.
   const cssContentLower = cssContent.toLowerCase();
 
@@ -121,7 +121,7 @@ describe("Theme manifest/CSS consistency", () => {
 
 describe("Theme palette shape (brutalist 9-key)", () => {
   // Old palette had 11 keys including glow/neonLine. The new brutalist shape
-  // has exactly 9 keys — no glow, no neonLine. This test locks the shape.
+  // has exactly 9 keys - no glow, no neonLine. This test locks the shape.
   const REMOVED_KEYS = ["glow", "neonLine"];
 
   it.each([...themeSlugs])(

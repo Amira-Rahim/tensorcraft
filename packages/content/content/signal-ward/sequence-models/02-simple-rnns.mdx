@@ -106,20 +106,20 @@ function rnnCell(
 // Build a clinical text classification model
 const model = tf.sequential();
 
-// Layer 1: Embedding — token IDs → dense vectors
+// Layer 1: Embedding; token IDs → dense vectors
 model.add(tf.layers.embedding({
   inputDim: 500,      // vocabulary size
   outputDim: 32,      // embedding dimension
   inputLength: 16,    // max sequence length
 }));
 
-// Layer 2: SimpleRNN — process sequence, output final hidden state
+// Layer 2: SimpleRNN; process sequence, output final hidden state
 model.add(tf.layers.simpleRNN({
   units: 32,          // hidden state dimension
   returnSequences: false, // only return final state
 }));
 
-// Layer 3: Dense — classify based on final hidden state
+// Layer 3: Dense; classify based on final hidden state
 model.add(tf.layers.dense({
   units: 1,
   activation: 'sigmoid', // binary: symptom present or negated?
@@ -167,7 +167,7 @@ const input = tf.tensor2d([[2, 3, 4, 5, 0, 0, 0, 0]], [1, 8], 'int32');
 const allStates = traceModel.predict(input) as tf.Tensor;
 
 console.log('All hidden states shape:', allStates.shape);
-// [1, 8, 16] — one 16-dim hidden state per timestep
+// [1, 8, 16]: one 16-dim hidden state per timestep
 
 // Compare to Array.reduce with logging:
 // [2, 3, 4, 5].reduce((state, token) => {
@@ -203,4 +203,4 @@ Where:
 If each Jacobian's spectral radius is < 1, the product shrinks exponentially → **vanishing gradients**. If > 1 → **exploding gradients**. Both are why vanilla RNNs struggle with long sequences and why LSTMs (gated) and Transformers (no recurrence) replaced them.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["An RNN processes tokens sequentially, just like Array.reduce accumulates state", "The hidden state carries context forward — it 'remembers' what came before", "Embedding + SimpleRNN + Dense is a complete text classification pipeline", "Use returnSequences to inspect how hidden state evolves at each timestep"]} />
+<KeyTakeaways takeaways={["An RNN processes tokens sequentially, just like Array.reduce accumulates state", "The hidden state carries context forward; it 'remembers' what came before", "Embedding + SimpleRNN + Dense is a complete text classification pipeline", "Use returnSequences to inspect how hidden state evolves at each timestep"]} />

@@ -78,7 +78,7 @@ class TriagePipeline {
   private routingModel: tf.LayersModel;
   private taggingModel: tf.LayersModel;
 
-  // Confidence thresholds — clinical decisions, not hyperparameters
+  // Confidence thresholds: clinical decisions, not hyperparameters
   private urgencyThreshold = 0.3;  // Low: catch all urgent cases
   private routingThreshold = 0.6;  // Moderate: need reasonable certainty
   private taggingThreshold = 0.5;  // Standard: per-label decision

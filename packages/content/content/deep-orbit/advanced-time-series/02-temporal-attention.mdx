@@ -7,7 +7,7 @@ order: 2
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "Demir applies attention specifically to the temporal dimension — the model learns to 'scroll to' the most relevant time steps in each signal window."
+  narrative: "Demir applies attention specifically to the temporal dimension: the model learns to 'scroll to' the most relevant time steps in each signal window."
   speaker: "Ensign Demir"
 concept:
   explanation: "Temporal attention scores each time step's importance and concentrates processing on the few that carry the information. The weights double as a map of where the model looked."
@@ -17,7 +17,7 @@ concept:
     mlTitle: "Temporal Attention"
     mlCode: "attentionWeights = softmax(scores) // focus on relevant time steps"
     tier: intuition
-    breaks: "scrollIntoView jumps to one element you target by ID. Temporal attention learns soft weights over every prior timestep at every layer — the model decides relevance per query, weights are continuous, and the cost is quadratic in sequence length."
+    breaks: "scrollIntoView jumps to one element you target by ID. Temporal attention learns soft weights over every prior timestep at every layer: the model decides relevance per query, weights are continuous, and the cost is quadratic in sequence length."
 consequence:
   narrative: "Two hot ranges in the attention weights: the initial amplitude spike, and the frequency shift 73 seconds later. The pattern is confirmed."
 hints:
@@ -41,7 +41,7 @@ The attention weights are like a heatmap over time. I can see exactly WHERE the 
 
 `scrollIntoView()` steers a user's viewport to the content that matters. Temporal attention gives the model the same control over a sequence: score every time step, then concentrate processing on the few that carry the information.
 
-<LearningObjectives objectives={["Apply attention specifically to the temporal dimension of sequential data", "Visualize attention weights as a temporal heatmap showing model focus", "Use attention for interpretability — understanding why the model made its prediction", "Build a temporal attention layer for the DEEP SCAN signal analyzer"]} />
+<LearningObjectives objectives={["Apply attention specifically to the temporal dimension of sequential data", "Visualize attention weights as a temporal heatmap showing model focus", "Use attention for interpretability: understanding why the model made its prediction", "Build a temporal attention layer for the DEEP SCAN signal analyzer"]} />
 
 ## Temporal Attention Layer
 
@@ -60,7 +60,7 @@ function temporalAttention(
     const scores = tf.layers.dense({ units: 1 }).apply(sequence) as tf.Tensor;
     const squeezed = scores.squeeze([2]) as tf.Tensor2D;  // [batch, timeSteps]
 
-    // Softmax over time axis — which steps matter most?
+    // Softmax over time axis: which steps matter most?
     const weights = tf.softmax(squeezed, 1);  // [batch, timeSteps]
 
     // Weighted sum: combine time steps by importance
@@ -82,7 +82,7 @@ function temporalAttention(
 ## Interpreting Attention Weights
 
 <CodeBlock language="typescript" title="interpret-attention.ts">
-{`// Attention weights are interpretable — unlike LSTM hidden state
+{`// Attention weights are interpretable, unlike LSTM hidden state
 // You can show the crew EXACTLY why the model made its prediction
 
 interface AttentionInsight {
@@ -115,11 +115,11 @@ Build a temporal attention mechanism and identify the focused time steps.
 
 <Exercise slug="temporal-attention" />
 
-<KeyTakeaways takeaways={["Attention weights come out of a softmax over the time axis, so they form a probability distribution across the window's steps", "Attention weights serve as built-in interpretability — you can see WHY the model made its prediction", "The DEEP SCAN attention reveals focus on the amplitude spike and the 73.4 Hz frequency shift", "Unlike LSTM hidden state, attention weights are directly visualizable as a temporal heatmap"]} />
+<KeyTakeaways takeaways={["Attention weights come out of a softmax over the time axis, so they form a probability distribution across the window's steps", "Attention weights serve as built-in interpretability: you can see WHY the model made its prediction", "The DEEP SCAN attention reveals focus on the amplitude spike and the 73.4 Hz frequency shift", "Unlike LSTM hidden state, attention weights are directly visualizable as a temporal heatmap"]} />
 
 <Epilogue>
 
-Storage on the bridge array is tight, so Demir does what he'd do with a ten-thousand-row list: virtualize it. He sets the capture buffer to record two seconds either side of each predicted pulse and discards the rest. By the third cycle the pulse onset is shaved off every capture — the signal keeps arriving early, sliding out the leading edge of a window aimed at where it used to be.
+Storage on the bridge array is tight, so Demir does what he'd do with a ten-thousand-row list: virtualize it. He sets the capture buffer to record two seconds either side of each predicted pulse and discards the rest. By the third cycle the pulse onset is shaved off every capture; the signal keeps arriving early, sliding out the leading edge of a window aimed at where it used to be.
 
 <Dialogue speaker="Chief Nazari">
 Three captures, six hours, all missing their first four hundred milliseconds. The viewport doesn't exist, Ensign. Stop recording where it will be and start recording everywhere it could be.

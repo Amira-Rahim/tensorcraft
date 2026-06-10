@@ -13,9 +13,9 @@ import { ThemeCardsGrid, type ThemeCardData } from "./theme-cards-grid";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: `Tensorcraft — Deep Orbit is live, ${THEME_SLUGS.length - LAUNCHED_THEMES.length} more coming`,
+  title: `Tensorcraft: Deep Orbit is live, ${THEME_SLUGS.length - LAUNCHED_THEMES.length} more coming`,
   description:
-    "Deep Orbit (time-series & signals) is live. Neon Protocol, Signal Ward, Nova Canvas, and Terra Grid follow in waves — join each waitlist.",
+    "Deep Orbit (time-series & signals) is live. Neon Protocol, Signal Ward, Nova Canvas, and Terra Grid follow in waves; join each waitlist.",
   alternates: { canonical: "https://tensorcraft.app/themes" },
 };
 
@@ -56,18 +56,18 @@ export default async function ThemesPage() {
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Hero */}
         <p className="font-mono text-sm text-text-muted mb-2">
-          {"// FIVE THEMED WORLDS — STAGGERED LAUNCH"}
+          {"FIVE THEMED WORLDS: STAGGERED LAUNCH"}
         </p>
         <h1 className="text-4xl md:text-5xl font-mono font-bold text-text-primary mb-3 tracking-tight">
           Choose Your World
         </h1>
         <p className="text-lg text-text-muted mb-6 max-w-2xl">
           Five ML specializations, each told through its own story universe.
-          Deep Orbit is live. The other four ship in waves — sign up to their
+          Deep Orbit is live. The other four ship in waves; sign up to their
           waitlists below.
         </p>
         <p className="text-base text-text-muted mb-14 max-w-2xl leading-relaxed">
-          React, Vue, Svelte, Angular — pick the theme that maps to the ML
+          React, Vue, Svelte, Angular: pick the theme that maps to the ML
           problem you actually want to solve. Each one teaches a complete
           specialization through JavaScript and TensorFlow.js. No Python.
         </p>
@@ -80,20 +80,19 @@ export default async function ThemesPage() {
             Why a staggered launch?
           </h2>
           <p className="text-base text-text-muted leading-relaxed max-w-2xl mb-4">
-            Machine learning is not one skill — it&apos;s a family of
+            Machine learning is not one skill; it&apos;s a family of
             specializations. Time-series analysis, computer vision, NLP,
             generative AI, and edge deployment each demand different mental
             models, architectures, and tooling. One course can&apos;t cover them
             all with the depth you need.
           </p>
           <p className="text-base text-text-muted leading-relaxed max-w-2xl">
-            Deep Orbit ships first because its narrative — anomaly detection in
-            satellite telemetry — was the strongest fit for end-to-end QA
-            against real TensorFlow.js models. Neon Protocol (vision), Signal
-            Ward (NLP), Nova Canvas (generative), and Terra Grid (edge
-            deployment) follow as each one clears the same bar. Join the
-            per-theme waitlist and we&apos;ll email you the moment yours is
-            live.
+            Deep Orbit ships first because its narrative, anomaly detection in
+            satellite telemetry, was the strongest fit for end-to-end QA against
+            real TensorFlow.js models. Neon Protocol (vision), Signal Ward
+            (NLP), Nova Canvas (generative), and Terra Grid (edge deployment)
+            follow as each one clears the same bar. Join the per-theme waitlist
+            and we&apos;ll email you the moment yours is live.
           </p>
         </section>
       </div>

@@ -13,9 +13,9 @@ concept:
   explanation: "Word2Vec learns dense vector representations from context patterns. Words used in similar sentences get similar vectors. The distributional hypothesis drives the learning: you shall know a word by the company it keeps."
   bridge:
     feTitle: "CSS Color Space"
-    feCode: "// red: rgb(255, 0, 0), orange: rgb(255, 165, 0) — nearby in RGB"
+    feCode: "// red: rgb(255, 0, 0), orange: rgb(255, 165, 0); nearby in RGB"
     mlTitle: "Word Embedding Space"
-    mlCode: "// aspirin: [0.8, 0.2, 0.5], ibuprofen: [0.7, 0.3, 0.4] — nearby"
+    mlCode: "// aspirin: [0.8, 0.2, 0.5], ibuprofen: [0.7, 0.3, 0.4]; nearby"
     tier: intuition
     breaks: "CSS color spaces are 3-4 dimensions with human-meaningful axes. Word embedding spaces are 100-1000+ dimensions with no axes that map to human concepts; directions emerge from training and are mostly entangled."
 consequence:
@@ -74,12 +74,12 @@ const embeddingLayer = tf.layers.embedding({
 // Look up the embedding for a single token
 const tokenId = tf.tensor2d([[42]], [1, 1], 'int32');
 const vector = embeddingLayer.apply(tokenId) as tf.Tensor;
-console.log(vector.shape); // [1, 1, 64] — one 64-dimensional vector
+console.log(vector.shape); // [1, 1, 64]: one 64-dimensional vector
 
 // Look up embeddings for a sequence of tokens
 const sequence = tf.tensor2d([[42, 17, 8, 103]], [1, 4], 'int32');
 const vectors = embeddingLayer.apply(sequence) as tf.Tensor;
-console.log(vectors.shape); // [1, 4, 64] — four 64-dim vectors
+console.log(vectors.shape); // [1, 4, 64]: four 64-dim vectors
 
 // The embedding layer starts with random weights.
 // During training, Word2Vec adjusts these weights so that
@@ -130,17 +130,17 @@ Cosine similarity measures the angle between two vectors. A value near 1.0 means
 // Painkillers cluster together
 console.log('aspirin ~ ibuprofen:',
   cosineSimilarity(trainedEmbeddings['aspirin'], trainedEmbeddings['ibuprofen']).toFixed(3)
-); // 0.990 — very similar
+); // 0.990: very similar
 
 // Painkillers are far from antibiotics
 console.log('aspirin ~ penicillin:',
   cosineSimilarity(trainedEmbeddings['aspirin'], trainedEmbeddings['penicillin']).toFixed(3)
-); // -0.107 — unrelated, pointing slightly apart
+); // -0.107: unrelated, pointing slightly apart
 
 // Antibiotics cluster together
 console.log('penicillin ~ amoxicillin:',
   cosineSimilarity(trainedEmbeddings['penicillin'], trainedEmbeddings['amoxicillin']).toFixed(3)
-); // 0.991 — very similar
+); // 0.991: very similar
 
 // Unlike one-hot encoding, dense vectors capture real relationships.
 // The model now knows that aspirin and ibuprofen are related

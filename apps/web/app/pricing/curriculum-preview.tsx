@@ -7,7 +7,7 @@ import { getModules, getModuleLessons } from "@tensorcraft/content";
  * Server-rendered module map for every launched theme, shown on /pricing.
  *
  * Locked users land here via the lesson-page redirect
- * (`/pricing?locked=<slug>`) and previously saw only tier cards — a blind
+ * (`/pricing?locked=<slug>`) and previously saw only tier cards, a blind
  * ask. This section shows exactly what a purchase unlocks: each module's
  * title, scope, lesson count, and estimated time, with Module 1 marked
  * free. Static content, so it prerenders with the page (revalidate 3600).
@@ -31,7 +31,7 @@ export function CurriculumPreview() {
                 What&rsquo;s in a Theme
               </h2>
               <p className="text-center text-sm text-text-muted font-mono uppercase tracking-wider mb-10">
-                // every module in {theme.displayName}, lesson by lesson
+                every module in {theme.displayName}, lesson by lesson
               </p>
               <ol className="border border-border divide-y divide-border list-none m-0 p-0">
                 {modules.map((mod, i) => {
@@ -71,7 +71,7 @@ export function CurriculumPreview() {
                 })}
               </ol>
               <p className="mt-4 text-center text-sm text-text-muted font-sans">
-                Module 1 is free &mdash; no account needed.{" "}
+                Module 1 is free, no account needed.{" "}
                 <Link
                   href={`/themes/${slug}`}
                   className="text-primary underline underline-offset-4 hover:opacity-80 transition-opacity"

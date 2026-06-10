@@ -397,7 +397,7 @@ export function DashboardView(props: DashboardProps) {
                       marginBottom: 6,
                     }}
                   >
-                    Module {currentModule.number} — {currentModule.name}
+                    Module {currentModule.number}: {currentModule.name}
                   </h1>
                   <p style={{ fontFamily: MONO, fontSize: 12, color: MUTED }}>
                     Lesson {currentModule.lessonNumber} of{" "}
@@ -687,7 +687,7 @@ export function DashboardView(props: DashboardProps) {
           {/* Skill Genome */}
           <SkillGenome data={genomeData} />
 
-          {/* Learning trend — rolling 7-day avg hints per exercise */}
+          {/* Learning trend, rolling 7-day avg hints per exercise */}
           <section
             aria-labelledby="loss-curve-heading"
             style={{ borderBottom: `1px solid ${BORDER_VAR}` }}
@@ -718,7 +718,7 @@ export function DashboardView(props: DashboardProps) {
             </div>
           </section>
 
-          {/* Theme catalog — owned vs locked */}
+          {/* Theme catalog, owned vs locked */}
           {themeCards}
 
           {/* Recent activity */}

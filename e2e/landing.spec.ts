@@ -76,7 +76,7 @@ test.describe("Landing Page", () => {
     await expect(footer.getByRole("link", { name: /privacy/i })).toBeVisible();
   });
 
-  test("final CTA opens the free lesson — copy promises no account", async ({
+  test("final CTA opens the free lesson: copy promises no account", async ({
     page,
   }) => {
     await page.goto("/");

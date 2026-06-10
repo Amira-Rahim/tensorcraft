@@ -7,7 +7,7 @@ order: 5
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "Nazari wants maximum speed. 'WebGL is good. WebGPU is better — direct GPU compute access without the graphics overhead. Use it.' Demir discovers the next generation of browser GPU compute."
+  narrative: "Nazari wants maximum speed. 'WebGL is good. WebGPU is better: direct GPU compute access without the graphics overhead. Use it.' Demir discovers the next generation of browser GPU compute."
   speaker: "Chief Nazari"
 concept:
   explanation: "WebGPU gives inference direct GPU compute access with no graphics pipeline in the way. Most of inference is matrix math, and now it runs as exactly that."
@@ -17,14 +17,14 @@ concept:
     mlTitle: "WebGPU Compute"
     mlCode: "const device = await navigator.gpu.requestAdapter() // compute-oriented GPU access"
     tier: structural
-    breaks: "Canvas WebGL renders pixels via fragment shaders for display. WebGPU compute shaders run general-purpose tensor math (matmul, conv) for inference — different shading language, different memory model, different driver maturity. Browser support is far narrower than WebGL."
+    breaks: "Canvas WebGL renders pixels via fragment shaders for display. WebGPU compute shaders run general-purpose tensor math (matmul, conv) for inference: different shading language, different memory model, different driver maturity. Browser support is far narrower than WebGL."
 consequence:
-  narrative: "WebGPU cuts inference from 15ms to 5ms. The optimization stack is complete — and the 2.4% it cost stays paid."
+  narrative: "WebGPU cuts inference from 15ms to 5ms. The optimization stack is complete, and the 2.4% it cost stays paid."
 hints:
   - level: nudge
-    content: "WebGPU is the successor to WebGL — designed for compute workloads, not just graphics"
+    content: "WebGPU is the successor to WebGL, designed for compute workloads, not just graphics"
   - level: guidance
-    content: "TF.js supports WebGPU as a backend — switch with tf.setBackend('webgpu')"
+    content: "TF.js supports WebGPU as a backend; switch with tf.setBackend('webgpu')"
   - level: solution
     content: "await tf.setBackend('webgpu'); await tf.ready(); // 2-3x faster inference"
 keywords:
@@ -43,7 +43,7 @@ WebGL was designed for rendering triangles, not multiplying matrices. WebGPU is 
 So WebGPU is to WebGL what Web Workers are to the main thread: purpose-built for the actual workload instead of shoehorning into a different API?
 </Dialogue>
 
-Nazari isn't wrong about the triangles. WebGL runs tensor math by smuggling it through a graphics pipeline: data as textures, math as fragment shaders, overhead on every op. WebGPU's compute shaders run matrix multiplications and parallel reductions directly — which is most of what inference is.
+Nazari isn't wrong about the triangles. WebGL runs tensor math by smuggling it through a graphics pipeline: data as textures, math as fragment shaders, overhead on every op. WebGPU's compute shaders run matrix multiplications and parallel reductions directly, which is most of what inference is.
 
 <LearningObjectives objectives={["Understand WebGPU as compute-oriented GPU access (vs WebGL's graphics orientation)", "Configure TensorFlow.js to use the WebGPU backend", "Benchmark WebGPU vs WebGL vs WASM for inference workloads", "Handle WebGPU availability with graceful fallback to WebGL"]} />
 
@@ -92,7 +92,7 @@ console.log('Using backend:', backend);
 </CodeBlock>
 
 <Dialogue speaker="Dr. Farah">
-Before you fall for your own Web Worker analogy, Demir: a Worker keeps the language and memory model you already trust. WebGPU replaces both — new shader language, new memory semantics, drivers you don't control. Trust the shape of the win. Don't trust the cost of entry.
+Before you fall for your own Web Worker analogy, Demir: a Worker keeps the language and memory model you already trust. WebGPU replaces both: new shader language, new memory semantics, drivers you don't control. Trust the shape of the win. Don't trust the cost of entry.
 </Dialogue>
 
 ## The Complete Optimization Stack
@@ -129,13 +129,13 @@ Set up the best available GPU backend and benchmark inference speed.
 
 <Quiz
   question="When does WebGPU outperform WebGL for ML inference?"
-  options={[{"text":"Always — WebGPU is newer"},{"text":"Compute-heavy ops (matmul, conv) where WebGPU's compute shaders avoid graphics-pipeline overhead"},{"text":"When the model is small (under 10MB)"},{"text":"Only on Chrome desktop"}]}
+  options={[{"text":"Always: WebGPU is newer"},{"text":"Compute-heavy ops (matmul, conv) where WebGPU's compute shaders avoid graphics-pipeline overhead"},{"text":"When the model is small (under 10MB)"},{"text":"Only on Chrome desktop"}]}
   correct={1}
-  explanation="WebGL repurposes graphics pipeline for compute via fragment shaders — overhead per op. WebGPU has dedicated compute shaders + better memory model. For matmul-heavy workloads (transformers, large CNNs), WebGPU is 2-5× faster. For small models, the setup cost dominates and there's no win."
+  explanation="WebGL repurposes graphics pipeline for compute via fragment shaders, with overhead per op. WebGPU has dedicated compute shaders + better memory model. For matmul-heavy workloads (transformers, large CNNs), WebGPU is 2-5× faster. For small models, the setup cost dominates and there's no win."
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["WebGPU provides 2-3x speedup over WebGL for ML inference — designed for compute, not graphics", "Always implement graceful fallback: WebGPU → WebGL → WASM, like progressive enhancement", "The full optimization stack (quantize + prune + cache + WebGPU) achieves 8x size reduction and 9x speed improvement", "DEEP SCAN ships at 42 MB and 5ms — and the 2.4% accuracy cost stays on the books until the next retrain"]} />
+<KeyTakeaways takeaways={["WebGPU provides 2-3x speedup over WebGL for ML inference; it is designed for compute, not graphics", "Always implement graceful fallback: WebGPU → WebGL → WASM, like progressive enhancement", "The full optimization stack (quantize + prune + cache + WebGPU) achieves 8x size reduction and 9x speed improvement", "DEEP SCAN ships at 42 MB and 5ms, and the 2.4% accuracy cost stays on the books until the next retrain"]} />
 
 <Epilogue>
 

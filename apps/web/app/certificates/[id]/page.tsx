@@ -15,7 +15,7 @@ import { getApiUrl } from "@/lib/api-url";
  * avatar_url.
  *
  * No auth required. UUID shape is validated server-side; an unknown id
- * returns 404. The hash is rendered as visual identification only — there
+ * returns 404. The hash is rendered as visual identification only, there
  * is intentionally no client-side hash verification path, since the API's
  * RPC is the source of truth.
  */
@@ -48,11 +48,11 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const cert = await loadCertificate(id);
-  if (!cert) return { title: "Certificate — Tensorcraft" };
+  if (!cert) return { title: "Certificate | Tensorcraft" };
   const theme = isValidThemeSlug(cert.theme_id) ? themes[cert.theme_id] : null;
   const themeName = theme?.displayName ?? cert.theme_id;
   const learner = cert.user_display_name ?? "A Tensorcraft learner";
-  const title = `${learner} completed ${themeName} — Tensorcraft`;
+  const title = `${learner} completed ${themeName} | Tensorcraft`;
   const description = `Certificate of completion for the ${themeName} theme on Tensorcraft.`;
   return {
     title,
@@ -66,7 +66,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       url: `https://tensorcraft.app/certificates/${cert.id}`,
       type: "profile",
       images: [
-        `/api/og?title=${encodeURIComponent(`${themeName} — Mission Complete`)}&theme=${encodeURIComponent(cert.theme_id)}&subtitle=${encodeURIComponent(learner)}`,
+        `/api/og?title=${encodeURIComponent(`${themeName}: Mission Complete`)}&theme=${encodeURIComponent(cert.theme_id)}&subtitle=${encodeURIComponent(learner)}`,
       ],
     },
   };
@@ -91,7 +91,7 @@ export default async function CertificateSharePage({ params }: Props) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "EducationalOccupationalCredential",
-    name: `${themeName} — Tensorcraft`,
+    name: `${themeName} | Tensorcraft`,
     description: `Completion of the ${themeName} theme on Tensorcraft.`,
     credentialCategory: "Course Completion",
     educationalLevel: "Intermediate",
@@ -113,7 +113,7 @@ export default async function CertificateSharePage({ params }: Props) {
       <div className="max-w-2xl mx-auto">
         <div className="border border-border bg-surface rounded-none p-10 print:border-black">
           <p className="text-[11px] font-mono uppercase tracking-[0.25em] text-text-muted mb-2">
-            // Certificate of Completion
+            Certificate of Completion
           </p>
           <h1 className="text-3xl md:text-4xl font-mono font-black tracking-[-0.03em] uppercase mb-6">
             {themeName}
@@ -149,8 +149,8 @@ export default async function CertificateSharePage({ params }: Props) {
             This learner completed every module of the {themeName} theme on{" "}
             <Link href="/" className="text-primary underline">
               Tensorcraft
-            </Link>{" "}
-            — an interactive, story-driven machine-learning course for frontend
+            </Link>
+            , an interactive, story-driven machine-learning course for frontend
             engineers.
           </p>
         </div>

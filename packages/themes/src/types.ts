@@ -1,5 +1,5 @@
 /**
- * Theme color palette — maps to CSS custom properties (--tc-*).
+ * Theme color palette, maps to CSS custom properties (--tc-*).
  * All colors are designed for dark backgrounds. No light mode.
  *
  * Brutalist Terminal aesthetic: sharp edges, offset shadows, monospace-first.

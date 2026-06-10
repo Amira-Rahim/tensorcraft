@@ -1,6 +1,6 @@
 slug: incident-missed-interaction
 lessonSlug: the-interaction
-title: "Incident — Drug Interaction Missed in Production"
+title: "Incident: Drug Interaction Missed in Production"
 mlContent: systems
 instructions: |
   PAGER: a known drug interaction (warfarin + aspirin) was not flagged by the pipeline last week. Build `diagnoseMiss(pipelineLog, knownInteraction)` returning the failure stage:
@@ -21,7 +21,7 @@ solutionCode: |
     const [drugA, drugB] = knownInteraction;
     const tokensIncludeAny = (drug) => pipelineLog.tokens.some(t => t.toLowerCase().includes(drug.toLowerCase()));
     if (!tokensIncludeAny(drugA) || !tokensIncludeAny(drugB)) {
-      return { stage: 'tokenization', detail: 'Drug name not in tokens — input did not contain the drug', recoverable: false };
+      return { stage: 'tokenization', detail: 'Drug name not in tokens: input did not contain the drug', recoverable: false };
     }
     const entityNames = pipelineLog.entities.map(e => e.text.toLowerCase());
     if (!entityNames.includes(drugA.toLowerCase()) || !entityNames.includes(drugB.toLowerCase())) {
@@ -36,7 +36,7 @@ solutionCode: |
     if (!checked.includes(expected)) {
       return { stage: 'interaction-lookup', detail: 'Interaction pair not in lookup set (database stale or pair missing)', recoverable: true };
     }
-    return { stage: 'unknown', detail: 'All stages produced expected outputs; interaction was checked but not flagged — investigate threshold logic', recoverable: false };
+    return { stage: 'unknown', detail: 'All stages produced expected outputs; interaction was checked but not flagged; investigate threshold logic', recoverable: false };
   }
 testCode: |
   describe('diagnoseMiss', () => {

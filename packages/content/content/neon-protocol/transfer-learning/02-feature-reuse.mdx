@@ -84,25 +84,25 @@ const hierarchy: FeatureLevel[] = [
   {
     layerRange: 'Layer 1-2',
     detects: 'Edges, gradients, color blobs',
-    analogy: 'Box, Text, Icon — raw primitives',
+    analogy: 'Box, Text, Icon: raw primitives',
     transferability: 'universal',
   },
   {
     layerRange: 'Layer 3-5',
     detects: 'Textures, repeating patterns, corners',
-    analogy: 'Button, Input, Card — composable components',
+    analogy: 'Button, Input, Card: composable components',
     transferability: 'high',
   },
   {
     layerRange: 'Layer 6-10',
-    detects: 'Object parts — wheels, wings, faces',
-    analogy: 'SearchBar, NavMenu — assembled patterns',
+    detects: 'Object parts: wheels, wings, faces',
+    analogy: 'SearchBar, NavMenu: assembled patterns',
     transferability: 'moderate',
   },
   {
     layerRange: 'Layer 11+',
-    detects: 'Full objects — specific car models, breeds',
-    analogy: 'ProductPage, Checkout — app-specific screens',
+    detects: 'Full objects: specific car models, breeds',
+    analogy: 'ProductPage, Checkout: app-specific screens',
     transferability: 'task-specific',
   },
 ];`}
@@ -127,7 +127,7 @@ async function buildFeatureExtractor(
   const targetLayer = model.getLayer(layerName);
 
   // Create a new model that outputs from that layer
-  // Everything after is discarded — like tree-shaking unused components
+  // Everything after is discarded, like tree-shaking unused components
   const featureExtractor = tf.model({
     inputs: model.input,
     outputs: targetLayer.output,
@@ -145,10 +145,10 @@ function analyzeTransferability(
 ): string {
   const depth = layerIndex / totalLayers;
 
-  if (depth < 0.2) return 'Universal — edges and gradients work everywhere';
-  if (depth < 0.5) return 'High — textures and patterns transfer broadly';
-  if (depth < 0.8) return 'Moderate — object parts transfer to similar domains';
-  return 'Low — task-specific features, likely need retraining';
+  if (depth < 0.2) return 'Universal: edges and gradients work everywhere';
+  if (depth < 0.5) return 'High: textures and patterns transfer broadly';
+  if (depth < 0.8) return 'Moderate: object parts transfer to similar domains';
+  return 'Low: task-specific features, likely need retraining';
 }`}
 </CodeBlock>
 
@@ -211,4 +211,4 @@ Extract reusable features from a model's layer hierarchy and measure transferabi
 
 <Exercise slug="extract-reusable-features" />
 
-<KeyTakeaways takeaways={["Pre-trained models learn a hierarchy: edges, textures, shapes, objects — each layer builds on the previous", "Early-layer features are universal and transfer to any vision task — like primitive UI components", "Later-layer features are task-specific and may need retraining — like app-specific pages", "A model trained on cats can detect drones because they share edges, textures, and shapes"]} />
+<KeyTakeaways takeaways={["Pre-trained models learn a hierarchy: edges, textures, shapes, objects; each layer builds on the previous", "Early-layer features are universal and transfer to any vision task, like primitive UI components", "Later-layer features are task-specific and may need retraining, like app-specific pages", "A model trained on cats can detect drones because they share edges, textures, and shapes"]} />

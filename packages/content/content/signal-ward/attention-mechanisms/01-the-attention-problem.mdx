@@ -64,7 +64,7 @@ Consider: "Patient denied chest pain but reported shortness of breath." If the m
 // Simulated hidden states for 5 words: [seqLen, hiddenDim]
 const hiddenStates = tf.randomNormal([5, 64]);
 
-// A query vector — what are we looking for?
+// A query vector: what are we looking for?
 const query = tf.randomNormal([64]);
 
 // Compute raw attention scores via dot product
@@ -73,11 +73,11 @@ const scores = tf.matMul(
   query.reshape([64, 1])
 ).squeeze(); // shape: [5]
 
-// Normalize with softmax — scores now sum to 1
+// Normalize with softmax: scores now sum to 1
 const weights = tf.softmax(scores);
 console.log('Attention weights:', await weights.array());
 
-// Create weighted combination — the "attended" representation
+// Create weighted combination: the "attended" representation
 const attended = tf.matMul(
   weights.reshape([1, 5]),
   hiddenStates

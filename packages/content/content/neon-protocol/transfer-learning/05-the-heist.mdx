@@ -50,7 +50,7 @@ Every great open-source project starts with a fork. Their surveillance AI become
 
 Forking an open-source project means taking the existing codebase and building something new on top of it. The original authors' work becomes your foundation. Repurposing a model runs on the same instinct, with one difference worth respecting: a fork keeps the original code in git history, but fine-tuning overwrites weights in place. Push too hard and capabilities you never trained against erode with no error thrown (catastrophic forgetting). The pipeline below freezes most of the backbone for exactly that reason.
 
-<LearningObjectives objectives={["Combine all transfer learning techniques into a complete model repurposing pipeline", "Load, freeze, modify, augment, and retrain a pre-trained model for a new task", "Build Protocol Sentinel: the resistance's counter-surveillance system", "Understand model repurposing as forking — same codebase, different mission"]} />
+<LearningObjectives objectives={["Combine all transfer learning techniques into a complete model repurposing pipeline", "Load, freeze, modify, augment, and retrain a pre-trained model for a new task", "Build Protocol Sentinel: the resistance's counter-surveillance system", "Understand model repurposing as forking: same codebase, different mission"]} />
 
 ## The Fork
 
@@ -65,24 +65,24 @@ Forking an open-source project means taking the existing codebase and building s
 // npm install && npm run build
 
 async function buildProtocolSentinel(meridianModelUrl: string) {
-  // Step 1: Clone — load the stolen model
+  // Step 1: Clone. Load the stolen model
   const meridianModel = await tf.loadLayersModel(meridianModelUrl);
   console.log('Loaded Meridian model:', meridianModel.layers.length, 'layers');
   console.log('Original purpose: citizen surveillance');
 
-  // Step 2: Strip — remove the surveillance classification head
+  // Step 2: Strip. Remove the surveillance classification head
   const lastFeatureLayer = meridianModel.layers[meridianModel.layers.length - 3];
   const backbone = tf.model({
     inputs: meridianModel.input,
     outputs: lastFeatureLayer.output,
   });
 
-  // Step 3: Freeze — preserve Meridian's feature extraction
-  // Object.freeze(backbone) — their years of training, locked in
+  // Step 3: Freeze. Preserve Meridian's feature extraction
+  // Object.freeze(backbone): their years of training, locked in
   backbone.layers.forEach(layer => { layer.trainable = false; });
 
   // Step 4: Selectively unfreeze last 3 conv layers
-  // Domain adaptation — let these layers learn Neon City's visual style
+  // Domain adaptation: let these layers learn Neon City's visual style
   const convLayers = backbone.layers.filter(l => l.getClassName() === 'Conv2D');
   convLayers.slice(-3).forEach(layer => { layer.trainable = true; });
 
@@ -114,7 +114,7 @@ async function trainProtocolSentinel(
   head: tf.LayersModel,
   trainingData: { images: tf.Tensor4D; labels: tf.Tensor2D }
 ) {
-  // Domain augmentation — bridge the gap to Neon City conditions
+  // Domain augmentation: bridge the gap to Neon City conditions
   const augmentedImages = tf.tidy(() => {
     // Night brightness: random factor between 0.3 and 1.0
     const brightness = tf.randomUniform(
@@ -144,7 +144,7 @@ async function trainProtocolSentinel(
     callbacks: {
       onEpochEnd: (epoch, logs) => {
         console.log(
-          \`[Sentinel] Epoch \${epoch + 1}/20 — \` +
+          \`[Sentinel] Epoch \${epoch + 1}/20: \` +
           \`loss: \${logs!.loss.toFixed(4)}, acc: \${(logs!.acc * 100).toFixed(1)}%\`
         );
       },
@@ -183,7 +183,7 @@ async function deployProtocolSentinel() {
   // Train
   await trainProtocolSentinel(backbone, head, resistanceTrainingData);
 
-  // Deploy — runs entirely in the browser
+  // Deploy: runs entirely in the browser
   // No server round-trip means no traffic for Meridian to trace.
   async function detectDrone(frame: HTMLCanvasElement) {
     const tensor = tf.tidy(() => {
@@ -226,7 +226,7 @@ Build the complete Protocol Sentinel pipeline by combining all transfer learning
 
 <Quiz
   question="Catastrophic forgetting in fine-tuning happens when?"
-  options={[{"text":"Learning rate is too low"},{"text":"Fine-tuning with high LR for too long — overwrites pretrained features the new task doesn't exercise"},{"text":"Model is too small"},{"text":"Always — unavoidable"}]}
+  options={[{"text":"Learning rate is too low"},{"text":"Fine-tuning with high LR for too long; overwrites pretrained features the new task doesn't exercise"},{"text":"Model is too small"},{"text":"Always; unavoidable"}]}
   correct={1}
   explanation="Fine-tuning trains existing weights on new data. If LR is too high or training too long, the optimizer destroys representations the new task doesn't need. The fix: small LR, early stopping, or layer-freezing for general features."
   tier="structural"

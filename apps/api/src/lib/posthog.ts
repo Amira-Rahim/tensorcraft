@@ -1,5 +1,5 @@
 /**
- * PostHog server-side client — EU instance (GDPR data residency).
+ * PostHog server-side client, EU instance (GDPR data residency).
  *
  * Used for server-emitted conversion events (payment_completed /
  * payment_failed from the Stripe webhook, etc.). Only constructs a
@@ -58,7 +58,7 @@ export function captureServerEvent(
 
 /**
  * Convenience alias matching the dev-plan spec name. Equivalent to
- * {@link captureServerEvent} — prefer this in new code.
+ * {@link captureServerEvent}, prefer this in new code.
  */
 export function captureServer(
   event: ServerEventName,
@@ -108,7 +108,7 @@ export interface ServerEventProperties {
   };
 }
 
-/** Flush pending events — call before process exit. */
+/** Flush pending events, call before process exit. */
 export async function shutdownPostHog(): Promise<void> {
   if (!client) return;
   await client.shutdown();

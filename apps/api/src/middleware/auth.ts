@@ -6,7 +6,7 @@ import type { AppEnv } from "../types";
 
 const JWT_CACHE_TTL = 30;
 
-/** Hash a token for use as a Redis key (SHA-256 — collision-safe at 1M+ users) */
+/** Hash a token for use as a Redis key (SHA-256, collision-safe at 1M+ users) */
 function hashToken(token: string): string {
   return `jwt:${createHash("sha256").update(token).digest("hex").slice(0, 32)}`;
 }
@@ -37,7 +37,7 @@ export async function authMiddleware(
       return next();
     }
   } catch {
-    // Redis failure is non-fatal — fall through to Supabase validation
+    // Redis failure is non-fatal, fall through to Supabase validation
   }
 
   // Validate with Supabase

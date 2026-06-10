@@ -1,15 +1,15 @@
 import { test, expect } from "@playwright/test";
 
 /**
- * Mobile responsive smoke tests — dev-plan §6b.
+ * Mobile responsive smoke tests, dev-plan §6b.
  *
  * Runs against the mobile/tablet Playwright projects defined in
  * `playwright.config.ts`:
  *
- *   - mobile-iphone-se  — iPhone SE (375×667, the tightest viewport we
+ *   - mobile-iphone-se  - iPhone SE (375×667, the tightest viewport we
  *     support per PRD 5.5)
- *   - mobile-pixel-7    — Pixel 7 (412×915)
- *   - tablet-ipad       — iPad gen 7 (810×1080, proxy for iPad Air)
+ *   - mobile-pixel-7   - Pixel 7 (412×915)
+ *   - tablet-ipad      - iPad gen 7 (810×1080, proxy for iPad Air)
  *
  * We cover the routes the dev-plan calls out: landing, auth, pricing,
  * themes, paywall. For each, we assert (1) the page renders, (2) no
@@ -61,7 +61,7 @@ test.describe("Mobile smoke", () => {
     page,
     viewport,
   }) => {
-    // Skip on tablet viewport — MobileNav is `md:hidden`, so the hamburger
+    // Skip on tablet viewport, MobileNav is `md:hidden`, so the hamburger
     // isn't rendered above ~768px.
     test.skip(
       !viewport || viewport.width >= 768,

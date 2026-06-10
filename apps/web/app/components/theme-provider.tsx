@@ -29,7 +29,7 @@ function applyTheme(slug: ThemeSlug) {
   localStorage.setItem(STORAGE_KEY, slug);
 }
 
-// External store for theme state — lets useSyncExternalStore track changes
+// External store for theme state, lets useSyncExternalStore track changes
 let listeners: Array<() => void> = [];
 
 function subscribe(listener: () => void) {

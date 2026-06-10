@@ -67,13 +67,13 @@ solutionCode: |
 
     const limitations: string[] = [];
     if (metrics.accuracy <= 0.9) {
-      limitations.push(`Accuracy is ${(metrics.accuracy * 100).toFixed(1)}% — may miss detections`);
+      limitations.push(`Accuracy is ${(metrics.accuracy * 100).toFixed(1)}%; may miss detections`);
     }
     if (metrics.falsePositiveRate >= 0.05) {
-      limitations.push(`False positive rate is ${(metrics.falsePositiveRate * 100).toFixed(1)}% — manual verification recommended`);
+      limitations.push(`False positive rate is ${(metrics.falsePositiveRate * 100).toFixed(1)}%; manual verification recommended`);
     }
     if (metrics.inferenceTimeMs > 100) {
-      limitations.push(`Inference time is ${metrics.inferenceTimeMs}ms — may not support real-time processing`);
+      limitations.push(`Inference time is ${metrics.inferenceTimeMs}ms; may not support real-time processing`);
     }
 
     return {

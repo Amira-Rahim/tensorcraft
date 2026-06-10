@@ -1,7 +1,7 @@
 slug: gradient-step
 lessonSlug: gradient-descent
 title: "Perform a Gradient Descent Step"
-instructions: "Perform one real step of gradient descent on loss = weight². Use tf.variableGrads() to compute the gradient automatically (don't derive it by hand — the whole point is that TFJS does calculus for you), then update the weight by subtracting learningRate × gradient. Starting at weight = 5.0 with learningRate = 0.1, one correct step lands the weight at exactly 4.0."
+instructions: "Perform one real step of gradient descent on loss = weight². Use tf.variableGrads() to compute the gradient automatically (don't derive it by hand; the whole point is that TFJS does calculus for you), then update the weight by subtracting learningRate × gradient. Starting at weight = 5.0 with learningRate = 0.1, one correct step lands the weight at exactly 4.0."
 starterCode: "const weight = tf.variable(tf.scalar(5.0));\nconst learningRate = 0.1;\n\n// 1. Define the loss as a function: () => weight.square().asScalar()\n// 2. Get gradients with tf.variableGrads(lossFn)\n// 3. Pull this weight's gradient out of the returned grads object\n// 4. weight.assign(...) the updated value\nlet gradient;\n"
 solutionCode: "const weight = tf.variable(tf.scalar(5.0));\nconst learningRate = 0.1;\n\nconst lossFn = () => weight.square().asScalar();\nconst { grads } = tf.variableGrads(lossFn);\ngradient = grads[Object.keys(grads)[0]];\nweight.assign(weight.sub(gradient.mul(learningRate)));"
 testCode: |

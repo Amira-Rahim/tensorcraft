@@ -5,7 +5,7 @@
  * for local development and testing.
  *
  * Uses service role key to bypass RLS.
- * Uses upsert (ON CONFLICT) so the script is idempotent — safe to run repeatedly.
+ * Uses upsert (ON CONFLICT) so the script is idempotent, safe to run repeatedly.
  *
  * Usage:
  *   SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... pnpm seed
@@ -83,7 +83,7 @@ async function seedProgress() {
   const themeId = "deep-orbit";
   const userId = USER_IDS.alex;
 
-  // Module 1: signals-in-space — all 5 lessons completed
+  // Module 1: signals-in-space, all 5 lessons completed
   const completedLessons = Array.from({ length: 5 }, (_, i) => ({
     user_id: userId,
     theme_id: themeId,
@@ -97,7 +97,7 @@ async function seedProgress() {
     completed_at: new Date(2026, 2, 1 + i).toISOString(),
   }));
 
-  // Module 2: neural-navigation — lessons 1-3 completed, 4-5 in progress
+  // Module 2: neural-navigation, lessons 1-3 completed, 4-5 in progress
   const navCompleted = Array.from({ length: 3 }, (_, i) => ({
     user_id: userId,
     theme_id: themeId,

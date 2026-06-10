@@ -36,7 +36,7 @@ keywords:
 ---
 
 <Dialogue speaker="NEON">
-I am detecting anomalous patterns in the least significant bits of the blue channel. Meridian is embedding metadata — device IDs, timestamps, tracking hashes — directly into the pixel values. The changes are invisible to the human eye but perfectly readable by their models.
+I am detecting anomalous patterns in the least significant bits of the blue channel. Meridian is embedding metadata (device IDs, timestamps, tracking hashes) directly into the pixel values. The changes are invisible to the human eye but perfectly readable by their models.
 </Dialogue>
 
 <Dialogue speaker="Noor">
@@ -59,9 +59,9 @@ const image = tf.browser.fromPixels(canvas); // [224, 224, 3]
 
 // Split into individual channels
 const [red, green, blue] = tf.split(image, 3, 2);
-console.log(red.shape);   // [224, 224, 1] — red intensity map
-console.log(green.shape); // [224, 224, 1] — green intensity map
-console.log(blue.shape);  // [224, 224, 1] — blue intensity map
+console.log(red.shape);   // [224, 224, 1], red intensity map
+console.log(green.shape); // [224, 224, 1], green intensity map
+console.log(blue.shape);  // [224, 224, 1], blue intensity map
 
 // Each channel is a grayscale image showing that color's contribution
 // High values = strong presence of that color
@@ -88,9 +88,9 @@ function rgbToHsv(rgb: tf.Tensor3D): tf.Tensor3D {
 }
 
 // Why HSV matters for vision:
-// H (hue) = what color — invariant to lighting
-// S (saturation) = how vivid — separates color from gray
-// V (value) = how bright — separates content from illumination
+// H (hue) = what color; invariant to lighting
+// S (saturation) = how vivid; separates color from gray
+// V (value) = how bright; separates content from illumination
 // A camera in shadow and sunlight has different V but same H`}
 </CodeBlock>
 
@@ -107,7 +107,7 @@ function analyzeChannels(image: tf.Tensor3D): void {
   const gMean = g.mean().dataSync()[0];
   const bMean = b.mean().dataSync()[0];
 
-  console.log('Channel means — R:', rMean.toFixed(1),
+  console.log('Channel means: R:', rMean.toFixed(1),
               'G:', gMean.toFixed(1), 'B:', bMean.toFixed(1));
 
   // Nighttime camera feeds: high blue bias from IR LEDs
@@ -119,12 +119,12 @@ function analyzeChannels(image: tf.Tensor3D): void {
   const gVar = g.toFloat().sub(gMean).square().mean().dataSync()[0];
   const bVar = b.toFloat().sub(bMean).square().mean().dataSync()[0];
 
-  console.log('Channel variance — R:', rVar.toFixed(1),
+  console.log('Channel variance: R:', rVar.toFixed(1),
               'G:', gVar.toFixed(1), 'B:', bVar.toFixed(1));
 
   // Unusually high blue variance could indicate embedded data
   if (bVar > rVar * 1.5 && bVar > gVar * 1.5) {
-    console.warn('Anomalous blue channel variance — possible steganography');
+    console.warn('Anomalous blue channel variance: possible steganography');
   }
 
   [r, g, b].forEach(t => t.dispose());
@@ -137,4 +137,4 @@ Split an image into channels and compute per-channel statistics.
 
 <Exercise slug="channel-analysis" />
 
-<KeyTakeaways takeaways={["Color channels are independent data dimensions — each channel is a grayscale intensity map", "RGB, HSV, and LAB are different coordinate systems for the same color, like CSS rgb()/hsl()/oklch()", "HSV separates color (hue) from lighting (value) — critical for robust vision in varying conditions", "Channel analysis reveals properties invisible to the eye, like hidden data in least-significant bits"]} />
+<KeyTakeaways takeaways={["Color channels are independent data dimensions; each channel is a grayscale intensity map", "RGB, HSV, and LAB are different coordinate systems for the same color, like CSS rgb()/hsl()/oklch()", "HSV separates color (hue) from lighting (value), critical for robust vision in varying conditions", "Channel analysis reveals properties invisible to the eye, like hidden data in least-significant bits"]} />

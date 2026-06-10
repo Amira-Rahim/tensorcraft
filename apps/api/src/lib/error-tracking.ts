@@ -1,5 +1,5 @@
 /**
- * Error tracking utility — structured error logging.
+ * Error tracking utility, structured error logging.
  *
  * Drop-in compatible with Sentry's captureException API shape.
  * When ready to integrate Sentry, replace the logger calls with

@@ -1,7 +1,7 @@
 slug: build-triage
 lessonSlug: triage-system
 title: "Build the Triage Pipeline"
-instructions: "Implement a TriagePipeline class that chains three classification stages: (1) urgency detection (binary, sigmoid), (2) department routing (multi-class, softmax), and (3) multi-label tagging (sigmoid per tag). Each stage checks confidence against a review threshold — if any stage falls below, the document is flagged for human review. The classify method should return a complete TriageResult with urgency, department, tags, and review status."
+instructions: "Implement a TriagePipeline class that chains three classification stages: (1) urgency detection (binary, sigmoid), (2) department routing (multi-class, softmax), and (3) multi-label tagging (sigmoid per tag). Each stage checks confidence against a review threshold: if any stage falls below, the document is flagged for human review. The classify method should return a complete TriageResult with urgency, department, tags, and review status."
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 

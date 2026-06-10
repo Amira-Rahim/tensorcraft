@@ -1,5 +1,5 @@
 /**
- * Sentry server-side config — runs in the Node.js runtime for server
+ * Sentry server-side config, runs in the Node.js runtime for server
  * components, route handlers, and API routes.
  *
  * Reads `SENTRY_DSN` first (server-only secret), falling back to

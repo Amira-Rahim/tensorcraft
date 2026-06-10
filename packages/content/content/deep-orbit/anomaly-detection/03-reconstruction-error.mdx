@@ -7,7 +7,7 @@ order: 3
 estimatedMinutes: 14
 difficulty: intermediate
 context:
-  narrative: "Demir feeds the anomalous signal through the autoencoder. The reconstruction is mangled — the error is 12x the normal baseline. Farah: 'That is our anomaly score.'"
+  narrative: "Demir feeds the anomalous signal through the autoencoder. The reconstruction is mangled; the error is 12x the normal baseline. Farah: 'That is our anomaly score.'"
   speaker: "Dr. Farah"
 concept:
   explanation: "Reconstruction error scores each sample by how badly the autoencoder rebuilds it: one number, high when the input doesn't fit the learned patterns."
@@ -17,7 +17,7 @@ concept:
     mlTitle: "Reconstruction Error"
     mlCode: "error = MSE(original, autoencoder.predict(original))"
     tier: intuition
-    breaks: "git diff names exact line changes you can patch. Reconstruction error is a single L2-distance scalar (the straight-line distance between input and reconstruction, measured across all feature dimensions at once) — high error tells you something is off but not which feature, position, or channel caused it. Debugging requires per-dimension error maps you compute separately."
+    breaks: "git diff names exact line changes you can patch. Reconstruction error is a single L2-distance scalar (the straight-line distance between input and reconstruction, measured across all feature dimensions at once); high error tells you something is off but not which feature, position, or channel caused it. Debugging requires per-dimension error maps you compute separately."
 consequence:
   narrative: "Twelve times the normal threshold. Nazari checks the sensors twice; this is not instrument noise. The model is right."
 hints:
@@ -77,13 +77,13 @@ function computeAnomalyScores(
 
 // Normal signals: low reconstruction error
 const normalScores = computeAnomalyScores(autoencoder, normalTestData);
-console.log('Normal — mean error:', mean(normalScores).toFixed(6));  // ~0.001
-console.log('Normal — max error:', Math.max(...normalScores).toFixed(6));  // ~0.005
+console.log('Normal, mean error:', mean(normalScores).toFixed(6));  // ~0.001
+console.log('Normal, max error:', Math.max(...normalScores).toFixed(6));  // ~0.005
 
 // Anomalous signal: high reconstruction error
 const anomalyScores = computeAnomalyScores(autoencoder, anomalousData);
-console.log('Anomaly — error:', anomalyScores[0].toFixed(6));  // ~0.062
-// 12x the normal maximum — this is clearly anomalous`}
+console.log('Anomaly, error:', anomalyScores[0].toFixed(6));  // ~0.062
+// 12x the normal maximum: this is clearly anomalous`}
 </CodeBlock>
 
 ## Feature-Level Error Analysis
@@ -92,7 +92,7 @@ console.log('Anomaly — error:', anomalyScores[0].toFixed(6));  // ~0.062
 {`import * as tf from '@tensorflow/tfjs';
 
 // Which features contribute most to the anomaly?
-// This map is Farah's actual answer — and she wants it computed
+// This map is Farah's actual answer, and she wants it computed
 // before she signs off on any alert.
 function featureErrors(
   autoencoder: tf.LayersModel,
@@ -117,7 +117,7 @@ const analysis = featureErrors(autoencoder, anomalyTensor, [
 ]);
 
 console.log('Top contributors:');
-// fft_5: 0.0412  ← the 73.4 Hz bin — the anomalous frequency!
+// fft_5: 0.0412  ← the 73.4 Hz bin: the anomalous frequency!
 // fft_6: 0.0089
 // amplitude: 0.0051
 // Everything else: < 0.001`}
@@ -135,9 +135,9 @@ A true anomaly slipped through the autoencoder. Audit the per-feature reconstruc
 
 <Exercise slug="incident-missed-anomaly" />
 
-<KeyTakeaways takeaways={["Reconstruction error is the anomaly score — high error means the signal doesn't match learned normal patterns", "MSE gives one scalar per sample — locating the cause requires per-feature error analysis computed separately", "Normal signals cluster at low error; anomalies stand out at 10-100x the normal baseline", "Feature-level error analysis reveals exactly which aspects of the signal are anomalous"]} />
+<KeyTakeaways takeaways={["Reconstruction error is the anomaly score: high error means the signal doesn't match learned normal patterns", "MSE gives one scalar per sample; locating the cause requires per-feature error analysis computed separately", "Normal signals cluster at low error; anomalies stand out at 10-100x the normal baseline", "Feature-level error analysis reveals exactly which aspects of the signal are anomalous"]} />
 
-> **DISPATCH archive · field intercept #08-A:** Operator Lin's CV cell logged a similar error spike last quarter — IoU residuals 12× baseline on a feed they marked 'unremarkable'. The signal was the model failing, not the world being weird. They retrained. The escalation never reached us.
+> **DISPATCH archive · field intercept #08-A:** Operator Lin's CV cell logged a similar error spike last quarter: IoU residuals 12× baseline on a feed they marked 'unremarkable'. The signal was the model failing, not the world being weird. They retrained. The escalation never reached us.
 
 <Epilogue>
 

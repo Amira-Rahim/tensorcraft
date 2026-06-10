@@ -156,7 +156,7 @@ describe("ModuleMapClient", () => {
     render(<ModuleMapClient {...defaultProps} modules={[mod]} />);
 
     const link = screen.getByRole("link", {
-      name: /Clickable — Not started/i,
+      name: /Clickable, Not started/i,
     });
     expect(link).toHaveAttribute(
       "href",

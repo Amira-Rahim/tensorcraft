@@ -15,7 +15,7 @@ concept:
     feTitle: "Bundle Analyzer"
     feCode: "// npx webpack-bundle-analyzer stats.json\n// Visual breakdown of bundle size"
     mlTitle: "Model Profiler"
-    mlCode: "// model.summary() — layer-by-layer breakdown\n// Parameters, memory, output shapes"
+    mlCode: "// model.summary(): layer-by-layer breakdown\n// Parameters, memory, output shapes"
     tier: structural
     breaks: "Bundle analyzer shows static module sizes from build artifacts. Model profiling traces per-op latency at inference time and bottlenecks shift across hardware. What is slow on CPU is fast on GPU and vice versa."
 consequence:
@@ -86,4 +86,4 @@ Profile a model and identify the largest layers.
 
 <Exercise slug="tg-profile-model" />
 
-<KeyTakeaways takeaways={["Always profile before optimizing — know where the size comes from", "Memory = parameters * 4 bytes for Float32 weights", "Dense layers with large unit counts dominate model size", "Model profiling maps directly to bundle analysis in frontend builds"]} />
+<KeyTakeaways takeaways={["Always profile before optimizing: know where the size comes from", "Memory = parameters * 4 bytes for Float32 weights", "Dense layers with large unit counts dominate model size", "Model profiling maps directly to bundle analysis in frontend builds"]} />

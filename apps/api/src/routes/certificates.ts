@@ -16,13 +16,13 @@ import type { AppEnv } from "../types";
 /**
  * Completion certificates.
  *
- * POST /api/certificates    — auth, issues a certificate (idempotent).
- * GET  /api/certificates/:id — public, minimal fields for share page.
+ * POST /api/certificates   , auth, issues a certificate (idempotent).
+ * GET  /api/certificates/:id, public, minimal fields for share page.
  *
  * The `cert_hash` is a deterministic SHA-256 of
  *   `${user_id}:${theme_id}:${issued_at_iso}:${CERT_SIGNING_SECRET}`
  * so the share page can verify authenticity without exposing the user
- * UUID. `CERT_SIGNING_SECRET` acts as a server-side salt — rotating it
+ * UUID. `CERT_SIGNING_SECRET` acts as a server-side salt, rotating it
  * invalidates every previously-issued hash, so treat it like a secret.
  */
 const certificates = new Hono<AppEnv>();
@@ -39,7 +39,7 @@ function computeCertHash(
 }
 
 // ──────────────────────────────────────────────────────────────
-// POST /api/certificates — issue (or return existing) certificate
+// POST /api/certificates, issue (or return existing) certificate
 // ──────────────────────────────────────────────────────────────
 
 certificates.use("/", authMiddleware);
@@ -66,7 +66,7 @@ certificates.post("/", async (c) => {
   if (!secret) {
     logger.error(
       { route: "certificates.issue" },
-      "CERT_SIGNING_SECRET is not set — refusing to issue a certificate",
+      "CERT_SIGNING_SECRET is not set, refusing to issue a certificate",
     );
     return c.json(
       {
@@ -174,7 +174,7 @@ certificates.post("/", async (c) => {
 });
 
 // ──────────────────────────────────────────────────────────────
-// GET /api/certificates/:id — public share page endpoint
+// GET /api/certificates/:id, public share page endpoint
 // ──────────────────────────────────────────────────────────────
 //
 // Intentionally NOT behind authMiddleware. Uses the public

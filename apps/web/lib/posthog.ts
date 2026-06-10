@@ -1,9 +1,9 @@
 /**
- * PostHog client initialization — EU instance (GDPR compliance).
+ * PostHog client initialization, EU instance (GDPR compliance).
  *
  * Initialization rules:
  * - Only initializes on the client (no-op on server).
- * - Only initializes when `NEXT_PUBLIC_POSTHOG_KEY` is present — dev/preview
+ * - Only initializes when `NEXT_PUBLIC_POSTHOG_KEY` is present, dev/preview
  *   environments without a key get a silent no-op.
  * - Host defaults to `https://eu.posthog.com`; override via
  *   `NEXT_PUBLIC_POSTHOG_HOST`. EU host is mandatory for data residency.

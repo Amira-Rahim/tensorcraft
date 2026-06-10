@@ -1,6 +1,6 @@
 ---
 slug: hospital-integration
-title: "Hospital Integration — Connecting to EHR Systems"
+title: "Hospital Integration: Connecting to EHR Systems"
 moduleId: sw-capstone
 themeId: signal-ward
 order: 2
@@ -52,7 +52,7 @@ Start with the failure mode. A malformed MedicationRequest slips past validation
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="fhir-adapter.ts">
-{`// FHIR integration — same pattern as any third-party API adapter
+{`// FHIR integration, same pattern as any third-party API adapter
 // Map external schemas to internal types, validate at the boundary
 
 // External: FHIR MedicationRequest (hospital's format)
@@ -84,7 +84,7 @@ interface ClinicalMedication {
   rawText: string;
 }
 
-// Adapter — transforms FHIR to internal format
+// Adapter: transforms FHIR to internal format
 class FHIRAdapter {
   private baseUrl: string;
   private apiKey: string;
@@ -94,7 +94,7 @@ class FHIRAdapter {
     this.apiKey = apiKey;
   }
 
-  // Fetch and transform — like calling Stripe's API and mapping to your Order model
+  // Fetch and transform, like calling Stripe's API and mapping to your Order model
   async getMedications(patientId: string): Promise<ClinicalMedication[]> {
     const response = await fetch(
       \`\${this.baseUrl}/MedicationRequest?patient=\${patientId}&status=active\`,
@@ -107,14 +107,14 @@ class FHIRAdapter {
 
     const bundle = await response.json();
 
-    // FHIR returns a Bundle of resources — like paginated API results
+    // FHIR returns a Bundle of resources, like paginated API results
     return bundle.entry
       .map((entry: any) => entry.resource)
       .filter(this.validateMedicationRequest)
       .map(this.transformMedication);
   }
 
-  // Schema validation — reject malformed data at the boundary
+  // Schema validation: reject malformed data at the boundary
   private validateMedicationRequest(resource: any): boolean {
     return (
       resource.resourceType === 'MedicationRequest' &&
@@ -208,7 +208,7 @@ function getSeverity(confidence: number): DrugInteraction['severity'] {
   return 'low';
 }
 
-// Dead-letter queue for failed integrations — like a webhook retry system
+// Dead-letter queue for failed integrations, like a webhook retry system
 class DeadLetterQueue {
   private failed: { resource: any; error: string; attempts: number; lastAttempt: string }[] = [];
 
@@ -252,4 +252,4 @@ Build a FHIR adapter that transforms external medical resources into Diagnostic 
 
 <Exercise slug="build-fhir-adapter" />
 
-<KeyTakeaways takeaways={["Every EHR vendor speaks its own HL7/FHIR variant; most of the integration cost lives in the adapter, not the model", "Validation at the integration boundary is critical — reject malformed clinical data before it enters the pipeline", "Dead-letter queues and retry patterns handle transient EHR failures without losing patient data", "The adapter pattern isolates your pipeline from external API changes — when the EHR upgrades, only the adapter needs to change"]} />
+<KeyTakeaways takeaways={["Every EHR vendor speaks its own HL7/FHIR variant; most of the integration cost lives in the adapter, not the model", "Validation at the integration boundary is critical: reject malformed clinical data before it enters the pipeline", "Dead-letter queues and retry patterns handle transient EHR failures without losing patient data", "The adapter pattern isolates your pipeline from external API changes: when the EHR upgrades, only the adapter needs to change"]} />

@@ -218,7 +218,7 @@ export function ReportIssueButton() {
 
         /* Reduced-motion users: kill every animation in this widget. The
            drawer, scan line, glow pulse, success pop, and shake are pure
-           decoration — the form remains usable without them. WCAG 2.3.3. */
+           decoration, the form remains usable without them. WCAG 2.3.3. */
         @media (prefers-reduced-motion: reduce) {
           [data-ri-root] *,
           [data-ri-root] *::before,
@@ -274,7 +274,7 @@ export function ReportIssueButton() {
             opacity: 0.7,
           }}
         >
-          {open ? "x" : "//"}
+          {open ? "x" : "?"}
         </span>
         {open ? "Close" : "Report Issue"}
       </button>

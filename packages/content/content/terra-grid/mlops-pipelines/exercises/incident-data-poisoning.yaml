@@ -1,6 +1,6 @@
 slug: incident-data-poisoning
 lessonSlug: data-versioning
-title: "Incident — Suspected Training Data Poisoning"
+title: "Incident: Suspected Training Data Poisoning"
 instructions: |
   PAGER: a model retrained yesterday is suddenly mislabeling a specific class. Suspicion: poisoned samples in the training set. You have `samples` (each `{ id, label, ingestedBy, ingestedAt, contentHash }`) and `trustedSources` (set of known-good `ingestedBy` IDs). Build `auditTrainingSet(samples, trustedSources, suspectClass)` that returns:
 

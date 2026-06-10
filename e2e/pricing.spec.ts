@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 /**
- * Pricing assertions pin to data-testids rather than marketing copy — the
+ * Pricing assertions pin to data-testids rather than marketing copy, the
  * copy iterates frequently; the structure (5 tiers, comparison table,
  * curriculum preview, refund badge) is the contract.
  */

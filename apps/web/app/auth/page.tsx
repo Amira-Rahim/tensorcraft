@@ -3,7 +3,7 @@ import { AuthForm } from "../components/auth-form";
 import { ParticleField } from "@tensorcraft/ui/effects";
 
 /**
- * Auth page — Phase 11 §11d Wave 1 brutalist redesign.
+ * Auth page, Phase 11 §11d Wave 1 brutalist redesign.
  *
  * Split layout:
  *  - Left pane (desktop only, ~55%): decorative ParticleField + tagline from
@@ -22,14 +22,14 @@ export default function AuthPage() {
   return (
     <main className="flex min-h-screen w-full bg-surface">
       {/* ============================================================ */}
-      {/* LEFT PANE — decorative + tagline (desktop only)              */}
+      {/* LEFT PANE, decorative + tagline (desktop only)              */}
       {/* ============================================================ */}
       <aside
         data-testid="auth-left-pane"
         aria-hidden="true"
         className="hidden md:flex md:w-[55%] relative overflow-hidden border-r border-border rounded-none bg-surface-raised"
       >
-        {/* Low-density particle field — pure decoration. Respects
+        {/* Low-density particle field, pure decoration. Respects
             prefers-reduced-motion internally (ParticleField skips rAF). */}
         <ParticleField
           density={0.25}
@@ -46,7 +46,7 @@ export default function AuthPage() {
           {/* Tagline block */}
           <div className="max-w-130">
             <div className="mb-6 font-mono text-[11px] uppercase tracking-[0.3em] text-text-muted">
-              // onboarding
+              onboarding
             </div>
             <h2
               data-testid="auth-tagline"
@@ -73,7 +73,7 @@ export default function AuthPage() {
       </aside>
 
       {/* ============================================================ */}
-      {/* RIGHT PANE — auth form                                       */}
+      {/* RIGHT PANE, auth form                                       */}
       {/* ============================================================ */}
       <section
         data-testid="auth-right-pane"

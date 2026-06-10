@@ -13,14 +13,14 @@ const THREAD: Record<string, ThreadEntry> = {
     id: "gan-game",
     href: "/themes/nova-canvas/generative-adversarial-networks/the-gan-game",
     title: "The GAN Game",
-    gist: "Generator vs discriminator — minimax saddle point.",
+    gist: "Generator vs discriminator: minimax saddle point.",
     primitive: "Minimax · non-cooperative",
   },
   bandit: {
     id: "bandit",
     href: "/themes/terra-grid/ab-testing/multi-armed-bandits",
     title: "Multi-armed bandits",
-    gist: "Explore vs exploit — regret minimization under uncertainty.",
+    gist: "Explore vs exploit: regret minimization under uncertainty.",
     primitive: "Regret · sequential",
   },
 };

@@ -73,7 +73,7 @@ async function rnnProcess(tokens: tf.Tensor2D) {
       )
     ).squeeze();
   }
-  return hidden; // final hidden state — bottleneck!
+  return hidden; // final hidden state: bottleneck!
 }
 
 // Transformer approach: parallel, O(1) depth

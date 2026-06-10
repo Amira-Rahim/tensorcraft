@@ -1,7 +1,7 @@
 slug: reshape-tensor
 lessonSlug: tensor-shapes
 title: "Find the Signal's Layout"
-instructions: "Twelve readings arrived flat: [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8]. Farah believes they're 3 time steps × 4 channels. Reshape `flat` into a [3, 4] matrix called `grid`, then extract the SECOND row (time step index 1) into `step1` as a plain JS array. Careful: row-major fill means you need to know exactly which four values land in that row — guess instead of reason and the grader will know."
+instructions: "Twelve readings arrived flat: [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8]. Farah believes they're 3 time steps × 4 channels. Reshape `flat` into a [3, 4] matrix called `grid`, then extract the SECOND row (time step index 1) into `step1` as a plain JS array. Careful: row-major fill means you need to know exactly which four values land in that row. Guess instead of reason and the grader will know."
 starterCode: "const flat = tf.tensor([3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8]);\n\n// 1. Reshape to [3, 4]\nconst grid = null; // your code here\n\n// 2. Extract row index 1 as a JS array\n// Hint: tf.slice or array indexing after .arraySync()\nconst step1 = null;"
 solutionCode: "const flat = tf.tensor([3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8]);\n\nconst grid = flat.reshape([3, 4]);\n\nconst step1 = grid.arraySync()[1];"
 testCode: |
@@ -13,7 +13,7 @@ testCode: |
       const rows = grid.arraySync();
       expect(rows[0]).toEqual([3, 1, 4, 1]);
     });
-    it('step1 is the second row — values 5 through 6', () => {
+    it('step1 is the second row: values 5 through 6', () => {
       expect(Array.from(step1)).toEqual([5, 9, 2, 6]);
     });
     it('last row lands correctly', () => {

@@ -7,7 +7,7 @@ import { BRIDGES } from "@tensorcraft/shared";
  * Scrolling band of canonical FE → ML bridges.
  *
  * Sources items from the shared `BRIDGES` catalog (50 bridges) and surfaces
- * the first 12 — they're curated, tier-labelled, and cover the breadth of
+ * the first 12, they're curated, tier-labelled, and cover the breadth of
  * concepts a learner hits in the first few modules.
  *
  * BridgeTicker internally respects `prefers-reduced-motion` (renders a
@@ -28,7 +28,7 @@ export function LandingBridgeTicker() {
     >
       <div className="px-10 md:px-20 pt-8 pb-2">
         <div className="font-mono text-xs text-primary tracking-[0.2em] uppercase mb-2">
-          // FROM THE BRIDGE CATALOG · {TICKER_ITEMS.length} OF {BRIDGES.length}
+          FROM THE BRIDGE CATALOG · {TICKER_ITEMS.length} OF {BRIDGES.length}
         </div>
       </div>
       <BridgeTicker items={TICKER_ITEMS} speed="medium" />

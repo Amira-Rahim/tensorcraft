@@ -61,7 +61,7 @@ export function AmbientBackground({ count = 200 }: { count?: number }) {
     timeRef.current += 0.003;
     const t = timeRef.current;
 
-    // Fully transparent clear — blends with page background
+    // Fully transparent clear, blends with page background
     ctx.clearRect(0, 0, w, h);
 
     const ps = particles.current;
@@ -138,7 +138,7 @@ export function AmbientBackground({ count = 200 }: { count?: number }) {
 
     resize();
 
-    // Honour `prefers-reduced-motion: reduce` — render a single static frame
+    // Honour `prefers-reduced-motion: reduce`, render a single static frame
     // so the page still gets the textured backdrop, but the rAF loop and
     // its ~3 % CPU cost stay off the main thread. WCAG 2.3.3.
     const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");

@@ -1,5 +1,5 @@
 /**
- * Sentry edge config — runs in the Next.js Edge runtime (middleware,
+ * Sentry edge config, runs in the Next.js Edge runtime (middleware,
  * edge routes, edge-rendered pages).
  *
  * Reads `SENTRY_DSN` first (server-only secret), falling back to

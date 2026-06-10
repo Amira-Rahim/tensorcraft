@@ -123,7 +123,7 @@ const encoderOut = tf.randomNormal([tokens.length, 64]) as tf.Tensor2D;
 if (batch.maskedPositions.length > 0) {
   const predictions = mlmPredictionHead(encoderOut, batch.maskedPositions, 30000);
   console.log('Prediction shape:', predictions.shape);
-  // [numMasked, vocabSize] — probability over entire vocabulary
+  // [numMasked, vocabSize]: probability over entire vocabulary
 }`}
 </CodeBlock>
 
@@ -174,7 +174,7 @@ function createNSPExamples(
 function nspHead(clsOutput: tf.Tensor2D, dModel: number): tf.Tensor2D {
   const W = tf.randomNormal([dModel, 2]);
   const logits = tf.matMul(clsOutput, W);
-  return tf.softmax(logits, -1) as tf.Tensor2D; // [batch, 2] — IsNext / NotNext
+  return tf.softmax(logits, -1) as tf.Tensor2D; // [batch, 2]: IsNext / NotNext
 }
 
 // Clinical example:

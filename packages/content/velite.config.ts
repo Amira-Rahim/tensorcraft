@@ -9,14 +9,14 @@ import ts from "typescript";
  */
 function tsToJs(src: string): string {
   if (!src) return src;
-  // Strip imports first — the worker injects globals (tf, expect, describe, it).
+  // Strip imports first; the worker injects globals (tf, expect, describe, it).
   // Stripping pre-transpile prevents TS from emitting CJS namespace-import helpers
   // (__importStar, __createBinding, etc.) which would then call require() and fail.
   const noImports = src
     .replace(/^\s*import\s+.*\s+from\s+['"][^'"]+['"];?\s*$/gm, "")
     .replace(/^\s*import\s+['"][^'"]+['"];?\s*$/gm, "")
     .replace(/^\s*export\s+\{[^}]*\};?\s*$/gm, "")
-    // Drop `export ` prefix on declarations — keep the declaration itself.
+    // Drop `export ` prefix on declarations; keep the declaration itself.
     .replace(
       /^(\s*)export\s+(default\s+)?(?=(?:async\s+)?(?:function|const|let|var|class|interface|type|enum)\b)/gm,
       "$1",
@@ -37,7 +37,7 @@ function tsToJs(src: string): string {
       .replace(/^"use strict";\s*\n?/m, "")
       .replace(/^Object\.defineProperty\(exports,.*$/gm, "")
       .replace(/^exports\.\w+\s*=\s*(?:void 0|\w+);?\s*$/gm, "")
-      // Strip CommonJS require() that TS emits for `import` statements — the worker
+      // Strip CommonJS require() that TS emits for `import` statements; the worker
       // injects globals (tf, expect, describe, it) so any external import is wrong.
       .replace(
         /^(?:const|var|let)\s+[\w{}\s,*:]+\s*=\s*require\(['"][^'"]+['"]\);?\s*$/gm,
@@ -47,7 +47,7 @@ function tsToJs(src: string): string {
   );
 }
 
-// V1 launched theme dirs — keep in sync with LAUNCHED_THEMES in
+// V1 launched theme dirs; keep in sync with LAUNCHED_THEMES in
 // packages/shared/src/constants.ts. Coming-soon themes' .mdx/.yaml stay in the
 // repo (under packages/content/content/{slug}/) but are excluded from the build
 // so their content does not ship in `.velite/*` outputs.
@@ -90,7 +90,7 @@ const lessons = defineCollection({
       nextLessonTeaser: s.string().optional(),
     }),
 
-    // Screenplay scene metadata (optional — falls back gracefully)
+    // Screenplay scene metadata (optional; falls back gracefully)
     scene: s
       .object({
         location: s.string(),
@@ -114,7 +114,7 @@ const lessons = defineCollection({
       .max(3)
       .optional(),
 
-    // Pedagogical pattern — drives alternate 5C presentations.
+    // Pedagogical pattern: drives alternate 5C presentations.
     // Absent frontmatter defaults to "standard".
     pattern: s
       .enum([

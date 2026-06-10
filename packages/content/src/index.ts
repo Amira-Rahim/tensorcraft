@@ -12,7 +12,7 @@ export type { Lesson, Exercise, Module } from "./schemas";
 export { lessons, exercises, modules, posts } from "../.velite";
 export type { Post } from "../.velite";
 
-// Concept index — reverse lookup from ML/FE concepts → lessons.
+// Concept index: reverse lookup from ML/FE concepts → lessons.
 // Used by the news → digest matcher pipeline.
 export {
   normalizeConcept,

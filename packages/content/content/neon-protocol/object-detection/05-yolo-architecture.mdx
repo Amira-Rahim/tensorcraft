@@ -194,18 +194,18 @@ function decodeYOLOOutput(
 Detection is a pipeline: predict, decode, filter, NMS. Each step is a familiar pattern.
 
 <CodeBlock language="typescript" title="detection-pipeline.ts">
-{`// The complete detection pipeline — all concepts from this module combined
+{`// The complete detection pipeline: all concepts from this module combined
 
 function detectObjects(
   imageData: number[][][],  // preprocessed image tensor
   config: YOLOConfig
 ): DecodedDetection[] {
-  // Step 1: Forward pass (single-shot — one pass, all predictions)
+  // Step 1: Forward pass (single-shot: one pass, all predictions)
   // Like requestAnimationFrame: batch everything into one call
   const rawOutput = model.predict(imageData);
 
   // Step 2: Decode raw output into bounding boxes
-  // Like JSON.parse() — converting wire format to usable objects
+  // Like JSON.parse(), converting wire format to usable objects
   const decoded = decodeYOLOOutput(rawOutput, config);
 
   // Step 3: Confidence threshold (filter low-quality detections)
@@ -213,17 +213,17 @@ function detectObjects(
   const confident = decoded.filter(d => d.confidence > 0.5);
 
   // Step 4: Non-Max Suppression (remove duplicates)
-  // Like debounce() — keep the best, suppress redundant
+  // Like debounce(): keep the best, suppress redundant
   const final = nms(confident, 0.5);
 
   return final;
 }
 
 // Performance comparison:
-// Two-stage (Faster R-CNN): ~5 FPS  — too slow for real-time
-// YOLO v5:                  ~30 FPS — real-time on GPU
-// YOLO in browser (WebGL):  ~15 FPS — good enough to see drones first
-// YOLO in browser (WebGPU): ~24 FPS — the resistance's advantage
+// Two-stage (Faster R-CNN): ~5 FPS  (too slow for real-time)
+// YOLO v5:                  ~30 FPS (real-time on GPU)
+// YOLO in browser (WebGL):  ~15 FPS (good enough to see drones first)
+// YOLO in browser (WebGPU): ~24 FPS (the resistance's advantage)
 
 // The resistance's edge: Meridian never expects detection
 // running from a browser tab, with no server or API to trace.
@@ -247,10 +247,10 @@ An adversarial patch on a stop sign caused the detector to classify it as a yiel
 
 <Quiz
   question="What does YOLO's 'You Only Look Once' actually mean?"
-  options={[{"text":"Single forward pass produces all bounding boxes + classes — no proposal stage"},{"text":"Trained on one image only"},{"text":"Single-class detection"},{"text":"Inference happens once per video"}]}
+  options={[{"text":"Single forward pass produces all bounding boxes + classes; no proposal stage"},{"text":"Trained on one image only"},{"text":"Single-class detection"},{"text":"Inference happens once per video"}]}
   correct={0}
   explanation="Two-stage detectors (R-CNN family) first propose regions, then classify each. YOLO does both in one forward pass via grid-based prediction. Faster but historically less accurate. Modern YOLO (v8+) closes the accuracy gap."
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["YOLO trades the two-stage pipeline for one forward pass, paying with anchor-grid design choices and a harder training problem", "The output is a grid tensor: each cell predicts bounding boxes, confidence, and class probabilities simultaneously", "The full pipeline is predict, decode, threshold, NMS — each step maps to a familiar frontend pattern", "Browser-based YOLO runs at 15-24 FPS with WebGL and WebGPU — fast enough for the resistance to see drones first"]} />
+<KeyTakeaways takeaways={["YOLO trades the two-stage pipeline for one forward pass, paying with anchor-grid design choices and a harder training problem", "The output is a grid tensor: each cell predicts bounding boxes, confidence, and class probabilities simultaneously", "The full pipeline is predict, decode, threshold, NMS; each step maps to a familiar frontend pattern", "Browser-based YOLO runs at 15-24 FPS with WebGL and WebGPU, fast enough for the resistance to see drones first"]} />

@@ -1,5 +1,5 @@
 /**
- * Next.js instrumentation hook — loads the appropriate Sentry config
+ * Next.js instrumentation hook, loads the appropriate Sentry config
  * per runtime so server / edge / client code each get their own init.
  *
  * Required by `@sentry/nextjs` starting in Next.js 13.4+.

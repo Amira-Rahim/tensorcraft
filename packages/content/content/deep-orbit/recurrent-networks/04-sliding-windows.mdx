@@ -7,7 +7,7 @@ order: 4
 estimatedMinutes: 12
 difficulty: intermediate
 context:
-  narrative: "Demir needs to feed continuous signal data into the LSTM in fixed-size chunks. He builds a sliding window pipeline — the same pattern as IntersectionObserver watching elements enter and leave the viewport."
+  narrative: "Demir needs to feed continuous signal data into the LSTM in fixed-size chunks. He builds a sliding window pipeline: the same pattern as IntersectionObserver watching elements enter and leave the viewport."
   speaker: "Ensign Demir"
 concept:
   explanation: "Sliding windows convert a continuous stream into fixed-size overlapping chunks, manufacturing one ready-made model input at every step."
@@ -17,7 +17,7 @@ concept:
     mlTitle: "Sliding Window"
     mlCode: "sequences = signal.slice(i, i + windowSize) // process each window"
     tier: structural
-    breaks: "IntersectionObserver fires a discrete event when an element crosses a threshold. Signal sliding windows shift by a stride parameter (often 1 step) and overlap by a hop parameter — every position produces a new sample. Compute scales with sequence length × overlap ratio, not viewport size."
+    breaks: "IntersectionObserver fires a discrete event when an element crosses a threshold. Signal sliding windows shift by a stride parameter (often 1 step) and overlap by a hop parameter; every position produces a new sample. Compute scales with sequence length × overlap ratio, not viewport size."
 consequence:
   narrative: "Perfectly shaped windows stream into the LSTM, and Demir can finally process the continuous signal feed in real time."
 hints:
@@ -123,7 +123,7 @@ Build a sliding window function for sequential data.
 
 <Exercise slug="sliding-window" />
 
-<KeyTakeaways takeaways={["Each window slice doubles as a training pair: the windowSize values are the input, the value right after them is the label", "Window size determines temporal context — must be larger than the pattern you want to detect", "Stride controls overlap: stride=1 maximizes training data, stride=windowSize gives no overlap", "A ring buffer provides real-time windowing for the streaming dashboard pipeline"]} />
+<KeyTakeaways takeaways={["Each window slice doubles as a training pair: the windowSize values are the input, the value right after them is the label", "Window size determines temporal context: it must be larger than the pattern you want to detect", "Stride controls overlap: stride=1 maximizes training data, stride=windowSize gives no overlap", "A ring buffer provides real-time windowing for the streaming dashboard pipeline"]} />
 
 <Epilogue>
 

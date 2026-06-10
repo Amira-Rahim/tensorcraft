@@ -6,7 +6,7 @@ export const terraGrid: ThemeManifest = {
   displayName: "Terra Grid",
   tagline: "Where models meet the real world",
   description:
-    "TERRA SYSTEMS' ML models achieve 99.9% in the lab and 67% in the field. Build Terra Grid Intelligence — an edge-deployed monitoring system.",
+    "TERRA SYSTEMS' ML models achieve 99.9% in the lab and 67% in the field. Build Terra Grid Intelligence, an edge-deployed monitoring system.",
   palette: {
     bg: "#1C1C1C",
     primary: "#C49535",
@@ -53,10 +53,10 @@ export const terraGrid: ThemeManifest = {
     },
   ],
   specialization: "Edge AI & Production ML",
-  modelBuilt: "Terra Grid Intelligence — edge monitoring system",
+  modelBuilt: "Terra Grid Intelligence: edge monitoring system",
   careerPaths: [
-    "MLOps Engineer ($120K–$260K)",
-    "Edge AI Engineer ($115K–$220K)",
-    "Production ML Engineer ($130K–$240K)",
+    "MLOps Engineer ($120K-$260K)",
+    "Edge AI Engineer ($115K-$220K)",
+    "Production ML Engineer ($130K-$240K)",
   ],
 };

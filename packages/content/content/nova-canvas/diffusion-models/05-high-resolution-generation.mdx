@@ -69,7 +69,7 @@ for (const res of resolutions) {
 // 256x256:  65,536 pixels, 0.8 MB per tensor
 // 512x512:  262,144 pixels, 3.0 MB per tensor
 // 1024x1024: 1,048,576 pixels, 12.0 MB per tensor
-// U-Net has dozens of intermediate tensors — multiply accordingly`}
+// U-Net has dozens of intermediate tensors; multiply accordingly`}
 </CodeBlock>
 
 ## Cascaded Generation Pipeline
@@ -162,10 +162,10 @@ Diffusion runs on the small latent. The VAE adds quality loss (the latent can't 
 
 <Quiz
   question="Why does Stable Diffusion run in latent space instead of pixel space?"
-  options={[{"text":"Latent space is more interpretable"},{"text":"VAE encodes 512×512 image to 64×64 latent — 64× cheaper diffusion compute"},{"text":"Latent diffusion is more accurate"},{"text":"Required by classifier-free guidance"}]}
+  options={[{"text":"Latent space is more interpretable"},{"text":"VAE encodes 512×512 image to 64×64 latent: 64× cheaper diffusion compute"},{"text":"Latent diffusion is more accurate"},{"text":"Required by classifier-free guidance"}]}
   correct={1}
   explanation="Naive 512×512 diffusion exhausts GPU memory. Stable Diffusion: VAE encodes image to 64×64×4 latent, runs diffusion there, VAE decodes back to image. ~64× compute savings at the cost of slight VAE quality loss (color shifts, fine-detail blurring)."
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Direct high-resolution diffusion is memory-prohibitive in the browser — pixels scale quadratically", "Cascaded pipelines generate at low resolution and upscale with super-resolution models", "Fewer diffusion steps + lower base resolution + fast upscaler = 43 seconds down to 3.4 seconds", "The gallery kiosks are saved: high-quality images at interactive speed"]} />
+<KeyTakeaways takeaways={["Direct high-resolution diffusion is memory-prohibitive in the browser; pixels scale quadratically", "Cascaded pipelines generate at low resolution and upscale with super-resolution models", "Fewer diffusion steps + lower base resolution + fast upscaler = 43 seconds down to 3.4 seconds", "The gallery kiosks are saved: high-quality images at interactive speed"]} />

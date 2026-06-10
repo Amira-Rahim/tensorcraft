@@ -23,7 +23,7 @@ const outPath = resolve(veliteDir, "concept-index.json");
 
 if (!existsSync(lessonsPath)) {
   console.error(
-    `[build-concept-index] missing ${lessonsPath} — run \`pnpm turbo build:content\` first.`,
+    `[build-concept-index] missing ${lessonsPath}; run \`pnpm turbo build:content\` first.`,
   );
   process.exit(1);
 }

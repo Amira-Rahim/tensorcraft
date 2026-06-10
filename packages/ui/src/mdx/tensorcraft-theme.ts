@@ -26,13 +26,13 @@ export const tensorcraftTheme: ThemeRegistration = {
     "editorBracketMatch.border": "#6BAA8A60",
   },
   tokenColors: [
-    // Comments — muted
+    // Comments - muted
     {
       scope: ["comment", "punctuation.definition.comment"],
       settings: { foreground: "#6A7A6A", fontStyle: "italic" },
     },
 
-    // Keywords — primary green (import, export, const, let, var, function, return, if, else, etc.)
+    // Keywords - primary green (import, export, const, let, var, function, return, if, else, etc.)
     {
       scope: [
         "keyword",
@@ -44,7 +44,7 @@ export const tensorcraftTheme: ThemeRegistration = {
       settings: { foreground: "#6BAA8A" },
     },
 
-    // Strings — warm accent
+    // Strings - warm accent
     {
       scope: [
         "string",
@@ -55,13 +55,13 @@ export const tensorcraftTheme: ThemeRegistration = {
       settings: { foreground: "#C9A96E" },
     },
 
-    // Numbers — soft green
+    // Numbers - soft green
     {
       scope: ["constant.numeric"],
       settings: { foreground: "#B5CEA8" },
     },
 
-    // Constants (true, false, null, undefined) — soft blue
+    // Constants (true, false, null, undefined) - soft blue
     {
       scope: [
         "constant.language",
@@ -72,13 +72,13 @@ export const tensorcraftTheme: ThemeRegistration = {
       settings: { foreground: "#7096B0" },
     },
 
-    // Functions/methods — warm yellow
+    // Functions/methods - warm yellow
     {
       scope: ["entity.name.function", "support.function", "meta.function-call"],
       settings: { foreground: "#DCDCAA" },
     },
 
-    // Types, classes, interfaces — blue
+    // Types, classes, interfaces - blue
     {
       scope: [
         "entity.name.type",
@@ -90,13 +90,13 @@ export const tensorcraftTheme: ThemeRegistration = {
       settings: { foreground: "#4A90D9" },
     },
 
-    // Variables, parameters — clean text
+    // Variables, parameters - clean text
     {
       scope: ["variable", "variable.other", "variable.parameter"],
       settings: { foreground: "#D4D4D4" },
     },
 
-    // Properties/fields — light blue
+    // Properties/fields - light blue
     {
       scope: [
         "variable.other.property",
@@ -106,7 +106,7 @@ export const tensorcraftTheme: ThemeRegistration = {
       settings: { foreground: "#9CDCFE" },
     },
 
-    // Operators — text color
+    // Operators - text color
     {
       scope: [
         "keyword.operator",
@@ -118,7 +118,7 @@ export const tensorcraftTheme: ThemeRegistration = {
       settings: { foreground: "#E0E0E0" },
     },
 
-    // Punctuation — slightly dimmed
+    // Punctuation - slightly dimmed
     {
       scope: [
         "punctuation",
@@ -130,7 +130,7 @@ export const tensorcraftTheme: ThemeRegistration = {
       settings: { foreground: "#B0B0B0" },
     },
 
-    // Template literal expressions — primary
+    // Template literal expressions - primary
     {
       scope: [
         "punctuation.definition.template-expression",

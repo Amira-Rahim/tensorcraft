@@ -17,12 +17,12 @@ concept:
     mlTitle: "Sequence Forecast"
     mlCode: "nextValue = model.predict(recentWindow) // predict next signal"
     tier: structural
-    breaks: "Autocomplete picks from a finite list of pre-indexed completions you control. Sequence forecasting generates novel continuations from a learned distribution — predictions are unbounded, often invent values outside the training range, and confidence drops sharply with horizon. You must bound predictions with domain constraints (clip to physical limits, etc.)."
+    breaks: "Autocomplete picks from a finite list of pre-indexed completions you control. Sequence forecasting generates novel continuations from a learned distribution: predictions are unbounded, often invent values outside the training range, and confidence drops sharply with horizon. You must bound predictions with domain constraints (clip to physical limits, etc.)."
 consequence:
-  narrative: "The LSTM predicts the anomalous signal will repeat in exactly 47 minutes. The crew waits. At 47 minutes and 3 seconds — it arrives."
+  narrative: "The LSTM predicts the anomalous signal will repeat in exactly 47 minutes. The crew waits. At 47 minutes and 3 seconds, it arrives."
 hints:
   - level: nudge
-    content: "Sequence prediction is next-value forecasting — the LSTM outputs what it thinks comes next"
+    content: "Sequence prediction is next-value forecasting: the LSTM outputs what it thinks comes next"
   - level: guidance
     content: "Train with input = window[0:n], label = signal[n+1]. Loss = MSE between predicted and actual."
   - level: solution
@@ -114,7 +114,7 @@ async function forecastMultiStep(
 
 // Forecast 47 minutes ahead
 const forecast = await forecastMultiStep(model, recentWindow, 47);
-// The LSTM predicts a spike at step 47 — the anomaly repeats!`}
+// The LSTM predicts a spike at step 47: the anomaly repeats!`}
 </CodeBlock>
 
 ## Challenge
@@ -133,14 +133,14 @@ Train a prediction model and forecast the next signal value.
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["DEEP SCAN's LSTM called the anomaly's return at 47 minutes; it arrived at 47 minutes 3 seconds — structure, not noise", "Multi-step forecasting feeds predictions back as input, generating forecasts one step at a time", "MSE/MAE metrics quantify prediction accuracy — high error on specific signals may indicate anomalies", "Prediction error on the anomalous pattern came in under 3%: the LSTM reproduces a sequence it last saw 72 hours earlier"]} />
+<KeyTakeaways takeaways={["DEEP SCAN's LSTM called the anomaly's return at 47 minutes; it arrived at 47 minutes 3 seconds: structure, not noise", "Multi-step forecasting feeds predictions back as input, generating forecasts one step at a time", "MSE/MAE metrics quantify prediction accuracy; high error on specific signals may indicate anomalies", "Prediction error on the anomalous pattern came in under 3%: the LSTM reproduces a sequence it last saw 72 hours earlier"]} />
 
 <Epilogue>
 
 The forecast goes up on the main bridge display at 2010: predicted recurrence, 47 minutes; nobody is assigned to watch the countdown, and by 2050 the entire bridge crew is watching it anyway. Nazari kills the room audio. 46:59, then 47:00, and the trace stays flat, and Demir feels the whole room not breathe. 47:01, 47:02. At 47:03 the spike walks onto the display exactly as drawn.
 
 <Dialogue speaker="Commander Mirza">
-Log the three seconds. I want to know whose error that is — ours or theirs.
+Log the three seconds. I want to know whose error that is: ours or theirs.
 </Dialogue>
 
 It is the first time anyone on the bridge has said "theirs."

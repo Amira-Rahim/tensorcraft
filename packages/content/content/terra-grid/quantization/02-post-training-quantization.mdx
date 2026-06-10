@@ -94,7 +94,7 @@ const original = new Float32Array([0.123, -0.456, 0.789, -0.012, 0.345]);
 const { quantized, scale, zeroPoint } = quantizeWeights(original);
 
 console.log('Original size:', original.byteLength, 'bytes');   // 20 bytes
-console.log('Quantized size:', quantized.byteLength, 'bytes'); // 5 bytes — 4x smaller`}
+console.log('Quantized size:', quantized.byteLength, 'bytes'); // 5 bytes, 4x smaller`}
 </CodeBlock>
 
 The process is mechanical: find the min and max of each weight tensor, compute a scale factor, and map every floating-point value to the nearest integer in [-128, 127]. Information is lost, just as minified code loses readability, but the behavior is preserved within acceptable tolerance.

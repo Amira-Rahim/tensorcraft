@@ -9,7 +9,7 @@ const pages = [
   { name: "Themes", path: "/themes" },
   { name: "Theme Detail", path: "/themes/deep-orbit" },
   // The module route (/themes/{slug}/{module}) is a redirect shim to the
-  // theme page — auditing it just re-audits Theme Detail and races axe
+  // theme page, auditing it just re-audits Theme Detail and races axe
   // against the navigation. Pricing is audited instead.
   { name: "Pricing", path: "/pricing" },
   {
@@ -21,7 +21,7 @@ const pages = [
 test.describe("Accessibility audits", () => {
   for (const { name, path } of pages) {
     test(`${name} page (${path}) passes axe audit`, async ({ page }) => {
-      // Skip entrance animations — axe samples computed colors, and an
+      // Skip entrance animations, axe samples computed colors, and an
       // element mid-fade reports a blended (lower-contrast) foreground.
       await page.emulateMedia({ reducedMotion: "reduce" });
       await page.goto(path);

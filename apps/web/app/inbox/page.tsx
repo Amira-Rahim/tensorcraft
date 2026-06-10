@@ -5,7 +5,7 @@ import { InboxView, type InboxMessage } from "./inbox-view";
 
 export const metadata: Metadata = {
   title: "DISPATCH inbox | Tensorcraft",
-  description: "Operator messages from DISPATCH — weekly intel and milestones.",
+  description: "Operator messages from DISPATCH: weekly intel and milestones.",
   robots: { index: false, follow: false },
 };
 

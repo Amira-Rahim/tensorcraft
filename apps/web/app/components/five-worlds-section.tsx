@@ -53,7 +53,7 @@ function spawn(w: number, h: number, kind: number): Particle {
   const life = 250 + Math.random() * 350;
   const base = { life, maxLife: life };
   switch (kind) {
-    case 0: // Deep Orbit — drifting stars
+    case 0: // Deep Orbit: drifting stars
       return {
         ...base,
         x: Math.random() * w,
@@ -63,7 +63,7 @@ function spawn(w: number, h: number, kind: number): Particle {
         r: Math.random() < 0.2 ? 2.2 : 1.0,
         alpha: 0.35 + Math.random() * 0.5,
       };
-    case 1: // Neon Protocol — horizontal scan streaks
+    case 1: // Neon Protocol: horizontal scan streaks
       return {
         ...base,
         x: -5,
@@ -73,7 +73,7 @@ function spawn(w: number, h: number, kind: number): Particle {
         r: 0.8,
         alpha: 0.25 + Math.random() * 0.4,
       };
-    case 2: // Signal Ward — rising pulses
+    case 2: // Signal Ward: rising pulses
       return {
         ...base,
         x: Math.random() * w,
@@ -83,7 +83,7 @@ function spawn(w: number, h: number, kind: number): Particle {
         r: 1.1,
         alpha: 0.3 + Math.random() * 0.4,
       };
-    case 3: // Nova Canvas — slow spiral
+    case 3: // Nova Canvas: slow spiral
       return {
         ...base,
         x: w / 2 + (Math.random() - 0.5) * w,
@@ -93,7 +93,7 @@ function spawn(w: number, h: number, kind: number): Particle {
         r: 0.6 + Math.random() * 1.8,
         alpha: 0.25 + Math.random() * 0.45,
       };
-    default: // Terra Grid — falling data
+    default: // Terra Grid: falling data
       return {
         ...base,
         x: Math.random() * w,
@@ -171,7 +171,7 @@ function AtmosphereCanvas({
         continue;
       }
 
-      // Neon Protocol — streaks
+      // Neon Protocol, streaks
       if (kind === 1) {
         ctx.beginPath();
         ctx.moveTo(p.x - 6, p.y);
@@ -195,7 +195,7 @@ function AtmosphereCanvas({
       }
     }
 
-    // Signal Ward — EKG line
+    // Signal Ward, EKG line
     if (kind === 2) {
       const t = Date.now() * 0.002;
       ctx.beginPath();
@@ -212,7 +212,7 @@ function AtmosphereCanvas({
       ctx.stroke();
     }
 
-    // Terra Grid — faint grid lines
+    // Terra Grid, faint grid lines
     if (kind === 4) {
       ctx.strokeStyle = `rgba(${r},${g},${b},${hot ? 0.08 : 0.04})`;
       ctx.lineWidth = 0.5;
@@ -261,7 +261,7 @@ function AtmosphereCanvas({
       const reduced = !!mql?.matches;
       if (reduced || !inView) {
         stop();
-        // Reduced motion still deserves the atmosphere — one static frame.
+        // Reduced motion still deserves the atmosphere, one static frame.
         if (reduced && inView) draw();
         return;
       }
@@ -315,19 +315,19 @@ export function FiveWorldsSection() {
       {/* Header */}
       <div className="px-10 md:px-20 pt-16 pb-10">
         <div className="font-mono text-xs text-primary tracking-[0.2em] uppercase mb-3">
-          // CHOOSE YOUR WORLD
+          CHOOSE YOUR WORLD
         </div>
         <h2 className="text-3xl md:text-4xl font-mono font-black tracking-tight mb-3">
           Five Worlds
         </h2>
         <p className="text-[15px] text-text-muted leading-relaxed max-w-[520px]">
           Same ML syllabus. Five story universes.{" "}
-          <span style={{ color: HERO_CARD.col }}>{HERO_CARD.name}</span> is live
-          &mdash; the other four ship in waves.
+          <span style={{ color: HERO_CARD.col }}>{HERO_CARD.name}</span> is
+          live; the other four ship in waves.
         </p>
       </div>
 
-      {/* Hero card — launched theme */}
+      {/* Hero card, launched theme */}
       <motion.div
         className="relative overflow-hidden border-t border-border"
         onMouseEnter={() => setHovered(HERO_CARD.slug)}
@@ -376,7 +376,7 @@ export function FiveWorldsSection() {
           <p className="text-base md:text-lg text-text-muted leading-relaxed max-w-[640px] mb-6">
             {HERO_CARD.tagline}
           </p>
-          {/* Story hook — only true for Deep Orbit; the hero demo's ambiguous
+          {/* Story hook, only true for Deep Orbit; the hero demo's ambiguous
               reading IS this theme's inciting incident. */}
           {HERO_CARD.slug === "deep-orbit" && (
             <p
@@ -384,7 +384,7 @@ export function FiveWorldsSection() {
               className="font-mono text-[13px] text-text-primary max-w-[560px] mb-6 border-l-2 pl-4"
               style={{ borderColor: HERO_CARD.col }}
             >
-              That ambiguous reading in the demo up top? Sample 7741 — the
+              That ambiguous reading in the demo up top? Sample 7741, the
               anomaly this whole story chases. The demo was chapter one.
             </p>
           )}
@@ -392,15 +392,15 @@ export function FiveWorldsSection() {
             className="font-mono text-sm tracking-wider"
             style={{ color: HERO_CARD.col }}
           >
-            Start Module 1 &mdash; free &rarr;
+            Start Module 1 (free) &rarr;
           </span>
         </Link>
       </motion.div>
 
-      {/* Coming-soon themes — muted 2x2 grid */}
+      {/* Coming-soon themes, muted 2x2 grid */}
       <div className="border-t border-border px-10 md:px-20 pt-10 pb-4">
         <div className="font-mono text-xs text-text-muted tracking-[0.2em] uppercase">
-          // Coming next
+          Coming next
         </div>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 border-t border-border">
@@ -463,7 +463,7 @@ export function FiveWorldsSection() {
               <p className="text-[12px] text-text-muted leading-relaxed opacity-40 group-hover:opacity-65 transition-opacity mb-4">
                 {t.tagline}
               </p>
-              {/* Always visible — hover-only meant touch devices (and anyone
+              {/* Always visible, hover-only meant touch devices (and anyone
                   not mousing over) never saw the waitlist affordance. */}
               <span
                 className="font-mono text-xs tracking-wider opacity-60 group-hover:opacity-100 transition-opacity"

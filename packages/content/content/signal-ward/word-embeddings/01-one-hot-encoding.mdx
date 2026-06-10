@@ -93,10 +93,10 @@ Aspirin and ibuprofen are both NSAIDs, pain relievers that work on the same biol
   return dot.div(normA.mul(normB)).dataSync()[0];
 }
 
-// Aspirin vs Ibuprofen (both painkillers — should be similar)
+// Aspirin vs Ibuprofen (both painkillers, should be similar)
 console.log(cosineSimilarity(aspirin, ibuprofen));  // 0
 
-// Aspirin vs Appendectomy (completely unrelated — should be different)
+// Aspirin vs Appendectomy (completely unrelated, should be different)
 console.log(cosineSimilarity(aspirin, appendectomy));  // 0
 
 // One-hot encoding says everything is equally unrelated.
@@ -105,7 +105,7 @@ console.log(cosineSimilarity(aspirin, appendectomy));  // 0
 // is a surgical procedure.
 
 // And with a real clinical vocabulary of 50,000 terms,
-// each vector has 50,000 dimensions — mostly zeros.`}
+// each vector has 50,000 dimensions, mostly zeros.`}
 </CodeBlock>
 
 <Dialogue speaker="Dr. Karimi">
@@ -124,7 +124,7 @@ const vocabSize = 50_000;
 
 // Each one-hot vector has 50,000 dimensions
 // A batch of 128 words = 128 x 50,000 = 6.4 million values
-// Most of them are zeros — wasted memory
+// Most of them are zeros: wasted memory
 
 // In frontend terms: imagine a CSS file where every class name
 // is a unique 50,000-character string of 0s and 1s.
@@ -133,7 +133,7 @@ const vocabSize = 50_000;
 console.log('Vector dimensions:', vocabSize);
 console.log('Non-zero values per vector:', 1);
 console.log('Sparsity:', ((vocabSize - 1) / vocabSize * 100).toFixed(4) + '%');
-// Sparsity: 99.9980% — almost entirely zeros`}
+// Sparsity: 99.9980%, almost entirely zeros`}
 </CodeBlock>
 
 ## Challenge
@@ -146,9 +146,9 @@ Implement one-hot encoding for clinical vocabulary words.
 
 <Quiz
   question="A vocabulary has 50,000 unique medical terms. One-hot encoding represents each token as a vector of which size?"
-  options={[{"text":"50,000 — one dimension per vocabulary item, exactly one 1 and 49,999 zeros"},{"text":"log₂(50000) ≈ 16 — most efficient binary encoding"},{"text":"512 — standard embedding dimension"},{"text":"50,000² — pairwise interactions"}]}
+  options={[{"text":"50,000: one dimension per vocabulary item, exactly one 1 and 49,999 zeros"},{"text":"log₂(50000) ≈ 16: most efficient binary encoding"},{"text":"512: standard embedding dimension"},{"text":"50,000²: pairwise interactions"}]}
   correct={0}
-  explanation="One-hot encoding allocates one dimension per vocabulary item. For 50K vocab → 50K-dim vectors with a single 1 and 49,999 zeros. This is precisely why one-hot doesn't scale and learned embeddings (typically 128-512 dims) are used in practice — option C is the embedding size, not one-hot size. Option B is binary encoding (different scheme; loses orthogonality between items). Option D invents a non-existent encoding."
+  explanation="One-hot encoding allocates one dimension per vocabulary item. For 50K vocab → 50K-dim vectors with a single 1 and 49,999 zeros. This is precisely why one-hot doesn't scale and learned embeddings (typically 128-512 dims) are used in practice. Option C is the embedding size, not one-hot size. Option B is binary encoding (different scheme; loses orthogonality between items). Option D invents a non-existent encoding."
   tier="identity"
 />
 

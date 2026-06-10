@@ -35,7 +35,7 @@ keywords:
 ---
 
 <Dialogue speaker="Hassan Al-Rashid">
-A model that works in your notebook is a hypothesis. A model that works at 3 AM on a solar farm in the Atacama Desert with no internet — that is a product. Start simple. Get something running on the device.
+A model that works in your notebook is a hypothesis. A model that works at 3 AM on a solar farm in the Atacama Desert with no internet: that is a product. Start simple. Get something running on the device.
 </Dialogue>
 
 Your first edge model does not need to be complex. In frontend development, you start with basic form validation before building elaborate input pipelines. Edge ML follows the same principle: start with a simple anomaly detector, prove it works on the hardware, then iterate.
@@ -54,7 +54,7 @@ Client-side form validation checks if input falls within expected bounds. Anomal
 // Sensor data: [vibration, temperature, pressure, rpm]
 // Each reading is a 4-element vector
 
-// Build a tiny model — must fit in edge device memory
+// Build a tiny model: must fit in edge device memory
 function buildAnomalyDetector(): tf.Sequential {
   const model = tf.sequential();
 
@@ -80,7 +80,7 @@ function buildAnomalyDetector(): tf.Sequential {
 
 const model = buildAnomalyDetector();
 
-// Check model size — critical for edge deployment
+// Check model size, critical for edge deployment
 const modelParams = model.countParams();
 console.log(\`Parameters: \${modelParams}\`);  // 49 parameters
 console.log(\`Estimated size: \${(modelParams * 4 / 1024).toFixed(1)}KB\`);  // ~0.2KB
@@ -91,7 +91,7 @@ const prediction = model.predict(sensorReading) as tf.Tensor;
 const score = prediction.dataSync()[0];
 console.log(\`Anomaly score: \${score.toFixed(4)}\`);
 
-// Clean up tensors — memory management matters on edge devices
+// Clean up tensors; memory management matters on edge devices
 sensorReading.dispose();
 prediction.dispose();`}
 </CodeBlock>

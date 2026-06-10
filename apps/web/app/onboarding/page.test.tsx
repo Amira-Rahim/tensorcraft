@@ -7,7 +7,7 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
  * Covers the 4-step wizard (Welcome, Background, Goal, Ready), back
  * navigation, canonical enum values from migration 018, and the final PATCH
  * to `/api/onboarding`. Theme selection step was removed when launch was
- * scoped to Deep Orbit only — every learner is auto-routed to that theme.
+ * scoped to Deep Orbit only, every learner is auto-routed to that theme.
  */
 
 // ---------------------------------------------------------------------------
@@ -91,7 +91,7 @@ function clickBack() {
   fireEvent.click(btn);
 }
 
-// (Theme-step helpers removed — onboarding no longer asks the learner to
+// (Theme-step helpers removed, onboarding no longer asks the learner to
 //  pick a theme; Deep Orbit is auto-selected on submit.)
 
 // ---------------------------------------------------------------------------
@@ -327,7 +327,7 @@ describe("OnboardingPage", () => {
     });
   });
 
-  it("brutalist markers — next/back buttons are rounded-none", async () => {
+  it("brutalist markers, next/back buttons are rounded-none", async () => {
     await renderPage();
     expect(screen.getByTestId("onboarding-next").className).toMatch(
       /rounded-none/,
@@ -341,12 +341,12 @@ describe("OnboardingPage", () => {
     );
   });
 
-  it("brutalist markers — no soft-corner rounded utilities in rendered tree", async () => {
+  it("brutalist markers, no soft-corner rounded utilities in rendered tree", async () => {
     const { container } = await renderPage();
     expect(container.innerHTML).not.toMatch(/rounded-(sm|md|lg|xl|2xl|full)/);
   });
 
-  it("brutalist markers — primary CTA has focus-visible outline", async () => {
+  it("brutalist markers, primary CTA has focus-visible outline", async () => {
     await renderPage();
     expect(screen.getByTestId("onboarding-next").className).toMatch(
       /focus-visible:outline-2/,

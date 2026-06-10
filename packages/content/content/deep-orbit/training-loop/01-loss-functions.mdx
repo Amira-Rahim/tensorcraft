@@ -7,7 +7,7 @@ order: 1
 estimatedMinutes: 15
 difficulty: beginner
 context:
-  narrative: "The network makes its first predictions — they're terrible. Dr. Farah needs a way to measure exactly how wrong they are."
+  narrative: "The network makes its first predictions. They're terrible. Dr. Farah needs a way to measure exactly how wrong they are."
   speaker: "Dr. Farah"
 concept:
   explanation: "A loss function turns 'how wrong was that prediction' into a single number the network can work to minimize."
@@ -38,7 +38,7 @@ skillAxes: [training]
 The network predicts 0.52 for a signal that should be 1.0. How wrong is that? We need a precise, mathematical measure of wrongness: a loss function.
 </Dialogue>
 
-<LearningObjectives objectives={["Understand what loss functions measure and why they're essential", "Implement MSE for regression and binary crossentropy for classification", "Interpret loss values — lower is better, zero is perfect"]} />
+<LearningObjectives objectives={["Understand what loss functions measure and why they're essential", "Implement MSE for regression and binary crossentropy for classification", "Interpret loss values: lower is better, zero is perfect"]} />
 
 ## How Wrong Are We?
 
@@ -52,7 +52,7 @@ The network predicts 0.52 for a signal that should be 1.0. How wrong is that? We
 // Actual labels (ground truth)
 const labels = tf.tensor([1, 0, 1, 0, 1]);
 
-// Network predictions (untrained — pretty bad)
+// Network predictions (untrained, pretty bad)
 const predictions = tf.tensor([0.6, 0.4, 0.3, 0.7, 0.8]);
 
 // Mean Squared Error: average of (prediction - label)^2

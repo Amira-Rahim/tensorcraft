@@ -8,7 +8,7 @@
 //   1. Curator shortlists items at /admin/digest (status='shortlisted').
 //   2. scripts/news/draft.mjs writes blog MDX + flips items to 'published'.
 //   3. POST /api/admin/newsletter/send (or scripts/news/send-newsletter.mjs)
-//      invokes sendDigestNewsletter(weekIso) — this file.
+//      invokes sendDigestNewsletter(weekIso), this file.
 //
 // Send model: per-recipient request to Resend so each email gets its own
 // unsubscribe token. Slow but simple; switch to Resend Broadcasts if/when
@@ -98,7 +98,7 @@ function renderText(
   unsubUrl: string,
 ): string {
   const lines = [
-    `The Bridge — ${weekIso}`,
+    `The Bridge: ${weekIso}`,
     "",
     `Browser-ML news this week, mapped to lessons that teach the underlying concepts.`,
     "",
@@ -148,10 +148,10 @@ function renderHtml(
     .join("\n");
 
   return `<!doctype html>
-<html><head><meta charset="utf-8"/><title>The Bridge — ${escapeHtml(weekIso)}</title></head>
+<html><head><meta charset="utf-8"/><title>The Bridge: ${escapeHtml(weekIso)}</title></head>
 <body style="margin: 0; padding: 24px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #111; background: #fafafa;">
   <div style="max-width: 560px; margin: 0 auto; background: #fff; padding: 32px; border: 1px solid #eaeaea;">
-    <p style="margin: 0 0 8px 0; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: #666;">The Bridge — ${escapeHtml(weekIso)}</p>
+    <p style="margin: 0 0 8px 0; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: #666;">The Bridge: ${escapeHtml(weekIso)}</p>
     <h1 style="margin: 0 0 24px 0; font-size: 22px;">Browser-ML news, mapped to lessons.</h1>
     <ul style="list-style: none; padding: 0; margin: 0;">${itemsHtml}</ul>
     <hr style="border: none; border-top: 1px solid #eaeaea; margin: 32px 0;"/>
@@ -194,7 +194,7 @@ export async function sendDigestNewsletter(
   if (options.dryRun || list.length === 0) {
     logger.info(
       { source: "newsletter.sendDigest", ...result, dryRun: !!options.dryRun },
-      "dry-run or empty list — skipping send",
+      "dry-run or empty list, skipping send",
     );
     return result;
   }
@@ -204,7 +204,7 @@ export async function sendDigestNewsletter(
     throw new Error("RESEND_API_KEY not set");
   }
 
-  const subject = `The Bridge — ${weekIso}`;
+  const subject = `The Bridge: ${weekIso}`;
 
   for (const r of list) {
     const unsubUrl = `${SITE}/unsubscribe?token=${r.unsubscribe_token}`;

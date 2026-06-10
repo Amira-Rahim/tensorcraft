@@ -51,7 +51,7 @@ A runbook is four fields: a trigger condition, ordered steps, a verification com
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="runbook.ts">
-{`// Operational runbooks — same structure as web ops playbooks
+{`// Operational runbooks, same structure as web ops playbooks
 
 interface RunbookStep {
   order: number;
@@ -122,7 +122,7 @@ registry.add({
     { order: 1, action: 'Check model accuracy dashboard',
       command: 'tg-cli metrics --model current --window 1h',
       expectedOutput: 'accuracy < 0.90',
-      ifFailed: 'Dashboard may be stale — check raw metrics' },
+      ifFailed: 'Dashboard may be stale; check raw metrics' },
     { order: 2, action: 'Compare against baseline model',
       command: 'tg-cli compare --current --baseline',
       expectedOutput: 'Drift report with affected features',
@@ -138,7 +138,7 @@ registry.add({
   ],
   escalation: {
     condition: 'Drift persists after rollback or root cause unclear',
-    contact: 'Hassan Al-Rashid — ML Infrastructure Lead',
+    contact: 'Hassan Al-Rashid, ML Infrastructure Lead',
   },
 });
 
@@ -152,4 +152,4 @@ Build a runbook registry with checklist generation.
 
 <Exercise slug="write-runbook" />
 
-<KeyTakeaways takeaways={["A runbook is a trigger condition, ordered steps, verification commands, and an escalation path; no step should require judgment at 2 AM", "Every operational scenario needs a documented procedure — the 2 AM engineer should never have to guess", "Model cards document model behavior, limitations, and intended use for stakeholders", "Runbooks must be tested regularly — an outdated runbook is worse than no runbook"]} />
+<KeyTakeaways takeaways={["A runbook is a trigger condition, ordered steps, verification commands, and an escalation path; no step should require judgment at 2 AM", "Every operational scenario needs a documented procedure: the 2 AM engineer should never have to guess", "Model cards document model behavior, limitations, and intended use for stakeholders", "Runbooks must be tested regularly: an outdated runbook is worse than no runbook"]} />

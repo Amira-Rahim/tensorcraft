@@ -7,7 +7,7 @@ order: 1
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Mirza needs a report for Earth Command in 6 hours. 47 days of data. Farah suggests using an LLM to draft the report — not to replace analysis, but to accelerate it."
+  narrative: "Mirza needs a report for Earth Command in 6 hours. 47 days of data. Farah suggests using an LLM to draft the report: not to replace analysis, but to accelerate it."
   speaker: "Dr. Farah"
 concept:
   explanation: "An LLM drafts structured output from instructions in seconds. Whether any of it is true remains your job."
@@ -22,7 +22,7 @@ consequence:
   narrative: "Minutes to a full preliminary draft. Farah reviews and corrects: faster than writing from scratch, but only because she knows the data cold."
 hints:
   - level: nudge
-    content: "LLMs are tools that augment human analysis, not replace it — like Copilot for coding"
+    content: "LLMs are tools that augment human analysis, not replace it, like Copilot for coding"
   - level: guidance
     content: "Provide structured context (data summaries, specific questions) for best results"
   - level: solution
@@ -60,7 +60,7 @@ Nazari's skepticism is the right default. A language model will happily invent a
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="llm-client.ts">
-{`// Setting up an LLM client — like configuring any API service
+{`// Setting up an LLM client, like configuring any API service
 interface LLMClient {
   complete(prompt: string, options?: { temperature?: number; maxTokens?: number }): Promise<string>;
 }
@@ -119,9 +119,9 @@ interface AnalysisWorkflow {
   approvedBy: string;   // who verified
 }
 
-// CRITICAL: LLMs can hallucinate — generate plausible but false statements
+// CRITICAL: LLMs can hallucinate, generating plausible but false statements
 // Always verify claims against actual data
-// Like reviewing Copilot suggestions — accept what's correct, fix what's not
+// Like reviewing Copilot suggestions: accept what's correct, fix what's not
 
 function validateClaims(
   draft: string,
@@ -143,7 +143,7 @@ Set up an LLM client and generate a structured analysis.
 
 <Exercise slug="llm-client" />
 
-<KeyTakeaways takeaways={["Farah's constraint is 47 days of data, 12,000 classified signals, and a 6-hour deadline: the LLM drafts, she verifies every claim", "Low temperature (0.1-0.3) for factual analysis, higher (0.7-0.9) for creative tasks", "Always validate LLM output against actual data — hallucination is a feature, not a bug", "The workflow is generate → review → correct → approve — never auto-publish LLM output"]} />
+<KeyTakeaways takeaways={["Farah's constraint is 47 days of data, 12,000 classified signals, and a 6-hour deadline: the LLM drafts, she verifies every claim", "Low temperature (0.1-0.3) for factual analysis, higher (0.7-0.9) for creative tasks", "Always validate LLM output against actual data; hallucination is a feature, not a bug", "The workflow is generate → review → correct → approve; never auto-publish LLM output"]} />
 
 <Epilogue>
 

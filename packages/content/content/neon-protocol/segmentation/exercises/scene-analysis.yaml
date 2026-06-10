@@ -1,7 +1,7 @@
 slug: scene-analysis
 lessonSlug: scene-understanding
 title: "Analyze Scene Adjacency"
-instructions: "Write a function that takes a 2D segmentation mask (class indices) and a list of class names, and returns a set of adjacency pairs — strings like 'building-road' (alphabetically sorted) — for any two different classes that are horizontally or vertically adjacent."
+instructions: "Write a function that takes a 2D segmentation mask (class indices) and a list of class names, and returns a set of adjacency pairs (strings like 'building-road', alphabetically sorted) for any two different classes that are horizontally or vertically adjacent."
 starterCode: |
   function findAdjacencies(
     mask: number[][],

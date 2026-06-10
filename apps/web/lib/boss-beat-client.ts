@@ -16,7 +16,7 @@ export interface BossBeatChoice {
   chosenAt: string;
 }
 
-/** Fetch the player's prior choice for a beat — null if not yet chosen. */
+/** Fetch the player's prior choice for a beat, null if not yet chosen. */
 export async function getBossBeatChoice(
   beatId: string,
 ): Promise<BossBeatChoice | null> {

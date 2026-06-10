@@ -54,8 +54,8 @@ Two clocks run in every browser tab. `requestAnimationFrame` ticks roughly every
 
 <CodeBlock language="typescript" title="sync-clocks.ts">
 {`// The browser has two timing systems. You already use both.
-// Visual: requestAnimationFrame — ~16.67ms intervals (60fps)
-// Audio: AudioContext.currentTime — microsecond precision
+// Visual: requestAnimationFrame, ~16.67ms intervals (60fps)
+// Audio: AudioContext.currentTime, microsecond precision
 
 const audioCtx = new AudioContext();
 const analyser = audioCtx.createAnalyser();
@@ -69,7 +69,7 @@ const timeDomainData = new Uint8Array(analyser.fftSize);
 function syncLoop() {
   requestAnimationFrame(syncLoop);
 
-  // Read current audio state — this is your bridge
+  // Read current audio state; this is your bridge
   analyser.getByteFrequencyData(frequencyData);
   analyser.getByteTimeDomainData(timeDomainData);
 
@@ -129,7 +129,7 @@ class AVGenerator {
   }
 }
 
-// Both modalities evolve together — one latent walk, two outputs
+// Both modalities evolve together: one latent walk, two outputs
 const generator = new AVGenerator(visualModel, audioModel);
 const sequence = await generator.generateSequence(z1, z2, 60); // 1 second at 60fps`}
 </CodeBlock>
@@ -191,4 +191,4 @@ Audio and visual events sampled by separate clocks drift over time. Even tiny ra
 For browser inference, `AudioContext.outputLatency` reports actual sample queue depth → use to compute drift in real-time.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["AudioContext.currentTime and requestAnimationFrame are the browser's two timing systems — sync them for AV coherence", "AnalyserNode extracts real-time frequency and amplitude data without interrupting playback", "Shared latent spaces ensure audio and visual generation are semantically linked, not just temporally", "Audio-reactive visuals use the same data-binding pattern as reactive UI frameworks"]} />
+<KeyTakeaways takeaways={["AudioContext.currentTime and requestAnimationFrame are the browser's two timing systems; sync them for AV coherence", "AnalyserNode extracts real-time frequency and amplitude data without interrupting playback", "Shared latent spaces ensure audio and visual generation are semantically linked, not just temporally", "Audio-reactive visuals use the same data-binding pattern as reactive UI frameworks"]} />

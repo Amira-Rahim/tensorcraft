@@ -52,7 +52,7 @@ In React, a well-designed component has independent props: `size` does not affec
 <CodeBlock language="typescript" title="entangled-vs-disentangled.ts">
 {`// ENTANGLED component: changing one prop affects multiple visual aspects
 // <BadButton theme="dark" />
-// "theme" controls color AND border AND shadow AND text — all at once
+// "theme" controls color AND border AND shadow AND text, all at once
 
 // DISENTANGLED component: each prop is independent
 // <Button size="lg" variant="primary" rounded={true} disabled={false} />

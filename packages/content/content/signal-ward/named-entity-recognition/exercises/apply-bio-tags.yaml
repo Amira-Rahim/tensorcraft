@@ -1,7 +1,7 @@
 slug: apply-bio-tags
 lessonSlug: bio-tagging
 title: "Apply BIO Tags"
-instructions: "Implement two functions: (1) applyBioTags converts entity annotations into a BIO tag sequence — B-TYPE on the first token of each entity, I-TYPE on continuation tokens, O on everything else. (2) decodeBioTags reconstructs entity spans from a BIO tag sequence. Think of B as an HTML opening tag and the next B or O as the implicit closing tag."
+instructions: "Implement two functions: (1) applyBioTags converts entity annotations into a BIO tag sequence: B-TYPE on the first token of each entity, I-TYPE on continuation tokens, O on everything else. (2) decodeBioTags reconstructs entity spans from a BIO tag sequence. Think of B as an HTML opening tag and the next B or O as the implicit closing tag."
 starterCode: |
   interface EntityAnnotation {
     start: number;

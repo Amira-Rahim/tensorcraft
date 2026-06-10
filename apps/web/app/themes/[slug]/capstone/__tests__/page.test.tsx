@@ -119,7 +119,7 @@ vi.mock("@tensorcraft/content", () => {
   };
 });
 
-// Progress helper — two completed lessons, spanning both modules.
+// Progress helper, two completed lessons, spanning both modules.
 const progressRef = vi.hoisted(() => ({
   data: [
     {
@@ -154,7 +154,7 @@ vi.mock("@tensorcraft/ui/effects", () => ({
   ParticleField: () => <div data-testid="particle-field" />,
 }));
 
-// Browser Supabase client — exercised by the certificate card's
+// Browser Supabase client, exercised by the certificate card's
 // POST-on-mount flow.
 const getSessionMock = vi.fn();
 vi.mock("@/lib/supabase/client", () => ({
@@ -267,7 +267,7 @@ beforeEach(() => {
   purchasesRef.data = [{ theme_ids: ["deep-orbit"] }];
   getSessionMock.mockReset();
   getSessionMock.mockResolvedValue({ data: { session: null } });
-  // Default: no network — individual tests install a fetch stub.
+  // Default: no network, individual tests install a fetch stub.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (globalThis as any).fetch = vi.fn().mockResolvedValue({
     ok: false,
@@ -288,14 +288,14 @@ async function renderPage() {
 
 // ─── Tests ─────────────────────────────────────────────────────────────
 
-describe("CapstonePage — Phase 11 §11d", () => {
+describe("CapstonePage, Phase 11 §11d", () => {
   it("renders the hero, 4 stat cards, the timeline, and the certificate card", async () => {
     await renderPage();
 
     // Hero
     expect(screen.getByText("All Systems Mapped")).toBeInTheDocument();
 
-    // Stats — 4 brutalist cards
+    // Stats, 4 brutalist cards
     const stats = screen.getByTestId("capstone-stats");
     expect(stats).toBeInTheDocument();
     for (let i = 0; i < 4; i++) {
@@ -413,9 +413,9 @@ describe("CapstonePage — Phase 11 §11d", () => {
 
     await renderPage();
 
-    // Cert number — first 8 of UUID, upper
+    // Cert number, first 8 of UUID, upper
     expect(screen.getByTestId("cert-number").textContent).toBe("TC-ABCDEF12");
-    // Hash preview — first 8 of hash, upper
+    // Hash preview, first 8 of hash, upper
     expect(screen.getByTestId("cert-hash-preview").textContent).toBe(
       "DEADBEEF",
     );

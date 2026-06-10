@@ -7,7 +7,7 @@ order: 4
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "The signal's timing is drifting. Demir needs a filter that tracks a moving target under noise — a Kalman filter that maintains a running estimate of the true state."
+  narrative: "The signal's timing is drifting. Demir needs a filter that tracks a moving target under noise: a Kalman filter that maintains a running estimate of the true state."
   speaker: "Dr. Farah"
 concept:
   explanation: "A Kalman filter tracks a moving value under noise by predicting where it should be, then correcting with each new measurement, trusting whichever is currently less uncertain."
@@ -19,10 +19,10 @@ concept:
     tier: structural
     breaks: "EMA blends a single fixed-weight average over past values. Kalman updates jointly track state and uncertainty using a state-transition model and a measurement model, with weights computed dynamically from the current covariance. Same weighted-update shape, very different machinery."
 consequence:
-  narrative: "The Kalman filter tracks the timing drift — the interval between anomaly pulses is shrinking by ~0.2 seconds per cycle. The pulse is speeding up."
+  narrative: "The Kalman filter tracks the timing drift: the interval between anomaly pulses is shrinking by ~0.2 seconds per cycle. The pulse is speeding up."
 hints:
   - level: nudge
-    content: "A Kalman filter is a predict-then-correct loop — predict the next state, then correct with the actual measurement"
+    content: "A Kalman filter is a predict-then-correct loop: predict the next state, then correct with the actual measurement"
   - level: guidance
     content: "The Kalman gain controls how much to trust the new measurement vs the prediction"
   - level: solution
@@ -56,7 +56,7 @@ That is exactly what it does. The "optimal alpha" has a name, the Kalman gain, a
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="kalman-filter.ts">
-{`// 1D Kalman Filter — optimal smoothing under noise
+{`// 1D Kalman Filter: optimal smoothing under noise
 
 interface KalmanState {
   estimate: number;      // current best guess
@@ -112,7 +112,7 @@ Implement a Kalman filter and track the anomaly timing.
 
 <Exercise slug="kalman-filter" />
 
-<KeyTakeaways takeaways={["Initialized at 73.4s with process noise 0.1 and measurement noise 1.0, the filter tracks the interval down to 72.5s across eight noisy readings", "The Kalman gain controls trust: high gain = trust measurements, low gain = trust predictions", "For DEEP SCAN, the Kalman filter reveals the pulse interval is shrinking ~0.2s per cycle — the signal is accelerating", "The predict-correct loop is the same pattern as optimistic UI updates with server reconciliation"]} />
+<KeyTakeaways takeaways={["Initialized at 73.4s with process noise 0.1 and measurement noise 1.0, the filter tracks the interval down to 72.5s across eight noisy readings", "The Kalman gain controls trust: high gain = trust measurements, low gain = trust predictions", "For DEEP SCAN, the Kalman filter reveals the pulse interval is shrinking ~0.2s per cycle: the signal is accelerating", "The predict-correct loop is the same pattern as optimistic UI updates with server reconciliation"]} />
 
 <Epilogue>
 

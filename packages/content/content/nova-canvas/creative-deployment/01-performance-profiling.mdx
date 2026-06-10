@@ -102,7 +102,7 @@ console.table(metrics);
 ## Memory Profiling
 
 <CodeBlock language="typescript" title="memory-profiling.ts">
-{`// Track tensor memory — the ML equivalent of tracking DOM node count
+{`// Track tensor memory, the ML equivalent of tracking DOM node count
 function logMemory(label: string) {
   const mem = tf.memory();
   console.log(\`[\${label}] Tensors: \${mem.numTensors}, Bytes: \${(mem.numBytes / 1024 / 1024).toFixed(2)}MB\`);
@@ -118,7 +118,7 @@ for (let i = 0; i < 10; i++) {
 
   logMemory(\`after generation \${i}\`);
 
-  // Without dispose(), tensor count grows every iteration — memory leak
+  // Without dispose(), tensor count grows every iteration: memory leak
   z.dispose();
   generated.dispose();
 }
@@ -131,13 +131,13 @@ const result = tf.tidy(() => {
   const raw = model.predict(z) as tf.Tensor;
   return raw.squeeze().mul(255);
 });
-// Only 'result' survives — all intermediates are freed`}
+// Only 'result' survives; all intermediates are freed`}
 </CodeBlock>
 
 ## Continuous Monitoring
 
 <CodeBlock language="typescript" title="perf-monitor.ts">
-{`// Real-time performance overlay — like an FPS counter for generation
+{`// Real-time performance overlay, like an FPS counter for generation
 class PerfMonitor {
   private history: number[] = [];
   private maxHistory = 60;
@@ -171,4 +171,4 @@ Build a profiling harness that measures each stage of a generation pipeline and 
 
 <Exercise slug="profile-generation" />
 
-<KeyTakeaways takeaways={["Chrome DevTools Performance panel works for ML inference profiling — same marks, measures, and flame charts", "tf.memory() is the ML equivalent of checking DOM node counts — track tensor count and byte usage", "Always call .data() before measuring inference time to force synchronous execution", "Memory leaks in generation loops come from undisposed tensors — use tf.tidy() or manual dispose()"]} />
+<KeyTakeaways takeaways={["Chrome DevTools Performance panel works for ML inference profiling: same marks, measures, and flame charts", "tf.memory() is the ML equivalent of checking DOM node counts; track tensor count and byte usage", "Always call .data() before measuring inference time to force synchronous execution", "Memory leaks in generation loops come from undisposed tensors; use tf.tidy() or manual dispose()"]} />

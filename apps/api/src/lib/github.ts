@@ -1,6 +1,6 @@
 /**
  * GitHub REST API client helpers.
- * Uses plain fetch — no external packages required.
+ * Uses plain fetch, no external packages required.
  *
  * Covers:
  *   - OAuth connect / callback exchange / token revocation (GitHub App)
@@ -8,7 +8,7 @@
  *   - File push (create or update)
  *   - Commit retry with exponential backoff
  *
- * All external credentials live in env vars — see `.env.example`.
+ * All external credentials live in env vars, see `.env.example`.
  */
 
 import { logger } from "./logger";
@@ -60,7 +60,7 @@ function headers(accessToken: string): HeadersInit {
 }
 
 // ──────────────────────────────────────────────────────────────────────────
-// Retry helper — exponential backoff (max 3 retries) for transient failures
+// Retry helper, exponential backoff (max 3 retries) for transient failures
 // ──────────────────────────────────────────────────────────────────────────
 
 /** Errors we should retry on. 5xx and 429 are transient; 4xx (except 429) are not. */
@@ -102,7 +102,7 @@ export async function withRetry<T>(
   }
 }
 
-/** Typed error for GitHub HTTP failures — carries `.status` for retry logic. */
+/** Typed error for GitHub HTTP failures, carries `.status` for retry logic. */
 export class GitHubApiError extends Error {
   status: number;
   body: string;
@@ -115,7 +115,7 @@ export class GitHubApiError extends Error {
 }
 
 // ──────────────────────────────────────────────────────────────────────────
-// OAuth flow — GitHub App (not OAuth App)
+// OAuth flow, GitHub App (not OAuth App)
 // ──────────────────────────────────────────────────────────────────────────
 
 /**
@@ -227,7 +227,7 @@ export async function revokeUserToken(params: {
     },
   );
 
-  // 204 No Content is success. 404 means the grant is already gone — also success.
+  // 204 No Content is success. 404 means the grant is already gone, also success.
   if (res.status === 204 || res.status === 404) {
     return;
   }
@@ -255,7 +255,7 @@ export async function createOrGetRepo(
     body: JSON.stringify({
       name: repoName,
       description:
-        opts?.description ?? `Tensorcraft exercise solutions — ${repoName}`,
+        opts?.description ?? `Tensorcraft exercise solutions: ${repoName}`,
       private: opts?.isPrivate ?? false,
       auto_init: true,
     }),
@@ -265,7 +265,7 @@ export async function createOrGetRepo(
     return createRes.json() as Promise<GitHubRepoResponse>;
   }
 
-  // 422 means repo already exists — fetch it instead
+  // 422 means repo already exists, fetch it instead
   if (createRes.status === 422) {
     const userRes = await fetch(`${GITHUB_API}/user`, {
       headers: headers(accessToken),
@@ -387,7 +387,7 @@ export async function getGitHubUsername(
   if (res.status === 401) {
     throw new GitHubApiError(
       401,
-      "Unauthorized — GitHub token expired or revoked",
+      "Unauthorized: GitHub token expired or revoked",
     );
   }
 
@@ -414,7 +414,7 @@ export function buildReadmeTemplate(params: {
   themeSlug: string;
   themeName?: string;
   description?: string;
-  /** Optional module list for the theme; omitted → default "Modules 01–11". */
+  /** Optional module list for the theme; omitted → default "Modules 01-11". */
   modules?: Array<{ slug: string; title: string }>;
 }): string {
   const { themeSlug } = params;
@@ -438,7 +438,7 @@ export function buildReadmeTemplate(params: {
         return `- Module ${n}`;
       }).join("\n");
     }
-    return params.modules.map((m) => `- \`${m.slug}\` — ${m.title}`).join("\n");
+    return params.modules.map((m) => `- \`${m.slug}\`: ${m.title}`).join("\n");
   })();
 
   return [
@@ -454,7 +454,7 @@ export function buildReadmeTemplate(params: {
     "",
     "## About",
     "",
-    "This repository is automatically maintained by [Tensorcraft](https://tensorcraft.app) —",
+    "This repository is automatically maintained by [Tensorcraft](https://tensorcraft.app),",
     "an interactive, story-driven platform teaching frontend engineers browser-based ML.",
     "Each commit corresponds to a completed lesson exercise.",
     "",
@@ -558,7 +558,7 @@ export async function commitLessonArtifact(params: {
         ),
       );
     } catch (err) {
-      // Progress-file updates are best-effort — never block the artifact commit.
+      // Progress-file updates are best-effort, never block the artifact commit.
       logger.warn(
         {
           err,

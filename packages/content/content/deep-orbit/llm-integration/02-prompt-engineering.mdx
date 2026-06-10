@@ -7,7 +7,7 @@ order: 2
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Farah discovers that the quality of LLM output depends entirely on the quality of the prompt. She refines her prompts iteratively — like debugging search queries until they return the right results."
+  narrative: "Farah discovers that the quality of LLM output depends entirely on the quality of the prompt. She refines her prompts iteratively, like debugging search queries until they return the right results."
   speaker: "Dr. Farah"
 concept:
   explanation: "Specificity, structure, and context decide what a prompt returns. The model never changes between a useless answer and a precise one; only your words do."
@@ -17,7 +17,7 @@ concept:
     mlTitle: "Prompt Design"
     mlCode: "// Bad: 'analyze signal' → vague, unfocused output"
     tier: structural
-    breaks: "Search queries match against an index with deterministic ranking. Prompts steer a probabilistic generator and tiny wording changes can change output drastically (prompt sensitivity). There is no result page to inspect — only one generated answer per call."
+    breaks: "Search queries match against an index with deterministic ranking. Prompts steer a probabilistic generator and tiny wording changes can change output drastically (prompt sensitivity). There is no result page to inspect, only one generated answer per call."
 consequence:
   narrative: "Structured prompts with role, context, and format instructions produce analysis that Farah only needs to lightly edit rather than rewrite."
 hints:
@@ -39,16 +39,16 @@ skillAxes: [deployment, fe_integration]
 My first prompt was 'analyze this signal.' The output was useless: generic, vague, no structure. When I added role, context, data, and format instructions, the output became precise enough to include in the report.
 </Dialogue>
 
-Nothing about the model changed between Farah's useless prompt and her precise one; the only diff is words. It's `git log` versus `git log --oneline --graph --all` — specificity and structure decide what you get back.
+Nothing about the model changed between Farah's useless prompt and her precise one; the only diff is words. It's `git log` versus `git log --oneline --graph --all`: specificity and structure decide what you get back.
 
-<LearningObjectives objectives={["Structure prompts with role, context, data, and format instructions", "Use few-shot examples to guide output format and style", "Request structured output (JSON) for programmatic processing", "Iterate on prompts like debugging — refine until results match expectations"]} />
+<LearningObjectives objectives={["Structure prompts with role, context, data, and format instructions", "Use few-shot examples to guide output format and style", "Request structured output (JSON) for programmatic processing", "Iterate on prompts like debugging: refine until results match expectations"]} />
 
 ## From Vague to Precise
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="prompt-evolution.ts">
-{`// Level 1: Vague — like searching for "error"
+{`// Level 1: Vague, like searching for "error"
 const vaguePrompt = "Analyze this signal data.";
 // Output: generic paragraph about signals (useless)
 
@@ -79,7 +79,7 @@ Classify this signal. Respond with:
 ## Prompt Templates
 
 <CodeBlock language="typescript" title="templates.ts">
-{`// Reusable prompt templates — like React component templates
+{`// Reusable prompt templates, like React component templates
 
 interface SignalData {
   amplitude: number;
@@ -128,7 +128,7 @@ Write a prompt template that produces structured signal analysis.
 
 <Exercise slug="prompt-template" />
 
-<KeyTakeaways takeaways={["Structure prompts in four parts: role, context, data, format. Missing parts are where vague output comes from", "Request JSON output for programmatic processing — always parse and validate the response", "Few-shot examples teach the model your expected format and reasoning style", "Iterate on prompts like debugging: test, inspect output, refine, repeat"]} />
+<KeyTakeaways takeaways={["Structure prompts in four parts: role, context, data, format. Missing parts are where vague output comes from", "Request JSON output for programmatic processing, and always parse and validate the response", "Few-shot examples teach the model your expected format and reasoning style", "Iterate on prompts like debugging: test, inspect output, refine, repeat"]} />
 
 <Epilogue>
 

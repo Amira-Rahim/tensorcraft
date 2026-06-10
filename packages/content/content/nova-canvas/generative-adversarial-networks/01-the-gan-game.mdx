@@ -128,7 +128,7 @@ With GANs you do not need to define what "good" output looks like. The discrimin
 
 **Why it's a game and not joint optimization:** D and G have opposing objectives. There is no single function whose gradient both descend on. Training alternates: 1 step on D (fix G), 1 step on G (fix D). Equilibrium is a saddle point of V, much harder to reach than a single minimum.
 
-**Optimal D for fixed G:** `D*(x) = p_data(x) / (p_data(x) + p_G(x))`. With this D, the inner max becomes Jensen-Shannon divergence between p_data and p_G — what G ends up minimizing.
+**Optimal D for fixed G:** `D*(x) = p_data(x) / (p_data(x) + p_G(x))`. With this D, the inner max becomes Jensen-Shannon divergence between p_data and p_G, which is what G ends up minimizing.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["GANs pit a generator against a discriminator in an adversarial game", "The generator creates fakes; the discriminator judges real vs fake", "Training alternates: improve discriminator, then improve generator", "No hand-crafted loss needed — the discriminator IS the learned loss function"]} />
+<KeyTakeaways takeaways={["GANs pit a generator against a discriminator in an adversarial game", "The generator creates fakes; the discriminator judges real vs fake", "Training alternates: improve discriminator, then improve generator", "No hand-crafted loss needed; the discriminator IS the learned loss function"]} />

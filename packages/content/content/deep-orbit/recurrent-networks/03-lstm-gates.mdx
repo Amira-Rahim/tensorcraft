@@ -7,7 +7,7 @@ order: 3
 estimatedMinutes: 14
 difficulty: advanced
 context:
-  narrative: "The simple RNN forgets the anomaly pattern — it's too far back in the sequence. Farah introduces LSTMs: networks with gates that decide what to remember and what to forget."
+  narrative: "The simple RNN forgets the anomaly pattern; it's too far back in the sequence. Farah introduces LSTMs: networks with gates that decide what to remember and what to forget."
   speaker: "Dr. Farah"
 concept:
   explanation: "LSTMs route memory through learned gates that decide, dimension by dimension, what to keep and what to discard."
@@ -17,14 +17,14 @@ concept:
     mlTitle: "LSTM Forget Gate"
     mlCode: "forgetGate = sigmoid(W_f * [hidden, input]) // learn what to discard"
     tier: structural
-    breaks: "localStorage TTL is a hard expiry — value gone after timeout. LSTM forget gates output a continuous value in [0,1] per dimension that scales the cell state — partial forgetting, learned per-input, with no fixed timeout."
+    breaks: "localStorage TTL is a hard expiry: value gone after timeout. LSTM forget gates output a continuous value in [0,1] per dimension that scales the cell state: partial forgetting, learned per-input, with no fixed timeout."
 consequence:
   narrative: "Seventy-two hours of memory: when the anomalous pattern reappears, the LSTM catches it in a single step."
 hints:
   - level: nudge
     content: "LSTMs have three gates: forget (what to discard), input (what to add), output (what to expose)"
   - level: guidance
-    content: "Use tf.layers.lstm() as a drop-in replacement for simpleRNN — same API, better memory"
+    content: "Use tf.layers.lstm() as a drop-in replacement for simpleRNN: same API, better memory"
   - level: solution
     content: "model.add(tf.layers.lstm({ units: 64, inputShape: [50, 3] }))"
 keywords:
@@ -56,14 +56,14 @@ Hundreds of steps, for roughly four times the parameters of the simple RNN. And 
 
 The three gates (forget, input, output) are each a small sigmoid layer with its own learned weights. That [0,1] output is what makes a gate a dimmer rather than a switch.
 
-<LearningObjectives objectives={["Understand the three LSTM gates: forget (discard), input (add), output (expose)", "Build an LSTM network using TensorFlow.js that handles long-range dependencies", "Compare LSTM and GRU architectures — tradeoffs between complexity and performance", "Solve the vanishing gradient problem with gated memory cells"]} />
+<LearningObjectives objectives={["Understand the three LSTM gates: forget (discard), input (add), output (expose)", "Build an LSTM network using TensorFlow.js that handles long-range dependencies", "Compare LSTM and GRU architectures: tradeoffs between complexity and performance", "Solve the vanishing gradient problem with gated memory cells"]} />
 
 ## Three Gates, One Cell
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="lstm-gates.ts">
-{`// LSTM Cell — three gates controlling information flow
+{`// LSTM Cell: three gates controlling information flow
 
 // 1. FORGET GATE: what to discard from memory
 //    forgetGate = sigmoid(W_f · [prevHidden, input])
@@ -78,7 +78,7 @@ The three gates (forget, input, output) are each a small sigmoid layer with its 
 //    outputGate = sigmoid(W_o · [prevHidden, input])
 //    newHidden = outputGate * tanh(newCell)
 
-// The cell state acts as a conveyor belt — information flows through
+// The cell state acts as a conveyor belt; information flows through
 // with minimal transformation, preventing gradient vanishing`}
 </CodeBlock>
 
@@ -87,18 +87,18 @@ The three gates (forget, input, output) are each a small sigmoid layer with its 
 <CodeBlock language="typescript" title="lstm-model.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// LSTM: drop-in replacement for SimpleRNN — same API, much better memory
+// LSTM: drop-in replacement for SimpleRNN (same API, much better memory)
 const model = tf.sequential();
 model.add(tf.layers.lstm({
   units: 64,              // hidden state size
-  inputShape: [50, 3],    // 50 time steps, 3 features — handles long sequences!
+  inputShape: [50, 3],    // 50 time steps, 3 features; handles long sequences!
   returnSequences: false,  // only need final output for classification
 }));
 model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
 
 model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accuracy'] });
 
-// Training on long sequences — where SimpleRNN failed
+// Training on long sequences, where SimpleRNN failed
 const x = tf.randomNormal([100, 50, 3]);  // 100 samples, 50 time steps
 const y = tf.randomUniform([100, 1]).round();
 
@@ -124,9 +124,9 @@ y.dispose();`}
 <CodeBlock language="typescript" title="gru-comparison.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// GRU (Gated Recurrent Unit) — fewer parameters, often similar performance
+// GRU (Gated Recurrent Unit): fewer parameters, often similar performance
 // Two gates instead of three: reset gate + update gate
-// No separate cell state — simpler architecture
+// No separate cell state: simpler architecture
 
 const gruModel = tf.sequential();
 gruModel.add(tf.layers.gru({
@@ -136,9 +136,9 @@ gruModel.add(tf.layers.gru({
 gruModel.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
 
 // Comparison:
-// LSTM: 4 weight matrices per gate — more parameters, better long-range memory
-// GRU:  3 weight matrices — ~25% fewer params, faster training
-// Rule of thumb: try both and compare — like choosing between React and Preact`}
+// LSTM: 4 weight matrices per gate (more parameters, better long-range memory)
+// GRU:  3 weight matrices (~25% fewer params, faster training)
+// Rule of thumb: try both and compare, like choosing between React and Preact`}
 </CodeBlock>
 
 ## Challenge
@@ -147,7 +147,7 @@ Build an LSTM that handles long signal sequences.
 
 <Exercise slug="build-lstm" />
 
-<KeyTakeaways takeaways={["LSTMs use three learned gates (forget, input, output); each is a sigmoid layer emitting per-dimension keep ratios in [0,1]", "The cell state provides a direct gradient highway, solving the vanishing gradient problem for long sequences", "GRUs are lighter (2 gates vs 3) with comparable performance — try both and compare", "For DEEP SCAN, LSTM catches the 73-second anomaly pattern that SimpleRNN missed entirely"]} />
+<KeyTakeaways takeaways={["LSTMs use three learned gates (forget, input, output); each is a sigmoid layer emitting per-dimension keep ratios in [0,1]", "The cell state provides a direct gradient highway, solving the vanishing gradient problem for long sequences", "GRUs are lighter (2 gates vs 3) with comparable performance: try both and compare", "For DEEP SCAN, LSTM catches the 73-second anomaly pattern that SimpleRNN missed entirely"]} />
 
 <Epilogue>
 

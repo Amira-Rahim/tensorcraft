@@ -13,7 +13,7 @@ concept:
   explanation: "KL divergence measures how different the encoder's learned distribution is from a standard normal. It regularizes the latent space, pushing it toward a smooth, continuous distribution."
   bridge:
     feTitle: "CSS Specificity Balance"
-    feCode: "// Too specific: #app > .nav > .link { } — inflexible. Balance specificity."
+    feCode: "// Too specific: #app > .nav > .link { } is inflexible. Balance specificity."
     mlTitle: "KL Divergence"
     mlCode: "klLoss = -0.5 * sum(1 + logVar - mu^2 - exp(logVar))"
     tier: intuition
@@ -75,7 +75,7 @@ function klDivergence(mu: tf.Tensor, logVar: tf.Tensor): tf.Scalar {
 // mu far from 0 → penalty (move toward center)
 // logVar far from 0 → penalty (standardize spread)
 // This forces the encoder to use the SAME region of space
-// for ALL data — creating a smooth, navigable landscape`}
+// for ALL data, creating a smooth, navigable landscape`}
 </CodeBlock>
 
 ## The Complete VAE Loss
@@ -90,10 +90,10 @@ function vaeLoss(
   logVar: tf.Tensor,
   beta: number = 1.0
 ): tf.Scalar {
-  // Part 1: Reconstruction loss — how well did we rebuild?
+  // Part 1: Reconstruction loss: how well did we rebuild?
   const reconLoss = tf.losses.meanSquaredError(original, reconstructed);
 
-  // Part 2: KL divergence — how organized is the latent space?
+  // Part 2: KL divergence: how organized is the latent space?
   const klLoss = mu.square()
     .add(logVar.exp())
     .sub(logVar)
@@ -115,7 +115,7 @@ function vaeLoss(
 
 <CodeBlock language="typescript" title="memorization-warning.ts">
 {`// MUSE generates an "original" piece for the exhibition.
-// Yara recognizes it instantly — it's nearly identical to
+// Yara recognizes it instantly; it's nearly identical to
 // Mondrian's "Composition with Red, Blue, and Yellow."
 
 // This is MEMORIZATION, not generalization.
@@ -124,8 +124,8 @@ function vaeLoss(
 
 // How to tell the difference:
 // 1. Generate many samples and check for near-duplicates of training data
-// 2. Measure KL divergence — if near zero, the model may be memorizing
-// 3. Interpolate between two encoded training samples —
+// 2. Measure KL divergence; if near zero, the model may be memorizing
+// 3. Interpolate between two encoded training samples;
 //    smooth transitions = generalization, jumpy transitions = memorization
 
 // The lesson: KL divergence is not just a math term.
@@ -136,14 +136,14 @@ function vaeLoss(
 
 <Exercise slug="kl-loss" />
 
-<DerivationDrawer summary="KL between two Gaussians — closed form">
+<DerivationDrawer summary="KL between two Gaussians: closed form">
 VAE's KL term has a closed-form solution when q(z|x) and p(z) are both Gaussian. For q = N(μ, σ²) and p = N(0, 1) (standard normal prior), per latent dimension:
 
 `KL[ q || p ] = ½ · ( σ² + μ² - 1 - log(σ²) )`
 
 Summed across all latent dimensions, this is the regularization loss VAE pays to keep the encoder's distribution close to the prior.
 
-**Asymmetry of KL:** `KL(q || p) ≠ KL(p || q)`. VAE uses the forward direction `KL(q || p)`, which encourages q to cover only regions where p has mass — so the encoder's distribution stays tight around the prior. The reverse direction would encourage q to cover all of p, which gives blurry, mode-averaged samples.
+**Asymmetry of KL:** `KL(q || p) ≠ KL(p || q)`. VAE uses the forward direction `KL(q || p)`, which encourages q to cover only regions where p has mass, so the encoder's distribution stays tight around the prior. The reverse direction would encourage q to cover all of p, which gives blurry, mode-averaged samples.
 
 **β-VAE** scales this term: `L = recon + β · KL`. β > 1 forces a tighter encoder, encouraging disentanglement at the cost of reconstruction quality.
 </DerivationDrawer>

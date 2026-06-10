@@ -13,7 +13,7 @@ concept:
   explanation: "Data drift means the statistical distribution of the model's inputs has moved away from the training baseline while the model itself stood still."
   bridge:
     feTitle: "Lighthouse CI Regression"
-    feCode: "assert(LCP < 2500) // input metric shifted — investigate"
+    feCode: "assert(LCP < 2500) // input metric shifted; investigate"
     mlTitle: "Data Drift Detection"
     mlCode: "assert(featureDist.klDivergence < 0.3) // input distribution shifted"
     tier: structural
@@ -43,7 +43,7 @@ This is why we monitor inputs, not just outputs. The model is doing exactly what
 
 Lighthouse CI catches regressions by comparing performance metrics against a baseline. When LCP jumps from 2.1s to 3.8s, you know something changed: maybe a new font, maybe an unoptimized image. Data drift detection works the same way: compare current input distributions against the training baseline, and flag when they diverge.
 
-<LearningObjectives objectives={["Understand data drift as a distribution shift in model inputs — like Lighthouse metric regression", "Implement KL divergence to quantify how much input data has changed", "Build per-feature drift monitors that pinpoint which inputs changed", "Design alerting thresholds that distinguish noise from real distribution shifts"]} />
+<LearningObjectives objectives={["Understand data drift as a distribution shift in model inputs, like Lighthouse metric regression", "Implement KL divergence to quantify how much input data has changed", "Build per-feature drift monitors that pinpoint which inputs changed", "Design alerting thresholds that distinguish noise from real distribution shifts"]} />
 
 ## Detecting Distribution Shift
 
@@ -69,7 +69,7 @@ interface DriftReport {
 }
 
 function computeKLDivergence(p: number[], q: number[]): number {
-  // KL(P || Q) — measures how different Q is from reference P
+  // KL(P || Q): measures how different Q is from reference P
   const epsilon = 1e-10;
   let kl = 0;
   for (let i = 0; i < p.length; i++) {
@@ -157,12 +157,12 @@ KL divergence has a cousin you will meet on every drift dashboard: the Populatio
 
 <Quiz
   question="Population Stability Index (PSI) on a feature reads 0.05 today, 0.12 yesterday, 0.31 a week ago. The classic threshold for 'major drift' is PSI > 0.25. What's the right read?"
-  options={[{"text":"Major drift is over — PSI dropped to 0.05, recovery confirmed"},{"text":"Cannot tell — PSI compares CURRENT distribution to a baseline, not consecutive days. Today's 0.05 means 'similar to baseline'; last week's 0.31 means 'very different from baseline'. The story is that things drifted then recovered"},{"text":"Major drift is now — 0.31 from last week still applies"},{"text":"PSI is ordered chronologically; 0.05 today vs 0.12 yesterday means drift increased"}]}
+  options={[{"text":"Major drift is over: PSI dropped to 0.05, recovery confirmed"},{"text":"Cannot tell: PSI compares CURRENT distribution to a baseline, not consecutive days. Today's 0.05 means 'similar to baseline'; last week's 0.31 means 'very different from baseline'. The story is that things drifted then recovered"},{"text":"Major drift is now: 0.31 from last week still applies"},{"text":"PSI is ordered chronologically; 0.05 today vs 0.12 yesterday means drift increased"}]}
   correct={1}
   explanation="PSI is a snapshot comparison to a fixed baseline distribution, not a moving average across days. Each day's value reads 'how different is today's data from baseline?'. The trend (0.31 → 0.12 → 0.05) tells you the system drifted significantly a week ago, partially recovered yesterday, and is now back near baseline. Option A misreads the temporal interpretation. Option C ignores that today's value is what's relevant for shipping decisions now. Option D inverts the interpretation."
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Data drift means the input distribution changed — the model is correct, but the world moved underneath it", "KL divergence puts a number on input shift; this pipeline flags a feature once KL crosses the 0.3 threshold", "Per-feature monitoring pinpoints exactly which inputs drifted — enabling targeted fixes instead of full retraining", "The fix for data drift is often preprocessing (rescaling), not retraining — understand the root cause first"]} />
+<KeyTakeaways takeaways={["Data drift means the input distribution changed: the model is correct, but the world moved underneath it", "KL divergence puts a number on input shift; this pipeline flags a feature once KL crosses the 0.3 threshold", "Per-feature monitoring pinpoints exactly which inputs drifted, enabling targeted fixes instead of full retraining", "The fix for data drift is often preprocessing (rescaling), not retraining: understand the root cause first"]} />
 
 > **DISPATCH archive · field intercept #38-E:** Operator Demir on Deep Orbit logs drift differently: the world they sample doesn't have a 'training distribution' to drift away from. Their drift is anomaly. Hassan's drift is degradation. Same metric, opposite operational stance.

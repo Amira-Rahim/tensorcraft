@@ -1,13 +1,13 @@
 ---
 slug: rag-architecture
-title: "RAG Architecture — Retrieval-Augmented Generation Pipeline"
+title: "RAG Architecture: Retrieval-Augmented Generation Pipeline"
 moduleId: question-answering-rag
 themeId: signal-ward
 order: 3
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "The patient's allergy was found — in one document. But Imran reports that this patient has 47 clinical documents across two systems, some in English, some in Spanish. 'We cannot read 47 documents every time we need an answer,' Karimi says. 'We need retrieval. Find the right documents first, then comprehend them.'"
+  narrative: "The patient's allergy was found. In one document. But Imran reports that this patient has 47 clinical documents across two systems, some in English, some in Spanish. 'We cannot read 47 documents every time we need an answer,' Karimi says. 'We need retrieval. Find the right documents first, then comprehend them.'"
   speaker: "Dr. Karimi"
 concept:
   explanation: "RAG splits question answering into two stages: retrieve the documents most relevant to the question, then comprehend only those. The answer is grounded in what was actually retrieved, not in whatever the model happens to remember."

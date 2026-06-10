@@ -61,7 +61,7 @@ A bag-of-words representation is simple: define a vocabulary, then count occurre
 <CodeBlock language="typescript" title="bag-of-words.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Our vocabulary — each word gets a position
+// Our vocabulary: each word gets a position
 const vocab = ['patient', 'reports', 'chest', 'pain', 'denies', 'fever'];
 
 function textToVector(text: string): number[] {
@@ -107,4 +107,4 @@ Build a bag-of-words function that converts clinical notes into numerical vector
 
 <Exercise slug="bag-of-words" />
 
-<KeyTakeaways takeaways={["Bag-of-words counts word occurrences, with each vector position corresponding to one vocabulary word", "The vocabulary decides what is visible: 'denied' and 'reported' must be vocab entries before those notes produce different vectors", "Bag-of-words loses word order — a limitation we'll address later"]} />
+<KeyTakeaways takeaways={["Bag-of-words counts word occurrences, with each vector position corresponding to one vocabulary word", "The vocabulary decides what is visible: 'denied' and 'reported' must be vocab entries before those notes produce different vectors", "Bag-of-words loses word order, a limitation we'll address later"]} />

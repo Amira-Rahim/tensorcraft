@@ -14,14 +14,14 @@ const FRAMEWORKS: { id: Framework; label: string; icon: string }[] = [
 ];
 
 // Only bridges that carry a real ML snippet AND a code variant for every
-// framework qualify for the landing preview — guarantees we never fall back
+// framework qualify for the landing preview, guarantees we never fall back
 // to prose inside a code-styled block, whichever combination is selected.
 const PREVIEW_BRIDGES = BRIDGES.filter(
   (b) => b.mlCode && FRAMEWORKS.every((f) => b.variants?.[f.id]?.feCode),
 );
 
 // First sentence of the connection prose, robust against abbreviations and
-// decimals ("e.g.", "0.5") — a period only counts as a sentence boundary
+// decimals ("e.g.", "0.5"), a period only counts as a sentence boundary
 // when followed by whitespace + capital, or end of string.
 function firstSentence(text: string): string {
   const match = text.match(/^.*?\.(?=\s+[A-Z]|$)/s);
@@ -49,18 +49,18 @@ export function BridgePreviewSection() {
       {/* Header */}
       <div className="px-10 md:px-20 pt-16 pb-6 text-center">
         <div className="font-mono text-xs text-primary tracking-[0.2em] uppercase mb-4">
-          // THE BRIDGE SYSTEM
+          THE BRIDGE SYSTEM
         </div>
         <h2 className="text-3xl md:text-4xl font-mono font-black tracking-tight mb-4">
           Every ML Concept Has a Frontend Name
         </h2>
         <p className="text-[15px] text-text-muted leading-relaxed max-w-[500px] mx-auto">
           {BRIDGES.length} bridges map ML concepts to the code you write daily.
-          Pick your framework — we&apos;ll prove it.
+          Pick your framework. We&apos;ll prove it.
         </p>
       </div>
 
-      {/* Framework selector — horizontal tabs */}
+      {/* Framework selector, horizontal tabs */}
       <div className="flex justify-center px-6 pb-6">
         <div className="inline-flex gap-0.5">
           {FRAMEWORKS.map((f) => (
@@ -85,7 +85,7 @@ export function BridgePreviewSection() {
         </div>
       </div>
 
-      {/* Bridge cycler controls — ←/→ keys work while focus is inside */}
+      {/* Bridge cycler controls, ←/→ keys work while focus is inside */}
       <div
         onKeyDown={(e) => {
           if (e.key === "ArrowLeft") {
@@ -124,7 +124,7 @@ export function BridgePreviewSection() {
         </button>
       </div>
 
-      {/* Bridge display — full width, centered. Keyed crossfade so a
+      {/* Bridge display, full width, centered. Keyed crossfade so a
           framework/bridge switch reads as a transition, not a teleport. */}
       <div className="border-t border-border overflow-hidden">
         <AnimatePresence mode="wait" initial={false}>
@@ -140,7 +140,7 @@ export function BridgePreviewSection() {
             <div className="px-10 md:px-16 py-10 md:py-12">
               <div className="max-w-lg mx-auto md:mx-0 md:ml-auto">
                 <div className="font-mono text-xs text-primary uppercase tracking-[0.15em] mb-3">
-                  // YOUR {selectedLabel.toUpperCase()} CODE
+                  YOUR {selectedLabel.toUpperCase()} CODE
                 </div>
                 <h3 className="font-mono text-xl font-bold text-text-primary mb-4">
                   {feTitle}
@@ -188,7 +188,7 @@ export function BridgePreviewSection() {
             <div className="px-10 md:px-16 py-10 md:py-12">
               <div className="max-w-lg mx-auto md:mx-0">
                 <div className="font-mono text-xs uppercase tracking-[0.15em] mb-3 text-text-muted">
-                  // ML EQUIVALENT
+                  ML EQUIVALENT
                 </div>
                 <h3 className="font-mono text-xl font-bold text-text-primary mb-4">
                   {bridge.mlConcept}
@@ -200,8 +200,8 @@ export function BridgePreviewSection() {
                   {bridge.mlCode}
                 </div>
                 <div className="font-mono text-xs text-text-muted mt-3">
-                  It&apos;s the same pattern — switch frameworks above, this
-                  side never changes.
+                  It&apos;s the same pattern: switch frameworks above, this side
+                  never changes.
                 </div>
               </div>
             </div>
@@ -216,14 +216,14 @@ export function BridgePreviewSection() {
           data-testid="bridge-section-cta"
           className="inline-flex items-center gap-2 font-mono text-sm font-bold uppercase tracking-wider text-primary border-b-2 border-primary pb-1 hover:opacity-80 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-page"
         >
-          Run a bridge yourself — module 1 is free →
+          Run a bridge yourself, module 1 is free →
         </Link>
       </div>
 
       {/* Bridge explanation footer */}
       <div className="border-t border-border px-10 md:px-20 py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 xl:pr-44">
         <p className="font-mono text-[12px] text-text-muted leading-relaxed max-w-lg">
-          <span style={{ color: "var(--tc-tier-structural)" }}>// bridge:</span>{" "}
+          <span style={{ color: "var(--tc-tier-structural)" }}>bridge:</span>{" "}
           {firstSentence(bridge.connection)}
         </p>
         <div
@@ -236,9 +236,9 @@ export function BridgePreviewSection() {
         >
           <span style={{ color: "var(--tc-tier-structural)" }}>
             {BRIDGES.length} bridges
-          </span>{" "}
+          </span>
           <span className="text-text-muted">
-            — all shown in {selectedLabel}
+            , all shown in {selectedLabel}
           </span>
         </div>
       </div>

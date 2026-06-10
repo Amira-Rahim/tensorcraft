@@ -24,7 +24,7 @@ vi.mock("@/app/components/user-avatar", () => ({
   UserAvatar: () => null,
 }));
 
-// SkillGenome is already covered by skill-genome.test.tsx — we don't want
+// SkillGenome is already covered by skill-genome.test.tsx, we don't want
 // its internals (or subpath import of @tensorcraft/ui/visualizations for
 // hexCorners) interacting with assertions about the adjacent LossCurve.
 vi.mock("../skill-genome", () => ({
@@ -37,7 +37,7 @@ const fullWeekly = Array.from({ length: 12 }, (_, i) => ({
   avgHints: 5 - i * 0.3,
 }));
 
-/** 12 weeks of all-null averages — drives the LossCurve empty state. */
+/** 12 weeks of all-null averages, drives the LossCurve empty state. */
 const emptyWeekly = Array.from({ length: 12 }, (_, i) => ({
   weekStart: `2026-0${1 + Math.floor(i / 4)}-${String((i % 4) * 7 + 1).padStart(2, "0")}`,
   avgHints: null,
@@ -80,8 +80,8 @@ function baseProps(overrides: Partial<DashboardProps> = {}): DashboardProps {
 describe("DashboardView (LossCurve integration)", () => {
   it("renders the LossCurve comment header when lossCurveData is provided", () => {
     render(<DashboardView {...baseProps()} />);
-    // The LossCurve SVG text: "// loss.hints — {n}wk"
-    expect(screen.getByText(/\/\/\s*loss\.hints/i)).toBeInTheDocument();
+    // The LossCurve SVG text: "loss.hints, {n}wk"
+    expect(screen.getByText(/loss\.hints/i)).toBeInTheDocument();
   });
 
   it("wraps the LossCurve in a <section aria-labelledby=...> with a section heading", () => {

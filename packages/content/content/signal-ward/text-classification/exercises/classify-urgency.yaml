@@ -1,7 +1,7 @@
 slug: classify-urgency
 lessonSlug: binary-classification
 title: "Classify Document Urgency"
-instructions: "Build a binary classifier that takes a document embedding (a 32-dimensional vector) and predicts whether the document is urgent (1) or routine (0). The model should use a single sigmoid output. Then implement a classify function that applies a clinical threshold of 0.3 — lower than the default 0.5 to prioritize catching urgent cases."
+instructions: "Build a binary classifier that takes a document embedding (a 32-dimensional vector) and predicts whether the document is urgent (1) or routine (0). The model should use a single sigmoid output. Then implement a classify function that applies a clinical threshold of 0.3, lower than the default 0.5 to prioritize catching urgent cases."
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 

@@ -60,7 +60,7 @@ A detection model outputs one rectangle per object it finds, plus a label and a 
 // { x: 120, y: 45, width: 200, height: 150, top, right, bottom, left }
 
 // ML: a bounding box is the same idea
-// [x, y, width, height] — but normalized to 0-1
+// [x, y, width, height], but normalized to 0-1
 
 interface BoundingBox {
   x: number;      // left edge (0-1)
@@ -138,15 +138,15 @@ console.log(displayBox);
 Detection models use different box formats. YOLO emits center-based boxes, COCO annotations use corner-plus-size, and evaluation code usually wants two corners. You convert between them constantly.
 
 <CodeBlock language="typescript" title="box-formats.ts">
-{`// Format 1: [x, y, width, height] — "xywh" (top-left corner + size)
+{`// Format 1: [x, y, width, height]: "xywh" (top-left corner + size)
 // Used by: COCO dataset, many web APIs
 // Same as getBoundingClientRect()!
 
-// Format 2: [x_center, y_center, width, height] — "cxcywh"
+// Format 2: [x_center, y_center, width, height]: "cxcywh"
 // Used by: YOLO models
 // The center point + dimensions
 
-// Format 3: [x_min, y_min, x_max, y_max] — "xyxy" (two corners)
+// Format 3: [x_min, y_min, x_max, y_max]: "xyxy" (two corners)
 // Used by: Pascal VOC, Faster R-CNN
 
 function xywhToCxcywh(box: number[]): number[] {
@@ -179,7 +179,7 @@ Build functions to create and convert bounding boxes.
 
 <Quiz
   question="A sentinel detector outputs a box at (x=120, y=80, width=60, height=40) on a 640×480 frame. To pass this box to a downstream model that expects normalized [x1, y1, x2, y2] coordinates in [0, 1], what is the correct conversion?"
-  options={[{"text":"[120/640, 80/480, 180/640, 120/480] — divide each (x, y) corner by image dimensions"},{"text":"[120/640, 80/480, 60/640, 40/480] — normalize all four values by their own axis"},{"text":"[120, 80, 180, 120] / 255 — scale by pixel intensity range"},{"text":"[120, 80, 60, 40] / max(640, 480) — divide everything by the longest side"}]}
+  options={[{"text":"[120/640, 80/480, 180/640, 120/480]: divide each (x, y) corner by image dimensions"},{"text":"[120/640, 80/480, 60/640, 40/480]: normalize all four values by their own axis"},{"text":"[120, 80, 180, 120] / 255: scale by pixel intensity range"},{"text":"[120, 80, 60, 40] / max(640, 480): divide everything by the longest side"}]}
   correct={0}
   explanation="The detector returned (x, y, width, height). To get [x1, y1, x2, y2] you compute x2 = x + width and y2 = y + height, then normalize each x by image width and each y by image height. The other options either keep the wh format (option B), confuse pixel value with coordinate (option C), or use a single divisor that distorts non-square images (option D)."
   tier="structural"

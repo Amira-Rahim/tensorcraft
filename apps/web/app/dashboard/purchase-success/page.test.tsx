@@ -3,7 +3,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import type { ReactElement } from "react";
 
 // ──────────────────────────────────────────────
-// Mocks — mirror the approach in `app/dashboard/__tests__/page.test.tsx`
+// Mocks, mirror the approach in `app/dashboard/__tests__/page.test.tsx`
 // so these tests never touch the real Supabase, Next cookies, or Velite
 // runtime.
 // ──────────────────────────────────────────────
@@ -163,7 +163,7 @@ describe("dashboard/purchase-success/page", () => {
     const { html } = await renderPage();
 
     expect(html).toContain("You&#x27;re In");
-    // Mono, uppercase, large hero — key brutalist treatment markers.
+    // Mono, uppercase, large hero, key brutalist treatment markers.
     expect(html).toMatch(/font-mono[^"]*uppercase/);
   });
 

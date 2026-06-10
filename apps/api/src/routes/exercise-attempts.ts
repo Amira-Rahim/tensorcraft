@@ -9,7 +9,7 @@ const exerciseAttempts = new Hono<AppEnv>();
 exerciseAttempts.use("*", authMiddleware);
 
 /**
- * POST /api/exercise-attempts — Record an exercise attempt.
+ * POST /api/exercise-attempts, Record an exercise attempt.
  */
 exerciseAttempts.post("/", async (c) => {
   const userId = c.get("userId");
@@ -114,7 +114,7 @@ exerciseAttempts.post("/", async (c) => {
 });
 
 /**
- * GET /api/exercise-attempts?lessonId=...&themeId=... — Get user's attempts for a lesson.
+ * GET /api/exercise-attempts?lessonId=...&themeId=..., Get user's attempts for a lesson.
  */
 exerciseAttempts.get("/", async (c) => {
   const userId = c.get("userId");

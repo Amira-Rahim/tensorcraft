@@ -51,7 +51,7 @@ describe("PaywallNotice", () => {
   });
 
   it("renders nothing for an unknown theme slug (defensive)", () => {
-    // A malicious or stale link shouldn't render anything — we only
+    // A malicious or stale link shouldn't render anything, we only
     // surface canonical theme slugs.
     mockLocked = "not-a-real-theme";
     const { container } = render(<PaywallNotice />);

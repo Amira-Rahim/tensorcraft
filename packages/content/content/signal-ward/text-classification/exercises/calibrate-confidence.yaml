@@ -1,7 +1,7 @@
 slug: calibrate-confidence
 lessonSlug: confidence-calibration
 title: "Calibrate Model Confidence"
-instructions: "Implement three functions for confidence calibration: (1) temperatureScale — divides logits by a temperature value before applying softmax, (2) predictionEntropy — computes the Shannon entropy of a probability distribution to measure uncertainty, and (3) expectedCalibrationError — bins predictions by confidence and computes the weighted average gap between confidence and accuracy."
+instructions: "Implement three functions for confidence calibration: (1) temperatureScale: divides logits by a temperature value before applying softmax, (2) predictionEntropy: computes the Shannon entropy of a probability distribution to measure uncertainty, and (3) expectedCalibrationError: bins predictions by confidence and computes the weighted average gap between confidence and accuracy."
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 

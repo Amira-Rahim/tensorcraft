@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Terms of Service — Tensorcraft",
+  title: "Terms of Service | Tensorcraft",
   description:
     "Read the Tensorcraft Terms of Service covering account use, one-time theme purchases, refunds, intellectual property, and acceptable use.",
   alternates: { canonical: "https://tensorcraft.app/terms" },
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     type: "article",
     url: "https://tensorcraft.app/terms",
     siteName: "Tensorcraft",
-    title: "Terms of Service — Tensorcraft",
+    title: "Terms of Service | Tensorcraft",
     description:
       "Terms covering accounts, purchases, refunds, IP, and acceptable use.",
     images: [
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Terms of Service — Tensorcraft",
+    title: "Terms of Service | Tensorcraft",
     description: "Accounts, purchases, refunds, IP, and acceptable use.",
     images: [
       "/api/og?title=Terms%20of%20Service&subtitle=Tensorcraft%20legal&theme=deep-orbit",

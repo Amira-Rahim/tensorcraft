@@ -51,7 +51,7 @@ export async function rateLimitMiddleware(
       );
     }
   } catch {
-    // Redis unavailable — allow request through (graceful degradation).
+    // Redis unavailable, allow request through (graceful degradation).
     // Log for monitoring but don't block the user.
     logger.warn("Rate limiter: Redis unavailable, allowing request through");
   }

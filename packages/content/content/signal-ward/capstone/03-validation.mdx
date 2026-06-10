@@ -1,6 +1,6 @@
 ---
 slug: validation
-title: "Validation — Testing Against Expert Annotations"
+title: "Validation: Testing Against Expert Annotations"
 moduleId: sw-capstone
 themeId: signal-ward
 order: 3
@@ -55,7 +55,7 @@ The harness itself is familiar test infrastructure: known inputs, expected outpu
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="validation-metrics.ts">
-{`// Clinical validation metrics — the same math behind test coverage reports
+{`// Clinical validation metrics: the same math behind test coverage reports
 // Precision: of everything the system flagged, how many were correct?
 // Recall: of everything that should have been flagged, how many did the system find?
 
@@ -144,7 +144,7 @@ console.log('F1:', metrics.f1.toFixed(3));               // 0.857`}
 ## Confusion Matrix
 
 <CodeBlock language="typescript" title="confusion-matrix.ts">
-{`// Confusion matrix — see exactly where the system makes mistakes
+{`// Confusion matrix: see exactly where the system makes mistakes
 // Like a test report that shows which tests fail and why
 
 type EntityLabel = 'DRUG' | 'CONDITION' | 'PROCEDURE' | 'DOSAGE' | 'ANATOMY';
@@ -210,4 +210,4 @@ Build a validation suite that computes precision, recall, and F1 for NLP predict
 
 <Exercise slug="validate-annotations" />
 
-<KeyTakeaways takeaways={["The gold standard here is 500 notes annotated by two physicians each; the suite scored precision 0.89, recall 0.84, F1 0.86 against it", "Precision measures false positive rate (false alarms), recall measures false negative rate (missed detections)", "In clinical settings, high recall is prioritized over high precision — better to investigate a false alarm than miss a real drug interaction", "The confusion matrix reveals systematic errors: if the system consistently confuses DOSAGE with DRUG, that is a training data problem"]} />
+<KeyTakeaways takeaways={["The gold standard here is 500 notes annotated by two physicians each; the suite scored precision 0.89, recall 0.84, F1 0.86 against it", "Precision measures false positive rate (false alarms), recall measures false negative rate (missed detections)", "In clinical settings, high recall is prioritized over high precision: better to investigate a false alarm than miss a real drug interaction", "The confusion matrix reveals systematic errors: if the system consistently confuses DOSAGE with DRUG, that is a training data problem"]} />

@@ -60,7 +60,7 @@ When you run `npm install react`, you get a decade of engineering from hundreds 
 <CodeBlock language="typescript" title="load-mobilenet.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Loading MobileNetV2 — lightweight, fast, optimized for browsers
+// Loading MobileNetV2: lightweight, fast, optimized for browsers
 // Like installing a well-maintained npm package: battle-tested and production-ready
 async function loadMobileNet() {
   const model = await tf.loadGraphModel(
@@ -75,7 +75,7 @@ async function loadMobileNet() {
   return model;
 }
 
-// Loading ResNet50 — heavier, more accurate, deeper architecture
+// Loading ResNet50: heavier, more accurate, deeper architecture
 // Like choosing between lodash (lightweight) and ramda (comprehensive)
 async function loadResNet() {
   const model = await tf.loadGraphModel(
@@ -99,7 +99,7 @@ async function classifyImage(
   model: tf.GraphModel,
   imageElement: HTMLImageElement
 ): Promise<{ classIndex: number; confidence: number }> {
-  // Preprocess — MobileNet expects 224x224 normalized pixels
+  // Preprocess: MobileNet expects 224x224 normalized pixels
   const tensor = tf.tidy(() => {
     const img = tf.browser.fromPixels(imageElement);
     const resized = tf.image.resizeBilinear(img, [224, 224]);
@@ -107,7 +107,7 @@ async function classifyImage(
     return normalized.expandDims(0); // [1, 224, 224, 3]
   });
 
-  // Predict — 1000 ImageNet classes, instantly
+  // Predict: 1000 ImageNet classes, instantly
   const predictions = model.predict(tensor) as tf.Tensor;
   const classIndex = predictions.argMax(-1).dataSync()[0];
   const confidence = predictions.max().dataSync()[0];
@@ -126,7 +126,7 @@ async function classifyImage(
 ## Choosing the Right Model
 
 <CodeBlock language="typescript" title="model-comparison.ts">
-{`// Like choosing npm packages — tradeoffs between size, speed, and features
+{`// Like choosing npm packages: tradeoffs between size, speed, and features
 
 interface PretrainedModel {
   name: string;
@@ -144,7 +144,7 @@ const models: PretrainedModel[] = [
     downloadSize: '14 MB',
     accuracy: '71.8%',
     inferenceTime: '~30ms',
-    useCase: 'Mobile/browser — fast inference, smaller footprint',
+    useCase: 'Mobile/browser: fast inference, smaller footprint',
   },
   {
     name: 'ResNet50',
@@ -152,7 +152,7 @@ const models: PretrainedModel[] = [
     downloadSize: '98 MB',
     accuracy: '76.0%',
     inferenceTime: '~120ms',
-    useCase: 'Server/desktop — higher accuracy, heavier weight',
+    useCase: 'Server/desktop: higher accuracy, heavier weight',
   },
   {
     name: 'EfficientNet-B0',
@@ -160,11 +160,11 @@ const models: PretrainedModel[] = [
     downloadSize: '20 MB',
     accuracy: '77.1%',
     inferenceTime: '~50ms',
-    useCase: 'Best accuracy-per-parameter — sweet spot for browsers',
+    useCase: 'Best accuracy-per-parameter; sweet spot for browsers',
   },
 ];
 
-// Amir chose MobileNetV2 — small enough to run in a browser tab
+// Amir chose MobileNetV2, small enough to run in a browser tab
 // without Meridian's servers ever knowing.`}
 </CodeBlock>
 
@@ -174,4 +174,4 @@ Load a pre-trained model and extract its layer information.
 
 <Exercise slug="load-pretrained" />
 
-<KeyTakeaways takeaways={["Pre-trained models are neural networks trained on massive datasets — download and use immediately", "MobileNet is lightweight for browsers; ResNet is heavier but more accurate — choose like npm packages", "Transfer learning means knowledge from one task (ImageNet) transfers to another (drone detection)"]} />
+<KeyTakeaways takeaways={["Pre-trained models are neural networks trained on massive datasets; download and use immediately", "MobileNet is lightweight for browsers; ResNet is heavier but more accurate; choose like npm packages", "Transfer learning means knowledge from one task (ImageNet) transfers to another (drone detection)"]} />

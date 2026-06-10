@@ -107,7 +107,7 @@ function buildStyleNetwork(): tf.LayersModel {
 // Speed comparison:
 // Gatys (iterative): ~180 seconds for 256x256
 // Fast style transfer: ~85 milliseconds for 256x256
-// That is a 2000x speedup — from minutes to real-time
+// That is a 2000x speedup, from minutes to real-time
 const net = buildStyleNetwork();
 console.log('Parameters:', net.countParams().toLocaleString());`}
 </CodeBlock>
@@ -118,13 +118,13 @@ Build a feedforward style transfer network with residual blocks.
 
 <Exercise slug="realtime-style" />
 
-<DerivationDrawer summary="Instance normalization — why styles use it">
+<DerivationDrawer summary="Instance normalization: why styles use it">
 Style transfer uses **Instance Normalization (IN)** instead of BatchNorm. Both normalize activations, but along different axes.
 
 **For input shape `[N, C, H, W]`:**
 
 ```
-BatchNorm: normalize over (N, H, W) per channel — uses batch statistics
+BatchNorm: normalize over (N, H, W) per channel; uses batch statistics
   μ_c = mean over batch + spatial          (one mean per channel)
   σ_c = std over batch + spatial            (one std per channel)
 
@@ -142,4 +142,4 @@ InstanceNorm: normalize over (H, W) per sample, per channel
 Applied at each layer of the generator. This is the basis for arbitrary style transfer (one model, any style).
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["Iterative transfer pays hundreds of optimization steps per image; the feedforward version paid them once, during training, for one style", "Feedforward networks pre-compile a style into learned weights — single-pass inference, like CSS filters", "The architecture: encoder (downsample) -> residual blocks (transform) -> decoder (upsample)", "Result: 2000x speedup, from minutes per image to 85 milliseconds — true real-time performance"]} />
+<KeyTakeaways takeaways={["Iterative transfer pays hundreds of optimization steps per image; the feedforward version paid them once, during training, for one style", "Feedforward networks pre-compile a style into learned weights: single-pass inference, like CSS filters", "The architecture: encoder (downsample) -> residual blocks (transform) -> decoder (upsample)", "Result: 2000x speedup, from minutes per image to 85 milliseconds. True real-time performance"]} />

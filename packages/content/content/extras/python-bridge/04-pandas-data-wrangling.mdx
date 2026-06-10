@@ -16,7 +16,7 @@ concept:
     mlTitle: "pandas DataFrame"
     mlCode: "df[df['age'] > 25].assign(label=lambda r: (r['age'] > 50).astype(int))"
     tier: structural
-    breaks: "Array of objects + .map/.filter/.reduce iterates row-by-row in JS-land. Pandas DataFrames are columnar with vectorized ops in C; equivalent operations are 10–100× faster but require thinking in columns, not rows."
+    breaks: "Array of objects + .map/.filter/.reduce iterates row-by-row in JS-land. Pandas DataFrames are columnar with vectorized ops in C; equivalent operations are 10-100× faster but require thinking in columns, not rows."
 consequence:
   narrative: "A pandas pipeline is a .filter().map() chain in different clothes: df[condition] filters, .apply() maps, df['col'] selects. The one thing that doesn't translate is the speed. pandas does it columnar, in C."
 hints:
@@ -48,7 +48,7 @@ Before data reaches a model, it goes through wrangling: cleaning, transforming, 
 <CodeBlock language="python" title="pandas-basics.py">
 {`import pandas as pd
 
-# Create a DataFrame — like an array of objects with typed columns
+# Create a DataFrame, like an array of objects with typed columns
 df = pd.DataFrame({
     'name': ['Amina', 'Ravi', 'Leyla', 'Arjun'],
     'age': [28, 35, 42, 23],
@@ -87,7 +87,7 @@ subset = df[['name', 'score']]        # Multiple columns → DataFrame
 ## Filtering Rows
 
 <CodeBlock language="python" title="pandas-filter.py">
-{`# pandas — boolean indexing
+{`# pandas: boolean indexing
 adults = df[df['age'] > 30]
 high_scorers = df[df['score'] >= 0.8]
 combined = df[(df['age'] > 25) & (df['score'] > 0.7)]

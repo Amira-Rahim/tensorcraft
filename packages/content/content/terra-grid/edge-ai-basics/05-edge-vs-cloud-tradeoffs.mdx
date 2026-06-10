@@ -85,7 +85,7 @@ console.log(chooseDeployment({
   modelSizeMB: 5,
   accuracyThreshold: 0.95,
   dataPrivacy: 'sensitive'
-})); // 'edge' — vibration anomaly detection
+})); // 'edge': vibration anomaly detection
 
 console.log(chooseDeployment({
   maxLatencyMs: 30000,
@@ -93,7 +93,7 @@ console.log(chooseDeployment({
   modelSizeMB: 2000,
   accuracyThreshold: 0.99,
   dataPrivacy: 'public'
-})); // 'cloud' — root cause analysis`}
+})); // 'cloud': root cause analysis`}
 </CodeBlock>
 
 The hybrid pattern is the most common in production. Edge devices handle real-time detection and send compressed alerts to the cloud, where larger models perform deeper analysis. This mirrors the pattern of client-side validation with server-side verification.
@@ -108,7 +108,7 @@ Design a deployment strategy for different Terra Grid inference tasks.
 
 <Quiz
   question="Primary reason for edge inference vs cloud?"
-  options={[{"text":"Edge is always faster"},{"text":"Cloud inference adds network round-trip; edge eliminates it — critical for latency-sensitive UX"},{"text":"Cloud is more secure"},{"text":"Edge models are smaller"}]}
+  options={[{"text":"Edge is always faster"},{"text":"Cloud inference adds network round-trip; edge eliminates it, critical for latency-sensitive UX"},{"text":"Cloud is more secure"},{"text":"Edge models are smaller"}]}
   correct={1}
   explanation="Cloud inference: 50-200ms network round-trip + cold start. Edge: 10-50ms total. For interactive UX (autocomplete, real-time AR), cloud is too slow. Tradeoff: edge model is constrained by device memory + compute, cloud has no such limit."
   tier="structural"

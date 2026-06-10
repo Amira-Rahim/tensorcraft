@@ -27,7 +27,7 @@ export interface ThemeCardsGridProps {
 }
 
 /**
- * ThemeCardsGrid — hero card for the launched theme + muted grid for
+ * ThemeCardsGrid, hero card for the launched theme + muted grid for
  * coming-soon themes. Each card wraps a per-theme <ParticleField> atmosphere
  * (CSS-var driven so each canvas inherits the theme's primary color).
  * Renders a newsletter modal trigger + dialog for "Get updates" CTA.
@@ -56,7 +56,7 @@ export function ThemeCardsGrid({ cards }: ThemeCardsGridProps) {
         {comingSoonCards.length > 0 && (
           <div>
             <p className="font-mono text-xs uppercase tracking-[0.2em] text-text-muted mb-4">
-              // Coming soon
+              Coming soon
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {comingSoonCards.map((card) => (
@@ -70,7 +70,7 @@ export function ThemeCardsGrid({ cards }: ThemeCardsGridProps) {
       {/* Newsletter CTA */}
       <div className="mt-16 flex flex-col items-center text-center">
         <p className="font-mono text-xs uppercase tracking-[0.15em] text-text-muted mb-3">
-          // stay in the loop
+          stay in the loop
         </p>
         <h3 className="text-xl sm:text-2xl font-mono font-bold text-text-primary mb-3 tracking-tight">
           New themes, launch discounts, bridge essays.
@@ -108,7 +108,7 @@ function ThemeCard({ card, variant }: ThemeCardProps) {
     >
       <Link
         href={`/themes/${card.slug}`}
-        aria-label={`${card.displayName} — ${card.tagline}${isComingSoon ? " (coming soon)" : ""}`}
+        aria-label={`${card.displayName}, ${card.tagline}${isComingSoon ? " (coming soon)" : ""}`}
         className={`group relative flex flex-col h-full border-2 border-border bg-surface-raised rounded-none overflow-hidden brutalist-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 ${isComingSoon ? "opacity-80 hover:opacity-100 transition-opacity" : ""}`}
         style={
           {

@@ -51,7 +51,7 @@ Every request that can't run right now needs three things: a place in line, a co
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="generation-queue.ts">
-{`// Bounded concurrency queue — same pattern as database connection pools
+{`// Bounded concurrency queue, same pattern as database connection pools
 class GenerationQueue {
   private queue: QueueItem[] = [];
   private active = 0;
@@ -127,7 +127,7 @@ interface GenerationResult { data: Float32Array; prompt: string; }`}
 ## WebSocket Connection Manager
 
 <CodeBlock language="typescript" title="ws-manager.ts">
-{`// Manage gallery visitor connections — each visitor gets real-time updates
+{`// Manage gallery visitor connections; each visitor gets real-time updates
 class GalleryConnectionManager {
   private connections = new Map<string, WebSocket>();
   private queue: GenerationQueue;
@@ -205,4 +205,4 @@ Build a concurrent generation queue with WebSocket status updates and load shedd
 
 <Exercise slug="handle-concurrency" />
 
-<KeyTakeaways takeaways={["Batch size, pool size, and max wait are coupled knobs: batching helps GPU throughput but adds delay for the first request in the batch", "WebSocket connections provide real-time status updates: queue position, estimated wait time, completion", "Load shedding serves cached or lower-quality results when demand exceeds capacity", "Graceful degradation beats hard failure — visitors get something rather than nothing"]} />
+<KeyTakeaways takeaways={["Batch size, pool size, and max wait are coupled knobs: batching helps GPU throughput but adds delay for the first request in the batch", "WebSocket connections provide real-time status updates: queue position, estimated wait time, completion", "Load shedding serves cached or lower-quality results when demand exceeds capacity", "Graceful degradation beats hard failure: visitors get something rather than nothing"]} />

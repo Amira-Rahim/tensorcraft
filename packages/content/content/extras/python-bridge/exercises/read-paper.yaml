@@ -1,7 +1,7 @@
 slug: read-paper
 lessonSlug: reading-ml-papers
 title: "Read a PyTorch Model and Build in TF.js"
-instructions: "Read the PyTorch model definition below — an anomaly detection autoencoder. Identify the architecture (encoder + decoder) and build the equivalent TF.js model. The encoder compresses input from 64 dimensions to 8, and the decoder reconstructs it back to 64. Use the same layer sizes, activations, and structure. Compile with Adam (lr=0.001) and MSE loss."
+instructions: "Read the PyTorch model definition below, an anomaly detection autoencoder. Identify the architecture (encoder + decoder) and build the equivalent TF.js model. The encoder compresses input from 64 dimensions to 8, and the decoder reconstructs it back to 64. Use the same layer sizes, activations, and structure. Compile with Adam (lr=0.001) and MSE loss."
 starterCode: |
   // Read this PyTorch autoencoder and build the TF.js equivalent:
   //

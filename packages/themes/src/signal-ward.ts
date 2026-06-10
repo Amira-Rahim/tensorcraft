@@ -6,7 +6,7 @@ export const signalWard: ThemeManifest = {
   displayName: "Signal Ward",
   tagline: "Decode language. Save lives.",
   description:
-    "Meridian General Hospital's diagnostic AI crashed during a patient surge. Build Diagnostic One — a clinical text intelligence assistant.",
+    "Meridian General Hospital's diagnostic AI crashed during a patient surge. Build Diagnostic One, a clinical text intelligence assistant.",
   palette: {
     bg: "#1C1C1C",
     primary: "#65C07D",
@@ -53,6 +53,6 @@ export const signalWard: ThemeManifest = {
     },
   ],
   specialization: "NLP & Text Intelligence",
-  modelBuilt: "Diagnostic One — clinical text assistant",
-  careerPaths: ["NLP Engineer ($114K–$237K)", "LLM/AI Engineer ($174K–$350K)"],
+  modelBuilt: "Diagnostic One: clinical text assistant",
+  careerPaths: ["NLP Engineer ($114K-$237K)", "LLM/AI Engineer ($174K-$350K)"],
 };

@@ -176,7 +176,7 @@ function NewsItemCard({ item }: { item: NewsItemRow }) {
                 {m.title}
               </a>{" "}
               <span className="opacity-50">
-                — {m.themeId}/{m.moduleId}
+                ({m.themeId}/{m.moduleId})
               </span>
               {m.rationale && (
                 <p className="ml-4 text-xs opacity-70">{m.rationale}</p>

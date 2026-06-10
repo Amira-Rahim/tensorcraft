@@ -1,6 +1,6 @@
 slug: incident-prompt-injection
 lessonSlug: prompt-engineering-for-images
-title: "Incident — Prompt Injection Attempt"
+title: "Incident: Prompt Injection Attempt"
 mlContent: systems
 instructions: |
   PAGER: user prompts containing instruction-override patterns are bypassing your system prompt. Build `detectInjection(userPrompt)` returning:

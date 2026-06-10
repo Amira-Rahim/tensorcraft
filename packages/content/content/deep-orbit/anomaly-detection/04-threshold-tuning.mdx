@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "Alert thresholds are static numbers you set in config. Anomaly thresholds must trade off false positives against false negatives across a continuous distribution and the right value depends on the cost asymmetry, not just the data."
 consequence:
-  narrative: "Demir sets the threshold at the 99th percentile of normal errors. DEEP SCAN is precise — it flags only the signals that truly don't belong."
+  narrative: "Demir sets the threshold at the 99th percentile of normal errors. DEEP SCAN is precise: it flags only the signals that truly don't belong."
 hints:
   - level: nudge
     content: "Use the distribution of normal reconstruction errors to set the threshold"
@@ -84,7 +84,7 @@ function classifySignal(error: number, threshold: number): 'normal' | 'anomaly' 
 {`interface Metrics {
   precision: number;  // of flagged signals, how many are real anomalies?
   recall: number;     // of real anomalies, how many did we catch?
-  f1: number;         // harmonic mean — single score balancing both
+  f1: number;         // harmonic mean: single score balancing both
 }
 
 function evaluate(
@@ -127,11 +127,11 @@ Find the optimal anomaly detection threshold using F1 score.
 
 ## On-Call Scenario
 
-Anomaly detector fired 1000 alerts in one hour — clearly noise, not a real outbreak. Diagnose whether the cause is sensor change, threshold drift, or model staleness.
+Anomaly detector fired 1000 alerts in one hour: clearly noise, not a real outbreak. Diagnose whether the cause is sensor change, threshold drift, or model staleness.
 
 <Exercise slug="incident-false-alarm-storm" />
 
-<KeyTakeaways takeaways={["Threshold tuning balances false positives (alert fatigue) against false negatives (missed anomalies)", "Use the normal error distribution to set thresholds — 99th percentile is a common starting point", "F1 score combines precision and recall into a single metric for comparing thresholds", "The optimal threshold depends on the cost of each error type — for DEEP SCAN, missing an anomaly is costlier"]} />
+<KeyTakeaways takeaways={["Threshold tuning balances false positives (alert fatigue) against false negatives (missed anomalies)", "Use the normal error distribution to set thresholds; the 99th percentile is a common starting point", "F1 score combines precision and recall into a single metric for comparing thresholds", "The optimal threshold depends on the cost of each error type; for DEEP SCAN, missing an anomaly is costlier"]} />
 
 <Epilogue>
 

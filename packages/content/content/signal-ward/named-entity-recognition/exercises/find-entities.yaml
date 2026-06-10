@@ -1,7 +1,7 @@
 slug: find-entities
 lessonSlug: what-is-ner
 title: "Find Clinical Entities"
-instructions: "Implement a findEntities function that takes an array of clinical tokens and classifies each one as an entity type (DRUG, CONDITION, DOSAGE, FREQUENCY) or O (outside). Use dictionary lookup for drugs, conditions, and frequencies. Use the provided regex pattern for dosages. Return an array of objects with token, label, and index. Think of it as querySelectorAll — walk every token and decide if it matches a selector."
+instructions: "Implement a findEntities function that takes an array of clinical tokens and classifies each one as an entity type (DRUG, CONDITION, DOSAGE, FREQUENCY) or O (outside). Use dictionary lookup for drugs, conditions, and frequencies. Use the provided regex pattern for dosages. Return an array of objects with token, label, and index. Think of it as querySelectorAll: walk every token and decide if it matches a selector."
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 

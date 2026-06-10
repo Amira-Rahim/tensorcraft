@@ -27,7 +27,7 @@ function getStripe(): Stripe {
  * Validate that every theme ID is launched (purchasable). Coming-soon themes
  * still pass `isValidThemeSlug` (registry knows them) but must NOT be
  * checkout-able. See packages/shared/src/constants.ts → LAUNCHED_THEMES.
- * Rejects empty arrays — paid plans must carry at least one theme.
+ * Rejects empty arrays, paid plans must carry at least one theme.
  */
 function validateThemeIds(ids: string[]): boolean {
   if (!Array.isArray(ids) || ids.length === 0) return false;
@@ -35,7 +35,7 @@ function validateThemeIds(ids: string[]): boolean {
 }
 
 /**
- * Terminal purchase statuses — once set, a retry of the same webhook
+ * Terminal purchase statuses, once set, a retry of the same webhook
  * must NOT regress the row (e.g. back to "completed"). See §338.
  */
 const TERMINAL_STATUSES = new Set([
@@ -46,7 +46,7 @@ const TERMINAL_STATUSES = new Set([
 ]);
 
 // ──────────────────────────────────────────────
-// POST /api/payments/checkout — Create a Stripe Checkout session
+// POST /api/payments/checkout, Create a Stripe Checkout session
 // ──────────────────────────────────────────────
 
 payments.use("/checkout", authMiddleware);
@@ -155,8 +155,8 @@ payments.post("/checkout", async (c) => {
           currency: "usd",
           product_data: {
             name: isUpgrade
-              ? `Tensorcraft — Upgrade to ${plan.label}`
-              : `Tensorcraft — ${plan.label}`,
+              ? `Tensorcraft: Upgrade to ${plan.label}`
+              : `Tensorcraft: ${plan.label}`,
             description: `Access to ${body.themeIds.join(", ")}`,
           },
           unit_amount: adjustedPrice * 100, // cents
@@ -178,7 +178,7 @@ payments.post("/checkout", async (c) => {
 });
 
 // ──────────────────────────────────────────────
-// GET /api/payments/purchases — Check user's purchases
+// GET /api/payments/purchases, Check user's purchases
 //
 // NOTE: As of V0.5, the Next.js frontend checks purchases directly via
 // Supabase client in lib/progress.ts (hasThemePurchase). This endpoint
@@ -227,7 +227,7 @@ payments.get("/purchases", async (c) => {
 });
 
 // ──────────────────────────────────────────────
-// POST /api/payments/webhook — Stripe webhook handler
+// POST /api/payments/webhook, Stripe webhook handler
 // CRITICAL #1: Now uses Stripe SDK signature verification
 // ──────────────────────────────────────────────
 
@@ -316,7 +316,7 @@ payments.post("/webhook", async (c) => {
         : [];
 
       // Validate theme IDs from metadata against canonical slug list.
-      // Empty array is rejected — every paid purchase must grant at
+      // Empty array is rejected, every paid purchase must grant at
       // least one theme (§6h referential integrity).
       if (!validateThemeIds(themeIds)) {
         logger.error(
@@ -359,7 +359,7 @@ payments.post("/webhook", async (c) => {
       }
 
       // ──────────────────────────────────────────────────────────
-      // Idempotent upsert — §338 "Fix upsert race condition".
+      // Idempotent upsert, §338 "Fix upsert race condition".
       //
       // Stripe delivers webhooks at-least-once and will retry any
       // non-2xx response. Under concurrent retries we MUST NOT create
@@ -390,7 +390,7 @@ payments.post("/webhook", async (c) => {
         .maybeSingle();
 
       if (existingRow && TERMINAL_STATUSES.has(existingRow.status)) {
-        // Already settled in a terminal state — do not regress.
+        // Already settled in a terminal state, do not regress.
         logger.info(
           {
             route: "payments.webhook",
@@ -398,7 +398,7 @@ payments.post("/webhook", async (c) => {
             stripeSessionId: sessionId,
             status: existingRow.status,
           },
-          "Webhook: skipping upsert — row already in terminal status",
+          "Webhook: skipping upsert, row already in terminal status",
         );
         break;
       }
@@ -574,7 +574,7 @@ payments.post("/webhook", async (c) => {
               ? asyncSession.payment_intent
               : (asyncSession.payment_intent?.id ?? null);
 
-          // Same no-regression guard as the sync path — §338.
+          // Same no-regression guard as the sync path, §338.
           const { data: existingAsyncRow } = await supabase
             .from("purchases")
             .select("status")
@@ -643,7 +643,7 @@ payments.post("/webhook", async (c) => {
     }
 
     default:
-      // Unhandled event type — acknowledge receipt
+      // Unhandled event type, acknowledge receipt
       break;
   }
 

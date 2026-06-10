@@ -23,7 +23,7 @@ vi.mock("@/app/components/ambient-background", () => ({
   AmbientBackground: () => <div data-testid="ambient-bg" />,
 }));
 
-// Particle canvas is a visual decoration only — stub it to avoid jsdom
+// Particle canvas is a visual decoration only, stub it to avoid jsdom
 // canvas / IntersectionObserver work in the test environment.
 vi.mock("@tensorcraft/ui/effects", () => ({
   ParticleField: ({ density }: { density?: number }) => (
@@ -54,7 +54,7 @@ vi.mock("@tensorcraft/ui/a11y", () => ({
   ),
 }));
 
-// Waitlist helper — we only care that it was called correctly.
+// Waitlist helper, we only care that it was called correctly.
 const submitWaitlistMock = vi.fn();
 vi.mock("@/lib/waitlist", () => ({
   submitWaitlist: (...args: unknown[]) => submitWaitlistMock(...args),
@@ -198,7 +198,7 @@ describe("ThemesPage (Deep Orbit launch + 4 coming-soon)", () => {
     expect(screen.getByTestId("theme-cta-deep-orbit").textContent).toContain(
       "Continue",
     );
-    // Coming-soon themes ignore ownership state — they always invite waitlist.
+    // Coming-soon themes ignore ownership state, they always invite waitlist.
     expect(screen.getByTestId("theme-cta-neon-protocol").textContent).toContain(
       "Notify me",
     );
@@ -234,7 +234,7 @@ describe("ThemesPage (Deep Orbit launch + 4 coming-soon)", () => {
   });
 });
 
-describe("NewsletterModal — interactions", () => {
+describe("NewsletterModal, interactions", () => {
   it("submits the waitlist with the entered email and the 'theme-selection' source", async () => {
     const onClose = vi.fn();
     render(<NewsletterModal open={true} onClose={onClose} />);
@@ -269,11 +269,11 @@ describe("NewsletterModal — interactions", () => {
     const onClose = vi.fn();
     render(<NewsletterModal open={true} onClose={onClose} />);
 
-    // Click inside the dialog panel — should NOT close.
+    // Click inside the dialog panel, should NOT close.
     fireEvent.click(screen.getByTestId("newsletter-modal"));
     expect(onClose).not.toHaveBeenCalled();
 
-    // Click on the backdrop (outside the panel) — should close.
+    // Click on the backdrop (outside the panel), should close.
     fireEvent.click(screen.getByTestId("newsletter-modal-backdrop"));
     expect(onClose).toHaveBeenCalledTimes(1);
   });

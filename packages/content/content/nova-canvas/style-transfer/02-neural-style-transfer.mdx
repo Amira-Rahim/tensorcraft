@@ -143,7 +143,7 @@ L_total = α · L_content + β · L_style
 
 **Why Gram matrices?** Texture is about which features co-occur, not where. Two images of the same texture (e.g., "oil painting brush strokes") have similar Gram matrices regardless of which side of the canvas the strokes are on.
 
-**Optimization:** start x = content image (or noise). Compute gradient of L_total w.r.t. x (NOT w.r.t. weights — VGG is frozen). Iterate: `x ← x − η · ∇_x L_total`. After ~500 iterations, x is the styled image.
+**Optimization:** start x = content image (or noise). Compute gradient of L_total w.r.t. x (NOT w.r.t. weights; VGG is frozen). Iterate: `x ← x − η · ∇_x L_total`. After ~500 iterations, x is the styled image.
 </DerivationDrawer>
 
 <KeyTakeaways takeaways={["Start the optimization from the content image instead of random noise: you converge in about 100 iterations instead of 500", "Content loss measures difference in deep CNN features between generated and content image", "Style loss measures difference in Gram matrices between generated and style image", "The balance between content weight and style weight controls how much the original structure is preserved"]} />

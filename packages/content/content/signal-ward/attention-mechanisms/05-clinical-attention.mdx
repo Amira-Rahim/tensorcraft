@@ -78,7 +78,7 @@ function clinicalAttention(
   // Standard scaled dot-product scores
   const scores = tf.matMul(Q, K.transpose()).div(Math.sqrt(dk));
 
-  // Add clinical bias — boost columns for medical terms
+  // Add clinical bias: boost columns for medical terms
   const bias = createClinicalMask(tokens);
   const biasedScores = scores.add(bias.reshape([1, -1]));
 

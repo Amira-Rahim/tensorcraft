@@ -1,6 +1,6 @@
 slug: incident-clinical-override
 lessonSlug: confidence-calibration
-title: "Incident — Clinical Overrides Outpacing Calibration"
+title: "Incident: Clinical Overrides Outpacing Calibration"
 mlContent: systems
 instructions: |
   PAGER: clinician override rate on model flags jumped from 8% to 47% over 2 weeks. Triage which overrides are signal (calibration drift the model needs to learn) vs noise (clinician disagreement on edge cases).
@@ -9,7 +9,7 @@ instructions: |
 
     {
       retrainCandidates: Override[],   // overrides where model confidence > 0.85 AND clinician disagreed
-      noisyOverrides: Override[],      // overrides where model confidence in [0.5, 0.7] (uncertain region — disagreement expected)
+      noisyOverrides: Override[],      // overrides where model confidence in [0.5, 0.7] (uncertain region; disagreement expected)
       retrainRecommended: boolean,     // true if retrainCandidates.length / overrides.length > 0.05
       driftSignal: number,             // |observedRate - baseline.expectedOverrideRate|, 1 decimal
     }

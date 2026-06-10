@@ -167,21 +167,21 @@ const sentinelLayers: LayerVisualization[] = [
     filterCount: 8,
     spatialSize: [224, 224],
     featureTypes: ['edges', 'gradients', 'color boundaries'],
-    insight: 'Like CSS border rendering — where does one region end and another begin?',
+    insight: 'Like CSS border rendering: where does one region end and another begin?',
   },
   {
     layerName: 'conv2',
     filterCount: 16,
     spatialSize: [112, 112],
     featureTypes: ['shapes', 'curves', 'corners', 'textures'],
-    insight: 'Like identifying UI components — buttons, inputs, cards by their shape.',
+    insight: 'Like identifying UI components: buttons, inputs, cards by their shape.',
   },
   {
     layerName: 'conv3',
     filterCount: 32,
     spatialSize: [56, 56],
     featureTypes: ['camera housings', 'lens assemblies', 'mounting hardware'],
-    insight: 'Like recognizing page layouts — the model sees complete objects now.',
+    insight: 'Like recognizing page layouts; the model sees complete objects now.',
   },
 ];
 
@@ -207,9 +207,9 @@ function findStrongestFilters(
 }
 
 // For a surveillance camera image, the strongest filters are:
-// conv3 filter 0 (camera dome shapes) — 0.97 activation
-// conv3 filter 1 (camera box housings) — 0.94 activation
-// conv2 filter 1 (circular shapes) — 0.91 activation
+// conv3 filter 0 (camera dome shapes): 0.97 activation
+// conv3 filter 1 (camera box housings): 0.94 activation
+// conv2 filter 1 (circular shapes): 0.91 activation
 // These are exactly the features that distinguish camera types!`}
 </CodeBlock>
 
@@ -234,10 +234,10 @@ A feature map is the output of one filter, shape `[H_out, W_out]` per filter per
 
 <Quiz
   question="Why do early CNN layers learn edge detectors regardless of task?"
-  options={[{"text":"Predetermined by initialization"},{"text":"Edges are universal low-level features in natural images — task-agnostic"},{"text":"Required by ReLU activation"},{"text":"Encoded in TensorFlow.js"}]}
+  options={[{"text":"Predetermined by initialization"},{"text":"Edges are universal low-level features in natural images, task-agnostic"},{"text":"Required by ReLU activation"},{"text":"Encoded in TensorFlow.js"}]}
   correct={1}
   explanation="Natural images share statistics: edges, gradients, oriented patterns. The most efficient first-layer features are universal regardless of whether the network classifies cats, X-rays, or satellite imagery. This is why ImageNet-pretrained early layers transfer to most vision tasks."
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Feature maps show where each filter fired: layer 1 lights up on edges, layer 3 on full camera silhouettes", "Early conv layers learn edges and gradients, middle layers learn shapes, deep layers learn object parts", "Normalizing activation maps to 0-1 range makes them comparable and visualizable", "Interpretability matters — a model that works for the wrong reasons will fail on new data"]} />
+<KeyTakeaways takeaways={["Feature maps show where each filter fired: layer 1 lights up on edges, layer 3 on full camera silhouettes", "Early conv layers learn edges and gradients, middle layers learn shapes, deep layers learn object parts", "Normalizing activation maps to 0-1 range makes them comparable and visualizable", "Interpretability matters: a model that works for the wrong reasons will fail on new data"]} />

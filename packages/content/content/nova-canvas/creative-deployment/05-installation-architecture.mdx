@@ -69,7 +69,7 @@ self.addEventListener('install', (event: ExtendableEvent) => {
 
 <CodeBlock language="typescript" title="manifest.json">
 {`{
-  "name": "Nova Canvas — Biennale Installation",
+  "name": "Nova Canvas: Biennale Installation",
   "short_name": "Nova Canvas",
   "start_url": "/gallery",
   "display": "fullscreen",
@@ -134,18 +134,18 @@ self.addEventListener('fetch', (event: FetchEvent) => {
 ## Local-First Generation
 
 <CodeBlock language="typescript" title="local-first.ts">
-{`// All generation runs locally — no server round-trip needed
+{`// All generation runs locally; no server round-trip needed
 class LocalFirstGenerator {
   private model: tf.LayersModel | null = null;
   private db: IDBDatabase | null = null;
 
   async initialize() {
-    // Load model from Service Worker cache — no network needed
+    // Load model from Service Worker cache; no network needed
     this.model = await tf.loadLayersModel('/models/nova-canvas-optimized/model.json');
 
     // IndexedDB for generation history
     this.db = await this.openDB();
-    console.log('Generator initialized — fully offline capable');
+    console.log('Generator initialized, fully offline capable');
   }
 
   async generate(params: GenerationParams): Promise<GenerationResult> {
@@ -223,4 +223,4 @@ Design a PWA architecture for an offline-first installation with local model inf
 
 <Exercise slug="installation-arch" />
 
-<KeyTakeaways takeaways={["Model weights ship and update on their own lifecycle: version them separately from the app shell and gate inference on load completion", "Service Workers cache ML model files for fully offline inference — no internet required", "Local-first with background sync ensures the experience never depends on connectivity", "PWA kiosk mode (display: fullscreen) creates an immersive installation without browser chrome"]} />
+<KeyTakeaways takeaways={["Model weights ship and update on their own lifecycle: version them separately from the app shell and gate inference on load completion", "Service Workers cache ML model files for fully offline inference; no internet required", "Local-first with background sync ensures the experience never depends on connectivity", "PWA kiosk mode (display: fullscreen) creates an immersive installation without browser chrome"]} />

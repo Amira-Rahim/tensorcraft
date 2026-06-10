@@ -6,7 +6,7 @@ export const neonProtocol: ThemeManifest = {
   displayName: "Neon Protocol",
   tagline: "See the city through the eyes of AI",
   description:
-    "NeuralCore HQ. 200 surveillance cameras went dark overnight. Rebuild Protocol Sentinel — an urban anomaly detection system.",
+    "NeuralCore HQ. 200 surveillance cameras went dark overnight. Rebuild Protocol Sentinel, an urban anomaly detection system.",
   palette: {
     bg: "#1C1C1C",
     primary: "#4A90D9",
@@ -53,9 +53,9 @@ export const neonProtocol: ThemeManifest = {
     },
   ],
   specialization: "Real-Time Computer Vision",
-  modelBuilt: "Protocol Sentinel — urban anomaly detector",
+  modelBuilt: "Protocol Sentinel: urban anomaly detector",
   careerPaths: [
-    "CV Engineer ($102K–$168K)",
-    "Perception Engineer ($168K–$333K)",
+    "CV Engineer ($102K-$168K)",
+    "Perception Engineer ($168K-$333K)",
   ],
 };

@@ -7,7 +7,7 @@ order: 1
 estimatedMinutes: 14
 difficulty: beginner
 context:
-  narrative: "ARIA's rule-based detection system has failed. Dr. Farah proposes building an adaptive system — starting with a single computational unit."
+  narrative: "ARIA's rule-based detection system has failed. Dr. Farah proposes building an adaptive system, starting with a single computational unit."
   speaker: "Dr. Farah"
 concept:
   explanation: "A neuron is a weighted sum of inputs plus a bias, passed through an activation function: arithmetic small enough to write by hand, and the unit every network is built from."
@@ -18,7 +18,7 @@ concept:
     mlCode: "const output = activation(tf.dot(inputs, weights).add(bias))"
     tier: structural
 consequence:
-  narrative: "The single neuron can now distinguish between two types of signals. But Commander Mirza needs more — much more."
+  narrative: "The single neuron can now distinguish between two types of signals. But Commander Mirza needs more. Much more."
 hints:
   - level: nudge
     content: "A neuron multiplies each input by a weight, sums them, and adds bias"
@@ -56,13 +56,13 @@ const bias = tf.scalar(0.1);                   // threshold offset
 
 // The neuron computation: weighted sum + bias
 const output = tf.dot(inputs, weights).add(bias);
-console.log(output.dataSync()); // [0.18] — raw output
+console.log(output.dataSync()); // [0.18]: raw output
 
 // Compare with the reduce() equivalent:
 const jsInputs = [0.5, 0.8, 0.2];
 const jsWeights = [0.4, -0.2, 0.6];
 const jsOutput = jsInputs.reduce((sum, x, i) => sum + x * jsWeights[i], 0.1);
-console.log(jsOutput); // 0.18 — identical!`}
+console.log(jsOutput); // 0.18: identical!`}
 </CodeBlock>
 
 Weights encode how much each input matters: a positive weight pushes the output up, a negative one pushes against it. The bias shifts the decision threshold, the baseline the weighted sum has to clear.

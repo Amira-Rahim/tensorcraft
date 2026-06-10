@@ -20,7 +20,7 @@ export function initSentry(): void {
     dsn,
     tracesSampleRate: 0.1,
     beforeSend(event) {
-      // Strip PII — never let emails, user IDs, or IPs leave the server.
+      // Strip PII, never let emails, user IDs, or IPs leave the server.
       if (event.user) {
         delete event.user.email;
         delete event.user.ip_address;

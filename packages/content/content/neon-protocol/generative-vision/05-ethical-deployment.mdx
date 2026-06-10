@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "CSP headers are declarative rules a browser enforces. Model governance policies are organizational processes that depend on humans following them; violations don't throw errors and many ethical failures (deepfakes, bias) cannot be blocked by a header."
 consequence:
-  narrative: "The governance framework passes review. Every patch is cryptographically signed and bound to Meridian's architecture fingerprints. Every generation is logged. Epsilon is capped. Zara nods: 'Art with accountability. I can live with that.' NEON: 'The most dangerous tools are the ones without constraints. Congratulations — you chose to build the constraints first.'"
+  narrative: "The governance framework passes review. Every patch is cryptographically signed and bound to Meridian's architecture fingerprints. Every generation is logged. Epsilon is capped. Zara nods: 'Art with accountability. I can live with that.' NEON: 'The most dangerous tools are the ones without constraints. Congratulations: you chose to build the constraints first.'"
 hints:
   - level: nudge
     content: "Write the policy the way a CSP header reads, as an explicit allow-list: allowedTargets and maxEpsilon are your default-src"
@@ -68,7 +68,7 @@ A Content Security Policy header tells the browser exactly which resources are a
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="governance-policy.ts">
-{`// Model governance policy — like CSP headers for ML
+{`// Model governance policy, like CSP headers for ML
 interface GovernancePolicy {
   // Allow-list of target model fingerprints (no wildcards)
   allowedTargets: string[];
@@ -133,7 +133,7 @@ class GovernedModel {
   ): { allowed: boolean; reason: string } {
     // Check policy expiration
     if (new Date() > this.policy.expiresAt) {
-      return { allowed: false, reason: 'Policy expired — renewal required' };
+      return { allowed: false, reason: 'Policy expired; renewal required' };
     }
 
     // Check target allow-list
@@ -185,7 +185,7 @@ class GovernedModel {
     }
 
     if (!check.allowed) {
-      console.warn(\`BLOCKED: \${operation} — \${check.reason}\`);
+      console.warn(\`BLOCKED: \${operation}. \${check.reason}\`);
       return null;
     }
 
@@ -193,7 +193,7 @@ class GovernedModel {
 
     // Validate output
     if (!this.policy.validateOutput(output)) {
-      console.warn(\`OUTPUT REJECTED: \${operation} — failed validation\`);
+      console.warn(\`OUTPUT REJECTED: \${operation}. Failed validation\`);
       return null;
     }
 
@@ -271,8 +271,8 @@ Build a governance policy system that constrains model operations.
   question="What's a content security policy (CSP) for ML models?"
   options={[{"text":"A bandwidth quota"},{"text":"Documented limits on inputs the model SHOULDN'T be asked to handle (faces, minors, regulated decisions)"},{"text":"An IP whitelist"},{"text":"Required by HTTPS"}]}
   correct={1}
-  explanation="Web CSP gates resource loading. ML CSP gates inputs and outputs — explicit list of use cases the model is and isn't approved for. Without it, an image classifier shipped for product photos ends up classifying medical scans. Documentation IS the policy when there's no code-level enforcement."
+  explanation="Web CSP gates resource loading. ML CSP gates inputs and outputs: explicit list of use cases the model is and isn't approved for. Without it, an image classifier shipped for product photos ends up classifying medical scans. Documentation IS the policy when there's no code-level enforcement."
   tier="intuition"
 />
 
-<KeyTakeaways takeaways={["A governance policy names allowed targets, caps perturbation strength (maxEpsilon), and requires an audit log before any operation runs", "Every operation should be audited: who ran it, what was the target, what were the parameters, was it approved", "Cryptographic fingerprinting binds capabilities to specific targets — no collateral damage", "The most powerful tools are the ones with the strongest constraints — governance enables deployment, not just restricts it"]} />
+<KeyTakeaways takeaways={["A governance policy names allowed targets, caps perturbation strength (maxEpsilon), and requires an audit log before any operation runs", "Every operation should be audited: who ran it, what was the target, what were the parameters, was it approved", "Cryptographic fingerprinting binds capabilities to specific targets: no collateral damage", "The most powerful tools are the ones with the strongest constraints; governance enables deployment, not just restricts it"]} />

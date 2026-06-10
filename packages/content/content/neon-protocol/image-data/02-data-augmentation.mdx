@@ -85,7 +85,7 @@ const BrittleCard = () => (
 // Frontend: flexible component (generalization)
 const FlexibleCard = () => (
   <div style={{ width: "100%", maxWidth: "400px", padding: "1rem" }}>
-    {/* Works across viewports — learned the pattern, not the pixels */}
+    {/* Works across viewports; learned the pattern, not the pixels */}
   </div>
 );
 
@@ -100,24 +100,24 @@ Let's implement the fundamental transforms. We'll work with images represented a
 <CodeBlock language="typescript" title="augmentations.ts">
 {`type PixelGrid = number[][];
 
-// Horizontal flip — like CSS scaleX(-1)
+// Horizontal flip, like CSS scaleX(-1)
 function flipHorizontal(pixels: PixelGrid): PixelGrid {
   return pixels.map(row => [...row].reverse());
 }
 
-// Vertical flip — like CSS scaleY(-1)
+// Vertical flip, like CSS scaleY(-1)
 function flipVertical(pixels: PixelGrid): PixelGrid {
   return [...pixels].reverse();
 }
 
-// Brightness adjustment — like CSS filter: brightness()
+// Brightness adjustment, like CSS filter: brightness()
 function adjustBrightness(pixels: PixelGrid, delta: number): PixelGrid {
   return pixels.map(row =>
     row.map(pixel => Math.max(0, Math.min(255, pixel + delta)))
   );
 }
 
-// Random crop — like CSS object-fit: cover with offset
+// Random crop, like CSS object-fit: cover with offset
 function randomCrop(
   pixels: PixelGrid,
   cropHeight: number,
@@ -214,5 +214,5 @@ Implement an augmentation pipeline that transforms surveillance camera images us
   "Augmentation turned 2,000 labeled images into an effective training set of 16,000 without collecting a single new photo",
   "Augmentation prevents overfitting by forcing the model to learn general features rather than memorizing exact pixel patterns",
   "Common augmentations (flip, rotate, brightness, crop) map directly to CSS operations you already use",
-  "Not all transforms preserve label meaning — choose augmentations that create realistic variations"
+  "Not all transforms preserve label meaning; choose augmentations that create realistic variations"
 ]} />

@@ -1,5 +1,5 @@
 /**
- * @tensorcraft/ui — Shared component library
+ * @tensorcraft/ui - Shared component library
  *
  * Uses Framer Motion for animations, Tailwind for styling.
  */

@@ -58,7 +58,7 @@ Browsers introduced `SameSite=Strict` cookies to prevent cross-site tracking. Th
 // Solution: add noise before sharing, like SameSite=Strict blocks leakage
 
 interface PrivacyConfig {
-  epsilon: number;       // privacy budget — lower = more private
+  epsilon: number;       // privacy budget: lower = more private
   delta: number;         // failure probability
   clipNorm: number;      // max gradient norm
   noiseSigma: number;    // computed from epsilon, delta, clipNorm
@@ -121,9 +121,9 @@ function privateGradientUpdate(
   gradients: Float32Array,
   config: PrivacyConfig,
 ): Float32Array {
-  // Step 1: Clip — bound the sensitivity
+  // Step 1: Clip, bound the sensitivity
   const clipped = clipGradients(gradients, config.clipNorm);
-  // Step 2: Add noise — calibrated to the bound
+  // Step 2: Add noise, calibrated to the bound
   return addGaussianNoise(clipped, config.noiseSigma);
 }
 
@@ -143,10 +143,10 @@ Implement private training with gradient clipping and noise addition.
 
 <Quiz
   question="Differential privacy adds Gaussian noise to gradient updates. With privacy budget ε=10 vs ε=0.1, which has STRONGER privacy?"
-  options={[{"text":"ε=10 — larger value means more privacy"},{"text":"ε=0.1 — smaller ε means tighter privacy guarantee (more noise added relative to the gradient)"},{"text":"They're equivalent — ε is just a normalization constant"},{"text":"It depends on δ, not ε"}]}
+  options={[{"text":"ε=10: larger value means more privacy"},{"text":"ε=0.1: smaller ε means tighter privacy guarantee (more noise added relative to the gradient)"},{"text":"They're equivalent: ε is just a normalization constant"},{"text":"It depends on δ, not ε"}]}
   correct={1}
-  explanation="ε is the privacy LOSS bound: smaller ε = stronger privacy. The Gaussian mechanism's noise σ is inversely proportional to ε (σ = clipNorm · √(2·ln(1.25/δ)) / ε), so ε=0.1 adds 100× more noise than ε=10. Option A inverts the convention. Option C is wrong — ε is the privacy budget. Option D is incomplete; both ε and δ matter, but the question asked about ε."
+  explanation="ε is the privacy LOSS bound: smaller ε = stronger privacy. The Gaussian mechanism's noise σ is inversely proportional to ε (σ = clipNorm · √(2·ln(1.25/δ)) / ε), so ε=0.1 adds 100× more noise than ε=10. Option A inverts the convention. Option C is wrong: ε is the privacy budget. Option D is incomplete; both ε and δ matter, but the question asked about ε."
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Raw gradient sharing can leak training data — differential privacy prevents this with calibrated noise", "Gradient clipping bounds sensitivity; Gaussian noise provides mathematical privacy guarantees", "Epsilon controls the privacy-accuracy tradeoff — lower epsilon means more privacy but less learning signal", "The privacy budget is finite: every shared update spends epsilon, and the guarantee weakens as updates accumulate"]} />
+<KeyTakeaways takeaways={["Raw gradient sharing can leak training data; differential privacy prevents this with calibrated noise", "Gradient clipping bounds sensitivity; Gaussian noise provides mathematical privacy guarantees", "Epsilon controls the privacy-accuracy tradeoff: lower epsilon means more privacy but less learning signal", "The privacy budget is finite: every shared update spends epsilon, and the guarantee weakens as updates accumulate"]} />

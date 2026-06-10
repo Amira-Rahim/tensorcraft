@@ -10,7 +10,7 @@ const progress = new Hono<AppEnv>();
 progress.use("*", authMiddleware);
 
 /**
- * GET /api/progress?themeId=deep-orbit — Get user's progress for a theme.
+ * GET /api/progress?themeId=deep-orbit, Get user's progress for a theme.
  *
  * NOTE: As of V0.5, the Next.js frontend queries Supabase directly via
  * lib/progress-client.ts rather than using this endpoint. This route is
@@ -54,7 +54,7 @@ progress.get("/", async (c) => {
 });
 
 /**
- * POST /api/progress — Create or update lesson progress.
+ * POST /api/progress, Create or update lesson progress.
  *
  * NOTE: As of V0.5, the Next.js frontend writes progress directly via
  * Supabase client in lib/progress-client.ts. This endpoint is retained
@@ -131,7 +131,7 @@ progress.post("/", async (c) => {
   const supabase = getSupabaseServerClient(token);
   const now = new Date().toISOString();
 
-  // CRITICAL #4: Fix started_at overwrite — check if record exists first
+  // CRITICAL #4: Fix started_at overwrite, check if record exists first
   const { data: existing } = await supabase
     .from("theme_progress")
     .select("started_at")
@@ -175,7 +175,7 @@ progress.post("/", async (c) => {
 });
 
 /**
- * GET /api/progress/summary — Aggregated progress across all themes.
+ * GET /api/progress/summary, Aggregated progress across all themes.
  * Returns per-theme counts of completed/total lessons and current streak.
  *
  * NOTE: As of V0.5, the dashboard queries Supabase directly (server
@@ -264,7 +264,7 @@ progress.get("/summary", async (c) => {
  *   - date: YYYY-MM-DD (UTC)
  *   - lessonsCompleted: lessons marked `completed` on that date
  *   - exercisesAttempted: rows in exercise_attempts with that
- *     `attempted_at` date (passed or failed — any attempt counts)
+ *     `attempted_at` date (passed or failed, any attempt counts)
  *
  * Missing days are included with zero counts so consumers can render
  * a heat-map / sparkline without client-side bucketing.

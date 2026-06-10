@@ -76,7 +76,7 @@ function buildSequenceLabeler(
 ): tf.LayersModel {
   const input = tf.input({ shape: [maxSeqLen] });
 
-  // Step 1: Embed each token — like assigning initial styles
+  // Step 1: Embed each token, like assigning initial styles
   const embedded = tf.layers.embedding({
     inputDim: vocabSize,
     outputDim: embedDim,
@@ -111,7 +111,7 @@ function prepareSequence(
   maxLen: number
 ): tf.Tensor2D {
   const ids = tokens.map(t => vocab.get(t.toLowerCase()) ?? 0);
-  // Pad to maxLen — like setting a fixed container width
+  // Pad to maxLen, like setting a fixed container width
   while (ids.length < maxLen) ids.push(0);
   return tf.tensor2d([ids.slice(0, maxLen)]);
 }
@@ -185,4 +185,4 @@ Build a sequence labeling model that assigns BIO tags to clinical tokens using a
 
 <Exercise slug="label-sequence" />
 
-<KeyTakeaways takeaways={["A dictionary labels 'cold' identically in 'has a cold' and 'cold compress'; a context-aware model separates them", "BiLSTM captures context from both directions — what comes before AND after each token", "returnSequences: true produces per-token outputs, not a single sentence vector", "Span-level evaluation matters more than token-level accuracy in clinical NER"]} />
+<KeyTakeaways takeaways={["A dictionary labels 'cold' identically in 'has a cold' and 'cold compress'; a context-aware model separates them", "BiLSTM captures context from both directions: what comes before AND after each token", "returnSequences: true produces per-token outputs, not a single sentence vector", "Span-level evaluation matters more than token-level accuracy in clinical NER"]} />

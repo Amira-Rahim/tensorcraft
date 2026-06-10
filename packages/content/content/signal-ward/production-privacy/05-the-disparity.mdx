@@ -1,6 +1,6 @@
 ---
 slug: the-disparity
-title: "The Disparity — Confronting the 12% Gap"
+title: "The Disparity: Confronting the 12% Gap"
 moduleId: production-privacy
 themeId: signal-ward
 order: 5
@@ -13,9 +13,9 @@ concept:
   explanation: "Performance disparity across demographic groups is like browser compatibility gaps: the system works well in one environment but fails in another. The remediation strategy is the same: identify the failure modes, build targeted fixes, and test across all environments."
   bridge:
     feTitle: "Browser Compatibility Gaps"
-    feCode: "// Works in Chrome, broken in Safari — polyfill, progressive enhancement, cross-browser testing"
+    feCode: "// Works in Chrome, broken in Safari: polyfill, progressive enhancement, cross-browser testing"
     mlTitle: "Performance Disparity"
-    mlCode: "// Works on formal notes, fails on ESL notes — data augmentation, re-weighting, cross-group testing"
+    mlCode: "// Works on formal notes, fails on ESL notes: data augmentation, re-weighting, cross-group testing"
     tier: structural
     breaks: "Browser compatibility gaps are documented per feature with known shims. Performance disparity across patient subgroups is often hidden in aggregate metrics; the model can hit 95% overall accuracy while failing entirely for a 5% subgroup."
 consequence:
@@ -96,19 +96,19 @@ function analyzeDisparities(
 function identifyFailureModes(slice: SliceMetrics): string[] {
   const modes: string[] = [];
   if (slice.falseNegativeRate > 0.15) {
-    modes.push('High false negative rate — model misses positive cases');
+    modes.push('High false negative rate: model misses positive cases');
   }
   if (slice.falsePositiveRate > 0.15) {
-    modes.push('High false positive rate — model triggers false alarms');
+    modes.push('High false positive rate: model triggers false alarms');
   }
   if (slice.sampleCount < 50) {
-    modes.push('Small sample size — results may be unreliable');
+    modes.push('Small sample size: results may be unreliable');
   }
   return modes;
 }`}
 </CodeBlock>
 
-## Data Augmentation — Polyfills for ML
+## Data Augmentation: Polyfills for ML
 
 <CodeBlock language="typescript" title="augmentation.ts">
 {`// Data augmentation is the ML equivalent of polyfills and progressive enhancement
@@ -190,7 +190,7 @@ function applyAugmentation(text: string, strategy: AugmentationStrategy): string
   }
 }
 
-// Sample re-weighting — give underperforming groups more influence during training
+// Sample re-weighting: give underperforming groups more influence during training
 function computeSampleWeights(
   samples: { text: string; label: number; group: string }[],
   groupAccuracies: Record<string, number>
@@ -206,7 +206,7 @@ function computeSampleWeights(
 }`}
 </CodeBlock>
 
-## The Model Card — Honest Documentation
+## The Model Card: Honest Documentation
 
 <CodeBlock language="typescript" title="model-card.ts">
 {`// A model card documents what the model can and cannot do
@@ -241,10 +241,10 @@ function generateModelCard(
   const worst = auditReport.slices.reduce((a, b) => a.accuracy < b.accuracy ? a : b);
 
   return {
-    name: 'Diagnostic One — Clinical Text Classifier',
+    name: 'Diagnostic One: Clinical Text Classifier',
     version: remediationApplied ? '1.1.0' : '1.0.0',
     description: 'Classifies clinical notes by type and extracts structured information.',
-    intendedUse: 'Clinical decision support — suggestions only, not autonomous decisions.',
+    intendedUse: 'Clinical decision support: suggestions only, not autonomous decisions.',
     performanceSummary: {
       overallAccuracy: auditReport.overall.accuracy,
       bestGroup: { name: best.sliceName, accuracy: best.accuracy },
@@ -286,4 +286,4 @@ Implement a disparity remediation pipeline that augments underperforming data sl
 
 <Exercise slug="fix-disparity" />
 
-<KeyTakeaways takeaways={["A model can score 94% on attending notes and 82% on night-shift notes; the aggregate number hides who it fails", "Data augmentation generates paraphrased and transformed examples to cover underrepresented writing styles", "Sample re-weighting gives underperforming groups more influence during training, like priority bug fixes for failing browsers", "Document the remaining gap (here, 2.3% after remediation) in the model card — what works, what does not, what limitations remain"]} />
+<KeyTakeaways takeaways={["A model can score 94% on attending notes and 82% on night-shift notes; the aggregate number hides who it fails", "Data augmentation generates paraphrased and transformed examples to cover underrepresented writing styles", "Sample re-weighting gives underperforming groups more influence during training, like priority bug fixes for failing browsers", "Document the remaining gap (here, 2.3% after remediation) in the model card: what works, what does not, what limitations remain"]} />

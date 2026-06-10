@@ -47,7 +47,7 @@ You've got the symmetry right: any element can initiate. Hold that thought until
 
 <LearningObjectives objectives={["Understand the Query-Key-Value framework", "Implement scaled dot-product self-attention", "Explain why scaling by sqrt(d_k) prevents gradient issues", "Apply self-attention to a clinical text sequence"]} />
 
-## Query, Key, Value — The Three Projections
+## Query, Key, Value: The Three Projections
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -138,10 +138,10 @@ Then:
 
 <Quiz
   question="Why divide attention scores by √d_k before softmax?"
-  options={[{"text":"To make scores positive"},{"text":"To control variance — without scaling, dot products grow with d_k and push softmax into saturation regions where gradients vanish"},{"text":"To match the residual connection scale"},{"text":"To prevent overflow in the softmax"}]}
+  options={[{"text":"To make scores positive"},{"text":"To control variance: without scaling, dot products grow with d_k and push softmax into saturation regions where gradients vanish"},{"text":"To match the residual connection scale"},{"text":"To prevent overflow in the softmax"}]}
   correct={1}
   explanation="Q·K^T values have variance proportional to d_k. Softmax of large values approaches a one-hot distribution where gradients are nearly zero. Dividing by √d_k normalizes variance to ~1, keeping softmax in its useful gradient range."
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Self-attention lets every token attend to every other token, capturing the long-range dependencies RNNs struggle with", "Q, K, V are linear projections of the same input — three different views", "Scaling by sqrt(d_k) prevents gradient vanishing in softmax"]} />
+<KeyTakeaways takeaways={["Self-attention lets every token attend to every other token, capturing the long-range dependencies RNNs struggle with", "Q, K, V are linear projections of the same input: three different views", "Scaling by sqrt(d_k) prevents gradient vanishing in softmax"]} />

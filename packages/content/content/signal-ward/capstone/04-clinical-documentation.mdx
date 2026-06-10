@@ -1,6 +1,6 @@
 ---
 slug: clinical-documentation
-title: "Clinical Documentation — Writing the Model Card"
+title: "Clinical Documentation: Writing the Model Card"
 moduleId: sw-capstone
 themeId: signal-ward
 order: 4
@@ -13,9 +13,9 @@ concept:
   explanation: "A model card is API documentation for an ML system: it describes what the model does, its limitations, intended use cases, and performance characteristics. Just as API documentation tells developers what to expect from an endpoint, a model card tells clinicians what to expect from a diagnostic tool."
   bridge:
     feTitle: "API Documentation"
-    feCode: "// POST /api/payments — accepts { amount, currency }, returns { id, status }, rate limit: 100/min"
+    feCode: "// POST /api/payments: accepts { amount, currency }, returns { id, status }, rate limit: 100/min"
     mlTitle: "Model Card"
-    mlCode: "// Diagnostic One — accepts clinical text, returns entities + interactions, accuracy: F1 0.86, limitation: English only"
+    mlCode: "// Diagnostic One: accepts clinical text, returns entities + interactions, accuracy: F1 0.86, limitation: English only"
     tier: structural
     breaks: "API documentation describes deterministic behavior. Model cards must document training data composition, intended use, known failure modes, and performance disparities; the document is non-trivial to author and is itself a deliverable, not a generated artifact."
 consequence:
@@ -45,14 +45,14 @@ And the edge cases could affect patient safety. So the documentation needs to be
 
 A model card has five sections: intended use, validation results, known limitations, fairness analysis, override guidance. What the system accepts, what it returns, how accurate it is, where it fails, when not to trust it. If that skeleton feels familiar, it should. It is API documentation (endpoint, request, response, error codes, rate limits) written for readers who are clinicians making patient care decisions, not developers making API calls.
 
-<LearningObjectives objectives={["Write a model card that documents Diagnostic One's capabilities, limitations, and validation results", "Structure clinical documentation with sections for intended use, performance, limitations, and fairness", "Translate ML metrics (precision, recall, F1) into language clinicians can act on", "Document override guidance — when clinicians should trust the system and when they should question it"]} />
+<LearningObjectives objectives={["Write a model card that documents Diagnostic One's capabilities, limitations, and validation results", "Structure clinical documentation with sections for intended use, performance, limitations, and fairness", "Translate ML metrics (precision, recall, F1) into language clinicians can act on", "Document override guidance: when clinicians should trust the system and when they should question it"]} />
 
 ## The Model Card Template
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="model-card.ts">
-{`// Model card generator — structured documentation for clinical ML systems
+{`// Model card generator: structured documentation for clinical ML systems
 // Same pattern as API documentation generators (Swagger, OpenAPI)
 
 interface ModelCardMetadata {
@@ -146,7 +146,7 @@ const diagnosticOneCard = generateModelCard({
     'Higher false positive rate for rare drug combinations (precision drops to 0.71 for drugs with fewer than 10 training examples)',
     'Does not detect drug-food interactions',
     'Performance degrades on clinical abbreviations not in training vocabulary',
-    'Confidence scores are not calibrated — 0.85 confidence does not mean 85% accuracy',
+    'Confidence scores are not calibrated: 0.85 confidence does not mean 85% accuracy',
   ],
   fairnessAnalysis: [
     { demographic: 'Age 18-65', metric: 'F1', value: 0.87 },
@@ -158,7 +158,7 @@ const diagnosticOneCard = generateModelCard({
     'Always verify flagged interactions against current drug reference databases',
     'Override the system when clinical context contradicts the flag (e.g., intentional co-prescription with monitoring)',
     'Report false positives and false negatives through the feedback interface to improve future versions',
-    'Do not rely on absence of a flag as evidence of safety — the system may miss interactions',
+    'Do not rely on absence of a flag as evidence of safety; the system may miss interactions',
   ],
   inputFormat: 'Unstructured English clinical text (UTF-8, max 2048 tokens)',
   outputFormat: '{ entities[], interactions[], classification, confidence, reviewTier }',
@@ -171,7 +171,7 @@ console.log(diagnosticOneCard);`}
 ## Version History
 
 <CodeBlock language="typescript" title="version-history.ts">
-{`// Track model versions — same pattern as API versioning (v1, v2, v2.1)
+{`// Track model versions, same pattern as API versioning (v1, v2, v2.1)
 // Each version documents what changed, why, and how performance shifted
 
 interface ModelVersion {
@@ -215,7 +215,7 @@ const versionHistory: ModelVersion[] = [
   },
 ];
 
-// Like a CHANGELOG.md — every version documented
+// Like a CHANGELOG.md: every version documented
 function printVersionHistory(versions: ModelVersion[]): void {
   for (const v of versions) {
     console.log(\`## v\${v.version} (\${v.date})\${v.breakingChanges ? ' [BREAKING]' : ''}\`);
@@ -234,4 +234,4 @@ Write a function that generates a formatted clinical model card from structured 
 
 <Exercise slug="write-clinical-card" />
 
-<KeyTakeaways takeaways={["A model card is an authored deliverable, not a generated artifact: training data composition, failure modes, and per-group performance must be written by someone who knows the system", "Clinical documentation must be honest about limitations — not marketing copy, but a tool for informed decision-making", "Override guidance is unique to clinical ML: tell clinicians exactly when to trust the system and when to question it", "Version history records what changed between model versions and why: retraining data, thresholds, and behavior shifts"]} />
+<KeyTakeaways takeaways={["A model card is an authored deliverable, not a generated artifact: training data composition, failure modes, and per-group performance must be written by someone who knows the system", "Clinical documentation must be honest about limitations: not marketing copy, but a tool for informed decision-making", "Override guidance is unique to clinical ML: tell clinicians exactly when to trust the system and when to question it", "Version history records what changed between model versions and why: retraining data, thresholds, and behavior shifts"]} />

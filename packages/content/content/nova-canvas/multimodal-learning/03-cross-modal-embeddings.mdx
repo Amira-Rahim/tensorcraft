@@ -54,7 +54,7 @@ Shared interfaces let different implementations communicate. Cross-modal embeddi
 {`import * as tf from '@tensorflow/tfjs';
 
 // Projection head: maps encoder output to the shared space
-// Like an adapter pattern — different implementations, same interface
+// Like an adapter pattern: different implementations, same interface
 function buildProjectionHead(inputDim: number, outputDim: number): tf.LayersModel {
   const input = tf.input({ shape: [inputDim] });
 

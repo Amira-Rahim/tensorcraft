@@ -10,7 +10,7 @@ import { PurchaseAnalytics } from "./purchase-analytics";
 
 export const metadata: Metadata = {
   title: "Purchase Confirmed | Tensorcraft",
-  description: "Your theme is yours — every module is open.",
+  description: "Your theme is yours: every module is open.",
   robots: { index: false, follow: false },
 };
 
@@ -47,7 +47,7 @@ function formatReceiptDate(raw: string): string {
 
 /** Last-8 hash for `stripe_session_id`, safe for display. */
 function shortenSessionId(sessionId: string | null | undefined): string {
-  if (!sessionId) return "—";
+  if (!sessionId) return "–";
   return sessionId.length <= 8 ? sessionId : sessionId.slice(-8);
 }
 
@@ -152,7 +152,7 @@ export default async function PurchaseSuccessPage({
           </h1>
           <p className="text-base sm:text-lg text-text-muted max-w-xl mx-auto">
             {firstTheme
-              ? `${firstTheme.displayName} is yours — all ${firstThemeModules.length} modules are open.`
+              ? `${firstTheme.displayName} is yours: all ${firstThemeModules.length} modules are open.`
               : "Your purchase is confirmed. Everything you bought is open."}
           </p>
         </div>
@@ -284,7 +284,7 @@ export default async function PurchaseSuccessPage({
                 >
                   {purchase.theme_ids.length > 0
                     ? purchase.theme_ids.join(", ")
-                    : "—"}
+                    : "–"}
                 </dd>
               </div>
               <div className="flex justify-between sm:block sm:col-span-2">

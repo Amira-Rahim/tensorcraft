@@ -118,7 +118,7 @@ pipeline.forEach(s => {
 // 2. Pruning: 40.0MB → 20.0MB (2x)
 // 3. Quantization: 20.0MB → 5.0MB (4x)
 // Total: 200MB → 5MB = 40x reduction
-// Accuracy: 98.5% → 94.4% — still above 92% threshold`}
+// Accuracy: 98.5% → 94.4%, still above 92% threshold`}
 </CodeBlock>
 
 The order matters. Distill first to get the right architecture size, then prune to remove redundant neurons, then quantize to reduce precision. This mirrors the Webpack pipeline: tree-shake first (remove code), then minify (shrink code), then compress (reduce size).

@@ -68,8 +68,8 @@ function reducer(state: State, action: Action): State {
 // posterior            = likelihood           * prior           / evidence
 
 function bayesUpdate(
-  prior: number[],        // P(hypothesis) — your current beliefs
-  likelihood: number[],   // P(data | hypothesis) — how well each hypothesis explains the data
+  prior: number[],        // P(hypothesis): your current beliefs
+  likelihood: number[],   // P(data | hypothesis): how well each hypothesis explains the data
 ): number[] {
   // Unnormalized posterior
   const unnormalized = prior.map((p, i) => p * likelihood[i]);
@@ -99,13 +99,13 @@ let beliefs = [0.95, 0.05];
 // Likelihood: P(100 clicks | human) = 0.001, P(100 clicks | bot) = 0.8
 beliefs = bayesUpdate(beliefs, [0.001, 0.8]);
 console.log('After rapid clicks:', beliefs.map(b => b.toFixed(4)));
-// [0.0231, 0.9769] — now we strongly suspect bot
+// [0.0231, 0.9769]: now we strongly suspect bot
 
 // Observation 2: user solves a CAPTCHA correctly
 // Likelihood: P(solve | human) = 0.95, P(solve | bot) = 0.1
 beliefs = bayesUpdate(beliefs, [0.95, 0.1]);
 console.log('After CAPTCHA pass:', beliefs.map(b => b.toFixed(4)));
-// Beliefs updated again — maybe it IS a human after all
+// Beliefs updated again. Maybe it IS a human after all
 
 // Each observation updates our beliefs incrementally
 // This is EXACTLY how sequential learning works in ML`}
@@ -130,7 +130,7 @@ The connection runs deep: when you add L2 regularization to your loss function, 
 // Total loss                =  -log P(weights | data)     [posterior]
 
 // Minimizing L2-regularized loss = finding the MAP estimate
-// (Maximum A Posteriori — the most probable weights given data AND prior)
+// (Maximum A Posteriori: the most probable weights given data AND prior)
 
 // The lambda * sum(w^2) term is equivalent to a Gaussian prior
 // centered at zero: P(w) = Normal(0, 1/lambda)
@@ -173,7 +173,7 @@ console.log('MAP estimate:', await wMAP.array());
 //   = Can overfit with limited data
 
 // Maximum A Posteriori (MAP): Find weights that maximize P(weights | data)
-//   = P(data | weights) * P(weights) — likelihood times prior
+//   = P(data | weights) * P(weights), likelihood times prior
 //   = L2 regularization when prior is Gaussian
 //   = L1 regularization when prior is Laplacian
 //   = Better generalization

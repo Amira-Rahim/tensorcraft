@@ -7,7 +7,7 @@ order: 2
 estimatedMinutes: 20
 difficulty: beginner
 context:
-  narrative: "The raw neuron output is unbounded — ARIA needs a way to constrain it into meaningful decisions."
+  narrative: "The raw neuron output is unbounded; ARIA needs a way to constrain it into meaningful decisions."
 concept:
   explanation: "Activation functions bend a network's straight lines: they transform raw neuron output into bounded, useful ranges that downstream layers can build on."
   bridge:
@@ -50,18 +50,18 @@ Without activation functions, a neural network is stacked linear transformations
 
 const raw = tf.tensor([-2, -1, 0, 1, 2]);
 
-// ReLU: max(0, x) — the most popular activation
+// ReLU: max(0, x), the most popular activation
 const relu = tf.relu(raw);        // [0, 0, 0, 1, 2]
 
-// Sigmoid: squash to (0, 1) — good for probabilities
+// Sigmoid: squash to (0, 1), good for probabilities
 const sigmoid = tf.sigmoid(raw);   // [0.12, 0.27, 0.5, 0.73, 0.88]
 
-// Tanh: squash to (-1, 1) — centered version of sigmoid
+// Tanh: squash to (-1, 1), centered version of sigmoid
 const tanh = tf.tanh(raw);         // [-0.96, -0.76, 0, 0.76, 0.96]
 
 // Frontend equivalent of ReLU:
 const jsRelu = [-2, -1, 0, 1, 2].map(x => Math.max(0, x));
-// [0, 0, 0, 1, 2] — identical!`}
+// [0, 0, 0, 1, 2]: identical!`}
 </CodeBlock>
 
 **When to use which:**
@@ -85,7 +85,7 @@ Apply ReLU activation to neuron outputs.
   tier="identity"
 />
 
-<KeyTakeaways takeaways={["Activation functions add non-linearity — without them, networks can't learn complex patterns", "ReLU = Math.max(0, x) — the most common activation function", "Sigmoid squashes output to 0-1 (probabilities), tanh to -1 to 1", "Choose ReLU for hidden layers, sigmoid for binary output layers"]} />
+<KeyTakeaways takeaways={["Activation functions add non-linearity; without them, networks can't learn complex patterns", "ReLU = Math.max(0, x), the most common activation function", "Sigmoid squashes output to 0-1 (probabilities), tanh to -1 to 1", "Choose ReLU for hidden layers, sigmoid for binary output layers"]} />
 
 <Epilogue>
 

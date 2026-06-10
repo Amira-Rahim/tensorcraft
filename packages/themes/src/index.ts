@@ -27,7 +27,7 @@ export const themes: Record<string, ThemeManifest> = {
   "terra-grid": terraGrid,
 };
 
-/** Theme slug literals — derived from the themes record (single source of truth) */
+/** Theme slug literals, derived from the themes record (single source of truth) */
 export const themeSlugs = Object.keys(themes) as (keyof typeof themes)[];
 
 export type ThemeSlug = keyof typeof themes;

@@ -13,7 +13,7 @@ concept:
   explanation: "CLIP-guided generation puts a critic inside the loop: at each diffusion step, score the image against the prompt and nudge the pixels toward higher similarity. CLIP never paints anything. It only steers, and the strength of its steering is a knob with failure modes at both ends."
   bridge:
     feTitle: "ESLint: guiding toward patterns"
-    feCode: "// eslint: prefer-const, no-unused-vars — nudge toward better code"
+    feCode: "// eslint: prefer-const, no-unused-vars; nudge toward better code"
     mlTitle: "CLIP guidance"
     mlCode: "gradient = clipScore(image, prompt); image += lr * gradient;"
     tier: structural
@@ -150,4 +150,4 @@ x ← x − η · ∇_x loss        // pixel-space guidance (more flexible)
 **Modern: diffusion guidance.** Classifier-free guidance (CFG) is the dominant technique now (see the diffusion lessons). CLIP guidance was the bridge between old GAN-based art and modern diffusion.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["Guidance strength is a continuous knob: too strong collapses the image toward CLIP's favorite artifacts, too weak ignores the prompt", "At each denoising step, compute the gradient of CLIP similarity and nudge the image toward the prompt", "Guidance strength controls how aggressively the image is steered — too much causes artifacts", "The AI-Wrong moment: high CLIP score does not guarantee artistic quality — alignment is not truth"]} />
+<KeyTakeaways takeaways={["Guidance strength is a continuous knob: too strong collapses the image toward CLIP's favorite artifacts, too weak ignores the prompt", "At each denoising step, compute the gradient of CLIP similarity and nudge the image toward the prompt", "Guidance strength controls how aggressively the image is steered; too much causes artifacts", "The AI-Wrong moment: high CLIP score does not guarantee artistic quality; alignment is not truth"]} />

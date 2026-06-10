@@ -21,7 +21,7 @@ export default function SettingsError({
     <div className="min-h-screen flex items-center justify-center px-8">
       <div className="border border-border bg-surface p-10 max-w-md w-full rounded-none">
         <div className="font-mono text-xs text-red-400 tracking-wider uppercase mb-4">
-          // ERROR
+          ERROR
         </div>
         <h2 className="text-xl font-mono font-black tracking-[-0.03em] mb-4 uppercase text-text-primary">
           Settings failed to load

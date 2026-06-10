@@ -185,7 +185,7 @@ describe("POST /api/payments/webhook", () => {
     });
 
     expect(res.status).toBe(200);
-    // payments.ts uses upsert(data, options) — match both arguments
+    // payments.ts uses upsert(data, options), match both arguments
     expect(mockInsert).toHaveBeenCalledWith(
       expect.objectContaining({
         user_id: "user_456",
@@ -231,7 +231,7 @@ describe("POST /api/payments/webhook", () => {
   });
 
   it("rejects webhook with empty theme_ids metadata (§6h)", async () => {
-    // An empty themeIds array must be rejected — every paid purchase
+    // An empty themeIds array must be rejected, every paid purchase
     // grants at least one theme. Guards against a future bug in the
     // checkout handler emitting a malformed metadata blob.
     const event = {
@@ -322,7 +322,7 @@ describe("POST /api/payments/webhook", () => {
   });
 
   it("upserts with ON CONFLICT DO UPDATE (not DO NOTHING) on retry (§338)", async () => {
-    // Non-terminal prior status — the upsert must still run and use
+    // Non-terminal prior status, the upsert must still run and use
     // ignoreDuplicates: false so the ON CONFLICT branch DOes UPDATE.
     mockAdminExistingRow = { status: "completed" };
     mockInsert.mockResolvedValue({ error: null });

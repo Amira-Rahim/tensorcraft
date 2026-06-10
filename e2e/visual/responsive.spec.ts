@@ -1,5 +1,5 @@
 /**
- * Visual regression tests — responsive layout breakpoints.
+ * Visual regression tests, responsive layout breakpoints.
  *
  * Per dev-plan §8k. 4 breakpoints × 2 high-impact pages (landing + pricing).
  * Widths: 320 (mobile S), 768 (tablet), 1024 (laptop), 1440 (desktop L).
@@ -20,7 +20,7 @@ const PAGES = [
   { name: "pricing", path: "/pricing" },
 ] as const;
 
-test.describe("Visual — Responsive Breakpoints", () => {
+test.describe("Visual: Responsive Breakpoints", () => {
   test.skip(!shouldRun, "Set RUN_VISUAL=1 after generating baselines");
 
   test.beforeEach(async ({ page }) => {

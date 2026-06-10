@@ -1,6 +1,6 @@
 ---
 slug: system-design
-title: "System Design — Assembling Diagnostic One"
+title: "System Design: Assembling Diagnostic One"
 moduleId: sw-capstone
 themeId: signal-ward
 order: 1
@@ -13,9 +13,9 @@ concept:
   explanation: "Designing Diagnostic One's architecture is the same discipline as designing a microservices system: independent services with typed contracts, orchestrated through a central pipeline that manages data flow, error handling, and fallback paths."
   bridge:
     feTitle: "Microservices Architecture"
-    feCode: "// Auth Service → User Service → Payment Service — independent services, typed APIs"
+    feCode: "// Auth Service → User Service → Payment Service: independent services, typed APIs"
     mlTitle: "ML Pipeline Architecture"
-    mlCode: "// Tokenizer → NER → Classifier → QA → Reviewer — independent models, typed interfaces"
+    mlCode: "// Tokenizer → NER → Classifier → QA → Reviewer: independent models, typed interfaces"
     tier: structural
     breaks: "Microservices have versioned API contracts and explicit error semantics. ML pipeline architecture has implicit data contracts (schemas, distributions) that fail silently and a model is itself a microservice with non-deterministic outputs."
 consequence:
@@ -123,7 +123,7 @@ interface DiagnosticReport {
   processingTimeMs: number;
 }
 
-// Pipeline orchestrator — like an API gateway for NLP services
+// Pipeline orchestrator, like an API gateway for NLP services
 class DiagnosticOnePipeline {
   private stages: Map<string, {
     process: (input: any) => Promise<any>;
@@ -200,7 +200,7 @@ const manifest = [
     input: 'GroundedResult', output: 'ReviewDecision' },
 ];
 
-// Validate the dependency graph — same as checking for circular deps in npm
+// Validate the dependency graph, same as checking for circular deps in npm
 function validateManifest(components: typeof manifest): boolean {
   const names = new Set(components.map(c => c.name));
   const stageOrder = components.every((c, i, arr) => {
@@ -220,4 +220,4 @@ Design a typed pipeline configuration that maps Diagnostic One's components and 
 
 <Exercise slug="design-diagnostic-one" />
 
-<KeyTakeaways takeaways={["ML pipeline data contracts are implicit (schemas, distributions) and fail silently; there is no 400 response for drifted input, so type every boundary", "Every pipeline stage has typed interfaces — catching integration errors at compile time, not at 3 AM in production", "Error boundaries and fallback paths ensure partial failures degrade gracefully, not catastrophically", "Nine modules of NLP work compose into six pipeline stages: process, analyze, retrieve, ground, verify, output"]} />
+<KeyTakeaways takeaways={["ML pipeline data contracts are implicit (schemas, distributions) and fail silently; there is no 400 response for drifted input, so type every boundary", "Every pipeline stage has typed interfaces, catching integration errors at compile time, not at 3 AM in production", "Error boundaries and fallback paths ensure partial failures degrade gracefully, not catastrophically", "Nine modules of NLP work compose into six pipeline stages: process, analyze, retrieve, ground, verify, output"]} />

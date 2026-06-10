@@ -23,7 +23,7 @@ import { Hono } from "hono";
 import type { AppEnv } from "../../types";
 
 // ─────────────────────────────────────────────────────────────
-// Supabase mock — profiles read/write only.
+// Supabase mock, profiles read/write only.
 // ─────────────────────────────────────────────────────────────
 
 type Row = Record<string, unknown>;
@@ -113,7 +113,7 @@ vi.mock("../../lib/redis", () => ({
 }));
 
 // ─────────────────────────────────────────────────────────────
-// Fetch handler — all outbound GitHub calls are captured here.
+// Fetch handler, all outbound GitHub calls are captured here.
 // ─────────────────────────────────────────────────────────────
 
 type FetchHandler = (
@@ -141,7 +141,7 @@ beforeEach(() => {
   process.env.APP_URL = "http://localhost:3000";
 
   fetchHandler = async () => {
-    throw new Error("Unhandled fetch — install a handler per test");
+    throw new Error("Unhandled fetch, install a handler per test");
   };
   vi.stubGlobal("fetch", async (url: unknown, init?: RequestInit) => {
     const u = typeof url === "string" ? url : String(url);
@@ -181,7 +181,7 @@ function jsonResponse(body: unknown, init: ResponseInit = {}): Response {
 // Tests
 // ─────────────────────────────────────────────────────────────
 
-describe("GitHub flow — OAuth acquisition → commit → push", () => {
+describe("GitHub flow, OAuth acquisition → commit → push", () => {
   it("connect returns a GitHub authorize URL with client_id + state", async () => {
     authed("user-A");
     const res = await createApp().request("/api/github/connect", {
@@ -447,7 +447,7 @@ describe("GitHub flow — OAuth acquisition → commit → push", () => {
     });
 
     // Either the retry succeeded (200 with retry_sha) or 500 surfaced on
-    // the initial PUT — both document the integration path; what we want
+    // the initial PUT, both document the integration path; what we want
     // to assert is that the retry mechanism WAS engaged (>1 PUT attempt).
     if (res.status === 200) {
       expect(lessonPutAttempts).toBeGreaterThan(1);

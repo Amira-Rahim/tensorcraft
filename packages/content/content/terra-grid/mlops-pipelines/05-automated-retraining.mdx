@@ -48,7 +48,7 @@ No. I've configured triggers. When the data drift score exceeds 0.3 or the datas
 
 GitHub Actions triggers on `push`, `pull_request`, `schedule`, or `workflow_dispatch`. You define the event, the conditions, and the workflow runs automatically. The trigger architecture transfers; the safety assumption does not. A CI build that compiles and passes tests is safe to ship. A retraining run that completes is not: retrain on drifted or poisoned data and you ship a worse model, on schedule, with green checkmarks. Every trigger in this lesson feeds an evaluation gate, and the gate, not the trigger, decides what deploys.
 
-<LearningObjectives objectives={["Design retraining triggers based on data events — like GitHub Actions event triggers", "Implement threshold-based triggers for data drift, dataset growth, and performance degradation", "Configure scheduled retraining with cron patterns", "Build safeguards that prevent runaway retraining loops"]} />
+<LearningObjectives objectives={["Design retraining triggers based on data events, like GitHub Actions event triggers", "Implement threshold-based triggers for data drift, dataset growth, and performance degradation", "Configure scheduled retraining with cron patterns", "Build safeguards that prevent runaway retraining loops"]} />
 
 ## Event-Driven Retraining
 
@@ -100,7 +100,7 @@ const triggers: RetrainingTrigger[] = [
 
 async function evaluateTriggers(triggers: RetrainingTrigger[]): Promise<TriggerType | null> {
   for (const trigger of triggers) {
-    // Check cooldown — prevent runaway retraining
+    // Check cooldown: prevent runaway retraining
     if (trigger.lastTriggered) {
       const elapsed = (Date.now() - trigger.lastTriggered) / 60000;
       if (elapsed < trigger.cooldownMinutes) continue;
@@ -137,7 +137,7 @@ async function evaluateTriggers(triggers: RetrainingTrigger[]): Promise<TriggerT
     const success = await runPipeline(pipeline);
 
     if (success) {
-      // Register the new model — but do NOT auto-promote to production
+      // Register the new model, but do NOT auto-promote to production
       // Hassan's rule: automated does not mean unsupervised
       await registry.register({
         name: 'terra-grid-intelligence',
@@ -167,4 +167,4 @@ Configure automated retraining triggers with cooldowns and safeguards.
 
 <Exercise slug="auto-retrain" />
 
-<KeyTakeaways takeaways={["Retraining fires on drift, schedule, or performance drops, and every triggered run must still pass the evaluation gate before deploying", "Cooldown periods prevent trigger storms — just like rate limiting prevents API abuse", "Automated does not mean unsupervised — new models land in staging, not production, until a human approves", "Every automated run feeds the experiment tracker and model registry for full auditability"]} />
+<KeyTakeaways takeaways={["Retraining fires on drift, schedule, or performance drops, and every triggered run must still pass the evaluation gate before deploying", "Cooldown periods prevent trigger storms, just like rate limiting prevents API abuse", "Automated does not mean unsupervised: new models land in staging, not production, until a human approves", "Every automated run feeds the experiment tracker and model registry for full auditability"]} />

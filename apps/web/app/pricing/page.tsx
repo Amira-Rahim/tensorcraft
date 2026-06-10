@@ -10,27 +10,27 @@ import { PricingTiers } from "./pricing-tiers";
 import { AmbientBackground } from "@/app/components/ambient-background";
 
 export const metadata: Metadata = {
-  title: `ML Course Pricing — From $0 to $${PRICING.allFive.price} | Tensorcraft`,
+  title: `ML Course Pricing: From $0 to $${PRICING.allFive.price} | Tensorcraft`,
   description: `One payment. Lifetime access. Learn browser-based ML through familiar frontend concepts. Free preview, $${PRICING.single.price} per theme, bundles up to $${PRICING.allFive.price}.`,
   alternates: { canonical: "https://tensorcraft.app/pricing" },
   openGraph: {
     type: "website",
     url: "https://tensorcraft.app/pricing",
     siteName: "Tensorcraft",
-    title: "Buy a Theme. Keep It Forever. — Tensorcraft",
+    title: "Buy a Theme. Keep It Forever. | Tensorcraft",
     description: `One payment. Lifetime access. $0 preview, $${PRICING.single.price} per theme, bundles up to $${PRICING.allFive.price}.`,
     images: [
       {
         url: "/api/og?title=Buy%20a%20Theme.%20Keep%20It%20Forever.&subtitle=One%20payment.%20Lifetime%20access.&theme=deep-orbit",
         width: 1200,
         height: 630,
-        alt: "Tensorcraft — Buy a Theme. Keep It Forever.",
+        alt: "Tensorcraft: Buy a Theme. Keep It Forever.",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Buy a Theme. Keep It Forever. — Tensorcraft",
+    title: "Buy a Theme. Keep It Forever. | Tensorcraft",
     description: `One payment. Lifetime access. $0 preview, $${PRICING.single.price} per theme, bundles up to $${PRICING.allFive.price}.`,
     images: [
       "/api/og?title=Buy%20a%20Theme.%20Keep%20It%20Forever.&subtitle=One%20payment.%20Lifetime%20access.&theme=deep-orbit",
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
 export const revalidate = 3600;
 
 /**
- * Feature comparison matrix — rendered under the tier grid.
+ * Feature comparison matrix, rendered under the tier grid.
  * Each row describes availability across the 5 tiers.
  * `true` = included, `false` = not included, string = descriptive cell value.
  */
@@ -204,7 +204,7 @@ export default function PricingPage() {
         priceCurrency: "USD",
         availability: "https://schema.org/InStock",
         description:
-          "Module 1 of Deep Orbit free — lessons and exercises, no account required. The other four themes ship in waves with per-theme waitlists.",
+          "Module 1 of Deep Orbit free: lessons and exercises, no account required. The other four themes ship in waves with per-theme waitlists.",
       },
       {
         "@type": "Offer",
@@ -267,7 +267,7 @@ export default function PricingPage() {
         {/* Hero */}
         <section className="pt-24 pb-14 px-6 text-center">
           <div className="inline-flex px-5 py-2 border border-border font-mono text-[13px] text-text-muted tracking-wider mb-8 rounded-none">
-            // one payment &middot; lifetime access &middot; no subscriptions
+            one payment &middot; lifetime access &middot; no subscriptions
           </div>
           <h1
             data-testid="pricing-heading"
@@ -277,7 +277,7 @@ export default function PricingPage() {
           </h1>
           <p className="text-base sm:text-lg max-w-140 mx-auto text-text-muted font-sans">
             Each theme is a separate ML specialization. Buy one, bundle a few,
-            or all five themes, one payment &mdash; lifetime access.
+            or all five themes, one payment, lifetime access.
           </p>
         </section>
 
@@ -305,8 +305,7 @@ export default function PricingPage() {
                   14-day money-back guarantee
                 </span>
                 <span className="text-text-muted">
-                  {" "}
-                  &mdash; full refund if you&rsquo;ve used less than 20% of a
+                  : full refund if you&rsquo;ve used less than 20% of a
                   theme.{" "}
                 </span>
                 <Link
@@ -321,7 +320,7 @@ export default function PricingPage() {
           </div>
         </section>
 
-        {/* Curriculum preview — what a purchase unlocks */}
+        {/* Curriculum preview, what a purchase unlocks */}
         <CurriculumPreview />
 
         {/* Comparison Table */}
@@ -331,7 +330,7 @@ export default function PricingPage() {
               Feature Comparison
             </h2>
             <p className="text-center text-sm text-text-muted font-mono uppercase tracking-wider mb-10">
-              // what&rsquo;s included in each tier
+              what&rsquo;s included in each tier
             </p>
             <div
               className="overflow-x-auto border border-border rounded-none"
@@ -412,7 +411,7 @@ export default function PricingPage() {
               </table>
             </div>
             <p className="mt-4 text-[11px] text-text-muted font-mono uppercase tracking-wider">
-              // scroll horizontally on small screens
+              scroll horizontally on small screens
             </p>
           </div>
         </section>
@@ -420,7 +419,7 @@ export default function PricingPage() {
         {/* CTA Footer */}
         <section className="py-24 px-6 text-center border-t border-border">
           <p className="text-[13px] uppercase tracking-[0.15em] mb-4 text-text-muted font-mono">
-            // your frontend is the foundation
+            your frontend is the foundation
           </p>
           <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-text-primary font-mono tracking-tight">
             Add ML to your engineering toolkit.

@@ -32,9 +32,9 @@ describe("LossCurve", () => {
     expect(svg?.hasAttribute("aria-label")).toBe(false);
   });
 
-  it("renders the comment-style header label", () => {
+  it("renders the header label", () => {
     const { container } = render(<LossCurve weekly={full} />);
-    expect(container.textContent).toMatch(/\/\/ loss\.hints/);
+    expect(container.textContent).toMatch(/loss\.hints/);
   });
 
   it("renders empty-state text when all avgHints are null", () => {

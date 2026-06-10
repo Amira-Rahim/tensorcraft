@@ -107,14 +107,14 @@ Three architectural decisions define a good generator:
 // 2. BATCH NORMALIZATION: stabilizes training
 // Without it, each layer's input distribution shifts during training
 // BatchNorm normalizes each layer's input → faster, more stable training
-// Rule: BatchNorm after dense, before activation (or after — both work)
+// Rule: BatchNorm after dense, before activation (or after; both work)
 
 // 3. OUTPUT ACTIVATION: sigmoid or tanh
-// sigmoid: output in [0, 1] — good for images normalized to [0, 1]
-// tanh: output in [-1, 1] — good for images normalized to [-1, 1]
+// sigmoid: output in [0, 1], good for images normalized to [0, 1]
+// tanh: output in [-1, 1], good for images normalized to [-1, 1]
 
 // Why not ReLU for the output?
-// ReLU has no upper bound — pixel values could explode
+// ReLU has no upper bound; pixel values could explode
 // We need bounded output for valid image data
 
 function buildGeneratorV2(noiseDim: number): tf.Sequential {
@@ -152,4 +152,4 @@ With stride 2, K=4, P=1: each input pixel becomes a 4×4 patch in the output, mu
 **Checkerboard artifacts:** when K is not divisible by stride, overlap regions get more contributions than non-overlap → visible grid pattern in generated images. Fix: use K = 2·stride (e.g. K=4 with stride=2) or replace transposed conv with `bilinear upsample + regular conv` ("sub-pixel convolution").
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["Generators progressively upscale from noise to full-resolution output", "LeakyReLU prevents dead neurons; BatchNorm stabilizes training", "Output activation must be bounded — sigmoid for [0,1], tanh for [-1,1]", "Pair kernel size with stride (K = 2·stride) or transposed convolutions leave checkerboard artifacts in every generated image"]} />
+<KeyTakeaways takeaways={["Generators progressively upscale from noise to full-resolution output", "LeakyReLU prevents dead neurons; BatchNorm stabilizes training", "Output activation must be bounded: sigmoid for [0,1], tanh for [-1,1]", "Pair kernel size with stride (K = 2·stride) or transposed convolutions leave checkerboard artifacts in every generated image"]} />

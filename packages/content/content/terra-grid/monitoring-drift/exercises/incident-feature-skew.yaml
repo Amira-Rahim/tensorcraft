@@ -1,8 +1,8 @@
 slug: incident-feature-skew
 lessonSlug: data-drift
-title: "Incident — Training/Serving Feature Skew"
+title: "Incident: Training/Serving Feature Skew"
 instructions: |
-  PAGER: model accuracy degrading slowly over 2 weeks. You suspect training/serving skew — the feature pipeline behaves differently in prod than during training. You receive `trainStats` and `prodStats` (per-feature mean + stddev objects). Build `detectSkew(trainStats, prodStats, threshold = 2)` that returns:
+  PAGER: model accuracy degrading slowly over 2 weeks. You suspect training/serving skew: the feature pipeline behaves differently in prod than during training. You receive `trainStats` and `prodStats` (per-feature mean + stddev objects). Build `detectSkew(trainStats, prodStats, threshold = 2)` that returns:
 
     {
       skewed: string[],            // feature names where |meanDiff/trainStd| > threshold (z-score)

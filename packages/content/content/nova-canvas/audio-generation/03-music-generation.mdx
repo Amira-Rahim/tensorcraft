@@ -60,7 +60,7 @@ const melody = [60, 62, 64, 65, 67, 65, 64, 62]; // C major scale up and down
 // Normalize to [0, 1] range for the network
 const normalized = melody.map(note => note / 127);
 
-// Build training windows — same sliding window pattern as time-series
+// Build training windows, same sliding window pattern as time-series
 function createWindows(notes: number[], windowSize: number) {
   const inputs: number[][] = [];
   const targets: number[] = [];
@@ -130,7 +130,7 @@ console.log('Generated melody:', melody);`}
 ## Scheduled Playback
 
 <CodeBlock language="typescript" title="scheduled-playback.ts">
-{`// Schedule notes using Web Audio API timing — precise to the sample
+{`// Schedule notes using Web Audio API timing, precise to the sample
 function scheduleMelody(
   ctx: AudioContext,
   notes: number[],

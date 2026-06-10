@@ -28,7 +28,7 @@ interface DerivationDrawerProps {
 }
 
 /**
- * <DerivationDrawer /> — closed-by-default disclosure that surfaces the
+ * <DerivationDrawer /> - closed-by-default disclosure that surfaces the
  * underlying math for an FE-bridge concept. Sits below the bridge callout
  * on training-loop main lessons. Default-closed honors the FE-bridge
  * pedagogy (you don't need calculus to ship); opening signals depth

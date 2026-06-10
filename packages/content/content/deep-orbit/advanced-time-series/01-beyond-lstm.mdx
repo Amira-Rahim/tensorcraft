@@ -7,7 +7,7 @@ order: 1
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "The LSTM works, but its sequential nature is slow. Farah introduces attention — a mechanism that lets the model focus on the most relevant time steps directly, without processing the entire sequence step by step."
+  narrative: "The LSTM works, but its sequential nature is slow. Farah introduces attention: a mechanism that lets the model focus on the most relevant time steps directly, without processing the entire sequence step by step."
   speaker: "Dr. Farah"
 concept:
   explanation: "Attention scores every time step for relevance at once, then spends the model's capacity where the scores are high."
@@ -23,7 +23,7 @@ hints:
   - level: nudge
     content: "Attention computes relevance scores for each time step, then focuses on the important ones"
   - level: guidance
-    content: "Q (query), K (key), V (value) — the query asks 'what should I focus on?', keys provide candidates, values carry the information"
+    content: "Q (query), K (key), V (value): the query asks 'what should I focus on?', keys provide candidates, values carry the information"
   - level: solution
     content: "scores = matmul(Q, transpose(K)); weights = softmax(scores); output = matmul(weights, V);"
 keywords:
@@ -43,12 +43,12 @@ Like CSS :focus. Instead of styling every element equally, you highlight just th
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-:focus lands on one element. Softmax never does — every step gets a weight, and most of them sit near zero. Keep your picture, but read the weights as a budget, not a spotlight.
+:focus lands on one element. Softmax never does: every step gets a weight, and most of them sit near zero. Keep your picture, but read the weights as a budget, not a spotlight.
 </Dialogue>
 
-Tab through a form and the browser doesn't restyle every element — it finds the active one and highlights it. Attention is the soft version of that move: it scores every time step for relevance, then spends most of its weight where the score is high and a little everywhere else.
+Tab through a form and the browser doesn't restyle every element; it finds the active one and highlights it. Attention is the soft version of that move: it scores every time step for relevance, then spends most of its weight where the score is high and a little everywhere else.
 
-<LearningObjectives objectives={["Understand attention as dynamic relevance scoring — focusing on what matters", "Learn the Query-Key-Value framework for computing attention weights", "Compare attention with LSTM: parallel vs sequential, global vs local context", "Implement a simple attention mechanism in TensorFlow.js"]} />
+<LearningObjectives objectives={["Understand attention as dynamic relevance scoring: focusing on what matters", "Learn the Query-Key-Value framework for computing attention weights", "Compare attention with LSTM: parallel vs sequential, global vs local context", "Implement a simple attention mechanism in TensorFlow.js"]} />
 
 ## The Query-Key-Value Framework
 
@@ -63,13 +63,13 @@ Tab through a form and the browser doesn't restyle every element — it finds th
 // 3. Values: "Here's the information at each candidate"
 
 // Score = how well each key matches the query
-// Weight = softmax(score) — normalize to probabilities
-// Output = weighted sum of values — focus on high-weight positions
+// Weight = softmax(score): normalize to probabilities
+// Output = weighted sum of values: focus on high-weight positions
 
 function simpleAttention(
-  query: tf.Tensor2D,   // [1, dim] — what we're looking for
-  keys: tf.Tensor2D,    // [seqLen, dim] — candidates at each time step
-  values: tf.Tensor2D,  // [seqLen, dim] — information at each time step
+  query: tf.Tensor2D,   // [1, dim]: what we're looking for
+  keys: tf.Tensor2D,    // [seqLen, dim]: candidates at each time step
+  values: tf.Tensor2D,  // [seqLen, dim]: information at each time step
 ): { output: tf.Tensor; weights: tf.Tensor } {
   return tf.tidy(() => {
     // Score each key against the query
@@ -87,7 +87,7 @@ function simpleAttention(
 
 // The weights tell you WHERE the model is "looking"
 // High weight at step 5 and step 72 = those steps matter most
-// This is interpretable — unlike LSTM hidden state`}
+// This is interpretable, unlike LSTM hidden state`}
 </CodeBlock>
 
 ## LSTM vs Attention
@@ -129,14 +129,14 @@ Implement a simple attention mechanism over a sequence.
 
 <Exercise slug="simple-attention" />
 
-<KeyTakeaways takeaways={["On the 80-step DEEP SCAN window, attention scores every position at once and runs ~10x faster than the step-by-step LSTM", "Query-Key-Value: the query asks what to look for, keys are candidates, values carry the information", "Attention processes all time steps in parallel — much faster than LSTM's sequential approach", "Attention weights are interpretable — you can see exactly which time steps the model focuses on"]} />
+<KeyTakeaways takeaways={["On the 80-step DEEP SCAN window, attention scores every position at once and runs ~10x faster than the step-by-step LSTM", "Query-Key-Value: the query asks what to look for, keys are candidates, values carry the information", "Attention processes all time steps in parallel, much faster than LSTM's sequential approach", "Attention weights are interpretable: you can see exactly which time steps the model focuses on"]} />
 
 <Epilogue>
 
 Demir runs the freshly validated attention model against the live feed before logging off. Two hotspots, every window: the amplitude spike, then the frequency shift trailing it. On the archived telemetry from eleven days ago, the gap between hotspots measures 73.4 seconds. On tonight's feed it measures 73.1, and he runs it twice more and gets 73.1 twice more.
 
 <Dialogue speaker="Dr. Farah">
-Run it again tomorrow night — same window, same archive. If it's sensor jitter, it won't be consistent.
+Run it again tomorrow night: same window, same archive. If it's sensor jitter, it won't be consistent.
 </Dialogue>
 
 He files it under jitter anyway, because the alternative is stranger than he wants to be at two in the morning. The file does not stay closed.

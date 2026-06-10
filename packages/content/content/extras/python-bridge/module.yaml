@@ -1,13 +1,13 @@
 slug: python-bridge
-title: "Python Bridge: You Know ML — Now Read the Other Language"
+title: "Python Bridge: You Know ML. Now Read the Other Language"
 themeId: shared
 order: 3
 description: |
   Every ML job posting requires Python literacy. This module bridges your
-  JavaScript ML knowledge to Python/PyTorch — not to make you a Python
+  JavaScript ML knowledge to Python/PyTorch, not to make you a Python
   developer, but to make you fluent enough to read research code, collaborate
   with data science teams, and navigate the ecosystem. Bridge: "Python's ML
-  ecosystem is like jQuery — it was there first, everything builds on it, and
+  ecosystem is like jQuery: it was there first, everything builds on it, and
   you need to be literate even if you prefer modern alternatives."
 lessonCount: 5
 prerequisites:
@@ -25,7 +25,7 @@ lessons:
     bridge: "Python syntax → JavaScript syntax (side-by-side)"
     summary: |
       Crash course: indentation vs. braces, list comprehensions vs. map/filter,
-      classes, type hints, imports. Not learning Python from scratch — translating
+      classes, type hints, imports. Not learning Python from scratch, translating
       what you already know. Focus on reading comprehension, not writing.
 
   - slug: numpy-is-typed-arrays
@@ -37,7 +37,7 @@ lessons:
     summary: |
       ndarray vs. tf.tensor (they're the same thing). Broadcasting, slicing,
       reshaping. Side-by-side: every NumPy operation mapped to its TF.js
-      equivalent. You already know this — it's just different syntax.
+      equivalent. You already know this; it's just different syntax.
 
   - slug: pytorch-is-tfjs
     title: "PyTorch = TensorFlow.js (Different Syntax, Same Ideas)"
@@ -72,4 +72,4 @@ lessons:
       Capstone: given a real ML paper and its PyTorch reference implementation,
       read and understand both. Identify the model architecture, loss function,
       training procedure, and key results. Comprehension exercise, not
-      implementation. You don't need to write Python — you need to read it.
+      implementation. You don't need to write Python; you need to read it.

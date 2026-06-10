@@ -15,7 +15,7 @@ concept:
     feTitle: "Hash functions"
     feCode: "const hash = crypto.subtle.digest('SHA-256', data); // fixed-size output"
     mlTitle: "Feature Vector"
-    mlCode: "const features = model.predict(image); // [1, 512] — fixed-size embedding"
+    mlCode: "const features = model.predict(image); // [1, 512], fixed-size embedding"
     tier: structural
     breaks: "Hash functions deterministically map input to a fixed-size output that has no semantic meaning. Feature vectors place inputs in a learned space where distance encodes similarity; the geometry is the point, hash collisions are a bug."
 consequence:
@@ -130,4 +130,4 @@ A feature vector is a point in d-dimensional space chosen so that **distances en
 **Curse of dimensionality:** in high d, all random vectors become near-orthogonal (cosine ≈ 0). Useful structure must be learned, not assumed. Random initialization gives uniform-distance embeddings, meaningless until trained.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["Feature vectors are compact numerical fingerprints of images — like hash digests, but similarity-preserving", "Extracting features means removing the classification head from a pre-trained model", "A 224x224 image (150K values) compresses to ~512-2048 values — a 300x reduction", "Meridian stores features instead of images: faster to search, smaller to store, impossible to reverse"]} />
+<KeyTakeaways takeaways={["Feature vectors are compact numerical fingerprints of images, like hash digests, but similarity-preserving", "Extracting features means removing the classification head from a pre-trained model", "A 224x224 image (150K values) compresses to ~512-2048 values, a 300x reduction", "Meridian stores features instead of images: faster to search, smaller to store, impossible to reverse"]} />

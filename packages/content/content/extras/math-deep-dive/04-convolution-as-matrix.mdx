@@ -71,7 +71,7 @@ const toeplitz = tf.tensor2d([
 
 const resultMatrix = tf.matMul(toeplitz, input.reshape([5, 1]));
 console.log('Matrix result:', await resultMatrix.array());
-// [[1], [-1], [-2]] — identical to the sliding window
+// [[1], [-1], [-2]]: identical to the sliding window
 
 // Using tf.conv1d for comparison
 const resultConv = tf.conv1d(
@@ -81,7 +81,7 @@ const resultConv = tf.conv1d(
   'valid'
 );
 console.log('Conv1d result:', await resultConv.array());
-// [[[1], [-1], [-2]]] — same answer`}
+// [[[1], [-1], [-2]]]: same answer`}
 </CodeBlock>
 
 ## Building a Toeplitz Matrix
@@ -145,7 +145,7 @@ For large kernels, this is dramatically faster than sliding the window.
 
 // The idea: conv(a, b) = ifft(fft(a) * fft(b))
 // This is why audio processing uses FFT-based convolution
-// for reverb effects — the impulse response kernel can be huge
+// for reverb effects: the impulse response kernel can be huge
 
 // Direct convolution: O(n * k) where n=input size, k=kernel size
 // FFT convolution:    O(n * log(n))
@@ -189,7 +189,7 @@ GPUs have thousands of cores optimized for matrix multiplication. By expressing 
 // 2. Reshape kernel into a matrix
 // 3. Single matrix multiply = all convolution outputs
 //
-// This trades memory for speed — classic CS tradeoff
+// This trades memory for speed: classic CS tradeoff
 
 // Benchmark: sliding window vs matrix multiply
 const inputLength = 1000;

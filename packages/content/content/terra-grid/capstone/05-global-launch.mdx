@@ -39,7 +39,7 @@ Pre-flight checklist complete. Security audit: passed. Disaster recovery: tested
 </Dialogue>
 
 <Dialogue speaker="GRID">
-Deployment initiated. Region 3 first — 2,100 devices. Canary window: 4 hours. If all health checks pass, proceeding to Regions 1 and 7. Full deployment estimated: 18 hours across all 8 time zones.
+Deployment initiated. Region 3 first: 2,100 devices. Canary window: 4 hours. If all health checks pass, proceeding to Regions 1 and 7. Full deployment estimated: 18 hours across all 8 time zones.
 </Dialogue>
 
 Launch day is mostly a checklist and a clock. The 4.2MB model you quantized and pruned in modules 3 and 4 ships over the OTA pipeline from module 5, gated by the A/B numbers from module 9. Eighteen hours, eight time zones, one rollback button. The checklist looks like every web launch you have run, with one difference worth respecting: a web pre-flight verifies a deterministic build against reproducible tests, while this one verifies a probabilistic model against a static benchmark. If the model is wrong in a way the benchmark never covered, the monitors from module 7 will tell you hours later, not at deploy time. That is why the rollback button is the most rehearsed item on the list.
@@ -51,7 +51,7 @@ Launch day is mostly a checklist and a clock. The 4.2MB model you quantized and 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="launch-controller.ts">
-{`// Production launch — same discipline as web app deployment
+{`// Production launch, same discipline as web app deployment
 
 interface PreFlightCheck {
   name: string;
@@ -94,7 +94,7 @@ class LaunchController {
   async launch(): Promise<void> {
     const preflight = await this.preFlight();
     if (!preflight.ready) {
-      throw new Error('Pre-flight checks failed — launch aborted');
+      throw new Error('Pre-flight checks failed: launch aborted');
     }
     this.launched = true;
     console.log('TERRA GRID INTELLIGENCE: Launch initiated');
@@ -144,12 +144,12 @@ await launcher.launch();`}
   options={[
     {
       label: "cooperate",
-      display: "Trust Park's pre-prod read — keep everything live, increase telemetry sampling",
+      display: "Trust Park's pre-prod read: keep everything live, increase telemetry sampling",
       consequence: "Telemetry doubles. Drift stabilizes at PSI 0.31 over 6 hours, no accuracy regression in user-visible metrics. Park's call was right; the pattern was a sensor calibration drift, not model drift. Hassan: 'You read the pre-prod report and trusted the gate.' Cooperative play with the team's pre-prod discipline; payoff = no rollback churn."
     },
     {
       label: "defect",
-      display: "Full global rollback — accept the operational cost",
+      display: "Full global rollback: accept the operational cost",
       consequence: "Rollback fires. 12,400 devices revert to last-known-good in 11.7 seconds (per the runbook). Service quality regresses ~2% for 18 hours during the re-investigation. Park: 'You bypassed pre-prod findings.' Hassan: 'You also kept the SLO sacred. Both readings stand.' Defection paid in safety; the next pre-prod report carries less weight in your future decisions."
     },
     {
@@ -222,5 +222,5 @@ Build a launch controller with pre-flight checks and post-launch monitoring.
 <DispatchTease
   toThemeId="deep-orbit"
   toThemeName="Deep Orbit"
-  body="Operator. Cross-channel intel: a long-mission vessel just transmitted a 7.83 Hz harmonic in their anomaly stream — the same frequency Hassan's edge fleet has been logging in localized power signatures. Operator Demir on the bridge is calling it deep-space; Hassan is calling it ground-station. Both can't be right. The mission ends where it began: time-series eyes catch what edge eyes miss. Signal logged: 7.83 Hz. Correlation: unresolved. 47 sites listening."
+  body="Operator. Cross-channel intel: a long-mission vessel just transmitted a 7.83 Hz harmonic in their anomaly stream, the same frequency Hassan's edge fleet has been logging in localized power signatures. Operator Demir on the bridge is calling it deep-space; Hassan is calling it ground-station. Both can't be right. The mission ends where it began: time-series eyes catch what edge eyes miss. Signal logged: 7.83 Hz. Correlation: unresolved. 47 sites listening."
 />

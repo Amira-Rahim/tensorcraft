@@ -57,7 +57,7 @@ Two hundred browsers. Twelve districts. One hour to prove an error rate under 2%
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="feature-flags.ts">
-{`// Feature flags for ML pipeline — same pattern as frontend feature flags
+{`// Feature flags for ML pipeline, same pattern as frontend feature flags
 
 interface FeatureFlag {
   name: string;
@@ -105,7 +105,7 @@ class SentinelFlags {
     const flag = this.flags.get(name);
     if (flag) {
       flag.enabled = false;
-      console.log(\`[\${name}] KILLED — rolling back to previous version\`);
+      console.log(\`[\${name}] KILLED. Rolling back to previous version\`);
     }
   }
 }
@@ -139,7 +139,7 @@ flags.register({
 <CodeBlock language="typescript" title="canary.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Canary deployment — run new pipeline alongside old, compare results
+// Canary deployment: run new pipeline alongside old, compare results
 interface CanaryConfig {
   canaryFlag: string;
   errorRateThreshold: number;   // Max acceptable error rate (e.g., 0.02 = 2%)
@@ -226,7 +226,7 @@ class CanaryDeployment {
   }
 
   private promote(): void {
-    console.log('CANARY PASSED — promoting to full rollout');
+    console.log('CANARY PASSED. Promoting to full rollout');
     this.flags.setRollout(this.config.canaryFlag, 100);
   }
 }
@@ -251,7 +251,7 @@ Numbers on a screen mean nothing without context. Show me the health of every st
 </Dialogue>
 
 <CodeBlock language="typescript" title="monitoring.ts">
-{`// Real-time monitoring dashboard — same as frontend performance monitoring
+{`// Real-time monitoring dashboard, same as frontend performance monitoring
 interface PipelineHealth {
   stage: string;
   status: 'healthy' | 'degraded' | 'critical';
@@ -331,7 +331,7 @@ monitor.onUpdate((health) => {
   const system = monitor.getSystemStatus();
   console.log(\`System: \${system}\`);
   for (const stage of health) {
-    console.log(\`  [\${stage.stage}] \${stage.status} — \${stage.metrics.avgLatencyMs.toFixed(1)}ms avg\`);
+    console.log(\`  [\${stage.stage}] \${stage.status}: \${stage.metrics.avgLatencyMs.toFixed(1)}ms avg\`);
   }
 });`}
 </CodeBlock>
@@ -340,7 +340,7 @@ monitor.onUpdate((health) => {
 
 <BossBeat
   beatId="neon-protocol-launch-rollout-call"
-  prompt="Lin pings on comms. The model passed canary at 5%. Telemetry from the field has a 3% accuracy regression on low-light frames — exactly the edge case the previous model also struggled with. Promote to 50% now and own the regression, or hold at 5% and ask Ryo's red team for one more pass? Decision in 30 seconds."
+  prompt="Lin pings on comms. The model passed canary at 5%. Telemetry from the field has a 3% accuracy regression on low-light frames, exactly the edge case the previous model also struggled with. Promote to 50% now and own the regression, or hold at 5% and ask Ryo's red team for one more pass? Decision in 30 seconds."
   options={[
     {
       label: "cooperate",
@@ -354,7 +354,7 @@ monitor.onUpdate((health) => {
     },
     {
       label: "random",
-      display: "Coin flip — 50% promote, 50% hold",
+      display: "Coin flip: 50% promote, 50% hold",
       consequence: "Heads. You promote. Same outcome as defect, but the bridge logged that you couldn't decide. Mixed strategies are valid against an adversary; against your own deployment ladder they read as not having a thesis."
     },
     {
@@ -374,7 +374,7 @@ Rolling out to 100%. All districts. All feeds.
 </Dialogue>
 
 <Dialogue speaker="NEON">
-Two hundred browsers. Twelve districts. Four hundred and twelve active camera feeds. Protocol Sentinel is processing 15 frames per second per feed. I can see everything the Architect built — every camera, every drone, every tracking device. And now, so can everyone else.
+Two hundred browsers. Twelve districts. Four hundred and twelve active camera feeds. Protocol Sentinel is processing 15 frames per second per feed. I can see everything the Architect built: every camera, every drone, every tracking device. And now, so can everyone else.
 </Dialogue>
 
 <Dialogue speaker="The Architect">
@@ -386,9 +386,9 @@ That is the point. The tools are neutral. The documentation is not. Everyone can
 </Dialogue>
 
 <CodeBlock language="typescript" title="launch.ts">
-{`// The final deployment — go city-wide
+{`// The final deployment: go city-wide
 async function launchProtocolSentinel(): Promise<void> {
-  console.log('=== PROTOCOL SENTINEL — CITY-WIDE LAUNCH ===');
+  console.log('=== PROTOCOL SENTINEL: CITY-WIDE LAUNCH ===');
   console.log(\`Timestamp: \${new Date().toISOString()}\`);
   console.log(\`Districts: ALL (1-12)\`);
   console.log(\`Active feeds: 412\`);
@@ -401,7 +401,7 @@ async function launchProtocolSentinel(): Promise<void> {
     console.log(\`Model \${name}: loaded (\${model.countParams()} params)\`);
   }
 
-  // Step 2: Remove district targeting — go global
+  // Step 2: Remove district targeting; go global
   flags.setRollout('sentinel-v1', 100);
   flags.register({
     name: 'sentinel-v1',
@@ -448,16 +448,16 @@ Implement a deployment configuration with feature flags, health checks, and auto
 
 <Quiz
   question="Best metric for monitoring a deployed CNN classifier in production?"
-  options={[{"text":"Inference latency only"},{"text":"Per-class confusion matrix slices over rolling window — catches subgroup degradation aggregate accuracy hides"},{"text":"GPU utilization"},{"text":"Total RPS"}]}
+  options={[{"text":"Inference latency only"},{"text":"Per-class confusion matrix slices over rolling window; catches subgroup degradation aggregate accuracy hides"},{"text":"GPU utilization"},{"text":"Total RPS"}]}
   correct={1}
   explanation="Aggregate accuracy moves slowly. A model can drop from 95% to 91% on one demographic subgroup while overall accuracy stays at 94%. Sliced monitoring catches this; aggregate doesn't. Plus: drift in the input feature distribution as a leading indicator."
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["A canary gate is explicit numbers, not vibes: District 7 shipped on 2% max error rate, 100ms p95 latency, and a 500-frame minimum sample", "Feature flags enable instant rollback — the previous model keeps running behind the flag", "Canary deployments limit blast radius — test on a subset before going global", "Real-time monitoring with automatic rollback triggers prevents bad models from reaching all users"]} />
+<KeyTakeaways takeaways={["A canary gate is explicit numbers, not vibes: District 7 shipped on 2% max error rate, 100ms p95 latency, and a 500-frame minimum sample", "Feature flags enable instant rollback; the previous model keeps running behind the flag", "Canary deployments limit blast radius: test on a subset before going global", "Real-time monitoring with automatic rollback triggers prevents bad models from reaching all users"]} />
 
 <DispatchTease
   toThemeId="signal-ward"
   toThemeName="Signal Ward"
-  body="Operator. Cross-channel intel: Dr. Amara just escalated an NLP triage case that's setting off the same softmax-confidence pattern Kira's vision model ran on last week's adversarial frames. Different sensor — text, not pixels — same failure mode: the model is too sure when it shouldn't be. Calibration is a property of the model, not the modality. Dr. Amara is holding the case open. Report to Signal Ward and run the calibration check on her triage model yourself."
+  body="Operator. Cross-channel intel: Dr. Amara just escalated an NLP triage case that's setting off the same softmax-confidence pattern Kira's vision model ran on last week's adversarial frames. Different sensor (text, not pixels), same failure mode: the model is too sure when it shouldn't be. Calibration is a property of the model, not the modality. Dr. Amara is holding the case open. Report to Signal Ward and run the calibration check on her triage model yourself."
 />

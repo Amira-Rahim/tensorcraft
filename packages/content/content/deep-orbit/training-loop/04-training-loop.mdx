@@ -7,7 +7,7 @@ order: 4
 estimatedMinutes: 18
 difficulty: advanced
 context:
-  narrative: "All the pieces are in place. Ensign Demir initiates the training sequence — the network will learn from thousands of signal examples."
+  narrative: "All the pieces are in place. Ensign Demir initiates the training sequence; the network will learn from thousands of signal examples."
   speaker: "Ensign Demir"
 concept:
   explanation: "Feed data, compute loss, update weights, repeat. The training loop is the engine that turns thousands of examples into learned behavior."
@@ -21,7 +21,7 @@ consequence:
   narrative: "Loss drops from 0.69 to 0.08 over 50 epochs. The network is learning. The signal becomes clearer with each iteration."
 hints:
   - level: nudge
-    content: "model.fit() runs the training loop — forward pass, loss, backprop, update"
+    content: "model.fit() runs the training loop: forward pass, loss, backprop, update"
   - level: guidance
     content: "Set epochs (iterations) and validationSplit to track progress"
   - level: solution
@@ -60,7 +60,7 @@ model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy', metrics: ['accura
 const trainX = tf.randomNormal([100, 3]);  // 100 samples, 3 features
 const trainY = tf.randomUniform([100, 1]).round();  // binary labels
 
-// THE TRAINING LOOP — model.fit() handles everything
+// THE TRAINING LOOP: model.fit() handles everything
 const history = await model.fit(trainX, trainY, {
   epochs: 50,             // iterate over dataset 50 times
   batchSize: 32,          // process 32 samples at a time
@@ -88,7 +88,7 @@ const history = await model.fit(trainX, trainY, {
 "Up to a point" has a body count. Demir's first run was not the clean curve above: reasoning from animation loops, where more frames always means smoother easing, he set `epochs: 500` to be safe and went for coffee. He came back to a training loss of 0.0004, a validation loss that had been climbing since epoch 60, and a model worse on real signals than the twenty-minute version. It had stopped learning the pattern and started memorizing the dataset. An animation that runs longer gets closer to its target; a network that trains longer gets closer to its training data, which is not the same place.
 
 <Dialogue speaker="Chief Nazari">
-Forty minutes of compute to make it worse. That's coming out of your certification hours, Ensign. From now on, validation loss is the first number you read — and the first one you show me.
+Forty minutes of compute to make it worse. That's coming out of your certification hours, Ensign. From now on, validation loss is the first number you read, and the first one you show me.
 </Dialogue>
 
 <DerivationDrawer summary="The 7-step SGD loop that fit() hides">
@@ -113,12 +113,12 @@ for epoch in 1..N:
 
       // 5. Log batch metrics
   // 6. End-of-epoch: validate on heldout set
-  if val_loss not improving for K epochs:   // K = patience, typically 5–10
+  if val_loss not improving for K epochs:   // K = patience, typically 5-10
       // 7. Stop early
       break
 ```
 
-**Why mini-batch (not full-batch or single-sample)?** Full-batch is exact but uses too much memory and takes one step per epoch. Single-sample (true SGD) is noisy and underuses GPU parallelism. Mini-batches of 16–512 are the empirical sweet spot: enough samples for a smooth gradient estimate, small enough to fit in memory, large enough to saturate the GPU.
+**Why mini-batch (not full-batch or single-sample)?** Full-batch is exact but uses too much memory and takes one step per epoch. Single-sample (true SGD) is noisy and underuses GPU parallelism. Mini-batches of 16-512 are the empirical sweet spot: enough samples for a smooth gradient estimate, small enough to fit in memory, large enough to saturate the GPU.
 
 **Why shuffle each epoch?** Without shuffling, the model sees batches in the same order every epoch, which biases learning toward whatever pattern is in the file order. Shuffle breaks the correlation between adjacent batches.
 </DerivationDrawer>
@@ -135,11 +135,11 @@ Train the DEEP SCAN network and watch the loss decrease.
   question="Why use mini-batch (32-512) instead of full-batch or single-sample?"
   options={[{"text":"Mini-batch is faster on CPU"},{"text":"Tradeoff: smooth-enough gradient estimate + GPU saturation + memory fits"},{"text":"Required by Adam optimizer"},{"text":"Standard for online learning"}]}
   correct={1}
-  explanation="Full-batch is exact but slow (one step per epoch + huge memory). Single-sample is noisy + underuses GPU parallelism. Mini-batch 16-512 hits the sweet spot — enough samples for low-variance gradient estimate, small enough to fit, large enough to saturate GPU compute."
+  explanation="Full-batch is exact but slow (one step per epoch + huge memory). Single-sample is noisy + underuses GPU parallelism. Mini-batch 16-512 hits the sweet spot: enough samples for low-variance gradient estimate, small enough to fit, large enough to saturate GPU compute."
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["model.fit() runs the full training loop: forward → loss → backprop → update", "Epochs = full passes through the dataset, batches = chunks within each epoch", "Validation split catches overfitting — if val_loss increases while loss decreases, you're memorizing", "More epochs is not more learning: the 500-epoch run came back worse than the 64-epoch one", "Callbacks let you monitor progress, like console.log in a rAF loop"]} />
+<KeyTakeaways takeaways={["model.fit() runs the full training loop: forward → loss → backprop → update", "Epochs = full passes through the dataset, batches = chunks within each epoch", "Validation split catches overfitting: if val_loss increases while loss decreases, you're memorizing", "More epochs is not more learning: the 500-epoch run came back worse than the 64-epoch one", "Callbacks let you monitor progress, like console.log in a rAF loop"]} />
 
 <Epilogue>
 

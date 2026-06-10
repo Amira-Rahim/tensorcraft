@@ -1,7 +1,7 @@
 slug: secure-aggregate
 lessonSlug: secure-aggregation
 title: "Secure Aggregation with Masking"
-instructions: "Write a function secureAggregate that takes an array of masked update arrays (number[][]) and returns their element-wise average (number[]). This simulates the server computing the aggregate — the masks cancel out during summation, so the server only needs to sum and divide."
+instructions: "Write a function secureAggregate that takes an array of masked update arrays (number[][]) and returns their element-wise average (number[]). This simulates the server computing the aggregate: the masks cancel out during summation, so the server only needs to sum and divide."
 starterCode: |
   function secureAggregate(maskedUpdates: number[][]): number[] {
     // Your code here

@@ -7,7 +7,7 @@ order: 4
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Many signals repeat similar patterns. Demir implements inference caching — skip the model entirely for inputs we've seen before."
+  narrative: "Many signals repeat similar patterns. Demir implements inference caching: skip the model entirely for inputs we've seen before."
   speaker: "Ensign Demir"
 concept:
   explanation: "Caching inference results means the model never computes the same answer twice. The hard part is deciding when two inputs count as the same."
@@ -17,9 +17,9 @@ concept:
     mlTitle: "Inference Cache"
     mlCode: "cache.get(inputHash) || model.predict(input).then(cache) // cache-first"
     tier: structural
-    breaks: "Service worker cache keys requests by URL — exact-match. Inference cache keys must include input hash (post-quantization), model version, and runtime parameters (batch size, fp precision). The cache-first pattern transfers; cache-key design does not."
+    breaks: "Service worker cache keys requests by URL: exact-match. Inference cache keys must include input hash (post-quantization), model version, and runtime parameters (batch size, fp precision). The cache-first pattern transfers; cache-key design does not."
 consequence:
-  narrative: "Caching eliminates 40% of inference calls — the signal patterns repeat regularly enough that cached results are valid."
+  narrative: "Caching eliminates 40% of inference calls; the signal patterns repeat regularly enough that cached results are valid."
 hints:
   - level: nudge
     content: "If you've seen this input before, return the cached result instead of running the model"
@@ -80,7 +80,7 @@ DEEP SCAN spent last night reclassifying cosmic background it had already classi
     }
     // True LRU: a Map iterates in insertion order, so delete + re-set
     // moves this key to the back of the eviction line. This is the trick
-    // interviewers fish for — without it you've built FIFO, which evicts
+    // interviewers fish for; without it you've built FIFO, which evicts
     // your hottest entry just because it arrived first.
     this.cache.delete(key);
     this.cache.set(key, entry);
@@ -122,14 +122,14 @@ Build an LRU inference cache with TTL expiry.
 
 <Exercise slug="inference-cache" />
 
-<KeyTakeaways takeaways={["DEEP SCAN's cache is 500 entries with a 30-second TTL: serving a stale classification of a drifting signal is worse than recomputing it", "Quantizing inputs before hashing increases cache hit rate by matching near-identical signals", "True LRU needs the delete + re-set trick on get() — skip it and you've built FIFO, which evicts hot entries", "DEEP SCAN's 40% cache hit rate means 40% fewer model inference calls"]} />
+<KeyTakeaways takeaways={["DEEP SCAN's cache is 500 entries with a 30-second TTL: serving a stale classification of a drifting signal is worse than recomputing it", "Quantizing inputs before hashing increases cache hit rate by matching near-identical signals", "True LRU needs the delete + re-set trick on get(); skip it and you've built FIFO, which evicts hot entries", "DEEP SCAN's 40% cache hit rate means 40% fewer model inference calls"]} />
 
 <Epilogue>
 
 Overnight the cache absorbs 40 percent of DEEP SCAN's inference calls: cosmic background, classified once, served from memory ever after. The dashboard's load graph flattens into something Nazari could almost call margin. Demir greps the cache log for the anomaly and finds it exactly zero times.
 
 <Dialogue speaker="Ensign Demir">
-Everything else out there repeats. The anomaly never has — not one cache hit, every pulse a new input, every interval a little shorter than the last. It's the only thing on the sensors the cache will never see twice.
+Everything else out there repeats. The anomaly never has: not one cache hit, every pulse a new input, every interval a little shorter than the last. It's the only thing on the sensors the cache will never see twice.
 </Dialogue>
 
 Sixteen days to the relay slot. He sets a 30-second TTL and goes to bed, and lies awake doing extrapolations: at the current rate of shrink, the pulse interval reaches 30 seconds right around deployment week.

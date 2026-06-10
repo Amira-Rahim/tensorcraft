@@ -4,7 +4,7 @@ import { LandingHero } from "./components/landing-hero";
 import { LandingBridgeTicker } from "./components/landing-bridge-ticker";
 import { BridgePreviewSection } from "./components/bridge-preview-section";
 
-// jsdom ships without ResizeObserver / IntersectionObserver — shim so the
+// jsdom ships without ResizeObserver / IntersectionObserver, shim so the
 // ParticleField canvas effect doesn't throw when it mounts.
 beforeAll(() => {
   class MockResizeObserver {
@@ -50,7 +50,7 @@ vi.mock("next/link", () => ({
   ),
 }));
 
-// next/dynamic would lazy-load the tfjs demo in jsdom; stub it out — the
+// next/dynamic would lazy-load the tfjs demo in jsdom; stub it out, the
 // demo has its own tests, here we only care that the hero mounts a panel.
 vi.mock("next/dynamic", () => ({
   default: () => {
@@ -96,7 +96,7 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
       expect(canvas!.getAttribute("aria-hidden")).toBe("true");
     });
 
-    it("CTA buttons are square-edged (rounded-none) — brutalist marker", () => {
+    it("CTA buttons are square-edged (rounded-none), brutalist marker", () => {
       render(<LandingHero />);
       const primary = screen.getByTestId("landing-cta-primary");
       const secondary = screen.getByTestId("landing-cta-secondary");
@@ -110,7 +110,7 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
       expect(primary.className).toMatch(/focus-visible:ring-/);
     });
 
-    // Conversion pass (2026-06-10) — spec:
+    // Conversion pass (2026-06-10), spec:
     // docs/superpowers/specs/2026-06-10-hero-conversion-pass.md
     it("primary CTA uses outcome copy and keeps the free-lesson href", () => {
       render(<LandingHero />);
@@ -149,7 +149,7 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
     });
   });
 
-  // Bridge section UX/a11y audit fixes (2026-06-10) — spec:
+  // Bridge section UX/a11y audit fixes (2026-06-10), spec:
   // docs/superpowers/specs/2026-06-10-bridge-section-audit-fixes.md
   describe("BridgePreviewSection", () => {
     it("framework tabs expose pressed state and accessible names", () => {

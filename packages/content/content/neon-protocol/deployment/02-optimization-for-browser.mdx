@@ -55,7 +55,7 @@ In frontend builds, tree-shaking analyzes your dependency graph and strips code 
 <CodeBlock language="typescript" title="quantization.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Load the full-precision model (float32 — 4 bytes per weight)
+// Load the full-precision model (float32, 4 bytes per weight)
 const model = await tf.loadLayersModel('/models/sentinel/model.json');
 
 // Check original size
@@ -65,12 +65,12 @@ const originalBytes = originalWeights.reduce(
 );
 console.log('Original size:', (originalBytes / 1024 / 1024).toFixed(1), 'MB');
 
-// Save with float16 quantization (2 bytes per weight — 50% reduction)
+// Save with float16 quantization (2 bytes per weight, 50% reduction)
 await model.save('downloads://sentinel-q16', {
   weightDataQuantizationBits: 16
 });
 
-// Save with uint8 quantization (1 byte per weight — 75% reduction)
+// Save with uint8 quantization (1 byte per weight, 75% reduction)
 await model.save('downloads://sentinel-q8', {
   weightDataQuantizationBits: 8
 });
@@ -199,4 +199,4 @@ Apply quantization to reduce a model's size and measure the accuracy impact.
 
 <Exercise slug="optimize-for-browser" />
 
-<KeyTakeaways takeaways={["Quantization reduces weight precision from float32 to float16 or uint8, cutting model size by 2-4x", "Pruning zeros out low-magnitude weights — the neural network equivalent of tree-shaking", "Every optimization involves an accuracy-size trade-off that must be measured", "For browser deployment, the right optimization strategy depends on your device constraints and accuracy requirements"]} />
+<KeyTakeaways takeaways={["Quantization reduces weight precision from float32 to float16 or uint8, cutting model size by 2-4x", "Pruning zeros out low-magnitude weights, the neural network equivalent of tree-shaking", "Every optimization involves an accuracy-size trade-off that must be measured", "For browser deployment, the right optimization strategy depends on your device constraints and accuracy requirements"]} />

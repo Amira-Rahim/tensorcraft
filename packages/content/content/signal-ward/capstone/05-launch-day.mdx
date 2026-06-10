@@ -1,6 +1,6 @@
 ---
 slug: launch-day
-title: "Launch Day — Diagnostic One Goes Live"
+title: "Launch Day: Diagnostic One Goes Live"
 moduleId: sw-capstone
 themeId: signal-ward
 order: 5
@@ -55,7 +55,7 @@ Khalil is almost right. The TensorFlow.js model is a static asset, a JSON topolo
 <CodeBlock language="typescript" title="deploy-diagnostic-one.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Deployment configuration — same as any web app deployment
+// Deployment configuration, same as any web app deployment
 interface DeploymentConfig {
   modelPath: string;
   version: string;
@@ -80,7 +80,7 @@ const config: DeploymentConfig = {
   },
 };
 
-// Feature flag — same pattern as LaunchDarkly, Unleash, or a simple config
+// Feature flag, same pattern as LaunchDarkly, Unleash, or a simple config
 class FeatureFlag {
   private flags: Map<string, { enabled: boolean; percentage: number }> = new Map();
 
@@ -93,14 +93,14 @@ class FeatureFlag {
     if (!flag || !flag.enabled) return false;
     if (flag.percentage >= 100) return true;
 
-    // Consistent hashing — same user always gets same result
+    // Consistent hashing: same user always gets same result
     const hash = userId
       ? userId.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0) % 100
       : Math.random() * 100;
     return hash < flag.percentage;
   }
 
-  // Instant rollback — flip the flag
+  // Instant rollback: flip the flag
   rollback(name: string): void {
     this.setFlag(name, false, 0);
     console.log(\`ROLLBACK: \${name} disabled\`);
@@ -114,7 +114,7 @@ flags.setFlag('diagnostic-one', true, 10); // 10% rollout`}
 ## Health Checks and Monitoring
 
 <CodeBlock language="typescript" title="monitoring.ts">
-{`// Monitoring dashboard — same as Datadog, Grafana, or your custom metrics
+{`// Monitoring dashboard, same as Datadog, Grafana, or your custom metrics
 // Track model health alongside application health
 
 interface HealthCheck {
@@ -228,12 +228,12 @@ class DiagnosticOneMonitor {
 
 <BossBeat
   beatId="signal-ward-launch-confidence-call"
-  prompt="Dr. Amara is on the phone. The model just flagged a methotrexate–trimethoprim interaction on a real patient chart with confidence 0.71. Threshold for clinical alert is 0.80. The clinician on duty is asking whether to surface it. The pharmacology textbook says: rare interaction, real risk. The model says: under-confident. Your call."
+  prompt="Dr. Amara is on the phone. The model just flagged a methotrexate-trimethoprim interaction on a real patient chart with confidence 0.71. Threshold for clinical alert is 0.80. The clinician on duty is asking whether to surface it. The pharmacology textbook says: rare interaction, real risk. The model says: under-confident. Your call."
   options={[
     {
       label: "cooperate",
       display: "Hold the alert below threshold, log for post-launch review",
-      consequence: "The alert is suppressed. The clinician is unaware. Five days later, audit catches the interaction in a chart review — patient is fine, no harm done, but the case becomes the lead exhibit in a calibration retraining sprint. Cooperative play with the threshold contract; the threshold itself was wrong."
+      consequence: "The alert is suppressed. The clinician is unaware. Five days later, audit catches the interaction in a chart review: patient is fine, no harm done, but the case becomes the lead exhibit in a calibration retraining sprint. Cooperative play with the threshold contract; the threshold itself was wrong."
     },
     {
       label: "defect",
@@ -257,7 +257,7 @@ class DiagnosticOneMonitor {
 {`// Day 9 of the pilot. The moment Diagnostic One proves itself.
 
 async function dayNine(): Promise<void> {
-  console.log('=== Diagnostic One — Day 9 ===');
+  console.log('=== Diagnostic One: Day 9 ===');
   console.log('');
 
   // MEDI processes a clinical note
@@ -292,7 +292,7 @@ async function dayNine(): Promise<void> {
   console.log('Reviewer: Dr. Karimi');
   console.log('Decision: Confirmed interaction, clinical override with monitoring');
   console.log('Reasoning: Low methotrexate dose (15mg weekly) and short trimethoprim');
-  console.log('           course (3 days) — acceptable risk with monitoring');
+  console.log('           course (3 days), acceptable risk with monitoring');
   console.log('');
   console.log('"Better a false alarm than a missed one."');
   console.log('');

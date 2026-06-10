@@ -17,12 +17,12 @@ concept:
     mlTitle: "Transformers.js pipeline"
     mlCode: "import { pipeline } from '@xenova/transformers'\nconst classifier = await pipeline('sentiment-analysis')"
     tier: structural
-    breaks: "An npm component renders deterministic markup once you pass props. A pretrained model returns probabilistic output that varies with input distribution — the 'API' looks identical, but you cannot unit-test the output value, only its shape and confidence range. The model file (50MB+) is also user-side bandwidth, not server-side. Caching strategy matters far more than for a typical npm import."
+    breaks: "An npm component renders deterministic markup once you pass props. A pretrained model returns probabilistic output that varies with input distribution: the 'API' looks identical, but you cannot unit-test the output value, only its shape and confidence range. The model file (50MB+) is also user-side bandwidth, not server-side. Caching strategy matters far more than for a typical npm import."
 consequence:
   narrative: "Demir prototypes a feedback classifier in 12 lines. Nazari: 'Now you know which tool fits which job. Train when the task is custom; install when the task is well-known.'"
 hints:
   - level: nudge
-    content: "pipeline() is the entry point — pass a task name like 'sentiment-analysis' or 'translation_en_to_fr'."
+    content: "pipeline() is the entry point: pass a task name like 'sentiment-analysis' or 'translation_en_to_fr'."
   - level: guidance
     content: "Pipelines lazily download and cache the model on first call. Subsequent calls hit the IndexedDB cache."
   - level: solution
@@ -56,7 +56,7 @@ By now you've seen TFJS and ONNX Runtime Web. Transformers.js is the third tool.
 |---|---|---|
 | **TensorFlow.js** | You trained your own model and want to ship it | Your model size + your domain expertise |
 | **ONNX Runtime Web** | Your team built a PyTorch model; you want it in the browser without Python | Conversion friction + op-set risk |
-| **Transformers.js** | You need a well-known NLP/vision/audio task done well | 50–500MB model download per task |
+| **Transformers.js** | You need a well-known NLP/vision/audio task done well | 50-500MB model download per task |
 
 The right answer depends on whether the task is **custom** (TFJS) or **commodity** (Transformers.js).
 
@@ -111,11 +111,11 @@ Build a sentiment classifier for field reports using Transformers.js.
 
 <Exercise slug="load-pretrained-pipeline" />
 
-<KeyTakeaways takeaways={["Transformers.js ships pretrained models; TFJS ships models you trained yourself", "pipeline(taskName) is the canonical entry point: the model downloads lazily on first call and caches in IndexedDB", "Use it for commodity tasks (sentiment, NER, translation); train your own for custom domains", "Model bandwidth (50–500MB) is the dominant cost — measure before shipping to mobile users"]} />
+<KeyTakeaways takeaways={["Transformers.js ships pretrained models; TFJS ships models you trained yourself", "pipeline(taskName) is the canonical entry point: the model downloads lazily on first call and caches in IndexedDB", "Use it for commodity tasks (sentiment, NER, translation); train your own for custom domains", "Model bandwidth (50-500MB) is the dominant cost: measure before shipping to mobile users"]} />
 
 <Epilogue>
 
-The feedback classifier runs in twelve lines, and Demir spends a full minute being quietly insulted by that. Across the lab, Farah has the Sector 7-G feed open again — the raw time-domain plot, scrolling like weather.
+The feedback classifier runs in twelve lines, and Demir spends a full minute being quietly insulted by that. Across the lab, Farah has the Sector 7-G feed open again: the raw time-domain plot, scrolling like weather.
 
 <Dialogue speaker="Dr. Farah">
 Enjoy the commodity problem while it lasts, Ensign. The signal we actually came out here for refuses to be one. Tomorrow, bring me everything you know about waves.

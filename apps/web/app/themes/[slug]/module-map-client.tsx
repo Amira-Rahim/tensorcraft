@@ -53,7 +53,7 @@ const FOCUS_RING =
  * (keyboard-accessible, no JS state). Modules render a numbered node
  * indicator (option a from spec §11d), a lesson list with status icons,
  * and per-module stats. Colors come from CSS custom properties set by
- * `ThemeSync` — this component carries no hex values.
+ * `ThemeSync`, this component carries no hex values.
  */
 export function ModuleMapClient({
   modules,
@@ -92,7 +92,7 @@ export function ModuleMapClient({
         );
       })}
 
-      {/* Continue CTA — primary action for returning learners */}
+      {/* Continue CTA, primary action for returning learners */}
       <Link
         href={continueHref}
         className={`mt-6 inline-flex w-full items-center justify-between rounded-none border px-6 py-4 font-mono text-sm font-bold uppercase tracking-widest transition-all brutalist-hover ${FOCUS_RING}`}
@@ -172,7 +172,7 @@ function ModuleRow({
           className={`flex cursor-pointer list-none items-start gap-4 rounded-none px-6 py-5 ${FOCUS_RING} ${isLocked ? "pointer-events-none" : ""}`}
           aria-label={`${terminology.module} ${mod.order}: ${mod.title}`}
         >
-          {/* Node indicator — simple numbered square at left edge (option a) */}
+          {/* Node indicator, simple numbered square at left edge (option a) */}
           <div
             className="flex shrink-0 items-center justify-center rounded-none border-2 font-mono text-xs font-bold"
             style={{
@@ -246,7 +246,7 @@ function ModuleRow({
               {mod.description}
             </p>
 
-            {/* Progress pip row (brutalist segmented) — one pip per lesson */}
+            {/* Progress pip row (brutalist segmented), one pip per lesson */}
             <div
               className="mt-3 flex gap-1"
               role="progressbar"
@@ -334,7 +334,7 @@ function LessonCard({
   const locked = lesson.status === "locked" && !moduleDone;
   const clickable = done || current || available;
 
-  // Status icon — ✓ done, ● current (in-progress), ○ available, 🔒 locked
+  // Status icon, ✓ done, ● current (in-progress), ○ available, 🔒 locked
   let icon = "○"; // ○
   let iconLabel = "Not started";
   if (done) {
@@ -524,12 +524,12 @@ function LessonCard({
       <Link
         href={`/themes/${themeSlug}/${moduleSlug}/${lesson.slug}`}
         className={`block rounded-none ${FOCUS_RING}`}
-        aria-label={`${lesson.title} — ${iconLabel}`}
+        aria-label={`${lesson.title}, ${iconLabel}`}
       >
         {card}
       </Link>
     );
   }
 
-  return <div aria-label={`${lesson.title} — ${iconLabel}`}>{card}</div>;
+  return <div aria-label={`${lesson.title}, ${iconLabel}`}>{card}</div>;
 }

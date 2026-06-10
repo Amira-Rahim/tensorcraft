@@ -104,7 +104,7 @@ export function CheckoutButton({
 
       const data = await response.json();
       if (data.granted) {
-        // Auto-grant — themes were granted instantly, redirect to success
+        // Auto-grant, themes were granted instantly, redirect to success
         window.location.href = "/dashboard/purchase-success";
         return;
       }

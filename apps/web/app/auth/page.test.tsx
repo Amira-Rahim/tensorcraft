@@ -3,7 +3,7 @@ import { render, screen } from "@testing-library/react";
 import AuthPage from "./page";
 
 /**
- * Phase 11 §11d Wave 1 — Auth page brutalist split-layout tests.
+ * Phase 11 §11d Wave 1, Auth page brutalist split-layout tests.
  *
  * We mock out the client-side dependencies of <AuthForm> and <ParticleField>
  * so the server-component page can be rendered synchronously and its layout
@@ -24,7 +24,7 @@ vi.mock("@tensorcraft/ui/effects", () => ({
   ),
 }));
 
-describe("AuthPage — Phase 11 §11d Wave 1 split layout", () => {
+describe("AuthPage, Phase 11 §11d Wave 1 split layout", () => {
   it("renders both left and right panes", () => {
     render(<AuthPage />);
     expect(screen.getByTestId("auth-left-pane")).toBeTruthy();
@@ -34,7 +34,7 @@ describe("AuthPage — Phase 11 §11d Wave 1 split layout", () => {
   it("left pane renders the onboarding tagline verbatim", () => {
     render(<AuthPage />);
     const tagline = screen.getByTestId("auth-tagline");
-    // Exact copy from project_copy_lines.md — do not silently rewrite.
+    // Exact copy from project_copy_lines.md, do not silently rewrite.
     expect(tagline.textContent).toBe("You Already Think Like an ML Engineer");
   });
 

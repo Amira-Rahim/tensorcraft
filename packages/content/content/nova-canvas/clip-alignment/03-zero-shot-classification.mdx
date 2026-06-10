@@ -108,7 +108,7 @@ async function zeroShotClassify(
 // ], tokenize);
 // results[0] = { label: 'abstract expressionism', confidence: 0.87 }
 
-// Change categories anytime — no retraining needed:
+// Change categories anytime; no retraining needed:
 // const moods = ['melancholy', 'joyful', 'serene', 'chaotic', 'contemplative'];
 // const results = await zeroShotClassify(clip, painting, moods, tokenize);`}
 </CodeBlock>
@@ -142,4 +142,4 @@ class_embedding[c] = mean(text_encoder(t.format(c=c)) for t in templates)
 CLIP paper used 80 templates and gained another 1-3pp accuracy. The cost: 80× text encodes per class, but cached once at startup.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["There is no built-in 'unknown' bucket: threshold the similarity score, or every out-of-distribution image gets a confident wrong label", "Encode the image and candidate labels as text, pick the closest match in embedding space", "Prompt templates (a photo of {category}) significantly improve accuracy", "Categories are just text — change them anytime without retraining the model"]} />
+<KeyTakeaways takeaways={["There is no built-in 'unknown' bucket: threshold the similarity score, or every out-of-distribution image gets a confident wrong label", "Encode the image and candidate labels as text, pick the closest match in embedding space", "Prompt templates (a photo of {category}) significantly improve accuracy", "Categories are just text; change them anytime without retraining the model"]} />

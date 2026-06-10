@@ -92,7 +92,7 @@ function buildEncoder(
 <CodeBlock language="typescript" title="reparameterize.ts">
 {`// Sample from the latent distribution in a differentiable way
 // z = mean + exp(0.5 * logVar) * epsilon
-// epsilon ~ N(0, 1) — random noise
+// epsilon ~ N(0, 1), random noise
 function reparameterize(
   mean: tf.Tensor,
   logVar: tf.Tensor
@@ -105,7 +105,7 @@ function reparameterize(
 }
 
 // KL divergence: measures how far the learned distribution
-// is from a standard normal — keeps the latent space structured
+// is from a standard normal; keeps the latent space structured
 function klDivergence(mean: tf.Tensor, logVar: tf.Tensor): tf.Scalar {
   return tf.tidy(() => {
     // KL = -0.5 * sum(1 + logVar - mean^2 - exp(logVar))
@@ -172,4 +172,4 @@ Implement the core VAE math: the reparameterization trick and KL divergence.
 
 <Exercise slug="build-vae" />
 
-<KeyTakeaways takeaways={["VAEs compress images to a probability distribution in latent space — like URL params encoding complex app state", "The reparameterization trick (z = mean + std * noise) enables gradient flow through random sampling", "KL divergence regularizes the latent space, keeping it smooth and structured — no dead zones", "Each dimension of the latent space can control a meaningful image property: lighting, angle, expression"]} />
+<KeyTakeaways takeaways={["VAEs compress images to a probability distribution in latent space, like URL params encoding complex app state", "The reparameterization trick (z = mean + std * noise) enables gradient flow through random sampling", "KL divergence regularizes the latent space, keeping it smooth and structured, with no dead zones", "Each dimension of the latent space can control a meaningful image property: lighting, angle, expression"]} />

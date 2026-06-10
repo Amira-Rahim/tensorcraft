@@ -53,7 +53,7 @@ The discipline is the OWASP audit you know from web applications: check for XSS,
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="security-audit.ts">
-{`// ML security audit — OWASP-style checklist for edge ML
+{`// ML security audit, OWASP-style checklist for edge ML
 
 interface SecurityCheck {
   id: string;
@@ -85,7 +85,7 @@ class SecurityAuditor {
   }
 }
 
-// Model integrity — verify model files have not been tampered with
+// Model integrity: verify model files have not been tampered with
 async function verifyModelIntegrity(
   modelBuffer: ArrayBuffer,
   expectedHash: string
@@ -96,7 +96,7 @@ async function verifyModelIntegrity(
   return hash === expectedHash;
 }
 
-// Input validation — detect adversarial sensor readings
+// Input validation: detect adversarial sensor readings
 function validateSensorInput(readings: Float32Array, bounds: {
   min: number; max: number; maxRateOfChange: number;
 }): { valid: boolean; anomalies: number[] } {

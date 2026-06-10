@@ -57,17 +57,17 @@ Here's the question that actually trips people up: not what the new shape *is*, 
 <CodeBlock language="typescript" title="tensor-shapes.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Shape [6] — a 1D vector with 6 elements
+// Shape [6]: a 1D vector with 6 elements
 const flat = tf.tensor([1, 2, 3, 4, 5, 6]);
 console.log(flat.shape);  // [6]
 
-// Reshape to [2, 3] — fills row by row
+// Reshape to [2, 3]: fills row by row
 const matrix = flat.reshape([2, 3]);
 matrix.print();
 // [[1, 2, 3],
 //  [4, 5, 6]]
 
-// Reshape to [3, 2] — SAME flat order, different row breaks
+// Reshape to [3, 2]: SAME flat order, different row breaks
 const tall = flat.reshape([3, 2]);
 tall.print();
 // [[1, 2],
@@ -75,15 +75,15 @@ tall.print();
 //  [5, 6]]
 
 // Note what did NOT happen: [3, 2] is not the transpose of [2, 3].
-// matrix.transpose() would give [[1, 4], [2, 5], [3, 6]] — different
+// matrix.transpose() would give [[1, 4], [2, 5], [3, 6]], different
 // values in different places. Reshape rewraps the line; transpose
 // reorders it.
 
 // The total elements must match: 2*3 = 3*2 = 6
-// This would throw: flat.reshape([2, 4]) — 2*4=8 ≠ 6`}
+// This would throw: flat.reshape([2, 4]) (2*4=8 ≠ 6)`}
 </CodeBlock>
 
-The golden rule: **reshaping never changes the data or its order — only where the line breaks fall.** The memory stays one flat sequence, exactly like the `Float32Array` from lesson 1; shape is just the reading instructions.
+The golden rule: **reshaping never changes the data or its order, only where the line breaks fall.** The memory stays one flat sequence, exactly like the `Float32Array` from lesson 1; shape is just the reading instructions.
 
 One honesty note on the grid analogy: CSS Grid *reflows*. Change `grid-template-columns` and items visually rearrange to fill the new tracks. Reshape never rearranges. If you remember one thing, remember that reshape is line-wrapping, not layout.
 
@@ -103,11 +103,11 @@ Reshape a flat tensor into a matrix.
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Shape is a tuple describing the size of each tensor dimension", "Reshape fills row-major: same flat order, new line breaks — it is NOT a transpose", "Total elements must match: product of old shape = product of new shape", "Common ML shapes: [batch, height, width, channels] for images"]} />
+<KeyTakeaways takeaways={["Shape is a tuple describing the size of each tensor dimension", "Reshape fills row-major: same flat order, new line breaks; it is NOT a transpose", "Total elements must match: product of old shape = product of new shape", "Common ML shapes: [batch, height, width, channels] for images"]} />
 
 <Epilogue>
 
-Farah reshapes the first hour of the stream every way the element count allows. Most layouts are mush. Then `[450, 64]` — and the mush snaps into stripes. Four hundred fifty rows, sixty-four columns, and down every column a slow, regular swell, like something breathing.
+Farah reshapes the first hour of the stream every way the element count allows. Most layouts are mush. Then `[450, 64]`, and the mush snaps into stripes. Four hundred fifty rows, sixty-four columns, and down every column a slow, regular swell, like something breathing.
 
 <Dialogue speaker="Dr. Farah">
 Sixty-four channels. Whatever sent this packed its data the way we pack ours.

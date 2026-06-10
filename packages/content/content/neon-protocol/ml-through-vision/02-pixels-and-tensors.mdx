@@ -72,7 +72,7 @@ function getPixelCanvas(data: Uint8ClampedArray, width: number, x: number, y: nu
 
 // Tensor: shaped array, [height, width, channels]
 // Pixel (x, y) is at position [y, x, :]
-// No manual index math needed — the shape handles it
+// No manual index math needed; the shape handles it
 
 function getPixelTensor(tensor: tf.Tensor3D, x: number, y: number) {
   const pixel = tensor.slice([y, x, 0], [1, 1, 3]);
@@ -99,7 +99,7 @@ const channelsLast = tf.randomNormal([224, 224, 3]);
 const channelsFirst = channelsLast.transpose([2, 0, 1]);
 console.log(channelsFirst.shape); // [3, 224, 224]
 
-// Grayscale from RGB — average the channels
+// Grayscale from RGB: average the channels
 const rgb = tf.browser.fromPixels(canvas); // [224, 224, 3]
 const grayscale = rgb.mean(2, true); // [224, 224, 1]
 console.log(grayscale.shape);
@@ -117,4 +117,4 @@ Access specific pixel values from a tensor and reshape image data.
 
 <Exercise slug="pixel-indexing" />
 
-<KeyTakeaways takeaways={["Canvas stores pixels as a flat RGBA array; tensors store them as shaped [height, width, channels]", "Tensor indexing replaces manual offset math — think in dimensions, not byte offsets", "Channels-last [H,W,C] is the TF.js convention; channels-first [C,H,W] is PyTorch's", "Grayscale conversion averages RGB channels — or uses weighted luminance for perceptual accuracy"]} />
+<KeyTakeaways takeaways={["Canvas stores pixels as a flat RGBA array; tensors store them as shaped [height, width, channels]", "Tensor indexing replaces manual offset math: think in dimensions, not byte offsets", "Channels-last [H,W,C] is the TF.js convention; channels-first [C,H,W] is PyTorch's", "Grayscale conversion averages RGB channels, or uses weighted luminance for perceptual accuracy"]} />

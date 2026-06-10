@@ -1,7 +1,7 @@
 slug: detect-interaction
 lessonSlug: the-interaction
 title: "Detect Drug Interactions"
-instructions: "Build a drug interaction detection pipeline — like dependency resolution for medicine. Implement detectInteractions that takes a list of drugs extracted from clinical notes (each with source and prescriber metadata), checks all pairs against the INTERACTIONS database, identifies cross-document interactions, and returns alerts sorted by severity (HIGH first, then MODERATE, then LOW). Sort drug names alphabetically to create canonical lookup keys."
+instructions: "Build a drug interaction detection pipeline, like dependency resolution for medicine. Implement detectInteractions that takes a list of drugs extracted from clinical notes (each with source and prescriber metadata), checks all pairs against the INTERACTIONS database, identifies cross-document interactions, and returns alerts sorted by severity (HIGH first, then MODERATE, then LOW). Sort drug names alphabetically to create canonical lookup keys."
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
@@ -136,7 +136,7 @@ testCode: |
         { name: 'ibuprofen', source: 'C', prescriber: 'Dr. C' }
       ];
       const alerts = detectInteractions(drugs);
-      // aspirin+warfarin (HIGH), aspirin+ibuprofen (MODERATE) — ibuprofen+warfarin not in DB
+      // aspirin+warfarin (HIGH), aspirin+ibuprofen (MODERATE); ibuprofen+warfarin not in DB
       expect(alerts.length).toBe(2);
     });
   });

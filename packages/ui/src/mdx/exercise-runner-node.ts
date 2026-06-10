@@ -1,5 +1,5 @@
 /**
- * Node-side runner — used by Vitest (and any SSR path) where web Worker is
+ * Node-side runner, used by Vitest (and any SSR path) where web Worker is
  * not available. Uses `node:worker_threads` so `worker.terminate()` actually
  * kills sync infinite loops in user code.
  */

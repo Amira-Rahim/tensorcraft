@@ -46,7 +46,7 @@ Right, same rule as any codebase. If it's not documented, it doesn't exist. I'll
 
 There is a version of the next two weeks in which Demir is not available to run DEEP SCAN. The crew is busy surviving something, the bridge is understaffed, and the only operator still awake is the one who does not sleep. This lesson writes the handover for that scenario: the **Model Card** Demir describes, plus a runbook precise enough that a rule-based system could execute it without you.
 
-<LearningObjectives objectives={["Write a Model Card documenting model purpose, training data, and performance", "Document the pipeline API and write runbooks for common operational scenarios", "List known limitations and failure modes — what the model cannot do"]} />
+<LearningObjectives objectives={["Write a Model Card documenting model purpose, training data, and performance", "Document the pipeline API and write runbooks for common operational scenarios", "List known limitations and failure modes: what the model cannot do"]} />
 
 ## Model Card
 
@@ -118,10 +118,10 @@ const deepScanCard: ModelCard = {
   },
 
   limitations: [
-    'Trained on Kepler-442 region only — accuracy may drop in other star systems',
-    'Anomaly class has lowest recall (84%) — rare signals may be misclassified as noise',
-    'Requires minimum 80-sample window — cannot classify very short bursts',
-    'WebGPU backend required for <10ms inference — falls back to 15ms on WebGL',
+    'Trained on Kepler-442 region only; accuracy may drop in other star systems',
+    'Anomaly class has lowest recall (84%); rare signals may be misclassified as noise',
+    'Requires minimum 80-sample window; cannot classify very short bursts',
+    'WebGPU backend required for <10ms inference; falls back to 15ms on WebGL',
     'Not validated on signals below -20 dB SNR',
   ],
 
@@ -136,7 +136,7 @@ const deepScanCard: ModelCard = {
 ## Pipeline API Documentation
 
 <CodeBlock language="typescript" title="api-docs.ts">
-{`// API docs — same approach as documenting a REST API or React component library
+{`// API docs: same approach as documenting a REST API or React component library
 
 /**
  * DEEP SCAN Pipeline API
@@ -189,7 +189,7 @@ Write a Model Card for the DEEP SCAN classifier.
 
 <Exercise slug="write-model-card" />
 
-<KeyTakeaways takeaways={["DEEP SCAN's card states the limits that matter: trained on Kepler-442 region only, 84% recall on the anomaly class, 15ms inference without WebGPU", "Document known limitations honestly — what the model cannot do is as important as what it can", "Pipeline API docs follow the same JSDoc patterns you use for any TypeScript library", "Runbooks bridge the gap between documentation and operations — if X happens, do Y"]} />
+<KeyTakeaways takeaways={["DEEP SCAN's card states the limits that matter: trained on Kepler-442 region only, 84% recall on the anomaly class, 15ms inference without WebGPU", "Document known limitations honestly: what the model cannot do is as important as what it can", "Pipeline API docs follow the same JSDoc patterns you use for any TypeScript library", "Runbooks bridge the gap between documentation and operations: if X happens, do Y"]} />
 
 <Epilogue>
 

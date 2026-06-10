@@ -7,7 +7,7 @@ order: 1
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "At 0247, during a predicted pulse window, the 340 MB model crashed the bridge dashboard. The capture was lost. Now the optimization sprint begins — as penance."
+  narrative: "At 0247, during a predicted pulse window, the 340 MB model crashed the bridge dashboard. The capture was lost. Now the optimization sprint begins, as penance."
   speaker: "Chief Nazari"
 concept:
   explanation: "Profiling measures before optimizing: memory footprint, latency, and which layers hold the parameters. The numbers decide where the knife goes."
@@ -17,12 +17,12 @@ concept:
     mlTitle: "Model Profiling"
     mlCode: "const t0 = performance.now(); model.predict(x); const ms = performance.now() - t0;"
     tier: structural
-    breaks: "performance.mark API is identical for both. But profiling a model means measuring per-op latency, kernel launch overhead, GPU memory bandwidth, and tensor-disposal cost — concerns that don't appear in browser perf budgets. The API transfers; the diagnostic skill set does not."
+    breaks: "performance.mark API is identical for both. But profiling a model means measuring per-op latency, kernel launch overhead, GPU memory bandwidth, and tensor-disposal cost: concerns that don't appear in browser perf budgets. The API transfers; the diagnostic skill set does not."
 consequence:
   narrative: "340 MB, 45 ms, and 80% of the time spent in the first Dense layer. Nazari knows exactly where to optimize."
 hints:
   - level: nudge
-    content: "Profile before optimizing — measure, don't guess"
+    content: "Profile before optimizing: measure, don't guess"
   - level: guidance
     content: "Use tf.memory() for memory, performance.now() for timing, model.summary() for architecture"
   - level: solution
@@ -36,19 +36,19 @@ keywords:
 skillAxes: [deployment]
 ---
 
-At 0247 this morning, the ensemble predicted a pulse window — the cleanest capture opportunity in nine days. At 0249, DEEP SCAN loaded its full 340 MB into the bridge dashboard's 512 MB of RAM alongside the telemetry suite, and the dashboard died. By the time it rebooted, the window had closed. Earth's relay slot closed forty minutes later, without the capture in it.
+At 0247 this morning, the ensemble predicted a pulse window, the cleanest capture opportunity in nine days. At 0249, DEEP SCAN loaded its full 340 MB into the bridge dashboard's 512 MB of RAM alongside the telemetry suite, and the dashboard died. By the time it rebooted, the window had closed. Earth's relay slot closed forty minutes later, without the capture in it.
 
-The data is gone. Not delayed — gone. The next relay slot is in nineteen days, and nothing in the optimization work ahead brings that capture back.
+The data is gone. Not delayed. Gone. The next relay slot is in nineteen days, and nothing in the optimization work ahead brings that capture back.
 
 <Dialogue speaker="Chief Nazari">
 I'm not going to yell. Here are the numbers instead. Dashboard RAM: 512 megabytes. Your model: 340. The telemetry suite it crashed: 9 hours of reconstruction. The capture we lost: unrecoverable. Make it small, Ensign. Make it small like the mission depends on it, because at 0247 it did.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
-Profiling first. Same discipline as a slow React app — measure, find the bottleneck, then cut. No guessing. Not after last night.
+Profiling first. Same discipline as a slow React app: measure, find the bottleneck, then cut. No guessing. Not after last night.
 </Dialogue>
 
-Profiling a model means three measurements: memory footprint, inference latency (mean and tail), and which layers hold the parameters. Get all three before touching a single weight — the numbers decide where the knife goes.
+Profiling a model means three measurements: memory footprint, inference latency (mean and tail), and which layers hold the parameters. Get all three before touching a single weight; the numbers decide where the knife goes.
 
 <LearningObjectives objectives={["Profile model memory usage with tf.memory()", "Benchmark inference latency with high-resolution timing", "Identify bottleneck layers using per-layer profiling", "Establish baseline metrics before optimization"]} />
 
@@ -121,7 +121,7 @@ Profile a model and identify its heaviest layer.
 
 <Exercise slug="profile-model" />
 
-<KeyTakeaways takeaways={["The profile localizes the problem: 80% of DEEP SCAN's 45ms inference sits in the first Dense layer, so that layer is the target", "Key metrics: model size (MB), parameter count, inference latency (mean + P95)", "Layer breakdown reveals where the parameters and compute concentrate", "The DEEP SCAN baseline: 340 MB, 45ms inference — both need to shrink for the 512 MB dashboard"]} />
+<KeyTakeaways takeaways={["The profile localizes the problem: 80% of DEEP SCAN's 45ms inference sits in the first Dense layer, so that layer is the target", "Key metrics: model size (MB), parameter count, inference latency (mean + P95)", "Layer breakdown reveals where the parameters and compute concentrate", "The DEEP SCAN baseline: 340 MB, 45ms inference; both need to shrink for the 512 MB dashboard"]} />
 
 <Epilogue>
 

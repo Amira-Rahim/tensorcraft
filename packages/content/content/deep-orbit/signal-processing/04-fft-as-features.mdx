@@ -7,7 +7,7 @@ order: 4
 estimatedMinutes: 15
 difficulty: advanced
 context:
-  narrative: "Demir feeds FFT magnitudes into the classifier as additional features. Accuracy jumps from 78% to 87%. Farah smiles — 'The frequency domain is where the real information lives.'"
+  narrative: "Demir feeds FFT magnitudes into the classifier as additional features. Accuracy jumps from 78% to 87%. Farah smiles. 'The frequency domain is where the real information lives.'"
   speaker: "Ensign Demir"
 concept:
   explanation: "Feature engineering hands the model a better view of the same data: FFT magnitudes join the raw values as inputs, and accuracy follows."
@@ -39,7 +39,7 @@ What if we feed the FFT magnitudes directly into the model? Instead of just raw 
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-Feature engineering: deriving new inputs from raw data. I used it to rebuild the signal analyzer on the Kepler mission. One correction, though — you said "more information." The FFT adds no information; the samples already contain everything it computes. What it adds is access. The model no longer has to discover the frequency basis on its own, and I trust a model more when I know which part of the work I did for it.
+Feature engineering: deriving new inputs from raw data. I used it to rebuild the signal analyzer on the Kepler mission. One correction, though: you said "more information." The FFT adds no information; the samples already contain everything it computes. What it adds is access. The model no longer has to discover the frequency basis on its own, and I trust a model more when I know which part of the work I did for it.
 </Dialogue>
 
 <Dialogue speaker="Chief Nazari">
@@ -105,7 +105,7 @@ FFT magnitudes can be orders of magnitude larger than raw signal values. Without
 
 // Like normalizing CSS values to a common scale
 // font-size: 16px, margin: 100px, opacity: 0.5
-// All different scales — a model would think margin is 200x more important
+// All different scales: a model would think margin is 200x more important
 
 function normalizeFeatures(features: number[][]): { normalized: number[][]; stats: { mean: number; std: number }[] } {
   // Z-score normalization: (value - mean) / std
@@ -126,7 +126,7 @@ function normalizeFeatures(features: number[][]): { normalized: number[][]; stat
   return { normalized, stats };
 }
 
-// Save stats from training data — apply the SAME stats during inference
+// Save stats from training data; apply the SAME stats during inference
 // This is critical: normalize test data with training statistics
 const { normalized: trainNorm, stats } = normalizeFeatures(trainingFeatures);
 
@@ -184,7 +184,7 @@ Extract FFT features from a signal and combine them with raw features.
 
 <Exercise slug="fft-features" />
 
-<KeyTakeaways takeaways={["The upgraded input is 11 features wide: 3 raw values plus the top 8 FFT magnitude bins from a 64-sample window", "FFT magnitudes capture frequency patterns invisible in the time domain, boosting accuracy from 78% to 87%", "Always normalize features to the same scale — otherwise the model overweights large-valued features", "Save normalization statistics from training data and reuse them during inference for consistency"]} />
+<KeyTakeaways takeaways={["The upgraded input is 11 features wide: 3 raw values plus the top 8 FFT magnitude bins from a 64-sample window", "FFT magnitudes capture frequency patterns invisible in the time domain, boosting accuracy from 78% to 87%", "Always normalize features to the same scale; otherwise the model overweights large-valued features", "Save normalization statistics from training data and reuse them during inference for consistency"]} />
 
 <Epilogue>
 

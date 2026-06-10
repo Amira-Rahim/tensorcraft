@@ -123,11 +123,11 @@ class InstallationMonitor {
   }
 
   private notifyTeam(title: string, detail: string) {
-    // Send alert via webhook — Erdem gets a push notification
+    // Send alert via webhook; Erdem gets a push notification
     fetch('/api/alerts', {
       method: 'POST',
       body: JSON.stringify({ title, detail, timestamp: Date.now() }),
-    }).catch(() => { /* alert system itself failed — log locally */ });
+    }).catch(() => { /* alert system itself failed; log locally */ });
   }
 
   private getAverageInference(): number { return 0; /* from metrics collector */ }
@@ -156,7 +156,7 @@ class CircuitBreaker {
       if (Date.now() - this.lastFailure > this.resetTimeMs) {
         this.state = 'half-open'; // Try one request
       } else {
-        console.log(\`[\${this.moduleName}] Circuit OPEN — serving fallback\`);
+        console.log(\`[\${this.moduleName}] Circuit OPEN; serving fallback\`);
         return fallback();
       }
     }
@@ -199,4 +199,4 @@ Build a monitoring system with health checks, automatic recovery, and circuit br
 
 <Exercise slug="monitor-failover" />
 
-<KeyTakeaways takeaways={["ML monitoring adds tensor count and inference latency to standard web app observability metrics", "Circuit breakers isolate failing modalities — if audio breaks, images keep generating", "Automatic recovery (tensor cleanup, model reload) handles common failures without human intervention", "Alert severity levels (info, warning, critical) prevent notification fatigue while catching real problems"]} />
+<KeyTakeaways takeaways={["ML monitoring adds tensor count and inference latency to standard web app observability metrics", "Circuit breakers isolate failing modalities: if audio breaks, images keep generating", "Automatic recovery (tensor cleanup, model reload) handles common failures without human intervention", "Alert severity levels (info, warning, critical) prevent notification fatigue while catching real problems"]} />

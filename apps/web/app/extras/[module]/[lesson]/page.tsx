@@ -28,14 +28,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const lesson = getLesson("shared", moduleSlug, lessonSlug);
   if (!lesson) return {};
   return {
-    title: `${lesson.title} — Extras | Tensorcraft`,
+    title: `${lesson.title} | Extras | Tensorcraft`,
     description: lesson.concept.explanation,
     alternates: {
       canonical: `https://tensorcraft.app/extras/${moduleSlug}/${lessonSlug}`,
     },
     openGraph: {
       images: [
-        `/api/og?title=${encodeURIComponent(lesson.title)}&theme=deep-orbit&subtitle=${encodeURIComponent("Extras — " + moduleSlug)}`,
+        `/api/og?title=${encodeURIComponent(lesson.title)}&theme=deep-orbit&subtitle=${encodeURIComponent("Extras: " + moduleSlug)}`,
       ],
     },
   };
@@ -66,7 +66,7 @@ export default async function ExtrasLessonPage({ params }: Props) {
               timeRequired: `PT${lesson.estimatedMinutes}M`,
               isPartOf: {
                 "@type": "Course",
-                name: `Tensorcraft Extras — ${moduleSlug}`,
+                name: `Tensorcraft Extras: ${moduleSlug}`,
                 url: `https://tensorcraft.app/extras`,
               },
               provider: { "@type": "Organization", name: "Tensorcraft" },
@@ -114,7 +114,7 @@ export default async function ExtrasLessonPage({ params }: Props) {
 
         {/* Companion banner */}
         <div className="font-mono text-[11px] text-primary uppercase tracking-[0.2em] mb-3">
-          // companion content · math depth
+          companion content · math depth
         </div>
 
         <h1 className="text-3xl md:text-4xl font-mono font-black tracking-tight text-text-primary mb-4">

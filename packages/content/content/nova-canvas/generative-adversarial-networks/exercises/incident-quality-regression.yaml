@@ -1,6 +1,6 @@
 slug: incident-quality-regression
 lessonSlug: training-dynamics
-title: "Incident — Generation Quality Regressed Post-Update"
+title: "Incident: Generation Quality Regressed Post-Update"
 mlContent: systems
 instructions: |
   PAGER: post-update FID (Frechet Inception Distance) jumped from 18 to 31, user satisfaction dropped 22%. Build `triageRegression(currentMetrics, baselineMetrics, rollbackBudget)` returning:

@@ -84,7 +84,7 @@ In React, `useMemo` and `useCallback` control what values persist across re-rend
 // React: useMemo returns the cached value to the component
 // LSTM: sigmoid(W_o * [hidden, input]) * tanh(cellState)
 
-// The cell state is the "cache" — it flows through time
+// The cell state is the "cache"; it flows through time
 // with minimal modification, solving vanishing gradients
 
 function lstmCellConceptual(
@@ -92,7 +92,7 @@ function lstmCellConceptual(
   prevCell: number[],
   input: number[]
 ) {
-  // Simplified — real LSTM uses matrix multiplication
+  // Simplified: real LSTM uses matrix multiplication
   const combined = [...prevHidden, ...input];
 
   // Forget gate: what to drop from memory (0 = forget, 1 = keep)
@@ -141,7 +141,7 @@ model.add(tf.layers.lstm({
   units: 32,
   returnSequences: false,
   // Internally manages: forget gate, input gate, output gate, cell state
-  // No vanishing gradient — cell state provides gradient highway
+  // No vanishing gradient: cell state provides gradient highway
 }));
 
 model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
@@ -220,4 +220,4 @@ h_t = o_t ⊙ tanh(c_t)
 **GRU** is a simpler variant: merges forget and input into a single update gate, no separate cell state. Fewer params, similar performance for many tasks.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["LSTM gates are learned continuous weights in [0,1], applied at every timestep; they always compute, never skip", "The forget gate discards irrelevant info, the input gate adds new info, the output gate controls exposure", "The cell state provides a gradient highway that solves vanishing gradients", "GRU is a lighter alternative with 2 gates instead of 3 — better for browser performance"]} />
+<KeyTakeaways takeaways={["LSTM gates are learned continuous weights in [0,1], applied at every timestep; they always compute, never skip", "The forget gate discards irrelevant info, the input gate adds new info, the output gate controls exposure", "The cell state provides a gradient highway that solves vanishing gradients", "GRU is a lighter alternative with 2 gates instead of 3, better for browser performance"]} />

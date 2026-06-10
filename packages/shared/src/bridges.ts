@@ -67,7 +67,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "Component props",
     tier: "structural",
     connection:
-      "Props configure a component from the outside; training data configures a model the same way. Swap the props and you get a different render. Swap the data and you get a different model — but only after retraining.",
+      "Props configure a component from the outside; training data configures a model the same way. Swap the props and you get a different render. Swap the data and you get a different model, but only after retraining.",
     breaks:
       "Props can change every render and the component re-renders pure; training data is consumed during training to mutate weights, then the weights are baked in and the data is not needed at inference. Changing props after the fact updates the UI; changing training data after the fact does nothing without retraining.",
     category: "shared",
@@ -99,7 +99,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "Component state",
     tier: "structural",
     connection:
-      "Component state and model weights are the internal values the system owns and mutates in response to inputs. State updates from user events; weights update from training data. Distinct from props (external config, see bridge #1) and from overfitting (generalization failure, see bridge #8) — this bridge is about where the mutable internal values live.",
+      "Component state and model weights are the internal values the system owns and mutates in response to inputs. State updates from user events; weights update from training data. Distinct from props (external config, see bridge #1) and from overfitting (generalization failure, see bridge #8); this bridge is about where the mutable internal values live.",
     breaks:
       "State updates instantly on user events with deterministic transitions; weights update slowly via gradient descent over many iterations and the update rule is stochastic. State is small and hand-written; weights are millions of floats with no semantic meaning per index.",
     category: "shared",
@@ -134,7 +134,7 @@ export const BRIDGES: Bridge[] = [
     connection:
       "A test assertion checks actual === expected; a loss function computes the distance between predictions and labels. Each one measures the gap between actual and expected output, quantifies \u201chow wrong,\u201d and drives corrections.",
     breaks:
-      "Test assertions return a binary pass/fail; loss returns a continuous, differentiable scalar. You cannot take the gradient of `toBe()` — that is why ML loss functions are smooth (MSE, cross-entropy) instead of strict equality.",
+      "Test assertions return a binary pass/fail; loss returns a continuous, differentiable scalar. You cannot take the gradient of `toBe()`; that is why ML loss functions are smooth (MSE, cross-entropy) instead of strict equality.",
     category: "shared",
     variants: {
       react: {
@@ -207,7 +207,7 @@ export const BRIDGES: Bridge[] = [
         feCode: `// Binary search converges by halving each step\nfunction bsearch(arr, target) {\n  let lo = 0, hi = arr.length - 1;\n  while (lo <= hi) {\n    const mid = Math.floor((lo + hi) / 2);\n    if (arr[mid] === target) return mid;\n    if (arr[mid] < target) lo = mid + 1; else hi = mid - 1;\n  }\n}`,
       },
       vue: {
-        feCode: `// Same algorithm — runtime-agnostic\nfunction bsearch(arr, target) {\n  let lo = 0, hi = arr.length - 1;\n  while (lo <= hi) {\n    const mid = (lo + hi) >> 1;\n    if (arr[mid] < target) lo = mid + 1; else hi = mid - 1;\n  }\n}`,
+        feCode: `// Same algorithm, runtime-agnostic\nfunction bsearch(arr, target) {\n  let lo = 0, hi = arr.length - 1;\n  while (lo <= hi) {\n    const mid = (lo + hi) >> 1;\n    if (arr[mid] < target) lo = mid + 1; else hi = mid - 1;\n  }\n}`,
       },
       angular: {
         feCode: `// Same algorithm\nbinarySearch(arr: number[], target: number): number {\n  let lo = 0, hi = arr.length - 1;\n  while (lo <= hi) {\n    const mid = (lo + hi) >> 1;\n    if (arr[mid] < target) lo = mid + 1; else hi = mid - 1;\n  }\n  return -1;\n}`,
@@ -216,7 +216,7 @@ export const BRIDGES: Bridge[] = [
         feCode: `// Same algorithm\nfunction bsearch(arr, target) {\n  let lo = 0, hi = arr.length - 1;\n  while (lo <= hi) {\n    const mid = (lo + hi) >> 1;\n    if (arr[mid] < target) lo = mid + 1; else hi = mid - 1;\n  }\n}`,
       },
       vanilla: {
-        feCode: `// Halving step interval — bisection's core trick\nlet lo = 0, hi = n - 1;\nwhile (lo < hi) {\n  const mid = (lo + hi) >> 1;\n  if (test(mid)) hi = mid; else lo = mid + 1;\n}`,
+        feCode: `// Halving step interval, bisection's core trick\nlet lo = 0, hi = n - 1;\nwhile (lo < hi) {\n  const mid = (lo + hi) >> 1;\n  if (test(mid)) hi = mid; else lo = mid + 1;\n}`,
       },
     },
     mlCode:
@@ -260,7 +260,7 @@ export const BRIDGES: Bridge[] = [
     connection:
       "How much do you process at once? Pagination answers that for UX: whatever fits on a screen. Batch size answers it for training: however many samples per gradient update the memory budget and the throughput target allow.",
     breaks:
-      "Page size is chosen for UX (what fits on screen); batch size is chosen for memory and gradient noise tradeoff. Larger pages are usually better for users; larger batches are not always better for training — small batches add useful noise that improves generalization.",
+      "Page size is chosen for UX (what fits on screen); batch size is chosen for memory and gradient noise tradeoff. Larger pages are usually better for users; larger batches are not always better for training; small batches add useful noise that improves generalization.",
     category: "shared",
     variants: {
       react: {
@@ -288,13 +288,13 @@ export const BRIDGES: Bridge[] = [
     feConcept: "Overspecialized component",
     tier: "intuition",
     connection:
-      "An overspecialized component breaks with new data; an overfit model fails on new examples. The disease is the same — too tailored to the specific inputs it grew up with — and the cure is generalization.",
+      "An overspecialized component breaks with new data; an overfit model fails on new examples. The disease is the same (too tailored to the specific inputs it grew up with) and the cure is generalization.",
     breaks:
-      "An overspecialized component breaks visibly with new data — you see the bug. An overfit model still runs and returns confident wrong answers; it can only be detected by holding out test data. The failure mode is silent.",
+      "An overspecialized component breaks visibly with new data; you see the bug. An overfit model still runs and returns confident wrong answers; it can only be detected by holding out test data. The failure mode is silent.",
     category: "shared",
     variants: {
       react: {
-        feCode: `// Too specific — breaks with new data shapes\nfunction UserCard({ user }) {\n  return <div>{user.name.first} {user.name.last}</div>;\n  // Crashes if user.name is a string\n}`,
+        feCode: `// Too specific: breaks with new data shapes\nfunction UserCard({ user }) {\n  return <div>{user.name.first} {user.name.last}</div>;\n  // Crashes if user.name is a string\n}`,
       },
       vue: {
         feCode: `<!-- Overfitted to one data shape -->\n<template>\n  <div>{{ user.name.first }} {{ user.name.last }}</div>\n  <!-- Breaks if user.name is a string -->\n</template>`,
@@ -349,7 +349,7 @@ export const BRIDGES: Bridge[] = [
     connection:
       "Array.map transforms data for rendering; feature engineering transforms data for modeling. The shared move is shaping raw inputs into more useful representations before anything consumes them.",
     breaks:
-      "Array.map applies a known transform you wrote. Feature engineering requires deciding which transforms to apply — a domain-knowledge problem, not a code problem. The wrong feature can hurt the model even if the transform code is correct.",
+      "Array.map applies a known transform you wrote. Feature engineering requires deciding which transforms to apply: a domain-knowledge problem, not a code problem. The wrong feature can hurt the model even if the transform code is correct.",
     category: "shared",
     variants: {
       react: {
@@ -378,7 +378,7 @@ export const BRIDGES: Bridge[] = [
     connection:
       "Both separate the context for building from the context for evaluation. You develop in dev, test in prod; you train on training data, evaluate on test data. Mixing them gives false confidence.",
     breaks:
-      "Dev and prod can both write — you push code to both. Train and test must be one-way: test data must never touch the model during training. Mixing them gives false performance numbers (data leakage) that look great until production.",
+      "Dev and prod can both write; you push code to both. Train and test must be one-way: test data must never touch the model during training. Mixing them gives false performance numbers (data leakage) that look great until production.",
     category: "shared",
     variants: {
       react: {
@@ -411,23 +411,23 @@ export const BRIDGES: Bridge[] = [
     connection:
       "Nobody learns NODE_ENV from data; you set it. Hyperparameters are that kind of value for training: learning rate, batch size, and layer width all steer the run from outside, and none of them are ever learned by the model itself.",
     breaks:
-      "Env vars take effect on restart and you know exactly what each does. Hyperparameters interact non-linearly during training — changing learning rate may require also changing batch size and warmup. Effects are coupled and only visible after a full training run.",
+      "Env vars take effect on restart and you know exactly what each does. Hyperparameters interact non-linearly during training: changing learning rate may require also changing batch size and warmup. Effects are coupled and only visible after a full training run.",
     category: "shared",
     variants: {
       react: {
-        feCode: `// next.config.js — not learned, just configured\nmodule.exports = {\n  images: { domains: ['cdn.example.com'] },\n};`,
+        feCode: `// next.config.js: not learned, just configured\nmodule.exports = {\n  images: { domains: ['cdn.example.com'] },\n};`,
       },
       vue: {
-        feCode: `// vite.config.ts — tuned, not learned\nexport default defineConfig({\n  server: { port: 3000 },\n});`,
+        feCode: `// vite.config.ts: tuned, not learned\nexport default defineConfig({\n  server: { port: 3000 },\n});`,
       },
       angular: {
-        feCode: `// angular.json — project-level config\n"budgets": [{\n  "type": "initial",\n  "maximumWarning": "500kb"\n}]`,
+        feCode: `// angular.json: project-level config\n"budgets": [{\n  "type": "initial",\n  "maximumWarning": "500kb"\n}]`,
       },
       svelte: {
-        feCode: `// svelte.config.js — tuned, not learned\nexport default {\n  kit: { adapter: adapter() },\n};`,
+        feCode: `// svelte.config.js: tuned, not learned\nexport default {\n  kit: { adapter: adapter() },\n};`,
       },
       vanilla: {
-        feCode: `// webpack.config.js — not learned, just tuned\nmodule.exports = {\n  output: { filename: '[name].[hash].js' },\n};`,
+        feCode: `// webpack.config.js: not learned, just tuned\nmodule.exports = {\n  output: { filename: '[name].[hash].js' },\n};`,
       },
     },
     mlCode:
@@ -441,23 +441,23 @@ export const BRIDGES: Bridge[] = [
     connection:
       "Sequential processing steps, each transforming its input and passing the result forward: input \u2192 transform \u2192 output \u2192 next. Express middleware is the canonical anchor (the variants below show the shape in other frameworks), and neural network layers fold over activations the way middleware folds over requests.",
     breaks:
-      "Middleware composes deterministic transforms you control. Neural network layers compose learned transforms whose internal logic is opaque — you specify the layer type and shape, the model decides the weights. Reordering middleware is reversible; reordering layers in a trained model destroys it.",
+      "Middleware composes deterministic transforms you control. Neural network layers compose learned transforms whose internal logic is opaque: you specify the layer type and shape, the model decides the weights. Reordering middleware is reversible; reordering layers in a trained model destroys it.",
     category: "shared",
     variants: {
       react: {
-        feCode: `// HOC composition — each layer transforms data\nconst Enhanced = withAuth(withTheme(withLogger(BaseComponent)));`,
+        feCode: `// HOC composition: each layer transforms data\nconst Enhanced = withAuth(withTheme(withLogger(BaseComponent)));`,
         feConcept: "HOC / Context provider chain",
       },
       vue: {
-        feCode: `// Plugin pipeline — each transforms the app\napp.use(router);\napp.use(pinia);\napp.use(i18n);`,
+        feCode: `// Plugin pipeline: each transforms the app\napp.use(router);\napp.use(pinia);\napp.use(i18n);`,
         feConcept: "Plugin pipeline",
       },
       angular: {
-        feCode: `// HTTP interceptor chain — each transforms request\nproviders: [\n  { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },\n  { provide: HTTP_INTERCEPTORS, useClass: LogInterceptor, multi: true },\n]`,
+        feCode: `// HTTP interceptor chain: each transforms request\nproviders: [\n  { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },\n  { provide: HTTP_INTERCEPTORS, useClass: LogInterceptor, multi: true },\n]`,
         feConcept: "HTTP interceptors",
       },
       svelte: {
-        feCode: `<!-- Layout composition — nested transforms -->\n<Layout>\n  <AuthGuard>\n    <slot />\n  </AuthGuard>\n</Layout>`,
+        feCode: `<!-- Layout composition: nested transforms -->\n<Layout>\n  <AuthGuard>\n    <slot />\n  </AuthGuard>\n</Layout>`,
         feConcept: "Layout composition",
       },
       vanilla: {
@@ -533,20 +533,20 @@ export const BRIDGES: Bridge[] = [
     connection:
       "model.predict(x) is getServerSideProps for tensors: data in, one forward pass, output out, nothing updated along the way. SSR renders HTML from data with exactly that contract. No loop, no learning, one shot.",
     breaks:
-      "SSR is deterministic — same input, same HTML out. Inference is deterministic given fixed weights, but the weights themselves came from a stochastic training process, so two runs of the same training pipeline produce different models with different predictions. The forward pass repeats; the model behind it does not.",
+      "SSR is deterministic: same input, same HTML out. Inference is deterministic given fixed weights, but the weights themselves came from a stochastic training process, so two runs of the same training pipeline produce different models with different predictions. The forward pass repeats; the model behind it does not.",
     category: "shared",
     variants: {
       react: {
-        feCode: `// Next.js SSR — one forward pass, no iteration\nexport async function getServerSideProps() {\n  const data = await fetchData();\n  return { props: { data } };\n}`,
+        feCode: `// Next.js SSR: one forward pass, no iteration\nexport async function getServerSideProps() {\n  const data = await fetchData();\n  return { props: { data } };\n}`,
       },
       vue: {
-        feCode: `// Nuxt SSR — single forward pass\nexport default defineNuxtPlugin(async () => {\n  const data = await $fetch('/api/data');\n  return { provide: { data } };\n});`,
+        feCode: `// Nuxt SSR: single forward pass\nexport default defineNuxtPlugin(async () => {\n  const data = await $fetch('/api/data');\n  return { provide: { data } };\n});`,
       },
       angular: {
         feCode: `// Angular Universal SSR\n@Injectable()\nexport class ServerDataResolver implements Resolve<Data> {\n  resolve() { return this.http.get<Data>('/api/data'); }\n}`,
       },
       svelte: {
-        feCode: `// SvelteKit load — one forward pass\nexport async function load({ fetch }) {\n  const data = await fetch('/api/data');\n  return { data: await data.json() };\n}`,
+        feCode: `// SvelteKit load: one forward pass\nexport async function load({ fetch }) {\n  const data = await fetch('/api/data');\n  return { data: await data.json() };\n}`,
       },
       vanilla: {
         feCode: `// Server renders HTML in one pass\nconst html = renderToString(data);`,
@@ -593,9 +593,9 @@ export const BRIDGES: Bridge[] = [
     feConcept: "Randomly hiding team members during practice",
     tier: "intuition",
     connection:
-      "If one neuron always fires, others co-adapt — so dropout benches neurons at random, the way a coach hides team members during practice. Forced to perform without any single participant, the rest learn resilience and independence.",
+      "If one neuron always fires, others co-adapt, so dropout benches neurons at random, the way a coach hides team members during practice. Forced to perform without any single participant, the rest learn resilience and independence.",
     breaks:
-      "Team members deliberately practice without each other. Dropout zeroes activations randomly during training only — at inference, all neurons are active and outputs are scaled. The hiding is not a real architectural change; it is a regularization trick that vanishes when the model ships.",
+      "Team members deliberately practice without each other. Dropout zeroes activations randomly during training only; at inference, all neurons are active and outputs are scaled. The hiding is not a real architectural change; it is a regularization trick that vanishes when the model ships.",
     category: "shared",
     variants: {
       react: {
@@ -623,9 +623,9 @@ export const BRIDGES: Bridge[] = [
     feConcept: "Error boundary report",
     tier: "structural",
     connection:
-      "An error boundary catches and categorizes errors; a confusion matrix categorizes predictions vs. actuals. Structured breakdowns of what went right and what went wrong — and either one tells you where to start debugging.",
+      "An error boundary catches and categorizes errors; a confusion matrix categorizes predictions vs. actuals. Structured breakdowns of what went right and what went wrong, and either one tells you where to start debugging.",
     breaks:
-      "Error boundaries catch exceptions you did not anticipate. Confusion matrices show wrong predictions the model is fully confident about — there is no exception, just bad output. The errors are silent and require knowing ground truth to detect.",
+      "Error boundaries catch exceptions you did not anticipate. Confusion matrices show wrong predictions the model is fully confident about; there is no exception, just bad output. The errors are silent and require knowing ground truth to detect.",
     category: "shared",
     variants: {
       react: {
@@ -686,9 +686,9 @@ export const BRIDGES: Bridge[] = [
     feConcept: "CSS initial values",
     tier: "structural",
     connection:
-      "Before any updates occur, something has to set the starting point: CSS initial values for layout, weight initialization for training. Poor initial values lead to broken layouts or slow convergence — deliberate defaults matter in each world.",
+      "Before any updates occur, something has to set the starting point: CSS initial values for layout, weight initialization for training. Poor initial values lead to broken layouts or slow convergence; deliberate defaults matter in each world.",
     breaks:
-      "CSS initial values are static defaults — `display: inline` for an unstyled `<span>` never changes by itself. Weight initialization controls the dynamics of training: He/Xavier init keeps activation variance stable across layers; bad init causes vanishing/exploding gradients or dead neurons that never recover. Init is a one-shot choice with multi-epoch consequences.",
+      "CSS initial values are static defaults: `display: inline` for an unstyled `<span>` never changes by itself. Weight initialization controls the dynamics of training: He/Xavier init keeps activation variance stable across layers; bad init causes vanishing/exploding gradients or dead neurons that never recover. Init is a one-shot choice with multi-epoch consequences.",
     category: "deep-orbit",
     mlCode: "tf.initializers.heNormal() // weight init for ReLU layers",
   },
@@ -713,7 +713,7 @@ export const BRIDGES: Bridge[] = [
     connection:
       "React children pass content through wrapper components; residual connections pass activations around layers. Each gives information a direct path that skips the intermediate processing.",
     breaks:
-      "React children pass content unchanged through wrappers. Residual connections add the input to the output of a transformed block (`output = f(x) + x`) — the path is additive, not pass-through. The shortcut value is summed with the processed value; child rendering does not sum.",
+      "React children pass content unchanged through wrappers. Residual connections add the input to the output of a transformed block (`output = f(x) + x`); the path is additive, not pass-through. The shortcut value is summed with the processed value; child rendering does not sum.",
     category: "deep-orbit",
     mlCode:
       "const out = layerNorm(input.add(attention(input))); // skip + transform",
@@ -726,7 +726,7 @@ export const BRIDGES: Bridge[] = [
     connection:
       "Both are problems caused by excessive depth. Deep callback nesting loses context; deep networks lose gradient signal. Both are solved by architectural shortcuts (async/await, skip connections).",
     breaks:
-      "Callback hell is a code-organization problem visible at write time and fixed by refactoring (async/await). Vanishing gradients are a numerical problem during training — gradients shrink toward zero through depth and weights stop updating. The fix (residuals, normalization) is architectural, not stylistic.",
+      "Callback hell is a code-organization problem visible at write time and fixed by refactoring (async/await). Vanishing gradients are a numerical problem during training: gradients shrink toward zero through depth and weights stop updating. The fix (residuals, normalization) is architectural, not stylistic.",
     category: "deep-orbit",
     mlCode: "const grad = tf.grad(loss)(weights)",
   },
@@ -751,7 +751,7 @@ export const BRIDGES: Bridge[] = [
     connection:
       "A classifier maps inputs to classes the way a router maps URLs to views: one input goes in, one of many categories comes out.",
     breaks:
-      "Routers map URLs to one route via exact-match rules. Classifiers output a probability distribution over all classes — softmax never returns zero confidence in any class. The selection is a confidence ranking, not a hard match.",
+      "Routers map URLs to one route via exact-match rules. Classifiers output a probability distribution over all classes; softmax never returns zero confidence in any class. The selection is a confidence ranking, not a hard match.",
     category: "deep-orbit",
     mlCode:
       "const probs = model.predict(x).softmax(); // [batch, numClasses], rows sum to 1",
@@ -801,7 +801,7 @@ export const BRIDGES: Bridge[] = [
     connection:
       "Both apply a 'one winner per region' rule to a redundant feed. A toast system suppresses a new alert if a similar one is already onscreen; NMS suppresses a detection if it overlaps a higher-confidence one above an IoU threshold. Same intuition: pick the strongest, hide the rest.",
     breaks:
-      "Toast dedupe is single-axis (time + key match) — a boolean check on identifier. NMS is two-dimensional, runs IoU(boxA, boxB) over every kept pair, and the threshold is a tunable scalar that trades recall for precision (lower threshold → fewer kept boxes). Toasts dedupe by equality; NMS dedupes by geometric overlap.",
+      "Toast dedupe is single-axis (time + key match), a boolean check on identifier. NMS is two-dimensional, runs IoU(boxA, boxB) over every kept pair, and the threshold is a tunable scalar that trades recall for precision (lower threshold → fewer kept boxes). Toasts dedupe by equality; NMS dedupes by geometric overlap.",
     category: "neon-protocol",
     mlCode: "tf.image.nonMaxSuppression(boxes, scores, 100, 0.5)",
   },
@@ -813,7 +813,7 @@ export const BRIDGES: Bridge[] = [
     connection:
       "Pixel-level boundaries, twice over: a clip-path\u2019s are drawn by an author to decide which pixels show, while a segmentation mask\u2019s are predicted by a model deciding which class each pixel belongs to.",
     breaks:
-      "CSS masks are author-defined geometry. Segmentation masks are model output — pixel-level predictions with confidence per pixel, often imperfect at boundaries. The mask must be thresholded and cleaned before use; CSS clip-paths do not need post-processing.",
+      "CSS masks are author-defined geometry. Segmentation masks are model output: pixel-level predictions with confidence per pixel, often imperfect at boundaries. The mask must be thresholded and cleaned before use; CSS clip-paths do not need post-processing.",
     category: "neon-protocol",
     mlCode:
       "const mask = model.predict(image).argMax(-1) // [H, W] class per pixel",
@@ -826,7 +826,7 @@ export const BRIDGES: Bridge[] = [
     connection:
       "A shared UI library serves multiple apps; a backbone CNN serves multiple vision tasks. Reusable feature extraction that downstream consumers build on instead of starting from scratch.",
     breaks:
-      "UI libraries are versioned, stable, and you compose them deterministically. Backbones are trained on specific datasets (ImageNet) and carry that bias forward — fine-tuning on different data may erase or compete with the pre-trained features. Reuse is not free of side effects.",
+      "UI libraries are versioned, stable, and you compose them deterministically. Backbones are trained on specific datasets (ImageNet) and carry that bias forward; fine-tuning on different data may erase or compete with the pre-trained features. Reuse is not free of side effects.",
     category: "neon-protocol",
     mlCode: "const backbone = await tf.loadLayersModel('mobilenet/model.json')",
   },
@@ -878,7 +878,7 @@ export const BRIDGES: Bridge[] = [
     connection:
       "State that has to survive navigation goes in session storage. An LSTM threads the same need through time: its cell state persists across timesteps, selectively read and updated at each one.",
     breaks:
-      "Session storage is a key-value store you write and read with explicit keys. LSTM cell state is a fixed-size vector with learned read/write gates — there is no key. The model decides what to remember; you do not address it.",
+      "Session storage is a key-value store you write and read with explicit keys. LSTM cell state is a fixed-size vector with learned read/write gates; there is no key. The model decides what to remember; you do not address it.",
     category: "signal-ward",
     mlCode: "tf.layers.lstm({ units: 128, returnSequences: true })",
   },
@@ -888,9 +888,9 @@ export const BRIDGES: Bridge[] = [
     feConcept: "Search engine ranking",
     tier: "structural",
     connection:
-      "Search ranks documents by relevance to a query; attention weights tokens by relevance to each other. Learned relevance scoring in each case — inputs get dynamically reweighted by how much they matter to the question being asked.",
+      "Search ranks documents by relevance to a query; attention weights tokens by relevance to each other. Learned relevance scoring in each case: inputs get dynamically reweighted by how much they matter to the question being asked.",
     breaks:
-      "Search ranking is a one-shot scoring of documents against one query. Attention runs at every layer for every token, with each token attending to every other token — quadratic cost in sequence length. Same scoring shape, very different scale and frequency.",
+      "Search ranking is a one-shot scoring of documents against one query. Attention runs at every layer for every token, with each token attending to every other token: quadratic cost in sequence length. Same scoring shape, very different scale and frequency.",
     category: "signal-ward",
     mlCode:
       "const scores = tf.softmax(Q.matMul(K.transpose()).div(Math.sqrt(dk)), -1)",
@@ -918,7 +918,7 @@ export const BRIDGES: Bridge[] = [
     connection:
       "Every call to Math.random() is a draw from the one distribution the browser hands you. A generative model spends its entire training learning a distribution of its own to draw from.",
     breaks:
-      "Math.random() samples uniformly from [0,1) with no parameters to learn. Generative models sample from a high-dimensional learned distribution that may have multiple modes, an unrepresentable tail, or unsafe regions. Sampling temperature, top-k, top-p — all knobs Math.random() does not have.",
+      "Math.random() samples uniformly from [0,1) with no parameters to learn. Generative models sample from a high-dimensional learned distribution that may have multiple modes, an unrepresentable tail, or unsafe regions. Sampling temperature, top-k, top-p: all knobs Math.random() does not have.",
     category: "nova-canvas",
     mlCode: "tf.randomNormal([latentDim]) // sample seed",
   },
@@ -930,7 +930,7 @@ export const BRIDGES: Bridge[] = [
     connection:
       "CSS transitions interpolate between start and end styles; latent interpolation generates smooth blends between generated outputs. Smooth intermediate values between two defined points, in stylesheets or in latent space.",
     breaks:
-      "CSS transitions interpolate fixed properties along defined easing curves. Latent interpolation walks a path in a learned space where dimensions have no human meaning — in-between points may be coherent or garbage depending on whether the trajectory stays on the data manifold.",
+      "CSS transitions interpolate fixed properties along defined easing curves. Latent interpolation walks a path in a learned space where dimensions have no human meaning; in-between points may be coherent or garbage depending on whether the trajectory stays on the data manifold.",
     category: "nova-canvas",
     mlCode:
       "const z = z1.mul(t).add(z2.mul(1 - t)); // linear walk between latent vectors",
@@ -956,7 +956,7 @@ export const BRIDGES: Bridge[] = [
     connection:
       "Encode, store small, decode back. A URL shortener does that round trip with links; a VAE does it with data, compressing into a latent vector and reconstructing the original from it.",
     breaks:
-      "URL shorteners encode losslessly — decode reproduces the input exactly. VAEs encode lossy and probabilistic — the latent vector is a distribution, decoding samples from it. Reconstruction is approximate and nondeterministic.",
+      "URL shorteners encode losslessly: decode reproduces the input exactly. VAEs encode lossy and probabilistic: the latent vector is a distribution, decoding samples from it. Reconstruction is approximate and nondeterministic.",
     category: "nova-canvas",
     mlCode:
       "const epsilon = tf.randomNormal(mu.shape);\nconst z = mu.add(tf.exp(logVar.mul(0.5)).mul(epsilon)); // reparameterization sample",
@@ -969,7 +969,7 @@ export const BRIDGES: Bridge[] = [
     connection:
       "Progressive JPEG loads blurry-to-sharp; diffusion denoises random noise into a coherent image. Start degraded, refine step by step toward full quality.",
     breaks:
-      "Progressive JPEG decodes a fixed encoded payload from header to detail. Diffusion runs many denoising steps (50–1000), each a learned model call. Compute scales with quality, not file size. Same blurry-to-sharp visual, very different runtime cost.",
+      "Progressive JPEG decodes a fixed encoded payload from header to detail. Diffusion runs many denoising steps (50-1000), each a learned model call. Compute scales with quality, not file size. Same blurry-to-sharp visual, very different runtime cost.",
     category: "nova-canvas",
     mlCode:
       "const xT = sqrt(alphaBar).mul(x0).add(sqrt(1 - alphaBar).mul(noise))",
@@ -998,7 +998,7 @@ export const BRIDGES: Bridge[] = [
     connection:
       "CDNs answered 'the server is too far away' by moving assets to edge PoPs. Edge ML answers the same complaint for inference: run the model on the device, next to the data, and the round trip disappears.",
     breaks:
-      "CDN edge nodes serve immutable static assets with predictable per-region SLAs and centralized cache-purging. Edge inference runs on heterogeneous user devices — variable RAM, no GPU on most phones, intermittent connectivity, and OTA model updates that must succeed against possibly-stale runtimes. The same model can hit 30ms on desktop WebGL and 800ms on a budget Android in CPU mode.",
+      "CDN edge nodes serve immutable static assets with predictable per-region SLAs and centralized cache-purging. Edge inference runs on heterogeneous user devices: variable RAM, no GPU on most phones, intermittent connectivity, and OTA model updates that must succeed against possibly-stale runtimes. The same model can hit 30ms on desktop WebGL and 800ms on a budget Android in CPU mode.",
     category: "terra-grid",
     mlCode:
       "const model = await tf.loadLayersModel(indexedDBPath) // run inference on-device",
@@ -1024,7 +1024,7 @@ export const BRIDGES: Bridge[] = [
     connection:
       "Tree-shaking eliminates statically unreferenced code via exact analysis; pruning removes weights below a numeric threshold. Each shrinks the artifact by cutting out components.",
     breaks:
-      "Tree-shaking removes statically unreferenced code (analysis is exact, behavior unchanged). Weight pruning removes weights below a numeric threshold and the model usually requires fine-tuning to recover accuracy after pruning — sometimes accuracy never fully recovers. Tree-shaking is safe; pruning has a quality cost.",
+      "Tree-shaking removes statically unreferenced code (analysis is exact, behavior unchanged). Weight pruning removes weights below a numeric threshold and the model usually requires fine-tuning to recover accuracy after pruning; sometimes accuracy never fully recovers. Tree-shaking is safe; pruning has a quality cost.",
     category: "terra-grid",
     mlCode:
       "tf.layers.dense({ units: 64, kernelRegularizer: tf.regularizers.l1({ l1: 0.01 }) })",
@@ -1037,7 +1037,7 @@ export const BRIDGES: Bridge[] = [
     connection:
       "Your bundle got too big, so you split it. Your model got too big, so you distill it: train a small student to mimic the large teacher's outputs, then ship only the student.",
     breaks:
-      "Code splitting decomposes one bundle into chunks of the same code. Distillation creates a different, smaller model that approximates the teacher — the student is not the teacher carved up; it is a separate model trained to mimic the teacher's outputs.",
+      "Code splitting decomposes one bundle into chunks of the same code. Distillation creates a different, smaller model that approximates the teacher: the student is not the teacher carved up; it is a separate model trained to mimic the teacher's outputs.",
     category: "terra-grid",
     mlCode:
       "const T = 4;\nconst pT = teacherLogits.div(T).softmax();\nconst pS = studentLogits.div(T).softmax();\nconst klLoss = pT.mul(pT.div(pS).log()).sum().mul(T * T); // T² scales gradient back",
@@ -1062,7 +1062,7 @@ export const BRIDGES: Bridge[] = [
     connection:
       "A Lighthouse CI gate asks every PR: did performance regress against the baseline? Drift detection asks production the same question about your model: has the incoming data wandered away from what it was trained on?",
     breaks:
-      "Lighthouse runs a fixed test suite per PR and returns a deterministic pass/fail score. Drift detection compares incoming data distributions to a baseline using PSI/KL/KS — non-binary, threshold-tunable, and lagging because ground-truth labels arrive late or never. A drift alert is a hint that the model MAY be degrading; you still need a labelled holdout to confirm. Lighthouse failure is the bug; drift alert is a hypothesis.",
+      "Lighthouse runs a fixed test suite per PR and returns a deterministic pass/fail score. Drift detection compares incoming data distributions to a baseline using PSI/KL/KS: non-binary, threshold-tunable, and lagging because ground-truth labels arrive late or never. A drift alert is a hint that the model MAY be degrading; you still need a labelled holdout to confirm. Lighthouse failure is the bug; drift alert is a hypothesis.",
     category: "terra-grid",
     mlCode: "const psi = computePSI(baselineDistribution, currentDistribution)",
   },

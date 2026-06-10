@@ -10,7 +10,7 @@ const bridgeWithVariants = {
   tier: "structural" as const,
 };
 
-// Fictional pair not present in the canonical registry — keeps "no breaks"
+// Fictional pair not present in the canonical registry, keeps "no breaks"
 // fallback assertion meaningful as we add breaks to real registry entries.
 const bridgeWithoutVariants = {
   feTitle: "Fixture FE Concept",

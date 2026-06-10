@@ -41,7 +41,7 @@ function validateField(field: AllowedField, value: unknown): string | null {
       if (typeof value !== "string" || value.length > 2048) {
         return "avatar_url must be a string of at most 2048 characters";
       }
-      // URL validation — reject dangerous protocols
+      // URL validation, reject dangerous protocols
       try {
         const parsed = new URL(value);
         if (!["https:", "http:"].includes(parsed.protocol)) {
@@ -83,7 +83,7 @@ function validateField(field: AllowedField, value: unknown): string | null {
 }
 
 // ──────────────────────────────────────────────
-// PATCH /api/profiles/:userId — Update user profile
+// PATCH /api/profiles/:userId, Update user profile
 // ──────────────────────────────────────────────
 
 profiles.patch("/:userId", async (c) => {

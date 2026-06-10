@@ -60,7 +60,7 @@ async function reliablePrice(productId: string): Promise<number> {
     .filter((r): r is PromiseFulfilledResult<number> => r.status === 'fulfilled')
     .map(r => r.value);
 
-  // Take the median — robust to one bad response
+  // Take the median (robust to one bad response)
   return median(prices);
 }
 

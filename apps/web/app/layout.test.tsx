@@ -7,7 +7,7 @@ vi.mock("next/font/google", () => ({
 }));
 
 // Mock all layout-level children components (RootLayout renders a tree of
-// components with their own heavy imports — we only care about the <body>).
+// components with their own heavy imports, we only care about the <body>).
 vi.mock("./components/theme-provider", () => ({
   ThemeProvider: ({ children }: { children: React.ReactNode }) => (
     <>{children}</>

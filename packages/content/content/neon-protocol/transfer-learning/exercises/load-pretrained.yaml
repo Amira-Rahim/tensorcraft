@@ -1,7 +1,7 @@
 slug: load-pretrained
 lessonSlug: pretrained-models
 title: "Describe a Pre-trained Model"
-instructions: "Write a function that takes a model description (layers array with name, type, outputShape, and paramCount) and returns a summary including total layers, total parameters, the output shape of the last layer, and the names of all 'conv2d' type layers. This simulates inspecting a pre-trained model after loading it — like reading a package's README to understand what you just installed."
+instructions: "Write a function that takes a model description (layers array with name, type, outputShape, and paramCount) and returns a summary including total layers, total parameters, the output shape of the last layer, and the names of all 'conv2d' type layers. This simulates inspecting a pre-trained model after loading it, like reading a package's README to understand what you just installed."
 starterCode: |
   interface LayerInfo {
     name: string;

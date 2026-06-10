@@ -4,7 +4,7 @@
  * cannot fire while a sync loop blocks the event loop).
  *
  * Runs in browser via web Worker. Falls back to node:worker_threads in Node
- * (vitest / SSR) — dynamic import is hidden from bundlers via `new Function`
+ * (vitest / SSR), dynamic import is hidden from bundlers via `new Function`
  * so Next.js/Vite client builds don't try to resolve `node:worker_threads`.
  */
 
@@ -54,7 +54,7 @@ const HARNESS = `
   var test = it;
 
   async function __awaitPending() {
-    // Drain the queue — pending it()s may schedule more work.
+    // Drain the queue, pending it()s may schedule more work.
     while (__pending.length > 0) {
       var batch = __pending.splice(0, __pending.length);
       await Promise.all(batch);
@@ -477,7 +477,7 @@ const TF_MOCK = `
         return fn();
       },
       variable: function(initial) {
-        // A variable is just a tensor with mutable .assign() — proxy all tensor methods.
+        // A variable is just a tensor with mutable .assign(), proxy all tensor methods.
         var t = initial;
         var v = Object.assign({}, t, {
           assign: function(newVal) {
@@ -708,7 +708,7 @@ const TF_MOCK = `
  *   - drop `<Type>` generic instantiations following an identifier (`new Foo<Bar>()`)
  *   - drop type annotations on params (`x: number`), variables (`let x: T`), return types (`): T {`)
  *   - drop type-only enum/abstract markers
- * Not a full TS parser — handles the syntax patterns observed in lesson exercises.
+ * Not a full TS parser, handles the syntax patterns observed in lesson exercises.
  */
 function stripTypeScript(src: string): string {
   let s = src;
@@ -882,7 +882,7 @@ const WORKER_BODY = `
       loadGraphModel: stubLoadGraph,
     };
 
-    // (Removed earlier InputSpec.shape getter — conflicted with TFJS's
+    // (Removed earlier InputSpec.shape getter, conflicted with TFJS's
     // own writes to spec.shape on subclasses. Lessons that read
     // layer.inputSpec[0].shape[N] are corrected at the lesson level via
     // the tests-fix script instead.)
@@ -906,7 +906,7 @@ const WORKER_BODY = `
       };
     }
 
-    // performance.mark / measure shim — real perf API exists in Node 16+ but
+    // performance.mark / measure shim, real perf API exists in Node 16+ but
     // some lessons mark from inside flagged code paths that don't run during
     // grading. Provide a relaxed implementation that always returns a measure.
     if (typeof globalThis.performance === 'undefined') globalThis.performance = {};

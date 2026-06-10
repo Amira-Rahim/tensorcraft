@@ -140,7 +140,7 @@ Notice what the orchestrator cannot do. `tsc` verifies every import in this file
 ## Module Health Check
 
 <CodeBlock language="typescript" title="health-check.ts">
-{`// Pre-flight check before opening night — like CI passing before deploy
+{`// Pre-flight check before opening night, like CI passing before deploy
 async function systemHealthCheck(
   orchestrator: MultiModalOrchestrator
 ): Promise<HealthReport> {
@@ -187,4 +187,4 @@ Build a multi-modal orchestrator that integrates image, audio, and style generat
 
 <Exercise slug="integrate-modalities" />
 
-<KeyTakeaways takeaways={["Validate tensor shapes and value ranges at every model-to-model handoff: cross-modal failures degrade output silently instead of throwing", "Shared latent spaces ensure cross-modal coherence: one vector, multiple outputs", "Promise.allSettled enables graceful degradation — partial results beat total failure", "Health checks before launch validate every module independently and in combination"]} />
+<KeyTakeaways takeaways={["Validate tensor shapes and value ranges at every model-to-model handoff: cross-modal failures degrade output silently instead of throwing", "Shared latent spaces ensure cross-modal coherence: one vector, multiple outputs", "Promise.allSettled enables graceful degradation: partial results beat total failure", "Health checks before launch validate every module independently and in combination"]} />

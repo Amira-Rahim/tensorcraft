@@ -25,7 +25,7 @@ const Exercise = dynamic(
     ssr: false,
     loading: () => (
       <div className="my-8 border border-border bg-surface rounded-none p-6 text-xs font-mono text-text-muted uppercase tracking-wider">
-        // Loading editor…
+        Loading editor…
       </div>
     ),
   },
@@ -80,7 +80,7 @@ interface LessonContentProps {
 
 /**
  * True while rendering inside an <Epilogue> block. Components nested in an
- * epilogue bypass the per-name visibility filter — the Epilogue wrapper
+ * epilogue bypass the per-name visibility filter, the Epilogue wrapper
  * itself is the gate. This is what lets a closing scene (prose + Dialogue)
  * live in the MDX body but render only on the Consequence step, instead of
  * leaking into Briefing (which shows Dialogue) and Concept (which shows
@@ -136,7 +136,7 @@ export function LessonContent({
     (result: ExerciseSubmitResult) => {
       if (!themeId || !lessonId) return;
 
-      // Fire-and-forget — don't block the UI on persistence
+      // Fire-and-forget, don't block the UI on persistence
       // Dynamic import to avoid making this callback async
       import("@/lib/api-fetch").then(({ apiFetch }) => {
         apiFetch("/api/exercise-attempts", {
@@ -151,7 +151,7 @@ export function LessonContent({
             solutionViewed: result.solutionViewed,
           }),
         }).catch(() => {
-          // Silently ignore — attempt recording is best-effort.
+          // Silently ignore, attempt recording is best-effort.
           // The user can still use the exercise without auth.
         });
       });
@@ -305,7 +305,7 @@ export function LessonContent({
     base.Section = (props: { name: string; children: React.ReactNode }) =>
       shouldShow(props.name) ? <div>{props.children}</div> : null;
 
-    // Closing scene block — renders only on the Consequence step.
+    // Closing scene block, renders only on the Consequence step.
     base.Epilogue = (props: { children: React.ReactNode }) =>
       shouldShow("Epilogue") ? (
         <EpilogueContext.Provider value={true}>

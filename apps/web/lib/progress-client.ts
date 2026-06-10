@@ -13,7 +13,7 @@ interface ProgressUpdate {
   attempts?: number;
 }
 
-/** Mark a lesson as started (in_progress) — only if not already started or completed */
+/** Mark a lesson as started (in_progress), only if not already started or completed */
 export async function markLessonStarted(
   themeId: string,
   moduleId: string,
@@ -50,7 +50,7 @@ export async function markLessonStarted(
 
   if (data) return data;
 
-  // Record already existed (ignoreDuplicates skipped the insert) — fetch it
+  // Record already existed (ignoreDuplicates skipped the insert), fetch it
   if (error) {
     const { data: existing } = await supabase
       .from("theme_progress")
@@ -228,7 +228,7 @@ async function flushEventBuffer() {
     body: JSON.stringify({ events }),
     keepalive: true,
   }).catch(() => {
-    // Silently fail — skill events are non-critical
+    // Silently fail, skill events are non-critical
   });
 }
 
@@ -241,7 +241,7 @@ if (typeof document !== "undefined") {
   });
 }
 
-/** Emit a skill event — buffered, flushed every 5s or on page leave */
+/** Emit a skill event, buffered, flushed every 5s or on page leave */
 export function emitSkillEvent(
   themeId: string,
   eventType: string,

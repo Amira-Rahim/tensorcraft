@@ -15,7 +15,7 @@ concept:
     feTitle: "UX Design Principles"
     feCode: "// Progressive disclosure: show simple first, reveal complexity on demand"
     mlTitle: "Installation UX"
-    mlCode: "// Visitor flow: observe → touch → create → share — each step reveals more"
+    mlCode: "// Visitor flow: observe → touch → create → share; each step reveals more"
     tier: structural
     breaks: "UX design principles assume deterministic UI behavior. Generative UX must handle slow generation, content moderation, regeneration affordances, and the user's loss of agency when output is non-deterministic. Many standard patterns (loading states, retries) need redesign."
 consequence:
@@ -51,7 +51,7 @@ Sixty seconds. That is the budget Yara's whiteboard allows for a stranger to wal
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="visitor-flow.ts">
-{`// Map the visitor journey — same state machine pattern as multi-step forms
+{`// Map the visitor journey, same state machine pattern as multi-step forms
 type VisitorState = 'approaching' | 'observing' | 'touching' | 'creating' | 'sharing';
 
 interface VisitorSession {
@@ -115,7 +115,7 @@ class FeedbackSystem {
     this.canvas = canvas;
   }
 
-  // Visual ripple on touch — instant acknowledgment
+  // Visual ripple on touch: instant acknowledgment
   touchFeedback(x: number, y: number) {
     const ctx = this.canvas.getContext('2d')!;
     let radius = 0;
@@ -131,7 +131,7 @@ class FeedbackSystem {
     animate();
   }
 
-  // Audio chime on generation start — builds anticipation
+  // Audio chime on generation start: builds anticipation
   generationStartFeedback() {
     const osc = this.audioCtx.createOscillator();
     const gain = this.audioCtx.createGain();
@@ -143,7 +143,7 @@ class FeedbackSystem {
     osc.stop(this.audioCtx.currentTime + 0.5);
   }
 
-  // Progress visualization during generation — no spinner, art instead
+  // Progress visualization during generation: no spinner, art instead
   generationProgress(progress: number) {
     const ctx = this.canvas.getContext('2d')!;
     // Growing crystalline pattern instead of a progress bar

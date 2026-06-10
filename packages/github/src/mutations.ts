@@ -41,7 +41,7 @@ interface GetBranchOidResponse {
 
 /**
  * Creates a commit on a branch using the GitHub GraphQL API.
- * This avoids cloning repositories — commits are created server-side.
+ * This avoids cloning repositories, commits are created server-side.
  */
 export async function createCommitOnBranch(
   client: ReturnType<typeof graphql.defaults>,

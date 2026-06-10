@@ -7,7 +7,7 @@ export async function updateSession(request: NextRequest) {
     !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
   ) {
     console.warn(
-      "Supabase env vars not set — skipping auth middleware. See apps/web/.env.example",
+      "Supabase env vars not set, skipping auth middleware. See apps/web/.env.example",
     );
     return NextResponse.next({ request });
   }
@@ -35,7 +35,7 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
-  // Refresh the session — this keeps the auth token alive
+  // Refresh the session, this keeps the auth token alive
   const {
     data: { user },
     error: authError,

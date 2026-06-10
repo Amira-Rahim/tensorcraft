@@ -111,7 +111,7 @@ The remaining 99% of gradients are not thrown away. They accumulate locally and 
       accumulated[i] = gradients[i] + this.residuals[i];
     }
 
-    // Sparsify — send only top 1%
+    // Sparsify: send only top 1%
     const compressed = topKSparsify(accumulated, 0.01);
 
     // Store the rest as residuals for next round
@@ -136,4 +136,4 @@ Implement communication-efficient federated updates with gradient compression.
 
 <Exercise slug="efficient-updates" />
 
-<KeyTakeaways takeaways={["Most gradient values are near zero; sending only the top 1% cuts update size by 98% before index overhead", "Residual accumulation preserves the 99% that was not sent — it gets included in future rounds when it becomes significant", "Gradient quantization (float32 to int8) provides an additional 4x compression on top of sparsification", "Communication efficiency makes federated learning practical on bandwidth-constrained links like satellite"]} />
+<KeyTakeaways takeaways={["Most gradient values are near zero; sending only the top 1% cuts update size by 98% before index overhead", "Residual accumulation preserves the 99% that was not sent; it gets included in future rounds when it becomes significant", "Gradient quantization (float32 to int8) provides an additional 4x compression on top of sparsification", "Communication efficiency makes federated learning practical on bandwidth-constrained links like satellite"]} />

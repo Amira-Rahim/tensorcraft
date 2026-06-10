@@ -34,7 +34,7 @@ export function UserMenu() {
       }
     });
 
-    // Listen for auth changes — SessionListener handles TOKEN_REFRESHED and
+    // Listen for auth changes, SessionListener handles TOKEN_REFRESHED and
     // SIGNED_OUT routing, so we only need this for updating local user state.
     const {
       data: { subscription },

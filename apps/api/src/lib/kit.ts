@@ -137,7 +137,7 @@ export async function tagSubscriber(
  * how we de-list a user from a lifecycle/notification sequence when
  * they toggle the corresponding preference OFF in /settings.
  *
- * Returns `null` if the subscriber wasn't tagged to begin with — Kit
+ * Returns `null` if the subscriber wasn't tagged to begin with, Kit
  * returns a 404/422 for that case and we treat it as a no-op rather
  * than a failure (idempotent from the caller's perspective).
  */

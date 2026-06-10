@@ -99,7 +99,7 @@ export function CodeBlock({
         </button>
       </div>
 
-      {/* Code — highlighted or fallback */}
+      {/* Code - highlighted or fallback */}
       {highlightedHtml ? (
         <div
           className="overflow-x-auto [&_pre]:p-5 [&_pre]:m-0 [&_pre]:bg-transparent [&_code]:text-sm [&_code]:leading-loose"

@@ -41,8 +41,8 @@ function isValidApiKey(provided: string | undefined): boolean {
 /**
  * Combined admin auth middleware.
  * Supports two auth methods:
- * 1. Supabase role-based auth (user with admin role) — preferred
- * 2. API key via x-admin-key header — fallback for CI/scripts
+ * 1. Supabase role-based auth (user with admin role), preferred
+ * 2. API key via x-admin-key header, fallback for CI/scripts
  */
 admin.use("*", async (c, next) => {
   // Method 1: Try API key first (for CI/scripts without a Supabase session)
@@ -70,14 +70,14 @@ admin.use("*", async (c, next) => {
       }
     }
   } catch {
-    // Auth failed — fall through to 401
+    // Auth failed, fall through to 401
   }
 
   return c.json({ error: "Unauthorized" }, 401);
 });
 
 /**
- * GET /api/admin/stats — Dashboard stats (waitlist, users, purchases, revenue).
+ * GET /api/admin/stats, Dashboard stats (waitlist, users, purchases, revenue).
  */
 admin.get("/stats", async (c) => {
   const supabase = getSupabaseAdminClient();
@@ -105,7 +105,7 @@ admin.get("/stats", async (c) => {
 });
 
 /**
- * GET /api/admin/waitlist — Paginated waitlist entries.
+ * GET /api/admin/waitlist, Paginated waitlist entries.
  * Query params: ?page=1&limit=50
  */
 admin.get("/waitlist", async (c) => {
@@ -143,7 +143,7 @@ admin.get("/waitlist", async (c) => {
 });
 
 /**
- * POST /api/admin/newsletter/send — Send the weekly digest newsletter.
+ * POST /api/admin/newsletter/send, Send the weekly digest newsletter.
  * Body: { weekIso: "2026-W18", dryRun?: boolean }
  */
 admin.post("/newsletter/send", async (c) => {

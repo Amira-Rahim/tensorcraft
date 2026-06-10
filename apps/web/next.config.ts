@@ -8,7 +8,7 @@ const velitePath = path.resolve(__dirname, "../../packages/content/.velite");
 
 const nextConfig: NextConfig = {
   eslint: {
-    // Prototype pages have intentional scaffolding vars — lint in CI, not build
+    // Prototype pages have intentional scaffolding vars, lint in CI, not build
     ignoreDuringBuilds: true,
   },
   transpilePackages: [
@@ -21,7 +21,7 @@ const nextConfig: NextConfig = {
   // Phase 6c: image optimization. AVIF/WebP auto-selection via next/image;
   // remotePatterns lists CDNs we pull avatars / content imagery from.
   // Supabase storage host derives from NEXT_PUBLIC_SUPABASE_URL so we can't
-  // hardcode it — configure via env at deploy time if Supabase-hosted media
+  // hardcode it, configure via env at deploy time if Supabase-hosted media
   // is added. For now, only same-origin + explicit trusted sources.
   images: {
     formats: ["image/avif", "image/webp"],
@@ -43,7 +43,7 @@ const nextConfig: NextConfig = {
   },
   webpack: (config) => {
     // Treat .velite output as managed (immutable) so webpack doesn't
-    // watch it for changes — prevents dev server crashes when Velite
+    // watch it for changes, prevents dev server crashes when Velite
     // regenerates large JSON files (2MB+)
     config.snapshot = {
       ...config.snapshot,
@@ -58,7 +58,7 @@ const nextConfig: NextConfig = {
   headers: async () => [
     {
       // Long-lived immutable cache for build-hashed chunks. Filenames carry
-      // a content hash so the URL changes whenever bytes change — safe to
+      // a content hash so the URL changes whenever bytes change, safe to
       // pin for a year + tell the CDN to skip revalidation.
       source: "/_next/static/:path*",
       headers: [

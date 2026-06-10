@@ -25,7 +25,7 @@ hints:
   - level: guidance
     content: "Use tf.argMax along the channel axis to get the predicted class per pixel"
   - level: solution
-    content: "const mask = tf.argMax(prediction, -1); // [H, W] — class index per pixel"
+    content: "const mask = tf.argMax(prediction, -1); // [H, W], class index per pixel"
 keywords:
   - semantic-segmentation
   - pixel-classification
@@ -67,7 +67,7 @@ const prediction = tf.randomNormal([1, 224, 224, NUM_CLASSES]);
 // Convert probabilities to class labels using argMax
 // This picks the highest-probability class for each pixel
 const mask = tf.argMax(prediction.squeeze(), -1);
-console.log(mask.shape); // [224, 224] — one class index per pixel
+console.log(mask.shape); // [224, 224], one class index per pixel
 
 // This is like applying a different clip-path region
 // for every object category in the scene`}
@@ -107,7 +107,7 @@ function renderMask(mask: tf.Tensor2D, canvas: HTMLCanvasElement): void {
   ctx.putImageData(imageData, 0, 0);
 }
 
-// Overlay onto the original feed — the resistance can now
+// Overlay onto the original feed; the resistance can now
 // see District 7 parsed into meaningful regions`}
 </CodeBlock>
 
@@ -143,10 +143,10 @@ Where γ ≥ 1 (typical 2). Down-weights easy examples (high p_true) → focuses
 
 <Quiz
   question="Segmentation outputs a per-pixel class probability tensor of shape [batch, H, W, numClasses]. To convert to a single class index per pixel for visualization, you should:"
-  options={[{"text":"Apply sigmoid to each class channel independently and threshold at 0.5"},{"text":"Take argmax across the class axis (axis=-1) — pick the most likely class for each pixel"},{"text":"Sum the channels then threshold the result by 1/numClasses"},{"text":"Take the L2 norm across the class axis"}]}
+  options={[{"text":"Apply sigmoid to each class channel independently and threshold at 0.5"},{"text":"Take argmax across the class axis (axis=-1) to pick the most likely class for each pixel"},{"text":"Sum the channels then threshold the result by 1/numClasses"},{"text":"Take the L2 norm across the class axis"}]}
   correct={1}
-  explanation="argmax along the class axis returns the index of the highest-probability class for each pixel, producing a [batch, H, W] integer tensor — the standard hard-segmentation output. Sigmoid+threshold (A) is the binary-segmentation recipe — for multi-class, multiple channels can pass 0.5 simultaneously, leaving ambiguous pixels (a real pitfall when the team migrates from binary to multi-class). Sum-then-threshold (C) destroys per-class information. L2 norm (D) returns a magnitude, not a class index."
+  explanation="argmax along the class axis returns the index of the highest-probability class for each pixel, producing a [batch, H, W] integer tensor, the standard hard-segmentation output. Sigmoid+threshold (A) is the binary-segmentation recipe; for multi-class, multiple channels can pass 0.5 simultaneously, leaving ambiguous pixels (a real pitfall when the team migrates from binary to multi-class). Sum-then-threshold (C) destroys per-class information. L2 norm (D) returns a magnitude, not a class index."
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Semantic segmentation assigns a class label to every pixel, producing a dense [H, W] mask", "Model output is [H, W, numClasses] — use argMax to pick the winning class per pixel", "Class imbalance is the standard failure: when background covers 90% of pixels, weight the loss per class or the model predicts background everywhere", "This gives the resistance full scene understanding, not just object locations"]} />
+<KeyTakeaways takeaways={["Semantic segmentation assigns a class label to every pixel, producing a dense [H, W] mask", "Model output is [H, W, numClasses]; use argMax to pick the winning class per pixel", "Class imbalance is the standard failure: when background covers 90% of pixels, weight the loss per class or the model predicts background everywhere", "This gives the resistance full scene understanding, not just object locations"]} />

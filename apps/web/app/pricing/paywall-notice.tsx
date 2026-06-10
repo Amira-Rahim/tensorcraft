@@ -11,7 +11,7 @@ import { EVENTS, track } from "@/lib/analytics-events";
  * The `?locked=<themeSlug>` query param carries the context so we can
  * tell the user *why* they landed here and which theme is gated.
  *
- * Renders nothing when `locked` is absent or not a canonical slug —
+ * Renders nothing when `locked` is absent or not a canonical slug -
  * we never want to render a banner for an arbitrary user-supplied value.
  *
  * Fires `upgrade_cta_shown` (source=`paywall`) on mount when the banner is

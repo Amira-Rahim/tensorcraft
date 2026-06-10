@@ -57,7 +57,7 @@ The first wiring attempt died in stage three. Detection handed the classifier a 
 <CodeBlock language="typescript" title="sentinel-pipeline.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Middleware-style pipeline — each stage is a function that calls next()
+// Middleware-style pipeline: each stage is a function that calls next()
 type PipelineContext = {
   feedId: string;
   timestamp: number;
@@ -107,7 +107,7 @@ class SentinelPipeline {
 const preprocess: Middleware = async (ctx, next) => {
   if (!ctx.frame) {
     ctx.errors.push('preprocess: no frame provided');
-    return; // short-circuit — do not call next()
+    return; // short-circuit; do not call next()
   }
 
   ctx.processed = tf.tidy(() => {
@@ -223,14 +223,14 @@ const adversarialGuard: Middleware = async (ctx, next) => {
 ## Assembling the Pipeline
 
 <CodeBlock language="typescript" title="assemble.ts">
-{`// Wire it all together — like app.use() in Express
+{`// Wire it all together, like app.use() in Express
 const sentinel = new SentinelPipeline()
   .use(preprocess)
   .use(detect)
   .use(classify)
   .use(adversarialGuard)
   .use(async (ctx, next) => {
-    // Stage 5: Broadcast — the final middleware
+    // Stage 5: Broadcast, the final middleware
     const surveillanceAlerts = (ctx.classifications || [])
       .filter(c => c.isSurveillance && c.confidence > 0.7);
 
@@ -272,7 +272,7 @@ function generateHash(feedId: string, timestamp: number): string {
 </CodeBlock>
 
 <Dialogue speaker="NEON">
-Forty-seven milliseconds, end to end. Ingestion, preprocessing, detection, classification, adversarial check, broadcast preparation. I have seen Meridian's pipeline — it takes 200 milliseconds and skips the adversarial check entirely. Protocol Sentinel is faster and more honest. Poetic.
+Forty-seven milliseconds, end to end. Ingestion, preprocessing, detection, classification, adversarial check, broadcast preparation. I have seen Meridian's pipeline; it takes 200 milliseconds and skips the adversarial check entirely. Protocol Sentinel is faster and more honest. Poetic.
 </Dialogue>
 
 ## Challenge

@@ -43,7 +43,7 @@ const LAUNCH_THEME_SLUG = "deep-orbit";
 const LAUNCH_THEME_NAME = "Deep Orbit";
 
 // ---------------------------------------------------------------------------
-// Canonical enum values — MUST match migration 018 CHECK constraints.
+// Canonical enum values, MUST match migration 018 CHECK constraints.
 // ---------------------------------------------------------------------------
 
 const EXPERIENCE_LEVELS = [
@@ -146,7 +146,7 @@ export default function OnboardingPage() {
       if (step === 1 && experienceLevel === null) {
         setStepError("Pick an experience level to continue.");
       } else if (step === 1 && !yearsValid) {
-        setStepError("Experience years must be a whole number 0–50.");
+        setStepError("Experience years must be a whole number 0-50.");
       } else if (step === 2) {
         setStepError("Pick a goal to continue.");
       }
@@ -180,7 +180,7 @@ export default function OnboardingPage() {
         return;
       }
 
-      // 1. PATCH /api/onboarding — writes experience_level, learning_goal,
+      // 1. PATCH /api/onboarding, writes experience_level, learning_goal,
       //    fe_background, fe_framework, fe_experience_years via the
       //    service-role endpoint.
       const payload: Record<string, unknown> = {
@@ -212,7 +212,7 @@ export default function OnboardingPage() {
         return;
       }
 
-      // 2. Mark onboarding complete. preferred_theme_id is no longer set —
+      // 2. Mark onboarding complete. preferred_theme_id is no longer set -
       //    the active theme is route-derived now. (Column kept as tombstone.)
       const {
         data: { user },
@@ -295,7 +295,7 @@ export default function OnboardingPage() {
         TENSORCRAFT
       </div>
 
-      {/* Progress indicator — segmented mono pips + "Step N of 5" text. */}
+      {/* Progress indicator, segmented mono pips + "Step N of 5" text. */}
       <div
         className="flex flex-col items-center gap-3 mb-12 relative z-10"
         role="group"
@@ -437,7 +437,7 @@ function WelcomeStep() {
       data-testid="step-welcome"
     >
       <div className="font-mono text-xs text-primary tracking-[0.15em] mb-3.5">
-        // MISSION BRIEFING
+        MISSION BRIEFING
       </div>
       <h1 className="font-mono text-4xl md:text-4xl font-bold text-text-primary tracking-tight leading-tight mb-4">
         Welcome Aboard
@@ -445,7 +445,7 @@ function WelcomeStep() {
         the <span className="text-primary">Archimedes</span>
       </h1>
       <p className="text-base text-text-muted leading-relaxed max-w-[500px] mb-10 font-sans">
-        You&apos;re a frontend engineer. You&apos;re about to learn ML — not by
+        You&apos;re a frontend engineer. You&apos;re about to learn ML, not by
         re-learning math, but by mapping it to what you already know.
       </p>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-0.5 w-full mb-4">
@@ -498,7 +498,7 @@ function BackgroundStep(props: {
       data-testid="step-background"
     >
       <div className="font-mono text-xs text-primary tracking-[0.15em] mb-3.5">
-        // CREW ASSESSMENT
+        CREW ASSESSMENT
       </div>
       <h2 className="font-mono text-3xl font-bold text-text-primary tracking-tight mb-2.5">
         Tell us about your FE background
@@ -508,7 +508,7 @@ function BackgroundStep(props: {
         level is required.
       </p>
 
-      {/* experience_level — required radio group */}
+      {/* experience_level, required radio group */}
       <fieldset
         className="w-full text-left mb-8"
         data-testid="experience-fieldset"
@@ -570,7 +570,7 @@ function BackgroundStep(props: {
         </div>
       </fieldset>
 
-      {/* fe_framework — optional */}
+      {/* fe_framework, optional */}
       <fieldset className="w-full text-left mb-8">
         <legend className="font-mono text-xs uppercase tracking-[0.12em] text-text-muted mb-3">
           Primary framework
@@ -607,7 +607,7 @@ function BackgroundStep(props: {
         </div>
       </fieldset>
 
-      {/* fe_experience_years — optional number */}
+      {/* fe_experience_years, optional number */}
       <div className="w-full text-left mb-8">
         <label
           htmlFor="fe-experience-years"
@@ -625,7 +625,7 @@ function BackgroundStep(props: {
           inputMode="numeric"
           value={years}
           onChange={(e) => setYears(e.target.value)}
-          placeholder="0 – 50"
+          placeholder="0-50"
           className="w-full md:w-40 font-mono text-sm bg-surface border-2 border-border rounded-none px-4 py-3 text-text-primary placeholder:text-text-muted focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 focus:border-primary"
         />
         {!yearsValid && (
@@ -634,12 +634,12 @@ function BackgroundStep(props: {
             data-testid="fe-years-error"
             className="mt-2 font-mono text-xs text-primary"
           >
-            Experience years must be a whole number 0–50.
+            Experience years must be a whole number 0-50.
           </p>
         )}
       </div>
 
-      {/* fe_background — optional free-text */}
+      {/* fe_background, optional free-text */}
       <div className="w-full text-left">
         <label
           htmlFor="fe-background"
@@ -676,7 +676,7 @@ function GoalStep(props: {
       data-testid="step-goal"
     >
       <div className="font-mono text-xs text-primary tracking-[0.15em] mb-3.5">
-        // MISSION OBJECTIVE
+        MISSION OBJECTIVE
       </div>
       <h2 className="font-mono text-3xl font-bold text-text-primary tracking-tight mb-2.5">
         What&apos;s your goal?
@@ -779,7 +779,7 @@ function ReadyStep(props: {
       data-testid="step-ready"
     >
       <div className="font-mono text-xs text-primary tracking-[0.15em] mb-3.5">
-        // LAUNCH SEQUENCE
+        LAUNCH SEQUENCE
       </div>
       <div className="font-mono text-5xl text-primary mb-4">◎</div>
       <h2 className="font-mono text-[30px] font-bold text-text-primary tracking-tight mb-3.5">
@@ -794,7 +794,7 @@ function ReadyStep(props: {
         data-testid="ready-summary"
       >
         <div className="font-mono text-xs text-primary tracking-[0.1em] mb-3.5 uppercase">
-          // Your Configuration
+          Your Configuration
         </div>
         {rows.map(([k, v]) => (
           <div key={k} className="flex gap-4 mb-2">

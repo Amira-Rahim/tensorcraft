@@ -6,8 +6,8 @@
  * 4-tab sidebar (Profile / Notifications / GitHub / Account), brutalist
  * square-track Toggle component, GitHub connect/disconnect wired to live API
  * endpoints in `apps/api/src/routes/github.ts`:
- *   - POST /api/github/connect  — returns { url } → redirect into OAuth flow.
- *   - POST /api/github/disconnect — revokes token + clears DB columns.
+ *   - POST /api/github/connect , returns { url } → redirect into OAuth flow.
+ *   - POST /api/github/disconnect, revokes token + clears DB columns.
  *
  * The "Theme" tab + preferred-theme picker were removed when the launch
  * scoped down to one theme. Active theme is route-derived now (whichever
@@ -42,7 +42,7 @@ const TABS = [
 type TabId = (typeof TABS)[number]["id"];
 
 // ---------------------------------------------------------------------------
-// Brutalist toggle — square track + square thumb. ON fills w/ primary, OFF
+// Brutalist toggle, square track + square thumb. ON fills w/ primary, OFF
 // uses border color. Flat linear transition for "brutalist" feel.
 // ---------------------------------------------------------------------------
 
@@ -271,7 +271,7 @@ export function SettingsForm({
   }
 
   // ------------------------------------------------------------------
-  // GitHub connect / disconnect — wired to apps/api/src/routes/github.ts
+  // GitHub connect / disconnect, wired to apps/api/src/routes/github.ts
   // ------------------------------------------------------------------
 
   async function handleGithubConnect() {
@@ -380,7 +380,7 @@ export function SettingsForm({
             letterSpacing: "0.14em",
           }}
         >
-          // SETTINGS
+          SETTINGS
         </div>
         <div
           className="flex md:flex-col gap-px overflow-x-auto md:overflow-visible"
@@ -608,7 +608,7 @@ export function SettingsForm({
               }}
             >
               Connect GitHub so each completed lesson commits to your own
-              repository. Tensorcraft stores only a personal OAuth token — no
+              repository. Tensorcraft stores only a personal OAuth token, no
               passwords, no private code mirroring.
             </p>
 
@@ -669,7 +669,7 @@ export function SettingsForm({
 
         {tab === "account" && (
           <Panel label="ACCOUNT">
-            {/* GitHub username (display + edit — saved w/ profile flow) */}
+            {/* GitHub username (display + edit, saved w/ profile flow) */}
             <div className="mb-8">
               <div
                 className="font-mono mb-2"
@@ -679,7 +679,7 @@ export function SettingsForm({
                   letterSpacing: "0.14em",
                 }}
               >
-                // PURCHASES
+                PURCHASES
               </div>
 
               {purchases.length > 0 ? (
@@ -700,8 +700,8 @@ export function SettingsForm({
                       >
                         {purchase.themeIds
                           .map((id) => themes[id]?.displayName ?? id)
-                          .join(" + ")}{" "}
-                        —{" "}
+                          .join(" + ")}
+                        {": "}
                         {purchase.planId === "single"
                           ? "Single Theme"
                           : purchase.planId === "twoBundle"
@@ -749,7 +749,7 @@ export function SettingsForm({
                   letterSpacing: "0.14em",
                 }}
               >
-                // PASSWORD
+                PASSWORD
               </div>
               <p
                 className="font-mono"
@@ -759,8 +759,8 @@ export function SettingsForm({
                   lineHeight: 1.6,
                 }}
               >
-                Tensorcraft uses magic-link sign-in — there&apos;s no password
-                to change. We&apos;ll email you a fresh link every time you sign
+                Tensorcraft uses magic-link sign-in; there&apos;s no password to
+                change. We&apos;ll email you a fresh link every time you sign
                 in.
               </p>
             </div>
@@ -778,7 +778,7 @@ export function SettingsForm({
                   letterSpacing: "0.14em",
                 }}
               >
-                // DANGER ZONE
+                DANGER ZONE
               </div>
               <div className="flex flex-wrap items-center gap-3">
                 <button
@@ -848,7 +848,7 @@ export function SettingsForm({
 }
 
 // ===========================================================================
-// Internal panel + field helpers — keep tabs visually identical.
+// Internal panel + field helpers, keep tabs visually identical.
 // ===========================================================================
 
 function Panel({
@@ -874,7 +874,7 @@ function Panel({
           letterSpacing: "0.14em",
         }}
       >
-        // {label}
+        {label}
       </div>
       {children}
     </section>

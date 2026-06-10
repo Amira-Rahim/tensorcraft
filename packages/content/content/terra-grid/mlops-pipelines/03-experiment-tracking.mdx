@@ -44,7 +44,7 @@ That is 31 GPU-hours spent buying answers we then threw away. Logging a run cost
 
 Somewhere in this week's 31 runs is a 96.1% model that nobody can reproduce. A CI dashboard would never permit the equivalent: every test run records what ran, how long it took, and what coverage it hit, and Tuesday's run sits one click from Friday's. Experiment tracking gives training runs the same memory.
 
-<LearningObjectives objectives={["Design an experiment tracking system that logs hyperparameters, metrics, and artifacts", "Compare training runs to identify the best configuration — like comparing test suite results", "Link experiments to data versions and code versions for full reproducibility", "Query experiment history to answer questions like 'what learning rate works best?'"]} />
+<LearningObjectives objectives={["Design an experiment tracking system that logs hyperparameters, metrics, and artifacts", "Compare training runs to identify the best configuration, like comparing test suite results", "Link experiments to data versions and code versions for full reproducibility", "Query experiment history to answer questions like 'what learning rate works best?'"]} />
 
 ## The Experiment Log
 
@@ -167,4 +167,4 @@ Build an experiment tracking system that logs and compares training runs.
 
 <Exercise slug="track-experiment" />
 
-<KeyTakeaways takeaways={["Every training run gets logged: hyperparameters in, metrics out, plus duration and data version", "Comparing runs reveals which hyperparameters drive performance gains — like comparing test configurations", "Link every experiment to its data version and code version for full reproducibility", "Never run an experiment without logging it — untracked experiments are wasted compute"]} />
+<KeyTakeaways takeaways={["Every training run gets logged: hyperparameters in, metrics out, plus duration and data version", "Comparing runs reveals which hyperparameters drive performance gains, like comparing test configurations", "Link every experiment to its data version and code version for full reproducibility", "Never run an experiment without logging it: untracked experiments are wasted compute"]} />

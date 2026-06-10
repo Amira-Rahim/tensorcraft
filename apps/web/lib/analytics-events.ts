@@ -1,5 +1,5 @@
 /**
- * Analytics Event Taxonomy — canonical, type-safe registry of every
+ * Analytics Event Taxonomy, canonical, type-safe registry of every
  * product event fired from the Tensorcraft web client.
  *
  * Source of truth: `docs/dev-plan.md` Appendix B + PRD 4.7.
@@ -7,15 +7,15 @@
  * Design rules:
  *  - Event names are `snake_case` (PostHog convention).
  *  - Properties are flat, JSON-serializable primitives.
- *  - No PII (email, full name) — user IDs (UUIDs) are fine.
+ *  - No PII (email, full name), user IDs (UUIDs) are fine.
  *  - Adding a new event = append to {@link EVENTS} + its matching
  *    entry in the {@link EventProperties} interface. TypeScript will
  *    then force call sites to pass the correct payload.
  *
  * See also:
- *  - `apps/web/lib/posthog.ts` — init / consent-gated capture
- *  - `apps/api/src/lib/posthog.ts` — server-side captures (webhook)
- *  - `docs/analytics-verification.md` — per-event verification checklist
+ *  - `apps/web/lib/posthog.ts`, init / consent-gated capture
+ *  - `apps/api/src/lib/posthog.ts`, server-side captures (webhook)
+ *  - `docs/analytics-verification.md`, per-event verification checklist
  */
 
 import { capture } from "./posthog";
@@ -197,7 +197,7 @@ export interface EventProperties {
   [EVENTS.SESSION_STARTED]: {
     /** Client-generated correlation id shared with the matching session_ended. */
     sessionId: string;
-    /** Optional — absent on anonymous sessions. */
+    /** Optional, absent on anonymous sessions. */
     userId?: string;
   };
   [EVENTS.SESSION_ENDED]: {

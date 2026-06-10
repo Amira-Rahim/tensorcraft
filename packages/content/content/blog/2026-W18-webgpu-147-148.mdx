@@ -1,6 +1,6 @@
 ---
 slug: 2026-w18-webgpu-147-148
-title: "Chrome 147–148 ships WebGPU upgrades — and we teach this directly"
+title: "Chrome 147-148 ships WebGPU upgrades, and we teach this directly"
 publishedAt: 2026-05-04
 weekIso: 2026-W18
 sourceUrl: https://developer.chrome.com/blog/new-in-webgpu-147-148
@@ -13,7 +13,7 @@ matchedLessons:
     moduleId: optimization-edge
     slug: webgpu-acceleration
     title: WebGPU Acceleration
-    rationale: Teaches WebGPU compute shaders for tensor ops — read this if you want to ship the perf gains 147-148 unlocks.
+    rationale: Teaches WebGPU compute shaders for tensor ops. Read this if you want to ship the perf gains 147-148 unlocks.
 tags:
   - webgpu
   - chrome
@@ -26,9 +26,9 @@ Chrome 147 and 148 expand WebGPU compute-shader performance and texture-format s
 
 ## Why it matters for FE engineers
 
-WebGPU is to inference what `requestAnimationFrame` is to paint — the buffer-per-frame discipline you already know, applied to tensors. If you've worked with `Float32Array` and texture uploads in WebGL, the mental model is the same: stage data in a typed array, push to GPU, dispatch a compute pass, read back.
+WebGPU is to inference what `requestAnimationFrame` is to paint: the buffer-per-frame discipline you already know, applied to tensors. If you've worked with `Float32Array` and texture uploads in WebGL, the mental model is the same: stage data in a typed array, push to GPU, dispatch a compute pass, read back.
 
-The 147–148 update doesn't change that mental model. It just makes more of it cheap.
+The 147-148 update doesn't change that mental model. It just makes more of it cheap.
 
 ## Where we teach this
 

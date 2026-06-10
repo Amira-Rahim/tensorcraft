@@ -61,12 +61,12 @@ const response = await fetch('/audio/ambient.wav');
 const arrayBuffer = await response.arrayBuffer();
 const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
 
-// getChannelData returns Float32Array — already tensor-compatible
+// getChannelData returns Float32Array, already tensor-compatible
 const channelData = audioBuffer.getChannelData(0);
 console.log('Samples:', channelData.length);       // 44100 * duration
 console.log('Sample rate:', audioBuffer.sampleRate); // 44100
 
-// Wrap it in a tensor — zero transformation needed
+// Wrap it in a tensor; zero transformation needed
 const waveform = tf.tensor1d(channelData);
 console.log('Tensor shape:', waveform.shape); // [numSamples]
 
@@ -80,7 +80,7 @@ A waveform tells you amplitude over time. A spectrogram tells you which frequenc
 
 <CodeBlock language="typescript" title="spectrogram.ts">
 {`// Build a spectrogram using Short-Time Fourier Transform
-// This is windowed FFT — same concept as CSS scroll-driven animations
+// This is windowed FFT, same concept as CSS scroll-driven animations
 // sampling the page at intervals
 
 function buildSpectrogram(
@@ -96,7 +96,7 @@ function buildSpectrogram(
     const magnitudes = computeFFTMagnitudes(windowed);
     frames.push(Array.from(magnitudes));
   }
-  // Shape: [numFrames, fftSize/2] — it is a 2D image
+  // Shape: [numFrames, fftSize/2]; it is a 2D image
   return tf.tensor2d(frames);
 }
 
@@ -111,10 +111,10 @@ function applyHannWindow(frame: Float32Array): Float32Array {
 
 const spectrogram = buildSpectrogram(channelData);
 console.log('Spectrogram shape:', spectrogram.shape);
-// [numTimeFrames, numFrequencyBins] — a grayscale image`}
+// [numTimeFrames, numFrequencyBins], a grayscale image`}
 </CodeBlock>
 
-A spectrogram is an image. That single insight is the bridge between everything you have built with visual generation and the world of audio. The same convolutional networks, the same latent spaces, the same generation techniques — they all apply.
+A spectrogram is an image. That single insight is the bridge between everything you have built with visual generation and the world of audio. The same convolutional networks, the same latent spaces, the same generation techniques: they all apply.
 
 ## Challenge
 
@@ -145,4 +145,4 @@ Convert a raw audio waveform into a tensor and compute its basic properties.
 Most speech/audio models work on mel spectrograms, not raw waveforms. Mel binning compresses 22 kHz into ~80 perceptually-meaningful bands.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["tf.tensor1d keeps the samples but drops the sample rate: track 44100 yourself and resample to whatever the model expects", "A spectrogram is a 2D tensor (image) representing frequency content over time", "The Web Audio API's getChannelData() output maps directly to tf.tensor1d()", "If you can generate images, you can generate audio — spectrograms bridge the two domains"]} />
+<KeyTakeaways takeaways={["tf.tensor1d keeps the samples but drops the sample rate: track 44100 yourself and resample to whatever the model expects", "A spectrogram is a 2D tensor (image) representing frequency content over time", "The Web Audio API's getChannelData() output maps directly to tf.tensor1d()", "If you can generate images, you can generate audio; spectrograms bridge the two domains"]} />

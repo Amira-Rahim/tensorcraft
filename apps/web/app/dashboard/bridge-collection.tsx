@@ -23,7 +23,7 @@ export function BridgeCollection({ bridges }: { bridges: BridgeItem[] }) {
   const collected = bridges.filter((b) => b.collected);
   const total = bridges.length;
 
-  // Collected first, then locked — each group sorted by module then lesson
+  // Collected first, then locked, each group sorted by module then lesson
   const sorted = [...bridges].sort((a, b) => {
     if (a.collected !== b.collected) return a.collected ? -1 : 1;
     return 0;
@@ -33,7 +33,7 @@ export function BridgeCollection({ bridges }: { bridges: BridgeItem[] }) {
     <section className="mb-10">
       <div className="flex items-center justify-between mb-3">
         <div className="font-mono text-xs font-bold text-text-muted tracking-wider uppercase">
-          // Bridges Collected
+          Bridges Collected
         </div>
         <div className="font-mono text-xs text-text-muted">
           <span className="text-primary font-bold">{collected.length}</span>

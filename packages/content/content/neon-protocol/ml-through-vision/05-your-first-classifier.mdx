@@ -53,7 +53,7 @@ Your first model's job is to be beatable. Baseline first: build the simplest rul
 <CodeBlock language="typescript" title="threshold-classifier.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// The simplest possible "model" — if/else on pixel values
+// The simplest possible "model": if/else on pixel values
 function classifyBrightness(image: tf.Tensor3D): string {
   const mean = image.mean().dataSync()[0];
   return mean > 128 ? 'daytime' : 'nighttime';
@@ -134,10 +134,10 @@ Build a threshold-based classifier and measure its accuracy.
 
 <Quiz
   question="Why does a brightness-threshold classifier fail on real images?"
-  options={[{"text":"Brightness depends on lighting, not class — same object varies wildly across images"},{"text":"Threshold is too strict"},{"text":"Requires more training data"},{"text":"Doesn't use TensorFlow.js"}]}
+  options={[{"text":"Brightness depends on lighting, not class; same object varies wildly across images"},{"text":"Threshold is too strict"},{"text":"Requires more training data"},{"text":"Doesn't use TensorFlow.js"}]}
   correct={0}
   explanation="A 'cat' photo at noon has different mean brightness than the same cat at dusk. Single-feature classifiers can't generalize across lighting/exposure. CNNs learn lighting-invariant features by composing local patterns into hierarchical representations."
   tier="intuition"
 />
 
-<KeyTakeaways takeaways={["Always start with a baseline — the simplest rule-based approach gives you a score to beat", "Threshold classifiers are just if/else on pixel statistics: brightness, channel ratios, variance", "62% accuracy exposes the limitation: hand-crafted rules can't handle real-world variation (tinted glass, indoor scenes, different camera types)", "ML learns its own features from data instead of requiring you to hand-code every rule"]} />
+<KeyTakeaways takeaways={["Always start with a baseline: the simplest rule-based approach gives you a score to beat", "Threshold classifiers are just if/else on pixel statistics: brightness, channel ratios, variance", "62% accuracy exposes the limitation: hand-crafted rules can't handle real-world variation (tinted glass, indoor scenes, different camera types)", "ML learns its own features from data instead of requiring you to hand-code every rule"]} />

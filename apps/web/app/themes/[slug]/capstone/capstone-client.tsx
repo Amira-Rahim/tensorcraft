@@ -49,7 +49,7 @@ function ShareButton({
     try {
       await navigator.clipboard.writeText(window.location.href);
       setCopied(true);
-      // Fire progress_shared — user copied the capstone URL (not a cert-specific link).
+      // Fire progress_shared, user copied the capstone URL (not a cert-specific link).
       track(EVENTS.PROGRESS_SHARED, {
         platform: "copy",
         ...(themeSlug ? { themeId: themeSlug } : {}),
@@ -90,7 +90,7 @@ function ShareButton({
  * Certificate body for the brutalist certificate card.
  *
  * Fetches the user's certificate (or issues one idempotently via
- * `POST /api/certificates`) after mount. Issuing is server-gated — the
+ * `POST /api/certificates`) after mount. Issuing is server-gated, the
  * API refuses to insert until the user has actually completed the theme.
  *
  * The server component already pre-filters the page to only render when
@@ -204,7 +204,7 @@ function CertificateCard({
       const shareUrl = `${window.location.origin}/certificates/${cert.id}`;
       await navigator.clipboard.writeText(shareUrl);
       setShareCopied(true);
-      // Fire progress_shared — user copied a certificate share link.
+      // Fire progress_shared, user copied a certificate share link.
       track(EVENTS.PROGRESS_SHARED, {
         platform: "copy",
         themeId: themeSlug,
@@ -216,7 +216,7 @@ function CertificateCard({
   }
 
   function handleDownload() {
-    // V0.5 stub — pdf_url not yet generated server-side. Use the browser's
+    // V0.5 stub, pdf_url not yet generated server-side. Use the browser's
     // print dialog on the `.print-certificate` section. Falls back to the
     // hosted URL once backend generation lands.
     if (cert?.pdf_url) {
@@ -269,14 +269,14 @@ function CertificateCard({
           letterSpacing: "0.15em",
         }}
       >
-        // CERTIFICATE OF COMPLETION
+        CERTIFICATE OF COMPLETION
       </div>
 
       <div
         className="font-mono font-bold mb-1.5"
         style={{ fontSize: 20, color: text }}
       >
-        {themeDisplayName} &mdash; {themeSpecialization}
+        {themeDisplayName}: {themeSpecialization}
       </div>
       <div className="font-mono mb-6" style={{ fontSize: 12, color: muted }}>
         Issued to: {displayName}
@@ -334,7 +334,7 @@ function CertificateCard({
         ))}
       </div>
 
-      {/* Actions — hidden when printing */}
+      {/* Actions, hidden when printing */}
       <div className="flex flex-wrap gap-3 mt-8 no-print">
         <button
           type="button"
@@ -378,7 +378,7 @@ function CertificateCard({
           style={{ fontSize: 10, color: muted }}
           data-testid="cert-loading"
         >
-          // issuing certificate...
+          issuing certificate...
         </div>
       )}
       {status === "error" && (
@@ -387,7 +387,7 @@ function CertificateCard({
           style={{ fontSize: 10, color: muted }}
           data-testid="cert-error"
         >
-          // could not load certificate &mdash; refresh to retry
+          could not load certificate; refresh to retry
         </div>
       )}
     </div>

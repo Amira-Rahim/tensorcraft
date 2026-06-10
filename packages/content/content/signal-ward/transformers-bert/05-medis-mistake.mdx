@@ -7,7 +7,7 @@ order: 5
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "MEDI flags a resolved condition as active — a dangerous error that forces the team to confront model limitations, failure modes, and the gap between accuracy metrics and clinical safety."
+  narrative: "MEDI flags a resolved condition as active, a dangerous error that forces the team to confront model limitations, failure modes, and the gap between accuracy metrics and clinical safety."
   speaker: "Dr. Karimi"
 concept:
   explanation: "Models can hallucinate or misclassify when they encounter edge cases, temporal reasoning gaps, or distributional shifts; understanding failure modes is as critical as understanding architecture."
@@ -68,7 +68,7 @@ This is a negation detection failure. MEDI's model learned strong associations: 
 <CodeBlock language="typescript" title="failure-analysis.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// What MEDI's model "saw" — attention weight analysis
+// What MEDI's model "saw": attention weight analysis
 interface AttentionAnalysis {
   token: string;
   attentionWeight: number;
@@ -99,7 +99,7 @@ const tokens = ['[CLS]', 'History', 'of', 'Type', '2', 'diabetes',
 const weights = [0.02, 0.05, 0.01, 0.18, 0.12, 0.35,
                  0.04, 0.02, 0.08, 0.11, 0.02];
 //                                        ^^^^
-// "resolved" got only 4% attention — the model barely noticed it
+// "resolved" got only 4% attention: the model barely noticed it
 
 const analysis = analyzeAttention(tokens, weights);
 analysis.forEach(a => {
@@ -148,12 +148,12 @@ function predictWithConfidence(
 
 const labels = ['Active', 'Resolved', 'Chronic', 'Suspected', 'Ruled-out'];
 
-// High confidence — model is certain
+// High confidence: model is certain
 const clearCase = tf.tensor1d([3.2, -1.0, 0.1, -0.5, -2.0]);
 console.log('Clear case:', predictWithConfidence(clearCase, labels));
 // → { label: 'Active', confidence: 0.94, requiresReview: false }
 
-// MEDI's problematic case — model is uncertain
+// MEDI's problematic case: model is uncertain
 const ambiguousCase = tf.tensor1d([1.1, 0.9, 0.3, -0.2, -0.5]);
 console.log('Ambiguous case:', predictWithConfidence(ambiguousCase, labels));
 // → { label: 'Active', confidence: 0.38, requiresReview: true }`}
@@ -227,10 +227,10 @@ function triagePrediction(
   let action: ClinicalPrediction['action'];
 
   if (negationDetected && predictedStatus === 'Active') {
-    // Model says active, but negation detected — conflict!
+    // Model says active, but negation detected: conflict!
     action = 'flag-for-review';
   } else if (confidence < confidenceThreshold) {
-    // Low confidence — human should verify
+    // Low confidence: human should verify
     action = 'flag-for-review';
   } else if (negationDetected && predictedStatus !== 'Resolved') {
     // Negation detected but model didn't predict resolved
@@ -242,12 +242,12 @@ function triagePrediction(
   return { condition, status: predictedStatus, confidence, negationDetected, action };
 }
 
-// MEDI's mistake — caught by the safety net
+// MEDI's mistake, caught by the safety net
 const mediResult = triagePrediction('Type 2 diabetes', 'Active', 0.72, true);
 console.log(mediResult);
-// → { action: 'flag-for-review' } — negation + active = conflict
+// → { action: 'flag-for-review' }: negation + active = conflict
 
-// Clear active condition — no negation, high confidence
+// Clear active condition: no negation, high confidence
 const clearResult = triagePrediction('Hypertension', 'Active', 0.95, false);
 console.log(clearResult);
 // → { action: 'auto-accept' }`}
@@ -267,6 +267,6 @@ Build a diagnostic safety pipeline that combines confidence thresholds, negation
 
 <Exercise slug="debug-medi" />
 
-<KeyTakeaways takeaways={["A hallucination has no underlying correct value to refresh: the model invents plausible text from patterns, not from any cached source", "Negation detection catches cases where context words like 'resolved' or 'denied' invalidate a classification", "Confidence thresholds flag uncertain predictions for human review instead of auto-accepting", "Defense in depth — confidence, negation, human review — is essential for safety-critical ML applications"]} />
+<KeyTakeaways takeaways={["A hallucination has no underlying correct value to refresh: the model invents plausible text from patterns, not from any cached source", "Negation detection catches cases where context words like 'resolved' or 'denied' invalidate a classification", "Confidence thresholds flag uncertain predictions for human review instead of auto-accepting", "Defense in depth (confidence, negation, human review) is essential for safety-critical ML applications"]} />
 
 > **DISPATCH archive · field intercept #18-N:** Hassan's edge fleet caught the same kind of confident hallucination: model surfaced a high-confidence prediction on a sensor that had silently disconnected. The signal was zero, the model was sure. Confidence is not validity; both modalities forget this at scale.

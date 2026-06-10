@@ -54,7 +54,7 @@ In a game engine, a character walks on terrain defined by a heightmap. Gradient 
 {`import * as tf from '@tensorflow/tfjs';
 
 // A simple 2D loss function: L(w1, w2) = w1^2 + 3*w2^2
-// This is a bowl — convex, one global minimum at (0, 0)
+// This is a bowl: convex, one global minimum at (0, 0)
 function convexLoss(w1: number, w2: number): number {
   return w1 * w1 + 3 * w2 * w2;
 }
@@ -102,7 +102,7 @@ for (const start of [-2.0, 0.0, 2.0, 4.0]) {
   }
   console.log(\`Start=\${start.toFixed(1)} -> converged to w=\${w.toFixed(4)}, loss=\${nonConvexLoss(w).toFixed(4)}\`);
 }
-// Different starting points, different answers — this is non-convex optimization`}
+// Different starting points, different answers. This is non-convex optimization`}
 </CodeBlock>
 
 ## Saddle Points
@@ -112,7 +112,7 @@ In high dimensions, local minima are rare. **Saddle points** are far more common
 <CodeBlock language="typescript" title="saddle-point.ts">
 {`// Saddle point example: f(x, y) = x^2 - y^2
 // At (0, 0): gradient is [0, 0] but it's NOT a minimum
-// It curves up in x, down in y — a saddle
+// It curves up in x, down in y: a saddle
 
 function saddleLoss(x: number, y: number): number {
   return x * x - y * y;
@@ -141,7 +141,7 @@ Momentum solves two problems: it helps escape saddle points and accelerates thro
 <CodeBlock language="typescript" title="sgd-momentum.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// SGD with momentum — the ball-rolling-downhill optimizer
+// SGD with momentum: the ball-rolling-downhill optimizer
 function sgdMomentum(
   lossGradFn: (w: number[]) => number[],
   initialWeights: number[],
@@ -167,7 +167,7 @@ function sgdMomentum(
 
 // Compare: plain SGD vs momentum on a narrow valley
 // L(w1, w2) = 0.5 * w1^2 + 50 * w2^2
-// This is like a long, narrow canyon — hard for plain SGD
+// This is like a long, narrow canyon (hard for plain SGD)
 const lossGrad = (w: number[]): number[] => [w[0], 100 * w[1]];
 
 const plainResult = sgdMomentum(lossGrad, [10, 1], 0.005, 0, 200);

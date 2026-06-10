@@ -12,7 +12,7 @@ export interface BridgeItem {
 
 export interface BridgeTickerProps {
   items: BridgeItem[];
-  /** Scroll duration tier — slow (60s), medium (40s), fast (25s). */
+  /** Scroll duration tier: slow (60s), medium (40s), fast (25s). */
   speed?: "slow" | "medium" | "fast";
   className?: string;
 }
@@ -32,12 +32,12 @@ const TIER_TINT: Record<BridgeTier, string> = {
   intuition: "var(--tc-muted)",
 };
 
-// Plain-language gloss for the tier taxonomy — cold visitors see "structural"
+// Plain-language gloss for the tier taxonomy, cold visitors see "structural"
 // as jargon; the tooltip carries how literally the mapping holds.
 const TIER_HINT: Record<BridgeTier, string> = {
-  identity: "Identity bridge — same concept, same math",
-  structural: "Structural bridge — same shape, different mechanics",
-  intuition: "Intuition bridge — useful mental model, not literal",
+  identity: "Identity bridge: same concept, same math",
+  structural: "Structural bridge: same shape, different mechanics",
+  intuition: "Intuition bridge: useful mental model, not literal",
 };
 
 function usePrefersReducedMotion() {
@@ -198,7 +198,7 @@ export function BridgeTicker({
           padding: "0.125rem 0.5rem",
           fontFamily: "var(--font-mono)",
           fontSize: "0.6875rem",
-          // Solid fill — cards scroll underneath; transparent made the
+          // Solid fill, cards scroll underneath; transparent made the
           // control collide visually with badge text.
           background: "var(--tc-bg, #1c1c1c)",
           color: "var(--tc-muted)",

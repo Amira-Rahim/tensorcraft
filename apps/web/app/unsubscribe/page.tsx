@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getSupabaseAdminClient } from "@tensorcraft/supabase";
 
 export const metadata: Metadata = {
-  title: "Unsubscribe — Tensorcraft",
+  title: "Unsubscribe | Tensorcraft",
   robots: { index: false, follow: false },
 };
 

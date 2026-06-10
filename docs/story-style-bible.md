@@ -76,7 +76,14 @@ texture from other themes. Keep; do not expand.
    lesson opens inside the unresolved problem).
 5. **Fragment triads** ("Flat, typed, contiguous.") — maximum one per
    lesson. They were a tell the moment they became a rhythm.
-6. **Em-dashes** — if a paragraph has two, rewrite one away.
+6. **Em-dashes are banned** (owner directive, 2026-06-10). The entire app
+   (lesson prose, frontmatter, UI copy, code-comment text) carries zero
+   em dashes. Use a comma, colon, semicolon, period, or parentheses
+   instead. Same for decorative `//` prefixes on UI labels: dead. Real
+   code comments keep their `//` marker; only the text gets repunctuated.
+   Two deliberate exceptions survive: the quiz-option sanitizer regex in
+   `packages/ui/src/mdx/quiz.tsx` and the `&mdash;`-decoding example in
+   signal-ward's text-cleaning lesson (both are behavior, not prose).
 7. **No tidy bows.** A lesson body may NOT end on a summary sentence that
    re-states the takeaways. Takeaways component does that job.
 

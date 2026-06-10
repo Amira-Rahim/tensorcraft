@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * PostHog provider — initializes PostHog on the EU instance and captures
+ * PostHog provider, initializes PostHog on the EU instance and captures
  * pageviews on route changes. Consent-gated via localStorage to satisfy
  * GDPR (no tracking before the user accepts analytics cookies).
  *

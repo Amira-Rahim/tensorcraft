@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 /**
- * 5C Loop lesson schema — every lesson must follow
+ * 5C Loop lesson schema: every lesson must follow
  * Context → Concept → Code → Challenge → Consequence
  */
 export const lessonSchema = z.object({
@@ -37,7 +37,7 @@ export const lessonSchema = z.object({
     nextLessonTeaser: z.string().optional(),
   }),
 
-  // Screenplay scene metadata (optional — falls back gracefully)
+  // Screenplay scene metadata (optional; falls back gracefully)
   scene: z
     .object({
       location: z.string(),
@@ -57,7 +57,7 @@ export const lessonSchema = z.object({
     .length(3)
     .optional(),
 
-  // Pedagogical pattern — drives alternate 5C presentations.
+  // Pedagogical pattern: drives alternate 5C presentations.
   // "standard"          → conventional Context→Concept→Code→Challenge→Consequence
   // "broken_code_first" → lesson opens with a bug to fix before exposition
   // "discovery"         → learner explores examples/prompts before the concept is named

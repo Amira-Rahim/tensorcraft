@@ -93,7 +93,7 @@ export function GlossaryList() {
       {/* Alphabet navigation */}
       <div className="flex flex-wrap gap-1 mb-12 border border-border bg-surface p-4">
         <div className="font-mono text-xs text-text-muted tracking-wider uppercase mr-3 flex items-center">
-          // jump to
+          jump to
         </div>
         {ALPHABET.map((letter) => {
           const isActive = activeLetters.has(letter);

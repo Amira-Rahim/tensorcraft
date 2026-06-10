@@ -7,7 +7,7 @@ order: 4
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "The fine-tuned model works perfectly on daytime footage but fails at night. Noor replays the test results: 94% accuracy at noon, 52% after dark. NEON projects the failure cases: neon-lit streets, rain-streaked lenses, fog-blurred silhouettes. 'The training data is from one domain — daylight, clear skies,' NEON explains. 'Neon City at 2AM is a different domain entirely. Same app, different locale.'"
+  narrative: "The fine-tuned model works perfectly on daytime footage but fails at night. Noor replays the test results: 94% accuracy at noon, 52% after dark. NEON projects the failure cases: neon-lit streets, rain-streaked lenses, fog-blurred silhouettes. 'The training data is from one domain: daylight, clear skies,' NEON explains. 'Neon City at 2AM is a different domain entirely. Same app, different locale.'"
   speaker: "NEON"
 concept:
   explanation: "Domain adaptation bridges the gap between the distribution of training data (source domain) and real-world deployment data (target domain). The model's job has not changed, but the surface conditions have: brightness, contrast, noise, weather. You close the gap by training on data that looks like where the model will actually run."
@@ -109,16 +109,16 @@ function augmentForNightDomain(image: tf.Tensor3D): tf.Tensor3D {
   return tf.tidy(() => {
     let augmented = image.toFloat().div(255);
 
-    // Reduce brightness — simulate night
+    // Reduce brightness to simulate night
     const brightnessFactor = 0.3 + Math.random() * 0.4; // 0.3-0.7
     augmented = augmented.mul(brightnessFactor);
 
-    // Boost contrast — neon lights create harsh light/dark boundaries
+    // Boost contrast; neon lights create harsh light/dark boundaries
     const mean = augmented.mean();
     const contrastFactor = 1.2 + Math.random() * 0.6; // 1.2-1.8
     augmented = augmented.sub(mean).mul(contrastFactor).add(mean);
 
-    // Add sensor noise — low-light cameras produce grainy footage
+    // Add sensor noise; low-light cameras produce grainy footage
     const noise = tf.randomNormal(augmented.shape, 0, 0.05);
     augmented = augmented.add(noise);
 
@@ -164,26 +164,26 @@ const levels: AdaptationLevel[] = [
   {
     name: 'Simple augmentation',
     technique: 'Brightness, contrast, noise transforms',
-    dataRequired: 'None — synthetic transforms on existing data',
-    i18nAnalogy: 'String translation — swap surface values',
+    dataRequired: 'None; synthetic transforms on existing data',
+    i18nAnalogy: 'String translation: swap surface values',
   },
   {
     name: 'Style transfer',
     technique: 'Transform source images to look like target domain',
     dataRequired: 'A few unlabeled target domain images',
-    i18nAnalogy: 'Format adaptation — dates, currencies, numbers',
+    i18nAnalogy: 'Format adaptation: dates, currencies, numbers',
   },
   {
     name: 'Few-shot adaptation',
     technique: 'Fine-tune on a handful of labeled target images',
     dataRequired: '10-50 labeled target domain images',
-    i18nAnalogy: 'Layout adaptation — restructure for the locale',
+    i18nAnalogy: 'Layout adaptation: restructure for the locale',
   },
   {
     name: 'Full domain transfer',
     technique: 'Adversarial training to align feature distributions',
     dataRequired: 'Large unlabeled target domain dataset',
-    i18nAnalogy: 'Cultural adaptation — deep structural changes',
+    i18nAnalogy: 'Cultural adaptation: deep structural changes',
   },
 ];
 
@@ -198,4 +198,4 @@ Build domain adaptation transforms for night-time surveillance footage.
 
 <Exercise slug="adapt-domain" />
 
-<KeyTakeaways takeaways={["Domain shift is the gap between training and deployment distributions: 94% accuracy at noon fell to 52% after dark", "Data augmentation simulates target domain conditions during training — synthetic night transforms bridge the gap", "Brightness reduction, contrast boost, and noise injection simulate Neon City's night conditions", "Gains in the target domain can cost accuracy in the source domain; measure both before declaring the gap closed"]} />
+<KeyTakeaways takeaways={["Domain shift is the gap between training and deployment distributions: 94% accuracy at noon fell to 52% after dark", "Data augmentation simulates target domain conditions during training; synthetic night transforms bridge the gap", "Brightness reduction, contrast boost, and noise injection simulate Neon City's night conditions", "Gains in the target domain can cost accuracy in the source domain; measure both before declaring the gap closed"]} />

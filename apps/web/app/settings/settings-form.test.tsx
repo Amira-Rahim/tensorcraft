@@ -55,7 +55,7 @@ vi.mock("@/lib/resize-image", () => ({
   resizeImage: vi.fn(async () => new Blob([new Uint8Array(1)])),
 }));
 
-// UserAvatar pulls in ambient assets — stub it.
+// UserAvatar pulls in ambient assets, stub it.
 vi.mock("@/app/components/user-avatar", () => ({
   UserAvatar: ({ name }: { name: string }) => (
     <div data-testid="user-avatar">{name}</div>

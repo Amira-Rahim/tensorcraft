@@ -47,7 +47,7 @@ solutionCode: |
     const fakeBatch = generator.predict(noise) as tf.Tensor;
 
     // trainOnBatch returns `number` when the model has no metrics or
-    // `number[]` when it does — extract the scalar loss either way.
+    // `number[]` when it does; extract the scalar loss either way.
     const asScalar = (r: number | number[]) => Array.isArray(r) ? r[0] : r;
 
     const dLossReal = asScalar(await discriminator.trainOnBatch(

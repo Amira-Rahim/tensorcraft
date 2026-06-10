@@ -5,7 +5,7 @@
  * ────────
  * Full content pipeline coverage without invoking Velite at runtime:
  *
- *   1. Start with a representative "post-parse" frontmatter object —
+ *   1. Start with a representative "post-parse" frontmatter object,
  *      the shape Velite's YAML parser would hand off to the Zod layer.
  *      (We don't re-run YAML parsing here; the Velite build does that
  *      and its own contract test covers the YAML→JS step.)
@@ -13,8 +13,8 @@
  *      assert rejection for known-malformed variants (missing title,
  *      invalid enum, wrong hint count).
  *   3. Render each of the custom MDX components that a lesson body
- *      uses — Dialogue, BridgeCallout, CodeBlock, Exercise, HintPanel,
- *      Quiz, SceneHeading — and assert the expected DOM shape.
+ *      uses, Dialogue, BridgeCallout, CodeBlock, Exercise, HintPanel,
+ *      Quiz, SceneHeading, and assert the expected DOM shape.
  *   4. Hand Zod-validated frontmatter slices directly into the
  *      components to prove end-to-end prop compatibility.
  *
@@ -27,12 +27,12 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { lessonSchema } from "../src/schemas";
 
-// Shiki loads many grammars — mock so CodeBlock falls back to <pre><code>.
+// Shiki loads many grammars, mock so CodeBlock falls back to <pre><code>.
 vi.mock("shiki", () => ({
-  createHighlighter: () => Promise.reject(new Error("mocked — fallback")),
+  createHighlighter: () => Promise.reject(new Error("mocked, fallback")),
 }));
 
-// Import components directly by module path — sidestep the
+// Import components directly by module path, sidestep the
 // `@tensorcraft/ui` barrel so we never touch the Exercise component
 // (which pulls in Sandpack's CSS-in-JS stack and blows up in jsdom).
 // The Exercise component is covered by its own suite
@@ -45,7 +45,7 @@ const { SceneHeading } = await import("../../ui/src/mdx/scene-heading");
 const { CodeBlock } = await import("../../ui/src/mdx/code-block");
 
 // ─────────────────────────────────────────────────────────────
-// Canonical frontmatter object — mirrors what Velite hands over
+// Canonical frontmatter object, mirrors what Velite hands over
 // to the MDX renderer after parsing `01-introduction-to-tensors.mdx`.
 // ─────────────────────────────────────────────────────────────
 
@@ -87,7 +87,7 @@ const SAMPLE_FRONTMATTER = {
   keywords: ["tensor", "array"],
 };
 
-describe("Content pipeline — frontmatter → Zod → components", () => {
+describe("Content pipeline: frontmatter → Zod → components", () => {
   describe("Stage 1: Zod schema validation", () => {
     it("accepts a valid lesson frontmatter", () => {
       const result = lessonSchema.safeParse(SAMPLE_FRONTMATTER);
@@ -155,7 +155,7 @@ describe("Content pipeline — frontmatter → Zod → components", () => {
   // ─────────────────────────────────────────────────────────────
 
   describe("Stage 2: custom MDX components render correctly", () => {
-    it("Dialogue — shows speaker + body text", () => {
+    it("Dialogue: shows speaker + body text", () => {
       render(
         <Dialogue speaker="Commander Mirza">
           We need to think in data structures.
@@ -167,13 +167,13 @@ describe("Content pipeline — frontmatter → Zod → components", () => {
       ).toBeInTheDocument();
     });
 
-    it("SceneHeading — renders location + time uppercased", () => {
+    it("SceneHeading: renders location + time uppercased", () => {
       render(<SceneHeading location="Bridge" time="Day 47" />);
       expect(screen.getByText(/bridge/i)).toBeInTheDocument();
       expect(screen.getByText(/day 47/i)).toBeInTheDocument();
     });
 
-    it("BridgeCallout — renders both FE + ML sides for an identity tier", () => {
+    it("BridgeCallout: renders both FE + ML sides for an identity tier", () => {
       render(
         <BridgeCallout
           bridge={{
@@ -191,7 +191,7 @@ describe("Content pipeline — frontmatter → Zod → components", () => {
       expect(screen.getByText(/tf\.tensor/)).toBeInTheDocument();
     });
 
-    it("CodeBlock — renders fallback <pre><code> with language badge + title", () => {
+    it("CodeBlock: renders fallback <pre><code> with language badge + title", () => {
       const { container } = render(
         <CodeBlock language="typescript" title="hello.ts">
           const hello = "world";
@@ -203,7 +203,7 @@ describe("Content pipeline — frontmatter → Zod → components", () => {
       expect(pre).not.toBeNull();
     });
 
-    it("HintPanel — progressively reveals 3 hints", () => {
+    it("HintPanel: progressively reveals 3 hints", () => {
       const hints = [
         { level: "nudge" as const, content: "Think in arrays" },
         { level: "guidance" as const, content: "Use tf.tensor()" },
@@ -226,7 +226,7 @@ describe("Content pipeline — frontmatter → Zod → components", () => {
       expect(screen.getByText(/const t = tf\.tensor/i)).toBeInTheDocument();
     });
 
-    it("Quiz — grades correct answer", () => {
+    it("Quiz: grades correct answer", () => {
       render(
         <Quiz
           question="What is a tensor?"
@@ -244,7 +244,7 @@ describe("Content pipeline — frontmatter → Zod → components", () => {
       expect(screen.getByText(/correct!/i)).toBeInTheDocument();
     });
 
-    it("Exercise — source module exists and exports Exercise/ExerciseDataProvider", () => {
+    it("Exercise: source module exists and exports Exercise/ExerciseDataProvider", () => {
       // The Exercise component pulls Sandpack's CSS-in-JS stack at import
       // time, which does not initialize cleanly in jsdom. Full behaviour
       // is covered by `packages/ui/src/mdx/exercise.test.ts`. Here we

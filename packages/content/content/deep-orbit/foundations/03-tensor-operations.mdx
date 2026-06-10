@@ -34,7 +34,7 @@ skillAxes: [data_prep]
 ---
 
 <Dialogue speaker="Chief Nazari">
-Raw data is useless to me. Clean it, combine the feeds, amplify what matters. And it runs at sensor speed or it doesn't run — we take two million readings a minute.
+Raw data is useless to me. Clean it, combine the feeds, amplify what matters. And it runs at sensor speed or it doesn't run. We take two million readings a minute.
 </Dialogue>
 
 Three operations cover almost everything Nazari just asked for: add two tensors, multiply them element by element, and matMul rows into columns. Each is a single call that the GPU executes across the entire tensor at once. The logic will feel familiar if you've chained `Array.map()` and `reduce()` over a list; what changes is the execution model, where one op covers millions of elements in parallel.
@@ -53,7 +53,7 @@ When you write `arr.map((x, i) => x + arr2[i])`, you're doing element-wise addit
 const sensor1 = tf.tensor([1, 2, 3]);
 const sensor2 = tf.tensor([4, 5, 6]);
 
-// Element-wise operations — same as map + zip
+// Element-wise operations: same as map + zip
 const sum = tf.add(sensor1, sensor2);     // [5, 7, 9]
 const product = tf.mul(sensor1, sensor2); // [4, 10, 18]
 const diff = tf.sub(sensor2, sensor1);    // [3, 3, 3]
@@ -63,11 +63,11 @@ const result = sensor1.add(sensor2).mul(tf.scalar(2));
 // [10, 14, 18]`}
 </CodeBlock>
 
-## Matrix Multiplication — and Its One Rule
+## Matrix Multiplication, and Its One Rule
 
 `matMul` is different from `mul`. It doesn't multiply matching positions; it multiplies **rows into columns**: every row of the left tensor dot-producted with every column of the right. That gives it one inflexible shape rule:
 
-**`[m, n] × [n, p] → [m, p]` — the inner dimensions must match.**
+**`[m, n] × [n, p] → [m, p]`: the inner dimensions must match.**
 
 The left tensor's column count must equal the right tensor's row count. When they don't, you flip one with `transpose()`, which swaps a tensor's rows and columns, turning `[3, 2]` into `[2, 3]`:
 
@@ -77,7 +77,7 @@ const weights = tf.tensor2d([[1, 2], [3, 4], [5, 6]]);  // [3, 2]
 const input = tf.tensor2d([[1], [1], [1]]);               // [3, 1]
 
 // weights.matMul(input) would throw:
-//   [3, 2] × [3, 1] — inner dims 2 ≠ 3. No deal.
+//   [3, 2] × [3, 1]: inner dims 2 ≠ 3. No deal.
 
 // transpose() flips [3, 2] → [2, 3]. Now the rule is satisfied:
 //   [2, 3] × [3, 1] → [2, 1] ✓
@@ -95,14 +95,14 @@ Add two tensors together to combine sensor readings.
 
 <Exercise slug="add-tensors" />
 
-<KeyTakeaways takeaways={["Element-wise ops (add, mul, sub) work like map + zip across any number of dimensions", "matMul rule: [m,n] × [n,p] → [m,p] — inner dimensions must match, transpose() to fix mismatches", "Method chaining works: tensor.add(other).mul(scalar)", "Every neural network layer is matMul(input, weights) + bias — this op is the workhorse"]} />
+<KeyTakeaways takeaways={["Element-wise ops (add, mul, sub) work like map + zip across any number of dimensions", "matMul rule: [m,n] × [n,p] → [m,p]: inner dimensions must match, transpose() to fix mismatches", "Method chaining works: tensor.add(other).mul(scalar)", "Every neural network layer is matMul(input, weights) + bias; this op is the workhorse"]} />
 
 <Epilogue>
 
 Demir wires the three feeds together, add to merge, scale to amplify, and pipes an hour of combined signal to Nazari's console. She watches it scroll for a long moment.
 
 <Dialogue speaker="Chief Nazari">
-There. Every few minutes, the same ripple across all sixty-four channels at once. Coordinated. Run it again — and Ensign, if this is a math error, I'm taking it out of your coffee ration.
+There. Every few minutes, the same ripple across all sixty-four channels at once. Coordinated. Run it again. And Ensign, if this is a math error, I'm taking it out of your coffee ration.
 </Dialogue>
 
 It isn't a math error. It shows up on the second pass, and the third.

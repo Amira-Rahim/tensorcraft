@@ -60,11 +60,11 @@ let lastX = 0, lastY = 0;
 const canvas = document.getElementById('interactive') as HTMLCanvasElement;
 
 canvas.addEventListener('pointermove', (e: PointerEvent) => {
-  // Normalize coordinates to [0, 1] — same as mapping to CSS percentage
+  // Normalize coordinates to [0, 1], same as mapping to CSS percentage
   params.x = e.clientX / window.innerWidth;
   params.y = e.clientY / window.innerHeight;
 
-  // Velocity from movement delta — drives intensity
+  // Velocity from movement delta; drives intensity
   const dx = e.clientX - lastX;
   const dy = e.clientY - lastY;
   params.velocity = Math.min(Math.sqrt(dx * dx + dy * dy) / 100, 1);
@@ -91,7 +91,7 @@ function paramsToLatent(): tf.Tensor {
 ## Continuous Generation Loop
 
 <CodeBlock language="typescript" title="generation-loop.ts">
-{`// Smooth audio generation driven by interaction — no clicks, no gaps
+{`// Smooth audio generation driven by interaction: no clicks, no gaps
 class InteractiveSoundscape {
   private audioCtx: AudioContext;
   private model: tf.LayersModel;
@@ -142,7 +142,7 @@ class InteractiveSoundscape {
 ## Multi-Dimensional Mapping
 
 <CodeBlock language="typescript" title="parameter-mapping.ts">
-{`// Rich parameter mappings — every gesture dimension drives a sound dimension
+{`// Rich parameter mappings: every gesture dimension drives a sound dimension
 interface SoundMapping {
   parameter: string;
   inputRange: [number, number];

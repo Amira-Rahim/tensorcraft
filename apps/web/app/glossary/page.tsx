@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import { GlossaryList } from "./glossary-list";
 
 export const metadata: Metadata = {
-  title: "ML Glossary for Frontend Engineers — Tensorcraft",
+  title: "ML Glossary for Frontend Engineers | Tensorcraft",
   description:
     "Every ML term explained with concepts you already know. 50+ terms mapped from JavaScript, React, and CSS to ML equivalents.",
   alternates: { canonical: "https://tensorcraft.app/glossary" },
   openGraph: {
-    title: "ML Glossary for Frontend Engineers — Tensorcraft",
+    title: "ML Glossary for Frontend Engineers | Tensorcraft",
     description: "Every ML term explained with concepts you already know.",
     url: "https://tensorcraft.app/glossary",
     images: [

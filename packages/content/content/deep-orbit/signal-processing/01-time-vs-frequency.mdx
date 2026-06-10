@@ -22,7 +22,7 @@ consequence:
   narrative: "Demir sees it: the same signal, two completely different views. Patterns invisible in time become obvious in frequency."
 hints:
   - level: nudge
-    content: "fft(signal) re-describes the same samples by what repeats in them — no information is added, only re-arranged"
+    content: "fft(signal) re-describes the same samples by what repeats in them; no information is added, only re-arranged"
   - level: guidance
     content: "Time domain shows amplitude at each moment. Frequency domain shows which frequencies are present."
   - level: solution
@@ -84,15 +84,15 @@ function generateSignal(frequencies: { hz: number; amplitude: number }[], sample
   return signal;
 }
 
-// A signal with three frequencies — easy to define, hard to see in time domain
+// A signal with three frequencies: easy to define, hard to see in time domain
 const complex = generateSignal([
   { hz: 5, amplitude: 1.0 },    // 5 Hz component
   { hz: 12, amplitude: 0.5 },   // 12 Hz component
-  { hz: 30, amplitude: 0.3 },   // 30 Hz component — the anomaly?
+  { hz: 30, amplitude: 0.3 },   // 30 Hz component: the anomaly?
 ], 256, 100);
 
 console.log(complex.slice(0, 10));
-// [0, 1.23, 0.78, -0.45, ...] — looks like noise!
+// [0, 1.23, 0.78, -0.45, ...]: looks like noise!
 // But the frequency domain would show exactly three clean peaks.`}
 </CodeBlock>
 
@@ -130,7 +130,7 @@ Identify which domain reveals a hidden pattern in signal data.
 
 <Exercise slug="time-vs-frequency" />
 
-<KeyTakeaways takeaways={["Every signal has two equivalent representations: time domain (when) and frequency domain (what patterns)", "Some patterns are invisible in time but obvious in frequency — like how CSS issues are invisible in the DOM tree", "The frequency domain reveals periodic components: which frequencies are present and how strong they are", "For DEEP SCAN, the anomalous signal has a frequency component that doesn't match natural cosmic patterns"]} />
+<KeyTakeaways takeaways={["Every signal has two equivalent representations: time domain (when) and frequency domain (what patterns)", "Some patterns are invisible in time but obvious in frequency, like how CSS issues are invisible in the DOM tree", "The frequency domain reveals periodic components: which frequencies are present and how strong they are", "For DEEP SCAN, the anomalous signal has a frequency component that doesn't match natural cosmic patterns"]} />
 
 <Epilogue>
 

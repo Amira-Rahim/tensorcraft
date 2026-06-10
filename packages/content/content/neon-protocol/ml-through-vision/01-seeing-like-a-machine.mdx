@@ -70,15 +70,15 @@ ctx.drawImage(img, 0, 0, 224, 224);
 // Method 1: Raw pixel access (what you already know)
 const imageData = ctx.getImageData(0, 0, 224, 224);
 const pixels = imageData.data; // Uint8ClampedArray, length = 224 * 224 * 4
-// Each pixel: [R, G, B, A] — values 0-255
+// Each pixel: [R, G, B, A], values 0-255
 
 // Method 2: TensorFlow.js tensor (the ML way)
 const tensor = tf.browser.fromPixels(canvas);
-console.log(tensor.shape); // [224, 224, 3] — height, width, RGB channels
-console.log(tensor.dtype); // 'int32' — pixel values as integers
+console.log(tensor.shape); // [224, 224, 3]: height, width, RGB channels
+console.log(tensor.dtype); // 'int32', pixel values as integers
 
 // Same data, different interface:
-// pixels[0] === tensor.dataSync()[0]  — the red value of pixel (0,0)
+// pixels[0] === tensor.dataSync()[0]  (the red value of pixel (0,0))
 
 // Why 3 channels, not 4?
 // tf.browser.fromPixels drops the alpha channel by default
@@ -93,9 +93,9 @@ console.log(withAlpha.shape); // [224, 224, 4]`}
 
 <CodeBlock language="typescript" title="image-shapes.ts">
 {`// Image dimensions in ML:
-// Grayscale: [height, width, 1]    — one value per pixel
-// Color:     [height, width, 3]    — RGB per pixel
-// Batch:     [batch, height, width, 3] — multiple images
+// Grayscale: [height, width, 1]    (one value per pixel)
+// Color:     [height, width, 3]    (RGB per pixel)
+// Batch:     [batch, height, width, 3] (multiple images)
 
 // A single 224x224 RGB image
 const singleImage = tf.randomNormal([224, 224, 3]);
@@ -105,7 +105,7 @@ console.log('Single image:', singleImage.shape);
 const batch = tf.randomNormal([32, 224, 224, 3]);
 console.log('Batch:', batch.shape);
 
-// Models expect batched input — even for a single image
+// Models expect batched input, even for a single image
 // Use expandDims to add the batch dimension:
 const batched = singleImage.expandDims(0);
 console.log('Batched single:', batched.shape); // [1, 224, 224, 3]
@@ -127,4 +127,4 @@ Convert canvas pixel data to a tensor and inspect its shape.
 <Exercise slug="canvas-to-tensor" />
 </Section>
 
-<KeyTakeaways takeaways={["Images are multi-dimensional arrays: [height, width, channels] — the same data as canvas getImageData()", "tf.browser.fromPixels() converts a canvas element to a TensorFlow.js tensor", "Models expect batched input: [batch, height, width, channels] — use expandDims() for single images", "You've been working with image tensors every time you used the Canvas API"]} />
+<KeyTakeaways takeaways={["Images are multi-dimensional arrays: [height, width, channels], the same data as canvas getImageData()", "tf.browser.fromPixels() converts a canvas element to a TensorFlow.js tensor", "Models expect batched input: [batch, height, width, channels]; use expandDims() for single images", "You've been working with image tensors every time you used the Canvas API"]} />

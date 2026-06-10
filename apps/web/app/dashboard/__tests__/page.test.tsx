@@ -89,7 +89,7 @@ vi.mock("../theme-cards", () => ({
 
 /**
  * The dashboard page is a React server component that returns a
- * `<DashboardView .../>` element. We don't render that element — we just
+ * `<DashboardView .../>` element. We don't render that element, we just
  * read `.props` off the returned React element to assert on what the page
  * would pass to the view.
  */
@@ -121,7 +121,7 @@ describe("dashboard/page (server component)", () => {
   it("does not redirect to /auth when a user is present", async () => {
     // When a user exists the page proceeds past the auth guard and eventually
     // hits the rest of the data-loading pipeline. We only care here that the
-    // /auth redirect specifically is NOT triggered — any later failure or
+    // /auth redirect specifically is NOT triggered, any later failure or
     // success is outside this test's scope.
     getUserMock.mockResolvedValue({
       data: { user: { id: "u-1", email: "x@example.com" } },

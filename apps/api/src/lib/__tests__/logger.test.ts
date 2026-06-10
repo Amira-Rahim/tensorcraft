@@ -12,7 +12,7 @@ describe("logger (Pino smoke test)", () => {
   it("spawns child loggers with extra bindings", () => {
     const child = logger.child({ requestId: "abc-123", route: "test" });
     expect(typeof child.info).toBe("function");
-    // Child loggers inherit the parent's bindings — a simple identity check.
+    // Child loggers inherit the parent's bindings, a simple identity check.
     expect(child.bindings()).toMatchObject({
       app: "tensorcraft-api",
       requestId: "abc-123",

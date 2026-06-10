@@ -64,7 +64,7 @@ function ThemePicker({
 }
 
 /**
- * PricingTiers — brutalist 5-tier grid (Phase 11 §11d Wave 1).
+ * PricingTiers, brutalist 5-tier grid (Phase 11 §11d Wave 1).
  *
  * Renders all 5 pricing tiers (Free, Single, Two, Three, All 5) as a
  * responsive grid. The "All 5 Themes" tier is highlighted with a darker
@@ -111,7 +111,7 @@ export function PricingTiers() {
     return (
       <p className="mt-1 text-[11px] font-mono text-primary uppercase tracking-wider">
         {adjustedPrice(planPrice) === 0
-          ? "// covered by credit"
+          ? "covered by credit"
           : `// pay $${adjustedPrice(planPrice)} (credit $${totalCredit})`}
       </p>
     );
@@ -137,7 +137,7 @@ export function PricingTiers() {
     <section className="px-6 pb-20" data-testid="pricing-tiers">
       <div className="max-w-7xl mx-auto">
         <p className="text-[13px] uppercase tracking-[0.15em] mb-6 text-text-muted font-mono">
-          // Choose your plan
+          Choose your plan
         </p>
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
           {/* ───── TIER 1 · Free Preview ───── */}
@@ -151,7 +151,7 @@ export function PricingTiers() {
                 $0
               </span>
               <p className="mt-1 text-[11px] font-mono text-text-muted uppercase tracking-wider">
-                // no card required
+                no card required
               </p>
             </div>
             <h3 className="text-base font-semibold mb-1 text-text-primary font-mono uppercase tracking-wider">
@@ -206,7 +206,7 @@ export function PricingTiers() {
                 </span>
               </div>
               <p className="mt-1 text-[11px] font-mono text-primary uppercase tracking-wider">
-                // founder price · save $
+                founder price · save $
                 {PRICING.single.regularPrice - PRICING.single.price}
               </p>
               {creditLine(PRICING.single.price)}
@@ -215,8 +215,8 @@ export function PricingTiers() {
               Single Theme
             </h3>
             <p className="text-xs mb-5 leading-relaxed text-text-muted font-sans">
-              Complete one theme &mdash; {totalLessons} lessons,{" "}
-              {modulesPerTheme} modules, capstone.
+              Complete one theme: {totalLessons} lessons, {modulesPerTheme}{" "}
+              modules, capstone.
             </p>
             <ul className="flex-1 mb-4 space-y-2">
               {[
@@ -239,7 +239,7 @@ export function PricingTiers() {
               ))}
             </ul>
             <p className="text-[11px] font-mono text-text-muted uppercase tracking-wider mb-2">
-              // pick 1 theme
+              pick 1 theme
             </p>
             <ThemePicker
               max={1}
@@ -270,7 +270,7 @@ export function PricingTiers() {
                 ${PRICING.twoBundle.price}
               </span>
               <p className="mt-1 text-[11px] font-mono text-text-muted uppercase tracking-wider">
-                // ${Math.round(PRICING.twoBundle.price / 2)}/theme · save $
+                ${Math.round(PRICING.twoBundle.price / 2)}/theme · save $
                 {PRICING.single.price * 2 - PRICING.twoBundle.price}
               </p>
               {creditLine(PRICING.twoBundle.price)}
@@ -300,7 +300,7 @@ export function PricingTiers() {
               ))}
             </ul>
             <p className="text-[11px] font-mono text-text-muted uppercase tracking-wider mb-2">
-              // pick 2 themes
+              pick 2 themes
             </p>
             <ThemePicker
               max={2}
@@ -335,7 +335,7 @@ export function PricingTiers() {
                 ${PRICING.threeBundle.price}
               </span>
               <p className="mt-1 text-[11px] font-mono text-text-muted uppercase tracking-wider">
-                // ${Math.round(PRICING.threeBundle.price / 3)}/theme · save $
+                ${Math.round(PRICING.threeBundle.price / 3)}/theme · save $
                 {PRICING.single.price * 3 - PRICING.threeBundle.price}
               </p>
               {creditLine(PRICING.threeBundle.price)}
@@ -365,7 +365,7 @@ export function PricingTiers() {
               ))}
             </ul>
             <p className="text-[11px] font-mono text-text-muted uppercase tracking-wider mb-2">
-              // pick 3 themes
+              pick 3 themes
             </p>
             <ThemePicker
               max={3}
@@ -409,7 +409,7 @@ export function PricingTiers() {
                 ${PRICING.allFive.price}
               </span>
               <p className="mt-1 text-[11px] font-mono text-primary uppercase tracking-wider">
-                // ${Math.round(PRICING.allFive.price / 5)}/theme · save $
+                ${Math.round(PRICING.allFive.price / 5)}/theme · save $
                 {PRICING.single.price * 5 - PRICING.allFive.price}
               </p>
               {creditLine(PRICING.allFive.price)}
@@ -418,9 +418,8 @@ export function PricingTiers() {
               All 5 Themes
             </h3>
             <p className="text-xs mb-5 leading-relaxed text-text-muted font-sans">
-              All five specializations &mdash; time-series, vision, NLP,
-              generative, edge. {totalLessons * 5} lessons, 5 capstones, one
-              payment.
+              All five specializations: time-series, vision, NLP, generative,
+              edge. {totalLessons * 5} lessons, 5 capstones, one payment.
             </p>
             <ul className="flex-1 mb-6 space-y-2">
               {[

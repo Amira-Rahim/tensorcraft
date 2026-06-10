@@ -147,7 +147,7 @@ await benchmark(student, 'Student');  // ~34ms`}
 ## Quality Comparison
 
 <CodeBlock language="typescript" title="quality-check.ts">
-{`// Measure quality loss from optimization — like Lighthouse scores for models
+{`// Measure quality loss from optimization, like Lighthouse scores for models
 async function compareQuality(
   teacher: tf.LayersModel,
   student: tf.LayersModel,
@@ -183,4 +183,4 @@ Optimize a model using quantization and measure the quality-speed tradeoff.
 
 <Exercise slug="optimize-model" />
 
-<KeyTakeaways takeaways={["Quantization reduces weight precision (float32 to uint8) — like image compression for model weights", "Knowledge distillation trains a small student model to mimic a large teacher — like code-splitting for ML", "Always benchmark both speed and quality after optimization — faster is useless if output quality collapses", "A 10x smaller model with 95% quality is often the right tradeoff for real-time applications"]} />
+<KeyTakeaways takeaways={["Quantization reduces weight precision (float32 to uint8), like image compression for model weights", "Knowledge distillation trains a small student model to mimic a large teacher, like code-splitting for ML", "Always benchmark both speed and quality after optimization; faster is useless if output quality collapses", "A 10x smaller model with 95% quality is often the right tradeoff for real-time applications"]} />

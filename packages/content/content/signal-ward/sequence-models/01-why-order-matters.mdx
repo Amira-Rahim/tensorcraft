@@ -7,7 +7,7 @@ order: 1
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "'Patient denied chest pain' versus 'Patient reported chest pain' — in clinical text, word order can be the difference between life and death."
+  narrative: "'Patient denied chest pain' versus 'Patient reported chest pain': in clinical text, word order can be the difference between life and death."
   speaker: "Dr. Karimi"
 concept:
   explanation: "Word order changes meaning, and bag-of-words throws order away. Sequence models process tokens in order, preserving the positional context that separates 'denied chest pain' from 'reported chest pain'."
@@ -98,7 +98,7 @@ const seqB = toSequence(sentenceB); // [0, 2, 3, 4]
 console.log('Seq A:', seqA); // Position 1 is "denied" (1)
 console.log('Seq B:', seqB); // Position 1 is "reported" (2)
 
-// As tensors — ready for a sequence model
+// As tensors, ready for a sequence model
 const tensorA = tf.tensor1d(seqA, 'int32');
 const tensorB = tf.tensor1d(seqB, 'int32');
 console.log('Tensor A shape:', tensorA.shape);`}
@@ -113,11 +113,11 @@ Negation is the most dangerous pattern in clinical NLP. "No fever" and "fever" m
 const dangerousPairs = [
   { text: 'no known allergies',         meaning: 'safe' },
   { text: 'documented allergy to PCN',  meaning: 'danger' },
-  // BoW sees "allergy" in both — can't distinguish!
+  // BoW sees "allergy" in both; can't distinguish!
 
   { text: 'patient denies chest pain',  meaning: 'negative' },
   { text: 'patient reports chest pain', meaning: 'positive' },
-  // BoW sees "chest pain" in both — can't distinguish!
+  // BoW sees "chest pain" in both; can't distinguish!
 
   { text: 'fever resolved yesterday',   meaning: 'no current fever' },
   { text: 'fever started yesterday',    meaning: 'active fever' },
@@ -206,10 +206,10 @@ Without positional encoding, a transformer treats "not good" and "good not" iden
 
 <Quiz
   question="A bag-of-words representation treats 'patient denied chest pain' identically to 'patient denied chest. pain'. Why is this catastrophic for clinical NLP specifically?"
-  options={[{"text":"Punctuation changes token count"},{"text":"Negation scope ('denied' applies to 'chest pain') depends on word order and adjacency — bag-of-words destroys both, so 'denied chest pain' (negation) and 'denied chest. pain' (no negation, separate finding) become the same vector despite opposite clinical meaning"},{"text":"Bag-of-words can't handle abbreviations"},{"text":"It's not catastrophic — order doesn't matter in NLP"}]}
+  options={[{"text":"Punctuation changes token count"},{"text":"Negation scope ('denied' applies to 'chest pain') depends on word order and adjacency; bag-of-words destroys both, so 'denied chest pain' (negation) and 'denied chest. pain' (no negation, separate finding) become the same vector despite opposite clinical meaning"},{"text":"Bag-of-words can't handle abbreviations"},{"text":"It's not catastrophic: order doesn't matter in NLP"}]}
   correct={1}
-  explanation="Clinical text is dense with negation cues ('denied', 'no', 'without', 'ruled out'). Scope of negation depends on word order — destroying order destroys the meaning. Sequence models preserve order so negation can be learned."
+  explanation="Clinical text is dense with negation cues ('denied', 'no', 'without', 'ruled out'). Scope of negation depends on word order; destroying order destroys the meaning. Sequence models preserve order so negation can be learned."
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Word order determines meaning — 'denied pain' is the opposite of 'reported pain'", "Bag-of-words fails on negation, the most dangerous pattern in clinical NLP", "Sequence representations preserve token positions for order-aware processing", "Execution order in async code maps directly to token order in sequences"]} />
+<KeyTakeaways takeaways={["Word order determines meaning: 'denied pain' is the opposite of 'reported pain'", "Bag-of-words fails on negation, the most dangerous pattern in clinical NLP", "Sequence representations preserve token positions for order-aware processing", "Execution order in async code maps directly to token order in sequences"]} />

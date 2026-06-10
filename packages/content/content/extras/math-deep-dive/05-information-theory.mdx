@@ -61,20 +61,20 @@ function entropy(probs: number[]): number {
 
 // Fair coin: maximum uncertainty
 console.log('Fair coin:', entropy([0.5, 0.5]).toFixed(4));
-// 1.0000 bit — you need exactly 1 bit (0 or 1) to encode each flip
+// 1.0000 bit: you need exactly 1 bit (0 or 1) to encode each flip
 
 // Biased coin (90% heads)
 console.log('Biased coin:', entropy([0.9, 0.1]).toFixed(4));
-// 0.4690 bits — less surprise, more compressible
+// 0.4690 bits: less surprise, more compressible
 
 // Certain outcome (100% heads)
 console.log('Certain:', entropy([1.0, 0.0]).toFixed(4));
-// 0.0000 bits — no surprise at all, nothing to encode
+// 0.0000 bits: no surprise at all, nothing to encode
 
 // Uniform distribution over 8 classes
 const uniform8 = Array(8).fill(1/8);
 console.log('Uniform 8-class:', entropy(uniform8).toFixed(4));
-// 3.0000 bits — need 3 bits to encode 8 equally likely outcomes
+// 3.0000 bits: need 3 bits to encode 8 equally likely outcomes
 
 // Connection to gzip:
 // High-entropy file (random bytes) -> poor compression ratio
@@ -102,20 +102,20 @@ const trueLabel = [1.0, 0.0, 0.0]; // [cat, dog, bird]
 // Good prediction
 const goodPred = [0.9, 0.05, 0.05];
 console.log('Good prediction CE:', crossEntropy(trueLabel, goodPred).toFixed(4));
-// 0.1520 bits — low cost, model is close
+// 0.1520 bits: low cost, model is close
 
 // Bad prediction
 const badPred = [0.1, 0.6, 0.3];
 console.log('Bad prediction CE:', crossEntropy(trueLabel, badPred).toFixed(4));
-// 3.3219 bits — high cost, model is very wrong
+// 3.3219 bits: high cost, model is very wrong
 
 // Terrible prediction (almost certain it's NOT a cat)
 const terriblePred = [0.01, 0.90, 0.09];
 console.log('Terrible prediction CE:', crossEntropy(trueLabel, terriblePred).toFixed(4));
-// 6.6439 bits — massive cost for confident wrong answer
+// 6.6439 bits: massive cost for confident wrong answer
 
 // This is why cross-entropy penalizes confident wrong predictions
-// so harshly — the log makes small probabilities very expensive
+// so harshly: the log makes small probabilities very expensive
 
 // TensorFlow.js built-in (uses natural log, not log2).
 // softmaxCrossEntropy expects LOGITS, the raw pre-softmax scores,
@@ -147,7 +147,7 @@ const p = [0.7, 0.2, 0.1]; // true distribution
 const q = [0.3, 0.4, 0.3]; // model's distribution
 
 console.log('KL(p || q):', klDivergence(p, q).toFixed(4));
-// Positive — q is not a perfect model of p
+// Positive: q is not a perfect model of p
 
 console.log('KL(q || p):', klDivergence(q, p).toFixed(4));
 // Different value! KL divergence is ASYMMETRIC
@@ -158,7 +158,7 @@ console.log('KL(q || p):', klDivergence(q, p).toFixed(4));
 
 // KL divergence of p from itself
 console.log('KL(p || p):', klDivergence(p, p).toFixed(4));
-// 0.0000 — zero when distributions match
+// 0.0000: zero when distributions match
 
 // Why cross-entropy loss works for classification:
 // Minimizing CE(true, predicted) is equivalent to minimizing

@@ -160,7 +160,7 @@ function pooledDimensions(
 // After conv: [224, 224, 32] feature maps
 const result = pooledDimensions(224, 224, 2, 32);
 console.log(result.shape);     // [112, 112, 32]
-console.log(result.reduction); // 75 — removed 75% of spatial data
+console.log(result.reduction); // 75, removed 75% of spatial data
 
 // After two pooling layers: [56, 56, 32]
 const result2 = pooledDimensions(112, 112, 2, 32);
@@ -168,7 +168,7 @@ console.log(result2.shape);    // [56, 56, 32]
 
 // Surveillance image pipeline:
 // 224x224x32 -> pool -> 112x112x32 -> pool -> 56x56x32
-// From 1,605,632 values to 100,352 — 94% reduction!`}
+// From 1,605,632 values to 100,352: 94% reduction!`}
 </CodeBlock>
 
 ## Challenge
@@ -191,4 +191,4 @@ With `K = S = 2` (the standard), `W_out = floor(W/2)`. A 224×224 input becomes 
 **Average pooling** preserves more low-frequency information; max pooling preserves the strongest activation regardless of position. Which one to use depends on whether the task cares about edge-like features (max) or texture-like features (average).
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["Pooling reduces spatial dimensions by summarizing local regions; the discarded activations are gone permanently", "Max pooling keeps the strongest activation in each region and is the most common pooling type", "A 2x2 max pool with stride 2 reduces each spatial dimension by half, cutting total values by 75%", "Pooling makes CNNs more efficient and adds translation invariance — a feature detected anywhere in a region still activates"]} />
+<KeyTakeaways takeaways={["Pooling reduces spatial dimensions by summarizing local regions; the discarded activations are gone permanently", "Max pooling keeps the strongest activation in each region and is the most common pooling type", "A 2x2 max pool with stride 2 reduces each spatial dimension by half, cutting total values by 75%", "Pooling makes CNNs more efficient and adds translation invariance: a feature detected anywhere in a region still activates"]} />

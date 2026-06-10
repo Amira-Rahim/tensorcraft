@@ -13,7 +13,7 @@ concept:
   explanation: "Scene understanding combines segmentation maps with spatial reasoning to extract meaning: object relationships, traversable paths, and contextual semantics. A drone above a person is not two labels. It is a surveillance event."
   bridge:
     feTitle: "Semantic HTML"
-    feCode: "<nav>, <main>, <aside> — structure implies meaning"
+    feCode: "<nav>, <main>, <aside>: structure implies meaning"
     mlTitle: "Scene Understanding"
     mlCode: "// Road + person + crosswalk = pedestrian crossing context"
     tier: intuition
@@ -123,7 +123,7 @@ function analyzeScene(mask: tf.Tensor2D): { adjacency: Set<string>; events: stri
 }
 
 // Output: { events: ['street-scene', 'clear-corridor'] }
-// The resistance knows: this street has people but no drones — safe to move`}
+// The resistance knows: this street has people but no drones, safe to move`}
 </CodeBlock>
 
 ## Challenge
@@ -138,8 +138,8 @@ Build a scene analysis function that detects contextual events from a segmentati
   question="Difference between semantic and instance segmentation?"
   options={[{"text":"Semantic is faster"},{"text":"Semantic: per-pixel class. Instance: per-pixel class + which instance of that class"},{"text":"Instance only handles people"},{"text":"Semantic uses CNN, instance uses transformer"}]}
   correct={1}
-  explanation="Semantic: 'all cat pixels'. Instance: 'cat #1 pixels vs cat #2 pixels'. Instance is harder — model must distinguish overlapping objects of the same class. Panoptic segmentation combines both."
+  explanation="Semantic: 'all cat pixels'. Instance: 'cat #1 pixels vs cat #2 pixels'. Instance is harder; model must distinguish overlapping objects of the same class. Panoptic segmentation combines both."
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Scene understanding reads spatial relationships between segmented regions to extract meaning", "Adjacency maps encode which classes neighbor each other in the mask", "Event detection applies rules to adjacency patterns — like semantic HTML, structure implies meaning", "The resistance now has a real-time contextual map of the entire district"]} />
+<KeyTakeaways takeaways={["Scene understanding reads spatial relationships between segmented regions to extract meaning", "Adjacency maps encode which classes neighbor each other in the mask", "Event detection applies rules to adjacency patterns; like semantic HTML, structure implies meaning", "The resistance now has a real-time contextual map of the entire district"]} />

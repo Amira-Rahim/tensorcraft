@@ -60,7 +60,7 @@ const decoder = tf.sequential({
     tf.layers.dense({ units: 512, activation: 'relu' }),
     tf.layers.dense({ units: 1024, activation: 'relu' }),
     // Output layer: generate 4096 audio samples (~93ms at 44.1kHz)
-    // tanh constrains output to [-1, 1] — valid audio range
+    // tanh constrains output to [-1, 1], the valid audio range
     tf.layers.dense({ units: 4096, activation: 'tanh' }),
   ],
 });
@@ -76,7 +76,7 @@ console.log('Generated samples:', audioData.length); // 4096`}
 ## Playback Through Web Audio API
 
 <CodeBlock language="typescript" title="playback.ts">
-{`// Connect neural output to speakers — bridging ML and Web Audio
+{`// Connect neural output to speakers, bridging ML and Web Audio
 async function playGenerated(samples: Float32Array, sampleRate = 44100) {
   const ctx = new AudioContext();
   const buffer = ctx.createBuffer(1, samples.length, sampleRate);
@@ -87,7 +87,7 @@ async function playGenerated(samples: Float32Array, sampleRate = 44100) {
   const source = ctx.createBufferSource();
   source.buffer = buffer;
 
-  // Add some processing — you already know this API
+  // Add some processing; you already know this API
   const gainNode = ctx.createGain();
   gainNode.gain.value = 0.5;
 
@@ -105,7 +105,7 @@ await playGenerated(samples);`}
 ## Navigating the Latent Space of Sound
 
 <CodeBlock language="typescript" title="latent-interpolation.ts">
-{`// Interpolate between two sounds — smooth morphing
+{`// Interpolate between two sounds: smooth morphing
 function interpolateLatent(
   z1: tf.Tensor, z2: tf.Tensor, alpha: number
 ): tf.Tensor {
@@ -160,4 +160,4 @@ EnCodec + autoregressive:   4.8/5   0.2× real-time
 ```
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["Neural audio synthesis maps latent vectors to waveforms — same architecture as image generation", "OscillatorNode produces 4 fixed waveform types; neural networks produce infinite timbres", "Generated Float32Array samples connect directly to AudioBuffer for playback", "Latent space interpolation creates smooth morphing between sounds, just like image morphing"]} />
+<KeyTakeaways takeaways={["Neural audio synthesis maps latent vectors to waveforms, same architecture as image generation", "OscillatorNode produces 4 fixed waveform types; neural networks produce infinite timbres", "Generated Float32Array samples connect directly to AudioBuffer for playback", "Latent space interpolation creates smooth morphing between sounds, just like image morphing"]} />

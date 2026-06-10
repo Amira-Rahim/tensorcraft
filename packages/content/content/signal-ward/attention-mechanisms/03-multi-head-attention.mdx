@@ -125,4 +125,4 @@ MultiHead(X) = Concat(head_1, ..., head_h) · W_O
 **Why heads specialize:** different heads end up attending to different patterns (some to syntax, some to semantics, some to position). The specialization is emergent; you can't assign roles.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["Multi-head attention runs parallel attention operations, each learning different patterns", "Dimensions are split across heads: d_k = d_model / numHeads", "Heads naturally specialize — some track syntax, others track entities or negation", "Concatenation followed by linear projection merges all perspectives"]} />
+<KeyTakeaways takeaways={["Multi-head attention runs parallel attention operations, each learning different patterns", "Dimensions are split across heads: d_k = d_model / numHeads", "Heads naturally specialize: some track syntax, others track entities or negation", "Concatenation followed by linear projection merges all perspectives"]} />

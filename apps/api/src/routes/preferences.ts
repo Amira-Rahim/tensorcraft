@@ -12,7 +12,7 @@ import type { AppEnv } from "../types";
 /**
  * Email preference management.
  *
- * PATCH /api/preferences — authenticated. Persists `email_alerts` and
+ * PATCH /api/preferences, authenticated. Persists `email_alerts` and
  * `weekly_digest` to `profiles`, then reconciles Kit tag membership so
  * the dashboard sequences stop/resume without a full unsubscribe.
  *
@@ -22,7 +22,7 @@ import type { AppEnv } from "../types";
  *   KIT_TAG_WEEKLY_DIGEST  → toggles Sunday progress digest
  *
  * If either env var is unset we persist the DB write but skip the Kit
- * call — identical to the lifecycle-event endpoint's behaviour so Fly.io
+ * call, identical to the lifecycle-event endpoint's behaviour so Fly.io
  * secret rotations / staging envs degrade gracefully.
  */
 const preferences = new Hono<AppEnv>();
@@ -90,7 +90,7 @@ preferences.patch("/", async (c) => {
   }
 
   // Fire-and-forget Kit reconciliation. We intentionally do NOT await
-  // these — the DB write is authoritative and we never want a Kit
+  // these, the DB write is authoritative and we never want a Kit
   // outage to fail the settings save.
   const email = data.email as string | null;
   if (email) {

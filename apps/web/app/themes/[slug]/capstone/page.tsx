@@ -20,7 +20,7 @@ interface Props {
 }
 
 // Only launched themes have a capstone route; everything else 404s at the
-// router level (real 404 status — the page body's notFound() would fire
+// router level (real 404 status, the page body's notFound() would fire
 // after the segment's loading.tsx already streamed a 200 shell).
 export function generateStaticParams() {
   return THEME_SLUGS.filter((slug) => isLaunched(slug)).map((slug) => ({
@@ -33,11 +33,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const theme = themes[slug];
   // notFound() here so the response carries a real 404 status for unknown
-  // and coming-soon themes — the page body's notFound() fires after the
+  // and coming-soon themes, the page body's notFound() fires after the
   // segment's loading.tsx has streamed a 200 shell (soft-404 otherwise).
   if (!isLaunched(slug) || !theme) notFound();
   return {
-    title: `Mission Complete — ${theme.displayName} | Tensorcraft`,
+    title: `Mission Complete: ${theme.displayName} | Tensorcraft`,
     description: `You've completed every module of ${theme.displayName}. View your certificate and stats.`,
     alternates: {
       canonical: `https://tensorcraft.app/themes/${slug}/capstone`,
@@ -131,7 +131,7 @@ export default async function CapstonePage({ params }: Props) {
   const exercisesPassed = attempts.filter((a) => a.passed).length;
   const hintsUsed = attempts.reduce((sum, a) => sum + (a.hints_used ?? 0), 0);
 
-  // Bridges explored — bridges that belong to lessons the user completed.
+  // Bridges explored, bridges that belong to lessons the user completed.
   const completedLessonSlugs = new Set(
     completedLessons.map((p) => p.lesson_id),
   );
@@ -159,7 +159,7 @@ export default async function CapstonePage({ params }: Props) {
 
   // Next theme: first **launched** theme (in canonical order) the user has not
   // purchased and is not the current one. Coming-soon themes intentionally
-  // excluded — V1 ships Deep Orbit only, so the teaser will be empty until
+  // excluded, V1 ships Deep Orbit only, so the teaser will be empty until
   // a second theme launches. The "ownsAll" flag mirrors the same scope so
   // the placeholder fires once the user owns every launched theme.
   const launchedSlugs = THEME_SLUGS.filter((t) => isLaunched(t));
@@ -172,7 +172,7 @@ export default async function CapstonePage({ params }: Props) {
   const displayName = profile?.display_name ?? "Engineer";
   const P = theme.palette;
 
-  // Timeline data — numbered nodes with titles, completion dates, and
+  // Timeline data, numbered nodes with titles, completion dates, and
   // per-module bridge titles pulled from content.
   const bridgesByModule = new Map<string, Array<{ fe: string; ml: string }>>();
   for (const b of bridges) {
@@ -212,7 +212,7 @@ export default async function CapstonePage({ params }: Props) {
       }
     : null;
 
-  // Stats cards — 4-card brutalist grid.
+  // Stats cards, 4-card brutalist grid.
   const statsCards = [
     {
       value: `${completedLessons.length} / ${allLessons.length}`,
@@ -249,7 +249,7 @@ export default async function CapstonePage({ params }: Props) {
     <main
       style={{
         background: P.bg,
-        // 100svh sits on the smallest viewport (URL bar shown) — prevents
+        // 100svh sits on the smallest viewport (URL bar shown), prevents
         // iOS Safari reflow when the address bar collapses on scroll.
         minHeight: "100svh",
         position: "relative",
@@ -323,7 +323,7 @@ export default async function CapstonePage({ params }: Props) {
             letterSpacing: "0.2em",
           }}
         >
-          // MISSION COMPLETE &middot; {theme.displayName.toUpperCase()}
+          MISSION COMPLETE &middot; {theme.displayName.toUpperCase()}
         </div>
         <h1
           className="font-mono font-bold mb-4"
@@ -346,8 +346,8 @@ export default async function CapstonePage({ params }: Props) {
           }}
         >
           You&apos;ve completed every module of {theme.displayName}. You built
-          the {theme.modelBuilt.split("—")[0].trim()}. You explored{" "}
-          {bridgesExplored} frontend bridges to ML.
+          the {theme.modelBuilt.split(/\u2014|\u2013|:|;|\s-\s/)[0].trim()}. You
+          explored {bridgesExplored} frontend bridges to ML.
         </p>
         <CapstoneClient.ShareButton
           border={P.border}
@@ -356,7 +356,7 @@ export default async function CapstonePage({ params }: Props) {
         />
       </div>
 
-      {/* Stats — 4-card brutalist grid */}
+      {/* Stats, 4-card brutalist grid */}
       <div
         className="relative z-[1] no-print"
         style={{ borderBottom: `1px solid ${P.border}` }}
@@ -394,7 +394,7 @@ export default async function CapstonePage({ params }: Props) {
         </div>
       </div>
 
-      {/* Journey timeline — brutalist numbered boxes with connectors */}
+      {/* Journey timeline, brutalist numbered boxes with connectors */}
       <div
         className="relative z-[1] max-w-[980px] mx-auto"
         style={{ padding: "56px 32px 40px" }}
@@ -407,7 +407,7 @@ export default async function CapstonePage({ params }: Props) {
             letterSpacing: "0.15em",
           }}
         >
-          // MISSION RECORD
+          MISSION RECORD
         </div>
         <h2
           className="font-mono font-bold mb-10 no-print"
@@ -553,13 +553,13 @@ export default async function CapstonePage({ params }: Props) {
                   letterSpacing: "0.1em",
                 }}
               >
-                // NEXT MISSION
+                NEXT MISSION
               </div>
               <div
                 className="font-mono font-bold mb-1"
                 style={{ fontSize: 14, color: P.text }}
               >
-                {nextTheme.displayName} &mdash; {nextTheme.specialization}
+                {nextTheme.displayName}: {nextTheme.specialization}
               </div>
               <div
                 style={{
@@ -602,7 +602,7 @@ export default async function CapstonePage({ params }: Props) {
                 letterSpacing: "0.1em",
               }}
             >
-              // NEXT MISSION
+              NEXT MISSION
             </div>
             <div
               className="font-mono font-bold mb-1"
@@ -618,7 +618,7 @@ export default async function CapstonePage({ params }: Props) {
               }}
             >
               You&apos;ve completed every mission in every theme. New V1.0
-              content lands on the roadmap &mdash; watch your inbox.
+              content lands on the roadmap; watch your inbox.
             </div>
           </div>
         ) : null}

@@ -90,7 +90,7 @@ function simpleMultiHeadAttention(x: tf.Tensor2D, dModel: number, numHeads: numb
 // Empirical line: Vaswani 2017 trained 6 layers stably with post-norm; BERT-Large
 // (24 layers) needs warmup + careful init to converge with post-norm; GPT-2 (48+)
 // and modern models (96+) use pre-norm because post-norm gradient magnitudes
-// diverge past ~12 layers. This example uses post-norm for clarity —
+// diverge past ~12 layers. This example uses post-norm for clarity;
 // switch the order if you stack ≥12 layers.
 function encoderBlock(x: tf.Tensor2D, dModel: number, numHeads: number, dFF: number): tf.Tensor2D {
   // Sub-layer 1: Multi-head attention + residual + norm

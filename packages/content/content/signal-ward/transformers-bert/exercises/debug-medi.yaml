@@ -1,7 +1,7 @@
 slug: debug-medi
 lessonSlug: medis-mistake
 title: "Debug MEDI's Diagnostic Pipeline"
-instructions: "Build a safety pipeline to catch errors like MEDI's mistake: (1) detectNegation — scan a text window around a clinical entity for negation cues (resolved, denied, no, without, absent, negative, ruled-out, discontinued, former, history). Return whether negation was detected and which cue triggered it. (2) triagePrediction — combine model confidence and negation detection to route predictions: if negation is detected but status is 'Active', flag for review; if confidence is below threshold, flag for review; otherwise auto-accept."
+instructions: "Build a safety pipeline to catch errors like MEDI's mistake: (1) detectNegation: scan a text window around a clinical entity for negation cues (resolved, denied, no, without, absent, negative, ruled-out, discontinued, former, history). Return whether negation was detected and which cue triggered it. (2) triagePrediction: combine model confidence and negation detection to route predictions: if negation is detected but status is 'Active', flag for review; if confidence is below threshold, flag for review; otherwise auto-accept."
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 

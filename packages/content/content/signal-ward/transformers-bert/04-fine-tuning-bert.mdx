@@ -83,7 +83,7 @@ function fineTuneForClassification(
   const input = tf.input({ shape: [dModel] });
   const encoded = encoder.apply(input) as tf.SymbolicTensor;
 
-  // Task-specific head — the "subclass methods"
+  // Task-specific head: the "subclass methods"
   const dropped = tf.layers.dropout({ rate: 0.1 }).apply(encoded) as tf.SymbolicTensor;
   const output = tf.layers.dense({
     units: numLabels,
@@ -167,7 +167,7 @@ function gradualUnfreeze(
   console.log(\`Epoch \${epoch}: \${model.layers.filter(l => l.trainable).length} trainable layers\`);
 }
 
-// Discriminative learning rates — lower layers learn slower
+// Discriminative learning rates: lower layers learn slower
 function discriminativeLR(
   baseRate: number,
   layerIndex: number,

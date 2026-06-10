@@ -1,5 +1,5 @@
 /**
- * Sentry client-side config — runs in the browser.
+ * Sentry client-side config, runs in the browser.
  *
  * Only initializes when `NEXT_PUBLIC_SENTRY_DSN` is set. In dev/preview
  * environments without a DSN this is a complete no-op.
@@ -36,7 +36,7 @@ if (dsn) {
       /safari-extension:\/\//i,
     ],
     beforeSend(event) {
-      // Strip PII — we do not want emails, user IDs, or IPs in Sentry.
+      // Strip PII, we do not want emails, user IDs, or IPs in Sentry.
       if (event.user) {
         delete event.user.email;
         delete event.user.ip_address;

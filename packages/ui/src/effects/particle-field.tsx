@@ -67,7 +67,7 @@ export function ParticleField({
     const canvas = canvasRef.current;
     if (!canvas) return;
     // In some environments (notably jsdom without the canvas package)
-    // getContext returns null — we still want to attach the observers so
+    // getContext returns null, we still want to attach the observers so
     // unmount cleanup is consistent, but we skip all drawing work.
     const ctx = canvas.getContext("2d");
 
@@ -115,11 +115,11 @@ export function ParticleField({
 
     applySize();
 
-    // Static render first — covers both reduced-motion and initial paint.
+    // Static render first, covers both reduced-motion and initial paint.
     drawFrame();
 
     if (prefersReducedMotion) {
-      // Respect the user's preference — no rAF loop, no observers beyond
+      // Respect the user's preference - no rAF loop, no observers beyond
       // ResizeObserver so the static scatter stays sharp on reflow.
       const ro = new ResizeObserver(() => {
         applySize();

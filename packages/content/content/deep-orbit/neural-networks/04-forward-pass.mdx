@@ -37,10 +37,10 @@ skillAxes: [model_arch]
 `ValueError: expected dense_Dense1_input to have shape [null,3] but got array with shape [3]`. The bridge display, 0940 this morning, four minutes into the demo slot Nazari had cleared, with Commander Mirza standing behind the console. Demir's reasoning was pure DOM: an event handler receives one event object, so `predict()` should receive one reading; he fed it a flat tensor of three values. Mirza left at minute four. Demir needed eleven more to find the missing batch dimension.
 
 <Dialogue speaker="Dr. Farah">
-The architecture is fine. The demo wasn't. Run it again, properly this time — even untrained, the forward pass shows us the network's initial state, and I don't trust a system I haven't watched fail and recover.
+The architecture is fine. The demo wasn't. Run it again, properly this time. Even untrained, the forward pass shows us the network's initial state, and I don't trust a system I haven't watched fail and recover.
 </Dialogue>
 
-<LearningObjectives objectives={["Trace data flow through a neural network layer by layer", "Use model.predict() to run inference", "Understand input and output tensor shapes at each layer", "Debug shape mismatches — the most common neural network error"]} />
+<LearningObjectives objectives={["Trace data flow through a neural network layer by layer", "Use model.predict() to run inference", "Understand input and output tensor shapes at each layer", "Debug shape mismatches, the most common neural network error"]} />
 
 ## Data Flows Forward
 
@@ -87,13 +87,13 @@ Run a forward pass through the signal classifier.
 
 <Quiz
   question="Your model expects input shape [null, 8] but you pass a tensor of shape [8]. What happens?"
-  options={[{"text":"It works — TFJS auto-batches"},{"text":"Shape mismatch error: missing batch dimension"},{"text":"It silently produces wrong predictions"},{"text":"It produces a NaN output"}]}
+  options={[{"text":"It works: TFJS auto-batches"},{"text":"Shape mismatch error: missing batch dimension"},{"text":"It silently produces wrong predictions"},{"text":"It produces a NaN output"}]}
   correct={1}
   explanation="The first dimension is the batch axis. A single sample of 8 features must be passed as shape [1, 8]: `tensor.reshape([1, 8])` or `tensor.expandDims(0)`."
   tier="intuition"
 />
 
-<KeyTakeaways takeaways={["Forward pass = data flows through layers, each transforming it", "model.predict() runs inference — input in, prediction out", "Shape flows: [batch, inputFeatures] → ... → [batch, outputFeatures]", "Shape mismatches are the #1 neural network debugging issue"]} />
+<KeyTakeaways takeaways={["Forward pass = data flows through layers, each transforming it", "model.predict() runs inference: input in, prediction out", "Shape flows: [batch, inputFeatures] → ... → [batch, outputFeatures]", "Shape mismatches are the #1 neural network debugging issue"]} />
 
 <Epilogue>
 

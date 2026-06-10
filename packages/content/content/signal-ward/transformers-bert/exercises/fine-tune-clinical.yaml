@@ -1,7 +1,7 @@
 slug: fine-tune-clinical
 lessonSlug: fine-tuning-bert
 title: "Fine-Tune BERT for Clinical Classification"
-instructions: "Build a fine-tuning pipeline: (1) createPretrainedEncoder — create a simulated pre-trained encoder using stacked dense layers with ReLU activation. (2) fineTuneForClassification — take the encoder, add a dropout (0.1) and classification head (dense + softmax), and compile the model with adam optimizer at learning rate 2e-5. The final model should accept [dModel] input and output [numLabels] probabilities."
+instructions: "Build a fine-tuning pipeline: (1) createPretrainedEncoder: create a simulated pre-trained encoder using stacked dense layers with ReLU activation. (2) fineTuneForClassification: take the encoder, add a dropout (0.1) and classification head (dense + softmax), and compile the model with adam optimizer at learning rate 2e-5. The final model should accept [dModel] input and output [numLabels] probabilities."
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 

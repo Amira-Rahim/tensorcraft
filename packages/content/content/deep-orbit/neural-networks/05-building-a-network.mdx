@@ -17,9 +17,9 @@ concept:
     mlTitle: "Model Compilation"
     mlCode: "model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy' })"
     tier: structural
-    breaks: "createRoot().render() mounts a component tree once and React handles updates. model.compile() does not run training — it attaches optimizer + loss configuration that fit() will use. Compilation is a setup step; the real work happens in fit/train."
+    breaks: "createRoot().render() mounts a component tree once and React handles updates. model.compile() does not run training; it attaches optimizer + loss configuration that fit() will use. Compilation is a setup step; the real work happens in fit/train."
 consequence:
-  narrative: "The DEEP SCAN network is assembled and compiled. Nothing has been trained yet — the weights are still random numbers. Mostly."
+  narrative: "The DEEP SCAN network is assembled and compiled. Nothing has been trained yet; the weights are still random numbers. Mostly."
 hints:
   - level: nudge
     content: "Compile sets the optimizer and loss function before training"
@@ -62,7 +62,7 @@ model.add(tf.layers.dense({
 model.add(tf.layers.dense({ units: 16, activation: 'relu' }));
 model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
 
-// 3. Compile (like ReactDOM.render — prepares for execution)
+// 3. Compile (like ReactDOM.render: prepares for execution)
 model.compile({
   optimizer: 'adam',              // how to update weights
   loss: 'binaryCrossentropy',    // how to measure error
@@ -98,17 +98,17 @@ Assemble and compile the complete DEEP SCAN signal classifier.
 
 <Quiz
   question="model.compile() runs which of these?"
-  options={[{"text":"Forward pass on training data"},{"text":"Backpropagation initialization"},{"text":"Sets optimizer + loss + metrics for fit() — does NOT train"},{"text":"Validates model architecture"}]}
+  options={[{"text":"Forward pass on training data"},{"text":"Backpropagation initialization"},{"text":"Sets optimizer + loss + metrics for fit(); does NOT train"},{"text":"Validates model architecture"}]}
   correct={2}
   explanation="compile() is configuration only. It attaches optimizer, loss function, and metrics. Training happens in model.fit(). A compiled-but-untrained model has random weights."
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Building a network: create → add layers → compile → predict", "Compilation prepares the model for training (optimizer + loss + metrics)", "Adam optimizer is the default choice — adapts learning rate automatically", "Binary crossentropy for classification, MSE for regression"]} />
+<KeyTakeaways takeaways={["Building a network: create → add layers → compile → predict", "Compilation prepares the model for training (optimizer + loss + metrics)", "Adam optimizer is the default choice: it adapts learning rate automatically", "Binary crossentropy for classification, MSE for regression"]} />
 
 <Epilogue>
 
-End of watch, as ordered. The compiled network sits untrained on the bridge feed, predictions pinned near 0.5 like a coin nobody has flipped. Farah runs a final sanity sweep against the archive: two hundred readings, every one scoring noise, exactly what random weights should produce — except sample 7741, which comes back at 0.998. She reinitializes the weights, a brand-new network with brand-new random numbers, and sweeps again. 0.997.
+End of watch, as ordered. The compiled network sits untrained on the bridge feed, predictions pinned near 0.5 like a coin nobody has flipped. Farah runs a final sanity sweep against the archive: two hundred readings, every one scoring noise, exactly what random weights should produce, except sample 7741, which comes back at 0.998. She reinitializes the weights, a brand-new network with brand-new random numbers, and sweeps again. 0.997.
 
 <Dialogue speaker="Dr. Farah">
 An untrained network has no opinions. So why does it keep having this one?

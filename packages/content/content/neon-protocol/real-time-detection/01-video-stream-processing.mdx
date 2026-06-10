@@ -54,7 +54,7 @@ Every video stream is a sequence of images. The browser gives you direct access 
 <CodeBlock language="typescript" title="video-capture.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Step 1: Access the camera — same as video chat
+// Step 1: Access the camera, same as video chat
 const stream = await navigator.mediaDevices.getUserMedia({
   video: { width: 640, height: 480, facingMode: 'environment' }
 });
@@ -134,4 +134,4 @@ Capture a video stream and convert frames to tensors for model input.
 
 <Exercise slug="capture-video" />
 
-<KeyTakeaways takeaways={["getUserMedia() gives direct browser access to camera feeds — the same API you use for video chat", "tf.browser.fromPixels() converts a video element frame to a tensor on every call", "Always use tf.tidy() or manual dispose() to prevent GPU memory leaks in frame loops", "Video inference is just image inference repeated — the challenge is doing it fast enough"]} />
+<KeyTakeaways takeaways={["getUserMedia() gives direct browser access to camera feeds, the same API you use for video chat", "tf.browser.fromPixels() converts a video element frame to a tensor on every call", "Always use tf.tidy() or manual dispose() to prevent GPU memory leaks in frame loops", "Video inference is just image inference repeated; the challenge is doing it fast enough"]} />

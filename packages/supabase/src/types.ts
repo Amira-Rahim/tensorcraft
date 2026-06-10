@@ -1,7 +1,7 @@
 /**
  * Tensorcraft Database Types
  *
- * These types mirror the Supabase schema defined in migrations 001–011.
+ * These types mirror the Supabase schema defined in migrations 001-011.
  * In production, these should be auto-generated via `supabase gen types typescript`.
  * For now, they're manually maintained to match the migrations.
  */

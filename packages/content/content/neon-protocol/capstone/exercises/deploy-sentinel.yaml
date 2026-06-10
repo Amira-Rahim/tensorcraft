@@ -108,7 +108,7 @@ testCode: |
       const manager = new FeatureFlagManager();
       manager.register('test-flag', 50);
 
-      // Test with many targets — roughly half should be enabled
+      // Test with many targets; roughly half should be enabled
       let enabled = 0;
       for (let i = 0; i < 100; i++) {
         if (manager.isEnabled('test-flag', `feed-${i}`)) enabled++;
@@ -139,11 +139,11 @@ testCode: |
     it('clamps rollout percentage to 0-100', () => {
       const manager = new FeatureFlagManager();
       manager.register('test', 150);
-      // Should clamp to 100 — all targets enabled
+      // Should clamp to 100, all targets enabled
       expect(manager.isEnabled('test', 'any')).toBe(true);
 
       manager.setRollout('test', -10);
-      // Should clamp to 0 — no targets enabled
+      // Should clamp to 0, no targets enabled
       expect(manager.isEnabled('test', 'any')).toBe(false);
     });
 

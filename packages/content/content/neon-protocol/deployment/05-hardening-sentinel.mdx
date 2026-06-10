@@ -185,7 +185,7 @@ if (audit.leaked) {
   async predict(imageData: ImageData): Promise<PredictionResult> {
     // Circuit breaker: if too many failures, stop trying temporarily
     if (this.circuitOpen) {
-      throw new Error('Circuit open — model temporarily unavailable');
+      throw new Error('Circuit open: model temporarily unavailable');
     }
 
     try {
@@ -222,7 +222,7 @@ if (audit.leaked) {
     setTimeout(() => {
       this.circuitOpen = false;
       this.consecutiveFailures = 0;
-      console.log('Circuit breaker reset — accepting requests');
+      console.log('Circuit breaker reset, accepting requests');
     }, this.cooldownMs);
   }
 }
@@ -238,7 +238,7 @@ function validateInput(imageData: ImageData): void {
   // Check for all-zero frames (camera disconnected)
   const hasSignal = imageData.data.some(v => v > 0);
   if (!hasSignal) {
-    throw new Error('Invalid input: blank frame detected — camera may be disconnected');
+    throw new Error('Invalid input: blank frame detected; camera may be disconnected');
   }
 }`}
 </CodeBlock>
@@ -253,10 +253,10 @@ Write a stress test that validates memory stability and error handling under loa
 
 <Quiz
   question="How does adversarial input differ from normal input load testing?"
-  options={[{"text":"Same — both stress test latency"},{"text":"Adversarial inputs are crafted to FOOL the model, not stress compute — different threat model"},{"text":"Adversarial requires GPU testing"},{"text":"Only language models have adversarial inputs"}]}
+  options={[{"text":"Same; both stress test latency"},{"text":"Adversarial inputs are crafted to FOOL the model, not stress compute; different threat model"},{"text":"Adversarial requires GPU testing"},{"text":"Only language models have adversarial inputs"}]}
   correct={1}
   explanation="Load testing: high RPS with normal data → measures throughput + latency. Adversarial testing: low RPS with crafted perturbations → measures robustness against gaming. Both required for production."
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Hardened means proven: memory flat under 200 concurrent requests, corrupted inputs returning errors instead of crashes, timeouts that abort", "Memory leaks from undisposed tensors are the most common production failure in browser ML", "Circuit breakers and timeouts prevent cascading failures when the model is under pressure", "Always validate inputs before inference — corrupted data should return errors, not crashes"]} />
+<KeyTakeaways takeaways={["Hardened means proven: memory flat under 200 concurrent requests, corrupted inputs returning errors instead of crashes, timeouts that abort", "Memory leaks from undisposed tensors are the most common production failure in browser ML", "Circuit breakers and timeouts prevent cascading failures when the model is under pressure", "Always validate inputs before inference; corrupted data should return errors, not crashes"]} />

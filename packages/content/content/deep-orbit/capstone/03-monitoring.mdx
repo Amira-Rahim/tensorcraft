@@ -7,7 +7,7 @@ order: 3
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "ARIA flags a concern: 'Deployment is not the end. Models degrade over time — data drift, distribution shift. We must watch.' Demir builds the monitoring dashboard."
+  narrative: "ARIA flags a concern: 'Deployment is not the end. Models degrade over time: data drift, distribution shift. We must watch.' Demir builds the monitoring dashboard."
   speaker: "ARIA"
 concept:
   explanation: "ML monitoring watches the failures that never throw: confidence decay, latency creep, and inputs drifting quietly away from the training distribution."
@@ -17,14 +17,14 @@ concept:
     mlTitle: "Model Monitoring"
     mlCode: "monitor.trackPrediction({ confidence, latency, drift }); // track accuracy, speed, data shift"
     tier: structural
-    breaks: "App monitoring tracks errors, latency, and throughput — observable system metrics. Model monitoring also tracks input distribution drift, prediction distribution drift, and label feedback delays. Many model failures produce no exception and no latency change."
+    breaks: "App monitoring tracks errors, latency, and throughput: observable system metrics. Model monitoring also tracks input distribution drift, prediction distribution drift, and label feedback delays. Many model failures produce no exception and no latency change."
 consequence:
   narrative: "Confidence scores, inference latency, drift detection, all streaming in real time. ARIA: 'Now we will know when DEEP SCAN begins to fail before the crew does.'"
 hints:
   - level: nudge
     content: "Monitor three things: prediction quality (confidence), performance (latency), and data health (drift)"
   - level: guidance
-    content: "Track running statistics and alert when metrics cross thresholds — like error rate alerts in web monitoring"
+    content: "Track running statistics and alert when metrics cross thresholds, like error rate alerts in web monitoring"
   - level: solution
     content: "Collect confidence, latency, and feature distribution stats; alert when drift score exceeds threshold"
 keywords:
@@ -46,7 +46,7 @@ Commander, I must flag a concern. The model performs at 91.8% accuracy now. In t
 Same problem as any production app. I'll set up monitoring: track prediction confidence, inference latency, and input distribution. When the data drifts from what we trained on, we alert and retrain.
 </Dialogue>
 
-So DEEP SCAN ships with instruments pointed at itself: the familiar web-app set, plus the failures that never throw — confidence decay, latency creep, and drift, production inputs walking quietly away from the training distribution.
+So DEEP SCAN ships with instruments pointed at itself: the familiar web-app set, plus the failures that never throw: confidence decay, latency creep, and drift, production inputs walking quietly away from the training distribution.
 
 <LearningObjectives objectives={["Implement prediction quality monitoring: confidence tracking and anomaly rates", "Build latency monitoring with P50/P95/P99 percentile tracking", "Detect data drift by comparing input feature distributions over time", "Configure alerts that trigger when model health metrics cross thresholds"]} />
 
@@ -76,13 +76,13 @@ class ModelMonitor {
     this.checkAlerts(prediction);
   }
 
-  // Confidence tracking — like error rate monitoring
+  // Confidence tracking, like error rate monitoring
   get avgConfidence(): number {
     const recent = this.logs.slice(-100);
     return recent.reduce((sum, p) => sum + p.confidence, 0) / recent.length;
   }
 
-  // Latency percentiles — like response time monitoring
+  // Latency percentiles, like response time monitoring
   getLatencyPercentile(p: number): number {
     const sorted = this.logs.slice(-1000)
       .map(l => l.latencyMs)
@@ -90,7 +90,7 @@ class ModelMonitor {
     return sorted[Math.floor(sorted.length * p / 100)];
   }
 
-  // Data drift detection — unique to ML monitoring
+  // Data drift detection, unique to ML monitoring
   computeDrift(recentInputs: number[][]): number {
     const baselineMean = this.computeMean(this.baselineFeatures);
     const recentMean = this.computeMean(recentInputs);
@@ -144,7 +144,7 @@ console.log('P95 latency:', monitor.getLatencyPercentile(95).toFixed(1), 'ms');`
 
 <CodeBlock language="typescript" title="drift.ts">
 {`// Data drift: when production data diverges from training data
-// Like monitoring API response shapes — if they change, your app breaks
+// Like monitoring API response shapes: if they change, your app breaks
 
 interface DriftReport {
   driftScore: number;
@@ -195,16 +195,16 @@ Build a model monitor with drift detection.
 
 <Exercise slug="model-monitor" />
 
-<KeyTakeaways takeaways={["ML monitoring extends app monitoring with prediction confidence, data drift, and model health metrics", "Data drift — when production inputs diverge from training data — is the #1 cause of silent model degradation", "Track P50/P95/P99 latency for inference just like you track API response times", "Alert on low confidence trends and high drift scores before users notice quality drops"]} />
+<KeyTakeaways takeaways={["ML monitoring extends app monitoring with prediction confidence, data drift, and model health metrics", "Data drift (when production inputs diverge from training data) is the #1 cause of silent model degradation", "Track P50/P95/P99 latency for inference just like you track API response times", "Alert on low confidence trends and high drift scores before users notice quality drops"]} />
 
 > **DISPATCH archive · field intercept #19-M:** Hassan's deployment dashboard runs the same drift check Demir wired here. His SRE team rotates monitoring duty weekly; the operator on rotation has 30 minutes to file a drift report whenever PSI > 0.2 fires. Same alert, different shift.
 
 <Epilogue>
 
-The monitor's first night on duty, it pages the bridge twice. Not for the model — confidence is steady at 0.94, latency flat at 5 milliseconds. Both alerts are drift: the input distribution is moving, and it is moving in one direction. Demir pulls the feature breakdown and finds the shift concentrated in a single feature, inter-pulse timing. The reading attached to the second alert: 32.8 seconds.
+The monitor's first night on duty, it pages the bridge twice. Not for the model: confidence is steady at 0.94, latency flat at 5 milliseconds. Both alerts are drift: the input distribution is moving, and it is moving in one direction. Demir pulls the feature breakdown and finds the shift concentrated in a single feature, inter-pulse timing. The reading attached to the second alert: 32.8 seconds.
 
 <Dialogue speaker="Dr. Farah">
-We built this to catch the model degrading. It's catching the signal changing instead. Keep both alerts armed — I no longer trust either one of them to stay still.
+We built this to catch the model degrading. It's catching the signal changing instead. Keep both alerts armed. I no longer trust either one of them to stay still.
 </Dialogue>
 
 </Epilogue>

@@ -121,7 +121,7 @@ Generative models almost always use **standard normal noise** as the latent prio
 2. **Continuous:** smooth interpolation, gradient-friendly. No discrete sampling discontinuities.
 3. **Centered:** zero mean, unit variance: matches typical neural network expectations after batch/layer normalization.
 4. **Universal approximator:** any distribution can be expressed as a deterministic transformation of N(0,I) (this is what normalizing flows formalize).
-5. **High-dim concentration:** in high d, N(0,I) mass concentrates on a thin shell of radius √d. Almost all valid latent codes lie near this shell — so the decoder mostly trains on shell-region samples, which is fine.
+5. **High-dim concentration:** in high d, N(0,I) mass concentrates on a thin shell of radius √d. Almost all valid latent codes lie near this shell, so the decoder mostly trains on shell-region samples, which is fine.
 
 **Alternative priors (rare):**
 - Uniform: less smooth gradients, used in some GAN variants.

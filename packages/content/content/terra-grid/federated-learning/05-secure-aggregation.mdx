@@ -100,7 +100,7 @@ function applyMasks(
       // Add mask
       for (let i = 0; i < modelSize; i++) masked[i] += mask[i];
     } else if (pair.participantB === myId) {
-      // Subtract mask — cancels out when summed
+      // Subtract mask; cancels out when summed
       for (let i = 0; i < modelSize; i++) masked[i] -= mask[i];
     }
   }
@@ -170,4 +170,4 @@ Implement secure aggregation with pairwise masking.
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Secure aggregation blinds the server to individual updates, but the aggregate itself can still leak; it complements differential privacy rather than replacing it", "Pairwise masking: participant A adds a mask, participant B subtracts it — masks cancel when the server sums all updates", "The server computes the correct aggregate without seeing any individual contribution", "Combined with differential privacy, secure aggregation provides defense in depth — protecting against both data leakage and server compromise"]} />
+<KeyTakeaways takeaways={["Secure aggregation blinds the server to individual updates, but the aggregate itself can still leak; it complements differential privacy rather than replacing it", "Pairwise masking: participant A adds a mask, participant B subtracts it: masks cancel when the server sums all updates", "The server computes the correct aggregate without seeing any individual contribution", "Combined with differential privacy, secure aggregation provides defense in depth, protecting against both data leakage and server compromise"]} />

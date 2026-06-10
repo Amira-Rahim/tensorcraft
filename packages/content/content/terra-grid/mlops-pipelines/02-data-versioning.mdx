@@ -51,7 +51,7 @@ If you cannot reproduce the training run, you cannot debug the regression. Versi
 
 No history means no blame, no bisect, no diff. The model is provably wrong and the why is untraceable, because nobody tracked what data trained it. Data versioning closes that gap with the same primitive git uses: a content hash for every state worth returning to.
 
-<LearningObjectives objectives={["Implement data versioning using content hashing — the same mechanism as git commit hashes", "Track dataset lineage to trace any model back to its exact training data", "Design a version metadata schema that captures what changed and why", "Enable data rollback for reproducing and debugging model regressions"]} />
+<LearningObjectives objectives={["Implement data versioning using content hashing, the same mechanism as git commit hashes", "Track dataset lineage to trace any model back to its exact training data", "Design a version metadata schema that captures what changed and why", "Enable data rollback for reproducing and debugging model regressions"]} />
 
 ## Git for Data
 
@@ -61,14 +61,14 @@ No history means no blame, no bisect, no diff. The model is provably wrong and t
 {`import { createHash } from 'crypto';
 
 interface DatasetVersion {
-  hash: string;              // content hash — like a git commit SHA
+  hash: string;              // content hash, like a git commit SHA
   version: string;           // semantic version
-  parentHash: string | null; // previous version — like git parent
+  parentHash: string | null; // previous version, like git parent
   timestamp: string;
   rowCount: number;
   schema: string;            // schema version
   source: string;            // where the data came from
-  changelog: string;         // what changed — like a commit message
+  changelog: string;         // what changed, like a commit message
 }
 
 function hashDataset(data: Float32Array): string {
@@ -102,7 +102,7 @@ const v2 = createDatasetVersion(batch2, v1.hash, 'Added Sector 3 sensor data');
 const v3 = createDatasetVersion(batch3, v2.hash, 'Removed corrupted Sector 3 batch');
 
 // Now we can trace: model v2.1 was trained on dataset a3f8e2 (v2)
-// which included the corrupted Sector 3 batch — that is the regression source`}
+// which included the corrupted Sector 3 batch; that is the regression source`}
 </CodeBlock>
 
 ## Dataset Diff
@@ -159,4 +159,4 @@ A retrained model is suddenly mislabeling one class. You suspect poisoned traini
 
 <Exercise slug="incident-data-poisoning" />
 
-<KeyTakeaways takeaways={["Content hashing gives every dataset a unique SHA; the same rows always hash to the same version, so every training run is traceable", "Dataset lineage traces any model back to its exact training data, enabling reproducible debugging", "Dataset diffs reveal distribution shifts that explain model regressions — like git diff explains code bugs", "Version everything: code, data, hyperparameters, and model artifacts — or you cannot reproduce results"]} />
+<KeyTakeaways takeaways={["Content hashing gives every dataset a unique SHA; the same rows always hash to the same version, so every training run is traceable", "Dataset lineage traces any model back to its exact training data, enabling reproducible debugging", "Dataset diffs reveal distribution shifts that explain model regressions, like git diff explains code bugs", "Version everything: code, data, hyperparameters, and model artifacts, or you cannot reproduce results"]} />

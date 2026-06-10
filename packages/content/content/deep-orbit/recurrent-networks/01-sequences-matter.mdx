@@ -7,7 +7,7 @@ order: 1
 estimatedMinutes: 12
 difficulty: intermediate
 context:
-  narrative: "The signals show a rhythm — a pattern that spans dozens of time steps. The feedforward network only sees one snapshot at a time. Farah says they need a model with memory."
+  narrative: "The signals show a rhythm: a pattern that spans dozens of time steps. The feedforward network only sees one snapshot at a time. Farah says they need a model with memory."
   speaker: "Dr. Farah"
 concept:
   explanation: "In sequences, order is part of the meaning: shuffle the readings and the values survive but the signal dies."
@@ -17,16 +17,16 @@ concept:
     mlTitle: "Sequence Order"
     mlCode: "model.predict(tf.tensor2d([t1, t2, t3, t4, t5]))"
     tier: structural
-    breaks: "React list keys identify elements for diffing — order matters for reconciliation but not for the values themselves. In sequences, position is part of the meaning ('not good' vs 'good not') and the model must learn order-dependent patterns, not just track identity."
+    breaks: "React list keys identify elements for diffing; order matters for reconciliation but not for the values themselves. In sequences, position is part of the meaning ('not good' vs 'good not') and the model must learn order-dependent patterns, not just track identity."
 consequence:
-  narrative: "Demir realizes the feedforward network is blind to temporal patterns. Each reading is processed in isolation — the model has no memory of what came before."
+  narrative: "Demir realizes the feedforward network is blind to temporal patterns. Each reading is processed in isolation; the model has no memory of what came before."
 hints:
   - level: nudge
     content: "Shuffle a keyed React list and the UI breaks because order carried information. Shuffling time-series samples destroys the same thing: the temporal pattern"
   - level: guidance
     content: "Sequence models process inputs in order, maintaining hidden state between steps"
   - level: solution
-    content: "A sequence [1, 2, 3] carries different meaning than [3, 1, 2] — just like rendering order affects UI state"
+    content: "A sequence [1, 2, 3] carries different meaning than [3, 1, 2], just like rendering order affects UI state"
 keywords:
   - sequence
   - temporal
@@ -45,7 +45,7 @@ Memory? You mean like... state that persists between inputs? That's just a reduc
 
 You've seen this problem in React. Render a list without stable keys and React can't track which items moved, were added, or were removed. Order carries information. The same goes for signals: [rising, falling, rising] tells a different story than [falling, rising, rising], even though the individual values are identical.
 
-<LearningObjectives objectives={["Understand why order matters in sequential data — shuffling destroys information", "Recognize the limitation of feedforward networks for temporal data", "Prepare sequential input by creating time-step windows from raw signals"]} />
+<LearningObjectives objectives={["Understand why order matters in sequential data: shuffling destroys information", "Recognize the limitation of feedforward networks for temporal data", "Prepare sequential input by creating time-step windows from raw signals"]} />
 
 ## Why Feedforward Networks Fail at Sequences
 
@@ -59,10 +59,10 @@ You've seen this problem in React. Render a list without stable keys and React c
 // Then:    [0.8, 0.2, 0.9] → classify (no memory of previous)
 
 // But the signal has TEMPORAL patterns:
-// t=0: [0.5, 0.3, 0.7]  — rising
-// t=1: [0.8, 0.2, 0.9]  — still rising
-// t=2: [0.3, 0.1, 0.4]  — falling
-// t=3: [0.5, 0.3, 0.7]  — rising again ← THE PATTERN REPEATS
+// t=0: [0.5, 0.3, 0.7]  (rising)
+// t=1: [0.8, 0.2, 0.9]  (still rising)
+// t=2: [0.3, 0.1, 0.4]  (falling)
+// t=3: [0.5, 0.3, 0.7]  (rising again) ← THE PATTERN REPEATS
 
 // A feedforward network processes each time step in isolation
 // It cannot detect: "the signal rises, falls, then rises again"
@@ -102,11 +102,11 @@ console.log(sequences[0]);
 {`import * as tf from '@tensorflow/tfjs';
 
 // Feedforward input: [batch, features]
-// Shape: [32, 3] — 32 samples, each with 3 features
+// Shape: [32, 3]: 32 samples, each with 3 features
 const feedforwardInput = tf.randomNormal([32, 3]);
 
 // Sequential input: [batch, timeSteps, features]
-// Shape: [32, 5, 3] — 32 samples, each a window of 5 time steps, each with 3 features
+// Shape: [32, 5, 3]: 32 samples, each a window of 5 time steps, each with 3 features
 const sequentialInput = tf.randomNormal([32, 5, 3]);
 
 // The extra dimension is TIME

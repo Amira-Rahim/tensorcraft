@@ -80,7 +80,7 @@ interface DriftIncident {
 }
 
 async function respondToDrift(incident: DriftIncident): Promise<void> {
-  // Phase 1: Triage — how bad is it?
+  // Phase 1: Triage, how bad is it?
   incident.phase = 'triage';
   const accuracyDrop = incident.metrics.baselineAccuracy - incident.metrics.currentAccuracy;
 
@@ -95,7 +95,7 @@ async function respondToDrift(incident: DriftIncident): Promise<void> {
     action: \`Severity: \${incident.severity}, accuracy drop: \${(accuracyDrop * 100).toFixed(1)}%\`,
   });
 
-  // Phase 2: Mitigate — stop the bleeding
+  // Phase 2: Mitigate, stop the bleeding
   incident.phase = 'mitigation';
   const previousModel = await registry.getByStage('terra-grid-intelligence', 'archived');
 
@@ -108,7 +108,7 @@ async function respondToDrift(incident: DriftIncident): Promise<void> {
     });
   }
 
-  // Phase 3: Diagnose — what caused the drift?
+  // Phase 3: Diagnose, what caused the drift?
   incident.phase = 'diagnosis';
   const driftReport = await analyzeDrift(incident.region);
   const externalEvents = await getExternalEvents(incident.region, incident.detectedAt);
@@ -164,4 +164,4 @@ Handle a drift incident using the detect-mitigate-diagnose-fix playbook.
 
 <Exercise slug="respond-to-drift" />
 
-<KeyTakeaways takeaways={["Drift incident response follows production incident methodology: detect, triage, mitigate, diagnose, fix, post-mortem", "Mitigate first (rollback), investigate second — do not debug while accuracy is degrading in production", "Correlate drift signals with external events (firmware updates, seasonal changes, new data sources) to find root causes", "Post-mortems that produce prevention measures are the only way to avoid repeating the same drift incidents"]} />
+<KeyTakeaways takeaways={["Drift incident response follows production incident methodology: detect, triage, mitigate, diagnose, fix, post-mortem", "Mitigate first (rollback), investigate second: do not debug while accuracy is degrading in production", "Correlate drift signals with external events (firmware updates, seasonal changes, new data sources) to find root causes", "Post-mortems that produce prevention measures are the only way to avoid repeating the same drift incidents"]} />

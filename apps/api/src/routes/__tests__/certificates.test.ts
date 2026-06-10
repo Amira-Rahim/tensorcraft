@@ -216,7 +216,7 @@ describe("POST /api/certificates", () => {
     );
   });
 
-  it("is idempotent — returns existing certificate without re-inserting", async () => {
+  it("is idempotent, returns existing certificate without re-inserting", async () => {
     authedUser();
     seedFullyCompletedTheme();
     mockExistingCert = {

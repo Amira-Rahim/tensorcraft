@@ -66,7 +66,7 @@ The critical insight: in HTML, forgetting to close a tag merges everything into 
 <CodeBlock language="typescript" title="bio-tagging.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// BIO tag set — like a vocabulary of HTML tags for clinical text
+// BIO tag set, like a vocabulary of HTML tags for clinical text
 const BIO_TAGS = [
   'O',                          // outside any entity (plain text)
   'B-DRUG', 'I-DRUG',          // <span class="drug">...</span>
@@ -109,7 +109,7 @@ function bioTagsToEntities(tokens: string[], tags: string[]): EntitySpan[] {
 
   for (let i = 0; i < tokens.length; i++) {
     if (tags[i].startsWith('B-')) {
-      // Opening tag — close any previous entity, start a new one
+      // Opening tag: close any previous entity, start a new one
       if (current) entities.push(current);
       const type = tags[i].substring(2);
       current = {
@@ -120,12 +120,12 @@ function bioTagsToEntities(tokens: string[], tags: string[]): EntitySpan[] {
         endIdx: i + 1
       };
     } else if (tags[i].startsWith('I-') && current) {
-      // Inside tag — extend the current entity
+      // Inside tag: extend the current entity
       current.tokens.push(tokens[i]);
       current.text += ' ' + tokens[i];
       current.endIdx = i + 1;
     } else {
-      // O tag or I without a preceding B — close any open entity
+      // O tag or I without a preceding B: close any open entity
       if (current) entities.push(current);
       current = null;
     }

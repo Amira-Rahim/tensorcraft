@@ -81,7 +81,7 @@ const loanModelAssessment: ModelImpactAssessment = {
   stakeholders: ['applicants', 'loan officers', 'bank', 'regulators'],
   failureModes: [
     {
-      description: 'False negative — qualified applicant denied',
+      description: 'False negative: qualified applicant denied',
       probability: 'medium',
       severity: 'high',
       affectedGroups: ['applicants', 'especially underrepresented groups'],
@@ -89,7 +89,7 @@ const loanModelAssessment: ModelImpactAssessment = {
       humanFallback: true,
     },
     {
-      description: 'False positive — unqualified applicant approved',
+      description: 'False positive: unqualified applicant approved',
       probability: 'low',
       severity: 'medium',
       affectedGroups: ['bank', 'applicant (may take on unaffordable debt)'],
@@ -114,12 +114,12 @@ function assessRisk(assessment: ModelImpactAssessment): string {
   const allHaveFallbacks = assessment.failureModes.every(f => f.humanFallback);
 
   if (hasCritical && !allHaveFallbacks) {
-    return 'DO NOT DEPLOY — critical failure modes without human fallbacks';
+    return 'DO NOT DEPLOY: critical failure modes without human fallbacks';
   }
   if (hasCritical && allHaveFallbacks) {
-    return 'DEPLOY WITH OVERSIGHT — critical risks mitigated by human review';
+    return 'DEPLOY WITH OVERSIGHT: critical risks mitigated by human review';
   }
-  return 'DEPLOY — risks are manageable with standard monitoring';
+  return 'DEPLOY: risks are manageable with standard monitoring';
 }`}
 </CodeBlock>
 

@@ -7,7 +7,7 @@ order: 4
 estimatedMinutes: 15
 difficulty: intermediate
 context:
-  narrative: "The model is loaded. Demir wires it into the dashboard's real-time signal feed — every second, a new reading arrives and the model must classify it."
+  narrative: "The model is loaded. Demir wires it into the dashboard's real-time signal feed: every second, a new reading arrives and the model must classify it."
   speaker: "Ensign Demir"
 concept:
   explanation: "Input arrives, logic runs, the UI updates. Inference slots into that familiar cycle with one new obligation: every tensor you create must be freed."
@@ -22,7 +22,7 @@ consequence:
   narrative: "Green for normal, amber for anomalous: live classifications stream across the dashboard while the crew watches."
 hints:
   - level: nudge
-    content: "Treat each signal reading as an event — preprocess, predict, display"
+    content: "Treat each signal reading as an event: preprocess, predict, display"
   - level: guidance
     content: "Use tf.tidy() to prevent memory leaks, and always normalize input before prediction"
   - level: solution
@@ -46,7 +46,7 @@ And what happens to the tensors you create every second? If you don't dispose th
 
 One reading per second sounds gentle until you do the multiplication Nazari already did in the margin: 86,400 predictions a day, each allocating fresh tensors on the GPU. The loop itself is the event-handler pattern (event fires, handler processes, UI updates) with one addition no garbage collector will save you from: **memory management**. Leak two tensors per reading and the dashboard is dead before the next shift change.
 
-<LearningObjectives objectives={["Build a real-time inference pipeline: input → preprocess → predict → display", "Use tf.tidy() for automatic tensor cleanup — preventing GPU memory leaks", "Preprocess raw input data to match model training format", "Measure and optimize inference latency for real-time requirements"]} />
+<LearningObjectives objectives={["Build a real-time inference pipeline: input → preprocess → predict → display", "Use tf.tidy() for automatic tensor cleanup, preventing GPU memory leaks", "Preprocess raw input data to match model training format", "Measure and optimize inference latency for real-time requirements"]} />
 
 ## The Real-Time Inference Loop
 
@@ -76,10 +76,10 @@ function preprocess(raw: { amplitude: number; frequency: number; phase: number }
   ];
 }
 
-// Run inference — the core predict call
+// Run inference: the core predict call
 function classify(model: tf.LayersModel, rawSignal: { amplitude: number; frequency: number; phase: number }) {
   // tf.tidy() automatically disposes all intermediate tensors
-  // Like a try/finally that cleans up resources — no manual dispose() needed
+  // Like a try/finally that cleans up resources; no manual dispose() needed
   return tf.tidy(() => {
     const normalized = preprocess(rawSignal);
     const input = tf.tensor2d([normalized]);        // shape: [1, 3]
@@ -101,7 +101,7 @@ This is the one concept with no frontend parallel. GPU tensors are invisible to 
 <CodeBlock language="typescript" title="memory-management.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// BAD: leaks memory every call — tensors accumulate on the GPU
+// BAD: leaks memory every call; tensors accumulate on the GPU
 function leakyPredict(model: tf.LayersModel, data: number[]) {
   const input = tf.tensor2d([data]);           // allocated on GPU
   const output = model.predict(input);          // allocated on GPU
@@ -118,7 +118,7 @@ function cleanPredict(model: tf.LayersModel, data: number[]) {
   // input and output tensors automatically disposed here
 }
 
-// Monitor memory usage — like checking DevTools memory tab
+// Monitor memory usage, like checking DevTools memory tab
 console.log(tf.memory());
 // { numTensors: 47, numDataBuffers: 47, numBytes: 12800, unreliable: false }`}
 </CodeBlock>
@@ -163,7 +163,7 @@ function createInferencePipeline(model: tf.LayersModel) {
   };
 }
 
-// Usage — exactly like setting up an event listener
+// Usage: exactly like setting up an event listener
 const pipeline = createInferencePipeline(model);
 
 // Process each signal reading as it arrives (1Hz)
@@ -186,15 +186,15 @@ Build a complete inference pipeline with preprocessing and memory management.
   question="Why call await tensor.data() instead of tensor.dataSync()?"
   options={[{"text":"data() is faster"},{"text":"dataSync() blocks the main thread; data() yields, keeping UI responsive"},{"text":"data() returns better precision"},{"text":"dataSync() doesn't work in workers"}]}
   correct={1}
-  explanation="dataSync() is synchronous — blocks JS execution until tensor data is read back from GPU. data() returns a Promise — yields control, lets UI/RAF callbacks run. For inference loops, always prefer await data()."
+  explanation="dataSync() is synchronous: it blocks JS execution until tensor data is read back from GPU. data() returns a Promise: it yields control, lets UI/RAF callbacks run. For inference loops, always prefer await data()."
   tier="intuition"
 />
 
-<KeyTakeaways takeaways={["Each reading is min-max normalized with the training-time feature ranges before model.predict() — mismatched preprocessing silently wrecks accuracy", "tf.tidy() is essential — it auto-disposes intermediate tensors, preventing GPU memory leaks", "tf.memory() lets you monitor tensor count and memory usage, like the DevTools memory tab"]} />
+<KeyTakeaways takeaways={["Each reading is min-max normalized with the training-time feature ranges before model.predict(); mismatched preprocessing silently wrecks accuracy", "tf.tidy() is essential: it auto-disposes intermediate tensors, preventing GPU memory leaks", "tf.memory() lets you monitor tensor count and memory usage, like the DevTools memory tab"]} />
 
 <Epilogue>
 
-The live pipeline clears its first hour without a leak: `numTensors` flat, latency holding at 3.4 ms. Then Demir replays the eleven-day archive through it as a soak test, and at 14:31 ship-time the feed flickers amber — one flag in twenty-eight thousand readings. The ID on the screen is sample 7741. Farah's calibration ghost, the one she filed and moved past, now glowing on the bridge dashboard where the whole crew can see it.
+The live pipeline clears its first hour without a leak: `numTensors` flat, latency holding at 3.4 ms. Then Demir replays the eleven-day archive through it as a soak test, and at 14:31 ship-time the feed flickers amber: one flag in twenty-eight thousand readings. The ID on the screen is sample 7741. Farah's calibration ghost, the one she filed and moved past, now glowing on the bridge dashboard where the whole crew can see it.
 
 <Dialogue speaker="Dr. Farah">
 It looks different on a screen than in a spreadsheet, doesn't it.

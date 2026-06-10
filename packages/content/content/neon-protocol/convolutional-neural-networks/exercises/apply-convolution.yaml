@@ -40,7 +40,7 @@ testCode: |
       const image = tf.tensor2d([[1,1],[1,1]]);
       const kernel = tf.tensor2d([[1,1],[1,1]]);
       const result = convolve2D(image, kernel);
-      // Result is 1x1 — squeeze collapses to scalar; read via dataSync.
+      // Result is 1x1; squeeze collapses to scalar; read via dataSync.
       const value = result.dataSync()[0];
       expect(value).toBeCloseTo(4, 4);
     });

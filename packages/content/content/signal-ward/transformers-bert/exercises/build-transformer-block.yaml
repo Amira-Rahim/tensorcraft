@@ -2,7 +2,7 @@ slug: build-transformer-block
 lessonSlug: transformer-architecture
 title: "Build a Transformer Encoder Block"
 mlContent: model
-instructions: "Implement a transformer encoder block with two sub-layers: (1) multi-head self-attention with residual + layer norm, (2) position-wise feed-forward (dModel → dFF → dModel) with residual + layer norm. Use `tf.layers.dense` for ALL projection matrices so weights are trainable variables — DO NOT use raw `tf.randomNormal` inside the function body (that re-initializes weights every call and makes the block untrainable). Build projections once outside the closure or in a class. Use the provided layerNorm helper."
+instructions: "Implement a transformer encoder block with two sub-layers: (1) multi-head self-attention with residual + layer norm, (2) position-wise feed-forward (dModel → dFF → dModel) with residual + layer norm. Use `tf.layers.dense` for ALL projection matrices so weights are trainable variables. DO NOT use raw `tf.randomNormal` inside the function body (that re-initializes weights every call and makes the block untrainable). Build projections once outside the closure or in a class. Use the provided layerNorm helper."
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
@@ -34,7 +34,7 @@ solutionCode: |
 
   function buildEncoderBlock(dModel: number, numHeads: number, dFF: number) {
     const dk = dModel / numHeads;
-    // Trainable layers built ONCE — every call to encoderBlock reuses these weights.
+    // Trainable layers built ONCE; every call to encoderBlock reuses these weights.
     const Wq = tf.layers.dense({ units: dModel, useBias: false });
     const Wk = tf.layers.dense({ units: dModel, useBias: false });
     const Wv = tf.layers.dense({ units: dModel, useBias: false });

@@ -6,7 +6,7 @@ export const novaCanvas: ThemeManifest = {
   displayName: "Nova Canvas",
   tagline: "Where AI learns to imagine",
   description:
-    "NOVA LABS' AI co-creation system crashed during a major exhibition. Build Nova Canvas — a multimodal creative assistant.",
+    "NOVA LABS' AI co-creation system crashed during a major exhibition. Build Nova Canvas, a multimodal creative assistant.",
   palette: {
     bg: "#1C1C1C",
     primary: "#D07070",
@@ -53,9 +53,9 @@ export const novaCanvas: ThemeManifest = {
     },
   ],
   specialization: "Multimodal & Generative AI",
-  modelBuilt: "Nova Canvas — multimodal creative assistant",
+  modelBuilt: "Nova Canvas: multimodal creative assistant",
   careerPaths: [
-    "GenAI Engineer ($130K–$280K)",
-    "Multimodal ML Engineer ($150K–$250K)",
+    "GenAI Engineer ($130K-$280K)",
+    "Multimodal ML Engineer ($150K-$250K)",
   ],
 };

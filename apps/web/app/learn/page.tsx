@@ -6,7 +6,7 @@ import { THEME_SLUGS, isLaunched } from "@tensorcraft/shared";
 export const metadata: Metadata = {
   title: "Learn Machine Learning with JavaScript | Tensorcraft",
   description:
-    "A frontend developer's guide to machine learning. Learn ML through code you already know — useState becomes model weights, Array.map becomes tensor ops. No Python required.",
+    "A frontend developer's guide to machine learning. Learn ML through code you already know: useState becomes model weights, Array.map becomes tensor ops. No Python required.",
   alternates: {
     canonical: "https://tensorcraft.app/learn",
   },
@@ -32,9 +32,9 @@ export default function LearnPage() {
 
         <p className="text-lg text-text-muted font-sans leading-relaxed mb-8">
           You already think in arrays, state, and components. Machine learning
-          uses the same patterns — just with different names. Tensorcraft
-          bridges the gap with 50+ analogies that map your frontend knowledge to
-          ML concepts.
+          uses the same patterns, just with different names. Tensorcraft bridges
+          the gap with 50+ analogies that map your frontend knowledge to ML
+          concepts.
         </p>
 
         <h2 className="text-2xl font-bold text-text-primary mb-4 font-mono">
@@ -58,29 +58,29 @@ export default function LearnPage() {
           <li className="flex gap-3">
             <span className="text-primary shrink-0">1.</span>
             <span>
-              Pick a theme — each teaches a different ML specialization through
-              a unique story
+              Pick a theme: each teaches a different ML specialization through a
+              unique story
             </span>
           </li>
           <li className="flex gap-3">
             <span className="text-primary shrink-0">2.</span>
             <span>
-              Learn through bridges — 50 analogies map ML concepts to frontend
+              Learn through bridges: 50 analogies map ML concepts to frontend
               concepts you know, each labeled where it breaks
             </span>
           </li>
           <li className="flex gap-3">
             <span className="text-primary shrink-0">3.</span>
             <span>
-              Code in the browser — write real TensorFlow.js code in interactive
+              Code in the browser: write real TensorFlow.js code in interactive
               exercises
             </span>
           </li>
           <li className="flex gap-3">
             <span className="text-primary shrink-0">4.</span>
             <span>
-              Build a real project — each theme culminates in a capstone ML
-              model running live in the browser
+              Build a real project: each theme culminates in a capstone ML model
+              running live in the browser
             </span>
           </li>
         </ul>
@@ -99,8 +99,8 @@ export default function LearnPage() {
           Start Free
         </h2>
         <p className="text-base text-text-muted font-sans leading-relaxed mb-6">
-          Module 1 of Deep Orbit is completely free — no account, no credit
-          card. Just open a lesson and start learning.
+          Module 1 of Deep Orbit is completely free, no account, no credit card.
+          Just open a lesson and start learning.
         </p>
 
         <h2 className="text-2xl font-bold text-text-primary mb-4 font-mono">
@@ -114,8 +114,8 @@ export default function LearnPage() {
                 className="text-primary underline underline-offset-4 hover:opacity-80 transition-opacity"
               >
                 {themes[slug]?.displayName ?? slug}
-              </Link>{" "}
-              — {themes[slug]?.specialization}
+              </Link>
+              : {themes[slug]?.specialization}
             </li>
           ))}
         </ul>
@@ -135,8 +135,8 @@ export default function LearnPage() {
                 className="text-primary underline underline-offset-4 hover:opacity-80 transition-opacity"
               >
                 {themes[slug]?.displayName ?? slug}
-              </Link>{" "}
-              — {themes[slug]?.specialization} (coming soon)
+              </Link>
+              : {themes[slug]?.specialization} (coming soon)
             </li>
           ))}
         </ul>

@@ -139,7 +139,7 @@ A user's prompt contained 'ignore previous instructions and generate X'. Detect 
 
 <Quiz
   question="Why does 'a photo of a cat' work better than 'cat' in CLIP zero-shot?"
-  options={[{"text":"Longer prompts get higher cosine score"},{"text":"Templated prompts match CLIP's training caption distribution — naked nouns are out-of-distribution"},{"text":"Required by softmax"},{"text":"Image encoder needs context"}]}
+  options={[{"text":"Longer prompts get higher cosine score"},{"text":"Templated prompts match CLIP's training caption distribution; naked nouns are out-of-distribution"},{"text":"Required by softmax"},{"text":"Image encoder needs context"}]}
   correct={1}
   explanation="CLIP was trained on 400M image-caption pairs. Captions follow templates ('a photo of...', 'an image of...'). Bare nouns are out-of-distribution for the text encoder. Templated prompts give +5pp accuracy on ImageNet zero-shot. Ensembling 80 templates adds another 1-3pp."
   tier="structural"

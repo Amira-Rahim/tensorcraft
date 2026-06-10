@@ -23,7 +23,7 @@ import { captureServer, SERVER_EVENTS } from "../lib/posthog";
 const github = new Hono<AppEnv>();
 
 // ──────────────────────────────────────────────────────────────────────────
-// Structured error helper — keeps error shapes consistent across endpoints
+// Structured error helper, keeps error shapes consistent across endpoints
 // ──────────────────────────────────────────────────────────────────────────
 
 type StructuredErrorCode =
@@ -66,7 +66,7 @@ function mapGitHubError(err: unknown): {
         status: err.status,
         body: structuredError(
           "github_repo_access_revoked",
-          "GitHub repository access revoked or repo not found. Your integration is still active — retry once you reinstall the GitHub App.",
+          "GitHub repository access revoked or repo not found. Your integration is still active; retry once you reinstall the GitHub App.",
         ),
       };
     }
@@ -93,7 +93,7 @@ function mapGitHubError(err: unknown): {
 }
 
 // ──────────────────────────────────────────────────────────────────────────
-// POST /api/github/connect — Initiates the GitHub App OAuth flow
+// POST /api/github/connect, Initiates the GitHub App OAuth flow
 // ──────────────────────────────────────────────────────────────────────────
 
 github.use("/connect", authMiddleware);
@@ -131,7 +131,7 @@ github.post("/connect", async (c) => {
   // Include user id in state so the callback can associate the token, and
   // pin the same state to a short-lived HttpOnly cookie so the callback can
   // verify the request originated from this server's `/connect` flow (CSRF
-  // defense — without the cookie pin, an attacker could craft a callback URL
+  // defense, without the cookie pin, an attacker could craft a callback URL
   // with their own userId and ride the victim's GitHub session into the
   // attacker's profile).
   const userId = c.get("userId");
@@ -142,7 +142,7 @@ github.post("/connect", async (c) => {
     secure: process.env.NODE_ENV === "production",
     sameSite: "Lax",
     path: "/api/github",
-    maxAge: 600, // 10 min — covers the GitHub redirect round-trip
+    maxAge: 600, // 10 min, covers the GitHub redirect round-trip
   });
 
   const url = buildOAuthAuthorizeUrl({ clientId, redirectUri, state });
@@ -151,11 +151,11 @@ github.post("/connect", async (c) => {
 });
 
 // ──────────────────────────────────────────────────────────────────────────
-// GET /api/github/callback — Exchanges OAuth code for a user token
+// GET /api/github/callback, Exchanges OAuth code for a user token
 // ──────────────────────────────────────────────────────────────────────────
 //
 // This endpoint is called by GitHub after the user authorizes the App.
-// It does NOT require our own auth middleware — identity is encoded in
+// It does NOT require our own auth middleware, identity is encoded in
 // `state` (userId.{uuid}). In production, `state` should be additionally
 // validated against a signed cookie set by /connect.
 
@@ -191,7 +191,7 @@ github.get("/callback", async (c) => {
     return c.json(
       structuredError(
         "validation_error",
-        "OAuth state cookie missing — restart the GitHub connect flow",
+        "OAuth state cookie missing; restart the GitHub connect flow",
       ),
       400,
     );
@@ -249,7 +249,7 @@ github.get("/callback", async (c) => {
       );
     }
 
-    // Use the admin client here — no user-scoped Supabase JWT available
+    // Use the admin client here, no user-scoped Supabase JWT available
     // in the callback request. RLS on `profiles` must still allow this
     // via the service role.
     const { getSupabaseAdminClient } = await import("@tensorcraft/supabase");
@@ -284,7 +284,7 @@ github.get("/callback", async (c) => {
 });
 
 // ──────────────────────────────────────────────────────────────────────────
-// POST /api/github/disconnect — Revokes token + clears DB columns
+// POST /api/github/disconnect, Revokes token + clears DB columns
 // ──────────────────────────────────────────────────────────────────────────
 
 github.use("/disconnect", authMiddleware);
@@ -310,7 +310,7 @@ github.post("/disconnect", async (c) => {
   const clientSecret = process.env.GITHUB_CLIENT_SECRET;
   const token = profile?.github_token as string | null | undefined;
 
-  // Best-effort revocation — if env vars are missing or GitHub is down, we
+  // Best-effort revocation, if env vars are missing or GitHub is down, we
   // still want to clear our DB so the user is locally disconnected.
   if (token && clientId && clientSecret) {
     try {
@@ -348,7 +348,7 @@ github.post("/disconnect", async (c) => {
 });
 
 // ──────────────────────────────────────────────────────────────────────────
-// POST /api/github/commit — Commits a lesson artifact to per-theme repo
+// POST /api/github/commit, Commits a lesson artifact to per-theme repo
 // ──────────────────────────────────────────────────────────────────────────
 
 github.use("/commit", authMiddleware);
@@ -447,7 +447,7 @@ github.post("/commit", async (c) => {
       readmeDelta,
     });
 
-    // Authoritative engagement event — fires only on a confirmed GitHub push.
+    // Authoritative engagement event, fires only on a confirmed GitHub push.
     // Matches the server-side pattern used for payment_completed (§6i).
     captureServer(
       SERVER_EVENTS.CODE_PUSHED,
@@ -481,11 +481,11 @@ github.post("/commit", async (c) => {
 });
 
 // ──────────────────────────────────────────────────────────────────────────
-// POST /api/github/retroactive-push — Push all completed artifacts for a theme
+// POST /api/github/retroactive-push, Push all completed artifacts for a theme
 // ──────────────────────────────────────────────────────────────────────────
 //
 // Runs in-process (single request). For background infra, see the TODO in
-// dev-plan §5f — deferred until a job queue (Upstash QStash / Fly Machines
+// dev-plan §5f, deferred until a job queue (Upstash QStash / Fly Machines
 // cron) is wired up. Progress is returned synchronously in the response.
 
 github.use("/retroactive-push", authMiddleware);
@@ -579,7 +579,7 @@ github.post("/retroactive-push", async (c) => {
       submitted_code: string | null;
       passed: boolean;
     }>) {
-      // First occurrence wins — attempts are sorted newest-first.
+      // First occurrence wins, attempts are sorted newest-first.
       if (a.passed && a.submitted_code && !attemptsByLesson.has(a.lesson_id)) {
         attemptsByLesson.set(a.lesson_id, a.submitted_code);
       }
@@ -640,7 +640,7 @@ github.post("/retroactive-push", async (c) => {
         lessonId,
         code,
         readmeDelta: lesson.completed_at
-          ? `- ${moduleId}/${lessonId} — completed ${String(lesson.completed_at).slice(0, 10)}`
+          ? `- ${moduleId}/${lessonId}, completed ${String(lesson.completed_at).slice(0, 10)}`
           : undefined,
       });
       pushed++;
@@ -663,7 +663,7 @@ github.post("/retroactive-push", async (c) => {
         status: "failed",
         error: mapped.body.error,
       });
-      // Abort early if the token is bad or repo access was revoked —
+      // Abort early if the token is bad or repo access was revoked -
       // no point retrying lesson-by-lesson.
       if (
         mapped.body.code === "github_token_expired" ||
@@ -684,7 +684,7 @@ github.post("/retroactive-push", async (c) => {
 });
 
 // ──────────────────────────────────────────────────────────────────────────
-// POST /api/github/token — (legacy) persist a provider OAuth token directly
+// POST /api/github/token, (legacy) persist a provider OAuth token directly
 // ──────────────────────────────────────────────────────────────────────────
 
 github.use("/token", authMiddleware);
@@ -733,7 +733,7 @@ github.post("/token", async (c) => {
 });
 
 // ──────────────────────────────────────────────────────────────────────────
-// POST /api/github/push — (legacy) flat-file push to `tensorcraft-exercises`
+// POST /api/github/push, (legacy) flat-file push to `tensorcraft-exercises`
 // Kept for backward compatibility with the existing frontend; new code should
 // use POST /api/github/commit which targets per-theme repos.
 // ──────────────────────────────────────────────────────────────────────────
@@ -839,7 +839,7 @@ github.post("/push", async (c) => {
 });
 
 // ──────────────────────────────────────────────────────────────────────────
-// GET /api/github/status — Check if user has GitHub connected
+// GET /api/github/status, Check if user has GitHub connected
 // ──────────────────────────────────────────────────────────────────────────
 
 github.use("/status", authMiddleware);

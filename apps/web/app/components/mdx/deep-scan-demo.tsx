@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
  * Free-tier magic moment: a REAL TensorFlow.js model (trained offline,
  * ~8 KB) classifying the module's sensor readings live in the reader's
  * browser tab, on the lesson's final step. The last reading is archive
- * sample 7741 — the story's anomaly — which lands at ~51%: too odd to
+ * sample 7741, the story's anomaly, which lands at ~51%: too odd to
  * ignore, too ambiguous to alarm. The whole paid course is the answer to
  * the question this number asks.
  *
@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
  *
  * Used by the lesson embed (default) and the landing hero (`framing` adds a
  * one-line premise for visitors without story context). An interactive
- * slider lab existed briefly on the landing page and was cut 2026-06-10 —
+ * slider lab existed briefly on the landing page and was cut 2026-06-10 -
  * it made the page busy without earning it; the spectator run is the proof.
  * The model probe script (scripts/probe-deep-scan-model.mjs) survives for
  * verifying any future claims against real model output.
@@ -57,7 +57,7 @@ function loadDeepScan(): Promise<{ tf: TfCore; model: LoadedModel }> {
       // Slim imports: core + one backend + layers (a fraction of the
       // full tfjs bundle; skips converter/data/vis we don't use). Pick
       // the backend from a plain canvas probe BEFORE touching tfjs's
-      // backend machinery — on machines without WebGL the full bundle's
+      // backend machinery, on machines without WebGL the full bundle's
       // setBackend can stall instead of falling back. The model is
       // 3→16→8→1; cpu is instant when WebGL is unavailable.
       const probe = document.createElement("canvas");
@@ -81,7 +81,7 @@ function loadDeepScan(): Promise<{ tf: TfCore; model: LoadedModel }> {
         model: model as unknown as LoadedModel,
       };
     })();
-    // A failed load shouldn't poison every later mount — allow a retry.
+    // A failed load shouldn't poison every later mount, allow a retry.
     deepScanLoad.catch(() => {
       deepScanLoad = null;
     });
@@ -90,7 +90,7 @@ function loadDeepScan(): Promise<{ tf: TfCore; model: LoadedModel }> {
 }
 
 const verdict = (score: number) =>
-  score > 0.7 ? "ANOMALOUS" : score < 0.3 ? "NORMAL" : "— NEITHER —";
+  score > 0.7 ? "ANOMALOUS" : score < 0.3 ? "NORMAL" : "NEITHER";
 
 interface DeepScanDemoProps {
   /** One-line premise for surfaces without the lesson's story context. */
@@ -113,7 +113,7 @@ export function DeepScanDemo({
   useEffect(() => {
     // No run-once ref guard here: under React StrictMode's dev
     // double-mount, a ref guard blocks the second (surviving) effect run
-    // while the first run was already cancelled — the demo would sit on
+    // while the first run was already cancelled, the demo would sit on
     // "loading" forever. Each run owns its own cancelled flag instead.
     let cancelled = false;
 
@@ -130,7 +130,7 @@ export function DeepScanDemo({
         const scores = await out.data();
         input.dispose?.();
 
-        // Reveal one classification at a time — let the moment breathe.
+        // Reveal one classification at a time, let the moment breathe.
         for (let i = 0; i < STREAM.length; i++) {
           if (cancelled) return;
           await new Promise((r) =>
@@ -167,22 +167,22 @@ export function DeepScanDemo({
         </span>
       </div>
       <div className="p-4 space-y-1.5">
-        {/* Landing visitors arrive without the lesson's story context — one
+        {/* Landing visitors arrive without the lesson's story context, one
             line answers "what is this" before the table starts filling in. */}
         {framing && (
           <p className="text-text-muted pb-2.5 mb-1 border-b border-border">
-            A real 8 KB neural network, downloaded into this page — no server —
+            A real 8 KB neural network, downloaded into this page (no server),
             scoring archived sensor readings from the story&rsquo;s ship.
           </p>
         )}
         {status === "loading" && (
           <p className="text-text-muted">
-            // loading model (8 KB) into your browser…
+            loading model (8 KB) into your browser…
           </p>
         )}
         {status === "error" && (
           <p className="text-text-muted">
-            // model failed to load — check your connection and refresh
+            model failed to load; check your connection and refresh
           </p>
         )}
         {status !== "loading" &&
@@ -219,8 +219,8 @@ export function DeepScanDemo({
           ))}
         {status === "done" && (
           <p className="pt-3 text-text-muted border-t border-border mt-3">
-            // that number is real — an actual neural network computed it in
-            your tab just now. Five readings it understood. One it didn&rsquo;t.
+            // that number is real, an actual neural network computed it in your
+            tab just now. Five readings it understood. One it didn&rsquo;t.
             Teaching it to answer is the rest of the course.
           </p>
         )}

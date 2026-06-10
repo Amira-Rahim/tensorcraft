@@ -392,7 +392,7 @@ export function LessonSteps({
           )}
         </div>
 
-        {/* Navigation — inline with content, not a fixed bar */}
+        {/* Navigation, inline with content, not a fixed bar */}
         <div
           className="flex items-center justify-between mt-10 pt-6"
           style={{ borderTop: `1px solid ${theme.palette.border}` }}
@@ -488,7 +488,7 @@ function StepBriefing({
         className="text-xs font-mono uppercase tracking-[3px] mb-6"
         style={{ color: theme.palette.primary }}
       >
-        // SECTOR {moduleSlug} &middot; MISSION {lesson.order}
+        SECTOR {moduleSlug} &middot; MISSION {lesson.order}
       </div>
 
       <h1
@@ -515,7 +515,7 @@ function StepBriefing({
         )}
       </div>
 
-      {/* Scene heading — only if scene frontmatter exists */}
+      {/* Scene heading, only if scene frontmatter exists */}
       {lesson.scene && (
         <SceneHeading
           prefix="Int."
@@ -532,7 +532,7 @@ function StepBriefing({
         {lesson.context.narrative}
       </p>
 
-      {/* Dialogue — screenplay beats from MDX */}
+      {/* Dialogue, screenplay beats from MDX */}
       <LessonContent
         lesson={lesson}
         exercises={exercises}
@@ -803,7 +803,7 @@ function StepConsequence({
         {lesson.consequence.narrative}
       </p>
 
-      {/* Closing scene from the MDX body (<Epilogue> blocks) — the story
+      {/* Closing scene from the MDX body (<Epilogue> blocks), the story
           beat the learner earns by finishing the work. */}
       <div className="max-w-140 mx-auto text-left mb-8">
         <LessonContent

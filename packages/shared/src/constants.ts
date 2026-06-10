@@ -1,5 +1,5 @@
 /**
- * Theme slugs — the 5 themed courses.
+ * Theme slugs: the 5 themed courses.
  */
 export const THEME_SLUGS = [
   "deep-orbit",
@@ -12,7 +12,7 @@ export const THEME_SLUGS = [
 export type ThemeSlug = (typeof THEME_SLUGS)[number];
 
 /**
- * V1 launched themes. Other themes in THEME_SLUGS are "coming soon" — their
+ * V1 launched themes. Other themes in THEME_SLUGS are "coming soon"; their
  * registry metadata still loads (palettes, taglines, characters), but build,
  * routing, payments, and dashboards gate on this set. Move a slug here when
  * its content is QA'd and the theme is ready to ship.
@@ -21,7 +21,7 @@ export const LAUNCHED_THEMES = ["deep-orbit"] as const;
 
 export type LaunchedTheme = (typeof LAUNCHED_THEMES)[number];
 
-/** Slugs not yet launched — derived so it stays in sync with THEME_SLUGS. */
+/** Slugs not yet launched, derived so it stays in sync with THEME_SLUGS. */
 export const COMING_SOON_THEMES = THEME_SLUGS.filter(
   (slug): slug is Exclude<ThemeSlug, LaunchedTheme> =>
     !(LAUNCHED_THEMES as readonly string[]).includes(slug),
@@ -36,7 +36,7 @@ export function isComingSoon(slug: string): boolean {
 }
 
 /**
- * Pricing tiers — per-model, one-time purchase.
+ * Pricing tiers: per-model, one-time purchase.
  * No subscriptions. Team pricing deferred to post-V1.0.
  *
  * `price` is the amount actually charged (drives Stripe `unit_amount` and
@@ -47,7 +47,7 @@ export function isComingSoon(slug: string): boolean {
  * present and greater than `price`, the pricing UI renders it struck-through
  * next to the live price ("~~$99~~ $49"). It must never reach Stripe, the
  * webhook validator, or JSON-LD. To soften/remove the anchor, change or drop
- * `regularPrice` here — the single source of truth.
+ * `regularPrice` here, the single source of truth.
  */
 export const PRICING = {
   free: { price: 0, themes: 0, label: "Free Preview" },
@@ -86,7 +86,7 @@ export const ROUTES = {
 } as const;
 
 /**
- * Per-theme content structure — full course (V1.0).
+ * Per-theme content structure: full course (V1.0).
  * Used by pricing page and marketing. Update when course structure changes.
  */
 export const THEME_CONTENT = {
@@ -103,7 +103,7 @@ export function isValidThemeSlug(slug: string): slug is ThemeSlug {
   return (THEME_SLUGS as readonly string[]).includes(slug);
 }
 
-/** Validate slug format — alphanumeric with hyphens, max 100 chars */
+/** Validate slug format: alphanumeric with hyphens, max 100 chars */
 export function isValidSlug(id: string): boolean {
   return /^[a-z0-9]([a-z0-9-]{0,98}[a-z0-9])?$/.test(id);
 }

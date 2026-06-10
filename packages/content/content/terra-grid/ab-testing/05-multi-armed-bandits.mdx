@@ -151,7 +151,7 @@ console.log('Traffic distribution:', bandit.getStats());`}
 ## UCB1 Strategy
 
 <CodeBlock language="typescript" title="ucb1.ts">
-{`// Upper Confidence Bound — sub-linear regret, no epsilon tuning.
+{`// Upper Confidence Bound: sub-linear regret, no epsilon tuning.
 
 class UCB1Bandit {
   private arms: ModelArm[] = [];
@@ -204,4 +204,4 @@ Implement an epsilon-greedy bandit for adaptive model selection.
 
 <RecallPrompt question="The lab skeptic Dr. Park asks: 'Your UCB1 has no ε. How does it know when to stop exploring?'" answer="The exploration bonus √(2·ln(N)/pulls) is the answer. Heavily-pulled arms have small bonuses → they get exploited. Rarely-pulled arms have large bonuses → they get sampled. UCB1 self-tunes; ε is replaced by counting." />
 
-<RecallPrompt question="Hassan files the post-mortem: 'Why did fixed-ε underperform vs UCB1 over the full quarter?'" answer="Fixed-ε ε-greedy has linear regret — every round carries a constant ε probability of pulling a suboptimal model. UCB1's regret grows roughly like the square root of the round count, slower than the rounds themselves. Over a quarter of inference traffic, that's the gap between 'always somewhat wrong' and 'eventually mostly right.'" />
+<RecallPrompt question="Hassan files the post-mortem: 'Why did fixed-ε underperform vs UCB1 over the full quarter?'" answer="Fixed-ε ε-greedy has linear regret: every round carries a constant ε probability of pulling a suboptimal model. UCB1's regret grows roughly like the square root of the round count, slower than the rounds themselves. Over a quarter of inference traffic, that's the gap between 'always somewhat wrong' and 'eventually mostly right.'" />

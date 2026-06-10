@@ -12,7 +12,7 @@
       "speaker": "Commander Mirza"
     },
     "concept": {
-      "explanation": "Tensors are multi-dimensional arrays — the fundamental data structure of machine learning.",
+      "explanation": "Tensors are multi-dimensional arrays: the fundamental data structure of machine learning.",
       "bridge": {
         "feTitle": "TypedArray",
         "feCode": "const arr = new Float32Array([1, 2, 3])",
@@ -60,7 +60,7 @@
       }
     },
     "consequence": {
-      "narrative": "The data dimensions are now clear — a 3D tensor of sensor readings."
+      "narrative": "The data dimensions are now clear: a 3D tensor of sensor readings."
     },
     "hints": [
       { "level": "nudge", "content": "Count the nesting levels of your array" },
@@ -125,7 +125,7 @@
       "narrative": "Ensign Demir sets up the data pipeline for the analysis system."
     },
     "concept": {
-      "explanation": "ML models require properly formatted input data — batched, shuffled, and normalized."
+      "explanation": "ML models require properly formatted input data: batched, shuffled, and normalized."
     },
     "consequence": {
       "narrative": "The data pipeline is operational. ARIA confirms: ready for analysis.",

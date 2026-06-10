@@ -1,6 +1,6 @@
 ---
 slug: human-in-the-loop
-title: "Human-in-the-Loop — Code Review for Clinical Predictions"
+title: "Human-in-the-Loop: Code Review for Clinical Predictions"
 moduleId: production-privacy
 themeId: signal-ward
 order: 4
@@ -72,7 +72,7 @@ interface ReviewDecision {
   timestamp: string;
 }
 
-// Route predictions by confidence — like branch protection rules
+// Route predictions by confidence, like branch protection rules
 // auto_surface: high confidence, no review needed (auto-merge)
 // queue_review: medium confidence, needs human review (PR review required)
 // suppress: low confidence, not shown (failing CI blocks merge)
@@ -85,14 +85,14 @@ function routePrediction(
   return 'suppress';
 }
 
-// Review queue — like a PR dashboard sorted by priority
+// Review queue, like a PR dashboard sorted by priority
 class ClinicalReviewQueue {
   private pending: Prediction[] = [];
   private decisions: ReviewDecision[] = [];
 
   enqueue(prediction: Prediction): void {
     this.pending.push(prediction);
-    // Sort by confidence descending — highest priority first
+    // Sort by confidence descending, highest priority first
     this.pending.sort((a, b) => b.confidence - a.confidence);
   }
 
@@ -109,7 +109,7 @@ class ClinicalReviewQueue {
     this.decisions.push(decision);
   }
 
-  // Feedback statistics — like PR review metrics
+  // Feedback statistics, like PR review metrics
   getFeedbackStats(): {
     totalReviewed: number;
     approvalRate: number;
@@ -148,7 +148,7 @@ class ClinicalReviewQueue {
 
 <CodeBlock language="typescript" title="alert-management.ts">
 {`// Alert fatigue: too many low-value alerts cause clinicians to ignore all alerts
-// Same as notification spam in web apps — over-notify and users disable notifications
+// Same as notification spam in web apps: over-notify and users disable notifications
 
 interface AlertConfig {
   maxAlertsPerHour: number;
@@ -171,7 +171,7 @@ class AlertManager {
     // Clean expired alerts
     this.recentAlerts = this.recentAlerts.filter(a => a.timestamp > oneHourAgo);
 
-    // Rate limit — like API rate limiting
+    // Rate limit, like API rate limiting
     if (this.recentAlerts.length >= this.config.maxAlertsPerHour) {
       // Only critical alerts break through the rate limit
       const priority = this.config.priorityWeights[prediction.label] ?? 1;
@@ -213,7 +213,7 @@ class HumanInTheLoopPipeline {
           this.alerts.recordAlert(prediction);
           return { tier, action: 'Displayed as suggestion' };
         }
-        return { tier, action: 'Throttled — alert rate limit reached' };
+        return { tier, action: 'Throttled: alert rate limit reached' };
 
       case 'queue_review':
         this.stats.queued++;
@@ -222,7 +222,7 @@ class HumanInTheLoopPipeline {
 
       case 'suppress':
         this.stats.suppressed++;
-        return { tier, action: 'Suppressed — below confidence threshold' };
+        return { tier, action: 'Suppressed: below confidence threshold' };
     }
   }
 }`}
@@ -238,4 +238,4 @@ Design a human review workflow that routes predictions to approval tiers based o
 
 <Exercise slug="design-review-flow" />
 
-<KeyTakeaways takeaways={["Automation bias is the quiet failure mode: reviewers start rubber-stamping suggestions, so the queue must stay small enough to be genuinely reviewed", "Confidence-based routing creates three tiers: auto-surface above 0.95, queue for review between 0.7 and 0.95, suppress below 0.7", "Clinician feedback on reviewed predictions becomes training data — approved predictions confirm, modifications correct", "Alert fatigue is notification spam for clinicians — rate limiting and priority weighting prevent desensitization"]} />
+<KeyTakeaways takeaways={["Automation bias is the quiet failure mode: reviewers start rubber-stamping suggestions, so the queue must stay small enough to be genuinely reviewed", "Confidence-based routing creates three tiers: auto-surface above 0.95, queue for review between 0.7 and 0.95, suppress below 0.7", "Clinician feedback on reviewed predictions becomes training data: approved predictions confirm, modifications correct", "Alert fatigue is notification spam for clinicians; rate limiting and priority weighting prevent desensitization"]} />

@@ -75,7 +75,7 @@ export function LossCurve({ weekly, className }: LossCurveProps) {
         fontSize="9"
         fill="var(--tc-muted)"
       >
-        // loss.hints — {weekly.length}wk
+        loss.hints: {weekly.length}wk
       </text>
 
       {/* Baseline */}

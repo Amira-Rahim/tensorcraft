@@ -9,8 +9,8 @@ export function SceneHeading({ location, time, prefix }: SceneHeadingProps) {
   if (prefix) parts.push(prefix);
   parts.push(location);
 
-  const heading = parts.join(" — ").toUpperCase();
-  const full = time ? `${heading} — ${time.toUpperCase()}` : heading;
+  const heading = parts.join(" - ").toUpperCase();
+  const full = time ? `${heading} - ${time.toUpperCase()}` : heading;
 
   return (
     <div

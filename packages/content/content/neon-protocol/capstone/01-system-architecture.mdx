@@ -58,7 +58,7 @@ Six stages, one rule: every boundary declares its contract before code gets wire
 <CodeBlock language="typescript" title="sentinel-architecture.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Each pipeline component has typed input/output — like React component props
+// Each pipeline component has typed input/output, like React component props
 interface SentinelComponent<TInput, TOutput> {
   name: string;
   version: string;
@@ -77,7 +77,7 @@ interface RawFrame {
 
 // Stage 2: Preprocessing
 interface ProcessedFrame {
-  tensor: tf.Tensor4D;       // [1, 224, 224, 3] — batched, resized, normalized
+  tensor: tf.Tensor4D;       // [1, 224, 224, 3]: batched, resized, normalized
   feedId: string;
   timestamp: number;
   originalSize: [number, number];
@@ -123,7 +123,7 @@ interface BroadcastPayload {
 ## Component Registry
 
 <CodeBlock language="typescript" title="registry.ts">
-{`// Register all Protocol Sentinel components — like a monorepo package index
+{`// Register all Protocol Sentinel components, like a monorepo package index
 interface ComponentManifest {
   name: string;
   version: string;
@@ -184,7 +184,7 @@ const sentinelManifest: ComponentManifest[] = [
   },
 ];
 
-// Validate dependency graph — same as checking package.json references
+// Validate dependency graph, same as checking package.json references
 function validateArchitecture(components: ComponentManifest[]): {
   valid: boolean;
   errors: string[];
@@ -234,11 +234,11 @@ console.log('Architecture valid:', result.valid);
 ## Failure Modes
 
 <Dialogue speaker="NEON">
-Every system fails. The question is whether it fails gracefully or catastrophically. I should know — I was Meridian's surveillance AI before they tried to shut me down. Let me show you every way Protocol Sentinel can break.
+Every system fails. The question is whether it fails gracefully or catastrophically. I should know; I was Meridian's surveillance AI before they tried to shut me down. Let me show you every way Protocol Sentinel can break.
 </Dialogue>
 
 <CodeBlock language="typescript" title="failure-modes.ts">
-{`// Graceful degradation — like error boundaries in React
+{`// Graceful degradation, like error boundaries in React
 interface FailureStrategy {
   component: string;
   failureMode: string;
@@ -279,7 +279,7 @@ const failureStrategies: FailureStrategy[] = [
   },
 ];
 
-// Like React ErrorBoundary — catch errors at component boundaries
+// Like React ErrorBoundary: catch errors at component boundaries
 function withErrorBoundary<TIn, TOut>(
   component: SentinelComponent<TIn, TOut>
 ): SentinelComponent<TIn, TOut | null> {
@@ -306,4 +306,4 @@ Design a component registry and validate its dependency graph.
 
 <Exercise slug="design-architecture" />
 
-<KeyTakeaways takeaways={["Every boundary in Sentinel's architecture declares its data contract and its failure behavior before any code is wired", "A component registry with dependency validation catches wiring errors before deployment", "Failure strategies at each boundary prevent cascade failures — like React error boundaries", "Protocol Sentinel's 6-stage pipeline: ingest → preprocess → detect → classify → guard → broadcast"]} />
+<KeyTakeaways takeaways={["Every boundary in Sentinel's architecture declares its data contract and its failure behavior before any code is wired", "A component registry with dependency validation catches wiring errors before deployment", "Failure strategies at each boundary prevent cascade failures, like React error boundaries", "Protocol Sentinel's 6-stage pipeline: ingest → preprocess → detect → classify → guard → broadcast"]} />

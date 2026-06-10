@@ -29,7 +29,7 @@ const ROWS: Row[] = [
   },
   {
     feature: "Audience starting point",
-    tensorcraft: "FE devs — useState, Array.reduce, Math.max",
+    tensorcraft: "FE devs: useState, Array.reduce, Math.max",
     fastai: "Anyone with Python comfort",
     karpathy: "Anyone willing to read math",
     coursera: "Anyone with college calculus",
@@ -45,7 +45,7 @@ const ROWS: Row[] = [
     feature: "Math depth",
     tensorcraft: "Chain rule, softmax, KL, ELBO, DDPM derived",
     fastai: "Pragmatic depth, not paper-grade",
-    karpathy: "Paper-grade — autograd from scratch, attention from scratch",
+    karpathy: "Paper-grade: autograd from scratch, attention from scratch",
     coursera: "Theory + math, exam-grade",
   },
   {
@@ -68,12 +68,12 @@ const ROWS: Row[] = [
     tensorcraft: `$0 preview / $${PRICING.single.price} per theme / $${PRICING.allFive.price} for all five (bundle opens once all five launch)`,
     fastai: "Free",
     karpathy: "Free",
-    coursera: "$49–79/mo (specialization $200–500)",
+    coursera: "$49-79/mo (specialization $200-500)",
   },
   {
     feature: "Credential",
     tensorcraft:
-      "Completion certificate + a GitHub repo of every exercise you solved — a record of work, not an accreditation",
+      "Completion certificate + a GitHub repo of every exercise you solved: a record of work, not an accreditation",
     fastai: "None",
     karpathy: "None",
     coursera: "Coursera certificate",
@@ -106,7 +106,7 @@ export default function ComparePage() {
       />
       <article className="max-w-5xl mx-auto">
         <p className="font-mono text-xs text-primary tracking-[0.18em] uppercase mb-3">
-          // COMPARE
+          COMPARE
         </p>
         <h1 className="text-4xl md:text-5xl font-mono font-black tracking-tight text-text-primary mb-8">
           Where each course wins.
@@ -124,7 +124,7 @@ export default function ComparePage() {
             Tensorcraft is the right course if you ship in the browser, you
             already know JavaScript, and you want a course that respects what
             you already know without watering down the ML. Every analogy ships
-            with a label naming where it stops being literal — the bridge-tier
+            with a label naming where it stops being literal: the bridge-tier
             system is woven directly into each lesson.
           </p>
         </section>
@@ -216,8 +216,8 @@ export default function ComparePage() {
                 An accredited credential.
               </span>{" "}
               Your certificate is a completion record, not an accreditation. The
-              proof we believe in is the capstone — a deployable browser-ML app
-              you can show in an interview — plus the GitHub repo of every
+              proof we believe in is the capstone: a deployable browser-ML app
+              you can show in an interview, plus the GitHub repo of every
               exercise you solved.
             </li>
           </ul>

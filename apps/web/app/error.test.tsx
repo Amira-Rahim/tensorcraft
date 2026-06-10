@@ -7,7 +7,7 @@ beforeAll(() => {
   vi.spyOn(console, "error").mockImplementation(() => {});
 });
 
-// Stub next/link — error.tsx uses it for a "Go home" link.
+// Stub next/link, error.tsx uses it for a "Go home" link.
 vi.mock("next/link", () => ({
   default: ({
     href,

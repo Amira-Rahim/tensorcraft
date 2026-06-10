@@ -7,7 +7,7 @@ order: 2
 estimatedMinutes: 13
 difficulty: advanced
 context:
-  narrative: "Simple statistics miss complex patterns. Farah proposes an autoencoder — a network that learns to compress and reconstruct normal signals. High reconstruction error means the signal is unlike anything the model has learned."
+  narrative: "Simple statistics miss complex patterns. Farah proposes an autoencoder: a network that learns to compress and reconstruct normal signals. High reconstruction error means the signal is unlike anything the model has learned."
   speaker: "Dr. Farah"
 concept:
   explanation: "An autoencoder learns to compress and rebuild normal data, so anything it can't rebuild cleanly is, by definition, not normal."
@@ -17,7 +17,7 @@ concept:
     mlTitle: "Autoencoder"
     mlCode: "encoded = encoder(signal); decoded = decoder(encoded)"
     tier: structural
-    breaks: "Compression algorithms (gzip) decode losslessly back to the input. Autoencoders are lossy and reconstruct only what they learned to reconstruct well — inputs unlike training data come back distorted, which is the entire point of using them for anomaly detection."
+    breaks: "Compression algorithms (gzip) decode losslessly back to the input. Autoencoders are lossy and reconstruct only what they learned to reconstruct well; inputs unlike training data come back distorted, which is the entire point of using them for anomaly detection."
 consequence:
   narrative: "Normal signals come back clean. The anomalous signal comes back mangled, its error 12x the baseline."
 hints:
@@ -42,7 +42,7 @@ Z-scores work for simple distributions. But our signals are high-dimensional: am
 
 Think of gzip: it finds repeated patterns in your data and exploits them to compress. Decompress and you get the original back; feed the decompressor a stream encoded under a different pattern set and you get garbage. Autoencoders run on the same bet. They learn to compress and rebuild "normal," so "abnormal" comes back mangled.
 
-<LearningObjectives objectives={["Understand the autoencoder architecture: encoder → bottleneck → decoder", "Build an autoencoder in TensorFlow.js for signal reconstruction", "Train on normal data only — the model learns what 'normal' looks like", "Recognize that high reconstruction error indicates anomalous input"]} />
+<LearningObjectives objectives={["Understand the autoencoder architecture: encoder → bottleneck → decoder", "Build an autoencoder in TensorFlow.js for signal reconstruction", "Train on normal data only; the model learns what 'normal' looks like", "Recognize that high reconstruction error indicates anomalous input"]} />
 
 ## Encoder → Bottleneck → Decoder
 
@@ -86,9 +86,9 @@ autoencoder.compile({ optimizer: 'adam', loss: 'meanSquaredError' });`}
 
 // KEY INSIGHT: train ONLY on normal signals
 // The autoencoder learns to compress and reconstruct normal patterns
-// It has never seen anomalies — so it cannot reconstruct them
+// It has never seen anomalies, so it cannot reconstruct them
 
-// normalSignals: shape [1000, 11] — 1000 normal signal readings
+// normalSignals: shape [1000, 11]: 1000 normal signal readings
 const history = await autoencoder.fit(normalSignals, normalSignals, {
   epochs: 100,
   batchSize: 32,
@@ -104,7 +104,7 @@ const history = await autoencoder.fit(normalSignals, normalSignals, {
 // Epoch 0:   loss=0.482100
 // Epoch 20:  loss=0.031200
 // Epoch 60:  loss=0.003400
-// Epoch 100: loss=0.001200  ← very low — it reconstructs normal data well`}
+// Epoch 100: loss=0.001200  ← very low; it reconstructs normal data well`}
 </CodeBlock>
 
 ## Challenge
@@ -113,7 +113,7 @@ Build and train an autoencoder on normal signal data.
 
 <Exercise slug="build-autoencoder" />
 
-<KeyTakeaways takeaways={["Autoencoders learn to compress and reconstruct — encoder squeezes data through a bottleneck, decoder rebuilds it", "Train on normal data only — the model learns the structure of normality", "The bottleneck forces the model to learn essential patterns, discarding noise", "Anomalous signals produce high reconstruction error because the model has never learned their patterns"]} />
+<KeyTakeaways takeaways={["Autoencoders learn to compress and reconstruct: encoder squeezes data through a bottleneck, decoder rebuilds it", "Train on normal data only; the model learns the structure of normality", "The bottleneck forces the model to learn essential patterns, discarding noise", "Anomalous signals produce high reconstruction error because the model has never learned their patterns"]} />
 
 <Epilogue>
 

@@ -1,6 +1,6 @@
 slug: incident-latency-spike
 lessonSlug: performance-budgets
-title: "Incident — Inference Latency Doubled Overnight"
+title: "Incident: Inference Latency Doubled Overnight"
 mlContent: systems
 instructions: |
   PAGER: p95 inference latency went from 25ms to 62ms after a model update. Build `pinpointRegression(currentTimings, baselineTimings)` returning:

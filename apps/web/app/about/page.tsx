@@ -35,7 +35,7 @@ export default function AboutPage() {
       />
       <article className="max-w-3xl mx-auto prose-invert">
         <p className="font-mono text-xs text-primary tracking-[0.18em] uppercase mb-3">
-          // ABOUT
+          ABOUT
         </p>
         <h1 className="text-4xl md:text-5xl font-mono font-black tracking-tight text-text-primary mb-8">
           Why this course exists.
@@ -44,7 +44,7 @@ export default function AboutPage() {
         <section className="space-y-6 text-base text-text-muted leading-relaxed font-sans">
           <p>
             Most ML courses teach you ML. Tensorcraft teaches you ML by mapping
-            it to the frontend code you already write —{" "}
+            it to the frontend code you already write:{" "}
             <code className="font-mono text-text-primary text-sm">
               useState
             </code>{" "}
@@ -62,7 +62,7 @@ export default function AboutPage() {
 
           <p>
             Every analogy ships with a label that names where it stops being
-            literal. We call this the bridge-tier system — identity (literally
+            literal. We call this the bridge-tier system: identity (literally
             the same), structural (same shape, different domain), intuition
             (same mental model, different math). Structural and intuition
             bridges include a &ldquo;where this breaks&rdquo; statement so you
@@ -79,7 +79,7 @@ export default function AboutPage() {
           <p>
             Five themes (Deep Orbit, Neon Protocol, Signal Ward, Nova Canvas,
             Terra Grid) wrap the curriculum in narrative. Each one builds toward
-            a working browser-side ML system — assembled piece by piece across
+            a working browser-side ML system, assembled piece by piece across
             the modules; connect GitHub and every solved exercise pushes to your
             repo. The story keeps you on the page; understanding every layer of
             what you built is what you take to interviews.
@@ -107,7 +107,7 @@ export default function AboutPage() {
               <span className="text-text-primary font-mono text-sm">
                 Paper-grade math derivations.
               </span>{" "}
-              Chain rule, softmax, KL, cross-entropy — all derived. Beyond that,
+              Chain rule, softmax, KL, cross-entropy. All derived. Beyond that,
               Karpathy&apos;s Zero-to-Hero is the right course.
             </li>
             <li>

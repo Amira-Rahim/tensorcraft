@@ -3,7 +3,7 @@ import { Hono } from "hono";
 import type { AppEnv } from "../../types";
 
 // ─────────────────────────────────────────────────────────────
-// Mocks — cover both theme_progress (completions) and
+// Mocks, cover both theme_progress (completions) and
 // exercise_attempts queries behind the activity-daily endpoint.
 // ─────────────────────────────────────────────────────────────
 
@@ -47,7 +47,7 @@ vi.mock("@tensorcraft/supabase", () => ({
           error: mockAttemptsError,
         }));
       }
-      // used by /summary and others — return a compatible default stub
+      // used by /summary and others, return a compatible default stub
       return makeThenable(() => ({ data: [], error: null }));
     },
   }),

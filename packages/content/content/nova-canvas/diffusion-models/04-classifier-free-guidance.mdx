@@ -7,7 +7,7 @@ order: 4
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "Yara types a prompt: 'a forest at dawn, watercolor style.' The image that appears is vaguely forest-shaped but ignores the watercolor instruction. 'It's not listening to me,' she says. Rohan responds: 'We need to amplify the prompt's influence. Think of it like !important in CSS — forcing the style override.'"
+  narrative: "Yara types a prompt: 'a forest at dawn, watercolor style.' The image that appears is vaguely forest-shaped but ignores the watercolor instruction. 'It's not listening to me,' she says. Rohan responds: 'We need to amplify the prompt's influence. Think of it like !important in CSS, forcing the style override.'"
   speaker: "Rohan"
 concept:
   explanation: "Classifier-free guidance runs the model twice per step, once with the prompt and once without, then exaggerates the difference. The guidance scale controls how hard the prompt's contribution is amplified over the model's own habits."
@@ -100,8 +100,8 @@ function guidedDenoise(
 
 // The guidance scale is your "specificity" dial
 // Low (1-3):   model's default style dominates, prompt is a suggestion
-// Medium (5-8): balanced — prompt is followed but image looks natural
-// High (10-20): prompt is forced — vivid but may have artifacts
+// Medium (5-8): balanced; prompt is followed but image looks natural
+// High (10-20): prompt is forced; vivid but may have artifacts
 console.log('Guidance scale 1.0 = suggestion');
 console.log('Guidance scale 7.5 = instruction');
 console.log('Guidance scale 15+ = !important');`}
@@ -167,4 +167,4 @@ Where `w` is the **guidance scale**:
 **Common values: w = 7-12** for text-to-image. The cost is doubled inference compute (two model calls per step).
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["Guidance runs the model twice per denoising step, with and without the prompt, so it roughly doubles inference cost", "The formula: guided = unconditioned + scale * (conditioned - unconditioned)", "Guidance scale controls the tradeoff: low = natural but unfaithful, high = faithful but may artifact", "Cost: two model forward passes per denoising step — one conditioned, one unconditioned"]} />
+<KeyTakeaways takeaways={["Guidance runs the model twice per denoising step, with and without the prompt, so it roughly doubles inference cost", "The formula: guided = unconditioned + scale * (conditioned - unconditioned)", "Guidance scale controls the tradeoff: low = natural but unfaithful, high = faithful but may artifact", "Cost: two model forward passes per denoising step, one conditioned, one unconditioned"]} />

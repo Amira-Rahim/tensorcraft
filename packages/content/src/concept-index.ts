@@ -5,7 +5,7 @@ export interface LessonRef {
   moduleId: string;
   slug: string;
   title: string;
-  /** Source field this concept came from — used for weighting downstream. */
+  /** Source field this concept came from; used for weighting downstream. */
   source: ConceptSource;
 }
 
@@ -30,7 +30,7 @@ export interface ConceptIndex {
 /**
  * Normalize a raw string into a concept token.
  *
- * USER CONTRIBUTION POINT — see request below.
+ * USER CONTRIBUTION POINT: see request below.
  *
  * Examples of decisions this function encodes:
  *   - "WebGPU"     → "webgpu"      (lowercase)

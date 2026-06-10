@@ -19,12 +19,12 @@ vi.mock("next/link", () => ({
   ),
 }));
 
-// Minimal router stub — CheckoutButton pulls in next/navigation.
+// Minimal router stub, CheckoutButton pulls in next/navigation.
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: vi.fn() }),
 }));
 
-// Supabase client — no session so we don't hit owned-theme lookups.
+// Supabase client, no session so we don't hit owned-theme lookups.
 const getSessionMock = vi.fn().mockResolvedValue({ data: { session: null } });
 vi.mock("@/lib/supabase/client", () => ({
   getSupabaseBrowserClient: () => ({
@@ -95,11 +95,11 @@ describe("PricingTiers (brutalist 5-tier grid)", () => {
         },
       },
     });
-    // @ts-expect-error — jsdom lacks fetch; we install a stub per test.
+    // @ts-expect-error, jsdom lacks fetch; we install a stub per test.
     global.fetch = fetchMock;
-    // @ts-expect-error — jsdom location is read-only; we replace it.
+    // @ts-expect-error, jsdom location is read-only; we replace it.
     delete window.location;
-    // @ts-expect-error — minimal Location polyfill for CheckoutButton.
+    // @ts-expect-error, minimal Location polyfill for CheckoutButton.
     window.location = { href: "" };
   });
 
@@ -178,7 +178,7 @@ describe("PricingTiers (brutalist 5-tier grid)", () => {
   it("Single tier CTA sends planId=single with the picked theme", async () => {
     render(<PricingTiers />);
     const card = screen.getByTestId("tier-card-single");
-    // Pick a theme to enable the CTA — one of the theme-picker buttons.
+    // Pick a theme to enable the CTA, one of the theme-picker buttons.
     const themeBtn = Array.from(card.querySelectorAll("button")).find(
       (b) => b.textContent?.trim() === "Deep Orbit",
     ) as HTMLButtonElement | undefined;

@@ -53,7 +53,7 @@ Wrap two identical requests in `console.time('generate')` and the log reads 340m
 <CodeBlock language="typescript" title="generation-cache.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// LRU cache for generated outputs — same pattern as any memoization
+// LRU cache for generated outputs, same pattern as any memoization
 class GenerationCache {
   private cache = new Map<string, Float32Array>();
   private accessOrder: string[] = [];
@@ -102,21 +102,21 @@ class GenerationCache {
 ## Cache-First Generation
 
 <CodeBlock language="typescript" title="cache-first.ts">
-{`// Cache-first strategy — identical to Service Worker cache-first pattern
+{`// Cache-first strategy, identical to Service Worker cache-first pattern
 async function generateWithCache(
   model: tf.LayersModel,
   params: Record<string, any>,
   cache: GenerationCache
 ): Promise<Float32Array> {
-  // Check cache first — instant response for cached outputs
+  // Check cache first: instant response for cached outputs
   const cached = cache.get(params);
   if (cached) {
-    console.log('Cache HIT — 0ms generation');
+    console.log('Cache HIT: 0ms generation');
     return cached;
   }
 
-  // Cache miss — generate and store
-  console.log('Cache MISS — generating...');
+  // Cache miss: generate and store
+  console.log('Cache MISS: generating...');
   const latent = paramsToLatent(params);
   const output = model.predict(latent) as tf.Tensor;
   const result = await output.data() as Float32Array;
@@ -129,7 +129,7 @@ async function generateWithCache(
 }
 
 function paramsToLatent(params: Record<string, any>): tf.Tensor {
-  // Deterministic latent from params — same input always gives same output
+  // Deterministic latent from params: same input always gives same output
   const seed = hashToNumbers(JSON.stringify(params));
   return tf.tensor2d([seed.slice(0, 128)]);
 }`}
@@ -138,7 +138,7 @@ function paramsToLatent(params: Record<string, any>): tf.Tensor {
 ## Service Worker Integration
 
 <CodeBlock language="typescript" title="sw-cache.ts">
-{`// Service Worker cache for generated outputs — works offline
+{`// Service Worker cache for generated outputs; works offline
 // sw.ts (Service Worker)
 
 const CACHE_NAME = 'nova-canvas-generations-v1';

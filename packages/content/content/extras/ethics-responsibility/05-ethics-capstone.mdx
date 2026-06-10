@@ -91,7 +91,7 @@ const ethicsTemplate: CheckItem[] = [
   {
     id: 'data-representation',
     phase: 'data',
-    description: 'Dataset representation audit completed — no group below 10% of expected proportion',
+    description: 'Dataset representation audit completed: no group below 10% of expected proportion',
     status: 'pending',
     notes: '',
   },
@@ -130,14 +130,14 @@ const ethicsTemplate: CheckItem[] = [
   {
     id: 'eval-subgroup',
     phase: 'evaluation',
-    description: 'Performance metrics broken down by subgroup — no group accuracy below threshold',
+    description: 'Performance metrics broken down by subgroup: no group accuracy below threshold',
     status: 'pending',
     notes: '',
   },
   {
     id: 'eval-interpretability',
     phase: 'evaluation',
-    description: 'Feature importance reviewed — model uses relevant features, not proxies',
+    description: 'Feature importance reviewed: model uses relevant features, not proxies',
     status: 'pending',
     notes: '',
   },
@@ -153,7 +153,7 @@ const ethicsTemplate: CheckItem[] = [
   {
     id: 'deploy-impact',
     phase: 'deployment',
-    description: 'Impact assessment completed — all critical failure modes have mitigations',
+    description: 'Impact assessment completed: all critical failure modes have mitigations',
     status: 'pending',
     notes: '',
   },
@@ -233,11 +233,11 @@ const ethicsTemplate: CheckItem[] = [
 
   report.push('---');
   if (hasFailures) {
-    report.push('OVERALL: BLOCKED — address failing checks before deployment');
+    report.push('OVERALL: BLOCKED; address failing checks before deployment');
   } else if (hasPending) {
-    report.push('OVERALL: NEEDS REVIEW — complete pending checks');
+    report.push('OVERALL: NEEDS REVIEW; complete pending checks');
   } else {
-    report.push('OVERALL: APPROVED — all checks passed');
+    report.push('OVERALL: APPROVED; all checks passed');
   }
 
   return report.join('\\n');

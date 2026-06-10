@@ -157,12 +157,12 @@ const rawDetections: Detection[] = [
 console.log('Before NMS:', rawDetections.length); // 8 boxes
 
 const cleanDetections = nms(rawDetections, 0.5);
-console.log('After NMS:', cleanDetections.length); // 3 boxes — one per drone
+console.log('After NMS:', cleanDetections.length); // 3 boxes, one per drone
 
 // IoU threshold tuning:
 // Lower threshold (0.3) -> more aggressive suppression, fewer boxes
 // Higher threshold (0.7) -> less suppression, might keep duplicates
-// 0.5 is the standard — like a 300ms debounce delay`}
+// 0.5 is the standard, like a 300ms debounce delay`}
 </CodeBlock>
 
 ## Class-Aware NMS
@@ -192,7 +192,7 @@ When detecting multiple object types, only suppress within the same class, like 
 }
 
 // A drone box should not suppress a person box
-// even if they overlap — they are different classes
+// even if they overlap; they are different classes
 // Like debouncing search input separately from scroll events`}
 </CodeBlock>
 
@@ -212,9 +212,9 @@ Face matching system returned the wrong person for a flagged search. Audit the c
 
 <Quiz
   question="A detector returns 50 boxes for the same vehicle, all overlapping. After NMS with iouThreshold=0.5, you expect 1 box. You set iouThreshold=0.95 instead. What happens?"
-  options={[{"text":"All 50 boxes are kept — only boxes with near-perfect overlap are suppressed"},{"text":"Exactly 1 box is kept regardless of threshold — NMS always converges"},{"text":"All 50 are suppressed — high threshold means more aggressive removal"},{"text":"The model becomes faster — higher threshold short-circuits the IoU comparison"}]}
+  options={[{"text":"All 50 boxes are kept; only boxes with near-perfect overlap are suppressed"},{"text":"Exactly 1 box is kept regardless of threshold; NMS always converges"},{"text":"All 50 are suppressed; high threshold means more aggressive removal"},{"text":"The model becomes faster; higher threshold short-circuits the IoU comparison"}]}
   correct={0}
-  explanation="iouThreshold is the minimum overlap required to suppress a competing box. At 0.5, anything overlapping the top box by ≥50% is removed — most of your 50 redundant boxes share >50% overlap, so 1 survives. At 0.95, only boxes overlapping by ≥95% are removed; boxes with 80-90% overlap survive, so most of the 50 get kept. Higher threshold = LESS suppression. Option C inverts the relation; option B ignores the threshold entirely; option D confuses semantics with performance."
+  explanation="iouThreshold is the minimum overlap required to suppress a competing box. At 0.5, anything overlapping the top box by ≥50% is removed; most of your 50 redundant boxes share >50% overlap, so 1 survives. At 0.95, only boxes overlapping by ≥95% are removed; boxes with 80-90% overlap survive, so most of the 50 get kept. Higher threshold = LESS suppression. Option C inverts the relation; option B ignores the threshold entirely; option D confuses semantics with performance."
   tier="structural"
 />
 

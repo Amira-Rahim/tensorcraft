@@ -35,7 +35,7 @@ keywords:
 ---
 
 <Dialogue speaker="NEON">
-At 4 frames per second, you are processing one frame every 250 milliseconds. A Meridian scout drone covers 3 meters in that time. You are not doing real-time detection. You are doing historical analysis — very recent history, but history nonetheless.
+At 4 frames per second, you are processing one frame every 250 milliseconds. A Meridian scout drone covers 3 meters in that time. You are not doing real-time detection. You are doing historical analysis. Very recent history, but history nonetheless.
 </Dialogue>
 
 <Dialogue speaker="Noor">
@@ -131,4 +131,4 @@ Build a frame-by-frame inference loop that tracks FPS and prevents memory leaks.
 
 <Exercise slug="frame-inference" />
 
-<KeyTakeaways takeaways={["requestAnimationFrame schedules the loop, but your real frame rate is set by inference time, not the display's 60Hz", "tf.tidy() is essential — without it, tensor memory leaks crash the browser in seconds", "Real-time means your inference time must be less than your frame budget (33ms at 30fps)", "Monitor tf.memory().numTensors to verify your loop is not leaking"]} />
+<KeyTakeaways takeaways={["requestAnimationFrame schedules the loop, but your real frame rate is set by inference time, not the display's 60Hz", "tf.tidy() is essential; without it, tensor memory leaks crash the browser in seconds", "Real-time means your inference time must be less than your frame budget (33ms at 30fps)", "Monitor tf.memory().numTensors to verify your loop is not leaking"]} />

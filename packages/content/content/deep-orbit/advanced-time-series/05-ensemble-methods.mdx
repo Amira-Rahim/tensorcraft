@@ -7,7 +7,7 @@ order: 5
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "No single model handles all aspects of the signal. Demir combines the LSTM, attention model, and Kalman filter into an ensemble — multiple models, one prediction."
+  narrative: "No single model handles all aspects of the signal. Demir combines the LSTM, attention model, and Kalman filter into an ensemble: multiple models, one prediction."
   speaker: "Ensign Demir"
 concept:
   explanation: "An ensemble runs several models on every input and combines their answers; their individual errors partially cancel, and the blend beats any single member."
@@ -17,7 +17,7 @@ concept:
     mlTitle: "Model Ensemble"
     mlCode: "prediction = average(lstm.predict(x), attention.predict(x), kalman.predict(x))"
     tier: structural
-    breaks: "Micro-frontends serve different routes — each handles its own slice. Model ensembles run all members on every input and combine predictions (vote, average, stack). Compute is multiplied per inference, not partitioned."
+    breaks: "Micro-frontends serve different routes; each handles its own slice. Model ensembles run all members on every input and combine predictions (vote, average, stack). Compute is multiplied per inference, not partitioned."
 consequence:
   narrative: "Three architectures, one verdict: the ensemble catches the timing drift the LSTM alone missed."
 hints:
@@ -61,7 +61,7 @@ interface ModelPrediction {
   confidence: number;
 }
 
-// Simple averaging — each model gets equal vote
+// Simple averaging: each model gets equal vote
 function averageEnsemble(predictions: ModelPrediction[]): number[] {
   const n = predictions.length;
   const dim = predictions[0].prediction.length;
@@ -75,7 +75,7 @@ function averageEnsemble(predictions: ModelPrediction[]): number[] {
   return result;
 }
 
-// Weighted averaging — trust better models more
+// Weighted averaging: trust better models more
 function weightedEnsemble(predictions: ModelPrediction[]): number[] {
   const totalConf = predictions.reduce((s, p) => s + p.confidence, 0);
   const dim = predictions[0].prediction.length;
@@ -163,11 +163,11 @@ Build a weighted ensemble from multiple model predictions.
   question="Why do model ensembles often outperform any single model?"
   options={[{"text":"Ensembles use more compute"},{"text":"Errors of independently-trained models partially cancel via averaging"},{"text":"Ensembles use bigger models"},{"text":"Required by transformer architectures"}]}
   correct={1}
-  explanation="If ensemble members make uncorrelated errors, averaging cuts variance by sqrt(N). Bias is unchanged. Even simple averaging improves accuracy 1-3pp on most tasks. The condition is uncorrelated errors — achieved via random init, bagging, different architectures."
+  explanation="If ensemble members make uncorrelated errors, averaging cuts variance by sqrt(N). Bias is unchanged. Even simple averaging improves accuracy 1-3pp on most tasks. The condition is uncorrelated errors, achieved via random init, bagging, different architectures."
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Ensembles combine multiple models — averaging out individual errors for more robust predictions", "Weighted ensembles give more influence to higher-confidence models, like prioritizing trusted micro-frontends", "Diversity matters: models with different architectures (LSTM, attention, Kalman) make uncorrelated errors", "The DEEP SCAN ensemble catches the timing drift that no single model fully captured"]} />
+<KeyTakeaways takeaways={["Ensembles combine multiple models, averaging out individual errors for more robust predictions", "Weighted ensembles give more influence to higher-confidence models, like prioritizing trusted micro-frontends", "Diversity matters: models with different architectures (LSTM, attention, Kalman) make uncorrelated errors", "The DEEP SCAN ensemble catches the timing drift that no single model fully captured"]} />
 
 <Epilogue>
 

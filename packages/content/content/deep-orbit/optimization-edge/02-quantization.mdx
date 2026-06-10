@@ -7,21 +7,21 @@ order: 2
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "Nazari's first optimization: reduce precision. 'Float32 uses 4 bytes per weight. Float16 uses 2. Int8 uses 1. Do the math — that's a 4x size reduction.'"
+  narrative: "Nazari's first optimization: reduce precision. 'Float32 uses 4 bytes per weight. Float16 uses 2. Int8 uses 1. Do the math: that's a 4x size reduction.'"
   speaker: "Chief Nazari"
 concept:
   explanation: "Quantization stores each weight in fewer bytes: a smaller, faster model, paid for with a measurable slice of accuracy."
   bridge:
     feTitle: "Image Compression"
-    feCode: "// PNG (lossless, 2MB) → WebP (lossy, 200KB) — 10x smaller, ~same visual quality"
+    feCode: "// PNG (lossless, 2MB) → WebP (lossy, 200KB): 10x smaller, ~same visual quality"
     mlTitle: "Quantization"
-    mlCode: "// Float32 (340MB) → Int8 (85MB) — 4x smaller, ~2% accuracy loss"
+    mlCode: "// Float32 (340MB) → Int8 (85MB): 4x smaller, ~2% accuracy loss"
     tier: structural
 consequence:
-  narrative: "Quantization shrinks DEEP SCAN from 340 MB to 85 MB. Accuracy drops 1.2% — Nazari writes both numbers on the board and leaves them there."
+  narrative: "Quantization shrinks DEEP SCAN from 340 MB to 85 MB. Accuracy drops 1.2%. Nazari writes both numbers on the board and leaves them there."
 hints:
   - level: nudge
-    content: "Quantization is like choosing JPEG quality — lower precision = smaller size, slight quality loss"
+    content: "Quantization is like choosing JPEG quality: lower precision = smaller size, slight quality loss"
   - level: guidance
     content: "There is no tf.quantize() in TFJS; you map the range by hand. scale = (max - min) / 255, zeroPoint = Math.round(-min / scale), then each weight becomes Math.round((w - min) / scale). When saving a real model, quantizationBytes: 1 applies the same idea for you."
   - level: solution
@@ -116,7 +116,7 @@ Quantize model weights and measure the precision loss.
 
 <Exercise slug="quantize-weights" />
 
-<KeyTakeaways takeaways={["Quantization reduces precision: float32 (4B) → float16 (2B) → int8 (1B) per weight", "Like image compression: smaller files, barely noticeable quality loss for most use cases", "DEEP SCAN: 340 MB → 85 MB with int8, only 1.2% accuracy drop — a worthwhile trade", "Always measure accuracy after quantization — some models are more sensitive than others"]} />
+<KeyTakeaways takeaways={["Quantization reduces precision: float32 (4B) → float16 (2B) → int8 (1B) per weight", "Like image compression: smaller files, barely noticeable quality loss for most use cases", "DEEP SCAN: 340 MB → 85 MB with int8, only 1.2% accuracy drop: a worthwhile trade", "Always measure accuracy after quantization; some models are more sensitive than others"]} />
 
 > **DISPATCH archive · field intercept #14-Q:** Hassan's edge cell quantizes everything before deploy. They hit 1.2% accuracy loss and called it a win. Operator Jin pushed back: "On a 50-million-row table that's 600,000 wrong calls per quarter." Hassan's reply: "We monitor for it. That is why we have drift detection." Both true.
 
@@ -128,6 +128,6 @@ The int8 build loads on the engineering rig at 85 MB, and for the first time sin
 The megabytes we got back, we count once. The 1.2 percent, we pay on every classification until someone retrains. Both numbers stay on the board.
 </Dialogue>
 
-After the others leave, Farah runs the class-by-class breakdown she asked for. She reads it twice. She doesn't post the result — she flags it for the pruning review instead.
+After the others leave, Farah runs the class-by-class breakdown she asked for. She reads it twice. She doesn't post the result; she flags it for the pruning review instead.
 
 </Epilogue>

@@ -1,6 +1,6 @@
 slug: incident-misclassification-audit
 lessonSlug: non-max-suppression
-title: "Incident — Wrong Match Returned by Face System"
+title: "Incident: Wrong Match Returned by Face System"
 mlContent: systems
 instructions: |
   PAGER: face match returned subject B for a search of subject A. Build `auditMatch(rankedCandidates, returnedId, threshold)` returning:

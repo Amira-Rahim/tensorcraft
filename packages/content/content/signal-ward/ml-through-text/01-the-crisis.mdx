@@ -44,7 +44,7 @@ We caught it at the pharmacy. Barely. I'm canceling the vendor contract today.
 </Dialogue>
 
 <Dialogue speaker="Imran" direction="pulling up the chart">
-The note said "pt has documented PCN allergy — anaphylaxis 2019." The system couldn't parse the abbreviation.
+The note said "pt has documented PCN allergy: anaphylaxis 2019." The system couldn't parse the abbreviation.
 </Dialogue>
 
 <Dialogue speaker="Dr. Karimi">
@@ -84,7 +84,7 @@ const weights = tf.tensor([0.8, 0.9, 0.1, 0.7, 0.2]);
 // Step 3: Produce a prediction (dot product + activation)
 const score = noteFeatures.mul(weights).sum();
 console.log('Allergy risk score:', score.dataSync()[0]);
-// Output: ~2.4 — high risk, flag for review`}
+// Output: ~2.4; high risk, flag for review`}
 </CodeBlock>
 
 ## The Architecture of Diagnostic One

@@ -63,10 +63,10 @@ async function fineTuneForDrones(baseModelUrl: string) {
   // Step 1: Load the pre-trained model
   const baseModel = await tf.loadLayersModel(baseModelUrl);
 
-  // Step 2: Freeze the backbone — Object.freeze() for neural networks
+  // Step 2: Freeze the backbone, Object.freeze() for neural networks
   // These layers already know edges, textures, shapes
   baseModel.layers.forEach(layer => {
-    layer.trainable = false; // immutable — preserve pre-trained knowledge
+    layer.trainable = false; // immutable: preserve pre-trained knowledge
   });
 
   // Step 3: Extract features from the second-to-last layer
@@ -100,7 +100,7 @@ Like `Object.freeze()` gives you control over which properties are immutable, fi
 <CodeBlock language="typescript" title="freeze-strategies.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Freezing strategies — how much to lock down
+// Freezing strategies: how much to lock down
 
 interface FreezeStrategy {
   name: string;
@@ -116,21 +116,21 @@ const strategies: FreezeStrategy[] = [
     unfreezeLastN: 2,
     learningRate: 0.001,
     bestFor: 'Very small datasets (100-500 images)',
-    risk: 'Low — all pre-trained knowledge preserved',
+    risk: 'Low: all pre-trained knowledge preserved',
   },
   {
     name: 'Partial unfreeze (balanced)',
     unfreezeLastN: 5,
     learningRate: 0.0001, // lower LR for pre-trained layers
     bestFor: 'Medium datasets (500-5000 images)',
-    risk: 'Medium — some adaptation, some preservation',
+    risk: 'Medium: some adaptation, some preservation',
   },
   {
     name: 'Full fine-tune (aggressive)',
     unfreezeLastN: Infinity,
     learningRate: 0.00001, // very low to avoid catastrophic forgetting
     bestFor: 'Large datasets (5000+ images)',
-    risk: 'High — catastrophic forgetting if LR too high',
+    risk: 'High: catastrophic forgetting if LR too high',
   },
 ];
 
@@ -153,7 +153,7 @@ function applyFreezeStrategy(
 
 // Catastrophic forgetting: when fine-tuning overwrites the useful
 // knowledge the model learned during pre-training.
-// Like accidentally calling Object.assign(defaults, {}) — wiping everything.
+// Like accidentally calling Object.assign(defaults, {}), wiping everything.
 // Prevention: freeze aggressively, use low learning rates.`}
 </CodeBlock>
 
@@ -166,7 +166,7 @@ function applyFreezeStrategy(
   images: tf.Tensor4D,
   labels: tf.Tensor2D
 ) {
-  // Extract features once — the backbone is frozen, so features never change
+  // Extract features once; the backbone is frozen, so features never change
   const features = featureExtractor.predict(images) as tf.Tensor;
 
   // Compile the classification head
@@ -176,7 +176,7 @@ function applyFreezeStrategy(
     metrics: ['accuracy'],
   });
 
-  // Train — only the head's weights update
+  // Train: only the head's weights update
   await head.fit(features, labels, {
     epochs: 20,
     batchSize: 32,

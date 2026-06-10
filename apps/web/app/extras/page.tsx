@@ -37,9 +37,9 @@ export default function ExtrasPage() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "ItemList",
-            name: "Tensorcraft Extras — Companion Modules",
+            name: "Tensorcraft Extras: Companion Modules",
             description:
-              "Math derivations, classical ML, ethics, Python bridge — companion modules that go deeper than the main FE-bridge path.",
+              "Math derivations, classical ML, ethics, Python bridge. Companion modules that go deeper than the main FE-bridge path.",
             url: "https://tensorcraft.app/extras",
             itemListElement: Object.keys(byModule).map((moduleId, i) => ({
               "@type": "ListItem",
@@ -52,7 +52,7 @@ export default function ExtrasPage() {
       />
       <div className="max-w-5xl mx-auto">
         <p className="font-mono text-xs text-primary tracking-[0.18em] uppercase mb-3">
-          // EXTRAS — companion modules
+          EXTRAS, companion modules
         </p>
         <h1 className="text-4xl md:text-5xl font-mono font-black tracking-tight text-text-primary mb-4">
           Beyond the main path.

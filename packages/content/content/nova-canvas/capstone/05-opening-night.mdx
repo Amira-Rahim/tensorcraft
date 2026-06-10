@@ -48,14 +48,14 @@ Tomorrow we fix the memory leak in the WebSocket handler. Tonight we watch.
 
 Every production launch you have done follows the same rhythm: weeks of preparation, a launch checklist, the deployment, the anxious monitoring, the first real users. An installation opening night is a production deployment you can see happening in front of you, with your users standing in the room instead of hiding in the analytics.
 
-<LearningObjectives objectives={["Build a comprehensive pre-launch checklist that verifies every system component", "Create a runbook with typed failure scenarios and recovery procedures", "Monitor a live system in production — knowing when to act and when to watch", "Conduct a post-launch retrospective that captures lessons for future deployments"]} />
+<LearningObjectives objectives={["Build a comprehensive pre-launch checklist that verifies every system component", "Create a runbook with typed failure scenarios and recovery procedures", "Monitor a live system in production, knowing when to act and when to watch", "Conduct a post-launch retrospective that captures lessons for future deployments"]} />
 
 ## Launch Checklist
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="launch-checklist.ts">
-{`// Pre-flight checklist — run this before opening the gallery doors
+{`// Pre-flight checklist: run this before opening the gallery doors
 interface ChecklistItem {
   name: string;
   check: () => Promise<boolean>;
@@ -164,7 +164,7 @@ const runbook: RunbookEntry[] = [
       tf.engine().endScope();
       return tf.memory().numTensors < 200;
     },
-    escalation: 'Rohan — audio pipeline likely source',
+    escalation: 'Rohan; audio pipeline likely source',
   },
   {
     scenario: 'WebSocket connection storm',
@@ -176,7 +176,7 @@ const runbook: RunbookEntry[] = [
       '3. Restart affected tablets if in reconnect loop',
       '4. Check server-side WebSocket handler for resource leaks',
     ],
-    escalation: 'Samir — connection manager owner',
+    escalation: 'Samir; connection manager owner',
   },
   {
     scenario: 'Generation quality degradation',
@@ -188,7 +188,7 @@ const runbook: RunbookEntry[] = [
       '3. Re-download model from cache',
       '4. Compare against reference outputs',
     ],
-    escalation: 'Yara — visual quality assessment',
+    escalation: 'Yara; visual quality assessment',
   },
 ];
 
@@ -197,7 +197,7 @@ async function handleIncident(scenario: string) {
   const entry = runbook.find(r => r.scenario === scenario);
   if (!entry) return;
 
-  console.log(\`[INCIDENT] \${entry.scenario} — severity: \${entry.severity}\`);
+  console.log(\`[INCIDENT] \${entry.scenario}; severity: \${entry.severity}\`);
 
   if (entry.autoRecovery) {
     const recovered = await entry.autoRecovery();
@@ -216,33 +216,33 @@ async function handleIncident(scenario: string) {
 
 <BossBeat
   beatId="nova-canvas-launch-curator-call"
-  prompt="Yara taps your shoulder. The generator just produced an output the curator says crosses the gallery's editorial line — content that's technically within model guardrails but contextually wrong for opening night. The room is full. The piece is on the wall in 90 seconds. Pull it now (curator override) or hold and let the generator try again (artistic process)?"
+  prompt="Yara taps your shoulder. The generator just produced an output the curator says crosses the gallery's editorial line: content that's technically within model guardrails but contextually wrong for opening night. The room is full. The piece is on the wall in 90 seconds. Pull it now (curator override) or hold and let the generator try again (artistic process)?"
   options={[
     {
       label: "cooperate",
-      display: "Pull the piece — respect the curator's editorial authority",
+      display: "Pull the piece; respect the curator's editorial authority",
       consequence: "Piece offline. Curator nods. The wall stays blank for 30 seconds; the generator retries and produces something that lands. Yara: 'The collective ships when the room is ready, not when the model is ready.' Cooperative play kept the gallery's artistic contract; the audience never sees the piece that almost broke trust."
     },
     {
       label: "defect",
-      display: "Let it ride — generative output is the work",
+      display: "Let it ride; generative output is the work",
       consequence: "Piece displays. Audience reaction split: half intrigued, half annoyed. Curator publicly defends the choice; privately, the gallery board calls a closed meeting next week. Yara backs you. The next exhibit's editorial gate is tighter as a result. Defection paid in artistic statement; the operating budget for the next show shrinks by 12%."
     },
     {
       label: "random",
-      display: "Coin flip — let the room decide via reaction sensor",
+      display: "Coin flip; let the room decide via reaction sensor",
       consequence: "Sensor reads 60% disengaged. Auto-pull triggers. Same outcome as cooperate, but the moment was decided by averaged audience attention rather than artistic intent. The gallery's role as filter became outsourced. Erdem, not looking up from the dashboard: 'Mixed strategies in art are how you get nothing on the wall.'"
     },
     {
       label: "dominant",
       display: "Pull but display the curator's note explaining the call",
-      consequence: "Piece offline. In its place: a one-line text card: 'Editorial gate triggered — generator produced output curated out of opening-night canon. Process visible, decision documented.' Audience reads it; conversation in the room shifts from 'what was the piece' to 'how does the gate work.' Yara: 'You made the discipline part of the artwork.' Dominant strategy = transparency as artistic statement."
+      consequence: "Piece offline. In its place: a one-line text card: 'Editorial gate triggered: generator produced output curated out of opening-night canon. Process visible, decision documented.' Audience reads it; conversation in the room shifts from 'what was the piece' to 'how does the gate work.' Yara: 'You made the discipline part of the artwork.' Dominant strategy = transparency as artistic statement."
     }
   ]}
 />
 
 <CodeBlock language="typescript" title="dashboard.ts">
-{`// Real-time dashboard — the view from Erdem's phone
+{`// Real-time dashboard: the view from Erdem's phone
 function renderDashboard(canvas: HTMLCanvasElement, monitor: InstallationMonitor) {
   const ctx = canvas.getContext('2d')!;
   const metrics = monitor.currentMetrics;
@@ -275,7 +275,7 @@ Build a launch checklist and runbook for deploying a live installation.
 
 <Exercise slug="launch-biennale" />
 
-<KeyTakeaways takeaways={["Launch checklists verify every system component — critical items block launch, non-critical items get logged", "Runbooks turn panic into procedure: typed failure scenarios, auto-recovery first, human escalation when it fails", "The discipline of production operations is watching metrics and resisting the urge to make changes during peak load"]} />
+<KeyTakeaways takeaways={["Launch checklists verify every system component; critical items block launch, non-critical items get logged", "Runbooks turn panic into procedure: typed failure scenarios, auto-recovery first, human escalation when it fails", "The discipline of production operations is watching metrics and resisting the urge to make changes during peak load"]} />
 
 <DispatchTease
   toThemeId="terra-grid"

@@ -7,7 +7,7 @@ order: 3
 estimatedMinutes: 15
 difficulty: intermediate
 context:
-  narrative: "A single FFT shows frequency content at one moment. But the anomalous signal changes over time. Farah needs a spectrogram — frequency content plotted across time."
+  narrative: "A single FFT shows frequency content at one moment. But the anomalous signal changes over time. Farah needs a spectrogram: frequency content plotted across time."
   speaker: "Dr. Farah"
 concept:
   explanation: "A spectrogram plots frequency content against time: stack one FFT per window and the signal's behavior becomes a picture you can read."
@@ -17,7 +17,7 @@ concept:
     mlTitle: "Spectrogram"
     mlCode: "// Time on x-axis, frequency on y-axis, magnitude as color"
     tier: intuition
-    breaks: "DevTools waterfall shows discrete network events on a timeline. Spectrograms are continuous heatmaps of frequency over time computed via overlapping windowed FFTs — every pixel carries energy, not an event marker."
+    breaks: "DevTools waterfall shows discrete network events on a timeline. Spectrograms are continuous heatmaps of frequency over time computed via overlapping windowed FFTs; every pixel carries energy, not an event marker."
 consequence:
   narrative: "Bursts, not a constant tone. The anomalous frequency pulses, and the gap between pulses measures roughly 73.4 seconds."
 hints:
@@ -61,7 +61,7 @@ A single FFT gives you one column of the spectrogram: all frequencies at one mom
  * Short-Time Fourier Transform (STFT)
  * Slide a window across the signal, compute FFT at each position.
  *
- * Think of it like a scrolling viewport across a timeline —
+ * Think of it like a scrolling viewport across a timeline:
  * at each scroll position, you analyze what's visible in the window.
  */
 function stft(
@@ -129,7 +129,7 @@ function findAnomalyWindows(
 const anomalyBin = Math.round(73.4 * 256 / 128);
 const activeWindows = findAnomalyWindows(spec, anomalyBin, 2.0);
 console.log('Anomaly appears at windows:', activeWindows);
-// Shows the anomaly pulses — it's not constant, it's periodic`}
+// Shows the anomaly pulses: it's not constant, it's periodic`}
 </CodeBlock>
 
 ## Window Size Tradeoff
@@ -176,12 +176,12 @@ spectrogram[t, k] = |X[t, k]|²            // magnitude squared
 **Parameters:**
 - **W (window size):** larger W = better frequency resolution, worse time resolution. Heisenberg uncertainty for signal processing.
 - **Hop (stride between windows):** smaller hop = more overlap, smoother spectrogram, more compute. Common: hop = W/4 (75% overlap).
-- **w(W) (window function):** Hann, Hamming, Blackman — all taper edges to reduce spectral leakage when the signal isn't periodic in W.
+- **w(W) (window function):** Hann, Hamming, Blackman: all taper edges to reduce spectral leakage when the signal isn't periodic in W.
 
 **Output shape:** `[num_windows, num_frequencies]`. With sample rate fs and window W, frequency resolution is `fs / W`. Time resolution is `hop / fs`.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["A 256-sample window with a 128-sample hop gives 50% overlap, the standard STFT starting configuration", "The STFT slides a window across the signal and computes the FFT at each position", "Window size is a tradeoff: large windows = better frequency detail, small windows = better time detail", "For DEEP SCAN, the spectrogram reveals the anomaly pulses periodically — not a constant signal"]} />
+<KeyTakeaways takeaways={["A 256-sample window with a 128-sample hop gives 50% overlap, the standard STFT starting configuration", "The STFT slides a window across the signal and computes the FFT at each position", "Window size is a tradeoff: large windows = better frequency detail, small windows = better time detail", "For DEEP SCAN, the spectrogram reveals the anomaly pulses periodically, not a constant signal"]} />
 
 <Epilogue>
 

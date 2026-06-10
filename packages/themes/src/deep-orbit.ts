@@ -6,7 +6,7 @@ export const deepOrbit: ThemeManifest = {
   displayName: "Deep Orbit",
   tagline: "Navigate the unknown through signals",
   description:
-    "Research vessel Archimedes has entered an uncharted nebula. The ship's AI is failing. Build DEEP SCAN — a deep-space signal classifier.",
+    "Research vessel Archimedes has entered an uncharted nebula. The ship's AI is failing. Build DEEP SCAN, a deep-space signal classifier.",
   palette: {
     bg: "#1C1C1C",
     primary: "#6BAA8A",
@@ -40,7 +40,7 @@ export const deepOrbit: ThemeManifest = {
       name: "Chief Nazari",
       role: "Skeptic",
       personality:
-        "Distrusts ML — a rule-based system froze on his last mission",
+        "Distrusts ML: a rule-based system froze on his last mission",
     },
     {
       name: "Ensign Demir",
@@ -54,10 +54,10 @@ export const deepOrbit: ThemeManifest = {
     },
   ],
   specialization: "Time-Series & Signals",
-  modelBuilt: "DEEP SCAN — deep-space signal classifier",
+  modelBuilt: "DEEP SCAN: deep-space signal classifier",
   careerPaths: [
-    "Signal Processing Engineer ($108K–$258K)",
-    "Time-Series ML Engineer ($120K–$200K)",
-    "IoT ML Engineer ($110K–$180K)",
+    "Signal Processing Engineer ($108K-$258K)",
+    "Time-Series ML Engineer ($120K-$200K)",
+    "IoT ML Engineer ($110K-$180K)",
   ],
 };

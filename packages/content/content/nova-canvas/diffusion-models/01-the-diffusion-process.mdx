@@ -167,13 +167,13 @@ Where `ᾱ_t = ∏_{s=1..t} (1 - β_s)`. So we can sample x_t directly:
 
 `x_t = √ᾱ_t · x_0 + √(1 - ᾱ_t) · ε,    ε ~ N(0, I)`
 
-**Reverse process (denoising)** — what the model learns:
+**Reverse process (denoising)**, what the model learns:
 
 `p_θ(x_{t-1} | x_t) = N( x_{t-1}; μ_θ(x_t, t),  Σ_θ(x_t, t) )`
 
 The network predicts the mean (and sometimes variance) of the reverse step. Generation = start from pure noise and apply the reverse step T times.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["The model never learns to draw, only to predict the noise in a noisy image; generation is that prediction subtracted T times", "The forward process adds Gaussian noise incrementally until only static remains", "The reverse process uses a neural network to predict and subtract that noise step by step", "Each denoising step is small — the model only has to remove a little noise at a time, making the task learnable"]} />
+<KeyTakeaways takeaways={["The model never learns to draw, only to predict the noise in a noisy image; generation is that prediction subtracted T times", "The forward process adds Gaussian noise incrementally until only static remains", "The reverse process uses a neural network to predict and subtract that noise step by step", "Each denoising step is small; the model only has to remove a little noise at a time, making the task learnable"]} />
 
 > **DISPATCH archive · field intercept #28-G:** Operator Demir's anomaly cell uses the inverse contract: they add Gaussian noise to clean signals to test detector robustness. Same noise schedule, opposite direction. Where Yara denoises to create, Demir denoises to verify. The math is symmetric; the intent isn't.

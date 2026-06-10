@@ -4,7 +4,7 @@
  * Use {@link errorMessageForCode} to resolve a machine code to a friendly
  * string. Unknown or missing codes fall back to `ERROR_MESSAGES.unknown`.
  *
- * Phase 6e — dev-plan.md §6e.
+ * Phase 6e, dev-plan.md §6e.
  */
 export const ERROR_MESSAGES = {
   network: "Can't reach the server. Check your connection and try again.",
@@ -35,7 +35,7 @@ export function errorMessageForCode(code: string | undefined): string {
     return ERROR_MESSAGES[code as ErrorCode];
   }
 
-  // Common aliases — keep this list narrow and intentional.
+  // Common aliases, keep this list narrow and intentional.
   const alias: Record<string, ErrorCode> = {
     // Stripe decline codes
     card_declined: "stripe_declined",

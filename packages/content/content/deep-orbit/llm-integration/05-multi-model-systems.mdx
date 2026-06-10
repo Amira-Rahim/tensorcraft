@@ -17,7 +17,7 @@ concept:
     mlTitle: "Model Orchestration"
     mlCode: "// Pipeline: classifier → anomaly detector → LLM reporter"
     tier: structural
-    breaks: "Microservices have stable contracts and explicit error responses. Model orchestration passes outputs (often natural-language) between probabilistic models — errors compound silently and one weak model degrades the entire chain without raising an exception."
+    breaks: "Microservices have stable contracts and explicit error responses. Model orchestration passes outputs (often natural-language) between probabilistic models; errors compound silently and one weak model degrades the entire chain without raising an exception."
 consequence:
   narrative: "Classify, detect, predict, report: the complete DEEP SCAN pipeline runs end-to-end with nobody awake to watch it."
 hints:
@@ -110,7 +110,7 @@ Generate a brief alert summary in 2-3 sentences.
 ## Error Handling and Fallbacks
 
 <CodeBlock language="typescript" title="resilience.ts">
-{`// Like micro-service circuit breakers — if one model fails, degrade gracefully
+{`// Like micro-service circuit breakers: if one model fails, degrade gracefully
 
 async function resilientPipeline(
   signal: number[],
@@ -118,7 +118,7 @@ async function resilientPipeline(
   models: any,
   thresholds: any,
 ): Promise<PipelineResult> {
-  // Classification is required — fail if it fails
+  // Classification is required: fail if it fails
   const classification = await classifyWithRetry(signal, models.classifier);
 
   // Anomaly detection: fall back to statistical check
@@ -131,15 +131,15 @@ async function resilientPipeline(
     anomaly = { isAnomaly: zScore > 3, score: zScore };
   }
 
-  // Prediction: optional — skip if LSTM fails
+  // Prediction: optional (skip if LSTM fails)
   let prediction = { nextValues: [], confidence: 0 };
   try {
     prediction = await predictNext(window, models.lstm);
   } catch {
-    console.warn('LSTM prediction failed — skipping');
+    console.warn('LSTM prediction failed; skipping');
   }
 
-  // Report: optional — skip if LLM is unavailable
+  // Report: optional (skip if LLM is unavailable)
   let report = null;
   if (anomaly.isAnomaly) {
     try {
@@ -165,11 +165,11 @@ Wire together a multi-model pipeline with error handling.
   question="Best way to chain LLM calls reliably?"
   options={[{"text":"Single big prompt with all instructions"},{"text":"Decompose into small focused calls + validate output of each before next"},{"text":"Always use the largest available model"},{"text":"Run all calls in parallel, then merge"}]}
   correct={1}
-  explanation="Long prompts increase cost AND error rate. Each LLM call is probabilistic — chaining 5 unchecked calls with 95% reliability per call yields 77% end-to-end. Validate output (JSON schema, length, format) between steps; retry on failure. Production LLM systems read like microservice architectures."
+  explanation="Long prompts increase cost AND error rate. Each LLM call is probabilistic: chaining 5 unchecked calls with 95% reliability per call yields 77% end-to-end. Validate output (JSON schema, length, format) between steps; retry on failure. Production LLM systems read like microservice architectures."
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Chained probabilistic models compound error: five unchecked steps at 95% reliability each yield 77% end-to-end, so validate output between stages", "Define clear interfaces between stages: classifier output becomes anomaly detector input", "Graceful degradation: if one model fails, fall back to simpler methods rather than failing entirely", "The complete DEEP SCAN pipeline: classify → detect anomalies → predict → report — end-to-end automation"]} />
+<KeyTakeaways takeaways={["Chained probabilistic models compound error: five unchecked steps at 95% reliability each yield 77% end-to-end, so validate output between stages", "Define clear interfaces between stages: classifier output becomes anomaly detector input", "Graceful degradation: if one model fails, fall back to simpler methods rather than failing entirely", "The complete DEEP SCAN pipeline: classify → detect anomalies → predict → report, end-to-end automation"]} />
 
 <Epilogue>
 

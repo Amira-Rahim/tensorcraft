@@ -127,7 +127,7 @@ const terraGridPipeline: MLPipeline = {
   console.log(\`Pipeline triggered by: \${pipeline.triggerSource}\`);
 
   for (const stage of pipeline.stages) {
-    // Check gate — like a CI check that must pass
+    // Check gate, like a CI check that must pass
     const gateOpen = await stage.gate();
     if (!gateOpen) {
       stage.status = 'failed';
@@ -150,7 +150,7 @@ const terraGridPipeline: MLPipeline = {
     }
   }
 
-  console.log('Pipeline complete — model deployed');
+  console.log('Pipeline complete: model deployed');
   return true;
 }`}
 </CodeBlock>
@@ -161,4 +161,4 @@ Define the stages and gates for an ML pipeline.
 
 <Exercise slug="pipeline-stages" />
 
-<KeyTakeaways takeaways={["An ML pipeline runs ingest, validate, train, evaluate, deploy; each stage consumes the previous stage's artifact and gates the next", "Quality gates prevent bad models from shipping — just like failing tests block a deploy", "Automation handles the repetitive work; human oversight handles the judgment calls", "Pipeline triggers can be scheduled, data-driven, or manual; match the trigger to how quickly your data changes"]} />
+<KeyTakeaways takeaways={["An ML pipeline runs ingest, validate, train, evaluate, deploy; each stage consumes the previous stage's artifact and gates the next", "Quality gates prevent bad models from shipping, just like failing tests block a deploy", "Automation handles the repetitive work; human oversight handles the judgment calls", "Pipeline triggers can be scheduled, data-driven, or manual; match the trigger to how quickly your data changes"]} />

@@ -7,7 +7,7 @@ order: 3
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "Nazari examines the weight distribution. 'Half these weights are near zero — they do nothing. Remove them.' Demir discovers pruning: tree-shaking for neural networks."
+  narrative: "Nazari examines the weight distribution. 'Half these weights are near zero. They do nothing. Remove them.' Demir discovers pruning: tree-shaking for neural networks."
   speaker: "Chief Nazari"
 concept:
   explanation: "Pruning deletes the weights that contribute almost nothing, and 'almost' is the word this lesson teaches you to measure."
@@ -21,7 +21,7 @@ consequence:
   narrative: "Pruning removes 60% of weights while maintaining 94% of accuracy. Combined with quantization: 340 MB → 42 MB. Demir's 80% experiment costs three hours."
 hints:
   - level: nudge
-    content: "Weights near zero contribute almost nothing — removing them barely affects output"
+    content: "Weights near zero contribute almost nothing; removing them barely affects output"
   - level: guidance
     content: "Sort weights by magnitude, zero out the smallest ones, retrain to recover accuracy"
   - level: solution
@@ -42,7 +42,7 @@ Look at this weight histogram. Half the values are within 0.001 of zero. They co
 Tree-shaking. Webpack drops the exports nothing imports; we drop the weights nothing needs. The bundle gets smaller and nobody notices the difference.
 </Dialogue>
 
-He's close. Tree-shaking removes code that's provably unreachable — the bundle behaves identically afterward. Pruning removes weights that contribute *almost* nothing, and "almost" is doing real work in that sentence: every pruned weight changes the output a little. The craft is in measuring how much all those littles add up to.
+He's close. Tree-shaking removes code that's provably unreachable; the bundle behaves identically afterward. Pruning removes weights that contribute *almost* nothing, and "almost" is doing real work in that sentence: every pruned weight changes the output a little. The craft is in measuring how much all those littles add up to.
 
 <LearningObjectives objectives={["Understand pruning as tree-shaking for neural networks: remove near-zero weights", "Implement magnitude-based pruning with a configurable sparsity level", "Measure the accuracy-size tradeoff at different pruning levels", "Combine pruning with quantization for maximum compression"]} />
 
@@ -67,13 +67,13 @@ const original = [0.5, -0.01, 0.002, -0.8, 0.003, 0.7, -0.001, 0.6];
 const pruned = pruneWeights(original, 0.6);
 console.log(pruned);
 // [0.5, 0, 0, -0.8, 0, 0.7, 0, 0.6]
-// 5 of 8 weights remain (3 pruned — those closest to zero)
+// 5 of 8 weights remain (3 pruned: those closest to zero)
 
 // Sparsity levels for DEEP SCAN:
-// 30% pruned: 93.8% accuracy (vs 94.2% baseline) — barely noticeable
-// 60% pruned: 92.1% accuracy — good tradeoff
-// 80% pruned: 87.5% accuracy — too aggressive
-// 90% pruned: 71.2% accuracy — model is broken`}
+// 30% pruned: 93.8% accuracy (vs 94.2% baseline), barely noticeable
+// 60% pruned: 92.1% accuracy, good tradeoff
+// 80% pruned: 87.5% accuracy, too aggressive
+// 90% pruned: 71.2% accuracy, model is broken`}
 </CodeBlock>
 
 Demir reads that ladder, does the arithmetic, and gets ambitious: at 80 percent sparsity the combined build would land near 28 MB, headroom to spare. He pushes it to the staging dashboard before dinner, without waiting for the replay suite.
@@ -97,7 +97,7 @@ He reverts. The "almost nothing" in those extra weights turned out to be the ano
 // After quantization: 34M × 1 byte ≈ 34 MB + sparse index ≈ 42 MB
 
 // Combined result: 340 MB → 42 MB (8x compression!)
-// Accuracy: 94.2% → 91.8% (2.4% drop — Nazari approves)
+// Accuracy: 94.2% → 91.8% (2.4% drop, Nazari approves)
 
 console.log('=== DEEP SCAN Optimization Results ===');
 console.log('Original:               340 MB, 94.2% accuracy');
@@ -113,7 +113,7 @@ Prune weights and measure the accuracy impact.
 
 <Exercise slug="prune-weights" />
 
-<KeyTakeaways takeaways={["Sparsity has a cliff: 60% pruning costs DEEP SCAN 2.1 accuracy points, 80% costs 6.7, and 90% breaks the model outright", "Pruning hits rare classes hardest — the 80% build misclassified the one anomaly fragment the crew had left", "Combined pruning + quantization achieves 8x compression: 340 MB → 42 MB for DEEP SCAN", "Always retrain after aggressive pruning to recover some lost accuracy"]} />
+<KeyTakeaways takeaways={["Sparsity has a cliff: 60% pruning costs DEEP SCAN 2.1 accuracy points, 80% costs 6.7, and 90% breaks the model outright", "Pruning hits rare classes hardest: the 80% build misclassified the one anomaly fragment the crew had left", "Combined pruning + quantization achieves 8x compression: 340 MB → 42 MB for DEEP SCAN", "Always retrain after aggressive pruning to recover some lost accuracy"]} />
 
 <Epilogue>
 

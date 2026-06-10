@@ -57,7 +57,7 @@ An NER model walks through every token and decides whether it belongs to an enti
 <CodeBlock language="typescript" title="what-is-ner.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// Entity types for clinical NER — like CSS selectors for text
+// Entity types for clinical NER, like CSS selectors for text
 const ENTITY_TYPES = ['O', 'DRUG', 'CONDITION', 'DOSAGE', 'FREQUENCY', 'PROCEDURE'];
 
 interface Entity {
@@ -91,7 +91,7 @@ async function extractEntities(
 
   for (let i = 0; i < tokens.length; i++) {
     const typeIdx = predArray[i];
-    if (typeIdx !== 0) { // skip 'O' (outside) — like nodes that don't match the selector
+    if (typeIdx !== 0) { // skip 'O' (outside), like nodes that don't match the selector
       entities.push({
         text: tokens[i],
         type: ENTITY_TYPES[typeIdx],

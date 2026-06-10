@@ -44,7 +44,7 @@ Treat it like a release. Semantic versioning, integrity hashes, the works.
 
 Nothing reaches the npm registry without a `package.json`, a version number, and an integrity hash; loose files are not a release. Model deployment deserves the same rigor. A model package bundles everything needed for inference into a single, versioned, verifiable artifact.
 
-<LearningObjectives objectives={["Structure a model deployment artifact with weights, config, and metadata", "Implement integrity verification using checksums — the same concept as SRI hashes", "Apply semantic versioning to model releases", "Build a packaging pipeline that produces reproducible deployment bundles"]} />
+<LearningObjectives objectives={["Structure a model deployment artifact with weights, config, and metadata", "Implement integrity verification using checksums, the same concept as SRI hashes", "Apply semantic versioning to model releases", "Build a packaging pipeline that produces reproducible deployment bundles"]} />
 
 ## Anatomy of a Model Package
 
@@ -134,7 +134,7 @@ Subresource Integrity (SRI) hashes verify that a CDN-served script has not been 
 // On the edge device:
 const pkg = await downloadPackage('terra-grid-intelligence', '2.1.0');
 if (!verifyPackage(pkg)) {
-  console.error('Aborting deployment — falling back to previous version');
+  console.error('Aborting deployment; falling back to previous version');
   await rollback();
 }`}
 </CodeBlock>
@@ -145,4 +145,4 @@ Create a model packaging function with versioning and integrity verification.
 
 <Exercise slug="package-model" />
 
-<KeyTakeaways takeaways={["A model package bundles weights, preprocessing config, and version metadata into one verifiable artifact whose format must match the target runtime", "Integrity checksums prevent corrupted deployments the same way SRI hashes prevent tampered scripts", "Semantic versioning for models enables rollback and compatibility tracking across your device fleet", "Never deploy raw weight files — always package, version, verify, then deploy"]} />
+<KeyTakeaways takeaways={["A model package bundles weights, preprocessing config, and version metadata into one verifiable artifact whose format must match the target runtime", "Integrity checksums prevent corrupted deployments the same way SRI hashes prevent tampered scripts", "Semantic versioning for models enables rollback and compatibility tracking across your device fleet", "Never deploy raw weight files: always package, version, verify, then deploy"]} />

@@ -122,7 +122,7 @@ async function trainAutoencoder(
 
 // THE LIMITATION: autoencoders reconstruct, but cannot generate
 // If you sample a random point in the latent space,
-// the decoder might produce garbage — the space has "holes"
+// the decoder might produce garbage; the space has "holes"
 // VAEs fix this by forcing the latent space to be smooth and continuous`}
 </CodeBlock>
 
@@ -146,10 +146,10 @@ The **bottleneck dimension** dim(z) constrains how much information the model ca
 
 <Quiz
   question="A vanilla autoencoder reconstructs input perfectly but generates garbage when you sample random points in its latent space. A VAE generates plausible new images. What's the architectural difference that fixes this?"
-  options={[{"text":"VAEs use bigger latent dimensions"},{"text":"VAEs encode each input as a distribution (μ, σ) instead of a single point, and the KL term forces the encoder's distributions to overlap and cover the prior — making the latent space continuous and samplable"},{"text":"VAEs use ReLU instead of sigmoid"},{"text":"VAEs train longer than autoencoders"}]}
+  options={[{"text":"VAEs use bigger latent dimensions"},{"text":"VAEs encode each input as a distribution (μ, σ) instead of a single point, and the KL term forces the encoder's distributions to overlap and cover the prior, making the latent space continuous and samplable"},{"text":"VAEs use ReLU instead of sigmoid"},{"text":"VAEs train longer than autoencoders"}]}
   correct={1}
-  explanation="Vanilla autoencoders learn point-to-point mappings — they leave the latent space full of holes between training points where decoding gives garbage. VAEs encode to a Gaussian (μ, σ) and the KL loss pulls every Gaussian toward N(0, I), filling the latent space with overlapping distributions. Sampling N(0, I) lands in well-trained regions."
+  explanation="Vanilla autoencoders learn point-to-point mappings; they leave the latent space full of holes between training points where decoding gives garbage. VAEs encode to a Gaussian (μ, σ) and the KL loss pulls every Gaussian toward N(0, I), filling the latent space with overlapping distributions. Sampling N(0, I) lands in well-trained regions."
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Autoencoders learn to compress and reconstruct data through a bottleneck", "Watch val_loss, not just loss: an oversized bottleneck memorizes instead of compressing", "Training minimizes reconstruction error — the difference between input and output", "Limitation: autoencoders cannot generate new data because the latent space has gaps"]} />
+<KeyTakeaways takeaways={["Autoencoders learn to compress and reconstruct data through a bottleneck", "Watch val_loss, not just loss: an oversized bottleneck memorizes instead of compressing", "Training minimizes reconstruction error, the difference between input and output", "Limitation: autoencoders cannot generate new data because the latent space has gaps"]} />

@@ -128,7 +128,7 @@ function buildUNet(inputShape: [number, number, number]): tf.LayersModel {
 
 const unet = buildUNet([64, 64, 3]);
 unet.summary();
-// Total params: ~300K — small enough for browser inference`}
+// Total params: ~300K, small enough for browser inference`}
 </CodeBlock>
 
 ## Challenge
@@ -157,4 +157,4 @@ Without skips, fine spatial detail is lost in the bottleneck. Skips re-inject hi
 **Time conditioning:** the timestep t is embedded (sinusoidal embedding → MLP) and added to every block's activations as a bias. The same network handles all timesteps; the time embedding tells it where in the schedule we are.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["Concatenate each skip tensor at its matching resolution level: without skips the bottleneck blurs away edges and texture", "The encoder compresses spatial dimensions to capture context; the decoder expands back to full resolution", "Skip connections carry fine-grained detail from encoder to decoder at matching resolution levels", "The output has the same shape as the input — the model predicts the noise to subtract"]} />
+<KeyTakeaways takeaways={["Concatenate each skip tensor at its matching resolution level: without skips the bottleneck blurs away edges and texture", "The encoder compresses spatial dimensions to capture context; the decoder expands back to full resolution", "Skip connections carry fine-grained detail from encoder to decoder at matching resolution levels", "The output has the same shape as the input; the model predicts the noise to subtract"]} />

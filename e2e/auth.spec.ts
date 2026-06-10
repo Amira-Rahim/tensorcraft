@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 /**
  * Auth is a single merged route (/auth) with context-aware copy driven by
- * the `tc_visited` localStorage flag — there are no separate sign-in /
+ * the `tc_visited` localStorage flag, there are no separate sign-in /
  * sign-up pages anymore. The legacy /auth/sign-in and /auth/sign-up routes
  * are redirect shims.
  */

@@ -19,7 +19,7 @@ export function ComingSoonStub({ theme }: Props) {
   const courseJsonLd = {
     "@context": "https://schema.org",
     "@type": "Course",
-    name: `${theme.displayName} — ${theme.specialization}`,
+    name: `${theme.displayName}: ${theme.specialization}`,
     description: theme.description,
     provider: {
       "@type": "Organization",
@@ -74,7 +74,7 @@ export function ComingSoonStub({ theme }: Props) {
               className="font-mono text-xs uppercase tracking-[0.15em]"
               style={{ color: theme.palette.muted }}
             >
-              // {theme.specialization}
+              {theme.specialization}
             </span>
           </div>
 
@@ -105,7 +105,7 @@ export function ComingSoonStub({ theme }: Props) {
             className="font-mono text-xs uppercase tracking-[0.2em] mb-4"
             style={{ color: theme.palette.primary }}
           >
-            // What you&rsquo;ll build
+            What you&rsquo;ll build
           </h2>
           <p
             className="text-lg leading-relaxed mb-8"
@@ -118,7 +118,7 @@ export function ComingSoonStub({ theme }: Props) {
             className="font-mono text-xs uppercase tracking-[0.2em] mb-4"
             style={{ color: theme.palette.primary }}
           >
-            // Cast
+            Cast
           </h2>
           <ul className="space-y-3">
             {theme.characters.map((c) => (

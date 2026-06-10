@@ -52,7 +52,7 @@ app.use("*", async (c, next) => {
 });
 
 // Rate limit all routes EXCEPT third-party webhooks (which retry on failure).
-// Both Stripe and Kit webhooks retry aggressively — rate-limiting them risks
+// Both Stripe and Kit webhooks retry aggressively, rate-limiting them risks
 // dropping retry attempts and desyncing our DB from the provider's state.
 app.use("*", async (c, next) => {
   if (
@@ -64,7 +64,7 @@ app.use("*", async (c, next) => {
   return rateLimitMiddleware(c, next);
 });
 
-// Global error handler — sanitize errors, never leak internals
+// Global error handler, sanitize errors, never leak internals
 app.onError((err, c) => {
   const requestId = c.res.headers.get("X-Request-Id");
   logger.error(
@@ -131,7 +131,7 @@ const server = serve({
 
 // Graceful shutdown
 function shutdown(signal: string) {
-  logger.info({ signal }, `${signal} received — shutting down gracefully`);
+  logger.info({ signal }, `${signal} received, shutting down gracefully`);
   server.close(() => {
     logger.info("Server closed");
     process.exit(0);

@@ -9,7 +9,7 @@ import {
 } from "@/lib/boss-beat-client";
 
 interface BossBeatOption {
-  /** Game-theoretic stance label — exactly one of the 4 enum values. */
+  /** Game-theoretic stance label, exactly one of the 4 enum values. */
   label: BossBeatChoiceLabel;
   /** Display label shown to the user. Free text. */
   display: string;
@@ -69,7 +69,7 @@ export function BossBeat({
     };
   }, [beatId]);
 
-  // Countdown — only ticks when no prior choice and not already submitted.
+  // Countdown, only ticks when no prior choice and not already submitted.
   useEffect(() => {
     if (loading || priorChoice || submittedIndex !== null) return;
     if (secondsLeft <= 0) {
@@ -106,7 +106,7 @@ export function BossBeat({
 
   async function handleTimeout() {
     if (submittedIndex !== null || priorChoice) return;
-    // Treat timeout as "random" stance — the explicit non-choice IS a
+    // Treat timeout as "random" stance, the explicit non-choice IS a
     // strategy in game-theoretic terms.
     const idx = options.findIndex((o) => o.label === TIMEOUT_LABEL);
     const fallback = idx >= 0 ? idx : 2;

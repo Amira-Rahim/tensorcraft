@@ -36,7 +36,7 @@ export function getSupabaseServerClient(accessToken?: string) {
 }
 
 /**
- * Admin client — bypasses RLS. Use only for server-side operations
+ * Admin client, bypasses RLS. Use only for server-side operations
  * like webhook handlers and background jobs.
  */
 export function getSupabaseAdminClient() {

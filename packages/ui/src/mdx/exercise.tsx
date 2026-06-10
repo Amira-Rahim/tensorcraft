@@ -46,7 +46,7 @@ export interface ExerciseData {
   estimatedMinutes: number;
   difficulty: "beginner" | "intermediate" | "advanced";
   /**
-   * ML content axis — orthogonal to cognitive difficulty. Tells learners
+   * ML content axis, orthogonal to cognitive difficulty. Tells learners
    * whether the exercise uses real TFJS primitives or is arithmetic-grade
    * JavaScript with ML framing. See
    * docs/audits/exercise-mlcontent-audit-2026-04-26.md.
@@ -86,7 +86,7 @@ export { parseAndRunTests };
 export type { TestRunOutcome };
 
 /* ------------------------------------------------------------------ */
-/*  Context — exercise data injected from LessonContent                */
+/*  Context - exercise data injected from LessonContent                */
 /* ------------------------------------------------------------------ */
 
 const ExerciseDataContext = createContext<Map<string, ExerciseData>>(new Map());
@@ -184,7 +184,7 @@ function TestResultsPanel({ results }: { results: TestResult[] }) {
           {allPassed
             ? "All tests passed!"
             : partial
-              ? `Partial credit — ${passed} of ${total} tests passed`
+              ? `Partial credit: ${passed} of ${total} tests passed`
               : `${passed} of ${total} tests passed`}
         </span>
         <span
@@ -235,7 +235,7 @@ function TestResultsPanel({ results }: { results: TestResult[] }) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  ConsolePanel — runtime console.log / console.error output          */
+/*  ConsolePanel - runtime console.log / console.error output          */
 /* ------------------------------------------------------------------ */
 
 function ConsolePanel({ logs }: { logs: ConsoleEntry[] }) {
@@ -286,7 +286,7 @@ function ConsolePanel({ logs }: { logs: ConsoleEntry[] }) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  BridgeHint — FE↔ML bridge reminder below the editor                */
+/*  BridgeHint - FE↔ML bridge reminder below the editor                */
 /* ------------------------------------------------------------------ */
 
 const bridgeTierColors: Record<ExerciseBridge["tier"], string> = {
@@ -318,7 +318,7 @@ function BridgeHint({ bridge }: { bridge: ExerciseBridge }) {
 }
 
 /* ------------------------------------------------------------------ */
-/*  RunButton — inside Sandpack context to access code                 */
+/*  RunButton - inside Sandpack context to access code                 */
 /* ------------------------------------------------------------------ */
 
 function ExerciseControls({
@@ -516,7 +516,7 @@ export function Exercise({ slug, onSubmit, bridge }: ExerciseProps) {
                 background: `${mlContentConfig[exercise.mlContent].tone}15`,
                 color: mlContentConfig[exercise.mlContent].tone,
               }}
-              title="ML content axis — what skill the exercise actually builds"
+              title="ML content axis: what skill the exercise actually builds"
               data-testid="mlcontent-badge"
             >
               {mlContentConfig[exercise.mlContent].label}
@@ -612,7 +612,7 @@ export function Exercise({ slug, onSubmit, bridge }: ExerciseProps) {
       {/* Solution revealed indicator */}
       {showSolution && (
         <p className="text-xs mt-3 italic text-yellow-400 font-mono">
-          Solution revealed — try modifying it to deepen your understanding.
+          Solution revealed. Try modifying it to deepen your understanding.
         </p>
       )}
     </div>

@@ -2,15 +2,15 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy — Tensorcraft",
+  title: "Privacy Policy | Tensorcraft",
   description:
-    "How Tensorcraft collects, uses, and stores account, progress, and analytics data — plus your GDPR and CCPA rights.",
+    "How Tensorcraft collects, uses, and stores account, progress, and analytics data, plus your GDPR and CCPA rights.",
   alternates: { canonical: "https://tensorcraft.app/privacy" },
   openGraph: {
     type: "article",
     url: "https://tensorcraft.app/privacy",
     siteName: "Tensorcraft",
-    title: "Privacy Policy — Tensorcraft",
+    title: "Privacy Policy | Tensorcraft",
     description:
       "Data practices, third-party services, cookies, retention, and your rights.",
     images: [
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Privacy Policy — Tensorcraft",
+    title: "Privacy Policy | Tensorcraft",
     description: "Data practices, third-party services, cookies, and rights.",
     images: [
       "/api/og?title=Privacy%20Policy&subtitle=Tensorcraft%20legal&theme=deep-orbit",
@@ -103,26 +103,26 @@ export default function PrivacyPage() {
             <p>We use the following third-party services:</p>
             <ul className="list-disc pl-6 mt-2 space-y-1">
               <li>
-                <strong className="text-text-primary">Supabase</strong> —
+                <strong className="text-text-primary">Supabase</strong>:
                 Authentication and database
               </li>
               <li>
-                <strong className="text-text-primary">Stripe</strong> — Payment
+                <strong className="text-text-primary">Stripe</strong>: Payment
                 processing
               </li>
               <li>
-                <strong className="text-text-primary">Kit (ConvertKit)</strong>{" "}
-                — Transactional and lifecycle email delivery
+                <strong className="text-text-primary">Kit (ConvertKit)</strong>:
+                Transactional and lifecycle email delivery
               </li>
               <li>
-                <strong className="text-text-primary">Sentry</strong> — Error
+                <strong className="text-text-primary">Sentry</strong>: Error
                 monitoring via DSN; captures errors and stack traces. PII
                 (emails, user IDs) is scrubbed via a{" "}
                 <code className="font-mono text-text-primary">beforeSend</code>{" "}
                 hook before transmission.
               </li>
               <li>
-                <strong className="text-text-primary">PostHog</strong> — Product
+                <strong className="text-text-primary">PostHog</strong>: Product
                 analytics on the EU instance (
                 <code className="font-mono text-text-primary">
                   eu.posthog.com
@@ -130,19 +130,19 @@ export default function PrivacyPage() {
                 ) for GDPR-compliant data residency. Cookie-consent-gated.
               </li>
               <li>
-                <strong className="text-text-primary">Plausible</strong> —
+                <strong className="text-text-primary">Plausible</strong>:
                 Privacy-first pageview analytics. Cookie-free and EU-hosted.
               </li>
               <li>
-                <strong className="text-text-primary">Vercel</strong> — Web
+                <strong className="text-text-primary">Vercel</strong>: Web
                 hosting and deployment
               </li>
               <li>
-                <strong className="text-text-primary">Fly.io</strong> — API
+                <strong className="text-text-primary">Fly.io</strong>: API
                 hosting
               </li>
               <li>
-                <strong className="text-text-primary">GitHub App</strong> —
+                <strong className="text-text-primary">GitHub App</strong>:
                 Optional user integration for exercise push flow (only when
                 explicitly authorized by you)
               </li>

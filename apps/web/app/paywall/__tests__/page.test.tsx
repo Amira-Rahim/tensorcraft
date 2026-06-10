@@ -73,7 +73,7 @@ describe("PaywallPage (Phase 11 §11d Wave 3 NEW)", () => {
   });
 
   it("does not ship the V1 social-proof placeholder block", () => {
-    // Round 13: the "// SOCIAL PROOF PENDING" placeholder was removed —
+    // Round 13: the "// SOCIAL PROOF PENDING" placeholder was removed -
     // an empty placeholder hurts conversion more than no testimonials. The
     // block returns once real beta quotes land.
     render(<PaywallPage />);

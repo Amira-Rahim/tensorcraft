@@ -16,7 +16,7 @@ concept:
     mlTitle: "NumPy ndarray"
     mlCode: "a = np.array([1,2,3]); a * 2"
     tier: structural
-    breaks: "`Float32Array + .map` is a JS-iterating function-per-element loop. NumPy `ndarray * 2` is a vectorized C-level broadcast that runs 10–100× faster on the same op and supports n-dimensional indexing/slicing JS arrays cannot express. The conceptual rhyme holds; the performance and API surface do not."
+    breaks: "`Float32Array + .map` is a JS-iterating function-per-element loop. NumPy `ndarray * 2` is a vectorized C-level broadcast that runs 10-100× faster on the same op and supports n-dimensional indexing/slicing JS arrays cannot express. The conceptual rhyme holds; the performance and API surface do not."
 consequence:
   narrative: "np.zeros is tf.zeros, np.reshape is tf.reshape; the translation is nearly mechanical. Keep the mapping table open for your first week of reading NumPy. After that you won't need it."
 hints:
@@ -100,7 +100,7 @@ result = a + b                   # broadcasts b across rows
 # [[11, 22, 33],
 #  [14, 25, 36]]
 
-# TF.js — identical behavior
+# TF.js: identical behavior
 # const a = tf.tensor2d([[1,2,3],[4,5,6]]);
 # const b = tf.tensor1d([10, 20, 30]);
 # const result = a.add(b);`}

@@ -7,17 +7,17 @@ order: 1
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "Mirza assembles the crew for the final phase. 'We have all the pieces. Now we assemble them into a production system. Demir — lay out the architecture.' Demir designs the complete DEEP SCAN system."
+  narrative: "Mirza assembles the crew for the final phase. 'We have all the pieces. Now we assemble them into a production system. Demir, lay out the architecture.' Demir designs the complete DEEP SCAN system."
   speaker: "Commander Mirza"
 concept:
   explanation: "System architecture is dependency management at production scale: every component from the last ten modules becomes a typed stage in one pipeline, sharing one unforgiving machine."
   bridge:
     feTitle: "Package Dependencies"
-    feCode: "// package.json: { dependencies: { react, tfjs, ... } } — declare, install, resolve"
+    feCode: "// package.json: { dependencies: { react, tfjs, ... } }: declare, install, resolve"
     mlTitle: "Pipeline Dependencies"
-    mlCode: "// pipeline: preprocess → featureExtract → classify → report — declare, connect, validate"
+    mlCode: "// pipeline: preprocess → featureExtract → classify → report: declare, connect, validate"
     tier: structural
-    breaks: "Package dependencies are resolved deterministically by a manifest and lockfile. ML pipeline dependencies include data shapes, schema contracts, model versions, and feature freshness — schema breaks are silent (predictions become wrong, not errors) and surface days later as accuracy regressions, not stack traces."
+    breaks: "Package dependencies are resolved deterministically by a manifest and lockfile. ML pipeline dependencies include data shapes, schema contracts, model versions, and feature freshness; schema breaks are silent (predictions become wrong, not errors) and surface days later as accuracy regressions, not stack traces."
 consequence:
   narrative: "Five components on the main display: preprocessing, feature extraction, classification, anomaly detection, reporting. Mirza nods. 'Build it.'"
 hints:
@@ -53,7 +53,7 @@ The deploy target is already chosen, and it is not forgiving: the repaired bridg
 
 <CodeBlock language="typescript" title="pipeline.ts">
 {`// DEEP SCAN Pipeline Architecture
-// Each stage has typed input/output — like React component props
+// Each stage has typed input/output, like React component props
 
 interface PipelineStage<TInput, TOutput> {
   name: string;
@@ -110,7 +110,7 @@ console.log('Confidence:', report.classification.confidence);`}
 ## Component Registry
 
 <CodeBlock language="typescript" title="registry.ts">
-{`// Register all DEEP SCAN components — like a monorepo's package index
+{`// Register all DEEP SCAN components, like a monorepo's package index
 
 interface ComponentManifest {
   name: string;
@@ -158,7 +158,7 @@ const manifest: ComponentManifest[] = [
   },
 ];
 
-// Validate dependency graph — no cycles, all deps exist
+// Validate dependency graph: no cycles, all deps exist
 function validateGraph(components: ComponentManifest[]): boolean {
   const names = new Set(components.map(c => c.name));
   return components.every(c =>
@@ -179,7 +179,7 @@ Design a typed pipeline and validate the dependency graph.
 
 <Epilogue>
 
-The diagram stays on the main display after the briefing ends. Five boxes, typed edges, one arrow in and one arrow out. In the lower corner, smaller than the rest: FALLBACK — RULE-BASED (ARIA), wired to fire if the classifier's confidence drops below threshold. ARIA studies it for 1.4 seconds, which for her is a long time.
+The diagram stays on the main display after the briefing ends. Five boxes, typed edges, one arrow in and one arrow out. In the lower corner, smaller than the rest: FALLBACK: RULE-BASED (ARIA), wired to fire if the classifier's confidence drops below threshold. ARIA studies it for 1.4 seconds, which for her is a long time.
 
 <Dialogue speaker="ARIA">
 I have reviewed the architecture. I appear to be the fallback path. It is a smaller box than I had. It is still a box.

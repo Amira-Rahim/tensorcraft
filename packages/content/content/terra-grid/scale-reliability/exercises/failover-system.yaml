@@ -22,7 +22,7 @@ starterCode: |
 
     execute(input: number): { result: number; source: 'primary' | 'fallback' } {
       // If on fallback, use fallback
-      // Otherwise try primary — if it throws, increment failures
+      // Otherwise try primary; if it throws, increment failures
       // Switch to fallback after maxFailures consecutive failures
       // Reset failures on primary success
       return { result: 0, source: 'primary' }; // your code here
@@ -118,7 +118,7 @@ testCode: |
       );
       controller.execute(1); // failure 1
       controller.execute(1); // failure 2
-      controller.execute(1); // failure 3 — switch
+      controller.execute(1); // failure 3: switch
       expect(controller.getStatus()).toBe('fallback');
     });
 
@@ -131,7 +131,7 @@ testCode: |
       );
       controller.execute(1); // failure 1
       shouldFail = false;
-      controller.execute(1); // success — reset
+      controller.execute(1); // success: reset
       expect(controller.getStatus()).toBe('primary');
     });
 

@@ -17,7 +17,7 @@ export const dynamicParams = false;
 
 /**
  * Module-overview shim. There is no standalone module page in the current
- * design — the theme page's module map is the canonical module overview.
+ * design, the theme page's module map is the canonical module overview.
  * This route exists because real surfaces still link to
  * `/themes/{slug}/{module}`: the lesson page's "Go to previous module"
  * prerequisite gate and the BreadcrumbList JSON-LD on every lesson. Without

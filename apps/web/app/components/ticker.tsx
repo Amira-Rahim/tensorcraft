@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useCallback } from "react";
 
-/* ── Ticker canvas — subtle horizontal streaks ──────────── */
+/* ── Ticker canvas, subtle horizontal streaks ──────────── */
 
 function TickerCanvas() {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -139,7 +139,7 @@ export function Ticker() {
       <TickerCanvas />
       <div className="shrink-0 px-4 h-full flex items-center border-r border-border bg-surface z-2 relative">
         <span className="font-mono text-xs font-bold text-primary tracking-[0.14em] uppercase whitespace-nowrap">
-          // bridge system
+          bridge system
         </span>
       </div>
       <div className="flex-1 overflow-hidden flex items-center relative z-1">

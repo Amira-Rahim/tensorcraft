@@ -22,7 +22,7 @@ starterCode: |
       return [];
     }
 
-    // Stage 2: Extract features — compute mean R, mean G, mean B
+    // Stage 2: Extract features. Compute mean R, mean G, mean B
     // Input: flat RGB pixel array
     // Output: [meanR, meanG, meanB]
     extractFeatures(pixels: number[]): number[] {

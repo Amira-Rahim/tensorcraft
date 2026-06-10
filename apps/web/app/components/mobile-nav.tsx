@@ -119,7 +119,7 @@ export function MobileNav() {
             ))}
           </nav>
 
-          {/* Bottom section — auth-aware */}
+          {/* Bottom section, auth-aware */}
           <div className="px-8 pb-10 border-t border-border pt-6">
             {user ? (
               <div className="flex flex-col gap-2">

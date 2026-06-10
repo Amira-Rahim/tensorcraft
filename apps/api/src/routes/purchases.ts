@@ -9,7 +9,7 @@ import type { AppEnv } from "../types";
  *
  * These endpoints are the canonical way for server components, mobile
  * clients, and external API consumers to ask "what has this user
- * purchased?". RLS ensures a user can only see their own rows —
+ * purchased?". RLS ensures a user can only see their own rows -
  * we additionally filter by status = 'completed' so refunded /
  * disputed / pending purchases never grant access.
  */
@@ -29,7 +29,7 @@ purchases.use("*", authMiddleware);
  *   { themeIds: string[]; hasFullBundle: boolean }
  *
  * Theme IDs are deduplicated and filtered against the canonical
- * `THEME_SLUGS` list — a stray value in the database (should be
+ * `THEME_SLUGS` list, a stray value in the database (should be
  * impossible once the CHECK constraint lands) will never leak to the
  * client.
  */

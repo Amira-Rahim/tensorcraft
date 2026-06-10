@@ -1,12 +1,12 @@
 slug: compare-architectures
 lessonSlug: from-rnn-to-transformer
 title: "Compare RNN and Transformer Architectures"
-instructions: "Implement two functions that process a sequence of token embeddings: (1) rnnProcess — sequentially processes tokens one at a time using a hidden state, returning the final hidden state; (2) transformerProcess — processes all tokens in parallel using scaled dot-product self-attention, returning attended representations for all tokens. Compare how each handles the same input."
+instructions: "Implement two functions that process a sequence of token embeddings: (1) rnnProcess: sequentially processes tokens one at a time using a hidden state, returning the final hidden state; (2) transformerProcess: processes all tokens in parallel using scaled dot-product self-attention, returning attended representations for all tokens. Compare how each handles the same input."
 starterCode: |
   import * as tf from '@tensorflow/tfjs';
 
   /**
-   * Process tokens sequentially — each step depends on the previous hidden state.
+   * Process tokens sequentially; each step depends on the previous hidden state.
    * @param tokens [seqLen, embedDim] input embeddings
    * @param hiddenDim size of the hidden state
    * @returns [hiddenDim] final hidden state
@@ -92,7 +92,7 @@ testCode: |
     });
   });
   describe('transformerProcess', () => {
-    it('returns shape [seqLen, dk] — output for ALL tokens', () => {
+    it('returns shape [seqLen, dk]: output for ALL tokens', () => {
       const tokens = tf.randomNormal([8, 32]) as tf.Tensor2D;
       const output = transformerProcess(tokens, 16);
       expect(output.shape).toEqual([8, 16]);

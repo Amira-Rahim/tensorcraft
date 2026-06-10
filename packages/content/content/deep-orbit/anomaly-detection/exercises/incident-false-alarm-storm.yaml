@@ -1,6 +1,6 @@
 slug: incident-false-alarm-storm
 lessonSlug: threshold-tuning
-title: "Incident — False Alarm Storm"
+title: "Incident: False Alarm Storm"
 mlContent: systems
 instructions: |
   PAGER: 1000 anomaly alerts in 1 hour, normal baseline is ~10/hour. Diagnose root cause via `diagnoseStorm(currentAlerts, baselineAlerts, sensorAuditLog)`:
@@ -34,7 +34,7 @@ solutionCode: |
       action = 'Recalibrate threshold using rolling 7-day baseline';
     } else {
       cause = 'real-event';
-      action = 'Escalate to incident response — investigate the underlying signal';
+      action = 'Escalate to incident response: investigate the underlying signal';
     }
     return { rate, ratio, cause, action };
   }

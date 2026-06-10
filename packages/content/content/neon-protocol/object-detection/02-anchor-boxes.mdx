@@ -92,7 +92,7 @@ function generateGrid(gridSize: number): Array<{ cx: number; cy: number }> {
 
 const grid = generateGrid(7);
 console.log(grid.length); // 49
-console.log(grid[0]);     // { cx: 0.071, cy: 0.071 } — top-left cell center`}
+console.log(grid[0]);     // { cx: 0.071, cy: 0.071 }, top-left cell center`}
 </CodeBlock>
 
 ## Multiple Scales and Aspect Ratios
@@ -169,7 +169,7 @@ function applyDelta(anchor: Anchor, delta: AnchorDelta): Anchor {
   };
 }
 
-// The model predicts small deltas — nudging anchors into place
+// The model predicts small deltas, nudging anchors into place
 // Much easier than predicting absolute coordinates from scratch
 // Like CSS: transform: translate(5px, -3px) scale(1.2)
 // vs setting left: 347px; top: 218px from nothing
@@ -178,7 +178,7 @@ const anchor: Anchor = { cx: 0.5, cy: 0.5, width: 0.2, height: 0.2 };
 const delta: AnchorDelta = { dx: 0.1, dy: -0.05, dw: 0.2, dh: 0.3 };
 const adjusted = applyDelta(anchor, delta);
 console.log(adjusted);
-// Center shifted slightly, box grew a bit — now fits the object`}
+// Center shifted slightly, box grew a bit; now fits the object`}
 </CodeBlock>
 
 ## Challenge
@@ -191,10 +191,10 @@ Generate an anchor grid with multiple scales.
 
 <Quiz
   question="Why do object detectors use multiple anchor boxes per spatial location instead of just one box?"
-  options={[{"text":"To average predictions across anchors and reduce variance"},{"text":"Because objects in real scenes have varying aspect ratios and scales — a single anchor cannot match a tall pedestrian and a wide bus equally well"},{"text":"To run detection in parallel on different GPU cores"},{"text":"To make the loss function differentiable"}]}
+  options={[{"text":"To average predictions across anchors and reduce variance"},{"text":"Because objects in real scenes have varying aspect ratios and scales; a single anchor cannot match a tall pedestrian and a wide bus equally well"},{"text":"To run detection in parallel on different GPU cores"},{"text":"To make the loss function differentiable"}]}
   correct={1}
   explanation="A single anchor shape can match either tall objects (pedestrians) OR wide objects (buses) but not both simultaneously. Multiple anchors per location (typically 3 scales × 3 ratios = 9 anchors) let the network specialize each anchor to a different shape; during training, only the anchor with highest IoU to the ground-truth gets the regression target. Variance reduction (A) is not the motivation; parallelism (C) is unrelated; loss differentiability (D) is independent of anchor count."
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Anchor scales and aspect ratios are hyperparameters fixed before training, and a bad choice caps recall no matter how long you train", "Multiple scales and aspect ratios at each cell cover objects of different sizes and shapes", "Models predict offsets (deltas) from anchors rather than raw coordinates", "A 7x7 grid with 9 anchors per cell produces 441 candidates per image — the model scores all of them"]} />
+<KeyTakeaways takeaways={["Anchor scales and aspect ratios are hyperparameters fixed before training, and a bad choice caps recall no matter how long you train", "Multiple scales and aspect ratios at each cell cover objects of different sizes and shapes", "Models predict offsets (deltas) from anchors rather than raw coordinates", "A 7x7 grid with 9 anchors per cell produces 441 candidates per image, and the model scores all of them"]} />

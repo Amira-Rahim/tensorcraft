@@ -7,7 +7,7 @@ order: 2
 estimatedMinutes: 15
 difficulty: intermediate
 context:
-  narrative: "Dr. Farah introduces the mathematical tool that converts between time and frequency: the Fourier Transform. 'Think of a chord — the FFT tells you which individual notes make it up.'"
+  narrative: "Dr. Farah introduces the mathematical tool that converts between time and frequency: the Fourier Transform. 'Think of a chord: the FFT tells you which individual notes make it up.'"
   speaker: "Dr. Farah"
 concept:
   explanation: "The Fourier Transform decomposes a complex signal into simple sine waves, each with a magnitude and a phase. The same fixed basis decomposes every signal; that universality is the whole trick."
@@ -17,12 +17,12 @@ concept:
     mlTitle: "FFT Decomposition"
     mlCode: "const frequencies = tf.spectral.rfft(signal)"
     tier: structural
-    breaks: "@keyframes decompose animation into authored timeline steps. FFT decomposes a signal into a fixed mathematical basis of sinusoids (e^(-2πikn/N) for k = 0..N-1) and returns complex-valued coefficients (magnitude + phase). The basis is universal and not learned from data — the same N sinusoids decompose every signal."
+    breaks: "@keyframes decompose animation into authored timeline steps. FFT decomposes a signal into a fixed mathematical basis of sinusoids (e^(-2πikn/N) for k = 0..N-1) and returns complex-valued coefficients (magnitude + phase). The basis is universal and not learned from data; the same N sinusoids decompose every signal."
 consequence:
   narrative: "A sharp peak at 73.4 Hz, and nothing in the catalog to explain it. 'That is not stellar background,' Farah says quietly."
 hints:
   - level: nudge
-    content: "FFT converts a time-domain array into frequency magnitudes — like decomposing an animation into its keyframe steps"
+    content: "FFT converts a time-domain array into frequency magnitudes, like decomposing an animation into its keyframe steps"
   - level: guidance
     content: "Use tf.spectral.rfft() for real-valued signals, then tf.abs() to get magnitudes"
   - level: solution
@@ -73,7 +73,7 @@ for (let i = 0; i < n; i++) {
   );
 }
 
-// Compute the FFT — decompose into frequencies
+// Compute the FFT: decompose into frequencies
 const signalTensor = tf.tensor1d(signal);
 const fftResult = tf.spectral.rfft(signalTensor);     // complex-valued output
 const magnitudes = tf.abs(fftResult);                   // get magnitude of each frequency
@@ -109,15 +109,15 @@ function binToFrequency(binIndex: number, sampleRate: number, fftSize: number): 
 }
 
 // For our signal: sampleRate=128, fftSize=128
-// bin 0  → 0 Hz   (DC component — average value)
+// bin 0  → 0 Hz   (DC component: average value)
 // bin 1  → 1 Hz
 // bin 5  → 5 Hz   ← our first sine wave
 // bin 20 → 20 Hz  ← our second sine wave
-// bin 64 → 64 Hz  (Nyquist frequency — maximum detectable)
+// bin 64 → 64 Hz  (Nyquist frequency: maximum detectable)
 
 // Nyquist frequency: the highest frequency you can detect
 // = sampleRate / 2
-// Like the "max viewport width" — you can't render details finer than one pixel
+// Like the "max viewport width": you can't render details finer than one pixel
 const nyquist = sampleRate / 2;  // 64 Hz
 console.log('Nyquist frequency:', nyquist, 'Hz');
 
@@ -206,7 +206,7 @@ A signal is fully reconstructible from its DFT: no information is lost.
 **Cost of naive DFT:** O(N²). For each of N frequencies, sum over N inputs. The FFT (next) drops this to O(N log N), which is what makes real-time spectrograms possible.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["Peaks only count against a noise floor: DEEP SCAN flags bins above 5x the average magnitude, then checks them against known natural frequencies", "Each frequency bin = binIndex × (sampleRate / fftSize) Hz — a simple linear mapping", "The Nyquist frequency (sampleRate / 2) is the highest detectable frequency — like a resolution limit", "For DEEP SCAN, the FFT reveals an anomalous 73.4 Hz component hidden in the time-domain noise"]} />
+<KeyTakeaways takeaways={["Peaks only count against a noise floor: DEEP SCAN flags bins above 5x the average magnitude, then checks them against known natural frequencies", "Each frequency bin = binIndex × (sampleRate / fftSize) Hz, a simple linear mapping", "The Nyquist frequency (sampleRate / 2) is the highest detectable frequency, like a resolution limit", "For DEEP SCAN, the FFT reveals an anomalous 73.4 Hz component hidden in the time-domain noise"]} />
 
 <Epilogue>
 

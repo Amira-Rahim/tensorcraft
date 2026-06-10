@@ -105,7 +105,7 @@ async function benchmark(backend: string, model: tf.LayersModel) {
 ## GPU Memory Management
 
 <CodeBlock language="typescript" title="gpu-memory.ts">
-{`// GPU memory is limited — more constrained than CPU RAM
+{`// GPU memory is limited, more constrained than CPU RAM
 // TensorFlow.js manages GPU textures automatically, but you must still dispose tensors
 
 // Monitor GPU memory usage
@@ -120,14 +120,14 @@ function cleanupGpu() {
   // Dispose all variables not tracked by a model
   tf.disposeVariables();
 
-  // For WebGL specifically — reset the GL context if memory is critical
+  // For WebGL specifically: reset the GL context if memory is critical
   const backend = tf.backend() as any;
   if (backend.gpgpu) {
     backend.gpgpu.gl.flush();
   }
 }
 
-// Use tf.tidy() religiously in loops — GPU memory leaks are worse than CPU leaks
+// Use tf.tidy() religiously in loops; GPU memory leaks are worse than CPU leaks
 // because GPU memory is typically 2-8GB vs 16-32GB system RAM`}
 </CodeBlock>
 
@@ -137,4 +137,4 @@ Configure the WebGL backend and compare inference performance across backends.
 
 <Exercise slug="webgl-backend" />
 
-<KeyTakeaways takeaways={["tf.setBackend('webgl') routes tensor operations through the GPU — the same hardware running your CSS transforms", "GPU parallelism can accelerate inference 5-10x over CPU for matrix-heavy operations", "Always do a warm-up run — the GPU compiles shaders on the first inference call", "GPU memory is more limited than system RAM — tensor disposal is even more critical on WebGL"]} />
+<KeyTakeaways takeaways={["tf.setBackend('webgl') routes tensor operations through the GPU, the same hardware running your CSS transforms", "GPU parallelism can accelerate inference 5-10x over CPU for matrix-heavy operations", "Always do a warm-up run; the GPU compiles shaders on the first inference call", "GPU memory is more limited than system RAM, so tensor disposal is even more critical on WebGL"]} />

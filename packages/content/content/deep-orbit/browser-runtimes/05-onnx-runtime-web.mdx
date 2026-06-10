@@ -7,7 +7,7 @@ order: 5
 estimatedMinutes: 15
 difficulty: advanced
 context:
-  narrative: "Nazari demands a benchmark. 'TF.js is not the only option. Compare runtimes before we commit.' Demir discovers ONNX — the universal model format."
+  narrative: "Nazari demands a benchmark. 'TF.js is not the only option. Compare runtimes before we commit.' Demir discovers ONNX, the universal model format."
   speaker: "Chief Nazari"
 concept:
   explanation: "ONNX is a shared model format: any compliant runtime can execute it, with 'compliant' carrying the same fine print as every web standard."
@@ -17,12 +17,12 @@ concept:
     mlTitle: "Cross-Runtime Models"
     mlCode: "// Same ONNX model runs in TF.js, ONNX Runtime, PyTorch"
     tier: structural
-    breaks: "Cross-browser compat is solved by polyfills and feature detection — the same code with shims. Cross-runtime models require operator-set support: an op present in PyTorch but absent from ONNX or TFJS makes the model fail to load entirely. There is no polyfill for a missing op; you must rewrite the model architecture."
+    breaks: "Cross-browser compat is solved by polyfills and feature detection: the same code with shims. Cross-runtime models require operator-set support: an op present in PyTorch but absent from ONNX or TFJS makes the model fail to load entirely. There is no polyfill for a missing op; you must rewrite the model architecture."
 consequence:
   narrative: "Demir presents the benchmark results. ONNX Runtime wins on cold start; TF.js wins on sustained inference. Nazari chooses TF.js for the dashboard, ONNX for the backup system."
 hints:
   - level: nudge
-    content: "ONNX is a model format, not a framework — like HTML is a document format, not a browser"
+    content: "ONNX is a model format, not a framework, like HTML is a document format, not a browser"
   - level: guidance
     content: "Load ONNX models with onnxruntime-web's InferenceSession.create(), feed data with OrtTensor"
   - level: solution
@@ -57,7 +57,7 @@ Train in PyTorch, export once, run anywhere: that is the pitch, and Nazari has a
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="onnx-basics.ts">
-{`// ONNX Runtime Web — the alternative browser ML runtime
+{`// ONNX Runtime Web: the alternative browser ML runtime
 // npm install onnxruntime-web
 import * as ort from 'onnxruntime-web';
 
@@ -66,7 +66,7 @@ const session = await ort.InferenceSession.create('/models/deep-scan.onnx', {
   executionProviders: ['wasm'],  // 'wasm' or 'webgl'
 });
 
-// Check model inputs/outputs — like inspecting an API schema
+// Check model inputs/outputs, like inspecting an API schema
 console.log('Inputs:', session.inputNames);    // ['input']
 console.log('Outputs:', session.outputNames);  // ['output']
 
@@ -172,7 +172,7 @@ Run an ONNX model and compare its output with TF.js.
 
 <Exercise slug="onnx-comparison" />
 
-<KeyTakeaways takeaways={["Benchmark verdict for the DEEP SCAN classifier: ONNX cold-starts in 180ms vs TF.js 340ms; TF.js sustains 2.1ms inference vs ONNX 3.8ms", "ONNX Runtime Web uses WASM for reliable cross-device inference; TF.js uses WebGL for GPU acceleration", "Cold start vs sustained speed is the key tradeoff — ONNX starts faster, TF.js runs faster long-term", "A model using an op the target runtime lacks fails to load entirely: check opset support before promising portability", "Choose your runtime based on your deployment pattern: always-on dashboard (TF.js) vs on-demand inference (ONNX)"]} />
+<KeyTakeaways takeaways={["Benchmark verdict for the DEEP SCAN classifier: ONNX cold-starts in 180ms vs TF.js 340ms; TF.js sustains 2.1ms inference vs ONNX 3.8ms", "ONNX Runtime Web uses WASM for reliable cross-device inference; TF.js uses WebGL for GPU acceleration", "Cold start vs sustained speed is the key tradeoff: ONNX starts faster, TF.js runs faster long-term", "A model using an op the target runtime lacks fails to load entirely: check opset support before promising portability", "Choose your runtime based on your deployment pattern: always-on dashboard (TF.js) vs on-demand inference (ONNX)"]} />
 
 <Epilogue>
 

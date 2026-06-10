@@ -1,7 +1,7 @@
 slug: normalize-data
 lessonSlug: normalization
-title: "Normalize — and Save the Stats"
-instructions: "Real normalization is two jobs: scale the training data AND keep the statistics so future readings get the identical treatment. Given a [4, 2] batch (4 readings × 2 features: temperature, signal strength), (1) compute per-column mean and std into `mean` and `std` using tf.moments with axis 0, (2) z-score the batch into `normalized`, (3) write `normalizeReading(reading)` that applies THOSE SAVED STATS to any new 1D reading — at inference time there is no batch to recompute from."
+title: "Normalize, and Save the Stats"
+instructions: "Real normalization is two jobs: scale the training data AND keep the statistics so future readings get the identical treatment. Given a [4, 2] batch (4 readings × 2 features: temperature, signal strength), (1) compute per-column mean and std into `mean` and `std` using tf.moments with axis 0, (2) z-score the batch into `normalized`, (3) write `normalizeReading(reading)` that applies THOSE SAVED STATS to any new 1D reading; at inference time there is no batch to recompute from."
 starterCode: "const batch = tf.tensor2d([\n  [20, 0.2],\n  [22, 0.8],\n  [24, 0.4],\n  [26, 0.6],\n]);\n\n// 1. Per-column stats (axis 0). std = variance.sqrt()\nconst mean = null; // your code here\nconst std = null;\n\n// 2. Z-score the batch with those stats\nconst normalized = null;\n\n// 3. Same treatment for any future reading\nfunction normalizeReading(reading) {\n  // your code here\n}"
 solutionCode: "const batch = tf.tensor2d([\n  [20, 0.2],\n  [22, 0.8],\n  [24, 0.4],\n  [26, 0.6],\n]);\n\nconst moments = tf.moments(batch, 0);\nconst mean = moments.mean;\nconst std = moments.variance.sqrt();\n\nconst normalized = batch.sub(mean).div(std);\n\nfunction normalizeReading(reading) {\n  return reading.sub(mean).div(std);\n}"
 testCode: |

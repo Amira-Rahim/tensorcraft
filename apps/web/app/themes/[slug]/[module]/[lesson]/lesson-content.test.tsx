@@ -70,7 +70,7 @@ const lesson = {
   concept: { explanation: "x" },
 };
 
-describe("LessonContent — Epilogue step routing", () => {
+describe("LessonContent, Epilogue step routing", () => {
   it("Briefing step (Dialogue+prose) shows opening dialogue but NOT epilogue content", () => {
     render(
       <LessonContent

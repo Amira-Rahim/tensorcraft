@@ -11,7 +11,7 @@ interface HintPanelProps {
   hints: Hint[] | undefined;
   /**
    * Called when the user reveals a hint tier. The consumer wires this up
-   * to analytics — kept here as a pure callback so the UI package has no
+   * to analytics, kept here as a pure callback so the UI package has no
    * PostHog dependency (Session 8b rule).
    */
   onHintRevealed?: (hintLevel: 1 | 2 | 3) => void;

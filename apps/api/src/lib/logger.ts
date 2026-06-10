@@ -1,5 +1,5 @@
 /**
- * Structured logger — Pino.
+ * Structured logger, Pino.
  *
  * Configuration:
  *  - Pretty-printed in development (NODE_ENV !== "production") for readable logs.
@@ -17,7 +17,7 @@
 
 import pino from "pino";
 
-// Package version — keep in sync with apps/api/package.json
+// Package version, keep in sync with apps/api/package.json
 // Hardcoded to avoid runtime JSON import complications in ESM builds.
 const APP_VERSION = "0.0.0";
 

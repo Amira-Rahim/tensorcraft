@@ -119,7 +119,7 @@ export function getLessonsWithBridges(themeSlug: string): CollectibleBridge[] {
  * `normalizeConcept` before lookup, so callers can pass raw strings.
  *
  * Pass a pre-built `ConceptIndex` (loaded from `.velite/concept-index.json`).
- * Falls back to building it on-demand if `index` is omitted — slow path,
+ * Falls back to building it on-demand if `index` is omitted: slow path,
  * intended for tests or one-off scripts only.
  */
 export function getLessonsByConcepts(

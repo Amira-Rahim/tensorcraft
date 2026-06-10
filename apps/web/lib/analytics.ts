@@ -11,10 +11,10 @@ import posthog from "posthog-js";
 import { EVENTS, track } from "./analytics-events";
 
 /**
- * Generic event capture — wraps posthog.capture with a guard.
+ * Generic event capture, wraps posthog.capture with a guard.
  * No-ops on the server and when PostHog is not initialized.
  *
- * Prefer {@link track} for new code — it is type-safe per Appendix B.
+ * Prefer {@link track} for new code, it is type-safe per Appendix B.
  */
 export function capture(
   event: string,
@@ -25,7 +25,7 @@ export function capture(
 }
 
 /**
- * Identify a user — wraps posthog.identify with a guard.
+ * Identify a user, wraps posthog.identify with a guard.
  * Call after login or signup so events are attributed to the user.
  */
 export function identify(
@@ -106,7 +106,7 @@ export function trackCheckoutStarted(planId: string) {
 /**
  * Back-compat: pre-existing `checkout_completed` client helper. Paired
  * with the server-side {@link EVENTS.PAYMENT_COMPLETED} event fired from
- * the Stripe webhook — the client event is for post-redirect UI tracking,
+ * the Stripe webhook, the client event is for post-redirect UI tracking,
  * the server event is the authoritative revenue signal.
  */
 export function trackCheckoutCompleted(planId: string, amount: number) {

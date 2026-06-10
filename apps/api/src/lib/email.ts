@@ -31,7 +31,7 @@ export async function sendIssueNotification(
   if (!client) {
     logger.warn(
       { source: "email.sendIssueNotification", issueId: params.id },
-      "Resend not configured — skipping issue notification email",
+      "Resend not configured, skipping issue notification email",
     );
     return;
   }
@@ -39,7 +39,7 @@ export async function sendIssueNotification(
   const { id, category, severity, description, email, pageUrl, screenshotUrl } =
     params;
 
-  const subject = `[${severity.toUpperCase()}] ${category.replace(/_/g, " ")} — Issue #${id.slice(0, 8)}`;
+  const subject = `[${severity.toUpperCase()}] ${category.replace(/_/g, " ")} - Issue #${id.slice(0, 8)}`;
 
   const text = [
     `Category: ${category.replace(/_/g, " ")}`,

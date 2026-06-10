@@ -93,7 +93,7 @@ interface AssetEntry {
   height: number;
 }
 
-// ML: dataset sample — same structure, different domain
+// ML: dataset sample. Same structure, different domain
 interface ImageSample {
   id: string;
   label: string;
@@ -133,7 +133,7 @@ class DatasetBuilder {
   private samples: ImageSample[] = [];
 
   addSample(sample: ImageSample): void {
-    // Validate before adding — like input validation on a form
+    // Validate before adding, like input validation on a form
     if (!sample.label || !sample.path) {
       throw new Error("Sample must have a label and path");
     }

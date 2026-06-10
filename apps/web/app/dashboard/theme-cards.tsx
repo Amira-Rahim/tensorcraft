@@ -13,7 +13,7 @@ export interface ThemeCardData {
   completedLessons: number;
   totalLessons: number;
   progressPercent: number;
-  /** When true, render as "Coming soon" — link routes to the per-theme stub. */
+  /** When true, render as "Coming soon", link routes to the per-theme stub. */
   comingSoon: boolean;
 }
 

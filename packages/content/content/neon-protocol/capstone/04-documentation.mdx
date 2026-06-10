@@ -22,7 +22,7 @@ consequence:
   narrative: "Noor writes the documentation through the night. Model cards for each component. API docs for every stage. A deployment runbook with step-by-step instructions. By morning, any resistance cell with a browser and an internet connection can deploy Protocol Sentinel. The Architect built a surveillance empire on proprietary, undocumented systems. The resistance fights back with open documentation."
 hints:
   - level: nudge
-    content: "A model card has the same sections as a good README — just focused on ML-specific details"
+    content: "A model card has the same sections as a good README, just focused on ML-specific details"
   - level: guidance
     content: "Include: model details, intended use, training data, metrics, limitations, and ethical considerations"
   - level: solution
@@ -56,7 +56,7 @@ Every open-source package you have used has a README. Every API you have integra
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="model-card.ts">
-{`// A model card is structured documentation — like a typed README
+{`// A model card is structured documentation, like a typed README
 interface ModelCard {
   modelDetails: {
     name: string;
@@ -107,10 +107,10 @@ interface ModelCard {
   };
 }
 
-// Protocol Sentinel — Detector Model Card
+// Protocol Sentinel: Detector Model Card
 const detectorCard: ModelCard = {
   modelDetails: {
-    name: 'Protocol Sentinel — Surveillance Detector',
+    name: 'Protocol Sentinel: Surveillance Detector',
     version: '1.0.0',
     type: 'Object Detection (MobileNet-SSD)',
     framework: 'TensorFlow.js 4.x',
@@ -215,7 +215,7 @@ const detectorCard: ModelCard = {
 ## Pipeline API Documentation
 
 <CodeBlock language="typescript" title="api-docs.ts">
-{`// API documentation — same structure as REST API docs
+{`// API documentation, same structure as REST API docs
 interface PipelineAPIDoc {
   endpoint: string;
   description: string;
@@ -294,7 +294,7 @@ function generateMarkdown(doc: PipelineAPIDoc): string {
 ## Deployment Runbook
 
 <CodeBlock language="typescript" title="runbook.ts">
-{`// Deployment runbook — step-by-step for resistance cell operators
+{`// Deployment runbook: step-by-step for resistance cell operators
 interface RunbookStep {
   step: number;
   title: string;
@@ -357,4 +357,4 @@ Write a structured model card for Protocol Sentinel's classifier component.
 
 <Exercise slug="np-write-model-card" />
 
-<KeyTakeaways takeaways={["Documentation is what lets 200 cells deploy and maintain Sentinel without its authors in the room", "Key sections: model details, intended use, training data, performance metrics, limitations, ethical considerations", "Performance metrics without context are meaningless — always specify dataset, conditions, and caveats", "Documentation is accountability: explicitly stating what a model cannot do is as important as what it can"]} />
+<KeyTakeaways takeaways={["Documentation is what lets 200 cells deploy and maintain Sentinel without its authors in the room", "Key sections: model details, intended use, training data, performance metrics, limitations, ethical considerations", "Performance metrics without context are meaningless; always specify dataset, conditions, and caveats", "Documentation is accountability: explicitly stating what a model cannot do is as important as what it can"]} />

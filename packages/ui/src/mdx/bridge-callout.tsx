@@ -288,7 +288,7 @@ function TabbedBridgeLayout({
           className="px-5 py-3 border-t border-border bg-code-bg"
         >
           <span className="font-mono text-xs leading-relaxed text-text-muted">
-            <span style={{ color }}>// bridge:</span> {sharedBridge.connection}
+            <span style={{ color }}>bridge:</span> {sharedBridge.connection}
           </span>
         </div>
       )}

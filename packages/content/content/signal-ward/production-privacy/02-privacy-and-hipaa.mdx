@@ -1,6 +1,6 @@
 ---
 slug: privacy-and-hipaa
-title: "Privacy & HIPAA — Protecting Patient Data at Every Layer"
+title: "Privacy & HIPAA: Protecting Patient Data at Every Layer"
 moduleId: production-privacy
 themeId: signal-ward
 order: 2
@@ -13,9 +13,9 @@ concept:
   explanation: "HIPAA compliance for ML systems follows the same principles as GDPR cookie consent and web data privacy (data minimization, explicit consent, access logging, and encryption) applied to Protected Health Information with higher stakes."
   bridge:
     feTitle: "GDPR Cookie Consent"
-    feCode: "// Consent banner, data minimization, right to deletion, audit trail — regulatory compliance for user data"
+    feCode: "// Consent banner, data minimization, right to deletion, audit trail: regulatory compliance for user data"
     mlTitle: "HIPAA Compliance"
-    mlCode: "// PHI encryption, access logging, data minimization, on-device inference — regulatory compliance for medical data"
+    mlCode: "// PHI encryption, access logging, data minimization, on-device inference: regulatory compliance for medical data"
     tier: structural
     breaks: "GDPR cookie consent is a UI banner and a data export endpoint. HIPAA compliance involves access controls, audit logs, BAAs, and de-identification; and ML models can re-identify individuals from de-identified data, so removing PHI is not sufficient."
 consequence:
@@ -109,7 +109,7 @@ function redactPHI(text: string): string {
 
 <CodeBlock language="typescript" title="hipaa-audit.ts">
 {`// HIPAA requires audit trails for all PHI access
-// Log the event metadata, never the content — like GDPR consent logs
+// Log the event metadata, never the content, like GDPR consent logs
 
 interface AuditEntry {
   timestamp: string;
@@ -134,7 +134,7 @@ class HIPAAAuditLogger {
     const metaString = JSON.stringify(entry.metadata);
     const phiDetections = detectPHI(metaString);
     if (phiDetections.length > 0) {
-      throw new Error('PHI detected in audit metadata — redact before logging');
+      throw new Error('PHI detected in audit metadata: redact before logging');
     }
     this.entries.push(entry);
   }
@@ -170,7 +170,7 @@ async function privacyAwareInference(
 ): Promise<{ prediction: number[]; noteId: string }> {
   const noteId = crypto.randomUUID();
 
-  // Log access event — never log content
+  // Log access event; never log content
   logger.log({
     timestamp: new Date().toISOString(),
     userId,
@@ -183,7 +183,7 @@ async function privacyAwareInference(
     },
   });
 
-  // All computation happens locally — no network call
+  // All computation happens locally: no network call
   const tokens = tokenize(clinicalNote);
   const input = tf.tensor2d([tokens]);
   const output = model.predict(input) as tf.Tensor;
@@ -206,4 +206,4 @@ Build a record anonymization pipeline that detects and redacts PHI from clinical
 
 <Exercise slug="anonymize-records" />
 
-<KeyTakeaways takeaways={["De-identification alone is not HIPAA compliance: ML models can re-identify individuals from de-identified data, so access controls, audit logs, and BAAs still apply", "Browser-based ML provides architectural privacy: patient data never leaves the device, eliminating cloud exfiltration risk", "PHI detection and redaction is input sanitization for medical data — catch it before it reaches logs or analytics", "Audit trails log the event (who, when, what type) without logging the content — metadata, not data"]} />
+<KeyTakeaways takeaways={["De-identification alone is not HIPAA compliance: ML models can re-identify individuals from de-identified data, so access controls, audit logs, and BAAs still apply", "Browser-based ML provides architectural privacy: patient data never leaves the device, eliminating cloud exfiltration risk", "PHI detection and redaction is input sanitization for medical data: catch it before it reaches logs or analytics", "Audit trails log the event (who, when, what type) without logging the content: metadata, not data"]} />

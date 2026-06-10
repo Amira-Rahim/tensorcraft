@@ -17,12 +17,12 @@ concept:
     mlTitle: "Tensor"
     mlCode: "const t = tf.tensor([1, 2, 3])"
     tier: structural
-    breaks: "Float32Array stores numbers in a flat memory layout. A Tensor stores numbers AND tracks shape (rank, dimensions), backend (CPU/WebGL/WASM), gradient information for autograd, and ownership for memory disposal. The byte storage is similar; the API and lifecycle are not — you can iterate Float32Array directly, but you cannot iterate a Tensor without dataSync()."
+    breaks: "Float32Array stores numbers in a flat memory layout. A Tensor stores numbers AND tracks shape (rank, dimensions), backend (CPU/WebGL/WASM), gradient information for autograd, and ownership for memory disposal. The byte storage is similar; the API and lifecycle are not: you can iterate Float32Array directly, but you cannot iterate a Tensor without dataSync()."
 consequence:
   narrative: "The signal begins to take shape as structured data."
 hints:
   - level: nudge
-    content: "A Float32Array stores numbers flat and contiguous in memory — tf.tensor() starts from that same layout"
+    content: "A Float32Array stores numbers flat and contiguous in memory; tf.tensor() starts from that same layout"
   - level: solution
     content: "const t = tf.tensor([1, 2, 3])"
 keywords:
@@ -42,7 +42,7 @@ Six hours, fourteen minutes. I have applied 4,096 parsing rules to the stream. A
 </Dialogue>
 
 <Dialogue speaker="Commander Mirza">
-Then we need someone who doesn't start from rules. Demir — you think in data structures. Start there.
+Then we need someone who doesn't start from rules. Demir, you think in data structures. Start there.
 </Dialogue>
 
 You've worked with arrays your entire career: DOM elements, API responses, pixel data. A tensor stores its numbers much the way a `Float32Array` does: flat, typed, contiguous. What it adds is shape tracking, GPU-backed math, and a memory lifecycle you have to manage. That's the whole gap this lesson closes.
@@ -60,15 +60,15 @@ A tensor is a multi-dimensional array with opinions. The numbers sit in contiguo
 <CodeBlock language="typescript" title="tensors-are-arrays.ts">
 {`import * as tf from '@tensorflow/tfjs';
 
-// A scalar (0D tensor) — just a single number
+// A scalar (0D tensor), just a single number
 const scalar = tf.scalar(42);
 console.log(scalar.rank);  // 0
 
-// A vector (1D tensor) — like a regular array
+// A vector (1D tensor), like a regular array
 const vector = tf.tensor1d([1, 2, 3, 4, 5]);
 console.log(vector.rank);  // 1
 
-// A matrix (2D tensor) — like an array of arrays
+// A matrix (2D tensor), like an array of arrays
 const matrix = tf.tensor2d([[1, 2], [3, 4], [5, 6]]);
 console.log(matrix.rank);  // 2
 
@@ -86,19 +86,19 @@ Here's the lifecycle promise from the top of the lesson, paid in full. When the 
 Two tools fix this:
 
 <CodeBlock language="typescript" title="tensor-memory.ts">
-{`// Tool 1: dispose() — manual, surgical
+{`// Tool 1: dispose(), manual and surgical
 const reading = tf.tensor1d([0.3, 0.7, 0.1]);
 console.log(tf.memory().numTensors);  // 1
 reading.dispose();                     // GPU memory released
 console.log(tf.memory().numTensors);  // 0
 
-// Tool 2: tf.tidy() — automatic, for everything intermediate.
+// Tool 2: tf.tidy(), automatic, for everything intermediate.
 // Every tensor created inside the callback is disposed when it
 // returns, EXCEPT the one you return.
 const result = tf.tidy(() => {
   const a = tf.tensor1d([1, 2, 3]);   // disposed automatically
   const b = tf.tensor1d([4, 5, 6]);   // disposed automatically
-  return a.add(b);                     // survives — it's the return value
+  return a.add(b);                     // survives: it's the return value
 });
 
 // tf.memory().numTensors is your leak detector. If that number
@@ -106,7 +106,7 @@ const result = tf.tidy(() => {
 // outside a tidy() and never disposing them.`}
 </CodeBlock>
 
-If `tf.tidy()` reminds you of a `useEffect` cleanup function, good — same contract: you acquired a resource the runtime can't track, so you say when it's done. We'll lean on `tidy()` in every lesson that touches real data.
+If `tf.tidy()` reminds you of a `useEffect` cleanup function, good. Same contract: you acquired a resource the runtime can't track, so you say when it's done. We'll lean on `tidy()` in every lesson that touches real data.
 
 ## Challenge
 
@@ -124,13 +124,13 @@ Now it's your turn. Create your first tensor from a JavaScript array.
   tier="identity"
 />
 
-<KeyTakeaways takeaways={["What a tensor adds over a Float32Array: shape tracking, GPU-backed math, and a memory lifecycle you manage yourself", "TensorFlow.js tensors are created from regular JavaScript arrays; convert back with .array()", "Tensor rank = number of dimensions (scalar=0, vector=1, matrix=2)", "The GC can't see GPU memory: dispose() what you keep, tf.tidy() everything else", "tf.memory().numTensors is your leak detector — if it climbs while the app idles, something is escaping your tidy()"]} />
+<KeyTakeaways takeaways={["What a tensor adds over a Float32Array: shape tracking, GPU-backed math, and a memory lifecycle you manage yourself", "TensorFlow.js tensors are created from regular JavaScript arrays; convert back with .array()", "Tensor rank = number of dimensions (scalar=0, vector=1, matrix=2)", "The GC can't see GPU memory: dispose() what you keep, tf.tidy() everything else", "tf.memory().numTensors is your leak detector: if it climbs while the app idles, something is escaping your tidy()"]} />
 
 > **DISPATCH archive · field intercept #02-T:** Yara's collective uses the same shape contract for image latents in Nova Canvas: `[batch, channels, h, w]`. Different domain, same primitive. The tensor is the lingua franca; the meaning is the lesson.
 
 <Epilogue>
 
-Demir loads the first kilobyte of the stream into a tensor and prints its rank, just to feel the shape of the thing. Rank 2: rows and columns. Whatever is out in Sector 7-G, it isn't shouting noise — it's sending tables.
+Demir loads the first kilobyte of the stream into a tensor and prints its rank, just to feel the shape of the thing. Rank 2: rows and columns. Whatever is out in Sector 7-G, it isn't shouting noise; it's sending tables.
 
 <Dialogue speaker="ARIA">
 Observation: my 4,096 rules assumed the stream was a message. You have just treated it as data. I will be watching what that buys you, Ensign.
