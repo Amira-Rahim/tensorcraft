@@ -81,8 +81,6 @@ export const ROUTES = {
   settings: "/settings",
   blog: "/blog",
   blogPost: (slug: string) => `/blog/${slug}` as const,
-  glossary: "/glossary",
-  glossaryTerm: (term: string) => `/glossary/${term}` as const,
 } as const;
 
 /**

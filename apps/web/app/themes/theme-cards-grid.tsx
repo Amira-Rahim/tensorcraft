@@ -73,7 +73,7 @@ export function ThemeCardsGrid({ cards }: ThemeCardsGridProps) {
           stay in the loop
         </p>
         <h3 className="text-xl sm:text-2xl font-mono font-bold text-text-primary mb-3 tracking-tight">
-          New themes, launch discounts, bridge essays.
+          New themes, launch discounts.
         </h3>
         <button
           type="button"
@@ -162,9 +162,7 @@ function ThemeCard({ card, variant }: ThemeCardProps) {
 
           <div className="mt-auto flex items-center justify-between pt-4 border-t border-border/60">
             <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-text-muted">
-              {isComingSoon ? (
-                <>Per-theme waitlist below</>
-              ) : (
+              {isComingSoon ? null : (
                 <>
                   <span className="text-text-primary font-bold">
                     {card.modulesCount}

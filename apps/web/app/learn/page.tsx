@@ -142,14 +142,7 @@ export default function LearnPage() {
         </ul>
 
         <p className="text-base text-text-muted font-sans leading-relaxed mb-8">
-          Browse our{" "}
-          <Link
-            href="/glossary"
-            className="text-primary underline underline-offset-4 hover:opacity-80 transition-opacity"
-          >
-            ML Glossary
-          </Link>{" "}
-          for quick definitions of every concept, or check out our{" "}
+          Check out our{" "}
           <Link
             href="/pricing"
             className="text-primary underline underline-offset-4 hover:opacity-80 transition-opacity"

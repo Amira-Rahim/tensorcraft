@@ -22,21 +22,6 @@ export function SiteFooter() {
             TENSORCRAFT
           </div>
           <div className="flex flex-wrap justify-center gap-6">
-            <Link href="/themes" className={FOOTER_LINK_CLASS}>
-              Themes
-            </Link>
-            <Link href="/pricing" className={FOOTER_LINK_CLASS}>
-              Pricing
-            </Link>
-            <Link href="/blog" className={FOOTER_LINK_CLASS}>
-              Blog
-            </Link>
-            <Link href="/learn" className={FOOTER_LINK_CLASS}>
-              Learn
-            </Link>
-            <Link href="/glossary" className={FOOTER_LINK_CLASS}>
-              Glossary
-            </Link>
             <Link href="/terms" className={FOOTER_LINK_CLASS}>
               Terms
             </Link>

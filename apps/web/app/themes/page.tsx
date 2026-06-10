@@ -55,9 +55,6 @@ export default async function ThemesPage() {
       <AmbientBackground count={240} />
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Hero */}
-        <p className="font-mono text-sm text-text-muted mb-2">
-          {"FIVE THEMED WORLDS: STAGGERED LAUNCH"}
-        </p>
         <h1 className="text-4xl md:text-5xl font-mono font-bold text-text-primary mb-3 tracking-tight">
           Choose Your World
         </h1>
@@ -73,28 +70,6 @@ export default async function ThemesPage() {
         </p>
 
         <ThemeCardsGrid cards={cards} />
-
-        {/* Why 5 Themes? */}
-        <section className="mt-24">
-          <h2 className="text-2xl font-mono font-bold text-text-primary mb-4 tracking-tight">
-            Why a staggered launch?
-          </h2>
-          <p className="text-base text-text-muted leading-relaxed max-w-2xl mb-4">
-            Machine learning is not one skill; it&apos;s a family of
-            specializations. Time-series analysis, computer vision, NLP,
-            generative AI, and edge deployment each demand different mental
-            models, architectures, and tooling. One course can&apos;t cover them
-            all with the depth you need.
-          </p>
-          <p className="text-base text-text-muted leading-relaxed max-w-2xl">
-            Deep Orbit ships first because its narrative, anomaly detection in
-            satellite telemetry, was the strongest fit for end-to-end QA against
-            real TensorFlow.js models. Neon Protocol (vision), Signal Ward
-            (NLP), Nova Canvas (generative), and Terra Grid (edge deployment)
-            follow as each one clears the same bar. Join the per-theme waitlist
-            and we&apos;ll email you the moment yours is live.
-          </p>
-        </section>
       </div>
     </main>
   );

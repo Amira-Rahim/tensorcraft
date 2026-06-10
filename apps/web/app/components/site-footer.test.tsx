@@ -40,25 +40,17 @@ describe("SiteFooter", () => {
     expect(screen.getByText(/2026 tensorcraft/i)).toBeInTheDocument();
   });
 
-  it("footer hrefs match ROUTES constants", async () => {
-    const { ROUTES } = await import("@tensorcraft/shared");
+  it("renders only legal links (nav links live in the header)", () => {
     render(<SiteFooter />);
-    expect(screen.getByRole("link", { name: /themes/i })).toHaveAttribute(
-      "href",
-      ROUTES.themes,
-    );
-    expect(screen.getByRole("link", { name: /pricing/i })).toHaveAttribute(
-      "href",
-      ROUTES.pricing,
-    );
-    expect(screen.getByRole("link", { name: /blog/i })).toHaveAttribute(
-      "href",
-      ROUTES.blog,
-    );
-    expect(screen.getByRole("link", { name: /glossary/i })).toHaveAttribute(
-      "href",
-      ROUTES.glossary,
-    );
+    for (const name of [
+      /themes/i,
+      /pricing/i,
+      /^blog$/i,
+      /learn/i,
+      /glossary/i,
+    ]) {
+      expect(screen.queryByRole("link", { name })).not.toBeInTheDocument();
+    }
   });
 
   it("renders all links with mono font class", () => {

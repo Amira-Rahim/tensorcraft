@@ -119,36 +119,9 @@ describe("PricingPage (brutalist Phase 11 §11d)", () => {
     expect(screen.getByTestId("tier-card-all-five")).toBeInTheDocument();
   });
 
-  it("renders the comparison table with all 5 tier columns", () => {
+  it("does not render the removed comparison table", () => {
     render(<PricingPage />);
-    const table = screen.getByTestId("comparison-table");
-    expect(table).toBeInTheDocument();
-    for (const key of [
-      "free",
-      "single",
-      "twoBundle",
-      "threeBundle",
-      "allFive",
-    ]) {
-      expect(screen.getByTestId(`comparison-col-${key}`)).toBeInTheDocument();
-    }
-  });
-
-  it("comparison table header row shows each tier price", () => {
-    render(<PricingPage />);
-    const table = screen.getByTestId("comparison-table");
-    expect(table).toHaveTextContent("$0");
-    expect(table).toHaveTextContent("$49");
-    expect(table).toHaveTextContent("$79");
-    expect(table).toHaveTextContent("$99");
-    expect(table).toHaveTextContent("$129");
-  });
-
-  it("links to the /compare page from the footer note", () => {
-    const { container } = render(<PricingPage />);
-    const link = container.querySelector('a[href="/compare"]');
-    expect(link).not.toBeNull();
-    expect(link!.textContent).toMatch(/compar/i);
+    expect(screen.queryByTestId("comparison-table")).not.toBeInTheDocument();
   });
 
   it("renders a curriculum preview of the launched theme's modules", () => {
@@ -167,19 +140,5 @@ describe("PricingPage (brutalist Phase 11 §11d)", () => {
     render(<PricingPage />);
     const section = screen.getByTestId("curriculum-preview");
     expect(section).toHaveTextContent(/free/i);
-  });
-
-  it("comparison table includes core feature rows", () => {
-    render(<PricingPage />);
-    const table = screen.getByTestId("comparison-table");
-    for (const feature of [
-      "Module 1 access",
-      "All 11 modules",
-      "GitHub push",
-      "Certificate",
-      "Bridge explorer",
-    ]) {
-      expect(table).toHaveTextContent(feature);
-    }
   });
 });
