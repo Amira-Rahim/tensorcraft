@@ -13,28 +13,24 @@ const FRAMEWORKS: { id: Framework; label: string; icon: string }[] = [
   { id: "vanilla", label: "Vanilla JS", icon: "{ }" },
 ];
 
-// Only bridges that carry a real ML snippet AND a code variant for every
-// framework qualify for the landing preview, guarantees we never fall back
-// to prose inside a code-styled block, whichever combination is selected.
-const PREVIEW_BRIDGES = BRIDGES.filter(
-  (b) => b.mlCode && FRAMEWORKS.every((f) => b.variants?.[f.id]?.feCode),
-);
+// ONE bridge on the landing page — the catalog is paid content, not for
+// public browsing (the prev/next cycler was removed 2026-06-10 for this
+// reason; do not reintroduce). The preview must carry a real ML snippet AND
+// a code variant for every framework so no tab falls back to prose.
+const PREVIEW_BRIDGE =
+  BRIDGES.find(
+    (b) => b.mlCode && FRAMEWORKS.every((f) => b.variants?.[f.id]?.feCode),
+  ) ?? BRIDGES[0];
 
 export function BridgePreviewSection() {
   const [selected, setSelected] = useState<Framework>("react");
-  const [index, setIndex] = useState(0);
 
-  const bridge = PREVIEW_BRIDGES[index] ?? BRIDGES[0];
+  const bridge = PREVIEW_BRIDGE;
   const variant = bridge.variants?.[selected];
   const feTitle = variant?.feConcept || bridge.feConcept;
   const feCode = variant?.feCode ?? "";
   const selectedLabel =
     FRAMEWORKS.find((f) => f.id === selected)?.label ?? selected;
-
-  const cycle = (dir: 1 | -1) =>
-    setIndex(
-      (i) => (i + dir + PREVIEW_BRIDGES.length) % PREVIEW_BRIDGES.length,
-    );
 
   return (
     <section className="border-b border-border">
@@ -77,51 +73,12 @@ export function BridgePreviewSection() {
         </div>
       </div>
 
-      {/* Bridge cycler controls, ←/→ keys work while focus is inside */}
-      <div
-        onKeyDown={(e) => {
-          if (e.key === "ArrowLeft") {
-            e.preventDefault();
-            cycle(-1);
-          } else if (e.key === "ArrowRight") {
-            e.preventDefault();
-            cycle(1);
-          }
-        }}
-        className="flex justify-center items-center gap-4 pb-8 font-mono text-xs text-text-muted"
-      >
-        <button
-          type="button"
-          onClick={() => cycle(-1)}
-          aria-label="Previous bridge"
-          data-testid="bridge-prev"
-          className="px-3 py-1.5 border border-border hover:border-primary/30 hover:text-text-primary transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-page"
-        >
-          ←
-        </button>
-        <span
-          data-testid="bridge-counter"
-          className="tracking-[0.14em] uppercase tabular-nums"
-        >
-          Bridge #{bridge.id} of {BRIDGES.length}
-        </span>
-        <button
-          type="button"
-          onClick={() => cycle(1)}
-          aria-label="Next bridge"
-          data-testid="bridge-next"
-          className="px-3 py-1.5 border border-border hover:border-primary/30 hover:text-text-primary transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-page"
-        >
-          →
-        </button>
-      </div>
-
       {/* Bridge display, full width, centered. Keyed crossfade so a
-          framework/bridge switch reads as a transition, not a teleport. */}
+          framework switch reads as a transition, not a teleport. */}
       <div className="border-t border-border overflow-hidden">
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
-            key={`${bridge.id}-${selected}`}
+            key={selected}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

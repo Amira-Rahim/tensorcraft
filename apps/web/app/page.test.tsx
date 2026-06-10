@@ -167,15 +167,11 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
       expect(reactTab.getAttribute("aria-pressed")).toBe("false");
     });
 
-    it("cycles bridges with prev/next and shows an honest counter", () => {
+    it("exposes exactly one bridge, no cycler (catalog is paid content)", () => {
       render(<BridgePreviewSection />);
-      const counter = screen.getByTestId("bridge-counter");
-      const before = counter.textContent;
-      expect(before).toMatch(/bridge #\d+ of \d+/i);
-      fireEvent.click(screen.getByTestId("bridge-next"));
-      expect(screen.getByTestId("bridge-counter").textContent).not.toBe(before);
-      fireEvent.click(screen.getByTestId("bridge-prev"));
-      expect(screen.getByTestId("bridge-counter").textContent).toBe(before);
+      expect(screen.queryByTestId("bridge-prev")).toBeNull();
+      expect(screen.queryByTestId("bridge-next")).toBeNull();
+      expect(screen.queryByTestId("bridge-counter")).toBeNull();
     });
 
     it("has a section exit CTA pointing at the free lesson", () => {

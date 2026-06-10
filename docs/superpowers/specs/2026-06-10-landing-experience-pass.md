@@ -135,6 +135,15 @@
   closes without a dead half. Same content, same testids.
 - **WYB** pipeline band (see above) was the same treatment.
 
+## Bridge cycler REMOVED (user call — content protection)
+
+Prev/next cycling exposed the bridge catalog for free browsing; the catalog
+is paid content. Back to ONE preview bridge (first with full framework
+variant coverage + mlCode), framework tabs remain the only variation,
+crossfade keyed on framework only. `bridge-prev/next/counter` testids gone;
+unit test now asserts the cycler does NOT exist (regression guard against
+reintroduction). User had separately removed the section footer chip.
+
 ## Deep Orbit 3D orbit canvas (user request, same day)
 
 `AtmosphereCanvas` kind 0 (drifting stars) replaced with a real 3D orbital
