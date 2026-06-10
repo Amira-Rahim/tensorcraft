@@ -100,7 +100,7 @@ export default function Home() {
                 desc: "A working model that runs entirely client-side, 60fps inference on an ordinary laptop via WebGL.",
               },
               {
-                label: "Own it",
+                label: "Own",
                 desc: "Solved exercises push to your GitHub as commits (any paid theme). Walk into interviews able to explain every layer.",
               },
             ].map((item, i) => (

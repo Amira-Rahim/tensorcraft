@@ -48,15 +48,6 @@ test.describe("Landing Page", () => {
     await expect(faq.getByText(/no python required/i).first()).toBeVisible();
   });
 
-  test("Deep Orbit card carries the sample-7741 story hook", async ({
-    page,
-  }) => {
-    await page.goto("/");
-    await expect(page.getByTestId("deep-orbit-story-hook")).toContainText(
-      /7741/,
-    );
-  });
-
   test("displays navigation with brand and CTA", async ({ page }) => {
     await page.goto("/");
     const nav = page.getByTestId("site-nav");

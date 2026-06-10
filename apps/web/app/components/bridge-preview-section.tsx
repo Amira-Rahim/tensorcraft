@@ -42,10 +42,6 @@ export function BridgePreviewSection() {
         <h2 className="text-3xl md:text-4xl font-mono font-black tracking-tight mb-4">
           Every ML Concept Has a Frontend Name
         </h2>
-        <p className="text-[15px] text-text-muted leading-relaxed max-w-[500px] mx-auto">
-          {BRIDGES.length} bridges map ML concepts to the code you write daily.
-          Pick your framework. We&apos;ll prove it.
-        </p>
       </div>
 
       {/* Framework selector, horizontal tabs */}

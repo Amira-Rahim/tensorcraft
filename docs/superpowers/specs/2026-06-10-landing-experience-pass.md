@@ -135,6 +135,12 @@
   closes without a dead half. Same content, same testids.
 - **WYB** pipeline band (see above) was the same treatment.
 
+## Deep Orbit card slimmed (user call)
+
+Ghost numeral "01", the sample-7741 story-hook paragraph, and "(free)" in
+the card CTA all removed — card is now name / spec / tagline / "Start
+Module 1 →" over the orbit canvas. Story-hook e2e test deleted (suite 10).
+
 ## Bridge cycler REMOVED (user call — content protection)
 
 Prev/next cycling exposed the bridge catalog for free browsing; the catalog

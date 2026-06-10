@@ -457,13 +457,7 @@ export function FiveWorldsSection() {
           href={`/themes/${HERO_CARD.slug}`}
           className="block relative z-10 px-8 md:px-20 py-14 md:py-20 group"
         >
-          <div className="flex items-start justify-between gap-6 mb-6">
-            <span
-              className="font-mono text-[80px] md:text-[120px] font-black leading-none opacity-15 group-hover:opacity-25 transition-opacity"
-              style={{ color: HERO_CARD.col }}
-            >
-              {HERO_CARD.code}
-            </span>
+          <div className="flex items-start justify-end gap-6 mb-6">
             <span
               className="font-mono text-xs font-bold tracking-wider px-3 py-1"
               style={{
@@ -487,23 +481,11 @@ export function FiveWorldsSection() {
           <p className="text-base md:text-lg text-text-muted leading-relaxed max-w-[640px] mb-6">
             {HERO_CARD.tagline}
           </p>
-          {/* Story hook, only true for Deep Orbit; the hero demo's ambiguous
-              reading IS this theme's inciting incident. */}
-          {HERO_CARD.slug === "deep-orbit" && (
-            <p
-              data-testid="deep-orbit-story-hook"
-              className="font-mono text-[13px] text-text-primary max-w-[560px] mb-6 border-l-2 pl-4"
-              style={{ borderColor: HERO_CARD.col }}
-            >
-              That ambiguous reading in the demo up top? Sample 7741, the
-              anomaly this whole story chases. The demo was chapter one.
-            </p>
-          )}
           <span
             className="font-mono text-sm tracking-wider"
             style={{ color: HERO_CARD.col }}
           >
-            Start Module 1 (free) &rarr;
+            Start Module 1 &rarr;
           </span>
         </Link>
       </motion.div>
