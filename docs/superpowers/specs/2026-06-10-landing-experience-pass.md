@@ -135,16 +135,24 @@
   closes without a dead half. Same content, same testids.
 - **WYB** pipeline band (see above) was the same treatment.
 
-## Five Worlds unified into one band (user: read as two sections)
+## Five Worlds unified (user: read as two sections) — TWO iterations
 
-Section rebuilt as a single bordered three-column composition
-(`xl:grid-cols-[0.95fr_2.1fr_1.05fr]`): header cell (eyebrow / h2 / sub)
-| flagship Deep Orbit (orbit canvas, LIVE NOW chip absolute top-right,
-min-h 420px, content vertically centered) | "Coming next" queue — four
-compact stacked rows (name + chip + spec + always-visible Notify me, each
-with its own atmosphere canvas). Same header-in-first-cell grammar as
-What You'll Build and FAQ. Coming-soon testids preserved. Verified
-visually via Playwright element screenshot.
+First attempt: header-in-first-cell three-column band (matching WYB/FAQ).
+**Rejected at page scale** — three consecutive identical band layouts
+(WYB + Worlds + FAQ) read as a monotonous cramped spreadsheet ("the page
+now looks terrible"). Lesson recorded: the band grammar works as an
+accent, not a default; vary composition per section.
+
+Final: title lives ON the flagship surface — eyebrow/h2/sub and the Deep
+Orbit block share one full-width orbit canvas (LIVE NOW chip top-right),
+so header and flagship physically cannot read as separate sections; the
+four unlaunched worlds run as a compact 4-up strip underneath (name, chip,
+spec, always-visible Notify me, own atmospheres). FAQ likewise reverted to
+full-width rows under a simple header (no dead half — rows span the page).
+Page rhythm now: stats band → centered bridge → WYB band → full-bleed
+Worlds canvas → full-width FAQ rows → centered CTA bookend. Verified via
+scroll-through full-page screenshot (whileInView sections are invisible in
+naive fullPage captures — scroll first).
 
 ## Deep Orbit card slimmed (user call)
 

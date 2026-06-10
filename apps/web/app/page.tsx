@@ -136,40 +136,38 @@ export default function Home() {
             Objection handling before the close. Items single-sourced with
             the sitewide FAQPage JSON-LD via app/faq-data.ts. */}
         <section data-testid="landing-faq" className="border-b border-border">
-          {/* Header owns the first cell, questions fill the rest — same
-              band grammar as What You'll Build, no dead right half. */}
-          <div className="grid grid-cols-1 xl:grid-cols-[1fr_2.2fr]">
-            <div className="px-10 md:px-14 py-12 border-b xl:border-b-0 xl:border-r border-border">
-              <div className="font-mono text-xs text-primary tracking-[0.2em] uppercase mb-3 flex items-center gap-3">
-                <span className="w-[7px] h-[7px] bg-primary inline-block" />
-                Before you ask
-              </div>
-              <h2 className="text-3xl md:text-4xl font-mono font-black tracking-tight mb-3">
-                Fair Questions
-              </h2>
-              <p className="text-sm text-text-muted leading-relaxed font-sans max-w-[360px]">
-                Six straight answers. Anything else, open module 1 and see for
-                yourself, it&apos;s free.
-              </p>
+          {/* Full-width rows under a simple header — every question spans
+              the page, so there's no dead half and no column cramping. */}
+          <div className="px-10 md:px-20 pt-16 pb-10">
+            <div className="font-mono text-xs text-primary tracking-[0.2em] uppercase mb-3 flex items-center gap-3">
+              <span className="w-[7px] h-[7px] bg-primary inline-block" />
+              Before you ask
             </div>
-            <div className="divide-y divide-border">
-              {FAQ_ITEMS.map((item) => (
-                <details key={item.q} className="group">
-                  <summary className="cursor-pointer list-none px-10 md:px-14 py-5 font-mono text-sm font-bold text-text-primary flex items-center justify-between gap-4 hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
-                    {item.q}
-                    <span
-                      aria-hidden="true"
-                      className="text-primary shrink-0 group-open:rotate-45 transition-transform font-black"
-                    >
-                      +
-                    </span>
-                  </summary>
-                  <p className="px-10 md:px-14 pb-6 text-sm text-text-muted leading-relaxed font-sans max-w-[680px]">
-                    {item.a}
-                  </p>
-                </details>
-              ))}
-            </div>
+            <h2 className="text-3xl md:text-4xl font-mono font-black tracking-tight mb-3">
+              Fair Questions
+            </h2>
+            <p className="text-sm text-text-muted leading-relaxed font-sans">
+              Six straight answers. Anything else, open module 1 and see for
+              yourself, it&apos;s free.
+            </p>
+          </div>
+          <div className="border-t border-border divide-y divide-border">
+            {FAQ_ITEMS.map((item) => (
+              <details key={item.q} className="group">
+                <summary className="cursor-pointer list-none px-10 md:px-20 py-5 font-mono text-sm font-bold text-text-primary flex items-center justify-between gap-4 hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+                  {item.q}
+                  <span
+                    aria-hidden="true"
+                    className="text-primary shrink-0 group-open:rotate-45 transition-transform font-black"
+                  >
+                    +
+                  </span>
+                </summary>
+                <p className="px-10 md:px-20 pb-6 text-sm text-text-muted leading-relaxed font-sans max-w-[760px]">
+                  {item.a}
+                </p>
+              </details>
+            ))}
           </div>
         </section>
 

@@ -423,48 +423,30 @@ export function FiveWorldsSection() {
 
   return (
     <section className="border-b border-border">
-      {/* One bordered composition, three columns: header cell owns the
-          title, the flagship owns the middle (orbit canvas breathes), the
-          four unlaunched worlds queue compactly on the right. Same
-          header-in-first-cell band grammar as What You'll Build / FAQ, so
-          title and worlds read as ONE object, not stacked sections. */}
-      <div className="grid grid-cols-1 xl:grid-cols-[0.95fr_2.1fr_1.05fr]">
-        {/* Header cell */}
-        <div className="px-10 md:px-14 py-12 border-b xl:border-b-0 xl:border-r border-border">
-          <div className="font-mono text-xs text-primary tracking-[0.2em] uppercase mb-3">
-            CHOOSE YOUR WORLD
-          </div>
-          <h2 className="text-3xl md:text-4xl font-mono font-black tracking-tight mb-3">
-            Five Worlds
-          </h2>
-          <p className="text-[15px] text-text-muted leading-relaxed max-w-[360px]">
-            Same ML syllabus. Five story universes.{" "}
-            <span style={{ color: HERO_CARD.col }}>{HERO_CARD.name}</span> is
-            live; the other four ship in waves.
-          </p>
-        </div>
-
-        {/* Flagship, launched theme */}
-        <motion.div
-          className="relative overflow-hidden border-b xl:border-b-0 xl:border-r border-border"
-          onMouseEnter={() => setHovered(HERO_CARD.slug)}
-          onMouseLeave={() => setHovered(null)}
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4 }}
-        >
-          <AtmosphereCanvas
-            kind={HERO_CARD.kind}
-            rgb={HERO_CARD.rgb}
-            hovered={hovered === HERO_CARD.slug}
-          />
-          <Link
-            href={`/themes/${HERO_CARD.slug}`}
-            className="flex flex-col justify-center min-h-[420px] relative z-10 px-8 md:px-14 py-14 group h-full"
-          >
+      {/* Title lives ON the flagship surface — header and Deep Orbit share
+          one full-width canvas, so they can't read as separate sections.
+          The four unlaunched worlds run as a compact strip underneath. */}
+      <motion.div
+        className="relative overflow-hidden"
+        onMouseEnter={() => setHovered(HERO_CARD.slug)}
+        onMouseLeave={() => setHovered(null)}
+        initial={{ opacity: 0, y: 12 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.4 }}
+      >
+        <AtmosphereCanvas
+          kind={HERO_CARD.kind}
+          rgb={HERO_CARD.rgb}
+          hovered={hovered === HERO_CARD.slug}
+        />
+        <div className="relative z-10 px-10 md:px-20 pt-16 pb-16">
+          <div className="flex items-start justify-between gap-6 mb-3">
+            <div className="font-mono text-xs text-primary tracking-[0.2em] uppercase">
+              CHOOSE YOUR WORLD
+            </div>
             <span
-              className="absolute top-6 right-6 font-mono text-xs font-bold tracking-wider px-3 py-1"
+              className="font-mono text-xs font-bold tracking-wider px-3 py-1 shrink-0"
               style={{
                 color: HERO_CARD.col,
                 background: `color-mix(in srgb, ${HERO_CARD.col} 12%, transparent)`,
@@ -473,8 +455,22 @@ export function FiveWorldsSection() {
             >
               LIVE NOW
             </span>
+          </div>
+          <h2 className="text-3xl md:text-4xl font-mono font-black tracking-tight mb-3">
+            Five Worlds
+          </h2>
+          <p className="text-[15px] text-text-muted leading-relaxed max-w-[520px]">
+            Same ML syllabus. Five story universes.{" "}
+            <span style={{ color: HERO_CARD.col }}>{HERO_CARD.name}</span> is
+            live; the other four ship in waves.
+          </p>
+
+          <Link
+            href={`/themes/${HERO_CARD.slug}`}
+            className="block mt-12 group max-w-[640px]"
+          >
             <div
-              className="text-3xl md:text-5xl font-mono font-black tracking-tight mb-3"
+              className="text-4xl md:text-6xl font-mono font-black tracking-tight mb-3"
               style={{ color: HERO_CARD.col }}
             >
               {HERO_CARD.name}
@@ -482,82 +478,79 @@ export function FiveWorldsSection() {
             <div className="font-mono text-sm text-text-primary mb-4">
               {HERO_CARD.spec}
             </div>
-            <p className="text-base md:text-lg text-text-muted leading-relaxed max-w-[480px] mb-6">
+            <p className="text-base md:text-lg text-text-muted leading-relaxed mb-6">
               {HERO_CARD.tagline}
             </p>
             <span
-              className="font-mono text-sm tracking-wider"
+              className="font-mono text-sm tracking-wider group-hover:opacity-80 transition-opacity"
               style={{ color: HERO_CARD.col }}
             >
               Start Module 1 &rarr;
             </span>
           </Link>
-        </motion.div>
+        </div>
+      </motion.div>
 
-        {/* Coming-next queue, four compact rows */}
-        <div className="flex flex-col">
-          <div className="px-6 py-3 border-b border-border font-mono text-[11px] text-text-muted tracking-[0.2em] uppercase">
-            Coming next
-          </div>
-          {COMING_SOON_CARDS.map((t, i) => (
-            <motion.div
-              key={t.code}
-              className="relative overflow-hidden group flex-1"
-              style={{
-                borderBottom:
-                  i < COMING_SOON_CARDS.length - 1
-                    ? "1px solid var(--tc-border)"
-                    : "none",
-                opacity: 0.85,
-              }}
-              onMouseEnter={() => setHovered(t.slug)}
-              onMouseLeave={() => setHovered(null)}
-              initial={{ opacity: 0, y: 12 }}
-              whileInView={{ opacity: 0.85, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.06, duration: 0.4 }}
+      {/* Coming-next strip — compact 4-up row under the flagship */}
+      <div className="border-t border-border grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+        {COMING_SOON_CARDS.map((t, i) => (
+          <motion.div
+            key={t.code}
+            className="relative overflow-hidden group"
+            style={{
+              borderRight:
+                i < COMING_SOON_CARDS.length - 1
+                  ? "1px solid var(--tc-border)"
+                  : "none",
+              opacity: 0.85,
+            }}
+            onMouseEnter={() => setHovered(t.slug)}
+            onMouseLeave={() => setHovered(null)}
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 0.85, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: i * 0.06, duration: 0.4 }}
+          >
+            <AtmosphereCanvas
+              kind={t.kind}
+              rgb={t.rgb}
+              hovered={hovered === t.slug}
+            />
+            <Link
+              href={`/themes/${t.slug}`}
+              className="flex flex-col gap-1.5 relative z-10 px-8 py-8 h-full"
+              data-testid={`coming-soon-card-${t.slug}`}
             >
-              <AtmosphereCanvas
-                kind={t.kind}
-                rgb={t.rgb}
-                hovered={hovered === t.slug}
-              />
-              <Link
-                href={`/themes/${t.slug}`}
-                className="flex flex-col justify-center gap-1.5 relative z-10 px-6 py-5 h-full"
-                data-testid={`coming-soon-card-${t.slug}`}
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <div
-                    className="text-[13px] font-bold tracking-tight uppercase group-hover:text-text-primary transition-colors"
-                    style={{ color: "var(--tc-muted)" }}
-                  >
-                    {t.name}
-                  </div>
-                  <span
-                    className="font-mono text-[10px] font-bold tracking-wider px-2 py-0.5 shrink-0"
-                    style={{
-                      color: t.col,
-                      background: `color-mix(in srgb, ${t.col} 8%, transparent)`,
-                      border: `1px solid color-mix(in srgb, ${t.col} 22%, transparent)`,
-                    }}
-                  >
-                    COMING SOON
-                  </span>
-                </div>
-                <div className="font-mono text-xs text-text-muted opacity-60">
-                  {t.spec}
+              <div className="flex items-center justify-between gap-3">
+                <div
+                  className="text-[13px] font-bold tracking-tight uppercase group-hover:text-text-primary transition-colors"
+                  style={{ color: "var(--tc-muted)" }}
+                >
+                  {t.name}
                 </div>
                 <span
-                  className="font-mono text-xs tracking-wider opacity-60 group-hover:opacity-100 transition-opacity"
-                  style={{ color: t.col }}
+                  className="font-mono text-[10px] font-bold tracking-wider px-2 py-0.5 shrink-0"
+                  style={{
+                    color: t.col,
+                    background: `color-mix(in srgb, ${t.col} 8%, transparent)`,
+                    border: `1px solid color-mix(in srgb, ${t.col} 22%, transparent)`,
+                  }}
                 >
-                  Notify me &rarr;
+                  COMING SOON
                 </span>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
+              </div>
+              <div className="font-mono text-xs text-text-muted opacity-60">
+                {t.spec}
+              </div>
+              <span
+                className="font-mono text-xs tracking-wider opacity-60 group-hover:opacity-100 transition-opacity mt-1"
+                style={{ color: t.col }}
+              >
+                Notify me &rarr;
+              </span>
+            </Link>
+          </motion.div>
+        ))}
       </div>
     </section>
   );
