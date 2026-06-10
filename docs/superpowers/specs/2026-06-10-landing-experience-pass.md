@@ -135,6 +135,17 @@
   closes without a dead half. Same content, same testids.
 - **WYB** pipeline band (see above) was the same treatment.
 
+## Five Worlds unified into one band (user: read as two sections)
+
+Section rebuilt as a single bordered three-column composition
+(`xl:grid-cols-[0.95fr_2.1fr_1.05fr]`): header cell (eyebrow / h2 / sub)
+| flagship Deep Orbit (orbit canvas, LIVE NOW chip absolute top-right,
+min-h 420px, content vertically centered) | "Coming next" queue — four
+compact stacked rows (name + chip + spec + always-visible Notify me, each
+with its own atmosphere canvas). Same header-in-first-cell grammar as
+What You'll Build and FAQ. Coming-soon testids preserved. Verified
+visually via Playwright element screenshot.
+
 ## Deep Orbit card slimmed (user call)
 
 Ghost numeral "01", the sample-7741 story-hook paragraph, and "(free)" in

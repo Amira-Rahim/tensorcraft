@@ -93,9 +93,6 @@ export function BridgePreviewSection() {
                 <div className="bg-code-bg border border-border p-5 font-mono text-[13px] text-primary leading-relaxed whitespace-pre-wrap">
                   {feCode}
                 </div>
-                <div className="font-mono text-xs text-text-muted mt-3">
-                  You write this every day.
-                </div>
               </div>
             </div>
 
@@ -143,10 +140,6 @@ export function BridgePreviewSection() {
                   style={{ color: "var(--tc-tier-intuition)" }}
                 >
                   {bridge.mlCode}
-                </div>
-                <div className="font-mono text-xs text-text-muted mt-3">
-                  It&apos;s the same pattern: switch frameworks above, this side
-                  never changes.
                 </div>
               </div>
             </div>
