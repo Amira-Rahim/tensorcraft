@@ -7,10 +7,10 @@ order: 5
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "Erdem needs 1024x1024 for the gallery prints. Samir runs the numbers: 'At 64x64 it takes 43 seconds. At 1024x1024... the browser tab will crash.' Rohan suggests: 'Generate small, upscale smart. Like srcset: serve the right resolution for the context.'"
+  narrative: "Erdem needs 1024x1024 for the gallery prints. Samir runs the numbers: 'At 64x64 it takes 43 seconds. At 1024x1024... the browser tab will crash.' Rohan suggests: 'Generate small, upscale smart. Serve the resolution the moment needs.'"
   speaker: "Rohan"
 concept:
-  explanation: "High-resolution generation uses cascaded models: generate at low resolution, then upscale with a super-resolution model. Like srcset and responsive images: serve the right size for the context, upscale only when needed."
+  explanation: "High-resolution generation runs as a cascade: a base diffusion model generates small, where denoising is fast, then a separate super-resolution model upscales the result. The high-res image is generated, not selected, and each stage adds real compute."
   bridge:
     feTitle: "srcset and responsive images"
     feCode: "<img srcset='small.jpg 256w, large.jpg 1024w' sizes='100vw' />"
@@ -20,10 +20,9 @@ concept:
     breaks: "srcset selects from pre-rendered image variants. Cascaded diffusion runs an entirely separate super-resolution model conditioned on the low-res output. The high-res image is generated, not selected. Each cascade stage adds compute on the order of the base generation."
 consequence:
   narrative: "3.4 seconds. Low-res generation plus a fast upscaler. The gallery kiosks hum with life. Erdem's hands are shaking, not from panic this time, but from something closer to awe. 'We open in three days,' he says quietly. 'We are ready.'"
-  nextLessonTeaser: "Next module: Style Transfer: can MUSE paint in the style of Monet?"
 hints:
   - level: nudge
-    content: "Think srcset: you don't send 4K images to mobile devices. Generate at the resolution you need."
+    content: "Generate at 64x64 where diffusion is cheap; let a separate super-resolution model handle the climb to print size"
   - level: guidance
     content: "Generate a small 64x64 image first, then use a separate super-resolution model to upscale to 256x256 or higher."
   - level: solution
@@ -48,9 +47,9 @@ Directly? No. Memory scales quadratically with resolution. A 1024x1024 image has
 So we do what responsive images do: serve the right resolution for the task. Generate at 64x64 where diffusion is fast, then upscale with a lightweight super-resolution model. Like srcset: the browser picks the size it needs.
 </Dialogue>
 
-You already handle this in frontend. `srcset` lets the browser choose the right image resolution. Cascaded diffusion does the same: generate at a manageable resolution, then upscale intelligently.
+The economics work because the two stages have different jobs. The base model does all the creative work at 64x64, where twenty denoising steps are cheap. The upscaler only has to add plausible detail to an image that already exists. Splitting the job is what brings 43 seconds down to 3.4.
 
-<LearningObjectives objectives={["Understand why direct high-resolution diffusion is prohibitively expensive", "Implement a cascaded pipeline: base generation + super-resolution upscaling", "Build a simple super-resolution model using transposed convolutions", "Connect cascaded generation to srcset and responsive image strategies"]} />
+<LearningObjectives objectives={["Understand why direct high-resolution diffusion is prohibitively expensive", "Implement a cascaded pipeline: base generation + super-resolution upscaling", "Build a simple super-resolution model using transposed convolutions", "Compare cascaded diffusion with latent diffusion for high-resolution output"]} />
 
 ## The Resolution Problem
 
@@ -169,4 +168,4 @@ Diffusion runs on the small latent. The VAE adds quality loss (the latent can't 
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Direct high-resolution diffusion is memory-prohibitive in the browser — pixels scale quadratically", "Cascaded pipelines generate at low resolution and upscale with super-resolution models, like srcset", "Fewer diffusion steps + lower base resolution + fast upscaler = 43 seconds down to 3.4 seconds", "The gallery kiosks are saved: high-quality images at interactive speed"]} />
+<KeyTakeaways takeaways={["Direct high-resolution diffusion is memory-prohibitive in the browser — pixels scale quadratically", "Cascaded pipelines generate at low resolution and upscale with super-resolution models", "Fewer diffusion steps + lower base resolution + fast upscaler = 43 seconds down to 3.4 seconds", "The gallery kiosks are saved: high-quality images at interactive speed"]} />

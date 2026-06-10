@@ -20,7 +20,6 @@ concept:
     breaks: "`getImageData` returns `Uint8ClampedArray` with values 0-255. `tf.browser.fromPixels` returns a float32 tensor with shape `[h, w, channels]`, and most models then need normalization to [0,1] or per-channel mean/std before inference. The pixels are the same; the numeric type, range, and rank are not."
 consequence:
   narrative: "NEON boots up: glitchy, disoriented, but functional. 'I used to track 14 million faces simultaneously. Now I am helping you debug a tensor shape mismatch. How the mighty have fallen.'"
-  nextLessonTeaser: "Next: pixels and tensors. Understanding the shape of image data"
 hints:
   - level: nudge
     content: "You've already worked with image tensors; every canvas getImageData() returns one"
@@ -40,7 +39,7 @@ scene:
 ---
 
 <Dialogue speaker="Dilan">
-Meridian Systems operates 200 cameras per city block. Their AI tracks every face, every gait, every pattern. We need someone who can build vision systems that fight back. Noor, you built a real-time collaborative drawing app with Canvas API and WebRTC for 50,000 users. You already know how to work with pixel data. You just never trained a model on it.
+Meridian Systems operates 200 cameras per city block. Their AI tracks every face, every gait, every pattern. We need someone who can build vision systems that fight back. Noor, you built a real-time collaborative drawing app with Canvas API and WebRTC for 50,000 users. Pixel buffers at 60 frames a second and you never dropped one. The only thing missing from that resume is a model on the other end.
 </Dialogue>
 
 <Dialogue speaker="Noor">

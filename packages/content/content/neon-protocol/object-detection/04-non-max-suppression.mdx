@@ -18,8 +18,7 @@ concept:
     mlCode: "const kept = nms(boxes, scores, iouThreshold: 0.5); // suppress redundant boxes"
     tier: structural
 consequence:
-  narrative: "After NMS, the holotable clears. Three clean boxes remain. One per drone. Noor grins. 'Clean. Like going from 50 scroll events to one debounced handler.' NEON approves: 'Meridian runs NMS at an IoU threshold of 0.45. I suggest 0.5 for cleaner results.'"
-  nextLessonTeaser: "Next: YOLO architecture. Single-shot detection that does everything in one pass"
+  narrative: "After NMS, the holotable clears. Three clean boxes remain. One per drone. Noor grins. 'Clean. Like going from 50 scroll events to one debounced handler.' Then the frame timer renders: 1.9 seconds per frame. NEON, flatly: 'A perfect answer to a question the drone stopped asking two seconds ago.' Nobody at the table calls it solved."
 hints:
   - level: nudge
     content: "Sort by confidence, keep the best, remove anything that overlaps too much with it, repeat"
@@ -219,4 +218,4 @@ Face matching system returned the wrong person for a flagged search. Audit the c
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["NMS runs after confidence thresholding: hundreds of candidate boxes go in, one box per object comes out", "The algorithm: sort by confidence, keep the top box, remove high-IoU overlaps, repeat", "IoU threshold controls suppression aggressiveness; 0.5 is the standard starting point", "Class-aware NMS only suppresses within the same object class, like debouncing each input independently"]} />
+<KeyTakeaways takeaways={["NMS runs after confidence thresholding: hundreds of candidate boxes go in, one box per object comes out", "The algorithm: sort by confidence, keep the top box, remove high-IoU overlaps, repeat", "IoU threshold controls suppression aggressiveness; 0.5 is the standard starting point", "Class-aware NMS only suppresses within the same object class, like debouncing each input independently", "Greedy NMS can delete real objects: two drones flying close together can merge into a single surviving box"]} />

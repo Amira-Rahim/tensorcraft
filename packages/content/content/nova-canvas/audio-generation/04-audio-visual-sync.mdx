@@ -20,7 +20,6 @@ concept:
     breaks: "rAF + AudioContext let you align rendering to wall-clock time. Synchronized generation across modalities (audio + video) requires the model to maintain temporal alignment internally. Drift between modalities is a model failure with no clock to correct it."
 consequence:
   narrative: "Colors pulse with bass frequencies. Shapes morph in rhythm with melody. The installation is no longer visual or auditory. It is synaesthetic. MUSE whispers: 'They are listening with their eyes.'"
-  nextLessonTeaser: "Next: making soundscapes respond to the audience"
 hints:
   - level: nudge
     content: "Use AudioContext.currentTime as the single source of truth for both audio and visual timing"
@@ -34,6 +33,8 @@ keywords:
   - analyser
   - real-time
 ---
+
+The bass drops at 0:47. The colors deepen at 0:48. One second late, and nobody in the studio can name the problem at first; the room just feels wrong, the way a film feels wrong when the dub slips. Rohan kills the sound and runs both loops side by side: the visuals are riding requestAnimationFrame, the audio is riding AudioContext.currentTime, and the two clocks have never been introduced.
 
 <Dialogue speaker="Yara">
 The visuals and the audio are two strangers in the same room. They need to become one thing. When the bass drops, the colors should deepen. When the melody rises, the geometry should unfold.

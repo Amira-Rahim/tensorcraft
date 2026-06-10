@@ -44,8 +44,18 @@ export default function AboutPage() {
         <section className="space-y-6 text-base text-text-muted leading-relaxed font-sans">
           <p>
             Most ML courses teach you ML. Tensorcraft teaches you ML by mapping
-            it to the frontend code you already write — `useState` becomes model
-            parameters, `Array.reduce` becomes a neuron, `Math.max(0, x)`
+            it to the frontend code you already write —{" "}
+            <code className="font-mono text-text-primary text-sm">
+              useState
+            </code>{" "}
+            becomes model parameters,{" "}
+            <code className="font-mono text-text-primary text-sm">
+              Array.reduce
+            </code>{" "}
+            becomes a neuron,{" "}
+            <code className="font-mono text-text-primary text-sm">
+              Math.max(0, x)
+            </code>{" "}
             literally is ReLU. The bridges aren&apos;t marketing. They&apos;re
             the curriculum.
           </p>
@@ -60,19 +70,19 @@ export default function AboutPage() {
           </p>
 
           <p>
-            Every exercise grades against real TensorFlow.js, not a mock.
-            295&plus; exercises, 100% solution-passes-all-tests, all running in
-            a worker in your browser. If a test fails, the model behavior is
-            actually wrong; not a string-match heuristic.
+            Every exercise grades against real TensorFlow.js, not a mock. 315
+            exercises, 100% solution-passes-all-tests, all running in a worker
+            in your browser. If a test fails, the model behavior is actually
+            wrong; not a string-match heuristic.
           </p>
 
           <p>
             Five themes (Deep Orbit, Neon Protocol, Signal Ward, Nova Canvas,
             Terra Grid) wrap the curriculum in narrative. Each one builds toward
             a working browser-side ML system — assembled piece by piece across
-            the modules, every solved exercise committed to your GitHub. The
-            story keeps you on the page; understanding every layer of what you
-            built is what you take to interviews.
+            the modules; connect GitHub and every solved exercise pushes to your
+            repo. The story keeps you on the page; understanding every layer of
+            what you built is what you take to interviews.
           </p>
 
           <h2 className="text-2xl font-mono font-bold text-text-primary mt-12 mb-4">

@@ -7,7 +7,7 @@ order: 3
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "Dr. Karimi delivers the hard truth in the ethics review: 'Your model performs 12% worse on records written in non-standard English. Notes from our night shift, predominantly staffed by nurses who speak English as a second language, have higher error rates. This is not a bug report. It is an equity crisis.' Khalil draws the parallel immediately: 'It is the same as an accessibility audit. We run Lighthouse and find that our app works for sighted mouse users but fails for everyone else.'"
+  narrative: "Dr. Karimi delivers the hard truth in the ethics review: 'Your model performs 12% worse on records written in non-standard English. Notes from our night shift, predominantly staffed by nurses who speak English as a second language, have higher error rates. This isn't a bug report. It's an equity crisis.' Khalil reaches for familiar ground: accessibility audits, Lighthouse scores. Karimi lets him finish, then adds the part his parallel doesn't carry: 'WCAG hands you a checklist. Fairness won't.'"
   speaker: "Dr. Karimi"
 concept:
   explanation: "Bias auditing for ML models follows the same methodology as running a Lighthouse accessibility audit: systematically testing across user groups to ensure no population is excluded or underserved."
@@ -20,7 +20,6 @@ concept:
     breaks: "Lighthouse accessibility audit checks against fixed WCAG criteria. Bias audits require disaggregated evaluation across demographic groups, choosing fairness metrics (which are mutually incompatible), and there is no checklist that guarantees fairness."
 consequence:
   narrative: "The bias audit reveals three failure modes: non-standard English, abbreviation-heavy ICU notes, and Spanish-language records. Khalil implements data augmentation for underperforming slices and retrains. The gap drops from 12% to 2.3%. Karimi reviews the fairness card. 'Two percent is not zero, but it is honest. Document the remaining gap and ship it with the model card.'"
-  nextLessonTeaser: "Next: human-in-the-loop — designing approval gates for clinical predictions"
 hints:
   - level: nudge
     content: "Compute accuracy for each demographic group separately, then compare the results"
@@ -46,7 +45,11 @@ Your model performs 12% worse on records written in non-standard English. Our ni
 It is the same problem as accessibility. If you only test your app with a mouse on a large monitor, you miss keyboard users, screen reader users, mobile users. Run Lighthouse and suddenly you see a score of 40 where you expected 95. If you only evaluate your model on one style of clinical writing, you miss everyone who writes differently. We need a Lighthouse for fairness.
 </Dialogue>
 
-Twelve percent. That is the gap between how the model reads an attending physician's note and how it reads a night-shift nurse's. Average the two into a headline accuracy number and the gap disappears; the patients it affects do not. Bias auditing exists to surface exactly this: slice the evaluation by group, measure performance per slice, fix what falls behind. Frontend work has the same discipline under a different name. Accessibility auditing assumes you cannot build for everyone by testing one user profile, so you run Lighthouse, test with VoiceOver, verify keyboard navigation. A model that works on average but fails specific populations is no better than a site that works only for sighted mouse users.
+Average the attending notes and the night-shift notes into one headline accuracy number and the gap disappears. The patients it affects do not. Surfacing exactly that kind of buried failure is what a bias audit is for.
+
+The method is short to state: slice the evaluation by group, measure performance per slice, fix what falls behind. Frontend work has the same discipline under a different name. Accessibility auditing assumes you cannot build for everyone by testing one user profile, so you run Lighthouse, test with VoiceOver, verify keyboard navigation.
+
+A model that works on average but fails specific populations is no better than a site that works only for sighted mouse users.
 
 <LearningObjectives objectives={["Build a fairness audit pipeline that evaluates model performance across demographic slices", "Compute disparity metrics: accuracy gaps, false positive rate ratios, false negative rate ratios", "Generate fairness cards that document per-group performance and known limitations", "Implement bias mitigation through data augmentation and sample re-weighting"]} />
 

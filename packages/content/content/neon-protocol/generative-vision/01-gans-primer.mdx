@@ -19,7 +19,6 @@ concept:
     tier: structural
 consequence:
   narrative: "Noor trains her first GAN on surveillance camera images. The generator produces blurry approximations at first, then eerily realistic fakes. NEON: 'Congratulations. You have taught a neural network to lie. I hope you feel the appropriate amount of existential dread.'"
-  nextLessonTeaser: "Next: using GANs to generate synthetic training data"
 hints:
   - level: nudge
     content: "Build two separate models: a generator that maps random noise to images, and a discriminator that scores real versus fake, like a fuzzer paired with a validator"
@@ -43,7 +42,7 @@ Art has always been resistance. Graffiti over billboards. Murals over propaganda
 A Generative Adversarial Network is two neural networks playing an infinite game. The generator is a counterfeiter. The discriminator is a detective. They make each other better. It is elegant, unstable, and occasionally terrifying.
 </Dialogue>
 
-A GAN pits two networks against each other. The generator creates fake data; the discriminator judges whether data is real or fake. As the discriminator improves, the generator must produce better fakes. As the generator improves, the discriminator must become more discerning. You have seen this pattern before: fuzz testing.
+A GAN pits two networks against each other. The generator creates fake data; the discriminator judges whether data is real or fake. As the discriminator improves, the generator must produce better fakes. As the generator improves, the discriminator must become more discerning. The pattern has a frontend name: fuzz testing.
 
 <LearningObjectives objectives={["Understand the adversarial relationship between generator and discriminator", "Build a simple generator that produces images from random noise", "Build a discriminator that classifies images as real or fake", "Implement the alternating training loop that makes GANs work"]} />
 

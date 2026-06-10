@@ -19,7 +19,6 @@ concept:
     tier: structural
 consequence:
   narrative: "Samir builds a prototype where each slider controls a single visual attribute: one for color warmth, one for complexity, one for symmetry. The curators are thrilled."
-  nextLessonTeaser: "Next: putting it all together in an interactive latent space explorer"
 hints:
   - level: nudge
     content: "Decode baseVector as-is, then set modified[dimension] = value and decode again; only one visual attribute should differ between the two outputs"
@@ -39,7 +38,7 @@ I want to change the rhythm of this generated soundscape without affecting the m
 </Dialogue>
 
 <Dialogue speaker="MUSE">
-Rohan nudged my dimension 7 by half a unit. The rhythm shifted, and so did the melody, which neither of us asked for. My axes are tangled. What if we retrained with a higher beta and swept dimension 7 again?
+What if we retrained me with a higher beta and swept dimension 7 again? When Rohan nudged it by half a unit just now, the rhythm shifted, and so did the melody, which neither of us asked for. My axes are tangled, and I'd like to know whether that's permanent.
 </Dialogue>
 
 In React, a well-designed component has independent props: `size` does not affect `color`, and `disabled` does not change `variant`. Each prop controls exactly one aspect. A disentangled latent space has the same property: each dimension controls one independent factor of variation.

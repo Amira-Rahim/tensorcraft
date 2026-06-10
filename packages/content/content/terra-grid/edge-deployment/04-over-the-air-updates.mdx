@@ -20,7 +20,6 @@ concept:
     breaks: "Service worker updates ship code that runs against current data deterministically. OTA model updates ship new weights that may suddenly shift prediction distribution. Staged rollout, shadow inference (running both old and new in parallel), and accuracy gating against a holdout set are required to detect regressions before full deployment."
 consequence:
   narrative: "GRID confirms: 847 of 847 devices updated. Zero downtime. Tariq exhales."
-  nextLessonTeaser: "Next: keeping models running when connectivity drops"
 hints:
   - level: nudge
     content: "performOTAUpdate() should behave like a Service Worker install: download in the background, verify, and keep serving the old model until the swap"
@@ -40,10 +39,10 @@ We have a model update that improves anomaly detection by 4.2%. I need it on 847
 </Dialogue>
 
 <Dialogue speaker="GRID">
-Deployment to Sector 7 initiated. Estimated completion: 47 minutes. Satellite bandwidth allocated.
+Deployment to Sector 7 initiated. Estimated completion: 38 minutes. Satellite bandwidth allocated.
 </Dialogue>
 
-You have seen this pattern before. A Service Worker installs a new version in the background while the current version keeps serving requests. When the new version is verified and ready, it activates on the next navigation. That is the right transport model for OTA: download, verify, stage, activate, zero downtime. It is the wrong risk model. New code behaves identically on every page load; new weights can shift the prediction distribution the moment they activate. So this pipeline adds what Service Workers never needed: staged rollout, shadow inference running old and new side by side, and an accuracy gate against a holdout set before the rest of the fleet sees the update.
+A Service Worker installs a new version in the background while the current version keeps serving requests; when the new version is verified and ready, it activates on the next navigation. That is the right transport model for OTA: download, verify, stage, activate, zero downtime. It is the wrong risk model. New code behaves identically on every page load; new weights can shift the prediction distribution the moment they activate. So this pipeline adds what Service Workers never needed: staged rollout, shadow inference running old and new side by side, and an accuracy gate against a holdout set before the rest of the fleet sees the update.
 
 <LearningObjectives objectives={["Map the Service Worker lifecycle (install, waiting, active) to model OTA updates", "Implement atomic model swaps with automatic rollback on failure", "Design bandwidth-efficient update strategies using delta compression", "Build health checks that validate new models before activation"]} />
 
@@ -145,10 +144,14 @@ function applyDelta(currentWeights: ArrayBuffer, delta: DeltaUpdate): ArrayBuffe
 }`}
 </CodeBlock>
 
+<Dialogue speaker="Elif Yilmaz">
+Before you celebrate the bandwidth savings: a delta patch is also an attack surface. Anyone who can flip bits in transit can steer weights. The checksum guards the artifact; sign the delta too, or don't ship it.
+</Dialogue>
+
 ## Challenge
 
 Implement an OTA model update with integrity verification and rollback.
 
 <Exercise slug="ota-update" />
 
-<KeyTakeaways takeaways={["OTA updates download, verify, stage, then activate; the running model keeps serving until the new one passes verification", "Atomic swaps with rollback guarantee zero-downtime deployments — never leave a device with no working model", "Delta updates send only changed weights, reducing bandwidth by 60-80% — like git diffs vs full clones", "Always validate with test inference before activation — never trust a model you have not run"]} />
+<KeyTakeaways takeaways={["OTA updates download, verify, stage, then activate; the running model keeps serving until the new one passes verification", "Atomic swaps with rollback guarantee zero-downtime deployments — never leave a device with no working model", "Delta updates send only changed weights, reducing bandwidth by 60-80% — like git diffs vs full clones", "A delta patch is an attack surface: sign it, not just checksum it", "Always validate with test inference before activation — never trust a model you have not run"]} />

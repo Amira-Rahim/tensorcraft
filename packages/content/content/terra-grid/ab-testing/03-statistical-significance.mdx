@@ -19,7 +19,6 @@ concept:
     tier: identity
 consequence:
   narrative: "Priya runs the significance test. 'p-value 0.003. With 8,400 predictions, the 2.6% accuracy improvement is statistically significant at 99% confidence. The new model is genuinely better.' Hassan: 'Now we have proof. Proceed to 20%.'"
-  nextLessonTeaser: "Next: canary deployments, gradual rollout with automatic rollback"
 hints:
   - level: nudge
     content: "Statistical significance requires enough samples, just like you need enough pageviews before trusting an A/B test result"
@@ -178,4 +177,4 @@ Implement a statistical significance test for model comparison.
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Statistical significance prevents shipping models based on noise instead of signal", "The two-proportion z-test compares accuracy rates between control and treatment groups", "Sample size matters: too few predictions means wide confidence intervals and unreliable conclusions", "Always calculate required sample size before starting a test — know how long you need to run it"]} />
+<KeyTakeaways takeaways={["Statistical significance prevents shipping models based on noise instead of signal", "The two-proportion z-test compares accuracy rates between control and treatment groups", "Calculate the required sample size before the test starts, not after it disappoints: too few predictions means wide intervals and unreliable conclusions"]} />

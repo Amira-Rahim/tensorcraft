@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "URL encoding maps each character to a fixed escape sequence. Variational encoding outputs parameters of a probability distribution (mean + variance) per dimension. Encoding the same input twice draws different latent samples."
 consequence:
-  narrative: "The distinction clicks: instead of memorizing exact positions, the VAE learns regions of possibility. Every point in the space decodes to something meaningful."
-  nextLessonTeaser: "Next: the reparameterization trick: making randomness differentiable"
+  narrative: "Instead of memorizing exact positions, the VAE learns regions of possibility. Every point in the space now decodes to something meaningful, and Samir starts wondering what lives between two encoded sketches."
 hints:
   - level: nudge
     content: "A regular autoencoder maps to a point. A VAE maps to a region (mean + variance)."
@@ -37,16 +36,16 @@ keywords:
 ---
 
 <Dialogue speaker="MUSE">
-A regular autoencoder says: "This image lives at point [0.3, -0.7, 1.2] in latent space." A variational autoencoder says: "This image lives *somewhere around* [0.3, -0.7, 1.2], with this much uncertainty." That uncertainty is the key to creation.
+Encode the same sketch through me twice. Yesterday I filed it at [0.31, -0.68, 1.24]; this morning, [0.29, -0.71, 1.19]. Not a malfunction. I stopped storing points and started storing neighborhoods, and everything between those two answers is territory I can imagine from.
 </Dialogue>
 
 <Dialogue speaker="Yara">
 It's like the difference between a pin on a map and a circle on a map. The pin says "here, exactly." The circle says "somewhere in this area." And when circles overlap, you get a continuous landscape you can explore.
 </Dialogue>
 
-URL encoding takes arbitrary text and produces a structured, decodable representation. A VAE does the same thing, but instead of encoding to a single compact string, it encodes to a *probability distribution*: a mean and a variance that define a region of possibility.
+Last module's autoencoder left holes in its latent space: sample a random point and the decoder hands back garbage, because nothing was ever trained near it. The fix is not more training. It is changing what the encoder outputs. Two vectors instead of one: a mean and a variance, a region instead of a pin.
 
-<LearningObjectives objectives={["Understand why regular autoencoders cannot generate well", "Grasp the key insight: encoding to distributions instead of points", "Build an encoder that outputs mean and log-variance", "See how distributional encoding creates a smooth, continuous latent space"]} />
+<LearningObjectives objectives={["Explain why point-encoding leaves holes that make autoencoders bad generators", "Build an encoder that outputs mean and log-variance", "See how distributional encoding creates a smooth, continuous latent space"]} />
 
 ## Points vs. Distributions
 

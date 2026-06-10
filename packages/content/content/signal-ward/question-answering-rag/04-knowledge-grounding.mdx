@@ -10,7 +10,7 @@ context:
   narrative: "Vikram runs a test: he asks MEDI about a medication interaction that does not exist. MEDI confidently fabricates an answer. 'Hallucination,' Vikram says flatly. 'In a chat app, this is annoying. In a hospital, it could kill someone. Every claim must have a source.'"
   speaker: "Vikram"
 concept:
-  explanation: "Knowledge grounding ensures every generated answer is supported by retrieved evidence, like hyperlinks on the web, where every claim has a verifiable source."
+  explanation: "Knowledge grounding ensures every generated answer is supported by retrieved evidence. A claim the system cannot trace to a source document is treated as a hallucination and withheld."
   bridge:
     feTitle: "Hyperlinks"
     feCode: "<a href='/studies/12345'>Reduces risk by 40%</a> // every claim has a source"
@@ -20,7 +20,6 @@ concept:
     breaks: "Hyperlinks are author-asserted references the reader can follow. Grounded answers cite sources the model claims support the answer, but the model frequently misattributes, partial-quotes out of context, or cites a passage that does not actually contain the claim. Grounding requires programmatic verification that the answer text appears in the cited chunk."
 consequence:
   narrative: "The grounded QA system now refuses to answer when evidence is insufficient. Vikram's fabricated interaction test returns: 'No supporting evidence found in patient records. Confidence: 0.12. Deferring to clinician.' Karimi approves. 'A system that knows when it does not know is safer than one that always has an answer.'"
-  nextLessonTeaser: "Next: clinical queries — doctors asking questions in natural language"
 hints:
   - level: nudge
     content: "Compare the generated answer against the retrieved passages to compute an entailment score"

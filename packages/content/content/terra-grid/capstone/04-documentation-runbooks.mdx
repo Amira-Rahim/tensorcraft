@@ -20,7 +20,6 @@ concept:
     breaks: "On-call runbooks for web services have deterministic remediation steps you can rehearse. ML runbooks have remediation classes (retrain / recalibrate / rollback / accept) but choosing the right one requires diagnosis you cannot pre-script: drift type, severity, business cost. The runbook structure transfers; the decision tree at each step has more branches and harder evidence requirements."
 consequence:
   narrative: "The documentation covers 12 runbooks: model deployment, rollback, drift response, federated learning sync, security incident, device failure, and 6 more. Tariq reviews them from the field. 'I could hand these to a new engineer and they could operate the system by day two.'"
-  nextLessonTeaser: "Next: global launch, deploying Terra Grid Intelligence to all 47 sites"
 hints:
   - level: nudge
     content: "A runbook has a trigger condition, step-by-step actions, verification checks, and escalation paths"
@@ -36,7 +35,7 @@ keywords:
 ---
 
 <Dialogue speaker="Hassan Al-Rashid">
-Six months from now, someone who has never seen this codebase will get paged at 2 AM because model drift triggered an alert. They need to know exactly what to do. Step by step. No ambiguity. That is what runbooks are for.
+Six months from now, someone who has never seen this codebase will get paged at 2 AM because model drift triggered an alert. They need exact steps. Ambiguity at 2 AM is paid for in downtime; a runbook is that bill paid in advance.
 </Dialogue>
 
 <Dialogue speaker="Tariq Hussain">

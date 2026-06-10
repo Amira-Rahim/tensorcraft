@@ -19,7 +19,6 @@ concept:
     tier: identity
 consequence:
   narrative: "Every model now has a benchmark suite that runs before field deployment."
-  nextLessonTeaser: "Next: creating your optimization strategy"
 hints:
   - level: nudge
     content: "Run multiple inference passes and average the results"
@@ -38,7 +37,7 @@ keywords:
 Last month someone deployed a model that benchmarked at 45ms on their laptop and ran at 890ms on the gateway. We need standardized benchmarks that reflect real device performance. No more surprises in the field.
 </Dialogue>
 
-You use `performance.mark()` and `performance.measure()` to benchmark frontend code. Model benchmarking uses the same timing primitives but adds ML-specific considerations: warm-up runs, batch sizes, and memory tracking.
+The timing primitives here are the familiar ones, `performance.mark()` and `performance.measure()`, with ML-specific rituals layered on: warm-up runs, batch sizes, and memory tracking. One vocabulary note before the code: p95 is the latency that 95% of runs beat; the slowest 5% live above it, and on an edge gateway those are the runs that matter.
 
 <LearningObjectives objectives={["Build a standardized model benchmark suite", "Account for warm-up runs and JIT compilation effects", "Measure latency, throughput, and memory usage", "Report p50, p95, and p99 latency percentiles"]} />
 

@@ -19,7 +19,6 @@ concept:
     tier: structural
 consequence:
   narrative: "Diagnostic One's core architecture is now built: a stack of encoder blocks that can understand clinical text in full context."
-  nextLessonTeaser: "Next: positional encoding — how transformers know word order."
 hints:
   - level: nudge
     content: "Each block has two sub-layers: attention and feedforward, each with residual + norm"
@@ -38,7 +37,7 @@ keywords:
 Self-attention alone isn't enough. We need to wrap it in a complete encoder block: attention plus feedforward, with skip connections that preserve information. Same move as React's virtual DOM: diff the new state against the old, apply minimal targeted updates.
 </Dialogue>
 
-<LearningObjectives objectives={["Build a complete transformer encoder block", "Implement residual (skip) connections", "Apply layer normalization after each sub-layer", "Stack multiple encoder blocks into an encoder"]} />
+<LearningObjectives objectives={["Build a complete transformer encoder block", "Wrap each sub-layer in a residual connection followed by layer normalization", "Stack multiple encoder blocks into an encoder"]} />
 
 ## The Encoder Block
 

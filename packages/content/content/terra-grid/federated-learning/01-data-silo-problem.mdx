@@ -20,12 +20,9 @@ concept:
     breaks: "CORS boundaries are technical constraints solved by configuration. Data silos in healthcare and finance are legal, contractual, and political. A federated learning approach addresses the technical boundary but does not resolve the consent, governance, or audit requirements."
 consequence:
   narrative: "Hassan proposes a solution: bring the model to the data, not the data to the model. Elif agrees: if the data never leaves their network, the legal team approves."
-  nextLessonTeaser: "Next: combining model updates from distributed training"
 hints:
   - level: nudge
     content: "CORS blocks a cross-origin fetch() to protect data by controlling who reads it. The silo boundary here plays the same role, enforced by lawyers instead of the browser."
-  - level: guidance
-    content: "Like CORS, data silos exist for good reasons. The solution respects the boundary instead of breaking it."
   - level: solution
     content: "Federated learning sends the model to the data, trains locally, and only shares model updates; data never leaves its origin"
 keywords:
@@ -43,9 +40,9 @@ Power companies won't share sensor data. Regulatory and competitive reasons. If 
 Then we bring the training to the data, not the data to the training. Each company trains on their own data. They share model updates, not data.
 </Dialogue>
 
-CORS exists because browsers must protect data boundaries between origins. A script on `malicious-site.com` cannot read your banking data from `bank.com`. The browser enforces this boundary, not because sharing is impossible, but because sharing is dangerous. One difference matters before you reach for the parallel: CORS is a technical constraint you can solve with a config header. The boundaries here are legal, contractual, and political. No header fixes them. Three power companies each hold sensor data that could improve the Terra Grid model, and none of them may share it.
+CORS exists because browsers must protect data boundaries between origins. A script on `malicious-site.com` cannot read your banking data from `bank.com`. The browser enforces this boundary, not because sharing is impossible, but because sharing is dangerous. Three power companies each hold sensor data that could improve the Terra Grid model, and none of them may share it. The same instinct applies: respect the boundary, then design around it.
 
-<LearningObjectives objectives={["Understand why data silos exist and why breaking them is not an option", "Map CORS data boundaries to organizational data boundaries in ML", "Recognize the federated learning insight: share model updates, not raw data", "Identify scenarios where federated learning solves the data access problem"]} />
+<LearningObjectives objectives={["Understand why data silos exist and why breaking them is not an option", "Map CORS data boundaries to organizational data boundaries in ML", "Recognize the federated learning insight: share model updates, not raw data"]} />
 
 ## Why Data Cannot Move
 
@@ -100,6 +97,8 @@ const silos: DataSilo[] = [
 // Each silo trains locally and sends back only weight updates
 // Data never crosses the boundary`}
 </CodeBlock>
+
+Read the `sharingBlocked` lists again. Not one entry is technical. A CORS error disappears when someone with deploy access edits a config header; these boundaries are legal, contractual, and political, and no header fixes them. That rules out every clever pipe you might build to move the data, and leaves exactly one direction of travel: the model goes to the data.
 
 ## The Federated Insight
 

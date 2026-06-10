@@ -28,8 +28,7 @@ keywords:
 skillAxes:
   - evaluation
 consequence:
-  narrative: "The bandit algorithm converges within 3 days. Model v3.1 receives 87% of traffic because it consistently outperforms. Priya: 'The algorithm found the winner faster than a fixed A/B test would have, and fewer devices were exposed to the worse model.'"
-  nextLessonTeaser: "Next module: Scale & Reliability, building infrastructure that survives the worst day"
+  narrative: "Three days in, the bandit has already decided: v3.1 holds 87% of traffic because it keeps winning. Priya: 'The algorithm found the winner faster than a fixed A/B test would have, and fewer devices were exposed to the worse model.'"
 hints:
   - level: nudge
     content: "Epsilon-greedy: exploit the best model most of the time, explore alternatives with probability epsilon"
@@ -49,7 +48,7 @@ If it reduces the time our devices spend on a worse model, I want it. Show me th
 
 The Region 5 test last winter ran a fixed 50/50 split for six weeks. By week two the dashboards already showed the new model winning; the protocol said keep going. For the remaining month, 6,200 devices ran a model everyone knew was worse, because the test design could not adapt. Multi-armed bandits exist for exactly this case. Like the ad rotation systems that show the best-performing ad most of the time while still sampling the rest, a bandit shifts traffic toward the winner as evidence accumulates instead of holding a fixed split until the calendar says stop.
 
-<LearningObjectives objectives={["Implement an epsilon-greedy multi-armed bandit for model selection", "Define regret and explain why minimizing it is a game-theoretic objective", "Build a UCB1 bandit and read its sub-linear regret bound"]} />
+<LearningObjectives objectives={["Implement an epsilon-greedy multi-armed bandit for model selection", "Define regret and explain why minimizing it is a game-theoretic objective", "Build a UCB1 bandit and explain why it wastes less per decision the longer it runs"]} />
 
 ## The Bridge
 
@@ -67,7 +66,7 @@ regret(T) = T · μ*  −  Σ rewards earned through round T
 
 where `μ*` is the mean of the best arm and `T` is the round count. A clueless agent pulling random arms incurs **linear** regret, proportional to `T`. A perfect oracle has zero regret. The bandit algorithm's job: stay as close to zero as possible.
 
-**ε-greedy with fixed ε** has linear regret: every round there's a fixed `ε` chance of picking a suboptimal arm, so regret grows with `T`. **Decaying ε** does better but still trails the optimum. **UCB1** achieves **sub-linear** regret, `O(√(T log T))`, which is why it needs no `ε` to tune. The exploration bonus `√(2 ln(N) / pulls)` shrinks naturally as an arm is pulled more, so confident arms get exploited and uncertain arms get sampled.
+**ε-greedy with fixed ε** has linear regret: every round there's a fixed `ε` chance of picking a suboptimal arm, so the waste piles up at a constant rate forever. **Decaying ε** does better but still trails the optimum. **UCB1** beats both in a way you can feel on a dashboard: its total regret grows slower than the number of pulls, so the longer it runs, the smaller the average waste per decision. The exploration bonus `√(2 ln(N) / pulls)` shrinks naturally as an arm is pulled more, so confident arms get exploited, uncertain arms get sampled, and there is no `ε` to tune.
 
 This is the same logical move the GAN lesson made: name the problem as a game with a formal payoff, then ask what strategy minimizes the loss.
 
@@ -199,10 +198,10 @@ Implement an epsilon-greedy bandit for adaptive model selection.
 
 <Exercise slug="bandit-algorithm" />
 
-<KeyTakeaways takeaways={["A bandit is a one-player game vs an adversarial environment; minimizing cumulative regret is the strategic objective", "ε-greedy with fixed ε has linear regret; UCB1 achieves O(√(T log T)) regret without tuning ε", "Bandits converge faster than fixed A/B tests and waste fewer predictions on clearly worse models"]} />
+<KeyTakeaways takeaways={["A bandit is a one-player game vs an adversarial environment; minimizing cumulative regret is the strategic objective", "ε-greedy with fixed ε wastes at a constant rate forever; UCB1's regret grows slower than its pull count, so per-decision waste shrinks, with no ε to tune", "Bandits converge faster than fixed A/B tests and waste fewer predictions on clearly worse models"]} />
 
 <RecallPrompt question="Priya pulls you aside: 'Hassan wants the regret bound on paper. How would you define it for our 3-model setup?'" answer="Regret(T) = T·μ* − Σ rewards earned. μ* is the mean reward of the best model. Sum the actual rewards your bandit collected; the gap is how much accuracy you sacrificed by not knowing which model would win from round 1." />
 
 <RecallPrompt question="The lab skeptic Dr. Park asks: 'Your UCB1 has no ε. How does it know when to stop exploring?'" answer="The exploration bonus √(2·ln(N)/pulls) is the answer. Heavily-pulled arms have small bonuses → they get exploited. Rarely-pulled arms have large bonuses → they get sampled. UCB1 self-tunes; ε is replaced by counting." />
 
-<RecallPrompt question="Hassan files the post-mortem: 'Why did fixed-ε underperform vs UCB1 over the full quarter?'" answer="Fixed-ε ε-greedy has linear regret — every round carries a constant ε probability of pulling a suboptimal model. UCB1 hits O(√(T·log T)), which is sub-linear and provably tight. Over a quarter of inference traffic, that's the gap between 'always somewhat wrong' and 'eventually mostly right.'" />
+<RecallPrompt question="Hassan files the post-mortem: 'Why did fixed-ε underperform vs UCB1 over the full quarter?'" answer="Fixed-ε ε-greedy has linear regret — every round carries a constant ε probability of pulling a suboptimal model. UCB1's regret grows roughly like the square root of the round count, slower than the rounds themselves. Over a quarter of inference traffic, that's the gap between 'always somewhat wrong' and 'eventually mostly right.'" />

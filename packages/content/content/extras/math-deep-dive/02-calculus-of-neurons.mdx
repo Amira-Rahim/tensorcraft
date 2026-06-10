@@ -21,14 +21,13 @@ concept:
     breaks: "rAF velocity is a finite-difference of an observed position you authored frame by frame. tf.grad uses reverse-mode autodiff: it walks the computational graph backwards applying the chain rule to compute exact partial derivatives. Velocity tells you what already happened; the gradient tells you which direction to step in to reduce a loss you have not yet measured."
 consequence:
   narrative: "Once you see backpropagation as chain rule bookkeeping, debugging gradient issues becomes tractable."
-  nextLessonTeaser: "Next: navigating the optimization landscape"
 hints:
   - level: nudge
     content: "A derivative is a rate of change: how much does the output wiggle when you wiggle an input?"
   - level: guidance
-    content: "The chain rule says: if y = f(g(x)), then dy/dx = f'(g(x)) * g'(x)"
+    content: "Run the forward pass first and keep every intermediate value (z1, a1, z2). Then multiply the four local derivatives right to left. With x=2, y=1, w1=0.5, w2=-0.3 you should get 1.56."
   - level: solution
-    content: "Use tf.grad() to compute gradients automatically, then verify against your manual calculation"
+    content: "Manual: return 2 * (z2 - y) * w2 * (z1 > 0 ? 1 : 0) * x after the forward pass. Auto: const gradFn = tf.grad((w1t: tf.Tensor) => tf.scalar(w2).mul(w1t.mul(x).relu()).sub(y).square()); return gradFn(tf.scalar(w1));"
 keywords:
   - partial-derivatives
   - chain-rule
@@ -167,9 +166,10 @@ Every neural network builds a computational graph during the forward pass. Backp
 // Forward: left to right (compute values)
 // Backward: right to left (compute gradients via chain rule)
 
-// With multiple weights, tf.grads returns all gradients at once
-const networkLoss = (weights: tf.Tensor[]) => {
-  const [w1, w2] = weights;
+// With multiple weights, tf.grads returns all gradients at once.
+// The function receives each weight as its own argument; the returned
+// gradient function takes the concrete values as an array.
+const networkLoss = (w1: tf.Tensor, w2: tf.Tensor) => {
   const x = tf.scalar(2);
   const y = tf.scalar(1);
 
@@ -180,10 +180,10 @@ const networkLoss = (weights: tf.Tensor[]) => {
 };
 
 const gradFn = tf.grads(networkLoss);
-const grads = gradFn([tf.scalar(0.5), tf.scalar(-0.3)]);
+const [dw1, dw2] = gradFn([tf.scalar(0.5), tf.scalar(-0.3)]);
 
-console.log('dL/dw1:', await grads[0].array()); // 1.56
-console.log('dL/dw2:', await grads[1].array()); // gradient for w2`}
+console.log('dL/dw1:', await dw1.array()); // 1.56
+console.log('dL/dw2:', await dw2.array()); // -2.6 (= dL/dz2 * a1 = -2.6 * 1.0)`}
 </CodeBlock>
 
 ## Challenge

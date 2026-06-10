@@ -10,7 +10,7 @@ context:
   narrative: "Dilan reviews the dataset statistics and spots trouble: 4,200 dome cameras but only 180 hidden micro-cameras, the very type the resistance most needs to detect. 'A model trained on this data will be brilliant at ignoring the most dangerous surveillance,' she warns."
   speaker: "Dilan"
 concept:
-  explanation: "Class imbalance in datasets is like uneven traffic distribution across servers: the overloaded class dominates while the underserved one gets ignored. Balancing techniques redistribute the load."
+  explanation: "Class imbalance means one label dominates the dataset, so a model can score high accuracy while ignoring the rare classes entirely. Balancing techniques (resampling, class weights) force the rare classes back into the loss."
   bridge:
     feTitle: "Load Balancing"
     feCode: "servers.distribute(requests, { strategy: 'round-robin' })"
@@ -20,7 +20,6 @@ concept:
     breaks: "Load balancing distributes equal work across servers. Class balancing matters because models minimize average loss; if 99% of samples are class A, the model can hit 99% accuracy by always predicting A. Resampling, reweighting, or focal loss are required, not optional."
 consequence:
   narrative: "After rebalancing, the Protocol Sentinel's recall on hidden micro-cameras jumps from 12% to 87%. Dilan allows herself a rare smile. 'Now it sees what matters most: the cameras designed not to be seen.'"
-  nextLessonTeaser: "Next: Data Loaders. Feeding your balanced dataset to the model efficiently."
 hints:
   - level: nudge
     content: "A model minimizes average loss, so a 95% majority class lets it score 95% accuracy by always predicting that class. Count your samples per label before touching the model."
@@ -38,6 +37,22 @@ keywords:
 
 <Dialogue speaker="Dilan">
 Look at these numbers, Noor. Four thousand dome cameras, three thousand bullet cameras, eight hundred PTZ units, and only one hundred eighty hidden micro-cameras. If you trained a model that always guessed "dome camera," it would be right nearly half the time. That's not intelligence. That's a coin flip dressed up as a prediction.
+</Dialogue>
+
+<Dialogue speaker="Noor">
+Easy fix. I cut the dome cameras down to 180 and the classes match.
+</Dialogue>
+
+<Dialogue speaker="Dilan">
+You just deleted 91% of a dataset we spent two weeks labeling. Try again.
+</Dialogue>
+
+<Dialogue speaker="Noor">
+The other direction, then. Duplicate the micro-cameras until they catch up.
+</Dialogue>
+
+<Dialogue speaker="Dilan">
+Closer. Now tell me what twenty-three copies of the same 180 images teach the model that one copy did not. There is a third option, and it does not touch the data at all. Work through all three and you will know which one this dataset needs.
 </Dialogue>
 
 48%, 34%, 9%, 2%. Spread request load across a four-server cluster in those proportions and the overloaded pair dominates system behavior while the underserved machines barely register. Class imbalance in ML datasets creates exactly this problem: the model optimizes for the most common class and ignores the rare ones.

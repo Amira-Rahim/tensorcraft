@@ -10,7 +10,7 @@ context:
   narrative: "Nazari demands the classifier run on the bridge dashboard. No Python notebooks, no server round-trips — the model must run where the crew can use it."
   speaker: "Chief Nazari"
 concept:
-  explanation: "Client-side ML inference keeps data on-device, eliminates server latency, and works offline — the same tradeoffs as client-side rendering vs SSR."
+  explanation: "Client-side ML inference keeps data on-device, eliminates server latency, and works offline. The cost moves to the download: heavy upfront, free after."
   bridge:
     feTitle: "Client-Side Rendering"
     feCode: "const html = ReactDOM.render(<App data={data} />)"
@@ -45,13 +45,13 @@ But the model was trained in a notebook environment. Can we really run it in a b
 
 You've faced this exact decision before as a frontend engineer. Server-side rendering vs client-side rendering. The tradeoffs are the same: where does the computation happen, and what do you gain or lose by moving it to the client?
 
-<LearningObjectives objectives={["Understand the advantages of browser-based ML inference (privacy, latency, offline)", "Identify the constraints of running models in the browser (memory, compute, cold start)", "Compare client-side inference to server-side inference using the CSR vs SSR mental model", "Evaluate when browser ML is the right choice vs a server API"]} />
+<LearningObjectives objectives={["Understand the advantages of browser-based ML inference (privacy, latency, offline)", "Identify the constraints of running models in the browser (memory, compute, cold start)", "Decide between browser and server inference using the CSR-vs-SSR mental model"]} />
 
 ## Where Inference Runs: Server or Client
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-ML inference splits along the same line, with the same stakes — performance, privacy, user experience:
+ML inference splits along the same line, with the same stakes of performance, privacy, and user experience:
 
 <CodeBlock language="typescript" title="inference-comparison.ts">
 {`// SERVER-SIDE INFERENCE — like SSR

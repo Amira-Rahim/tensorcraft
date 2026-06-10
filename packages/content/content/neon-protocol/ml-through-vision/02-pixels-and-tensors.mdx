@@ -7,7 +7,7 @@ order: 2
 estimatedMinutes: 25
 difficulty: beginner
 context:
-  narrative: "Zara explains image dimensions. 'A grayscale image is a 2D grid. Color adds a third dimension: channels. A batch of images adds a fourth. You already think in these dimensions when you set up responsive image grids.'"
+  narrative: "Zara freezes a surveillance frame on the holotable and strips the image away, leaving only the numbers underneath. 'A grayscale image is a 2D grid. Color adds a third dimension: channels. A batch of images adds a fourth. The whole city, four dimensions.'"
   speaker: "Zara"
 concept:
   explanation: "Image tensors have specific shapes depending on their type: grayscale (2D), color (3D), or batched (4D). This maps directly to the Uint8ClampedArray layout from canvas."
@@ -20,7 +20,6 @@ concept:
     breaks: "Uint8ClampedArray is a flat byte array with no inherent dimensionality; you compute pixel offsets manually. Tensor indexing uses tf.slice with explicit shape and strides; the operation knows what dimension is what. Same data, different access semantics."
 consequence:
   narrative: "Noor realizes the pixel patterns in Meridian's feeds are familiar. Too familiar. NEON says: 'I have seen this encoding before. At Meridian.'"
-  nextLessonTeaser: "Next: color channels. RGB, grayscale, and hidden data in color spaces"
 hints:
   - level: nudge
     content: "tensor.shape reads [height, width, channels]: rows first, then columns, then depth. Most indexing bugs come from assuming [x, y] order"
@@ -36,8 +35,10 @@ keywords:
   - indexing
 ---
 
+SECTOR 7 // FEED 12 // 2241. The frozen frame on the holotable is a 224-by-224 grid, three numbers per cell. [14, 9, 22] in the shadows under the rail line. [212, 188, 96] where the noodle bar's sign burns. Every camera in Meridian's grid reduces the city to exactly this: stacked grids of small numbers.
+
 <Dialogue speaker="Zara">
-A grayscale image is a 2D grid, height by width. Each cell holds one brightness value. Add color and you get a third dimension: three channels for red, green, blue. Stack multiple images and you get a fourth dimension: the batch. You already think in these dimensions when you write CSS grid layouts.
+A grayscale image is a 2D grid, height by width. Each cell holds one brightness value. Add color and you get a third dimension: three channels for red, green, blue. Stack multiple frames and you get a fourth: the batch. That is the entire data model of surveillance.
 </Dialogue>
 
 <Dialogue speaker="Noor">

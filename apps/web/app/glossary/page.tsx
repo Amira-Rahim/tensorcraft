@@ -4,12 +4,11 @@ import { GlossaryList } from "./glossary-list";
 export const metadata: Metadata = {
   title: "ML Glossary for Frontend Engineers — Tensorcraft",
   description:
-    "Every ML term explained through the lens of concepts you already know. 50+ terms mapped from JavaScript, React, and CSS to ML equivalents.",
+    "Every ML term explained with concepts you already know. 50+ terms mapped from JavaScript, React, and CSS to ML equivalents.",
   alternates: { canonical: "https://tensorcraft.app/glossary" },
   openGraph: {
     title: "ML Glossary for Frontend Engineers — Tensorcraft",
-    description:
-      "Every ML term explained through the lens of concepts you already know.",
+    description: "Every ML term explained with concepts you already know.",
     url: "https://tensorcraft.app/glossary",
     images: [
       "/api/og?title=ML%20Glossary&theme=deep-orbit&subtitle=50%2B%20terms%20for%20frontend%20engineers",
@@ -35,7 +34,7 @@ export default function GlossaryIndexPage() {
         </h1>
 
         <p className="text-lg font-mono text-text-muted leading-relaxed max-w-140 mb-12">
-          Every ML term explained through the lens of concepts you already know
+          Every ML term, mapped to code you already write.
         </p>
 
         <GlossaryList />

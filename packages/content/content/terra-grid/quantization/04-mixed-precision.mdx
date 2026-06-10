@@ -10,7 +10,7 @@ context:
   narrative: "Some layers need higher precision than others. Elif analyzes which layers are sensitive."
   speaker: "Elif Yilmaz"
 concept:
-  explanation: "Mixed precision uses different number formats for different layers, like responsive images that serve different resolutions based on context."
+  explanation: "Mixed precision assigns each layer the cheapest number format it can tolerate: full precision where accuracy is fragile, Int8 everywhere else."
   bridge:
     feTitle: "Responsive Images"
     feCode: "<img srcset=\"small.webp 480w, large.png 1200w\"\n  sizes=\"(max-width: 600px) 480px, 1200px\" />"
@@ -20,7 +20,6 @@ concept:
     breaks: "Responsive images deliver different assets per breakpoint. Mixed-precision training mixes float16 and float32 within a single forward/backward pass: most ops in fp16 for speed, accumulation in fp32 for numerical stability. The 'switching' is per-op, not per-environment."
 consequence:
   narrative: "Mixed precision gives you 3x compression instead of 4x, but preserves critical accuracy."
-  nextLessonTeaser: "Next: managing the accuracy vs size tradeoff"
 hints:
   - level: nudge
     content: "Not all layers need the same precision; early and late layers are often more sensitive"
@@ -39,7 +38,7 @@ keywords:
 I ran a sensitivity analysis. The first and last layers lose significant accuracy when quantized to Int8. The middle layers are robust. We should use different precision for different parts of the model.
 </Dialogue>
 
-You already use mixed precision in frontend development. Responsive images serve different resolutions to different devices: high-res for desktop, compressed for mobile. Mixed precision does the same for model layers: high precision where it matters, lower precision where it does not.
+Elif's sensitivity table reads like a srcset: a few consumers need the full-resolution asset, most are fine with the compressed one. Mixed precision applies that judgment per layer: keep precision where accuracy is fragile, spend Int8 everywhere it is not.
 
 <LearningObjectives objectives={["Understand why different layers have different precision sensitivity", "Implement per-layer precision assignment", "Calculate memory savings from mixed precision strategies", "Map responsive image strategies to mixed precision model deployment"]} />
 

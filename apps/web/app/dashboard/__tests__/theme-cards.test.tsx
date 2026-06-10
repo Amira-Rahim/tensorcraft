@@ -57,11 +57,11 @@ describe("ThemeCards", () => {
     ];
     render(<ThemeCards cards={cards} hasFullBundle={true} />);
     expect(
-      screen.getByText("All available themes unlocked"),
+      screen.getByText("You own all available themes"),
     ).toBeInTheDocument();
   });
 
-  it("partial summary excludes coming-soon themes from the unlocked count", () => {
+  it("partial summary excludes coming-soon themes from the owned count", () => {
     const cards = [
       makeCard({ slug: "deep-orbit", owned: true }),
       makeCard({
@@ -72,7 +72,7 @@ describe("ThemeCards", () => {
       }),
     ];
     render(<ThemeCards cards={cards} hasFullBundle={false} />);
-    expect(screen.getByText(/1 of 1 unlocked/i)).toBeInTheDocument();
+    expect(screen.getByText(/1 of 1 owned/i)).toBeInTheDocument();
     expect(screen.getByText(/1 coming soon/i)).toBeInTheDocument();
   });
 
@@ -124,7 +124,7 @@ describe("ThemeCards", () => {
     expect(within(link).getByText(/Active/i)).toBeInTheDocument();
   });
 
-  it("locked card links to /pricing?locked={slug} and shows Unlock CTA", () => {
+  it("locked card links to /pricing?locked={slug} and shows Get access CTA", () => {
     const cards = [
       makeCard({
         slug: "neon-protocol",
@@ -145,7 +145,7 @@ describe("ThemeCards", () => {
 
     // Locked copy is surfaced for sighted users.
     expect(within(link).getByText("55 lessons locked")).toBeInTheDocument();
-    expect(within(link).getByText(/Unlock/i)).toBeInTheDocument();
+    expect(within(link).getByText(/Get access/i)).toBeInTheDocument();
   });
 
   it("builds distinct hrefs for owned vs. locked cards in the same grid", () => {

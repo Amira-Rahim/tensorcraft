@@ -44,7 +44,9 @@ export function SiteFooter() {
               Privacy
             </Link>
           </div>
-          <div className="font-mono text-xs">&copy; 2026 Tensorcraft</div>
+          <div className="font-mono text-xs">
+            &copy; {new Date().getFullYear()} Tensorcraft
+          </div>
         </div>
       </div>
     </footer>

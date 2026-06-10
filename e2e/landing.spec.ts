@@ -8,6 +8,14 @@ test.describe("Landing Page", () => {
     await expect(h1).toContainText(/turns out you'?re fluent/i);
   });
 
+  test("trust line stays above the fold on a 900px-tall laptop", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/");
+    await expect(page.getByTestId("hero-trust-line")).toBeInViewport();
+  });
+
   test("hero mounts the live inference demo panel", async ({ page }) => {
     await page.goto("/");
     await expect(page.getByTestId("hero-demo-panel")).toBeVisible();

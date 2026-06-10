@@ -10,7 +10,7 @@ context:
   narrative: "Amir leads Noor through a maintenance corridor beneath Meridian's data center in the corporate district. Water drips from exposed pipes. He stops at a server rack humming behind a cracked panel, connects a portable drive, and begins downloading model weights. 'This model was trained on ImageNet. 14 million images, 1000 categories. Two million credits of compute. We are going to use it for free.'"
   speaker: "Amir"
 concept:
-  explanation: "Pre-trained models are neural networks already trained on massive datasets. Instead of training from scratch (expensive, slow, data-hungry), you load these weights and immediately get a powerful feature extractor. Like installing an npm package: you build on someone else's work instead of reimplementing everything yourself."
+  explanation: "Pre-trained models are neural networks already trained on massive datasets. Instead of training from scratch (expensive, slow, data-hungry), you load the finished weights and immediately get a feature extractor that someone else paid to build."
   bridge:
     feTitle: "npm package"
     feCode: "npm install lodash // thousands of hours of work, one command"
@@ -19,11 +19,8 @@ concept:
     tier: intuition
     breaks: "An npm package ships versioned code that runs deterministically; `lodash@4.17.21` behaves the same on every machine. A pretrained model ships weights from a specific training run on a specific dataset distribution. ImageNet is biased toward Western consumer photography (overrepresentation of dogs, US suburbs, pizza); fine-tuning to non-Western contexts often shows accuracy drop. Loading the model also imports its license, its bias, and its failure modes. `loadLayersModel('mobilenet')` is *not* reproducible across data domains."
 consequence:
-  narrative: "The download completes. 25 megabytes. Amir holds up the drive, its status LED blinking green. 'Two million credits of training on this drive. Meridian trained it on their server farm over three weeks. We just downloaded it in forty seconds. That is the power of pre-trained models.'"
-  nextLessonTeaser: "Next: feature reuse. Why the patterns this model learned transfer to tasks it was never trained on"
+  narrative: "Forty seconds, 25 megabytes, done. Amir holds up the drive, its status LED blinking green. 'Two million credits of training on this drive. Meridian trained it on their server farm over three weeks. We just downloaded it. That is the power of pre-trained models.'"
 hints:
-  - level: nudge
-    content: "Loading a pre-trained model is like installing an npm package: one line of code gives you years of work"
   - level: guidance
     content: "Use tf.loadLayersModel() or tf.loadGraphModel() to load pre-trained weights from a URL"
   - level: solution
@@ -47,12 +44,12 @@ So `tf.loadLayersModel('mobilenet')` is basically `npm install mobilenet`?
 </Dialogue>
 
 <Dialogue speaker="Amir">
-Exactly. Except the package cost two million credits to build.
+With one difference. This package cost two million credits to build, and the vendor does not know we are customers.
 </Dialogue>
 
 An npm package encapsulates thousands of hours of development. A pre-trained model encapsulates thousands of GPU-hours of training. Both let you start with a proven foundation instead of building from zero. That is transfer learning: knowledge learned on one task transfers to another.
 
-<LearningObjectives objectives={["Understand pre-trained models as reusable trained networks you download and use", "Load MobileNet and ResNet models in TensorFlow.js", "Use a pre-trained model for immediate inference without any training", "Recognize the direct parallel between npm packages and pre-trained models"]} />
+<LearningObjectives objectives={["Understand pre-trained models as reusable trained networks you download and use", "Load MobileNet and ResNet models in TensorFlow.js", "Use a pre-trained model for immediate inference without any training"]} />
 
 ## One Line, Millions of Dollars
 
@@ -177,4 +174,4 @@ Load a pre-trained model and extract its layer information.
 
 <Exercise slug="load-pretrained" />
 
-<KeyTakeaways takeaways={["Pre-trained models are neural networks trained on massive datasets — download and use immediately", "MobileNet is lightweight for browsers; ResNet is heavier but more accurate — choose like npm packages", "Loading a model is like npm install: one line gives you thousands of hours of training", "Transfer learning means knowledge from one task (ImageNet) transfers to another (drone detection)"]} />
+<KeyTakeaways takeaways={["Pre-trained models are neural networks trained on massive datasets — download and use immediately", "MobileNet is lightweight for browsers; ResNet is heavier but more accurate — choose like npm packages", "Transfer learning means knowledge from one task (ImageNet) transfers to another (drone detection)"]} />

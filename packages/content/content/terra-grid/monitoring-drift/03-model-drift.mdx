@@ -10,7 +10,7 @@ context:
   narrative: "Sector 5 inputs look normal. No data drift detected. But accuracy is silently dropping. The relationship between inputs and correct outputs has changed."
   speaker: "Hassan Al-Rashid"
 concept:
-  explanation: "Model drift (concept drift) means the relationship between inputs and outputs has changed, like visual regression where the CSS looks correct but the rendered result is wrong."
+  explanation: "Model drift (concept drift) means the relationship between inputs and correct outputs has changed: same readings, different truth."
   bridge:
     feTitle: "Visual Regression Testing"
     feCode: "expect(screenshot).toMatchSnapshot() // output changed despite same inputs"
@@ -18,8 +18,7 @@ concept:
     mlCode: "expect(accuracy).toBeAbove(baseline) // predictions degraded silently"
     tier: structural
 consequence:
-  narrative: "The drift detector reveals that Sector 5's seasonal patterns shifted. Summer heat affects sensor behavior differently than winter. The model needs seasonal awareness."
-  nextLessonTeaser: "Next: configuring alerts that tell you when drift crosses actionable thresholds"
+  narrative: "Sector 5's mystery turns out to be seasonal. Summer heat changes what the same sensor readings mean, and the model needs to know what month it is."
 hints:
   - level: nudge
     content: "ModelDriftDetector needs delayed ground truth: store PredictionRecords now, score them when the true labels arrive"

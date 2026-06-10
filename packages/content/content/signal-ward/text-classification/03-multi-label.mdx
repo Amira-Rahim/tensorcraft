@@ -8,7 +8,7 @@ estimatedMinutes: 25
 difficulty: intermediate
 context:
   narrative: "Dr. Karimi points out that real clinical documents don't fit into neat single categories. A single report might involve multiple conditions, procedures, and specialties."
-  speaker: "Dr. Zahra Karimi"
+  speaker: "Dr. Karimi"
 concept:
   explanation: "Multi-label classification assigns zero or more labels to each input, like tagging a document with every relevant topic, not just the primary one."
   bridge:
@@ -20,7 +20,6 @@ concept:
     breaks: "Checkbox groups let users explicitly select any subset. Multi-label classifiers output independent sigmoid per label and label correlations are not modeled by default; the wrong loss (softmax) on multi-label produces silently wrong results."
 consequence:
   narrative: "Documents now carry full tag sets. A chest-pain case gets tagged as cardiac, emergency, and pain-management simultaneously."
-  nextLessonTeaser: "Next: confidence calibration — knowing when the model isn't sure about its tags."
 hints:
   - level: nudge
     content: "Use sigmoid on each output unit independently, not softmax"
@@ -36,8 +35,8 @@ keywords:
   - binary-crossentropy
 ---
 
-<Dialogue speaker="Dr. Zahra Karimi">
-Your routing system sends each document to one department. But look at this case: "72-year-old male, chest pain, elevated troponin, history of COPD, renal insufficiency." That needs cardiology, pulmonology, and nephrology. One label isn't enough.
+<Dialogue speaker="Dr. Karimi">
+Your routing system sends each document to one department. But look at this case: "72-year-old male, chest pain, elevated troponin, history of COPD, renal insufficiency." Troponin is a protein the heart releases when its muscle is damaged, so cardiology. COPD: pulmonology. Renal insufficiency means his kidneys aren't filtering properly, so nephrology too. One label isn't enough.
 </Dialogue>
 
 <Dialogue speaker="Khalil">
@@ -172,8 +171,8 @@ function perLabelMetrics(
 So every document is like a patient: it can have multiple conditions at once. And we need to catch all of them, not just the primary diagnosis.
 </Dialogue>
 
-<Dialogue speaker="Dr. Zahra Karimi">
-Exactly. Missing a secondary condition like renal insufficiency in a cardiac patient could mean prescribing a nephrotoxic drug. Every relevant tag matters.
+<Dialogue speaker="Dr. Karimi">
+And a missed tag isn't a cosmetic bug. Overlook renal insufficiency in a cardiac patient and someone may prescribe a nephrotoxic drug, one that damages kidneys that were already struggling. Every relevant tag matters.
 </Dialogue>
 
 ## Challenge

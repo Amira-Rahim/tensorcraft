@@ -7,7 +7,7 @@ order: 3
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "The pipeline runs. But Dilan refuses to deploy untested software. 'If Protocol Sentinel misclassifies a civilian as a Meridian agent, we destroy someone's life. If it misses a surveillance drone, we are exposed.' Zara takes the lead on testing. She maps the ML testing pyramid: unit tests for individual components, integration tests for stage connections, end-to-end tests for the full pipeline. Noor recognizes every layer."
+  narrative: "At 0300 a Sector 9 camera sends an empty frame and the classifier dies in front of everyone. Two days of flawless pipeline runs, ended by a frame with nothing in it. Dilan's verdict is short: 'If Sentinel misclassifies a civilian as a Meridian agent, we destroy someone's life. If it misses a drone, we are exposed. Nothing deploys without a test suite.'"
   speaker: "Zara"
 concept:
   explanation: "ML testing follows the same testing pyramid as frontend development: unit tests for individual functions, integration tests for connected components, and end-to-end tests for the complete system. Add data validation as a fourth layer unique to ML."
@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "Frontend testing pyramid (unit/integration/e2e) checks deterministic behaviors. ML testing pyramid adds data validation, model evaluation, fairness audits, and shadow deployments. Many tests return continuous metrics, not pass/fail."
 consequence:
-  narrative: "Two hundred tests pass. Six fail: edge cases Noor never considered. A frame with zero detections crashes the classifier. A grayscale camera feed breaks the preprocessor. An adversarial patch with exactly 0.8 variance slips through the guard. Zara fixes each one. 'Testing is not bureaucracy. It is how you earn trust.'"
-  nextLessonTeaser: "Next: documentation. Model cards, system docs, and handoff to the resistance network"
+  narrative: "Two hundred tests pass. Six fail. The 0300 zero-detection crash is in there, reproduced in four lines of fixture code, along with five edge cases Noor never imagined: a grayscale camera feed breaks the preprocessor, an adversarial patch with exactly 0.8 variance slips through the guard. Zara fixes each one. 'Testing is not bureaucracy. It is how you earn trust.'"
 hints:
   - level: nudge
     content: "Start with unit tests for each pipeline stage, then test stage connections, then the full pipeline"
@@ -37,8 +36,10 @@ keywords:
   - test-pyramid
 ---
 
+`TypeError: Cannot read properties of undefined (reading 'shape')`. The stack trace is still on the main display. One camera, one empty frame, zero detections, and the classifier that survived two days of live drone traffic is dead on the simplest input the city will ever send it.
+
 <Dialogue speaker="Dilan">
-You would not deploy a frontend application without tests. You will not deploy Protocol Sentinel without them either. Lives depend on this system being correct. Zara, build the test suite.
+That crash, on broadcast night, with all of Neon City watching? We do not get a second launch. Lives depend on this system being correct. Zara, build the test suite.
 </Dialogue>
 
 <Dialogue speaker="Zara">

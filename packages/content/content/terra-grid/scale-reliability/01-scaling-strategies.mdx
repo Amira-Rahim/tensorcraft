@@ -18,8 +18,7 @@ concept:
     mlCode: "// Edge: minWorkers: 2, maxWorkers: 8, targetLatency: 15ms"
     tier: identity
 consequence:
-  narrative: "The system scales from 2 inference workers to 6 within 30 seconds. Latency stays under 18ms. Hassan exhales. 'Horizontal scaling held. The architecture works.'"
-  nextLessonTeaser: "Next: model sharding, splitting models across devices when they are too large for one"
+  narrative: "Two workers become six within 30 seconds, and latency never crosses 18ms. Hassan exhales. 'Horizontal scaling held. The architecture works.'"
 hints:
   - level: nudge
     content: "Horizontal scaling adds more inference workers; vertical scaling adds more resources to each worker"

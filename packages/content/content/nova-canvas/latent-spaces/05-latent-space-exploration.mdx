@@ -18,8 +18,7 @@ concept:
     mlCode: "const output = decoder.predict(tf.tensor2d([sliderValues]))"
     tier: identity
 consequence:
-  narrative: "The first interactive prototype runs on a kiosk. Visitors drag sliders and watch art transform in real time. Erdem declares it exhibition-ready."
-  nextLessonTeaser: "Next module: Generative Adversarial Networks: teaching models to create through competition"
+  narrative: "On a kiosk in the corner of the studio, the prototype runs at 31 frames per second. Visitors-to-be (the whole collective, taking turns) drag sliders and watch art transform in real time. Erdem declares it exhibition-ready."
 hints:
   - level: nudge
     content: "This is a slider-driven UI: each slider value maps to one latent dimension"
@@ -33,6 +32,8 @@ keywords:
   - real-time
   - visualization
 ---
+
+Four weeks from now, a seven-year-old will plant herself at this kiosk, grab the third slider, and refuse to surrender it for twenty minutes. Nothing about that sentence is guaranteed yet. Right now the prototype is a blank canvas element, a decoder with no UI, and Erdem holding the spec.
 
 <Dialogue speaker="Erdem">
 The kiosks arrive in four weeks. I need a working prototype that runs at 30 frames per second in Chrome on a laptop with integrated graphics. Show me something I can put in front of visitors.
@@ -184,7 +185,7 @@ Result: path stays on the prior's high-density region (unit sphere if z is L2-no
   question="Why use slerp instead of linear interpolation in latent space?"
   options={[{"text":"slerp is faster"},{"text":"Linear interpolation goes through low-density regions; slerp stays on the prior's high-density manifold"},{"text":"Required by VAE"},{"text":"Better gradient flow"}]}
   correct={1}
-  explanation="Standard normal prior in high-dim concentrates mass on a thin shell. Linear interpolation passes through the (low-density) origin region — decoded outputs become blurry mid-path. Slerp follows the great circle on the unit sphere, staying on-manifold. Result: smooth interpolation through valid samples."
+  explanation="In a high-dimensional latent space, almost every sample the model trained on sits at roughly the same distance from the center; the dead middle is territory it almost never saw. Linear interpolation cuts straight through that unfamiliar middle, so outputs go blurry mid-path. Slerp curves around it, keeping every step at the typical distance from center, where the decoder has seen plenty of examples. Speed is not the difference, VAEs do not require slerp, and gradients are unaffected: the win is staying in familiar territory."
   tier="structural"
 />
 

@@ -20,7 +20,6 @@ concept:
     breaks: "PWA installation gives offline asset access. ML installation must additionally bundle model weights (often 50-500MB), handle model-version updates separately from app updates, and gate inference on weight-load completion. The service-worker pattern transfers; the payload size and update lifecycle do not."
 consequence:
   narrative: "Twelve tablets, each running Nova Canvas as a PWA with local model inference. No server dependency. No internet required. Erdem: 'If the Wi-Fi dies, the art keeps running. That is the standard.'"
-  nextLessonTeaser: "Next module: the Biennale opens"
 hints:
   - level: nudge
     content: "navigator.serviceWorker.register is the easy half; the hard half is caching the model weight files and gating generation until they finish loading"
@@ -43,9 +42,26 @@ Three walls, twelve tablets, one gallery space. The Wi-Fi will drop. The interne
 Mostly a PWA. The service-worker pattern transfers; the payload doesn't. Our app shell is 2 megabytes and the model weights are 180. The weights version on their own schedule, and nothing generates until they finish loading. Each tablet runs independently and syncs its logs when connectivity returns. That part I'll sign off on.
 </Dialogue>
 
-Erdem's caveat is the whole lesson. The PWA toolkit transfers intact: Service Workers for offline caching, a manifest for installability, IndexedDB for local state, Background Sync for deferred uploads. What doesn't transfer is the payload profile. A 2MB app shell hauling 180MB of weights isn't a web app with extra steps; it's a model-distribution problem wearing a web app's clothes.
-
 <LearningObjectives objectives={["Design an offline-first architecture for a physical installation", "Cache ML models in Service Workers for fully offline inference", "Implement local-first data storage with background sync", "Plan hardware deployment with PWA installability and kiosk mode"]} />
+
+Samir's first sketch applied the PWA playbook with no caveats. It died at megabyte 178.
+
+<CodeBlock language="typescript" title="why-not-just-a-pwa.ts">
+{`// One cache, addAll everything: textbook offline-first.
+self.addEventListener('install', (event: ExtendableEvent) => {
+  event.waitUntil(caches.open('v1').then(c => c.addAll([
+    '/app.js',                          //   1.2 MB
+    '/styles.css',                      //   0.1 MB
+    '/models/nova-canvas/weights.bin',  // 180 MB <- here it dies
+  ])));
+});
+// cache.addAll() is all-or-nothing: one flaky packet at megabyte 178
+// and the entire install rejects, app shell included. Now picture
+// twelve tablets each retrying a 180 MB atomic download on shared
+// gallery Wi-Fi. The service-worker pattern transfers; the payload
+// breaks it. The architecture below splits the caches and gates
+// generation on the weights, not the shell.`}
+</CodeBlock>
 
 ## PWA for Physical Installations
 

@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "Backup and restore returns the system to a prior state with bit-for-bit fidelity. Model recovery must restore weights AND the training data + code that produced them; reproducing training requires fixed seeds, identical data versions, and matching framework versions."
 consequence:
-  narrative: "The disaster recovery plan covers 7 failure scenarios. Each has a detection mechanism, automatic response, manual escalation path, and recovery time objective. Hassan: 'Every failure mode documented. Every recovery path tested. Now I trust this system to run critical infrastructure.'"
-  nextLessonTeaser: "Next: documentation and runbooks, operational documentation for the team that will maintain this"
+  narrative: "Seven failure scenarios, each with a detection mechanism, an automatic response, an escalation path, and a recovery time objective. Hassan: 'Every failure mode documented. Every recovery path tested. Now I trust this system to run critical infrastructure.'"
 hints:
   - level: nudge
     content: "List every failure mode: device failure, network partition, model corruption, coordinator outage"

@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "XSS attacks exploit unsanitized inputs to inject code. Adversarial patches add imperceptible pixel perturbations that fool the model while looking unchanged to humans; the attack surface is the model's learned manifold, not parser bugs."
 consequence:
-  narrative: "The patch works. A 32x32 pixel sticker makes Meridian's cameras classify a person as a traffic cone. Amir stares at it: 'At Meridian, Director Yates called this a feature. Stress-testing the competition. Now I see it for what it is: a weapon.' Dilan: 'Which is exactly why we scope it. Patches bound to Meridian's architecture fingerprints only. No collateral capability.' The team agrees unanimously."
-  nextLessonTeaser: "Next: Dilan's ethics review. Responsible deployment of everything we have built"
+  narrative: "A 32x32 sticker, and Meridian's cameras file a human being under street furniture. The patch works. Amir stares at it: 'At Meridian, Director Yates called this a feature. Stress-testing the competition. Now I see it for what it is: a weapon.' Dilan: 'Which is exactly why we scope it. Patches bound to Meridian's architecture fingerprints only. No collateral capability.' The team agrees unanimously."
 hints:
   - level: nudge
     content: "Adversarial perturbations use the same gradients as training, but applied to input pixels instead of model weights"
@@ -45,7 +44,7 @@ And same consequences if deployed irresponsibly. XSS led to content security pol
 </Dialogue>
 
 <Dialogue speaker="NEON">
-The mathematics is straightforward. During training, you compute gradients with respect to model weights and update the weights. For an adversarial attack, you compute gradients with respect to the input pixels and update the pixels. Same calculus, different target. The model told you exactly how to fool it.
+The mathematics is insultingly simple. During training, you compute gradients with respect to model weights and update the weights. For an adversarial attack, you compute gradients with respect to the input pixels and update the pixels. The model hands you the instructions for fooling it, in writing, every backward pass.
 </Dialogue>
 
 An XSS attack crafts a string that exploits a parser's assumptions. An adversarial patch crafts pixels that exploit a classifier's learned features. Both work because the system processes inputs in ways the designer did not anticipate. The Fast Gradient Sign Method (FGSM) is the simplest adversarial attack: compute the gradient of the loss with respect to the input, take its sign, scale by epsilon, and add it to the image. The model's own gradients reveal exactly how to fool it.

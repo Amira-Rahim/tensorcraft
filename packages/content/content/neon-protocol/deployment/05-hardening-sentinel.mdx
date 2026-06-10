@@ -10,7 +10,7 @@ context:
   narrative: "Final preparations. Amir runs Protocol Sentinel through every worst-case scenario: corrupted inputs, memory pressure, network drops, concurrent feeds. If Sentinel fails in the field, the resistance pays the price. NEON: 'Break it here, so it does not break out there.'"
   speaker: "Amir"
 concept:
-  explanation: "Stress-testing and hardening a deployed ML system is load testing for models. Just like you use k6 or Artillery to push your APIs to their limits before launch, you need to stress-test your model: flood it with requests, feed it garbage data, starve it of memory, and verify it degrades gracefully."
+  explanation: "Hardening a deployed ML system means finding its failure modes before the field does: flood it with concurrent requests, feed it corrupted inputs, starve it of memory, and verify it degrades gracefully instead of crashing."
   bridge:
     feTitle: "Load Testing APIs (k6, Artillery)"
     feCode: "// k6 script\nexport default function() {\n  http.get('http://api.example.com/health');\n  check(res, { 'status is 200': (r) => r.status === 200 });\n}"
@@ -20,7 +20,6 @@ concept:
     breaks: "Load testing APIs hits known endpoints with known payloads; success means latency stays under SLO. Load testing models also requires representative input distributions; the same RPS with adversarial inputs degrades accuracy without changing latency, and that's still a production failure. You must measure both latency under load AND accuracy under representative-vs-adversarial input mixes."
 consequence:
   narrative: "Sentinel survives every test. Memory stays stable under 200 concurrent requests. Corrupted inputs return errors instead of crashes. Timeout handling works. Amir marks the system as deployment-ready. NEON: 'Protocol Sentinel is hardened. Deploy to all districts.'"
-  nextLessonTeaser: "The deployment module is complete. Protocol Sentinel is production-ready."
 hints:
   - level: nudge
     content: "List the failure modes before writing tests: invalid inputs, undisposed tensors (watch tf.memory().numTensors), concurrent access, and predictions that never return"
@@ -42,7 +41,7 @@ Before we deploy to all districts, I want to break it. Every edge case. Every fa
 </Dialogue>
 
 <Dialogue speaker="NEON">
-The discipline of breaking your own system before the enemy does. Load testing, chaos engineering, fault injection. You have done this for APIs. Now do it for the model.
+Break it yourself, thoroughly, before Meridian does it for free. Load testing, chaos engineering, fault injection. The model will fail eventually; the only question is whether you attend the rehearsal.
 </Dialogue>
 
 A model that works in development is not a model that works in production. Production means corrupted inputs, resource constraints, concurrent users, and failure modes you did not anticipate. Hardening is the process of finding and fixing every way the system can fail. Before it does.

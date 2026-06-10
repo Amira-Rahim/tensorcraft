@@ -1,7 +1,8 @@
 import { describe, it, expect, vi, beforeAll } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { LandingHero } from "./components/landing-hero";
 import { LandingBridgeTicker } from "./components/landing-bridge-ticker";
+import { BridgePreviewSection } from "./components/bridge-preview-section";
 
 // jsdom ships without ResizeObserver / IntersectionObserver — shim so the
 // ParticleField canvas effect doesn't throw when it mounts.
@@ -132,15 +133,70 @@ describe("Landing page brutalist redesign (§11d Wave 1)", () => {
     });
 
     it("renders the trust line under the CTAs", () => {
-      const { container } = render(<LandingHero />);
-      expect(container.textContent).toMatch(/no credit card/i);
-      expect(container.textContent).toMatch(/no account for module 1/i);
+      render(<LandingHero />);
+      const trust = screen.getByTestId("hero-trust-line");
+      expect(trust.textContent).toMatch(/no credit card/i);
+      expect(trust.textContent).toMatch(/no account for module 1/i);
     });
 
     it("mounts the live-demo proof panel", () => {
       render(<LandingHero />);
       expect(screen.getByTestId("hero-demo-panel")).toBeInTheDocument();
       expect(screen.getByTestId("deep-scan-demo-stub")).toBeInTheDocument();
+    });
+  });
+
+  // Bridge section UX/a11y audit fixes (2026-06-10) — spec:
+  // docs/superpowers/specs/2026-06-10-bridge-section-audit-fixes.md
+  describe("BridgePreviewSection", () => {
+    it("framework tabs expose pressed state and accessible names", () => {
+      render(<BridgePreviewSection />);
+      const reactTab = screen.getByRole("button", {
+        name: /show bridges in react/i,
+      });
+      const vueTab = screen.getByRole("button", {
+        name: /show bridges in vue/i,
+      });
+      expect(reactTab.getAttribute("aria-pressed")).toBe("true");
+      expect(vueTab.getAttribute("aria-pressed")).toBe("false");
+      fireEvent.click(vueTab);
+      expect(vueTab.getAttribute("aria-pressed")).toBe("true");
+      expect(reactTab.getAttribute("aria-pressed")).toBe("false");
+    });
+
+    it("cycles bridges with prev/next and shows an honest counter", () => {
+      render(<BridgePreviewSection />);
+      const counter = screen.getByTestId("bridge-counter");
+      const before = counter.textContent;
+      expect(before).toMatch(/bridge #\d+ of \d+/i);
+      fireEvent.click(screen.getByTestId("bridge-next"));
+      expect(screen.getByTestId("bridge-counter").textContent).not.toBe(before);
+      fireEvent.click(screen.getByTestId("bridge-prev"));
+      expect(screen.getByTestId("bridge-counter").textContent).toBe(before);
+    });
+
+    it("has a section exit CTA pointing at the free lesson", () => {
+      render(<BridgePreviewSection />);
+      const cta = screen.getByTestId("bridge-section-cta");
+      expect(cta.getAttribute("href")).toBe(
+        "/themes/deep-orbit/foundations/introduction-to-tensors",
+      );
+    });
+
+    it("footer claims 'shown in', not 'personalized', and tracks framework", () => {
+      const { container } = render(<BridgePreviewSection />);
+      expect(container.textContent).toMatch(/all shown in react/i);
+      expect(container.textContent).not.toMatch(/personalized/i);
+      fireEvent.click(
+        screen.getByRole("button", { name: /show bridges in svelte/i }),
+      );
+      expect(container.textContent).toMatch(/all shown in svelte/i);
+    });
+
+    it("h2 avoids the 'You already' template (used by hero + onboarding)", () => {
+      render(<BridgePreviewSection />);
+      const h2 = screen.getByRole("heading", { level: 2 });
+      expect(h2.textContent).not.toMatch(/you already/i);
     });
   });
 

@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "useMemo/useCallback skip recomputation when deps are unchanged. LSTM gates are learned continuous weights in [0,1] applied every timestep; they always compute, never skip, and the gating function adapts during training to the data distribution."
 consequence:
-  narrative: "The team's model can now process long discharge summaries without forgetting the diagnosis at the top."
-  nextLessonTeaser: "Next: bidirectional models — reading clinical text forwards AND backwards for complete context."
+  narrative: "Imran reruns the fifty-token test that broke the simple RNN. The LSTM holds the diagnosis from token one to the end, and the long-note accuracy curve finally looks like the short-note one."
 hints:
   - level: nudge
     content: "The forget gate decides what to discard from cell state, like useMemo's dependency array decides when to recalculate."
@@ -37,8 +36,6 @@ keywords:
   - useMemo
   - long-range-dependencies
 ---
-
-> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
 <Dialogue speaker="Vikram">
 Imran, when you use `useMemo` in React, what are you doing?
@@ -62,7 +59,9 @@ Correct. The LSTM cell state acts as a long-term memory highway. The forget gate
 
 In React, `useMemo` and `useCallback` control what values persist across re-renders. Without them, expensive computations run unnecessarily or stale closures cause bugs. LSTMs solve the analogous problem in sequences: without gates, information either vanishes or explodes over long timesteps.
 
-<LearningObjectives objectives={["Understand the three LSTM gates: forget, input, and output", "Connect LSTM gates to React memoization hooks conceptually", "Build an LSTM model in TensorFlow.js for clinical text", "Compare LSTM vs GRU architecture tradeoffs"]} />
+<LearningObjectives objectives={["Understand the three LSTM gates: forget, input, and output", "Build an LSTM model in TensorFlow.js for clinical text", "Compare LSTM vs GRU architecture tradeoffs"]} />
+
+> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
 ## The Three Gates
 

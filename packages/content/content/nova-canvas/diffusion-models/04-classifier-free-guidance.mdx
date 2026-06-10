@@ -10,7 +10,7 @@ context:
   narrative: "Yara types a prompt: 'a forest at dawn, watercolor style.' The image that appears is vaguely forest-shaped but ignores the watercolor instruction. 'It's not listening to me,' she says. Rohan responds: 'We need to amplify the prompt's influence. Think of it like !important in CSS — forcing the style override.'"
   speaker: "Rohan"
 concept:
-  explanation: "Classifier-free guidance amplifies the influence of a text prompt on image generation by contrasting conditioned and unconditioned predictions, like using CSS custom property overrides to force a specific visual style."
+  explanation: "Classifier-free guidance runs the model twice per step, once with the prompt and once without, then exaggerates the difference. The guidance scale controls how hard the prompt's contribution is amplified over the model's own habits."
   bridge:
     feTitle: "CSS custom property overrides"
     feCode: "element.style.setProperty('--color', 'blue', 'important');"
@@ -20,7 +20,6 @@ concept:
     breaks: "CSS custom property overrides change one value at one rule. Classifier-free guidance interpolates between two full model predictions (conditional and unconditional) at every denoising step. Guidance scale is a global mixing knob over thousands of intermediate latents, not a single property override."
 consequence:
   narrative: "Guidance scale 7.5. The forest snaps into focus: dawn light filtering through watercolor trees. Yara smiles for the first time in days. 'Now it listens.'"
-  nextLessonTeaser: "Next: high-resolution generation: scaling up without running out of memory"
 hints:
   - level: nudge
     content: "In guided = uncond + scale * (cond - uncond), the subtraction isolates what the prompt contributes; scale multiplies only that part"
@@ -44,9 +43,9 @@ I typed "a forest at dawn, watercolor style" and it gave me a forest. But not wa
 That is because the model balances its own learned priors with your prompt. We need to shift that balance. Classifier-free guidance lets us amplify the prompt's influence, like adding `!important` to override a CSS default.
 </Dialogue>
 
-CSS custom properties let you override styles at any level of specificity. Classifier-free guidance does the same for image generation: it amplifies how much the text prompt overrides the model's default tendencies.
+Rohan's `!important` is a decent slogan and a misleading mechanism. An override replaces one value outright. Guidance never replaces anything: it runs the model both with and without the prompt, subtracts to isolate what the prompt contributes, and multiplies only that part. The prompt does not win the argument. It gets a louder voice in it.
 
-<LearningObjectives objectives={["Understand why unconditioned generation ignores prompt details", "Implement classifier-free guidance using conditioned and unconditioned predictions", "Control the guidance scale to balance prompt adherence and image quality", "Connect guidance to CSS property overrides and specificity"]} />
+<LearningObjectives objectives={["Understand why unconditioned generation ignores prompt details", "Implement classifier-free guidance using conditioned and unconditioned predictions", "Control the guidance scale to balance prompt adherence and image quality"]} />
 
 ## The Guidance Formula
 

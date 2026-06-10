@@ -5,7 +5,7 @@ import { PRICING } from "@tensorcraft/shared";
 export const metadata: Metadata = {
   title: "Tensorcraft vs fast.ai vs Karpathy vs Coursera | Course comparison",
   description:
-    "Honest comparison: where Tensorcraft wins (FE-developer onboarding, browser-runtime focus, bridge-tier honesty), where the alternatives win (deeper math, larger pretrained ecosystem, formal credentials).",
+    "Honest comparison: where Tensorcraft wins (FE-developer onboarding, browser-runtime focus, analogies labeled where they break), where the alternatives win (deeper math, larger pretrained ecosystem, formal credentials).",
   alternates: { canonical: "https://tensorcraft.app/compare" },
 };
 
@@ -35,7 +35,7 @@ const ROWS: Row[] = [
     coursera: "Anyone with college calculus",
   },
   {
-    feature: "Bridge-tier honesty",
+    feature: "Analogies labeled where they break",
     tensorcraft: "Identity / structural / intuition labels + breaks",
     fastai: "Top-down practice; no formal tier system",
     karpathy: "Bottom-up math; no analogy framing",
@@ -57,14 +57,15 @@ const ROWS: Row[] = [
   },
   {
     feature: "Capstone artifact you ship",
-    tensorcraft: "Five deployable browser-side ML apps",
+    tensorcraft:
+      "A deployable browser-side ML app per theme (one live today, four in the pipeline)",
     fastai: "fast.ai notebooks shareable as Hugging Face Spaces",
     karpathy: "Final notebook trained from scratch",
     coursera: "Certificates",
   },
   {
     feature: "Cost (full curriculum)",
-    tensorcraft: `$0 preview / $${PRICING.allFive.price} all five themes`,
+    tensorcraft: `$0 preview / $${PRICING.single.price} per theme / $${PRICING.allFive.price} for all five (bundle opens once all five launch)`,
     fastai: "Free",
     karpathy: "Free",
     coursera: "$49–79/mo (specialization $200–500)",
@@ -72,7 +73,7 @@ const ROWS: Row[] = [
   {
     feature: "Credential",
     tensorcraft:
-      "Shareable certificate + a GitHub repo of every exercise you solved",
+      "Completion certificate + a GitHub repo of every exercise you solved — a record of work, not an accreditation",
     fastai: "None",
     karpathy: "None",
     coursera: "Coursera certificate",
@@ -212,10 +213,12 @@ export default function ComparePage() {
             </li>
             <li>
               <span className="text-text-primary font-mono text-sm">
-                A credential.
+                An accredited credential.
               </span>{" "}
-              Your capstone is a deployable browser-ML app you can show in an
-              interview. That&apos;s the credential we believe in.
+              Your certificate is a completion record, not an accreditation. The
+              proof we believe in is the capstone — a deployable browser-ML app
+              you can show in an interview — plus the GitHub repo of every
+              exercise you solved.
             </li>
           </ul>
         </section>

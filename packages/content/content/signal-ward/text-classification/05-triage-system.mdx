@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "Priority queues sort by an authored priority value. Triage pipelines sort by predicted urgency from a model; the priority is a probability with calibration error and miscategorizing a critical case as low priority is a clinical safety risk, not a UX bug."
 consequence:
-  narrative: "The triage pipeline is operational. MEDI processes incoming documents in seconds, routing urgent cases immediately and flagging uncertain ones for human review. The ward runs faster and safer."
-  nextLessonTeaser: "The text-classification module is complete. Your triage system is live."
+  narrative: "By the end of the first shift, MEDI has routed 312 documents and asked for human help on 41 of them. The nurses notice the quiet before they notice the dashboard."
 hints:
   - level: nudge
     content: "Chain the classifiers in order: urgency first, then department routing, then tagging"
@@ -44,7 +43,7 @@ We have the pieces: urgency detection, department routing, multi-label tagging, 
 It's like building a priority queue with middleware. Each document enters the pipeline, gets classified at multiple stages, and exits with a complete triage profile. Uncertain cases get dequeued for human review instead of being auto-processed.
 </Dialogue>
 
-<LearningObjectives objectives={["Design a multi-stage triage pipeline combining urgency, routing, and tagging", "Implement confidence-gated routing with human-review fallback", "Handle edge cases: ambiguous documents, rare conditions, and system failures", "Evaluate end-to-end pipeline performance with clinically meaningful metrics"]} />
+<LearningObjectives objectives={["Design a multi-stage triage pipeline combining urgency, routing, and tagging", "Implement confidence-gated routing with human-review fallback", "Order automated results so urgent documents are processed first", "Handle edge cases: ambiguous documents, rare conditions, and system failures", "Evaluate end-to-end pipeline performance with clinically meaningful metrics"]} />
 
 ## The Full Pipeline
 
@@ -161,7 +160,7 @@ class TriagePipeline {
 
 ## Processing the Queue
 
-<Dialogue speaker="Dr. Zahra Karimi">
+<Dialogue speaker="Dr. Karimi">
 Show me the flow. A document arrives. What happens?
 </Dialogue>
 
@@ -209,7 +208,7 @@ async function processQueue(
 
 ## Measuring What Matters
 
-<Dialogue speaker="Dr. Zahra Karimi">
+<Dialogue speaker="Dr. Karimi">
 I don't care about overall accuracy. Tell me: how many urgent documents did we miss? How many got sent to the wrong department? Those are the numbers that save lives.
 </Dialogue>
 

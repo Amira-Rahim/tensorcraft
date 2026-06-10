@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "Design system tokens are discrete authored variables with semantic names (`--color-primary`). VAE latent dimensions are unnamed continuous learned axes; identifying which dimension controls smile vs. age requires running attribution experiments. You cannot rename a dimension to give it meaning."
 consequence:
-  narrative: "The creative VAE powers the centerpiece of the exhibition. Visitors walk through a space where every surface displays generated art that responds to their presence: unique, controllable, and running entirely in the browser."
-  nextLessonTeaser: "Next: advanced architectures, starting with two networks that train by fighting each other"
+  narrative: "Visitors will walk through a space where every surface displays generated art that responds to their presence: unique, controllable, and running entirely in the browser. The creative VAE is the centerpiece of the exhibition."
 hints:
   - level: nudge
     content: "Design tokens give you named, semantic control. VAE latent dimensions do the same for generated art."
@@ -48,7 +47,7 @@ And it must run at 30fps in Chrome on those kiosk laptops. No excuses.
 Erdem's kiosks give me 33 milliseconds per frame, and one decode costs me 11. Sixteen dimensions with ten slider stops each is 10^16 possible artworks. Tonight's visitors will see maybe 4,000 of them.
 </Dialogue>
 
-In a design system, tokens like `color: 'ocean'`, `density: 0.7`, `rhythm: 'flowing'` give designers semantic, controllable parameters. A trained VAE gives you the same thing: latent dimensions that control specific visual attributes of the generated output.
+The kiosk sliders will read like design tokens: warmth, complexity, symmetry. The VAE does not hand you those names. It hands you sixteen unnamed axes, and the labels come later, after traversal experiments reveal which axis moves what. The mapping code in this lesson is the product of that detective work, not a feature of the model.
 
 <LearningObjectives objectives={["Build a complete VAE with custom training loop in TensorFlow.js", "Implement the full loss function: reconstruction + KL divergence", "Create an interactive generation UI with latent space controls", "Optimize for real-time browser performance"]} />
 
@@ -210,10 +209,10 @@ for d in 1..latent_dim:
 ## Knowledge check
 
 <Quiz
-  question="What does increasing β in β-VAE do?"
-  options={[{"text":"Makes encoder + decoder bigger"},{"text":"Tighter encoder (closer to N(0,I)) → better disentanglement, worse reconstruction"},{"text":"Speeds up training"},{"text":"Reduces latent dimension"}]}
+  question="Why does the creative VAE train with a custom loop around optimizer.minimize instead of calling model.fit?"
+  options={[{"text":"model.fit is not available in TensorFlow.js"},{"text":"The loss needs the encoder's intermediate outputs (mu, logVar) plus a fresh epsilon sample each step, so the whole forward pass has to live inside the loss closure"},{"text":"Custom loops always train faster than model.fit"},{"text":"model.fit cannot use the Adam optimizer"}]}
   correct={1}
-  explanation="L = recon + β · KL. Higher β forces the encoder distribution closer to the prior, reducing per-sample variance. Often improves disentanglement (each dim captures one factor) but loses reconstruction fidelity. Tradeoff is empirical and dataset-dependent."
+  explanation="model.fit computes loss from (prediction, label) pairs. The VAE loss also depends on mu and logVar from the encoder and on a reparameterized sample drawn fresh every step, values model.fit never sees. Putting encode, sample, decode, and both loss terms inside optimizer.minimize lets TF.js differentiate through the entire pass. model.fit exists in TF.js and Adam works fine with it; neither is the obstacle, and custom loops are not inherently faster."
   tier="structural"
 />
 

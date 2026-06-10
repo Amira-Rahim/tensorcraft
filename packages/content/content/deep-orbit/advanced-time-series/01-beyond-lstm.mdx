@@ -10,7 +10,7 @@ context:
   narrative: "The LSTM works, but its sequential nature is slow. Farah introduces attention — a mechanism that lets the model focus on the most relevant time steps directly, without processing the entire sequence step by step."
   speaker: "Dr. Farah"
 concept:
-  explanation: "Attention mechanisms dynamically highlight the most relevant parts of input — like CSS :focus that moves to the active element based on context."
+  explanation: "Attention scores every time step for relevance at once, then spends the model's capacity where the scores are high."
   bridge:
     feTitle: "CSS :focus"
     feCode: ":focus { outline: 2px solid blue; } // highlight the active element"
@@ -18,7 +18,7 @@ concept:
     mlCode: "weights = softmax(Q * K^T); output = weights * V // focus on relevant steps"
     tier: intuition
 consequence:
-  narrative: "The attention model processes the full signal in parallel — 10x faster than the LSTM — and reveals which time steps matter most for each prediction."
+  narrative: "Ten times faster than the LSTM, the attention model reads the full signal in parallel and shows its work: which time steps mattered, per prediction."
 hints:
   - level: nudge
     content: "Attention computes relevance scores for each time step, then focuses on the important ones"
@@ -133,7 +133,7 @@ Implement a simple attention mechanism over a sequence.
 
 <Epilogue>
 
-The attention model clears validation at 0140 and Demir runs it against the live feed before logging off. Two hotspots, every window: the amplitude spike, then the frequency shift trailing it. On the archived telemetry from eleven days ago, the gap between hotspots measures 73.4 seconds. On tonight's feed it measures 73.1. He runs it twice more and gets 73.1 twice more.
+Demir runs the freshly validated attention model against the live feed before logging off. Two hotspots, every window: the amplitude spike, then the frequency shift trailing it. On the archived telemetry from eleven days ago, the gap between hotspots measures 73.4 seconds. On tonight's feed it measures 73.1, and he runs it twice more and gets 73.1 twice more.
 
 <Dialogue speaker="Dr. Farah">
 Run it again tomorrow night — same window, same archive. If it's sensor jitter, it won't be consistent.

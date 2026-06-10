@@ -451,7 +451,7 @@ export function LessonSteps({
                 color: theme.palette.bg,
               }}
             >
-              Module Complete &rarr;
+              Back to Mission Map &rarr;
             </Link>
           )}
         </div>

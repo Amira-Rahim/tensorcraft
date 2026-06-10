@@ -20,7 +20,6 @@ concept:
     breaks: "npm pack bundles code with metadata. Model packaging bundles weights + topology + tokenizer + preprocessing + version metadata and the format must match the runtime exactly (TFLite, Core ML, ONNX). Mismatches fail at load time."
 consequence:
   narrative: "The first model package passes integrity validation. Tariq queues it for deployment to Sector 7."
-  nextLessonTeaser: "Next: choosing the right runtime environment for each device"
 hints:
   - level: nudge
     content: "An npm package ships package.json next to the code. Your ModelPackage needs the equivalent: weights plus config, version, and a checksum"
@@ -43,7 +42,7 @@ I'm not shipping raw weight files to 847 devices. Every deployment artifact need
 Treat it like a release. Semantic versioning, integrity hashes, the works.
 </Dialogue>
 
-You would never `npm publish` a package without a `package.json`, a version number, and a lockfile hash. Model deployment deserves the same rigor. A model package bundles everything needed for inference into a single, versioned, verifiable artifact.
+Nothing reaches the npm registry without a `package.json`, a version number, and an integrity hash; loose files are not a release. Model deployment deserves the same rigor. A model package bundles everything needed for inference into a single, versioned, verifiable artifact.
 
 <LearningObjectives objectives={["Structure a model deployment artifact with weights, config, and metadata", "Implement integrity verification using checksums — the same concept as SRI hashes", "Apply semantic versioning to model releases", "Build a packaging pipeline that produces reproducible deployment bundles"]} />
 

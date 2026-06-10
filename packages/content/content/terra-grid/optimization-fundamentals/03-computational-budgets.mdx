@@ -20,7 +20,6 @@ concept:
     breaks: "Lighthouse budgets are static thresholds for build artifacts. Model budgets must trade off compute, memory, accuracy, and latency simultaneously across target devices. Single-axis budgets hide the tradeoff space."
 consequence:
   narrative: "Every model now has a deployment budget. No exceptions."
-  nextLessonTeaser: "Next: standardized benchmarking"
 hints:
   - level: nudge
     content: "Define your budget based on device constraints: 60% of RAM, storage, latency target"
@@ -43,7 +42,7 @@ New deployment policy: no model ships without passing budget validation. Maximum
 The Sector 11 forecaster ran fine in staging, then got OOM-killed nine minutes after deploy because nobody set a memory ceiling. We don't do that twice. This is our Lighthouse budget, but for ML.
 </Dialogue>
 
-You set performance budgets in Lighthouse: maximum bundle size, maximum time-to-interactive, maximum total blocking time. If the budget fails, the build fails. Priya's instinct to copy the enforcement is right. Her analogy hides one trap: Lighthouse budgets are independent dials, and model budgets are coupled. Shrink the model to pass the size gate and accuracy pays. Cap RAM and you may force a quantization that breaks the accuracy floor. GRID's three numbers plus the accuracy threshold form one four-way trade, not four separate checkboxes.
+Lighthouse made performance budgets famous: maximum bundle size, maximum time-to-interactive, maximum total blocking time, and a failed build when any of them is exceeded. Priya's instinct to copy the enforcement is right. Her analogy hides one trap: Lighthouse budgets are independent dials, and model budgets are coupled. Shrink the model to pass the size gate and accuracy pays. Cap RAM and you may force a quantization that breaks the accuracy floor. GRID's three numbers plus the accuracy threshold form one four-way trade, not four separate checkboxes.
 
 <LearningObjectives objectives={["Define computational budgets for edge model deployment", "Calculate budget thresholds from device specifications", "Validate models against budget constraints before deployment", "Apply Lighthouse performance budget concepts to ML models"]} />
 

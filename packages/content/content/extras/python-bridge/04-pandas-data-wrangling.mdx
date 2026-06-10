@@ -19,14 +19,13 @@ concept:
     breaks: "Array of objects + .map/.filter/.reduce iterates row-by-row in JS-land. Pandas DataFrames are columnar with vectorized ops in C; equivalent operations are 10–100× faster but require thinking in columns, not rows."
 consequence:
   narrative: "A pandas pipeline is a .filter().map() chain in different clothes: df[condition] filters, .apply() maps, df['col'] selects. The one thing that doesn't translate is the speed. pandas does it columnar, in C."
-  nextLessonTeaser: "Next: how to read ML papers and navigate PyTorch repos"
 hints:
   - level: nudge
-    content: "Run df.head() first: it prints rows and named columns like a spreadsheet, and df['col'] addresses one column"
+    content: "Each pandas line in the comments is one array-method call"
   - level: guidance
-    content: "df['column'] is like data.map(row => row.column)"
+    content: "dropna is a .filter for non-null values, and the threshold check is another .filter. Compute mean and std from the filtered rows before mapping the normalized column on. groupby is a reduce into an object keyed by sensorId."
   - level: solution
-    content: "Every pandas operation has a JavaScript array method equivalent"
+    content: "1) const clean = data.filter(r => r.value !== null).filter(r => r.value > 0). 2) mean and std from clean.map(r => r.value). 3) const norm = clean.map(r => ({ ...r, normalized: (r.value - mean) / std })). 4) reduce into { [sensorId]: values[] }, then average each group's array."
 keywords:
   - pandas
   - dataframe
@@ -38,7 +37,7 @@ keywords:
 You've filtered arrays, mapped over objects, reduced datasets to summaries, and grouped items by category, all in JavaScript. A pandas DataFrame is that same toolkit, optimized for tabular data. If you can chain .map().filter().reduce(), you can read pandas code.
 </Dialogue>
 
-Before data reaches a model, it goes through wrangling: cleaning, transforming, splitting, normalizing. In Python, that's pandas. In JavaScript, that's the array methods you use every day. This lesson maps every common pandas operation to its JavaScript equivalent.
+Before data reaches a model, it goes through wrangling: cleaning, transforming, splitting, normalizing. In Python, that's pandas. In JavaScript, that's the array methods you use every day. Put a pandas line next to its array-method twin and most of the mystery evaporates, so that's exactly what we'll do below.
 
 <LearningObjectives objectives={["Read pandas DataFrame operations and understand what they do", "Map pandas filtering, selection, and transformation to JS array methods", "Understand groupby as the equivalent of a reduce-to-groups pattern", "Translate pandas data preparation pipelines to JavaScript"]} />
 

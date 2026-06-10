@@ -10,7 +10,7 @@ context:
   narrative: "The fine-tuned model works perfectly on daytime footage but fails at night. Noor replays the test results: 94% accuracy at noon, 52% after dark. NEON projects the failure cases: neon-lit streets, rain-streaked lenses, fog-blurred silhouettes. 'The training data is from one domain — daylight, clear skies,' NEON explains. 'Neon City at 2AM is a different domain entirely. Same app, different locale.'"
   speaker: "NEON"
 concept:
-  explanation: "Domain adaptation bridges the gap between the distribution of training data (source domain) and real-world deployment data (target domain). The core functionality stays the same, but surface-level conditions change: brightness, contrast, noise, weather. Like i18n: the same app, adapted for a different locale."
+  explanation: "Domain adaptation bridges the gap between the distribution of training data (source domain) and real-world deployment data (target domain). The model's job has not changed, but the surface conditions have: brightness, contrast, noise, weather. You close the gap by training on data that looks like where the model will actually run."
   bridge:
     feTitle: "i18n: adapting across locales"
     feCode: "t('welcome', { locale: 'ja' }); // same key, different rendering"
@@ -20,7 +20,6 @@ concept:
     breaks: "i18n swaps text strings via key-based lookup, deterministic and total. Domain adaptation must align learned feature distributions across source and target domains; methods (fine-tuning, adversarial loss, distribution matching) all require labeled or unlabeled target data and may degrade source-domain performance. There is no key-value table; alignment is empirical and partial."
 consequence:
   narrative: "After augmenting training data with synthetic night transforms (reduced brightness, increased contrast, sensor noise) and re-fine-tuning, the model handles rain, fog, and neon lighting. NEON tests it on a week of overnight footage. 96% accuracy across all conditions. 'The domain gap is closed,' NEON says. 'Day or night, this model sees drones.'"
-  nextLessonTeaser: "Next: the heist — repurposing Meridian's own model against them"
 hints:
   - level: nudge
     content: "Domain shift is like an app working in English but failing in Japanese: same structure, different surface"
@@ -37,8 +36,10 @@ keywords:
   - night-vision
 ---
 
+52%. Noor runs the overnight batch a second time, because the first number had to be wrong. It is not wrong. The same model that catches 94 of every 100 drones at noon is coin-flipping at 2AM. Nothing in the weights changed between sunset and sunrise. The city did.
+
 <Dialogue speaker="NEON">
-You have built an app that works perfectly in English. Now deploy it to Japan. The buttons are the same, the logic is the same, but text wraps differently, dates format differently, character sets change entirely. That is domain shift. Your model works on daylight photos from ImageNet. Neon City at 2AM in the rain is a completely different locale.
+Your model learned daylight, and Neon City at 2AM did not consult it. You have seen this failure in another costume: the app that works perfectly in English, deployed to Japan. Text wraps, dates break, character sets riot. Different locale, no translation file.
 </Dialogue>
 
 <Dialogue speaker="Noor">
@@ -46,12 +47,12 @@ So domain adaptation is i18n for neural networks. Same model, same features, but
 </Dialogue>
 
 <Dialogue speaker="NEON">
-Mostly. One place the analogy flatters you: i18n is a lookup table. Total, deterministic, done. Domain adaptation has no table. You nudge learned feature distributions toward the target with augmented data and more training, the alignment is partial, and pushing accuracy up at 2AM can pull it down at noon. Measure both domains or you have only moved the failure.
+i18n is a lookup table. Total, deterministic, done. Domain adaptation has no table. You nudge learned feature distributions toward the target with augmented data and more training, the alignment is partial, and pushing accuracy up at 2AM can pull it down at noon. Measure both domains or you have only moved the failure somewhere you are not looking.
 </Dialogue>
 
 In i18n, you do not rewrite the entire app for each locale. You adapt the surface: translations, date formats, currency symbols. The architecture stays the same. Domain adaptation follows the same principle: you adapt the model to handle different visual conditions without rebuilding from scratch.
 
-<LearningObjectives objectives={["Understand domain shift as the gap between training and deployment data distributions", "Use data augmentation to simulate target domain conditions", "Apply brightness, contrast, and noise transforms for night-time adaptation", "Connect domain adaptation to i18n — same core, different surface conditions"]} />
+<LearningObjectives objectives={["Understand domain shift as the gap between training and deployment data distributions", "Use data augmentation to simulate target domain conditions", "Apply brightness, contrast, and noise transforms for night-time adaptation"]} />
 
 ## The Domain Gap
 

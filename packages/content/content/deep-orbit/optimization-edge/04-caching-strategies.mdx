@@ -10,7 +10,7 @@ context:
   narrative: "Many signals repeat similar patterns. Demir implements inference caching — skip the model entirely for inputs we've seen before."
   speaker: "Ensign Demir"
 concept:
-  explanation: "Caching inference results avoids redundant computation — like Service Worker caching strategies that serve cached responses for repeated requests."
+  explanation: "Caching inference results means the model never computes the same answer twice. The hard part is deciding when two inputs count as the same."
   bridge:
     feTitle: "Service Worker Cache"
     feCode: "caches.match(request) || fetch(request).then(cache) // cache-first"

@@ -10,7 +10,7 @@ context:
   narrative: "Hassan examines the model's weights and finds most are near zero: dead weight."
   speaker: "Hassan Al-Rashid"
 concept:
-  explanation: "Weight pruning removes near-zero connections from a neural network, just like tree-shaking removes unused exports from JavaScript modules."
+  explanation: "Weight pruning removes near-zero connections from a neural network; most trained models carry far more weights than their predictions actually use."
   bridge:
     feTitle: "Tree-Shaking"
     feCode: "// Webpack removes unused exports\nimport { used } from './utils';\n// unused exports are eliminated"
@@ -19,7 +19,6 @@ concept:
     tier: structural
 consequence:
   narrative: "60% of the model's weights were near zero. Pruning them barely affects accuracy."
-  nextLessonTeaser: "Next: structured pruning, removing entire neurons"
 hints:
   - level: nudge
     content: "Weights near zero contribute almost nothing to the output"
@@ -38,9 +37,9 @@ keywords:
 We have a massive model that knows everything. We need a tiny model that knows just enough. Look at the weight distribution: 60% of the values are near zero. They are unused exports. Tree-shake them.
 </Dialogue>
 
-You use tree-shaking every day. Webpack analyzes your import statements and removes code that is never used. Weight pruning applies the same principle to neural networks: weights near zero contribute almost nothing to the model's output, so you remove them.
+Webpack's tree-shaker reads your import statements and deletes whatever nothing references. Weight pruning applies the same principle to a neural network: weights near zero contribute almost nothing to the output, so out they go.
 
-<LearningObjectives objectives={["Understand magnitude-based weight pruning", "Implement a pruning function that zeros small weights", "Calculate sparsity percentage after pruning", "Map tree-shaking concepts to neural network pruning"]} />
+<LearningObjectives objectives={["Understand magnitude-based weight pruning", "Implement a pruning function that zeros small weights", "Calculate sparsity percentage after pruning"]} />
 
 ## Tree-Shaking for Neural Networks
 

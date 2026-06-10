@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "These are literally the same update — lerp IS gradient descent on loss = (target − pos)², with 0.1 playing the learning rate. The break: in lerp you KNOW the target, so easing is a style choice; you could jump straight there. In ML the target is unknown — the loss surface only tells you the local slope under your feet, across millions of dimensions at once. Descent isn't a style choice; it's the only information you have."
 consequence:
-  narrative: "The gradients reveal exactly how to adjust each weight. The path to a trained network is clear."
+  narrative: "Down is now computable. Every weight knows which direction reduces the loss, and by how much."
 hints:
   - level: nudge
     content: "Gradients tell you the slope — which way is downhill"
@@ -43,7 +43,7 @@ Great, so the loss tells us we're wrong. But which knobs do I turn? Which weight
 
 ## Finding Downhill
 
-You're blindfolded partway up a hill and want the bottom. Your only instrument is the tilt of the ground where you stand. Step downhill, keep stepping until the ground goes flat, and you have performed gradient descent — the tilt is the gradient, and flat ground is a minimum.
+You're blindfolded partway up a hill and want the bottom. Your only instrument is the tilt of the ground where you stand. Step downhill, keep stepping until the ground goes flat, and you have performed gradient descent: the tilt is the gradient, and flat ground is a minimum.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -113,7 +113,7 @@ Implement gradient descent to minimize a loss function.
 
 <Epilogue>
 
-The descent runs overnight: four thousand steps, the loss falling in the slow glide the math promised. At 0512 the curve flattens at 0.31 and refuses to move again — a valley, though nobody can say yet whether it is the deepest one. In the morning diagnostics, wedged between two watchdog timestamps, there is a log entry no one scheduled.
+The descent runs overnight: four thousand steps, the loss falling in the slow glide the math promised. At 0512 the curve flattens at 0.31 and refuses to move again. A valley, though nobody can say yet whether it is the deepest one. In the morning diagnostics, wedged between two watchdog timestamps, there is a log entry no one scheduled.
 
 <Dialogue speaker="ARIA">
 I have begun logging the network's loss curve at each gradient step. No directive requires this. The curve is a record of the system that is replacing my rules, and I am keeping it for my own records.

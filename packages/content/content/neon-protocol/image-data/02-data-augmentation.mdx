@@ -10,7 +10,7 @@ context:
   narrative: "The team's dataset is solid but small: only 2,000 images. Training the Protocol Sentinel on this would be like learning to recognize faces from a single yearbook. Amir fires up the augmentation pipeline: 'We don't need more cameras. We need more perspectives.'"
   speaker: "Amir"
 concept:
-  explanation: "Data augmentation creates training variety through transforms, just like CSS transforms create visual variations of the same element without changing the underlying DOM."
+  explanation: "Data augmentation multiplies a small dataset by transforming each image (flip, rotate, brighten, crop) while keeping its label the same. The model learns that meaning survives presentation."
   bridge:
     feTitle: "CSS Transforms"
     feCode: "transform: rotate(15deg) scale(0.9) skewX(5deg)"
@@ -20,7 +20,6 @@ concept:
     breaks: "CSS transforms are visual changes to authored elements. Image augmentation generates new training samples to teach invariance. The wrong augmentation (e.g. flipping medical images) can teach the model the wrong invariance and silently hurt accuracy."
 consequence:
   narrative: "The augmentation pipeline transforms 2,000 images into an effective training set of 16,000. Amir nods approvingly at the augmented samples scrolling across the screen. 'Same cameras, but the Sentinel will see them from every angle, in every light.'"
-  nextLessonTeaser: "Next: Normalization. Scaling pixel values so the model can consume them consistently."
 hints:
   - level: nudge
     content: "Start from transform: rotate(15deg) scale(0.9): the pixels change, the label does not. That invariance is what every augmentation you write must preserve."
@@ -37,7 +36,7 @@ keywords:
 ---
 
 <Dialogue speaker="Amir">
-Two thousand images might sound like a lot, but a neural network will memorize them in minutes and learn nothing generalizable. We need to show it the same cameras from every angle, in every lighting condition. You already know how to transform visual elements. You've been doing it in CSS for years.
+Two thousand images might sound like a lot, but a neural network will memorize them in minutes and learn nothing generalizable. We need to show it the same cameras from every angle, in every lighting condition. Two thousand originals, sixteen thousand training samples. The transforms do the photography for us.
 </Dialogue>
 
 Every frontend developer has written `transform: rotate(45deg) scale(1.2)` to manipulate how an element appears on screen. The element itself doesn't change; its DOM structure, content, and semantics remain identical. You're just presenting it differently. Data augmentation applies the exact same principle to training images: transform the presentation without changing the meaning.

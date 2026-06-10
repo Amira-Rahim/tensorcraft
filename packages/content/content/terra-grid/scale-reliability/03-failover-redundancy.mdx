@@ -20,7 +20,6 @@ concept:
     breaks: "Error boundaries catch render errors and show fallback UI. Model failover must decide between fallback to a simpler model (worse but available), cached predictions (stale), or returning no prediction. Each fallback has its own correctness implications."
 consequence:
   narrative: "Device-3 goes offline. Within 200ms, the failover controller routes shard-2 inference to the backup device. Accuracy drops 0.3% running the simplified fallback model, but the system stays operational. Hassan: 'That is what graceful degradation looks like.'"
-  nextLessonTeaser: "Next: load management, handling traffic spikes without dropping predictions"
 hints:
   - level: nudge
     content: "Error boundaries catch errors and render fallback UI. Model failover catches failures and routes to backup models."

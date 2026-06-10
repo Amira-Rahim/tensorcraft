@@ -20,7 +20,6 @@ concept:
     breaks: "Multiple event listeners run independently and don't interact. Multiple attention heads process the same input in parallel with different learned projections, then concatenate; heads specialize during training (some attend to syntax, some to semantics) but you cannot assign roles."
 consequence:
   narrative: "Diagnostic One can now simultaneously track drug-condition relationships, temporal sequences, and dosage patterns."
-  nextLessonTeaser: "Next: visualizing what the model focuses on."
 hints:
   - level: nudge
     content: "Split the embedding dimension across heads, not the sequence"
@@ -42,7 +41,7 @@ One attention head learns one type of relationship. But clinical text has many s
 Like attaching multiple event listeners to the same element. A click handler for navigation, another for analytics, another for animations. Same event, different purposes.
 </Dialogue>
 
-<LearningObjectives objectives={["Understand why single-head attention is insufficient", "Implement multi-head attention by splitting dimensions", "Concatenate and project head outputs", "Identify what different heads learn to attend to"]} />
+<LearningObjectives objectives={["Understand why single-head attention is insufficient", "Implement multi-head attention: split dimensions across heads, then concatenate and project the outputs", "Identify what different heads learn to attend to"]} />
 
 ## One Element, Many Listeners
 

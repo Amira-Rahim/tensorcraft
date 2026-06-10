@@ -10,7 +10,7 @@ import { PurchaseAnalytics } from "./purchase-analytics";
 
 export const metadata: Metadata = {
   title: "Purchase Confirmed | Tensorcraft",
-  description: "Your theme is now fully unlocked.",
+  description: "Your theme is yours — every module is open.",
   robots: { index: false, follow: false },
 };
 
@@ -152,8 +152,8 @@ export default async function PurchaseSuccessPage({
           </h1>
           <p className="text-base sm:text-lg text-text-muted max-w-xl mx-auto">
             {firstTheme
-              ? `${firstTheme.displayName} is now fully unlocked. All ${firstThemeModules.length} modules are ready.`
-              : "Your purchase is confirmed. All content is now unlocked."}
+              ? `${firstTheme.displayName} is yours — all ${firstThemeModules.length} modules are open.`
+              : "Your purchase is confirmed. Everything you bought is open."}
           </p>
         </div>
 

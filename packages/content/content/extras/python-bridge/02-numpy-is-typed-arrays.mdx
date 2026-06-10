@@ -19,14 +19,13 @@ concept:
     breaks: "`Float32Array + .map` is a JS-iterating function-per-element loop. NumPy `ndarray * 2` is a vectorized C-level broadcast that runs 10–100× faster on the same op and supports n-dimensional indexing/slicing JS arrays cannot express. The conceptual rhyme holds; the performance and API surface do not."
 consequence:
   narrative: "np.zeros is tf.zeros, np.reshape is tf.reshape; the translation is nearly mechanical. Keep the mapping table open for your first week of reading NumPy. After that you won't need it."
-  nextLessonTeaser: "Next: PyTorch models are TensorFlow.js models with different syntax"
 hints:
   - level: nudge
-    content: "The broadcasting rules you learned for tf.js apply unchanged in NumPy: align trailing dimensions, stretch any dimension of size 1"
+    content: "The np.* names map almost one-to-one onto tf.* names"
   - level: guidance
-    content: "np.array maps to tf.tensor, np.reshape maps to tf.reshape"
+    content: "np.zeros((3, 4)) is tf.zeros([3, 4]): the shape tuple becomes an array. np.arange has a direct tf.range equivalent. For axis operations like np.mean(a, axis=1), TF.js takes the axis as the second argument."
   - level: solution
-    content: "Every NumPy operation has a TF.js equivalent; the API names are nearly identical"
+    content: "createZeros: tf.zeros([3, 4]). createRange: tf.range(0, 10, 2). reshapeTensor: a.reshape([2, 6]). meanAlongAxis: a.mean(1). concatTensors: tf.concat([a, b], 0)."
 keywords:
   - numpy
   - typed-array

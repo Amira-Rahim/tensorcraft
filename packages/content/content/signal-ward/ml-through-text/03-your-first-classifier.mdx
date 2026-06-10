@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "`items.map(x => x * weight + bias)` applies a function YOU wrote. A linear classifier learns the weight + bias from labeled data via gradient descent, and adds a decision rule (sign, softmax) that .map doesn't have. The arithmetic shape matches; the authoring direction (you write vs model learns) is opposite."
 consequence:
-  narrative: "The first classifier correctly categorizes 3 out of 4 test notes. It's rough, but it works."
-  nextLessonTeaser: "Next: understanding how tokenization breaks text into processable units."
+  narrative: "Three of the four test notes land in the right bucket. Khalil stares at the fourth, an allergy note filed under 'progress', and starts a list titled WHY."
 hints:
   - level: nudge
     content: "Multiply each feature by a weight, sum the results, and add a bias."
@@ -35,8 +34,6 @@ keywords:
   - linear-model
 ---
 
-> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
-
 <Dialogue speaker="Dr. Karimi">
 Our first milestone: Diagnostic One needs to tell the difference between an allergy note, a progress note, and a discharge summary. Can you build that, Khalil?
 </Dialogue>
@@ -46,12 +43,14 @@ So it's like... routing. A request comes in and I need to send it to the right h
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-Half right. A router runs rules you wrote. Nobody writes the rules here. The classifier starts with weights it learns from labeled notes, and that flips the authoring direction. You don't decide that the allergy keyword is the signal. The training data does.
+A router runs rules you wrote. Nobody writes the rules here, and that's the part of your picture to replace. The classifier learns its weights from labeled notes, which flips the authoring direction: you don't decide that the allergy keyword is the signal. The training data does.
 </Dialogue>
 
 The arithmetic shape is one you know. `Array.map(x => x * weight + bias)` applies a function you wrote. A classifier runs the same multiply-and-add, with one difference that matters: you didn't write the weight or the bias. Training did.
 
 <LearningObjectives objectives={["Build a simple linear classifier using TensorFlow.js", "Understand weights and bias as the model's learned parameters", "Map the concept of Array.map(transform) to matrix multiplication", "Classify clinical notes into categories using feature vectors"]} />
+
+> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
 ## The Simplest Classifier
 

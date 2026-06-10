@@ -20,7 +20,6 @@ concept:
     breaks: "Git versions text well via line-level diffs. Data versioning must handle large binaries, schema evolution, and reproducible sampling. Git-LFS and DVC exist but require disciplined commit practices that text-version control does not need."
 consequence:
   narrative: "Priya traces the regression to a corrupted sensor batch from Sector 3. She reverts to the previous data version and retrains."
-  nextLessonTeaser: "Next: tracking experiments so you know which training run produced which model"
 hints:
   - level: nudge
     content: "hashDataset() gives data what git gives code: a content hash, so diffDatasets() can answer what changed between two training runs"
@@ -35,6 +34,13 @@ keywords:
   - dataset-hash
 ---
 
+```text
+$ git log --oneline training-data/
+fatal: not a git repository
+```
+
+That command is the whole problem. The code that trained last Tuesday's regressed model has full history; the data it trained on has none.
+
 <Dialogue speaker="Priya Sharma">
 The model regressed last Tuesday. But I can't tell you which training data produced it. Was it the batch before or after the Sector 3 sensor recalibration? Nobody versioned the data.
 </Dialogue>
@@ -43,7 +49,7 @@ The model regressed last Tuesday. But I can't tell you which training data produ
 If you cannot reproduce the training run, you cannot debug the regression. Version everything. Code, data, hyperparameters.
 </Dialogue>
 
-Imagine debugging a production bug without git history. No blame, no bisect, no diff. That is what ML without data versioning looks like. You know the model is wrong, but you cannot trace why, because nobody tracked what data trained it.
+No history means no blame, no bisect, no diff. The model is provably wrong and the why is untraceable, because nobody tracked what data trained it. Data versioning closes that gap with the same primitive git uses: a content hash for every state worth returning to.
 
 <LearningObjectives objectives={["Implement data versioning using content hashing — the same mechanism as git commit hashes", "Track dataset lineage to trace any model back to its exact training data", "Design a version metadata schema that captures what changed and why", "Enable data rollback for reproducing and debugging model regressions"]} />
 

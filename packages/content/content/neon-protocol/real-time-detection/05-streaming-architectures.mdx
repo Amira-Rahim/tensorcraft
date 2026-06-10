@@ -20,7 +20,6 @@ concept:
     breaks: "WebSocket/SSE streams discrete messages over an open connection. Inference streams must additionally manage frame skipping under load, batched-vs-streaming tradeoffs, and backpressure. Every dropped frame is a missed detection, not a missed UI update."
 consequence:
   narrative: "Protocol Sentinel processes 12 feeds simultaneously: 8 locally, 4 via relay. NEON identifies a Meridian agent by gait analysis. Noor reaches for the alert button. Amir stops her. 'That person is limping from an injury. The model is wrong.' The cost of trusting vision without verification."
-  nextLessonTeaser: "Module 9 awaits: generative vision. Art that fights back"
 hints:
   - level: nudge
     content: "Treat each feed like a WebSocket connection: frames arrive as events, and your FeedProcessor decides which ones the GPU actually sees"

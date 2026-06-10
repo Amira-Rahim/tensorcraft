@@ -19,7 +19,6 @@ concept:
     tier: structural
 consequence:
   narrative: "Diagnostic One can now split clinical notes into tokens and map them to vocabulary indices."
-  nextLessonTeaser: "Next: connecting all the pieces in a complete forward pass."
 hints:
   - level: nudge
     content: "Split the text into words, then look up each word in a vocabulary dictionary."
@@ -33,8 +32,6 @@ keywords:
   - text-processing
   - token-ids
 ---
-
-> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
 <Dialogue speaker="Vikram">
 Khalil, when you parse a URL like /patient/123/records, you split it into segments: "patient", "123", "records." Each segment means something different. Tokenization does the same for text.
@@ -51,6 +48,8 @@ Four, once you strip the period. Leave it attached and "pain." becomes a fifth t
 You parse URLs all the time. `new URL()` breaks a URL into structured parts: protocol, host, pathname, search params. Tokenization does the same for natural language: it breaks a sentence into structured parts that a model can process.
 
 <LearningObjectives objectives={["Tokenize text by splitting on whitespace and punctuation", "Build a vocabulary mapping from words to integer indices", "Convert a sentence into a sequence of token IDs", "Handle unknown words with an out-of-vocabulary token"]} />
+
+> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
 ## From Text to Token IDs
 

@@ -20,7 +20,6 @@ concept:
     breaks: "Perlin noise produces visually coherent random fields from a deterministic algorithm. Every input gives an aesthetic output. Latent noise vectors only decode to coherent images near the training data manifold; vectors sampled outside that region decode to garbage. The noise distribution must match training (typically standard normal) exactly."
 consequence:
   narrative: "Samir builds a canvas sketch driven by noise vectors and sees the parallel: noise is the clay, the model is the sculptor."
-  nextLessonTeaser: "Next: putting it all together to build your first generator"
 hints:
   - level: nudge
     content: "Perlin noise creates smooth randomness for terrain and textures. ML noise vectors serve the same purpose"
@@ -35,6 +34,8 @@ keywords:
   - random-input
 ---
 
+Open a console and run `tf.randomNormal([1, 100]).print()`. One hundred numbers, no meaning, no structure. Keep them in view for the rest of this module, because they are the entire input budget of everything you will generate: every stripe, every palette, every pattern, conjured out of exactly that much static. Noise is not the enemy of creation. It is the raw material.
+
 <Dialogue speaker="Yara">
 Every painting I make starts the same way: with a mess. A splash of paint, a smear of charcoal, a random gesture. The art is not in the first mark. The art is in what I do with it afterward. Generative models work the same way.
 </Dialogue>
@@ -42,8 +43,6 @@ Every painting I make starts the same way: with a mess. A splash of paint, a sme
 <Dialogue speaker="MUSE">
 I started this morning with the same 100 random numbers you did. The difference between us is 40 million gradient updates.
 </Dialogue>
-
-If you have ever used Perlin noise to generate terrain in a canvas game, or simplex noise for procedural textures, you already understand the core idea. Noise is not the enemy of creation. It is the raw material.
 
 <LearningObjectives objectives={["Understand why generative models start from random noise", "Connect Perlin noise in canvas art to latent vectors in ML", "Create and manipulate noise vectors with TensorFlow.js", "Transform noise into structured patterns using a simple neural layer"]} />
 

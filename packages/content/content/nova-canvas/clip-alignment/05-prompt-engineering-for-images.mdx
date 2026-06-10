@@ -10,7 +10,7 @@ context:
   narrative: "Yara experiments with prompts. 'City at night' gives a generic skyline. 'A melancholy digital cityscape at twilight, rendered in deep blues and amber, architectural solitude, cinematic lighting' produces something that makes Erdem go quiet. 'The prompt is the brushstroke now,' she says. 'Specificity is the skill.'"
   speaker: "Yara"
 concept:
-  explanation: "Prompt engineering for images is the art of writing text that guides the model toward specific visual outcomes. Like writing effective CSS selectors: specificity matters. A vague selector matches too broadly; a precise selector targets exactly what you want."
+  explanation: "Prompt engineering for images is writing text that lands where you intend in CLIP's embedding space. Vague phrasing averages over everything the model has seen; precise modifiers for mood, lighting, palette, and composition steer the output toward one specific visual outcome."
   bridge:
     feTitle: "Writing effective CSS selectors"
     feCode: "/* Vague: */ div { } /* Specific: */ .gallery > .card:nth-child(2n) { }"
@@ -19,11 +19,10 @@ concept:
     tier: structural
     breaks: "CSS selectors target known elements with deterministic specificity. Image prompts steer a generator and tiny wording changes (style tokens, artist names, modifiers) materially change output. There is no spec, only empirical recipes that drift across model versions."
 consequence:
-  narrative: "The gallery catalog grows. Each piece accompanied by its prompt, the artistic intent made visible. Visitors can read the prompt and see how words became images. Yara writes the final prompt for the centerpiece: 'The space between what was said and what was meant, rendered in light.' MUSE produces something that silences the room."
-  nextLessonTeaser: "The next module explores model evaluation and fine-tuning: making MUSE truly Yara's collaborator"
+  narrative: "Each new piece enters the catalog with its prompt printed beside it, the artistic intent made visible. Yara writes the final prompt for the centerpiece: 'The space between what was said and what was meant, rendered in light.' MUSE produces something that silences the room."
 hints:
   - level: nudge
-    content: "CSS specificity: div {} matches everything. .gallery > .featured:first-child {} matches exactly one element."
+    content: "Start from a bare subject ('city'), then append one modifier at a time and re-score with CLIP; each addition should move the similarity"
   - level: guidance
     content: "Add modifiers: style (watercolor, digital), mood (melancholy, joyful), lighting (cinematic, flat), composition (close-up, wide angle)"
   - level: solution
@@ -41,12 +40,12 @@ keywords:
 </Dialogue>
 
 <Dialogue speaker="Rohan">
-CSS specificity. `div` matches everything. Too broad. `.gallery > .card:nth-child(2n)` targets exactly what you want. Prompt engineering is the same skill: vague prompts produce generic output, specific prompts produce targeted results.
+It's a session brief. Tell a musician "make it moody" and you get nothing usable. Tell them "minor key, 72 BPM, tape saturation, room reverb at 1.2 seconds" and you get the take you imagined. Vague prompts produce generic output. Specific prompts produce targeted results.
 </Dialogue>
 
-You already know that specificity matters. In CSS, a vague selector matches too broadly. In prompt engineering, a vague prompt produces generic images. The skill is the same: precision in description produces precision in output.
+Specificity is the whole skill. A vague prompt averages over everything the model has ever seen of that subject; every modifier you add (mood, lighting, palette, composition) cuts the space of possible images down toward the one you meant.
 
-<LearningObjectives objectives={["Understand prompt engineering as a specificity problem — like CSS selectors", "Use structured modifiers: subject, style, mood, lighting, color, composition", "Measure prompt effectiveness using CLIP alignment scores", "Iterate on prompts using embedding distance as feedback"]} />
+<LearningObjectives objectives={["Understand prompt engineering as a specificity problem", "Use structured modifiers: subject, style, mood, lighting, color, composition", "Measure prompt effectiveness using CLIP alignment scores", "Iterate on prompts using embedding distance as feedback"]} />
 
 ## The Specificity Spectrum
 

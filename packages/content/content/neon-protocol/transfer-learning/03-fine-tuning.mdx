@@ -10,7 +10,7 @@ context:
   narrative: "Amir connects the portable drive to the holotable. The stolen MobileNet model loads, its architecture glowing in wireframe blue. 'This model knows what objects look like in general. But it does not know a Meridian X-7 from a civilian quadcopter. We need to fine-tune. Freeze the layers that already work, replace the classification head, train on our 500 drone images.'"
   speaker: "Amir"
 concept:
-  explanation: "Fine-tuning takes a pre-trained model and adapts it to your specific task. You freeze the early layers (universal features), replace the final classification layer, and train on your data. Like Object.freeze() in JavaScript: you lock the parts that should not change and only modify what needs to adapt."
+  explanation: "Fine-tuning takes a pre-trained model and adapts it to your specific task. You freeze the early layers (universal features), replace the final classification layer, and train only the new head on your data. A few hundred images can be enough, because the frozen backbone already does the hard part."
   bridge:
     feTitle: "Object.freeze()"
     feCode: "Object.freeze(baseConfig); // locked. const myConfig = { ...baseConfig, theme: 'dark' };"
@@ -20,7 +20,6 @@ concept:
     breaks: "`Object.freeze` prevents JS object property mutation at runtime. `layer.trainable = false` prevents the optimizer from updating that layer's weights during the backward pass, but the layer still participates in the forward pass and contributes to gradient computation for unfrozen layers. Different mechanism, different blast radius."
 consequence:
   narrative: "After 20 epochs on 500 labeled drone images, the fine-tuned model hits 94% accuracy on Meridian's drone fleet. Amir leans back. 'Two million credits of pre-training. Twenty minutes of fine-tuning. That is the exchange rate of transfer learning.' Noor watches the loss curve flatten. 'What if we unfroze a few more layers?'"
-  nextLessonTeaser: "Next: domain adaptation. Making the model work in Neon City's rain, fog, and neon lighting"
 hints:
   - level: nudge
     content: "Freeze the backbone with layer.trainable = false, like Object.freeze() protecting shared state"
@@ -46,7 +45,7 @@ So fine-tuning is `Object.freeze(backbone)` and then extending with our own clas
 </Dialogue>
 
 <Dialogue speaker="Amir">
-Close, with one correction before it bites you. `Object.freeze` takes the object out of play. A frozen layer stays in the game: every forward pass still runs through it, and gradients still flow through it to reach whatever you left trainable. "Frozen" only means the optimizer skips its update step. That is why 500 images is enough. The backbone already understands edges, textures, and shapes; the new head only has to learn which combination of those equals X-7 drone.
+That is the code, yes. Watch what "frozen" actually means, though. `Object.freeze` takes the object out of play. A frozen layer stays in the game: every forward pass still runs through it, and gradients still flow through it to reach whatever you left trainable. The optimizer just skips its update step. That is why 500 images is enough. The backbone already understands edges, textures, and shapes; the new head only has to learn which combination of those equals X-7 drone.
 </Dialogue>
 
 When you use `Object.freeze()`, you protect the properties that should be stable while keeping other parts mutable. Fine-tuning applies the same pattern to neural networks: freeze the pre-trained layers that already extract useful features, then attach and train a new classification head for your specific task.

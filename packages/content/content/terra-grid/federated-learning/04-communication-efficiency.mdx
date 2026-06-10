@@ -10,7 +10,7 @@ context:
   narrative: "Each federated round exchanges model weights across satellite links. Tariq calculates: 15 rounds x 3 participants x 4MB per update = 180MB at $0.50/MB. They need to compress the updates."
   speaker: "Tariq Hussain"
 concept:
-  explanation: "Efficient federated communication sends only what changed, like GraphQL requesting only needed fields instead of fetching entire resources."
+  explanation: "Efficient federated communication sends only the gradient values that matter this round and lets the rest accumulate locally until they do."
   bridge:
     feTitle: "GraphQL Selective Queries"
     feCode: "query { user { name, email } } // request only needed fields"
@@ -20,7 +20,6 @@ concept:
     breaks: "GraphQL selective queries fetch only requested fields. Gradient compression in federated learning trades communication cost for convergence speed. Too aggressive compression slows training; too little blows the network budget. The tradeoff is empirical per setting."
 consequence:
   narrative: "Communication cost drops from 180MB to 22MB per training cycle. The satellite budget holds."
-  nextLessonTeaser: "Next: protecting individual updates during aggregation"
 hints:
   - level: nudge
     content: "A GraphQL query names only the fields it needs instead of fetching the whole resource. Sparsification names only the gradient values worth sending"

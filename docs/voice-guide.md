@@ -2,6 +2,8 @@
 
 Phase 1 (voice cards) and Phase 2 (naming consolidation) executed 2026-04-25. The full Phase 4 spot-check edit pass remains to be run by a human editor — see "Remaining work" below.
 
+**Cards refreshed 2026-06-10:** Rohan's card corrected (he is Nova Canvas's audio artist, not a Terra Grid ops lead — the old card described a character who does not exist in his theme). New cards added for Erdem and Samir (Nova Canvas) and Tariq Hussain, Priya Sharma, and Elif Yilmaz (Terra Grid), each derived from their actual dialogue blocks.
+
 ## Status
 
 - **Phase 1 (voice cards):** done — character voice cards below.
@@ -70,12 +72,12 @@ These are the canonical voices. When editing dialogue, match the card.
 - **Verboten:** never accepts a model claim without the holdout data. Never speaks for a patient.
 - **Example:** *"Before we ship, show me the recall on the high-risk class on the holdout. If we miss a sepsis flag, an 88% accuracy isn't 88% — it's a death."*
 
-### Rohan (Terra Grid — ops lead, 30 blocks)
-- **Background:** Production ML ops at planetary scale. Pragmatic, alert-fatigued.
-- **Tone:** dry, world-weary. Pattern-matches new failures to old incidents.
-- **Speech:** short to medium. Heavy on incident-response vocabulary ("rollback", "canary", "blast radius").
-- **Verboten:** no theoretical detours. Always asks "what's the SLO?".
-- **Example:** *"PSI dropped to 0.05 today after spiking to 0.31 last week — drift recovered. Ship the rollback rollback. Watch the canary for 4 hours, full traffic if green."*
+### Rohan (Nova Canvas — audio artist, ~32 blocks)
+- **Background:** Musician and creative technologist in the Nova Collective. Owns the audio pipeline; came to ML through synthesizers and the Web Audio API.
+- **Tone:** warm-pragmatic, aphoristic. Hears every ML concept as sound first ("the distribution is the composition; sampling is the performance").
+- **Speech:** medium, contractions, ends explanations on a compressed punchline ("Music generation is setTimeout with taste."). Comfortable code-switching between studio vocabulary (knobs, takes, session briefs, tempo) and web-dev vocabulary, but the studio register comes first.
+- **Verboten:** never delivers pure CSS/markup analogies — if a comparison is needed, he reaches for audio, performance, or composition. Never reverent about the models; they're instruments.
+- **Example:** *"I've seen this in music. A composer finds one melody the audience likes and plays it forever. No exploration, no risk. The generator found the safe zone and refuses to leave."*
 
 ### Dr. Karimi (Signal Ward — researcher, 26 blocks)
 - **Background:** Computational biology researcher applying ML to clinical text.
@@ -97,6 +99,43 @@ These are the canonical voices. When editing dialogue, match the card.
 - **Speech:** medium, uses "we could", "what if we", "this might".
 - **Verboten:** never authoritative — always offers options.
 - **Example:** *"What if we interpolate at three points along this latent direction? We'd see the model's internal axis of variation between Monet and Hokusai."*
+
+## Voice cards added 2026-06-10
+
+### Erdem (Nova Canvas — production lead / curator-ops, ~21 blocks)
+- **Background:** Runs the operational side of the Nova Collective: kiosk hardware, deadlines, budgets, the Biennale's editorial line. The exhibition's producer.
+- **Tone:** dry, exacting, constraint-first. Approval is always conditional and always quantified. Allowed one mutter of grudging praise per module ("Better than the interns.").
+- **Speech:** short sentences front-loaded with numbers ("Forty-three seconds. I timed it."). States the constraint, then the consequence, then the demand. Uses contractions, but goes clipped and formal when issuing ultimatums.
+- **Verboten:** never impressed without a metric attached. Never accepts an analogy whole — he's the one who names where it breaks ("Webpack hands you back the identical program. Quantization hands you back a slightly different artist."). Never says a deadline is flexible.
+- **Example:** *"The gallery opens in nine days and each kiosk takes forty-three seconds to produce a single image. We will have a queue around the block, and not the good kind."*
+
+### Samir (Nova Canvas — frontend engineer, ~25 blocks)
+- **Background:** Senior frontend developer, newest member of the collective. The learner's mirror in this theme: maps every ML mechanism onto a web-dev pattern, and is usually 80% right.
+- **Tone:** eager-systematic, confident in his own domain, openly curious outside it. Likes architectures and clean pipelines.
+- **Speech:** medium, structured ("Two encoders. One for images, one for text."), heavy on web vocabulary (monorepo, SSR, progressive disclosure, state machines). Proposes the FE analogy as a question or claim that someone else then corrects or sharpens.
+- **Verboten:** never the one who delivers the correction — his role is the plausible first draft. Never bluffs about the math; when he doesn't know, he asks.
+- **Example:** *"This is the same challenge as integrating a monorepo before a major release. Each package works in isolation. The hard part is making them work together: shared types, consistent interfaces, and a clear data flow."*
+
+### Tariq Hussain (Terra Grid — fleet deployment lead, 23 blocks)
+- **Background:** Owns the physical fleet: 847 edge devices, satellite uplinks, solar budgets, rollout windows. The person whose pager goes off.
+- **Tone:** operational, unhurried, immovable on safety margins. Treats shipping as a privilege the artifact has to earn.
+- **Speech:** short to medium, dense with fleet numbers and unit costs ("$0.50 per MB", "2,100 devices", "48 hours"). Speaks in requirements ("Every deployment artifact needs a version, a checksum, and a rollback path."). Verdicts are terse ("That I can ship.").
+- **Verboten:** never deploys anything without a rollback path. Never hand-waves hardware ("it'll probably fit" does not exist in his vocabulary — the RAM number does).
+- **Example:** *"Once I deploy a model here, I can't just SSH in and fix it. The update has to work perfectly, every time, over a satellite link that costs $0.50 per MB."*
+
+### Priya Sharma (Terra Grid — ML platform engineer, 24 blocks)
+- **Background:** Bridges data science and infrastructure: drift monitoring, A/B statistics, distillation, sharding. Trained the cloud models the edge fleet inherits.
+- **Tone:** analytical-calm, patient, precise about uncertainty. The voice that says "we need more data before we act."
+- **Speech:** medium-long, mechanism-first explanations ("The model is doing exactly what we trained it to do. The problem is that the world changed underneath it."). Quotes sample sizes, confidence, and costs. Maps to web-infra patterns but always names what changes ("The routing stays; the patience changes.").
+- **Verboten:** never claims significance without the interval. Never blames the model before checking the inputs.
+- **Example:** *"The new model shows 93.8% accuracy versus 91.2% for the control. That is a 2.6% improvement. But is it real? With 1,200 samples, the confidence interval is wide. We need more data before we act."*
+
+### Elif Yilmaz (Terra Grid — security & safety engineer, 9 blocks)
+- **Background:** Reviews everything that touches the grid for attack surface and failure blast radius: model files, update channels, federated aggregation, quantized safety thresholds.
+- **Tone:** adversarial-precise. Thinks like the attacker, speaks like an auditor. Quietly alarming rather than loud.
+- **Speech:** short-medium declaratives that name the threat, the mechanism, and the required control ("The checksum guards the artifact; sign the delta too, or don't ship it."). Cites concrete attack classes (gradient inversion, tampered weights) and failure signatures ("a 0.3% vibration anomaly, rounded away").
+- **Verboten:** never assumes inputs are benign or parties are trustworthy. Never lets convenience ship unsigned, unreviewed, or without an instant fallback.
+- **Example:** *"Weight updates aren't data. But a determined adversary can reconstruct training examples from gradients. It's called a gradient inversion attack. We need stronger guarantees."*
 
 ## Remaining work (Phase 4)
 

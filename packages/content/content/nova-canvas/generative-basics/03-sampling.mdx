@@ -20,11 +20,8 @@ concept:
     breaks: "Seeded random produces reproducible draws from a known distribution. Sampling from generative models involves temperature, top-k, top-p, and beam search. Different strategies optimize for different output qualities and the same seed under different strategies produces different outputs."
 consequence:
   narrative: "Samir grasps that generation is not magic. It is structured sampling from learned distributions."
-  nextLessonTeaser: "Next: using noise as the raw material for creation"
 hints:
   - level: nudge
-    content: "Sampling is just picking values from a distribution, like rolling dice with specific probabilities"
-  - level: guidance
     content: "Use tf.randomNormal() to sample from a Gaussian, then apply transformations"
   - level: solution
     content: "const samples = tf.randomNormal([batchSize, dims]); const transformed = samples.mul(scale).add(shift);"

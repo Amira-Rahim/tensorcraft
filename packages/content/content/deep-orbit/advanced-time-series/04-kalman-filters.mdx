@@ -10,7 +10,7 @@ context:
   narrative: "The signal's timing is drifting. Demir needs a filter that tracks a moving target under noise — a Kalman filter that maintains a running estimate of the true state."
   speaker: "Dr. Farah"
 concept:
-  explanation: "Kalman filters maintain a running estimate smoothed against noise — like an exponential moving average in analytics that balances new data against historical trends."
+  explanation: "A Kalman filter tracks a moving value under noise by predicting where it should be, then correcting with each new measurement, trusting whichever is currently less uncertain."
   bridge:
     feTitle: "Exponential Moving Average"
     feCode: "smoothed = alpha * newValue + (1 - alpha) * smoothed"
@@ -35,6 +35,10 @@ keywords:
 skillAxes: [model_arch]
 ---
 
+> **PULSE INTERVAL LOG · last eight cycles (seconds):** 72.9 · 73.1 · 72.8 · 72.6 · 72.7 · 72.4 · 72.5 · 72.3
+
+Read the column twice. The noise says the numbers wander; the trend says they only wander downhill.
+
 <Dialogue speaker="Dr. Farah">
 The signal's period isn't constant; it's drifting. We need a filter that tracks a moving target under noise. The Kalman filter predicts where the signal should be, then corrects with each new measurement. It's the optimal estimator for linear systems under Gaussian noise.
 </Dialogue>
@@ -43,7 +47,7 @@ The signal's period isn't constant; it's drifting. We need a filter that tracks 
 That's an exponential moving average! smoothed = alpha * new + (1-alpha) * old. The Kalman filter just computes the optimal alpha at each step?
 </Dialogue>
 
-Demir is one alpha away from right. An EMA blends with a fixed alpha you pick once and hope holds; the Kalman filter recomputes the blend at every step, weighing the new measurement against the running estimate by how noisy each currently is. Same shape, smarter coefficient — and computing that coefficient is the whole filter.
+That is exactly what it does. The "optimal alpha" has a name, the Kalman gain, and computing it at every step, by weighing how noisy the measurement is against how uncertain the running estimate is, is the entire filter. Demir's EMA framing needs no correction; the rest of this lesson is just the machinery behind that one moving coefficient.
 
 <LearningObjectives objectives={["Understand the Kalman filter as a predict-correct loop for state estimation", "Implement a 1D Kalman filter for tracking signal timing", "Connect Kalman filtering to the exponential moving average pattern", "Track the anomaly timing drift and predict the next occurrence"]} />
 
@@ -112,7 +116,7 @@ Implement a Kalman filter and track the anomaly timing.
 
 <Epilogue>
 
-Farah brings the filter's output to the bridge at 0530: eight measurements, the smoothed estimate at 72.5 seconds, down from 73.4 at first measurement, shrinking roughly two tenths of a second per cycle. The variance is small enough that nobody argues with it. The confidence band no longer includes "steady." Mirza reads the number twice.
+Eight measurements; smoothed estimate 72.5 seconds, down from 73.4 at first measurement, shrinking roughly two tenths of a second per cycle. Farah brings the filter's output to the bridge before dawn, and the variance is small enough that nobody argues with it. The confidence band no longer includes "steady." Mirza reads the number twice.
 
 <Dialogue speaker="Commander Mirza">
 Wake Nazari. Transmission contingencies and a hard-burn plot on my console by 0800.

@@ -11,7 +11,7 @@ context:
 concept:
   explanation: "ML models require properly formatted input data — batched, shuffled, and normalized."
 consequence:
-  narrative: "The data pipeline is operational. ARIA confirms: ready for analysis."
+  narrative: "Second attempt: the pipeline holds, memory flat. ARIA confirms: ready for analysis."
 hints:
   - level: nudge
     content: "Data needs to be split into batches"
@@ -27,14 +27,16 @@ skillAxes: [data_prep]
 ---
 
 <Dialogue speaker="Ensign Demir">
-The raw sensor data is coming in faster than we can process it in one pass. We need a pipeline that feeds the analysis system in manageable chunks.
+The raw sensor data comes in faster than we can process it in one pass. But this is just infinite scroll, right? Fetch everything once, hold the list, render a window. I pulled the full archive into one array overnight.
 </Dialogue>
+
+> `RangeError: Array buffer allocation failed`. Engineering rig, 19,204 readings into a 28,800-reading archive. The crash takes ARIA's overnight diagnostic queue down with it. Queue rebuild: four hours. Logged against: Ensign Demir.
 
 <Dialogue speaker="ARIA">
 Confirmed. Batch processing will allow me to analyze data incrementally while maintaining memory efficiency. I note that I said the same thing about my parsing rules.
 </Dialogue>
 
-One method call decides whether this pipeline survives contact with real sensor data: `.batch(32)`. The model sees 32 readings at a time and pulls the next chunk only when it finishes the current one. Infinite scroll and pagination run on the same discipline, so the instinct transfers directly: load chunks, never everything.
+One method call decides whether this pipeline survives contact with real sensor data: `.batch(32)`. The model sees 32 readings at a time and pulls the next chunk only when it finishes the current one. Demir's instinct wasn't wrong about scrolling; it was wrong about what a well-built infinite scroll actually does. A good list never holds every page. It holds a window, and that's the discipline this lesson installs: load chunks, never everything.
 
 <LearningObjectives objectives={["Create data pipelines using tf.data", "Batch data into fixed-size chunks for processing", "Shuffle data to prevent ordering bias", "Split data into training and validation sets"]} />
 
@@ -96,12 +98,12 @@ const valData = allData.skip(TRAIN_SIZE).batch(32);`}
 
 <Epilogue>
 
-The pipeline chews through eleven days of archived telemetry in four minutes — twenty-eight thousand readings, batch by batch, memory flat the whole way. Demir watches `numTensors` hold steady at 70 and allows himself exactly one fist pump.
+The rebuilt pipeline chews through eleven days of archived telemetry in four minutes: twenty-eight thousand readings, batch by batch, memory flat the whole way. Demir watches `numTensors` hold steady at 70 and allows himself exactly one fist pump, four hours later than he'd planned to.
 
 <Dialogue speaker="ARIA">
 Pipeline nominal. For reference, Ensign: I processed this archive in nine seconds. I simply could not tell you what any of it meant.
 </Dialogue>
 
-Fast and blind, or slower and learning. One more piece of preparation — putting every channel on the same scale — and the foundation is done.
+Fast and blind, or slower and learning. One more piece of preparation, putting every channel on the same scale, and the foundation is done.
 
 </Epilogue>

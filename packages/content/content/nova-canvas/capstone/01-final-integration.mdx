@@ -20,7 +20,6 @@ concept:
     breaks: "Monorepo integration ships when packages publish and tests pass. Multi-modal pipelines must validate that each model handles outputs from upstream models without compounding error. Failure modes propagate silently across modalities."
 consequence:
   narrative: "For the first time, all modalities run together. A visitor speaks a prompt. Text becomes an image. The image generates a soundscape. The soundscape drives visual effects. A complete creative loop."
-  nextLessonTeaser: "Next: designing the visitor experience"
 hints:
   - level: nudge
     content: "The MultiModalPipeline only composes calls like imageModel.predict(z) and audioModel.predict(z); start by listing each model's input and output tensor shapes"
@@ -46,8 +45,6 @@ This is the same challenge as integrating a monorepo before a major release. Eac
 <Dialogue speaker="Erdem">
 A monorepo ships when the tests pass. This pipeline won't get that courtesy. When the image model hands a slightly-off latent to the audio model, nothing throws. The output just degrades, quietly, three models downstream. So we validate every handoff, not just every module.
 </Dialogue>
-
-Samir's monorepo instinct is right about the wiring and wrong about the guarantees, which is Erdem's point. Each model is a package with typed inputs and outputs, and an orchestrator wires them together the way a build graph wires imports. But `tsc` would catch a bad import. Nothing catches a latent vector that has drifted slightly out of distribution. The types check; the art degrades.
 
 <LearningObjectives objectives={["Design a multi-modal orchestration layer that connects all generation modules", "Implement shared latent spaces for coherent cross-modal generation", "Build a routing system that directs user input to the appropriate model pipeline", "Handle errors and fallbacks across interconnected generation modules"]} />
 
@@ -137,6 +134,8 @@ interface MultiModalResult {
   latent: Float32Array;
 }`}
 </CodeBlock>
+
+Notice what the orchestrator cannot do. `tsc` verifies every import in this file; nothing verifies that the latent `generateFromPrompt` hands to the audio model still looks like the distribution the audio model trained on. Samir's monorepo instinct wired this cleanly, and the wiring is the easy half. The guarantees are the half that does not transfer.
 
 ## Module Health Check
 

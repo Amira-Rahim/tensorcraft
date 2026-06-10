@@ -90,11 +90,11 @@ export function NewsletterModal({ open, onClose }: NewsletterModalProps) {
               id="newsletter-modal-title"
               className="text-2xl font-mono font-bold text-text-primary mb-2 tracking-tight"
             >
-              The Bridge, monthly
+              The Bridge, weekly
             </h2>
             <p className="text-sm text-text-muted mb-5 leading-relaxed">
-              New themes, bridge essays, launch discounts. No spam, one email at
-              most per month.
+              One email a week: browser-ML news mapped to the lessons that teach
+              it, plus theme launches and discounts. Unsubscribe anytime.
             </p>
 
             {status === "done" ? (

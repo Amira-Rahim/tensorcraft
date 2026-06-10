@@ -7,7 +7,7 @@ order: 3
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "Dr. Karimi places a folder on the table. Five hundred clinical notes, each annotated by two board-certified physicians. Drug names highlighted, interactions flagged, severity levels assigned. 'This is the gold standard,' she says. 'Every entity, every classification, every interaction, verified by experts. Your system needs to match these annotations. Not perfectly, but well enough that I trust it at 3 AM.' Imran opens the first annotated note. Highlighted spans, BIO tags, classification labels. 'It is like a snapshot test,' she says. 'Known inputs, expected outputs.'"
+  narrative: "Dr. Karimi places a folder on the table. Five hundred clinical notes, each annotated by two board-certified physicians. Drug names highlighted, interactions flagged, severity levels assigned. 'This is the gold standard,' she says. 'Every entity, every classification, every interaction, verified by experts. Your system needs to match these annotations. Not perfectly, but well enough that I trust it at 3 AM.' Imran opens the first annotated note. Highlighted spans, BIO tags, classification labels. 'It's like a snapshot test,' she says. 'Known inputs, expected outputs.'"
   speaker: "Dr. Karimi"
 concept:
   explanation: "Validating Diagnostic One against expert annotations is the same discipline as end-to-end testing: running automated checks against known-good outputs. Precision, recall, and F1 score are the clinical equivalents of test pass rates, measuring how well your system matches expert-verified ground truth."
@@ -20,7 +20,6 @@ concept:
     breaks: "End-to-end tests assert specific behaviors that pass or fail at known input. Clinical validation requires institutional review (IRB), prospective studies on real patient populations, and statistical evidence of improved patient outcomes; you cannot 'pass' clinical validation by adding more test cases. Test pass rate has no correlation with clinical safety."
 consequence:
   narrative: "The validation suite finishes running. Precision: 0.89. Recall: 0.84. F1: 0.86. Dr. Karimi studies the confusion matrix. 'The system is cautious: it flags things that are not there more often than it misses things that are. For a clinical system, that is the right trade-off. I would rather investigate a false alarm than miss a real interaction.' She signs the validation report. 'Approved for pilot deployment.'"
-  nextLessonTeaser: "Next: writing the clinical documentation and model card"
 hints:
   - level: nudge
     content: "Precision measures false positives, recall measures false negatives; think about which matters more in clinical settings"
@@ -45,7 +44,9 @@ Five hundred clinical notes. Each one annotated by two board-certified physician
 It is end-to-end testing. Known inputs, expected outputs. I run the system against the annotations and check if the predictions match. Precision tells me how many of the system's flags were correct. Recall tells me how many of the real interactions the system found. F1 balances them.
 </Dialogue>
 
-Imran's framing is close, not complete. An end-to-end suite passes or it fails. A validation run against 500 expert-annotated notes returns precision 0.89 and recall 0.84, and no assertion turns those numbers green; someone has to decide whether they are good enough to trust at 3 AM. The harness itself is familiar test infrastructure, known inputs and expected outputs. The verdict is statistical: you measure how closely Diagnostic One's predictions match expert ground truth, then argue about the threshold.
+Imran's framing is close, not complete. An end-to-end suite passes or it fails. A validation run has no green check: against 500 expert-annotated notes it returns precision 0.89 and recall 0.84, and someone has to decide whether those numbers are good enough to trust at 3 AM.
+
+The harness itself is familiar test infrastructure: known inputs, expected outputs. The verdict is statistical. You measure how closely Diagnostic One matches expert ground truth, then you argue about the threshold.
 
 <LearningObjectives objectives={["Compute precision, recall, and F1 score for clinical NLP predictions", "Build a validation harness that runs Diagnostic One against expert annotations", "Interpret a confusion matrix to identify systematic errors in entity recognition", "Understand the precision-recall trade-off in clinical settings where false negatives are more dangerous than false positives"]} />
 

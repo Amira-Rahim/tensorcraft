@@ -10,7 +10,7 @@ context:
   narrative: "Post-training quantization missed a bearing failure at Site 23. The model needs to be trained with quantization in mind."
   speaker: "Hassan Al-Rashid"
 concept:
-  explanation: "Quantization-aware training trains with quantization noise built in, like mobile-first development where you design for constraints from the start."
+  explanation: "Quantization-aware training bakes Int8 rounding into the training loop itself, so the model learns weights that survive compression instead of discovering it after deployment."
   bridge:
     feTitle: "Mobile-First Development"
     feCode: "// Design for mobile constraints first\n// Then enhance for larger screens\n@media (min-width: 768px) { ... }"
@@ -20,7 +20,6 @@ concept:
     breaks: "Mobile-first design is a layout strategy you write once. Quantization-aware training simulates int8 rounding during training so the model learns weights that survive quantization. It changes the training loop and adds compute, not just the output build."
 consequence:
   narrative: "The QAT model handles the bearing failure case correctly: quantization noise made it more robust."
-  nextLessonTeaser: "Next: mixed precision, different precision for different layers"
 hints:
   - level: nudge
     content: "Simulate quantization during training by adding rounding noise"
@@ -35,6 +34,13 @@ keywords:
   - noise
 ---
 
+```text
+SITE 23 INCIDENT LOG, 03:12
+vibration anomaly: +0.3% over baseline
+model output: NORMAL (Int8 resolution: 0.4% per bucket)
+03:52: turbine 23-B bearing seizure
+```
+
 <Dialogue speaker="Hassan Al-Rashid">
 Site 23. The post-training quantized model missed a bearing failure. The vibration readings were in a range where Int8 precision was not fine enough. The turbine seized. We need models that are trained for quantization, not converted after the fact.
 </Dialogue>
@@ -43,9 +49,9 @@ Site 23. The post-training quantized model missed a bearing failure. The vibrati
 The failure signature was a 0.3% vibration anomaly. Post-training quantization rounded it away. The model literally couldn't see the difference.
 </Dialogue>
 
-Mobile-first development means designing for the smallest screen from the start, then enhancing for larger displays. Quantization-aware training (QAT) applies the same philosophy: train the model knowing it will run at Int8 precision, so it learns to be accurate within those constraints.
+That log line is what "convert after the fact" costs. Mobile-first development designs for the smallest screen from the start, then enhances upward. Quantization-aware training (QAT) applies the same philosophy: train the model knowing it will run at Int8 precision, so it learns to be accurate within those constraints instead of discovering them at 03:12.
 
-<LearningObjectives objectives={["Understand why post-training quantization can miss edge cases", "Implement fake quantization during training", "Compare QAT accuracy vs post-training quantization accuracy", "Apply mobile-first thinking to model training"]} />
+<LearningObjectives objectives={["Understand why post-training quantization can miss edge cases", "Implement fake quantization during training", "Compare QAT accuracy vs post-training quantization accuracy"]} />
 
 ## Design for Constraints First
 

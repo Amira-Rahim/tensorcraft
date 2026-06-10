@@ -9,7 +9,7 @@ difficulty: beginner
 context:
   narrative: "The raw neuron output is unbounded — ARIA needs a way to constrain it into meaningful decisions."
 concept:
-  explanation: "Activation functions transform raw neuron output into bounded, useful ranges — like Math.max(0, x) for ReLU or clamping values."
+  explanation: "Activation functions bend a network's straight lines: they transform raw neuron output into bounded, useful ranges that downstream layers can build on."
   bridge:
     feTitle: "Math.max(0, x)"
     feCode: "const clamped = Math.max(0, rawValue)"
@@ -37,11 +37,11 @@ skillAxes: [model_arch]
 The neuron outputs unbounded values: negative infinity to positive infinity. I need a way to interpret these as decisions. Should this signal be classified as anomalous or normal?
 </Dialogue>
 
-<LearningObjectives objectives={["Understand why activation functions are necessary", "Implement ReLU, sigmoid, and tanh activations", "See how Math.max() and Math.min() map to neural network activations", "Choose the right activation for different situations"]} />
+<LearningObjectives objectives={["Understand why activation functions are necessary", "Implement ReLU, sigmoid, and tanh activations", "Choose the right activation for different situations"]} />
 
 ## From Unbounded to Useful
 
-Without activation functions, a neural network is stacked linear transformations, and stacked linear maps multiply out to a single matrix: ten layers of pure matrix math collapse into one. Activations break the collapse — they are the only place the network gets to bend.
+Without activation functions, a neural network is stacked linear transformations, and stacked linear maps multiply out to a single matrix: ten layers of pure matrix math collapse into one. Activations break the collapse. They are the only place the network gets to bend.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 

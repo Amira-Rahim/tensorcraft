@@ -10,7 +10,7 @@ context:
   narrative: "An unconscious patient arrives in the ER. No ID, no medical bracelet, no accessible history. Imran pulls up the intake form: 'John Doe, approximately 45, unresponsive. We need to know if he has drug allergies before we administer anything.' Khalil stares at the screen. 'I built Meridian's records UI. I know their data format. If we can search their documents, I can find the answer.'"
   speaker: "Imran"
 concept:
-  explanation: "Extractive QA finds the exact span of text in a document that answers a question, like Ctrl+F, but the model understands meaning, not just character matching."
+  explanation: "Extractive QA finds the exact span of text in a document that answers a question, matching on meaning rather than characters, so 'hypersensitivity to penicillin-class agents' answers a question about penicillin allergy."
   bridge:
     feTitle: "Ctrl+F (text search)"
     feCode: "document.querySelector('article').textContent.indexOf('penicillin')"
@@ -20,7 +20,6 @@ concept:
     breaks: "Ctrl+F finds exact substrings. Extractive QA selects a span from a passage by predicting start and end token indices; the predicted span often boundary-cuts mid-word, includes punctuation, or selects the wrong of two valid answers. Post-processing must clip to word boundaries and rerank candidate spans."
 consequence:
   narrative: "The QA model highlights a span in the patient's discharge summary from 2019: 'Patient reported severe allergic reaction to penicillin-class antibiotics.' Imran pages the attending physician immediately."
-  nextLessonTeaser: "Next: reading comprehension — understanding context beyond keyword matching"
 hints:
   - level: nudge
     content: "The model predicts start and end positions within the context passage"
@@ -35,8 +34,10 @@ keywords:
   - clinical-search
 ---
 
+He came in by ambulance twenty minutes ago and hasn't said a word since. No wallet, no bracelet, no chart. The infection needs antibiotics within the hour, and whether they're safe depends on a sentence that may or may not exist in another hospital's records.
+
 <Dialogue speaker="Imran">
-Unconscious male, mid-forties, no ID. Paramedics found him collapsed at a bus stop. We need to start antibiotics but we have no allergy history. If he's allergic to penicillin and we give him amoxicillin, we could trigger anaphylaxis.
+Unconscious male, mid-forties. Paramedics found him collapsed at a bus stop. We need to start antibiotics but we have no allergy history. If he's allergic to penicillin and we give him amoxicillin, we could trigger anaphylaxis.
 </Dialogue>
 
 <Dialogue speaker="Khalil">

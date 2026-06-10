@@ -20,7 +20,6 @@ concept:
     breaks: "WebGL rendering pipeline targets pixel output through fragment shaders. WebGL backend for ML co-opts the same pipeline for matmul and conv, but precision (float16/32), texture upload cost, and lack of native compute make it slower than WebGPU for ML."
 consequence:
   narrative: "WebGL backend: 22fps becomes 38fps. Protocol Sentinel runs in real-time for the first time. Amir allows a rare half-smile. NEON: 'GPU utilization at 74%. Acceptable. For a resistance operation running on stolen hardware.'"
-  nextLessonTeaser: "Next: streaming architectures. Handling continuous data from multiple feeds"
 hints:
   - level: nudge
     content: "tf.setBackend('webgl') switches all tensor operations to the GPU"

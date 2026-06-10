@@ -20,7 +20,6 @@ concept:
     breaks: "Input sanitization removes known dangerous characters with explicit rules. Text normalization for ML can over-clean (removing case loses information for NER) or under-clean (leaving artifacts that confuse the model); there is no one-size-fits-all clean function."
 consequence:
   narrative: "After the cleaning pipeline is applied, Diagnostic One's accuracy on the legacy data recovers to match the clean dataset, proving that garbage in, garbage out is not inevitable."
-  nextLessonTeaser: "Next: chaining all these steps into a reusable preprocessing pipeline."
 hints:
   - level: nudge
     content: "Start by stripping HTML tags with a regex, then handle special characters."
@@ -36,10 +35,10 @@ keywords:
   - preprocessing
 ---
 
-> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
+The note on Imran's monitor is supposed to say that a patient came in with chest pain and a penicillin allergy. What it actually says is `<p>PT PRESENTS WITH <b>CHEST PAIN</b>.</p><span style="color:red">ALLERGY: PCN</span>&nbsp;&mdash;`. Fourteen thousand notes came over from the legacy system last night. This one is typical.
 
 <Dialogue speaker="Imran">
-We just imported 14,000 notes from the old system. Half of them have HTML tags embedded in the text, there are Unicode characters I've never seen, and some notes are ALL CAPS. Diagnostic One is choking on this data.
+Embedded HTML, Unicode characters I've never seen, whole paragraphs in ALL CAPS. Diagnostic One is choking on this data.
 </Dialogue>
 
 <Dialogue speaker="Vikram">
@@ -50,9 +49,11 @@ Classic data migration problem. You wouldn't render unsanitized user input in a 
 I should note that my accuracy on the legacy dataset is currently 62%, compared to 77% on properly formatted notes. The noise is not random; it is systematically degrading my performance.
 </Dialogue>
 
-The legacy notes arrive looking like `<p>Pt presents with <b>chest pain</b>.</p>`, trailed by raw entities, stray Unicode, and entire paragraphs in ALL CAPS. Cleaning them is the sanitization discipline you already apply to user input (strip tags, normalize encoding, trim whitespace) plus a judgment call sanitization never asks for: every cleaning step throws information away, and some of it the model needed.
+Cleaning these notes is the sanitization discipline you already apply to user input (strip tags, normalize encoding, trim whitespace) plus a judgment call sanitization never asks for: every cleaning step throws information away, and some of it the model needed.
 
 <LearningObjectives objectives={["Strip HTML tags and entities from clinical text", "Handle Unicode normalization and special characters", "Apply consistent lowercasing and whitespace normalization", "Implement basic stemming to reduce word variants", "Build a multi-step text cleaning function"]} />
+
+> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
 ## Stripping HTML Tags
 

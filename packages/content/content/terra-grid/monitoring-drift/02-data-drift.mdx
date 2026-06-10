@@ -10,7 +10,7 @@ context:
   narrative: "Region 4 sensors received a firmware update that changed their output scale. The model still runs, but the inputs no longer match what it was trained on."
   speaker: "Hassan Al-Rashid"
 concept:
-  explanation: "Data drift occurs when the statistical distribution of input data changes over time, like Lighthouse CI catching a CSS regression that shifts layout metrics."
+  explanation: "Data drift means the statistical distribution of the model's inputs has moved away from the training baseline while the model itself stood still."
   bridge:
     feTitle: "Lighthouse CI Regression"
     feCode: "assert(LCP < 2500) // input metric shifted — investigate"
@@ -19,7 +19,6 @@ concept:
     tier: structural
 consequence:
   narrative: "The drift detector fires on Region 4. Feature 7 (temperature readings) shifted by 2 standard deviations. Root cause: firmware v3.2 changed the sensor scale from Celsius to Kelvin."
-  nextLessonTeaser: "Next: detecting when model predictions degrade, even when inputs look normal"
 hints:
   - level: nudge
     content: "computeKLDivergence() compares today's inputs against the FeatureBaseline captured at training time; a rising score means the inputs moved"
@@ -49,6 +48,8 @@ Lighthouse CI catches regressions by comparing performance metrics against a bas
 ## Detecting Distribution Shift
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
+
+The number this detector runs on is KL divergence, so here is what it means before you read the code. It compares two histograms, the training-day baseline and today's readings, and scores the mismatch: zero means identical distributions, and the score climbs as readings pile up in bins the baseline said should be rare. The 0.3 alert threshold is a calibrated rule of thumb: by that point, roughly a quarter of the readings are landing where the baseline did not expect them, which is too much movement to call noise.
 
 <CodeBlock language="typescript" title="data-drift-detector.ts">
 {`interface FeatureBaseline {
@@ -149,6 +150,8 @@ Build a data drift detector that monitors feature distributions against a baseli
 Production model accuracy is degrading slowly over 2 weeks. Suspect: training/serving skew. The scenario below walks the on-call diagnostic: z-score per feature, identify the worst, decide whether retrain is required.
 
 <Exercise slug="incident-feature-skew" />
+
+KL divergence has a cousin you will meet on every drift dashboard: the Population Stability Index (PSI). It answers the same question, today's distribution against a fixed baseline, with a symmetric formula and well-worn conventions: below 0.1 is stable, 0.1 to 0.25 is worth watching, above 0.25 is major drift.
 
 ## Knowledge check
 

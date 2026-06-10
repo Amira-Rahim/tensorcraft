@@ -48,6 +48,15 @@ and the entire right half of the viewport spent on decorative particles.
    → `text-[13px] text-text-primary`. "No Python" removed here (now in the
    eyebrow — kept single-sourced).
 
+7. **Fold fix (same-day follow-up).** Deployed screenshot review showed the
+   promoted trust line landing below the fold (behind the macOS dock) on a
+   ~900px-tall viewport — the spacing rhythm was sized for the old single
+   trust-footer layout. Vertical rhythm tightened: eyebrow `mb-9 → mb-6`,
+   headline `mb-10 → mb-8`, subhead `mb-8 → mb-6`, stat line `mb-12 → mb-8`,
+   CTA row `mb-6 → mb-5`, section `pb-28 → pb-16` (~48 px in-flow + 48 px
+   padding slack). Trust line got `data-testid="hero-trust-line"` and an e2e
+   regression test: `toBeInViewport()` at 1440×900.
+
 ## Iterated-copy trail
 
 The subhead and footer are flagged in memory (`project_copy_lines.md`) as
@@ -68,10 +77,14 @@ approved by the user ("implement") before any edit. Headline untouched.
 - `npx vitest run apps/web/app/page.test.tsx` from repo root — 11/11 pass.
 - `npx tsc --noEmit` in `apps/web` — zero new errors (6 pre-existing in
   `settings-form.test.tsx`, present with this change stashed).
+- `npx playwright test e2e/landing.spec.ts --project=chromium` — 9/9 pass
+  (includes fold regression + live demo panel attach).
 
 ## Deferred / follow-ups
 
 - Real social proof (learner count / testimonial) once numbers exist —
   stat line is the placeholder.
 - Hero CTA click + scroll-depth analytics verification before measuring lift.
-- Playwright run not executed in this pass (needs running app).
+- Demo header says "PREVIEW BUILD" — ambiguous on landing (reads as site
+  beta); consider hero-specific label via prop.
+- Demo is one-shot; replay affordance is polish for later.

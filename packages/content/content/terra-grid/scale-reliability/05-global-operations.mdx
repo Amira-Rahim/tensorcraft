@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "CDN multi-region serves identical static content from the closest PoP. Multi-region model serving must handle data residency (regional models cannot leave their region), latency-vs-staleness tradeoff for model updates, and cross-region traffic shaping for warm-up."
 consequence:
-  narrative: "The global coordination system manages model deployments across 8 time zones. Region-aware rollouts avoid deploying during peak industrial hours. Model version consistency is maintained within 15 minutes across all 47 sites."
-  nextLessonTeaser: "Next module: Capstone, deploying Terra Grid Intelligence to production"
+  narrative: "Eight time zones, one coordination layer. Rollouts dodge each region's peak industrial hours, and model versions converge within 15 minutes across all 47 sites."
 hints:
   - level: nudge
     content: "Region-aware deployment schedules updates during low-activity windows, like deploying web apps during off-peak hours"
@@ -40,10 +39,10 @@ keywords:
 </Dialogue>
 
 <Dialogue speaker="Priya Sharma">
-Same pattern as CDN multi-region deployment. Replicate models to regional edge nodes. Schedule updates during each region's maintenance window. Verify consistency after rollout. If any region fails to update, it keeps running the previous version until the next window.
+It's the CDN multi-region pattern. Replicate models to regional edge nodes. Schedule updates during each region's maintenance window. Verify consistency after rollout. If any region fails to update, it keeps running the previous version until the next window.
 </Dialogue>
 
-Priya's CDN playbook is the right starting point and the wrong place to stop. A CDN replicates identical static bytes to every node; nothing about one PoP's cache depends on local law or local load. Models are different cargo. Data residency rules can mean a region's model is not allowed to leave that region. A freshly activated model answers slowly until it warms up. And an update that politely waits for every maintenance window is trading staleness for safety, which is a choice, not a default. The job is still replication across 47 sites and 8 time zones; the playbook needs three pages CDNs never wrote.
+Eight time zones, one model, and a rollout that must never land in the middle of a region's peak industrial hours. Priya's CDN playbook covers the opening moves: replicate to the edge, schedule the swap, verify the result.
 
 <LearningObjectives objectives={["Design a global model deployment coordinator across time zones", "Implement region-aware update scheduling with maintenance windows", "Build consistency checks that verify all regions are running the same model version", "Handle regional model drift and divergent update states"]} />
 
@@ -157,6 +156,8 @@ plan.regions.forEach(r =>
   console.log(\`  \${r.regionId}: \${r.scheduledUTC.toISOString()}\`)
 );`}
 </CodeBlock>
+
+Notice what the `Region` interface carries that a CDN node config never would: a maintenance window, a per-region model version, a device count that doubles as a warm-up bill. A CDN replicates identical static bytes to every node, and nothing about one PoP's cache depends on local law or local load. Models are different cargo. Data residency rules can mean a region's model is not allowed to leave that region. A freshly activated model answers slowly until it warms up. And an update that politely waits for every maintenance window trades staleness for safety, which is a choice, not a default. The job is still replication across 47 sites and 8 time zones; the playbook needs three pages CDNs never wrote.
 
 ## Challenge
 

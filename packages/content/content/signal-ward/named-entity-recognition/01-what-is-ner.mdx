@@ -8,7 +8,7 @@ estimatedMinutes: 25
 difficulty: intermediate
 context:
   narrative: "Dr. Karimi explains why she needs structured information extracted from hundreds of unstructured clinical notes each week."
-  speaker: "Dr. Zahra Karimi"
+  speaker: "Dr. Karimi"
 concept:
   explanation: "Named Entity Recognition (NER) identifies and classifies specific elements in text (drugs, conditions, dosages, procedures), transforming unstructured prose into structured, queryable data."
   bridge:
@@ -20,7 +20,6 @@ concept:
     breaks: "querySelectorAll matches DOM nodes by an exact CSS selector. NER tags spans by learned token-classification probabilities: novel entities are missed, compound entities (e.g. 'New York City Hall') get fragmented or merged incorrectly, and overlapping entity types collide. Post-processing must dedupe, merge, and validate against gazetteers."
 consequence:
   narrative: "Khalil understands that NER transforms free text into structured, computable data, the same way querySelectorAll turns a DOM tree into a usable collection."
-  nextLessonTeaser: "Next: BIO tagging — marking where entities begin and end."
 hints:
   - level: nudge
     content: "Every token gets a label from ENTITY_TYPES or O; argMax over the softmax output picks the winner per token"
@@ -35,7 +34,7 @@ keywords:
   - querySelectorAll
 ---
 
-<Dialogue speaker="Dr. Zahra Karimi">
+<Dialogue speaker="Dr. Karimi">
 Khalil, I reviewed 47 clinical notes this morning. Each one buries critical information in free text: drug names, dosages, conditions, procedures. I need that data structured. Searchable. Computable. Right now, it's like having a massive DOM tree with no class names, no IDs, no way to query it.
 </Dialogue>
 
@@ -43,8 +42,8 @@ Khalil, I reviewed 47 clinical notes this morning. Each one buries critical info
 So you need the equivalent of `document.querySelectorAll()` for clinical text. Instead of finding all `.drug` elements in a DOM, you're finding all drug mentions in a paragraph.
 </Dialogue>
 
-<Dialogue speaker="Dr. Zahra Karimi">
-Exactly. "Patient prescribed methotrexate 15mg weekly for rheumatoid arthritis." I need the system to pull out "methotrexate" as a DRUG, "15mg" as a DOSAGE, "weekly" as a FREQUENCY, and "rheumatoid arthritis" as a CONDITION. Every word classified or skipped.
+<Dialogue speaker="Dr. Karimi">
+Here, run your selector on this sentence: "Patient prescribed methotrexate 15mg weekly for rheumatoid arthritis." I need "methotrexate" back as a DRUG, "15mg" as a DOSAGE, "weekly" as a FREQUENCY, and "rheumatoid arthritis" as a CONDITION. Every word classified or skipped.
 </Dialogue>
 
 <LearningObjectives objectives={["Define Named Entity Recognition and its role in clinical NLP", "Map NER to the familiar concept of DOM querying with querySelectorAll", "Identify common clinical entity types (drugs, conditions, dosages, procedures)", "Implement basic token-level entity classification"]} />
@@ -119,7 +118,7 @@ console.log('Found entities:', entities);
 Think of a hospital's electronic health records as one massive web page with millions of text nodes. Without NER, searching for "which patients are on warfarin?" means a human reading every note. With NER, it's a database query. That's the difference between hours and milliseconds.
 </Dialogue>
 
-<Dialogue speaker="Dr. Zahra Karimi">
+<Dialogue speaker="Dr. Karimi">
 And it's not just search. Once we have structured entities, we can detect drug interactions, track treatment outcomes, and flag anomalies across thousands of patients. NER is the foundation of everything Diagnostic One will do.
 </Dialogue>
 
@@ -140,4 +139,4 @@ Find and classify entities in a clinical sentence using token-level classificati
 
 <Exercise slug="find-entities" />
 
-<KeyTakeaways takeaways={["NER output needs post-processing: compound entities fragment and novel terms get missed, so dedupe, merge, and validate spans against gazetteers", "Each token gets classified as an entity type (DRUG, CONDITION, etc.) or O (outside)", "Clinical NER transforms unstructured notes into structured, queryable data", "The pipeline mirrors DOM querying: parse, walk, test, collect"]} />
+<KeyTakeaways takeaways={["NER output needs post-processing: compound entities fragment and novel terms get missed, so dedupe, merge, and validate spans against gazetteers", "Each token gets classified as an entity type (DRUG, CONDITION, etc.) or O (outside)", "Clinical NER transforms unstructured notes into structured, queryable data"]} />

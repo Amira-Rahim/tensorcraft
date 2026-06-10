@@ -10,7 +10,7 @@ context:
   narrative: "Rohan frowns at the output. 'The early steps waste time on barely visible changes. The final steps rush through critical detail. We need a better schedule.' Samir nods: 'Like choosing the right easing curve for an animation.'"
   speaker: "Rohan"
 concept:
-  explanation: "A noise schedule controls how much noise is added or removed at each timestep, just like an animation easing curve controls the rate of change over time. Linear is rarely optimal."
+  explanation: "A noise schedule sets how much noise enters or leaves at each timestep. The shape of that curve decides where the model spends its denoising effort, and the obvious choice, linear, is rarely the right one."
   bridge:
     feTitle: "Animation easing curves"
     feCode: "transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);"
@@ -20,7 +20,6 @@ concept:
     breaks: "Animation easing curves interpolate one value over a fixed time. Noise schedules control variance added to the entire latent at every timestep and the schedule shape (linear, cosine, sigmoid) materially changes generation quality. Tuning matters far more than picking an animation easing."
 consequence:
   narrative: "With the cosine schedule, the images are noticeably sharper. Same number of steps, better allocation of the noise budget. Erdem leans in: 'The details in the shadows — those were not there before.'"
-  nextLessonTeaser: "Next: the U-Net: the architecture that actually predicts the noise"
 hints:
   - level: nudge
     content: "Plot your betas array before training: a cosine schedule keeps alpha_bar high through the early timesteps where a linear one has already destroyed the signal"
@@ -36,6 +35,8 @@ keywords:
   - timestep
 ---
 
+Step 1 removes 0.4% of the noise. Step 2: another 0.4%, invisibly. By step 20 the canvas has changed so little that Rohan overlays the frames to prove anything happened at all. Meanwhile, steps 80 through 100 tear through the fine detail, the only part a visitor will actually study, at four times that rate.
+
 <Dialogue speaker="Rohan">
 The linear schedule is wasteful. Look: the first twenty steps barely change anything, and the last twenty steps blur over fine details. We need the noise equivalent of an easing curve.
 </Dialogue>
@@ -48,9 +49,9 @@ Right. In CSS, `linear` timing looks mechanical and `ease-in-out` feels natural.
 That's where the easing picture stops working. A timing function interpolates one CSS value, and the worst case is an awkward animation. The schedule controls the variance added to the entire latent at every timestep, and its shape changes what the model can learn. Wrong curve, blurry generations forever. We tune this with experiments, not taste.
 </Dialogue>
 
-Every animation benefits from the right easing curve. Diffusion models are no different. The noise schedule (also called the beta schedule) determines how much noise to add at each timestep. Get it wrong, and you waste compute on imperceptible changes or rush through the details that matter.
+Rohan's correction sets the stakes. The noise schedule (also called the beta schedule) decides how much noise enters at each timestep during training, which decides what the model gets to practice. A bad easing curve costs you one awkward animation. A bad beta schedule costs you a model that denoises poorly at every step it was mistrained on.
 
-<LearningObjectives objectives={["Understand why linear noise schedules produce suboptimal results", "Implement linear, quadratic, and cosine noise schedules", "Compare schedule shapes and their effect on image quality", "Connect noise schedules to CSS animation easing curves"]} />
+<LearningObjectives objectives={["Understand why linear noise schedules produce suboptimal results", "Implement linear, quadratic, and cosine noise schedules", "Compare schedule shapes and their effect on image quality", "Plot alpha_bar curves to diagnose a schedule before committing a training run to it"]} />
 
 ## Linear vs Cosine Schedules
 

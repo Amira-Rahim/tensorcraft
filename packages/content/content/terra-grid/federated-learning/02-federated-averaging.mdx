@@ -10,7 +10,7 @@ context:
   narrative: "Three companies have each trained the model on their local data. Now Hassan must combine their weight updates into a single improved model. The key algorithm: Federated Averaging."
   speaker: "Hassan Al-Rashid"
 concept:
-  explanation: "Federated averaging combines model updates from distributed training, just like syncing state across browser tabs using BroadcastChannel."
+  explanation: "Federated averaging merges weight updates from distributed trainers into one global model, with each contribution weighted by how much data stood behind it."
   bridge:
     feTitle: "State Sync Across Tabs"
     feCode: "channel.postMessage(localState) // merge states from multiple tabs"
@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "BroadcastChannel state sync across tabs assumes symmetric peers with identical data shapes. Federated averaging weights client gradient updates by local dataset size and aggregates server-side; clients with non-IID data (e.g. one hospital's patient mix vs another's) drag the global model in different directions and naive averaging may not converge; methods like FedProx or FedAvgM are required."
 consequence:
-  narrative: "The federated model outperforms any single company's local model. More data, better generalization, zero data sharing."
-  nextLessonTeaser: "Next: ensuring data privacy during federated training"
+  narrative: "More data, better generalization, zero data sharing: the federated model outperforms every company's local one."
 hints:
   - level: nudge
     content: "You merged tab state by handling BroadcastChannel message events. The merge here is arithmetic: combine the weight arrays from each participant into one"
@@ -43,7 +42,13 @@ Three companies. Three locally trained models. Each one is good at recognizing p
 Aggregation round 1 complete. Global model accuracy: 94.7%. Individual accuracies: Alpha 91.2%, Beta 89.8%, Volta 93.1%. Global exceeds best individual by 1.6 points.
 </Dialogue>
 
-Three companies, three models, and a contract that says none of them may ever see another's data. The only thing allowed to cross the boundary is weights. So that's what we average, and the `BroadcastChannel` tab-sync you have written turns out to be the muscle memory you need. One correction before you lean on it: tabs are symmetric peers with identical data shapes, and these three companies are not. Volta holds 3.1M rows to Beta's 1.8M, and each company's sensor mix pulls the model in a different direction. That is why FedAvg weights every update by dataset size instead of merging them as equals.
+Three companies, three models, and a contract that says none of them may ever see another's data. The only thing allowed to cross the boundary is weights, so weights are what we average. If you have synced state across browser tabs with a `BroadcastChannel`, the shape is familiar: several copies of one state, merged into a single truth. Federated averaging is that merge done with arithmetic.
+
+<Dialogue speaker="Elif Yilmaz">
+Don't merge them as equals, though. Volta holds 3.1 million rows; Beta holds 1.8. And each company's sensor mix pulls the model in its own direction. Browser tabs are identical twins. These three aren't even siblings.
+</Dialogue>
+
+That objection is the design decision inside FedAvg: every update is weighted by the dataset size behind it.
 
 <LearningObjectives objectives={["Implement the Federated Averaging (FedAvg) algorithm for combining distributed model updates", "Understand weighted averaging based on participant dataset sizes", "Track convergence across federated training rounds", "Compare federated model performance against individual local models"]} />
 

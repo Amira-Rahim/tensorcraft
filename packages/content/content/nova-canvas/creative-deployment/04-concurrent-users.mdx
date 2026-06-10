@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "WebSocket connection pooling reuses idle sockets. Generation queues must batch requests for GPU efficiency and trade off batching delay vs throughput. Pool size, max wait, and batch size are coupled hyperparameters with no obvious right answer."
 consequence:
-  narrative: "The system handles 200 concurrent connections. Excess requests queue with estimated wait times. Nobody waits more than 2 seconds. Erdem exhales for the first time in weeks."
-  nextLessonTeaser: "Next: designing the physical-digital installation architecture"
+  narrative: "200 concurrent connections hold. Excess requests queue with estimated wait times, nobody waits more than 2 seconds, and Erdem exhales for the first time in weeks."
 hints:
   - level: nudge
     content: "GenerationQueue(maxConcurrent: 4) is the whole trick: 4 inferences run, everyone else holds a live WebSocket and a queue position"

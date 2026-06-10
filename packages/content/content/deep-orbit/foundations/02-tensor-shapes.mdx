@@ -18,7 +18,7 @@ concept:
     tier: structural
     breaks: "`Array.length` returns one number for a 1D structure. `Tensor.shape` returns an array of dimensions (`[batch, features]`, `[batch, h, w, channels]`, etc) and the rank itself can vary. Reading shape is multi-dimensional; broadcasting rules depend on the full shape vector, not a single length."
 consequence:
-  narrative: "The data dimensions are now clear — sensor readings across 64 channels."
+  narrative: "Four hundred fifty rows by sixty-four channels: the stream finally has a layout, and the layout looks deliberate."
 hints:
   - level: nudge
     content: "Count the nesting levels of your array"
@@ -34,13 +34,15 @@ keywords:
 skillAxes: [data_prep]
 ---
 
+> **ARCHIMEDES SENSOR LOG · STREAM 7-G** · Repeating structure detected at two distinct scales. Dimensional layout: unresolved. ARIA parse status: failed, 4,096 of 4,096 rules.
+
 <Dialogue speaker="Dr. Farah">
-The stream isn't a wall of numbers — it has structure. Repeating patterns at different scales. Before we analyze anything, I want to know its dimensional layout.
+That log line is the most interesting thing on this ship. The stream isn't a wall of numbers; it has structure. Before we analyze anything, I want to know its dimensional layout.
 </Dialogue>
 
 Every tensor has a **shape**: a tuple of numbers describing how many elements exist along each dimension. If you've ever checked `array.length` or calculated `rows × cols` for a grid layout, you already think in shapes.
 
-<LearningObjectives objectives={["Read and interpret tensor shapes", "Understand row-major order — where each value lands after a reshape", "Reshape tensors without changing their data", "Recognize common shapes in ML (batches, sequences, images)"]} />
+<LearningObjectives objectives={["Read and interpret tensor shapes", "Predict where each value lands after a reshape (row-major order)", "Recognize common shapes in ML (batches, sequences, images)"]} />
 
 ## Shapes You Already Know
 
@@ -50,7 +52,7 @@ In frontend development, you work with shapes constantly. A responsive grid with
 
 ## Where Does Each Value Land?
 
-Here's the question that actually trips people up — not what the new shape *is*, but which value ends up *where*. The answer: tensors fill **row by row** (row-major order). Watch the values, not just the shapes:
+Here's the question that actually trips people up: not what the new shape *is*, but which value ends up *where*. The answer: tensors fill **row by row** (row-major order). Watch the values, not just the shapes:
 
 <CodeBlock language="typescript" title="tensor-shapes.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -83,7 +85,7 @@ tall.print();
 
 The golden rule: **reshaping never changes the data or its order — only where the line breaks fall.** The memory stays one flat sequence, exactly like the `Float32Array` from lesson 1; shape is just the reading instructions.
 
-One honesty note on the grid analogy: CSS Grid *reflows* — change `grid-template-columns` and items visually rearrange to fill the new tracks. Reshape never rearranges. If you remember one thing, remember that reshape is line-wrapping, not layout.
+One honesty note on the grid analogy: CSS Grid *reflows*. Change `grid-template-columns` and items visually rearrange to fill the new tracks. Reshape never rearranges. If you remember one thing, remember that reshape is line-wrapping, not layout.
 
 ## Challenge
 

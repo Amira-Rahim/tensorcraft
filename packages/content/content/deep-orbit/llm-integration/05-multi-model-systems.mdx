@@ -10,7 +10,7 @@ context:
   narrative: "Demir orchestrates the full DEEP SCAN system: the signal classifier feeds the anomaly detector, which feeds the LLM reporter. Multiple models, one pipeline."
   speaker: "Ensign Demir"
 concept:
-  explanation: "Orchestrating multiple ML models is like micro-service architecture — each model handles its domain, and an orchestrator coordinates the flow."
+  explanation: "A multi-model system chains specialists: each model handles its stage, and an orchestrator moves the signal from raw bytes to finished report."
   bridge:
     feTitle: "Micro-Services"
     feCode: "// API gateway routes to auth, products, payments services"
@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "Microservices have stable contracts and explicit error responses. Model orchestration passes outputs (often natural-language) between probabilistic models — errors compound silently and one weak model degrades the entire chain without raising an exception."
 consequence:
-  narrative: "The complete DEEP SCAN pipeline processes signals end-to-end: classify, detect anomalies, predict timing, and generate reports — all automatically."
+  narrative: "Classify, detect, predict, report: the complete DEEP SCAN pipeline runs end-to-end with nobody awake to watch it."
 hints:
   - level: nudge
     content: "Each model in the pipeline handles one task, passing its output to the next"
@@ -173,12 +173,12 @@ Wire together a multi-model pipeline with error handling.
 
 <Epilogue>
 
-The first fully automated alert fires at 0317 the next night, while the bridge is dark and everyone who built the pipeline is asleep. Classifier, autoencoder, LSTM, language model — signal to finished summary with no human awake, Demir's checker signing off on every number in between. The alert's footer notes the pulse interval, shorter again than the night before. Mirza reads the whole chain of evidence over coffee at 0600 and asks exactly one question.
+The bridge is dark and everyone who built the pipeline is asleep when the first fully automated alert fires. Classifier, autoencoder, LSTM, language model: signal to finished summary with no human awake, Demir's checker signing off on every number in between. The alert's footer notes the pulse interval, shorter again than the night before. Mirza reads the whole chain of evidence over coffee at 0600 and asks exactly one question.
 
 <Dialogue speaker="Commander Mirza">
 How long from signal to report? Make it faster.
 </Dialogue>
 
-Fourteen seconds, Demir tells him, already knowing it isn't the right answer. The signal is accelerating. The pipeline will have to.
+Fourteen seconds, Demir tells him, already knowing it isn't the right answer. The signal is accelerating; the pipeline will have to.
 
 </Epilogue>

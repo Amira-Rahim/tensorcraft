@@ -9,7 +9,7 @@ difficulty: intermediate
 context:
   narrative: "Gradient descent works for a single weight, but the network has hundreds. ARIA needs an efficient way to compute all gradients at once."
 concept:
-  explanation: "Backpropagation computes gradients for every weight by working backwards through the network — like how React's reconciliation traces changes from leaf nodes back to root."
+  explanation: "Backpropagation computes gradients for every weight in one backward sweep, applying the chain rule from the loss back to the input."
   bridge:
     feTitle: "React Reconciliation"
     feCode: "// Diff propagates from changed leaf → parent → root"
@@ -112,7 +112,7 @@ Each factor is local to one layer. `tf.variableGrads()` builds the computational
 
 <Epilogue>
 
-Nazari times it herself, stopwatch against the console, because she doesn't trust benchmarks she didn't run. One backward pass: 11 milliseconds, all 673 gradients. Then she makes Demir run it the naive way — 673 separate forward passes, one nudged weight at a time — and stands there for the full 27 seconds, arms folded, watching the waste accumulate.
+Nazari times it herself, stopwatch against the console, because she doesn't trust benchmarks she didn't run. One backward pass: 11 milliseconds, all 673 gradients. Then she makes Demir run it the naive way, 673 separate forward passes with one nudged weight at a time, and stands there for the full 27 seconds, arms folded, watching the waste accumulate.
 
 <Dialogue speaker="Chief Nazari">
 Twenty-seven seconds against eleven milliseconds, a few thousand times per training run. That's the difference between an answer by morning and an answer next month. Use the eleven.

@@ -10,7 +10,7 @@ context:
   narrative: "You've learned the individual pieces. Now assemble them into a reusable ethics review process."
   speaker: "Instructor"
 concept:
-  explanation: "An ML ethics checklist is a structured review process, like a pull request checklist that ensures every model meets standards for data quality, fairness, interpretability, and deployment safety."
+  explanation: "An ML ethics checklist turns review into a repeatable process: every model gets checked for data quality, fairness, interpretability, and deployment safety before it ships."
   bridge:
     feTitle: "Pull Request Review Checklist"
     feCode: "// PR checklist: tests pass, a11y checked, perf budget met, docs updated"
@@ -22,11 +22,11 @@ consequence:
   narrative: "The checklist you built is typed, executable, and ready to drop into your next project's pipeline. Whether it stays a deployment gate or decays into a suggestion is up to your team."
 hints:
   - level: nudge
-    content: "Your checklist type needs one category per pipeline stage: data, training, evaluation, deployment. Write those four first"
+    content: "Group the check items by phase before computing anything"
   - level: guidance
-    content: "Structure the checklist with categories and individual check items with pass/fail status"
+    content: "Build phaseResults by bucketing items per phase and counting statuses. overallStatus needs only two scans: any 'fail' blocks, otherwise any 'pending' means needs-review. For passRate, exclude not-applicable items from the denominator."
   - level: solution
-    content: "Create a typed checklist covering data sourcing, bias audit, fairness metrics, interpretability, and deployment review"
+    content: "1) phaseResults: reduce items into { [phase]: { pass, fail, pending } } counts. 2) overallStatus: items.some(i => i.status === 'fail') ? 'blocked' : items.some(i => i.status === 'pending') ? 'needs-review' : 'approved'. 3) passRate: passed / items.filter(i => i.status !== 'not-applicable').length."
 keywords:
   - ethics-checklist
   - responsible-ai

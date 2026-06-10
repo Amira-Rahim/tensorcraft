@@ -10,7 +10,7 @@ context:
   narrative: "Your model has high accuracy, but can you explain why it makes the predictions it does?"
   speaker: "Instructor"
 concept:
-  explanation: "Interpretability techniques like LIME and SHAP reveal which features drive a model's predictions, similar to how Chrome DevTools reveals what's causing performance bottlenecks."
+  explanation: "Interpretability techniques such as LIME and SHAP reveal which features drive a model's predictions, turning 'the model said so' into something you can inspect and debug."
   bridge:
     feTitle: "Chrome DevTools Performance Tab"
     feCode: "// Performance: 'Long Task' — scripting 342ms in handleClick()"
@@ -20,14 +20,13 @@ concept:
     breaks: "DevTools Performance tab shows actual measured execution down to the function call. SHAP feature importances are estimates from input perturbation and different SHAP variants (Tree, Kernel, Deep) disagree on the same prediction. The 'explanation' is itself a model approximating the model, so verify with multiple techniques before trusting it."
 consequence:
   narrative: "Feature attribution turns 'the model said so' into a list of which inputs pushed the prediction, and by how much. Whether those reasons hold up is the question the deployment review asks next."
-  nextLessonTeaser: "Next: responsible deployment, or what happens when your model meets the real world"
 hints:
   - level: nudge
     content: "Perturb each feature and measure the change in prediction"
   - level: guidance
-    content: "Zero out one feature at a time and compare predictions"
+    content: "Get the baseline prediction on the untouched input first. Then, one feature at a time, copy the input, zero that feature, and re-predict. The importance is how far the new prediction moved from the baseline."
   - level: solution
-    content: "For each feature, set it to zero, re-predict, and compute the difference from the original prediction"
+    content: "const base = predict(input); return featureNames.map((feature, i) => { const perturbed = [...input]; perturbed[i] = 0; return { feature, importance: Math.abs(predict(perturbed) - base) }; }).sort((a, b) => b.importance - a.importance);"
 keywords:
   - interpretability
   - LIME

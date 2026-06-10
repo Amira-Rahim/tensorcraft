@@ -19,7 +19,6 @@ concept:
     tier: intuition
 consequence:
   narrative: "Samir sees the difference: not sorting art into categories, but conjuring entirely new pieces from learned patterns."
-  nextLessonTeaser: "Next: the mathematical foundations that make generation possible"
 hints:
   - level: nudge
     content: "Compare model.predict(tf.randomNormal([1, 100])) with classifier.predict(imageData): one consumes noise and emits new data, the other consumes existing data and emits a label"
@@ -46,9 +45,9 @@ In the browser, on hardware we don't control. The venue has 40 kiosk machines: m
 Before Yara retrained me, I answered one question per image: landscape or not, a single number out. Now I emit 784 pixels nobody has seen before. Same layers. The only thing she changed was my loss function.
 </Dialogue>
 
-You have spent your frontend career building interfaces that respond to data: rendering API responses, sorting lists, filtering search results. All of that is about working with data that already exists. Generative AI works in the other direction. It creates data that has never existed.
+Every interface Samir has ever shipped consumed data that already existed: API responses rendered, lists sorted, search results filtered. The thing humming in MUSE's training logs runs in the opposite direction. It emits data that has never existed, 784 pixels at a time, and the only architectural difference is the loss function.
 
-<LearningObjectives objectives={["Understand the difference between generative and discriminative models", "Recognize how controlled randomness in frontend maps to generation in ML", "Identify the input and output of a generative model", "Set up TensorFlow.js for generative experiments"]} />
+<LearningObjectives objectives={["Understand the difference between generative and discriminative models", "Identify the input and output of a generative model", "Set up TensorFlow.js for generative experiments"]} />
 
 ## Discriminative vs. Generative
 

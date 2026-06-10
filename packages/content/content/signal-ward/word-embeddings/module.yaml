@@ -2,7 +2,7 @@ slug: word-embeddings
 title: "Word Embeddings: Meaning in Numbers"
 themeId: signal-ward
 order: 3
-description: "Vikram demonstrates that 'aspirin' lives closer to 'ibuprofen' than to 'appendectomy' in vector space. You'll learn to represent words as dense vectors that capture semantic meaning — from naive one-hot encoding to pre-trained medical embeddings."
+description: "Vikram demonstrates that 'aspirin' lives closer to 'ibuprofen' than to 'appendectomy' in vector space. Getting there takes the whole module: one-hot vectors that treat every word as a stranger, Word2Vec learning meaning from context, medical embeddings that know 'discharge' means going home, and a trainable layer that keeps adapting on hospital data."
 lessonCount: 5
 prerequisites:
   - tokenization-preprocessing

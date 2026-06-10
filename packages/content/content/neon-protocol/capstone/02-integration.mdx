@@ -18,8 +18,7 @@ concept:
     mlCode: "pipeline.use(preprocess).use(detect).use(classify).use(guard); // tensor flows through each"
     tier: structural
 consequence:
-  narrative: "The pipeline runs end-to-end for the first time. A test frame enters. Preprocessed. Objects detected. Classified: Meridian drone. Adversarial check: clean. Broadcast payload generated. Noor watches the data flow through six stages in 47 milliseconds. The Architect's surveillance network has a new adversary."
-  nextLessonTeaser: "Next: testing and validation. Making sure Protocol Sentinel works before it goes live"
+  narrative: "For the first time, the pipeline runs end-to-end. A test frame enters, gets preprocessed, and comes out the far side classified: Meridian drone, adversarial check clean, broadcast payload ready. Noor watches the data flow through six stages in 47 milliseconds. The Architect's surveillance network has a new adversary."
 hints:
   - level: nudge
     content: "Each pipeline stage is middleware: it receives data, processes it, and passes it downstream"

@@ -7,7 +7,7 @@ order: 4
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "The ethics committee's final structural requirement: 'No automated clinical decision may be made without clinician review.' Khalil thinks of pull requests. 'It is code review. The model writes the prediction, like a junior developer writing code. The clinician reviews and approves, requests changes, or rejects. Automated checks first, human judgment last.'"
+  narrative: "The ethics committee's final structural requirement: 'No automated clinical decision may be made without clinician review.' Khalil thinks of pull requests: the model authors a prediction, a clinician approves, modifies, or rejects it. Dr. Karimi signs off on half of it. 'Your junior developer's bad merge does not dose anyone. Build the queue, but build it small enough that we actually read it.'"
   speaker: "Khalil"
 concept:
   explanation: "Human-in-the-loop ML follows the same pattern as code review: automated checks (linting, CI) run first, then a human reviewer approves, requests changes, or rejects. The system recommends, the human decides."
@@ -20,7 +20,6 @@ concept:
     breaks: "Code review is asynchronous review of authored changes. Human-in-the-loop ML must minimize reviewer fatigue, account for automation bias (humans rubber-stamping AI suggestions), and design active-learning queries that maximize information gain, not just queue every prediction."
 consequence:
   narrative: "Diagnostic One's review architecture is complete: high-confidence predictions surface as suggestions, medium-confidence predictions queue for clinician review, low-confidence predictions are suppressed. Imran runs a simulation: 200 predictions in an hour. 62% auto-surface, 28% go to review, 10% suppressed. Dr. Karimi approves: 'This is the right balance. The model assists; it does not decide.'"
-  nextLessonTeaser: "Next: confronting the 12% disparity — responsible remediation and honest documentation"
 hints:
   - level: nudge
     content: "Define confidence thresholds that route predictions to different review tiers, like branch protection rules"

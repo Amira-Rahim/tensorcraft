@@ -20,7 +20,6 @@ concept:
     breaks: "k6 load tests measure latency and throughput under known input shapes. ML load testing must additionally vary input distribution. The same RPS with adversarial prompts degrades output quality without changing latency. A load test that returns green on synthetic prompts can pass while the production prompt mix exhausts memory or triggers content-safety classifiers. Load shape AND content shape both need stress."
 consequence:
   narrative: "The load test reveals three critical issues: WebSocket reconnection fails after 180 connections, tensor memory leaks after 500 generations, and the audio pipeline blocks the main thread at high concurrency. All fixable. All caught before opening night."
-  nextLessonTeaser: "Next: monitoring and failover for a running installation"
 hints:
   - level: nudge
     content: "Model your load test scenarios after real visitor behavior: not constant load, but waves"
@@ -36,11 +35,19 @@ keywords:
 ---
 
 <Dialogue speaker="Erdem">
-The Biennale expects 200 visitors during peak hours. We test for 300. If it survives 300, opening night is a controlled event, not an experiment.
+The Biennale expects 200 visitors at peak. We run 300 against it, constant, for an hour. If it survives, opening night is a controlled event, not an experiment.
 </Dialogue>
 
 <Dialogue speaker="Rohan">
-My audio pipeline has never been tested with more than 10 concurrent streams. This is going to be revealing.
+Constant load tells you nothing. A gallery breathes. A tour group walks in, forty requests in ten seconds, then silence. Your flat 300 never exercises a WebSocket reconnect. The waves do.
+</Dialogue>
+
+<Dialogue speaker="Erdem">
+Waves, then. But the 300 ceiling stays, and I want the recovery window measured, not eyeballed. If the system needs four minutes to drain a spike, I need that number before Thursday, not during the opening.
+</Dialogue>
+
+<Dialogue speaker="Rohan">
+Fine. For the record, my audio pipeline has never seen more than 10 concurrent streams. Whatever shape you pick, it's going to be revealing.
 </Dialogue>
 
 p99 is the number that ruins opening nights. Median latency describes the typical visitor; the 99th percentile describes the one who waited eleven seconds, gave up, and told a friend. You've measured both with Artillery, k6, or Locust against REST endpoints. The methodology survives unchanged here. The payload doesn't: each request triggers model inference instead of a database query.

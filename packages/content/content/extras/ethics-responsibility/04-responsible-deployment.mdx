@@ -10,7 +10,7 @@ context:
   narrative: "Your model is trained, tested, and performing well. But deploying it means real people experience its mistakes."
   speaker: "Instructor"
 concept:
-  explanation: "Responsible deployment means analyzing failure modes, documenting limitations, and deciding when human oversight is required, like conducting an accessibility impact assessment before a major launch."
+  explanation: "Responsible deployment means analyzing failure modes, documenting limitations, and deciding when a human needs to stay in the loop before the model meets real users."
   bridge:
     feTitle: "Accessibility Impact Assessment"
     feCode: "// a11y review: Who can't use this feature? What's the fallback?"
@@ -20,14 +20,13 @@ concept:
     breaks: "Accessibility impact assessment can be checked against published WCAG criteria. Model impact assessment must consider distributional harms across populations the developer is not in. There is no spec to check; it requires affected-stakeholder consultation. Skipping consultation and declaring 'we considered ethics' is the dominant failure mode."
 consequence:
   narrative: "Failure modes, severity, affected groups, mitigations: the impact assessment is a document you can write now, not a vibe. Write one for your next model before training starts and see what it surfaces."
-  nextLessonTeaser: "Next: building a reusable ethics checklist for all your ML projects"
 hints:
   - level: nudge
-    content: "Consider what happens when the model is wrong for each stakeholder"
+    content: "One critical failure mode without a human fallback blocks the whole deployment"
   - level: guidance
-    content: "Map each failure mode to its severity and affected population"
+    content: "Check the blocking condition first: any mode with severity 'critical' and no human fallback means 'do-not-deploy'. If you get past that, the presence of any critical or high mode means oversight. Otherwise deploy."
   - level: solution
-    content: "Create a structured impact assessment with failure modes, severity, affected groups, and mitigations"
+    content: "1) if (modes.some(m => m.severity === 'critical' && !m.hasHumanFallback)) return 'do-not-deploy'. 2) if (modes.some(m => m.severity === 'critical' || m.severity === 'high')) return 'deploy-with-oversight'. 3) return 'deploy'."
 keywords:
   - deployment
   - failure-modes

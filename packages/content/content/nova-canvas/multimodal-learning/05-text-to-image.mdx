@@ -10,7 +10,7 @@ context:
   narrative: "The moment. Samir types: 'a sunset over a digital city.' MUSE processes the text, encodes it, conditions the diffusion model, and begins denoising. From noise, shapes emerge. A horizon. Buildings. Light. Rough, but unmistakably a sunset over a digital city. Erdem: 'Can we talk about the CLIP alignment score?'"
   speaker: "Samir"
 concept:
-  explanation: "Text-to-image generation reverses captioning: text becomes the input, images become the output. Like server-side rendering: text (HTML/data) is transformed into visual output (the rendered page). The text description becomes the image."
+  explanation: "Text-to-image generation runs captioning in reverse: a text encoder turns the prompt into conditioning, and a diffusion model decodes it into pixels. One sentence in, one image out, with every visual decision the sentence left unspecified made by the model."
   bridge:
     feTitle: "Server-side rendering: text becomes visual"
     feCode: "const html = renderToString(<App data={textData} />);"
@@ -19,7 +19,6 @@ concept:
     tier: structural
 consequence:
   narrative: "The first text-to-image output. Rough edges. Imperfect colors. But recognizable. Yara stares at the screen: 'From words to art. We just crossed the bridge.' Erdem already has concerns: 'The CLIP alignment score is 0.23. We need at least 0.30.'"
-  nextLessonTeaser: "Next module: CLIP & Alignment: teaching MUSE to understand nuance and mood"
 hints:
   - level: nudge
     content: "SSR transforms text data into visual HTML. Text-to-image transforms text prompts into pixel data."
@@ -35,6 +34,8 @@ keywords:
   - server-side-rendering
 ---
 
+It already happened. Twenty minutes ago Samir typed "a sunset over a digital city," and the screen now shows one: rough edges, colors not quite right, but a horizon, buildings, light. The collective spent the first ten minutes celebrating and the last ten arguing about how it works. This lesson is the argument, settled: walking back through the pipeline that turned eight words into pixels.
+
 <Dialogue speaker="Samir">
 Everything we built converges here. The text encoder from multimodal learning. The diffusion model from module five. The classifier-free guidance for prompt adherence. Text in, image out.
 </Dialogue>
@@ -43,9 +44,7 @@ Everything we built converges here. The text encoder from multimodal learning. T
 It is server-side rendering for art. SSR takes data and text and renders it into a visual page. Text-to-image takes a prompt and renders it into pixels. Text becomes visual.
 </Dialogue>
 
-Server-side rendering transforms text and data into a visual page. Text-to-image transforms a text prompt into a visual image. The principle is identical: text is the source of truth, and the system renders it into something you can see.
-
-<LearningObjectives objectives={["Understand how text conditioning drives image generation in diffusion models", "Connect the text encoder to the diffusion U-Net via cross-attention or concatenation", "Implement a text-to-image pipeline combining text encoding, diffusion, and guidance", "Connect text-to-image to server-side rendering — text as source, visuals as output"]} />
+<LearningObjectives objectives={["Understand how text conditioning drives image generation in diffusion models", "Connect the text encoder to the diffusion U-Net via cross-attention or concatenation", "Implement a text-to-image pipeline combining text encoding, diffusion, and guidance"]} />
 
 ## The Text-to-Image Pipeline
 

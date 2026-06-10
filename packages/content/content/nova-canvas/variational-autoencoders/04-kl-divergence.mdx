@@ -20,12 +20,9 @@ concept:
     breaks: "CSS specificity is a hand-tunable balance between rules. KL divergence is an asymmetric distance between distributions used as a regularization term in VAEs. The weight on KL vs reconstruction loss is a hyperparameter that materially shapes the latent space."
 consequence:
   narrative: "With KL divergence in the loss, the latent space smooths out. Random samples decode into coherent art. MUSE generates an 'original' that eerily resembles a famous painting: memorization vs generalization."
-  nextLessonTeaser: "Next: putting it all together: a creative VAE for the exhibition"
 hints:
-  - level: nudge
-    content: "KL divergence is a penalty that keeps the latent space organized, like CSS specificity guidelines"
   - level: guidance
-    content: "The VAE loss has two parts: reconstruction loss + KL divergence"
+    content: "The VAE loss has two parts: reconstruction loss plus a KL penalty that keeps the latent space organized"
   - level: solution
     content: "const klLoss = mu.square().add(logVar.exp()).sub(logVar).sub(1).mul(0.5).sum(1).mean();"
 keywords:
@@ -37,7 +34,7 @@ keywords:
 ---
 
 <Dialogue speaker="MUSE">
-The VAE has two competing desires. It wants to reconstruct perfectly — make the output match the input. But it also wants its latent space to be smooth and organized. KL divergence is the tension between these desires. Too much reconstruction focus and the space becomes chaotic. Too much regularization and the reconstructions become blurry. Finding the balance is the art.
+Train me twice and compare. With beta at 0.1, I reconstruct Samir's sketches almost pixel-perfect and my latent space turns to gravel: clusters, gaps, dead zones. With beta at 4, everything decodes soft and blurry but the space goes smooth as glass. Where between those two would you like me to live?
 </Dialogue>
 
 <Dialogue speaker="Yara">
@@ -111,12 +108,7 @@ function vaeLoss(
   //   beta = 1: standard VAE (balanced)
   //   beta > 1: prioritize organization (blurrier but smoother space)
   return reconLoss.add(klLoss.mul(beta)) as tf.Scalar;
-}
-
-// CSS specificity analogy:
-// reconLoss = inline styles (exact, specific)
-// klLoss = class-based styles (general, systematic)
-// beta = how strictly you enforce the design system`}
+}`}
 </CodeBlock>
 
 ## The AI-Wrong Moment

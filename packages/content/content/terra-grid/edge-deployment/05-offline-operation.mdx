@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "IndexedDB + service worker cache documents you authored, so staleness is bounded by your update cadence. Offline model cache holds weights that drift relative to the world the model was trained on. A 6-month-old offline model may be confidently wrong about today's data, with no signal to the user that the model is stale."
 consequence:
-  narrative: "The storm passes. 200 devices reconnect and sync 14 hours of buffered predictions. Zero data loss."
-  nextLessonTeaser: "Module 6: building automated pipelines to retrain and redeploy at scale"
+  narrative: "When the storm finally passes, 200 devices reconnect and sync 14 hours of buffered predictions. Zero data loss."
 hints:
   - level: nudge
     content: "OfflineModelCache is your IndexedDB layer; PredictionRingBuffer queues results the way Background Sync queues API calls"
@@ -43,7 +42,7 @@ Station 7-Delta just lost satellite. Forecast says 14 hours minimum before link 
 That is precisely why we designed for offline-first. The models run locally. Predictions buffer. When the link comes back, everything syncs. No data loss. There is a cost, and it is not bandwidth: every hour offline, the model's picture of the grid ages. Fourteen hours is acceptable. Six months would be a model that answers confidently and wrongly, with nothing to tell us so.
 </Dialogue>
 
-You have built offline-first web apps. Service Workers cache assets. IndexedDB stores data. Background Sync queues API calls for when connectivity returns. The architecture carries over: cache the model, buffer the results, sync when possible. What does not carry over is the meaning of stale. A stale page is your own content, only older. A stale model is a snapshot of the world as of training day, still answering with full confidence about a world that may have moved.
+Service Workers cache assets, IndexedDB stores data, Background Sync queues API calls until the network returns: the offline-first toolkit, reused here move for move. Cache the model, buffer the results, sync when possible. One word quietly changes meaning in transit, and that word is stale. A stale page is your own content, only older. A stale model is a snapshot of the world as of training day, still answering with full confidence about a world that may have moved.
 
 <LearningObjectives objectives={["Implement offline model caching using IndexedDB — the same pattern as offline-first web apps", "Design prediction buffering with ring buffers for memory-constrained devices", "Build sync queues that reconcile local predictions with the central system", "Handle model staleness during extended offline periods"]} />
 

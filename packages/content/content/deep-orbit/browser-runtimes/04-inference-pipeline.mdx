@@ -10,7 +10,7 @@ context:
   narrative: "The model is loaded. Demir wires it into the dashboard's real-time signal feed — every second, a new reading arrives and the model must classify it."
   speaker: "Ensign Demir"
 concept:
-  explanation: "Running inference is the event handler → process → render cycle you use for every user interaction — input arrives, logic runs, UI updates."
+  explanation: "Input arrives, logic runs, the UI updates. Inference slots into that familiar cycle with one new obligation: every tensor you create must be freed."
   bridge:
     feTitle: "Event → Process → Render"
     feCode: "input.addEventListener('change', e => { const result = process(e); render(result); })"
@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "Event → Process → Render runs once per user input with code you wrote. Input → Predict → Display passes data through a learned model whose internals you cannot inspect step-by-step. Debugging shifts from breakpoints to interpretation tools (saliency maps, attention viz)."
 consequence:
-  narrative: "The dashboard shows live classifications. Green for normal, amber for anomalous. The crew watches as signals stream in."
+  narrative: "Green for normal, amber for anomalous: live classifications stream across the dashboard while the crew watches."
 hints:
   - level: nudge
     content: "Treat each signal reading as an event — preprocess, predict, display"
@@ -190,7 +190,7 @@ Build a complete inference pipeline with preprocessing and memory management.
   tier="intuition"
 />
 
-<KeyTakeaways takeaways={["Each reading is min-max normalized with the training-time feature ranges before model.predict() — mismatched preprocessing silently wrecks accuracy", "tf.tidy() is essential — it auto-disposes intermediate tensors, preventing GPU memory leaks", "Always preprocess input to match training format — normalize values to the same ranges used during training", "tf.memory() lets you monitor tensor count and memory usage, like the DevTools memory tab"]} />
+<KeyTakeaways takeaways={["Each reading is min-max normalized with the training-time feature ranges before model.predict() — mismatched preprocessing silently wrecks accuracy", "tf.tidy() is essential — it auto-disposes intermediate tensors, preventing GPU memory leaks", "tf.memory() lets you monitor tensor count and memory usage, like the DevTools memory tab"]} />
 
 <Epilogue>
 

@@ -19,14 +19,13 @@ concept:
     breaks: "Hand-written if/else encodes rules YOU chose. A decision tree learns split features and thresholds from data via algorithms like CART (Gini impurity, information gain). The runtime shape rhymes; the authoring story is opposite. One is engineered, one is fitted."
 consequence:
   narrative: "Every prediction from your tree now traces back to a readable chain of if/else rules, an explanation a compliance officer can audit. Regulated industries require nothing less."
-  nextLessonTeaser: "Next: k-nearest neighbors, classification without any training at all"
 hints:
   - level: nudge
     content: "A split is just choosing which feature and value to branch on"
   - level: guidance
-    content: "Gini impurity measures how mixed the classes are in a group"
+    content: "Gini impurity measures how mixed a group's labels are. Compute each class's proportion, square them, subtract the squares from 1. A pure group gives 0; a 50/50 binary group gives 0.5."
   - level: solution
-    content: "gini = 1 - p1^2 - p2^2, where p1 and p2 are class proportions"
+    content: "const gini = (labels) => { const counts = {}; labels.forEach(l => counts[l] = (counts[l] || 0) + 1); return 1 - Object.values(counts).reduce((s, c) => s + (c / labels.length) ** 2, 0); }; For findBestSplit, try every feature/threshold pair and keep the one with the lowest weighted Gini of the two sides."
 keywords:
   - decision-tree
   - gini-impurity

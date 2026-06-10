@@ -17,10 +17,9 @@ concept:
     mlTitle: "Fine-Tuning BERT"
     mlCode: "// Inherit pre-trained weights, add classification head\nconst model = addHead(bertBase, numLabels);"
     tier: structural
-    breaks: "Extending a class adds methods deterministically while preserving base behavior. Fine-tuning updates the model's weights, including those that encoded base capabilities, and may degrade them silently (catastrophic forgetting). Validation must check that pre-existing capabilities the new task doesn't exercise still work, not just that the new task's metric improved."
+    breaks: "Extending a class adds methods deterministically while preserving base behavior. Fine-tuning updates the model's weights, including those that encoded base capabilities, and can erode them without any error (catastrophic forgetting). Validation must check that pre-existing capabilities the new task doesn't exercise still work, not just that the new task's metric improved."
 consequence:
   narrative: "Diagnostic One can now classify clinical conditions, but the team must be careful not to destroy the pre-trained knowledge in the process."
-  nextLessonTeaser: "Next: MEDI makes a dangerous mistake — and we learn what happens when a model's limitations are ignored."
 hints:
   - level: nudge
     content: "Add a dense softmax head on the encoder output and compile with tf.train.adam(2e-5) so the pre-trained weights barely move"
@@ -35,7 +34,7 @@ keywords:
   - domain-adaptation
 ---
 
-<Dialogue speaker="Imran Malik">
+<Dialogue speaker="Imran">
 We've got a BERT model that understands general English. But when I feed it "pt c/o SOB x 3d, hx of CHF," it's lost. Clinical language is its own dialect.
 </Dialogue>
 
@@ -44,7 +43,7 @@ That's like class inheritance in TypeScript. You don't rewrite the entire base c
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-Careful with that one. `extends` never touches the base class. Fine-tuning does: gradients flow into the same weights that encode grammar and semantics, and they can quietly degrade. That's catastrophic forgetting, and it won't show up in your clinical metric. So we add the classification head, train gently, and validate the general-language behaviors the new task never exercises, not just the new score.
+If only it were that safe. `extends` never touches the base class. Fine-tuning does: gradients flow into the same weights that encode grammar and semantics, and what they knew can erode while your clinical metric climbs. That's catastrophic forgetting. So we add the classification head, train gently, and validate the general-language behaviors the new task never exercises, not just the new score.
 </Dialogue>
 
 <LearningObjectives objectives={["Understand the fine-tuning paradigm: inherit general knowledge, add task specialization", "Add a task-specific classification head to a pre-trained encoder", "Apply learning rate strategies to prevent catastrophic forgetting", "Implement gradual unfreezing for stable domain adaptation"]} />
@@ -187,7 +186,7 @@ for (let i = 0; i < 5; i++) {
 }`}
 </CodeBlock>
 
-<Dialogue speaker="Imran Malik">
+<Dialogue speaker="Imran">
 So lower layers, the ones that learned basic language patterns, get tiny updates. Upper layers, closer to the task, get larger updates. Like how you'd be more careful editing a utility library than a feature component.
 </Dialogue>
 

@@ -7,10 +7,10 @@ order: 3
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "The team fractures. Noor wants pure browser: impossible to shut down. Amir insists on hybrid: server-side for accuracy. The argument escalates. Dilan: 'Build both. Test both. Let the data decide.'"
+  narrative: "The team fractures. Noor wants pure browser: impossible to shut down. Amir insists on hybrid: server-side for accuracy. The argument escalates until Dilan ends it with one order: build both, and let the data decide."
   speaker: "Dilan"
 concept:
-  explanation: "Performance budgets in ML inference work exactly like Lighthouse performance budgets. You have a time budget per frame. Preprocessing, inference, and postprocessing must all fit within it, or you drop frames."
+  explanation: "Real-time inference runs on a time budget per frame: preprocessing, inference, and postprocessing must all fit inside it, or you drop frames. At 30fps the entire budget is 33 milliseconds."
   bridge:
     feTitle: "Lighthouse Performance Budgets"
     feCode: "// Budget: FCP < 1.8s, LCP < 2.5s, TBT < 200ms"
@@ -20,7 +20,6 @@ concept:
     breaks: "Lighthouse budgets are bytes and milliseconds with hard pass/fail thresholds. Inference budgets must trade off latency vs accuracy, and the same model meets budget on a desktop GPU but misses by 10× on mobile; single-budget targets hide device variance. Budgets must be set per-device-class and monitored separately."
 consequence:
   narrative: "Noor profiles Protocol Sentinel. Preprocessing: 3ms. Inference: 28ms. Postprocessing: 4ms. Total: 35ms. Over the 33ms budget for 30fps. She needs to shave 2ms somewhere. NEON: 'Welcome to the optimization game. Every millisecond counts.'"
-  nextLessonTeaser: "Next: WebGL acceleration. Using the GPU to break through the performance ceiling"
 hints:
   - level: nudge
     content: "Break down the total frame time into stages, just like you break down a Lighthouse audit"

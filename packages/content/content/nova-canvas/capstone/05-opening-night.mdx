@@ -20,7 +20,6 @@ concept:
     breaks: "Pre-launch checklists for web apps verify config, certs, dependencies, all reproducible. Generative-model pre-launch must additionally verify content-safety thresholds, prompt-injection defenses, and rate-limits per user. None of which are reproducible by replaying logs because the model output varies per call. 'Green checks' for a generative system is a snapshot, not a guarantee."
 consequence:
   narrative: "The exhibition runs for three months. 12,847 unique visitors. 31,209 generations. The system crashes twice. Both times, the circuit breakers engage and recover within 30 seconds. Rohan: 'Tomorrow we fix the memory leak in the WebSocket handler.' There is always a tomorrow."
-  nextLessonTeaser: "You have completed Nova Canvas. The bridge from frontend to ML is shorter than you thought."
 hints:
   - level: nudge
     content: "A launch checklist is a pre-flight checklist: verify every system before the doors open"
@@ -232,7 +231,7 @@ async function handleIncident(scenario: string) {
     {
       label: "random",
       display: "Coin flip — let the room decide via reaction sensor",
-      consequence: "Sensor reads 60% disengaged. Auto-pull triggers. Same outcome as cooperate, but the moment was decided by averaged audience attention rather than artistic intent. The gallery's role as filter became outsourced. Petrov in the back: 'Mixed strategies in art are how you get nothing on the wall.'"
+      consequence: "Sensor reads 60% disengaged. Auto-pull triggers. Same outcome as cooperate, but the moment was decided by averaged audience attention rather than artistic intent. The gallery's role as filter became outsourced. Erdem, not looking up from the dashboard: 'Mixed strategies in art are how you get nothing on the wall.'"
     },
     {
       label: "dominant",
@@ -276,7 +275,7 @@ Build a launch checklist and runbook for deploying a live installation.
 
 <Exercise slug="launch-biennale" />
 
-<KeyTakeaways takeaways={["Launch checklists verify every system component — critical items block launch, non-critical items get logged", "Runbooks turn panic into procedure — typed failure scenarios with step-by-step recovery", "Auto-recovery handles common issues without human intervention; escalation handles the rest", "The discipline of production operations is watching metrics and resisting the urge to make changes during peak load"]} />
+<KeyTakeaways takeaways={["Launch checklists verify every system component — critical items block launch, non-critical items get logged", "Runbooks turn panic into procedure: typed failure scenarios, auto-recovery first, human escalation when it fails", "The discipline of production operations is watching metrics and resisting the urge to make changes during peak load"]} />
 
 <DispatchTease
   toThemeId="terra-grid"

@@ -19,14 +19,13 @@ concept:
     breaks: "Promise.allSettled runs known async tasks in parallel and votes the results you defined. Random forest trains many decorrelated decision trees on bootstrapped samples and votes; the diversity is the entire point and comes from the training procedure, not the call site."
 consequence:
   narrative: "Bootstrap sampling plus majority voting: that's the whole trick behind the models that dominate Kaggle leaderboards and production ML systems alike."
-  nextLessonTeaser: "Next: the decision framework for choosing the right model for any problem"
 hints:
   - level: nudge
     content: "Bagging trains models in parallel on random subsets of data"
   - level: guidance
-    content: "Each tree sees a random subset of features AND a random subset of data"
+    content: "bootstrapSample picks n items at random WITH replacement, so duplicates are expected. majorityVote counts occurrences and returns the most common. The forest just maps trees to predictions and votes."
   - level: solution
-    content: "Sample data with replacement, train tree on subset of features, repeat N times, majority vote"
+    content: "1) bootstrapSample: Array.from({ length: arr.length }, () => arr[Math.floor(Math.random() * arr.length)]). 2) majorityVote: count each prediction in a map, return the key with the highest count. 3) randomForestPredict: majorityVote(trees.map(t => t.predict(features)))."
 keywords:
   - random-forest
   - bagging

@@ -20,7 +20,6 @@ concept:
     breaks: "String similarity (Levenshtein) compares character edits, surface-level only. Vector similarity (cosine) compares learned semantic representations: 'doctor' and 'physician' score high; 'doctor' and 'doctored' score low despite shared letters. Embedding choice determines what 'similar' means; one model's similarity is another's irrelevance."
 consequence:
   narrative: "Diagnostic One can now find related medications, detect analogy-based relationships, and flag when a patient's medication list contains semantically conflicting terms."
-  nextLessonTeaser: "Next: training custom embedding layers inside a neural network."
 hints:
   - level: nudge
     content: "For analogies, subtract one vector and add another, then find the closest match."
@@ -34,8 +33,6 @@ keywords:
   - vector-arithmetic
   - semantic-similarity
 ---
-
-> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
 <Dialogue speaker="Vikram">
 Imran, you know Levenshtein distance. It measures how many character edits separate two strings. "aspirin" and "asprin" are 1 edit apart. Cosine similarity does something similar, but for meaning instead of spelling.
@@ -52,6 +49,8 @@ Half the picture. They can also flatly disagree. "Doctor" and "doctored" share n
 Cosine similarity measures the angle between two word vectors. Two drugs that never share a letter can sit a few degrees apart in embedding space. And vector arithmetic lets you reason about relationships, not just distances.
 
 <LearningObjectives objectives={["Implement cosine similarity to measure semantic relatedness between word vectors", "Perform word analogy tasks using vector arithmetic (a - b + c = ?)", "Find the most similar words to a query vector", "Apply analogy reasoning to clinical vocabulary"]} />
+
+> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
 ## Cosine Similarity: Measuring Meaning
 
@@ -176,7 +175,7 @@ Could we use this to find drug alternatives? If a patient is allergic to penicil
 </Dialogue>
 
 <Dialogue speaker="MEDI">
-The similarity score would identify amoxicillin as the closest alternative. However, since both are beta-lactam antibiotics, a clinical decision support system should cross-reference with allergy data. Embedding similarity finds semantic neighbors but does not replace pharmacological knowledge.
+Similarity scan: amoxicillin is the nearest alternative. Caution flag raised: both drugs are beta-lactam antibiotics with cross-reactive allergy risk. Embedding similarity locates semantic neighbors; it does not encode pharmacological knowledge.
 </Dialogue>
 
 ## Challenge

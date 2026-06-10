@@ -20,7 +20,6 @@ concept:
     breaks: "Browser engines (V8, JSC) implement the same EcmaScript spec, so code runs identically. ML runtimes (TFLite, ONNX Runtime, Core ML) support different operator subsets. A model with a single unsupported op fails to load entirely on that runtime. Op-set audit is required before targeting a runtime."
 consequence:
   narrative: "Tariq maps each device tier to its optimal runtime. The deployment matrix is complete."
-  nextLessonTeaser: "Next: pushing model updates over the air to remote devices"
 hints:
   - level: nudge
     content: "selectRuntime() is a compatibility lookup: match each device's CPU architecture to TFLite, ONNX Runtime, or the WASM fallback"

@@ -10,7 +10,7 @@ context:
   narrative: "Rohan connects a neural network to the gallery speakers. 'We are not playing recordings. We are growing sounds from latent vectors, the same way Yara grows images.'"
   speaker: "Rohan"
 concept:
-  explanation: "Neural audio synthesis generates waveforms by decoding latent vectors through a network, just like image generation decodes latent space into pixels."
+  explanation: "Neural audio synthesis decodes a latent vector into a waveform: thousands of amplitude samples generated rather than recorded, with timbre controlled by where in the latent space you sample."
   bridge:
     feTitle: "OscillatorNode"
     feCode: "const osc = ctx.createOscillator(); osc.frequency.value = 440; osc.start();"
@@ -20,7 +20,6 @@ concept:
     breaks: "OscillatorNode generates fixed waveforms from authored frequency, type, and detune parameters. Output is exactly predictable. Neural audio synthesis generates samples from a learned model and can glitch (sample-rate mismatch), drift in pitch (cumulative error in autoregressive sampling), or produce artifacts not present in training data. Quality is measured per-output, not per-config."
 consequence:
   narrative: "The first neural tone fills the gallery: not a sine wave, but something richer, textured, alive. Yara closes her eyes. 'That is not a sound. That is a feeling.'"
-  nextLessonTeaser: "Next: composing melodies and harmonies"
 hints:
   - level: nudge
     content: "An OscillatorNode generates simple waveforms. A neural network generates complex ones from the same starting point: a frequency representation"
@@ -45,7 +44,7 @@ Like how our image generator doesn't store images. It stores the space of all po
 
 Rohan's first speaker test was a 440Hz sine wave, sterile as a dial tone in an empty gallery. That tone is the ceiling of `OscillatorNode`: one frequency in, one periodic waveform out, forever. Neural synthesis keeps the contract and raises the abstraction. It maps a latent vector to a complex waveform no single oscillator could produce.
 
-<LearningObjectives objectives={["Build a neural network that generates audio waveforms from latent vectors", "Connect TensorFlow.js output to the Web Audio API for playback", "Control timbre and character by navigating latent space", "Understand the relationship between OscillatorNode parameters and neural network inputs"]} />
+<LearningObjectives objectives={["Build a neural network that generates audio waveforms from latent vectors", "Connect TensorFlow.js output to the Web Audio API for playback", "Control timbre and character by navigating latent space"]} />
 
 ## From Oscillators to Neural Synthesis
 

@@ -10,7 +10,7 @@ context:
   narrative: "Nazari's first optimization: reduce precision. 'Float32 uses 4 bytes per weight. Float16 uses 2. Int8 uses 1. Do the math — that's a 4x size reduction.'"
   speaker: "Chief Nazari"
 concept:
-  explanation: "Quantization reduces numerical precision for smaller models and faster inference — like image compression where PNG to WebP trades some quality for much smaller file size."
+  explanation: "Quantization stores each weight in fewer bytes: a smaller, faster model, paid for with a measurable slice of accuracy."
   bridge:
     feTitle: "Image Compression"
     feCode: "// PNG (lossless, 2MB) → WebP (lossy, 200KB) — 10x smaller, ~same visual quality"
@@ -23,9 +23,9 @@ hints:
   - level: nudge
     content: "Quantization is like choosing JPEG quality — lower precision = smaller size, slight quality loss"
   - level: guidance
-    content: "Use tf.quantize() or model converter flags to reduce from float32 to float16 or uint8"
+    content: "There is no tf.quantize() in TFJS; you map the range by hand. scale = (max - min) / 255, zeroPoint = Math.round(-min / scale), then each weight becomes Math.round((w - min) / scale). When saving a real model, quantizationBytes: 1 applies the same idea for you."
   - level: solution
-    content: "const quantized = tf.quantize(weights, 'uint8'); // 4x smaller"
+    content: "const min = Math.min(...weights), max = Math.max(...weights); const scale = (max - min) / 255; const zeroPoint = Math.round(-min / scale); const quantized = weights.map(w => Math.round((w - min) / scale));"
 keywords:
   - quantization
   - float16
@@ -39,7 +39,7 @@ skillAxes: [deployment]
 Every weight is a 32-bit float: 4 bytes. Your model has 85 million weights. That's 340 MB just for the numbers. Cut the precision to 8-bit integers and you're at 85 MB. The model is 4x smaller and inference runs on integer hardware, faster on every device.
 </Dialogue>
 
-Nazari's arithmetic is the whole technique. If you've ever converted a 2 MB PNG to a 200 KB WebP and squinted at the invisible difference, you know the trade: store each weight in one byte instead of four and the file lands at 85 MB, at a cost of roughly a point of accuracy. The dashboard that died at 0247 has 512 MB of RAM; the first 255 MB of the repayment come from this lesson.
+Nazari's arithmetic is the whole technique. If you've ever converted a 2 MB PNG to a 200 KB WebP and squinted at the invisible difference, you know the trade. Store each weight in one byte instead of four and the file lands at 85 MB; the cost is roughly a point of accuracy. The dashboard that died at 0247 has 512 MB of RAM, and the first 255 MB of the repayment come from this lesson.
 
 <Dialogue speaker="Chief Nazari">
 Don't sell me the WebP comparison, Ensign. Tell me where the accuracy goes. A point of loss spread evenly across five classes is one thing; a point concentrated in the rare class is another. Measure which one we're buying.

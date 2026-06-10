@@ -10,7 +10,7 @@ context:
   narrative: "Dilan reports from District 4: Protocol Sentinel takes 12 seconds to load on her device. Amir runs the numbers: 45MB of weights. For a resistance network running on salvaged hardware, that is a death sentence. NEON: 'Trim the fat. Keep the signal.'"
   speaker: "Amir"
 concept:
-  explanation: "Model optimization for the browser is like webpack tree-shaking for neural networks. Tree-shaking removes unused code paths to shrink your bundle. Quantization and pruning remove unnecessary precision and redundant connections to shrink your model. Same goal, same intuition, different domain."
+  explanation: "Model optimization shrinks a network for delivery: quantization reduces the precision of every weight, and pruning removes connections that barely contribute. Together they can cut a 45MB model to a quarter of its size with accuracy loss measured in fractions of a point."
   bridge:
     feTitle: "Webpack Tree-Shaking"
     feCode: "// webpack removes unused exports\nexport function used() { ... }\nexport function unused() { ... } // stripped in production"
@@ -18,8 +18,7 @@ concept:
     mlCode: "// Pruning removes low-impact weights\nconst pruned = await pruneModel(model, { sparsity: 0.5 }); // 50% of weights zeroed"
     tier: structural
 consequence:
-  narrative: "The optimized model drops from 45MB to 11MB. Load time on Dilan's device: 2.8 seconds. Accuracy loss: 0.3%. Amir exhales. NEON: 'Acceptable trade-off. Now every resistance node in Neon City can run Sentinel.'"
-  nextLessonTeaser: "Next: building the inference API so other resistance systems can call Sentinel"
+  narrative: "45MB becomes 11MB. Load time on Dilan's device: 2.8 seconds. Accuracy loss: 0.3%. Amir exhales. NEON: 'Acceptable trade-off. Now every resistance node in Neon City can run Sentinel.'"
 hints:
   - level: nudge
     content: "Quantization reduces float32 weights to float16 or uint8, halving or quartering the model size"
@@ -40,7 +39,7 @@ Forty-five megabytes. That is the model size. Dilan's device in District 4 takes
 </Dialogue>
 
 <Dialogue speaker="NEON">
-You have done this before. Every production web application trims its bundle — dead code elimination, tree-shaking, minification. A neural network is no different. Remove what the model does not need. Keep what it does.
+Dead code elimination, tree-shaking, minification. You perform these rituals on every bundle without being asked. Perform them on the network. It is hauling 45 megabytes, and most of that is precision no one can see.
 </Dialogue>
 
 A model that is too large to load is a model that does not exist in the field. Browser-based ML has hard constraints: network bandwidth, memory limits, cold start time. Optimization makes the difference between a usable tool and a tech demo.

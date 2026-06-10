@@ -20,7 +20,6 @@ concept:
     breaks: "OWASP checklist enumerates known web vulnerabilities. ML security adds adversarial examples, model extraction, training data poisoning, and prompt injection. Many ML attacks have no equivalent in the web checklist and exploit the model's learned behavior."
 consequence:
   narrative: "Elif's security audit passes all 24 checks. Model integrity verified with SHA-256 hashes. Input validation catches 99.7% of adversarial patterns. Update authentication requires multi-factor from authorized operators only. 'Hardened. Ship it.'"
-  nextLessonTeaser: "Next: disaster recovery, planning for the worst-case scenario"
 hints:
   - level: nudge
     content: "Start with an attack surface inventory: list every way an attacker could compromise the ML system"
@@ -35,6 +34,8 @@ keywords:
   - adversarial-defense
 ---
 
+During the stress test, the red team fed the anomaly detector a sequence of crafted sensor readings: each within physical bounds, each plausible on its own. The model watched a simulated cooling system fail and reported normal. That replay is pinned to the top of Elif's audit document.
+
 <Dialogue speaker="Elif Yilmaz">
 Before this goes to 47 sites, every attack surface gets reviewed. Model files: can someone swap in a tampered model? Input data: can adversarial sensor readings trick the system? Update channel: can an unauthorized party push a model update? Each one gets a control and a verification test.
 </Dialogue>
@@ -43,7 +44,7 @@ Before this goes to 47 sites, every attack surface gets reviewed. Model files: c
 The adversarial sensor incident from the stress test proved the point. Someone fed crafted readings that made the model ignore a cooling system failure. We cannot deploy without hardening against that class of attack.
 </Dialogue>
 
-You run OWASP security audits on web applications: check for XSS, verify CSRF tokens, enforce CSP headers, sanitize inputs. ML security hardening follows the same checklist discipline. Identify attack surfaces specific to ML (model tampering, adversarial inputs, data poisoning, unauthorized updates) and implement controls for each one.
+The discipline is the OWASP audit you know from web applications: check for XSS, verify CSRF tokens, enforce CSP headers, sanitize inputs. ML security hardening follows the same checklist approach with a different threat list: model tampering, adversarial inputs, data poisoning, unauthorized updates. Each one gets a control and a verification test.
 
 <LearningObjectives objectives={["Conduct a security audit for an edge ML deployment", "Implement model integrity verification using cryptographic hashes", "Build input validation that detects adversarial sensor readings", "Design secure model update channels with authentication and verification"]} />
 

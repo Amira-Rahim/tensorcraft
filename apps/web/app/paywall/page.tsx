@@ -96,7 +96,8 @@ export default function PaywallPage() {
           <p className="text-base sm:text-lg max-w-160 mx-auto text-text-muted font-sans leading-relaxed">
             You&rsquo;ve seen the bridge. Modules 2&ndash;11 are where you stop
             translating and start shipping &mdash; tensors, backprop, transfer
-            learning, and a capstone you run in production.
+            learning, and a capstone: a working browser-side ML system you
+            assemble piece by piece.
           </p>
           <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center">
             <PaywallCtaTracker>
@@ -213,7 +214,7 @@ export default function PaywallPage() {
             // ready when you are
           </p>
           <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-text-primary font-mono tracking-tight">
-            Pick a plan. Own it forever.
+            Ready for Module 2?
           </h2>
           <p className="text-base mb-10 text-text-muted font-sans max-w-130 mx-auto">
             Single theme, a bundle, or all five &mdash; no subscriptions, no

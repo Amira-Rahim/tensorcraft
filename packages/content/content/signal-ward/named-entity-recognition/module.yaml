@@ -2,7 +2,7 @@ slug: named-entity-recognition
 title: "Named Entity Recognition: Finding What Matters in the Noise"
 themeId: signal-ward
 order: 7
-description: "Dr. Karimi needs structured information from unstructured clinical notes: drug names, conditions, dosages buried in free text. You'll build NER models that identify and classify medical entities, culminating in a breakthrough moment where your model catches a drug interaction that three doctors missed."
+description: "Drug names, conditions, and dosages are buried in free text, and Dr. Karimi wants them structured, searchable, computable. The module builds up from token labels to BIO spans to a neural tagger, and ends with Mrs. Begum's chart: a warfarin-aspirin interaction, prescribed by two different specialists, that three doctors read past and the pipeline caught."
 lessonCount: 5
 prerequisites:
   - transformers-bert

@@ -7,7 +7,7 @@ order: 5
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "The ethics review reaches its climax. Dr. Karimi projects the fairness card on the screen. 'Twelve percent. That is the gap between how well your model works on attending physician notes and how well it works on night shift notes. Khalil, fix it or we do not deploy.' Khalil recognizes the pattern from cross-browser testing: 'It works in Chrome but breaks in Safari. Same code, different rendering engine. Same model, different writing style.'"
+  narrative: "The ethics review reaches its climax. Dr. Karimi projects the fairness card on the screen and lets the number sit there before she speaks. Khalil recognizes the pattern from cross-browser testing: it works in Chrome, it breaks in Safari, and nobody notices until a user files the bug."
   speaker: "Dr. Karimi"
 concept:
   explanation: "Performance disparity across demographic groups is like browser compatibility gaps: the system works well in one environment but fails in another. The remediation strategy is the same: identify the failure modes, build targeted fixes, and test across all environments."
@@ -20,14 +20,13 @@ concept:
     breaks: "Browser compatibility gaps are documented per feature with known shims. Performance disparity across patient subgroups is often hidden in aggregate metrics; the model can hit 95% overall accuracy while failing entirely for a 5% subgroup."
 consequence:
   narrative: "After augmentation and retraining, the disparity drops from 12% to 2.3%. Khalil presents the updated fairness card. Dr. Karimi studies it. 'Two point three percent. Not zero. Document the remaining gap in the model card. Ship it with an honest account of what we know and what we do not. That is responsible deployment.' The ethics committee votes unanimously to approve the pilot."
-  nextLessonTeaser: "Next module: capstone — deploying Diagnostic One to Signal Ward"
 hints:
   - level: nudge
     content: "Identify which data slices underperform, then augment training data for those specific groups"
   - level: guidance
     content: "Generate synthetic examples for underperforming groups, apply sample weights to prioritize them during training, and retrain"
   - level: solution
-    content: "Build a remediation pipeline: identify failing slices from the fairness audit, augment with paraphrased/transformed examples, apply inverse-frequency sample weights, retrain, re-audit, and document the remaining gap in a model card"
+    content: "Work in stages. 1) Pull the failing slices from the fairness audit. 2) Augment those slices with paraphrased and transformed examples. 3) Give rare groups more training influence: weight each sample by one over its group's frequency. 4) Retrain, re-audit, and write the remaining gap into the model card."
 keywords:
   - performance-disparity
   - browser-compatibility
@@ -39,11 +38,19 @@ keywords:
 ---
 
 <Dialogue speaker="Dr. Karimi">
-Twelve percent. That is the gap. Your model classifies attending physician notes at 94% accuracy. Night shift nurse notes, written by staff who predominantly speak English as a second language, get 82%. Same patients. Same conditions. Different accuracy. Khalil, this is not a performance issue. It is an equity failure.
+Twelve percent. That is the gap. Your model classifies attending physician notes at 94% accuracy. Night shift nurse notes, written by staff who predominantly speak English as a second language, get 82%. Same patients. Same conditions. Different accuracy.
 </Dialogue>
 
 <Dialogue speaker="Khalil">
-I have seen this before. It is browser compatibility. You build a beautiful interface in Chrome, ship it, and discover it is broken in Safari. Same code, different rendering engine. Same model, different writing style. The fix is the same: identify the failure modes, build targeted polyfills, and test across every environment. Not just the one you developed in.
+Overall accuracy is still 91%. That's above the bar we agreed for the pilot.
+</Dialogue>
+
+<Dialogue speaker="Dr. Karimi">
+The bar was never an average. Go tell the night shift their patients get the leftover points. This is not a performance issue, Khalil. It is an equity failure, and it does not deploy until it is fixed.
+</Dialogue>
+
+<Dialogue speaker="Khalil">
+Then I've seen this shape before. Browser compatibility. You build a beautiful interface in Chrome, ship it, and discover it's broken in Safari. Same code, different rendering engine. Same model, different writing style. The fix is the same: identify the failure modes, build targeted polyfills, and test across every environment. Not just the one you developed in.
 </Dialogue>
 
 The 12% disparity is Diagnostic One's cross-browser bug. The model was trained primarily on attending physician notes, the "Chrome" of clinical writing. Night shift notes, ICU shorthand, and Spanish-language records are the "Safari," "Firefox," and "mobile" of the dataset. The remediation strategy follows the same playbook: identify which environments fail, build targeted fixes (data augmentation instead of polyfills), test across all environments, and document any remaining gaps.

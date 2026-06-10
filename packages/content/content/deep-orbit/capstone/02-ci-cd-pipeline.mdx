@@ -10,7 +10,7 @@ context:
   narrative: "Nazari insists on automated testing. 'I am not deploying a signal classifier that was tested by hand. Automate it — every commit, every push, every merge.' Demir builds the CI/CD pipeline."
   speaker: "Chief Nazari"
 concept:
-  explanation: "CI/CD for ML systems automates testing and deployment — the same GitHub Actions workflow you use for web apps, extended with model validation steps."
+  explanation: "CI/CD for ML extends the test-build-deploy workflow with model gates: accuracy thresholds, speed benchmarks, and a memory budget that blocks the merge."
   bridge:
     feTitle: "GitHub Actions CI"
     feCode: "on: push → npm test → npm build → deploy // automated web app pipeline"
@@ -44,7 +44,7 @@ Manual testing is how systems fail in production. You will automate everything: 
 Same as any web app CI: GitHub Actions, test on push, deploy on merge to main. I just need to add model-specific checks: accuracy thresholds, inference speed benchmarks, memory budget validation.
 </Dialogue>
 
-Demir is one assumption away from being right. The workflow engine transfers whole; the belief that a green build tested the artifact you actually ship does not — and that assumption is about to cost forty minutes.
+Demir is one assumption away from being right. The workflow engine transfers whole; the belief that a green build tested the artifact you actually ship does not, and that assumption is about to cost forty minutes.
 
 <LearningObjectives objectives={["Extend a standard CI/CD pipeline with ML-specific validation steps", "Implement model accuracy gates that block deployment on regression", "Add inference performance benchmarks as CI checks", "Configure automated deployment with rollback on failure"]} />
 

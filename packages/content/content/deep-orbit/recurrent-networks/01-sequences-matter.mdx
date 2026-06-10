@@ -10,7 +10,7 @@ context:
   narrative: "The signals show a rhythm — a pattern that spans dozens of time steps. The feedforward network only sees one snapshot at a time. Farah says they need a model with memory."
   speaker: "Dr. Farah"
 concept:
-  explanation: "In sequences, order matters — just like React list rendering depends on key order to maintain correct state."
+  explanation: "In sequences, order is part of the meaning: shuffle the readings and the values survive but the signal dies."
   bridge:
     feTitle: "React List Keys"
     feCode: "items.map(item => <Item key={item.id} />)"
@@ -45,7 +45,7 @@ Memory? You mean like... state that persists between inputs? That's just a reduc
 
 You've seen this problem in React. Render a list without stable keys and React can't track which items moved, were added, or were removed. Order carries information. The same goes for signals: [rising, falling, rising] tells a different story than [falling, rising, rising], even though the individual values are identical.
 
-<LearningObjectives objectives={["Understand why order matters in sequential data — shuffling destroys information", "Recognize the limitation of feedforward networks for temporal data", "Prepare sequential input by creating time-step windows from raw signals", "Connect sequence processing to React list rendering and state management"]} />
+<LearningObjectives objectives={["Understand why order matters in sequential data — shuffling destroys information", "Recognize the limitation of feedforward networks for temporal data", "Prepare sequential input by creating time-step windows from raw signals"]} />
 
 ## Why Feedforward Networks Fail at Sequences
 

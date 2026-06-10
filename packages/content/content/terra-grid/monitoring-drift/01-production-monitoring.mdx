@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "Sentry surfaces unhandled exceptions and stack traces. Model monitoring tracks prediction distributions, feature distributions, and proxy metrics for accuracy when ground-truth labels are delayed. Most model failures throw zero exceptions."
 consequence:
-  narrative: "The monitoring dashboard lights up. Hassan can see every sector's model health in real time."
-  nextLessonTeaser: "Next: detecting when input data starts to change"
+  narrative: "Dashboards light up sector by sector. For the first time, Hassan can see every model's health in real time."
 hints:
   - level: nudge
     content: "ModelMonitor.record() should log per-prediction latency and confidence, the ML counterparts of response time and error rate"
@@ -43,7 +42,7 @@ We have 847 models running in the field. If one starts producing garbage predict
 Monitoring dashboard initialized. 50,247 inferences logged in the last hour. Average latency: 14ms. Average confidence: 0.91.
 </Dialogue>
 
-You would never deploy a web application without Sentry, DataDog, or at least basic error tracking. You monitor response times, error rates, and throughput. Production ML models need the same observability, but instead of HTTP status codes you track prediction confidence, inference latency, and output distributions.
+What is the Sentry of a model fleet? Web apps get observability on day one: response times, error rates, throughput. Production ML needs the same discipline with one complication, which is that a failing model throws no exceptions. So instead of HTTP status codes, the dashboard tracks prediction confidence, inference latency, and output distributions.
 
 <LearningObjectives objectives={["Design a model monitoring system using the same patterns as application monitoring", "Track the key metrics of production ML: latency, confidence, throughput, and distribution", "Build aggregated health dashboards across a fleet of edge devices", "Identify the difference between model errors and system errors"]} />
 
@@ -116,6 +115,8 @@ class ModelMonitor {
   }
 }`}
 </CodeBlock>
+
+A note on the percentile metrics, because they carry the dashboard: p95 is the latency 95% of requests beat; the slowest 5% live above it. p50 is the median experience, and p99 catches the stragglers that averages politely hide.
 
 ## Dashboard Aggregation
 

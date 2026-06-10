@@ -7,7 +7,7 @@ order: 1
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Amir pulls up a stolen Meridian schematic on the NeuralCore holotable. It shows how their drones represent detected targets: not as pixel masks, but as simple rectangles. 'Every detection system starts with a box,' he says. 'And you already know how boxes work.'"
+  narrative: "Amir pulls up a stolen Meridian schematic on the NeuralCore holotable. It shows how their drones represent detected targets: not as pixel masks, but as simple rectangles. 'Every detection system starts with a box,' he says. 'Theirs. Ours. All of them.'"
   speaker: "Amir"
 concept:
   explanation: "Object detection models locate objects by predicting bounding boxes, rectangular regions defined by coordinates. This is identical to how CSS position: absolute and getBoundingClientRect() define element locations on a page."
@@ -19,7 +19,6 @@ concept:
     tier: identity
 consequence:
   narrative: "Noor stares at the schematic. 'So a detection model is basically returning a DOMRect for every object it finds?' Amir nods. 'Meridian spent billions building what is, at its core, a very expensive getBoundingClientRect().'"
-  nextLessonTeaser: "Next: anchor boxes. Pre-defined detection regions that speed up the search"
 hints:
   - level: nudge
     content: "A bounding box is just an object with x, y, width, and height, same as a DOMRect"
@@ -48,7 +47,7 @@ The same four numbers. X, Y, width, height. The difference is how you get them.
 
 Call `getBoundingClientRect()` on a tooltip and you get `{ x: 120, y: 80, width: 60, height: 40 }`. Run a detection model on a surveillance frame and you get `[0.19, 0.17, 0.09, 0.08]`. Same rectangle, same four numbers, one difference: the model's coordinates are normalized to the 0-1 range instead of pixels. Every object the network finds in an image comes back as one of these rectangles, a **bounding box**.
 
-<LearningObjectives objectives={["Understand bounding boxes as the fundamental representation of object locations", "Convert between pixel coordinates and normalized coordinates", "Calculate bounding box area and center points", "Recognize the direct parallel between DOMRect and ML bounding boxes"]} />
+<LearningObjectives objectives={["Understand bounding boxes as the fundamental representation of object locations", "Convert between pixel coordinates and normalized coordinates", "Calculate bounding box area and center points"]} />
 
 ## Bounding Boxes: DOMRects for Images
 
@@ -57,8 +56,7 @@ Call `getBoundingClientRect()` on a tooltip and you get `{ x: 120, y: 80, width:
 A detection model outputs one rectangle per object it finds, plus a label and a confidence score for each.
 
 <CodeBlock language="typescript" title="bounding-box-basics.ts">
-{`// Frontend: you already know this
-// element.getBoundingClientRect() returns:
+{`// Frontend: element.getBoundingClientRect() returns:
 // { x: 120, y: 45, width: 200, height: 150, top, right, bottom, left }
 
 // ML: a bounding box is the same idea

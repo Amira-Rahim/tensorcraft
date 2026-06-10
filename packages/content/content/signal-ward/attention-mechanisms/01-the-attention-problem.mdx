@@ -20,7 +20,6 @@ concept:
     breaks: "CSS :focus + tabIndex moves focus to one element at a time. Attention weights are continuous over all tokens and computed per query: every token attends to every other token in parallel, not as a single focus point."
 consequence:
   narrative: "Khalil realizes that weighting matters: not every word in a clinical note is equally important."
-  nextLessonTeaser: "Next: self-attention, where every word learns to attend to every other word."
 hints:
   - level: nudge
     content: "tf.softmax turns your raw scores into weights that sum to 1; compute the scores first"

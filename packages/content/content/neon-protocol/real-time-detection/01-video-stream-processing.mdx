@@ -20,7 +20,6 @@ concept:
     breaks: "`getUserMedia` returns a `MediaStream`, a continuous source of opaque encoded video frames. `tf.browser.fromPixels(video)` extracts a single frame as a `[H, W, 3]` uint8 tensor; you still need to resize, normalize (often `(x/127.5) - 1` or `x/255`), and add a batch dimension before `model.predict`. The stream is the input pipe; the tensor is what the model actually consumes. Skip the preprocessing and the model sees the wrong distribution."
 consequence:
   narrative: "The test feed shows three Meridian drones circling District 7. Protocol Sentinel tags each one. Noor grins. Then the frame rate drops to 4fps. NEON: 'Congratulations. You can detect drones. Slowly.'"
-  nextLessonTeaser: "Next: running inference on every frame without dropping below 30fps"
 hints:
   - level: nudge
     content: "getUserMedia returns a MediaStream; attach it to a video element's srcObject"
@@ -37,7 +36,7 @@ keywords:
 ---
 
 <Dialogue speaker="Noor">
-It is working. It is actually seeing them. Three drones over District 7, tagged and tracked in real-time. In the browser. No server. No Meridian infrastructure. Just JavaScript.
+It is working. It is actually seeing them. Three drones over District 7, tagged and tracked in real-time, in a browser tab, with no server and nothing of Meridian's anywhere in the stack.
 </Dialogue>
 
 <Dialogue speaker="NEON">

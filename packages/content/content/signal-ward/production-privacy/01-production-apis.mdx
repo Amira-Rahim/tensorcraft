@@ -7,7 +7,7 @@ order: 1
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "The ethics review begins. Khalil presents Diagnostic One's capabilities, but the committee chair interrupts: 'How does a clinician actually use this in a trauma bay?' Khalil turns to the whiteboard. 'It is an API, the same contract as any REST endpoint. POST clinical text, GET structured predictions. But we have a 200-millisecond SLA, and if we break it, lives are on the line.'"
+  narrative: "The ethics review begins. Khalil presents Diagnostic One's capabilities, but the committee chair interrupts: 'How does a clinician actually use this in a trauma bay?' Khalil turns to the whiteboard and sketches the contract he knows: POST clinical text, GET structured predictions. The chair stops him at the second box. 'A trauma bay doesn't retry on a timeout. What happens at millisecond 201?'"
   speaker: "Khalil"
 concept:
   explanation: "An ML serving API follows the exact same pattern as a REST API with SLA guarantees (request validation, processing, and response formatting), but the processing step is neural network inference instead of a database query, and the SLA covers latency budgets, error handling, and graceful degradation."
@@ -19,7 +19,6 @@ concept:
     tier: identity
 consequence:
   narrative: "The inference API processes its first clinical query in 43 milliseconds. The ethics committee watches as Dr. Karimi types a question and receives a structured, cited response. Imran checks the error handler: a malformed request returns a clean 400 with a descriptive message. The chair nods. 'The interface is solid. Now show me what happens with patient data.'"
-  nextLessonTeaser: "Next: HIPAA compliance — protecting patient data in every layer of the pipeline"
 hints:
   - level: nudge
     content: "Order the handler like middleware: validateRequest first, model.predict wrapped in a timeout, then shape the JSON response"

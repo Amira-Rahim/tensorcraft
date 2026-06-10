@@ -24,7 +24,7 @@ export function CurriculumPreview() {
           return (
             <div key={slug}>
               <h2 className="text-2xl sm:text-3xl font-bold text-center mb-3 text-text-primary font-mono tracking-tight">
-                What You&rsquo;re Unlocking
+                What&rsquo;s in a Theme
               </h2>
               <p className="text-center text-sm text-text-muted font-mono uppercase tracking-wider mb-10">
                 // every module in {theme.displayName}, lesson by lesson

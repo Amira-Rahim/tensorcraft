@@ -20,7 +20,6 @@ concept:
     breaks: "Random color generators sample from a uniform RGB box. Learned probability distributions place mass in arbitrary regions of high-dimensional space and sampling from them requires methods (rejection, MCMC, ancestral) that are non-trivial."
 consequence:
   narrative: "Samir realizes that every dataset has a hidden shape, a distribution, and learning that shape is the first step to generating new data."
-  nextLessonTeaser: "Next: how to actually draw samples from these distributions"
 hints:
   - level: nudge
     content: "Math.random() samples a flat line: every value between 0 and 1 equally likely. tf.randomNormal([100], 0, 1) samples a bell curve instead"
@@ -41,7 +40,7 @@ Before you can create, you need to understand the shape of what already exists. 
 </Dialogue>
 
 <Dialogue speaker="MUSE">
-I ran a histogram over your palette archive last night. Five years of exhibitions, and the hues pile up in two lumps: one around 20 degrees, one around 210. What if I sampled from the valley between them? We'd get palettes the collective has never touched.
+What if I sampled from the valley between your two favorite hues? I ran a histogram over the palette archive last night: five years of exhibitions piling up in two lumps, one near 20 degrees, one near 210, and almost nothing between. That valley is territory the collective has never touched.
 </Dialogue>
 
 When you write `Math.random()`, you get a uniform distribution: every value between 0 and 1 is equally likely. But real-world data almost never looks like that. Heights cluster around an average. Colors in a sunset concentrate in warm hues. Brushstroke widths follow patterns. Understanding these distributions is the foundation of generation.

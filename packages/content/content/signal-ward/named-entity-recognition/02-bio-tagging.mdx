@@ -10,7 +10,7 @@ context:
   narrative: "Vikram introduces BIO tagging to handle multi-word entities like 'rheumatoid arthritis', where simple per-token labels fall apart."
   speaker: "Vikram"
 concept:
-  explanation: "BIO tagging marks entity boundaries using B (beginning), I (inside), and O (outside), like HTML opening and closing tags that define where elements start and end."
+  explanation: "BIO tagging marks entity boundaries using B (beginning), I (inside), and O (outside), so multi-word entities like 'rheumatoid arthritis' survive token-by-token prediction as a single span."
   bridge:
     feTitle: "HTML Opening/Closing Tags"
     feCode: "<span class='condition'>rheumatoid arthritis</span> <!-- tags mark boundaries -->"
@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "HTML tags are explicit author-written boundaries. BIO tags are predicted per-token (Begin, Inside, Outside) and inconsistent BIO sequences (I-PER following B-LOC) are a common model failure; post-processing must repair invalid tag sequences."
 consequence:
-  narrative: "The model can now correctly identify multi-word entities, distinguishing 'rheumatoid arthritis' as one condition from two adjacent single-word entities."
-  nextLessonTeaser: "Next: medical-specific entity types and the challenges of clinical vocabulary."
+  narrative: "'Rheumatoid arthritis' comes back as one condition now, not two strangers sharing a sentence. Vikram queues the harder test: a model that has to predict the tags itself."
 hints:
   - level: nudge
     content: "B marks the first token of an entity, I marks continuation tokens, like an opening tag and its content"
@@ -44,10 +43,10 @@ In HTML, I'd wrap them in a single tag: `<span class="condition">rheumatoid arth
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-Same shape, one difference that bites. Your span tags are ground truth because you wrote them. BIO tags are predictions, made one token at a time, and the model will happily emit a sequence no author could: an I-DRUG right after a B-CONDITION. Post-processing has to repair invalid sequences before you trust a span. B begins an entity, I continues it, O is outside; the entity ends at the next O or B.
+Same shape, one difference you'll have to engineer around. Your span tags are ground truth because you wrote them. BIO tags are predictions, made one token at a time, and the model will happily emit a sequence no author could: an I-DRUG right after a B-CONDITION. Post-processing has to repair invalid sequences before you trust a span. B begins an entity, I continues it, O is outside; the entity ends at the next O or B.
 </Dialogue>
 
-<LearningObjectives objectives={["Understand the BIO (Beginning, Inside, Outside) tagging scheme", "Map BIO tags to the familiar concept of HTML opening and closing tags", "Convert entity annotations into BIO tag sequences", "Decode BIO sequences back into entity spans"]} />
+<LearningObjectives objectives={["Understand the BIO (Beginning, Inside, Outside) tagging scheme", "Map BIO tags to the familiar concept of HTML opening and closing tags", "Convert entity annotations into BIO tag sequences", "Decode BIO sequences back into entity spans", "Repair invalid predicted tag sequences before extracting spans"]} />
 
 ## Opening and Closing Tags for NLP
 

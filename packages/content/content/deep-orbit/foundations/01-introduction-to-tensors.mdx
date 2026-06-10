@@ -10,7 +10,7 @@ context:
   narrative: "The Archimedes receives a mysterious data stream from deep space."
   speaker: "Commander Mirza"
 concept:
-  explanation: "Tensors are multi-dimensional arrays — the fundamental data structure of machine learning."
+  explanation: "Tensors are multi-dimensional arrays: the fundamental data structure of machine learning."
   bridge:
     feTitle: "TypedArray"
     feCode: "const arr = new Float32Array([1, 2, 3])"
@@ -23,8 +23,6 @@ consequence:
 hints:
   - level: nudge
     content: "A Float32Array stores numbers flat and contiguous in memory — tf.tensor() starts from that same layout"
-  - level: guidance
-    content: "Use tf.tensor() to create a tensor from an array"
   - level: solution
     content: "const t = tf.tensor([1, 2, 3])"
 keywords:
@@ -53,7 +51,7 @@ You've worked with arrays your entire career: DOM elements, API responses, pixel
 
 ## What Is a Tensor?
 
-A tensor is a multi-dimensional array with opinions. The numbers sit in contiguous memory exactly like a `Float32Array` — what's new is everything wrapped around them.
+A tensor is a multi-dimensional array with opinions. The numbers sit in contiguous memory exactly like a `Float32Array`; what's new is everything wrapped around them.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -83,7 +81,7 @@ One difference to internalize early: you can iterate a `Float32Array` directly, 
 
 ## The Part Garbage Collection Won't Do For You
 
-Here's the lifecycle promise from the top of the lesson, paid in full. When the WebGL backend is active, a tensor's numbers live in GPU texture memory — and the JavaScript garbage collector cannot see GPU memory. Drop your last reference to a tensor and the JS wrapper gets collected; the texture it owned does not. Create tensors in a loop and you have written a memory leak in a language you thought couldn't leak.
+Here's the lifecycle promise from the top of the lesson, paid in full. When the WebGL backend is active, a tensor's numbers live in GPU texture memory, and the JavaScript garbage collector cannot see GPU memory. Drop your last reference to a tensor and the JS wrapper gets collected; the texture it owned does not. Create tensors in a loop and you have written a memory leak in a language you thought couldn't leak.
 
 Two tools fix this:
 
@@ -126,13 +124,13 @@ Now it's your turn. Create your first tensor from a JavaScript array.
   tier="identity"
 />
 
-<KeyTakeaways takeaways={["What a tensor adds over a Float32Array: shape tracking, GPU-backed math, and a memory lifecycle you manage yourself", "TensorFlow.js tensors are created from regular JavaScript arrays; convert back with .array()", "Tensor rank = number of dimensions (scalar=0, vector=1, matrix=2)", "The GC can't see GPU memory: dispose() what you keep, tf.tidy() everything else, and watch tf.memory().numTensors"]} />
+<KeyTakeaways takeaways={["What a tensor adds over a Float32Array: shape tracking, GPU-backed math, and a memory lifecycle you manage yourself", "TensorFlow.js tensors are created from regular JavaScript arrays; convert back with .array()", "Tensor rank = number of dimensions (scalar=0, vector=1, matrix=2)", "The GC can't see GPU memory: dispose() what you keep, tf.tidy() everything else", "tf.memory().numTensors is your leak detector — if it climbs while the app idles, something is escaping your tidy()"]} />
 
 > **DISPATCH archive · field intercept #02-T:** Yara's collective uses the same shape contract for image latents in Nova Canvas: `[batch, channels, h, w]`. Different domain, same primitive. The tensor is the lingua franca; the meaning is the lesson.
 
 <Epilogue>
 
-Demir loads the first kilobyte of the stream into a tensor and prints its rank, just to feel the shape of the thing. Rank 2. Rows and columns. Whatever is out in Sector 7-G, it isn't shouting noise — it's sending tables.
+Demir loads the first kilobyte of the stream into a tensor and prints its rank, just to feel the shape of the thing. Rank 2: rows and columns. Whatever is out in Sector 7-G, it isn't shouting noise — it's sending tables.
 
 <Dialogue speaker="ARIA">
 Observation: my 4,096 rules assumed the stream was a message. You have just treated it as data. I will be watching what that buys you, Ensign.

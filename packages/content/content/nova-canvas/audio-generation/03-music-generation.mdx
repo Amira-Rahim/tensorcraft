@@ -20,7 +20,6 @@ concept:
     breaks: "setTimeout sequences fire fixed callbacks at fixed intervals. Sequence prediction models generate the next token conditioned on prior tokens. The resulting music is structured by what the model learned about training data, not by an authored timeline."
 consequence:
   narrative: "A melody emerges, each note predicted from the ones before it. The phrasing follows the training data's habits, and somehow that sounds like intention. Erdem pauses his optimization work to listen."
-  nextLessonTeaser: "Next: synchronizing audio and visual generation"
 hints:
   - level: nudge
     content: "Each MIDI note is an integer 0-127; feed the model a window of them and its output is a distribution over the 128 possible next notes"
@@ -36,11 +35,11 @@ keywords:
 ---
 
 <Dialogue speaker="Rohan">
-A melody is a sequence of events with timing constraints. You have been scheduling sequences your entire career: animation frames, API polling, debounced input handlers. Music generation is setTimeout with taste.
+A melody is a sequence of events with timing constraints, which makes it the most familiar object in this whole theme: animation frames, API polling, debounced input handlers. Music generation is setTimeout with taste.
 </Dialogue>
 
 <Dialogue speaker="MUSE">
-I do not compose. I predict. Given these notes, what note is most likely to follow? The same question autocomplete asks about words, I ask about pitch.
+Ask me for a melody and what I actually produce is 128 probabilities. After [60, 62, 64, 65], I'd give note 67 a 0.31 and note 64 a 0.22, and then we roll the dice. It's the question autocomplete asks about words, asked about pitch instead. Whether that counts as composing is your call, not mine.
 </Dialogue>
 
 A note is one integer. MIDI gives you 128 of them; middle C is 60, and every melody you've ever hummed is a short list of small numbers with timestamps. Firing timestamped events is old ground: `setTimeout`, `setInterval`, `requestAnimationFrame`. The ML twist is that nobody hardcodes the list. A model predicts each next note from the notes that came before.
@@ -167,4 +166,4 @@ Build a melody generator that predicts the next note from a sliding window of pr
 
 <Exercise slug="generate-melody" />
 
-<KeyTakeaways takeaways={["Sample from the predicted note distribution instead of taking argmax: greedy decoding loops the same phrase", "MIDI notes map to integers, making them natural inputs for neural networks", "Sliding windows over note sequences create training data identical to time-series forecasting", "Web Audio API scheduling (AudioContext.currentTime) provides sample-accurate playback timing"]} />
+<KeyTakeaways takeaways={["Sample from the predicted note distribution instead of taking argmax: greedy decoding loops the same phrase", "MIDI notes map to integers, making them natural inputs for neural networks", "Sliding windows over note sequences create training data identical to time-series forecasting", "Web Audio API scheduling (AudioContext.currentTime) provides sample-accurate playback timing", "Clamp generated notes to a playable range (36-96): regression outputs drift off the keyboard"]} />

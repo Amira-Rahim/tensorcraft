@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "DevTools element highlighting shows the literal target you queried. Attention heatmaps visualize learned weights but interpretation is contested: high attention does not mean causal influence on the output, only that the weight is high."
 consequence:
-  narrative: "Karimi can now see why Diagnostic One makes its decisions, building trust in the system."
-  nextLessonTeaser: "Next: applying attention specifically to clinical vocabulary."
+  narrative: "The heatmaps are up and Karimi reads them like an X-ray. The first bright stripe lands on methotrexate. The second lands on the word 'for', and nobody in the room can say why."
 hints:
   - level: nudge
     content: "Extract the attention weights matrix and render it as a grid"
@@ -35,7 +34,7 @@ keywords:
   - explainability
 ---
 
-<Dialogue speaker="Dr. Zahra Karimi">
+<Dialogue speaker="Dr. Karimi">
 I can't trust a system I can't understand. If Diagnostic One flags a drug interaction, I need to see why: which words in the clinical note drove that decision.
 </Dialogue>
 
@@ -120,6 +119,12 @@ Common patterns in clinical attention heatmaps:
 When you see "methotrexate" with a bright vertical stripe, every other word is attending to it. That's the model recognizing it as the anchor of the sentence, exactly what a clinician would do.
 </Dialogue>
 
+<Dialogue speaker="Dr. Karimi">
+Then explain the second stripe to me. Nearly as much weight is parked on the word "for". What clinical anchor is that?
+</Dialogue>
+
+Nobody answers. The heatmap doesn't either.
+
 ## Challenge
 
 Visualize attention weights between clinical tokens as a heatmap.
@@ -139,4 +144,4 @@ An attention heatmap visualizes the `[seq_len, seq_len]` softmax matrix from one
 **Aggregation tricks** (rollout, attention flow) try to combine heads/layers into one map. Each adds its own assumptions. Triangulate with multiple interpretation methods (attention + integrated gradients + saliency).
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["Attention weights form an interpretable matrix showing model focus", "Heatmaps reveal which token pairs the model connects", "Visualization builds clinical trust — doctors can verify model reasoning", "Common patterns include diagonal, vertical stripes, and block structures"]} />
+<KeyTakeaways takeaways={["Attention weights form a seqLen x seqLen matrix you can render directly as a heatmap", "Common patterns include diagonal, vertical stripes, and block structures", "A heatmap shows where weight went, not proof of causal reasoning: treat it as one interpretability signal among several"]} />

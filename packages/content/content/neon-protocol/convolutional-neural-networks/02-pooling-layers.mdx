@@ -10,7 +10,7 @@ context:
   narrative: "The convolution output is massive: 224x224 feature maps for each of 32 kernels. Amir shakes his head: 'Same wall we hit at Meridian. Downsample. srcset logic: serve the smaller image, keep the details that matter.'"
   speaker: "Amir"
 concept:
-  explanation: "Pooling reduces the spatial dimensions of feature maps by summarizing local regions, just like srcset delivers smaller responsive images that preserve key visual information."
+  explanation: "Pooling reduces the spatial dimensions of feature maps by summarizing local regions: each 2x2 window collapses to a single value, so the map shrinks by 75% while the strongest activations survive."
   bridge:
     feTitle: "srcset Responsive Images"
     feCode: "<img srcset='photo-800w.jpg 800w, photo-400w.jpg 400w' sizes='(max-width: 600px) 400px, 800px' />"
@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "srcset picks one image variant based on viewport; the alternatives still exist. Max pooling discards information permanently: only the strongest activation in each region survives forward. The downsampled tensor cannot reconstruct the original."
 consequence:
-  narrative: "The pooled feature maps are a quarter of the size but retain the sharpest activations. NEON calculates the memory savings: 'From 6.4 million values to 1.6 million. Your browser will thank you.'"
-  nextLessonTeaser: "Next: stacking conv and pool layers into a complete CNN architecture"
+  narrative: "A quarter of the size, sharpest activations intact: the pooled feature maps roll across the display. NEON calculates the memory savings: 'From 6.4 million values to 1.6 million. Your browser will thank you.'"
 hints:
   - level: nudge
     content: "Max pooling takes the maximum value from each non-overlapping region. Think of it as keeping only the strongest signal."
@@ -44,9 +43,9 @@ At Meridian, our first surveillance model choked because the feature maps were t
 So it is like serving a 400px image instead of an 800px one via srcset? You lose resolution but the content is still recognizable.
 </Dialogue>
 
-Close, but srcset is gentler than this. With srcset, the 800px original still sits on the server; the browser just picked a smaller variant. Max pooling has no original to fall back on. Only the strongest activation in each region moves forward, and the rest is discarded permanently. The downsampled tensor cannot reconstruct what it threw away. The two main types are max pooling (keep the strongest activation) and average pooling (keep the mean); max is far more common because strong activations usually signal important features.
+Srcset is gentler than that. The 800px original still sits on the server; the browser just picked a smaller variant. Max pooling has no original to fall back on. Only the strongest activation in each region moves forward, and the rest is discarded permanently; the downsampled tensor cannot reconstruct what it threw away. The two main types are max pooling (keep the strongest activation) and average pooling (keep the mean); max is far more common because strong activations usually signal important features.
 
-<LearningObjectives objectives={["Understand why spatial downsampling is necessary in CNNs", "Implement max pooling and average pooling from scratch", "Connect responsive image downsampling (srcset) to feature map pooling", "Calculate output dimensions after pooling operations"]} />
+<LearningObjectives objectives={["Understand why spatial downsampling is necessary in CNNs", "Implement max pooling and average pooling from scratch", "Calculate output dimensions after pooling operations"]} />
 
 ## Why Downsample?
 

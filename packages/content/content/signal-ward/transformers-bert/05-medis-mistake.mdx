@@ -8,7 +8,7 @@ estimatedMinutes: 30
 difficulty: advanced
 context:
   narrative: "MEDI flags a resolved condition as active — a dangerous error that forces the team to confront model limitations, failure modes, and the gap between accuracy metrics and clinical safety."
-  speaker: "Dr. Zahra Karimi"
+  speaker: "Dr. Karimi"
 concept:
   explanation: "Models can hallucinate or misclassify when they encounter edge cases, temporal reasoning gaps, or distributional shifts; understanding failure modes is as critical as understanding architecture."
   bridge:
@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "A stale cache serves data the system once knew was correct. Model hallucinations are confidently generated outputs the model never had; the model invents plausible-sounding text from patterns, not from any cached source. There is no underlying 'correct' value to refresh."
 consequence:
-  narrative: "The team implements confidence thresholds, negation detection, and human-in-the-loop safeguards, turning MEDI's failure into a safer system."
-  nextLessonTeaser: "Next module: Named Entity Recognition — extracting structured information from unstructured clinical text."
+  narrative: "Patient 2847-R never sees the insulin review. MEDI's mistake costs nothing this time, and buys the system its first real safeguards: confidence floors, negation checks, a human gate."
 hints:
   - level: nudge
     content: "High confidence is not evidence the prediction is current: scan for negation words like 'resolved' or 'denied' before trusting the label"
@@ -36,11 +35,13 @@ keywords:
   - human-in-the-loop
 ---
 
+Day 30 of the pilot. Eleven thousand notes processed without incident, and the team has mostly stopped watching the alert feed. Then:
+
 <Dialogue speaker="MEDI">
 Alert: Priority One. Patient 2847-R: Active condition identified. Type 2 diabetes mellitus. Recommending insulin protocol review.
 </Dialogue>
 
-<Dialogue speaker="Dr. Zahra Karimi">
+<Dialogue speaker="Dr. Karimi">
 Pull the full note. Now.
 </Dialogue>
 
@@ -48,7 +49,7 @@ Pull the full note. Now.
 Here it is: "History of Type 2 diabetes mellitus, resolved following bariatric surgery, March 2024. Current A1C 5.2%, within normal range. No diabetic medications."
 </Dialogue>
 
-<Dialogue speaker="Dr. Zahra Karimi">
+<Dialogue speaker="Dr. Karimi">
 Your system just recommended an insulin review for a patient whose diabetes resolved eight months ago. If a nurse follows that recommendation without reading the full note, we're giving insulin to someone who doesn't need it. That's a hypoglycemic event waiting to happen.
 </Dialogue>
 
@@ -252,7 +253,7 @@ console.log(clearResult);
 // → { action: 'auto-accept' }`}
 </CodeBlock>
 
-<Dialogue speaker="Dr. Zahra Karimi">
+<Dialogue speaker="Dr. Karimi">
 So the system doesn't just give an answer. It tells me how confident it is, whether it detected conflicting signals, and whether a human should verify. That's the kind of system I can trust.
 </Dialogue>
 

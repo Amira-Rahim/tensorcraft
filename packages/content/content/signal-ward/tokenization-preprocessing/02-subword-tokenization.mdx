@@ -10,7 +10,7 @@ context:
   narrative: "Vikram explains that some words, especially medical terms, need to be broken into smaller pieces to handle the vast vocabulary of clinical language."
   speaker: "Vikram"
 concept:
-  explanation: "Subword tokenization (BPE, WordPiece) breaks rare words into known sub-units. 'Cardiology' becomes ['cardio', '##logy']. Just like URL route parsing extracts meaningful segments from a path, subword tokenization extracts meaningful morphemes from words."
+  explanation: "Subword tokenization (BPE, WordPiece) breaks rare words into known sub-units. 'Cardiology' becomes ['cardio', '##logy'], so a medical term the model has never seen still decomposes into pieces it already knows."
   bridge:
     feTitle: "Route Parsing"
     feCode: "'/patients/:id/records'.match(/:([a-z]+)/g)"
@@ -20,7 +20,6 @@ concept:
     breaks: "Route parsing splits URLs at known delimiters (`/`, `?`). Subword tokenizers (BPE, WordPiece) learn merge rules from a training corpus; the same word tokenizes differently across model versions ('chatgpt' is 1 token in GPT-4, 3 tokens in earlier vocab). There is no canonical tokenization; you must pin the tokenizer to your model version."
 consequence:
   narrative: "Diagnostic One can now handle medical terminology it hasn't seen before by breaking words into known sub-parts."
-  nextLessonTeaser: "Next: handling the specific challenges of medical abbreviations."
 hints:
   - level: nudge
     content: "Start with the longest known subword that matches the beginning of the word."
@@ -35,8 +34,6 @@ keywords:
   - morphemes
 ---
 
-> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
-
 <Dialogue speaker="Vikram">
 Our vocabulary can't contain every medical term; there are hundreds of thousands. But "cardiology" is just "cardio" plus "logy." If the model knows the parts, it can understand the whole.
 </Dialogue>
@@ -46,12 +43,14 @@ Like route parsing. /patients/:id/records. I break the path into segments and ea
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-Almost. Routes split on slashes you put there. The tokenizer had to *learn* its merge rules from a corpus, and nothing guarantees it cuts where a morphology textbook would. Same word, different vocab version, different tokens. Pin the tokenizer to the model version or your inputs silently change. That's the part that bites you in production.
+That one actually holds. Segments compose, position carries meaning, and you can parse a path you've never seen because the pieces are known. The difference is who drew the boundaries: you put the slashes in the URL, but the tokenizer *learned* its merge rules from a corpus. Same word, different vocab version, different tokens. So pin the tokenizer to the model version and your inputs stay stable.
 </Dialogue>
 
 A subword tokenizer breaks "electrocardiogram" into `["electro", "##cardio", "##gram"]`. Each piece carries meaning, and each piece is in the vocabulary even when the full word is not.
 
-<LearningObjectives objectives={["Understand why subword tokenization outperforms word-level tokenization", "Implement a greedy WordPiece-style tokenizer", "Recognize how morphemes carry meaning in medical terminology", "Handle out-of-vocabulary words by decomposing them into known sub-units"]} />
+<LearningObjectives objectives={["Explain why subword vocabularies cover rare terms that word-level vocabularies miss", "Implement a greedy WordPiece-style tokenizer", "Recognize how morphemes carry meaning in medical terminology"]} />
+
+> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
 ## Why Words Aren't Enough
 
@@ -113,7 +112,7 @@ Medical language is highly compositional. Prefixes like "hyper-", "hypo-", "card
 const decompositions = {
   'cardiology':     ['card', '##io', '##logy'],     // study of heart
   'carditis':       ['card', '##itis'],              // heart inflammation
-  'cardioectomy':   ['card', '##io', '##ectomy'],    // heart removal (surgical)
+  'cardiectomy':    ['cardi', '##ectomy'],           // heart removal (surgical)
   'gastroenteritis': ['gastro', '##enter', '##itis'], // stomach/intestine inflammation
 };
 
@@ -128,4 +127,4 @@ Implement a WordPiece-style subword tokenizer.
 
 <Exercise slug="subword-tokenize" />
 
-<KeyTakeaways takeaways={["Subword tokenization breaks words into known morpheme-like pieces", "It handles unseen words by decomposing them — no more [UNK] for rare terms", "Medical terminology is highly compositional, making subword tokenization ideal", "The ## prefix marks continuation pieces (not the start of a word)"]} />
+<KeyTakeaways takeaways={["Subword tokenization breaks words into known morpheme-like pieces", "Decomposing unseen words means far fewer [UNK] tokens, though the fallback still fires when no vocabulary piece matches", "Medical terminology is highly compositional, making subword tokenization ideal", "The ## prefix marks continuation pieces (not the start of a word)"]} />

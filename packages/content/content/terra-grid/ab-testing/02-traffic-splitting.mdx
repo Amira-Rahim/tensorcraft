@@ -20,7 +20,6 @@ concept:
     breaks: "Canary deployments compare identical code at different rollout %. Model traffic splitting compares two different models, so confounding from input distribution shifts contaminates the result. You need stratified sampling and longer observation windows than canary code rollouts demand."
 consequence:
   narrative: "After 24 hours at 5%, the metrics are clear: v3.1 catches anomalies 12% faster with no false positive increase. Tariq bumps the split to 20%. 'Let it run for a week. If the numbers hold, we go wider.'"
-  nextLessonTeaser: "Next: statistical significance, knowing when results are meaningful"
 hints:
   - level: nudge
     content: "Weight-based routing distributes traffic proportionally, like a load balancer with weighted upstreams"
@@ -43,7 +42,15 @@ We start at 5%. Only 620 devices see the new model. If anything looks wrong (acc
 Same pattern as canary deployments for web apps. Weighted routing with automatic rollback triggers. The only difference is we're routing sensor data to model versions instead of HTTP requests to server versions.
 </Dialogue>
 
-Priya is half right, and the missing half is where the money goes. A web canary compares identical code at two rollout percentages, so any metric gap is caused by the rollout. Here the two arms run different models, and a shift in the input mix can hand the new model an easy week or a brutal one. You have configured weighted upstreams before: 95% stable, 5% canary. Keep that routing. What you add is what code canaries never needed: stratified sampling so both arms see comparable inputs, and observation windows long enough to outlast the confounders.
+<Dialogue speaker="Tariq Hussain">
+One wrinkle, and it's expensive. A web canary runs identical code at two percentages, so any metric gap belongs to the rollout. Our two arms are different models. A cold snap in Region 4 hands the new model a week of inputs the old one never saw, and the dashboard will swear the model got worse.
+</Dialogue>
+
+<Dialogue speaker="Priya Sharma">
+Then we stratify the split. Every region, every device tier represented in both arms, and we hold the observation window open longer than a code canary would ever need. The routing stays; the patience changes.
+</Dialogue>
+
+A canary, in deploy jargon, is the small first slice of traffic that absorbs the risk of a new version, named for the bird miners carried underground. Priya and Tariq just designed one for models: weighted routing you already trust, plus the two disciplines code canaries never needed, stratified sampling so both arms see comparable inputs and observation windows long enough to outlast the confounders.
 
 <LearningObjectives objectives={["Implement weighted traffic splitting across model versions", "Configure graduated rollout schedules (5% -> 20% -> 50% -> 100%)", "Build automatic rollback triggers based on metric thresholds", "Track per-version metrics to validate traffic split decisions"]} />
 
@@ -177,4 +184,4 @@ Implement a weighted traffic splitter with graduated rollout.
 
 <Exercise slug="route-models" />
 
-<KeyTakeaways takeaways={["Start the new model at 5% of devices (620 of 12,400) and widen the split only as live metrics hold", "Graduated rollout (5% -> 20% -> 50% -> 100%) limits blast radius at each stage", "Automatic rollback triggers on accuracy drop, latency increase, or false positive spikes", "The control model always stays available — never remove the fallback until the test is conclusive"]} />
+<KeyTakeaways takeaways={["Graduated rollout (5% -> 20% -> 50% -> 100%) limits blast radius: at 5%, only 620 of 12,400 devices ever see a bad model", "Automatic rollback triggers on accuracy drop, latency increase, or false positive spikes", "The control model always stays available — never remove the fallback until the test is conclusive"]} />

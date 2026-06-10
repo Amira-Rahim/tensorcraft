@@ -10,7 +10,7 @@ context:
   narrative: "Demir applies attention specifically to the temporal dimension — the model learns to 'scroll to' the most relevant time steps in each signal window."
   speaker: "Ensign Demir"
 concept:
-  explanation: "Temporal attention focuses on the most relevant time steps in a sequence — like scrollIntoView() that programmatically navigates to the element that matters."
+  explanation: "Temporal attention scores each time step's importance and concentrates processing on the few that carry the information. The weights double as a map of where the model looked."
   bridge:
     feTitle: "scrollIntoView()"
     feCode: "element.scrollIntoView({ behavior: 'smooth' }) // jump to what matters"
@@ -19,7 +19,7 @@ concept:
     tier: intuition
     breaks: "scrollIntoView jumps to one element you target by ID. Temporal attention learns soft weights over every prior timestep at every layer — the model decides relevance per query, weights are continuous, and the cost is quadratic in sequence length."
 consequence:
-  narrative: "The attention weights reveal the model focuses on two specific time ranges: the initial amplitude spike and the frequency shift 73 seconds later. The pattern is confirmed."
+  narrative: "Two hot ranges in the attention weights: the initial amplitude spike, and the frequency shift 73 seconds later. The pattern is confirmed."
 hints:
   - level: nudge
     content: "Temporal attention assigns importance weights to each time step in the sequence"

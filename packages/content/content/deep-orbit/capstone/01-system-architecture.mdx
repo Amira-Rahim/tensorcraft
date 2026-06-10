@@ -10,7 +10,7 @@ context:
   narrative: "Mirza assembles the crew for the final phase. 'We have all the pieces. Now we assemble them into a production system. Demir — lay out the architecture.' Demir designs the complete DEEP SCAN system."
   speaker: "Commander Mirza"
 concept:
-  explanation: "System architecture is dependency management at production scale — like a monorepo's package.json dependency graph, but for ML pipeline components."
+  explanation: "System architecture is dependency management at production scale: every component from the last ten modules becomes a typed stage in one pipeline, sharing one unforgiving machine."
   bridge:
     feTitle: "Package Dependencies"
     feCode: "// package.json: { dependencies: { react, tfjs, ... } } — declare, install, resolve"
@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "Package dependencies are resolved deterministically by a manifest and lockfile. ML pipeline dependencies include data shapes, schema contracts, model versions, and feature freshness — schema breaks are silent (predictions become wrong, not errors) and surface days later as accuracy regressions, not stack traces."
 consequence:
-  narrative: "The architecture diagram fills the main display. Every component is accounted for: preprocessing, feature extraction, classification, anomaly detection, reporting. Mirza nods. 'Build it.'"
+  narrative: "Five components on the main display: preprocessing, feature extraction, classification, anomaly detection, reporting. Mirza nods. 'Build it.'"
 hints:
   - level: nudge
     content: "Each PipelineStage declares an inputType and outputType. Wire stages so every output type matches the next stage's input"

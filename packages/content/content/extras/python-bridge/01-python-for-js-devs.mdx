@@ -19,14 +19,13 @@ concept:
     breaks: "JavaScript and Python both have async I/O and dynamic typing, but Python's GIL serializes CPU work, indentation defines blocks, and the package ecosystem (pip, conda, virtualenv) is fragmented in ways npm is not."
 consequence:
   narrative: "Python files should parse in your head now: indentation for braces, comprehensions for map/filter, def for function. Next stop is a screen full of np.array calls. Same drill."
-  nextLessonTeaser: "Next: NumPy arrays are just TypedArrays with superpowers"
 hints:
   - level: nudge
     content: "x => x * 2 in JavaScript is lambda x: x * 2 in Python; anything with a body becomes def"
   - level: guidance
-    content: "JavaScript's const/let becomes plain variable assignment in Python"
+    content: "Translate line by line: self.mean = None becomes this.mean = null in the constructor. Python's sum(data) / len(data) is a reduce divided by length. The list comprehension in transform is exactly a .map()."
   - level: solution
-    content: "Most JS patterns have a direct Python equivalent; the shape of the logic is identical"
+    content: "fit(data) { this.mean = data.reduce((a, b) => a + b, 0) / data.length; this.std = Math.sqrt(data.reduce((s, x) => s + (x - this.mean) ** 2, 0) / data.length); return this; } transform(data) { return data.map(x => (x - this.mean) / this.std); }"
 keywords:
   - python
   - syntax

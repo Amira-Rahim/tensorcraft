@@ -10,7 +10,7 @@ context:
   narrative: "Demir builds his first recurrent neural network — a network that maintains hidden state between time steps, processing the signal as a sequence rather than isolated snapshots."
   speaker: "Ensign Demir"
 concept:
-  explanation: "An RNN is a reducer function — it takes previous state and new input to produce updated state, exactly like useReducer in React."
+  explanation: "An RNN carries hidden state from step to step: previous state in, new input in, updated state out. The transition function is learned, not written."
   bridge:
     feTitle: "useReducer"
     feCode: "const [state, dispatch] = useReducer(reducer, initialState)"
@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "useReducer is a deterministic pure function you wrote. RNN cells learn the reducer logic from data, carry hidden state across timesteps, and the same input produces different outputs depending on what came before. The 'reducer' is opaque and trained, not authored."
 consequence:
-  narrative: "The RNN detects short-range patterns — it notices the signal rises before each anomalous burst. But longer patterns slip away."
+  narrative: "Short-range patterns resolve first: the RNN notices the signal rises before each anomalous burst. Longer patterns slip away."
 hints:
   - level: nudge
     content: "An RNN cell is just a function: (prevState, newInput) → newState"
@@ -153,10 +153,10 @@ Build a simple RNN that processes sequential signal data.
 ## Knowledge check
 
 <Quiz
-  question="An RNN sequence-to-sequence model is trained to translate sentences. At inference time you feed the encoder a 100-word input. The decoder outputs sequentially. Which is true about the decoder's inputs at step t > 0?"
-  options={[{"text":"The decoder sees the FULL ground-truth target sequence at each step"},{"text":"The decoder is fed its OWN previous output token (or top-k beam candidate) — at inference there's no ground truth, so generation is autoregressive"},{"text":"The decoder takes the encoder's hidden state directly with no per-step input"},{"text":"The decoder uses random sampling at every step"}]}
+  question="A simple RNN trains on 80-step windows, but the pattern it needs spans ~73 steps. Loss sits at 0.693 after two hundred epochs. What's the most likely cause?"
+  options={[{"text":"The batch size is too small for sequential data"},{"text":"Vanishing gradients: the error signal decays to almost nothing before it reaches the early time steps where the pattern starts"},{"text":"returnSequences should be set to true"},{"text":"tanh is the wrong activation for the hidden state"}]}
   correct={1}
-  explanation="At training time, teacher forcing feeds ground-truth previous tokens. At inference time, ground truth doesn't exist — the decoder feeds its own emitted token (or beam-search candidate) back as input. This causes 'exposure bias': errors compound because the model wasn't trained on its own mistaken outputs."
+  explanation="Backprop through time multiplies the gradient by the recurrent weights and the tanh derivative at every step, so over ~73 steps it shrinks toward zero and the early steps never learn. Loss stuck at 0.693 (ln 2) means the network is still flipping a coin. Batch size and returnSequences don't change gradient depth, and tanh is the standard simple-RNN activation. The LSTM in the next lesson is the fix."
   tier="structural"
 />
 

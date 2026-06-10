@@ -18,8 +18,7 @@ concept:
     mlCode: "const pipeline = { input: 'text', model: 'classifier', output: 'prediction' }"
     tier: structural
 consequence:
-  narrative: "The team commits to building Diagnostic One. Khalil begins sketching the system architecture."
-  nextLessonTeaser: "Next: turning clinical text into numbers a model can understand."
+  narrative: "Karimi gets the vendor contract terminated before lunch. By evening, Khalil's whiteboard holds the first sketch of Diagnostic One: three boxes and a question mark where the model should be."
 hints:
   - level: nudge
     content: "tf.tensor() will not accept 'chest pain'. Encode each characteristic of the note as a 0 or 1 before the model can use it."
@@ -38,10 +37,10 @@ scene:
   epilogueLocation: "Server Room"
 ---
 
-> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
+The pharmacy alert fired at 11:47 last night: amoxicillin, ordered for a patient whose chart documents a penicillin allergy with anaphylaxis in 2019. The vendor NLP system had filed the note under "no known allergies." A pharmacist caught the order because she happened to remember the patient. By morning the printout is on the conference room table, and nobody has touched the coffee.
 
 <Dialogue speaker="Dr. Karimi">
-Everyone, sit down. Last night the vendor NLP system flagged a penicillin allergy note as "no known allergies." The patient received amoxicillin. We caught it at the pharmacy. Barely. I'm canceling the vendor contract today.
+We caught it at the pharmacy. Barely. I'm canceling the vendor contract today.
 </Dialogue>
 
 <Dialogue speaker="Imran" direction="pulling up the chart">
@@ -54,7 +53,9 @@ We're building our own. Khalil, you built the patient portal frontend. I need yo
 
 A vendor system failed because it relied on rigid keyword matching. Machine learning takes a different approach: instead of hand-coded rules, it learns patterns from data.
 
-<LearningObjectives objectives={["Understand why ML outperforms rule-based systems for clinical text", "Identify the three stages of an ML pipeline: input, model, output", "Recognize the parallels between app architecture and ML architecture", "Create a simple numerical representation of text features using TensorFlow.js"]} />
+<LearningObjectives objectives={["Understand why ML outperforms rule-based systems for clinical text", "Identify the three stages of an ML pipeline: input, model, output", "Create a simple numerical representation of text features using TensorFlow.js"]} />
+
+> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
 ## Why Rules Break Down
 

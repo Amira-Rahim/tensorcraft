@@ -10,7 +10,7 @@ context:
   narrative: "Back at the resistance safehouse, NEON projects a visualization of MobileNet's internal layers onto the wall. Colored heatmaps cascade from top to bottom: edges, textures, shapes, objects. 'The question is not whether this model works,' NEON says. 'The question is why a model trained on cats and cars can recognize drones it has never seen.'"
   speaker: "NEON"
 concept:
-  explanation: "Pre-trained models learn hierarchical features that transfer across domains. Early layers detect universal visual primitives: edges, gradients, textures. Later layers combine them into domain-specific patterns. These reusable features are like component libraries: a Button component works whether you are building an e-commerce app or a dashboard."
+  explanation: "Pre-trained models learn hierarchical features that transfer across domains. Early layers detect universal visual primitives: edges, gradients, textures. Later layers combine them into domain-specific patterns. The early layers transfer almost anywhere; the deep ones belong to the task they were trained for."
   bridge:
     feTitle: "Component libraries"
     feCode: "import { Button, Input, Card } from '@ui/components'; // reusable building blocks"
@@ -19,7 +19,6 @@ concept:
     tier: structural
 consequence:
   narrative: "Noor stares at the heatmaps. Layer 3 activates on edges. The same edges in cats, cars, and drones. 'It learned edges from cats,' she says slowly. 'And those same edges outline a Meridian X-7.' Amir nods. 'Features transfer. That is the whole trick.'"
-  nextLessonTeaser: "Next: fine-tuning. Adapting this model to recognize Meridian's specific drone fleet"
 hints:
   - level: nudge
     content: "Early layers learn universal features like edges and textures; they work for any visual task"
@@ -37,7 +36,7 @@ keywords:
 ---
 
 <Dialogue speaker="NEON">
-A Button component does not care if it lives in a shopping cart or a login form. It renders the same way. A convolutional filter that detects vertical edges does not care if the edge belongs to a cat's ear or a drone's wing. Features are reusable building blocks.
+A Button component does not care if it lives in a shopping cart or a login form. A convolutional filter that detects vertical edges does not care if the edge belongs to a cat's ear or a drone's wing. Meridian paid two million credits for that insight. You are getting it free, which seems fair.
 </Dialogue>
 
 <Dialogue speaker="Noor">

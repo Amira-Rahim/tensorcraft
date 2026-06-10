@@ -10,7 +10,7 @@ context:
   narrative: "Zara projects a grid onto a surveillance feed. Each cell glows faintly, waiting for a detection. 'The model does not search the entire image pixel by pixel,' she explains. 'It divides the image into pre-set regions called anchors and checks each one. Just like CSS Grid divides a page into template areas.'"
   speaker: "Zara"
 concept:
-  explanation: "Anchor boxes are pre-defined regions placed across an image in a grid pattern. The model predicts adjustments to these anchors rather than guessing coordinates from scratch. This is like CSS Grid template areas: a pre-defined layout that content snaps to."
+  explanation: "Anchor boxes are pre-defined regions placed across an image in a grid pattern. The model predicts adjustments to these anchors rather than guessing coordinates from scratch, and choosing the candidate shapes well is half the detection problem."
   bridge:
     feTitle: "CSS Grid Template Areas"
     feCode: "grid-template-areas: 'header header' 'sidebar main' 'footer footer';"
@@ -20,7 +20,6 @@ concept:
     breaks: "CSS Grid template areas are author-defined regions. Anchor boxes are predefined box shapes the model learns to refine; choosing the right anchor scales and aspect ratios for your dataset is a hyperparameter that materially changes recall."
 consequence:
   narrative: "NEON flickers. 'Meridian uses a 13x13 anchor grid with 5 anchors per cell. That is 845 candidate boxes per frame. I used to evaluate all 845 in 4 milliseconds. You will need to be faster.'"
-  nextLessonTeaser: "Next: IoU. Measuring how well your predicted boxes match the real targets"
 hints:
   - level: nudge
     content: "Lay anchors out the way grid-template-areas lays out cells: every cell gets the same set of box templates at different scales and aspect ratios"
@@ -37,7 +36,7 @@ keywords:
 ---
 
 <Dialogue speaker="Zara">
-You don't position dashboard widgets pixel by pixel. You define a CSS Grid (columns, rows, template areas) and content snaps into those regions. Detection models make the same bet: pre-define a grid of "anchor boxes" across the image, then predict adjustments to those anchors.
+Count the glowing cells. Forty-nine, and the model committed to them before it ever saw a drone. It will not search the frame pixel by pixel. It predicts adjustments to boxes that already exist: we author the anchors, it learns the nudges.
 </Dialogue>
 
 <Dialogue speaker="Noor">
@@ -45,12 +44,12 @@ So instead of the model saying "there is an object at exactly pixel 347, 218," i
 </Dialogue>
 
 <Dialogue speaker="Zara">
-Mostly. Predicting offsets from known positions is much easier than predicting absolute coordinates from nothing. But here is where the grid intuition will bite you: you author grid-template-areas to fit your content. Anchor scales and aspect ratios are guesses you commit to before training. Guess wrong, say all square anchors for long, thin drones, and recall craters no matter how good the model is.
+Predicting offsets from known positions is much easier than predicting absolute coordinates from nothing. But the grid intuition will bite you in one spot: you author grid-template-areas to fit your content. Anchor scales and aspect ratios are guesses you commit to before training. Guess wrong, say all square anchors for long, thin drones, and recall craters no matter how good the model is.
 </Dialogue>
 
 Searching an entire image for objects is computationally brutal. Instead, modern detection models pre-define a grid of **anchor boxes**: candidate regions at various sizes and aspect ratios. The model then predicts two things for each anchor: (1) "is there an object here?" and (2) "how should I adjust this anchor to fit the object?"
 
-<LearningObjectives objectives={["Understand anchor boxes as pre-defined detection candidates placed on a grid", "Generate anchor boxes at multiple scales and aspect ratios", "Calculate anchor offsets (deltas) to adjust anchors to fit objects", "Connect the CSS Grid mental model to detection grid architecture"]} />
+<LearningObjectives objectives={["Understand anchor boxes as pre-defined detection candidates placed on a grid", "Generate anchor boxes at multiple scales and aspect ratios", "Calculate anchor offsets (deltas) to adjust anchors to fit objects"]} />
 
 ## The Anchor Grid
 

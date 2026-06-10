@@ -10,7 +10,7 @@ context:
   narrative: "Dr. Farah stares at the signal plot. 'We are only seeing half the picture. This is the time domain. The real structure hides in the frequency domain.'"
   speaker: "Dr. Farah"
 concept:
-  explanation: "Every signal has two representations — time domain (amplitude over time) and frequency domain (which frequencies are present) — just like a web page has a DOM and a CSSOM."
+  explanation: "Every signal has two representations: the time domain (amplitude over time) and the frequency domain (which frequencies are present). Each view hides what the other shows."
   bridge:
     feTitle: "DOM vs CSSOM"
     feCode: "document.querySelector('div') // DOM view of the page"
@@ -19,7 +19,7 @@ concept:
     tier: intuition
     breaks: "DOM and CSSOM are two views of the same authored markup. Time and frequency representations are mathematically dual but information-equivalent only when the full signal is observed; windowing and finite sample rate distort the frequency view."
 consequence:
-  narrative: "Demir sees it — the same signal, two completely different views. Patterns invisible in time become obvious in frequency."
+  narrative: "Demir sees it: the same signal, two completely different views. Patterns invisible in time become obvious in frequency."
 hints:
   - level: nudge
     content: "fft(signal) re-describes the same samples by what repeats in them — no information is added, only re-arranged"
@@ -49,7 +49,7 @@ As a first sketch. But the DOM and CSSOM are both lossless views of markup someo
 
 The time domain plots amplitude at each moment. The frequency domain plots how strongly each periodic component is present. The rest of this lesson is learning to read the second view.
 
-<LearningObjectives objectives={["Understand that every signal has two equivalent representations: time domain and frequency domain", "Identify what each domain reveals: time shows when, frequency shows what patterns", "Recognize why some patterns are invisible in time but obvious in frequency", "Connect dual representations to familiar frontend concepts (DOM/CSSOM, markup/styles)"]} />
+<LearningObjectives objectives={["Understand that every signal has two equivalent representations: time domain and frequency domain", "Identify what each domain reveals: time shows when, frequency shows what patterns", "Recognize why some patterns are invisible in time but obvious in frequency"]} />
 
 ## Two Views, One Signal
 
@@ -134,7 +134,7 @@ Identify which domain reveals a hidden pattern in signal data.
 
 <Epilogue>
 
-Farah queues the full Sector 7-G capture for transform overnight: 64 channels, eleven days, every window of it. Before she leaves the lab she pins two time-domain plots side by side on the main display — confirmed cosmic background on the left, the stretch the crew has been arguing about for a week on the right. Demir stares until the traces blur. Sample for sample, he cannot tell them apart.
+Farah queues the full Sector 7-G capture for transform overnight: 64 channels, eleven days, every window of it. Before she leaves the lab she pins two time-domain plots side by side on the main display, confirmed cosmic background on the left, the stretch the crew has been arguing about for a week on the right. Demir stares until the traces blur. Sample for sample, he cannot tell them apart.
 
 <Dialogue speaker="Dr. Farah">
 Neither can I. That is an uncomfortable thing for a signal analyst to admit, which is why tomorrow we stop looking at time.

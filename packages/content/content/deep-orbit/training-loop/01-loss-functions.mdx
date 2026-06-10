@@ -10,7 +10,7 @@ context:
   narrative: "The network makes its first predictions — they're terrible. Dr. Farah needs a way to measure exactly how wrong they are."
   speaker: "Dr. Farah"
 concept:
-  explanation: "Loss functions measure prediction error — like the difference between expected and actual in a test assertion."
+  explanation: "A loss function turns 'how wrong was that prediction' into a single number the network can work to minimize."
   bridge:
     feTitle: "expect().toBe()"
     feCode: "expect(actual).toBe(expected) // assertion diff"
@@ -38,7 +38,7 @@ skillAxes: [training]
 The network predicts 0.52 for a signal that should be 1.0. How wrong is that? We need a precise, mathematical measure of wrongness: a loss function.
 </Dialogue>
 
-<LearningObjectives objectives={["Understand what loss functions measure and why they're essential", "Implement MSE (Mean Squared Error) for regression tasks", "Implement binary crossentropy for classification tasks", "Interpret loss values — lower is better, zero is perfect"]} />
+<LearningObjectives objectives={["Understand what loss functions measure and why they're essential", "Implement MSE for regression and binary crossentropy for classification", "Interpret loss values — lower is better, zero is perfect"]} />
 
 ## How Wrong Are We?
 
@@ -103,7 +103,7 @@ Calculate the loss for the DEEP SCAN classifier's initial predictions.
 
 <Epilogue>
 
-Farah writes the network's opening loss on the lab's glass wall in marker, dated and initialed: 0.6931. Demir asks why the number is so round. It isn't round, she tells him — it's ln(2) to four places, the exact cross-entropy of a coin flip, the score of a network that knows nothing at all. He'd guessed it was a fluke of the random seed; it's arithmetic.
+Farah writes the network's opening loss on the lab's glass wall in marker, dated and initialed: 0.6931. Demir asks why the number is so round. It isn't round, she tells him: it's ln(2) to four places, the exact cross-entropy of a coin flip, the score of a network that knows nothing at all. He'd guessed it was a fluke of the random seed; it's arithmetic.
 
 <Dialogue speaker="Dr. Farah">
 That number is our honesty. We don't get to claim the network learned anything until it moves.

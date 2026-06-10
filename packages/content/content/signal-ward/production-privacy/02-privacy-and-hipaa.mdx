@@ -7,7 +7,7 @@ order: 2
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "The hospital's compliance officer joins the ethics review. 'Your model processes Protected Health Information. Where does patient data go? Who has access? What gets logged?' Khalil draws parallels to GDPR cookie consent: the same regulatory mindset, different domain. 'We already know how to handle data privacy. HIPAA applies the same principles to medical data, with stricter consequences.'"
+  narrative: "The hospital's compliance officer joins the ethics review. 'Your model processes Protected Health Information. Where does patient data go? Who has access? What gets logged?' Khalil starts from what he knows: GDPR consent banners, data minimization, audit trails. The officer doesn't disagree. 'Keep the mindset. Lose the confidence. A cookie banner was never a federal filing. One clinical note in a crash log is.'"
   speaker: "Khalil"
 concept:
   explanation: "HIPAA compliance for ML systems follows the same principles as GDPR cookie consent and web data privacy (data minimization, explicit consent, access logging, and encryption) applied to Protected Health Information with higher stakes."
@@ -20,14 +20,13 @@ concept:
     breaks: "GDPR cookie consent is a UI banner and a data export endpoint. HIPAA compliance involves access controls, audit logs, BAAs, and de-identification; and ML models can re-identify individuals from de-identified data, so removing PHI is not sufficient."
 consequence:
   narrative: "Khalil demonstrates the privacy architecture: all inference runs in the browser, no PHI leaves the device, model weights contain no patient data, and every access is logged. The compliance officer reviews the audit trail and the PHI redaction pipeline. 'This is the most privacy-forward ML system I have reviewed. Approved for pilot.'"
-  nextLessonTeaser: "Next: bias auditing — ensuring the model works fairly for everyone"
 hints:
   - level: nudge
     content: "The biggest privacy advantage of browser-based ML: patient data never leaves the device"
   - level: guidance
     content: "Implement PHI detection with regex patterns, redact before logging, and maintain audit trails that track events without storing content"
   - level: solution
-    content: "Build a privacy pipeline: detect PHI with regex patterns (SSN, MRN, DOB, phone), redact from all logs, encrypt cached data, run inference on-device, and log access events (who, when, what type) without logging the actual text"
+    content: "Three layers. 1) Detect PHI with regex patterns (SSN, MRN, DOB, phone) and redact it before anything is logged. 2) Keep data local: encrypt anything cached and run inference on-device. 3) Audit by event, not content: log who accessed what type of record and when, never the text itself."
 keywords:
   - hipaa
   - privacy

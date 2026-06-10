@@ -10,7 +10,7 @@ context:
   narrative: "ARIA flags a concern: 'Deployment is not the end. Models degrade over time — data drift, distribution shift. We must watch.' Demir builds the monitoring dashboard."
   speaker: "ARIA"
 concept:
-  explanation: "ML monitoring tracks model health in production — like application monitoring (Sentry, DataDog) but with additional metrics for prediction quality and data drift."
+  explanation: "ML monitoring watches the failures that never throw: confidence decay, latency creep, and inputs drifting quietly away from the training distribution."
   bridge:
     feTitle: "App Monitoring"
     feCode: "Sentry.captureException(error); // track errors, performance, user impact"
@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "App monitoring tracks errors, latency, and throughput — observable system metrics. Model monitoring also tracks input distribution drift, prediction distribution drift, and label feedback delays. Many model failures produce no exception and no latency change."
 consequence:
-  narrative: "The monitoring dashboard lights up. Confidence scores, inference latency, drift detection — all streaming in real-time. ARIA: 'Now we will know when DEEP SCAN begins to fail before the crew does.'"
+  narrative: "Confidence scores, inference latency, drift detection, all streaming in real time. ARIA: 'Now we will know when DEEP SCAN begins to fail before the crew does.'"
 hints:
   - level: nudge
     content: "Monitor three things: prediction quality (confidence), performance (latency), and data health (drift)"
@@ -36,6 +36,8 @@ keywords:
 skillAxes: [deployment, evaluation]
 ---
 
+Monitoring exists on this ship for one reason, and the reason has a timestamp. At 0249 the dashboard didn't throw an exception, didn't log an error, didn't degrade gracefully: memory pressure killed it mid-frame, and the first alert anyone received was the screen going dark. Nobody on the Archimedes needs to be sold on observability. The argument happened four nights ago and the dashboard lost.
+
 <Dialogue speaker="ARIA">
 Commander, I must flag a concern. The model performs at 91.8% accuracy now. In three weeks, that number will change. The signal characteristics in this region of space are not stationary. Without monitoring, we will not know when DEEP SCAN begins to fail.
 </Dialogue>
@@ -44,7 +46,7 @@ Commander, I must flag a concern. The model performs at 91.8% accuracy now. In t
 Same problem as any production app. I'll set up monitoring: track prediction confidence, inference latency, and input distribution. When the data drifts from what we trained on, we alert and retrain.
 </Dialogue>
 
-Monitoring exists on this ship for one reason, and the reason has a timestamp. At 0249 the dashboard didn't throw an exception, didn't log an error, didn't degrade gracefully: memory pressure killed it mid-frame, and the first alert anyone received was the screen going dark. So DEEP SCAN ships with instruments pointed at itself — the familiar web-app set, plus the failures that never throw: confidence decay, latency creep, and drift, production inputs walking quietly away from the training distribution.
+So DEEP SCAN ships with instruments pointed at itself: the familiar web-app set, plus the failures that never throw — confidence decay, latency creep, and drift, production inputs walking quietly away from the training distribution.
 
 <LearningObjectives objectives={["Implement prediction quality monitoring: confidence tracking and anomaly rates", "Build latency monitoring with P50/P95/P99 percentile tracking", "Detect data drift by comparing input feature distributions over time", "Configure alerts that trigger when model health metrics cross thresholds"]} />
 

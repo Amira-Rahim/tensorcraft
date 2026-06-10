@@ -20,7 +20,6 @@ concept:
     breaks: "reduce + reduceRight produce two separate folds you compose afterward. Bidirectional RNNs run forward and backward passes whose hidden states are concatenated per timestep; two passes is at training and inference, not just an additional traversal."
 consequence:
   narrative: "Diagnostic One now reads clinical notes in both directions, catching negation and context that unidirectional models miss."
-  nextLessonTeaser: "Module complete. Next module: Attention Mechanisms — focusing on what matters most."
 hints:
   - level: nudge
     content: "tf.layers.bidirectional wraps any RNN layer and runs it in both directions."
@@ -36,8 +35,6 @@ keywords:
   - context-window
 ---
 
-> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
-
 <Dialogue speaker="Dr. Karimi">
 Consider this note: "The medication was discontinued because the patient developed a rash." When you read "the medication," you don't yet know it was discontinued. You only understand the full meaning after reading the entire sentence.
 </Dialogue>
@@ -47,7 +44,7 @@ So the model needs to look ahead, not just behind. That's like needing both `red
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-Almost. reduce and reduceRight hand you two finished folds you'd stitch together at the end. A bidirectional RNN concatenates the forward and backward hidden states at every single token, so each position carries both contexts as it goes. And you pay for both passes every time you run the model, inference included, not just once at training.
+That's the right pair of primitives, and for once the analogy survives contact with the implementation: a bidirectional RNN literally runs one fold left-to-right and one right-to-left. The detail worth adding is where they meet. The network doesn't stitch two finished folds at the end; it concatenates the forward and backward hidden states at every single token. And you pay for both passes every time you run the model, inference included.
 </Dialogue>
 
 <Dialogue speaker="MEDI">
@@ -57,6 +54,8 @@ Clinical note analysis confirms: 23% of negation patterns require right-to-left 
 A forward pass alone means that at "the medication," the model knows nothing about the discontinuation four words ahead. The backward pass fills in exactly that gap, and concatenating the two states gives every token full context from the entire sequence.
 
 <LearningObjectives objectives={["Understand why unidirectional models miss backward context clues", "Connect bidirectional processing to reduce() + reduceRight() combination", "Build a bidirectional LSTM in TensorFlow.js", "Recognize when bidirectional models are appropriate vs unnecessary"]} />
+
+> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
 ## Two Directions, Full Context
 

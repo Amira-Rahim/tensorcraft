@@ -10,7 +10,7 @@ context:
   narrative: "Nazari wants maximum speed. 'WebGL is good. WebGPU is better — direct GPU compute access without the graphics overhead. Use it.' Demir discovers the next generation of browser GPU compute."
   speaker: "Chief Nazari"
 concept:
-  explanation: "WebGPU provides direct GPU compute access for ML inference — like upgrading from WebGL canvas rendering to a dedicated compute pipeline."
+  explanation: "WebGPU gives inference direct GPU compute access with no graphics pipeline in the way. Most of inference is matrix math, and now it runs as exactly that."
   bridge:
     feTitle: "Canvas WebGL"
     feCode: "const gl = canvas.getContext('webgl2') // graphics-oriented GPU access"
@@ -41,10 +41,6 @@ WebGL was designed for rendering triangles, not multiplying matrices. WebGPU is 
 
 <Dialogue speaker="Ensign Demir">
 So WebGPU is to WebGL what Web Workers are to the main thread: purpose-built for the actual workload instead of shoehorning into a different API?
-</Dialogue>
-
-<Dialogue speaker="Dr. Farah">
-That analogy survives about one paragraph of scrutiny. Web Workers keep the language and memory model you already trust; WebGPU replaces both — new shader language, new memory semantics, drivers you don't control. Trust the shape of the win. Don't trust the cost of entry.
 </Dialogue>
 
 Nazari isn't wrong about the triangles. WebGL runs tensor math by smuggling it through a graphics pipeline: data as textures, math as fragment shaders, overhead on every op. WebGPU's compute shaders run matrix multiplications and parallel reductions directly — which is most of what inference is.
@@ -95,6 +91,10 @@ console.log('Using backend:', backend);
 // CPU:     ~120ms per inference (pure JavaScript)`}
 </CodeBlock>
 
+<Dialogue speaker="Dr. Farah">
+Before you fall for your own Web Worker analogy, Demir: a Worker keeps the language and memory model you already trust. WebGPU replaces both — new shader language, new memory semantics, drivers you don't control. Trust the shape of the win. Don't trust the cost of entry.
+</Dialogue>
+
 ## The Complete Optimization Stack
 
 <CodeBlock language="typescript" title="optimization-stack.ts">
@@ -139,7 +139,7 @@ Set up the best available GPU backend and benchmark inference speed.
 
 <Epilogue>
 
-They run the rehearsal at 0247 on purpose. Full telemetry suite, live feeds, and the 42 MB build loading on the bridge dashboard where its predecessor died four nights ago. The first load comes up on WebGL at 15 milliseconds — the dashboard's GPU is hiding behind a disabled flag, and Demir spends twenty minutes finding it before the second load lands on WebGPU at 5. The dashboard holds. The capture from that night is still gone, and stays gone; the rehearsal only proves the next one doesn't have to be.
+They run the rehearsal at 0247 on purpose, full telemetry suite and live feeds, on the bridge dashboard where the 340 MB build died four nights ago. The first load comes up on WebGL at 15 milliseconds: the dashboard's GPU is hiding behind a disabled flag, and Demir spends twenty minutes finding it before the second load lands on WebGPU at 5. The dashboard holds. The capture from that night is still gone, and stays gone; the rehearsal only proves the next one doesn't have to be.
 
 <Dialogue speaker="Commander Mirza">
 The relay slot opens in fifteen days. Can you assemble the rest of the system in fourteen?

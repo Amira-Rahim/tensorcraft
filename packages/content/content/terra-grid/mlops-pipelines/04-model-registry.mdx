@@ -7,7 +7,7 @@ order: 4
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Priya has 47 trained models. Tariq needs to know which one is approved for production. The model registry is the single source of truth, like an npm registry for ML models."
+  narrative: "Priya has 31 trained models. Tariq needs to know which one is approved for production. The model registry is the single source of truth, like an npm registry for ML models."
   speaker: "Priya Sharma"
 concept:
   explanation: "A model registry versions and stores trained models with metadata, just as npm registry stores versioned packages with their package.json."
@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "npm registry serves immutable versioned packages. Model registries must additionally track training metadata, eval metrics per version, deployment lineage, and approval status. And there is no canonical 'latest', since model selection is performance-driven, not chronological."
 consequence:
-  narrative: "The registry shows one model in production, two in staging, and 44 archived. Tariq pulls the production model for deployment."
-  nextLessonTeaser: "Next: automating retraining so the pipeline runs itself"
+  narrative: "The registry shows one model in production, two in staging, and 28 archived. Tariq pulls the production model for deployment."
 hints:
   - level: nudge
     content: "ModelRegistry needs what npm dist-tags give packages: a stage field (development, staging, production) that deployments can query"
@@ -36,16 +35,16 @@ keywords:
 ---
 
 <Dialogue speaker="Priya Sharma">
-I have 47 trained models. Which one is in production? Which one should Tariq deploy next? Without a registry, nobody knows.
+I have 31 trained models. Which one is in production? Which one should Tariq deploy next? Without a registry, nobody knows.
 </Dialogue>
 
 <Dialogue speaker="Tariq Hussain">
 I need one command: give me the latest approved model. Not the latest trained model. The latest approved model. Those are different things.
 </Dialogue>
 
-You do not deploy npm packages by copying files around. You publish to a registry with a version, metadata, and dist-tags like `latest`, `next`, and `beta`. Tariq's one command exists because that design is worth stealing, minus one assumption: npm's `latest` is chronological, and for models chronology means nothing. The newest of Priya's 47 models is frequently not the best one. A model registry's `production` tag is earned through evaluation metrics and explicit approval, which is why it also tracks training metadata and per-version eval results that npm never needed.
+You do not deploy npm packages by copying files around. You publish to a registry with a version, metadata, and dist-tags like `latest`, `next`, and `beta`. Tariq's one command exists because that design is worth stealing, minus one assumption: npm's `latest` is chronological, and for models chronology means nothing. The newest of Priya's 31 models is frequently not the best one. A model registry's `production` tag is earned through evaluation metrics and explicit approval, which is why it also tracks training metadata and per-version eval results that npm never needed.
 
-<LearningObjectives objectives={["Design a model registry with versioning, metadata, and promotion stages", "Implement model lifecycle stages (development → staging → production → archived)", "Map npm dist-tags to model promotion stages", "Build a registry query API that lets deployment pipelines pull the right model"]} />
+<LearningObjectives objectives={["Design a model registry with versioning, metadata, and promotion stages", "Implement model lifecycle stages (development → staging → production → archived)", "Build a registry query API that lets deployment pipelines pull the right model"]} />
 
 ## The Model Registry
 
@@ -129,7 +128,7 @@ registry.register({
   artifactPath: 's3://models/tgi-2.3.0.bin',
   metrics: { accuracy: 0.961, f1Score: 0.948, inferenceMs: 12, modelSizeMB: 4.2 },
   dataVersion: 'a3f8e2',
-  experimentId: 'run-47',
+  experimentId: 'run-31',
   registeredAt: new Date().toISOString(),
   promotedBy: null,
 });

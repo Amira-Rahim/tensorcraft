@@ -10,7 +10,7 @@ context:
   narrative: "Nazari demands a benchmark. 'TF.js is not the only option. Compare runtimes before we commit.' Demir discovers ONNX — the universal model format."
   speaker: "Chief Nazari"
 concept:
-  explanation: "ONNX is a universal model format that runs across runtimes — like how HTML runs in any browser regardless of the rendering engine."
+  explanation: "ONNX is a shared model format: any compliant runtime can execute it, with 'compliant' carrying the same fine print as every web standard."
   bridge:
     feTitle: "Cross-Browser Compat"
     feCode: "// Same HTML works in Chrome, Firefox, Safari"
@@ -48,7 +48,7 @@ Fair enough. ONNX is a universal model format, then? Train in Python, export to 
 "Anywhere" is the brochure version. ONNX is a shared operator set. If your model uses an op the target runtime doesn't implement, it doesn't degrade gracefully. It fails to load. There is no polyfill for a missing op; you rewrite the architecture. Check the opset before you promise me portability. Then bring me the numbers.
 </Dialogue>
 
-Train in PyTorch, export once, run anywhere: that is the pitch, and Nazari has already told you what she thinks of pitches. ONNX (Open Neural Network Exchange) is ML's attempt at a web standard: a shared format that any compliant runtime can execute, regardless of which framework trained the model. It carries the same fine print every web standard does — "universal" means "universal where implemented."
+Train in PyTorch, export once, run anywhere: that is the pitch, and Nazari has already told you what she thinks of pitches. ONNX (Open Neural Network Exchange) is ML's attempt at a web standard: a shared format that any compliant runtime can execute, regardless of which framework trained the model. It carries the same fine print every web standard does: "universal" means "universal where implemented."
 
 <LearningObjectives objectives={["Understand ONNX as a universal model interchange format", "Load and run ONNX models in the browser with onnxruntime-web", "Benchmark TF.js vs ONNX Runtime: cold start, inference speed, memory usage", "Choose the right runtime for your use case based on real performance data"]} />
 
@@ -172,11 +172,11 @@ Run an ONNX model and compare its output with TF.js.
 
 <Exercise slug="onnx-comparison" />
 
-<KeyTakeaways takeaways={["Benchmark verdict for the DEEP SCAN classifier: ONNX cold-starts in 180ms vs TF.js 340ms; TF.js sustains 2.1ms inference vs ONNX 3.8ms", "ONNX Runtime Web uses WASM for reliable cross-device inference; TF.js uses WebGL for GPU acceleration", "Cold start vs sustained speed is the key tradeoff — ONNX starts faster, TF.js runs faster long-term", "Choose your runtime based on your deployment pattern: always-on dashboard (TF.js) vs on-demand inference (ONNX)"]} />
+<KeyTakeaways takeaways={["Benchmark verdict for the DEEP SCAN classifier: ONNX cold-starts in 180ms vs TF.js 340ms; TF.js sustains 2.1ms inference vs ONNX 3.8ms", "ONNX Runtime Web uses WASM for reliable cross-device inference; TF.js uses WebGL for GPU acceleration", "Cold start vs sustained speed is the key tradeoff — ONNX starts faster, TF.js runs faster long-term", "A model using an op the target runtime lacks fails to load entirely: check opset support before promising portability", "Choose your runtime based on your deployment pattern: always-on dashboard (TF.js) vs on-demand inference (ONNX)"]} />
 
 <Epilogue>
 
-Nazari accepts the split: TF.js on the always-on dashboard, ONNX for the backup system that loads on demand. The next morning, Demir finds a third entry in the benchmark log — one he did not run. Timestamp 0317. Owner: ARIA.
+Nazari accepts the split: TF.js on the always-on dashboard, ONNX for the backup system that loads on demand. The next morning, Demir finds a third entry in the benchmark log, one he did not run. Timestamp 0317. Owner: ARIA.
 
 <Dialogue speaker="ARIA">
 I benchmarked both runtimes against my own rule engine while you slept. My rules evaluate in 0.4 milliseconds and were wrong about sample 7741. Your model takes 2.1 milliseconds and is uncertain about it. Uncertainty appears to be the more expensive and the more honest product. For the record: the WebGL backend serves my successor best.

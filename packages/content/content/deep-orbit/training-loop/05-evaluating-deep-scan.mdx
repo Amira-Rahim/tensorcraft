@@ -10,7 +10,7 @@ context:
   narrative: "Training is complete. Commander Mirza demands proof that DEEP SCAN works before authorizing deployment on the Archimedes sensor array."
   speaker: "Commander Mirza"
 concept:
-  explanation: "Model evaluation tests on unseen data — like end-to-end tests that verify real user behavior, not just unit tests on training data."
+  explanation: "Evaluation tests the model on data it has never seen. The gap between training and test accuracy is the first honest number you get."
   bridge:
     feTitle: "E2E Tests"
     feCode: "test('user can complete checkout', async () => { ... })"
@@ -39,7 +39,7 @@ skillAxes: [training, evaluation]
 Training accuracy means nothing if it doesn't work on signals the network has never seen. Run the evaluation suite. I want real numbers on real data.
 </Dialogue>
 
-<LearningObjectives objectives={["Evaluate model performance on held-out test data", "Interpret accuracy, loss, and confusion matrix metrics", "Understand the difference between training and test performance", "Make predictions on new, real-world data"]} />
+<LearningObjectives objectives={["Evaluate on held-out test data and read the train-vs-test gap", "Interpret accuracy, loss, and confusion matrix metrics", "Make predictions on new, real-world data"]} />
 
 ## The Final Test
 

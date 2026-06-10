@@ -18,8 +18,7 @@ concept:
     mlCode: "// Deploy modelV2 to Region 3, monitor accuracy, promote or rollback"
     tier: identity
 consequence:
-  narrative: "Region 3 canary passes all checks. Tariq promotes to Regions 1 and 7. After 72 hours across 3 regions: zero accuracy regressions, 6-hour earlier anomaly detection on 3 confirmed incidents. 'The new model caught a bearing failure 6 hours earlier. That is real impact.'"
-  nextLessonTeaser: "Next: multi-armed bandits, adaptive traffic allocation that optimizes in real time"
+  narrative: "Region 3 canary passes all checks. Tariq promotes to Regions 1 and 7. After 72 hours across 3 regions: zero accuracy regressions, 6-hour earlier anomaly detection on 3 confirmed incidents. 'The new model caught a bearing failure 6 hours earlier. That's real impact.'"
 hints:
   - level: nudge
     content: "A canary deployment is a staged rollout with health checks at each stage"
@@ -42,7 +41,7 @@ Region 3 is our canary. 2,100 devices. If the new model holds for 48 hours with 
 The rollback must be instant. If a canary deployment compromises safety monitoring at any site, we need sub-second fallback to the proven model. No grace period.
 </Dialogue>
 
-Tariq and Elif are arguing about different failure modes. He is guarding against a bad model; she is guarding against a slow rollback while a bad model is live. A canary protocol has to satisfy both, and it is the one you know from frontend deploys: push to one server, watch error rates, promote or roll back. The part that changes is what "healthy" means. An ML canary tracks accuracy, detection speed, and false positive rates, not just HTTP errors.
+Two fears, one protocol. Tariq is guarding against a bad model; Elif is guarding against a slow rollback while a bad model is live. The canary manager below has to answer both of them at once.
 
 <LearningObjectives objectives={["Implement a canary deployment manager for model rollouts", "Define health check criteria specific to ML model performance", "Build automatic promotion and rollback logic based on metric thresholds", "Design region-based staged rollout strategies"]} />
 
@@ -148,6 +147,8 @@ const manager = new CanaryManager([
   },
 ]);`}
 </CodeBlock>
+
+Read the rollout plan against the two fears. Tariq's lives in the health gates: accuracy floors, latency ceilings, a hard zero on missed anomalies. Elif's lives in `evaluate()`: one failed check and the stage flips to `rolled-back` with no human in the loop. A frontend canary only ever watched HTTP error rates; this one has to know what a missed bearing failure costs, which is why "healthy" is four ML metrics instead of one status code.
 
 ## Challenge
 

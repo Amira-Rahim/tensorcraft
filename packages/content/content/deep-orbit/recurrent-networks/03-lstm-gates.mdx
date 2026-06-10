@@ -10,7 +10,7 @@ context:
   narrative: "The simple RNN forgets the anomaly pattern — it's too far back in the sequence. Farah introduces LSTMs: networks with gates that decide what to remember and what to forget."
   speaker: "Dr. Farah"
 concept:
-  explanation: "LSTMs use gates to selectively remember and forget — like localStorage with TTL where some data persists long-term and stale data is automatically cleared."
+  explanation: "LSTMs route memory through learned gates that decide, dimension by dimension, what to keep and what to discard."
   bridge:
     feTitle: "localStorage with TTL"
     feCode: "if (Date.now() > expiry) localStorage.removeItem(key) // forget stale data"
@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "localStorage TTL is a hard expiry — value gone after timeout. LSTM forget gates output a continuous value in [0,1] per dimension that scales the cell state — partial forgetting, learned per-input, with no fixed timeout."
 consequence:
-  narrative: "The LSTM remembers the anomalous pattern from 72 hours ago. When it appears again, the network catches it immediately — long-range memory works."
+  narrative: "Seventy-two hours of memory: when the anomalous pattern reappears, the LSTM catches it in a single step."
 hints:
   - level: nudge
     content: "LSTMs have three gates: forget (what to discard), input (what to add), output (what to expose)"
@@ -35,6 +35,8 @@ keywords:
   - gru
 skillAxes: [model_arch]
 ---
+
+Loss: 0.693. Epoch 200 of 200. Demir's overnight run is still on the engineering display, six hours of compute flatlined at a coin flip, when Farah walks in with her tablet already open to the fix.
 
 <Dialogue speaker="Dr. Farah">
 The simple RNN forgets. By the time it reaches time step 50, information from step 1 has vanished, its gradients multiplied through too many small numbers. LSTMs solve this with gates: learned switches that control what flows through and what gets discarded.
@@ -149,7 +151,7 @@ Build an LSTM that handles long signal sequences.
 
 <Epilogue>
 
-The LSTM goes live against the archive at 1130, cleared through Nazari this time, with a cost estimate attached. Demir replays the full eleven days, and at the 72-hour mark the network flags the recurrence in a single step. The cell state carried the pattern the whole way. On the bridge channel, ARIA is silent for four full seconds before she speaks.
+Cleared through Nazari this time, cost estimate attached, the LSTM goes live against the archive. Demir replays the full eleven days, and at the 72-hour mark the network flags the recurrence in a single step. The cell state carried the pattern the whole way. On the bridge channel, ARIA is silent for four full seconds before she speaks.
 
 <Dialogue speaker="ARIA">
 Observation. My rule tables log every reading since launch and can act on none of it. I store everything and retain nothing of use. The new model discards most of what it sees and remembers three days. I have no rule that explains why that works.

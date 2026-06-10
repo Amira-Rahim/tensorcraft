@@ -20,7 +20,6 @@ concept:
     breaks: "Forking an open-source project clones runnable code you can edit. Repurposing a model means fine-tuning weights for a new task. The original weights are silently overwritten and capabilities you didn't fine-tune for can degrade (catastrophic forgetting)."
 consequence:
   narrative: "The repurposed model goes live. Protocol Sentinel v1.0: built on Meridian's own architecture, fine-tuned on 500 resistance images, running entirely in the browser. NEON displays the dashboard: real-time drone detection across all districts. Amir addresses the team: 'They spent three years and two million credits building the best vision model in the world. And we just turned it against them. In a browser tab.'"
-  nextLessonTeaser: "Next module: the resistance begins deploying Protocol Sentinel across Neon City's districts"
 hints:
   - level: nudge
     content: "Forking a model is like forking a repo: clone, modify, and deploy for your purpose"
@@ -49,7 +48,7 @@ You forked their model?
 Every great open-source project starts with a fork. Their surveillance AI becomes our counter-surveillance AI. Same weights. Different purpose.
 </Dialogue>
 
-Forking an open-source project means taking the existing codebase and building something new on top of it. The original authors' work becomes your foundation. Repurposing a model runs on the same instinct, with one difference worth respecting: a fork keeps the original code in git history, but fine-tuning overwrites weights in place. Push too hard and capabilities you never trained against quietly degrade (catastrophic forgetting). The pipeline below freezes most of the backbone for exactly that reason.
+Forking an open-source project means taking the existing codebase and building something new on top of it. The original authors' work becomes your foundation. Repurposing a model runs on the same instinct, with one difference worth respecting: a fork keeps the original code in git history, but fine-tuning overwrites weights in place. Push too hard and capabilities you never trained against erode with no error thrown (catastrophic forgetting). The pipeline below freezes most of the backbone for exactly that reason.
 
 <LearningObjectives objectives={["Combine all transfer learning techniques into a complete model repurposing pipeline", "Load, freeze, modify, augment, and retrain a pre-trained model for a new task", "Build Protocol Sentinel: the resistance's counter-surveillance system", "Understand model repurposing as forking — same codebase, different mission"]} />
 

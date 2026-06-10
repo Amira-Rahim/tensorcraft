@@ -20,7 +20,6 @@ concept:
     breaks: "Service worker cache keys static assets by URL: same URL, same payload. Generation cache keys must include prompt, seed, model version, and inference parameters; a one-character prompt change misses the cache, while identical prompts without a fixed seed produce different output and shouldn't share a cache entry at all."
 consequence:
   narrative: "The top 100 prompts now respond in under 10ms. Samir: 'We pre-generated 200 variations and cached them in the Service Worker. The visitor gets instant art. The model only fires for novel requests.'"
-  nextLessonTeaser: "Next: handling 200 concurrent generators"
 hints:
   - level: nudge
     content: "The cache key has to capture everything that changes the output: hash prompt + seed + model version + inference parameters, then check it before calling predict"

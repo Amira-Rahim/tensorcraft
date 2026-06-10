@@ -20,7 +20,6 @@ concept:
     breaks: "Express middleware composes synchronous transforms you wrote. Feature pipelines must produce identical features at training and inference time (training/serving skew is the canonical bug) and must handle missing values, drift, and feature freshness."
 consequence:
   narrative: "Noor runs the pipeline against a live district camera feed. Frames flow in, features flow out, the search index updates in real time. Forty seconds later, the system flags a Meridian drone circling Block 7. 'We have a working surveillance detector,' Zara says quietly. 'Built entirely in the browser. No server. No Meridian infrastructure. Just JavaScript.'"
-  nextLessonTeaser: "Next module: Transfer Learning. Amir downloads Meridian's own model weights and turns their tools against them"
 hints:
   - level: nudge
     content: "A feature pipeline chains multiple processing steps; each stage takes input from the previous one, like middleware"

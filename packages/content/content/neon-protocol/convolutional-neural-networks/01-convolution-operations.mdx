@@ -7,7 +7,7 @@ order: 1
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Noor stares at a surveillance feed, trying to sharpen a blurry license plate. Zara stops her: 'You already know how to do this. That blur filter in your Canvas drawing app? That IS a convolution. Let me show you what is really happening under the hood.'"
+  narrative: "Noor stares at a surveillance feed, trying to sharpen a blurry license plate. Zara stops her: 'That blur filter in your Canvas drawing app? That IS a convolution. The real thing, not an analogy. Let me show you what is happening under the hood.'"
   speaker: "Zara"
 concept:
   explanation: "A convolution slides a small kernel (matrix) across an image, computing weighted sums at each position, identical to how CSS filter: blur() applies a Gaussian kernel to every pixel."
@@ -20,7 +20,6 @@ concept:
     breaks: "CSS blur() applies one fixed Gaussian kernel browser-side. CNN convolution applies many learned kernels (8, 16, 64+) per layer that update during training to detect features specific to the dataset. Same sliding-window math; the kernel content is the entire point of training."
 consequence:
   narrative: "Noor runs her first convolution on a surveillance frame. Edge detection lights up doorways, windows, and camera housings: structural features invisible to the naked eye."
-  nextLessonTeaser: "Next: pooling layers that compress feature maps without losing important patterns"
 hints:
   - level: nudge
     content: "A convolution kernel is just a small matrix of weights. Multiply each kernel value by the overlapping pixel, then sum."

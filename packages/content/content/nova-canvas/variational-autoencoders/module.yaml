@@ -2,7 +2,7 @@ slug: variational-autoencoders
 title: "VAEs: Controlled Creation"
 themeId: nova-canvas
 order: 4
-description: "Move beyond GANs to Variational Autoencoders — models that learn smooth, structured latent spaces for controllable generation. You'll master the reparameterization trick, KL divergence, and creative VAEs — concepts that map to compression pipelines, seeded randomness, and design system tokens."
+description: "The GAN can forge, but it cannot be steered, and the exhibition needs sliders: warmth, density, rhythm. Enter the VAE, a model that learns a smooth, structured latent space you can actually navigate. The price of admission is getting gradients to flow through a sampling step and learning what the KL term is paying for."
 lessonCount: 5
 prerequisites:
   - generative-adversarial-networks

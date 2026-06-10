@@ -20,7 +20,6 @@ concept:
     breaks: "gzip/Brotli are lossless: decode reproduces input exactly. Autoencoders are lossy by design. The bottleneck forces information loss and the reconstruction fidelity is the training objective, not a free byproduct."
 consequence:
   narrative: "Samir has a working autoencoder that compresses and reconstructs patterns. But it cannot generate NEW patterns, only reproduce existing ones. That limitation sets the stage for the variational part."
-  nextLessonTeaser: "Next: adding the 'variational' to make autoencoders generative"
 hints:
   - level: nudge
     content: "Wire encoder.apply(input) into the decoder, then call autoencoder.fit(data, data): the same tensor serves as both input and target"
@@ -36,11 +35,11 @@ keywords:
 ---
 
 <Dialogue speaker="Rohan">
-Before we get fancy, let us make sure you have the fundamentals locked in. An autoencoder is like an audio codec: MP3 compresses a WAV file, then decompresses it back. Some information is lost, but the important parts survive. The bottleneck forces the model to learn what matters.
+Before we get fancy, let's make sure you've got the fundamentals locked in. An autoencoder is an audio codec that taught itself: MP3 compresses a WAV file, then decompresses it back. Some information is lost, but the important parts survive. The bottleneck forces the model to learn what matters.
 </Dialogue>
 
 <Dialogue speaker="MUSE">
-I just pushed one of Samir's stripe patterns through my 16-unit bottleneck. Reconstruction error: 0.018. I kept the stripe frequency and dropped the jitter along the edges. Nobody told me which to keep. The loss decided.
+Stripe frequency survived. Edge jitter didn't. That's what came back when one of Samir's patterns went through my 16-unit bottleneck just now, reconstruction error 0.018. Nobody told me which detail to keep. The loss decided.
 </Dialogue>
 
 You use compression every day. Brotli compresses your JavaScript bundles. JPEG compresses your images. gzip compresses your API responses. An autoencoder is a neural network that learns its own compression algorithm, customized for the specific data it sees.

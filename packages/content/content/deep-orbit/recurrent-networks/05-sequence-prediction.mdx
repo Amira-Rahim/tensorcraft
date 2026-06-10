@@ -10,7 +10,7 @@ context:
   narrative: "Demir trains the LSTM to predict the next signal values. Prediction error on the anomalous pattern: under 3%. The LSTM remembers it from 72 hours ago."
   speaker: "Ensign Demir"
 concept:
-  explanation: "Sequence prediction forecasts the next values in a series — like autocomplete suggestions that predict the next word based on what you've typed so far."
+  explanation: "Sequence prediction forecasts the next values in a series. If the model can call the next reading, the series has structure worth interrogating."
   bridge:
     feTitle: "Autocomplete"
     feCode: "suggestions = model.predict(inputText) // predict next word"
@@ -126,10 +126,10 @@ Train a prediction model and forecast the next signal value.
 ## Knowledge check
 
 <Quiz
-  question="What's the dominant failure mode of vanilla RNNs on long sequences?"
-  options={[{"text":"Memory overflow"},{"text":"Vanishing gradients — gradient signal collapses through depth"},{"text":"GPU thread contention"},{"text":"Slow inference"}]}
+  question="The prediction model compiles with meanSquaredError, while the classifiers in earlier lessons used binaryCrossentropy. Why the switch?"
+  options={[{"text":"MSE trains faster on the WebGL backend"},{"text":"Predicting the next reading is regression: the output is continuous signal values, not a yes/no class"},{"text":"binaryCrossentropy only works when returnSequences is true"},{"text":"LSTM layers require MSE"}]}
   correct={1}
-  explanation="Backprop-through-time multiplies per-step Jacobians. If spectral radius < 1, the product shrinks exponentially. By step 100, gradients are below float32 precision. LSTM/GRU gates and Transformer's attention solve this by giving information additive paths instead of multiplicative ones."
+  explanation="Earlier lessons asked 'anomalous or not?', a classification, so binary crossentropy fit. This model outputs the next [amplitude, frequency, phase] values, continuous numbers, which makes it regression: MSE (with MAE as a readable metric) measures distance from the true next reading. Loss choice follows the output type, not the layer type."
   tier="structural"
 />
 
@@ -137,7 +137,7 @@ Train a prediction model and forecast the next signal value.
 
 <Epilogue>
 
-The forecast goes up on the main bridge display at 2010: predicted recurrence, 47 minutes. Nobody is assigned to watch the countdown; by 2050 the entire bridge crew is watching it anyway. Nazari kills the room audio. 46:59. 47:00, and the trace stays flat, and Demir feels the whole room not breathe. 47:01. 47:02. At 47:03 the spike walks onto the display exactly as drawn.
+The forecast goes up on the main bridge display at 2010: predicted recurrence, 47 minutes; nobody is assigned to watch the countdown, and by 2050 the entire bridge crew is watching it anyway. Nazari kills the room audio. 46:59, then 47:00, and the trace stays flat, and Demir feels the whole room not breathe. 47:01, 47:02. At 47:03 the spike walks onto the display exactly as drawn.
 
 <Dialogue speaker="Commander Mirza">
 Log the three seconds. I want to know whose error that is — ours or theirs.

@@ -7,7 +7,7 @@ order: 4
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "Dr. Karimi pulls up the FDA's guidance on clinical decision support software. 'Before Diagnostic One can be used in any hospital, we need documentation. A model card: what it does, what it does not do, how it was validated, its known limitations, and when a clinician should override it.' Vikram nods. 'It is API documentation. I have written hundreds of API docs. Endpoints, parameters, expected responses, error codes, rate limits.' Karimi smiles. 'Exactly. Except your users are clinicians, and your error codes could affect patient care.'"
+  narrative: "Dr. Karimi pulls up the FDA's guidance on clinical decision support software. 'Before Diagnostic One can be used in any hospital, we need documentation. A model card: what it does, what it does not do, how it was validated, its known limitations, and when a clinician should override it.' Vikram nods. 'It's API documentation. I've written hundreds of API docs. Endpoints, parameters, expected responses, error codes, rate limits.' Karimi slides the guidance across the table. 'Then write me the API doc where a misread error code reaches a patient. Start there.'"
   speaker: "Dr. Karimi"
 concept:
   explanation: "A model card is API documentation for an ML system: it describes what the model does, its limitations, intended use cases, and performance characteristics. Just as API documentation tells developers what to expect from an endpoint, a model card tells clinicians what to expect from a diagnostic tool."
@@ -20,7 +20,6 @@ concept:
     breaks: "API documentation describes deterministic behavior. Model cards must document training data composition, intended use, known failure modes, and performance disparities; the document is non-trivial to author and is itself a deliverable, not a generated artifact."
 consequence:
   narrative: "The model card is complete. Four pages covering intended use, validation results, known limitations, fairness analysis, and override guidance. Dr. Karimi reads every line. 'This is honest documentation,' she says. 'It tells clinicians exactly what the system can and cannot do. It tells them when to trust it and when to question it.' She adds her signature. The regulatory submission package is complete. Imran formats the model card as a static page in the Diagnostic One interface, accessible from every screen with a single click."
-  nextLessonTeaser: "Next: launch day — Diagnostic One goes live"
 hints:
   - level: nudge
     content: "Write down what the system accepts, what it returns, and the conditions under which a clinician should override it; that last section matters most"

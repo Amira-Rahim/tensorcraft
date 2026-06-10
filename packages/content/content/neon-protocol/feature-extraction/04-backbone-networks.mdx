@@ -10,7 +10,7 @@ context:
   narrative: "Amir opens a comparison chart on the holotable: MobileNet, ResNet, EfficientNet, each with different tradeoffs. 'These are backbone networks,' he says. 'Pre-trained feature extractors that you plug into your system like shared component libraries. You do not build from scratch. You pick the right backbone and build on top.'"
   speaker: "Amir"
 concept:
-  explanation: "A backbone network is a pre-trained CNN that serves as a reusable feature extractor. Like importing a shared component library in frontend development, you use someone else's trained network as a foundation and build your specific application on top."
+  explanation: "A backbone network is a pre-trained CNN that serves as a reusable feature extractor. You strip off its classification head, keep the layers that turn pixels into features, and build your specific application on that foundation."
   bridge:
     feTitle: "Shared component libraries"
     feCode: "import { Button, Card } from '@company/ui-library';"
@@ -19,7 +19,6 @@ concept:
     tier: structural
 consequence:
   narrative: "Amir benchmarks three backbones on Noor's laptop. MobileNetV2: 48ms per frame. ResNet50: 180ms. 'For browser-based real-time detection,' he says, 'MobileNet is the only choice. We are not running on Meridian's server farms.'"
-  nextLessonTeaser: "Next: dimensionality reduction. Compressing 512 dimensions into 2 for visualization"
 hints:
   - level: nudge
     content: "Backbone networks are pre-trained models you use as feature extractors, like importing a UI library"
@@ -44,10 +43,10 @@ So MobileNet is like a lightweight UI library, fast but basic. And ResNet is lik
 </Dialogue>
 
 <Dialogue speaker="Amir">
-Half right, and the wrong half will cost you. ResNet is not "more powerful" the way a design system has more features. Both backbones do one job: turn an image into a feature vector. ResNet just spends more layers doing it. On this laptop, MobileNetV2 runs a frame in 45 milliseconds at 71.8% ImageNet accuracy. ResNet50 takes 180 milliseconds for 76.1%. Four times the latency buys you four points. You pick by constraint: inference speed, accuracy, memory footprint.
+"Lightweight" holds. "Powerful" is the word doing the damage: ResNet is not more powerful the way a design system has more features. Both backbones do one job, turning an image into a feature vector; ResNet just spends more layers doing it. On this laptop, MobileNetV2 runs a frame in 45 milliseconds at 71.8% ImageNet accuracy. ResNet50 takes 180 milliseconds for 76.1%. Four times the latency buys you four points. You pick by constraint: inference speed, accuracy, memory footprint.
 </Dialogue>
 
-<LearningObjectives objectives={["Understand backbone networks as reusable pre-trained feature extractors", "Compare common backbones: MobileNet, ResNet, EfficientNet", "Choose a backbone based on speed, accuracy, and deployment constraints", "Connect backbone selection to choosing frontend component libraries"]} />
+<LearningObjectives objectives={["Understand backbone networks as reusable pre-trained feature extractors", "Compare common backbones: MobileNet, ResNet, EfficientNet", "Choose a backbone based on speed, accuracy, and deployment constraints"]} />
 
 ## Backbone Selection
 

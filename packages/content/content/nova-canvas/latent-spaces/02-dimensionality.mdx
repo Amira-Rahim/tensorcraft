@@ -20,7 +20,6 @@ concept:
     breaks: "CSS custom properties are a small set of named scalars you authored. Latent dimensions are 100–10000 unnamed learned axes; meaningful directions are typically entangled across dimensions and require dedicated discovery (PCA on samples, attribute classifiers). Increasing latent dimensionality changes capacity, trainability, and disentanglement, not just expressivity."
 consequence:
   narrative: "Samir experiments with different latent sizes and discovers the tradeoff: too small and the reconstructions blur, too large and the space becomes sparse."
-  nextLessonTeaser: "Next: walking between points in latent space with interpolation"
 hints:
   - level: nudge
     content: "Build the encoder three times with units: 2, 16, and 128 in the bottleneck dense layer, then compare the reconstructions side by side"
@@ -39,11 +38,19 @@ keywords:
 When I define a design system for an installation, I choose my axes carefully. Color, scale, density, rhythm. Four dimensions describe every piece in the show. Too few and everything looks the same. Too many and I lose the coherence that makes it a *system*.
 </Dialogue>
 
-<Dialogue speaker="Rohan">
-Same in audio. Three knobs on a synth and you can explore a whole sound space. Thirty knobs and you are lost. Dimensionality is about finding the sweet spot.
+<Dialogue speaker="Samir">
+Then I'll give MUSE four dimensions and name them the same way. Color, scale, density, rhythm.
 </Dialogue>
 
-In your design systems, CSS custom properties define the axes of variation. `--color-primary`, `--spacing-unit`, `--border-radius`: each one is a dimension. Change one and the whole system shifts along that axis. A latent space works the same way.
+<Dialogue speaker="Yara">
+You'll give it sixteen and name none of them. I chose my four axes; MUSE has to learn its own from the data, and what it learns won't line up with a word like 'color'. Your job isn't picking the names. It's picking the budget.
+</Dialogue>
+
+<Dialogue speaker="Rohan">
+And budgets have failure modes in both directions. Three knobs on a synth and you can explore a whole sound space. Thirty and you're lost before the first patch.
+</Dialogue>
+
+The budget question is measurable. A 28x28 pattern arrives as 784 numbers, and the encoder has to decide what survives the squeeze. This lesson builds the same encoder at three budgets (2, 16, 128) and reads the answer off the reconstruction error.
 
 <LearningObjectives objectives={["Understand dimensionality as the number of independent axes in a space", "Recognize the compression tradeoff: too few dims lose info, too many fail to compress", "Build encoders with different bottleneck sizes", "Measure reconstruction quality to find the right dimensionality"]} />
 

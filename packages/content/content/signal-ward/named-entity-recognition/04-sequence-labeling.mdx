@@ -10,7 +10,7 @@ context:
   narrative: "Imran pushes for a neural approach to NER (one that considers context, not just individual tokens) while advocating for careful validation."
   speaker: "Imran"
 concept:
-  explanation: "Sequence labeling assigns a class to every token in a sequence using neural networks that consider surrounding context, like CSS class assignment where each element's class depends on its siblings."
+  explanation: "Sequence labeling assigns a class to every token using a model that reads the surrounding context, not the token alone. The same word earns different labels depending on its neighbors."
   bridge:
     feTitle: "CSS Class Assignment Per Element"
     feCode: "elements.forEach(el => el.className = getClass(el, siblings)); // context-aware styling"
@@ -20,7 +20,6 @@ concept:
     breaks: "CSS class assignment per element is deterministic: you wrote it. Token classification is per-position softmax, often using BiLSTM or transformer encoders, and adjacent token decisions are not independent (CRF layers model the joint distribution)."
 consequence:
   narrative: "Diagnostic One can now use surrounding context to resolve ambiguous tokens: 'cold' as a CONDITION vs. 'cold' as an adjective."
-  nextLessonTeaser: "Next: the breakthrough — your NER pipeline catches a drug interaction three doctors missed."
 hints:
   - level: nudge
     content: "Each token's label should depend on the tokens around it, not just itself"

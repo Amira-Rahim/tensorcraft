@@ -10,7 +10,7 @@ context:
   narrative: "Samir sketches the architecture on the whiteboard. 'It goes down (encoding), then back up (decoding). With skip connections bridging across.' Yara tilts her head. 'Like an hourglass.' Samir smiles: 'Exactly. A U-shape.'"
   speaker: "Samir"
 concept:
-  explanation: "The U-Net is an encoder-decoder architecture with skip connections. The encoder compresses the image to understand context; the decoder expands it back to predict noise. Skip connections preserve fine detail, like how a layout component wraps content but passes through children."
+  explanation: "The U-Net is an encoder-decoder for denoising: the encoder compresses the noisy image to understand global context, the decoder expands back to predict noise at every pixel, and skip connections carry the fine detail the bottleneck would otherwise destroy."
   bridge:
     feTitle: "Encoder-decoder layout patterns"
     feCode: "<Layout><Sidebar /><Content>{children}</Content></Layout>"
@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "Encoder-decoder UI patterns separate write from read. U-Net adds skip connections that fuse encoder activations directly into the decoder at matching resolutions. Information bypasses the bottleneck. The 'middle' of a U-Net is not a clean handoff; it is a multi-resolution merge."
 consequence:
-  narrative: "The U-Net predictions are sharp. Skip connections preserve the edges and textures that the bottleneck alone would blur. Erdem examines the output: 'The brushstrokes. It remembers the brushstrokes.'"
-  nextLessonTeaser: "Next: classifier-free guidance: steering generation with text prompts"
+  narrative: "Sharp predictions at last: skip connections carry the edges and textures the bottleneck alone would blur. Erdem examines the output: 'The brushstrokes. It remembers the brushstrokes.'"
 hints:
   - level: nudge
     content: "In decoder(bottleneck, skip), the skip tensor is the encoder's activation at the matching resolution, concatenated in so fine detail bypasses the bottleneck"
@@ -48,9 +47,9 @@ But if you compress and then expand, don't you lose detail? Like over-compressin
 That is what skip connections solve. They bridge from the encoder to the decoder at each resolution level, carrying the fine details that compression would destroy. Like passing `children` through a layout wrapper.
 </Dialogue>
 
-You build layout components that wrap content but pass children through unchanged. U-Nets do the same thing: the encoder captures context, the decoder generates output, and skip connections carry fine-grained detail across.
+Yara's JPEG worry is the right instinct, and skip connections are the whole answer to it. Without them, every fine edge has to survive a round trip through the bottleneck, and most don't. With them, detail takes the bridge while context takes the long way down and back up. The U-Net's middle is not a clean handoff; it is a multi-resolution merge.
 
-<LearningObjectives objectives={["Understand the U-Net encoder-decoder structure and why it suits denoising", "Implement downsampling (encoder) and upsampling (decoder) blocks", "Add skip connections that preserve fine detail across resolution levels", "Connect the architecture to frontend layout patterns with children passthrough"]} />
+<LearningObjectives objectives={["Understand the U-Net encoder-decoder structure and why it suits denoising", "Implement downsampling (encoder) and upsampling (decoder) blocks", "Add skip connections that preserve fine detail across resolution levels"]} />
 
 ## The U-Shape
 

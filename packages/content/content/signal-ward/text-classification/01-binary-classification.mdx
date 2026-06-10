@@ -20,7 +20,6 @@ concept:
     breaks: "Form validation produces hand-written boolean output. Binary classifiers output a probability; calibration matters because '0.51' and '0.99' carry different action implications, and rounding to a binary decision discards calibration information."
 consequence:
   narrative: "The first filter is live: MEDI now flags urgent documents before they hit the pile. But some documents need more than a binary label."
-  nextLessonTeaser: "Next: routing documents to multiple departments with multi-class classification."
 hints:
   - level: nudge
     content: "Use sigmoid activation for the output layer; it squashes values to [0, 1]"
@@ -40,7 +39,7 @@ keywords:
 Dr. Karimi, we've got 300 documents waiting in the queue. Lab results, imaging reports, discharge summaries, all mixed together. The nurses are drowning.
 </Dialogue>
 
-<Dialogue speaker="Dr. Zahra Karimi">
+<Dialogue speaker="Dr. Karimi">
 Some of those reports contain critical findings that can't wait. A potassium level of 7.2, a pulmonary embolism on CT. Those need to reach a physician in minutes, not hours.
 </Dialogue>
 
@@ -117,7 +116,7 @@ console.log(\`Urgency score: \${urgencyScore.toFixed(3)}, Flagged: \${isUrgent}\
 
 ## Thresholds Are Clinical Decisions
 
-<Dialogue speaker="Dr. Zahra Karimi">
+<Dialogue speaker="Dr. Karimi">
 Don't set that threshold at 0.5. In medicine, we'd rather flag ten routine documents as urgent than miss one truly critical finding. What's the cost of a false alarm versus a missed emergency?
 </Dialogue>
 
@@ -133,4 +132,4 @@ Build a binary classifier that flags clinical documents as urgent or routine.
 
 <Exercise slug="classify-urgency" />
 
-<KeyTakeaways takeaways={["Binary classification outputs a probability between 0 and 1 using sigmoid activation", "Binary crossentropy is the standard loss function for two-class problems", "The decision threshold is separate from the model — it's a policy decision", "In clinical settings, lower thresholds favor catching urgent cases over reducing false alarms"]} />
+<KeyTakeaways takeaways={["Binary classification outputs a probability between 0 and 1 using sigmoid activation", "Binary crossentropy is the standard loss function for two-class problems", "The decision threshold is a policy decision separate from the model: in clinical settings, lower thresholds favor catching urgent cases over reducing false alarms"]} />

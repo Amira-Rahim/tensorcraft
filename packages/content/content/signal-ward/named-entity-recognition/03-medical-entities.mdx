@@ -10,7 +10,7 @@ context:
   narrative: "The team builds a medical NER model handling drugs, conditions, procedures, and dosages: the complex type system of clinical language."
   speaker: "Vikram"
 concept:
-  explanation: "Medical NER requires domain-specific entity types, each with distinct patterns, like defining TypeScript union types where each variant has its own shape and validation rules."
+  explanation: "Medical NER requires domain-specific entity types: drugs, conditions, procedures, dosages. Each type has its own detection patterns, and a token misfiled across types is a clinical error, not a cosmetic one."
   bridge:
     feTitle: "TypeScript Union Types"
     feCode: "type Entity = Drug | Condition | Procedure; // each variant has its own shape"
@@ -20,7 +20,6 @@ concept:
     breaks: "TypeScript union types are checked at compile time against an exact list. Medical entity types come from controlled vocabularies (UMLS, SNOMED) with thousands of overlapping terms; the model must learn fuzzy mappings, not enforce a literal union."
 consequence:
   narrative: "Diagnostic One can now parse complex clinical notes, correctly distinguishing between drugs, conditions, procedures, and dosages even when they look similar."
-  nextLessonTeaser: "Next: sequence labeling with neural networks — training a model to assign these types automatically."
 hints:
   - level: nudge
     content: "Each entity type has distinct patterns: drugs have specific suffixes, dosages have numeric patterns, abbreviations map to known types"
@@ -43,7 +42,7 @@ General NER knows three types: Person, Location, Organization. Medical NER needs
 So each entity type is like a variant in a union: `type Entity = Drug | Condition | Procedure | Dosage`. Each variant has its own shape: drugs have generic names and brand names, dosages have numbers and units, conditions have standard codes.
 </Dialogue>
 
-<Dialogue speaker="Dr. Zahra Karimi">
+<Dialogue speaker="Dr. Karimi">
 And just like TypeScript catches type errors at compile time, our NER needs to catch classification errors before they reach a clinician. Labeling "methotrexate" as a CONDITION instead of a DRUG could be dangerous downstream.
 </Dialogue>
 

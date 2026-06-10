@@ -99,7 +99,10 @@ const lessons = defineCollection({
       })
       .optional(),
 
-    // 3-level progressive hints
+    // Progressive hints. Default is the 3-level ladder (nudge/guidance/
+    // solution); 2 hints are legal where the exercise is a single call and a
+    // middle "guidance" tier would just restate the solution (style bible
+    // rule 3: counts are not sacred).
     hints: s
       .array(
         s.object({
@@ -107,7 +110,8 @@ const lessons = defineCollection({
           content: s.string().min(1),
         }),
       )
-      .length(3)
+      .min(2)
+      .max(3)
       .optional(),
 
     // Pedagogical pattern — drives alternate 5C presentations.

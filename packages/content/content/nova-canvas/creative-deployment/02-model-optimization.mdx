@@ -10,7 +10,7 @@ context:
   narrative: "The profiling data is clear: the model is too large for real-time gallery use. Erdem calls the team. 'We need a smaller model that produces the same quality. Distillation and quantization, the same tricks that make webpack bundles smaller.'"
   speaker: "Erdem"
 concept:
-  explanation: "Model optimization reduces inference time by shrinking the model: quantization reduces precision (like image compression), distillation trains a smaller student model to mimic a larger teacher."
+  explanation: "Model optimization shrinks the network until inference fits the frame budget: quantization trades numeric precision for size, distillation trains a smaller student to mimic a larger teacher, and every step is a measured trade of quality for speed."
   bridge:
     feTitle: "Webpack Production Build"
     feCode: "// minify + tree-shake + compress: 2MB → 200KB, same functionality"
@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "Webpack production build minifies and tree-shakes deterministically. Model optimization (quantization, pruning, distillation) trades accuracy for size and the right tradeoff depends on the use case. There is no '--mode production' that always works."
 consequence:
-  narrative: "The optimized model runs in 340ms, down from 3.2 seconds. Erdem: 'Ten times faster. The quality drop is barely visible. Ship it.'"
-  nextLessonTeaser: "Next: caching and precomputation for instant responses"
+  narrative: "340 milliseconds, down from 3.2 seconds. Erdem reads the benchmark twice before he lets himself believe it. 'Ten times faster. The quality drop is barely visible. Ship it.'"
 hints:
   - level: nudge
     content: "Quantization converts float32 weights to uint8 during model conversion: 4 bytes become 1, and you measure what the lost precision costs in output quality"

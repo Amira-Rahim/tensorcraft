@@ -10,7 +10,7 @@ context:
   narrative: "Zara zooms into a crowd on the District 7 feed. The semantic mask shows all people as the same red blob. 'Useful. But the resistance needs to count individuals. We need to tell them apart. That is instance segmentation.'"
   speaker: "Zara"
 concept:
-  explanation: "Instance segmentation distinguishes individual objects of the same class. While semantic segmentation labels all 'person' pixels the same, instance segmentation gives each person a unique ID, like DOM elements that share a class but have unique IDs."
+  explanation: "Instance segmentation distinguishes individual objects of the same class. While semantic segmentation labels all 'person' pixels the same, instance segmentation gives each person its own mask and ID, so you can count and track individuals rather than categories."
   bridge:
     feTitle: "DOM element identity vs class"
     feCode: "document.querySelectorAll('.person'); // same class, different elements"
@@ -20,7 +20,6 @@ concept:
     breaks: "DOM identity (querySelector) and class (className) are author-assigned and unique by construction. Instance segmentation must distinguish overlapping objects of the same class from raw pixels. The model assigns instance IDs that may merge two adjacent cars or split one car into multiple instances. ID stability across frames requires explicit tracking, not just per-frame segmentation."
 consequence:
   narrative: "The red blob separates into distinct silhouettes, each person outlined individually. NEON chimes in: 'I can now track 14 individuals in this frame. Meridian tracks 14 million. But ours run in the browser.'"
-  nextLessonTeaser: "Next: U-Net architecture. The encoder-decoder structure that makes dense prediction possible"
 hints:
   - level: nudge
     content: "Instance segmentation combines detection (which objects?) with segmentation (which pixels?)"
@@ -36,7 +35,7 @@ keywords:
 ---
 
 <Dialogue speaker="Zara">
-Semantic segmentation says "these pixels are people." Instance segmentation says "these pixels are person one, those are person two, and that cluster in the back is person three." It is the difference between `document.querySelectorAll('.person')` and selecting each element by its unique ID.
+Semantic segmentation stops at "these pixels are people." Instance segmentation keeps going. This is person one. That is person two. The cluster in the back is person three. It is `document.querySelectorAll('.person')` versus selecting each element by its unique ID.
 </Dialogue>
 
 <Dialogue speaker="Noor">

@@ -10,7 +10,7 @@ context:
   narrative: "Demir begins wiring TensorFlow.js into the ship's dashboard. Nazari watches over his shoulder, timing every step."
   speaker: "Ensign Demir"
 concept:
-  explanation: "Setting up TensorFlow.js in a web project follows the same pattern as any npm dependency — install, import, configure the backend."
+  explanation: "Install, import, configure: TensorFlow.js enters a project like any npm dependency. The backend check is the one step that isn't routine."
   bridge:
     feTitle: "npm install"
     feCode: "npm install react react-dom"
@@ -34,17 +34,19 @@ keywords:
 skillAxes: [deployment, fe_integration]
 ---
 
+> **BRIDGE CONSOLE · BENCHMARK** · same matMul, same browser tab: webgl 0.5 ms · wasm 3.0 ms · cpu 15.0 ms
+
 <Dialogue speaker="Ensign Demir">
 Installing TensorFlow.js feels exactly like adding any other dependency. npm install, import, configure. I've done this a thousand times.
 </Dialogue>
 
 <Dialogue speaker="Chief Nazari">
-Good. Because the hard part isn't installation. It's what comes after. Check the backend. If it falls back to CPU, our inference budget is blown.
+Then explain the benchmark on your screen. The hard part isn't installation; it's what comes after. Check the backend. If it falls back to CPU, our inference budget is blown.
 </Dialogue>
 
-0.5 milliseconds, 3 milliseconds, 15 milliseconds. Same matrix multiply, same browser tab, a 30× spread — the only variable is which engine TF.js lands on. Installation is the part you already know; the new concept is **backends**: TF.js can run on WebGL (GPU), WebAssembly (CPU, optimized), or plain JavaScript (CPU, slow).
+A 30× spread on identical code, and the only variable is which engine TF.js lands on. Installation is the part you already know; the new concept is **backends**: TF.js can run on WebGL (GPU), WebAssembly (CPU, optimized), or plain JavaScript (CPU, slow).
 
-<LearningObjectives objectives={["Install and import TensorFlow.js in a web project", "Understand TF.js backends (WebGL, WASM, CPU) and their performance characteristics", "Initialize TF.js and verify which backend is active", "Configure the optimal backend for your deployment target"]} />
+<LearningObjectives objectives={["Install and import TensorFlow.js in a web project", "Understand TF.js backends (WebGL, WASM, CPU) and their performance characteristics", "Initialize TF.js, verify the active backend, and configure the right one for your target"]} />
 
 ## Install and Import
 

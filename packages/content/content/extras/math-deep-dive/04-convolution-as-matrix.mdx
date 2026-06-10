@@ -21,14 +21,13 @@ concept:
     breaks: "CSS transform matrix is a fixed 3x3 you wrote. The Toeplitz matrix that represents a convolution is automatically derived from the kernel, sparse, structured, and used only as a mathematical equivalence; practical implementations exploit the structure to avoid the explicit matrix."
 consequence:
   narrative: "Seeing convolution as matrix multiplication reveals why GPUs are perfect for neural networks."
-  nextLessonTeaser: "Next: information theory and why cross-entropy loss works"
 hints:
   - level: nudge
     content: "A Toeplitz matrix has the same values along each diagonal, like a sliding window frozen in matrix form"
   - level: guidance
-    content: "Build the Toeplitz matrix by placing the kernel at each possible position in the input"
+    content: "The matrix needs one row per output position: inputLength - kernelLength + 1 rows, inputLength columns. Row i is all zeros except the kernel, which starts at column i. Build each row, then stack them."
   - level: solution
-    content: "Each row of the Toeplitz matrix is the kernel shifted by one position, padded with zeros"
+    content: "buildToeplitz: Array.from({ length: inputLength - kernel.length + 1 }, (_, i) => { const row = new Array(inputLength).fill(0); kernel.forEach((k, j) => { row[i + j] = k; }); return row; }). convolveViaMatrix: tf.matMul(tf.tensor2d(toeplitz), tf.tensor2d(input, [input.length, 1])).squeeze()"
 keywords:
   - toeplitz-matrix
   - convolution-theorem

@@ -10,7 +10,7 @@ context:
   narrative: "A single FFT shows frequency content at one moment. But the anomalous signal changes over time. Farah needs a spectrogram — frequency content plotted across time."
   speaker: "Dr. Farah"
 concept:
-  explanation: "A spectrogram shows how frequency content changes over time — like the Chrome DevTools performance waterfall that shows event types distributed across a timeline."
+  explanation: "A spectrogram plots frequency content against time: stack one FFT per window and the signal's behavior becomes a picture you can read."
   bridge:
     feTitle: "DevTools Waterfall"
     feCode: "// Performance tab: time on x-axis, event type on y-axis, duration as width"
@@ -19,7 +19,7 @@ concept:
     tier: intuition
     breaks: "DevTools waterfall shows discrete network events on a timeline. Spectrograms are continuous heatmaps of frequency over time computed via overlapping windowed FFTs — every pixel carries energy, not an event marker."
 consequence:
-  narrative: "The spectrogram reveals a pattern — the anomalous frequency appears in bursts, not continuously. It pulses roughly every 73.4 seconds."
+  narrative: "Bursts, not a constant tone. The anomalous frequency pulses, and the gap between pulses measures roughly 73.4 seconds."
 hints:
   - level: nudge
     content: "A spectrogram is just many FFTs stacked side by side, one per time window"
@@ -44,7 +44,7 @@ The FFT tells us which frequencies are present, but not *when* they appear. The 
 So we compute the FFT at different time windows and stack them together? That sounds like... the DevTools performance waterfall. Time on one axis, event types on another, colored by duration.
 </Dialogue>
 
-Demir's mapping mostly survives contact. A spectrogram keeps the waterfall's layout (time on x, frequency on y, color for magnitude) with one difference worth holding onto: a waterfall marks discrete events, while every pixel of a spectrogram carries energy.
+Demir's mapping holds, and nobody corrects it because there is nothing to correct. A spectrogram keeps the waterfall's layout exactly: time on x, frequency on y, color for magnitude. Read enough of them and DevTools waterfalls start looking like spectrograms of your app.
 
 <LearningObjectives objectives={["Understand spectrograms as time-frequency representations of signals", "Implement the Short-Time Fourier Transform (STFT) by windowing and computing FFTs", "Read spectrogram output: what the axes and values mean", "Connect spectrogram visualization to the DevTools waterfall mental model"]} />
 
@@ -185,7 +185,7 @@ spectrogram[t, k] = |X[t, k]|²            // magnitude squared
 
 <Epilogue>
 
-On the spectrogram the anomaly resolves into a row of bright dashes marching along the time axis: on, off, on, off. Farah measures the gaps by hand and gets 73.4 seconds, give or take — she writes "~73.4 s" on the board and deliberately keeps the tilde. The same number twice now, hertz within the pulse and seconds between pulses, and she does not yet have a theory that deserves it. ARIA holds the image on the main display for eleven seconds, which for ARIA is staring.
+On the spectrogram the anomaly resolves into a row of bright dashes marching along the time axis: on, off, on, off. Farah measures the gaps by hand and gets 73.4 seconds, give or take; she writes "~73.4 s" on the board and deliberately keeps the tilde. The same number twice now, hertz within the pulse and seconds between pulses, and she does not yet have a theory that deserves it. ARIA holds the image on the main display for eleven seconds, which for ARIA is staring.
 
 <Dialogue speaker="ARIA">
 My rules monitored this band for eleven days and reported silence, because no rule of mine could see time and frequency at once. Request: store a copy of this spectrogram in my reference partition.

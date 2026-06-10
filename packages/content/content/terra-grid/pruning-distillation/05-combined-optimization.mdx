@@ -20,12 +20,11 @@ concept:
     breaks: "Webpack production config combines minification + tree-shaking + chunk splitting orthogonally. Combined model optimization (prune + quantize + distill) interactions are non-orthogonal. The order and parameter values must be tuned jointly to recover acceptable accuracy."
 consequence:
   narrative: "The 200MB cloud model becomes a 5MB edge model. It passes all deployment budgets."
-  nextLessonTeaser: "Module complete. The foundation for edge deployment is set."
 hints:
   - level: nudge
     content: "Order matters: distill first, then prune, then quantize"
   - level: guidance
-    content: "Each technique compounds: distill (10x) * prune (2x) * quantize (4x) = 80x"
+    content: "Each technique compounds: distill (5x) * prune (2x) * quantize (4x) = 40x"
   - level: solution
     content: "Pipeline: teacher→student distillation, structured pruning, Int8 quantization, fine-tune"
 keywords:
@@ -70,8 +69,8 @@ function calculatePipeline(
 
   // Step 1: Knowledge Distillation (teacher → student)
   // Like code splitting: extract route-specific code
-  const distilledSize = currentSize * 0.1; // 10x reduction
-  const distilledAcc = currentAccuracy * 0.97; // 3% accuracy cost
+  const distilledSize = currentSize * 0.2; // 5x reduction
+  const distilledAcc = currentAccuracy * 0.98; // 2% accuracy cost
   steps.push({
     step: '1. Distillation (code splitting)',
     inputSizeMB: currentSize,
@@ -115,11 +114,11 @@ const pipeline = calculatePipeline(200, 0.985);
 pipeline.forEach(s => {
   console.log(\`\${s.step}: \${s.inputSizeMB.toFixed(1)}MB → \${s.outputSizeMB.toFixed(1)}MB (\${s.reduction})\`);
 });
-// 1. Distillation: 200.0MB → 20.0MB (10x)
-// 2. Pruning: 20.0MB → 10.0MB (2x)
-// 3. Quantization: 10.0MB → 2.5MB (4x)
-// Total: 200MB → 2.5MB = 80x reduction
-// Accuracy: 98.5% → 93.7% — still above 92% threshold`}
+// 1. Distillation: 200.0MB → 40.0MB (5x)
+// 2. Pruning: 40.0MB → 20.0MB (2x)
+// 3. Quantization: 20.0MB → 5.0MB (4x)
+// Total: 200MB → 5MB = 40x reduction
+// Accuracy: 98.5% → 94.4% — still above 92% threshold`}
 </CodeBlock>
 
 The order matters. Distill first to get the right architecture size, then prune to remove redundant neurons, then quantize to reduce precision. This mirrors the Webpack pipeline: tree-shake first (remove code), then minify (shrink code), then compress (reduce size).
@@ -134,10 +133,10 @@ Calculate combined optimization results for a full pipeline.
 
 <Quiz
   question="Why prune BEFORE quantizing instead of after?"
-  options={[{"text":"Pruning produces zero weights → quantization can use the gained dynamic range for non-zero weights"},{"text":"Quantization breaks pruning"},{"text":"Pruning requires FP32"},{"text":"Order doesn't matter"}]}
+  options={[{"text":"Pruning and its recovery fine-tuning need full-precision weights; quantization calibrates its scales on the final weight distribution, so it has to come last"},{"text":"Quantization breaks pruning"},{"text":"Pruning requires FP32"},{"text":"Order doesn't matter"}]}
   correct={0}
-  explanation="Pruning sets ~50%+ weights to zero. Quantization then bins the remaining non-zero weights with finer resolution (256 INT8 values for the surviving ~50% instead of all 100%). Reverse order: quantize first → pruning has fewer values to work with → less effective."
+  explanation="Uniform INT8 picks one scale from the tensor's min/max, so zeroed-out weights do not buy the survivors any extra resolution. The order matters for a different reason: pruning needs fine-tuning to recover accuracy, and fine-tuning happens in float. Quantize first and every later change (pruning, recovery training) shifts the weight distribution the INT8 scales were calibrated against, so you would have to recalibrate or eat the error."
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Combined techniques compound: 10x * 2x * 4x = 80x total reduction", "Order: distillation first, then pruning, then quantization", "Always fine-tune after each step to recover accuracy", "Validate the final model on target hardware; compression changes latency and memory in ways the training environment hides"]} />
+<KeyTakeaways takeaways={["Combined techniques compound: 5x * 2x * 4x = 40x total reduction", "Order: distillation first, then pruning, then quantization", "Always fine-tune after each step to recover accuracy", "Validate the final model on target hardware; compression changes latency and memory in ways the training environment hides"]} />

@@ -19,14 +19,13 @@ concept:
     breaks: "Sort and slice runs in O(n log n) over data already in memory. KNN lookups need a distance metric, scale poorly with dimensionality (curse of dimensionality), and require all training data at query time; there is no model artifact, only the dataset."
 consequence:
   narrative: "Sort, slice, vote: a working classifier with zero training time. For small datasets with clear clusters, KNN is hard to beat. The open question: what happens when your features number in the thousands?"
-  nextLessonTeaser: "Next: ensemble methods, combining many weak models into one strong one"
 hints:
   - level: nudge
     content: "Euclidean distance is just the Pythagorean theorem extended to N dimensions"
   - level: guidance
-    content: "Sort all training points by distance to the query point, take the first k"
+    content: "Compute the distance from the query point to every training point. Sort the training points by that distance and keep the first k. The prediction is whichever label appears most among those k."
   - level: solution
-    content: "distances.sort().slice(0, k).map(d => d.label) then majority vote"
+    content: "const dist = (a, b) => Math.sqrt(a.reduce((s, v, i) => s + (v - b[i]) ** 2, 0)); const nearest = data.map(d => ({ label: d.label, d: dist(point, d.features) })).sort((x, y) => x.d - y.d).slice(0, k); then count labels and return the most frequent."
 keywords:
   - knn
   - distance-metrics
@@ -38,7 +37,7 @@ keywords:
 k-nearest neighbors has no training step at all. No weights to learn, no gradients to compute, no epochs to wait through. You store the data and look things up at prediction time. That's the whole algorithm.
 </Dialogue>
 
-As a frontend developer, you already know this pattern. Ever built a search feature that sorts results by relevance? Or a "similar products" section that finds items closest to the one being viewed? That's KNN.
+Ever built a search feature that sorts results by relevance? Or a "similar products" section that finds the items closest to the one being viewed? Then you've already shipped KNN. You just never called it that.
 
 <LearningObjectives objectives={["Implement KNN classification from scratch using distance metrics", "Understand Euclidean vs. Manhattan distance and when to use each", "Choose an appropriate value for k and understand its effect", "Recognize the curse of dimensionality and when KNN breaks down"]} />
 

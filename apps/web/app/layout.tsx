@@ -288,7 +288,7 @@ export default function RootLayout({
                     name: "Is Tensorcraft free?",
                     acceptedAnswer: {
                       "@type": "Answer",
-                      text: `Module 1 of every theme is free — no account or credit card required. Full themes cost $${PRICING.single.price} each, with bundle discounts available up to $${PRICING.allFive.price} for all 5 themes.`,
+                      text: `Module 1 of Deep Orbit, the live theme, is free — no account or credit card required. The other four themes ship in waves, each with a waitlist. Full themes cost $${PRICING.single.price} each, with bundle discounts available up to $${PRICING.allFive.price} for all 5 themes.`,
                     },
                   },
                   {

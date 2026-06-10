@@ -10,7 +10,7 @@ context:
   narrative: "The crew needs to predict WHEN the anomaly will appear next. Demir builds a forecasting system — predicting future signal behavior from past patterns."
   speaker: "Dr. Farah"
 concept:
-  explanation: "Time-series forecasting predicts future values from past patterns — like predictive prefetching that loads resources before the user needs them."
+  explanation: "Time-series forecasting predicts future values from past patterns, and every step ahead compounds the previous step's error."
   bridge:
     feTitle: "Prefetching"
     feCode: "<link rel='prefetch' href='/next-page' /> // predict what's needed next"
@@ -45,7 +45,7 @@ Then someone — or something — is sending it.
 
 You've used `<link rel="prefetch">` to predict which page the user will navigate to next and preload it. Forecasting is the same idea applied to time series: based on past patterns, predict what the signal will look like in the future.
 
-<LearningObjectives objectives={["Build a multi-step forecasting system using rolling predictions", "Evaluate forecast accuracy with horizon-dependent metrics", "Understand non-stationarity — when past patterns stop predicting the future", "Handle prediction uncertainty with confidence intervals"]} />
+<LearningObjectives objectives={["Build a multi-step forecasting system using rolling predictions", "Understand non-stationarity, when past patterns stop predicting the future", "Detect drift by comparing recent prediction errors to a historical baseline"]} />
 
 ## Multi-Step Forecasting
 
@@ -58,10 +58,10 @@ async function forecast(
   model: tf.LayersModel,
   seed: number[][],
   horizon: number,
-): Promise<{ predictions: number[][]; confidence: number[] }> {
+): Promise<{ predictions: number[][]; trustHeuristic: number[] }> {
   const window = [...seed];
   const predictions: number[][] = [];
-  const confidence: number[] = [];
+  const trustHeuristic: number[] = [];
 
   for (let step = 0; step < horizon; step++) {
     const nextValue = tf.tidy(() => {
@@ -73,19 +73,20 @@ async function forecast(
     predictions.push(nextValue);
     window.push(nextValue);
 
-    // Confidence decreases with each step — errors compound
-    // Like prefetch accuracy dropping the further ahead you predict
-    confidence.push(Math.max(0, 1 - step * 0.015));
+    // Placeholder heuristic, NOT a real confidence interval: a hand-tuned
+    // linear decay that encodes "trust later steps less." A measured
+    // interval would come from the model's error distribution.
+    trustHeuristic.push(Math.max(0, 1 - step * 0.015));
   }
 
-  return { predictions, confidence };
+  return { predictions, trustHeuristic };
 }
 
 // Forecast 100 steps ahead
 const result = await forecast(model, recentWindow, 100);
-console.log('Step 1 confidence:', result.confidence[0]);    // 0.985
-console.log('Step 50 confidence:', result.confidence[49]);  // 0.265
-console.log('Step 100 confidence:', result.confidence[99]); // 0.0 — too far ahead`}
+console.log('Step 1 trust:', result.trustHeuristic[0]);    // 0.985 (hand-tuned decay)
+console.log('Step 50 trust:', result.trustHeuristic[49]);  // 0.265
+console.log('Step 100 trust:', result.trustHeuristic[99]); // 0.0 — too far ahead`}
 </CodeBlock>
 
 ## Non-Stationarity: When Predictions Fail

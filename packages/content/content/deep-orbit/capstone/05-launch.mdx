@@ -10,7 +10,7 @@ context:
   narrative: "Everything is ready. Mirza gives the final order: 'Deploy DEEP SCAN. Classify the anomalous signal. Let's find out what we've been chasing across the galaxy.' Demir deploys. The signal is classified."
   speaker: "Commander Mirza"
 concept:
-  explanation: "Deploying an ML system to production is the same as deploying a web app — build, optimize, ship to a static host. The model is just another asset in the bundle."
+  explanation: "Deploying an ML system to production is the same motion as deploying a web app: build, optimize, ship to a static host, with the model as one more asset in the bundle."
   bridge:
     feTitle: "Static Site Deploy"
     feCode: "npm run build && gh-pages -d dist // bundle, optimize, ship"
@@ -36,11 +36,15 @@ keywords:
 skillAxes: [deployment]
 ---
 
-<Dialogue speaker="Commander Mirza">
-Ten modules. Four months of work. The model is optimized, tested, monitored, documented. There is nothing left to prepare. Deploy DEEP SCAN. Classify the anomalous signal. Let us find out what we have been chasing.
+<Dialogue speaker="Chief Nazari">
+Ten modules, four months of work. Optimized, tested, monitored, documented: nothing left on my list.
 </Dialogue>
 
-Every web app you've built ends the same way: `npm run build`, push to production, watch the deploy. DEEP SCAN ends that way too — the model is a static asset like an image or a font, bundled into the build output, served from a CDN, and run entirely in the browser.
+<Dialogue speaker="Commander Mirza">
+Then deploy DEEP SCAN. Classify the signal.
+</Dialogue>
+
+Every web app you've built ends the same way: `npm run build`, push to production, watch the deploy. DEEP SCAN ends that way too. The model is a static asset like an image or a font, bundled into the build output, served from a CDN, and run entirely in the browser.
 
 <LearningObjectives objectives={["Configure a production build that includes model assets alongside web assets", "Deploy an ML-powered web app to GitHub Pages as a static site", "Verify the deployed system loads and runs inference correctly", "Complete the DEEP SCAN mission: classify the anomalous signal"]} />
 
@@ -237,14 +241,14 @@ Write a deployment verification script for the complete system.
 
 <Epilogue>
 
-The classification lands on every display on the bridge at once. Nobody speaks. Nazari leans over her console and checks the sensor calibration log — third time tonight — then, slowly, a fourth.
+The classification lands on every display on the bridge at once. Nobody speaks. Nazari leans over her console and checks the sensor calibration log a third time tonight. Then, slowly, a fourth.
 
 <Dialogue speaker="Chief Nazari">
 Calibration's clean. I checked it four times. Those are our harmonics, in a signal that left its source before this ship was built.
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-Then either the universe loves the same math we do — phyllotaxis, shell spirals, Fibonacci everywhere — or something out there heard us, and answered in our own voice. The model can't choose between those. That part was never going to be its job.
+Then either the universe loves the same math we do, phyllotaxis and shell spirals and Fibonacci everywhere — or something out there heard us, and answered in our own voice. The model can't choose between those. That part was never going to be its job.
 </Dialogue>
 
 <Dialogue speaker="ARIA">

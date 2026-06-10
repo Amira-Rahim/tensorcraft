@@ -7,10 +7,10 @@ order: 5
 estimatedMinutes: 35
 difficulty: intermediate
 context:
-  narrative: "Amir finally reveals what he knows. 'Meridian uses YOLOv5 on every drone. You Only Look Once. A single neural network pass that outputs all detections at once. No region proposals, no two-stage pipeline. One shot.' Dilan leans forward. 'Then we build one that is faster. One that runs in the browser. For the first time, we see the drones before they see us.'"
+  narrative: "The 1.9-second frame time is still glowing on the holotable when Amir finally reveals what he knows. 'Meridian uses YOLOv5 on every drone. You Only Look Once. A single neural network pass that outputs all detections at once. No region proposals, no two-stage pipeline. One shot.' Dilan leans forward. 'Then we build one that is faster. One that runs in the browser.'"
   speaker: "Amir"
 concept:
-  explanation: "YOLO (You Only Look Once) performs object detection in a single forward pass through the network. Instead of scanning regions one at a time, it processes the entire image at once, like single-pass browser rendering versus multi-pass layout recalculation."
+  explanation: "YOLO (You Only Look Once) performs object detection in a single forward pass through the network. Instead of scanning regions one at a time, it processes the entire image at once and predicts every box, label, and confidence score simultaneously."
   bridge:
     feTitle: "Single-Pass Rendering"
     feCode: "requestAnimationFrame(() => updateAllElements()); // one pass, all updates"
@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "Single-pass rendering produces final HTML in one server pass. YOLO does single-shot detection in one forward pass but pays for it with anchor-grid design choices, multi-scale prediction heads, and harder training compared to two-stage detectors."
 consequence:
-  narrative: "The resistance's browser-based detector goes live. On Noor's laptop, running in a web worker with WebGL acceleration, it processes drone footage at 24 FPS. NEON watches the feed. 'For the first time, you see them before they see you. Meridian will not expect detection coming from a browser tab.' Dilan smiles. 'This changes everything.'"
-  nextLessonTeaser: "Module complete. Next module: tracking objects across frames in real-time"
+  narrative: "Twenty-four frames per second. On Noor's laptop, in a web worker with WebGL acceleration, the browser-based detector chews through drone footage faster than the drones change course. NEON watches the feed. 'For the first time, you see them before they see you. Meridian will not expect detection coming from a browser tab.' Dilan smiles. 'This changes everything.'"
 hints:
   - level: nudge
     content: "YOLO divides the image into a grid and predicts boxes, confidence, and class probabilities at each cell"
@@ -227,7 +226,7 @@ function detectObjects(
 // YOLO in browser (WebGPU): ~24 FPS — the resistance's advantage
 
 // The resistance's edge: Meridian never expects detection
-// running from a browser tab. No server. No API. No trace.
+// running from a browser tab, with no server or API to trace.
 // Just JavaScript, WebGL, and a model small enough to fit
 // in a service worker cache.`}
 </CodeBlock>

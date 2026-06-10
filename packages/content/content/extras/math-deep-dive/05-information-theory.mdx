@@ -21,14 +21,13 @@ concept:
     breaks: "Gzip compression measures redundancy in a single file. Entropy in ML measures expected information across a distribution and shows up in cross-entropy loss, mutual information, and KL divergence. Gzip is a useful intuition for compressibility but does not yield gradients."
 consequence:
   narrative: "Understanding information theory turns loss function selection from guesswork into principled choice."
-  nextLessonTeaser: "Next: probability and Bayesian thinking for ML"
 hints:
   - level: nudge
     content: "Entropy measures surprise: a fair coin has maximum entropy because each flip is maximally surprising"
   - level: guidance
-    content: "Cross-entropy H(p, q) = -sum(p(x) * log(q(x))) penalizes confident wrong predictions heavily"
+    content: "Start with entropy: loop over the probabilities, skip zeros, accumulate p * Math.log(p), and negate the sum. Check entropy([0.5, 0.5]); it should print 0.6931 (ln 2). crossEntropy is the same loop except the log takes the predicted probability."
   - level: solution
-    content: "KL divergence = cross-entropy minus entropy: KL(p||q) = H(p,q) - H(p)"
+    content: "entropy: -probs.reduce((s, p) => p > 0 ? s + p * Math.log(p) : s, 0). crossEntropy: -trueProbs.reduce((s, p, i) => p > 0 ? s + p * Math.log(predictedProbs[i]) : s, 0). klDivergence: crossEntropy(p, q) - entropy(p)."
 keywords:
   - entropy
   - cross-entropy
@@ -118,14 +117,18 @@ console.log('Terrible prediction CE:', crossEntropy(trueLabel, terriblePred).toF
 // This is why cross-entropy penalizes confident wrong predictions
 // so harshly — the log makes small probabilities very expensive
 
-// TensorFlow.js built-in (uses natural log, not log2)
-const trueTensor = tf.tensor1d([1, 0, 0]);
-const predTensor = tf.tensor1d([0.9, 0.05, 0.05]);
-const ce = tf.losses.softmaxCrossEntropy(
-  trueTensor.reshape([1, 3]),
-  predTensor.reshape([1, 3])
-);
-console.log('TF cross-entropy:', await ce.array());`}
+// TensorFlow.js built-in (uses natural log, not log2).
+// softmaxCrossEntropy expects LOGITS, the raw pre-softmax scores,
+// not probabilities. Log-probabilities work as logits here because
+// softmax(ln(p)) recovers p exactly when p sums to 1.
+const labels = tf.tensor2d([[1, 0, 0]]);
+const logits = tf.tensor2d([
+  [Math.log(0.9), Math.log(0.05), Math.log(0.05)]
+]);
+const ce = tf.losses.softmaxCrossEntropy(labels, logits);
+console.log('TF cross-entropy:', await ce.array());
+// 0.1054 nats. Divide by ln(2) and you get 0.1520 bits,
+// the same number we computed by hand for goodPred above.`}
 </CodeBlock>
 
 ## KL Divergence: Distance Between Distributions

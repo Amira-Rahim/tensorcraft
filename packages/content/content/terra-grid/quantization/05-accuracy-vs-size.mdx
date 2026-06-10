@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "Lossy image compression has a perceptual quality target: the user sees the result and judges it directly. Quantization tradeoffs are measured against held-out test accuracy; a 1% drop may be invisible to the developer running locally on familiar inputs but unacceptable in production where it manifests as silently wrong predictions on edge cases."
 consequence:
-  narrative: "You define the minimum acceptable accuracy for each use case. The Site 23 lesson is learned."
-  nextLessonTeaser: "Next module: pruning and distillation for even more compression"
+  narrative: "Every model in the registry now carries a minimum-accuracy threshold next to its size budget. The Site 23 lesson is learned."
 hints:
   - level: nudge
     content: "Define the accuracy floor before you start compressing"
@@ -46,6 +45,8 @@ JPEG quality 85 produces images visually identical to the original at 60% smalle
 ## Finding the Knee
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
+
+The knee is the point on the accuracy-size curve where compression stops being free. Above it, halving the model costs almost nothing, the way JPEG quality 100 to 85 costs almost nothing. Below it, every saved megabyte charges accuracy you can measure on the test set. The code below walks one model down the curve and marks where each format lands against a 97% floor.
 
 <CodeBlock language="typescript" title="accuracy-vs-size.ts">
 {`interface QuantizationResult {
@@ -105,7 +106,7 @@ turbine.forEach(r => console.log(
 // Int8 (QAT): 50MB, 98.0%, PASS ← best choice`}
 </CodeBlock>
 
-For safety-critical applications, QAT is worth the extra training time because it preserves more accuracy at the same compression ratio. For non-critical telemetry, post-training quantization is faster and good enough.
+Run the table for turbine monitoring and the knee announces itself. Float16 is free. Post-training Int8 scrapes past the 97% floor with 0.3 points to spare, which is not a margin Hassan would sign off on for a safety system. Int8 with quantization-aware training lands at 98.0% at the same 50MB, and that recovered accuracy is exactly what QAT's extra training time purchases. For non-critical telemetry with its 92% floor, post-training quantization clears the bar by five points and the extra training would be money spent on margin nobody needs.
 
 ## Challenge
 
@@ -144,8 +145,6 @@ Binary (1 bit): ~50% top-1 accuracy     3.1% size               -- specialized
   explanation="Most layers tolerate INT8 (0.5-2% accuracy drop). Some don't: attention scores have huge dynamic range, layernorm parameters are tiny. Per-layer mixed quantization (sensitive layers stay FP16, bulk goes INT8) is the production fix."
   tier="structural"
 />
-
-## Knowledge check
 
 <Quiz
   question="Quantizing a vision classifier from FP32 to INT8 dropped accuracy from 92% to 88%. The deployment latency budget is 50ms; FP32 takes 80ms; INT8 takes 25ms. What's the right call for an attention-driven UI feature where wrong predictions are recoverable?"

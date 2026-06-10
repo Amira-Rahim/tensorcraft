@@ -10,7 +10,7 @@ context:
   narrative: "ARIA's rule-based detection system has failed. Dr. Farah proposes building an adaptive system — starting with a single computational unit."
   speaker: "Dr. Farah"
 concept:
-  explanation: "A neuron computes a weighted sum of inputs plus a bias, then applies an activation function — just like a reduce() callback that transforms accumulated values."
+  explanation: "A neuron is a weighted sum of inputs plus a bias, passed through an activation function: arithmetic small enough to write by hand, and the unit every network is built from."
   bridge:
     feTitle: "Array.reduce()"
     feCode: "inputs.reduce((sum, x, i) => sum + x * weights[i], bias)"
@@ -65,7 +65,7 @@ const jsOutput = jsInputs.reduce((sum, x, i) => sum + x * jsWeights[i], 0.1);
 console.log(jsOutput); // 0.18 — identical!`}
 </CodeBlock>
 
-Weights encode how much each input matters: a positive weight pushes the output up, a negative one pushes against it. The bias shifts the decision threshold — the baseline the weighted sum has to clear.
+Weights encode how much each input matters: a positive weight pushes the output up, a negative one pushes against it. The bias shifts the decision threshold, the baseline the weighted sum has to clear.
 
 ## Challenge
 
@@ -77,7 +77,7 @@ Build your first neuron to classify signal readings.
 
 <Epilogue>
 
-2341 hours. Farah routes the neuron's output to a spare monitor above the galley coffee machine and feeds it the two calibration tones on a loop. Tone A holds at 0.81, tone B at 0.12 — twenty minutes of telemetry without a single crossover. Nazari stops under the monitor on her way off shift and watches it longer than she would admit to.
+Farah routes the neuron's output to a spare monitor above the galley coffee machine and feeds it the two calibration tones on a loop. Tone A holds at 0.81, tone B at 0.12: twenty minutes of telemetry without a single crossover. Nazari stops under the monitor on her way off shift and watches it longer than she would admit to.
 
 <Dialogue speaker="Chief Nazari">
 Three weights and a bias can tell two tones apart. The stream from 7-G is sixty-four channels. How many weights before I trust this thing with my board?

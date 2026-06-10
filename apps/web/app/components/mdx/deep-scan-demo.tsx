@@ -120,7 +120,7 @@ export function DeepScanDemo() {
       <div className="p-4 space-y-1.5">
         {status === "loading" && (
           <p className="text-text-muted">
-            // loading model (8 KB) into your GPU…
+            // loading model (8 KB) into your browser…
           </p>
         )}
         {status === "error" && (
@@ -162,9 +162,9 @@ export function DeepScanDemo() {
           ))}
         {status === "done" && (
           <p className="pt-3 text-text-muted border-t border-border mt-3">
-            // that 51% is real — an actual neural network ran in your browser
-            just now. Five readings it understood. One it didn&rsquo;t. Teaching
-            it to answer is the rest of the course.
+            // that number is real — an actual neural network computed it in
+            your tab just now. Five readings it understood. One it didn&rsquo;t.
+            Teaching it to answer is the rest of the course.
           </p>
         )}
       </div>

@@ -10,7 +10,7 @@ context:
   narrative: "The cloud model knows everything about anomaly detection. We need to transfer that knowledge to a tiny edge model."
   speaker: "Priya Sharma"
 concept:
-  explanation: "Knowledge distillation trains a small 'student' model to mimic a large 'teacher' model, like code splitting where a small chunk contains just the code needed for a specific route."
+  explanation: "Knowledge distillation trains a small 'student' model to reproduce a large 'teacher' model's judgment, capturing the essential knowledge in a fraction of the parameters."
   bridge:
     feTitle: "Code Splitting"
     feCode: "// Full bundle: 2MB — everything\n// Route chunk: 50KB — just what's needed\nconst Page = lazy(() => import('./page'));"
@@ -18,8 +18,7 @@ concept:
     mlCode: "// Teacher: 200MB — full knowledge\n// Student: 5MB — distilled knowledge\nstudent.fitWith(teacherOutputs);"
     tier: structural
 consequence:
-  narrative: "The student model achieves 96% of the teacher's accuracy at 2.5% of the size."
-  nextLessonTeaser: "Next: the teacher-student training process in detail"
+  narrative: "96% of the teacher's accuracy at 2.5% of its size: the student passes."
 hints:
   - level: nudge
     content: "The student learns from the teacher's soft predictions, not just the hard labels"

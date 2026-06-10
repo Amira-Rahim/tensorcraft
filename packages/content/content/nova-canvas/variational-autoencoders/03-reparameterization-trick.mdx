@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "Seeded random is a tool for reproducibility. The reparameterization trick is a math hack to make stochastic sampling differentiable. Without it, gradients cannot flow through the sample step. The trick is structural to training, not a debugging convenience."
 consequence:
-  narrative: "The trick works: gradients flow through mu and logVar while epsilon provides the randomness. The VAE can now train end-to-end."
-  nextLessonTeaser: "Next: KL divergence: the regularizer that keeps the latent space well-organized"
+  narrative: "Gradients flow through mu and logVar while epsilon carries the randomness on the outside. By epoch 50 the encoder is finally moving. The VAE can train end-to-end."
 hints:
   - level: nudge
     content: "You cannot take the derivative of a random number. But you CAN take the derivative of mu + sigma * constant."
@@ -36,15 +35,15 @@ keywords:
   - epsilon
 ---
 
+Epoch 40: loss 0.241. Epoch 41: loss 0.241. Epoch 42: loss 0.240. Samir checks the decoder gradients: healthy. The encoder gradients: zero, every layer, every epoch. The training has been running for three hours and the encoder has learned nothing, because there is a sampling step between the two halves and gradients cannot cross it.
+
 <Dialogue speaker="Rohan">
-Here is the problem. You need to sample from the distribution to generate output. But sampling is random, and you cannot compute gradients through randomness. Backpropagation needs a smooth, differentiable path. Randomness is a wall.
+There's your wall. You need to sample from the distribution to generate output, but sampling is random, and you can't compute gradients through randomness. Backprop needs a smooth, differentiable path. A dice roll isn't one.
 </Dialogue>
 
 <Dialogue speaker="MUSE">
 I hit this wall in my own training. The gradient couldn't pass through my sampling step, so my encoder weights got nothing to learn from. The workaround: I draw epsilon from N(0, 1) outside the network and only learn the mu and sigma I scale it with. Gradients route around the randomness. It still feels like a loophole to me.
 </Dialogue>
-
-In frontend development, a seeded random number generator separates the *source of randomness* (the seed) from the *computation* that uses it. The computation is deterministic given a fixed seed, and therefore differentiable. The reparameterization trick applies this same separation to VAE training.
 
 <LearningObjectives objectives={["Understand why random sampling blocks gradient flow", "Implement the reparameterization trick in TensorFlow.js", "Connect seeded randomness to the concept of external noise", "Build a custom sampling layer for a VAE"]} />
 

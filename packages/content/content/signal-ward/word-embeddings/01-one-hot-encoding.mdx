@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "An enum value is a small integer with named identity. A one-hot vector is a length-N sparse vector with a single 1; N grows with vocabulary size, distance between any two encodings is identical (no notion of similarity), and storage is wasteful for large N. The integer ID is the link; the geometry is not."
 consequence:
-  narrative: "The team sees that one-hot encoding works for identification but is wasteful and blind to meaning. 10,000 words means 10,000-dimensional vectors with no semantic structure."
-  nextLessonTeaser: "Next: dense vectors that place similar words near each other in space."
+  narrative: "Fifty thousand dimensions per word, and the model still can't tell aspirin from a surgical procedure. Vikram leaves the whiteboard covered in zeros and one open question: where is the meaning supposed to live?"
 hints:
   - level: nudge
     content: "Create a zero-filled array with length equal to vocabulary size, then set one position to 1."
@@ -34,8 +33,6 @@ keywords:
   - word-representation
   - categorical-encoding
 ---
-
-> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
 <Dialogue speaker="Vikram">
 Imran, when you define a TypeScript enum (say, for medication categories), each value gets a unique number. But does the enum tell you that aspirin and ibuprofen are related?
@@ -52,6 +49,8 @@ That's one-hot encoding, minus one detail that costs you. Each word gets a uniqu
 One-hot encoding is the enum of machine learning. Each word gets a unique ID, but the representation carries no information about meaning, similarity, or relationships. It is the simplest possible encoding and the starting point for understanding why we need something better.
 
 <LearningObjectives objectives={["Create one-hot encoded vectors for vocabulary words using TensorFlow.js", "Understand why one-hot encoding captures no semantic relationships", "Calculate the memory cost of one-hot encoding at scale", "Recognize the limitations that motivate dense word embeddings"]} />
+
+> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
 ## The Enum of ML
 
@@ -114,7 +113,7 @@ So if a patient's chart mentions ibuprofen and the model has only seen aspirin i
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-No connection at all. It can't generalize. Every word is an island. That's why we need representations that place related words near each other: dense vectors that capture meaning, not just identity.
+No connection at all. It can't generalize. Every word is an island.
 </Dialogue>
 
 ## The Scale Problem
@@ -153,4 +152,4 @@ Implement one-hot encoding for clinical vocabulary words.
   tier="identity"
 />
 
-<KeyTakeaways takeaways={["A one-hot vector takes two lines: zero-fill an array the size of the vocabulary, then set the word's index to 1", "Every word is equally distant from every other word: no semantic relationships", "Memory cost scales linearly with vocabulary size (50K words = 50K dimensions per vector)", "We need denser representations that capture meaning — that is what word embeddings provide"]} />
+<KeyTakeaways takeaways={["A one-hot vector takes two lines: zero-fill an array the size of the vocabulary, then set the word's index to 1", "Every word is equally distant from every other word: the encoding carries identity but no notion of similarity", "Memory cost scales linearly with vocabulary size (50K words = 50K dimensions per vector)"]} />

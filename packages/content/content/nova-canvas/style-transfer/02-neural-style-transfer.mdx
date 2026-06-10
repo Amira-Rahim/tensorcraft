@@ -10,7 +10,7 @@ context:
   narrative: "Yara uploads a photograph of the city skyline and selects Monet as the style. MUSE processes it. The photograph softens, edges dissolve into impressionist light. 'It is painting,' Yara whispers. 'The machine is painting.'"
   speaker: "Yara"
 concept:
-  explanation: "Neural style transfer optimizes an image to match the content of one image and the style of another, like applying a CSS theme to existing HTML content. Minimize the content loss and the style loss simultaneously."
+  explanation: "Neural style transfer generates a new image by optimizing its pixels directly: keep one image's structure, match another image's texture statistics. Two losses, minimized simultaneously, with the balance between them as the main creative dial."
   bridge:
     feTitle: "CSS theme switching"
     feCode: "document.body.dataset.theme = 'monet'; // swap visual identity"
@@ -19,7 +19,6 @@ concept:
     tier: structural
 consequence:
   narrative: "The gallery wall shows the same cityscape in five styles: Monet, Basquiat, Hokusai, Rothko, and Yara's own. Erdem studies them in silence. 'The machine has taste,' he says finally. 'Or at least, it can borrow ours.'"
-  nextLessonTeaser: "Next: how networks encode artistic style: the mathematics of visual identity"
 hints:
   - level: nudge
     content: "totalLoss adds two MSEs with very different scales: styleWeight defaults to 1000 because raw Gram-matrix differences are tiny next to feature differences"

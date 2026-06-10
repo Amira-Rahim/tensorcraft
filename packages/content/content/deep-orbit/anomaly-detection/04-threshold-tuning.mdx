@@ -10,7 +10,7 @@ context:
   narrative: "Nazari demands precise thresholds. 'If DEEP SCAN cries wolf one more time, the bridge crew will ignore it. Set the sensitivity correctly.'"
   speaker: "Chief Nazari"
 concept:
-  explanation: "Threshold tuning balances false positives and false negatives — like setting alert thresholds in a monitoring dashboard where too many alerts cause alert fatigue."
+  explanation: "Threshold tuning decides what the detector is allowed to wake a human for: set it too low and you buy alert fatigue, too high and you buy missed anomalies."
   bridge:
     feTitle: "Alert Thresholds"
     feCode: "if (errorRate > 0.05) page('oncall') // too low = alert fatigue"
@@ -46,7 +46,7 @@ But if we set it too high, we might miss a genuine anomaly. It's a tradeoff, Naz
 
 Alert fatigue is real, in frontend monitoring and in space. An error tracker that fires on every minor exception teaches the team to ignore it; Nazari just described the bridge-crew version. The threshold must balance sensitivity against specificity.
 
-<LearningObjectives objectives={["Set detection thresholds using percentiles of normal error distribution", "Understand the precision-recall tradeoff and how threshold affects each", "Compute F1 score to find the optimal balance point", "Apply the same reasoning you use for monitoring alert thresholds"]} />
+<LearningObjectives objectives={["Set detection thresholds using percentiles of normal error distribution", "Understand the precision-recall tradeoff and how threshold affects each", "Compute F1 score to find the optimal balance point"]} />
 
 ## Setting the Threshold
 
@@ -140,5 +140,7 @@ Demir locks the threshold at the 99th percentile and replays last week's fourtee
 <Dialogue speaker="Chief Nazari">
 Two alerts, both worth my time. Fine. The next false positive still comes out of your sleep schedule, Ensign.
 </Dialogue>
+
+The lock holds for a day and a half. Then, mid-morning, the dashboard fires the highest-confidence alert DEEP SCAN has ever produced, and this time nobody reaches for the word "false."
 
 </Epilogue>

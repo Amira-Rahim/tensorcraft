@@ -19,7 +19,6 @@ concept:
     tier: identity
 consequence:
   narrative: "The load manager prioritizes safety-critical predictions and queues routine monitoring. During the 4x spike, zero critical predictions are dropped. Routine monitoring delays average 340ms. Priya: 'Priority queuing kept the critical path clear.'"
-  nextLessonTeaser: "Next: global operations, managing ML across time zones and regions"
 hints:
   - level: nudge
     content: "Priority queues process high-priority items first, like a web server handling health checks before regular requests"
@@ -42,7 +41,7 @@ Prediction requests at 8,400 per second. Normal baseline: 2,100 per second. Queu
 We can't process everything at peak load, so we prioritize. Gas leaks, electrical faults, structural anomalies: safety-critical predictions go first, always. Routine temperature monitoring can wait 500ms. The same way a web server handles health check endpoints before serving static assets under load.
 </Dialogue>
 
-During the Region 2 heat event last summer, request volume quadrupled in under an hour and the queue did what unmanaged queues do: served whatever arrived first. Routine temperature telemetry held its place in line while two gas-leak detections waited 480ms behind it. Nothing crashed, and that was the problem. The fix is rate limiting as you already know it (100 requests per minute per client, priority bypass for health checks), with the priorities made explicit: queue by priority, rate-limit by device, shed low-priority load before the critical path feels anything.
+During the Region 2 heat event last summer, request volume quadrupled in under an hour and the queue did what unmanaged queues do: served whatever arrived first. Routine temperature telemetry held its place in line while two gas-leak detections waited 480ms behind it. Nothing crashed, and that was the problem. The fix is rate limiting as you already know it: 100 requests per minute per client, priority bypass for health checks. Here the priorities are made explicit. Queue by priority, rate-limit by device, and shed low-priority load before the critical path feels anything.
 
 <LearningObjectives objectives={["Implement priority-based inference queuing for edge ML", "Build token bucket rate limiting for prediction requests", "Design load shedding strategies that protect critical predictions", "Monitor queue depth and processing latency under load"]} />
 
@@ -165,4 +164,4 @@ Build a priority inference queue with token bucket rate limiting.
 
 <Exercise slug="manage-load" />
 
-<KeyTakeaways takeaways={["Under a 4x request spike, priority queues keep safety-critical predictions inside the latency budget while telemetry waits", "Token bucket rate limiting prevents any single device from overwhelming the inference pipeline", "Load shedding drops low-priority requests to protect capacity for critical predictions", "During a 4x traffic spike, zero critical predictions should be dropped — that is the design target"]} />
+<KeyTakeaways takeaways={["Priority queues keep safety-critical predictions inside the latency budget while routine telemetry waits", "Token bucket rate limiting prevents any single device from overwhelming the inference pipeline", "Load shedding drops low-priority requests to protect capacity: during a 4x spike, zero dropped critical predictions is the design target"]} />

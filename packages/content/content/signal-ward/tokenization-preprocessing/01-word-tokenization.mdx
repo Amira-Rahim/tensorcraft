@@ -20,7 +20,6 @@ concept:
     breaks: "`String.split(/\\s+/)` uses a regex YOU control. A subword tokenizer (BPE, WordPiece, SentencePiece) learns merge rules from a training corpus and the same word can tokenize to 1 token in one model and 5 tokens in another. Tokenization is part of the model artifact; you cannot regex your way out of a tokenizer mismatch at inference."
 consequence:
   narrative: "Diagnostic One can now reliably split clinical notes into word tokens, handling punctuation and edge cases."
-  nextLessonTeaser: "Next: subword tokenization — what happens when words themselves need breaking apart."
 hints:
   - level: nudge
     content: "Consider what counts as a word boundary: spaces, punctuation, line breaks."
@@ -34,8 +33,6 @@ keywords:
   - text-boundaries
   - regex
 ---
-
-> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
 <Dialogue speaker="Imran">
 Here's what we're dealing with. This patient record has periods inside abbreviations, hyphens in drug names, and slashes in dates. Good luck splitting that cleanly.
@@ -52,6 +49,8 @@ String.split() with a regex. I've done this a hundred times for search inputs.
 You already use `String.split()` to break strings apart: CSV rows, search queries, URL parameters. Clinical notes are a harder version of that job: periods inside abbreviations, hyphens inside drug names, slashes inside blood pressure readings.
 
 <LearningObjectives objectives={["Split clinical text into word tokens using regex patterns", "Handle punctuation, numbers, and special characters in medical text", "Understand whitespace vs. regex-based tokenization strategies", "Build a robust word tokenizer for clinical notes"]} />
+
+> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
 ## Simple Splitting vs. Real Tokenization
 

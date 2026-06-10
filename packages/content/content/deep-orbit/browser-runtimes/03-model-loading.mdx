@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "fetch returns a parsed JSON object; loadLayersModel returns a `LayersModel` instance with `predict`, `evaluate`, weights, and a compute graph. The HTTP call shape matches; the resolved value type does not. Subsequent code paths diverge — you call `.json()` once, you call `.predict()` many times, and the model holds onto GPU memory until disposed."
 consequence:
-  narrative: "The DEEP SCAN model loads in 340ms. Nazari nods — within budget. Demir caches it in IndexedDB for offline use."
+  narrative: "340 milliseconds from request to ready; Nazari calls it within budget. Demir caches the model in IndexedDB for offline use."
 hints:
   - level: nudge
     content: "tf.loadLayersModel(url) takes the URL of model.json and fetches the weight files listed in its manifest automatically"
@@ -40,11 +40,7 @@ skillAxes: [deployment, fe_integration]
 So the model is just files, a JSON manifest and binary weight chunks? That's... exactly like loading a web font or a spritesheet.
 </Dialogue>
 
-<Dialogue speaker="ARIA">
-The fetch is, Ensign. What resolves is not. A font resolves to bytes the renderer consumes once. tf.loadLayersModel resolves to a live LayersModel: a compute graph with predict and evaluate methods that holds GPU memory until you dispose it. You download it like an asset. You manage it like a process.
-</Dialogue>
-
-The model's architecture lives in `model.json`; the learned weights live in binary `.bin` shards alongside it. `tf.loadLayersModel()` fetches both over HTTP and assembles the model in memory.
+The model's architecture lives in `model.json`; the learned weights live in binary `.bin` shards alongside it. `tf.loadLayersModel()` fetches both over HTTP and assembles the model in memory. Demir's font comparison holds for the whole network leg of the trip. Where it goes after that is a question ARIA answers later in this lesson, at the exact moment it stops being academic.
 
 <LearningObjectives objectives={["Load a pre-trained TensorFlow.js model from a URL", "Understand the model format: model.json manifest + weight .bin shards", "Cache models in IndexedDB for offline access and faster subsequent loads", "Handle loading states and errors gracefully in the UI"]} />
 
@@ -88,6 +84,10 @@ const weightData = await fetch('/models/deep-scan/group1-shard1of1.bin')
 // 3. Reconstruct the model from architecture + weights
 // tf.loadLayersModel() handles all of this in one call`}
 </CodeBlock>
+
+<Dialogue speaker="ARIA">
+The fetch is like a font, Ensign. What resolves is not. A font resolves to bytes the renderer consumes once. tf.loadLayersModel resolves to a live LayersModel: a compute graph with predict and evaluate methods that holds GPU memory until you dispose it. You download it like an asset. You manage it like a process.
+</Dialogue>
 
 ## Caching with IndexedDB
 
@@ -178,7 +178,7 @@ Load a model with caching and verify its architecture.
 
 <Epilogue>
 
-Retrained weights ship to the server at 0930. At 1247 Farah notices the dashboard disagreeing with her notebook: same reading, two different confidences. Demir cached the model the way he caches web fonts, and fonts never change, so he never versioned the key — the bridge has spent three hours and 10,800 readings running last week's weights while `deep-scan-v1` sat smug in IndexedDB.
+Farah notices it first: her notebook and the bridge dashboard disagree about the same reading, two confidences three points apart. The retrained weights shipped to the server hours ago; the dashboard never heard. Demir cached the model the way he caches web fonts, and fonts never change, so he never versioned the key. The bridge has spent three hours and 10,800 readings running last week's weights while `deep-scan-v1` sat smug in IndexedDB.
 
 <Dialogue speaker="Chief Nazari">
 Three hours, Ensign. An asset that learns is an asset that ships new versions. Version the key, and add the removeModel call you skipped this morning.

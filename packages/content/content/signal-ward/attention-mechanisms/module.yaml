@@ -2,7 +2,7 @@ slug: attention-mechanisms
 title: "Attention Mechanisms: Focus Where It Matters"
 themeId: signal-ward
 order: 5
-description: "When you read 'The patient was prescribed methotrexate for rheumatoid arthritis,' your brain automatically connects 'methotrexate' to 'arthritis.' You'll build this same selective focus into Diagnostic One — teaching the model which words matter most using attention mechanisms that work exactly like CSS :focus."
+description: "When you read 'The patient was prescribed methotrexate for rheumatoid arthritis,' your brain connects 'methotrexate' to 'arthritis' without being told. Diagnostic One needs that same selective focus, and attention is how it gets there: scores, weights, multiple heads, and finally a heatmap Dr. Karimi can read like an X-ray."
 lessonCount: 5
 prerequisites:
   - sequence-models

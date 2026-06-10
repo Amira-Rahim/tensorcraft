@@ -10,7 +10,7 @@ context:
   narrative: "Simple statistics miss complex patterns. Farah proposes an autoencoder — a network that learns to compress and reconstruct normal signals. High reconstruction error means the signal is unlike anything the model has learned."
   speaker: "Dr. Farah"
 concept:
-  explanation: "An autoencoder compresses data and reconstructs it — like gzip compression where lossy reconstruction reveals what doesn't fit the learned patterns."
+  explanation: "An autoencoder learns to compress and rebuild normal data, so anything it can't rebuild cleanly is, by definition, not normal."
   bridge:
     feTitle: "Compression"
     feCode: "compressed = gzip(data); restored = gunzip(compressed)"
@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "Compression algorithms (gzip) decode losslessly back to the input. Autoencoders are lossy and reconstruct only what they learned to reconstruct well — inputs unlike training data come back distorted, which is the entire point of using them for anomaly detection."
 consequence:
-  narrative: "The autoencoder reconstructs normal signals perfectly. But the anomalous signal? The reconstruction is mangled — the error is 12x the normal baseline."
+  narrative: "Normal signals come back clean. The anomalous signal comes back mangled, its error 12x the baseline."
 hints:
   - level: nudge
     content: "An autoencoder has two parts: encoder (compress) and decoder (reconstruct)"

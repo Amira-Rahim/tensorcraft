@@ -19,7 +19,6 @@ concept:
     tier: identity
 consequence:
   narrative: "Protocol Sentinel hits 24fps on Noor's laptop. Drones are tracked frame by frame. Amir nods. Then points at the memory graph. 'You are leaking 50MB per second. Fix the tensor lifecycle or the browser crashes in two minutes.'"
-  nextLessonTeaser: "Next: performance budgets. How fast is fast enough?"
 hints:
   - level: nudge
     content: "Same skeleton as your render loop: requestAnimationFrame calls detect(), and detect() schedules itself. The new part is tf.tidy() around everything tensor-shaped"
@@ -44,7 +43,7 @@ I built a 60fps particle system for my drawing app using requestAnimationFrame. 
 </Dialogue>
 
 <Dialogue speaker="NEON">
-Structurally, yes. Two differences will hurt you. Drawing a particle costs microseconds; `model.predict` eats most of your frame budget, so the browser can call your function 60 times a second and you will still not get 60 frames. And every pass allocates tensors in GPU memory the garbage collector cannot see. Skip disposal and this tab dies inside two minutes. Your particle system never did that.
+Structurally, yes. Two differences, neither cosmetic. Drawing a particle costs microseconds; `model.predict` eats most of your frame budget, so the browser can call your function 60 times a second and you will still not get 60 frames. And every pass allocates tensors in GPU memory the garbage collector cannot see. Skip disposal and this tab dies inside two minutes. Your particle system never did that.
 </Dialogue>
 
 <LearningObjectives objectives={["Build an inference loop using requestAnimationFrame()", "Manage tensor memory with tf.tidy() to prevent leaks", "Calculate and display real-time FPS metrics", "Understand the relationship between inference time and achievable frame rate"]} />

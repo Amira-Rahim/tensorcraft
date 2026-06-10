@@ -10,7 +10,7 @@ context:
   narrative: "Karimi sits at the nurse's station, types a query: 'Which of my patients on immunosuppressants have upcoming dental procedures?' The system retrieves, comprehends, grounds, and answers in 340 milliseconds. Imran watches over her shoulder. 'Can I use it too?' Karimi smiles. 'Khalil, we need to handle how nurses ask questions, not just how doctors do.'"
   speaker: "Dr. Karimi"
 concept:
-  explanation: "Clinical query understanding maps natural language questions to structured retrieval intents, like a search bar with natural language understanding that rewrites user queries into database operations."
+  explanation: "Clinical query understanding maps natural language questions to structured retrieval intents. A doctor's clipped jargon and a nurse's plain phrasing should normalize to the same query against the same records."
   bridge:
     feTitle: "Search Bar with NLU"
     feCode: "parseQuery('red shoes under $50') → { color: 'red', type: 'shoes', maxPrice: 50 }"
@@ -20,7 +20,6 @@ concept:
     breaks: "Search bars with NLU parse known intents. Clinical query parsing must handle ambiguous medical terms, abbreviations with multiple expansions, and a knowledge base with strict licensing; failure modes include silently ignoring critical context."
 consequence:
   narrative: "The clinical query system handles both 'List current anticoagulant patients with subtherapeutic INR' from Dr. Karimi and 'Who needs their blood thinner levels checked?' from Imran. Same intent, different language. Khalil's NLU layer normalizes both into the same structured query."
-  nextLessonTeaser: "Next module: production NLP and privacy — taking Diagnostic One to the real world"
 hints:
   - level: nudge
     content: "Break query understanding into intent classification and entity extraction"

@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "SVG mask and clipPath define exact author-drawn geometry. Generated binary masks come from per-pixel softmax and require thresholding; boundaries are typically noisy and post-processing (CRF, morphological ops) is often needed for usable output."
 consequence:
-  narrative: "The jagged edges sharpen into clean silhouettes. Each drone is outlined with sub-pixel precision. Noor overlays the masks on the live feed: perfect cutouts floating over the city grid."
-  nextLessonTeaser: "Next: scene understanding. Combining segmentation with spatial reasoning to understand full scenes"
+  narrative: "Jagged edges sharpen into clean silhouettes, each drone outlined with sub-pixel precision. Noor overlays the masks on the live feed: perfect cutouts floating over the city grid."
 hints:
   - level: nudge
     content: "Use tf.greater() or tf.greaterEqual() to threshold probabilities into binary masks"

@@ -10,7 +10,7 @@ context:
   narrative: "'Patient denied chest pain' versus 'Patient reported chest pain' — in clinical text, word order can be the difference between life and death."
   speaker: "Dr. Karimi"
 concept:
-  explanation: "Word order changes meaning. Bag-of-words loses this information. Sequence models process tokens in order, maintaining positional context, just like the execution order of async operations determines what state your app ends up in."
+  explanation: "Word order changes meaning, and bag-of-words throws order away. Sequence models process tokens in order, preserving the positional context that separates 'denied chest pain' from 'reported chest pain'."
   bridge:
     feTitle: "Execution Order in Async Code"
     feCode: "await validate(data); await save(data); // order changes outcome"
@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "Async execution order is enforced by promise resolution semantics. Token order in sequences is part of the input meaning ('not bad' vs 'bad not') and the model must learn order-dependent representations; there is no Promise.all that preserves meaning while reordering."
 consequence:
-  narrative: "The team realizes bag-of-words is insufficient for clinical safety. They need models that understand sequence."
-  nextLessonTeaser: "Next: building a simple RNN that processes text one word at a time."
+  narrative: "Karimi pins the two sentences side by side above Imran's desk: denied chest pain, reported chest pain. Until the model can tell them apart, they stay up there."
 hints:
   - level: nudge
     content: "Compare the bag-of-words vectors for 'denied pain' and 'not in pain': they lose the negation."
@@ -36,8 +35,6 @@ keywords:
   - async-ordering
 ---
 
-> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
-
 <Dialogue speaker="Dr. Karimi">
 Listen carefully. "Patient denied chest pain" and "Patient reported chest pain." Same words, different order, opposite meaning. If our system gets this wrong, someone could die.
 </Dialogue>
@@ -47,7 +44,7 @@ It's like async code. `await validate(); await save();` is completely different 
 </Dialogue>
 
 <Dialogue speaker="Dr. Karimi">
-Exactly. And clinical notes are full of these ordering traps. "No fever, but reports nausea": the meaning flips mid-sentence.
+And unlike your code, no compiler ever rejects the wrong order. Clinical notes are full of these traps. "No fever, but reports nausea": the meaning flips mid-sentence.
 </Dialogue>
 
 <Dialogue speaker="MEDI">
@@ -56,7 +53,9 @@ Alert: current bag-of-words model cannot distinguish "denied chest pain" from "r
 
 Strip the order out of a sentence and you strip out part of its meaning. A bag-of-words model does exactly that. "No fever, but reports nausea" becomes an unordered pile of tokens, and nothing records whether the negation landed on the fever or the nausea. You already manage this constraint in async code, where `fetch` then `render` produces a different application state than `render` then `fetch`. In clinical text, the same inversion changes the medical record, and getting it wrong has real consequences.
 
-<LearningObjectives objectives={["Understand why word order is critical for clinical text interpretation", "Identify cases where bag-of-words fails: negation, temporal phrases, conditionals", "Represent text as ordered sequences of token IDs", "Connect execution order in async code to token order in sequences"]} />
+<LearningObjectives objectives={["Understand why word order is critical for clinical text interpretation", "Identify cases where bag-of-words fails: negation, temporal phrases, conditionals", "Represent text as ordered sequences of token IDs"]} />
+
+> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
 ## When Order Is Meaning
 

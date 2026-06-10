@@ -2,7 +2,7 @@ slug: quantization
 title: "Quantization"
 themeId: terra-grid
 order: 3
-description: "Shrink your model from Float32 to Int8 — 4x smaller with only 1.2% accuracy loss. Master quantization techniques that map directly to image compression and Webpack minification concepts you already use."
+description: "After a quantized model missed a bearing failure at Site 23, Terra Grid rewrote its compression rules: every model gets an accuracy floor before anyone touches the precision dial. Number formats, post-training quantization, QAT, and mixed precision: the instincts of image compression and minification, plus the failure cases those tools never had."
 lessonCount: 5
 prerequisites:
   - optimization-fundamentals

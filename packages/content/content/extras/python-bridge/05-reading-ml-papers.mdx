@@ -23,9 +23,9 @@ hints:
   - level: nudge
     content: "Start with the abstract and figures, then jump to the model definition in code"
   - level: guidance
-    content: "In the repo, look for model.py or net.py; that's where the architecture lives"
+    content: "Read the two nn.Sequential blocks separately. The encoder steps 64 down to 8; the decoder steps 8 back up to 64. In TF.js you can express the whole thing as one sequential model, layer by layer in order."
   - level: solution
-    content: "Map each nn.Module class to layers you know, then read forward() for the data flow"
+    content: "1) Encoder: dense 32 (relu, inputShape [64]), dense 16 (relu), dense 8. 2) Decoder: dense 16 (relu), dense 32 (relu), dense 64 (sigmoid). 3) model.compile({ optimizer: tf.train.adam(0.001), loss: 'meanSquaredError' })."
 keywords:
   - papers
   - research

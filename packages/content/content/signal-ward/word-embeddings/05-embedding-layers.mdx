@@ -20,7 +20,6 @@ concept:
     breaks: "Lookup tables map known keys to known values authored at write time. Embedding layers are trainable parameter matrices indexed by token ID; the values update during training and an out-of-vocabulary token has no entry and must be handled (UNK token, subword fallback)."
 consequence:
   narrative: "Diagnostic One now has a trainable embedding layer initialized with medical vectors. As the model trains on hospital data, the embeddings fine-tune to capture institution-specific terminology."
-  nextLessonTeaser: "Next module: sequence models — because word order changes the meaning of clinical text."
 hints:
   - level: nudge
     content: "Create a sequential model with an embedding layer as the first layer, followed by a dense output layer."
@@ -35,8 +34,6 @@ keywords:
   - transfer-learning
 ---
 
-> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
-
 <Dialogue speaker="Vikram">
 Imran, think of a Map in JavaScript. You pass in a key, you get back a value. An embedding layer starts there: you pass in a token ID, you get back a vector. The difference? During training, the vectors update automatically.
 </Dialogue>
@@ -46,12 +43,22 @@ So it is like a Map where the values optimize themselves based on how well the m
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-Mostly. Two things your Map never does. The values move on every training step, backpropagation adjusts them to serve the task. And a token that wasn't in the vocabulary has no row at all. Map.get returns undefined and you handle it; an embedding layer needs an UNK entry or a subword fallback before the lookup ever runs. We'll initialize ours with the pre-trained medical vectors to give it a head start.
+That's the trainable part, yes. The piece your Map never has to deal with is a missing key. Map.get returns undefined and you handle it inline. An embedding layer has no row at all for an unseen token, so it needs an UNK entry or a subword fallback before the lookup ever runs.
+</Dialogue>
+
+<Dialogue speaker="Imran">
+And we start the values from the medical vectors we loaded last lesson?
+</Dialogue>
+
+<Dialogue speaker="Vikram">
+Right. Pre-trained rows where we have them, random rows where we don't. Training moves both.
 </Dialogue>
 
 An embedding layer is a matrix with one row per vocabulary entry, indexed by integer token ID. The rows are learnable parameters: during training, the network adjusts them through backpropagation, so the embedding space evolves to serve the model's task.
 
 <LearningObjectives objectives={["Build a neural network with a trainable embedding layer in TensorFlow.js", "Initialize embedding weights from pre-trained vectors", "Understand the difference between frozen and fine-tuned embeddings", "Train a simple text classifier with an embedding layer"]} />
+
+> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
 ## The Trainable Lookup Table
 
@@ -125,7 +132,7 @@ model.summary();
 ## Initializing with Pre-trained Weights
 
 <Dialogue speaker="MEDI">
-You can initialize the embedding layer with pre-trained medical vectors. Words that appear in your pre-trained data start with meaningful representations. Words not in the pre-trained set start with small random values and learn from your task-specific training data.
+Initialization report: 5 of 7 vocabulary entries have pre-trained medical vectors. Those rows start with meaningful representations. The remaining rows start with small random values and learn only from task-specific training data.
 </Dialogue>
 
 <CodeBlock language="typescript" title="pretrained-init.ts">

@@ -20,7 +20,6 @@ concept:
     breaks: "Web pre-flight verifies a deterministic build artifact against reproducible tests. ML pre-flight verifies a probabilistic model against a static benchmark, and 'monitoring ready' typically means accuracy/drift monitors that only catch problems hours-to-days after they manifest. The checklist shape transfers; the time-to-detect-failure does not, and that latency is what determines whether your launch is actually safe."
 consequence:
   narrative: "Two days after launch. Substation 7-Alpha. Temperature spike triggers a cascading anomaly across 3 regions. Terra Grid Intelligence identifies the root cause in 11.7 seconds. Manual analysis would have taken 2-3 hours. GRID reports: 'Time to detection: 4.2 seconds. Time to root cause: 11.7 seconds. Model size: 4.2MB. Running on 12,400 edge devices across 47 sites.' Hassan: 'Eleven point seven seconds. Two months ago that was a three-hour bridge call.'"
-  nextLessonTeaser: "Congratulations. You have completed Terra Grid."
 hints:
   - level: nudge
     content: "A launch checklist verifies every system is ready before deployment begins"
@@ -141,7 +140,7 @@ await launcher.launch();`}
 
 <BossBeat
   beatId="terra-grid-launch-cascade-call"
-  prompt="Hassan is on incident-bridge. 47 of 12,400 edge devices are reporting drift PSI > 0.3 across three sites. Dr. Park's red team flagged the same pattern in pre-prod two weeks ago and called it benign. The on-call is asking: full rollback, geofence the affected sites, or trust Park's pre-prod call and watch?"
+  prompt="Hassan is on incident-bridge. 63 of 12,400 edge devices are reporting drift PSI > 0.3 across three sites. Dr. Park's red team flagged the same pattern in pre-prod two weeks ago and called it benign. The on-call is asking: full rollback, geofence the affected sites, or trust Park's pre-prod call and watch?"
   options={[
     {
       label: "cooperate",
@@ -205,7 +204,7 @@ console.log('This is what it looks like when the system works.');`}
 </CodeBlock>
 
 <Dialogue speaker="GRID">
-Incident detected at Substation 7-Alpha. Temperature spike: 47 degrees above baseline in 90 seconds. Cascading anomaly propagating to Regions 1 and 5. Time to detection: 4.2 seconds. Time to root cause identification: 11.7 seconds. Automated mitigation initiated. All affected devices responding.
+Incident detected at Substation 7-Alpha. Temperature spike: 38 degrees above baseline in 90 seconds. Cascading anomaly propagating to Regions 1 and 5. Time to detection: 4.2 seconds. Time to root cause identification: 11.7 seconds. Automated mitigation initiated. All affected devices responding.
 </Dialogue>
 
 <Dialogue speaker="Hassan Al-Rashid">
@@ -218,7 +217,7 @@ Build a launch controller with pre-flight checks and post-launch monitoring.
 
 <Exercise slug="global-launch" />
 
-<KeyTakeaways takeaways={["A launch is pre-flight gates, staged regional rollout, and a rehearsed rollback path; the model is just the payload", "Pre-flight checks verify every system component before deployment begins", "Post-launch monitoring tracks deployment progress, accuracy, latency, and incident detection", "Terra Grid Intelligence: 4.2MB model, 12,400 devices, 47 sites, 11.7 seconds to root cause against a 2-3 hour manual baseline"]} />
+<KeyTakeaways takeaways={["A launch is pre-flight gates, staged regional rollout, and a rehearsed rollback path; the model is just the payload", "Pre-flight checks verify every system component before deployment begins", "Post-launch monitoring tracks deployment progress, accuracy, latency, and incident detection", "Time-to-detect failure is what makes an ML launch safe: accuracy monitors lag reality by hours, which is why the rollback path is the most rehearsed item", "Terra Grid Intelligence: 4.2MB model, 12,400 devices, 47 sites, 11.7 seconds to root cause against a 2-3 hour manual baseline"]} />
 
 <DispatchTease
   toThemeId="deep-orbit"

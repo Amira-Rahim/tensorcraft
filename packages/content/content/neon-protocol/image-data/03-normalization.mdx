@@ -10,7 +10,7 @@ context:
   narrative: "NEON's analysis of the augmented dataset reveals a problem: pixel values range wildly across images: some captured in harsh neon light, others in near darkness. 'The Sentinel cannot learn when inputs scream at different volumes,' NEON warns. Noor must bring every image to a common scale."
   speaker: "NEON"
 concept:
-  explanation: "Normalization scales pixel values to a consistent range, just like CSS normalize.css creates a consistent baseline across browsers by resetting defaults."
+  explanation: "Normalization scales pixel values to a consistent range so every image enters training at the same volume. Without it, bright images dominate the gradient updates simply because their numbers are bigger."
   bridge:
     feTitle: "CSS Normalize"
     feCode: "* { margin: 0; padding: 0; box-sizing: border-box; }"
@@ -19,7 +19,6 @@ concept:
     tier: structural
 consequence:
   narrative: "With normalized data flowing into the training pipeline, NEON reports stable gradient values for the first time. 'Consistent inputs yield consistent learning,' the AI confirms. The Protocol Sentinel's early training runs no longer spike and crash."
-  nextLessonTeaser: "Next: Class Balance. Ensuring every camera type gets fair representation in training."
 hints:
   - level: nudge
     content: "Raw pixel ranges differ per image the way default styles differ per browser. Your minMaxNormalize gives every image the same [0, 1] baseline."
@@ -43,7 +42,6 @@ Every frontend developer has experienced the chaos of unstyled HTML across brows
 
 <LearningObjectives objectives={[
   "Understand why raw pixel values create training instability",
-  "Connect CSS normalization patterns to pixel normalization techniques",
   "Implement min-max normalization to scale pixels to the 0-1 range",
   "Implement z-score standardization for mean-centered data"
 ]} />
@@ -79,7 +77,7 @@ So without normalization, the model pays more attention to bright images just be
 </Dialogue>
 
 <Dialogue speaker="NEON">
-Close. Specificity is a tiebreak rule the browser applies on purpose. Magnitude dominance is an accident of arithmetic. Nobody decided bright pixels matter more; the gradients simply scale with the input values. Normalization removes the accident.
+Specificity is a tiebreak rule the browser applies on purpose. Magnitude dominance is an accident of arithmetic. Nobody decided bright pixels matter more; the gradients simply scale with the input values. Normalization removes the accident.
 </Dialogue>
 
 ## Min-Max Normalization
@@ -197,7 +195,7 @@ const IMAGENET_STATS: ChannelStats = {
 </CodeBlock>
 
 <Dialogue speaker="NEON">
-The ImageNet statistics are to computer vision what normalize.css is to web development — a shared baseline adopted by the entire community. Using them allows pretrained models to process your data without recalibration.
+Those numbers are the mean and spread of fourteen million photographs. Dogs, mostly. Also pizza. The entire field of computer vision normalizes against them, and it works, which is the embarrassing part. Use them and any pretrained model will read your data without recalibration.
 </Dialogue>
 
 ## Challenge

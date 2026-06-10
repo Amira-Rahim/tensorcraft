@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "Avoiding re-renders reduces wasted React reconciliation. Efficient layer choices affect FLOPS, memory bandwidth, and cache behavior. And the most FLOPS-efficient layer (depthwise conv) is not always the fastest in wall-clock time on a given accelerator."
 consequence:
-  narrative: "The redesigned model is 60% smaller with comparable accuracy."
-  nextLessonTeaser: "Next: setting computational budgets"
+  narrative: "Same accuracy, 60% fewer parameters. The architecture was the first optimization, and the cheapest."
 hints:
   - level: nudge
     content: "Compare parameter counts between different layer configurations"
@@ -41,7 +40,7 @@ Before you compress a model, ask whether the architecture itself is efficient. Y
 
 The cheapest optimization is not compression. It is choosing the right architecture from the start. Just as `React.memo` and `useMemo` prevent unnecessary computation in your components, efficient architectures prevent unnecessary computation in your model.
 
-<LearningObjectives objectives={["Understand how architecture choices affect model size", "Use bottleneck layers to reduce parameters", "Compare parameter counts between different designs", "Apply frontend component optimization thinking to model design"]} />
+<LearningObjectives objectives={["Understand how architecture choices affect model size", "Use bottleneck layers to reduce parameters", "Compare parameter counts between different designs"]} />
 
 ## The Bottleneck Pattern
 

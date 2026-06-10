@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "Build optimization checklists have ordered, deterministic steps. Model optimization is iterative and order-dependent (quantize then prune vs prune then quantize give different results). And many techniques compound or interfere in non-obvious ways."
 consequence:
-  narrative: "You have a systematic optimization plan. Time to execute it."
-  nextLessonTeaser: "Next module: quantization, the most impactful compression technique"
+  narrative: "The plan is on the wall: profile, budget, architecture, prune, quantize, distill, benchmark. Hassan signs off on the sequence, not the outcome. The outcome has to earn itself."
 hints:
   - level: nudge
     content: "Start with the highest-impact, lowest-risk optimizations"
@@ -105,3 +104,7 @@ Create an optimization plan for a model that needs to shrink from 1.8GB to under
 <Exercise slug="optimization-plan" />
 
 <KeyTakeaways takeaways={["Optimization is a sequenced plan with measurements between steps, not a bag of techniques applied at once", "Start with architecture review (low risk, high impact) before compression", "Techniques compound: 40% + 4x + 50% = 12x total reduction", "Always profile and benchmark between each optimization step"]} />
+
+<Dialogue speaker="Hassan Al-Rashid">
+One more thing. The plan is allowed to be wrong. The budget is not. If step three breaks the accuracy floor, you go back to step one and pay for the architecture change; you do not negotiate with the floor.
+</Dialogue>

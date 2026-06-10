@@ -21,14 +21,13 @@ concept:
     breaks: "State management updates are deterministic given the action. Bayesian updates combine prior beliefs with likelihoods to produce posteriors; the update rule is fixed but priors are subjective and posteriors are distributions, not point values."
 consequence:
   narrative: "Bayesian thinking reveals why regularization works and how to reason about model uncertainty."
-  nextLessonTeaser: "You've completed the Math Deep Dive companion track"
 hints:
   - level: nudge
-    content: "A prior is your default belief, a posterior is your belief after seeing data: like default state vs. state after user interaction"
+    content: "A prior is your belief before the data; the posterior is that belief updated by evidence"
   - level: guidance
-    content: "Bayes: P(A|B) = P(B|A) * P(A) / P(B). Update prior P(A) with likelihood P(B|A)"
+    content: "Multiply prior and likelihood element-wise, then divide every entry by the total so the result sums to 1. The sequential version is a loop where each posterior becomes the next step's prior. Collect a posterior per observation."
   - level: solution
-    content: "Implement the update loop: for each observation, posterior = normalize(likelihood * prior)"
+    content: "bayesUpdate: const raw = prior.map((p, i) => p * likelihood[i]); const total = raw.reduce((a, b) => a + b, 0); return raw.map(v => v / total). sequentialBayesUpdate: let current = prior; return likelihoods.map(l => (current = bayesUpdate(current, l)));"
 keywords:
   - bayes-theorem
   - prior

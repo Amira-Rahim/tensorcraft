@@ -20,10 +20,7 @@ concept:
     breaks: "JSON.stringify/parse round-trips structured values losslessly. Model serialization writes weights + topology in framework-specific formats (SavedModel, ONNX, GGUF) and conversion between formats can drop ops, change numerics, or fail entirely."
 consequence:
   narrative: "The model is saved. Amir sends the exported files to Dilan, who loads Protocol Sentinel on a completely different machine in District 4. The first remote detection lights up her screen. NEON: 'Now it is portable. Next, make it small enough to run everywhere.'"
-  nextLessonTeaser: "Next: shrinking the model so it runs on every device in the resistance network"
 hints:
-  - level: nudge
-    content: "model.save() returns a Promise and accepts different storage schemes like localstorage://, indexeddb://, downloads://, and file://"
   - level: guidance
     content: "Use model.save('downloads://sentinel') to export as files, or model.save('localstorage://sentinel') for browser storage. Loading uses tf.loadLayersModel with the same scheme."
   - level: solution
@@ -41,7 +38,7 @@ Protocol Sentinel detects Meridian drones with 94% accuracy. But it only runs he
 </Dialogue>
 
 <Dialogue speaker="NEON">
-A model that cannot be saved is a model that does not exist. Serialize the architecture and weights. Think of it like saving your application state — except the state is millions of learned parameters.
+A model that cannot be saved is a model that does not exist. Serialize the architecture and the weights, or enjoy retraining four weeks of parameters from memory after the next raid.
 </Dialogue>
 
 Last month a cell in District 11 burned their safehouse ahead of a Meridian sweep. Their detector lived in one browser tab on one machine, and nobody had exported it. Four weeks of training gone in the time it takes to slam a laptop shut. That is what unserialized state costs. A trained model lives in memory: volatile, fragile, bound to a single session. Serialization turns that ephemeral state into files you can store, transfer, and reload anywhere.

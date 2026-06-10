@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "CSR vs SSR is a rendering location decision. Edge vs cloud for ML trades latency + privacy against model size + compute. Unlike rendering, you cannot easily fall back from edge to cloud at runtime; the choice is architectural."
 consequence:
-  narrative: "You design a hybrid strategy: edge for real-time alerts, cloud for deep analysis."
-  nextLessonTeaser: "Next module: optimizing models to fit edge constraints"
+  narrative: "Hybrid strategy approved: edge for real-time alerts, cloud for deep analysis. One problem survives the architecture diagram. The best anomaly model is still 200MB, and the gateway's RAM budget is 307MB with the OS already inside it. Something has to shrink."
 hints:
   - level: nudge
     content: "chooseDeployment() weighs the same factors as your CSR-vs-SSR call: latency floor, compute weight, and what happens when the network drops"

@@ -10,7 +10,7 @@ context:
   narrative: "Vikram reveals the distributional hypothesis: words that appear in similar contexts have similar meanings. Word2Vec learns dense vectors where 'aspirin' and 'ibuprofen' cluster together, like similar colors clustering in RGB space."
   speaker: "Vikram"
 concept:
-  explanation: "Word2Vec learns dense vector representations from context patterns. Words used in similar sentences get similar vectors. The distributional hypothesis, 'you shall know a word by the company it keeps', drives the learning, just like similar colors occupy nearby regions in RGB color space."
+  explanation: "Word2Vec learns dense vector representations from context patterns. Words used in similar sentences get similar vectors. The distributional hypothesis drives the learning: you shall know a word by the company it keeps."
   bridge:
     feTitle: "CSS Color Space"
     feCode: "// red: rgb(255, 0, 0), orange: rgb(255, 165, 0) — nearby in RGB"
@@ -20,7 +20,6 @@ concept:
     breaks: "CSS color spaces are 3-4 dimensions with human-meaningful axes. Word embedding spaces are 100-1000+ dimensions with no axes that map to human concepts; directions emerge from training and are mostly entangled."
 consequence:
   narrative: "Diagnostic One now represents clinical terms as 64-dimensional dense vectors. Similar medications cluster together, and the system can generalize across related terms."
-  nextLessonTeaser: "Next: pre-trained medical embeddings that understand clinical language out of the box."
 hints:
   - level: nudge
     content: "An embedding layer maps each integer token ID to a dense vector; it is a trainable lookup table."
@@ -34,8 +33,6 @@ keywords:
   - distributional-hypothesis
   - embedding-layer
 ---
-
-> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
 <Dialogue speaker="Vikram">
 Imran, think about CSS colors. Red is rgb(255, 0, 0) and orange is rgb(255, 165, 0). They are nearby in RGB space because they share similar values. Now imagine words working the same way: "aspirin" and "ibuprofen" as nearby points in a learned space.
@@ -52,6 +49,8 @@ That's the move. Word2Vec reads millions of sentences and notices that "aspirin"
 Word2Vec learns a numerical space where words with similar meanings have similar coordinates. This is the distributional hypothesis: a word's meaning is defined by the company it keeps.
 
 <LearningObjectives objectives={["Understand the distributional hypothesis and how context determines meaning", "Create a TensorFlow.js embedding layer that maps token IDs to dense vectors", "Measure word similarity using cosine similarity on dense vectors", "Recognize how dense embeddings compress sparse one-hot vectors into meaningful representations"]} />
+
+> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
 ## From Sparse to Dense
 
@@ -131,17 +130,17 @@ Cosine similarity measures the angle between two vectors. A value near 1.0 means
 // Painkillers cluster together
 console.log('aspirin ~ ibuprofen:',
   cosineSimilarity(trainedEmbeddings['aspirin'], trainedEmbeddings['ibuprofen']).toFixed(3)
-); // ~0.98 — very similar
+); // 0.990 — very similar
 
 // Painkillers are far from antibiotics
 console.log('aspirin ~ penicillin:',
   cosineSimilarity(trainedEmbeddings['aspirin'], trainedEmbeddings['penicillin']).toFixed(3)
-); // ~0.05 — very different
+); // -0.107 — unrelated, pointing slightly apart
 
 // Antibiotics cluster together
 console.log('penicillin ~ amoxicillin:',
   cosineSimilarity(trainedEmbeddings['penicillin'], trainedEmbeddings['amoxicillin']).toFixed(3)
-); // ~0.97 — very similar
+); // 0.991 — very similar
 
 // Unlike one-hot encoding, dense vectors capture real relationships.
 // The model now knows that aspirin and ibuprofen are related

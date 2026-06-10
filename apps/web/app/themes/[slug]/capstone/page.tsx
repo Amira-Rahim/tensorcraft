@@ -407,7 +407,7 @@ export default async function CapstonePage({ params }: Props) {
             letterSpacing: "0.15em",
           }}
         >
-          // YOUR JOURNEY
+          // MISSION RECORD
         </div>
         <h2
           className="font-mono font-bold mb-10 no-print"

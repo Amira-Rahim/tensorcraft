@@ -19,8 +19,7 @@ concept:
     tier: intuition
     breaks: "Load balancing aims for equal utilization across servers. GAN training balance between generator and discriminator is unstable: if the discriminator gets too strong, generator gradients vanish; too weak, the generator stops improving. There's no homeostatic algorithm."
 consequence:
-  narrative: "After hours of training and tuning, the GAN produces its first recognizable patterns. Crude, but alive. Erdem approves the approach for the exhibition."
-  nextLessonTeaser: "Next: when things go wrong: mode collapse and how to fix it"
+  narrative: "After hours of tuning, the losses settle into a healthy wobble and the GAN produces its first recognizable patterns. Crude, but alive. Erdem approves the approach for the exhibition. Then Samir scrolls back through tonight's outputs and frowns: the last forty look suspiciously alike. He queues 200 samples to generate overnight and goes home uneasy."
 hints:
   - level: nudge
     content: "Like load balancing: if one server handles all traffic, the system degrades"
@@ -44,7 +43,7 @@ I've seen this on engineering teams, and it never resolves itself. Discriminator
 Watch my loss curves tonight. If the discriminator's drops to 0.02 and stays there, my generator half is getting gradients too small to learn from. What we want is both curves wobbling around 0.69 and neither one flatlining.
 </Dialogue>
 
-Training a GAN is notoriously tricky. Unlike training a single model where loss steadily decreases, GAN training involves two competing losses that must stay in balance. It is load balancing across servers: if one server handles all the traffic, the system breaks down.
+Training a GAN is notoriously tricky. Unlike training a single model where loss steadily decreases, GAN training is two competing losses that must stay in balance, and there is no autoscaler to keep them there. You are the homeostat: watch both curves every epoch and throttle whichever side runs away.
 
 <LearningObjectives objectives={["Implement the alternating GAN training loop", "Monitor generator and discriminator losses for balance", "Recognize signs of training instability", "Apply practical tricks for stable GAN training"]} />
 

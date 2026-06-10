@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { PRICING } from "@tensorcraft/shared";
+import { LAUNCHED_THEMES, PRICING, THEME_SLUGS } from "@tensorcraft/shared";
 import { LandingHero } from "./components/landing-hero";
 import { LandingBridgeTicker } from "./components/landing-bridge-ticker";
 import { BridgePreviewSection } from "./components/bridge-preview-section";
@@ -28,26 +28,18 @@ export default function Home() {
         {/* ===== BRIDGE TICKER — scrolling FE→ML band (client island) ===== */}
         <LandingBridgeTicker />
 
-        {/* ===== HOW IT WORKS LINK ===== */}
-        <div className="px-10 md:px-20 py-6 border-b border-border">
-          <p className="text-sm text-text-muted font-sans">
-            New to ML?{" "}
-            <Link
-              href="/learn"
-              className="text-primary underline underline-offset-4 hover:opacity-80 transition-opacity"
-            >
-              See how it works
-            </Link>
-          </p>
-        </div>
-
-        {/* ===== STATS (server-rendered — zero JS) ===== */}
+        {/* ===== STATS (server-rendered — zero JS) =====
+            Lesson/module counts live in the hero stat line — these four slots
+            carry information the hero doesn't. */}
         <section className="grid grid-cols-2 md:grid-cols-4 border-b border-border">
           {[
-            ["55", "Lessons per theme"],
-            ["11", "Modules"],
-            [`$${PRICING.single.price}`, "One-time, no sub"],
-            ["1 / 5", "Themes live (4 coming)"],
+            [`$${PRICING.single.price}`, "Per theme. One-time, no sub"],
+            ["0", "Lines of Python"],
+            ["8 KB", "The model running in the hero above"],
+            [
+              `${LAUNCHED_THEMES.length} / ${THEME_SLUGS.length}`,
+              "Themes live",
+            ],
           ].map(([v, l], i) => (
             <div
               key={l}
@@ -122,7 +114,7 @@ export default function Home() {
                 <span className="w-2 h-2 bg-primary inline-block animate-pulse" />
                 <span className="text-primary">LIVE</span>
                 <span className="text-text-muted">
-                  — runs at 60fps in your browser
+                  — runs entirely in your browser
                 </span>
               </div>
             </div>
@@ -132,7 +124,7 @@ export default function Home() {
               {[
                 {
                   label: "Train",
-                  desc: "Build neural networks layer by layer in TensorFlow.js and train them in your browser tab. No Python, no backend, no GPU farm.",
+                  desc: "Build neural networks layer by layer in TensorFlow.js and train them in your browser tab. The tab is the whole toolchain — Python never enters it.",
                 },
                 {
                   label: "Detect",
@@ -140,11 +132,11 @@ export default function Home() {
                 },
                 {
                   label: "Deploy",
-                  desc: "Ship a production-ready model that runs entirely client-side. Inference at 60fps via WebGL acceleration.",
+                  desc: "Ship a working model that runs entirely client-side — 60fps inference on an ordinary laptop via WebGL.",
                 },
                 {
                   label: "Own it",
-                  desc: "Every exercise you solve auto-commits to your GitHub. Walk into interviews able to explain every layer you built.",
+                  desc: "Solved exercises push to your GitHub — connect once, and every solution lands as a commit (included with any paid theme). Walk into interviews able to explain every layer you built.",
                 },
               ].map((item) => (
                 <div key={item.label}>
@@ -171,8 +163,8 @@ export default function Home() {
             <span className="text-primary">the gap.</span>
           </h2>
           <p className="text-base text-text-muted max-w-[420px] leading-relaxed font-sans">
-            Module 1 is free. No account, no card, no setup. Open the lesson and
-            start reading.
+            Module 1 is free &mdash; you don&apos;t need an account or a card.
+            Open the lesson and start reading.
           </p>
           <Link
             href="/auth"

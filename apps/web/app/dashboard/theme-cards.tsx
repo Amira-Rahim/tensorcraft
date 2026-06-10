@@ -70,8 +70,8 @@ export function ThemeCards({ cards, hasFullBundle }: ThemeCardsProps) {
             const launched = cards.filter((c) => !c.comingSoon);
             const ownedLaunched = launched.filter((c) => c.owned).length;
             return hasFullBundle
-              ? "All available themes unlocked"
-              : `${ownedLaunched} of ${launched.length} unlocked · ${cards.filter((c) => c.comingSoon).length} coming soon`;
+              ? "You own all available themes"
+              : `${ownedLaunched} of ${launched.length} owned · ${cards.filter((c) => c.comingSoon).length} coming soon`;
           })()}
         </span>
       </div>
@@ -272,7 +272,7 @@ function ThemeCard({ card }: { card: ThemeCardData }) {
                 letterSpacing: "0.05em",
               }}
             >
-              Unlock &rarr;
+              Get access &rarr;
             </span>
           </div>
         )}

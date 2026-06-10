@@ -10,7 +10,7 @@ context:
   narrative: "Erdem uploads a photograph of an abstract painting. 'What genre is this? The gallery needs tags.' Samir types a list of genres (impressionism, cubism, abstract expressionism) and CLIP ranks them by similarity. No fine-tuning. No labeled training data. 'It just knows,' Erdem says, incredulous. Rohan: 'It does not know. It compares.'"
   speaker: "Rohan"
 concept:
-  explanation: "Zero-shot classification classifies images into categories never seen during training, by comparing the image embedding to text embeddings of category descriptions. Like dynamic routing: handling unknown paths by matching against a pattern instead of hardcoding every route."
+  explanation: "Zero-shot classification labels images with categories the model never trained on: embed the image, embed each candidate description as text, pick the closest. A new category costs one typed sentence instead of a labeled dataset and a training run."
   bridge:
     feTitle: "Dynamic routing: handling unknown paths"
     feCode: "app.get('/:category/:item', (req, res) => matchRoute(req.params));"
@@ -20,7 +20,6 @@ concept:
     breaks: "Dynamic routing sends unknown paths to a default route. Fallback is explicit. Zero-shot classification ranks input against text-prompt embeddings of class names and confidently picks the closest match even when the input doesn't belong to any class. There is no 'unknown' bucket; you must threshold the similarity score and treat low confidence as out-of-distribution."
 consequence:
   narrative: "MUSE tags every gallery piece without being trained on a single example. Abstract expressionism. Digital impressionism. Geometric minimalism. Erdem checks the tags against his own labels: 94% agreement. 'Better than the interns,' he mutters."
-  nextLessonTeaser: "Next: CLIP-guided generation: using CLIP to steer what the model creates"
 hints:
   - level: nudge
     content: "Dynamic routes handle paths they have never seen. Zero-shot handles categories never seen in training."
@@ -36,8 +35,12 @@ keywords:
   - similarity-matching
 ---
 
+<Dialogue speaker="Erdem">
+Four hundred pieces in the archive, none of them tagged, and the catalog deadline is Friday. I am not spending a week labeling training data so a classifier can learn what 'cubism' means. Tag them by tonight, or we do it by hand and you all owe me.
+</Dialogue>
+
 <Dialogue speaker="Rohan">
-Dynamic routing handles paths it has never seen. You write `/:category/:item` and it matches any category, any item, without hardcoding every possibility. Zero-shot classification does the same thing. CLIP classifies images it has never seen into categories it was never trained on.
+We won't need training data. CLIP classifies images it has never seen into categories it was never trained on. Same trick as dynamic routing: you write `/:category/:item` once and it matches any path, without hardcoding every possibility.
 </Dialogue>
 
 <Dialogue speaker="Erdem">
@@ -48,9 +51,9 @@ No training data at all? How?
 It does not memorize categories. It compares. Encode the image, encode each candidate label as text, pick the closest match. The categories are just text. You can change them anytime.
 </Dialogue>
 
-Dynamic routing handles unknown paths by matching against patterns. Zero-shot classification handles unknown categories by matching against text descriptions. No hardcoded routes, no hardcoded labels, just flexible comparison.
+The trick generalizes to any label set you can type, with one catch Rohan's routing analogy hides: there is no default route. CLIP will confidently pick the closest label even for an image that belongs to none of them. Production zero-shot means thresholding the similarity score and treating low confidence as "none of the above."
 
-<LearningObjectives objectives={["Understand zero-shot classification: classify without task-specific training data", "Implement classification by comparing image embeddings to text label embeddings", "Use prompt templates to improve classification accuracy", "Connect zero-shot classification to dynamic routing patterns"]} />
+<LearningObjectives objectives={["Understand zero-shot classification: classify without task-specific training data", "Implement classification by comparing image embeddings to text label embeddings", "Use prompt templates to improve classification accuracy"]} />
 
 ## Classification Without Training
 

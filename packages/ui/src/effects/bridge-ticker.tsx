@@ -32,6 +32,14 @@ const TIER_TINT: Record<BridgeTier, string> = {
   intuition: "var(--tc-muted)",
 };
 
+// Plain-language gloss for the tier taxonomy — cold visitors see "structural"
+// as jargon; the tooltip carries how literally the mapping holds.
+const TIER_HINT: Record<BridgeTier, string> = {
+  identity: "Identity bridge — same concept, same math",
+  structural: "Structural bridge — same shape, different mechanics",
+  intuition: "Intuition bridge — useful mental model, not literal",
+};
+
 function usePrefersReducedMotion() {
   const [reduced, setReduced] = useState(false);
 
@@ -82,6 +90,8 @@ function Card({ item }: { item: BridgeItem }) {
       {tier && (
         <span
           data-testid="tier-badge"
+          title={TIER_HINT[tier]}
+          aria-label={TIER_HINT[tier]}
           style={{
             marginLeft: "0.25rem",
             padding: "0.125rem 0.375rem",
@@ -188,7 +198,9 @@ export function BridgeTicker({
           padding: "0.125rem 0.5rem",
           fontFamily: "var(--font-mono)",
           fontSize: "0.6875rem",
-          background: "transparent",
+          // Solid fill — cards scroll underneath; transparent made the
+          // control collide visually with badge text.
+          background: "var(--tc-bg, #1c1c1c)",
           color: "var(--tc-muted)",
           border: "1px solid var(--tc-border)",
           cursor: "pointer",

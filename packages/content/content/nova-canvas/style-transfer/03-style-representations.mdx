@@ -10,7 +10,7 @@ context:
   narrative: "Rohan examines the Gram matrices on screen. 'Each artist has a unique signature in these numbers. Monet's Gram matrix is smooth gradients. Basquiat's is sharp, high-contrast. The math captures what makes their art recognizable.' Yara: 'Like design tokens: the encoded DNA of a visual identity.'"
   speaker: "Rohan"
 concept:
-  explanation: "Style representations are encoded as Gram matrices across multiple CNN layers, capturing texture correlations at different scales. Like design tokens that encode a visual identity: colors, spacing, typography that make a brand recognizable."
+  explanation: "Style representations are Gram matrices taken across multiple CNN layers, each capturing which textures co-occur at one scale. Stacked together they form a numeric fingerprint of an artistic identity, derived rather than authored."
   bridge:
     feTitle: "Design tokens: encoded visual identity"
     feCode: "const tokens = { color: '#1e3a5f', radius: '8px', font: 'Inter' };"
@@ -20,7 +20,6 @@ concept:
     breaks: "Design tokens are an authored list of named values. Gram matrices encode style by computing feature correlations across spatial positions in CNN layers. The representation is automatically derived, opaque, and only meaningful as a loss target, not as a swap-in style."
 consequence:
   narrative: "Yara creates a library of style tokens: Gram matrices extracted from her favorite paintings. Each one is a reusable identity. 'I can apply any of these to any photograph,' she realizes. 'An infinite palette.'"
-  nextLessonTeaser: "Next: real-time style transfer: fast enough for the browser"
 hints:
   - level: nudge
     content: "Design tokens capture the essence of a brand. Gram matrices capture the essence of an artistic style."
@@ -46,7 +45,7 @@ Like design tokens. When I build a design system, I encode the visual identity i
 
 A 256-by-256 Gram matrix is small enough to extract once from a painting, cache, and reuse against any photograph you want to restyle.
 
-<LearningObjectives objectives={["Understand how Gram matrices capture style at different scales across CNN layers", "Build a multi-output model to extract features from multiple layers simultaneously", "Compute multi-scale style representations for richer style capture", "Connect style encoding to design tokens and visual identity systems"]} />
+<LearningObjectives objectives={["Understand how Gram matrices capture style at different scales across CNN layers", "Build a multi-output model to extract features from multiple layers simultaneously", "Compute multi-scale style representations for richer style capture"]} />
 
 ## Multi-Scale Style Extraction
 

@@ -18,8 +18,7 @@ concept:
     mlCode: "if (modelFlags.v2) { predict(modelV2, input); } else { predict(modelV1, input); }"
     tier: identity
 consequence:
-  narrative: "Hassan nods at the monitoring dashboard. 'Now every model update goes through A/B testing. We prove it's better before it touches production. Tariq, show them what happened when we tested v3.1.' Tariq grins. 'The new model caught a bearing failure 6 hours earlier. That is real impact.'"
-  nextLessonTeaser: "Next: traffic splitting, routing requests to different model versions"
+  narrative: "Hassan nods at the monitoring dashboard. 'Now every model update goes through A/B testing. We prove it's better before it touches production. Tariq, show them what happened when we tested v3.1.' Tariq grins. 'v3.1 flagged a bearing failure while the control arm was still calling it normal vibration. Six hours of warning we didn't have before.'"
 hints:
   - level: nudge
     content: "Your ModelRouter.assignModel() should hash the device ID into a bucket, so device-7alpha-003 gets the same model version on every request"
@@ -42,7 +41,7 @@ March 2024. Model v2.3 deployed to all 12,400 devices simultaneously. Power grid
 We had the monitoring. We had the metrics. What we didn't have was a controlled comparison. The old model was gone. Nothing to measure against.
 </Dialogue>
 
-Route 10% of the fleet to the new model. Keep 90% on the old one. Let live metrics pick the winner. You have shipped this mechanism before, as a feature flag on a checkout flow; here the payload is a model version instead of a UI variant. What changes is the timescale. A conversion shows up in minutes, while the ground truth for a bearing-failure prediction can take hours to arrive.
+Route 10% of the fleet to the new model. Keep 90% on the old one. Let live metrics pick the winner. The mechanism is a feature flag with a model version behind it instead of a checkout flow. The waiting is the unfamiliar part: a conversion confirms itself in minutes, while the ground truth for a bearing-failure prediction can take hours to arrive, so the comparison has to be designed to outlast its own impatience.
 
 <LearningObjectives objectives={["Understand why A/B testing is critical for production ML deployments", "Map feature flag concepts to model version routing", "Implement a basic model router that assigns devices to model versions", "Define metrics that determine whether a new model is actually better"]} />
 

@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "Image format choice is per-file at save time and lossy formats keep visual fidelity. Number-format choice in models propagates through every weight, activation, and gradient computation, and the wrong choice can collapse model accuracy entirely. Format change is invasive in models, cosmetic in images."
 consequence:
-  narrative: "You understand the precision-size spectrum. Int8 gives you 4x compression."
-  nextLessonTeaser: "Next: applying post-training quantization"
+  narrative: "Int8: same model, one quarter the bytes. Tariq's gateway has room for the sensor buffer again."
 hints:
   - level: nudge
     content: "JPEG's quality slider trades file size against visible artifacts. The format ladder here trades bytes per parameter against numerical precision"
@@ -39,9 +38,9 @@ keywords:
 I need this model running on a $35 sensor gateway. It has 512MB RAM shared between the OS, drivers, and your model. Every byte you save is a byte I can use for the sensor buffer.
 </Dialogue>
 
-You choose image formats every day. PNG for lossless screenshots, WebP for balanced quality and size, AVIF for maximum compression. Each format trades quality for file size. Number formats in ML run the same trade, with numerical precision in place of visual quality.
+PNG, WebP, or AVIF? It is the same decision three times: how much quality are you willing to trade for bytes. Number formats in ML run the same trade, with numerical precision in place of visual quality, and on Tariq's gateway the bytes side of the ledger is not negotiable.
 
-<LearningObjectives objectives={["Understand Float32, Float16, and Int8 number formats", "Calculate memory savings from format conversion", "Recognize the precision-size tradeoff in each format", "Map image format decisions to number format decisions"]} />
+<LearningObjectives objectives={["Understand Float32, Float16, and Int8 number formats", "Calculate memory savings from format conversion", "Map image format decisions to number format decisions"]} />
 
 ## The Precision Spectrum
 

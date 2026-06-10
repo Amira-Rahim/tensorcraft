@@ -10,7 +10,7 @@ context:
   narrative: "Erdem pulls up the first render from MUSE. Pure noise. 'This is what the model starts with,' Samir explains. 'It learns to remove the noise, step by step, until an image appears. Like watching a Polaroid develop.'"
   speaker: "Samir"
 concept:
-  explanation: "Diffusion models generate images by starting from pure noise and gradually removing it over many steps, exactly like progressive image loading, where a blurry placeholder sharpens into the final image."
+  explanation: "Diffusion models generate by reversing destruction: start from pure noise and remove a little of it at every step, over many steps, until an image condenses out of the static. The model's whole job is learning what to subtract."
   bridge:
     feTitle: "Progressive image loading (blur-up)"
     feCode: "img { filter: blur(20px); transition: filter 0.3s; }"
@@ -19,7 +19,6 @@ concept:
     tier: intuition
 consequence:
   narrative: "The gallery screen flickers. From static snow, a shape emerges: buildings, a sky, stars. Forty-three seconds of patient denoising. Erdem whispers: 'It is beautiful. But forty-three seconds is an eternity for a kiosk.'"
-  nextLessonTeaser: "Next: noise schedules: controlling the trajectory from noise to clarity"
 hints:
   - level: nudge
     content: "The reverse loop runs denoise(image, t) from t = T down to 1; each call subtracts the noise the model predicts for that timestep"
@@ -47,7 +46,7 @@ Let me show you what is happening in those forty-three seconds. The model starts
 It's like watching a Polaroid develop. Or like those websites where the image loads blurry first, then sharpens. Progressive loading, right?
 </Dialogue>
 
-You already know this pattern. Progressive image loading starts with a tiny, blurred placeholder and sharpens it into the final image. Diffusion models do exactly the same thing, but in reverse. They learn to undo noise.
+Yara is close, with one difference that matters. Progressive loading reveals an image that already exists on a server somewhere; the blur is a delivery trick. Diffusion has no finished image hiding behind the noise. The sharpening IS the creation: forty-three seconds of a model deciding, step by step, what was never there to begin with.
 
 <LearningObjectives objectives={["Understand the forward process: systematically adding noise to an image", "Understand the reverse process: a neural network learning to remove that noise", "Connect diffusion to progressive image loading (blur-up technique)", "Implement basic noise addition and removal with TensorFlow.js"]} />
 

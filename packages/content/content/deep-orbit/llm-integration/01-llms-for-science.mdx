@@ -10,7 +10,7 @@ context:
   narrative: "Mirza needs a report for Earth Command in 6 hours. 47 days of data. Farah suggests using an LLM to draft the report — not to replace analysis, but to accelerate it."
   speaker: "Dr. Farah"
 concept:
-  explanation: "LLMs are reasoning tools that generate structured output from instructions — like AI code completion that produces code from natural language descriptions."
+  explanation: "An LLM drafts structured output from instructions in seconds. Whether any of it is true remains your job."
   bridge:
     feTitle: "AI Code Completion"
     feCode: "// Copilot: 'create a fetch wrapper' → generates full function"
@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "AI code completion suggests text from a frozen model trained on public code. LLM analysis can hallucinate plausible-sounding scientific claims that look correct but are not backed by data. The verification burden is on the user, not the model."
 consequence:
-  narrative: "The LLM drafts a preliminary report in minutes. Farah reviews and corrects — it's faster than writing from scratch, but requires expert oversight."
+  narrative: "Minutes to a full preliminary draft. Farah reviews and corrects: faster than writing from scratch, but only because she knows the data cold."
 hints:
   - level: nudge
     content: "LLMs are tools that augment human analysis, not replace it — like Copilot for coding"
@@ -47,9 +47,13 @@ Forty-seven days of logged data and you want to hand the write-up to an autocomp
 I want to use it as a tool, Nazari, like Copilot for code. It drafts, I verify. It's faster than writing from scratch, and I catch what it gets wrong.
 </Dialogue>
 
+<Dialogue speaker="Chief Nazari">
+Then we run it with a ledger. Every fabricated claim you catch goes on the board, next to the minutes it cost you to catch it. If verification eats more than two of your six hours, the next report gets written by hand.
+</Dialogue>
+
 Nazari's skepticism is the right default. A language model will happily invent a confident paragraph about an anomaly that never happened, and a fabricated number in a report to Earth Command is worse than no report at all. What makes Farah's plan sound is the workflow, not the model: nothing ships until the one person aboard who knows the data has checked every claim against it.
 
-<LearningObjectives objectives={["Understand LLMs as augmentation tools for structured analysis", "Set up an LLM API client for programmatic access", "Define the human-AI workflow: generate → review → correct → approve", "Connect LLM usage to familiar developer tools (Copilot, ChatGPT, Claude)"]} />
+<LearningObjectives objectives={["Understand LLMs as augmentation tools for structured analysis", "Set up an LLM API client for programmatic access", "Define the human-AI workflow: generate → review → correct → approve"]} />
 
 ## LLMs as Developer Tools
 
@@ -143,7 +147,7 @@ Set up an LLM client and generate a structured analysis.
 
 <Epilogue>
 
-Five hours, twelve minutes to the transmission window. Farah submits the first draft request and the model returns six hundred words in eleven seconds — clean prose, confident structure, and a second paragraph describing an "anomaly cluster in Band-3" that has never existed on any instrument aboard the Archimedes. She strikes it without slowing down. ARIA has been parsing the draft from her own console the entire time.
+Five hours, twelve minutes to the transmission window. Farah submits the first draft request and the model returns six hundred words in eleven seconds: clean prose, confident structure. The second paragraph describes an "anomaly cluster in Band-3" that has never existed on any instrument aboard the Archimedes. She strikes it without slowing down, and logs one tally mark on Nazari's ledger. ARIA has been parsing the draft from her own console the entire time.
 
 <Dialogue speaker="ARIA">
 Review complete. One fabricated claim; probability 0.97 that Dr. Farah had already identified it. It generates language without rules. I do not know what I am for.

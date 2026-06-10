@@ -10,7 +10,7 @@ context:
   narrative: "Erdem tests the gallery kiosk: 'Three minutes for one style transfer. The visitors will leave.' Rohan pulls up a different approach: 'We train a feedforward network that applies the style in a single pass. Like pre-compiling CSS: no runtime optimization needed.'"
   speaker: "Rohan"
 concept:
-  explanation: "Real-time style transfer replaces iterative optimization with a feedforward network trained to apply a specific style in one pass, like how CSS filters apply visual effects instantly without per-pixel computation at runtime."
+  explanation: "Real-time style transfer replaces per-image optimization with a feedforward network trained once per style. The expensive loop moves to training time; inference collapses to a single forward pass."
   bridge:
     feTitle: "CSS filter chains"
     feCode: "img { filter: saturate(1.5) contrast(1.2) blur(1px); }"
@@ -20,7 +20,6 @@ concept:
     breaks: "CSS filter chains compose deterministic per-pixel operations. Feedforward style networks learn one fixed style end-to-end. Adding a new style requires retraining the entire network, not adding a filter to a chain."
 consequence:
   narrative: "One forward pass. 85 milliseconds. The photograph transforms into a Monet in the time it takes to blink. Yara stares at the kiosk screen, watching visitors' photographs become paintings in real time. 'This is what I dreamed it could be.'"
-  nextLessonTeaser: "Next: blending multiple styles: combining Monet and Basquiat in a single image"
 hints:
   - level: nudge
     content: "CSS filters are instant because the computation is pre-compiled. A feedforward style network works the same way."
@@ -36,6 +35,8 @@ keywords:
   - residual-blocks
 ---
 
+Three minutes per frame. Erdem times it on the kiosk twice to be sure: 180 seconds of gradient descent for one restyled photograph, on a screen that has to feel instant. A visitor will give that screen maybe ten seconds. The optimization loop owes two orders of magnitude, and no amount of tuning pays that debt. The loop itself has to go.
+
 <Dialogue speaker="Rohan">
 The Gatys method optimizes each image from scratch: hundreds of iterations, minutes per image. That is like computing CSS styles by running gradient descent on every page load. We need to pre-compile the style into a network.
 </Dialogue>
@@ -44,9 +45,7 @@ The Gatys method optimizes each image from scratch: hundreds of iterations, minu
 A feedforward network. Train it once on the Monet style, and it applies that style in a single forward pass. Like CSS `filter`: the browser applies saturate, contrast, and blur instantly because the operations are pre-compiled.
 </Dialogue>
 
-CSS filters apply visual effects in real time because they are pre-computed GPU operations, not pixel-by-pixel calculations. Fast style transfer works the same way: a network pre-trained on a specific style applies it in a single pass.
-
-<LearningObjectives objectives={["Understand why iterative optimization is too slow for real-time use", "Build a feedforward style transfer network with encoder-residual-decoder architecture", "Train the network using perceptual and style losses from a pretrained feature extractor", "Connect fast inference to CSS filter chains — pre-compiled visual effects"]} />
+<LearningObjectives objectives={["Understand why iterative optimization is too slow for real-time use", "Build a feedforward style transfer network with encoder-residual-decoder architecture", "Train the network using perceptual and style losses from a pretrained feature extractor"]} />
 
 ## The Fast Style Network
 

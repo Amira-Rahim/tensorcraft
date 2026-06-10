@@ -10,7 +10,7 @@ context:
   narrative: "Yara asks MUSE to generate an image from text. Nothing happens. 'It only understands images,' Samir explains. 'It is monolingual: it speaks vision but not language. We need to make it multilingual.' Rohan adds: 'Multimodal. Like a full-stack app that connects frontend, backend, and database.'"
   speaker: "Samir"
 concept:
-  explanation: "Multimodal models process multiple data types (text, images, audio) in a unified system. Like a full-stack application where frontend, backend, and database must work together, each component handles a different modality but they share a common interface."
+  explanation: "Multimodal models process more than one kind of data (text, images, audio) in a single system. Each modality gets its own encoder; the real work is making their outputs meet in one shared representation where they can be compared and combined."
   bridge:
     feTitle: "Full-stack apps: frontend + backend + database"
     feCode: "fetch('/api/data').then(r => r.json()).then(render);"
@@ -19,8 +19,7 @@ concept:
     tier: intuition
     breaks: "Full-stack apps separate concerns by tier with explicit interfaces. Multimodal pipelines fuse modalities via shared embedding spaces or cross-attention and the 'API' between modalities is learned. Debugging requires tracing through learned intermediate representations."
 consequence:
-  narrative: "The architecture takes shape on the whiteboard: a text encoder, an image encoder, and a shared embedding space where both modalities meet. 'Two languages,' Rohan says, 'one translator.'"
-  nextLessonTeaser: "Next: vision-language models: connecting images and text in a single system"
+  narrative: "On the whiteboard, the architecture takes shape: a text encoder, an image encoder, and a shared embedding space where both modalities meet. 'Two languages,' Rohan says, 'one translator.'"
 hints:
   - level: nudge
     content: "encodeText and the image encoder never share code, only a contract: both must emit vectors of the same dimensionality into the same space"
@@ -48,7 +47,7 @@ MUSE currently only understands images: pixel data in, pixel data out. It is mon
 It is like building a full-stack app. Your frontend speaks HTML and CSS. Your backend speaks Python or Node. Your database speaks SQL. They are all different languages, but they communicate through APIs and shared data formats. Multimodal AI works the same way.
 </Dialogue>
 
-You already build systems where different technologies work together. Frontend, backend, database: each handles a different type of data but they share interfaces. Multimodal AI applies the same principle: different encoders for different data types, unified by a shared embedding space.
+Rohan's full-stack picture holds until you ask where the API contract lives. In your stack, the interface between tiers is written down: an OpenAPI spec, a schema, a TypeScript type. Between MUSE's modalities, the interface is learned: a shared embedding space whose "contract" is just geometry that training happened to converge on. When it breaks, there is no spec to diff against. That difference shapes everything this module builds.
 
 <LearningObjectives objectives={["Understand what multimodal means: models that process multiple data types", "Identify the key components: modality-specific encoders and a shared embedding space", "Connect multimodal architecture to full-stack application design", "Implement basic text and image encoders that produce compatible embeddings"]} />
 

@@ -10,7 +10,7 @@ context:
   narrative: "The extractive QA model found the allergy note, but Vikram raises a concern. 'Finding a keyword match is not comprehension. What if the record says the allergy was ruled out? Or that a family member has the allergy, not the patient?' Khalil realizes the model needs to understand context, not just locate text."
   speaker: "Vikram"
 concept:
-  explanation: "Reading comprehension models don't just find text; they understand relationships between question and context, like a GraphQL resolver that fetches exactly the data a query needs."
+  explanation: "Reading comprehension models don't just locate text; they model the relationship between question and context, so 'allergy ruled out' and 'mother's allergy' stop counting as answers about the patient."
   bridge:
     feTitle: "GraphQL Resolver"
     feCode: "resolver: (parent, { patientId }) => db.allergies.find({ patientId, active: true })"
@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "GraphQL resolvers fetch named fields from defined sources. Reading-comprehension models infer answers from passages and routinely fabricate plausible-sounding answers ungrounded in the source; fluent output is no evidence of correct comprehension. Ground-truth verification requires checking the cited span exists in the input passage."
 consequence:
-  narrative: "The comprehension model correctly distinguishes 'patient allergic to penicillin' from 'patient's mother allergic to penicillin.' Vikram nods. 'Now it reads like a clinician, not a search engine.'"
-  nextLessonTeaser: "Next: RAG architecture — when the answer isn't in a single document"
+  narrative: "Run against the adversarial set, the model stops conflating 'patient allergic to penicillin' with 'patient's mother allergic to penicillin.' Vikram nods. 'Now it reads like a clinician, not a search engine.'"
 hints:
   - level: nudge
     content: "Attention scores reveal which context tokens the model focuses on for each question token"

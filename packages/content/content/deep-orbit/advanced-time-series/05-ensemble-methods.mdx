@@ -10,7 +10,7 @@ context:
   narrative: "No single model handles all aspects of the signal. Demir combines the LSTM, attention model, and Kalman filter into an ensemble — multiple models, one prediction."
   speaker: "Ensign Demir"
 concept:
-  explanation: "Ensemble methods combine multiple models for a more robust prediction — like micro-frontends where multiple independent apps compose into one view."
+  explanation: "An ensemble runs several models on every input and combines their answers; their individual errors partially cancel, and the blend beats any single member."
   bridge:
     feTitle: "Micro-Frontends"
     feCode: "// Multiple apps compose into one view, each handling its domain"
@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "Micro-frontends serve different routes — each handles its own slice. Model ensembles run all members on every input and combine predictions (vote, average, stack). Compute is multiplied per inference, not partitioned."
 consequence:
-  narrative: "The ensemble catches the timing drift that the LSTM alone missed. Multiple perspectives yield a more complete picture."
+  narrative: "Three architectures, one verdict: the ensemble catches the timing drift the LSTM alone missed."
 hints:
   - level: nudge
     content: "Ensemble = multiple models vote on the answer, reducing individual model errors"
@@ -44,7 +44,7 @@ The LSTM is great at short-range patterns. The attention model catches long-rang
 Because all three run on every input. An ensemble isn't a router that picks the right specialist. Every model fires every time, and you pay the sum of their inference costs. If the compute budget covers that, then yes: each model has blind spots, and the ensemble covers them.
 </Dialogue>
 
-Micro-frontends compose independent apps into one view by partitioning the work: each app owns its route. The analogy bends exactly where Farah said it would — an ensemble doesn't partition the work, it multiplies it per request.
+Micro-frontends compose independent apps into one view by partitioning the work: each app owns its route. The analogy bends exactly where Farah said it would. An ensemble doesn't partition the work; it multiplies it per request.
 
 <LearningObjectives objectives={["Combine multiple models using averaging, weighted averaging, and stacking", "Understand why ensembles reduce error: averaging out individual model mistakes", "Build an ensemble of LSTM, attention, and Kalman filter for signal forecasting", "Evaluate ensemble performance vs individual models"]} />
 
@@ -171,12 +171,12 @@ Build a weighted ensemble from multiple model predictions.
 
 <Epilogue>
 
-Farah leaves the ensemble extrapolating overnight: LSTM, attention, Kalman, all three projecting the interval forward from 72.5 seconds. By morning the bridge display holds three curves that disagree on the date and agree on the shape. Every one of them ends at zero. Nazari asks what an interval of zero even means: a continuous tone, a wall of signal, an arrival. Nobody volunteers an answer.
+Farah leaves the ensemble extrapolating overnight: LSTM, attention, Kalman, all three projecting the interval forward from 72.5 seconds. By morning the bridge display holds three curves that disagree on the date and agree on the shape. Every one of them ends at zero. Nazari asks what an interval of zero even means, a continuous tone, a wall of signal, an arrival, and nobody volunteers an answer.
 
 <Dialogue speaker="ARIA">
 I have recomputed Dr. Farah's compression curve against the ensemble output. The fit holds to four significant figures; I can supply eleven. You did not request this precision. I had it available.
 </Dialogue>
 
-Farah looks at the legacy AI's console a moment longer than the readout requires. Eleven decimal places of agreement, three architectures, one conclusion: the thing in Sector 7-G is not repeating itself. It is counting down. The only number still missing is to what.
+Eleven decimal places of agreement, three architectures, one conclusion: the thing in Sector 7-G is not repeating itself; it is counting down. The only number still missing is to what.
 
 </Epilogue>

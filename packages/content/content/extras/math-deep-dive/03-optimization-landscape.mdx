@@ -11,7 +11,7 @@ context:
   narrative: "Training a model is navigating a high-dimensional terrain, and the landscape is full of traps."
   speaker: "Instructor"
 concept:
-  explanation: "The loss surface is a high-dimensional terrain where SGD with momentum acts like a ball rolling downhill."
+  explanation: "The loss surface is a high-dimensional terrain, and SGD with momentum is a ball rolling across it: velocity carries it through flat regions and past shallow dips."
   bridge:
     feTitle: "3D Game Terrain"
     feCode: "player.velocity += gravity * dt"
@@ -21,14 +21,13 @@ concept:
     breaks: "3D game terrain is authored by a level designer. SGD navigates a million-dimensional non-convex loss landscape with no map; momentum helps escape some local minima but offers no guarantee of finding the global optimum."
 consequence:
   narrative: "Understanding the loss landscape explains why learning rate schedules and momentum matter."
-  nextLessonTeaser: "Next: convolution through the lens of matrix multiplication"
 hints:
   - level: nudge
-    content: "Your SGD update tracks two values, weights and velocity. The velocity term is what carries the ball through flat spots"
+    content: "The velocity term is what carries the ball through flat spots"
   - level: guidance
-    content: "A convex function has one minimum (a bowl shape). Non-convex has many (a mountain range)"
+    content: "Each sgdStep returns both updated values, not just the weight. Compute newVelocity first from the old velocity and the gradient, then add it to the weight. In optimizeWithMomentum, feed each step's outputs into the next iteration."
   - level: solution
-    content: "Track both position (weights) and velocity (momentum) to implement SGD with momentum"
+    content: "sgdStep: const newVelocity = momentum * velocity - lr * gradient; return { weight: weight + newVelocity, velocity: newVelocity }. In the loop, record { weight, loss: L(weight) } for the initial state and after every step."
 keywords:
   - convexity
   - saddle-point

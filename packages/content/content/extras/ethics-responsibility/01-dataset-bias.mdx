@@ -20,14 +20,13 @@ concept:
     breaks: "Cross-browser bugs surface immediately on a Firefox/Safari pageview; the failure mode is loud (broken layout, JS error). Dataset bias is silent: a face-recognition model trained mostly on light-skinned faces may still return a confident match on a darker-skinned face that is wrong. Detecting bias requires per-subgroup evaluation against a labelled holdout. There's no equivalent of 'open it in Firefox' that surfaces it on demand."
 consequence:
   narrative: "Understanding bias is the first step toward building ML systems that serve everyone."
-  nextLessonTeaser: "Next: measuring fairness with concrete metrics"
 hints:
   - level: nudge
     content: "Count the representation of each group in your dataset"
   - level: guidance
-    content: "Compare group proportions to expected real-world distributions"
+    content: "Group the data points by their group field and count each bucket. Divide by the total for the proportion, and average the labels for the positive rate. Any proportion under 0.1 gets flagged."
   - level: solution
-    content: "Compute per-group counts and ratios, then flag underrepresented groups"
+    content: "1) Build counts: for each point, increment counts[point.group]. 2) Per group: proportion = count / data.length; positiveRate = sum of labels in group / count. 3) If proportion < 0.1, add underrepresented: true to that group's entry."
 keywords:
   - bias
   - selection-bias
@@ -131,7 +130,7 @@ function auditOutcomes(data: DataPoint[]) {
 
 These aren't hypothetical problems. Amazon scrapped an AI recruiting tool that penalized resumes containing the word "women's" because it was trained on a decade of male-dominated hiring. Healthcare algorithms allocated less care to Black patients because they used healthcare spending (influenced by systemic inequality) as a proxy for health needs.
 
-As a frontend developer, you already understand that "works for me" isn't good enough. Apply that same instinct to your data.
+You would never close a bug report with "works for me." Hold your training data to the same standard: works for whom, exactly?
 
 ## Challenge
 

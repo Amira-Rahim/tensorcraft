@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "Fuzzy text search compares string edit distance, which is semantically meaningless. Similarity search compares embedding-vector distance and 'similar' depends on what the embedding was trained to capture. Visual embeddings rank a red apple near a red car; semantic embeddings rank it near a green apple. Pick the embedding whose similarity matches your task definition."
 consequence:
-  narrative: "The search returns 47 matches across three weeks of footage. The same drone model, captured from different angles, different lighting, different districts. Zara maps the results to timestamps and locations. A patrol pattern emerges. 'Now we know where it flies,' she says. 'And when.'"
-  nextLessonTeaser: "Next: backbone networks. The pre-trained feature extractors that power production search systems"
+  narrative: "Forty-seven matches across three weeks of footage. The same drone model, captured from different angles, different lighting, different districts. Zara maps the results to timestamps and locations. A patrol pattern emerges. 'Now we know where it flies,' she says. 'And when.'"
 hints:
   - level: nudge
     content: "k-nearest neighbors finds the k items in the database closest to the query vector"
@@ -37,11 +36,23 @@ keywords:
 ---
 
 <Dialogue speaker="Zara">
-In frontend search, you type a misspelled word and fuzzy matching finds what you meant. Visual similarity search works the same way, but instead of comparing strings you compare feature vectors. Feed in a query image, find the database entries with the smallest distance. The closest neighbors are the most visually similar.
+Three weeks of footage. Forty cameras. I want every frame this drone appears in, and I want it before its next patrol.
 </Dialogue>
 
 <Dialogue speaker="Noor">
-So it is autocomplete, but for images. I give it one drone photo and it retrieves every visually similar frame from the archive?
+Then we diff pixels. Hash every frame, compare against the capture. Exact, fast, and I can write it in an hour.
+</Dialogue>
+
+<Dialogue speaker="Zara">
+And it returns nothing. Different angle, different lighting, different district. Not one pixel survives the change, so your hash only matches frames we already have.
+</Dialogue>
+
+<Dialogue speaker="Noor">
+Fuzzy match, then. Like search-as-you-type: I never need the exact string, just the closest entries.
+</Dialogue>
+
+<Dialogue speaker="Zara">
+Now you are describing similarity search. Same shape as your fuzzy text matcher, except the distance runs between feature vectors instead of strings. Feed in the query image, rank the database by distance, keep the nearest neighbors.
 </Dialogue>
 
 Fuzzy text search ranks results by edit distance: how many character changes separate the query from each candidate. Similarity search ranks results by vector distance: how far apart two feature vectors are in embedding space. The algorithm is the same: compute a distance, sort by closeness, return the top results.

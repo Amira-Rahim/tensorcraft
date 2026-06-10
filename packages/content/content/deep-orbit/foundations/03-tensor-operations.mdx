@@ -19,12 +19,10 @@ concept:
     tier: structural
     breaks: "Array.map runs JavaScript per element on the CPU. tf.add operates on whole tensors with hardware-accelerated kernels (WebGL, WASM, WebGPU) and a single op covers millions of elements. Same elementwise idea; different execution model and orders-of-magnitude different cost profile."
 consequence:
-  narrative: "The processed signal reveals a pattern in the noise."
+  narrative: "Nazari watches the combined feed scroll and sees it first: every few minutes, the same ripple across all sixty-four channels at once."
 hints:
   - level: nudge
     content: "tf.mul(a, b) multiplies matching positions; tf.matMul(a, b) multiplies rows into columns. Decide which one the task needs"
-  - level: guidance
-    content: "tf.add() performs element-wise addition"
   - level: solution
     content: "const result = tf.add(a, b)"
 keywords:
@@ -67,11 +65,11 @@ const result = sensor1.add(sensor2).mul(tf.scalar(2));
 
 ## Matrix Multiplication — and Its One Rule
 
-`matMul` is different from `mul`. It doesn't multiply matching positions; it multiplies **rows into columns** — every row of the left tensor dot-producted with every column of the right. That gives it one inflexible shape rule:
+`matMul` is different from `mul`. It doesn't multiply matching positions; it multiplies **rows into columns**: every row of the left tensor dot-producted with every column of the right. That gives it one inflexible shape rule:
 
 **`[m, n] × [n, p] → [m, p]` — the inner dimensions must match.**
 
-The left tensor's column count must equal the right tensor's row count. When they don't, you flip one with `transpose()` — which swaps a tensor's rows and columns, turning `[3, 2]` into `[2, 3]`:
+The left tensor's column count must equal the right tensor's row count. When they don't, you flip one with `transpose()`, which swaps a tensor's rows and columns, turning `[3, 2]` into `[2, 3]`:
 
 <CodeBlock language="typescript" title="matmul.ts">
 {`// weights: [3, 2], input: [3, 1]
@@ -89,7 +87,7 @@ output.print();
 //  [12]]    ← 2+4+6: second column`}
 </CodeBlock>
 
-Why care? Every layer of every neural network you'll build is essentially `matMul(input, weights) + bias`. The shape rule above is the single most common source of errors in ML code — you'll meet `Error: inner dimensions must match` again, and now you know exactly what it's complaining about.
+Why care? Every layer of every neural network you'll build is essentially `matMul(input, weights) + bias`. The shape rule above is the single most common source of errors in ML code. You'll meet `Error: inner dimensions must match` again, and now you know exactly what it's complaining about.
 
 ## Challenge
 
@@ -101,7 +99,7 @@ Add two tensors together to combine sensor readings.
 
 <Epilogue>
 
-Demir wires the three feeds together — add to merge, scale to amplify — and pipes an hour of combined signal to Nazari's console. She watches it scroll for a long moment.
+Demir wires the three feeds together, add to merge, scale to amplify, and pipes an hour of combined signal to Nazari's console. She watches it scroll for a long moment.
 
 <Dialogue speaker="Chief Nazari">
 There. Every few minutes, the same ripple across all sixty-four channels at once. Coordinated. Run it again — and Ensign, if this is a math error, I'm taking it out of your coffee ration.

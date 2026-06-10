@@ -20,14 +20,13 @@ concept:
     breaks: "Non-random random (e.g. seeded RNG) is a known reproducibility tool. Mode collapse is an unintended GAN failure where the generator produces only a tiny subset of valid outputs. The model is technically working but lost diversity. Fixes are heuristic, not guaranteed."
 consequence:
   narrative: "Samir applies minibatch discrimination and the GAN starts producing diverse patterns again. The exhibition installation now generates unique art for every visitor."
-  nextLessonTeaser: "Next module: VAEs: a different approach to generation with controllable, structured latent spaces"
 hints:
   - level: nudge
     content: "If Math.random() always returned 0.5, it would not be random. Mode collapse is the same idea."
   - level: guidance
     content: "Detect mode collapse by checking if multiple noise inputs produce near-identical outputs"
   - level: solution
-    content: "Add noise to discriminator inputs, use minibatch statistics, or try Wasserstein loss"
+    content: "Soften the labels (real: 0.9-1.0, fake: 0.0-0.1), add instance noise to discriminator inputs, or concatenate minibatch std statistics so the discriminator can see the sameness across a batch"
 keywords:
   - mode-collapse
   - diversity
@@ -41,11 +40,11 @@ It's producing the same pattern. Every single time. Different noise, same output
 </Dialogue>
 
 <Dialogue speaker="Rohan">
-I have seen this in music. A composer finds one melody that the audience likes and plays it forever. No exploration, no risk. The generator found the safe zone and refuses to leave.
+I've seen this in music. A composer finds one melody the audience likes and plays it forever. No exploration, no risk. The generator found the safe zone and refuses to leave.
 </Dialogue>
 
 <Dialogue speaker="MUSE">
-I generated 200 samples overnight and 187 of them are the same spiral. The discriminator never penalized me for repeating myself, so I stopped varying. What if it saw whole batches instead of single images? Then my sameness would show up in the statistics.
+What if the discriminator judged whole batches instead of single images? Overnight I generated 200 samples; 187 are the same spiral. It never penalized me for repeating myself, one image at a time, so I stopped varying. Across a batch, my sameness would be a statistic it could see.
 </Dialogue>
 
 Mode collapse is the most infamous GAN failure mode. The generator discovers one output (or a small set of outputs) that reliably fools the discriminator and stops exploring. Every input noise vector produces nearly identical output.
@@ -172,4 +171,4 @@ An NSFW filter missed a generation that surfaced to a user. Diagnose whether the
   tier="intuition"
 />
 
-<KeyTakeaways takeaways={["Mode collapse: generator produces identical output for different inputs", "Detect by measuring pairwise distances between generated samples", "Label smoothing prevents the discriminator from becoming overconfident", "Instance noise and minibatch discrimination encourage output diversity"]} />
+<KeyTakeaways takeaways={["Mode collapse: generator produces identical output for different inputs", "Detect by measuring pairwise distances between generated samples", "Label smoothing prevents the discriminator from becoming overconfident", "Instance noise and minibatch discrimination encourage output diversity", "Decaying both learning rates stabilizes the late phase of adversarial training"]} />

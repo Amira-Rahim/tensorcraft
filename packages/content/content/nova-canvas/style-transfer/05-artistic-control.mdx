@@ -10,7 +10,7 @@ context:
   narrative: "Yara wants to blend styles. 'Half Monet, half Basquiat. Soft light with raw energy.' Rohan grins: 'That is just interpolating between style representations. Like CSS mix-blend-mode: layer one visual effect over another.'"
   speaker: "Yara"
 concept:
-  explanation: "Style blending interpolates between Gram matrices of multiple styles, like CSS mix-blend-mode layers visual effects. Control the blend ratio to create hybrid styles that no single artist represents."
+  explanation: "Style blending interpolates between the Gram matrices of multiple styles, producing hybrids no single artist represents. The blend ratio is a creative control, and not every point along it decodes to a coherent style."
   bridge:
     feTitle: "CSS mix-blend-mode"
     feCode: ".overlay { mix-blend-mode: multiply; opacity: 0.6; }"
@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "CSS mix-blend-mode composites two layers via a fixed pixel formula. Style interpolation walks a path in style-feature space (Gram matrices, AdaIN parameters) where intermediate points often do not correspond to coherent styles. The parameterization is continuous but the manifold of valid styles is not. Interpolation may pass through visually broken regions."
 consequence:
-  narrative: "The gallery wall shows a gradient of styles: pure Monet on the left, pure Basquiat on the right, and every blend between. Visitors slide a physical dial on the kiosk, watching the cityscape morph between artistic identities in real time. Erdem is speechless."
-  nextLessonTeaser: "Next module: Multimodal Learning: MUSE generates its first image from a text prompt"
+  narrative: "Pure Monet on the left, pure Basquiat on the right, and every blend between them across the gallery wall. Visitors slide a physical dial on the kiosk, watching the cityscape morph between artistic identities in real time. Erdem is speechless."
 hints:
   - level: nudge
     content: "mix-blend-mode layers two visual effects. Style blending layers two artistic identities."
@@ -44,7 +43,7 @@ I don't want pure Monet or pure Basquiat. I want something in between: Monet's l
 In CSS, `mix-blend-mode` layers visual effects: multiply, screen, overlay. Style blending does the same thing. We interpolate between two Gram matrices and use the blend as our target. You get a style that is half Monet, half Basquiat, or any ratio you choose.
 </Dialogue>
 
-CSS `mix-blend-mode` layers visual effects to create composites. Style blending interpolates between artistic representations to create hybrid styles. Both give you creative control over how visual identities combine.
+Blending works because Gram matrices live in a continuous space: any weighted average of two style fingerprints is a perfectly valid loss target. Whether it is a coherent style is a separate question. Some blends read as a third artist who never existed; others pass through visually broken territory on the way. The dial is continuous. Taste is not.
 
 <LearningObjectives objectives={["Interpolate between Gram matrices to blend artistic styles", "Control blend ratios to create hybrid styles at any point between two artists", "Apply spatial style masks to use different styles in different image regions", "Connect style blending to CSS mix-blend-mode compositing"]} />
 

@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "Webpack minification rewrites code to equivalent shorter syntax; runtime behavior is preserved exactly. Post-training quantization rounds float weights to int8 and changes numeric output: accuracy can drop several percent, requiring calibration data to mitigate."
 consequence:
-  narrative: "The model is now 4x smaller. But you notice accuracy dropped on extreme values."
-  nextLessonTeaser: "Next: training with quantization in mind"
+  narrative: "Four times smaller, no retraining. But accuracy on extreme sensor values dropped, and nobody can say yet by how much."
 hints:
   - level: nudge
     content: "Map Float32 weights to Int8 range [-128, 127] using min/max scaling"
@@ -36,10 +35,20 @@ keywords:
 ---
 
 <Dialogue speaker="Priya Sharma">
-We have 47 models already trained and deployed in Float32. I'm not retraining all of them. Give me a way to quantize them as-is.
+We have 31 models already trained and deployed in Float32. I'm not retraining all of them. Give me a way to quantize them as-is.
 </Dialogue>
 
-Reach for the Webpack comparison, but hold it loosely. `terser` transforms your JavaScript after you write it, and post-training quantization converts trained weights after training. What carries over is the timing: both operate on a finished artifact, no source changes, no retraining. What does not carry over is the guarantee. Minified code behaves byte-for-byte like the original. Quantized weights are rounded to 256 integer buckets, the outputs shift, and accuracy can drop several points until you give the converter calibration data to set the ranges.
+`terser` transforms your JavaScript after you write it; post-training quantization converts trained weights after training. Both operate on a finished artifact, no source changes, no retraining. Run both round trips, though, and the analogy springs a leak:
+
+```text
+// Minified code is the same program
+add(2, 2)   // 4 before terser, 4 after terser
+
+// Quantized weights are a different model
+0.123 → Int8 bucket -10 → dequantize → 0.1221
+```
+
+Minification loses readability and nothing else. Quantization rounds every weight into one of 256 buckets, the outputs shift, and accuracy can drop several points until you give the converter calibration data to set the ranges.
 
 <LearningObjectives objectives={["Understand the post-training quantization process", "Implement min-max scaling to convert Float32 weights to Int8", "Calculate quantization scale and zero-point", "Evaluate accuracy impact of post-training quantization"]} />
 

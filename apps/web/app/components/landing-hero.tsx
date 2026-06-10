@@ -4,6 +4,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { ParticleField } from "@tensorcraft/ui/effects";
+import { THEME_CONTENT } from "@tensorcraft/shared";
 
 // The hero's proof panel is the free-tier Deep Scan demo: a real 8 KB TFJS
 // model classifying readings live in the visitor's tab. ssr:false — tfjs is
@@ -30,7 +31,7 @@ export function LandingHero() {
   return (
     <section
       data-testid="landing-hero"
-      className="min-h-screen flex items-center px-10 md:px-20 pt-24 pb-28 border-b border-border relative overflow-hidden"
+      className="min-h-screen flex items-center px-10 md:px-20 pt-24 pb-16 border-b border-border relative overflow-hidden"
     >
       {/* Particle canvas background — pure decoration, low density */}
       <ParticleField
@@ -45,19 +46,19 @@ export function LandingHero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9 }}
         >
-          <div className="font-mono text-xs text-primary tracking-[0.14em] uppercase mb-9 flex items-center gap-3">
+          <div className="font-mono text-xs text-primary tracking-[0.14em] uppercase mb-6 flex items-center gap-3">
             <span className="inline-block w-[7px] h-[7px] bg-primary" />
             Deep Orbit is live · No Python required
           </div>
 
-          <h1 className="text-5xl md:text-6xl font-mono font-black leading-[0.93] tracking-[-0.045em] mb-10 uppercase">
+          <h1 className="text-5xl md:text-6xl font-mono font-black leading-[0.93] tracking-[-0.045em] mb-8 uppercase">
             <span className="block">ML Speaks JavaScript.</span>
             <span className="block text-primary">
               Turns Out You&apos;re Fluent.
             </span>
           </h1>
 
-          <p className="text-lg text-text-muted max-w-[520px] mb-8 leading-relaxed font-sans">
+          <p className="text-lg text-text-muted max-w-[520px] mb-6 leading-relaxed font-sans">
             You already debug state, optimize renders, reason about caches.
             That&apos;s the mental model that ships browser ML —{" "}
             <code className="font-mono text-text-primary text-base">
@@ -76,12 +77,13 @@ export function LandingHero() {
 
           <p
             data-testid="hero-stat-line"
-            className="font-mono text-xs text-text-primary tracking-[0.14em] uppercase border-l-2 border-primary pl-4 mb-12"
+            className="font-mono text-xs text-text-primary tracking-[0.14em] uppercase border-l-2 border-primary pl-4 mb-8"
           >
-            11 modules · 55 lessons · 1 deployable model
+            {THEME_CONTENT.modulesPerTheme} modules ·{" "}
+            {THEME_CONTENT.totalLessonsPerTheme} lessons · 1 deployable model
           </p>
 
-          <div className="flex gap-4 flex-wrap mb-6">
+          <div className="flex gap-4 flex-wrap mb-5">
             <Link
               href="/themes/deep-orbit/foundations/introduction-to-tensors"
               data-testid="landing-cta-primary"
@@ -98,7 +100,10 @@ export function LandingHero() {
             </Link>
           </div>
 
-          <p className="font-mono text-[13px] text-text-primary">
+          <p
+            data-testid="hero-trust-line"
+            className="font-mono text-[13px] text-text-primary"
+          >
             No credit card. No account for module 1.
           </p>
         </motion.div>

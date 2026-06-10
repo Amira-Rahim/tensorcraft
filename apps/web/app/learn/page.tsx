@@ -1,5 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { themes } from "@tensorcraft/themes";
+import { THEME_SLUGS, isLaunched } from "@tensorcraft/shared";
 
 export const metadata: Metadata = {
   title: "Learn Machine Learning with JavaScript | Tensorcraft",
@@ -18,6 +20,9 @@ export const metadata: Metadata = {
 export const revalidate = 3600;
 
 export default function LearnPage() {
+  const liveThemes = THEME_SLUGS.filter((slug) => isLaunched(slug));
+  const comingThemes = THEME_SLUGS.filter((slug) => !isLaunched(slug));
+
   return (
     <main className="min-h-screen bg-page px-6 py-20">
       <div className="max-w-3xl mx-auto">
@@ -33,7 +38,7 @@ export default function LearnPage() {
         </p>
 
         <h2 className="text-2xl font-bold text-text-primary mb-4 font-mono">
-          Why Frontend Developers Make Great ML Engineers
+          You Already Know More ML Than You Think
         </h2>
         <p className="text-base text-text-muted font-sans leading-relaxed mb-6">
           If you understand{" "}
@@ -60,8 +65,8 @@ export default function LearnPage() {
           <li className="flex gap-3">
             <span className="text-primary shrink-0">2.</span>
             <span>
-              Learn through bridges — every ML concept is mapped to a frontend
-              concept you know
+              Learn through bridges — 50 analogies map ML concepts to frontend
+              concepts you know, each labeled where it breaks
             </span>
           </li>
           <li className="flex gap-3">
@@ -75,7 +80,7 @@ export default function LearnPage() {
             <span className="text-primary shrink-0">4.</span>
             <span>
               Build a real project — each theme culminates in a capstone ML
-              model that runs at 60fps
+              model running live in the browser
             </span>
           </li>
         </ul>
@@ -86,8 +91,8 @@ export default function LearnPage() {
         <p className="text-base text-text-muted font-sans leading-relaxed mb-8">
           Everything runs in the browser using TensorFlow.js. You write
           TypeScript, test in real-time, and deploy models that work on any
-          device with a web browser. No Jupyter notebooks, no pip install, no
-          GPU setup.
+          device with a web browser. You skip the Jupyter notebooks, pip
+          installs, and GPU setup entirely.
         </p>
 
         <h2 className="text-2xl font-bold text-text-primary mb-4 font-mono">
@@ -102,61 +107,38 @@ export default function LearnPage() {
           Available Now
         </h2>
         <ul className="space-y-2 mb-6 text-base text-text-muted font-sans">
-          <li>
-            <Link
-              href="/themes/deep-orbit"
-              className="text-primary underline underline-offset-4 hover:opacity-80 transition-opacity"
-            >
-              Deep Orbit
-            </Link>{" "}
-            — Time-Series &amp; Signals
-          </li>
+          {liveThemes.map((slug) => (
+            <li key={slug}>
+              <Link
+                href={`/themes/${slug}`}
+                className="text-primary underline underline-offset-4 hover:opacity-80 transition-opacity"
+              >
+                {themes[slug]?.displayName ?? slug}
+              </Link>{" "}
+              — {themes[slug]?.specialization}
+            </li>
+          ))}
         </ul>
 
         <h2 className="text-2xl font-bold text-text-primary mb-4 font-mono">
           Coming Soon
         </h2>
         <p className="text-base text-text-muted font-sans leading-relaxed mb-3">
-          Four more themes ship in waves. Each links to a stub page where you
-          can join a per-theme waitlist:
+          {comingThemes.length} more themes ship in waves. Each has a preview
+          page where you can join its waitlist:
         </p>
         <ul className="space-y-2 mb-8 text-base text-text-muted font-sans">
-          <li>
-            <Link
-              href="/themes/neon-protocol"
-              className="text-primary underline underline-offset-4 hover:opacity-80 transition-opacity"
-            >
-              Neon Protocol
-            </Link>{" "}
-            — Computer Vision (coming soon)
-          </li>
-          <li>
-            <Link
-              href="/themes/signal-ward"
-              className="text-primary underline underline-offset-4 hover:opacity-80 transition-opacity"
-            >
-              Signal Ward
-            </Link>{" "}
-            — NLP &amp; Text Intelligence (coming soon)
-          </li>
-          <li>
-            <Link
-              href="/themes/nova-canvas"
-              className="text-primary underline underline-offset-4 hover:opacity-80 transition-opacity"
-            >
-              Nova Canvas
-            </Link>{" "}
-            — Multimodal &amp; Generative AI (coming soon)
-          </li>
-          <li>
-            <Link
-              href="/themes/terra-grid"
-              className="text-primary underline underline-offset-4 hover:opacity-80 transition-opacity"
-            >
-              Terra Grid
-            </Link>{" "}
-            — Edge AI &amp; Production ML (coming soon)
-          </li>
+          {comingThemes.map((slug) => (
+            <li key={slug}>
+              <Link
+                href={`/themes/${slug}`}
+                className="text-primary underline underline-offset-4 hover:opacity-80 transition-opacity"
+              >
+                {themes[slug]?.displayName ?? slug}
+              </Link>{" "}
+              — {themes[slug]?.specialization} (coming soon)
+            </li>
+          ))}
         </ul>
 
         <p className="text-base text-text-muted font-sans leading-relaxed mb-8">

@@ -20,7 +20,6 @@ concept:
     breaks: "Device testing matrices use feature detection at runtime. Edge device model selection must match model size to RAM, ops to NPU/GPU support, quantization to supported numeric formats, and thermal envelope to inference cadence. A model that loads on one device fails to load on a 'similar' one with less RAM."
 consequence:
   narrative: "You now understand exactly what hardware your models must run on."
-  nextLessonTeaser: "Next: building your first edge model"
 hints:
   - level: nudge
     content: "canDeployModel() is a spec check: compare the model's RAM, storage, and compute needs against each EdgeDevice's fields"
@@ -39,9 +38,9 @@ keywords:
 Here's what we're deploying to Site 12. Quad-core ARM Cortex-A53, 512MB RAM, 4GB eMMC storage, powered by a solar panel. It needs to run 24/7 on about 5 watts. Your model has to fit in this.
 </Dialogue>
 
-You test your web applications on low-end devices. You know the pain of a React app that runs beautifully on your M2 MacBook but crawls on a budget Android phone. Edge ML has the same problem, amplified.
+A React app that runs beautifully on an M2 MacBook and crawls on a budget Android phone: every frontend dev ships that lesson exactly once. Edge ML teaches the same lesson, amplified, except the budget device is bolted to a tower in Patagonia and nobody is around to clear its cache.
 
-<LearningObjectives objectives={["Identify common edge device hardware specifications", "Understand memory, compute, and power constraints", "Map frontend device testing concepts to edge ML deployment", "Calculate whether a model fits within device constraints"]} />
+<LearningObjectives objectives={["Identify common edge device hardware specifications", "Understand memory, compute, and power constraints", "Calculate whether a model fits within device constraints"]} />
 
 ## Know Your Hardware
 

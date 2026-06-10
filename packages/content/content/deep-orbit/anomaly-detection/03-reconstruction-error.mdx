@@ -10,16 +10,16 @@ context:
   narrative: "Demir feeds the anomalous signal through the autoencoder. The reconstruction is mangled — the error is 12x the normal baseline. Farah: 'That is our anomaly score.'"
   speaker: "Dr. Farah"
 concept:
-  explanation: "Reconstruction error measures how different the output is from the input — like git diff showing what changed from the expected baseline."
+  explanation: "Reconstruction error scores each sample by how badly the autoencoder rebuilds it: one number, high when the input doesn't fit the learned patterns."
   bridge:
     feTitle: "git diff"
     feCode: "git diff HEAD -- file.ts  // what changed from baseline?"
     mlTitle: "Reconstruction Error"
     mlCode: "error = MSE(original, autoencoder.predict(original))"
     tier: intuition
-    breaks: "git diff names exact line changes you can patch. Reconstruction error is a single L2 distance scalar — high error tells you something is off but not which feature, position, or channel caused it. Debugging requires per-dimension error maps you compute separately."
+    breaks: "git diff names exact line changes you can patch. Reconstruction error is a single L2-distance scalar (the straight-line distance between input and reconstruction, measured across all feature dimensions at once) — high error tells you something is off but not which feature, position, or channel caused it. Debugging requires per-dimension error maps you compute separately."
 consequence:
-  narrative: "The reconstruction error for the anomalous signal is 12x the normal threshold. Nazari checks the sensors twice — this is not instrument noise. The model is right."
+  narrative: "Twelve times the normal threshold. Nazari checks the sensors twice; this is not instrument noise. The model is right."
 hints:
   - level: nudge
     content: "Reconstruction error = difference between input and output. High error = anomaly."
@@ -44,10 +44,10 @@ So the reconstruction error IS the anomaly score? It's like running git diff. If
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-Half of it. A diff names the exact lines that changed, and you can patch them. Reconstruction error is one number, the L2 distance between input and output. Twelve times baseline tells us something is wrong. It doesn't tell us which feature, which position, which channel. For that we compute per-dimension error maps separately. Which we will, before I sign off on any alert.
+Then run your diff, Ensign. And when it fires, tell me which channel it says changed.
 </Dialogue>
 
-The autoencoder's baseline is its learned representation of normal signals. The error score measures total deviation from that baseline, one scalar per sample.
+The autoencoder's baseline is its learned representation of normal signals. The error score measures total deviation from that baseline, one scalar per sample: the L2 distance, the straight-line gap between a signal and its reconstruction measured across all the feature dimensions at once. Hold Farah's question while you build it; the score will turn out to answer everything except what she asked.
 
 <LearningObjectives objectives={["Compute reconstruction error as the difference between input and autoencoder output", "Use MSE (mean squared error) as the anomaly score for each sample", "Establish a normal error distribution to set meaningful thresholds", "Interpret reconstruction error: which features contribute most to the anomaly"]} />
 
@@ -65,7 +65,11 @@ function computeAnomalyScores(
 ): number[] {
   return tf.tidy(() => {
     const reconstructed = autoencoder.predict(signals) as tf.Tensor2D;
-    // Per-sample MSE: mean of squared differences across features
+    // Per-sample MSE: mean of squared differences across features.
+    // Here is where Demir's git-diff analogy stops paying out: a diff
+    // names the exact lines that changed and you can patch them. This
+    // collapses eleven dimensions into ONE scalar. It says how wrong,
+    // never which feature, which position, which channel.
     const errors = tf.mean(tf.square(tf.sub(signals, reconstructed)), 1);
     return Array.from(errors.dataSync());
   });
@@ -88,6 +92,8 @@ console.log('Anomaly — error:', anomalyScores[0].toFixed(6));  // ~0.062
 {`import * as tf from '@tensorflow/tfjs';
 
 // Which features contribute most to the anomaly?
+// This map is Farah's actual answer — and she wants it computed
+// before she signs off on any alert.
 function featureErrors(
   autoencoder: tf.LayersModel,
   signal: tf.Tensor2D,

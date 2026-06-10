@@ -20,7 +20,6 @@ concept:
     breaks: "scrollIntoView jumps to one element with hard-coded behavior. Self-attention computes a soft weighting over all positions, every layer, every head; the 'jump' is fractional, learned, and applied many times."
 consequence:
   narrative: "Diagnostic One can now relate distant words, connecting a drug mentioned in paragraph one to a side effect in paragraph three."
-  nextLessonTeaser: "Next: multi-head attention, attending to multiple aspects simultaneously."
 hints:
   - level: nudge
     content: "Query, Key, and Value are all derived from the same input"
@@ -43,7 +42,7 @@ Like when I use `scrollIntoView()`: any element can programmatically bring anoth
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-You've got the symmetry right, any element can initiate. The rest doesn't hold. scrollIntoView jumps to one element, all or nothing, with behavior you hard-coded. Attention never jumps. Every word spreads fractional weight across every other word, the weights are learned, and it happens again at every layer and every head. Each word ends up with a representation that accounts for its full context.
+You've got the symmetry right: any element can initiate. Hold that thought until you've seen the weight matrix, because the rest of the analogy is going to fall apart in an instructive way.
 </Dialogue>
 
 <LearningObjectives objectives={["Understand the Query-Key-Value framework", "Implement scaled dot-product self-attention", "Explain why scaling by sqrt(d_k) prevents gradient issues", "Apply self-attention to a clinical text sequence"]} />
@@ -92,6 +91,14 @@ console.log('Output shape:', output.shape);  // [8, 16]
 console.log('Weight matrix shape:', weights.shape);  // [8, 8]`}
 </CodeBlock>
 
+<Dialogue speaker="Khalil">
+The weight matrix is 8 by 8. So token three doesn't focus on one other token. It holds a little of all eight at once?
+</Dialogue>
+
+<Dialogue speaker="Vikram">
+And that's where scrollIntoView stops being your model. It jumps to one element, all or nothing, with behavior you hard-coded. Attention never jumps: every word spreads fractional weight across every other word, the weights are learned, and it happens again at every layer and every head. Each word ends up with a representation that accounts for its full context.
+</Dialogue>
+
 ## Why Scale by sqrt(d_k)?
 
 Without scaling, dot products grow large as dimensionality increases. Large values push softmax into regions with extremely small gradients, and the model stops learning. Dividing by `sqrt(d_k)` keeps values in a reasonable range.
@@ -137,4 +144,4 @@ Then:
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Self-attention lets every token attend to every other token in the sequence", "Q, K, V are linear projections of the same input — three different views", "Scaling by sqrt(d_k) prevents gradient vanishing in softmax", "Self-attention captures long-range dependencies that RNNs struggle with"]} />
+<KeyTakeaways takeaways={["Self-attention lets every token attend to every other token, capturing the long-range dependencies RNNs struggle with", "Q, K, V are linear projections of the same input — three different views", "Scaling by sqrt(d_k) prevents gradient vanishing in softmax"]} />

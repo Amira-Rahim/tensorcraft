@@ -10,7 +10,7 @@ context:
   narrative: "Imran discovers that the RNN forgets critical information from earlier in long clinical notes, a symptom of the vanishing gradient problem."
   speaker: "Imran"
 concept:
-  explanation: "In long sequences, gradients shrink exponentially as they backpropagate through time. Early tokens lose their influence on learning, like an event bubbling through deeply nested DOM elements; the signal fades before reaching the top."
+  explanation: "In long sequences, gradients shrink exponentially as they backpropagate through time. Early tokens lose their influence on learning: by the time the error signal reaches them, almost nothing is left to update with."
   bridge:
     feTitle: "Event Bubbling Fades in Deep DOM"
     feCode: "div > div > div > div > button.click() // event may never reach root"
@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "Event bubbling decays only when a handler calls stopPropagation. Vanishing gradients shrink multiplicatively at every layer (sigmoid derivative caps at 0.25); by layer 10 the gradient is below float32 precision and weights stop updating. The fix is architectural (residuals, ReLU, LSTM gates), not stylistic."
 consequence:
-  narrative: "The team understands why the simple RNN fails on long discharge summaries. They need a more robust architecture."
-  nextLessonTeaser: "Next: LSTM and GRU — architectures with gates that solve the vanishing gradient problem."
+  narrative: "Imran cancels the bigger-hidden-state retraining job, half-finished. Capacity was never the problem. The fix is architectural, and Vikram says it comes with gates."
 hints:
   - level: nudge
     content: "Multiply a fraction by itself many times and it approaches zero. That's what happens to gradients in deep backpropagation."
@@ -36,14 +35,20 @@ keywords:
   - gradient-decay
 ---
 
-> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
-
 <Dialogue speaker="Imran">
-Something's wrong. Our RNN classifies short clinical notes perfectly, but on long discharge summaries it's basically random. It's like the model forgets everything from the beginning of the document.
+Something's wrong. Our RNN classifies short clinical notes perfectly, but on long discharge summaries it's basically random. I want to double the hidden state and retrain.
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-It's the vanishing gradient problem. Closest thing you've shipped is event bubbling fading in a deep DOM, but don't lean on that too hard. Bubbling only dies if a handler kills it. Gradients shrink at every single step, no opt-out: the activation derivative caps at 0.25, so a few dozen steps in you're under float32 precision and the early weights just stop updating.
+That buys you nothing. Capacity isn't your bottleneck.
+</Dialogue>
+
+<Dialogue speaker="Imran">
+It might be. Fifty tokens is ten times more to remember than five. Bigger memory, longer reach.
+</Dialogue>
+
+<Dialogue speaker="Vikram">
+Bigger memory the gradient still can't reach. Look at the failure pattern: the model nails whatever sits near the end of a long note and whiffs the top. That's the vanishing gradient problem. Closest thing you've shipped is event bubbling fading in a deep DOM, but don't lean on that too hard. Bubbling only dies if a handler kills it. Gradients shrink at every single step, no opt-out: the activation derivative caps at 0.25, so a few dozen steps in you're under float32 precision and the early weights just stop updating.
 </Dialogue>
 
 <Dialogue speaker="Dr. Karimi">
@@ -57,6 +62,8 @@ Warning: gradient magnitude at timestep 1 is 0.00003 when sequence length is 50.
 Each RNN timestep multiplies the gradient by roughly the same factor. Multiply 0.9 by itself 50 times and you get 0.005; at 100 steps you are at 0.00003. Over a long discharge summary, the tokens at the top lose all influence on what the network learns.
 
 <LearningObjectives objectives={["Understand why gradients vanish during backpropagation through time", "Connect vanishing gradients to event bubbling signal loss in deep DOM trees", "Observe gradient decay experimentally with TensorFlow.js", "Recognize the symptoms: poor performance on long sequences despite good short-sequence accuracy"]} />
+
+> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
 ## The Math of Signal Decay
 

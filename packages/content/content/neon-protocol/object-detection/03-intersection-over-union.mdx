@@ -20,7 +20,6 @@ concept:
     breaks: "Drag-and-drop hit testing uses bounding-box overlap as a binary gate. IoU is a continuous score in [0,1] used both as a training loss and as a threshold for matching predictions to ground truth. The threshold value (typically 0.5) is a tunable knob with significant effect on metrics."
 consequence:
   narrative: "Noor runs her model and computes IoU against the ground truth. Average IoU: 0.72. NEON chirps: 'Meridian demands 0.85 or higher. We need to do better. But at least now we can measure it.'"
-  nextLessonTeaser: "Next: Non-Max Suppression. Eliminating duplicate detections when anchors overlap"
 hints:
   - level: nudge
     content: "IoU is intersection area divided by union area, same as collision detection overlap ratios"
@@ -45,12 +44,12 @@ I check if the rectangles overlap. I calculate the overlap area and compare it t
 </Dialogue>
 
 <Dialogue speaker="Zara">
-Half of it. Your drop zone is a binary gate: enough overlap, snap into place, done. IoU keeps the ratio. It is a continuous score from 0 to 1, and detection uses it everywhere: inside the loss, and as the threshold for deciding whether a prediction matched the ground truth at all. Move that threshold from 0.75 to 0.5 and the same model suddenly looks much better on paper. The knob matters as much as the math.
+That arithmetic is the metric. Overlap area divided by combined area: detection calls it Intersection over Union and scores every predicted box with it, from 0 for a clean miss to 1 for a perfect match.
 </Dialogue>
 
 When a detection model predicts a bounding box, you need to measure how accurate it is. **Intersection over Union (IoU)** compares a predicted box to the ground truth box by computing their overlap ratio.
 
-<LearningObjectives objectives={["Calculate Intersection over Union (IoU) between two bounding boxes", "Understand IoU thresholds and what they mean for detection quality", "Implement rectangle intersection and union area computation", "Connect IoU to frontend collision detection and hit testing patterns"]} />
+<LearningObjectives objectives={["Calculate Intersection over Union (IoU) between two bounding boxes", "Understand IoU thresholds and what they mean for detection quality", "Implement rectangle intersection and union area computation"]} />
 
 ## The IoU Formula
 
@@ -103,7 +102,7 @@ console.log(iou.toFixed(3)); // 0.680 — decent but not great`}
 
 ## IoU Thresholds
 
-Different IoU thresholds define what counts as a "correct" detection. COCO reports metrics at both 0.5 and 0.75 because the two thresholds tell different stories about the same model.
+Different IoU thresholds define what counts as a "correct" detection. COCO reports metrics at both 0.5 and 0.75 because the two thresholds tell different stories about the same model. This is where the drop-zone instinct stops helping: a drop zone is a binary gate you feel out by hand, while a detection threshold is a tunable knob with consequences. Move it from 0.75 to 0.5 and the same model suddenly looks much better on paper. The knob matters as much as the math.
 
 <CodeBlock language="typescript" title="iou-thresholds.ts">
 {`// In drag-and-drop: you might snap when overlap > 30%

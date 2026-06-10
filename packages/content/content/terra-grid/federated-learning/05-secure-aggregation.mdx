@@ -20,7 +20,6 @@ concept:
     breaks: "End-to-end encryption hides content from intermediaries. Secure aggregation lets a server sum client updates without seeing individuals. But the server still sees the aggregate, and aggregates can leak info about contributors via reconstruction or membership-inference attacks."
 consequence:
   narrative: "The federated system passes Elif's security audit. The server computes the global average without seeing any individual update. Three companies, zero data exposure, one shared model."
-  nextLessonTeaser: "Module 9: bringing it all together in a production deployment"
 hints:
   - level: nudge
     content: "Signal's server relays ciphertext it cannot read. Your aggregation server should sum masked updates it cannot read"
@@ -35,6 +34,13 @@ keywords:
   - privacy
 ---
 
+```text
+(alpha + m1 + m2) + (beta − m1 + m3) + (volta − m2 − m3)
+  = alpha + beta + volta
+```
+
+Three companies send the server numbers that look like noise. The server adds the noise together and gets the truth. The rest of this lesson is why that line works, and why Elif insisted on it.
+
 <Dialogue speaker="Elif Yilmaz">
 Differential privacy protects individual data points. But the aggregation server still sees each company's raw weight updates. If the server is compromised, an attacker learns what each company's model looks like.
 </Dialogue>
@@ -45,7 +51,7 @@ Secure aggregation. The server computes the sum without seeing the parts. Like e
 
 In Signal or WhatsApp, the server relays encrypted messages between users. It can route them, store them, and deliver them, but it cannot read them. The server sees the ciphertext, not the plaintext. Secure aggregation brings this guarantee to federated learning: the aggregation server computes the weighted average of all updates without ever seeing any individual update.
 
-<LearningObjectives objectives={["Understand why the aggregation server seeing individual updates is a privacy risk", "Implement pairwise masking for secure aggregation", "Verify that masks cancel out correctly during aggregation", "Design a secure federated pipeline that passes security audits"]} />
+<LearningObjectives objectives={["Understand why the aggregation server seeing individual updates is a privacy risk", "Implement pairwise masking for secure aggregation", "Verify that masks cancel out correctly during aggregation"]} />
 
 ## The Trust Problem
 

@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "Class → hooks was a refactor: same component behavior, cleaner code. RNN → Transformer is an architectural break: parallelism over sequence steps replaces sequential state, attention replaces hidden-state passing. The output capability shifts (long-range dependencies), not just the API."
 consequence:
-  narrative: "The team commits to the transformer architecture, knowing it can process entire clinical notes at once."
-  nextLessonTeaser: "Next: building the transformer encoder block from scratch."
+  narrative: "Vikram orders the rebuild: recurrence out, attention in. Nobody mentions that the O(n squared) bill will come due on the longest discharge summaries first."
 hints:
   - level: nudge
     content: "Drop the recurrent loop entirely: tf.matMul(Q, K.transpose()) scores every token pair in one operation, no step-to-step dependency"

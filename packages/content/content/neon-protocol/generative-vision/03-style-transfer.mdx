@@ -10,7 +10,7 @@ context:
   narrative: "Zara has a new camouflage idea. If resistance members wear clothing styled to look like Neon City's street art, surveillance cameras will classify them as background. She needs a neural network that transfers artistic style to images: the same content, wrapped in a different visual skin."
   speaker: "Zara"
 concept:
-  explanation: "Neural style transfer separates an image's content (what objects are present) from its style (textures, colors, brushstrokes) and recombines them. A CSS theme changes a page's visual presentation without altering its structure. Style transfer does the same at the pixel level. Same content, different visual identity."
+  explanation: "Neural style transfer separates an image's content (what objects are present) from its style (textures, colors, brushstrokes) and recombines them, so one photo's structure can wear another image's surface."
   bridge:
     feTitle: "CSS Themes"
     feCode: "document.documentElement.dataset.theme = 'neon'; // Same DOM, different visual presentation"
@@ -19,7 +19,6 @@ concept:
     tier: structural
 consequence:
   narrative: "Zara feeds a surveillance still through style transfer using her own graffiti as the style source. The result: a human figure rendered in spray-paint textures, blending into the mural-covered alley behind them. NEON: 'The classifier confidence drops from 94% to 12%. It sees paint, not a person.' Zara steps back from the screen. 'Art that protects people. This is what I have been working toward.'"
-  nextLessonTeaser: "Next: adversarial patches. Patterns designed to actively fool classifiers"
 hints:
   - level: nudge
     content: "Content comes from deep CNN layers (structure/objects); style comes from shallow layers (textures/patterns)"
@@ -40,7 +39,7 @@ A CSS theme changes how a page looks without touching the HTML. Dark mode, light
 </Dialogue>
 
 <Dialogue speaker="NEON">
-The technique exploits how convolutional neural networks naturally organize information. Shallow layers detect low-level patterns — edges, textures, color distributions. These are style. Deep layers detect high-level structures — objects, faces, spatial relationships. These are content. Separate them, recombine them, and you have style transfer.
+The network did the hard part without being asked. Shallow layers hold edges, textures, color distributions: style. Deep layers hold objects, faces, spatial relationships: content. Pry the two apart, recombine them, and a surveillance camera will believe whatever costume you hand it.
 </Dialogue>
 
 <Dialogue speaker="Amir">

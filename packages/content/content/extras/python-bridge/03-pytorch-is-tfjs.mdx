@@ -19,14 +19,13 @@ concept:
     breaks: "PyTorch nn.Module and tf.sequential both compose layers, but PyTorch is dynamic-graph (define-by-run) and TFJS leans static. Autograd, training loop syntax, and model serialization formats differ enough that direct ports rarely work without rewriting."
 consequence:
   narrative: "Open any PyTorch repo and the model file should read like a TF.js architecture you haven't written yet: nn.Linear is dense, nn.Conv2d is conv2d, forward() is predict(). Try it on the next model you find on GitHub."
-  nextLessonTeaser: "Next: pandas DataFrames are arrays of objects with built-in data wrangling"
 hints:
   - level: nudge
     content: "nn.Linear is tf.layers.dense, nn.Conv2d is tf.layers.conv2d"
   - level: guidance
-    content: "PyTorch's forward() is what happens when you call model.predict() in TF.js"
+    content: "Walk the nn.Sequential top to bottom and emit one tf.layers call per line. nn.Linear(256, 128) becomes dense with units: 128 (give the first layer inputShape: [256]). A ReLU after a Linear folds into that dense layer's activation option."
   - level: solution
-    content: "The layer types, activation functions, and optimizers are the same concepts with different names"
+    content: "model.add(tf.layers.dense({ inputShape: [256], units: 128, activation: 'relu' })); model.add(tf.layers.dropout({ rate: 0.2 })); model.add(tf.layers.dense({ units: 64, activation: 'relu' })); model.add(tf.layers.dropout({ rate: 0.2 })); model.add(tf.layers.dense({ units: 10 })); then compile with tf.train.adam(0.001) and 'categoricalCrossentropy'."
 keywords:
   - pytorch
   - tensorflow
@@ -39,7 +38,7 @@ keywords:
 PyTorch and TensorFlow.js are two dialects of the same language. Dense layers, conv layers, ReLU, Adam optimizer: all the same building blocks. Once you see the mapping, you can read any PyTorch model definition and know exactly what it does.
 </Dialogue>
 
-Most ML research code is written in PyTorch. When you read a paper's reference implementation, a colleague's notebook, or a GitHub repo, it will almost certainly be PyTorch. This lesson gives you the Rosetta Stone: every PyTorch concept mapped to the TF.js equivalent you already know.
+Most ML research code is written in PyTorch. When you read a paper's reference implementation, a colleague's notebook, or a GitHub repo, it will almost certainly be PyTorch. The good news: you already know PyTorch. You know it under different names, and the tables below pair each one with the TF.js API you've been using all along.
 
 <LearningObjectives objectives={["Read a PyTorch model definition and identify each layer's TF.js equivalent", "Map PyTorch's training loop to TF.js model.fit()", "Translate PyTorch optimizers, loss functions, and activations to TF.js", "Understand nn.Module's forward() pattern vs. TF.js sequential/functional API"]} />
 

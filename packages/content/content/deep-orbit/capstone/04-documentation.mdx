@@ -10,7 +10,7 @@ context:
   narrative: "Dr. Farah insists on documentation. 'If this crew cannot operate DEEP SCAN without Demir, then it is not a production system. Document everything.' Demir writes docs like writing a good README."
   speaker: "Dr. Farah"
 concept:
-  explanation: "ML system documentation covers the same ground as software docs — API reference, architecture guide, getting started — plus model-specific docs like training data descriptions and performance characteristics."
+  explanation: "ML system documentation covers the usual ground (API reference, architecture, getting started) plus the model-specific record: training data, performance characteristics, and known limitations."
   bridge:
     feTitle: "README + JSDoc"
     feCode: "/** @param input - Signal array */ function classify(input) {} // API docs"
@@ -44,9 +44,9 @@ Demir, if you were incapacitated tomorrow, could Nazari operate DEEP SCAN? Could
 Right, same rule as any codebase. If it's not documented, it doesn't exist. I'll write a Model Card for the ML model and API docs for the pipeline. Like a really thorough README, but covering training data, accuracy metrics, and known limitations too.
 </Dialogue>
 
-There is a version of the next two weeks in which Demir is not available to run DEEP SCAN: the crew busy surviving something, the bridge understaffed, the only operator still awake the one who does not sleep. This lesson writes the handover for that scenario — the **Model Card** Demir describes, plus a runbook precise enough that a rule-based system could execute it without you.
+There is a version of the next two weeks in which Demir is not available to run DEEP SCAN. The crew is busy surviving something, the bridge is understaffed, and the only operator still awake is the one who does not sleep. This lesson writes the handover for that scenario: the **Model Card** Demir describes, plus a runbook precise enough that a rule-based system could execute it without you.
 
-<LearningObjectives objectives={["Write a Model Card documenting model purpose, training data, and performance", "Document pipeline API with typed interfaces and usage examples", "List known limitations and failure modes — what the model cannot do", "Create runbook documentation for common operational scenarios"]} />
+<LearningObjectives objectives={["Write a Model Card documenting model purpose, training data, and performance", "Document the pipeline API and write runbooks for common operational scenarios", "List known limitations and failure modes — what the model cannot do"]} />
 
 ## Model Card
 
@@ -193,12 +193,12 @@ Write a Model Card for the DEEP SCAN classifier.
 
 <Epilogue>
 
-Demir finishes the first draft of the runbook at 0140 and assigns it a single reviewer.
+Demir finishes the first draft of the runbook in the dead hours of the night watch and assigns it a single reviewer.
 
 <Dialogue speaker="ARIA">
 Three of the four procedures parse as condition and action. The first instructs the operator to retrain "if drift is high." I do not have an intuition for "high." I have thresholds. Please provide one.
 </Dialogue>
 
-He rewrites it with a number: drift above 0.5, retrain, no judgment required. The finished document reads less like documentation and more like a will, which he supposes is the point — this is the version of him that stays behind if the crew can't. On the ticker the pulse interval touches 31.0 seconds. Tomorrow they deploy.
+He rewrites it with a number: drift above 0.5, retrain, no judgment required. The finished document reads less like documentation and more like a will, which he supposes is the point: this is the version of him that stays behind if the crew can't. On the ticker the pulse interval touches 31.0 seconds. Tomorrow they deploy.
 
 </Epilogue>

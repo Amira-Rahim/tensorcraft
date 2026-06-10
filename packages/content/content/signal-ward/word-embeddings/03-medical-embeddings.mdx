@@ -20,7 +20,6 @@ concept:
     breaks: "Scoped CSS variables override global ones within a selector subtree. Domain-adapted embeddings retrain or fine-tune on medical text, but mixing general and domain embeddings naively can degrade both, and the right blending strategy is empirical."
 consequence:
   narrative: "Diagnostic One switches from generic to medical-domain embeddings and immediately improves on ambiguous clinical terms like 'discharge', 'stat', and 'positive'."
-  nextLessonTeaser: "Next: using cosine similarity for word analogies and clinical reasoning."
 hints:
   - level: nudge
     content: "Load two embedding sets (generic and medical) and compare which neighbors make clinical sense."
@@ -35,8 +34,6 @@ keywords:
   - clinical-nlp
 ---
 
-> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
-
 <Dialogue speaker="Vikram">
 Imran, in CSS you can define a variable globally and then override it in a specific scope. --color-primary might be blue site-wide, but inside a clinical dashboard, you scope it to mean something specific. Domain embeddings work the same way.
 </Dialogue>
@@ -46,7 +43,7 @@ So generic Word2Vec is like the global stylesheet, and medical embeddings are th
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-Close, with one catch the cascade doesn't have. In generic English, "discharge" is closest to "fire" and "release." In clinical text, it's closest to "hospital," "home," and "follow-up." But scoped CSS falls back to the global value cleanly. Mix generic and medical embeddings naively and you can degrade both. Which blend works is an empirical question, not a cascade rule.
+That's the shape of it. In generic English, "discharge" is closest to "fire" and "release." In clinical text, it's closest to "hospital," "home," and "follow-up." Train on the right corpus and the override comes built in.
 </Dialogue>
 
 <Dialogue speaker="Dr. Karimi">
@@ -56,6 +53,8 @@ That class of error brought down the vendor system. It read "discharge summary" 
 Medical embeddings are trained on millions of clinical documents, and the associations they learn replace the generic ones: "stat" lands near "urgent" instead of "statistics".
 
 <LearningObjectives objectives={["Understand why domain-specific embeddings outperform generic ones for clinical text", "Compare generic vs. medical embedding results for ambiguous terms", "Load and use pre-trained embedding vectors as frozen lookup tables", "Identify clinical terms that require domain-specific representations"]} />
+
+> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
 ## Generic vs. Medical Embeddings
 
@@ -120,6 +119,14 @@ console.log('Medical: stat ~ urgent =',
   cosineSim(medicalEmbeddings['stat'], medicalEmbeddings['urgent']).toFixed(3)
 ); // ~0.92`}
 </CodeBlock>
+
+<Dialogue speaker="Imran">
+Could we keep both sets loaded and fall back to the generic vector when a word isn't in the medical set? The cascade does that: scoped value first, global value when the scope misses.
+</Dialogue>
+
+<Dialogue speaker="Vikram">
+This is where the cascade stops helping you. CSS falls back cleanly because both values live in the same coordinate system. Two embedding sets don't: they were trained separately, so dimension 3 in one has nothing to do with dimension 3 in the other. Mix them naively and you can degrade both. Which blend works is an empirical question, not a cascade rule.
+</Dialogue>
 
 ## Real-World Medical Embedding Models
 

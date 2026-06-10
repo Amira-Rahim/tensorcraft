@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "Components are stateless pure functions of props; CNN layers carry mutable learned weights. Reorder React children → layout shifts predictably. Reorder CNN layers → the model loses its learned feature hierarchy and must retrain from scratch."
 consequence:
-  narrative: "The architecture is complete: three conv-pool blocks feeding into a dense classifier. NEON estimates the parameter count: '34,826 trainable weights. Lean enough to run in the browser.'"
-  nextLessonTeaser: "Next: training the CNN end-to-end on surveillance camera images"
+  narrative: "The architecture is complete: three conv-pool blocks feeding into a dense classifier. NEON tallies the parameter count: '1,612,053 trainable weights, and 1,605,696 of them live in one dense layer. Runnable in a browser. Lean is a different word.'"
 hints:
   - level: nudge
     content: "A CNN is just layers composed together. Conv layers extract features, pool layers compress, and dense layers classify."
@@ -37,16 +36,16 @@ keywords:
 ---
 
 <Dialogue speaker="Dilan">
-You have convolution for feature extraction and pooling for compression. Now compose them. A React page wraps Layout around Sidebar around NavList; each component transforms data and passes it down. A CNN composes the same way: each layer transforms the feature maps and hands them to the next.
+Two tools on the bench. Convolution extracts, pooling compresses. Neither one is a model. The Sentinel needs them stacked: conv, pool, conv, pool, deeper and narrower until a dense layer turns the features into a verdict. Composition is the whole architecture.
 </Dialogue>
 
 <Dialogue speaker="Noor">
 So the model is basically a component tree? Conv is like a data-fetching component, pooling is like a summarization component, and the dense layer at the end is the leaf that renders the final output?
 </Dialogue>
 
-Close. A CNN is a pipeline of composed layers, each transforming its input and passing the result downstream, but unlike a component tree it is strictly linear. No branching, no context providers, no portals. The standard pattern: convolution blocks (conv + activation + pool) stacked to extract increasingly abstract features, then dense layers for classification.
+A CNN is a pipeline of composed layers, each transforming its input and passing the result downstream. The standard pattern: convolution blocks (conv + activation + pool) stacked to extract increasingly abstract features, then dense layers for classification.
 
-<LearningObjectives objectives={["Design a CNN architecture by stacking conv, pool, and dense layers", "Understand how data shapes transform through each layer of the network", "Connect component composition patterns to neural network layer composition", "Calculate the total parameter count of a CNN"]} />
+<LearningObjectives objectives={["Design a CNN architecture by stacking conv, pool, and dense layers", "Understand how data shapes transform through each layer of the network", "Calculate the total parameter count of a CNN"]} />
 
 ## The Layer Stack
 
@@ -65,6 +64,9 @@ Close. A CNN is a pipeline of composed layers, each transforming its input and p
 //   Conv Block 2  — extracts mid-level features (shapes)
 //     Conv Block 3  — extracts high-level features (objects)
 //       Dense      — classifies based on features
+//
+// One thing the tree picture hides: this stack is strictly
+// linear. No branching, no context providers, no portals.
 
 interface LayerConfig {
   type: 'conv2d' | 'maxPool' | 'flatten' | 'dense';

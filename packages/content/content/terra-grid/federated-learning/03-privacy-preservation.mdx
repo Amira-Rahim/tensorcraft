@@ -10,7 +10,7 @@ context:
   narrative: "Elif raises a concern: even weight updates can leak information about the training data. They need differential privacy to add mathematical guarantees."
   speaker: "Elif Yilmaz"
 concept:
-  explanation: "Differential privacy adds calibrated noise to model updates, preventing data leakage, like cookie isolation prevents third-party tracking across sites."
+  explanation: "Differential privacy adds calibrated noise to model updates, so no individual training example can be reconstructed from anything that leaves the silo."
   bridge:
     feTitle: "Cookie Isolation"
     feCode: "SameSite=Strict // prevent cross-site data leakage"
@@ -20,7 +20,6 @@ concept:
     breaks: "Cookie isolation enforces same-origin scope. Differential privacy adds calibrated noise to outputs. There is a quantified privacy budget (epsilon) that depletes with each query and noise materially reduces utility, especially for small subgroups."
 consequence:
   narrative: "With differential privacy enabled, Elif's security audit confirms: no individual sensor reading can be reconstructed from the shared weight updates."
-  nextLessonTeaser: "Next: minimizing communication costs during federated training"
 hints:
   - level: nudge
     content: "SameSite=Strict limits what a cookie can reveal across sites. Here the limit is mathematical: noise added to gradients before they leave the silo"
@@ -36,7 +35,7 @@ keywords:
 ---
 
 <Dialogue speaker="Elif Yilmaz">
-Weight updates are not data. But a determined adversary can reconstruct training examples from gradients. It's called a gradient inversion attack. We need stronger guarantees.
+Weight updates aren't data. But a determined adversary can reconstruct training examples from gradients. It's called a gradient inversion attack. We need stronger guarantees.
 </Dialogue>
 
 <Dialogue speaker="Hassan Al-Rashid">

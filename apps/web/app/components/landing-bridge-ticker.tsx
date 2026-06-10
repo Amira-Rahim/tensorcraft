@@ -28,7 +28,7 @@ export function LandingBridgeTicker() {
     >
       <div className="px-10 md:px-20 pt-8 pb-2">
         <div className="font-mono text-xs text-primary tracking-[0.2em] uppercase mb-2">
-          // LIVE BRIDGE FEED
+          // FROM THE BRIDGE CATALOG · {TICKER_ITEMS.length} OF {BRIDGES.length}
         </div>
       </div>
       <BridgeTicker items={TICKER_ITEMS} speed="medium" />

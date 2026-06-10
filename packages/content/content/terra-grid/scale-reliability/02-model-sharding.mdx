@@ -20,7 +20,6 @@ concept:
     breaks: "Dynamic imports split bundles by route: each chunk runs independently. Model sharding splits a single model across devices and shards must communicate per inference (tensor parallelism, pipeline parallelism), so interconnect bandwidth becomes the bottleneck."
 consequence:
   narrative: "The ensemble runs across 3 devices, each handling a 6MB shard. Coordinated inference adds 4ms of overhead but fits within the 64MB memory budget on every device. Priya: 'Sharding solved the memory constraint without sacrificing model capability.'"
-  nextLessonTeaser: "Next: failover and redundancy, what happens when a shard goes offline"
 hints:
   - level: nudge
     content: "Split the model at layer boundaries, like splitting a bundle at route boundaries"
@@ -153,4 +152,4 @@ Implement a model sharding coordinator that splits layers across devices.
 
 <Exercise slug="shard-model" />
 
-<KeyTakeaways takeaways={["Sharding splits the model at layer boundaries and pipes intermediate tensors between devices, so each device holds only its fraction", "Each shard runs on a separate device within its memory budget", "Intermediate tensors flow between shards — the output of shard N is the input to shard N+1", "Sharding adds communication overhead but solves the fundamental memory constraint on edge devices"]} />
+<KeyTakeaways takeaways={["Sharding splits the model at layer boundaries; the output of shard N pipes to shard N+1, so each device holds only its fraction", "Each shard runs on a separate device within its memory budget", "Sharding adds communication overhead but solves the fundamental memory constraint on edge devices"]} />

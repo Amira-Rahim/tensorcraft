@@ -10,7 +10,7 @@ context:
   narrative: "Vikram introduces recurrent neural networks: models that process text one word at a time, carrying context forward like Array.reduce accumulates state."
   speaker: "Vikram"
 concept:
-  explanation: "An RNN processes a sequence one element at a time, maintaining a hidden state that accumulates context. It's exactly like Array.reduce: each step takes the current element and the accumulated state, producing a new state."
+  explanation: "An RNN processes a sequence one element at a time, maintaining a hidden state that accumulates context. Each step takes the current element and the state so far, and produces a new state that carries everything read up to that point."
   bridge:
     feTitle: "Array.reduce()"
     feCode: "words.reduce((state, word) => updateState(state, word), initialState)"
@@ -20,7 +20,6 @@ concept:
     breaks: "`reduce` folds with a pure function YOU define. An RNN step folds with a LEARNED cell that has trainable weights, an activation, and a hidden state vector; the cell behavior changes per training run. The fold shape transfers; the cell content is opaque and stochastic."
 consequence:
   narrative: "Diagnostic One can now process clinical notes sequentially, understanding that 'denied' before 'pain' negates the symptom."
-  nextLessonTeaser: "Next: why simple RNNs struggle with long sequences — the vanishing gradient problem."
 hints:
   - level: nudge
     content: "An RNN cell takes two inputs: the current token embedding and the previous hidden state."
@@ -35,8 +34,6 @@ keywords:
   - array-reduce
   - sequence-processing
 ---
-
-> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
 <Dialogue speaker="Vikram">
 Imran, you use Array.reduce all the time, right? Start with an initial value, process each element, accumulate state?
@@ -57,6 +54,8 @@ Confirmed: Array.reduce and RNN forward pass share identical computational struc
 `Array.reduce()` processes elements one at a time, carrying forward an accumulator. An RNN does the same: it processes tokens one at a time, carrying forward a hidden state vector. After reading the entire sequence, the hidden state encodes the sentence's meaning.
 
 <LearningObjectives objectives={["Understand RNNs as Array.reduce over token sequences", "Build a simple RNN in TensorFlow.js for clinical text classification", "Trace how hidden state evolves as each token is processed", "Combine embedding + RNN + dense layers for end-to-end text processing"]} />
+
+> **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
 ## RNN = Array.reduce for Tensors
 

@@ -55,7 +55,7 @@ Not think. Compute. The bias isn't an opinion the model forms — it's arithmeti
 
 You've computed min-max normalization before, probably this month: scroll progress. `scrollY / (docHeight - viewportHeight)` takes a value in pixels and maps it to 0–1 so a progress bar can use it. That's the entire min-max formula — subtract the minimum, divide by the range.
 
-Here's why a model needs the same treatment. The temperature channel runs 19 to 35. Signal strength runs 0.1 to 0.9. Feed both in raw and temperature produces gradients roughly forty times larger, so the optimizer pours its effort into the loud feature while the quiet one stagnates — even if the quiet one carries the signal you actually care about.
+Here's why a model needs the same treatment. The temperature channel runs 19 to 35. Signal strength runs 0.1 to 0.9. Feed both in raw and temperature's numbers land roughly forty times larger, so the louder feature dominates what the model learns while the quiet one barely registers, even if the quiet one carries the signal you actually care about.
 
 <CodeBlock language="typescript" title="normalization.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -107,9 +107,9 @@ Normalize the Archimedes sensor data using z-score normalization.
 
 <Quiz
   question="Why normalize features before training?"
-  options={[{"text":"To make training run faster on the GPU"},{"text":"Different feature scales make gradients pull weights unevenly — normalization gives all features comparable update magnitudes"},{"text":"Required by TensorFlow.js"},{"text":"Reduces model size"}]}
+  options={[{"text":"To make training run faster on the GPU"},{"text":"On different scales, the louder feature dominates what the model learns; normalization gives every feature comparable influence"},{"text":"Required by TensorFlow.js"},{"text":"Reduces model size"}]}
   correct={1}
-  explanation="Without normalization, a feature on scale 0-1000 produces gradients 1000× larger than one on scale 0-1. The optimizer tunes the larger-gradient feature first while smaller-scale features stagnate. Normalization (z-score or min-max) fixes the scale disparity."
+  explanation="Without normalization, a feature on scale 0-1000 has 1000× the numerical pull of one on scale 0-1, so the model tunes itself to the loud feature first while quieter ones barely register. Normalization (z-score or min-max) fixes the scale disparity. In the training module you'll see the mechanism behind this: update sizes track feature scales."
   tier="structural"
 />
 
@@ -117,9 +117,9 @@ Normalize the Archimedes sensor data using z-score normalization.
 
 <Epilogue>
 
-The normalized feeds go live across the bridge displays at 0214. Four sensors, one scale, every channel finally speaking the same language. Demir scrolls the archive to confirm the backlog converted cleanly — and stops. Sample 7741, logged eleven days ago, sits in the middle of the calm period. Normalized, it shouldn't stand out. It does.
+Demir flips the four normalized feeds live and the bridge displays settle onto one scale, every channel finally speaking the same language. Scrolling the archive to confirm the backlog converted cleanly, he stops on sample 7741, logged eleven days ago in the middle of the calm period. Normalized, it shouldn't stand out. It does.
 
-Farah pulls up a preview build of the classifier the crew will spend the next ten modules earning — and runs it on the archive, live, in front of you:
+Farah pulls up a preview build of the classifier the crew will spend the next ten modules earning, and runs it on the archive, live, in front of you:
 
 <DeepScanDemo />
 
@@ -127,6 +127,6 @@ Farah pulls up a preview build of the classifier the crew will spend the next te
 Five clean verdicts and one shrug. A model that says "fifty-one percent" is a model that's never seen anything like this. Flag it. We have a classifier to build — a real one.
 </Dialogue>
 
-She doesn't delete sample 7741, though. You'll want to remember that.
+She doesn't delete sample 7741, though.
 
 </Epilogue>

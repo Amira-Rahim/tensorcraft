@@ -10,7 +10,7 @@ context:
   narrative: "The LLM doesn't know about DEEP SCAN's specific signals. Farah builds a RAG pipeline — retrieving relevant signal data from the database and injecting it into the prompt."
   speaker: "Dr. Farah"
 concept:
-  explanation: "RAG grounds LLM responses in real data by retrieving relevant records first — like Server Components that query the database before rendering."
+  explanation: "RAG retrieves the relevant records first and hands them to the model, so answers can cite your data instead of the model's memory."
   bridge:
     feTitle: "Server Components"
     feCode: "async function Page() { const data = await db.query(...); return <View data={data} />; }"
@@ -137,12 +137,12 @@ Build a RAG pipeline that retrieves and contextualizes signal data.
 
 <Epilogue>
 
-Three hours to the window. Demir demos the pipeline on the bridge — data in, render out, same contract as a Server Component, so he doesn't bother checking the output against the context. Nazari asks it for Band-7 anomalies in the last 72 hours. The answer comes back fluent and cited: seventeen signals. The retrieved context, printed right above it, contains fourteen.
+Three hours to the window. Demir demos the pipeline on the bridge: data in, render out, same contract as a Server Component, so he doesn't bother checking the output against the context. Nazari asks it for Band-7 anomalies in the last 72 hours. The answer comes back fluent and cited: seventeen signals. The retrieved context, printed right above it, contains fourteen.
 
 <Dialogue speaker="Chief Nazari">
 Fourteen. I logged them myself. Your pipeline retrieved fourteen and reported seventeen with citations, which means I now audit every answer it has produced today. That's an hour, Ensign, out of three.
 </Dialogue>
 
-The render contradicted its own data, politely, in perfect prose. Demir spends the audit hour writing a checker that compares every number in an answer against the retrieved rows. It catches two more before the report is even drafted.
+Demir spends the audit hour writing a checker that compares every number in an answer against the retrieved rows; it catches two more before the report is even drafted.
 
 </Epilogue>

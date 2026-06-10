@@ -20,7 +20,6 @@ concept:
     breaks: "The deploy command is identical; the recovery semantics are not. Web app rollback restores the prior bundle and the next request renders correctly. Model rollback restores the prior weights but if the new model already wrote predictions to the EHR, those records persist. ML rollback in clinical settings requires both weight rollback AND a forward-correction process for predictions issued during the bad window."
 consequence:
   narrative: "Day 30. Diagnostic One has processed 2,847 clinical notes. 12 confirmed drug interactions caught. 3 false positives investigated and dismissed. Zero missed interactions in the validation set. Dr. Karimi presents the pilot results to the hospital board. 'Diagnostic One is not replacing clinicians. It reads every chart, including the ones we are too tired to read twice. The flag on Day 9, methotrexate and trimethoprim, was a real interaction. I overrode it because the dose was low and the course was short, and I documented why. That is the system doing its job: it flags, we decide.' Imran closes her laptop. Eleven modules ago this was a regex over a clinical note. Now it is a model with a rollback plan, and a clinician who knows when to overrule it."
-  nextLessonTeaser: "Mission complete. Diagnostic One is live: 2,847 notes processed, 12 interactions caught, one documented override on the record."
 hints:
   - level: nudge
     content: "The model is a static asset; deploy it the same way you deploy images and fonts"

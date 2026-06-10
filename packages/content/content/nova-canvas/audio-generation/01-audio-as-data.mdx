@@ -20,7 +20,6 @@ concept:
     breaks: "AudioContext + AudioBuffer manages sample rate, channel layout, and playback timing. tf.tensor1d on Float32Array drops all of that metadata: sample rate must be tracked separately, and feeding audio into a model requires resampling to the model's expected rate. Same float storage; very different metadata."
 consequence:
   narrative: "Rohan grins as raw audio streams into tensors on screen. 'A waveform is just a Float32Array. We already speak this language.'"
-  nextLessonTeaser: "Next: generating sound with neural networks"
 hints:
   - level: nudge
     content: "audioBuffer.getChannelData(0) already returns the Float32Array that tf.tensor1d wants; what it loses in the handoff is the sample rate"

@@ -10,7 +10,7 @@ context:
   narrative: "MUSE generates technically competent images. But Erdem frowns: 'Technically competent. Artistically dead. The colors are correct, the composition is sound, but there is no feeling.' Yara suggests: 'Use CLIP as a critic, like ESLint for art. It guides the model toward images that match the emotional intent, not just the literal description.'"
   speaker: "Yara"
 concept:
-  explanation: "CLIP-guided generation uses CLIP as a scoring function to steer the diffusion process: at each step, nudge the image toward higher CLIP similarity with the prompt. Like ESLint guiding code toward patterns: it does not write the code, but it steers it in the right direction."
+  explanation: "CLIP-guided generation puts a critic inside the loop: at each diffusion step, score the image against the prompt and nudge the pixels toward higher similarity. CLIP never paints anything. It only steers, and the strength of its steering is a knob with failure modes at both ends."
   bridge:
     feTitle: "ESLint: guiding toward patterns"
     feCode: "// eslint: prefer-const, no-unused-vars — nudge toward better code"
@@ -20,10 +20,9 @@ concept:
     breaks: "ESLint surfaces deterministic rule violations. CLIP guidance steers a generator by backpropagating through CLIP similarity. Guidance strength is a continuous knob and too much causes mode collapse, too little ignores the prompt."
 consequence:
   narrative: "With CLIP guidance, the images come alive. 'A melancholy cityscape at twilight' now produces deep blues, long shadows, a sense of solitude in the architecture. Erdem stares at the gallery wall. 'It feels something now,' he says. But then, the AI-Wrong moment: a style transfer produces technically perfect but emotionally hollow output. 'Technically competent,' Erdem repeats. 'Artistically dead.' The team realizes CLIP alignment is not the same as artistic truth."
-  nextLessonTeaser: "Next: prompt engineering for images: writing text that produces exactly the visuals you want"
 hints:
   - level: nudge
-    content: "ESLint does not write your code. It nudges it toward better patterns. CLIP does the same for images."
+    content: "The image gets updated, not the model: take the gradient of the CLIP score with respect to the pixels and step along it between denoising steps"
   - level: guidance
     content: "Compute the gradient of CLIP similarity with respect to the image. Use it to adjust the image at each diffusion step."
   - level: solution
@@ -44,9 +43,9 @@ Technically competent. Artistically dead. The cityscape has buildings and a sky.
 Use CLIP as a critic. Like ESLint for code: it doesn't write the code, but it steers you toward better patterns. At each generation step, ask CLIP: "Does this image match the emotional intent of the prompt?" Then nudge the image in that direction.
 </Dialogue>
 
-ESLint does not write your code. It guides you toward patterns: prefer-const, no-unused-vars, prefer-arrow-callback. CLIP guidance works the same way: it scores how well the generated image matches the prompt, then nudges the generation process toward a better match.
+Yara's analogy earns its keep about halfway. A linter's rules are deterministic; CLIP's score is a learned opinion, and the guidance scale decides how loudly that opinion speaks. Push it too hard and every output collapses toward CLIP's favorite cliche of the prompt. Too soft and the prompt washes out entirely.
 
-<LearningObjectives objectives={["Understand CLIP-guided generation: using CLIP as a scoring function during diffusion", "Compute CLIP similarity gradients with respect to the image", "Integrate CLIP guidance into the denoising loop", "Connect CLIP guidance to ESLint — steering toward patterns without dictating output"]} />
+<LearningObjectives objectives={["Understand CLIP-guided generation: using CLIP as a scoring function during diffusion", "Compute CLIP similarity gradients with respect to the image", "Integrate CLIP guidance into the denoising loop", "Tune guidance strength between its two failure modes: mode collapse and prompt drift"]} />
 
 ## CLIP as a Critic
 

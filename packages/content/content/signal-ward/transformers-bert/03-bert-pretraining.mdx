@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "IntelliSense uses a static index keyed by symbol names. Masked language modeling learns continuous embeddings that capture context-dependent meaning: 'bank' next to 'river' embeds differently than 'bank' next to 'money'. The lookup is contextual, not key-based."
 consequence:
-  narrative: "The team realizes that BERT's pre-training on general text gives it a foundation, but clinical language requires domain-specific fine-tuning."
-  nextLessonTeaser: "Next: fine-tuning BERT to specialize in clinical text."
+  narrative: "BERT can finish a sentence it has never seen, yet 'pt c/o SOB x 3d' still parses as noise. Vikram circles the gap on the whiteboard: a foundation, not a building."
 hints:
   - level: nudge
     content: "MLM randomly masks 15% of tokens and asks the model to predict them from surrounding context"
@@ -189,7 +188,7 @@ console.log('NSP prediction [IsNext, NotNext]:', await nspPrediction.array());`}
 
 ## Why This Matters for Clinical Text
 
-<Dialogue speaker="Dr. Zahra Karimi">
+<Dialogue speaker="Dr. Karimi">
 So BERT learns to fill in blanks and understand sentence flow, on Wikipedia, news articles, books. How does that help us with clinical notes?
 </Dialogue>
 

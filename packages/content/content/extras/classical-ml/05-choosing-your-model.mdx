@@ -19,14 +19,13 @@ concept:
     breaks: "Choosing npm packages weighs maintenance, downloads, license. Choosing a model weighs accuracy on your data, inference cost, training cost, calibration, interpretability, and you cannot know which model wins without empirically training each one."
 consequence:
   narrative: "Five questions (data type, dataset size, interpretability, compute budget, deploy target) and the framework names your model family. Run the next problem that lands on your desk through it before you write a line of training code."
-  nextLessonTeaser: "You've completed the Classical ML module. These foundations will serve you in every ML project."
 hints:
   - level: nudge
-    content: "Start simple: logistic regression is always your first baseline"
+    content: "Branch on dataType first; everything else nests inside"
   - level: guidance
-    content: "Consider: data size, data type, interpretability needs, compute budget"
+    content: "Write it as a switch on dataType. The image/audio case returns immediately. Text branches on sample count, tabular checks interpretability before size, and time-series branches on sample count."
   - level: solution
-    content: "Small tabular data + interpretability = tree-based. Large unstructured data = deep learning."
+    content: "1) image/audio: return 'deep-learning'. 2) text: samples < 1000 ? 'logistic-regression' : 'deep-learning'. 3) tabular: interpretability ? 'decision-tree' : samples < 100 ? 'knn' : samples < 10000 ? 'random-forest' : 'xgboost'. 4) time-series: samples < 1000 ? 'classical-stats' : 'deep-learning'."
 keywords:
   - model-selection
   - decision-framework

@@ -10,7 +10,7 @@ context:
   narrative: "Rohan puts two images side by side. 'Which one matches the caption a melancholy cityscape at twilight?' One is moody, blue-toned. The other is a bright daytime city. 'The model learns by comparison,' he says. 'Not by being told the answer, but by seeing which pairs match and which don't. Like an A/B test.'"
   speaker: "Rohan"
 concept:
-  explanation: "Contrastive learning trains models by comparing positive pairs (matching image-text) against negative pairs (mismatched). Like A/B testing: you learn what works by comparing options side by side, not by being told the answer directly."
+  explanation: "Contrastive learning trains a model by comparison instead of instruction: pull matched image-text pairs together in embedding space, push the mismatched ones apart. Nobody tells the model what a sunset is; it learns what survives the comparisons."
   bridge:
     feTitle: "A/B testing"
     feCode: "if (variant === 'A') showOldDesign(); else showNewDesign();"
@@ -20,7 +20,6 @@ concept:
     breaks: "A/B testing measures user behavior across two known variants. Contrastive learning trains a model to pull matched pairs together and push unmatched pairs apart in embedding space. The 'A' and 'B' are dynamically sampled from the dataset, not user-assigned."
 consequence:
   narrative: "The model stops confusing 'city at night' with 'melancholy cityscape at twilight.' The contrastive loss teaches it that mood matters: the difference between a description and an evocation. Rohan: 'Mood is a direction in a 512-dimensional vector space.'"
-  nextLessonTeaser: "Next: the CLIP architecture, and how to build this at scale"
 hints:
   - level: nudge
     content: "A/B tests compare two variants to find which is better. Contrastive learning compares pairs to find which match."

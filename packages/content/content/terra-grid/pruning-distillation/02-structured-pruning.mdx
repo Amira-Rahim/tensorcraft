@@ -10,7 +10,7 @@ context:
   narrative: "Tariq points out that sparse weights do not actually speed up inference on ARM processors."
   speaker: "Tariq Hussain"
 concept:
-  explanation: "Structured pruning removes entire neurons or channels, like dead code elimination that removes whole functions, not individual statements."
+  explanation: "Structured pruning removes entire neurons or channels, producing a physically smaller dense model instead of a same-sized sparse one."
   bridge:
     feTitle: "Dead Code Elimination"
     feCode: "// Bundler removes entire unused functions\n// function unused() { ... } → deleted\n// Not just individual lines"
@@ -20,7 +20,6 @@ concept:
     breaks: "Dead code elimination removes unreferenced symbols at build time. Structured pruning removes entire neurons/channels and the model must be retrained or fine-tuned to recover accuracy. Pruning more aggressively without fine-tuning collapses the model."
 consequence:
   narrative: "Structured pruning produces a physically smaller model that runs faster on ARM hardware."
-  nextLessonTeaser: "Next: knowledge distillation, teaching a small model"
 hints:
   - level: nudge
     content: "Instead of zeroing individual weights, remove entire rows from weight matrices"
@@ -86,6 +85,10 @@ console.log(\`After: \${pruned.length} neurons, \${pruned.length * 3} params\`);
 // Before: 8 neurons, 24 params → After: 4 neurons, 12 params
 // Physically smaller — actual speedup on ARM`}
 </CodeBlock>
+
+<Dialogue speaker="Tariq Hussain">
+Four neurons, twelve parameters, no zeros to iterate over. That I can ship.
+</Dialogue>
 
 The key difference: unstructured pruning creates a sparse matrix (same shape, many zeros). Structured pruning creates a smaller dense matrix (fewer rows, no zeros). ARM processors handle dense matrices much more efficiently than sparse ones.
 

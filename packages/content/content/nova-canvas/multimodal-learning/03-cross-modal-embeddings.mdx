@@ -10,7 +10,7 @@ context:
   narrative: "Rohan pulls up the embedding visualizer. 'Look: the sunset image and the text sunset are next to each other in the space. Dog photo and dog text, right next to each other. Two completely different data types, living in the same neighborhood.' Samir: 'Like shared component props: the same interface works across platforms.'"
   speaker: "Rohan"
 concept:
-  explanation: "Cross-modal embeddings map different data types to the same vector space: a shared representation where similarity is measurable across modalities. Like shared component props that provide a consistent interface across React, React Native, and web components."
+  explanation: "Cross-modal embeddings map different data types into one vector space, where a sentence and a photo can be compared with the same distance function. Similarity stops caring what format the data arrived in."
   bridge:
     feTitle: "Shared component props across platforms"
     feCode: "interface ButtonProps { label: string; onClick: () => void; }"
@@ -19,7 +19,6 @@ concept:
     tier: structural
 consequence:
   narrative: "The embedding space is alive with clusters. Animals in one region, landscapes in another, architecture in a third. Text descriptions sit right next to their corresponding images. 'They found each other,' Yara says. 'Different languages, same meaning.'"
-  nextLessonTeaser: "Next: image captioning: teaching MUSE to describe what it sees"
 hints:
   - level: nudge
     content: "L2-normalize both embeddings before comparing them: cosine similarity only behaves when every vector sits on the unit hypersphere"

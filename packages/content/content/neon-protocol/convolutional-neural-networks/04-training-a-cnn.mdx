@@ -7,7 +7,7 @@ order: 4
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "The architecture is built. Amir pulls up the training dashboard: 'This is where it gets real. We feed the Sentinel surveillance images, compute loss, and update every kernel weight. Same shape as your CI/CD pipeline: lint, test, bundle, deploy. Except the artifact is weights.'"
+  narrative: "Epoch 1 has just finished. The training dashboard reads loss 1.6094, accuracy 19.8 percent. On five camera classes, that is a model rolling dice. Noor's hand drifts toward the kill switch; Amir does not look up from the loss curve."
   speaker: "Amir"
 concept:
   explanation: "Training a CNN is an iterative pipeline of forward pass, loss computation, backpropagation, and weight updates, structurally identical to a build pipeline that processes, validates, and outputs artifacts."
@@ -20,7 +20,6 @@ concept:
     breaks: "A build pipeline runs deterministic steps: same input, same artifact. A training loop is stochastic (random init, shuffled batches, dropout) and produces a different model on each run. 'Re-run the pipeline' restores a build; 'retrain' produces a new model with new behavior."
 consequence:
   narrative: "After 50 epochs, the Protocol Sentinel hits 89% accuracy on camera type classification. Noor watches the loss curve flatten. 'It learned,' she whispers. Dilan nods: 'Now make it see what it learned.'"
-  nextLessonTeaser: "Next: visualizing what the CNN actually learned. Peering inside the black box"
 hints:
   - level: nudge
     content: "The training loop runs forward pass, computes loss, then updates weights. Track loss and accuracy per epoch."
@@ -36,21 +35,25 @@ keywords:
   - accuracy
 ---
 
+Loss 1.6094 is not a malfunction. It is ln(5), the exact loss of a five-class model that knows nothing. Every network starts here: random weights, random guesses. The question is what happens over the next 49 epochs.
+
 <Dialogue speaker="Amir">
-At Meridian, we trained surveillance models on thousands of GPUs. But the process is the same whether you have one GPU or a thousand. You feed images in batches, compute how wrong the model is, calculate gradients, and nudge the weights. Repeat until convergence. It's a build pipeline. Each epoch is a full build cycle.
+Leave it running. Every model starts stupid. You feed images in batches, compute how wrong it is, calculate gradients, nudge the weights. Repeat until convergence. At Meridian we did this on thousands of GPUs; the loop is identical on one. It's a build pipeline. Each epoch is a full build cycle.
 </Dialogue>
 
 <Dialogue speaker="Noor">
 So each epoch is like a CI run? Forward pass is the build step, loss is the test results, backprop is analyzing failures, and the weight update is the fix?
 </Dialogue>
 
-That is a solid mental model. Training is iterative refinement. Each epoch processes the entire dataset, and with each pass the kernels get better at detecting useful features.
+That is a solid mental model. Training is iterative refinement: each epoch processes the entire dataset, and with each pass the kernels get better at detecting useful features. By epoch 9 the dashboard reads loss 0.74, accuracy 61%. The dice are loaded now.
 
 <LearningObjectives objectives={["Understand the end-to-end CNN training pipeline: forward pass, loss, backprop, update", "Implement a training loop with epoch and batch tracking", "Compute cross-entropy loss for multi-class classification", "Track accuracy and loss curves to monitor training progress"]} />
 
 ## The Training Pipeline
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
+
+One vocabulary item before the code: the raw, unbounded scores a network's final layer emits are called **logits**. Softmax squashes logits into probabilities that sum to 1, and cross-entropy scores those probabilities against the true label.
 
 <CodeBlock language="typescript" title="training-pipeline.ts">
 {`// Build pipeline stages:

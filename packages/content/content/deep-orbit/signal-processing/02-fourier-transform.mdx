@@ -10,7 +10,7 @@ context:
   narrative: "Dr. Farah introduces the mathematical tool that converts between time and frequency: the Fourier Transform. 'Think of a chord — the FFT tells you which individual notes make it up.'"
   speaker: "Dr. Farah"
 concept:
-  explanation: "The Fourier Transform decomposes a complex signal into simple sine waves — like how a CSS @keyframes animation is defined as discrete steps that combine into smooth motion."
+  explanation: "The Fourier Transform decomposes a complex signal into simple sine waves, each with a magnitude and a phase. The same fixed basis decomposes every signal; that universality is the whole trick."
   bridge:
     feTitle: "@keyframes Decomposition"
     feCode: "@keyframes pulse { 0% { scale: 1 } 50% { scale: 1.2 } 100% { scale: 1 } }"
@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "@keyframes decompose animation into authored timeline steps. FFT decomposes a signal into a fixed mathematical basis of sinusoids (e^(-2πikn/N) for k = 0..N-1) and returns complex-valued coefficients (magnitude + phase). The basis is universal and not learned from data — the same N sinusoids decompose every signal."
 consequence:
-  narrative: "The FFT output confirms Farah's suspicion — a sharp peak at 73.4 Hz that has no natural explanation. 'That is not stellar background,' she says quietly."
+  narrative: "A sharp peak at 73.4 Hz, and nothing in the catalog to explain it. 'That is not stellar background,' Farah says quietly."
 hints:
   - level: nudge
     content: "FFT converts a time-domain array into frequency magnitudes — like decomposing an animation into its keyframe steps"
@@ -50,7 +50,7 @@ Backwards, in one important way. Your keyframes are steps you authored for that 
 
 The FFT takes N samples and returns N frequency coefficients. Each coefficient answers one question: how strongly is this exact frequency present, and at what phase offset?
 
-<LearningObjectives objectives={["Understand the Fourier Transform as signal decomposition into frequency components", "Compute the FFT of a signal using TensorFlow.js spectral operations", "Interpret FFT output: frequency bins, magnitudes, and the Nyquist frequency", "Connect decomposition to familiar frontend patterns (@keyframes, animation steps)"]} />
+<LearningObjectives objectives={["Understand the Fourier Transform as signal decomposition into frequency components", "Compute the FFT of a signal using TensorFlow.js spectral operations", "Interpret FFT output: frequency bins, magnitudes, and the Nyquist frequency"]} />
 
 ## Decomposing Signals
 
@@ -210,12 +210,12 @@ A signal is fully reconstructible from its DFT: no information is lost.
 
 <Epilogue>
 
-The overnight transform finishes at 0612, and the lab display redraws itself as four clean peaks: 5, 12, 23, 47 Hz. Stellar background, textbook, exactly what eleven days of noise should look like. Demir is already reaching for the log entry when Farah catches his wrist — there is a fifth peak. It stands at 73.4 Hz, magnitude 3.2, a frequency that matches nothing in the catalog; she checks the catalog twice, then a third time, and the peak does not move.
+Four clean peaks on the lab display: 5, 12, 23, 47 Hz. Stellar background, textbook, exactly what the overnight transform of eleven days of noise should look like. Demir is already reaching for the log entry when Farah catches his wrist. There is a fifth peak. It stands at 73.4 Hz, magnitude 3.2, a frequency that matches nothing in the catalog; she checks the catalog twice, then a third time, and the peak does not move.
 
 <Dialogue speaker="Dr. Farah">
 That is not stellar background.
 </Dialogue>
 
-She says it quietly, the way people say things they have already triple-checked. Demir runs the same transform on archive sample 7741, her "calibration ghost" from the normalization sweep. The 73.4 Hz peak is sitting in it — eleven days old, filed under equipment error the whole time.
+Demir runs the same transform on archive sample 7741, her "calibration ghost" from the normalization sweep: the 73.4 Hz peak is sitting in it, eleven days old, filed under equipment error the whole time.
 
 </Epilogue>

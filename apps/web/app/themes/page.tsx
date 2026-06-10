@@ -1,7 +1,9 @@
 import { themes } from "@tensorcraft/themes";
 import {
+  LAUNCHED_THEMES,
   PRICING,
   THEME_CONTENT,
+  THEME_SLUGS,
   isValidThemeSlug,
   isLaunched,
 } from "@tensorcraft/shared";
@@ -11,7 +13,7 @@ import { ThemeCardsGrid, type ThemeCardData } from "./theme-cards-grid";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Tensorcraft — Deep Orbit is live, 4 more coming",
+  title: `Tensorcraft — Deep Orbit is live, ${THEME_SLUGS.length - LAUNCHED_THEMES.length} more coming`,
   description:
     "Deep Orbit (time-series & signals) is live. Neon Protocol, Signal Ward, Nova Canvas, and Terra Grid follow in waves — join each waitlist.",
   alternates: { canonical: "https://tensorcraft.app/themes" },

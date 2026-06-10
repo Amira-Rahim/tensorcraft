@@ -10,7 +10,7 @@ context:
   narrative: "All the pieces are in place. Ensign Demir initiates the training sequence — the network will learn from thousands of signal examples."
   speaker: "Ensign Demir"
 concept:
-  explanation: "The training loop repeatedly feeds data, computes loss, and updates weights — like a requestAnimationFrame loop that converges toward a target state."
+  explanation: "Feed data, compute loss, update weights, repeat. The training loop is the engine that turns thousands of examples into learned behavior."
   bridge:
     feTitle: "requestAnimationFrame"
     feCode: "function animate() { update(); render(); requestAnimationFrame(animate); }"
@@ -85,7 +85,7 @@ const history = await model.fit(trainX, trainY, {
 - **batchSize**: How many samples to process before updating weights. 32 is a good default.
 - **validationSplit**: Fraction of data held out to check for overfitting.
 
-"Up to a point" has a body count. Demir's first run was not the clean curve above: reasoning from animation loops, where more frames always means smoother easing, he set `epochs: 500` to be safe and went for coffee. He came back to a training loss of 0.0004, a validation loss that had been climbing since epoch 60, and a model worse on real signals than the twenty-minute version — it had stopped learning the pattern and started memorizing the dataset. An animation that runs longer gets closer to its target; a network that trains longer gets closer to its training data, which is not the same place.
+"Up to a point" has a body count. Demir's first run was not the clean curve above: reasoning from animation loops, where more frames always means smoother easing, he set `epochs: 500` to be safe and went for coffee. He came back to a training loss of 0.0004, a validation loss that had been climbing since epoch 60, and a model worse on real signals than the twenty-minute version. It had stopped learning the pattern and started memorizing the dataset. An animation that runs longer gets closer to its target; a network that trains longer gets closer to its training data, which is not the same place.
 
 <Dialogue speaker="Chief Nazari">
 Forty minutes of compute to make it worse. That's coming out of your certification hours, Ensign. From now on, validation loss is the first number you read — and the first one you show me.
@@ -139,10 +139,10 @@ Train the DEEP SCAN network and watch the loss decrease.
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["model.fit() runs the full training loop: forward → loss → backprop → update", "Epochs = full passes through the dataset, batches = chunks within each epoch", "Validation split catches overfitting — if val_loss increases while loss decreases, you're memorizing", "Callbacks let you monitor progress, like console.log in a rAF loop"]} />
+<KeyTakeaways takeaways={["model.fit() runs the full training loop: forward → loss → backprop → update", "Epochs = full passes through the dataset, batches = chunks within each epoch", "Validation split catches overfitting — if val_loss increases while loss decreases, you're memorizing", "More epochs is not more learning: the 500-epoch run came back worse than the 64-epoch one", "Callbacks let you monitor progress, like console.log in a rAF loop"]} />
 
 <Epilogue>
 
-The rerun stops itself at epoch 64, early-stopping on a validation loss of 0.081. Demir prints both curves and tapes them above his console: the 500-epoch run labeled MEMORIZING, the 64-epoch run labeled LEARNING. On his way out he stops at the archive terminal and pulls the manifest — 28,800 readings, eleven days of telemetry, all of it now folded into 673 trained weights. Somewhere in that archive, he thinks, is at least one reading the network now knows something about that nobody on board does.
+The rerun stops itself at epoch 64, early-stopping on a validation loss of 0.081. Demir prints both curves and tapes them above his console: the 500-epoch run labeled MEMORIZING, the 64-epoch run labeled LEARNING. On his way out he stops at the archive terminal and pulls the manifest: 28,800 readings, eleven days of telemetry, all of it now folded into 673 trained weights. Somewhere in that archive, he thinks, is at least one reading the network now knows something about that nobody on board does. He is still in the corridor when Mirza's order posts to the duty queue. A training number proves nothing; prove it on signals the network has never seen.
 
 </Epilogue>

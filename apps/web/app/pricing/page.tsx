@@ -204,7 +204,7 @@ export default function PricingPage() {
         priceCurrency: "USD",
         availability: "https://schema.org/InStock",
         description:
-          "Preview lessons + sample exercises across all five themes.",
+          "Module 1 of Deep Orbit free — lessons and exercises, no account required. The other four themes ship in waves with per-theme waitlists.",
       },
       {
         "@type": "Offer",

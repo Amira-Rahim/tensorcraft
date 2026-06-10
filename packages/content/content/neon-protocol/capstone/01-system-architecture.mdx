@@ -20,7 +20,6 @@ concept:
     breaks: "Component architecture diagrams describe code you wrote. ML system architecture diagrams must include data flow, model versions, feature stores, training pipelines, and monitoring. The boxes carry far more state and the arrows have schema contracts."
 consequence:
   narrative: "The architecture crystallizes on screen. Six stages, typed interfaces between each. NEON overlays failure scenarios: what happens when a camera goes dark, when a model returns garbage, when Meridian jams the signal. Every edge case accounted for. Zara grins: 'Now that is engineering.'"
-  nextLessonTeaser: "Next: integration. Wiring detection, classification, and adversarial modules into a single pipeline"
 hints:
   - level: nudge
     content: "Type each pipeline stage the way you type component props: declare what tensor shape goes in, what comes out, and what happens when it fails"
@@ -45,12 +44,12 @@ Six stages. Camera ingestion, frame preprocessing, surveillance detection, class
 </Dialogue>
 
 <Dialogue speaker="Noor">
-This looks exactly like a component architecture diagram. Each stage is a component with props and output. The data flows down like a render tree. I've been building these for years, just with JSX instead of tensors.
+This looks exactly like a component architecture diagram. Each stage is a component with props and output. The data flows down like a render tree.
 </Dialogue>
 
-Six stages, one rule: every boundary declares its contract before code gets wired. Each ML module is a component. Data flows through the tree. Typed interfaces catch errors at the edges. If you have designed component trees for complex UIs, pages with dozens of nested components and typed props, you already know this discipline. Same pattern, heavier payloads.
+Six stages, one rule: every boundary declares its contract before code gets wired. Each ML module is a component. Data flows through the tree. Typed interfaces catch errors at the edges. It is the same discipline that keeps a fifty-component page from collapsing: declare the props, validate at the boundary, trust nothing downstream. Same pattern, heavier payloads.
 
-<LearningObjectives objectives={["Design a complete ML system architecture as a typed component graph", "Define interfaces between pipeline stages: ingestion, preprocessing, detection, classification, defense, output", "Implement a component registry with dependency validation", "Map failure modes and design graceful degradation for each stage"]} />
+<LearningObjectives objectives={["Design a complete ML system architecture as a typed component graph", "Define interfaces between pipeline stages: ingestion, preprocessing, detection, classification, defense, output", "Implement a component registry with dependency validation", "Map failure modes and design graceful degradation for each stage", "Trace one frame's data shape through all six stages, from raw pixels to broadcast payload"]} />
 
 ## Protocol Sentinel Architecture
 

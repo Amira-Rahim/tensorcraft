@@ -20,7 +20,6 @@ concept:
     breaks: "An ADR records a decision so future engineers understand the trade-off. ML system ADRs additionally embed assumptions about data distribution, model size envelope, and acceptable accuracy floor. Those assumptions go stale as the world changes. A 6-month-old ADR for a web service is usually still correct; for an ML service, it may already describe a model that no longer represents the data."
 consequence:
   narrative: "The architecture diagram fills the operations display. Every component mapped: sensor ingestion, preprocessing, edge inference, federated aggregation, A/B testing, failover, global coordination. Hassan reviews each connection. 'Build it. All of it.'"
-  nextLessonTeaser: "Next: security hardening, the final security review before global deployment"
 hints:
   - level: nudge
     content: "Map every component from the previous 10 modules into a single system diagram with clear interfaces"

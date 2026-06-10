@@ -19,8 +19,7 @@ concept:
     tier: structural
     breaks: "GitHub Actions trigger on commit events. Retraining triggers come from drift detectors, scheduled cadences, or label feedback. And retraining without performance gating can ship a worse model on schedule."
 consequence:
-  narrative: "The pipeline detects the Sector 9 data shift, triggers retraining, and produces a new model that passes all gates. Priya reviews and approves."
-  nextLessonTeaser: "Module 7: monitoring production models and detecting when they start to degrade"
+  narrative: "Sector 9's data shift trips the trigger, the pipeline retrains, and a new model clears every gate. Priya reviews and approves."
 hints:
   - level: nudge
     content: "evaluateTriggers() walks each RetrainingTrigger like a workflow's event filters: schedule elapsed, drift threshold crossed, or manual request"

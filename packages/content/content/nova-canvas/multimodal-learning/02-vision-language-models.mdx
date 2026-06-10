@@ -7,10 +7,10 @@ order: 2
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Samir shows MUSE an image of a sunset. 'What do you see?' The model outputs a vector. 'Now describe it.' Silence. 'It sees,' Samir explains, 'but it cannot speak. We need to connect vision to language. Like connecting an img tag to its alt text — the image and its description are linked.'"
+  narrative: "Samir shows MUSE an image of a sunset. 'What do you see?' The model outputs a vector. 'Now describe it.' Silence. 'It sees,' Samir explains, 'but it cannot speak. We need to connect vision to language.'"
   speaker: "Samir"
 concept:
-  explanation: "Vision-language models connect image understanding and text generation, like the relationship between an img element and its alt attribute. The image and its text description are two representations of the same thing."
+  explanation: "Vision-language models tie image understanding to text generation by encoding both into one shared space. An image and its description become two representations of the same concept, aligned statistically rather than by an author who looked."
   bridge:
     feTitle: "img alt='...': text describing images"
     feCode: "<img src='sunset.jpg' alt='A golden sunset over the ocean' />"
@@ -20,7 +20,6 @@ concept:
     breaks: "Alt-text is author-written description bound to one image at publish time. Vision-language models generate captions from learned cross-modal alignment and routinely hallucinate objects not in the image, miss salient details (especially small or partially-occluded), or describe a related image instead. Model output must be filtered through human review for accessibility-critical use cases."
 consequence:
   narrative: "MUSE processes the sunset image and outputs: 'warm colors, horizon line, city silhouette.' Not poetic. Not wrong. Yara laughs: 'It has the vocabulary of a real estate listing. But it can see and speak. That is a start.'"
-  nextLessonTeaser: "Next: cross-modal embeddings: building a shared representation space"
 hints:
   - level: nudge
     content: "The diagonal of tf.matMul(normImages, normTexts, false, true) holds the matched pairs; training pushes those entries higher than the rest of each row."
@@ -45,12 +44,20 @@ So training a vision-language model is like building a massive dataset of images
 </Dialogue>
 
 <Dialogue speaker="Samir">
-Half of it, yes. Millions of image-caption pairs, and the model learns that a sunset photo and "a golden sunset over the ocean" are the same concept in two languages. But here's where the alt-text picture misleads: alt text is written by an author who looked at the image. A model generates from learned alignment, and it'll cheerfully describe a dog that isn't there or skip the small detail that matters. For accessibility work, a human still reviews every caption.
+That's the training data, yes. Millions of image-caption pairs, and the model learns that a sunset photo and "a golden sunset over the ocean" are the same concept in two languages.
 </Dialogue>
 
-You already connect images and text every time you write an `alt` attribute. Vision-language models learn this connection at scale: millions of image-caption pairs, encoded into a shared space where the image embedding and the text embedding of its description are neighbors.
+<Dialogue speaker="MUSE">
+Before you finish the pitch: I captioned 50 of Yara's studio photos this morning. I put a dog in three of them. There has never been a dog in this studio. An author writing a description looks at the image. I generate from alignment statistics, and my statistics like dogs.
+</Dialogue>
 
-<LearningObjectives objectives={["Understand how vision-language models connect image and text understanding", "Implement cosine similarity to measure alignment between image and text embeddings", "Train with contrastive loss: matched pairs close, mismatched pairs far", "Connect the image-text relationship to HTML img alt attributes"]} />
+<Dialogue speaker="Samir">
+Which is why anything accessibility-critical still routes every generated caption through a human. The model proposes. Someone who actually looked decides.
+</Dialogue>
+
+Vision-language models learn the image-text connection at scale: millions of pairs, encoded into a shared space where the image embedding and the text embedding of its description are neighbors. The scale is what changes the rules. No author saw these pairs. The alignment is statistical, and so are its mistakes.
+
+<LearningObjectives objectives={["Understand how vision-language models connect image and text understanding", "Implement cosine similarity to measure alignment between image and text embeddings", "Train with contrastive loss: matched pairs close, mismatched pairs far"]} />
 
 ## Connecting Vision and Language
 
