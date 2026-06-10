@@ -10,26 +10,22 @@ import { useCallback, useEffect, useRef, useState } from "react";
  * ignore, too ambiguous to alarm. The whole paid course is the answer to
  * the question this number asks.
  *
- * tfjs is dynamically imported on mount so it never touches the initial
+ * tfjs is dynamically imported on first use so it never touches the initial
  * bundle; the model itself is a static asset under /models/.
  *
- * `interactive` (landing hero only) appends a your-reading panel after the
- * run: three channel sliders, pre-set to sample 7741's exact values, that
- * re-classify live as the visitor drags. The lesson embed stays read-only —
- * its narrative beat ends on the unanswered 51%.
+ * Two exports share one module-level model load:
+ * - `DeepScanDemo` — the spectator table (lesson embed + landing hero).
+ *   `framing` adds a one-line premise for visitors without story context.
+ * - `DeepScanLab` — the hands-on panel (presets / sliders / verdict meter),
+ *   mounted further down the landing page where a visitor has earned the
+ *   invitation to play. Kept out of the hero: hero content must be
+ *   glanceable, and the lab needs instructions.
  */
 
 interface Row {
   id: string;
   features: [number, number, number];
   score: number | null;
-}
-
-interface DeepScanDemoProps {
-  /** Show the drag-your-own-reading panel once the run finishes. */
-  interactive?: boolean;
-  /** Override the terminal header label (default: lesson preview wording). */
-  headerLabel?: string;
 }
 
 const STREAM: { id: string; features: [number, number, number] }[] = [
@@ -44,7 +40,7 @@ const STREAM: { id: string; features: [number, number, number] }[] = [
 const ANOMALY_FEATURES = STREAM[STREAM.length - 1].features;
 const CHANNELS = ["ch-0", "ch-1", "ch-2"] as const;
 
-// Interactive-panel presets. Values are PROBED against the real model
+// Lab presets. Values are PROBED against the real model
 // (scripts/probe-deep-scan-model.mjs) so labels match actual output:
 // healthy → 15.3% NORMAL · 7741 → 51.3% NEITHER · anomaly → 91.5% ANOMALOUS.
 // Re-probe if the model is retrained.
@@ -58,7 +54,7 @@ const PRESETS: {
   { id: "anomaly", label: "deep anomaly", values: [0.95, 0.05, 0.95] },
 ];
 
-// Minimal surface of the tfjs modules the user-reading panel needs.
+// Minimal surface of the tfjs modules this file needs.
 interface TfCore {
   tensor2d: (v: number[][]) => { dispose?: () => void };
 }
@@ -69,8 +65,63 @@ interface LoadedModel {
   };
 }
 
+// Module-level singleton: demo (hero/lesson) and lab (further down the
+// landing page) share one tfjs import + one model fetch. First caller pays;
+// everyone else awaits the same promise.
+let deepScanLoad: Promise<{ tf: TfCore; model: LoadedModel }> | null = null;
+
+function loadDeepScan(): Promise<{ tf: TfCore; model: LoadedModel }> {
+  if (!deepScanLoad) {
+    deepScanLoad = (async () => {
+      // Slim imports: core + one backend + layers (a fraction of the
+      // full tfjs bundle; skips converter/data/vis we don't use). Pick
+      // the backend from a plain canvas probe BEFORE touching tfjs's
+      // backend machinery — on machines without WebGL the full bundle's
+      // setBackend can stall instead of falling back. The model is
+      // 3→16→8→1; cpu is instant when WebGL is unavailable.
+      const probe = document.createElement("canvas");
+      const hasWebGL = !!(
+        probe.getContext("webgl2") || probe.getContext("webgl")
+      );
+      const [tf, , layers] = await Promise.all([
+        import("@tensorflow/tfjs-core"),
+        hasWebGL
+          ? import("@tensorflow/tfjs-backend-webgl")
+          : import("@tensorflow/tfjs-backend-cpu"),
+        import("@tensorflow/tfjs-layers"),
+      ]);
+      await tf.setBackend(hasWebGL ? "webgl" : "cpu");
+      await tf.ready();
+      const model = await layers.loadLayersModel(
+        "/models/deep-scan-preview/model.json",
+      );
+      return {
+        tf: tf as unknown as TfCore,
+        model: model as unknown as LoadedModel,
+      };
+    })();
+    // A failed load shouldn't poison every later mount — allow a retry.
+    deepScanLoad.catch(() => {
+      deepScanLoad = null;
+    });
+  }
+  return deepScanLoad;
+}
+
+const verdict = (score: number) =>
+  score > 0.7 ? "ANOMALOUS" : score < 0.3 ? "NORMAL" : "— NEITHER —";
+
+/* ── Spectator demo — lesson embed + landing hero ────────────────────── */
+
+interface DeepScanDemoProps {
+  /** One-line premise for surfaces without the lesson's story context. */
+  framing?: boolean;
+  /** Override the terminal header label (default: lesson preview wording). */
+  headerLabel?: string;
+}
+
 export function DeepScanDemo({
-  interactive = false,
+  framing = false,
   headerLabel = "DEEP SCAN · preview build · live inference",
 }: DeepScanDemoProps = {}) {
   const [rows, setRows] = useState<Row[]>(
@@ -79,16 +130,6 @@ export function DeepScanDemo({
   const [status, setStatus] = useState<
     "loading" | "running" | "done" | "error"
   >("loading");
-
-  // Kept for the interactive panel — re-classification reuses the same
-  // loaded model instead of re-importing tfjs.
-  const tfRef = useRef<TfCore | null>(null);
-  const modelRef = useRef<LoadedModel | null>(null);
-
-  const [userVals, setUserVals] = useState<[number, number, number]>([
-    ...ANOMALY_FEATURES,
-  ]);
-  const [userScore, setUserScore] = useState<number | null>(null);
 
   useEffect(() => {
     // No run-once ref guard here: under React StrictMode's dev
@@ -99,31 +140,8 @@ export function DeepScanDemo({
 
     (async () => {
       try {
-        // Slim imports: core + one backend + layers (a fraction of the
-        // full tfjs bundle; skips converter/data/vis we don't use). Pick
-        // the backend from a plain canvas probe BEFORE touching tfjs's
-        // backend machinery — on machines without WebGL the full bundle's
-        // setBackend can stall instead of falling back. The model is
-        // 3→16→8→1; cpu is instant when WebGL is unavailable.
-        const probe = document.createElement("canvas");
-        const hasWebGL = !!(
-          probe.getContext("webgl2") || probe.getContext("webgl")
-        );
-        const [tf, , layers] = await Promise.all([
-          import("@tensorflow/tfjs-core"),
-          hasWebGL
-            ? import("@tensorflow/tfjs-backend-webgl")
-            : import("@tensorflow/tfjs-backend-cpu"),
-          import("@tensorflow/tfjs-layers"),
-        ]);
-        await tf.setBackend(hasWebGL ? "webgl" : "cpu");
-        await tf.ready();
-        const model = await layers.loadLayersModel(
-          "/models/deep-scan-preview/model.json",
-        );
+        const { tf, model } = await loadDeepScan();
         if (cancelled) return;
-        tfRef.current = tf as unknown as TfCore;
-        modelRef.current = model as unknown as LoadedModel;
         setStatus("running");
 
         const input = tf.tensor2d(STREAM.map((s) => s.features));
@@ -156,38 +174,6 @@ export function DeepScanDemo({
     };
   }, []);
 
-  const classifyUser = useCallback(async (vals: [number, number, number]) => {
-    const tf = tfRef.current;
-    const model = modelRef.current;
-    if (!tf || !model) return;
-    const input = tf.tensor2d([vals]);
-    const out = model.predict(input);
-    const data = await out.data();
-    input.dispose?.();
-    out.dispose?.();
-    setUserScore(data[0]);
-  }, []);
-
-  // First classification of the user panel mirrors sample 7741 exactly —
-  // the visitor starts at the story's cliffhanger and drags away from it.
-  useEffect(() => {
-    if (interactive && status === "done") {
-      void classifyUser([...ANOMALY_FEATURES]);
-    }
-  }, [interactive, status, classifyUser]);
-
-  const setChannel = (i: number, value: number) => {
-    setUserVals((prev) => {
-      const next = [...prev] as [number, number, number];
-      next[i] = value;
-      void classifyUser(next);
-      return next;
-    });
-  };
-
-  const verdict = (score: number) =>
-    score > 0.7 ? "ANOMALOUS" : score < 0.3 ? "NORMAL" : "— NEITHER —";
-
   return (
     <div
       data-testid="deep-scan-demo"
@@ -202,6 +188,14 @@ export function DeepScanDemo({
         </span>
       </div>
       <div className="p-4 space-y-1.5">
+        {/* Landing visitors arrive without the lesson's story context — one
+            line answers "what is this" before the table starts filling in. */}
+        {framing && (
+          <p className="text-text-muted pb-2.5 mb-1 border-b border-border">
+            A real 8 KB neural network, downloaded into this page — no server —
+            scoring archived sensor readings from the story&rsquo;s ship.
+          </p>
+        )}
         {status === "loading" && (
           <p className="text-text-muted">
             // loading model (8 KB) into your browser…
@@ -251,20 +245,98 @@ export function DeepScanDemo({
             Teaching it to answer is the rest of the course.
           </p>
         )}
-        {interactive && status === "done" && (
-          <div
-            data-testid="demo-user-panel"
-            className="pt-3 border-t border-border mt-3 space-y-2.5"
-          >
-            <p className="text-xs uppercase tracking-widest text-primary flex items-center gap-2">
-              <span className="w-[7px] h-[7px] bg-primary inline-block" />
-              Your turn — feed it a reading
-            </p>
-            <p className="text-xs text-text-muted/80">
-              The model only ever sees these three sensor numbers. Try a preset,
-              then drag — no single channel decides, push two.
-            </p>
+      </div>
+    </div>
+  );
+}
 
+/* ── Hands-on lab — landing "What You'll Build" section ──────────────── */
+
+export function DeepScanLab() {
+  const [status, setStatus] = useState<"loading" | "ready" | "error">(
+    "loading",
+  );
+  const tfRef = useRef<TfCore | null>(null);
+  const modelRef = useRef<LoadedModel | null>(null);
+
+  const [userVals, setUserVals] = useState<[number, number, number]>([
+    ...ANOMALY_FEATURES,
+  ]);
+  const [userScore, setUserScore] = useState<number | null>(null);
+
+  const classifyUser = useCallback(async (vals: [number, number, number]) => {
+    const tf = tfRef.current;
+    const model = modelRef.current;
+    if (!tf || !model) return;
+    const input = tf.tensor2d([vals]);
+    const out = model.predict(input);
+    const data = await out.data();
+    input.dispose?.();
+    out.dispose?.();
+    setUserScore(data[0]);
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const { tf, model } = await loadDeepScan();
+        if (cancelled) return;
+        tfRef.current = tf;
+        modelRef.current = model;
+        setStatus("ready");
+        // First classification mirrors sample 7741 exactly — the visitor
+        // starts at the story's cliffhanger and drags away from it.
+        void classifyUser([...ANOMALY_FEATURES]);
+      } catch {
+        if (!cancelled) setStatus("error");
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [classifyUser]);
+
+  const setChannel = (i: number, value: number) => {
+    setUserVals((prev) => {
+      const next = [...prev] as [number, number, number];
+      next[i] = value;
+      void classifyUser(next);
+      return next;
+    });
+  };
+
+  return (
+    <div
+      data-testid="demo-user-panel"
+      className="border border-border bg-code-bg font-mono text-[13px]"
+    >
+      <div className="flex items-center gap-2 px-4 py-2.5 border-b border-border bg-surface">
+        <span className="w-2 h-2 inline-block bg-primary" />
+        <span className="text-xs font-semibold uppercase tracking-widest text-primary">
+          Your turn — feed it a reading
+        </span>
+      </div>
+      <div className="p-4 space-y-2.5">
+        <p className="text-xs text-text-muted/80">
+          Same model as the hero demo up top. Each slider is one of the
+          ship&rsquo;s sensor feeds — temperature, signal strength and the like,
+          every value normalized to 0–1. These three numbers are all the model
+          ever sees. Try a preset, then drag — no single channel decides, push
+          two.
+        </p>
+
+        {status === "loading" && (
+          <p className="text-text-muted">// waiting for the model…</p>
+        )}
+        {status === "error" && (
+          <p className="text-text-muted">
+            // model failed to load — check your connection and refresh
+          </p>
+        )}
+
+        {status === "ready" && (
+          <>
             {/* Probed presets — labels match real model output (15% / 51% / 92%) */}
             <div className="flex flex-wrap gap-2 pt-0.5">
               {PRESETS.map((p) => {
@@ -374,7 +446,7 @@ export function DeepScanDemo({
               Sample 7741 sits dead center — too odd to ignore, too ambiguous to
               alarm. Module 1 teaches you why.
             </p>
-          </div>
+          </>
         )}
       </div>
     </div>

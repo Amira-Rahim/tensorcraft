@@ -84,6 +84,22 @@
   anomaly 91.5% — labels guaranteed by probe, re-run script if model is
   retrained), and copy explaining the channels + "no single channel decides,
   push two". E2e hardened: presets must land in their labeled zones.
+- **Demo still unintelligible to cold visitors** (what runs in the tab? what
+  are ch-0/1/2? what is NEITHER?). Added a framing block (interactive variant
+  only, shown from load): Deep Scan = the anomaly detector you'll build; an
+  8 KB net downloaded into the page scores archived ship-sensor readings;
+  <30% normal, >70% anomalous, between = can't tell. Slider explainer now
+  names the channels using lesson-05 canon (temperature, signal strength,
+  normalized 0–1). Lesson embed unchanged — its story provides this context.
+- **Lab moved out of the hero.** The interactive panel had accreted (framing
+  paragraph + presets + sliders + meter) past hero-glanceability — hero
+  content that needs instructions is section content. Split: `DeepScanDemo`
+  (spectator table; `framing` prop adds a one-line premise for the hero) and
+  new `DeepScanLab` export (presets/sliders/meter, own terminal frame),
+  mounted in What You'll Build's right column. Both share one module-level
+  `loadDeepScan()` singleton — tfjs + model load once per page; failed loads
+  reset the singleton so a retry is possible. Funnel now: watch (hero) →
+  understand (bridges) → touch (WYB) → choose (worlds) → act.
 - **`//` comment-prefix on prose copy** flagged as an AI tell. All instances
   added in this pass (demo panel eyebrow + closing line, WYB cross-ref +
   lesson-UI label, FAQ eyebrow) replaced with the site's pre-existing ■

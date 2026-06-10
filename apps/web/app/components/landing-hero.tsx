@@ -121,7 +121,7 @@ export function LandingHero() {
           </div>
           <div className="[&_[data-testid=deep-scan-demo]]:my-0 brutalist-shadow">
             <DeepScanDemo
-              interactive
+              framing
               headerLabel="DEEP SCAN · live inference · running in your tab"
             />
           </div>

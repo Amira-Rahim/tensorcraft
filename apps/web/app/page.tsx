@@ -3,6 +3,7 @@ import Image from "next/image";
 import type { Metadata } from "next";
 import { LAUNCHED_THEMES, PRICING, THEME_SLUGS } from "@tensorcraft/shared";
 import { FAQ_ITEMS } from "./faq-data";
+import { DeepScanLab } from "./components/mdx/deep-scan-demo";
 import { LandingHero } from "./components/landing-hero";
 import { LandingBridgeTicker } from "./components/landing-bridge-ticker";
 import { BridgePreviewSection } from "./components/bridge-preview-section";
@@ -180,6 +181,11 @@ export default function Home() {
                   </p>
                 </div>
               ))}
+
+              {/* Hands-on lab — same model as the hero demo, singleton-loaded.
+                  Lives here, not the hero: hero proves, this section lets a
+                  warmed-up visitor touch it. */}
+              <DeepScanLab />
             </div>
           </div>
         </section>
