@@ -96,7 +96,9 @@ Final-CTA secondary link block (account / glossary / compare) removed
 entirely at user request — section now ends on the primary button. Note:
 this was the landing page's only `/compare` link (2026-06-09 funnel fix);
 `/compare` and `/glossary` currently have no landing entry point. The two
-e2e tests covering those links were removed with it (suite now 12).
+e2e tests covering those links were removed with it (suite now 12), and
+the stale unit guard `apps/web/app/page.compare-link.test.tsx` (added by
+the 2026-06-09 funnel fix) was deleted after it blocked the next push.
 
 ## Deferred
 
