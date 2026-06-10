@@ -91,7 +91,7 @@ const weightData = await fetch('/models/deep-scan/group1-shard1of1.bin')
 
 ## Caching with IndexedDB
 
-Models can be 5-50MB. You don't want to re-download them on every page load, just like you'd cache API responses or use a service worker for static assets.
+Models run 5-50MB. You don't re-download that on every page load, for the same reason your static assets sit behind a service worker.
 
 <CodeBlock language="typescript" title="model-caching.ts">
 {`import * as tf from '@tensorflow/tfjs';

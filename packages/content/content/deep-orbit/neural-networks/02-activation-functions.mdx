@@ -41,7 +41,7 @@ The neuron outputs unbounded values: negative infinity to positive infinity. I n
 
 ## From Unbounded to Useful
 
-Without activation functions, a neural network is a series of linear transformations. No matter how many layers you stack, it collapses to a single linear function. Activation functions introduce the non-linearity that lets networks learn complex patterns.
+Without activation functions, a neural network is stacked linear transformations, and stacked linear maps multiply out to a single matrix: ten layers of pure matrix math collapse into one. Activations break the collapse — they are the only place the network gets to bend.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 

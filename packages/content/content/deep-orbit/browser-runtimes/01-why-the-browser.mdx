@@ -51,7 +51,7 @@ You've faced this exact decision before as a frontend engineer. Server-side rend
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-In frontend development, you choose between rendering on the server (SSR) or in the browser (CSR) based on performance, privacy, and user experience tradeoffs. ML inference has the same split:
+ML inference splits along the same line, with the same stakes — performance, privacy, user experience:
 
 <CodeBlock language="typescript" title="inference-comparison.ts">
 {`// SERVER-SIDE INFERENCE — like SSR
@@ -87,11 +87,11 @@ async function clientInference(signalData: number[]) {
 | **Compute** | GPU clusters available | Device CPU/GPU only |
 | **Cold start** | Warm server | Model must download first |
 
-Nazari is right: for a real-time dashboard processing signal readings every second, the network round-trip is unacceptable. The model must run in the browser.
+Nazari is right: a dashboard classifying a reading every second cannot afford a network round-trip on each one.
 
 ## The Cost of Client-Side ML
 
-Just as CSR has hydration costs and bundle size concerns, browser ML has its own tax:
+Moving the computation client-side doesn't erase its costs; it changes their currency:
 
 <CodeBlock language="typescript" title="browser-constraints.ts">
 {`// Memory: browser tabs typically have 1-4GB limit

@@ -43,7 +43,7 @@ This isn't random noise. Something is repeating. The pattern spans dozens of tim
 Memory? You mean like... state that persists between inputs? That's just a reducer: previous state plus new input produces updated state.
 </Dialogue>
 
-You've seen this problem in React. When you render a list without stable keys, React can't track which items moved, were added, or were removed. Order carries information. The same is true for signals: the sequence [rising, falling, rising] tells a completely different story than [falling, rising, rising], even though they contain the same individual values.
+You've seen this problem in React. Render a list without stable keys and React can't track which items moved, were added, or were removed. Order carries information. The same goes for signals: [rising, falling, rising] tells a different story than [falling, rising, rising], even though the individual values are identical.
 
 <LearningObjectives objectives={["Understand why order matters in sequential data — shuffling destroys information", "Recognize the limitation of feedforward networks for temporal data", "Prepare sequential input by creating time-step windows from raw signals", "Connect sequence processing to React list rendering and state management"]} />
 

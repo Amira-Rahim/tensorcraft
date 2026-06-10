@@ -48,6 +48,11 @@ test.describe("Themes Page", () => {
   });
 
   test("Deep Orbit links to its theme page", async ({ page }) => {
+    // Pre-dismiss the cookie banner — under parallel load it can slide in
+    // mid-click and intercept the pointer event.
+    await page.addInitScript(() => {
+      localStorage.setItem("tc-cookie-consent", "declined");
+    });
     await page.goto("/themes");
     // Theme cards link to /themes/{slug} — click on the Deep Orbit card link
     const deepOrbitLink = page
@@ -83,6 +88,11 @@ test.describe("Theme Detail Page", () => {
   });
 
   test("lessons link to lesson viewer", async ({ page }) => {
+    // Pre-dismiss the cookie banner — under parallel load it can slide in
+    // mid-click and intercept the pointer event.
+    await page.addInitScript(() => {
+      localStorage.setItem("tc-cookie-consent", "declined");
+    });
     await page.goto("/themes/deep-orbit");
     await page
       .getByRole("link", { name: /introduction to tensors/i })

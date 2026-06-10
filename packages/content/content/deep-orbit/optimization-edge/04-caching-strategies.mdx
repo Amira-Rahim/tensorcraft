@@ -39,7 +39,7 @@ skillAxes: [deployment]
 Many signals are similar: cosmic background with minor variations. If I've already classified a signal with these features, why run the model again? I'll cache the results, like a Service Worker caching API responses.
 </Dialogue>
 
-DEEP SCAN spent last night reclassifying cosmic background radiation it had already classified. Same features, same verdict, full GPU cost every time. The playbook for fixing this is one you know from Service Workers: cache-first, TTL expiry, hash the request, only do the expensive work on a miss.
+DEEP SCAN spent last night reclassifying cosmic background it had already classified, at full GPU cost each time. The Service Worker playbook transfers: cache-first, TTL expiry, hash the request, only do the expensive work on a miss.
 
 <LearningObjectives objectives={["Implement an LRU cache for inference results", "Hash model inputs for cache key generation", "Choose cache strategies: exact match, approximate match, TTL-based expiry", "Measure cache hit rate and its impact on effective inference latency"]} />
 

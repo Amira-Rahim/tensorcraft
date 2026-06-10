@@ -44,7 +44,7 @@ Commander, I must flag a concern. The model performs at 91.8% accuracy now. In t
 Same problem as any production app. I'll set up monitoring: track prediction confidence, inference latency, and input distribution. When the data drifts from what we trained on, we alert and retrain.
 </Dialogue>
 
-Monitoring exists on this ship for one reason, and the reason has a timestamp. At 0249 the dashboard didn't throw an exception, didn't log an error, didn't degrade gracefully: memory pressure killed it mid-frame, and the first alert anyone received was the screen going dark. Nobody will survive another 0247, so DEEP SCAN ships with instruments pointed at itself. The web-app half of this is familiar — Sentry, DataDog, error rates, response times. ML monitoring adds the failures that never throw: confidence decay, latency creep, and data drift, production inputs walking quietly away from the training distribution.
+Monitoring exists on this ship for one reason, and the reason has a timestamp. At 0249 the dashboard didn't throw an exception, didn't log an error, didn't degrade gracefully: memory pressure killed it mid-frame, and the first alert anyone received was the screen going dark. So DEEP SCAN ships with instruments pointed at itself — the familiar web-app set, plus the failures that never throw: confidence decay, latency creep, and drift, production inputs walking quietly away from the training distribution.
 
 <LearningObjectives objectives={["Implement prediction quality monitoring: confidence tracking and anomaly rates", "Build latency monitoring with P50/P95/P99 percentile tracking", "Detect data drift by comparing input feature distributions over time", "Configure alerts that trigger when model health metrics cross thresholds"]} />
 

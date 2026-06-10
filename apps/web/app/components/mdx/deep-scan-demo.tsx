@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 /**
  * Free-tier magic moment: a REAL TensorFlow.js model (trained offline,
@@ -36,17 +36,36 @@ export function DeepScanDemo() {
   const [status, setStatus] = useState<
     "loading" | "running" | "done" | "error"
   >("loading");
-  const started = useRef(false);
 
   useEffect(() => {
-    if (started.current) return;
-    started.current = true;
+    // No run-once ref guard here: under React StrictMode's dev
+    // double-mount, a ref guard blocks the second (surviving) effect run
+    // while the first run was already cancelled — the demo would sit on
+    // "loading" forever. Each run owns its own cancelled flag instead.
     let cancelled = false;
 
     (async () => {
       try {
-        const tf = await import("@tensorflow/tfjs");
-        const model = await tf.loadLayersModel(
+        // Slim imports: core + one backend + layers (a fraction of the
+        // full tfjs bundle; skips converter/data/vis we don't use). Pick
+        // the backend from a plain canvas probe BEFORE touching tfjs's
+        // backend machinery — on machines without WebGL the full bundle's
+        // setBackend can stall instead of falling back. The model is
+        // 3→16→8→1; cpu is instant when WebGL is unavailable.
+        const probe = document.createElement("canvas");
+        const hasWebGL = !!(
+          probe.getContext("webgl2") || probe.getContext("webgl")
+        );
+        const [tf, , layers] = await Promise.all([
+          import("@tensorflow/tfjs-core"),
+          hasWebGL
+            ? import("@tensorflow/tfjs-backend-webgl")
+            : import("@tensorflow/tfjs-backend-cpu"),
+          import("@tensorflow/tfjs-layers"),
+        ]);
+        await tf.setBackend(hasWebGL ? "webgl" : "cpu");
+        await tf.ready();
+        const model = await layers.loadLayersModel(
           "/models/deep-scan-preview/model.json",
         );
         if (cancelled) return;

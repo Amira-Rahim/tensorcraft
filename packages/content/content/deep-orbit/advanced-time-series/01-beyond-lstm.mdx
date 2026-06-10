@@ -46,7 +46,7 @@ Like CSS :focus. Instead of styling every element equally, you highlight just th
 :focus lands on one element. Softmax never does — every step gets a weight, and most of them sit near zero. Keep your picture, but read the weights as a budget, not a spotlight.
 </Dialogue>
 
-When a user tabs through a form, CSS `:focus` moves to the active element. The browser doesn't re-render every element; it identifies which one matters and highlights it. Attention runs the softer version of that move: it computes a relevance score for every time step, then spends most of its weight where the score is high — and a little everywhere else.
+Tab through a form and the browser doesn't restyle every element — it finds the active one and highlights it. Attention is the soft version of that move: it scores every time step for relevance, then spends most of its weight where the score is high and a little everywhere else.
 
 <LearningObjectives objectives={["Understand attention as dynamic relevance scoring — focusing on what matters", "Learn the Query-Key-Value framework for computing attention weights", "Compare attention with LSTM: parallel vs sequential, global vs local context", "Implement a simple attention mechanism in TensorFlow.js"]} />
 

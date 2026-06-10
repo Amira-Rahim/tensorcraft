@@ -14,15 +14,21 @@ const predictMock = vi.fn((input: { arraySync: () => number[][] }) => {
   };
 });
 
-vi.mock("@tensorflow/tfjs", () => ({
-  loadLayersModel: vi.fn(async () => ({
-    predict: predictMock,
-    dispose: () => {},
-  })),
+vi.mock("@tensorflow/tfjs-core", () => ({
+  setBackend: vi.fn(async () => true),
+  ready: vi.fn(async () => undefined),
   tensor2d: (rows: number[][]) => ({
     arraySync: () => rows,
     dispose: () => {},
   }),
+}));
+vi.mock("@tensorflow/tfjs-backend-cpu", () => ({}));
+vi.mock("@tensorflow/tfjs-backend-webgl", () => ({}));
+vi.mock("@tensorflow/tfjs-layers", () => ({
+  loadLayersModel: vi.fn(async () => ({
+    predict: predictMock,
+    dispose: () => {},
+  })),
 }));
 
 describe("DeepScanDemo", () => {

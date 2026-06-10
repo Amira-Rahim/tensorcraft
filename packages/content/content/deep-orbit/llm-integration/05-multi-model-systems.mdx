@@ -39,7 +39,7 @@ skillAxes: [deployment, fe_integration]
 Each model does one thing well. The classifier knows signal types. The autoencoder knows what's normal. The LSTM knows temporal patterns. The LLM knows language. I just need to wire them together, like an API gateway routing to micro-services.
 </Dialogue>
 
-Four models, four contracts. The classifier emits a class and a confidence. The autoencoder emits a reconstruction error. The LSTM emits predicted next values, and the LLM consumes all three to emit prose. Orchestration is the discipline of wiring those contracts together so one weak stage can't silently poison the chain, which is the same job an API gateway does for auth, products, and payments services.
+Four models, four contracts: a class and a confidence from the classifier, a reconstruction error from the autoencoder, predicted next values from the LSTM, and prose from the LLM that consumes the other three. Orchestration is the discipline of wiring those contracts together so one weak stage can't silently poison the chain.
 
 <LearningObjectives objectives={["Design a multi-model pipeline with clear interfaces between stages", "Orchestrate signal classifier, anomaly detector, LSTM predictor, and LLM reporter", "Handle errors and fallbacks when individual models fail", "Build the complete DEEP SCAN end-to-end processing pipeline"]} />
 

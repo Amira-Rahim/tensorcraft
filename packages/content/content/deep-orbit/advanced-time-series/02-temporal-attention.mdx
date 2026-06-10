@@ -39,7 +39,7 @@ skillAxes: [model_arch]
 The attention weights are like a heatmap over time. I can see exactly WHERE the model is looking in the signal. It's scrolling to the moments that matter: the spike at step 12 and the frequency shift at step 85.
 </Dialogue>
 
-You use `scrollIntoView()` to programmatically navigate a user's viewport to the content that matters. Temporal attention does the same thing for the model's "viewport" across a sequence: it identifies the time steps that carry the most information and focuses processing there.
+`scrollIntoView()` steers a user's viewport to the content that matters. Temporal attention gives the model the same control over a sequence: score every time step, then concentrate processing on the few that carry the information.
 
 <LearningObjectives objectives={["Apply attention specifically to the temporal dimension of sequential data", "Visualize attention weights as a temporal heatmap showing model focus", "Use attention for interpretability — understanding why the model made its prediction", "Build a temporal attention layer for the DEEP SCAN signal analyzer"]} />
 

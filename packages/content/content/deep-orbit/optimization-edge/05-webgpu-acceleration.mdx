@@ -47,7 +47,7 @@ So WebGPU is to WebGL what Web Workers are to the main thread: purpose-built for
 That analogy survives about one paragraph of scrutiny. Web Workers keep the language and memory model you already trust; WebGPU replaces both — new shader language, new memory semantics, drivers you don't control. Trust the shape of the win. Don't trust the cost of entry.
 </Dialogue>
 
-WebGL was designed for 3D graphics. ML inference works on it, but it's like using `<canvas>` to render a spreadsheet. WebGPU is designed for general-purpose GPU compute: matrix multiplications, parallel reductions, and the tensor operations that ML inference actually needs.
+Nazari isn't wrong about the triangles. WebGL runs tensor math by smuggling it through a graphics pipeline: data as textures, math as fragment shaders, overhead on every op. WebGPU's compute shaders run matrix multiplications and parallel reductions directly — which is most of what inference is.
 
 <LearningObjectives objectives={["Understand WebGPU as compute-oriented GPU access (vs WebGL's graphics orientation)", "Configure TensorFlow.js to use the WebGPU backend", "Benchmark WebGPU vs WebGL vs WASM for inference workloads", "Handle WebGPU availability with graceful fallback to WebGL"]} />
 

@@ -40,7 +40,7 @@ skillAxes: [model_arch, evaluation]
 Z-scores work for simple distributions. But our signals are high-dimensional: amplitude, frequency, phase, plus FFT features. We need a model that learns the full structure of normal signals. An autoencoder compresses and reconstructs. If it can't reconstruct a signal, that signal is anomalous.
 </Dialogue>
 
-Think of gzip: it learns patterns in your data and compresses them efficiently. When you decompress, you get back the original. But if you tried to decompress data that was encoded with a completely different pattern set, the output would be garbage. Autoencoders work the same way. They learn to compress and reconstruct "normal," so "abnormal" gets mangled.
+Think of gzip: it finds repeated patterns in your data and exploits them to compress. Decompress and you get the original back; feed the decompressor a stream encoded under a different pattern set and you get garbage. Autoencoders run on the same bet. They learn to compress and rebuild "normal," so "abnormal" comes back mangled.
 
 <LearningObjectives objectives={["Understand the autoencoder architecture: encoder → bottleneck → decoder", "Build an autoencoder in TensorFlow.js for signal reconstruction", "Train on normal data only — the model learns what 'normal' looks like", "Recognize that high reconstruction error indicates anomalous input"]} />
 

@@ -39,7 +39,7 @@ skillAxes: [model_arch]
 The signal feed is continuous: readings every second, forever. But the LSTM needs fixed-size input: exactly 50 time steps. I need to convert a stream into windows, like IntersectionObserver processing what's currently in view.
 </Dialogue>
 
-Slice 50 readings. Step forward one. Slice again. That's the entire pipeline: a fixed-size window walks the continuous stream, and every position it stops at becomes one perfectly shaped sample for the LSTM. If the rhythm reminds you of IntersectionObserver processing elements as they scroll through the viewport, that's the right instinct, with one difference: here, every step of the walk produces training data.
+Slice 50 readings. Step forward one. Slice again. That's the entire pipeline: a fixed-size window walks the continuous stream, and every position it stops at becomes one ready-made sample for the LSTM. Demir's IntersectionObserver instinct is close, but an observer only fires when an element crosses a threshold; the window manufactures data at every step.
 
 <LearningObjectives objectives={["Convert continuous signal streams into fixed-size overlapping windows", "Create input/label pairs for sequence prediction (next-value forecasting)", "Configure window size and stride for different temporal resolutions", "Build a streaming buffer that feeds the LSTM in real time"]} />
 

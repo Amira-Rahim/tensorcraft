@@ -52,7 +52,7 @@ Don't tell me what it's like, Ensign. Tell me how far back it can hold a pattern
 Hundreds of steps, for roughly four times the parameters of the simple RNN. And there is no clock in it anywhere. A forget gate reads the current input and outputs a number between 0 and 1 for every dimension of the cell state: keep 90% of this, drop most of that. Partial and learned, with no timer. That is why it can hold a pattern from 72 hours ago.
 </Dialogue>
 
-The three gates (forget, input, output) are each a small sigmoid layer with its own learned weights. A sigmoid outputs values in [0,1], which is what lets a gate act as a dimmer rather than a switch.
+The three gates (forget, input, output) are each a small sigmoid layer with its own learned weights. That [0,1] output is what makes a gate a dimmer rather than a switch.
 
 <LearningObjectives objectives={["Understand the three LSTM gates: forget (discard), input (add), output (expose)", "Build an LSTM network using TensorFlow.js that handles long-range dependencies", "Compare LSTM and GRU architectures — tradeoffs between complexity and performance", "Solve the vanishing gradient problem with gated memory cells"]} />
 

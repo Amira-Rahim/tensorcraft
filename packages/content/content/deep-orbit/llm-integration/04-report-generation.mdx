@@ -39,7 +39,7 @@ skillAxes: [deployment, fe_integration]
 The report needs six sections: Executive Summary, Methodology, Signal Classification Results, Anomaly Analysis, Hypotheses, and Recommendations. I'll generate each section separately for better quality control.
 </Dialogue>
 
-Generating a full report in one shot produces mediocre results, like rendering a complex page in a single monolithic component. Breaking it into sections (components) and generating each independently produces better output with easier verification.
+Generating a full report in one shot is the monolithic-component mistake: mediocre output and nothing you can verify in isolation. Sections are components — each gets its own data, its own prompt, and its own review.
 
 <LearningObjectives objectives={["Structure report generation as section-by-section assembly, not monolithic generation", "Build a report pipeline: template → data retrieval → generation → validation → assembly", "Implement quality checks between sections for consistency", "Produce a formatted, citable scientific report from signal data"]} />
 

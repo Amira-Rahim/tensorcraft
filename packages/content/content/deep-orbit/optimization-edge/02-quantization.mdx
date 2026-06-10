@@ -39,7 +39,7 @@ skillAxes: [deployment]
 Every weight is a 32-bit float: 4 bytes. Your model has 85 million weights. That's 340 MB just for the numbers. Cut the precision to 8-bit integers and you're at 85 MB. The model is 4x smaller and inference runs on integer hardware, faster on every device.
 </Dialogue>
 
-340 MB is the size of DEEP SCAN's weight file at float32: 85 million parameters, 4 bytes each, exactly as Nazari computed. Store each weight in one byte instead and the file lands at 85 MB, at a cost of roughly a point of accuracy. If you've ever converted a 2 MB PNG to a 200 KB WebP and squinted at the invisible difference, you know this trade. The dashboard that died at 0247 has 512 MB of RAM; the first 255 MB of the repayment come from this lesson.
+Nazari's arithmetic is the whole technique. If you've ever converted a 2 MB PNG to a 200 KB WebP and squinted at the invisible difference, you know the trade: store each weight in one byte instead of four and the file lands at 85 MB, at a cost of roughly a point of accuracy. The dashboard that died at 0247 has 512 MB of RAM; the first 255 MB of the repayment come from this lesson.
 
 <Dialogue speaker="Chief Nazari">
 Don't sell me the WebP comparison, Ensign. Tell me where the accuracy goes. A point of loss spread evenly across five classes is one thing; a point concentrated in the rare class is another. Measure which one we're buying.

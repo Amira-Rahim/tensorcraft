@@ -42,7 +42,7 @@ What if we feed the FFT magnitudes directly into the model? Instead of just raw 
 Feature engineering: deriving new inputs from raw data. I used it to rebuild the signal analyzer on the Kepler mission. One correction, though — you said "more information." The FFT adds no information; the samples already contain everything it computes. What it adds is access. The model no longer has to discover the frequency basis on its own, and I trust a model more when I know which part of the work I did for it.
 </Dialogue>
 
-You do this in React all the time. Raw props come in, but you compute derived values (sorted lists, filtered arrays, aggregated counts) because the derived form is more useful for rendering. Feature engineering is the same idea: you transform raw data into forms that make the model's job easier.
+You do this in React all the time: raw props come in, and you compute the sorted list, the filtered array, the aggregated count, because the derived form is what rendering actually needs. Feature engineering is the same move, aimed at a model instead of a render.
 
 <LearningObjectives objectives={["Understand feature engineering as deriving useful model inputs from raw data", "Extract FFT magnitudes and use them as model features", "Normalize and combine raw features with frequency-domain features", "Measure the impact of better features on model accuracy"]} />
 

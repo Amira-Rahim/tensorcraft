@@ -85,7 +85,7 @@ const history = await model.fit(trainX, trainY, {
 - **batchSize**: How many samples to process before updating weights. 32 is a good default.
 - **validationSplit**: Fraction of data held out to check for overfitting.
 
-"Up to a point" has a body count. Demir's first run was not the clean curve above: reasoning from animation loops, where more frames always means smoother easing, he set `epochs: 500` to be safe and went for coffee. He came back to a training loss of 0.0004 and a validation loss that had been climbing since epoch 60. Forty minutes of compute, and the model was worse on real signals than the twenty-minute version — it had stopped learning the pattern and started memorizing the dataset. An animation that runs longer gets closer to its target; a network that trains longer gets closer to its training data, which is not the same place.
+"Up to a point" has a body count. Demir's first run was not the clean curve above: reasoning from animation loops, where more frames always means smoother easing, he set `epochs: 500` to be safe and went for coffee. He came back to a training loss of 0.0004, a validation loss that had been climbing since epoch 60, and a model worse on real signals than the twenty-minute version — it had stopped learning the pattern and started memorizing the dataset. An animation that runs longer gets closer to its target; a network that trains longer gets closer to its training data, which is not the same place.
 
 <Dialogue speaker="Chief Nazari">
 Forty minutes of compute to make it worse. That's coming out of your certification hours, Ensign. From now on, validation loss is the first number you read — and the first one you show me.

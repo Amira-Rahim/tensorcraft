@@ -43,7 +43,7 @@ Great, so the loss tells us we're wrong. But which knobs do I turn? Which weight
 
 ## Finding Downhill
 
-Imagine you're blindfolded on a hill and need to reach the bottom. You feel the slope under your feet; that's the gradient. Step in the direction that slopes down, keep stepping until the ground flattens out, and you've performed gradient descent.
+You're blindfolded partway up a hill and want the bottom. Your only instrument is the tilt of the ground where you stand. Step downhill, keep stepping until the ground goes flat, and you have performed gradient descent — the tilt is the gradient, and flat ground is a minimum.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -74,7 +74,7 @@ for (let step = 0; step < 20; step++) {
 // Step 15: x=3.000, loss=0.000`}
 </CodeBlock>
 
-**Learning rate** is crucial — and you already have the intuition from lerp factors. Crank `0.1` up to `1.5` in your easing code and the element oscillates wildly past its target; drop it to `0.001` and the animation takes all afternoon. Same failure modes, same knob.
+**Learning rate** is the hyperparameter that matters most, and you already own the intuition from lerp factors. Crank `0.1` up to `1.5` in your easing code and the element oscillates wildly past its target; drop it to `0.001` and the animation takes all afternoon. Same failure modes, same knob.
 
 <DerivationDrawer summary="Why the gradient is the steepest-ascent direction" companionSlug="optimization-landscape">
 **The gradient is a vector of partial derivatives.** For loss `L(w₁, w₂, ..., wₙ)`:

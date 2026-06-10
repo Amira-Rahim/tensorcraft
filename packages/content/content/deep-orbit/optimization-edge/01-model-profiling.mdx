@@ -48,7 +48,7 @@ I'm not going to yell. Here are the numbers instead. Dashboard RAM: 512 megabyte
 Profiling first. Same discipline as a slow React app — measure, find the bottleneck, then cut. No guessing. Not after last night.
 </Dialogue>
 
-You never optimize without profiling first. In frontend development, you open DevTools, record a performance trace, and find the bottleneck. Model optimization follows the same discipline: measure memory, time inference, identify the heaviest layers, then optimize surgically.
+Profiling a model means three measurements: memory footprint, inference latency (mean and tail), and which layers hold the parameters. Get all three before touching a single weight — the numbers decide where the knife goes.
 
 <LearningObjectives objectives={["Profile model memory usage with tf.memory()", "Benchmark inference latency with high-resolution timing", "Identify bottleneck layers using per-layer profiling", "Establish baseline metrics before optimization"]} />
 

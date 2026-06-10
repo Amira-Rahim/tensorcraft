@@ -42,7 +42,7 @@ ARIA's pattern matching failed because it uses fixed rules. We need something th
 
 ## The Simplest Learning Machine
 
-A neuron is surprisingly simple. It takes inputs, multiplies each by a weight, sums everything up, adds a bias, and outputs a number. You've written this exact pattern with `Array.reduce()`.
+A neuron takes inputs, multiplies each by a weight, sums the products, adds a bias, and emits one number. You've written this exact pattern with `Array.reduce()`.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -65,7 +65,7 @@ const jsOutput = jsInputs.reduce((sum, x, i) => sum + x * jsWeights[i], 0.1);
 console.log(jsOutput); // 0.18 — identical!`}
 </CodeBlock>
 
-The weights determine how much each input matters. A large positive weight means "this input is important and supports the output." A negative weight means "this input pushes against the output." The bias shifts the decision threshold.
+Weights encode how much each input matters: a positive weight pushes the output up, a negative one pushes against it. The bias shifts the decision threshold — the baseline the weighted sum has to clear.
 
 ## Challenge
 

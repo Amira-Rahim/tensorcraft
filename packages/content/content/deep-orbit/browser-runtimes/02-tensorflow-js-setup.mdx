@@ -65,7 +65,7 @@ console.log('Backend:', tf.getBackend());  // 'webgl', 'wasm', or 'cpu'
 console.log('TF.js version:', tf.version.tfjs);`}
 </CodeBlock>
 
-That's it. Four lines to have a full ML runtime in the browser. But the backend selection matters enormously for performance.
+That's it: four lines to a full ML runtime in the browser. The fourth is the one Nazari told you to check.
 
 ## Backends: The Runtime Engine
 
@@ -145,7 +145,7 @@ Set up TensorFlow.js and verify the active backend.
 
 <Epilogue>
 
-Demir runs the backend check on every bridge station before he calls it done. Five consoles report `webgl`. The sixth — the engineering panel, oldest display on the ship — comes back `wasm`: 3.1 ms per matmul instead of 0.5.
+Demir runs the backend check on every bridge station before he calls it done. Five consoles report `webgl`. The sixth (the engineering panel, oldest display on the ship) comes back `wasm`: 3.1 ms per matmul instead of 0.5.
 
 <Dialogue speaker="Chief Nazari">
 So the engineering chair sees the feed six times slower than the helm. Log it. If anyone ever has to watch from that station, I want to know what they are missing and by how much.

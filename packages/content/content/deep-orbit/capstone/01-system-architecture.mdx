@@ -43,7 +43,7 @@ Ten modules of separate pieces. Assemble them into one system, Ensign, and show 
 It's like setting up a monorepo. Each module is a package with clear inputs and outputs. I connect them with a pipeline: preprocessor, feature extractor, classifier, anomaly detector, reporter. Each stage validates its input before processing. Raw signal in, classified report out.
 </Dialogue>
 
-The deploy target is already chosen, and it is not forgiving: the repaired bridge dashboard, 512 MB of RAM, one prior fatality on its record. Every architecture decision in this lesson answers to that box. Each component from the last ten modules becomes a typed stage in a single pipeline — raw signal in, classified report out — and every stage shares a machine that has already been killed once by careless memory.
+The deploy target is already chosen, and it is not forgiving: the repaired bridge dashboard, 512 MB of RAM, one prior fatality on its record. Every architecture decision in this lesson answers to that box. Each component from the last ten modules becomes a typed stage in one pipeline, every stage sharing the machine.
 
 <LearningObjectives objectives={["Design a production ML pipeline as a dependency graph of typed components", "Define interfaces between pipeline stages: preprocessor, feature extractor, classifier, reporter", "Implement a pipeline runner that validates data flow between stages", "Map the complete DEEP SCAN architecture from raw signal to final report"]} />
 

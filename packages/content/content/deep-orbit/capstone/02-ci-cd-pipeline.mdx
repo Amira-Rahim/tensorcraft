@@ -44,7 +44,7 @@ Manual testing is how systems fail in production. You will automate everything: 
 Same as any web app CI: GitHub Actions, test on push, deploy on merge to main. I just need to add model-specific checks: accuracy thresholds, inference speed benchmarks, memory budget validation.
 </Dialogue>
 
-You've set up GitHub Actions for web apps: lint, test, build, deploy. ML CI/CD extends this with model-specific gates: does the model still meet accuracy thresholds? Is inference fast enough? Does it fit in the memory budget? Same workflow engine, additional validation steps.
+Demir is one assumption away from being right. The workflow engine transfers whole; the belief that a green build tested the artifact you actually ship does not — and that assumption is about to cost forty minutes.
 
 <LearningObjectives objectives={["Extend a standard CI/CD pipeline with ML-specific validation steps", "Implement model accuracy gates that block deployment on regression", "Add inference performance benchmarks as CI checks", "Configure automated deployment with rollback on failure"]} />
 
@@ -188,8 +188,6 @@ Nazari reads the logs instead of the badge. The validate-model step pulled `deep
 Your lockfile pins code. Nothing in this file pins weights. Hash the artifact, key the cache on the hash, and rerun. That's 40 minutes, and I'm adding them to the ledger next to the three hours your 80-percent prune cost us.
 </Dialogue>
 
-This is the gap the bridge warned about: a green workflow is not a pinned model. Weights need their own versioning, their own hashes, and a cache key that changes when they do.
-
 ## Challenge
 
 Write a model validation gate for CI/CD.
@@ -203,7 +201,7 @@ Write a model validation gate for CI/CD.
 The rerun goes green at 2214, hash-pinned this time, every gate aimed at the artifact that will actually ship. Nazari watches all four stages pass and gives the screen a single nod, which from her is a parade. On the wall display the telemetry ticker reads: pulse interval 35.2 seconds.
 
 <Dialogue speaker="Chief Nazari">
-Three days ago that ticker said 38. Whatever is out there isn't slowing down to wait for our pipeline, so the pipeline doesn't get to need second takes.
+Three days ago that ticker said 38.4. Whatever is out there isn't slowing down to wait for our pipeline, so the pipeline doesn't get to need second takes.
 </Dialogue>
 
 </Epilogue>

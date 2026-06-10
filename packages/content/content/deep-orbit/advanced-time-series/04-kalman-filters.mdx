@@ -43,7 +43,7 @@ The signal's period isn't constant; it's drifting. We need a filter that tracks 
 That's an exponential moving average! smoothed = alpha * new + (1-alpha) * old. The Kalman filter just computes the optimal alpha at each step?
 </Dialogue>
 
-You've used exponential moving averages in analytics dashboards, smoothing noisy metrics to reveal the underlying trend. The Kalman filter is the mathematically optimal version of this: it dynamically adjusts how much to trust new data vs the historical estimate, based on the noise levels of each.
+Demir is one alpha away from right. An EMA blends with a fixed alpha you pick once and hope holds; the Kalman filter recomputes the blend at every step, weighing the new measurement against the running estimate by how noisy each currently is. Same shape, smarter coefficient — and computing that coefficient is the whole filter.
 
 <LearningObjectives objectives={["Understand the Kalman filter as a predict-correct loop for state estimation", "Implement a 1D Kalman filter for tracking signal timing", "Connect Kalman filtering to the exponential moving average pattern", "Track the anomaly timing drift and predict the next occurrence"]} />
 

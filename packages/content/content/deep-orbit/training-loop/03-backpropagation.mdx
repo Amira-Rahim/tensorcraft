@@ -41,7 +41,7 @@ Computing the gradient for each of 673 parameters individually would take 673 fo
 
 ## Working Backwards
 
-React's reconciliation algorithm finds what changed by comparing the virtual DOM tree from leaves to root. Backpropagation finds how to change each weight by propagating the loss gradient from output to input, backwards through the network.
+React's reconciliation algorithm finds what changed by comparing the virtual DOM tree from leaves to root. Backpropagation finds how to change each weight by walking the loss gradient backwards, from output to input.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 

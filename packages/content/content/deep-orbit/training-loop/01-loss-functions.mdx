@@ -69,7 +69,7 @@ const perfectLoss = tf.losses.meanSquaredError(labels, perfect);
 console.log('Perfect MSE:', perfectLoss.dataSync()); // 0`}
 </CodeBlock>
 
-Think of loss as the "distance" between where you are and where you want to be. Training a neural network = minimizing this distance.
+The rest of this module is machinery for making that one number smaller: gradients to find the direction, backprop to compute them fast, the loop to keep stepping.
 
 <DerivationDrawer summary="MSE and cross-entropy from first principles" companionSlug="information-theory">
 **Why squared error?** MSE squares the residuals so positive and negative errors don't cancel, AND so large errors are penalized more than small ones (a 0.4 error counts 4× more than a 0.2 error). The formula:

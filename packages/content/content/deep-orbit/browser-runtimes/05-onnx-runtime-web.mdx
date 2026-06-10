@@ -48,7 +48,7 @@ Fair enough. ONNX is a universal model format, then? Train in Python, export to 
 "Anywhere" is the brochure version. ONNX is a shared operator set. If your model uses an op the target runtime doesn't implement, it doesn't degrade gracefully. It fails to load. There is no polyfill for a missing op; you rewrite the architecture. Check the opset before you promise me portability. Then bring me the numbers.
 </Dialogue>
 
-Train in PyTorch, export once, run anywhere — that is the pitch, and Nazari has already told you what she thinks of pitches. ONNX (Open Neural Network Exchange) is ML's attempt at a web standard: a shared format that any compliant runtime can execute, regardless of which framework trained the model. It carries the same fine print every web standard does — "universal" means "universal where implemented."
+Train in PyTorch, export once, run anywhere: that is the pitch, and Nazari has already told you what she thinks of pitches. ONNX (Open Neural Network Exchange) is ML's attempt at a web standard: a shared format that any compliant runtime can execute, regardless of which framework trained the model. It carries the same fine print every web standard does — "universal" means "universal where implemented."
 
 <LearningObjectives objectives={["Understand ONNX as a universal model interchange format", "Load and run ONNX models in the browser with onnxruntime-web", "Benchmark TF.js vs ONNX Runtime: cold start, inference speed, memory usage", "Choose the right runtime for your use case based on real performance data"]} />
 
@@ -156,7 +156,7 @@ async function benchmarkONNX(): Promise<BenchmarkResult> {
 
 | Factor | TF.js | ONNX Runtime Web |
 |--------|-------|-------------------|
-| **Ecosystem** | Largest (React of ML) | Growing (Vue of ML) |
+| **Ecosystem** | Largest, most tutorials | Growing fast |
 | **GPU acceleration** | WebGL (excellent) | WebGL (experimental) |
 | **Python interop** | Export from TF/Keras | Any framework via ONNX export |
 | **Cold start** | Slower (WebGL shader compilation) | Faster (WASM) |
@@ -164,7 +164,7 @@ async function benchmarkONNX(): Promise<BenchmarkResult> {
 | **Memory management** | Manual (tf.tidy/dispose) | Automatic (GC) |
 | **Bundle size** | ~800KB | ~600KB |
 
-For DEEP SCAN: TF.js wins on sustained inference (the dashboard runs continuously). ONNX wins on cold start (backup system that loads on demand). Nazari's decision to use both is pragmatic engineering.
+For DEEP SCAN: TF.js wins on sustained inference (the dashboard runs continuously). ONNX wins on cold start (backup system that loads on demand). Nazari ships both, each where its cost shape wins.
 
 ## Challenge
 

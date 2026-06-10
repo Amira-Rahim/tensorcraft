@@ -44,7 +44,7 @@ Signal feed is connected. Every second, a new reading arrives: three values. I f
 And what happens to the tensors you create every second? If you don't dispose them, you'll leak memory until the tab crashes. This is not a lab experiment anymore.
 </Dialogue>
 
-One reading per second sounds gentle until you do the multiplication: 86,400 predictions a day, each allocating fresh tensors on the GPU. The loop itself is the event-handler pattern — event fires, handler processes, UI updates — with one critical addition that no garbage collector will save you from: **memory management**. Leak two tensors per reading and the dashboard is dead before the next shift change.
+One reading per second sounds gentle until you do the multiplication Nazari already did in the margin: 86,400 predictions a day, each allocating fresh tensors on the GPU. The loop itself is the event-handler pattern (event fires, handler processes, UI updates) with one addition no garbage collector will save you from: **memory management**. Leak two tensors per reading and the dashboard is dead before the next shift change.
 
 <LearningObjectives objectives={["Build a real-time inference pipeline: input → preprocess → predict → display", "Use tf.tidy() for automatic tensor cleanup — preventing GPU memory leaks", "Preprocess raw input data to match model training format", "Measure and optimize inference latency for real-time requirements"]} />
 
@@ -96,7 +96,7 @@ function classify(model: tf.LayersModel, rawSignal: { amplitude: number; frequen
 
 ## Memory Management with tf.tidy()
 
-This is the one concept with no exact frontend parallel, and it's critical. GPU tensors don't get garbage collected like JavaScript objects. You must explicitly clean them up.
+This is the one concept with no frontend parallel. GPU tensors are invisible to the garbage collector; you free them yourself or they stay allocated until the tab dies.
 
 <CodeBlock language="typescript" title="memory-management.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -123,7 +123,7 @@ console.log(tf.memory());
 // { numTensors: 47, numDataBuffers: 47, numBytes: 12800, unreliable: false }`}
 </CodeBlock>
 
-`tf.tidy()` plays the role of React's `useEffect` cleanup function: it ensures resources are released when they're no longer needed.
+If that `numTensors` figure climbs while the dashboard idles, something escaped a `tidy()`.
 
 ## Wiring It into the Dashboard
 

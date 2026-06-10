@@ -39,7 +39,7 @@ skillAxes: [deployment, fe_integration]
 My first prompt was 'analyze this signal.' The output was useless: generic, vague, no structure. When I added role, context, data, and format instructions, the output became precise enough to include in the report.
 </Dialogue>
 
-"Analyze this signal data" returns a paragraph that could describe any signal ever recorded. Add a role, the normal amplitude range, the four known natural frequencies, and a JSON schema, and the same model returns a classification Farah can paste into her report. Nothing about the model changed between those two calls; only the prompt did. It's the difference between `git log` and `git log --oneline --graph --all`: specificity and structure decide what you get back.
+Nothing about the model changed between Farah's useless prompt and her precise one; the only diff is words. It's `git log` versus `git log --oneline --graph --all` — specificity and structure decide what you get back.
 
 <LearningObjectives objectives={["Structure prompts with role, context, data, and format instructions", "Use few-shot examples to guide output format and style", "Request structured output (JSON) for programmatic processing", "Iterate on prompts like debugging — refine until results match expectations"]} />
 

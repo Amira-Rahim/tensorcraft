@@ -81,7 +81,7 @@ model.add(tf.layers.dense({
 model.summary(); // prints layer shapes and parameter counts`}
 </CodeBlock>
 
-Each layer transforms its input and passes the result forward, exactly like props flowing through a component tree. The `units` parameter is like the number of "features" that layer can learn to detect.
+`units` is the only knob here with a price tag: every unit buys the layer one more learnable feature and charges for it in parameters. Nazari's count of 209 comes straight from these three numbers.
 
 ## Challenge
 
