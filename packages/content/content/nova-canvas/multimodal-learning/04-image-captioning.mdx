@@ -10,20 +10,20 @@ context:
   narrative: "Erdem needs the gallery catalog: every generated image needs a text description. 'For accessibility,' Yara insists. 'Every image needs alt text. We built this to be inclusive.' Samir agrees: 'Image captioning is automated alt-text generation. The model describes what it sees.'"
   speaker: "Yara"
 concept:
-  explanation: "Image captioning generates text descriptions from images — automated alt-text generation. An image encoder extracts visual features, and a text decoder generates a description word by word, just like writing alt text that describes what an image shows."
+  explanation: "Image captioning generates text descriptions from images: automated alt-text generation. An image encoder extracts visual features, and a text decoder generates a description word by word, just like writing alt text that describes what an image shows."
   bridge:
     feTitle: "Alt-text generation for accessibility"
     feCode: "// Automated: <img alt={generateCaption(src)} />"
     mlTitle: "Image captioning pipeline"
     mlCode: "const features = encodeImage(img); const caption = decodeText(features);"
     tier: structural
-    breaks: "Alt-text generation for accessibility uses author-written or pattern-matched strings tied to known image roles. Image captioning models produce continuous-output captions whose quality drops sharply on out-of-distribution images — niche or unusual scenes get confidently wrong captions. Captions intended for accessibility must be human-reviewed before shipping."
+    breaks: "Alt-text generation for accessibility uses author-written or pattern-matched strings tied to known image roles. Image captioning models produce continuous-output captions whose quality drops sharply on out-of-distribution images. Niche or unusual scenes get confidently wrong captions. Captions intended for accessibility must be human-reviewed before shipping."
 consequence:
   narrative: "MUSE generates a caption for each gallery piece. 'Abstract geometric forms in blue and gold, suggesting a digital cityscape at dusk.' Yara reads it aloud: 'That is genuinely beautiful alt text. Every image in the gallery is now accessible.'"
-  nextLessonTeaser: "Next: text-to-image — the reverse direction, generating images from text prompts"
+  nextLessonTeaser: "Next: text-to-image: the reverse direction, generating images from text prompts"
 hints:
   - level: nudge
-    content: "Think of writing alt text: you look at an image and describe what it shows in words"
+    content: "decodeText(features) runs autoregressively: each word is predicted from the image features plus every word emitted so far"
   - level: guidance
     content: "Encode the image to features, then use an RNN/transformer decoder to generate words one at a time, conditioned on the image features"
   - level: solution
@@ -37,7 +37,7 @@ keywords:
 ---
 
 <Dialogue speaker="Yara">
-Every image in the gallery needs a description. For the catalog, for the website, and most importantly — for visitors who cannot see the images. Accessibility is not optional.
+Every image in the gallery needs a description. For the catalog, for the website, and most importantly, for visitors who cannot see the images. Accessibility is not optional.
 </Dialogue>
 
 <Dialogue speaker="Samir">
@@ -172,4 +172,4 @@ return detokenize(tokens)
 **Beam search** (see `bidirectional-models` lesson) typically used for higher-quality captions than greedy.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["Image captioning is automated alt-text generation — describing images in words for accessibility", "The architecture is encoder-decoder: image encoder produces context, text decoder generates words", "Generation is autoregressive: each word depends on the previous words and the image context", "Every generated image in the gallery now has a description — accessibility built into the creative pipeline"]} />
+<KeyTakeaways takeaways={["Caption quality drops sharply off-distribution: unusual scenes get confidently wrong descriptions, so human-review anything accessibility-critical", "The architecture is encoder-decoder: image encoder produces context, text decoder generates words", "Generation is autoregressive: each word depends on the previous words and the image context", "Every generated image in the gallery now has a description — accessibility built into the creative pipeline"]} />

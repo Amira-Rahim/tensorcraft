@@ -7,10 +7,10 @@ order: 3
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Zara has a new camouflage idea. If resistance members wear clothing styled to look like Neon City's street art, surveillance cameras will classify them as background. She needs a neural network that transfers artistic style to images — the same content, wrapped in a different visual skin."
+  narrative: "Zara has a new camouflage idea. If resistance members wear clothing styled to look like Neon City's street art, surveillance cameras will classify them as background. She needs a neural network that transfers artistic style to images: the same content, wrapped in a different visual skin."
   speaker: "Zara"
 concept:
-  explanation: "Neural style transfer separates an image's content (what objects are present) from its style (textures, colors, brushstrokes) and recombines them. A CSS theme changes a page's visual presentation without altering its structure. Style transfer does the same at the pixel level — same content, different visual identity."
+  explanation: "Neural style transfer separates an image's content (what objects are present) from its style (textures, colors, brushstrokes) and recombines them. A CSS theme changes a page's visual presentation without altering its structure. Style transfer does the same at the pixel level. Same content, different visual identity."
   bridge:
     feTitle: "CSS Themes"
     feCode: "document.documentElement.dataset.theme = 'neon'; // Same DOM, different visual presentation"
@@ -19,12 +19,12 @@ concept:
     tier: structural
 consequence:
   narrative: "Zara feeds a surveillance still through style transfer using her own graffiti as the style source. The result: a human figure rendered in spray-paint textures, blending into the mural-covered alley behind them. NEON: 'The classifier confidence drops from 94% to 12%. It sees paint, not a person.' Zara steps back from the screen. 'Art that protects people. This is what I have been working toward.'"
-  nextLessonTeaser: "Next: adversarial patches — patterns designed to actively fool classifiers"
+  nextLessonTeaser: "Next: adversarial patches. Patterns designed to actively fool classifiers"
 hints:
   - level: nudge
     content: "Content comes from deep CNN layers (structure/objects); style comes from shallow layers (textures/patterns)"
   - level: guidance
-    content: "Content loss is MSE between feature maps. Style loss is MSE between Gram matrices — correlation matrices that capture texture patterns."
+    content: "Content loss is MSE between feature maps. Style loss is MSE between Gram matrices, correlation matrices that capture texture patterns."
   - level: solution
     content: "Extract features from pre-trained CNN layers. Content loss from conv4. Style loss from Gram matrices of conv1-conv5. Optimize output image to minimize weighted sum."
 keywords:
@@ -36,7 +36,7 @@ keywords:
 ---
 
 <Dialogue speaker="Zara">
-A CSS theme changes how a page looks without touching the HTML. Dark mode, light mode, high contrast — same content, different skin. Style transfer is the neural network version. I take a surveillance photo and wrap it in the visual style of a Monet, a Basquiat, or my own street art. The content stays. The appearance transforms.
+A CSS theme changes how a page looks without touching the HTML. Dark mode, light mode, high contrast. Same content, different skin. Style transfer is the neural network version. I take a surveillance photo and wrap it in the visual style of a Monet, a Basquiat, or my own street art. The content stays. The appearance transforms.
 </Dialogue>
 
 <Dialogue speaker="NEON">
@@ -215,4 +215,4 @@ Implement the Gram matrix and style transfer loss functions.
 
 <Exercise slug="apply-style-transfer" />
 
-<KeyTakeaways takeaways={["Style transfer separates content from style — the same principle as CSS themes separating HTML structure from visual presentation", "Gram matrices capture texture patterns by computing correlations between CNN feature channels", "Content loss (deep layers) preserves what the image shows; style loss (shallow layers) matches how it looks", "The alpha/beta balance controls whether the output leans toward content fidelity or style intensity"]} />
+<KeyTakeaways takeaways={["A style-transferred figure dropped the classifier's confidence from 94% to 12%: it sees paint, not a person", "Gram matrices capture texture patterns by computing correlations between CNN feature channels", "Content loss (deep layers) preserves what the image shows; style loss (shallow layers) matches how it looks", "The alpha/beta balance controls whether the output leans toward content fidelity or style intensity"]} />

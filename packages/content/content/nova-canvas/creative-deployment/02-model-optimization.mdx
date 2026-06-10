@@ -7,23 +7,23 @@ order: 2
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "The profiling data is clear: the model is too large for real-time gallery use. Erdem calls the team. 'We need a smaller model that produces the same quality. Distillation and quantization — the same tricks that make webpack bundles smaller.'"
+  narrative: "The profiling data is clear: the model is too large for real-time gallery use. Erdem calls the team. 'We need a smaller model that produces the same quality. Distillation and quantization, the same tricks that make webpack bundles smaller.'"
   speaker: "Erdem"
 concept:
-  explanation: "Model optimization reduces inference time by shrinking the model — quantization reduces precision (like image compression), distillation trains a smaller student model to mimic a larger teacher."
+  explanation: "Model optimization reduces inference time by shrinking the model: quantization reduces precision (like image compression), distillation trains a smaller student model to mimic a larger teacher."
   bridge:
     feTitle: "Webpack Production Build"
     feCode: "// minify + tree-shake + compress: 2MB → 200KB, same functionality"
     mlTitle: "Model Optimization"
     mlCode: "// quantize + distill + prune: 50MB → 5MB, similar quality"
     tier: structural
-    breaks: "Webpack production build minifies and tree-shakes deterministically. Model optimization (quantization, pruning, distillation) trades accuracy for size and the right tradeoff depends on the use case — there is no '--mode production' that always works."
+    breaks: "Webpack production build minifies and tree-shakes deterministically. Model optimization (quantization, pruning, distillation) trades accuracy for size and the right tradeoff depends on the use case. There is no '--mode production' that always works."
 consequence:
-  narrative: "The optimized model runs in 340ms — down from 3.2 seconds. Erdem: 'Ten times faster. The quality drop is barely visible. Ship it.'"
+  narrative: "The optimized model runs in 340ms, down from 3.2 seconds. Erdem: 'Ten times faster. The quality drop is barely visible. Ship it.'"
   nextLessonTeaser: "Next: caching and precomputation for instant responses"
 hints:
   - level: nudge
-    content: "Think of quantization as reducing image quality from PNG to JPEG — lossy but much smaller"
+    content: "Quantization converts float32 weights to uint8 during model conversion: 4 bytes become 1, and you measure what the lost precision costs in output quality"
   - level: guidance
     content: "Convert float32 weights to uint8 with tf.quantization, measure quality vs speed tradeoff"
   - level: solution
@@ -36,14 +36,18 @@ keywords:
 ---
 
 <Dialogue speaker="Erdem">
-The model is 47 megabytes. It downloads in 8 seconds on gallery Wi-Fi. Inference takes 3 seconds. We need both numbers to drop by 10x. Same approach as production frontend builds — strip everything unnecessary.
+The model is 47 megabytes. It downloads in 8 seconds on gallery Wi-Fi. Inference takes 3 seconds. We need both numbers to drop by 10x. Same approach as production frontend builds: strip everything unnecessary.
 </Dialogue>
 
 <Dialogue speaker="Samir">
 Webpack takes a 2MB bundle and produces 200KB through minification, tree-shaking, and compression. Same functionality, tenth the size. Model optimization does the same thing with weights.
 </Dialogue>
 
-You have optimized frontend bundles your entire career. Minification removes whitespace. Tree-shaking removes dead code. Code splitting loads only what is needed. Model optimization applies the same principles: quantization reduces precision, pruning removes unnecessary weights, distillation transfers knowledge to a smaller architecture.
+<Dialogue speaker="Erdem">
+Except Webpack hands you back the identical program, minus whitespace. Quantization hands you back a slightly different artist. We're trading accuracy for size, and there's no `--mode production` flag that makes that call for us. Benchmark the output quality after every step, or we ship a worse model and never notice.
+</Dialogue>
+
+The first dry run on gallery Wi-Fi was grim: 47 megabytes of weights crawling through a shared access point while a test visitor stared at a spinner. You already know the cure from shipping bundles. Minification strips whitespace, tree-shaking strips dead code, code splitting defers the rest. Model optimization runs the same playbook with different verbs: quantization cuts precision, pruning cuts weights, distillation moves the knowledge into a smaller network.
 
 <LearningObjectives objectives={["Apply weight quantization to reduce model size and inference time", "Understand knowledge distillation as training a small model to mimic a large one", "Measure the quality-speed tradeoff using generation benchmarks", "Choose the right optimization strategy based on deployment constraints"]} />
 

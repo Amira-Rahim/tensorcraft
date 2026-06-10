@@ -38,14 +38,18 @@ skillAxes: [data_prep]
 ---
 
 <Dialogue speaker="Dr. Farah">
-Think of a chord on a piano, Demir. You hear one sound, but it is actually three notes played simultaneously. The Fourier Transform is the mathematical tool that listens to the chord and tells you exactly which notes are in it — and how loud each one is.
+Think of a chord on a piano, Demir. You hear one sound, but it's actually three notes played simultaneously. The Fourier Transform is the mathematical tool that listens to the chord and tells you exactly which notes are in it, and how loud each one is.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
 So the signal is the chord, and the FFT breaks it into individual frequencies? That's like how a CSS animation is defined as individual keyframes that blend together into smooth motion.
 </Dialogue>
 
-Every CSS animation you've written is a decomposition. You define discrete keyframe states — 0%, 25%, 50%, 75%, 100% — and the browser interpolates between them to create continuous motion. The Fourier Transform does the same thing in reverse: it takes a continuous signal and decomposes it into discrete frequency components.
+<Dialogue speaker="Dr. Farah">
+Backwards, in one important way. Your keyframes are steps you authored for that one animation. The FFT does not invent its steps. It projects every signal onto the same fixed basis of sinusoids, N of them for an N-sample window, and returns a complex coefficient for each: magnitude and phase. Nothing learned, nothing authored. The same basis decomposes a heartbeat, a radio pulse, this signal. That universality is what lets me trust whatever peak we find.
+</Dialogue>
+
+The FFT takes N samples and returns N frequency coefficients. Each coefficient answers one question: how strongly is this exact frequency present, and at what phase offset?
 
 <LearningObjectives objectives={["Understand the Fourier Transform as signal decomposition into frequency components", "Compute the FFT of a signal using TensorFlow.js spectral operations", "Interpret FFT output: frequency bins, magnitudes, and the Nyquist frequency", "Connect decomposition to familiar frontend patterns (@keyframes, animation steps)"]} />
 
@@ -192,15 +196,15 @@ The DFT decomposes a length-N signal into N complex coefficients, one per freque
 
 `X[k] = Σ_{n=0..N-1} x[n] · e^(-2π·i·k·n/N)`
 
-For each frequency index k, this is a sum of input samples weighted by complex sinusoids. The output `X[k]` is complex — the magnitude `|X[k]|` is the amount of frequency k present, the phase `arg(X[k])` is its alignment.
+For each frequency index k, this is a sum of input samples weighted by complex sinusoids. The output `X[k]` is complex: the magnitude `|X[k]|` is the amount of frequency k present, the phase `arg(X[k])` is its alignment.
 
 **Inverse:**
 
 `x[n] = (1/N) · Σ_{k=0..N-1} X[k] · e^(2π·i·k·n/N)`
 
-A signal is fully reconstructible from its DFT — no information is lost.
+A signal is fully reconstructible from its DFT: no information is lost.
 
-**Cost of naive DFT:** O(N²) — for each of N frequencies, sum over N inputs. The FFT (next) drops this to O(N log N), which is what makes real-time spectrograms possible.
+**Cost of naive DFT:** O(N²). For each of N frequencies, sum over N inputs. The FFT (next) drops this to O(N log N), which is what makes real-time spectrograms possible.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["The FFT decomposes a time-domain signal into frequency components — like decomposing an animation into @keyframes steps", "Each frequency bin = binIndex × (sampleRate / fftSize) Hz — a simple linear mapping", "The Nyquist frequency (sampleRate / 2) is the highest detectable frequency — like a resolution limit", "For DEEP SCAN, the FFT reveals an anomalous 73.4 Hz component hidden in the time-domain noise"]} />
+<KeyTakeaways takeaways={["Peaks only count against a noise floor: DEEP SCAN flags bins above 5x the average magnitude, then checks them against known natural frequencies", "Each frequency bin = binIndex × (sampleRate / fftSize) Hz — a simple linear mapping", "The Nyquist frequency (sampleRate / 2) is the highest detectable frequency — like a resolution limit", "For DEEP SCAN, the FFT reveals an anomalous 73.4 Hz component hidden in the time-domain noise"]} />

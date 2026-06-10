@@ -8,7 +8,7 @@ estimatedMinutes: 30
 difficulty: advanced
 companionTo: neural-networks
 context:
-  narrative: "Cross-entropy loss isn't arbitrary — it measures the information gap between what your model believes and what's true."
+  narrative: "Cross-entropy loss measures something specific: the information gap between what your model believes and what's true."
   speaker: "Instructor"
 concept:
   explanation: "Entropy quantifies uncertainty, cross-entropy measures prediction quality, and KL divergence measures the distance between distributions."
@@ -24,9 +24,9 @@ consequence:
   nextLessonTeaser: "Next: probability and Bayesian thinking for ML"
 hints:
   - level: nudge
-    content: "Entropy measures surprise — a fair coin has maximum entropy because each flip is maximally surprising"
+    content: "Entropy measures surprise: a fair coin has maximum entropy because each flip is maximally surprising"
   - level: guidance
-    content: "Cross-entropy H(p, q) = -sum(p(x) * log(q(x))) — it penalizes confident wrong predictions heavily"
+    content: "Cross-entropy H(p, q) = -sum(p(x) * log(q(x))) penalizes confident wrong predictions heavily"
   - level: solution
     content: "KL divergence = cross-entropy minus entropy: KL(p||q) = H(p,q) - H(p)"
 keywords:
@@ -38,12 +38,12 @@ keywords:
 ---
 
 <Dialogue speaker="Instructor">
-Every classification model you've trained used cross-entropy loss. But why cross-entropy? Why not mean squared error for classification? The answer comes from information theory — a field that quantifies uncertainty, surprise, and the cost of being wrong. Once you understand it, loss function selection becomes a principled decision, not a recipe to memorize.
+Every classification model you've trained used cross-entropy loss. But why cross-entropy? Why not mean squared error for classification? The answer comes from information theory, the field that quantifies uncertainty, surprise, and the cost of being wrong. Once you understand it, loss function selection becomes a principled decision, not a recipe to memorize.
 </Dialogue>
 
-<LearningObjectives objectives={["Compute entropy as a measure of uncertainty in a distribution", "Understand cross-entropy loss as measuring the information gap between predictions and truth", "Calculate KL divergence and understand its asymmetry", "Connect entropy to compression ratios — the bridge to frontend intuition", "Choose appropriate loss functions based on information-theoretic principles"]} />
+<LearningObjectives objectives={["Compute entropy as a measure of uncertainty in a distribution", "Understand cross-entropy loss as measuring the information gap between predictions and truth", "Calculate KL divergence and understand its asymmetry", "Connect entropy to compression ratios, the bridge to frontend intuition", "Choose appropriate loss functions based on information-theoretic principles"]} />
 
-## Entropy: Measuring Surprise
+## Entropy Measures Surprise
 
 You've used gzip on web assets. Files with repetitive content compress well (low entropy); random data doesn't compress at all (high entropy). Entropy is literally the theoretical minimum number of bits needed to encode a message.
 
@@ -83,7 +83,7 @@ console.log('Uniform 8-class:', entropy(uniform8).toFixed(4));
 // Entropy IS the compression limit`}
 </CodeBlock>
 
-## Cross-Entropy: Measuring Prediction Quality
+## Cross-Entropy Prices Wrong Predictions
 
 Cross-entropy H(p, q) asks: "If the true distribution is p, but I'm using distribution q to encode messages, how many bits do I waste?" When q matches p perfectly, cross-entropy equals entropy (no waste). When q is wrong, you pay extra bits.
 
@@ -196,4 +196,4 @@ Implement entropy, cross-entropy, and KL divergence from scratch.
 
 <Exercise slug="compute-entropy" />
 
-<KeyTakeaways takeaways={["Entropy measures uncertainty — high entropy means unpredictable (hard to compress), low entropy means predictable", "Cross-entropy measures the cost of using the wrong distribution — it's the loss function for classification", "KL divergence is the extra cost (cross-entropy minus entropy) — it's asymmetric", "Cross-entropy loss produces stronger gradients for confident wrong predictions than MSE", "Minimizing cross-entropy is equivalent to minimizing KL divergence from the true distribution"]} />
+<KeyTakeaways takeaways={["Entropy measures uncertainty: high entropy means unpredictable (hard to compress), low entropy means predictable", "Cross-entropy measures the cost of using the wrong distribution, which is why it's the loss function for classification", "KL divergence is the extra cost (cross-entropy minus entropy), and it's asymmetric", "Cross-entropy loss produces stronger gradients for confident wrong predictions than MSE", "Minimizing cross-entropy is equivalent to minimizing KL divergence from the true distribution"]} />

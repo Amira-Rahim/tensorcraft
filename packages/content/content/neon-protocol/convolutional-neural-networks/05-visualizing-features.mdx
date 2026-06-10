@@ -7,17 +7,17 @@ order: 5
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "89% accuracy. The Protocol Sentinel works. But Dilan wants proof it is learning the right things — not just memorizing noise. Zara steps forward: 'I specialize in making neural networks show their work. Think of it like opening DevTools and inspecting what each element contributes to the page.'"
+  narrative: "89% accuracy. The Protocol Sentinel works. But Dilan wants proof it is learning the right things, not just memorizing noise. Zara steps forward: 'I specialize in making neural networks show their work. Same move as opening DevTools and inspecting what each element contributes to the page.'"
   speaker: "Zara"
 concept:
-  explanation: "Feature visualization reveals what each CNN layer has learned by examining activation patterns — just like DevTools element inspection shows how each DOM node contributes to the rendered page."
+  explanation: "Feature visualization reveals what each CNN layer has learned by examining activation patterns, just like DevTools element inspection shows how each DOM node contributes to the rendered page."
   bridge:
     feTitle: "DevTools Element Inspection"
     feCode: "document.querySelector('.card').computedStyle // inspect what each element contributes"
     mlTitle: "Feature Map Visualization"
     mlCode: "const activations = intermediateModel.predict(image); // inspect what each layer detects"
     tier: structural
-    breaks: "DevTools element inspection shows the literal DOM you authored. Feature map visualization shows the activation pattern of a learned filter — interpretation is approximate, single feature maps often correspond to no human concept, and 'this filter detects edges' is a post-hoc story rather than a guarantee. Use multiple visualizations (activation maps, gradient × input, integrated gradients) to triangulate."
+    breaks: "DevTools element inspection shows the literal DOM you authored. Feature map visualization shows the activation pattern of a learned filter. Interpretation is approximate, single feature maps often correspond to no human concept, and 'this filter detects edges' is a post-hoc story rather than a guarantee. Use multiple visualizations (activation maps, gradient × input, integrated gradients) to triangulate."
 consequence:
   narrative: "Zara overlays the feature maps on the original surveillance feed. Layer 1: edges and gradients. Layer 2: camera lens circles and rectangular housings. Layer 3: full camera silhouettes. 'It sees exactly what we need it to see,' Zara confirms. The Protocol Sentinel is ready for deployment."
   nextLessonTeaser: "Module complete. Next module: Object Detection and Localization"
@@ -37,11 +37,11 @@ keywords:
 ---
 
 <Dialogue speaker="Zara">
-A model that works but you cannot explain is dangerous. At 89% accuracy, we need to know WHY it classifies correctly. Open your DevTools and inspect a web page — you can see exactly what each element contributes. We are going to do the same thing with the Sentinel's layers.
+A model that works but you can't explain is dangerous. At 89% accuracy, we need to know WHY it classifies correctly. Open your DevTools and inspect a web page. You can see exactly what each element contributes. We are going to do the same thing with the Sentinel's layers.
 </Dialogue>
 
 <Dialogue speaker="Noor">
-So instead of inspecting DOM nodes, we inspect neurons? Each conv filter is like a computed style property — it tells us what that layer is doing to the data?
+So instead of inspecting DOM nodes, we inspect neurons? Each conv filter is like a computed style property that tells us what that layer is doing to the data?
 </Dialogue>
 
 Feature visualization is model inspection. You extract the activations from intermediate layers and examine what patterns each filter responds to. It is the neural network equivalent of opening DevTools.
@@ -224,7 +224,7 @@ Implement activation map extraction and normalization for feature visualization.
 A feature map is the output of one filter, shape `[H_out, W_out]` per filter per layer. Visualizing it as an image: bright pixels = high activation = strong response of that filter at that spatial position.
 
 **Caveats:**
-- Magnitude is not normalized — comparing brightness across filters or layers is misleading without per-channel rescaling.
+- Magnitude is not normalized; comparing brightness across filters or layers is misleading without per-channel rescaling.
 - A bright pixel at position (i, j) means the filter's pattern was detected in the receptive field around (i, j) of the input. The receptive field grows with depth: a layer-3 filter integrates over a much larger input region than a layer-1 filter.
 - Multiple filters can fire on the same input region. "This is the dog filter" is post-hoc storytelling about what a high-magnitude filter responded to, not a guarantee.
 
@@ -241,4 +241,4 @@ A feature map is the output of one filter, shape `[H_out, W_out]` per filter per
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Feature visualization is the neural network equivalent of DevTools element inspection — see what each layer contributes", "Early conv layers learn edges and gradients, middle layers learn shapes, deep layers learn object parts", "Normalizing activation maps to 0-1 range makes them comparable and visualizable", "Interpretability matters — a model that works for the wrong reasons will fail on new data"]} />
+<KeyTakeaways takeaways={["Feature maps show where each filter fired: layer 1 lights up on edges, layer 3 on full camera silhouettes", "Early conv layers learn edges and gradients, middle layers learn shapes, deep layers learn object parts", "Normalizing activation maps to 0-1 range makes them comparable and visualizable", "Interpretability matters — a model that works for the wrong reasons will fail on new data"]} />

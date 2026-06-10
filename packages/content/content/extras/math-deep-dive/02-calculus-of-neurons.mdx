@@ -8,7 +8,7 @@ estimatedMinutes: 35
 difficulty: advanced
 companionTo: neural-networks
 context:
-  narrative: "Backpropagation isn't magic — it's the chain rule from calculus, applied recursively through your network."
+  narrative: "Backpropagation is the chain rule from calculus, applied over and over through your network."
   speaker: "Instructor"
 concept:
   explanation: "Partial derivatives and the chain rule are the engine behind every gradient update in neural networks."
@@ -18,13 +18,13 @@ concept:
     mlTitle: "Gradient"
     mlCode: "const grad = tf.grad(loss)(weights)"
     tier: structural
-    breaks: "rAF velocity is a finite-difference of an observed position you authored frame by frame. tf.grad uses reverse-mode autodiff — it walks the computational graph backwards applying the chain rule to compute exact partial derivatives. Velocity tells you what already happened; the gradient tells you which direction to step in to reduce a loss you have not yet measured."
+    breaks: "rAF velocity is a finite-difference of an observed position you authored frame by frame. tf.grad uses reverse-mode autodiff: it walks the computational graph backwards applying the chain rule to compute exact partial derivatives. Velocity tells you what already happened; the gradient tells you which direction to step in to reduce a loss you have not yet measured."
 consequence:
   narrative: "Once you see backpropagation as chain rule bookkeeping, debugging gradient issues becomes tractable."
   nextLessonTeaser: "Next: navigating the optimization landscape"
 hints:
   - level: nudge
-    content: "A derivative is a rate of change — how much does the output wiggle when you wiggle an input?"
+    content: "A derivative is a rate of change: how much does the output wiggle when you wiggle an input?"
   - level: guidance
     content: "The chain rule says: if y = f(g(x)), then dy/dx = f'(g(x)) * g'(x)"
   - level: solution
@@ -38,14 +38,14 @@ keywords:
 ---
 
 <Dialogue speaker="Instructor">
-In the Neural Networks module, you used backpropagation to train models. The framework handled the math. But understanding what's actually happening — partial derivatives flowing backward through a computational graph — gives you the intuition to debug vanishing gradients, pick better architectures, and understand why certain tricks work.
+In the Neural Networks module, you used backpropagation to train models. The framework handled the math. But understanding what's actually happening (partial derivatives flowing backward through a computational graph) gives you the intuition to debug vanishing gradients, pick better architectures, and understand why certain tricks work.
 </Dialogue>
 
 <LearningObjectives objectives={["Compute partial derivatives for multi-variable functions", "Apply the chain rule to composite functions step by step", "Trace gradient flow through a simple neural network by hand", "Use TensorFlow.js automatic differentiation to verify manual gradients", "Connect the concept of derivatives to rates of change in animation code"]} />
 
 ## Derivatives as Rates of Change
 
-You already think in derivatives when you write animation code. In `requestAnimationFrame`, velocity is the derivative of position with respect to time — how fast the position changes per frame.
+You already think in derivatives when you write animation code. In `requestAnimationFrame`, velocity is the derivative of position with respect to time: how fast the position changes per frame.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -100,7 +100,7 @@ console.log(await dfdy(tf.scalar(3)).array()); // 31`}
 
 ## The Chain Rule
 
-The chain rule is the single most important idea in deep learning. If you have a composite function — and every neural network is a deeply nested composite function — the chain rule tells you how to compute the derivative of the whole thing.
+The chain rule is the single most important idea in deep learning. Every neural network is a deeply nested composite function, and the chain rule tells you how to compute the derivative of the whole thing.
 
 <CodeBlock language="typescript" title="chain-rule.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -152,7 +152,7 @@ console.log('Auto gradient dL/dw1:', await autoGrad(tf.scalar(w1)).array());
 
 ## The Computational Graph
 
-Every neural network builds a computational graph during the forward pass. Backpropagation walks this graph in reverse, applying the chain rule at each node. This is why TensorFlow is called TensorFlow — tensors flow through a graph of operations.
+Every neural network builds a computational graph during the forward pass. Backpropagation walks this graph in reverse, applying the chain rule at each node. This is why TensorFlow is called TensorFlow: tensors flow through a graph of operations.
 
 <CodeBlock language="typescript" title="computational-graph.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -192,4 +192,4 @@ Compute gradients by hand for a simple network, then verify with TensorFlow.js.
 
 <Exercise slug="compute-gradients" />
 
-<KeyTakeaways takeaways={["A derivative measures rate of change — the same concept behind velocity in animation code", "Partial derivatives measure how loss changes when you nudge one weight at a time", "The chain rule decomposes complex derivatives into products of simple local derivatives", "Backpropagation is the chain rule applied backward through a computational graph", "TensorFlow.js tf.grad() and tf.grads() automate this — but understanding the math helps you debug gradient problems"]} />
+<KeyTakeaways takeaways={["A derivative measures rate of change, the same concept behind velocity in animation code", "Partial derivatives measure how loss changes when you nudge one weight at a time", "The chain rule decomposes complex derivatives into products of simple local derivatives", "Backpropagation is the chain rule applied backward through a computational graph", "TensorFlow.js tf.grad() and tf.grads() automate this, but understanding the math helps you debug gradient problems"]} />

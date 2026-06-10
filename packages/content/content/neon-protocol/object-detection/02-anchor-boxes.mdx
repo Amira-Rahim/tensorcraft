@@ -7,23 +7,23 @@ order: 2
 estimatedMinutes: 30
 difficulty: intermediate
 context:
-  narrative: "Zara projects a grid onto a surveillance feed. Each cell glows faintly, waiting for a detection. 'The model does not search the entire image pixel by pixel,' she explains. 'It divides the image into regions — anchors — and checks each one. Just like CSS Grid divides a page into template areas.'"
+  narrative: "Zara projects a grid onto a surveillance feed. Each cell glows faintly, waiting for a detection. 'The model does not search the entire image pixel by pixel,' she explains. 'It divides the image into pre-set regions called anchors and checks each one. Just like CSS Grid divides a page into template areas.'"
   speaker: "Zara"
 concept:
-  explanation: "Anchor boxes are pre-defined regions placed across an image in a grid pattern. The model predicts adjustments to these anchors rather than guessing coordinates from scratch. This is like CSS Grid template areas — a pre-defined layout that content snaps to."
+  explanation: "Anchor boxes are pre-defined regions placed across an image in a grid pattern. The model predicts adjustments to these anchors rather than guessing coordinates from scratch. This is like CSS Grid template areas: a pre-defined layout that content snaps to."
   bridge:
     feTitle: "CSS Grid Template Areas"
     feCode: "grid-template-areas: 'header header' 'sidebar main' 'footer footer';"
     mlTitle: "Anchor Grid"
     mlCode: "anchors = generateAnchors(gridSize: 7, scales: [0.5, 1.0, 2.0])"
     tier: structural
-    breaks: "CSS Grid template areas are author-defined regions. Anchor boxes are predefined box shapes the model learns to refine — choosing the right anchor scales and aspect ratios for your dataset is a hyperparameter that materially changes recall."
+    breaks: "CSS Grid template areas are author-defined regions. Anchor boxes are predefined box shapes the model learns to refine; choosing the right anchor scales and aspect ratios for your dataset is a hyperparameter that materially changes recall."
 consequence:
   narrative: "NEON flickers. 'Meridian uses a 13x13 anchor grid with 5 anchors per cell. That is 845 candidate boxes per frame. I used to evaluate all 845 in 4 milliseconds. You will need to be faster.'"
-  nextLessonTeaser: "Next: IoU — measuring how well your predicted boxes match the real targets"
+  nextLessonTeaser: "Next: IoU. Measuring how well your predicted boxes match the real targets"
 hints:
   - level: nudge
-    content: "Think of the image as a CSS Grid — each cell gets pre-defined box templates"
+    content: "Lay anchors out the way grid-template-areas lays out cells: every cell gets the same set of box templates at different scales and aspect ratios"
   - level: guidance
     content: "Generate anchor center points by dividing the image into a grid, then create multiple boxes at each center"
   - level: solution
@@ -37,18 +37,18 @@ keywords:
 ---
 
 <Dialogue speaker="Zara">
-Think about how you lay out a dashboard. You do not position each widget pixel by pixel. You define a CSS Grid — columns, rows, template areas — and then content snaps into those regions. Object detection works the same way. The model pre-defines a grid of "anchor boxes" across the image and then predicts adjustments to those anchors.
+You don't position dashboard widgets pixel by pixel. You define a CSS Grid (columns, rows, template areas) and content snaps into those regions. Detection models make the same bet: pre-define a grid of "anchor boxes" across the image, then predict adjustments to those anchors.
 </Dialogue>
 
 <Dialogue speaker="Noor">
-So instead of the model saying "there is an object at exactly pixel 347, 218" — it says "the object is near anchor #42, shifted a bit left and stretched taller"?
+So instead of the model saying "there is an object at exactly pixel 347, 218," it says "the object is near anchor #42, shifted a bit left and stretched taller"?
 </Dialogue>
 
 <Dialogue speaker="Zara">
-Exactly. Predicting offsets from known positions is much easier than predicting absolute coordinates from nothing. Your CSS Grid intuition maps perfectly.
+Mostly. Predicting offsets from known positions is much easier than predicting absolute coordinates from nothing. But here is where the grid intuition will bite you: you author grid-template-areas to fit your content. Anchor scales and aspect ratios are guesses you commit to before training. Guess wrong, say all square anchors for long, thin drones, and recall craters no matter how good the model is.
 </Dialogue>
 
-Searching an entire image for objects is computationally brutal. Instead, modern detection models pre-define a grid of **anchor boxes** — candidate regions at various sizes and aspect ratios. The model then predicts two things for each anchor: (1) "is there an object here?" and (2) "how should I adjust this anchor to fit the object?"
+Searching an entire image for objects is computationally brutal. Instead, modern detection models pre-define a grid of **anchor boxes**: candidate regions at various sizes and aspect ratios. The model then predicts two things for each anchor: (1) "is there an object here?" and (2) "how should I adjust this anchor to fit the object?"
 
 <LearningObjectives objectives={["Understand anchor boxes as pre-defined detection candidates placed on a grid", "Generate anchor boxes at multiple scales and aspect ratios", "Calculate anchor offsets (deltas) to adjust anchors to fit objects", "Connect the CSS Grid mental model to detection grid architecture"]} />
 
@@ -198,4 +198,4 @@ Generate an anchor grid with multiple scales.
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Anchor boxes are pre-defined candidate regions laid out on a grid — like CSS Grid template areas", "Multiple scales and aspect ratios at each cell cover objects of different sizes and shapes", "Models predict offsets (deltas) from anchors rather than raw coordinates — like CSS transforms", "A 7x7 grid with 9 anchors per cell produces 441 candidates per image — the model scores all of them"]} />
+<KeyTakeaways takeaways={["Anchor scales and aspect ratios are hyperparameters fixed before training, and a bad choice caps recall no matter how long you train", "Multiple scales and aspect ratios at each cell cover objects of different sizes and shapes", "Models predict offsets (deltas) from anchors rather than raw coordinates", "A 7x7 grid with 9 anchors per cell produces 441 candidates per image — the model scores all of them"]} />

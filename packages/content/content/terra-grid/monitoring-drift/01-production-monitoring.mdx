@@ -10,24 +10,24 @@ context:
   narrative: "Hassan pulls up the monitoring dashboard. 847 devices, 12 sectors, 50,000 inferences per hour. Without real-time health metrics, they are flying blind."
   speaker: "Hassan Al-Rashid"
 concept:
-  explanation: "Model monitoring tracks prediction health in production, just as Sentry and DataDog track application health — latency, error rates, and throughput."
+  explanation: "Model monitoring tracks prediction health in production, just as Sentry and DataDog track application health: latency, error rates, and throughput."
   bridge:
     feTitle: "App Monitoring (Sentry)"
     feCode: "Sentry.captureException(err) // track errors, latency, throughput"
     mlTitle: "Model Monitoring"
     mlCode: "monitor.logPrediction({ latency, confidence, distribution })"
     tier: structural
-    breaks: "Sentry surfaces unhandled exceptions and stack traces. Model monitoring tracks prediction distributions, feature distributions, and proxy metrics for accuracy when ground-truth labels are delayed — most model failures throw zero exceptions."
+    breaks: "Sentry surfaces unhandled exceptions and stack traces. Model monitoring tracks prediction distributions, feature distributions, and proxy metrics for accuracy when ground-truth labels are delayed. Most model failures throw zero exceptions."
 consequence:
   narrative: "The monitoring dashboard lights up. Hassan can see every sector's model health in real time."
   nextLessonTeaser: "Next: detecting when input data starts to change"
 hints:
   - level: nudge
-    content: "Think about what metrics you track in a production web application"
+    content: "ModelMonitor.record() should log per-prediction latency and confidence, the ML counterparts of response time and error rate"
   - level: guidance
     content: "Track prediction latency, confidence distributions, throughput, and error rates"
   - level: solution
-    content: "Log every prediction with latency, confidence score, and input feature statistics — aggregate into dashboards"
+    content: "Log every prediction with latency, confidence score, and input feature statistics, then aggregate into dashboards"
 keywords:
   - production-monitoring
   - observability
@@ -43,7 +43,7 @@ We have 847 models running in the field. If one starts producing garbage predict
 Monitoring dashboard initialized. 50,247 inferences logged in the last hour. Average latency: 14ms. Average confidence: 0.91.
 </Dialogue>
 
-You would never deploy a web application without Sentry, DataDog, or at least basic error tracking. You monitor response times, error rates, and throughput. Production ML models need the same observability — but instead of HTTP status codes, you track prediction confidence, inference latency, and output distributions.
+You would never deploy a web application without Sentry, DataDog, or at least basic error tracking. You monitor response times, error rates, and throughput. Production ML models need the same observability, but instead of HTTP status codes you track prediction confidence, inference latency, and output distributions.
 
 <LearningObjectives objectives={["Design a model monitoring system using the same patterns as application monitoring", "Track the key metrics of production ML: latency, confidence, throughput, and distribution", "Build aggregated health dashboards across a fleet of edge devices", "Identify the difference between model errors and system errors"]} />
 
@@ -143,4 +143,4 @@ Implement a monitoring system that tracks prediction health metrics.
 
 <Exercise slug="monitor-metrics" />
 
-<KeyTakeaways takeaways={["Model monitoring parallels app monitoring — track latency, error rates, throughput, and confidence instead of HTTP metrics", "Rolling windows keep memory bounded while providing recent-enough visibility into model health", "Per-sector (per-region) health breakdowns reveal localized issues that aggregate metrics hide", "Low confidence rate is the ML equivalent of elevated error rate — a signal that something is changing"]} />
+<KeyTakeaways takeaways={["Log every prediction: latency, confidence, and throughput per sector, at 50,000 inferences an hour", "Rolling windows keep memory bounded while providing recent-enough visibility into model health", "Per-sector (per-region) health breakdowns reveal localized issues that aggregate metrics hide", "Low confidence rate is the ML equivalent of elevated error rate — a signal that something is changing"]} />

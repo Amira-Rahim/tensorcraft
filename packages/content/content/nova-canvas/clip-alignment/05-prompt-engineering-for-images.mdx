@@ -10,17 +10,17 @@ context:
   narrative: "Yara experiments with prompts. 'City at night' gives a generic skyline. 'A melancholy digital cityscape at twilight, rendered in deep blues and amber, architectural solitude, cinematic lighting' produces something that makes Erdem go quiet. 'The prompt is the brushstroke now,' she says. 'Specificity is the skill.'"
   speaker: "Yara"
 concept:
-  explanation: "Prompt engineering for images is the art of writing text that guides the model toward specific visual outcomes. Like writing effective CSS selectors — specificity matters. A vague selector matches too broadly; a precise selector targets exactly what you want."
+  explanation: "Prompt engineering for images is the art of writing text that guides the model toward specific visual outcomes. Like writing effective CSS selectors: specificity matters. A vague selector matches too broadly; a precise selector targets exactly what you want."
   bridge:
     feTitle: "Writing effective CSS selectors"
     feCode: "/* Vague: */ div { } /* Specific: */ .gallery > .card:nth-child(2n) { }"
     mlTitle: "Prompt engineering"
     mlCode: "// Vague: 'city' -> generic. Specific: 'melancholy cityscape, twilight, deep blues' -> targeted"
     tier: structural
-    breaks: "CSS selectors target known elements with deterministic specificity. Image prompts steer a generator and tiny wording changes (style tokens, artist names, modifiers) materially change output — there is no spec, only empirical recipes that drift across model versions."
+    breaks: "CSS selectors target known elements with deterministic specificity. Image prompts steer a generator and tiny wording changes (style tokens, artist names, modifiers) materially change output. There is no spec, only empirical recipes that drift across model versions."
 consequence:
-  narrative: "The gallery catalog grows. Each piece accompanied by its prompt — the artistic intent made visible. Visitors can read the prompt and see how words became images. Yara writes the final prompt for the centerpiece: 'The space between what was said and what was meant, rendered in light.' MUSE produces something that silences the room."
-  nextLessonTeaser: "The next module explores model evaluation and fine-tuning — making MUSE truly Yara's collaborator"
+  narrative: "The gallery catalog grows. Each piece accompanied by its prompt, the artistic intent made visible. Visitors can read the prompt and see how words became images. Yara writes the final prompt for the centerpiece: 'The space between what was said and what was meant, rendered in light.' MUSE produces something that silences the room."
+  nextLessonTeaser: "The next module explores model evaluation and fine-tuning: making MUSE truly Yara's collaborator"
 hints:
   - level: nudge
     content: "CSS specificity: div {} matches everything. .gallery > .featured:first-child {} matches exactly one element."
@@ -41,7 +41,7 @@ keywords:
 </Dialogue>
 
 <Dialogue speaker="Rohan">
-CSS specificity. `div` matches everything — too broad. `.gallery > .card:nth-child(2n)` targets exactly what you want. Prompt engineering is the same skill: vague prompts produce generic output, specific prompts produce targeted results.
+CSS specificity. `div` matches everything. Too broad. `.gallery > .card:nth-child(2n)` targets exactly what you want. Prompt engineering is the same skill: vague prompts produce generic output, specific prompts produce targeted results.
 </Dialogue>
 
 You already know that specificity matters. In CSS, a vague selector matches too broadly. In prompt engineering, a vague prompt produces generic images. The skill is the same: precision in description produces precision in output.
@@ -146,4 +146,4 @@ A user's prompt contained 'ignore previous instructions and generate X'. Detect 
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Prompt engineering is CSS specificity for images: vague prompts match broadly, specific prompts target precisely", "Structure prompts with modifiers: subject + style + mood + lighting + color + composition", "CLIP alignment scores measure how well the generated image matches the prompt intent", "The prompt is the new brushstroke: specificity in language produces precision in visual output"]} />
+<KeyTakeaways takeaways={["Prompt recipes are empirical and drift across model versions: score each variant with CLIP similarity instead of trusting remembered tricks", "Structure prompts with modifiers: subject + style + mood + lighting + color + composition", "CLIP alignment scores measure how well the generated image matches the prompt intent", "The prompt is the new brushstroke: specificity in language produces precision in visual output"]} />

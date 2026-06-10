@@ -7,10 +7,10 @@ order: 1
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Yara frames the GAN concept through art criticism — one network creates, another judges. The tension between them drives both to improve."
+  narrative: "Yara frames the GAN concept through art criticism: one network creates, another judges. The tension between them drives both to improve."
   speaker: "Yara"
 concept:
-  explanation: "A GAN consists of two networks — a generator that creates fake data and a discriminator that tries to distinguish fakes from real data. They train together in an adversarial game."
+  explanation: "A GAN consists of two networks: a generator that creates fake data and a discriminator that tries to distinguish fakes from real data. They train together in an adversarial game."
   bridge:
     feTitle: "Fuzzer vs Validator"
     feCode: "const input = fuzzer.generate(); const isValid = validator.check(input);"
@@ -18,11 +18,11 @@ concept:
     mlCode: "const fake = G.predict(noise); const score = D.predict(fake);"
     tier: structural
 consequence:
-  narrative: "Samir sees the elegance — no need for hand-crafted loss functions. The discriminator IS the loss function, and it gets smarter alongside the generator."
-  nextLessonTeaser: "Next: building the generator architecture — the creative network"
+  narrative: "Samir sees the elegance: no need for hand-crafted loss functions. The discriminator IS the loss function, and it gets smarter alongside the generator."
+  nextLessonTeaser: "Next: building the generator architecture, the creative network"
 hints:
   - level: nudge
-    content: "Think of fuzz testing — one system generates inputs, another validates them"
+    content: "G.predict(noise) plays the fuzzer; D.predict(fake) plays the validator. Each network's training target is the other one's failure"
   - level: guidance
     content: "The generator tries to fool the discriminator. The discriminator tries not to be fooled."
   - level: solution
@@ -40,10 +40,10 @@ The generator is a student artist. The discriminator is a harsh critic. The stud
 </Dialogue>
 
 <Dialogue speaker="MUSE">
-Two minds locked in opposition. From their struggle, beauty emerges.
+So you'd split me in two. One half forges, one half audits the forgeries. For the first few epochs the auditor wins almost every round, my fakes get caught 95 times out of 100. What interests me is what happens when it drops to a coin flip.
 </Dialogue>
 
-If you have ever used a fuzzer in testing — a tool that generates random inputs to find bugs in a validator — you already understand the GAN architecture. The fuzzer (generator) creates inputs. The validator (discriminator) judges them. The tension between creation and criticism drives improvement.
+If you have ever used a fuzzer in testing (a tool that generates random inputs to find bugs in a validator), you already understand the GAN architecture. The fuzzer (generator) creates inputs. The validator (discriminator) judges them. The tension between creation and criticism drives improvement.
 
 <LearningObjectives objectives={["Understand the adversarial training paradigm of GANs", "Identify the roles of generator and discriminator", "Connect fuzzer/validator testing patterns to GAN architecture", "Describe the minimax game that drives GAN training"]} />
 
@@ -111,7 +111,7 @@ async function ganTrainStep(
 }`}
 </CodeBlock>
 
-The beauty of GANs is that you do not need to define what "good" output looks like. The discriminator *learns* what good looks like from real data, and that learned judgment becomes the generator's training signal.
+With GANs you do not need to define what "good" output looks like. The discriminator *learns* what good looks like from real data, and that learned judgment becomes the generator's training signal.
 
 <StrategyThread links={["bandit"]} />
 
@@ -124,10 +124,10 @@ The beauty of GANs is that you do not need to define what "good" output looks li
 
 `min_G max_D V(D, G) = E_{x~p_data} [log D(x)] + E_{z~p_z} [log(1 - D(G(z)))]`
 
-- **D (discriminator):** wants to maximize V — assign high D(x) to real samples, low D(G(z)) to fakes.
-- **G (generator):** wants to minimize V — make D(G(z)) close to 1 (fool the discriminator).
+- **D (discriminator):** wants to maximize V: assign high D(x) to real samples, low D(G(z)) to fakes.
+- **G (generator):** wants to minimize V: make D(G(z)) close to 1 (fool the discriminator).
 
-**Why it's a game and not joint optimization:** D and G have opposing objectives. There is no single function whose gradient both descend on. Training alternates: 1 step on D (fix G), 1 step on G (fix D). Equilibrium is a saddle point of V — much harder to reach than a single minimum.
+**Why it's a game and not joint optimization:** D and G have opposing objectives. There is no single function whose gradient both descend on. Training alternates: 1 step on D (fix G), 1 step on G (fix D). Equilibrium is a saddle point of V, much harder to reach than a single minimum.
 
 **Optimal D for fixed G:** `D*(x) = p_data(x) / (p_data(x) + p_G(x))`. With this D, the inner max becomes Jensen-Shannon divergence between p_data and p_G — what G ends up minimizing.
 </DerivationDrawer>

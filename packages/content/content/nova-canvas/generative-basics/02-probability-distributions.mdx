@@ -7,7 +7,7 @@ order: 2
 estimatedMinutes: 25
 difficulty: beginner
 context:
-  narrative: "Yara pulls up the collective's archive of past exhibitions — thousands of color palettes, compositions, and textures. Every generative model needs to understand the shape of its data."
+  narrative: "Yara pulls up the collective's archive of past exhibitions: thousands of color palettes, compositions, and textures. Every generative model needs to understand the shape of its data."
   speaker: "Yara"
 concept:
   explanation: "A probability distribution describes how likely each possible value is. Generative models learn these distributions from data and then sample from them."
@@ -19,11 +19,11 @@ concept:
     tier: structural
     breaks: "Random color generators sample from a uniform RGB box. Learned probability distributions place mass in arbitrary regions of high-dimensional space and sampling from them requires methods (rejection, MCMC, ancestral) that are non-trivial."
 consequence:
-  narrative: "Samir realizes that every dataset has a hidden shape — a distribution — and learning that shape is the first step to generating new data."
+  narrative: "Samir realizes that every dataset has a hidden shape, a distribution, and learning that shape is the first step to generating new data."
   nextLessonTeaser: "Next: how to actually draw samples from these distributions"
 hints:
   - level: nudge
-    content: "Think about how Math.random() gives uniform distribution — every value equally likely"
+    content: "Math.random() samples a flat line: every value between 0 and 1 equally likely. tf.randomNormal([100], 0, 1) samples a bell curve instead"
   - level: guidance
     content: "A normal distribution clusters values around a mean. Use tf.randomNormal()."
   - level: solution
@@ -37,20 +37,20 @@ keywords:
 ---
 
 <Dialogue speaker="Yara">
-Before you can create, you need to understand the shape of what already exists. I have catalogued every color palette we have used in the last five years. Look at the pattern — warm tones cluster here, cool tones drift there. That clustering is not random. It is a distribution.
+Before you can create, you need to understand the shape of what already exists. I've catalogued every color palette we've used in the last five years. Look at the pattern: warm tones cluster here, cool tones drift there. That clustering isn't random. It's a distribution.
 </Dialogue>
 
 <Dialogue speaker="MUSE">
-Data has a shape. Learn the shape, and you can dream new points within it.
+I ran a histogram over your palette archive last night. Five years of exhibitions, and the hues pile up in two lumps: one around 20 degrees, one around 210. What if I sampled from the valley between them? We'd get palettes the collective has never touched.
 </Dialogue>
 
-When you write `Math.random()`, you get a uniform distribution — every value between 0 and 1 is equally likely. But real-world data almost never looks like that. Heights cluster around an average. Colors in a sunset concentrate in warm hues. Brushstroke widths follow patterns. Understanding these distributions is the foundation of generation.
+When you write `Math.random()`, you get a uniform distribution: every value between 0 and 1 is equally likely. But real-world data almost never looks like that. Heights cluster around an average. Colors in a sunset concentrate in warm hues. Brushstroke widths follow patterns. Understanding these distributions is the foundation of generation.
 
 <LearningObjectives objectives={["Understand what a probability distribution represents", "Distinguish between uniform and normal distributions", "Create and visualize distributions using TensorFlow.js", "Recognize how frontend random generators map to statistical distributions"]} />
 
 ## Distributions Are Everywhere
 
-A probability distribution is a function that tells you how likely each value is. You use them in frontend code constantly — you just may not call them that.
+A probability distribution is a function that tells you how likely each value is. You use them in frontend code constantly. You just may not call them that.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 

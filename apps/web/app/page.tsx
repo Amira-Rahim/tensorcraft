@@ -189,6 +189,13 @@ export default function Home() {
             >
               Browse 50 ML terms with FE bridges
             </Link>
+            . Weighing alternatives?{" "}
+            <Link
+              href="/compare"
+              className="text-primary underline underline-offset-4 hover:opacity-80 transition-opacity"
+            >
+              See how Tensorcraft compares to fast.ai, Karpathy, and Coursera
+            </Link>
             .
           </p>
         </section>

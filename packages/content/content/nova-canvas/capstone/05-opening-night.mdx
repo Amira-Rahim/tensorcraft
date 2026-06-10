@@ -7,23 +7,23 @@ order: 5
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "Opening night. The gallery doors open. 247 concurrent visitors at peak. A child whispers 'a dragon made of stars' and Nova Canvas generates it — image, sound, and all. Erdem watches the dashboard. 'It is holding. Everything is holding.'"
+  narrative: "Opening night. The gallery doors open. 247 concurrent visitors at peak. A child whispers 'a dragon made of stars' and Nova Canvas generates it: image, sound, and all. Erdem watches the dashboard. 'It is holding. Everything is holding.'"
   speaker: "Erdem"
 concept:
-  explanation: "Production launch day is operational readiness — runbooks, rollback plans, communication channels, and the discipline to watch metrics instead of making changes."
+  explanation: "Production launch day is operational readiness: runbooks, rollback plans, communication channels, and the discipline to watch metrics instead of making changes."
   bridge:
     feTitle: "Production Launch Day"
     feCode: "// Launch checklist: staging verified, rollback ready, monitoring active, team on standby"
     mlTitle: "Installation Launch"
     mlCode: "// All models loaded, caches warm, health checks green, failover tested"
     tier: structural
-    breaks: "Pre-launch checklists for web apps verify config, certs, dependencies — all reproducible. Generative-model pre-launch must additionally verify content-safety thresholds, prompt-injection defenses, and rate-limits per user — none of which are reproducible by replaying logs because the model output varies per call. 'Green checks' for a generative system is a snapshot, not a guarantee."
+    breaks: "Pre-launch checklists for web apps verify config, certs, dependencies, all reproducible. Generative-model pre-launch must additionally verify content-safety thresholds, prompt-injection defenses, and rate-limits per user. None of which are reproducible by replaying logs because the model output varies per call. 'Green checks' for a generative system is a snapshot, not a guarantee."
 consequence:
-  narrative: "The exhibition runs for three months. 12,847 unique visitors. 31,209 generations. The system crashes twice — both times, the circuit breakers engage and recover within 30 seconds. Rohan: 'Tomorrow we fix the memory leak in the WebSocket handler.' There is always a tomorrow."
+  narrative: "The exhibition runs for three months. 12,847 unique visitors. 31,209 generations. The system crashes twice. Both times, the circuit breakers engage and recover within 30 seconds. Rohan: 'Tomorrow we fix the memory leak in the WebSocket handler.' There is always a tomorrow."
   nextLessonTeaser: "You have completed Nova Canvas. The bridge from frontend to ML is shorter than you thought."
 hints:
   - level: nudge
-    content: "A launch checklist is a pre-flight checklist — verify every system before the doors open"
+    content: "A launch checklist is a pre-flight checklist: verify every system before the doors open"
   - level: guidance
     content: "Build a runbook that covers the top 10 failure scenarios with step-by-step recovery procedures"
   - level: solution
@@ -36,18 +36,18 @@ keywords:
 ---
 
 <Dialogue speaker="Erdem">
-It is holding. Everything is holding. Inference latency at 290ms p95. Memory stable at 340MB. Zero errors in the last hour. 247 concurrent connections.
+It's holding. Everything's holding. Inference latency at 290ms p95. Memory stable at 340MB. Zero errors in the last hour. 247 concurrent connections.
 </Dialogue>
 
 <Dialogue speaker="Yara">
-Look at them. They are not looking at screens. They are inside the art. A woman is conducting a symphony with her hands. A child just asked for a dragon made of stars.
+Look at them. They're not looking at screens. They're inside the art. A woman is conducting a symphony with her hands. A child just asked for a dragon made of stars.
 </Dialogue>
 
 <Dialogue speaker="Rohan">
 Tomorrow we fix the memory leak in the WebSocket handler. Tonight we watch.
 </Dialogue>
 
-Every production launch you have done follows the same rhythm: weeks of preparation, a launch checklist, the deployment, the anxious monitoring, the first real users. An installation opening night is a production deployment you can see happening in front of you. The visitors are your users. The metrics dashboard is your Datadog. The runbook is your incident response plan.
+Every production launch you have done follows the same rhythm: weeks of preparation, a launch checklist, the deployment, the anxious monitoring, the first real users. An installation opening night is a production deployment you can see happening in front of you, with your users standing in the room instead of hiding in the analytics.
 
 <LearningObjectives objectives={["Build a comprehensive pre-launch checklist that verifies every system component", "Create a runbook with typed failure scenarios and recovery procedures", "Monitor a live system in production — knowing when to act and when to watch", "Conduct a post-launch retrospective that captures lessons for future deployments"]} />
 
@@ -281,5 +281,5 @@ Build a launch checklist and runbook for deploying a live installation.
 <DispatchTease
   toThemeId="terra-grid"
   toThemeName="Terra Grid"
-  body="Operator. Cross-channel intel: Hassan's edge cell just inherited the model Yara's collective shipped. Three days in: latency creeping, accuracy drifting, the runbook Yara wrote isn't covering the failure modes the field is producing. Yara built it for one room of museum-goers; Hassan deploys it across 12,000 devices. Generators don't transfer to edge the way trained models do. Continue the thread."
+  body="Operator. Cross-channel intel: Hassan's edge cell just inherited the model Yara's collective shipped. Three days in: latency creeping, accuracy drifting, and the runbook doesn't cover what the field keeps producing. Yara wrote it for one room of museum-goers. Hassan is pushing it to 12,000 devices on satellite links. He needs you on Terra Grid before the drift eats his accuracy budget."
 />

@@ -17,7 +17,7 @@ concept:
     mlTitle: "Multiple Attention Heads"
     mlCode: "// Head 1: drug-condition links\n// Head 2: dosage-frequency links\n// Head 3: temporal relationships"
     tier: structural
-    breaks: "Multiple event listeners run independently and don't interact. Multiple attention heads process the same input in parallel with different learned projections, then concatenate — heads specialize during training (some attend to syntax, some to semantics) but you cannot assign roles."
+    breaks: "Multiple event listeners run independently and don't interact. Multiple attention heads process the same input in parallel with different learned projections, then concatenate; heads specialize during training (some attend to syntax, some to semantics) but you cannot assign roles."
 consequence:
   narrative: "Diagnostic One can now simultaneously track drug-condition relationships, temporal sequences, and dosage patterns."
   nextLessonTeaser: "Next: visualizing what the model focuses on."
@@ -35,11 +35,11 @@ keywords:
 ---
 
 <Dialogue speaker="Vikram">
-One attention head learns one type of relationship. But clinical text has many simultaneous relationships — the drug to its condition, the dosage to its frequency, the symptom to its temporal qualifier. We need multiple heads, each specializing in a different pattern.
+One attention head learns one type of relationship. But clinical text has many simultaneous relationships: the drug to its condition, the dosage to its frequency, the symptom to its temporal qualifier. We need multiple heads, each specializing in a different pattern.
 </Dialogue>
 
 <Dialogue speaker="Khalil">
-Like attaching multiple event listeners to the same element — a click handler for navigation, another for analytics, another for animations. Same event, different purposes.
+Like attaching multiple event listeners to the same element. A click handler for navigation, another for analytics, another for animations. Same event, different purposes.
 </Dialogue>
 
 <LearningObjectives objectives={["Understand why single-head attention is insufficient", "Implement multi-head attention by splitting dimensions", "Concatenate and project head outputs", "Identify what different heads learn to attend to"]} />
@@ -104,7 +104,7 @@ Research on clinical transformers shows heads naturally specialize:
 - **Head 4** might learn medication-condition pairs
 
 <Dialogue speaker="Vikram">
-We don't tell the heads what to specialize in. They discover it during training. That's the beauty — the model finds structure we might not have thought to look for.
+We don't tell the heads what to specialize in. They discover it during training. That's the beauty: the model finds structure we might not have thought to look for.
 </Dialogue>
 
 ## Challenge
@@ -123,7 +123,7 @@ MultiHead(X) = Concat(head_1, ..., head_h) · W_O
 
 **Dimensions:** if `d_model = 512` and `h = 8`, each head's `d_k = d_model / h = 64`. Total parameter count of multi-head is similar to a single full-dim attention, so this is a way to express richer relationships without paying a parameter cost.
 
-**Why heads specialize:** different heads end up attending to different patterns (some to syntax, some to semantics, some to position). The specialization is emergent — you can't assign roles.
+**Why heads specialize:** different heads end up attending to different patterns (some to syntax, some to semantics, some to position). The specialization is emergent; you can't assign roles.
 </DerivationDrawer>
 
 <KeyTakeaways takeaways={["Multi-head attention runs parallel attention operations, each learning different patterns", "Dimensions are split across heads: d_k = d_model / numHeads", "Heads naturally specialize — some track syntax, others track entities or negation", "Concatenation followed by linear projection merges all perspectives"]} />

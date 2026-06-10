@@ -10,14 +10,14 @@ context:
   narrative: "With urgency detection, department routing, multi-label tagging, and calibration in place, the team builds the full triage pipeline that handles every document entering Signal Ward."
   speaker: "Imran"
 concept:
-  explanation: "A triage pipeline chains multiple classifiers together — urgency detection, department routing, and multi-label tagging — with confidence-gated human review at each stage."
+  explanation: "A triage pipeline chains multiple classifiers together (urgency detection, department routing, and multi-label tagging) with confidence-gated human review at each stage."
   bridge:
     feTitle: "Priority Queue (urgent items first)"
     feCode: "// queue.enqueue(task, priority)\n// High-priority items processed first\n// Unknown priority → manual review"
     mlTitle: "Triage Pipeline"
     mlCode: "// pipeline.classify(doc) → urgency, dept, tags\n// High urgency → fast-tracked\n// Low confidence → human review"
     tier: structural
-    breaks: "Priority queues sort by an authored priority value. Triage pipelines sort by predicted urgency from a model — the priority is a probability with calibration error and miscategorizing a critical case as low priority is a clinical safety risk, not a UX bug."
+    breaks: "Priority queues sort by an authored priority value. Triage pipelines sort by predicted urgency from a model; the priority is a probability with calibration error and miscategorizing a critical case as low priority is a clinical safety risk, not a UX bug."
 consequence:
   narrative: "The triage pipeline is operational. MEDI processes incoming documents in seconds, routing urgent cases immediately and flagging uncertain ones for human review. The ward runs faster and safer."
   nextLessonTeaser: "The text-classification module is complete. Your triage system is live."
@@ -25,7 +25,7 @@ hints:
   - level: nudge
     content: "Chain the classifiers in order: urgency first, then department routing, then tagging"
   - level: guidance
-    content: "Add confidence gates between stages — below threshold routes to human review"
+    content: "Add confidence gates between stages; below threshold routes to human review"
   - level: solution
     content: "Create a TriagePipeline class that runs urgency → routing → tagging with confidence checks at each step"
 keywords:
@@ -50,7 +50,7 @@ It's like building a priority queue with middleware. Each document enters the pi
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-A priority queue processes high-priority items first. A triage pipeline does the same — but each item also gets classified, routed, and tagged along the way. At any stage, if the model isn't confident enough, the document drops out of the automated pipeline and into a human review queue.
+A priority queue processes high-priority items first. A triage pipeline does the same, but each item also gets classified, routed, and tagged along the way. At any stage, if the model isn't confident enough, the document drops out of the automated pipeline and into a human review queue.
 
 <CodeBlock language="typescript" title="triage-pipeline.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -162,7 +162,7 @@ class TriagePipeline {
 ## Processing the Queue
 
 <Dialogue speaker="Dr. Zahra Karimi">
-Show me the flow. A document arrives — what happens?
+Show me the flow. A document arrives. What happens?
 </Dialogue>
 
 <Dialogue speaker="MEDI">
@@ -227,7 +227,7 @@ Build the complete triage pipeline that chains urgency detection, department rou
 
 ## On-Call Scenario
 
-Triage nurses report alert fatigue — too many medium-confidence flags. Recalibrate the threshold using a held-out evaluation slice.
+Triage nurses report alert fatigue: too many medium-confidence flags. Recalibrate the threshold using a held-out evaluation slice.
 
 <Exercise slug="incident-alert-fatigue" />
 

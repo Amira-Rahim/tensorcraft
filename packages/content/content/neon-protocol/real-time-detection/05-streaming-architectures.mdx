@@ -7,7 +7,7 @@ order: 5
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "The resistance has 47 camera feeds across 12 districts. A single browser tab cannot process them all. Noor designs a streaming architecture — some feeds processed locally, others relayed through WebSocket from resistance servers. The hybrid system Dilan demanded."
+  narrative: "The resistance has 47 camera feeds across 12 districts. A single browser tab cannot process them all. Noor designs a streaming architecture: some feeds processed locally, others relayed through WebSocket from resistance servers. The hybrid system Dilan demanded."
   speaker: "Noor"
 concept:
   explanation: "Processing continuous data streams is the same pattern as WebSockets and Server-Sent Events. You receive data in chunks, process each chunk, and push results downstream. The only difference: each chunk is a video frame, and processing means inference."
@@ -17,13 +17,13 @@ concept:
     mlTitle: "Inference Stream"
     mlCode: "feedStream.onFrame((frame) => { const result = model.predict(preprocess(frame)); emit(result); });"
     tier: structural
-    breaks: "WebSocket/SSE streams discrete messages over an open connection. Inference streams must additionally manage frame skipping under load, batched-vs-streaming tradeoffs, and backpressure — every dropped frame is a missed detection, not a missed UI update."
+    breaks: "WebSocket/SSE streams discrete messages over an open connection. Inference streams must additionally manage frame skipping under load, batched-vs-streaming tradeoffs, and backpressure. Every dropped frame is a missed detection, not a missed UI update."
 consequence:
-  narrative: "Protocol Sentinel processes 12 feeds simultaneously — 8 locally, 4 via relay. NEON identifies a Meridian agent by gait analysis. Noor reaches for the alert button — Amir stops her. 'That person is limping from an injury. The model is wrong.' The cost of trusting vision without verification."
-  nextLessonTeaser: "Module 9 awaits: generative vision — art that fights back"
+  narrative: "Protocol Sentinel processes 12 feeds simultaneously: 8 locally, 4 via relay. NEON identifies a Meridian agent by gait analysis. Noor reaches for the alert button. Amir stops her. 'That person is limping from an injury. The model is wrong.' The cost of trusting vision without verification."
+  nextLessonTeaser: "Module 9 awaits: generative vision. Art that fights back"
 hints:
   - level: nudge
-    content: "Think of each video feed as a WebSocket connection — same event-driven pattern"
+    content: "Treat each feed like a WebSocket connection: frames arrive as events, and your FeedProcessor decides which ones the GPU actually sees"
   - level: guidance
     content: "Create a FeedProcessor class that manages multiple streams with a shared inference queue"
   - level: solution
@@ -41,14 +41,14 @@ Forty-seven feeds. One browser tab. Even with WebGL, we cannot run inference on 
 </Dialogue>
 
 <Dialogue speaker="Amir">
-So do not try. Process the high-priority feeds locally. Relay the rest through our server nodes via WebSocket. The server runs inference and sends back detections. If a server goes down, the browser picks up that feed directly — graceful degradation.
+So do not try. Process the high-priority feeds locally. Relay the rest through our server nodes via WebSocket. The server runs inference and sends back detections. If a server goes down, the browser picks up that feed directly. Graceful degradation.
 </Dialogue>
 
 <Dialogue speaker="Dilan">
 The hybrid architecture we agreed on. Both of you were right. Build it.
 </Dialogue>
 
-You have built WebSocket connections for chat apps, real-time dashboards, and collaborative editors. A streaming inference pipeline is the same architecture — receive data, process it, emit results. The data happens to be video frames and the processing happens to be neural network inference.
+Forty-seven feeds, one `model.predict()`. Run them naively and the inference queue backs up in under a second; by minute two you are tagging drones that left the district while their frames sat in the queue. The architecture that prevents this is one you have built before, for chat apps, real-time dashboards, and collaborative editors. Receive data, process it, emit results. The data happens to be video frames and the processing happens to be neural network inference.
 
 <LearningObjectives objectives={["Design a streaming architecture for processing multiple video feeds", "Implement a frame queue that prioritizes high-value feeds", "Build graceful degradation between local and server-side inference", "Handle backpressure when inference cannot keep up with incoming frames"]} />
 
@@ -195,4 +195,4 @@ Build a streaming pipeline that manages multiple feeds with backpressure handlin
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Streaming inference follows the same pattern as WebSocket event processing — receive, process, emit", "Backpressure handling (dropping old frames) prevents memory buildup when inference is slower than input", "Hybrid architectures combine local GPU inference for priority feeds with server relay for the rest", "Graceful degradation means the system keeps working when server nodes go down — the browser picks up the load"]} />
+<KeyTakeaways takeaways={["Multiple feeds share one inference queue; a scheduler (round-robin or priority) decides which frame gets the GPU next", "Backpressure handling (dropping old frames) prevents memory buildup when inference is slower than input", "Hybrid architectures combine local GPU inference for priority feeds with server relay for the rest", "Graceful degradation means the system keeps working when server nodes go down — the browser picks up the load"]} />

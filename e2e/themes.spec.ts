@@ -59,9 +59,15 @@ test.describe("Themes Page", () => {
 });
 
 test.describe("Theme Detail Page", () => {
-  test("renders Deep Orbit theme page with modules", async ({ page }) => {
+  test("renders Deep Orbit theme page with module map and lessons", async ({
+    page,
+  }) => {
     await page.goto("/themes/deep-orbit");
+    await expect(page.getByTestId("module-map")).toBeVisible();
     await expect(page.getByText(/foundations/i).first()).toBeVisible();
+    await expect(
+      page.getByText(/introduction to tensors/i).first(),
+    ).toBeVisible();
   });
 
   test("shows module list with correct order", async ({ page }) => {
@@ -71,34 +77,47 @@ test.describe("Theme Detail Page", () => {
     await expect(page.getByText(/training loop/i).first()).toBeVisible();
   });
 
+  test("shows lesson estimated time", async ({ page }) => {
+    await page.goto("/themes/deep-orbit");
+    await expect(page.getByText(/min/i).first()).toBeVisible();
+  });
+
+  test("lessons link to lesson viewer", async ({ page }) => {
+    await page.goto("/themes/deep-orbit");
+    await page
+      .getByRole("link", { name: /introduction to tensors/i })
+      .first()
+      .click();
+    await expect(page).toHaveURL(
+      /\/themes\/deep-orbit\/foundations\/introduction-to-tensors/,
+    );
+  });
+
   test("returns 404 for unknown theme", async ({ page }) => {
     const response = await page.goto("/themes/nonexistent");
     expect(response?.status()).toBe(404);
   });
 });
 
-test.describe("Module Overview Page", () => {
-  test("renders module with lesson cards", async ({ page }) => {
+test.describe("Module Overview Route", () => {
+  // There is no standalone module page in the current design — the theme
+  // page's module map is the module overview. The /themes/{slug}/{module}
+  // route is a shim that redirects to the theme page so in-app links
+  // (lesson prerequisite gate, breadcrumb JSON-LD) never 404.
+  test("module route redirects to the theme page", async ({ page }) => {
     await page.goto("/themes/deep-orbit/foundations");
-    await expect(
-      page.getByText(/introduction to tensors/i).first(),
-    ).toBeVisible();
+    await expect(page).toHaveURL(/\/themes\/deep-orbit$/);
+    await expect(page.getByTestId("module-map")).toBeVisible();
   });
 
-  test("shows lesson difficulty and time", async ({ page }) => {
-    await page.goto("/themes/deep-orbit/foundations");
-    await expect(page.getByText(/min/i).first()).toBeVisible();
+  test("unknown module 404s", async ({ page }) => {
+    const response = await page.goto("/themes/deep-orbit/nonexistent-module");
+    expect(response?.status()).toBe(404);
   });
 
-  test("lessons link to lesson viewer", async ({ page }) => {
-    await page.goto("/themes/deep-orbit/foundations");
-    await page
-      .getByText(/introduction to tensors/i)
-      .first()
-      .click();
-    await expect(page).toHaveURL(
-      /\/themes\/deep-orbit\/foundations\/introduction-to-tensors/,
-    );
+  test("coming-soon theme module route 404s", async ({ page }) => {
+    const response = await page.goto("/themes/neon-protocol/foundations");
+    expect(response?.status()).toBe(404);
   });
 });
 
@@ -110,10 +129,9 @@ test.describe("Lesson Viewer Page", () => {
     ).toBeVisible();
   });
 
-  test("shows progress bar", async ({ page }) => {
+  test("shows step progress bar", async ({ page }) => {
     await page.goto("/themes/deep-orbit/foundations/introduction-to-tensors");
-    const progressBar = page.getByRole("progressbar");
-    await expect(progressBar).toBeVisible();
+    await expect(page.getByRole("progressbar")).toBeVisible();
   });
 
   test("shows Continue button", async ({ page }) => {
@@ -122,9 +140,8 @@ test.describe("Lesson Viewer Page", () => {
     await expect(continueButton).toBeVisible();
   });
 
-  test("shows Back or Module link", async ({ page }) => {
+  test("shows a link back to the module map", async ({ page }) => {
     await page.goto("/themes/deep-orbit/foundations/introduction-to-tensors");
-    // First step shows a link back to the module; later steps show "← Back"
     const backLink = page
       .getByRole("link", { name: /back|module|foundations/i })
       .first();

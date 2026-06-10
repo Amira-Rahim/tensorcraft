@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "Canvas WebGL renders pixels via fragment shaders for display. WebGPU compute shaders run general-purpose tensor math (matmul, conv) for inference — different shading language, different memory model, different driver maturity. Browser support is far narrower than WebGL."
 consequence:
-  narrative: "WebGPU cuts inference time by 3x over WebGL. Nazari: 'Not bad, for a frontend dev.' DEEP SCAN is production-ready."
+  narrative: "WebGPU cuts inference from 15ms to 5ms. DEEP SCAN is production-ready."
   nextLessonTeaser: "Module 11: the capstone — deploying the complete DEEP SCAN system"
 hints:
   - level: nudge
@@ -37,14 +37,14 @@ skillAxes: [deployment]
 ---
 
 <Dialogue speaker="Chief Nazari">
-WebGL was designed for rendering triangles, not multiplying matrices. WebGPU is the real thing — direct GPU compute access. Set it up.
+WebGL was designed for rendering triangles, not multiplying matrices. WebGPU is the real thing: direct GPU compute access. Set it up.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
-So WebGPU is to WebGL what Web Workers are to the main thread — purpose-built for the actual workload instead of shoehorning into a different API?
+So WebGPU is to WebGL what Web Workers are to the main thread: purpose-built for the actual workload instead of shoehorning into a different API?
 </Dialogue>
 
-WebGL was designed for 3D graphics — ML inference works on it, but it's like using `<canvas>` to render a spreadsheet. WebGPU is designed for general-purpose GPU compute: matrix multiplications, parallel reductions, and the tensor operations that ML inference actually needs.
+WebGL was designed for 3D graphics. ML inference works on it, but it's like using `<canvas>` to render a spreadsheet. WebGPU is designed for general-purpose GPU compute: matrix multiplications, parallel reductions, and the tensor operations that ML inference actually needs.
 
 <LearningObjectives objectives={["Understand WebGPU as compute-oriented GPU access (vs WebGL's graphics orientation)", "Configure TensorFlow.js to use the WebGPU backend", "Benchmark WebGPU vs WebGL vs WASM for inference workloads", "Handle WebGPU availability with graceful fallback to WebGL"]} />
 

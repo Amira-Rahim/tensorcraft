@@ -34,14 +34,14 @@ skillAxes: [model_arch]
 ---
 
 <Dialogue speaker="ARIA">
-The neuron outputs unbounded values — negative infinity to positive infinity. I need a way to interpret these as decisions. Should this signal be classified as anomalous or normal?
+The neuron outputs unbounded values: negative infinity to positive infinity. I need a way to interpret these as decisions. Should this signal be classified as anomalous or normal?
 </Dialogue>
 
 <LearningObjectives objectives={["Understand why activation functions are necessary", "Implement ReLU, sigmoid, and tanh activations", "See how Math.max() and Math.min() map to neural network activations", "Choose the right activation for different situations"]} />
 
 ## From Unbounded to Useful
 
-Without activation functions, a neural network is just a series of linear transformations — no matter how many layers you stack, it collapses to a single linear function. Activation functions introduce the non-linearity that lets networks learn complex patterns.
+Without activation functions, a neural network is a series of linear transformations. No matter how many layers you stack, it collapses to a single linear function. Activation functions introduce the non-linearity that lets networks learn complex patterns.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 

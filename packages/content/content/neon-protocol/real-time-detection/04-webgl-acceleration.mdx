@@ -7,10 +7,10 @@ order: 4
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "Noor's inference loop runs at 22fps on CPU. Not enough. Amir suggests switching TensorFlow.js to the WebGL backend. 'The GPU is already there — your browser uses it for CSS transforms and canvas compositing. Now use it for matrix multiplication.'"
+  narrative: "Noor's inference loop runs at 22fps on CPU. Not enough. Amir suggests switching TensorFlow.js to the WebGL backend. 'The GPU is already there. Your browser uses it for CSS transforms and canvas compositing. Now use it for matrix multiplication.'"
   speaker: "Amir"
 concept:
-  explanation: "WebGL is the browser's GPU interface. You already use it indirectly — CSS 3D transforms, canvas compositing, WebGL-based games. TensorFlow.js can route tensor operations through WebGL shaders, turning matrix multiplications into parallel GPU operations."
+  explanation: "WebGL is the browser's GPU interface. You already use it indirectly: CSS 3D transforms, canvas compositing, WebGL-based games. TensorFlow.js can route tensor operations through WebGL shaders, turning matrix multiplications into parallel GPU operations."
   bridge:
     feTitle: "WebGL Rendering Pipeline"
     feCode: "const gl = canvas.getContext('webgl2'); // GPU access for rendering"
@@ -20,7 +20,7 @@ concept:
     breaks: "WebGL rendering pipeline targets pixel output through fragment shaders. WebGL backend for ML co-opts the same pipeline for matmul and conv, but precision (float16/32), texture upload cost, and lack of native compute make it slower than WebGPU for ML."
 consequence:
   narrative: "WebGL backend: 22fps becomes 38fps. Protocol Sentinel runs in real-time for the first time. Amir allows a rare half-smile. NEON: 'GPU utilization at 74%. Acceptable. For a resistance operation running on stolen hardware.'"
-  nextLessonTeaser: "Next: streaming architectures — handling continuous data from multiple feeds"
+  nextLessonTeaser: "Next: streaming architectures. Handling continuous data from multiple feeds"
 hints:
   - level: nudge
     content: "tf.setBackend('webgl') switches all tensor operations to the GPU"
@@ -37,7 +37,7 @@ keywords:
 ---
 
 <Dialogue speaker="Amir">
-Your browser already uses the GPU. Every CSS 3D transform, every canvas composite operation, every WebGL game — they all route through the same graphics pipeline. TensorFlow.js can use that pipeline for matrix math. Same hardware, different purpose.
+Your browser already uses the GPU. Every CSS 3D transform, every canvas composite operation, every WebGL game. They all route through the same graphics pipeline. TensorFlow.js can use that pipeline for matrix math. Same hardware, different purpose.
 </Dialogue>
 
 <Dialogue speaker="Noor">
@@ -48,7 +48,7 @@ So instead of the CPU doing millions of multiplications sequentially, the GPU do
 In parallel. A modern GPU has thousands of cores. A matrix multiplication that takes 20ms on CPU can take 3ms on GPU. That is the difference between 22fps and real-time.
 </Dialogue>
 
-The GPU is already running in your browser. WebGL gives TensorFlow.js access to it for tensor operations — the same hardware that renders your CSS transforms now accelerates neural network inference.
+The GPU is already running in your browser. WebGL gives TensorFlow.js access to it for tensor operations; the same hardware that renders your CSS transforms now accelerates neural network inference.
 
 <LearningObjectives objectives={["Switch TensorFlow.js to the WebGL backend for GPU-accelerated inference", "Understand why GPU parallelism accelerates matrix operations", "Benchmark CPU vs WebGL performance for the same model", "Handle GPU memory constraints and texture size limits"]} />
 

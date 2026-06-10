@@ -7,10 +7,10 @@ order: 1
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Amir stares at the trained Protocol Sentinel model in the browser dev tools. It works — but only on his machine. NEON: 'A model that cannot leave the machine that trained it is a prototype, not a product. Serialize it.'"
+  narrative: "Amir stares at the trained Protocol Sentinel model in the browser dev tools. It works, but only on his machine. NEON: 'A model that cannot leave the machine that trained it is a prototype, not a product. Serialize it.'"
   speaker: "Amir"
 concept:
-  explanation: "Model serialization is saving a trained model's architecture and weights so it can be loaded elsewhere. If you have ever used JSON.stringify to save application state and JSON.parse to restore it later, you already understand the concept. A model's weights are its learned state — serialization freezes that state into a portable format."
+  explanation: "Model serialization is saving a trained model's architecture and weights so it can be loaded elsewhere. If you have ever used JSON.stringify to save application state and JSON.parse to restore it later, you already understand the concept. A model's weights are its learned state; serialization freezes that state into a portable format."
   bridge:
     feTitle: "JSON.stringify/parse"
     feCode: "const saved = JSON.stringify(appState); localStorage.setItem('state', saved); const restored = JSON.parse(localStorage.getItem('state'));"
@@ -37,14 +37,14 @@ keywords:
 ---
 
 <Dialogue speaker="Amir">
-Protocol Sentinel detects Meridian drones with 94% accuracy. But it only runs here, on this machine, in this browser tab. If Meridian takes out this safehouse, we lose everything. We need to export it — make it portable.
+Protocol Sentinel detects Meridian drones with 94% accuracy. But it only runs here, on this machine, in this browser tab. If Meridian takes out this safehouse, we lose everything. We need to export it. Make it portable.
 </Dialogue>
 
 <Dialogue speaker="NEON">
 A model that cannot be saved is a model that does not exist. Serialize the architecture and weights. Think of it like saving your application state — except the state is millions of learned parameters.
 </Dialogue>
 
-You have trained a model. It works. But it lives in memory — volatile, fragile, bound to a single browser session. Serialization turns that ephemeral state into files you can store, transfer, and reload anywhere.
+Last month a cell in District 11 burned their safehouse ahead of a Meridian sweep. Their detector lived in one browser tab on one machine, and nobody had exported it. Four weeks of training gone in the time it takes to slam a laptop shut. That is what unserialized state costs. A trained model lives in memory: volatile, fragile, bound to a single session. Serialization turns that ephemeral state into files you can store, transfer, and reload anywhere.
 
 <LearningObjectives objectives={["Serialize a TensorFlow.js model to multiple storage backends", "Understand the model.json + weights binary shard format", "Export models for download, IndexedDB, and HTTP hosting", "Load a previously saved model and verify it produces identical predictions"]} />
 
@@ -52,7 +52,7 @@ You have trained a model. It works. But it lives in memory — volatile, fragile
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-As a frontend engineer, you save application state constantly — to localStorage, to IndexedDB, to a server. Model export is the same pattern. The model's "state" is its architecture (layers, shapes, activations) plus its weights (the learned numbers). TensorFlow.js splits these into a JSON topology file and one or more binary weight shards.
+As a frontend engineer, you save application state constantly: to localStorage, to IndexedDB, to a server. Model export is the same pattern. The model's "state" is its architecture (layers, shapes, activations) plus its weights (the learned numbers). TensorFlow.js splits these into a JSON topology file and one or more binary weight shards.
 
 <CodeBlock language="typescript" title="model-export.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -84,8 +84,8 @@ console.log(savedModels);
 
 When you export a TensorFlow.js model, you get two pieces:
 
-- **model.json** — The architecture topology (layer types, shapes, activation functions) plus a manifest listing weight shard files
-- **group1-shard1of1.bin** — The actual weight data as a binary ArrayBuffer, split into shards for large models
+- **model.json**: The architecture topology (layer types, shapes, activation functions) plus a manifest listing weight shard files
+- **group1-shard1of1.bin**: The actual weight data as a binary ArrayBuffer, split into shards for large models
 
 <CodeBlock language="typescript" title="model-topology.ts">
 {`// The model.json structure (simplified)
@@ -165,4 +165,4 @@ Export a model and verify its integrity after reloading.
 
 <Exercise slug="export-model" />
 
-<KeyTakeaways takeaways={["Model serialization is the ML equivalent of JSON.stringify — it saves learned state into a portable format", "TensorFlow.js exports a model.json topology file plus binary weight shards", "Multiple storage backends are available: localStorage, IndexedDB, file download, and HTTP", "Always verify that a loaded model produces identical outputs to the original before deploying"]} />
+<KeyTakeaways takeaways={["Saving a model means serializing two things: the architecture and the learned weights", "TensorFlow.js exports a model.json topology file plus binary weight shards", "Multiple storage backends are available: localStorage, IndexedDB, file download, and HTTP", "Always verify that a loaded model reproduces the original's outputs before deploying"]} />

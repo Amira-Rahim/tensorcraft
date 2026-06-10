@@ -7,23 +7,23 @@ order: 2
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Priya discovers that last week's model regression was caused by a bad data batch — but nobody can tell which version of the training data produced the current model."
+  narrative: "Priya discovers that last week's model regression was caused by a bad data batch, but nobody can tell which version of the training data produced the current model."
   speaker: "Priya Sharma"
 concept:
-  explanation: "Data versioning tracks dataset changes over time, just as Git tracks code changes — enabling rollback, blame, and reproducibility."
+  explanation: "Data versioning tracks dataset changes over time, just as Git tracks code changes, enabling rollback, blame, and reproducibility."
   bridge:
     feTitle: "Git Version Control"
     feCode: "git log --oneline // trace every change to source code"
     mlTitle: "Data Versioning"
     mlCode: "dvc log --oneline // trace every change to training data"
     tier: structural
-    breaks: "Git versions text well via line-level diffs. Data versioning must handle large binaries, schema evolution, and reproducible sampling — git-LFS and DVC exist but require disciplined commit practices that text-version control does not need."
+    breaks: "Git versions text well via line-level diffs. Data versioning must handle large binaries, schema evolution, and reproducible sampling. Git-LFS and DVC exist but require disciplined commit practices that text-version control does not need."
 consequence:
   narrative: "Priya traces the regression to a corrupted sensor batch from Sector 3. She reverts to the previous data version and retrains."
   nextLessonTeaser: "Next: tracking experiments so you know which training run produced which model"
 hints:
   - level: nudge
-    content: "Think about how git blame helps you find when and why code changed"
+    content: "hashDataset() gives data what git gives code: a content hash, so diffDatasets() can answer what changed between two training runs"
   - level: guidance
     content: "Hash the dataset contents to create a unique version identifier, like a git commit hash"
   - level: solution
@@ -36,14 +36,14 @@ keywords:
 ---
 
 <Dialogue speaker="Priya Sharma">
-The model regressed last Tuesday. But I cannot tell you which training data produced it. Was it the batch before or after the Sector 3 sensor recalibration? Nobody versioned the data.
+The model regressed last Tuesday. But I can't tell you which training data produced it. Was it the batch before or after the Sector 3 sensor recalibration? Nobody versioned the data.
 </Dialogue>
 
 <Dialogue speaker="Hassan Al-Rashid">
 If you cannot reproduce the training run, you cannot debug the regression. Version everything. Code, data, hyperparameters.
 </Dialogue>
 
-Imagine debugging a production bug without git history. No blame, no bisect, no diff. That is what ML without data versioning looks like — you know the model is wrong, but you cannot trace why because nobody tracked what data trained it.
+Imagine debugging a production bug without git history. No blame, no bisect, no diff. That is what ML without data versioning looks like. You know the model is wrong, but you cannot trace why, because nobody tracked what data trained it.
 
 <LearningObjectives objectives={["Implement data versioning using content hashing — the same mechanism as git commit hashes", "Track dataset lineage to trace any model back to its exact training data", "Design a version metadata schema that captures what changed and why", "Enable data rollback for reproducing and debugging model regressions"]} />
 
@@ -149,8 +149,8 @@ Implement a data versioning system with content hashing and lineage tracking.
 
 ## On-Call Scenario
 
-A retrained model is suddenly mislabeling one class. You suspect poisoned training samples. The exercise walks the first 5 minutes of a real data-poisoning audit — isolate untrusted sources, find content-hash collisions, decide whether to quarantine.
+A retrained model is suddenly mislabeling one class. You suspect poisoned training samples. The exercise walks the first 5 minutes of a real data-poisoning audit: isolate untrusted sources, find content-hash collisions, decide whether to quarantine.
 
 <Exercise slug="incident-data-poisoning" />
 
-<KeyTakeaways takeaways={["Data versioning uses content hashing just like git — every dataset gets a unique SHA based on its contents", "Dataset lineage traces any model back to its exact training data, enabling reproducible debugging", "Dataset diffs reveal distribution shifts that explain model regressions — like git diff explains code bugs", "Version everything: code, data, hyperparameters, and model artifacts — or you cannot reproduce results"]} />
+<KeyTakeaways takeaways={["Content hashing gives every dataset a unique SHA; the same rows always hash to the same version, so every training run is traceable", "Dataset lineage traces any model back to its exact training data, enabling reproducible debugging", "Dataset diffs reveal distribution shifts that explain model regressions — like git diff explains code bugs", "Version everything: code, data, hyperparameters, and model artifacts — or you cannot reproduce results"]} />

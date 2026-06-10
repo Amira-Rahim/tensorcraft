@@ -7,7 +7,7 @@ order: 2
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Vikram explains that some words — especially medical terms — need to be broken into smaller pieces to handle the vast vocabulary of clinical language."
+  narrative: "Vikram explains that some words, especially medical terms, need to be broken into smaller pieces to handle the vast vocabulary of clinical language."
   speaker: "Vikram"
 concept:
   explanation: "Subword tokenization (BPE, WordPiece) breaks rare words into known sub-units. 'Cardiology' becomes ['cardio', '##logy']. Just like URL route parsing extracts meaningful segments from a path, subword tokenization extracts meaningful morphemes from words."
@@ -17,7 +17,7 @@ concept:
     mlTitle: "Subword Tokenizer"
     mlCode: "'cardiology' → ['cardio', '##logy']"
     tier: structural
-    breaks: "Route parsing splits URLs at known delimiters (`/`, `?`). Subword tokenizers (BPE, WordPiece) learn merge rules from a training corpus — the same word tokenizes differently across model versions ('chatgpt' is 1 token in GPT-4, 3 tokens in earlier vocab). There is no canonical tokenization; you must pin the tokenizer to your model version."
+    breaks: "Route parsing splits URLs at known delimiters (`/`, `?`). Subword tokenizers (BPE, WordPiece) learn merge rules from a training corpus; the same word tokenizes differently across model versions ('chatgpt' is 1 token in GPT-4, 3 tokens in earlier vocab). There is no canonical tokenization; you must pin the tokenizer to your model version."
 consequence:
   narrative: "Diagnostic One can now handle medical terminology it hasn't seen before by breaking words into known sub-parts."
   nextLessonTeaser: "Next: handling the specific challenges of medical abbreviations."
@@ -38,18 +38,18 @@ keywords:
 > **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
 <Dialogue speaker="Vikram">
-Our vocabulary can't contain every medical term — there are hundreds of thousands. But here's the trick: "cardiology" is just "cardio" plus "logy." If the model knows the parts, it can understand the whole.
+Our vocabulary can't contain every medical term; there are hundreds of thousands. But "cardiology" is just "cardio" plus "logy." If the model knows the parts, it can understand the whole.
 </Dialogue>
 
 <Dialogue speaker="Khalil">
-Like route parsing. /patients/:id/records — I break the path into segments and each segment has meaning.
+Like route parsing. /patients/:id/records. I break the path into segments and each segment has meaning.
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-Exactly. Subword tokenization is route parsing for words. You break them into meaningful segments.
+Almost. Routes split on slashes you put there. The tokenizer had to *learn* its merge rules from a corpus, and nothing guarantees it cuts where a morphology textbook would. Same word, different vocab version, different tokens. Pin the tokenizer to the model version or your inputs silently change. That's the part that bites you in production.
 </Dialogue>
 
-When you define routes like `/patients/:id/records/:recordId`, your router parses the path into meaningful segments. Subword tokenization does the same to words — breaking "electrocardiogram" into `["electro", "##cardio", "##gram"]`, where each piece carries meaning.
+A subword tokenizer breaks "electrocardiogram" into `["electro", "##cardio", "##gram"]`. Each piece carries meaning, and each piece is in the vocabulary even when the full word is not.
 
 <LearningObjectives objectives={["Understand why subword tokenization outperforms word-level tokenization", "Implement a greedy WordPiece-style tokenizer", "Recognize how morphemes carry meaning in medical terminology", "Handle out-of-vocabulary words by decomposing them into known sub-units"]} />
 
@@ -102,7 +102,7 @@ console.log(wordPieceTokenize('gastroenteritis'));
 // ['gastro', '##enter', '##itis']`}
 </CodeBlock>
 
-## The Power of Composability
+## Prefixes and Suffixes Carry Meaning
 
 Medical language is highly compositional. Prefixes like "hyper-", "hypo-", "cardio-" combine with suffixes like "-itis", "-ectomy", "-ology". Subword tokenization captures this structure.
 

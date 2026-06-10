@@ -60,7 +60,7 @@ export function CookieConsent() {
           cookies (PostHog) to improve the learning experience. See our{" "}
           <Link
             href="/privacy"
-            className="text-primary rounded-none hover:underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+            className="text-primary rounded-none underline underline-offset-2 hover:opacity-80 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
           >
             Privacy Policy
           </Link>{" "}

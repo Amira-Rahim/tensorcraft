@@ -17,7 +17,7 @@ concept:
     mlTitle: "Clinical Attention Bias"
     mlCode: "scores.add(clinicalBias); // boost medical term weights"
     tier: structural
-    breaks: "Search result highlighting marks exact-match keywords. Clinical attention bias is the learned tendency for the model to over- or under-weight certain patient features — invisible without targeted audits, and the bias is in the weights, not the highlight rendering."
+    breaks: "Search result highlighting marks exact-match keywords. Clinical attention bias is the learned tendency for the model to over- or under-weight certain patient features, invisible without targeted audits, and the bias is in the weights, not the highlight rendering."
 consequence:
   narrative: "Diagnostic One now focuses on clinically meaningful words, improving its accuracy on real patient notes."
   nextLessonTeaser: "Next module: the Transformer architecture that revolutionized NLP."
@@ -36,11 +36,11 @@ keywords:
 ---
 
 <Dialogue speaker="Vikram">
-General attention treats "the" and "methotrexate" as equally eligible for high scores. But we know clinical terms carry more diagnostic weight. Let's give the model a nudge — like how search engines boost exact-match results.
+General attention treats "the" and "methotrexate" as equally eligible for high scores. But we know clinical terms carry more diagnostic weight. Let's give the model a nudge, the way search engines boost exact-match results.
 </Dialogue>
 
 <Dialogue speaker="Khalil">
-That's like search result highlighting. When a user searches for "arthritis," I use a regex to highlight matches in the results. We're doing the same thing — boosting attention on medically relevant tokens.
+That's like search result highlighting. When a user searches for "arthritis," I use a regex to highlight matches in the results. We're doing the same thing: boosting attention on medically relevant tokens.
 </Dialogue>
 
 <LearningObjectives objectives={["Build a clinical vocabulary mask for attention biasing", "Apply domain-specific attention biases to improve relevance", "Compare biased versus unbiased attention on clinical text", "Handle unknown medical terms gracefully"]} />
@@ -49,7 +49,7 @@ That's like search result highlighting. When a user searches for "arthritis," I 
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-In search UIs, you highlight matching terms to draw the user's eye. Clinical attention does the same for the model — we add a bias to the attention scores for tokens that belong to a medical vocabulary, gently steering the model toward clinically meaningful relationships.
+In search UIs, you highlight matching terms to draw the user's eye. Clinical attention does the same for the model. We add a bias to the attention scores for tokens that belong to a medical vocabulary, gently steering the model toward clinically meaningful relationships.
 
 <CodeBlock language="typescript" title="clinical-attention.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -108,10 +108,10 @@ console.log('Clinical attention weights shape:', weights.shape);`}
 ## Bias vs. Hard Masking
 
 <Dialogue speaker="Vikram">
-We use a soft bias, not a hard mask. The model can still attend to function words like "denied" or "without" — those carry negation, which is clinically critical. We just make it easier for drug names and conditions to get attention. Think of it as raising their hand in a crowded room, not silencing everyone else.
+We use a soft bias, not a hard mask. The model can still attend to function words like "denied" or "without"; those carry negation, which is clinically critical. We just make it easier for drug names and conditions to get attention. Think of it as raising their hand in a crowded room, not silencing everyone else.
 </Dialogue>
 
-This is the difference between `display: none` (hard mask — token is invisible) and `font-weight: bold` (soft bias — token is emphasized but others remain visible).
+This is the difference between `display: none` (hard mask: token is invisible) and `font-weight: bold` (soft bias: token is emphasized but others remain visible).
 
 ## Challenge
 

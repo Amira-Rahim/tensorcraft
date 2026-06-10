@@ -7,7 +7,7 @@ order: 2
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "The architecture diagram is approved. Now each module must connect to the next. Noor starts wiring — detection feeds into classification, classification feeds into the adversarial guard, the guard feeds into broadcast. Amir watches: 'Treat each connection like middleware. Data in, data out, next() to continue.' It clicks instantly."
+  narrative: "The architecture diagram is approved. Now each module must connect to the next. Noor starts wiring: detection feeds into classification, classification feeds into the adversarial guard, the guard feeds into broadcast. Amir watches: 'Treat each connection like middleware. Data in, data out, next() to continue.' It clicks instantly."
   speaker: "Amir"
 concept:
   explanation: "Integrating ML pipeline stages follows the same pattern as Express/Next.js middleware. Each stage receives input, transforms it, and calls next() to pass output downstream. Errors short-circuit the chain."
@@ -18,11 +18,11 @@ concept:
     mlCode: "pipeline.use(preprocess).use(detect).use(classify).use(guard); // tensor flows through each"
     tier: structural
 consequence:
-  narrative: "The pipeline runs end-to-end for the first time. A test frame enters. Preprocessed. Objects detected. Classified — Meridian drone. Adversarial check — clean. Broadcast payload generated. Noor watches the data flow through six stages in 47 milliseconds. The Architect's surveillance network has a new adversary."
-  nextLessonTeaser: "Next: testing and validation — making sure Protocol Sentinel works before it goes live"
+  narrative: "The pipeline runs end-to-end for the first time. A test frame enters. Preprocessed. Objects detected. Classified: Meridian drone. Adversarial check: clean. Broadcast payload generated. Noor watches the data flow through six stages in 47 milliseconds. The Architect's surveillance network has a new adversary."
+  nextLessonTeaser: "Next: testing and validation. Making sure Protocol Sentinel works before it goes live"
 hints:
   - level: nudge
-    content: "Each pipeline stage is middleware — it receives data, processes it, and passes it downstream"
+    content: "Each pipeline stage is middleware: it receives data, processes it, and passes it downstream"
   - level: guidance
     content: "Create a SentinelPipeline class with a use() method that chains stages together"
   - level: solution
@@ -36,18 +36,18 @@ keywords:
 ---
 
 <Dialogue speaker="Amir">
-Architecture is a diagram. Integration is making it real. Every connection between stages is a contract — typed input, typed output, error handling at every boundary. You have done this before, Noor. Think middleware.
+Architecture is a diagram. Integration is making it real. Every connection between stages is a contract. Typed input, typed output, error handling at every boundary. You've done this before, Noor. Think middleware.
 </Dialogue>
 
 <Dialogue speaker="Noor">
-Express middleware. Each function gets the request, does its thing, calls next(). The detection model gets a preprocessed frame, does inference, passes detections downstream. Same pattern — different data.
+Express middleware. Each function gets the request, does its thing, calls next(). The detection model gets a preprocessed frame, does inference, passes detections downstream. Same pattern, different data.
 </Dialogue>
 
 <Dialogue speaker="Zara">
 Except if one stage corrupts its output, every downstream stage fails silently. In a web app, a bad middleware returns a 500. In a surveillance detection system, a bad pipeline stage means Meridian's drones go undetected. Validate between every stage.
 </Dialogue>
 
-You have chained middleware in Express, composed Next.js API routes, and wired up React context providers. Protocol Sentinel's integration follows the same pattern: each ML module is a middleware function that receives typed data, transforms it, and passes the result downstream. The key difference is that you must validate tensor shapes and value ranges between stages — a shape mismatch does not return a helpful error message.
+The first wiring attempt died in stage three. Detection handed the classifier a tensor shaped [1, 13, 13, 5]; the classifier wanted [1, 224, 224, 3]. No stack trace worth reading. Just NaN spreading downstream until the broadcast stage emitted garbage. That is ML integration: the middleware pattern you have chained a hundred times in Express and Next.js API routes, except every connection is a contract you enforce yourself. Each ML module receives typed data, transforms it, and passes the result on. Validate tensor shapes and value ranges between stages, because a shape mismatch does not return a helpful error message.
 
 <LearningObjectives objectives={["Integrate multiple ML models into a unified middleware-style pipeline", "Implement typed data contracts between pipeline stages with runtime validation", "Handle errors and edge cases at stage boundaries without crashing the pipeline", "Compose detection, classification, and adversarial defense into a single end-to-end system"]} />
 
@@ -282,4 +282,4 @@ Build a middleware-style pipeline that integrates multiple processing stages.
 
 <Exercise slug="integrate-pipeline" />
 
-<KeyTakeaways takeaways={["ML pipeline integration follows the Express middleware pattern — each stage receives data, transforms it, and calls next()", "Typed context objects carry data between stages, preventing shape mismatches", "Short-circuiting (not calling next()) handles errors without crashing downstream stages", "Cleanup in middleware (disposing tensors after downstream finishes) prevents memory leaks"]} />
+<KeyTakeaways takeaways={["Each stage receives a context object, transforms it, and calls next(); the full six-stage pass runs in 47 milliseconds", "Typed context objects carry data between stages, preventing shape mismatches", "Short-circuiting (not calling next()) handles errors without crashing downstream stages", "Cleanup in middleware (disposing tensors after downstream finishes) prevents memory leaks"]} />

@@ -7,9 +7,9 @@ order: 2
 estimatedMinutes: 25
 difficulty: beginner
 context:
-  narrative: "Every ML tutorial starts with 'import numpy as np'. NumPy is Python's tensor library — and if you've used Float32Array or tf.tensor, you already understand it."
+  narrative: "Every ML tutorial starts with 'import numpy as np'. NumPy is Python's tensor library, and if you've used Float32Array or tf.tensor, you already understand it."
 concept:
-  explanation: "NumPy ndarrays and TensorFlow.js tensors are the same concept — typed, shaped, contiguous memory buffers with vectorized math operations."
+  explanation: "NumPy ndarrays and TensorFlow.js tensors are the same concept: typed, shaped, contiguous memory buffers with vectorized math operations."
   bridge:
     feTitle: "Float32Array + Array methods"
     feCode: "const a = new Float32Array([1,2,3]); a.map(x => x * 2)"
@@ -18,15 +18,15 @@ concept:
     tier: structural
     breaks: "`Float32Array + .map` is a JS-iterating function-per-element loop. NumPy `ndarray * 2` is a vectorized C-level broadcast that runs 10–100× faster on the same op and supports n-dimensional indexing/slicing JS arrays cannot express. The conceptual rhyme holds; the performance and API surface do not."
 consequence:
-  narrative: "You can now read NumPy code fluently. Every np.zeros is tf.zeros, every np.reshape is tf.reshape. The translation is nearly mechanical."
+  narrative: "np.zeros is tf.zeros, np.reshape is tf.reshape; the translation is nearly mechanical. Keep the mapping table open for your first week of reading NumPy. After that you won't need it."
   nextLessonTeaser: "Next: PyTorch models are TensorFlow.js models with different syntax"
 hints:
   - level: nudge
-    content: "NumPy broadcasting works exactly like tf.js broadcasting"
+    content: "The broadcasting rules you learned for tf.js apply unchanged in NumPy: align trailing dimensions, stretch any dimension of size 1"
   - level: guidance
     content: "np.array maps to tf.tensor, np.reshape maps to tf.reshape"
   - level: solution
-    content: "Every NumPy operation has a TF.js equivalent — the API names are nearly identical"
+    content: "Every NumPy operation has a TF.js equivalent; the API names are nearly identical"
 keywords:
   - numpy
   - typed-array
@@ -143,4 +143,4 @@ Translate NumPy operations to their TensorFlow.js equivalents.
 
 <Exercise slug="numpy-to-tfjs" />
 
-<KeyTakeaways takeaways={["NumPy ndarrays and TF.js tensors are the same concept — typed, shaped number buffers", "Creation functions map almost 1:1: np.zeros → tf.zeros, np.ones → tf.ones", "Broadcasting rules are identical in both libraries", "Shape tuples (3, 4) in NumPy become shape arrays [3, 4] in TF.js"]} />
+<KeyTakeaways takeaways={["NumPy ndarrays and TF.js tensors are the same concept: typed, shaped number buffers", "Creation functions map almost 1:1: np.zeros → tf.zeros, np.ones → tf.ones", "Broadcasting rules are identical in both libraries", "Shape tuples (3, 4) in NumPy become shape arrays [3, 4] in TF.js"]} />

@@ -10,19 +10,19 @@ context:
   narrative: "You've learned the individual pieces. Now assemble them into a reusable ethics review process."
   speaker: "Instructor"
 concept:
-  explanation: "An ML ethics checklist is a structured review process — like a pull request checklist that ensures every model meets standards for data quality, fairness, interpretability, and deployment safety."
+  explanation: "An ML ethics checklist is a structured review process, like a pull request checklist that ensures every model meets standards for data quality, fairness, interpretability, and deployment safety."
   bridge:
     feTitle: "Pull Request Review Checklist"
     feCode: "// PR checklist: tests pass, a11y checked, perf budget met, docs updated"
     mlTitle: "ML Ethics Checklist"
     mlCode: "// Ethics checklist: data audited, fairness tested, model explained, impact assessed"
     tier: structural
-    breaks: "Both are checklists. PR checklists verify deterministic technical properties (tests, perf, docs). Ethics checklists evaluate distributional harms across populations the developer may not be in — the items are non-binary, require stakeholder consultation, and have no automated verification. Same artifact shape, different evidence requirements."
+    breaks: "Both are checklists. PR checklists verify deterministic technical properties (tests, perf, docs). Ethics checklists evaluate distributional harms across populations the developer may not be in; the items are non-binary, require stakeholder consultation, and have no automated verification. Same artifact shape, different evidence requirements."
 consequence:
-  narrative: "You now have a practical, reusable ethics review process for every ML project you build."
+  narrative: "The checklist you built is typed, executable, and ready to drop into your next project's pipeline. Whether it stays a deployment gate or decays into a suggestion is up to your team."
 hints:
   - level: nudge
-    content: "Think about what checks you'd want at each stage: data, training, evaluation, deployment"
+    content: "Your checklist type needs one category per pipeline stage: data, training, evaluation, deployment. Write those four first"
   - level: guidance
     content: "Structure the checklist with categories and individual check items with pass/fail status"
   - level: solution
@@ -38,7 +38,7 @@ keywords:
 Over the last four lessons, you've learned to audit datasets for bias, measure fairness with metrics, interpret model predictions, and assess deployment risk. Now it's time to package all of that into something you'll actually use: a reusable ethics checklist.
 </Dialogue>
 
-As a frontend developer, you know the power of checklists. Your team probably has a PR review checklist: tests pass, no accessibility regressions, performance budget met, documentation updated. Nobody relies on memory alone for quality assurance. Your ML projects deserve the same rigor.
+Sixteen checks across five phases. That's the whole artifact this capstone produces, and every line of it traces back to one of the previous four lessons. Your team probably already runs a PR review checklist: tests pass, no accessibility regressions, performance budget met, documentation updated. Nobody relies on memory alone for quality assurance, and your ML projects shouldn't either.
 
 <LearningObjectives objectives={["Combine dataset auditing, fairness metrics, interpretability, and deployment review into a single checklist", "Build a typed, executable ethics checklist in TypeScript", "Understand when each check should be applied in the ML lifecycle", "Create a reusable template for future ML projects"]} />
 
@@ -248,11 +248,11 @@ const ethicsTemplate: CheckItem[] = [
 
 The best checklist is one you actually use. Here are three tips from the frontend world:
 
-1. **Automate what you can.** Just like CI runs your tests and linting automatically, automate fairness metric computation and representation audits in your training pipeline.
+1. Automate what you can. CI already runs your tests and linting without being asked; fairness metric computation and representation audits belong in the training pipeline the same way.
 
-2. **Make it a gate, not a suggestion.** Your PR can't merge without passing tests. Your model shouldn't deploy without passing ethics review.
+2. Treat the review as a merge gate. Your PR can't merge without passing tests, and your model shouldn't deploy without passing ethics review.
 
-3. **Review and iterate.** Your PR checklist evolves as you learn from production incidents. Your ethics checklist should too.
+3. The checklist itself needs maintenance. Your PR checklist evolves as you learn from production incidents, and your ethics checklist should evolve the same way.
 
 ## Challenge
 
@@ -260,4 +260,4 @@ Build a complete ethics checklist for an ML project and run the review.
 
 <Exercise slug="build-ethics-checklist" />
 
-<KeyTakeaways takeaways={["An ML ethics checklist is a PR review checklist for responsible AI", "Five phases: data sourcing, training, evaluation, deployment, monitoring", "Automate what you can — fairness metrics and representation audits should be in your pipeline", "Make ethics review a deployment gate, not an optional step", "Iterate on your checklist as you learn from real-world outcomes"]} />
+<KeyTakeaways takeaways={["An ML ethics checklist is a PR review checklist for responsible AI", "Five phases: data sourcing, training, evaluation, deployment, monitoring", "Automate what you can: fairness metrics and representation audits should be in your pipeline", "Make ethics review a deployment gate, not an optional step", "Iterate on your checklist as you learn from real-world outcomes"]} />

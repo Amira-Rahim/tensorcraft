@@ -42,7 +42,7 @@ Manual testing is how systems fail in production. You will automate everything: 
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
-Same as any web app CI — GitHub Actions, test on push, deploy on merge to main. I just need to add model-specific checks: accuracy thresholds, inference speed benchmarks, memory budget validation.
+Same as any web app CI: GitHub Actions, test on push, deploy on merge to main. I just need to add model-specific checks: accuracy thresholds, inference speed benchmarks, memory budget validation.
 </Dialogue>
 
 You've set up GitHub Actions for web apps: lint, test, build, deploy. ML CI/CD extends this with model-specific gates: does the model still meet accuracy thresholds? Is inference fast enough? Does it fit in the memory budget? Same workflow engine, additional validation steps.

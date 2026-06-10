@@ -7,7 +7,7 @@ order: 1
 estimatedMinutes: 25
 difficulty: beginner
 context:
-  narrative: "Samir arrives at The Grid — a converted warehouse district humming with creative energy — to join the Nova Collective for the Global Biennale exhibition."
+  narrative: "Samir arrives at The Grid (a converted warehouse district humming with creative energy) to join the Nova Collective for the Global Biennale exhibition."
   speaker: "Yara"
 concept:
   explanation: "Generative AI creates new data that resembles training data, rather than classifying or labeling existing data. It learns the underlying distribution and samples from it."
@@ -18,11 +18,11 @@ concept:
     mlCode: "const sample = model.predict(tf.randomNormal([1, 100]))"
     tier: intuition
 consequence:
-  narrative: "Samir sees the difference — not sorting art into categories, but conjuring entirely new pieces from learned patterns."
+  narrative: "Samir sees the difference: not sorting art into categories, but conjuring entirely new pieces from learned patterns."
   nextLessonTeaser: "Next: the mathematical foundations that make generation possible"
 hints:
   - level: nudge
-    content: "Think about what Math.random() does — it creates new values, not labels for existing ones"
+    content: "Compare model.predict(tf.randomNormal([1, 100])) with classifier.predict(imageData): one consumes noise and emits new data, the other consumes existing data and emits a label"
   - level: guidance
     content: "A discriminative model maps input to a label. A generative model maps noise to new data."
   - level: solution
@@ -39,14 +39,14 @@ Welcome to The Grid, Samir. You're standing in ten thousand square feet of raw p
 </Dialogue>
 
 <Dialogue speaker="Erdem">
-In the browser, on hardware we do not control. The venue has 40 kiosk machines — mid-range laptops with integrated GPUs. Whatever we build must run there.
+In the browser, on hardware we don't control. The venue has 40 kiosk machines: mid-range laptops with integrated GPUs. Whatever we build must run there.
 </Dialogue>
 
 <Dialogue speaker="MUSE">
-Every masterpiece begins with a single gradient update.
+Before Yara retrained me, I answered one question per image: landscape or not, a single number out. Now I emit 784 pixels nobody has seen before. Same layers. The only thing she changed was my loss function.
 </Dialogue>
 
-You have spent your frontend career building interfaces that respond to data — rendering API responses, sorting lists, filtering search results. All of that is about working with data that already exists. Generative AI flips the script entirely. It creates data that has never existed.
+You have spent your frontend career building interfaces that respond to data: rendering API responses, sorting lists, filtering search results. All of that is about working with data that already exists. Generative AI works in the other direction. It creates data that has never existed.
 
 <LearningObjectives objectives={["Understand the difference between generative and discriminative models", "Recognize how controlled randomness in frontend maps to generation in ML", "Identify the input and output of a generative model", "Set up TensorFlow.js for generative experiments"]} />
 
@@ -56,7 +56,7 @@ Every ML model you have heard about falls into one of two camps. A **discriminat
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-You already use controlled randomness in frontend code. Every time you call `Math.random()` to generate a procedural color, a particle effect, or a placeholder avatar, you are doing the conceptual equivalent of what a generative model does — producing something new from a source of randomness. The difference is that a generative model has *learned* what "good" output looks like.
+You already use controlled randomness in frontend code. Every time you call `Math.random()` to generate a procedural color, a particle effect, or a placeholder avatar, you are doing the conceptual equivalent of what a generative model does: producing something new from a source of randomness. The difference is that a generative model has *learned* what "good" output looks like.
 
 <CodeBlock language="typescript" title="generative-vs-discriminative.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -86,7 +86,7 @@ function generateParticle() {
 
 ## The Core Idea
 
-A generative model learns a probability distribution from training data. Once trained, you sample from that distribution to create new instances. The model does not memorize and replay — it captures the *structure* and *statistics* of the data, then produces novel outputs that share those properties.
+A generative model learns a probability distribution from training data. Once trained, you sample from that distribution to create new instances. The model does not memorize and replay. It captures the *structure* and *statistics* of the data, then produces novel outputs that share those properties.
 
 <CodeBlock language="typescript" title="simple-generation.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -118,7 +118,7 @@ console.log(await newSamples.array());
 
 `p(label | data) = p(data | label) · p(label) / p(data)`
 
-A full generative model (p(data | label) + p(label)) lets you compute both directions. Discriminative models skip this and learn p(label | data) directly — cheaper, more accurate when you only need classification.
+A full generative model (p(data | label) + p(label)) lets you compute both directions. Discriminative models skip this and learn p(label | data) directly: cheaper, more accurate when you only need classification.
 
 **When generative is the right tool:**
 - You need new samples (image generation, music, text)
@@ -127,4 +127,4 @@ A full generative model (p(data | label) + p(label)) lets you compute both direc
 - You need to handle missing data (impute by conditional sampling)
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["Generative models create new data; discriminative models classify existing data", "Generation starts from randomness and shapes it into structured output", "Frontend procedural generation is a conceptual bridge to ML generation", "TensorFlow.js lets you build generative models that run in the browser"]} />
+<KeyTakeaways takeaways={["Generative models create new data; discriminative models classify existing data", "Generation starts from randomness and shapes it into structured output", "The simplest generative model is learned statistics: sample tf.randomNormal, multiply by the data's std, add the mean", "TensorFlow.js lets you build generative models that run in the browser"]} />

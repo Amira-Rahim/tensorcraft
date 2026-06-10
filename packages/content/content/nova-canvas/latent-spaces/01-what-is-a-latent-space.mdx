@@ -7,7 +7,7 @@ order: 1
 estimatedMinutes: 25
 difficulty: beginner
 context:
-  narrative: "Yara takes Samir through her material library — shelves of pigments, textures, and media organized by hidden properties. This is the physical analogy to a latent space."
+  narrative: "Yara takes Samir through her material library: shelves of pigments, textures, and media organized by hidden properties. This is the physical analogy to a latent space."
   speaker: "Yara"
 concept:
   explanation: "A latent space is a compressed, lower-dimensional representation of data where similar items are near each other. Encoding maps data into this space; decoding maps it back out."
@@ -18,11 +18,11 @@ concept:
     mlCode: "const z = encoder.predict(image) // [784] → [16]"
     tier: structural
 consequence:
-  narrative: "Samir sees that beneath the surface of every image is a compact code — a position in latent space that captures its essence."
+  narrative: "Samir sees that beneath the surface of every image is a compact code, a position in latent space that captures its essence."
   nextLessonTeaser: "Next: how many dimensions does your latent space need?"
 hints:
   - level: nudge
-    content: "Think of a URL shortener — it encodes long URLs into short codes that can be decoded back"
+    content: "encoder.predict(image) takes a [784] tensor down to [16]; the decoder's whole job is rebuilding all 784 values from those 16"
   - level: guidance
     content: "An encoder compresses high-dimensional data to low-dimensional. A decoder reverses it."
   - level: solution
@@ -35,14 +35,14 @@ keywords:
 ---
 
 <Dialogue speaker="Yara">
-Come with me to the material library. See how I organize pigments — not by name or bottle shape, but by hue, opacity, and granularity. Three numbers describe each pigment better than any label. That is a latent space. Every material has a position in it.
+Come with me to the material library. See how I organize pigments: not by name or bottle shape, but by hue, opacity, and granularity. Three numbers describe each pigment better than any label. That is a latent space. Every material has a position in it.
 </Dialogue>
 
 <Dialogue speaker="MUSE">
-The visible is vast. The latent is compact. Between them lies understanding.
+Yara's sketch reached me as 784 numbers. I filed it under 16. When I redraw it from those 16, the linework survives and the paper grain doesn't. I wonder what I'd lose at 8.
 </Dialogue>
 
-A URL shortener takes a long URL and compresses it into a short code. The short code is not random — it encodes the original URL in a way that can be reversed. A latent space works exactly the same way, but for images, sounds, or any complex data.
+A URL shortener takes a long URL and compresses it into a short code. The short code is not random. It encodes the original URL in a way that can be reversed. A latent space works exactly the same way, but for images, sounds, or any complex data.
 
 <LearningObjectives objectives={["Understand latent space as compressed representation of data", "Connect the encoder-decoder pattern to URL shortening", "Build a simple encoder that maps data to a lower dimension", "Visualize positions in latent space"]} />
 
@@ -84,7 +84,7 @@ decoder.add(tf.layers.dense({ units: 784, activation: 'sigmoid' }));
 
 ## Why Latent Spaces Matter
 
-The magic is what happens *inside* the latent space. Similar images end up near each other. A face with glasses and a face without glasses might differ by just one dimension. This structure is not designed — it emerges from training.
+The useful part is what happens *inside* the latent space. Similar images end up near each other. A face with glasses and a face without glasses might differ by just one dimension. This structure is not designed. It emerges from training.
 
 <CodeBlock language="typescript" title="latent-similarity.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -122,7 +122,7 @@ A **latent variable** is an unobserved variable inferred from observations. The 
 
 `I(X; z) = H(X) − H(X | z)`     (mutual information)
 
-The encoder maximizes I(X; z) subject to a capacity constraint on z (small dim, or KL penalty). This is the **information bottleneck** — discard noise, keep signal.
+The encoder maximizes I(X; z) subject to a capacity constraint on z (small dim, or KL penalty). This is the **information bottleneck**: discard noise, keep signal.
 
 **Practical consequence:**
 - Small latent dim → forced compression, learns most-salient features (good for downstream tasks).
@@ -130,4 +130,4 @@ The encoder maximizes I(X; z) subject to a capacity constraint on z (small dim, 
 - VAE adds Gaussian prior → latent space is smooth (interpolations decode coherently).
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["A latent space is a compressed representation where similar data points are nearby", "Encoders compress high-dimensional data; decoders reconstruct from the compressed form", "URL shorteners and zip compression are frontend analogies for encoding", "Structure in latent space emerges from training — similar items cluster naturally"]} />
+<KeyTakeaways takeaways={["A latent space is a compressed representation where similar data points are nearby", "Encoders compress high-dimensional data; decoders reconstruct from the compressed form", "The 16-unit bottleneck layer is what forces compression: without it the network can pass inputs through unchanged", "Structure in latent space emerges from training — similar items cluster naturally"]} />

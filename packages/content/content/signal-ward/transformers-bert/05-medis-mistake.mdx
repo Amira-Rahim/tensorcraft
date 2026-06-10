@@ -10,20 +10,20 @@ context:
   narrative: "MEDI flags a resolved condition as active — a dangerous error that forces the team to confront model limitations, failure modes, and the gap between accuracy metrics and clinical safety."
   speaker: "Dr. Zahra Karimi"
 concept:
-  explanation: "Models can hallucinate or misclassify when they encounter edge cases, temporal reasoning gaps, or distributional shifts — understanding failure modes is as critical as understanding architecture."
+  explanation: "Models can hallucinate or misclassify when they encounter edge cases, temporal reasoning gaps, or distributional shifts; understanding failure modes is as critical as understanding architecture."
   bridge:
     feTitle: "Stale Cache Serving Wrong Data"
     feCode: "// Cache returns outdated response after data changed\ncache.get('user-status'); // → 'active' (but user deactivated)"
     mlTitle: "Model Hallucination"
     mlCode: "// Model returns outdated classification despite context change\npredict('diabetes, resolved'); // → 'Active' (ignores 'resolved')"
     tier: structural
-    breaks: "A stale cache serves data the system once knew was correct. Model hallucinations are confidently generated outputs the model never had — the model invents plausible-sounding text from patterns, not from any cached source. There is no underlying 'correct' value to refresh."
+    breaks: "A stale cache serves data the system once knew was correct. Model hallucinations are confidently generated outputs the model never had; the model invents plausible-sounding text from patterns, not from any cached source. There is no underlying 'correct' value to refresh."
 consequence:
-  narrative: "The team implements confidence thresholds, negation detection, and human-in-the-loop safeguards — turning MEDI's failure into a safer system."
+  narrative: "The team implements confidence thresholds, negation detection, and human-in-the-loop safeguards, turning MEDI's failure into a safer system."
   nextLessonTeaser: "Next module: Named Entity Recognition — extracting structured information from unstructured clinical text."
 hints:
   - level: nudge
-    content: "Think about what happens when a cache serves stale data — the model's internal representation is 'stale' for edge cases"
+    content: "High confidence is not evidence the prediction is current: scan for negation words like 'resolved' or 'denied' before trusting the label"
   - level: guidance
     content: "Check prediction confidence, look for negation words, and flag low-confidence results for human review"
   - level: solution
@@ -37,7 +37,7 @@ keywords:
 ---
 
 <Dialogue speaker="MEDI">
-Alert — Priority One. Patient 2847-R: Active condition identified. Type 2 diabetes mellitus. Recommending insulin protocol review.
+Alert: Priority One. Patient 2847-R: Active condition identified. Type 2 diabetes mellitus. Recommending insulin protocol review.
 </Dialogue>
 
 <Dialogue speaker="Dr. Zahra Karimi">
@@ -58,7 +58,7 @@ Your system just recommended an insulin review for a patient whose diabetes reso
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-Every frontend engineer has fought stale caches. You update user data in the database, but the CDN keeps serving the old version. The data changed, but the system's representation didn't. MEDI has the same problem — "Type 2 diabetes" activates strong patterns from training data, and the model's internal representation fails to update when it encounters "resolved."
+MEDI saw "Type 2 diabetes mellitus" and fired. The phrase activates strong patterns from training data, where it almost always marks an active condition, and the single word "resolved" carried too little attention weight to flip the prediction. If the failure shape feels familiar, it is a stale cache: the data changed, the system's representation didn't, and the CDN keeps serving the old version.
 
 <Dialogue speaker="Vikram">
 This is a negation detection failure. MEDI's model learned strong associations: "Type 2 diabetes" maps to "active condition" in the vast majority of training examples. The word "resolved" should invalidate that classification, but the model's attention weights didn't give it enough importance.
@@ -110,7 +110,7 @@ analysis.forEach(a => {
 ## Three Lines of Defense
 
 <Dialogue speaker="Vikram">
-MEDI's error teaches us that accuracy on a test set doesn't guarantee safety in production. We need defense in depth — just like how you wouldn't rely solely on client-side validation in a web app.
+MEDI's error teaches us that accuracy on a test set doesn't guarantee safety in production. We need defense in depth, just as you wouldn't rely solely on client-side validation in a web app.
 </Dialogue>
 
 ### Defense 1: Confidence Thresholds
@@ -253,11 +253,11 @@ console.log(clearResult);
 </CodeBlock>
 
 <Dialogue speaker="Dr. Zahra Karimi">
-So the system doesn't just give an answer — it tells me how confident it is, whether it detected conflicting signals, and whether a human should verify. That's the kind of system I can trust.
+So the system doesn't just give an answer. It tells me how confident it is, whether it detected conflicting signals, and whether a human should verify. That's the kind of system I can trust.
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-In frontend terms, you never trust client input alone — you validate server-side too. In clinical ML, you never trust model output alone — you validate with confidence checks, negation detection, and human review. Defense in depth.
+In frontend terms, you never trust client input alone; you validate server-side too. In clinical ML, you never trust model output alone; you validate with confidence checks, negation detection, and human review. Defense in depth.
 </Dialogue>
 
 ## Challenge
@@ -266,6 +266,6 @@ Build a diagnostic safety pipeline that combines confidence thresholds, negation
 
 <Exercise slug="debug-medi" />
 
-<KeyTakeaways takeaways={["Model hallucination is analogous to a stale cache serving outdated data — the representation doesn't reflect reality", "Negation detection catches cases where context words like 'resolved' or 'denied' invalidate a classification", "Confidence thresholds flag uncertain predictions for human review instead of auto-accepting", "Defense in depth — confidence, negation, human review — is essential for safety-critical ML applications"]} />
+<KeyTakeaways takeaways={["A hallucination has no underlying correct value to refresh: the model invents plausible text from patterns, not from any cached source", "Negation detection catches cases where context words like 'resolved' or 'denied' invalidate a classification", "Confidence thresholds flag uncertain predictions for human review instead of auto-accepting", "Defense in depth — confidence, negation, human review — is essential for safety-critical ML applications"]} />
 
-> **DISPATCH archive · field intercept #18-N:** Hassan's edge fleet caught the same kind of confident hallucination — model surfaced a high-confidence prediction on a sensor that had silently disconnected. The signal was zero, the model was sure. Confidence is not validity; both modalities forget this at scale.
+> **DISPATCH archive · field intercept #18-N:** Hassan's edge fleet caught the same kind of confident hallucination: model surfaced a high-confidence prediction on a sensor that had silently disconnected. The signal was zero, the model was sure. Confidence is not validity; both modalities forget this at scale.

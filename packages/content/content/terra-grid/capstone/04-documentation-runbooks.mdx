@@ -10,17 +10,17 @@ context:
   narrative: "Hassan insists on operational documentation. 'This system will be maintained by people who did not build it. If they cannot understand it from the documentation alone, we have failed. Write runbooks for every operational scenario.'"
   speaker: "Hassan Al-Rashid"
 concept:
-  explanation: "Operational runbooks document step-by-step procedures for common and emergency scenarios — the same playbook approach used for web application incident response."
+  explanation: "Operational runbooks document step-by-step procedures for common and emergency scenarios, the same playbook approach used for web application incident response."
   bridge:
     feTitle: "Runbook Creation"
     feCode: "// Runbook: 'High CPU Alert' → check top → identify process → scale/restart"
     mlTitle: "ML Runbook"
     mlCode: "// Runbook: 'Model Drift Alert' → check metrics → compare baseline → retrain/rollback"
     tier: structural
-    breaks: "On-call runbooks for web services have deterministic remediation steps you can rehearse. ML runbooks have remediation classes (retrain / recalibrate / rollback / accept) but choosing the right one requires diagnosis you cannot pre-script — drift type, severity, business cost. The runbook structure transfers; the decision tree at each step has more branches and harder evidence requirements."
+    breaks: "On-call runbooks for web services have deterministic remediation steps you can rehearse. ML runbooks have remediation classes (retrain / recalibrate / rollback / accept) but choosing the right one requires diagnosis you cannot pre-script: drift type, severity, business cost. The runbook structure transfers; the decision tree at each step has more branches and harder evidence requirements."
 consequence:
   narrative: "The documentation covers 12 runbooks: model deployment, rollback, drift response, federated learning sync, security incident, device failure, and 6 more. Tariq reviews them from the field. 'I could hand these to a new engineer and they could operate the system by day two.'"
-  nextLessonTeaser: "Next: global launch — deploying Terra Grid Intelligence to all 47 sites"
+  nextLessonTeaser: "Next: global launch, deploying Terra Grid Intelligence to all 47 sites"
 hints:
   - level: nudge
     content: "A runbook has a trigger condition, step-by-step actions, verification checks, and escalation paths"
@@ -43,7 +43,7 @@ Six months from now, someone who has never seen this codebase will get paged at 
 Same as any on-call runbook for web infrastructure. Alert fires, engineer opens the runbook, follows the steps, verifies each action, escalates if needed. The only difference is the steps involve model metrics instead of server metrics.
 </Dialogue>
 
-You have written runbooks for web operations: "If CPU exceeds 90%, check top, identify the process, scale horizontally or restart." ML runbooks follow the same structure but address model-specific scenarios: drift detection, accuracy degradation, failed federated learning rounds, adversarial input alerts. Each runbook has a trigger, steps, verification commands, and an escalation path.
+A runbook is four fields: a trigger condition, ordered steps, a verification command per step, and an escalation path. That structure is exactly what you wrote for web operations ("If CPU exceeds 90%, check top, identify the process, scale horizontally or restart"). What fills the fields here is different: drift alerts, accuracy degradation, failed federated learning rounds, adversarial inputs. The test of a good runbook is whether the steps survive contact with a half-awake stranger.
 
 <LearningObjectives objectives={["Design operational runbooks for edge ML systems", "Structure runbooks with trigger conditions, steps, verifications, and escalation", "Create model cards that document model behavior, limitations, and intended use", "Build a documentation system that stays in sync with the deployed system"]} />
 
@@ -153,4 +153,4 @@ Build a runbook registry with checklist generation.
 
 <Exercise slug="write-runbook" />
 
-<KeyTakeaways takeaways={["ML runbooks follow the same structure as web ops playbooks — trigger, steps, verification, escalation", "Every operational scenario needs a documented procedure — the 2 AM engineer should never have to guess", "Model cards document model behavior, limitations, and intended use for stakeholders", "Runbooks must be tested regularly — an outdated runbook is worse than no runbook"]} />
+<KeyTakeaways takeaways={["A runbook is a trigger condition, ordered steps, verification commands, and an escalation path; no step should require judgment at 2 AM", "Every operational scenario needs a documented procedure — the 2 AM engineer should never have to guess", "Model cards document model behavior, limitations, and intended use for stakeholders", "Runbooks must be tested regularly — an outdated runbook is worse than no runbook"]} />

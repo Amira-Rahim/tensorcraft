@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { THEME_CONTENT, THEME_SLUGS } from "@tensorcraft/shared";
 
 export const metadata: Metadata = {
   title: "About Tensorcraft | Why this course exists",
@@ -27,8 +28,7 @@ export default function AboutPage() {
               "@type": "EducationalOrganization",
               name: "Tensorcraft",
               url: "https://tensorcraft.app",
-              description:
-                "Browser-based machine learning course for frontend developers. JavaScript / TensorFlow.js. 297 lessons across 5 themes.",
+              description: `Browser-based machine learning course for frontend developers. JavaScript / TensorFlow.js. ${THEME_CONTENT.totalLessonsPerTheme * THEME_SLUGS.length} lessons across ${THEME_SLUGS.length} themes.`,
             },
           }),
         }}

@@ -7,7 +7,7 @@ order: 3
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "Samir hits a wall — you cannot backpropagate through random sampling. Rohan explains the reparameterization trick using an analogy from seeded random number generators."
+  narrative: "Samir hits a wall: you cannot backpropagate through random sampling. Rohan explains the reparameterization trick using an analogy from seeded random number generators."
   speaker: "Rohan"
 concept:
   explanation: "The reparameterization trick moves randomness outside the gradient computation path. Instead of sampling z directly, compute z = mu + sigma * epsilon where epsilon is fixed random noise."
@@ -17,10 +17,10 @@ concept:
     mlTitle: "Reparameterization"
     mlCode: "z = mu + exp(logVar * 0.5) * epsilon  // epsilon is external noise"
     tier: structural
-    breaks: "Seeded random is a tool for reproducibility. The reparameterization trick is a math hack to make stochastic sampling differentiable — without it, gradients cannot flow through the sample step. The trick is structural to training, not a debugging convenience."
+    breaks: "Seeded random is a tool for reproducibility. The reparameterization trick is a math hack to make stochastic sampling differentiable. Without it, gradients cannot flow through the sample step. The trick is structural to training, not a debugging convenience."
 consequence:
-  narrative: "The trick works — gradients flow through mu and logVar while epsilon provides the randomness. The VAE can now train end-to-end."
-  nextLessonTeaser: "Next: KL divergence — the regularizer that keeps the latent space well-organized"
+  narrative: "The trick works: gradients flow through mu and logVar while epsilon provides the randomness. The VAE can now train end-to-end."
+  nextLessonTeaser: "Next: KL divergence: the regularizer that keeps the latent space well-organized"
 hints:
   - level: nudge
     content: "You cannot take the derivative of a random number. But you CAN take the derivative of mu + sigma * constant."
@@ -41,10 +41,10 @@ Here is the problem. You need to sample from the distribution to generate output
 </Dialogue>
 
 <Dialogue speaker="MUSE">
-The trick is ancient and elegant: do not sample from the distribution. Instead, sample from a fixed source of noise and transform it.
+I hit this wall in my own training. The gradient couldn't pass through my sampling step, so my encoder weights got nothing to learn from. The workaround: I draw epsilon from N(0, 1) outside the network and only learn the mu and sigma I scale it with. Gradients route around the randomness. It still feels like a loophole to me.
 </Dialogue>
 
-In frontend development, a seeded random number generator separates the *source of randomness* (the seed) from the *computation* that uses it. The computation is deterministic given a fixed seed — and therefore differentiable. The reparameterization trick applies this same separation to VAE training.
+In frontend development, a seeded random number generator separates the *source of randomness* (the seed) from the *computation* that uses it. The computation is deterministic given a fixed seed, and therefore differentiable. The reparameterization trick applies this same separation to VAE training.
 
 <LearningObjectives objectives={["Understand why random sampling blocks gradient flow", "Implement the reparameterization trick in TensorFlow.js", "Connect seeded randomness to the concept of external noise", "Build a custom sampling layer for a VAE"]} />
 
@@ -123,14 +123,14 @@ function buildVAE(inputDim: number, latentDim: number) {
 
 ## Why It Works
 
-The key insight is that `z = mu + sigma * epsilon` is a deterministic function of `mu`, `sigma`, and `epsilon`. Since `epsilon` is sampled *before* the computation, it acts like a constant during backpropagation. Gradients flow cleanly through `mu` and `sigma`.
+`z = mu + sigma * epsilon` is a deterministic function of `mu`, `sigma`, and `epsilon`. Since `epsilon` is sampled *before* the computation, it acts like a constant during backpropagation. Gradients flow cleanly through `mu` and `sigma`.
 
 ## Challenge
 
 <Exercise slug="reparameterize" />
 
 <DerivationDrawer summary="Why reparameterization is required for backprop">
-VAE encoder outputs `μ(x), σ(x)` — parameters of a distribution. To compute the loss we need a sample `z ~ N(μ, σ²)`. But **sampling is non-differentiable** — there's no gradient through a random number.
+VAE encoder outputs `μ(x), σ(x)` — parameters of a distribution. To compute the loss we need a sample `z ~ N(μ, σ²)`. But **sampling is non-differentiable**: there's no gradient through a random number.
 
 **The trick:** rewrite the sample as a deterministic function of μ, σ, and a noise variable ε ~ N(0, 1):
 

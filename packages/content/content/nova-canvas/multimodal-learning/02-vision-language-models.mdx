@@ -10,9 +10,9 @@ context:
   narrative: "Samir shows MUSE an image of a sunset. 'What do you see?' The model outputs a vector. 'Now describe it.' Silence. 'It sees,' Samir explains, 'but it cannot speak. We need to connect vision to language. Like connecting an img tag to its alt text — the image and its description are linked.'"
   speaker: "Samir"
 concept:
-  explanation: "Vision-language models connect image understanding and text generation — like the relationship between an img element and its alt attribute. The image and its text description are two representations of the same thing."
+  explanation: "Vision-language models connect image understanding and text generation, like the relationship between an img element and its alt attribute. The image and its text description are two representations of the same thing."
   bridge:
-    feTitle: "img alt='...' — text describing images"
+    feTitle: "img alt='...': text describing images"
     feCode: "<img src='sunset.jpg' alt='A golden sunset over the ocean' />"
     mlTitle: "Vision-language model"
     mlCode: "const caption = visionLanguageModel(image); // 'A golden sunset...'"
@@ -20,10 +20,10 @@ concept:
     breaks: "Alt-text is author-written description bound to one image at publish time. Vision-language models generate captions from learned cross-modal alignment and routinely hallucinate objects not in the image, miss salient details (especially small or partially-occluded), or describe a related image instead. Model output must be filtered through human review for accessibility-critical use cases."
 consequence:
   narrative: "MUSE processes the sunset image and outputs: 'warm colors, horizon line, city silhouette.' Not poetic. Not wrong. Yara laughs: 'It has the vocabulary of a real estate listing. But it can see and speak. That is a start.'"
-  nextLessonTeaser: "Next: cross-modal embeddings — building a shared representation space"
+  nextLessonTeaser: "Next: cross-modal embeddings: building a shared representation space"
 hints:
   - level: nudge
-    content: "Alt text describes what an image shows. Vision-language models learn this connection automatically."
+    content: "The diagonal of tf.matMul(normImages, normTexts, false, true) holds the matched pairs; training pushes those entries higher than the rest of each row."
   - level: guidance
     content: "Encode images and their captions into a shared space. Train so that matched pairs are close, mismatched pairs are far apart."
   - level: solution
@@ -37,7 +37,7 @@ keywords:
 ---
 
 <Dialogue speaker="Samir">
-Every `img` tag should have an `alt` attribute — text that describes the image. This is the fundamental vision-language connection: the same concept expressed in two modalities. What we see and what we say about what we see.
+Every `img` tag should have an `alt` attribute: text that describes the image. This is the fundamental vision-language connection: the same concept expressed in two modalities. What we see and what we say about what we see.
 </Dialogue>
 
 <Dialogue speaker="Yara">
@@ -45,10 +45,10 @@ So training a vision-language model is like building a massive dataset of images
 </Dialogue>
 
 <Dialogue speaker="Samir">
-Exactly. Millions of image-caption pairs. The model learns that a picture of a sunset and the words "a golden sunset over the ocean" are the same concept in two different languages.
+Half of it, yes. Millions of image-caption pairs, and the model learns that a sunset photo and "a golden sunset over the ocean" are the same concept in two languages. But here's where the alt-text picture misleads: alt text is written by an author who looked at the image. A model generates from learned alignment, and it'll cheerfully describe a dog that isn't there or skip the small detail that matters. For accessibility work, a human still reviews every caption.
 </Dialogue>
 
-You already connect images and text every time you write an `alt` attribute. Vision-language models learn this connection at scale — millions of image-caption pairs, encoded into a shared space where the image embedding and the text embedding of its description are neighbors.
+You already connect images and text every time you write an `alt` attribute. Vision-language models learn this connection at scale: millions of image-caption pairs, encoded into a shared space where the image embedding and the text embedding of its description are neighbors.
 
 <LearningObjectives objectives={["Understand how vision-language models connect image and text understanding", "Implement cosine similarity to measure alignment between image and text embeddings", "Train with contrastive loss: matched pairs close, mismatched pairs far", "Connect the image-text relationship to HTML img alt attributes"]} />
 
@@ -113,6 +113,6 @@ Implement cosine similarity between image and text embeddings.
 
 <Exercise slug="vision-language" />
 
-<KeyTakeaways takeaways={["Vision-language models connect images and text, like img elements and their alt attributes", "Cosine similarity measures how aligned two embeddings are in the shared space", "Contrastive loss pushes matched image-text pairs together and mismatched pairs apart", "After training, the model understands that a sunset photo and the words 'sunset' are the same concept"]} />
+<KeyTakeaways takeaways={["Generated captions hallucinate: route them through human review before using them as real alt text", "Cosine similarity measures how aligned two embeddings are in the shared space", "Contrastive loss pushes matched image-text pairs together and mismatched pairs apart", "After training, the model understands that a sunset photo and the words 'sunset' are the same concept"]} />
 
-> **DISPATCH archive · field intercept #31-G:** Dr. Amara's clinical RAG uses cross-modal in the opposite direction — images of dermatology presentations matched to text records. Same contrastive loss, much higher stakes for misalignment. Yara's mismatched embedding becomes a confused painting; Amara's mismatched embedding becomes a wrong diagnosis.
+> **DISPATCH archive · field intercept #31-G:** Dr. Amara's clinical RAG uses cross-modal in the opposite direction: images of dermatology presentations matched to text records. Same contrastive loss, much higher stakes for misalignment. Yara's mismatched embedding becomes a confused painting; Amara's mismatched embedding becomes a wrong diagnosis.

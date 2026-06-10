@@ -18,11 +18,11 @@ concept:
     tier: structural
     breaks: "Array of objects + .map/.filter/.reduce iterates row-by-row in JS-land. Pandas DataFrames are columnar with vectorized ops in C; equivalent operations are 10–100× faster but require thinking in columns, not rows."
 consequence:
-  narrative: "You can now read pandas data preprocessing code. df['col'] is like row.col, df[condition] is .filter(), and .apply() is .map(). Data wrangling translates directly."
+  narrative: "A pandas pipeline is a .filter().map() chain in different clothes: df[condition] filters, .apply() maps, df['col'] selects. The one thing that doesn't translate is the speed. pandas does it columnar, in C."
   nextLessonTeaser: "Next: how to read ML papers and navigate PyTorch repos"
 hints:
   - level: nudge
-    content: "Think of a DataFrame as a spreadsheet you manipulate with code"
+    content: "Run df.head() first: it prints rows and named columns like a spreadsheet, and df['col'] addresses one column"
   - level: guidance
     content: "df['column'] is like data.map(row => row.column)"
   - level: solution
@@ -35,7 +35,7 @@ keywords:
 ---
 
 <Dialogue speaker="Instructor">
-You've filtered arrays, mapped over objects, reduced datasets to summaries, and grouped items by category — all in JavaScript. A pandas DataFrame is that same toolkit, optimized for tabular data. If you can chain .map().filter().reduce(), you can read pandas code.
+You've filtered arrays, mapped over objects, reduced datasets to summaries, and grouped items by category, all in JavaScript. A pandas DataFrame is that same toolkit, optimized for tabular data. If you can chain .map().filter().reduce(), you can read pandas code.
 </Dialogue>
 
 Before data reaches a model, it goes through wrangling: cleaning, transforming, splitting, normalizing. In Python, that's pandas. In JavaScript, that's the array methods you use every day. This lesson maps every common pandas operation to its JavaScript equivalent.

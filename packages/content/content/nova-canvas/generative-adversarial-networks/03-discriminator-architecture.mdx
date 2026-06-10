@@ -7,7 +7,7 @@ order: 3
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Samir builds the discriminator — the critic network that judges whether art is real or generated. Yara compares it to gallery curation: examining every detail for authenticity."
+  narrative: "Samir builds the discriminator, the critic network that judges whether art is real or generated. Yara compares it to gallery curation: examining every detail for authenticity."
   speaker: "Yara"
 concept:
   explanation: "The discriminator is a binary classifier that takes an image and outputs a probability of it being real. It progressively compresses the input down to a single decision."
@@ -19,11 +19,11 @@ concept:
     tier: structural
     breaks: "Form validation runs hand-written rules against user input. Discriminators learn to distinguish real from generated samples and the decision boundary is implicit, dataset-dependent, and shifts as the generator improves during training."
 consequence:
-  narrative: "The critic network is complete. Samir now has both halves of the GAN — a creator and a judge, ready to train together."
-  nextLessonTeaser: "Next: the adversarial training loop — making both networks dance"
+  narrative: "The critic network is complete. Samir now has both halves of the GAN: a creator and a judge, ready to train together."
+  nextLessonTeaser: "Next: the adversarial training loop: making both networks dance"
 hints:
   - level: nudge
-    content: "Form validation examines input and returns valid/invalid — the discriminator does the same for images"
+    content: "Form validation examines input and returns valid/invalid. The discriminator does the same for images"
   - level: guidance
     content: "Mirror the generator but in reverse: 784 → 512 → 256 → 1"
   - level: solution
@@ -36,11 +36,11 @@ keywords:
 ---
 
 <Dialogue speaker="Yara">
-A good curator does not just say "I like it" or "I don't." They examine the brushwork, the composition, the palette, the texture — every layer of detail. Then they render a verdict. Your discriminator must do the same. It examines the image layer by layer, extracting features, until it can say with confidence: real or fake.
+A good curator doesn't just say "I like it" or "I don't." They examine the brushwork, the composition, the palette, the texture. Every layer of detail. Then they render a verdict. Your discriminator must do the same. It examines the image layer by layer, extracting features, until it can say with confidence: real or fake.
 </Dialogue>
 
 <Dialogue speaker="MUSE">
-The critic's eye sharpens with every forgery it catches. And every forgery it misses.
+The discriminator caught 9 of my last 10 forgeries. The one that got through had softer edges and lower contrast than my usual output. I'm keeping notes on what fools it. That list is my curriculum.
 </Dialogue>
 
 The discriminator is the mirror image of the generator. Where the generator *expands* noise into an image, the discriminator *compresses* an image into a single number: the probability that the input is real.
@@ -91,7 +91,7 @@ discriminator.compile({
 
 ## Why Dropout Matters
 
-Dropout randomly deactivates neurons during training. For discriminators, this is critical — without it, the discriminator learns too fast and the generator cannot keep up.
+Dropout randomly deactivates neurons during training. For discriminators, this is critical: without it, the discriminator learns too fast and the generator cannot keep up.
 
 <CodeBlock language="typescript" title="dropout-balance.ts">
 {`import * as tf from '@tensorflow/tfjs';

@@ -7,7 +7,7 @@ order: 5
 estimatedMinutes: 30
 difficulty: intermediate
 context:
-  narrative: "You've learned the syntax. Now it's time for the ultimate test: reading real ML papers and their code. It sounds intimidating, but papers follow a formula — and now you know enough to decode them."
+  narrative: "You've learned the syntax. Now it's time for the ultimate test: reading real ML papers and their code. It sounds intimidating, but papers follow a formula, and now you know enough to decode them."
 concept:
   explanation: "ML papers follow a predictable structure, and their PyTorch implementations follow predictable patterns. Knowing where to look makes them readable."
   bridge:
@@ -18,12 +18,12 @@ concept:
     tier: structural
     breaks: "Technical blog posts ship runnable code with a current dependency manifest. ML papers use math notation, omit code, assume reader knowledge of cited results, and report experiments whose hyperparameters and seeds are often unrecoverable. Reproducing a paper takes weeks, not a `git clone`."
 consequence:
-  narrative: "You now have a complete bridge from frontend to the Python ML ecosystem. You can read papers, navigate repos, and understand the code. The gap between frontend and ML was never as wide as it seemed."
+  narrative: "Papers, repos, notebooks: the whole Python ML ecosystem is readable to you now. The gap between frontend and ML was never as wide as it seemed. Pick one paper off this week's arXiv and test that claim."
 hints:
   - level: nudge
     content: "Start with the abstract and figures, then jump to the model definition in code"
   - level: guidance
-    content: "In the repo, look for model.py or net.py — that's where the architecture lives"
+    content: "In the repo, look for model.py or net.py; that's where the architecture lives"
   - level: solution
     content: "Map each nn.Module class to layers you know, then read forward() for the data flow"
 keywords:
@@ -34,10 +34,10 @@ keywords:
 ---
 
 <Dialogue speaker="Instructor">
-An ML paper is just a technical blog post with more formality. A PyTorch repo is just a codebase with models instead of UI components. You already know how to read technical writing and navigate code — now you have the vocabulary to do it in ML.
+An ML paper is just a technical blog post with more formality. A PyTorch repo is just a codebase with models instead of UI components. You already know how to read technical writing and navigate code. Now you have the vocabulary to do it in ML.
 </Dialogue>
 
-This is the capstone of the Python Bridge. Everything you've learned — Python syntax, NumPy operations, PyTorch models, pandas data wrangling — comes together when you open an ML paper and its reference implementation. This lesson teaches you where to look and what to skip.
+This is the capstone of the Python Bridge. Everything you've learned (Python syntax, NumPy operations, PyTorch models, pandas data wrangling) comes together when you open an ML paper and its reference implementation. This lesson teaches you where to look and what to skip.
 
 <LearningObjectives objectives={["Navigate the standard structure of an ML research paper", "Find the model architecture in a PyTorch repository", "Read a PyTorch model definition and identify layers, shapes, and data flow", "Extract the key information from a paper without reading every equation"]} />
 
@@ -60,7 +60,7 @@ Abstract                        →  TL;DR at the top
 Appendix                        →  Implementation details, hyperparameters`}
 </CodeBlock>
 
-**Reading strategy:** Read the abstract, look at all figures and tables, then read Section 3 (Method). Skip Related Work on your first pass. The figures usually contain the architecture diagram — that's your roadmap.
+**Reading strategy:** Read the abstract, look at all figures and tables, then read Section 3 (Method). Skip Related Work on your first pass. The figures usually contain the architecture diagram. That's your roadmap.
 
 ## Anatomy of a PyTorch Repository
 
@@ -196,7 +196,7 @@ When you encounter an ML paper or repo, follow this checklist:
 4. **Repo:** Read `__init__` to list the layers
 5. **Repo:** Read `forward()` to trace the data flow
 6. **Connect:** Match each layer in code to the architecture diagram
-7. **Skip:** Don't get stuck on math you don't understand — look at the code instead
+7. **Skip:** Don't get stuck on math you don't understand; look at the code instead
 
 ## Challenge
 
@@ -204,4 +204,4 @@ Read a PyTorch model definition and answer comprehension questions by building t
 
 <Exercise slug="read-paper" />
 
-<KeyTakeaways takeaways={["ML papers follow a predictable structure — focus on Abstract, Method, and Figures", "In a PyTorch repo, model.py is the entry point — read __init__ for layers, forward() for data flow", "You don't need to understand every equation — map symbols to code operations", "Reading ML code is a comprehension exercise, not an implementation task"]} />
+<KeyTakeaways takeaways={["ML papers follow a predictable structure: focus on Abstract, Method, and Figures", "In a PyTorch repo, model.py is the entry point; read __init__ for layers, forward() for data flow", "You don't need to understand every equation, just map symbols to code operations", "Reading ML code is a comprehension exercise, not an implementation task"]} />

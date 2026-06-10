@@ -10,16 +10,16 @@ context:
   narrative: "You've found bias in your data. Now you need a way to measure whether your model's outputs are fair."
   speaker: "Instructor"
 concept:
-  explanation: "Fairness metrics quantify how equitably a model treats different groups — just like Lighthouse scores quantify accessibility compliance."
+  explanation: "Fairness metrics quantify how equitably a model treats different groups, just like Lighthouse scores quantify accessibility compliance."
   bridge:
     feTitle: "Lighthouse Accessibility Score"
     feCode: "// Lighthouse: 72/100 accessibility — which rules are failing?"
     mlTitle: "Fairness Metric"
     mlCode: "// Demographic parity: 0.65 — which groups are disadvantaged?"
     tier: intuition
-    breaks: "Lighthouse accessibility produces a single composite score against fixed rules. Fairness metrics are a family of incompatible measures (demographic parity, equalized odds, calibration) and you cannot satisfy all of them simultaneously — the choice is value-laden."
+    breaks: "Lighthouse accessibility produces a single composite score against fixed rules. Fairness metrics are a family of incompatible measures (demographic parity, equalized odds, calibration) and you cannot satisfy all of them simultaneously; the choice is value-laden."
 consequence:
-  narrative: "You can now quantify fairness — but choosing the right metric depends on context."
+  narrative: "Fairness has numbers attached now: parity ratios, TPR gaps per group. Which number matters for your application is a judgment the metrics cannot make for you."
   nextLessonTeaser: "Next: understanding what your model actually learned"
 hints:
   - level: nudge
@@ -36,12 +36,12 @@ keywords:
 ---
 
 <Dialogue speaker="Instructor">
-You've audited your dataset and found imbalances. But how do you know if your model's predictions are actually unfair? You need numbers — fairness metrics give you a concrete score, just like Lighthouse gives you an accessibility score.
+You've audited your dataset and found imbalances. But how do you know if your model's predictions are actually unfair? You need numbers. Fairness metrics give you a concrete score, just like Lighthouse gives you an accessibility score.
 </Dialogue>
 
-As a frontend developer, you've probably run a Lighthouse audit and stared at a score trying to decide if 72 is "good enough." Fairness metrics put you in a similar position — except the stakes aren't page performance, they're whether real people get loans, jobs, or medical care.
+As a frontend developer, you've probably run a Lighthouse audit and stared at a score trying to decide if 72 is "good enough." Fairness metrics put you in a similar position, except the stakes aren't page performance. They're whether real people get loans, jobs, or medical care.
 
-<LearningObjectives objectives={["Define and compute demographic parity for a binary classifier", "Define and compute equalized odds (true positive rate parity)", "Understand the impossibility theorem — you cannot satisfy all fairness metrics simultaneously", "Choose the appropriate fairness metric based on application context"]} />
+<LearningObjectives objectives={["Define and compute demographic parity for a binary classifier", "Define and compute equalized odds (true positive rate parity)", "Understand the impossibility theorem: you cannot satisfy all fairness metrics simultaneously", "Choose the appropriate fairness metric based on application context"]} />
 
 ## Lighthouse, but for Fairness
 
@@ -134,7 +134,7 @@ A stricter metric: does each group have the same true positive rate AND false po
 
 Here's the uncomfortable truth: you mathematically cannot satisfy all fairness definitions at the same time (unless your model is perfect or the base rates are equal across groups). This is called the impossibility theorem.
 
-This is like trying to optimize for Lighthouse performance, accessibility, SEO, and best practices all at 100 simultaneously — sometimes improving one metric degrades another. You have to make a judgment call about which metric matters most for your specific application.
+This is like trying to optimize for Lighthouse performance, accessibility, SEO, and best practices all at 100 simultaneously. Sometimes improving one metric degrades another. You have to make a judgment call about which metric matters most for your specific application.
 
 **When to use demographic parity:** When equal access to a resource matters more than accuracy (e.g., seeing job ads).
 

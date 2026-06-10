@@ -7,7 +7,7 @@ order: 4
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Priya has 47 trained models. Tariq needs to know which one is approved for production. The model registry is the single source of truth — like npm registry for ML models."
+  narrative: "Priya has 47 trained models. Tariq needs to know which one is approved for production. The model registry is the single source of truth, like an npm registry for ML models."
   speaker: "Priya Sharma"
 concept:
   explanation: "A model registry versions and stores trained models with metadata, just as npm registry stores versioned packages with their package.json."
@@ -17,13 +17,13 @@ concept:
     mlTitle: "Model Registry"
     mlCode: "registry.publish(model, { version, metrics, stage })"
     tier: structural
-    breaks: "npm registry serves immutable versioned packages. Model registries must additionally track training metadata, eval metrics per version, deployment lineage, and approval status — and there is no canonical 'latest' since model selection is performance-driven, not chronological."
+    breaks: "npm registry serves immutable versioned packages. Model registries must additionally track training metadata, eval metrics per version, deployment lineage, and approval status. And there is no canonical 'latest', since model selection is performance-driven, not chronological."
 consequence:
   narrative: "The registry shows one model in production, two in staging, and 44 archived. Tariq pulls the production model for deployment."
   nextLessonTeaser: "Next: automating retraining so the pipeline runs itself"
 hints:
   - level: nudge
-    content: "Think about how npm registry tracks package versions and their metadata"
+    content: "ModelRegistry needs what npm dist-tags give packages: a stage field (development, staging, production) that deployments can query"
   - level: guidance
     content: "Track model stage (development, staging, production, archived) like npm dist-tags (latest, next, beta)"
   - level: solution
@@ -40,10 +40,10 @@ I have 47 trained models. Which one is in production? Which one should Tariq dep
 </Dialogue>
 
 <Dialogue speaker="Tariq Hussain">
-I need one command: give me the latest approved model. Not the latest trained model — the latest approved model. Those are different things.
+I need one command: give me the latest approved model. Not the latest trained model. The latest approved model. Those are different things.
 </Dialogue>
 
-You do not deploy npm packages by copying files around. You publish to a registry with a version, metadata, and dist-tags like `latest`, `next`, and `beta`. Your deployment pipeline pulls the `latest` tag. A model registry works the same way — it is the single source of truth for which model is approved, staged, or archived.
+You do not deploy npm packages by copying files around. You publish to a registry with a version, metadata, and dist-tags like `latest`, `next`, and `beta`. Tariq's one command exists because that design is worth stealing, minus one assumption: npm's `latest` is chronological, and for models chronology means nothing. The newest of Priya's 47 models is frequently not the best one. A model registry's `production` tag is earned through evaluation metrics and explicit approval, which is why it also tracks training metadata and per-version eval results that npm never needed.
 
 <LearningObjectives objectives={["Design a model registry with versioning, metadata, and promotion stages", "Implement model lifecycle stages (development → staging → production → archived)", "Map npm dist-tags to model promotion stages", "Build a registry query API that lets deployment pipelines pull the right model"]} />
 
@@ -152,4 +152,4 @@ Build a model registry with versioning and promotion stages.
 
 <Exercise slug="register-model" />
 
-<KeyTakeaways takeaways={["A model registry is the npm registry for ML — single source of truth for versioned model artifacts", "Promotion stages (dev → staging → production) parallel npm dist-tags (beta → next → latest)", "Enforced promotion order prevents untested models from reaching production", "Every registered model links back to its experiment and data version for full traceability"]} />
+<KeyTakeaways takeaways={["The registry is the single source of truth for which model version is approved, staged, or archived", "Promotion stages (dev → staging → production) parallel npm dist-tags (beta → next → latest)", "Enforced promotion order prevents untested models from reaching production", "Every registered model links back to its experiment and data version for full traceability"]} />

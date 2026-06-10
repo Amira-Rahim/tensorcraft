@@ -35,6 +35,12 @@ vi.mock("@/lib/supabase/client", () => ({
 
 vi.mock("@/lib/analytics", () => ({ trackThemeSelected: vi.fn() }));
 
+const trackMock = vi.fn();
+vi.mock("@/lib/analytics-events", async (importOriginal) => {
+  const mod = await importOriginal<typeof import("@/lib/analytics-events")>();
+  return { ...mod, track: trackMock };
+});
+
 vi.mock("@/lib/api-url", () => ({
   getApiUrl: () => "http://api.test",
 }));
@@ -61,6 +67,7 @@ beforeEach(() => {
   updateEqMock.mockClear();
   getUserMock.mockClear();
   getSessionMock.mockClear();
+  trackMock.mockClear();
   vi.restoreAllMocks();
 });
 
@@ -263,6 +270,60 @@ describe("OnboardingPage", () => {
     // Also writes onboarding_completed via supabase client.
     await waitFor(() => {
       expect(updateEqMock).toHaveBeenCalled();
+    });
+  });
+
+  it("fires onboarding_step_viewed for each step as the user advances", async () => {
+    await renderPage();
+    // Step 1 (Welcome) fires on mount.
+    expect(trackMock).toHaveBeenCalledWith("onboarding_step_viewed", {
+      step: 1,
+      stepName: "Welcome",
+    });
+    clickNext(); // -> Background
+    expect(trackMock).toHaveBeenCalledWith("onboarding_step_viewed", {
+      step: 2,
+      stepName: "Background",
+    });
+    fireEvent.click(screen.getByTestId("experience-beginner"));
+    clickNext(); // -> Goal
+    expect(trackMock).toHaveBeenCalledWith("onboarding_step_viewed", {
+      step: 3,
+      stepName: "Goal",
+    });
+    fireEvent.click(screen.getByTestId("goal-hobby"));
+    clickNext(); // -> Ready
+    expect(trackMock).toHaveBeenCalledWith("onboarding_step_viewed", {
+      step: 4,
+      stepName: "Ready",
+    });
+  });
+
+  it("fires onboarding_completed with cohort properties on final submit", async () => {
+    const fetchMock = vi.fn(
+      async () => ({ ok: true, json: async () => ({}) }) as unknown as Response,
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    await renderPage();
+    clickNext(); // -> Background
+    fireEvent.click(screen.getByTestId("experience-intermediate"));
+    fireEvent.click(screen.getByTestId("framework-react"));
+    fireEvent.change(screen.getByTestId("fe-experience-years"), {
+      target: { value: "4" },
+    });
+    clickNext(); // -> Goal
+    fireEvent.click(screen.getByTestId("goal-career"));
+    clickNext(); // -> Ready
+    fireEvent.click(screen.getByTestId("onboarding-submit"));
+
+    await waitFor(() => {
+      expect(trackMock).toHaveBeenCalledWith("onboarding_completed", {
+        experienceLevel: "intermediate",
+        learningGoal: "career",
+        framework: "react",
+        yearsExperience: 4,
+      });
     });
   });
 

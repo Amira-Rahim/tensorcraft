@@ -17,9 +17,9 @@ concept:
     mlTitle: "Attention Heatmap"
     mlCode: "// High attention weight → token highlights in visualization"
     tier: structural
-    breaks: "DevTools element highlighting shows the literal target you queried. Attention heatmaps visualize learned weights but interpretation is contested — high attention does not mean causal influence on the output, only that the weight is high."
+    breaks: "DevTools element highlighting shows the literal target you queried. Attention heatmaps visualize learned weights but interpretation is contested: high attention does not mean causal influence on the output, only that the weight is high."
 consequence:
-  narrative: "Karimi can now see why Diagnostic One makes its decisions — building trust in the system."
+  narrative: "Karimi can now see why Diagnostic One makes its decisions, building trust in the system."
   nextLessonTeaser: "Next: applying attention specifically to clinical vocabulary."
 hints:
   - level: nudge
@@ -36,7 +36,7 @@ keywords:
 ---
 
 <Dialogue speaker="Dr. Zahra Karimi">
-I can't trust a system I can't understand. If Diagnostic One flags a drug interaction, I need to see why — which words in the clinical note drove that decision.
+I can't trust a system I can't understand. If Diagnostic One flags a drug interaction, I need to see why: which words in the clinical note drove that decision.
 </Dialogue>
 
 <Dialogue speaker="Khalil">
@@ -111,13 +111,13 @@ const viz = await extractAttentionWeights(tokens, embeddings, 16);
 
 Common patterns in clinical attention heatmaps:
 
-- **Diagonal** — each word attends most to itself (common in early layers)
-- **Vertical stripes** — all words attend to a key term like a drug name
-- **Block patterns** — words within a clause attend to each other
-- **Off-diagonal connections** — distant words linked semantically
+- **Diagonal**: each word attends most to itself (common in early layers)
+- **Vertical stripes**: all words attend to a key term like a drug name
+- **Block patterns**: words within a clause attend to each other
+- **Off-diagonal connections**: distant words linked semantically
 
 <Dialogue speaker="Vikram">
-When you see "methotrexate" with a bright vertical stripe, every other word is attending to it. That's the model recognizing it as the anchor of the sentence — exactly what a clinician would do.
+When you see "methotrexate" with a bright vertical stripe, every other word is attending to it. That's the model recognizing it as the anchor of the sentence, exactly what a clinician would do.
 </Dialogue>
 
 ## Challenge

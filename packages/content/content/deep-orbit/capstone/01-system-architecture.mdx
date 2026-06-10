@@ -23,7 +23,7 @@ consequence:
   nextLessonTeaser: "Next: CI/CD pipeline — automated testing and deployment"
 hints:
   - level: nudge
-    content: "Think of each module as a package in a monorepo — clear interfaces, explicit dependencies"
+    content: "Each PipelineStage declares an inputType and outputType. Wire stages so every output type matches the next stage's input"
   - level: guidance
     content: "Map the data flow: raw signal → preprocessed → features → classification → report"
   - level: solution
@@ -37,11 +37,11 @@ skillAxes: [deployment]
 ---
 
 <Dialogue speaker="Commander Mirza">
-Ten modules of work. Preprocessing, neural networks, signal processing, sequence prediction, anomaly detection, attention mechanisms, LLM integration, optimization. All separate pieces. Demir — assemble them into one system. Show me the architecture.
+Ten modules of work. Preprocessing, neural networks, signal processing, sequence prediction, anomaly detection, attention mechanisms, LLM integration, optimization. All separate pieces. Demir, assemble them into one system. Show me the architecture.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
-It's like setting up a monorepo. Each module is a package with clear inputs and outputs. I connect them with a pipeline — data flows from one stage to the next, each stage validates its inputs, and the whole thing composes into something bigger than any single part.
+It's like setting up a monorepo. Each module is a package with clear inputs and outputs. I connect them with a pipeline: preprocessor, feature extractor, classifier, anomaly detector, reporter. Each stage validates its input before processing. Raw signal in, classified report out.
 </Dialogue>
 
 You've built monorepos with Turborepo, wired up dependency graphs in `package.json`, composed React components into full pages. DEEP SCAN's production architecture follows the same principles: each ML component is a self-contained module with typed inputs and outputs, composed into a pipeline that transforms raw signals into classified reports.
@@ -176,4 +176,4 @@ Design a typed pipeline and validate the dependency graph.
 
 <Exercise slug="pipeline-architecture" />
 
-<KeyTakeaways takeaways={["Production ML systems are dependency graphs — same principles as monorepo package management", "Typed interfaces between stages catch integration errors at compile time, not runtime", "Validation at each stage boundary prevents garbage-in-garbage-out propagation", "DEEP SCAN's 5-stage pipeline: preprocess → extract → classify → detect → report"]} />
+<KeyTakeaways takeaways={["The reporter depends on both classifier and anomaly-detector; validateGraph() checks the manifest for cycles and missing deps before anything runs", "Typed interfaces between stages catch integration errors at compile time, not runtime", "Validation at each stage boundary prevents garbage-in-garbage-out propagation", "DEEP SCAN's 5-stage pipeline: preprocess → extract → classify → detect → report"]} />

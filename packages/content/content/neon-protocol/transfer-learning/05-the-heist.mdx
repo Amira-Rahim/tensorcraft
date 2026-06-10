@@ -7,7 +7,7 @@ order: 5
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "Amir sits on the server room floor, the stolen drive glowing in his hand. He looks at Noor. 'I helped build this model when I worked at Meridian. Three years. 200 engineers. 14 billion training images. And now we are going to fork it — strip out the surveillance layers, retrain the head, and turn it into the resistance's greatest weapon. They trained it to find us. We will train it to find them.'"
+  narrative: "Amir sits on the server room floor, the stolen drive glowing in his hand. He looks at Noor. 'I helped build this model when I worked at Meridian. Three years. 200 engineers. 14 billion training images. And now we are going to fork it. Strip out the surveillance layers, retrain the head, turn it into the resistance's greatest weapon. They trained it to find us. We will train it to find them.'"
   speaker: "Amir"
 concept:
   explanation: "Repurposing an existing model for a new task is like forking an open-source project. You take the codebase (pre-trained weights), strip out what you do not need (classification head), add your own features (new task-specific layers), and deploy it for a completely different purpose. The original authors' work becomes your foundation."
@@ -17,13 +17,13 @@ concept:
     mlTitle: "Model Repurposing"
     mlCode: "// Load Meridian's model, remove surveillance head, add resistance classifier"
     tier: intuition
-    breaks: "Forking an open-source project clones runnable code you can edit. Repurposing a model means fine-tuning weights for a new task — the original weights are silently overwritten and capabilities you didn't fine-tune for can degrade (catastrophic forgetting)."
+    breaks: "Forking an open-source project clones runnable code you can edit. Repurposing a model means fine-tuning weights for a new task. The original weights are silently overwritten and capabilities you didn't fine-tune for can degrade (catastrophic forgetting)."
 consequence:
-  narrative: "The repurposed model goes live. Protocol Sentinel v1.0 — built on Meridian's own architecture, fine-tuned on 500 resistance images, running entirely in the browser. NEON displays the dashboard: real-time drone detection across all districts. Amir addresses the team: 'They spent three years and two million credits building the best vision model in the world. And we just turned it against them. In a browser tab.'"
+  narrative: "The repurposed model goes live. Protocol Sentinel v1.0: built on Meridian's own architecture, fine-tuned on 500 resistance images, running entirely in the browser. NEON displays the dashboard: real-time drone detection across all districts. Amir addresses the team: 'They spent three years and two million credits building the best vision model in the world. And we just turned it against them. In a browser tab.'"
   nextLessonTeaser: "Next module: the resistance begins deploying Protocol Sentinel across Neon City's districts"
 hints:
   - level: nudge
-    content: "Forking a model is like forking a repo — clone, modify, and deploy for your purpose"
+    content: "Forking a model is like forking a repo: clone, modify, and deploy for your purpose"
   - level: guidance
     content: "Combine all techniques: load pre-trained, extract features, freeze backbone, new head, augment data, fine-tune"
   - level: solution
@@ -38,7 +38,7 @@ keywords:
 ---
 
 <Dialogue speaker="Amir">
-I spent six years at Meridian. I wrote the pooling layers in their flagship model. I optimized the batch normalization. And when I realized what they were using it for — tracking dissidents, scoring citizens, predicting who would resist — I walked out. But I did not walk out empty-handed.
+I spent six years at Meridian. I wrote the pooling layers in their flagship model. I optimized the batch normalization. And then I realized what they were using it for. Tracking dissidents. Scoring citizens. Predicting who would resist. I walked out. But I did not walk out empty-handed.
 </Dialogue>
 
 <Dialogue speaker="Noor">
@@ -49,7 +49,7 @@ You forked their model?
 Every great open-source project starts with a fork. Their surveillance AI becomes our counter-surveillance AI. Same weights. Different purpose.
 </Dialogue>
 
-Forking an open-source project means taking the existing codebase and building something new on top of it. The original authors' work becomes your foundation. Repurposing a model is identical: Meridian's weights — trained over three years on 14 billion images — become the foundation for Protocol Sentinel. Same architecture. Opposite purpose.
+Forking an open-source project means taking the existing codebase and building something new on top of it. The original authors' work becomes your foundation. Repurposing a model runs on the same instinct, with one difference worth respecting: a fork keeps the original code in git history, but fine-tuning overwrites weights in place. Push too hard and capabilities you never trained against quietly degrade (catastrophic forgetting). The pipeline below freezes most of the backbone for exactly that reason.
 
 <LearningObjectives objectives={["Combine all transfer learning techniques into a complete model repurposing pipeline", "Load, freeze, modify, augment, and retrain a pre-trained model for a new task", "Build Protocol Sentinel: the resistance's counter-surveillance system", "Understand model repurposing as forking — same codebase, different mission"]} />
 
@@ -185,7 +185,7 @@ async function deployProtocolSentinel() {
   await trainProtocolSentinel(backbone, head, resistanceTrainingData);
 
   // Deploy — runs entirely in the browser
-  // No servers. No cloud. No trail for Meridian to follow.
+  // No server round-trip means no traffic for Meridian to trace.
   async function detectDrone(frame: HTMLCanvasElement) {
     const tensor = tf.tidy(() => {
       const img = tf.browser.fromPixels(frame);
@@ -214,8 +214,7 @@ async function deployProtocolSentinel() {
 }
 
 // Protocol Sentinel is live.
-// Meridian's own architecture, turned against them.
-// Running in a browser tab. No servers to trace.`}
+// Meridian's own architecture, turned against them, in a browser tab.`}
 </CodeBlock>
 
 ## Challenge
@@ -234,4 +233,4 @@ Build the complete Protocol Sentinel pipeline by combining all transfer learning
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Repurposing a model is forking a project: clone the weights, strip the old head, add your own", "Protocol Sentinel combines every technique: pre-training, feature reuse, freezing, domain adaptation, and fine-tuning", "500 images and 20 minutes of training leverages 3 years and $2M of Meridian's compute", "The model runs entirely in the browser — no servers, no cloud, no surveillance trail"]} />
+<KeyTakeaways takeaways={["Repurposing a model is forking a project: clone the weights, strip the old head, add your own", "Protocol Sentinel combines every technique: pre-training, feature reuse, freezing, domain adaptation, and fine-tuning", "500 images and 20 minutes of training stand on 3 years and $2M of Meridian's compute", "The model runs entirely in the browser, so inference produces no server traffic to trace"]} />

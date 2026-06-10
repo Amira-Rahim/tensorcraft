@@ -41,11 +41,21 @@ export function generateStaticParams() {
   );
 }
 
+// Reject params outside generateStaticParams at the router level. Without
+// this, unknown/coming-soon lesson URLs stream a 200 shell (via loading.tsx)
+// before the page body's notFound() runs — a soft-404. Router-level
+// rejection returns a real 404 status before anything is flushed.
+export const dynamicParams = false;
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug, module: moduleSlug, lesson: lessonSlug } = await params;
   const lesson = getLesson(slug, moduleSlug, lessonSlug);
   const theme = themes[slug];
-  if (!lesson || !theme) return {};
+  // notFound() here (not only in the page body) so the response carries a
+  // real 404 status. The page body's notFound() fires after loading.tsx has
+  // already streamed a 200 shell, which turns unknown/coming-soon lesson
+  // URLs into soft-404s (bad for crawlers and uptime checks alike).
+  if (!isLaunched(slug) || !lesson || !theme) notFound();
   return {
     title: `${lesson.title} — ${theme.displayName} | Tensorcraft`,
     description: lesson.concept.explanation,

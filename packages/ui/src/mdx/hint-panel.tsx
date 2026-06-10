@@ -24,17 +24,9 @@ const HINT_LEVEL_TO_INDEX: Record<Hint["level"], 1 | 2 | 3> = {
 };
 
 const levelConfig = {
-  nudge: { label: "Nudge", color: "var(--tc-tier-identity)", icon: "💡" },
-  guidance: {
-    label: "Guidance",
-    color: "var(--tc-tier-structural)",
-    icon: "🧭",
-  },
-  solution: {
-    label: "Solution",
-    color: "var(--tc-tier-intuition)",
-    icon: "✅",
-  },
+  nudge: { label: "Nudge", color: "var(--tc-tier-identity)" },
+  guidance: { label: "Guidance", color: "var(--tc-tier-structural)" },
+  solution: { label: "Solution", color: "var(--tc-tier-intuition)" },
 };
 
 export function HintPanel({ hints, onHintRevealed }: HintPanelProps) {
@@ -66,7 +58,7 @@ export function HintPanel({ hints, onHintRevealed }: HintPanelProps) {
                     className="text-xs font-mono font-semibold uppercase tracking-widest block mb-1"
                     style={{ color: config.color }}
                   >
-                    {config.icon} {config.label}
+                    {config.label}
                   </span>
                   <p className="text-sm leading-relaxed text-text-primary/80">
                     {hint.content}
@@ -84,14 +76,12 @@ export function HintPanel({ hints, onHintRevealed }: HintPanelProps) {
                   }}
                 >
                   <span className="text-xs font-medium">
-                    {config.icon} Reveal {config.label}
+                    Reveal {config.label} →
                   </span>
                 </button>
               ) : (
                 <div className="p-3 opacity-40 border border-dashed border-border text-text-muted">
-                  <span className="text-xs">
-                    {config.icon} {config.label}
-                  </span>
+                  <span className="text-xs">{config.label}</span>
                 </div>
               )}
             </div>

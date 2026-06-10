@@ -7,17 +7,17 @@ order: 2
 estimatedMinutes: 25
 difficulty: beginner
 context:
-  narrative: "Vikram introduces Khalil to bag-of-words — the simplest way to turn clinical notes into numbers a model can process."
+  narrative: "Vikram introduces Khalil to bag-of-words, the simplest way to turn clinical notes into numbers a model can process."
   speaker: "Vikram"
 concept:
-  explanation: "Models only understand numbers. A bag-of-words representation counts word occurrences in a document, converting text into a numerical vector — just like JSON.parse converts a string into a usable data structure."
+  explanation: "Models only understand numbers. A bag-of-words representation counts word occurrences in a document, converting text into a numerical vector, just like JSON.parse converts a string into a usable data structure."
   bridge:
     feTitle: "JSON.parse()"
     feCode: "const data = JSON.parse('{\"name\": \"aspirin\"}')"
     mlTitle: "Bag of Words"
     mlCode: "const bow = textToVector('patient takes aspirin daily')"
     tier: structural
-    breaks: "JSON.parse converts a known string into a known structure. Bag-of-words discards order and frequency-encodes tokens — useful baseline but loses every syntactic and contextual cue that newer text models exploit."
+    breaks: "JSON.parse converts a known string into a known structure. Bag-of-words discards order and frequency-encodes tokens; useful baseline but loses every syntactic and contextual cue that newer text models exploit."
 consequence:
   narrative: "Khalil successfully converts his first batch of clinical notes into numerical vectors."
   nextLessonTeaser: "Next: building a simple classifier that can categorize these vectors."
@@ -38,7 +38,7 @@ keywords:
 > **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
 <Dialogue speaker="Vikram">
-Khalil, you've parsed JSON a thousand times, right? You take a string, run JSON.parse, and get a structured object. Turning text into ML features is the same idea — different format, same principle.
+Khalil, you've parsed JSON a thousand times, right? You take a string, run JSON.parse, and get a structured object. Turning text into ML features is the same idea. Different format, same principle.
 </Dialogue>
 
 <Dialogue speaker="Khalil">
@@ -46,10 +46,10 @@ So instead of key-value pairs, I'm getting... what, a list of numbers?
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-Exactly. A vector. Each position represents a word from your vocabulary, and the value is how many times that word appears. It's called bag-of-words.
+A vector, yes. But careful with the JSON.parse comparison. Parsing keeps structure; this throws it away. Each position counts one vocabulary word, nothing more. "Denied chest pain" and "chest pain denied" come out as the same vector. It's called bag-of-words, and the bag part is literal.
 </Dialogue>
 
-When your frontend fetches an API response, `JSON.parse()` converts a raw string into structured data your app can use. Bag-of-words does the same thing for ML: it converts raw text into a numerical vector your model can process.
+`JSON.parse()` turns a raw string into structured data your app can use. Bag-of-words turns raw text into a vector your model can process, at the cost Vikram named: the structure is gone, and only counts remain.
 
 <LearningObjectives objectives={["Convert text into a bag-of-words vector", "Understand why models require numerical input", "Build a vocabulary from a corpus of clinical notes", "Recognize the limitations of bag-of-words for clinical text"]} />
 
@@ -108,4 +108,4 @@ Build a bag-of-words function that converts clinical notes into numerical vector
 
 <Exercise slug="bag-of-words" />
 
-<KeyTakeaways takeaways={["Bag-of-words converts text to numbers by counting word occurrences", "Each position in the vector corresponds to a vocabulary word", "JSON.parse converts strings to objects; bag-of-words converts text to vectors", "Bag-of-words loses word order — a limitation we'll address later"]} />
+<KeyTakeaways takeaways={["Bag-of-words converts text to numbers by counting word occurrences", "Each position in the vector corresponds to a vocabulary word", "The vocabulary decides what is visible: 'denied' and 'reported' must be vocab entries before those notes produce different vectors", "Bag-of-words loses word order — a limitation we'll address later"]} />

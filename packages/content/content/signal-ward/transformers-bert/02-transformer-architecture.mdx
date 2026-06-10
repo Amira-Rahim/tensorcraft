@@ -7,7 +7,7 @@ order: 2
 estimatedMinutes: 30
 difficulty: intermediate
 context:
-  narrative: "Khalil builds a transformer encoder block — the core unit of modern NLP."
+  narrative: "Khalil builds a transformer encoder block, the core unit of modern NLP."
   speaker: "Vikram"
 concept:
   explanation: "A transformer encoder block combines multi-head attention with feedforward layers, skip connections, and layer normalization."
@@ -18,7 +18,7 @@ concept:
     mlCode: "output = layerNorm(input + attention(input)); // preserve + refine"
     tier: structural
 consequence:
-  narrative: "Diagnostic One's core architecture is now built — a stack of encoder blocks that can understand clinical text in full context."
+  narrative: "Diagnostic One's core architecture is now built: a stack of encoder blocks that can understand clinical text in full context."
   nextLessonTeaser: "Next: positional encoding — how transformers know word order."
 hints:
   - level: nudge
@@ -35,7 +35,7 @@ keywords:
 ---
 
 <Dialogue speaker="Vikram">
-Self-attention alone isn't enough. We need to wrap it in a complete encoder block — attention plus feedforward, with skip connections that preserve information. Think of it like React's virtual DOM: you diff the new state against the old and apply minimal, targeted updates.
+Self-attention alone isn't enough. We need to wrap it in a complete encoder block: attention plus feedforward, with skip connections that preserve information. Same move as React's virtual DOM: diff the new state against the old, apply minimal targeted updates.
 </Dialogue>
 
 <LearningObjectives objectives={["Build a complete transformer encoder block", "Implement residual (skip) connections", "Apply layer normalization after each sub-layer", "Stack multiple encoder blocks into an encoder"]} />
@@ -46,8 +46,8 @@ Self-attention alone isn't enough. We need to wrap it in a complete encoder bloc
 
 A transformer encoder block has two sub-layers, each wrapped in a residual connection and layer normalization:
 
-1. **Multi-Head Self-Attention** — tokens attend to each other
-2. **Position-wise Feed-Forward Network** — each token processed independently through a small MLP
+1. **Multi-Head Self-Attention**: tokens attend to each other
+2. **Position-wise Feed-Forward Network**: each token processed independently through a small MLP
 
 <CodeBlock language="typescript" title="encoder-block.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -115,10 +115,10 @@ console.log('Encoder output:', x.shape); // [10, 64]`}
 
 ## Residual Connections: Preserving What Matters
 
-The `x.add(attnOut)` step is critical. Without it, deep networks suffer from vanishing gradients — information from early layers fades. The residual connection provides a highway for gradients and information to flow through unchanged, while the attention layer adds refinements.
+The `x.add(attnOut)` step is critical. Without it, deep networks suffer from vanishing gradients, and information from early layers fades. The residual connection provides a highway for gradients and information to flow through unchanged, while the attention layer adds refinements.
 
 <Dialogue speaker="Khalil">
-That's like how React's reconciliation works — you don't rebuild the entire DOM. You keep the existing structure and apply only the changes. The residual connection is the existing DOM; the attention output is the diff.
+That's like how React's reconciliation works. You don't rebuild the entire DOM. You keep the existing structure and apply only the changes. The residual connection is the existing DOM; the attention output is the diff.
 </Dialogue>
 
 ## Challenge

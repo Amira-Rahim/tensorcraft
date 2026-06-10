@@ -7,19 +7,19 @@ order: 4
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "The ethics committee's final structural requirement: 'No automated clinical decision may be made without clinician review.' Khalil thinks of pull requests. 'It is code review. The model writes the prediction — like a junior developer writing code. The clinician reviews and approves, requests changes, or rejects. Automated checks first, human judgment last.'"
+  narrative: "The ethics committee's final structural requirement: 'No automated clinical decision may be made without clinician review.' Khalil thinks of pull requests. 'It is code review. The model writes the prediction, like a junior developer writing code. The clinician reviews and approves, requests changes, or rejects. Automated checks first, human judgment last.'"
   speaker: "Khalil"
 concept:
-  explanation: "Human-in-the-loop ML follows the same pattern as code review — automated checks (linting, CI) run first, then a human reviewer approves, requests changes, or rejects. The system recommends, the human decides."
+  explanation: "Human-in-the-loop ML follows the same pattern as code review: automated checks (linting, CI) run first, then a human reviewer approves, requests changes, or rejects. The system recommends, the human decides."
   bridge:
     feTitle: "Code Review (PR Workflow)"
     feCode: "// Lint + CI pass → PR created → human reviews → approve / request changes / reject"
     mlTitle: "Human-in-the-Loop"
     mlCode: "// Confidence check → prediction queued → clinician reviews → approve / modify / reject"
     tier: structural
-    breaks: "Code review is asynchronous review of authored changes. Human-in-the-loop ML must minimize reviewer fatigue, account for automation bias (humans rubber-stamping AI suggestions), and design active-learning queries that maximize information gain — not just queue every prediction."
+    breaks: "Code review is asynchronous review of authored changes. Human-in-the-loop ML must minimize reviewer fatigue, account for automation bias (humans rubber-stamping AI suggestions), and design active-learning queries that maximize information gain, not just queue every prediction."
 consequence:
-  narrative: "Diagnostic One's review architecture is complete: high-confidence predictions surface as suggestions, medium-confidence predictions queue for clinician review, low-confidence predictions are suppressed. Imran runs a simulation — 200 predictions in an hour. 62% auto-surface, 28% go to review, 10% suppressed. Dr. Karimi approves: 'This is the right balance. The model assists; it does not decide.'"
+  narrative: "Diagnostic One's review architecture is complete: high-confidence predictions surface as suggestions, medium-confidence predictions queue for clinician review, low-confidence predictions are suppressed. Imran runs a simulation: 200 predictions in an hour. 62% auto-surface, 28% go to review, 10% suppressed. Dr. Karimi approves: 'This is the right balance. The model assists; it does not decide.'"
   nextLessonTeaser: "Next: confronting the 12% disparity — responsible remediation and honest documentation"
 hints:
   - level: nudge
@@ -38,14 +38,14 @@ keywords:
 ---
 
 <Dialogue speaker="Khalil">
-The committee wants clinician review on every prediction. I have built this system before — it is a pull request workflow. The model writes the prediction, like a junior developer writing code. Automated checks run first — confidence thresholds, validation, safety checks. Then a human reviewer approves, requests changes, or rejects. Linting and CI are necessary but not sufficient. Human judgment is the final gate.
+The committee wants clinician review on every prediction. I have built this system before. It is a pull request workflow. The model writes the prediction, like a junior developer writing code. Automated checks run first: confidence thresholds, validation, safety checks. Then a human reviewer approves, requests changes, or rejects. Linting and CI are necessary but not sufficient. Human judgment is the final gate.
 </Dialogue>
 
 <Dialogue speaker="Dr. Karimi">
-But not every prediction needs the same level of review. If the model is 99% confident about a well-known drug interaction, I want to see it immediately — like auto-merging a passing Dependabot PR. If it is 73% confident about something unusual, queue it for my review. If it is 40% confident, suppress it entirely — do not create alert fatigue.
+But not every prediction needs the same level of review. If the model is 99% confident about a well-known drug interaction, I want to see it immediately, like auto-merging a passing Dependabot PR. If it is 73% confident about something unusual, queue it for my review. If it is 40% confident, suppress it entirely. Do not create alert fatigue.
 </Dialogue>
 
-Every engineering team uses code review. A junior developer opens a PR, CI runs automated checks, and a senior engineer reviews the changes. The PR gets approved, returned with requested changes, or rejected. Human-in-the-loop ML is the same workflow: the model produces a prediction (the PR), automated checks verify confidence and safety (CI), and a clinician reviews and decides (code review). The confidence level determines how much oversight each prediction requires — just as branch protection rules determine which merges require review.
+Dr. Karimi just changed the design. Khalil's PR workflow reviews everything at the same depth; she wants three tiers, routed by confidence. High-confidence predictions surface immediately, mid-confidence ones queue for review, low-confidence ones get suppressed before they cause alert fatigue. The code-review skeleton survives: model as author, automated checks as CI, clinician as final reviewer. What is new is the routing rule. Confidence decides how much oversight each prediction earns, the way branch protection rules decide which merges need review.
 
 <LearningObjectives objectives={["Design a confidence-based routing system that triages predictions into review tiers", "Build a clinician review queue with approve, reject, and modify actions", "Implement feedback loops that use clinician decisions to improve the model", "Balance automation throughput against alert fatigue using rate limiting and priority weighting"]} />
 
@@ -239,4 +239,4 @@ Design a human review workflow that routes predictions to approval tiers based o
 
 <Exercise slug="design-review-flow" />
 
-<KeyTakeaways takeaways={["Human-in-the-loop is code review for ML — automated checks first (CI), human judgment last (reviewer approval)", "Confidence-based routing creates three tiers: auto-surface (auto-merge), queue for review (PR review), suppress (failing CI)", "Clinician feedback on reviewed predictions becomes training data — approved predictions confirm, modifications correct", "Alert fatigue is notification spam for clinicians — rate limiting and priority weighting prevent desensitization"]} />
+<KeyTakeaways takeaways={["Automation bias is the quiet failure mode: reviewers start rubber-stamping suggestions, so the queue must stay small enough to be genuinely reviewed", "Confidence-based routing creates three tiers: auto-surface above 0.95, queue for review between 0.7 and 0.95, suppress below 0.7", "Clinician feedback on reviewed predictions becomes training data — approved predictions confirm, modifications correct", "Alert fatigue is notification spam for clinicians — rate limiting and priority weighting prevent desensitization"]} />

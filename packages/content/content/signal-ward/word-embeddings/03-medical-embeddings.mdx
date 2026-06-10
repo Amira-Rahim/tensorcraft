@@ -7,17 +7,17 @@ order: 3
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Vikram demonstrates that generic embeddings miss clinical nuances. 'Discharge' means leaving the hospital, not firing someone. Domain-specific embeddings like BioWordVec solve this — just like scoped CSS variables override global defaults."
+  narrative: "Vikram demonstrates that generic embeddings miss clinical nuances. 'Discharge' means leaving the hospital, not firing someone. Domain-specific embeddings like BioWordVec solve this, just like scoped CSS variables override global defaults."
   speaker: "Vikram"
 concept:
-  explanation: "Medical embeddings are word vectors trained on clinical text (PubMed, MIMIC-III, clinical notes). They capture domain-specific relationships that generic embeddings miss — 'stat' means 'immediately' in clinical context, not 'statistics'. Like scoped CSS variables, domain embeddings provide context-specific values."
+  explanation: "Medical embeddings are word vectors trained on clinical text (PubMed, MIMIC-III, clinical notes). They capture domain-specific relationships that generic embeddings miss: 'stat' means 'immediately' in clinical context, not 'statistics'. Like scoped CSS variables, domain embeddings provide context-specific values."
   bridge:
     feTitle: "Scoped CSS Variables"
     feCode: ".clinical { --color-alert: #dc3545; } /* context-specific */"
     mlTitle: "Domain Embeddings"
     mlCode: "// 'stat' near 'urgent', not 'statistics' — context-specific"
     tier: structural
-    breaks: "Scoped CSS variables override global ones within a selector subtree. Domain-adapted embeddings retrain or fine-tune on medical text — but mixing general and domain embeddings naively can degrade both, and the right blending strategy is empirical."
+    breaks: "Scoped CSS variables override global ones within a selector subtree. Domain-adapted embeddings retrain or fine-tune on medical text, but mixing general and domain embeddings naively can degrade both, and the right blending strategy is empirical."
 consequence:
   narrative: "Diagnostic One switches from generic to medical-domain embeddings and immediately improves on ambiguous clinical terms like 'discharge', 'stat', and 'positive'."
   nextLessonTeaser: "Next: using cosine similarity for word analogies and clinical reasoning."
@@ -46,14 +46,14 @@ So generic Word2Vec is like the global stylesheet, and medical embeddings are th
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-Precisely. In generic English, "discharge" is closest to "fire" and "release." In clinical text, "discharge" is closest to "hospital," "home," and "follow-up." The scoped context changes the meaning entirely.
+Close, with one catch the cascade doesn't have. In generic English, "discharge" is closest to "fire" and "release." In clinical text, it's closest to "hospital," "home," and "follow-up." But scoped CSS falls back to the global value cleanly. Mix generic and medical embeddings naively and you can degrade both. Which blend works is an empirical question, not a cascade rule.
 </Dialogue>
 
 <Dialogue speaker="Dr. Karimi">
-That is exactly the class of error that brought down the vendor system. It read "discharge summary" and associated it with termination instead of a patient leaving the hospital.
+That class of error brought down the vendor system. It read "discharge summary" and associated it with termination instead of a patient leaving the hospital.
 </Dialogue>
 
-A global CSS variable provides a default value. A scoped CSS variable overrides it for a specific component. Medical embeddings do the same for word meaning — they override generic associations with clinically accurate ones, trained on millions of medical documents.
+Medical embeddings are trained on millions of clinical documents, and the associations they learn replace the generic ones: "stat" lands near "urgent" instead of "statistics".
 
 <LearningObjectives objectives={["Understand why domain-specific embeddings outperform generic ones for clinical text", "Compare generic vs. medical embedding results for ambiguous terms", "Load and use pre-trained embedding vectors as frozen lookup tables", "Identify clinical terms that require domain-specific representations"]} />
 
@@ -166,4 +166,4 @@ Load generic and medical embeddings and compare their results for ambiguous clin
 
 <Exercise slug="load-medical-embeddings" />
 
-<KeyTakeaways takeaways={["Generic embeddings miss domain-specific meanings: 'discharge' near 'fire' instead of 'hospital'", "Medical embeddings (BioWordVec, clinical models) capture clinical relationships correctly", "Domain embeddings are like scoped CSS variables — they override global defaults with context-specific values", "Pre-trained medical embeddings can be frozen and reused, giving your model clinical knowledge for free"]} />
+<KeyTakeaways takeaways={["Generic embeddings miss domain-specific meanings: 'discharge' near 'fire' instead of 'hospital'", "Medical embeddings (BioWordVec, clinical models) capture clinical relationships correctly", "Mixing generic and medical embeddings naively can degrade both; the right blend is an empirical question", "Pre-trained medical embeddings can be frozen and reused, giving your model clinical knowledge for free"]} />

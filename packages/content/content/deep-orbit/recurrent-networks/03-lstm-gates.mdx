@@ -38,18 +38,18 @@ skillAxes: [model_arch]
 ---
 
 <Dialogue speaker="Dr. Farah">
-The simple RNN forgets. By the time it reaches time step 50, information from step 1 has vanished — gradients multiplied through too many small numbers. LSTMs solve this with gates — learned switches that control what flows through and what gets discarded.
+The simple RNN forgets. By the time it reaches time step 50, information from step 1 has vanished, its gradients multiplied through too many small numbers. LSTMs solve this with gates: learned switches that control what flows through and what gets discarded.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
-Gates... like a cache with TTL? Some things you keep forever because they're important, some things you let expire because they're stale?
+Gates, like a cache with TTL? Keep the important entries, let the stale ones expire?
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-That is a remarkably good analogy, Ensign.
+Almost. TTL forgets on a clock: after the timeout, the value is gone, all or nothing. A forget gate forgets on content. It reads the current input and outputs a number between 0 and 1 for every dimension of the cell state. Keep 90% of this, drop most of that. Partial, learned, no timer anywhere. That difference is why an LSTM can hold a pattern from 72 hours ago.
 </Dialogue>
 
-You manage data lifecycle in frontend apps all the time. Some localStorage entries persist until explicitly cleared (user preferences). Others have TTL and expire (session tokens). LSTMs do exactly this — they learn which information is worth keeping long-term and which should be discarded, using three learned gates.
+The three gates (forget, input, output) are each a small sigmoid layer with its own learned weights. A sigmoid outputs values in [0,1], which is what lets a gate act as a dimmer rather than a switch.
 
 <LearningObjectives objectives={["Understand the three LSTM gates: forget (discard), input (add), output (expose)", "Build an LSTM network using TensorFlow.js that handles long-range dependencies", "Compare LSTM and GRU architectures — tradeoffs between complexity and performance", "Solve the vanishing gradient problem with gated memory cells"]} />
 
@@ -145,4 +145,4 @@ Build an LSTM that handles long signal sequences.
 
 <Exercise slug="build-lstm" />
 
-<KeyTakeaways takeaways={["LSTMs use three learned gates (forget, input, output) to control memory — like localStorage with selective persistence and expiry", "The cell state provides a direct gradient highway, solving the vanishing gradient problem for long sequences", "GRUs are lighter (2 gates vs 3) with comparable performance — try both and compare", "For DEEP SCAN, LSTM catches the 73-second anomaly pattern that SimpleRNN missed entirely"]} />
+<KeyTakeaways takeaways={["LSTMs use three learned gates (forget, input, output); each is a sigmoid layer emitting per-dimension keep ratios in [0,1]", "The cell state provides a direct gradient highway, solving the vanishing gradient problem for long sequences", "GRUs are lighter (2 gates vs 3) with comparable performance — try both and compare", "For DEEP SCAN, LSTM catches the 73-second anomaly pattern that SimpleRNN missed entirely"]} />

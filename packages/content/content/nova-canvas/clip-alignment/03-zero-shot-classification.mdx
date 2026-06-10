@@ -7,20 +7,20 @@ order: 3
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "Erdem uploads a photograph of an abstract painting. 'What genre is this? The gallery needs tags.' Samir types a list of genres — impressionism, cubism, abstract expressionism — and CLIP ranks them by similarity. No fine-tuning. No labeled training data. 'It just knows,' Erdem says, incredulous. Rohan: 'It does not know. It compares.'"
+  narrative: "Erdem uploads a photograph of an abstract painting. 'What genre is this? The gallery needs tags.' Samir types a list of genres (impressionism, cubism, abstract expressionism) and CLIP ranks them by similarity. No fine-tuning. No labeled training data. 'It just knows,' Erdem says, incredulous. Rohan: 'It does not know. It compares.'"
   speaker: "Rohan"
 concept:
-  explanation: "Zero-shot classification classifies images into categories never seen during training — by comparing the image embedding to text embeddings of category descriptions. Like dynamic routing — handling unknown paths by matching against a pattern instead of hardcoding every route."
+  explanation: "Zero-shot classification classifies images into categories never seen during training, by comparing the image embedding to text embeddings of category descriptions. Like dynamic routing: handling unknown paths by matching against a pattern instead of hardcoding every route."
   bridge:
-    feTitle: "Dynamic routing — handling unknown paths"
+    feTitle: "Dynamic routing: handling unknown paths"
     feCode: "app.get('/:category/:item', (req, res) => matchRoute(req.params));"
     mlTitle: "Zero-shot classification"
     mlCode: "const label = categories[argmax(similarity(image, categoryTexts))];"
     tier: structural
-    breaks: "Dynamic routing sends unknown paths to a default route — fallback is explicit. Zero-shot classification ranks input against text-prompt embeddings of class names and confidently picks the closest match even when the input doesn't belong to any class. There is no 'unknown' bucket; you must threshold the similarity score and treat low confidence as out-of-distribution."
+    breaks: "Dynamic routing sends unknown paths to a default route. Fallback is explicit. Zero-shot classification ranks input against text-prompt embeddings of class names and confidently picks the closest match even when the input doesn't belong to any class. There is no 'unknown' bucket; you must threshold the similarity score and treat low confidence as out-of-distribution."
 consequence:
   narrative: "MUSE tags every gallery piece without being trained on a single example. Abstract expressionism. Digital impressionism. Geometric minimalism. Erdem checks the tags against his own labels: 94% agreement. 'Better than the interns,' he mutters."
-  nextLessonTeaser: "Next: CLIP-guided generation — using CLIP to steer what the model creates"
+  nextLessonTeaser: "Next: CLIP-guided generation: using CLIP to steer what the model creates"
 hints:
   - level: nudge
     content: "Dynamic routes handle paths they have never seen. Zero-shot handles categories never seen in training."
@@ -37,7 +37,7 @@ keywords:
 ---
 
 <Dialogue speaker="Rohan">
-Dynamic routing handles paths it has never seen. You write `/:category/:item` and it matches any category, any item — without hardcoding every possibility. Zero-shot classification does the same thing. CLIP classifies images it has never seen into categories it was never trained on.
+Dynamic routing handles paths it has never seen. You write `/:category/:item` and it matches any category, any item, without hardcoding every possibility. Zero-shot classification does the same thing. CLIP classifies images it has never seen into categories it was never trained on.
 </Dialogue>
 
 <Dialogue speaker="Erdem">
@@ -45,10 +45,10 @@ No training data at all? How?
 </Dialogue>
 
 <Dialogue speaker="Rohan">
-It does not memorize categories. It compares. Encode the image, encode each candidate label as text, pick the closest match. The categories are just text — you can change them anytime.
+It does not memorize categories. It compares. Encode the image, encode each candidate label as text, pick the closest match. The categories are just text. You can change them anytime.
 </Dialogue>
 
-Dynamic routing handles unknown paths by matching against patterns. Zero-shot classification handles unknown categories by matching against text descriptions. No hardcoded routes, no hardcoded labels — just flexible comparison.
+Dynamic routing handles unknown paths by matching against patterns. Zero-shot classification handles unknown categories by matching against text descriptions. No hardcoded routes, no hardcoded labels, just flexible comparison.
 
 <LearningObjectives objectives={["Understand zero-shot classification: classify without task-specific training data", "Implement classification by comparing image embeddings to text label embeddings", "Use prompt templates to improve classification accuracy", "Connect zero-shot classification to dynamic routing patterns"]} />
 
@@ -139,4 +139,4 @@ class_embedding[c] = mean(text_encoder(t.format(c=c)) for t in templates)
 CLIP paper used 80 templates and gained another 1-3pp accuracy. The cost: 80× text encodes per class, but cached once at startup.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["Zero-shot classification = dynamic routing for categories: no hardcoded labels, just flexible matching", "Encode the image and candidate labels as text, pick the closest match in embedding space", "Prompt templates (a photo of {category}) significantly improve accuracy", "Categories are just text — change them anytime without retraining the model"]} />
+<KeyTakeaways takeaways={["There is no built-in 'unknown' bucket: threshold the similarity score, or every out-of-distribution image gets a confident wrong label", "Encode the image and candidate labels as text, pick the closest match in embedding space", "Prompt templates (a photo of {category}) significantly improve accuracy", "Categories are just text — change them anytime without retraining the model"]} />

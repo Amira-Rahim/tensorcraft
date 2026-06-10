@@ -7,23 +7,23 @@ order: 4
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Dilan reviews the dataset statistics and spots trouble: 4,200 dome cameras but only 180 hidden micro-cameras — the very type the resistance most needs to detect. 'A model trained on this data will be brilliant at ignoring the most dangerous surveillance,' she warns."
+  narrative: "Dilan reviews the dataset statistics and spots trouble: 4,200 dome cameras but only 180 hidden micro-cameras, the very type the resistance most needs to detect. 'A model trained on this data will be brilliant at ignoring the most dangerous surveillance,' she warns."
   speaker: "Dilan"
 concept:
-  explanation: "Class imbalance in datasets is like uneven traffic distribution across servers — the overloaded class dominates while the underserved one gets ignored. Balancing techniques redistribute the load."
+  explanation: "Class imbalance in datasets is like uneven traffic distribution across servers: the overloaded class dominates while the underserved one gets ignored. Balancing techniques redistribute the load."
   bridge:
     feTitle: "Load Balancing"
     feCode: "servers.distribute(requests, { strategy: 'round-robin' })"
     mlTitle: "Class Balancing"
     mlCode: "sampler.balance(dataset, { strategy: 'oversample-minority' })"
     tier: structural
-    breaks: "Load balancing distributes equal work across servers. Class balancing matters because models minimize average loss — if 99% of samples are class A, the model can hit 99% accuracy by always predicting A. Resampling, reweighting, or focal loss are required, not optional."
+    breaks: "Load balancing distributes equal work across servers. Class balancing matters because models minimize average loss; if 99% of samples are class A, the model can hit 99% accuracy by always predicting A. Resampling, reweighting, or focal loss are required, not optional."
 consequence:
-  narrative: "After rebalancing, the Protocol Sentinel's recall on hidden micro-cameras jumps from 12% to 87%. Dilan allows herself a rare smile. 'Now it sees what matters most — the cameras designed not to be seen.'"
-  nextLessonTeaser: "Next: Data Loaders — feeding your balanced dataset to the model efficiently."
+  narrative: "After rebalancing, the Protocol Sentinel's recall on hidden micro-cameras jumps from 12% to 87%. Dilan allows herself a rare smile. 'Now it sees what matters most: the cameras designed not to be seen.'"
+  nextLessonTeaser: "Next: Data Loaders. Feeding your balanced dataset to the model efficiently."
 hints:
   - level: nudge
-    content: "Think about what happens when one server gets 95% of the traffic — it dominates the system while others sit idle. Same thing happens when one class dominates a dataset."
+    content: "A model minimizes average loss, so a 95% majority class lets it score 95% accuracy by always predicting that class. Count your samples per label before touching the model."
   - level: guidance
     content: "Oversampling duplicates minority class samples. Undersampling removes majority class samples. Class weights make the model pay more attention to rare classes without changing the data."
   - level: solution
@@ -37,10 +37,10 @@ keywords:
 ---
 
 <Dialogue speaker="Dilan">
-Look at these numbers, Noor. Four thousand dome cameras, three thousand bullet cameras, eight hundred PTZ units, and only one hundred eighty hidden micro-cameras. If you trained a model that always guessed "dome camera," it would be right nearly half the time. That's not intelligence — that's a coin flip dressed up as a prediction.
+Look at these numbers, Noor. Four thousand dome cameras, three thousand bullet cameras, eight hundred PTZ units, and only one hundred eighty hidden micro-cameras. If you trained a model that always guessed "dome camera," it would be right nearly half the time. That's not intelligence. That's a coin flip dressed up as a prediction.
 </Dialogue>
 
-If you've ever dealt with server load balancing, you understand this problem intuitively. Imagine a cluster of four servers where one handles 48% of all requests, another handles 34%, a third handles 9%, and the last handles only 2%. The overloaded servers dominate system behavior while the underserved ones barely register. Class imbalance in ML datasets creates exactly this problem — the model optimizes for the most common class and ignores the rare ones.
+48%, 34%, 9%, 2%. Spread request load across a four-server cluster in those proportions and the overloaded pair dominates system behavior while the underserved machines barely register. Class imbalance in ML datasets creates exactly this problem: the model optimizes for the most common class and ignores the rare ones.
 
 <LearningObjectives objectives={[
   "Recognize class imbalance and understand its impact on model performance",
@@ -149,7 +149,7 @@ function oversample(samples: Sample[]): Sample[] {
 }`}
 </CodeBlock>
 
-Oversampling is safe and preserves all original data, but duplicated samples add no new information. Combining oversampling with augmentation (from the previous lesson) gives you the best of both worlds — more minority samples *and* more variety.
+Oversampling is safe and preserves all original data, but duplicated samples add no new information. Combining oversampling with augmentation (from the previous lesson) gives you the best of both worlds: more minority samples *and* more variety.
 
 ## Undersampling: Throttling the Majority
 
@@ -184,7 +184,7 @@ The opposite approach: reduce the majority class to match the minority. Like thr
 
 ## Class Weights: The Software Solution
 
-Instead of changing the data, change how much the model cares about each class. Class weights multiply the loss for rare classes, making errors on them more expensive — like prioritizing critical API endpoints in your monitoring dashboard.
+Instead of changing the data, change how much the model cares about each class. Class weights multiply the loss for rare classes, making errors on them more expensive, like prioritizing critical API endpoints in your monitoring dashboard.
 
 <CodeBlock language="typescript" title="class-weights.ts">
 {`function calculateClassWeights(
@@ -226,7 +226,7 @@ Implement class balancing strategies to fix the imbalanced surveillance camera d
 <Exercise slug="balance-classes" />
 
 <KeyTakeaways takeaways={[
-  "Class imbalance causes models to ignore rare classes — like a server getting 2% of traffic being invisible in monitoring",
+  "With 4,200 dome cameras and 180 micro-cameras in the dataset, recall on micro-cameras sat at 12%; rebalancing pushed it to 87%",
   "Oversampling duplicates minority samples (safe but adds no new information without augmentation)",
   "Undersampling reduces majority samples (balances classes but discards potentially useful data)",
   "Class weights adjust loss magnitude per class — the most flexible approach that preserves all data"

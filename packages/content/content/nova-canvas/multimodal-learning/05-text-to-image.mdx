@@ -10,16 +10,16 @@ context:
   narrative: "The moment. Samir types: 'a sunset over a digital city.' MUSE processes the text, encodes it, conditions the diffusion model, and begins denoising. From noise, shapes emerge. A horizon. Buildings. Light. Rough, but unmistakably a sunset over a digital city. Erdem: 'Can we talk about the CLIP alignment score?'"
   speaker: "Samir"
 concept:
-  explanation: "Text-to-image generation reverses captioning: text becomes the input, images become the output. Like server-side rendering — text (HTML/data) is transformed into visual output (the rendered page). The text description becomes the image."
+  explanation: "Text-to-image generation reverses captioning: text becomes the input, images become the output. Like server-side rendering: text (HTML/data) is transformed into visual output (the rendered page). The text description becomes the image."
   bridge:
-    feTitle: "Server-side rendering — text becomes visual"
+    feTitle: "Server-side rendering: text becomes visual"
     feCode: "const html = renderToString(<App data={textData} />);"
     mlTitle: "Text-to-image generation"
     mlCode: "const image = diffusionModel.generate(encodeText(prompt));"
     tier: structural
 consequence:
   narrative: "The first text-to-image output. Rough edges. Imperfect colors. But recognizable. Yara stares at the screen: 'From words to art. We just crossed the bridge.' Erdem already has concerns: 'The CLIP alignment score is 0.23. We need at least 0.30.'"
-  nextLessonTeaser: "Next module: CLIP & Alignment — teaching MUSE to understand nuance and mood"
+  nextLessonTeaser: "Next module: CLIP & Alignment: teaching MUSE to understand nuance and mood"
 hints:
   - level: nudge
     content: "SSR transforms text data into visual HTML. Text-to-image transforms text prompts into pixel data."
@@ -146,4 +146,4 @@ Wire up the text-to-image pipeline: encode text, condition diffusion, generate.
 
 <Exercise slug="text-to-image" />
 
-<KeyTakeaways takeaways={["Text-to-image is server-side rendering for art: text prompt in, visual image out", "The pipeline combines text encoding, conditioned diffusion, classifier-free guidance, and super-resolution", "Text embeddings condition the U-Net at each denoising step, steering what the model generates", "MUSE's first text-to-image output is rough but recognizable — the bridge from words to art is crossed"]} />
+<KeyTakeaways takeaways={["The text embedding conditions the U-Net at every denoising step, not just the first one", "The pipeline combines text encoding, conditioned diffusion, classifier-free guidance, and super-resolution", "Text embeddings condition the U-Net at each denoising step, steering what the model generates", "MUSE's first text-to-image output is rough but recognizable — the bridge from words to art is crossed"]} />

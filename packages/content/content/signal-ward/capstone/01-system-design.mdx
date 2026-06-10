@@ -10,7 +10,7 @@ context:
   narrative: "Imran pins the architecture diagram to the briefing room wall. Nine modules of NLP work laid out in colored boxes: tokenization, embeddings, sequences, attention, transformers, NER, classification, QA, production infrastructure. 'We built each piece separately,' she says. 'Now we wire them together.' Khalil studies the diagram. 'It is a microservices architecture. Each module is an independent service with a typed contract. We just need an orchestrator.'"
   speaker: "Imran"
 concept:
-  explanation: "Designing Diagnostic One's architecture is the same discipline as designing a microservices system — independent services with typed contracts, orchestrated through a central pipeline that manages data flow, error handling, and fallback paths."
+  explanation: "Designing Diagnostic One's architecture is the same discipline as designing a microservices system: independent services with typed contracts, orchestrated through a central pipeline that manages data flow, error handling, and fallback paths."
   bridge:
     feTitle: "Microservices Architecture"
     feCode: "// Auth Service → User Service → Payment Service — independent services, typed APIs"
@@ -27,7 +27,7 @@ hints:
   - level: guidance
     content: "Define interfaces between stages: tokenizer output feeds embedding input, NER output feeds classification input, QA output feeds the review gate"
   - level: solution
-    content: "Build a pipeline configuration that declares all stages, their dependencies, input/output types, and fallback behaviors — like a service mesh for NLP components"
+    content: "Build a pipeline configuration that declares all stages, their dependencies, input/output types, and fallback behaviors, like a service mesh for NLP components"
 keywords:
   - system-design
   - microservices
@@ -41,10 +41,10 @@ Nine modules of work. Tokenization, embeddings, sequence models, attention, tran
 </Dialogue>
 
 <Dialogue speaker="Khalil">
-It is a microservices architecture. I have built these before — auth service, user service, payment service, notification service. Each service has a typed API contract. Each service can be tested independently. You compose them through an API gateway. Diagnostic One is the same pattern: independent NLP services composed through a pipeline orchestrator.
+It is a microservices architecture. I have built these before: auth service, user service, payment service, notification service. Each service has a typed API contract. Each service can be tested independently. You compose them through an API gateway. Diagnostic One is the same pattern: independent NLP services composed through a pipeline orchestrator.
 </Dialogue>
 
-You have designed microservices architectures — independent services communicating through typed APIs, orchestrated by a gateway that routes requests, handles failures, and aggregates responses. Diagnostic One follows the same pattern. Each NLP module is an independent service with typed inputs and outputs. The pipeline orchestrator routes clinical text through each service in sequence, handles failures with fallback paths, and assembles the final diagnostic report.
+Nine modules, six pipeline stages, twelve components, one diagram on the briefing room wall. Khalil has the right instinct: this is the microservices discipline you already know. Independent services with typed inputs and outputs, behind a gateway that routes requests, handles failures, and aggregates responses. Here the orchestrator routes clinical text through each NLP service in sequence, falls back when a stage fails, and assembles the final diagnostic report.
 
 <LearningObjectives objectives={["Design the complete Diagnostic One architecture as a typed pipeline of NLP services", "Define contracts between pipeline stages: preprocessing, NLP analysis, knowledge retrieval, safety review", "Implement error boundaries and fallback paths for each component", "Map nine modules of NLP work to six orchestrated pipeline stages"]} />
 
@@ -221,4 +221,4 @@ Design a typed pipeline configuration that maps Diagnostic One's components and 
 
 <Exercise slug="design-diagnostic-one" />
 
-<KeyTakeaways takeaways={["Diagnostic One's architecture maps directly to microservices architecture — independent services with typed contracts, composed through an orchestrator", "Every pipeline stage has typed interfaces — catching integration errors at compile time, not at 3 AM in production", "Error boundaries and fallback paths ensure partial failures degrade gracefully, not catastrophically", "Nine modules of NLP work compose into six pipeline stages: process, analyze, retrieve, ground, verify, output"]} />
+<KeyTakeaways takeaways={["ML pipeline data contracts are implicit (schemas, distributions) and fail silently; there is no 400 response for drifted input, so type every boundary", "Every pipeline stage has typed interfaces — catching integration errors at compile time, not at 3 AM in production", "Error boundaries and fallback paths ensure partial failures degrade gracefully, not catastrophically", "Nine modules of NLP work compose into six pipeline stages: process, analyze, retrieve, ground, verify, output"]} />

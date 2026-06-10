@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { PRICING } from "@tensorcraft/shared";
+import { PRICING, THEME_CONTENT } from "@tensorcraft/shared";
+import { CurriculumPreview } from "./curriculum-preview";
 import { PaymentError } from "./payment-error";
 import { PaywallNotice } from "./paywall-notice";
 import { PricingAnalytics } from "./pricing-analytics";
@@ -16,23 +17,23 @@ export const metadata: Metadata = {
     type: "website",
     url: "https://tensorcraft.app/pricing",
     siteName: "Tensorcraft",
-    title: "Simple, Fair Pricing — Tensorcraft",
+    title: "Buy a Theme. Keep It Forever. — Tensorcraft",
     description: `One payment. Lifetime access. $0 preview, $${PRICING.single.price} per theme, bundles up to $${PRICING.allFive.price}.`,
     images: [
       {
-        url: "/api/og?title=Simple%2C%20Fair%20Pricing&subtitle=One%20payment.%20Lifetime%20access.&theme=deep-orbit",
+        url: "/api/og?title=Buy%20a%20Theme.%20Keep%20It%20Forever.&subtitle=One%20payment.%20Lifetime%20access.&theme=deep-orbit",
         width: 1200,
         height: 630,
-        alt: "Tensorcraft — Simple, Fair Pricing",
+        alt: "Tensorcraft — Buy a Theme. Keep It Forever.",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Simple, Fair Pricing — Tensorcraft",
+    title: "Buy a Theme. Keep It Forever. — Tensorcraft",
     description: `One payment. Lifetime access. $0 preview, $${PRICING.single.price} per theme, bundles up to $${PRICING.allFive.price}.`,
     images: [
-      "/api/og?title=Simple%2C%20Fair%20Pricing&subtitle=One%20payment.%20Lifetime%20access.&theme=deep-orbit",
+      "/api/og?title=Buy%20a%20Theme.%20Keep%20It%20Forever.&subtitle=One%20payment.%20Lifetime%20access.&theme=deep-orbit",
     ],
   },
 };
@@ -211,8 +212,7 @@ export default function PricingPage() {
         price: String(PRICING.single.price),
         priceCurrency: "USD",
         availability: "https://schema.org/InStock",
-        description:
-          "One full theme: ~60 lessons, ~60 exercises, capstone, lifetime access.",
+        description: `One full theme: ${THEME_CONTENT.totalLessonsPerTheme} lessons across ${THEME_CONTENT.modulesPerTheme} modules, capstone, lifetime access.`,
       },
       {
         "@type": "Offer",
@@ -273,7 +273,7 @@ export default function PricingPage() {
             data-testid="pricing-heading"
             className="text-4xl sm:text-5xl font-bold mb-5 text-text-primary font-mono tracking-tight"
           >
-            Simple, Fair Pricing
+            Buy a theme. Keep it forever.
           </h1>
           <p className="text-base sm:text-lg max-w-140 mx-auto text-text-muted font-sans">
             Each theme is a separate ML specialization. Buy one, bundle a few,
@@ -320,6 +320,9 @@ export default function PricingPage() {
             </div>
           </div>
         </section>
+
+        {/* Curriculum preview — what a purchase unlocks */}
+        <CurriculumPreview />
 
         {/* Comparison Table */}
         <section className="px-6 pb-24" data-testid="comparison-table-section">
@@ -434,7 +437,14 @@ export default function PricingPage() {
           <p className="mt-12 text-xs text-text-muted/70 font-mono max-w-150 mx-auto leading-relaxed">
             What you don&rsquo;t get: Python ecosystem coverage, GPU training,
             paper-grade math derivations beyond chain rule. If you need those,
-            fast.ai and Karpathy&rsquo;s Zero-to-Hero are excellent and free.
+            fast.ai and Karpathy&rsquo;s Zero-to-Hero are excellent and free.{" "}
+            <Link
+              href="/compare"
+              className="underline underline-offset-[3px] decoration-text-muted/40 hover:text-primary hover:decoration-primary transition-colors"
+            >
+              See the full comparison
+            </Link>
+            .
           </p>
         </section>
       </div>

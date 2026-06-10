@@ -7,7 +7,7 @@ order: 5
 estimatedMinutes: 30
 difficulty: intermediate
 context:
-  narrative: "The most important skill in ML isn't building models — it's knowing which model to build. This lesson gives you the decision framework."
+  narrative: "Knowing which model to build matters more than knowing how to build one. This lesson gives you the decision framework."
 concept:
   explanation: "Model selection depends on dataset size, interpretability requirements, compute budget, and data type. Deep learning is not always the answer."
   bridge:
@@ -16,13 +16,13 @@ concept:
     mlTitle: "Model selection"
     mlCode: "// Tabular? XGBoost. Images? CNN. Text? Transformer. Small data? KNN"
     tier: structural
-    breaks: "Choosing npm packages weighs maintenance, downloads, license. Choosing a model weighs accuracy on your data, inference cost, training cost, calibration, interpretability — and you cannot know which model wins without empirically training each one."
+    breaks: "Choosing npm packages weighs maintenance, downloads, license. Choosing a model weighs accuracy on your data, inference cost, training cost, calibration, interpretability, and you cannot know which model wins without empirically training each one."
 consequence:
-  narrative: "You now have a practical decision framework for model selection. This is the skill that separates ML engineers from tutorial followers."
+  narrative: "Five questions (data type, dataset size, interpretability, compute budget, deploy target) and the framework names your model family. Run the next problem that lands on your desk through it before you write a line of training code."
   nextLessonTeaser: "You've completed the Classical ML module. These foundations will serve you in every ML project."
 hints:
   - level: nudge
-    content: "Start simple — logistic regression is always your first baseline"
+    content: "Start simple: logistic regression is always your first baseline"
   - level: guidance
     content: "Consider: data size, data type, interpretability needs, compute budget"
   - level: solution
@@ -35,7 +35,7 @@ keywords:
 ---
 
 <Dialogue speaker="Instructor">
-I've seen teams spend months building a neural network that a logistic regression could have matched in an afternoon. The most expensive mistake in ML isn't picking the wrong hyperparameters — it's picking the wrong model entirely. Let's make sure you never make that mistake.
+I've seen teams spend months building a neural network that a logistic regression could have matched in an afternoon. Wrong hyperparameters cost you days; the wrong model family costs you the quarter. This lesson is about not losing the quarter.
 </Dialogue>
 
 Choosing an ML model is like choosing a frontend framework. You wouldn't use Next.js for a static landing page, and you wouldn't use plain HTML for a real-time dashboard. The right tool depends on the job.
@@ -136,7 +136,7 @@ Regulated industries (finance, healthcare, insurance) often require model explan
 
 ### 4. Tight Compute Budget
 
-Training a neural network requires GPUs. Training a random forest requires a laptop. In production, inference cost matters too — a decision tree evaluates in microseconds.
+Training a neural network requires GPUs. Training a random forest requires a laptop. In production, inference cost matters too. A decision tree evaluates in microseconds.
 
 ## When Deep Learning Wins
 
@@ -198,4 +198,4 @@ Given real-world scenarios, choose the right model and justify your reasoning.
 
 <Exercise slug="choose-model" />
 
-<KeyTakeaways takeaways={["Tabular data + classical ML beats neural networks more often than not", "Always start with a simple baseline — logistic regression for classification", "Deep learning shines with unstructured data (images, text, audio) and massive datasets", "Model selection is about trade-offs: accuracy vs. interpretability vs. compute vs. time", "The best model is the simplest one that meets your requirements"]} />
+<KeyTakeaways takeaways={["Tabular data + classical ML beats neural networks more often than not", "Always start with a simple baseline: logistic regression for classification", "Deep learning shines with unstructured data (images, text, audio) and massive datasets", "Model selection is about trade-offs: accuracy vs. interpretability vs. compute vs. time", "The best model is the simplest one that meets your requirements"]} />

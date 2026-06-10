@@ -7,10 +7,10 @@ order: 1
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Yara holds up two paintings. 'Same subject — a bridge over water. Monet painted it with soft light and broken color. Basquiat would paint it with raw energy and text fragments. The content is the same. The style is everything.'"
+  narrative: "Yara holds up two paintings. 'Same subject: a bridge over water. Monet painted it with soft light and broken color. Basquiat would paint it with raw energy and text fragments. The content is the same. The style is everything.'"
   speaker: "Yara"
 concept:
-  explanation: "Neural networks naturally separate content (what is depicted) from style (how it is depicted) — just like HTML defines content and CSS defines presentation. The same content can wear any style."
+  explanation: "Neural networks naturally separate content (what is depicted) from style (how it is depicted), just like HTML defines content and CSS defines presentation. The same content can wear any style."
   bridge:
     feTitle: "Content vs presentation (HTML vs CSS)"
     feCode: "<article class='monet'>A bridge over water</article>"
@@ -19,11 +19,11 @@ concept:
     tier: intuition
     breaks: "HTML and CSS are cleanly separable by language. Content and style in images are entangled in pixel values; the separation is computed from intermediate CNN activations and the boundary between 'content' and 'style' is fuzzy and layer-dependent."
 consequence:
-  narrative: "Yara gets it. She has been separating content from style her entire career — first with paint, now with code. 'So the network learns what the painting shows and how it shows it as separate things?' Samir nods: 'Different layers, different representations.'"
-  nextLessonTeaser: "Next: neural style transfer — applying one image's style to another's content"
+  narrative: "Yara gets it. She has been separating content from style her entire career, first with paint, now with code. 'So the network learns what the painting shows and how it shows it as separate things?' Samir nods: 'Different layers, different representations.'"
+  nextLessonTeaser: "Next: neural style transfer: applying one image's style to another's content"
 hints:
   - level: nudge
-    content: "Think HTML vs CSS: same HTML with different stylesheets looks completely different"
+    content: "extractContent reads one deep layer's activations; extractStyle needs Gram matrices from several early layers. The split comes from where you tap the network"
   - level: guidance
     content: "Early CNN layers capture style (textures, colors, brushstrokes). Deeper layers capture content (objects, structure)."
   - level: solution
@@ -37,14 +37,18 @@ keywords:
 ---
 
 <Dialogue speaker="Yara">
-Every artist understands this instinctively. The bridge over water is the content. Monet's broken brushstrokes and diffused light — that is the style. Same subject, completely different paintings.
+Every artist understands this instinctively. The bridge over water is the content. Monet's broken brushstrokes and diffused light, that's the style. Same subject, completely different paintings.
 </Dialogue>
 
 <Dialogue speaker="Samir">
 Frontend developers understand it too. HTML is content. CSS is style. The same HTML with a different stylesheet looks like a completely different site. Neural networks learn this same separation.
 </Dialogue>
 
-You already live in a world of content-style separation. HTML structures what the page says. CSS controls how it looks. Neural networks learn the same division — different layers encode different things.
+<Dialogue speaker="Yara">
+Careful with that one. HTML and CSS split cleanly because someone designed two languages. A painting isn't labeled. Content and style live in the same pixels, and the network has to compute the split from its own activations. Ask different layers and you'll get a different boundary.
+</Dialogue>
+
+You already live in a world of content-style separation. HTML structures what the page says. CSS controls how it looks. Neural networks learn the same division: different layers encode different things.
 
 <LearningObjectives objectives={["Understand how CNNs naturally separate content and style into different layer activations", "Extract content features from deep layers of a pretrained network", "Compute Gram matrices to capture style information from multiple layers", "Connect content/style separation to the HTML/CSS paradigm"]} />
 
@@ -129,7 +133,7 @@ Compute a Gram matrix from CNN feature activations to capture an image's style.
 - The choice of style layers (typically conv1_1 + conv2_1 + conv3_1 + conv4_1 + conv5_1)
 - The relative weight α : β between content loss and style loss
 
-There is no universal "correct" decomposition — you tune for the visual effect you want.
+There is no universal "correct" decomposition. You tune for the visual effect you want.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["CNNs naturally separate content (deep layers) from style (early layers), like HTML separates from CSS", "Content is captured by activations of deep convolutional layers — what objects and structures are present", "Style is captured by Gram matrices — correlations between feature channels that encode textures and patterns", "The same content can be rendered in any style, just like the same HTML can wear any stylesheet"]} />
+<KeyTakeaways takeaways={["The content/style split is empirical and layer-dependent: deep activations hold structure, early-layer Gram matrices hold texture", "Content is captured by activations of deep convolutional layers — what objects and structures are present", "Style is captured by Gram matrices — correlations between feature channels that encode textures and patterns", "The same content can be rendered in any style: swap the style image and re-run the optimization"]} />

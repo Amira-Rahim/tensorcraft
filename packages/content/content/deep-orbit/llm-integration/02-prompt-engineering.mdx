@@ -37,10 +37,10 @@ skillAxes: [deployment, fe_integration]
 ---
 
 <Dialogue speaker="Dr. Farah">
-My first prompt was 'analyze this signal.' The output was useless — generic, vague, no structure. When I added role, context, data, and format instructions, the output became precise enough to include in the report.
+My first prompt was 'analyze this signal.' The output was useless: generic, vague, no structure. When I added role, context, data, and format instructions, the output became precise enough to include in the report.
 </Dialogue>
 
-You've learned that `git log --oneline --graph --all` gives better results than `git log`. The same applies to LLM prompts: specificity and structure dramatically improve output quality.
+"Analyze this signal data" returns a paragraph that could describe any signal ever recorded. Add a role, the normal amplitude range, the four known natural frequencies, and a JSON schema, and the same model returns a classification Farah can paste into her report. Nothing about the model changed between those two calls; only the prompt did. It's the difference between `git log` and `git log --oneline --graph --all`: specificity and structure decide what you get back.
 
 <LearningObjectives objectives={["Structure prompts with role, context, data, and format instructions", "Use few-shot examples to guide output format and style", "Request structured output (JSON) for programmatic processing", "Iterate on prompts like debugging — refine until results match expectations"]} />
 
@@ -129,4 +129,4 @@ Write a prompt template that produces structured signal analysis.
 
 <Exercise slug="prompt-template" />
 
-<KeyTakeaways takeaways={["Structure prompts with role, context, data, and format — like building a well-structured API request", "Request JSON output for programmatic processing — always parse and validate the response", "Few-shot examples teach the model your expected format and reasoning style", "Iterate on prompts like debugging: test, inspect output, refine, repeat"]} />
+<KeyTakeaways takeaways={["Structure prompts in four parts: role, context, data, format. Missing parts are where vague output comes from", "Request JSON output for programmatic processing — always parse and validate the response", "Few-shot examples teach the model your expected format and reasoning style", "Iterate on prompts like debugging: test, inspect output, refine, repeat"]} />

@@ -7,7 +7,7 @@ order: 5
 estimatedMinutes: 30
 difficulty: beginner
 context:
-  narrative: "The collective gathers for the first prototype session. Samir builds a simple generator that produces visual patterns — the first brushstroke of the Biennale installation."
+  narrative: "The collective gathers for the first prototype session. Samir builds a simple generator that produces visual patterns: the first brushstroke of the Biennale installation."
   speaker: "Yara"
 concept:
   explanation: "A simple generator is a neural network that takes a noise vector and outputs structured data. Training it means teaching it to produce outputs that look like real data."
@@ -17,13 +17,13 @@ concept:
     mlTitle: "Generator Network"
     mlCode: "const output = generator.predict(tf.randomNormal([1, 64]))"
     tier: structural
-    breaks: "Procedural canvas drawing produces visuals from rules you wrote. Generator networks produce visuals from learned weights — the same architecture trained twice produces different outputs and 'understanding' the rules requires interpretability tools, not reading code."
+    breaks: "Procedural canvas drawing produces visuals from rules you wrote. Generator networks produce visuals from learned weights. The same architecture trained twice produces different outputs and 'understanding' the rules requires interpretability tools, not reading code."
 consequence:
-  narrative: "The first generated patterns appear on screen — crude but unmistakably structured. The Biennale installation has its first heartbeat."
-  nextLessonTeaser: "Next module: diving into latent spaces — the hidden dimensions where generation happens"
+  narrative: "The first generated patterns appear on screen: crude but unmistakably structured. The Biennale installation has its first heartbeat."
+  nextLessonTeaser: "Next module: diving into latent spaces: the hidden dimensions where generation happens"
 hints:
   - level: nudge
-    content: "A generator is just a function from noise to data — like a procedural drawing function with learned parameters"
+    content: "A generator is just a function from noise to data, like a procedural drawing function with learned parameters"
   - level: guidance
     content: "Build a tf.sequential model with dense layers that maps noise to a 28x28 output"
   - level: solution
@@ -36,7 +36,7 @@ keywords:
 ---
 
 <Dialogue speaker="Yara">
-Enough theory. Let us make something. I want to see patterns on that screen before midnight.
+Enough theory. Let's make something. I want to see patterns on that screen before midnight.
 </Dialogue>
 
 <Dialogue speaker="Rohan">
@@ -44,16 +44,16 @@ I have been feeding MUSE examples of geometric patterns all week. Time to see if
 </Dialogue>
 
 <Dialogue speaker="MUSE">
-A blank canvas and a noise vector. Let us see what emerges.
+Rohan fed me 200 stripe patterns this week. Untrained, I output 784 pixels of gray static. We could save one frame per epoch while Samir trains me and watch for the stripes. Last run they surfaced around epoch 12.
 </Dialogue>
 
-Everything you have learned so far — distributions, sampling, noise — comes together now. You are going to build a simple generator network: a function that takes random noise and outputs a 28x28 grayscale pattern.
+Everything you have learned so far (distributions, sampling, noise) comes together now. You are going to build a simple generator network: a function that takes random noise and outputs a 28x28 grayscale pattern.
 
 <LearningObjectives objectives={["Build a generator network using TensorFlow.js sequential API", "Train the generator to produce structured visual patterns", "Render generated output to an HTML canvas", "Understand the training loop for a simple generative model"]} />
 
 ## Building the Generator
 
-A generator is a neural network that maps a low-dimensional noise vector to a high-dimensional output. Think of it as a procedural drawing function — but instead of hand-coded rules, the rules are *learned*.
+A generator is a neural network that maps a low-dimensional noise vector to a high-dimensional output. It is a procedural drawing function whose rules are *learned* instead of hand-coded.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -131,7 +131,7 @@ await autoEncoder.fit(targets, targets, {
 
 ## Rendering to Canvas
 
-The final step — bringing the generated pattern into the browser where it belongs.
+The final step: bringing the generated pattern into the browser where it belongs.
 
 <CodeBlock language="typescript" title="render-pattern.ts">
 {`async function renderPattern(tensor: tf.Tensor, canvas: HTMLCanvasElement) {

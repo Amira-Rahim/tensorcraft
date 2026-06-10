@@ -37,10 +37,10 @@ skillAxes: [deployment, fe_integration]
 ---
 
 <Dialogue speaker="Ensign Demir">
-Each model does one thing well. The classifier knows signal types. The autoencoder knows what's normal. The LSTM knows temporal patterns. The LLM knows language. I just need to wire them together — like an API gateway routing to micro-services.
+Each model does one thing well. The classifier knows signal types. The autoencoder knows what's normal. The LSTM knows temporal patterns. The LLM knows language. I just need to wire them together, like an API gateway routing to micro-services.
 </Dialogue>
 
-You've built micro-service architectures where each service handles its domain — auth, products, payments — and an API gateway coordinates the flow. Multi-model ML systems work the same way: each model is a specialist, and an orchestrator connects them into a coherent pipeline.
+Four models, four contracts. The classifier emits a class and a confidence. The autoencoder emits a reconstruction error. The LSTM emits predicted next values, and the LLM consumes all three to emit prose. Orchestration is the discipline of wiring those contracts together so one weak stage can't silently poison the chain, which is the same job an API gateway does for auth, products, and payments services.
 
 <LearningObjectives objectives={["Design a multi-model pipeline with clear interfaces between stages", "Orchestrate signal classifier, anomaly detector, LSTM predictor, and LLM reporter", "Handle errors and fallbacks when individual models fail", "Build the complete DEEP SCAN end-to-end processing pipeline"]} />
 
@@ -170,4 +170,4 @@ Wire together a multi-model pipeline with error handling.
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Multi-model systems are micro-service architectures — each model handles its domain, an orchestrator coordinates", "Define clear interfaces between stages: classifier output becomes anomaly detector input", "Graceful degradation: if one model fails, fall back to simpler methods rather than failing entirely", "The complete DEEP SCAN pipeline: classify → detect anomalies → predict → report — end-to-end automation"]} />
+<KeyTakeaways takeaways={["Chained probabilistic models compound error: five unchecked steps at 95% reliability each yield 77% end-to-end, so validate output between stages", "Define clear interfaces between stages: classifier output becomes anomaly detector input", "Graceful degradation: if one model fails, fall back to simpler methods rather than failing entirely", "The complete DEEP SCAN pipeline: classify → detect anomalies → predict → report — end-to-end automation"]} />

@@ -10,7 +10,7 @@ context:
   narrative: "Noor stares at a surveillance feed, trying to sharpen a blurry license plate. Zara stops her: 'You already know how to do this. That blur filter in your Canvas drawing app? That IS a convolution. Let me show you what is really happening under the hood.'"
   speaker: "Zara"
 concept:
-  explanation: "A convolution slides a small kernel (matrix) across an image, computing weighted sums at each position — identical to how CSS filter: blur() applies a Gaussian kernel to every pixel."
+  explanation: "A convolution slides a small kernel (matrix) across an image, computing weighted sums at each position, identical to how CSS filter: blur() applies a Gaussian kernel to every pixel."
   bridge:
     feTitle: "CSS filter: blur()"
     feCode: "element.style.filter = 'blur(4px)'; // applies a Gaussian convolution kernel"
@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "CSS blur() applies one fixed Gaussian kernel browser-side. CNN convolution applies many learned kernels (8, 16, 64+) per layer that update during training to detect features specific to the dataset. Same sliding-window math; the kernel content is the entire point of training."
 consequence:
-  narrative: "Noor runs her first convolution on a surveillance frame. Edge detection lights up doorways, windows, and camera housings — structural features invisible to the naked eye."
+  narrative: "Noor runs her first convolution on a surveillance frame. Edge detection lights up doorways, windows, and camera housings: structural features invisible to the naked eye."
   nextLessonTeaser: "Next: pooling layers that compress feature maps without losing important patterns"
 hints:
   - level: nudge
@@ -41,10 +41,10 @@ Every time you apply `filter: blur()` in CSS, the browser slides a Gaussian kern
 </Dialogue>
 
 <Dialogue speaker="Noor">
-Wait — so when I built that photo editor with Canvas filters in my drawing app, I was literally doing convolutions? The sharpen filter, the edge detection... those were all kernels?
+Wait. So when I built that photo editor with Canvas filters in my drawing app, I was literally doing convolutions? The sharpen filter, the edge detection... those were all kernels?
 </Dialogue>
 
-Exactly. A convolution is a sliding window operation. You take a small matrix (the kernel), slide it across an image, and at each position compute a weighted sum. Different kernels detect different features: edges, textures, shapes.
+She was, with one asterisk. Those Canvas filters ran kernels somebody hardcoded. A convolution is the sliding window operation itself: take a small matrix (the kernel), slide it across an image, and at each position compute a weighted sum. A CNN runs that same operation but learns its kernel weights from data, and learns dozens of them per layer. The sliding window is just mechanics. The learned weights are the entire point of training.
 
 <LearningObjectives objectives={["Understand how a convolution kernel slides across an image to produce a feature map", "Implement a 2D convolution operation from scratch", "Recognize that CSS blur, sharpen, and edge-detect filters are convolution operations", "Distinguish between valid and same padding strategies"]} />
 
@@ -165,8 +165,8 @@ For input width W, kernel size K, padding P, stride S, the output width is:
 `W_out = floor((W - K + 2P) / S) + 1`
 
 **Common patterns:**
-- `K=3, P=1, S=1` → `W_out = W` ("same" padding — preserves size)
-- `K=3, P=0, S=1` → `W_out = W - 2` ("valid" padding — shrinks by 2)
+- `K=3, P=1, S=1` → `W_out = W` ("same" padding, preserves size)
+- `K=3, P=0, S=1` → `W_out = W - 2` ("valid" padding, shrinks by 2)
 - `K=3, P=1, S=2` → `W_out = ceil(W / 2)` (downsample by 2)
 
 **Number of learnable parameters** in one conv layer with `F` filters, kernel `KxK`, input channels `C`:
@@ -186,4 +186,4 @@ For a 3×3 conv with 32 filters on RGB input: `(9 · 3 + 1) · 32 = 896` learnab
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["A convolution slides a kernel across an image, computing weighted sums — the same operation as CSS blur and sharpen filters", "Different kernels detect different features: edges, textures, gradients", "Padding controls whether the output shrinks (valid) or stays the same size (same)", "In a CNN, the kernel weights are learned during training instead of being hardcoded"]} />
+<KeyTakeaways takeaways={["A convolution slides a kernel across an image, computing a weighted sum at each position to produce a feature map", "Different kernels detect different features: edges, textures, gradients", "Padding controls whether the output shrinks (valid) or stays the same size (same)", "In a CNN, the kernel weights are learned during training instead of being hardcoded"]} />

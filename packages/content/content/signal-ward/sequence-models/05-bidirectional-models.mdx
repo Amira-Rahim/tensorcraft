@@ -17,7 +17,7 @@ concept:
     mlTitle: "Bidirectional RNN"
     mlCode: "const [fwd, bwd] = biLSTM(tokens); const full = tf.concat([fwd, bwd]);"
     tier: structural
-    breaks: "reduce + reduceRight produce two separate folds you compose afterward. Bidirectional RNNs run forward and backward passes whose hidden states are concatenated per timestep — two passes is at training and inference, not just an additional traversal."
+    breaks: "reduce + reduceRight produce two separate folds you compose afterward. Bidirectional RNNs run forward and backward passes whose hidden states are concatenated per timestep; two passes is at training and inference, not just an additional traversal."
 consequence:
   narrative: "Diagnostic One now reads clinical notes in both directions, catching negation and context that unidirectional models miss."
   nextLessonTeaser: "Module complete. Next module: Attention Mechanisms — focusing on what matters most."
@@ -25,7 +25,7 @@ hints:
   - level: nudge
     content: "tf.layers.bidirectional wraps any RNN layer and runs it in both directions."
   - level: guidance
-    content: "The output of a bidirectional layer has 2x the units — forward and backward states are concatenated."
+    content: "The output of a bidirectional layer has 2x the units: forward and backward states are concatenated."
   - level: solution
     content: "model.add(tf.layers.bidirectional({ layer: tf.layers.lstm({ units: 32 }) }));"
 keywords:
@@ -47,14 +47,14 @@ So the model needs to look ahead, not just behind. That's like needing both `red
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-Exactly. A bidirectional model runs two passes — one left-to-right, one right-to-left — and combines them. Every token gets context from both directions.
+Almost. reduce and reduceRight hand you two finished folds you'd stitch together at the end. A bidirectional RNN concatenates the forward and backward hidden states at every single token, so each position carries both contexts as it goes. And you pay for both passes every time you run the model, inference included, not just once at training.
 </Dialogue>
 
 <Dialogue speaker="MEDI">
 Clinical note analysis confirms: 23% of negation patterns require right-to-left context for correct interpretation. Unidirectional models miss these cases.
 </Dialogue>
 
-In JavaScript, `Array.reduce()` processes left-to-right, accumulating state from the beginning. `Array.reduceRight()` processes right-to-left, accumulating from the end. Neither alone gives you complete context at every position. A bidirectional model combines both passes, giving each token full context from the entire sequence.
+A forward pass alone means that at "the medication," the model knows nothing about the discontinuation four words ahead. The backward pass fills in exactly that gap, and concatenating the two states gives every token full context from the entire sequence.
 
 <LearningObjectives objectives={["Understand why unidirectional models miss backward context clues", "Connect bidirectional processing to reduce() + reduceRight() combination", "Build a bidirectional LSTM in TensorFlow.js", "Recognize when bidirectional models are appropriate vs unnecessary"]} />
 
@@ -144,7 +144,7 @@ Should we always use bidirectional? If it's strictly better, why not default to 
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-Two reasons. First, it doubles your parameters and computation — that matters in the browser. Second, bidirectional only works when you have the complete input upfront. For real-time streaming — like autocomplete — you can't look ahead because the future hasn't arrived yet.
+Two reasons. First, it doubles your parameters and computation, which matters in the browser. Second, bidirectional only works when you have the complete input upfront. For real-time streaming, like autocomplete, you can't look ahead because the future hasn't arrived yet.
 </Dialogue>
 
 <CodeBlock language="typescript" title="when-bidirectional.ts">
@@ -195,9 +195,9 @@ Build a bidirectional LSTM that reads clinical text in both directions for impro
 <Exercise slug="bidirectional-scan" />
 
 <DerivationDrawer summary="Beam search vs greedy decoding">
-When generating sequences token-by-token (translation, summarization, story generation), the search space is exponential — for vocab V and length T, V^T possible outputs. Practical decoding strategies:
+When generating sequences token-by-token (translation, summarization, story generation), the search space is exponential: for vocab V and length T, V^T possible outputs. Practical decoding strategies:
 
-**Greedy decoding:** at each step, pick `argmax_v p(v | history)`. O(T · V). Fast but myopic — local choices can paint the model into a corner.
+**Greedy decoding:** at each step, pick `argmax_v p(v | history)`. O(T · V). Fast but myopic: local choices can paint the model into a corner.
 
 **Beam search:** maintain top-K hypotheses at each step. For each, expand to V continuations, score, keep top-K total.
 
@@ -230,4 +230,4 @@ return beams[0]
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Bidirectional models combine reduce() and reduceRight() — processing sequences in both directions", "Each token gets context from the entire sequence, not just preceding tokens", "Bidirectional is ideal for clinical text where complete notes are available before analysis", "Tradeoff: 2x parameters and compute, but significantly better accuracy on context-dependent patterns"]} />
+<KeyTakeaways takeaways={["23% of negation patterns in clinical notes need right-to-left context; unidirectional models miss them", "Each token gets context from the entire sequence, not just preceding tokens", "Bidirectional is ideal for clinical text where complete notes are available before analysis", "Tradeoff: 2x parameters and compute, but significantly better accuracy on context-dependent patterns"]} />

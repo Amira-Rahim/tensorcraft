@@ -281,8 +281,8 @@ export function FiveWorldsSection() {
         </h2>
         <p className="text-[15px] text-text-muted leading-relaxed max-w-[520px]">
           Same ML syllabus. Five story universes.{" "}
-          <span style={{ color: HERO_CARD.col }}>{HERO_CARD.name}</span>{" "}
-          launches today &mdash; the other four ship in waves.
+          <span style={{ color: HERO_CARD.col }}>{HERO_CARD.name}</span> is live
+          &mdash; the other four ship in waves.
         </p>
       </div>
 
@@ -320,7 +320,7 @@ export function FiveWorldsSection() {
                 border: `1px solid color-mix(in srgb, ${HERO_CARD.col} 35%, transparent)`,
               }}
             >
-              LIVE TODAY
+              LIVE NOW
             </span>
           </div>
           <div
@@ -329,7 +329,7 @@ export function FiveWorldsSection() {
           >
             {HERO_CARD.name}
           </div>
-          <div className="font-mono text-sm text-text-muted opacity-70 mb-4">
+          <div className="font-mono text-sm text-text-primary mb-4">
             {HERO_CARD.spec}
           </div>
           <p className="text-base md:text-lg text-text-muted leading-relaxed max-w-[640px] mb-6">
@@ -339,7 +339,7 @@ export function FiveWorldsSection() {
             className="font-mono text-sm tracking-wider"
             style={{ color: HERO_CARD.col }}
           >
-            Start the journey &rarr;
+            Start Module 1 &mdash; free &rarr;
           </span>
         </Link>
       </motion.div>

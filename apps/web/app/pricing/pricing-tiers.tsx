@@ -199,7 +199,7 @@ export function PricingTiers() {
                   ${PRICING.single.price}
                 </span>
                 <span
-                  className="text-lg font-mono text-text-muted/50 line-through"
+                  className="text-lg font-mono text-text-muted line-through"
                   aria-label={`Regular price $${PRICING.single.regularPrice}`}
                 >
                   ${PRICING.single.regularPrice}
@@ -418,8 +418,9 @@ export function PricingTiers() {
               All 5 Themes
             </h3>
             <p className="text-xs mb-5 leading-relaxed text-text-muted font-sans">
-              Every theme, every specialization. Complete ML mastery across all
-              5 domains.
+              All five specializations &mdash; time-series, vision, NLP,
+              generative, edge. {totalLessons * 5} lessons, 5 capstones, one
+              payment.
             </p>
             <ul className="flex-1 mb-6 space-y-2">
               {[

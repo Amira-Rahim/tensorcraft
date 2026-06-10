@@ -7,10 +7,10 @@ order: 3
 estimatedMinutes: 22
 difficulty: intermediate
 context:
-  narrative: "NEON's analysis of the augmented dataset reveals a problem: pixel values range wildly across images — some captured in harsh neon light, others in near darkness. 'The Sentinel cannot learn when inputs scream at different volumes,' NEON warns. Noor must bring every image to a common scale."
+  narrative: "NEON's analysis of the augmented dataset reveals a problem: pixel values range wildly across images: some captured in harsh neon light, others in near darkness. 'The Sentinel cannot learn when inputs scream at different volumes,' NEON warns. Noor must bring every image to a common scale."
   speaker: "NEON"
 concept:
-  explanation: "Normalization scales pixel values to a consistent range — just like CSS normalize.css creates a consistent baseline across browsers by resetting defaults."
+  explanation: "Normalization scales pixel values to a consistent range, just like CSS normalize.css creates a consistent baseline across browsers by resetting defaults."
   bridge:
     feTitle: "CSS Normalize"
     feCode: "* { margin: 0; padding: 0; box-sizing: border-box; }"
@@ -19,10 +19,10 @@ concept:
     tier: structural
 consequence:
   narrative: "With normalized data flowing into the training pipeline, NEON reports stable gradient values for the first time. 'Consistent inputs yield consistent learning,' the AI confirms. The Protocol Sentinel's early training runs no longer spike and crash."
-  nextLessonTeaser: "Next: Class Balance — ensuring every camera type gets fair representation in training."
+  nextLessonTeaser: "Next: Class Balance. Ensuring every camera type gets fair representation in training."
 hints:
   - level: nudge
-    content: "Think about why normalize.css exists — different browsers have different default styles. Normalization brings everything to a consistent baseline."
+    content: "Raw pixel ranges differ per image the way default styles differ per browser. Your minMaxNormalize gives every image the same [0, 1] baseline."
   - level: guidance
     content: "Min-max normalization maps values to 0-1 by subtracting the minimum and dividing by the range. Z-score normalization subtracts the mean and divides by standard deviation."
   - level: solution
@@ -39,7 +39,7 @@ keywords:
 Analysis complete. Your pixel values span from 3 to 251 across the dataset. Some images dominate the learning signal simply because they are brighter. This is equivalent to one CSS module overriding all others because its specificity is unconstrained. We must normalize.
 </Dialogue>
 
-Every frontend developer has experienced the chaos of unstyled HTML across browsers. One browser adds 8px body margin, another adds 16px paragraph spacing, a third applies its own font sizes. CSS normalize.css solves this by establishing a consistent baseline. ML normalization solves the exact same problem for pixel data — bringing every image to a common scale so no single image dominates the learning process.
+Every frontend developer has experienced the chaos of unstyled HTML across browsers. One browser adds 8px body margin, another adds 16px paragraph spacing, a third applies its own font sizes. CSS normalize.css solves this by establishing a consistent baseline. ML normalization solves the exact same problem for pixel data, bringing every image to a common scale so no single image dominates the learning process.
 
 <LearningObjectives objectives={[
   "Understand why raw pixel values create training instability",
@@ -72,13 +72,15 @@ Before normalize.css, building cross-browser UIs was unpredictable. Each browser
 
 ## Why Raw Pixels Break Training
 
-Neural networks learn by adjusting weights based on input values. When one image has pixel values in the range [0, 50] and another spans [200, 255], the brighter image produces much larger gradient updates. This is like having one CSS module with `!important` on every rule — it drowns out everything else.
+Neural networks learn by adjusting weights based on input values. When one image has pixel values in the range [0, 50] and another spans [200, 255], the brighter image produces much larger gradient updates. This is like having one CSS module with `!important` on every rule. It drowns out everything else.
 
 <Dialogue speaker="Noor">
 So without normalization, the model pays more attention to bright images just because their numbers are bigger? That's like a component with higher CSS specificity getting all the styling priority regardless of relevance.
 </Dialogue>
 
-Exactly. Normalization strips away the "specificity" of raw magnitudes, letting the model focus on actual patterns.
+<Dialogue speaker="NEON">
+Close. Specificity is a tiebreak rule the browser applies on purpose. Magnitude dominance is an accident of arithmetic. Nobody decided bright pixels matter more; the gradients simply scale with the input values. Normalization removes the accident.
+</Dialogue>
 
 ## Min-Max Normalization
 
@@ -159,11 +161,11 @@ function zScoreNormalize(pixels: PixelGrid): number[][] {
 }`}
 </CodeBlock>
 
-Z-score values can be negative (darker than average) or positive (brighter than average), with most values falling between -3 and 3. Think of it like centering a flexbox container — everything is positioned relative to the center, not the edge.
+Z-score values can be negative (darker than average) or positive (brighter than average), with most values falling between -3 and 3. Like centering a flexbox container: everything is positioned relative to the center, not the edge.
 
 ## Channel-Wise Normalization
 
-Real images have three channels (RGB). Each channel may have different statistical properties — red neon signs create high red values, dark alleys have low blue values. Best practice: normalize each channel independently.
+Real images have three channels (RGB). Each channel may have different statistical properties: red neon signs create high red values, dark alleys have low blue values. Best practice: normalize each channel independently.
 
 <CodeBlock language="typescript" title="channel-normalize.ts">
 {`interface RGBImage {
@@ -205,7 +207,7 @@ Implement normalization functions that bring Neon City's wildly varied surveilla
 <Exercise slug="normalize-pixels" />
 
 <KeyTakeaways takeaways={[
-  "Normalization creates a consistent baseline for pixel values — the ML equivalent of CSS normalize.css across browsers",
+  "Normalization rescales every image to a common range so bright images stop dominating the gradient updates",
   "Min-max normalization maps values to [0, 1] using the formula (value - min) / (max - min)",
   "Z-score standardization centers data around zero using (value - mean) / std",
   "Channel-wise normalization handles each RGB channel independently for accurate color representation"

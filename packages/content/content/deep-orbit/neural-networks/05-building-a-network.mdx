@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "createRoot().render() mounts a component tree once and React handles updates. model.compile() does not run training — it attaches optimizer + loss configuration that fit() will use. Compilation is a setup step; the real work happens in fit/train."
 consequence:
-  narrative: "Module complete. The DEEP SCAN network is assembled and ready for training. The crew holds their breath."
+  narrative: "Module complete. The DEEP SCAN network is assembled and compiled. Nothing has been trained yet — the weights are still random numbers."
 hints:
   - level: nudge
     content: "Compile sets the optimizer and loss function before training"
@@ -36,14 +36,14 @@ skillAxes: [model_arch]
 ---
 
 <Dialogue speaker="Commander Mirza">
-This is it. We've built the components — neurons, activations, layers. Now assemble them into a complete system. The deep scan classifier must be ready for training by end of watch.
+This is it. We've built the components: neurons, activations, layers. Now assemble them into a complete system. The deep scan classifier must be ready for training by end of watch.
 </Dialogue>
 
 <LearningObjectives objectives={["Build a complete neural network from scratch", "Compile a model with optimizer, loss function, and metrics", "Understand what each compilation option controls", "Verify the network with a summary and test prediction"]} />
 
 ## Assembly Required
 
-Building a React app: you create components, compose them, then mount the app. Building a neural network: you create layers, stack them, then compile the model.
+Compile the network below, then call `model.predict()` immediately. It runs. It returns a probability. And the number is meaningless, because compilation wires up the optimizer and loss without ever touching the weights, which are still random. Assembly and training are separate steps, the same way composing and mounting a React app is separate from anything the user actually does with it. This lesson covers assembly end to end.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -84,7 +84,7 @@ console.log('Initial prediction:', prediction.dataSync());`}
 </CodeBlock>
 
 **Compilation options explained:**
-- **optimizer** (`'adam'`): The algorithm that adjusts weights during training. Adam is the default choice — it adapts the learning rate automatically.
+- **optimizer** (`'adam'`): The algorithm that adjusts weights during training. Adam is the default choice; it adapts the learning rate automatically.
 - **loss** (`'binaryCrossentropy'`): Measures how wrong the predictions are. Binary crossentropy for yes/no classification, MSE for continuous values.
 - **metrics** (`['accuracy']`): What to display during training. Accuracy = percentage of correct predictions.
 

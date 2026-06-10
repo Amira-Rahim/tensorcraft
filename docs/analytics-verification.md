@@ -40,6 +40,8 @@ production release.
 | --- | --- | --- |
 | `session_started` | Log in (any auth flow) | `userId` |
 | `theme_selected` | Complete onboarding with a theme picked | `themeId`, `source="onboarding"` |
+| `onboarding_step_viewed` | Each wizard step render (mount + every advance/back) | `step` (1–4), `stepName` |
+| `onboarding_completed` | Click "Start Deep Orbit" on the Ready step (fires after PATCH succeeds) | `experienceLevel`, `learningGoal`, `framework?`, `yearsExperience?` |
 | `lesson_started` | Open any lesson (step 1 auto-fires) | `themeId`, `moduleId`, `lessonId` |
 | `hint_requested` | On a lesson step with hints: click "Reveal Nudge" | `hintLevel=1`, plus context ids |
 | `exercise_attempted` | Submit an exercise (any outcome) | `passed`, `score`, `exerciseSlug` |

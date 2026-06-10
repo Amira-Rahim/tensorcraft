@@ -11,22 +11,22 @@ context:
   narrative: "Every model has beliefs about the world. Bayesian thinking makes those beliefs explicit and updateable."
   speaker: "Instructor"
 concept:
-  explanation: "Bayes' theorem updates prior beliefs with evidence to produce posterior beliefs — the same pattern as state management."
+  explanation: "Bayes' theorem updates prior beliefs with evidence to produce posterior beliefs, the same pattern as state management."
   bridge:
     feTitle: "State Management"
     feCode: "const newState = reducer(prevState, action)"
     mlTitle: "Bayes Update"
     mlCode: "posterior = likelihood * prior / evidence"
     tier: structural
-    breaks: "State management updates are deterministic given the action. Bayesian updates combine prior beliefs with likelihoods to produce posteriors — the update rule is fixed but priors are subjective and posteriors are distributions, not point values."
+    breaks: "State management updates are deterministic given the action. Bayesian updates combine prior beliefs with likelihoods to produce posteriors; the update rule is fixed but priors are subjective and posteriors are distributions, not point values."
 consequence:
   narrative: "Bayesian thinking reveals why regularization works and how to reason about model uncertainty."
   nextLessonTeaser: "You've completed the Math Deep Dive companion track"
 hints:
   - level: nudge
-    content: "A prior is your default belief, a posterior is your belief after seeing data — like default state vs. state after user interaction"
+    content: "A prior is your default belief, a posterior is your belief after seeing data: like default state vs. state after user interaction"
   - level: guidance
-    content: "Bayes: P(A|B) = P(B|A) * P(A) / P(B) — update prior P(A) with likelihood P(B|A)"
+    content: "Bayes: P(A|B) = P(B|A) * P(A) / P(B). Update prior P(A) with likelihood P(B|A)"
   - level: solution
     content: "Implement the update loop: for each observation, posterior = normalize(likelihood * prior)"
 keywords:
@@ -114,7 +114,7 @@ console.log('After CAPTCHA pass:', beliefs.map(b => b.toFixed(4)));
 
 ## Regularization as a Prior
 
-Here's the deep connection: when you add L2 regularization to your loss function, you're making a Bayesian statement about your weights.
+The connection runs deep: when you add L2 regularization to your loss function, you're making a Bayesian statement about your weights.
 
 <CodeBlock language="typescript" title="regularization-prior.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -266,4 +266,4 @@ Implement Bayesian updating to classify events based on sequential observations.
 
 <Exercise slug="bayes-update" />
 
-<KeyTakeaways takeaways={["Bayes' theorem updates prior beliefs with evidence to produce posteriors — same as state management reducers", "L2 regularization is equivalent to a Gaussian prior on weights (MAP estimation)", "With lots of data, the prior doesn't matter; with little data, the prior prevents overfitting", "Maximum Likelihood ignores priors and can overfit; MAP incorporates priors for better generalization", "Dropout with Monte Carlo sampling approximates Bayesian inference, giving uncertainty estimates for free"]} />
+<KeyTakeaways takeaways={["Bayes' theorem updates prior beliefs with evidence to produce posteriors, same as state management reducers", "L2 regularization is equivalent to a Gaussian prior on weights (MAP estimation)", "With lots of data, the prior doesn't matter; with little data, the prior prevents overfitting", "Maximum Likelihood ignores priors and can overfit; MAP incorporates priors for better generalization", "Dropout with Monte Carlo sampling approximates Bayesian inference, giving uncertainty estimates for free"]} />

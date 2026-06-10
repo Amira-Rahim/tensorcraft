@@ -38,18 +38,18 @@ skillAxes: [deployment, fe_integration]
 ---
 
 <Dialogue speaker="Ensign Demir">
-Signal feed is connected. Every second, a new reading arrives — three values. I feed them into the model, get a classification, update the display. It is literally an event handler.
+Signal feed is connected. Every second, a new reading arrives: three values. I feed them into the model, get a classification, update the display. It's literally an event handler.
 </Dialogue>
 
 <Dialogue speaker="Chief Nazari">
-And what happens to the tensors you create every second? If you do not dispose them, you will leak memory until the tab crashes. This is not a lab experiment anymore.
+And what happens to the tensors you create every second? If you don't dispose them, you'll leak memory until the tab crashes. This is not a lab experiment anymore.
 </Dialogue>
 
-You've built this exact pattern hundreds of times: an event fires, your handler processes the data, and the UI updates. ML inference in the browser is the same loop — but with one critical addition: **memory management**. Tensors are GPU resources. If you don't clean them up, you'll leak memory until the tab crashes.
+You've built this exact pattern hundreds of times: an event fires, your handler processes the data, and the UI updates. ML inference in the browser is the same loop, with one critical addition: **memory management**. Tensors are GPU resources. If you don't clean them up, you'll leak memory until the tab crashes.
 
 <LearningObjectives objectives={["Build a real-time inference pipeline: input → preprocess → predict → display", "Use tf.tidy() for automatic tensor cleanup — preventing GPU memory leaks", "Preprocess raw input data to match model training format", "Measure and optimize inference latency for real-time requirements"]} />
 
-## The Event Loop of ML
+## The Real-Time Inference Loop
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -97,7 +97,7 @@ function classify(model: tf.LayersModel, rawSignal: { amplitude: number; frequen
 
 ## Memory Management with tf.tidy()
 
-This is the one concept that has no exact frontend parallel — and it's critical. GPU tensors don't get garbage collected like JavaScript objects. You must explicitly clean them up.
+This is the one concept with no exact frontend parallel, and it's critical. GPU tensors don't get garbage collected like JavaScript objects. You must explicitly clean them up.
 
 <CodeBlock language="typescript" title="memory-management.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -124,7 +124,7 @@ console.log(tf.memory());
 // { numTensors: 47, numDataBuffers: 47, numBytes: 12800, unreliable: false }`}
 </CodeBlock>
 
-Think of `tf.tidy()` like React's `useEffect` cleanup function — it ensures resources are released when they're no longer needed.
+`tf.tidy()` plays the role of React's `useEffect` cleanup function: it ensures resources are released when they're no longer needed.
 
 ## Wiring It into the Dashboard
 
@@ -191,4 +191,4 @@ Build a complete inference pipeline with preprocessing and memory management.
   tier="intuition"
 />
 
-<KeyTakeaways takeaways={["Inference follows the event → process → render pattern: receive input, run model.predict(), update UI", "tf.tidy() is essential — it auto-disposes intermediate tensors, preventing GPU memory leaks", "Always preprocess input to match training format — normalize values to the same ranges used during training", "tf.memory() lets you monitor tensor count and memory usage, like the DevTools memory tab"]} />
+<KeyTakeaways takeaways={["Each reading is min-max normalized with the training-time feature ranges before model.predict() — mismatched preprocessing silently wrecks accuracy", "tf.tidy() is essential — it auto-disposes intermediate tensors, preventing GPU memory leaks", "Always preprocess input to match training format — normalize values to the same ranges used during training", "tf.memory() lets you monitor tensor count and memory usage, like the DevTools memory tab"]} />

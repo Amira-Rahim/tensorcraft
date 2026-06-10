@@ -17,13 +17,13 @@ concept:
     mlTitle: "RNN to Transformer"
     mlCode: "// RNN: sequential hidden states\n// Transformer: parallel self-attention"
     tier: structural
-    breaks: "Class → hooks was a refactor — same component behavior, cleaner code. RNN → Transformer is an architectural break: parallelism over sequence steps replaces sequential state, attention replaces hidden-state passing. The output capability shifts (long-range dependencies), not just the API."
+    breaks: "Class → hooks was a refactor: same component behavior, cleaner code. RNN → Transformer is an architectural break: parallelism over sequence steps replaces sequential state, attention replaces hidden-state passing. The output capability shifts (long-range dependencies), not just the API."
 consequence:
   narrative: "The team commits to the transformer architecture, knowing it can process entire clinical notes at once."
   nextLessonTeaser: "Next: building the transformer encoder block from scratch."
 hints:
   - level: nudge
-    content: "Think about what makes parallel processing possible — no sequential dependency"
+    content: "Drop the recurrent loop entirely: tf.matMul(Q, K.transpose()) scores every token pair in one operation, no step-to-step dependency"
   - level: guidance
     content: "Self-attention computes all token relationships simultaneously"
   - level: solution
@@ -36,15 +36,15 @@ keywords:
 ---
 
 <Dialogue speaker="Vikram">
-Khalil, our LSTM processes a clinical note one word at a time — left to right, sequentially. A 500-word discharge summary takes 500 steps. What if we could process all 500 words simultaneously?
+Khalil, our LSTM processes a clinical note one word at a time, left to right, sequentially. A 500-word discharge summary takes 500 steps. What if we could process all 500 words simultaneously?
 </Dialogue>
 
 <Dialogue speaker="Khalil">
-That reminds me of when React moved from class components to hooks. Class components had these rigid lifecycle methods — mount, update, unmount — everything sequential. Hooks let you declare what you need, and React figures out the execution order.
+That reminds me of when React moved from class components to hooks. Class components had these rigid lifecycle methods (mount, update, unmount), everything sequential. Hooks let you declare what you need, and React figures out the execution order.
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-That's exactly the paradigm shift. The transformer paper — "Attention Is All You Need" — did for NLP what hooks did for React. It replaced sequential processing with declarative attention.
+Smaller than what happened here. Hooks were a refactor: same rendered output, cleaner code. The transformer was an architectural break. Parallel attention replaced sequential state, and the output capability changed with it. Long-range dependencies the LSTM kept losing became learnable. The paper is "Attention Is All You Need," and the title is the whole argument.
 </Dialogue>
 
 <LearningObjectives objectives={["Understand why RNNs bottleneck on long sequences", "Explain the core innovation of the transformer architecture", "Compare sequential vs parallel processing of text", "Identify when transformers outperform RNNs"]} />
@@ -101,12 +101,12 @@ console.log('All tokens processed in parallel:', output.shape);`}
 
 ## The Three Advantages
 
-1. **Parallelism**: All positions computed simultaneously — GPUs love this
+1. **Parallelism**: All positions computed simultaneously; GPUs love this
 2. **Constant path length**: Any two words are connected in one attention step
 3. **No information bottleneck**: Each token retains its own representation
 
 <Dialogue speaker="Vikram">
-For clinical text, this is transformative. A drug mentioned in the admission note and a contraindication mentioned in the lab results are directly connected — no information decay over distance.
+For clinical text, this is transformative. A drug mentioned in the admission note and a contraindication mentioned in the lab results are directly connected. No information decay over distance.
 </Dialogue>
 
 ## Challenge
@@ -116,7 +116,7 @@ Build a basic transformer-style parallel processor and compare it to sequential 
 <Exercise slug="transformer-block" />
 
 <DerivationDrawer summary="Sinusoidal positional encoding (the formula)">
-Self-attention is permutation-equivariant — shuffle input tokens, output shuffles the same way. To break this and inject position information, add a positional encoding vector to each token embedding:
+Self-attention is permutation-equivariant: shuffle input tokens, output shuffles the same way. To break this and inject position information, add a positional encoding vector to each token embedding:
 
 ```
 PE(pos, 2i)   = sin(pos / 10000^(2i/d_model))
@@ -128,13 +128,13 @@ PE(pos, 2i+1) = cos(pos / 10000^(2i/d_model))
 - The frequencies span from `1` (i=0) to `1/10000` (i=d_model/2) on a geometric scale
 
 **Why sinusoids?** 
-- Each pair of dimensions (2i, 2i+1) is a rotation by angle `pos / 10000^(2i/d_model)`. Different pairs rotate at different frequencies — like a clock with multiple hands.
+- Each pair of dimensions (2i, 2i+1) is a rotation by angle `pos / 10000^(2i/d_model)`. Different pairs rotate at different frequencies, like a clock with multiple hands.
 - **Relative-position invariance:** `PE(pos+k)` is a fixed linear function of `PE(pos)` (rotation matrix at angle `k / 10000^(...)`). The model can learn to attend by relative position.
 - Generalizes to longer sequences than seen in training (sinusoids are defined for any pos).
 
 **Modern alternatives:** RoPE (Rotary Position Embeddings) and ALiBi modify attention scores directly using position, instead of adding to embeddings. Most modern LLMs use RoPE.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["RNNs process sequentially, creating information bottlenecks on long text", "Transformers process all tokens in parallel via self-attention", "Any two tokens are connected in O(1) steps, not O(n)", "This paradigm shift mirrors React's move from class components to hooks"]} />
+<KeyTakeaways takeaways={["RNNs process sequentially, creating information bottlenecks on long text", "Transformers process all tokens in parallel via self-attention", "Any two tokens are connected in O(1) steps, not O(n)", "Parallelism has a price: attention cost grows as O(n²) with sequence length, while an RNN's is linear"]} />
 
 > **DISPATCH archive · field intercept #15-N:** Operator Demir's anomaly cell tried RNN-style sequence models on long-mission telemetry. They abandoned for self-attention. Demir's note: 'You can't watch a 12-hour signal one timestep at a time and notice a 4-hour beat.' Different signal, same parallel-vs-sequential trade.

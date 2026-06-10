@@ -44,7 +44,7 @@ The LLM has no knowledge of our specific signals. If I ask about Band-7 anomalie
 That's Server Components! Fetch data on the server, then render with it. RAG fetches data from the signal database, then generates a response with it.
 </Dialogue>
 
-React Server Components query the database before rendering — the component has access to real data, not just what the client provides. RAG does the same for LLMs: retrieve relevant records from your database, inject them into the prompt, then generate a grounded response.
+React Server Components query the database before rendering, so the component works from real data rather than whatever the client provides. RAG does the same for LLMs: retrieve relevant records from your database, inject them into the prompt, then generate a grounded response.
 
 <LearningObjectives objectives={["Understand RAG as retrieve → augment → generate: query data, inject into prompt, generate response", "Build a simple signal retrieval system using text and metadata matching", "Ground LLM responses in actual data to prevent hallucination", "Enable natural language queries over the DEEP SCAN signal database"]} />
 

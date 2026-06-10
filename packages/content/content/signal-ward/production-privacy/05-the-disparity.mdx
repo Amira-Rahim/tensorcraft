@@ -10,14 +10,14 @@ context:
   narrative: "The ethics review reaches its climax. Dr. Karimi projects the fairness card on the screen. 'Twelve percent. That is the gap between how well your model works on attending physician notes and how well it works on night shift notes. Khalil, fix it or we do not deploy.' Khalil recognizes the pattern from cross-browser testing: 'It works in Chrome but breaks in Safari. Same code, different rendering engine. Same model, different writing style.'"
   speaker: "Dr. Karimi"
 concept:
-  explanation: "Performance disparity across demographic groups is like browser compatibility gaps — the system works well in one environment but fails in another. The remediation strategy is the same: identify the failure modes, build targeted fixes, and test across all environments."
+  explanation: "Performance disparity across demographic groups is like browser compatibility gaps: the system works well in one environment but fails in another. The remediation strategy is the same: identify the failure modes, build targeted fixes, and test across all environments."
   bridge:
     feTitle: "Browser Compatibility Gaps"
     feCode: "// Works in Chrome, broken in Safari — polyfill, progressive enhancement, cross-browser testing"
     mlTitle: "Performance Disparity"
     mlCode: "// Works on formal notes, fails on ESL notes — data augmentation, re-weighting, cross-group testing"
     tier: structural
-    breaks: "Browser compatibility gaps are documented per feature with known shims. Performance disparity across patient subgroups is often hidden in aggregate metrics — the model can hit 95% overall accuracy while failing entirely for a 5% subgroup."
+    breaks: "Browser compatibility gaps are documented per feature with known shims. Performance disparity across patient subgroups is often hidden in aggregate metrics; the model can hit 95% overall accuracy while failing entirely for a 5% subgroup."
 consequence:
   narrative: "After augmentation and retraining, the disparity drops from 12% to 2.3%. Khalil presents the updated fairness card. Dr. Karimi studies it. 'Two point three percent. Not zero. Document the remaining gap in the model card. Ship it with an honest account of what we know and what we do not. That is responsible deployment.' The ethics committee votes unanimously to approve the pilot."
   nextLessonTeaser: "Next module: capstone — deploying Diagnostic One to Signal Ward"
@@ -39,14 +39,14 @@ keywords:
 ---
 
 <Dialogue speaker="Dr. Karimi">
-Twelve percent. That is the gap. Your model classifies attending physician notes at 94% accuracy. Night shift nurse notes — written by staff who predominantly speak English as a second language — get 82%. Same patients. Same conditions. Different accuracy. Khalil, this is not a performance issue. It is an equity failure.
+Twelve percent. That is the gap. Your model classifies attending physician notes at 94% accuracy. Night shift nurse notes, written by staff who predominantly speak English as a second language, get 82%. Same patients. Same conditions. Different accuracy. Khalil, this is not a performance issue. It is an equity failure.
 </Dialogue>
 
 <Dialogue speaker="Khalil">
 I have seen this before. It is browser compatibility. You build a beautiful interface in Chrome, ship it, and discover it is broken in Safari. Same code, different rendering engine. Same model, different writing style. The fix is the same: identify the failure modes, build targeted polyfills, and test across every environment. Not just the one you developed in.
 </Dialogue>
 
-The 12% disparity is Diagnostic One's cross-browser bug. The model was trained primarily on attending physician notes — the "Chrome" of clinical writing. Night shift notes, ICU shorthand, and Spanish-language records are the "Safari," "Firefox," and "mobile" of the dataset. The remediation strategy follows the same playbook: identify which environments fail, build targeted fixes (data augmentation instead of polyfills), test across all environments, and document any remaining gaps.
+The 12% disparity is Diagnostic One's cross-browser bug. The model was trained primarily on attending physician notes, the "Chrome" of clinical writing. Night shift notes, ICU shorthand, and Spanish-language records are the "Safari," "Firefox," and "mobile" of the dataset. The remediation strategy follows the same playbook: identify which environments fail, build targeted fixes (data augmentation instead of polyfills), test across all environments, and document any remaining gaps.
 
 <LearningObjectives objectives={["Identify performance disparities across demographic slices using fairness audit data", "Implement data augmentation strategies that target underperforming groups", "Apply sample re-weighting to prioritize underrepresented populations during training", "Write honest model cards that document known limitations and remaining gaps"]} />
 
@@ -279,4 +279,4 @@ Implement a disparity remediation pipeline that augments underperforming data sl
 
 <Exercise slug="fix-disparity" />
 
-<KeyTakeaways takeaways={["Performance disparity is a cross-browser bug — same system, different environments, different results", "Data augmentation is the ML polyfill — generate diverse training examples to cover underrepresented writing styles", "Sample re-weighting gives underperforming groups more influence during training, like priority bug fixes for failing browsers", "Model cards are browser support tables for ML — document what works, what does not, and what limitations remain"]} />
+<KeyTakeaways takeaways={["A model can score 94% on attending notes and 82% on night-shift notes; the aggregate number hides who it fails", "Data augmentation generates paraphrased and transformed examples to cover underrepresented writing styles", "Sample re-weighting gives underperforming groups more influence during training, like priority bug fixes for failing browsers", "Document the remaining gap (here, 2.3% after remediation) in the model card — what works, what does not, what limitations remain"]} />

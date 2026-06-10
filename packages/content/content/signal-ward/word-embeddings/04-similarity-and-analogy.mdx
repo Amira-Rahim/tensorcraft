@@ -17,7 +17,7 @@ concept:
     mlTitle: "Vector Similarity"
     mlCode: "cosineSim(vec('aspirin'), vec('ibuprofen')) // semantic similarity = 0.95"
     tier: intuition
-    breaks: "String similarity (Levenshtein) compares character edits — surface-level only. Vector similarity (cosine) compares learned semantic representations — 'doctor' and 'physician' score high; 'doctor' and 'doctored' score low despite shared letters. Embedding choice determines what 'similar' means; one model's similarity is another's irrelevance."
+    breaks: "String similarity (Levenshtein) compares character edits, surface-level only. Vector similarity (cosine) compares learned semantic representations: 'doctor' and 'physician' score high; 'doctor' and 'doctored' score low despite shared letters. Embedding choice determines what 'similar' means; one model's similarity is another's irrelevance."
 consequence:
   narrative: "Diagnostic One can now find related medications, detect analogy-based relationships, and flag when a patient's medication list contains semantically conflicting terms."
   nextLessonTeaser: "Next: training custom embedding layers inside a neural network."
@@ -38,7 +38,7 @@ keywords:
 > **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
 <Dialogue speaker="Vikram">
-Imran, you know Levenshtein distance — it measures how many character edits separate two strings. "aspirin" and "asprin" are 1 edit apart. Cosine similarity does something similar, but for meaning instead of spelling.
+Imran, you know Levenshtein distance. It measures how many character edits separate two strings. "aspirin" and "asprin" are 1 edit apart. Cosine similarity does something similar, but for meaning instead of spelling.
 </Dialogue>
 
 <Dialogue speaker="Imran">
@@ -46,10 +46,10 @@ So Levenshtein says "aspirin" and "asprin" are close because they look similar, 
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-Exactly. And here is where it gets interesting: you can do arithmetic with word vectors. Subtract one concept, add another, and discover new relationships.
+Half the picture. They can also flatly disagree. "Doctor" and "doctored" share nine letters and score near zero, because they show up in different contexts. And "similar" depends on which embeddings you loaded. One model's close neighbor is another model's stranger, so check the neighbors before you trust the score. Now the part worth the detour: you can do arithmetic with these vectors. Subtract one concept, add another.
 </Dialogue>
 
-Levenshtein distance measures surface-level similarity between strings — how many edits to transform one into the other. Cosine similarity measures deep semantic similarity between word vectors — how close their meanings are. And unlike string comparison, vector arithmetic lets you reason about relationships.
+Cosine similarity measures the angle between two word vectors. Two drugs that never share a letter can sit a few degrees apart in embedding space. And vector arithmetic lets you reason about relationships, not just distances.
 
 <LearningObjectives objectives={["Implement cosine similarity to measure semantic relatedness between word vectors", "Perform word analogy tasks using vector arithmetic (a - b + c = ?)", "Find the most similar words to a query vector", "Apply analogy reasoning to clinical vocabulary"]} />
 
@@ -194,11 +194,11 @@ result = argmax over vocab v of cosine(embed(v), target_vector)
          excluding v in {king, man, woman}
 ```
 
-**Why excluding inputs:** without exclusion, the closest vocabulary word is often `king` (since the math doesn't perfectly cancel) — not interesting.
+**Why excluding inputs:** without exclusion, the closest vocabulary word is often `king` (since the math doesn't perfectly cancel), which is not interesting.
 
 **Why this works geometrically:** if the gender axis (man → woman) is roughly the same direction across pairs (king → queen, brother → sister, ...), then subtracting the male direction from king and adding the female direction lands near queen.
 
-**Why this often fails:** the math is approximate. Modern contextual embeddings (BERT, GPT) don't use single vectors per word — meaning depends on context — so static-vector analogies are a property of older Word2Vec/GloVe-style embeddings, not modern LLMs.
+**Why this often fails:** the math is approximate. Modern contextual embeddings (BERT, GPT) don't use single vectors per word (meaning depends on context), so static-vector analogies are a property of older Word2Vec/GloVe-style embeddings, not modern LLMs.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["Cosine similarity measures the angle between vectors: 1.0 = same meaning, 0.0 = unrelated", "Nearest-neighbor search finds semantically related words by ranking cosine similarities", "Vector arithmetic enables analogies: king - man + woman = queen works for clinical terms too", "String similarity (Levenshtein) measures spelling closeness; vector similarity measures meaning closeness"]} />
+<KeyTakeaways takeaways={["Cosine similarity measures the angle between vectors: 1.0 = same meaning, 0.0 = unrelated", "Nearest-neighbor search finds semantically related words by ranking cosine similarities", "Vector arithmetic enables analogies: king - man + woman = queen works for clinical terms too", "Static-vector analogies are a Word2Vec/GloVe property; contextual models (BERT, GPT) have no single vector per word"]} />

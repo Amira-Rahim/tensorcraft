@@ -10,20 +10,20 @@ context:
   narrative: "Dr. Karimi explains why she needs structured information extracted from hundreds of unstructured clinical notes each week."
   speaker: "Dr. Zahra Karimi"
 concept:
-  explanation: "Named Entity Recognition (NER) identifies and classifies specific elements in text — drugs, conditions, dosages, procedures — transforming unstructured prose into structured, queryable data."
+  explanation: "Named Entity Recognition (NER) identifies and classifies specific elements in text (drugs, conditions, dosages, procedures), transforming unstructured prose into structured, queryable data."
   bridge:
     feTitle: "document.querySelectorAll()"
     feCode: "document.querySelectorAll('.drug'); // find specific elements in a sea of nodes"
     mlTitle: "Named Entity Recognition"
     mlCode: "ner(tokens); // find specific entities in a sea of words"
     tier: structural
-    breaks: "querySelectorAll matches DOM nodes by an exact CSS selector. NER tags spans by learned token-classification probabilities — novel entities are missed, compound entities (e.g. 'New York City Hall') get fragmented or merged incorrectly, and overlapping entity types collide. Post-processing must dedupe, merge, and validate against gazetteers."
+    breaks: "querySelectorAll matches DOM nodes by an exact CSS selector. NER tags spans by learned token-classification probabilities: novel entities are missed, compound entities (e.g. 'New York City Hall') get fragmented or merged incorrectly, and overlapping entity types collide. Post-processing must dedupe, merge, and validate against gazetteers."
 consequence:
-  narrative: "Khalil understands that NER transforms free text into structured, computable data — the same way querySelectorAll turns a DOM tree into a usable collection."
+  narrative: "Khalil understands that NER transforms free text into structured, computable data, the same way querySelectorAll turns a DOM tree into a usable collection."
   nextLessonTeaser: "Next: BIO tagging — marking where entities begin and end."
 hints:
   - level: nudge
-    content: "Think of each token as a DOM node that needs to be selected or skipped"
+    content: "Every token gets a label from ENTITY_TYPES or O; argMax over the softmax output picks the winner per token"
   - level: guidance
     content: "Assign a category label to each token based on what it represents"
   - level: solution
@@ -36,7 +36,7 @@ keywords:
 ---
 
 <Dialogue speaker="Dr. Zahra Karimi">
-Khalil, I reviewed 47 clinical notes this morning. Each one buries critical information in free text — drug names, dosages, conditions, procedures. I need that data structured. Searchable. Computable. Right now, it's like having a massive DOM tree with no class names, no IDs, no way to query it.
+Khalil, I reviewed 47 clinical notes this morning. Each one buries critical information in free text: drug names, dosages, conditions, procedures. I need that data structured. Searchable. Computable. Right now, it's like having a massive DOM tree with no class names, no IDs, no way to query it.
 </Dialogue>
 
 <Dialogue speaker="Khalil">
@@ -53,9 +53,7 @@ Exactly. "Patient prescribed methotrexate 15mg weekly for rheumatoid arthritis."
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-When you call `document.querySelectorAll('.drug')`, the browser traverses every node in the DOM tree and returns the ones matching your selector. NER does the same thing with text: it walks through every token and decides whether it matches an entity type.
-
-The difference? DOM nodes have explicit class names. Clinical text does not. The model has to learn which tokens are drugs, which are conditions, and which are just connecting words like "the" or "prescribed."
+An NER model walks through every token and decides whether it belongs to an entity type. But where a CSS selector matches exactly or not at all, the model outputs probabilities. It has to learn which tokens are drugs, which are conditions, and which are just connecting words like "the" or "prescribed," and it will sometimes fragment a compound term or miss a drug it has never seen.
 
 <CodeBlock language="typescript" title="what-is-ner.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -142,4 +140,4 @@ Find and classify entities in a clinical sentence using token-level classificati
 
 <Exercise slug="find-entities" />
 
-<KeyTakeaways takeaways={["NER is querySelectorAll for text — finding specific elements in a sea of tokens", "Each token gets classified as an entity type (DRUG, CONDITION, etc.) or O (outside)", "Clinical NER transforms unstructured notes into structured, queryable data", "The pipeline mirrors DOM querying: parse, walk, test, collect"]} />
+<KeyTakeaways takeaways={["NER output needs post-processing: compound entities fragment and novel terms get missed, so dedupe, merge, and validate spans against gazetteers", "Each token gets classified as an entity type (DRUG, CONDITION, etc.) or O (outside)", "Clinical NER transforms unstructured notes into structured, queryable data", "The pipeline mirrors DOM querying: parse, walk, test, collect"]} />

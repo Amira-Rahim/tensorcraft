@@ -42,10 +42,10 @@ Dr. Farah, the FFT is showing frequencies I know aren't real. There's energy sme
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-Spectral leakage. When you slice a signal at arbitrary points, the abrupt edges create artificial high-frequency content. The FFT does not know where your signal ends and where an artifact begins. We need to taper the edges to zero — a windowing function.
+Spectral leakage. When you slice a signal at arbitrary points, the abrupt edges create artificial high-frequency content. The FFT doesn't know where your signal ends and where an artifact begins. We need to taper the edges to zero with a windowing function.
 </Dialogue>
 
-You've solved this exact problem in frontend development. When you implement virtual scrolling, you render only the items in the viewport — but you can't just hard-cut at the edges, or you get visual artifacts. You fade items at the boundaries. Windowing functions do the same thing for signals: they smoothly taper the edges to zero so the FFT doesn't see artificial discontinuities.
+You've solved this exact problem in frontend development. When you implement virtual scrolling, you render only the items in the viewport. But you can't hard-cut at the edges, or you get visual artifacts. You fade items at the boundaries. Windowing functions do the same thing for signals: they smoothly taper the edges to zero so the FFT doesn't see artificial discontinuities.
 
 <LearningObjectives objectives={["Understand spectral leakage: why abrupt signal edges create false frequencies in the FFT", "Apply windowing functions (Hann, Hamming) to taper signal edges before FFT", "Implement overlapping windows for continuous signal processing", "Choose the right window function based on the frequency resolution vs leakage tradeoff"]} />
 
@@ -129,7 +129,7 @@ console.log('Bin 11 (leakage):', windowedFFT[11].toFixed(1));  // ~0.3
 
 ## Overlapping Windows
 
-Windowing tapers the signal to zero at the edges — which means you lose information there. The solution: overlap your windows so every sample gets full weight in at least one window.
+Windowing tapers the signal to zero at the edges, which means you lose information there. The solution: overlap your windows so every sample gets full weight in at least one window.
 
 <CodeBlock language="typescript" title="overlap.ts">
 {`// Without overlap: gaps in information at window boundaries
@@ -175,7 +175,7 @@ Apply a Hann window to a signal before computing the FFT.
 <Exercise slug="apply-window" />
 
 <DerivationDrawer summary="Why window + overlap matters">
-**Windowing:** multiplying the signal segment by a window function (Hann, Hamming, ...) before FFT reduces **spectral leakage** — energy from real frequencies smearing into adjacent FFT bins. Without windowing, a sinusoid that doesn't fit perfectly in the window produces a wide smeared response.
+**Windowing:** multiplying the signal segment by a window function (Hann, Hamming, ...) before FFT reduces **spectral leakage**: energy from real frequencies smearing into adjacent FFT bins. Without windowing, a sinusoid that doesn't fit perfectly in the window produces a wide smeared response.
 
 **Window math (Hann):**
 
@@ -198,4 +198,4 @@ For real-time inference: smaller hop = lower latency between input and STFT avai
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Spectral leakage creates false frequencies when signal edges are discontinuous — like visual artifacts from hard-clipping in virtual scroll", "Windowing functions (Hann, Hamming) taper signal edges to zero, eliminating leakage artifacts", "50% overlap between windows ensures no information is lost at tapered edges — like overscan in virtualized lists", "The 73.4 Hz anomaly, now clean after windowing, is confirmed as real structure — not an artifact"]} />
+<KeyTakeaways takeaways={["Leakage is measurable: a pure 10 Hz tone cut mid-period smears magnitude ~8.2 into bins 9 and 11, which should both read zero", "Windowing functions (Hann, Hamming) taper signal edges to zero, eliminating leakage artifacts", "50% overlap between windows ensures no information is lost at tapered edges — like overscan in virtualized lists", "The 73.4 Hz anomaly, now clean after windowing, is confirmed as real structure — not an artifact"]} />

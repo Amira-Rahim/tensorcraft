@@ -7,7 +7,7 @@ order: 5
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "Samir builds the final creative VAE — a controllable generative model for the exhibition. Visitors can explore a smooth latent space of art, blending styles and attributes with precision."
+  narrative: "Samir builds the final creative VAE: a controllable generative model for the exhibition. Visitors can explore a smooth latent space of art, blending styles and attributes with precision."
   speaker: "Yara"
 concept:
   explanation: "A creative VAE combines encoding, reparameterization, KL regularization, and decoding into a unified model for controllable generation. Design system tokens map to latent dimensions."
@@ -19,8 +19,8 @@ concept:
     tier: structural
     breaks: "Design system tokens are discrete authored variables with semantic names (`--color-primary`). VAE latent dimensions are unnamed continuous learned axes; identifying which dimension controls smile vs. age requires running attribution experiments. You cannot rename a dimension to give it meaning."
 consequence:
-  narrative: "The creative VAE powers the centerpiece of the exhibition. Visitors walk through a space where every surface displays generated art that responds to their presence — unique, controllable, and running entirely in the browser."
-  nextLessonTeaser: "You have mastered the foundations of generative AI. Next modules explore advanced architectures and real-world deployment."
+  narrative: "The creative VAE powers the centerpiece of the exhibition. Visitors walk through a space where every surface displays generated art that responds to their presence: unique, controllable, and running entirely in the browser."
+  nextLessonTeaser: "Next: advanced architectures, starting with two networks that train by fighting each other"
 hints:
   - level: nudge
     content: "Design tokens give you named, semantic control. VAE latent dimensions do the same for generated art."
@@ -37,7 +37,7 @@ keywords:
 ---
 
 <Dialogue speaker="Yara">
-This is the moment. Everything we have built — the distributions, the latent spaces, the reparameterization, the KL balance — comes together here. I want an interactive installation where visitors shape the art. Not by choosing from a menu, but by exploring a continuous space of possibility.
+This is the moment. Everything we've built (the distributions, the latent spaces, the reparameterization, the KL balance) comes together here. I want an interactive installation where visitors shape the art. Not by choosing from a menu, but by exploring a continuous space of possibility.
 </Dialogue>
 
 <Dialogue speaker="Erdem">
@@ -45,10 +45,10 @@ And it must run at 30fps in Chrome on those kiosk laptops. No excuses.
 </Dialogue>
 
 <Dialogue speaker="MUSE">
-Every visitor becomes an artist. Every point in the space is an undiscovered masterpiece.
+Erdem's kiosks give me 33 milliseconds per frame, and one decode costs me 11. Sixteen dimensions with ten slider stops each is 10^16 possible artworks. Tonight's visitors will see maybe 4,000 of them.
 </Dialogue>
 
-In a design system, tokens like `color: 'ocean'`, `density: 0.7`, `rhythm: 'flowing'` give designers semantic, controllable parameters. A trained VAE gives you the same thing — latent dimensions that control specific visual attributes of the generated output.
+In a design system, tokens like `color: 'ocean'`, `density: 0.7`, `rhythm: 'flowing'` give designers semantic, controllable parameters. A trained VAE gives you the same thing: latent dimensions that control specific visual attributes of the generated output.
 
 <LearningObjectives objectives={["Build a complete VAE with custom training loop in TensorFlow.js", "Implement the full loss function: reconstruction + KL divergence", "Create an interactive generation UI with latent space controls", "Optimize for real-time browser performance"]} />
 
@@ -204,7 +204,7 @@ for d in 1..latent_dim:
 
 **Interpretation:** if dim d encodes a meaningful axis (e.g., "digit width" for MNIST), varying it should produce a smooth interpolation along that axis.
 
-**Disentanglement** is the property that distinct latent dimensions correspond to distinct semantic factors. Vanilla VAE often produces entangled latents (one factor smeared across many dims). β-VAE, FactorVAE, TCVAE all add penalties that push toward disentanglement — at the cost of reconstruction quality. There is no universal disentanglement metric; the term is empirical and contested.
+**Disentanglement** is the property that distinct latent dimensions correspond to distinct semantic factors. Vanilla VAE often produces entangled latents (one factor smeared across many dims). β-VAE, FactorVAE, TCVAE all add penalties that push toward disentanglement, at the cost of reconstruction quality. There is no universal disentanglement metric; the term is empirical and contested.
 </DerivationDrawer>
 
 ## Knowledge check
@@ -217,4 +217,4 @@ for d in 1..latent_dim:
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["A complete VAE combines encoder, reparameterization, decoder, and dual loss", "Design system tokens are the perfect mental model for latent dimensions", "Custom training loops give you control over the VAE loss components", "tf.tidy() and dispose() are essential for real-time browser performance"]} />
+<KeyTakeaways takeaways={["A complete VAE combines encoder, reparameterization, decoder, and dual loss", "Latent dimensions arrive unnamed: finding which one controls warmth takes traversal experiments, not a naming convention", "Custom training loops give you control over the VAE loss components", "tf.tidy() and dispose() are essential for real-time browser performance"]} />

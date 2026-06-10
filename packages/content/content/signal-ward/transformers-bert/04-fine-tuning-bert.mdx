@@ -7,7 +7,7 @@ order: 4
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "The team adapts BERT for clinical condition classification — inheriting general language knowledge and adding medical specialization."
+  narrative: "The team adapts BERT for clinical condition classification, inheriting general language knowledge and adding medical specialization."
   speaker: "Vikram"
 concept:
   explanation: "Fine-tuning adapts a pre-trained model to a specific task by adding a task-specific head and continuing training with a small learning rate on domain data."
@@ -17,13 +17,13 @@ concept:
     mlTitle: "Fine-Tuning BERT"
     mlCode: "// Inherit pre-trained weights, add classification head\nconst model = addHead(bertBase, numLabels);"
     tier: structural
-    breaks: "Extending a class adds methods deterministically while preserving base behavior. Fine-tuning updates the model's weights — including those that encoded base capabilities — and may degrade them silently (catastrophic forgetting). Validation must check that pre-existing capabilities the new task doesn't exercise still work, not just that the new task's metric improved."
+    breaks: "Extending a class adds methods deterministically while preserving base behavior. Fine-tuning updates the model's weights, including those that encoded base capabilities, and may degrade them silently (catastrophic forgetting). Validation must check that pre-existing capabilities the new task doesn't exercise still work, not just that the new task's metric improved."
 consequence:
-  narrative: "Diagnostic One can now classify clinical conditions — but the team must be careful not to destroy the pre-trained knowledge in the process."
+  narrative: "Diagnostic One can now classify clinical conditions, but the team must be careful not to destroy the pre-trained knowledge in the process."
   nextLessonTeaser: "Next: MEDI makes a dangerous mistake — and we learn what happens when a model's limitations are ignored."
 hints:
   - level: nudge
-    content: "Think of fine-tuning as extending a base class — you inherit all capabilities and add specialization"
+    content: "Add a dense softmax head on the encoder output and compile with tf.train.adam(2e-5) so the pre-trained weights barely move"
   - level: guidance
     content: "Use a very small learning rate (2e-5) and few epochs (3-4) to preserve pre-trained knowledge"
   - level: solution
@@ -40,11 +40,11 @@ We've got a BERT model that understands general English. But when I feed it "pt 
 </Dialogue>
 
 <Dialogue speaker="Khalil">
-That's like class inheritance in TypeScript. You don't rewrite the entire base class — you extend it and override only the methods you need. The base class handles the fundamentals; the subclass adds the specialization.
+That's like class inheritance in TypeScript. You don't rewrite the entire base class. You extend it and override only the methods you need. The base class handles the fundamentals; the subclass adds the specialization.
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-Perfect analogy. Fine-tuning is exactly that. BERT is our base class — it knows language structure, grammar, semantics. We extend it with a clinical classification head. The base stays mostly intact. The new head learns the domain.
+Careful with that one. `extends` never touches the base class. Fine-tuning does: gradients flow into the same weights that encode grammar and semantics, and they can quietly degrade. That's catastrophic forgetting, and it won't show up in your clinical metric. So we add the classification head, train gently, and validate the general-language behaviors the new task never exercises, not just the new score.
 </Dialogue>
 
 <LearningObjectives objectives={["Understand the fine-tuning paradigm: inherit general knowledge, add task specialization", "Add a task-specific classification head to a pre-trained encoder", "Apply learning rate strategies to prevent catastrophic forgetting", "Implement gradual unfreezing for stable domain adaptation"]} />
@@ -53,7 +53,7 @@ Perfect analogy. Fine-tuning is exactly that. BERT is our base class — it know
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-When you extend a React component library's base class, you inherit its rendering logic, event handling, and lifecycle management. You only override what's specific to your use case. Fine-tuning works identically — BERT's encoder layers already understand language. You add a small classification head on top and train primarily that head.
+BERT's encoder layers already understand language structure. You add a small classification head on top, train primarily that head, and keep the updates to the encoder small enough that what it already knows survives.
 
 <CodeBlock language="typescript" title="fine-tune-clinical.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -132,13 +132,13 @@ await clinicalModel.fit(xTrain, yTrain, {
 ## Catastrophic Forgetting: The Override Trap
 
 <Dialogue speaker="Vikram">
-The biggest danger in fine-tuning is catastrophic forgetting. If your learning rate is too high or you train too many epochs, the model overwrites its pre-trained knowledge. It's like overriding every method in a base class until there's nothing left of the original — you've destroyed the inheritance.
+The biggest danger in fine-tuning is catastrophic forgetting. If your learning rate is too high or you train too many epochs, the model overwrites its pre-trained knowledge, and nothing in the new task's loss curve will tell you.
 </Dialogue>
 
 Three strategies to prevent catastrophic forgetting:
 
-1. **Small learning rate**: 2e-5 instead of 1e-3 — gentle updates that refine rather than overwrite
-2. **Few epochs**: 3-4 epochs, not 50 — the model already knows language
+1. **Small learning rate**: 2e-5 instead of 1e-3, gentle updates that refine rather than overwrite
+2. **Few epochs**: 3-4 epochs, not 50; the model already knows language
 3. **Gradual unfreezing**: Train only the head first, then progressively unfreeze encoder layers
 
 <CodeBlock language="typescript" title="gradual-unfreezing.ts">
@@ -188,11 +188,11 @@ for (let i = 0; i < 5; i++) {
 </CodeBlock>
 
 <Dialogue speaker="Imran Malik">
-So lower layers — the ones that learned basic language patterns — get tiny updates. Upper layers — closer to the task — get larger updates. Like how you'd be more careful editing a utility library than a feature component.
+So lower layers, the ones that learned basic language patterns, get tiny updates. Upper layers, closer to the task, get larger updates. Like how you'd be more careful editing a utility library than a feature component.
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-Exactly. The foundation stays solid. The specialization adapts.
+Right instinct. Layer 0 gets about 4.8e-6, the head gets the full 2e-5. The general language patterns barely move while the clinical head does the learning.
 </Dialogue>
 
 ## Challenge
@@ -202,7 +202,7 @@ Build a fine-tuning pipeline with a pre-trained encoder, classification head, an
 <Exercise slug="fine-tune-clinical" />
 
 <DerivationDrawer summary="Fine-tuning learning rate schedule">
-Fine-tuning a pretrained model uses a **much smaller learning rate** than training from scratch — typically 1e-5 to 5e-5 for BERT, vs 1e-3 for from-scratch training.
+Fine-tuning a pretrained model uses a **much smaller learning rate** than training from scratch: typically 1e-5 to 5e-5 for BERT, vs 1e-3 for from-scratch training.
 
 **Why so small?** Pretrained weights are already in a useful region of the loss landscape. A large LR would overshoot and destroy what was learned (catastrophic forgetting). Small LR refines instead of restructures.
 
@@ -212,9 +212,9 @@ warmup: linearly increase LR from 0 to peak over first 10% of steps
 decay:  linearly decrease LR from peak to 0 over remaining 90% of steps
 ```
 
-**Layer-wise LR decay:** different LRs per layer — top layers (closer to output) get higher LR, bottom layers (closer to input, more general features) get lower LR. Bottom = features you want to preserve; top = features specific to the new task. Common decay factor: 0.95 per layer downward.
+**Layer-wise LR decay:** different LRs per layer: top layers (closer to output) get higher LR, bottom layers (closer to input, more general features) get lower LR. Bottom = features you want to preserve; top = features specific to the new task. Common decay factor: 0.95 per layer downward.
 
-**Discriminative learning rate** is the same idea — fast.ai popularized this for vision transfer learning.
+**Discriminative learning rate** is the same idea; fast.ai popularized this for vision transfer learning.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["Fine-tuning extends a pre-trained model with task-specific capabilities — like class inheritance", "Use small learning rates (2e-5) and few epochs (3-4) to prevent catastrophic forgetting", "Gradual unfreezing trains the head first, then progressively unfreezes encoder layers", "Discriminative learning rates apply smaller updates to lower (more general) layers"]} />
+<KeyTakeaways takeaways={["The task head can be tiny: dropout(0.1) plus a 5-label softmax on the encoder output is the whole addition", "Use small learning rates (2e-5) and few epochs (3-4) to prevent catastrophic forgetting", "Gradual unfreezing trains the head first, then progressively unfreezes encoder layers", "Discriminative learning rates apply smaller updates to lower (more general) layers"]} />

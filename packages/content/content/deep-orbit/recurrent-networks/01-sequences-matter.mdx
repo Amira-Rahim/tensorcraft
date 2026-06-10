@@ -23,7 +23,7 @@ consequence:
   nextLessonTeaser: "Next: building a network that remembers — the Simple RNN"
 hints:
   - level: nudge
-    content: "Think about why shuffling a list of React components breaks the UI — order carries information"
+    content: "Shuffle a keyed React list and the UI breaks because order carried information. Shuffling time-series samples destroys the same thing: the temporal pattern"
   - level: guidance
     content: "Sequence models process inputs in order, maintaining hidden state between steps"
   - level: solution
@@ -37,11 +37,11 @@ skillAxes: [model_arch]
 ---
 
 <Dialogue speaker="Dr. Farah">
-This is not random noise. Something is repeating. The pattern spans dozens of time steps — our feedforward network only sees one snapshot at a time. We need a model with memory.
+This isn't random noise. Something is repeating. The pattern spans dozens of time steps, but our feedforward network only sees one snapshot at a time. We need a model with memory.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
-Memory? You mean like... state that persists between inputs? That's just a reducer — previous state plus new input produces updated state.
+Memory? You mean like... state that persists between inputs? That's just a reducer: previous state plus new input produces updated state.
 </Dialogue>
 
 You've seen this problem in React. When you render a list without stable keys, React can't track which items moved, were added, or were removed. Order carries information. The same is true for signals: the sequence [rising, falling, rising] tells a completely different story than [falling, rising, rising], even though they contain the same individual values.
@@ -132,4 +132,4 @@ Create time-step sequences from raw signal data.
 
 <Exercise slug="create-sequences" />
 
-<KeyTakeaways takeaways={["Order carries information in sequences — shuffling destroys temporal patterns, just like shuffling React list keys breaks UI state", "Feedforward networks process each input independently with no memory of previous inputs", "Sequential input adds a time dimension: shape goes from [batch, features] to [batch, timeSteps, features]", "Sliding windows convert a continuous signal stream into discrete sequences for model input"]} />
+<KeyTakeaways takeaways={["A feedforward network scores rise-fall-rise and fall-rise-rise identically: same values, and it never sees the order", "Feedforward networks process each input independently with no memory of previous inputs", "Sequential input adds a time dimension: shape goes from [batch, features] to [batch, timeSteps, features]", "Sliding windows convert a continuous signal stream into discrete sequences for model input"]} />

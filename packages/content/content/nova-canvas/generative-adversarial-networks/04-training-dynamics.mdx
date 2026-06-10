@@ -7,23 +7,23 @@ order: 4
 estimatedMinutes: 30
 difficulty: intermediate
 context:
-  narrative: "Training begins. Samir discovers that training a GAN is like balancing two dancers — if one gets too far ahead, the whole performance falls apart."
+  narrative: "Training begins. Samir discovers that training a GAN is like balancing two dancers: if one gets too far ahead, the whole performance falls apart."
   speaker: "Erdem"
 concept:
-  explanation: "GAN training alternates between updating the discriminator and the generator. The key challenge is keeping both networks in balance — neither should dominate."
+  explanation: "GAN training alternates between updating the discriminator and the generator. The key challenge is keeping both networks in balance. Neither should dominate."
   bridge:
     feTitle: "Load Balancing"
     feCode: "if (server1.load > server2.load) route(server2)"
     mlTitle: "GAN Training Balance"
     mlCode: "if (dLoss < 0.1) skipDStep(); // D is too strong"
     tier: intuition
-    breaks: "Load balancing aims for equal utilization across servers. GAN training balance between generator and discriminator is unstable — if the discriminator gets too strong, generator gradients vanish; too weak, the generator stops improving. There's no homeostatic algorithm."
+    breaks: "Load balancing aims for equal utilization across servers. GAN training balance between generator and discriminator is unstable: if the discriminator gets too strong, generator gradients vanish; too weak, the generator stops improving. There's no homeostatic algorithm."
 consequence:
   narrative: "After hours of training and tuning, the GAN produces its first recognizable patterns. Crude, but alive. Erdem approves the approach for the exhibition."
-  nextLessonTeaser: "Next: when things go wrong — mode collapse and how to fix it"
+  nextLessonTeaser: "Next: when things go wrong: mode collapse and how to fix it"
 hints:
   - level: nudge
-    content: "Like load balancing — if one server handles all traffic, the system degrades"
+    content: "Like load balancing: if one server handles all traffic, the system degrades"
   - level: guidance
     content: "Alternate: train D for one step, then train G for one step. Monitor both losses."
   - level: solution
@@ -37,14 +37,14 @@ keywords:
 ---
 
 <Dialogue speaker="Erdem">
-I have managed enough engineering teams to know this: two systems in competition will find equilibrium only if neither is allowed to dominate. Your discriminator is too smart? The generator gives up. Generator too clever? The discriminator stops learning. Balance. That is the only goal.
+I've seen this on engineering teams, and it never resolves itself. Discriminator too smart? Generator gradients flatline and it quits improving. Generator too clever? Discriminator stops learning anything. Watch both loss curves every epoch, and the moment one runs away, throttle it.
 </Dialogue>
 
 <Dialogue speaker="MUSE">
-A dance requires two. If one leads too strongly, the other merely stumbles.
+Watch my loss curves tonight. If the discriminator's drops to 0.02 and stays there, my generator half is getting gradients too small to learn from. What we want is both curves wobbling around 0.69 and neither one flatlining.
 </Dialogue>
 
-Training a GAN is notoriously tricky. Unlike training a single model where loss steadily decreases, GAN training involves two competing losses that must stay in balance. Think of it like load balancing across servers — if one server handles all the traffic, the system breaks down.
+Training a GAN is notoriously tricky. Unlike training a single model where loss steadily decreases, GAN training involves two competing losses that must stay in balance. It is load balancing across servers: if one server handles all the traffic, the system breaks down.
 
 <LearningObjectives objectives={["Implement the alternating GAN training loop", "Monitor generator and discriminator losses for balance", "Recognize signs of training instability", "Apply practical tricks for stable GAN training"]} />
 
@@ -149,7 +149,7 @@ function diagnose(metrics: TrainingMetrics): string {
 
 ## On-Call Scenario
 
-After a model update, generated outputs lost coherence — text in images garbled, faces distorted. Decide whether to roll back or fine-tune.
+After a model update, generated outputs lost coherence: text in images garbled, faces distorted. Decide whether to roll back or fine-tune.
 
 <Exercise slug="incident-quality-regression" />
 

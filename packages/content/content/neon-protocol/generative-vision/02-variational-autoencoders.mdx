@@ -7,25 +7,25 @@ order: 2
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "The GAN generates images, but Zara wants control. She needs to encode existing surveillance footage into a compressed representation and reconstruct it with modifications — swap a face, change lighting, alter a uniform. Amir recognizes the pattern: 'It is a URL with query parameters. The latent space is the compressed state.'"
+  narrative: "The GAN generates images, but Zara wants control. She needs to encode existing surveillance footage into a compressed representation and reconstruct it with modifications: swap a face, change lighting, alter a uniform. Amir recognizes the pattern: 'It is a URL with query parameters. The latent space is the compressed state.'"
   speaker: "Amir"
 concept:
-  explanation: "A Variational Autoencoder compresses images into a structured latent space and reconstructs them. The encoder maps high-dimensional data to a compact representation; the decoder maps it back. The latent space is like URL query parameters — a compressed representation of complex state that can be manipulated and decoded."
+  explanation: "A Variational Autoencoder compresses images into a structured latent space and reconstructs them. The encoder maps high-dimensional data to a compact representation; the decoder maps it back. The latent space is like URL query parameters, a compressed representation of complex state that can be manipulated and decoded."
   bridge:
     feTitle: "URL Query Parameters"
     feCode: "const state = new URLSearchParams({ theme: 'dark', zoom: '2', filter: 'blur' }); // Compressed state"
     mlTitle: "Latent Space Encoding"
     mlCode: "const [mean, logVar] = encoder.predict(image); // Compressed representation of image"
     tier: structural
-    breaks: "URL query params encode known key-value state. VAE latent vectors are continuous, learned, and only meaningful inside the trained decoder — there is no schema, the same coordinates in a different model produce unrelated images."
+    breaks: "URL query params encode known key-value state. VAE latent vectors are continuous, learned, and only meaningful inside the trained decoder; there is no schema, the same coordinates in a different model produce unrelated images."
 consequence:
-  narrative: "Amir encodes a surveillance frame into a 64-dimensional latent vector. He tweaks dimension 23 — the reconstructed image shifts from day to night. Dimension 41 changes the camera angle. Zara grins: 'A 64-number address for every possible image. Now we can navigate the space of all images like a map.'"
-  nextLessonTeaser: "Next: style transfer — applying artistic styles to images as camouflage"
+  narrative: "Amir encodes a surveillance frame into a 64-dimensional latent vector. He tweaks dimension 23. The reconstructed image shifts from day to night. Dimension 41 changes the camera angle. Zara grins: 'A 64-number address for every possible image. Now we can navigate the space of all images like a map.'"
+  nextLessonTeaser: "Next: style transfer. Applying artistic styles to images as camouflage"
 hints:
   - level: nudge
-    content: "Think of the encoder as serializing state to a URL and the decoder as deserializing it back to a full page"
+    content: "Your encoder compresses each image to a 64-number latent vector and the decoder rebuilds the image from it; those coordinates only mean something to this trained decoder"
   - level: guidance
-    content: "The encoder outputs two vectors — mean and variance — that define a probability distribution. Sample from that distribution to get the latent code."
+    content: "The encoder outputs two vectors (mean and variance) that define a probability distribution. Sample from that distribution to get the latent code."
   - level: solution
     content: "Encoder: Conv2D layers -> Dense(mean) + Dense(logVar). Sample: z = mean + exp(0.5 * logVar) * epsilon. Decoder: Dense -> Reshape -> Conv2DTranspose. Loss: reconstruction + KL divergence."
 keywords:
@@ -37,7 +37,7 @@ keywords:
 ---
 
 <Dialogue speaker="Amir">
-At Meridian, we compressed session state into URL parameters — theme, layout, filters, all encoded into a short string. A VAE does the same thing with images. The encoder compresses a 28x28 image into 64 numbers. The decoder reconstructs it from those 64 numbers. The compression forces the network to learn what actually matters.
+At Meridian, we compressed session state into URL parameters: theme, layout, filters, all encoded into a short string. A VAE does the same thing with images. The encoder compresses a 28x28 image into 64 numbers. The decoder reconstructs it from those 64 numbers. The compression forces the network to learn what actually matters.
 </Dialogue>
 
 <Dialogue speaker="Zara">
@@ -48,7 +48,7 @@ And if we can control those 64 numbers, we control the output image. Change one 
 The critical difference from a regular autoencoder: VAEs encode to a probability distribution, not a fixed point. This makes the latent space smooth and continuous — neighboring points produce similar images. Without this constraint, the space would be full of gaps and dead zones.
 </Dialogue>
 
-A Variational Autoencoder learns to compress images into a structured latent space and reconstruct them. Unlike a regular autoencoder that maps to fixed points, a VAE maps to probability distributions. This makes the latent space smooth — you can interpolate between any two points and get meaningful images along the way. You have seen this before: URL query parameters compress complex application state into a short string that can be manipulated and decoded.
+A Variational Autoencoder learns to compress images into a structured latent space and reconstruct them. Unlike a regular autoencoder that maps to fixed points, a VAE maps to probability distributions. This makes the latent space smooth. You can interpolate between any two points and get meaningful images along the way. You have seen this before: URL query parameters compress complex application state into a short string that can be manipulated and decoded.
 
 <LearningObjectives objectives={["Build an encoder that maps images to a latent probability distribution", "Implement the reparameterization trick for differentiable sampling", "Build a decoder that reconstructs images from latent codes", "Understand KL divergence as a regularizer that structures the latent space"]} />
 

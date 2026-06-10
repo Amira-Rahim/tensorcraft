@@ -10,14 +10,14 @@ context:
   narrative: "You set up the distillation training pipeline: the cloud model teaches the edge model."
   speaker: "Hassan Al-Rashid"
 concept:
-  explanation: "The teacher-student training process is like pair programming with a senior engineer — the junior learns not just what to do, but why."
+  explanation: "The teacher-student training process is like pair programming with a senior engineer: the junior learns not just what to do, but why."
   bridge:
     feTitle: "Mentor Pair Programming"
     feCode: "// Senior explains reasoning, not just code\n// Junior learns patterns, not just syntax\n// Knowledge transfers through collaboration"
     mlTitle: "Teacher-Student Training"
     mlCode: "// Teacher provides soft predictions\n// Student learns patterns, not just labels\n// Knowledge transfers through distillation loss"
     tier: intuition
-    breaks: "Mentor pair programming transfers explicit reasoning the mentor articulates. Teacher-student distillation transfers soft predictions (logits, attention maps) — the student learns to mimic the teacher's outputs without learning the teacher's reasoning. The student inherits the teacher's confidently-wrong cases as easily as its correct ones."
+    breaks: "Mentor pair programming transfers explicit reasoning the mentor articulates. Teacher-student distillation transfers soft predictions (logits, attention maps). The student learns to mimic the teacher's outputs without learning the teacher's reasoning. The student inherits the teacher's confidently-wrong cases as easily as its correct ones."
 consequence:
   narrative: "The student model is trained and ready for edge deployment."
   nextLessonTeaser: "Next: combining all optimization techniques"
@@ -36,10 +36,10 @@ keywords:
 ---
 
 <Dialogue speaker="Hassan Al-Rashid">
-The distillation process has two objectives. First, the student should match the teacher's predictions — learning the patterns. Second, the student should still be correct on the actual labels. Balance both.
+The distillation process has two objectives. First, the student should match the teacher's predictions, learning the patterns. Second, the student should still be correct on the actual labels. Balance both.
 </Dialogue>
 
-When a senior engineer pair programs with a junior, the junior learns from two sources: the senior's explanations (soft knowledge) and the actual requirements (hard truth). Distillation training works the same way — the student learns from both the teacher's outputs and the ground truth labels.
+When a senior engineer pair programs with a junior, the junior learns from two sources: the senior's explanations (soft knowledge) and the actual requirements (hard truth). Distillation training works the same way: the student learns from both the teacher's outputs and the ground truth labels.
 
 <LearningObjectives objectives={["Implement the combined distillation loss function", "Understand the alpha parameter for balancing teacher vs ground truth", "Set up a teacher-student training loop", "Evaluate student model accuracy relative to teacher"]} />
 

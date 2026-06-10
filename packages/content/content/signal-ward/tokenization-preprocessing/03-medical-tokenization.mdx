@@ -49,7 +49,7 @@ Every domain has its own shorthand. In web dev, you parse phone numbers that com
 If Diagnostic One can't normalize these abbreviations, it will miss the same allergy our vendor missed. This is critical.
 </Dialogue>
 
-Every frontend developer has written custom parsers — phone number formatters, date normalizers, address cleaners. Medical tokenization is the same craft: you take messy, inconsistent input and normalize it into a standard form.
+"PCN", "penicillin", "pen." Three spellings, one drug, and that is a single entry in a shorthand vocabulary running to the hundreds. The dangerous entries are the ambiguous ones: the same abbreviation can expand two different ways, and the wrong expansion changes the clinical meaning. The craft itself you have practiced before. Phone number formatters, date normalizers, address cleaners. Medical tokenization is that same custom-parser work, pointed at a domain where a missed normalization can hide an allergy.
 
 <LearningObjectives objectives={["Build an abbreviation expansion map for common clinical shorthand", "Normalize medical text before tokenization", "Handle multiple representations of the same concept", "Implement a medical-aware preprocessing pipeline"]} />
 
@@ -132,4 +132,4 @@ Build a medical tokenizer that expands abbreviations.
 
 <Exercise slug="medical-tokens" />
 
-<KeyTakeaways takeaways={["Medical text uses hundreds of abbreviations that must be normalized", "Abbreviation expansion is like phone number parsing — domain-specific normalization", "A preprocessing pipeline chains tokenization, abbreviation expansion, and spelling correction", "Consistent normalization directly improves model accuracy"]} />
+<KeyTakeaways takeaways={["Medical text uses hundreds of abbreviations that must be normalized", "RA expands to rheumatoid arthritis or right atrium; a lookup map cannot tell which, only context can", "A preprocessing pipeline chains tokenization, abbreviation expansion, and spelling correction", "Consistent normalization directly improves model accuracy"]} />

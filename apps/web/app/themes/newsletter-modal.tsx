@@ -90,7 +90,7 @@ export function NewsletterModal({ open, onClose }: NewsletterModalProps) {
               id="newsletter-modal-title"
               className="text-2xl font-mono font-bold text-text-primary mb-2 tracking-tight"
             >
-              Stay in the loop
+              The Bridge, monthly
             </h2>
             <p className="text-sm text-text-muted mb-5 leading-relaxed">
               New themes, bridge essays, launch discounts. No spam, one email at
@@ -103,7 +103,7 @@ export function NewsletterModal({ open, onClose }: NewsletterModalProps) {
                 data-testid="newsletter-success"
                 className="border-2 border-primary/50 bg-primary/10 px-4 py-3 font-mono text-sm text-primary rounded-none"
               >
-                You&rsquo;re on the list. Welcome aboard.
+                You&rsquo;re on the list.
               </div>
             ) : (
               <form onSubmit={handleSubmit} noValidate>

@@ -7,7 +7,7 @@ order: 3
 estimatedMinutes: 30
 difficulty: intermediate
 context:
-  narrative: "Zara sketches an architecture diagram on the holotable. It looks like a U — layers descend on the left, compress the image into abstract features, then ascend on the right, expanding back to full resolution. 'Content flows down. Detail flows up. The skip connections are the secret.'"
+  narrative: "Zara sketches an architecture diagram on the holotable. It looks like a U: layers descend on the left, compress the image into abstract features, then ascend on the right, expanding back to full resolution. 'Content flows down. Detail flows up. The skip connections are the secret.'"
   speaker: "Zara"
 concept:
   explanation: "U-Net is an encoder-decoder architecture for dense prediction. The encoder compresses spatial information into features (like a funnel). The decoder expands features back to full resolution. Skip connections bridge corresponding encoder-decoder layers, preserving spatial detail."
@@ -17,10 +17,10 @@ concept:
     mlTitle: "U-Net: Encode down, decode up"
     mlCode: "// Encoder compresses, decoder expands, skip connections preserve detail"
     tier: structural
-    breaks: "Layout flow ships content down and styles up — a one-way render. U-Net adds skip connections that fuse encoder feature maps directly into matching-resolution decoder layers — the merge is concatenation, not pass-through."
+    breaks: "Layout flow ships content down and styles up, a one-way render. U-Net adds skip connections that fuse encoder feature maps directly into matching-resolution decoder layers; the merge is concatenation, not pass-through."
 consequence:
   narrative: "The U-Net trains on District 7 feeds. After 50 epochs, it segments drones from sky with pixel-perfect boundaries. Zara smiles: 'The skip connections preserved the edges. Without them, every drone would be a blurry blob.'"
-  nextLessonTeaser: "Next: mask generation — producing pixel-precise boundaries for each detected object"
+  nextLessonTeaser: "Next: mask generation. Producing pixel-precise boundaries for each detected object"
 hints:
   - level: nudge
     content: "The U-Net has two halves: encoder (downsampling) and decoder (upsampling), connected by skip connections"
@@ -37,14 +37,14 @@ keywords:
 ---
 
 <Dialogue speaker="Zara">
-The encoder is the descent — convolutions and pooling that compress a 224-by-224 image down to a tiny 14-by-14 feature map. Rich in meaning, poor in spatial detail. The decoder is the ascent — transposed convolutions that expand back to full resolution. But without skip connections, the decoded output loses fine edges. That is why the U shape matters.
+The encoder is the descent: convolutions and pooling that compress a 224-by-224 image down to a tiny 14-by-14 feature map. Rich in meaning, poor in spatial detail. The decoder is the ascent: transposed convolutions that expand back to full resolution. But without skip connections, the decoded output loses fine edges. That is why the U shape matters.
 </Dialogue>
 
 <Dialogue speaker="Noor">
-Skip connections — like the CSS cascade? Properties flow down through the DOM, but computed values reference parent contexts?
+Skip connections, like the CSS cascade? Properties flow down through the DOM, but computed values reference parent contexts?
 </Dialogue>
 
-The U-Net architecture is the workhorse of segmentation. Think of it like a layout engine: content flows down through nested containers (encoder), and the final rendering flows back up to the viewport (decoder). Skip connections act like CSS inheritance — they carry high-resolution spatial details from early layers directly to later layers, preventing information loss.
+The U-Net architecture is the workhorse of segmentation. It has the same shape as a layout engine: content flows down through nested containers (encoder), and the final rendering flows back up to the viewport (decoder). Skip connections act like CSS inheritance, carrying high-resolution spatial details from early layers directly to later layers so nothing is lost on the way up.
 
 <LearningObjectives objectives={["Understand the encoder-decoder structure of U-Net", "Implement skip connections that preserve spatial detail", "Build a simple U-Net in TensorFlow.js", "Connect the architecture to layout flow concepts in frontend development"]} />
 
@@ -166,4 +166,4 @@ Conv [256, 256, num_classes]
 
 <KeyTakeaways takeaways={["U-Net compresses images through an encoder then expands through a decoder back to full resolution", "Skip connections concatenate encoder features with decoder features, preserving spatial detail", "The output has the same spatial dimensions as the input: [H, W, numClasses]", "The architecture mirrors layout flow — content descends through containers, rendering ascends to the viewport"]} />
 
-> **DISPATCH archive · field intercept #23-V:** Yara's collective uses U-Net variants for image-to-image generation. Skip connections preserve content the bottleneck would otherwise lose. Same architecture, opposite optimization target — they want the input back, you want the segmentation. Symmetry is structural, not semantic.
+> **DISPATCH archive · field intercept #23-V:** Yara's collective uses U-Net variants for image-to-image generation. Skip connections preserve content the bottleneck would otherwise lose. Same architecture, opposite optimization target: they want the input back, you want the segmentation. Symmetry is structural, not semantic.

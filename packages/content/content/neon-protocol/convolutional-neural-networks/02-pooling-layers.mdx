@@ -7,17 +7,17 @@ order: 2
 estimatedMinutes: 22
 difficulty: intermediate
 context:
-  narrative: "The convolution output is massive — 224x224 feature maps for each of 32 kernels. Amir shakes his head: 'When I was at Meridian, we hit the same wall. You need to downsample. Think about how srcset works — you serve a smaller image but keep the important details.'"
+  narrative: "The convolution output is massive: 224x224 feature maps for each of 32 kernels. Amir shakes his head: 'Same wall we hit at Meridian. Downsample. srcset logic: serve the smaller image, keep the details that matter.'"
   speaker: "Amir"
 concept:
-  explanation: "Pooling reduces the spatial dimensions of feature maps by summarizing local regions — just like srcset delivers smaller responsive images that preserve key visual information."
+  explanation: "Pooling reduces the spatial dimensions of feature maps by summarizing local regions, just like srcset delivers smaller responsive images that preserve key visual information."
   bridge:
     feTitle: "srcset Responsive Images"
     feCode: "<img srcset='photo-800w.jpg 800w, photo-400w.jpg 400w' sizes='(max-width: 600px) 400px, 800px' />"
     mlTitle: "Max Pooling"
     mlCode: "const pooled = tf.maxPool(featureMap, poolSize, strides, 'valid'); // halves spatial dims"
     tier: structural
-    breaks: "srcset picks one image variant based on viewport — the alternatives still exist. Max pooling discards information permanently: only the strongest activation in each region survives forward. The downsampled tensor cannot reconstruct the original."
+    breaks: "srcset picks one image variant based on viewport; the alternatives still exist. Max pooling discards information permanently: only the strongest activation in each region survives forward. The downsampled tensor cannot reconstruct the original."
 consequence:
   narrative: "The pooled feature maps are a quarter of the size but retain the sharpest activations. NEON calculates the memory savings: 'From 6.4 million values to 1.6 million. Your browser will thank you.'"
   nextLessonTeaser: "Next: stacking conv and pool layers into a complete CNN architecture"
@@ -37,20 +37,20 @@ keywords:
 ---
 
 <Dialogue speaker="Amir">
-At Meridian, our first surveillance model choked because the feature maps were too large. A 224x224 input with 64 filters means over 3 million values per layer. Pooling solves this. You take each 2x2 region and keep only the max value. Same idea as responsive images — you downsample, but the important features survive.
+At Meridian, our first surveillance model choked because the feature maps were too large. A 224x224 input with 64 filters means over 3 million values per layer. Pooling solves this. You take each 2x2 region and keep only the max value. Same idea as responsive images. You downsample, but the important features survive.
 </Dialogue>
 
 <Dialogue speaker="Noor">
 So it is like serving a 400px image instead of an 800px one via srcset? You lose resolution but the content is still recognizable.
 </Dialogue>
 
-Exactly. Pooling compresses feature maps by summarizing local regions. The two main types are max pooling (keep the strongest activation) and average pooling (keep the mean). Max pooling is far more common because strong activations usually signal important features.
+Close, but srcset is gentler than this. With srcset, the 800px original still sits on the server; the browser just picked a smaller variant. Max pooling has no original to fall back on. Only the strongest activation in each region moves forward, and the rest is discarded permanently. The downsampled tensor cannot reconstruct what it threw away. The two main types are max pooling (keep the strongest activation) and average pooling (keep the mean); max is far more common because strong activations usually signal important features.
 
 <LearningObjectives objectives={["Understand why spatial downsampling is necessary in CNNs", "Implement max pooling and average pooling from scratch", "Connect responsive image downsampling (srcset) to feature map pooling", "Calculate output dimensions after pooling operations"]} />
 
 ## Why Downsample?
 
-After convolution, feature maps can be enormous. A 224x224 image with 64 filters produces 64 feature maps of 224x224 each — over 3.2 million values. Pooling reduces spatial dimensions while preserving the most important activations.
+After convolution, feature maps can be enormous. A 224x224 image with 64 filters produces 64 feature maps of 224x224 each. That is over 3.2 million values. Pooling reduces spatial dimensions while preserving the most important activations.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -187,9 +187,9 @@ For input width W, pool size K, stride S (often S = K):
 
 With `K = S = 2` (the standard), `W_out = floor(W/2)`. A 224×224 input becomes 112×112 after one max-pool.
 
-**Information loss is permanent:** max-pool keeps only the highest activation per window. The downsampled tensor cannot reconstruct the original. This is by design — pooling enforces translation invariance and reduces compute.
+**Information loss is permanent:** max-pool keeps only the highest activation per window. The downsampled tensor cannot reconstruct the original. This is by design: pooling enforces translation invariance and reduces compute.
 
 **Average pooling** preserves more low-frequency information; max pooling preserves the strongest activation regardless of position. Which one to use depends on whether the task cares about edge-like features (max) or texture-like features (average).
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["Pooling reduces spatial dimensions while preserving important features — like srcset serving smaller responsive images", "Max pooling keeps the strongest activation in each region and is the most common pooling type", "A 2x2 max pool with stride 2 reduces each spatial dimension by half, cutting total values by 75%", "Pooling makes CNNs more efficient and adds translation invariance — a feature detected anywhere in a region still activates"]} />
+<KeyTakeaways takeaways={["Pooling reduces spatial dimensions by summarizing local regions; the discarded activations are gone permanently", "Max pooling keeps the strongest activation in each region and is the most common pooling type", "A 2x2 max pool with stride 2 reduces each spatial dimension by half, cutting total values by 75%", "Pooling makes CNNs more efficient and adds translation invariance — a feature detected anywhere in a region still activates"]} />

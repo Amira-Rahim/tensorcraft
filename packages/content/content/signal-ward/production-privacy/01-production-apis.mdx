@@ -7,10 +7,10 @@ order: 1
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "The ethics review begins. Khalil presents Diagnostic One's capabilities, but the committee chair interrupts: 'How does a clinician actually use this in a trauma bay?' Khalil turns to the whiteboard. 'It is an API — the same contract as any REST endpoint. POST clinical text, GET structured predictions. But we have a 200-millisecond SLA, and if we break it, lives are on the line.'"
+  narrative: "The ethics review begins. Khalil presents Diagnostic One's capabilities, but the committee chair interrupts: 'How does a clinician actually use this in a trauma bay?' Khalil turns to the whiteboard. 'It is an API, the same contract as any REST endpoint. POST clinical text, GET structured predictions. But we have a 200-millisecond SLA, and if we break it, lives are on the line.'"
   speaker: "Khalil"
 concept:
-  explanation: "An ML serving API follows the exact same pattern as a REST API with SLA guarantees — request validation, processing, and response formatting — but the processing step is neural network inference instead of a database query, and the SLA covers latency budgets, error handling, and graceful degradation."
+  explanation: "An ML serving API follows the exact same pattern as a REST API with SLA guarantees (request validation, processing, and response formatting), but the processing step is neural network inference instead of a database query, and the SLA covers latency budgets, error handling, and graceful degradation."
   bridge:
     feTitle: "REST API with SLA"
     feCode: "app.post('/api/data', validate, async (req, res) => { const result = await db.query(req.body); res.json(result); })"
@@ -18,11 +18,11 @@ concept:
     mlCode: "app.post('/api/predict', validate, async (req, res) => { const result = await model.predict(req.body.text); res.json(result); })"
     tier: identity
 consequence:
-  narrative: "The inference API processes its first clinical query in 43 milliseconds. The ethics committee watches as Dr. Karimi types a question and receives a structured, cited response. Imran checks the error handler — a malformed request returns a clean 400 with a descriptive message. The chair nods. 'The interface is solid. Now show me what happens with patient data.'"
+  narrative: "The inference API processes its first clinical query in 43 milliseconds. The ethics committee watches as Dr. Karimi types a question and receives a structured, cited response. Imran checks the error handler: a malformed request returns a clean 400 with a descriptive message. The chair nods. 'The interface is solid. Now show me what happens with patient data.'"
   nextLessonTeaser: "Next: HIPAA compliance — protecting patient data in every layer of the pipeline"
 hints:
   - level: nudge
-    content: "Think of the prediction pipeline as middleware: validate input, run inference, format output"
+    content: "Order the handler like middleware: validateRequest first, model.predict wrapped in a timeout, then shape the JSON response"
   - level: guidance
     content: "Add request validation, a latency budget timer, proper error responses, and health checks"
   - level: solution
@@ -37,14 +37,14 @@ keywords:
 ---
 
 <Dialogue speaker="Khalil">
-The committee asked how clinicians would actually interact with Diagnostic One. I realized we had a model but no interface. We need a production API — same contract as any REST endpoint. POST a clinical note, GET back structured predictions. But this is not a CRUD app. We have a 200-millisecond SLA, and every request touches a patient's care.
+The committee asked how clinicians would actually interact with Diagnostic One. I realized we had a model but no interface. We need a production API, same contract as any REST endpoint. POST a clinical note, GET back structured predictions. But this is not a CRUD app. We have a 200-millisecond SLA, and every request touches a patient's care.
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-You have built REST APIs with latency budgets before, yes? Rate limiting, request validation, error handling, health checks — it is the same discipline. The only difference is that between request and response, a neural network runs instead of a database query.
+You've built REST APIs with latency budgets before, yes? Rate limiting, request validation, error handling, health checks. It's the same discipline. The only difference is that between request and response, a neural network runs instead of a database query.
 </Dialogue>
 
-Every production API you have shipped follows the same contract: validate the request, process it within a latency budget, return a structured response, and handle errors gracefully. An ML serving API is identical. The "processing" step is inference instead of a database query, but the HTTP contract, error handling, and SLA enforcement are the same patterns you already know.
+The HTTP contract is the familiar part: validate the request, process it within a latency budget, return a structured response. The middle step is where the failure modes change. A model can be loaded but cold (hence the warm-up inference), latency varies with input length, and tensor memory leaks if you skip `dispose()`. That's why the health endpoint reports `tf.memory().numTensors`, not just uptime.
 
 <LearningObjectives objectives={["Design a production NLP API with typed request/response schemas and SLA enforcement", "Implement a prediction pipeline with validation, inference, and structured error handling", "Add latency budget enforcement that returns graceful timeouts when inference exceeds the SLA", "Build health check and readiness endpoints for production monitoring"]} />
 
@@ -264,4 +264,4 @@ Build a production NLP API class that validates requests, runs inference, enforc
 
 <Exercise slug="build-nlp-api" />
 
-<KeyTakeaways takeaways={["An ML serving API follows the same contract as any REST API — validate, process, respond, handle errors", "Latency budget enforcement is like a fetch() timeout — if inference exceeds the SLA, return a graceful 504", "Request batching improves GPU throughput the same way batching SQL queries avoids N+1 problems", "Health check endpoints for ML APIs monitor model readiness and tensor memory, not just uptime"]} />
+<KeyTakeaways takeaways={["Enforce the 200ms SLA with Promise.race: inference that overruns returns a clean 504, never a stalled request", "Cap input size at validation (here, 10,000 characters) — inference latency grows with token count", "Request batching collects up to 8 requests for at most 10ms and runs one GPU pass for all of them", "Health check endpoints for ML APIs monitor model readiness and tensor memory, not just uptime"]} />

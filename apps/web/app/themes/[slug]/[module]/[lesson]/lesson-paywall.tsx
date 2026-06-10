@@ -39,8 +39,9 @@ export function LessonPaywall({
         This lesson requires a purchase
       </h2>
       <p className="text-sm mb-6 max-w-md mx-auto leading-relaxed text-text-muted">
-        Module 1 is free for everyone. To continue learning {themeName} beyond
-        Module 1, purchase access to unlock all 11 modules and 55 lessons.
+        Module 1 is free. Modules 2&ndash;11 of {themeName} &mdash; 50 more
+        lessons, the capstone, and your certificate &mdash; are one payment,
+        yours forever.
       </p>
       <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
         <Link

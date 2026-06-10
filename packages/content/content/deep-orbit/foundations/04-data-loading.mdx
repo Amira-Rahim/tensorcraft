@@ -28,14 +28,14 @@ skillAxes: [data_prep]
 ---
 
 <Dialogue speaker="Ensign Demir">
-Commander, the raw sensor data is coming in too fast for single-pass processing. We need a pipeline — something that feeds data to the analysis system in manageable chunks.
+Commander, the raw sensor data is coming in too fast for single-pass processing. We need a pipeline that feeds data to the analysis system in manageable chunks.
 </Dialogue>
 
 <Dialogue speaker="ARIA">
 Confirmed. Batch processing will allow me to analyze data incrementally while maintaining memory efficiency.
 </Dialogue>
 
-If you've ever implemented infinite scroll or pagination in a frontend app, you already understand the core concept of data batching. Instead of loading everything at once, you process data in chunks.
+One method call decides whether this pipeline survives contact with real sensor data: `.batch(32)`. The stream never materializes in memory; the model sees 32 readings at a time and pulls the next chunk only when it finishes the current one. Infinite scroll and pagination run on the same discipline, so the instinct transfers directly: load chunks, never everything.
 
 <LearningObjectives objectives={["Create data pipelines using tf.data", "Batch data into fixed-size chunks for processing", "Shuffle data to prevent ordering bias", "Split data into training and validation sets"]} />
 
@@ -81,7 +81,7 @@ The key difference from frontend pagination: ML shuffles the data randomly befor
 
 ## Why Batching Matters
 
-Think of it like rendering a virtual list. You don't render 10,000 DOM nodes at once — you render a "window" of visible items. Similarly, ML models process a "window" (batch) of data at a time, updating their understanding incrementally.
+Batching is virtual-list rendering for model input. You don't render 10,000 DOM nodes at once; you render a window of visible items. ML models likewise process a window (batch) of data at a time, updating their understanding incrementally.
 
 <CodeBlock language="typescript" title="train-test-split.ts">
 {`// Split data into training (80%) and validation (20%)
@@ -93,4 +93,4 @@ const trainData = allData.take(TRAIN_SIZE).batch(32);
 const valData = allData.skip(TRAIN_SIZE).batch(32);`}
 </CodeBlock>
 
-<KeyTakeaways takeaways={["Data pipelines feed data to models in batches, like paginated API calls", "Shuffling prevents ordering bias — the model learns patterns, not sequence", "tf.data.generator() creates lazy iterators from JavaScript generators", "Train/validation splits let you verify the model isn't just memorizing"]} />
+<KeyTakeaways takeaways={["shuffle(100).batch(32) is the canonical pipeline order: shuffle with a buffer first, then group. Batching first would freeze the order", "Shuffling prevents ordering bias — the model learns patterns, not sequence", "tf.data.generator() creates lazy iterators from JavaScript generators", "Train/validation splits let you verify the model isn't just memorizing"]} />

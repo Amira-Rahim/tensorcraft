@@ -7,20 +7,20 @@ order: 4
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "The architecture is built. Amir pulls up the training dashboard: 'This is where it gets real. We feed the Sentinel surveillance images, compute loss, and update every kernel weight. Think of it like running your full CI/CD build pipeline — lint, test, bundle, deploy — but for neural network weights.'"
+  narrative: "The architecture is built. Amir pulls up the training dashboard: 'This is where it gets real. We feed the Sentinel surveillance images, compute loss, and update every kernel weight. Same shape as your CI/CD pipeline: lint, test, bundle, deploy. Except the artifact is weights.'"
   speaker: "Amir"
 concept:
-  explanation: "Training a CNN is an iterative pipeline of forward pass, loss computation, backpropagation, and weight updates — structurally identical to a build pipeline that processes, validates, and outputs artifacts."
+  explanation: "Training a CNN is an iterative pipeline of forward pass, loss computation, backpropagation, and weight updates, structurally identical to a build pipeline that processes, validates, and outputs artifacts."
   bridge:
     feTitle: "Build Pipeline Execution"
     feCode: "npm run build // lint -> typecheck -> test -> bundle -> deploy"
     mlTitle: "Training Loop"
     mlCode: "for (epoch) { const loss = model.trainOnBatch(images, labels); } // forward -> loss -> backward -> update"
     tier: structural
-    breaks: "A build pipeline runs deterministic steps — same input, same artifact. A training loop is stochastic (random init, shuffled batches, dropout) and produces a different model on each run. 'Re-run the pipeline' restores a build; 'retrain' produces a new model with new behavior."
+    breaks: "A build pipeline runs deterministic steps: same input, same artifact. A training loop is stochastic (random init, shuffled batches, dropout) and produces a different model on each run. 'Re-run the pipeline' restores a build; 'retrain' produces a new model with new behavior."
 consequence:
   narrative: "After 50 epochs, the Protocol Sentinel hits 89% accuracy on camera type classification. Noor watches the loss curve flatten. 'It learned,' she whispers. Dilan nods: 'Now make it see what it learned.'"
-  nextLessonTeaser: "Next: visualizing what the CNN actually learned — peering inside the black box"
+  nextLessonTeaser: "Next: visualizing what the CNN actually learned. Peering inside the black box"
 hints:
   - level: nudge
     content: "The training loop runs forward pass, computes loss, then updates weights. Track loss and accuracy per epoch."
@@ -37,7 +37,7 @@ keywords:
 ---
 
 <Dialogue speaker="Amir">
-At Meridian, we trained surveillance models on thousands of GPUs. But the process is the same whether you have one GPU or a thousand. You feed images in batches, compute how wrong the model is, calculate gradients, and nudge the weights. Repeat until convergence. It is a build pipeline — each epoch is a full build cycle.
+At Meridian, we trained surveillance models on thousands of GPUs. But the process is the same whether you have one GPU or a thousand. You feed images in batches, compute how wrong the model is, calculate gradients, and nudge the weights. Repeat until convergence. It's a build pipeline. Each epoch is a full build cycle.
 </Dialogue>
 
 <Dialogue speaker="Noor">

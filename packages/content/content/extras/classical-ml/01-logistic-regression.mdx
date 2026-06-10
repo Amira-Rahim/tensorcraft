@@ -9,17 +9,17 @@ difficulty: beginner
 context:
   narrative: "Before reaching for a neural network, every ML practitioner learns the model that solves 80% of binary classification problems with 20% of the effort."
 concept:
-  explanation: "Logistic regression maps inputs through a sigmoid function to produce a probability between 0 and 1 — the simplest form of binary classification."
+  explanation: "Logistic regression maps inputs through a sigmoid function to produce a probability between 0 and 1, the simplest form of binary classification."
   bridge:
     feTitle: "if/else with confidence"
     feCode: "const approved = score > 0.5 ? true : false"
     mlTitle: "Binary classification"
     mlCode: "const prob = sigmoid(weights.dot(features) + bias)"
     tier: structural
-    breaks: "if/else with confidence is a hand-written threshold on a feature you chose. Logistic regression learns coefficients per feature from data and outputs a calibrated probability — the decision boundary moves with retraining, not with code edits."
+    breaks: "if/else with confidence is a hand-written threshold on a feature you chose. Logistic regression learns coefficients per feature from data and outputs a calibrated probability; the decision boundary moves with retraining, not with code edits."
 consequence:
-  narrative: "You now have a baseline classifier. In production, this is always your first model — if logistic regression solves the problem, ship it."
-  nextLessonTeaser: "Next: decision trees — models you can actually explain to stakeholders"
+  narrative: "A working baseline classifier in under sixty lines of TypeScript. In production this is always the first model on the board. If logistic regression solves the problem, ship it."
+  nextLessonTeaser: "Next: decision trees, models you can actually explain to stakeholders"
 hints:
   - level: nudge
     content: "The sigmoid function squashes any number into the 0-1 range"
@@ -35,14 +35,14 @@ keywords:
 ---
 
 <Dialogue speaker="Instructor">
-Here's a secret that experienced ML engineers know: most classification problems in production don't need a neural network. They need logistic regression. It trains in seconds, requires minimal data, and the results are interpretable. Let's understand why.
+Most classification problems in production don't need a neural network. They need logistic regression. It trains in seconds, requires minimal data, and the results are interpretable. Let's understand why.
 </Dialogue>
 
-You already use binary decisions everywhere in frontend code. Is the user authenticated? Is the cart empty? Is the viewport mobile-sized? These are all `true`/`false` checks. Logistic regression does the same thing — but instead of a hard rule, it gives you a *confidence score*.
+The whole model fits in two moves: a weighted sum and a squash. Multiply each feature by a learned weight, add a bias, push the result through a sigmoid, and out comes a number between 0 and 1. Where a frontend `if` hands you a hard `true`/`false`, logistic regression hands you 0.83 and lets you decide what to do with it.
 
 <LearningObjectives objectives={["Understand the sigmoid function and why it produces probabilities", "Implement logistic regression from scratch in TypeScript", "Interpret a decision boundary as a threshold on a confidence score", "Know when logistic regression is the right (and wrong) choice"]} />
 
-## The Sigmoid Function: Your Confidence Score
+## The Sigmoid Turns Any Number Into Confidence
 
 In frontend code, you write hard thresholds:
 
@@ -87,7 +87,7 @@ console.log(probBounce);   // 0.14 — likely to bounce`}
 
 ## The Decision Boundary
 
-The decision boundary is just your threshold. By default, it's 0.5 — if the sigmoid output is above 0.5, classify as positive. But in production, you often tune this threshold:
+The decision boundary is just your threshold. By default it's 0.5: above that, classify as positive. But in production, you often tune this threshold:
 
 <CodeBlock language="typescript" title="decision-boundary.ts">
 {`function classify(
@@ -110,11 +110,11 @@ classify(features, weights, bias, 0.3);
 classify(features, weights, bias, 0.8);`}
 </CodeBlock>
 
-This is exactly like adjusting a CSS media query breakpoint — you're choosing where to draw the line based on what matters most for your use case.
+Same move as tuning a media query breakpoint: you choose where the line falls based on what your use case punishes most.
 
-## Training: Finding the Best Weights
+## Finding the Best Weights
 
-Training logistic regression means finding the weights and bias that minimize prediction errors. The algorithm is called **gradient descent** — the same concept that powers neural networks, just applied to a simpler model.
+Training logistic regression means finding the weights and bias that minimize prediction errors. The algorithm is called **gradient descent**, the same concept that powers neural networks, just applied to a simpler model.
 
 <CodeBlock language="typescript" title="training-loop.ts">
 {`// Simplified training loop for logistic regression
@@ -159,4 +159,4 @@ Now implement logistic regression yourself.
 
 <Exercise slug="implement-logistic" />
 
-<KeyTakeaways takeaways={["Logistic regression is binary classification with a confidence score via sigmoid", "The sigmoid function maps any number to a probability between 0 and 1", "Decision boundaries are tunable thresholds — just like breakpoints in responsive design", "Always try logistic regression first — if it works, you don't need a neural network"]} />
+<KeyTakeaways takeaways={["Logistic regression is binary classification with a confidence score via sigmoid", "The sigmoid function maps any number to a probability between 0 and 1", "Decision boundaries are tunable thresholds, just like breakpoints in responsive design", "Always try logistic regression first; if it works, you don't need a neural network"]} />

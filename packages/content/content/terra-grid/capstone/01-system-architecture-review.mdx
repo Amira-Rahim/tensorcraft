@@ -10,17 +10,17 @@ context:
   narrative: "Hassan assembles the full team for the final phase. 'Ten modules of work. Edge deployment, optimization, quantization, pruning, federated learning, privacy, monitoring, A/B testing, scaling. All separate pieces. Now we put them together and deploy Terra Grid Intelligence across 47 sites.'"
   speaker: "Hassan Al-Rashid"
 concept:
-  explanation: "System architecture review documents the complete design — like creating Architecture Decision Records (ADRs) that capture why each component exists and how they connect."
+  explanation: "System architecture review documents the complete design, like creating Architecture Decision Records (ADRs) that capture why each component exists and how they connect."
   bridge:
     feTitle: "Architecture Decision Records"
     feCode: "// ADR-001: Use React for UI. Status: Accepted. Context: SPA requirements..."
     mlTitle: "ML Architecture Records"
     mlCode: "// ADR-001: Use TF.js for edge. Status: Accepted. Context: 512MB RAM constraint..."
     tier: structural
-    breaks: "An ADR records a decision so future engineers understand the trade-off. ML system ADRs additionally embed assumptions about data distribution, model size envelope, and acceptable accuracy floor — assumptions that go stale as the world changes. A 6-month-old ADR for a web service is usually still correct; for an ML service, it may already describe a model that no longer represents the data."
+    breaks: "An ADR records a decision so future engineers understand the trade-off. ML system ADRs additionally embed assumptions about data distribution, model size envelope, and acceptable accuracy floor. Those assumptions go stale as the world changes. A 6-month-old ADR for a web service is usually still correct; for an ML service, it may already describe a model that no longer represents the data."
 consequence:
   narrative: "The architecture diagram fills the operations display. Every component mapped: sensor ingestion, preprocessing, edge inference, federated aggregation, A/B testing, failover, global coordination. Hassan reviews each connection. 'Build it. All of it.'"
-  nextLessonTeaser: "Next: security hardening — final security review before global deployment"
+  nextLessonTeaser: "Next: security hardening, the final security review before global deployment"
 hints:
   - level: nudge
     content: "Map every component from the previous 10 modules into a single system diagram with clear interfaces"
@@ -36,14 +36,14 @@ keywords:
 ---
 
 <Dialogue speaker="Hassan Al-Rashid">
-Ten modules. Edge basics, optimization, quantization, pruning, federated learning, privacy, monitoring, A/B testing, scaling. Each one solved a specific problem. Now we assemble them into one production system. Priya — lay out the complete architecture. Every component, every connection, every failure mode.
+Ten modules. Edge basics, optimization, quantization, pruning, federated learning, privacy, monitoring, A/B testing, scaling. Each one solved a specific problem. Now we assemble them into one production system. Priya, lay out the complete architecture. Every component, every connection, every failure mode.
 </Dialogue>
 
 <Dialogue speaker="Priya Sharma">
 It is a dependency graph, same as a monorepo. Each module is a package with typed inputs and outputs. I connect them into a pipeline: sensor data flows in, predictions flow out, and every component in between has a clear interface and a fallback strategy.
 </Dialogue>
 
-You have designed monorepo architectures with Turborepo, mapped package dependencies, and created architecture decision records for frontend systems. Terra Grid Intelligence follows the same discipline. Every ML component is a self-contained module with typed interfaces, composed into a pipeline that transforms raw sensor data into actionable infrastructure predictions across 47 sites and 12,400 devices.
+47 sites. 12,400 devices. 2 million sensors. One pipeline from raw vibration reading to maintenance dispatch, and no component allowed to fail alone. On the whiteboard, Terra Grid Intelligence is a monorepo dependency graph, and it gets the monorepo discipline you know from Turborepo: every ML component a self-contained package with typed interfaces, every design choice captured in an architecture decision record.
 
 <LearningObjectives objectives={["Map the complete Terra Grid Intelligence architecture from sensor to prediction", "Document component interfaces, dependencies, and failure modes", "Create architecture decision records for key design choices", "Validate the dependency graph for completeness and circular reference detection"]} />
 
@@ -153,4 +153,4 @@ Build a component registry and validate the full architecture.
 
 <Exercise slug="review-architecture" />
 
-<KeyTakeaways takeaways={["Production ML systems are dependency graphs — same principles as monorepo package architecture", "Every component needs a defined fallback strategy — the system must degrade gracefully", "Memory budgets are hard constraints on edge devices — total component memory must fit within limits", "Architecture Decision Records capture the 'why' behind design choices for future maintainers"]} />
+<KeyTakeaways takeaways={["Production ML systems are dependency graphs; map every component's inputs, outputs, and failure modes before launch", "Every component needs a defined fallback strategy — the system must degrade gracefully", "Memory budgets are hard constraints on edge devices — total component memory must fit within limits", "Architecture Decision Records capture the 'why' behind design choices for future maintainers"]} />

@@ -10,20 +10,20 @@ context:
   narrative: "'Patient denied chest pain' versus 'Patient reported chest pain' — in clinical text, word order can be the difference between life and death."
   speaker: "Dr. Karimi"
 concept:
-  explanation: "Word order changes meaning. Bag-of-words loses this information. Sequence models process tokens in order, maintaining positional context — just like the execution order of async operations determines what state your app ends up in."
+  explanation: "Word order changes meaning. Bag-of-words loses this information. Sequence models process tokens in order, maintaining positional context, just like the execution order of async operations determines what state your app ends up in."
   bridge:
     feTitle: "Execution Order in Async Code"
     feCode: "await validate(data); await save(data); // order changes outcome"
     mlTitle: "Token Order in Sequences"
     mlCode: "tokens.forEach((token, pos) => hidden = rnnStep(hidden, token));"
     tier: structural
-    breaks: "Async execution order is enforced by promise resolution semantics. Token order in sequences is part of the input meaning ('not bad' vs 'bad not') and the model must learn order-dependent representations — there is no Promise.all that preserves meaning while reordering."
+    breaks: "Async execution order is enforced by promise resolution semantics. Token order in sequences is part of the input meaning ('not bad' vs 'bad not') and the model must learn order-dependent representations; there is no Promise.all that preserves meaning while reordering."
 consequence:
   narrative: "The team realizes bag-of-words is insufficient for clinical safety. They need models that understand sequence."
   nextLessonTeaser: "Next: building a simple RNN that processes text one word at a time."
 hints:
   - level: nudge
-    content: "Compare the bag-of-words vectors for 'denied pain' and 'not in pain' — they lose the negation."
+    content: "Compare the bag-of-words vectors for 'denied pain' and 'not in pain': they lose the negation."
   - level: guidance
     content: "Create sequences preserving token order: [denied, pain] vs [reported, pain] are different sequences even if they share words."
   - level: solution
@@ -47,14 +47,14 @@ It's like async code. `await validate(); await save();` is completely different 
 </Dialogue>
 
 <Dialogue speaker="Dr. Karimi">
-Exactly. And clinical notes are full of these ordering traps. "No fever, but reports nausea" — the meaning flips mid-sentence.
+Exactly. And clinical notes are full of these ordering traps. "No fever, but reports nausea": the meaning flips mid-sentence.
 </Dialogue>
 
 <Dialogue speaker="MEDI">
 Alert: current bag-of-words model cannot distinguish "denied chest pain" from "reported chest pain." Both contain the same unigrams.
 </Dialogue>
 
-In frontend development, the order you execute async operations determines your application state. `fetch` then `render` produces a different result than `render` then `fetch`. In clinical text, word order determines meaning — and getting it wrong has real consequences.
+Strip the order out of a sentence and you strip out part of its meaning. A bag-of-words model does exactly that. "No fever, but reports nausea" becomes an unordered pile of tokens, and nothing records whether the negation landed on the fever or the nausea. You already manage this constraint in async code, where `fetch` then `render` produces a different application state than `render` then `fetch`. In clinical text, the same inversion changes the medical record, and getting it wrong has real consequences.
 
 <LearningObjectives objectives={["Understand why word order is critical for clinical text interpretation", "Identify cases where bag-of-words fails: negation, temporal phrases, conditionals", "Represent text as ordered sequences of token IDs", "Connect execution order in async code to token order in sequences"]} />
 
@@ -138,7 +138,7 @@ const dangerousPairs = [
 ## From Bag to Sequence
 
 <Dialogue speaker="Vikram">
-Think of it this way. A bag-of-words is like dumping all your async calls into Promise.all — you lose the ordering. A sequence model is like an async/await chain — each step depends on what came before.
+Think of it this way. A bag-of-words is like dumping all your async calls into Promise.all: you lose the ordering. A sequence model is like an async/await chain, where each step depends on what came before.
 </Dialogue>
 
 <CodeBlock language="typescript" title="sequence-representation.ts">
@@ -196,7 +196,7 @@ Sequence models receive a sequence x_1, x_2, ..., x_n. Two architectural choices
 
 **Recurrent (RNN):** position is implicit. `h_t = f(h_{t-1}, x_t)`. Order is enforced because `h_t` depends on `h_{t-1}`.
 
-**Attention (Transformer):** position is NOT inherent. The attention formula is permutation-equivariant: shuffling input tokens shuffles output tokens but produces the same per-token computation. To break this and let attention learn order, we add **positional encodings** — fixed sinusoidal vectors or learned embeddings — to the token embeddings before the first attention layer.
+**Attention (Transformer):** position is NOT inherent. The attention formula is permutation-equivariant: shuffling input tokens shuffles output tokens but produces the same per-token computation. To break this and let attention learn order, we add **positional encodings** (fixed sinusoidal vectors or learned embeddings) to the token embeddings before the first attention layer.
 
 `x_t' = embedding(x_t) + positional(t)`
 

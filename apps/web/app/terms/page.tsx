@@ -151,7 +151,7 @@ export default function TermsPage() {
               Questions about these terms? Contact us at{" "}
               <a
                 href="mailto:legal@tensorcraft.app"
-                className="text-accent hover:underline"
+                className="text-accent underline underline-offset-2 hover:opacity-80"
               >
                 legal@tensorcraft.app
               </a>

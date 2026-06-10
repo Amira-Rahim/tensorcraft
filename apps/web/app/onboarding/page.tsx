@@ -35,7 +35,9 @@ import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { BRIDGES } from "@tensorcraft/shared";
 import { AmbientBackground } from "@/app/components/ambient-background";
 import { trackThemeSelected } from "@/lib/analytics";
+import { EVENTS, track } from "@/lib/analytics-events";
 import { getApiUrl } from "@/lib/api-url";
+import { ERROR_MESSAGES } from "@/lib/error-messages";
 
 const LAUNCH_THEME_SLUG = "deep-orbit";
 const LAUNCH_THEME_NAME = "Deep Orbit";
@@ -114,6 +116,15 @@ export default function OnboardingPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [stepError, setStepError] = useState<string | null>(null);
+
+  // Funnel instrumentation: one event per wizard step so per-step drop-off
+  // is measurable (step is 1-based to match the "STEP N OF 4" label).
+  useEffect(() => {
+    track(EVENTS.ONBOARDING_STEP_VIEWED, {
+      step: step + 1,
+      stepName: STEPS[step],
+    });
+  }, [step]);
 
   const yearsAsNumber = years === "" ? null : Number(years);
   const yearsValid =
@@ -224,14 +235,16 @@ export default function OnboardingPage() {
       }).catch(() => {});
 
       // 4. Route to the launched theme.
+      track(EVENTS.ONBOARDING_COMPLETED, {
+        experienceLevel,
+        learningGoal,
+        ...(framework ? { framework } : {}),
+        ...(yearsAsNumber !== null ? { yearsExperience: yearsAsNumber } : {}),
+      });
       trackThemeSelected(LAUNCH_THEME_SLUG);
       router.push(`/themes/${LAUNCH_THEME_SLUG}`);
     } catch (e) {
-      setError(
-        e instanceof Error
-          ? e.message
-          : "Unexpected error completing onboarding.",
-      );
+      setError(e instanceof Error ? e.message : ERROR_MESSAGES.unknown);
       setSaving(false);
     }
   }, [
@@ -381,7 +394,7 @@ export default function OnboardingPage() {
               onClick={goNext}
               className="px-7 py-3 font-mono text-xs font-bold uppercase tracking-[0.1em] text-page bg-primary border-2 border-primary rounded-none hover:bg-transparent hover:text-primary transition-all brutalist-hover brutalist-shadow focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {step === 0 ? "Let's Begin →" : "Continue →"}
+              {step === 0 ? "Begin Briefing →" : "Continue →"}
             </button>
           ) : (
             <button

@@ -7,23 +7,23 @@ order: 4
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Zara's breakthrough moment. She has trained generators, explored latent spaces, and mastered style transfer. Now the real weapon: adversarial patches — small visual patterns that cause Meridian's classifiers to misidentify everything in the frame. But Dilan intervenes immediately: 'This is XSS for neural networks. We need to understand what we are building.'"
+  narrative: "Zara's breakthrough moment. She has trained generators, explored latent spaces, and mastered style transfer. Now the real weapon: adversarial patches, small visual patterns that cause Meridian's classifiers to misidentify everything in the frame. But Dilan intervenes immediately: 'This is XSS for neural networks. We need to understand what we are building.'"
   speaker: "Dilan"
 concept:
-  explanation: "Adversarial patches are carefully crafted pixel patterns that exploit a model's learned features to force misclassification. They work like XSS attacks — inputs specifically crafted to exploit the system's processing logic. An XSS payload is a string designed to be interpreted as code. An adversarial patch is an image designed to be interpreted as something it is not."
+  explanation: "Adversarial patches are carefully crafted pixel patterns that exploit a model's learned features to force misclassification. They work like XSS attacks: inputs specifically crafted to exploit the system's processing logic. An XSS payload is a string designed to be interpreted as code. An adversarial patch is an image designed to be interpreted as something it is not."
   bridge:
     feTitle: "XSS Attacks"
     feCode: "const malicious = '<img onerror=\"alert(1)\">'; // Input crafted to exploit the parser"
     mlTitle: "Adversarial Examples"
     mlCode: "const patch = optimizePatch(model, targetClass, epsilon); // Input crafted to exploit the classifier"
     tier: structural
-    breaks: "XSS attacks exploit unsanitized inputs to inject code. Adversarial patches add imperceptible pixel perturbations that fool the model while looking unchanged to humans — the attack surface is the model's learned manifold, not parser bugs."
+    breaks: "XSS attacks exploit unsanitized inputs to inject code. Adversarial patches add imperceptible pixel perturbations that fool the model while looking unchanged to humans; the attack surface is the model's learned manifold, not parser bugs."
 consequence:
-  narrative: "The patch works. A 32x32 pixel sticker makes Meridian's cameras classify a person as a traffic cone. Amir stares at it: 'At Meridian, Director Yates called this a feature — stress-testing the competition. Now I see it for what it is: a weapon.' Dilan: 'Which is exactly why we scope it. Patches bound to Meridian's architecture fingerprints only. No collateral capability.' The team agrees unanimously."
-  nextLessonTeaser: "Next: Dilan's ethics review — responsible deployment of everything we have built"
+  narrative: "The patch works. A 32x32 pixel sticker makes Meridian's cameras classify a person as a traffic cone. Amir stares at it: 'At Meridian, Director Yates called this a feature. Stress-testing the competition. Now I see it for what it is: a weapon.' Dilan: 'Which is exactly why we scope it. Patches bound to Meridian's architecture fingerprints only. No collateral capability.' The team agrees unanimously."
+  nextLessonTeaser: "Next: Dilan's ethics review. Responsible deployment of everything we have built"
 hints:
   - level: nudge
-    content: "Adversarial perturbations use the same gradients as training — but applied to input pixels instead of model weights"
+    content: "Adversarial perturbations use the same gradients as training, but applied to input pixels instead of model weights"
   - level: guidance
     content: "FGSM: compute gradient of loss w.r.t. input, take the sign, multiply by epsilon, add to image"
   - level: solution

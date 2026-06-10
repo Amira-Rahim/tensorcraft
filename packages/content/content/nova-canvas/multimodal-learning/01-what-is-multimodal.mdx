@@ -7,23 +7,23 @@ order: 1
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Yara asks MUSE to generate an image from text. Nothing happens. 'It only understands images,' Samir explains. 'It is monolingual — it speaks vision but not language. We need to make it multilingual.' Rohan adds: 'Multimodal. Like a full-stack app that connects frontend, backend, and database.'"
+  narrative: "Yara asks MUSE to generate an image from text. Nothing happens. 'It only understands images,' Samir explains. 'It is monolingual: it speaks vision but not language. We need to make it multilingual.' Rohan adds: 'Multimodal. Like a full-stack app that connects frontend, backend, and database.'"
   speaker: "Samir"
 concept:
-  explanation: "Multimodal models process multiple data types — text, images, audio — in a unified system. Like a full-stack application where frontend, backend, and database must work together, each component handles a different modality but they share a common interface."
+  explanation: "Multimodal models process multiple data types (text, images, audio) in a unified system. Like a full-stack application where frontend, backend, and database must work together, each component handles a different modality but they share a common interface."
   bridge:
-    feTitle: "Full-stack apps — frontend + backend + database"
+    feTitle: "Full-stack apps: frontend + backend + database"
     feCode: "fetch('/api/data').then(r => r.json()).then(render);"
     mlTitle: "Multimodal pipeline"
     mlCode: "const embedding = encodeText(text); const image = decodeImage(embedding);"
     tier: intuition
-    breaks: "Full-stack apps separate concerns by tier with explicit interfaces. Multimodal pipelines fuse modalities via shared embedding spaces or cross-attention and the 'API' between modalities is learned — debugging requires tracing through learned intermediate representations."
+    breaks: "Full-stack apps separate concerns by tier with explicit interfaces. Multimodal pipelines fuse modalities via shared embedding spaces or cross-attention and the 'API' between modalities is learned. Debugging requires tracing through learned intermediate representations."
 consequence:
   narrative: "The architecture takes shape on the whiteboard: a text encoder, an image encoder, and a shared embedding space where both modalities meet. 'Two languages,' Rohan says, 'one translator.'"
-  nextLessonTeaser: "Next: vision-language models — connecting images and text in a single system"
+  nextLessonTeaser: "Next: vision-language models: connecting images and text in a single system"
 hints:
   - level: nudge
-    content: "Think of a full-stack app: the frontend speaks HTML/CSS, the backend speaks Python, the database speaks SQL — but they communicate"
+    content: "encodeText and the image encoder never share code, only a contract: both must emit vectors of the same dimensionality into the same space"
   - level: guidance
     content: "Each modality (text, image, audio) has its own encoder, but all encoders map to a shared embedding space"
   - level: solution
@@ -41,14 +41,14 @@ I typed "a sunset over a digital city" and MUSE did nothing. It just stared at m
 </Dialogue>
 
 <Dialogue speaker="Samir">
-MUSE currently only understands images — pixel data in, pixel data out. It is monolingual. To understand text, it needs a text encoder. To connect text and images, it needs a shared representation space.
+MUSE currently only understands images: pixel data in, pixel data out. It is monolingual. To understand text, it needs a text encoder. To connect text and images, it needs a shared representation space.
 </Dialogue>
 
 <Dialogue speaker="Rohan">
 It is like building a full-stack app. Your frontend speaks HTML and CSS. Your backend speaks Python or Node. Your database speaks SQL. They are all different languages, but they communicate through APIs and shared data formats. Multimodal AI works the same way.
 </Dialogue>
 
-You already build systems where different technologies work together. Frontend, backend, database — each handles a different type of data but they share interfaces. Multimodal AI applies the same principle: different encoders for different data types, unified by a shared embedding space.
+You already build systems where different technologies work together. Frontend, backend, database: each handles a different type of data but they share interfaces. Multimodal AI applies the same principle: different encoders for different data types, unified by a shared embedding space.
 
 <LearningObjectives objectives={["Understand what multimodal means: models that process multiple data types", "Identify the key components: modality-specific encoders and a shared embedding space", "Connect multimodal architecture to full-stack application design", "Implement basic text and image encoders that produce compatible embeddings"]} />
 
@@ -147,4 +147,4 @@ Most flexible. Powers BLIP, Flamingo, GPT-4V. Expensive: O(n_text · n_img · d)
 **Modern recipe:** project both modalities into a shared embedding space (CLIP-style), then add cross-attention layers in a transformer. Most modern multimodal LLMs (LLaVA, Qwen-VL) use this hybrid.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["Multimodal = multiple data types in one system, like a full-stack app connecting frontend, backend, and database", "Each modality has its own encoder, but all map to a shared embedding space of the same dimensionality", "The shared space is where different modalities meet — text and images become comparable vectors", "This architecture enables cross-modal tasks: text-to-image, image-to-text, image-text matching"]} />
+<KeyTakeaways takeaways={["The interface between modalities is learned, not declared: debugging means tracing intermediate embeddings, not reading an API spec", "Each modality has its own encoder, but all map to a shared embedding space of the same dimensionality", "The shared space is where different modalities meet — text and images become comparable vectors", "This architecture enables cross-modal tasks: text-to-image, image-to-text, image-text matching"]} />

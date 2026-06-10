@@ -7,20 +7,20 @@ order: 3
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Zara captures a single frame of an unidentified drone over District 4. 'We need to find every other frame this drone appears in,' she says. 'Not by exact pixel match — by visual similarity. Feed the image into the feature extractor, get its vector, and find the nearest neighbors in the database.'"
+  narrative: "Zara captures a single frame of an unidentified drone over District 4. 'We need to find every other frame this drone appears in,' she says. 'Not by exact pixel match. By visual similarity. Feed the image into the feature extractor, get its vector, and find the nearest neighbors in the database.'"
   speaker: "Zara"
 concept:
-  explanation: "Similarity search finds the closest feature vectors in a database to a query vector. Given a drone image, find all similar drone images. This is the same pattern as fuzzy text search or autocomplete — but in visual embedding space instead of string space."
+  explanation: "Similarity search finds the closest feature vectors in a database to a query vector. Given a drone image, find all similar drone images. This is the same pattern as fuzzy text search or autocomplete, but in visual embedding space instead of string space."
   bridge:
     feTitle: "Fuzzy text search / autocomplete"
     feCode: "const matches = fuse.search('drne'); // fuzzy match → 'drone'"
     mlTitle: "Similarity Search"
     mlCode: "const nearest = findKNearest(queryVector, database, k); // k most similar images"
     tier: structural
-    breaks: "Fuzzy text search compares string edit distance — semantically meaningless. Similarity search compares embedding-vector distance and 'similar' depends on what the embedding was trained to capture. Visual embeddings rank a red apple near a red car; semantic embeddings rank it near a green apple. Pick the embedding whose similarity matches your task definition."
+    breaks: "Fuzzy text search compares string edit distance, which is semantically meaningless. Similarity search compares embedding-vector distance and 'similar' depends on what the embedding was trained to capture. Visual embeddings rank a red apple near a red car; semantic embeddings rank it near a green apple. Pick the embedding whose similarity matches your task definition."
 consequence:
   narrative: "The search returns 47 matches across three weeks of footage. The same drone model, captured from different angles, different lighting, different districts. Zara maps the results to timestamps and locations. A patrol pattern emerges. 'Now we know where it flies,' she says. 'And when.'"
-  nextLessonTeaser: "Next: backbone networks — the pre-trained feature extractors that power production search systems"
+  nextLessonTeaser: "Next: backbone networks. The pre-trained feature extractors that power production search systems"
 hints:
   - level: nudge
     content: "k-nearest neighbors finds the k items in the database closest to the query vector"
@@ -37,14 +37,14 @@ keywords:
 ---
 
 <Dialogue speaker="Zara">
-In frontend search, you type a misspelled word and fuzzy matching finds what you meant. Visual similarity search works the same way — but instead of comparing strings, you compare feature vectors. Feed in a query image, find the database entries with the smallest distance. The closest neighbors are the most visually similar.
+In frontend search, you type a misspelled word and fuzzy matching finds what you meant. Visual similarity search works the same way, but instead of comparing strings you compare feature vectors. Feed in a query image, find the database entries with the smallest distance. The closest neighbors are the most visually similar.
 </Dialogue>
 
 <Dialogue speaker="Noor">
 So it is autocomplete, but for images. I give it one drone photo and it retrieves every visually similar frame from the archive?
 </Dialogue>
 
-Fuzzy text search ranks results by edit distance — how many character changes separate the query from each candidate. Similarity search ranks results by vector distance — how far apart two feature vectors are in embedding space. The algorithm is the same: compute a distance, sort by closeness, return the top results.
+Fuzzy text search ranks results by edit distance: how many character changes separate the query from each candidate. Similarity search ranks results by vector distance: how far apart two feature vectors are in embedding space. The algorithm is the same: compute a distance, sort by closeness, return the top results.
 
 <LearningObjectives objectives={["Implement k-nearest neighbor search in embedding space", "Rank images by cosine similarity to a query", "Understand the connection between fuzzy text search and visual similarity search", "Build a simple vector search index for the resistance's image database"]} />
 
@@ -144,7 +144,7 @@ Implement a k-nearest neighbor search function.
 - **IVF (Inverted File):** k-means clusters the dataset. Query: find nearest centroid, search within cluster. Tunable recall/speed via `nprobe` (number of clusters to search).
 - **PQ (Product Quantization):** compresses vectors to bytes via codebooks. 4-32× memory reduction at the cost of approximate distances.
 
-**Recall vs latency tradeoff:** ANN is parameterized — pick higher recall (slower) or lower recall (faster) per query. Production systems target 95-99% recall at 10-100× speedup over exact.
+**Recall vs latency tradeoff:** ANN is parameterized: pick higher recall (slower) or lower recall (faster) per query. Production systems target 95-99% recall at 10-100× speedup over exact.
 </DerivationDrawer>
 
 <KeyTakeaways takeaways={["Similarity search finds the closest feature vectors in a database — like fuzzy text search for images", "k-nearest neighbors ranks all candidates by distance and returns the top k", "Cosine similarity is the standard distance metric for visual feature comparison", "The resistance can now track specific drones across weeks of footage with a single query image"]} />

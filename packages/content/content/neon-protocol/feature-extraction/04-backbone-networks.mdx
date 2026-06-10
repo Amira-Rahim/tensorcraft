@@ -7,7 +7,7 @@ order: 4
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Amir opens a comparison chart on the holotable: MobileNet, ResNet, EfficientNet — each with different tradeoffs. 'These are backbone networks,' he says. 'Pre-trained feature extractors that you plug into your system like shared component libraries. You do not build from scratch. You pick the right backbone and build on top.'"
+  narrative: "Amir opens a comparison chart on the holotable: MobileNet, ResNet, EfficientNet, each with different tradeoffs. 'These are backbone networks,' he says. 'Pre-trained feature extractors that you plug into your system like shared component libraries. You do not build from scratch. You pick the right backbone and build on top.'"
   speaker: "Amir"
 concept:
   explanation: "A backbone network is a pre-trained CNN that serves as a reusable feature extractor. Like importing a shared component library in frontend development, you use someone else's trained network as a foundation and build your specific application on top."
@@ -19,12 +19,12 @@ concept:
     tier: structural
 consequence:
   narrative: "Amir benchmarks three backbones on Noor's laptop. MobileNetV2: 48ms per frame. ResNet50: 180ms. 'For browser-based real-time detection,' he says, 'MobileNet is the only choice. We are not running on Meridian's server farms.'"
-  nextLessonTeaser: "Next: dimensionality reduction — compressing 512 dimensions into 2 for visualization"
+  nextLessonTeaser: "Next: dimensionality reduction. Compressing 512 dimensions into 2 for visualization"
 hints:
   - level: nudge
-    content: "Backbone networks are pre-trained models you use as feature extractors — like importing a UI library"
+    content: "Backbone networks are pre-trained models you use as feature extractors, like importing a UI library"
   - level: guidance
-    content: "Different backbones trade off accuracy for speed — MobileNet is fast, ResNet is accurate"
+    content: "Different backbones trade off accuracy for speed: MobileNet is fast, ResNet is accurate"
   - level: solution
     content: "Load a backbone, remove the classification head, and use it as a feature extractor in your pipeline"
 keywords:
@@ -40,10 +40,12 @@ When you start a new frontend project, you do not write a button component from 
 </Dialogue>
 
 <Dialogue speaker="Noor">
-So MobileNet is like a lightweight UI library — fast but basic. And ResNet is like a full design system — powerful but heavier?
+So MobileNet is like a lightweight UI library, fast but basic. And ResNet is like a full design system, powerful but heavier?
 </Dialogue>
 
-Exactly. Just as you choose a component library based on your project's constraints — bundle size, performance, feature set — you choose a backbone network based on your model's constraints: inference speed, accuracy, and memory footprint.
+<Dialogue speaker="Amir">
+Half right, and the wrong half will cost you. ResNet is not "more powerful" the way a design system has more features. Both backbones do one job: turn an image into a feature vector. ResNet just spends more layers doing it. On this laptop, MobileNetV2 runs a frame in 45 milliseconds at 71.8% ImageNet accuracy. ResNet50 takes 180 milliseconds for 76.1%. Four times the latency buys you four points. You pick by constraint: inference speed, accuracy, memory footprint.
+</Dialogue>
 
 <LearningObjectives objectives={["Understand backbone networks as reusable pre-trained feature extractors", "Compare common backbones: MobileNet, ResNet, EfficientNet", "Choose a backbone based on speed, accuracy, and deployment constraints", "Connect backbone selection to choosing frontend component libraries"]} />
 
@@ -123,9 +125,9 @@ Compare backbone networks and select the optimal one for browser deployment.
 <DerivationDrawer summary="Transfer learning: why backbone features generalize">
 A pretrained backbone (e.g. ResNet-50 trained on ImageNet) learns features in this hierarchy:
 
-- **Layer 1-2:** edge detectors, color blobs (universal — transfer to any image task)
+- **Layer 1-2:** edge detectors, color blobs (universal; transfer to any image task)
 - **Layer 3-4:** textures, simple shapes (transfer to most natural-image tasks)
-- **Layer 5+:** object parts, class-specific features (specific to ImageNet — may not transfer)
+- **Layer 5+:** object parts, class-specific features (specific to ImageNet; may not transfer)
 
 **Transfer learning recipes:**
 
@@ -143,7 +145,7 @@ Differential learning rates:  bottom layers tiny LR, top layers larger LR
   - fast.ai standard practice
 ```
 
-**When transfer fails:** target images very different from ImageNet (tiny grayscale microscopy, medical scans with fixed orientation). The hierarchy doesn't apply — pretrained features are random for your domain. Train from scratch, or use domain-specific backbones (RadImageNet, etc).
+**When transfer fails:** target images very different from ImageNet (tiny grayscale microscopy, medical scans with fixed orientation). The hierarchy doesn't apply; pretrained features are random for your domain. Train from scratch, or use domain-specific backbones (RadImageNet, etc).
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["Backbone networks are pre-trained feature extractors — like importing a shared component library", "MobileNet is the browser-optimal backbone: small, fast, and accurate enough for real-time inference", "You build custom models by adding task-specific layers on top of a frozen backbone", "Choosing a backbone is like choosing a UI library: tradeoffs between power, speed, and bundle size"]} />
+<KeyTakeaways takeaways={["Backbone choice is a constraint decision: MobileNetV2 runs 45ms per frame at 71.8% top-1, ResNet50 takes 180ms for 76.1%", "MobileNet is the browser-optimal backbone: small, fast, and accurate enough for real-time inference", "You build custom models by adding task-specific layers on top of a frozen backbone", "Choosing a backbone is like choosing a UI library: tradeoffs between power, speed, and bundle size"]} />

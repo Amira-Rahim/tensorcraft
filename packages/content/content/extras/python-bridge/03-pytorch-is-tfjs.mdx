@@ -7,9 +7,9 @@ order: 3
 estimatedMinutes: 30
 difficulty: intermediate
 context:
-  narrative: "Most cutting-edge ML research uses PyTorch. When you find an interesting paper or model on GitHub, it will almost certainly be in PyTorch. But you already know TF.js — and they're the same thing."
+  narrative: "Most cutting-edge ML research uses PyTorch. When you find an interesting paper or model on GitHub, it will almost certainly be in PyTorch. But you already know TF.js, and they're the same thing."
 concept:
-  explanation: "PyTorch nn.Module and TensorFlow.js tf.LayersModel express the same abstractions — layers, forward passes, loss functions, and optimizers — with different syntax."
+  explanation: "PyTorch nn.Module and TensorFlow.js tf.LayersModel express the same abstractions (layers, forward passes, loss functions, and optimizers) with different syntax."
   bridge:
     feTitle: "tf.sequential / tf.model"
     feCode: "const model = tf.sequential({ layers: [tf.layers.dense({units: 64})] })"
@@ -18,7 +18,7 @@ concept:
     tier: structural
     breaks: "PyTorch nn.Module and tf.sequential both compose layers, but PyTorch is dynamic-graph (define-by-run) and TFJS leans static. Autograd, training loop syntax, and model serialization formats differ enough that direct ports rarely work without rewriting."
 consequence:
-  narrative: "You can now read PyTorch code and understand the architecture. nn.Linear is dense, nn.Conv2d is conv2d, forward() is predict(). The concepts are identical."
+  narrative: "Open any PyTorch repo and the model file should read like a TF.js architecture you haven't written yet: nn.Linear is dense, nn.Conv2d is conv2d, forward() is predict(). Try it on the next model you find on GitHub."
   nextLessonTeaser: "Next: pandas DataFrames are arrays of objects with built-in data wrangling"
 hints:
   - level: nudge
@@ -36,7 +36,7 @@ keywords:
 ---
 
 <Dialogue speaker="Instructor">
-PyTorch and TensorFlow.js are two dialects of the same language. Dense layers, conv layers, ReLU, Adam optimizer — all the same building blocks. Once you see the mapping, you can read any PyTorch model definition and know exactly what it does.
+PyTorch and TensorFlow.js are two dialects of the same language. Dense layers, conv layers, ReLU, Adam optimizer: all the same building blocks. Once you see the mapping, you can read any PyTorch model definition and know exactly what it does.
 </Dialogue>
 
 Most ML research code is written in PyTorch. When you read a paper's reference implementation, a colleague's notebook, or a GitHub repo, it will almost certainly be PyTorch. This lesson gives you the Rosetta Stone: every PyTorch concept mapped to the TF.js equivalent you already know.
@@ -62,9 +62,9 @@ nn.Flatten()                   #  tf.layers.flatten()
 nn.LSTM(64, 32)                #  tf.layers.lstm({units: 32})`}
 </CodeBlock>
 
-## Model Definition: Side by Side
+## The Same Model, Defined Twice
 
-Here's a simple classifier in both frameworks. Read them in parallel — they're the same model.
+Here's a simple classifier in both frameworks. Read them in parallel. They're the same model.
 
 <CodeBlock language="python" title="pytorch-model.py">
 {`import torch
@@ -161,7 +161,7 @@ await model.fit(trainX, trainY, {
 });`}
 </CodeBlock>
 
-The five steps in PyTorch's loop — clear gradients, forward pass, compute loss, backward pass, update weights — are exactly what `model.fit()` does internally on each batch.
+The five steps in PyTorch's loop (clear gradients, forward pass, compute loss, backward pass, update weights) are exactly what `model.fit()` does internally on each batch.
 
 ## Data Loading
 

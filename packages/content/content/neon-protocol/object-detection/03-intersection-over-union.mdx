@@ -17,13 +17,13 @@ concept:
     mlTitle: "IoU Score"
     mlCode: "const iou = intersectionArea / unionArea; // 0 = no overlap, 1 = perfect match"
     tier: structural
-    breaks: "Drag-and-drop hit testing uses bounding-box overlap as a binary gate. IoU is a continuous score in [0,1] used both as a training loss and as a threshold for matching predictions to ground truth — the threshold value (typically 0.5) is a tunable knob with significant effect on metrics."
+    breaks: "Drag-and-drop hit testing uses bounding-box overlap as a binary gate. IoU is a continuous score in [0,1] used both as a training loss and as a threshold for matching predictions to ground truth. The threshold value (typically 0.5) is a tunable knob with significant effect on metrics."
 consequence:
   narrative: "Noor runs her model and computes IoU against the ground truth. Average IoU: 0.72. NEON chirps: 'Meridian demands 0.85 or higher. We need to do better. But at least now we can measure it.'"
-  nextLessonTeaser: "Next: Non-Max Suppression — eliminating duplicate detections when anchors overlap"
+  nextLessonTeaser: "Next: Non-Max Suppression. Eliminating duplicate detections when anchors overlap"
 hints:
   - level: nudge
-    content: "IoU is intersection area divided by union area — same as collision detection overlap ratios"
+    content: "IoU is intersection area divided by union area, same as collision detection overlap ratios"
   - level: guidance
     content: "Find the overlap rectangle by taking the max of the left edges and min of the right edges"
   - level: solution
@@ -45,10 +45,10 @@ I check if the rectangles overlap. I calculate the overlap area and compare it t
 </Dialogue>
 
 <Dialogue speaker="Zara">
-That is exactly IoU — Intersection over Union. The standard metric for evaluating object detection. You already know the algorithm.
+Half of it. Your drop zone is a binary gate: enough overlap, snap into place, done. IoU keeps the ratio. It is a continuous score from 0 to 1, and detection uses it everywhere: inside the loss, and as the threshold for deciding whether a prediction matched the ground truth at all. Move that threshold from 0.75 to 0.5 and the same model suddenly looks much better on paper. The knob matters as much as the math.
 </Dialogue>
 
-When a detection model predicts a bounding box, you need to measure how accurate it is. **Intersection over Union (IoU)** compares a predicted box to the ground truth box by computing their overlap ratio. It is the same math you use for drag-and-drop collision detection.
+When a detection model predicts a bounding box, you need to measure how accurate it is. **Intersection over Union (IoU)** compares a predicted box to the ground truth box by computing their overlap ratio.
 
 <LearningObjectives objectives={["Calculate Intersection over Union (IoU) between two bounding boxes", "Understand IoU thresholds and what they mean for detection quality", "Implement rectangle intersection and union area computation", "Connect IoU to frontend collision detection and hit testing patterns"]} />
 
@@ -103,7 +103,7 @@ console.log(iou.toFixed(3)); // 0.680 — decent but not great`}
 
 ## IoU Thresholds
 
-Different IoU thresholds define what counts as a "correct" detection. This is like setting the sensitivity of a drag-and-drop snap zone.
+Different IoU thresholds define what counts as a "correct" detection. COCO reports metrics at both 0.5 and 0.75 because the two thresholds tell different stories about the same model.
 
 <CodeBlock language="typescript" title="iou-thresholds.ts">
 {`// In drag-and-drop: you might snap when overlap > 30%
@@ -157,7 +157,7 @@ console.log(result);
 
 ## Batch Evaluation
 
-Real evaluation requires checking many detections against many ground truths — like checking multiple draggable items against multiple drop zones.
+Real evaluation requires checking many detections against many ground truths at once.
 
 <CodeBlock language="typescript" title="batch-iou.ts">
 {`// Compute IoU matrix: every detection vs every ground truth
@@ -204,6 +204,6 @@ Implement IoU computation between two bounding boxes.
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["IoU measures bounding box overlap: intersection area divided by union area, producing a 0-1 score", "Standard detection threshold is IoU >= 0.5 (a correct detection), IoU >= 0.75 is a strict match", "The intersection rectangle is found by taking max of left edges and min of right edges — same as collision detection", "IoU is the foundation of all detection evaluation, just as hit testing is the foundation of drag-and-drop"]} />
+<KeyTakeaways takeaways={["IoU measures bounding box overlap: intersection area divided by union area, producing a 0-1 score", "Standard detection threshold is IoU >= 0.5 (a correct detection), IoU >= 0.75 is a strict match", "The intersection rectangle is found by taking max of left edges and min of right edges, with width and height clamped to zero when boxes don't overlap", "IoU also acts as the matching rule inside training and NMS, so the threshold you pick propagates through the whole pipeline"]} />
 
-> **DISPATCH archive · field intercept #21-V:** Operator Demir on the Deep Orbit vessel runs the same overlap math on time-series windows — they call it 'window IoU'. The metric travels well; only the dimension changes.
+> **DISPATCH archive · field intercept #21-V:** Operator Demir on the Deep Orbit vessel runs the same overlap math on time-series windows; they call it 'window IoU'. The metric travels well; only the dimension changes.

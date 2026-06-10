@@ -35,14 +35,14 @@ skillAxes: [training]
 ---
 
 <Dialogue speaker="ARIA">
-Computing the gradient for each of 673 parameters individually would take 673 forward passes. Backpropagation computes them all in a single backward pass — a 673x speedup.
+Computing the gradient for each of 673 parameters individually would take 673 forward passes. Backpropagation computes them all in a single backward pass: a 673x speedup.
 </Dialogue>
 
 <LearningObjectives objectives={["Understand how backpropagation works at a high level", "See the connection to React's reconciliation algorithm", "Use tf.variableGrads() for automatic gradient computation", "Appreciate why backprop made deep learning practical"]} />
 
 ## Working Backwards
 
-React's reconciliation algorithm finds what changed by comparing the virtual DOM tree from leaves to root. Backpropagation finds how to change each weight by propagating the loss gradient from output to input — backwards through the network.
+React's reconciliation algorithm finds what changed by comparing the virtual DOM tree from leaves to root. Backpropagation finds how to change each weight by propagating the loss gradient from output to input, backwards through the network.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -74,7 +74,7 @@ console.log('w2 gradient shape:', grads[w2.name].shape); // [4, 1]
 // Each gradient tells us: "adjust this weight by this much"`}
 </CodeBlock>
 
-The magic: `tf.variableGrads()` records every operation during the forward pass, then automatically computes gradients for all variables by applying the chain rule backwards. You never have to implement backprop manually.
+No magic involved: `tf.variableGrads()` records every operation during the forward pass, then computes gradients for all variables by applying the chain rule backwards. The drawer below walks the exact multiplication chain by hand. You never have to implement it manually, but you can.
 
 <DerivationDrawer summary="Chain rule applied to a 2-layer network, by hand" companionSlug="calculus-of-neurons">
 **The chain rule:** if `y = f(g(x))`, then `dy/dx = f'(g(x)) · g'(x)`. For a 2-layer network:
@@ -94,7 +94,7 @@ L  = ½(ŷ - y)²           ← loss
        = (ŷ - y)  · σ'(z₂)  ·   w₂    ·  ReLU'(z₁)  ·  x
 ```
 
-Each factor is local to one layer. `tf.variableGrads()` builds the computational graph during forward pass, then walks it backward multiplying these local derivatives. **That backward walk is the entire algorithm** — there is no other magic. The "1 backward pass" claim above is exactly this multiplication chain.
+Each factor is local to one layer. `tf.variableGrads()` builds the computational graph during forward pass, then walks it backward multiplying these local derivatives. **That backward walk is the entire algorithm**: there is no other magic. The "1 backward pass" claim above is exactly this multiplication chain.
 
 **Vanishing gradients = the chain product collapsing.** If `σ'(z₂) ≈ 0.1`, `ReLU'(z₁) ∈ {0,1}`, and you have 20 layers, the product can be `0.1²⁰ ≈ 10⁻²⁰`. The early-layer weights stop updating. Residual connections add `+1` to each link in the chain to prevent this collapse.
 </DerivationDrawer>

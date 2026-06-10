@@ -7,23 +7,23 @@ order: 4
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "A critical model update needs to reach 847 devices. Tariq designs an OTA pipeline that mirrors the Service Worker update lifecycle — download in background, verify, swap atomically."
+  narrative: "A critical model update needs to reach 847 devices. Tariq designs an OTA pipeline that mirrors the Service Worker update lifecycle: download in background, verify, swap atomically."
   speaker: "Tariq Hussain"
 concept:
-  explanation: "OTA model updates follow the Service Worker lifecycle — install new version in background, verify integrity, activate on next inference cycle, keep the old version as fallback."
+  explanation: "OTA model updates follow the Service Worker lifecycle: install new version in background, verify integrity, activate on next inference cycle, keep the old version as fallback."
   bridge:
     feTitle: "Service Worker Update"
     feCode: "navigator.serviceWorker.register('/sw.js') // install → waiting → active"
     mlTitle: "OTA Model Update"
     mlCode: "otaUpdate({ download, verify, stage, activate }) // same lifecycle"
     tier: structural
-    breaks: "Service worker updates ship code that runs against current data deterministically. OTA model updates ship new weights that may suddenly shift prediction distribution — staged rollout, shadow inference (running both old and new in parallel), and accuracy gating against a holdout set are required to detect regressions before full deployment."
+    breaks: "Service worker updates ship code that runs against current data deterministically. OTA model updates ship new weights that may suddenly shift prediction distribution. Staged rollout, shadow inference (running both old and new in parallel), and accuracy gating against a holdout set are required to detect regressions before full deployment."
 consequence:
   narrative: "GRID confirms: 847 of 847 devices updated. Zero downtime. Tariq exhales."
   nextLessonTeaser: "Next: keeping models running when connectivity drops"
 hints:
   - level: nudge
-    content: "Think about how Service Workers update without disrupting the current page"
+    content: "performOTAUpdate() should behave like a Service Worker install: download in the background, verify, and keep serving the old model until the swap"
   - level: guidance
     content: "Download new model in background, verify checksum, then swap atomically"
   - level: solution
@@ -43,7 +43,7 @@ We have a model update that improves anomaly detection by 4.2%. I need it on 847
 Deployment to Sector 7 initiated. Estimated completion: 47 minutes. Satellite bandwidth allocated.
 </Dialogue>
 
-You have seen this pattern before. A Service Worker installs a new version in the background while the current version keeps serving requests. When the new version is verified and ready, it activates on the next navigation. Model OTA updates follow the same lifecycle — download, verify, stage, activate — with the same guarantee: zero downtime.
+You have seen this pattern before. A Service Worker installs a new version in the background while the current version keeps serving requests. When the new version is verified and ready, it activates on the next navigation. That is the right transport model for OTA: download, verify, stage, activate, zero downtime. It is the wrong risk model. New code behaves identically on every page load; new weights can shift the prediction distribution the moment they activate. So this pipeline adds what Service Workers never needed: staged rollout, shadow inference running old and new side by side, and an accuracy gate against a holdout set before the rest of the fleet sees the update.
 
 <LearningObjectives objectives={["Map the Service Worker lifecycle (install, waiting, active) to model OTA updates", "Implement atomic model swaps with automatic rollback on failure", "Design bandwidth-efficient update strategies using delta compression", "Build health checks that validate new models before activation"]} />
 
@@ -112,7 +112,7 @@ async function performOTAUpdate(
 
 ## Delta Updates
 
-Sending a full model over a $0.50/MB satellite link is expensive. Delta updates send only what changed — like git sending diffs instead of full snapshots:
+Sending a full model over a $0.50/MB satellite link is expensive. Delta updates send only what changed, like git sending diffs instead of full snapshots:
 
 <CodeBlock language="typescript" title="delta-update.ts">
 {`interface DeltaUpdate {
@@ -151,4 +151,4 @@ Implement an OTA model update with integrity verification and rollback.
 
 <Exercise slug="ota-update" />
 
-<KeyTakeaways takeaways={["OTA model updates mirror the Service Worker lifecycle: download, verify, stage, activate", "Atomic swaps with rollback guarantee zero-downtime deployments — never leave a device with no working model", "Delta updates send only changed weights, reducing bandwidth by 60-80% — like git diffs vs full clones", "Always validate with test inference before activation — never trust a model you have not run"]} />
+<KeyTakeaways takeaways={["OTA updates download, verify, stage, then activate; the running model keeps serving until the new one passes verification", "Atomic swaps with rollback guarantee zero-downtime deployments — never leave a device with no working model", "Delta updates send only changed weights, reducing bandwidth by 60-80% — like git diffs vs full clones", "Always validate with test inference before activation — never trust a model you have not run"]} />

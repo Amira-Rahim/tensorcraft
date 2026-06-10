@@ -7,23 +7,23 @@ order: 3
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Rohan layers generated tones into sequences. 'A melody is a sequence of events with timing. We already know sequences — setTimeout, setInterval, requestAnimationFrame. Music is scheduled state changes.'"
+  narrative: "Rohan layers generated tones into sequences. 'A melody is a sequence of events with timing. We already know sequences: setTimeout, setInterval, requestAnimationFrame. Music is scheduled state changes.'"
   speaker: "Rohan"
 concept:
-  explanation: "Music generation is sequence prediction — given a series of notes, predict the next one. The same pattern as autocomplete, but with pitch and duration instead of characters."
+  explanation: "Music generation is sequence prediction: given a series of notes, predict the next one. The same pattern as autocomplete, but with pitch and duration instead of characters."
   bridge:
     feTitle: "setTimeout Sequences"
     feCode: "notes.forEach((note, i) => setTimeout(() => play(note), i * 500));"
     mlTitle: "Sequence Prediction"
     mlCode: "const nextNote = model.predict(tf.tensor2d([noteSequence]));"
     tier: structural
-    breaks: "setTimeout sequences fire fixed callbacks at fixed intervals. Sequence prediction models generate the next token conditioned on prior tokens — the resulting music is structured by what the model learned about training data, not by an authored timeline."
+    breaks: "setTimeout sequences fire fixed callbacks at fixed intervals. Sequence prediction models generate the next token conditioned on prior tokens. The resulting music is structured by what the model learned about training data, not by an authored timeline."
 consequence:
-  narrative: "A melody emerges — not random, not composed, but grown. Each note follows from the last with a logic that feels almost like intention. Erdem pauses his optimization work to listen."
+  narrative: "A melody emerges, each note predicted from the ones before it. The phrasing follows the training data's habits, and somehow that sounds like intention. Erdem pauses his optimization work to listen."
   nextLessonTeaser: "Next: synchronizing audio and visual generation"
 hints:
   - level: nudge
-    content: "Think of notes as tokens in a sequence — same pattern as text prediction"
+    content: "Each MIDI note is an integer 0-127; feed the model a window of them and its output is a distribution over the 128 possible next notes"
   - level: guidance
     content: "Encode notes as integers (MIDI values), build sliding windows, predict the next note"
   - level: solution
@@ -36,14 +36,14 @@ keywords:
 ---
 
 <Dialogue speaker="Rohan">
-A melody is a sequence of events with timing constraints. You have been scheduling sequences your entire career — animation frames, API polling, debounced input handlers. Music generation is setTimeout with taste.
+A melody is a sequence of events with timing constraints. You have been scheduling sequences your entire career: animation frames, API polling, debounced input handlers. Music generation is setTimeout with taste.
 </Dialogue>
 
 <Dialogue speaker="MUSE">
 I do not compose. I predict. Given these notes, what note is most likely to follow? The same question autocomplete asks about words, I ask about pitch.
 </Dialogue>
 
-You have scheduled timed events thousands of times. `setTimeout`, `setInterval`, `requestAnimationFrame` — all of them execute callbacks at specific moments. Music is the same pattern: a sequence of pitched events fired at precise intervals. The ML twist is that instead of hardcoding the sequence, a model predicts each next note from the notes that came before.
+A note is one integer. MIDI gives you 128 of them; middle C is 60, and every melody you've ever hummed is a short list of small numbers with timestamps. Firing timestamped events is old ground: `setTimeout`, `setInterval`, `requestAnimationFrame`. The ML twist is that nobody hardcodes the list. A model predicts each next note from the notes that came before.
 
 <LearningObjectives objectives={["Encode musical notes as tensors using MIDI representation", "Build a sequence model that predicts the next note in a melody", "Schedule generated notes for playback using Web Audio API timing", "Control generation temperature to balance predictability and creativity"]} />
 
@@ -167,4 +167,4 @@ Build a melody generator that predicts the next note from a sliding window of pr
 
 <Exercise slug="generate-melody" />
 
-<KeyTakeaways takeaways={["Music generation is sequence prediction — the same pattern as text autocomplete", "MIDI notes map to integers, making them natural inputs for neural networks", "Sliding windows over note sequences create training data identical to time-series forecasting", "Web Audio API scheduling (AudioContext.currentTime) provides sample-accurate playback timing"]} />
+<KeyTakeaways takeaways={["Sample from the predicted note distribution instead of taking argmax: greedy decoding loops the same phrase", "MIDI notes map to integers, making them natural inputs for neural networks", "Sliding windows over note sequences create training data identical to time-series forecasting", "Web Audio API scheduling (AudioContext.currentTime) provides sample-accurate playback timing"]} />

@@ -7,23 +7,23 @@ order: 3
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "The team builds a medical NER model handling drugs, conditions, procedures, and dosages — the complex type system of clinical language."
+  narrative: "The team builds a medical NER model handling drugs, conditions, procedures, and dosages: the complex type system of clinical language."
   speaker: "Vikram"
 concept:
-  explanation: "Medical NER requires domain-specific entity types, each with distinct patterns — like defining TypeScript union types where each variant has its own shape and validation rules."
+  explanation: "Medical NER requires domain-specific entity types, each with distinct patterns, like defining TypeScript union types where each variant has its own shape and validation rules."
   bridge:
     feTitle: "TypeScript Union Types"
     feCode: "type Entity = Drug | Condition | Procedure; // each variant has its own shape"
     mlTitle: "Medical Entity Types"
     mlCode: "type MedEntity = 'DRUG' | 'CONDITION' | 'PROCEDURE'; // each type has distinct patterns"
     tier: structural
-    breaks: "TypeScript union types are checked at compile time against an exact list. Medical entity types come from controlled vocabularies (UMLS, SNOMED) with thousands of overlapping terms — the model must learn fuzzy mappings, not enforce a literal union."
+    breaks: "TypeScript union types are checked at compile time against an exact list. Medical entity types come from controlled vocabularies (UMLS, SNOMED) with thousands of overlapping terms; the model must learn fuzzy mappings, not enforce a literal union."
 consequence:
   narrative: "Diagnostic One can now parse complex clinical notes, correctly distinguishing between drugs, conditions, procedures, and dosages even when they look similar."
   nextLessonTeaser: "Next: sequence labeling with neural networks — training a model to assign these types automatically."
 hints:
   - level: nudge
-    content: "Each entity type has distinct patterns — drugs have specific suffixes, dosages have numeric patterns, abbreviations map to known types"
+    content: "Each entity type has distinct patterns: drugs have specific suffixes, dosages have numeric patterns, abbreviations map to known types"
   - level: guidance
     content: "Combine dictionary lookup, regex patterns, and abbreviation expansion to classify tokens"
   - level: solution
@@ -40,7 +40,7 @@ General NER knows three types: Person, Location, Organization. Medical NER needs
 </Dialogue>
 
 <Dialogue speaker="Khalil">
-So each entity type is like a variant in a union: `type Entity = Drug | Condition | Procedure | Dosage`. Each variant has its own shape — drugs have generic names and brand names, dosages have numbers and units, conditions have standard codes.
+So each entity type is like a variant in a union: `type Entity = Drug | Condition | Procedure | Dosage`. Each variant has its own shape: drugs have generic names and brand names, dosages have numbers and units, conditions have standard codes.
 </Dialogue>
 
 <Dialogue speaker="Dr. Zahra Karimi">
@@ -164,14 +164,14 @@ console.log(result);
 ## Precision, Recall, and F1
 
 <Dialogue speaker="Imran">
-How do we know the model is correct? Finding 90% of drugs means nothing if it also flags "patient" as a drug 30% of the time. We need the TypeScript equivalent of strict mode — catching false positives and false negatives.
+How do we know the model is correct? Finding 90% of drugs means nothing if it also flags "patient" as a drug 30% of the time. We need the TypeScript equivalent of strict mode, something that catches false positives and false negatives.
 </Dialogue>
 
 Just like TypeScript's strict mode catches both "value used as wrong type" (false positive) and "type not checked" (false negative), NER evaluation uses three metrics:
 
 - **Precision**: Of tokens the model labeled as DRUG, how many actually are drugs? (How many false positives?)
 - **Recall**: Of all actual drugs in the text, how many did the model find? (How many false negatives?)
-- **F1**: The harmonic mean of precision and recall — the single number that balances both
+- **F1**: The harmonic mean of precision and recall, the single number that balances both
 
 In a clinical setting, a false negative (missing a drug) can be as dangerous as a false positive (hallucinating one). Both metrics matter.
 
@@ -191,4 +191,4 @@ Build a medical entity classifier that handles drugs, conditions, dosages, frequ
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Medical entity types form a union type system: Drug | Condition | Procedure | Dosage | Frequency", "Each type has distinct detection strategies: dictionaries, regex patterns, abbreviation maps", "Like TypeScript type guards, each strategy narrows the token to a specific entity type", "Precision catches false positives, recall catches false negatives — both matter clinically"]} />
+<KeyTakeaways takeaways={["Medical entity types come from controlled vocabularies (UMLS, SNOMED) with thousands of overlapping terms; the mapping is fuzzy, not a fixed enum", "Each type has distinct detection strategies: dictionaries, regex patterns, abbreviation maps", "Like TypeScript type guards, each strategy narrows the token to a specific entity type", "Precision catches false positives, recall catches false negatives — both matter clinically"]} />

@@ -10,16 +10,16 @@ context:
   narrative: "Your model is trained, tested, and performing well. But deploying it means real people experience its mistakes."
   speaker: "Instructor"
 concept:
-  explanation: "Responsible deployment means analyzing failure modes, documenting limitations, and deciding when human oversight is required — like conducting an accessibility impact assessment before a major launch."
+  explanation: "Responsible deployment means analyzing failure modes, documenting limitations, and deciding when human oversight is required, like conducting an accessibility impact assessment before a major launch."
   bridge:
     feTitle: "Accessibility Impact Assessment"
     feCode: "// a11y review: Who can't use this feature? What's the fallback?"
     mlTitle: "Model Impact Assessment"
     mlCode: "// ML review: Who is harmed by errors? What's the recourse?"
     tier: intuition
-    breaks: "Accessibility impact assessment can be checked against published WCAG criteria. Model impact assessment must consider distributional harms across populations the developer is not in — there is no spec to check; it requires affected-stakeholder consultation. Skipping consultation and declaring 'we considered ethics' is the dominant failure mode."
+    breaks: "Accessibility impact assessment can be checked against published WCAG criteria. Model impact assessment must consider distributional harms across populations the developer is not in. There is no spec to check; it requires affected-stakeholder consultation. Skipping consultation and declaring 'we considered ethics' is the dominant failure mode."
 consequence:
-  narrative: "You now have a framework for deciding whether, how, and when to deploy a model."
+  narrative: "Failure modes, severity, affected groups, mitigations: the impact assessment is a document you can write now, not a vibe. Write one for your next model before training starts and see what it surfaces."
   nextLessonTeaser: "Next: building a reusable ethics checklist for all your ML projects"
 hints:
   - level: nudge
@@ -37,7 +37,7 @@ keywords:
 ---
 
 <Dialogue speaker="Instructor">
-Your model scores well on every metric. Your fairness numbers look good. You've verified it learned the right patterns. But before you deploy, there's one more question — the most important one: who gets hurt if you're wrong?
+Your model scores well on every metric. Your fairness numbers look good. You've verified it learned the right patterns. But before you deploy, there's one more question, the most important one: who gets hurt if you're wrong?
 </Dialogue>
 
 Every frontend developer has done a pre-launch review. Does it work on mobile? Is it accessible? What happens if the API is down? Responsible ML deployment follows the same logic, but the failure cases involve people's livelihoods, health, and civil rights.
@@ -132,11 +132,11 @@ Not all ML applications carry equal risk. A music recommendation that suggests a
 
 **Lower-stakes (can tolerate errors):** content recommendations, spam filtering, autocomplete, image tagging.
 
-The stakes determine how much oversight you need — not whether you need it at all. Every deployed model needs monitoring.
+The stakes determine how much oversight you need, not whether you need it at all. Every deployed model needs monitoring.
 
 ## Model Cards
 
-Model cards are like `package.json` for ML models — structured documentation that tells anyone who encounters your model what it does, what it was trained on, how it performs, and where it fails.
+Model cards are like `package.json` for ML models: structured documentation that tells anyone who encounters your model what it does, what it was trained on, how it performs, and where it fails.
 
 A model card should include:
 - **Intended use:** what the model is designed to do
@@ -151,4 +151,4 @@ Build a model impact assessment for a given ML application scenario.
 
 <Exercise slug="assess-impact" />
 
-<KeyTakeaways takeaways={["Always ask 'who gets hurt if this is wrong?' before deploying", "Failure mode analysis maps errors to their real-world consequences", "High-stakes applications require human-in-the-loop oversight", "Model cards document capabilities and limitations — like package.json for ML", "Sometimes the responsible decision is to not deploy at all"]} />
+<KeyTakeaways takeaways={["Always ask 'who gets hurt if this is wrong?' before deploying", "Failure mode analysis maps errors to their real-world consequences", "High-stakes applications require human-in-the-loop oversight", "Model cards document capabilities and limitations, like package.json for ML", "Sometimes the responsible decision is to not deploy at all"]} />

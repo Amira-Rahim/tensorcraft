@@ -10,17 +10,17 @@ context:
   narrative: "Tariq configures the traffic split from the field operations center. 'We start at 5%. If the new model holds steady for 24 hours, we bump to 20%. If it still looks good after a week, 50%. Slow and steady.'"
   speaker: "Tariq Hussain"
 concept:
-  explanation: "Traffic splitting routes prediction requests to different model versions — the same technique as canary deployments with a load balancer, but applied to ML inference endpoints."
+  explanation: "Traffic splitting routes prediction requests to different model versions, the same technique as canary deployments with a load balancer, but applied to ML inference endpoints."
   bridge:
     feTitle: "Canary Deployments"
     feCode: "// nginx: upstream { server v1 weight=95; server v2 weight=5; }"
     mlTitle: "Model Traffic Split"
     mlCode: "// router: modelV1 weight=95, modelV2 weight=5 — gradual rollout"
     tier: structural
-    breaks: "Canary deployments compare identical code at different rollout %. Model traffic splitting compares two different models, so confounding from input distribution shifts contaminates the result — you need stratified sampling and longer observation windows than canary code rollouts demand."
+    breaks: "Canary deployments compare identical code at different rollout %. Model traffic splitting compares two different models, so confounding from input distribution shifts contaminates the result. You need stratified sampling and longer observation windows than canary code rollouts demand."
 consequence:
   narrative: "After 24 hours at 5%, the metrics are clear: v3.1 catches anomalies 12% faster with no false positive increase. Tariq bumps the split to 20%. 'Let it run for a week. If the numbers hold, we go wider.'"
-  nextLessonTeaser: "Next: statistical significance — knowing when results are meaningful"
+  nextLessonTeaser: "Next: statistical significance, knowing when results are meaningful"
 hints:
   - level: nudge
     content: "Weight-based routing distributes traffic proportionally, like a load balancer with weighted upstreams"
@@ -36,14 +36,14 @@ keywords:
 ---
 
 <Dialogue speaker="Tariq Hussain">
-We start at 5%. Only 620 devices see the new model. If anything looks wrong — accuracy drops, latency spikes, false positive rate climbs — we kill it instantly and all devices fall back to the current model. No drama.
+We start at 5%. Only 620 devices see the new model. If anything looks wrong (accuracy drops, latency spikes, false positive rate climbs), we kill it instantly and all devices fall back to the current model. No drama.
 </Dialogue>
 
 <Dialogue speaker="Priya Sharma">
-Same pattern as canary deployments for web apps. Weighted routing with automatic rollback triggers. The only difference is we are routing sensor data to model versions instead of HTTP requests to server versions.
+Same pattern as canary deployments for web apps. Weighted routing with automatic rollback triggers. The only difference is we're routing sensor data to model versions instead of HTTP requests to server versions.
 </Dialogue>
 
-You have configured load balancers with weighted upstreams: 95% to the stable server, 5% to the canary. Traffic splitting for ML models works the same way. Each prediction request gets routed to a model version based on configured weights, and you adjust those weights as confidence grows.
+Priya is half right, and the missing half is where the money goes. A web canary compares identical code at two rollout percentages, so any metric gap is caused by the rollout. Here the two arms run different models, and a shift in the input mix can hand the new model an easy week or a brutal one. You have configured weighted upstreams before: 95% stable, 5% canary. Keep that routing. What you add is what code canaries never needed: stratified sampling so both arms see comparable inputs, and observation windows long enough to outlast the confounders.
 
 <LearningObjectives objectives={["Implement weighted traffic splitting across model versions", "Configure graduated rollout schedules (5% -> 20% -> 50% -> 100%)", "Build automatic rollback triggers based on metric thresholds", "Track per-version metrics to validate traffic split decisions"]} />
 
@@ -177,4 +177,4 @@ Implement a weighted traffic splitter with graduated rollout.
 
 <Exercise slug="route-models" />
 
-<KeyTakeaways takeaways={["Weighted traffic splitting for models mirrors load balancer canary deployments", "Graduated rollout (5% -> 20% -> 50% -> 100%) limits blast radius at each stage", "Automatic rollback triggers on accuracy drop, latency increase, or false positive spikes", "The control model always stays available — never remove the fallback until the test is conclusive"]} />
+<KeyTakeaways takeaways={["Start the new model at 5% of devices (620 of 12,400) and widen the split only as live metrics hold", "Graduated rollout (5% -> 20% -> 50% -> 100%) limits blast radius at each stage", "Automatic rollback triggers on accuracy drop, latency increase, or false positive spikes", "The control model always stays available — never remove the fallback until the test is conclusive"]} />

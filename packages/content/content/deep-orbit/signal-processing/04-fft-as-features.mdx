@@ -22,7 +22,7 @@ consequence:
   nextLessonTeaser: "Next: windowing functions — preventing artifacts in the FFT"
 hints:
   - level: nudge
-    content: "Think of FFT output as derived state — computed from raw data to give the model better inputs"
+    content: "tf.abs(tf.spectral.rfft(signal)) carries the same information as the raw samples, reorganized into a form the classifier separates more easily"
   - level: guidance
     content: "Compute FFT magnitudes, normalize them, and concatenate with the original features"
   - level: solution
@@ -36,14 +36,14 @@ skillAxes: [data_prep]
 ---
 
 <Dialogue speaker="Ensign Demir">
-What if we feed the FFT magnitudes directly into the model? Instead of just raw amplitude, frequency, and phase — we also give it the spectral decomposition. More information, better decisions.
+What if we feed the FFT magnitudes directly into the model? Instead of just raw amplitude, frequency, and phase, we also give it the spectral decomposition. More information, better decisions.
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-Feature engineering — deriving new inputs from raw data. This is exactly how I improved the signal analyzer on the Kepler mission. The raw data tells the model *what happened*. The FFT tells it *what patterns are present*. Together, the model sees the full picture.
+Feature engineering: deriving new inputs from raw data. This is exactly how I improved the signal analyzer on the Kepler mission. The raw data tells the model *what happened*. The FFT tells it *what patterns are present*. Together, the model sees the full picture.
 </Dialogue>
 
-You do this in React all the time. Raw props come in, but you compute derived values — sorted lists, filtered arrays, aggregated counts — because the derived form is more useful for rendering. Feature engineering is the same idea: you transform raw data into forms that make the model's job easier.
+You do this in React all the time. Raw props come in, but you compute derived values (sorted lists, filtered arrays, aggregated counts) because the derived form is more useful for rendering. Feature engineering is the same idea: you transform raw data into forms that make the model's job easier.
 
 <LearningObjectives objectives={["Understand feature engineering as deriving useful model inputs from raw data", "Extract FFT magnitudes and use them as model features", "Normalize and combine raw features with frequency-domain features", "Measure the impact of better features on model accuracy"]} />
 
@@ -181,4 +181,4 @@ Extract FFT features from a signal and combine them with raw features.
 
 <Exercise slug="fft-features" />
 
-<KeyTakeaways takeaways={["Feature engineering transforms raw data into more informative model inputs — like computing derived state from props", "FFT magnitudes capture frequency patterns invisible in the time domain, boosting accuracy from 78% to 87%", "Always normalize features to the same scale — otherwise the model overweights large-valued features", "Save normalization statistics from training data and reuse them during inference for consistency"]} />
+<KeyTakeaways takeaways={["The upgraded input is 11 features wide: 3 raw values plus the top 8 FFT magnitude bins from a 64-sample window", "FFT magnitudes capture frequency patterns invisible in the time domain, boosting accuracy from 78% to 87%", "Always normalize features to the same scale — otherwise the model overweights large-valued features", "Save normalization statistics from training data and reuse them during inference for consistency"]} />

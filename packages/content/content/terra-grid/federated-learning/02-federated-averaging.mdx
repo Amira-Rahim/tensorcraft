@@ -17,13 +17,13 @@ concept:
     mlTitle: "Federated Averaging"
     mlCode: "aggregate(localUpdates) // merge weights from multiple trainers"
     tier: structural
-    breaks: "BroadcastChannel state sync across tabs assumes symmetric peers with identical data shapes. Federated averaging weights client gradient updates by local dataset size and aggregates server-side; clients with non-IID data (e.g. one hospital's patient mix vs another's) drag the global model in different directions and naive averaging may not converge — methods like FedProx or FedAvgM are required."
+    breaks: "BroadcastChannel state sync across tabs assumes symmetric peers with identical data shapes. Federated averaging weights client gradient updates by local dataset size and aggregates server-side; clients with non-IID data (e.g. one hospital's patient mix vs another's) drag the global model in different directions and naive averaging may not converge; methods like FedProx or FedAvgM are required."
 consequence:
   narrative: "The federated model outperforms any single company's local model. More data, better generalization, zero data sharing."
   nextLessonTeaser: "Next: ensuring data privacy during federated training"
 hints:
   - level: nudge
-    content: "Think about how you merge state from multiple browser tabs into a consistent view"
+    content: "You merged tab state by handling BroadcastChannel message events. The merge here is arithmetic: combine the weight arrays from each participant into one"
   - level: guidance
     content: "Average the weight updates, weighted by each participant's dataset size"
   - level: solution
@@ -36,14 +36,14 @@ keywords:
 ---
 
 <Dialogue speaker="Hassan Al-Rashid">
-Three companies. Three locally trained models. Each one is good at recognizing patterns in their own data. Now we combine them into one model that knows all three distributions — without any company seeing another's data.
+Three companies. Three locally trained models. Each one is good at recognizing patterns in their own data. Now we combine them into one model that knows all three distributions, without any company seeing another's data.
 </Dialogue>
 
 <Dialogue speaker="GRID">
-Aggregation round 1 complete. Global model accuracy: 94.7%. Individual accuracies: Alpha 91.2%, Beta 89.8%, Volta 93.1%. The whole exceeds any part.
+Aggregation round 1 complete. Global model accuracy: 94.7%. Individual accuracies: Alpha 91.2%, Beta 89.8%, Volta 93.1%. Global exceeds best individual by 1.6 points.
 </Dialogue>
 
-You have synced state across browser tabs using `BroadcastChannel` or `localStorage` events. Each tab has its own local state. When something changes, the tab broadcasts its update. A coordinator merges the updates into a consistent global state. Federated averaging is the same pattern applied to model weights.
+Three companies, three models, and a contract that says none of them may ever see another's data. The only thing allowed to cross the boundary is weights. So that's what we average, and the `BroadcastChannel` tab-sync you have written turns out to be the muscle memory you need. One correction before you lean on it: tabs are symmetric peers with identical data shapes, and these three companies are not. Volta holds 3.1M rows to Beta's 1.8M, and each company's sensor mix pulls the model in a different direction. That is why FedAvg weights every update by dataset size instead of merging them as equals.
 
 <LearningObjectives objectives={["Implement the Federated Averaging (FedAvg) algorithm for combining distributed model updates", "Understand weighted averaging based on participant dataset sizes", "Track convergence across federated training rounds", "Compare federated model performance against individual local models"]} />
 
@@ -149,4 +149,4 @@ Implement federated averaging to combine weight updates from multiple participan
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Federated Averaging (FedAvg) computes a weighted average of participant model updates — like merging state from multiple browser tabs", "Weight each participant's contribution by their dataset size — more data, more influence on the global model", "The global model outperforms any individual local model because it learns patterns from all data sources", "Multiple rounds of send-train-aggregate converge toward a model that generalizes across all participants"]} />
+<KeyTakeaways takeaways={["Federated Averaging (FedAvg) averages participant weight updates layer by layer on the server; raw data never moves", "Weight each participant's contribution by their dataset size — more data, more influence on the global model", "The global model outperforms any individual local model because it learns patterns from all data sources", "Multiple rounds of send-train-aggregate converge toward a model that generalizes across all participants"]} />

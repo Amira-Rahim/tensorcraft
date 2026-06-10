@@ -7,20 +7,20 @@ order: 4
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "Protocol Sentinel works. Tests pass. But the resistance has 200 cells across Neon City — each needs to deploy and maintain their own instance. 'If only we can run it, it is useless,' Dilan says. 'Document everything. Model cards, API docs, deployment guides. Every cell must be able to operate independently.' Noor opens her editor. She has written README files before. Model cards are the same idea — with different sections."
+  narrative: "Protocol Sentinel works. Tests pass. But the resistance has 200 cells across Neon City, and each needs to deploy and maintain their own instance. 'If only we can run it, it is useless,' Dilan says. 'Document everything. Model cards, API docs, deployment guides. Every cell must be able to operate independently.' Noor opens her editor. She has written README files before. Model cards are the same idea with different sections."
   speaker: "Dilan"
 concept:
-  explanation: "A model card is a README.md for a machine learning model. It documents what the model does, how it was trained, what its limitations are, and when it should not be trusted. Same structure, same purpose — helping the next developer understand what they are working with."
+  explanation: "A model card is a README.md for a machine learning model. It documents what the model does, how it was trained, what its limitations are, and when it should not be trusted. Same structure, same purpose: helping the next developer understand what they are working with."
   bridge:
     feTitle: "README.md + API Docs"
     feCode: "## Installation\n## Usage\n## API Reference\n## Known Issues\n## Contributing"
     mlTitle: "Model Card"
     mlCode: "## Model Details\n## Intended Use\n## Training Data\n## Performance Metrics\n## Limitations\n## Ethical Considerations"
     tier: structural
-    breaks: "OpenAPI documents an API contract that the server enforces. A model card documents intended use, training data composition, and known disparities — but nothing enforces that operators read it before shipping the model into a new context. The doc is advisory; the contract is statistical. Misreading a model card causes a fairness incident, not a 400 error."
+    breaks: "OpenAPI documents an API contract that the server enforces. A model card documents intended use, training data composition, and known disparities. But nothing enforces that operators read it before shipping the model into a new context. The doc is advisory; the contract is statistical. Misreading a model card causes a fairness incident, not a 400 error."
 consequence:
   narrative: "Noor writes the documentation through the night. Model cards for each component. API docs for every stage. A deployment runbook with step-by-step instructions. By morning, any resistance cell with a browser and an internet connection can deploy Protocol Sentinel. The Architect built a surveillance empire on proprietary, undocumented systems. The resistance fights back with open documentation."
-  nextLessonTeaser: "Next: launch — Protocol Sentinel goes live across Neon City"
+  nextLessonTeaser: "Next: launch. Protocol Sentinel goes live across Neon City"
 hints:
   - level: nudge
     content: "A model card has the same sections as a good README — just focused on ML-specific details"
@@ -41,14 +41,14 @@ Protocol Sentinel is not a weapon. It is a tool. And a tool without documentatio
 </Dialogue>
 
 <Dialogue speaker="Noor">
-I have written hundreds of README files. Package documentation, API references, component storybooks. A model card is the same thing — introduction, usage, API, limitations, contributing guidelines. Just with different section headers.
+I've written hundreds of README files. Package documentation, API references, component storybooks. A model card is the same thing: introduction, usage, API, limitations, contributing guidelines. Just with different section headers.
 </Dialogue>
 
 <Dialogue speaker="NEON">
 Meridian never documented my limitations. They deployed me to track 14 million people without a single line about my 23% false positive rate on dark-skinned faces. Documentation is not just courtesy. It is accountability.
 </Dialogue>
 
-Every open-source package you have used has a README. Every API you have integrated has documentation. Model cards serve the same purpose for ML systems — they tell the next developer (or operator, or resistance cell) what the model does, how it performs, where it fails, and when it should not be trusted. The format is standardized. If you can write a good README, you can write a good model card.
+Every open-source package you have used has a README. Every API you have integrated has documentation. Model cards serve the same purpose for ML systems. They tell the next developer (or operator, or resistance cell) what the model does, how it performs, where it fails, and when it should not be trusted. The format is standardized. If you can write a good README, you can write a good model card.
 
 <LearningObjectives objectives={["Write a model card documenting an ML system's capabilities, limitations, and ethical considerations", "Create API documentation for a multi-stage ML pipeline", "Document performance metrics with appropriate context and caveats", "Build a deployment runbook for non-technical operators"]} />
 
@@ -358,4 +358,4 @@ Write a structured model card for Protocol Sentinel's classifier component.
 
 <Exercise slug="np-write-model-card" />
 
-<KeyTakeaways takeaways={["A model card is a README for an ML model — same structure, same purpose, ML-specific sections", "Key sections: model details, intended use, training data, performance metrics, limitations, ethical considerations", "Performance metrics without context are meaningless — always specify dataset, conditions, and caveats", "Documentation is accountability: explicitly stating what a model cannot do is as important as what it can"]} />
+<KeyTakeaways takeaways={["Documentation is what lets 200 cells deploy and maintain Sentinel without its authors in the room", "Key sections: model details, intended use, training data, performance metrics, limitations, ethical considerations", "Performance metrics without context are meaningless — always specify dataset, conditions, and caveats", "Documentation is accountability: explicitly stating what a model cannot do is as important as what it can"]} />

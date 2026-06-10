@@ -10,7 +10,7 @@ context:
   narrative: "Every model expects a fixed input size. Noor must resize, crop, and transform surveillance feeds to match Protocol Sentinel's requirements."
   speaker: "NEON"
 concept:
-  explanation: "Image transforms for ML — resize, crop, rotate, flip — are the same operations as CSS transform and object-fit that frontend developers use daily."
+  explanation: "Image transforms for ML (resize, crop, rotate, flip) are the same operations as CSS transform and object-fit that frontend developers use daily."
   bridge:
     feTitle: "CSS object-fit"
     feCode: "object-fit: cover // center-crop to fill container"
@@ -19,11 +19,11 @@ concept:
     tier: structural
     breaks: "object-fit: cover crops to fill the container at display time, deterministically. tf.image.cropAndResize crops + resamples for model input with sub-pixel interpolation, and the resampling algorithm choice (bilinear, nearest) materially affects model accuracy on small features. Same intent; different fidelity controls."
 consequence:
-  narrative: "The transforms reveal something: Meridian's cameras all output images at an unusual resolution — one optimized for a specific model architecture."
-  nextLessonTeaser: "Next: your first classifier — threshold-based image classification"
+  narrative: "The transforms reveal something: Meridian's cameras all output images at an unusual resolution, one optimized for a specific model architecture."
+  nextLessonTeaser: "Next: your first classifier. Threshold-based image classification"
 hints:
   - level: nudge
-    content: "Models expect fixed input sizes — resize all images to the same dimensions"
+    content: "Models expect fixed input sizes; resize all images to the same dimensions"
   - level: guidance
     content: "Use tf.image.resizeBilinear() for smooth resizing, slice() for cropping"
   - level: solution
@@ -41,7 +41,7 @@ Protocol Sentinel expects 224x224 pixel input. Meridian cameras stream at 640x48
 </Dialogue>
 
 <Dialogue speaker="Noor">
-Same as responsive images — `object-fit: cover` is center-crop, `object-fit: contain` is resize-with-padding. I've been doing image transforms in CSS for years.
+Same as responsive images: `object-fit: cover` is center-crop, `object-fit: contain` is resize-with-padding. I've been doing image transforms in CSS for years.
 </Dialogue>
 
 You set `object-fit: cover` to fill a container with a center-cropped image. You use CSS `transform: rotate(45deg)` to spin elements. ML image preprocessing uses the same operations: resize to a fixed input size, crop to a region of interest, flip and rotate for data augmentation.

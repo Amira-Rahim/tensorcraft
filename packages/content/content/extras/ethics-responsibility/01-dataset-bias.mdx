@@ -10,14 +10,14 @@ context:
   narrative: "Before you train a single model, you need to ask: who is missing from your data?"
   speaker: "Instructor"
 concept:
-  explanation: "Dataset bias occurs when your training data doesn't represent the real world — leading to models that work well for some people and fail for others."
+  explanation: "Dataset bias occurs when your training data doesn't represent the real world, leading to models that work well for some people and fail for others."
   bridge:
     feTitle: "Browser-Only Testing"
     feCode: "// Only tested in Chrome on macOS — 'works for me!'"
     mlTitle: "Biased Training Data"
     mlCode: "// Only trained on English text — fails on multilingual input"
     tier: intuition
-    breaks: "Cross-browser bugs surface immediately on a Firefox/Safari pageview — the failure mode is loud (broken layout, JS error). Dataset bias is silent: a face-recognition model trained mostly on light-skinned faces may still return a confident match on a darker-skinned face that is wrong. Detecting bias requires per-subgroup evaluation against a labelled holdout — there's no equivalent of 'open it in Firefox' that surfaces it on demand."
+    breaks: "Cross-browser bugs surface immediately on a Firefox/Safari pageview; the failure mode is loud (broken layout, JS error). Dataset bias is silent: a face-recognition model trained mostly on light-skinned faces may still return a confident match on a darker-skinned face that is wrong. Detecting bias requires per-subgroup evaluation against a labelled holdout. There's no equivalent of 'open it in Firefox' that surfaces it on demand."
 consequence:
   narrative: "Understanding bias is the first step toward building ML systems that serve everyone."
   nextLessonTeaser: "Next: measuring fairness with concrete metrics"
@@ -39,7 +39,7 @@ keywords:
 Before we write a single line of model code, we need to talk about something that will determine whether your model helps people or harms them: the data you train on.
 </Dialogue>
 
-Every frontend developer has shipped a feature that "worked on my machine" but broke for users with different browsers, screen sizes, or assistive technologies. Dataset bias is the ML equivalent — except when ML models fail, the consequences can be far more serious than a broken layout.
+In 2018, researchers tested commercial face-recognition systems and found error rates up to 34.7% for darker-skinned women. For light-skinned men: under 1%. The models weren't broken. Their training data was. That gap, between who your data represents and who your model serves, is dataset bias, and the consequences run far past a broken layout.
 
 <LearningObjectives objectives={["Identify the three main types of dataset bias: selection, measurement, and historical", "Recognize how biased data leads to discriminatory model outputs", "Audit a dataset for demographic representation gaps", "Connect dataset bias to the familiar problem of insufficient cross-browser testing"]} />
 
@@ -47,19 +47,19 @@ Every frontend developer has shipped a feature that "worked on my machine" but b
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-You know the drill. You build a beautiful UI, test it in Chrome on your MacBook, ship it, and immediately get bug reports from Firefox users, Windows users, and screen reader users. The problem wasn't your code — it was your testing coverage. You only validated against a narrow slice of your actual user base.
+You know the drill. You build a beautiful UI, test it in Chrome on your MacBook, ship it, and immediately get bug reports from Firefox users, Windows users, and screen reader users. The problem wasn't your code. It was your testing coverage. You only validated against a narrow slice of your actual user base.
 
-Dataset bias works exactly the same way. If your training data only represents certain demographics, your model will "work" for those groups and silently fail for everyone else.
+Dataset bias is the same trap. If your training data only represents certain demographics, your model will "work" for those groups and silently fail for everyone else.
 
 ## Three Types of Bias
 
 ### Selection Bias
 
-Your dataset doesn't represent the full population. If you train a facial recognition model on photos that are 80% light-skinned faces, it will perform poorly on darker skin tones. This is exactly like only testing on desktop when 60% of your traffic is mobile.
+Your dataset doesn't represent the full population. If you train a facial recognition model on photos that are 80% light-skinned faces, it will perform poorly on darker skin tones. The frontend version: testing only on desktop when 60% of your traffic is mobile.
 
 ### Measurement Bias
 
-Your data collection method itself introduces distortion. If you measure "employee productivity" using metrics that favor in-office workers, remote workers will be systematically rated lower — not because they're less productive, but because your measuring tool is broken.
+Your data collection method itself introduces distortion. If you measure "employee productivity" using metrics that favor in-office workers, remote workers will be systematically rated lower. Not because they're less productive, but because your measuring tool is broken.
 
 ### Historical Bias
 
@@ -139,4 +139,4 @@ Audit a dataset and identify representation gaps across demographic groups.
 
 <Exercise slug="audit-dataset" />
 
-<KeyTakeaways takeaways={["Dataset bias is the ML equivalent of only testing in one browser", "Selection bias = missing groups, measurement bias = flawed metrics, historical bias = unfair world reflected in data", "Always audit your dataset demographics before training", "A model trained on biased data will produce biased outputs — no algorithm can fix bad data"]} />
+<KeyTakeaways takeaways={["Dataset bias is the ML equivalent of only testing in one browser", "Selection bias = missing groups, measurement bias = flawed metrics, historical bias = unfair world reflected in data", "Always audit your dataset demographics before training", "A model trained on biased data will produce biased outputs; no algorithm can fix bad data"]} />

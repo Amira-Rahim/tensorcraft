@@ -7,23 +7,23 @@ order: 3
 estimatedMinutes: 30
 difficulty: intermediate
 context:
-  narrative: "Samir sketches the architecture on the whiteboard. 'It goes down — encoding — then back up — decoding. With skip connections bridging across.' Yara tilts her head. 'Like an hourglass.' Samir smiles: 'Exactly. A U-shape.'"
+  narrative: "Samir sketches the architecture on the whiteboard. 'It goes down (encoding), then back up (decoding). With skip connections bridging across.' Yara tilts her head. 'Like an hourglass.' Samir smiles: 'Exactly. A U-shape.'"
   speaker: "Samir"
 concept:
-  explanation: "The U-Net is an encoder-decoder architecture with skip connections. The encoder compresses the image to understand context; the decoder expands it back to predict noise. Skip connections preserve fine detail — like how a layout component wraps content but passes through children."
+  explanation: "The U-Net is an encoder-decoder architecture with skip connections. The encoder compresses the image to understand context; the decoder expands it back to predict noise. Skip connections preserve fine detail, like how a layout component wraps content but passes through children."
   bridge:
     feTitle: "Encoder-decoder layout patterns"
     feCode: "<Layout><Sidebar /><Content>{children}</Content></Layout>"
     mlTitle: "U-Net architecture"
     mlCode: "skip = encoder(x); output = decoder(bottleneck, skip);"
     tier: structural
-    breaks: "Encoder-decoder UI patterns separate write from read. U-Net adds skip connections that fuse encoder activations directly into the decoder at matching resolutions — information bypasses the bottleneck. The 'middle' of a U-Net is not a clean handoff; it is a multi-resolution merge."
+    breaks: "Encoder-decoder UI patterns separate write from read. U-Net adds skip connections that fuse encoder activations directly into the decoder at matching resolutions. Information bypasses the bottleneck. The 'middle' of a U-Net is not a clean handoff; it is a multi-resolution merge."
 consequence:
   narrative: "The U-Net predictions are sharp. Skip connections preserve the edges and textures that the bottleneck alone would blur. Erdem examines the output: 'The brushstrokes. It remembers the brushstrokes.'"
-  nextLessonTeaser: "Next: classifier-free guidance — steering generation with text prompts"
+  nextLessonTeaser: "Next: classifier-free guidance: steering generation with text prompts"
 hints:
   - level: nudge
-    content: "Think of Layout components that wrap content — the outer shell processes context while children pass through"
+    content: "In decoder(bottleneck, skip), the skip tensor is the encoder's activation at the matching resolution, concatenated in so fine detail bypasses the bottleneck"
   - level: guidance
     content: "The encoder downsamples (compresses), the decoder upsamples (expands), and skip connections bridge matching resolution levels"
   - level: solution
@@ -37,7 +37,7 @@ keywords:
 ---
 
 <Dialogue speaker="Samir">
-The architecture that predicts noise is called a U-Net. Think of it as an encoder-decoder — like a layout component. The encoder compresses the noisy image to understand the big picture. The decoder expands it back to full resolution to predict the noise at every pixel.
+The architecture that predicts noise is called a U-Net: an encoder-decoder, the same shape as a layout component. The encoder compresses the noisy image to understand the big picture. The decoder expands it back to full resolution to predict the noise at every pixel.
 </Dialogue>
 
 <Dialogue speaker="Yara">
@@ -48,7 +48,7 @@ But if you compress and then expand, don't you lose detail? Like over-compressin
 That is what skip connections solve. They bridge from the encoder to the decoder at each resolution level, carrying the fine details that compression would destroy. Like passing `children` through a layout wrapper.
 </Dialogue>
 
-You build layout components that wrap content but pass children through unchanged. U-Nets do the same thing — the encoder captures context, the decoder generates output, and skip connections carry fine-grained detail across.
+You build layout components that wrap content but pass children through unchanged. U-Nets do the same thing: the encoder captures context, the decoder generates output, and skip connections carry fine-grained detail across.
 
 <LearningObjectives objectives={["Understand the U-Net encoder-decoder structure and why it suits denoising", "Implement downsampling (encoder) and upsampling (decoder) blocks", "Add skip connections that preserve fine detail across resolution levels", "Connect the architecture to frontend layout patterns with children passthrough"]} />
 
@@ -158,4 +158,4 @@ Without skips, fine spatial detail is lost in the bottleneck. Skips re-inject hi
 **Time conditioning:** the timestep t is embedded (sinusoidal embedding → MLP) and added to every block's activations as a bias. The same network handles all timesteps; the time embedding tells it where in the schedule we are.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["U-Net is an encoder-decoder with skip connections — like a layout component that passes children through", "The encoder compresses spatial dimensions to capture context; the decoder expands back to full resolution", "Skip connections carry fine-grained detail from encoder to decoder at matching resolution levels", "The output has the same shape as the input — the model predicts the noise to subtract"]} />
+<KeyTakeaways takeaways={["Concatenate each skip tensor at its matching resolution level: without skips the bottleneck blurs away edges and texture", "The encoder compresses spatial dimensions to capture context; the decoder expands back to full resolution", "Skip connections carry fine-grained detail from encoder to decoder at matching resolution levels", "The output has the same shape as the input — the model predicts the noise to subtract"]} />

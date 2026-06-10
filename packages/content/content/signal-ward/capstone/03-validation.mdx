@@ -7,23 +7,23 @@ order: 3
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "Dr. Karimi places a folder on the table. Five hundred clinical notes, each annotated by two board-certified physicians. Drug names highlighted, interactions flagged, severity levels assigned. 'This is the gold standard,' she says. 'Every entity, every classification, every interaction — verified by experts. Your system needs to match these annotations. Not perfectly — but well enough that I trust it at 3 AM.' Imran opens the first annotated note. Highlighted spans, BIO tags, classification labels. 'It is like a snapshot test,' she says. 'Known inputs, expected outputs.'"
+  narrative: "Dr. Karimi places a folder on the table. Five hundred clinical notes, each annotated by two board-certified physicians. Drug names highlighted, interactions flagged, severity levels assigned. 'This is the gold standard,' she says. 'Every entity, every classification, every interaction, verified by experts. Your system needs to match these annotations. Not perfectly, but well enough that I trust it at 3 AM.' Imran opens the first annotated note. Highlighted spans, BIO tags, classification labels. 'It is like a snapshot test,' she says. 'Known inputs, expected outputs.'"
   speaker: "Dr. Karimi"
 concept:
-  explanation: "Validating Diagnostic One against expert annotations is the same discipline as end-to-end testing — running automated checks against known-good outputs. Precision, recall, and F1 score are the clinical equivalents of test pass rates, measuring how well your system matches expert-verified ground truth."
+  explanation: "Validating Diagnostic One against expert annotations is the same discipline as end-to-end testing: running automated checks against known-good outputs. Precision, recall, and F1 score are the clinical equivalents of test pass rates, measuring how well your system matches expert-verified ground truth."
   bridge:
     feTitle: "End-to-End Testing"
     feCode: "expect(render(<App />)).toMatchSnapshot(); // compare against known-good output"
     mlTitle: "Clinical Validation"
     mlCode: "expect(model.predict(note)).toMatchAnnotations(expertLabels); // compare against expert ground truth"
     tier: structural
-    breaks: "End-to-end tests assert specific behaviors that pass or fail at known input. Clinical validation requires institutional review (IRB), prospective studies on real patient populations, and statistical evidence of improved patient outcomes — you cannot 'pass' clinical validation by adding more test cases. Test pass rate has no correlation with clinical safety."
+    breaks: "End-to-end tests assert specific behaviors that pass or fail at known input. Clinical validation requires institutional review (IRB), prospective studies on real patient populations, and statistical evidence of improved patient outcomes; you cannot 'pass' clinical validation by adding more test cases. Test pass rate has no correlation with clinical safety."
 consequence:
-  narrative: "The validation suite finishes running. Precision: 0.89. Recall: 0.84. F1: 0.86. Dr. Karimi studies the confusion matrix. 'The system is cautious — it flags things that are not there more often than it misses things that are. For a clinical system, that is the right trade-off. I would rather investigate a false alarm than miss a real interaction.' She signs the validation report. 'Approved for pilot deployment.'"
+  narrative: "The validation suite finishes running. Precision: 0.89. Recall: 0.84. F1: 0.86. Dr. Karimi studies the confusion matrix. 'The system is cautious: it flags things that are not there more often than it misses things that are. For a clinical system, that is the right trade-off. I would rather investigate a false alarm than miss a real interaction.' She signs the validation report. 'Approved for pilot deployment.'"
   nextLessonTeaser: "Next: writing the clinical documentation and model card"
 hints:
   - level: nudge
-    content: "Precision measures false positives, recall measures false negatives — think about which matters more in clinical settings"
+    content: "Precision measures false positives, recall measures false negatives; think about which matters more in clinical settings"
   - level: guidance
     content: "Build a validation harness that runs Diagnostic One against annotated notes and computes precision, recall, and F1 for each entity type"
   - level: solution
@@ -45,7 +45,7 @@ Five hundred clinical notes. Each one annotated by two board-certified physician
 It is end-to-end testing. Known inputs, expected outputs. I run the system against the annotations and check if the predictions match. Precision tells me how many of the system's flags were correct. Recall tells me how many of the real interactions the system found. F1 balances them.
 </Dialogue>
 
-Every frontend application has a test suite. Unit tests verify individual functions. Integration tests verify that components work together. End-to-end tests verify that the entire application produces correct output for known inputs. Clinical validation is end-to-end testing for ML — you run Diagnostic One against expert-annotated clinical notes and measure how well the predictions match the ground truth.
+Imran's framing is close, not complete. An end-to-end suite passes or it fails. A validation run against 500 expert-annotated notes returns precision 0.89 and recall 0.84, and no assertion turns those numbers green; someone has to decide whether they are good enough to trust at 3 AM. The harness itself is familiar test infrastructure, known inputs and expected outputs. The verdict is statistical: you measure how closely Diagnostic One's predictions match expert ground truth, then argue about the threshold.
 
 <LearningObjectives objectives={["Compute precision, recall, and F1 score for clinical NLP predictions", "Build a validation harness that runs Diagnostic One against expert annotations", "Interpret a confusion matrix to identify systematic errors in entity recognition", "Understand the precision-recall trade-off in clinical settings where false negatives are more dangerous than false positives"]} />
 
@@ -209,4 +209,4 @@ Build a validation suite that computes precision, recall, and F1 for NLP predict
 
 <Exercise slug="validate-annotations" />
 
-<KeyTakeaways takeaways={["Clinical validation is end-to-end testing for ML — run predictions against expert-annotated ground truth and measure accuracy", "Precision measures false positive rate (false alarms), recall measures false negative rate (missed detections)", "In clinical settings, high recall is prioritized over high precision — better to investigate a false alarm than miss a real drug interaction", "The confusion matrix reveals systematic errors: if the system consistently confuses DOSAGE with DRUG, that is a training data problem"]} />
+<KeyTakeaways takeaways={["The gold standard here is 500 notes annotated by two physicians each; the suite scored precision 0.89, recall 0.84, F1 0.86 against it", "Precision measures false positive rate (false alarms), recall measures false negative rate (missed detections)", "In clinical settings, high recall is prioritized over high precision — better to investigate a false alarm than miss a real drug interaction", "The confusion matrix reveals systematic errors: if the system consistently confuses DOSAGE with DRUG, that is a training data problem"]} />

@@ -300,7 +300,7 @@ export function AuthForm() {
           <div className="mb-6 border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400 font-mono">
             {authError === "session_expired"
               ? ERROR_MESSAGES.session_expired
-              : "Authentication failed. Please try again."}
+              : "Sign-in didn't go through. Try again, or request a fresh email link below."}
           </div>
         )}
 
@@ -462,7 +462,7 @@ export function AuthForm() {
             </div>
 
             {/* Terms */}
-            <div className="text-center mt-5 text-xs text-text-muted/60 font-mono">
+            <div className="text-center mt-5 text-xs text-text-muted font-mono">
               By {copy.terms}, you agree to our{" "}
               <Link
                 href="/terms"

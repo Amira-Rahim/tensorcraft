@@ -37,14 +37,14 @@ skillAxes: [model_arch]
 ---
 
 <Dialogue speaker="Dr. Farah">
-The signal's period is not constant — it's drifting. We need a filter that tracks a moving target under noise. The Kalman filter predicts where the signal should be, then corrects with each new measurement. It is the optimal estimator for linear systems under Gaussian noise.
+The signal's period isn't constant; it's drifting. We need a filter that tracks a moving target under noise. The Kalman filter predicts where the signal should be, then corrects with each new measurement. It's the optimal estimator for linear systems under Gaussian noise.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
 That's an exponential moving average! smoothed = alpha * new + (1-alpha) * old. The Kalman filter just computes the optimal alpha at each step?
 </Dialogue>
 
-You've used exponential moving averages in analytics dashboards — smoothing noisy metrics to reveal the underlying trend. The Kalman filter is the mathematically optimal version of this: it dynamically adjusts how much to trust new data vs the historical estimate, based on the noise levels of each.
+You've used exponential moving averages in analytics dashboards, smoothing noisy metrics to reveal the underlying trend. The Kalman filter is the mathematically optimal version of this: it dynamically adjusts how much to trust new data vs the historical estimate, based on the noise levels of each.
 
 <LearningObjectives objectives={["Understand the Kalman filter as a predict-correct loop for state estimation", "Implement a 1D Kalman filter for tracking signal timing", "Connect Kalman filtering to the exponential moving average pattern", "Track the anomaly timing drift and predict the next occurrence"]} />
 
@@ -109,4 +109,4 @@ Implement a Kalman filter and track the anomaly timing.
 
 <Exercise slug="kalman-filter" />
 
-<KeyTakeaways takeaways={["Kalman filters are optimal exponential moving averages — they dynamically compute the best blend of prediction and measurement", "The Kalman gain controls trust: high gain = trust measurements, low gain = trust predictions", "For DEEP SCAN, the Kalman filter reveals the anomaly interval is drifting upward by 0.3s per cycle", "The predict-correct loop is the same pattern as optimistic UI updates with server reconciliation"]} />
+<KeyTakeaways takeaways={["Initialized at 73.4s with process noise 0.1 and measurement noise 1.0, the filter tracks the interval to 74.3s across eight noisy readings", "The Kalman gain controls trust: high gain = trust measurements, low gain = trust predictions", "For DEEP SCAN, the Kalman filter reveals the anomaly interval is drifting upward by 0.3s per cycle", "The predict-correct loop is the same pattern as optimistic UI updates with server reconciliation"]} />

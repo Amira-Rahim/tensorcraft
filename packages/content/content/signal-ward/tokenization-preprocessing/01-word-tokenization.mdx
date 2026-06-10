@@ -10,7 +10,7 @@ context:
   narrative: "Imran brings in a stack of messy clinical records. The first challenge: splitting text on the right boundaries."
   speaker: "Imran"
 concept:
-  explanation: "Word tokenization splits text into individual words by identifying boundaries — spaces, punctuation, and special characters. It's the same pattern as String.split() and regex-based text processing you use daily."
+  explanation: "Word tokenization splits text into individual words by identifying boundaries: spaces, punctuation, and special characters. It's the same pattern as String.split() and regex-based text processing you use daily."
   bridge:
     feTitle: "String.split()"
     feCode: "'hello world'.split(/\\s+/)"
@@ -23,7 +23,7 @@ consequence:
   nextLessonTeaser: "Next: subword tokenization — what happens when words themselves need breaking apart."
 hints:
   - level: nudge
-    content: "Consider what counts as a word boundary — spaces, punctuation, line breaks."
+    content: "Consider what counts as a word boundary: spaces, punctuation, line breaks."
   - level: guidance
     content: "Use a regex that matches word characters and splits on everything else."
   - level: solution
@@ -49,7 +49,7 @@ Imran just described every frontend developer's nightmare with user input. You'v
 String.split() with a regex. I've done this a hundred times for search inputs.
 </Dialogue>
 
-You already use `String.split()` to break strings apart — splitting CSV rows, parsing search queries, extracting URL parameters. Word tokenization is the same operation, applied to natural language.
+You already use `String.split()` to break strings apart: CSV rows, search queries, URL parameters. Clinical notes are a harder version of that job: periods inside abbreviations, hyphens inside drug names, slashes inside blood pressure readings.
 
 <LearningObjectives objectives={["Split clinical text into word tokens using regex patterns", "Handle punctuation, numbers, and special characters in medical text", "Understand whitespace vs. regex-based tokenization strategies", "Build a robust word tokenizer for clinical notes"]} />
 
@@ -113,4 +113,4 @@ Build a word tokenizer that handles clinical text edge cases.
 
 <Exercise slug="word-tokenize" />
 
-<KeyTakeaways takeaways={["Word tokenization is String.split() with clinical awareness", "Naive space-splitting fails on punctuation, hyphens, and medical patterns", "Regex-based tokenizers can preserve meaningful units like vitals and compound words", "The quality of your tokenizer directly affects model accuracy"]} />
+<KeyTakeaways takeaways={["Extracting with text.match(/[a-z0-9]+/g) beats splitting on spaces: '120/80,' stops dragging its comma along", "Naive space-splitting fails on punctuation, hyphens, and medical patterns", "Regex-based tokenizers can preserve meaningful units like vitals and compound words", "The quality of your tokenizer directly affects model accuracy"]} />

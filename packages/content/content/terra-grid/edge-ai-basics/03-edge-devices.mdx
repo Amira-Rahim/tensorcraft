@@ -10,20 +10,20 @@ context:
   narrative: "Tariq opens a shipping crate of new gateway devices destined for Site 12."
   speaker: "Tariq Hussain"
 concept:
-  explanation: "Edge devices have strict hardware constraints — understanding them is like understanding your device testing matrix for responsive web development."
+  explanation: "Edge devices have strict hardware constraints. Understanding them is like understanding your device testing matrix for responsive web development."
   bridge:
     feTitle: "Device Testing Matrix"
     feCode: "// Low-end: 2GB RAM, slow CPU\n// Must test on real constraints"
     mlTitle: "Edge Device Specs"
     mlCode: "// Gateway: 512MB RAM, ARM Cortex-A53\n// Must profile on real hardware"
     tier: structural
-    breaks: "Device testing matrices use feature detection at runtime. Edge device model selection must match model size to RAM, ops to NPU/GPU support, quantization to supported numeric formats, and thermal envelope to inference cadence — a model that loads on one device fails to load on a 'similar' one with less RAM."
+    breaks: "Device testing matrices use feature detection at runtime. Edge device model selection must match model size to RAM, ops to NPU/GPU support, quantization to supported numeric formats, and thermal envelope to inference cadence. A model that loads on one device fails to load on a 'similar' one with less RAM."
 consequence:
   narrative: "You now understand exactly what hardware your models must run on."
   nextLessonTeaser: "Next: building your first edge model"
 hints:
   - level: nudge
-    content: "Think about testing your web app on a low-end Android phone"
+    content: "canDeployModel() is a spec check: compare the model's RAM, storage, and compute needs against each EdgeDevice's fields"
   - level: guidance
     content: "List the constraints: RAM, CPU architecture, storage, power"
   - level: solution
@@ -47,7 +47,7 @@ You test your web applications on low-end devices. You know the pain of a React 
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-In frontend development, you maintain a device testing matrix — the range of devices your application must support. Edge ML requires the same discipline. You need to know your target hardware intimately.
+In frontend development, you maintain a device testing matrix: the range of devices your application must support. Edge ML requires the same discipline. You need to know your target hardware intimately.
 
 <CodeBlock language="typescript" title="device-constraints.ts">
 {`interface EdgeDevice {
@@ -87,7 +87,7 @@ console.log(canDeployModel(terraGateway, 200, 400));
 // { fits: false, reason: "Model needs 400MB RAM, device budget is 307MB..." }`}
 </CodeBlock>
 
-The 60% rule: never allocate more than 60% of device RAM to your model. The OS, sensor drivers, and communication stack need the rest. Sound familiar? It is the same principle as keeping your JavaScript bundle under your performance budget — leave headroom for the browser.
+The 60% rule: never allocate more than 60% of device RAM to your model. The OS, sensor drivers, and communication stack need the rest. Sound familiar? It is the same principle as keeping your JavaScript bundle under your performance budget: leave headroom for the browser.
 
 ## Challenge
 
@@ -95,4 +95,4 @@ Determine whether given models fit within edge device constraints.
 
 <Exercise slug="device-constraints" />
 
-<KeyTakeaways takeaways={["Edge devices have strict RAM, CPU, storage, and power constraints", "The 60% rule: never use more than 60% of device RAM for your model", "Profiling on real hardware is essential — just like device testing in frontend", "ARM processors have different performance characteristics than x86 desktop CPUs"]} />
+<KeyTakeaways takeaways={["Edge devices have strict RAM, CPU, storage, and power constraints", "The 60% rule: never use more than 60% of device RAM for your model", "Profile on the actual target hardware; numbers from your dev machine do not survive contact with a constrained device", "ARM processors have different performance characteristics than x86 desktop CPUs"]} />

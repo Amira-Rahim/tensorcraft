@@ -10,7 +10,7 @@ context:
   narrative: "The cloud model knows everything about anomaly detection. We need to transfer that knowledge to a tiny edge model."
   speaker: "Priya Sharma"
 concept:
-  explanation: "Knowledge distillation trains a small 'student' model to mimic a large 'teacher' model — like code splitting where a small chunk contains just the code needed for a specific route."
+  explanation: "Knowledge distillation trains a small 'student' model to mimic a large 'teacher' model, like code splitting where a small chunk contains just the code needed for a specific route."
   bridge:
     feTitle: "Code Splitting"
     feCode: "// Full bundle: 2MB — everything\n// Route chunk: 50KB — just what's needed\nconst Page = lazy(() => import('./page'));"
@@ -35,7 +35,7 @@ keywords:
 ---
 
 <Dialogue speaker="Priya Sharma">
-Our cloud anomaly detector is a 200MB model trained on three years of sensor data from all 47 sites. It knows every failure pattern. I need a 5MB model for the edge that captures the essential knowledge. Not all of it — just enough.
+Our cloud anomaly detector is a 200MB model trained on three years of sensor data from all 47 sites. It knows every failure pattern. I need a 5MB model for the edge that captures the essential knowledge. Not all of it. Just enough.
 </Dialogue>
 
 Code splitting extracts the minimum JavaScript needed for a specific route from the full application bundle. Knowledge distillation does the same for models: extract the minimum knowledge needed for a specific task from a large, general model.
@@ -98,10 +98,10 @@ L = α · L_KD(student_soft, teacher_soft, T) + (1 − α) · L_CE(student_hard,
 `p_i = exp(z_i / T) / Σ_j exp(z_j / T)`
 
 - T = 1: standard softmax
-- T > 1: "softer" distribution — probabilities pulled toward uniform, exposing the relative ordering of low-probability classes
+- T > 1: "softer" distribution, probabilities pulled toward uniform, exposing the relative ordering of low-probability classes
 - T → ∞: uniform
 
-**Why high T?** The teacher's most informative signal isn't the top-1 prediction (that matches the label). It's the relative confidence on alternative classes — "this image is mostly cat (0.85), then small dog (0.10), then nothing else (0.05)" tells you the cat-dog boundary. With T=1 those low values round to noise. With T=4 they expand to meaningful signal.
+**Why high T?** The teacher's most informative signal isn't the top-1 prediction (that matches the label). It's the relative confidence on alternative classes: "this image is mostly cat (0.85), then small dog (0.10), then nothing else (0.05)" tells you the cat-dog boundary. With T=1 those low values round to noise. With T=4 they expand to meaningful signal.
 
 **KD loss:**
 

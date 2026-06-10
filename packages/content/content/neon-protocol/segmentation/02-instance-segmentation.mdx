@@ -7,25 +7,25 @@ order: 2
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Zara zooms into a crowd on the District 7 feed. The semantic mask shows all people as the same red blob. 'Useful — but the resistance needs to count individuals. We need to tell them apart. That is instance segmentation.'"
+  narrative: "Zara zooms into a crowd on the District 7 feed. The semantic mask shows all people as the same red blob. 'Useful. But the resistance needs to count individuals. We need to tell them apart. That is instance segmentation.'"
   speaker: "Zara"
 concept:
-  explanation: "Instance segmentation distinguishes individual objects of the same class. While semantic segmentation labels all 'person' pixels the same, instance segmentation gives each person a unique ID — like DOM elements that share a class but have unique IDs."
+  explanation: "Instance segmentation distinguishes individual objects of the same class. While semantic segmentation labels all 'person' pixels the same, instance segmentation gives each person a unique ID, like DOM elements that share a class but have unique IDs."
   bridge:
     feTitle: "DOM element identity vs class"
     feCode: "document.querySelectorAll('.person'); // same class, different elements"
     mlTitle: "Instance Segmentation"
     mlCode: "// Same class 'person', but instance IDs: person-1, person-2, person-3"
     tier: structural
-    breaks: "DOM identity (querySelector) and class (className) are author-assigned and unique by construction. Instance segmentation must distinguish overlapping objects of the same class from raw pixels — the model assigns instance IDs that may merge two adjacent cars or split one car into multiple instances. ID stability across frames requires explicit tracking, not just per-frame segmentation."
+    breaks: "DOM identity (querySelector) and class (className) are author-assigned and unique by construction. Instance segmentation must distinguish overlapping objects of the same class from raw pixels. The model assigns instance IDs that may merge two adjacent cars or split one car into multiple instances. ID stability across frames requires explicit tracking, not just per-frame segmentation."
 consequence:
-  narrative: "The red blob separates into distinct silhouettes — each person outlined individually. NEON chimes in: 'I can now track 14 individuals in this frame. Meridian tracks 14 million. But ours run in the browser.'"
-  nextLessonTeaser: "Next: U-Net architecture — the encoder-decoder structure that makes dense prediction possible"
+  narrative: "The red blob separates into distinct silhouettes, each person outlined individually. NEON chimes in: 'I can now track 14 individuals in this frame. Meridian tracks 14 million. But ours run in the browser.'"
+  nextLessonTeaser: "Next: U-Net architecture. The encoder-decoder structure that makes dense prediction possible"
 hints:
   - level: nudge
     content: "Instance segmentation combines detection (which objects?) with segmentation (which pixels?)"
   - level: guidance
-    content: "Each detected object gets its own binary mask — a tensor of 0s and 1s"
+    content: "Each detected object gets its own binary mask, a tensor of 0s and 1s"
   - level: solution
     content: "For each detection, generate a binary mask and assign a unique instance ID"
 keywords:
@@ -43,7 +43,9 @@ Semantic segmentation says "these pixels are people." Instance segmentation says
 So semantic segmentation is `.className` and instance segmentation is `#elementId`?
 </Dialogue>
 
-Exactly. In the DOM, elements with the same class share a category but remain distinct nodes. Instance segmentation does the same for pixels: every object gets its own mask, even when multiple objects share the same class label.
+<Dialogue speaker="Zara">
+As selectors, yes. As guarantees, no. Your ids are unique because you assigned them. An instance model has to invent its IDs from raw pixels, and it gets that wrong in two specific ways: two people standing close merge into one instance, or one person splits into two. And nothing keeps person-2 in this frame from becoming person-5 in the next. ID stability across frames takes explicit tracking on top of per-frame segmentation.
+</Dialogue>
 
 <LearningObjectives objectives={["Distinguish semantic segmentation (class labels) from instance segmentation (unique object masks)", "Represent instances as separate binary masks", "Assign unique IDs to detected objects", "Connect the concept to DOM element identity vs class membership"]} />
 

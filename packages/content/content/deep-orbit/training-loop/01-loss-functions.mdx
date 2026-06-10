@@ -36,14 +36,14 @@ skillAxes: [training]
 ---
 
 <Dialogue speaker="Dr. Farah">
-The network predicts 0.52 for a signal that should be 1.0. How wrong is that? We need a precise, mathematical measure of wrongness — a loss function.
+The network predicts 0.52 for a signal that should be 1.0. How wrong is that? We need a precise, mathematical measure of wrongness: a loss function.
 </Dialogue>
 
 <LearningObjectives objectives={["Understand what loss functions measure and why they're essential", "Implement MSE (Mean Squared Error) for regression tasks", "Implement binary crossentropy for classification tasks", "Interpret loss values — lower is better, zero is perfect"]} />
 
 ## How Wrong Are We?
 
-In testing, assertions tell you if something's wrong: `expect(actual).toBe(expected)`. Loss functions do the same for neural networks — they compute a single number representing how wrong all predictions are.
+0.52 against a true label of 1.0 means the network is off by 0.48. Square that and you get 0.23, and averaging the squares across every prediction in a batch gives you mean squared error: one number that answers Farah's question. If you've written `expect(actual).toBe(expected)`, you've used the same idea before. A loss function is an assertion that returns a distance instead of a pass/fail.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -81,7 +81,7 @@ Think of loss as the "distance" between where you are and where you want to be. 
 
 `BCE = -(1/n) Σ [ yᵢ log(ŷᵢ) + (1-yᵢ) log(1-ŷᵢ) ]`
 
-When the true label is 1 and the model predicts 0.01, `-log(0.01) ≈ 4.6` — a strong gradient signal. When MSE would say "off by 0.99² ≈ 0.98", BCE says "off by 4.6". The loss curve shape is what trains.
+When the true label is 1 and the model predicts 0.01, `-log(0.01) ≈ 4.6`: a strong gradient signal. When MSE would say "off by 0.99² ≈ 0.98", BCE says "off by 4.6". The loss curve shape is what trains.
 </DerivationDrawer>
 
 ## Challenge
@@ -100,4 +100,4 @@ Calculate the loss for the DEEP SCAN classifier's initial predictions.
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Loss functions quantify prediction error — like test assertion diffs", "MSE: good for regression, penalizes large errors quadratically", "Binary crossentropy: better for classification (0/1 outputs)", "Training goal: minimize loss toward zero"]} />
+<KeyTakeaways takeaways={["A prediction of 0.52 on a true label of 1.0 is the starting problem: loss turns 'how wrong' into one number you can minimize", "MSE: good for regression, penalizes large errors quadratically", "Binary crossentropy: better for classification (0/1 outputs)", "Training goal: minimize loss toward zero"]} />

@@ -42,10 +42,10 @@ The LSTM is great at short-range patterns. The attention model catches long-rang
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-Exactly. Each model has blind spots. An ensemble covers them. Like having three specialists review the same data — their combined judgment is stronger than any individual.
+Because all three run on every input. An ensemble isn't a router that picks the right specialist. Every model fires every time, and you pay the sum of their inference costs. If the compute budget covers that, then yes: each model has blind spots, and the ensemble covers them.
 </Dialogue>
 
-Micro-frontends compose multiple independent applications into one coherent view — each app handles its domain expertise. Model ensembles do the same: each model brings its own strengths, and the combination is more robust than any single model.
+Micro-frontends compose multiple independent applications into one coherent view, each app handling its domain. The analogy bends at exactly the point Farah named: micro-frontends partition the work by route, while an ensemble multiplies it per request.
 
 <LearningObjectives objectives={["Combine multiple models using averaging, weighted averaging, and stacking", "Understand why ensembles reduce error: averaging out individual model mistakes", "Build an ensemble of LSTM, attention, and Kalman filter for signal forecasting", "Evaluate ensemble performance vs individual models"]} />
 

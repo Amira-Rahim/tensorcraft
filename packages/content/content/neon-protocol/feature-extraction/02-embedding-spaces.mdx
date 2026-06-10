@@ -7,7 +7,7 @@ order: 2
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "NEON projects Meridian's feature database into 3D space on the holotable. Millions of points float in the air — and they are not random. Drones cluster together. Faces cluster together. Vehicles cluster together. 'This is the geometry of visual meaning,' NEON says. 'Similar things are near each other.'"
+  narrative: "NEON projects Meridian's feature database into 3D space on the holotable. Millions of points float in the air, and they are not random. Drones cluster together. Faces cluster together. Vehicles cluster together. 'This is the geometry of visual meaning,' NEON says. 'Similar things are near each other.'"
   speaker: "NEON"
 concept:
   explanation: "An embedding space is a high-dimensional coordinate system where each point represents an image's feature vector. The key property: images that look similar are positioned near each other. Distance in embedding space equals visual similarity."
@@ -17,17 +17,17 @@ concept:
     mlTitle: "Embedding Space"
     mlCode: "// 512-dimensional positions encode visual similarity"
     tier: structural
-    breaks: "2D scatter plot positioning uses two axes you assign meaning to. Embedding spaces have hundreds to thousands of dimensions, no human-readable axes, and meaningful directions emerge from training — visualizing requires lossy projection (UMAP, t-SNE) that distorts distances."
+    breaks: "2D scatter plot positioning uses two axes you assign meaning to. Embedding spaces have hundreds to thousands of dimensions, no human-readable axes, and meaningful directions emerge from training; visualizing requires lossy projection (UMAP, t-SNE) that distorts distances."
 consequence:
-  narrative: "Noor rotates the holographic point cloud. She zooms into the drone cluster — hundreds of points, tightly packed. 'If we can find this cluster,' she says, 'we can identify any drone from a single frame. We do not need labels. Just proximity.'"
-  nextLessonTeaser: "Next: similarity search — using distance in embedding space to find visually similar images"
+  narrative: "Noor rotates the holographic point cloud. She zooms into the drone cluster: hundreds of points, tightly packed. 'If we can find this cluster,' she says, 'we can identify any drone from a single frame. We do not need labels. Just proximity.'"
+  nextLessonTeaser: "Next: similarity search. Using distance in embedding space to find visually similar images"
 hints:
   - level: nudge
     content: "Embedding spaces arrange points so that similar items are geometrically close"
   - level: guidance
     content: "Use cosine similarity or Euclidean distance to measure closeness in embedding space"
   - level: solution
-    content: "Cosine similarity: dot(a, b) / (norm(a) * norm(b)) — values near 1 mean very similar"
+    content: "Cosine similarity: dot(a, b) / (norm(a) * norm(b)); values near 1 mean very similar"
 keywords:
   - embedding-space
   - feature-space
@@ -44,7 +44,7 @@ When I was Meridian's surveillance AI, I processed features in a 512-dimensional
 So it is like a scatter plot, but with 512 axes instead of 2. Points that are close together represent images that look alike.
 </Dialogue>
 
-On a 2D scatter plot, position encodes meaning — points near each other share similar data values. An embedding space works the same way, but in hundreds of dimensions. Each feature vector is a coordinate. Distance between coordinates equals semantic distance between images. This is not a metaphor — it is literal geometry.
+On a 2D scatter plot, position encodes meaning: points near each other share similar data values. An embedding space works the same way, but in hundreds of dimensions. Each feature vector is a coordinate. Distance between coordinates equals semantic distance between images. This is not a metaphor. It is literal geometry.
 
 <LearningObjectives objectives={["Understand embedding spaces as high-dimensional coordinate systems for visual data", "Calculate cosine similarity between feature vectors", "Interpret distance in embedding space as visual similarity", "Visualize how similar images naturally cluster in feature space"]} />
 
@@ -116,7 +116,7 @@ Implement cosine similarity to compare feature vectors.
 
 **When Euclidean wins:** explicit distance-preserving embeddings (UMAP, t-SNE projections) where you want closeness to be metric. Recommendation systems where magnitude encodes engagement strength.
 
-**Equivalent under L2 normalization:** if all vectors are L2-normalized to unit length, `||a − b||² = 2 − 2 · cos(a, b)`. Cosine similarity and Euclidean distance become monotonic transforms — same ranking, different scale. Most production embedding systems pre-normalize, then use either interchangeably.
+**Equivalent under L2 normalization:** if all vectors are L2-normalized to unit length, `||a − b||² = 2 − 2 · cos(a, b)`. Cosine similarity and Euclidean distance become monotonic transforms: same ranking, different scale. Most production embedding systems pre-normalize, then use either interchangeably.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["Embedding spaces are high-dimensional coordinate systems where position encodes visual meaning", "Cosine similarity measures the angle between vectors — 1.0 means identical, 0.0 means unrelated", "Similar images cluster together naturally in embedding space without explicit rules", "Distance in feature space is the foundation for search, recognition, and anomaly detection"]} />
+<KeyTakeaways takeaways={["Embedding spaces are high-dimensional coordinate systems where position encodes visual meaning", "Cosine similarity measures the angle between vectors — 1.0 means pointing the same direction, 0.0 means unrelated", "Similar images cluster together naturally in embedding space without explicit rules", "Distance in feature space is the foundation for search, recognition, and anomaly detection"]} />

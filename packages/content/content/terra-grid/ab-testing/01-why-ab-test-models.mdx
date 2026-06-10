@@ -10,7 +10,7 @@ context:
   narrative: "Hassan pulls up the incident report from March 2024. 'Model v2.3 went to all 12,400 devices at once. Power grid predictions drifted 15% within 48 hours. Three weeks before anyone noticed. That cost us $4.2 million. Never again.'"
   speaker: "Hassan Al-Rashid"
 concept:
-  explanation: "A/B testing ML models validates improvements before full rollout — the same principle as feature flags in frontend development, but applied to model versions instead of UI changes."
+  explanation: "A/B testing ML models validates improvements before full rollout, the same principle as feature flags in frontend development, but applied to model versions instead of UI changes."
   bridge:
     feTitle: "Feature Flags"
     feCode: "if (featureFlags.newCheckout) { renderNewCheckout(); } else { renderOldCheckout(); }"
@@ -19,10 +19,10 @@ concept:
     tier: identity
 consequence:
   narrative: "Hassan nods at the monitoring dashboard. 'Now every model update goes through A/B testing. We prove it's better before it touches production. Tariq, show them what happened when we tested v3.1.' Tariq grins. 'The new model caught a bearing failure 6 hours earlier. That is real impact.'"
-  nextLessonTeaser: "Next: traffic splitting — routing requests to different model versions"
+  nextLessonTeaser: "Next: traffic splitting, routing requests to different model versions"
 hints:
   - level: nudge
-    content: "Think of model versions like feature flag variants — each user gets one version, and you measure which performs better"
+    content: "Your ModelRouter.assignModel() should hash the device ID into a bucket, so device-7alpha-003 gets the same model version on every request"
   - level: guidance
     content: "Create a ModelRouter that accepts a version map and routes predictions based on assignment"
   - level: solution
@@ -39,10 +39,10 @@ March 2024. Model v2.3 deployed to all 12,400 devices simultaneously. Power grid
 </Dialogue>
 
 <Dialogue speaker="Tariq Hussain">
-We had the monitoring. We had the metrics. What we did not have was a controlled comparison. The old model was gone — nothing to measure against.
+We had the monitoring. We had the metrics. What we didn't have was a controlled comparison. The old model was gone. Nothing to measure against.
 </Dialogue>
 
-You have deployed feature flags in frontend apps. Show the new checkout to 10% of users, measure conversion rates, roll out when the numbers prove it works. A/B testing ML models follows the exact same pattern: route some devices to the new model, some to the old, and let the data decide which is better.
+Route 10% of the fleet to the new model. Keep 90% on the old one. Let live metrics pick the winner. You have shipped this mechanism before, as a feature flag on a checkout flow; here the payload is a model version instead of a UI variant. What changes is the timescale. A conversion shows up in minutes, while the ground truth for a bearing-failure prediction can take hours to arrive.
 
 <LearningObjectives objectives={["Understand why A/B testing is critical for production ML deployments", "Map feature flag concepts to model version routing", "Implement a basic model router that assigns devices to model versions", "Define metrics that determine whether a new model is actually better"]} />
 
@@ -51,8 +51,7 @@ You have deployed feature flags in frontend apps. Show the new checkout to 10% o
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
 <CodeBlock language="typescript" title="model-router.ts">
-{`// A/B testing models = feature flags for ML
-// Same concept: route users to variants, measure outcomes
+{`// Route devices to model variants, measure outcomes per version
 
 interface ModelVersion {
   id: string;
@@ -112,7 +111,7 @@ console.log(\`Model \${result.modelVersion}: \${result.prediction}\`);`}
 ## Metrics Collection
 
 <CodeBlock language="typescript" title="ab-metrics.ts">
-{`// Track outcomes per model version — same as tracking conversions per variant
+{`// Track outcomes per model version
 
 interface PredictionOutcome {
   deviceId: string;
@@ -176,4 +175,4 @@ Build a model router with deterministic device assignment.
   tier="intuition"
 />
 
-<KeyTakeaways takeaways={["A/B testing ML models follows the same pattern as frontend feature flags — route to variants, measure outcomes", "Deterministic assignment (hash-based) ensures each device always gets the same model version", "Collect prediction outcomes per version to compare accuracy, latency, and detection rate", "The $4.2 million lesson: never deploy a model update to 100% of devices without controlled comparison"]} />
+<KeyTakeaways takeaways={["Route a fixed share of devices to each model version and judge on production outcomes, not offline benchmarks", "Deterministic assignment (hash-based) ensures each device always gets the same model version", "Collect prediction outcomes per version to compare accuracy, latency, and detection rate", "The $4.2 million lesson: never deploy a model update to 100% of devices without controlled comparison"]} />

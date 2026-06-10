@@ -7,7 +7,7 @@ order: 2
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Samir designs the generator network — the creative half of the GAN. Rohan compares it to a template engine that takes data and produces structured output."
+  narrative: "Samir designs the generator network, the creative half of the GAN. Rohan compares it to a template engine that takes data and produces structured output."
   speaker: "Rohan"
 concept:
   explanation: "The generator takes a low-dimensional noise vector and progressively upscales it through dense and reshape layers to produce full-resolution output."
@@ -17,13 +17,13 @@ concept:
     mlTitle: "Generator Network"
     mlCode: "const image = generator.predict(tf.randomNormal([1, 100]))"
     tier: structural
-    breaks: "Template engines fill known slots with provided values. Generator networks map noise vectors to images via learned upsampling — the output structure is implicit in the architecture and weights, not in any template."
+    breaks: "Template engines fill known slots with provided values. Generator networks map noise vectors to images via learned upsampling. The output structure is implicit in the architecture and weights, not in any template."
 consequence:
-  narrative: "The generator architecture takes shape — a pipeline that transforms a 100-dimensional whisper of randomness into a 28x28 image. Rough, but unmistakably structured."
-  nextLessonTeaser: "Next: building the discriminator — the critic that judges the generator's work"
+  narrative: "The generator architecture takes shape: a pipeline that transforms a 100-dimensional whisper of randomness into a 28x28 image. Rough, but unmistakably structured."
+  nextLessonTeaser: "Next: building the discriminator, the critic that judges the generator's work"
 hints:
   - level: nudge
-    content: "A template engine takes compact data and expands it into structured HTML — the generator does the same for images"
+    content: "A template engine takes compact data and expands it into structured HTML. The generator does the same for images"
   - level: guidance
     content: "Use dense layers with increasing units: 100 → 256 → 512 → 784"
   - level: solution
@@ -36,11 +36,11 @@ keywords:
 ---
 
 <Dialogue speaker="Rohan">
-Think of a template engine. You feed it a small data object — title, items, theme — and it expands that into a full HTML page. Every template call produces a different page, but they all follow the same structure. A generator does the same thing: small input, structured output.
+A template engine takes a small data object (title, items, theme) and expands it into a full HTML page. Every template call produces a different page, but they all follow the same structure. A generator does the same thing: small input, structured output.
 </Dialogue>
 
 <Dialogue speaker="MUSE">
-The seed is small. The tree is vast. Architecture is the blueprint between them.
+My generator half starts from 100 numbers and ends at 784. Two dense layers in between, 256 units then 512, each one adding detail the noise never contained. We could log the activations after each layer and watch where the structure first appears.
 </Dialogue>
 
 A generator is an upscaling pipeline. It takes a compact noise vector (the seed) and progressively expands it through layers until it reaches the target resolution. Each layer adds detail and structure.
@@ -153,4 +153,4 @@ With stride 2, K=4, P=1: each input pixel becomes a 4×4 patch in the output, mu
 **Checkerboard artifacts:** when K is not divisible by stride, overlap regions get more contributions than non-overlap → visible grid pattern in generated images. Fix: use K = 2·stride (e.g. K=4 with stride=2) or replace transposed conv with `bilinear upsample + regular conv` ("sub-pixel convolution").
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["Generators progressively upscale from noise to full-resolution output", "LeakyReLU prevents dead neurons; BatchNorm stabilizes training", "Output activation must be bounded — sigmoid for [0,1], tanh for [-1,1]", "The architecture mirrors a template engine: compact input to structured output"]} />
+<KeyTakeaways takeaways={["Generators progressively upscale from noise to full-resolution output", "LeakyReLU prevents dead neurons; BatchNorm stabilizes training", "Output activation must be bounded — sigmoid for [0,1], tanh for [-1,1]", "Pair kernel size with stride (K = 2·stride) or transposed convolutions leave checkerboard artifacts in every generated image"]} />

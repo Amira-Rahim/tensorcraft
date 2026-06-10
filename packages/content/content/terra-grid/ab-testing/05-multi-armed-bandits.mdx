@@ -17,7 +17,7 @@ concept:
     mlTitle: "Adaptive Model Selection"
     mlCode: "// Route to best model more often, explore alternatives with epsilon"
     tier: structural
-    breaks: "Ad rotation has clear short-term reward signals. Production bandits face delayed rewards (long-term retention), non-stationary arms (model drift), and exploration cost — every fresh arm starts unpulled, and the reward signal is often a noisy proxy for the outcome you actually care about."
+    breaks: "Ad rotation has clear short-term reward signals. Production bandits face delayed rewards (long-term retention), non-stationary arms (model drift), and exploration cost. Every fresh arm starts unpulled, and the reward signal is often a noisy proxy for the outcome you actually care about."
 keywords:
   - multi-armed-bandit
   - epsilon-greedy
@@ -29,25 +29,25 @@ skillAxes:
   - evaluation
 consequence:
   narrative: "The bandit algorithm converges within 3 days. Model v3.1 receives 87% of traffic because it consistently outperforms. Priya: 'The algorithm found the winner faster than a fixed A/B test would have, and fewer devices were exposed to the worse model.'"
-  nextLessonTeaser: "Next module: Scale & Reliability — building infrastructure that survives the worst day"
+  nextLessonTeaser: "Next module: Scale & Reliability, building infrastructure that survives the worst day"
 hints:
   - level: nudge
     content: "Epsilon-greedy: exploit the best model most of the time, explore alternatives with probability epsilon"
   - level: guidance
     content: "Track rewards (successful predictions) per model and select the one with highest average reward"
   - level: solution
-    content: "Implement epsilon-greedy with decaying epsilon — explore more early, exploit more as confidence grows"
+    content: "Implement epsilon-greedy with decaying epsilon: explore more early, exploit more as confidence grows"
 ---
 
 <Dialogue speaker="Priya Sharma">
-Standard A/B tests split traffic 50/50 and wait for significance. That means half your devices run the worse model for the entire test duration. Multi-armed bandits are smarter — they shift traffic toward the winner as evidence accumulates. Less wasted exposure, faster convergence.
+Standard A/B tests split traffic 50/50 and wait for significance. That means half your devices run the worse model for the entire test duration. Multi-armed bandits are smarter: they shift traffic toward the winner as evidence accumulates. Less wasted exposure, faster convergence.
 </Dialogue>
 
 <Dialogue speaker="Hassan Al-Rashid">
 If it reduces the time our devices spend on a worse model, I want it. Show me the implementation.
 </Dialogue>
 
-You have seen dynamic ad rotation on websites: the system shows the highest-performing ad most of the time while occasionally testing alternatives. Multi-armed bandits apply the same explore-exploit tradeoff to model selection. Instead of fixed traffic splits, the algorithm adapts — sending more traffic to the model that is performing better while still exploring alternatives.
+The Region 5 test last winter ran a fixed 50/50 split for six weeks. By week two the dashboards already showed the new model winning; the protocol said keep going. For the remaining month, 6,200 devices ran a model everyone knew was worse, because the test design could not adapt. Multi-armed bandits exist for exactly this case. Like the ad rotation systems that show the best-performing ad most of the time while still sampling the rest, a bandit shifts traffic toward the winner as evidence accumulates instead of holding a fixed split until the calendar says stop.
 
 <LearningObjectives objectives={["Implement an epsilon-greedy multi-armed bandit for model selection", "Define regret and explain why minimizing it is a game-theoretic objective", "Build a UCB1 bandit and read its sub-linear regret bound"]} />
 
@@ -57,7 +57,7 @@ You have seen dynamic ad rotation on websites: the system shows the highest-perf
 
 ## Game Theory: Regret Minimization
 
-A bandit is the simplest game: one player (you) against an adversarial environment (the world's hidden reward distributions). Each round you pull an arm; the world reveals a reward. Your goal is not to win — there is no opponent — but to **minimize regret**.
+A bandit is the simplest game: one player (you) against an adversarial environment (the world's hidden reward distributions). Each round you pull an arm; the world reveals a reward. Your goal is not to win (there is no opponent) but to **minimize regret**.
 
 **Regret** is the gap between the reward you actually earned and the reward you would have earned if you had known the best arm from round one:
 
@@ -65,9 +65,9 @@ A bandit is the simplest game: one player (you) against an adversarial environme
 regret(T) = T · μ*  −  Σ rewards earned through round T
 ```
 
-where `μ*` is the mean of the best arm and `T` is the round count. A clueless agent pulling random arms incurs **linear** regret — proportional to `T`. A perfect oracle has zero regret. The bandit algorithm's job: stay as close to zero as possible.
+where `μ*` is the mean of the best arm and `T` is the round count. A clueless agent pulling random arms incurs **linear** regret, proportional to `T`. A perfect oracle has zero regret. The bandit algorithm's job: stay as close to zero as possible.
 
-**ε-greedy with fixed ε** has linear regret: every round there's a fixed `ε` chance of picking a suboptimal arm, so regret grows with `T`. **Decaying ε** does better but still trails the optimum. **UCB1** achieves **sub-linear** regret — `O(√(T log T))` — which is why it needs no `ε` to tune. The exploration bonus `√(2 ln(N) / pulls)` shrinks naturally as an arm is pulled more, so confident arms get exploited and uncertain arms get sampled.
+**ε-greedy with fixed ε** has linear regret: every round there's a fixed `ε` chance of picking a suboptimal arm, so regret grows with `T`. **Decaying ε** does better but still trails the optimum. **UCB1** achieves **sub-linear** regret, `O(√(T log T))`, which is why it needs no `ε` to tune. The exploration bonus `√(2 ln(N) / pulls)` shrinks naturally as an arm is pulled more, so confident arms get exploited and uncertain arms get sampled.
 
 This is the same logical move the GAN lesson made: name the problem as a game with a formal payoff, then ask what strategy minimizes the loss.
 

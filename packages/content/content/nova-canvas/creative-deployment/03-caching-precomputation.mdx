@@ -7,23 +7,23 @@ order: 3
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "Samir runs the numbers. 'Even optimized, generation takes 340ms. For the most popular prompts — sunset, dragon, abstract — we can pre-generate and cache. Instant response for the common case, generation for the novel case.'"
+  narrative: "Samir runs the numbers. 'Even optimized, generation takes 340ms. For the most popular prompts (sunset, dragon, abstract) we can pre-generate and cache. Instant response for the common case, generation for the novel case.'"
   speaker: "Samir"
 concept:
-  explanation: "Caching generated outputs trades storage for computation time — the same tradeoff as Service Worker caches, CDN edge caching, and React.memo."
+  explanation: "Caching generated outputs trades storage for computation time, the same tradeoff as Service Worker caches, CDN edge caching, and React.memo."
   bridge:
     feTitle: "Service Worker Cache"
     feCode: "caches.open('v1').then(cache => cache.put(request, response));"
     mlTitle: "Generation Cache"
     mlCode: "const cache = new Map(); cache.set(promptHash, generatedOutput);"
     tier: structural
-    breaks: "Service worker cache keys static assets by URL — same URL, same payload. Generation cache keys must include prompt, seed, model version, and inference parameters; a one-character prompt change misses the cache, while identical prompts without a fixed seed produce different output and shouldn't share a cache entry at all."
+    breaks: "Service worker cache keys static assets by URL: same URL, same payload. Generation cache keys must include prompt, seed, model version, and inference parameters; a one-character prompt change misses the cache, while identical prompts without a fixed seed produce different output and shouldn't share a cache entry at all."
 consequence:
   narrative: "The top 100 prompts now respond in under 10ms. Samir: 'We pre-generated 200 variations and cached them in the Service Worker. The visitor gets instant art. The model only fires for novel requests.'"
   nextLessonTeaser: "Next: handling 200 concurrent generators"
 hints:
   - level: nudge
-    content: "Think about which generated outputs will be requested most often — cache those"
+    content: "The cache key has to capture everything that changes the output: hash prompt + seed + model version + inference parameters, then check it before calling predict"
   - level: guidance
     content: "Hash the input parameters, check the cache first, generate only on cache miss"
   - level: solution
@@ -43,7 +43,7 @@ Not every generation needs to be real-time. The top 20 prompts account for 60% o
 Cache the predictable. Generate the novel. Simple. How much storage do we need?
 </Dialogue>
 
-You have implemented caching at every layer of the frontend stack. Browser cache headers, Service Worker caches, React.memo, useMemo, CDN edge caching. Every caching strategy trades storage for computation. Generation caching is no different: store popular outputs and skip the expensive inference for repeat requests.
+Wrap two identical requests in `console.time('generate')` and the log reads 340ms, twice. The model did the same expensive work and billed you both times. This is the exact waste `React.memo` exists to prevent, and cache headers, Service Worker caches, `useMemo`, and CDN edges all make the same trade: storage for computation. Generation caching is no different. Store the popular outputs; skip the inference on repeats.
 
 <LearningObjectives objectives={["Implement a generation cache with hash-based key lookup", "Pre-compute popular outputs during off-peak hours", "Use Service Worker caches for offline-capable generation results", "Design a cache eviction strategy based on frequency and recency"]} />
 
@@ -187,4 +187,4 @@ Implement a cache-first generation strategy with LRU eviction.
 
 <Exercise slug="cache-outputs" />
 
-<KeyTakeaways takeaways={["Generation caching trades storage for computation — same tradeoff as Service Worker caches and CDN", "LRU eviction ensures the cache holds the most relevant outputs without unbounded growth", "Pre-computing popular outputs during off-peak hours eliminates generation latency for common requests", "Cache-first with network fallback is the optimal strategy: instant for known, generative for novel"]} />
+<KeyTakeaways takeaways={["Cache keys must include prompt, seed, model version, and parameters: unseeded generations of the same prompt should never share an entry", "LRU eviction ensures the cache holds the most relevant outputs without unbounded growth", "Pre-computing popular outputs during off-peak hours eliminates generation latency for common requests", "Cache-first with network fallback is the optimal strategy: instant for known, generative for novel"]} />

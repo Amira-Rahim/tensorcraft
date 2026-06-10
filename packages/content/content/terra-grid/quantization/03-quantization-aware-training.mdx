@@ -10,22 +10,22 @@ context:
   narrative: "Post-training quantization missed a bearing failure at Site 23. The model needs to be trained with quantization in mind."
   speaker: "Hassan Al-Rashid"
 concept:
-  explanation: "Quantization-aware training trains with quantization noise built in — like mobile-first development where you design for constraints from the start."
+  explanation: "Quantization-aware training trains with quantization noise built in, like mobile-first development where you design for constraints from the start."
   bridge:
     feTitle: "Mobile-First Development"
     feCode: "// Design for mobile constraints first\n// Then enhance for larger screens\n@media (min-width: 768px) { ... }"
     mlTitle: "Quantization-Aware Training"
     mlCode: "// Train with quantization noise\n// Model learns to be robust to Int8 precision\nsimulateQuantization(weights)"
     tier: structural
-    breaks: "Mobile-first design is a layout strategy you write once. Quantization-aware training simulates int8 rounding during training so the model learns weights that survive quantization — it changes the training loop and adds compute, not just the output build."
+    breaks: "Mobile-first design is a layout strategy you write once. Quantization-aware training simulates int8 rounding during training so the model learns weights that survive quantization. It changes the training loop and adds compute, not just the output build."
 consequence:
-  narrative: "The QAT model handles the bearing failure case correctly — quantization noise made it more robust."
-  nextLessonTeaser: "Next: mixed precision — different precision for different layers"
+  narrative: "The QAT model handles the bearing failure case correctly: quantization noise made it more robust."
+  nextLessonTeaser: "Next: mixed precision, different precision for different layers"
 hints:
   - level: nudge
     content: "Simulate quantization during training by adding rounding noise"
   - level: guidance
-    content: "Quantize and dequantize during the forward pass — the model learns to handle the noise"
+    content: "Quantize and dequantize during the forward pass; the model learns to handle the noise"
   - level: solution
     content: "Apply fake quantization: round weights to nearest Int8 value during forward pass, use real gradients for backward pass"
 keywords:
@@ -40,7 +40,7 @@ Site 23. The post-training quantized model missed a bearing failure. The vibrati
 </Dialogue>
 
 <Dialogue speaker="Elif Yilmaz">
-The failure signature was a 0.3% vibration anomaly. Post-training quantization rounded it away. The model literally could not see the difference.
+The failure signature was a 0.3% vibration anomaly. Post-training quantization rounded it away. The model literally couldn't see the difference.
 </Dialogue>
 
 Mobile-first development means designing for the smallest screen from the start, then enhancing for larger displays. Quantization-aware training (QAT) applies the same philosophy: train the model knowing it will run at Int8 precision, so it learns to be accurate within those constraints.
@@ -100,7 +100,7 @@ Implement a fake quantization function for quantization-aware training.
 x_quantized = round((x − zp) / scale) · scale + zp     // simulate INT8 round-trip
 ```
 
-**Backward pass problem:** `round` has zero gradient almost everywhere — backprop would block learning entirely.
+**Backward pass problem:** `round` has zero gradient almost everywhere, so backprop would block learning entirely.
 
 **Straight-through estimator (STE):** during backward, treat round as identity:
 
@@ -110,7 +110,7 @@ The forward pass quantizes (so the model adapts to rounding errors), the backwar
 
 **Refinements:**
 - Clip the gradient to the range `[scale_min, scale_max]` to prevent activations outside the quantizable range from receiving signal.
-- **Learnable step-size quantization (LSQ):** make `scale` itself a trainable parameter — model jointly learns weights AND optimal quantization scale.
+- **Learnable step-size quantization (LSQ):** make `scale` itself a trainable parameter: the model jointly learns weights AND optimal quantization scale.
 
 QAT typically recovers 90-95% of the accuracy loss from PTQ at the cost of needing labeled training data + extra training time.
 </DerivationDrawer>
@@ -125,4 +125,4 @@ QAT typically recovers 90-95% of the accuracy loss from PTQ at the cost of needi
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["QAT trains with simulated quantization noise — mobile-first for models", "Fake quantization: quantize in forward pass, straight-through gradients in backward pass", "QAT typically achieves 0.5-1% better accuracy than post-training quantization", "Design for constraints from the start — do not retrofit precision later"]} />
+<KeyTakeaways takeaways={["QAT trains with simulated quantization noise so the model learns weights that survive Int8 rounding", "Fake quantization: quantize in forward pass, straight-through gradients in backward pass", "QAT typically achieves 0.5-1% better accuracy than post-training quantization", "Design for constraints from the start — do not retrofit precision later"]} />

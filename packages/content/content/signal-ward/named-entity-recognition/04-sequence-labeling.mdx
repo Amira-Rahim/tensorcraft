@@ -7,19 +7,19 @@ order: 4
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "Imran pushes for a neural approach to NER — one that considers context, not just individual tokens — while advocating for careful validation."
+  narrative: "Imran pushes for a neural approach to NER (one that considers context, not just individual tokens) while advocating for careful validation."
   speaker: "Imran"
 concept:
-  explanation: "Sequence labeling assigns a class to every token in a sequence using neural networks that consider surrounding context — like CSS class assignment where each element's class depends on its siblings."
+  explanation: "Sequence labeling assigns a class to every token in a sequence using neural networks that consider surrounding context, like CSS class assignment where each element's class depends on its siblings."
   bridge:
     feTitle: "CSS Class Assignment Per Element"
     feCode: "elements.forEach(el => el.className = getClass(el, siblings)); // context-aware styling"
     mlTitle: "Token Classification"
     mlCode: "tokens.forEach(t => t.label = classify(t, context)); // context-aware labeling"
     tier: structural
-    breaks: "CSS class assignment per element is deterministic — you wrote it. Token classification is per-position softmax, often using BiLSTM or transformer encoders, and adjacent token decisions are not independent (CRF layers model the joint distribution)."
+    breaks: "CSS class assignment per element is deterministic: you wrote it. Token classification is per-position softmax, often using BiLSTM or transformer encoders, and adjacent token decisions are not independent (CRF layers model the joint distribution)."
 consequence:
-  narrative: "Diagnostic One can now use surrounding context to resolve ambiguous tokens — 'cold' as a CONDITION vs. 'cold' as an adjective."
+  narrative: "Diagnostic One can now use surrounding context to resolve ambiguous tokens: 'cold' as a CONDITION vs. 'cold' as an adjective."
   nextLessonTeaser: "Next: the breakthrough — your NER pipeline catches a drug interaction three doctors missed."
 hints:
   - level: nudge
@@ -40,11 +40,11 @@ Our dictionary-based classifier labels every instance of "cold" as a CONDITION. 
 </Dialogue>
 
 <Dialogue speaker="Khalil">
-That's like CSS specificity. A bare `.highlight` selector might style the wrong elements. But `.medical-note > .symptom-list > .highlight` uses context — parent elements — to target precisely. Each element's class depends on where it sits in the DOM.
+That's like CSS specificity. A bare `.highlight` selector might style the wrong elements. But `.medical-note > .symptom-list > .highlight` uses context (parent elements) to target precisely. Each element's class depends on where it sits in the DOM.
 </Dialogue>
 
 <Dialogue speaker="Imran">
-Exactly. Sequence labeling considers the full context of each token — what comes before it, what comes after it — before assigning a label. It's CSS class assignment where every element's class depends on its siblings.
+With one twist your selectors don't have. A specificity rule is deterministic, you wrote it, it fires or it doesn't. Here the label at each position is a learned softmax, and neighboring decisions lean on each other, which is why CRF layers exist: they score the whole tag sequence jointly instead of each token alone. But yes, context before commitment. That's the move.
 </Dialogue>
 
 <LearningObjectives objectives={["Understand sequence labeling as context-aware token classification", "Build a BiLSTM-based sequence labeling model with TensorFlow.js", "Prepare training data with token-label pairs and padding", "Evaluate sequence labeling with per-token accuracy and span-level F1"]} />
@@ -53,9 +53,9 @@ Exactly. Sequence labeling considers the full context of each token — what com
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-In simple CSS, you assign a class to each element independently: `el.className = 'drug'`. But real-world styling often depends on context — `:first-child`, `:nth-of-type`, adjacent sibling selectors. The element's appearance depends on its neighbors.
+In simple CSS, you assign a class to each element independently: `el.className = 'drug'`. But real-world styling often depends on context: `:first-child`, `:nth-of-type`, adjacent sibling selectors. The element's appearance depends on its neighbors.
 
-Sequence labeling works the same way. A dictionary lookup classifies tokens in isolation. A neural sequence labeler considers the full sentence context before assigning each label:
+A dictionary lookup classifies tokens in isolation. A neural sequence labeler considers the full sentence context before assigning each label:
 
 - "Patient has a **cold**" → CONDITION (preceded by "has a")
 - "Apply **cold** compress" → O (preceded by "Apply", followed by "compress")
@@ -149,7 +149,7 @@ model.summary();`}
 ## Training the Labeler
 
 <Dialogue speaker="Vikram">
-The key insight: `returnSequences: true` on the LSTM means we get an output for every token, not just the last one. Without it, we'd get a single vector for the whole sentence — useful for classification, useless for labeling individual tokens.
+`returnSequences: true` on the LSTM means we get an output for every token, not just the last one. Without it, we'd get a single vector for the whole sentence: useful for classification, useless for labeling individual tokens.
 </Dialogue>
 
 Training requires aligned token-label pairs. Each training example is a sentence where every token has a BIO tag:
@@ -186,4 +186,4 @@ Build a sequence labeling model that assigns BIO tags to clinical tokens using a
 
 <Exercise slug="label-sequence" />
 
-<KeyTakeaways takeaways={["Sequence labeling assigns context-aware labels to every token, like CSS classes that depend on sibling elements", "BiLSTM captures context from both directions — what comes before AND after each token", "returnSequences: true produces per-token outputs, not a single sentence vector", "Span-level evaluation matters more than token-level accuracy in clinical NER"]} />
+<KeyTakeaways takeaways={["A dictionary labels 'cold' identically in 'has a cold' and 'cold compress'; a context-aware model separates them", "BiLSTM captures context from both directions — what comes before AND after each token", "returnSequences: true produces per-token outputs, not a single sentence vector", "Span-level evaluation matters more than token-level accuracy in clinical NER"]} />

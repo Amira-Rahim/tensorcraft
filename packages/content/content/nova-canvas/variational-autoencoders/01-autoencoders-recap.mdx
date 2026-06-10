@@ -7,7 +7,7 @@ order: 1
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Before diving into VAEs, Samir revisits autoencoders — the compression-reconstruction pipeline that forms the foundation. Rohan draws the parallel to audio compression codecs."
+  narrative: "Before diving into VAEs, Samir revisits autoencoders: the compression-reconstruction pipeline that forms the foundation. Rohan draws the parallel to audio compression codecs."
   speaker: "Rohan"
 concept:
   explanation: "An autoencoder compresses input through a bottleneck and reconstructs it, learning efficient representations. It is the foundation for VAEs."
@@ -17,13 +17,13 @@ concept:
     mlTitle: "Autoencoder"
     mlCode: "const z = encoder.predict(image); const reconstruction = decoder.predict(z);"
     tier: structural
-    breaks: "gzip/Brotli are lossless: decode reproduces input exactly. Autoencoders are lossy by design — the bottleneck forces information loss and the reconstruction fidelity is the training objective, not a free byproduct."
+    breaks: "gzip/Brotli are lossless: decode reproduces input exactly. Autoencoders are lossy by design. The bottleneck forces information loss and the reconstruction fidelity is the training objective, not a free byproduct."
 consequence:
-  narrative: "Samir has a working autoencoder that compresses and reconstructs patterns. But it cannot generate NEW patterns — only reproduce existing ones. That limitation sets the stage for the variational part."
+  narrative: "Samir has a working autoencoder that compresses and reconstructs patterns. But it cannot generate NEW patterns, only reproduce existing ones. That limitation sets the stage for the variational part."
   nextLessonTeaser: "Next: adding the 'variational' to make autoencoders generative"
 hints:
   - level: nudge
-    content: "Think of file compression — data goes in, compressed form comes out, original is reconstructed"
+    content: "Wire encoder.apply(input) into the decoder, then call autoencoder.fit(data, data): the same tensor serves as both input and target"
   - level: guidance
     content: "Build an encoder (shrink) and decoder (expand) with a bottleneck in the middle"
   - level: solution
@@ -36,14 +36,14 @@ keywords:
 ---
 
 <Dialogue speaker="Rohan">
-Before we get fancy, let us make sure you have the fundamentals locked in. An autoencoder is like an audio codec — MP3 compresses a WAV file, then decompresses it back. Some information is lost, but the important parts survive. The bottleneck forces the model to learn what matters.
+Before we get fancy, let us make sure you have the fundamentals locked in. An autoencoder is like an audio codec: MP3 compresses a WAV file, then decompresses it back. Some information is lost, but the important parts survive. The bottleneck forces the model to learn what matters.
 </Dialogue>
 
 <Dialogue speaker="MUSE">
-To remember everything is to remember nothing. The art of compression is the art of knowing what to keep.
+I just pushed one of Samir's stripe patterns through my 16-unit bottleneck. Reconstruction error: 0.018. I kept the stripe frequency and dropped the jitter along the edges. Nobody told me which to keep. The loss decided.
 </Dialogue>
 
-You use compression every day. Brotli compresses your JavaScript bundles. JPEG compresses your images. gzip compresses your API responses. An autoencoder is a neural network that learns its own compression algorithm — customized for the specific data it sees.
+You use compression every day. Brotli compresses your JavaScript bundles. JPEG compresses your images. gzip compresses your API responses. An autoencoder is a neural network that learns its own compression algorithm, customized for the specific data it sees.
 
 <LearningObjectives objectives={["Build and train a complete autoencoder in TensorFlow.js", "Understand the encoder-bottleneck-decoder pipeline", "Measure reconstruction quality with MSE loss", "Recognize the autoencoder's limitation: it cannot generate new data"]} />
 
@@ -153,4 +153,4 @@ The **bottleneck dimension** dim(z) constrains how much information the model ca
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Autoencoders learn to compress and reconstruct data through a bottleneck", "The compression pipeline mirrors gzip/Brotli: encode, compress, decode", "Training minimizes reconstruction error — the difference between input and output", "Limitation: autoencoders cannot generate new data because the latent space has gaps"]} />
+<KeyTakeaways takeaways={["Autoencoders learn to compress and reconstruct data through a bottleneck", "Watch val_loss, not just loss: an oversized bottleneck memorizes instead of compressing", "Training minimizes reconstruction error — the difference between input and output", "Limitation: autoencoders cannot generate new data because the latent space has gaps"]} />

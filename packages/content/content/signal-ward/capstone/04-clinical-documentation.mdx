@@ -7,23 +7,23 @@ order: 4
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "Dr. Karimi pulls up the FDA's guidance on clinical decision support software. 'Before Diagnostic One can be used in any hospital, we need documentation. A model card — what it does, what it does not do, how it was validated, its known limitations, and when a clinician should override it.' Vikram nods. 'It is API documentation. I have written hundreds of API docs. Endpoints, parameters, expected responses, error codes, rate limits.' Karimi smiles. 'Exactly. Except your users are clinicians, and your error codes could affect patient care.'"
+  narrative: "Dr. Karimi pulls up the FDA's guidance on clinical decision support software. 'Before Diagnostic One can be used in any hospital, we need documentation. A model card: what it does, what it does not do, how it was validated, its known limitations, and when a clinician should override it.' Vikram nods. 'It is API documentation. I have written hundreds of API docs. Endpoints, parameters, expected responses, error codes, rate limits.' Karimi smiles. 'Exactly. Except your users are clinicians, and your error codes could affect patient care.'"
   speaker: "Dr. Karimi"
 concept:
-  explanation: "A model card is API documentation for an ML system — it describes what the model does, its limitations, intended use cases, and performance characteristics. Just as API documentation tells developers what to expect from an endpoint, a model card tells clinicians what to expect from a diagnostic tool."
+  explanation: "A model card is API documentation for an ML system: it describes what the model does, its limitations, intended use cases, and performance characteristics. Just as API documentation tells developers what to expect from an endpoint, a model card tells clinicians what to expect from a diagnostic tool."
   bridge:
     feTitle: "API Documentation"
     feCode: "// POST /api/payments — accepts { amount, currency }, returns { id, status }, rate limit: 100/min"
     mlTitle: "Model Card"
     mlCode: "// Diagnostic One — accepts clinical text, returns entities + interactions, accuracy: F1 0.86, limitation: English only"
     tier: structural
-    breaks: "API documentation describes deterministic behavior. Model cards must document training data composition, intended use, known failure modes, and performance disparities — the document is non-trivial to author and is itself a deliverable, not a generated artifact."
+    breaks: "API documentation describes deterministic behavior. Model cards must document training data composition, intended use, known failure modes, and performance disparities; the document is non-trivial to author and is itself a deliverable, not a generated artifact."
 consequence:
-  narrative: "The model card is complete. Four pages covering intended use, validation results, known limitations, fairness analysis, and override guidance. Dr. Karimi reads every line. 'This is honest documentation,' she says. 'It tells clinicians exactly what the system can and cannot do. It tells them when to trust it and when to question it.' She adds her signature. The regulatory submission package is complete. Imran formats the model card as a static page in the Diagnostic One interface — accessible from every screen with a single click."
+  narrative: "The model card is complete. Four pages covering intended use, validation results, known limitations, fairness analysis, and override guidance. Dr. Karimi reads every line. 'This is honest documentation,' she says. 'It tells clinicians exactly what the system can and cannot do. It tells them when to trust it and when to question it.' She adds her signature. The regulatory submission package is complete. Imran formats the model card as a static page in the Diagnostic One interface, accessible from every screen with a single click."
   nextLessonTeaser: "Next: launch day — Diagnostic One goes live"
 hints:
   - level: nudge
-    content: "Think of the model card as API docs for clinicians — what does the system accept, return, and when should they not trust it?"
+    content: "Write down what the system accepts, what it returns, and the conditions under which a clinician should override it; that last section matters most"
   - level: guidance
     content: "Include sections for intended use, validation metrics, known limitations, fairness analysis, and override guidance"
   - level: solution
@@ -37,14 +37,14 @@ keywords:
 ---
 
 <Dialogue speaker="Vikram">
-API documentation. I write it for every service I build. What the endpoint accepts, what it returns, what errors it can throw, what the rate limits are, what edge cases to watch for. A model card is the same thing — except the endpoint is a trained model and the users are doctors.
+API documentation. I write it for every service I build. What the endpoint accepts, what it returns, what errors it can throw, what the rate limits are, what edge cases to watch for. A model card is the same thing, except the endpoint is a trained model and the users are doctors.
 </Dialogue>
 
 <Dialogue speaker="Dr. Karimi">
-And the edge cases could affect patient safety. So the documentation needs to be honest. Not marketing copy — clinical documentation. What does Diagnostic One do well? Where does it fail? When should a clinician override it? If we cannot answer those questions clearly, it does not deploy.
+And the edge cases could affect patient safety. So the documentation needs to be honest. Not marketing copy. Clinical documentation. What does Diagnostic One do well? Where does it fail? When should a clinician override it? If we cannot answer those questions clearly, it does not deploy.
 </Dialogue>
 
-Every API you have documented follows a pattern: endpoint description, request format, response format, error codes, rate limits, known limitations. A model card follows the same pattern for an ML system: what the model accepts, what it returns, how accurate it is, where it fails, and when users should not trust it. The difference is that your readers are clinicians making patient care decisions, not developers making API calls.
+A model card has five sections: intended use, validation results, known limitations, fairness analysis, override guidance. What the system accepts, what it returns, how accurate it is, where it fails, when not to trust it. If that skeleton feels familiar, it should. It is API documentation (endpoint, request, response, error codes, rate limits) written for readers who are clinicians making patient care decisions, not developers making API calls.
 
 <LearningObjectives objectives={["Write a model card that documents Diagnostic One's capabilities, limitations, and validation results", "Structure clinical documentation with sections for intended use, performance, limitations, and fairness", "Translate ML metrics (precision, recall, F1) into language clinicians can act on", "Document override guidance — when clinicians should trust the system and when they should question it"]} />
 
@@ -235,4 +235,4 @@ Write a function that generates a formatted clinical model card from structured 
 
 <Exercise slug="write-clinical-card" />
 
-<KeyTakeaways takeaways={["A model card is API documentation for ML — it describes capabilities, limitations, performance, and usage instructions", "Clinical documentation must be honest about limitations — not marketing copy, but a tool for informed decision-making", "Override guidance is unique to clinical ML: tell clinicians exactly when to trust the system and when to question it", "Version history tracks how the model evolved — same pattern as semantic versioning and changelogs"]} />
+<KeyTakeaways takeaways={["A model card is an authored deliverable, not a generated artifact: training data composition, failure modes, and per-group performance must be written by someone who knows the system", "Clinical documentation must be honest about limitations — not marketing copy, but a tool for informed decision-making", "Override guidance is unique to clinical ML: tell clinicians exactly when to trust the system and when to question it", "Version history records what changed between model versions and why: retraining data, thresholds, and behavior shifts"]} />

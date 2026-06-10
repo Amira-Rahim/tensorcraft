@@ -7,17 +7,17 @@ order: 3
 estimatedMinutes: 25
 difficulty: beginner
 context:
-  narrative: "Dr. Karimi needs Diagnostic One to categorize incoming notes by type — allergy, progress, or discharge. Khalil builds his first classifier."
+  narrative: "Dr. Karimi needs Diagnostic One to categorize incoming notes by type: allergy, progress, or discharge. Khalil builds his first classifier."
   speaker: "Dr. Karimi"
 concept:
-  explanation: "A classifier assigns a category to input data. At its simplest, it multiplies input features by learned weights and adds a bias — the same pattern as Array.map(x => x * weight + bias)."
+  explanation: "A classifier assigns a category to input data. At its simplest, it multiplies input features by learned weights and adds a bias, the same pattern as Array.map(x => x * weight + bias)."
   bridge:
     feTitle: "Array.map()"
     feCode: "items.map(x => x * weight + bias)"
     mlTitle: "Linear Classifier"
     mlCode: "prediction = tf.add(tf.mul(input, weights), bias)"
     tier: structural
-    breaks: "`items.map(x => x * weight + bias)` applies a function YOU wrote. A linear classifier learns the weight + bias from labeled data via gradient descent — and adds a decision rule (sign, softmax) that .map doesn't have. The arithmetic shape matches; the authoring direction (you write vs model learns) is opposite."
+    breaks: "`items.map(x => x * weight + bias)` applies a function YOU wrote. A linear classifier learns the weight + bias from labeled data via gradient descent, and adds a decision rule (sign, softmax) that .map doesn't have. The arithmetic shape matches; the authoring direction (you write vs model learns) is opposite."
 consequence:
   narrative: "The first classifier correctly categorizes 3 out of 4 test notes. It's rough, but it works."
   nextLessonTeaser: "Next: understanding how tokenization breaks text into processable units."
@@ -46,10 +46,10 @@ So it's like... routing. A request comes in and I need to send it to the right h
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-That's exactly right. A classifier is a router for data. It looks at the features and decides which category they belong to.
+Half right. A router runs rules you wrote. Nobody writes the rules here. The classifier starts with weights it learns from labeled notes, and that flips the authoring direction. You don't decide that the allergy keyword is the signal. The training data does.
 </Dialogue>
 
-You use `Array.map()` constantly — transforming each element in an array. A classifier does the same thing: it takes each input feature, multiplies it by a learned weight, adds a bias, and the result determines the category.
+The arithmetic shape is one you know. `Array.map(x => x * weight + bias)` applies a function you wrote. A classifier runs the same multiply-and-add, with one difference that matters: you didn't write the weight or the bias. Training did.
 
 <LearningObjectives objectives={["Build a simple linear classifier using TensorFlow.js", "Understand weights and bias as the model's learned parameters", "Map the concept of Array.map(transform) to matrix multiplication", "Classify clinical notes into categories using feature vectors"]} />
 
@@ -84,7 +84,7 @@ console.log('Discharge note score:', classify(dischargeNote, allergyWeights, bia
 
 ## From Score to Decision
 
-A raw score isn't a classification yet. We apply a **sigmoid** function to squash it between 0 and 1 — turning it into a probability.
+A raw score isn't a classification yet. We apply a **sigmoid** function to squash it between 0 and 1, turning it into a probability.
 
 <CodeBlock language="typescript" title="sigmoid-decision.ts">
 {`// Sigmoid: squash any number to the 0-1 range
@@ -110,4 +110,4 @@ Build a classifier that scores clinical notes as allergy-related or not.
 
 <Exercise slug="note-classifier" />
 
-<KeyTakeaways takeaways={["A classifier multiplies features by weights and adds bias — just like Array.map(transform)", "Sigmoid converts raw scores to probabilities between 0 and 1", "Weights are the parameters the model learns — they encode which features matter", "Classification is essentially routing: data in, category out"]} />
+<KeyTakeaways takeaways={["A linear classifier is weighted addition: multiply each feature by its learned weight, sum, add bias", "Sigmoid converts raw scores to probabilities between 0 and 1", "Weights are the parameters the model learns — they encode which features matter", "A score of 0 maps to probability 0.5: the model's way of saying undecided"]} />

@@ -7,7 +7,7 @@ order: 3
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "The pipeline runs. But Dilan refuses to deploy untested software. 'If Protocol Sentinel misclassifies a civilian as a Meridian agent, we destroy someone's life. If it misses a surveillance drone, we are exposed.' Zara takes the lead on testing. She maps the ML testing pyramid — unit tests for individual components, integration tests for stage connections, end-to-end tests for the full pipeline. Noor recognizes every layer."
+  narrative: "The pipeline runs. But Dilan refuses to deploy untested software. 'If Protocol Sentinel misclassifies a civilian as a Meridian agent, we destroy someone's life. If it misses a surveillance drone, we are exposed.' Zara takes the lead on testing. She maps the ML testing pyramid: unit tests for individual components, integration tests for stage connections, end-to-end tests for the full pipeline. Noor recognizes every layer."
   speaker: "Zara"
 concept:
   explanation: "ML testing follows the same testing pyramid as frontend development: unit tests for individual functions, integration tests for connected components, and end-to-end tests for the complete system. Add data validation as a fourth layer unique to ML."
@@ -17,15 +17,15 @@ concept:
     mlTitle: "ML Testing Pyramid"
     mlCode: "// Unit: expect(preprocess(frame).shape).toEqual([1,224,224,3])  Integration: pipeline.run(frame) → detections  E2E: camera → pipeline → broadcast → verify"
     tier: structural
-    breaks: "Frontend testing pyramid (unit/integration/e2e) checks deterministic behaviors. ML testing pyramid adds data validation, model evaluation, fairness audits, and shadow deployments — many tests return continuous metrics, not pass/fail."
+    breaks: "Frontend testing pyramid (unit/integration/e2e) checks deterministic behaviors. ML testing pyramid adds data validation, model evaluation, fairness audits, and shadow deployments. Many tests return continuous metrics, not pass/fail."
 consequence:
-  narrative: "Two hundred tests pass. Six fail — edge cases Noor never considered. A frame with zero detections crashes the classifier. A grayscale camera feed breaks the preprocessor. An adversarial patch with exactly 0.8 variance slips through the guard. Zara fixes each one. 'Testing is not bureaucracy. It is how you earn trust.'"
-  nextLessonTeaser: "Next: documentation — model cards, system docs, and handoff to the resistance network"
+  narrative: "Two hundred tests pass. Six fail: edge cases Noor never considered. A frame with zero detections crashes the classifier. A grayscale camera feed breaks the preprocessor. An adversarial patch with exactly 0.8 variance slips through the guard. Zara fixes each one. 'Testing is not bureaucracy. It is how you earn trust.'"
+  nextLessonTeaser: "Next: documentation. Model cards, system docs, and handoff to the resistance network"
 hints:
   - level: nudge
     content: "Start with unit tests for each pipeline stage, then test stage connections, then the full pipeline"
   - level: guidance
-    content: "Use deterministic test data — create known tensors instead of relying on random inputs"
+    content: "Use deterministic test data: create known tensors instead of relying on random inputs"
   - level: solution
     content: "Create fixture tensors with known values, test each stage independently, then compose stages and verify end-to-end output"
 keywords:
@@ -38,18 +38,18 @@ keywords:
 ---
 
 <Dialogue speaker="Dilan">
-You would not deploy a frontend application without tests. You will not deploy Protocol Sentinel without them either. Lives depend on this system being correct. Zara — build the test suite.
+You would not deploy a frontend application without tests. You will not deploy Protocol Sentinel without them either. Lives depend on this system being correct. Zara, build the test suite.
 </Dialogue>
 
 <Dialogue speaker="Zara">
-Same pyramid we use for any production system. Unit tests for each stage. Integration tests for connected stages. End-to-end tests for the full pipeline. But ML adds a fourth layer that frontend does not have: data validation. We test the data itself — distributions, edge cases, adversarial inputs.
+Same pyramid we use for any production system. Unit tests for each stage. Integration tests for connected stages. End-to-end tests for the full pipeline. But ML adds a fourth layer that frontend doesn't have: data validation. We test the data itself. Distributions, edge cases, adversarial inputs.
 </Dialogue>
 
 <Dialogue speaker="Noor">
-Jest for units, React Testing Library for integration, Cypress for E2E. I know this pyramid. The ML version uses the same structure — just different assertions. Instead of checking DOM output, I check tensor shapes and prediction confidence.
+Jest for units, React Testing Library for integration, Cypress for E2E. I know this pyramid. The ML version uses the same structure, just different assertions. Instead of checking DOM output, I check tensor shapes and prediction confidence.
 </Dialogue>
 
-The testing pyramid is identical. Unit tests at the base — fast, isolated, covering individual functions. Integration tests in the middle — verifying that connected stages pass data correctly. End-to-end tests at the top — running the complete pipeline against realistic scenarios. ML adds data validation: checking that inputs match expected distributions and outputs fall within acceptable ranges.
+The testing pyramid is identical. Unit tests at the base: fast, isolated, covering individual functions. Integration tests in the middle verify that connected stages pass data correctly. End-to-end tests at the top run the complete pipeline against realistic scenarios. ML adds data validation: checking that inputs match expected distributions and outputs fall within acceptable ranges.
 
 <LearningObjectives objectives={["Apply the frontend testing pyramid (unit, integration, e2e) to ML pipeline testing", "Write unit tests for individual pipeline stages using deterministic test tensors", "Build integration tests that verify data contracts between connected stages", "Implement data validation checks for tensor shapes, value ranges, and distribution drift"]} />
 
@@ -204,7 +204,7 @@ function createMockDetector(): tf.LayersModel {
 ## Data Validation
 
 <Dialogue speaker="Zara">
-This is the layer frontend testing does not have. We validate the data itself. Is the input distribution what we expect? Are the pixel values in range? Has the camera drifted — literally — and started sending frames that look nothing like our training data?
+This is the layer frontend testing doesn't have. We validate the data itself. Is the input distribution what we expect? Are the pixel values in range? Has the camera drifted (literally) and started sending frames that look nothing like our training data?
 </Dialogue>
 
 <CodeBlock language="typescript" title="data-validation.ts">
@@ -362,4 +362,4 @@ Write validation functions that check tensor shapes, value ranges, and data qual
 
 <Exercise slug="validate-system" />
 
-<KeyTakeaways takeaways={["ML testing follows the same pyramid as frontend: unit tests (stages), integration tests (connections), e2e tests (pipeline)", "Deterministic test data (known tensor values) replaces random inputs for reproducible tests", "Data validation is the fourth layer unique to ML — checking shapes, ranges, NaN, mean, and variance", "Every test failure Zara found maps to a real-world scenario: zero detections, grayscale feeds, boundary adversarial scores"]} />
+<KeyTakeaways takeaways={["Test in three layers: unit tests per stage, integration tests per connection, end-to-end tests on the full pipeline", "Deterministic test data (known tensor values) replaces random inputs for reproducible tests", "Data validation is the fourth layer unique to ML — checking shapes, ranges, NaN, mean, and variance", "Every test failure Zara found maps to a real-world scenario: zero detections, grayscale feeds, boundary adversarial scores"]} />

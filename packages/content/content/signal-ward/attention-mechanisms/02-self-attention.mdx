@@ -7,7 +7,7 @@ order: 2
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Vikram introduces self-attention — every word attending to every other word in a clinical note."
+  narrative: "Vikram introduces self-attention: every word attending to every other word in a clinical note."
   speaker: "Vikram"
 concept:
   explanation: "Self-attention lets each token compute relevance scores against all other tokens in the same sequence."
@@ -17,9 +17,9 @@ concept:
     mlTitle: "Self-Attention"
     mlCode: "const attn = tf.softmax(tf.matMul(Q, K.transpose())); // each token attends to all others"
     tier: structural
-    breaks: "scrollIntoView jumps to one element with hard-coded behavior. Self-attention computes a soft weighting over all positions, every layer, every head — the 'jump' is fractional, learned, and applied many times."
+    breaks: "scrollIntoView jumps to one element with hard-coded behavior. Self-attention computes a soft weighting over all positions, every layer, every head; the 'jump' is fractional, learned, and applied many times."
 consequence:
-  narrative: "Diagnostic One can now relate distant words — connecting a drug mentioned in paragraph one to a side effect in paragraph three."
+  narrative: "Diagnostic One can now relate distant words, connecting a drug mentioned in paragraph one to a side effect in paragraph three."
   nextLessonTeaser: "Next: multi-head attention, attending to multiple aspects simultaneously."
 hints:
   - level: nudge
@@ -35,15 +35,15 @@ keywords:
 ---
 
 <Dialogue speaker="Vikram">
-Basic attention uses an external query — we ask "what's the diagnosis?" and the model finds relevant words. But what if every word in the sentence could ask its own question about every other word?
+Basic attention uses an external query. We ask "what's the diagnosis?" and the model finds relevant words. But what if every word in the sentence could ask its own question about every other word?
 </Dialogue>
 
 <Dialogue speaker="Khalil">
-Like when I use `scrollIntoView()` — any element can programmatically bring another element into focus, not just the user's click.
+Like when I use `scrollIntoView()`: any element can programmatically bring another element into focus, not just the user's click.
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-Perfect analogy. In self-attention, every word generates its own query, and every word is both a potential answer and a potential key. The result? Each word builds a representation that accounts for its full context.
+You've got the symmetry right, any element can initiate. The rest doesn't hold. scrollIntoView jumps to one element, all or nothing, with behavior you hard-coded. Attention never jumps. Every word spreads fractional weight across every other word, the weights are learned, and it happens again at every layer and every head. Each word ends up with a representation that accounts for its full context.
 </Dialogue>
 
 <LearningObjectives objectives={["Understand the Query-Key-Value framework", "Implement scaled dot-product self-attention", "Explain why scaling by sqrt(d_k) prevents gradient issues", "Apply self-attention to a clinical text sequence"]} />
@@ -94,12 +94,12 @@ console.log('Weight matrix shape:', weights.shape);  // [8, 8]`}
 
 ## Why Scale by sqrt(d_k)?
 
-Without scaling, dot products grow large as dimensionality increases. Large values push softmax into regions with extremely small gradients — the model stops learning. Dividing by `sqrt(d_k)` keeps values in a reasonable range.
+Without scaling, dot products grow large as dimensionality increases. Large values push softmax into regions with extremely small gradients, and the model stops learning. Dividing by `sqrt(d_k)` keeps values in a reasonable range.
 
 It's the same reason you normalize CSS values. A `z-index: 999999` works, but it makes the system brittle and hard to reason about.
 
 <Dialogue speaker="Vikram">
-In the note "Patient denied chest pain but reported nausea after starting methotrexate," self-attention lets "nausea" attend strongly to "methotrexate" — capturing that causal relationship even though four words separate them.
+In the note "Patient denied chest pain but reported nausea after starting methotrexate," self-attention lets "nausea" attend strongly to "methotrexate", capturing that causal relationship even though four words separate them.
 </Dialogue>
 
 ## Challenge
@@ -120,7 +120,7 @@ Then:
 **Shape walk** for input X with shape `[seq_len, d_model]`:
 - W_Q, W_K, W_V each `[d_model, d_k]`
 - Q, K, V each `[seq_len, d_k]`
-- Q · Kᵀ → `[seq_len, seq_len]` (the attention matrix — every token's attention to every other)
+- Q · Kᵀ → `[seq_len, seq_len]` (the attention matrix: every token's attention to every other)
 - softmax row-wise
 - · V → `[seq_len, d_k]` (output, same length as input)
 

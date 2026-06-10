@@ -10,14 +10,14 @@ context:
   narrative: "The extractive QA model found the allergy note, but Vikram raises a concern. 'Finding a keyword match is not comprehension. What if the record says the allergy was ruled out? Or that a family member has the allergy, not the patient?' Khalil realizes the model needs to understand context, not just locate text."
   speaker: "Vikram"
 concept:
-  explanation: "Reading comprehension models don't just find text — they understand relationships between question and context, like a GraphQL resolver that fetches exactly the data a query needs."
+  explanation: "Reading comprehension models don't just find text; they understand relationships between question and context, like a GraphQL resolver that fetches exactly the data a query needs."
   bridge:
     feTitle: "GraphQL Resolver"
     feCode: "resolver: (parent, { patientId }) => db.allergies.find({ patientId, active: true })"
     mlTitle: "Reading Comprehension"
     mlCode: "model.comprehend({ question: 'active allergies?', context: record }) // understands scope"
     tier: structural
-    breaks: "GraphQL resolvers fetch named fields from defined sources. Reading-comprehension models infer answers from passages and routinely fabricate plausible-sounding answers ungrounded in the source — fluent output is no evidence of correct comprehension. Ground-truth verification requires checking the cited span exists in the input passage."
+    breaks: "GraphQL resolvers fetch named fields from defined sources. Reading-comprehension models infer answers from passages and routinely fabricate plausible-sounding answers ungrounded in the source; fluent output is no evidence of correct comprehension. Ground-truth verification requires checking the cited span exists in the input passage."
 consequence:
   narrative: "The comprehension model correctly distinguishes 'patient allergic to penicillin' from 'patient's mother allergic to penicillin.' Vikram nods. 'Now it reads like a clinician, not a search engine.'"
   nextLessonTeaser: "Next: RAG architecture — when the answer isn't in a single document"
@@ -36,14 +36,14 @@ keywords:
 ---
 
 <Dialogue speaker="Vikram">
-Your QA model found the word "penicillin" in the record. But read this note carefully: "Patient's mother has documented penicillin allergy. Patient has no known drug allergies." A keyword search would flag this as a positive. A comprehension model would not.
+Your QA model found the word "penicillin" in the record. But read this note carefully: "Patient's mother has documented penicillin allergy. Patient has no known drug allergies." A keyword search would flag this as a positive. A comprehension model wouldn't.
 </Dialogue>
 
 <Dialogue speaker="Khalil">
 It's like the difference between a REST endpoint that dumps everything and a GraphQL resolver that returns exactly what you asked for. The model needs to understand the relationship between the question and the specific context.
 </Dialogue>
 
-A GraphQL resolver does not return the entire database. It parses your query, understands what you need, and fetches precisely that. Reading comprehension works the same way — the model uses cross-attention to connect question tokens to the most relevant context tokens, building a query-specific understanding of the passage.
+A GraphQL resolver does not return the entire database. It parses your query, understands what you need, and fetches precisely that. Reading comprehension works the same way. The model uses cross-attention to connect question tokens to the most relevant context tokens, building a query-specific understanding of the passage.
 
 <LearningObjectives objectives={["Build cross-attention layers that connect questions to relevant context spans", "Implement question-aware context representations using attention mechanisms", "Distinguish between subjects in clinical text (patient vs. family member)", "Evaluate comprehension quality with adversarial examples"]} />
 
@@ -162,4 +162,4 @@ Implement a cross-attention function that computes question-aware context repres
 
 <Exercise slug="reading-comprehension" />
 
-<KeyTakeaways takeaways={["Reading comprehension uses cross-attention to connect question tokens to relevant context tokens — like a GraphQL resolver matching queries to data", "Question-aware representations prevent false matches (family allergies, discontinued medications, ruled-out conditions)", "Adversarial clinical examples are essential for validating comprehension vs. keyword matching", "Attention weight visualization reveals which context tokens the model focuses on for each question"]} />
+<KeyTakeaways takeaways={["Fluent output is no evidence of comprehension: verify the cited span actually exists in the input passage", "Question-aware representations prevent false matches (family allergies, discontinued medications, ruled-out conditions)", "Adversarial clinical examples are essential for validating comprehension vs. keyword matching", "Attention weight visualization reveals which context tokens the model focuses on for each question"]} />

@@ -13,6 +13,11 @@
 
 @theme {
   /* Background surfaces */
+  /* `page` is the root page background — also used as the text color on
+     primary-filled elements (e.g. `bg-primary text-page`). Without this
+     token, Tailwind emits nothing for `bg-page`/`text-page` and the text
+     silently inherits light-on-primary (axe contrast 2.05 vs 4.5). */
+  --color-page: var(--tc-bg);
   --color-surface: var(--tc-bg);
   --color-surface-raised: var(--tc-surface);
   --color-surface-overlay: var(--tc-surface-overlay);
@@ -169,6 +174,12 @@ body {
 
 .animate-fade-up {
   animation: fade-up 0.15s linear both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up {
+    animation: none;
+  }
 }
 
 /* Hide top-level prose in lesson steps when not in a prose-visible step.

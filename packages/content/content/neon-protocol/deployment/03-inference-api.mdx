@@ -7,10 +7,10 @@ order: 3
 estimatedMinutes: 30
 difficulty: intermediate
 context:
-  narrative: "Noor's dashboard needs to call Protocol Sentinel from multiple pages. Amir realizes they need a clean API layer — a single interface that any resistance tool can call. NEON: 'Wrap the model. Expose a contract. Hide the complexity.'"
+  narrative: "Noor's dashboard needs to call Protocol Sentinel from multiple pages. Amir realizes they need a clean API layer: a single interface that any resistance tool can call. NEON: 'Wrap the model. Expose a contract. Hide the complexity.'"
   speaker: "Amir"
 concept:
-  explanation: "An inference API is a clean interface that wraps your model and exposes prediction functionality through a standard contract. It is the same pattern as building a REST API endpoint — callers send data in a known format, receive results in a known format, and never touch the implementation details."
+  explanation: "An inference API is a clean interface that wraps your model and exposes prediction functionality through a standard contract. It is the same pattern as building a REST API endpoint. Callers send data in a known format, receive results in a known format, and never touch the implementation details."
   bridge:
     feTitle: "REST API Endpoint"
     feCode: "const response = await fetch('/api/users', {\n  method: 'POST',\n  body: JSON.stringify({ name: 'Amir' })\n});\nconst user = await response.json();"
@@ -18,11 +18,11 @@ concept:
     mlCode: "const response = await fetch('/api/predict', {\n  method: 'POST',\n  body: JSON.stringify({ imageData: pixels })\n});\nconst prediction = await response.json();"
     tier: identity
 consequence:
-  narrative: "Noor wires the inference API into the resistance dashboard, the mobile scanner, and the district alert system — all in one afternoon. Three tools, one model, one interface. NEON: 'Abstraction. The most powerful tool in any engineer's kit.'"
+  narrative: "Noor wires the inference API into the resistance dashboard, the mobile scanner, and the district alert system, all in one afternoon. Three tools, one model, one interface. NEON: 'Abstraction. The most powerful tool in any engineer's kit.'"
   nextLessonTeaser: "Next: monitoring the deployed model to catch problems before they become emergencies"
 hints:
   - level: nudge
-    content: "Think about the inference API like any service class — it loads once, exposes a predict method, and handles preprocessing internally"
+    content: "Structure SentinelAPI like any service class: load the model once in init(), expose a single predict(), and keep preprocessing private"
   - level: guidance
     content: "Create a class that loads the model in an init method, preprocesses input in a private method, and exposes a single predict() method with typed inputs and outputs"
   - level: solution
@@ -43,7 +43,7 @@ Noor needs Sentinel on the dashboard. Dilan needs it on the mobile scanner. The 
 You have built API layers hundreds of times. A model is just another service. Wrap it. Define the input contract. Define the output contract. Hide everything else.
 </Dialogue>
 
-A trained model is an implementation detail. The rest of your application should never know or care how predictions are made — only that they can call a function with data and get results back. This is the same abstraction principle behind every REST API you have ever consumed.
+A trained model is an implementation detail. The rest of your application should never know or care how predictions are made, only that they can call a function with data and get results back. This is the same abstraction principle behind every REST API you have ever consumed.
 
 <LearningObjectives objectives={["Design a typed inference API that wraps a TensorFlow.js model", "Implement preprocessing and postprocessing inside the API boundary", "Build both client-side and server-side inference endpoints", "Handle model loading, warmup, and error states gracefully"]} />
 

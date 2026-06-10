@@ -10,7 +10,7 @@ context:
   narrative: "Khalil connects all the pieces: tokenization, vocabulary lookup, feature extraction, and classification into one end-to-end pipeline."
   speaker: "Khalil"
 concept:
-  explanation: "A forward pass runs input data through every layer of the model to produce a prediction. It's a pipeline — like Promise chains or Express middleware — where each step transforms the data and passes it to the next."
+  explanation: "A forward pass runs input data through every layer of the model to produce a prediction. It's a pipeline, like Promise chains or Express middleware, where each step transforms the data and passes it to the next."
   bridge:
     feTitle: "Promise Chain"
     feCode: "fetch(url).then(parse).then(validate).then(render)"
@@ -42,14 +42,14 @@ Okay, I've got tokenization, vocabulary, and a classifier. But how do I connect 
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-Think of it like a Promise chain. fetch, then parse, then validate, then render. Each step transforms the data and hands it to the next. That's exactly what a forward pass is.
+It's a Promise chain. fetch, then parse, then validate, then render. Each step transforms the data and hands it to the next. One difference, and it matters when you debug: you can log a Promise chain's intermediate values and read them. The middle of a forward pass is activations from weight matrices. Nothing in there is human-readable.
 </Dialogue>
 
 <Dialogue speaker="Dr. Karimi">
 Show me. Run a clinical note through the entire pipeline. I want to see it classify in real time.
 </Dialogue>
 
-In Express, middleware functions process a request in sequence: authentication, validation, parsing, response. A forward pass is the same pattern — data flows through layers, each transforming it, until a prediction emerges at the end.
+In a forward pass, data flows through layers in sequence, each one transforming it, until a prediction emerges at the end. There is no training here, no learning. Inference is running data through functions whose parameters are already set.
 
 <LearningObjectives objectives={["Chain tokenization, encoding, and classification into a complete pipeline", "Run a forward pass through a simple text classifier", "Understand that inference is just data flowing through functions", "Build an end-to-end text classification pipeline in TensorFlow.js"]} />
 
@@ -136,4 +136,4 @@ Build a complete forward pass pipeline that takes raw clinical text and outputs 
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["A forward pass chains tokenization → encoding → model → prediction", "It mirrors Promise chains and middleware: each step transforms data for the next", "Inference is just running data through learned functions — no magic involved", "The full pipeline: raw text in, probability out"]} />
+<KeyTakeaways takeaways={["A forward pass chains tokenization → encoding → model → prediction", "With fixed weights, the same note always produces the same prediction: inference is deterministic", "Inference is just running data through learned functions — no magic involved", "The full pipeline: raw text in, probability out"]} />

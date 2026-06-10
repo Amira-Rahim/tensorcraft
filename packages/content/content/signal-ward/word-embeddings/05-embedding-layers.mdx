@@ -7,7 +7,7 @@ order: 5
 estimatedMinutes: 30
 difficulty: intermediate
 context:
-  narrative: "Instead of using pre-trained vectors alone, the team builds a custom embedding layer inside Diagnostic One's neural network. The layer is a trainable lookup table — Map<string, Vector> where the vectors update during training."
+  narrative: "Instead of using pre-trained vectors alone, the team builds a custom embedding layer inside Diagnostic One's neural network. The layer is a trainable lookup table: Map<string, Vector> where the vectors update during training."
   speaker: "Vikram"
 concept:
   explanation: "An embedding layer is a trainable lookup table that maps integer token IDs to dense vectors. During training, backpropagation adjusts these vectors so that words useful for the task develop meaningful representations. You can initialize with pre-trained weights or train from scratch."
@@ -17,7 +17,7 @@ concept:
     mlTitle: "Embedding Layer"
     mlCode: "tf.layers.embedding({ inputDim: vocabSize, outputDim: 64 });"
     tier: structural
-    breaks: "Lookup tables map known keys to known values authored at write time. Embedding layers are trainable parameter matrices indexed by token ID — the values update during training and an out-of-vocabulary token has no entry and must be handled (UNK token, subword fallback)."
+    breaks: "Lookup tables map known keys to known values authored at write time. Embedding layers are trainable parameter matrices indexed by token ID; the values update during training and an out-of-vocabulary token has no entry and must be handled (UNK token, subword fallback)."
 consequence:
   narrative: "Diagnostic One now has a trainable embedding layer initialized with medical vectors. As the model trains on hospital data, the embeddings fine-tune to capture institution-specific terminology."
   nextLessonTeaser: "Next module: sequence models — because word order changes the meaning of clinical text."
@@ -38,7 +38,7 @@ keywords:
 > **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
 <Dialogue speaker="Vikram">
-Imran, think of a Map in JavaScript. You pass in a key, you get back a value. An embedding layer is exactly that: you pass in a token ID, you get back a vector. The difference? During training, the vectors update automatically.
+Imran, think of a Map in JavaScript. You pass in a key, you get back a value. An embedding layer starts there: you pass in a token ID, you get back a vector. The difference? During training, the vectors update automatically.
 </Dialogue>
 
 <Dialogue speaker="Imran">
@@ -46,10 +46,10 @@ So it is like a Map where the values optimize themselves based on how well the m
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-Precisely. Backpropagation adjusts the vectors so that words important for the task develop useful representations. And we can initialize the Map with our pre-trained medical vectors to give it a head start.
+Mostly. Two things your Map never does. The values move on every training step, backpropagation adjusts them to serve the task. And a token that wasn't in the vocabulary has no row at all. Map.get returns undefined and you handle it; an embedding layer needs an UNK entry or a subword fallback before the lookup ever runs. We'll initialize ours with the pre-trained medical vectors to give it a head start.
 </Dialogue>
 
-A `Map<string, Vector>` gives you instant lookup: pass in a key, get back a value. An embedding layer does the same with integer IDs, but the values are learnable parameters. During training, the network adjusts these vectors through backpropagation, so the embedding space evolves to serve the model's task.
+An embedding layer is a matrix with one row per vocabulary entry, indexed by integer token ID. The rows are learnable parameters: during training, the network adjusts them through backpropagation, so the embedding space evolves to serve the model's task.
 
 <LearningObjectives objectives={["Build a neural network with a trainable embedding layer in TensorFlow.js", "Initialize embedding weights from pre-trained vectors", "Understand the difference between frozen and fine-tuned embeddings", "Train a simple text classifier with an embedding layer"]} />
 
@@ -214,7 +214,7 @@ Which approach should we use for Diagnostic One?
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-We have about 50,000 annotated clinical notes. That is a medium-sized dataset. I recommend initializing with BioWordVec and fine-tuning — we get the benefit of pre-trained medical knowledge while letting the model adapt to our hospital's specific terminology and abbreviations.
+We've got about 50,000 annotated clinical notes. That's a medium-sized dataset. I recommend initializing with BioWordVec and fine-tuning. We get the benefit of pre-trained medical knowledge while letting the model adapt to our hospital's specific terminology and abbreviations.
 </Dialogue>
 
 ## Challenge
@@ -232,11 +232,11 @@ A neural network 'embedding layer' is a learnable matrix `E` of shape `[vocab_si
 
 `embedding(t) = one_hot(t) · E`
 
-This is a single matrix multiply — sparse, but mathematically the same as the lookup. Backprop updates only the row corresponding to the input token.
+This is a single matrix multiply: sparse, but mathematically the same as the lookup. Backprop updates only the row corresponding to the input token.
 
 **Storage cost:** `vocab_size × d_embed × 4 bytes`. For 50k vocab and d=768, that's ~150MB just for the embedding table. Larger LLMs have embedding tables that dominate parameter count.
 
-**Tied embeddings:** language models often tie the input embedding with the output (next-token prediction) projection — same matrix used for both. Halves the parameter count and often improves quality.
+**Tied embeddings:** language models often tie the input embedding with the output (next-token prediction) projection, the same matrix used for both. Halves the parameter count and often improves quality.
 </DerivationDrawer>
 
 ## Knowledge check
@@ -249,4 +249,4 @@ This is a single matrix multiply — sparse, but mathematically the same as the 
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["An embedding layer is a trainable lookup table: Map<tokenID, Vector> where values update during training", "Initialize with pre-trained weights to give your model a head start on medical vocabulary", "Freeze embeddings for small datasets; fine-tune for large datasets; train from scratch for very large datasets", "The embedding layer is typically the first layer in a text classification neural network"]} />
+<KeyTakeaways takeaways={["In the demo classifier, 16,000 of 16,033 trainable parameters live in the embedding matrix (500 tokens x 32 dims)", "Initialize with pre-trained weights to give your model a head start on medical vocabulary", "Freeze embeddings for small datasets; fine-tune for large datasets; train from scratch for very large datasets", "The embedding layer is typically the first layer in a text classification neural network"]} />

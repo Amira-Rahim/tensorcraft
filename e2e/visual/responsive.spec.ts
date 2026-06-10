@@ -37,6 +37,9 @@ test.describe("Visual — Responsive Breakpoints", () => {
         await expect(page).toHaveScreenshot(`${pageDef.name}-${bp.label}.png`, {
           fullPage: true,
           maxDiffPixelRatio: 0.001,
+          // Canvas animations (five-worlds cards) don't all honor
+          // reduced-motion; mask them so frame timing can't flake the diff.
+          mask: [page.locator("canvas")],
         });
       });
     }

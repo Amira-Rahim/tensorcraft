@@ -21,7 +21,7 @@ consequence:
   narrative: "The multi-layer network can now detect patterns that a single neuron couldn't. The signal analysis improves dramatically."
 hints:
   - level: nudge
-    content: "Think of layers as functions that transform data step by step"
+    content: "Each layer you model.add() is a function: tensor in, transformed tensor out, applied in the order you added them"
   - level: guidance
     content: "Use tf.layers.dense() to create fully connected layers"
   - level: solution
@@ -35,14 +35,14 @@ skillAxes: [model_arch]
 ---
 
 <Dialogue speaker="Chief Nazari">
-One neuron can barely tell signal from noise. We need a system — multiple processing stages, each building on the last. Like how the ship's sensor array feeds through filters, amplifiers, then classifiers.
+One neuron can barely tell signal from noise. We need a system: multiple processing stages, each building on the last. Like how the ship's sensor array feeds through filters, amplifiers, then classifiers.
 </Dialogue>
 
 <LearningObjectives objectives={["Build multi-layer neural networks using tf.sequential()", "Understand how layers compose like React components", "Configure layer sizes (units) and activations", "Visualize data flow through a network"]} />
 
 ## Components All the Way Down
 
-In React, you build complex UIs by composing simple components. Neural networks work the same way — you compose simple layers into powerful architectures.
+Three dense layers, 209 trainable parameters. That's the whole system Nazari just asked for: a 16-unit stage that reads the raw sensor values, an 8-unit stage that finds patterns in what the first stage produces, and a single sigmoid unit for the verdict. The composition logic comes straight from React, where you build complex UIs out of simple components, each transforming what it receives and passing the result on.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -81,7 +81,7 @@ model.add(tf.layers.dense({
 model.summary(); // prints layer shapes and parameter counts`}
 </CodeBlock>
 
-Each layer transforms its input and passes the result forward — exactly like props flowing through a component tree. The `units` parameter is like the number of "features" that layer can learn to detect.
+Each layer transforms its input and passes the result forward, exactly like props flowing through a component tree. The `units` parameter is like the number of "features" that layer can learn to detect.
 
 ## Challenge
 
@@ -89,4 +89,4 @@ Build a 3-layer network for signal classification.
 
 <Exercise slug="build-layer" />
 
-<KeyTakeaways takeaways={["Layers compose like React components — each transforms and passes forward", "tf.sequential() creates a linear stack of layers", "units = number of neurons in a layer (features it can detect)", "inputShape only needed on the first layer — rest are inferred"]} />
+<KeyTakeaways takeaways={["DEEP SCAN's first network is 3 dense layers: 3 inputs to 16 relu units, then 8, then 1 sigmoid output", "tf.sequential() creates a linear stack of layers", "units = number of neurons in a layer (features it can detect)", "inputShape only needed on the first layer — rest are inferred"]} />

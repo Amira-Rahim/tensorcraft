@@ -23,7 +23,7 @@ consequence:
   nextLessonTeaser: "Next: setting up TensorFlow.js in the browser"
 hints:
   - level: nudge
-    content: "Think about where computation happens — server or client"
+    content: "fetch('/api/classify') pays a network round-trip per reading; model.predict() runs on the device — start by listing what each one costs"
   - level: guidance
     content: "Client-side inference means the model runs in the browser, just like client-side rendering"
   - level: solution
@@ -37,7 +37,7 @@ skillAxes: [deployment, fe_integration]
 ---
 
 <Dialogue speaker="Chief Nazari">
-The bridge crew needs real-time classification in their dashboard. I am not routing signal data through a server on every reading. The model runs in the browser or it does not ship.
+The bridge crew needs real-time classification in their dashboard. I'm not routing signal data through a server on every reading. The model runs in the browser or it does not ship.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
@@ -48,7 +48,7 @@ You've faced this exact decision before as a frontend engineer. Server-side rend
 
 <LearningObjectives objectives={["Understand the advantages of browser-based ML inference (privacy, latency, offline)", "Identify the constraints of running models in the browser (memory, compute, cold start)", "Compare client-side inference to server-side inference using the CSR vs SSR mental model", "Evaluate when browser ML is the right choice vs a server API"]} />
 
-## The CSR vs SSR of Machine Learning
+## Where Inference Runs: Server or Client
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -124,4 +124,4 @@ Analyze the tradeoffs for a browser ML deployment scenario.
 
 <Exercise slug="browser-ml-tradeoffs" />
 
-<KeyTakeaways takeaways={["Client-side ML inference mirrors CSR: computation moves to the browser for speed, privacy, and offline support", "Browser constraints (memory, cold start, compute) mirror frontend performance concerns (bundle size, TTI, main thread)", "The right choice depends on latency requirements, data sensitivity, and model size — just like choosing CSR vs SSR", "For real-time dashboards like DEEP SCAN, client-side inference eliminates the network bottleneck"]} />
+<KeyTakeaways takeaways={["In-browser inference replaces a 50-500ms network round-trip with a 5-50ms local predict() call, and the data never leaves the device", "Browser constraints (memory, cold start, compute) mirror frontend performance concerns (bundle size, TTI, main thread)", "The right choice depends on latency requirements, data sensitivity, and model size — just like choosing CSR vs SSR", "For real-time dashboards like DEEP SCAN, client-side inference eliminates the network bottleneck"]} />

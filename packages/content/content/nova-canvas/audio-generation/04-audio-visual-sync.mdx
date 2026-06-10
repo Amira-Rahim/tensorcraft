@@ -10,16 +10,16 @@ context:
   narrative: "Yara watches generated visuals drift independently of generated audio. 'They need to breathe together. Sound and image, one organism.' Rohan nods. 'requestAnimationFrame meets AudioContext.currentTime.'"
   speaker: "Yara"
 concept:
-  explanation: "Audio-visual synchronization aligns two generation loops — the visual render loop (requestAnimationFrame) and the audio scheduling loop (AudioContext) — using a shared clock."
+  explanation: "Audio-visual synchronization aligns two generation loops, the visual render loop (requestAnimationFrame) and the audio scheduling loop (AudioContext), using a shared clock."
   bridge:
     feTitle: "rAF + AudioContext Timing"
     feCode: "requestAnimationFrame(t => { const audioTime = ctx.currentTime; render(audioTime); });"
     mlTitle: "Synchronized Generation"
     mlCode: "const frame = visualModel.predict(latent); const audio = audioModel.predict(latent);"
     tier: structural
-    breaks: "rAF + AudioContext let you align rendering to wall-clock time. Synchronized generation across modalities (audio + video) requires the model to maintain temporal alignment internally — drift between modalities is a model failure with no clock to correct it."
+    breaks: "rAF + AudioContext let you align rendering to wall-clock time. Synchronized generation across modalities (audio + video) requires the model to maintain temporal alignment internally. Drift between modalities is a model failure with no clock to correct it."
 consequence:
-  narrative: "Colors pulse with bass frequencies. Shapes morph in rhythm with melody. The installation is no longer visual or auditory — it is synaesthetic. MUSE whispers: 'They are listening with their eyes.'"
+  narrative: "Colors pulse with bass frequencies. Shapes morph in rhythm with melody. The installation is no longer visual or auditory. It is synaesthetic. MUSE whispers: 'They are listening with their eyes.'"
   nextLessonTeaser: "Next: making soundscapes respond to the audience"
 hints:
   - level: nudge
@@ -43,7 +43,7 @@ The visuals and the audio are two strangers in the same room. They need to becom
 requestAnimationFrame gives us the visual heartbeat. AudioContext.currentTime gives us the audio heartbeat. We just need to make them share a pulse.
 </Dialogue>
 
-You have synchronized animations to scroll position, to mouse movement, to API responses. Audio-visual sync is the same problem: two systems that need to share a clock. The browser gives you both clocks already — `requestAnimationFrame` for visuals at 60fps, and `AudioContext.currentTime` for audio at sample-level precision.
+Two clocks run in every browser tab. `requestAnimationFrame` ticks roughly every 16.67ms for the eyes; `AudioContext.currentTime` advances with sample-level precision for the ears. Sync means electing one as the source of truth and making the other follow. You've solved this shape of problem with scroll positions, mouse coordinates, API timestamps. The clocks are new; the discipline isn't.
 
 <LearningObjectives objectives={["Synchronize visual rendering with audio playback using shared timing", "Extract real-time audio features with AnalyserNode for visual reactivity", "Drive generative visual parameters from audio frequency and amplitude data", "Build a unified generation loop that produces coherent audio-visual output"]} />
 

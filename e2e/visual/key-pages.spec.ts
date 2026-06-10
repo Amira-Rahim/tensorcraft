@@ -35,6 +35,9 @@ test.describe("Visual — Key Pages (desktop 1280×800)", () => {
     await expect(page).toHaveScreenshot("landing.png", {
       fullPage: true,
       maxDiffPixelRatio: 0.001,
+      // Canvas animations (five-worlds cards) don't all honor
+      // reduced-motion; mask them so frame timing can't flake the diff.
+      mask: [page.locator("canvas")],
     });
   });
 

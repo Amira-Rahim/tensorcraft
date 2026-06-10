@@ -7,7 +7,7 @@ order: 5
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "With cleaning, tokenization, and normalization all working individually, the team needs to chain them into a single reliable pipeline. Vikram draws the parallel to Express middleware — each step transforms the data and passes it to the next."
+  narrative: "With cleaning, tokenization, and normalization all working individually, the team needs to chain them into a single reliable pipeline. Vikram draws the parallel to Express middleware: each step transforms the data and passes it to the next."
   speaker: "Vikram"
 concept:
   explanation: "A preprocessing pipeline chains text cleaning, tokenization, normalization, and encoding into a single composable flow. Each step transforms the data for the next, exactly like Express middleware or a functional pipe()."
@@ -19,11 +19,11 @@ concept:
     tier: structural
     breaks: "Express middleware composes synchronous transforms with explicit order. Text pipelines must produce identical preprocessing at training and inference (training/serving skew is the canonical bug) and version drift in tokenizers can silently degrade model accuracy."
 consequence:
-  narrative: "Diagnostic One now processes raw clinical notes end-to-end in a single pipeline call. The team can swap steps, add logging, and handle errors — just like middleware."
+  narrative: "Diagnostic One now processes raw clinical notes end-to-end in a single pipeline call. The team can swap steps, add logging, and handle errors, just like middleware."
   nextLessonTeaser: "Next module: giving tokens meaning with word embeddings."
 hints:
   - level: nudge
-    content: "Think of each preprocessing step as a middleware function that transforms text."
+    content: "Give every step the same signature, text in and transformed text out, so pipe(clean, tokenize, normalize, encode) can chain them."
   - level: guidance
     content: "Build a pipe() function that chains transformers, or use a class with an addStep method."
   - level: solution
@@ -39,7 +39,7 @@ keywords:
 > **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
 <Dialogue speaker="Vikram">
-We've built all the pieces — cleaning, tokenizing, normalizing abbreviations. But right now each step is a separate function call. We need a pipeline that chains them together, like Express middleware.
+We've built all the pieces: cleaning, tokenizing, normalizing abbreviations. But right now each step is a separate function call. We need a pipeline that chains them together, like Express middleware.
 </Dialogue>
 
 <Dialogue speaker="Khalil">
@@ -50,7 +50,7 @@ So `app.use(cors).use(auth).use(validate)` becomes `pipeline.add(clean).add(toke
 I would also recommend adding error handling and logging to each step. When I misclassify a note, we need to trace back through the pipeline to find where the data was corrupted.
 </Dialogue>
 
-If you've built Express middleware, you've built a preprocessing pipeline. Each middleware function receives a request, transforms it, and calls `next()`. A text pipeline does the same: each step receives text (or tokens), transforms it, and passes the result forward.
+Each pipeline step receives text (or tokens), transforms it, and passes the result forward. One rule has no middleware equivalent: the exact same pipeline must run at training time and at inference time. If the two drift apart, the model quietly degrades. Training/serving skew is the canonical preprocessing bug.
 
 <LearningObjectives objectives={["Build a composable preprocessing pipeline using functional composition", "Implement a Pipeline class with pluggable steps", "Add logging and error handling to pipeline stages", "Create reusable step functions for different clinical text sources", "Understand pipeline ordering and its impact on output"]} />
 
@@ -254,4 +254,4 @@ Build a reusable preprocessing pipeline with pluggable steps.
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["A preprocessing pipeline is Express middleware for text — each step transforms and passes data forward", "Functional pipe() and class-based Pipeline are both valid patterns", "Logging and error handling in pipelines make debugging model issues tractable", "Step ordering matters — lowercase before abbreviation lookup, clean before tokenize", "Reusable pipelines ensure consistent preprocessing across training and inference"]} />
+<KeyTakeaways takeaways={["Pin pipeline and tokenizer versions together: version drift silently degrades model accuracy", "Functional pipe() and class-based Pipeline are both valid patterns", "Logging and error handling in pipelines make debugging model issues tractable", "Step ordering matters — lowercase before abbreviation lookup, clean before tokenize", "Reusable pipelines ensure consistent preprocessing across training and inference"]} />

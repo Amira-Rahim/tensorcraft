@@ -42,11 +42,11 @@ We are not shipping the first runtime we tried. Compare TensorFlow.js and ONNX R
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
-Fair enough. ONNX is like... a universal model format? Train in Python, export to ONNX, run anywhere?
+Fair enough. ONNX is a universal model format, then? Train in Python, export to ONNX, run anywhere?
 </Dialogue>
 
 <Dialogue speaker="Chief Nazari">
-Exactly. Like how you build once in HTML and it runs in Chrome, Firefox, Safari. ONNX is the HTML of trained models.
+"Anywhere" is the brochure version. ONNX is a shared operator set. If your model uses an op the target runtime doesn't implement, it doesn't degrade gracefully. It fails to load. There is no polyfill for a missing op; you rewrite the architecture. Check the opset before you promise me portability. Then bring me the numbers.
 </Dialogue>
 
 You've dealt with cross-browser compatibility your entire career. Different browsers, different engines, same web standards. ONNX (Open Neural Network Exchange) brings the same idea to ML: a universal format that any runtime can execute, regardless of which framework trained the model.
@@ -173,4 +173,4 @@ Run an ONNX model and compare its output with TF.js.
 
 <Exercise slug="onnx-comparison" />
 
-<KeyTakeaways takeaways={["ONNX is a universal model format — train anywhere, deploy anywhere, like HTML across browsers", "ONNX Runtime Web uses WASM for reliable cross-device inference; TF.js uses WebGL for GPU acceleration", "Cold start vs sustained speed is the key tradeoff — ONNX starts faster, TF.js runs faster long-term", "Choose your runtime based on your deployment pattern: always-on dashboard (TF.js) vs on-demand inference (ONNX)"]} />
+<KeyTakeaways takeaways={["Benchmark verdict for the DEEP SCAN classifier: ONNX cold-starts in 180ms vs TF.js 340ms; TF.js sustains 2.1ms inference vs ONNX 3.8ms", "ONNX Runtime Web uses WASM for reliable cross-device inference; TF.js uses WebGL for GPU acceleration", "Cold start vs sustained speed is the key tradeoff — ONNX starts faster, TF.js runs faster long-term", "Choose your runtime based on your deployment pattern: always-on dashboard (TF.js) vs on-demand inference (ONNX)"]} />

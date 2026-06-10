@@ -10,17 +10,17 @@ context:
   narrative: "Hassan gives the go order. 'Deploy Terra Grid Intelligence to all 47 sites. 12,400 devices. Model size: 4.2MB. We have tested every component, hardened every surface, documented every procedure. Launch it.' Two days later, the system proves its worth."
   speaker: "Hassan Al-Rashid"
 concept:
-  explanation: "Production launch with monitoring follows the same checklist approach as shipping a web application to production — pre-flight checks, staged rollout, real-time monitoring, incident response readiness."
+  explanation: "Production launch with monitoring follows the same checklist approach as shipping a web application to production: pre-flight checks, staged rollout, real-time monitoring, incident response readiness."
   bridge:
     feTitle: "Production Launch"
     feCode: "// Pre-flight: tests pass, staging verified, monitoring ready, rollback tested"
     mlTitle: "ML Production Launch"
     mlCode: "// Pre-flight: accuracy verified, edge tested, monitoring ready, rollback tested"
     tier: structural
-    breaks: "Web pre-flight verifies a deterministic build artifact against reproducible tests. ML pre-flight verifies a probabilistic model against a static benchmark — and 'monitoring ready' typically means accuracy/drift monitors that only catch problems hours-to-days after they manifest. The checklist shape transfers; the time-to-detect-failure does not, and that latency is what determines whether your launch is actually safe."
+    breaks: "Web pre-flight verifies a deterministic build artifact against reproducible tests. ML pre-flight verifies a probabilistic model against a static benchmark, and 'monitoring ready' typically means accuracy/drift monitors that only catch problems hours-to-days after they manifest. The checklist shape transfers; the time-to-detect-failure does not, and that latency is what determines whether your launch is actually safe."
 consequence:
-  narrative: "Two days after launch. Substation 7-Alpha. Temperature spike triggers a cascading anomaly across 3 regions. Terra Grid Intelligence identifies the root cause in 11.7 seconds. Manual analysis would have taken 2-3 hours. GRID reports: 'Time to detection: 4.2 seconds. Time to root cause: 11.7 seconds. Model size: 4.2MB. Running on 12,400 edge devices across 47 sites.' Hassan: 'This is what it looks like when the system works.'"
-  nextLessonTeaser: "Congratulations — you have completed Terra Grid."
+  narrative: "Two days after launch. Substation 7-Alpha. Temperature spike triggers a cascading anomaly across 3 regions. Terra Grid Intelligence identifies the root cause in 11.7 seconds. Manual analysis would have taken 2-3 hours. GRID reports: 'Time to detection: 4.2 seconds. Time to root cause: 11.7 seconds. Model size: 4.2MB. Running on 12,400 edge devices across 47 sites.' Hassan: 'Eleven point seven seconds. Two months ago that was a three-hour bridge call.'"
+  nextLessonTeaser: "Congratulations. You have completed Terra Grid."
 hints:
   - level: nudge
     content: "A launch checklist verifies every system is ready before deployment begins"
@@ -43,7 +43,7 @@ Pre-flight checklist complete. Security audit: passed. Disaster recovery: tested
 Deployment initiated. Region 3 first — 2,100 devices. Canary window: 4 hours. If all health checks pass, proceeding to Regions 1 and 7. Full deployment estimated: 18 hours across all 8 time zones.
 </Dialogue>
 
-This is the moment everything comes together. Every module — edge AI, optimization, quantization, pruning, federated learning, privacy, monitoring, A/B testing, scaling — assembled into one production system. The launch follows the same disciplined approach as shipping any critical web application: pre-flight checks, staged rollout, real-time monitoring, and instant rollback capability.
+Launch day is mostly a checklist and a clock. The 4.2MB model you quantized and pruned in modules 3 and 4 ships over the OTA pipeline from module 5, gated by the A/B numbers from module 9. Eighteen hours, eight time zones, one rollback button. The checklist looks like every web launch you have run, with one difference worth respecting: a web pre-flight verifies a deterministic build against reproducible tests, while this one verifies a probabilistic model against a static benchmark. If the model is wrong in a way the benchmark never covered, the monitors from module 7 will tell you hours later, not at deploy time. That is why the rollback button is the most rehearsed item on the list.
 
 <LearningObjectives objectives={["Execute a production launch checklist for edge ML deployment", "Implement real-time monitoring dashboards for global model performance", "Coordinate staged deployment across 47 sites and 8 time zones", "Respond to the first real-world incident with the complete system"]} />
 
@@ -209,7 +209,7 @@ Incident detected at Substation 7-Alpha. Temperature spike: 47 degrees above bas
 </Dialogue>
 
 <Dialogue speaker="Hassan Al-Rashid">
-Manual analysis would have taken 2 to 3 hours. By then, the cascade would have reached Region 7. This is what it looks like when the system works. Model size: 4.2MB. Running on 12,400 edge devices across 47 sites. Every module we built — edge deployment, optimization, federated learning, A/B testing, failover — all of it came together in 11.7 seconds.
+Manual analysis would have taken 2 to 3 hours. By then, the cascade would have reached Region 7. Instead we had the root cause in 11.7 seconds, from a 4.2MB model running on 12,400 edge devices across 47 sites. Edge deployment served it, federated training taught it, the A/B gate cleared it, and failover kept Region 3 answering while the cascade was live. Each piece paid for itself this morning.
 </Dialogue>
 
 ## Challenge
@@ -218,10 +218,10 @@ Build a launch controller with pre-flight checks and post-launch monitoring.
 
 <Exercise slug="global-launch" />
 
-<KeyTakeaways takeaways={["Production launch follows the same discipline as web app deployment — pre-flight, staged rollout, monitoring", "Pre-flight checks verify every system component before deployment begins", "Post-launch monitoring tracks deployment progress, accuracy, latency, and incident detection", "Terra Grid Intelligence: 4.2MB model, 12,400 devices, 47 sites, 11.7 seconds to root cause — this is what it looks like when the system works"]} />
+<KeyTakeaways takeaways={["A launch is pre-flight gates, staged regional rollout, and a rehearsed rollback path; the model is just the payload", "Pre-flight checks verify every system component before deployment begins", "Post-launch monitoring tracks deployment progress, accuracy, latency, and incident detection", "Terra Grid Intelligence: 4.2MB model, 12,400 devices, 47 sites, 11.7 seconds to root cause against a 2-3 hour manual baseline"]} />
 
 <DispatchTease
   toThemeId="deep-orbit"
   toThemeName="Deep Orbit"
-  body="Operator. Cross-channel intel: a long-mission vessel just transmitted a 7.83 Hz harmonic in their anomaly stream — the same frequency Hassan's edge fleet has been logging in localized power signatures. Operator Demir on the bridge is calling it deep-space; Hassan is calling it ground-station. Both can't be right. The mission ends where it began: time-series eyes catch what edge eyes miss. Continue the thread."
+  body="Operator. Cross-channel intel: a long-mission vessel just transmitted a 7.83 Hz harmonic in their anomaly stream — the same frequency Hassan's edge fleet has been logging in localized power signatures. Operator Demir on the bridge is calling it deep-space; Hassan is calling it ground-station. Both can't be right. The mission ends where it began: time-series eyes catch what edge eyes miss. Signal logged: 7.83 Hz. Correlation: unresolved. 47 sites listening."
 />

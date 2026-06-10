@@ -10,7 +10,7 @@ context:
   narrative: "You arrive at Terra Grid HQ. 47 sites, 2 million sensors, and a monitoring network that never sleeps."
   speaker: "Hassan Al-Rashid"
 concept:
-  explanation: "Edge computing runs ML models directly on remote devices instead of sending data to the cloud — just like CDN edge locations serve content close to users."
+  explanation: "Edge computing runs ML models directly on remote devices instead of sending data to the cloud, just like CDN edge locations serve content close to users."
   bridge:
     feTitle: "CDN Edge Location"
     feCode: "// Content served from nearest PoP\nfetch('https://cdn.example.com/asset.js')"
@@ -18,11 +18,11 @@ concept:
     mlCode: "// Model runs on local device\nconst prediction = model.predict(sensorData)"
     tier: structural
 consequence:
-  narrative: "GRID assigns you to Site 12 — a wind farm in Patagonia with no reliable uplink."
+  narrative: "GRID assigns you to Site 12: a wind farm in Patagonia with no reliable uplink."
   nextLessonTeaser: "Next: understanding why the edge matters"
 hints:
   - level: nudge
-    content: "Think about why CDNs exist — latency and availability"
+    content: "Compare cloudInference() and edgeInference(): one pays a satellite round trip before the model even runs, the other only pays compute"
   - level: guidance
     content: "Edge computing solves the same problems for ML that CDNs solve for content delivery"
   - level: solution
@@ -35,7 +35,7 @@ keywords:
 ---
 
 <Dialogue speaker="Hassan Al-Rashid">
-Welcome to Terra Systems. I run infrastructure for the Grid — 47 monitoring sites across six continents, 2 million sensors feeding data every second. Your job is to make our ML models run out there, not in here.
+Welcome to Terra Systems. I run infrastructure for the Grid: 47 monitoring sites across six continents, 2 million sensors feeding data every second. Your job is to make our ML models run out there, not in here.
 </Dialogue>
 
 <Dialogue speaker="GRID">
@@ -80,7 +80,7 @@ The cloud version requires connectivity, adds network latency, and fails when th
 
 ## The Grid Architecture
 
-Terra Grid monitors industrial infrastructure: wind farms, solar arrays, pipeline networks, water treatment plants. Each site has gateway devices — small ARM-based computers connected to hundreds of sensors. Your models run on those gateways.
+Terra Grid monitors industrial infrastructure: wind farms, solar arrays, pipeline networks, water treatment plants. Each site has gateway devices, small ARM-based computers connected to hundreds of sensors. Your models run on those gateways.
 
 The constraints are real: 512MB RAM, quad-core ARM processors, intermittent connectivity, and power budgets measured in watts. Every byte matters.
 
@@ -90,4 +90,4 @@ Classify scenarios as edge or cloud computing.
 
 <Exercise slug="edge-vs-cloud" />
 
-<KeyTakeaways takeaways={["Edge AI runs models on local devices, just like CDNs serve content from edge locations", "Edge inference eliminates network latency and works offline", "Terra Grid devices have hard constraints: 512MB RAM, ARM processors, intermittent connectivity", "The same model can be deployed to cloud or edge — the architecture decision depends on requirements"]} />
+<KeyTakeaways takeaways={["Edge AI runs the model on the device that produced the data; the 8,234ms round trip becomes local compute against an 89ms target", "Edge inference eliminates network latency and works offline", "Terra Grid devices have hard constraints: 512MB RAM, ARM processors, intermittent connectivity", "The same model can be deployed to cloud or edge — the architecture decision depends on requirements"]} />

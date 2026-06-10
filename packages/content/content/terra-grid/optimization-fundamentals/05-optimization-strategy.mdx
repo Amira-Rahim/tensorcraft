@@ -10,17 +10,17 @@ context:
   narrative: "Hassan asks you to create a formal optimization plan before touching any model weights."
   speaker: "Hassan Al-Rashid"
 concept:
-  explanation: "Creating an optimization plan is like a build optimization checklist — a systematic approach covering every technique in priority order."
+  explanation: "Creating an optimization plan is like a build optimization checklist: a systematic approach covering every technique in priority order."
   bridge:
     feTitle: "Build Optimization Checklist"
     feCode: "// 1. Tree-shake → 2. Minify → 3. Compress\n// 4. Code-split → 5. Lazy-load → 6. CDN"
     mlTitle: "Model Optimization Checklist"
     mlCode: "// 1. Architecture → 2. Prune → 3. Quantize\n// 4. Distill → 5. Benchmark → 6. Deploy"
     tier: structural
-    breaks: "Build optimization checklists have ordered, deterministic steps. Model optimization is iterative and order-dependent (quantize then prune vs prune then quantize give different results) — and many techniques compound or interfere in non-obvious ways."
+    breaks: "Build optimization checklists have ordered, deterministic steps. Model optimization is iterative and order-dependent (quantize then prune vs prune then quantize give different results). And many techniques compound or interfere in non-obvious ways."
 consequence:
   narrative: "You have a systematic optimization plan. Time to execute it."
-  nextLessonTeaser: "Next module: quantization — the most impactful compression technique"
+  nextLessonTeaser: "Next module: quantization, the most impactful compression technique"
 hints:
   - level: nudge
     content: "Start with the highest-impact, lowest-risk optimizations"
@@ -96,7 +96,7 @@ const optimizationPipeline: OptimizationStep[] = [
 // 5. Combined → Full production build config`}
 </CodeBlock>
 
-The key insight: each step is independent but they compound. A model that is 40% smaller after architecture review, then 4x smaller after quantization, then 50% smaller after pruning is now 12x smaller than the original. That is how a 1.8GB model fits in 512MB of RAM.
+Each step is independent, but they compound. A model that is 40% smaller after architecture review, then 4x smaller after quantization, then 50% smaller after pruning is now 12x smaller than the original. That is how a 1.8GB model fits in 512MB of RAM.
 
 ## Challenge
 
@@ -104,4 +104,4 @@ Create an optimization plan for a model that needs to shrink from 1.8GB to under
 
 <Exercise slug="optimization-plan" />
 
-<KeyTakeaways takeaways={["Optimization follows a systematic pipeline — just like a build optimization checklist", "Start with architecture review (low risk, high impact) before compression", "Techniques compound: 40% + 4x + 50% = 12x total reduction", "Always profile and benchmark between each optimization step"]} />
+<KeyTakeaways takeaways={["Optimization is a sequenced plan with measurements between steps, not a bag of techniques applied at once", "Start with architecture review (low risk, high impact) before compression", "Techniques compound: 40% + 4x + 50% = 12x total reduction", "Always profile and benchmark between each optimization step"]} />

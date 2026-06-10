@@ -16,9 +16,9 @@ concept:
     mlTitle: "Random forest"
     mlCode: "forest.predict(x) // each tree votes, majority wins"
     tier: structural
-    breaks: "Promise.allSettled runs known async tasks in parallel and votes the results you defined. Random forest trains many decorrelated decision trees on bootstrapped samples and votes — the diversity is the entire point and comes from the training procedure, not the call site."
+    breaks: "Promise.allSettled runs known async tasks in parallel and votes the results you defined. Random forest trains many decorrelated decision trees on bootstrapped samples and votes; the diversity is the entire point and comes from the training procedure, not the call site."
 consequence:
-  narrative: "You now understand why random forests and gradient boosting dominate Kaggle competitions and production ML systems alike."
+  narrative: "Bootstrap sampling plus majority voting: that's the whole trick behind the models that dominate Kaggle leaderboards and production ML systems alike."
   nextLessonTeaser: "Next: the decision framework for choosing the right model for any problem"
 hints:
   - level: nudge
@@ -35,10 +35,10 @@ keywords:
 ---
 
 <Dialogue speaker="Instructor">
-Here's a fact that surprises most people: on structured, tabular data, random forests and gradient-boosted trees beat neural networks more often than not. Not because trees are smarter, but because combining many simple models is often better than one complex one.
+On structured, tabular data, random forests and gradient-boosted trees beat neural networks more often than not. Not because trees are smarter, but because combining many simple models is often better than one complex one.
 </Dialogue>
 
-Think about how you handle unreliable API calls in production. You don't trust a single service — you call multiple, compare results, and take the consensus. That's exactly what ensemble methods do with models.
+A random forest is a hundred mediocre decision trees and a ballot box. Each tree trains on a different random slice of the data, each casts a vote, and the majority wins. The individual errors cancel out. The signal survives.
 
 <LearningObjectives objectives={["Understand bagging as parallel model training with random data subsets", "Build a simplified random forest from multiple decision trees", "Distinguish bagging (variance reduction) from boosting (bias reduction)", "Know when ensembles outperform deep learning (spoiler: tabular data)"]} />
 
@@ -124,7 +124,7 @@ function buildRandomForest(
 }`}
 </CodeBlock>
 
-Why does this work? Each individual tree is mediocre — it only sees part of the data and part of the features. But their errors are *uncorrelated*. When you average uncorrelated errors, they cancel out.
+Why does this work? Each individual tree is mediocre, seeing only part of the data and part of the features. But their errors are *uncorrelated*. When you average uncorrelated errors, they cancel out.
 
 ## Boosting: Sequential Error Correction
 
@@ -169,7 +169,7 @@ function boostingTrain(data: DataPoint[], numRounds: number) {
 }`}
 </CodeBlock>
 
-## Bagging vs. Boosting: When to Use Each
+## When to Bag, When to Boost
 
 | | Bagging (Random Forest) | Boosting (XGBoost) |
 |---|---|---|
@@ -185,4 +185,4 @@ Build a simplified random forest with bootstrap sampling and majority voting.
 
 <Exercise slug="build-random-forest" />
 
-<KeyTakeaways takeaways={["Ensembles combine weak models into strong ones, like Promise.allSettled with voting", "Bagging trains models in parallel on random subsets — reduces variance", "Boosting trains models sequentially, each fixing prior errors — reduces bias", "On tabular data, random forests and XGBoost often beat neural networks"]} />
+<KeyTakeaways takeaways={["Ensembles combine weak models into strong ones, like Promise.allSettled with voting", "Bagging trains models in parallel on random subsets, which reduces variance", "Boosting trains models sequentially, each fixing prior errors, which reduces bias", "On tabular data, random forests and XGBoost often beat neural networks"]} />

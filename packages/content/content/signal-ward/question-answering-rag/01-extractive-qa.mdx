@@ -10,14 +10,14 @@ context:
   narrative: "An unconscious patient arrives in the ER. No ID, no medical bracelet, no accessible history. Imran pulls up the intake form: 'John Doe, approximately 45, unresponsive. We need to know if he has drug allergies before we administer anything.' Khalil stares at the screen. 'I built Meridian's records UI. I know their data format. If we can search their documents, I can find the answer.'"
   speaker: "Imran"
 concept:
-  explanation: "Extractive QA finds the exact span of text in a document that answers a question — like Ctrl+F, but the model understands meaning, not just character matching."
+  explanation: "Extractive QA finds the exact span of text in a document that answers a question, like Ctrl+F, but the model understands meaning, not just character matching."
   bridge:
     feTitle: "Ctrl+F (text search)"
     feCode: "document.querySelector('article').textContent.indexOf('penicillin')"
     mlTitle: "Extractive QA"
     mlCode: "model.predict({ question, context }) // → { answer: 'allergic to penicillin', start: 142, end: 163 }"
     tier: structural
-    breaks: "Ctrl+F finds exact substrings. Extractive QA selects a span from a passage by predicting start and end token indices — the predicted span often boundary-cuts mid-word, includes punctuation, or selects the wrong of two valid answers. Post-processing must clip to word boundaries and rerank candidate spans."
+    breaks: "Ctrl+F finds exact substrings. Extractive QA selects a span from a passage by predicting start and end token indices; the predicted span often boundary-cuts mid-word, includes punctuation, or selects the wrong of two valid answers. Post-processing must clip to word boundaries and rerank candidate spans."
 consequence:
   narrative: "The QA model highlights a span in the patient's discharge summary from 2019: 'Patient reported severe allergic reaction to penicillin-class antibiotics.' Imran pages the attending physician immediately."
   nextLessonTeaser: "Next: reading comprehension — understanding context beyond keyword matching"
@@ -40,10 +40,10 @@ Unconscious male, mid-forties, no ID. Paramedics found him collapsed at a bus st
 </Dialogue>
 
 <Dialogue speaker="Khalil">
-I built the records interface at Meridian Health. Their discharge summaries are structured — diagnoses, medications, allergies, all in free text sections. If I can search those documents semantically, I can find whether this patient has any recorded allergies.
+I built the records interface at Meridian Health. Their discharge summaries are structured: diagnoses, medications, allergies, all in free text sections. If I can search those documents semantically, I can find whether this patient has any recorded allergies.
 </Dialogue>
 
-You have used Ctrl+F thousands of times. Type a string, find exact matches. But Ctrl+F fails when a doctor writes "patient exhibited hypersensitivity to penicillin-class agents" and you search for "penicillin allergy." Extractive QA bridges that gap — it understands the *meaning* of your question and finds the answer span within the document.
+`notes.filter(n => n.text.includes('penicillin allergy'))` returns zero rows for this patient. The discharge summary says "exhibited hypersensitivity to penicillin-class agents," and substring matching cannot see that those are the same fact. Neither can Ctrl+F. Extractive QA closes the gap: the model reads the question and the document together, matches on *meaning* rather than characters, and returns the span that answers it.
 
 <LearningObjectives objectives={["Understand extractive QA as span prediction over a context passage", "Build start and end position predictors using TensorFlow.js", "Extract answer spans from tokenized clinical text", "Evaluate QA accuracy with exact match and F1 metrics"]} />
 
@@ -153,4 +153,4 @@ Build an extractive QA function that predicts start and end positions to extract
 
 <Exercise slug="extractive-qa" />
 
-<KeyTakeaways takeaways={["Extractive QA is Ctrl+F that understands meaning — it finds answer spans by predicting start and end positions", "Two output heads (start logits, end logits) are applied independently, then combined to find the best span", "Answer spans are constrained to the context portion of the input, not the question", "In clinical settings, confidence scores determine whether to surface an answer or escalate to a human"]} />
+<KeyTakeaways takeaways={["Predicted spans boundary-cut mid-word, drag in punctuation, or pick the wrong of two valid answers; post-processing clips to word boundaries and reranks", "Two output heads (start logits, end logits) are applied independently, then combined to find the best span", "Answer spans are constrained to the context portion of the input, not the question", "In clinical settings, confidence scores determine whether to surface an answer or escalate to a human"]} />

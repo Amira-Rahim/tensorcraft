@@ -7,10 +7,10 @@ order: 1
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Zara has an idea. If Meridian's cameras use classifiers, then images can be crafted to confuse those classifiers. But first, the team needs to understand generative adversarial networks — two neural networks locked in competition."
+  narrative: "Zara has an idea. If Meridian's cameras use classifiers, then images can be crafted to confuse those classifiers. But first, the team needs to understand generative adversarial networks: two neural networks locked in competition."
   speaker: "Zara"
 concept:
-  explanation: "A GAN is two networks competing: a generator creates fake data, a discriminator judges whether data is real or fake. They improve each other through adversarial training — like a fuzzer finding bugs that a validator misses."
+  explanation: "A GAN is two networks competing: a generator creates fake data, a discriminator judges whether data is real or fake. They improve each other through adversarial training, like a fuzzer finding bugs that a validator misses."
   bridge:
     feTitle: "Fuzzer vs Validator in Testing"
     feCode: "const fuzzInput = fuzzer.generate(); const isValid = validator.check(fuzzInput);"
@@ -18,13 +18,13 @@ concept:
     mlCode: "const fakeImage = generator.predict(noise); const isReal = discriminator.predict(fakeImage);"
     tier: structural
 consequence:
-  narrative: "Noor trains her first GAN on surveillance camera images. The generator produces blurry approximations at first — then eerily realistic fakes. NEON: 'Congratulations. You have taught a neural network to lie. I hope you feel the appropriate amount of existential dread.'"
+  narrative: "Noor trains her first GAN on surveillance camera images. The generator produces blurry approximations at first, then eerily realistic fakes. NEON: 'Congratulations. You have taught a neural network to lie. I hope you feel the appropriate amount of existential dread.'"
   nextLessonTeaser: "Next: using GANs to generate synthetic training data"
 hints:
   - level: nudge
-    content: "Think of the generator as a fuzzer creating test inputs, and the discriminator as a validator checking them"
+    content: "Build two separate models: a generator that maps random noise to images, and a discriminator that scores real versus fake, like a fuzzer paired with a validator"
   - level: guidance
-    content: "Build two separate models — one that generates images from random noise, one that classifies images as real or fake"
+    content: "Build two separate models: one that generates images from random noise, one that classifies images as real or fake"
   - level: solution
     content: "Generator: Dense -> Reshape -> Conv2DTranspose layers. Discriminator: Conv2D -> Dense -> sigmoid. Train alternately."
 keywords:
@@ -36,7 +36,7 @@ keywords:
 ---
 
 <Dialogue speaker="Zara">
-Art has always been resistance. Graffiti over billboards. Murals over propaganda. Now the art literally fights back — images designed to confuse the cameras that oppress us. But first, you need to understand how machines create images.
+Art has always been resistance. Graffiti over billboards. Murals over propaganda. Now the art literally fights back. Images designed to confuse the cameras that oppress us. But first, you need to understand how machines create images.
 </Dialogue>
 
 <Dialogue speaker="NEON">

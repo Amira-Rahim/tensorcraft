@@ -22,7 +22,7 @@ consequence:
   narrative: "The processed signal reveals a pattern in the noise."
 hints:
   - level: nudge
-    content: "Think about element-wise vs matrix operations"
+    content: "tf.mul(a, b) multiplies matching positions; tf.matMul(a, b) multiplies rows into columns. Decide which one the task needs"
   - level: guidance
     content: "tf.add() performs element-wise addition"
   - level: solution
@@ -36,10 +36,10 @@ skillAxes: [data_prep]
 ---
 
 <Dialogue speaker="Chief Nazari">
-Raw data is useless. We need to clean it, combine sensor feeds, and amplify the signal. Every operation needs to be fast — we're processing millions of data points per second.
+Raw data is useless. We need to clean it, combine sensor feeds, and amplify the signal. Every operation needs to be fast. We're processing millions of data points per second.
 </Dialogue>
 
-You've used `Array.map()` to transform lists, `reduce()` to aggregate values, and spread operators to combine arrays. Tensor operations are the same ideas — but they run on the GPU and handle millions of elements in parallel.
+Three operations cover almost everything Nazari just asked for: add two tensors, multiply them element by element, and matMul rows into columns. Each is a single call that the GPU executes across the entire tensor at once. The logic will feel familiar if you've chained `Array.map()` and `reduce()` over a list; what changes is the execution model, where one op covers millions of elements in parallel.
 
 <LearningObjectives objectives={["Perform element-wise tensor operations (add, multiply, subtract)", "Understand broadcasting — how tensors of different shapes interact", "Use matrix multiplication (matmul) for combining data", "Chain operations together to build data transformations"]} />
 
@@ -78,4 +78,4 @@ Add two tensors together to combine sensor readings.
 
 <Exercise slug="add-tensors" />
 
-<KeyTakeaways takeaways={["Element-wise ops (add, mul, sub) work like Array.map across dimensions", "Method chaining works: tensor.add(other).mul(scalar)", "Matrix multiplication (matMul) is the core operation of neural networks", "GPU acceleration means tensor ops scale to millions of elements"]} />
+<KeyTakeaways takeaways={["Shapes must agree before matMul: the [3,2] weights tensor needs a transpose() before it can multiply the [3,1] input", "Method chaining works: tensor.add(other).mul(scalar)", "Matrix multiplication (matMul) is the core operation of neural networks", "GPU acceleration means tensor ops scale to millions of elements"]} />

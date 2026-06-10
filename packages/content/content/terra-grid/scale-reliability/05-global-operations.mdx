@@ -10,7 +10,7 @@ context:
   narrative: "Hassan reviews the global deployment map. 'We operate across 8 time zones. When Region 1 is in peak industrial hours, Region 7 is overnight. Model updates must roll out safely across all of them. Priya, show me the global coordination layer.'"
   speaker: "Hassan Al-Rashid"
 concept:
-  explanation: "Managing ML across global regions follows the same patterns as CDN multi-region deployment — replicate models close to devices, coordinate updates, handle regional differences."
+  explanation: "Managing ML across global regions follows the same patterns as CDN multi-region deployment: replicate models close to devices, coordinate updates, handle regional differences."
   bridge:
     feTitle: "CDN Multi-Region"
     feCode: "// CDN: replicate assets to edge nodes, invalidate cache on deploy"
@@ -20,7 +20,7 @@ concept:
     breaks: "CDN multi-region serves identical static content from the closest PoP. Multi-region model serving must handle data residency (regional models cannot leave their region), latency-vs-staleness tradeoff for model updates, and cross-region traffic shaping for warm-up."
 consequence:
   narrative: "The global coordination system manages model deployments across 8 time zones. Region-aware rollouts avoid deploying during peak industrial hours. Model version consistency is maintained within 15 minutes across all 47 sites."
-  nextLessonTeaser: "Next module: Capstone — deploying Terra Grid Intelligence to production"
+  nextLessonTeaser: "Next module: Capstone, deploying Terra Grid Intelligence to production"
 hints:
   - level: nudge
     content: "Region-aware deployment schedules updates during low-activity windows, like deploying web apps during off-peak hours"
@@ -43,7 +43,7 @@ keywords:
 Same pattern as CDN multi-region deployment. Replicate models to regional edge nodes. Schedule updates during each region's maintenance window. Verify consistency after rollout. If any region fails to update, it keeps running the previous version until the next window.
 </Dialogue>
 
-You have deployed web applications to CDN edge nodes: replicate assets globally, invalidate caches on deploy, serve from the nearest node. Global ML operations follow the same pattern. Models are replicated to regional edge clusters, updates are coordinated across time zones, and each region maintains its own health metrics. The challenge is coordination at scale — 47 sites must converge to the same model version without disrupting operations.
+Priya's CDN playbook is the right starting point and the wrong place to stop. A CDN replicates identical static bytes to every node; nothing about one PoP's cache depends on local law or local load. Models are different cargo. Data residency rules can mean a region's model is not allowed to leave that region. A freshly activated model answers slowly until it warms up. And an update that politely waits for every maintenance window is trading staleness for safety, which is a choice, not a default. The job is still replication across 47 sites and 8 time zones; the playbook needs three pages CDNs never wrote.
 
 <LearningObjectives objectives={["Design a global model deployment coordinator across time zones", "Implement region-aware update scheduling with maintenance windows", "Build consistency checks that verify all regions are running the same model version", "Handle regional model drift and divergent update states"]} />
 
@@ -174,4 +174,4 @@ Build a global deployment coordinator with time-zone-aware scheduling.
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Global ML deployment mirrors CDN multi-region management — replicate models to edge nodes, coordinate updates", "Region-aware scheduling deploys during local maintenance windows to avoid disrupting peak operations", "Consistency checks verify all regions converge to the same model version after rollout", "If a region fails to update, it keeps running the previous version — availability over consistency"]} />
+<KeyTakeaways takeaways={["Models are not static assets: data residency can pin a region's model in place, and a fresh deployment serves cold until warmed", "Region-aware scheduling deploys during local maintenance windows to avoid disrupting peak operations", "Consistency checks verify all regions converge to the same model version after rollout", "If a region fails to update, it keeps running the previous version — availability over consistency"]} />

@@ -8,7 +8,7 @@ estimatedMinutes: 30
 difficulty: advanced
 companionTo: training-loop
 context:
-  narrative: "Training a model is navigating a high-dimensional terrain — and the landscape is full of traps."
+  narrative: "Training a model is navigating a high-dimensional terrain, and the landscape is full of traps."
   speaker: "Instructor"
 concept:
   explanation: "The loss surface is a high-dimensional terrain where SGD with momentum acts like a ball rolling downhill."
@@ -24,9 +24,9 @@ consequence:
   nextLessonTeaser: "Next: convolution through the lens of matrix multiplication"
 hints:
   - level: nudge
-    content: "Think of gradient descent as a ball rolling downhill — momentum keeps it moving through flat spots"
+    content: "Your SGD update tracks two values, weights and velocity. The velocity term is what carries the ball through flat spots"
   - level: guidance
-    content: "A convex function has one minimum — a bowl shape. Non-convex has many — a mountain range"
+    content: "A convex function has one minimum (a bowl shape). Non-convex has many (a mountain range)"
   - level: solution
     content: "Track both position (weights) and velocity (momentum) to implement SGD with momentum"
 keywords:
@@ -38,14 +38,14 @@ keywords:
 ---
 
 <Dialogue speaker="Instructor">
-In the Training Loop module, you adjusted learning rates and watched loss curves. But what's the geometry behind those curves? The loss function defines a surface in high-dimensional space, and training is the process of finding the lowest point. The shape of that surface determines everything — whether training converges, how fast, and to what solution.
+In the Training Loop module, you adjusted learning rates and watched loss curves. But what's the geometry behind those curves? The loss function defines a surface in high-dimensional space, and training is the process of finding the lowest point. The shape of that surface determines everything: whether training converges, how fast, and to what solution.
 </Dialogue>
 
 <LearningObjectives objectives={["Visualize loss functions as surfaces in weight space", "Distinguish convex from non-convex optimization problems", "Understand saddle points and why they're more common than local minima in high dimensions", "Implement SGD with momentum using the ball-rolling-downhill analogy", "Explain why learning rate schedules improve convergence"]} />
 
 ## The Loss Surface
 
-Imagine plotting loss as a function of two weights. You get a 3D surface — hills, valleys, and ridges. The goal of training is to find the lowest valley. In a real network with millions of weights, this surface exists in millions of dimensions, but the intuition from 3D holds.
+Imagine plotting loss as a function of two weights. You get a 3D surface: hills, valleys, ridges. The goal of training is to find the lowest valley. In a real network with millions of weights, this surface exists in millions of dimensions, but the intuition from 3D holds.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -80,9 +80,9 @@ for (let step = 0; step < 20; step++) {
 
 ## Convexity and Non-Convexity
 
-A **convex** function is bowl-shaped: any line between two points on the surface stays above the surface. This guarantees a single global minimum. Linear regression loss is convex — gradient descent always finds the best answer.
+A **convex** function is bowl-shaped: any line between two points on the surface stays above the surface. This guarantees a single global minimum. Linear regression loss is convex, so gradient descent always finds the best answer.
 
-Neural network loss functions are **non-convex** — they have multiple valleys, ridges, and saddle points. There's no guarantee you'll find the global minimum.
+Neural network loss functions are **non-convex**. They have multiple valleys, ridges, and saddle points, and there's no guarantee you'll find the global minimum.
 
 <CodeBlock language="typescript" title="non-convex.ts">
 {`// A non-convex 1D loss function with multiple minima
@@ -108,7 +108,7 @@ for (const start of [-2.0, 0.0, 2.0, 4.0]) {
 
 ## Saddle Points
 
-In high dimensions, local minima are rare. **Saddle points** are far more common — points where the gradient is zero but the surface curves up in some directions and down in others. Think of a mountain pass: it's the lowest point along the ridge but the highest point along the valley.
+In high dimensions, local minima are rare. **Saddle points** are far more common: points where the gradient is zero but the surface curves up in some directions and down in others. Think of a mountain pass: it's the lowest point along the ridge but the highest point along the valley.
 
 <CodeBlock language="typescript" title="saddle-point.ts">
 {`// Saddle point example: f(x, y) = x^2 - y^2
@@ -137,7 +137,7 @@ for (let i = 0; i < 10; i++) {
 
 ## SGD with Momentum
 
-Momentum solves two problems: it helps escape saddle points and accelerates through flat regions. The physics analogy is perfect — a ball rolling downhill accumulates velocity.
+Momentum solves two problems: it helps escape saddle points and accelerates through flat regions. The physics analogy is perfect. A ball rolling downhill accumulates velocity.
 
 <CodeBlock language="typescript" title="sgd-momentum.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -185,4 +185,4 @@ Build a visualization of gradient descent on a loss surface and implement moment
 
 <Exercise slug="visualize-loss-surface" />
 
-<KeyTakeaways takeaways={["The loss function defines a surface in weight space — training navigates this terrain", "Convex functions have one minimum (bowl-shaped); neural network losses are non-convex with many valleys", "Saddle points (zero gradient but not a minimum) are more common than local minima in high dimensions", "SGD with momentum accumulates velocity like a rolling ball — it escapes saddle points and accelerates through flat regions", "Learning rate controls step size; too large overshoots, too small gets stuck"]} />
+<KeyTakeaways takeaways={["The loss function defines a surface in weight space; training navigates this terrain", "Convex functions have one minimum (bowl-shaped); neural network losses are non-convex with many valleys", "Saddle points (zero gradient but not a minimum) are more common than local minima in high dimensions", "SGD with momentum accumulates velocity like a rolling ball, escaping saddle points and accelerating through flat regions", "Learning rate controls step size; too large overshoots, too small gets stuck"]} />

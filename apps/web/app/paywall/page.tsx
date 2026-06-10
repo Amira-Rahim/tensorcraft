@@ -21,8 +21,8 @@ import { PaywallAnalytics, PaywallCtaTracker } from "./paywall-analytics";
  */
 
 export const metadata: Metadata = {
-  title: "Continue Your ML Journey | Tensorcraft",
-  description: `Unlock all 11 modules, the capstone, certificate, and GitHub push flow. One payment, lifetime access — from $${PRICING.single.price}.`,
+  title: "Module 1 Is Done. The Model Isn't. | Tensorcraft",
+  description: `All 11 modules, the capstone, certificate, and GitHub push flow. One payment, lifetime access — from $${PRICING.single.price}.`,
   // Gated-content upsell page; not an SEO target.
   robots: { index: false, follow: false },
 };
@@ -91,7 +91,7 @@ export default function PaywallPage() {
             data-testid="paywall-heading"
             className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 text-text-primary font-mono tracking-tight leading-tight"
           >
-            Continue Your ML Journey
+            Module 1 is done. The model isn&rsquo;t.
           </h1>
           <p className="text-base sm:text-lg max-w-160 mx-auto text-text-muted font-sans leading-relaxed">
             You&rsquo;ve seen the bridge. Modules 2&ndash;11 are where you stop

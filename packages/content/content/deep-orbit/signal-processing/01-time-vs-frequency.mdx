@@ -23,7 +23,7 @@ consequence:
   nextLessonTeaser: "Next: the Fourier Transform — how to convert between these two views"
 hints:
   - level: nudge
-    content: "Think of the DOM as the time-domain view of a page, and CSSOM as the frequency-domain view"
+    content: "fft(signal) re-describes the same samples by what repeats in them — no information is added, only re-arranged"
   - level: guidance
     content: "Time domain shows amplitude at each moment. Frequency domain shows which frequencies are present."
   - level: solution
@@ -37,7 +37,7 @@ skillAxes: [data_prep]
 ---
 
 <Dialogue speaker="Dr. Farah">
-Look at this signal plot, Demir. Amplitude over time. You see noise with occasional spikes. But I suspect there is hidden structure — periodic components buried in the noise that only reveal themselves in the frequency domain.
+Look at this signal plot, Demir. Amplitude over time. You see noise with occasional spikes. But I suspect there's hidden structure: periodic components buried in the noise that only reveal themselves in the frequency domain.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
@@ -45,10 +45,10 @@ Two views of the same data? That's like... the DOM and the CSSOM. Same page, com
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-Precisely. The time domain shows you *when* things happen. The frequency domain shows you *what patterns* are repeating. Both are complete descriptions of the same signal — just different lenses.
+As a first sketch. But the DOM and CSSOM are both lossless views of markup someone wrote. The frequency view is only a complete description if you observe the entire signal, and we never do. We sample at a finite rate and cut finite windows, and both of those distort it. The time domain shows you *when* things happen. The frequency domain shows you *what repeats*, through that distortion.
 </Dialogue>
 
-You already think in dual representations. The DOM tree and the CSSOM are two views of the same web page — one describes structure, the other describes presentation. Signals work the same way: the time domain shows amplitude at each moment, while the frequency domain reveals which periodic patterns make up the signal.
+The time domain plots amplitude at each moment. The frequency domain plots how strongly each periodic component is present. The rest of this lesson is learning to read the second view.
 
 <LearningObjectives objectives={["Understand that every signal has two equivalent representations: time domain and frequency domain", "Identify what each domain reveals: time shows when, frequency shows what patterns", "Recognize why some patterns are invisible in time but obvious in frequency", "Connect dual representations to familiar frontend concepts (DOM/CSSOM, markup/styles)"]} />
 
@@ -99,7 +99,7 @@ console.log(complex.slice(0, 10));
 
 ## Why Frequency Matters for DEEP SCAN
 
-The deep space signals look like noise in the time domain. But Dr. Farah suspects they contain specific frequency components — periodic patterns buried in randomness. If a signal contains a frequency that shouldn't be there, that's an anomaly.
+The deep space signals look like noise in the time domain. But Dr. Farah suspects they contain specific frequency components: periodic patterns buried in randomness. If a signal contains a frequency that shouldn't be there, that's an anomaly.
 
 <CodeBlock language="typescript" title="why-frequency.ts">
 {`// In the time domain, these two signals look almost identical:

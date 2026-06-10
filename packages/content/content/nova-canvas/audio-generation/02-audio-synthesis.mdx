@@ -7,7 +7,7 @@ order: 2
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Rohan connects a neural network to the gallery speakers. 'We are not playing recordings. We are growing sounds from latent vectors — the same way Yara grows images.'"
+  narrative: "Rohan connects a neural network to the gallery speakers. 'We are not playing recordings. We are growing sounds from latent vectors, the same way Yara grows images.'"
   speaker: "Rohan"
 concept:
   explanation: "Neural audio synthesis generates waveforms by decoding latent vectors through a network, just like image generation decodes latent space into pixels."
@@ -17,13 +17,13 @@ concept:
     mlTitle: "Neural Oscillator"
     mlCode: "const latent = tf.randomNormal([1, 64]); const waveform = decoder.predict(latent);"
     tier: structural
-    breaks: "OscillatorNode generates fixed waveforms from authored frequency, type, and detune parameters — output is exactly predictable. Neural audio synthesis generates samples from a learned model and can glitch (sample-rate mismatch), drift in pitch (cumulative error in autoregressive sampling), or produce artifacts not present in training data. Quality is measured per-output, not per-config."
+    breaks: "OscillatorNode generates fixed waveforms from authored frequency, type, and detune parameters. Output is exactly predictable. Neural audio synthesis generates samples from a learned model and can glitch (sample-rate mismatch), drift in pitch (cumulative error in autoregressive sampling), or produce artifacts not present in training data. Quality is measured per-output, not per-config."
 consequence:
-  narrative: "The first neural tone fills the gallery — not a sine wave, but something richer, textured, alive. Yara closes her eyes. 'That is not a sound. That is a feeling.'"
+  narrative: "The first neural tone fills the gallery: not a sine wave, but something richer, textured, alive. Yara closes her eyes. 'That is not a sound. That is a feeling.'"
   nextLessonTeaser: "Next: composing melodies and harmonies"
 hints:
   - level: nudge
-    content: "An OscillatorNode generates simple waveforms. A neural network generates complex ones from the same starting point — a frequency representation"
+    content: "An OscillatorNode generates simple waveforms. A neural network generates complex ones from the same starting point: a frequency representation"
   - level: guidance
     content: "Build a small decoder that takes a latent vector and outputs a Float32Array of audio samples"
   - level: solution
@@ -36,14 +36,14 @@ keywords:
 ---
 
 <Dialogue speaker="Rohan">
-An OscillatorNode gives you sine, square, sawtooth, triangle. Four shapes. A neural synthesizer gives you infinite shapes — every timbre that could exist, generated from a point in latent space.
+An OscillatorNode gives you sine, square, sawtooth, triangle. Four shapes. A neural synthesizer gives you infinite shapes: every timbre that could exist, generated from a point in latent space.
 </Dialogue>
 
 <Dialogue speaker="Yara">
-Like how our image generator does not store images — it stores the space of all possible images. You are building the space of all possible sounds.
+Like how our image generator doesn't store images. It stores the space of all possible images. You're building the space of all possible sounds.
 </Dialogue>
 
-You have used `OscillatorNode` to generate test tones and UI sound effects. It maps a frequency value to a periodic waveform. Neural synthesis does the same thing at a higher level of abstraction: it maps a latent vector to a complex waveform that no single oscillator could produce.
+Rohan's first speaker test was a 440Hz sine wave, sterile as a dial tone in an empty gallery. That tone is the ceiling of `OscillatorNode`: one frequency in, one periodic waveform out, forever. Neural synthesis keeps the contract and raises the abstraction. It maps a latent vector to a complex waveform no single oscillator could produce.
 
 <LearningObjectives objectives={["Build a neural network that generates audio waveforms from latent vectors", "Connect TensorFlow.js output to the Web Audio API for playback", "Control timbre and character by navigating latent space", "Understand the relationship between OscillatorNode parameters and neural network inputs"]} />
 
@@ -126,7 +126,7 @@ for (let alpha = 0; alpha <= 1; alpha += 0.1) {
 }`}
 </CodeBlock>
 
-Latent interpolation in audio is identical to latent interpolation in images. Move through the space and the output transforms continuously. No jumps, no glitches — just smooth evolution from one sound to another.
+Latent interpolation in audio is identical to latent interpolation in images. Move through the space and the output transforms continuously. No jumps, no glitches, just smooth evolution from one sound to another.
 
 ## Challenge
 

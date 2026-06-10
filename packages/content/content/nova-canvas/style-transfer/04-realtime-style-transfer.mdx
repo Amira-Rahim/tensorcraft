@@ -7,20 +7,20 @@ order: 4
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "Erdem tests the gallery kiosk: 'Three minutes for one style transfer. The visitors will leave.' Rohan pulls up a different approach: 'We train a feedforward network that applies the style in a single pass. Like pre-compiling CSS — no runtime optimization needed.'"
+  narrative: "Erdem tests the gallery kiosk: 'Three minutes for one style transfer. The visitors will leave.' Rohan pulls up a different approach: 'We train a feedforward network that applies the style in a single pass. Like pre-compiling CSS: no runtime optimization needed.'"
   speaker: "Rohan"
 concept:
-  explanation: "Real-time style transfer replaces iterative optimization with a feedforward network trained to apply a specific style in one pass — like how CSS filters apply visual effects instantly without per-pixel computation at runtime."
+  explanation: "Real-time style transfer replaces iterative optimization with a feedforward network trained to apply a specific style in one pass, like how CSS filters apply visual effects instantly without per-pixel computation at runtime."
   bridge:
     feTitle: "CSS filter chains"
     feCode: "img { filter: saturate(1.5) contrast(1.2) blur(1px); }"
     mlTitle: "Feedforward style network"
     mlCode: "const stylized = styleNet.predict(contentImage);"
     tier: structural
-    breaks: "CSS filter chains compose deterministic per-pixel operations. Feedforward style networks learn one fixed style end-to-end — adding a new style requires retraining the entire network, not adding a filter to a chain."
+    breaks: "CSS filter chains compose deterministic per-pixel operations. Feedforward style networks learn one fixed style end-to-end. Adding a new style requires retraining the entire network, not adding a filter to a chain."
 consequence:
   narrative: "One forward pass. 85 milliseconds. The photograph transforms into a Monet in the time it takes to blink. Yara stares at the kiosk screen, watching visitors' photographs become paintings in real time. 'This is what I dreamed it could be.'"
-  nextLessonTeaser: "Next: blending multiple styles — combining Monet and Basquiat in a single image"
+  nextLessonTeaser: "Next: blending multiple styles: combining Monet and Basquiat in a single image"
 hints:
   - level: nudge
     content: "CSS filters are instant because the computation is pre-compiled. A feedforward style network works the same way."
@@ -37,14 +37,14 @@ keywords:
 ---
 
 <Dialogue speaker="Rohan">
-The Gatys method optimizes each image from scratch — hundreds of iterations, minutes per image. That is like computing CSS styles by running gradient descent on every page load. We need to pre-compile the style into a network.
+The Gatys method optimizes each image from scratch: hundreds of iterations, minutes per image. That is like computing CSS styles by running gradient descent on every page load. We need to pre-compile the style into a network.
 </Dialogue>
 
 <Dialogue speaker="Samir">
-A feedforward network. Train it once on the Monet style, and it applies that style in a single forward pass. Like CSS `filter` — the browser applies saturate, contrast, and blur instantly because the operations are pre-compiled.
+A feedforward network. Train it once on the Monet style, and it applies that style in a single forward pass. Like CSS `filter`: the browser applies saturate, contrast, and blur instantly because the operations are pre-compiled.
 </Dialogue>
 
-CSS filters apply visual effects in real time because they are pre-computed GPU operations, not pixel-by-pixel calculations. Fast style transfer works the same way — a network pre-trained on a specific style applies it in a single pass.
+CSS filters apply visual effects in real time because they are pre-computed GPU operations, not pixel-by-pixel calculations. Fast style transfer works the same way: a network pre-trained on a specific style applies it in a single pass.
 
 <LearningObjectives objectives={["Understand why iterative optimization is too slow for real-time use", "Build a feedforward style transfer network with encoder-residual-decoder architecture", "Train the network using perceptual and style losses from a pretrained feature extractor", "Connect fast inference to CSS filter chains — pre-compiled visual effects"]} />
 
@@ -143,4 +143,4 @@ InstanceNorm: normalize over (H, W) per sample, per channel
 Applied at each layer of the generator. This is the basis for arbitrary style transfer (one model, any style).
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["Iterative style transfer optimizes from scratch each time — like computing CSS by gradient descent on page load", "Feedforward networks pre-compile a style into learned weights — single-pass inference, like CSS filters", "The architecture: encoder (downsample) -> residual blocks (transform) -> decoder (upsample)", "Result: 2000x speedup, from minutes per image to 85 milliseconds — true real-time performance"]} />
+<KeyTakeaways takeaways={["Iterative transfer pays hundreds of optimization steps per image; the feedforward version paid them once, during training, for one style", "Feedforward networks pre-compile a style into learned weights — single-pass inference, like CSS filters", "The architecture: encoder (downsample) -> residual blocks (transform) -> decoder (upsample)", "Result: 2000x speedup, from minutes per image to 85 milliseconds — true real-time performance"]} />

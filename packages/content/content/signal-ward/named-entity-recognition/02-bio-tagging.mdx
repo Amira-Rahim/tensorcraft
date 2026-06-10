@@ -7,23 +7,23 @@ order: 2
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Vikram introduces BIO tagging to handle multi-word entities like 'rheumatoid arthritis' — where simple per-token labels fall apart."
+  narrative: "Vikram introduces BIO tagging to handle multi-word entities like 'rheumatoid arthritis', where simple per-token labels fall apart."
   speaker: "Vikram"
 concept:
-  explanation: "BIO tagging marks entity boundaries using B (beginning), I (inside), and O (outside) — like HTML opening and closing tags that define where elements start and end."
+  explanation: "BIO tagging marks entity boundaries using B (beginning), I (inside), and O (outside), like HTML opening and closing tags that define where elements start and end."
   bridge:
     feTitle: "HTML Opening/Closing Tags"
     feCode: "<span class='condition'>rheumatoid arthritis</span> <!-- tags mark boundaries -->"
     mlTitle: "BIO Tags"
     mlCode: "B-CONDITION I-CONDITION O // tags mark entity boundaries"
     tier: structural
-    breaks: "HTML tags are explicit author-written boundaries. BIO tags are predicted per-token (Begin, Inside, Outside) and inconsistent BIO sequences (I-PER following B-LOC) are a common model failure — post-processing must repair invalid tag sequences."
+    breaks: "HTML tags are explicit author-written boundaries. BIO tags are predicted per-token (Begin, Inside, Outside) and inconsistent BIO sequences (I-PER following B-LOC) are a common model failure; post-processing must repair invalid tag sequences."
 consequence:
   narrative: "The model can now correctly identify multi-word entities, distinguishing 'rheumatoid arthritis' as one condition from two adjacent single-word entities."
   nextLessonTeaser: "Next: medical-specific entity types and the challenges of clinical vocabulary."
 hints:
   - level: nudge
-    content: "B marks the first token of an entity, I marks continuation tokens — like an opening tag and its content"
+    content: "B marks the first token of an entity, I marks continuation tokens, like an opening tag and its content"
   - level: guidance
     content: "Two adjacent entities of the same type need the B tag to separate them, just like two adjacent spans need separate opening tags"
   - level: solution
@@ -36,7 +36,7 @@ keywords:
 ---
 
 <Dialogue speaker="Vikram">
-Khalil, our basic NER labels each token independently. But look at "rheumatoid arthritis" — that's one condition, two words. How do we tell the model that "arthritis" continues the entity started by "rheumatoid" rather than being a separate entity?
+Khalil, our basic NER labels each token independently. But look at "rheumatoid arthritis": one condition, two words. How do we tell the model that "arthritis" continues the entity started by "rheumatoid" rather than being a separate entity?
 </Dialogue>
 
 <Dialogue speaker="Khalil">
@@ -44,7 +44,7 @@ In HTML, I'd wrap them in a single tag: `<span class="condition">rheumatoid arth
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-That's exactly what BIO tagging does. B is the opening tag — the beginning of an entity. I is the content inside. O is everything outside any tag. No explicit closing tag needed; the entity ends when you hit O or a new B.
+Same shape, one difference that bites. Your span tags are ground truth because you wrote them. BIO tags are predictions, made one token at a time, and the model will happily emit a sequence no author could: an I-DRUG right after a B-CONDITION. Post-processing has to repair invalid sequences before you trust a span. B begins an entity, I continues it, O is outside; the entity ends at the next O or B.
 </Dialogue>
 
 <LearningObjectives objectives={["Understand the BIO (Beginning, Inside, Outside) tagging scheme", "Map BIO tags to the familiar concept of HTML opening and closing tags", "Convert entity annotations into BIO tag sequences", "Decode BIO sequences back into entity spans"]} />
@@ -149,11 +149,11 @@ console.log(entities);
 ## Why B Matters: Preventing Tag Merge
 
 <Dialogue speaker="Imran">
-What happens if a patient has "diabetes hypertension" — two conditions listed back to back?
+What happens if a patient has "diabetes hypertension", two conditions listed back to back?
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-Without the B tag, both words get I-CONDITION. The decoder merges them into one entity: "diabetes hypertension." The B tag on "hypertension" is like a new opening `<span>` — it signals a separate entity starts there, even though the type is the same.
+Without the B tag, both words get I-CONDITION. The decoder merges them into one entity: "diabetes hypertension." The B tag on "hypertension" is like a new opening `<span>`. It signals that a separate entity starts there, even though the type is the same.
 </Dialogue>
 
 Consider the difference:
@@ -169,4 +169,4 @@ Implement a BIO tagger that converts entity annotations into tag sequences and d
 
 <Exercise slug="apply-bio-tags" />
 
-<KeyTakeaways takeaways={["BIO tagging is like HTML tags — B opens an entity, I continues it, O marks outside text", "Multi-word entities use B on the first token and I on continuation tokens", "The B tag prevents adjacent same-type entities from merging, like separate opening tags in HTML", "Decoding BIO tags reconstructs entity spans, like parsing HTML into DOM elements"]} />
+<KeyTakeaways takeaways={["Models emit invalid BIO sequences (an I-CONDITION after a B-DRUG); decoding must repair them before extracting spans", "Multi-word entities use B on the first token and I on continuation tokens", "The B tag prevents adjacent same-type entities from merging, like separate opening tags in HTML", "Decoding BIO tags reconstructs entity spans, like parsing HTML into DOM elements"]} />

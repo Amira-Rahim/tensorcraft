@@ -23,7 +23,7 @@ consequence:
   nextLessonTeaser: "Next: running real-time inference with the loaded model"
 hints:
   - level: nudge
-    content: "Think of model loading as fetching JSON — same pattern, bigger payload"
+    content: "tf.loadLayersModel(url) takes the URL of model.json and fetches the weight files listed in its manifest automatically"
   - level: guidance
     content: "tf.loadLayersModel() fetches model.json (architecture) and .bin files (weights)"
   - level: solution
@@ -38,14 +38,14 @@ skillAxes: [deployment, fe_integration]
 ---
 
 <Dialogue speaker="Ensign Demir">
-So the model is just files — a JSON manifest and binary weight chunks? That's... exactly like loading a web font or a spritesheet.
+So the model is just files, a JSON manifest and binary weight chunks? That's... exactly like loading a web font or a spritesheet.
 </Dialogue>
 
 <Dialogue speaker="ARIA">
-Correct. The architecture is described in model.json. The learned weights are in one or more .bin files. The browser fetches both, just like any other asset.
+The fetch is, Ensign. What resolves is not. A font resolves to bytes the renderer consumes once. tf.loadLayersModel resolves to a live LayersModel: a compute graph with predict and evaluate methods that holds GPU memory until you dispose it. You download it like an asset. You manage it like a process.
 </Dialogue>
 
-Every frontend developer has written `fetch(url).then(r => r.json())` hundreds of times. Loading a trained model into the browser is the same pattern — you're fetching structured data over HTTP. The model's architecture lives in a JSON file, and the learned weights live in binary files alongside it.
+The model's architecture lives in `model.json`; the learned weights live in binary `.bin` shards alongside it. `tf.loadLayersModel()` fetches both over HTTP and assembles the model in memory.
 
 <LearningObjectives objectives={["Load a pre-trained TensorFlow.js model from a URL", "Understand the model format: model.json manifest + weight .bin shards", "Cache models in IndexedDB for offline access and faster subsequent loads", "Handle loading states and errors gracefully in the UI"]} />
 
@@ -92,7 +92,7 @@ const weightData = await fetch('/models/deep-scan/group1-shard1of1.bin')
 
 ## Caching with IndexedDB
 
-Models can be 5-50MB. You don't want to re-download them on every page load — just like you'd cache API responses or use a service worker for static assets.
+Models can be 5-50MB. You don't want to re-download them on every page load, just like you'd cache API responses or use a service worker for static assets.
 
 <CodeBlock language="typescript" title="model-caching.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -128,7 +128,7 @@ console.log(savedModels);
 await tf.io.removeModel(CACHE_KEY);`}
 </CodeBlock>
 
-This is identical to the service worker caching pattern: check cache first, fall back to network, store for next time.
+Check cache first, fall back to network, store for next time. And remove the cached entry when you ship a new model version, or users keep running the old weights.
 
 ## Loading States in the UI
 
@@ -175,4 +175,4 @@ Load a model with caching and verify its architecture.
 
 <Exercise slug="load-model" />
 
-<KeyTakeaways takeaways={["Model loading follows the fetch → parse → use pattern: tf.loadLayersModel() fetches JSON + binary weight files", "Models are two parts: model.json (architecture) and .bin files (learned weights) — like code-splitting chunks", "IndexedDB caching prevents re-downloading — same pattern as service worker asset caching", "The onProgress callback gives loading feedback, just like fetch progress events"]} />
+<KeyTakeaways takeaways={["The DEEP SCAN model loads in 340ms from the network — model.summary() confirms the 673 parameters arrived intact", "Models are two parts: model.json (architecture) and .bin files (learned weights) — like code-splitting chunks", "IndexedDB caching prevents re-downloading — same pattern as service worker asset caching", "The onProgress callback gives loading feedback, just like fetch progress events"]} />

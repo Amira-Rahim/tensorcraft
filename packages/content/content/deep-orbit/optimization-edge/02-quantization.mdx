@@ -37,10 +37,10 @@ skillAxes: [deployment]
 ---
 
 <Dialogue speaker="Chief Nazari">
-Every weight is a 32-bit float — 4 bytes. Your model has 85 million weights. That is 340 MB just for the numbers. Cut the precision to 8-bit integers and you are at 85 MB. The model is 4x smaller and inference runs on integer hardware — faster on every device.
+Every weight is a 32-bit float: 4 bytes. Your model has 85 million weights. That's 340 MB just for the numbers. Cut the precision to 8-bit integers and you're at 85 MB. The model is 4x smaller and inference runs on integer hardware, faster on every device.
 </Dialogue>
 
-You've optimized images: PNG (lossless, large) to WebP (lossy, small). The visual quality barely changes but the file size drops 5-10x. Quantization does the same for model weights: reduce from 32-bit floats to 8-bit integers. The accuracy barely changes but the model shrinks 4x.
+340 MB is the size of DEEP SCAN's weight file at float32: 85 million parameters, 4 bytes each, exactly as Nazari computed. Store each weight in one byte instead and the file lands at 85 MB, at a cost of roughly a point of accuracy. If you've ever converted a 2 MB PNG to a 200 KB WebP and squinted at the invisible difference, you know this trade. Quantization is the same lossy compression argument applied to model weights.
 
 <LearningObjectives objectives={["Understand quantization as precision reduction: float32 → float16 → int8", "Quantize a model using TensorFlow.js conversion tools", "Measure the accuracy-size tradeoff of different quantization levels", "Choose the right precision for your deployment constraints"]} />
 
@@ -115,4 +115,4 @@ Quantize model weights and measure the precision loss.
 
 <KeyTakeaways takeaways={["Quantization reduces precision: float32 (4B) → float16 (2B) → int8 (1B) per weight", "Like image compression: smaller files, barely noticeable quality loss for most use cases", "DEEP SCAN: 340 MB → 85 MB with int8, only 1.2% accuracy drop — a worthwhile trade", "Always measure accuracy after quantization — some models are more sensitive than others"]} />
 
-> **DISPATCH archive · field intercept #14-Q:** Hassan's edge cell quantizes everything before deploy — they hit 1.2% accuracy loss and called it a win. Operator Jin pushed back: "On a 50-million-row table that's 600,000 wrong calls per quarter." Hassan's reply: "We monitor for it. That's why we have drift detection." Both true.
+> **DISPATCH archive · field intercept #14-Q:** Hassan's edge cell quantizes everything before deploy. They hit 1.2% accuracy loss and called it a win. Operator Jin pushed back: "On a 50-million-row table that's 600,000 wrong calls per quarter." Hassan's reply: "We monitor for it. That is why we have drift detection." Both true.

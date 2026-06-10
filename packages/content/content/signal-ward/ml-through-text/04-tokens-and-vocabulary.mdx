@@ -7,7 +7,7 @@ order: 4
 estimatedMinutes: 25
 difficulty: beginner
 context:
-  narrative: "Vikram explains that before text can become numbers, it must be broken into tokens — the atomic units of text processing, just like URL segments."
+  narrative: "Vikram explains that before text can become numbers, it must be broken into tokens, the atomic units of text processing, just like URL segments."
   speaker: "Vikram"
 concept:
   explanation: "Tokenization breaks text into discrete units (tokens) that can be mapped to numbers. Just as new URL() parses a URL into protocol, host, path, and query segments, a tokenizer parses text into processable pieces."
@@ -45,10 +45,10 @@ So "patient reports chest pain" becomes four tokens?
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-Right. And each token maps to an index in our vocabulary. "patient" might be index 42, "reports" is 107, and so on. The model only sees these numbers.
+Four, once you strip the period. Leave it attached and "pain." becomes a fifth token that shares nothing with "pain". Then each token maps to an index in our vocabulary. "patient" might be index 42, "reports" is 107, and so on. The model only sees these numbers.
 </Dialogue>
 
-You parse URLs all the time. `new URL()` breaks a URL into structured parts — protocol, host, pathname, search params. Tokenization does the same for natural language: it breaks a sentence into structured parts that a model can process.
+You parse URLs all the time. `new URL()` breaks a URL into structured parts: protocol, host, pathname, search params. Tokenization does the same for natural language: it breaks a sentence into structured parts that a model can process.
 
 <LearningObjectives objectives={["Tokenize text by splitting on whitespace and punctuation", "Build a vocabulary mapping from words to integer indices", "Convert a sentence into a sequence of token IDs", "Handle unknown words with an out-of-vocabulary token"]} />
 
@@ -76,7 +76,7 @@ const tokens = tokenize('Patient reports chest pain.');
 
 ## Building a Vocabulary
 
-A vocabulary maps each unique word to an integer ID. This is exactly like an i18n translation dictionary — each key maps to a value.
+A vocabulary maps each unique word to an integer ID. This is exactly like an i18n translation dictionary, where each key maps to a value.
 
 <CodeBlock language="typescript" title="vocabulary-map.ts">
 {`// Build vocabulary from a corpus of notes
@@ -119,4 +119,4 @@ Build a tokenizer and vocabulary encoder for clinical notes.
 
 <Exercise slug="tokenize-text" />
 
-<KeyTakeaways takeaways={["Tokenization splits text into atomic units, just like URL parsing splits paths into segments", "A vocabulary maps each unique token to an integer index", "Unknown words get a special <UNK> token to handle unseen text", "Token IDs are the numerical input that models actually process"]} />
+<KeyTakeaways takeaways={["Normalize before you split: lowercase and strip punctuation so 'Pain.' and 'pain' become the same token", "A vocabulary maps each unique token to an integer index", "Unknown words get a special <UNK> token to handle unseen text", "Token IDs are the numerical input that models actually process"]} />

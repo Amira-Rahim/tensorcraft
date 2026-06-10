@@ -7,17 +7,17 @@ order: 1
 estimatedMinutes: 25
 difficulty: beginner
 context:
-  narrative: "Vikram introduces the simplest word representation: one-hot encoding. Each word gets a unique ID with no relationships — like enum values where each item is equally distant from every other."
+  narrative: "Vikram introduces the simplest word representation: one-hot encoding. Each word gets a unique ID with no relationships, like enum values where each item is equally distant from every other."
   speaker: "Vikram"
 concept:
-  explanation: "One-hot encoding represents each word as a vector where exactly one position is 1 and all others are 0. It assigns a unique identity but captures zero semantic relationships — 'aspirin' is equally distant from 'ibuprofen' and 'appendectomy'."
+  explanation: "One-hot encoding represents each word as a vector where exactly one position is 1 and all others are 0. It assigns a unique identity but captures zero semantic relationships: 'aspirin' is equally distant from 'ibuprofen' and 'appendectomy'."
   bridge:
     feTitle: "Enum Values"
     feCode: "enum Drug { Aspirin = 0, Ibuprofen = 1, Appendectomy = 2 }"
     mlTitle: "One-Hot Vector"
     mlCode: "aspirin = [1, 0, 0]  // unique ID, no relationships"
     tier: structural
-    breaks: "An enum value is a small integer with named identity. A one-hot vector is a length-N sparse vector with a single 1 — N grows with vocabulary size, distance between any two encodings is identical (no notion of similarity), and storage is wasteful for large N. The integer ID is the link; the geometry is not."
+    breaks: "An enum value is a small integer with named identity. A one-hot vector is a length-N sparse vector with a single 1; N grows with vocabulary size, distance between any two encodings is identical (no notion of similarity), and storage is wasteful for large N. The integer ID is the link; the geometry is not."
 consequence:
   narrative: "The team sees that one-hot encoding works for identification but is wasteful and blind to meaning. 10,000 words means 10,000-dimensional vectors with no semantic structure."
   nextLessonTeaser: "Next: dense vectors that place similar words near each other in space."
@@ -38,7 +38,7 @@ keywords:
 > **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
 <Dialogue speaker="Vikram">
-Imran, when you define a TypeScript enum — say, for medication categories — each value gets a unique number. But does the enum tell you that aspirin and ibuprofen are related?
+Imran, when you define a TypeScript enum (say, for medication categories), each value gets a unique number. But does the enum tell you that aspirin and ibuprofen are related?
 </Dialogue>
 
 <Dialogue speaker="Imran">
@@ -46,7 +46,7 @@ No. Enums are just labels. Aspirin is 0, ibuprofen is 1, appendectomy is 2. The 
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-That is exactly what one-hot encoding does. Each word in your vocabulary gets a unique vector — a single 1 in a sea of zeros. It identifies words but says nothing about how they relate.
+That's one-hot encoding, minus one detail that costs you. Each word gets a unique vector, a single 1 in a sea of zeros. Identity, no relationships. And unlike your enum, the vector grows with the vocabulary. Ten thousand words means ten thousand dimensions per word.
 </Dialogue>
 
 One-hot encoding is the enum of machine learning. Each word gets a unique ID, but the representation carries no information about meaning, similarity, or relationships. It is the simplest possible encoding and the starting point for understanding why we need something better.
@@ -57,7 +57,7 @@ One-hot encoding is the enum of machine learning. Each word gets a unique ID, bu
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-In frontend code, enum values give each item a unique integer. One-hot encoding does the same thing, except each word becomes a vector instead of a single number. The vector has one position set to 1 (the word's index) and every other position set to 0.
+Each word becomes a vector with one position set to 1 (the word's index) and every other position set to 0. Nothing else about the word survives the encoding.
 
 <CodeBlock language="typescript" title="one-hot-encoding.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -84,7 +84,7 @@ appendectomy.print(); // [0, 0, 0, 0, 1]`}
 
 ## The Problem: No Relationships
 
-Aspirin and ibuprofen are both NSAIDs — pain relievers that work on the same biological pathway. But their one-hot vectors are orthogonal, meaning their cosine similarity is 0. They are exactly as "different" from each other as aspirin is from appendectomy (a surgical procedure). One-hot encoding is blind to meaning.
+Aspirin and ibuprofen are both NSAIDs, pain relievers that work on the same biological pathway. But their one-hot vectors are orthogonal, meaning their cosine similarity is 0. They are exactly as "different" from each other as aspirin is from appendectomy (a surgical procedure). One-hot encoding is blind to meaning.
 
 <CodeBlock language="typescript" title="one-hot-distances.ts">
 {`function cosineSimilarity(a: tf.Tensor, b: tf.Tensor): number {
@@ -114,7 +114,7 @@ So if a patient's chart mentions ibuprofen and the model has only seen aspirin i
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-Exactly. It cannot generalize. Every word is an island. That is why we need representations that place related words near each other — dense vectors that capture meaning, not just identity.
+No connection at all. It can't generalize. Every word is an island. That's why we need representations that place related words near each other: dense vectors that capture meaning, not just identity.
 </Dialogue>
 
 ## The Scale Problem
@@ -153,4 +153,4 @@ Implement one-hot encoding for clinical vocabulary words.
   tier="identity"
 />
 
-<KeyTakeaways takeaways={["One-hot encoding assigns each word a unique vector — like enum values with unique IDs", "Every word is equally distant from every other word: no semantic relationships", "Memory cost scales linearly with vocabulary size (50K words = 50K dimensions per vector)", "We need denser representations that capture meaning — that is what word embeddings provide"]} />
+<KeyTakeaways takeaways={["A one-hot vector takes two lines: zero-fill an array the size of the vocabulary, then set the word's index to 1", "Every word is equally distant from every other word: no semantic relationships", "Memory cost scales linearly with vocabulary size (50K words = 50K dimensions per vector)", "We need denser representations that capture meaning — that is what word embeddings provide"]} />

@@ -10,7 +10,7 @@ context:
   narrative: "The patient's allergy was found — in one document. But Imran reports that this patient has 47 clinical documents across two systems, some in English, some in Spanish. 'We cannot read 47 documents every time we need an answer,' Karimi says. 'We need retrieval. Find the right documents first, then comprehend them.'"
   speaker: "Dr. Karimi"
 concept:
-  explanation: "RAG retrieves relevant documents first, then generates answers from them — like React Server Components that fetch data on the server before rendering on the client."
+  explanation: "RAG retrieves relevant documents first, then generates answers from them, like React Server Components that fetch data on the server before rendering on the client."
   bridge:
     feTitle: "React Server Components"
     feCode: "async function PatientCard({ id }) { const data = await db.query(id); return <Card data={data} />; }"
@@ -37,7 +37,7 @@ keywords:
 ---
 
 <Dialogue speaker="Dr. Karimi">
-One document, one answer — that was a proof of concept. This patient has 47 records across two hospital systems. Emergency notes, lab results, imaging reports, discharge summaries. Some in Spanish. We cannot comprehend 47 documents sequentially. We need to retrieve the right ones first.
+One document, one answer. That was a proof of concept. This patient has 47 records across two hospital systems. Emergency notes, lab results, imaging reports, discharge summaries. Some in Spanish. We cannot comprehend 47 documents sequentially. We need to retrieve the right ones first.
 </Dialogue>
 
 <Dialogue speaker="Khalil">
@@ -174,4 +174,4 @@ Build a vector index with cosine similarity retrieval for a RAG pipeline.
 
 <Exercise slug="rag-pipeline" />
 
-<KeyTakeaways takeaways={["RAG is React Server Components for NLP — retrieve relevant data first, then generate the answer", "Dense retrieval uses embedding similarity to find relevant documents, replacing keyword search", "Vector indexes enable sub-millisecond retrieval over thousands of clinical documents", "Source attribution in RAG means every answer points back to the documents it came from"]} />
+<KeyTakeaways takeaways={["RAG's dominant failure modes are retrieval recall, chunking strategy, and the generator ignoring retrieved content; debug retrieval before blaming the model", "Dense retrieval uses embedding similarity to find relevant documents, replacing keyword search", "Vector indexes enable sub-millisecond retrieval over thousands of clinical documents", "Source attribution in RAG means every answer points back to the documents it came from"]} />

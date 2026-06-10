@@ -7,23 +7,23 @@ order: 5
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "A storm severs satellite connectivity to 200 remote sensors. The models must keep running — collecting predictions, queuing telemetry, and syncing when the link returns."
+  narrative: "A storm severs satellite connectivity to 200 remote sensors. The models must keep running: collecting predictions, queuing telemetry, and syncing when the link returns."
   speaker: "Tariq Hussain"
 concept:
-  explanation: "Offline-first ML mirrors offline-first web apps — cache models in IndexedDB, queue predictions locally, sync when connectivity returns."
+  explanation: "Offline-first ML mirrors offline-first web apps: cache models in IndexedDB, queue predictions locally, sync when connectivity returns."
   bridge:
     feTitle: "IndexedDB + Service Worker"
     feCode: "const db = await idb.open('app-cache'); // offline-first storage"
     mlTitle: "Offline Model Cache"
     mlCode: "const model = await tf.loadLayersModel('indexeddb://cached-model');"
     tier: structural
-    breaks: "IndexedDB + service worker cache documents you authored — staleness is bounded by your update cadence. Offline model cache holds weights that drift relative to the world the model was trained on — a 6-month-old offline model may be confidently wrong about today's data, with no signal to the user that the model is stale."
+    breaks: "IndexedDB + service worker cache documents you authored, so staleness is bounded by your update cadence. Offline model cache holds weights that drift relative to the world the model was trained on. A 6-month-old offline model may be confidently wrong about today's data, with no signal to the user that the model is stale."
 consequence:
   narrative: "The storm passes. 200 devices reconnect and sync 14 hours of buffered predictions. Zero data loss."
   nextLessonTeaser: "Module 6: building automated pipelines to retrain and redeploy at scale"
 hints:
   - level: nudge
-    content: "Think about how offline-first web apps use IndexedDB and background sync"
+    content: "OfflineModelCache is your IndexedDB layer; PredictionRingBuffer queues results the way Background Sync queues API calls"
   - level: guidance
     content: "Cache the model locally, buffer predictions, and use a sync queue for when connectivity returns"
   - level: solution
@@ -40,10 +40,10 @@ Station 7-Delta just lost satellite. Forecast says 14 hours minimum before link 
 </Dialogue>
 
 <Dialogue speaker="Hassan Al-Rashid">
-That is precisely why we designed for offline-first. The models run locally. Predictions buffer. When the link comes back, everything syncs. No data loss.
+That is precisely why we designed for offline-first. The models run locally. Predictions buffer. When the link comes back, everything syncs. No data loss. There is a cost, and it is not bandwidth: every hour offline, the model's picture of the grid ages. Fourteen hours is acceptable. Six months would be a model that answers confidently and wrongly, with nothing to tell us so.
 </Dialogue>
 
-You have built offline-first web apps. Service Workers cache assets. IndexedDB stores data. Background Sync queues API calls for when connectivity returns. Edge ML uses the exact same architecture — cache the model, buffer the results, sync when possible.
+You have built offline-first web apps. Service Workers cache assets. IndexedDB stores data. Background Sync queues API calls for when connectivity returns. The architecture carries over: cache the model, buffer the results, sync when possible. What does not carry over is the meaning of stale. A stale page is your own content, only older. A stale model is a snapshot of the world as of training day, still answering with full confidence about a world that may have moved.
 
 <LearningObjectives objectives={["Implement offline model caching using IndexedDB — the same pattern as offline-first web apps", "Design prediction buffering with ring buffers for memory-constrained devices", "Build sync queues that reconcile local predictions with the central system", "Handle model staleness during extended offline periods"]} />
 
@@ -84,7 +84,7 @@ class OfflineModelCache {
 
 ## Prediction Buffer
 
-When offline, predictions queue in a ring buffer — a fixed-size circular array that overwrites the oldest entries when full, preventing memory from growing unbounded on a 256MB device:
+When offline, predictions queue in a ring buffer: a fixed-size circular array that overwrites the oldest entries when full, preventing memory from growing unbounded on a 256MB device:
 
 <CodeBlock language="typescript" title="prediction-buffer.ts">
 {`interface BufferedPrediction {
@@ -159,4 +159,4 @@ Build an offline inference system with local caching and sync queue.
 
 <Exercise slug="offline-inference" />
 
-<KeyTakeaways takeaways={["Offline-first ML mirrors offline-first web architecture — cache assets, buffer data, sync later", "IndexedDB stores models locally, just as it stores app data in PWAs", "Ring buffers prevent memory overflow on constrained devices during extended offline periods", "Background sync patterns reconcile buffered predictions when connectivity returns — zero data loss"]} />
+<KeyTakeaways takeaways={["Offline ML keeps model, buffer, and decision logic on the device; a 14-hour satellite outage costs sync delay, not predictions", "IndexedDB holds the cached model across restarts; the device loads weights from local storage at boot, never from the link", "Ring buffers prevent memory overflow on constrained devices during extended offline periods", "Background sync patterns reconcile buffered predictions when connectivity returns — zero data loss"]} />

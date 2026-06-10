@@ -37,7 +37,7 @@ export function LandingHero() {
       >
         <div className="font-mono text-xs text-primary tracking-[0.14em] uppercase mb-9 flex items-center gap-3">
           <span className="inline-block w-[7px] h-[7px] bg-primary" />
-          Deep Orbit is live · Launch cohort open
+          Deep Orbit is live · 4 themes in the pipeline
         </div>
 
         <h1 className="text-5xl md:text-6xl font-mono font-black leading-[0.93] tracking-[-0.045em] mb-10 uppercase">

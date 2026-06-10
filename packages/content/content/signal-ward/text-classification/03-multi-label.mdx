@@ -10,20 +10,20 @@ context:
   narrative: "Dr. Karimi points out that real clinical documents don't fit into neat single categories. A single report might involve multiple conditions, procedures, and specialties."
   speaker: "Dr. Zahra Karimi"
 concept:
-  explanation: "Multi-label classification assigns zero or more labels to each input — like tagging a document with every relevant topic, not just the primary one."
+  explanation: "Multi-label classification assigns zero or more labels to each input, like tagging a document with every relevant topic, not just the primary one."
   bridge:
     feTitle: "Checkbox Groups (multiple selections)"
     feCode: "// <input type='checkbox' /> Cardiac\n// <input type='checkbox' /> Respiratory\n// Each checkbox is independent — check any combination"
     mlTitle: "Multi-Label Classifier"
     mlCode: "// sigmoid([cardiac, respiratory, renal, neuro])\n// Each label is independent — any combination possible"
     tier: structural
-    breaks: "Checkbox groups let users explicitly select any subset. Multi-label classifiers output independent sigmoid per label and label correlations are not modeled by default — the wrong loss (softmax) on multi-label produces silently wrong results."
+    breaks: "Checkbox groups let users explicitly select any subset. Multi-label classifiers output independent sigmoid per label and label correlations are not modeled by default; the wrong loss (softmax) on multi-label produces silently wrong results."
 consequence:
   narrative: "Documents now carry full tag sets. A chest-pain case gets tagged as cardiac, emergency, and pain-management simultaneously."
   nextLessonTeaser: "Next: confidence calibration — knowing when the model isn't sure about its tags."
 hints:
   - level: nudge
-    content: "Use sigmoid on each output unit independently — not softmax"
+    content: "Use sigmoid on each output unit independently, not softmax"
   - level: guidance
     content: "Binary crossentropy works per-label: each label is its own binary decision"
   - level: solution
@@ -50,7 +50,7 @@ Ah, that's the difference between a radio button and a checkbox group. Radio but
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-In HTML forms, radio buttons enforce mutual exclusivity — pick exactly one. Checkboxes allow any combination. Multi-label classification works like checkboxes: each label gets its own independent sigmoid, outputting a probability between 0 and 1. You can check as many boxes as apply — or none at all.
+In HTML forms, radio buttons enforce mutual exclusivity: pick exactly one. Checkboxes allow any combination. Multi-label classification works like checkboxes: each label gets its own independent sigmoid, outputting a probability between 0 and 1. You can check as many boxes as apply, or none at all.
 
 The critical insight: switch from softmax (probabilities sum to 1) to sigmoid (each probability is independent). Each output neuron is its own binary classifier.
 
@@ -169,7 +169,7 @@ function perLabelMetrics(
 </CodeBlock>
 
 <Dialogue speaker="Vikram">
-So every document is like a patient — it can have multiple conditions at once. And we need to catch all of them, not just the primary diagnosis.
+So every document is like a patient: it can have multiple conditions at once. And we need to catch all of them, not just the primary diagnosis.
 </Dialogue>
 
 <Dialogue speaker="Dr. Zahra Karimi">

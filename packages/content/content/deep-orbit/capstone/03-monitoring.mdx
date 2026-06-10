@@ -38,14 +38,14 @@ skillAxes: [deployment, evaluation]
 ---
 
 <Dialogue speaker="ARIA">
-Commander, I must flag a concern. The model performs at 91.8% accuracy now. In three weeks, that number will change — the signal characteristics in this region of space are not stationary. Without monitoring, we will not know when DEEP SCAN begins to fail.
+Commander, I must flag a concern. The model performs at 91.8% accuracy now. In three weeks, that number will change. The signal characteristics in this region of space are not stationary. Without monitoring, we will not know when DEEP SCAN begins to fail.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
-Same problem as any production app. I'll set up monitoring — track prediction confidence, inference latency, and input distribution. When the data drifts from what we trained on, we alert and retrain.
+Same problem as any production app. I'll set up monitoring: track prediction confidence, inference latency, and input distribution. When the data drifts from what we trained on, we alert and retrain.
 </Dialogue>
 
-You monitor web apps with Sentry, DataDog, or Vercel Analytics: error rates, response times, user impact. ML monitoring adds model-specific metrics: prediction confidence trends, inference latency, and data drift — detecting when the real-world data no longer matches the training data.
+You monitor web apps with Sentry, DataDog, or Vercel Analytics: error rates, response times, user impact. ML monitoring adds model-specific metrics: prediction confidence trends, inference latency, and data drift, which detects when the real-world data no longer matches the training data.
 
 <LearningObjectives objectives={["Implement prediction quality monitoring: confidence tracking and anomaly rates", "Build latency monitoring with P50/P95/P99 percentile tracking", "Detect data drift by comparing input feature distributions over time", "Configure alerts that trigger when model health metrics cross thresholds"]} />
 
@@ -196,4 +196,4 @@ Build a model monitor with drift detection.
 
 <KeyTakeaways takeaways={["ML monitoring extends app monitoring with prediction confidence, data drift, and model health metrics", "Data drift — when production inputs diverge from training data — is the #1 cause of silent model degradation", "Track P50/P95/P99 latency for inference just like you track API response times", "Alert on low confidence trends and high drift scores before users notice quality drops"]} />
 
-> **DISPATCH archive · field intercept #19-M:** Hassan's deployment dashboard runs the same drift check Demir wired here. His SRE team rotates monitoring duty weekly — the operator on rotation has 30 minutes to file a drift report whenever PSI > 0.2 fires. Same alert, different shift.
+> **DISPATCH archive · field intercept #19-M:** Hassan's deployment dashboard runs the same drift check Demir wired here. His SRE team rotates monitoring duty weekly; the operator on rotation has 30 minutes to file a drift report whenever PSI > 0.2 fires. Same alert, different shift.

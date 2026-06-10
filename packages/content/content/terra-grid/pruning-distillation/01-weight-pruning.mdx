@@ -7,10 +7,10 @@ order: 1
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Hassan examines the model's weights and finds most are near zero — dead weight."
+  narrative: "Hassan examines the model's weights and finds most are near zero: dead weight."
   speaker: "Hassan Al-Rashid"
 concept:
-  explanation: "Weight pruning removes near-zero connections from a neural network — just like tree-shaking removes unused exports from JavaScript modules."
+  explanation: "Weight pruning removes near-zero connections from a neural network, just like tree-shaking removes unused exports from JavaScript modules."
   bridge:
     feTitle: "Tree-Shaking"
     feCode: "// Webpack removes unused exports\nimport { used } from './utils';\n// unused exports are eliminated"
@@ -19,7 +19,7 @@ concept:
     tier: structural
 consequence:
   narrative: "60% of the model's weights were near zero. Pruning them barely affects accuracy."
-  nextLessonTeaser: "Next: structured pruning — removing entire neurons"
+  nextLessonTeaser: "Next: structured pruning, removing entire neurons"
 hints:
   - level: nudge
     content: "Weights near zero contribute almost nothing to the output"
@@ -35,7 +35,7 @@ keywords:
 ---
 
 <Dialogue speaker="Hassan Al-Rashid">
-We have a massive model that knows everything. We need a tiny model that knows just enough. Look at the weight distribution — 60% of the values are near zero. They are unused exports. Tree-shake them.
+We have a massive model that knows everything. We need a tiny model that knows just enough. Look at the weight distribution: 60% of the values are near zero. They are unused exports. Tree-shake them.
 </Dialogue>
 
 You use tree-shaking every day. Webpack analyzes your import statements and removes code that is never used. Weight pruning applies the same principle to neural networks: weights near zero contribute almost nothing to the model's output, so you remove them.
@@ -87,4 +87,4 @@ Implement magnitude-based weight pruning.
 
 <Exercise slug="tg-prune-weights" />
 
-<KeyTakeaways takeaways={["Weight pruning zeros out near-zero weights — tree-shaking for neural networks", "Most trained models are over-parameterized: 50-90% of weights can be pruned", "Magnitude-based pruning removes the smallest absolute weights first", "Sparse models can be stored more efficiently using compressed formats"]} />
+<KeyTakeaways takeaways={["Weight pruning zeros near-zero connections; the output barely moves because those weights barely contributed", "Most trained models are over-parameterized: 50-90% of weights can be pruned", "Magnitude-based pruning removes the smallest absolute weights first", "Sparse models can be stored more efficiently using compressed formats"]} />

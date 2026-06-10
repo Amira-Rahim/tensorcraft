@@ -10,14 +10,14 @@ context:
   narrative: "Vikram runs a test: he asks MEDI about a medication interaction that does not exist. MEDI confidently fabricates an answer. 'Hallucination,' Vikram says flatly. 'In a chat app, this is annoying. In a hospital, it could kill someone. Every claim must have a source.'"
   speaker: "Vikram"
 concept:
-  explanation: "Knowledge grounding ensures every generated answer is supported by retrieved evidence — like hyperlinks on the web, where every claim has a verifiable source."
+  explanation: "Knowledge grounding ensures every generated answer is supported by retrieved evidence, like hyperlinks on the web, where every claim has a verifiable source."
   bridge:
     feTitle: "Hyperlinks"
     feCode: "<a href='/studies/12345'>Reduces risk by 40%</a> // every claim has a source"
     mlTitle: "Grounded Answer"
     mlCode: "{ answer: 'Reduces risk by 40%', evidence: [{ docId: 12345, span: '...', score: 0.95 }] }"
     tier: structural
-    breaks: "Hyperlinks are author-asserted references the reader can follow. Grounded answers cite sources the model claims support the answer — but the model frequently misattributes, partial-quotes out of context, or cites a passage that does not actually contain the claim. Grounding requires programmatic verification that the answer text appears in the cited chunk."
+    breaks: "Hyperlinks are author-asserted references the reader can follow. Grounded answers cite sources the model claims support the answer, but the model frequently misattributes, partial-quotes out of context, or cites a passage that does not actually contain the claim. Grounding requires programmatic verification that the answer text appears in the cited chunk."
 consequence:
   narrative: "The grounded QA system now refuses to answer when evidence is insufficient. Vikram's fabricated interaction test returns: 'No supporting evidence found in patient records. Confidence: 0.12. Deferring to clinician.' Karimi approves. 'A system that knows when it does not know is safer than one that always has an answer.'"
   nextLessonTeaser: "Next: clinical queries — doctors asking questions in natural language"
@@ -37,7 +37,7 @@ keywords:
 ---
 
 <Dialogue speaker="Vikram">
-I asked MEDI: "What is the interaction between metformin and ibuprofen in patients with renal impairment?" MEDI responded with a detailed, confident, and entirely fabricated answer. It cited a study that does not exist. In a chat application, a hallucination is an inconvenience. In Signal Ward, it is a liability.
+I asked MEDI: "What is the interaction between metformin and ibuprofen in patients with renal impairment?" MEDI responded with a detailed, confident, and entirely fabricated answer. It cited a study that doesn't exist. In a chat application, a hallucination is an inconvenience. In Signal Ward, it's a liability.
 </Dialogue>
 
 <Dialogue speaker="Dr. Karimi">
@@ -172,4 +172,4 @@ Build an entailment-based grounding function that verifies answers against evide
 
 <Exercise slug="ground-answers" />
 
-<KeyTakeaways takeaways={["Knowledge grounding is hyperlinks for ML — every claim must link to verifiable evidence", "NLI models classify whether evidence entails, is neutral to, or contradicts a claim", "Confidence thresholds trigger abstention: 'insufficient evidence' is safer than a hallucinated answer", "In clinical NLP, a system that knows it does not know is more valuable than one that always guesses"]} />
+<KeyTakeaways takeaways={["Models misattribute and partial-quote their own citations; grounding requires programmatic verification that the answer text appears in the cited chunk", "NLI models classify whether evidence entails, is neutral to, or contradicts a claim", "Confidence thresholds trigger abstention: 'insufficient evidence' is safer than a hallucinated answer", "In clinical NLP, a system that knows it does not know is more valuable than one that always guesses"]} />

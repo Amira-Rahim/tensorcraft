@@ -8,25 +8,25 @@ estimatedMinutes: 30
 difficulty: advanced
 companionTo: foundations
 context:
-  narrative: "The numbers you've been pushing through tensors follow rules older than computers — the rules of linear algebra."
+  narrative: "The numbers you've been pushing through tensors follow rules older than computers: the rules of linear algebra."
   speaker: "Instructor"
 concept:
-  explanation: "Tensors are elements of vector spaces with transformation rules — not just arrays of numbers."
+  explanation: "Tensors are elements of vector spaces with transformation rules, not just arrays of numbers."
   bridge:
     feTitle: "CSS Transform"
     feCode: "transform: matrix(a, b, c, d, tx, ty)"
     mlTitle: "Linear Map"
     mlCode: "const result = tf.matMul(transformMatrix, vector)"
     tier: structural
-    breaks: "CSS transforms apply hand-coded matrices to 2D positions. Tensor linear maps act on n-dimensional spaces with learned matrices and are composed automatically through the network — the matrices are huge, opaque, and meaningful only in aggregate."
+    breaks: "CSS transforms apply hand-coded matrices to 2D positions. Tensor linear maps act on n-dimensional spaces with learned matrices and are composed automatically through the network; the matrices are huge, opaque, and meaningful only in aggregate."
 consequence:
   narrative: "With vector spaces in your toolkit, tensor operations stop being black boxes."
   nextLessonTeaser: "Next: the calculus that makes neural networks learn"
 hints:
   - level: nudge
-    content: "Think about how CSS transforms compose — matrix multiplication works the same way"
+    content: "Chaining CSS transforms multiplies their matrices under the hood; tf.matMul composes linear maps the same way"
   - level: guidance
-    content: "A basis vector is like a coordinate axis — it defines a direction in your space"
+    content: "A basis vector is like a coordinate axis: it defines a direction in your space"
   - level: solution
     content: "Use tf.matMul to compose linear transformations, just like chaining CSS transforms"
 keywords:
@@ -38,7 +38,7 @@ keywords:
 ---
 
 <Dialogue speaker="Instructor">
-You've been creating tensors and running operations on them since Module 1. But there's a deeper structure here that most tutorials skip. Tensors aren't just arrays — they're elements of vector spaces, and the operations you've been using are linear maps. Understanding this changes how you think about every layer in a neural network.
+You've been creating tensors and running operations on them since Module 1. But there's a deeper structure here that most tutorials skip. Tensors aren't just arrays. They're elements of vector spaces, and the operations you've been using are linear maps. Understanding this changes how you think about every layer in a neural network.
 </Dialogue>
 
 <LearningObjectives objectives={["Understand vector spaces and why tensors live inside them", "Identify basis vectors and linear independence in practical terms", "Perform matrix multiplication as composition of linear maps", "Connect CSS transform matrices to ML weight matrices", "Compute the rank of a matrix and understand what it means for data"]} />
@@ -51,20 +51,20 @@ In frontend development, you've used CSS transforms without thinking twice:
 transform: matrix(1, 0, 0, 1, 50, 100);
 ```
 
-That 2D transform matrix lives in a vector space. Every CSS transform you've ever written is a linear map — it takes a coordinate and produces a new coordinate, and it respects addition and scaling. ML weight matrices work identically.
+That 2D transform matrix lives in a vector space. Every CSS transform you've ever written is a linear map: it takes a coordinate, produces a new coordinate, and respects addition and scaling. ML weight matrices work identically.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-A **vector space** is a set of objects (vectors) where you can add any two together and multiply any one by a scalar, and the results stay in the set. JavaScript arrays of fixed length form a vector space — you can add `[1, 2, 3]` and `[4, 5, 6]` element-wise to get `[5, 7, 9]`, and that result is still a 3-element array.
+A **vector space** is a set of objects (vectors) where you can add any two together and multiply any one by a scalar, and the results stay in the set. JavaScript arrays of fixed length form a vector space. You can add `[1, 2, 3]` and `[4, 5, 6]` element-wise to get `[5, 7, 9]`, and that result is still a 3-element array.
 
 ## Basis Vectors and Coordinates
 
 Every vector in a space can be written as a combination of **basis vectors**. In 2D, the standard basis is:
 
-- **e1** = [1, 0] — the x-axis direction
-- **e2** = [0, 1] — the y-axis direction
+- **e1** = [1, 0], the x-axis direction
+- **e2** = [0, 1], the y-axis direction
 
-The point [3, 7] is really 3 * e1 + 7 * e2. This is exactly how coordinate systems work in CSS — the browser defines a basis (x-right, y-down), and every position is a linear combination of those directions.
+The point [3, 7] is really 3 * e1 + 7 * e2. CSS coordinates work the same way: the browser defines a basis (x-right, y-down), and every position is a linear combination of those directions.
 
 <CodeBlock language="typescript" title="basis-vectors.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -92,7 +92,7 @@ console.log(await transformed.array());
 
 ## Linear Independence and Rank
 
-Vectors are **linearly independent** if none can be written as a combination of the others. The **rank** of a matrix tells you how many independent directions it preserves. If a weight matrix has low rank, it's collapsing your data into fewer dimensions — information is being lost.
+Vectors are **linearly independent** if none can be written as a combination of the others. The **rank** of a matrix tells you how many independent directions it preserves. If a weight matrix has low rank, it's collapsing your data into fewer dimensions. Information is being lost.
 
 <CodeBlock language="typescript" title="matrix-rank.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -127,7 +127,7 @@ console.log('Singular values:', singularValues);
 
 ## Matrix Multiplication as Composition
 
-When you chain CSS transforms, the browser multiplies the matrices together. Neural network layers work the same way — each layer's weight matrix is a linear map, and stacking layers composes those maps.
+When you chain CSS transforms, the browser multiplies the matrices together. Neural network layers work the same way: each layer's weight matrix is a linear map, and stacking layers composes those maps.
 
 <CodeBlock language="typescript" title="composition.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -166,4 +166,4 @@ Put your linear algebra knowledge to work by implementing core vector space oper
 
 <Exercise slug="linear-algebra-ops" />
 
-<KeyTakeaways takeaways={["Tensors live in vector spaces — they follow rules of addition and scalar multiplication", "Basis vectors define coordinate systems; every vector is a linear combination of basis vectors", "Matrix rank tells you how many dimensions a transformation preserves — low rank means information loss", "Matrix multiplication composes linear maps, which is exactly how stacking neural network layers works", "Without nonlinear activations, any number of layers collapses to a single matrix multiplication"]} />
+<KeyTakeaways takeaways={["Tensors live in vector spaces: they follow rules of addition and scalar multiplication", "Basis vectors define coordinate systems; every vector is a linear combination of basis vectors", "Matrix rank tells you how many dimensions a transformation preserves, so low rank means information loss", "Matrix multiplication composes linear maps, which is exactly how stacking neural network layers works", "Without nonlinear activations, any number of layers collapses to a single matrix multiplication"]} />

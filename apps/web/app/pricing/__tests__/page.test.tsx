@@ -45,6 +45,36 @@ vi.mock("@/app/components/ambient-background", () => ({
   AmbientBackground: () => <div data-testid="ambient-bg" />,
 }));
 
+vi.mock("@tensorcraft/content", () => ({
+  getModules: (slug: string) =>
+    slug === "deep-orbit"
+      ? [
+          {
+            slug: "foundations",
+            title: "Foundations",
+            description: "Tensors from arrays",
+            order: 1,
+          },
+          {
+            slug: "signal-processing",
+            title: "Signal Processing",
+            description: "Windows and filters",
+            order: 2,
+          },
+          {
+            slug: "neural-networks",
+            title: "Neural Networks",
+            description: "Layers as middleware",
+            order: 3,
+          },
+        ]
+      : [],
+  getModuleLessons: () => [
+    { slug: "l1", title: "Lesson 1", order: 1, estimatedMinutes: 18 },
+    { slug: "l2", title: "Lesson 2", order: 2, estimatedMinutes: 20 },
+  ],
+}));
+
 vi.mock("@tensorcraft/themes", () => {
   const slugs = [
     "deep-orbit",
@@ -75,11 +105,11 @@ vi.mock("@tensorcraft/themes", () => {
 });
 
 describe("PricingPage (brutalist Phase 11 §11d)", () => {
-  it('renders the "Simple, Fair Pricing" H1', () => {
+  it('renders the "Buy a theme" H1', () => {
     render(<PricingPage />);
     const h1 = screen.getByTestId("pricing-heading");
     expect(h1.tagName).toBe("H1");
-    expect(h1).toHaveTextContent(/Simple, Fair Pricing/i);
+    expect(h1).toHaveTextContent(/Buy a theme\. Keep it forever\./i);
   });
 
   it("renders the 5-tier grid (embedded PricingTiers)", () => {
@@ -112,6 +142,31 @@ describe("PricingPage (brutalist Phase 11 §11d)", () => {
     expect(table).toHaveTextContent("$79");
     expect(table).toHaveTextContent("$99");
     expect(table).toHaveTextContent("$129");
+  });
+
+  it("links to the /compare page from the footer note", () => {
+    const { container } = render(<PricingPage />);
+    const link = container.querySelector('a[href="/compare"]');
+    expect(link).not.toBeNull();
+    expect(link!.textContent).toMatch(/compar/i);
+  });
+
+  it("renders a curriculum preview of the launched theme's modules", () => {
+    render(<PricingPage />);
+    const section = screen.getByTestId("curriculum-preview");
+    expect(section).toBeInTheDocument();
+    // Module titles from the launched theme are visible pre-purchase.
+    expect(section).toHaveTextContent("Foundations");
+    expect(section).toHaveTextContent("Signal Processing");
+    expect(section).toHaveTextContent("Neural Networks");
+    // Each module row exposes its lesson count.
+    expect(section).toHaveTextContent(/2 lessons/i);
+  });
+
+  it("curriculum preview marks Module 1 as free", () => {
+    render(<PricingPage />);
+    const section = screen.getByTestId("curriculum-preview");
+    expect(section).toHaveTextContent(/free/i);
   });
 
   it("comparison table includes core feature rows", () => {

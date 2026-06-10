@@ -10,7 +10,7 @@ context:
   narrative: "Some layers need higher precision than others. Elif analyzes which layers are sensitive."
   speaker: "Elif Yilmaz"
 concept:
-  explanation: "Mixed precision uses different number formats for different layers — like responsive images that serve different resolutions based on context."
+  explanation: "Mixed precision uses different number formats for different layers, like responsive images that serve different resolutions based on context."
   bridge:
     feTitle: "Responsive Images"
     feCode: "<img srcset=\"small.webp 480w, large.png 1200w\"\n  sizes=\"(max-width: 600px) 480px, 1200px\" />"
@@ -23,7 +23,7 @@ consequence:
   nextLessonTeaser: "Next: managing the accuracy vs size tradeoff"
 hints:
   - level: nudge
-    content: "Not all layers need the same precision — early and late layers are often more sensitive"
+    content: "Not all layers need the same precision; early and late layers are often more sensitive"
   - level: guidance
     content: "Keep sensitive layers at Float16 and quantize robust middle layers to Int8"
   - level: solution
@@ -106,7 +106,7 @@ Assign precision levels to model layers and calculate total size.
 <DerivationDrawer summary="Mixed-precision training — loss scaling math">
 **Mixed precision** keeps FP32 master weights but does forward/backward in FP16 for speed.
 
-**The problem:** FP16 has range `~6e-8` to `~65504`. Most ML gradients fall in `1e-8` to `1e-3` — partly below FP16's smallest normal value → **gradient underflow** (gradients become 0).
+**The problem:** FP16 has range `~6e-8` to `~65504`. Most ML gradients fall in `1e-8` to `1e-3`, partly below FP16's smallest normal value → **gradient underflow** (gradients become 0).
 
 **Loss scaling fix:**
 
@@ -122,7 +122,7 @@ Assign precision levels to model layers and calculate total size.
 
 **Dynamic loss scaling:** S is adjusted automatically. If any gradient overflows (NaN/Inf), skip the step and halve S. If many steps pass without overflow, double S. PyTorch's `GradScaler` and TF's `LossScaleOptimizer` do this.
 
-**Why FP32 master weights?** Optimizer state (Adam's m, v) and weight updates need full precision — accumulating tiny updates (`-α · g`) in FP16 loses them to roundoff. Master weights are FP32; only the forward/backward arithmetic uses FP16.
+**Why FP32 master weights?** Optimizer state (Adam's m, v) and weight updates need full precision: accumulating tiny updates (`-α · g`) in FP16 loses them to roundoff. Master weights are FP32; only the forward/backward arithmetic uses FP16.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["First and last layers are typically more sensitive to quantization", "Mixed precision balances compression ratio with accuracy preservation", "Per-layer precision assignment mirrors responsive image srcset strategies", "Mixed precision gives ~3x compression vs 4x for full Int8, but better accuracy"]} />
+<KeyTakeaways takeaways={["First and last layers are typically more sensitive to quantization", "Mixed precision balances compression ratio with accuracy preservation", "Assign per-layer precision from a measured sensitivity analysis, not assumptions", "Mixed precision gives ~3x compression vs 4x for full Int8, but better accuracy"]} />

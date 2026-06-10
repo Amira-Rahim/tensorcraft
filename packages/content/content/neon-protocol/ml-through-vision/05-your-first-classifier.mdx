@@ -7,10 +7,10 @@ order: 5
 estimatedMinutes: 25
 difficulty: beginner
 context:
-  narrative: "NEON runs the simple classifier on a surveillance feed. It works — barely. 62% accuracy. Noor realizes she needs something more powerful."
+  narrative: "NEON runs the simple classifier on a surveillance feed. It works. Barely. 62% accuracy. Noor realizes she needs something more powerful."
   speaker: "NEON"
 concept:
-  explanation: "A threshold-based classifier applies if/else rules to pixel values — the simplest possible 'model.' This is where traditional programming ends and ML begins."
+  explanation: "A threshold-based classifier applies if/else rules to pixel values: the simplest possible 'model.' This is where traditional programming ends and ML begins."
   bridge:
     feTitle: "if/else Logic"
     feCode: "if (brightness > 128) return 'day'; else return 'night'; // rule-based"
@@ -18,11 +18,11 @@ concept:
     mlCode: "if (meanPixel > threshold) return 'active'; else return 'inactive'; // same pattern"
     tier: identity
 consequence:
-  narrative: "62% accuracy. Not good enough to detect Meridian's drones. Noor needs neural networks — models that learn their own rules from data."
+  narrative: "62% accuracy. Not good enough to detect Meridian's drones. Noor needs neural networks, models that learn their own rules from data."
   nextLessonTeaser: "Module 2: building a proper image dataset for training"
 hints:
   - level: nudge
-    content: "Start with the simplest possible approach — if/else on pixel statistics"
+    content: "Start with the simplest possible approach: if/else on pixel statistics"
   - level: guidance
     content: "Compute mean brightness, check for red channel spikes (camera LEDs), count threshold"
   - level: solution
@@ -43,7 +43,7 @@ Before neural networks, there were rules. If the average brightness exceeds 128,
 So a threshold classifier is basically an if/else chain on pixel statistics? That's just... programming. Where does the ML start?
 </Dialogue>
 
-Every ML journey starts with a baseline. Before training a neural network, build the simplest rule-based solution — `if/else` on pixel values. This gives you two things: a baseline accuracy to beat and a deep understanding of why hand-written rules are insufficient for real-world vision tasks.
+Your first model's job is to be beatable. Baseline first: build the simplest rule-based solution, `if/else` on pixel values. This gives you two things: a baseline accuracy to beat and a concrete understanding of why hand-written rules are insufficient for real-world vision tasks.
 
 <LearningObjectives objectives={["Build a threshold-based image classifier using pixel statistics", "Compute image features: mean brightness, channel ratios, variance", "Measure classifier accuracy against labeled test data", "Understand why hand-crafted rules fail and ML is needed"]} />
 

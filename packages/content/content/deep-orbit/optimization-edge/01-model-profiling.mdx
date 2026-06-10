@@ -42,7 +42,7 @@ Your model works. Now make it fast. The bridge dashboard has 512 MB of RAM. Your
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
-I'll profile it first — same as I'd profile a slow React app. Find the bottleneck, then fix it.
+I'll profile it first, same as I'd profile a slow React app. Find the bottleneck, then fix it.
 </Dialogue>
 
 You never optimize without profiling first. In frontend development, you open DevTools, record a performance trace, and find the bottleneck. Model optimization follows the same discipline: measure memory, time inference, identify the heaviest layers, then optimize surgically.
@@ -118,4 +118,4 @@ Profile a model and identify its heaviest layer.
 
 <Exercise slug="profile-model" />
 
-<KeyTakeaways takeaways={["Always profile before optimizing — measure, don't guess, just like frontend performance work", "Key metrics: model size (MB), parameter count, inference latency (mean + P95)", "Layer breakdown reveals where the parameters and compute concentrate", "The DEEP SCAN baseline: 340 MB, 45ms inference — both need to shrink for the 512 MB dashboard"]} />
+<KeyTakeaways takeaways={["The profile localizes the problem: 80% of DEEP SCAN's 45ms inference sits in the first Dense layer, so that layer is the target", "Key metrics: model size (MB), parameter count, inference latency (mean + P95)", "Layer breakdown reveals where the parameters and compute concentrate", "The DEEP SCAN baseline: 340 MB, 45ms inference — both need to shrink for the 512 MB dashboard"]} />

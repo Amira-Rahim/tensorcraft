@@ -7,23 +7,23 @@ order: 5
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "Region 4 drift alert escalates to critical. Hassan leads the incident response — diagnose, mitigate, fix, and prevent recurrence. The same playbook as a production outage."
+  narrative: "Region 4 drift alert escalates to critical. Hassan leads the incident response: diagnose, mitigate, fix, and prevent recurrence. The same playbook as a production outage."
   speaker: "Hassan Al-Rashid"
 concept:
-  explanation: "Drift incident response follows the same playbook as production incident response — detect, triage, mitigate, fix, and run a post-mortem."
+  explanation: "Drift incident response follows the same playbook as production incident response: detect, triage, mitigate, fix, and run a post-mortem."
   bridge:
     feTitle: "Incident Response"
     feCode: "rollback(deployment, 'v2.1.3') // mitigate first, investigate second"
     mlTitle: "Drift Response"
     mlCode: "rollback(model, 'v2.1.0') // revert to last known good model"
     tier: structural
-    breaks: "Incident response runbooks have known mitigation steps. Drift response must decide between rollback, retrain, recalibrate, or accept — each has different costs and the right choice depends on root cause analysis you must do, not a runbook entry."
+    breaks: "Incident response runbooks have known mitigation steps. Drift response must decide between rollback, retrain, recalibrate, or accept. Each has different costs, and the right choice depends on root cause analysis you must do, not a runbook entry."
 consequence:
   narrative: "Region 4 accuracy restored to 95.8% within 2 hours. Post-mortem identifies the firmware update as root cause. New preprocessing pipeline handles the sensor scale change."
   nextLessonTeaser: "Module 8: federated learning when data cannot be centralized"
 hints:
   - level: nudge
-    content: "Think about your incident response runbook for production outages"
+    content: "respondToDrift() should mitigate before it diagnoses: roll back first, then let the DriftIncident data drive root cause analysis"
   - level: guidance
     content: "Follow the steps: detect → triage severity → mitigate (rollback) → diagnose root cause → fix → post-mortem"
   - level: solution
@@ -47,7 +47,7 @@ I can roll back to the previous model in 12 minutes. That buys us time to invest
 Rolling back the model only helps if the old model handles the new data distribution. If the firmware changed the sensor scale, neither model works correctly until we fix the preprocessing.
 </Dialogue>
 
-You have been paged at 2 AM for a production outage. You know the drill: mitigate first (rollback the bad deploy), investigate second (find the root cause), fix third (ship the patch), and prevent fourth (post-mortem and safeguards). Drift incident response follows the same playbook.
+You have been paged at 2 AM for a production outage. You know the drill: mitigate first (rollback the bad deploy), investigate second (find the root cause), fix third (ship the patch), and prevent fourth (post-mortem and safeguards). Steps one, two, and four transfer to drift intact. Step three does not. An outage has one fix: ship the patch. Drift offers four, each with a different bill. Rollback is fast, but the old model faces the same drifted world. Retraining is thorough and expensive, and needs fresh labels. Recalibration is cheap and only works for certain shifts. Accepting the new baseline costs nothing today and compounds quietly. No runbook entry makes that call; root cause analysis does.
 
 <LearningObjectives objectives={["Apply production incident response methodology to model drift incidents", "Execute rapid mitigation through model rollback or preprocessing adjustments", "Diagnose root causes by correlating drift signals with external events", "Run post-mortems that produce actionable prevention measures"]} />
 

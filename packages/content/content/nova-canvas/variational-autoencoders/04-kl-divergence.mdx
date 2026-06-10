@@ -7,7 +7,7 @@ order: 4
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "The VAE reconstructs well but the latent space is messy — clusters with gaps. MUSE introduces KL divergence as the force that regularizes the space into a smooth, organized landscape."
+  narrative: "The VAE reconstructs well but the latent space is messy: clusters with gaps. MUSE introduces KL divergence as the force that regularizes the space into a smooth, organized landscape."
   speaker: "MUSE"
 concept:
   explanation: "KL divergence measures how different the encoder's learned distribution is from a standard normal. It regularizes the latent space, pushing it toward a smooth, continuous distribution."
@@ -17,13 +17,13 @@ concept:
     mlTitle: "KL Divergence"
     mlCode: "klLoss = -0.5 * sum(1 + logVar - mu^2 - exp(logVar))"
     tier: intuition
-    breaks: "CSS specificity is a hand-tunable balance between rules. KL divergence is an asymmetric distance between distributions used as a regularization term in VAEs — the weight on KL vs reconstruction loss is a hyperparameter that materially shapes the latent space."
+    breaks: "CSS specificity is a hand-tunable balance between rules. KL divergence is an asymmetric distance between distributions used as a regularization term in VAEs. The weight on KL vs reconstruction loss is a hyperparameter that materially shapes the latent space."
 consequence:
-  narrative: "With KL divergence in the loss, the latent space smooths out. Random samples decode into coherent art. MUSE generates an 'original' that eerily resembles a famous painting — memorization vs generalization."
-  nextLessonTeaser: "Next: putting it all together — a creative VAE for the exhibition"
+  narrative: "With KL divergence in the loss, the latent space smooths out. Random samples decode into coherent art. MUSE generates an 'original' that eerily resembles a famous painting: memorization vs generalization."
+  nextLessonTeaser: "Next: putting it all together: a creative VAE for the exhibition"
 hints:
   - level: nudge
-    content: "KL divergence is a penalty that keeps the latent space organized — like CSS specificity guidelines"
+    content: "KL divergence is a penalty that keeps the latent space organized, like CSS specificity guidelines"
   - level: guidance
     content: "The VAE loss has two parts: reconstruction loss + KL divergence"
   - level: solution
@@ -41,7 +41,7 @@ The VAE has two competing desires. It wants to reconstruct perfectly — make th
 </Dialogue>
 
 <Dialogue speaker="Yara">
-It is like CSS specificity. Too specific and your styles are rigid, impossible to override. Too generic and nothing looks right. You need the balance point.
+It's like CSS specificity. Too specific and your styles are rigid, impossible to override. Too generic and nothing looks right. You need the balance point.
 </Dialogue>
 
 The VAE loss function has two parts: **reconstruction loss** (how well it rebuilds the input) and **KL divergence** (how close the latent distribution is to a standard normal). Together, they form the Evidence Lower Bound (ELBO).

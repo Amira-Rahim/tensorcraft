@@ -3,10 +3,18 @@ import { test, expect } from "@playwright/test";
 test.describe("Legal Pages", () => {
   test("terms page renders all sections", async ({ page }) => {
     await page.goto("/terms");
-    await expect(page.getByText("Terms of Service")).toBeVisible();
-    await expect(page.getByText("1. Acceptance of Terms")).toBeVisible();
-    await expect(page.getByText("9. Contact")).toBeVisible();
-    await expect(page.getByText("legal@tensorcraft.app")).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: /terms of service/i }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: /1\. acceptance of terms/i }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: /9\. contact/i }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: /legal@tensorcraft\.app/i }),
+    ).toBeVisible();
   });
 
   test("terms page has back link to home", async ({ page }) => {
@@ -19,8 +27,12 @@ test.describe("Legal Pages", () => {
 
   test("privacy page renders all sections", async ({ page }) => {
     await page.goto("/privacy");
-    await expect(page.getByText("Privacy Policy")).toBeVisible();
-    await expect(page.getByText(/information we collect/i)).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: /privacy policy/i }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: /information we collect/i }),
+    ).toBeVisible();
   });
 
   test("privacy page has back link to home", async ({ page }) => {

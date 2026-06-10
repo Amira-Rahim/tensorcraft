@@ -37,10 +37,10 @@ skillAxes: [deployment]
 ---
 
 <Dialogue speaker="Ensign Demir">
-Many signals are similar — cosmic background with minor variations. If I've already classified a signal with these features, why run the model again? I'll cache the results, like a Service Worker caching API responses.
+Many signals are similar: cosmic background with minor variations. If I've already classified a signal with these features, why run the model again? I'll cache the results, like a Service Worker caching API responses.
 </Dialogue>
 
-Service Worker caching is second nature to frontend developers: cache-first, stale-while-revalidate, network-first. Inference caching applies the same strategies: hash the input, check the cache, serve cached results for repeated patterns.
+DEEP SCAN spent last night reclassifying cosmic background radiation it had already classified. Same features, same verdict, full GPU cost every time. Roughly 40% of its inference calls were answering a question it had answered minutes earlier. Caching eliminates those calls, and the playbook is the one you know from Service Workers: cache-first, TTL expiry, hash the request, only do the expensive work on a miss.
 
 <LearningObjectives objectives={["Implement an LRU cache for inference results", "Hash model inputs for cache key generation", "Choose cache strategies: exact match, approximate match, TTL-based expiry", "Measure cache hit rate and its impact on effective inference latency"]} />
 
@@ -114,4 +114,4 @@ Build an LRU inference cache with TTL expiry.
 
 <Exercise slug="inference-cache" />
 
-<KeyTakeaways takeaways={["Inference caching uses the same strategies as Service Worker caching: cache-first with TTL", "Quantizing inputs before hashing increases cache hit rate by matching near-identical signals", "LRU eviction prevents unbounded memory growth — same as browser cache limits", "40% cache hit rate on DEEP SCAN signals means 40% fewer model inference calls"]} />
+<KeyTakeaways takeaways={["DEEP SCAN's cache is 500 entries with a 30-second TTL: serving a stale classification of a drifting signal is worse than recomputing it", "Quantizing inputs before hashing increases cache hit rate by matching near-identical signals", "LRU eviction prevents unbounded memory growth — same as browser cache limits", "40% cache hit rate on DEEP SCAN signals means 40% fewer model inference calls"]} />

@@ -7,23 +7,23 @@ order: 1
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "The gallery walls shimmer with generative art, but the space is eerily silent. Yara stops mid-stride. 'Something is missing. We need sound — not as decoration, but as a dimension.'"
+  narrative: "The gallery walls shimmer with generative art, but the space is eerily silent. Yara stops mid-stride. 'Something is missing. We need sound. Not as decoration, as a dimension.'"
   speaker: "Yara"
 concept:
-  explanation: "Audio is a time-series signal that can be represented as tensors — waveforms become 1D arrays, spectrograms become 2D image-like matrices."
+  explanation: "Audio is a time-series signal that can be represented as tensors: waveforms become 1D arrays, spectrograms become 2D image-like matrices."
   bridge:
     feTitle: "Web Audio API"
     feCode: "const ctx = new AudioContext(); const buffer = ctx.createBuffer(1, 44100, 44100);"
     mlTitle: "Audio Tensor"
     mlCode: "const waveform = tf.tensor1d(new Float32Array(44100)); // 1 second at 44.1kHz"
     tier: structural
-    breaks: "AudioContext + AudioBuffer manages sample rate, channel layout, and playback timing. tf.tensor1d on Float32Array drops all of that metadata — sample rate must be tracked separately, and feeding audio into a model requires resampling to the model's expected rate. Same float storage; very different metadata."
+    breaks: "AudioContext + AudioBuffer manages sample rate, channel layout, and playback timing. tf.tensor1d on Float32Array drops all of that metadata: sample rate must be tracked separately, and feeding audio into a model requires resampling to the model's expected rate. Same float storage; very different metadata."
 consequence:
   narrative: "Rohan grins as raw audio streams into tensors on screen. 'A waveform is just a Float32Array. We already speak this language.'"
   nextLessonTeaser: "Next: generating sound with neural networks"
 hints:
   - level: nudge
-    content: "Think about how AudioBuffer.getChannelData() returns a Float32Array — the same type tensors use"
+    content: "audioBuffer.getChannelData(0) already returns the Float32Array that tf.tensor1d wants; what it loses in the handoff is the sample rate"
   - level: guidance
     content: "Use the Web Audio API to decode audio, then wrap the channel data in tf.tensor1d()"
   - level: solution
@@ -36,14 +36,14 @@ keywords:
 ---
 
 <Dialogue speaker="Yara">
-Look at this room. Every surface alive with generated visuals, and it is completely silent. Sound is not decoration, Rohan. It is a dimension. Without it, this installation is a painting pretending to be a world.
+Look at this room. Every surface alive with generated visuals, and it's completely silent. Sound isn't decoration, Rohan. It's a dimension. Without it, this installation is a painting pretending to be a world.
 </Dialogue>
 
 <Dialogue speaker="Rohan">
 You know what a spectrogram is? It is an image. Pixel intensity mapped to frequency over time. We already know how to work with images. Audio is the same math, different domain.
 </Dialogue>
 
-You have been working with the Web Audio API for years — `AudioContext`, `AudioBuffer`, `getChannelData()`. Every audio sample is a floating-point number between -1 and 1. That `Float32Array` you get from `getChannelData()`? It is already a tensor waiting to happen.
+Call `audioBuffer.getChannelData(0)` and inspect the return value: a `Float32Array`, every sample between -1 and 1. Now check what `tf.tensor1d()` accepts. A `Float32Array`. The audio you've been routing through `AudioContext` for years was tensor-shaped the whole time; the only thing the handoff loses is metadata, and that's where this lesson earns its keep.
 
 <LearningObjectives objectives={["Convert raw audio waveforms into TensorFlow.js tensors", "Understand the relationship between sample rate, duration, and tensor shape", "Build a spectrogram by applying Short-Time Fourier Transform (STFT) to audio tensors", "Visualize audio data as both waveforms and spectrograms in the browser"]} />
 
@@ -51,7 +51,7 @@ You have been working with the Web Audio API for years — `AudioContext`, `Audi
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-Every sound you have ever heard through a browser was a `Float32Array`. The Web Audio API decodes compressed audio into PCM samples — raw amplitude values at regular time intervals. TensorFlow.js tensors use the exact same underlying data type.
+Every sound you have ever heard through a browser was a `Float32Array`. The Web Audio API decodes compressed audio into PCM samples: raw amplitude values at regular time intervals. TensorFlow.js tensors use the exact same underlying data type.
 
 <CodeBlock language="typescript" title="audio-to-tensor.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -77,7 +77,7 @@ const normalized = waveform.div(waveform.abs().max());`}
 
 ## From Waveform to Spectrogram
 
-A waveform tells you amplitude over time. A spectrogram tells you which frequencies are present at each moment — it is a 2D image where the x-axis is time, the y-axis is frequency, and pixel brightness is magnitude.
+A waveform tells you amplitude over time. A spectrogram tells you which frequencies are present at each moment. It is a 2D image where the x-axis is time, the y-axis is frequency, and pixel brightness is magnitude.
 
 <CodeBlock language="typescript" title="spectrogram.ts">
 {`// Build a spectrogram using Short-Time Fourier Transform
@@ -143,7 +143,7 @@ Convert a raw audio waveform into a tensor and compute its basic properties.
 - Spectrogram: [time, frequency]                   shape [T, F]
 - Mel spectrogram: [time, mel_bins]                 shape [T, M] (M=80 typical)
 
-Most speech/audio models work on mel spectrograms, not raw waveforms — mel binning compresses 22 kHz into ~80 perceptually-meaningful bands.
+Most speech/audio models work on mel spectrograms, not raw waveforms. Mel binning compresses 22 kHz into ~80 perceptually-meaningful bands.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["Audio waveforms are Float32Arrays — identical to the data type tensors use internally", "A spectrogram is a 2D tensor (image) representing frequency content over time", "The Web Audio API's getChannelData() output maps directly to tf.tensor1d()", "If you can generate images, you can generate audio — spectrograms bridge the two domains"]} />
+<KeyTakeaways takeaways={["tf.tensor1d keeps the samples but drops the sample rate: track 44100 yourself and resample to whatever the model expects", "A spectrogram is a 2D tensor (image) representing frequency content over time", "The Web Audio API's getChannelData() output maps directly to tf.tensor1d()", "If you can generate images, you can generate audio — spectrograms bridge the two domains"]} />

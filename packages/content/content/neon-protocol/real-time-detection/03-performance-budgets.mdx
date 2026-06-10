@@ -7,20 +7,20 @@ order: 3
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "The team fractures. Noor wants pure browser — impossible to shut down. Amir insists on hybrid — server-side for accuracy. The argument escalates. Dilan: 'Build both. Test both. Let the data decide.'"
+  narrative: "The team fractures. Noor wants pure browser: impossible to shut down. Amir insists on hybrid: server-side for accuracy. The argument escalates. Dilan: 'Build both. Test both. Let the data decide.'"
   speaker: "Dilan"
 concept:
-  explanation: "Performance budgets in ML inference work exactly like Lighthouse performance budgets. You have a time budget per frame. Preprocessing, inference, and postprocessing must all fit within it — or you drop frames."
+  explanation: "Performance budgets in ML inference work exactly like Lighthouse performance budgets. You have a time budget per frame. Preprocessing, inference, and postprocessing must all fit within it, or you drop frames."
   bridge:
     feTitle: "Lighthouse Performance Budgets"
     feCode: "// Budget: FCP < 1.8s, LCP < 2.5s, TBT < 200ms"
     mlTitle: "Inference Performance Budget"
     mlCode: "// Budget per frame at 30fps: preprocess < 5ms, inference < 20ms, postprocess < 5ms"
     tier: structural
-    breaks: "Lighthouse budgets are bytes and milliseconds with hard pass/fail thresholds. Inference budgets must trade off latency vs accuracy, and the same model meets budget on a desktop GPU but misses by 10× on mobile — single-budget targets hide device variance. Budgets must be set per-device-class and monitored separately."
+    breaks: "Lighthouse budgets are bytes and milliseconds with hard pass/fail thresholds. Inference budgets must trade off latency vs accuracy, and the same model meets budget on a desktop GPU but misses by 10× on mobile; single-budget targets hide device variance. Budgets must be set per-device-class and monitored separately."
 consequence:
-  narrative: "Noor profiles Protocol Sentinel. Preprocessing: 3ms. Inference: 28ms. Postprocessing: 4ms. Total: 35ms — over the 33ms budget for 30fps. She needs to shave 2ms somewhere. NEON: 'Welcome to the optimization game. Every millisecond counts.'"
-  nextLessonTeaser: "Next: WebGL acceleration — using the GPU to break through the performance ceiling"
+  narrative: "Noor profiles Protocol Sentinel. Preprocessing: 3ms. Inference: 28ms. Postprocessing: 4ms. Total: 35ms. Over the 33ms budget for 30fps. She needs to shave 2ms somewhere. NEON: 'Welcome to the optimization game. Every millisecond counts.'"
+  nextLessonTeaser: "Next: WebGL acceleration. Using the GPU to break through the performance ceiling"
 hints:
   - level: nudge
     content: "Break down the total frame time into stages, just like you break down a Lighthouse audit"
@@ -45,10 +45,10 @@ If we go pure browser, we lose 15% accuracy. That 15% is people, Noor. Misidenti
 </Dialogue>
 
 <Dialogue speaker="Dilan">
-Build both. Test both. Let the data decide. But first — profile what you have. You cannot optimize what you cannot measure.
+Build both. Test both. Let the data decide. But first, profile what you have. You cannot optimize what you cannot measure.
 </Dialogue>
 
-You have used Lighthouse to audit web performance: First Contentful Paint under 1.8 seconds, Total Blocking Time under 200ms. ML inference has the same discipline. At 30fps, your total budget is 33.3ms per frame. Every stage — preprocessing, inference, postprocessing — eats into that budget.
+33.3 milliseconds. That is the entire budget for one frame at 30fps, and preprocessing, inference, and postprocessing all eat from it. The discipline is Lighthouse with the stakes raised: instead of First Contentful Paint under 1.8 seconds and Total Blocking Time under 200ms, you are policing a budget thirty times tighter, thirty times a second.
 
 <LearningObjectives objectives={["Define performance budgets for real-time ML inference", "Profile each stage of the inference pipeline using performance.now()", "Identify bottlenecks through systematic measurement", "Apply frame-skipping and resolution reduction strategies when over budget"]} />
 

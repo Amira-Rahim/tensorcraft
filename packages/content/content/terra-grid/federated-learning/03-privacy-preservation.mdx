@@ -10,22 +10,22 @@ context:
   narrative: "Elif raises a concern: even weight updates can leak information about the training data. They need differential privacy to add mathematical guarantees."
   speaker: "Elif Yilmaz"
 concept:
-  explanation: "Differential privacy adds calibrated noise to model updates, preventing data leakage — like cookie isolation prevents third-party tracking across sites."
+  explanation: "Differential privacy adds calibrated noise to model updates, preventing data leakage, like cookie isolation prevents third-party tracking across sites."
   bridge:
     feTitle: "Cookie Isolation"
     feCode: "SameSite=Strict // prevent cross-site data leakage"
     mlTitle: "Differential Privacy"
     mlCode: "addNoise(gradients, epsilon) // prevent data leakage from updates"
     tier: structural
-    breaks: "Cookie isolation enforces same-origin scope. Differential privacy adds calibrated noise to outputs — there is a quantified privacy budget (epsilon) that depletes with each query and noise materially reduces utility, especially for small subgroups."
+    breaks: "Cookie isolation enforces same-origin scope. Differential privacy adds calibrated noise to outputs. There is a quantified privacy budget (epsilon) that depletes with each query and noise materially reduces utility, especially for small subgroups."
 consequence:
   narrative: "With differential privacy enabled, Elif's security audit confirms: no individual sensor reading can be reconstructed from the shared weight updates."
   nextLessonTeaser: "Next: minimizing communication costs during federated training"
 hints:
   - level: nudge
-    content: "Think about how browsers prevent third-party cookies from leaking user data"
+    content: "SameSite=Strict limits what a cookie can reveal across sites. Here the limit is mathematical: noise added to gradients before they leave the silo"
   - level: guidance
-    content: "Add Gaussian noise to gradients before sharing — more noise means more privacy but less accuracy"
+    content: "Add Gaussian noise to gradients before sharing: more noise means more privacy but less accuracy"
   - level: solution
     content: "Clip gradients to a max norm, then add noise calibrated to the clip bound and privacy budget (epsilon)"
 keywords:
@@ -36,14 +36,14 @@ keywords:
 ---
 
 <Dialogue speaker="Elif Yilmaz">
-Weight updates are not data. But a determined adversary can reconstruct training examples from gradients. It is called a gradient inversion attack. We need stronger guarantees.
+Weight updates are not data. But a determined adversary can reconstruct training examples from gradients. It's called a gradient inversion attack. We need stronger guarantees.
 </Dialogue>
 
 <Dialogue speaker="Hassan Al-Rashid">
 Differential privacy. We add calibrated noise to the gradients before sharing. Enough noise that no individual data point can be recovered, but not so much that the model stops learning.
 </Dialogue>
 
-Browsers introduced `SameSite=Strict` cookies to prevent cross-site tracking. The mechanism is simple: restrict what information crosses boundaries. Differential privacy applies the same principle to federated learning — restrict what information the weight updates can reveal about individual training examples by adding calibrated noise.
+Browsers introduced `SameSite=Strict` cookies to prevent cross-site tracking. The mechanism is simple: restrict what information crosses boundaries. Differential privacy applies the same principle to federated learning: restrict what information the weight updates can reveal about individual training examples by adding calibrated noise.
 
 <LearningObjectives objectives={["Understand why raw gradient sharing can leak training data", "Implement differential privacy with gradient clipping and noise addition", "Reason about the privacy-accuracy tradeoff controlled by epsilon", "Map cookie isolation concepts to differential privacy mechanisms"]} />
 
@@ -150,4 +150,4 @@ Implement private training with gradient clipping and noise addition.
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Raw gradient sharing can leak training data — differential privacy prevents this with calibrated noise", "Gradient clipping bounds sensitivity; Gaussian noise provides mathematical privacy guarantees", "Epsilon controls the privacy-accuracy tradeoff — lower epsilon means more privacy but less learning signal", "Privacy in federated learning parallels cookie isolation — restrict what crosses boundaries to prevent leakage"]} />
+<KeyTakeaways takeaways={["Raw gradient sharing can leak training data — differential privacy prevents this with calibrated noise", "Gradient clipping bounds sensitivity; Gaussian noise provides mathematical privacy guarantees", "Epsilon controls the privacy-accuracy tradeoff — lower epsilon means more privacy but less learning signal", "The privacy budget is finite: every shared update spends epsilon, and the guarantee weakens as updates accumulate"]} />

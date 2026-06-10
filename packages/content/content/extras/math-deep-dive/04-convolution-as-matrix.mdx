@@ -8,23 +8,23 @@ estimatedMinutes: 30
 difficulty: advanced
 companionTo: signal-processing
 context:
-  narrative: "Every convolution you've run is secretly a matrix multiplication — and understanding this unlocks GPU-level performance intuition."
+  narrative: "Every convolution you've run is a matrix multiplication in a different shape, and that equivalence is why GPUs run CNNs so fast."
   speaker: "Instructor"
 concept:
-  explanation: "Convolution can be expressed as multiplication by a Toeplitz matrix — a structured matrix where each diagonal is constant."
+  explanation: "Convolution can be expressed as multiplication by a Toeplitz matrix, a structured matrix where each diagonal is constant."
   bridge:
     feTitle: "CSS Transform Matrix"
     feCode: "transform: matrix(a, b, c, d, tx, ty)"
     mlTitle: "Toeplitz Matrix"
     mlCode: "const output = tf.matMul(toeplitzMatrix, inputVector)"
     tier: structural
-    breaks: "CSS transform matrix is a fixed 3x3 you wrote. The Toeplitz matrix that represents a convolution is automatically derived from the kernel, sparse, structured, and used only as a mathematical equivalence — practical implementations exploit the structure to avoid the explicit matrix."
+    breaks: "CSS transform matrix is a fixed 3x3 you wrote. The Toeplitz matrix that represents a convolution is automatically derived from the kernel, sparse, structured, and used only as a mathematical equivalence; practical implementations exploit the structure to avoid the explicit matrix."
 consequence:
   narrative: "Seeing convolution as matrix multiplication reveals why GPUs are perfect for neural networks."
   nextLessonTeaser: "Next: information theory and why cross-entropy loss works"
 hints:
   - level: nudge
-    content: "A Toeplitz matrix has the same values along each diagonal — like a sliding window frozen in matrix form"
+    content: "A Toeplitz matrix has the same values along each diagonal, like a sliding window frozen in matrix form"
   - level: guidance
     content: "Build the Toeplitz matrix by placing the kernel at each possible position in the input"
   - level: solution
@@ -38,7 +38,7 @@ keywords:
 ---
 
 <Dialogue speaker="Instructor">
-In the Signal Processing module, you applied convolution as a sliding window over data. That's the intuitive view. But mathematically, convolution is matrix multiplication in disguise. The kernel becomes a special structured matrix called a Toeplitz matrix, and the "sliding" becomes a single matrix-vector multiply. This is exactly why GPUs — which are optimized for matrix math — run convolutions so fast.
+In the Signal Processing module, you applied convolution as a sliding window over data. That's the intuitive view. But mathematically, convolution is matrix multiplication in disguise. The kernel becomes a special structured matrix called a Toeplitz matrix, and the "sliding" becomes a single matrix-vector multiply. GPUs are built for matrix math, which is why they run convolutions so fast.
 </Dialogue>
 
 <LearningObjectives objectives={["Understand the Toeplitz matrix and how it encodes a sliding window", "Convert a 1D convolution into an equivalent matrix multiplication", "Explain why convolution in time domain equals multiplication in frequency domain", "Connect CSS transform matrices to the structured matrices used in convolution", "Reason about computational cost of convolution vs. FFT-based approaches"]} />
@@ -87,7 +87,7 @@ console.log('Conv1d result:', await resultConv.array());
 
 ## Building a Toeplitz Matrix
 
-The pattern is simple: each row of the Toeplitz matrix is the kernel shifted one position to the right, padded with zeros. The diagonals are constant — that's the defining property of a Toeplitz matrix.
+The pattern is simple: each row of the Toeplitz matrix is the kernel shifted one position to the right, padded with zeros. The diagonals are constant. That's the defining property of a Toeplitz matrix.
 
 <CodeBlock language="typescript" title="build-toeplitz.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -215,4 +215,4 @@ Build a Toeplitz matrix from a kernel and verify it matches TensorFlow.js convol
 
 <Exercise slug="toeplitz-convolution" />
 
-<KeyTakeaways takeaways={["Convolution is matrix multiplication using a Toeplitz matrix — each row is the kernel shifted by one position", "The Toeplitz matrix turns a sliding window into a single matrix-vector multiply", "The convolution theorem: convolution in time domain = multiplication in frequency domain", "GPUs are fast at convolution because they're fast at matrix multiplication — it's the same operation", "For small kernels (neural networks), direct/matrix convolution wins; for large kernels (audio), FFT wins"]} />
+<KeyTakeaways takeaways={["Convolution is matrix multiplication using a Toeplitz matrix: each row is the kernel shifted by one position", "The Toeplitz matrix turns a sliding window into a single matrix-vector multiply", "The convolution theorem: convolution in time domain = multiplication in frequency domain", "GPUs are fast at convolution because they're fast at matrix multiplication; it's the same operation", "For small kernels (neural networks), direct/matrix convolution wins; for large kernels (audio), FFT wins"]} />

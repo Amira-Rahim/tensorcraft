@@ -7,10 +7,10 @@ order: 3
 estimatedMinutes: 20
 difficulty: beginner
 context:
-  narrative: "NEON isolates a hidden channel in Meridian's camera feeds — data encoded in color values the human eye can't distinguish. 'They are using steganography. Hiding data inside images.'"
+  narrative: "NEON isolates a hidden channel in Meridian's camera feeds: data encoded in color values the human eye can't distinguish. 'They are using steganography. Hiding data inside images.'"
   speaker: "NEON"
 concept:
-  explanation: "Color spaces are different coordinate systems for the same visual information — just like CSS has rgb(), hsl(), and oklch() for the same color."
+  explanation: "Color spaces are different coordinate systems for the same visual information, just like CSS has rgb(), hsl(), and oklch() for the same color."
   bridge:
     feTitle: "CSS Color Functions"
     feCode: "rgb(255, 0, 0) === hsl(0, 100%, 50%) === oklch(0.63, 0.26, 29) // same red"
@@ -19,11 +19,11 @@ concept:
     tier: structural
     breaks: "RGB, HSL, LAB describe the same color spaces in browser and ML. But ML models care about channel ordering (RGB vs BGR), value range (0-1 vs 0-255), and learned per-channel normalization. The math of color is identity; the per-model preprocessing requirements are not."
 consequence:
-  narrative: "Noor isolates the hidden data channel. Meridian is embedding tracking metadata directly into their camera feeds — invisible to the human eye but readable by their models."
-  nextLessonTeaser: "Next: image operations — resize, crop, and transform for model input"
+  narrative: "Noor isolates the hidden data channel. Meridian is embedding tracking metadata directly into their camera feeds, invisible to the human eye but readable by their models."
+  nextLessonTeaser: "Next: image operations. Resize, crop, and transform for model input"
 hints:
   - level: nudge
-    content: "Different color spaces highlight different aspects of an image — HSV separates color from brightness"
+    content: "Different color spaces highlight different aspects of an image; HSV separates color from brightness"
   - level: guidance
     content: "Split a tensor into individual channels with tf.split() or tensor.slice()"
   - level: solution
@@ -41,10 +41,10 @@ I am detecting anomalous patterns in the least significant bits of the blue chan
 </Dialogue>
 
 <Dialogue speaker="Noor">
-So each color channel is like a separate data layer? Like how CSS lets you express the same color in different coordinate systems — rgb(), hsl(), oklch() — each one reveals different properties?
+So each color channel is like a separate data layer? Like how CSS lets you express the same color in different coordinate systems (rgb(), hsl(), oklch()), each one revealing different properties?
 </Dialogue>
 
-You switch between `rgb()`, `hsl()`, and `oklch()` in CSS depending on what you need: `rgb` for exact values, `hsl` for adjusting lightness, `oklch` for perceptual uniformity. Color spaces in computer vision work the same way — RGB for raw data, HSV for separating color from brightness, LAB for perceptual difference.
+You switch between `rgb()`, `hsl()`, and `oklch()` in CSS depending on what you need: `rgb` for exact values, `hsl` for adjusting lightness, `oklch` for perceptual uniformity. Color spaces in computer vision work the same way: RGB for raw data, HSV for separating color from brightness, LAB for perceptual difference.
 
 <LearningObjectives objectives={["Understand RGB, HSV, and grayscale color spaces and when to use each", "Split image tensors into individual channels", "Convert between color spaces for different vision tasks", "Recognize that color channels are independent data dimensions"]} />
 

@@ -7,7 +7,7 @@ order: 3
 estimatedMinutes: 25
 difficulty: beginner
 context:
-  narrative: "The laziest algorithm in ML — literally. KNN does zero work during training and all the work at prediction time. Sometimes that's exactly what you want."
+  narrative: "The laziest algorithm in ML, literally. KNN does zero work during training and all the work at prediction time. Sometimes that's exactly what you want."
 concept:
   explanation: "k-Nearest Neighbors classifies a new point by finding the k closest points in the training data and taking a majority vote."
   bridge:
@@ -16,10 +16,10 @@ concept:
     mlTitle: "KNN"
     mlCode: "knn.classify(point, k) // find k nearest, majority vote"
     tier: structural
-    breaks: "Sort and slice runs in O(n log n) over data already in memory. KNN lookups need a distance metric, scale poorly with dimensionality (curse of dimensionality), and require all training data at query time — there is no model artifact, only the dataset."
+    breaks: "Sort and slice runs in O(n log n) over data already in memory. KNN lookups need a distance metric, scale poorly with dimensionality (curse of dimensionality), and require all training data at query time; there is no model artifact, only the dataset."
 consequence:
-  narrative: "You now have a model that requires no training at all. For small datasets with clear clusters, KNN is hard to beat."
-  nextLessonTeaser: "Next: ensemble methods — combining many weak models into one strong one"
+  narrative: "Sort, slice, vote: a working classifier with zero training time. For small datasets with clear clusters, KNN is hard to beat. The open question: what happens when your features number in the thousands?"
+  nextLessonTeaser: "Next: ensemble methods, combining many weak models into one strong one"
 hints:
   - level: nudge
     content: "Euclidean distance is just the Pythagorean theorem extended to N dimensions"
@@ -35,7 +35,7 @@ keywords:
 ---
 
 <Dialogue speaker="Instructor">
-What if I told you there's an ML algorithm that has no training step at all? No weights to learn, no gradients to compute, no epochs to wait through. You just store the data and look things up at prediction time. That's k-nearest neighbors.
+k-nearest neighbors has no training step at all. No weights to learn, no gradients to compute, no epochs to wait through. You store the data and look things up at prediction time. That's the whole algorithm.
 </Dialogue>
 
 As a frontend developer, you already know this pattern. Ever built a search feature that sorts results by relevance? Or a "similar products" section that finds items closest to the one being viewed? That's KNN.
@@ -92,7 +92,7 @@ That's the entire algorithm. No training loop, no weights, no backpropagation. J
 
 ## Distance Metrics: Choosing Your Ruler
 
-The choice of distance metric matters. It's like choosing between `===` and a custom comparator — both compare, but they measure different things.
+The choice of distance metric matters. It's like choosing between `===` and a custom comparator: both compare, but they measure different things.
 
 <CodeBlock language="typescript" title="distance-metrics.ts">
 {`// Euclidean: straight-line distance (most common)
@@ -116,7 +116,7 @@ console.log(manhattan(pointA, pointB)); // 7.0 (grid walk: 3 + 4)
 // or when outliers could skew Euclidean distance`}
 </CodeBlock>
 
-## Choosing k: The Hyperparameter
+## How Many Neighbors Get a Vote
 
 The value of k determines how many neighbors get to vote. It's a trade-off:
 
@@ -157,7 +157,7 @@ findBestK(trainSet, valSet, [1, 3, 5, 7, 11, 15]);`}
 
 ## The Curse of Dimensionality
 
-KNN works beautifully in low dimensions (2-10 features). But as dimensions increase, a strange thing happens: all points become approximately equidistant. It's like trying to find your "nearest neighbor" in a city versus in a universe — in high-dimensional space, the concept of "nearest" loses meaning.
+KNN works beautifully in low dimensions (2-10 features). But as dimensions increase, a strange thing happens: all points become approximately equidistant. It's like trying to find your "nearest neighbor" in a city versus in a universe. In high-dimensional space, the concept of "nearest" loses meaning.
 
 This is why KNN struggles with raw image data (thousands of pixels) but excels at tabular data with a handful of meaningful features.
 
@@ -167,4 +167,4 @@ Implement KNN classification with configurable k and distance metric.
 
 <Exercise slug="implement-knn" />
 
-<KeyTakeaways takeaways={["KNN has no training step — it stores data and compares at prediction time", "The algorithm is literally Array.sort() by distance, .slice(0, k), then majority vote", "Choose k as an odd number between 3-15; validate to find the best value", "KNN breaks down in high dimensions — stick to low-dimensional tabular data"]} />
+<KeyTakeaways takeaways={["KNN has no training step: it stores data and compares at prediction time", "The algorithm is literally Array.sort() by distance, .slice(0, k), then majority vote", "Choose k as an odd number between 3-15; validate to find the best value", "KNN breaks down in high dimensions, so stick to low-dimensional tabular data"]} />

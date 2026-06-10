@@ -67,7 +67,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "Component props",
     tier: "structural",
     connection:
-      "Both are external inputs that shape behavior. Props configure a component; training data configures a model. Change the props, the component renders differently. Change the data, the model learns differently.",
+      "Props configure a component from the outside; training data configures a model the same way. Swap the props and you get a different render. Swap the data and you get a different model — but only after retraining.",
     breaks:
       "Props can change every render and the component re-renders pure; training data is consumed during training to mutate weights, then the weights are baked in and the data is not needed at inference. Changing props after the fact updates the UI; changing training data after the fact does nothing without retraining.",
     category: "shared",
@@ -99,7 +99,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "Component state",
     tier: "structural",
     connection:
-      "Both are internal, learned-at-runtime values the system owns and mutates in response to inputs. State updates from user events; weights update from training data. Distinct from props (external config, see bridge #1) and from overfitting (generalization failure, see bridge #8) — this bridge is about where the mutable internal values live.",
+      "Component state and model weights are the internal values the system owns and mutates in response to inputs. State updates from user events; weights update from training data. Distinct from props (external config, see bridge #1) and from overfitting (generalization failure, see bridge #8) — this bridge is about where the mutable internal values live.",
     breaks:
       "State updates instantly on user events with deterministic transitions; weights update slowly via gradient descent over many iterations and the update rule is stochastic. State is small and hand-written; weights are millions of floats with no semantic meaning per index.",
     category: "shared",
@@ -132,7 +132,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "expect().toBe() assertions",
     tier: "structural",
     connection:
-      "Both measure the gap between actual and expected output. A test assertion checks actual === expected; a loss function computes the distance between predictions and labels. Both quantify \u201chow wrong\u201d and drive corrections.",
+      "A test assertion checks actual === expected; a loss function computes the distance between predictions and labels. Different machinery, same job: measure the gap between actual and expected output, quantify \u201chow wrong,\u201d and drive corrections.",
     breaks:
       "Test assertions return a binary pass/fail; loss returns a continuous, differentiable scalar. You cannot take the gradient of `toBe()` — that is why ML loss functions are smooth (MSE, cross-entropy) instead of strict equality.",
     category: "shared",
@@ -165,7 +165,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "Reconciliation",
     tier: "intuition",
     connection:
-      "Both incrementally reduce a measured gap. Reconciliation patches the DOM toward the desired state; gradient descent adjusts weights toward lower loss.",
+      "Reconciliation patches the DOM toward the desired state; gradient descent adjusts weights toward lower loss. Either way, each step incrementally reduces a measured gap.",
     breaks:
       "Reconciliation is deterministic and converges in one pass to the exact desired DOM. Gradient descent is stochastic, requires many iterations, and may overshoot or settle in a local minimum that is not the global optimum.",
     category: "shared",
@@ -198,7 +198,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "Bisection / binary-search step halving",
     tier: "intuition",
     connection:
-      "Both shrink the step toward a target as you get closer. Binary search halves the search interval each iteration; learning-rate decay shrinks the gradient step as training approaches a minimum. Same intuition: take big steps when far, small steps when near.",
+      "Binary search halves the search interval each iteration; learning-rate decay shrinks the gradient step as training approaches a minimum. Same intuition: take big steps when far from the target, small steps when near.",
     breaks:
       "Binary search converges deterministically in log(n) steps because each step provably contains the answer. Gradient descent is stochastic — each step uses a noisy estimate of the gradient, so 'closer to the minimum' is never certain. LR too large: weights overshoot and training diverges. LR too small: weights settle in a local minimum or run out of budget before reaching it. Binary search has a guarantee; LR is a tuning problem with no closed-form right answer.",
     category: "shared",
@@ -228,7 +228,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "requestAnimationFrame loop",
     tier: "structural",
     connection:
-      "Both are repeated cycles where the system processes input and refines output. An rAF loop reruns render logic every frame; an epoch reruns training over the entire dataset. Both converge toward a target.",
+      "An rAF loop reruns render logic every frame; an epoch reruns training over the entire dataset. Repeated cycles of process-input, refine-output — and each cycle moves the system closer to its target.",
     breaks:
       "rAF runs at 60Hz with deterministic frame timing on in-memory data. An epoch can take seconds to hours per iteration, runs as fast as the GPU allows, and reads batches from disk or network. The loop pattern matches; the timescale and determinism do not.",
     category: "shared",
@@ -258,7 +258,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "Chunk / page size",
     tier: "structural",
     connection:
-      "Both control how much data is processed at once. Pagination loads N items per page; batch size feeds N samples per gradient update. Both balance memory and throughput.",
+      "Pagination loads N items per page; batch size feeds N samples per gradient update. How much data gets processed at once is the knob in each case, balancing memory against throughput.",
     breaks:
       "Page size is chosen for UX (what fits on screen); batch size is chosen for memory and gradient noise tradeoff. Larger pages are usually better for users; larger batches are not always better for training — small batches add useful noise that improves generalization.",
     category: "shared",
@@ -288,7 +288,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "Overspecialized component",
     tier: "intuition",
     connection:
-      "Both are cases of being too tailored to specific inputs. An overspecialized component breaks with new data; an overfit model fails on new examples. Both need generalization.",
+      "An overspecialized component breaks with new data; an overfit model fails on new examples. The disease is the same — too tailored to the specific inputs it grew up with — and the cure is generalization.",
     breaks:
       "An overspecialized component breaks visibly with new data — you see the bug. An overfit model still runs and returns confident wrong answers; it can only be detected by holding out test data. The failure mode is silent.",
     category: "shared",
@@ -318,7 +318,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "Code linting / constraints",
     tier: "intuition",
     connection:
-      "Both impose rules that prevent overly specific or complex solutions. Linting constrains code style; regularization constrains model complexity. Both improve generalizability.",
+      "Linting constrains code style; regularization constrains model complexity. Rules imposed from outside to prevent overly specific or convoluted solutions — and in each case, the payoff is better generalizability.",
     breaks:
       "Linting enforces hard rules at write time. Regularization adds a soft penalty during training that the optimizer trades off against loss. A linter never decides this rule is worth violating for a 5% accuracy gain; an optimizer does.",
     category: "shared",
@@ -347,7 +347,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "Data transformation / mapping",
     tier: "structural",
     connection:
-      "Both transform raw inputs into more useful representations. Array.map transforms data for rendering; feature engineering transforms data for modeling. Both are about shaping inputs.",
+      "Array.map transforms data for rendering; feature engineering transforms data for modeling. The shared move is shaping raw inputs into more useful representations before anything consumes them.",
     breaks:
       "Array.map applies a known transform you wrote. Feature engineering requires deciding which transforms to apply — a domain-knowledge problem, not a code problem. The wrong feature can hurt the model even if the transform code is correct.",
     category: "shared",
@@ -409,7 +409,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "Config / environment variables",
     tier: "structural",
     connection:
-      "Both are settings that control behavior but aren\u2019t learned from data. Env vars configure an app without changing code; hyperparameters configure training without being part of the model.",
+      "Env vars configure an app without changing code; hyperparameters configure training without being part of the model. Settings that steer behavior, in either world, without ever being learned from data.",
     breaks:
       "Env vars take effect on restart and you know exactly what each does. Hyperparameters interact non-linearly during training — changing learning rate may require also changing batch size and warmup. Effects are coupled and only visible after a full training run.",
     category: "shared",
@@ -439,7 +439,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "Express-style middleware chain",
     tier: "structural",
     connection:
-      "Both are sequential processing steps where each transforms its input and passes the result forward: input \u2192 transform \u2192 output \u2192 next. The canonical FE anchor is Express/Koa/Next middleware; the same shape appears as React HOC composition, Vue/Angular plugin pipelines, Angular HTTP interceptors, and Redux middleware (see variants). Neural network layers fold over activations the way these fold over requests.",
+      "Sequential processing steps, each transforming its input and passing the result forward: input \u2192 transform \u2192 output \u2192 next. The canonical FE anchor is Express/Koa/Next middleware; the same shape appears as React HOC composition, Vue/Angular plugin pipelines, Angular HTTP interceptors, and Redux middleware (see variants). Neural network layers fold over activations the way these fold over requests.",
     breaks:
       "Middleware composes deterministic transforms you control. Neural network layers compose learned transforms whose internal logic is opaque — you specify the layer type and shape, the model decides the weights. Reordering middleware is reversible; reordering layers in a trained model destroys it.",
     category: "shared",
@@ -500,7 +500,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "Reconciliation (tracing diffs backward)",
     tier: "intuition",
     connection:
-      "Both propagate information backward through a structure to determine what needs updating. React traces from changed leaves back to root; backprop traces from loss back to input weights via the chain rule.",
+      "Backprop traces from loss back to input weights via the chain rule; React traces from changed leaves back to root. In each case, information propagates backward through a structure to determine what needs updating.",
     breaks:
       "Reconciliation moves data; backpropagation computes partial derivatives via the chain rule. There is no DOM equivalent of a gradient. The traversal direction matches; the operation at each node does not.",
     category: "shared",
@@ -530,7 +530,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "Server-side rendering",
     tier: "structural",
     connection:
-      "Both take an input and produce an output in a single forward pass, without iterative updating. SSR renders HTML from data; inference produces predictions from features. Both are \u201cone-shot.\u201d",
+      "SSR renders HTML from data; inference produces predictions from features. One input, one forward pass, one output \u2014 no iterative updating in either case. \u201cOne-shot,\u201d both times.",
     breaks:
       "SSR is deterministic — same input, same HTML out. Inference is deterministic given fixed weights, but the weights themselves came from a stochastic training process, so two runs of the same training pipeline produce different models with different predictions. The forward pass repeats; the model behind it does not.",
     category: "shared",
@@ -562,7 +562,7 @@ export const BRIDGES: Bridge[] = [
       "Programmatic test fixture factories (Faker, factory-bot, fast-check generators)",
     tier: "intuition",
     connection:
-      "Both generate a population of plausible variations from a single base example, drawn from a distribution. A user-factory emits 1000 different `{name, email, address}` records sampled from realistic distributions; data augmentation emits a different rotated / cropped / color-jittered version of every training image. Same intent: expose the consumer (test, model) to the variation it will see in production, not a single hand-picked example.",
+      "A user-factory emits 1000 different `{name, email, address}` records sampled from realistic distributions; data augmentation emits a different rotated / cropped / color-jittered version of every training image. Each generates a population of plausible variations from a single base example. Same intent: expose the consumer (test, model) to the variation it will see in production, not a single hand-picked example.",
     breaks:
       "Test fixtures are consumed once per test run and discarded — the test asserts a property and either passes or fails on that batch of generated data. Augmented training images participate in gradient descent: the model's weights shift toward minimizing loss across the augmented distribution, baking that variation into its learned representation. Fixtures are ephemeral inputs to a deterministic check; augmentations are persistent shapes the model's parameters absorb. Both sample from a distribution; only one updates state.",
     category: "shared",
@@ -592,7 +592,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "Randomly hiding team members during practice",
     tier: "intuition",
     connection:
-      "Both temporarily remove participants to prevent over-reliance on any single one. If one neuron always fires, others co-adapt. Random removal forces resilience and independence.",
+      "If one neuron always fires, others co-adapt — so dropout benches neurons at random, the way a coach hides team members during practice. Forced to perform without any single participant, the rest learn resilience and independence.",
     breaks:
       "Team members deliberately practice without each other. Dropout zeroes activations randomly during training only — at inference, all neurons are active and outputs are scaled. The hiding is not a real architectural change; it is a regularization trick that vanishes when the model ships.",
     category: "shared",
@@ -622,7 +622,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "Error boundary report",
     tier: "structural",
     connection:
-      "Both provide structured breakdowns of what went right and wrong. An error boundary catches and categorizes errors; a confusion matrix categorizes predictions vs. actuals. Both guide debugging.",
+      "An error boundary catches and categorizes errors; a confusion matrix categorizes predictions vs. actuals. Structured breakdowns of what went right and what went wrong — and either one tells you where to start debugging.",
     breaks:
       "Error boundaries catch exceptions you did not anticipate. Confusion matrices show wrong predictions the model is fully confident about — there is no exception, just bad output. The errors are silent and require knowing ground truth to detect.",
     category: "shared",
@@ -652,7 +652,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "CI/CD pipeline",
     tier: "structural",
     connection:
-      "Both are the process of taking something from development to production. CI/CD deploys code; model deployment serves a model. Both involve versioning, testing, and monitoring.",
+      "CI/CD deploys code; model deployment serves a model. The road from development to production runs through the same stations either way: versioning, testing, and monitoring.",
     breaks:
       "CI/CD ships immutable artifacts; rollback restores prior behavior exactly. Deployed models drift over time as input distribution shifts, even with no code change. Rollback restores weights but not the world the model was trained on. Monitoring requirements are different.",
     category: "shared",
@@ -683,7 +683,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "CSS initial values",
     tier: "structural",
     connection:
-      "Both set the starting point before any updates occur. Poor initial values lead to slow convergence or broken layouts. Both require deliberate defaults.",
+      "Before any updates occur, something has to set the starting point: CSS initial values for layout, weight initialization for training. Poor initial values lead to broken layouts or slow convergence — deliberate defaults matter in each world.",
     breaks:
       "CSS initial values are static defaults — `display: inline` for an unstyled `<span>` never changes by itself. Weight initialization controls the dynamics of training: He/Xavier init keeps activation variance stable across layers; bad init causes vanishing/exploding gradients or dead neurons that never recover. Init is a one-shot choice with multi-epoch consequences.",
     category: "deep-orbit",
@@ -695,7 +695,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "CSS normalize / reset",
     tier: "structural",
     connection:
-      "Both standardize inputs to a layer/component to prevent compounding inconsistencies. CSS resets remove browser defaults; batch norm removes distribution shift between layers.",
+      "CSS resets remove browser defaults; batch norm removes distribution shift between layers. Standardize the inputs a layer or component receives, and inconsistencies stop compounding downstream.",
     breaks:
       "CSS reset runs once at page load. Batch normalization runs every forward pass and uses learned scale/shift parameters that update during training. It is an active learnable transform per layer, not a one-time normalization.",
     category: "deep-orbit",
@@ -708,7 +708,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "Component composition via children",
     tier: "structural",
     connection:
-      "Both allow information to skip intermediate processing and pass through directly. React children pass content through wrapper components; residual connections pass activations around layers.",
+      "React children pass content through wrapper components; residual connections pass activations around layers. Each gives information a direct path that skips the intermediate processing.",
     breaks:
       "React children pass content unchanged through wrappers. Residual connections add the input to the output of a transformed block (`output = f(x) + x`) — the path is additive, not pass-through. The shortcut value is summed with the processed value; child rendering does not sum.",
     category: "deep-orbit",
@@ -733,7 +733,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "Animation easing functions",
     tier: "structural",
     connection:
-      "Both vary the rate of change over time. Easing functions start fast and slow down (or vice versa); LR schedulers reduce the learning rate as training progresses. Both optimize the trajectory.",
+      "Easing functions start fast and slow down (or vice versa); LR schedulers reduce the learning rate as training progresses. Varying the rate of change over time is how each one optimizes the trajectory.",
     breaks:
       "Easing interpolates a value over a fixed duration. LR schedulers vary learning rate over indefinite training time, often based on validation metrics (reduce-on-plateau) not step count. Time is bounded for animation; training time is unbounded until convergence.",
     category: "deep-orbit",
@@ -746,7 +746,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "Router with multiple routes",
     tier: "structural",
     connection:
-      "Both take a single input and determine which of many categories it belongs to. A router maps URLs to views; a classifier maps inputs to classes. Both are selection mechanisms.",
+      "A classifier maps inputs to classes the way a router maps URLs to views: one input goes in, one of many categories comes out. Selection mechanisms in different clothes.",
     breaks:
       "Routers map URLs to one route via exact-match rules. Classifiers output a probability distribution over all classes — softmax never returns zero confidence in any class. The selection is a confidence ranking, not a hard match.",
     category: "deep-orbit",
@@ -761,7 +761,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "canvas.getImageData()",
     tier: "structural",
     connection:
-      "Both represent images as numeric arrays of pixel values. getImageData returns a flat Uint8ClampedArray (0-255 RGBA). An image tensor returns a shaped float32 tensor (often [h, w, 3]).",
+      "An image is a numeric array of pixel values in either world. getImageData returns a flat Uint8ClampedArray (0-255 RGBA); an image tensor returns a shaped float32 tensor (often [h, w, 3]).",
     breaks:
       "getImageData ships uint8 (0-255) interleaved RGBA. Most models need float32 normalized to [0,1] (or per-channel mean/std). Skipping the cast and normalization gives an image whose pixels are 100x larger than training distribution, and the model returns nonsense.",
     category: "neon-protocol",
@@ -773,7 +773,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "CSS blur() / SVG filters",
     tier: "structural",
     connection:
-      "Both apply a small sliding window that transforms local regions of an image. CSS blur applies a convolution kernel to pixels; CNNs apply learned kernels to feature maps.",
+      "CSS blur applies a convolution kernel to pixels; CNNs apply learned kernels to feature maps. The shared mechanism is a small sliding window that transforms local regions of an image.",
     breaks:
       "CSS blur uses a fixed Gaussian kernel hard-coded in the browser. CNN convolution uses learned kernels that update during training to detect features specific to the dataset. Same operation; one is hand-tuned, the other is data-tuned and changes per model.",
     category: "neon-protocol",
@@ -786,7 +786,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "getBoundingClientRect()",
     tier: "identity",
     connection:
-      "Both define rectangular regions with x, y, width, height coordinates. DOM element bounds and object detection boxes use the same data structure.",
+      "DOM element bounds and object detection boxes use the same data structure: a rectangular region defined by x, y, width, height coordinates.",
     category: "neon-protocol",
     mlCode: "{ x, y, width, height } // bbox tuple",
   },
@@ -808,7 +808,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "SVG clip-path / CSS masks",
     tier: "structural",
     connection:
-      "Both create pixel-level boundaries that separate regions. CSS masks define visible/hidden areas; segmentation masks label each pixel\u2019s class. Same concept, different domain.",
+      "CSS masks define visible/hidden areas; segmentation masks label each pixel\u2019s class. Pixel-level boundaries that separate regions \u2014 same concept, different domain.",
     breaks:
       "CSS masks are author-defined geometry. Segmentation masks are model output — pixel-level predictions with confidence per pixel, often imperfect at boundaries. The mask must be thresholded and cleaned before use; CSS clip-paths do not need post-processing.",
     category: "neon-protocol",
@@ -821,7 +821,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "Shared component libraries",
     tier: "structural",
     connection:
-      "Both provide reusable feature extraction that multiple downstream tasks build on. A shared UI library serves multiple apps; a backbone CNN serves multiple vision tasks.",
+      "A shared UI library serves multiple apps; a backbone CNN serves multiple vision tasks. Reusable feature extraction that downstream consumers build on instead of starting from scratch.",
     breaks:
       "UI libraries are versioned, stable, and you compose them deterministically. Backbones are trained on specific datasets (ImageNet) and carry that bias forward — fine-tuning on different data may erase or compete with the pre-trained features. Reuse is not free of side effects.",
     category: "neon-protocol",
@@ -835,7 +835,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "URL parsing / route splitting",
     tier: "structural",
     connection:
-      "Both break continuous input into discrete structured parts. URL parsing splits at known delimiters with deterministic regex. Subword tokenizers split text using learned merge rules.",
+      "URL parsing splits at known delimiters with deterministic regex; subword tokenizers split text using learned merge rules. Either way, continuous input becomes discrete structured parts.",
     breaks:
       "URL parsing uses regex YOU control. Subword tokenizers (BPE, WordPiece, SentencePiece) learn merge rules from a training corpus and the same word can tokenize to 1 token in one model and 5 in another. Tokenization is part of the model artifact; you cannot regex your way out of a tokenizer mismatch at inference.",
     category: "signal-ward",
@@ -848,7 +848,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "i18n translation dictionaries",
     tier: "structural",
     connection:
-      "Both map symbolic identifiers to meaningful representations. i18n maps keys to localized strings; embeddings map tokens to dense vectors in semantic space. Both enable meaning-aware processing.",
+      "i18n maps keys to localized strings; embeddings map tokens to dense vectors in semantic space. Turning a symbolic identifier into a meaningful representation is what makes meaning-aware processing possible in each case.",
     breaks:
       "i18n maps key → exact translated string with no semantic relationship between keys. Embeddings place tokens in a continuous vector space where distance encodes meaning (`king - man + woman ≈ queen`). The mapping has structure i18n does not.",
     category: "signal-ward",
@@ -861,7 +861,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "Array.reduce()",
     tier: "structural",
     connection:
-      "Both fold a sequence element-by-element, carrying forward accumulated state. reduce() builds a result by folding with a function YOU define; an RNN folds with a learned cell.",
+      "reduce() folds a sequence element-by-element with a function YOU define, carrying forward accumulated state; an RNN does the same fold with a learned cell. Same walk over the sequence, same running accumulator.",
     breaks:
       "reduce folds with a pure function YOU define. An RNN cell folds with a LEARNED step function whose weights, gates, and activation come from training; the same input sequence can produce different hidden states across model versions. The fold shape transfers; the cell content is opaque and stochastic.",
     category: "signal-ward",
@@ -873,7 +873,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "Session storage",
     tier: "structural",
     connection:
-      "Both maintain persistent state across sequential processing steps that can be selectively read and updated. Session storage persists across page navigations; LSTM cells persist across timesteps.",
+      "Session storage persists across page navigations; LSTM cell state persists across timesteps. Persistent memory threading through sequential steps, selectively read and updated along the way.",
     breaks:
       "Session storage is a key-value store you write and read with explicit keys. LSTM cell state is a fixed-size vector with learned read/write gates — there is no key. The model decides what to remember; you do not address it.",
     category: "signal-ward",
@@ -885,7 +885,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "Search engine ranking",
     tier: "structural",
     connection:
-      "Both dynamically weight inputs by relevance to a query. Search ranks documents by query relevance; attention weights tokens by relevance to each other. Both are learned relevance scoring.",
+      "Search ranks documents by relevance to a query; attention weights tokens by relevance to each other. Learned relevance scoring in each case — inputs get dynamically reweighted by how much they matter to the question being asked.",
     breaks:
       "Search ranking is a one-shot scoring of documents against one query. Attention runs at every layer for every token, with each token attending to every other token — quadratic cost in sequence length. Same scoring shape, very different scale and frequency.",
     category: "signal-ward",
@@ -898,7 +898,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "React virtual DOM reconciliation",
     tier: "intuition",
     connection:
-      "Both are reconciliation engines that compare current state to desired state. React\u2019s vDOM processes the component tree and computes diffs; transformers process input tokens and compute attention-weighted representations.",
+      "React\u2019s vDOM processes the component tree and computes diffs; transformers process input tokens and compute attention-weighted representations. Each is a reconciliation engine comparing current state to desired state.",
     breaks:
       "vDOM diffs current vs target tree once per render and applies known patches. Transformers compute soft attention weights every forward pass and the 'patches' are learned matrix operations on continuous activations. The reconciliation framing rhymes; the math does not.",
     category: "signal-ward",
@@ -913,7 +913,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "Math.random()",
     tier: "structural",
     connection:
-      "Both generate values from probability distributions. Math.random() samples uniformly from [0,1); generative models sample from a learned distribution.",
+      "Math.random() samples uniformly from [0,1); generative models sample from a learned distribution. Drawing values from a probability distribution is the shared move.",
     breaks:
       "Math.random() samples uniformly from [0,1) with no parameters to learn. Generative models sample from a high-dimensional learned distribution that may have multiple modes, an unrepresentable tail, or unsafe regions. Sampling temperature, top-k, top-p — all knobs Math.random() does not have.",
     category: "nova-canvas",
@@ -925,7 +925,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "CSS transitions between states",
     tier: "structural",
     connection:
-      "Both create smooth intermediate values between two defined points. CSS transitions interpolate between start and end styles; latent interpolation generates smooth blends between generated outputs.",
+      "CSS transitions interpolate between start and end styles; latent interpolation generates smooth blends between generated outputs. Smooth intermediate values between two defined points, in stylesheets or in latent space.",
     breaks:
       "CSS transitions interpolate fixed properties along defined easing curves. Latent interpolation walks a path in a learned space where dimensions have no human meaning — in-between points may be coherent or garbage depending on whether the trajectory stays on the data manifold.",
     category: "nova-canvas",
@@ -951,7 +951,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "URL shortener",
     tier: "structural",
     connection:
-      "Both compress complex data into a compact representation and reconstruct the original. A URL shortener encodes a long URL into a short code and decodes it back; a VAE encodes data into a latent vector and decodes it back.",
+      "A URL shortener encodes a long URL into a short code and decodes it back; a VAE encodes data into a latent vector and decodes it back. Compress into a compact representation, reconstruct the original — that round trip is the bridge.",
     breaks:
       "URL shorteners encode losslessly — decode reproduces the input exactly. VAEs encode lossy and probabilistic — the latent vector is a distribution, decoding samples from it. Reconstruction is approximate and nondeterministic.",
     category: "nova-canvas",
@@ -964,7 +964,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "Progressive image loading",
     tier: "structural",
     connection:
-      "Both start with a degraded version and iteratively refine toward full quality. Progressive JPEG loads blurry-to-sharp; diffusion denoises random noise into a coherent image. Same trajectory, different domain.",
+      "Progressive JPEG loads blurry-to-sharp; diffusion denoises random noise into a coherent image. Start degraded, iteratively refine toward full quality — same trajectory, different domain.",
     breaks:
       "Progressive JPEG decodes a fixed encoded payload from header to detail. Diffusion runs many denoising steps (50–1000), each a learned model call. Compute scales with quality, not file size. Same blurry-to-sharp visual, very different runtime cost.",
     category: "nova-canvas",
@@ -978,7 +978,7 @@ export const BRIDGES: Bridge[] = [
       "Auto-formatter pipeline (Prettier / eslint --fix rewriting code until it matches a style config)",
     tier: "intuition",
     connection:
-      "Both iteratively rewrite a target until it matches a reference style. Prettier walks the AST and emits whitespace, quote, and bracket choices that match the configured style — applied repeatedly until the output is stable. Style transfer walks pixel updates that minimize the difference between the target image's feature statistics (Gram matrices) and the reference style image's. Same shape: take an input that already has CONTENT, transform it iteratively until its STYLE matches an exemplar, preserve the content semantics throughout.",
+      "Prettier walks the AST and emits whitespace, quote, and bracket choices that match the configured style — applied repeatedly until the output is stable. Style transfer walks pixel updates that minimize the difference between the target image's feature statistics (Gram matrices) and the reference style image's. Same shape: take an input that already has CONTENT, transform it iteratively until its STYLE matches an exemplar, preserve the content semantics throughout.",
     breaks:
       "Prettier's transformation is symbolic + deterministic: parse the AST, emit canonical formatting per rule, converge in one pass. Style transfer's transformation is numerical + stochastic: gradient descent against a perceptual-loss network, hundreds of forward + backward passes through frozen VGG, no closed-form rule. Prettier's 'style' is a config file you can read; style transfer's 'style' is a [C, C] Gram matrix per VGG layer that has no human-readable interpretation. Output of Prettier is deterministic; output of style transfer depends on initialization, learning rate, and step count.",
     category: "nova-canvas",
@@ -993,7 +993,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "CDN edge locations",
     tier: "structural",
     connection:
-      "Both move computation closer to the user/data source for lower latency. CDNs serve static assets from edge PoPs; edge ML runs inference on local devices. Same architecture, different payloads.",
+      "CDNs serve static assets from edge PoPs; edge ML runs inference on local devices. Either way, computation moves closer to the user or data source for lower latency — same architecture, different payloads.",
     breaks:
       "CDN edge nodes serve immutable static assets with predictable per-region SLAs and centralized cache-purging. Edge inference runs on heterogeneous user devices — variable RAM, no GPU on most phones, intermittent connectivity, and OTA model updates that must succeed against possibly-stale runtimes. The same model can hit 30ms on desktop WebGL and 800ms on a budget Android in CPU mode.",
     category: "terra-grid",
@@ -1019,7 +1019,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "Tree-shaking",
     tier: "structural",
     connection:
-      "Both remove components to reduce size. Tree-shaking eliminates statically unreferenced code via exact analysis. Pruning removes weights below a numeric threshold.",
+      "Tree-shaking eliminates statically unreferenced code via exact analysis; pruning removes weights below a numeric threshold. Each shrinks the artifact by cutting out components.",
     breaks:
       "Tree-shaking removes statically unreferenced code (analysis is exact, behavior unchanged). Weight pruning removes weights below a numeric threshold and the model usually requires fine-tuning to recover accuracy after pruning — sometimes accuracy never fully recovers. Tree-shaking is safe; pruning has a quality cost.",
     category: "terra-grid",
@@ -1032,7 +1032,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "Code splitting",
     tier: "structural",
     connection:
-      "Both decompose a large artifact into smaller, purpose-built pieces. Code splitting breaks a bundle into route-specific chunks; distillation transfers a large model\u2019s knowledge into a smaller, faster model.",
+      "Code splitting breaks a bundle into route-specific chunks; distillation transfers a large model\u2019s knowledge into a smaller, faster model. A big artifact becomes smaller, purpose-built pieces in each case.",
     breaks:
       "Code splitting decomposes one bundle into chunks of the same code. Distillation creates a different, smaller model that approximates the teacher — the student is not the teacher carved up; it is a separate model trained to mimic the teacher's outputs.",
     category: "terra-grid",
@@ -1045,7 +1045,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "CI/CD pipeline",
     tier: "structural",
     connection:
-      "Both are automated multi-stage pipelines that transform inputs into production artifacts. CI/CD: code \u2192 build \u2192 test \u2192 deploy. ML: data \u2192 train \u2192 evaluate \u2192 deploy. Same workflow pattern.",
+      "CI/CD: code \u2192 build \u2192 test \u2192 deploy. ML: data \u2192 train \u2192 evaluate \u2192 deploy. Same workflow pattern \u2014 an automated multi-stage pipeline that transforms inputs into production artifacts.",
     breaks:
       "CI/CD outputs are deterministic and identical given identical inputs. ML pipeline outputs (trained models) vary across runs even with fixed code due to random init, data shuffling, and GPU nondeterminism. Reproducibility requires extra effort (seeds, deterministic kernels).",
     category: "terra-grid",
@@ -1057,7 +1057,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "Lighthouse CI",
     tier: "structural",
     connection:
-      "Both continuously monitor a production system for degradation against baselines. Lighthouse CI flags performance regressions; drift detection flags model accuracy regressions. Same monitoring pattern.",
+      "Lighthouse CI flags performance regressions; drift detection flags model accuracy regressions. Continuous monitoring of a production system against baselines — the same pattern pointed at different signals.",
     breaks:
       "Lighthouse runs a fixed test suite per PR and returns a deterministic pass/fail score. Drift detection compares incoming data distributions to a baseline using PSI/KL/KS — non-binary, threshold-tunable, and lagging because ground-truth labels arrive late or never. A drift alert is a hint that the model MAY be degrading; you still need a labelled holdout to confirm. Lighthouse failure is the bug; drift alert is a hypothesis.",
     category: "terra-grid",
@@ -1069,7 +1069,7 @@ export const BRIDGES: Bridge[] = [
     feConcept: "Dynamic ad rotation",
     tier: "structural",
     connection:
-      "Both adaptively allocate traffic to whichever variant is performing best, while reserving a small fraction for exploration. Ad servers route impressions toward higher-CTR creatives; bandit schedulers route inference (or, in Tensorcraft's review queue, attention) toward higher-reward arms. Same explore-exploit tradeoff, same ε knob.",
+      "Ad servers route impressions toward higher-CTR creatives; bandit schedulers route inference (or, in Tensorcraft's review queue, attention) toward higher-reward arms. Each adaptively allocates traffic to whichever variant is performing best while reserving a small fraction for exploration. Same explore-exploit tradeoff, same ε knob.",
     breaks:
       "Ad rotation has clear short-term reward signals and stationary arms over the test window. Production bandits face delayed rewards (long-term retention), non-stationary arms (model drift, new lessons appearing in the review queue), and exploration cost — Thompson sampling and UCB1 are not interchangeable knobs. Tensorcraft's review queue inherits the same failure modes: every new completed lesson adds an unpulled arm, and 'recall success' is a noisy proxy for 'remembered'.",
     category: "terra-grid",

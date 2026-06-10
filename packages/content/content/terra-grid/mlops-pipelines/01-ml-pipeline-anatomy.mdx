@@ -7,10 +7,10 @@ order: 1
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Priya maps out the stages of the Terra Grid retraining pipeline. Data ingestion, validation, training, evaluation, packaging, deployment — each stage has a gate."
+  narrative: "Priya maps out the stages of the Terra Grid retraining pipeline. Data ingestion, validation, training, evaluation, packaging, deployment. Each stage has a gate."
   speaker: "Priya Sharma"
 concept:
-  explanation: "An ML pipeline has stages and gates, just like a CI/CD pipeline — data in, validation, build (training), test (evaluation), publish (deploy)."
+  explanation: "An ML pipeline has stages and gates, just like a CI/CD pipeline: data in, validation, build (training), test (evaluation), publish (deploy)."
   bridge:
     feTitle: "CI/CD Pipeline"
     feCode: "lint → test → build → deploy // each stage gates the next"
@@ -22,7 +22,7 @@ consequence:
   nextLessonTeaser: "Next: versioning the data that feeds the pipeline"
 hints:
   - level: nudge
-    content: "Think about how a CI/CD pipeline flows from code commit to production"
+    content: "runPipeline() chains PipelineStage objects the way CI chains jobs: each stage's output feeds the next, and a failed gate stops the run"
   - level: guidance
     content: "Map each CI/CD stage to its ML equivalent: lint=validate, test=evaluate, build=train"
   - level: solution
@@ -35,14 +35,14 @@ keywords:
 ---
 
 <Dialogue speaker="Priya Sharma">
-Manual retraining does not scale. We have 12 sectors generating new sensor data every hour. If I have to manually kick off training every time the data changes, we are already behind.
+Manual retraining doesn't scale. We have 12 sectors generating new sensor data every hour. If I have to manually kick off training every time the data changes, we're already behind.
 </Dialogue>
 
 <Dialogue speaker="Hassan Al-Rashid">
 Automate it. But with human oversight at the gates. Automated does not mean unsupervised.
 </Dialogue>
 
-You have set up CI/CD pipelines. A developer pushes code, the pipeline runs lint, tests, builds, and deploys — each stage gating the next. If tests fail, the build never ships. ML pipelines follow the same architecture, with data replacing code as the input trigger.
+`git push`, and the machinery wakes up: lint, test, build, deploy, each stage gating the next. A red test means the build never ships, and nobody has to remember to check. Now swap the trigger. New sensor data lands instead of new code, training replaces the build step, evaluation replaces the test suite. The gates work the same way: a model that fails evaluation never reaches a device.
 
 <LearningObjectives objectives={["Map CI/CD pipeline stages to their ML pipeline equivalents", "Design quality gates that prevent bad models from reaching production", "Understand the role of each ML pipeline stage: ingest, validate, train, evaluate, deploy", "Implement a pipeline orchestrator that enforces stage ordering and gate conditions"]} />
 
@@ -162,4 +162,4 @@ Define the stages and gates for an ML pipeline.
 
 <Exercise slug="pipeline-stages" />
 
-<KeyTakeaways takeaways={["ML pipelines mirror CI/CD: ingest=commit, validate=lint, train=build, evaluate=test, deploy=release", "Quality gates prevent bad models from shipping — just like failing tests block a deploy", "Automation handles the repetitive work; human oversight handles the judgment calls", "Pipeline triggers can be scheduled, data-driven, or manual — like cron jobs, webhooks, or manual deploys"]} />
+<KeyTakeaways takeaways={["An ML pipeline runs ingest, validate, train, evaluate, deploy; each stage consumes the previous stage's artifact and gates the next", "Quality gates prevent bad models from shipping — just like failing tests block a deploy", "Automation handles the repetitive work; human oversight handles the judgment calls", "Pipeline triggers can be scheduled, data-driven, or manual; match the trigger to how quickly your data changes"]} />

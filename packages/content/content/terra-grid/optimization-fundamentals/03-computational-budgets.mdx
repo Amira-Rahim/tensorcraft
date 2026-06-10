@@ -10,14 +10,14 @@ context:
   narrative: "GRID establishes hard computational budgets for every model deployed to the field."
   speaker: "GRID"
 concept:
-  explanation: "Setting computational budgets for models is like setting performance budgets in Lighthouse — hard limits that cannot be exceeded."
+  explanation: "Setting computational budgets for models is like setting performance budgets in Lighthouse: hard limits that cannot be exceeded."
   bridge:
     feTitle: "Lighthouse Budget"
     feCode: "// performance-budget.json\n{ \"resourceSizes\": [{ \"resourceType\": \"script\", \"budget\": 300 }] }"
     mlTitle: "Model Budget"
     mlCode: "// model-budget.json\n{ \"maxSizeMB\": 50, \"maxLatencyMs\": 89, \"maxRamMB\": 307 }"
     tier: structural
-    breaks: "Lighthouse budgets are static thresholds for build artifacts. Model budgets must trade off compute, memory, accuracy, and latency simultaneously across target devices — single-axis budgets hide the tradeoff space."
+    breaks: "Lighthouse budgets are static thresholds for build artifacts. Model budgets must trade off compute, memory, accuracy, and latency simultaneously across target devices. Single-axis budgets hide the tradeoff space."
 consequence:
   narrative: "Every model now has a deployment budget. No exceptions."
   nextLessonTeaser: "Next: standardized benchmarking"
@@ -40,10 +40,10 @@ New deployment policy: no model ships without passing budget validation. Maximum
 </Dialogue>
 
 <Dialogue speaker="Priya Sharma">
-I have seen too many models that work in staging and crash in production because nobody set hard limits. This is our Lighthouse budget, but for ML.
+The Sector 11 forecaster ran fine in staging, then got OOM-killed nine minutes after deploy because nobody set a memory ceiling. We don't do that twice. This is our Lighthouse budget, but for ML.
 </Dialogue>
 
-You set performance budgets in Lighthouse: maximum bundle size, maximum time-to-interactive, maximum total blocking time. If the budget fails, the build fails. Model deployment budgets work exactly the same way.
+You set performance budgets in Lighthouse: maximum bundle size, maximum time-to-interactive, maximum total blocking time. If the budget fails, the build fails. Priya's instinct to copy the enforcement is right. Her analogy hides one trap: Lighthouse budgets are independent dials, and model budgets are coupled. Shrink the model to pass the size gate and accuracy pays. Cap RAM and you may force a quantization that breaks the accuracy floor. GRID's three numbers plus the accuracy threshold form one four-way trade, not four separate checkboxes.
 
 <LearningObjectives objectives={["Define computational budgets for edge model deployment", "Calculate budget thresholds from device specifications", "Validate models against budget constraints before deployment", "Apply Lighthouse performance budget concepts to ML models"]} />
 
@@ -98,4 +98,4 @@ Create and validate computational budgets for Terra Grid devices.
 
 <Exercise slug="set-budgets" />
 
-<KeyTakeaways takeaways={["Computational budgets are hard limits derived from device specifications", "Apply the 60% RAM rule, 25% storage rule, and latency targets", "Budget validation should block deployment — like failing a Lighthouse audit", "Define budgets before optimization so you know exactly what 'done' looks like"]} />
+<KeyTakeaways takeaways={["Computational budgets are hard limits derived from device specifications", "Apply the 60% RAM rule, 25% storage rule, and latency targets", "Budget validation blocks deployment: 50MB size, 89ms latency, and 307MB RAM are gates, not review comments", "Define budgets before optimization so you know exactly what 'done' looks like"]} />

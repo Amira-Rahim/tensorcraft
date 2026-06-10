@@ -7,23 +7,23 @@ order: 5
 estimatedMinutes: 20
 difficulty: beginner
 context:
-  narrative: "GRID proposes a hybrid architecture — some models on edge, some in the cloud."
+  narrative: "GRID proposes a hybrid architecture: some models on edge, some in the cloud."
   speaker: "GRID"
 concept:
-  explanation: "Choosing between edge and cloud inference is like choosing between CSR and SSR — each has tradeoffs in latency, capability, and resource usage."
+  explanation: "Choosing between edge and cloud inference is like choosing between CSR and SSR: each has tradeoffs in latency, capability, and resource usage."
   bridge:
     feTitle: "CSR vs SSR"
     feCode: "// CSR: runs in browser, fast interaction\n// SSR: runs on server, more capable"
     mlTitle: "Edge vs Cloud"
     mlCode: "// Edge: runs on device, low latency\n// Cloud: runs on GPU, more capable"
     tier: structural
-    breaks: "CSR vs SSR is a rendering location decision. Edge vs cloud for ML trades latency + privacy against model size + compute — and unlike rendering, you cannot easily fall back from edge to cloud at runtime; the choice is architectural."
+    breaks: "CSR vs SSR is a rendering location decision. Edge vs cloud for ML trades latency + privacy against model size + compute. Unlike rendering, you cannot easily fall back from edge to cloud at runtime; the choice is architectural."
 consequence:
   narrative: "You design a hybrid strategy: edge for real-time alerts, cloud for deep analysis."
   nextLessonTeaser: "Next module: optimizing models to fit edge constraints"
 hints:
   - level: nudge
-    content: "Think about when you choose CSR vs SSR in Next.js"
+    content: "chooseDeployment() weighs the same factors as your CSR-vs-SSR call: latency floor, compute weight, and what happens when the network drops"
   - level: guidance
     content: "Map each factor: latency, model complexity, connectivity, cost"
   - level: solution
@@ -115,4 +115,4 @@ Design a deployment strategy for different Terra Grid inference tasks.
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Edge vs cloud is a tradeoff, not a binary choice — like CSR vs SSR", "Edge wins for: low latency, offline capability, data privacy, bandwidth reduction", "Cloud wins for: complex models, high accuracy requirements, centralized analysis", "Hybrid architectures combine edge detection with cloud analysis"]} />
+<KeyTakeaways takeaways={["Split by workload: latency-critical anomaly detection runs on-device, heavy root-cause analysis stays in the cloud", "Edge wins for: low latency, offline capability, data privacy, bandwidth reduction", "Cloud wins for: complex models, high accuracy requirements, centralized analysis", "Hybrid architectures combine edge detection with cloud analysis"]} />

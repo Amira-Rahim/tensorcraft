@@ -10,20 +10,20 @@ context:
   narrative: "A flood of clinical documents overwhelms the ward. Imran and Dr. Karimi need an automated system that flags urgent documents immediately."
   speaker: "Imran"
 concept:
-  explanation: "Binary classification assigns one of two labels to each input — urgent vs. non-urgent. It's the simplest form of classification and the foundation of any triage system."
+  explanation: "Binary classification assigns one of two labels to each input: urgent vs. non-urgent. It's the simplest form of classification and the foundation of any triage system."
   bridge:
     feTitle: "Form Validation (if/else with confidence)"
     feCode: "// if (isValid(input)) { accept() } else { reject() }\n// Boolean decision with a confidence threshold"
     mlTitle: "Binary Classifier"
     mlCode: "// if (sigmoid(score) > 0.5) { 'URGENT' } else { 'ROUTINE' }\n// Learned decision with calibrated threshold"
     tier: structural
-    breaks: "Form validation produces hand-written boolean output. Binary classifiers output a probability — calibration matters because '0.51' and '0.99' carry different action implications, and rounding to a binary decision discards calibration information."
+    breaks: "Form validation produces hand-written boolean output. Binary classifiers output a probability; calibration matters because '0.51' and '0.99' carry different action implications, and rounding to a binary decision discards calibration information."
 consequence:
-  narrative: "The first filter is live — MEDI now flags urgent documents before they hit the pile. But some documents need more than a binary label."
+  narrative: "The first filter is live: MEDI now flags urgent documents before they hit the pile. But some documents need more than a binary label."
   nextLessonTeaser: "Next: routing documents to multiple departments with multi-class classification."
 hints:
   - level: nudge
-    content: "Use sigmoid activation for the output layer — it squashes values to [0, 1]"
+    content: "Use sigmoid activation for the output layer; it squashes values to [0, 1]"
   - level: guidance
     content: "Binary crossentropy is the loss function for two-class problems"
   - level: solution
@@ -37,15 +37,15 @@ keywords:
 ---
 
 <Dialogue speaker="Imran">
-Dr. Karimi, we've got 300 documents waiting in the queue. Lab results, imaging reports, discharge summaries — all mixed together. The nurses are drowning.
+Dr. Karimi, we've got 300 documents waiting in the queue. Lab results, imaging reports, discharge summaries, all mixed together. The nurses are drowning.
 </Dialogue>
 
 <Dialogue speaker="Dr. Zahra Karimi">
-Some of those reports contain critical findings that can't wait. A potassium level of 7.2, a pulmonary embolism on CT — those need to reach a physician in minutes, not hours.
+Some of those reports contain critical findings that can't wait. A potassium level of 7.2, a pulmonary embolism on CT. Those need to reach a physician in minutes, not hours.
 </Dialogue>
 
 <Dialogue speaker="Khalil">
-So the first question for every document is binary: urgent or not? That's like form validation — every input gets a yes or no, but here we also get a confidence score telling us how sure we are.
+So the first question for every document is binary: urgent or not? That's like form validation: every input gets a yes or no, but here we also get a confidence score telling us how sure we are.
 </Dialogue>
 
 <LearningObjectives objectives={["Understand binary classification as a two-class decision problem", "Implement a binary classifier with sigmoid activation", "Use binary crossentropy as the loss function", "Set and adjust decision thresholds for clinical safety"]} />
@@ -54,9 +54,9 @@ So the first question for every document is binary: urgent or not? That's like f
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-Form validation makes a binary decision: valid or invalid. A binary classifier does the same, but instead of hand-coded rules, it learns the decision boundary from labeled examples. And crucially, it outputs a probability — not just a boolean.
+Form validation makes a binary decision: valid or invalid. A binary classifier does the same, but instead of hand-coded rules, it learns the decision boundary from labeled examples. And crucially, it outputs a probability, not just a boolean.
 
-A sigmoid activation squashes any real number into the range [0, 1]. Values above 0.5 become "urgent," values below become "routine." But in medicine, you might lower that threshold to 0.3 — because missing a truly urgent document is far worse than over-flagging a routine one.
+A sigmoid activation squashes any real number into the range [0, 1]. Values above 0.5 become "urgent," values below become "routine." But in medicine, you might lower that threshold to 0.3, because missing a truly urgent document is far worse than over-flagging a routine one.
 
 <CodeBlock language="typescript" title="urgency-classifier.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -122,10 +122,10 @@ Don't set that threshold at 0.5. In medicine, we'd rather flag ten routine docum
 </Dialogue>
 
 <Dialogue speaker="MEDI">
-Adjusting threshold. At 0.3, sensitivity increases to 96% — we catch nearly all urgent cases. Specificity drops to 71% — more false alarms, but no missed emergencies.
+Adjusting threshold. At 0.3, sensitivity increases to 96%: nearly all urgent cases caught. Specificity drops to 71%: more false alarms, no missed emergencies.
 </Dialogue>
 
-The threshold is not a technical parameter — it's a clinical decision. Lowering it increases recall (catching more true positives) at the cost of precision (more false positives). In a triage system, that tradeoff almost always favors recall.
+The threshold is not a technical parameter. It's a clinical decision. Lowering it increases recall (catching more true positives) at the cost of precision (more false positives). In a triage system, that tradeoff almost always favors recall.
 
 ## Challenge
 

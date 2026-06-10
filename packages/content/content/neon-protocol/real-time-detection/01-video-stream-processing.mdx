@@ -10,20 +10,20 @@ context:
   narrative: "Protocol Sentinel goes live on a test feed. Noor watches the first detections appear in real-time on the browser dashboard. NEON warns: 'Frame rate dropping. Optimize or lose real-time capability.'"
   speaker: "Noor"
 concept:
-  explanation: "Video streams are just sequences of image frames. The browser's getUserMedia() API provides direct access to camera feeds — the same API you've used for video chat features. Each frame is a canvas image you can feed to a model."
+  explanation: "Video streams are just sequences of image frames. The browser's getUserMedia() API provides direct access to camera feeds, the same API you've used for video chat features. Each frame is a canvas image you can feed to a model."
   bridge:
     feTitle: "getUserMedia() API"
     feCode: "const stream = await navigator.mediaDevices.getUserMedia({ video: true });"
     mlTitle: "Video Frame Pipeline"
     mlCode: "const frame = tf.browser.fromPixels(video); const prediction = model.predict(frame.expandDims(0));"
     tier: structural
-    breaks: "`getUserMedia` returns a `MediaStream` — a continuous source of opaque encoded video frames. `tf.browser.fromPixels(video)` extracts a single frame as a `[H, W, 3]` uint8 tensor; you still need to resize, normalize (often `(x/127.5) - 1` or `x/255`), and add a batch dimension before `model.predict`. The stream is the input pipe; the tensor is what the model actually consumes. Skip the preprocessing and the model sees the wrong distribution."
+    breaks: "`getUserMedia` returns a `MediaStream`, a continuous source of opaque encoded video frames. `tf.browser.fromPixels(video)` extracts a single frame as a `[H, W, 3]` uint8 tensor; you still need to resize, normalize (often `(x/127.5) - 1` or `x/255`), and add a batch dimension before `model.predict`. The stream is the input pipe; the tensor is what the model actually consumes. Skip the preprocessing and the model sees the wrong distribution."
 consequence:
-  narrative: "The test feed shows three Meridian drones circling District 7. Protocol Sentinel tags each one. Noor grins — then the frame rate drops to 4fps. NEON: 'Congratulations. You can detect drones. Slowly.'"
+  narrative: "The test feed shows three Meridian drones circling District 7. Protocol Sentinel tags each one. Noor grins. Then the frame rate drops to 4fps. NEON: 'Congratulations. You can detect drones. Slowly.'"
   nextLessonTeaser: "Next: running inference on every frame without dropping below 30fps"
 hints:
   - level: nudge
-    content: "getUserMedia returns a MediaStream — attach it to a video element's srcObject"
+    content: "getUserMedia returns a MediaStream; attach it to a video element's srcObject"
   - level: guidance
     content: "Create a video element, set srcObject to the stream, then use tf.browser.fromPixels(video) to capture frames"
   - level: solution
@@ -37,14 +37,14 @@ keywords:
 ---
 
 <Dialogue speaker="Noor">
-It is working. It is actually seeing them. Three drones over District 7 — tagged and tracked in real-time. In the browser. No server. No Meridian infrastructure. Just JavaScript.
+It is working. It is actually seeing them. Three drones over District 7, tagged and tracked in real-time. In the browser. No server. No Meridian infrastructure. Just JavaScript.
 </Dialogue>
 
 <Dialogue speaker="NEON">
 Impressive. Your frame rate is 4fps. At that speed, a drone could fly from District 7 to District 12 before you process the next frame. Perhaps we should discuss optimization before you celebrate.
 </Dialogue>
 
-Every video stream is a sequence of images. The browser gives you direct access through `getUserMedia()` — the same API behind video chat, screen recording, and webcam filters. You have already used it. Now you will feed those frames to a model.
+Every video stream is a sequence of images. The browser gives you direct access through `getUserMedia()`, the same API behind video chat, screen recording, and webcam filters. You have already used it. Now you will feed those frames to a model.
 
 <LearningObjectives objectives={["Access webcam and video feeds using the getUserMedia() API", "Convert live video frames to TensorFlow.js tensors", "Build a basic video-to-tensor pipeline for real-time inference", "Understand the relationship between frame rate and detection latency"]} />
 

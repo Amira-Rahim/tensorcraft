@@ -281,7 +281,8 @@ export default async function ThemeDetailPage({ params }: Props) {
           MODULE MAP
         </h1>
         <p className="text-sm" style={{ color: theme.palette.muted }}>
-          Track your journey from frontend engineer to ML engineer.
+          {themeModules.length} modules between your frontend and a deployed
+          model. Pick up where you left off.
         </p>
 
         <div className="flex gap-8 mt-6">

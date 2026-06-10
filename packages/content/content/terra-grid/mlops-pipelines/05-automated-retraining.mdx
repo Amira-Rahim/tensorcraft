@@ -7,23 +7,23 @@ order: 5
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Sector 9 installs 200 new sensors. The data distribution shifts. Priya configures automated retraining triggered by data changes — like GitHub Actions triggered by pushes."
+  narrative: "Sector 9 installs 200 new sensors. The data distribution shifts. Priya configures automated retraining triggered by data changes, like GitHub Actions triggered by pushes."
   speaker: "Priya Sharma"
 concept:
-  explanation: "Automated retraining triggers on data events, just as GitHub Actions trigger on code events — push, schedule, or manual dispatch."
+  explanation: "Automated retraining triggers on data events, just as GitHub Actions trigger on code events: push, schedule, or manual dispatch."
   bridge:
     feTitle: "GitHub Actions"
     feCode: "on: push: branches: [main] // event-triggered workflow"
     mlTitle: "Retraining Trigger"
     mlCode: "on: data-change: drift-score > 0.3 // event-triggered training"
     tier: structural
-    breaks: "GitHub Actions trigger on commit events. Retraining triggers come from drift detectors, scheduled cadences, or label feedback — and retraining without performance gating can ship a worse model on schedule."
+    breaks: "GitHub Actions trigger on commit events. Retraining triggers come from drift detectors, scheduled cadences, or label feedback. And retraining without performance gating can ship a worse model on schedule."
 consequence:
   narrative: "The pipeline detects the Sector 9 data shift, triggers retraining, and produces a new model that passes all gates. Priya reviews and approves."
   nextLessonTeaser: "Module 7: monitoring production models and detecting when they start to degrade"
 hints:
   - level: nudge
-    content: "Think about what events trigger your CI/CD workflows"
+    content: "evaluateTriggers() walks each RetrainingTrigger like a workflow's event filters: schedule elapsed, drift threshold crossed, or manual request"
   - level: guidance
     content: "Define trigger conditions: schedule (cron), data drift threshold exceeded, or manual request"
   - level: solution
@@ -44,10 +44,10 @@ Manually? Every time a sector changes?
 </Dialogue>
 
 <Dialogue speaker="Priya Sharma">
-No. I have configured triggers. When the data drift score exceeds 0.3 or the dataset grows by more than 10%, the pipeline kicks off automatically. I review before it deploys.
+No. I've configured triggers. When the data drift score exceeds 0.3 or the dataset grows by more than 10%, the pipeline kicks off automatically. I review before it deploys.
 </Dialogue>
 
-GitHub Actions triggers on `push`, `pull_request`, `schedule`, or `workflow_dispatch`. You define the event, the conditions, and the workflow runs automatically. Automated retraining uses the same pattern — define trigger events (data change, drift detected, schedule), and the training pipeline runs when conditions are met.
+GitHub Actions triggers on `push`, `pull_request`, `schedule`, or `workflow_dispatch`. You define the event, the conditions, and the workflow runs automatically. The trigger architecture transfers; the safety assumption does not. A CI build that compiles and passes tests is safe to ship. A retraining run that completes is not: retrain on drifted or poisoned data and you ship a worse model, on schedule, with green checkmarks. Every trigger in this lesson feeds an evaluation gate, and the gate, not the trigger, decides what deploys.
 
 <LearningObjectives objectives={["Design retraining triggers based on data events — like GitHub Actions event triggers", "Implement threshold-based triggers for data drift, dataset growth, and performance degradation", "Configure scheduled retraining with cron patterns", "Build safeguards that prevent runaway retraining loops"]} />
 
@@ -168,4 +168,4 @@ Configure automated retraining triggers with cooldowns and safeguards.
 
 <Exercise slug="auto-retrain" />
 
-<KeyTakeaways takeaways={["Retraining triggers mirror GitHub Actions events — data drift, schedule, and performance drops replace push, cron, and check failures", "Cooldown periods prevent trigger storms — just like rate limiting prevents API abuse", "Automated does not mean unsupervised — new models land in staging, not production, until a human approves", "Every automated run feeds the experiment tracker and model registry for full auditability"]} />
+<KeyTakeaways takeaways={["Retraining fires on drift, schedule, or performance drops, and every triggered run must still pass the evaluation gate before deploying", "Cooldown periods prevent trigger storms — just like rate limiting prevents API abuse", "Automated does not mean unsupervised — new models land in staging, not production, until a human approves", "Every automated run feeds the experiment tracker and model registry for full auditability"]} />

@@ -10,7 +10,7 @@ context:
   narrative: "The gallery space is booked. Three projection walls, 12 tablets for visitor interaction, unreliable Wi-Fi, no guaranteed internet. Samir: 'This is a PWA problem. Offline-first, local inference, sync when possible.'"
   speaker: "Samir"
 concept:
-  explanation: "An art installation is a Progressive Web App deployed to a physical space — offline-capable, installable, resilient to network failures, and designed for a specific hardware environment."
+  explanation: "An art installation is a Progressive Web App deployed to a physical space: offline-capable, installable, resilient to network failures, and designed for a specific hardware environment."
   bridge:
     feTitle: "PWA Architecture"
     feCode: "navigator.serviceWorker.register('/sw.js'); // offline-first, installable"
@@ -23,7 +23,7 @@ consequence:
   nextLessonTeaser: "Next module: the Biennale opens"
 hints:
   - level: nudge
-    content: "Think about what a PWA needs to work offline — cached assets, local data, background sync"
+    content: "navigator.serviceWorker.register is the easy half; the hard half is caching the model weight files and gating generation until they finish loading"
   - level: guidance
     content: "Cache the model files in a Service Worker, run inference locally with TensorFlow.js, sync results when online"
   - level: solution
@@ -40,10 +40,10 @@ Three walls, twelve tablets, one gallery space. The Wi-Fi will drop. The interne
 </Dialogue>
 
 <Dialogue speaker="Erdem">
-Every tablet runs the full application independently. No single point of failure. When connectivity returns, they sync their generation logs. The gallery never sees a loading spinner.
+Mostly a PWA. The service-worker pattern transfers; the payload doesn't. Our app shell is 2 megabytes and the model weights are 180. The weights version on their own schedule, and nothing generates until they finish loading. Each tablet runs independently and syncs its logs when connectivity returns. That part I'll sign off on.
 </Dialogue>
 
-You have built PWAs before. Service Workers for offline caching, Web App Manifest for installability, IndexedDB for local storage, Background Sync for deferred uploads. An art installation is a PWA deployed to physical hardware. The same architecture, the same APIs, the same resilience patterns.
+Erdem's caveat is the whole lesson. The PWA toolkit transfers intact: Service Workers for offline caching, a manifest for installability, IndexedDB for local state, Background Sync for deferred uploads. What doesn't transfer is the payload profile. A 2MB app shell hauling 180MB of weights isn't a web app with extra steps; it's a model-distribution problem wearing a web app's clothes.
 
 <LearningObjectives objectives={["Design an offline-first architecture for a physical installation", "Cache ML models in Service Workers for fully offline inference", "Implement local-first data storage with background sync", "Plan hardware deployment with PWA installability and kiosk mode"]} />
 
@@ -207,4 +207,4 @@ Design a PWA architecture for an offline-first installation with local model inf
 
 <Exercise slug="installation-arch" />
 
-<KeyTakeaways takeaways={["Art installations are PWAs deployed to physical hardware — same architecture, same APIs", "Service Workers cache ML model files for fully offline inference — no internet required", "Local-first with background sync ensures the experience never depends on connectivity", "PWA kiosk mode (display: fullscreen) creates an immersive installation without browser chrome"]} />
+<KeyTakeaways takeaways={["Model weights ship and update on their own lifecycle: version them separately from the app shell and gate inference on load completion", "Service Workers cache ML model files for fully offline inference — no internet required", "Local-first with background sync ensures the experience never depends on connectivity", "PWA kiosk mode (display: fullscreen) creates an immersive installation without browser chrome"]} />

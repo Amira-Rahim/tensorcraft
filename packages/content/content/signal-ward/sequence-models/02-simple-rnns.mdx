@@ -7,17 +7,17 @@ order: 2
 estimatedMinutes: 30
 difficulty: intermediate
 context:
-  narrative: "Vikram introduces recurrent neural networks — models that process text one word at a time, carrying context forward like Array.reduce accumulates state."
+  narrative: "Vikram introduces recurrent neural networks: models that process text one word at a time, carrying context forward like Array.reduce accumulates state."
   speaker: "Vikram"
 concept:
-  explanation: "An RNN processes a sequence one element at a time, maintaining a hidden state that accumulates context. It's exactly like Array.reduce — each step takes the current element and the accumulated state, producing a new state."
+  explanation: "An RNN processes a sequence one element at a time, maintaining a hidden state that accumulates context. It's exactly like Array.reduce: each step takes the current element and the accumulated state, producing a new state."
   bridge:
     feTitle: "Array.reduce()"
     feCode: "words.reduce((state, word) => updateState(state, word), initialState)"
     mlTitle: "RNN Step"
     mlCode: "tokens.reduce((hidden, token) => rnnCell(hidden, embed(token)), h0)"
     tier: structural
-    breaks: "`reduce` folds with a pure function YOU define. An RNN step folds with a LEARNED cell that has trainable weights, an activation, and a hidden state vector — the cell behavior changes per training run. The fold shape transfers; the cell content is opaque and stochastic."
+    breaks: "`reduce` folds with a pure function YOU define. An RNN step folds with a LEARNED cell that has trainable weights, an activation, and a hidden state vector; the cell behavior changes per training run. The fold shape transfers; the cell content is opaque and stochastic."
 consequence:
   narrative: "Diagnostic One can now process clinical notes sequentially, understanding that 'denied' before 'pain' negates the symptom."
   nextLessonTeaser: "Next: why simple RNNs struggle with long sequences — the vanishing gradient problem."
@@ -47,7 +47,7 @@ Sure. Like summing an array: `[1,2,3].reduce((sum, n) => sum + n, 0)`. Each step
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-An RNN is exactly that. Start with an initial hidden state, process each token, accumulate context. By the time you've read "patient denied chest pain," the hidden state encodes the full meaning — including the negation.
+An RNN is exactly that. Start with an initial hidden state, process each token, accumulate context. By the time you've read "patient denied chest pain," the hidden state encodes the full meaning, including the negation.
 </Dialogue>
 
 <Dialogue speaker="MEDI">

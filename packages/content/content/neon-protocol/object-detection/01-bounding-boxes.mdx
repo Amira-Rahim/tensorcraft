@@ -7,10 +7,10 @@ order: 1
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Amir pulls up a stolen Meridian schematic on the NeuralCore holotable. It shows how their drones represent detected targets — not as pixel masks, but as simple rectangles. 'Every detection system starts with a box,' he says. 'And you already know how boxes work.'"
+  narrative: "Amir pulls up a stolen Meridian schematic on the NeuralCore holotable. It shows how their drones represent detected targets: not as pixel masks, but as simple rectangles. 'Every detection system starts with a box,' he says. 'And you already know how boxes work.'"
   speaker: "Amir"
 concept:
-  explanation: "Object detection models locate objects by predicting bounding boxes — rectangular regions defined by coordinates. This is identical to how CSS position: absolute and getBoundingClientRect() define element locations on a page."
+  explanation: "Object detection models locate objects by predicting bounding boxes, rectangular regions defined by coordinates. This is identical to how CSS position: absolute and getBoundingClientRect() define element locations on a page."
   bridge:
     feTitle: "getBoundingClientRect()"
     feCode: "const rect = element.getBoundingClientRect(); // { x, y, width, height }"
@@ -18,11 +18,11 @@ concept:
     mlCode: "const bbox = [x, y, width, height]; // normalized 0-1 coordinates"
     tier: identity
 consequence:
-  narrative: "Noor stares at the schematic. 'So a detection model is basically returning a DOMRect for every object it finds?' Amir nods. 'Exactly. Meridian spent billions building what is, at its core, a very expensive getBoundingClientRect().'"
-  nextLessonTeaser: "Next: anchor boxes — pre-defined detection regions that speed up the search"
+  narrative: "Noor stares at the schematic. 'So a detection model is basically returning a DOMRect for every object it finds?' Amir nods. 'Meridian spent billions building what is, at its core, a very expensive getBoundingClientRect().'"
+  nextLessonTeaser: "Next: anchor boxes. Pre-defined detection regions that speed up the search"
 hints:
   - level: nudge
-    content: "A bounding box is just an object with x, y, width, and height — same as a DOMRect"
+    content: "A bounding box is just an object with x, y, width, and height, same as a DOMRect"
   - level: guidance
     content: "Normalize coordinates by dividing by image dimensions so values fall between 0 and 1"
   - level: solution
@@ -35,18 +35,18 @@ keywords:
 ---
 
 <Dialogue speaker="Amir">
-I spent six years at Meridian building their drone vision pipeline. Every frame, every detection — it all starts with a bounding box. Four numbers that say: "there is something here." You've used getBoundingClientRect() a thousand times. Same concept. Meridian just does it with neural networks instead of the DOM.
+I spent six years at Meridian building their drone vision pipeline. Every frame, every detection. It all starts with a bounding box. Four numbers that say: "there is something here." You've used getBoundingClientRect() a thousand times. Same concept. Meridian just does it with neural networks instead of the DOM.
 </Dialogue>
 
 <Dialogue speaker="Noor">
-Wait — their multi-billion credit surveillance system outputs the same data structure as me checking if a tooltip overflows the viewport?
+Wait. Their multi-billion credit surveillance system outputs the same data structure as me checking if a tooltip overflows the viewport?
 </Dialogue>
 
 <Dialogue speaker="Amir">
 The same four numbers. X, Y, width, height. The difference is how you get them.
 </Dialogue>
 
-In frontend development, you locate elements with `getBoundingClientRect()`. In object detection, a neural network predicts the same kind of rectangle — a **bounding box** — for every object it finds in an image. The representation is identical. The only difference is that ML uses normalized coordinates (0 to 1) instead of pixel values.
+Call `getBoundingClientRect()` on a tooltip and you get `{ x: 120, y: 80, width: 60, height: 40 }`. Run a detection model on a surveillance frame and you get `[0.19, 0.17, 0.09, 0.08]`. Same rectangle, same four numbers, one difference: the model's coordinates are normalized to the 0-1 range instead of pixels. Every object the network finds in an image comes back as one of these rectangles, a **bounding box**.
 
 <LearningObjectives objectives={["Understand bounding boxes as the fundamental representation of object locations", "Convert between pixel coordinates and normalized coordinates", "Calculate bounding box area and center points", "Recognize the direct parallel between DOMRect and ML bounding boxes"]} />
 
@@ -54,7 +54,7 @@ In frontend development, you locate elements with `getBoundingClientRect()`. In 
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-In the DOM, every element has a position described by a rectangle. Object detection models do the exact same thing — but for objects in images.
+A detection model outputs one rectangle per object it finds, plus a label and a confidence score for each.
 
 <CodeBlock language="typescript" title="bounding-box-basics.ts">
 {`// Frontend: you already know this
@@ -89,7 +89,7 @@ const detection: BoundingBox = {
 
 ## Why Normalize?
 
-Normalization makes bounding boxes resolution-independent — just like using percentages instead of pixels in CSS.
+Normalization makes bounding boxes resolution-independent. The same box description works on a 640px preview and a 4K feed.
 
 <CodeBlock language="typescript" title="coordinate-conversion.ts">
 {`// Convert pixel coordinates to normalized (0-1) coordinates
@@ -137,7 +137,7 @@ console.log(displayBox);
 
 ## Box Formats
 
-Detection models use different box formats. You need to convert between them — just like converting between different coordinate systems in CSS.
+Detection models use different box formats. YOLO emits center-based boxes, COCO annotations use corner-plus-size, and evaluation code usually wants two corners. You convert between them constantly.
 
 <CodeBlock language="typescript" title="box-formats.ts">
 {`// Format 1: [x, y, width, height] — "xywh" (top-left corner + size)
@@ -187,4 +187,4 @@ Build functions to create and convert bounding boxes.
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Bounding boxes are the ML equivalent of DOMRect — four numbers that locate an object", "Normalized coordinates (0-1) make boxes resolution-independent, like CSS percentages", "Detection models output boxes in different formats (xywh, cxcywh, xyxy) that you convert between", "getBoundingClientRect() and model.predict() return fundamentally the same data structure"]} />
+<KeyTakeaways takeaways={["A bounding box is four numbers plus a label and a confidence score; the confidence is what makes it a prediction rather than a measurement", "Normalized coordinates (0-1) make boxes resolution-independent across feed sizes", "Detection models output boxes in different formats (xywh, cxcywh, xyxy) that you convert between", "getBoundingClientRect() and model.predict() return fundamentally the same data structure"]} />

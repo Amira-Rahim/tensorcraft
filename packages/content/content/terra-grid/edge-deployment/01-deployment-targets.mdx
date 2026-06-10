@@ -10,24 +10,24 @@ context:
   narrative: "Tariq surveys the hardware manifest for Sector 7. ARM Cortex-A53 processors, 512MB RAM, intermittent satellite connectivity. Every device is different."
   speaker: "Tariq Hussain"
 concept:
-  explanation: "Edge hardware diversity mirrors browser diversity — you must test and optimize for the weakest target in your fleet, just like supporting IE11 alongside Chrome."
+  explanation: "Edge hardware diversity mirrors browser diversity: you must test and optimize for the weakest target in your fleet, just like supporting IE11 alongside Chrome."
   bridge:
     feTitle: "Cross-Browser Testing"
     feCode: "if (!('IntersectionObserver' in window)) { loadPolyfill(); }"
     mlTitle: "Edge Hardware Detection"
     mlCode: "if (device.ram < 256) { loadLiteModel(); }"
     tier: structural
-    breaks: "Cross-browser testing checks against documented compatibility tables. Edge hardware detection must determine NPU presence, supported ops, available memory, and thermal headroom — many capabilities require running probes, not reading a user-agent string."
+    breaks: "Cross-browser testing checks against documented compatibility tables. Edge hardware detection must determine NPU presence, supported ops, available memory, and thermal headroom. Many capabilities require running probes, not reading a user-agent string."
 consequence:
   narrative: "Tariq maps the hardware landscape. Three tiers: high-power substations, mid-range sensors, low-power remote monitors."
   nextLessonTeaser: "Next: packaging models for these diverse targets"
 hints:
   - level: nudge
-    content: "Think about how you detect browser capabilities before rendering"
+    content: "profileDevice() plays the role of feature detection: read RAM, CPU, and connectivity off the DeviceProfile before picking a model tier"
   - level: guidance
     content: "Create a device profile that maps hardware specs to model variants"
   - level: solution
-    content: "Match RAM, CPU, and connectivity to model tiers — full, medium, lite — like serving different bundles per browser capability"
+    content: "Match RAM, CPU, and connectivity to model tiers (full, medium, lite), like serving different bundles per browser capability"
 keywords:
   - edge-hardware
   - deployment-targets
@@ -43,7 +43,7 @@ Once I deploy a model here, I can't just SSH in and fix it. The update has to wo
 Sector 7 hardware manifest loaded. 847 devices across 3 tiers. ARM Cortex-A53 (412 units), ARM Cortex-A72 (298 units), x86 edge servers (137 units). RAM ranges from 256MB to 4GB.
 </Dialogue>
 
-You have shipped frontend code to Safari, Firefox, Chrome, and that one customer still running IE11. You know the pain of hardware diversity. Edge ML deployment is the same problem — different processors, different memory, different capabilities — and the same solution: detect, adapt, degrade gracefully.
+The first fleet-wide model push at Terra Systems went out before anyone profiled the hardware. The artifact loaded cleanly on the 137 x86 edge servers, crawled on the Cortex-A72 gateways, and refused to start on the 412 Cortex-A53 units running 256MB of RAM. One artifact, three outcomes. You have lived this problem before, shipping to Safari, Firefox, Chrome, and that one customer still on IE11, and the solution carries over intact: detect, adapt, degrade gracefully.
 
 <LearningObjectives objectives={["Map edge hardware diversity to browser compatibility testing concepts", "Profile deployment targets by CPU, RAM, and connectivity constraints", "Design tiered model deployment strategies for heterogeneous device fleets", "Implement capability detection to select the right model variant per device"]} />
 
@@ -51,7 +51,7 @@ You have shipped frontend code to Safari, Firefox, Chrome, and that one customer
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-In frontend development, you use feature detection to serve the right experience. Edge deployment uses the same pattern — but instead of checking for `IntersectionObserver`, you check for available RAM and compute.
+In frontend development, you use feature detection to serve the right experience. Edge deployment uses the same pattern, but instead of checking for `IntersectionObserver`, you check for available RAM and compute.
 
 <CodeBlock language="typescript" title="device-profiling.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -122,4 +122,4 @@ Analyze a fleet of edge devices and assign the correct model variant to each.
 
 <Exercise slug="target-analysis" />
 
-<KeyTakeaways takeaways={["Edge hardware diversity mirrors browser diversity — profile targets and adapt", "Device profiling maps RAM, CPU, and connectivity to model tiers, like feature detection selects polyfills", "Constraint budgets for edge devices parallel performance budgets in frontend — model size is your bundle size", "Graceful degradation means every device gets the best model it can run, not a one-size-fits-all deployment"]} />
+<KeyTakeaways takeaways={["Sector 7 spans 847 devices across three hardware tiers, from 256MB to 4GB of RAM; profile every tier before assigning models", "Device profiling maps RAM, CPU, and connectivity to model tiers, like feature detection selects polyfills", "Set a per-tier budget before choosing models: available RAM caps parameter count, storage caps artifact size", "Graceful degradation means every device gets the best model it can run, not a one-size-fits-all deployment"]} />

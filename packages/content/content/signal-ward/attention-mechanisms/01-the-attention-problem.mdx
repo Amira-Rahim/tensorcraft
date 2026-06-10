@@ -17,13 +17,13 @@ concept:
     mlTitle: "Attention Weight"
     mlCode: "const weight = tf.softmax(scores); // model highlights key tokens"
     tier: structural
-    breaks: "CSS :focus + tabIndex moves focus to one element at a time. Attention weights are continuous over all tokens and computed per query — every token attends to every other token in parallel, not as a single focus point."
+    breaks: "CSS :focus + tabIndex moves focus to one element at a time. Attention weights are continuous over all tokens and computed per query: every token attends to every other token in parallel, not as a single focus point."
 consequence:
-  narrative: "Khalil realizes that weighting matters — not every word in a clinical note is equally important."
+  narrative: "Khalil realizes that weighting matters: not every word in a clinical note is equally important."
   nextLessonTeaser: "Next: self-attention, where every word learns to attend to every other word."
 hints:
   - level: nudge
-    content: "Think about how softmax normalizes values to sum to 1"
+    content: "tf.softmax turns your raw scores into weights that sum to 1; compute the scores first"
   - level: guidance
     content: "Compute a dot product between a query and each key, then apply softmax"
   - level: solution
@@ -40,14 +40,14 @@ Khalil, read this clinical note: "The patient was prescribed methotrexate for rh
 </Dialogue>
 
 <Dialogue speaker="Khalil">
-"Methotrexate" and "rheumatoid arthritis" — the drug and what it's treating. The rest is context.
+"Methotrexate" and "rheumatoid arthritis": the drug and what it's treating. The rest is context.
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-Exactly. Your brain just performed attention. Our sequence models treat every word with roughly equal importance. That's like tabbing through every element on a page instead of jumping to the one that matters.
+And you did that without reading every word with equal care. Our sequence models can't do that yet. They treat every word with roughly equal importance, like tabbing through every element on a page instead of jumping to the one that matters.
 </Dialogue>
 
-In frontend development, you use CSS `:focus` and `tabIndex` to direct the user's attention to what matters. Attention mechanisms do the same thing for neural networks — they learn which parts of the input to focus on.
+CSS `:focus` moves focus to one element at a time, all or nothing. An attention mechanism is softer: it spreads continuous weight across every token at once and learns where the weight should go.
 
 <LearningObjectives objectives={["Understand why uniform weighting fails for clinical text", "Compute attention scores using dot products", "Apply softmax to normalize scores into attention weights", "Use attention weights to create a weighted representation"]} />
 
@@ -55,7 +55,7 @@ In frontend development, you use CSS `:focus` and `tabIndex` to direct the user'
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-Our LSTM from Module 4 processes each word sequentially, compressing the entire sentence into a single hidden state. That's like trying to summarize a patient's entire medical history in one sentence — you inevitably lose critical details.
+Our LSTM from Module 4 processes each word sequentially, compressing the entire sentence into a single hidden state. That's like trying to summarize a patient's entire medical history in one sentence. You inevitably lose critical details.
 
 Consider: "Patient denied chest pain but reported shortness of breath." If the model treats "denied" and "reported" with equal weight, it might confuse which symptom is present and which is absent.
 
@@ -86,7 +86,7 @@ const attended = tf.matMul(
 console.log('Attended vector shape:', attended.shape);`}
 </CodeBlock>
 
-The dot product measures similarity between the query and each hidden state. Words that match what we're looking for get higher scores. Softmax turns those scores into a probability distribution — a set of weights that sum to 1.
+The dot product measures similarity between the query and each hidden state. Words that match what we're looking for get higher scores. Softmax turns those scores into a probability distribution, a set of weights that sum to 1.
 
 ## Why This Matters Clinically
 
@@ -112,4 +112,4 @@ The attention output is a weighted sum of values:
 `Attention(Q, K, V) = softmax(Q · Kᵀ / √d_k) · V`
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["Attention lets models focus on relevant parts of input, like CSS :focus directs user attention", "Dot product similarity measures how well each input matches a query", "Softmax normalizes raw scores into weights that sum to 1", "Weighted combination produces a context-aware representation"]} />
+<KeyTakeaways takeaways={["An LSTM compresses a whole note into one hidden state; attention keeps every token reachable through learned weights", "Dot product similarity measures how well each input matches a query", "Softmax normalizes raw scores into weights that sum to 1", "Weighted combination produces a context-aware representation"]} />

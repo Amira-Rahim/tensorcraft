@@ -36,14 +36,14 @@ skillAxes: [model_arch]
 ---
 
 <Dialogue speaker="Dr. Farah">
-The LSTM must process time steps sequentially — step 1, then 2, then 3. It cannot skip ahead. But what if the relevant pattern is at step 5 and step 72? Attention lets the model look at all steps simultaneously and focus on what matters.
+The LSTM must process time steps sequentially: step 1, then 2, then 3. It can't skip ahead. But what if the relevant pattern is at step 5 and step 72? Attention lets the model look at all steps simultaneously and focus on what matters.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
-Like CSS :focus — instead of styling every element equally, you highlight just the one that's active. Attention highlights the time steps that are most relevant to the current prediction.
+Like CSS :focus. Instead of styling every element equally, you highlight just the one that's active. Attention highlights the time steps that are most relevant to the current prediction.
 </Dialogue>
 
-When a user tabs through a form, CSS `:focus` moves to the active element. The browser doesn't re-render every element — it identifies which one matters and highlights it. Attention mechanisms do the same thing for sequences: instead of processing every time step equally, they compute relevance scores and focus compute on what matters.
+When a user tabs through a form, CSS `:focus` moves to the active element. The browser doesn't re-render every element; it identifies which one matters and highlights it. Attention mechanisms do the same thing for sequences: instead of processing every time step equally, they compute relevance scores and focus compute on what matters.
 
 <LearningObjectives objectives={["Understand attention as dynamic relevance scoring — focusing on what matters", "Learn the Query-Key-Value framework for computing attention weights", "Compare attention with LSTM: parallel vs sequential, global vs local context", "Implement a simple attention mechanism in TensorFlow.js"]} />
 
@@ -126,4 +126,4 @@ Implement a simple attention mechanism over a sequence.
 
 <Exercise slug="simple-attention" />
 
-<KeyTakeaways takeaways={["Attention computes relevance scores for each position, then focuses on the important ones — like CSS :focus", "Query-Key-Value: the query asks what to look for, keys are candidates, values carry the information", "Attention processes all time steps in parallel — much faster than LSTM's sequential approach", "Attention weights are interpretable — you can see exactly which time steps the model focuses on"]} />
+<KeyTakeaways takeaways={["On the 80-step DEEP SCAN window, attention scores every position at once and runs ~10x faster than the step-by-step LSTM", "Query-Key-Value: the query asks what to look for, keys are candidates, values carry the information", "Attention processes all time steps in parallel — much faster than LSTM's sequential approach", "Attention weights are interpretable — you can see exactly which time steps the model focuses on"]} />

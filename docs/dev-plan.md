@@ -1167,6 +1167,13 @@ Historical placeholder-link inventory (prototypes deleted; links now embedded in
 | purchase_completed | Stripe checkout success | tier, amount, themeIds, pppDiscount |
 | refund_requested | User requests refund | purchaseId, reason |
 
+### Onboarding Funnel Events
+
+| Event | Trigger | Properties |
+| --- | --- | --- |
+| onboarding_step_viewed | Wizard step renders (mount + advance/back) | step (1–4), stepName |
+| onboarding_completed | Final submit succeeds on Ready step | experienceLevel, learningGoal, framework?, yearsExperience? |
+
 ### Engagement Events
 
 | Event | Trigger | Properties |

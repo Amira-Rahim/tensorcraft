@@ -17,13 +17,13 @@ concept:
     mlTitle: "Sampling Strategy"
     mlCode: "const sample = tf.randomNormal([1, 100], 0, 1)"
     tier: structural
-    breaks: "Seeded random produces reproducible draws from a known distribution. Sampling from generative models involves temperature, top-k, top-p, and beam search — different strategies optimize for different output qualities and the same seed under different strategies produces different outputs."
+    breaks: "Seeded random produces reproducible draws from a known distribution. Sampling from generative models involves temperature, top-k, top-p, and beam search. Different strategies optimize for different output qualities and the same seed under different strategies produces different outputs."
 consequence:
-  narrative: "Samir grasps that generation is not magic — it is structured sampling from learned distributions."
+  narrative: "Samir grasps that generation is not magic. It is structured sampling from learned distributions."
   nextLessonTeaser: "Next: using noise as the raw material for creation"
 hints:
   - level: nudge
-    content: "Sampling is just picking values from a distribution — like rolling dice with specific probabilities"
+    content: "Sampling is just picking values from a distribution, like rolling dice with specific probabilities"
   - level: guidance
     content: "Use tf.randomNormal() to sample from a Gaussian, then apply transformations"
   - level: solution
@@ -36,14 +36,14 @@ keywords:
 ---
 
 <Dialogue speaker="Rohan">
-Listen to this. Every note in this soundscape was sampled from a probability distribution I designed. High notes are rare — low probability. Bass tones are common — high probability. The distribution is the composition. Sampling is the performance.
+Listen to this. Every note in this soundscape was sampled from a probability distribution I designed. High notes are rare: low probability. Bass tones are common: high probability. The distribution is the composition. Sampling is the performance.
 </Dialogue>
 
 <Dialogue speaker="MUSE">
-To sample is to reach into possibility and pull out a single truth.
+Run me twice on the same distribution and you'll hear two different soundscapes. At temperature 0.1 the softmax puts 0.9999 on a single note and they'd be nearly identical. We could sweep from 0.1 up to 5.0 and listen for where it stops sounding like music.
 </Dialogue>
 
-In frontend development, you call `Math.random()` and get a number. That is sampling from a uniform distribution. But generative AI needs more control — sampling from specific distributions, at specific temperatures, with reproducible seeds.
+In frontend development, you call `Math.random()` and get a number. That is sampling from a uniform distribution. But generative AI needs more control: sampling from specific distributions, at specific temperatures, with reproducible seeds.
 
 <LearningObjectives objectives={["Understand sampling as drawing values from distributions", "Implement different sampling strategies in TensorFlow.js", "Control randomness with temperature scaling", "Use seeded randomness for reproducible generation"]} />
 
@@ -110,7 +110,7 @@ const standard = sampleWithTemperature(logits, 1.0);
 const creative = sampleWithTemperature(logits, 5.0);`}
 </CodeBlock>
 
-Think of temperature like a thermostat for creativity. Rohan uses it in his audio: low temperature for predictable rhythms, high temperature for experimental noise.
+Temperature is a thermostat for creativity. Rohan uses it in his audio: low temperature for predictable rhythms, high temperature for experimental noise.
 
 ## Challenge
 

@@ -7,10 +7,10 @@ order: 3
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Sector 5 inputs look normal. No data drift detected. But accuracy is silently dropping — the relationship between inputs and correct outputs has changed."
+  narrative: "Sector 5 inputs look normal. No data drift detected. But accuracy is silently dropping. The relationship between inputs and correct outputs has changed."
   speaker: "Hassan Al-Rashid"
 concept:
-  explanation: "Model drift (concept drift) means the relationship between inputs and outputs has changed — like visual regression where the CSS looks correct but the rendered result is wrong."
+  explanation: "Model drift (concept drift) means the relationship between inputs and outputs has changed, like visual regression where the CSS looks correct but the rendered result is wrong."
   bridge:
     feTitle: "Visual Regression Testing"
     feCode: "expect(screenshot).toMatchSnapshot() // output changed despite same inputs"
@@ -22,11 +22,11 @@ consequence:
   nextLessonTeaser: "Next: configuring alerts that tell you when drift crosses actionable thresholds"
 hints:
   - level: nudge
-    content: "Think about how visual regression tests catch UI changes that unit tests miss"
+    content: "ModelDriftDetector needs delayed ground truth: store PredictionRecords now, score them when the true labels arrive"
   - level: guidance
     content: "Track prediction accuracy over time using delayed ground truth labels"
   - level: solution
-    content: "Compare rolling accuracy and prediction distribution against baselines — flag gradual degradation"
+    content: "Compare rolling accuracy and prediction distribution against baselines, then flag gradual degradation"
 keywords:
   - model-drift
   - concept-drift
@@ -42,7 +42,7 @@ Sector 5 inputs look perfectly normal. No feature drift. No schema changes. But 
 Concept drift. The relationship between inputs and the correct answer has changed. The model learned that a certain temperature-pressure combination means "normal." But now, with summer heat, that same combination means "warning."
 </Dialogue>
 
-Visual regression testing catches a subtle but important class of bugs: the code is correct, the inputs are valid, but the output looks wrong. A CSS change shifted a button 3px left. The screenshot diff catches it. Model drift is the same — inputs look fine, the model runs correctly, but predictions are quietly degrading because the underlying patterns have shifted.
+Visual regression testing catches a subtle but important class of bugs: the code is correct, the inputs are valid, but the output looks wrong. A CSS change shifted a button 3px left. The screenshot diff catches it. Model drift is the same: inputs look fine, the model runs correctly, but predictions are quietly degrading because the underlying patterns have shifted.
 
 <LearningObjectives objectives={["Distinguish model drift (concept drift) from data drift — same inputs, different correct answers", "Implement prediction distribution monitoring to detect silent accuracy degradation", "Use delayed ground truth to measure actual vs predicted accuracy over time", "Recognize seasonal and temporal patterns that cause concept drift"]} />
 
@@ -154,4 +154,4 @@ You are the on-call engineer when the prediction-distribution drift alarm fires 
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Model drift means the correct answers changed — same inputs, different ground truth, like a visual regression from a design system update", "Data drift is detectable immediately (input stats change); model drift requires ground truth labels that often arrive delayed", "Prediction distribution monitoring catches drift even before ground truth arrives — if the model suddenly predicts more 'critical' events, investigate", "Seasonal patterns are a common cause of concept drift in industrial systems — build temporal awareness into your monitoring"]} />
+<KeyTakeaways takeaways={["Model drift means the correct answers changed: same inputs, different ground truth, so accuracy decays while inputs still look normal", "Data drift is detectable immediately (input stats change); model drift requires ground truth labels that often arrive delayed", "Prediction distribution monitoring catches drift even before ground truth arrives — if the model suddenly predicts more 'critical' events, investigate", "Seasonal patterns are a common cause of concept drift in industrial systems — build temporal awareness into your monitoring"]} />

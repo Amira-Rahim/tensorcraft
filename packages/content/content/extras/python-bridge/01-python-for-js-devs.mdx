@@ -7,26 +7,26 @@ order: 1
 estimatedMinutes: 20
 difficulty: beginner
 context:
-  narrative: "You're about to read ML code written in Python. Before you panic — don't. If you know JavaScript, you already know 90% of Python. The syntax is different, but the logic is identical."
+  narrative: "You're about to read ML code written in Python. Before you panic: don't. If you know JavaScript, you already know 90% of Python. The syntax is different, but the logic is identical."
 concept:
-  explanation: "Python syntax maps directly to JavaScript syntax — indentation replaces braces, list comprehensions replace map/filter, and everything else is a 1:1 translation."
+  explanation: "Python syntax maps directly to JavaScript syntax: indentation replaces braces, list comprehensions replace map/filter, and everything else is a 1:1 translation."
   bridge:
     feTitle: "JavaScript Syntax"
     feCode: "const items = arr.filter(x => x > 0).map(x => x * 2)"
     mlTitle: "Python Syntax"
     mlCode: "items = [x * 2 for x in arr if x > 0]"
     tier: structural
-    breaks: "JavaScript and Python both have async I/O and dynamic typing — but Python's GIL serializes CPU work, indentation defines blocks, and the package ecosystem (pip, conda, virtualenv) is fragmented in ways npm is not."
+    breaks: "JavaScript and Python both have async I/O and dynamic typing, but Python's GIL serializes CPU work, indentation defines blocks, and the package ecosystem (pip, conda, virtualenv) is fragmented in ways npm is not."
 consequence:
-  narrative: "You can now read Python ML code without a translator. The syntax differences are cosmetic — the logic you already know carries over completely."
+  narrative: "Python files should parse in your head now: indentation for braces, comprehensions for map/filter, def for function. Next stop is a screen full of np.array calls. Same drill."
   nextLessonTeaser: "Next: NumPy arrays are just TypedArrays with superpowers"
 hints:
   - level: nudge
-    content: "Think about how arrow functions map to Python's lambda and def"
+    content: "x => x * 2 in JavaScript is lambda x: x * 2 in Python; anything with a body becomes def"
   - level: guidance
     content: "JavaScript's const/let becomes plain variable assignment in Python"
   - level: solution
-    content: "Most JS patterns have a direct Python equivalent — the shape of the logic is identical"
+    content: "Most JS patterns have a direct Python equivalent; the shape of the logic is identical"
 keywords:
   - python
   - syntax
@@ -35,10 +35,10 @@ keywords:
 ---
 
 <Dialogue speaker="Instructor">
-You already know how to program. You think in functions, loops, conditionals, and data structures every day. Python isn't a new language to learn — it's a new accent on concepts you already own.
+You already know how to program. You think in functions, loops, conditionals, and data structures every day. Python spells those same things differently, and the new spelling is most of what this lesson covers.
 </Dialogue>
 
-Every ML tutorial, research paper, and reference implementation you'll encounter is written in Python. You don't need to become a Python developer. You need to read Python the way you read TypeScript even if you mostly write JavaScript — fluently enough to understand what's happening.
+Every ML tutorial, research paper, and reference implementation you'll encounter is written in Python. You don't need to become a Python developer. You need to read Python the way you read TypeScript even if you mostly write JavaScript: fluently enough to understand what's happening.
 
 <LearningObjectives objectives={["Read Python syntax and mentally translate it to JavaScript", "Understand indentation-based scoping vs. brace-based scoping", "Map list comprehensions to Array.map/filter chains", "Recognize Python classes, type hints, and import patterns"]} />
 
@@ -73,7 +73,7 @@ Line for line, the logic is identical. The differences are cosmetic: `function` 
 
 ## Variables and Types
 
-Python has no `const`, `let`, or `var`. You just assign. Type hints exist but are optional — like TypeScript annotations that never get enforced at runtime.
+Python has no `const`, `let`, or `var`. You just assign. Type hints exist but are optional, like TypeScript annotations that never get enforced at runtime.
 
 <CodeBlock language="python" title="python-types.py">
 {`# Python
@@ -158,4 +158,4 @@ Time to put the translation to work. Read Python code and write the JavaScript e
 
 <Exercise slug="translate-python" />
 
-<KeyTakeaways takeaways={["Python syntax is a 1:1 translation of JavaScript — same logic, different punctuation", "Indentation replaces braces, def replaces function, self replaces this", "List comprehensions are compact map/filter chains — read them right to left", "You don't need to write Python — you need to read it fluently"]} />
+<KeyTakeaways takeaways={["Python syntax is a 1:1 translation of JavaScript: same logic, different punctuation", "Indentation replaces braces, def replaces function, self replaces this", "List comprehensions are compact map/filter chains; read them right to left", "You don't need to write Python, you need to read it fluently"]} />

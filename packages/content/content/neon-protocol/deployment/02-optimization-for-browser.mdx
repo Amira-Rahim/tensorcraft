@@ -7,10 +7,10 @@ order: 2
 estimatedMinutes: 30
 difficulty: intermediate
 context:
-  narrative: "Dilan reports from District 4: Protocol Sentinel takes 12 seconds to load on her device. Amir runs the numbers — 45MB of weights. For a resistance network running on salvaged hardware, that is a death sentence. NEON: 'Trim the fat. Keep the signal.'"
+  narrative: "Dilan reports from District 4: Protocol Sentinel takes 12 seconds to load on her device. Amir runs the numbers: 45MB of weights. For a resistance network running on salvaged hardware, that is a death sentence. NEON: 'Trim the fat. Keep the signal.'"
   speaker: "Amir"
 concept:
-  explanation: "Model optimization for the browser is like webpack tree-shaking for neural networks. Tree-shaking removes unused code paths to shrink your bundle. Quantization and pruning remove unnecessary precision and redundant connections to shrink your model — same goal, same intuition, different domain."
+  explanation: "Model optimization for the browser is like webpack tree-shaking for neural networks. Tree-shaking removes unused code paths to shrink your bundle. Quantization and pruning remove unnecessary precision and redundant connections to shrink your model. Same goal, same intuition, different domain."
   bridge:
     feTitle: "Webpack Tree-Shaking"
     feCode: "// webpack removes unused exports\nexport function used() { ... }\nexport function unused() { ... } // stripped in production"
@@ -22,7 +22,7 @@ consequence:
   nextLessonTeaser: "Next: building the inference API so other resistance systems can call Sentinel"
 hints:
   - level: nudge
-    content: "Quantization reduces float32 weights to float16 or uint8 — halving or quartering the model size"
+    content: "Quantization reduces float32 weights to float16 or uint8, halving or quartering the model size"
   - level: guidance
     content: "Use tf.io.withSaveHandler to apply quantization during export. For pruning, zero out weights below a threshold and retrain briefly."
   - level: solution
@@ -81,7 +81,7 @@ await model.save('downloads://sentinel-q8', {
 
 ## Weight Pruning
 
-Pruning zeros out weights that are close to zero — they contribute almost nothing to the model's decisions. After pruning, you retrain briefly to recover any lost accuracy.
+Pruning zeros out weights that are close to zero; they contribute almost nothing to the model's decisions. After pruning, you retrain briefly to recover any lost accuracy.
 
 <CodeBlock language="typescript" title="pruning.ts">
 {`import * as tf from '@tensorflow/tfjs';

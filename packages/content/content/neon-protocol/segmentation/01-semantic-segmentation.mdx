@@ -18,8 +18,8 @@ concept:
     mlCode: "const mask = model.predict(image); // [H, W, numClasses]"
     tier: structural
 consequence:
-  narrative: "The feed transforms. Instead of boxes, every pixel glows with color — roads blue, buildings green, people red, drones orange. Zara nods. 'Now you are not just detecting. You are understanding the entire scene.'"
-  nextLessonTeaser: "Next: instance segmentation — telling apart individual objects, not just categories"
+  narrative: "The feed transforms. Instead of boxes, every pixel glows with color: roads blue, buildings green, people red, drones orange. Zara nods. 'Now you are not just detecting. You are understanding the entire scene.'"
+  nextLessonTeaser: "Next: instance segmentation. Telling apart individual objects, not just categories"
 hints:
   - level: nudge
     content: "A segmentation mask has the same height and width as the input image, but each pixel holds a class index instead of a color"
@@ -43,7 +43,7 @@ A bounding box tells you "there is a drone here." But it cannot tell you the sha
 So instead of outputting a rectangle, the model outputs a full-resolution map where every pixel is labeled?
 </Dialogue>
 
-That is exactly right. In CSS, you use `clip-path` to define complex regions that determine which parts of an element are visible. Semantic segmentation does the same thing for an image — it partitions every pixel into a named region. The output is a **segmentation mask**: a tensor with the same height and width as the input, where each value is a class label.
+Close, with one difference that matters. When you write `clip-path`, you author the polygon; the region is exactly where you declared it. A segmentation model predicts its regions pixel by pixel, and it can be wrong about any of them. The output is a **segmentation mask**: a tensor with the same height and width as the input, where each value is a class label the model chose, not one you declared.
 
 <LearningObjectives objectives={["Understand semantic segmentation as per-pixel classification", "Build a segmentation mask tensor from model output", "Map class indices to visual colors for display", "Recognize the structural parallel between CSS clip-path regions and segmentation masks"]} />
 
@@ -51,7 +51,7 @@ That is exactly right. In CSS, you use `clip-path` to define complex regions tha
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-With `clip-path`, you define polygon regions that carve out visible areas of an element. A segmentation model does this for every object category in the image — roads, buildings, people, sky — producing a dense map of non-overlapping regions.
+With `clip-path`, you define polygon regions that carve out visible areas of an element. A segmentation model does this for every object category in the image (roads, buildings, people, sky), producing a dense map of non-overlapping regions.
 
 <CodeBlock language="typescript" title="semantic-segmentation.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -76,7 +76,7 @@ console.log(mask.shape); // [224, 224] — one class index per pixel
 
 ## Visualizing Masks
 
-To render the segmentation mask, map each class index to a color — exactly like applying a color-coded `clip-path` overlay.
+To render the segmentation mask, map each class index to a color and draw it as a semi-transparent overlay.
 
 <CodeBlock language="typescript" title="mask-visualization.ts">
 {`// Color palette for each class
@@ -121,7 +121,7 @@ Build a function that converts raw segmentation logits into a class-index mask.
 <DerivationDrawer summary="Pixel-wise softmax + class-balanced cross-entropy">
 **Semantic segmentation output:** per-pixel class predictions. For input [H, W, 3], output is [H, W, num_classes] logits → softmax along channel axis → argmax = predicted class per pixel.
 
-**Loss function** — per-pixel cross-entropy summed over the image:
+**Loss function**: per-pixel cross-entropy summed over the image:
 
 `L = − Σ_{h, w} log(softmax(logits[h, w])[true_class[h, w]])`
 
@@ -150,4 +150,4 @@ Where γ ≥ 1 (typical 2). Down-weights easy examples (high p_true) → focuses
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Semantic segmentation assigns a class label to every pixel, producing a dense [H, W] mask", "Model output is [H, W, numClasses] — use argMax to pick the winning class per pixel", "Rendering a mask is like applying color-coded clip-path regions across the entire image", "This gives the resistance full scene understanding, not just object locations"]} />
+<KeyTakeaways takeaways={["Semantic segmentation assigns a class label to every pixel, producing a dense [H, W] mask", "Model output is [H, W, numClasses] — use argMax to pick the winning class per pixel", "Class imbalance is the standard failure: when background covers 90% of pixels, weight the loss per class or the model predicts background everywhere", "This gives the resistance full scene understanding, not just object locations"]} />

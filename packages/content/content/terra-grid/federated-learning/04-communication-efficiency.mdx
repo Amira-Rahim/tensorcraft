@@ -10,22 +10,22 @@ context:
   narrative: "Each federated round exchanges model weights across satellite links. Tariq calculates: 15 rounds x 3 participants x 4MB per update = 180MB at $0.50/MB. They need to compress the updates."
   speaker: "Tariq Hussain"
 concept:
-  explanation: "Efficient federated communication sends only what changed — like GraphQL requesting only needed fields instead of fetching entire resources."
+  explanation: "Efficient federated communication sends only what changed, like GraphQL requesting only needed fields instead of fetching entire resources."
   bridge:
     feTitle: "GraphQL Selective Queries"
     feCode: "query { user { name, email } } // request only needed fields"
     mlTitle: "Gradient Compression"
     mlCode: "sendTopKGradients(k=0.01) // send only significant updates"
     tier: structural
-    breaks: "GraphQL selective queries fetch only requested fields. Gradient compression in federated learning trades communication cost for convergence speed — too aggressive compression slows training; too little blows network budget. The tradeoff is empirical per setting."
+    breaks: "GraphQL selective queries fetch only requested fields. Gradient compression in federated learning trades communication cost for convergence speed. Too aggressive compression slows training; too little blows the network budget. The tradeoff is empirical per setting."
 consequence:
   narrative: "Communication cost drops from 180MB to 22MB per training cycle. The satellite budget holds."
   nextLessonTeaser: "Next: protecting individual updates during aggregation"
 hints:
   - level: nudge
-    content: "Think about how GraphQL reduces over-fetching compared to REST"
+    content: "A GraphQL query names only the fields it needs instead of fetching the whole resource. Sparsification names only the gradient values worth sending"
   - level: guidance
-    content: "Send only the gradient values that changed significantly — sparsify the updates"
+    content: "Send only the gradient values that changed significantly: sparsify the updates"
   - level: solution
     content: "Use top-K sparsification: sort gradients by magnitude, send only the top 1%, accumulate the rest locally"
 keywords:
@@ -43,7 +43,7 @@ Each weight update is 4MB. Fifteen rounds, three companies, that is 180MB of sat
 Most gradient values are near zero anyway. We can send only the top 1% and accumulate the rest for the next round. Ninety percent bandwidth savings.
 </Dialogue>
 
-A REST API returns the entire user object when you only need their name and email. GraphQL solves this by requesting only the fields you need — reducing payload by 80-90%. Federated learning has the same problem: most gradient values in an update are near zero and contribute almost nothing to learning. Gradient compression sends only the significant values.
+A REST API returns the entire user object when you only need their name and email. GraphQL solves this by requesting only the fields you need, reducing payload by 80-90%. Federated learning has the same problem: most gradient values in an update are near zero and contribute almost nothing to learning. Gradient compression sends only the significant values.
 
 <LearningObjectives objectives={["Understand the communication bottleneck in federated learning", "Implement top-K gradient sparsification to reduce update size by 90%+", "Use gradient quantization to reduce per-value precision", "Accumulate residuals to preserve information lost during compression"]} />
 
@@ -95,7 +95,7 @@ function topKSparsify(
 
 ## Residual Accumulation
 
-The remaining 99% of gradients are not thrown away — they accumulate locally and get sent in the next round when they become significant:
+The remaining 99% of gradients are not thrown away. They accumulate locally and get sent in the next round when they become significant:
 
 <CodeBlock language="typescript" title="residual-accumulation.ts">
 {`class EfficientFederatedClient {
@@ -137,4 +137,4 @@ Implement communication-efficient federated updates with gradient compression.
 
 <Exercise slug="efficient-updates" />
 
-<KeyTakeaways takeaways={["Most gradient values are near zero — sending only the top 1% reduces bandwidth by 98%, like GraphQL reduces over-fetching", "Residual accumulation preserves the 99% that was not sent — it gets included in future rounds when it becomes significant", "Gradient quantization (float32 to int8) provides an additional 4x compression on top of sparsification", "Communication efficiency makes federated learning practical on bandwidth-constrained links like satellite"]} />
+<KeyTakeaways takeaways={["Most gradient values are near zero; sending only the top 1% cuts update size by 98% before index overhead", "Residual accumulation preserves the 99% that was not sent — it gets included in future rounds when it becomes significant", "Gradient quantization (float32 to int8) provides an additional 4x compression on top of sparsification", "Communication efficiency makes federated learning practical on bandwidth-constrained links like satellite"]} />

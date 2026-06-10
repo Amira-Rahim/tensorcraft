@@ -7,23 +7,23 @@ order: 5
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Dilan halts the entire deployment. The adversarial patches work, the style transfer camouflage works, the generators produce convincing fakes — and that is exactly the problem. 'We deploy this responsibly or we do not deploy it at all. Every capability needs governance. Every output needs an audit trail.' She pulls up the model governance framework she has been building in parallel."
+  narrative: "Dilan halts the entire deployment. The adversarial patches work, the style transfer camouflage works, the generators produce convincing fakes. And that is exactly the problem. 'We deploy this responsibly or we do not deploy it at all. Every capability needs governance. Every output needs an audit trail.' She pulls up the model governance framework she has been building in parallel."
   speaker: "Dilan"
 concept:
-  explanation: "Model governance defines what a generative system is allowed to do, who can use it, and how outputs are tracked. It is the ML equivalent of Content Security Policy headers — explicit rules about what resources can be loaded, what scripts can execute, and what connections are permitted. Without governance, a powerful model is an open attack surface."
+  explanation: "Model governance defines what a generative system is allowed to do, who can use it, and how outputs are tracked. It is the ML equivalent of Content Security Policy headers: explicit rules about what resources can be loaded, what scripts can execute, and what connections are permitted. Without governance, a powerful model is an open attack surface."
   bridge:
     feTitle: "Content Security Policy Headers"
     feCode: "Content-Security-Policy: default-src 'self'; script-src 'self'; img-src 'self' data:; // Explicit allow-list"
     mlTitle: "Model Governance Policy"
     mlCode: "const policy = { allowedTargets: ['meridian-v3'], maxEpsilon: 0.03, requireAuditLog: true };"
     tier: structural
-    breaks: "CSP headers are declarative rules a browser enforces. Model governance policies are organizational processes that depend on humans following them — violations don't throw errors and many ethical failures (deepfakes, bias) cannot be blocked by a header."
+    breaks: "CSP headers are declarative rules a browser enforces. Model governance policies are organizational processes that depend on humans following them; violations don't throw errors and many ethical failures (deepfakes, bias) cannot be blocked by a header."
 consequence:
   narrative: "The governance framework passes review. Every patch is cryptographically signed and bound to Meridian's architecture fingerprints. Every generation is logged. Epsilon is capped. Zara nods: 'Art with accountability. I can live with that.' NEON: 'The most dangerous tools are the ones without constraints. Congratulations — you chose to build the constraints first.'"
   nextLessonTeaser: "Module complete. The generative vision arsenal is built, governed, and ready for deployment."
 hints:
   - level: nudge
-    content: "Think about CSP headers — they do not disable features, they constrain them to an explicit allow-list"
+    content: "Write the policy the way a CSP header reads, as an explicit allow-list: allowedTargets and maxEpsilon are your default-src"
   - level: guidance
     content: "A governance policy should specify: allowed targets, maximum perturbation strength, required logging, and output validation"
   - level: solution
@@ -37,15 +37,15 @@ keywords:
 ---
 
 <Dialogue speaker="Dilan">
-I am shutting this down until we have governance. Every capability you have built this module — generators, style transfer, adversarial patches — is dual-use. A patch that fools Meridian's cameras can fool medical imaging. A style transfer model that creates camouflage can create deepfakes. We need a Content Security Policy for our models.
+I am shutting this down until we have governance. Every capability you have built this module (generators, style transfer, adversarial patches) is dual-use. A patch that fools Meridian's cameras can fool medical imaging. A style transfer model that creates camouflage can create deepfakes. We need a Content Security Policy for our models.
 </Dialogue>
 
 <Dialogue speaker="Amir">
-CSP headers. Explicit allow-list for what scripts can run, what resources can load, what connections are permitted. You want the same thing for the model — an explicit policy for what it is allowed to generate and who it is allowed to target.
+CSP headers. Explicit allow-list for what scripts can run, what resources can load, what connections are permitted. You want the same thing for the model: an explicit policy for what it is allowed to generate and who it is allowed to target.
 </Dialogue>
 
 <Dialogue speaker="Dilan">
-Exactly. No wildcard permissions. No 'default allow.' Every operation goes through the governance layer. Every output gets logged. And the patches are cryptographically bound to Meridian's architecture fingerprints — useless against any other system.
+With one difference we do not get to ignore. CSP is enforced by the browser: break the policy and the script simply does not run. Our governance layer is enforced by us, and violations do not throw errors. So the rules have to be airtight and audited. No wildcard permissions. No 'default allow.' Every operation goes through the governance layer. Every output gets logged. And the patches are cryptographically bound to Meridian's architecture fingerprints, useless against any other system.
 </Dialogue>
 
 <Dialogue speaker="Zara">
@@ -268,4 +268,4 @@ Build a governance policy system that constrains model operations.
   tier="intuition"
 />
 
-<KeyTakeaways takeaways={["Model governance is CSP for ML — explicit allow-lists for what the model can do, not implicit 'allow all'", "Every operation should be audited: who ran it, what was the target, what were the parameters, was it approved", "Cryptographic fingerprinting binds capabilities to specific targets — no collateral damage", "The most powerful tools are the ones with the strongest constraints — governance enables deployment, not just restricts it"]} />
+<KeyTakeaways takeaways={["A governance policy names allowed targets, caps perturbation strength (maxEpsilon), and requires an audit log before any operation runs", "Every operation should be audited: who ran it, what was the target, what were the parameters, was it approved", "Cryptographic fingerprinting binds capabilities to specific targets — no collateral damage", "The most powerful tools are the ones with the strongest constraints — governance enables deployment, not just restricts it"]} />

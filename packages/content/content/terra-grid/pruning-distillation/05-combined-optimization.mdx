@@ -10,14 +10,14 @@ context:
   narrative: "Time to combine everything: pruning, quantization, and distillation into a single pipeline."
   speaker: "Hassan Al-Rashid"
 concept:
-  explanation: "Combining all optimization techniques is like configuring a full Webpack production build — tree-shaking, minification, compression, code splitting, all working together."
+  explanation: "Combining all optimization techniques is like configuring a full Webpack production build: tree-shaking, minification, compression, code splitting, all working together."
   bridge:
     feTitle: "Full Webpack Production Config"
     feCode: "// mode: 'production'\n// Tree-shaking + minification + compression\n// + code splitting + lazy loading"
     mlTitle: "Full Model Optimization"
     mlCode: "// Distill + prune + quantize\n// Student model, structured pruning, Int8\n// Combined: 40x smaller"
     tier: structural
-    breaks: "Webpack production config combines minification + tree-shaking + chunk splitting orthogonally. Combined model optimization (prune + quantize + distill) interactions are non-orthogonal — the order and parameter values must be tuned jointly to recover acceptable accuracy."
+    breaks: "Webpack production config combines minification + tree-shaking + chunk splitting orthogonally. Combined model optimization (prune + quantize + distill) interactions are non-orthogonal. The order and parameter values must be tuned jointly to recover acceptable accuracy."
 consequence:
   narrative: "The 200MB cloud model becomes a 5MB edge model. It passes all deployment budgets."
   nextLessonTeaser: "Module complete. The foundation for edge deployment is set."
@@ -36,11 +36,11 @@ keywords:
 ---
 
 <Dialogue speaker="Hassan Al-Rashid">
-You now have three tools: pruning removes unnecessary connections, quantization reduces precision, and distillation transfers knowledge to a smaller architecture. Used together, they compound. A 200MB model becomes 5MB — and it still works.
+You now have three tools: pruning removes unnecessary connections, quantization reduces precision, and distillation transfers knowledge to a smaller architecture. Used together, they compound. A 200MB model becomes 5MB, and it still works.
 </Dialogue>
 
 <Dialogue speaker="Tariq Hussain">
-If this works, I can deploy to every gateway in the fleet. 47 sites, updated overnight. Let us see the numbers.
+If this works, I can deploy to every gateway in the fleet. 47 sites, updated overnight. Let's see the numbers.
 </Dialogue>
 
 In frontend, your production build combines every optimization: tree-shaking removes dead code, minification shrinks what remains, compression reduces transfer size, and code splitting loads only what is needed. Each technique is independent, but together they achieve reductions that no single technique could.
@@ -140,4 +140,4 @@ Calculate combined optimization results for a full pipeline.
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Combined techniques compound: 10x * 2x * 4x = 80x total reduction", "Order: distillation first, then pruning, then quantization", "Always fine-tune after each step to recover accuracy", "The full pipeline mirrors Webpack production: tree-shake → minify → compress → split"]} />
+<KeyTakeaways takeaways={["Combined techniques compound: 10x * 2x * 4x = 80x total reduction", "Order: distillation first, then pruning, then quantization", "Always fine-tune after each step to recover accuracy", "Validate the final model on target hardware; compression changes latency and memory in ways the training environment hides"]} />

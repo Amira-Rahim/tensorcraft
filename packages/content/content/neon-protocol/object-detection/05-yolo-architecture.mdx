@@ -7,10 +7,10 @@ order: 5
 estimatedMinutes: 35
 difficulty: intermediate
 context:
-  narrative: "Amir finally reveals what he knows. 'Meridian uses YOLOv5 on every drone — You Only Look Once. A single neural network pass that outputs all detections at once. No region proposals, no two-stage pipeline. One shot.' Dilan leans forward. 'Then we build one that is faster. One that runs in the browser. For the first time, we see the drones before they see us.'"
+  narrative: "Amir finally reveals what he knows. 'Meridian uses YOLOv5 on every drone. You Only Look Once. A single neural network pass that outputs all detections at once. No region proposals, no two-stage pipeline. One shot.' Dilan leans forward. 'Then we build one that is faster. One that runs in the browser. For the first time, we see the drones before they see us.'"
   speaker: "Amir"
 concept:
-  explanation: "YOLO (You Only Look Once) performs object detection in a single forward pass through the network. Instead of scanning regions one at a time, it processes the entire image at once — like single-pass browser rendering versus multi-pass layout recalculation."
+  explanation: "YOLO (You Only Look Once) performs object detection in a single forward pass through the network. Instead of scanning regions one at a time, it processes the entire image at once, like single-pass browser rendering versus multi-pass layout recalculation."
   bridge:
     feTitle: "Single-Pass Rendering"
     feCode: "requestAnimationFrame(() => updateAllElements()); // one pass, all updates"
@@ -27,7 +27,7 @@ hints:
   - level: guidance
     content: "Each grid cell predicts B bounding boxes, each with 5 values (x, y, w, h, confidence) plus class probabilities"
   - level: solution
-    content: "Output tensor shape: [gridSize, gridSize, numAnchors * (5 + numClasses)] — decode by reshaping and slicing"
+    content: "Output tensor shape: [gridSize, gridSize, numAnchors * (5 + numClasses)]; decode by reshaping and slicing"
 keywords:
   - yolo
   - single-shot-detection
@@ -37,7 +37,7 @@ keywords:
 ---
 
 <Dialogue speaker="Amir">
-Traditional detection was two stages. First, propose regions. Then, classify each one. Slow. Accurate, but slow. Then YOLO came along and said: why not do it all at once? One neural network. One forward pass. Every box, every label, every confidence score — all predicted simultaneously. Like the difference between re-rendering your entire component tree in multiple layout passes versus batching everything into a single requestAnimationFrame callback.
+Traditional detection was two stages. First, propose regions. Then, classify each one. Slow. Accurate, but slow. Then YOLO came along and said: why not do it all at once? One neural network. One forward pass. Every box, every label, every confidence score, all predicted simultaneously. Like the difference between re-rendering your entire component tree in multiple layout passes versus batching everything into a single requestAnimationFrame callback.
 </Dialogue>
 
 <Dialogue speaker="Noor">
@@ -45,14 +45,14 @@ Single-pass rendering. I do that when I batch DOM mutations to avoid layout thra
 </Dialogue>
 
 <Dialogue speaker="Amir">
-Exactly the same principle. Meridian uses YOLOv5 because speed matters more than marginal accuracy gains when you are tracking targets from a drone moving at 120 km/h. And we are going to run it in the browser.
+Same instinct. But know what the single pass costs before you fall in love with it. You commit to an anchor grid and multi-scale prediction heads up front, and training gets harder than the two-stage way. Meridian paid that price because at 120 km/h, speed beats marginal accuracy. We are going to run their tradeoff in a browser tab.
 </Dialogue>
 
 <Dialogue speaker="Dilan">
 If it runs in the browser, there is no server to trace. No API to intercept. Just a web worker and a WebGL context. For the first time, we see the drones before they see us.
 </Dialogue>
 
-YOLO revolutionized object detection by doing everything in a **single forward pass**. No separate region proposal step. No multi-stage pipeline. One network, one pass, all detections. This is the architectural equivalent of batching all DOM updates into a single `requestAnimationFrame` instead of triggering multiple layout recalculations.
+YOLO revolutionized object detection by doing everything in a **single forward pass**. No separate region proposal step. No multi-stage pipeline. One network, one pass, all detections.
 
 <LearningObjectives objectives={["Understand the YOLO single-shot detection architecture and why it is fast", "Decode YOLO output tensors into bounding boxes with class predictions", "Compare single-pass vs multi-pass approaches in both ML and frontend rendering", "Build the detection pipeline: predict, decode, threshold, NMS"]} />
 
@@ -254,4 +254,4 @@ An adversarial patch on a stop sign caused the detector to classify it as a yiel
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["YOLO performs all detection in a single forward pass — like batching DOM updates into one requestAnimationFrame", "The output is a grid tensor: each cell predicts bounding boxes, confidence, and class probabilities simultaneously", "The full pipeline is predict, decode, threshold, NMS — each step maps to a familiar frontend pattern", "Browser-based YOLO runs at 15-24 FPS with WebGL and WebGPU — fast enough for the resistance to see drones first"]} />
+<KeyTakeaways takeaways={["YOLO trades the two-stage pipeline for one forward pass, paying with anchor-grid design choices and a harder training problem", "The output is a grid tensor: each cell predicts bounding boxes, confidence, and class probabilities simultaneously", "The full pipeline is predict, decode, threshold, NMS — each step maps to a familiar frontend pattern", "Browser-based YOLO runs at 15-24 FPS with WebGL and WebGPU — fast enough for the resistance to see drones first"]} />

@@ -19,10 +19,23 @@ interface Props {
   params: Promise<{ slug: string }>;
 }
 
+// Only launched themes have a capstone route; everything else 404s at the
+// router level (real 404 status — the page body's notFound() would fire
+// after the segment's loading.tsx already streamed a 200 shell).
+export function generateStaticParams() {
+  return THEME_SLUGS.filter((slug) => isLaunched(slug)).map((slug) => ({
+    slug,
+  }));
+}
+export const dynamicParams = false;
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const theme = themes[slug];
-  if (!theme) return {};
+  // notFound() here so the response carries a real 404 status for unknown
+  // and coming-soon themes — the page body's notFound() fires after the
+  // segment's loading.tsx has streamed a 200 shell (soft-404 otherwise).
+  if (!isLaunched(slug) || !theme) notFound();
   return {
     title: `Mission Complete — ${theme.displayName} | Tensorcraft`,
     description: `You've completed every module of ${theme.displayName}. View your certificate and stats.`,

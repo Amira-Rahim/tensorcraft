@@ -10,20 +10,20 @@ context:
   narrative: "Yara types a prompt: 'a forest at dawn, watercolor style.' The image that appears is vaguely forest-shaped but ignores the watercolor instruction. 'It's not listening to me,' she says. Rohan responds: 'We need to amplify the prompt's influence. Think of it like !important in CSS — forcing the style override.'"
   speaker: "Rohan"
 concept:
-  explanation: "Classifier-free guidance amplifies the influence of a text prompt on image generation by contrasting conditioned and unconditioned predictions — like using CSS custom property overrides to force a specific visual style."
+  explanation: "Classifier-free guidance amplifies the influence of a text prompt on image generation by contrasting conditioned and unconditioned predictions, like using CSS custom property overrides to force a specific visual style."
   bridge:
     feTitle: "CSS custom property overrides"
     feCode: "element.style.setProperty('--color', 'blue', 'important');"
     mlTitle: "Classifier-free guidance"
     mlCode: "guided = uncond + scale * (cond - uncond);"
     tier: structural
-    breaks: "CSS custom property overrides change one value at one rule. Classifier-free guidance interpolates between two full model predictions (conditional and unconditional) at every denoising step — guidance scale is a global mixing knob over thousands of intermediate latents, not a single property override."
+    breaks: "CSS custom property overrides change one value at one rule. Classifier-free guidance interpolates between two full model predictions (conditional and unconditional) at every denoising step. Guidance scale is a global mixing knob over thousands of intermediate latents, not a single property override."
 consequence:
-  narrative: "Guidance scale 7.5. The forest snaps into focus — dawn light filtering through watercolor trees. Yara smiles for the first time in days. 'Now it listens.'"
-  nextLessonTeaser: "Next: high-resolution generation — scaling up without running out of memory"
+  narrative: "Guidance scale 7.5. The forest snaps into focus: dawn light filtering through watercolor trees. Yara smiles for the first time in days. 'Now it listens.'"
+  nextLessonTeaser: "Next: high-resolution generation: scaling up without running out of memory"
 hints:
   - level: nudge
-    content: "Think of it as the difference between a styled and unstyled component, amplified"
+    content: "In guided = uncond + scale * (cond - uncond), the subtraction isolates what the prompt contributes; scale multiplies only that part"
   - level: guidance
     content: "Run the model twice: once with the prompt, once without. The difference tells you what the prompt contributes."
   - level: solution
@@ -41,10 +41,10 @@ I typed "a forest at dawn, watercolor style" and it gave me a forest. But not wa
 </Dialogue>
 
 <Dialogue speaker="Rohan">
-That is because the model balances its own learned priors with your prompt. We need to shift that balance. Classifier-free guidance lets us amplify the prompt's influence — like adding `!important` to override a CSS default.
+That is because the model balances its own learned priors with your prompt. We need to shift that balance. Classifier-free guidance lets us amplify the prompt's influence, like adding `!important` to override a CSS default.
 </Dialogue>
 
-CSS custom properties let you override styles at any level of specificity. Classifier-free guidance does the same for image generation — it amplifies how much the text prompt overrides the model's default tendencies.
+CSS custom properties let you override styles at any level of specificity. Classifier-free guidance does the same for image generation: it amplifies how much the text prompt overrides the model's default tendencies.
 
 <LearningObjectives objectives={["Understand why unconditioned generation ignores prompt details", "Implement classifier-free guidance using conditioned and unconditioned predictions", "Control the guidance scale to balance prompt adherence and image quality", "Connect guidance to CSS property overrides and specificity"]} />
 
@@ -168,4 +168,4 @@ Where `w` is the **guidance scale**:
 **Common values: w = 7-12** for text-to-image. The cost is doubled inference compute (two model calls per step).
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["Classifier-free guidance amplifies text prompt influence, like CSS !important overrides defaults", "The formula: guided = unconditioned + scale * (conditioned - unconditioned)", "Guidance scale controls the tradeoff: low = natural but unfaithful, high = faithful but may artifact", "Cost: two model forward passes per denoising step — one conditioned, one unconditioned"]} />
+<KeyTakeaways takeaways={["Guidance runs the model twice per denoising step, with and without the prompt, so it roughly doubles inference cost", "The formula: guided = unconditioned + scale * (conditioned - unconditioned)", "Guidance scale controls the tradeoff: low = natural but unfaithful, high = faithful but may artifact", "Cost: two model forward passes per denoising step — one conditioned, one unconditioned"]} />

@@ -7,23 +7,23 @@ order: 4
 estimatedMinutes: 25
 difficulty: advanced
 context:
-  narrative: "Three days to opening. Erdem builds the monitoring dashboard. 'We cannot be in the server room during the exhibition. The system must tell us when something is wrong — and fix what it can on its own.'"
+  narrative: "Three days to opening. Erdem builds the monitoring dashboard. 'We cannot be in the server room during the exhibition. The system must tell us when something is wrong, and fix what it can on its own.'"
   speaker: "Erdem"
 concept:
-  explanation: "Monitoring and failover for ML systems applies the same observability patterns as web applications — health checks, error budgets, circuit breakers, and graceful degradation."
+  explanation: "Monitoring and failover for ML systems applies the same observability patterns as web applications: health checks, error budgets, circuit breakers, and graceful degradation."
   bridge:
     feTitle: "Uptime Monitoring"
     feCode: "// health check: fetch('/health').then(r => r.ok ? 'up' : alert('down'));"
     mlTitle: "Model Monitoring"
     mlCode: "// monitor: tensor count, inference latency, generation quality, error rate"
     tier: structural
-    breaks: "Uptime monitoring detects request failures. Generative model monitoring also detects content quality drift, NSFW rate changes, and prompt-injection attempts — many failure modes return 200 OK with bad content."
+    breaks: "Uptime monitoring detects request failures. Generative model monitoring also detects content quality drift, NSFW rate changes, and prompt-injection attempts. Many failure modes return 200 OK with bad content."
 consequence:
   narrative: "The monitoring dashboard goes live. Twelve tablet health indicators, generation latency graphs, memory usage trends, error rate alerts. Erdem can watch the entire installation from his phone."
   nextLessonTeaser: "Next: opening night"
 hints:
   - level: nudge
-    content: "Think about what metrics matter most for a live installation — latency, memory, and error rate"
+    content: "Put tf.memory().numTensors and inference latency on the health endpoint next to uptime: a tensor leak shows up as a steady climb, hours before the crash"
   - level: guidance
     content: "Build health checks that run continuously and trigger automatic recovery actions"
   - level: solution
@@ -36,14 +36,14 @@ keywords:
 ---
 
 <Dialogue speaker="Erdem">
-The system will run for six hours a day, six days a week, for three months. We will not be standing next to it. It must monitor itself, heal itself, and alert us only when it cannot recover.
+Six hours a day, six days a week, three months. We won't be standing next to it. It monitors itself, heals what it can, and pages me only when it can't. Anything else and I'm sleeping in the server room.
 </Dialogue>
 
 <Dialogue speaker="Samir">
 Same pattern as any production web app. Health endpoints, error budgets, circuit breakers, auto-restart. The only difference is we are also watching tensor memory and inference latency alongside the usual metrics.
 </Dialogue>
 
-You have set up monitoring for production web applications — uptime checks, error tracking, performance budgets, alerting. Installation monitoring adds ML-specific metrics (tensor count, inference latency, model health) to the same observability stack you already know.
+During a six-hour soak test, tablet seven stopped generating. No crash, no error, nothing in the logs. Its tensor count had been climbing for two hours, and when it hit the ceiling the canvas froze mid-frame and stayed that way for forty minutes before anyone noticed. That's the failure monitoring exists for: the one that returns 200 OK. Installation monitoring adds ML-specific metrics (tensor count, inference latency, model health) to the observability stack you already run: uptime checks, error tracking, performance budgets, alerting.
 
 <LearningObjectives objectives={["Implement continuous health monitoring for a multi-device installation", "Build circuit breakers that isolate failing modalities without taking down the system", "Design automatic recovery procedures for common failure modes", "Create an alerting system with severity levels and escalation"]} />
 

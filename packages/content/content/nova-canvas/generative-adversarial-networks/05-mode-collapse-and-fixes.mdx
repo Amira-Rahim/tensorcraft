@@ -17,10 +17,10 @@ concept:
     mlTitle: "Mode Collapse"
     mlCode: "generator.predict(noise1) ≈ generator.predict(noise2) // same output!"
     tier: intuition
-    breaks: "Non-random random (e.g. seeded RNG) is a known reproducibility tool. Mode collapse is an unintended GAN failure where the generator produces only a tiny subset of valid outputs — the model is technically working but lost diversity. Fixes are heuristic, not guaranteed."
+    breaks: "Non-random random (e.g. seeded RNG) is a known reproducibility tool. Mode collapse is an unintended GAN failure where the generator produces only a tiny subset of valid outputs. The model is technically working but lost diversity. Fixes are heuristic, not guaranteed."
 consequence:
   narrative: "Samir applies minibatch discrimination and the GAN starts producing diverse patterns again. The exhibition installation now generates unique art for every visitor."
-  nextLessonTeaser: "Next module: VAEs — a different approach to generation with controllable, structured latent spaces"
+  nextLessonTeaser: "Next module: VAEs: a different approach to generation with controllable, structured latent spaces"
 hints:
   - level: nudge
     content: "If Math.random() always returned 0.5, it would not be random. Mode collapse is the same idea."
@@ -37,7 +37,7 @@ keywords:
 ---
 
 <Dialogue speaker="Yara">
-It is producing the same pattern. Every single time. Different noise, same output. This is not generative art — it is a photocopier. We call this the one-trick pony problem.
+It's producing the same pattern. Every single time. Different noise, same output. This isn't generative art. It's a photocopier. We call this the one-trick pony problem.
 </Dialogue>
 
 <Dialogue speaker="Rohan">
@@ -45,7 +45,7 @@ I have seen this in music. A composer finds one melody that the audience likes a
 </Dialogue>
 
 <Dialogue speaker="MUSE">
-A single note repeated is not a symphony. Diversity is the soul of creativity.
+I generated 200 samples overnight and 187 of them are the same spiral. The discriminator never penalized me for repeating myself, so I stopped varying. What if it saw whole batches instead of single images? Then my sameness would show up in the statistics.
 </Dialogue>
 
 Mode collapse is the most infamous GAN failure mode. The generator discovers one output (or a small set of outputs) that reliably fools the discriminator and stops exploring. Every input noise vector produces nearly identical output.
@@ -153,12 +153,12 @@ An NSFW filter missed a generation that surfaced to a user. Diagnose whether the
 <DerivationDrawer summary="Mode collapse: math of why and prevention">
 **Mode collapse:** generator outputs only a small subset of valid samples (e.g. always the same digit). Mathematically, p_G concentrates mass on a few modes of p_data while ignoring others.
 
-**Why it happens:** if D punishes one specific pattern ("too few 7s"), G learns to produce more 7s — but if D doesn't punish ignoring entire classes (because one class is enough to reduce average loss), G may collapse to one mode and never explore others. Optimization finds a local equilibrium, not the global one.
+**Why it happens:** if D punishes one specific pattern ("too few 7s"), G learns to produce more 7s. But if D doesn't punish ignoring entire classes (because one class is enough to reduce average loss), G may collapse to one mode and never explore others. Optimization finds a local equilibrium, not the global one.
 
 **Common fixes:**
 - **Mini-batch discrimination:** D sees a batch and can detect lack of diversity (similarity between samples).
-- **Unrolled GAN:** G optimizes against a future D (k steps ahead) — anticipates D's adaptation to a single mode.
-- **Diversity loss:** add `L_div = −λ · ||G(z_1) − G(z_2)||` for two random latents — penalize identical outputs.
+- **Unrolled GAN:** G optimizes against a future D (k steps ahead), which anticipates D's adaptation to a single mode.
+- **Diversity loss:** add `L_div = −λ · ||G(z_1) − G(z_2)||` for two random latents, penalizing identical outputs.
 - **Spectral normalization on D:** controls Lipschitz constant, makes D's loss landscape smoother and easier for G to navigate.
 </DerivationDrawer>
 

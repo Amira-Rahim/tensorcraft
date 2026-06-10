@@ -10,7 +10,7 @@ context:
   narrative: "Rohan frowns at the output. 'The early steps waste time on barely visible changes. The final steps rush through critical detail. We need a better schedule.' Samir nods: 'Like choosing the right easing curve for an animation.'"
   speaker: "Rohan"
 concept:
-  explanation: "A noise schedule controls how much noise is added or removed at each timestep — just like an animation easing curve controls the rate of change over time. Linear is rarely optimal."
+  explanation: "A noise schedule controls how much noise is added or removed at each timestep, just like an animation easing curve controls the rate of change over time. Linear is rarely optimal."
   bridge:
     feTitle: "Animation easing curves"
     feCode: "transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);"
@@ -20,12 +20,12 @@ concept:
     breaks: "Animation easing curves interpolate one value over a fixed time. Noise schedules control variance added to the entire latent at every timestep and the schedule shape (linear, cosine, sigmoid) materially changes generation quality. Tuning matters far more than picking an animation easing."
 consequence:
   narrative: "With the cosine schedule, the images are noticeably sharper. Same number of steps, better allocation of the noise budget. Erdem leans in: 'The details in the shadows — those were not there before.'"
-  nextLessonTeaser: "Next: the U-Net — the architecture that actually predicts the noise"
+  nextLessonTeaser: "Next: the U-Net: the architecture that actually predicts the noise"
 hints:
   - level: nudge
-    content: "Think about how ease-in-out animations spend more time accelerating and decelerating"
+    content: "Plot your betas array before training: a cosine schedule keeps alpha_bar high through the early timesteps where a linear one has already destroyed the signal"
   - level: guidance
-    content: "A cosine schedule adds noise slowly at the start and end, faster in the middle — preserving structure longer"
+    content: "A cosine schedule adds noise slowly at the start and end, faster in the middle, preserving structure longer"
   - level: solution
     content: "Compute alpha_bar = cos((t/T + s) / (1 + s) * pi/2)^2 for each timestep t"
 keywords:
@@ -37,14 +37,18 @@ keywords:
 ---
 
 <Dialogue speaker="Rohan">
-The linear schedule is wasteful. Look — the first twenty steps barely change anything, and the last twenty steps blur over fine details. We need the noise equivalent of an easing curve.
+The linear schedule is wasteful. Look: the first twenty steps barely change anything, and the last twenty steps blur over fine details. We need the noise equivalent of an easing curve.
 </Dialogue>
 
 <Dialogue speaker="Samir">
-Right. In CSS, `linear` timing looks mechanical. `ease-in-out` feels natural because it allocates more time to acceleration and deceleration. A noise schedule does the same thing — it controls the *rate* of noise addition.
+Right. In CSS, `linear` timing looks mechanical and `ease-in-out` feels natural. So we swap in the noise equivalent of ease-in-out and we're done?
 </Dialogue>
 
-Every animation benefits from the right easing curve. Diffusion models are no different. The noise schedule — also called the beta schedule — determines how much noise to add at each timestep. Get it wrong, and you waste compute on imperceptible changes or rush through the details that matter.
+<Dialogue speaker="Rohan">
+That's where the easing picture stops working. A timing function interpolates one CSS value, and the worst case is an awkward animation. The schedule controls the variance added to the entire latent at every timestep, and its shape changes what the model can learn. Wrong curve, blurry generations forever. We tune this with experiments, not taste.
+</Dialogue>
+
+Every animation benefits from the right easing curve. Diffusion models are no different. The noise schedule (also called the beta schedule) determines how much noise to add at each timestep. Get it wrong, and you waste compute on imperceptible changes or rush through the details that matter.
 
 <LearningObjectives objectives={["Understand why linear noise schedules produce suboptimal results", "Implement linear, quadratic, and cosine noise schedules", "Compare schedule shapes and their effect on image quality", "Connect noise schedules to CSS animation easing curves"]} />
 
@@ -151,4 +155,4 @@ The noise schedule β_1, β_2, ..., β_T controls how much noise is added at eac
 **T (number of steps)** trades quality for compute. T = 1000 is the original DDPM; sampling can be accelerated to T = 50 (DDIM) or even T = 4 (consistency models) at the cost of quality.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["Noise schedules control the rate of noise addition, like CSS easing curves control animation pacing", "Linear schedules destroy signal too quickly — cosine schedules preserve structure longer", "Cumulative alpha (alpha_bar) tells you how much original signal remains at any step", "The right schedule improves image quality without adding compute cost"]} />
+<KeyTakeaways takeaways={["The schedule is a tuned hyperparameter: its shape changes generation quality, so plot alpha_bar before you train", "Linear schedules destroy signal too quickly — cosine schedules preserve structure longer", "Cumulative alpha (alpha_bar) tells you how much original signal remains at any step", "The right schedule improves image quality without adding compute cost"]} />

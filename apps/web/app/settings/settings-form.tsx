@@ -26,6 +26,7 @@ import { getApiUrl } from "@/lib/api-url";
 import { themes } from "@tensorcraft/themes";
 import { UserAvatar } from "@/app/components/user-avatar";
 import { resizeImage } from "@/lib/resize-image";
+import { ERROR_MESSAGES } from "@/lib/error-messages";
 
 // ---------------------------------------------------------------------------
 // Tabs
@@ -169,7 +170,7 @@ export function SettingsForm({
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
+      if (!user) throw new Error(ERROR_MESSAGES.session_expired);
 
       const filePath = `${user.id}.webp`;
       const { error: uploadError } = await supabase.storage
@@ -212,7 +213,7 @@ export function SettingsForm({
     } = await supabase.auth.getUser();
 
     if (!user) {
-      setError("Not authenticated");
+      setError(ERROR_MESSAGES.session_expired);
       setSaving(false);
       return;
     }
@@ -283,7 +284,7 @@ export function SettingsForm({
         data: { session },
       } = await supabase.auth.getSession();
       if (!session) {
-        setGithubError("Not authenticated");
+        setGithubError(ERROR_MESSAGES.session_expired);
         setGithubBusy(false);
         return;
       }
@@ -321,7 +322,7 @@ export function SettingsForm({
         data: { session },
       } = await supabase.auth.getSession();
       if (!session) {
-        setGithubError("Not authenticated");
+        setGithubError(ERROR_MESSAGES.session_expired);
         setGithubBusy(false);
         return;
       }

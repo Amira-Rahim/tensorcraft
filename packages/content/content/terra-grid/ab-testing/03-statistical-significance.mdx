@@ -10,7 +10,7 @@ context:
   narrative: "Priya Sharma reviews the first 24 hours of data. 'The new model looks 3% better, but we only have 1,200 predictions. Is that signal or noise? We need statistical significance before making any decisions.'"
   speaker: "Priya Sharma"
 concept:
-  explanation: "Statistical significance tells you whether observed differences are real or random noise — the same confidence intervals you use in analytics dashboards, applied to model comparison."
+  explanation: "Statistical significance tells you whether observed differences are real or random noise, the same confidence intervals you use in analytics dashboards, applied to model comparison."
   bridge:
     feTitle: "Analytics Confidence"
     feCode: "// A/B test: conversion 4.2% vs 4.5%, p=0.23 — not significant yet"
@@ -19,10 +19,10 @@ concept:
     tier: identity
 consequence:
   narrative: "Priya runs the significance test. 'p-value 0.003. With 8,400 predictions, the 2.6% accuracy improvement is statistically significant at 99% confidence. The new model is genuinely better.' Hassan: 'Now we have proof. Proceed to 20%.'"
-  nextLessonTeaser: "Next: canary deployments — gradual rollout with automatic rollback"
+  nextLessonTeaser: "Next: canary deployments, gradual rollout with automatic rollback"
 hints:
   - level: nudge
-    content: "Statistical significance requires enough samples — just like you need enough pageviews before trusting an A/B test result"
+    content: "Statistical significance requires enough samples, just like you need enough pageviews before trusting an A/B test result"
   - level: guidance
     content: "Implement a z-test comparing two proportions (accuracy rates from control and treatment)"
   - level: solution
@@ -42,7 +42,7 @@ After 24 hours we have 1,200 predictions from the treatment group. The new model
 I have seen teams ship models based on 200 predictions and a gut feeling. That is how you get the March 2024 incident. Run the numbers. Tell me when the result is statistically significant.
 </Dialogue>
 
-You have seen confidence intervals on analytics dashboards: "Conversion rate: 4.5% +/- 0.3%, 95% confidence." Statistical significance for model A/B tests works identically. You need enough samples to distinguish real improvement from random variation. The math is the same — proportions, standard errors, z-scores.
+Flip a fair coin 1,200 times and a 51.3% heads rate would surprise nobody. That is roughly the gap Priya is staring at: 2.6 points on 1,200 samples could be a better model, or it could be a lucky day. The math that settles it is the math behind every analytics dashboard you have read ("Conversion rate: 4.5% +/- 0.3%, 95% confidence"): proportions, standard errors, z-scores. Enough samples to separate real improvement from random variation.
 
 <LearningObjectives objectives={["Calculate statistical significance for model A/B test results", "Determine minimum sample sizes needed for reliable conclusions", "Implement a two-proportion z-test for comparing model accuracy", "Understand p-values and confidence intervals in the context of ML deployment decisions"]} />
 

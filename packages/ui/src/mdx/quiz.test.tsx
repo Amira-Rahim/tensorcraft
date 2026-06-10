@@ -49,11 +49,11 @@ describe("Quiz", () => {
     expect(screen.getByText("Correct!")).toBeInTheDocument();
   });
 
-  it("shows 'Not quite' and Retry for wrong answer", () => {
+  it("shows 'Wrong answer' and Retry for wrong answer", () => {
     render(<Quiz question="Test?" options={options} />);
     fireEvent.click(screen.getByText("A JavaScript object"));
     fireEvent.click(screen.getByText("Check Answer"));
-    expect(screen.getByText(/Not quite/)).toBeInTheDocument();
+    expect(screen.getByText(/Wrong answer/)).toBeInTheDocument();
     expect(screen.getByText("Retry")).toBeInTheDocument();
   });
 
@@ -63,7 +63,7 @@ describe("Quiz", () => {
     fireEvent.click(screen.getByText("Check Answer"));
     fireEvent.click(screen.getByText("Retry"));
     expect(screen.getByText("Check Answer")).toBeDisabled();
-    expect(screen.queryByText(/Not quite/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Wrong answer/)).not.toBeInTheDocument();
   });
 
   it("disables options after submission", () => {

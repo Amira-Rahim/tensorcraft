@@ -10,20 +10,20 @@ context:
   narrative: "MEDI confidently misclassifies a rare condition. Dr. Karimi explains that in medicine, overconfidence kills. The system needs to say 'I'm not sure.'"
   speaker: "Dr. Zahra Karimi"
 concept:
-  explanation: "Calibration ensures that model confidence scores match actual accuracy — when the model says 80% confident, it should be right 80% of the time."
+  explanation: "Calibration ensures that model confidence scores match actual accuracy: when the model says 80% confident, it should be right 80% of the time."
   bridge:
     feTitle: "TypeScript Strict Mode (flagging uncertainty)"
     feCode: "// strict mode: flag unknown types as errors\n// 'any' is dangerous — make uncertainty explicit"
     mlTitle: "Model Calibration"
     mlCode: "// calibrated model: flag uncertain predictions\n// High confidence on wrong answers is dangerous"
     tier: structural
-    breaks: "TypeScript strict mode flags missing type information at compile time. Model calibration measures how well predicted probabilities match empirical frequencies and well-calibrated probabilities are not free — they require explicit calibration techniques (temperature scaling, isotonic regression)."
+    breaks: "TypeScript strict mode flags missing type information at compile time. Model calibration measures how well predicted probabilities match empirical frequencies and well-calibrated probabilities are not free; they require explicit calibration techniques (temperature scaling, isotonic regression)."
 consequence:
   narrative: "MEDI now knows what it doesn't know. Documents that fall below the confidence threshold get routed to human review instead of being silently misclassified."
   nextLessonTeaser: "Next: combining everything into a complete triage pipeline."
 hints:
   - level: nudge
-    content: "Entropy of the output distribution measures uncertainty — high entropy means the model is unsure"
+    content: "Entropy of the output distribution measures uncertainty: high entropy means the model is unsure"
   - level: guidance
     content: "Temperature scaling adjusts the softmax to better calibrate confidence scores"
   - level: solution
@@ -45,7 +45,7 @@ That document describes a rare autoimmune flare. Your model has never seen this 
 </Dialogue>
 
 <Dialogue speaker="Khalil">
-It's like TypeScript strict mode. Without it, everything is implicitly `any` — the compiler doesn't flag uncertainty. With strict mode, every unknown type becomes an explicit error. We need strict mode for our classifier.
+It's like TypeScript strict mode. Without it, everything is implicitly `any`, and the compiler doesn't flag uncertainty. With strict mode, every unknown type becomes an explicit error. We need strict mode for our classifier.
 </Dialogue>
 
 <LearningObjectives objectives={["Understand why raw model confidence scores can be misleading", "Measure calibration using reliability diagrams and expected calibration error", "Apply temperature scaling to improve confidence calibration", "Use entropy as a measure of prediction uncertainty"]} />
@@ -54,9 +54,9 @@ It's like TypeScript strict mode. Without it, everything is implicitly `any` —
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-TypeScript strict mode forces you to handle every uncertain case explicitly. Without it, the compiler silently allows `any` types — and bugs hide in the ambiguity. Model calibration is the same idea: without it, a model can be 95% "confident" about a prediction and still be wrong half the time.
+TypeScript strict mode forces you to handle every uncertain case explicitly. Without it, the compiler silently allows `any` types, and bugs hide in the ambiguity. Model calibration is the same idea: without it, a model can be 95% "confident" about a prediction and still be wrong half the time.
 
-A well-calibrated model's confidence matches its actual accuracy. When it says 80%, it should be right about 80% of the time. Most neural networks are overconfident — they need calibration.
+A well-calibrated model's confidence matches its actual accuracy. When it says 80%, it should be right about 80% of the time. Most neural networks are overconfident. They need calibration.
 
 <CodeBlock language="typescript" title="calibration.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -105,7 +105,7 @@ console.log('Max entropy:', maxEntropy(6).toFixed(3));`}
 
 ## Reliability Diagrams
 
-A reliability diagram bins predictions by confidence and plots actual accuracy against predicted confidence. A perfectly calibrated model falls on the diagonal — 70% confidence means 70% accuracy. Most models curve above the diagonal (overconfident).
+A reliability diagram bins predictions by confidence and plots actual accuracy against predicted confidence. A perfectly calibrated model falls on the diagonal: 70% confidence means 70% accuracy. Most models curve above the diagonal (overconfident).
 
 <CodeBlock language="typescript" title="reliability-diagram.ts">
 {`interface CalibrationBin {

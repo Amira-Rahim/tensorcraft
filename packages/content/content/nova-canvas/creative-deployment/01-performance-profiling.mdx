@@ -10,14 +10,14 @@ context:
   narrative: "Erdem pulls up the metrics dashboard. 'Current generation time: 3.2 seconds per image. The Biennale expects instant response. We need to find every bottleneck and crush it.'"
   speaker: "Erdem"
 concept:
-  explanation: "Performance profiling for ML generation uses the same Chrome DevTools you use for frontend optimization — the Performance panel, memory snapshots, and flame charts reveal where inference time is spent."
+  explanation: "Performance profiling for ML generation uses the same Chrome DevTools you use for frontend optimization: the Performance panel, memory snapshots, and flame charts reveal where inference time is spent."
   bridge:
     feTitle: "DevTools Performance Panel"
     feCode: "performance.mark('start'); doWork(); performance.mark('end'); performance.measure('work', 'start', 'end');"
     mlTitle: "Inference Profiling"
     mlCode: "performance.mark('inference-start'); model.predict(input); performance.mark('inference-end');"
     tier: structural
-    breaks: "performance.mark API is the same. Profiling a generative model adds: per-step inference cost over many denoising iterations, latent memory pressure, queue backpressure under concurrent users — none of which web-app perf measurement encounters."
+    breaks: "performance.mark API is the same. Profiling a generative model adds: per-step inference cost over many denoising iterations, latent memory pressure, queue backpressure under concurrent users. None of which web-app perf measurement encounters."
 consequence:
   narrative: "The flame chart reveals the truth: 60% of time is spent on tensor allocation, not computation. Erdem smiles grimly. 'We have been optimizing the wrong thing. Memory allocation is our enemy.'"
   nextLessonTeaser: "Next: model optimization through distillation and quantization"
@@ -36,14 +36,14 @@ keywords:
 ---
 
 <Dialogue speaker="Erdem">
-Three-point-two seconds per generation. Unacceptable. The gallery visitors will walk away after one. We need sub-second response. Where is the time going?
+Three-point-two seconds per generation. Unacceptable. The gallery visitors will walk away after one. We need sub-second response. Where's the time going?
 </Dialogue>
 
 <Dialogue speaker="Samir">
-The same place it always goes in frontend apps — where you least expect it. We need to profile before we optimize. Chrome DevTools does not care whether you are rendering DOM or running inference.
+The same place it always goes in frontend apps: where you least expect it. We need to profile before we optimize. Chrome DevTools does not care whether you are rendering DOM or running inference.
 </Dialogue>
 
-You have profiled React re-renders, diagnosed layout thrashing, traced memory leaks in single-page applications. ML inference profiling uses the exact same tools. `performance.mark()`, `performance.measure()`, the Chrome DevTools Performance panel, memory snapshots — all of it applies directly.
+3,200 milliseconds. Somewhere inside that number live tensor prep, inference, post-processing, data transfer, and at least one bottleneck nobody has met yet. The tools that find it are the ones you already point at React re-renders and layout thrashing: `performance.mark()`, `performance.measure()`, the DevTools Performance panel, memory snapshots. All of it applies directly to inference.
 
 <LearningObjectives objectives={["Profile TensorFlow.js inference using Chrome DevTools Performance panel", "Identify bottlenecks in tensor allocation, computation, and data transfer", "Measure memory usage patterns during generation loops", "Build a profiling harness that instruments each pipeline stage"]} />
 

@@ -37,10 +37,10 @@ skillAxes: [deployment, fe_integration]
 ---
 
 <Dialogue speaker="Dr. Farah">
-The report needs six sections: Executive Summary, Methodology, Signal Classification Results, Anomaly Analysis, Hypotheses, and Recommendations. I will generate each section separately for better quality control.
+The report needs six sections: Executive Summary, Methodology, Signal Classification Results, Anomaly Analysis, Hypotheses, and Recommendations. I'll generate each section separately for better quality control.
 </Dialogue>
 
-Generating a full report in one shot produces mediocre results — like rendering a complex page in a single monolithic component. Breaking it into sections (components) and generating each independently produces better output with easier verification.
+Generating a full report in one shot produces mediocre results, like rendering a complex page in a single monolithic component. Breaking it into sections (components) and generating each independently produces better output with easier verification.
 
 <LearningObjectives objectives={["Structure report generation as section-by-section assembly, not monolithic generation", "Build a report pipeline: template → data retrieval → generation → validation → assembly", "Implement quality checks between sections for consistency", "Produce a formatted, citable scientific report from signal data"]} />
 
@@ -111,4 +111,4 @@ Build a section-by-section report generator from signal data.
 
 <Exercise slug="generate-report" />
 
-<KeyTakeaways takeaways={["Break report generation into sections — like components, each section is independently generated and verifiable", "Low temperature (0.1-0.3) for factual scientific writing reduces hallucination risk", "Always validate generated content against actual data before including in the report", "The pipeline mirrors frontend rendering: template → data → render → review"]} />
+<KeyTakeaways takeaways={["The report is six independently generated sections, Executive Summary through Recommendations, each validated before assembly", "Low temperature (0.1-0.3) for factual scientific writing reduces hallucination risk", "Always validate generated content against actual data before including in the report", "The pipeline mirrors frontend rendering: template → data → render → review"]} />

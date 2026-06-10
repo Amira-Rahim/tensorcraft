@@ -7,7 +7,7 @@ order: 3
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Vikram explains how BERT learns language before it ever sees a clinical note — through two clever self-supervised tasks."
+  narrative: "Vikram explains how BERT learns language before it ever sees a clinical note, through two clever self-supervised tasks."
   speaker: "Vikram"
 concept:
   explanation: "BERT is pre-trained with two tasks: Masked Language Modeling (predicting hidden words from context) and Next Sentence Prediction (understanding document structure)."
@@ -17,9 +17,9 @@ concept:
     mlTitle: "Masked Language Modeling"
     mlCode: "// MLM: predict masked token from context\n// 'Patient has [MASK] diabetes' → 'type-2'"
     tier: structural
-    breaks: "IntelliSense uses a static index keyed by symbol names. Masked language modeling learns continuous embeddings that capture context-dependent meaning — 'bank' next to 'river' embeds differently than 'bank' next to 'money'. The lookup is contextual, not key-based."
+    breaks: "IntelliSense uses a static index keyed by symbol names. Masked language modeling learns continuous embeddings that capture context-dependent meaning: 'bank' next to 'river' embeds differently than 'bank' next to 'money'. The lookup is contextual, not key-based."
 consequence:
-  narrative: "The team realizes that BERT's pre-training on general text gives it a foundation — but clinical language requires domain-specific fine-tuning."
+  narrative: "The team realizes that BERT's pre-training on general text gives it a foundation, but clinical language requires domain-specific fine-tuning."
   nextLessonTeaser: "Next: fine-tuning BERT to specialize in clinical text."
 hints:
   - level: nudge
@@ -36,15 +36,15 @@ keywords:
 ---
 
 <Dialogue speaker="Vikram">
-Before BERT ever sees a clinical note, it trains on millions of general text documents. But here's the clever part — it doesn't need any labels. It creates its own training signal by playing two games with the text.
+Before BERT ever sees a clinical note, it trains on millions of general text documents. And it needs no labels at all. It creates its own training signal by playing two games with the text.
 </Dialogue>
 
 <Dialogue speaker="Khalil">
-Self-supervised learning? That's like how VS Code IntelliSense learns from your codebase — it figures out what should fill the blank based on surrounding context, without anyone manually labeling every completion.
+Self-supervised learning? That's like how VS Code IntelliSense learns from your codebase: it figures out what should fill the blank based on surrounding context, without anyone manually labeling every completion.
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-Exactly. The first game is Masked Language Modeling — MLM. Hide a word, predict it from context. The second is Next Sentence Prediction — NSP. Given two sentences, did the second actually follow the first?
+Useful comparison, wrong machinery. IntelliSense looks completions up in a static index keyed by symbol names. BERT learns contextual embeddings: "bank" next to "river" fills the blank differently than "bank" next to "money," and no index can store that. The first game is Masked Language Modeling, MLM. Hide a word, predict it from context. The second is Next Sentence Prediction, NSP. Given two sentences, did the second actually follow the first?
 </Dialogue>
 
 <LearningObjectives objectives={["Understand BERT's two pre-training objectives: MLM and NSP", "Implement masked language modeling with proper masking strategy", "Implement next sentence prediction as a binary classification task", "Explain why self-supervised pre-training creates powerful representations"]} />
@@ -53,7 +53,7 @@ Exactly. The first game is Masked Language Modeling — MLM. Hide a word, predic
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-VS Code IntelliSense predicts what you'll type next based on the surrounding code — function signatures, variable names, import patterns. MLM works the same way, but instead of predicting the next token, it predicts a randomly hidden token using both left and right context.
+MLM predicts a randomly hidden token using both left and right context, not just the tokens that came before it. That bidirectionality is what next-token predictors give up.
 
 BERT masks 15% of tokens, but with a twist: of those 15%, 80% become `[MASK]`, 10% become a random token, and 10% stay unchanged. This prevents the model from learning that `[MASK]` is the only signal for prediction.
 
@@ -190,11 +190,11 @@ console.log('NSP prediction [IsNext, NotNext]:', await nspPrediction.array());`}
 ## Why This Matters for Clinical Text
 
 <Dialogue speaker="Dr. Zahra Karimi">
-So BERT learns to fill in blanks and understand sentence flow — on Wikipedia, news articles, books. How does that help us with clinical notes?
+So BERT learns to fill in blanks and understand sentence flow, on Wikipedia, news articles, books. How does that help us with clinical notes?
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-Because language has universal patterns. A model that can predict "The patient was prescribed [MASK] for hypertension" has learned something about how medical terms relate — even from general text. But it won't know that "lisinopril" is more likely than "ibuprofen" until we fine-tune it on clinical data. Pre-training gives us the skeleton. Fine-tuning adds the medical knowledge.
+Because language has universal patterns. A model that can predict "The patient was prescribed [MASK] for hypertension" has learned something about how medical terms relate, even from general text. But it won't know that "lisinopril" is more likely than "ibuprofen" until we fine-tune it on clinical data. Pre-training gives us the skeleton. Fine-tuning adds the medical knowledge.
 </Dialogue>
 
 ## Challenge
@@ -212,12 +212,12 @@ BERT pre-training uses **Masked Language Modeling (MLM)**: randomly mask 15% of 
 
 Summed over all masked positions in the batch.
 
-**The 80/10/10 masking trick** — instead of always replacing with [MASK]:
+**The 80/10/10 masking trick** (instead of always replacing with [MASK]):
 - 80%: replace with `[MASK]` token
 - 10%: replace with a random token
 - 10%: keep the original token unchanged
 
-**Why?** The downstream fine-tuning task never sees `[MASK]` tokens (real text). If the model only learned to fill in `[MASK]`, it would degrade on real input. The 10/10/80 mix forces the model to maintain rich representations for ALL tokens, not just masked ones — because it can't tell which tokens are "real" and which were swapped.
+**Why?** The downstream fine-tuning task never sees `[MASK]` tokens (real text). If the model only learned to fill in `[MASK]`, it would degrade on real input. The 10/10/80 mix forces the model to maintain rich representations for ALL tokens, not just masked ones, because it can't tell which tokens are "real" and which were swapped.
 
 **Combined with NSP** (Next Sentence Prediction, since dropped in RoBERTa) for the original BERT objective. Modern models (RoBERTa, DeBERTa) keep MLM with 80/10/10 but skip NSP.
 </DerivationDrawer>

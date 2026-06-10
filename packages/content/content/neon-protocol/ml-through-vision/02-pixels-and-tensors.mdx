@@ -7,23 +7,23 @@ order: 2
 estimatedMinutes: 25
 difficulty: beginner
 context:
-  narrative: "Zara explains image dimensions. 'A grayscale image is a 2D grid. Color adds a third dimension — channels. A batch of images adds a fourth. You already think in these dimensions when you set up responsive image grids.'"
+  narrative: "Zara explains image dimensions. 'A grayscale image is a 2D grid. Color adds a third dimension: channels. A batch of images adds a fourth. You already think in these dimensions when you set up responsive image grids.'"
   speaker: "Zara"
 concept:
-  explanation: "Image tensors have specific shapes depending on their type — grayscale (2D), color (3D), or batched (4D). This maps directly to the Uint8ClampedArray layout from canvas."
+  explanation: "Image tensors have specific shapes depending on their type: grayscale (2D), color (3D), or batched (4D). This maps directly to the Uint8ClampedArray layout from canvas."
   bridge:
     feTitle: "Uint8ClampedArray"
     feCode: "imageData.data[i * 4 + 0] // Red channel of pixel i (flat array)"
     mlTitle: "Tensor Indexing"
     mlCode: "tensor.slice([y, x, 0], [1, 1, 1]) // Red channel of pixel (y, x)"
     tier: structural
-    breaks: "Uint8ClampedArray is a flat byte array with no inherent dimensionality — you compute pixel offsets manually. Tensor indexing uses tf.slice with explicit shape and strides — the operation knows what dimension is what. Same data, different access semantics."
+    breaks: "Uint8ClampedArray is a flat byte array with no inherent dimensionality; you compute pixel offsets manually. Tensor indexing uses tf.slice with explicit shape and strides; the operation knows what dimension is what. Same data, different access semantics."
 consequence:
-  narrative: "Noor realizes the pixel patterns in Meridian's feeds are familiar — too familiar. NEON says: 'I have seen this encoding before. At Meridian.'"
-  nextLessonTeaser: "Next: color channels — RGB, grayscale, and hidden data in color spaces"
+  narrative: "Noor realizes the pixel patterns in Meridian's feeds are familiar. Too familiar. NEON says: 'I have seen this encoding before. At Meridian.'"
+  nextLessonTeaser: "Next: color channels. RGB, grayscale, and hidden data in color spaces"
 hints:
   - level: nudge
-    content: "Think of image dimensions like CSS grid — rows (height), columns (width), and depth (channels)"
+    content: "tensor.shape reads [height, width, channels]: rows first, then columns, then depth. Most indexing bugs come from assuming [x, y] order"
   - level: guidance
     content: "Use tensor.shape to inspect dimensions, tensor.slice() to access specific pixels"
   - level: solution
@@ -37,7 +37,7 @@ keywords:
 ---
 
 <Dialogue speaker="Zara">
-A grayscale image is a 2D grid — height by width. Each cell holds one brightness value. Add color and you get a third dimension: three channels for red, green, blue. Stack multiple images and you get a fourth dimension: the batch. You already think in these dimensions when you write CSS grid layouts.
+A grayscale image is a 2D grid, height by width. Each cell holds one brightness value. Add color and you get a third dimension: three channels for red, green, blue. Stack multiple images and you get a fourth dimension: the batch. You already think in these dimensions when you write CSS grid layouts.
 </Dialogue>
 
 <Dialogue speaker="Noor">

@@ -24,11 +24,11 @@ vi.mock("@/app/components/ambient-background", () => ({
 }));
 
 describe("PaywallPage (Phase 11 §11d Wave 3 NEW)", () => {
-  it('renders the "Continue Your ML Journey" H1', () => {
+  it('renders the "Module 1 is done" H1', () => {
     render(<PaywallPage />);
     const h1 = screen.getByTestId("paywall-heading");
     expect(h1.tagName).toBe("H1");
-    expect(h1).toHaveTextContent(/Continue Your ML Journey/i);
+    expect(h1).toHaveTextContent(/Module 1 is done\. The model isn[''’]t\./i);
   });
 
   it("renders the primary CTA pointing to /pricing", () => {

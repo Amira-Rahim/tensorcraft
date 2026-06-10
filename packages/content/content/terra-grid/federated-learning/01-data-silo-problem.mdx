@@ -10,24 +10,24 @@ context:
   narrative: "Elif explains why three power companies will not share sensor data. Regulatory compliance, competitive advantage, and liability concerns. The data stays behind their firewalls."
   speaker: "Elif Yilmaz"
 concept:
-  explanation: "Data silos in ML mirror CORS boundaries in browsers — data cannot cross origin boundaries, so you must find ways to work within those constraints."
+  explanation: "Data silos in ML mirror CORS boundaries in browsers. Data cannot cross origin boundaries, so you must find ways to work within those constraints."
   bridge:
     feTitle: "CORS Boundaries"
     feCode: "fetch(crossOrigin) // blocked: data cannot leave this origin"
     mlTitle: "Data Silos"
     mlCode: "trainOnRemoteData() // blocked: data cannot leave this org"
     tier: structural
-    breaks: "CORS boundaries are technical constraints solved by configuration. Data silos in healthcare and finance are legal, contractual, and political — a federated learning approach addresses the technical boundary but does not resolve the consent, governance, or audit requirements."
+    breaks: "CORS boundaries are technical constraints solved by configuration. Data silos in healthcare and finance are legal, contractual, and political. A federated learning approach addresses the technical boundary but does not resolve the consent, governance, or audit requirements."
 consequence:
-  narrative: "Hassan proposes a solution: bring the model to the data, not the data to the model. Elif agrees — if the data never leaves their network, the legal team approves."
+  narrative: "Hassan proposes a solution: bring the model to the data, not the data to the model. Elif agrees: if the data never leaves their network, the legal team approves."
   nextLessonTeaser: "Next: combining model updates from distributed training"
 hints:
   - level: nudge
-    content: "Think about why CORS exists — protecting data by controlling who can access it"
+    content: "CORS blocks a cross-origin fetch() to protect data by controlling who reads it. The silo boundary here plays the same role, enforced by lawyers instead of the browser."
   - level: guidance
     content: "Like CORS, data silos exist for good reasons. The solution respects the boundary instead of breaking it."
   - level: solution
-    content: "Federated learning sends the model to the data, trains locally, and only shares model updates — data never leaves its origin"
+    content: "Federated learning sends the model to the data, trains locally, and only shares model updates; data never leaves its origin"
 keywords:
   - data-silos
   - cors
@@ -36,14 +36,14 @@ keywords:
 ---
 
 <Dialogue speaker="Elif Yilmaz">
-Power companies will not share sensor data. Regulatory and competitive reasons. If Company A's outage patterns leak to Company B, there are legal consequences.
+Power companies won't share sensor data. Regulatory and competitive reasons. If Company A's outage patterns leak to Company B, there are legal consequences.
 </Dialogue>
 
 <Dialogue speaker="Hassan Al-Rashid">
 Then we bring the training to the data, not the data to the training. Each company trains on their own data. They share model updates, not data.
 </Dialogue>
 
-CORS exists because browsers must protect data boundaries between origins. A script on `malicious-site.com` cannot read your banking data from `bank.com`. The browser enforces this boundary — not because sharing is impossible, but because sharing is dangerous. Data silos in ML exist for the same reason. Three power companies each have sensor data that could improve the Terra Grid model, but regulatory, competitive, and legal boundaries prevent sharing.
+CORS exists because browsers must protect data boundaries between origins. A script on `malicious-site.com` cannot read your banking data from `bank.com`. The browser enforces this boundary, not because sharing is impossible, but because sharing is dangerous. One difference matters before you reach for the parallel: CORS is a technical constraint you can solve with a config header. The boundaries here are legal, contractual, and political. No header fixes them. Three power companies each hold sensor data that could improve the Terra Grid model, and none of them may share it.
 
 <LearningObjectives objectives={["Understand why data silos exist and why breaking them is not an option", "Map CORS data boundaries to organizational data boundaries in ML", "Recognize the federated learning insight: share model updates, not raw data", "Identify scenarios where federated learning solves the data access problem"]} />
 
@@ -53,7 +53,7 @@ CORS exists because browsers must protect data boundaries between origins. A scr
 
 <CodeBlock language="typescript" title="data-silos.ts">
 {`// In a browser: CORS blocks cross-origin data access
-// The solution is NOT to disable CORS — it is to use CORS-safe patterns
+// The solution is NOT to disable CORS. It is to use CORS-safe patterns
 
 // In ML: organizational boundaries block data sharing
 // The solution is NOT to copy all data to one place
@@ -98,7 +98,7 @@ const silos: DataSilo[] = [
 
 // Federated solution: send the MODEL to each silo
 // Each silo trains locally and sends back only weight updates
-// Data never crosses the boundary — like postMessage across origins`}
+// Data never crosses the boundary`}
 </CodeBlock>
 
 ## The Federated Insight
@@ -127,7 +127,7 @@ async function federatedTrainingRound(
   for (const silo of participants) {
     // Model goes TO the data (like sending a Service Worker to the client)
     const localUpdate = await trainLocally(globalWeights, silo.organization);
-    // Only weight updates come back — raw data stays behind the boundary
+    // Only weight updates come back. Raw data stays behind the boundary
     updates.push(localUpdate);
   }
 
@@ -152,4 +152,4 @@ Simulate a data silo scenario and implement the federated alternative.
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Data silos exist for valid regulatory, competitive, and legal reasons — like CORS exists for security", "The federated insight: send the model to the data, not the data to the model — respecting boundaries instead of breaking them", "Only model weight updates cross organizational boundaries — raw data never leaves its origin", "Federated learning unlocks 7.3M rows of training data that traditional centralized training could never access"]} />
+<KeyTakeaways takeaways={["Data silos are regulatory, competitive, and legal constraints; unlike a CORS header, no configuration change makes them go away", "The federated insight: send the model to the data, not the data to the model, respecting boundaries instead of breaking them", "Only model weight updates cross organizational boundaries; raw data never leaves its origin", "Federated learning puts 7.3M rows of training data to work that traditional centralized training could never access"]} />

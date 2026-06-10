@@ -38,14 +38,14 @@ skillAxes: [data_prep]
 ---
 
 <Dialogue speaker="Dr. Farah">
-The FFT tells us which frequencies are present — but not *when* they appear. The anomaly might pulse, might drift, might appear only during specific intervals. We need to see frequency content over time. We need a spectrogram.
+The FFT tells us which frequencies are present, but not *when* they appear. The anomaly might pulse, might drift, might appear only during specific intervals. We need to see frequency content over time. We need a spectrogram.
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
 So we compute the FFT at different time windows and stack them together? That sounds like... the DevTools performance waterfall. Time on one axis, event types on another, colored by duration.
 </Dialogue>
 
-You've used the Chrome DevTools performance waterfall dozens of times. Time runs along the x-axis, different event types (scripting, rendering, painting) stack on the y-axis, and color or width shows intensity. A spectrogram is exactly the same visualization — time on x, frequency on y, color intensity showing magnitude.
+You've used the Chrome DevTools performance waterfall dozens of times. Time runs along the x-axis, different event types (scripting, rendering, painting) stack on the y-axis, and color or width shows intensity. A spectrogram is exactly the same visualization: time on x, frequency on y, color intensity showing magnitude.
 
 <LearningObjectives objectives={["Understand spectrograms as time-frequency representations of signals", "Implement the Short-Time Fourier Transform (STFT) by windowing and computing FFTs", "Read spectrogram output: what the axes and values mean", "Connect spectrogram visualization to the DevTools waterfall mental model"]} />
 
@@ -53,7 +53,7 @@ You've used the Chrome DevTools performance waterfall dozens of times. Time runs
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-A single FFT gives you one column of the spectrogram — all frequencies at one moment. To see how frequencies change over time, you slide a window across the signal and compute the FFT at each position.
+A single FFT gives you one column of the spectrogram: all frequencies at one moment. To see how frequencies change over time, you slide a window across the signal and compute the FFT at each position.
 
 <CodeBlock language="typescript" title="stft.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -182,4 +182,4 @@ spectrogram[t, k] = |X[t, k]|²            // magnitude squared
 **Output shape:** `[num_windows, num_frequencies]`. With sample rate fs and window W, frequency resolution is `fs / W`. Time resolution is `hop / fs`.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["A spectrogram is many FFTs stacked over time — showing how frequency content evolves, like a DevTools waterfall", "The STFT slides a window across the signal and computes the FFT at each position", "Window size is a tradeoff: large windows = better frequency detail, small windows = better time detail", "For DEEP SCAN, the spectrogram reveals the anomaly pulses periodically — not a constant signal"]} />
+<KeyTakeaways takeaways={["A 256-sample window with a 128-sample hop gives 50% overlap, the standard STFT starting configuration", "The STFT slides a window across the signal and computes the FFT at each position", "Window size is a tradeoff: large windows = better frequency detail, small windows = better time detail", "For DEEP SCAN, the spectrogram reveals the anomaly pulses periodically — not a constant signal"]} />

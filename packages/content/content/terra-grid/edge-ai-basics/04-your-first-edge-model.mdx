@@ -10,14 +10,14 @@ context:
   narrative: "Site 12 needs a simple anomaly detector for vibration sensors. You build one that fits."
   speaker: "Hassan Al-Rashid"
 concept:
-  explanation: "A simple anomaly detector on sensor data works like client-side form validation — checking if input falls within expected bounds."
+  explanation: "A simple anomaly detector on sensor data works like client-side form validation, checking if input falls within expected bounds."
   bridge:
     feTitle: "Client-Side Validation"
     feCode: "function validate(input) {\n  return input >= min && input <= max;\n}"
     mlTitle: "Anomaly Detection"
     mlCode: "function isAnomaly(reading, mean, std) {\n  return Math.abs(reading - mean) > 3 * std;\n}"
     tier: structural
-    breaks: "Client-side validation runs deterministic rule checks. Edge anomaly detection runs a learned threshold that drifts as input distribution changes — a model that hits 1% false-positive rate at deploy can silently rise to 15% three weeks later with no code change. Threshold recalibration is required, not optional."
+    breaks: "Client-side validation runs deterministic rule checks. Edge anomaly detection runs a learned threshold that drifts as input distribution changes. A model that hits 1% false-positive rate at deploy can silently rise to 15% three weeks later with no code change. Threshold recalibration is required, not optional."
 consequence:
   narrative: "Your first edge model is deployed to Site 12. It detects anomalies in real time."
   nextLessonTeaser: "Next: understanding when to use edge vs cloud"
@@ -47,7 +47,7 @@ Your first edge model does not need to be complex. In frontend development, you 
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-Client-side form validation checks if input falls within expected bounds. Anomaly detection does the same thing — but it *learns* the bounds from data instead of hardcoding them.
+Client-side form validation checks if input falls within expected bounds. Anomaly detection does the same thing, but it *learns* the bounds from data instead of hardcoding them.
 
 <CodeBlock language="typescript" title="simple-anomaly-detector.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -97,7 +97,7 @@ sensorReading.dispose();
 prediction.dispose();`}
 </CodeBlock>
 
-Notice the `dispose()` calls. On a device with 512MB RAM, you cannot afford memory leaks. Every tensor must be explicitly freed. This is like removing event listeners in frontend code to prevent memory leaks — except the consequences are a frozen gateway device at a remote site.
+Notice the `dispose()` calls. On a device with 512MB RAM, you cannot afford memory leaks. Every tensor must be explicitly freed. This is like removing event listeners in frontend code to prevent memory leaks, except the consequences here are a frozen gateway device at a remote site.
 
 ## Challenge
 

@@ -11,7 +11,7 @@ import { ThemeCardsGrid, type ThemeCardData } from "./theme-cards-grid";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Tensorcraft — Deep Orbit launches today, 4 more coming",
+  title: "Tensorcraft — Deep Orbit is live, 4 more coming",
   description:
     "Deep Orbit (time-series & signals) is live. Neon Protocol, Signal Ward, Nova Canvas, and Terra Grid follow in waves — join each waitlist.",
   alternates: { canonical: "https://tensorcraft.app/themes" },
@@ -61,8 +61,8 @@ export default async function ThemesPage() {
         </h1>
         <p className="text-lg text-text-muted mb-6 max-w-2xl">
           Five ML specializations, each told through its own story universe.
-          Deep Orbit launches today. The other four ship in waves — sign up to
-          their waitlists below.
+          Deep Orbit is live. The other four ship in waves — sign up to their
+          waitlists below.
         </p>
         <p className="text-base text-text-muted mb-14 max-w-2xl leading-relaxed">
           React, Vue, Svelte, Angular — pick the theme that maps to the ML

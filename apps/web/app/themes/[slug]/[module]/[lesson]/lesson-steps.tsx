@@ -289,6 +289,11 @@ export function LessonSteps({
           <div
             className="flex-1 h-1.5 overflow-hidden"
             style={{ background: theme.palette.border, borderRadius: 2 }}
+            role="progressbar"
+            aria-valuenow={currentStep + 1}
+            aria-valuemin={1}
+            aria-valuemax={TOTAL_STEPS}
+            aria-label={`Lesson step ${currentStep + 1} of ${TOTAL_STEPS}`}
           >
             <div
               className="h-full transition-all duration-500 ease-out"

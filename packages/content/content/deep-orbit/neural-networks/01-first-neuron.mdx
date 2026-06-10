@@ -36,7 +36,7 @@ skillAxes: [model_arch]
 ---
 
 <Dialogue speaker="Dr. Farah">
-ARIA's pattern matching failed because it uses fixed rules. We need something that can learn. The simplest learning unit is a single neuron — think of it as a function that can adjust its own parameters.
+ARIA's pattern matching failed because it uses fixed rules. We need something that can learn. The simplest learning unit is a single neuron. Think of it as a function that can adjust its own parameters.
 </Dialogue>
 
 <LearningObjectives objectives={["Understand the anatomy of a single neuron (inputs, weights, bias)", "Implement a neuron as a weighted sum plus bias", "See how Array.reduce() maps to the dot product operation", "Initialize weights and bias for a simple classifier"]} />
@@ -74,4 +74,4 @@ Build your first neuron to classify signal readings.
 
 <Exercise slug="implement-neuron" />
 
-<KeyTakeaways takeaways={["A neuron = weighted sum + bias = Array.reduce() with learned weights", "Weights control input importance, bias shifts the decision threshold", "tf.dot() computes the weighted sum efficiently on the GPU", "This single operation is the building block of all neural networks"]} />
+<KeyTakeaways takeaways={["Three inputs, three weights, one bias: tf.dot([0.5, 0.8, 0.2], [0.4, -0.2, 0.6]) + 0.1 = 0.18, the neuron's entire computation", "Weights control input importance, bias shifts the decision threshold", "tf.dot() computes the weighted sum efficiently on the GPU", "This single operation is the building block of all neural networks"]} />

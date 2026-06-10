@@ -7,23 +7,23 @@ order: 2
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Flagging urgency isn't enough — documents need to reach the right department. Imran and Khalil build a routing system."
+  narrative: "Flagging urgency isn't enough; documents need to reach the right department. Imran and Khalil build a routing system."
   speaker: "Imran"
 concept:
-  explanation: "Multi-class classification assigns exactly one label from several possible categories — like routing a document to cardiology, radiology, oncology, or general medicine."
+  explanation: "Multi-class classification assigns exactly one label from several possible categories, like routing a document to cardiology, radiology, oncology, or general medicine."
   bridge:
     feTitle: "Express Router (switch/case routing)"
     feCode: "// app.get('/cardio', handler)\n// app.get('/radiology', handler)\n// Each request matches exactly one route"
     mlTitle: "Multi-Class Classifier"
     mlCode: "// softmax([cardio, radio, onco, general])\n// Each document assigned to exactly one department"
     tier: structural
-    breaks: "Express router switch/case routes match exactly one path with no confidence score. Multi-class classifiers output a softmax over all classes — the model picks one but confidence may split (0.4/0.35/0.25 across three classes). Treating the argmax as a hard route discards the uncertainty signal needed for review queues, abstain-on-low-confidence policies, and triage."
+    breaks: "Express router switch/case routes match exactly one path with no confidence score. Multi-class classifiers output a softmax over all classes; the model picks one but confidence may split (0.4/0.35/0.25 across three classes). Treating the argmax as a hard route discards the uncertainty signal needed for review queues, abstain-on-low-confidence policies, and triage."
 consequence:
   narrative: "Documents now flow to the right department automatically. But some documents belong to more than one department."
   nextLessonTeaser: "Next: multi-label classification for documents that need multiple tags."
 hints:
   - level: nudge
-    content: "Softmax ensures all class probabilities sum to 1 — exactly one class wins"
+    content: "Softmax ensures all class probabilities sum to 1: exactly one class wins"
   - level: guidance
     content: "Use categoricalCrossentropy loss with one-hot encoded labels"
   - level: solution
@@ -37,11 +37,11 @@ keywords:
 ---
 
 <Dialogue speaker="Imran">
-The urgency filter is working — we're catching critical findings faster. But flagging something as urgent doesn't tell us where to send it. A cardiac emergency needs cardiology, a suspicious mass needs oncology, an abnormal CT goes to radiology.
+The urgency filter is working; we're catching critical findings faster. But flagging something as urgent doesn't tell us where to send it. A cardiac emergency needs cardiology, a suspicious mass needs oncology, an abnormal CT goes to radiology.
 </Dialogue>
 
 <Dialogue speaker="Khalil">
-That's a routing problem. In Express, each request URL matches exactly one route handler. We need the same thing here — each document matches exactly one department.
+That's a routing problem. In Express, each request URL matches exactly one route handler. We need the same thing here: each document matches exactly one department.
 </Dialogue>
 
 <LearningObjectives objectives={["Distinguish multi-class from binary classification", "Implement softmax activation for mutually exclusive categories", "Use categorical crossentropy as the multi-class loss function", "Build a department routing classifier for clinical documents"]} />
@@ -50,7 +50,7 @@ That's a routing problem. In Express, each request URL matches exactly one route
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-An Express router matches each incoming request to exactly one handler. Similarly, softmax classification assigns each document to exactly one department. The softmax function guarantees that all output probabilities sum to 1 — like a router, every document goes somewhere, and no document goes to two places at once.
+An Express router matches each incoming request to exactly one handler. Similarly, softmax classification assigns each document to exactly one department. The softmax function guarantees that all output probabilities sum to 1. Like a router, every document goes somewhere, and no document goes to two places at once.
 
 <CodeBlock language="typescript" title="department-router.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -126,14 +126,14 @@ DEPARTMENTS.forEach((dept, i) => {
 
 ## Softmax: The Probability Router
 
-The key difference between binary and multi-class classification is in the output layer. Binary uses sigmoid (one probability). Multi-class uses softmax (a probability distribution). Softmax is like a competitive election — each class "votes," and the probabilities must sum to 1.
+The key difference between binary and multi-class classification is in the output layer. Binary uses sigmoid (one probability). Multi-class uses softmax (a probability distribution). Softmax is like a competitive election: each class "votes," and the probabilities must sum to 1.
 
 <Dialogue speaker="Vikram">
 What happens when a document could go to two departments? A patient with chest pain might need both cardiology and emergency.
 </Dialogue>
 
 <Dialogue speaker="Khalil">
-Softmax forces a single winner — the highest probability department. If we need multiple labels, we'll need a different approach. That's the next lesson.
+Softmax forces a single winner, the highest probability department. If we need multiple labels, we'll need a different approach. That's the next lesson.
 </Dialogue>
 
 ## Confusion Matrix: Where Routing Goes Wrong

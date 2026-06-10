@@ -7,10 +7,10 @@ order: 2
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Yara uploads a photograph of the city skyline and selects Monet as the style. MUSE processes it — the photograph softens, edges dissolve into impressionist light. 'It is painting,' Yara whispers. 'The machine is painting.'"
+  narrative: "Yara uploads a photograph of the city skyline and selects Monet as the style. MUSE processes it. The photograph softens, edges dissolve into impressionist light. 'It is painting,' Yara whispers. 'The machine is painting.'"
   speaker: "Yara"
 concept:
-  explanation: "Neural style transfer optimizes an image to match the content of one image and the style of another — like applying a CSS theme to existing HTML content. Minimize the content loss and the style loss simultaneously."
+  explanation: "Neural style transfer optimizes an image to match the content of one image and the style of another, like applying a CSS theme to existing HTML content. Minimize the content loss and the style loss simultaneously."
   bridge:
     feTitle: "CSS theme switching"
     feCode: "document.body.dataset.theme = 'monet'; // swap visual identity"
@@ -18,11 +18,11 @@ concept:
     mlCode: "loss = contentLoss(target, content) + styleLoss(target, style);"
     tier: structural
 consequence:
-  narrative: "The gallery wall shows the same cityscape in five styles — Monet, Basquiat, Hokusai, Rothko, and Yara's own. Erdem studies them in silence. 'The machine has taste,' he says finally. 'Or at least, it can borrow ours.'"
-  nextLessonTeaser: "Next: how networks encode artistic style — the mathematics of visual identity"
+  narrative: "The gallery wall shows the same cityscape in five styles: Monet, Basquiat, Hokusai, Rothko, and Yara's own. Erdem studies them in silence. 'The machine has taste,' he says finally. 'Or at least, it can borrow ours.'"
+  nextLessonTeaser: "Next: how networks encode artistic style: the mathematics of visual identity"
 hints:
   - level: nudge
-    content: "Think of applying a CSS theme: the HTML content stays the same, only the visual presentation changes"
+    content: "totalLoss adds two MSEs with very different scales: styleWeight defaults to 1000 because raw Gram-matrix differences are tiny next to feature differences"
   - level: guidance
     content: "Generate an image by minimizing two losses: content loss (match the photograph's structure) and style loss (match the painting's textures)"
   - level: solution
@@ -40,10 +40,10 @@ I want to see this photograph through Monet's eyes. Can MUSE do that?
 </Dialogue>
 
 <Dialogue speaker="Samir">
-The algorithm is elegant. We take the content features from your photograph and the style features from a Monet painting. Then we optimize a new image that matches both — photograph's structure, Monet's brushstrokes.
+The algorithm is elegant. We take the content features from your photograph and the style features from a Monet painting. Then we optimize a new image that matches both: photograph's structure, Monet's brushstrokes.
 </Dialogue>
 
-Swapping CSS themes preserves content while changing visual identity. Neural style transfer does the same — it generates an image that preserves one image's content while adopting another image's style.
+Swapping CSS themes preserves content while changing visual identity. Neural style transfer does the same. It generates an image that preserves one image's content while adopting another image's style.
 
 <LearningObjectives objectives={["Define content loss as the MSE between content feature activations", "Define style loss as the MSE between Gram matrices of style features", "Combine losses with weighting to control content-style balance", "Optimize pixel values using gradient descent to minimize total loss"]} />
 
@@ -147,4 +147,4 @@ L_total = α · L_content + β · L_style
 **Optimization:** start x = content image (or noise). Compute gradient of L_total w.r.t. x (NOT w.r.t. weights — VGG is frozen). Iterate: `x ← x − η · ∇_x L_total`. After ~500 iterations, x is the styled image.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["Neural style transfer = CSS theme switching: preserve content structure, swap visual identity", "Content loss measures difference in deep CNN features between generated and content image", "Style loss measures difference in Gram matrices between generated and style image", "The balance between content weight and style weight controls how much the original structure is preserved"]} />
+<KeyTakeaways takeaways={["Start the optimization from the content image instead of random noise: you converge in about 100 iterations instead of 500", "Content loss measures difference in deep CNN features between generated and content image", "Style loss measures difference in Gram matrices between generated and style image", "The balance between content weight and style weight controls how much the original structure is preserved"]} />

@@ -7,7 +7,7 @@ order: 5
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "DEEP SCAN fires its highest-confidence alert ever. The reconstruction error is off the charts. Nazari checks the sensors three times. 'This is not instrument noise. The model is right.'"
+  narrative: "DEEP SCAN fires its highest-confidence alert ever. The reconstruction error is twelve times baseline. Nazari checks the sensors three times. 'This is not instrument noise. The model is right.'"
   speaker: "Chief Nazari"
 concept:
   explanation: "When an error boundary catches an unexpected throw, it means something genuinely new happened — the system encountered a case it was never designed for."
@@ -18,7 +18,7 @@ concept:
     mlCode: "if (error > 12 * baseline) { alert('UNKNOWN SIGNAL DETECTED') }"
     tier: intuition
 consequence:
-  narrative: "The mathematical structure embedded in the anomaly mirrors the Fibonacci sequence — the same sequence used in the ship's own sensor calibration. Farah's hands are shaking."
+  narrative: "The mathematical structure embedded in the anomaly mirrors the Fibonacci sequence — the same sequence used in the ship's own sensor calibration. Farah runs the decomposition again. Same ratios."
   nextLessonTeaser: "Module 8: advanced forecasting to predict when the anomaly will appear next"
 hints:
   - level: nudge
@@ -36,7 +36,7 @@ skillAxes: [model_arch, evaluation]
 ---
 
 <Dialogue speaker="Chief Nazari">
-I have checked the sensor calibration three times. This is not instrument noise — the model is right.
+I've checked the sensor calibration three times. This is not instrument noise. The model is right.
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
@@ -47,7 +47,7 @@ The reconstruction error is twelve times the normal baseline. The frequency deco
 What am I looking at, Dr. Farah?
 </Dialogue>
 
-When a React error boundary catches an exception, it means something genuinely unexpected happened — the application encountered a case no developer anticipated. DEEP SCAN's anomaly alert is the same: every detection system agrees this signal is unlike anything in the training data.
+When a React error boundary catches an exception, it means something genuinely unexpected happened: the application encountered a case no developer anticipated. DEEP SCAN's anomaly alert is the same: every detection system agrees this signal is unlike anything in the training data.
 
 <LearningObjectives objectives={["Combine multiple detection methods into an ensemble for robust anomaly detection", "Build a detection pipeline: statistical checks → autoencoder → LSTM verification", "Interpret ensemble agreement as confidence — more detectors flagging = higher confidence", "Deploy the full anomaly detection system on the DEEP SCAN dashboard"]} />
 
@@ -119,7 +119,7 @@ function detectAnomaly(
 ## The Discovery
 
 <CodeBlock language="typescript" title="the-discovery.ts">
-{`// The signal that breaks everything
+{`// Run the full ensemble on the flagged signal
 const anomalyResult = detectAnomaly(
   anomalousSignal, baseline, autoencoder, lstm, recentWindow, thresholds,
 );

@@ -16,10 +16,10 @@ concept:
     mlTitle: "Decision tree"
     mlCode: "tree.split('age', 30).split('income', 50000).predict()"
     tier: structural
-    breaks: "Hand-written if/else encodes rules YOU chose. A decision tree learns split features and thresholds from data via algorithms like CART (Gini impurity, information gain). The runtime shape rhymes; the authoring story is opposite — one is engineered, one is fitted."
+    breaks: "Hand-written if/else encodes rules YOU chose. A decision tree learns split features and thresholds from data via algorithms like CART (Gini impurity, information gain). The runtime shape rhymes; the authoring story is opposite. One is engineered, one is fitted."
 consequence:
-  narrative: "You can now build models that explain their reasoning. In regulated industries, this isn't optional — it's required."
-  nextLessonTeaser: "Next: k-nearest neighbors — classification without any training at all"
+  narrative: "Every prediction from your tree now traces back to a readable chain of if/else rules, an explanation a compliance officer can audit. Regulated industries require nothing less."
+  nextLessonTeaser: "Next: k-nearest neighbors, classification without any training at all"
 hints:
   - level: nudge
     content: "A split is just choosing which feature and value to branch on"
@@ -38,13 +38,13 @@ keywords:
 Neural networks are powerful, but try explaining to a compliance officer why your model denied a loan. "The 47th neuron in the third hidden layer activated strongly" won't cut it. Decision trees give you something neural networks can't: a clear explanation for every prediction.
 </Dialogue>
 
-Here's the identity bridge — a decision tree *is* nested if/else statements. If you've ever written conditional rendering logic in a component, you've already built a decision tree.
+A decision tree *is* nested if/else statements, an identity bridge. If you've ever written conditional rendering logic in a component, you've already built one.
 
 <LearningObjectives objectives={["Understand how decision trees split data using feature thresholds", "Calculate Gini impurity to measure split quality", "Build a simple decision tree from scratch in TypeScript", "Recognize overfitting as the tree equivalent of over-nested components"]} />
 
 ## Trees Are Just Nested If/Else
 
-This is the rare "identity bridge" — the frontend concept and the ML concept are the same thing.
+This is the rare "identity bridge": the frontend concept and the ML concept are the same thing.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -163,9 +163,9 @@ function findBestSplit(data: DataPoint[], featureNames: string[]) {
 }`}
 </CodeBlock>
 
-## Overfitting: The Component Over-Nesting Problem
+## Overfitting Is Component Over-Nesting
 
-A decision tree with no depth limit will create a perfect rule for every single training example — and fail on new data. This is like creating a deeply nested component tree where each component handles exactly one edge case. It works, but it's brittle.
+A decision tree with no depth limit will create a perfect rule for every single training example, then fail on new data. This is like creating a deeply nested component tree where each component handles exactly one edge case. It works, but it's brittle.
 
 Set a `maxDepth` to prevent this, just like you'd refactor deeply nested components.
 
@@ -175,4 +175,4 @@ Build a decision tree that learns splits from data.
 
 <Exercise slug="build-decision-tree" />
 
-<KeyTakeaways takeaways={["Decision trees are literally nested if/else — the identity bridge", "Gini impurity measures how mixed the classes are (0 = pure, 0.5 = max)", "Trees find the best feature and threshold to split on at each node", "Max depth prevents overfitting — same principle as avoiding deep component nesting"]} />
+<KeyTakeaways takeaways={["Decision trees are literally nested if/else (the identity bridge)", "Gini impurity measures how mixed the classes are (0 = pure, 0.5 = max)", "Trees find the best feature and threshold to split on at each node", "Max depth prevents overfitting, same principle as avoiding deep component nesting"]} />

@@ -10,7 +10,7 @@ context:
   narrative: "Tariq needs a model on a $35 sensor gateway. Every byte counts."
   speaker: "Tariq Hussain"
 concept:
-  explanation: "Number formats in ML (Float32, Float16, Int8) trade precision for size — just like image formats (PNG, WebP, AVIF) trade quality for file size."
+  explanation: "Number formats in ML (Float32, Float16, Int8) trade precision for size, just like image formats (PNG, WebP, AVIF) trade quality for file size."
   bridge:
     feTitle: "Image Formats"
     feCode: "// PNG: lossless, large\n// WebP: lossy, 30% smaller\n// AVIF: lossy, 50% smaller"
@@ -23,7 +23,7 @@ consequence:
   nextLessonTeaser: "Next: applying post-training quantization"
 hints:
   - level: nudge
-    content: "Think about how JPEG quality settings trade file size for visual quality"
+    content: "JPEG's quality slider trades file size against visible artifacts. The format ladder here trades bytes per parameter against numerical precision"
   - level: guidance
     content: "Float32 = 4 bytes, Float16 = 2 bytes, Int8 = 1 byte per parameter"
   - level: solution
@@ -39,7 +39,7 @@ keywords:
 I need this model running on a $35 sensor gateway. It has 512MB RAM shared between the OS, drivers, and your model. Every byte you save is a byte I can use for the sensor buffer.
 </Dialogue>
 
-You choose image formats every day. PNG for lossless screenshots, WebP for balanced quality and size, AVIF for maximum compression. Each format trades quality for file size. Number formats in ML make the exact same tradeoff — but with numerical precision instead of visual quality.
+You choose image formats every day. PNG for lossless screenshots, WebP for balanced quality and size, AVIF for maximum compression. Each format trades quality for file size. Number formats in ML run the same trade, with numerical precision in place of visual quality.
 
 <LearningObjectives objectives={["Understand Float32, Float16, and Int8 number formats", "Calculate memory savings from format conversion", "Recognize the precision-size tradeoff in each format", "Map image format decisions to number format decisions"]} />
 
@@ -102,7 +102,7 @@ INT8: signed 8-bit integer, range [-128, 127]
 **Dynamic range** (largest representable / smallest nonzero):
 - FP32: ~10^76
 - FP16: ~10^9 (overflow risk above 65504, underflow below 6e-8)
-- FP8: ~10^4 (very narrow — needs careful per-tensor scaling)
+- FP8: ~10^4 (very narrow; needs careful per-tensor scaling)
 - INT8: 256 distinct values, scale-shift to map to model's value range
 
 **Quantization formula** (FP32 → INT8 with affine quantization):
@@ -125,4 +125,4 @@ Where `scale = (x_max − x_min) / 255` and `zero_point = round(−x_min / scale
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Float32 (4 bytes), Float16 (2 bytes), Int8 (1 byte) per parameter", "Float32 → Int8 quantization gives 4x size reduction", "Typical accuracy loss from Int8 quantization: 0-2%", "The precision-size tradeoff mirrors image format quality-size tradeoffs"]} />
+<KeyTakeaways takeaways={["Float32 (4 bytes), Float16 (2 bytes), Int8 (1 byte) per parameter", "Float32 → Int8 quantization gives 4x size reduction", "Typical accuracy loss from Int8 quantization: 0-2%", "On a 512MB gateway shared with the OS and drivers, every byte of model size is a byte taken from the sensor buffer"]} />

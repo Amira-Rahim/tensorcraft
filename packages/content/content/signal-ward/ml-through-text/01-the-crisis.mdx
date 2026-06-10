@@ -10,7 +10,7 @@ context:
   narrative: "The hospital's vendor NLP system misclassified a drug allergy note, nearly causing a fatal interaction. Dr. Karimi cancels the vendor contract and assembles an in-house team."
   speaker: "Dr. Karimi"
 concept:
-  explanation: "Machine learning finds patterns in data that rule-based systems miss. For clinical text, ML models learn to classify, extract, and interpret medical language — turning unstructured notes into actionable information."
+  explanation: "Machine learning finds patterns in data that rule-based systems miss. For clinical text, ML models learn to classify, extract, and interpret medical language, turning unstructured notes into actionable information."
   bridge:
     feTitle: "App Architecture"
     feCode: "const app = { ui: 'React', state: 'Redux', api: 'REST' }"
@@ -22,7 +22,7 @@ consequence:
   nextLessonTeaser: "Next: turning clinical text into numbers a model can understand."
 hints:
   - level: nudge
-    content: "Think about what a model needs to make a decision — it needs numbers, not words."
+    content: "tf.tensor() will not accept 'chest pain'. Encode each characteristic of the note as a 0 or 1 before the model can use it."
   - level: guidance
     content: "Use tf.tensor() to represent a simple numerical feature vector."
   - level: solution
@@ -41,7 +41,7 @@ scene:
 > **Disclaimer:** Signal Ward is an educational simulation. All clinical scenarios are fictional. Nothing in this course constitutes medical advice.
 
 <Dialogue speaker="Dr. Karimi">
-Everyone, sit down. Last night the vendor NLP system flagged a penicillin allergy note as "no known allergies." The patient received amoxicillin. We caught it at the pharmacy — barely. I'm canceling the vendor contract today.
+Everyone, sit down. Last night the vendor NLP system flagged a penicillin allergy note as "no known allergies." The patient received amoxicillin. We caught it at the pharmacy. Barely. I'm canceling the vendor contract today.
 </Dialogue>
 
 <Dialogue speaker="Imran" direction="pulling up the chart">
@@ -52,7 +52,7 @@ The note said "pt has documented PCN allergy — anaphylaxis 2019." The system c
 We're building our own. Khalil, you built the patient portal frontend. I need you on the ML interface. Vikram will handle the NLP internals. We're calling it Diagnostic One.
 </Dialogue>
 
-A vendor system failed because it relied on rigid keyword matching. Machine learning takes a fundamentally different approach: instead of hand-coded rules, it learns patterns from data. As a frontend developer, you already think in systems. Now you'll apply that thinking to text intelligence.
+A vendor system failed because it relied on rigid keyword matching. Machine learning takes a different approach: instead of hand-coded rules, it learns patterns from data.
 
 <LearningObjectives objectives={["Understand why ML outperforms rule-based systems for clinical text", "Identify the three stages of an ML pipeline: input, model, output", "Recognize the parallels between app architecture and ML architecture", "Create a simple numerical representation of text features using TensorFlow.js"]} />
 
@@ -62,7 +62,7 @@ The vendor system had rules like `if note.includes('no known allergies')`. But c
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-Just as a web app has layers — UI, state management, API — an ML pipeline has layers too. Data comes in, gets transformed, flows through a model, and produces a prediction. You already understand this architecture. The components are different, but the pattern is the same.
+An ML pipeline has layers the way a web app does: data comes in, gets transformed, flows through a model, and produces a prediction.
 
 <CodeBlock language="typescript" title="ml-pipeline-overview.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -111,4 +111,4 @@ Create a simple feature vector representing a clinical note's characteristics.
 
 <Exercise slug="text-to-numbers" />
 
-<KeyTakeaways takeaways={["ML learns patterns from data instead of relying on hand-coded rules", "An ML pipeline mirrors web app architecture: input → processing → output", "Clinical text requires ML because abbreviations and context make rules brittle", "The first step is always converting text into numerical representations"]} />
+<KeyTakeaways takeaways={["ML learns patterns from data instead of relying on hand-coded rules", "A dot product of binary features and learned weights already yields a usable risk score; the lesson's five-feature allergy note scores ~2.4 and gets flagged for review", "Clinical text requires ML because abbreviations and context make rules brittle", "The first step is always converting text into numerical representations"]} />

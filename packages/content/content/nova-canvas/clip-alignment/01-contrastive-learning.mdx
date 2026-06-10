@@ -7,20 +7,20 @@ order: 1
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Rohan puts two images side by side. 'Which one matches the caption a melancholy cityscape at twilight?' One is moody, blue-toned. The other is a bright daytime city. 'The model learns by comparison,' he says. 'Not by being told the answer — by seeing which pairs match and which don't. Like an A/B test.'"
+  narrative: "Rohan puts two images side by side. 'Which one matches the caption a melancholy cityscape at twilight?' One is moody, blue-toned. The other is a bright daytime city. 'The model learns by comparison,' he says. 'Not by being told the answer, but by seeing which pairs match and which don't. Like an A/B test.'"
   speaker: "Rohan"
 concept:
-  explanation: "Contrastive learning trains models by comparing positive pairs (matching image-text) against negative pairs (mismatched). Like A/B testing — you learn what works by comparing options side by side, not by being told the answer directly."
+  explanation: "Contrastive learning trains models by comparing positive pairs (matching image-text) against negative pairs (mismatched). Like A/B testing: you learn what works by comparing options side by side, not by being told the answer directly."
   bridge:
     feTitle: "A/B testing"
     feCode: "if (variant === 'A') showOldDesign(); else showNewDesign();"
     mlTitle: "Contrastive learning"
     mlCode: "loss = -log(sim(pos) / sum(sim(pos) + sim(negatives)));"
     tier: intuition
-    breaks: "A/B testing measures user behavior across two known variants. Contrastive learning trains a model to pull matched pairs together and push unmatched pairs apart in embedding space — the 'A' and 'B' are dynamically sampled from the dataset, not user-assigned."
+    breaks: "A/B testing measures user behavior across two known variants. Contrastive learning trains a model to pull matched pairs together and push unmatched pairs apart in embedding space. The 'A' and 'B' are dynamically sampled from the dataset, not user-assigned."
 consequence:
-  narrative: "The model stops confusing 'city at night' with 'melancholy cityscape at twilight.' The contrastive loss teaches it that mood matters — the difference between a description and an evocation. Rohan: 'Mood is a direction in a 512-dimensional vector space.'"
-  nextLessonTeaser: "Next: the CLIP architecture — how to build this at scale"
+  narrative: "The model stops confusing 'city at night' with 'melancholy cityscape at twilight.' The contrastive loss teaches it that mood matters: the difference between a description and an evocation. Rohan: 'Mood is a direction in a 512-dimensional vector space.'"
+  nextLessonTeaser: "Next: the CLIP architecture, and how to build this at scale"
 hints:
   - level: nudge
     content: "A/B tests compare two variants to find which is better. Contrastive learning compares pairs to find which match."
@@ -41,14 +41,14 @@ A/B testing works by comparison. You show variant A to half your users and varia
 </Dialogue>
 
 <Dialogue speaker="Erdem">
-So the model sees a batch of images and captions and has to figure out which go together?
+So it's an A/B test. Two known variants, assign half the traffic to each, and measure which wins?
 </Dialogue>
 
 <Dialogue speaker="Rohan">
-Exactly. In a batch of 32, there are 32 correct pairs and 992 incorrect pairs. The model learns by getting better at telling them apart. Learning by comparison — not by memorization.
+That's where my analogy stops carrying. An A/B test measures users against two fixed variants somebody chose. Here nobody assigns anything: in a batch of 32, the 32 matched pairs and 992 mismatched ones are sampled fresh from the dataset every step. The model learns by telling them apart. Comparison, not memorization.
 </Dialogue>
 
-You already use A/B testing to learn what works by comparison. Contrastive learning applies the same principle to embeddings — the model learns which image-text pairs match by comparing them against mismatches.
+You already use A/B testing to learn what works by comparison. Contrastive learning applies the same principle to embeddings: the model learns which image-text pairs match by comparing them against mismatches.
 
 <LearningObjectives objectives={["Understand contrastive learning: training by comparison rather than classification", "Implement positive and negative pair sampling from a batch", "Compute InfoNCE loss with temperature scaling", "Connect contrastive learning to A/B testing methodology"]} />
 
@@ -143,4 +143,4 @@ For a batch of (image, caption) pairs: image_i should match caption_i (and only 
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Contrastive learning = A/B testing for embeddings: learn by comparing matched and mismatched pairs", "InfoNCE loss maximizes similarity of positive pairs relative to all negative pairs in the batch", "Temperature controls how sharp the similarity distribution is — like confidence threshold in A/B testing", "Larger batches provide more negative pairs, improving the quality of learned representations"]} />
+<KeyTakeaways takeaways={["A batch of 32 supplies its own training signal: 32 matched pairs against 992 mismatches, resampled every step", "InfoNCE loss maximizes similarity of positive pairs relative to all negative pairs in the batch", "Temperature controls how sharp the similarity distribution is — like confidence threshold in A/B testing", "Larger batches provide more negative pairs, improving the quality of learned representations"]} />

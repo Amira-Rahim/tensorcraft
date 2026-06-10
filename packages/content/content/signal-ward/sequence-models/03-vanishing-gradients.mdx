@@ -7,25 +7,25 @@ order: 3
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Imran discovers that the RNN forgets critical information from earlier in long clinical notes — a symptom of the vanishing gradient problem."
+  narrative: "Imran discovers that the RNN forgets critical information from earlier in long clinical notes, a symptom of the vanishing gradient problem."
   speaker: "Imran"
 concept:
-  explanation: "In long sequences, gradients shrink exponentially as they backpropagate through time. Early tokens lose their influence on learning, like an event bubbling through deeply nested DOM elements — the signal fades before reaching the top."
+  explanation: "In long sequences, gradients shrink exponentially as they backpropagate through time. Early tokens lose their influence on learning, like an event bubbling through deeply nested DOM elements; the signal fades before reaching the top."
   bridge:
     feTitle: "Event Bubbling Fades in Deep DOM"
     feCode: "div > div > div > div > button.click() // event may never reach root"
     mlTitle: "Gradient Vanishes Over Time"
     mlCode: "grad_t0 = grad_tN * W^N // shrinks exponentially with depth"
     tier: structural
-    breaks: "Event bubbling decays only when a handler calls stopPropagation. Vanishing gradients shrink multiplicatively at every layer (sigmoid derivative caps at 0.25) — by layer 10 the gradient is below float32 precision and weights stop updating. The fix is architectural (residuals, ReLU, LSTM gates), not stylistic."
+    breaks: "Event bubbling decays only when a handler calls stopPropagation. Vanishing gradients shrink multiplicatively at every layer (sigmoid derivative caps at 0.25); by layer 10 the gradient is below float32 precision and weights stop updating. The fix is architectural (residuals, ReLU, LSTM gates), not stylistic."
 consequence:
   narrative: "The team understands why the simple RNN fails on long discharge summaries. They need a more robust architecture."
   nextLessonTeaser: "Next: LSTM and GRU — architectures with gates that solve the vanishing gradient problem."
 hints:
   - level: nudge
-    content: "Multiply a fraction by itself many times — it approaches zero. That's what happens to gradients in deep backpropagation."
+    content: "Multiply a fraction by itself many times and it approaches zero. That's what happens to gradients in deep backpropagation."
   - level: guidance
-    content: "Compare RNN performance on short sequences (5 tokens) vs long sequences (50 tokens) — accuracy drops sharply."
+    content: "Compare RNN performance on short sequences (5 tokens) vs long sequences (50 tokens): accuracy drops sharply."
   - level: solution
     content: "Demonstrate gradient magnitude decay: for i in range(50): grad *= 0.9 shows how quickly signal vanishes."
 keywords:
@@ -43,7 +43,7 @@ Something's wrong. Our RNN classifies short clinical notes perfectly, but on lon
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-That's exactly what's happening. It's the vanishing gradient problem. Think of it like event bubbling in a deeply nested DOM — by the time the click event reaches the root, the signal has faded to nothing.
+It's the vanishing gradient problem. Closest thing you've shipped is event bubbling fading in a deep DOM, but don't lean on that too hard. Bubbling only dies if a handler kills it. Gradients shrink at every single step, no opt-out: the activation derivative caps at 0.25, so a few dozen steps in you're under float32 precision and the early weights just stop updating.
 </Dialogue>
 
 <Dialogue speaker="Dr. Karimi">
@@ -54,7 +54,7 @@ In clinical notes, the diagnosis is often stated at the top, but the supporting 
 Warning: gradient magnitude at timestep 1 is 0.00003 when sequence length is 50. Information from early tokens has effectively zero influence on weight updates.
 </Dialogue>
 
-In the browser, a click event on a deeply nested element bubbles up through every ancestor. If each layer slightly dampens the event, by the time it reaches the document root, the signal is nearly gone. Vanishing gradients work the same way — each RNN timestep slightly shrinks the gradient, and over long sequences, early tokens lose all influence.
+Each RNN timestep multiplies the gradient by roughly the same factor. Multiply 0.9 by itself 50 times and you get 0.005; at 100 steps you are at 0.00003. Over a long discharge summary, the tokens at the top lose all influence on what the network learns.
 
 <LearningObjectives objectives={["Understand why gradients vanish during backpropagation through time", "Connect vanishing gradients to event bubbling signal loss in deep DOM trees", "Observe gradient decay experimentally with TensorFlow.js", "Recognize the symptoms: poor performance on long sequences despite good short-sequence accuracy"]} />
 
@@ -152,7 +152,7 @@ So the longer the discharge summary, the more the model forgets about the diagno
 </Dialogue>
 
 <Dialogue speaker="Vikram">
-Exactly. We need an architecture that can selectively remember important information across long sequences. That's what LSTMs were invented for.
+That's the dealbreaker LSTMs were invented for. An architecture that selectively remembers across long sequences, instead of letting every step erode the signal.
 </Dialogue>
 
 ## Challenge
@@ -173,9 +173,9 @@ BPTT computes gradients as products of per-step Jacobians:
 - ρ > 1 → product explodes (exploding, often resolved by gradient clipping)
 - ρ ≈ 1 → information can flow but is fragile
 
-For T = 100 steps and average per-step factor of 0.5: `0.5^100 ≈ 10^-30` — far below float32 precision. Early-step gradients are zero in practice, weights stop updating, and the model effectively trains only on recent context.
+For T = 100 steps and average per-step factor of 0.5: `0.5^100 ≈ 10^-30`, far below float32 precision. Early-step gradients are zero in practice, weights stop updating, and the model effectively trains only on recent context.
 
 **Architectural fixes:** LSTM/GRU gates create gradient highways (next lesson). Transformers eliminate recurrence entirely.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["Gradients shrink exponentially during backpropagation through time, like event signals fading through deep DOM nesting", "Simple RNNs fail on long sequences because early tokens lose all influence on learning", "The vanishing gradient problem manifests as poor accuracy on long sequences despite good short-sequence performance", "This fundamental limitation motivates gated architectures like LSTMs and GRUs"]} />
+<KeyTakeaways takeaways={["With a recurrent weight of 0.9, the gradient reaching token 0 of a 50-token sequence is 0.005; at 100 tokens, 0.00003", "Simple RNNs fail on long sequences because early tokens lose all influence on learning", "The vanishing gradient problem manifests as poor accuracy on long sequences despite good short-sequence performance", "This fundamental limitation motivates gated architectures like LSTMs and GRUs"]} />

@@ -42,10 +42,10 @@ So an RNN is just... a reducer? It takes the previous hidden state and the new i
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
-Exactly right. The hidden state is the network's memory — it accumulates information from every time step it has seen. The key difference is that the reducer function is *learned* from data, not hand-coded.
+Close, with one correction. Your reducer is a pure function you wrote. Same state, same action, same result, and you can read the logic. This one is learned from data. Nobody authored the transition function; the weights are the function. And the same input produces different outputs depending on everything that came before. The hidden state is the network's memory.
 </Dialogue>
 
-If you've used `useReducer`, you already understand recurrent neural networks. A reducer takes `(previousState, action)` and returns `newState`. An RNN cell takes `(previousHidden, currentInput)` and returns `newHidden`. Same pattern — the RNN just learns the reducer function from data instead of you writing it by hand.
+The cell itself is small: a weight matrix for the previous hidden state, a weight matrix for the input, a bias, a `tanh`. What makes it recurrent is the wiring: the output loops back in as the hidden state at the next time step.
 
 <LearningObjectives objectives={["Understand the RNN as a learned reducer: (prevState, input) → newState", "Build a simple RNN using TensorFlow.js layers API", "Recognize the vanishing gradient problem — why simple RNNs struggle with long sequences", "Process sequential signal data through a recurrent architecture"]} />
 
@@ -161,4 +161,4 @@ Build a simple RNN that processes sequential signal data.
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["An RNN is a learned reducer: (prevHidden, input) → newHidden, where the transition function is trained from data", "Hidden state carries memory across time steps — the network remembers what it has seen", "returnSequences: true gives output at every step; false gives only the final hidden state", "Simple RNNs suffer from vanishing gradients — they forget long-range patterns after ~10-20 steps"]} />
+<KeyTakeaways takeaways={["DEEP SCAN's anomaly repeats every ~73 seconds — at 1 sample/second that's a 73-step dependency, beyond a simple RNN's reach", "Hidden state carries memory across time steps — the network remembers what it has seen", "returnSequences: true gives output at every step; false gives only the final hidden state", "Simple RNNs suffer from vanishing gradients — they forget long-range patterns after ~10-20 steps"]} />

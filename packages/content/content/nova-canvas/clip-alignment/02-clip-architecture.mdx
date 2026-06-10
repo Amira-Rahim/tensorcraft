@@ -7,20 +7,20 @@ order: 2
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "Samir draws the architecture. 'Two encoders. One for images, one for text. Trained together on 400 million image-text pairs from the internet. The result: a shared space where sunset photo and the words sunset over a digital city are neighbors.' Rohan: 'It is Algolia but for concepts — multi-index search across modalities.'"
+  narrative: "Samir draws the architecture. 'Two encoders. One for images, one for text. Trained together on 400 million image-text pairs from the internet. The result: a shared space where sunset photo and the words sunset over a digital city are neighbors.' Rohan: 'It is Algolia but for concepts: multi-index search across modalities.'"
   speaker: "Samir"
 concept:
-  explanation: "CLIP (Contrastive Language-Image Pretraining) trains dual encoders on massive image-text data to create a shared embedding space. Like Algolia multi-index search — you can search across different content types (images, text) with a single query because they share the same ranking space."
+  explanation: "CLIP (Contrastive Language-Image Pretraining) trains dual encoders on massive image-text data to create a shared embedding space. Like Algolia multi-index search: you can search across different content types (images, text) with a single query because they share the same ranking space."
   bridge:
     feTitle: "Algolia multi-index search"
     feCode: "algolia.search('sunset city', { indices: ['images', 'articles'] });"
     mlTitle: "CLIP dual encoder"
     mlCode: "const results = clip.search(textQuery, imageDatabase);"
     tier: structural
-    breaks: "Multi-index search routes queries to indices you built. CLIP dual-encoder runs both modalities through separate networks into a shared embedding space — there is no index lookup, only learned proximity in continuous space."
+    breaks: "Multi-index search routes queries to indices you built. CLIP dual-encoder runs both modalities through separate networks into a shared embedding space. There is no index lookup, only learned proximity in continuous space."
 consequence:
-  narrative: "CLIP understands nuance. 'A melancholy cityscape at twilight' and 'a city at night' produce different embeddings — the model encodes mood, not just content. Rohan smiles: 'Mood is a direction in a 512-dimensional vector space.'"
-  nextLessonTeaser: "Next: zero-shot classification — classifying images without any training examples"
+  narrative: "CLIP understands nuance. 'A melancholy cityscape at twilight' and 'a city at night' produce different embeddings. The model encodes mood, not just content. Rohan smiles: 'Mood is a direction in a 512-dimensional vector space.'"
+  nextLessonTeaser: "Next: zero-shot classification: classifying images without any training examples"
 hints:
   - level: nudge
     content: "Algolia multi-index search returns results from different content types ranked in the same space"
@@ -37,14 +37,14 @@ keywords:
 ---
 
 <Dialogue speaker="Samir">
-CLIP is two encoders trained together. The image encoder sees pixels. The text encoder reads words. Contrastive loss pulls matching pairs together. After training on 400 million pairs, the shared space understands concepts — not just pixels and tokens.
+CLIP is two encoders trained together. The image encoder sees pixels. The text encoder reads words. Contrastive loss pulls matching pairs together. After training on 400 million pairs, the shared space understands concepts, not just pixels and tokens.
 </Dialogue>
 
 <Dialogue speaker="Rohan">
-It is like Algolia multi-index search. You type a query and get results from images, articles, and products — all ranked in the same relevance space. CLIP does the same thing: text and images, ranked by conceptual similarity.
+It is like Algolia multi-index search. You type a query and get results from images, articles, and products, all ranked in the same relevance space. CLIP does the same thing: text and images, ranked by conceptual similarity.
 </Dialogue>
 
-Algolia lets you search across different content types with a single query because they share a ranking space. CLIP creates the same unified search across modalities — given text, find matching images; given an image, find matching text.
+Algolia lets you search across different content types with a single query because they share a ranking space. CLIP creates the same unified search across modalities: given text, find matching images; given an image, find matching text.
 
 <LearningObjectives objectives={["Understand the CLIP dual-encoder architecture: image encoder + text encoder + shared space", "Implement the training loop with contrastive loss on image-text batches", "Use learned embeddings for cross-modal search: text query -> image results", "Connect CLIP to multi-index search systems like Algolia"]} />
 

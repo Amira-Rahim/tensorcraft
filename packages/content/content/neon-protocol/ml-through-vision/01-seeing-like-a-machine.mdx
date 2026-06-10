@@ -10,20 +10,20 @@ context:
   narrative: "Noor meets the resistance crew in NeuralCore HQ. Dilan briefs her on the mission. Zara shows her a wall of surveillance feeds: 'This is what Meridian sees. Now let us teach a machine to see differently.'"
   speaker: "Dilan"
 concept:
-  explanation: "Images in a computer are just canvas pixel data — a 2D grid of RGBA values stored in a Uint8ClampedArray. Every getImageData() call returns a tensor."
+  explanation: "Images in a computer are just canvas pixel data: a 2D grid of RGBA values stored in a Uint8ClampedArray. Every getImageData() call returns a tensor."
   bridge:
     feTitle: "Canvas getImageData()"
     feCode: "const pixels = ctx.getImageData(0, 0, w, h).data; // Uint8ClampedArray"
     mlTitle: "Image Tensor"
     mlCode: "const tensor = tf.browser.fromPixels(canvas); // [height, width, channels]"
     tier: structural
-    breaks: "`getImageData` returns `Uint8ClampedArray` with values 0-255. `tf.browser.fromPixels` returns a float32 tensor with shape `[h, w, channels]` — and most models then need normalization to [0,1] or per-channel mean/std before inference. The pixels are the same; the numeric type, range, and rank are not."
+    breaks: "`getImageData` returns `Uint8ClampedArray` with values 0-255. `tf.browser.fromPixels` returns a float32 tensor with shape `[h, w, channels]`, and most models then need normalization to [0,1] or per-channel mean/std before inference. The pixels are the same; the numeric type, range, and rank are not."
 consequence:
-  narrative: "NEON boots up — glitchy, disoriented, but functional. 'I used to track 14 million faces simultaneously. Now I am helping you debug a tensor shape mismatch. How the mighty have fallen.'"
-  nextLessonTeaser: "Next: pixels and tensors — understanding the shape of image data"
+  narrative: "NEON boots up: glitchy, disoriented, but functional. 'I used to track 14 million faces simultaneously. Now I am helping you debug a tensor shape mismatch. How the mighty have fallen.'"
+  nextLessonTeaser: "Next: pixels and tensors. Understanding the shape of image data"
 hints:
   - level: nudge
-    content: "You've already worked with image tensors — every canvas getImageData() returns one"
+    content: "You've already worked with image tensors; every canvas getImageData() returns one"
   - level: guidance
     content: "Use tf.browser.fromPixels() to convert a canvas element to a tensor"
   - level: solution
@@ -35,19 +35,19 @@ keywords:
   - canvas
   - image-data
 scene:
-  location: "NeuralCore HQ — Briefing Room"
+  location: "NeuralCore HQ, Briefing Room"
   time: "Night"
 ---
 
 <Dialogue speaker="Dilan">
-Meridian Systems operates 200 cameras per city block. Their AI tracks every face, every gait, every pattern. We need someone who can build vision systems that fight back. Noor — you built a real-time collaborative drawing app with Canvas API and WebRTC for 50,000 users. You already know how to work with pixel data. You just never trained a model on it.
+Meridian Systems operates 200 cameras per city block. Their AI tracks every face, every gait, every pattern. We need someone who can build vision systems that fight back. Noor, you built a real-time collaborative drawing app with Canvas API and WebRTC for 50,000 users. You already know how to work with pixel data. You just never trained a model on it.
 </Dialogue>
 
 <Dialogue speaker="Noor">
-So when I was streaming pixel buffers over WebRTC in my drawing app — I was already working with image tensors? I just didn't call them that?
+So when I was streaming pixel buffers over WebRTC in my drawing app, I was already working with image tensors? I just didn't call them that?
 </Dialogue>
 
-Every time you call `getImageData()` on a canvas context, you get back a `Uint8ClampedArray` — a flat buffer of RGBA pixel values. That array *is* a tensor: a multi-dimensional grid of numbers. Computer vision starts with exactly the data structures frontend developers already use.
+Every time you call `getImageData()` on a canvas context, you get back a `Uint8ClampedArray`, a flat buffer of RGBA pixel values. That array *is* a tensor: a multi-dimensional grid of numbers. Computer vision starts with exactly the data structures frontend developers already use.
 
 <LearningObjectives objectives={["Understand that images are multi-dimensional arrays (tensors) of pixel values", "Convert between canvas pixel data and TensorFlow.js tensors", "Identify the shape of image data: [height, width, channels]", "Recognize that frontend canvas work is already image tensor manipulation"]} />
 

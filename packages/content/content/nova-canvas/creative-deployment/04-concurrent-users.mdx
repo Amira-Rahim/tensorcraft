@@ -10,20 +10,20 @@ context:
   narrative: "Erdem runs the stress test. One user: perfect. Ten users: fine. Fifty users: the WebSocket connections start dropping. 'We need connection pooling, request queuing, and graceful degradation. The same problems as any high-traffic web application.'"
   speaker: "Erdem"
 concept:
-  explanation: "Handling concurrent generators is connection management — pooling WebSocket connections, queuing generation requests, and shedding load gracefully when demand exceeds capacity."
+  explanation: "Handling concurrent generators is connection management: pooling WebSocket connections, queuing generation requests, and shedding load gracefully when demand exceeds capacity."
   bridge:
     feTitle: "WebSocket Connection Pooling"
     feCode: "const pool = new ConnectionPool(maxConnections: 50); pool.acquire().then(ws => ws.send(data));"
     mlTitle: "Generation Queue"
     mlCode: "const queue = new GenerationQueue(maxConcurrent: 4); queue.enqueue(generateRequest);"
     tier: structural
-    breaks: "WebSocket connection pooling reuses idle sockets. Generation queues must batch requests for GPU efficiency and trade off batching delay vs throughput — pool size, max wait, and batch size are coupled hyperparameters with no obvious right answer."
+    breaks: "WebSocket connection pooling reuses idle sockets. Generation queues must batch requests for GPU efficiency and trade off batching delay vs throughput. Pool size, max wait, and batch size are coupled hyperparameters with no obvious right answer."
 consequence:
   narrative: "The system handles 200 concurrent connections. Excess requests queue with estimated wait times. Nobody waits more than 2 seconds. Erdem exhales for the first time in weeks."
   nextLessonTeaser: "Next: designing the physical-digital installation architecture"
 hints:
   - level: nudge
-    content: "Think about HTTP/2 multiplexing and connection limits — same constraints apply to generation"
+    content: "GenerationQueue(maxConcurrent: 4) is the whole trick: 4 inferences run, everyone else holds a live WebSocket and a queue position"
   - level: guidance
     content: "Build a queue that limits concurrent generation while keeping all connections alive"
   - level: solution
@@ -40,10 +40,10 @@ Two hundred people in the gallery. Each one generating. That is 200 concurrent W
 </Dialogue>
 
 <Dialogue speaker="Samir">
-Same problem as a chat application with thousands of users. Connection pooling, message queuing, backpressure. The generation is just the payload — the infrastructure is pure frontend engineering.
+Same problem as a chat application with thousands of users. Connection pooling, message queuing, backpressure. The generation is just the payload. The infrastructure is pure frontend engineering.
 </Dialogue>
 
-You have managed concurrent connections before — WebSocket chat rooms, real-time dashboards, multiplayer game lobbies. The challenge is always the same: more clients than you can serve simultaneously. You need connection management, request queuing, and graceful degradation. The generation model is just the expensive operation at the end of a very familiar pipeline.
+Every request that can't run right now needs three things: a place in line, a connection that stays alive, and an honest estimate of the wait. That's the whole system. Connection management, request queuing, graceful degradation. You've built it before as a chat room, a live dashboard, a multiplayer lobby. The generation model is just the expensive operation at the end of a very familiar pipeline.
 
 <LearningObjectives objectives={["Implement a generation queue with configurable concurrency limits", "Manage WebSocket connections for multiple simultaneous users", "Provide real-time progress updates and estimated wait times", "Design graceful degradation when demand exceeds generation capacity"]} />
 
@@ -206,4 +206,4 @@ Build a concurrent generation queue with WebSocket status updates and load shedd
 
 <Exercise slug="handle-concurrency" />
 
-<KeyTakeaways takeaways={["Generation queues limit concurrent model inference — same pattern as database connection pooling", "WebSocket connections provide real-time status updates: queue position, estimated wait time, completion", "Load shedding serves cached or lower-quality results when demand exceeds capacity", "Graceful degradation beats hard failure — visitors get something rather than nothing"]} />
+<KeyTakeaways takeaways={["Batch size, pool size, and max wait are coupled knobs: batching helps GPU throughput but adds delay for the first request in the batch", "WebSocket connections provide real-time status updates: queue position, estimated wait time, completion", "Load shedding serves cached or lower-quality results when demand exceeds capacity", "Graceful degradation beats hard failure — visitors get something rather than nothing"]} />

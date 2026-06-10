@@ -35,7 +35,7 @@ skillAxes: [data_prep]
 ---
 
 <Dialogue speaker="Commander Mirza">
-Before we run the deep scan, I want all sensor data normalized. We can't have one sensor's scale drowning out another — each data source must contribute equally.
+Before we run the deep scan, I want all sensor data normalized. We can't have one sensor's scale drowning out another. Each data source must contribute equally.
 </Dialogue>
 
 <Dialogue speaker="Dr. Farah">
@@ -44,11 +44,11 @@ Just like CSS resets create a consistent baseline for styling, normalization cre
 
 <LearningObjectives objectives={["Understand why normalization is critical for ML", "Apply z-score normalization (zero mean, unit variance)", "Apply min-max normalization (scale to 0-1 range)", "Recognize when to use each normalization strategy"]} />
 
-## The CSS Reset of Data Science
+## Why Scales Must Match
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
-Every frontend developer knows CSS resets. Without them, browsers apply inconsistent default styles. Normalization is the data equivalent — without it, features with large values (like pixel counts in the thousands) dominate features with small values (like percentages from 0-1).
+The temperature channel runs 19 to 35. Signal strength runs 0.1 to 0.9. Feed both to a model raw and temperature produces gradients roughly forty times larger, so the optimizer tunes that feature while signal strength stagnates. Normalization removes the bias, doing for data what a CSS reset does for inconsistent browser defaults: it gives every input the same starting line.
 
 <CodeBlock language="typescript" title="normalization.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -89,7 +89,7 @@ const tempMinMax = minMaxNormalize(temperature);
 
 **Min-max** (range 0-1): Use when you need bounded values, like pixel data or probabilities.
 
-Think of it like choosing between `normalize.css` and a full reset — each has its place depending on what consistency you need.
+The choice mirrors `normalize.css` versus a full reset: each has its place depending on what consistency you need.
 
 ## Challenge
 
@@ -107,4 +107,4 @@ Normalize the Archimedes sensor data using z-score normalization.
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Normalization is the CSS reset of data — it creates a consistent baseline", "Z-score: subtract mean, divide by std — centers data at 0", "Min-max: scales data to a 0-1 range", "Always normalize before training — unnormalized data causes biased models"]} />
+<KeyTakeaways takeaways={["Unnormalized scales bias the model: a 19-35 range temperature feature drowns out a 0.1-0.9 signal-strength feature", "Z-score: subtract mean, divide by std — centers data at 0", "Min-max: scales data to a 0-1 range", "Always normalize before training — unnormalized data causes biased models"]} />

@@ -10,7 +10,7 @@ context:
   narrative: "GRID initiates the stress test. 'Simulating simultaneous sensor anomalies across 3 regions. 12,400 affected devices. Inference load increasing 400%.' Hassan watches the dashboard. 'This is where we find out if the system holds.'"
   speaker: "GRID"
 concept:
-  explanation: "Scaling ML inference horizontally and vertically mirrors auto-scaling web servers — add more instances or add more resources to existing ones."
+  explanation: "Scaling ML inference horizontally and vertically mirrors auto-scaling web servers: add more instances, or add more resources to existing ones."
   bridge:
     feTitle: "Auto-Scaling Servers"
     feCode: "// AWS: minInstances: 2, maxInstances: 10, targetCPU: 70%"
@@ -19,7 +19,7 @@ concept:
     tier: identity
 consequence:
   narrative: "The system scales from 2 inference workers to 6 within 30 seconds. Latency stays under 18ms. Hassan exhales. 'Horizontal scaling held. The architecture works.'"
-  nextLessonTeaser: "Next: model sharding — splitting models across devices when they are too large for one"
+  nextLessonTeaser: "Next: model sharding, splitting models across devices when they are too large for one"
 hints:
   - level: nudge
     content: "Horizontal scaling adds more inference workers; vertical scaling adds more resources to each worker"
@@ -42,7 +42,7 @@ Stress test initiated. Simulating simultaneous sensor anomalies across Regions 1
 Everything fails eventually. The question is: does it fail well? If we cannot handle a 4x load spike, we have no business running critical infrastructure monitoring. Watch the latency.
 </Dialogue>
 
-You have configured auto-scaling groups for web servers: set a target CPU utilization, define min and max instances, and let the orchestrator handle the rest. Scaling ML inference follows the same pattern. When prediction latency climbs, spin up more inference workers. When load drops, scale back down. The principles are identical — the metric you target is latency instead of CPU.
+A 400% request spike, and latency is holding at 14ms. That number is the whole game. Nobody watching the stress test cares how many workers are running or what the CPUs are doing; they care whether predictions still arrive inside the budget. So that is what the auto-scaler targets. The machinery is the auto-scaling you have configured for web servers (min and max instances, an orchestrator doing the arithmetic), pointed at prediction latency instead of CPU utilization. Latency climbs, workers spin up. Load drops, they drain.
 
 <LearningObjectives objectives={["Implement horizontal scaling for ML inference workers", "Build an auto-scaler that responds to latency thresholds", "Configure scale-up and scale-down policies with cooldown periods", "Compare horizontal vs vertical scaling tradeoffs for edge ML"]} />
 
@@ -148,4 +148,4 @@ Build an auto-scaler that adjusts inference workers based on latency.
 
 <Exercise slug="scale-horizontally" />
 
-<KeyTakeaways takeaways={["Horizontal scaling for ML inference mirrors auto-scaling web servers — add workers when load increases", "Target latency instead of CPU utilization as the scaling metric for inference workloads", "Cooldown periods prevent thrashing — no rapid scale-up/scale-down oscillations", "Edge constraint: scaling horizontally means distributing across more devices, not spinning up cloud instances"]} />
+<KeyTakeaways takeaways={["Scale inference workers on prediction latency, not CPU; latency is the number the SLO and the operators see", "Target latency instead of CPU utilization as the scaling metric for inference workloads", "Cooldown periods prevent thrashing — no rapid scale-up/scale-down oscillations", "Edge constraint: scaling horizontally means distributing across more devices, not spinning up cloud instances"]} />

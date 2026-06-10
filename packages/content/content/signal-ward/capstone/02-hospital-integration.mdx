@@ -7,23 +7,23 @@ order: 2
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "Khalil opens the hospital's API documentation. HL7 FHIR — a standard for exchanging healthcare data. 'It is just REST,' he says, scrolling through resource types. 'Patient, Observation, MedicationRequest, Condition. Each resource has a schema. I have integrated with worse APIs.' Imran looks over his shoulder. 'Worse APIs that did not involve patient safety.' Khalil pauses. 'Fair point. Let us be very careful with this one.'"
+  narrative: "Khalil opens the hospital's API documentation. HL7 FHIR, a standard for exchanging healthcare data. 'It is just REST,' he says, scrolling through resource types. 'Patient, Observation, MedicationRequest, Condition. Each resource has a schema. I have integrated with worse APIs.' Imran looks over his shoulder. 'Worse APIs that did not involve patient safety.' Khalil pauses. 'Fair point. Let us be very careful with this one.'"
   speaker: "Khalil"
 concept:
-  explanation: "Integrating Diagnostic One with hospital EHR systems through HL7 FHIR is the same discipline as integrating with any third-party API — adapting your internal data models to external contracts, handling versioning, and building robust error handling for data you do not control."
+  explanation: "Integrating Diagnostic One with hospital EHR systems through HL7 FHIR is the same discipline as integrating with any third-party API: adapting your internal data models to external contracts, handling versioning, and building robust error handling for data you do not control."
   bridge:
     feTitle: "Third-Party API Integration"
     feCode: "// Stripe API: adapt your Order model to Stripe's PaymentIntent schema"
     mlTitle: "EHR Integration"
     mlCode: "// FHIR API: adapt your ClinicalNote model to FHIR's Observation resource schema"
     tier: structural
-    breaks: "Third-party API integration is bounded by published OpenAPI specs. EHR integration involves HL7/FHIR variants per vendor, PHI handling requirements, and clinical workflow constraints that no spec captures — most cost is in the integration, not the model."
+    breaks: "Third-party API integration is bounded by published OpenAPI specs. EHR integration involves HL7/FHIR variants per vendor, PHI handling requirements, and clinical workflow constraints that no spec captures; most cost is in the integration, not the model."
 consequence:
-  narrative: "The FHIR adapter passes its first integration test. A MedicationRequest resource flows in, gets transformed to Diagnostic One's internal format, runs through the NLP pipeline, and produces a drug interaction alert. Vikram watches the data flow on his monitor. 'It is like watching a webhook fire for the first time. Except the webhook might save someone's life.' Dr. Karimi reviews the adapter's error handling. 'What happens when the EHR sends malformed data?' Khalil shows her the validation layer. 'Same thing that happens when Stripe sends a malformed webhook — we log it, reject it, and alert the team.'"
+  narrative: "The FHIR adapter passes its first integration test. A MedicationRequest resource flows in, gets transformed to Diagnostic One's internal format, runs through the NLP pipeline, and produces a drug interaction alert. Vikram watches the data flow on his monitor. 'It is like watching a webhook fire for the first time. Except the webhook might save someone's life.' Dr. Karimi reviews the adapter's error handling. 'What happens when the EHR sends malformed data?' Khalil shows her the validation layer. 'Same thing that happens when Stripe sends a malformed webhook: we log it, reject it, and alert the team.'"
   nextLessonTeaser: "Next: validating Diagnostic One against expert annotations"
 hints:
   - level: nudge
-    content: "Think of FHIR resources as API response schemas — you need to map them to your internal types"
+    content: "Map each FHIR resource's fields onto your ClinicalNote type in the adapter, and reject malformed resources before they reach the pipeline"
   - level: guidance
     content: "Build an adapter layer that transforms FHIR resources into your pipeline's input format, with validation at the boundary"
   - level: solution
@@ -37,14 +37,14 @@ keywords:
 ---
 
 <Dialogue speaker="Khalil">
-HL7 FHIR. It is a REST API for healthcare data. Patient resources, Observation resources, MedicationRequest resources. Each has a JSON schema. I have integrated frontend apps with Stripe, Twilio, SendGrid — this is the same pattern. Fetch the resource, validate the schema, transform it to our internal format.
+HL7 FHIR. It is a REST API for healthcare data. Patient resources, Observation resources, MedicationRequest resources. Each has a JSON schema. I have integrated frontend apps with Stripe, Twilio, SendGrid. This is the same pattern. Fetch the resource, validate the schema, transform it to our internal format.
 </Dialogue>
 
 <Dialogue speaker="Imran">
 Except if our Stripe integration drops a payment, someone retries their credit card. If our FHIR integration drops a medication record, someone might miss a drug interaction. The error handling needs to be airtight.
 </Dialogue>
 
-You have integrated web applications with third-party APIs. Stripe for payments, Auth0 for authentication, Twilio for messaging. Every integration follows the same pattern: read the external API's documentation, map their data models to your internal types, build an adapter layer that transforms between the two, and handle every possible failure mode. Integrating Diagnostic One with hospital EHR systems through HL7 FHIR follows the exact same pattern — with higher stakes.
+Start with the failure mode. A malformed MedicationRequest slips past validation, the adapter emits a ClinicalNote with one drug missing, and the interaction checker reports "no interactions found" with full confidence. Nothing crashes. That silent gap is what the adapter layer exists to prevent. The construction is the third-party integration pattern you know from Stripe, Auth0, or Twilio: read the external schema, map it to internal types, transform at the boundary, handle every failure mode. FHIR is the same pattern with patient safety riding on the error handling.
 
 <LearningObjectives objectives={["Build an adapter layer that transforms FHIR resources into Diagnostic One's internal format", "Handle versioning, pagination, and error responses from external EHR APIs", "Implement validation at the integration boundary to reject malformed clinical data", "Design retry and dead-letter patterns for failed EHR data ingestion"]} />
 
@@ -253,4 +253,4 @@ Build a FHIR adapter that transforms external medical resources into Diagnostic 
 
 <Exercise slug="build-fhir-adapter" />
 
-<KeyTakeaways takeaways={["EHR integration through FHIR is the same pattern as any third-party API integration — map external schemas to internal types, validate at the boundary", "Validation at the integration boundary is critical — reject malformed clinical data before it enters the pipeline", "Dead-letter queues and retry patterns handle transient EHR failures without losing patient data", "The adapter pattern isolates your pipeline from external API changes — when the EHR upgrades, only the adapter needs to change"]} />
+<KeyTakeaways takeaways={["Every EHR vendor speaks its own HL7/FHIR variant; most of the integration cost lives in the adapter, not the model", "Validation at the integration boundary is critical — reject malformed clinical data before it enters the pipeline", "Dead-letter queues and retry patterns handle transient EHR failures without losing patient data", "The adapter pattern isolates your pipeline from external API changes — when the EHR upgrades, only the adapter needs to change"]} />

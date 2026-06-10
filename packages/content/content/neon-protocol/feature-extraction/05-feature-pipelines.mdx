@@ -7,7 +7,7 @@ order: 5
 estimatedMinutes: 25
 difficulty: intermediate
 context:
-  narrative: "Noor has the pieces — feature extraction, embedding spaces, similarity search, backbone selection. Now Amir pulls up a schematic on the holotable: a full pipeline diagram. 'Individual tools mean nothing if they do not connect,' he says. 'Meridian's power was never any single algorithm. It was the pipeline — ingest, preprocess, extract, index, query — running end-to-end on every camera in the city. We are going to build the same thing in the browser.'"
+  narrative: "Noor has the pieces: feature extraction, embedding spaces, similarity search, backbone selection. Now Amir pulls up a schematic on the holotable: a full pipeline diagram. 'Individual tools mean nothing if they do not connect,' he says. 'Meridian's power was never any single algorithm. It was the pipeline (ingest, preprocess, extract, index, query) running end-to-end on every camera in the city. We are going to build the same thing in the browser.'"
   speaker: "Amir"
 concept:
   explanation: "A feature pipeline chains together preprocessing, feature extraction, normalization, and indexing into a single end-to-end system. Each stage transforms data for the next, like middleware in an Express server. The pipeline pattern decouples stages so you can swap backbones, change normalization, or upgrade indexing without rewriting the entire system."
@@ -20,10 +20,10 @@ concept:
     breaks: "Express middleware composes synchronous transforms you wrote. Feature pipelines must produce identical features at training and inference time (training/serving skew is the canonical bug) and must handle missing values, drift, and feature freshness."
 consequence:
   narrative: "Noor runs the pipeline against a live district camera feed. Frames flow in, features flow out, the search index updates in real time. Forty seconds later, the system flags a Meridian drone circling Block 7. 'We have a working surveillance detector,' Zara says quietly. 'Built entirely in the browser. No server. No Meridian infrastructure. Just JavaScript.'"
-  nextLessonTeaser: "Next module: Transfer Learning — Amir downloads Meridian's own model weights and turns their tools against them"
+  nextLessonTeaser: "Next module: Transfer Learning. Amir downloads Meridian's own model weights and turns their tools against them"
 hints:
   - level: nudge
-    content: "A feature pipeline chains multiple processing steps — each stage takes input from the previous one, like middleware"
+    content: "A feature pipeline chains multiple processing steps; each stage takes input from the previous one, like middleware"
   - level: guidance
     content: "Build each stage as an independent function: preprocess, extract features, normalize the vector, add to the index"
   - level: solution
@@ -37,14 +37,14 @@ keywords:
 ---
 
 <Dialogue speaker="Amir">
-In a production Express server, you do not write one giant handler that does authentication, validation, logging, and business logic. You build a middleware pipeline — each function does one thing and passes the result to the next. Feature extraction works the same way. Preprocess the image. Extract features with a backbone. Normalize the vector. Add it to the index. Each stage is independent. Each stage is replaceable.
+In a production Express server, you do not write one giant handler that does authentication, validation, logging, and business logic. You build a middleware pipeline. Each function does one thing and passes the result to the next. Feature extraction works the same way. Preprocess the image. Extract features with a backbone. Normalize the vector. Add it to the index. Each stage is independent. Each stage is replaceable.
 </Dialogue>
 
 <Dialogue speaker="Noor">
-So the pipeline is middleware for images. Each step transforms the data and passes it forward. If I swap MobileNet for EfficientNet, only one stage changes — the rest of the pipeline stays the same.
+So the pipeline is middleware for images. Each step transforms the data and passes it forward. If I swap MobileNet for EfficientNet, only one stage changes. The rest of the pipeline stays the same.
 </Dialogue>
 
-The middleware pattern decouples processing stages. In Express, `cors()` does not know about `auth()`, and `auth()` does not know about the route handler. Each middleware transforms the request and calls `next()`. A feature pipeline works identically — each stage transforms data and passes it to the next stage. This decoupling is what makes production systems maintainable.
+The middleware pattern decouples processing stages. In Express, `cors()` does not know about `auth()`, and `auth()` does not know about the route handler. Each middleware transforms the request and calls `next()`. A feature pipeline works identically: each stage transforms data and passes it to the next stage. This decoupling is what makes production systems maintainable.
 
 <LearningObjectives objectives={["Build an end-to-end feature extraction pipeline with configurable stages", "Implement preprocessing, extraction, normalization, and indexing as independent pipeline stages", "Connect the pipeline pattern to Express middleware architecture", "Run a complete pipeline against image data to populate a searchable feature index"]} />
 
@@ -211,11 +211,11 @@ const pipeline = new FeaturePipeline({
 </CodeBlock>
 
 <Dialogue speaker="Noor">
-This is exactly how I structure Express APIs. Each middleware does one job. The pipeline is composable — I can swap MobileNet for EfficientNet by changing a URL. I can disable normalization by flipping a boolean. The stages do not care about each other.
+This is exactly how I structure Express APIs. Each middleware does one job. The pipeline is composable. I can swap MobileNet for EfficientNet by changing a URL. I can disable normalization by flipping a boolean. The stages do not care about each other.
 </Dialogue>
 
 <Dialogue speaker="Amir">
-That is why Meridian's system scaled to every camera in the city. Not because any single component was brilliant — but because the pipeline made components interchangeable. Now you have the same architecture running in a browser tab.
+That is why Meridian's system scaled to every camera in the city. Not because any single component was brilliant. Because the pipeline made components interchangeable. Now you have the same architecture running in a browser tab.
 </Dialogue>
 
 ## Challenge
@@ -234,4 +234,4 @@ Build a feature pipeline class that chains preprocessing, extraction, and normal
   tier="structural"
 />
 
-<KeyTakeaways takeaways={["Feature pipelines chain preprocess, extract, normalize, and index stages — exactly like Express middleware", "L2 normalization makes cosine similarity equivalent to dot product, simplifying search", "The pipeline pattern decouples stages so you can swap backbones or change normalization independently", "The resistance now has a complete in-browser surveillance detection system — ingest to query — with no server dependency"]} />
+<KeyTakeaways takeaways={["A feature pipeline chains preprocess, extract, normalize, and index so raw frames go in and queryable vectors come out", "L2 normalization makes cosine similarity equivalent to dot product, simplifying search", "The pipeline pattern decouples stages so you can swap backbones or change normalization independently", "The resistance now has a complete in-browser surveillance detection system — ingest to query — with no server dependency"]} />

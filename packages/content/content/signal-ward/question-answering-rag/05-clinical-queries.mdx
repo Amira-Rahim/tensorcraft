@@ -10,14 +10,14 @@ context:
   narrative: "Karimi sits at the nurse's station, types a query: 'Which of my patients on immunosuppressants have upcoming dental procedures?' The system retrieves, comprehends, grounds, and answers in 340 milliseconds. Imran watches over her shoulder. 'Can I use it too?' Karimi smiles. 'Khalil, we need to handle how nurses ask questions, not just how doctors do.'"
   speaker: "Dr. Karimi"
 concept:
-  explanation: "Clinical query understanding maps natural language questions to structured retrieval intents — like a search bar with natural language understanding that rewrites user queries into database operations."
+  explanation: "Clinical query understanding maps natural language questions to structured retrieval intents, like a search bar with natural language understanding that rewrites user queries into database operations."
   bridge:
     feTitle: "Search Bar with NLU"
     feCode: "parseQuery('red shoes under $50') → { color: 'red', type: 'shoes', maxPrice: 50 }"
     mlTitle: "Clinical Query Parser"
     mlCode: "parseQuery('patients on warfarin with INR > 3') → { medication: 'warfarin', lab: 'INR', condition: '> 3' }"
     tier: structural
-    breaks: "Search bars with NLU parse known intents. Clinical query parsing must handle ambiguous medical terms, abbreviations with multiple expansions, and a knowledge base with strict licensing — failure modes include silently ignoring critical context."
+    breaks: "Search bars with NLU parse known intents. Clinical query parsing must handle ambiguous medical terms, abbreviations with multiple expansions, and a knowledge base with strict licensing; failure modes include silently ignoring critical context."
 consequence:
   narrative: "The clinical query system handles both 'List current anticoagulant patients with subtherapeutic INR' from Dr. Karimi and 'Who needs their blood thinner levels checked?' from Imran. Same intent, different language. Khalil's NLU layer normalizes both into the same structured query."
   nextLessonTeaser: "Next module: production NLP and privacy — taking Diagnostic One to the real world"
@@ -186,4 +186,4 @@ Build a clinical query parser that extracts intent and entities from natural lan
 
 <Exercise slug="clinical-query" />
 
-<KeyTakeaways takeaways={["Clinical query understanding is search-bar NLU for hospitals — parsing natural language into structured retrieval operations", "Query expansion with medical synonyms bridges informal and formal clinical language", "Multi-task models handle intent classification and entity extraction in a single pass", "Role-aware normalization ensures doctors and nurses get the same results from differently phrased questions"]} />
+<KeyTakeaways takeaways={["Abbreviations with multiple expansions are the riskiest inputs: a parser that silently drops critical context is worse than one that asks", "Query expansion with medical synonyms bridges informal and formal clinical language", "Multi-task models handle intent classification and entity extraction in a single pass", "Role-aware normalization ensures doctors and nurses get the same results from differently phrased questions"]} />

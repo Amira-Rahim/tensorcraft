@@ -17,7 +17,7 @@ concept:
     mlTitle: "Model Profiler"
     mlCode: "// model.summary() — layer-by-layer breakdown\n// Parameters, memory, output shapes"
     tier: structural
-    breaks: "Bundle analyzer shows static module sizes from build artifacts. Model profiling traces per-op latency at inference time and bottlenecks shift across hardware — what is slow on CPU is fast on GPU and vice versa."
+    breaks: "Bundle analyzer shows static module sizes from build artifacts. Model profiling traces per-op latency at inference time and bottlenecks shift across hardware. What is slow on CPU is fast on GPU and vice versa."
 consequence:
   narrative: "You now see exactly where the model's bulk is. 82% of parameters are in two layers."
   nextLessonTeaser: "Next: choosing efficient architectures"
@@ -36,7 +36,7 @@ keywords:
 ---
 
 <Dialogue speaker="Priya Sharma">
-This model uses 1.8GB RAM. Our edge devices have 512MB. Make it fit. But first, you need to understand where the size comes from. You would not optimize a JavaScript bundle without running the analyzer first.
+This model uses 1.8GB RAM. Our edge devices have 512MB. Make it fit. But first, you need to understand where the size comes from. You wouldn't optimize a JavaScript bundle without running the analyzer first.
 </Dialogue>
 
 You would never try to reduce a 5MB JavaScript bundle without first running `webpack-bundle-analyzer` to see what is taking up space. Model optimization follows the same principle: profile before you compress.

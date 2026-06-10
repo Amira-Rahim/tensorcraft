@@ -19,7 +19,7 @@ concept:
     tier: structural
     breaks: "E2E tests assert exact behaviors that pass or fail — green build means safe to ship. Model evaluation reports continuous metrics (accuracy, precision, recall) over a held-out set, and good aggregate metrics routinely hide failure modes on production-distribution subgroups. Sliced eval (per-class, per-cohort, per-feature-bin) is required before production."
 consequence:
-  narrative: "DEEP SCAN achieves 94% accuracy on unseen signals. Commander Mirza authorizes deployment. Module complete — the foundations of ML are yours."
+  narrative: "DEEP SCAN achieves 94% accuracy on unseen signals. Commander Mirza authorizes deployment. Module complete — five lessons from loss function to deployed evaluation."
 hints:
   - level: nudge
     content: "Use model.evaluate() on data the model has never seen"
@@ -36,14 +36,14 @@ skillAxes: [training, evaluation]
 ---
 
 <Dialogue speaker="Commander Mirza">
-Training accuracy means nothing if it doesn't work on signals the network has never seen. Run the evaluation suite — I want real numbers on real data.
+Training accuracy means nothing if it doesn't work on signals the network has never seen. Run the evaluation suite. I want real numbers on real data.
 </Dialogue>
 
 <LearningObjectives objectives={["Evaluate model performance on held-out test data", "Interpret accuracy, loss, and confusion matrix metrics", "Understand the difference between training and test performance", "Make predictions on new, real-world data"]} />
 
 ## The Final Test
 
-In software engineering, you don't trust code that only passes unit tests — you need E2E tests against real scenarios. Model evaluation is the same: testing on data the model never saw during training.
+Ninety-five percent training accuracy, sixty percent on signals the network has never seen. That gap is the most common failure in ML, and nothing in the training logs warns you about it: the model memorized its homework instead of learning the subject. Evaluation on held-out data exists to catch exactly this, the way E2E tests catch what unit tests can't: code that passes against fixtures and fails against reality.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -86,13 +86,13 @@ results.forEach((prob, i) => {
 <DerivationDrawer summary="Why accuracy alone is not enough — precision, recall, F1">
 **Accuracy** = `(TP + TN) / (TP + TN + FP + FN)`. This breaks under class imbalance: if 99% of signals are normal, predicting "normal" for everything scores 99% accuracy and zero useful detections.
 
-**Precision** = `TP / (TP + FP)` — of all signals you flagged as anomalous, what fraction actually were?
+**Precision** = `TP / (TP + FP)`: of all signals you flagged as anomalous, what fraction actually were?
 
-**Recall** (sensitivity) = `TP / (TP + FN)` — of all true anomalies, what fraction did you catch?
+**Recall** (sensitivity) = `TP / (TP + FN)`: of all true anomalies, what fraction did you catch?
 
-**Tradeoff:** lowering the decision threshold (default 0.5) increases recall (catch more anomalies) but lowers precision (more false alarms). Raising it does the opposite. There is no free lunch — pick based on the cost asymmetry of false positives vs false negatives in your domain.
+**Tradeoff:** lowering the decision threshold (default 0.5) increases recall (catch more anomalies) but lowers precision (more false alarms). Raising it does the opposite. There is no free lunch. Pick based on the cost asymmetry of false positives vs false negatives in your domain.
 
-**F1 score** = `2 · (precision · recall) / (precision + recall)` — harmonic mean. Use when you need a single number that punishes either extreme. For DEEP SCAN, missing a true anomaly might cost a ship. False alarms cost crew time. The right metric depends on which cost you're willing to absorb.
+**F1 score** = `2 · (precision · recall) / (precision + recall)`: harmonic mean. Use when you need a single number that punishes either extreme. For DEEP SCAN, missing a true anomaly might cost a ship. False alarms cost crew time. The right metric depends on which cost you're willing to absorb.
 
 **ROC and PR curves** plot precision-recall (or TPR-FPR) across all thresholds. Reporting one accuracy number from one threshold hides this entire surface.
 </DerivationDrawer>

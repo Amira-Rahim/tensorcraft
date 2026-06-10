@@ -42,10 +42,10 @@ Demir, if you were incapacitated tomorrow, could Nazari operate DEEP SCAN? Could
 </Dialogue>
 
 <Dialogue speaker="Ensign Demir">
-Right — same rule as any codebase. If it's not documented, it doesn't exist. I'll write a Model Card for the ML model and API docs for the pipeline. Like a really thorough README, but covering training data, accuracy metrics, and known limitations too.
+Right, same rule as any codebase. If it's not documented, it doesn't exist. I'll write a Model Card for the ML model and API docs for the pipeline. Like a really thorough README, but covering training data, accuracy metrics, and known limitations too.
 </Dialogue>
 
-Every open source project needs a README. Every API needs docs. ML systems add a specific documentation format: the **Model Card** — a standardized document that describes what a model does, how it was trained, what its limitations are, and how to interpret its outputs. It's a README for your model.
+Every open source project needs a README. Every API needs docs. ML systems add a specific documentation format: the **Model Card**, a standardized document that describes what a model does, how it was trained, what its limitations are, and how to interpret its outputs. It's a README for your model.
 
 <LearningObjectives objectives={["Write a Model Card documenting model purpose, training data, and performance", "Document pipeline API with typed interfaces and usage examples", "List known limitations and failure modes — what the model cannot do", "Create runbook documentation for common operational scenarios"]} />
 
@@ -190,4 +190,4 @@ Write a Model Card for the DEEP SCAN classifier.
 
 <Exercise slug="write-model-card" />
 
-<KeyTakeaways takeaways={["Model Cards are README files for ML models — standardized docs covering purpose, training, performance, and limitations", "Document known limitations honestly — what the model cannot do is as important as what it can", "Pipeline API docs follow the same JSDoc patterns you use for any TypeScript library", "Runbooks bridge the gap between documentation and operations — if X happens, do Y"]} />
+<KeyTakeaways takeaways={["DEEP SCAN's card states the limits that matter: trained on Kepler-442 region only, 84% recall on the anomaly class, 15ms inference without WebGPU", "Document known limitations honestly — what the model cannot do is as important as what it can", "Pipeline API docs follow the same JSDoc patterns you use for any TypeScript library", "Runbooks bridge the gap between documentation and operations — if X happens, do Y"]} />

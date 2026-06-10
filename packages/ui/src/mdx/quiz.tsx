@@ -143,7 +143,11 @@ export function Quiz({
               aria-atomic="true"
               className={`text-sm font-medium ${isCorrect ? "text-primary" : "text-red-400"}`}
             >
-              {isCorrect ? "Correct!" : "Not quite — try again"}
+              {isCorrect
+                ? "Correct!"
+                : explanation
+                  ? "Wrong answer — see why below"
+                  : "Wrong answer"}
             </span>
             {!isCorrect && (
               <button

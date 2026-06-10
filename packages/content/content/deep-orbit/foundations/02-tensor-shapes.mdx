@@ -34,10 +34,10 @@ skillAxes: [data_prep]
 ---
 
 <Dialogue speaker="Dr. Farah">
-The data stream has structure — I can see repeating patterns at different scales. We need to understand its dimensional layout before we can analyze it.
+The data stream has structure. I can see repeating patterns at different scales. We need to understand its dimensional layout before we can analyze it.
 </Dialogue>
 
-Every tensor has a **shape** — a tuple of numbers describing how many elements exist along each dimension. If you've ever checked `array.length` or calculated `rows × cols` for a grid layout, you already think in shapes.
+Every tensor has a **shape**: a tuple of numbers describing how many elements exist along each dimension. If you've ever checked `array.length` or calculated `rows × cols` for a grid layout, you already think in shapes.
 
 <LearningObjectives objectives={["Read and interpret tensor shapes", "Understand the relationship between shape and data layout", "Reshape tensors without changing their data", "Recognize common shapes in ML (batches, sequences, images)"]} />
 
@@ -66,7 +66,7 @@ console.log(tall.shape);  // [3, 2]
 // This would throw: flat.reshape([2, 4]) — 2*4=8 ≠ 6`}
 </CodeBlock>
 
-The golden rule: **reshaping never changes the data, only how it's organized**. Think of it like CSS Grid — the same child elements can be arranged as 2×3 or 3×2 just by changing `grid-template-columns`.
+The golden rule: **reshaping never changes the data, only how it's organized**. CSS Grid does the same thing, arranging identical child elements as 2×3 or 3×2 with one change to `grid-template-columns`.
 
 ## Challenge
 

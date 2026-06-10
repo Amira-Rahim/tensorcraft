@@ -45,6 +45,10 @@ export const EVENTS = {
   UPGRADE_CTA_SHOWN: "upgrade_cta_shown",
   UPGRADE_CTA_CLICKED: "upgrade_cta_clicked",
 
+  // Onboarding funnel
+  ONBOARDING_STEP_VIEWED: "onboarding_step_viewed",
+  ONBOARDING_COMPLETED: "onboarding_completed",
+
   // Engagement
   CODE_PUSHED: "code_pushed",
   THEME_SELECTED: "theme_selected",
@@ -161,6 +165,18 @@ export interface EventProperties {
   [EVENTS.UPGRADE_CTA_CLICKED]: {
     source: "paywall" | "pricing" | "dashboard" | "lesson_footer";
     themeId?: string;
+  };
+
+  [EVENTS.ONBOARDING_STEP_VIEWED]: {
+    /** 1-based step number, matching the on-screen "STEP N OF 4" label. */
+    step: number;
+    stepName: "Welcome" | "Background" | "Goal" | "Ready";
+  };
+  [EVENTS.ONBOARDING_COMPLETED]: {
+    experienceLevel: string;
+    learningGoal: string;
+    framework?: string;
+    yearsExperience?: number;
   };
 
   [EVENTS.CODE_PUSHED]: {

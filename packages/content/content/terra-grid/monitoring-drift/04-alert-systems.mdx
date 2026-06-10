@@ -10,7 +10,7 @@ context:
   narrative: "GRID fires 200 alerts in one hour. Most are noise. Hassan redesigns the alerting thresholds to reduce fatigue while catching real issues."
   speaker: "Hassan Al-Rashid"
 concept:
-  explanation: "Alert thresholds must balance sensitivity and noise — too sensitive and you get alert fatigue, too lax and you miss incidents. Same as monitoring tool configuration."
+  explanation: "Alert thresholds must balance sensitivity and noise: too sensitive and you get alert fatigue, too lax and you miss incidents. Same as monitoring tool configuration."
   bridge:
     feTitle: "Monitoring Thresholds"
     feCode: "alert({ metric: 'error_rate', threshold: 0.05, window: '5m' })"
@@ -22,7 +22,7 @@ consequence:
   nextLessonTeaser: "Next: responding to drift incidents with diagnosis and remediation"
 hints:
   - level: nudge
-    content: "Think about how you configure PagerDuty or Sentry alert rules"
+    content: "Each AlertRule needs a threshold, a window, and a severity tier; evaluateAlerts() should deduplicate before anything pages a human"
   - level: guidance
     content: "Use severity tiers, windowed aggregation, and deduplication to reduce noise"
   - level: solution
@@ -42,7 +42,7 @@ Two hundred alerts in one hour. The team stopped reading them after the first th
 Alert suppression configured. Severity tiers active. Deduplication window: 30 minutes. Estimated actionable alerts: 6-10 per hour.
 </Dialogue>
 
-You have configured Sentry alert rules. You know the pain of alert fatigue — when every minor JavaScript error pages the on-call engineer at 3 AM. Good alerting requires thresholds that separate signal from noise, severity tiers that route appropriately, and cooldowns that prevent duplicate alerts from burying the real ones.
+The night the drift monitors went live, they fired 200 alerts in the first hour. The on-call engineer read thirty, muted the channel, and went back to bed. Somewhere around alert 140 was a real sensor failure in Region 2, indistinguishable from the noise burying it. You have built this exact failure before, with Sentry rules that page on every minor JavaScript error at 3 AM. The cure is the same in both worlds: thresholds that separate signal from noise, severity tiers that route appropriately, and cooldowns that keep duplicates from burying the real ones.
 
 <LearningObjectives objectives={["Design multi-tier alert systems with info, warning, and critical severity levels", "Configure windowed thresholds that smooth out noise while catching sustained degradation", "Implement alert deduplication and cooldowns to prevent fatigue", "Route alerts to the right channel based on severity and scope"]} />
 
@@ -177,4 +177,4 @@ Configure an alert system with severity tiers, thresholds, and cooldowns.
 
 <Exercise slug="configure-alerts" />
 
-<KeyTakeaways takeaways={["Alert fatigue kills monitoring systems — if everything alerts, nothing gets investigated", "Severity tiers route alerts appropriately: info→dashboard, warning→Slack, critical→pager", "Windowed thresholds smooth noise; cooldowns prevent duplicate storms", "The best alert is one that fires rarely and is always actionable — like a well-tuned Sentry alert rule"]} />
+<KeyTakeaways takeaways={["Alert fatigue kills monitoring systems — if everything alerts, nothing gets investigated", "Severity tiers route alerts appropriately: info→dashboard, warning→Slack, critical→pager", "Windowed thresholds smooth noise; cooldowns prevent duplicate storms", "The best alert fires rarely and is always actionable: 200 alerts per hour got ignored, 8 per hour get answered"]} />

@@ -7,23 +7,23 @@ order: 4
 estimatedMinutes: 30
 difficulty: advanced
 context:
-  narrative: "MUSE generates technically competent images. But Erdem frowns: 'Technically competent. Artistically dead. The colors are correct, the composition is sound, but there is no feeling.' Yara suggests: 'Use CLIP as a critic — like ESLint for art. It guides the model toward images that match the emotional intent, not just the literal description.'"
+  narrative: "MUSE generates technically competent images. But Erdem frowns: 'Technically competent. Artistically dead. The colors are correct, the composition is sound, but there is no feeling.' Yara suggests: 'Use CLIP as a critic, like ESLint for art. It guides the model toward images that match the emotional intent, not just the literal description.'"
   speaker: "Yara"
 concept:
-  explanation: "CLIP-guided generation uses CLIP as a scoring function to steer the diffusion process — at each step, nudge the image toward higher CLIP similarity with the prompt. Like ESLint guiding code toward patterns: it does not write the code, but it steers it in the right direction."
+  explanation: "CLIP-guided generation uses CLIP as a scoring function to steer the diffusion process: at each step, nudge the image toward higher CLIP similarity with the prompt. Like ESLint guiding code toward patterns: it does not write the code, but it steers it in the right direction."
   bridge:
-    feTitle: "ESLint — guiding toward patterns"
+    feTitle: "ESLint: guiding toward patterns"
     feCode: "// eslint: prefer-const, no-unused-vars — nudge toward better code"
     mlTitle: "CLIP guidance"
     mlCode: "gradient = clipScore(image, prompt); image += lr * gradient;"
     tier: structural
-    breaks: "ESLint surfaces deterministic rule violations. CLIP guidance steers a generator by backpropagating through CLIP similarity — guidance strength is a continuous knob and too much causes mode collapse, too little ignores the prompt."
+    breaks: "ESLint surfaces deterministic rule violations. CLIP guidance steers a generator by backpropagating through CLIP similarity. Guidance strength is a continuous knob and too much causes mode collapse, too little ignores the prompt."
 consequence:
   narrative: "With CLIP guidance, the images come alive. 'A melancholy cityscape at twilight' now produces deep blues, long shadows, a sense of solitude in the architecture. Erdem stares at the gallery wall. 'It feels something now,' he says. But then, the AI-Wrong moment: a style transfer produces technically perfect but emotionally hollow output. 'Technically competent,' Erdem repeats. 'Artistically dead.' The team realizes CLIP alignment is not the same as artistic truth."
-  nextLessonTeaser: "Next: prompt engineering for images — writing text that produces exactly the visuals you want"
+  nextLessonTeaser: "Next: prompt engineering for images: writing text that produces exactly the visuals you want"
 hints:
   - level: nudge
-    content: "ESLint does not write your code — it nudges it toward better patterns. CLIP does the same for images."
+    content: "ESLint does not write your code. It nudges it toward better patterns. CLIP does the same for images."
   - level: guidance
     content: "Compute the gradient of CLIP similarity with respect to the image. Use it to adjust the image at each diffusion step."
   - level: solution
@@ -41,10 +41,10 @@ Technically competent. Artistically dead. The cityscape has buildings and a sky.
 </Dialogue>
 
 <Dialogue speaker="Yara">
-Use CLIP as a critic. Like ESLint for code — it does not write the code, but it steers you toward better patterns. At each generation step, ask CLIP: "Does this image match the emotional intent of the prompt?" Then nudge the image in that direction.
+Use CLIP as a critic. Like ESLint for code: it doesn't write the code, but it steers you toward better patterns. At each generation step, ask CLIP: "Does this image match the emotional intent of the prompt?" Then nudge the image in that direction.
 </Dialogue>
 
-ESLint does not write your code. It guides you toward patterns — prefer-const, no-unused-vars, prefer-arrow-callback. CLIP guidance works the same way: it scores how well the generated image matches the prompt, then nudges the generation process toward a better match.
+ESLint does not write your code. It guides you toward patterns: prefer-const, no-unused-vars, prefer-arrow-callback. CLIP guidance works the same way: it scores how well the generated image matches the prompt, then nudges the generation process toward a better match.
 
 <LearningObjectives objectives={["Understand CLIP-guided generation: using CLIP as a scoring function during diffusion", "Compute CLIP similarity gradients with respect to the image", "Integrate CLIP guidance into the denoising loop", "Connect CLIP guidance to ESLint — steering toward patterns without dictating output"]} />
 
@@ -148,7 +148,7 @@ x ← x − η · ∇_x loss        // pixel-space guidance (more flexible)
 - Adversarial pixel patterns can satisfy CLIP without looking right to humans.
 - Fix: combine with a perceptual loss (LPIPS) or content prior.
 
-**Modern: diffusion guidance.** Classifier-free guidance (CFG) is the dominant technique now — see diffusion lessons. CLIP guidance was the bridge between old GAN-based art and modern diffusion.
+**Modern: diffusion guidance.** Classifier-free guidance (CFG) is the dominant technique now (see the diffusion lessons). CLIP guidance was the bridge between old GAN-based art and modern diffusion.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["CLIP-guided generation uses CLIP as a scoring critic, like ESLint guides code toward patterns", "At each denoising step, compute the gradient of CLIP similarity and nudge the image toward the prompt", "Guidance strength controls how aggressively the image is steered — too much causes artifacts", "The AI-Wrong moment: high CLIP score does not guarantee artistic quality — alignment is not truth"]} />
+<KeyTakeaways takeaways={["Guidance strength is a continuous knob: too strong collapses the image toward CLIP's favorite artifacts, too weak ignores the prompt", "At each denoising step, compute the gradient of CLIP similarity and nudge the image toward the prompt", "Guidance strength controls how aggressively the image is steered — too much causes artifacts", "The AI-Wrong moment: high CLIP score does not guarantee artistic quality — alignment is not truth"]} />

@@ -7,7 +7,7 @@ order: 5
 estimatedMinutes: 30
 difficulty: intermediate
 context:
-  narrative: "Samir builds an interactive explorer for the exhibition — visitors use sliders and a 2D map to navigate through the latent space of generated art in real time."
+  narrative: "Samir builds an interactive explorer for the exhibition: visitors use sliders and a 2D map to navigate through the latent space of generated art in real time."
   speaker: "Erdem"
 concept:
   explanation: "A latent space explorer is an interactive tool that lets users navigate the latent space using sliders, 2D maps, or other controls, generating output in real time."
@@ -19,10 +19,10 @@ concept:
     tier: identity
 consequence:
   narrative: "The first interactive prototype runs on a kiosk. Visitors drag sliders and watch art transform in real time. Erdem declares it exhibition-ready."
-  nextLessonTeaser: "Next module: Generative Adversarial Networks — teaching models to create through competition"
+  nextLessonTeaser: "Next module: Generative Adversarial Networks: teaching models to create through competition"
 hints:
   - level: nudge
-    content: "This is a slider-driven UI — each slider value maps to one latent dimension"
+    content: "This is a slider-driven UI: each slider value maps to one latent dimension"
   - level: guidance
     content: "Collect slider values into an array, create a tensor, pass through the decoder"
   - level: solution
@@ -42,7 +42,7 @@ The kiosks arrive in four weeks. I need a working prototype that runs at 30 fram
 Make it intuitive. A child should be able to walk up, drag a slider, and feel like an artist.
 </Dialogue>
 
-This is where everything converges — latent spaces, encoding, dimensionality, interpolation, disentanglement — into an interactive tool that runs in the browser. You are building exactly what frontend developers do best: a responsive, real-time UI. The difference is that the data source is a neural network decoder.
+This is where everything converges (latent spaces, encoding, dimensionality, interpolation, disentanglement) into an interactive tool that runs in the browser. You are building exactly what frontend developers do best: a responsive, real-time UI. The difference is that the data source is a neural network decoder.
 
 <LearningObjectives objectives={["Build a complete latent space explorer with slider controls", "Render decoded output to canvas in real time", "Handle performance with debouncing and tensor disposal", "Create a 2D navigation map for latent space exploration"]} />
 
@@ -88,7 +88,7 @@ async function updateLatentVector() {
 
 ## Performance: Memory and Speed
 
-TensorFlow.js tensors live on the GPU. If you do not dispose them, you get memory leaks — the GPU equivalent of DOM node leaks.
+TensorFlow.js tensors live on the GPU. If you do not dispose them, you get memory leaks: the GPU equivalent of DOM node leaks.
 
 <CodeBlock language="typescript" title="performance.ts">
 {`import * as tf from '@tensorflow/tfjs';
@@ -125,7 +125,7 @@ const debouncedUpdate = debounce(cleanUpdate, 16); // ~60fps cap`}
 
 ## The 2D Map
 
-For an exhibition, sliders are precise but not intuitive. A 2D map lets visitors click or drag to explore two dimensions at once — like a touchpad for the latent space.
+For an exhibition, sliders are precise but not intuitive. A 2D map lets visitors click or drag to explore two dimensions at once, like a touchpad for the latent space.
 
 <CodeBlock language="typescript" title="latent-map.ts">
 {`function create2DMap(
@@ -162,7 +162,7 @@ For an exhibition, sliders are precise but not intuitive. A 2D map lets visitors
 <Exercise slug="latent-explorer" />
 
 <DerivationDrawer summary="Spherical interpolation (slerp) vs linear">
-**Linear interpolation:** `z(t) = (1-t) · z_a + t · z_b`. Simple but for normalized vectors, the path goes THROUGH the origin's vicinity — into a low-density region of the latent prior. Decoded outputs along the path become blurry/garbled at the midpoint.
+**Linear interpolation:** `z(t) = (1-t) · z_a + t · z_b`. Simple but for normalized vectors, the path goes THROUGH the origin's vicinity, into a low-density region of the latent prior. Decoded outputs along the path become blurry/garbled at the midpoint.
 
 **Spherical linear interpolation (slerp):** parameterize the path along the great circle on the unit sphere:
 

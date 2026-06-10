@@ -7,10 +7,10 @@ order: 3
 estimatedMinutes: 28
 difficulty: intermediate
 context:
-  narrative: "Dilan reviews the progress: 'We can detect edges and downsample. Now stack them. The Protocol Sentinel needs layers that feed into each other — like components composing into a page.' Noor sees the pattern immediately."
+  narrative: "Dilan reviews the progress: 'We can detect edges and downsample. Now stack them. The Protocol Sentinel needs layers that feed into each other, like components composing into a page.' Noor sees the pattern immediately."
   speaker: "Dilan"
 concept:
-  explanation: "A CNN stacks conv, pool, and dense layers into a pipeline where each layer's output feeds the next — the same composition pattern as React components wrapping children."
+  explanation: "A CNN stacks conv, pool, and dense layers into a pipeline where each layer's output feeds the next, the same composition pattern as React components wrapping children."
   bridge:
     feTitle: "Component Composition"
     feCode: "<Layout><Sidebar><NavList items={data} /></Sidebar></Layout>"
@@ -37,14 +37,14 @@ keywords:
 ---
 
 <Dialogue speaker="Dilan">
-You have convolution for feature extraction and pooling for compression. Now compose them. Think about how you build a React page — Layout wraps Sidebar wraps NavList. Each component transforms data and passes it down. A CNN is the same pattern: each layer transforms the feature maps and passes them to the next.
+You have convolution for feature extraction and pooling for compression. Now compose them. A React page wraps Layout around Sidebar around NavList; each component transforms data and passes it down. A CNN composes the same way: each layer transforms the feature maps and hands them to the next.
 </Dialogue>
 
 <Dialogue speaker="Noor">
 So the model is basically a component tree? Conv is like a data-fetching component, pooling is like a summarization component, and the dense layer at the end is the leaf that renders the final output?
 </Dialogue>
 
-That analogy is spot on. A CNN is a pipeline of composed layers, each transforming its input and passing the result downstream. The standard pattern is: convolution blocks (conv + activation + pool) stacked to extract increasingly abstract features, followed by dense layers for classification.
+Close. A CNN is a pipeline of composed layers, each transforming its input and passing the result downstream, but unlike a component tree it is strictly linear. No branching, no context providers, no portals. The standard pattern: convolution blocks (conv + activation + pool) stacked to extract increasingly abstract features, then dense layers for classification.
 
 <LearningObjectives objectives={["Design a CNN architecture by stacking conv, pool, and dense layers", "Understand how data shapes transform through each layer of the network", "Connect component composition patterns to neural network layer composition", "Calculate the total parameter count of a CNN"]} />
 
@@ -172,7 +172,7 @@ console.log('Total trainable parameters:', totalParams);`}
 
 ## The Feature Hierarchy
 
-Each conv block learns increasingly abstract features. This is the key insight: early layers see pixels and find edges, middle layers combine edges into shapes, and deep layers combine shapes into objects.
+Each conv block learns increasingly abstract features. Early layers see pixels and find edges, middle layers combine edges into shapes, and deep layers combine shapes into objects.
 
 <CodeBlock language="typescript" title="feature-hierarchy.ts">
 {`// What each conv block learns:
@@ -231,7 +231,7 @@ dense(64): (25088 + 1) · 64 = 1,605,696
 dense(C):  (64 + 1) · C
 ```
 
-**Where the parameters go:** the dense layer after flatten typically dominates parameter count, even though conv layers do most of the compute. This is why many architectures (Inception, ResNet, MobileNet) use global average pooling instead of flatten — replacing 25k features with 32 averages eliminates the dense bottleneck.
+**Where the parameters go:** the dense layer after flatten typically dominates parameter count, even though conv layers do most of the compute. This is why many architectures (Inception, ResNet, MobileNet) use global average pooling instead of flatten: replacing 25k features with 32 averages eliminates the dense bottleneck.
 </DerivationDrawer>
 
 <KeyTakeaways takeaways={["A CNN composes layers in sequence — conv blocks extract features, flatten bridges to dense layers, dense layers classify", "Each conv block learns increasingly abstract features: edges, then shapes, then object parts", "Pooling layers have zero learnable parameters — they just compress spatial dimensions", "The flatten layer reshapes 3D feature maps into a 1D vector for the dense classifier"]} />

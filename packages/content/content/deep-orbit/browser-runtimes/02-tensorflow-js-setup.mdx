@@ -40,10 +40,10 @@ Installing TensorFlow.js feels exactly like adding any other dependency. npm ins
 </Dialogue>
 
 <Dialogue speaker="Chief Nazari">
-Good. Because the hard part is not installation — it's what comes after. Check the backend. If it falls back to CPU, our inference budget is blown.
+Good. Because the hard part isn't installation. It's what comes after. Check the backend. If it falls back to CPU, our inference budget is blown.
 </Dialogue>
 
-You've added React, Vue, D3, Three.js — every library starts the same way. TensorFlow.js is no different. The only new concept is **backends**: TF.js can run on WebGL (GPU), WebAssembly (CPU, optimized), or plain JavaScript (CPU, slow).
+You've added React, Vue, D3, Three.js; every library starts the same way. TensorFlow.js is no different. The only new concept is **backends**: TF.js can run on WebGL (GPU), WebAssembly (CPU, optimized), or plain JavaScript (CPU, slow).
 
 <LearningObjectives objectives={["Install and import TensorFlow.js in a web project", "Understand TF.js backends (WebGL, WASM, CPU) and their performance characteristics", "Initialize TF.js and verify which backend is active", "Configure the optimal backend for your deployment target"]} />
 
@@ -142,4 +142,4 @@ Set up TensorFlow.js and verify the active backend.
 
 <Exercise slug="tfjs-setup" />
 
-<KeyTakeaways takeaways={["TensorFlow.js installs like any npm package — install, import, ready", "Backends (WebGL, WASM, CPU) determine performance — like choosing GPU-accelerated CSS vs JS layout", "WebGL is fastest for most models; WASM is the reliable fallback for devices without good GPUs", "Always call tf.dispose() on tensors you're done with — browser memory is limited"]} />
+<KeyTakeaways takeaways={["The same matmul costs ~0.5ms on webgl, ~3ms on wasm, ~15ms on cpu: check tf.getBackend() before trusting a latency budget", "Backends (WebGL, WASM, CPU) determine performance — like choosing GPU-accelerated CSS vs JS layout", "WebGL is fastest for most models; WASM is the reliable fallback for devices without good GPUs", "Always call tf.dispose() on tensors you're done with — browser memory is limited"]} />

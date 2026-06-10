@@ -36,14 +36,14 @@ skillAxes: [model_arch]
 ---
 
 <Dialogue speaker="Dr. Farah">
-The architecture is set. Let's feed data through and see what happens. Even untrained, the forward pass will show us the network's initial state — random weights producing random outputs.
+The architecture is set. Let's feed data through and see what happens. Even untrained, the forward pass will show us the network's initial state: random weights producing random outputs.
 </Dialogue>
 
 <LearningObjectives objectives={["Trace data flow through a neural network layer by layer", "Use model.predict() to run inference", "Understand input and output tensor shapes at each layer", "Debug shape mismatches — the most common neural network error"]} />
 
 ## Data Flows Forward
 
-The forward pass is simple: data enters the first layer, gets transformed, and flows to the next layer until it reaches the output. It's like DOM event propagation — each handler processes and passes forward.
+The forward pass is simple: data enters the first layer, gets transformed, and flows to the next layer until it reaches the output. It's like DOM event propagation, where each handler processes and passes forward.
 
 <BridgeCallout bridge={frontmatter.concept.bridge} />
 
@@ -70,7 +70,7 @@ console.log(prediction.dataSync()); // ~0.5 (random, untrained)
 // Output:  [1, 1]  → probability of anomaly`}
 </CodeBlock>
 
-The most common error in ML is shape mismatches. If your input shape doesn't match `inputShape`, you'll get an error — just like passing the wrong prop type to a React component.
+The most common error in ML is shape mismatches. If your input shape doesn't match `inputShape`, you'll get an error, just like passing the wrong prop type to a React component.
 
 ## Challenge
 
