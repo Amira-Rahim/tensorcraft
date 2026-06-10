@@ -126,6 +126,27 @@
   square-marker eyebrow convention or plain prose. Long-established `//`
   eyebrows elsewhere left untouched.
 
+## Space pass (user: "so much space is wasted")
+
+- **FAQ** reflowed into the header-in-first-cell band grammar
+  (`xl:grid-cols-[1fr_2.2fr]`): header cell left (eyebrow, h2, "anything
+  else, open module 1" line), full-width question list right. No dead half.
+- **Final CTA** centered — the one symmetric moment on an asymmetric page;
+  closes without a dead half. Same content, same testids.
+- **WYB** pipeline band (see above) was the same treatment.
+
+## Deep Orbit 3D orbit canvas (user request, same day)
+
+`AtmosphereCanvas` kind 0 (drifting stars) replaced with a real 3D orbital
+system drawn on the same 2D canvas — no three.js. `drawOrbit()`: three
+tilted rings (perspective projection, focal length 2.4R), per-ring speed +
+Y-axis precession, depth-scaled particle size/alpha (far side dims behind
+the central body + glow), faint projected ring paths so the orbit shape
+reads instantly. Center at 68%/52% — right of the card's text column.
+Time-parameterized from the rAF timestamp (no mutable particle state), so
+the reduced-motion static frame is just t=0; offscreen pause unchanged.
+Other four themes keep their particle atmospheres.
+
 ## Post-pass removal (user call, same day)
 
 Final-CTA secondary link block (account / glossary / compare) removed

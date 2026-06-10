@@ -106,6 +106,100 @@ function spawn(w: number, h: number, kind: number): Particle {
   }
 }
 
+/* ── Deep Orbit: 3D orbital system ─────────────────────────
+   Three tilted orbital rings rendered with real 3D math (perspective
+   projection + slow Y-axis precession), drawn on the same 2D canvas —
+   no three.js. Depth drives size/alpha so far-side particles dim and
+   shrink behind the central body. Time-parameterized (no mutable
+   particle state), so the reduced-motion static frame is just t=0. */
+
+const ORBIT_RINGS = [
+  { radius: 0.34, tilt: 1.18, speed: 0.45, precession: 0.05, count: 14 },
+  { radius: 0.55, tilt: 1.02, speed: 0.28, precession: -0.035, count: 20 },
+  { radius: 0.78, tilt: 1.3, speed: 0.18, precession: 0.022, count: 26 },
+];
+
+function drawOrbit(
+  ctx: CanvasRenderingContext2D,
+  w: number,
+  h: number,
+  rgb: [number, number, number],
+  hot: boolean,
+  t: number,
+) {
+  const [r, g, b] = rgb;
+  // Center sits right of the card's text column.
+  const cx = w * 0.68;
+  const cy = h * 0.52;
+  const R = Math.min(w, h) * 0.62;
+  const f = R * 2.4; // perspective focal length
+  const boost = hot ? 1.6 : 1;
+
+  // Central body + glow.
+  ctx.beginPath();
+  ctx.arc(cx, cy, R * 0.045, 0, Math.PI * 2);
+  ctx.fillStyle = `rgba(${r},${g},${b},${0.5 * boost})`;
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(cx, cy, R * 0.13, 0, Math.PI * 2);
+  ctx.fillStyle = `rgba(${r},${g},${b},${0.06 * boost})`;
+  ctx.fill();
+
+  for (const ring of ORBIT_RINGS) {
+    const rr = R * ring.radius;
+    const psi = t * ring.precession * (hot ? 1.6 : 1); // Y-axis precession
+    const cosT = Math.cos(ring.tilt);
+    const sinT = Math.sin(ring.tilt);
+    const cosP = Math.cos(psi);
+    const sinP = Math.sin(psi);
+
+    // Project a point at ring angle theta into screen space; returns
+    // [sx, sy, depth] with depth in [-1, 1] (1 = nearest).
+    const project = (theta: number): [number, number, number] => {
+      const x = Math.cos(theta) * rr;
+      const y = Math.sin(theta) * rr;
+      // Tilt around X, then precess around Y.
+      const y2 = y * cosT;
+      const z2 = y * sinT;
+      const x3 = x * cosP + z2 * sinP;
+      const z3 = -x * sinP + z2 * cosP;
+      const p = f / (f + z3);
+      return [cx + x3 * p, cy + y2 * p, -z3 / rr];
+    };
+
+    // Faint orbit path so the shape reads even between particles.
+    ctx.beginPath();
+    for (let s = 0; s <= 96; s++) {
+      const [sx, sy] = project((s / 96) * Math.PI * 2);
+      if (s === 0) ctx.moveTo(sx, sy);
+      else ctx.lineTo(sx, sy);
+    }
+    ctx.strokeStyle = `rgba(${r},${g},${b},${(hot ? 0.16 : 0.09) * 1})`;
+    ctx.lineWidth = 0.6;
+    ctx.stroke();
+
+    // Particles riding the ring.
+    for (let i = 0; i < ring.count; i++) {
+      const theta =
+        (i / ring.count) * Math.PI * 2 + t * ring.speed * (hot ? 1.6 : 1);
+      const [sx, sy, depth] = project(theta);
+      const front = (depth + 1) / 2; // 0 far … 1 near
+      const radius = 0.7 + 1.5 * front;
+      const alpha = (0.12 + 0.5 * front) * boost;
+      ctx.beginPath();
+      ctx.arc(sx, sy, radius, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
+      ctx.fill();
+      if (front > 0.85) {
+        ctx.beginPath();
+        ctx.arc(sx, sy, radius * 3.5, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${r},${g},${b},${alpha * 0.12})`;
+        ctx.fill();
+      }
+    }
+  }
+}
+
 function AtmosphereCanvas({
   kind,
   rgb,
@@ -125,113 +219,124 @@ function AtmosphereCanvas({
   // burning CPU entirely (five cards × 55 particles otherwise run forever).
   const runningRef = useRef(false);
 
-  const draw = useCallback(() => {
-    const c = ref.current;
-    if (!c) return;
-    const ctx = c.getContext("2d");
-    if (!ctx) return;
-    const w = c.width;
-    const h = c.height;
-    const hot = hovRef.current;
+  const draw = useCallback(
+    (now = 0) => {
+      const c = ref.current;
+      if (!c) return;
+      const ctx = c.getContext("2d");
+      if (!ctx) return;
+      const w = c.width;
+      const h = c.height;
+      const hot = hovRef.current;
 
-    ctx.clearRect(0, 0, w, h);
+      ctx.clearRect(0, 0, w, h);
 
-    const [r, g, b] = rgb;
-    const ps = particles.current;
-
-    for (let i = ps.length - 1; i >= 0; i--) {
-      const p = ps[i];
-      p.x += p.vx * (hot ? 1.6 : 1);
-      p.y += p.vy * (hot ? 1.6 : 1);
-      p.life--;
-
-      // Nova spiral
-      if (kind === 3) {
-        const cx = w / 2,
-          cy = h / 2;
-        const dx = p.x - cx,
-          dy = p.y - cy;
-        const a = 0.003;
-        p.x = cx + dx * Math.cos(a) - dy * Math.sin(a);
-        p.y = cy + dx * Math.sin(a) + dy * Math.cos(a);
+      // Deep Orbit gets the 3D orbital system — time-parameterized, no
+      // mutable particle state, so the generic loop below is skipped.
+      if (kind === 0) {
+        drawOrbit(ctx, w, h, rgb, hot, now * 0.001);
+        if (runningRef.current) frame.current = requestAnimationFrame(draw);
+        return;
       }
 
-      const lr = p.life / p.maxLife;
-      const fade = lr > 0.8 ? (1 - lr) * 5 : lr > 0.2 ? 1 : lr * 5;
-      const alpha = p.alpha * fade * (hot ? 2.5 : 1.4);
+      const [r, g, b] = rgb;
+      const ps = particles.current;
 
-      if (
-        p.life <= 0 ||
-        p.x < -10 ||
-        p.x > w + 10 ||
-        p.y < -10 ||
-        p.y > h + 10
-      ) {
-        ps[i] = spawn(w, h, kind);
-        continue;
-      }
+      for (let i = ps.length - 1; i >= 0; i--) {
+        const p = ps[i];
+        p.x += p.vx * (hot ? 1.6 : 1);
+        p.y += p.vy * (hot ? 1.6 : 1);
+        p.life--;
 
-      // Neon Protocol, streaks
-      if (kind === 1) {
+        // Nova spiral
+        if (kind === 3) {
+          const cx = w / 2,
+            cy = h / 2;
+          const dx = p.x - cx,
+            dy = p.y - cy;
+          const a = 0.003;
+          p.x = cx + dx * Math.cos(a) - dy * Math.sin(a);
+          p.y = cy + dx * Math.sin(a) + dy * Math.cos(a);
+        }
+
+        const lr = p.life / p.maxLife;
+        const fade = lr > 0.8 ? (1 - lr) * 5 : lr > 0.2 ? 1 : lr * 5;
+        const alpha = p.alpha * fade * (hot ? 2.5 : 1.4);
+
+        if (
+          p.life <= 0 ||
+          p.x < -10 ||
+          p.x > w + 10 ||
+          p.y < -10 ||
+          p.y > h + 10
+        ) {
+          ps[i] = spawn(w, h, kind);
+          continue;
+        }
+
+        // Neon Protocol, streaks
+        if (kind === 1) {
+          ctx.beginPath();
+          ctx.moveTo(p.x - 6, p.y);
+          ctx.lineTo(p.x + 6, p.y);
+          ctx.strokeStyle = `rgba(${r},${g},${b},${alpha})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+
         ctx.beginPath();
-        ctx.moveTo(p.x - 6, p.y);
-        ctx.lineTo(p.x + 6, p.y);
-        ctx.strokeStyle = `rgba(${r},${g},${b},${alpha})`;
-        ctx.lineWidth = 0.5;
-        ctx.stroke();
-      }
-
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
-      ctx.fill();
-
-      // Glow halo
-      if (p.r > 1) {
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r * 4, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${r},${g},${b},${alpha * (hot ? 0.2 : 0.1)})`;
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
         ctx.fill();
-      }
-    }
 
-    // Signal Ward, EKG line
-    if (kind === 2) {
-      const t = Date.now() * 0.002;
-      ctx.beginPath();
-      ctx.strokeStyle = `rgba(${r},${g},${b},${hot ? 0.3 : 0.15})`;
-      ctx.lineWidth = 1;
-      for (let x = 0; x < w; x += 2) {
-        const blip =
-          Math.sin((x * 0.05 + t) * 4) *
-          Math.exp(-((((x + t * 40) % 120) - 60) ** 2) / 200);
-        const y = h * 0.45 + blip * (hot ? 28 : 14);
-        if (x === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
+        // Glow halo
+        if (p.r > 1) {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r * 4, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${r},${g},${b},${alpha * (hot ? 0.2 : 0.1)})`;
+          ctx.fill();
+        }
       }
-      ctx.stroke();
-    }
 
-    // Terra Grid, faint grid lines
-    if (kind === 4) {
-      ctx.strokeStyle = `rgba(${r},${g},${b},${hot ? 0.08 : 0.04})`;
-      ctx.lineWidth = 0.5;
-      for (let x = 0; x < w; x += 18) {
+      // Signal Ward, EKG line
+      if (kind === 2) {
+        const t = Date.now() * 0.002;
         ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, h);
+        ctx.strokeStyle = `rgba(${r},${g},${b},${hot ? 0.3 : 0.15})`;
+        ctx.lineWidth = 1;
+        for (let x = 0; x < w; x += 2) {
+          const blip =
+            Math.sin((x * 0.05 + t) * 4) *
+            Math.exp(-((((x + t * 40) % 120) - 60) ** 2) / 200);
+          const y = h * 0.45 + blip * (hot ? 28 : 14);
+          if (x === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
         ctx.stroke();
       }
-      for (let y = 0; y < h; y += 18) {
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(w, y);
-        ctx.stroke();
-      }
-    }
 
-    if (runningRef.current) frame.current = requestAnimationFrame(draw);
-  }, [rgb, kind]);
+      // Terra Grid, faint grid lines
+      if (kind === 4) {
+        ctx.strokeStyle = `rgba(${r},${g},${b},${hot ? 0.08 : 0.04})`;
+        ctx.lineWidth = 0.5;
+        for (let x = 0; x < w; x += 18) {
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, h);
+          ctx.stroke();
+        }
+        for (let y = 0; y < h; y += 18) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(w, y);
+          ctx.stroke();
+        }
+      }
+
+      if (runningRef.current) frame.current = requestAnimationFrame(draw);
+    },
+    [rgb, kind],
+  );
 
   useEffect(() => {
     const c = ref.current;
@@ -320,7 +425,7 @@ export function FiveWorldsSection() {
         <h2 className="text-3xl md:text-4xl font-mono font-black tracking-tight mb-3">
           Five Worlds
         </h2>
-        <p className="text-[15px] text-text-muted leading-relaxed max-w-[520px]">
+        <p className="text-[15px] text-text-muted leading-relaxed">
           Same ML syllabus. Five story universes.{" "}
           <span style={{ color: HERO_CARD.col }}>{HERO_CARD.name}</span> is
           live; the other four ship in waves.

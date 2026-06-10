@@ -135,39 +135,48 @@ export default function Home() {
         {/* ===== FAQ (server-rendered, native <details>, zero JS) =====
             Objection handling before the close. Items single-sourced with
             the sitewide FAQPage JSON-LD via app/faq-data.ts. */}
-        <section
-          data-testid="landing-faq"
-          className="border-b border-border px-10 md:px-20 py-16"
-        >
-          <div className="font-mono text-xs text-primary tracking-[0.2em] uppercase mb-3 flex items-center gap-3">
-            <span className="w-[7px] h-[7px] bg-primary inline-block" />
-            Before you ask
-          </div>
-          <h2 className="text-3xl md:text-4xl font-mono font-black tracking-tight mb-8">
-            Fair Questions
-          </h2>
-          <div className="max-w-3xl divide-y divide-border border-y border-border">
-            {FAQ_ITEMS.map((item) => (
-              <details key={item.q} className="group">
-                <summary className="cursor-pointer list-none px-1 py-4 font-mono text-sm font-bold text-text-primary flex items-center justify-between gap-4 hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
-                  {item.q}
-                  <span
-                    aria-hidden="true"
-                    className="text-primary shrink-0 group-open:rotate-45 transition-transform font-black"
-                  >
-                    +
-                  </span>
-                </summary>
-                <p className="px-1 pb-5 text-sm text-text-muted leading-relaxed font-sans max-w-[640px]">
-                  {item.a}
-                </p>
-              </details>
-            ))}
+        <section data-testid="landing-faq" className="border-b border-border">
+          {/* Header owns the first cell, questions fill the rest — same
+              band grammar as What You'll Build, no dead right half. */}
+          <div className="grid grid-cols-1 xl:grid-cols-[1fr_2.2fr]">
+            <div className="px-10 md:px-14 py-12 border-b xl:border-b-0 xl:border-r border-border">
+              <div className="font-mono text-xs text-primary tracking-[0.2em] uppercase mb-3 flex items-center gap-3">
+                <span className="w-[7px] h-[7px] bg-primary inline-block" />
+                Before you ask
+              </div>
+              <h2 className="text-3xl md:text-4xl font-mono font-black tracking-tight mb-3">
+                Fair Questions
+              </h2>
+              <p className="text-sm text-text-muted leading-relaxed font-sans max-w-[360px]">
+                Six straight answers. Anything else, open module 1 and see for
+                yourself, it&apos;s free.
+              </p>
+            </div>
+            <div className="divide-y divide-border">
+              {FAQ_ITEMS.map((item) => (
+                <details key={item.q} className="group">
+                  <summary className="cursor-pointer list-none px-10 md:px-14 py-5 font-mono text-sm font-bold text-text-primary flex items-center justify-between gap-4 hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+                    {item.q}
+                    <span
+                      aria-hidden="true"
+                      className="text-primary shrink-0 group-open:rotate-45 transition-transform font-black"
+                    >
+                      +
+                    </span>
+                  </summary>
+                  <p className="px-10 md:px-14 pb-6 text-sm text-text-muted leading-relaxed font-sans max-w-[680px]">
+                    {item.a}
+                  </p>
+                </details>
+              ))}
+            </div>
           </div>
         </section>
 
-        {/* ===== FINAL CTA (server-rendered, zero JS) ===== */}
-        <section className="px-10 md:px-20 py-20 flex flex-col items-start gap-10">
+        {/* ===== FINAL CTA (server-rendered, zero JS) =====
+            Centered bookend — the one symmetric moment on an asymmetric
+            page; closes without a dead half. */}
+        <section className="px-10 md:px-20 py-20 flex flex-col items-center text-center gap-8">
           <div className="font-mono text-xs text-text-muted tracking-wider">
             module 1 · free · no account required
           </div>
