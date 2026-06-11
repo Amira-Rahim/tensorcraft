@@ -264,7 +264,7 @@ Velite compiles MDX to function body strings. The `LessonContent` client compone
 |-------|------|---------|
 | `/themes` | Theme listing | Grid of 5 themes, all LIVE |
 | `/themes/[slug]` | Theme detail | Module map with dossier accordion (shows all modules + expandable lesson lists), layout sets `data-theme` |
-| `/themes/[slug]/[module]/[lesson]` | Lesson viewer | 6-step progression (no sidebar); step-based nav with progress bar |
+| `/themes/[slug]/[module]/[lesson]` | Lesson viewer | 6-step progression (no sidebar); step-based nav with segmented, clickable progress bar |
 
 ### Lesson Page Architecture (`app/themes/[slug]/[module]/[lesson]/`)
 
@@ -273,7 +273,7 @@ The lesson page uses a three-component split:
 | File | Type | Responsibility |
 |------|------|----------------|
 | `page.tsx` | Server component | Data fetching (Velite), paywall enforcement, prerequisite gating, passes props to client components |
-| `lesson-steps.tsx` | Client component | Manages 6-step progression state, renders progress bar, handles step navigation (prev/next/complete) |
+| `lesson-steps.tsx` | Client component | Manages 6-step progression state, renders segmented step bar (visited steps clickable for direct jumps; furthest step reached persisted in `tc_step_max_*` alongside `tc_step_*`), handles step navigation (prev/next/complete) |
 | `lesson-content.tsx` | Client component | MDX renderer; accepts a `visibleComponents` prop to filter which 5C sections render for the current step |
 
 **Step-to-component mapping:**

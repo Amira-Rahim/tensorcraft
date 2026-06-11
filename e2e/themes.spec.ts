@@ -139,9 +139,12 @@ test.describe("Lesson Viewer Page", () => {
     ).toBeVisible();
   });
 
-  test("shows step progress bar", async ({ page }) => {
+  test("shows segmented step progress bar", async ({ page }) => {
     await page.goto("/themes/deep-orbit/foundations/introduction-to-tensors");
-    await expect(page.getByRole("progressbar")).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Step 1: Briefing" }),
+    ).toBeVisible();
+    await expect(page.getByRole("button", { name: /^Step \d/ })).toHaveCount(6);
   });
 
   test("shows Continue button", async ({ page }) => {

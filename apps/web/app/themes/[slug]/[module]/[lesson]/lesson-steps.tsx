@@ -71,6 +71,15 @@ interface LessonStepsProps {
 
 const TOTAL_STEPS = 6;
 
+const STEP_NAMES = [
+  "Briefing",
+  "Concept",
+  "Code",
+  "Challenge",
+  "Takeaways",
+  "Consequence",
+] as const;
+
 function getLessonSlugFromTitle(title: string): string {
   return title
     .toLowerCase()
@@ -81,6 +90,11 @@ function getLessonSlugFromTitle(title: string): string {
 function getStorageKey(themeSlug: string, lessonTitle: string): string {
   const lessonSlug = getLessonSlugFromTitle(lessonTitle);
   return `tc_step_${themeSlug}_${lessonSlug}`;
+}
+
+function getMaxStorageKey(themeSlug: string, lessonTitle: string): string {
+  const lessonSlug = getLessonSlugFromTitle(lessonTitle);
+  return `tc_step_max_${themeSlug}_${lessonSlug}`;
 }
 
 export function LessonSteps({
@@ -96,36 +110,55 @@ export function LessonSteps({
   lessons,
 }: LessonStepsProps) {
   const [currentStep, setCurrentStep] = useState(0);
+  const [maxStepReached, setMaxStepReached] = useState(0);
   const [exercisePassed, setExercisePassed] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   const storageKey = getStorageKey(themeSlug, lesson.title);
+  const maxStorageKey = getMaxStorageKey(themeSlug, lesson.title);
 
-  // Read persisted step on mount
+  // Read persisted step + furthest step reached on mount
   useEffect(() => {
+    let step = 0;
+    let maxStep = 0;
     try {
       const saved = localStorage.getItem(storageKey);
       if (saved !== null) {
         const parsed = parseInt(saved, 10);
         if (!isNaN(parsed) && parsed >= 0 && parsed < TOTAL_STEPS) {
+          step = parsed;
           setCurrentStep(parsed);
+        }
+      }
+      const savedMax = localStorage.getItem(maxStorageKey);
+      if (savedMax !== null) {
+        const parsed = parseInt(savedMax, 10);
+        if (!isNaN(parsed) && parsed >= 0 && parsed < TOTAL_STEPS) {
+          maxStep = parsed;
         }
       }
     } catch {
       // localStorage unavailable
     }
+    setMaxStepReached(Math.max(step, maxStep));
     setMounted(true);
-  }, [storageKey]);
+  }, [storageKey, maxStorageKey]);
+
+  // Track the furthest step reached so going back never locks steps again
+  useEffect(() => {
+    setMaxStepReached((m) => Math.max(m, currentStep));
+  }, [currentStep]);
 
   // Persist step changes
   useEffect(() => {
     if (!mounted) return;
     try {
       localStorage.setItem(storageKey, String(currentStep));
+      localStorage.setItem(maxStorageKey, String(maxStepReached));
     } catch {
       // localStorage unavailable
     }
-  }, [currentStep, storageKey, mounted]);
+  }, [currentStep, maxStepReached, storageKey, maxStorageKey, mounted]);
 
   // Mark lesson as started on mount
   useEffect(() => {
@@ -228,8 +261,6 @@ export function LessonSteps({
     [goNext, goBack],
   );
 
-  const progressPercent = ((currentStep + 1) / TOTAL_STEPS) * 100;
-
   // Highlight the first word that's > 3 chars with primary color
   const highlightTitle = (title: string) => {
     const words = title.split(" ");
@@ -287,22 +318,38 @@ export function LessonSteps({
           </Link>
 
           <div
-            className="flex-1 h-1.5 overflow-hidden"
-            style={{ background: theme.palette.border, borderRadius: 2 }}
-            role="progressbar"
-            aria-valuenow={currentStep + 1}
-            aria-valuemin={1}
-            aria-valuemax={TOTAL_STEPS}
+            className="flex-1 flex items-center gap-1"
+            role="group"
             aria-label={`Lesson step ${currentStep + 1} of ${TOTAL_STEPS}`}
           >
-            <div
-              className="h-full transition-all duration-500 ease-out"
-              style={{
-                width: `${progressPercent}%`,
-                background: theme.palette.primary,
-                borderRadius: 2,
-              }}
-            />
+            {STEP_NAMES.map((name, i) => {
+              const visited = i <= maxStepReached;
+              const filled = i <= currentStep;
+              return (
+                <button
+                  key={name}
+                  type="button"
+                  onClick={() => setCurrentStep(i)}
+                  disabled={!visited}
+                  aria-label={`Step ${i + 1}: ${name}`}
+                  aria-current={i === currentStep ? "step" : undefined}
+                  title={visited ? name : `${name} (locked)`}
+                  className="flex-1 h-4 flex items-center p-0 border-0 bg-transparent transition-opacity hover:opacity-80 disabled:hover:opacity-100"
+                  style={{ cursor: visited ? "pointer" : "not-allowed" }}
+                >
+                  <span
+                    className="h-1.5 w-full transition-all duration-300"
+                    style={{
+                      background: filled
+                        ? theme.palette.primary
+                        : theme.palette.border,
+                      opacity: !visited ? 0.45 : 1,
+                      borderRadius: 2,
+                    }}
+                  />
+                </button>
+              );
+            })}
           </div>
 
           <span
