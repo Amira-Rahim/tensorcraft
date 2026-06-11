@@ -33,6 +33,7 @@ function NavLink({
 
 export function Nav() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const supabase = getSupabaseBrowserClient();
@@ -46,6 +47,15 @@ export function Nav() {
     });
     return () => subscription.unsubscribe();
   }, []);
+
+  // Focus mode: lesson viewer routes get no marketing nav. Lesson routes are
+  // exactly /themes/{slug}/{module}/{lesson}; the capstone page is 3 segments
+  // (/themes/{slug}/capstone) so it never matches; the endsWith guard is
+  // only defensive against a lesson slug literally named "capstone".
+  const isLessonRoute =
+    /^\/themes\/[^/]+\/[^/]+\/[^/]+$/.test(pathname) &&
+    !pathname.endsWith("/capstone");
+  if (isLessonRoute) return null;
 
   return (
     <nav

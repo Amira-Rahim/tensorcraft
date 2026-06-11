@@ -3,15 +3,23 @@ import type { ReactNode } from "react";
 interface DialogueProps {
   speaker: string;
   direction?: string;
+  /** Label for the scene-transition divider; the divider is hidden unless
+   *  the host app's CSS reveals it (see comment on the element below). */
+  cutTo?: string;
   children: ReactNode;
 }
 
-export function Dialogue({ speaker, direction, children }: DialogueProps) {
+export function Dialogue({
+  speaker,
+  direction,
+  cutTo = "Briefing",
+  children,
+}: DialogueProps) {
   return (
-    <div className="mb-7">
+    <div className="mb-7 pl-6" data-dialogue="true">
       <div
         className="font-mono text-xs font-bold uppercase tracking-[2px] mb-1.5"
-        style={{ color: "var(--tc-text, #E0E0E0)" }}
+        style={{ color: "var(--tc-primary, #E0E0E0)" }}
       >
         {speaker}
       </div>
@@ -29,6 +37,28 @@ export function Dialogue({ speaker, direction, children }: DialogueProps) {
         style={{ color: "var(--tc-text, #c8c8c8)" }}
       >
         {children}
+      </div>
+      {/* Shown only on the last dialogue of a Briefing story zone; the web
+          app's lesson CSS opts it in under [data-story-register]. Hidden by
+          default so other consumers of @tensorcraft/ui never see it. */}
+      <div
+        className="tc-cut-to hidden items-center gap-3 mt-8"
+        aria-hidden="true"
+      >
+        <span
+          className="h-px flex-1"
+          style={{ background: "var(--tc-border, #2a2a2a)" }}
+        />
+        <span
+          className="font-mono text-[9px] uppercase tracking-[3px]"
+          style={{ color: "var(--tc-muted, #777777)" }}
+        >
+          Cut to: {cutTo}
+        </span>
+        <span
+          className="h-px flex-1"
+          style={{ background: "var(--tc-border, #2a2a2a)" }}
+        />
       </div>
     </div>
   );

@@ -21,7 +21,12 @@ vi.mock("next/link", () => ({
 // Step content is exercised in lesson-content.test.tsx; stub it here so the
 // suite focuses on step navigation chrome.
 vi.mock("./lesson-content", () => ({
-  LessonContent: () => <div data-testid="lesson-content" />,
+  LessonContent: ({ storyRegister }: { storyRegister?: boolean }) => (
+    <div
+      data-testid="lesson-content"
+      data-story-register={storyRegister ? "true" : undefined}
+    />
+  ),
 }));
 
 vi.mock("./lesson-drawer", () => ({
@@ -148,5 +153,68 @@ describe("LessonSteps, segmented progress bar", () => {
     fireEvent.click(screen.getByRole("button", { name: /^Step 1/ }));
     expect(localStorage.getItem(STEP_KEY)).toBe("0");
     expect(localStorage.getItem(MAX_KEY)).toBe("2");
+  });
+});
+
+describe("LessonSteps, exit chip", () => {
+  it("labels the exit link Mission Map and points at the theme page", () => {
+    renderSteps();
+    const exit = screen.getByRole("link", { name: /mission map/i });
+    expect(exit).toHaveAttribute("href", "/themes/deep-orbit");
+  });
+});
+
+describe("LessonSteps, briefing meta line", () => {
+  it("shows minutes only when there are no exercises, no bridge tier", () => {
+    renderSteps();
+    expect(screen.getByText(/10 min/i)).toBeInTheDocument();
+    expect(screen.queryByText(/exercise/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/bridge/i)).not.toBeInTheDocument();
+  });
+
+  it("appends pluralized exercise count when exercises exist", () => {
+    render(
+      <LessonSteps
+        lesson={lesson}
+        exercises={[{ slug: "a" }, { slug: "b" }] as never}
+        theme={theme}
+        themeSlug="deep-orbit"
+        moduleSlug="foundations"
+        moduleName="Foundations: Tensors & Data"
+        prevLesson={null}
+        nextLesson={null}
+      />,
+    );
+    expect(screen.getByText(/10 min · 2 exercises/i)).toBeInTheDocument();
+  });
+
+  it("uses the singular form for one exercise", () => {
+    render(
+      <LessonSteps
+        lesson={lesson}
+        exercises={[{ slug: "a" }] as never}
+        theme={theme}
+        themeSlug="deep-orbit"
+        moduleSlug="foundations"
+        moduleName="Foundations: Tensors & Data"
+        prevLesson={null}
+        nextLesson={null}
+      />,
+    );
+    expect(screen.getByText(/10 min · 1 exercise$/i)).toBeInTheDocument();
+  });
+});
+
+describe("LessonSteps, story register", () => {
+  it("flags Briefing content as story register, Concept step not", () => {
+    renderSteps();
+    expect(
+      document.querySelector("[data-story-register='true']"),
+    ).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: /continue/i }));
+    expect(
+      document.querySelector("[data-story-register='true']"),
+    ).not.toBeInTheDocument();
   });
 });

@@ -204,6 +204,7 @@ Client component with Framer Motion animations:
 - `aria-label` on OAuth buttons and SVG icons
 - Focus trap and focus restore on modals
 - `role="progressbar"` with `aria-valuenow/min/max` on progress bars
+- Lesson CUT-TO scene divider is decorative (`aria-hidden="true"`)
 - Color-only indicators supplemented with text labels
 
 ### Error Tracking (`apps/api/src/lib/error-tracking.ts`)
@@ -264,7 +265,7 @@ Velite compiles MDX to function body strings. The `LessonContent` client compone
 |-------|------|---------|
 | `/themes` | Theme listing | Grid of 5 themes, all LIVE |
 | `/themes/[slug]` | Theme detail | Module map with dossier accordion (shows all modules + expandable lesson lists), layout sets `data-theme` |
-| `/themes/[slug]/[module]/[lesson]` | Lesson viewer | 6-step progression (no sidebar); step-based nav with segmented, clickable progress bar |
+| `/themes/[slug]/[module]/[lesson]` | Lesson viewer | 6-step progression (no sidebar); step-based nav with segmented, clickable progress bar; focus mode (global marketing nav hidden); screenplay register for story content (pre-heading story zone styled as stage directions + CUT-TO divider via `:has()` rules in `globals.css`) |
 
 ### Lesson Page Architecture (`app/themes/[slug]/[module]/[lesson]/`)
 
@@ -273,8 +274,8 @@ The lesson page uses a three-component split:
 | File | Type | Responsibility |
 |------|------|----------------|
 | `page.tsx` | Server component | Data fetching (Velite), paywall enforcement, prerequisite gating, passes props to client components |
-| `lesson-steps.tsx` | Client component | Manages 6-step progression state, renders segmented step bar (visited steps clickable for direct jumps; furthest step reached persisted in `tc_step_max_*` alongside `tc_step_*`), handles step navigation (prev/next/complete) |
-| `lesson-content.tsx` | Client component | MDX renderer; accepts a `visibleComponents` prop to filter which 5C sections render for the current step |
+| `lesson-steps.tsx` | Client component | Manages 6-step progression state, renders segmented step bar (visited steps clickable for direct jumps; furthest step reached persisted in `tc_step_max_*` alongside `tc_step_*`), quiet "Mission Map" exit chip, single meta line (minutes + exercise count; bridge tier not learner-facing), handles step navigation (prev/next/complete) |
+| `lesson-content.tsx` | Client component | MDX renderer; accepts a `visibleComponents` prop to filter which 5C sections render for the current step, and a `storyRegister` flag (Briefing only) that surfaces as `data-story-register` for the screenplay CSS |
 
 **Step-to-component mapping:**
 

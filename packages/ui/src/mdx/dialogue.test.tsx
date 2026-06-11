@@ -49,4 +49,39 @@ describe("Dialogue", () => {
     const results = await axe(container);
     expect(results).toHaveNoViolations();
   });
+
+  it("marks its root with data-dialogue for positional CSS", () => {
+    const { container } = render(<Dialogue speaker="ARIA">Test</Dialogue>);
+    expect(
+      container.querySelector("[data-dialogue='true']"),
+    ).toBeInTheDocument();
+  });
+
+  it("colors the speaker with the theme primary variable", () => {
+    render(<Dialogue speaker="ARIA">Test</Dialogue>);
+    expect(screen.getByText("ARIA")).toHaveAttribute(
+      "style",
+      expect.stringContaining("--tc-primary"),
+    );
+  });
+
+  it("renders a hidden, decorative CUT-TO divider", () => {
+    const { container } = render(<Dialogue speaker="ARIA">Test</Dialogue>);
+    const cut = container.querySelector(".tc-cut-to");
+    expect(cut).toBeInTheDocument();
+    expect(cut).toHaveClass("hidden");
+    expect(cut).toHaveAttribute("aria-hidden", "true");
+    expect(cut).toHaveTextContent(/cut to: briefing/i);
+  });
+
+  it("uses a custom cutTo label when provided", () => {
+    const { container } = render(
+      <Dialogue speaker="ARIA" cutTo="Debrief">
+        Test
+      </Dialogue>,
+    );
+    expect(container.querySelector(".tc-cut-to")).toHaveTextContent(
+      /cut to: debrief/i,
+    );
+  });
 });

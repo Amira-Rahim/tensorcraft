@@ -153,10 +153,20 @@ test.describe("Lesson Viewer Page", () => {
     await expect(continueButton).toBeVisible();
   });
 
+  test("hides marketing nav in focus mode", async ({ page }) => {
+    await page.goto("/themes/deep-orbit/foundations/introduction-to-tensors");
+    await expect(page.getByTestId("site-nav")).toHaveCount(0);
+  });
+
+  test("marketing nav still renders on the theme page", async ({ page }) => {
+    await page.goto("/themes/deep-orbit");
+    await expect(page.getByTestId("site-nav")).toBeVisible();
+  });
+
   test("shows a link back to the module map", async ({ page }) => {
     await page.goto("/themes/deep-orbit/foundations/introduction-to-tensors");
     const backLink = page
-      .getByRole("link", { name: /back|module|foundations/i })
+      .getByRole("link", { name: /mission map|module|foundations/i })
       .first();
     await expect(backLink).toBeVisible();
   });

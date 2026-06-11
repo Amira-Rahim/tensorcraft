@@ -25,8 +25,11 @@ vi.mock("../../lib/supabase/client", () => ({
   }),
 }));
 
+let mockPathname = "/";
+
 beforeEach(() => {
   authState.user = null;
+  mockPathname = "/";
 });
 
 vi.mock("next/navigation", () => ({
@@ -36,7 +39,7 @@ vi.mock("next/navigation", () => ({
     prefetch: vi.fn(),
     back: vi.fn(),
   }),
-  usePathname: () => "/",
+  usePathname: () => mockPathname,
 }));
 
 vi.mock("next/link", () => ({
@@ -128,5 +131,23 @@ describe("Nav", () => {
     const { container } = render(<Nav />);
     const results = await axe(container);
     expect(results).toHaveNoViolations();
+  });
+
+  it("hides itself on lesson viewer routes (focus mode)", () => {
+    mockPathname = "/themes/deep-orbit/foundations/introduction-to-tensors";
+    render(<Nav />);
+    expect(screen.queryByTestId("site-nav")).toBeNull();
+  });
+
+  it("stays visible on theme routes", () => {
+    mockPathname = "/themes/deep-orbit";
+    render(<Nav />);
+    expect(screen.getByTestId("site-nav")).toBeInTheDocument();
+  });
+
+  it("stays visible on capstone routes", () => {
+    mockPathname = "/themes/deep-orbit/capstone";
+    render(<Nav />);
+    expect(screen.getByTestId("site-nav")).toBeInTheDocument();
   });
 });

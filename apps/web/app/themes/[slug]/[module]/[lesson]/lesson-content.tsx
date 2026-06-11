@@ -75,6 +75,7 @@ interface LessonContentProps {
   lessonId?: string;
   userFramework?: Framework;
   visibleComponents?: Set<string>;
+  storyRegister?: boolean;
   onExerciseComplete?: () => void;
 }
 
@@ -122,6 +123,7 @@ export function LessonContent({
   lessonId,
   userFramework,
   visibleComponents,
+  storyRegister,
   onExerciseComplete,
 }: LessonContentProps) {
   const exerciseMap = useMemo(() => {
@@ -359,6 +361,7 @@ export function LessonContent({
       <div
         className="max-w-none lesson-prose lesson-step-content"
         data-show-prose={showProse ? "true" : "false"}
+        data-story-register={storyRegister ? "true" : undefined}
       >
         <Content />
         {shouldShow("HintPanel") && lesson.hints && (

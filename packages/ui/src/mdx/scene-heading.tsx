@@ -5,12 +5,7 @@ interface SceneHeadingProps {
 }
 
 export function SceneHeading({ location, time, prefix }: SceneHeadingProps) {
-  const parts: string[] = [];
-  if (prefix) parts.push(prefix);
-  parts.push(location);
-
-  const heading = parts.join(" - ").toUpperCase();
-  const full = time ? `${heading} - ${time.toUpperCase()}` : heading;
+  const rest = [location, ...(time ? [time] : [])].join(" - ").toUpperCase();
 
   return (
     <div
@@ -20,7 +15,12 @@ export function SceneHeading({ location, time, prefix }: SceneHeadingProps) {
         borderBottom: "1px solid var(--tc-border, #2a2a2a)",
       }}
     >
-      {full}
+      {prefix && (
+        <span style={{ color: "var(--tc-primary, #6baa8a)" }}>
+          {`${prefix.toUpperCase()} - `}
+        </span>
+      )}
+      {rest}
     </div>
   );
 }

@@ -194,6 +194,30 @@ body {
   display: none;
 }
 
+/* Screenplay register (Briefing step). The story zone is the opening scene:
+   content BEFORE the first heading (some lessons have mid-lesson Dialogues
+   after headings; those must keep instruction styling). Story-zone prose =
+   any pre-heading paragraph that still has a pre-heading Dialogue after it;
+   the CUT-TO divider surfaces only on the final pre-heading dialogue.
+   Without :has() support these rules no-op: no divider, prose stays plain;
+   register shift still carried by Dialogue/SceneHeading styling. */
+.lesson-step-content[data-story-register="true"]
+  > p:not(:where(h2, h3) ~ *):has(~ [data-dialogue]:not(:where(h2, h3) ~ *)) {
+  font-style: italic;
+  font-size: 0.875rem;
+  color: var(--tc-muted, #a0a0a0);
+  padding-left: 1.5rem;
+  max-width: 52ch;
+}
+
+.lesson-step-content[data-story-register="true"]
+  > [data-dialogue]:not(:where(h2, h3) ~ *):not(
+    :has(~ [data-dialogue]:not(:where(h2, h3) ~ *))
+  )
+  > .tc-cut-to {
+  display: flex;
+}
+
 /* Step-in animation for lesson steps */
 @keyframes step-in {
   from {

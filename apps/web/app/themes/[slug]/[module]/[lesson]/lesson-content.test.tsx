@@ -70,6 +70,31 @@ const lesson = {
   concept: { explanation: "x" },
 };
 
+describe("LessonContent, story register", () => {
+  it("sets data-story-register only when the flag is passed", () => {
+    const { container, rerender } = render(
+      <LessonContent
+        lesson={lesson}
+        visibleComponents={new Set(["Dialogue", "prose"])}
+        storyRegister
+      />,
+    );
+    expect(
+      container.querySelector("[data-story-register='true']"),
+    ).toBeInTheDocument();
+
+    rerender(
+      <LessonContent
+        lesson={lesson}
+        visibleComponents={new Set(["Dialogue", "prose"])}
+      />,
+    );
+    expect(
+      container.querySelector("[data-story-register]"),
+    ).not.toBeInTheDocument();
+  });
+});
+
 describe("LessonContent, Epilogue step routing", () => {
   it("Briefing step (Dialogue+prose) shows opening dialogue but NOT epilogue content", () => {
     render(

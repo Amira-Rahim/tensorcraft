@@ -24,4 +24,13 @@ describe("SceneHeading", () => {
     render(<SceneHeading location="Lab" prefix="Epilogue" />);
     expect(screen.getByText(/epilogue/i)).toBeInTheDocument();
   });
+
+  it("renders the prefix in the theme primary color", () => {
+    render(<SceneHeading location="Lab" prefix="Int." />);
+    const prefix = screen.getByText(/INT\./);
+    expect(prefix).toHaveAttribute(
+      "style",
+      expect.stringContaining("--tc-primary"),
+    );
+  });
 });

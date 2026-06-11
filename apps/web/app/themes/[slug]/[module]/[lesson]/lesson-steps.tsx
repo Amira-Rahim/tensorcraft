@@ -307,14 +307,10 @@ export function LessonSteps({
           )}
           <Link
             href={`/themes/${themeSlug}`}
-            className="text-sm font-mono flex items-center gap-2 shrink-0 transition-colors px-3 py-2 hover:opacity-80"
-            style={{
-              color: theme.palette.text,
-              background: theme.palette.surface,
-              border: `1px solid ${theme.palette.border}`,
-            }}
+            className="text-sm font-mono flex items-center gap-2 shrink-0 px-3 py-2 border border-transparent opacity-70 transition-all hover:opacity-100 hover:border-current"
+            style={{ color: theme.palette.text }}
           >
-            &larr; {moduleName ?? "Module"}
+            &larr; Mission Map
           </Link>
 
           <div
@@ -527,8 +523,6 @@ function StepBriefing({
   lessonSlug: string;
   userFramework?: Framework;
 }) {
-  const tierLabel = lesson.concept.bridge?.tier ?? "concept";
-
   return (
     <div>
       <div
@@ -546,20 +540,13 @@ function StepBriefing({
       </h1>
 
       <div
-        className="flex flex-wrap gap-3 mb-8 pt-5"
-        style={{ borderTop: `1px solid ${theme.palette.border}` }}
+        className="font-mono text-xs uppercase tracking-wider mb-8 pt-5"
+        style={{
+          color: theme.palette.muted,
+          borderTop: `1px solid ${theme.palette.border}`,
+        }}
       >
-        <Pill theme={theme}>
-          <span style={{ color: theme.palette.primary }}>●</span>{" "}
-          {lesson.estimatedMinutes} min
-        </Pill>
-        <Pill theme={theme}>{tierLabel} bridge</Pill>
-        {exercises.length > 0 && (
-          <Pill theme={theme}>
-            {exercises.length}{" "}
-            {exercises.length === 1 ? "exercise" : "exercises"}
-          </Pill>
-        )}
+        {`${lesson.estimatedMinutes} min${exercises.length > 0 ? ` · ${exercises.length} ${exercises.length === 1 ? "exercise" : "exercises"}` : ""}`}
       </div>
 
       {/* Scene heading, only if scene frontmatter exists */}
@@ -573,7 +560,7 @@ function StepBriefing({
 
       {/* Narrative as stage direction */}
       <p
-        className="text-sm italic leading-[1.85] mb-7 max-w-[520px]"
+        className="text-sm italic leading-[1.85] mb-7 pl-6 max-w-[52ch]"
         style={{ color: theme.palette.muted }}
       >
         {lesson.context.narrative}
@@ -588,6 +575,7 @@ function StepBriefing({
         lessonId={lessonSlug}
         userFramework={userFramework}
         visibleComponents={new Set(["Dialogue", "prose"])}
+        storyRegister
       />
     </div>
   );
@@ -910,27 +898,6 @@ function StepConsequence({
 /* ──────────────────────────────────────────────
    Shared UI helpers
    ────────────────────────────────────────────── */
-
-function Pill({
-  children,
-  theme,
-}: {
-  children: React.ReactNode;
-  theme: LessonStepsProps["theme"];
-}) {
-  return (
-    <span
-      className="text-[10px] font-mono uppercase tracking-wider px-3 py-1"
-      style={{
-        background: theme.palette.surface,
-        border: `1px solid ${theme.palette.border}`,
-        color: theme.palette.muted,
-      }}
-    >
-      {children}
-    </span>
-  );
-}
 
 function PhaseChip({
   theme,
