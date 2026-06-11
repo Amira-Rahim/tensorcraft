@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import { LessonSteps } from "./lesson-steps";
 
 // Stub next/link so render works without the Next router.
@@ -212,9 +212,77 @@ describe("LessonSteps, story register", () => {
       document.querySelector("[data-story-register='true']"),
     ).toBeInTheDocument();
 
+    // Skip the script playback so Continue is reachable in later asserts.
+    fireEvent.click(screen.getByRole("button", { name: /skip/i }));
     fireEvent.click(screen.getByRole("button", { name: /continue/i }));
     expect(
       document.querySelector("[data-story-register='true']"),
     ).not.toBeInTheDocument();
+  });
+});
+
+describe("LessonSteps, step navigation chrome", () => {
+  it("has no bottom Back button; backward nav is the segmented bar", () => {
+    renderSteps();
+    expect(
+      screen.queryByRole("button", { name: /back/i }),
+    ).not.toBeInTheDocument();
+  });
+});
+
+describe("LessonSteps, script playback", () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("auto-plays the script on first visit to the Briefing step", () => {
+    renderSteps();
+    expect(
+      document.querySelector("[data-script-state='playing']"),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /skip/i })).toBeInTheDocument();
+  });
+
+  it("finishes after the timeline and offers Replay", () => {
+    renderSteps();
+    act(() => {
+      vi.advanceTimersByTime(30_000);
+    });
+    expect(
+      document.querySelector("[data-script-state='done']"),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /replay/i })).toBeInTheDocument();
+  });
+
+  it("Skip jumps straight to the finished state", () => {
+    renderSteps();
+    fireEvent.click(screen.getByRole("button", { name: /skip/i }));
+    expect(
+      document.querySelector("[data-script-state='done']"),
+    ).toBeInTheDocument();
+  });
+
+  it("Replay restarts the playback", () => {
+    renderSteps();
+    fireEvent.click(screen.getByRole("button", { name: /skip/i }));
+    fireEvent.click(screen.getByRole("button", { name: /replay/i }));
+    expect(
+      document.querySelector("[data-script-state='playing']"),
+    ).toBeInTheDocument();
+  });
+
+  it("does not auto-play again when returning to the Briefing step", () => {
+    renderSteps();
+    fireEvent.click(screen.getByRole("button", { name: /skip/i }));
+    fireEvent.click(screen.getByRole("button", { name: /continue/i }));
+    fireEvent.click(screen.getByRole("button", { name: /^Step 1/ }));
+    expect(
+      document.querySelector("[data-script-state='done']"),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /replay/i })).toBeInTheDocument();
   });
 });

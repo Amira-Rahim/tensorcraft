@@ -71,6 +71,37 @@ interface LessonStepsProps {
 
 const TOTAL_STEPS = 6;
 
+/* Per-step MDX visibility sets, hoisted so their identity is stable across
+   renders. Passing a fresh Set each render makes LessonContent rebuild its
+   memoized MDX component, which remounts the whole MDX DOM subtree on every
+   parent re-render (breaking the script-playback timeline's element refs
+   and recompiling the MDX body needlessly). */
+const BRIEFING_COMPONENTS = new Set(["Dialogue", "prose"]);
+const CONCEPT_COMPONENTS = new Set([
+  "BridgeCallout",
+  "LearningObjectives",
+  "Concept",
+  "InteractiveDemo",
+  "prose",
+  "code-tensors",
+]);
+const CODE_COMPONENTS = new Set([
+  "CodeBlock",
+  "MathBlock",
+  "prose",
+  "code-tensors",
+  "code-shapes",
+]);
+const CHALLENGE_COMPONENTS = new Set(["Exercise", "challenge"]);
+const TAKEAWAYS_COMPONENTS = new Set([
+  "KeyTakeaways",
+  "Quiz",
+  "HintPanel",
+  "RecallPrompt",
+  "NextLesson",
+]);
+const CONSEQUENCE_COMPONENTS = new Set(["Epilogue"]);
+
 const STEP_NAMES = [
   "Briefing",
   "Concept",
@@ -113,6 +144,13 @@ export function LessonSteps({
   const [maxStepReached, setMaxStepReached] = useState(0);
   const [exercisePassed, setExercisePassed] = useState(false);
   const [mounted, setMounted] = useState(false);
+
+  // Script playback runs once per visit; returning to the Briefing step
+  // shows the scene static with a Replay control instead of re-playing.
+  const scriptPlayedRef = useRef(false);
+  const handleScriptPlayed = useCallback(() => {
+    scriptPlayedRef.current = true;
+  }, []);
 
   const storageKey = getStorageKey(themeSlug, lesson.title);
   const maxStorageKey = getMaxStorageKey(themeSlug, lesson.title);
@@ -374,6 +412,8 @@ export function LessonSteps({
               themeSlug={themeSlug}
               lessonSlug={lessonSlug}
               userFramework={userFramework}
+              scriptAutoPlay={!scriptPlayedRef.current}
+              onScriptPlayed={handleScriptPlayed}
             />
           )}
           {currentStep === 1 && (
@@ -435,28 +475,13 @@ export function LessonSteps({
           )}
         </div>
 
-        {/* Navigation, inline with content, not a fixed bar */}
+        {/* Navigation, inline with content, not a fixed bar. Backward nav
+            lives in the segmented step bar (and swipe on mobile), so the
+            bottom row only moves forward. */}
         <div
-          className="flex items-center justify-between mt-10 pt-6"
+          className="flex items-center justify-end mt-10 pt-6"
           style={{ borderTop: `1px solid ${theme.palette.border}` }}
         >
-          <button
-            type="button"
-            onClick={goBack}
-            disabled={currentStep === 0}
-            className="text-sm font-mono font-medium px-5 py-3 transition-all"
-            style={{
-              color:
-                currentStep === 0 ? theme.palette.border : theme.palette.text,
-              background: theme.palette.surface,
-              border: `1px solid ${theme.palette.border}`,
-              cursor: currentStep === 0 ? "not-allowed" : "pointer",
-              opacity: currentStep === 0 ? 0.3 : 1,
-            }}
-          >
-            &larr; Back
-          </button>
-
           {currentStep < TOTAL_STEPS - 1 ? (
             <button
               type="button"
@@ -506,6 +531,23 @@ export function LessonSteps({
 /* ──────────────────────────────────────────────
    Step 0: Briefing
    ────────────────────────────────────────────── */
+
+function prefersReducedMotion(): boolean {
+  return (
+    typeof window !== "undefined" &&
+    window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true
+  );
+}
+
+/* Hold time per beat scales with reading length. */
+function beatHoldMs(el: HTMLElement): number {
+  const words = (el.textContent ?? "")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean).length;
+  return Math.min(3200, Math.max(800, words * 170));
+}
+
 function StepBriefing({
   lesson,
   moduleSlug,
@@ -514,6 +556,8 @@ function StepBriefing({
   themeSlug,
   lessonSlug,
   userFramework,
+  scriptAutoPlay,
+  onScriptPlayed,
 }: {
   lesson: LessonStepsProps["lesson"];
   moduleSlug: string;
@@ -522,9 +566,128 @@ function StepBriefing({
   themeSlug: string;
   lessonSlug: string;
   userFramework?: Framework;
+  scriptAutoPlay: boolean;
+  onScriptPlayed: () => void;
 }) {
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const timeoutsRef = useRef<Array<ReturnType<typeof setTimeout>>>([]);
+  const scrollPendingRef = useRef(false);
+  const [scriptState, setScriptState] = useState<"playing" | "done">(
+    scriptAutoPlay ? "playing" : "done",
+  );
+  const [beatsShown, setBeatsShown] = useState(0);
+
+  const clearTimeline = useCallback(() => {
+    for (const t of timeoutsRef.current) clearTimeout(t);
+    timeoutsRef.current = [];
+  }, []);
+
+  /* A beat is one story element revealed on the timeline: the scene
+     slugline, the narrative stage direction, then every pre-heading child
+     of the MDX container (the same story-zone boundary the screenplay CSS
+     uses). */
+  const collectBeats = useCallback((): HTMLElement[] => {
+    const root = rootRef.current;
+    if (!root) return [];
+    const beats = Array.from(
+      root.querySelectorAll<HTMLElement>("[data-script-beat]"),
+    );
+    const content = root.querySelector(".lesson-step-content");
+    if (content) {
+      for (const child of Array.from(content.children)) {
+        if (/^H[23]$/.test(child.tagName)) break;
+        beats.push(child as HTMLElement);
+      }
+    }
+    return beats;
+  }, []);
+
+  const finish = useCallback(
+    (scrollToExplanation: boolean) => {
+      clearTimeline();
+      scrollPendingRef.current = scrollToExplanation;
+      setScriptState("done");
+      onScriptPlayed();
+    },
+    [clearTimeline, onScriptPlayed],
+  );
+
+  const play = useCallback(() => {
+    clearTimeline();
+    if (prefersReducedMotion()) {
+      finish(false);
+      return;
+    }
+    const beats = collectBeats();
+    if (beats.length === 0) {
+      finish(false);
+      return;
+    }
+    setBeatsShown(0);
+    setScriptState("playing");
+    let at = 350;
+    beats.forEach((b, i) => {
+      timeoutsRef.current.push(setTimeout(() => setBeatsShown(i + 1), at));
+      at += beatHoldMs(b);
+    });
+    timeoutsRef.current.push(setTimeout(() => finish(true), at + 200));
+  }, [clearTimeline, collectBeats, finish]);
+
+  // Re-assert beat attributes after every commit. The beat list is driven
+  // by state (beatsShown) instead of one-shot imperative setAttribute calls
+  // because the MDX subtree can be remounted by a parent re-render (dev
+  // renderer especially), which silently discards attributes set on the
+  // old nodes.
+  useEffect(() => {
+    const beats = collectBeats();
+    beats.forEach((b, i) => {
+      if (i < beatsShown) b.setAttribute("data-beat-shown", "");
+      else b.removeAttribute("data-beat-shown");
+    });
+  });
+
+  // Scroll to the explanation only after the "done" state has committed:
+  // until then the explanation is display:none and a hidden element never
+  // scrolls. Double rAF lets layout settle after the reveal.
+  useEffect(() => {
+    if (scriptState !== "done" || !scrollPendingRef.current) return;
+    scrollPendingRef.current = false;
+    const scroll = () => {
+      const root = rootRef.current;
+      const target =
+        root?.querySelector(
+          ".lesson-step-content h2, .lesson-step-content h3",
+        ) ?? root?.querySelector(".tc-cut-to");
+      if (target && typeof target.scrollIntoView === "function") {
+        target.scrollIntoView({
+          behavior: prefersReducedMotion() ? "auto" : "smooth",
+          block: "start",
+        });
+      }
+    };
+    if (typeof requestAnimationFrame === "function") {
+      requestAnimationFrame(() => requestAnimationFrame(scroll));
+    } else {
+      scroll();
+    }
+  }, [scriptState]);
+
+  // Kick the timeline once on mount when auto-playing.
+  useEffect(() => {
+    if (scriptAutoPlay) play();
+    return clearTimeline;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
-    <div>
+    // aria-busy: while the scene plays, the instructional content is
+    // display:none and absent from the accessibility tree; flag the region
+    // as loading so screen readers know more content is coming.
+    <div
+      ref={rootRef}
+      data-script-state={scriptState}
+      aria-busy={scriptState === "playing" ? "true" : undefined}
+    >
       <div
         className="text-xs font-mono uppercase tracking-[3px] mb-6"
         style={{ color: theme.palette.primary }}
@@ -549,17 +712,51 @@ function StepBriefing({
         {`${lesson.estimatedMinutes} min${exercises.length > 0 ? ` · ${exercises.length} ${exercises.length === 1 ? "exercise" : "exercises"}` : ""}`}
       </div>
 
+      {/* Playback controls for the scene */}
+      <div className="flex justify-end mb-3">
+        {scriptState === "playing" ? (
+          <button
+            type="button"
+            onClick={() => finish(false)}
+            className="text-[10px] font-mono uppercase tracking-[2px] px-3 py-1.5 transition-colors hover:opacity-80"
+            style={{
+              color: theme.palette.muted,
+              border: `1px solid ${theme.palette.border}`,
+              background: "transparent",
+            }}
+          >
+            Skip <span aria-hidden="true">&#9656;</span>
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={play}
+            className="text-[10px] font-mono uppercase tracking-[2px] px-3 py-1.5 transition-colors hover:opacity-80"
+            style={{
+              color: theme.palette.muted,
+              border: `1px solid ${theme.palette.border}`,
+              background: "transparent",
+            }}
+          >
+            <span aria-hidden="true">&#8635;</span> Replay scene
+          </button>
+        )}
+      </div>
+
       {/* Scene heading, only if scene frontmatter exists */}
       {lesson.scene && (
-        <SceneHeading
-          prefix="Int."
-          location={lesson.scene.location}
-          time={lesson.scene.time}
-        />
+        <div data-script-beat="">
+          <SceneHeading
+            prefix="Int."
+            location={lesson.scene.location}
+            time={lesson.scene.time}
+          />
+        </div>
       )}
 
       {/* Narrative as stage direction */}
       <p
+        data-script-beat=""
         className="text-sm italic leading-[1.85] mb-7 pl-6 max-w-[52ch]"
         style={{ color: theme.palette.muted }}
       >
@@ -574,7 +771,7 @@ function StepBriefing({
         moduleId={moduleSlug}
         lessonId={lessonSlug}
         userFramework={userFramework}
-        visibleComponents={new Set(["Dialogue", "prose"])}
+        visibleComponents={BRIEFING_COMPONENTS}
         storyRegister
       />
     </div>
@@ -618,16 +815,7 @@ function StepConcept({
           moduleId={moduleSlug}
           lessonId={lessonSlug}
           userFramework={userFramework}
-          visibleComponents={
-            new Set([
-              "BridgeCallout",
-              "LearningObjectives",
-              "Concept",
-              "InteractiveDemo",
-              "prose",
-              "code-tensors",
-            ])
-          }
+          visibleComponents={CONCEPT_COMPONENTS}
         />
       </div>
     </div>
@@ -665,15 +853,7 @@ function StepCode({
           moduleId={moduleSlug}
           lessonId={lessonSlug}
           userFramework={userFramework}
-          visibleComponents={
-            new Set([
-              "CodeBlock",
-              "MathBlock",
-              "prose",
-              "code-tensors",
-              "code-shapes",
-            ])
-          }
+          visibleComponents={CODE_COMPONENTS}
         />
       </div>
     </div>
@@ -713,7 +893,7 @@ function StepChallenge({
           moduleId={moduleSlug}
           lessonId={lessonSlug}
           userFramework={userFramework}
-          visibleComponents={new Set(["Exercise", "challenge"])}
+          visibleComponents={CHALLENGE_COMPONENTS}
           onExerciseComplete={onExerciseComplete}
         />
       </div>
@@ -752,15 +932,7 @@ function StepTakeaways({
           moduleId={moduleSlug}
           lessonId={lessonSlug}
           userFramework={userFramework}
-          visibleComponents={
-            new Set([
-              "KeyTakeaways",
-              "Quiz",
-              "HintPanel",
-              "RecallPrompt",
-              "NextLesson",
-            ])
-          }
+          visibleComponents={TAKEAWAYS_COMPONENTS}
         />
       </div>
     </div>
@@ -848,7 +1020,7 @@ function StepConsequence({
           moduleId={moduleSlug}
           lessonId={lessonSlug}
           userFramework={userFramework}
-          visibleComponents={new Set(["Epilogue"])}
+          visibleComponents={CONSEQUENCE_COMPONENTS}
         />
       </div>
 

@@ -1,4 +1,9 @@
 @import "tailwindcss";
+/* Tailwind only auto-scans the app's own source tree; shared UI components
+   in packages/ui use utility classes too (incl. arbitrary values like
+   max-w-[440px]) and must be scanned explicitly or their utilities are
+   silently missing from the build. */
+@source "../../../packages/ui/src";
 @import "@tensorcraft/themes/css/themes.css";
 
 ::selection {
@@ -216,6 +221,46 @@ body {
   )
   > .tc-cut-to {
   display: flex;
+}
+
+/* Script playback (Briefing step). Beats reveal on a reading-paced JS
+   timeline: while playing, every beat (slugline, stage direction, each
+   pre-heading story element) is hidden until it gains [data-beat-shown];
+   instructional content (first heading onward) and the CUT-TO divider stay
+   out of sight until the scene finishes. In the "done" state none of these
+   rules apply; reduced-motion visitors land there immediately. (First-visit
+   SSR HTML starts in "playing", so JS is required to reveal the page, same
+   as the rest of the app.) */
+[data-script-state] [data-script-beat],
+[data-script-state] .lesson-step-content[data-story-register="true"] > * {
+  transition:
+    opacity 0.45s ease,
+    transform 0.45s ease;
+}
+
+[data-script-state="playing"] [data-script-beat]:not([data-beat-shown]),
+[data-script-state="playing"]
+  .lesson-step-content[data-story-register="true"]
+  > :not([data-beat-shown]) {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+[data-script-state="playing"]
+  .lesson-step-content[data-story-register="true"]
+  > :where(h2, h3, h2 ~ *, h3 ~ *) {
+  display: none;
+}
+
+[data-script-state="playing"] .tc-cut-to {
+  display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-script-state] [data-script-beat],
+  [data-script-state] .lesson-step-content[data-story-register="true"] > * {
+    transition: none;
+  }
 }
 
 /* Step-in animation for lesson steps */

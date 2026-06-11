@@ -274,7 +274,7 @@ The lesson page uses a three-component split:
 | File | Type | Responsibility |
 |------|------|----------------|
 | `page.tsx` | Server component | Data fetching (Velite), paywall enforcement, prerequisite gating, passes props to client components |
-| `lesson-steps.tsx` | Client component | Manages 6-step progression state, renders segmented step bar (visited steps clickable for direct jumps; furthest step reached persisted in `tc_step_max_*` alongside `tc_step_*`), quiet "Mission Map" exit chip, single meta line (minutes + exercise count; bridge tier not learner-facing), handles step navigation (prev/next/complete) |
+| `lesson-steps.tsx` | Client component | Manages 6-step progression state, renders segmented step bar (visited steps clickable for direct jumps; furthest step reached persisted in `tc_step_max_*` alongside `tc_step_*`), quiet "Mission Map" exit chip, single meta line (minutes + exercise count; bridge tier not learner-facing), script playback on the Briefing step (beat-by-beat reveal, Skip/Replay, auto-scroll to explanation; reduced-motion safe), forward-only bottom nav (backward nav = segmented bar / swipe) |
 | `lesson-content.tsx` | Client component | MDX renderer; accepts a `visibleComponents` prop to filter which 5C sections render for the current step, and a `storyRegister` flag (Briefing only) that surfaces as `data-story-register` for the screenplay CSS |
 
 **Step-to-component mapping:**

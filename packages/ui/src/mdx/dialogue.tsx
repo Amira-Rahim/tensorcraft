@@ -16,16 +16,16 @@ export function Dialogue({
   children,
 }: DialogueProps) {
   return (
-    <div className="mb-7 pl-6" data-dialogue="true">
+    <div className="mb-7 mx-auto max-w-[440px]" data-dialogue="true">
       <div
-        className="font-mono text-xs font-bold uppercase tracking-[2px] mb-1.5"
+        className="font-mono text-xs font-bold uppercase tracking-[2px] mb-1.5 text-center"
         style={{ color: "var(--tc-primary, #E0E0E0)" }}
       >
         {speaker}
       </div>
       {direction && (
         <div
-          className="text-[13px] italic mb-1"
+          className="text-[13px] italic mb-1 text-center"
           style={{ color: "var(--tc-muted, #A0A0A0)" }}
           data-testid="direction"
         >
@@ -33,7 +33,7 @@ export function Dialogue({
         </div>
       )}
       <div
-        className="text-[15px] leading-relaxed max-w-[560px]"
+        className="text-[15px] leading-relaxed"
         style={{ color: "var(--tc-text, #c8c8c8)" }}
       >
         {children}

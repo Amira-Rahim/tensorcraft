@@ -74,6 +74,28 @@ describe("Dialogue", () => {
     expect(cut).toHaveTextContent(/cut to: briefing/i);
   });
 
+  it("lays out as a centered screenplay column", () => {
+    const { container } = render(<Dialogue speaker="ARIA">Test</Dialogue>);
+    const root = container.querySelector("[data-dialogue='true']");
+    expect(root).toHaveClass("mx-auto", "max-w-[440px]");
+  });
+
+  it("centers the speaker name above the line", () => {
+    render(<Dialogue speaker="ARIA">Test</Dialogue>);
+    expect(screen.getByText("ARIA")).toHaveClass("text-center");
+  });
+
+  it("centers the parenthetical direction", () => {
+    render(
+      <Dialogue speaker="Imran" direction="pulling up the chart">
+        The note said PCN allergy.
+      </Dialogue>,
+    );
+    expect(screen.getByText("(pulling up the chart)")).toHaveClass(
+      "text-center",
+    );
+  });
+
   it("uses a custom cutTo label when provided", () => {
     const { container } = render(
       <Dialogue speaker="ARIA" cutTo="Debrief">
