@@ -8,9 +8,23 @@ interface Props {
   themeSlug: string;
   themeName: string;
   palette: ThemePalette;
+  /** Distinguishes multiple forms on one page; appended to ids/testids */
+  idSuffix?: string;
+  /** Analytics source recorded in the waitlist table */
+  source?: string;
+  /** Submit button label */
+  ctaLabel?: string;
 }
 
-export function ThemeWaitlistForm({ themeSlug, themeName, palette }: Props) {
+export function ThemeWaitlistForm({
+  themeSlug,
+  themeName,
+  palette,
+  idSuffix,
+  source = "coming-soon-stub",
+  ctaLabel = "Notify",
+}: Props) {
+  const suffix = idSuffix ? `-${idSuffix}` : "";
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<
     "idle" | "submitting" | "done" | "error"
@@ -25,7 +39,7 @@ export function ThemeWaitlistForm({ themeSlug, themeName, palette }: Props) {
       return;
     }
     setStatus("submitting");
-    const result = await submitWaitlist(trimmed, themeSlug, "coming-soon-stub");
+    const result = await submitWaitlist(trimmed, themeSlug, source);
     setStatus(result);
   }
 
@@ -33,7 +47,7 @@ export function ThemeWaitlistForm({ themeSlug, themeName, palette }: Props) {
     return (
       <div
         role="status"
-        data-testid="theme-waitlist-success"
+        data-testid={`theme-waitlist-success${suffix}`}
         className="border-2 px-4 py-3 font-mono text-sm rounded-none"
         style={{
           borderColor: palette.primary,
@@ -50,7 +64,7 @@ export function ThemeWaitlistForm({ themeSlug, themeName, palette }: Props) {
   return (
     <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-3">
       <label
-        htmlFor={`waitlist-${themeSlug}`}
+        htmlFor={`waitlist-${themeSlug}${suffix}`}
         className="font-mono text-xs uppercase"
         style={{ color: palette.muted, letterSpacing: "0.15em" }}
       >
@@ -58,7 +72,7 @@ export function ThemeWaitlistForm({ themeSlug, themeName, palette }: Props) {
       </label>
       <div className="flex gap-2">
         <input
-          id={`waitlist-${themeSlug}`}
+          id={`waitlist-${themeSlug}${suffix}`}
           name="email"
           type="email"
           required
@@ -67,7 +81,7 @@ export function ThemeWaitlistForm({ themeSlug, themeName, palette }: Props) {
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@domain.com"
           disabled={status === "submitting"}
-          data-testid={`theme-waitlist-input-${themeSlug}`}
+          data-testid={`theme-waitlist-input-${themeSlug}${suffix}`}
           className="flex-1 border-2 px-4 py-3 font-mono text-sm rounded-none focus:outline-none"
           style={{
             borderColor: palette.border,
@@ -78,7 +92,7 @@ export function ThemeWaitlistForm({ themeSlug, themeName, palette }: Props) {
         <button
           type="submit"
           disabled={status === "submitting"}
-          data-testid={`theme-waitlist-submit-${themeSlug}`}
+          data-testid={`theme-waitlist-submit-${themeSlug}${suffix}`}
           className="font-mono px-5 py-3 text-sm font-medium uppercase tracking-wider border-2 rounded-none disabled:opacity-60"
           style={{
             background: palette.primary,
@@ -86,7 +100,7 @@ export function ThemeWaitlistForm({ themeSlug, themeName, palette }: Props) {
             color: palette.bg,
           }}
         >
-          {status === "submitting" ? "..." : "Notify"}
+          {status === "submitting" ? "..." : ctaLabel}
         </button>
       </div>
       {status === "error" ? (

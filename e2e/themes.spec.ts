@@ -34,7 +34,20 @@ test.describe("Themes Page", () => {
       page.getByTestId("coming-soon-stub-neon-protocol"),
     ).toBeVisible();
     await expect(
-      page.getByTestId("theme-waitlist-input-neon-protocol"),
+      page.getByTestId("theme-waitlist-input-neon-protocol-hero"),
+    ).toBeVisible();
+    await expect(
+      page.getByTestId("theme-waitlist-input-neon-protocol-footer"),
+    ).toBeVisible();
+  });
+
+  test("coming-soon stub shows module roster from preview data", async ({
+    page,
+  }) => {
+    await page.goto("/themes/signal-ward");
+    await expect(page.getByText("W01 · ML Through Text")).toBeVisible();
+    await expect(
+      page.getByText("W11 · Capstone: Diagnostic One"),
     ).toBeVisible();
   });
 

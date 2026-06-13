@@ -148,3 +148,63 @@ describe("ThemePalette vs CSS property alignment", () => {
     expect(PALETTE_KEYS.length).toBe(9);
   });
 });
+
+describe("Coming-soon preview data", () => {
+  const COMING_SOON = [
+    "signal-ward",
+    "neon-protocol",
+    "nova-canvas",
+    "terra-grid",
+  ] as const;
+
+  it.each([...COMING_SOON])("theme '%s' has a preview block", (slug) => {
+    expect(themes[slug].preview).toBeDefined();
+  });
+
+  it.each([...COMING_SOON])(
+    "theme '%s' preview has exactly 11 modules ordered 1-11",
+    (slug) => {
+      const mods = themes[slug].preview!.modules;
+      expect(mods).toHaveLength(11);
+      expect(mods.map((m) => m.order)).toEqual([
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
+      ]);
+    },
+  );
+
+  it.each([...COMING_SOON])(
+    "theme '%s' preview has exactly one free module (order 1) and one capstone (order 11)",
+    (slug) => {
+      const mods = themes[slug].preview!.modules;
+      const free = mods.filter((m) => m.free);
+      const capstone = mods.filter((m) => m.capstone);
+      expect(free).toHaveLength(1);
+      expect(free[0]!.order).toBe(1);
+      expect(capstone).toHaveLength(1);
+      expect(capstone[0]!.order).toBe(11);
+    },
+  );
+
+  it.each([...COMING_SOON])(
+    "theme '%s' preview has 8 skills and non-empty status board",
+    (slug) => {
+      const preview = themes[slug].preview!;
+      expect(preview.skills).toHaveLength(8);
+      expect(preview.statusBoard.org).toBeTruthy();
+      expect(preview.statusBoard.status).toBeTruthy();
+      expect(preview.ctaLabel).toBeTruthy();
+    },
+  );
+
+  it.each([...COMING_SOON])(
+    "theme '%s' preview copy contains no em dashes",
+    (slug) => {
+      const json = JSON.stringify(themes[slug].preview);
+      expect(json).not.toContain("—");
+    },
+  );
+
+  it("deep-orbit has no preview block (launched themes do not need one)", () => {
+    expect(themes["deep-orbit"]!.preview).toBeUndefined();
+  });
+});

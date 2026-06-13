@@ -9,7 +9,7 @@ import {
 } from "@tensorcraft/content";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { hasThemePurchase, getUserProgress } from "@/lib/progress";
-import { AmbientBackground } from "@/app/components/ambient-background";
+import { ParticleField } from "@tensorcraft/ui/effects";
 import { ModuleMapClient } from "./module-map-client";
 import { ComingSoonStub } from "./coming-soon-stub";
 import type { Metadata } from "next";
@@ -258,7 +258,13 @@ export default async function ThemeDetailPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(courseJsonLd) }}
       />
-      <AmbientBackground count={160} />
+      {/* Same orbit particle drift as the landing hero, tinted with the
+          theme's primary so future themes stay on-palette. */}
+      <ParticleField
+        density={0.3}
+        colorToken={theme.palette.primary}
+        className="absolute inset-0 z-0 pointer-events-none"
+      />
 
       {/* Page header */}
       <header

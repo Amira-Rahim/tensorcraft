@@ -3,6 +3,8 @@ export type {
   ThemePalette,
   ThemeTerminology,
   ThemeCharacter,
+  ThemePreview,
+  ThemePreviewModule,
 } from "./types";
 
 export { deepOrbit } from "./deep-orbit";

@@ -44,6 +44,38 @@ export interface ThemeCharacter {
 }
 
 /**
+ * One module row in a coming-soon curriculum teaser.
+ * Titles come from docs/scripts/<slug>.md module outlines.
+ */
+export interface ThemePreviewModule {
+  /** 1-11 */
+  order: number;
+  title: string;
+  /** Exactly one per theme, always module 1 */
+  free?: boolean;
+  /** Exactly one per theme, always module 11 */
+  capstone?: boolean;
+}
+
+/**
+ * Teaser data for coming-soon stub pages. Hand-curated; real lesson
+ * content for these themes is excluded from the build until launch.
+ */
+export interface ThemePreview {
+  /** In-world framing for the hero, e.g. org board + incident status */
+  statusBoard: {
+    org: string;
+    status: string;
+  };
+  /** Hero waitlist button label, e.g. "Get paged" */
+  ctaLabel: string;
+  /** Exactly 11 entries */
+  modules: ThemePreviewModule[];
+  /** Exactly 8 short skill chips */
+  skills: string[];
+}
+
+/**
  * Full theme manifest matching the technical spec.
  * Each theme defines visual identity and narrative context. Launch status is
  * tracked separately in @tensorcraft/shared → LAUNCHED_THEMES.
@@ -75,4 +107,6 @@ export interface ThemeManifest {
   modelBuilt: string;
   /** Relevant career paths with salary ranges */
   careerPaths: string[];
+  /** Coming-soon teaser data; absent for launched themes */
+  preview?: ThemePreview;
 }
