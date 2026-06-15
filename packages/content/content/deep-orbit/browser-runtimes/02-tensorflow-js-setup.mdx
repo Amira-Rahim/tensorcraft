@@ -143,7 +143,9 @@ Set up TensorFlow.js and verify the active backend.
 
 <Exercise slug="tfjs-setup" />
 
-<KeyTakeaways takeaways={["The same matmul costs ~0.5ms on webgl, ~3ms on wasm, ~15ms on cpu: check tf.getBackend() before trusting a latency budget", "Backends (WebGL, WASM, CPU) determine performance, like choosing GPU-accelerated CSS vs JS layout", "WebGL is fastest for most models; WASM is the reliable fallback for devices without good GPUs", "Always call tf.dispose() on tensors you're done with; browser memory is limited"]} />
+<RecallPrompt question="Why does it matter which backend TensorFlow.js selects, and how do you check it?" answer="The same matrix multiply costs ~0.5ms on WebGL, ~3ms on WASM, and ~15ms on CPU, a 30x spread on identical code. Call tf.getBackend() after tf.ready() to confirm which engine is active before trusting any latency budget." />
+
+<LessonRecap whatYouLearned={["TF.js installs and imports like any npm dependency; the one non-routine step is calling tf.ready() and checking tf.getBackend() to verify which backend was selected", "Backends (WebGL, WASM, CPU) function like rendering engines: same operations, very different performance; WebGL is fastest for most models, WASM is the reliable fallback", "Tensors allocated in TF.js are not garbage-collected automatically; call tf.dispose() when done or use tf.tidy() to prevent browser memory from filling up"]} bridge="Just as `npm install react` brings a rendering runtime into a project, `npm install @tensorflow/tfjs` brings an ML inference runtime with the same install-import-configure flow." youCanNow="Install TensorFlow.js, initialize it, verify the active backend, and benchmark backend performance in a web project." />
 
 <Epilogue>
 

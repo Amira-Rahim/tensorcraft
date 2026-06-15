@@ -131,7 +131,17 @@ Build a forecasting system and detect when predictions start drifting.
 
 <Exercise slug="forecast-signal" />
 
-<KeyTakeaways takeaways={["Forecasting extends prediction to multiple steps; confidence decreases with each step as errors compound", "Non-stationary data means patterns change over time; the model must adapt or be retrained", "Drift detection compares recent prediction errors to historical baselines, like monitoring for regressions", "The signal's timing is changing; it's not perfectly periodic, making simple forecasting insufficient"]} />
+<RecallPrompt question="Why does multi-step forecasting become less reliable the further ahead you predict?" answer="Each step uses the previous prediction as input, so errors compound: a small error at step 1 gets fed back into step 2, and so on. The uncertainty cone grows with horizon, and if the underlying data is non-stationary, the learned patterns may no longer apply at all." />
+
+<LessonRecap
+  whatYouLearned={[
+    "Rolling prediction (feed each forecast back as the next input) extends a single-step model to arbitrary horizons, but error compounds with every step.",
+    "Non-stationarity means the statistical properties of the series change over time, causing a model trained on past patterns to drift from reality.",
+    "Drift detection compares recent prediction error against a historical baseline; a large ratio signals that the model needs to adapt or retrain."
+  ]}
+  bridge="Like `<link rel='prefetch'>` predicting the next navigation and preloading it, `model.predict(pastWindow)` learns past patterns to predict `future` values, but unlike prefetch there is no cache hit, only a widening probability cone."
+  youCanNow="Build a multi-step forecasting system and detect when its predictions start drifting from incoming observations."
+/>
 
 <Epilogue>
 

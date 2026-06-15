@@ -147,7 +147,20 @@ Build an LSTM that handles long signal sequences.
 
 <Exercise slug="build-lstm" />
 
-<KeyTakeaways takeaways={["LSTMs use three learned gates (forget, input, output); each is a sigmoid layer emitting per-dimension keep ratios in [0,1]", "The cell state provides a direct gradient highway, solving the vanishing gradient problem for long sequences", "GRUs are lighter (2 gates vs 3) with comparable performance: try both and compare", "For DEEP SCAN, LSTM catches the 73-second anomaly pattern that SimpleRNN missed entirely"]} />
+<RecallPrompt
+  question="What does the LSTM forget gate actually output, and how does that differ from a hard expiry like localStorage TTL?"
+  answer="The forget gate outputs a value between 0 and 1 for every dimension of the cell state, learned per input, not set by a clock. A value near 0 discards that dimension; near 1 keeps it fully. localStorage TTL removes the entire entry after a fixed timeout. The LSTM's forgetting is continuous, partial, per-dimension, and conditioned on the current input."
+/>
+
+<LessonRecap
+  whatYouLearned={[
+    "LSTMs add three sigmoid gates (forget, input, output) to the basic RNN cell; each emits per-dimension values in [0, 1] that scale, not switch, information flow.",
+    "The cell state acts as a direct gradient highway through time, preventing the exponential decay that breaks simple RNNs on long sequences.",
+    "GRUs use two gates instead of three (roughly 25% fewer parameters) and often match LSTM accuracy: training both and comparing is a standard first step."
+  ]}
+  bridge="`localStorage` with a TTL deletes a value after a fixed timeout; the LSTM forget gate reads the current input and outputs a learned, per-dimension keep ratio, so forgetting is conditioned on context, not a timer."
+  youCanNow="Replace `tf.layers.simpleRNN` with `tf.layers.lstm` to handle long-range temporal dependencies, and explain what each gate contributes."
+/>
 
 <Epilogue>
 

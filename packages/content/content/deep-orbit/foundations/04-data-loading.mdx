@@ -94,7 +94,20 @@ const trainData = allData.take(TRAIN_SIZE).batch(32);
 const valData = allData.skip(TRAIN_SIZE).batch(32);`}
 </CodeBlock>
 
-<KeyTakeaways takeaways={["shuffle(100).batch(32) is the canonical pipeline order: shuffle with a buffer first, then group. Batching first would freeze the order", "Shuffling prevents ordering bias: the model learns patterns, not sequence", "A generator must read lazily: one record per yield. Materializing the full dataset inside it defeats the entire point", "Train/validation splits let you verify the model isn't just memorizing"]} />
+<RecallPrompt
+  question="What is the correct order for shuffle and batch in a tf.data pipeline, and why does the order matter?"
+  answer="Shuffle first, then batch: shuffle(bufferSize).batch(32). If you batch first, the shuffle can only reorder whole batches, not individual records, which freezes the internal ordering of each batch and lets the model learn sequence rather than patterns."
+/>
+
+<LessonRecap
+  whatYouLearned={[
+    "A lazy generator yields one record at a time, so the full dataset never sits in memory. Materializing all records inside the generator defeats the purpose.",
+    "The canonical pipeline order is shuffle first, then batch: shuffle(bufferSize).batch(32). Batching before shuffling freezes per-batch ordering.",
+    "Train/validation splits (e.g. 80/20 via take/skip) let you confirm the model is learning general patterns rather than memorizing training examples."
+  ]}
+  bridge="Just as a well-built infinite-scroll list renders only a visible window and fetches the next page on demand, a tf.data pipeline loads one batch at a time and pulls the next chunk only when the model is ready for it."
+  youCanNow="Build a tf.data pipeline that reads lazily with a generator, shuffles and batches records correctly, and splits data into training and validation sets."
+/>
 
 <Epilogue>
 

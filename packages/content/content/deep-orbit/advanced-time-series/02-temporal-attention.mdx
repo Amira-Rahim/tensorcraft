@@ -115,7 +115,17 @@ Build a temporal attention mechanism and identify the focused time steps.
 
 <Exercise slug="temporal-attention" />
 
-<KeyTakeaways takeaways={["Attention weights come out of a softmax over the time axis, so they form a probability distribution across the window's steps", "Attention weights serve as built-in interpretability: you can see WHY the model made its prediction", "The DEEP SCAN attention reveals focus on the amplitude spike and the 73.4 Hz frequency shift", "Unlike LSTM hidden state, attention weights are directly visualizable as a temporal heatmap"]} />
+<RecallPrompt question="Why are temporal attention weights useful beyond improving prediction accuracy?" answer="They form a probability distribution over time steps via softmax, making them directly interpretable: you can inspect which positions the model weighted most heavily and understand why a prediction was made, unlike the opaque hidden state of an LSTM." />
+
+<LessonRecap
+  whatYouLearned={[
+    "Temporal attention applies a learned scoring function along the time axis, then softmax-normalizes the scores into a probability distribution over time steps.",
+    "The weighted sum of time-step features concentrates the model's representation on the highest-scoring positions, reducing noise from irrelevant steps.",
+    "Attention weights are natively interpretable: visualizing them as a heatmap shows exactly which time steps drove the output."
+  ]}
+  bridge="Like `scrollIntoView()` jumping the viewport to the element that matters, temporal `attentionWeights = softmax(scores)` concentrate processing on the highest-scoring time steps."
+  youCanNow="Build a temporal attention layer, extract its weights, and identify the time steps a model focused on to explain its prediction."
+/>
 
 <Epilogue>
 

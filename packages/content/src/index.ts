@@ -23,6 +23,14 @@ export {
 } from "./concept-index";
 export type { ConceptIndex, ConceptSource, LessonRef } from "./concept-index";
 
+// Curated ML glossary: auto-underline concept terms in prose and feed a rail.
+export { GLOSSARY } from "./glossary";
+export type { GlossaryEntry } from "./glossary";
+
+// Glossary matching: whole-word prose scanner used by rehype plugin + Velite transform.
+export { matchGlossaryTerms, findGlossaryTermsInText } from "./glossary-match";
+export type { GlossaryMatch } from "./glossary-match";
+
 // Content query functions
 export {
   getModules,

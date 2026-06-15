@@ -125,17 +125,17 @@ Set up the best available GPU backend and benchmark inference speed.
 
 <Exercise slug="gpu-backend" />
 
-## Knowledge check
+<RecallPrompt question="Why does WebGPU outperform WebGL for ML inference on compute-heavy operations?" answer="WebGL was designed for rendering graphics: it runs math by smuggling it through a fragment-shader pipeline, adding overhead per operation. WebGPU has dedicated compute shaders that run matrix multiplications and parallel reductions directly, which is what inference is mostly doing. For small models the setup cost dominates, but for large matmul-heavy workloads WebGPU is 2-5x faster." />
 
-<Quiz
-  question="When does WebGPU outperform WebGL for ML inference?"
-  options={[{"text":"Always: WebGPU is newer"},{"text":"Compute-heavy ops (matmul, conv) where WebGPU's compute shaders avoid graphics-pipeline overhead"},{"text":"When the model is small (under 10MB)"},{"text":"Only on Chrome desktop"}]}
-  correct={1}
-  explanation="WebGL repurposes graphics pipeline for compute via fragment shaders, with overhead per op. WebGPU has dedicated compute shaders + better memory model. For matmul-heavy workloads (transformers, large CNNs), WebGPU is 2-5× faster. For small models, the setup cost dominates and there's no win."
-  tier="structural"
+<LessonRecap
+  whatYouLearned={[
+    "WebGPU compute shaders run tensor math directly, without the graphics-pipeline overhead WebGL imposes via fragment shaders; this makes WebGPU 2-3x faster for matmul-heavy inference workloads.",
+    "Backend selection should use progressive fallback: `webgpu` -> `webgl` -> `wasm`, matching the same progressive-enhancement pattern used in frontend feature detection.",
+    "The full optimization stack (quantization, pruning, caching, and WebGPU) compounds: each step multiplies the gains of the previous ones."
+  ]}
+  bridge="Switching `canvas.getContext('webgl2')` for `navigator.gpu.requestAdapter()` moves GPU access from a graphics-oriented API to a compute-oriented one, the same shift as moving rendering logic off the main thread into a dedicated Worker."
+  youCanNow="Configure TensorFlow.js to use the WebGPU backend with graceful fallback to WebGL and WASM, and benchmark inference speed across backends."
 />
-
-<KeyTakeaways takeaways={["WebGPU provides 2-3x speedup over WebGL for ML inference; it is designed for compute, not graphics", "Always implement graceful fallback: WebGPU → WebGL → WASM, like progressive enhancement", "The full optimization stack (quantize + prune + cache + WebGPU) achieves 8x size reduction and 9x speed improvement", "DEEP SCAN ships at 42 MB and 5ms, and the 2.4% accuracy cost stays on the books until the next retrain"]} />
 
 <Epilogue>
 

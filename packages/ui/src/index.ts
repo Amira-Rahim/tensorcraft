@@ -12,9 +12,11 @@ export {
   DerivationDrawer,
   Exercise,
   ExerciseDataProvider,
+  GlossaryTerm,
   HintPanel,
   KeyTakeaways,
   LearningObjectives,
+  LessonRecap,
   Quiz,
   SceneHeading,
 } from "./mdx";

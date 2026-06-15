@@ -150,17 +150,20 @@ Build a simple RNN that processes sequential signal data.
 
 <Exercise slug="build-rnn" />
 
-## Knowledge check
-
-<Quiz
-  question="A simple RNN trains on 80-step windows, but the pattern it needs spans ~73 steps. Loss sits at 0.693 after two hundred epochs. What's the most likely cause?"
-  options={[{"text":"The batch size is too small for sequential data"},{"text":"Vanishing gradients: the error signal decays to almost nothing before it reaches the early time steps where the pattern starts"},{"text":"returnSequences should be set to true"},{"text":"tanh is the wrong activation for the hidden state"}]}
-  correct={1}
-  explanation="Backprop through time multiplies the gradient by the recurrent weights and the tanh derivative at every step, so over ~73 steps it shrinks toward zero and the early steps never learn. Loss stuck at 0.693 (ln 2) means the network is still flipping a coin. Batch size and returnSequences don't change gradient depth, and tanh is the standard simple-RNN activation. The LSTM in the next lesson is the fix."
-  tier="structural"
+<RecallPrompt
+  question="A simple RNN trains on long windows, but the dependency it must learn spans dozens of time steps. After many epochs the loss is stuck at 0.693. What is happening, and what fixes it?"
+  answer="Vanishing gradients. Backpropagation through time multiplies the gradient by recurrent weights and the tanh derivative at every step, so over dozens of steps it shrinks toward zero and the early time steps never learn. Loss pinned at 0.693 (ln 2) is the binary cross-entropy of a coin flip, meaning the network has learned nothing. Batch size and returnSequences do not change gradient depth; tanh is the standard activation. The fix is an LSTM, whose gated cell state carries gradient across long spans."
 />
 
-<KeyTakeaways takeaways={["DEEP SCAN's anomaly repeats every ~73 seconds: at 1 sample/second that's a 73-step dependency, beyond a simple RNN's reach", "Hidden state carries memory across time steps: the network remembers what it has seen", "returnSequences: true gives output at every step; false gives only the final hidden state", "Simple RNNs suffer from vanishing gradients; they forget long-range patterns after ~10-20 steps"]} />
+<LessonRecap
+  whatYouLearned={[
+    "An RNN is a learned reducer: at each time step it takes the previous hidden state and the new input, runs them through a trained weight matrix and tanh, and emits updated hidden state.",
+    "Setting `returnSequences: true` yields hidden state at every time step (shape [batch, timeSteps, units]); the default false yields only the final hidden state (shape [batch, units]).",
+    "Simple RNNs suffer from vanishing gradients: the error signal shrinks exponentially as it propagates backward through time, making patterns beyond ~10-20 steps unlearnable."
+  ]}
+  bridge="React's `useReducer` gives you a deterministic pure function you wrote; an RNN cell learns that reducer from data, so the same input produces different outputs depending on what came before, and the transition logic is encoded in weights rather than readable code."
+  youCanNow="Build a simple RNN with `tf.layers.simpleRNN` and explain why vanishing gradients prevent it from learning long-range dependencies."
+/>
 
 <Epilogue>
 

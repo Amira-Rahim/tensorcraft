@@ -157,4 +157,6 @@ Time to put the translation to work. Read Python code and write the JavaScript e
 
 <Exercise slug="translate-python" />
 
-<KeyTakeaways takeaways={["Python syntax is a 1:1 translation of JavaScript: same logic, different punctuation", "Indentation replaces braces, def replaces function, self replaces this", "List comprehensions are compact map/filter chains; read them right to left", "You don't need to write Python, you need to read it fluently"]} />
+<RecallPrompt question="What Python construct directly replaces a JavaScript .filter().map() chain?" answer="A list comprehension: [expr for x in iterable if condition] filters and transforms in one step, equivalent to arr.filter(cond).map(fn) in JavaScript." />
+
+<LessonRecap whatYouLearned={["Python and JavaScript share the same logical structure; only the punctuation changes (indentation vs. braces, def vs. function, self vs. this)", "List comprehensions replace .map()/.filter() chains and are readable once you spot the pattern: expression, for, optional if", "Python type hints are optional annotations that never enforce at runtime, similar to TypeScript in a non-strict config"]} bridge="Just as `arr.filter(x => x > 0).map(x => x * 2)` filters then transforms in JavaScript, `[x * 2 for x in arr if x > 0]` does the same in Python with no extra function calls." youCanNow="Read Python syntax and mentally translate it to equivalent JavaScript, including functions, classes, imports, and list comprehensions." />

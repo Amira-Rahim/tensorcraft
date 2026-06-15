@@ -189,7 +189,17 @@ Write a Model Card for the DEEP SCAN classifier.
 
 <Exercise slug="write-model-card" />
 
-<KeyTakeaways takeaways={["DEEP SCAN's card states the limits that matter: trained on Kepler-442 region only, 84% recall on the anomaly class, 15ms inference without WebGPU", "Document known limitations honestly: what the model cannot do is as important as what it can", "Pipeline API docs follow the same JSDoc patterns you use for any TypeScript library", "Runbooks bridge the gap between documentation and operations: if X happens, do Y"]} />
+<RecallPrompt question="Why does documentation discipline transfer from software to ML, but verifiability does not?" answer="JSDoc describes a deterministic function whose behavior you can confirm by reading the source. A model card describes statistical performance measured on a held-out benchmark that may not match production data. You can verify a documented function by running it; you cannot verify a model card's accuracy claim without running a fresh evaluation, and that benchmark may already be stale by the time anyone reads it." />
+
+<LessonRecap
+  whatYouLearned={[
+    "A Model Card is structured documentation for an ML model covering purpose, training data, performance metrics, and known limitations: the same documentation discipline as a README, applied to a statistical artifact rather than deterministic code.",
+    "Documenting limitations honestly is load-bearing: what the model cannot do (low recall on rare classes, training distribution boundaries, hardware requirements) is as operationally important as what it can do.",
+    "Runbooks convert documentation into executable operational procedures by replacing judgment calls with explicit numeric thresholds, making the system operable by anyone without access to the original author."
+  ]}
+  bridge="JSDoc comments describe a TypeScript function's inputs, outputs, and exceptions; a Model Card describes a model's training data, accuracy metrics, and known failure modes. The format is the same, but the model card's accuracy numbers describe a past benchmark, not a verifiable contract."
+  youCanNow="Write a Model Card and operational runbook that document an ML model's performance characteristics, limitations, and failure recovery procedures."
+/>
 
 <Epilogue>
 

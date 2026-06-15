@@ -159,17 +159,17 @@ Wire together a multi-model pipeline with error handling.
 
 <Exercise slug="model-pipeline" />
 
-## Knowledge check
+<RecallPrompt question="What is the best way to chain LLM calls reliably in a multi-model pipeline?" answer="Decompose the task into small, focused calls and validate the output of each step before passing it to the next. Each LLM call is probabilistic: five unchecked calls at 95% reliability each yield only 77% end-to-end reliability. Validate output shape (JSON schema, length, format) between steps and retry on failure rather than letting errors propagate silently." />
 
-<Quiz
-  question="Best way to chain LLM calls reliably?"
-  options={[{"text":"Single big prompt with all instructions"},{"text":"Decompose into small focused calls + validate output of each before next"},{"text":"Always use the largest available model"},{"text":"Run all calls in parallel, then merge"}]}
-  correct={1}
-  explanation="Long prompts increase cost AND error rate. Each LLM call is probabilistic: chaining 5 unchecked calls with 95% reliability per call yields 77% end-to-end. Validate output (JSON schema, length, format) between steps; retry on failure. Production LLM systems read like microservice architectures."
-  tier="structural"
+<LessonRecap
+  whatYouLearned={[
+    "Chained probabilistic models compound error: validate output between every stage rather than letting silent failures degrade the whole pipeline.",
+    "Define clear interfaces between stages -- classifier output format becomes the anomaly detector's input contract -- so each model has predictable inputs and outputs.",
+    "Graceful degradation keeps the pipeline running: if one model fails, fall back to a simpler method rather than failing the entire chain."
+  ]}
+  bridge="Orchestrating multiple models mirrors microservice architecture (classifier, anomaly detector, LSTM, LLM reporter as independent `services`): each handles one stage and passes a typed result to the next. Unlike microservices with explicit error codes, model outputs are probabilistic and can degrade silently, so contract validation between stages is mandatory."
+  youCanNow="Design and wire a multi-model pipeline with typed interfaces between stages, per-stage output validation, and graceful fallbacks when individual models fail."
 />
-
-<KeyTakeaways takeaways={["Chained probabilistic models compound error: five unchecked steps at 95% reliability each yield 77% end-to-end, so validate output between stages", "Define clear interfaces between stages: classifier output becomes anomaly detector input", "Graceful degradation: if one model fails, fall back to simpler methods rather than failing entirely", "The complete DEEP SCAN pipeline: classify → detect anomalies → predict → report, end-to-end automation"]} />
 
 <Epilogue>
 

@@ -104,6 +104,25 @@ the reader earns the scene by doing the work.
   renders above the scene). `nextLessonTeaser` ("Next: [gerund]") is
   RETIRED — delete on touch; the epilogue is the teaser.
 
+## Lesson close (authoring)
+
+Each built lesson ends its body with two blocks, in this order, both rendered
+on the Takeaways step (the story belongs to the Epilogue, never here):
+
+1. `<RecallPrompt>` first. One active-recall question and answer on the core
+   idea of the lesson. Phrase the question so a learner must retrieve the
+   concept, not recognize it; keep the answer to a few sentences.
+2. `<LessonRecap>` second.
+   - `whatYouLearned`: the transferable points, story-stripped. No character
+     names, no scene references, no "Aria discovered" framing.
+   - `bridge`: one FE to ML sentence (the same kind of bridge the lesson
+     teaches), e.g. "X in React is Y in TensorFlow".
+   - `youCanNow`: a single capability line describing what the learner can do.
+
+Do NOT use a `## Knowledge check` heading or any `<Quiz>` / `<KeyTakeaways>`
+block in built lessons; those are deprecated. The recap is summary, not
+narrative — keep all story in the Epilogue.
+
 ## Stakes rules
 
 - Nothing succeeds on the first try more than twice per module.
@@ -123,3 +142,22 @@ Before shipping a scene, check:
 2. Does anyone want something in this scene that another character isn't
    giving them? If no one does, it's a lecture with name-tags.
 3. Would a reader screenshot any line? One per module should be worth it.
+
+## Term and code styling
+
+Two reader affordances are automatic. Do not hand-author markup for either.
+
+- **Inline code is an automatic chip.** Just use backticks in the MDX
+  (`` `tf.tensor` ``). The build renders any inline code inside lesson prose as
+  a bordered chip via CSS. No span, class, or component needed. Use backticks
+  for API names, identifiers, and literal values, not for emphasis.
+- **Concept terms auto-underline from the glossary.** To make a term an
+  interactive concept term, add one entry to
+  `packages/content/src/glossary.ts` (term, plain-language definition, optional
+  aliases, scope). Define it once. The build underlines the FIRST occurrence of
+  that term in each lesson's prose and lists it in the lesson's glossary rail.
+  Clicking the underlined term highlights its rail entry. There is no per-lesson
+  markup to add or maintain.
+
+Definitions follow the same prose rules as everything else: one or two plain
+sentences, no em dashes (rule 6).

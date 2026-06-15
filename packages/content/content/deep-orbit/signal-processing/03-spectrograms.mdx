@@ -181,7 +181,20 @@ spectrogram[t, k] = |X[t, k]|²            // magnitude squared
 **Output shape:** `[num_windows, num_frequencies]`. With sample rate fs and window W, frequency resolution is `fs / W`. Time resolution is `hop / fs`.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["A 256-sample window with a 128-sample hop gives 50% overlap, the standard STFT starting configuration", "The STFT slides a window across the signal and computes the FFT at each position", "Window size is a tradeoff: large windows = better frequency detail, small windows = better time detail", "For DEEP SCAN, the spectrogram reveals the anomaly pulses periodically, not a constant signal"]} />
+<RecallPrompt
+  question="If you increase the STFT window size, what happens to frequency resolution and time resolution, and why can't you improve both at once?"
+  answer="A larger window gives better frequency resolution because more samples means finer frequency bins (resolution = sampleRate / windowSize). But it also spans more time, so you cannot tell precisely when within that window a frequency appears. You cannot improve both because you are dividing the same samples between two views: more samples per window improves frequency detail but blurs the time location of events."
+/>
+
+<LessonRecap
+  whatYouLearned={[
+    "A spectrogram is built by sliding a window across the signal and computing one FFT per position. The result is a 2D array where each row is a time step and each column is a frequency bin.",
+    "Window size creates a fundamental tradeoff: larger windows give finer frequency resolution but coarser time resolution; smaller windows give finer time resolution but coarser frequency resolution.",
+    "To track how a signal's frequency content changes over time, a spectrogram is necessary because a single FFT shows only which frequencies exist across the whole signal, not when they appear."
+  ]}
+  bridge="A spectrogram shares the layout of a DevTools performance waterfall: time on the x-axis, frequency (or event type) on the y-axis, and intensity (or duration) as color. The difference is that every pixel in the spectrogram carries computed energy, not a discrete event marker."
+  youCanNow="Implement an STFT by sliding a window across a signal and stacking FFTs, then read the resulting spectrogram to identify when a specific frequency is active."
+/>
 
 <Epilogue>
 

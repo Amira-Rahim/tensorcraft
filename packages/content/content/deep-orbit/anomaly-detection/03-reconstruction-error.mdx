@@ -135,7 +135,20 @@ A true anomaly slipped through the autoencoder. Audit the per-feature reconstruc
 
 <Exercise slug="incident-missed-anomaly" />
 
-<KeyTakeaways takeaways={["Reconstruction error is the anomaly score: high error means the signal doesn't match learned normal patterns", "MSE gives one scalar per sample; locating the cause requires per-feature error analysis computed separately", "Normal signals cluster at low error; anomalies stand out at 10-100x the normal baseline", "Feature-level error analysis reveals exactly which aspects of the signal are anomalous"]} />
+<RecallPrompt
+  question="MSE reconstruction error gives you a single scalar per sample. What does that scalar tell you, and what does it not tell you?"
+  answer="The scalar tells you how far the reconstruction is from the original across all features combined -- a high value means the sample does not fit the learned normal patterns. It does not tell you which feature, dimension, or channel caused the deviation. Identifying the source requires computing per-feature squared error separately and inspecting which dimensions contribute most."
+/>
+
+<LessonRecap
+  whatYouLearned={[
+    "Reconstruction error is computed as the MSE between an input and the autoencoder's reconstruction of it; one scalar per sample serves as the anomaly score.",
+    "Normal samples cluster at low error; anomalous samples stand out at 10-100x the normal baseline because the model cannot faithfully reproduce patterns it was never trained on.",
+    "Diagnosing which part of a signal is anomalous requires per-feature error analysis -- the aggregate MSE collapses all dimensions into a single number that shows magnitude but not location."
+  ]}
+  bridge="Like `git diff` showing that something changed from baseline, reconstruction error (`error = MSE(original, autoencoder.predict(original))`) flags deviation from learned normal patterns -- but unlike a diff, it gives one distance scalar rather than naming the exact lines that changed."
+  youCanNow="Compute per-sample reconstruction error as an anomaly score and run feature-level error analysis to identify which signal dimensions drive the deviation."
+/>
 
 > **DISPATCH archive · field intercept #08-A:** Operator Lin's CV cell logged a similar error spike last quarter: IoU residuals 12× baseline on a feed they marked 'unremarkable'. The signal was the model failing, not the world being weird. They retrained. The escalation never reached us.
 

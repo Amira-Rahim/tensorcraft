@@ -116,7 +116,17 @@ Quantize model weights and measure the precision loss.
 
 <Exercise slug="quantize-weights" />
 
-<KeyTakeaways takeaways={["Quantization reduces precision: float32 (4B) → float16 (2B) → int8 (1B) per weight", "Like image compression: smaller files, barely noticeable quality loss for most use cases", "DEEP SCAN: 340 MB → 85 MB with int8, only 1.2% accuracy drop: a worthwhile trade", "Always measure accuracy after quantization; some models are more sensitive than others"]} />
+<RecallPrompt question="What trade-off does quantization make, and how do you decide if it is acceptable?" answer="Quantization reduces bytes-per-weight (float32 to float16 or int8), shrinking model size and speeding up integer hardware, at the cost of a measurable accuracy drop. The trade is acceptable when the accuracy loss is evenly distributed across classes and within tolerance for the use case; it is unacceptable when the loss concentrates in rare or high-stakes classes." />
+
+<LessonRecap
+  whatYouLearned={[
+    "Quantization maps each weight from float32 (4 bytes) to float16 (2 bytes) or int8 (1 byte), reducing model size by 2x or 4x respectively.",
+    "Accuracy loss from quantization is usually small on average but can concentrate in rare classes, so per-class breakdown matters more than aggregate accuracy.",
+    "The `quantizationBytes` option in `model.save()` applies quantization at serialization time without requiring manual weight manipulation."
+  ]}
+  bridge="Just as converting a PNG to WebP trades lossless fidelity for a smaller file, quantizing from `float32` to `int8` trades weight precision for a 4x smaller model."
+  youCanNow="Quantize a TensorFlow.js model's weights to reduce its size, measure the resulting accuracy loss per class, and choose the precision level appropriate for your deployment constraints."
+/>
 
 > **DISPATCH archive · field intercept #14-Q:** Hassan's edge cell quantizes everything before deploy. They hit 1.2% accuracy loss and called it a win. Operator Jin pushed back: "On a 50-million-row table that's 600,000 wrong calls per quarter." Hassan's reply: "We monitor for it. That is why we have drift detection." Both true.
 

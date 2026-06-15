@@ -94,17 +94,20 @@ Assemble and compile the complete DEEP SCAN signal classifier.
 
 <Exercise slug="simple-network" />
 
-## Knowledge check
-
-<Quiz
-  question="model.compile() runs which of these?"
-  options={[{"text":"Forward pass on training data"},{"text":"Backpropagation initialization"},{"text":"Sets optimizer + loss + metrics for fit(); does NOT train"},{"text":"Validates model architecture"}]}
-  correct={2}
-  explanation="compile() is configuration only. It attaches optimizer, loss function, and metrics. Training happens in model.fit(). A compiled-but-untrained model has random weights."
-  tier="structural"
+<RecallPrompt
+  question="What does model.compile() actually do, and what does it NOT do?"
+  answer="compile() is configuration only: it attaches the optimizer, loss function, and metrics that fit() will use during training. It does not run a forward pass, initialize weights specially, or train the model. A compiled-but-untrained model still has random weights."
 />
 
-<KeyTakeaways takeaways={["Building a network: create → add layers → compile → predict", "Compilation prepares the model for training (optimizer + loss + metrics)", "Adam optimizer is the default choice: it adapts learning rate automatically", "Binary crossentropy for classification, MSE for regression"]} />
+<LessonRecap
+  whatYouLearned={[
+    "Building a sequential network follows four steps: create the model, add layers, compile with optimizer and loss, then call predict() or fit().",
+    "model.compile() is configuration, not training: it wires up the optimizer, loss function, and metrics for the later fit() call.",
+    "Adam adapts the learning rate automatically and is the standard starting optimizer; binary crossentropy measures error for classification, MSE for regression."
+  ]}
+  bridge="createRoot().render() mounts a React component tree and prepares it for user interaction; model.compile() mounts optimizer and loss configuration and prepares the model for training. In both cases, the real work happens after assembly."
+  youCanNow="Assemble, compile, and verify a complete sequential neural network, then run an initial prediction to confirm the pipeline is wired correctly."
+/>
 
 <Epilogue>
 

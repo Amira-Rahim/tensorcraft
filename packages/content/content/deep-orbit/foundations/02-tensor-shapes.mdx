@@ -93,17 +93,20 @@ Reshape a flat tensor into a matrix.
 
 <Exercise slug="reshape-tensor" />
 
-## Knowledge check
-
-<Quiz
+<RecallPrompt
   question="If a tensor has shape `[8, 224, 224, 3]`, what does each dimension represent for a typical image batch?"
-  options={[{"text":"[batch, height, width, channels]"},{"text":"[channels, height, width, batch]"},{"text":"[height, width, batch, channels]"},{"text":"[batch, channels, height, width] (PyTorch style)"}]}
-  correct={0}
-  explanation="TensorFlow uses NHWC (batch, height, width, channels) by default. PyTorch uses NCHW. Knowing the convention matters when porting models."
-  tier="structural"
+  answer="The dimensions are [batch, height, width, channels]. TensorFlow uses NHWC order by default. PyTorch uses NCHW, so knowing the convention matters when porting models between frameworks."
 />
 
-<KeyTakeaways takeaways={["Shape is a tuple describing the size of each tensor dimension", "Reshape fills row-major: same flat order, new line breaks; it is NOT a transpose", "Total elements must match: product of old shape = product of new shape", "Common ML shapes: [batch, height, width, channels] for images"]} />
+<LessonRecap
+  whatYouLearned={[
+    "Shape is a tuple that describes how many elements exist along each tensor dimension. A 2D grid with 3 rows and 4 columns has shape [3, 4].",
+    "Reshape fills row-major order: the flat sequence of values stays the same, only the line-break positions change. It is not a transpose.",
+    "The total element count must be preserved: the product of all dimensions must match before and after a reshape."
+  ]}
+  bridge="Just as `Array.length` gives one number for a 1D structure, `tensor.shape` returns the full dimension tuple, enabling multi-axis operations like broadcasting that depend on the complete shape vector."
+  youCanNow="Read and interpret tensor shapes, predict where each value lands after a reshape using row-major order, and recognize the common image batch shape [batch, height, width, channels]."
+/>
 
 <Epilogue>
 

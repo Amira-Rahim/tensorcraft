@@ -103,17 +103,20 @@ Normalize the Archimedes sensor data using z-score normalization.
 
 <Exercise slug="normalize-data" />
 
-## Knowledge check
-
-<Quiz
+<RecallPrompt
   question="Why normalize features before training?"
-  options={[{"text":"To make training run faster on the GPU"},{"text":"On different scales, the louder feature dominates what the model learns; normalization gives every feature comparable influence"},{"text":"Required by TensorFlow.js"},{"text":"Reduces model size"}]}
-  correct={1}
-  explanation="Without normalization, a feature on scale 0-1000 has 1000× the numerical pull of one on scale 0-1, so the model tunes itself to the loud feature first while quieter ones barely register. Normalization (z-score or min-max) fixes the scale disparity. In the training module you'll see the mechanism behind this: update sizes track feature scales."
-  tier="structural"
+  answer="On different scales, the louder feature dominates what the model learns: a temperature feature ranging 19-35 has roughly 40x the numerical pull of a signal-strength feature ranging 0.1-0.9. Normalization (z-score or min-max) brings every feature to a comparable scale so each one gets a fair hearing during gradient updates."
 />
 
-<KeyTakeaways takeaways={["Unnormalized scales bias the model: a 19-35 range temperature feature drowns out a 0.1-0.9 signal-strength feature", "Z-score: subtract mean, divide by std; in TFJS, tf.moments() gives you both statistics", "Min-max: scales data to a 0-1 range: the scroll-progress formula", "Save your training-time mean and std: inference data must be normalized with the same statistics"]} />
+<LessonRecap
+  whatYouLearned={[
+    "Unnormalized scales bias gradient updates toward whichever feature has the largest raw values. Normalization gives every feature comparable numerical influence during training.",
+    "Z-score (subtract mean, divide by std) is the default for neural network inputs. In TensorFlow.js, tf.moments() returns both statistics in one call. Min-max (subtract min, divide by range) works for data with true, known bounds like pixel values.",
+    "Save the training-time mean and standard deviation. Inference data must be normalized with those same statistics, not recomputed from the new batch."
+  ]}
+  bridge="Min-max normalization is the same formula as scroll-progress: `scrollY / (docHeight - viewportHeight)` maps pixels to 0-1, and `data.sub(min).div(max.sub(min))` maps sensor readings to 0-1 the same way."
+  youCanNow="Apply z-score and min-max normalization to tensor data using TensorFlow.js, choose the right strategy for a given data type, and preserve training statistics for consistent inference."
+/>
 
 <Epilogue>
 

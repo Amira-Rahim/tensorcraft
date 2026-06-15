@@ -112,7 +112,17 @@ Implement a Kalman filter and track the anomaly timing.
 
 <Exercise slug="kalman-filter" />
 
-<KeyTakeaways takeaways={["Initialized at 73.4s with process noise 0.1 and measurement noise 1.0, the filter tracks the interval down to 72.5s across eight noisy readings", "The Kalman gain controls trust: high gain = trust measurements, low gain = trust predictions", "For DEEP SCAN, the Kalman filter reveals the pulse interval is shrinking ~0.2s per cycle: the signal is accelerating", "The predict-correct loop is the same pattern as optimistic UI updates with server reconciliation"]} />
+<RecallPrompt question="What does the Kalman gain control, and what happens when it is near 0 versus near 1?" answer="The Kalman gain sets how much weight the filter gives to the new measurement versus its own prediction. Near 0 means the measurement is very noisy so the filter trusts its prediction; near 1 means the prediction is highly uncertain so the filter defers to the measurement." />
+
+<LessonRecap
+  whatYouLearned={[
+    "A Kalman filter runs a predict-then-correct loop: it projects the current estimate forward, then blends in the new measurement weighted by the Kalman gain.",
+    "The gain is computed dynamically from the current estimate variance and measurement noise, making it the optimal linear blend at every step.",
+    "The predict-correct structure generalizes the exponential moving average: EMA uses a fixed alpha, Kalman computes the equivalent weight adaptively."
+  ]}
+  bridge="Like a smoothed = `alpha * newValue + (1 - alpha) * smoothed` exponential moving average, a Kalman update blends `gain * measurement + (1 - gain) * prediction`, but computes `gain` dynamically from current uncertainty rather than holding it fixed."
+  youCanNow="Implement a 1D Kalman filter that tracks a drifting signal value under noise and report the smoothed estimate at each step."
+/>
 
 <Epilogue>
 

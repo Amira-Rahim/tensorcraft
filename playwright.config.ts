@@ -1,5 +1,10 @@
 import { defineConfig, devices } from "@playwright/test";
 
+// Default to the standard Next dev port (3000); allow PW_PORT to override so
+// runs can avoid a port already taken by an unrelated local service.
+const PORT = process.env.PW_PORT ?? "3000";
+const BASE_URL = `http://localhost:${PORT}`;
+
 export default defineConfig({
   testDir: "./e2e",
   fullyParallel: true,
@@ -12,7 +17,7 @@ export default defineConfig({
   // exceed the 5s default expect timeout and flake unrelated tests.
   expect: { timeout: 15000 },
   use: {
-    baseURL: "http://localhost:3000",
+    baseURL: BASE_URL,
     trace: "on-first-retry",
     screenshot: "only-on-failure",
     video: "retain-on-failure",
@@ -42,8 +47,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "pnpm --filter @tensorcraft/web dev",
-    url: "http://localhost:3000",
+    command: `pnpm --filter @tensorcraft/web dev -p ${PORT}`,
+    url: BASE_URL,
     reuseExistingServer: !process.env.CI,
     timeout: 30000,
   },

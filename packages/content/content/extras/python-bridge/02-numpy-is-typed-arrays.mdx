@@ -142,4 +142,6 @@ Translate NumPy operations to their TensorFlow.js equivalents.
 
 <Exercise slug="numpy-to-tfjs" />
 
-<KeyTakeaways takeaways={["NumPy ndarrays and TF.js tensors are the same concept: typed, shaped number buffers", "Creation functions map almost 1:1: np.zeros → tf.zeros, np.ones → tf.ones", "Broadcasting rules are identical in both libraries", "Shape tuples (3, 4) in NumPy become shape arrays [3, 4] in TF.js"]} />
+<RecallPrompt question="How does NumPy's broadcasting behavior compare to TensorFlow.js broadcasting?" answer="They are identical: when arrays have different shapes, both libraries automatically expand dimensions along size-1 axes to make element-wise operations work, following the same rules." />
+
+<LessonRecap whatYouLearned={["NumPy ndarrays and TF.js tensors are the same concept: typed, shaped number buffers with vectorized math", "Creation and math functions map almost 1:1 between the two libraries (np.zeros -> tf.zeros, np.mean -> tf.mean, np.matmul -> tf.matMul)", "Shape notation differs: NumPy uses tuples (3, 4) while TF.js uses arrays [3, 4], but the semantics are the same"]} bridge="Just as `new Float32Array` gives you a typed buffer in JavaScript, `np.array()` gives you an ndarray in Python; both support element-wise math, but NumPy's vectorized C-level operations run 10-100x faster on the same computation." youCanNow="Map NumPy array creation, reshaping, slicing, and math operations to their TensorFlow.js equivalents." />

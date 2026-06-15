@@ -113,7 +113,20 @@ Build and train an autoencoder on normal signal data.
 
 <Exercise slug="build-autoencoder" />
 
-<KeyTakeaways takeaways={["Autoencoders learn to compress and reconstruct: encoder squeezes data through a bottleneck, decoder rebuilds it", "Train on normal data only; the model learns the structure of normality", "The bottleneck forces the model to learn essential patterns, discarding noise", "Anomalous signals produce high reconstruction error because the model has never learned their patterns"]} />
+<RecallPrompt
+  question="Why does an autoencoder trained only on normal data produce high reconstruction error for anomalous inputs?"
+  answer="The encoder compresses inputs into a compact bottleneck representation by learning patterns present in normal data. Because it has never seen anomalous patterns, it cannot encode them accurately, and the decoder reconstructs something that reflects normal structure instead. The mismatch between the original anomalous input and the reconstruction is what produces high error."
+/>
+
+<LessonRecap
+  whatYouLearned={[
+    "An autoencoder has two parts: an encoder that compresses input through a bottleneck, and a decoder that rebuilds the original from that compressed form.",
+    "Training exclusively on normal data teaches the model the structure of normality; it learns nothing about anomalies.",
+    "Anomalous inputs cannot be accurately encoded or decoded, so they produce high reconstruction error -- which becomes the anomaly signal."
+  ]}
+  bridge="Like `gzip` exploiting repeated patterns to compress and restore data losslessly, an autoencoder compresses by learning patterns in normal data -- but unlike gzip, it is lossy: inputs unlike anything it was trained on come back distorted, and that distortion is the detection mechanism."
+  youCanNow="Build and train an autoencoder on normal-only data and use reconstruction error as an unsupervised anomaly score."
+/>
 
 <Epilogue>
 

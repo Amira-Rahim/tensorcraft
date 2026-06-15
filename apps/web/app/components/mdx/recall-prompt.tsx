@@ -8,12 +8,15 @@ interface RecallPromptProps {
   children?: ReactNode;
   /** Package-level API: plain string answer */
   answer?: string;
+  /** Called when the learner rates their recall */
+  onAnswer?: (result: "got-it" | "review") => void;
 }
 
 export function RecallPrompt({
   question,
   children,
   answer,
+  onAnswer,
 }: RecallPromptProps) {
   const [revealed, setRevealed] = useState(false);
 
@@ -50,13 +53,25 @@ export function RecallPrompt({
             {answerContent}
           </div>
 
-          <button
-            type="button"
-            onClick={() => setRevealed(false)}
-            className="mt-3 px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider transition-colors brutalist-hover bg-primary/10 text-primary border border-primary/20"
-          >
-            Hide Answer
-          </button>
+          <div className="mt-3 flex gap-2">
+            <button
+              type="button"
+              onClick={() => onAnswer?.("got-it")}
+              className="px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider transition-colors brutalist-hover bg-primary/10 text-primary border border-primary/20"
+            >
+              Got it
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                onAnswer?.("review");
+                setRevealed(false);
+              }}
+              className="px-4 py-2 text-xs font-mono font-semibold uppercase tracking-wider transition-colors brutalist-hover bg-yellow-400/10 text-yellow-400 border border-yellow-400/20"
+            >
+              Review again
+            </button>
+          </div>
         </div>
       )}
     </div>

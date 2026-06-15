@@ -99,17 +99,20 @@ Implement gradient descent to minimize a loss function.
 
 <Exercise slug="gradient-step" />
 
-## Knowledge check
-
-<Quiz
-  question="Your training loss explodes after a few steps. Most likely cause?"
-  options={[{"text":"Learning rate too high"},{"text":"Learning rate too low"},{"text":"Batch size too small"},{"text":"Network too deep"}]}
-  correct={0}
-  explanation="Loss explosion = optimizer is overshooting the minimum. The fix is to lower the learning rate (try 10× smaller). Learning rate too low causes slow convergence, not divergence. Batch size affects gradient noise but rarely causes pure explosion."
-  tier="intuition"
+<RecallPrompt
+  question="Your training loss explodes after a few steps. What is the most likely cause and fix?"
+  answer="The learning rate is too high, causing the optimizer to overshoot the minimum. Lowering the learning rate (try 10x smaller) is the fix. A rate that is too low causes slow convergence but not divergence."
 />
 
-<KeyTakeaways takeaways={["Gradients = slope of the loss with respect to each weight", "Gradient descent: move weights opposite to the gradient direction", "Learning rate controls step size; it is the key hyperparameter", "tf.variableGrads() computes gradients automatically"]} />
+<LessonRecap
+  whatYouLearned={[
+    "A gradient is the slope of the loss with respect to each weight. It points in the direction of steepest ascent, so subtracting it moves weights toward lower loss.",
+    "The learning rate controls step size. Too high causes the optimizer to overshoot and diverge; too low causes painfully slow convergence.",
+    "`tf.variableGrads()` computes gradients for all tracked variables automatically in one call."
+  ]}
+  bridge="Lerp smoothing and gradient descent use the same update rule: `position += (target - position) * rate`. The difference is that in ML the target is unknown and the gradient gives only the local slope, not the destination."
+  youCanNow="Implement a manual gradient descent step using `tf.variableGrads()` and tune the learning rate to control convergence speed."
+/>
 
 <Epilogue>
 

@@ -114,17 +114,20 @@ Now it's your turn. Create your first tensor from a JavaScript array.
 
 <Exercise slug="create-a-tensor" />
 
-## Knowledge check
-
-<Quiz
+<RecallPrompt
   question="What is the rank of `tf.tensor2d([[1, 2, 3], [4, 5, 6]])`?"
-  options={[{"text":"0 (scalar)"},{"text":"1 (vector)"},{"text":"2 (matrix)"},{"text":"3 (3D tensor)"}]}
-  correct={2}
-  explanation="Rank = number of dimensions. tf.tensor2d creates a 2D tensor (matrix). Shape is [2, 3] but rank is 2."
-  tier="identity"
+  answer="The rank is 2. Rank equals the number of dimensions. tf.tensor2d creates a 2D tensor (a matrix). The shape is [2, 3], but rank counts the axes, not the elements."
 />
 
-<KeyTakeaways takeaways={["What a tensor adds over a Float32Array: shape tracking, GPU-backed math, and a memory lifecycle you manage yourself", "TensorFlow.js tensors are created from regular JavaScript arrays; convert back with .array()", "Tensor rank = number of dimensions (scalar=0, vector=1, matrix=2)", "The GC can't see GPU memory: dispose() what you keep, tf.tidy() everything else", "tf.memory().numTensors is your leak detector: if it climbs while the app idles, something is escaping your tidy()"]} />
+<LessonRecap
+  whatYouLearned={[
+    "A tensor adds shape tracking, GPU-backed math, and an explicit memory lifecycle on top of the flat number storage you already know from Float32Array.",
+    "Tensor rank equals the number of dimensions: scalar=0, vector=1, matrix=2. Use .array() or dataSync() to pull values back into JavaScript.",
+    "The JavaScript GC cannot see GPU memory: dispose() tensors you keep explicitly, and use tf.tidy() for everything intermediate. tf.memory().numTensors is your leak detector."
+  ]}
+  bridge="Just as a `Float32Array` holds numbers in flat contiguous memory, a `tf.tensor` wraps that same layout with shape metadata, GPU dispatch, and a manual disposal contract."
+  youCanNow="Create tensors from JavaScript arrays, read their rank and shape, and manage their GPU memory with dispose() and tf.tidy() without leaking."
+/>
 
 > **DISPATCH archive · field intercept #02-T:** Yara's collective uses the same shape contract for image latents in Nova Canvas: `[batch, channels, h, w]`. Different domain, same primitive. The tensor is the lingua franca; the meaning is the lesson.
 

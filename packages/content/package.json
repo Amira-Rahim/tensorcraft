@@ -16,12 +16,16 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@types/hast": "^3.0.4",
     "velite": "^0.2.0",
     "zod": "^3.23.0"
   },
   "devDependencies": {
     "@tensorcraft/config": "workspace:*",
+    "rehype-parse": "^9.0.1",
+    "rehype-stringify": "^10.0.1",
     "tsx": "^4.19.2",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "unified": "^11.0.5"
   }
 }

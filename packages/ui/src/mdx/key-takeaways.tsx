@@ -1,3 +1,4 @@
+// DEPRECATED: replaced by RecallPrompt/LessonRecap in the lesson close; retained for unbuilt coming-soon theme MDX. See docs/superpowers/specs/2026-06-15-end-of-lesson-design.md
 interface KeyTakeawaysProps {
   takeaways: string[];
 }

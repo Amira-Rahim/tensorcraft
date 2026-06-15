@@ -194,7 +194,17 @@ Write a model validation gate for CI/CD.
 
 <Exercise slug="ci-cd-gate" />
 
-<KeyTakeaways takeaways={["ML CI/CD extends standard web CI with model accuracy gates and performance benchmarks", "Accuracy gates prevent deployment when model quality regresses, same concept as test coverage thresholds", "A green workflow does not pin a model: version weights separately and key caches on the artifact hash", "GitHub Actions workflow: test → validate-model → benchmark → deploy, with each stage gating the next"]} />
+<RecallPrompt question="Why does a passing CI workflow not guarantee you tested the model you are about to ship?" answer="CI workflows cache artifacts by path or time, not by content hash. If the cache key does not include the model's file hash, a stale weight file from a previous training run can satisfy the cache hit and pass all accuracy gates, measuring a model that no longer exists. You must version weights separately and key the cache on the artifact hash." />
+
+<LessonRecap
+  whatYouLearned={[
+    "Standard CI/CD pipelines extend naturally to ML by adding model-specific gate steps (accuracy thresholds and inference benchmarks) that block the merge the same way failing unit tests do.",
+    "A green workflow badge does not pin a model: weight files are non-deterministic outputs of training, so you must version them separately and key CI caches on the content hash of the artifact.",
+    "Deployment rollback for a web app restores the exact prior bytes; model rollback restores prior weights but not the data distribution the model was trained on."
+  ]}
+  bridge="GitHub Actions CI for a web app runs `npm test` then ships a bundle; ML CI adds `validate-model` and `benchmark` steps that gate on accuracy and inference speed -- the workflow shape is identical, but `model.json` must be hash-pinned the way a `package-lock.json` pins dependencies."
+  youCanNow="Extend a GitHub Actions workflow with ML accuracy gates and performance benchmarks that block deployment on model regression."
+/>
 
 <Epilogue>
 

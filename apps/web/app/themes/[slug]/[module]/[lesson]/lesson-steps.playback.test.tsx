@@ -48,6 +48,7 @@ vi.mock("@tensorcraft/ui", async () => {
     DerivationDrawer: () => null,
     HintPanel: () => null,
     KeyTakeaways: () => null,
+    LessonRecap: () => null,
     LearningObjectives: () => null,
     Quiz: () => null,
     Exercise: () => null,

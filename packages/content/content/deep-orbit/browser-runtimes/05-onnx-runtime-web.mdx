@@ -172,7 +172,9 @@ Run an ONNX model and compare its output with TF.js.
 
 <Exercise slug="onnx-comparison" />
 
-<KeyTakeaways takeaways={["Benchmark verdict for the DEEP SCAN classifier: ONNX cold-starts in 180ms vs TF.js 340ms; TF.js sustains 2.1ms inference vs ONNX 3.8ms", "ONNX Runtime Web uses WASM for reliable cross-device inference; TF.js uses WebGL for GPU acceleration", "Cold start vs sustained speed is the key tradeoff: ONNX starts faster, TF.js runs faster long-term", "A model using an op the target runtime lacks fails to load entirely: check opset support before promising portability", "Choose your runtime based on your deployment pattern: always-on dashboard (TF.js) vs on-demand inference (ONNX)"]} />
+<RecallPrompt question="ONNX is marketed as 'train anywhere, run anywhere'. What is the real constraint that limits that guarantee?" answer="ONNX defines a shared operator set, not a compatibility layer. If a model uses an op the target runtime has not implemented, the model fails to load entirely. There is no polyfill; you must rewrite the model architecture to remove the unsupported op." />
+
+<LessonRecap whatYouLearned={["ONNX Runtime Web uses WASM for reliable cross-device inference and starts up faster (180ms) than TF.js (340ms); TF.js uses WebGL for GPU acceleration and sustains faster inference (2.1ms vs 3.8ms)", "The key runtime selection criterion is deployment pattern: always-on workloads favor TF.js for sustained throughput, on-demand workloads favor ONNX for cold-start speed", "Cross-runtime ONNX portability is real but bounded: a model using an op the target runtime lacks fails to load entirely, so opset support must be verified before committing to a deployment target"]} bridge="Just as the same HTML renders across browsers but a missing feature has no polyfill, the same ONNX model runs across runtimes but a missing operator fails hard with no fallback." youCanNow="Load and run an ONNX model in the browser, benchmark it against TF.js, and select the right runtime based on cold-start and sustained-inference requirements." />
 
 <Epilogue>
 

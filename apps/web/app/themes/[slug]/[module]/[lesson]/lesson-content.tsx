@@ -9,11 +9,14 @@ import {
   CodeBlock,
   DerivationDrawer,
   ExerciseDataProvider,
+  GlossaryTerm,
   HintPanel,
   KeyTakeaways,
   LearningObjectives,
+  LessonRecap,
   Quiz,
 } from "@tensorcraft/ui";
+import { useGlossary } from "./glossary-context";
 
 // Round-12 perf fix: the `Exercise` component pulls in the full Sandpack
 // runtime + editor (~300 KB gzipped). Loading it dynamically with
@@ -48,6 +51,7 @@ import {
   trackCheckpointSubmitted,
   trackExerciseSubmitted,
   trackHintRequested,
+  trackRecallAnswered,
 } from "@/lib/analytics";
 
 interface LessonContentProps {
@@ -77,6 +81,7 @@ interface LessonContentProps {
   visibleComponents?: Set<string>;
   storyRegister?: boolean;
   onExerciseComplete?: () => void;
+  glossaryTerms?: Array<{ term: string; definition: string }>;
 }
 
 /**
@@ -125,7 +130,19 @@ export function LessonContent({
   visibleComponents,
   storyRegister,
   onExerciseComplete,
+  glossaryTerms,
 }: LessonContentProps) {
+  const { activeTerm, setActiveTerm } = useGlossary();
+
+  // Map canonical term -> entry, for the span override to look up definitions.
+  // Memoized on the (stable) glossaryTerms array so the components map below
+  // does not rebuild (and remount the MDX subtree) every render.
+  const glossaryByTerm = useMemo(() => {
+    const map = new Map<string, { term: string; definition: string }>();
+    for (const g of glossaryTerms ?? []) map.set(g.term, g);
+    return map;
+  }, [glossaryTerms]);
+
   const exerciseMap = useMemo(() => {
     const map = new Map<string, ExerciseData>();
     for (const ex of exercises) {
@@ -224,6 +241,7 @@ export function LessonContent({
       InteractiveDemo: wrapVisibility("InteractiveDemo", InteractiveDemo),
       DeepScanDemo: wrapVisibility("DeepScanDemo", DeepScanDemo),
       KeyTakeaways: wrapVisibility("KeyTakeaways", KeyTakeaways),
+      LessonRecap: wrapVisibility("LessonRecap", LessonRecap),
       LearningObjectives: wrapVisibility(
         "LearningObjectives",
         LearningObjectives,
@@ -262,7 +280,15 @@ export function LessonContent({
         );
       },
       RecallPrompt: (props: React.ComponentProps<typeof RecallPrompt>) =>
-        shouldShow("RecallPrompt") ? <RecallPrompt {...props} /> : null,
+        shouldShow("RecallPrompt") ? (
+          <RecallPrompt
+            {...props}
+            onAnswer={(result) => {
+              trackRecallAnswered(result, { themeId, lessonId });
+              props.onAnswer?.(result);
+            }}
+          />
+        ) : null,
       BridgeCallout: (props: { bridge: unknown }) =>
         shouldShow("BridgeCallout") ? (
           <BridgeCallout
@@ -307,6 +333,30 @@ export function LessonContent({
     base.Section = (props: { name: string; children: React.ReactNode }) =>
       shouldShow(props.name) ? <div>{props.children}</div> : null;
 
+    // Upgrade glossary spans (emitted by rehype-glossary as
+    // <span data-glossary-term="...">) into interactive GlossaryTerm chips
+    // linked to the shared rail via the glossary context. Plain spans pass
+    // through untouched.
+    base.span = (
+      props: React.HTMLAttributes<HTMLSpanElement> & {
+        "data-glossary-term"?: string;
+      },
+    ) => {
+      const term = props["data-glossary-term"];
+      if (!term) return <span {...props} />;
+      const entry = glossaryByTerm.get(term);
+      return (
+        <GlossaryTerm
+          term={term}
+          definition={entry?.definition}
+          active={activeTerm === term}
+          onActivate={setActiveTerm}
+        >
+          {props.children}
+        </GlossaryTerm>
+      );
+    };
+
     // Closing scene block, renders only on the Consequence step.
     base.Epilogue = (props: { children: React.ReactNode }) =>
       shouldShow("Epilogue") ? (
@@ -328,6 +378,9 @@ export function LessonContent({
     shouldShow,
     onExerciseComplete,
     lesson.concept.bridge,
+    glossaryByTerm,
+    activeTerm,
+    setActiveTerm,
   ]);
 
   const Content = useMemo(() => {

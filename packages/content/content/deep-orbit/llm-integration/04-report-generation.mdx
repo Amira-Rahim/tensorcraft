@@ -110,7 +110,17 @@ Build a section-by-section report generator from signal data.
 
 <Exercise slug="generate-report" />
 
-<KeyTakeaways takeaways={["The report is six independently generated sections, Executive Summary through Recommendations, each validated before assembly", "Low temperature (0.1-0.3) for factual scientific writing reduces hallucination risk", "Always validate generated content against actual data before including in the report", "The pipeline mirrors frontend rendering: template → data → render → review"]} />
+<RecallPrompt question="Why generate a report section by section rather than all at once?" answer="Generating a full report in one prompt gives you output you cannot verify in isolation -- errors in one area infect the whole. Treating each section as an independent unit means each gets its own data, its own prompt, and its own validation step before assembly. You can catch and fix problems per section rather than discarding the whole." />
+
+<LessonRecap
+  whatYouLearned={[
+    "Section-by-section generation is safer than monolithic generation: each section gets its own data, prompt, and validation step, so errors are caught in isolation.",
+    "Low temperature (0.1-0.3) reduces hallucination risk for factual writing -- always validate generated claims against actual data before including them.",
+    "The report pipeline mirrors template rendering: define the structure first, retrieve data per section, generate, validate, then assemble."
+  ]}
+  bridge="Generating a report section by section mirrors how template rendering works (`template.render({ title, sections, data })`): you define the schema upfront and fill each slot independently. The difference is that a template substitutes known values into known slots, while a generator invents prose that must be verified against your data."
+  youCanNow="Build a section-by-section report generation pipeline that retrieves data per section, generates content at low temperature, validates claims against source data, and assembles a complete citable output."
+/>
 
 <Epilogue>
 

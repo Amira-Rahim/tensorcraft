@@ -131,7 +131,20 @@ Create time-step sequences from raw signal data.
 
 <Exercise slug="create-sequences" />
 
-<KeyTakeaways takeaways={["A feedforward network scores rise-fall-rise and fall-rise-rise identically: same values, and it never sees the order", "Feedforward networks process each input independently with no memory of previous inputs", "Sequential input adds a time dimension: shape goes from [batch, features] to [batch, timeSteps, features]", "Sliding windows convert a continuous signal stream into discrete sequences for model input"]} />
+<RecallPrompt
+  question="You have a feedforward network and feed it readings [0.5, 0.3, 0.7] then [0.7, 0.3, 0.5] (shuffled order). How does it score them compared to the original sequence?"
+  answer="Identically. A feedforward network processes each input in isolation with no memory of what came before, so it cannot detect that the order changed. Order-dependent meaning is invisible to it."
+/>
+
+<LessonRecap
+  whatYouLearned={[
+    "Feedforward networks score every time step independently: shuffling the order of inputs costs them nothing and loses all temporal information.",
+    "Sequential data requires a third tensor dimension for time, giving inputs shape [batch, timeSteps, features] instead of [batch, features].",
+    "Sliding windows convert a continuous signal stream into discrete fixed-size sequences suitable for model input."
+  ]}
+  bridge="React list keys track element identity during reconciliation, but in sequence models position encodes meaning: the same values in a different order carry a different signal, and `model.predict` on `[timeSteps, features]` tensors depends on that order."
+  youCanNow="Prepare sequential data by slicing a continuous signal into sliding windows and representing it as a [batch, timeSteps, features] tensor."
+/>
 
 <Epilogue>
 

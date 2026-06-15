@@ -184,7 +184,20 @@ Extract FFT features from a signal and combine them with raw features.
 
 <Exercise slug="fft-features" />
 
-<KeyTakeaways takeaways={["The upgraded input is 11 features wide: 3 raw values plus the top 8 FFT magnitude bins from a 64-sample window", "FFT magnitudes capture frequency patterns invisible in the time domain, boosting accuracy from 78% to 87%", "Always normalize features to the same scale; otherwise the model overweights large-valued features", "Save normalization statistics from training data and reuse them during inference for consistency"]} />
+<RecallPrompt
+  question="Feature engineering with FFT magnitudes adds no new information to the signal. Why does it improve model accuracy anyway?"
+  answer="The raw samples already contain all the information the FFT will compute, but in a form the model has to discover on its own. Providing FFT magnitudes as explicit inputs gives the model direct access to frequency-domain structure, removing the burden of learning to extract it from time-domain samples. The model improves because the representation is better, not because the data changed."
+/>
+
+<LessonRecap
+  whatYouLearned={[
+    "Feature engineering derives new model inputs from existing data to make patterns more directly accessible, without adding new information.",
+    "FFT magnitudes expose frequency-domain structure that a model trained on raw time-domain samples would have to learn to extract on its own. Providing them as explicit inputs improves accuracy without more data.",
+    "Features from different sources often differ in scale by orders of magnitude. Z-score normalization must be applied using statistics computed from training data, and those same statistics must be reused at inference time."
+  ]}
+  bridge="Just as `useMemo(() => items.sort(compare), [items])` derives a sorted array from props so the render function does not have to sort on every access, `tf.concat([rawSignal, fftMagnitudes], 1)` derives frequency features from the raw signal so the model does not have to learn frequency extraction from scratch."
+  youCanNow="Extract top FFT magnitude bins from a signal, normalize them alongside raw features, and concatenate everything into a combined feature vector for a classifier."
+/>
 
 <Epilogue>
 

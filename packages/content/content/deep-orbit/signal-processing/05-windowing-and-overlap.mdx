@@ -191,17 +191,20 @@ Apply a Hann window to a signal before computing the FFT.
 For real-time inference: smaller hop = lower latency between input and STFT availability, at the cost of more FFTs per second.
 </DerivationDrawer>
 
-## Knowledge check
-
-<Quiz
-  question="Why apply a Hann window before FFT?"
-  options={[{"text":"To reduce computation"},{"text":"To reduce spectral leakage when signal isn't periodic in the window"},{"text":"To increase frequency resolution"},{"text":"Required by Cooley-Tukey algorithm"}]}
-  correct={1}
-  explanation="FFT assumes the input is one period of a periodic signal. Real signals usually aren't; the discontinuity at window edges creates spurious frequencies (spectral leakage). Tapering the edges (Hann, Hamming, Blackman) suppresses this. Cost: slight loss of frequency resolution."
-  tier="structural"
+<RecallPrompt
+  question="Why apply a Hann window before computing the FFT?"
+  answer="The FFT treats the input as one period of an infinitely repeating signal. When a real signal slice does not end at the same amplitude it started, the abrupt edge looks like a sharp discontinuity, which produces spurious high-frequency energy (spectral leakage) across many bins. A Hann window tapers both ends of the slice to zero so the edge is smooth, suppressing leakage at the cost of a slight reduction in frequency resolution."
 />
 
-<KeyTakeaways takeaways={["Leakage is measurable: a pure 10 Hz tone cut mid-period smears magnitude ~8.2 into bins 9 and 11, which should both read zero", "Windowing functions (Hann, Hamming) taper signal edges to zero, eliminating leakage artifacts", "50% overlap between windows ensures no information is lost at tapered edges, like overscan in virtualized lists", "The 73.4 Hz anomaly, now clean after windowing, is confirmed as real structure, not an artifact"]} />
+<LessonRecap
+  whatYouLearned={[
+    "Spectral leakage occurs when a signal slice does not fit an integer number of cycles in the window. The abrupt edge is interpreted as a discontinuity, spreading energy from real peaks into neighboring frequency bins.",
+    "Windowing functions such as Hann and Hamming taper signal edges to zero before the FFT, suppressing leakage. The tradeoff is a slight widening of the main lobe, reducing frequency resolution.",
+    "Overlapping windows (typically 50% hop) ensure that every sample contributes with full weight in at least one window, compensating for the energy lost at tapered edges."
+  ]}
+  bridge="Virtual scrolling hard-cuts DOM rendering at the viewport boundary with no consequence because off-screen pixels are simply not rendered. Signal windowing cannot hard-cut because the FFT treats the slice as periodic, so an abrupt edge becomes real frequency content. The fix, tapering the edge smoothly, is analogous to fading items at the scroll viewport boundary."
+  youCanNow="Apply a Hann window to a signal slice before computing the FFT, choose an appropriate overlap ratio, and explain why windowing reduces spectral leakage."
+/>
 
 <Epilogue>
 

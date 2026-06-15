@@ -89,17 +89,20 @@ Calculate the loss for the DEEP SCAN classifier's initial predictions.
 
 <Exercise slug="mse-loss" />
 
-## Knowledge check
-
-<Quiz
-  question="For binary classification, why use binary cross-entropy instead of mean squared error?"
-  options={[{"text":"BCE is faster to compute"},{"text":"BCE produces meaningful gradients near the decision boundary, MSE saturates near 0 and 1"},{"text":"MSE only works with regression"},{"text":"BCE is required by TensorFlow.js"}]}
-  correct={1}
-  explanation="MSE gradient ∝ (pred − label) shrinks to zero when predictions are near 0 or 1, even when wrong. BCE uses log, keeping gradients steep where the model is most wrong. This is the difference between a model that converges and one that stalls."
-  tier="structural"
+<RecallPrompt
+  question="For binary classification, why is binary cross-entropy preferred over mean squared error?"
+  answer="MSE gradients shrink to near zero when predictions are close to 0 or 1, stalling learning even when the model is wrong. Binary cross-entropy uses log, which keeps gradients steep where the model is most wrong. This difference determines whether a model converges or stalls."
 />
 
-<KeyTakeaways takeaways={["A prediction of 0.52 on a true label of 1.0 is the starting problem: loss turns 'how wrong' into one number you can minimize", "MSE: good for regression, penalizes large errors quadratically", "Binary crossentropy: better for classification (0/1 outputs)", "Training goal: minimize loss toward zero"]} />
+<LessonRecap
+  whatYouLearned={[
+    "A loss function converts prediction error into a single number you can minimize. Lower means better; zero is perfect.",
+    "Mean squared error works for regression by penalizing large errors quadratically. Binary cross-entropy is better for classification because it maintains steep gradients near the decision boundary.",
+    "The choice of loss function shapes how the optimizer learns: the wrong loss can stall training even with a correct architecture."
+  ]}
+  bridge="Just as `expect().toBe()` asserts a difference between actual and expected, a loss function measures the distance between a prediction and its label, returning a number instead of a pass/fail."
+  youCanNow="Choose between MSE and binary cross-entropy based on your task type and implement either using `tf.losses`."
+/>
 
 <Epilogue>
 

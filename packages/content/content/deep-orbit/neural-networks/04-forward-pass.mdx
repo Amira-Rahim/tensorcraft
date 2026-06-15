@@ -83,17 +83,20 @@ Run a forward pass through the signal classifier.
 
 <Exercise slug="forward-pass" />
 
-## Knowledge check
-
-<Quiz
-  question="Your model expects input shape [null, 8] but you pass a tensor of shape [8]. What happens?"
-  options={[{"text":"It works: TFJS auto-batches"},{"text":"Shape mismatch error: missing batch dimension"},{"text":"It silently produces wrong predictions"},{"text":"It produces a NaN output"}]}
-  correct={1}
-  explanation="The first dimension is the batch axis. A single sample of 8 features must be passed as shape [1, 8]: `tensor.reshape([1, 8])` or `tensor.expandDims(0)`."
-  tier="intuition"
+<RecallPrompt
+  question="Your model expects input shape [null, 8] but you pass a tensor of shape [8]. What happens, and how do you fix it?"
+  answer="TFJS throws a shape mismatch error. The first dimension is the batch axis. A single sample of 8 features must be passed as shape [1, 8]: use tensor.reshape([1, 8]) or tensor.expandDims(0)."
 />
 
-<KeyTakeaways takeaways={["Forward pass = data flows through layers, each transforming it", "model.predict() runs inference: input in, prediction out", "Shape flows: [batch, inputFeatures] → ... → [batch, outputFeatures]", "Shape mismatches are the #1 neural network debugging issue"]} />
+<LessonRecap
+  whatYouLearned={[
+    "The forward pass flows data through each layer in order; model.predict() runs this in one call and returns the output tensor.",
+    "Every input requires a batch dimension even for a single sample: shape [1, features], not [features].",
+    "Shape mismatches are the most common neural network error and fail loudly with a clear message."
+  ]}
+  bridge="DOM event propagation and the forward pass both carry the word 'propagation,' but event handlers run independently and can stop bubbling, while layer outputs feed directly into the next layer's weights and cannot be interrupted."
+  youCanNow="Run a forward pass with model.predict(), trace tensor shapes through each layer, and diagnose shape mismatch errors."
+/>
 
 <Epilogue>
 

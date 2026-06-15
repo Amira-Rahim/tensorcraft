@@ -144,17 +144,20 @@ Build an ensemble anomaly detector combining multiple methods.
 
 <Exercise slug="ensemble-detector" />
 
-## Knowledge check
-
-<Quiz
-  question="How do autoencoders detect anomalies without anomaly labels?"
-  options={[{"text":"They use clustering on the latent space"},{"text":"Train on normal data only; high reconstruction error on a new sample = anomaly"},{"text":"They require labeled examples of both normal + anomalous"},{"text":"They flag samples below a confidence threshold"}]}
-  correct={1}
-  explanation="Train autoencoder to reconstruct normal samples (low error). Anomalies don't fit the learned representation, so reconstruction error is high. Threshold the error to flag anomalies. Unsupervised: only need normal data."
-  tier="intuition"
+<RecallPrompt
+  question="How does an autoencoder detect anomalies without ever being trained on labeled anomaly examples?"
+  answer="It is trained to reconstruct normal samples with low error. Because it has only learned patterns present in normal data, inputs that do not fit those patterns cannot be accurately reconstructed. Thresholding the reconstruction error -- high error signals anomaly -- makes the detection unsupervised: you only need clean normal data to train, no anomaly labels required."
 />
 
-<KeyTakeaways takeaways={["Ensemble detection combines multiple methods: majority vote gives higher confidence than any single detector", "Three complementary approaches: statistics (simple), autoencoder (learned), LSTM (temporal)", "100% detector agreement = highest confidence, like multiple independent tests confirming the same bug", "The model detects and quantifies; interpretation (alien or coincidence?) remains a human decision"]} />
+<LessonRecap
+  whatYouLearned={[
+    "Ensemble detection combines multiple independent methods -- statistical, learned, and temporal -- so that majority agreement raises confidence and reduces false alerts from any single detector.",
+    "Three complementary detectors cover different failure modes: z-score catches amplitude outliers, autoencoder reconstruction error catches structural deviations, and LSTM prediction error catches temporal pattern breaks.",
+    "A model's job is detection and quantification; ensemble agreement tells you how confident the system is, but interpretation of what was detected remains a human decision."
+  ]}
+  bridge="Like a React error boundary (`componentDidCatch(error)`) firing when the application hits a case no developer anticipated, an anomaly alert (`if (error > 12 * baseline) alert('UNKNOWN SIGNAL DETECTED')`) fires when every detector agrees the input falls outside anything the system was trained to handle."
+  youCanNow="Build an ensemble anomaly detection pipeline that combines statistical, autoencoder, and temporal detectors using majority voting for high-confidence flagging."
+/>
 
 <Epilogue>
 

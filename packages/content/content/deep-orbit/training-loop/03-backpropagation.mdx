@@ -98,17 +98,20 @@ Each factor is local to one layer. `tf.variableGrads()` builds the computational
 **Vanishing gradients = the chain product collapsing.** If `σ'(z₂) ≈ 0.1`, `ReLU'(z₁) ∈ {0,1}`, and you have 20 layers, the product can be `0.1²⁰ ≈ 10⁻²⁰`. The early-layer weights stop updating. Residual connections add `+1` to each link in the chain to prevent this collapse.
 </DerivationDrawer>
 
-## Knowledge check
-
-<Quiz
-  question="What does tf.variableGrads() return?"
-  options={[{"text":"The loss value only"},{"text":"{ value: loss, grads: { var1: tensor, var2: tensor, ... } }"},{"text":"The updated weights"},{"text":"A new optimizer instance"}]}
-  correct={1}
-  explanation="tf.variableGrads(fn) runs fn() in a recording context, returns the loss value AND a dict of gradients keyed by variable name. You then use the grads to update weights via an optimizer or manual subtraction."
-  tier="structural"
+<RecallPrompt
+  question="What does tf.variableGrads() return, and what do you do with the result?"
+  answer="It returns an object with two keys: `value` (the loss scalar) and `grads` (a dict of gradient tensors keyed by variable name). You use the grads to update each weight, either via an optimizer or by manual subtraction."
 />
 
-<KeyTakeaways takeaways={["Backpropagation computes all gradients in one backward pass", "It works by applying the chain rule from output to input", "tf.variableGrads() handles it automatically: you define forward, it computes backward", "This made deep learning practical: efficient gradient computation for millions of parameters"]} />
+<LessonRecap
+  whatYouLearned={[
+    "Backpropagation computes gradients for every weight in one backward pass by applying the chain rule from output to input, making it orders of magnitude faster than computing each gradient individually.",
+    "`tf.variableGrads()` records the forward pass automatically and walks the computation graph backward. You define the forward pass; it handles the backward pass.",
+    "Vanishing gradients occur when the chain rule product collapses across many layers. Residual connections help by adding 1 to each link in the chain."
+  ]}
+  bridge="React reconciliation diffs the virtual DOM from changed leaf to root. Backpropagation diffs the loss from output layer to input layer, propagating gradient information through the same tree-walking pattern."
+  youCanNow="Use `tf.variableGrads()` to compute gradients for a multi-layer network in a single backward pass and read the gradient shapes for each variable."
+/>
 
 <Epilogue>
 

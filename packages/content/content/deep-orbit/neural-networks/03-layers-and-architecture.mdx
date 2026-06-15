@@ -89,7 +89,20 @@ Build a 3-layer network for signal classification.
 
 <Exercise slug="build-layer" />
 
-<KeyTakeaways takeaways={["DEEP SCAN's first network is 3 dense layers: 3 inputs to 16 relu units, then 8, then 1 sigmoid output", "tf.sequential() creates a linear stack of layers", "units = number of neurons in a layer (features it can detect)", "inputShape only needed on the first layer; rest are inferred"]} />
+<RecallPrompt
+  question="What does `units` control in a dense layer, and why do only the first layer's `inputShape` and each layer's `units` determine the total parameter count?"
+  answer="units sets the number of neurons (output features) in a layer. Parameters for a dense layer equal (input_size * units) + units for the bias. Only the first layer needs inputShape; TFJS infers subsequent input sizes from the previous layer's units, so the whole count follows from those two values."
+/>
+
+<LessonRecap
+  whatYouLearned={[
+    "Neural networks are composed layers, each transforming its input and passing the result forward, just as UI components pass data through a render tree.",
+    "tf.sequential() builds a linear stack of layers; each model.add() call appends one transformation stage.",
+    "units sets the number of learnable features in a layer; inputShape is only required on the first layer, and subsequent shapes are inferred automatically."
+  ]}
+  bridge="Component composition in React (`<Layout><Header /><Content /></Layout>`) maps directly to layer composition in TFJS (`model.add(tf.layers.dense({...}))`): each piece transforms what it receives and passes the result on."
+  youCanNow="Design and build a multi-layer sequential neural network, configuring layer sizes, activations, and input shape."
+/>
 
 <Epilogue>
 

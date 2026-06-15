@@ -174,7 +174,9 @@ Load a model with caching and verify its architecture.
 
 <Exercise slug="load-model" />
 
-<KeyTakeaways takeaways={["The DEEP SCAN model loads in 340ms from the network; model.summary() confirms the 673 parameters arrived intact", "Models are two parts: model.json (architecture) and .bin files (learned weights), like code-splitting chunks", "IndexedDB caching prevents re-downloading, same pattern as service worker asset caching", "The onProgress callback gives loading feedback, just like fetch progress events"]} />
+<RecallPrompt question="What does tf.loadLayersModel() return compared to a plain fetch().then(r => r.json()), and why does the difference matter?" answer="fetch resolves to parsed JSON you read once. tf.loadLayersModel() resolves to a LayersModel with predict and evaluate methods that holds GPU memory until explicitly disposed. You load it like an asset but manage it like a live process." />
+
+<LessonRecap whatYouLearned={["A TF.js model is two parts: model.json holds the architecture and .bin shards hold the learned weights, analogous to code-splitting chunks in a frontend build", "Caching a model in IndexedDB prevents re-downloading on every page load, using the same cache-first pattern as service worker asset caching; version the cache key whenever you ship new weights", "The onProgress callback reports weight-shard download progress, giving you the same feedback primitive as a fetch progress event"]} bridge="Just as `fetch(url).then(r => r.json())` loads API data, `tf.loadLayersModel(url)` loads a model: same HTTP fetch shape, but the resolved value is a live compute graph with `predict()` rather than a plain data object." youCanNow="Load a pre-trained TF.js model, inspect its architecture, and cache it in IndexedDB with correct version invalidation." />
 
 <Epilogue>
 

@@ -129,7 +129,17 @@ Implement a simple attention mechanism over a sequence.
 
 <Exercise slug="simple-attention" />
 
-<KeyTakeaways takeaways={["On the 80-step DEEP SCAN window, attention scores every position at once and runs ~10x faster than the step-by-step LSTM", "Query-Key-Value: the query asks what to look for, keys are candidates, values carry the information", "Attention processes all time steps in parallel, much faster than LSTM's sequential approach", "Attention weights are interpretable: you can see exactly which time steps the model focuses on"]} />
+<RecallPrompt question="What are the three components of the Query-Key-Value framework in attention, and what does each do?" answer="Query asks what to look for, Keys are the candidates at each time step, and Values carry the information. The model scores each Key against the Query, normalizes with softmax, then takes a weighted sum of Values to focus on the most relevant steps." />
+
+<LessonRecap
+  whatYouLearned={[
+    "Attention scores every time step simultaneously with a Query-Key-Value computation, then uses softmax weights to focus capacity on the most relevant positions.",
+    "Processing the full sequence in parallel means attention scales much faster on GPUs than LSTM's sequential step-by-step approach.",
+    "Attention weights are directly interpretable: inspecting them tells you which time steps the model relied on for each prediction."
+  ]}
+  bridge="Like CSS `:focus` highlighting the active element, attention learns soft relevance weights across all `timeSteps` and spends model capacity where `softmax(Q * K^T)` scores are highest."
+  youCanNow="Implement a simple attention mechanism in TensorFlow.js and read its weights to understand which time steps drove a prediction."
+/>
 
 <Epilogue>
 

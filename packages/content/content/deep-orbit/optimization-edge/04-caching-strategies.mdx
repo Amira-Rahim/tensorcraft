@@ -122,7 +122,17 @@ Build an LRU inference cache with TTL expiry.
 
 <Exercise slug="inference-cache" />
 
-<KeyTakeaways takeaways={["DEEP SCAN's cache is 500 entries with a 30-second TTL: serving a stale classification of a drifting signal is worse than recomputing it", "Quantizing inputs before hashing increases cache hit rate by matching near-identical signals", "True LRU needs the delete + re-set trick on get(); skip it and you've built FIFO, which evicts hot entries", "DEEP SCAN's 40% cache hit rate means 40% fewer model inference calls"]} />
+<RecallPrompt question="What two design decisions most determine an inference cache's effectiveness?" answer="Cache key design (how you hash inputs, including whether to quantize them first) and TTL length. A key that is too strict causes near-identical inputs to miss; a TTL that is too long serves stale results when the underlying data distribution has shifted." />
+
+<LessonRecap
+  whatYouLearned={[
+    "An LRU inference cache uses a cache-first pattern: hash the input, return a stored result on hit, run the model and store on miss. The delete + re-set trick on get() is required for true LRU behavior.",
+    "Quantizing inputs before hashing groups near-identical inputs under the same key, raising hit rate without sacrificing result quality.",
+    "TTL length should reflect how quickly the input distribution can drift; a TTL that is too long serves stale classifications on changing data."
+  ]}
+  bridge="A service worker cache keys on URL for exact-match HTTP responses; an inference cache keys on a quantized input hash. The cache-first pattern is identical, but cache-key design is entirely different."
+  youCanNow="Build an LRU inference cache with input hashing and TTL expiry, and measure the resulting reduction in model inference calls."
+/>
 
 <Epilogue>
 

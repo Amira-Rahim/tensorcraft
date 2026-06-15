@@ -195,7 +195,17 @@ Build a model monitor with drift detection.
 
 <Exercise slug="model-monitor" />
 
-<KeyTakeaways takeaways={["ML monitoring extends app monitoring with prediction confidence, data drift, and model health metrics", "Data drift (when production inputs diverge from training data) is the #1 cause of silent model degradation", "Track P50/P95/P99 latency for inference just like you track API response times", "Alert on low confidence trends and high drift scores before users notice quality drops"]} />
+<RecallPrompt question="What category of model failure does standard app monitoring miss entirely?" answer="Data drift: when production input distributions diverge from the training distribution, predictions quietly become wrong without throwing an exception, changing latency, or triggering any observable system metric. App monitoring tracks errors and throughput; model monitoring must separately track input feature distributions and compare them against training-time baselines." />
+
+<LessonRecap
+  whatYouLearned={[
+    "ML observability extends app monitoring with three additional signals: prediction confidence trends, input distribution drift, and model-specific latency percentiles. Many model failures produce no exception and no latency spike, so these signals need separate instrumentation.",
+    "Data drift detection compares the statistical distribution of live inputs against training-time baselines; a significant drift score is a signal to retrain, not just to alert.",
+    "Latency percentiles (P50/P95/P99) apply directly to inference monitoring just as they do to API response time tracking."
+  ]}
+  bridge="Sentry captures exceptions and response times for a web app; `monitor.trackPrediction({ confidence, latency, drift })` adds the ML-specific layer. Confidence decay and input distribution shift are failures that never throw, so they require dedicated instrumentation."
+  youCanNow="Implement a model health monitor that tracks confidence trends, inference latency percentiles, and data drift against a training-time baseline."
+/>
 
 > **DISPATCH archive · field intercept #19-M:** Hassan's deployment dashboard runs the same drift check Demir wired here. His SRE team rotates monitoring duty weekly; the operator on rotation has 30 minutes to file a drift report whenever PSI > 0.2 fires. Same alert, different shift.
 

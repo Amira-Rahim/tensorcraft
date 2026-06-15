@@ -128,7 +128,17 @@ Write a prompt template that produces structured signal analysis.
 
 <Exercise slug="prompt-template" />
 
-<KeyTakeaways takeaways={["Structure prompts in four parts: role, context, data, format. Missing parts are where vague output comes from", "Request JSON output for programmatic processing, and always parse and validate the response", "Few-shot examples teach the model your expected format and reasoning style", "Iterate on prompts like debugging: test, inspect output, refine, repeat"]} />
+<RecallPrompt question="What are the four parts of a well-structured prompt, and why does each matter?" answer="Role sets the model's perspective; context supplies domain-specific constraints the model cannot infer; data provides the actual values to reason over; format (e.g. JSON) controls output shape so it can be parsed programmatically. Missing any part is where vague output comes from." />
+
+<LessonRecap
+  whatYouLearned={[
+    "Effective prompts have four parts: role, context, data, and format. Each missing part is a source of vague or unparseable output.",
+    "Requesting structured output (JSON) makes LLM responses programmatically reliable -- always parse and validate the schema before use.",
+    "Prompts should be iterated like debugging: test, inspect output, identify the missing constraint, refine, and repeat until results are consistent."
+  ]}
+  bridge="Crafting a prompt is like writing a precise search query: specificity and structure determine what you get back. A vague query (`git log`) returns noise; a precise one (`git log --oneline --graph --all`) returns signal. The same principle applies to prompts (`analyze signal` vs. a structured role-context-data-format prompt)."
+  youCanNow="Write reusable prompt templates with role, context, data, and format sections that produce structured, parseable output suitable for programmatic processing."
+/>
 
 <Epilogue>
 

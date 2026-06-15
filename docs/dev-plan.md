@@ -21,6 +21,17 @@
 > - Drop `profiles.preferred_theme_id` column once we're confident the
 >   field stays unused (currently kept as a tombstone).
 > - Restore an onboarding theme picker once 2+ themes are live.
+>
+> **Deferred (end-of-lesson):** The 4 coming-soon themes' lessons (Neon
+> Protocol, Signal Ward, Nova Canvas, Terra Grid) still author the lesson
+> close with the deprecated `<Quiz>` / `<KeyTakeaways>` blocks. Before each
+> theme launches, migrate its lessons onto `<RecallPrompt>` + `<LessonRecap>`
+> (see the "Lesson close" section in `docs/story-style-bible.md`). This is
+> non-blocking for V1 because the coming-soon MDX is excluded from the Velite
+> build. `<Quiz>` and `<KeyTakeaways>` are deprecated-but-retained (still
+> registered in `lesson-content.tsx`, marked DEPRECATED in
+> `packages/ui/src/mdx/`) solely so that unbuilt MDX keeps compiling until
+> migrated; remove them once all themes are off them.
 
 This document is the single source of truth for all development work needed to ship Tensorcraft. It covers every phase from repo initialization to post-launch operations, sourced from the PRD, tech-spec, product-plan, theme scripts, and two rounds of DeepSeek reviews.
 
@@ -1267,6 +1278,30 @@ Based on comprehensive audit of codebase, user journeys, database, and security:
 - PPP discounts, team plans
 - Advanced content components (MathBlock, InteractiveDemo)
 - Deep Orbit Modules 4-5
+
+---
+
+## Deferred (reading experience)
+
+The lesson reading experience (inline-code chips, the auto-underlined glossary
+terms, the two-column LessonShell rail/pane) shipped for Deep Orbit. Two pieces
+are intentionally deferred:
+
+- **Multi-framework lesson code (react / svelte / vanilla)** is NOT implemented
+  in lessons. The lesson body renders a single code path; per-framework variants
+  are not authored or switched. Revisit if/when learner framework preference
+  drives lesson code.
+- **Glossary content covers deep-orbit + global terms only.** The other four
+  themes' theme-specific glossary terms are deferred until those themes launch
+  (their MDX is excluded from the Velite build, so there is nothing to underline
+  yet). Add their entries to `packages/content/src/glossary.ts` when each theme
+  ships.
+
+Known aliasing to watch: the glossary aliases `window` (for `windowing`) and
+`descent` (for `gradient descent`) are common English words and can produce
+false-positive underlines in prose that uses those words in a non-ML sense.
+Review first-occurrence matches in new lessons that mention browser windows or
+literal descent.
 
 ---
 

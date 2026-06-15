@@ -123,7 +123,9 @@ Analyze the tradeoffs for a browser ML deployment scenario.
 
 <Exercise slug="browser-ml-tradeoffs" />
 
-<KeyTakeaways takeaways={["In-browser inference replaces a 50-500ms network round-trip with a 5-50ms local predict() call, and the data never leaves the device", "Browser constraints (memory, cold start, compute) mirror frontend performance concerns (bundle size, TTI, main thread)", "The right choice depends on latency requirements, data sensitivity, and model size, just like choosing CSR vs SSR", "For real-time dashboards like DEEP SCAN, client-side inference eliminates the network bottleneck"]} />
+<RecallPrompt question="What is the main tradeoff when moving ML inference from server to browser?" answer="You eliminate per-request network latency (50-500ms down to 5-50ms) and keep data on-device, but pay an upfront cost: the model weights must download once and device CPU/GPU is all you get." />
+
+<LessonRecap whatYouLearned={["In-browser inference replaces a network round-trip on every request with a one-time model download; after that each prediction runs locally at 5-50ms", "Browser constraints (memory cap, cold start time, device compute) map directly onto frontend performance concerns like bundle size and time-to-interactive", "Choosing between server and browser inference follows the same logic as SSR vs CSR: weigh latency requirements, data sensitivity, and model size"]} bridge="Just as `ReactDOM.render()` moves rendering computation to the client, `model.predict(inputTensor)` moves ML computation to the client, trading server costs for download weight." youCanNow="Decide whether a given ML use case belongs in the browser or on a server using a structured set of tradeoffs." />
 
 <Epilogue>
 

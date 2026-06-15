@@ -1,5 +1,8 @@
 import { defineCollection, defineConfig, s } from "velite";
 import ts from "typescript";
+import { rehypeGlossary } from "./src/rehype-glossary";
+import { GLOSSARY } from "./src/glossary";
+import { findGlossaryTermsInText } from "./src/glossary-match";
 
 /**
  * Transpile TS-flavored exercise code to plain JS so the runtime worker
@@ -57,97 +60,108 @@ const lessons = defineCollection({
   name: "Lesson",
   // Scoped to launched theme dirs (extras included for shared cross-theme content).
   pattern: `${LAUNCHED_THEME_DIRS}/**/*.mdx`,
-  schema: s.object({
-    slug: s.slug("lessons"),
-    title: s.string().min(1),
-    moduleId: s.string().min(1),
-    themeId: s.string().min(1),
-    order: s.number().int().positive(),
-    estimatedMinutes: s.number().int().positive(),
-    difficulty: s.enum(["beginner", "intermediate", "advanced"]),
+  schema: s
+    .object({
+      slug: s.slug("lessons"),
+      title: s.string().min(1),
+      moduleId: s.string().min(1),
+      themeId: s.string().min(1),
+      order: s.number().int().positive(),
+      estimatedMinutes: s.number().int().positive(),
+      difficulty: s.enum(["beginner", "intermediate", "advanced"]),
 
-    // 5C Loop structured sections (Context, Concept, Consequence in frontmatter)
-    context: s.object({
-      narrative: s.string().min(1),
-      speaker: s.string().optional(),
-    }),
-    concept: s.object({
-      explanation: s.string().min(1),
-      bridge: s
+      // 5C Loop structured sections (Context, Concept, Consequence in frontmatter)
+      context: s.object({
+        narrative: s.string().min(1),
+        speaker: s.string().optional(),
+      }),
+      concept: s.object({
+        explanation: s.string().min(1),
+        bridge: s
+          .object({
+            feTitle: s.string(),
+            feCode: s.string(),
+            mlTitle: s.string(),
+            mlCode: s.string(),
+            tier: s.enum(["identity", "structural", "intuition"]),
+            breaks: s.string().optional(),
+          })
+          .optional(),
+      }),
+      // Code and Challenge sections live in the MDX body
+      consequence: s.object({
+        narrative: s.string().min(1),
+        nextLessonTeaser: s.string().optional(),
+      }),
+
+      // Screenplay scene metadata (optional; falls back gracefully)
+      scene: s
         .object({
-          feTitle: s.string(),
-          feCode: s.string(),
-          mlTitle: s.string(),
-          mlCode: s.string(),
-          tier: s.enum(["identity", "structural", "intuition"]),
-          breaks: s.string().optional(),
+          location: s.string(),
+          time: s.string().optional(),
+          epilogueLocation: s.string().optional(),
         })
         .optional(),
+
+      // Progressive hints. Default is the 3-level ladder (nudge/guidance/
+      // solution); 2 hints are legal where the exercise is a single call and a
+      // middle "guidance" tier would just restate the solution (style bible
+      // rule 3: counts are not sacred).
+      hints: s
+        .array(
+          s.object({
+            level: s.enum(["nudge", "guidance", "solution"]),
+            content: s.string().min(1),
+          }),
+        )
+        .min(2)
+        .max(3)
+        .optional(),
+
+      // Pedagogical pattern: drives alternate 5C presentations.
+      // Absent frontmatter defaults to "standard".
+      pattern: s
+        .enum([
+          "standard",
+          "broken_code_first",
+          "discovery",
+          "flashback",
+          "peer_review",
+        ])
+        .optional()
+        .default("standard"),
+
+      keywords: s.array(s.string()).default([]),
+
+      // Skill Genome: which axes this lesson affects (optional, for event tracking)
+      skillAxes: s
+        .array(
+          s.enum([
+            "data_prep",
+            "model_arch",
+            "training",
+            "evaluation",
+            "deployment",
+            "fe_integration",
+          ]),
+        )
+        .optional()
+        .default([]),
+
+      // Velite-specific: compiled MDX body and metadata
+      body: s.mdx(),
+      metadata: s.metadata(),
+    })
+    .transform((data, { meta }) => {
+      const raw = typeof meta.content === "string" ? meta.content : "";
+      const prose = raw
+        .replace(/```[\s\S]*?```/g, " ")
+        .replace(/`[^`]*`/g, " ");
+      return {
+        ...data,
+        glossaryTerms: findGlossaryTermsInText(prose, GLOSSARY),
+      };
     }),
-    // Code and Challenge sections live in the MDX body
-    consequence: s.object({
-      narrative: s.string().min(1),
-      nextLessonTeaser: s.string().optional(),
-    }),
-
-    // Screenplay scene metadata (optional; falls back gracefully)
-    scene: s
-      .object({
-        location: s.string(),
-        time: s.string().optional(),
-        epilogueLocation: s.string().optional(),
-      })
-      .optional(),
-
-    // Progressive hints. Default is the 3-level ladder (nudge/guidance/
-    // solution); 2 hints are legal where the exercise is a single call and a
-    // middle "guidance" tier would just restate the solution (style bible
-    // rule 3: counts are not sacred).
-    hints: s
-      .array(
-        s.object({
-          level: s.enum(["nudge", "guidance", "solution"]),
-          content: s.string().min(1),
-        }),
-      )
-      .min(2)
-      .max(3)
-      .optional(),
-
-    // Pedagogical pattern: drives alternate 5C presentations.
-    // Absent frontmatter defaults to "standard".
-    pattern: s
-      .enum([
-        "standard",
-        "broken_code_first",
-        "discovery",
-        "flashback",
-        "peer_review",
-      ])
-      .optional()
-      .default("standard"),
-
-    keywords: s.array(s.string()).default([]),
-
-    // Skill Genome: which axes this lesson affects (optional, for event tracking)
-    skillAxes: s
-      .array(
-        s.enum([
-          "data_prep",
-          "model_arch",
-          "training",
-          "evaluation",
-          "deployment",
-          "fe_integration",
-        ]),
-      )
-      .optional()
-      .default([]),
-
-    // Velite-specific: compiled MDX body and metadata
-    body: s.mdx(),
-    metadata: s.metadata(),
-  }),
 });
 
 const exercises = defineCollection({
@@ -260,5 +274,6 @@ export default defineConfig({
     data: ".velite",
     clean: true,
   },
+  mdx: { rehypePlugins: [[rehypeGlossary, { dictionary: GLOSSARY }]] },
   collections: { lessons, exercises, modules, posts },
 });

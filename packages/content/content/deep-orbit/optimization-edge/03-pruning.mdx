@@ -113,7 +113,17 @@ Prune weights and measure the accuracy impact.
 
 <Exercise slug="prune-weights" />
 
-<KeyTakeaways takeaways={["Sparsity has a cliff: 60% pruning costs DEEP SCAN 2.1 accuracy points, 80% costs 6.7, and 90% breaks the model outright", "Pruning hits rare classes hardest: the 80% build misclassified the one anomaly fragment the crew had left", "Combined pruning + quantization achieves 8x compression: 340 MB → 42 MB for DEEP SCAN", "Always retrain after aggressive pruning to recover some lost accuracy"]} />
+<RecallPrompt question="Why does aggressive pruning hurt rare-class accuracy more than common-class accuracy?" answer="Near-zero weights often encode the model's memory of infrequent patterns. Common classes reinforce many weights during training; rare classes leave only a few small-magnitude weights. Pruning by magnitude removes those small weights first, erasing the rare-class signal while common-class accuracy stays intact." />
+
+<LessonRecap
+  whatYouLearned={[
+    "Magnitude-based pruning zeros out the smallest-absolute-value weights first; sparsity has a non-linear cliff where a small increase in pruning rate causes a large accuracy drop.",
+    "Rare and anomalous classes are disproportionately harmed by aggressive pruning because their learned signal concentrates in low-magnitude weights.",
+    "Combining pruning (60% sparsity) with int8 quantization achieves roughly 8x total compression with moderate accuracy loss, and retraining after pruning can recover some of that loss."
+  ]}
+  bridge="Just as webpack tree-shaking removes unused exports to shrink a bundle, magnitude-based pruning removes near-zero weights to shrink a model; but unlike dead code, pruned weights still contributed a little, so the model changes."
+  youCanNow="Implement magnitude-based pruning at a chosen sparsity level, evaluate its per-class accuracy impact, and combine pruning with quantization for maximum model compression."
+/>
 
 <Epilogue>
 

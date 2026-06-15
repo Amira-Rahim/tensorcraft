@@ -111,7 +111,9 @@ Build a sentiment classifier for field reports using Transformers.js.
 
 <Exercise slug="load-pretrained-pipeline" />
 
-<KeyTakeaways takeaways={["Transformers.js ships pretrained models; TFJS ships models you trained yourself", "pipeline(taskName) is the canonical entry point: the model downloads lazily on first call and caches in IndexedDB", "Use it for commodity tasks (sentiment, NER, translation); train your own for custom domains", "Model bandwidth (50-500MB) is the dominant cost: measure before shipping to mobile users"]} />
+<RecallPrompt question="When should you reach for Transformers.js instead of training your own model with TF.js?" answer="When the task is a well-known commodity problem that Hugging Face pipelines already cover well, such as sentiment analysis, NER, or translation. If the task is domain-specific (like classifying custom sensor signals), no pretrained pipeline exists and you need to train your own." />
+
+<LessonRecap whatYouLearned={["pipeline(taskName) lazily downloads and caches a pretrained model in IndexedDB on first call, then runs inference locally in the browser on every subsequent call with no server round-trip", "Transformers.js is the right tool for commodity NLP and vision tasks; TF.js is the right tool when you have a custom domain model; ONNX Runtime Web is the bridge when a Python-trained model needs to run in the browser", "Model bandwidth (50-500MB per task) is the dominant cost: measure model size and target network conditions before shipping to mobile users"]} bridge="Just as you import a `DatePicker` component from a library instead of building one, `pipeline('sentiment-analysis')` gives you a ready-made ML capability without a training loop, labeled data, or GPU." youCanNow="Use pipeline() from Transformers.js to run pretrained models in the browser, and reason about when that approach fits versus training a custom model." />
 
 <Epilogue>
 

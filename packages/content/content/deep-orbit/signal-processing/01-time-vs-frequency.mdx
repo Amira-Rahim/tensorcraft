@@ -130,7 +130,20 @@ Identify which domain reveals a hidden pattern in signal data.
 
 <Exercise slug="time-vs-frequency" />
 
-<KeyTakeaways takeaways={["Every signal has two equivalent representations: time domain (when) and frequency domain (what patterns)", "Some patterns are invisible in time but obvious in frequency, like how CSS issues are invisible in the DOM tree", "The frequency domain reveals periodic components: which frequencies are present and how strong they are", "For DEEP SCAN, the anomalous signal has a frequency component that doesn't match natural cosmic patterns"]} />
+<RecallPrompt
+  question="You have a signal with a tiny periodic component buried in noise. Why does looking at the frequency domain reveal it when the time domain does not?"
+  answer="The time domain shows amplitude at each moment, so weak periodic patterns are hidden by surrounding noise. The frequency domain accumulates energy from every cycle of a periodic component into a single bin, making even small repeating patterns stand out as a distinct peak above the noise floor."
+/>
+
+<LessonRecap
+  whatYouLearned={[
+    "Every signal has two equivalent representations: the time domain shows amplitude at each moment, and the frequency domain shows which periodic components are present and how strong they are.",
+    "The two views contain the same information but each hides what the other reveals: weak repeating patterns invisible in time become distinct peaks in frequency.",
+    "The frequency domain is useful for detection tasks because periodic components accumulate into a single frequency bin rather than being spread across many time samples."
+  ]}
+  bridge="Just as `document.querySelector` gives a structural view of a page while `getComputedStyle` gives a computed-value view, `fft(signal)` gives a frequency view of the same samples that the time-domain array already contains."
+  youCanNow="Explain why switching from the time domain to the frequency domain makes a buried periodic signal detectable."
+/>
 
 <Epilogue>
 

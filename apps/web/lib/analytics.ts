@@ -163,7 +163,7 @@ export function trackCheckpointSubmitted(
 }
 
 export function trackRecallAnswered(
-  action: "revealed" | "hidden",
+  action: "revealed" | "hidden" | "got-it" | "review",
   context?: { themeId?: string; lessonId?: string },
 ) {
   track(EVENTS.RECALL_ANSWERED, {

@@ -191,3 +191,106 @@ test.describe("Lesson Viewer Page", () => {
     expect(response?.status()).toBe(404);
   });
 });
+
+test.describe("Lesson reading experience", () => {
+  // Seed the persisted step BEFORE first render so the lesson lands on the
+  // Concept step (index 1). The storage key uses the slugified lesson TITLE
+  // ("Introduction to Tensors" -> introduction-to-tensors), which happens to
+  // match the slug here (see getStorageKey in lesson-steps.tsx).
+  const LESSON = "/themes/deep-orbit/foundations/introduction-to-tensors";
+  const STEP_KEY = "tc_step_deep-orbit_introduction-to-tensors";
+  const MAX_KEY = "tc_step_max_deep-orbit_introduction-to-tensors";
+
+  test("Concept step underlines glossary terms and lists them in the rail", async ({
+    page,
+  }) => {
+    await page.addInitScript(
+      ({ stepKey, maxKey }) => {
+        localStorage.setItem(stepKey, "1");
+        localStorage.setItem(maxKey, "1");
+      },
+      { stepKey: STEP_KEY, maxKey: MAX_KEY },
+    );
+    await page.goto(LESSON, { waitUntil: "domcontentloaded" });
+
+    // Right region on the Concept step is a rail (not a pane).
+    const right = page.getByTestId("lesson-right");
+    await expect(right).toHaveAttribute("data-kind", "rail");
+
+    // At least one concept term is underlined in the prose.
+    const term = page.locator(".lesson-prose [data-glossary-term]").first();
+    await expect(term).toBeVisible({ timeout: 15000 });
+
+    // The glossary rail lists entries.
+    const railEntries = page.locator('[data-testid^="glossary-entry-"]');
+    await expect(railEntries.first()).toBeVisible();
+    expect(await railEntries.count()).toBeGreaterThan(0);
+  });
+
+  test("clicking a glossary term activates its rail entry", async ({
+    page,
+  }) => {
+    await page.addInitScript(
+      ({ stepKey, maxKey }) => {
+        localStorage.setItem(stepKey, "1");
+        localStorage.setItem(maxKey, "1");
+      },
+      { stepKey: STEP_KEY, maxKey: MAX_KEY },
+    );
+    await page.goto(LESSON, { waitUntil: "domcontentloaded" });
+
+    const term = page.locator(".lesson-prose [data-glossary-term]").first();
+    await expect(term).toBeVisible({ timeout: 15000 });
+
+    // Read the term value off the clicked element, then assert the rail
+    // entry with that exact term becomes active.
+    const termValue = await term.getAttribute("data-glossary-term");
+    expect(termValue).toBeTruthy();
+
+    const entry = page.getByTestId(`glossary-entry-${termValue}`);
+    // Wait for the rail entry to exist (proves the client component is
+    // hydrated) before clicking, so the click handler is attached.
+    await expect(entry).toBeVisible({ timeout: 15000 });
+    await expect(entry).toHaveAttribute("data-active", "false");
+
+    await term.click();
+
+    await expect(entry).toHaveAttribute("data-active", "true", {
+      timeout: 15000,
+    });
+  });
+
+  test("inline code renders as a chip in the prose (not a code block)", async ({
+    page,
+  }) => {
+    await page.addInitScript(
+      ({ stepKey, maxKey }) => {
+        localStorage.setItem(stepKey, "1");
+        localStorage.setItem(maxKey, "1");
+      },
+      { stepKey: STEP_KEY, maxKey: MAX_KEY },
+    );
+    await page.goto(LESSON, { waitUntil: "domcontentloaded" });
+
+    // An inline <code> exists inside the prose that is NOT inside a <pre>.
+    const inlineCode = page.locator(".lesson-prose :not(pre) > code").first();
+    await expect(inlineCode).toBeVisible({ timeout: 15000 });
+  });
+
+  test("Code step swaps the right rail for a work pane", async ({ page }) => {
+    // Code is step index 2. Seed maxStep high enough that the step is reachable.
+    await page.addInitScript(
+      ({ stepKey, maxKey }) => {
+        localStorage.setItem(stepKey, "2");
+        localStorage.setItem(maxKey, "2");
+      },
+      { stepKey: STEP_KEY, maxKey: MAX_KEY },
+    );
+    await page.goto(LESSON, { waitUntil: "domcontentloaded" });
+
+    const right = page.getByTestId("lesson-right");
+    await expect(right).toHaveAttribute("data-kind", "pane", {
+      timeout: 15000,
+    });
+  });
+});

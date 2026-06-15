@@ -143,7 +143,17 @@ Set up an LLM client and generate a structured analysis.
 
 <Exercise slug="llm-client" />
 
-<KeyTakeaways takeaways={["Farah's constraint is 47 days of data, 12,000 classified signals, and a 6-hour deadline: the LLM drafts, she verifies every claim", "Low temperature (0.1-0.3) for factual analysis, higher (0.7-0.9) for creative tasks", "Always validate LLM output against actual data; hallucination is a feature, not a bug", "The workflow is generate → review → correct → approve; never auto-publish LLM output"]} />
+<RecallPrompt question="What workflow makes LLM-assisted analysis safe for factual output?" answer="Generate a draft with the LLM, then have a domain expert review every claim against actual data, correct errors, and approve before the output ships. The model drafts; a human who knows the data decides what is true." />
+
+<LessonRecap
+  whatYouLearned={[
+    "LLMs are augmentation tools: they produce drafts faster than writing from scratch, but every factual claim must be verified against real data before use.",
+    "Temperature controls output variability: low values (0.1-0.3) reduce hallucination risk for factual analysis; higher values suit creative tasks.",
+    "The safe workflow is generate, review, correct, approve -- never publish LLM output without a human sign-off."
+  ]}
+  bridge="Just as AI code completion (Copilot) suggests code you still review before merging, LLM analysis (`llm.complete(prompt)`) generates prose you must verify against your data before trusting."
+  youCanNow="Set up an LLM API client and integrate it into a human-in-the-loop review workflow for structured analysis tasks."
+/>
 
 <Epilogue>
 

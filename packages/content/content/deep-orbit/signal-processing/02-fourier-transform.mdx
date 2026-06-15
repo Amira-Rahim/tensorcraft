@@ -206,7 +206,20 @@ A signal is fully reconstructible from its DFT: no information is lost.
 **Cost of naive DFT:** O(N²). For each of N frequencies, sum over N inputs. The FFT (next) drops this to O(N log N), which is what makes real-time spectrograms possible.
 </DerivationDrawer>
 
-<KeyTakeaways takeaways={["Peaks only count against a noise floor: DEEP SCAN flags bins above 5x the average magnitude, then checks them against known natural frequencies", "Each frequency bin = binIndex × (sampleRate / fftSize) Hz, a simple linear mapping", "The Nyquist frequency (sampleRate / 2) is the highest detectable frequency, like a resolution limit", "For DEEP SCAN, the FFT reveals an anomalous 73.4 Hz component hidden in the time-domain noise"]} />
+<RecallPrompt
+  question="Given an FFT of 128 samples taken at 128 Hz, what frequency does bin 20 correspond to, and why can't you detect anything above 64 Hz?"
+  answer="Bin 20 corresponds to 20 Hz because each bin maps to binIndex x (sampleRate / fftSize) = 20 x (128 / 128) = 20 Hz. Nothing above 64 Hz is detectable because the Nyquist frequency, sampleRate / 2, is the highest frequency that can be represented without aliasing from a signal sampled at that rate."
+/>
+
+<LessonRecap
+  whatYouLearned={[
+    "The FFT decomposes a signal into a fixed mathematical basis of sinusoids and returns a complex coefficient for each frequency bin, giving both a magnitude (how much of that frequency is present) and a phase (its offset).",
+    "Each frequency bin maps linearly to a real frequency: binIndex x (sampleRate / fftSize) Hz. The highest detectable frequency is the Nyquist frequency, sampleRate / 2.",
+    "Peaks are only meaningful relative to a noise floor. Flagging bins above a threshold relative to the average magnitude separates real signal components from noise."
+  ]}
+  bridge="Where `@keyframes` decomposes an animation into authored timeline steps, `tf.spectral.rfft(signal)` decomposes a signal into a universal fixed basis of sinusoids. The basis is the same for every signal, not authored per-signal."
+  youCanNow="Compute the FFT of a real-valued signal with `tf.spectral.rfft`, read the frequency and magnitude from a bin index, and identify peaks above a noise floor."
+/>
 
 <Epilogue>
 

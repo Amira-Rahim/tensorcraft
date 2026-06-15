@@ -121,7 +121,17 @@ Profile a model and identify its heaviest layer.
 
 <Exercise slug="profile-model" />
 
-<KeyTakeaways takeaways={["The profile localizes the problem: 80% of DEEP SCAN's 45ms inference sits in the first Dense layer, so that layer is the target", "Key metrics: model size (MB), parameter count, inference latency (mean + P95)", "Layer breakdown reveals where the parameters and compute concentrate", "The DEEP SCAN baseline: 340 MB, 45ms inference; both need to shrink for the 512 MB dashboard"]} />
+<RecallPrompt question="Why should you profile a model before optimizing it?" answer="Profiling identifies which layers hold the most parameters and compute time, so you cut where it matters rather than guessing. Without a baseline you cannot measure whether an optimization actually helped." />
+
+<LessonRecap
+  whatYouLearned={[
+    "Three metrics define a model's performance baseline: memory footprint (MB), inference latency (mean and P95), and per-layer parameter concentration.",
+    "Layer breakdown pinpoints where compute time concentrates, so optimization effort goes to the right place.",
+    "A warmup pass before timing removes JIT and compilation noise from measurements."
+  ]}
+  bridge="Just as `performance.mark`/`performance.measure` locates slow code in a frontend app, `tf.memory()` and `performance.now()` around `model.predict()` locates the memory and latency cost in an ML model."
+  youCanNow="Profile a TensorFlow.js model to measure its memory footprint, inference latency, and per-layer parameter distribution before making any optimization decisions."
+/>
 
 <Epilogue>
 

@@ -9,6 +9,9 @@ import type { Framework } from "@tensorcraft/shared";
 import type { ExerciseData } from "@tensorcraft/ui";
 import { SceneHeading } from "@tensorcraft/ui";
 import { LessonDrawer } from "./lesson-drawer";
+import { LessonShell } from "./lesson-shell";
+import { GlossaryProvider, useGlossary } from "./glossary-context";
+import { GlossaryRail } from "./glossary-rail";
 
 interface LessonStepsProps {
   lesson: {
@@ -38,6 +41,7 @@ interface LessonStepsProps {
       content: string;
     }>;
     skillAxes?: string[];
+    glossaryTerms?: Array<{ term: string; definition: string }>;
   };
   exercises: ExerciseData[];
   theme: {
@@ -77,26 +81,43 @@ const TOTAL_STEPS = 6;
    parent re-render (breaking the script-playback timeline's element refs
    and recompiling the MDX body needlessly). */
 const BRIEFING_COMPONENTS = new Set(["Dialogue", "prose"]);
-const CONCEPT_COMPONENTS = new Set([
+
+/* Each non-story step splits into a LEFT (reading column) and RIGHT (rail or
+   work pane) partition. The two LessonContent instances per step receive
+   complementary Sets so no component renders in both columns. Interactive
+   components with side effects live in exactly one partition: Exercise only
+   in CHALLENGE_RIGHT, RecallPrompt only in TAKEAWAYS_COMPONENTS. */
+
+// Concept: prose + concept visuals on the left; objectives on the right rail
+// (the glossary rail itself is an app component rendered directly, not MDX).
+const CONCEPT_LEFT = new Set([
   "BridgeCallout",
-  "LearningObjectives",
   "Concept",
   "InteractiveDemo",
   "prose",
   "code-tensors",
 ]);
-const CODE_COMPONENTS = new Set([
-  "CodeBlock",
+const CONCEPT_RIGHT = new Set(["LearningObjectives"]);
+
+// Code: walkthrough prose + math/inline tensors on the left; runnable code
+// and demos in the right work pane.
+const CODE_LEFT = new Set([
   "MathBlock",
   "prose",
   "code-tensors",
   "code-shapes",
 ]);
-const CHALLENGE_COMPONENTS = new Set(["Exercise", "challenge"]);
+const CODE_RIGHT = new Set(["CodeBlock", "InteractiveDemo"]);
+
+// Challenge: brief/hints on the left; the Exercise editor in the right pane.
+const CHALLENGE_LEFT = new Set(["challenge", "prose", "HintPanel"]);
+const CHALLENGE_RIGHT = new Set(["Exercise"]);
+
+// Takeaways: the lesson close on the left (RecallPrompt + LessonRecap +
+// NextLesson); the right rail is the glossary recap + mission progress (app
+// components, not MDX).
 const TAKEAWAYS_COMPONENTS = new Set([
-  "KeyTakeaways",
-  "Quiz",
-  "HintPanel",
+  "LessonRecap",
   "RecallPrompt",
   "NextLesson",
 ]);
@@ -128,7 +149,18 @@ function getMaxStorageKey(themeSlug: string, lessonTitle: string): string {
   return `tc_step_max_${themeSlug}_${lessonSlug}`;
 }
 
-export function LessonSteps({
+/* Public entry: a single GlossaryProvider wraps the whole reader so the
+   in-prose GlossaryTerm chips (via LessonContent's span override) and the
+   GlossaryRail in the sidebar share one activeTerm instance. */
+export function LessonSteps(props: LessonStepsProps) {
+  return (
+    <GlossaryProvider>
+      <LessonStepsInner {...props} />
+    </GlossaryProvider>
+  );
+}
+
+function LessonStepsInner({
   lesson,
   exercises,
   theme,
@@ -140,10 +172,13 @@ export function LessonSteps({
   userFramework,
   lessons,
 }: LessonStepsProps) {
+  const { activeTerm } = useGlossary();
   const [currentStep, setCurrentStep] = useState(0);
   const [maxStepReached, setMaxStepReached] = useState(0);
   const [exercisePassed, setExercisePassed] = useState(false);
   const [mounted, setMounted] = useState(false);
+  // Mobile-only: reveal the right work pane (code/exercise) over the prose.
+  const [paneOpen, setPaneOpen] = useState(false);
 
   // Script playback runs once per visit; returning to the Briefing step
   // shows the scene static with a Replay control instead of re-playing.
@@ -185,6 +220,11 @@ export function LessonSteps({
   // Track the furthest step reached so going back never locks steps again
   useEffect(() => {
     setMaxStepReached((m) => Math.max(m, currentStep));
+  }, [currentStep]);
+
+  // Collapse the mobile work-pane whenever the step changes.
+  useEffect(() => {
+    setPaneOpen(false);
   }, [currentStep]);
 
   // Persist step changes
@@ -324,208 +364,458 @@ export function LessonSteps({
 
   const isStoryStep = currentStep === 0 || currentStep === 5;
 
+  const sharedContentProps = {
+    lesson,
+    exercises,
+    themeSlug,
+    moduleSlug,
+    lessonSlug,
+    userFramework,
+    theme,
+  };
+
+  // Distinct speakers across the lesson dialogue, for the briefing cast chips.
+  const castSpeakers = extractSpeakers(lesson.body, lesson.context.speaker);
+
+  const bottomNav = (
+    <div
+      className="flex items-center justify-end mt-10 pt-6"
+      style={{ borderTop: `1px solid ${theme.palette.border}` }}
+    >
+      {currentStep < TOTAL_STEPS - 1 ? (
+        <button
+          type="button"
+          onClick={goNext}
+          disabled={!canContinue}
+          className="text-sm font-mono font-bold px-8 py-3 transition-all"
+          style={{
+            background: canContinue
+              ? theme.palette.primary
+              : theme.palette.border,
+            color: canContinue ? theme.palette.bg : theme.palette.muted,
+            cursor: canContinue ? "pointer" : "not-allowed",
+            opacity: canContinue ? 1 : 0.3,
+          }}
+        >
+          Continue &rarr;
+        </button>
+      ) : nextLesson ? (
+        <Link
+          href={`/themes/${themeSlug}/${moduleSlug}/${nextLesson.slug}`}
+          className="text-sm font-mono font-bold px-8 py-3 transition-all inline-flex items-center"
+          style={{ background: theme.palette.primary, color: theme.palette.bg }}
+        >
+          Next Lesson &rarr;
+        </Link>
+      ) : (
+        <Link
+          href={`/themes/${themeSlug}`}
+          className="text-sm font-mono font-bold px-8 py-3 transition-all inline-flex items-center"
+          style={{ background: theme.palette.primary, color: theme.palette.bg }}
+        >
+          Back to Mission Map &rarr;
+        </Link>
+      )}
+    </div>
+  );
+
+  let shellLeft: React.ReactNode = null;
+  let shellRight: React.ReactNode = null;
+  let rightKind: "rail" | "pane" | "none" = "none";
+
+  if (currentStep === 0) {
+    rightKind = "rail";
+    shellLeft = (
+      <StepBriefing
+        lesson={lesson}
+        moduleSlug={moduleSlug}
+        exercises={exercises}
+        theme={theme}
+        themeSlug={themeSlug}
+        lessonSlug={lessonSlug}
+        userFramework={userFramework}
+        scriptAutoPlay={!scriptPlayedRef.current}
+        onScriptPlayed={handleScriptPlayed}
+      />
+    );
+    shellRight = (
+      <SceneCard theme={theme} scene={lesson.scene} speakers={castSpeakers} />
+    );
+  } else if (currentStep === 1) {
+    rightKind = "rail";
+    shellLeft = <StepConcept {...sharedContentProps} />;
+    shellRight = (
+      <div className="flex flex-col gap-8">
+        <GlossaryRail
+          terms={lesson.glossaryTerms ?? []}
+          activeTerm={activeTerm}
+        />
+        <LessonContent
+          lesson={lesson}
+          exercises={exercises}
+          themeId={themeSlug}
+          moduleId={moduleSlug}
+          lessonId={lessonSlug}
+          userFramework={userFramework}
+          glossaryTerms={lesson.glossaryTerms}
+          visibleComponents={CONCEPT_RIGHT}
+        />
+      </div>
+    );
+  } else if (currentStep === 2) {
+    rightKind = "pane";
+    shellLeft = <StepCode {...sharedContentProps} />;
+    shellRight = (
+      <LessonContent
+        lesson={lesson}
+        exercises={exercises}
+        themeId={themeSlug}
+        moduleId={moduleSlug}
+        lessonId={lessonSlug}
+        userFramework={userFramework}
+        glossaryTerms={lesson.glossaryTerms}
+        visibleComponents={CODE_RIGHT}
+      />
+    );
+  } else if (currentStep === 3) {
+    rightKind = "pane";
+    shellLeft = <StepChallenge {...sharedContentProps} />;
+    shellRight = (
+      <LessonContent
+        lesson={lesson}
+        exercises={exercises}
+        themeId={themeSlug}
+        moduleId={moduleSlug}
+        lessonId={lessonSlug}
+        userFramework={userFramework}
+        glossaryTerms={lesson.glossaryTerms}
+        visibleComponents={CHALLENGE_RIGHT}
+        onExerciseComplete={handleExerciseComplete}
+      />
+    );
+  } else if (currentStep === 4) {
+    rightKind = "rail";
+    shellLeft = <StepTakeaways {...sharedContentProps} />;
+    shellRight = (
+      <div className="flex flex-col gap-8">
+        <GlossaryRail
+          terms={lesson.glossaryTerms ?? []}
+          activeTerm={activeTerm}
+        />
+        <MissionProgress
+          theme={theme}
+          lessons={lessons}
+          lessonSlug={lessonSlug}
+        />
+      </div>
+    );
+  } else {
+    rightKind = "none";
+    shellLeft = (
+      <StepConsequence {...sharedContentProps} nextLesson={nextLesson} />
+    );
+  }
+
+  // On mobile, pane steps show a toggle button that swaps prose for the work
+  // pane; on lg+ the shell renders both columns and the toggle is hidden.
+  const mobileToggle =
+    rightKind === "pane" ? (
+      <button
+        type="button"
+        onClick={() => setPaneOpen((o) => !o)}
+        className="lg:hidden mb-4 text-xs font-mono uppercase tracking-[2px] px-4 py-2 transition-colors"
+        style={{
+          color: theme.palette.primary,
+          border: `1px solid ${theme.palette.primary}40`,
+          background: `${theme.palette.primary}10`,
+        }}
+      >
+        {paneOpen
+          ? "Show explanation"
+          : currentStep === 3
+            ? "Show task"
+            : "Show code"}
+      </button>
+    ) : null;
+
+  // For pane steps on mobile we render a single column whose body is either
+  // the prose or the pane (toggled). lg+ always uses the two-column shell.
+  const shellLeftWithToggle =
+    rightKind === "pane" ? (
+      <>
+        {mobileToggle}
+        <div className={paneOpen ? "hidden lg:block" : "block"}>
+          {shellLeft}
+        </div>
+        <div className={paneOpen ? "block lg:hidden" : "hidden"}>
+          {shellRight}
+        </div>
+      </>
+    ) : (
+      shellLeft
+    );
+
   return (
     <div
       className="flex-1 overflow-y-auto"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      <div className="w-full max-w-[900px] mx-auto px-6 md:px-12 py-6">
-        {/* Top nav: back + progress + counter */}
-        <div className="flex items-center gap-4 mb-6">
-          {lessons && (
-            <LessonDrawer
-              lessons={lessons}
-              currentLessonSlug={lessonSlug}
-              themeSlug={themeSlug}
-              moduleSlug={moduleSlug}
-              moduleName={moduleName ?? "Module"}
-              theme={theme}
-            />
-          )}
-          <Link
-            href={`/themes/${themeSlug}`}
-            className="text-sm font-mono flex items-center gap-2 shrink-0 px-3 py-2 border border-transparent opacity-70 transition-all hover:opacity-100 hover:border-current"
-            style={{ color: theme.palette.text }}
-          >
-            &larr; Mission Map
-          </Link>
-
-          <div
-            className="flex-1 flex items-center gap-1"
-            role="group"
-            aria-label={`Lesson step ${currentStep + 1} of ${TOTAL_STEPS}`}
-          >
-            {STEP_NAMES.map((name, i) => {
-              const visited = i <= maxStepReached;
-              const filled = i <= currentStep;
-              return (
-                <button
-                  key={name}
-                  type="button"
-                  onClick={() => setCurrentStep(i)}
-                  disabled={!visited}
-                  aria-label={`Step ${i + 1}: ${name}`}
-                  aria-current={i === currentStep ? "step" : undefined}
-                  title={visited ? name : `${name} (locked)`}
-                  className="flex-1 h-4 flex items-center p-0 border-0 bg-transparent transition-opacity hover:opacity-80 disabled:hover:opacity-100"
-                  style={{ cursor: visited ? "pointer" : "not-allowed" }}
-                >
-                  <span
-                    className="h-1.5 w-full transition-all duration-300"
-                    style={{
-                      background: filled
-                        ? theme.palette.primary
-                        : theme.palette.border,
-                      opacity: !visited ? 0.45 : 1,
-                      borderRadius: 2,
-                    }}
-                  />
-                </button>
-              );
-            })}
-          </div>
-
-          <span
-            className="text-xs font-mono shrink-0 tracking-wider px-3 py-1"
-            style={{
-              color: theme.palette.primary,
-              background: `${theme.palette.primary}12`,
-              border: `1px solid ${theme.palette.primary}25`,
-            }}
-          >
-            {currentStep + 1} / {TOTAL_STEPS}
-          </span>
-        </div>
-
-        {/* Step content - key forces remount for animation */}
-        <div
-          key={currentStep}
-          className={`animate-step-in ${isStoryStep ? "min-h-[50vh] flex flex-col justify-center" : ""}`}
-        >
-          {currentStep === 0 && (
-            <StepBriefing
-              lesson={lesson}
-              moduleSlug={moduleSlug}
-              exercises={exercises}
-              theme={theme}
-              themeSlug={themeSlug}
-              lessonSlug={lessonSlug}
-              userFramework={userFramework}
-              scriptAutoPlay={!scriptPlayedRef.current}
-              onScriptPlayed={handleScriptPlayed}
-            />
-          )}
-          {currentStep === 1 && (
-            <StepConcept
-              lesson={lesson}
-              exercises={exercises}
-              themeSlug={themeSlug}
-              moduleSlug={moduleSlug}
-              lessonSlug={lessonSlug}
-              userFramework={userFramework}
-              theme={theme}
-            />
-          )}
-          {currentStep === 2 && (
-            <StepCode
-              lesson={lesson}
-              exercises={exercises}
-              themeSlug={themeSlug}
-              moduleSlug={moduleSlug}
-              lessonSlug={lessonSlug}
-              userFramework={userFramework}
-              theme={theme}
-            />
-          )}
-          {currentStep === 3 && (
-            <StepChallenge
-              lesson={lesson}
-              exercises={exercises}
-              themeSlug={themeSlug}
-              moduleSlug={moduleSlug}
-              lessonSlug={lessonSlug}
-              userFramework={userFramework}
-              theme={theme}
-              onExerciseComplete={handleExerciseComplete}
-            />
-          )}
-          {currentStep === 4 && (
-            <StepTakeaways
-              lesson={lesson}
-              exercises={exercises}
-              themeSlug={themeSlug}
-              moduleSlug={moduleSlug}
-              lessonSlug={lessonSlug}
-              userFramework={userFramework}
-              theme={theme}
-            />
-          )}
-          {currentStep === 5 && (
-            <StepConsequence
-              lesson={lesson}
-              exercises={exercises}
-              theme={theme}
-              themeSlug={themeSlug}
-              moduleSlug={moduleSlug}
-              lessonSlug={lessonSlug}
-              userFramework={userFramework}
-              nextLesson={nextLesson}
-            />
-          )}
-        </div>
-
-        {/* Navigation, inline with content, not a fixed bar. Backward nav
-            lives in the segmented step bar (and swipe on mobile), so the
-            bottom row only moves forward. */}
-        <div
-          className="flex items-center justify-end mt-10 pt-6"
-          style={{ borderTop: `1px solid ${theme.palette.border}` }}
-        >
-          {currentStep < TOTAL_STEPS - 1 ? (
-            <button
-              type="button"
-              onClick={goNext}
-              disabled={!canContinue}
-              className="text-sm font-mono font-bold px-8 py-3 transition-all"
-              style={{
-                background: canContinue
-                  ? theme.palette.primary
-                  : theme.palette.border,
-                color: canContinue ? theme.palette.bg : theme.palette.muted,
-                cursor: canContinue ? "pointer" : "not-allowed",
-                opacity: canContinue ? 1 : 0.3,
-              }}
+      <div className="py-6">
+        <LessonShell
+          rightKind={rightKind}
+          chrome={
+            <div className="mx-auto w-full max-w-[1200px] px-6 md:px-12">
+              <ChromeBar
+                lessons={lessons}
+                lessonSlug={lessonSlug}
+                themeSlug={themeSlug}
+                moduleSlug={moduleSlug}
+                moduleName={moduleName}
+                theme={theme}
+                currentStep={currentStep}
+                maxStepReached={maxStepReached}
+                setCurrentStep={setCurrentStep}
+              />
+            </div>
+          }
+          left={
+            <div
+              key={currentStep}
+              className={`animate-step-in ${isStoryStep ? "min-h-[50vh] flex flex-col justify-center" : ""}`}
             >
-              Continue &rarr;
-            </button>
-          ) : nextLesson ? (
-            <Link
-              href={`/themes/${themeSlug}/${moduleSlug}/${nextLesson.slug}`}
-              className="text-sm font-mono font-bold px-8 py-3 transition-all inline-flex items-center"
-              style={{
-                background: theme.palette.primary,
-                color: theme.palette.bg,
-              }}
-            >
-              Next Lesson &rarr;
-            </Link>
-          ) : (
-            <Link
-              href={`/themes/${themeSlug}`}
-              className="text-sm font-mono font-bold px-8 py-3 transition-all inline-flex items-center"
-              style={{
-                background: theme.palette.primary,
-                color: theme.palette.bg,
-              }}
-            >
-              Back to Mission Map &rarr;
-            </Link>
-          )}
-        </div>
+              {shellLeftWithToggle}
+              {bottomNav}
+            </div>
+          }
+          right={shellRight}
+        />
       </div>
     </div>
   );
+}
+
+/* Top chrome: lesson drawer, exit link, segmented progress bar, counter. */
+function ChromeBar({
+  lessons,
+  lessonSlug,
+  themeSlug,
+  moduleSlug,
+  moduleName,
+  theme,
+  currentStep,
+  maxStepReached,
+  setCurrentStep,
+}: {
+  lessons: LessonStepsProps["lessons"];
+  lessonSlug: string;
+  themeSlug: string;
+  moduleSlug: string;
+  moduleName?: string;
+  theme: LessonStepsProps["theme"];
+  currentStep: number;
+  maxStepReached: number;
+  setCurrentStep: (n: number) => void;
+}) {
+  return (
+    <div className="flex items-center gap-4 mb-6">
+      {lessons && (
+        <LessonDrawer
+          lessons={lessons}
+          currentLessonSlug={lessonSlug}
+          themeSlug={themeSlug}
+          moduleSlug={moduleSlug}
+          moduleName={moduleName ?? "Module"}
+          theme={theme}
+        />
+      )}
+      <Link
+        href={`/themes/${themeSlug}`}
+        className="text-sm font-mono flex items-center gap-2 shrink-0 px-3 py-2 border border-transparent opacity-70 transition-all hover:opacity-100 hover:border-current"
+        style={{ color: theme.palette.text }}
+      >
+        &larr; Mission Map
+      </Link>
+
+      <div
+        className="flex-1 flex items-center gap-1"
+        role="group"
+        aria-label={`Lesson step ${currentStep + 1} of ${TOTAL_STEPS}`}
+      >
+        {STEP_NAMES.map((name, i) => {
+          const visited = i <= maxStepReached;
+          const filled = i <= currentStep;
+          return (
+            <button
+              key={name}
+              type="button"
+              onClick={() => setCurrentStep(i)}
+              disabled={!visited}
+              aria-label={`Step ${i + 1}: ${name}`}
+              aria-current={i === currentStep ? "step" : undefined}
+              title={visited ? name : `${name} (locked)`}
+              className="flex-1 h-4 flex items-center p-0 border-0 bg-transparent transition-opacity hover:opacity-80 disabled:hover:opacity-100"
+              style={{ cursor: visited ? "pointer" : "not-allowed" }}
+            >
+              <span
+                className="h-1.5 w-full transition-all duration-300"
+                style={{
+                  background: filled
+                    ? theme.palette.primary
+                    : theme.palette.border,
+                  opacity: !visited ? 0.45 : 1,
+                  borderRadius: 2,
+                }}
+              />
+            </button>
+          );
+        })}
+      </div>
+
+      <span
+        className="text-xs font-mono shrink-0 tracking-wider px-3 py-1"
+        style={{
+          color: theme.palette.primary,
+          background: `${theme.palette.primary}12`,
+          border: `1px solid ${theme.palette.primary}25`,
+        }}
+      >
+        {currentStep + 1} / {TOTAL_STEPS}
+      </span>
+    </div>
+  );
+}
+
+/* Right-rail card for the Briefing: scene slugline + cast chips. */
+function SceneCard({
+  theme,
+  scene,
+  speakers,
+}: {
+  theme: LessonStepsProps["theme"];
+  scene?: { location: string; time?: string };
+  speakers: string[];
+}) {
+  return (
+    <div className="flex flex-col gap-5">
+      <span
+        className="font-mono text-xs uppercase tracking-[0.2em]"
+        style={{ color: theme.palette.primary }}
+      >
+        Scene
+      </span>
+      {scene && (
+        <div className="flex flex-col gap-1">
+          <span
+            className="font-mono text-sm"
+            style={{ color: theme.palette.text }}
+          >
+            {scene.location}
+          </span>
+          {scene.time && (
+            <span
+              className="font-mono text-xs uppercase tracking-wider"
+              style={{ color: theme.palette.muted }}
+            >
+              {scene.time}
+            </span>
+          )}
+        </div>
+      )}
+      {speakers.length > 0 && (
+        <div className="flex flex-col gap-2">
+          <span
+            className="font-mono text-[10px] uppercase tracking-[2px]"
+            style={{ color: theme.palette.muted }}
+          >
+            Cast
+          </span>
+          <div className="flex flex-wrap gap-2">
+            {speakers.map((s) => (
+              <span
+                key={s}
+                className="font-mono text-xs px-2 py-1"
+                style={{
+                  color: theme.palette.text,
+                  border: `1px solid ${theme.palette.border}`,
+                  background: theme.palette.surface,
+                }}
+              >
+                {s}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* Right-rail mission progress for the Takeaways step. */
+function MissionProgress({
+  theme,
+  lessons,
+  lessonSlug,
+}: {
+  theme: LessonStepsProps["theme"];
+  lessons: LessonStepsProps["lessons"];
+  lessonSlug: string;
+}) {
+  if (!lessons || lessons.length === 0) return null;
+  const done = lessons.filter((l) => l.completed).length;
+  return (
+    <div className="flex flex-col gap-3">
+      <span
+        className="font-mono text-xs uppercase tracking-[0.2em]"
+        style={{ color: theme.palette.primary }}
+      >
+        Mission Progress
+      </span>
+      <span className="text-sm" style={{ color: theme.palette.muted }}>
+        {done} / {lessons.length} complete
+      </span>
+      <ul className="flex flex-col gap-1.5">
+        {lessons.map((l) => {
+          const isCurrent = l.slug === lessonSlug;
+          return (
+            <li
+              key={l.slug}
+              className="text-sm flex items-center gap-2"
+              style={{
+                color: isCurrent ? theme.palette.text : theme.palette.muted,
+              }}
+            >
+              <span
+                className="w-1.5 h-1.5 inline-block shrink-0"
+                style={{
+                  background:
+                    l.completed || isCurrent
+                      ? theme.palette.primary
+                      : theme.palette.border,
+                }}
+              />
+              {l.title}
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+}
+
+/* Pull the distinct dialogue speakers out of the compiled MDX body. The body
+   is a JS function string from Velite; speakers appear as `speaker: "Name"`
+   literals on each Dialogue call. Falls back to the frontmatter speaker. */
+function extractSpeakers(body: string, fallback?: string): string[] {
+  const seen = new Set<string>();
+  const re = /speaker\s*:\s*"((?:[^"\\]|\\.)*)"/g;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(body)) !== null) {
+    const name = m[1].replace(/\\"/g, '"');
+    if (name) seen.add(name);
+  }
+  if (seen.size === 0 && fallback) seen.add(fallback);
+  return [...seen];
 }
 
 /* ──────────────────────────────────────────────
@@ -771,6 +1061,7 @@ function StepBriefing({
         moduleId={moduleSlug}
         lessonId={lessonSlug}
         userFramework={userFramework}
+        glossaryTerms={lesson.glossaryTerms}
         visibleComponents={BRIEFING_COMPONENTS}
         storyRegister
       />
@@ -815,7 +1106,8 @@ function StepConcept({
           moduleId={moduleSlug}
           lessonId={lessonSlug}
           userFramework={userFramework}
-          visibleComponents={CONCEPT_COMPONENTS}
+          glossaryTerms={lesson.glossaryTerms}
+          visibleComponents={CONCEPT_LEFT}
         />
       </div>
     </div>
@@ -853,7 +1145,8 @@ function StepCode({
           moduleId={moduleSlug}
           lessonId={lessonSlug}
           userFramework={userFramework}
-          visibleComponents={CODE_COMPONENTS}
+          glossaryTerms={lesson.glossaryTerms}
+          visibleComponents={CODE_LEFT}
         />
       </div>
     </div>
@@ -871,7 +1164,6 @@ function StepChallenge({
   lessonSlug,
   userFramework,
   theme,
-  onExerciseComplete,
 }: {
   lesson: LessonStepsProps["lesson"];
   exercises: ExerciseData[];
@@ -880,11 +1172,13 @@ function StepChallenge({
   lessonSlug: string;
   userFramework?: Framework;
   theme: LessonStepsProps["theme"];
-  onExerciseComplete: () => void;
 }) {
   return (
     <div>
       <PhaseChip theme={theme} label="Challenge" icon={"\u26A1"} />
+      {/* Left column: brief + hints only. The Exercise editor itself renders
+          in the right work pane (CHALLENGE_RIGHT) so its submit handler runs
+          exactly once. */}
       <div className="lesson-prose">
         <LessonContent
           lesson={lesson}
@@ -893,8 +1187,8 @@ function StepChallenge({
           moduleId={moduleSlug}
           lessonId={lessonSlug}
           userFramework={userFramework}
-          visibleComponents={CHALLENGE_COMPONENTS}
-          onExerciseComplete={onExerciseComplete}
+          glossaryTerms={lesson.glossaryTerms}
+          visibleComponents={CHALLENGE_LEFT}
         />
       </div>
     </div>
@@ -932,6 +1226,7 @@ function StepTakeaways({
           moduleId={moduleSlug}
           lessonId={lessonSlug}
           userFramework={userFramework}
+          glossaryTerms={lesson.glossaryTerms}
           visibleComponents={TAKEAWAYS_COMPONENTS}
         />
       </div>
@@ -1020,6 +1315,7 @@ function StepConsequence({
           moduleId={moduleSlug}
           lessonId={lessonSlug}
           userFramework={userFramework}
+          glossaryTerms={lesson.glossaryTerms}
           visibleComponents={CONSEQUENCE_COMPONENTS}
         />
       </div>

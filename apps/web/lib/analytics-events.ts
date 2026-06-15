@@ -116,7 +116,7 @@ export interface EventProperties {
     themeId?: string;
     lessonId?: string;
     /** What the user did with the prompt. */
-    action: "revealed" | "hidden";
+    action: "revealed" | "hidden" | "got-it" | "review";
   };
   [EVENTS.MODULE_COMPLETED]: {
     themeId: string;

@@ -22,9 +22,30 @@ vi.mock("@tensorcraft/ui", () => ({
   ExerciseDataProvider: ({ children }: { children: React.ReactNode }) => (
     <>{children}</>
   ),
+  GlossaryTerm: ({
+    term,
+    active,
+    onActivate,
+    children,
+  }: {
+    term: string;
+    active?: boolean;
+    onActivate?: (t: string) => void;
+    children: React.ReactNode;
+  }) => (
+    <button
+      type="button"
+      data-glossary-term={term}
+      data-active={active ? "true" : "false"}
+      onClick={() => onActivate?.(term)}
+    >
+      {children}
+    </button>
+  ),
   HintPanel: () => null,
   KeyTakeaways: () => null,
   LearningObjectives: () => null,
+  LessonRecap: () => <div>Lesson recap</div>,
   Quiz: () => null,
   Exercise: () => null,
 }));
@@ -40,11 +61,11 @@ vi.mock("@/app/components/mdx", () => ({
   RecallPrompt: () => null,
   StrategyThread: () => null,
 }));
-
 vi.mock("@/lib/analytics", () => ({
   trackCheckpointSubmitted: vi.fn(),
   trackExerciseSubmitted: vi.fn(),
   trackHintRequested: vi.fn(),
+  trackRecallAnswered: vi.fn(),
 }));
 
 // Minimal Velite-style compiled MDX body: an opening Dialogue, lesson prose,
@@ -95,6 +116,34 @@ describe("LessonContent, story register", () => {
   });
 });
 
+// Body with a glossary span (as emitted by rehype-glossary) inside prose.
+const GLOSSARY_BODY = `const {Fragment, jsx, jsxs} = arguments[0];
+function _createMdxContent(props) {
+  const _components = props.components || {};
+  const _span = _components.span || "span";
+  return jsxs(Fragment, {children: [
+    jsxs("p", {children: ["A ", jsx(_span, {"data-glossary-term": "tensor", children: "tensor"}), " is an array."]}),
+    jsx("p", {children: jsx(_span, {className: "plain", children: "not a term"})})
+  ]});
+}
+return {default: function(props) { return _createMdxContent(props); }};`;
+
+describe("LessonContent, glossary span upgrade", () => {
+  it("upgrades data-glossary-term spans into a GlossaryTerm, leaves plain spans alone", () => {
+    render(
+      <LessonContent
+        lesson={{ body: GLOSSARY_BODY, concept: { explanation: "x" } }}
+        visibleComponents={new Set(["prose"])}
+        glossaryTerms={[{ term: "tensor", definition: "A multi-dim array." }]}
+      />,
+    );
+    const chip = screen.getByRole("button", { name: /tensor/i });
+    expect(chip).toHaveAttribute("data-glossary-term", "tensor");
+    // The plain span passes through (still rendered, but not a button).
+    expect(screen.getByText("not a term").tagName).toBe("SPAN");
+  });
+});
+
 describe("LessonContent, Epilogue step routing", () => {
   it("Briefing step (Dialogue+prose) shows opening dialogue but NOT epilogue content", () => {
     render(
@@ -118,5 +167,40 @@ describe("LessonContent, Epilogue step routing", () => {
     expect(screen.getByText(/Closing line\./)).toBeInTheDocument();
     expect(screen.getByText(/scene after the work/)).toBeInTheDocument();
     expect(screen.queryByText(/Opening line\./)).toBeNull();
+  });
+});
+
+// Compiled MDX body that uses LessonRecap.
+const LESSON_RECAP_BODY = `const {Fragment, jsx, jsxs} = arguments[0];
+function _createMdxContent(props) {
+  const _components = props.components || {};
+  const LessonRecap = _components.LessonRecap;
+  return jsx(LessonRecap, {
+    whatYouLearned: ["Tensors are n-dimensional arrays."],
+    bridge: "Arrays in JS become tensors in TF.js.",
+    youCanNow: "Create and inspect tensors."
+  });
+}
+return {default: function(props) { return _createMdxContent(props); }};`;
+
+describe("LessonContent, LessonRecap visibility", () => {
+  it("renders LessonRecap when visibleComponents includes LessonRecap", () => {
+    render(
+      <LessonContent
+        lesson={{ body: LESSON_RECAP_BODY, concept: { explanation: "x" } }}
+        visibleComponents={new Set(["LessonRecap"])}
+      />,
+    );
+    expect(screen.getByText(/Lesson recap/i)).toBeInTheDocument();
+  });
+
+  it("does not render LessonRecap when visibleComponents excludes it", () => {
+    render(
+      <LessonContent
+        lesson={{ body: LESSON_RECAP_BODY, concept: { explanation: "x" } }}
+        visibleComponents={new Set(["Dialogue", "prose"])}
+      />,
+    );
+    expect(screen.queryByText(/Lesson recap/i)).toBeNull();
   });
 });

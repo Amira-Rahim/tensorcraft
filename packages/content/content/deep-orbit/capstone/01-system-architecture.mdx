@@ -175,7 +175,17 @@ Design a typed pipeline and validate the dependency graph.
 
 <Exercise slug="pipeline-architecture" />
 
-<KeyTakeaways takeaways={["The reporter depends on both classifier and anomaly-detector; validateGraph() checks the manifest for cycles and missing deps before anything runs", "Typed interfaces between stages catch integration errors at compile time, not runtime", "Validation at each stage boundary prevents garbage-in-garbage-out propagation", "DEEP SCAN's 5-stage pipeline: preprocess → extract → classify → detect → report"]} />
+<RecallPrompt question="Why do ML pipeline stage dependencies differ from npm package dependencies?" answer="npm dependencies are resolved from a lockfile and behave deterministically. ML pipeline stage dependencies include data shape contracts, model version compatibility, and feature freshness -- a schema mismatch produces wrong predictions, not a build error, and may surface days later as an accuracy regression rather than a stack trace." />
+
+<LessonRecap
+  whatYouLearned={[
+    "Modeling an ML pipeline as a dependency graph of typed stages lets you validate data contracts at compile time rather than discovering mismatches at runtime.",
+    "Each stage in a pipeline should declare explicit input and output types, and validate incoming data before processing to prevent bad data from propagating downstream.",
+    "A component manifest with dependency declarations lets you run cycle and completeness checks before any inference runs."
+  ]}
+  bridge="Just as `package.json` declares dependencies between npm packages, a pipeline config declares data-shape contracts between ML stages -- but unlike npm, a contract violation in ML is silent and shows up as accuracy drift, not a resolution error."
+  youCanNow="Design a multi-stage ML inference pipeline as a typed dependency graph and validate its component contracts before runtime."
+/>
 
 <Epilogue>
 

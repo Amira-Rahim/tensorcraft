@@ -221,6 +221,31 @@ describe("LessonSteps, story register", () => {
   });
 });
 
+describe("LessonSteps, LessonShell layout", () => {
+  it("renders the Briefing through a right-rail shell", () => {
+    renderSteps();
+    const right = screen.getByTestId("lesson-right");
+    expect(right).toHaveAttribute("data-kind", "rail");
+  });
+
+  it("renders a two-column rail shell on the Concept step", () => {
+    renderSteps();
+    fireEvent.click(screen.getByRole("button", { name: /skip/i }));
+    fireEvent.click(screen.getByRole("button", { name: /continue/i }));
+    const right = screen.getByTestId("lesson-right");
+    expect(right).toHaveAttribute("data-kind", "rail");
+  });
+
+  it("collapses to a single column on the Consequence step", () => {
+    // Reach the final step directly via persisted state.
+    localStorage.setItem(STEP_KEY, "5");
+    localStorage.setItem(MAX_KEY, "5");
+    renderSteps();
+    expect(screen.getByText("6 / 6")).toBeInTheDocument();
+    expect(screen.queryByTestId("lesson-right")).not.toBeInTheDocument();
+  });
+});
+
 describe("LessonSteps, step navigation chrome", () => {
   it("has no bottom Back button; backward nav is the segmented bar", () => {
     renderSteps();

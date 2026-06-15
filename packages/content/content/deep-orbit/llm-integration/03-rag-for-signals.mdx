@@ -131,7 +131,17 @@ Build a RAG pipeline that retrieves and contextualizes signal data.
 
 <Exercise slug="rag-pipeline" />
 
-<KeyTakeaways takeaways={["RAG = Retrieve → Augment → Generate: fetch real data, inject into prompt, generate grounded response", "Like Server Components: data access happens before generation, ensuring the output reflects reality", "Limit retrieved context to stay within token limits: retrieve the top-K most relevant records", "Instruct the LLM to cite sources and say 'insufficient data' when information is missing"]} />
+<RecallPrompt question="Why does a RAG pipeline still require you to verify the generated answer against retrieved records?" answer="A generator conditions on retrieved passages but can contradict them while still citing them. The citation exists but the number or claim may not match the source. Verification means comparing every quantitative claim in the answer against the actual retrieved rows, not just confirming a citation is present." />
+
+<LessonRecap
+  whatYouLearned={[
+    "RAG follows a retrieve-then-generate contract: query your data store for relevant records, inject them into the prompt, then generate a response grounded in those records rather than the model's memory.",
+    "Limiting retrieved context to the top-K most relevant records keeps you within token limits and focuses the model on what matters.",
+    "Generated answers can contradict the retrieved passages they cite -- always verify quantitative claims against the actual retrieved rows before trusting the output."
+  ]}
+  bridge="RAG mirrors the Server Component pattern (`async function Page() { const data = await db.query(...); return <View data={data} />; }`) -- data access happens before rendering. The key difference: a component cannot contradict its props, but a generator can contradict its context."
+  youCanNow="Build a RAG pipeline that retrieves relevant records from a data store, injects them into a grounded prompt, and validates the generated response against the source data."
+/>
 
 > **DISPATCH archive · field intercept #11-D:** Dr. Amara's clinical RAG pipeline runs the same retrieve-then-generate contract on patient records. Her note in the log: "the model that confabulates is the one that retrieved nothing and didn't say so." Different domain, identical failure mode.
 

@@ -73,7 +73,20 @@ Build your first neuron to classify signal readings.
 
 <Exercise slug="implement-neuron" />
 
-<KeyTakeaways takeaways={["Three inputs, three weights, one bias: tf.dot([0.5, 0.8, 0.2], [0.4, -0.2, 0.6]) + 0.1 = 0.18, the neuron's entire computation", "Weights control input importance, bias shifts the decision threshold", "tf.dot() computes the weighted sum efficiently on the GPU", "This single operation is the building block of all neural networks"]} />
+<RecallPrompt
+  question="What does a neuron compute, and what role do weights and bias each play?"
+  answer="A neuron computes the dot product of its inputs and weights, then adds a bias: output = dot(inputs, weights) + bias. Weights control how much each input contributes; the bias shifts the decision threshold independently of the inputs."
+/>
+
+<LessonRecap
+  whatYouLearned={[
+    "A neuron computes a weighted sum of its inputs plus a bias, producing a single number.",
+    "Weights encode how much each input matters; bias shifts the output threshold.",
+    "Array.reduce() over inputs is the JavaScript equivalent of tf.dot(), making the operation intuitive to read and reason about."
+  ]}
+  bridge="The FE pattern `inputs.reduce((sum, x, i) => sum + x * weights[i], bias)` maps directly to the ML operation `tf.dot(inputs, weights).add(bias)`, so every neuron is just a reduce you've written before."
+  youCanNow="Implement a single neuron as a weighted dot product plus bias using tf.dot() and add()."
+/>
 
 <Epilogue>
 

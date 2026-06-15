@@ -95,7 +95,20 @@ Add two tensors together to combine sensor readings.
 
 <Exercise slug="add-tensors" />
 
-<KeyTakeaways takeaways={["Element-wise ops (add, mul, sub) work like map + zip across any number of dimensions", "matMul rule: [m,n] × [n,p] → [m,p]: inner dimensions must match, transpose() to fix mismatches", "Method chaining works: tensor.add(other).mul(scalar)", "Every neural network layer is matMul(input, weights) + bias; this op is the workhorse"]} />
+<RecallPrompt
+  question="What is the shape rule for matrix multiplication, and what do you use to fix a shape mismatch?"
+  answer="The rule is [m, n] x [n, p] produces [m, p]: the inner dimensions must match. When they don't, use transpose() to swap rows and columns on one of the tensors so the inner sizes align."
+/>
+
+<LessonRecap
+  whatYouLearned={[
+    "Element-wise operations (add, mul, sub) apply the same computation to each matching position across tensors of any rank, equivalent to a GPU-accelerated map+zip.",
+    "Matrix multiplication (matMul) follows the [m,n] x [n,p] = [m,p] shape rule: inner dimensions must match. Use transpose() to fix mismatches.",
+    "Every neural network layer computes matMul(input, weights) + bias, making the matMul shape rule the most common source of dimension errors in ML code."
+  ]}
+  bridge="Where `Array.map()` applies a function element by element on the CPU, `tf.add()` and friends operate on entire tensors in parallel using hardware-accelerated kernels, covering millions of elements in a single op."
+  youCanNow="Perform element-wise and matrix operations on tensors, chain operations with method syntax, and diagnose inner-dimension mismatches using transpose()."
+/>
 
 <Epilogue>
 

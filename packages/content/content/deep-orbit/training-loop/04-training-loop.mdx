@@ -129,17 +129,20 @@ Train the DEEP SCAN network and watch the loss decrease.
 
 <Exercise slug="training-loop-exercise" />
 
-## Knowledge check
-
-<Quiz
-  question="Why use mini-batch (32-512) instead of full-batch or single-sample?"
-  options={[{"text":"Mini-batch is faster on CPU"},{"text":"Tradeoff: smooth-enough gradient estimate + GPU saturation + memory fits"},{"text":"Required by Adam optimizer"},{"text":"Standard for online learning"}]}
-  correct={1}
-  explanation="Full-batch is exact but slow (one step per epoch + huge memory). Single-sample is noisy + underuses GPU parallelism. Mini-batch 16-512 hits the sweet spot: enough samples for low-variance gradient estimate, small enough to fit, large enough to saturate GPU compute."
-  tier="structural"
+<RecallPrompt
+  question="Why use mini-batches of 32 to 512 samples rather than processing the full dataset at once or one sample at a time?"
+  answer="Full-batch is exact but slow and memory-heavy (one weight update per epoch). Single-sample is noisy and underuses GPU parallelism. Mini-batches hit the practical sweet spot: low-variance gradient estimates, memory that fits on hardware, and enough parallelism to saturate GPU compute."
 />
 
-<KeyTakeaways takeaways={["model.fit() runs the full training loop: forward → loss → backprop → update", "Epochs = full passes through the dataset, batches = chunks within each epoch", "Validation split catches overfitting: if val_loss increases while loss decreases, you're memorizing", "More epochs is not more learning: the 500-epoch run came back worse than the 64-epoch one", "Callbacks let you monitor progress, like console.log in a rAF loop"]} />
+<LessonRecap
+  whatYouLearned={[
+    "`model.fit()` encapsulates the complete training loop: forward pass, loss computation, backpropagation, and weight update, repeated for every batch of every epoch.",
+    "Training loss decreasing while validation loss rises is the signature of overfitting. The model is memorizing its training data rather than learning a generalizable pattern.",
+    "Mini-batches balance gradient quality against memory and compute: too large strains memory, too small introduces noise. Shuffling each epoch breaks ordering bias."
+  ]}
+  bridge="`requestAnimationFrame` creates a loop that updates state and re-renders each frame until an animation target is reached. `model.fit()` does the same: update weights, evaluate loss, repeat until convergence."
+  youCanNow="Configure and run `model.fit()` with appropriate epoch count, batch size, validation split, and epoch callbacks to monitor training progress."
+/>
 
 <Epilogue>
 

@@ -8,8 +8,10 @@ export type {
   ExerciseSubmitResult,
   ExerciseBridge,
 } from "./exercise";
+export { GlossaryTerm } from "./glossary-term";
 export { HintPanel } from "./hint-panel";
 export { KeyTakeaways } from "./key-takeaways";
 export { LearningObjectives } from "./learning-objectives";
+export { LessonRecap } from "./lesson-recap";
 export { Quiz } from "./quiz";
 export { SceneHeading } from "./scene-heading";

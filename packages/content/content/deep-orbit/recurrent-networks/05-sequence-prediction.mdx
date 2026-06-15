@@ -123,17 +123,20 @@ Train a prediction model and forecast the next signal value.
 
 <Exercise slug="predict-next" />
 
-## Knowledge check
-
-<Quiz
+<RecallPrompt
   question="The prediction model compiles with meanSquaredError, while the classifiers in earlier lessons used binaryCrossentropy. Why the switch?"
-  options={[{"text":"MSE trains faster on the WebGL backend"},{"text":"Predicting the next reading is regression: the output is continuous signal values, not a yes/no class"},{"text":"binaryCrossentropy only works when returnSequences is true"},{"text":"LSTM layers require MSE"}]}
-  correct={1}
-  explanation="Earlier lessons asked 'anomalous or not?', a classification, so binary crossentropy fit. This model outputs the next [amplitude, frequency, phase] values, continuous numbers, which makes it regression: MSE (with MAE as a readable metric) measures distance from the true next reading. Loss choice follows the output type, not the layer type."
-  tier="structural"
+  answer="Predicting the next reading is regression: the output is continuous signal values (amplitude, frequency, phase), not a yes/no class. MSE measures the distance between the predicted and actual values, which is what matters here. Loss choice follows the output type, not the layer type."
 />
 
-<KeyTakeaways takeaways={["DEEP SCAN's LSTM called the anomaly's return at 47 minutes; it arrived at 47 minutes 3 seconds: structure, not noise", "Multi-step forecasting feeds predictions back as input, generating forecasts one step at a time", "MSE/MAE metrics quantify prediction accuracy; high error on specific signals may indicate anomalies", "Prediction error on the anomalous pattern came in under 3%: the LSTM reproduces a sequence it last saw 72 hours earlier"]} />
+<LessonRecap
+  whatYouLearned={[
+    "Next-value prediction is regression: the output is a continuous vector of signal values, so the loss is `meanSquaredError` and the diagnostic metric is MAE, not accuracy.",
+    "Multi-step forecasting feeds each prediction back as the next input, extending the horizon one step at a time; error compounds with each step, so confidence degrades with distance.",
+    "Unusually high prediction error on a specific region of a signal can itself be an anomaly signal: the model's surprise is informative."
+  ]}
+  bridge="Autocomplete picks from a finite pre-indexed list you control; sequence forecasting generates novel continuations from a learned distribution, so predictions are unbounded and confidence drops sharply with horizon, requiring domain-level output clipping."
+  youCanNow="Train an LSTM for next-value regression using MSE loss, evaluate it with MAE, and generate multi-step forecasts by feeding predictions back as input."
+/>
 
 <Epilogue>
 
