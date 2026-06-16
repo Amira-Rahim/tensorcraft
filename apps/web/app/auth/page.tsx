@@ -51,12 +51,7 @@ export default function AuthPage() {
         />
 
         {/* Foreground copy block */}
-        <div className="relative z-10 flex h-full w-full flex-col justify-between p-10 lg:p-14">
-          {/* Brand mark */}
-          <div className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-primary">
-            T_ tensorcraft
-          </div>
-
+        <div className="relative z-10 flex h-full w-full flex-col justify-center p-10 lg:p-14">
           {/* Headline */}
           <h2
             data-testid="auth-tagline"
@@ -64,12 +59,6 @@ export default function AuthPage() {
           >
             You Already Think Like an ML Engineer
           </h2>
-
-          {/* Footer status line */}
-          <div className="flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.25em] text-text-muted">
-            <span className="inline-block h-1.75 w-1.75 rounded-none bg-primary" />
-            FE &rarr; ML · bridge online
-          </div>
         </div>
       </aside>
 
